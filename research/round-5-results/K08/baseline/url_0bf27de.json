@@ -1,0 +1,100 @@
+{
+ "checker": "K08 R5 check_demo_attribution",
+ "target": "--url http://127.0.0.1:8791/",
+ "disclaimer": "Проверка наличия текстов, уведомлений и ссылок; не юридическое заключение. sources.license — поле записи, а не полная проверка условий поставщика.",
+ "results": [
+  {
+   "id": "A1",
+   "status": "INFO",
+   "text": "Поставщики и лицензии в данных демо",
+   "providers": [
+    "Foursquare",
+    "meta"
+   ],
+   "licenses": [
+    "Apache-2.0",
+    "CDLA-Permissive-2.0",
+    "ODbL-1.0"
+   ],
+   "providers_only_in_inputs": []
+  },
+  {
+   "id": "A2",
+   "status": "FAIL",
+   "text": "Текст лицензии Apache-2.0 не поставляется рядом с демо",
+   "license": "Apache-2.0",
+   "searched": [
+    "LICENSES/Apache-2.0.txt",
+    "attribution/LICENSES/Apache-2.0.txt",
+    "licenses/Apache-2.0.txt"
+   ]
+  },
+  {
+   "id": "A2",
+   "status": "FAIL",
+   "text": "Текст лицензии CDLA-Permissive-2.0 не поставляется рядом с демо",
+   "license": "CDLA-Permissive-2.0",
+   "searched": [
+    "LICENSES/CDLA-Permissive-2.0.txt",
+    "attribution/LICENSES/CDLA-Permissive-2.0.txt",
+    "licenses/CDLA-Permissive-2.0.txt"
+   ]
+  },
+  {
+   "id": "A2",
+   "status": "FAIL",
+   "text": "Текст лицензии ODbL-1.0 не поставляется рядом с демо",
+   "license": "ODbL-1.0",
+   "searched": [
+    "LICENSES/ODbL-1.0.txt",
+    "attribution/LICENSES/ODbL-1.0.txt",
+    "licenses/ODbL-1.0.txt"
+   ]
+  },
+  {
+   "id": "A3",
+   "status": "FAIL",
+   "text": "Отдельный файл атрибуции в поставке отсутствует",
+   "searched": [
+    "ATTRIBUTION.md",
+    "ATTRIBUTION.txt",
+    "ATTRIBUTION.html",
+    "attribution/ATTRIBUTION.md",
+    "attribution.html"
+   ]
+  },
+  {
+   "id": "A4",
+   "status": "FAIL",
+   "text": "Поставщик Foursquare в общем уведомлении: UI=False, файл атрибуции=False; в карточке места поставщик выводится из данных, но в общем уведомлении не назван",
+   "provider": "Foursquare"
+  },
+  {
+   "id": "A4",
+   "status": "FAIL",
+   "text": "Поставщик meta в общем уведомлении: UI=False, файл атрибуции=False; в карточке места поставщик выводится из данных, но в общем уведомлении не назван",
+   "provider": "meta"
+  },
+  {
+   "id": "A5",
+   "status": "WARN",
+   "text": "Ссылки на openstreetmap.org/copyright нет (сама страница из этой среды не проверялась; формулировка — по практике OSM)"
+  },
+  {
+   "id": "A6",
+   "status": "WARN",
+   "text": "Сегментов без поля dataset в data.js: 2410 из 2410"
+  },
+  {
+   "id": "A7",
+   "status": "WARN",
+   "text": "Карточка дороги всегда подписана «OSM через Overture»"
+  }
+ ],
+ "summary": {
+  "PASS": 0,
+  "WARN": 3,
+  "FAIL": 6,
+  "INFO": 1
+ }
+}

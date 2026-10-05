@@ -1,0 +1,132 @@
+{
+ "checker": "K08 R5 check_demo_attribution",
+ "target": "--app-root /tmp/claude-0/-home-user-ADMIT-STUTU/6cfc5b67-d133-5868-9e23-1581b53a3f54/scratchpad/k04/prototypes/city-evidence",
+ "disclaimer": "Проверка наличия текстов, уведомлений и ссылок; не юридическое заключение. sources.license — поле записи, а не полная проверка условий поставщика.",
+ "results": [
+  {
+   "id": "A1",
+   "status": "INFO",
+   "text": "Поставщики и лицензии в данных демо",
+   "providers": [
+    "Foursquare",
+    "meta"
+   ],
+   "licenses": [
+    "Apache-2.0",
+    "CDLA-Permissive-2.0",
+    "ODbL-1.0"
+   ],
+   "providers_only_in_inputs": [
+    "OpenStreetMap",
+    "TomTom"
+   ]
+  },
+  {
+   "id": "A2",
+   "status": "FAIL",
+   "text": "Текст лицензии Apache-2.0 не поставляется рядом с демо",
+   "license": "Apache-2.0",
+   "searched": [
+    "LICENSES/Apache-2.0.txt",
+    "attribution/LICENSES/Apache-2.0.txt",
+    "licenses/Apache-2.0.txt"
+   ]
+  },
+  {
+   "id": "A2",
+   "status": "FAIL",
+   "text": "Текст лицензии CDLA-Permissive-2.0 не поставляется рядом с демо",
+   "license": "CDLA-Permissive-2.0",
+   "searched": [
+    "LICENSES/CDLA-Permissive-2.0.txt",
+    "attribution/LICENSES/CDLA-Permissive-2.0.txt",
+    "licenses/CDLA-Permissive-2.0.txt"
+   ]
+  },
+  {
+   "id": "A2",
+   "status": "FAIL",
+   "text": "Текст лицензии ODbL-1.0 не поставляется рядом с демо",
+   "license": "ODbL-1.0",
+   "searched": [
+    "LICENSES/ODbL-1.0.txt",
+    "attribution/LICENSES/ODbL-1.0.txt",
+    "licenses/ODbL-1.0.txt"
+   ]
+  },
+  {
+   "id": "A3",
+   "status": "FAIL",
+   "text": "Отдельный файл атрибуции в поставке отсутствует",
+   "searched": [
+    "ATTRIBUTION.md",
+    "ATTRIBUTION.txt",
+    "ATTRIBUTION.html",
+    "attribution/ATTRIBUTION.md",
+    "attribution.html"
+   ]
+  },
+  {
+   "id": "A4",
+   "status": "FAIL",
+   "text": "Поставщик Foursquare в общем уведомлении: UI=False, файл атрибуции=False; в карточке места поставщик выводится из данных, но в общем уведомлении не назван",
+   "provider": "Foursquare"
+  },
+  {
+   "id": "A4",
+   "status": "PASS",
+   "text": "Поставщик OpenStreetMap в общем уведомлении: UI=True, файл атрибуции=False (есть во входах, но у записей data.js поставщик не сохранён)",
+   "provider": "OpenStreetMap"
+  },
+  {
+   "id": "A4",
+   "status": "WARN",
+   "text": "Поставщик TomTom в общем уведомлении: UI=False, файл атрибуции=False (есть во входах, но у записей data.js поставщик не сохранён)",
+   "provider": "TomTom"
+  },
+  {
+   "id": "A4",
+   "status": "FAIL",
+   "text": "Поставщик meta в общем уведомлении: UI=False, файл атрибуции=False; в карточке места поставщик выводится из данных, но в общем уведомлении не назван",
+   "provider": "meta"
+  },
+  {
+   "id": "A5",
+   "status": "WARN",
+   "text": "Ссылки на openstreetmap.org/copyright нет (сама страница из этой среды не проверялась; формулировка — по практике OSM)"
+  },
+  {
+   "id": "A6",
+   "status": "FAIL",
+   "text": "Сегментов без поля dataset в data.js: 2410 из 2410; во входах есть поставщики, не видимые в демо: ['OpenStreetMap', 'TomTom']"
+  },
+  {
+   "id": "A7",
+   "status": "FAIL",
+   "text": "Карточка дороги всегда подписана «OSM через Overture»"
+  },
+  {
+   "id": "A8",
+   "status": "PASS",
+   "text": "Файлы inputs/ совпадают с source_manifest.json: 40/40",
+   "mismatches": []
+  },
+  {
+   "id": "A9",
+   "status": "PASS",
+   "text": "Сверка с upstream git-объектами: проверено 40, отличаются 0",
+   "modified": []
+  },
+  {
+   "id": "A10",
+   "status": "INFO",
+   "text": "Записей manifest с явной пометкой modified: 0 (поле в схеме manifest отсутствует; изменённые файлы надо помечать отдельным hash)"
+  }
+ ],
+ "summary": {
+  "PASS": 3,
+  "WARN": 2,
+  "FAIL": 8,
+  "INFO": 2
+ }
+}
