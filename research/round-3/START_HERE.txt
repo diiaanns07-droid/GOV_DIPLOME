@@ -1,0 +1,18 @@
+Отправить общий текст из SEND_TO_EACH.txt в те же 12 сессий Claude Code. Номера определяются по веткам, не по остаткам лимитов.
+
+K01 — claude/loving-thompson-nmajdo — Малый контроль сохранности
+K02 — claude/clever-mccarthy-pywscu — Проверяемое объяснение AI
+K03 — claude/epic-curie-iitc43 — Согласование географии
+K04 — claude/beautiful-clarke-sbzomj — Выбор первого продукта
+K05 — claude/optimistic-davinci-1oiqs9 — Адаптер реальных данных
+K06 — claude/ecstatic-curie-hzfzn0 — Корректные метрики автобусов
+K07 — claude/save-work-handoff-ku3ej3 — Прототип карты доступности
+K08 — claude/dazzling-mayer-drhsxk — Независимая проверка K10
+K09 — claude/save-work-handoff-qho6eq — Эксперимент для диплома
+K10 — claude/save-work-handoff-j7pc05 — Воспроизводимый пакет двух городов
+K11 — claude/save-work-handoff-fmjw6r — Малый аудит конфликтов
+K12 — claude/save-work-handoff-xuav3q — Честный импорт энергоданных
+
+Просмотр координатора: проверены новые файлы во всех 12 ветках, прочитаны выбранные отчёты и STATUS. Эксперименты агентов независимо не перезапускались.
+Конфликт: clever-mccarthy содержит K02 и дополнительный K03, epic-curie — другую версию K03. Теперь clever-mccarthy работает только K02, epic-curie сводит K03.
+Ветки не слиты в main. Входы читать из Git по snapshots.json.
