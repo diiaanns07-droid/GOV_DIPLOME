@@ -1,0 +1,103 @@
+{
+ "target_sha": "064ed25368341edaa50289bc29e21dda7bdd9440",
+ "target_branch": "claude/beautiful-clarke-sbzomj",
+ "target_path": "prototypes/city-evidence/",
+ "not_target": "0bf27deb8549b325b34a9610402613d745544edb (раунд 5) не перепроверялся",
+ "contract_under_test": {
+  "id": "k05-obs-v1.2+k12r4",
+  "loaded_via": "prototypes/city-evidence/tools/contract.py (реальная проводка сборки)",
+  "files_sha256": {
+   "research/next-round/K05/k05_validator.py": "90086a105a0a0108dcc4a35fd5312fb29becc0787b3eef5bc880ae987dfe64ab",
+   "research/round-3-results/K05/k05r3_contract.py": "b6856121d01c2046cfa2c0e8248ac4c0f107ecf60fdfa601bc04117fbf3e26a2",
+   "research/round-4-results/K05/k05r4_contract.py": "423cdfeeb13ce4ca7f9b8d7938157dd79ba8b21e41162cf6f7c8bb8d51307957",
+   "research/round-4-results/K05/schema/k05-obs-v1.2.schema.json": "a8a848aa7fa58a585da563bfd72821baa2e26ce4692f789ca468cd3d1713617f"
+  },
+  "note": "k05r3_contract = K12-патч (b6856121…); k05r4_contract = исходный 423cdfee… (r5-предложения K05 не применены)"
+ },
+ "test_source": {
+  "commit": "fb2dea60a5e42e745e6914dc063355d6db67aebe (k05r5_compat.py, фикстуры)",
+  "k05r6_accept.py_sha256": "0eb40936f7132de43094c2b16e82b6f5a7fba955099dfd2da0ea61a9c19ca1f0",
+  "k05r5_compat.py_sha256": "c6ce023822aef38354a8867573d841725c453d4b1a2095ffdfdbd7cc459b14b1",
+  "repro_r6.py_sha256": "1278a95dc984889bc01029fa9520e468c7e92e92ac5a22cc384b8adabce88a36",
+  "result_commit": "см. git log ветки claude/optimistic-davinci-1oiqs9 (SHA в STATUS/чате)"
+ },
+ "commands": [
+  "git worktree add --detach <wt> 064ed25368341edaa50289bc29e21dda7bdd9440",
+  "python research/round-6-results/K05/k05r6_accept.py --app-root <wt>/prototypes/city-evidence --json research/round-6-results/K05/runs/accept_064ed25_app_root.json",
+  "(cd <wt>/prototypes/city-evidence && python serve.py 8811) ; python research/round-6-results/K05/k05r6_accept.py --app-root <wt>/prototypes/city-evidence --url http://127.0.0.1:8811/ --json .../accept_064ed25_url.json",
+  "python research/round-6-results/K05/repro_r6.py --app-root <wt>/prototypes/city-evidence",
+  "(cd <wt>/prototypes/city-evidence && python tools/check_all.py)",
+  "python research/round-5-results/K05/k05r5_compat.py --app-root <wt>/prototypes/city-evidence  # TEST_INCOMPATIBLE, для объяснения"
+ ],
+ "invariants": {
+  "I1_count_domain_records_segments": {
+   "verdict": "FAIL",
+   "evidence": "records=-3, records=2.5, segments=-3, segments=2.5 принимаются; count=-3/2.5 отклоняются",
+   "location": "inputs/contract/research/round-3-results/K05/k05r3_contract.py:115 (obs[\"unit\"].strip() == \"count\")",
+   "intent": "K12 сознательно ограничил домен единицей count (для count_change отрицательные допустимы). Но сборка хранит счётчики в records/segments, а BUILD r5 ISSUE_MATRIX K12-3..9 объявляет «домен счётчика» fixed; тест сборки test_count_unit_domain_and_bad_dates проверяет только дату. Требование: счётчики сборки (records, segments) — целые ≥ 0. Не автоматический баг продукта (данные сборки целые ≥ 0, D05 PASS), а незакрытая защита, заявленная как закрытая.",
+   "fix": "research/round-5-results/K05/patches/k05r3_count_units_after_k12.patch (COUNT_UNITS={count,records,segments})"
+  },
+  "I2_expected_units_via_v12": {
+   "verdict": "FAIL",
+   "evidence": "TypeError: aggregate_sum() got an unexpected keyword argument 'expected_units'",
+   "location": "inputs/contract/research/round-4-results/K05/k05r4_contract.py:89 и :104",
+   "intent": "Латентно: сборка не вызывает aggregate_sum (только тест M05-типа). Полнота географии K12 недоступна через v1.2.",
+   "fix": "research/round-5-results/K05/patches/k05r4_contract_k12_compat.patch (**kwargs → C3)"
+  },
+  "I3_disjoint_bboxes_no_boundary_mix": {
+   "verdict": "FAIL",
+   "evidence": "BOUNDARY_MIX: ['k10_r3_square:r11_c12@5d76ee95e214', 'k10_r3_square:r1_c1@000000000000'] на реальной записи сборки + вторая bbox",
+   "location": "inputs/contract/research/round-3-results/K05/k05r3_contract.py:211-213 (слой = boundary_version без r<id>@<v>); v1.2 передаёт boundary_version квадрата как есть (k05r4_contract.py:34 _to_v11)",
+   "intent": "Латентно: сборка не суммирует квадраты. Правило K12 рассчитано на OSM-формат r<id>@<версия>.",
+   "fix": "тот же k05r4_contract_k12_compat.patch (boundary_version bbox → bbox-layer:<data_version>)"
+  }
+ },
+ "other_checks": {
+  "D01_strict_json": "PASS",
+  "D02_unique_obs_id": "PASS",
+  "D03_null_iff_missing": "PASS",
+  "D04_honest_zero": "PASS",
+  "D05_counts_integer": "PASS",
+  "D06_city": "PASS",
+  "D07_contract_validate_all": "PASS",
+  "M01_nan": "PASS",
+  "M03_nan_aggregate": "PASS",
+  "M04_bbox_vs_district": "PASS",
+  "M05_legacy_district": "PASS",
+  "M06_zero_partial_aggregate": "PASS",
+  "M07_zero_vs_missing": "PASS",
+  "M08_duplicate_obs_id": "PASS",
+  "M11_overlap": "PASS"
+ },
+ "summary": {
+  "PASS": 15,
+  "FAIL": 3
+ },
+ "repeat": {
+  "app_root": {
+   "PASS": 15,
+   "FAIL": 3
+  },
+  "url": {
+   "PASS": 15,
+   "FAIL": 3
+  },
+  "identical_verdicts": true
+ },
+ "build_own_checks": {
+  "check_all_full_worktree": "13 passed, 0 skipped, 0 failed",
+  "check_all_partial_extract": "11 passed, 1 failed (facts: StopIteration — inputs/k02v4/verified_explainer.py ищет корень репозитория agent/evidence.py; при извлечении только prototypes/ его нет). Среда, не дефект продукта."
+ },
+ "r5_harness_on_064ed25": {
+  "verdict": "TEST_INCOMPATIBLE",
+  "why": [
+   "читает v1.1 из inputs/k05_root (в 064ed25 это неизменённый оригинал 8dc4a177…, рабочий контракт — inputs/contract/)",
+   "v1.2 берёт из своей папки (--k05r4), а не из сборки",
+   "D08 валидирует v1.2-записи валидатором v1.1 → SCHEMA_VERSION (ложный FAIL)",
+   "таблица EXPECTED_FAIL по sha не применима к новой сборке"
+  ],
+  "fixed_by": "k05r6_accept.py (загрузка через tools/contract.py сборки, без EXPECTED_FAIL)",
+  "raw": "runs/r5_harness_unmodified_on_064ed25.json"
+ },
+ "verdict": "NOT_ACCEPTED for contract invariants I1–I3 (3 FAIL); data of the build and other contract rules PASS (15)"
+}
