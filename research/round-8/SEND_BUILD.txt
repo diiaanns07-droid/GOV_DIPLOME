@@ -1,0 +1,10 @@
+Ты единственный BUILD большого восьмого раунда GOV_DIPLOME.
+Это длительное задание из четырёх этапов: многообъектный сценарий, точный оптимизатор, сравнение/объяснение/файлы, приёмка.
+git fetch origin codex/research-import-2026-10-05
+git show origin/codex/research-import-2026-10-05:research/round-8/snapshots.json
+git show origin/codex/research-import-2026-10-05:research/round-8/CORE_SPEC.txt
+git show origin/codex/research-import-2026-10-05:research/round-8/BUILD.txt
+Выполни BUILD.txt в своей ветке. Сохрани рабочий what-if v1.
+После каждого работающего этапа STATUS/HANDOFF → commit → push и продолжай.
+Не заканчивай только планом или первым checkpoint. Если лимит остановит работу, сохрани запускаемый этап и точный следующий шаг.
+Других аккаунтов не жди. Финал: готовые функции, команды, тесты, ограничения, ветка/SHA.
