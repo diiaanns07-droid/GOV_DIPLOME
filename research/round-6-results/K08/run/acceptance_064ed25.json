@@ -1,0 +1,73 @@
+{
+ "checker": "K08 R6 check_r6_acceptance",
+ "app_root": "/tmp/claude-0/-home-user-ADMIT-STUTU/6cfc5b67-d133-5868-9e23-1581b53a3f54/scratchpad/k04n/prototypes/city-evidence",
+ "results": [
+  {
+   "invariant": "I1",
+   "verdict": "PASS",
+   "text": "source_manifest.json: 40/40 = manifest = upstream",
+   "mismatches": []
+  },
+  {
+   "invariant": "I2",
+   "verdict": "PASS",
+   "text": "inputs/r4/MANIFEST.json: 82/82 = manifest = upstream",
+   "mismatches": []
+  },
+  {
+   "invariant": "I3",
+   "verdict": "PASS",
+   "text": "K03 v2: отдельные hash исходного и модифицированного файла, патч из архива, воспроизводимо",
+   "problems": [],
+   "original_sha256": "61e354b2cf68b202e2a1a0a8aace38dd8e844c5909288eba55cf67474956e82e",
+   "patched_sha256": "891cd7e5b4a58eda5cdbf75e7aa5db96839dc80587536b6a4060f0cfe5858f1f"
+  },
+  {
+   "invariant": "I4",
+   "verdict": "PASS",
+   "text": "контракт k05-obs-v1.2+k12r4: модифицировано 1 из 4, hash раздельны, воспроизводимо",
+   "problems": [],
+   "modified": [
+    {
+     "path": "research/round-3-results/K05/k05r3_contract.py",
+     "original_sha256": "8dc4a177f47edcdfa6753ed41b78a31e5afb652df4d79f02c73aeb5686d2f397",
+     "used_sha256": "b6856121d01c2046cfa2c0e8248ac4c0f107ecf60fdfa601bc04117fbf3e26a2"
+    }
+   ]
+  },
+  {
+   "invariant": "I5",
+   "verdict": "PASS",
+   "text": "K02 v4: original/adapted hash раздельны, воспроизводимо",
+   "problems": [],
+   "original_sha256": "2993aebb2817a0d1d2912b211308405034f30db6bc7ef227f4a1e146a76e9129",
+   "adapted_sha256": "86e46e57d737eb6bb06bd0ef2b50a9356c8c184e87ba181791c7051c778e64d0"
+  },
+  {
+   "invariant": "I6",
+   "verdict": "PASS",
+   "text": "используемые модули — модифицированные копии; архивные копии не импортируются",
+   "problems": []
+  },
+  {
+   "invariant": "I7",
+   "verdict": "PASS",
+   "text": "routes: значений в data.js нет, пробел задокументирован"
+  },
+  {
+   "invariant": "I8",
+   "verdict": "FAIL",
+   "text": "checker R5 (c450abd8764a): {'PASS': 12, 'WARN': 0, 'FAIL': 1, 'INFO': 2}",
+   "failed": [
+    {
+     "id": "A7",
+     "text": "Карточка дороги всегда подписана «OSM через Overture», хотя среди сегментов есть ['TomTom']"
+    }
+   ]
+  }
+ ],
+ "summary": {
+  "PASS": 7,
+  "FAIL": 1
+ }
+}

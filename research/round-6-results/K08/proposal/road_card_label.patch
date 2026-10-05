@@ -1,0 +1,11 @@
+--- a/prototypes/city-evidence/web/app.js	2026-10-05 08:17:52.000000000 +0000
++++ b/prototypes/city-evidence/web/app.js	2026-10-05 11:17:24.745590383 +0000
+@@ -386,7 +386,7 @@
+     } else if (s.type === "segment") {
+       const g = c.segments.find((x) => x.id === s.id);
+       if (!g) { STATE.selected = null; empty.hidden = false; return; }
+-      body.append(el("h3", null, "Дорога (OSM через Overture)"));
++      body.append(el("h3", null, `Дорога (${g.dataset === "OpenStreetMap" ? "OSM" : (g.dataset || "источник не указан")} через Overture)`));
+       const dl = el("dl");
+       dlRows(dl, [
+         ["Класс", g.class + (g.subclass ? " / " + g.subclass : ""), "наблюдение"],

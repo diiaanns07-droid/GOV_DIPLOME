@@ -1,0 +1,80 @@
+{
+ "app_root": "/tmp/claude-0/-home-user-ADMIT-STUTU/6cfc5b67-d133-5868-9e23-1581b53a3f54/scratchpad/fix",
+ "non_osm_segments": 9,
+ "mislabeled": 0,
+ "page_errors": [],
+ "cases": [
+  {
+   "city": "shymkent",
+   "segment_id": "cc0cfb1e-d3a1-4895-8006-fa717525c56d",
+   "dataset": "TomTom",
+   "heading": "Дорога (TomTom через Overture)",
+   "source_row": "TomTom · id записи нет · ODbL-1.0 · дата неизвестнане OSM: K08 F3",
+   "mislabeled": false
+  },
+  {
+   "city": "astana",
+   "segment_id": "03ca83a2-3f87-4ea0-b8c7-a3be4b91f584",
+   "dataset": "TomTom",
+   "heading": "Дорога (TomTom через Overture)",
+   "source_row": "TomTom · id записи нет · ODbL-1.0 · дата неизвестнане OSM: K08 F3",
+   "mislabeled": false
+  },
+  {
+   "city": "astana",
+   "segment_id": "12013833-4a1b-4473-b055-00dcc71d2721",
+   "dataset": "TomTom",
+   "heading": "Дорога (TomTom через Overture)",
+   "source_row": "TomTom · id записи нет · ODbL-1.0 · дата неизвестнане OSM: K08 F3",
+   "mislabeled": false
+  },
+  {
+   "city": "astana",
+   "segment_id": "1e7e04ca-c303-4f6d-a845-cc9a1bca6bfb",
+   "dataset": "TomTom",
+   "heading": "Дорога (TomTom через Overture)",
+   "source_row": "TomTom · id записи нет · ODbL-1.0 · дата неизвестнане OSM: K08 F3",
+   "mislabeled": false
+  },
+  {
+   "city": "astana",
+   "segment_id": "1ffb8d5c-48be-4861-a436-07fc66ac2b67",
+   "dataset": "TomTom",
+   "heading": "Дорога (TomTom через Overture)",
+   "source_row": "TomTom · id записи нет · ODbL-1.0 · дата неизвестнане OSM: K08 F3",
+   "mislabeled": false
+  },
+  {
+   "city": "astana",
+   "segment_id": "61e2965a-c4f2-40ce-8ac5-730a2469a720",
+   "dataset": "TomTom",
+   "heading": "Дорога (TomTom через Overture)",
+   "source_row": "TomTom · id записи нет · ODbL-1.0 · дата неизвестнане OSM: K08 F3",
+   "mislabeled": false
+  },
+  {
+   "city": "astana",
+   "segment_id": "7f482acf-1887-4be2-b04e-90f7f1ce652c",
+   "dataset": "TomTom",
+   "heading": "Дорога (TomTom через Overture)",
+   "source_row": "TomTom · id записи нет · ODbL-1.0 · дата неизвестнане OSM: K08 F3",
+   "mislabeled": false
+  },
+  {
+   "city": "astana",
+   "segment_id": "b78652c8-ead8-4f33-a85e-861e7f38ee7f",
+   "dataset": "TomTom",
+   "heading": "Дорога (TomTom через Overture)",
+   "source_row": "TomTom · id записи нет · ODbL-1.0 · дата неизвестнане OSM: K08 F3",
+   "mislabeled": false
+  },
+  {
+   "city": "astana",
+   "segment_id": "ff34f76e-779c-40aa-886e-7ef12f98fe1a",
+   "dataset": "TomTom",
+   "heading": "Дорога (TomTom через Overture)",
+   "source_row": "TomTom · id записи нет · ODbL-1.0 · дата неизвестнане OSM: K08 F3",
+   "mislabeled": false
+  }
+ ]
+}

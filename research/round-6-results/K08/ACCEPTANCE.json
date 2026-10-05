@@ -1,0 +1,99 @@
+{
+ "schema": "k08-r6-acceptance/v1",
+ "role": "REVIEW K08",
+ "date": "2026-10-05",
+ "target": {
+  "branch": "claude/beautiful-clarke-sbzomj",
+  "sha": "064ed25368341edaa50289bc29e21dda7bdd9440",
+  "path": "prototypes/city-evidence/"
+ },
+ "previous_build_not_retested": "0bf27deb8549b325b34a9610402613d745544edb",
+ "test_source": {
+  "branch": "claude/dazzling-mayer-drhsxk",
+  "sha": "cdcfd200a8444037c30ae22951e0cdf1229eb18b",
+  "file": "research/round-5-results/K08/check_demo_attribution.py",
+  "sha256": "c450abd8764a57f7d30d2be51713bcfba2e738ef1f358cb0d8d67f1c718eb596",
+  "note": "использован без изменений; старые baseline/EXPECTED_FAIL раунда 5 к новой сборке не применялись"
+ },
+ "new_test_files": {
+  "research/round-6-results/K08/check_r6_acceptance.py": "6384ce9bf068598cd6e1f96ecf3de3d8a2434981f8e121b005f1b538d0e112e0",
+  "research/round-6-results/K08/repro_road_card_label.cjs": "6d7b7e61af53cf717f249a324f30b0dcfea1fca9f102372c1b551a30615b7213"
+ },
+ "verdict": "NOT_ACCEPTED: 1 дефект (I8/A7), остальные инварианты PASS",
+ "invariants": [
+  {
+   "id": "I1",
+   "verdict": "PASS",
+   "text": "source_manifest.json: 40/40 = manifest = upstream"
+  },
+  {
+   "id": "I2",
+   "verdict": "PASS",
+   "text": "inputs/r4/MANIFEST.json: 82/82 = manifest = upstream"
+  },
+  {
+   "id": "I3",
+   "verdict": "PASS",
+   "text": "K03 v2: отдельные hash исходного и модифицированного файла, патч из архива, воспроизводимо"
+  },
+  {
+   "id": "I4",
+   "verdict": "PASS",
+   "text": "контракт k05-obs-v1.2+k12r4: модифицировано 1 из 4, hash раздельны, воспроизводимо"
+  },
+  {
+   "id": "I5",
+   "verdict": "PASS",
+   "text": "K02 v4: original/adapted hash раздельны, воспроизводимо"
+  },
+  {
+   "id": "I6",
+   "verdict": "PASS",
+   "text": "используемые модули — модифицированные копии; архивные копии не импортируются"
+  },
+  {
+   "id": "I7",
+   "verdict": "PASS",
+   "text": "routes: значений в data.js нет, пробел задокументирован"
+  },
+  {
+   "id": "I8",
+   "verdict": "FAIL",
+   "text": "checker R5 (c450abd8764a): {'PASS': 12, 'WARN': 0, 'FAIL': 1, 'INFO': 2}"
+  }
+ ],
+ "defect": {
+  "id": "R6-K08-D1",
+  "invariant": "I8/A7",
+  "where": "prototypes/city-evidence/web/app.js:389 @ 064ed25",
+  "what": "Заголовок карточки дороги жёстко «Дорога (OSM через Overture)». Для 9 сегментов TomTom (1 Шымкент, 8 Астана) он противоречит строке «Источник» той же карточки (app.js:397: «TomTom · id записи нет · ODbL-1.0 · …не OSM: K08 F3»).",
+  "repro": "NODE_PATH=$(npm root -g) node research/round-6-results/K08/repro_road_card_label.cjs --app-root <064ed25 prototypes/city-evidence>  → mislabeled 9/9, exit 1 (run/repro_road_card_label_064ed25.json)",
+  "proposal": "proposal/road_card_label.patch (1 строка; git apply --check на 064ed25 проходит). На копии с patch: repro 0/9, check_r6_acceptance 8/8 PASS. Это предложение, не FIXED в BUILD."
+ },
+ "not_test_incompatible": "Checker R5 работает на новой структуре без правки: тексты в web/attribution/LICENSES и ATTRIBUTION.md найдены по уже предусмотренным путям; несовместимостей тестов не обнаружено.",
+ "info": [
+  "A10 checker R5 (нет поля modified в source_manifest.json) для этой сборки неактуален: модифицированные копии вынесены в отдельные деревья k03v2_root, contract, k02v4 со своими manifest (I3–I5).",
+  "K02 v4 изменён заменой строк (setup_k02.py), а не patch-файлом; происхождение и оба hash записаны в inputs/k02v4/MANIFEST.json."
+ ],
+ "commands": [
+  "git fetch origin claude/beautiful-clarke-sbzomj && git archive 064ed25368341edaa50289bc29e21dda7bdd9440 prototypes/city-evidence | tar -x -C /tmp/r6",
+  "python3 research/round-6-results/K08/check_r6_acceptance.py --app-root /tmp/r6/prototypes/city-evidence --repo . --checker research/round-5-results/K08/check_demo_attribution.py --json OUT.json",
+  "python3 research/round-5-results/K08/check_demo_attribution.py --url http://127.0.0.1:8765/   # после python3 /tmp/r6/prototypes/city-evidence/serve.py 8765",
+  "NODE_PATH=$(npm root -g) node research/round-6-results/K08/repro_road_card_label.cjs --app-root /tmp/r6/prototypes/city-evidence"
+ ],
+ "results": {
+  "acceptance_app_root": "run/acceptance_064ed25.json (PASS 7, FAIL 1)",
+  "r5_checker_app_root": "run/r5_checker_app_root_064ed25.json (PASS 12, FAIL 1)",
+  "r5_checker_url": "run/r5_checker_url_064ed25.json (PASS 10, FAIL 1)",
+  "repro": "run/repro_road_card_label_064ed25.json (9/9 mislabeled)",
+  "repro_with_proposal": "run/repro_road_card_label_with_proposal.json (0/9)"
+ },
+ "sanity": [
+  "мутация k03v2 boundary_validator.py (+1 строка) в копии → I3 FAIL (адаптер не слеп)",
+  "копия с proposal/road_card_label.patch → 8/8 PASS"
+ ],
+ "skipped": [
+  "тесты BUILD (smoke/conformance/unittest) не перезапускались — вне задания K08",
+  "юридическая проверка не проводилась"
+ ]
+}
