@@ -36,15 +36,17 @@
    69.617658,
    42.324611
   ],
-  "source_snapshot": "sha256:282cf187523d8b990ac9bfde69ba43763248aa9b49007149a094ccc81bd36ec2",
+  "source_snapshot": "sha256:a9326b5633c513c0bfeccbb2248b26cf3b706c902f77745073a2959ad8d7ff3e",
   "snapshot_components": [
-   "city-whatif-v1",
+   "city-plan-v2",
    "shymkent",
    "2026-09-23.1",
    "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7",
    "30b0b9678bd5d903232e1c820f2c65a5faad7ffc9020fff3f2ed8c591f591e0f",
-   "haversine:R=6371008.8"
+   "haversine-mm-v1"
   ],
+  "snapshot_format": "plan-v2: web/plan.js sourceSnapshot (BUILD 60f44d9)",
+  "whatif_v1_snapshot_same_slice": "sha256:282cf187523d8b990ac9bfde69ba43763248aa9b49007149a094ccc81bd36ec2",
   "upstream": "Overture Maps places 2026-09-23.1 via K10 package (round-3 results); not re-downloaded"
  },
  "source_copy": {
@@ -200,7 +202,7 @@
  "scenario": {
   "schema_version": "city-plan-v2",
   "city_id": "shymkent",
-  "source_snapshot": "sha256:282cf187523d8b990ac9bfde69ba43763248aa9b49007149a094ccc81bd36ec2",
+  "source_snapshot": "sha256:a9326b5633c513c0bfeccbb2248b26cf3b706c902f77745073a2959ad8d7ff3e",
   "category": "outpatient_clinic",
   "control_points": [
    {
@@ -449,12 +451,12 @@
   "generated_by": "k10plan.oracle",
   "metric_version": "haversine-mm-v1",
   "validation": "accepted",
-  "problem_digest": "sha256:9b867880efc5af3e819dacbbcca80a165086453208e1a3cbe5313ead97888503",
-  "scenario_digest": "sha256:eb3d138dfddf6c1a61d084f3c67eaf1882e9c3d5f5232bfb974d819ba351e4c6",
+  "problem_digest": "sha256:3cdfc6e0b30859c944d9b0fa1c3dca88d63c48c92e490b742a7443205c64a26a",
+  "scenario_digest": "sha256:d143a50cf06aa8409999a68e39f20d0884d45f5bee679e809679cdfb592880ea",
   "optimize": {
    "status": "optimal",
    "metric_version": "haversine-mm-v1",
-   "problem_digest": "sha256:9b867880efc5af3e819dacbbcca80a165086453208e1a3cbe5313ead97888503",
+   "problem_digest": "sha256:3cdfc6e0b30859c944d9b0fa1c3dca88d63c48c92e490b742a7443205c64a26a",
    "evaluated": 1471,
    "feasible_count": 682,
    "candidate_count": 14,

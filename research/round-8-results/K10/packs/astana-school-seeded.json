@@ -36,15 +36,17 @@
    71.447,
    51.181
   ],
-  "source_snapshot": "sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d",
+  "source_snapshot": "sha256:67a40b96d29873118780969eb11c32deba49a0c64fda1f185efe634882f04c6d",
   "snapshot_components": [
-   "city-whatif-v1",
+   "city-plan-v2",
    "astana",
    "2026-09-23.1",
    "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343",
    "4ea80e67e9ae236eee42b6ca74e650efec2d46dad0982448906d809c8eeb8a43",
-   "haversine:R=6371008.8"
+   "haversine-mm-v1"
   ],
+  "snapshot_format": "plan-v2: web/plan.js sourceSnapshot (BUILD 60f44d9)",
+  "whatif_v1_snapshot_same_slice": "sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d",
   "upstream": "Overture Maps places 2026-09-23.1 via K10 package (round-3 results); not re-downloaded"
  },
  "source_copy": {
@@ -119,7 +121,7 @@
  "scenario": {
   "schema_version": "city-plan-v2",
   "city_id": "astana",
-  "source_snapshot": "sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d",
+  "source_snapshot": "sha256:67a40b96d29873118780969eb11c32deba49a0c64fda1f185efe634882f04c6d",
   "category": "school",
   "control_points": [
    {
@@ -368,12 +370,12 @@
   "generated_by": "k10plan.oracle",
   "metric_version": "haversine-mm-v1",
   "validation": "accepted",
-  "problem_digest": "sha256:ed06351587c1d5d49496355045fc029969d1979b2e0572b72e7f4ec09d5b02a6",
-  "scenario_digest": "sha256:a1943be4fcc18511b6d1424e8353325882f1f2bf1c34ca37592a5fa0c479339c",
+  "problem_digest": "sha256:3cb729d1d5a19618b076cedc13b5f96eb71877889416b88c0667add911d5aa32",
+  "scenario_digest": "sha256:3771f328a39dd422f5a8fc6dffe0a3b9b6345948174dfef1d1a5d6f89ca292e8",
   "optimize": {
    "status": "optimal",
    "metric_version": "haversine-mm-v1",
-   "problem_digest": "sha256:ed06351587c1d5d49496355045fc029969d1979b2e0572b72e7f4ec09d5b02a6",
+   "problem_digest": "sha256:3cb729d1d5a19618b076cedc13b5f96eb71877889416b88c0667add911d5aa32",
    "evaluated": 1471,
    "feasible_count": 537,
    "candidate_count": 14,

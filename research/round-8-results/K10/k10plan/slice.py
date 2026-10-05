@@ -3,10 +3,13 @@
     ctx = load_context(app_root, "shymkent")      # oracle context: city_id, bbox, source_snapshot, records, versions
     man = input_manifest(app_root)                # sha256 of every input file the packs depend on (immutability check)
 
-The source_snapshot reproduces web/whatif.js sourceSnapshot() of BUILD a5b5e2d byte for byte:
-    "sha256:" + sha256hex(JSON.stringify([SCHEMA_V1, city, release, places_file_sha256, placesDigest, FORMULA]))
+source_snapshot formats (both reproduce the BUILD's JavaScript byte for byte; checked with node):
+    "plan-v2"   web/plan.js sourceSnapshot() of BUILD 60f44d9 (default; what a city-plan-v2 import compares with)
+                "sha256:" + sha256hex(JSON.stringify(["city-plan-v2", city, release, places_sha256, placesDigest, "haversine-mm-v1"]))
+    "whatif-v1" web/whatif.js sourceSnapshot() of BUILD a5b5e2d
+                "sha256:" + sha256hex(JSON.stringify(["city-whatif-v1", city, release, places_sha256, placesDigest, "haversine:R=6371008.8"]))
     placesDigest = sha256hex(JSON.stringify(rows sorted by id of [id, Math.round(lon*1e7)/1e7, Math.round(lat*1e7)/1e7]))
-If BUILD gives city-plan-v2 its own snapshot format, only the snapshot string changes, not the distances.
+A different snapshot format changes only the snapshot string, never the distances.
 Nothing here writes to the app root; files are opened for reading only.
 """
 import hashlib
@@ -14,9 +17,9 @@ import json
 import math
 from pathlib import Path
 
-SNAPSHOT_SCHEMA = "city-whatif-v1"
-SNAPSHOT_FORMULA = "haversine:R=6371008.8"
-INPUT_FILES = ("web/data.js", "web/evidence.js", "web/whatif.js", "web/facts.js",
+SNAPSHOT_FORMATS = {"plan-v2": ("city-plan-v2", "haversine-mm-v1"), "whatif-v1": ("city-whatif-v1", "haversine:R=6371008.8")}
+DEFAULT_SNAPSHOT = "plan-v2"
+INPUT_FILES = ("web/data.js", "web/evidence.js", "web/whatif.js", "web/facts.js", "web/plan.js",
                "inputs/k10/data/shymkent/places_social.geojson", "inputs/k10/data/astana/places_social.geojson",
                "inputs/k10/package_manifest.json")
 
@@ -70,13 +73,14 @@ def places_digest(city_data):
     return hashlib.sha256(js_stringify(rows).encode("utf-8")).hexdigest()
 
 
-def snapshot_components(city, city_data):
+def snapshot_components(city, city_data, fmt=DEFAULT_SNAPSHOT):
+    schema, metric = SNAPSHOT_FORMATS[fmt]
     fsha = ((city_data.get("files") or {}).get("places_social") or {}).get("sha256")
-    return [SNAPSHOT_SCHEMA, city, city_data["release"], fsha, places_digest(city_data), SNAPSHOT_FORMULA]
+    return [schema, city, city_data["release"], fsha, places_digest(city_data), metric]
 
 
-def source_snapshot(city, city_data):
-    return "sha256:" + hashlib.sha256(js_stringify(snapshot_components(city, city_data)).encode("utf-8")).hexdigest()
+def source_snapshot(city, city_data, fmt=DEFAULT_SNAPSHOT):
+    return "sha256:" + hashlib.sha256(js_stringify(snapshot_components(city, city_data, fmt)).encode("utf-8")).hexdigest()
 
 
 def qa_codes(ev_city):
@@ -105,9 +109,10 @@ def load_context(app_root, city, _cache=None):
                 "qa_flags": qa.get(p["id"], [])} for p in c["places"]]
     return {"city_id": city, "bbox": list(c["bbox"]), "source_snapshot": source_snapshot(city, c),
             "snapshot_components": snapshot_components(city, c), "release": c["release"],
+            "whatif_v1_snapshot": source_snapshot(city, c, "whatif-v1"),
             "places_file": c["files"]["places_social"]["path"], "places_file_sha256": c["files"]["places_social"]["sha256"],
             "records": records, "qa_colocated": ev["cities"][city]["qa"]["colocated"],
-            "versions": {"snapshot_format": "web/whatif.js sourceSnapshot (BUILD a5b5e2d)"}}
+            "versions": {"snapshot_format": "plan-v2: web/plan.js sourceSnapshot (BUILD 60f44d9)"}}
 
 
 def input_manifest(app_root):

@@ -41,15 +41,17 @@
    71.447,
    51.181
   ],
-  "source_snapshot": "sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d",
+  "source_snapshot": "sha256:67a40b96d29873118780969eb11c32deba49a0c64fda1f185efe634882f04c6d",
   "snapshot_components": [
-   "city-whatif-v1",
+   "city-plan-v2",
    "astana",
    "2026-09-23.1",
    "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343",
    "4ea80e67e9ae236eee42b6ca74e650efec2d46dad0982448906d809c8eeb8a43",
-   "haversine:R=6371008.8"
+   "haversine-mm-v1"
   ],
+  "snapshot_format": "plan-v2: web/plan.js sourceSnapshot (BUILD 60f44d9)",
+  "whatif_v1_snapshot_same_slice": "sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d",
   "upstream": "Overture Maps places 2026-09-23.1 via K10 package (round-3 results); not re-downloaded"
  },
  "source_copy": {
@@ -188,7 +190,7 @@
  "scenario": {
   "schema_version": "city-plan-v2",
   "city_id": "astana",
-  "source_snapshot": "sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d",
+  "source_snapshot": "sha256:67a40b96d29873118780969eb11c32deba49a0c64fda1f185efe634882f04c6d",
   "category": "outpatient_clinic",
   "control_points": [
    {
@@ -403,12 +405,12 @@
   "generated_by": "k10plan.oracle",
   "metric_version": "haversine-mm-v1",
   "validation": "accepted",
-  "problem_digest": "sha256:a43c0dba8e3b2fb7b3a92e34c925a2db7965b3d0d6412adcd37de3ca877bf974",
-  "scenario_digest": "sha256:13c4579e1be6475c4aa97d5ab5f6b29e93008acdbd1c7e0a239e7a04ecd08834",
+  "problem_digest": "sha256:af8a8bebb3950cfb03c6141ee24d43c77c1c00a48d20cc735e5c30d4c3ece2c6",
+  "scenario_digest": "sha256:3cad2f914e525641079afc1e561a4b9039aac55c269fc8bb1bd19c135d9edf0d",
   "optimize": {
    "status": "infeasible",
    "metric_version": "haversine-mm-v1",
-   "problem_digest": "sha256:a43c0dba8e3b2fb7b3a92e34c925a2db7965b3d0d6412adcd37de3ca877bf974",
+   "problem_digest": "sha256:af8a8bebb3950cfb03c6141ee24d43c77c1c00a48d20cc735e5c30d4c3ece2c6",
    "evaluated": 11,
    "feasible_count": 0,
    "candidate_count": 12,

@@ -21,6 +21,12 @@
    "lon": 0.0269796,
    "lat": 0.0,
    "weight": 2
+  },
+  {
+   "id": "P4",
+   "lon": 0.02248300181862269,
+   "lat": 0.0,
+   "weight": 1
   }
  ],
  "candidates": [
@@ -41,7 +47,7 @@
    "cost": 50
   },
   {
-   "id": "u",
+   "id": "a0",
    "lon": 0.0,
    "lat": 0.0,
    "category": "school",
@@ -55,6 +61,6 @@
  "required_ids": [],
  "excluded_ids": [],
  "selected_ids": [
-  "u"
+  "a0"
  ]
 }

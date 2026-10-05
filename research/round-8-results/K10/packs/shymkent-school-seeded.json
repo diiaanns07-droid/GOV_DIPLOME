@@ -36,15 +36,17 @@
    69.617658,
    42.324611
   ],
-  "source_snapshot": "sha256:282cf187523d8b990ac9bfde69ba43763248aa9b49007149a094ccc81bd36ec2",
+  "source_snapshot": "sha256:a9326b5633c513c0bfeccbb2248b26cf3b706c902f77745073a2959ad8d7ff3e",
   "snapshot_components": [
-   "city-whatif-v1",
+   "city-plan-v2",
    "shymkent",
    "2026-09-23.1",
    "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7",
    "30b0b9678bd5d903232e1c820f2c65a5faad7ffc9020fff3f2ed8c591f591e0f",
-   "haversine:R=6371008.8"
+   "haversine-mm-v1"
   ],
+  "snapshot_format": "plan-v2: web/plan.js sourceSnapshot (BUILD 60f44d9)",
+  "whatif_v1_snapshot_same_slice": "sha256:282cf187523d8b990ac9bfde69ba43763248aa9b49007149a094ccc81bd36ec2",
   "upstream": "Overture Maps places 2026-09-23.1 via K10 package (round-3 results); not re-downloaded"
  },
  "source_copy": {
@@ -191,7 +193,7 @@
  "scenario": {
   "schema_version": "city-plan-v2",
   "city_id": "shymkent",
-  "source_snapshot": "sha256:282cf187523d8b990ac9bfde69ba43763248aa9b49007149a094ccc81bd36ec2",
+  "source_snapshot": "sha256:a9326b5633c513c0bfeccbb2248b26cf3b706c902f77745073a2959ad8d7ff3e",
   "category": "school",
   "control_points": [
    {
@@ -440,12 +442,12 @@
   "generated_by": "k10plan.oracle",
   "metric_version": "haversine-mm-v1",
   "validation": "accepted",
-  "problem_digest": "sha256:cc631bbf5eeb303f624f329cacc569d2d8a9d7c3f0b221982667276937d2fabd",
-  "scenario_digest": "sha256:e27e2920ccc94cac0e11760a5dcf6e7ed0673f8096f8807daa158dfcf096c9b6",
+  "problem_digest": "sha256:c1923fb4b4bcd699433e8f91f6b6fdfd6da28fb8e1f4a0015af3e2b662a50324",
+  "scenario_digest": "sha256:fa9b182925029a06ca4930d3e672fbfcd06811b15a3fff4d54c5b82cdf16f9aa",
   "optimize": {
    "status": "optimal",
    "metric_version": "haversine-mm-v1",
-   "problem_digest": "sha256:cc631bbf5eeb303f624f329cacc569d2d8a9d7c3f0b221982667276937d2fabd",
+   "problem_digest": "sha256:c1923fb4b4bcd699433e8f91f6b6fdfd6da28fb8e1f4a0015af3e2b662a50324",
    "evaluated": 1471,
    "feasible_count": 371,
    "candidate_count": 14,

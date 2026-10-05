@@ -1,7 +1,7 @@
 {
  "schema_version": "city-plan-v2",
  "city_id": "astana",
- "source_snapshot": "sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d",
+ "source_snapshot": "sha256:67a40b96d29873118780969eb11c32deba49a0c64fda1f185efe634882f04c6d",
  "category": "outpatient_clinic",
  "control_points": [
   {

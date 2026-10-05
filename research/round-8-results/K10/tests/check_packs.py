@@ -12,8 +12,9 @@ Per pack:
   ORDER     reversed input arrays (points, candidates, id lists, source records) give the same digest, winners,
             Pareto front and sensitivity.
   HAND      synthetic packs: oracle output equals the expectation written by hand in the pack's design block.
-  JS        real packs: millimetre distances (before + to every candidate) and source_snapshot computed with the
-            BUILD's web/whatif.js equal the oracle values exactly (node required, else SKIP).
+  JS        real packs: millimetre distances (before + to every candidate) computed with the BUILD's web/whatif.js
+            haversine, and source_snapshot (plan-v2 formula via facts.js; web/plan.js sourceSnapshot when the build has
+            it; whatif-v1 for the same slice) equal the oracle values exactly (node required, else SKIP).
 Whole run:
   IMMUTABLE sha256 of the app-root input files and of every pack file are the same before and after the run, and
             the oracle did not mutate the context/scenario objects it was given.
@@ -145,7 +146,10 @@ def run(app_root, packs_dir):
             raw_diff = max((abs(O.haversine_m(cp["lon"], cp["lat"], c["lon"], c["lat"]) - j["raw"][i][k])
                             for i, cp in enumerate(p["scenario"]["control_points"])
                             for k, c in enumerate(p["scenario"]["candidates"])), default=0.0)
-            ok = base_py == j["base"] and m.cand == j["cand"] and j["snapshot"] == p["scenario"]["source_snapshot"]
+            ok = (base_py == j["base"] and m.cand == j["cand"] and j["snapshot"] == p["scenario"]["source_snapshot"]
+                  and j["plan_js_snapshot"] in (None, p["scenario"]["source_snapshot"])
+                  and j["whatif_v1_snapshot"] == p["provenance"]["whatif_v1_snapshot_same_slice"])
+            r["plan_js_present"] = j["plan_js_snapshot"] is not None
             r["checks"]["JS"] = "PASS" if ok else "FAIL"
             r["js_max_abs_diff_m_unrounded"] = raw_diff
         elif p["kind"] == "real_slice" and "invalid_cases" not in p:

@@ -40,15 +40,17 @@
    69.617658,
    42.324611
   ],
-  "source_snapshot": "sha256:282cf187523d8b990ac9bfde69ba43763248aa9b49007149a094ccc81bd36ec2",
+  "source_snapshot": "sha256:a9326b5633c513c0bfeccbb2248b26cf3b706c902f77745073a2959ad8d7ff3e",
   "snapshot_components": [
-   "city-whatif-v1",
+   "city-plan-v2",
    "shymkent",
    "2026-09-23.1",
    "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7",
    "30b0b9678bd5d903232e1c820f2c65a5faad7ffc9020fff3f2ed8c591f591e0f",
-   "haversine:R=6371008.8"
+   "haversine-mm-v1"
   ],
+  "snapshot_format": "plan-v2: web/plan.js sourceSnapshot (BUILD 60f44d9)",
+  "whatif_v1_snapshot_same_slice": "sha256:282cf187523d8b990ac9bfde69ba43763248aa9b49007149a094ccc81bd36ec2",
   "upstream": "Overture Maps places 2026-09-23.1 via K10 package (round-3 results); not re-downloaded"
  },
  "source_copy": {
@@ -195,7 +197,7 @@
  "scenario": {
   "schema_version": "city-plan-v2",
   "city_id": "shymkent",
-  "source_snapshot": "sha256:282cf187523d8b990ac9bfde69ba43763248aa9b49007149a094ccc81bd36ec2",
+  "source_snapshot": "sha256:a9326b5633c513c0bfeccbb2248b26cf3b706c902f77745073a2959ad8d7ff3e",
   "category": "school",
   "control_points": [
    {
@@ -407,12 +409,12 @@
   "generated_by": "k10plan.oracle",
   "metric_version": "haversine-mm-v1",
   "validation": "accepted",
-  "problem_digest": "sha256:6515a62ad67f6aeb3e11ff79e7d02c74f6120f22dcbe72c6252dc2defb34ac07",
-  "scenario_digest": "sha256:c996656aeae020f36b522ecdc546f9b3304b97941c23dbd8963e3585e1df69e2",
+  "problem_digest": "sha256:1b4c9797fa0f76736a4c7746b9e3cdc3245441770d3ac7cc664099cd2c860864",
+  "scenario_digest": "sha256:9f81ce35e597589c2131b5eeef874bd02abea8fd61011cfaeac62188ce302f7f",
   "optimize": {
    "status": "optimal",
    "metric_version": "haversine-mm-v1",
-   "problem_digest": "sha256:6515a62ad67f6aeb3e11ff79e7d02c74f6120f22dcbe72c6252dc2defb34ac07",
+   "problem_digest": "sha256:1b4c9797fa0f76736a4c7746b9e3cdc3245441770d3ac7cc664099cd2c860864",
    "evaluated": 299,
    "feasible_count": 143,
    "candidate_count": 12,

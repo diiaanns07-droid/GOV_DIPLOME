@@ -31,6 +31,7 @@ RULES = {
     "base": "budget 700, max_selected 3, coverage_radius_m 400 (analysis parameter, not a walking norm), "
             "required [], excluded [], selected_ids [c06, c07] (the two candidates nearest the bbox centre)",
     "tight_budget": "base, budget = smallest candidate cost",
+    "zero_budget": "base, budget 0 (manual selection c06+c07 stays in the file and is reported as over budget)",
     "required_excluded": "base, required [c12] (fixed corner candidate), excluded = ids of the base 'mean' winner minus c12",
     "conflict_budget": "base, required = the two most expensive candidates (ties: smaller id), budget = their cost sum - 1",
     "conflict_count": "base, required [c01,c02,c03,c04], max_selected 3, budget 1000000 (only the count conflicts)",
@@ -168,7 +169,8 @@ def provenance(ctx, src):
             "data_js_sha256": src["data_js_sha256"], "evidence_js_sha256": src["evidence_js_sha256"],
             "places_social_file": ctx["places_file"], "places_social_sha256": ctx["places_file_sha256"],
             "release": ctx["release"], "bbox": ctx["bbox"], "source_snapshot": ctx["source_snapshot"],
-            "snapshot_components": ctx["snapshot_components"],
+            "snapshot_components": ctx["snapshot_components"], "snapshot_format": ctx["versions"]["snapshot_format"],
+            "whatif_v1_snapshot_same_slice": ctx["whatif_v1_snapshot"],
             "upstream": "Overture Maps places 2026-09-23.1 via K10 package (round-3 results); not re-downloaded"}
 
 
@@ -207,6 +209,11 @@ def real_packs(ctx, src, cat, index):
     sc["budget"] = min(c["cost"] for c in sc["candidates"])
     packs.append(make_pack(f"{tag}-tight-budget", 2, "limited budget: only the cheapest single candidate fits", ctx, src,
                            sc, ["control_points", "weights", "candidates", "costs", "base", "tight_budget"]))
+
+    sc = copy.deepcopy(base)
+    sc["budget"] = 0
+    packs.append(make_pack(f"{tag}-zero-budget", 2, "budget 0: only the empty plan is allowed; sensitivity has one budget",
+                           ctx, src, sc, ["control_points", "weights", "candidates", "costs", "base", "zero_budget"]))
 
     sc = copy.deepcopy(base)
     sc["required_ids"] = ["c12"]
@@ -407,6 +414,10 @@ def hand_problems(p):
         bad.append("pareto_excludes_empty_plan")
     if "P1_nearest_before" in h and plans[refs["baseline"]]["rows"][0]["nearest_before"]["id"] != h["P1_nearest_before"]:
         bad.append("P1_nearest_before")
+    if "mean_P4_after_mm" in h and plans[refs["mean"]]["rows"][3]["after_mm"] != h["mean_P4_after_mm"]:
+        bad.append("mean_P4_after_mm")
+    if "coverage_covered_weight" in h and opt["objectives"]["coverage"]["covered_weight"] != h["coverage_covered_weight"]:
+        bad.append("coverage_covered_weight")
     if "manual_P1_nearest_after" in h and plans[refs["manual"]]["rows"][0]["nearest_after"] != h["manual_P1_nearest_after"]:
         bad.append("manual_P1_nearest_after")
     return bad
@@ -458,12 +469,31 @@ def synthetic_packs():
     ctx = synth_context("synthetic-equator", [{"id": "s1", "lon": _x(0), "lat": 0.0, "group": "school", "name": "S1"},
                                               {"id": "s0", "lon": _x(0), "lat": 0.0, "group": "school", "name": "S0"}])
     sc = synth_scenario(ctx, "school", [("P1", 0, 1), ("P2", 2000, 1), ("P3", 3000, 2)],
-                        [("t2", 2000, 50), ("t1", 2000, 50), ("u", 0, 10)], 100, 1, 500, ["u"])
-    packs.append(synth_pack("synthetic-ties", "equal distances and equal plans: source beats hypothetical on ties, "
-                            "smaller id beats larger, equal (cost, sum) collapse to one Pareto point", ctx, sc,
+                        [("t2", 2000, 50), ("t1", 2000, 50), ("a0", 0, 10)], 100, 1, 500, ["a0"])
+    # P4 exactly 500 m (= coverage radius) east of t1, longitude not rounded, so its distance is 500000 mm
+    sc["control_points"].append({"id": "P4", "lon": _x(2000) + 500 / M_PER_DEG, "lat": 0.0, "weight": 1})
+    packs.append(synth_pack("synthetic-ties", "equal distances and equal plans: source beats hypothetical on ties even "
+                            "when the candidate id sorts first, smaller id beats larger, equal (cost, sum) collapse to one "
+                            "Pareto point, a point exactly at the radius is covered", ctx, sc,
                             {"hand_expectation": {"P1_nearest_before": "s0", "manual_P1_nearest_after": {"kind": "source", "id": "s0"},
-                                                  "mean": ["t1"], "pareto": [[0, []], [50, ["t1"]]]},
-                             "why": "u sits on the sources and changes nothing; t1 and t2 are identical, t1 < t2"}))
+                                                  "mean": ["t1"], "pareto": [[0, []], [50, ["t1"]]],
+                                                  "mean_P4_after_mm": 500000, "coverage_covered_weight": 3},
+                             "why": "a0 sits on the sources ('a0' < 's0', yet the source wins the tie) and changes nothing; "
+                                    "t1 and t2 are identical, t1 < t2; with t1, P1, P2 (0 m) and P4 (500 m = radius) are covered"}))
+    # 4. secondary keys: equal weighted sum -> smaller max decides mean (before cost); B is the mean winner although it is
+    #    not on the (cost, sum) Pareto front, because A has the same sum for less cost
+    ctx = synth_context("synthetic-equator", [{"id": "src1", "lon": _x(20000), "lat": 0.0, "group": "school", "name": "S"}])
+    sc = synth_scenario(ctx, "school", [("P1", 0, 1), ("P2", 1000, 1)], [("A", 100, 1), ("B", 500, 2)], 10, 1, 150)
+    packs.append(synth_pack("synthetic-mean-tiebreak", "equal weighted sum: max_mm decides before cost; the mean winner "
+                            "need not be on the cost/sum Pareto front", ctx, sc,
+                            {"hand_expectation": {"mean": ["B"], "minimax": ["B"], "coverage": ["A"], "pareto": [[0, []], [1, ["A"]]]},
+                             "why": "A: 100+900 m, max 900, cost 1, covers P1 within 150 m; B: 500+500 m, max 500, cost 2"}))
+    # 5. equal max -> smaller weighted sum decides minimax (before cost)
+    sc = synth_scenario(ctx, "school", [("P1", 0, 1), ("P2", 1000, 1), ("P3", 5000, 1)], [("X", 2500, 1), ("Y", 0, 1)], 10, 2, 300)
+    packs.append(synth_pack("synthetic-minimax-tiebreak", "equal max_mm: weighted sum decides minimax before cost", ctx, sc,
+                            {"hand_expectation": {"mean": ["X", "Y"], "minimax": ["X", "Y"], "coverage": ["X", "Y"],
+                                                  "pareto": [[0, []], [1, ["Y"]], [2, ["X", "Y"]]]},
+                             "why": "{X}: 2500/1500/2500 m (max 2500, cost 1); {X,Y}: 0/1000/2500 m (max 2500, cost 2, smaller sum)"}))
     return packs
 
 

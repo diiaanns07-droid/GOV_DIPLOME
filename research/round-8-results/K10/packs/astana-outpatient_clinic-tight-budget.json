@@ -41,15 +41,17 @@
    71.447,
    51.181
   ],
-  "source_snapshot": "sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d",
+  "source_snapshot": "sha256:67a40b96d29873118780969eb11c32deba49a0c64fda1f185efe634882f04c6d",
   "snapshot_components": [
-   "city-whatif-v1",
+   "city-plan-v2",
    "astana",
    "2026-09-23.1",
    "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343",
    "4ea80e67e9ae236eee42b6ca74e650efec2d46dad0982448906d809c8eeb8a43",
-   "haversine:R=6371008.8"
+   "haversine-mm-v1"
   ],
+  "snapshot_format": "plan-v2: web/plan.js sourceSnapshot (BUILD 60f44d9)",
+  "whatif_v1_snapshot_same_slice": "sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d",
   "upstream": "Overture Maps places 2026-09-23.1 via K10 package (round-3 results); not re-downloaded"
  },
  "source_copy": {
@@ -188,7 +190,7 @@
  "scenario": {
   "schema_version": "city-plan-v2",
   "city_id": "astana",
-  "source_snapshot": "sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d",
+  "source_snapshot": "sha256:67a40b96d29873118780969eb11c32deba49a0c64fda1f185efe634882f04c6d",
   "category": "outpatient_clinic",
   "control_points": [
    {
@@ -400,12 +402,12 @@
   "generated_by": "k10plan.oracle",
   "metric_version": "haversine-mm-v1",
   "validation": "accepted",
-  "problem_digest": "sha256:fb2a005aac38c563879c72ace9e2587fe6ebe8ee80f8f93741c7607a448e7e20",
-  "scenario_digest": "sha256:13714aa234f4a9f0a6dc100cc854232b0e3530e8c763c9eb46f21682bc63ef8e",
+  "problem_digest": "sha256:27dacc6287205265025ee8ea7bd5eff47d4a7d0f4a849a7cadc20e968c9eeaaa",
+  "scenario_digest": "sha256:a3531f8a1d77d71d2287b15178e649dedddfddca737156965914a4e86ffb4b32",
   "optimize": {
    "status": "optimal",
    "metric_version": "haversine-mm-v1",
-   "problem_digest": "sha256:fb2a005aac38c563879c72ace9e2587fe6ebe8ee80f8f93741c7607a448e7e20",
+   "problem_digest": "sha256:27dacc6287205265025ee8ea7bd5eff47d4a7d0f4a849a7cadc20e968c9eeaaa",
    "evaluated": 299,
    "feasible_count": 2,
    "candidate_count": 12,

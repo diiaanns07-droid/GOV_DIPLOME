@@ -1,0 +1,50 @@
+{
+ "schema_version": "city-plan-v2",
+ "city_id": "synthetic-equator",
+ "source_snapshot": "synthetic:8e04c3da2d82d2e8c7521fa7f5cf1f31efed12c786fa65f4f7aff74a472c6f3c",
+ "category": "school",
+ "control_points": [
+  {
+   "id": "P1",
+   "lon": 0.0,
+   "lat": 0.0,
+   "weight": 1
+  },
+  {
+   "id": "P2",
+   "lon": 0.0089932,
+   "lat": 0.0,
+   "weight": 1
+  },
+  {
+   "id": "P3",
+   "lon": 0.044966,
+   "lat": 0.0,
+   "weight": 1
+  }
+ ],
+ "candidates": [
+  {
+   "id": "X",
+   "lon": 0.022483,
+   "lat": 0.0,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 1
+  },
+  {
+   "id": "Y",
+   "lon": 0.0,
+   "lat": 0.0,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 1
+  }
+ ],
+ "budget": 10,
+ "max_selected": 2,
+ "coverage_radius_m": 300,
+ "required_ids": [],
+ "excluded_ids": [],
+ "selected_ids": []
+}

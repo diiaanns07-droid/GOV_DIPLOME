@@ -14,9 +14,10 @@
   "web/data.js": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
   "web/evidence.js": "df736e986145da33dee60f692e020486720b72db5b6116af31640cc8693b11b9",
   "web/facts.js": "3994a275ddb8c0cb857478365d94810a945752a96fff10d53d37bc8dc9808c64",
+  "web/plan.js": null,
   "web/whatif.js": "944adfa63500d9bc13b3da859cf4a56a3d3e3f92fa0f565ed655bedfb81d8f2f"
  },
- "packs_checked": 31,
+ "packs_checked": 37,
  "results": [
   {
    "checks": {
@@ -29,7 +30,8 @@
    },
    "js_max_abs_diff_m_unrounded": 0.0,
    "kind": "real_slice",
-   "pack_id": "astana-outpatient_clinic-base"
+   "pack_id": "astana-outpatient_clinic-base",
+   "plan_js_present": false
   },
   {
    "checks": {
@@ -42,7 +44,8 @@
    },
    "js_max_abs_diff_m_unrounded": 0.0,
    "kind": "real_slice",
-   "pack_id": "astana-outpatient_clinic-conflict-budget"
+   "pack_id": "astana-outpatient_clinic-conflict-budget",
+   "plan_js_present": false
   },
   {
    "checks": {
@@ -55,7 +58,8 @@
    },
    "js_max_abs_diff_m_unrounded": 0.0,
    "kind": "real_slice",
-   "pack_id": "astana-outpatient_clinic-conflict-count"
+   "pack_id": "astana-outpatient_clinic-conflict-count",
+   "plan_js_present": false
   },
   {
    "checks": {
@@ -68,7 +72,8 @@
    },
    "js_max_abs_diff_m_unrounded": 0.0,
    "kind": "real_slice",
-   "pack_id": "astana-outpatient_clinic-required-excluded"
+   "pack_id": "astana-outpatient_clinic-required-excluded",
+   "plan_js_present": false
   },
   {
    "checks": {
@@ -81,7 +86,8 @@
    },
    "js_max_abs_diff_m_unrounded": 2.2737367544323206e-13,
    "kind": "real_slice",
-   "pack_id": "astana-outpatient_clinic-seeded"
+   "pack_id": "astana-outpatient_clinic-seeded",
+   "plan_js_present": false
   },
   {
    "checks": {
@@ -94,7 +100,8 @@
    },
    "js_max_abs_diff_m_unrounded": 0.0,
    "kind": "real_slice",
-   "pack_id": "astana-outpatient_clinic-tight-budget"
+   "pack_id": "astana-outpatient_clinic-tight-budget",
+   "plan_js_present": false
   },
   {
    "checks": {
@@ -107,7 +114,8 @@
    },
    "js_max_abs_diff_m_unrounded": 0.0,
    "kind": "real_slice",
-   "pack_id": "astana-school-base"
+   "pack_id": "astana-outpatient_clinic-zero-budget",
+   "plan_js_present": false
   },
   {
    "checks": {
@@ -120,7 +128,8 @@
    },
    "js_max_abs_diff_m_unrounded": 0.0,
    "kind": "real_slice",
-   "pack_id": "astana-school-conflict-budget"
+   "pack_id": "astana-school-base",
+   "plan_js_present": false
   },
   {
    "checks": {
@@ -133,7 +142,22 @@
    },
    "js_max_abs_diff_m_unrounded": 0.0,
    "kind": "real_slice",
-   "pack_id": "astana-school-conflict-count"
+   "pack_id": "astana-school-conflict-budget",
+   "plan_js_present": false
+  },
+  {
+   "checks": {
+    "INDEX": "PASS",
+    "JS": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "js_max_abs_diff_m_unrounded": 0.0,
+   "kind": "real_slice",
+   "pack_id": "astana-school-conflict-count",
+   "plan_js_present": false
   },
   {
    "checks": {
@@ -144,7 +168,8 @@
    },
    "js_max_abs_diff_m_unrounded": 0.0,
    "kind": "real_slice",
-   "pack_id": "astana-school-invalid-inputs"
+   "pack_id": "astana-school-invalid-inputs",
+   "plan_js_present": false
   },
   {
    "checks": {
@@ -157,7 +182,8 @@
    },
    "js_max_abs_diff_m_unrounded": 0.0,
    "kind": "real_slice",
-   "pack_id": "astana-school-required-excluded"
+   "pack_id": "astana-school-required-excluded",
+   "plan_js_present": false
   },
   {
    "checks": {
@@ -170,7 +196,8 @@
    },
    "js_max_abs_diff_m_unrounded": 2.2737367544323206e-13,
    "kind": "real_slice",
-   "pack_id": "astana-school-seeded"
+   "pack_id": "astana-school-seeded",
+   "plan_js_present": false
   },
   {
    "checks": {
@@ -183,7 +210,22 @@
    },
    "js_max_abs_diff_m_unrounded": 0.0,
    "kind": "real_slice",
-   "pack_id": "astana-school-tight-budget"
+   "pack_id": "astana-school-tight-budget",
+   "plan_js_present": false
+  },
+  {
+   "checks": {
+    "INDEX": "PASS",
+    "JS": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "js_max_abs_diff_m_unrounded": 0.0,
+   "kind": "real_slice",
+   "pack_id": "astana-school-zero-budget",
+   "plan_js_present": false
   },
   {
    "checks": {
@@ -196,7 +238,8 @@
    },
    "js_max_abs_diff_m_unrounded": 2.2737367544323206e-13,
    "kind": "real_slice",
-   "pack_id": "shymkent-outpatient_clinic-base"
+   "pack_id": "shymkent-outpatient_clinic-base",
+   "plan_js_present": false
   },
   {
    "checks": {
@@ -209,7 +252,8 @@
    },
    "js_max_abs_diff_m_unrounded": 2.2737367544323206e-13,
    "kind": "real_slice",
-   "pack_id": "shymkent-outpatient_clinic-conflict-budget"
+   "pack_id": "shymkent-outpatient_clinic-conflict-budget",
+   "plan_js_present": false
   },
   {
    "checks": {
@@ -222,7 +266,8 @@
    },
    "js_max_abs_diff_m_unrounded": 2.2737367544323206e-13,
    "kind": "real_slice",
-   "pack_id": "shymkent-outpatient_clinic-conflict-count"
+   "pack_id": "shymkent-outpatient_clinic-conflict-count",
+   "plan_js_present": false
   },
   {
    "checks": {
@@ -235,7 +280,8 @@
    },
    "js_max_abs_diff_m_unrounded": 4.547473508864641e-13,
    "kind": "real_slice",
-   "pack_id": "shymkent-outpatient_clinic-qa-nearest"
+   "pack_id": "shymkent-outpatient_clinic-qa-nearest",
+   "plan_js_present": false
   },
   {
    "checks": {
@@ -248,7 +294,8 @@
    },
    "js_max_abs_diff_m_unrounded": 2.2737367544323206e-13,
    "kind": "real_slice",
-   "pack_id": "shymkent-outpatient_clinic-required-excluded"
+   "pack_id": "shymkent-outpatient_clinic-required-excluded",
+   "plan_js_present": false
   },
   {
    "checks": {
@@ -261,7 +308,8 @@
    },
    "js_max_abs_diff_m_unrounded": 4.547473508864641e-13,
    "kind": "real_slice",
-   "pack_id": "shymkent-outpatient_clinic-seeded"
+   "pack_id": "shymkent-outpatient_clinic-seeded",
+   "plan_js_present": false
   },
   {
    "checks": {
@@ -274,7 +322,8 @@
    },
    "js_max_abs_diff_m_unrounded": 2.2737367544323206e-13,
    "kind": "real_slice",
-   "pack_id": "shymkent-outpatient_clinic-tight-budget"
+   "pack_id": "shymkent-outpatient_clinic-tight-budget",
+   "plan_js_present": false
   },
   {
    "checks": {
@@ -287,7 +336,8 @@
    },
    "js_max_abs_diff_m_unrounded": 2.2737367544323206e-13,
    "kind": "real_slice",
-   "pack_id": "shymkent-school-base"
+   "pack_id": "shymkent-outpatient_clinic-zero-budget",
+   "plan_js_present": false
   },
   {
    "checks": {
@@ -300,7 +350,8 @@
    },
    "js_max_abs_diff_m_unrounded": 2.2737367544323206e-13,
    "kind": "real_slice",
-   "pack_id": "shymkent-school-conflict-budget"
+   "pack_id": "shymkent-school-base",
+   "plan_js_present": false
   },
   {
    "checks": {
@@ -313,7 +364,22 @@
    },
    "js_max_abs_diff_m_unrounded": 2.2737367544323206e-13,
    "kind": "real_slice",
-   "pack_id": "shymkent-school-conflict-count"
+   "pack_id": "shymkent-school-conflict-budget",
+   "plan_js_present": false
+  },
+  {
+   "checks": {
+    "INDEX": "PASS",
+    "JS": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "js_max_abs_diff_m_unrounded": 2.2737367544323206e-13,
+   "kind": "real_slice",
+   "pack_id": "shymkent-school-conflict-count",
+   "plan_js_present": false
   },
   {
    "checks": {
@@ -324,7 +390,8 @@
    },
    "js_max_abs_diff_m_unrounded": 2.2737367544323206e-13,
    "kind": "real_slice",
-   "pack_id": "shymkent-school-invalid-inputs"
+   "pack_id": "shymkent-school-invalid-inputs",
+   "plan_js_present": false
   },
   {
    "checks": {
@@ -337,7 +404,8 @@
    },
    "js_max_abs_diff_m_unrounded": 4.547473508864641e-13,
    "kind": "real_slice",
-   "pack_id": "shymkent-school-qa-nearest"
+   "pack_id": "shymkent-school-qa-nearest",
+   "plan_js_present": false
   },
   {
    "checks": {
@@ -350,7 +418,8 @@
    },
    "js_max_abs_diff_m_unrounded": 2.2737367544323206e-13,
    "kind": "real_slice",
-   "pack_id": "shymkent-school-required-excluded"
+   "pack_id": "shymkent-school-required-excluded",
+   "plan_js_present": false
   },
   {
    "checks": {
@@ -363,7 +432,8 @@
    },
    "js_max_abs_diff_m_unrounded": 2.2737367544323206e-13,
    "kind": "real_slice",
-   "pack_id": "shymkent-school-seeded"
+   "pack_id": "shymkent-school-seeded",
+   "plan_js_present": false
   },
   {
    "checks": {
@@ -376,7 +446,22 @@
    },
    "js_max_abs_diff_m_unrounded": 2.2737367544323206e-13,
    "kind": "real_slice",
-   "pack_id": "shymkent-school-tight-budget"
+   "pack_id": "shymkent-school-tight-budget",
+   "plan_js_present": false
+  },
+  {
+   "checks": {
+    "INDEX": "PASS",
+    "JS": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "js_max_abs_diff_m_unrounded": 2.2737367544323206e-13,
+   "kind": "real_slice",
+   "pack_id": "shymkent-school-zero-budget",
+   "plan_js_present": false
   },
   {
    "checks": {
@@ -389,6 +474,30 @@
    },
    "kind": "synthetic",
    "pack_id": "synthetic-empty-baseline"
+  },
+  {
+   "checks": {
+    "HAND": "PASS",
+    "INDEX": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "SYNTHETIC",
+    "VALID": "PASS"
+   },
+   "kind": "synthetic",
+   "pack_id": "synthetic-mean-tiebreak"
+  },
+  {
+   "checks": {
+    "HAND": "PASS",
+    "INDEX": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "SYNTHETIC",
+    "VALID": "PASS"
+   },
+   "kind": "synthetic",
+   "pack_id": "synthetic-minimax-tiebreak"
   },
   {
    "checks": {

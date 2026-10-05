@@ -1,0 +1,919 @@
+{
+ "build": {
+  "app_root": "/tmp/claude-0/-home-user-GOV-DIPLOME/e15cd393-c9d0-5e6f-ba76-0281490195c8/scratchpad/build_60f44d9/prototypes/city-evidence",
+  "plan_js_sha256": "d3d09243bc1a48dda88f9ec09743df72c0d510551ab4ee1d5087315efa58bb33",
+  "whatif_js_sha256": "944adfa63500d9bc13b3da859cf4a56a3d3e3f92fa0f565ed655bedfb81d8f2f",
+  "data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72"
+ },
+ "packs": 37,
+ "failures": [],
+ "results": [
+  {
+   "pack_id": "astana-outpatient_clinic-base",
+   "kind": "real_slice",
+   "checks": {
+    "SNAPSHOT": "PASS",
+    "VALID": "PASS",
+    "STATUS": "PASS",
+    "OBJ_mean": "PASS",
+    "OBJ_minimax": "PASS",
+    "OBJ_coverage": "PASS",
+    "PARETO": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "SENSITIVITY": "PASS",
+    "EVALUATE": "PASS",
+    "ORDER": "PASS",
+    "DIGEST_SELECTED": "PASS",
+    "PARTIAL_NOT_OPTIMAL": "PASS"
+   },
+   "problems": [],
+   "notes": [],
+   "evaluated": {
+    "build": 4096,
+    "k10": 299,
+    "note": "counted differently by design (BUILD: 2^free masks; K10: subsets within max_selected)"
+   }
+  },
+  {
+   "pack_id": "astana-outpatient_clinic-conflict-budget",
+   "kind": "real_slice",
+   "checks": {
+    "SNAPSHOT": "PASS",
+    "VALID": "PASS",
+    "STATUS": "PASS",
+    "INFEASIBLE_REASONS": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "SENSITIVITY": "PASS",
+    "EVALUATE": "PASS",
+    "ORDER": "PASS",
+    "DIGEST_SELECTED": "PASS"
+   },
+   "problems": [],
+   "notes": [],
+   "evaluated": {
+    "build": 0,
+    "k10": 11,
+    "note": "counted differently by design (BUILD: 2^free masks; K10: subsets within max_selected)"
+   }
+  },
+  {
+   "pack_id": "astana-outpatient_clinic-conflict-count",
+   "kind": "real_slice",
+   "checks": {
+    "SNAPSHOT": "PASS",
+    "VALID": "PASS",
+    "STATUS": "PASS",
+    "INFEASIBLE_REASONS": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "SENSITIVITY": "PASS",
+    "EVALUATE": "PASS",
+    "ORDER": "PASS",
+    "DIGEST_SELECTED": "PASS"
+   },
+   "problems": [],
+   "notes": [],
+   "evaluated": {
+    "build": 0,
+    "k10": 0,
+    "note": "counted differently by design (BUILD: 2^free masks; K10: subsets within max_selected)"
+   }
+  },
+  {
+   "pack_id": "astana-outpatient_clinic-required-excluded",
+   "kind": "real_slice",
+   "checks": {
+    "SNAPSHOT": "PASS",
+    "VALID": "PASS",
+    "STATUS": "PASS",
+    "OBJ_mean": "PASS",
+    "OBJ_minimax": "PASS",
+    "OBJ_coverage": "PASS",
+    "PARETO": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "SENSITIVITY": "PASS",
+    "EVALUATE": "PASS",
+    "ORDER": "PASS",
+    "DIGEST_SELECTED": "PASS",
+    "PARTIAL_NOT_OPTIMAL": "PASS"
+   },
+   "problems": [],
+   "notes": [],
+   "evaluated": {
+    "build": 512,
+    "k10": 46,
+    "note": "counted differently by design (BUILD: 2^free masks; K10: subsets within max_selected)"
+   }
+  },
+  {
+   "pack_id": "astana-outpatient_clinic-seeded",
+   "kind": "real_slice",
+   "checks": {
+    "SNAPSHOT": "PASS",
+    "VALID": "PASS",
+    "STATUS": "PASS",
+    "OBJ_mean": "PASS",
+    "OBJ_minimax": "PASS",
+    "OBJ_coverage": "PASS",
+    "PARETO": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "SENSITIVITY": "PASS",
+    "EVALUATE": "PASS",
+    "ORDER": "PASS",
+    "DIGEST_SELECTED": "PASS",
+    "PARTIAL_NOT_OPTIMAL": "PASS"
+   },
+   "problems": [],
+   "notes": [],
+   "evaluated": {
+    "build": 16384,
+    "k10": 1471,
+    "note": "counted differently by design (BUILD: 2^free masks; K10: subsets within max_selected)"
+   }
+  },
+  {
+   "pack_id": "astana-outpatient_clinic-tight-budget",
+   "kind": "real_slice",
+   "checks": {
+    "SNAPSHOT": "PASS",
+    "VALID": "PASS",
+    "STATUS": "PASS",
+    "OBJ_mean": "PASS",
+    "OBJ_minimax": "PASS",
+    "OBJ_coverage": "PASS",
+    "PARETO": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "SENSITIVITY": "PASS",
+    "EVALUATE": "PASS",
+    "ORDER": "PASS",
+    "DIGEST_SELECTED": "PASS",
+    "PARTIAL_NOT_OPTIMAL": "PASS"
+   },
+   "problems": [],
+   "notes": [],
+   "evaluated": {
+    "build": 4096,
+    "k10": 299,
+    "note": "counted differently by design (BUILD: 2^free masks; K10: subsets within max_selected)"
+   }
+  },
+  {
+   "pack_id": "astana-outpatient_clinic-zero-budget",
+   "kind": "real_slice",
+   "checks": {
+    "SNAPSHOT": "PASS",
+    "VALID": "PASS",
+    "STATUS": "PASS",
+    "OBJ_mean": "PASS",
+    "OBJ_minimax": "PASS",
+    "OBJ_coverage": "PASS",
+    "PARETO": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "SENSITIVITY": "PASS",
+    "EVALUATE": "PASS",
+    "ORDER": "PASS",
+    "DIGEST_SELECTED": "PASS",
+    "PARTIAL_NOT_OPTIMAL": "PASS"
+   },
+   "problems": [],
+   "notes": [],
+   "evaluated": {
+    "build": 4096,
+    "k10": 299,
+    "note": "counted differently by design (BUILD: 2^free masks; K10: subsets within max_selected)"
+   }
+  },
+  {
+   "pack_id": "astana-school-base",
+   "kind": "real_slice",
+   "checks": {
+    "SNAPSHOT": "PASS",
+    "VALID": "PASS",
+    "STATUS": "PASS",
+    "OBJ_mean": "PASS",
+    "OBJ_minimax": "PASS",
+    "OBJ_coverage": "PASS",
+    "PARETO": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "SENSITIVITY": "PASS",
+    "EVALUATE": "PASS",
+    "ORDER": "PASS",
+    "DIGEST_SELECTED": "PASS",
+    "PARTIAL_NOT_OPTIMAL": "PASS"
+   },
+   "problems": [],
+   "notes": [],
+   "evaluated": {
+    "build": 4096,
+    "k10": 299,
+    "note": "counted differently by design (BUILD: 2^free masks; K10: subsets within max_selected)"
+   }
+  },
+  {
+   "pack_id": "astana-school-conflict-budget",
+   "kind": "real_slice",
+   "checks": {
+    "SNAPSHOT": "PASS",
+    "VALID": "PASS",
+    "STATUS": "PASS",
+    "INFEASIBLE_REASONS": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "SENSITIVITY": "PASS",
+    "EVALUATE": "PASS",
+    "ORDER": "PASS",
+    "DIGEST_SELECTED": "PASS"
+   },
+   "problems": [],
+   "notes": [],
+   "evaluated": {
+    "build": 0,
+    "k10": 11,
+    "note": "counted differently by design (BUILD: 2^free masks; K10: subsets within max_selected)"
+   }
+  },
+  {
+   "pack_id": "astana-school-conflict-count",
+   "kind": "real_slice",
+   "checks": {
+    "SNAPSHOT": "PASS",
+    "VALID": "PASS",
+    "STATUS": "PASS",
+    "INFEASIBLE_REASONS": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "SENSITIVITY": "PASS",
+    "EVALUATE": "PASS",
+    "ORDER": "PASS",
+    "DIGEST_SELECTED": "PASS"
+   },
+   "problems": [],
+   "notes": [],
+   "evaluated": {
+    "build": 0,
+    "k10": 0,
+    "note": "counted differently by design (BUILD: 2^free masks; K10: subsets within max_selected)"
+   }
+  },
+  {
+   "pack_id": "astana-school-invalid-inputs",
+   "kind": "real_slice",
+   "checks": {
+    "SNAPSHOT": "PASS",
+    "INVALID_CASES": "PASS"
+   },
+   "problems": [],
+   "notes": [
+    "html_in_ids: BUILD refuses ids outside [A-Za-z0-9_.-] (stricter than the length-only rule; acceptable, documented)"
+   ]
+  },
+  {
+   "pack_id": "astana-school-required-excluded",
+   "kind": "real_slice",
+   "checks": {
+    "SNAPSHOT": "PASS",
+    "VALID": "PASS",
+    "STATUS": "PASS",
+    "OBJ_mean": "PASS",
+    "OBJ_minimax": "PASS",
+    "OBJ_coverage": "PASS",
+    "PARETO": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "SENSITIVITY": "PASS",
+    "EVALUATE": "PASS",
+    "ORDER": "PASS",
+    "DIGEST_SELECTED": "PASS",
+    "PARTIAL_NOT_OPTIMAL": "PASS"
+   },
+   "problems": [],
+   "notes": [],
+   "evaluated": {
+    "build": 512,
+    "k10": 46,
+    "note": "counted differently by design (BUILD: 2^free masks; K10: subsets within max_selected)"
+   }
+  },
+  {
+   "pack_id": "astana-school-seeded",
+   "kind": "real_slice",
+   "checks": {
+    "SNAPSHOT": "PASS",
+    "VALID": "PASS",
+    "STATUS": "PASS",
+    "OBJ_mean": "PASS",
+    "OBJ_minimax": "PASS",
+    "OBJ_coverage": "PASS",
+    "PARETO": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "SENSITIVITY": "PASS",
+    "EVALUATE": "PASS",
+    "ORDER": "PASS",
+    "DIGEST_SELECTED": "PASS",
+    "PARTIAL_NOT_OPTIMAL": "PASS"
+   },
+   "problems": [],
+   "notes": [],
+   "evaluated": {
+    "build": 16384,
+    "k10": 1471,
+    "note": "counted differently by design (BUILD: 2^free masks; K10: subsets within max_selected)"
+   }
+  },
+  {
+   "pack_id": "astana-school-tight-budget",
+   "kind": "real_slice",
+   "checks": {
+    "SNAPSHOT": "PASS",
+    "VALID": "PASS",
+    "STATUS": "PASS",
+    "OBJ_mean": "PASS",
+    "OBJ_minimax": "PASS",
+    "OBJ_coverage": "PASS",
+    "PARETO": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "SENSITIVITY": "PASS",
+    "EVALUATE": "PASS",
+    "ORDER": "PASS",
+    "DIGEST_SELECTED": "PASS",
+    "PARTIAL_NOT_OPTIMAL": "PASS"
+   },
+   "problems": [],
+   "notes": [],
+   "evaluated": {
+    "build": 4096,
+    "k10": 299,
+    "note": "counted differently by design (BUILD: 2^free masks; K10: subsets within max_selected)"
+   }
+  },
+  {
+   "pack_id": "astana-school-zero-budget",
+   "kind": "real_slice",
+   "checks": {
+    "SNAPSHOT": "PASS",
+    "VALID": "PASS",
+    "STATUS": "PASS",
+    "OBJ_mean": "PASS",
+    "OBJ_minimax": "PASS",
+    "OBJ_coverage": "PASS",
+    "PARETO": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "SENSITIVITY": "PASS",
+    "EVALUATE": "PASS",
+    "ORDER": "PASS",
+    "DIGEST_SELECTED": "PASS",
+    "PARTIAL_NOT_OPTIMAL": "PASS"
+   },
+   "problems": [],
+   "notes": [],
+   "evaluated": {
+    "build": 4096,
+    "k10": 299,
+    "note": "counted differently by design (BUILD: 2^free masks; K10: subsets within max_selected)"
+   }
+  },
+  {
+   "pack_id": "shymkent-outpatient_clinic-base",
+   "kind": "real_slice",
+   "checks": {
+    "SNAPSHOT": "PASS",
+    "VALID": "PASS",
+    "STATUS": "PASS",
+    "OBJ_mean": "PASS",
+    "OBJ_minimax": "PASS",
+    "OBJ_coverage": "PASS",
+    "PARETO": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "SENSITIVITY": "PASS",
+    "EVALUATE": "PASS",
+    "ORDER": "PASS",
+    "DIGEST_SELECTED": "PASS",
+    "PARTIAL_NOT_OPTIMAL": "PASS"
+   },
+   "problems": [],
+   "notes": [],
+   "evaluated": {
+    "build": 4096,
+    "k10": 299,
+    "note": "counted differently by design (BUILD: 2^free masks; K10: subsets within max_selected)"
+   }
+  },
+  {
+   "pack_id": "shymkent-outpatient_clinic-conflict-budget",
+   "kind": "real_slice",
+   "checks": {
+    "SNAPSHOT": "PASS",
+    "VALID": "PASS",
+    "STATUS": "PASS",
+    "INFEASIBLE_REASONS": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "SENSITIVITY": "PASS",
+    "EVALUATE": "PASS",
+    "ORDER": "PASS",
+    "DIGEST_SELECTED": "PASS"
+   },
+   "problems": [],
+   "notes": [],
+   "evaluated": {
+    "build": 0,
+    "k10": 11,
+    "note": "counted differently by design (BUILD: 2^free masks; K10: subsets within max_selected)"
+   }
+  },
+  {
+   "pack_id": "shymkent-outpatient_clinic-conflict-count",
+   "kind": "real_slice",
+   "checks": {
+    "SNAPSHOT": "PASS",
+    "VALID": "PASS",
+    "STATUS": "PASS",
+    "INFEASIBLE_REASONS": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "SENSITIVITY": "PASS",
+    "EVALUATE": "PASS",
+    "ORDER": "PASS",
+    "DIGEST_SELECTED": "PASS"
+   },
+   "problems": [],
+   "notes": [],
+   "evaluated": {
+    "build": 0,
+    "k10": 0,
+    "note": "counted differently by design (BUILD: 2^free masks; K10: subsets within max_selected)"
+   }
+  },
+  {
+   "pack_id": "shymkent-outpatient_clinic-qa-nearest",
+   "kind": "real_slice",
+   "checks": {
+    "SNAPSHOT": "PASS",
+    "VALID": "PASS",
+    "STATUS": "PASS",
+    "OBJ_mean": "PASS",
+    "OBJ_minimax": "PASS",
+    "OBJ_coverage": "PASS",
+    "PARETO": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "SENSITIVITY": "PASS",
+    "EVALUATE": "PASS",
+    "ORDER": "PASS",
+    "DIGEST_SELECTED": "PASS",
+    "PARTIAL_NOT_OPTIMAL": "PASS"
+   },
+   "problems": [],
+   "notes": [],
+   "evaluated": {
+    "build": 4096,
+    "k10": 299,
+    "note": "counted differently by design (BUILD: 2^free masks; K10: subsets within max_selected)"
+   }
+  },
+  {
+   "pack_id": "shymkent-outpatient_clinic-required-excluded",
+   "kind": "real_slice",
+   "checks": {
+    "SNAPSHOT": "PASS",
+    "VALID": "PASS",
+    "STATUS": "PASS",
+    "OBJ_mean": "PASS",
+    "OBJ_minimax": "PASS",
+    "OBJ_coverage": "PASS",
+    "PARETO": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "SENSITIVITY": "PASS",
+    "EVALUATE": "PASS",
+    "ORDER": "PASS",
+    "DIGEST_SELECTED": "PASS",
+    "PARTIAL_NOT_OPTIMAL": "PASS"
+   },
+   "problems": [],
+   "notes": [],
+   "evaluated": {
+    "build": 512,
+    "k10": 46,
+    "note": "counted differently by design (BUILD: 2^free masks; K10: subsets within max_selected)"
+   }
+  },
+  {
+   "pack_id": "shymkent-outpatient_clinic-seeded",
+   "kind": "real_slice",
+   "checks": {
+    "SNAPSHOT": "PASS",
+    "VALID": "PASS",
+    "STATUS": "PASS",
+    "OBJ_mean": "PASS",
+    "OBJ_minimax": "PASS",
+    "OBJ_coverage": "PASS",
+    "PARETO": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "SENSITIVITY": "PASS",
+    "EVALUATE": "PASS",
+    "ORDER": "PASS",
+    "DIGEST_SELECTED": "PASS",
+    "PARTIAL_NOT_OPTIMAL": "PASS"
+   },
+   "problems": [],
+   "notes": [],
+   "evaluated": {
+    "build": 16384,
+    "k10": 1471,
+    "note": "counted differently by design (BUILD: 2^free masks; K10: subsets within max_selected)"
+   }
+  },
+  {
+   "pack_id": "shymkent-outpatient_clinic-tight-budget",
+   "kind": "real_slice",
+   "checks": {
+    "SNAPSHOT": "PASS",
+    "VALID": "PASS",
+    "STATUS": "PASS",
+    "OBJ_mean": "PASS",
+    "OBJ_minimax": "PASS",
+    "OBJ_coverage": "PASS",
+    "PARETO": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "SENSITIVITY": "PASS",
+    "EVALUATE": "PASS",
+    "ORDER": "PASS",
+    "DIGEST_SELECTED": "PASS",
+    "PARTIAL_NOT_OPTIMAL": "PASS"
+   },
+   "problems": [],
+   "notes": [],
+   "evaluated": {
+    "build": 4096,
+    "k10": 299,
+    "note": "counted differently by design (BUILD: 2^free masks; K10: subsets within max_selected)"
+   }
+  },
+  {
+   "pack_id": "shymkent-outpatient_clinic-zero-budget",
+   "kind": "real_slice",
+   "checks": {
+    "SNAPSHOT": "PASS",
+    "VALID": "PASS",
+    "STATUS": "PASS",
+    "OBJ_mean": "PASS",
+    "OBJ_minimax": "PASS",
+    "OBJ_coverage": "PASS",
+    "PARETO": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "SENSITIVITY": "PASS",
+    "EVALUATE": "PASS",
+    "ORDER": "PASS",
+    "DIGEST_SELECTED": "PASS",
+    "PARTIAL_NOT_OPTIMAL": "PASS"
+   },
+   "problems": [],
+   "notes": [],
+   "evaluated": {
+    "build": 4096,
+    "k10": 299,
+    "note": "counted differently by design (BUILD: 2^free masks; K10: subsets within max_selected)"
+   }
+  },
+  {
+   "pack_id": "shymkent-school-base",
+   "kind": "real_slice",
+   "checks": {
+    "SNAPSHOT": "PASS",
+    "VALID": "PASS",
+    "STATUS": "PASS",
+    "OBJ_mean": "PASS",
+    "OBJ_minimax": "PASS",
+    "OBJ_coverage": "PASS",
+    "PARETO": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "SENSITIVITY": "PASS",
+    "EVALUATE": "PASS",
+    "ORDER": "PASS",
+    "DIGEST_SELECTED": "PASS",
+    "PARTIAL_NOT_OPTIMAL": "PASS"
+   },
+   "problems": [],
+   "notes": [],
+   "evaluated": {
+    "build": 4096,
+    "k10": 299,
+    "note": "counted differently by design (BUILD: 2^free masks; K10: subsets within max_selected)"
+   }
+  },
+  {
+   "pack_id": "shymkent-school-conflict-budget",
+   "kind": "real_slice",
+   "checks": {
+    "SNAPSHOT": "PASS",
+    "VALID": "PASS",
+    "STATUS": "PASS",
+    "INFEASIBLE_REASONS": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "SENSITIVITY": "PASS",
+    "EVALUATE": "PASS",
+    "ORDER": "PASS",
+    "DIGEST_SELECTED": "PASS"
+   },
+   "problems": [],
+   "notes": [],
+   "evaluated": {
+    "build": 0,
+    "k10": 11,
+    "note": "counted differently by design (BUILD: 2^free masks; K10: subsets within max_selected)"
+   }
+  },
+  {
+   "pack_id": "shymkent-school-conflict-count",
+   "kind": "real_slice",
+   "checks": {
+    "SNAPSHOT": "PASS",
+    "VALID": "PASS",
+    "STATUS": "PASS",
+    "INFEASIBLE_REASONS": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "SENSITIVITY": "PASS",
+    "EVALUATE": "PASS",
+    "ORDER": "PASS",
+    "DIGEST_SELECTED": "PASS"
+   },
+   "problems": [],
+   "notes": [],
+   "evaluated": {
+    "build": 0,
+    "k10": 0,
+    "note": "counted differently by design (BUILD: 2^free masks; K10: subsets within max_selected)"
+   }
+  },
+  {
+   "pack_id": "shymkent-school-invalid-inputs",
+   "kind": "real_slice",
+   "checks": {
+    "SNAPSHOT": "PASS",
+    "INVALID_CASES": "PASS"
+   },
+   "problems": [],
+   "notes": [
+    "html_in_ids: BUILD refuses ids outside [A-Za-z0-9_.-] (stricter than the length-only rule; acceptable, documented)"
+   ]
+  },
+  {
+   "pack_id": "shymkent-school-qa-nearest",
+   "kind": "real_slice",
+   "checks": {
+    "SNAPSHOT": "PASS",
+    "VALID": "PASS",
+    "STATUS": "PASS",
+    "OBJ_mean": "PASS",
+    "OBJ_minimax": "PASS",
+    "OBJ_coverage": "PASS",
+    "PARETO": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "SENSITIVITY": "PASS",
+    "EVALUATE": "PASS",
+    "ORDER": "PASS",
+    "DIGEST_SELECTED": "PASS",
+    "PARTIAL_NOT_OPTIMAL": "PASS"
+   },
+   "problems": [],
+   "notes": [],
+   "evaluated": {
+    "build": 4096,
+    "k10": 299,
+    "note": "counted differently by design (BUILD: 2^free masks; K10: subsets within max_selected)"
+   }
+  },
+  {
+   "pack_id": "shymkent-school-required-excluded",
+   "kind": "real_slice",
+   "checks": {
+    "SNAPSHOT": "PASS",
+    "VALID": "PASS",
+    "STATUS": "PASS",
+    "OBJ_mean": "PASS",
+    "OBJ_minimax": "PASS",
+    "OBJ_coverage": "PASS",
+    "PARETO": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "SENSITIVITY": "PASS",
+    "EVALUATE": "PASS",
+    "ORDER": "PASS",
+    "DIGEST_SELECTED": "PASS",
+    "PARTIAL_NOT_OPTIMAL": "PASS"
+   },
+   "problems": [],
+   "notes": [],
+   "evaluated": {
+    "build": 256,
+    "k10": 37,
+    "note": "counted differently by design (BUILD: 2^free masks; K10: subsets within max_selected)"
+   }
+  },
+  {
+   "pack_id": "shymkent-school-seeded",
+   "kind": "real_slice",
+   "checks": {
+    "SNAPSHOT": "PASS",
+    "VALID": "PASS",
+    "STATUS": "PASS",
+    "OBJ_mean": "PASS",
+    "OBJ_minimax": "PASS",
+    "OBJ_coverage": "PASS",
+    "PARETO": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "SENSITIVITY": "PASS",
+    "EVALUATE": "PASS",
+    "ORDER": "PASS",
+    "DIGEST_SELECTED": "PASS",
+    "PARTIAL_NOT_OPTIMAL": "PASS"
+   },
+   "problems": [],
+   "notes": [],
+   "evaluated": {
+    "build": 16384,
+    "k10": 1471,
+    "note": "counted differently by design (BUILD: 2^free masks; K10: subsets within max_selected)"
+   }
+  },
+  {
+   "pack_id": "shymkent-school-tight-budget",
+   "kind": "real_slice",
+   "checks": {
+    "SNAPSHOT": "PASS",
+    "VALID": "PASS",
+    "STATUS": "PASS",
+    "OBJ_mean": "PASS",
+    "OBJ_minimax": "PASS",
+    "OBJ_coverage": "PASS",
+    "PARETO": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "SENSITIVITY": "PASS",
+    "EVALUATE": "PASS",
+    "ORDER": "PASS",
+    "DIGEST_SELECTED": "PASS",
+    "PARTIAL_NOT_OPTIMAL": "PASS"
+   },
+   "problems": [],
+   "notes": [],
+   "evaluated": {
+    "build": 4096,
+    "k10": 299,
+    "note": "counted differently by design (BUILD: 2^free masks; K10: subsets within max_selected)"
+   }
+  },
+  {
+   "pack_id": "shymkent-school-zero-budget",
+   "kind": "real_slice",
+   "checks": {
+    "SNAPSHOT": "PASS",
+    "VALID": "PASS",
+    "STATUS": "PASS",
+    "OBJ_mean": "PASS",
+    "OBJ_minimax": "PASS",
+    "OBJ_coverage": "PASS",
+    "PARETO": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "SENSITIVITY": "PASS",
+    "EVALUATE": "PASS",
+    "ORDER": "PASS",
+    "DIGEST_SELECTED": "PASS",
+    "PARTIAL_NOT_OPTIMAL": "PASS"
+   },
+   "problems": [],
+   "notes": [],
+   "evaluated": {
+    "build": 4096,
+    "k10": 299,
+    "note": "counted differently by design (BUILD: 2^free masks; K10: subsets within max_selected)"
+   }
+  },
+  {
+   "pack_id": "synthetic-empty-baseline",
+   "kind": "synthetic",
+   "checks": {
+    "VALID": "PASS",
+    "STATUS": "PASS",
+    "OBJ_mean": "PASS",
+    "OBJ_minimax": "PASS",
+    "OBJ_coverage": "PASS",
+    "PARETO": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "SENSITIVITY": "PASS",
+    "EVALUATE": "PASS",
+    "ORDER": "PASS",
+    "DIGEST_SELECTED": "PASS",
+    "PARTIAL_NOT_OPTIMAL": "PASS"
+   },
+   "problems": [],
+   "notes": [
+    "synthetic pack: source_snapshot replaced by the BUILD's own value for the synthetic context"
+   ],
+   "evaluated": {
+    "build": 256,
+    "k10": 37,
+    "note": "counted differently by design (BUILD: 2^free masks; K10: subsets within max_selected)"
+   }
+  },
+  {
+   "pack_id": "synthetic-mean-tiebreak",
+   "kind": "synthetic",
+   "checks": {
+    "VALID": "PASS",
+    "STATUS": "PASS",
+    "OBJ_mean": "PASS",
+    "OBJ_minimax": "PASS",
+    "OBJ_coverage": "PASS",
+    "PARETO": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "SENSITIVITY": "PASS",
+    "EVALUATE": "PASS",
+    "ORDER": "PASS",
+    "DIGEST_SELECTED": "PASS",
+    "PARTIAL_NOT_OPTIMAL": "PASS"
+   },
+   "problems": [],
+   "notes": [
+    "synthetic pack: source_snapshot replaced by the BUILD's own value for the synthetic context"
+   ],
+   "evaluated": {
+    "build": 4,
+    "k10": 3,
+    "note": "counted differently by design (BUILD: 2^free masks; K10: subsets within max_selected)"
+   }
+  },
+  {
+   "pack_id": "synthetic-minimax-tiebreak",
+   "kind": "synthetic",
+   "checks": {
+    "VALID": "PASS",
+    "STATUS": "PASS",
+    "OBJ_mean": "PASS",
+    "OBJ_minimax": "PASS",
+    "OBJ_coverage": "PASS",
+    "PARETO": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "SENSITIVITY": "PASS",
+    "EVALUATE": "PASS",
+    "ORDER": "PASS",
+    "DIGEST_SELECTED": "PASS",
+    "PARTIAL_NOT_OPTIMAL": "PASS"
+   },
+   "problems": [],
+   "notes": [
+    "synthetic pack: source_snapshot replaced by the BUILD's own value for the synthetic context"
+   ],
+   "evaluated": {
+    "build": 4,
+    "k10": 4,
+    "note": "counted differently by design (BUILD: 2^free masks; K10: subsets within max_selected)"
+   }
+  },
+  {
+   "pack_id": "synthetic-objectives-differ",
+   "kind": "synthetic",
+   "checks": {
+    "VALID": "PASS",
+    "STATUS": "PASS",
+    "OBJ_mean": "PASS",
+    "OBJ_minimax": "PASS",
+    "OBJ_coverage": "PASS",
+    "PARETO": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "SENSITIVITY": "PASS",
+    "EVALUATE": "PASS",
+    "ORDER": "PASS",
+    "DIGEST_SELECTED": "PASS",
+    "PARTIAL_NOT_OPTIMAL": "PASS"
+   },
+   "problems": [],
+   "notes": [
+    "synthetic pack: source_snapshot replaced by the BUILD's own value for the synthetic context"
+   ],
+   "evaluated": {
+    "build": 16,
+    "k10": 5,
+    "note": "counted differently by design (BUILD: 2^free masks; K10: subsets within max_selected)"
+   }
+  },
+  {
+   "pack_id": "synthetic-ties",
+   "kind": "synthetic",
+   "checks": {
+    "VALID": "PASS",
+    "STATUS": "PASS",
+    "OBJ_mean": "PASS",
+    "OBJ_minimax": "PASS",
+    "OBJ_coverage": "PASS",
+    "PARETO": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "SENSITIVITY": "PASS",
+    "EVALUATE": "PASS",
+    "ORDER": "PASS",
+    "DIGEST_SELECTED": "PASS",
+    "PARTIAL_NOT_OPTIMAL": "PASS"
+   },
+   "problems": [],
+   "notes": [
+    "synthetic pack: source_snapshot replaced by the BUILD's own value for the synthetic context"
+   ],
+   "evaluated": {
+    "build": 8,
+    "k10": 4,
+    "note": "counted differently by design (BUILD: 2^free masks; K10: subsets within max_selected)"
+   }
+  }
+ ]
+}

@@ -1,0 +1,502 @@
+{
+ "pack_format": "k10-plan-pack-v1",
+ "pack_id": "synthetic-minimax-tiebreak",
+ "kind": "synthetic",
+ "stage": 2,
+ "purpose": "equal max_mm: weighted sum decides minimax before cost",
+ "city_id": "synthetic-equator",
+ "category": "school",
+ "design": {
+  "hand_expectation": {
+   "mean": [
+    "X",
+    "Y"
+   ],
+   "minimax": [
+    "X",
+    "Y"
+   ],
+   "coverage": [
+    "X",
+    "Y"
+   ],
+   "pareto": [
+    [
+     0,
+     []
+    ],
+    [
+     1,
+     [
+      "Y"
+     ]
+    ],
+    [
+     2,
+     [
+      "X",
+      "Y"
+     ]
+    ]
+   ]
+  },
+  "why": "{X}: 2500/1500/2500 m (max 2500, cost 1); {X,Y}: 0/1000/2500 m (max 2500, cost 2, smaller sum)"
+ },
+ "synthetic_slice": {
+  "bbox": [
+   -0.01,
+   -0.01,
+   0.2,
+   0.01
+  ],
+  "source_snapshot": "synthetic:8e04c3da2d82d2e8c7521fa7f5cf1f31efed12c786fa65f4f7aff74a472c6f3c",
+  "records": [
+   {
+    "id": "src1",
+    "lon": 0.1798641,
+    "lat": 0.0,
+    "group": "school",
+    "name": "S",
+    "qa_flags": []
+   }
+  ],
+  "note": "SYNTHETIC geometry on the equator near 0°E; not Shymkent or Astana data"
+ },
+ "scenario": {
+  "schema_version": "city-plan-v2",
+  "city_id": "synthetic-equator",
+  "source_snapshot": "synthetic:8e04c3da2d82d2e8c7521fa7f5cf1f31efed12c786fa65f4f7aff74a472c6f3c",
+  "category": "school",
+  "control_points": [
+   {
+    "id": "P1",
+    "lon": 0.0,
+    "lat": 0.0,
+    "weight": 1
+   },
+   {
+    "id": "P2",
+    "lon": 0.0089932,
+    "lat": 0.0,
+    "weight": 1
+   },
+   {
+    "id": "P3",
+    "lon": 0.044966,
+    "lat": 0.0,
+    "weight": 1
+   }
+  ],
+  "candidates": [
+   {
+    "id": "X",
+    "lon": 0.022483,
+    "lat": 0.0,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 1
+   },
+   {
+    "id": "Y",
+    "lon": 0.0,
+    "lat": 0.0,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 1
+   }
+  ],
+  "budget": 10,
+  "max_selected": 2,
+  "coverage_radius_m": 300,
+  "required_ids": [],
+  "excluded_ids": [],
+  "selected_ids": []
+ },
+ "expected": {
+  "generated_by": "k10plan.oracle",
+  "metric_version": "haversine-mm-v1",
+  "validation": "accepted",
+  "problem_digest": "sha256:c8304a922d648e5ae3531e2cd0a32567e5307498fb43086df131178dca70d9e0",
+  "scenario_digest": "sha256:36ba99c1a4bb23b6735ae5a43386184b0565f53b18ab66a7d8d494acdc257bd9",
+  "optimize": {
+   "status": "optimal",
+   "metric_version": "haversine-mm-v1",
+   "problem_digest": "sha256:c8304a922d648e5ae3531e2cd0a32567e5307498fb43086df131178dca70d9e0",
+   "evaluated": 4,
+   "feasible_count": 4,
+   "candidate_count": 2,
+   "objectives": {
+    "mean": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 3499999,
+     "weighted_mean_mm": 1166666.3333333333,
+     "max_mm": 2499999,
+     "covered_weight": 1,
+     "coverage_fraction": 0.3333333333333333,
+     "cost": 2,
+     "selected_ids": [
+      "X",
+      "Y"
+     ]
+    },
+    "minimax": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 3499999,
+     "weighted_mean_mm": 1166666.3333333333,
+     "max_mm": 2499999,
+     "covered_weight": 1,
+     "coverage_fraction": 0.3333333333333333,
+     "cost": 2,
+     "selected_ids": [
+      "X",
+      "Y"
+     ]
+    },
+    "coverage": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 3499999,
+     "weighted_mean_mm": 1166666.3333333333,
+     "max_mm": 2499999,
+     "covered_weight": 1,
+     "coverage_fraction": 0.3333333333333333,
+     "cost": 2,
+     "selected_ids": [
+      "X",
+      "Y"
+     ]
+    }
+   },
+   "pareto": [
+    {
+     "cost": 0,
+     "weighted_sum_mm": 54000011,
+     "selected_ids": []
+    },
+    {
+     "cost": 1,
+     "weighted_sum_mm": 5999998,
+     "selected_ids": [
+      "Y"
+     ]
+    },
+    {
+     "cost": 2,
+     "weighted_sum_mm": 3499999,
+     "selected_ids": [
+      "X",
+      "Y"
+     ]
+    }
+   ],
+   "pareto_note": null,
+   "sensitivity": [
+    {
+     "budget": 0,
+     "status": "optimal",
+     "objectives": {
+      "mean": {
+       "selected_ids": [],
+       "cost": 0,
+       "weighted_sum_mm": 54000011,
+       "max_mm": 20000003,
+       "covered_weight": 0,
+       "unknown_count": 0
+      },
+      "minimax": {
+       "selected_ids": [],
+       "cost": 0,
+       "weighted_sum_mm": 54000011,
+       "max_mm": 20000003,
+       "covered_weight": 0,
+       "unknown_count": 0
+      },
+      "coverage": {
+       "selected_ids": [],
+       "cost": 0,
+       "weighted_sum_mm": 54000011,
+       "max_mm": 20000003,
+       "covered_weight": 0,
+       "unknown_count": 0
+      }
+     },
+     "infeasible_reasons": null
+    },
+    {
+     "budget": 5,
+     "status": "optimal",
+     "objectives": {
+      "mean": {
+       "selected_ids": [
+        "X",
+        "Y"
+       ],
+       "cost": 2,
+       "weighted_sum_mm": 3499999,
+       "max_mm": 2499999,
+       "covered_weight": 1,
+       "unknown_count": 0
+      },
+      "minimax": {
+       "selected_ids": [
+        "X",
+        "Y"
+       ],
+       "cost": 2,
+       "weighted_sum_mm": 3499999,
+       "max_mm": 2499999,
+       "covered_weight": 1,
+       "unknown_count": 0
+      },
+      "coverage": {
+       "selected_ids": [
+        "X",
+        "Y"
+       ],
+       "cost": 2,
+       "weighted_sum_mm": 3499999,
+       "max_mm": 2499999,
+       "covered_weight": 1,
+       "unknown_count": 0
+      }
+     },
+     "infeasible_reasons": null
+    },
+    {
+     "budget": 10,
+     "status": "optimal",
+     "objectives": {
+      "mean": {
+       "selected_ids": [
+        "X",
+        "Y"
+       ],
+       "cost": 2,
+       "weighted_sum_mm": 3499999,
+       "max_mm": 2499999,
+       "covered_weight": 1,
+       "unknown_count": 0
+      },
+      "minimax": {
+       "selected_ids": [
+        "X",
+        "Y"
+       ],
+       "cost": 2,
+       "weighted_sum_mm": 3499999,
+       "max_mm": 2499999,
+       "covered_weight": 1,
+       "unknown_count": 0
+      },
+      "coverage": {
+       "selected_ids": [
+        "X",
+        "Y"
+       ],
+       "cost": 2,
+       "weighted_sum_mm": 3499999,
+       "max_mm": 2499999,
+       "covered_weight": 1,
+       "unknown_count": 0
+      }
+     },
+     "infeasible_reasons": null
+    }
+   ]
+  },
+  "plan_refs": {
+   "manual": "(empty)",
+   "baseline": "(empty)",
+   "mean": "X+Y",
+   "minimax": "X+Y",
+   "coverage": "X+Y"
+  },
+  "plans": {
+   "(empty)": {
+    "rows": [
+     {
+      "control_point_id": "P1",
+      "weight": 1,
+      "before_mm": 20000003,
+      "nearest_before": {
+       "kind": "source",
+       "id": "src1"
+      },
+      "after_mm": 20000003,
+      "nearest_after": {
+       "kind": "source",
+       "id": "src1"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "src1"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "P2",
+      "weight": 1,
+      "before_mm": 19000003,
+      "nearest_before": {
+       "kind": "source",
+       "id": "src1"
+      },
+      "after_mm": 19000003,
+      "nearest_after": {
+       "kind": "source",
+       "id": "src1"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "src1"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "P3",
+      "weight": 1,
+      "before_mm": 15000005,
+      "nearest_before": {
+       "kind": "source",
+       "id": "src1"
+      },
+      "after_mm": 15000005,
+      "nearest_after": {
+       "kind": "source",
+       "id": "src1"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "src1"
+      ],
+      "nearest_before_qa_flags": []
+     }
+    ],
+    "metrics": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 54000011,
+     "weighted_mean_mm": 18000003.666666668,
+     "max_mm": 20000003,
+     "covered_weight": 0,
+     "coverage_fraction": 0.0,
+     "cost": 0,
+     "selected_ids": []
+    },
+    "feasibility": {
+     "feasible": true,
+     "reasons": []
+    },
+    "baseline_records_in_category": 1
+   },
+   "X+Y": {
+    "rows": [
+     {
+      "control_point_id": "P1",
+      "weight": 1,
+      "before_mm": 20000003,
+      "nearest_before": {
+       "kind": "source",
+       "id": "src1"
+      },
+      "after_mm": 0,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "Y"
+      },
+      "delta_mm": 20000003,
+      "tied_before_ids": [
+       "src1"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "P2",
+      "weight": 1,
+      "before_mm": 19000003,
+      "nearest_before": {
+       "kind": "source",
+       "id": "src1"
+      },
+      "after_mm": 1000000,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "Y"
+      },
+      "delta_mm": 18000003,
+      "tied_before_ids": [
+       "src1"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "P3",
+      "weight": 1,
+      "before_mm": 15000005,
+      "nearest_before": {
+       "kind": "source",
+       "id": "src1"
+      },
+      "after_mm": 2499999,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "X"
+      },
+      "delta_mm": 12500006,
+      "tied_before_ids": [
+       "src1"
+      ],
+      "nearest_before_qa_flags": []
+     }
+    ],
+    "metrics": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 3499999,
+     "weighted_mean_mm": 1166666.3333333333,
+     "max_mm": 2499999,
+     "covered_weight": 1,
+     "coverage_fraction": 0.3333333333333333,
+     "cost": 2,
+     "selected_ids": [
+      "X",
+      "Y"
+     ]
+    },
+    "feasibility": {
+     "feasible": true,
+     "reasons": []
+    },
+    "baseline_records_in_category": 1
+   }
+  }
+ },
+ "observations": {
+  "status": "optimal",
+  "evaluated": 4,
+  "feasible_count": 4,
+  "pareto_points": 3,
+  "winners": {
+   "mean": "X+Y",
+   "minimax": "X+Y",
+   "coverage": "X+Y"
+  },
+  "objectives_agree": true,
+  "distinct_winner_sets": 1,
+  "differing_pairs": [],
+  "sensitivity": [
+   {
+    "budget": 0,
+    "status": "optimal",
+    "mean": "(empty)"
+   },
+   {
+    "budget": 5,
+    "status": "optimal",
+    "mean": "X+Y"
+   },
+   {
+    "budget": 10,
+    "status": "optimal",
+    "mean": "X+Y"
+   }
+  ]
+ }
+}

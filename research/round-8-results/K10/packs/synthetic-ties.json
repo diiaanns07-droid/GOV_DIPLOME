@@ -3,7 +3,7 @@
  "pack_id": "synthetic-ties",
  "kind": "synthetic",
  "stage": 2,
- "purpose": "equal distances and equal plans: source beats hypothetical on ties, smaller id beats larger, equal (cost, sum) collapse to one Pareto point",
+ "purpose": "equal distances and equal plans: source beats hypothetical on ties even when the candidate id sorts first, smaller id beats larger, equal (cost, sum) collapse to one Pareto point, a point exactly at the radius is covered",
  "city_id": "synthetic-equator",
  "category": "school",
  "design": {
@@ -27,9 +27,11 @@
       "t1"
      ]
     ]
-   ]
+   ],
+   "mean_P4_after_mm": 500000,
+   "coverage_covered_weight": 3
   },
-  "why": "u sits on the sources and changes nothing; t1 and t2 are identical, t1 < t2"
+  "why": "a0 sits on the sources ('a0' < 's0', yet the source wins the tie) and changes nothing; t1 and t2 are identical, t1 < t2; with t1, P1, P2 (0 m) and P4 (500 m = radius) are covered"
  },
  "synthetic_slice": {
   "bbox": [
@@ -82,6 +84,12 @@
     "lon": 0.0269796,
     "lat": 0.0,
     "weight": 2
+   },
+   {
+    "id": "P4",
+    "lon": 0.02248300181862269,
+    "lat": 0.0,
+    "weight": 1
    }
   ],
   "candidates": [
@@ -102,7 +110,7 @@
     "cost": 50
    },
    {
-    "id": "u",
+    "id": "a0",
     "lon": 0.0,
     "lat": 0.0,
     "category": "school",
@@ -116,30 +124,30 @@
   "required_ids": [],
   "excluded_ids": [],
   "selected_ids": [
-   "u"
+   "a0"
   ]
  },
  "expected": {
   "generated_by": "k10plan.oracle",
   "metric_version": "haversine-mm-v1",
   "validation": "accepted",
-  "problem_digest": "sha256:2ea7191ecc66959769379ff4a4b852e43fb7c98296a07459f88a1f6391bd8c4a",
-  "scenario_digest": "sha256:cba7c27b43837812323a8e93b3a072d156675d14333b8fd57a1a9bc55dcaacf4",
+  "problem_digest": "sha256:43d06ccb2817d4de65417af78193be29abe7b07b7adad2c377d3620325286051",
+  "scenario_digest": "sha256:249f0b08752611c52d04058dcae8de6afdbbcb4265426277a137faafe54498c1",
   "optimize": {
    "status": "optimal",
    "metric_version": "haversine-mm-v1",
-   "problem_digest": "sha256:2ea7191ecc66959769379ff4a4b852e43fb7c98296a07459f88a1f6391bd8c4a",
+   "problem_digest": "sha256:43d06ccb2817d4de65417af78193be29abe7b07b7adad2c377d3620325286051",
    "evaluated": 4,
    "feasible_count": 4,
    "candidate_count": 3,
    "objectives": {
     "mean": {
      "unknown_count": 0,
-     "weighted_sum_mm": 2000000,
+     "weighted_sum_mm": 2500000,
      "weighted_mean_mm": 500000.0,
      "max_mm": 1000000,
-     "covered_weight": 2,
-     "coverage_fraction": 0.5,
+     "covered_weight": 3,
+     "coverage_fraction": 0.6,
      "cost": 50,
      "selected_ids": [
       "t1"
@@ -147,11 +155,11 @@
     },
     "minimax": {
      "unknown_count": 0,
-     "weighted_sum_mm": 2000000,
+     "weighted_sum_mm": 2500000,
      "weighted_mean_mm": 500000.0,
      "max_mm": 1000000,
-     "covered_weight": 2,
-     "coverage_fraction": 0.5,
+     "covered_weight": 3,
+     "coverage_fraction": 0.6,
      "cost": 50,
      "selected_ids": [
       "t1"
@@ -159,11 +167,11 @@
     },
     "coverage": {
      "unknown_count": 0,
-     "weighted_sum_mm": 2000000,
+     "weighted_sum_mm": 2500000,
      "weighted_mean_mm": 500000.0,
      "max_mm": 1000000,
-     "covered_weight": 2,
-     "coverage_fraction": 0.5,
+     "covered_weight": 3,
+     "coverage_fraction": 0.6,
      "cost": 50,
      "selected_ids": [
       "t1"
@@ -173,12 +181,12 @@
    "pareto": [
     {
      "cost": 0,
-     "weighted_sum_mm": 7999997,
+     "weighted_sum_mm": 10499996,
      "selected_ids": []
     },
     {
      "cost": 50,
-     "weighted_sum_mm": 2000000,
+     "weighted_sum_mm": 2500000,
      "selected_ids": [
       "t1"
      ]
@@ -193,7 +201,7 @@
       "mean": {
        "selected_ids": [],
        "cost": 0,
-       "weighted_sum_mm": 7999997,
+       "weighted_sum_mm": 10499996,
        "max_mm": 2999999,
        "covered_weight": 1,
        "unknown_count": 0
@@ -201,7 +209,7 @@
       "minimax": {
        "selected_ids": [],
        "cost": 0,
-       "weighted_sum_mm": 7999997,
+       "weighted_sum_mm": 10499996,
        "max_mm": 2999999,
        "covered_weight": 1,
        "unknown_count": 0
@@ -209,7 +217,7 @@
       "coverage": {
        "selected_ids": [],
        "cost": 0,
-       "weighted_sum_mm": 7999997,
+       "weighted_sum_mm": 10499996,
        "max_mm": 2999999,
        "covered_weight": 1,
        "unknown_count": 0
@@ -226,9 +234,9 @@
         "t1"
        ],
        "cost": 50,
-       "weighted_sum_mm": 2000000,
+       "weighted_sum_mm": 2500000,
        "max_mm": 1000000,
-       "covered_weight": 2,
+       "covered_weight": 3,
        "unknown_count": 0
       },
       "minimax": {
@@ -236,9 +244,9 @@
         "t1"
        ],
        "cost": 50,
-       "weighted_sum_mm": 2000000,
+       "weighted_sum_mm": 2500000,
        "max_mm": 1000000,
-       "covered_weight": 2,
+       "covered_weight": 3,
        "unknown_count": 0
       },
       "coverage": {
@@ -246,9 +254,9 @@
         "t1"
        ],
        "cost": 50,
-       "weighted_sum_mm": 2000000,
+       "weighted_sum_mm": 2500000,
        "max_mm": 1000000,
-       "covered_weight": 2,
+       "covered_weight": 3,
        "unknown_count": 0
       }
      },
@@ -263,9 +271,9 @@
         "t1"
        ],
        "cost": 50,
-       "weighted_sum_mm": 2000000,
+       "weighted_sum_mm": 2500000,
        "max_mm": 1000000,
-       "covered_weight": 2,
+       "covered_weight": 3,
        "unknown_count": 0
       },
       "minimax": {
@@ -273,9 +281,9 @@
         "t1"
        ],
        "cost": 50,
-       "weighted_sum_mm": 2000000,
+       "weighted_sum_mm": 2500000,
        "max_mm": 1000000,
-       "covered_weight": 2,
+       "covered_weight": 3,
        "unknown_count": 0
       },
       "coverage": {
@@ -283,9 +291,9 @@
         "t1"
        ],
        "cost": 50,
-       "weighted_sum_mm": 2000000,
+       "weighted_sum_mm": 2500000,
        "max_mm": 1000000,
-       "covered_weight": 2,
+       "covered_weight": 3,
        "unknown_count": 0
       }
      },
@@ -294,14 +302,14 @@
    ]
   },
   "plan_refs": {
-   "manual": "u",
+   "manual": "a0",
    "baseline": "(empty)",
    "mean": "t1",
    "minimax": "t1",
    "coverage": "t1"
   },
   "plans": {
-   "u": {
+   "a0": {
     "rows": [
      {
       "control_point_id": "P1",
@@ -362,18 +370,38 @@
        "s1"
       ],
       "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "P4",
+      "weight": 1,
+      "before_mm": 2499999,
+      "nearest_before": {
+       "kind": "source",
+       "id": "s0"
+      },
+      "after_mm": 2499999,
+      "nearest_after": {
+       "kind": "source",
+       "id": "s0"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "s0",
+       "s1"
+      ],
+      "nearest_before_qa_flags": []
      }
     ],
     "metrics": {
      "unknown_count": 0,
-     "weighted_sum_mm": 7999997,
-     "weighted_mean_mm": 1999999.25,
+     "weighted_sum_mm": 10499996,
+     "weighted_mean_mm": 2099999.2,
      "max_mm": 2999999,
      "covered_weight": 1,
-     "coverage_fraction": 0.25,
+     "coverage_fraction": 0.2,
      "cost": 10,
      "selected_ids": [
-      "u"
+      "a0"
      ]
     },
     "feasibility": {
@@ -443,15 +471,35 @@
        "s1"
       ],
       "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "P4",
+      "weight": 1,
+      "before_mm": 2499999,
+      "nearest_before": {
+       "kind": "source",
+       "id": "s0"
+      },
+      "after_mm": 2499999,
+      "nearest_after": {
+       "kind": "source",
+       "id": "s0"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "s0",
+       "s1"
+      ],
+      "nearest_before_qa_flags": []
      }
     ],
     "metrics": {
      "unknown_count": 0,
-     "weighted_sum_mm": 7999997,
-     "weighted_mean_mm": 1999999.25,
+     "weighted_sum_mm": 10499996,
+     "weighted_mean_mm": 2099999.2,
      "max_mm": 2999999,
      "covered_weight": 1,
-     "coverage_fraction": 0.25,
+     "coverage_fraction": 0.2,
      "cost": 0,
      "selected_ids": []
     },
@@ -522,15 +570,35 @@
        "s1"
       ],
       "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "P4",
+      "weight": 1,
+      "before_mm": 2499999,
+      "nearest_before": {
+       "kind": "source",
+       "id": "s0"
+      },
+      "after_mm": 500000,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "t1"
+      },
+      "delta_mm": 1999999,
+      "tied_before_ids": [
+       "s0",
+       "s1"
+      ],
+      "nearest_before_qa_flags": []
      }
     ],
     "metrics": {
      "unknown_count": 0,
-     "weighted_sum_mm": 2000000,
+     "weighted_sum_mm": 2500000,
      "weighted_mean_mm": 500000.0,
      "max_mm": 1000000,
-     "covered_weight": 2,
-     "coverage_fraction": 0.5,
+     "covered_weight": 3,
+     "coverage_fraction": 0.6,
      "cost": 50,
      "selected_ids": [
       "t1"

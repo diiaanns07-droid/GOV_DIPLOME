@@ -16,6 +16,7 @@
   "costs": "SYNTHETIC conditional units: candidate k cost = 100 + 50*((5*k) mod 7); not tenge, not an estimate",
   "base": "budget 700, max_selected 3, coverage_radius_m 400 (analysis parameter, not a walking norm), required [], excluded [], selected_ids [c06, c07] (the two candidates nearest the bbox centre)",
   "tight_budget": "base, budget = smallest candidate cost",
+  "zero_budget": "base, budget 0 (manual selection c06+c07 stays in the file and is reported as over budget)",
   "required_excluded": "base, required [c12] (fixed corner candidate), excluded = ids of the base 'mean' winner minus c12",
   "conflict_budget": "base, required = the two most expensive candidates (ties: smaller id), budget = their cost sum - 1",
   "conflict_count": "base, required [c01,c02,c03,c04], max_selected 3, budget 1000000 (only the count conflicts)",
@@ -35,7 +36,7 @@
    "distinct_winner_sets": 1,
    "infeasible_reasons": null,
    "pareto_points": 7,
-   "sha256": "330a0cc90d4e28db9d5c0457c7d5c02ed783e4d277e3d91fad0e3346a5c4bb9d"
+   "sha256": "7142b54ed27ba542d86921d726ee82c86c46557e5f1bb7181da5ae7fc929366a"
   },
   {
    "pack_id": "shymkent-school-tight-budget",
@@ -47,7 +48,19 @@
    "distinct_winner_sets": 1,
    "infeasible_reasons": null,
    "pareto_points": 2,
-   "sha256": "e5a675a66a96a878681560d7b482514a2257462779eeec61b5defca7d236860d"
+   "sha256": "ca1e4221fc7984df6b699380d319bf1302f0531b592d33ea1f873ba23d7b6cbe"
+  },
+  {
+   "pack_id": "shymkent-school-zero-budget",
+   "kind": "real_slice",
+   "stage": 2,
+   "purpose": "budget 0: only the empty plan is allowed; sensitivity has one budget",
+   "status": "optimal",
+   "objectives_agree": true,
+   "distinct_winner_sets": 1,
+   "infeasible_reasons": null,
+   "pareto_points": 1,
+   "sha256": "66d810719ed34126580b5282999bcf84757e559aab3ab6d4df1349f0381a77a3"
   },
   {
    "pack_id": "shymkent-school-required-excluded",
@@ -59,7 +72,7 @@
    "distinct_winner_sets": 2,
    "infeasible_reasons": null,
    "pareto_points": 4,
-   "sha256": "3bdcb746fa837bf330716d5e59f5c14fead5191d06227c96934400d041e01858"
+   "sha256": "b779dbb5470faadedab008b72729ea114711ad26287a08125219d30c5ce5b27c"
   },
   {
    "pack_id": "shymkent-school-conflict-budget",
@@ -73,7 +86,7 @@
     "required_cost_exceeds_budget"
    ],
    "pareto_points": 0,
-   "sha256": "c599c3bf83554509073408d5531a5c3e7ea5a6445f8f882d4a5e19b175f9fd7f"
+   "sha256": "cf5eb9d6502f4510a5f12c4135b3d12d5f1bdc23f9c87cbc4cfc8632cc788b80"
   },
   {
    "pack_id": "shymkent-school-conflict-count",
@@ -87,7 +100,7 @@
     "required_count_exceeds_max_selected"
    ],
    "pareto_points": 0,
-   "sha256": "9c9ff43b6f103b1ac2a9cb8dfa43947cb6a1494d563368e581d47ff1aa19551c"
+   "sha256": "f889e3f724550023e8e6c2467fc144b4550d1c623ce4e3d3b46717800085866d"
   },
   {
    "pack_id": "shymkent-school-seeded",
@@ -99,7 +112,7 @@
    "distinct_winner_sets": 1,
    "infeasible_reasons": null,
    "pareto_points": 7,
-   "sha256": "62e36d0b351f7bc6bd11b3f5e68509e01549aabc750c7b0dafb984160396ab81"
+   "sha256": "7923476d16a7d5b3d5e6a4fbd5433396fc4e76c1e257b4c91577b3f7a9715ffc"
   },
   {
    "pack_id": "shymkent-school-qa-nearest",
@@ -111,7 +124,7 @@
    "distinct_winner_sets": 1,
    "infeasible_reasons": null,
    "pareto_points": 7,
-   "sha256": "ae4b41d7fa507309f3935301f947f8beb0376872ede8542fa340ac38b8f6a44c"
+   "sha256": "ca191156015b390d1a44d9c40689095e16d2c64a5ac4c81e34ca78437b185585"
   },
   {
    "pack_id": "shymkent-outpatient_clinic-base",
@@ -123,7 +136,7 @@
    "distinct_winner_sets": 2,
    "infeasible_reasons": null,
    "pareto_points": 10,
-   "sha256": "a99a6c3bf309425eb0d1557b8a952ef8b116a9f1246acc8b3ee0f438e9a51b6b"
+   "sha256": "418e7e62453166401a003502bf60479b336f3ff3ad05c58f52d8aa59e526e049"
   },
   {
    "pack_id": "shymkent-outpatient_clinic-tight-budget",
@@ -135,7 +148,19 @@
    "distinct_winner_sets": 1,
    "infeasible_reasons": null,
    "pareto_points": 1,
-   "sha256": "a4a2a1700c45142b3dcb638c5e72e5f96695b1248382e5c5ad68f4bfa2cfdf74"
+   "sha256": "0902558d98c8c107c9e7da3abc867e17268b807571c77ab32f2b6ff4ad6f9809"
+  },
+  {
+   "pack_id": "shymkent-outpatient_clinic-zero-budget",
+   "kind": "real_slice",
+   "stage": 2,
+   "purpose": "budget 0: only the empty plan is allowed; sensitivity has one budget",
+   "status": "optimal",
+   "objectives_agree": true,
+   "distinct_winner_sets": 1,
+   "infeasible_reasons": null,
+   "pareto_points": 1,
+   "sha256": "a5e237ee95ec38b31f9131b29f41a17de89c49b8c883c6b69c8cb3390bee157a"
   },
   {
    "pack_id": "shymkent-outpatient_clinic-required-excluded",
@@ -147,7 +172,7 @@
    "distinct_winner_sets": 1,
    "infeasible_reasons": null,
    "pareto_points": 4,
-   "sha256": "ec084c2c68770bc0c813e0776f05fc64d63eb99af85cfca8ca3f81f0eb3c279d"
+   "sha256": "1dfcf285321ede8cf987d11fcaceee29479e83c540df32cbfc1de4d21e7ae35f"
   },
   {
    "pack_id": "shymkent-outpatient_clinic-conflict-budget",
@@ -161,7 +186,7 @@
     "required_cost_exceeds_budget"
    ],
    "pareto_points": 0,
-   "sha256": "00e48d0deaae0d02aaee3e9c646c9c84eb8cde7b9c119f7d6eff2986c8803d06"
+   "sha256": "1fcf135912fd0869c9d3e9b9020c136df05bf6cbfa7352bde88de349080af38d"
   },
   {
    "pack_id": "shymkent-outpatient_clinic-conflict-count",
@@ -175,7 +200,7 @@
     "required_count_exceeds_max_selected"
    ],
    "pareto_points": 0,
-   "sha256": "868187acfb3bc50bc64fa3c39ac6ac3c6fec8ab832dcf2065f514fe4f708b788"
+   "sha256": "320410c0f3c7ff2c0e42e68d0a582276363d9c347860c73fb9c1341e35789b94"
   },
   {
    "pack_id": "shymkent-outpatient_clinic-seeded",
@@ -187,7 +212,7 @@
    "distinct_winner_sets": 1,
    "infeasible_reasons": null,
    "pareto_points": 13,
-   "sha256": "a66ae63e1118ae7b3af7dcf170710b4a9275d96536d52f79cf0e130adc413fcc"
+   "sha256": "39b8ff8e07ef3843c07435946f5821c54c3cc3b59ffe8b4b433e332b30bdd398"
   },
   {
    "pack_id": "shymkent-outpatient_clinic-qa-nearest",
@@ -199,7 +224,7 @@
    "distinct_winner_sets": 2,
    "infeasible_reasons": null,
    "pareto_points": 10,
-   "sha256": "1786f4032ae40bcb1947a3d062612edf61afc2df17e3e452eec0a02b488edf0a"
+   "sha256": "93465b3a6bbf0c4cfef56956afece88bc6fc4be55d5538c7077f4cc32b3b8960"
   },
   {
    "pack_id": "astana-school-base",
@@ -211,7 +236,7 @@
    "distinct_winner_sets": 3,
    "infeasible_reasons": null,
    "pareto_points": 6,
-   "sha256": "e12c700cb8d18d8e51e8d0aedb37b2f729f4ec0d8bac6085d37b25aab14cdf2e"
+   "sha256": "4a7c90b09397cec668f54e40d093069e18cc7fa67dafd52e70e8ba39ca2323ac"
   },
   {
    "pack_id": "astana-school-tight-budget",
@@ -223,7 +248,19 @@
    "distinct_winner_sets": 1,
    "infeasible_reasons": null,
    "pareto_points": 2,
-   "sha256": "0ab775bedb311d1d1a2de26a61f6ad1f532a602112e6316c661362dfd06fcb0d"
+   "sha256": "337d71405d35c6a9eecd14229dbac03e7d459388639c8b9a7de103e18b478edf"
+  },
+  {
+   "pack_id": "astana-school-zero-budget",
+   "kind": "real_slice",
+   "stage": 2,
+   "purpose": "budget 0: only the empty plan is allowed; sensitivity has one budget",
+   "status": "optimal",
+   "objectives_agree": true,
+   "distinct_winner_sets": 1,
+   "infeasible_reasons": null,
+   "pareto_points": 1,
+   "sha256": "19c0b1e79ee477a97303cc94cb07a25c627c92aed5e08f14bcda92cf69a6adca"
   },
   {
    "pack_id": "astana-school-required-excluded",
@@ -235,7 +272,7 @@
    "distinct_winner_sets": 2,
    "infeasible_reasons": null,
    "pareto_points": 5,
-   "sha256": "2d27a70274b69936965dafee9e34f93da85518d1da7a62b8e7f83665d754f3f2"
+   "sha256": "2010562f091fc6993a1149961037e294755c45576f894ba7649194efd8d8c746"
   },
   {
    "pack_id": "astana-school-conflict-budget",
@@ -249,7 +286,7 @@
     "required_cost_exceeds_budget"
    ],
    "pareto_points": 0,
-   "sha256": "f5f470121e010d3efe98684eb132fb867265ce0734bffeacf2f1745b92e9c56c"
+   "sha256": "9ae7412a4644048049c8c1d94190caf5578c7ffe36071b83c68135b7a06226e3"
   },
   {
    "pack_id": "astana-school-conflict-count",
@@ -263,7 +300,7 @@
     "required_count_exceeds_max_selected"
    ],
    "pareto_points": 0,
-   "sha256": "6e8ae58e6245ff2e5f4aba6e063d122be61977f1a1ab2cfc29e3ba22f57764d0"
+   "sha256": "516897520400b956d7d652e8c463becf4b61e58208b7de09f8aa1a4449f9e3a6"
   },
   {
    "pack_id": "astana-school-seeded",
@@ -275,7 +312,7 @@
    "distinct_winner_sets": 3,
    "infeasible_reasons": null,
    "pareto_points": 14,
-   "sha256": "14cf6356802afe2e9dbb5a79de6e47f3a2caae35b0b254e29875bcc0b20a85d5"
+   "sha256": "1948fb966da5823a47adb59867371f943160f92d7bed7994d4a049cafab1dd2e"
   },
   {
    "pack_id": "astana-outpatient_clinic-base",
@@ -287,7 +324,7 @@
    "distinct_winner_sets": 2,
    "infeasible_reasons": null,
    "pareto_points": 9,
-   "sha256": "e8220dec32ec574bbad390e96ec0d8e8812da80464320fbc671da536fe51396b"
+   "sha256": "5802e18adfaeb0982be051b52cf8c7d50a89d3eceea36ec2b5e8256d5c6e7db2"
   },
   {
    "pack_id": "astana-outpatient_clinic-tight-budget",
@@ -299,7 +336,19 @@
    "distinct_winner_sets": 1,
    "infeasible_reasons": null,
    "pareto_points": 2,
-   "sha256": "ce14adec295c0a91947906bcc3416fa48ef3b3dae7bc5ac1ca12a9c885357f54"
+   "sha256": "cafb7ee8354c247c4fb4036d8fa512dbee1f5e6b635eb06517d2d9af8795f406"
+  },
+  {
+   "pack_id": "astana-outpatient_clinic-zero-budget",
+   "kind": "real_slice",
+   "stage": 2,
+   "purpose": "budget 0: only the empty plan is allowed; sensitivity has one budget",
+   "status": "optimal",
+   "objectives_agree": true,
+   "distinct_winner_sets": 1,
+   "infeasible_reasons": null,
+   "pareto_points": 1,
+   "sha256": "fd5cb5bd5c440e767f50e807e8e673a19612a0450a6464ad226220772b35de55"
   },
   {
    "pack_id": "astana-outpatient_clinic-required-excluded",
@@ -311,7 +360,7 @@
    "distinct_winner_sets": 2,
    "infeasible_reasons": null,
    "pareto_points": 5,
-   "sha256": "1916bdd4ce2945e5f45b31e26e45b222402809eb847c653cfdf922195eeb2afc"
+   "sha256": "0588dd1418f337ec875d2cb3efd6cb9424802ffd47671296b32129f5b5d981db"
   },
   {
    "pack_id": "astana-outpatient_clinic-conflict-budget",
@@ -325,7 +374,7 @@
     "required_cost_exceeds_budget"
    ],
    "pareto_points": 0,
-   "sha256": "b61892c272ca9e520de8caf9da3ef3c94842c56b0a8e703c1e77f9819e6b3913"
+   "sha256": "f369e70cf9b03b4206e9384379a252cf933bde8d09ccbfca72cf0f5ffe0e5c44"
   },
   {
    "pack_id": "astana-outpatient_clinic-conflict-count",
@@ -339,7 +388,7 @@
     "required_count_exceeds_max_selected"
    ],
    "pareto_points": 0,
-   "sha256": "4991e16198eca7bf953528cb891f1a896ddca8c35fd80c4a88197a2ef87ca201"
+   "sha256": "969175a6cacb9d3f9a4cc4985b7f16a7ec6683eaa41abce6daf048f8d382edd8"
   },
   {
    "pack_id": "astana-outpatient_clinic-seeded",
@@ -351,7 +400,7 @@
    "distinct_winner_sets": 2,
    "infeasible_reasons": null,
    "pareto_points": 13,
-   "sha256": "bfbea7ea6ddcd6d0b76842877236a569b3cf3eae857eff9018762e2188037f8c"
+   "sha256": "4cd095336b6b06ac41c11dbfa058f53e9edaff5ea6029f40ac67c9ea55c484a9"
   },
   {
    "pack_id": "shymkent-school-invalid-inputs",
@@ -363,7 +412,7 @@
    "distinct_winner_sets": null,
    "infeasible_reasons": null,
    "pareto_points": null,
-   "sha256": "ecfde013cfa278e9c6f07c5844ff46282e3a83325a02600a06f8979805148e16"
+   "sha256": "9b977f690da47ca5c91316ee585bed40c75a938a1aba901083da069c26b8b7f9"
   },
   {
    "pack_id": "astana-school-invalid-inputs",
@@ -375,7 +424,7 @@
    "distinct_winner_sets": null,
    "infeasible_reasons": null,
    "pareto_points": null,
-   "sha256": "38ed7e11458090df9996f53159556fb7c574472014e11a870c428ab7293bd444"
+   "sha256": "df8eb31ff888c0b802d748b0af683e159474e12d9c1dc08d0a4ffb9f0a271095"
   },
   {
    "pack_id": "synthetic-objectives-differ",
@@ -405,13 +454,37 @@
    "pack_id": "synthetic-ties",
    "kind": "synthetic",
    "stage": 2,
-   "purpose": "equal distances and equal plans: source beats hypothetical on ties, smaller id beats larger, equal (cost, sum) collapse to one Pareto point",
+   "purpose": "equal distances and equal plans: source beats hypothetical on ties even when the candidate id sorts first, smaller id beats larger, equal (cost, sum) collapse to one Pareto point, a point exactly at the radius is covered",
    "status": "optimal",
    "objectives_agree": true,
    "distinct_winner_sets": 1,
    "infeasible_reasons": null,
    "pareto_points": 2,
-   "sha256": "e467bb97f042836a8664576a60c34f72dc5e9825e998c34c9001d2f750f7ac33"
+   "sha256": "bc9761ae7bccbf847dd217a9de33b20f91c47cf2ec324f7e20d02f82b5d7b749"
+  },
+  {
+   "pack_id": "synthetic-mean-tiebreak",
+   "kind": "synthetic",
+   "stage": 2,
+   "purpose": "equal weighted sum: max_mm decides before cost; the mean winner need not be on the cost/sum Pareto front",
+   "status": "optimal",
+   "objectives_agree": false,
+   "distinct_winner_sets": 2,
+   "infeasible_reasons": null,
+   "pareto_points": 2,
+   "sha256": "8039dec6abffaaee9379c1eaa941aac13109803a5f83f0285b9e8297571ebf8b"
+  },
+  {
+   "pack_id": "synthetic-minimax-tiebreak",
+   "kind": "synthetic",
+   "stage": 2,
+   "purpose": "equal max_mm: weighted sum decides minimax before cost",
+   "status": "optimal",
+   "objectives_agree": true,
+   "distinct_winner_sets": 1,
+   "infeasible_reasons": null,
+   "pareto_points": 3,
+   "sha256": "0774a8543dbe470c274c0af9aaa888eafbf7596613bf1f029a563149c6e6965d"
   }
  ],
  "not_built": [
@@ -430,6 +503,7 @@
   "web/evidence.js": "df736e986145da33dee60f692e020486720b72db5b6116af31640cc8693b11b9",
   "web/whatif.js": "944adfa63500d9bc13b3da859cf4a56a3d3e3f92fa0f565ed655bedfb81d8f2f",
   "web/facts.js": "3994a275ddb8c0cb857478365d94810a945752a96fff10d53d37bc8dc9808c64",
+  "web/plan.js": null,
   "inputs/k10/data/shymkent/places_social.geojson": "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7",
   "inputs/k10/data/astana/places_social.geojson": "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343",
   "inputs/k10/package_manifest.json": "0616c08b65285ed4a5324c9e0238a31bec004857705cdb22c6b26e032fa4551d"
