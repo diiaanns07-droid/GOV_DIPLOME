@@ -6,43 +6,40 @@
 | Ветка | `claude/save-work-handoff-j7pc05` |
 | Задание и снимки | `origin/codex/research-import-2026-10-05` @ `2883aeb6eb68babc9b346b0aa927d4c633f5163d` |
 | Проверяемый BUILD | `claude/beautiful-clarke-sbzomj` @ `0bf27deb8549b325b34a9610402613d745544edb`, `prototypes/city-evidence/` |
-| Статус | **partial**, checkpoint 1: генератор флагов, раннер проверок и фикстуры готовы. UI-тест (Playwright) и влияние на выбор квадрата — следующий шаг |
+| Прочие входы | собственные файлы K10 этой ветки: `research/round-3-results/K10/selection/*_bbox_selection.json`, `research/next-round/K10/samples/*_districts_overture.geojson`, `research/next-round/K10/provenance/raw_extracts.sha256` |
+| Статус | **done** для заданного объёма. Исправлений нет (не FIXED): только флаги, тесты и предложения |
 | Пути | только `research/round-5-results/K10/` |
 
 ## Сделано
 
-- **`tools/extract_build.py --sha --out`** — побайтное извлечение `prototypes/city-evidence` из коммита. Каждый файл сверяется с id git-объекта. Для 0bf27de: 57 файлов.
-- **`tools/qa_flags.py --app-root | --url`** — детерминированный `qa_flags.json`. Правила:
-  - `COORD_EXACT_GROUP` — несколько записей в одной точке;
-  - `COORD_NEAR_GROUP` — записи ближе 2 м, но не в одной точке;
-  - `GROUP_ADDRESS_DIVERGENT` — в одной точке разные адреса;
-  - `COORD_LOW_PRECISION` — не больше 4 знаков после запятой;
-  - `ADDRESS_EMAIL_LIKE` — e-mail вместо адреса (значение не копируется);
-  - `ADDRESS_CITY_OR_COUNTRY_ONLY` — адрес состоит только из города или страны;
-  - `OUTSIDE_BBOX`, `ID_*`, `COORD_CHANGED_IN_UI`.
+- `tools/extract_build.py` — извлечение сборки по SHA с проверкой id git-объектов.
+- `tools/qa_flags.py --app-root | --url` → `results/qa_flags_0bf27de.json` (и `…_url_mode.json`), детерминированный.
+- `tests/run_qa.py --app-root | --url` — проверки MUST и SHOULD, JSON-отчёт, код выхода 1 при падении MUST.
+- `tests/ui_coord_group.cjs --app-root | --url` — Playwright-тест группы из 10 записей.
+- `tools/selection_impact.py` — граничная проверка и точный пересчёт выбора квадрата при `--raw-dir`.
+- `fixtures/ui_coord_group_shymkent.json` (реальная группа) и `fixtures/ui_coord_group_synthetic.json` (SYNTHETIC).
+- `REVIEW.md` — находки, таблицы, предложения для BUILD, команды повтора.
 
-  Флаг означает «проверить», а не «удалить». Категории не переименовываются, полнота не оценивается.
-- **`tests/run_qa.py --app-root | --url`** — проверки уровня MUST (код выхода 1 при падении) и SHOULD (предложение ревью; на baseline ожидаемо FAIL).
-- **Фикстуры:**
-  - `fixtures/ui_coord_group_shymkent.json` — группа из 10 записей Шымкента, реальные ID;
-  - `fixtures/ui_coord_group_synthetic.json` — 3 записи, SYNTHETIC.
+## Реально выполненные проверки (на 0bf27de)
 
-## Результаты на 0bf27de (baseline)
-
-- **Шымкент:** 6 групп с одинаковой координатой, 22 записи. Главная — 10 записей в точке (69.5958, 42.3167) с 8 разными непустыми адресами, у всех 4 знака после запятой. Ещё кластер из 6 записей в двух точках на расстоянии 1,11 м (69.60702, 42.31757/58).
-- **Астана:** 3 пары, 6 записей.
-- **Все группы внутри bbox квадрата.**
-- **Все исходные ID сохранены:** места 55/55 и 65/65, сегменты 1 084/1 084 и 1 326/1 326; лишних нет, дубликатов нет; координаты не сдвинуты.
-- **`run_qa.py`, `--app-root`:** 11 MUST PASS, 1 SHOULD FAIL (`SHOULD_data_exposes_coord_group_flag`, ожидаемо).
-- **`run_qa.py`, `--url`** (локальный `serve.py` извлечённой копии): 7 MUST PASS, 1 INFO, тот же SHOULD FAIL.
-- **Детерминированность:** два прогона `qa_flags.py` побайтно равны (sha256 `b32b06a1…`).
+- **`extract_build.py`:** 57 файлов, id git-объектов совпали.
+- **`qa_flags.py --app-root`:** два прогона дали побайтно одинаковый результат (sha256 `b32b06a1…`).
+- **`qa_flags.py --url`** (локальный `serve.py` извлечённой копии): те же числа флагов.
+- **`run_qa.py --app-root`:** 11 MUST PASS, `SHOULD_data_exposes_coord_group_flag` FAIL (ожидаемо).
+- **`run_qa.py --url`:** 7 MUST PASS, 1 INFO, тот же SHOULD FAIL.
+- **`ui_coord_group.cjs --app-root` и `--url`** (Node 22, Playwright Chromium): 4 MUST PASS, 2 SHOULD FAIL (ожидаемо): с карты достижима 1 из 10 записей группы, обозначения группы нет.
+- **`selection_impact.py`:** граничная проверка выполнена. Точный пересчёт на сырых выгрузках раунда 2 тоже, их SHA совпали с закоммиченными:
+  - Шымкент: V0–V3 — тот же квадрат, V4 — другой (33 против 34);
+  - Астана: во всех вариантах тот же квадрат.
 
 ## Ограничения
 
-- Правило `GROUP_ADDRESS_DIVERGENT` срабатывает на русский и казахский варианты одного адреса: в Астане «проспект Абая 50» и «Абай даңғылы 50». Это шум правила, а не вывод о неправильном адресе.
-- «Плейсхолдер геокодирования» — гипотеза. Источник Meta этого не сообщает.
+- **Сырые выгрузки раунда 2 не закоммичены.** Точный пересчёт выбора повторяется только при их наличии; граничная проверка работает без них.
+- **Гипотеза о точке-заглушке.** «101 запись любых категорий в точке 69.5958, 42.3167» подсказывает условное геокодирование, но источник Meta этого не подтверждает.
+- **Шум правила адресов.** `GROUP_ADDRESS_DIVERGENT` считает русский и казахский варианты одного адреса разными.
+- **Только Linux.** UI проверялся в headless Chromium. Карточку с e-mail в адресе я проверял по коду, без скриншота.
 
 ## Следующий шаг
 
-1. Playwright-тест UI-группы (`--app-root` / `--url`).
-2. Влияние групп на выбор квадрата: варианты счёта на сырых выгрузках раунда 2, SHA которых закоммичены.
+1. BUILD при желании реализует предложения 1–3 из REVIEW.md.
+2. Затем любой агент повторяет команды из раздела 6 REVIEW.md на новом SHA и сравнивает с `results/*_0bf27de*.json`.

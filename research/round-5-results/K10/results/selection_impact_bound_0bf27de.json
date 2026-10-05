@@ -1,0 +1,90 @@
+{
+ "bound_check": {
+  "astana": {
+   "note": "False = not provable from the square alone; see exact recount",
+   "original_runner_up": {
+    "bbox": [
+     71.418372,
+     51.127101,
+     71.447,
+     51.145067
+    ],
+    "col": 7,
+    "row": 15,
+    "social_places": 60
+   },
+   "selected_cell": {
+    "bbox": [
+     71.418372,
+     51.163033,
+     71.447,
+     51.181
+    ],
+    "col": 7,
+    "row": 17,
+    "social_places": 65
+   },
+   "selected_cell_count_by_variant": {
+    "V0_all": 65,
+    "V1_one_per_exact_coordinate": 62,
+    "V2_one_per_2m_cluster": 62,
+    "V3_drop_exact_groups_ge3": 65,
+    "V4_drop_all_exact_group_members": 59
+   },
+   "selection_unchanged_proven_without_raw": {
+    "V0_all": true,
+    "V1_one_per_exact_coordinate": true,
+    "V2_one_per_2m_cluster": true,
+    "V3_drop_exact_groups_ge3": true,
+    "V4_drop_all_exact_group_members": false
+   }
+  },
+  "shymkent": {
+   "note": "False = not provable from the square alone; see exact recount",
+   "original_runner_up": {
+    "bbox": [
+     69.569072,
+     42.306645,
+     69.593365,
+     42.324611
+    ],
+    "col": 11,
+    "row": 11,
+    "social_places": 34
+   },
+   "selected_cell": {
+    "bbox": [
+     69.593365,
+     42.306645,
+     69.617658,
+     42.324611
+    ],
+    "col": 12,
+    "row": 11,
+    "social_places": 55
+   },
+   "selected_cell_count_by_variant": {
+    "V0_all": 55,
+    "V1_one_per_exact_coordinate": 39,
+    "V2_one_per_2m_cluster": 38,
+    "V3_drop_exact_groups_ge3": 41,
+    "V4_drop_all_exact_group_members": 33
+   },
+   "selection_unchanged_proven_without_raw": {
+    "V0_all": true,
+    "V1_one_per_exact_coordinate": true,
+    "V2_one_per_2m_cluster": true,
+    "V3_drop_exact_groups_ge3": true,
+    "V4_drop_all_exact_group_members": false
+   }
+  }
+ },
+ "tool": "research/round-5-results/K10/tools/selection_impact.py",
+ "variants": [
+  "V0_all",
+  "V1_one_per_exact_coordinate",
+  "V2_one_per_2m_cluster",
+  "V3_drop_exact_groups_ge3",
+  "V4_drop_all_exact_group_members"
+ ]
+}

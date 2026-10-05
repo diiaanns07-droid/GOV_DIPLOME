@@ -1,0 +1,280 @@
+{
+ "bound_check": {
+  "astana": {
+   "note": "False = not provable from the square alone; see exact recount",
+   "original_runner_up": {
+    "bbox": [
+     71.418372,
+     51.127101,
+     71.447,
+     51.145067
+    ],
+    "col": 7,
+    "row": 15,
+    "social_places": 60
+   },
+   "selected_cell": {
+    "bbox": [
+     71.418372,
+     51.163033,
+     71.447,
+     51.181
+    ],
+    "col": 7,
+    "row": 17,
+    "social_places": 65
+   },
+   "selected_cell_count_by_variant": {
+    "V0_all": 65,
+    "V1_one_per_exact_coordinate": 62,
+    "V2_one_per_2m_cluster": 62,
+    "V3_drop_exact_groups_ge3": 65,
+    "V4_drop_all_exact_group_members": 59
+   },
+   "selection_unchanged_proven_without_raw": {
+    "V0_all": true,
+    "V1_one_per_exact_coordinate": true,
+    "V2_one_per_2m_cluster": true,
+    "V3_drop_exact_groups_ge3": true,
+    "V4_drop_all_exact_group_members": false
+   }
+  },
+  "shymkent": {
+   "note": "False = not provable from the square alone; see exact recount",
+   "original_runner_up": {
+    "bbox": [
+     69.569072,
+     42.306645,
+     69.593365,
+     42.324611
+    ],
+    "col": 11,
+    "row": 11,
+    "social_places": 34
+   },
+   "selected_cell": {
+    "bbox": [
+     69.593365,
+     42.306645,
+     69.617658,
+     42.324611
+    ],
+    "col": 12,
+    "row": 11,
+    "social_places": 55
+   },
+   "selected_cell_count_by_variant": {
+    "V0_all": 55,
+    "V1_one_per_exact_coordinate": 39,
+    "V2_one_per_2m_cluster": 38,
+    "V3_drop_exact_groups_ge3": 41,
+    "V4_drop_all_exact_group_members": 33
+   },
+   "selection_unchanged_proven_without_raw": {
+    "V0_all": true,
+    "V1_one_per_exact_coordinate": true,
+    "V2_one_per_2m_cluster": true,
+    "V3_drop_exact_groups_ge3": true,
+    "V4_drop_all_exact_group_members": false
+   }
+  }
+ },
+ "exact_recount": {
+  "astana": {
+   "cells_fully_inside_city": 144,
+   "largest_exact_groups_city_bbox": [
+    {
+     "inside_selected_square": false,
+     "lat": 51.1276363,
+     "lon": 71.4275864,
+     "records_any_category_at_point": 118,
+     "social_records": 6
+    },
+    {
+     "inside_selected_square": false,
+     "lat": 51.16692,
+     "lon": 71.46434,
+     "records_any_category_at_point": 236,
+     "social_records": 6
+    },
+    {
+     "inside_selected_square": false,
+     "lat": 51.1811,
+     "lon": 71.4278,
+     "records_any_category_at_point": 158,
+     "social_records": 5
+    }
+   ],
+   "raw_sha256": "13ffb95dbf8ec06f3ee057452a42937023a3483817692ff0ee28a243a3ff66e2",
+   "variants": {
+    "V0_all": {
+     "runner_up": {
+      "col": 7,
+      "count": 60,
+      "row": 15
+     },
+     "same_as_round3_selection": true,
+     "winner": {
+      "col": 7,
+      "count": 65,
+      "row": 17
+     }
+    },
+    "V1_one_per_exact_coordinate": {
+     "runner_up": {
+      "col": 7,
+      "count": 52,
+      "row": 14
+     },
+     "same_as_round3_selection": true,
+     "winner": {
+      "col": 7,
+      "count": 62,
+      "row": 17
+     }
+    },
+    "V2_one_per_2m_cluster": {
+     "runner_up": {
+      "col": 7,
+      "count": 52,
+      "row": 14
+     },
+     "same_as_round3_selection": true,
+     "winner": {
+      "col": 7,
+      "count": 62,
+      "row": 17
+     }
+    },
+    "V3_drop_exact_groups_ge3": {
+     "runner_up": {
+      "col": 7,
+      "count": 53,
+      "row": 14
+     },
+     "same_as_round3_selection": true,
+     "winner": {
+      "col": 7,
+      "count": 65,
+      "row": 17
+     }
+    },
+    "V4_drop_all_exact_group_members": {
+     "runner_up": {
+      "col": 7,
+      "count": 49,
+      "row": 14
+     },
+     "same_as_round3_selection": true,
+     "winner": {
+      "col": 7,
+      "count": 59,
+      "row": 17
+     }
+    }
+   }
+  },
+  "shymkent": {
+   "cells_fully_inside_city": 243,
+   "largest_exact_groups_city_bbox": [
+    {
+     "inside_selected_square": true,
+     "lat": 42.3167,
+     "lon": 69.5958,
+     "records_any_category_at_point": 101,
+     "social_records": 10
+    },
+    {
+     "inside_selected_square": true,
+     "lat": 42.31757,
+     "lon": 69.60702,
+     "records_any_category_at_point": 64,
+     "social_records": 4
+    },
+    {
+     "inside_selected_square": true,
+     "lat": 42.32353,
+     "lon": 69.59496,
+     "records_any_category_at_point": 4,
+     "social_records": 2
+    }
+   ],
+   "raw_sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "variants": {
+    "V0_all": {
+     "runner_up": {
+      "col": 11,
+      "count": 34,
+      "row": 11
+     },
+     "same_as_round3_selection": true,
+     "winner": {
+      "col": 12,
+      "count": 55,
+      "row": 11
+     }
+    },
+    "V1_one_per_exact_coordinate": {
+     "runner_up": {
+      "col": 11,
+      "count": 34,
+      "row": 11
+     },
+     "same_as_round3_selection": true,
+     "winner": {
+      "col": 12,
+      "count": 39,
+      "row": 11
+     }
+    },
+    "V2_one_per_2m_cluster": {
+     "runner_up": {
+      "col": 11,
+      "count": 32,
+      "row": 11
+     },
+     "same_as_round3_selection": true,
+     "winner": {
+      "col": 12,
+      "count": 38,
+      "row": 11
+     }
+    },
+    "V3_drop_exact_groups_ge3": {
+     "runner_up": {
+      "col": 11,
+      "count": 34,
+      "row": 11
+     },
+     "same_as_round3_selection": true,
+     "winner": {
+      "col": 12,
+      "count": 41,
+      "row": 11
+     }
+    },
+    "V4_drop_all_exact_group_members": {
+     "runner_up": {
+      "col": 12,
+      "count": 33,
+      "row": 11
+     },
+     "same_as_round3_selection": false,
+     "winner": {
+      "col": 11,
+      "count": 34,
+      "row": 11
+     }
+    }
+   }
+  }
+ },
+ "tool": "research/round-5-results/K10/tools/selection_impact.py",
+ "variants": [
+  "V0_all",
+  "V1_one_per_exact_coordinate",
+  "V2_one_per_2m_cluster",
+  "V3_drop_exact_groups_ge3",
+  "V4_drop_all_exact_group_members"
+ ]
+}
