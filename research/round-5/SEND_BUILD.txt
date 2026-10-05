@@ -1,0 +1,8 @@
+Ты единственный BUILD пятого раунда GOV_DIPLOME. Продолжи существующее демо, не создавай его заново.
+Сохрани текущую работу, затем:
+git fetch origin codex/research-import-2026-10-05
+git show origin/codex/research-import-2026-10-05:research/round-5/snapshots.json
+git show origin/codex/research-import-2026-10-05:research/round-5/BUILD.txt
+Выполни BUILD.txt в своей ветке. Входы и исправления уже сохранены — других агентов не жди. Вместо прежнего REVIEW выполняй BUILD.
+После первого исправления с тестом: STATUS/HANDOFF → commit → push. Затем продолжай остальные этапы.
+В финале: команда запуска, исправленные проблемы, реально выполненные проверки, оставшиеся ограничения, ветка и SHA.
