@@ -1,0 +1,7 @@
+{"dataset_id": "AST-A06-D005", "source_id": "AST-A06-S008",
+ "repo_commit": "4937462 (2026-10-05 01:03:58 UTC)",
+ "file": "bus_traffic_dataset.csv (28 185 062 bytes)",
+ "rows": 324300, "points": 100, "snapshots": 3243,
+ "time_range_utc_naive": ["2026-03-15 09:22:16", "2026-10-05 01:03:55"],
+ "snapshots_all_zero": 3243, "share_rows_zero": 1.0, "max_bus_count": 0,
+ "interpretation": "collector catches all exceptions and returns [] -> every snapshot is 0; the file contains no observations of buses"}

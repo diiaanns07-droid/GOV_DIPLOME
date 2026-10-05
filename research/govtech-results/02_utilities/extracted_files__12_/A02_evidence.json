@@ -1,0 +1,974 @@
+{
+  "meta": {
+    "agent_id": "A02",
+    "topic": "ЖКХ: вода, канализация, тепло и обслуживание",
+    "city": "Шымкент (город республиканского значения)",
+    "searched_at": "2026-10-04T17:14:31Z",
+    "access_limitations": "Нет инструмента веб-поиска. Прокси песочницы блокирует gov.kz, stat.gov.kz, data.egov.kz и google.com (HTTP 403, x-deny-reason: host_not_allowed). Доступны github.com и Google Places. Местные статистика, бюджеты, отключения и нормы в этом проходе НЕ проверены; литература не открыта (по памяти модели)."
+  },
+  "sources": [
+    {
+      "source_id": "A02-S001",
+      "title": "ПРОМПТ 02. ЖКХ: вода, канализация, тепло и обслуживание",
+      "publisher": "Владелец проекта / координатор",
+      "url": null,
+      "published_at": "2026-10-04",
+      "accessed_at": "2026-10-04",
+      "source_type": "task_brief",
+      "access_status": "opened",
+      "notes": "Загруженный документ задания; задаёт рамки, не является доказательством о Шымкенте."
+    },
+    {
+      "source_id": "A02-S002",
+      "title": "BAITC-Hacks/hack-d3b2c613-stupits («Аким на 5 часов»)",
+      "publisher": "GitHub, BAITC-Hacks",
+      "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits",
+      "published_at": "2026-09-23",
+      "accessed_at": "2026-10-04",
+      "source_type": "code_repository",
+      "access_status": "opened",
+      "notes": "git clone --depth 1, коммит 834a25fb860dd5514d02c9274b70d7bf8a53a79c от 2026-09-23 18:36:48 +0600. Прочитаны data/city_data.json, data/events.json, data/real_context_meta.json, ui/web_server.py, README.md."
+    },
+    {
+      "source_id": "A02-S003",
+      "title": "Журнал проверки сетевого доступа из песочницы A02",
+      "publisher": "A02 (собственный эксперимент)",
+      "url": null,
+      "published_at": "2026-10-04",
+      "accessed_at": "2026-10-04",
+      "source_type": "own_experiment_log",
+      "access_status": "opened",
+      "notes": "curl -s -o /dev/null -D - --max-time 15 <url>: gov.kz, stat.gov.kz, data.egov.kz, google.com → 403 host_not_allowed; github.com → 200. Ограничение песочницы, а не сайтов."
+    },
+    {
+      "source_id": "A02-S004",
+      "title": "Результаты Google Places: «ТОО Водные ресурсы-Маркетинг Шымкент», «ТЭЦ-3 Шымкент 3-Энергоорталык», «очистные сооружения канализации Шымкент», «водозабор Шымкент»",
+      "publisher": "Google Maps Platform (Places)",
+      "url": null,
+      "published_at": null,
+      "accessed_at": "2026-10-04",
+      "source_type": "commercial_poi_listing",
+      "access_status": "opened",
+      "notes": "Данные Google: только для обнаружения, не для хранения и переиспользования в продукте; сохранены place_id. Карточки создаются третьими лицами, тип объекта и роль компании не гарантированы. place_id: касса ВРМ ChIJdxWUt8seqTgRFXr9fGT7Kco, ChIJdUHYiXYeqTgRhS8VxB4kvqM, ChIJK-ccP6weqTgREitRjSYrDuE, ChIJ7b8JjfgeqTgR2ndKdwtr8E0, ChIJm0US_ucbqTgRb8oF8w0YN24; АО 3-Энергоорталык ChIJo2Fr2KkdqTgRLnIazqNItC0; ТЭЦ-3 ChIJ7SLnOW3gqDgRjTk5Q6jRTCM; Очистные сооружения ChIJxbI4OM4EqTgRB57-zPntY-w."
+    },
+    {
+      "source_id": "A02-S005",
+      "title": "Синтетический эксперимент приоритизации (A02_priority_experiment.py)",
+      "publisher": "A02 (собственный эксперимент)",
+      "url": null,
+      "published_at": "2026-10-04",
+      "accessed_at": "2026-10-04",
+      "source_type": "own_experiment_synthetic",
+      "access_status": "opened",
+      "notes": "python3 A02_priority_experiment.py --reps 200; Python 3.12.3, numpy 2.4.4, seed 20261004, N=400. Генеративная модель выдумана."
+    },
+    {
+      "source_id": "A02-S006",
+      "title": "Kleiner Y., Rajani B. Comprehensive review of structural deterioration of water mains: statistical models. Urban Water, 2001",
+      "publisher": "Elsevier (по памяти)",
+      "url": null,
+      "published_at": "2001",
+      "accessed_at": null,
+      "source_type": "scientific_paper",
+      "access_status": "not_opened",
+      "notes": "Указано по памяти модели, библиографию проверить."
+    },
+    {
+      "source_id": "A02-S007",
+      "title": "Kumar A. et al. Using Machine Learning to Assess the Risk of and Prevent Water Main Breaks. KDD 2018",
+      "publisher": "ACM (по памяти)",
+      "url": null,
+      "published_at": "2018",
+      "accessed_at": null,
+      "source_type": "scientific_paper_implementation",
+      "access_status": "not_opened",
+      "notes": "Указано по памяти модели (кейс Сиракьюс, США), проверить."
+    },
+    {
+      "source_id": "A02-S010",
+      "title": "Управление цифровизации г. Шымкент (страница gov.kz, служба 109)",
+      "publisher": "gov.kz",
+      "url": "https://www.gov.kz/memleket/entities/shymkent-sandyk?lang=ru",
+      "published_at": null,
+      "accessed_at": "2026-10-04",
+      "source_type": "official_page",
+      "access_status": "blocked_in_sandbox",
+      "notes": "Указатель координатора; содержимое не открыто."
+    },
+    {
+      "source_id": "A02-S011",
+      "title": "БНС: динамические ряды по Шымкенту",
+      "publisher": "stat.gov.kz",
+      "url": "https://stat.gov.kz/ru/region/shymkent/dynamic-tables/38/",
+      "published_at": null,
+      "accessed_at": "2026-10-04",
+      "source_type": "official_statistics",
+      "access_status": "blocked_in_sandbox",
+      "notes": "Указатель координатора; содержимое не открыто."
+    },
+    {
+      "source_id": "A02-S012",
+      "title": "Портал открытых данных data.egov.kz",
+      "publisher": "data.egov.kz",
+      "url": "https://data.egov.kz/",
+      "published_at": null,
+      "accessed_at": "2026-10-04",
+      "source_type": "open_data_portal",
+      "access_status": "blocked_in_sandbox",
+      "notes": "Указатель координатора; у координатора тоже ошибка открытия."
+    }
+  ],
+  "facts": [
+    {
+      "fact_id": "A02-F001",
+      "statement": "В STUPITS есть индикатор C1 «Надёжность ЖКХ» (вес 0.1) и C2 «Скорость решения обращений жителей» (вес 0.1)",
+      "kind": "observed",
+      "value": {
+        "C1": 0.1,
+        "C2": 0.1
+      },
+      "unit": "вес в индексе",
+      "geography": "Астана (учебный датасет)",
+      "period": "датасет ТЗ, коммит 2026-09-23",
+      "source_refs": [
+        {
+          "source_id": "A02-S002",
+          "locator": "data/city_data.json → indicators.C1, indicators.C2"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "Учебные показатели, не измерения."
+    },
+    {
+      "fact_id": "A02-F002",
+      "statement": "Мера M13 «Модернизация тепло- и водосетей»: районная, 28 у.е., лаг 4 квартала, C1 +18, E2 +2; M14: городская, 16 у.е., лаг 1, C1 +5, C2 +2; M12: городская, 14 у.е., C2 +5",
+      "kind": "observed",
+      "value": {
+        "M13": {
+          "cost": 28,
+          "lag": 4,
+          "C1": 18,
+          "E2": 2
+        },
+        "M14": {
+          "cost": 16,
+          "lag": 1,
+          "C1": 5,
+          "C2": 2
+        },
+        "M12": {
+          "cost": 14,
+          "lag": 1,
+          "C2": 5
+        }
+      },
+      "unit": "у.е., кварталы, пункты индикатора",
+      "geography": "Астана (учебный датасет)",
+      "period": "датасет ТЗ",
+      "source_refs": [
+        {
+          "source_id": "A02-S002",
+          "locator": "data/city_data.json → measures[id=M12,M13,M14]"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "Эффекты учебные, переносить на Шымкент нельзя."
+    },
+    {
+      "fact_id": "A02-F003",
+      "statement": "События E1 (авария теплосети при морозе до −38 °C, район «Алматы» Астаны) и E4 (прорыв водопровода, район «Байконур»: C1 −18, C2 −4, T1 −3)",
+      "kind": "observed",
+      "value": {
+        "E4": {
+          "C1": -18,
+          "C2": -4,
+          "T1": -3
+        }
+      },
+      "unit": "пункты индикатора",
+      "geography": "Астана (учебный датасет)",
+      "period": "датасет ТЗ",
+      "source_refs": [
+        {
+          "source_id": "A02-S002",
+          "locator": "data/events.json → id=E1, id=E4"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "Климатический сценарий Астаны; для Шымкента нужен свой набор событий."
+    },
+    {
+      "fact_id": "A02-F004",
+      "statement": "Справочный OSM-слой STUPITS не загружен: статус unavailable из-за ReadTimeout Overpass; слой помечен как не влияющий на расчёт",
+      "kind": "observed",
+      "value": "unavailable",
+      "unit": null,
+      "geography": "Астана",
+      "period": "2026-09-23T09:25:25Z",
+      "source_refs": [
+        {
+          "source_id": "A02-S002",
+          "locator": "data/real_context_meta.json → status, error, usage"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "Урок: хранить снимки внешних данных."
+    },
+    {
+      "fact_id": "A02-F005",
+      "statement": "Локальный API содержит маршруты /api/advisor, /api/baseline, /api/bootstrap, /api/compare, /api/events, /api/health, /api/optimize, /api/plan-status, /api/robustness, /api/simulate, /api/validate",
+      "kind": "observed",
+      "value": 11,
+      "unit": "маршрутов",
+      "geography": null,
+      "period": "коммит 2026-09-23",
+      "source_refs": [
+        {
+          "source_id": "A02-S002",
+          "locator": "ui/web_server.py, строковые литералы '/api/...'"
+        }
+      ],
+      "derivation": "Извлечено регулярным выражением; методы и параметры не проверялись",
+      "confidence": "medium",
+      "caveats": "Возможны маршруты, собираемые динамически."
+    },
+    {
+      "fact_id": "A02-F006",
+      "statement": "Из песочницы A02 официальные домены gov.kz, stat.gov.kz, data.egov.kz недоступны (HTTP 403, host_not_allowed)",
+      "kind": "observed",
+      "value": "403",
+      "unit": null,
+      "geography": null,
+      "period": "2026-10-04T17:14Z",
+      "source_refs": [
+        {
+          "source_id": "A02-S003",
+          "locator": "вывод curl"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "Ограничение среды; о доступности сайтов для людей ничего не говорит."
+    },
+    {
+      "fact_id": "A02-F007",
+      "statement": "В Google Maps в Шымкенте найдено 5 карточек «Касса ТОО «Водные ресурсы-Маркетинг»»",
+      "kind": "observed",
+      "value": 5,
+      "unit": "карточек",
+      "geography": "Шымкент, разные части города",
+      "period": "на 2026-10-04",
+      "source_refs": [
+        {
+          "source_id": "A02-S004",
+          "locator": "запрос 1, 5 результатов"
+        }
+      ],
+      "derivation": null,
+      "confidence": "medium",
+      "caveats": "Подтверждает приём платежей за воду; роль в эксплуатации сетей не подтверждена."
+    },
+    {
+      "fact_id": "A02-F008",
+      "statement": "В Google Maps есть карточки «АО «3-Энергоорталык»» (офис в Шымкенте) и «ТЭЦ-3, 3-Энергоорталык» с адресом «Badam 2»; положение ТЭЦ-3 относительно границы города не установлено",
+      "kind": "observed",
+      "value": null,
+      "unit": null,
+      "geography": "Шымкент / возможно Туркестанская область",
+      "period": "на 2026-10-04",
+      "source_refs": [
+        {
+          "source_id": "A02-S004",
+          "locator": "запрос 2"
+        }
+      ],
+      "derivation": null,
+      "confidence": "low",
+      "caveats": "Проверить по официальным границам; влияет на правило «областное ≠ городское»."
+    },
+    {
+      "fact_id": "A02-F009",
+      "statement": "В Google Maps есть карточка «Очистные сооружения Шымкент» на северо-западе города",
+      "kind": "observed",
+      "value": null,
+      "unit": null,
+      "geography": "Шымкент",
+      "period": "на 2026-10-04",
+      "source_refs": [
+        {
+          "source_id": "A02-S004",
+          "locator": "запрос 3"
+        }
+      ],
+      "derivation": null,
+      "confidence": "low",
+      "caveats": "Оператор и мощность неизвестны."
+    },
+    {
+      "fact_id": "A02-F010",
+      "statement": "Отзывы под карточками жалуются на неработающий телефон (3-Энергоорталык) и очереди (кассы ВРМ)",
+      "kind": "observed",
+      "value": null,
+      "unit": null,
+      "geography": "Шымкент",
+      "period": null,
+      "source_refs": [
+        {
+          "source_id": "A02-S004",
+          "locator": "reviews, запросы 1–2"
+        }
+      ],
+      "derivation": null,
+      "confidence": "low",
+      "caveats": "Единичные мнения; не доказательство проблем инфраструктуры."
+    },
+    {
+      "fact_id": "A02-F011",
+      "statement": "Шымкент выделен в город республиканского значения в 2018 году; ЮКО переименована в Туркестанскую область — ряды до и после нельзя склеивать без проверки",
+      "kind": "hypothesis",
+      "value": null,
+      "unit": null,
+      "geography": "Шымкент / Туркестанская обл.",
+      "period": "2018",
+      "source_refs": [],
+      "derivation": "Фоновое знание модели, источник не открыт",
+      "confidence": "medium",
+      "caveats": "Проверить по официальному акту и метаданным БНС."
+    },
+    {
+      "fact_id": "A02-F012",
+      "statement": "Зима в Шымкенте мягче, лето жарче, чем в Астане; главный стресс водоснабжения — вероятно, летний пик, а не морозная авария",
+      "kind": "hypothesis",
+      "value": null,
+      "unit": null,
+      "geography": "Шымкент",
+      "period": null,
+      "source_refs": [],
+      "derivation": "Фоновое знание модели",
+      "confidence": "low",
+      "caveats": "Проверить по Казгидромету и истории отключений."
+    },
+    {
+      "fact_id": "A02-F013",
+      "statement": "Водо- и теплоснабжение — регулируемые естественные монополии с инвестпрограммами; отчёты об исполнении могут быть открытым источником о плановых заменах",
+      "kind": "hypothesis",
+      "value": null,
+      "unit": null,
+      "geography": "Казахстан",
+      "period": null,
+      "source_refs": [],
+      "derivation": "Фоновое знание модели",
+      "confidence": "low",
+      "caveats": "Проверить действующий закон и сайт регулятора/операторов."
+    },
+    {
+      "fact_id": "A02-F014",
+      "statement": "Теплосети ежегодно проходят летние гидравлические испытания; результаты — данные оператора",
+      "kind": "hypothesis",
+      "value": null,
+      "unit": null,
+      "geography": "Шымкент",
+      "period": null,
+      "source_refs": [],
+      "derivation": "Типовая практика, не проверена локально",
+      "confidence": "medium",
+      "caveats": "Проверить у оператора / в публикациях о подготовке к сезону."
+    },
+    {
+      "fact_id": "A02-F015",
+      "statement": "Мир W1 (возраст доминирует): «самый старый первым» захватывает 0.879 аварий оракула против 0.492 у оценки; по риску 0.729 против 0.827",
+      "kind": "synthetic",
+      "value": {
+        "oldest_failures": 0.879,
+        "score_failures": 0.492,
+        "oldest_risk": 0.729,
+        "score_risk": 0.827
+      },
+      "unit": "доля от оракула",
+      "geography": "synthetic",
+      "period": "synthetic",
+      "source_refs": [
+        {
+          "source_id": "A02-S005",
+          "locator": "A02_experiment_results.json → results"
+        }
+      ],
+      "derivation": "top-10%, 200 повторов",
+      "confidence": "high",
+      "caveats": "Высокая уверенность в воспроизводимости, не в применимости к Шымкенту."
+    },
+    {
+      "fact_id": "A02-F016",
+      "statement": "Мир W2 (смешанные драйверы): по риску оценка 0.875 против 0.449; по авариям 0.597 против 0.616",
+      "kind": "synthetic",
+      "value": {
+        "score_risk": 0.875,
+        "oldest_risk": 0.449,
+        "score_failures": 0.597,
+        "oldest_failures": 0.616
+      },
+      "unit": "доля от оракула",
+      "geography": "synthetic",
+      "period": "synthetic",
+      "source_refs": [
+        {
+          "source_id": "A02-S005",
+          "locator": "A02_experiment_results.json → results"
+        }
+      ],
+      "derivation": "top-10%, 200 повторов",
+      "confidence": "high",
+      "caveats": "Часть преимущества по риску — артефакт: CoF в оценке и в метрике."
+    },
+    {
+      "fact_id": "A02-F017",
+      "statement": "Только открытые сигналы + последствия: риск 0.779 (W1) и 0.700 (W2)",
+      "kind": "synthetic",
+      "value": {
+        "W1": 0.779,
+        "W2": 0.7
+      },
+      "unit": "доля от оракула",
+      "geography": "synthetic",
+      "period": "synthetic",
+      "source_refs": [
+        {
+          "source_id": "A02-S005",
+          "locator": "A02_experiment_results.json → results"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "Завышено: жалобы в генераторе порождены истинной частотой аварий."
+    },
+    {
+      "fact_id": "A02-F018",
+      "statement": "R1: утроение сигналов в одном районе сохраняет 96.5% (W1) и 95.1% (W2) верхнего списка",
+      "kind": "synthetic",
+      "value": {
+        "W1": 0.965,
+        "W2": 0.951
+      },
+      "unit": "доля совпадения",
+      "geography": "synthetic",
+      "period": "synthetic",
+      "source_refs": [
+        {
+          "source_id": "A02-S005",
+          "locator": "A02_experiment_results.json → results"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "Перцентиль гасит и настоящие всплески."
+    },
+    {
+      "fact_id": "A02-F019",
+      "statement": "R3: при 40% неизвестного возраста базовое правило в W1 падает до 0.716 по авариям; надбавка «неизвестное → обследовать» почти не помогает (0.751 против 0.743 по риску)",
+      "kind": "synthetic",
+      "value": {
+        "oldest_failures": 0.716,
+        "bonus_risk": 0.751,
+        "imputed_risk": 0.743
+      },
+      "unit": "доля от оракула",
+      "geography": "synthetic",
+      "period": "synthetic",
+      "source_refs": [
+        {
+          "source_id": "A02-S005",
+          "locator": "A02_experiment_results.json → results"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "Не доказывает и не опровергает ценность информации."
+    },
+    {
+      "fact_id": "A02-F020",
+      "statement": "При случайном изменении весов LoF сохраняется в среднем 88% верхних 10%",
+      "kind": "synthetic",
+      "value": {
+        "W1": 0.884,
+        "W2": 0.883
+      },
+      "unit": "доля совпадения",
+      "geography": "synthetic",
+      "period": "synthetic",
+      "source_refs": [
+        {
+          "source_id": "A02-S005",
+          "locator": "A02_experiment_results.json → results"
+        }
+      ],
+      "derivation": "Дирихле, концентрация 20×веса, 20 выборок на повтор",
+      "confidence": "high",
+      "caveats": null
+    },
+    {
+      "fact_id": "A02-F021",
+      "statement": "Статистические и ML-модели прорывов требуют истории отказов по участкам; без неё прогноз не строится",
+      "kind": "hypothesis",
+      "value": null,
+      "unit": null,
+      "geography": null,
+      "period": null,
+      "source_refs": [
+        {
+          "source_id": "A02-S006",
+          "locator": "не открыто"
+        },
+        {
+          "source_id": "A02-S007",
+          "locator": "не открыто"
+        }
+      ],
+      "derivation": "По памяти модели о литературе",
+      "confidence": "medium",
+      "caveats": "Проверить по первоисточникам."
+    }
+  ],
+  "datasets": [
+    {
+      "dataset_id": "A02-D001",
+      "title": "STUPITS city_data.json / events.json",
+      "publisher": "BAITC-Hacks",
+      "source_ids": [
+        "A02-S002"
+      ],
+      "landing_url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits",
+      "download_or_api_url": "https://raw.githubusercontent.com/BAITC-Hacks/hack-d3b2c613-stupits/main/data/city_data.json",
+      "access_status": "sample_verified",
+      "tested_at": "2026-10-04",
+      "geography": "Астана (учебный)",
+      "granularity": "5 районов",
+      "period": "датасет ТЗ",
+      "format": "JSON",
+      "fields": [
+        "indicators",
+        "districts",
+        "measures",
+        "synergies",
+        "incompatibilities",
+        "events"
+      ],
+      "units": "у.е., пункты индикатора",
+      "update_frequency": null,
+      "license": null,
+      "auth_requirement": "нет",
+      "limitations": "Учебные значения; raw-URL ветки main не запрашивался отдельно (проверен клон)",
+      "next_retrieval_step": "Использовать только как каркас интерфейса."
+    },
+    {
+      "dataset_id": "A02-D002",
+      "title": "БНС: показатели ЖКХ по Шымкенту (протяжённость сетей, в т.ч. нуждающихся в замене) — ожидаемо",
+      "publisher": "БНС АСПиР РК",
+      "source_ids": [
+        "A02-S011"
+      ],
+      "landing_url": "https://stat.gov.kz/ru/region/shymkent/dynamic-tables/38/",
+      "download_or_api_url": null,
+      "access_status": "unavailable",
+      "tested_at": null,
+      "geography": "Шымкент",
+      "granularity": "город (вероятно)",
+      "period": null,
+      "format": null,
+      "fields": [],
+      "units": null,
+      "update_frequency": null,
+      "license": null,
+      "auth_requirement": null,
+      "limitations": "Заблокировано в песочнице; наличие таблиц ЖКХ — гипотеза",
+      "next_retrieval_step": "Второй проход: открыть страницу, найти ряды ЖКХ, записать год и единицы."
+    },
+    {
+      "dataset_id": "A02-D003",
+      "title": "Наборы data.egov.kz по ЖКХ Шымкента",
+      "publisher": "data.egov.kz",
+      "source_ids": [
+        "A02-S012"
+      ],
+      "landing_url": "https://data.egov.kz/",
+      "download_or_api_url": null,
+      "access_status": "unavailable",
+      "tested_at": null,
+      "geography": "Шымкент",
+      "granularity": null,
+      "period": null,
+      "format": null,
+      "fields": [],
+      "units": null,
+      "update_frequency": null,
+      "license": null,
+      "auth_requirement": null,
+      "limitations": "Заблокировано в песочнице и у координатора",
+      "next_retrieval_step": "Второй проход: поиск по каталогу, запрос к API с фиксацией ответа."
+    },
+    {
+      "dataset_id": "A02-D004",
+      "title": "Паспорт сетей и журнал аварий оператора",
+      "publisher": "Операторы воды/канализации/тепла (название подтвердить)",
+      "source_ids": [],
+      "landing_url": null,
+      "download_or_api_url": null,
+      "access_status": "restricted",
+      "tested_at": null,
+      "geography": "Шымкент",
+      "granularity": "участок/объект",
+      "period": null,
+      "format": "CSV/GeoJSON (запрашиваемо)",
+      "fields": [
+        "segment_id",
+        "network_type",
+        "material",
+        "diameter_mm",
+        "install_year",
+        "length_m",
+        "pressure_zone",
+        "incident_id",
+        "start_at",
+        "end_at",
+        "incident_type",
+        "cause",
+        "customers_affected"
+      ],
+      "units": "мм, м, годы, шт.",
+      "update_frequency": null,
+      "license": null,
+      "auth_requirement": "соглашение с оператором",
+      "limitations": "Критическая инфраструктура; вероятно обобщение геометрии",
+      "next_retrieval_step": "Владелец решает об отправке заявки (раздел 8 отчёта)."
+    },
+    {
+      "dataset_id": "A02-D005",
+      "title": "Публичные объявления об авариях и плановых отключениях",
+      "publisher": "операторы / акимат (подтвердить)",
+      "source_ids": [],
+      "landing_url": null,
+      "download_or_api_url": null,
+      "access_status": "unavailable",
+      "tested_at": null,
+      "geography": "Шымкент",
+      "granularity": "улица/дом",
+      "period": null,
+      "format": "HTML/посты",
+      "fields": [
+        "дата",
+        "адрес/диапазон домов",
+        "тип",
+        "срок восстановления"
+      ],
+      "units": null,
+      "update_frequency": null,
+      "license": null,
+      "auth_requirement": null,
+      "limitations": "Не найдено в этом проходе",
+      "next_retrieval_step": "Ручной сбор за 30 дней по схеме карточки."
+    },
+    {
+      "dataset_id": "A02-D006",
+      "title": "Инвестиционные программы и отчёты об их исполнении",
+      "publisher": "операторы / регулятор (подтвердить)",
+      "source_ids": [],
+      "landing_url": null,
+      "download_or_api_url": null,
+      "access_status": "unavailable",
+      "tested_at": null,
+      "geography": "Шымкент",
+      "granularity": "мероприятие",
+      "period": null,
+      "format": null,
+      "fields": [
+        "мероприятие",
+        "км",
+        "стоимость",
+        "год",
+        "статус"
+      ],
+      "units": "км, тенге",
+      "update_frequency": null,
+      "license": null,
+      "auth_requirement": null,
+      "limitations": "Публикация — гипотеза A02-F013",
+      "next_retrieval_step": "Найти на сайтах операторов и регулятора."
+    },
+    {
+      "dataset_id": "A02-D007",
+      "title": "Агрегаты обращений 109 / e-Otinish по ЖКХ",
+      "publisher": "акимат / цифровизация (подтвердить)",
+      "source_ids": [
+        "A02-S010"
+      ],
+      "landing_url": "https://www.gov.kz/memleket/entities/shymkent-sandyk?lang=ru",
+      "download_or_api_url": null,
+      "access_status": "unavailable",
+      "tested_at": null,
+      "geography": "Шымкент",
+      "granularity": "район/категория",
+      "period": null,
+      "format": null,
+      "fields": [
+        "категория",
+        "район",
+        "месяц",
+        "число"
+      ],
+      "units": "обращений",
+      "update_frequency": null,
+      "license": null,
+      "auth_requirement": null,
+      "limitations": "Неизвестно, публикуются ли",
+      "next_retrieval_step": "Выяснить у агента цифровизации / на странице управления."
+    },
+    {
+      "dataset_id": "A02-D008",
+      "title": "OSM: соцобъекты (школы, детсады, больницы)",
+      "publisher": "OpenStreetMap contributors",
+      "source_ids": [
+        "A02-S002"
+      ],
+      "landing_url": "https://www.openstreetmap.org",
+      "download_or_api_url": null,
+      "access_status": "documented_only",
+      "tested_at": null,
+      "geography": "Шымкент",
+      "granularity": "точка",
+      "period": null,
+      "format": "OSM/GeoJSON",
+      "fields": [
+        "amenity",
+        "healthcare",
+        "name"
+      ],
+      "units": null,
+      "update_frequency": "непрерывно",
+      "license": "ODbL",
+      "auth_requirement": "нет",
+      "limitations": "Overpass недоступен из песочницы; у STUPITS загрузка по Астане падала по таймауту (A02-F004)",
+      "next_retrieval_step": "Скачать снимок для Шымкента, хранить локально с атрибуцией."
+    },
+    {
+      "dataset_id": "A02-D009",
+      "title": "Синтетические участки сети (образец 20 строк)",
+      "publisher": "A02",
+      "source_ids": [
+        "A02-S005"
+      ],
+      "landing_url": null,
+      "download_or_api_url": "A02_synthetic_segments_sample.csv",
+      "access_status": "sample_verified",
+      "tested_at": "2026-10-04",
+      "geography": "synthetic",
+      "granularity": "участок",
+      "period": "synthetic",
+      "format": "CSV",
+      "fields": [
+        "segment_id",
+        "kind",
+        "district_idx",
+        "material",
+        "age_years",
+        "high_pressure",
+        "length_km",
+        "pop_in_zone",
+        "critical_in_zone",
+        "complaints_12m"
+      ],
+      "units": "годы, км, человек, шт.",
+      "update_frequency": null,
+      "license": "по выбору владельца",
+      "auth_requirement": "нет",
+      "limitations": "SYNTHETIC — не данные Шымкента",
+      "next_retrieval_step": "Только для тестов интерфейса и кода."
+    },
+    {
+      "dataset_id": "A02-D010",
+      "title": "Google Places: карточки организаций",
+      "publisher": "Google",
+      "source_ids": [
+        "A02-S004"
+      ],
+      "landing_url": null,
+      "download_or_api_url": null,
+      "access_status": "restricted",
+      "tested_at": "2026-10-04",
+      "geography": "Шымкент",
+      "granularity": "точка",
+      "period": "на 2026-10-04",
+      "format": null,
+      "fields": [
+        "name",
+        "address",
+        "place_id"
+      ],
+      "units": null,
+      "update_frequency": null,
+      "license": "Условия Google Maps Platform",
+      "auth_requirement": "API-ключ",
+      "limitations": "Не для хранения и переиспользования в продукте",
+      "next_retrieval_step": "Заменить официальными реестрами / OSM."
+    }
+  ],
+  "opportunities": [
+    {
+      "idea_id": "A02-O001",
+      "title": "Прозрачная очередь обследований территорий и участков (LoF × CoF) с базовым правилом",
+      "problem": "P2/P1: где обследовать и что менять при ограниченном бюджете; износ и аварии не подтверждены количественно в этом проходе",
+      "evidence_fact_ids": [
+        "A02-F001",
+        "A02-F002",
+        "A02-F015",
+        "A02-F016",
+        "A02-F018",
+        "A02-F019",
+        "A02-F020",
+        "A02-F021"
+      ],
+      "primary_user": "Планировщик эксплуатации/инвестпрограммы оператора; специалист управления ЖКХ акимата",
+      "user_task": "Выбрать N участков/зон для обследования или ремонта и обосновать выбор",
+      "existing_solution": "Неизвестно; вероятно экспертное решение и «самый старый первым»",
+      "proposed_addition": "Рейтинг с вкладами критериев, флагами пропусков, выбором цели (аварии/последствия), сравнением с «самый старый первым», диапазоном ранга при изменении весов",
+      "required_dataset_ids": [
+        "A02-D004",
+        "A02-D005",
+        "A02-D006",
+        "A02-D008",
+        "A02-D002"
+      ],
+      "ai_role": "Не нужен для расчёта; LLM — объяснение посчитанного кодом и разбор текстов объявлений",
+      "non_ai_baseline": "Сортировка по возрасту; случайный выбор",
+      "success_metrics": [
+        "На истории аварий: доля аварий года T+1 в верхних k% против базового правила",
+        "Совпадение верхнего списка при изменении весов",
+        "Доля критериев с пропусками",
+        "Оценка полезности планировщиком (интервью)"
+      ],
+      "feasibility_10_days": "Интерфейс и код на синтетике + 20–50 реальных карточек — реально; проверка на истории — только с данными оператора",
+      "blockers": [
+        "Нет данных оператора",
+        "Нет подтверждённой связи жалоб с авариями",
+        "Чувствительность геометрии сетей"
+      ],
+      "transfer_to_astana": "Метод переносим; веса, данные и события — свои",
+      "next_action": "Перенести функции из A02_priority_experiment.py в отдельный модуль с тестами"
+    },
+    {
+      "idea_id": "A02-O002",
+      "title": "Реестр карточек: группировка сообщений и разделение авария / плановое / хроническое / проект",
+      "problem": "P1/P3/P4: жители и диспетчер путают плановые и аварийные отключения, обещания и внедрение",
+      "evidence_fact_ids": [
+        "A02-F003",
+        "A02-F010"
+      ],
+      "primary_user": "Диспетчер оператора / сотрудник 109; житель как читатель",
+      "user_task": "Понять, сколько разных инцидентов стоит за потоком сообщений и что уже известно",
+      "existing_solution": "Неизвестно (объявления операторов/акимата — гипотеза)",
+      "proposed_addition": "Карточки по схеме A02_problem_card.schema.json; кластеризация по месту и времени; статус проекта до completed_verified",
+      "required_dataset_ids": [
+        "A02-D005",
+        "A02-D007",
+        "A02-D006"
+      ],
+      "ai_role": "LLM извлекает поля из текста (рус./каз.); код кластеризует и считает",
+      "non_ai_baseline": "Ручное заполнение и правила по ключевым словам",
+      "success_metrics": [
+        "Точность/полнота извлечения полей на 50 размеченных объявлениях",
+        "Доля объявлений с адресом, временем и типом",
+        "Число сообщений на один инцидент"
+      ],
+      "feasibility_10_days": "Да, при наличии публичных объявлений",
+      "blockers": [
+        "Объём и формат публичных объявлений не проверены",
+        "Агрегаты обращений могут быть закрыты"
+      ],
+      "transfer_to_astana": "Схема переносима",
+      "next_action": "Двухчасовой ручной сбор объявлений за 30 дней"
+    },
+    {
+      "idea_id": "A02-O003",
+      "title": "Исследование: план обследований по ценности информации",
+      "problem": "Много неизвестных паспортных данных; рейтинг не учитывает, что обследование уменьшает неопределённость",
+      "evidence_fact_ids": [
+        "A02-F019"
+      ],
+      "primary_user": "Исследователь (диплом), затем планировщик",
+      "user_task": "Выбрать обследования, максимально снижающие ожидаемый риск",
+      "existing_solution": "Рейтинг O001",
+      "proposed_addition": "Байесовская модель частоты аварий и выбор по ожидаемому выигрышу информации",
+      "required_dataset_ids": [
+        "A02-D004",
+        "A02-D009"
+      ],
+      "ai_role": "Вероятностная модель, не LLM",
+      "non_ai_baseline": "O001 и «самый старый первым»",
+      "success_metrics": [
+        "Снижение остаточного риска на синтетике и на истории против O001"
+      ],
+      "feasibility_10_days": "Только синтетический прототип",
+      "blockers": [
+        "Нужна история аварий для калибровки"
+      ],
+      "transfer_to_astana": "Да",
+      "next_action": "Расширить синтетический скрипт байесовской моделью (1–2 дня)"
+    }
+  ],
+  "open_questions": [
+    {
+      "question": "Какие официальные операторы отвечают за водопровод, канализацию, теплосети в границах Шымкента?",
+      "why_important": "Определяет адресата заявки и источники объявлений",
+      "how_to_check": "Сайты акимата, операторов, регулятора; второй проход"
+    },
+    {
+      "question": "Где расположена ТЭЦ-3 относительно границы города?",
+      "why_important": "Правило: областное не приписывать городу",
+      "how_to_check": "Официальные границы, адрес из реестра юрлиц/лицензий, согласовать с агентом 09"
+    },
+    {
+      "question": "Какие ряды ЖКХ есть у БНС по Шымкенту (протяжённость, нуждающиеся в замене) и с какого года?",
+      "why_important": "Единственный вероятный открытый количественный индикатор износа",
+      "how_to_check": "stat.gov.kz, динамические таблицы, метаданные"
+    },
+    {
+      "question": "Публикуются ли объявления об авариях и плановых отключениях, в каком формате и объёме?",
+      "why_important": "Основа прототипа O002 и уровня A",
+      "how_to_check": "Ручной сбор за 30 дней"
+    },
+    {
+      "question": "Публикуются ли инвестпрограммы и отчёты об их исполнении с перечнем участков?",
+      "why_important": "Открытый источник плановых работ и стоимости",
+      "how_to_check": "Сайты операторов и регулятора"
+    },
+    {
+      "question": "Насколько сигналы жителей связаны с подтверждёнными авариями?",
+      "why_important": "Главное непроверенное допущение уровня A (см. A02-F017)",
+      "how_to_check": "Сопоставить карточки объявлений с агрегатами обращений по зоне и неделе"
+    },
+    {
+      "question": "Есть ли у оператора своя ГИС и система планирования, и меняет ли рейтинг реальное решение?",
+      "why_important": "Может обесценить O001 и сместить фокус на прозрачность для жителей",
+      "how_to_check": "Публичные отчёты, закупки ПО, интервью через официальный канал"
+    },
+    {
+      "question": "Какие сценарии стресса реальны для Шымкента (жара, пик полива, отказ насосной)?",
+      "why_important": "События STUPITS сделаны для Астаны",
+      "how_to_check": "История отключений по сезонам, Казгидромет"
+    }
+  ],
+  "deliverables": {
+    "problem_card_schema": "A02_problem_card.schema.json",
+    "experiment": {
+      "script": "A02_priority_experiment.py",
+      "results": "A02_experiment_results.json",
+      "command": "python3 A02_priority_experiment.py --reps 200",
+      "python": "3.12.3",
+      "numpy": "2.4.4",
+      "kind": "synthetic"
+    },
+    "synthetic_sample": "A02_synthetic_segments_sample.csv"
+  }
+}

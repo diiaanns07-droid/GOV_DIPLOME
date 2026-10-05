@@ -1,0 +1,3818 @@
+{
+ "meta": {
+  "agent_id": "AST-A12",
+  "topic": "База данных и знаний по Астане для 11 сфер; география и аудит STUPITS",
+  "city": "astana",
+  "round": "astana-2026-10-05",
+  "searched_at": "2026-10-05T04:09Z (UTC)",
+  "access_limitations": "Нет браузера и веб-поиска; прокси пропускает только GitHub, PyPI, npm и др. Все казахстанские госисточники, OSM-сервисы и Zenodo недоступны (F001). Проверены: репозиторий STUPITS (сохранённые в нём ответы OSM), Natural Earth и сторонние GitHub-репозитории с метаданными каталога data.egov.kz и копией исследовательского GTFS Астаны. Ни одного запроса к API портала не выполнено; живые страницы наборов не открыты."
+ },
+ "sources": [
+  {
+   "source_id": "AST-A12-S001",
+   "title": "Задание AST-A12 (второй проход, Астана)",
+   "publisher": "Владелец проекта / координатор",
+   "url": null,
+   "published_at": "2026-10-05",
+   "accessed_at": "2026-10-05T04:09:07Z",
+   "source_type": "task_brief",
+   "access_status": "opened",
+   "notes": "Содержит стартовые URL координатора; не доказательство фактов о городе."
+  },
+  {
+   "source_id": "AST-A12-S002",
+   "title": "STUPITS — снимок репозитория, ветка main",
+   "publisher": "BAITC-Hacks / команда STUPITS",
+   "url": "https://codeload.github.com/BAITC-Hacks/hack-d3b2c613-stupits/zip/refs/heads/main",
+   "published_at": null,
+   "accessed_at": "2026-10-05T04:09:07Z",
+   "source_type": "repo_snapshot",
+   "access_status": "opened",
+   "notes": "commit 834a25fb860dd5514d02c9274b70d7bf8a53a79c; sha256 архива 497921e4…0357 — совпадает со снимком первого прохода (A12-S002) от 2026-10-04. Только чтение."
+  },
+  {
+   "source_id": "AST-A12-S003",
+   "title": "data/city_data.json",
+   "publisher": "STUPITS / организаторы хакатона",
+   "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/blob/834a25fb860dd5514d02c9274b70d7bf8a53a79c/data/city_data.json",
+   "published_at": null,
+   "accessed_at": "2026-10-05T04:09:07Z",
+   "source_type": "repo_file",
+   "access_status": "opened",
+   "notes": "sha256 403478c1…; синтетический датасет ТЗ."
+  },
+  {
+   "source_id": "AST-A12-S004",
+   "title": "data/events.json",
+   "publisher": "STUPITS",
+   "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/blob/834a25fb860dd5514d02c9274b70d7bf8a53a79c/data/events.json",
+   "published_at": null,
+   "accessed_at": "2026-10-05T04:09:07Z",
+   "source_type": "repo_file",
+   "access_status": "opened",
+   "notes": "sha256 e7a8c400…; 8 сценарных событий."
+  },
+  {
+   "source_id": "AST-A12-S005",
+   "title": "data/real_context.json и real_context_meta.json",
+   "publisher": "STUPITS",
+   "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/blob/834a25fb860dd5514d02c9274b70d7bf8a53a79c/data/real_context.json",
+   "published_at": "2026-09-23",
+   "accessed_at": "2026-10-05T04:09:07Z",
+   "source_type": "repo_file",
+   "access_status": "opened",
+   "notes": "sha256 7f630d68… / 3eefd513…."
+  },
+  {
+   "source_id": "AST-A12-S006",
+   "title": "fetch_real_context.py",
+   "publisher": "STUPITS",
+   "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/blob/834a25fb860dd5514d02c9274b70d7bf8a53a79c/fetch_real_context.py",
+   "published_at": null,
+   "accessed_at": "2026-10-05T04:09:07Z",
+   "source_type": "repo_file",
+   "access_status": "opened",
+   "notes": "sha256 19bb143b…; строки 344–360 (make_meta)."
+  },
+  {
+   "source_id": "AST-A12-S007",
+   "title": "data/astana_districts.geojson",
+   "publisher": "STUPITS (данные © OpenStreetMap contributors, ODbL)",
+   "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/blob/834a25fb860dd5514d02c9274b70d7bf8a53a79c/data/astana_districts.geojson",
+   "published_at": "2026-09-23",
+   "accessed_at": "2026-10-05T04:09:07Z",
+   "source_type": "repo_file",
+   "access_status": "opened",
+   "notes": "sha256 9092aebb…."
+  },
+  {
+   "source_id": "AST-A12-S008",
+   "title": "data/geo_sources/astana_districts_overpass.json",
+   "publisher": "OSM contributors через Overpass (сохранено STUPITS)",
+   "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/blob/834a25fb860dd5514d02c9274b70d7bf8a53a79c/data/geo_sources/astana_districts_overpass.json",
+   "published_at": "2026-09-22",
+   "accessed_at": "2026-10-05T04:09:07Z",
+   "source_type": "osm",
+   "access_status": "opened",
+   "notes": "osm3s.timestamp_osm_base 2026-09-22T08:45:51Z; 11 relations, out geom."
+  },
+  {
+   "source_id": "AST-A12-S009",
+   "title": "data/geo_sources/sara_osm.json — OSM API 0.6 relation/19733918/full",
+   "publisher": "OpenStreetMap (сохранено STUPITS)",
+   "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/blob/834a25fb860dd5514d02c9274b70d7bf8a53a79c/data/geo_sources/sara_osm.json",
+   "published_at": null,
+   "accessed_at": "2026-10-05T04:09:07Z",
+   "source_type": "osm",
+   "access_status": "opened",
+   "notes": "sha256 c3ef5159…; generator openstreetmap-cgimap 2.1.0; содержит version/timestamp элементов. Имена пользователей OSM не переносились."
+  },
+  {
+   "source_id": "AST-A12-S010",
+   "title": "data/geo_sources/sara_nominatim.json",
+   "publisher": "Nominatim (сохранено STUPITS)",
+   "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/blob/834a25fb860dd5514d02c9274b70d7bf8a53a79c/data/geo_sources/sara_nominatim.json",
+   "published_at": null,
+   "accessed_at": "2026-10-05T04:09:07Z",
+   "source_type": "osm",
+   "access_status": "opened",
+   "notes": "address.ISO3166-2-lvl4 = KZ-71."
+  },
+  {
+   "source_id": "AST-A12-S011",
+   "title": "docs/GEO_SOURCES.md",
+   "publisher": "STUPITS",
+   "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/blob/834a25fb860dd5514d02c9274b70d7bf8a53a79c/docs/GEO_SOURCES.md",
+   "published_at": null,
+   "accessed_at": "2026-10-05T04:09:07Z",
+   "source_type": "repo_file",
+   "access_status": "opened",
+   "notes": "Таблица relation ID, проверки Shapely."
+  },
+  {
+   "source_id": "AST-A12-S012",
+   "title": "README.md",
+   "publisher": "STUPITS",
+   "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/blob/834a25fb860dd5514d02c9274b70d7bf8a53a79c/README.md",
+   "published_at": null,
+   "accessed_at": "2026-10-05T04:09:07Z",
+   "source_type": "repo_file",
+   "access_status": "opened",
+   "notes": "Строки 43, 617, 625, 643, 653–655."
+  },
+  {
+   "source_id": "AST-A12-S013",
+   "title": "docs/tz/tz_task.txt",
+   "publisher": "Организаторы хакатона (копия в репозитории)",
+   "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/blob/834a25fb860dd5514d02c9274b70d7bf8a53a79c/docs/tz/tz_task.txt",
+   "published_at": null,
+   "accessed_at": "2026-10-05T04:09:07Z",
+   "source_type": "repo_file",
+   "access_status": "opened",
+   "notes": "«синтетический датасет», «условные районы»."
+  },
+  {
+   "source_id": "AST-A12-S014",
+   "title": "Natural Earth 10m admin-1 (GeoJSON)",
+   "publisher": "Natural Earth",
+   "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_admin_1_states_provinces.geojson",
+   "published_at": null,
+   "accessed_at": "2026-10-05T04:09:07Z",
+   "source_type": "dataset_file",
+   "access_status": "opened",
+   "notes": "VERSION 5.2.0-pre; sha256 22d0e3ad…; public domain; повторно использован файл первого прохода (A12-S010)."
+  },
+  {
+   "source_id": "AST-A12-S015",
+   "title": "Natural Earth 10m populated places (simple)",
+   "publisher": "Natural Earth",
+   "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_populated_places_simple.geojson",
+   "published_at": null,
+   "accessed_at": "2026-10-05T04:09:07Z",
+   "source_type": "dataset_file",
+   "access_status": "opened",
+   "notes": "sha256 fd3fa867…; public domain (A12-S011)."
+  },
+  {
+   "source_id": "AST-A12-S016",
+   "title": "Сторонний обход каталога data.egov.kz: datasets_export.csv (репозиторий Yerassyl20036/egov-web-crawler)",
+   "publisher": "Сторонний автор на GitHub (не владелец портала)",
+   "url": "https://github.com/Yerassyl20036/egov-web-crawler/blob/8c1f4a34688cfb825089bb96055eef89dbb24207/datasets_export.csv",
+   "published_at": null,
+   "accessed_at": "2026-10-05T04:09:07Z",
+   "source_type": "secondary_catalog",
+   "access_status": "opened",
+   "notes": "crawled_at 2026-02-01; 3 882 строки метаданных (название, ведомство, частота, даты паспорта, api_uri). Лицензия репозитория не указана. Вторичный источник: не заменяет проверку на портале."
+  },
+  {
+   "source_id": "AST-A12-S017",
+   "title": "opengov-kz/data-egov-kz: getstatisticsbymiogovagencies.json, data/byMIO.csv",
+   "publisher": "opengov-kz (сторонний проект, MIT)",
+   "url": "https://github.com/opengov-kz/data-egov-kz/tree/46ca0c01653387b9381b6fece30d36ca69c582c4",
+   "published_at": null,
+   "accessed_at": "2026-10-05T04:09:07Z",
+   "source_type": "secondary_catalog",
+   "access_status": "opened",
+   "notes": "Файлы датированы 2025-04-30 (метки ZIP). Список data/meta-ссылок с версиями API. В config.py репозитория опубликован чужой API-ключ — НЕ использовался и не воспроизводится."
+  },
+  {
+   "source_id": "AST-A12-S018",
+   "title": "Aizhan-05/open-data-backend: index.js",
+   "publisher": "Сторонний автор на GitHub",
+   "url": "https://github.com/Aizhan-05/open-data-backend/blob/d3f3ee038e7316196fd883b9585d96b7b978bfca/index.js",
+   "published_at": null,
+   "accessed_at": "2026-10-05T04:09:07Z",
+   "source_type": "secondary_code",
+   "access_status": "opened",
+   "notes": "Шаблон запроса /api/v4/onirler_oblystar_kalalar_boi4/v7?apiKey=…; фильтр по полю nate1."
+  },
+  {
+   "source_id": "AST-A12-S019",
+   "title": "Копия набора «Astana bus dataset» в репозитории Mrithula742/Bussure (datasets/astana)",
+   "publisher": "Авторы набора: Mansurova, Mussina, Aubakirov, Nugumanova, Yedilkhan (по READ-ME копии); копия — сторонний репозиторий",
+   "url": "https://github.com/Mrithula742/Bussure/tree/0356bb5b37ef0992ec0df3a4f09be35e3147b094/datasets/astana",
+   "published_at": null,
+   "accessed_at": "2026-10-05T04:09:07Z",
+   "source_type": "dataset_copy",
+   "access_status": "opened",
+   "notes": "READ-ME: оригинал https://zenodo.org/records/15769359, статья https://doi.org/10.3390/data10080119, лицензия CC BY 4.0, MD5 сверены копировщиком 2026-09-29. Оригинал A12 не открывал. stop_times.txt и segment_level_data.csv в копии — LFS-указатели."
+  },
+  {
+   "source_id": "AST-A12-S020",
+   "title": "ailaris/astana-air-quality: data.csv, air_quality_data.csv",
+   "publisher": "Сторонний автор на GitHub",
+   "url": "https://github.com/ailaris/astana-air-quality/tree/921aafa38cf314f66908a92841a499a7cabd4f1b",
+   "published_at": null,
+   "accessed_at": "2026-10-05T04:09:07Z",
+   "source_type": "dataset_copy",
+   "access_status": "opened",
+   "notes": "Ряды PM2.5 и погоды 2019+ без указания источника и лицензии — отклонено."
+  },
+  {
+   "source_id": "AST-A12-S021",
+   "title": "Журнал сетевых проверок AST-A12 (curl, 14 URL)",
+   "publisher": "AST-A12 (эксперимент)",
+   "url": null,
+   "published_at": "2026-10-05",
+   "accessed_at": "2026-10-05T04:09:07Z",
+   "source_type": "experiment_log",
+   "access_status": "opened",
+   "notes": "11 URL — 403 host_not_allowed; 3 предположенных A12 домена не разрешились DNS."
+  },
+  {
+   "source_id": "AST-A12-S022",
+   "title": "AST_A12_experiments.py и вывод AST_A12_experiments_output.json",
+   "publisher": "AST-A12 (эксперимент)",
+   "url": null,
+   "published_at": "2026-10-05",
+   "accessed_at": "2026-10-05T04:09:07Z",
+   "source_type": "experiment_log",
+   "access_status": "opened",
+   "notes": "Python 3.12.3, SQLite 3.45.1, shapely 2.1.2, pyproj 3.8.0."
+  },
+  {
+   "source_id": "AST-A12-S040",
+   "title": "Акимат г. Астаны на gov.kz (стартовый URL координатора)",
+   "publisher": "Акимат г. Астаны",
+   "url": "https://www.gov.kz/memleket/entities/astana?lang=ru",
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "official_page",
+   "access_status": "blocked_in_sandbox",
+   "notes": "Кандидат; A12 содержимое не видел. 403 host_not_allowed в песочнице 2026-10-05."
+  },
+  {
+   "source_id": "AST-A12-S041",
+   "title": "БНС: динамические таблицы г. Астана, раздел 38 (население/миграция, по словам координатора)",
+   "publisher": "Бюро национальной статистики АСПиР РК",
+   "url": "https://stat.gov.kz/ru/region/astana/dynamic-tables/38/",
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "official_stat",
+   "access_status": "blocked_in_sandbox",
+   "notes": "Кандидат; A12 содержимое не видел. 403 host_not_allowed в песочнице 2026-10-05."
+  },
+  {
+   "source_id": "AST-A12-S042",
+   "title": "data.egov.kz (портал)",
+   "publisher": "Электронное правительство РК",
+   "url": "https://data.egov.kz/",
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "open_data_portal",
+   "access_status": "blocked_in_sandbox",
+   "notes": "Кандидат; A12 содержимое не видел. 403 host_not_allowed в песочнице 2026-10-05."
+  },
+  {
+   "source_id": "AST-A12-S043",
+   "title": "Казгидромет",
+   "publisher": "РГП «Казгидромет»",
+   "url": "https://www.kazhydromet.kz/",
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "official_page",
+   "access_status": "blocked_in_sandbox",
+   "notes": "Кандидат; 403 host_not_allowed (2026-10-05)."
+  },
+  {
+   "source_id": "AST-A12-S044",
+   "title": "Overpass API",
+   "publisher": "OSM community",
+   "url": "https://overpass-api.de/api/status",
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "api",
+   "access_status": "blocked_in_sandbox",
+   "notes": "Кандидат; 403 host_not_allowed (2026-10-05)."
+  },
+  {
+   "source_id": "AST-A12-S045",
+   "title": "OSM API 0.6",
+   "publisher": "OpenStreetMap Foundation",
+   "url": "https://api.openstreetmap.org/api/0.6/relation/19733918",
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "api",
+   "access_status": "blocked_in_sandbox",
+   "notes": "403 host_not_allowed (2026-10-05); копия ответа есть в репозитории (S009)."
+  },
+  {
+   "source_id": "AST-A12-S046",
+   "title": "ИАС «Талдау»",
+   "publisher": "БНС",
+   "url": "https://taldau.stat.gov.kz/",
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "official_stat",
+   "access_status": "not_attempted",
+   "notes": "Кандидат; не открыт (хост вне allowlist песочницы)."
+  },
+  {
+   "source_id": "AST-A12-S047",
+   "title": "ИПС «Әділет»",
+   "publisher": "Минюст РК / ИЗПИ",
+   "url": "https://adilet.zan.kz/",
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "legal_db",
+   "access_status": "not_attempted",
+   "notes": "Кандидат; не открыт (хост вне allowlist песочницы)."
+  },
+  {
+   "source_id": "AST-A12-S048",
+   "title": "Открытые бюджеты",
+   "publisher": "Электронное правительство РК",
+   "url": "https://budget.egov.kz/",
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "open_data_portal",
+   "access_status": "not_attempted",
+   "notes": "Кандидат; не открыт (хост вне allowlist песочницы)."
+  },
+  {
+   "source_id": "AST-A12-S049",
+   "title": "Портал госзакупок",
+   "publisher": "Минфин РК / ЦЭФ",
+   "url": "https://goszakup.gov.kz/",
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "registry",
+   "access_status": "not_attempted",
+   "notes": "Кандидат; не открыт (хост вне allowlist песочницы)."
+  },
+  {
+   "source_id": "AST-A12-S050",
+   "title": "Zenodo record 15769359 (оригинал Astana bus dataset)",
+   "publisher": "Zenodo / авторы набора",
+   "url": "https://zenodo.org/records/15769359",
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "dataset_portal",
+   "access_status": "not_attempted",
+   "notes": "Кандидат; не открыт (хост вне allowlist песочницы). Ссылка взята из READ-ME копии (S019)."
+  },
+  {
+   "source_id": "AST-A12-S051",
+   "title": "Статья о наборе Astana bus dataset, Data (MDPI)",
+   "publisher": "MDPI / авторы",
+   "url": "https://doi.org/10.3390/data10080119",
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "paper",
+   "access_status": "not_attempted",
+   "notes": "Кандидат; не открыт (хост вне allowlist песочницы). DOI взят из READ-ME копии (S019)."
+  },
+  {
+   "source_id": "AST-A12-S052",
+   "title": "City Transportation Systems (оператор, agency_url в GTFS)",
+   "publisher": "ТОО «City Transportation Systems» (по agency.txt)",
+   "url": "https://cts.gov.kz/ru/",
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "operator_site",
+   "access_status": "not_attempted",
+   "notes": "Кандидат; не открыт (хост вне allowlist песочницы). URL взят из agency.txt (S019)."
+  },
+  {
+   "source_id": "AST-A12-S053",
+   "title": "data.opengov.kz (CKAN-зеркало, по config.py стороннего проекта)",
+   "publisher": "opengov-kz",
+   "url": "https://data.opengov.kz",
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "open_data_portal",
+   "access_status": "not_attempted",
+   "notes": "Кандидат; не открыт (хост вне allowlist песочницы). URL из S017."
+  },
+  {
+   "source_id": "AST-A12-S054",
+   "title": "iKOMEK109 — единый контакт-центр Астаны",
+   "publisher": "Акимат г. Астаны (оператор — уточнить)",
+   "url": null,
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "service",
+   "access_status": "unknown",
+   "notes": "Официальный адрес не установлен: предположенные A12 домены не разрешились DNS. Наличие сервиса не означает доступа к данным."
+  },
+  {
+   "source_id": "AST-A12-S055",
+   "title": "Geofabrik: выгрузка OSM Kazakhstan",
+   "publisher": "Geofabrik / OSM contributors",
+   "url": "https://download.geofabrik.de/asia/kazakhstan.html",
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "dataset_file",
+   "access_status": "blocked_in_sandbox",
+   "notes": "403 host_not_allowed в первом проходе (A12-S030)."
+  }
+ ],
+ "facts": [
+  {
+   "fact_id": "AST-A12-F001",
+   "statement": "Из среды A12 11 из 14 проверенных URL (gov.kz/astana, stat.gov.kz/astana, data.egov.kz, lrt-домен, Казгидромет, Overpass, OSM API, planet.osm, Wikidata, Bing, DuckDuckGo) вернули 403 host_not_allowed; 3 предположенных A12 домена (ikomek109.kz, www.ikomek109.kz, astana.gov.kz) не разрешились DNS.",
+   "kind": "observed",
+   "value": 11,
+   "unit": "URL",
+   "geography": "—",
+   "period": "2026-10-05T04:09Z",
+   "source_refs": [
+    {
+     "source_id": "AST-A12-S021",
+     "locator": "curl log"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Ограничение песочницы. Неразрешившиеся домены были догадками A12 и ничего не доказывают о сервисах."
+  },
+  {
+   "fact_id": "AST-A12-F002",
+   "statement": "Репозиторий STUPITS не менялся между проходами: тот же commit 834a25f и тот же sha256 архива 4 и 5 октября 2026.",
+   "kind": "observed",
+   "value": "834a25fb860dd5514d02c9274b70d7bf8a53a79c",
+   "unit": null,
+   "geography": "—",
+   "period": "2026-10-04/05",
+   "source_refs": [
+    {
+     "source_id": "AST-A12-S002",
+     "locator": "zip comment + sha256"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Ветка main; другие ветки не проверялись."
+  },
+  {
+   "fact_id": "AST-A12-F003",
+   "statement": "city_data.json содержит 10 показателей с весами, 5 районов (esil, almaty, saryarka, baikonur, nura) с population_share (сумма 1.0), 14 мер M1–M14 со стоимостью в у.е. и лагом, бюджет 100 у.е.",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": "условный город",
+   "period": "—",
+   "source_refs": [
+    {
+     "source_id": "AST-A12-S003",
+     "locator": "$.indicators, $.districts, $.measures, $.budget"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Все значения учебные (F004)."
+  },
+  {
+   "fact_id": "AST-A12-F004",
+   "statement": "README прямо говорит: «Данные синтетические… эффекты мер и веса не откалиброваны на реальной статистике Астаны»; ТЗ допускает синтетический датасет условных районов.",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": "—",
+   "period": "—",
+   "source_refs": [
+    {
+     "source_id": "AST-A12-S012",
+     "locator": "README.md строка 643"
+    },
+    {
+     "source_id": "AST-A12-S013",
+     "locator": "tz_task.txt, раздел «Данные»"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "population_share 0,27/0,24/… нельзя читать как реальные доли населения районов."
+  },
+  {
+   "fact_id": "AST-A12-F005",
+   "statement": "events.json содержит 8 сценарных событий, из них 5 привязаны к реальным названиям районов (например, порыв водовода в Байконуре, смог в Сарыарке, новостройки в Нуре).",
+   "kind": "observed",
+   "value": 8,
+   "unit": "событий",
+   "geography": "условный город",
+   "period": "—",
+   "source_refs": [
+    {
+     "source_id": "AST-A12-S004",
+     "locator": "$[*].district, $[*].description"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Это вымышленные сценарии (synthetic): в интерфейсе их легко принять за реальные инциденты."
+  },
+  {
+   "fact_id": "AST-A12-F006",
+   "statement": "real_context.json: 25 ячеек, ненулевых 0; meta.status='unavailable', districts_source='fallback_approx', generated_at 2026-09-23T09:25:25Z — раньше сборки реальных полигонов (11:28 UTC); только 5 районов, без Сарайшыка; файл не используется кодом приложения (ссылок вне fetch_real_context.py нет).",
+   "kind": "observed",
+   "value": 0,
+   "unit": "ненулевых ячеек",
+   "geography": "г. Астана",
+   "period": "2026-09-23",
+   "source_refs": [
+    {
+     "source_id": "AST-A12-S005",
+     "locator": "real_context.json; real_context_meta.json $.status,$.districts_source,$.generated_at"
+    },
+    {
+     "source_id": "AST-A12-S007",
+     "locator": "metadata.retrieved_at 11:28:06Z"
+    },
+    {
+     "source_id": "AST-A12-S022",
+     "locator": "E101 real_context_referenced_by=[]"
+    }
+   ],
+   "derivation": "E101: поиск строки 'real_context' в *.py/*.js/*.html",
+   "confidence": "high",
+   "caveats": "Слой нужно перегенерировать по реальным полигонам и хранить null вместо 0."
+  },
+  {
+   "fact_id": "AST-A12-F007",
+   "statement": "fetch_real_context.py документирует соглашение: при status='unavailable' нули в real_context.json означают «нет данных».",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": "—",
+   "period": "—",
+   "source_refs": [
+    {
+     "source_id": "AST-A12-S006",
+     "locator": "строка 346, комментарий в make_meta"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Соглашение-сентинел; при слиянии данных двух городов теряется, если читать файл без meta."
+  },
+  {
+   "fact_id": "AST-A12-F008",
+   "statement": "В OSM-снимке у районов Астаны: esil — name 'Есіл ауданы', name:ru 'район Есиль', без name:kk; almaty — 'Алматы ауданы', без name:kk; saryarka, baikonur, nura, saraishyk имеют name:kk ('Сарыарқа ауданы', 'Байқоңыр ауданы', 'Нұра ауданы', 'Сарайшық ауданы').",
+   "kind": "observed",
+   "value": 6,
+   "unit": "районов",
+   "geography": "г. Астана",
+   "period": "OSM base 2026-09-22",
+   "source_refs": [
+    {
+     "source_id": "AST-A12-S007",
+     "locator": "features[*].properties.osm_names"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Это теги OSM, не официальные написания; официальный акт не открыт."
+  },
+  {
+   "fact_id": "AST-A12-F009",
+   "statement": "admin_level в OSM: Сарайшык = 8, остальные 5 районов = 6.",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": "г. Астана",
+   "period": "2026-09-22",
+   "source_refs": [
+    {
+     "source_id": "AST-A12-S007",
+     "locator": "properties.osm_admin_level"
+    },
+    {
+     "source_id": "AST-A12-S009",
+     "locator": "relation.tags.admin_level"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Выборка по admin_level теряет район."
+  },
+  {
+   "fact_id": "AST-A12-F010",
+   "statement": "Отношение Сарайшыка 19733918: version 17, последняя правка 2026-09-21T13:44:01Z, т.е. за день до состояния базы Overpass 2026-09-22T08:45:51Z; временные метки элементов отношения — от 2012-06-05 до 2026-09-21.",
+   "kind": "observed",
+   "value": 17,
+   "unit": "версия OSM",
+   "geography": "г. Астана",
+   "period": "2026-09-21",
+   "source_refs": [
+    {
+     "source_id": "AST-A12-S009",
+     "locator": "elements[type=relation].version,timestamp; min/max timestamp элементов"
+    },
+    {
+     "source_id": "AST-A12-S008",
+     "locator": "osm3s.timestamp_osm_base"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Граница активно правится в OSM: boundary_version обязан фиксировать снимок."
+  },
+  {
+   "fact_id": "AST-A12-F011",
+   "statement": "Объединение 6 районов OSM: 789.3 км² (геодезически, WGS84), MultiPolygon из 4 частей: [770.41, 9.021, 5.033, 4.794] км²; малые части — эксклавы Байконура (9,021 и 5,033 км²) и Алматы (4,794 км²).",
+   "kind": "derived",
+   "value": 789.3,
+   "unit": "км²",
+   "geography": "г. Астана",
+   "period": "OSM base 2026-09-22",
+   "source_refs": [
+    {
+     "source_id": "AST-A12-S007",
+     "locator": "geometry всех features"
+    }
+   ],
+   "derivation": "shapely.unary_union + pyproj.Geod.geometry_area_perimeter",
+   "confidence": "high",
+   "caveats": "Площадь геометрии OSM, не официальная площадь города."
+  },
+  {
+   "fact_id": "AST-A12-F012",
+   "statement": "Эксклав района Байконур площадью 9,021 км² (репрезентативная точка 71.66574, 51.33028) целиком лежит и внутри полигона Целиноградского района Акмолинской области (relation 3403760): в OSM одна территория принадлежит двум административным единицам разных регионов.",
+   "kind": "derived",
+   "value": 9.021,
+   "unit": "км²",
+   "geography": "Астана / Акмолинская обл.",
+   "period": "OSM base 2026-09-22",
+   "source_refs": [
+    {
+     "source_id": "AST-A12-S007",
+     "locator": "baikonur MultiPolygon, часть 2"
+    },
+    {
+     "source_id": "AST-A12-S008",
+     "locator": "relation 3403760: 54 outer, 1 inner"
+    }
+   ],
+   "derivation": "Сборка полигона 3403760 из outer/inner ways (polygonize, even-odd) → intersection с объединением районов Астаны",
+   "confidence": "medium",
+   "caveats": "Какая принадлежность верна юридически — неизвестно; возможна ошибка сборки, хотя площадь пересечения точно равна площади эксклава."
+  },
+  {
+   "fact_id": "AST-A12-F013",
+   "statement": "Городская администрация Косшы (relation 15594335, 141,2 км²), Аршалынский и Шортандинский районы граничат с объединением районов Астаны без площадного пересечения.",
+   "kind": "derived",
+   "value": 0,
+   "unit": "км² пересечения",
+   "geography": "Астана и соседи",
+   "period": "2026-09-22",
+   "source_refs": [
+    {
+     "source_id": "AST-A12-S008",
+     "locator": "relations 15594335, 3403782, 3404061"
+    }
+   ],
+   "derivation": "intersection/touches в shapely",
+   "confidence": "high",
+   "caveats": "Косшы нельзя включать в агрегаты Астаны (правовой статус проверить)."
+  },
+  {
+   "fact_id": "AST-A12-F014",
+   "statement": "Точка (71.447389, 51.1311552) — общая вершина районов Алматы, Есиль и Сарайшык: contains() даёт False для всех трёх, covers() — True для всех трёх.",
+   "kind": "derived",
+   "value": 3,
+   "unit": "района",
+   "geography": "г. Астана",
+   "period": "2026-09-22",
+   "source_refs": [
+    {
+     "source_id": "AST-A12-S007",
+     "locator": "общая граница esil/almaty"
+    }
+   ],
+   "derivation": "shapely contains/covers",
+   "confidence": "high",
+   "caveats": "Без правила разрешения ничьих точки на границах теряются или дублируются."
+  },
+  {
+   "fact_id": "AST-A12-F015",
+   "statement": "Natural Earth: полигон Astana 619.8 км², IoU с объединением районов OSM 0.675, вне NE остаётся 221.6 км² OSM-территории; точка города названа 'Nur-Sultan', adm1name 'Aqmola', pop_max 345604.",
+   "kind": "derived",
+   "value": 0.675,
+   "unit": "IoU",
+   "geography": "г. Астана",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "AST-A12-S014",
+     "locator": "feature name='Astana'"
+    },
+    {
+     "source_id": "AST-A12-S015",
+     "locator": "feature nameascii='Astana'"
+    },
+    {
+     "source_id": "AST-A12-S007",
+     "locator": "geometry"
+    }
+   ],
+   "derivation": "pyproj геодезические площади; IoU = area(∩)/area(∪)",
+   "confidence": "high",
+   "caveats": "Старые границы и привязка столицы к Акмолинской области: использовать только как отрицательный контроль."
+  },
+  {
+   "fact_id": "AST-A12-F016",
+   "statement": "Действующий официальный состав районов Астаны A12 не подтвердил. Гипотеза: 6 районов, как в OSM (Алматы, Байконур, Есиль, Сарыарка, Нура, Сарайшык); Нура и Сарайшык образованы позже остальных (по памяти модели — около 2022 и 2024–2025 гг.).",
+   "kind": "hypothesis",
+   "value": 6,
+   "unit": "районов",
+   "geography": "г. Астана",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "AST-A12-S007",
+     "locator": "6 features"
+    },
+    {
+     "source_id": "AST-A12-S012",
+     "locator": "строка 625: Сарайшык «выделен из Есильского района»"
+    }
+   ],
+   "derivation": "Память модели + OSM + README",
+   "confidence": "low",
+   "caveats": "Нужен правовой акт (adilet) и сайт акимата. Номера relation в OSM не отражают порядок юридического создания."
+  },
+  {
+   "fact_id": "AST-A12-F017",
+   "statement": "В стороннем обходе каталога data.egov.kz (crawled_at 2026-02-01, 3882 строк) ведомство «Акимат города Астана» указано у 52 наборов, «Акимат Акмолинской области» — у 68, «Акимат города Шымкент» — у 56.",
+   "kind": "observed",
+   "value": 52,
+   "unit": "наборов",
+   "geography": "г. Астана",
+   "period": "2026-02-01",
+   "source_refs": [
+    {
+     "source_id": "AST-A12-S016",
+     "locator": "столбец passport_gov_agency"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Вторичный источник; полнота обхода портала неизвестна. Наборы Акмолинской области и «Медицинского университета Астаны» не относятся к городу."
+  },
+  {
+   "fact_id": "AST-A12-F018",
+   "statement": "Частота обновления 52 наборов акимата Астаны по паспортам: {'Ежегодно': 44, 'Ежеквартально': 5, 'Ежемесячно': 1, '1 раз в полгода': 2}; у всех passport_actuality_status='Да'; даты обновления паспорта — 2025-12-01…2026-01-27.",
+   "kind": "observed",
+   "value": 52,
+   "unit": "наборов",
+   "geography": "г. Астана",
+   "period": "2025-12…2026-01",
+   "source_refs": [
+    {
+     "source_id": "AST-A12-S016",
+     "locator": "passport_actualization_type, passport_actuality_status, passport_renewal_date"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Состояние на 2026-02-01; актуальность на октябрь 2026 не проверена."
+  },
+  {
+   "fact_id": "AST-A12-F019",
+   "statement": "15 из 52 идентификаторов наборов Астаны содержат 'nur-sultan' (например, nur-sultan_kalasyndagy_turgyn_), 2 — 'astana'.",
+   "kind": "observed",
+   "value": 15,
+   "unit": "идентификаторов",
+   "geography": "г. Астана",
+   "period": "2026-02-01",
+   "source_refs": [
+    {
+     "source_id": "AST-A12-S016",
+     "locator": "api_uri"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Идентификаторы не следуют за переименованием города; искать нужно по обоим названиям."
+  },
+  {
+   "fact_id": "AST-A12-F020",
+   "statement": "Метаданные каталога местами не согласованы: идентификатор '435_the_number_of_cattle_by_r' имеет название «№654 Сведения о качестве предоставления тепла…», а '700_informaciya_o_tarifah_na_' — «№674 Сведения об объектах вывоза мусора» (то же название, что у №672).",
+   "kind": "observed",
+   "value": 2,
+   "unit": "примера",
+   "geography": "г. Астана",
+   "period": "2026-02-01",
+   "source_refs": [
+    {
+     "source_id": "AST-A12-S016",
+     "locator": "строки с api_uri 435_the_number_of_cattle_by_r и 700_informaciya_o_tarifah_na_"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Содержание набора нельзя выводить из идентификатора; дубли по названию не означают дубли по содержанию."
+  },
+  {
+   "fact_id": "AST-A12-F021",
+   "statement": "51 из 52 идентификаторов Астаны есть и в независимом списке opengov-kz (файлы от 2025-04-30) с номерами версий API: например, ремонт дорог v15, свободные земельные участки v9, строительство жилых домов v8.",
+   "kind": "derived",
+   "value": 51,
+   "unit": "совпадений",
+   "geography": "г. Астана",
+   "period": "2025-04-30 / 2026-02-01",
+   "source_refs": [
+    {
+     "source_id": "AST-A12-S016",
+     "locator": "api_uri"
+    },
+    {
+     "source_id": "AST-A12-S017",
+     "locator": "byMIO.csv: Data Link, Data Url"
+    }
+   ],
+   "derivation": "Сопоставление api_uri с параметром index= в byMIO.csv",
+   "confidence": "medium",
+   "caveats": "Два независимых вторичных источника подтверждают состав каталога; версии на октябрь 2026 могли вырасти."
+  },
+  {
+   "fact_id": "AST-A12-F022",
+   "statement": "По сторонней документации и коду, данные портала выдаются по шаблону https://data.egov.kz/api/v4/<index>/v<N>?apiKey=…, метаданные — https://data.egov.kz/meta/<index>/v<N>?pretty; для данных нужен API-ключ.",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": "РК",
+   "period": "2025–2026",
+   "source_refs": [
+    {
+     "source_id": "AST-A12-S017",
+     "locator": "byMIO.csv столбцы Data Link, Meta Link"
+    },
+    {
+     "source_id": "AST-A12-S018",
+     "locator": "index.js строки 13–22"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "A12 ни одного запроса к порталу не выполнил. Нужен ли ключ для /meta — неизвестно."
+  },
+  {
+   "fact_id": "AST-A12-F023",
+   "statement": "Статистика портала по местным исполнительным органам (файл от 2025-04-30): г. Астана — placed 54, all 56, actual 56; г. Шымкент — placed 54, all 61, actualPlaced 49; Акмолинская обл. — placed 54, all 92.",
+   "kind": "observed",
+   "value": 54,
+   "unit": "размещённых наборов",
+   "geography": "Астана, Шымкент, Акмолинская обл.",
+   "period": "≤2025-04-30",
+   "source_refs": [
+    {
+     "source_id": "AST-A12-S017",
+     "locator": "getstatisticsbymiogovagencies.json: записи 'г. Астана', 'г. Шымкент', 'Акмолинская обл.'"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Точная дата выгрузки статистики неизвестна (метка файла)."
+  },
+  {
+   "fact_id": "AST-A12-F024",
+   "statement": "Министерство просвещения публикует «Реестр общеобразовательных школ по областям, городам республиканского значения, столицы» (onirler_oblystar_kalalar_boi4, ежегодно, паспорт обновлён 22.12.2025) и «Реестр детских садов…» (boi6, обновлён 28.07.2025); сторонний код фильтрует строки по полю nate1 (регион).",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": "РК (включая Астану и Шымкент)",
+   "period": "2025",
+   "source_refs": [
+    {
+     "source_id": "AST-A12-S016",
+     "locator": "строки api_uri onirler_oblystar_kalalar_boi4, boi6"
+    },
+    {
+     "source_id": "AST-A12-S018",
+     "locator": "index.js: v7, поле nate1"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Поля, кроме nate1, и наличие координат не проверены."
+  },
+  {
+   "fact_id": "AST-A12-F025",
+   "statement": "Копия набора Astana bus dataset: агентство 'City Transportation Systems' (agency_url https://cts.gov.kz/ru/), маршруты ['46', '10', '12'], 201 остановок с координатами, 19769 рейсов, 55 дат обслуживания 2024-07-29…2024-09-21; лицензия по READ-ME копии — CC BY 4.0; stop_times и сегментные данные в копии отсутствуют (LFS).",
+   "kind": "observed",
+   "value": 201,
+   "unit": "остановок",
+   "geography": "г. Астана (3 маршрута)",
+   "period": "2024-07-29…2024-09-21",
+   "source_refs": [
+    {
+     "source_id": "AST-A12-S019",
+     "locator": "gtfs_data/agency.txt, routes.txt (cp1251), stops.txt, trips.txt, calendar_dates.txt; READ-ME.txt"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Исследовательский набор, реконструированный по GPS, а не официальное расписание; оригинал и лицензию на Zenodo A12 не открывал."
+  },
+  {
+   "fact_id": "AST-A12-F026",
+   "statement": "Точки 201 остановки GTFS распределяются по районам OSM: {'saryarka': 80, 'nura': 24, 'esil': 88, 'baikonur': 7, 'almaty': 2}; ничьих 0, вне районов 0.",
+   "kind": "derived",
+   "value": 201,
+   "unit": "остановок",
+   "geography": "г. Астана",
+   "period": "OSM 2026-09-22 / GTFS 2024",
+   "source_refs": [
+    {
+     "source_id": "AST-A12-S019",
+     "locator": "stops.txt"
+    },
+    {
+     "source_id": "AST-A12-S007",
+     "locator": "geometry"
+    }
+   ],
+   "derivation": "covers() по 6 полигонам; правило covers_lowest_stable_id_v1",
+   "confidence": "high",
+   "caveats": "Показывает работу правила, а не покрытие транспортом: в наборе только 3 маршрута."
+  },
+  {
+   "fact_id": "AST-A12-F027",
+   "statement": "В том же обходе каталога у «Акимата города Шымкент» 56 наборов тех же типовых тем: ремонт и строительство дорог, водоснабжение, водоотведение, энерго- и газоснабжение, вывоз мусора и тарифы, свободные земельные участки, земельный фонд по категориям, список общеобразовательных школ, территории обслуживания поликлиник.",
+   "kind": "observed",
+   "value": 56,
+   "unit": "наборов",
+   "geography": "г. Шымкент",
+   "period": "2026-02-01",
+   "source_refs": [
+    {
+     "source_id": "AST-A12-S016",
+     "locator": "passport_gov_agency='Акимат города Шымкент'"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Новое доказательство по Шымкенту из этого прохода; одинаковое название не гарантирует одинаковых полей."
+  },
+  {
+   "fact_id": "AST-A12-F028",
+   "statement": "Сторонние ряды PM2.5 и погоды по Астане (2019+) опубликованы без указания источника и лицензии — исключены из базы.",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": "г. Астана",
+   "period": "2019–",
+   "source_refs": [
+    {
+     "source_id": "AST-A12-S020",
+     "locator": "data.csv, air_quality_data.csv, README пуст"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Не использовать даже как ориентир."
+  },
+  {
+   "fact_id": "AST-A12-F029",
+   "statement": "В стороннем репозитории opengov-kz в config.py опубликован API-ключ data.egov.kz; A12 его не использовал и не воспроизводит.",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": "—",
+   "period": "—",
+   "source_refs": [
+    {
+     "source_id": "AST-A12-S017",
+     "locator": "config.py строка 1"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Косвенно подтверждает, что для выгрузки данных нужен ключ."
+  },
+  {
+   "fact_id": "AST-A12-F030",
+   "statement": "Типовые наборы акиматов (одинаковые названия у Астаны и Шымкента) можно обрабатывать общим парсером с городским фильтром.",
+   "kind": "hypothesis",
+   "value": null,
+   "unit": null,
+   "geography": "Астана, Шымкент",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "AST-A12-S016",
+     "locator": "параллельные названия"
+    }
+   ],
+   "derivation": null,
+   "confidence": "low",
+   "caveats": "Проверить по /meta обоих городов: состав полей, единицы, детализацию."
+  }
+ ],
+ "datasets": [
+  {
+   "dataset_id": "AST-A12-D001",
+   "title": "Границы 6 районов Астаны (OSM, сборка STUPITS)",
+   "publisher": "OSM contributors / STUPITS",
+   "source_ids": [
+    "AST-A12-S007",
+    "AST-A12-S011"
+   ],
+   "landing_url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits",
+   "download_or_api_url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/blob/834a25fb860dd5514d02c9274b70d7bf8a53a79c/data/astana_districts.geojson",
+   "access_status": "sample_verified",
+   "tested_at": "2026-10-05T04:09:07Z",
+   "geography": "г. Астана",
+   "granularity": "район",
+   "period": "OSM base 2026-09-22",
+   "format": "GeoJSON, EPSG:4326",
+   "fields": [
+    "id",
+    "name",
+    "osm_id",
+    "osm_names",
+    "osm_admin_level",
+    "area_km2",
+    "center_lon",
+    "center_lat",
+    "scoring_enabled"
+   ],
+   "units": {
+    "area_km2": "км², приближённо"
+   },
+   "update_frequency": "по запуску скрипта",
+   "license": "ODbL 1.0",
+   "auth_requirement": "нет",
+   "limitations": [
+    "не юридические границы",
+    "эксклав Байконура пересекается с Целиноградским районом (F012)"
+   ],
+   "next_retrieval_step": "Зафиксировать как boundary_version osm:2026-09-22T08:45:51Z; повторить Overpass с out meta geom во втором проходе.",
+   "directions": [
+    "география"
+   ],
+   "egov_indices": [],
+   "needed_fields": [],
+   "access_evidence": "файл открыт, геометрия проверена"
+  },
+  {
+   "dataset_id": "AST-A12-D002",
+   "title": "Сырой ответ Overpass по bbox Астаны (11 отношений)",
+   "publisher": "OSM contributors",
+   "source_ids": [
+    "AST-A12-S008"
+   ],
+   "landing_url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits",
+   "download_or_api_url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/blob/834a25fb860dd5514d02c9274b70d7bf8a53a79c/data/geo_sources/astana_districts_overpass.json",
+   "access_status": "sample_verified",
+   "tested_at": "2026-10-05T04:09:07Z",
+   "geography": "bbox 50.90–51.5 N, 71.0–72.0 E",
+   "granularity": "relation",
+   "period": "2026-09-22T08:45:51Z",
+   "format": "Overpass JSON",
+   "fields": [
+    "type",
+    "id",
+    "tags",
+    "members[].geometry"
+   ],
+   "units": null,
+   "update_frequency": "снимок",
+   "license": "ODbL 1.0",
+   "auth_requirement": "нет",
+   "limitations": [
+    "содержит Косшы и районы Акмолинской области"
+   ],
+   "next_retrieval_step": "Использовать для проверки соседей и конфликтов топологии.",
+   "directions": [
+    "география"
+   ],
+   "egov_indices": [],
+   "needed_fields": [],
+   "access_evidence": "файл открыт"
+  },
+  {
+   "dataset_id": "AST-A12-D003",
+   "title": "OSM API full relation 19733918 (Сарайшык)",
+   "publisher": "OpenStreetMap",
+   "source_ids": [
+    "AST-A12-S009"
+   ],
+   "landing_url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits",
+   "download_or_api_url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/blob/834a25fb860dd5514d02c9274b70d7bf8a53a79c/data/geo_sources/sara_osm.json",
+   "access_status": "sample_verified",
+   "tested_at": "2026-10-05T04:09:07Z",
+   "geography": "р-н Сарайшык",
+   "granularity": "node/way/relation",
+   "period": "v17, 2026-09-21",
+   "format": "OSM JSON 0.6",
+   "fields": [
+    "id",
+    "version",
+    "timestamp",
+    "changeset",
+    "tags",
+    "nodes/members"
+   ],
+   "units": null,
+   "update_frequency": "снимок",
+   "license": "ODbL 1.0",
+   "auth_requirement": "нет",
+   "limitations": [
+    "имена пользователей OSM не переносить"
+   ],
+   "next_retrieval_step": "Сравнивать version при каждом обновлении границ.",
+   "directions": [
+    "география"
+   ],
+   "egov_indices": [],
+   "needed_fields": [],
+   "access_evidence": "файл открыт"
+  },
+  {
+   "dataset_id": "AST-A12-D004",
+   "title": "Синтетический датасет ТЗ (city_data.json)",
+   "publisher": "Организаторы хакатона / STUPITS",
+   "source_ids": [
+    "AST-A12-S003",
+    "AST-A12-S012",
+    "AST-A12-S013"
+   ],
+   "landing_url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits",
+   "download_or_api_url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/blob/834a25fb860dd5514d02c9274b70d7bf8a53a79c/data/city_data.json",
+   "access_status": "sample_verified",
+   "tested_at": "2026-10-05T04:09:07Z",
+   "geography": "условный город",
+   "granularity": "район",
+   "period": "условные 8 кварталов",
+   "format": "JSON",
+   "fields": [
+    "indicators",
+    "districts",
+    "measures",
+    "synergies",
+    "incompatibilities",
+    "rules",
+    "reference_checks"
+   ],
+   "units": {
+    "budget": "у.е.",
+    "indicators": "0–100"
+   },
+   "update_frequency": "нет",
+   "license": "не указана",
+   "auth_requirement": "нет",
+   "limitations": [
+    "synthetic"
+   ],
+   "next_retrieval_step": "Заморозить как игровой режим с sha256; не смешивать с реальными observations.",
+   "directions": [
+    "все (учебно)"
+   ],
+   "egov_indices": [],
+   "needed_fields": [],
+   "access_evidence": "файл открыт"
+  },
+  {
+   "dataset_id": "AST-A12-D005",
+   "title": "Сценарные события (events.json)",
+   "publisher": "STUPITS",
+   "source_ids": [
+    "AST-A12-S004"
+   ],
+   "landing_url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits",
+   "download_or_api_url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/blob/834a25fb860dd5514d02c9274b70d7bf8a53a79c/data/events.json",
+   "access_status": "sample_verified",
+   "tested_at": "2026-10-05T04:09:07Z",
+   "geography": "условный город",
+   "granularity": "район/город",
+   "period": "—",
+   "format": "JSON",
+   "fields": [
+    "id",
+    "name",
+    "description",
+    "district",
+    "effects",
+    "budget_change"
+   ],
+   "units": null,
+   "update_frequency": "нет",
+   "license": "не указана",
+   "auth_requirement": "нет",
+   "limitations": [
+    "synthetic; привязка к реальным названиям районов"
+   ],
+   "next_retrieval_step": "Пометить в UI как вымышленные сценарии.",
+   "directions": [
+    "безопасность",
+    "ЖКХ",
+    "транспорт",
+    "экология"
+   ],
+   "egov_indices": [],
+   "needed_fields": [],
+   "access_evidence": "файл открыт"
+  },
+  {
+   "dataset_id": "AST-A12-D006",
+   "title": "Справочный слой OSM-объектов (real_context.json)",
+   "publisher": "STUPITS / OSM",
+   "source_ids": [
+    "AST-A12-S005",
+    "AST-A12-S006"
+   ],
+   "landing_url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits",
+   "download_or_api_url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/blob/834a25fb860dd5514d02c9274b70d7bf8a53a79c/data/real_context.json",
+   "access_status": "sample_verified",
+   "tested_at": "2026-10-05T04:09:07Z",
+   "geography": "г. Астана",
+   "granularity": "район",
+   "period": "2026-09-23",
+   "format": "JSON",
+   "fields": [
+    "schools",
+    "kindergartens",
+    "clinics",
+    "bus_stops",
+    "parks"
+   ],
+   "units": {
+    "все": "шт."
+   },
+   "update_frequency": "по запуску скрипта",
+   "license": "ODbL 1.0",
+   "auth_requirement": "нет",
+   "limitations": [
+    "все значения — сентинел 0 при status=unavailable",
+    "собран по схематичным границам",
+    "нет Сарайшыка"
+   ],
+   "next_retrieval_step": "Перегенерировать по D001 с null; хранить как observations с value_status.",
+   "directions": [
+    "образование",
+    "транспорт",
+    "экология"
+   ],
+   "egov_indices": [],
+   "needed_fields": [],
+   "access_evidence": "файл открыт"
+  },
+  {
+   "dataset_id": "AST-A12-D007",
+   "title": "Astana bus dataset (GTFS по GPS, 3 маршрута) — копия",
+   "publisher": "Авторы набора (по READ-ME копии); оригинал на Zenodo",
+   "source_ids": [
+    "AST-A12-S019",
+    "AST-A12-S050",
+    "AST-A12-S051",
+    "AST-A12-S052"
+   ],
+   "landing_url": "https://zenodo.org/records/15769359",
+   "download_or_api_url": "https://github.com/Mrithula742/Bussure/tree/0356bb5b37ef0992ec0df3a4f09be35e3147b094/datasets/astana/gtfs_data",
+   "access_status": "sample_verified",
+   "tested_at": "2026-10-05T04:09:07Z",
+   "geography": "г. Астана, маршруты 46, 10, 12",
+   "granularity": "остановка/рейс",
+   "period": "2024-07-29…2024-09-21",
+   "format": "GTFS (TSV), смешанная кодировка",
+   "fields": [
+    "agency_id",
+    "agency_name",
+    "agency_url",
+    "route_id",
+    "route_short_name",
+    "route_long_name",
+    "stop_id",
+    "stop_name",
+    "stop_lat",
+    "stop_lon",
+    "trip_id",
+    "service_id",
+    "direction_id",
+    "start_time",
+    "end_time",
+    "vehicle_id"
+   ],
+   "units": null,
+   "update_frequency": "нет (исторический)",
+   "license": "CC BY 4.0 (по READ-ME копии; проверить на Zenodo)",
+   "auth_requirement": "нет",
+   "limitations": [
+    "не официальное расписание",
+    "stop_times и сегменты не скопированы (LFS)",
+    "routes.txt в cp1251"
+   ],
+   "next_retrieval_step": "Открыть Zenodo: лицензия, версии, MD5; скачать stop_times.",
+   "directions": [
+    "транспорт"
+   ],
+   "egov_indices": [],
+   "needed_fields": [],
+   "access_evidence": "файлы копии открыты; оригинал нет"
+  },
+  {
+   "dataset_id": "AST-A12-D008",
+   "title": "Natural Earth admin-1 и populated places (отрицательный контроль)",
+   "publisher": "Natural Earth",
+   "source_ids": [
+    "AST-A12-S014",
+    "AST-A12-S015"
+   ],
+   "landing_url": "https://github.com/nvkelso/natural-earth-vector",
+   "download_or_api_url": null,
+   "access_status": "sample_verified",
+   "tested_at": "2026-10-05T04:09:07Z",
+   "geography": "мир",
+   "granularity": "регион/точка",
+   "period": null,
+   "format": "GeoJSON",
+   "fields": [
+    "name",
+    "name_ru",
+    "iso_3166_2",
+    "adm1name",
+    "pop_max"
+   ],
+   "units": null,
+   "update_frequency": "нерегулярно",
+   "license": "Public domain",
+   "auth_requirement": "нет",
+   "limitations": [
+    "старые границы Астаны; Астана привязана к Aqmola; Шымкент — к South Kazakhstan"
+   ],
+   "next_retrieval_step": "Только в тестах QC.",
+   "directions": [
+    "география"
+   ],
+   "egov_indices": [],
+   "needed_fields": [],
+   "access_evidence": "файлы открыты"
+  },
+  {
+   "dataset_id": "AST-A12-D009",
+   "title": "Каталог data.egov.kz — метаданные паспортов (сторонний обход)",
+   "publisher": "Сторонний автор; первоисточник — портал data.egov.kz",
+   "source_ids": [
+    "AST-A12-S016"
+   ],
+   "landing_url": "https://data.egov.kz/",
+   "download_or_api_url": "https://github.com/Yerassyl20036/egov-web-crawler/blob/8c1f4a34688cfb825089bb96055eef89dbb24207/datasets_export.csv",
+   "access_status": "sample_verified",
+   "tested_at": "2026-10-05T04:09:07Z",
+   "geography": "РК",
+   "granularity": "набор данных",
+   "period": "crawled 2026-02-01",
+   "format": "CSV",
+   "fields": [
+    "url",
+    "title",
+    "description",
+    "date",
+    "views",
+    "downloads",
+    "status",
+    "api_uri",
+    "passport_gov_agency",
+    "passport_actualization_type",
+    "passport_actuality_status",
+    "passport_creation_date",
+    "passport_renewal_date"
+   ],
+   "units": null,
+   "update_frequency": "разовый обход",
+   "license": "не указана",
+   "auth_requirement": "нет",
+   "limitations": [
+    "вторичный источник; полнота неизвестна; метаданные, не данные"
+   ],
+   "next_retrieval_step": "Сверить 5–10 строк с живым порталом.",
+   "directions": [
+    "все"
+   ],
+   "egov_indices": [],
+   "needed_fields": [],
+   "access_evidence": "CSV открыт; портал не открыт"
+  },
+  {
+   "dataset_id": "AST-A12-D010",
+   "title": "Статистика публикаций по местным исполнительным органам + список data/meta-ссылок",
+   "publisher": "opengov-kz (сторонний)",
+   "source_ids": [
+    "AST-A12-S017"
+   ],
+   "landing_url": "https://github.com/opengov-kz/data-egov-kz",
+   "download_or_api_url": null,
+   "access_status": "sample_verified",
+   "tested_at": "2026-10-05T04:09:07Z",
+   "geography": "регионы РК",
+   "granularity": "орган",
+   "period": "≤2025-04-30",
+   "format": "JSON, CSV",
+   "fields": [
+    "nameRu",
+    "govAgency",
+    "actualPlacedDatasetsCount",
+    "placedDatasetsCount",
+    "allDatasetsCount",
+    "allActualDatasetsCount",
+    "allPlacedDatasetsCount"
+   ],
+   "units": null,
+   "update_frequency": "разово",
+   "license": "MIT (репозиторий)",
+   "auth_requirement": "нет",
+   "limitations": [
+    "вторичный; дата выгрузки — метка файла"
+   ],
+   "next_retrieval_step": "Использовать govAgencyId Астаны и Шымкента для поиска на портале.",
+   "directions": [
+    "цифровизация"
+   ],
+   "egov_indices": [],
+   "needed_fields": [],
+   "access_evidence": "файлы открыты"
+  },
+  {
+   "dataset_id": "AST-A12-D020",
+   "title": "Объекты ремонта и строительства дорог (№681, №680)",
+   "publisher": "Акимат г. Астаны (поставщик на data.egov.kz)",
+   "source_ids": [
+    "AST-A12-S016",
+    "AST-A12-S017",
+    "AST-A12-S042"
+   ],
+   "landing_url": "https://data.egov.kz/",
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "г. Астана",
+   "granularity": "нет данных (поля не видены)",
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": "1 раз в полгода",
+   "license": null,
+   "auth_requirement": "API-ключ для данных (по сторонним источникам)",
+   "limitations": [
+    "содержимое не видено A12; поля, адреса, координаты неизвестны"
+   ],
+   "next_retrieval_step": "Открыть /meta/zholdy_zhondeu_obektileri_tur/v15?pretty; проверить адреса/координаты и период.",
+   "directions": [
+    "инфраструктура",
+    "транспорт"
+   ],
+   "egov_indices": [
+    {
+     "no": 681,
+     "index": "zholdy_zhondeu_obektileri_tur",
+     "version_2025_04": 15
+    },
+    {
+     "no": 680,
+     "index": "zhol_kurylysy_obektileri_tura1",
+     "version_2025_04": 10
+    }
+   ],
+   "needed_fields": [],
+   "access_evidence": "метаданные каталога (S016 2026-02-01, S017 2025-04-30); живая страница не открыта"
+  },
+  {
+   "dataset_id": "AST-A12-D021",
+   "title": "Объекты водоснабжения и водоотведения (№670, №671)",
+   "publisher": "Акимат г. Астаны (поставщик на data.egov.kz)",
+   "source_ids": [
+    "AST-A12-S016",
+    "AST-A12-S017",
+    "AST-A12-S042"
+   ],
+   "landing_url": "https://data.egov.kz/",
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "г. Астана",
+   "granularity": "нет данных (поля не видены)",
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": "Ежегодно",
+   "license": null,
+   "auth_requirement": "API-ключ для данных (по сторонним источникам)",
+   "limitations": [
+    "содержимое не видено A12; поля, адреса, координаты неизвестны"
+   ],
+   "next_retrieval_step": "Открыть meta обоих; сравнить с Шымкентом (sumen_zhabdyktau_obektileri, su_buru_obektileri).",
+   "directions": [
+    "ЖКХ"
+   ],
+   "egov_indices": [
+    {
+     "no": 670,
+     "index": "696_sumen_zhabdyktau_obektil",
+     "version_2025_04": 4
+    },
+    {
+     "no": 671,
+     "index": "697_su_buru_obektileri_tural",
+     "version_2025_04": 5
+    }
+   ],
+   "needed_fields": [],
+   "access_evidence": "метаданные каталога (S016 2026-02-01, S017 2025-04-30); живая страница не открыта"
+  },
+  {
+   "dataset_id": "AST-A12-D022",
+   "title": "Объекты энерго- и газоснабжения (№668, №669)",
+   "publisher": "Акимат г. Астаны (поставщик на data.egov.kz)",
+   "source_ids": [
+    "AST-A12-S016",
+    "AST-A12-S017",
+    "AST-A12-S042"
+   ],
+   "landing_url": "https://data.egov.kz/",
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "г. Астана",
+   "granularity": "нет данных (поля не видены)",
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": "Ежегодно",
+   "license": null,
+   "auth_requirement": "API-ключ для данных (по сторонним источникам)",
+   "limitations": [
+    "содержимое не видено A12; поля, адреса, координаты неизвестны"
+   ],
+   "next_retrieval_step": "Открыть meta; выяснить, есть ли мощность/охват.",
+   "directions": [
+    "энергетика"
+   ],
+   "egov_indices": [
+    {
+     "no": 668,
+     "index": "694_energiyamen_zhabdyktau_ob",
+     "version_2025_04": 3
+    },
+    {
+     "no": 669,
+     "index": "695_gazben_zhabdyktau_obekti",
+     "version_2025_04": 4
+    }
+   ],
+   "needed_fields": [],
+   "access_evidence": "метаданные каталога (S016 2026-02-01, S017 2025-04-30); живая страница не открыта"
+  },
+  {
+   "dataset_id": "AST-A12-D023",
+   "title": "Качество предоставления тепла в отопительный период (№654)",
+   "publisher": "Акимат г. Астаны (поставщик на data.egov.kz)",
+   "source_ids": [
+    "AST-A12-S016",
+    "AST-A12-S017",
+    "AST-A12-S042"
+   ],
+   "landing_url": "https://data.egov.kz/",
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "г. Астана",
+   "granularity": "нет данных (поля не видены)",
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": "Ежегодно",
+   "license": null,
+   "auth_requirement": "API-ключ для данных (по сторонним источникам)",
+   "limitations": [
+    "содержимое не видено A12; поля, адреса, координаты неизвестны"
+   ],
+   "next_retrieval_step": "Открыть meta и убедиться, что содержимое — о теплоснабжении.",
+   "directions": [
+    "ЖКХ",
+    "энергетика"
+   ],
+   "egov_indices": [
+    {
+     "no": 654,
+     "index": "435_the_number_of_cattle_by_r",
+     "version_2025_04": 5,
+     "note": "идентификатор не соответствует названию (F020)"
+    }
+   ],
+   "needed_fields": [],
+   "access_evidence": "метаданные каталога (S016 2026-02-01, S017 2025-04-30); живая страница не открыта"
+  },
+  {
+   "dataset_id": "AST-A12-D024",
+   "title": "Объекты вывоза мусора и тарифы (№672, №674)",
+   "publisher": "Акимат г. Астаны (поставщик на data.egov.kz)",
+   "source_ids": [
+    "AST-A12-S016",
+    "AST-A12-S017",
+    "AST-A12-S042"
+   ],
+   "landing_url": "https://data.egov.kz/",
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "г. Астана",
+   "granularity": "нет данных (поля не видены)",
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": "Ежегодно",
+   "license": null,
+   "auth_requirement": "API-ключ для данных (по сторонним источникам)",
+   "limitations": [
+    "содержимое не видено A12; поля, адреса, координаты неизвестны"
+   ],
+   "next_retrieval_step": "Проверить, какой из двух — тарифы (названия совпадают).",
+   "directions": [
+    "экология",
+    "ЖКХ"
+   ],
+   "egov_indices": [
+    {
+     "no": 672,
+     "index": "698__kokys_shygaru_obektiler",
+     "version_2025_04": 3
+    },
+    {
+     "no": 674,
+     "index": "700_informaciya_o_tarifah_na_",
+     "version_2025_04": 3
+    }
+   ],
+   "needed_fields": [],
+   "access_evidence": "метаданные каталога (S016 2026-02-01, S017 2025-04-30); живая страница не открыта"
+  },
+  {
+   "dataset_id": "AST-A12-D025",
+   "title": "Земельные участки: свободные, реализованные для коммерческих целей, земельный фонд по категориям (№34, №35, №36)",
+   "publisher": "Акимат г. Астаны (поставщик на data.egov.kz)",
+   "source_ids": [
+    "AST-A12-S016",
+    "AST-A12-S017",
+    "AST-A12-S042"
+   ],
+   "landing_url": "https://data.egov.kz/",
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "г. Астана",
+   "granularity": "нет данных (поля не видены)",
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": "Ежеквартально / ежегодно",
+   "license": null,
+   "auth_requirement": "API-ключ для данных (по сторонним источникам)",
+   "limitations": [
+    "содержимое не видено A12; поля, адреса, координаты неизвестны"
+   ],
+   "next_retrieval_step": "Открыть meta №34: кадастровые номера, площадь, район, целевое назначение.",
+   "directions": [
+    "земельные отношения"
+   ],
+   "egov_indices": [
+    {
+     "no": 34,
+     "index": "39_information_about_vacant_l1",
+     "version_2025_04": 9,
+     "frequency": "Ежеквартально"
+    },
+    {
+     "no": 35,
+     "index": "40_data_on_land_plots_sold_fo",
+     "version_2025_04": 2
+    },
+    {
+     "no": 36,
+     "index": "41_distribution_of_the_land_f",
+     "version_2025_04": 3
+    }
+   ],
+   "needed_fields": [],
+   "access_evidence": "метаданные каталога (S016 2026-02-01, S017 2025-04-30); живая страница не открыта"
+  },
+  {
+   "dataset_id": "AST-A12-D026",
+   "title": "Строительство жилых домов, объектов социального назначения, инженерно-коммуникационной инфраструктуры (№676, №675, №677)",
+   "publisher": "Акимат г. Астаны (поставщик на data.egov.kz)",
+   "source_ids": [
+    "AST-A12-S016",
+    "AST-A12-S017",
+    "AST-A12-S042"
+   ],
+   "landing_url": "https://data.egov.kz/",
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "г. Астана",
+   "granularity": "нет данных (поля не видены)",
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": "Ежегодно",
+   "license": null,
+   "auth_requirement": "API-ключ для данных (по сторонним источникам)",
+   "limitations": [
+    "содержимое не видено A12; поля, адреса, координаты неизвестны"
+   ],
+   "next_retrieval_step": "Проверить наличие района/адреса и сроков ввода.",
+   "directions": [
+    "инфраструктура",
+    "образование",
+    "ЖКХ"
+   ],
+   "egov_indices": [
+    {
+     "no": 676,
+     "index": "nur-sultan_kalasyndagy_turgyn_",
+     "version_2025_04": 8
+    },
+    {
+     "no": 675,
+     "index": "nur-sultan_kalasynyn_aleumetti",
+     "version_2025_04": 6
+    },
+    {
+     "no": 677,
+     "index": "nur-sultan_kalasynda_inzhenerl",
+     "version_2025_04": 6
+    }
+   ],
+   "needed_fields": [],
+   "access_evidence": "метаданные каталога (S016 2026-02-01, S017 2025-04-30); живая страница не открыта"
+  },
+  {
+   "dataset_id": "AST-A12-D027",
+   "title": "Туристские маршруты и учреждения культуры (№731, №729)",
+   "publisher": "Акимат г. Астаны (поставщик на data.egov.kz)",
+   "source_ids": [
+    "AST-A12-S016",
+    "AST-A12-S017",
+    "AST-A12-S042"
+   ],
+   "landing_url": "https://data.egov.kz/",
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "г. Астана",
+   "granularity": "нет данных (поля не видены)",
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": "Ежегодно",
+   "license": null,
+   "auth_requirement": "API-ключ для данных (по сторонним источникам)",
+   "limitations": [
+    "содержимое не видено A12; поля, адреса, координаты неизвестны"
+   ],
+   "next_retrieval_step": "Проверить координаты/адреса.",
+   "directions": [
+    "туризм"
+   ],
+   "egov_indices": [
+    {
+     "no": 731,
+     "index": "nur-sultan_kalasynyn__turistik",
+     "version_2025_04": 6
+    },
+    {
+     "no": 729,
+     "index": "madeniet_uiymdary",
+     "version_2025_04": 11
+    }
+   ],
+   "needed_fields": [],
+   "access_evidence": "метаданные каталога (S016 2026-02-01, S017 2025-04-30); живая страница не открыта"
+  },
+  {
+   "dataset_id": "AST-A12-D028",
+   "title": "Деятельность Центра городских услуг iQala",
+   "publisher": "Акимат г. Астаны (поставщик на data.egov.kz)",
+   "source_ids": [
+    "AST-A12-S016",
+    "AST-A12-S017",
+    "AST-A12-S042"
+   ],
+   "landing_url": "https://data.egov.kz/",
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "г. Астана",
+   "granularity": "нет данных (поля не видены)",
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": "Ежегодно",
+   "license": null,
+   "auth_requirement": "API-ключ для данных (по сторонним источникам)",
+   "limitations": [
+    "содержимое не видено A12; поля, адреса, координаты неизвестны"
+   ],
+   "next_retrieval_step": "Открыть meta; понять показатели (обращения, услуги).",
+   "directions": [
+    "цифровизация"
+   ],
+   "egov_indices": [
+    {
+     "no": null,
+     "index": "bir_tereze_kagidaty_boiynsha_i",
+     "version_2025_04": null
+    }
+   ],
+   "needed_fields": [],
+   "access_evidence": "метаданные каталога (S016 2026-02-01, S017 2025-04-30); живая страница не открыта"
+  },
+  {
+   "dataset_id": "AST-A12-D029",
+   "title": "Государственные поликлиники и больницы (№305, №304) — для показателя S2 игрового режима и реальной доступности",
+   "publisher": "Акимат г. Астаны (поставщик на data.egov.kz)",
+   "source_ids": [
+    "AST-A12-S016",
+    "AST-A12-S017",
+    "AST-A12-S042"
+   ],
+   "landing_url": "https://data.egov.kz/",
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "г. Астана",
+   "granularity": "нет данных (поля не видены)",
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": "Ежегодно",
+   "license": null,
+   "auth_requirement": "API-ключ для данных (по сторонним источникам)",
+   "limitations": [
+    "содержимое не видено A12; поля, адреса, координаты неизвестны"
+   ],
+   "next_retrieval_step": "Проверить адреса; сопоставить с OSM.",
+   "directions": [
+    "инфраструктура"
+   ],
+   "egov_indices": [
+    {
+     "no": 305,
+     "index": "317_list_of_state_polyclinics",
+     "version_2025_04": 4
+    },
+    {
+     "no": 304,
+     "index": "68_nur-sultan_kalasynyn_auruh",
+     "version_2025_04": 9
+    }
+   ],
+   "needed_fields": [],
+   "access_evidence": "метаданные каталога (S016 2026-02-01, S017 2025-04-30); живая страница не открыта"
+  },
+  {
+   "dataset_id": "AST-A12-D030",
+   "title": "Реестры общеобразовательных школ и детских садов (Министерство просвещения)",
+   "publisher": "Министерство просвещения РК",
+   "source_ids": [
+    "AST-A12-S016",
+    "AST-A12-S018",
+    "AST-A12-S042"
+   ],
+   "landing_url": "https://data.egov.kz/",
+   "download_or_api_url": "https://data.egov.kz/api/v4/onirler_oblystar_kalalar_boi4/v7 (шаблон из стороннего кода; не выполнялся)",
+   "access_status": null,
+   "tested_at": null,
+   "geography": "РК; фильтр по региону (nate1)",
+   "granularity": "организация образования",
+   "period": "паспорт 22.12.2025 / 28.07.2025",
+   "format": null,
+   "fields": [
+    "nate1 (по стороннему коду)"
+   ],
+   "units": null,
+   "update_frequency": "Ежегодно",
+   "license": null,
+   "auth_requirement": "API-ключ",
+   "limitations": [
+    "остальные поля и координаты неизвестны"
+   ],
+   "next_retrieval_step": "Открыть /meta/onirler_oblystar_kalalar_boi4/v7?pretty; посчитать строки Астаны и Шымкента.",
+   "directions": [
+    "образование"
+   ],
+   "egov_indices": [
+    {
+     "index": "onirler_oblystar_kalalar_boi4",
+     "version": 7
+    },
+    {
+     "index": "onirler_oblystar_kalalar_boi6",
+     "version": null
+    }
+   ],
+   "needed_fields": [],
+   "access_evidence": "метаданные каталога + сторонний код"
+  },
+  {
+   "dataset_id": "AST-A12-D040",
+   "title": "БНС: динамические таблицы г. Астаны, раздел 38 (население/миграция)",
+   "publisher": "БНС",
+   "source_ids": [
+    "AST-A12-S041"
+   ],
+   "landing_url": "https://stat.gov.kz/ru/region/astana/dynamic-tables/38/",
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "г. Астана (районы — проверить)",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": [
+    "содержимое не видено A12"
+   ],
+   "next_retrieval_step": "Скачать файл, записать, есть ли 6 районов и с какого года.",
+   "directions": [
+    "все (знаменатели)"
+   ],
+   "egov_indices": [],
+   "needed_fields": [
+    "kato",
+    "year",
+    "district",
+    "persons",
+    "births",
+    "deaths",
+    "migration_in",
+    "migration_out"
+   ],
+   "access_evidence": "не открыт"
+  },
+  {
+   "dataset_id": "AST-A12-D041",
+   "title": "ИАС «Талдау» и классификатор КАТО",
+   "publisher": "БНС",
+   "source_ids": [
+    "AST-A12-S046",
+    "AST-A12-S041"
+   ],
+   "landing_url": "https://taldau.stat.gov.kz/",
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "РК",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": [
+    "содержимое не видено A12"
+   ],
+   "next_retrieval_step": "Коды КАТО Астаны и 6 районов; 1 машинный запрос к Талдау.",
+   "directions": [
+    "география",
+    "все"
+   ],
+   "egov_indices": [],
+   "needed_fields": [
+    "kato_code",
+    "name_kk",
+    "name_ru",
+    "valid_from"
+   ],
+   "access_evidence": "не открыт"
+  },
+  {
+   "dataset_id": "AST-A12-D042",
+   "title": "Акимат Астаны: документы, постановления, отчёты управлений",
+   "publisher": "Акимат г. Астаны",
+   "source_ids": [
+    "AST-A12-S040"
+   ],
+   "landing_url": "https://www.gov.kz/memleket/entities/astana?lang=ru",
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "г. Астана",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": [
+    "содержимое не видено A12"
+   ],
+   "next_retrieval_step": "Найти акты об образовании Нуры и Сарайшыка; отчёты управлений по 11 сферам → doc_chunks.",
+   "directions": [
+    "все"
+   ],
+   "egov_indices": [],
+   "needed_fields": [
+    "doc_title",
+    "date",
+    "number",
+    "text"
+   ],
+   "access_evidence": "не открыт"
+  },
+  {
+   "dataset_id": "AST-A12-D043",
+   "title": "Акты о районах Астаны в «Әділет»",
+   "publisher": "Минюст / ИЗПИ",
+   "source_ids": [
+    "AST-A12-S047"
+   ],
+   "landing_url": "https://adilet.zan.kz/",
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "г. Астана",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": [
+    "содержимое не видено A12"
+   ],
+   "next_retrieval_step": "Реквизиты → geo_units.valid_from и boundary_versions.legal_basis.",
+   "directions": [
+    "география",
+    "земельные отношения"
+   ],
+   "egov_indices": [],
+   "needed_fields": [
+    "act_id",
+    "date",
+    "title",
+    "status",
+    "text"
+   ],
+   "access_evidence": "не открыт"
+  },
+  {
+   "dataset_id": "AST-A12-D044",
+   "title": "Казгидромет: бюллетени и посты наблюдения по Астане",
+   "publisher": "РГП «Казгидромет»",
+   "source_ids": [
+    "AST-A12-S043"
+   ],
+   "landing_url": "https://www.kazhydromet.kz/",
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "посты г. Астаны",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": [
+    "содержимое не видено A12"
+   ],
+   "next_retrieval_step": "Последний бюллетень: раздел Астаны, 5 строк с номером страницы.",
+   "directions": [
+    "экология"
+   ],
+   "egov_indices": [],
+   "needed_fields": [
+    "post_id",
+    "pollutant",
+    "period",
+    "mean",
+    "unit"
+   ],
+   "access_evidence": "не открыт"
+  },
+  {
+   "dataset_id": "AST-A12-D045",
+   "title": "iKOMEK109: публичная статистика обращений",
+   "publisher": "Акимат г. Астаны / оператор (уточнить)",
+   "source_ids": [
+    "AST-A12-S054"
+   ],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "г. Астана",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": [
+    "содержимое не видено A12"
+   ],
+   "next_retrieval_step": "Найти официальный сайт и опубликованные агрегаты; внутренние данные — только запросом.",
+   "directions": [
+    "цифровизация",
+    "ЖКХ"
+   ],
+   "egov_indices": [],
+   "needed_fields": [
+    "month",
+    "district",
+    "category",
+    "count",
+    "median_resolution_days"
+   ],
+   "access_evidence": "не открыт"
+  },
+  {
+   "dataset_id": "AST-A12-D046",
+   "title": "City Transportation Systems: маршруты, остановки, расписания",
+   "publisher": "ТОО «City Transportation Systems»",
+   "source_ids": [
+    "AST-A12-S052"
+   ],
+   "landing_url": "https://cts.gov.kz/ru/",
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "г. Астана",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": [
+    "содержимое не видено A12"
+   ],
+   "next_retrieval_step": "Проверить публикацию GTFS/маршрутов и условия.",
+   "directions": [
+    "транспорт"
+   ],
+   "egov_indices": [],
+   "needed_fields": [
+    "route_id",
+    "stop_id",
+    "lat",
+    "lon",
+    "headway"
+   ],
+   "access_evidence": "не открыт"
+  },
+  {
+   "dataset_id": "AST-A12-D047",
+   "title": "Открытые бюджеты и госзакупки: г. Астана",
+   "publisher": "Минфин / Электронное правительство",
+   "source_ids": [
+    "AST-A12-S048",
+    "AST-A12-S049"
+   ],
+   "landing_url": "https://budget.egov.kz/",
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "г. Астана",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": "токен OWS (по памяти модели)",
+   "limitations": [
+    "содержимое не видено A12"
+   ],
+   "next_retrieval_step": "Исполнение бюджета по программам; договоры одной категории мер.",
+   "directions": [
+    "все (стоимость мер)"
+   ],
+   "egov_indices": [],
+   "needed_fields": [
+    "year",
+    "program_code",
+    "plan_kzt",
+    "fact_kzt"
+   ],
+   "access_evidence": "не открыт"
+  },
+  {
+   "dataset_id": "AST-A12-D048",
+   "title": "OSM: дороги, пешеходная сеть, адреса, объекты (Overpass/Geofabrik)",
+   "publisher": "OSM contributors",
+   "source_ids": [
+    "AST-A12-S044",
+    "AST-A12-S055"
+   ],
+   "landing_url": "https://overpass-api.de/",
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "г. Астана",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": [
+    "полнота неизвестна",
+    "ODbL"
+   ],
+   "next_retrieval_step": "Запросы в отчёте §4.5; сохранить сырые ответы с base timestamp.",
+   "directions": [
+    "транспорт",
+    "инфраструктура",
+    "образование",
+    "туризм"
+   ],
+   "egov_indices": [],
+   "needed_fields": [
+    "osm_id",
+    "highway",
+    "footway",
+    "addr:*",
+    "amenity"
+   ],
+   "access_evidence": "не открыт"
+  },
+  {
+   "dataset_id": "AST-A12-D049",
+   "title": "Правовая статистика КПСиСУ (преступления, ДТП)",
+   "publisher": "КПСиСУ ГП РК",
+   "source_ids": [],
+   "landing_url": "https://qamqor.gov.kz/",
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "г. Астана / район",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": [
+    "содержимое не видено A12"
+   ],
+   "next_retrieval_step": "Проверить детализацию и годы до/после выделения районов.",
+   "directions": [
+    "безопасность",
+    "транспорт"
+   ],
+   "egov_indices": [],
+   "needed_fields": [
+    "month",
+    "district",
+    "category",
+    "count"
+   ],
+   "access_evidence": "не открыт"
+  },
+  {
+   "dataset_id": "AST-A12-D050",
+   "title": "GHSL / WorldPop: модельная сетка населения",
+   "publisher": "EC JRC / WorldPop",
+   "source_ids": [],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "сетка",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": [
+    "содержимое не видено A12"
+   ],
+   "next_retrieval_step": "Тайл Астаны; сверка суммы с БНС.",
+   "directions": [
+    "образование",
+    "транспорт"
+   ],
+   "egov_indices": [],
+   "needed_fields": [
+    "cell",
+    "epoch",
+    "population_est"
+   ],
+   "access_evidence": "не открыт"
+  },
+  {
+   "dataset_id": "AST-A12-D051",
+   "title": "Overture Maps: здания, места, транспортная сеть",
+   "publisher": "Overture Maps Foundation",
+   "source_ids": [],
+   "landing_url": "https://overturemaps.org/",
+   "download_or_api_url": null,
+   "access_status": null,
+   "tested_at": null,
+   "geography": "г. Астана",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": [
+    "содержимое не видено A12"
+   ],
+   "next_retrieval_step": "Проверить покрытие Астаны и лицензии тем.",
+   "directions": [
+    "инфраструктура",
+    "транспорт"
+   ],
+   "egov_indices": [],
+   "needed_fields": [
+    "gers_id",
+    "geometry",
+    "category"
+   ],
+   "access_evidence": "не открыт"
+  }
+ ],
+ "opportunities": [
+  {
+   "idea_id": "AST-A12-O001",
+   "level": "prototype",
+   "title": "Каталог открытых данных Астаны с матрицей покрытия 11 сфер и разделением «игра / реальность»",
+   "problem": "Учебные, сценарные и реальные данные лежат рядом (F003–F006); каталог портала неоднороден (F019, F020).",
+   "evidence_fact_ids": [
+    "AST-A12-F003",
+    "AST-A12-F005",
+    "AST-A12-F006",
+    "AST-A12-F017",
+    "AST-A12-F018",
+    "AST-A12-F020",
+    "AST-A12-F021"
+   ],
+   "primary_user": "Разработчик и аналитик проекта; эксперт GovTech, проверяющий происхождение цифр",
+   "user_task": "Понять, какие реальные данные по каждой сфере есть, насколько свежи и что нужно для доступа",
+   "existing_solution": "README и GEO_SOURCES.md описывают только границы",
+   "proposed_addition": "Реестр 52 + N наборов с паспортами (частота, дата, ведомство, ключ), статус доступа, сфера; игровой режим заморожен по sha256 и показан отдельно",
+   "required_dataset_ids": [
+    "AST-A12-D009",
+    "AST-A12-D010",
+    "AST-A12-D004",
+    "AST-A12-D001"
+   ],
+   "ai_role": "Классификация наборов по 11 сферам по названию/описанию; проверка точности на 52 вручную размеченных наборах Астаны. Ядро — без AI.",
+   "non_ai_baseline": "Ключевые слова + ручная разметка",
+   "success_metrics": [
+    "точность классификации на 52 разметках",
+    "доля наборов с проверенным живым статусом",
+    "время обновления каталога по manifest"
+   ],
+   "feasibility_10_days": "высокая для каталога и разделения режимов; живой статус — после второго прохода",
+   "blockers": [
+    "портал недоступен из среды A12",
+    "условия API"
+   ],
+   "transfer_to_shymkent": "Прямой: у Шымкента 56 наборов тех же типовых тем (F027)",
+   "next_action": "Разметить 52 набора Астаны по 11 сферам вручную (1 час) и сравнить с правилами"
+  },
+  {
+   "idea_id": "AST-A12-O002",
+   "level": "product_1_3_months",
+   "title": "Паспорт района Астаны в зафиксированной версии границ",
+   "problem": "Районы меняются (F009, F010, F016), есть конфликты топологии (F012), точки на границах (F014).",
+   "evidence_fact_ids": [
+    "AST-A12-F009",
+    "AST-A12-F010",
+    "AST-A12-F012",
+    "AST-A12-F014",
+    "AST-A12-F026"
+   ],
+   "primary_user": "Аналитик акимата/управления; дипломник",
+   "user_task": "Получить по району число школ, поликлиник, остановок, объектов ремонта дорог и население с указанием версии границ и неопределённости",
+   "existing_solution": "Карточка района в STUPITS показывает учебные показатели",
+   "proposed_addition": "pip_assignments по правилу covers_lowest_stable_id_v1 для реестров с координатами/адресами; население из БНС; флаги boundary_tie/outside/topology_conflict",
+   "required_dataset_ids": [
+    "AST-A12-D001",
+    "AST-A12-D030",
+    "AST-A12-D029",
+    "AST-A12-D020",
+    "AST-A12-D040",
+    "AST-A12-D048"
+   ],
+   "ai_role": "Нормализация казахских/русских адресов перед геокодированием (оценить на 100 размеченных адресах). Point-in-polygon и агрегаты — без AI.",
+   "non_ai_baseline": "Правила нормализации + геокодер OSM",
+   "success_metrics": [
+    "доля объектов реестра с координатами после геокодирования",
+    "precision геокодирования на выборке",
+    "доля точек с флагами"
+   ],
+   "feasibility_10_days": "частично: правило PIP проверено (E103, E104); реестры и население — после доступа",
+   "blockers": [
+    "наличие адресов/координат в реестрах неизвестно",
+    "официальные границы"
+   ],
+   "transfer_to_shymkent": "Общий код; свои границы, население и реестры",
+   "next_action": "Во втором проходе открыть /meta реестра школ и №681, проверить поля адреса/координат"
+  },
+  {
+   "idea_id": "AST-A12-O003",
+   "level": "research",
+   "title": "Согласование районных рядов при изменении границ и конфликтах OSM (Нура, Сарайшык, эксклав Байконура)",
+   "problem": "Старые районные цифры нельзя распределять между новыми районами без метода (условие задания; F016).",
+   "evidence_fact_ids": [
+    "AST-A12-F011",
+    "AST-A12-F012",
+    "AST-A12-F016"
+   ],
+   "primary_user": "Исследователь / дипломник",
+   "user_task": "Построить ряд показателя в текущих границах с интервалом неопределённости",
+   "existing_solution": "Нет; STUPITS не считает Сарайшык",
+   "proposed_addition": "boundary_crosswalk (area / dasymetric) + проверка на годе с двумя разбивками",
+   "required_dataset_ids": [
+    "AST-A12-D040",
+    "AST-A12-D043",
+    "AST-A12-D050",
+    "AST-A12-D001"
+   ],
+   "ai_role": "Не нужен для метода",
+   "non_ai_baseline": "Площадная интерполяция",
+   "success_metrics": [
+    "ошибка интерполяции на контрольном годе",
+    "ширина интервала"
+   ],
+   "feasibility_10_days": "низкая: только проверка, есть ли год с обеими разбивками",
+   "blockers": [
+    "БНС может не публиковать пересчёт",
+    "нет старых официальных полигонов"
+   ],
+   "transfer_to_shymkent": "Тот же метод для Туранского района (гипотеза A12-F016)",
+   "next_action": "Найти в таблицах БНС Астаны население по районам за годы до и после выделения Сарайшыка"
+  }
+ ],
+ "open_questions": [
+  {
+   "question": "Каков официальный состав районов Астаны на октябрь 2026 и реквизиты актов о Нуре и Сарайшыке?",
+   "why": "Ключ всей районной аналитики; F016 — гипотеза",
+   "how": "adilet.zan.kz + сайт акимата; сверить с OSM"
+  },
+  {
+   "question": "Публикует ли БНС население по 6 районам и с какого года?",
+   "why": "Знаменатель всех удельных показателей; проверка O003",
+   "how": "Файл раздела 38 (S041)"
+  },
+  {
+   "question": "Кому юридически принадлежит территория эксклава Байконура, пересекающаяся с Целиноградским районом в OSM?",
+   "why": "Риск отнести объекты к двум регионам (F012)",
+   "how": "Правовые акты + сверка с кадастровой картой; при ошибке OSM — сообщить сообществу (не в рамках исследования)"
+  },
+  {
+   "question": "Нужен ли API-ключ для /meta на data.egov.kz и каковы условия повторного использования?",
+   "why": "Определяет реальную доступность топ-5",
+   "how": "Открыть /meta одного набора в браузере и пользовательское соглашение портала"
+  },
+  {
+   "question": "Есть ли в реестрах школ, поликлиник и №681 адреса или координаты?",
+   "why": "Без них нет районной детализации",
+   "how": "/meta этих наборов"
+  },
+  {
+   "question": "Публикует ли City Transportation Systems актуальный GTFS или маршруты?",
+   "why": "Исследовательский GTFS охватывает 3 маршрута 2024 года",
+   "how": "cts.gov.kz"
+  },
+  {
+   "question": "Есть ли у iKOMEK109 публичные агрегаты обращений по районам и категориям?",
+   "why": "Цифровизация и ЖКХ; показатель C2 игрового режима",
+   "how": "Официальная страница сервиса на gov.kz/акимат"
+  },
+  {
+   "question": "Сколько постов Казгидромета в Астане и в каких единицах публикуются данные?",
+   "why": "Экология; риск мг/м³ vs мкг/м³",
+   "how": "Последний бюллетень"
+  }
+ ],
+ "city_comparison": [
+  {
+   "topic": "Районы и версии границ",
+   "astana_fact_ids": [
+    "AST-A12-F008",
+    "AST-A12-F009",
+    "AST-A12-F010",
+    "AST-A12-F016"
+   ],
+   "shymkent_fact_ids": [
+    "A12-F016"
+   ],
+   "comparison_status": "astana_osm_observed__shymkent_hypothesis_only",
+   "shared_component": "geo_units, boundary_versions, правило выбора по явным ID",
+   "city_specific_inputs": "Свои relation ID/КАТО, названия, акты",
+   "caveats": "По Шымкенту нет ни OSM-снимка, ни акта"
+  },
+  {
+   "topic": "Глобальные слои приписывают город области",
+   "astana_fact_ids": [
+    "AST-A12-F015"
+   ],
+   "shymkent_fact_ids": [
+    "A12-F010",
+    "A12-F011",
+    "A12-F012"
+   ],
+   "comparison_status": "both_observed_same_failure",
+   "shared_component": "QC: spatial join только с geo_units; NE — отрицательный контроль",
+   "city_specific_inputs": "—",
+   "caveats": "Одинаковый механизм ошибки; разные области (Акмолинская / Туркестанская)"
+  },
+  {
+   "topic": "Метрическая СК",
+   "astana_fact_ids": [
+    "AST-A12-F011"
+   ],
+   "shymkent_fact_ids": [
+    "A12-F013"
+   ],
+   "comparison_status": "shared",
+   "shared_component": "EPSG:32642 (UTM 42N) для обоих; геодезические площади",
+   "city_specific_inputs": "—",
+   "caveats": "Кадастровые файлы — только с метаданными СК"
+  },
+  {
+   "topic": "Point-in-polygon и ничьи на границах",
+   "astana_fact_ids": [
+    "AST-A12-F014",
+    "AST-A12-F026"
+   ],
+   "shymkent_fact_ids": [],
+   "comparison_status": "astana_tested__shymkent_pending",
+   "shared_component": "pip_assignments, rule covers_lowest_stable_id_v1",
+   "city_specific_inputs": "Полигоны районов Шымкента",
+   "caveats": "Правило проверено только на геометрии Астаны"
+  },
+  {
+   "topic": "Конфликты город/область в OSM",
+   "astana_fact_ids": [
+    "AST-A12-F012",
+    "AST-A12-F013"
+   ],
+   "shymkent_fact_ids": [],
+   "comparison_status": "astana_observed__shymkent_pending",
+   "shared_component": "topology_conflicts",
+   "city_specific_inputs": "Соседние единицы Туркестанской обл.",
+   "caveats": "Для Шымкента не проверено"
+  },
+  {
+   "topic": "Типовые наборы акимата на data.egov.kz",
+   "astana_fact_ids": [
+    "AST-A12-F017",
+    "AST-A12-F018",
+    "AST-A12-F021"
+   ],
+   "shymkent_fact_ids": [
+    "AST-A12-F027"
+   ],
+   "comparison_status": "both_observed_secondary",
+   "shared_component": "Парсер паспорта и типовых наборов с городским фильтром (гипотеза F030)",
+   "city_specific_inputs": "govAgencyId, индексы, версии",
+   "caveats": "Одинаковые названия ≠ одинаковые поля; живые страницы не открыты"
+  },
+  {
+   "topic": "Публикационная активность на портале",
+   "astana_fact_ids": [
+    "AST-A12-F023"
+   ],
+   "shymkent_fact_ids": [
+    "AST-A12-F023"
+   ],
+   "comparison_status": "both_observed_secondary",
+   "shared_component": "—",
+   "city_specific_inputs": "—",
+   "caveats": "Снимок ≤2025-04-30"
+  },
+  {
+   "topic": "Реестры школ и детсадов",
+   "astana_fact_ids": [
+    "AST-A12-F024"
+   ],
+   "shymkent_fact_ids": [
+    "AST-A12-F024",
+    "AST-A12-F027"
+   ],
+   "comparison_status": "shared_national_dataset",
+   "shared_component": "Один набор Министерства с фильтром региона",
+   "city_specific_inputs": "Значение nate1 для каждого города",
+   "caveats": "Поля и координаты не проверены"
+  },
+  {
+   "topic": "Общественный транспорт",
+   "astana_fact_ids": [
+    "AST-A12-F025",
+    "AST-A12-F026"
+   ],
+   "shymkent_fact_ids": [],
+   "comparison_status": "astana_sample__shymkent_pending",
+   "shared_component": "GTFS-загрузчик, PIP остановок",
+   "city_specific_inputs": "Фид оператора каждого города",
+   "caveats": "Для Шымкента фид не найден (A12-D035 — кандидат)"
+  },
+  {
+   "topic": "Учебные данные и ложные нули",
+   "astana_fact_ids": [
+    "AST-A12-F003",
+    "AST-A12-F005",
+    "AST-A12-F006",
+    "AST-A12-F007"
+   ],
+   "shymkent_fact_ids": [
+    "A12-F006",
+    "A12-F007"
+   ],
+   "comparison_status": "shared_rule",
+   "shared_component": "value_status, kind=synthetic, game_mode_guard",
+   "city_specific_inputs": "—",
+   "caveats": "Игровой режим остаётся астанинским учебным; на Шымкент не переносить"
+  },
+  {
+   "topic": "Население по районам",
+   "astana_fact_ids": [],
+   "shymkent_fact_ids": [],
+   "comparison_status": "pending_both",
+   "shared_component": "observations + boundary_versions",
+   "city_specific_inputs": "Таблицы БНС каждого города",
+   "caveats": "Не открыто ни для одного города"
+  },
+  {
+   "topic": "Качество воздуха",
+   "astana_fact_ids": [
+    "AST-A12-F028"
+   ],
+   "shymkent_fact_ids": [],
+   "comparison_status": "pending_both",
+   "shared_component": "Импорт бюллетеня с locator",
+   "city_specific_inputs": "Посты Казгидромета каждого города",
+   "caveats": "Сторонний ряд по Астане отклонён"
+  }
+ ],
+ "deliverables": {
+  "repo_audit": [
+   {
+    "file": "data/city_data.json",
+    "content": "10 показателей, 5 районов, доли населения, 14 мер, у.е.",
+    "classification": "synthetic (ТЗ)",
+    "used_by": "engine: весь расчёт Score и оптимизатор",
+    "needs_update": "Не обновлять; заморозить sha256 403478c1… как игровой режим",
+    "fact_ids": [
+     "AST-A12-F003",
+     "AST-A12-F004"
+    ]
+   },
+   {
+    "file": "data/events.json",
+    "content": "8 сценариев с эффектами",
+    "classification": "synthetic",
+    "used_by": "engine/robustness",
+    "needs_update": "Подписать в UI «вымышленный сценарий»",
+    "fact_ids": [
+     "AST-A12-F005"
+    ]
+   },
+   {
+    "file": "data/astana_districts.geojson",
+    "content": "6 полигонов OSM",
+    "classification": "reference_real (osm_community)",
+    "used_by": "карта, список районов",
+    "needs_update": "Добавить stable_id и boundary_version; отслеживать version Сарайшыка; отметить конфликт эксклава",
+    "fact_ids": [
+     "AST-A12-F008",
+     "AST-A12-F010",
+     "AST-A12-F012"
+    ]
+   },
+   {
+    "file": "data/geo_sources/*.json",
+    "content": "сырые ответы Overpass/OSM API/Nominatim",
+    "classification": "raw_real",
+    "used_by": "офлайн-сборка карты",
+    "needs_update": "Добавить sha256 в manifest",
+    "fact_ids": [
+     "AST-A12-F010"
+    ]
+   },
+   {
+    "file": "data/real_context.json",
+    "content": "25 нулей",
+    "classification": "placeholder (status unavailable)",
+    "used_by": "не используется приложением",
+    "needs_update": "Перегенерировать по реальным полигонам, с null и Сарайшыком",
+    "fact_ids": [
+     "AST-A12-F006",
+     "AST-A12-F007"
+    ]
+   },
+   {
+    "file": "data/real_context_meta.json",
+    "content": "статус и ошибка Overpass",
+    "classification": "metadata",
+    "used_by": "—",
+    "needs_update": "Сохранить как журнал неудачного импорта",
+    "fact_ids": [
+     "AST-A12-F006"
+    ]
+   },
+   {
+    "file": "docs/tz/*",
+    "content": "постановка ТЗ",
+    "classification": "task_definition",
+    "used_by": "—",
+    "needs_update": "—",
+    "fact_ids": [
+     "AST-A12-F004"
+    ]
+   }
+  ],
+  "district_registry": [
+   {
+    "stable_id": "kz.astana.district.almaty",
+    "legacy_id": "almaty",
+    "osm_relation_id": 3482819,
+    "osm_admin_level": "6",
+    "name_kk_osm": "Алматы ауданы (тег name; name:kk нет)",
+    "name_ru_osm": "район Алматы",
+    "official_name_ru": null,
+    "official_name_kk": null,
+    "kato_code": null,
+    "legal_basis": null,
+    "boundary_version": "osm:2026-09-22T08:45:51Z",
+    "geometry_source": "osm_community",
+    "status": "osm_observed; official pending"
+   },
+   {
+    "stable_id": "kz.astana.district.baikonur",
+    "legacy_id": "baikonur",
+    "osm_relation_id": 8593081,
+    "osm_admin_level": "6",
+    "name_kk_osm": "Байқоңыр ауданы",
+    "name_ru_osm": "район Байконур",
+    "official_name_ru": null,
+    "official_name_kk": null,
+    "kato_code": null,
+    "legal_basis": null,
+    "boundary_version": "osm:2026-09-22T08:45:51Z",
+    "geometry_source": "osm_community",
+    "status": "osm_observed; official pending"
+   },
+   {
+    "stable_id": "kz.astana.district.esil",
+    "legacy_id": "esil",
+    "osm_relation_id": 3479876,
+    "osm_admin_level": "6",
+    "name_kk_osm": "Есіл ауданы (тег name; name:kk нет)",
+    "name_ru_osm": "район Есиль",
+    "official_name_ru": null,
+    "official_name_kk": null,
+    "kato_code": null,
+    "legal_basis": null,
+    "boundary_version": "osm:2026-09-22T08:45:51Z",
+    "geometry_source": "osm_community",
+    "status": "osm_observed; official pending"
+   },
+   {
+    "stable_id": "kz.astana.district.nura",
+    "legacy_id": "nura",
+    "osm_relation_id": 20593940,
+    "osm_admin_level": "6",
+    "name_kk_osm": "Нұра ауданы",
+    "name_ru_osm": "район Нура",
+    "official_name_ru": null,
+    "official_name_kk": null,
+    "kato_code": null,
+    "legal_basis": null,
+    "boundary_version": "osm:2026-09-22T08:45:51Z",
+    "geometry_source": "osm_community",
+    "status": "osm_observed; official pending"
+   },
+   {
+    "stable_id": "kz.astana.district.saraishyk",
+    "legacy_id": "saraishyk",
+    "osm_relation_id": 19733918,
+    "osm_admin_level": "8",
+    "name_kk_osm": "Сарайшық ауданы",
+    "name_ru_osm": "район Сарайшык",
+    "official_name_ru": null,
+    "official_name_kk": null,
+    "kato_code": null,
+    "legal_basis": null,
+    "boundary_version": "osm:2026-09-22T08:45:51Z",
+    "geometry_source": "osm_community",
+    "status": "osm_observed; official pending"
+   },
+   {
+    "stable_id": "kz.astana.district.saryarka",
+    "legacy_id": "saryarka",
+    "osm_relation_id": 3486954,
+    "osm_admin_level": "6",
+    "name_kk_osm": "Сарыарқа ауданы",
+    "name_ru_osm": "район Сарыарка",
+    "official_name_ru": null,
+    "official_name_kk": null,
+    "kato_code": null,
+    "legal_basis": null,
+    "boundary_version": "osm:2026-09-22T08:45:51Z",
+    "geometry_source": "osm_community",
+    "status": "osm_observed; official pending"
+   }
+  ],
+  "geo_rules": {
+   "city_id": {
+    "kz.astana": {
+     "iso_3166_2": "KZ-71 (Nominatim, A12-F005; сверить)",
+     "kato_code": null
+    },
+    "kz.shymkent": "см. A12 (KZ-79 — гипотеза)"
+   },
+   "stable_id": "Территории: kz.<city>.<level>.<slug>; объекты: <source>:<native_id> (osm:node/123, gtfs:zenodo15769359:stop:<uuid>, egov:<index>:v<N>:<row_id>); legacy_id продукта не переименовывается",
+   "boundary_version": "osm:<osm_base_timestamp> | official:<акт>:<дата>; каждое наблюдение и каждое PIP-назначение хранит версию; Сарайшык v17 (2026-09-21) входит в osm:2026-09-22T08:45:51Z",
+   "crs": "Хранение EPSG:4326 [lon,lat]; метрика EPSG:32642 или pyproj.Geod; кадастр — только с метаданными СК",
+   "pip_rule": "covers_lowest_stable_id_v1: (1) проверка диапазона РК и перестановки lon/lat; (2) covers() по районам выбранной boundary_version; (3) 0 совпадений → unit_id=NULL, flag=outside + ближайший район и расстояние; (4) >1 совпадения на общей границе → лексикографически наименьший stable_id, flag=boundary_tie, candidates; (5) площадное пересечение с единицей другого региона (topology_conflicts) → flag=topology_conflict, решение вручную; (6) результат пишется в pip_assignments с версией правила",
+   "old_figures": "Числа старой версии границ переносятся в новую только через boundary_crosswalk с методом и uncertainty, результат kind=derived; без crosswalk — показывать в старой версии"
+  },
+  "coverage_two_cities": [
+   {
+    "direction": "география",
+    "astana": {
+     "datasets": [
+      "AST-A12-D001",
+      "AST-A12-D002",
+      "AST-A12-D003"
+     ],
+     "status": "sample_verified (OSM)",
+     "period": "2026-09-22",
+     "detail": "район"
+    },
+    "shymkent": {
+     "a12_ids": [
+      "A12-D028",
+      "A12-D012"
+     ],
+     "status": "не открыто",
+     "detail": null
+    },
+    "comparability": "pending"
+   },
+   {
+    "direction": "цифровизация",
+    "astana": {
+     "datasets": [
+      "AST-A12-D028",
+      "AST-A12-D045"
+     ],
+     "status": "метаданные каталога / не открыт",
+     "period": "паспорт 2026-01",
+     "detail": "город?"
+    },
+    "shymkent": {
+     "a12_ids": [
+      "A12-D014",
+      "A12-D015"
+     ],
+     "status": "не открыто"
+    },
+    "comparability": "pending"
+   },
+   {
+    "direction": "ЖКХ",
+    "astana": {
+     "datasets": [
+      "AST-A12-D021",
+      "AST-A12-D023",
+      "AST-A12-D024"
+     ],
+     "status": "метаданные каталога",
+     "period": "ежегодно",
+     "detail": "объект?"
+    },
+    "shymkent": {
+     "a12_ids": [
+      "A12-D022",
+      "A12-D036"
+     ],
+     "new_ast_evidence": [
+      "AST-A12-F027"
+     ],
+     "status": "метаданные каталога"
+    },
+    "comparability": "названия совпадают; поля не проверены"
+   },
+   {
+    "direction": "логистика",
+    "astana": {
+     "datasets": [
+      "AST-A12-D040",
+      "AST-A12-D041"
+     ],
+     "status": "не открыт",
+     "detail": "город"
+    },
+    "shymkent": {
+     "a12_ids": [
+      "A12-D010",
+      "A12-D011"
+     ],
+     "status": "не открыто"
+    },
+    "comparability": "pending"
+   },
+   {
+    "direction": "инфраструктура",
+    "astana": {
+     "datasets": [
+      "AST-A12-D020",
+      "AST-A12-D026"
+     ],
+     "status": "метаданные каталога",
+     "period": "полугодие / год"
+    },
+    "shymkent": {
+     "new_ast_evidence": [
+      "AST-A12-F027"
+     ],
+     "status": "метаданные каталога"
+    },
+    "comparability": "типовые наборы есть в обоих"
+   },
+   {
+    "direction": "образование",
+    "astana": {
+     "datasets": [
+      "AST-A12-D030",
+      "AST-A12-D026"
+     ],
+     "status": "метаданные + сторонний код",
+     "period": "2025"
+    },
+    "shymkent": {
+     "a12_ids": [
+      "A12-D013",
+      "A12-D034"
+     ],
+     "new_ast_evidence": [
+      "AST-A12-F024",
+      "AST-A12-F027"
+     ],
+     "status": "тот же национальный реестр + список школ акимата"
+    },
+    "comparability": "высокая при одном реестре; проверить поля"
+   },
+   {
+    "direction": "транспорт",
+    "astana": {
+     "datasets": [
+      "AST-A12-D007",
+      "AST-A12-D046",
+      "AST-A12-D048"
+     ],
+     "status": "sample_verified (исследовательский GTFS)",
+     "period": "2024-07…09",
+     "detail": "остановка"
+    },
+    "shymkent": {
+     "a12_ids": [
+      "A12-D035",
+      "A12-D027"
+     ],
+     "status": "нет фида"
+    },
+    "comparability": "pending"
+   },
+   {
+    "direction": "туризм",
+    "astana": {
+     "datasets": [
+      "AST-A12-D027"
+     ],
+     "status": "метаданные каталога"
+    },
+    "shymkent": {
+     "a12_ids": [
+      "A12-D033"
+     ],
+     "new_ast_evidence": [
+      "AST-A12-F027"
+     ],
+     "status": "метаданные каталога"
+    },
+    "comparability": "названия совпадают"
+   },
+   {
+    "direction": "экология",
+    "astana": {
+     "datasets": [
+      "AST-A12-D044",
+      "AST-A12-D024"
+     ],
+     "status": "не открыт"
+    },
+    "shymkent": {
+     "a12_ids": [
+      "A12-D020"
+     ],
+     "status": "не открыто"
+    },
+    "comparability": "pending"
+   },
+   {
+    "direction": "энергетика",
+    "astana": {
+     "datasets": [
+      "AST-A12-D022",
+      "AST-A12-D023"
+     ],
+     "status": "метаданные каталога"
+    },
+    "shymkent": {
+     "new_ast_evidence": [
+      "AST-A12-F027"
+     ],
+     "status": "метаданные каталога"
+    },
+    "comparability": "названия совпадают"
+   },
+   {
+    "direction": "безопасность",
+    "astana": {
+     "datasets": [
+      "AST-A12-D049"
+     ],
+     "status": "не открыт"
+    },
+    "shymkent": {
+     "a12_ids": [
+      "A12-D023"
+     ],
+     "status": "не открыто"
+    },
+    "comparability": "pending"
+   },
+   {
+    "direction": "земельные отношения",
+    "astana": {
+     "datasets": [
+      "AST-A12-D025",
+      "AST-A12-D043"
+     ],
+     "status": "метаданные каталога"
+    },
+    "shymkent": {
+     "a12_ids": [
+      "A12-D026",
+      "A12-D025"
+     ],
+     "new_ast_evidence": [
+      "AST-A12-F027"
+     ],
+     "status": "метаданные каталога"
+    },
+    "comparability": "названия совпадают"
+   }
+  ],
+  "indicator_dictionary": [
+   {
+    "indicator_id": "DIG.appeals_count",
+    "direction": "цифровизация",
+    "name_ru": "Обращения в 109 / e-Otinish",
+    "canonical_unit": "count",
+    "better": "neutral",
+    "expected_frequency": "month",
+    "max_age_days": 120,
+    "status": "candidate: источник не проверен; определение уточнить по методике владельца данных",
+    "shymkent_candidate_dataset_ids": [
+     "A12-D014",
+     "A12-D015"
+    ],
+    "astana_candidate_dataset_ids": [
+     "AST-A12-D028",
+     "AST-A12-D045"
+    ],
+    "comparability": "pending: сверить определение, единицы и детализацию в обоих городах",
+    "origin": "A12 (первый проход)"
+   },
+   {
+    "indicator_id": "DIG.appeals_resolution_median_days",
+    "direction": "цифровизация",
+    "name_ru": "Медианный срок рассмотрения обращения",
+    "canonical_unit": "day",
+    "better": "lower",
+    "expected_frequency": "month",
+    "max_age_days": 120,
+    "status": "candidate: источник не проверен; определение уточнить по методике владельца данных",
+    "shymkent_candidate_dataset_ids": [
+     "A12-D014",
+     "A12-D015"
+    ],
+    "astana_candidate_dataset_ids": [
+     "AST-A12-D028",
+     "AST-A12-D045"
+    ],
+    "comparability": "pending: сверить определение, единицы и детализацию в обоих городах",
+    "origin": "A12 (первый проход)"
+   },
+   {
+    "indicator_id": "HCS.water_tariff_household",
+    "direction": "ЖКХ",
+    "name_ru": "Тариф на питьевую воду для населения",
+    "canonical_unit": "KZT/m3",
+    "better": "neutral",
+    "expected_frequency": "irregular",
+    "max_age_days": 550,
+    "status": "candidate: источник не проверен; определение уточнить по методике владельца данных",
+    "shymkent_candidate_dataset_ids": [
+     "A12-D022"
+    ],
+    "astana_candidate_dataset_ids": [
+     "AST-A12-D021",
+     "AST-A12-D023",
+     "AST-A12-D024"
+    ],
+    "comparability": "pending: сверить определение, единицы и детализацию в обоих городах",
+    "origin": "A12 (первый проход)"
+   },
+   {
+    "indicator_id": "HCS.utility_incidents",
+    "direction": "ЖКХ",
+    "name_ru": "Аварии/отключения на сетях",
+    "canonical_unit": "count",
+    "better": "lower",
+    "expected_frequency": "month",
+    "max_age_days": 120,
+    "status": "candidate: источник не проверен; определение уточнить по методике владельца данных",
+    "shymkent_candidate_dataset_ids": [
+     "A12-D036"
+    ],
+    "astana_candidate_dataset_ids": [
+     "AST-A12-D021",
+     "AST-A12-D023",
+     "AST-A12-D024"
+    ],
+    "comparability": "pending: сверить определение, единицы и детализацию в обоих городах",
+    "origin": "A12 (первый проход)"
+   },
+   {
+    "indicator_id": "LOG.freight_transported",
+    "direction": "логистика",
+    "name_ru": "Перевезено грузов всеми видами транспорта",
+    "canonical_unit": "t",
+    "better": "neutral",
+    "expected_frequency": "month",
+    "max_age_days": 120,
+    "status": "candidate: источник не проверен; определение уточнить по методике владельца данных",
+    "shymkent_candidate_dataset_ids": [
+     "A12-D010",
+     "A12-D011"
+    ],
+    "astana_candidate_dataset_ids": [
+     "AST-A12-D040",
+     "AST-A12-D041"
+    ],
+    "comparability": "pending: сверить определение, единицы и детализацию в обоих городах",
+    "origin": "A12 (первый проход)"
+   },
+   {
+    "indicator_id": "LOG.freight_turnover",
+    "direction": "логистика",
+    "name_ru": "Грузооборот",
+    "canonical_unit": "t*km",
+    "better": "neutral",
+    "expected_frequency": "month",
+    "max_age_days": 120,
+    "status": "candidate: источник не проверен; определение уточнить по методике владельца данных",
+    "shymkent_candidate_dataset_ids": [
+     "A12-D010",
+     "A12-D011"
+    ],
+    "astana_candidate_dataset_ids": [
+     "AST-A12-D040",
+     "AST-A12-D041"
+    ],
+    "comparability": "pending: сверить определение, единицы и детализацию в обоих городах",
+    "origin": "A12 (первый проход)"
+   },
+   {
+    "indicator_id": "INF.housing_commissioned",
+    "direction": "инфраструктура",
+    "name_ru": "Ввод жилья",
+    "canonical_unit": "m2",
+    "better": "neutral",
+    "expected_frequency": "month",
+    "max_age_days": 120,
+    "status": "candidate: источник не проверен; определение уточнить по методике владельца данных",
+    "shymkent_candidate_dataset_ids": [
+     "A12-D010"
+    ],
+    "astana_candidate_dataset_ids": [
+     "AST-A12-D026",
+     "AST-A12-D020"
+    ],
+    "comparability": "pending: сверить определение, единицы и детализацию в обоих городах",
+    "origin": "A12 (первый проход)"
+   },
+   {
+    "indicator_id": "INF.capital_investment",
+    "direction": "инфраструктура",
+    "name_ru": "Инвестиции в основной капитал",
+    "canonical_unit": "KZT",
+    "better": "neutral",
+    "expected_frequency": "month",
+    "max_age_days": 120,
+    "status": "candidate: источник не проверен; определение уточнить по методике владельца данных",
+    "shymkent_candidate_dataset_ids": [
+     "A12-D010"
+    ],
+    "astana_candidate_dataset_ids": [
+     "AST-A12-D026",
+     "AST-A12-D020"
+    ],
+    "comparability": "pending: сверить определение, единицы и детализацию в обоих городах",
+    "origin": "A12 (первый проход)"
+   },
+   {
+    "indicator_id": "EDU.schools_count",
+    "direction": "образование",
+    "name_ru": "Число дневных общеобразовательных школ",
+    "canonical_unit": "count",
+    "better": "neutral",
+    "expected_frequency": "year",
+    "max_age_days": 550,
+    "status": "candidate: источник не проверен; определение уточнить по методике владельца данных",
+    "shymkent_candidate_dataset_ids": [
+     "A12-D010",
+     "A12-D013"
+    ],
+    "astana_candidate_dataset_ids": [
+     "AST-A12-D030",
+     "AST-A12-D026"
+    ],
+    "comparability": "pending: сверить определение, единицы и детализацию в обоих городах",
+    "origin": "A12 (первый проход)"
+   },
+   {
+    "indicator_id": "EDU.capacity_deficit_places",
+    "direction": "образование",
+    "name_ru": "Дефицит ученических мест / многосменность",
+    "canonical_unit": "places",
+    "better": "lower",
+    "expected_frequency": "year",
+    "max_age_days": 550,
+    "status": "candidate: источник не проверен; определение уточнить по методике владельца данных",
+    "shymkent_candidate_dataset_ids": [
+     "A12-D034"
+    ],
+    "astana_candidate_dataset_ids": [
+     "AST-A12-D030",
+     "AST-A12-D026"
+    ],
+    "comparability": "pending: сверить определение, единицы и детализацию в обоих городах",
+    "origin": "A12 (первый проход)"
+   },
+   {
+    "indicator_id": "TRN.road_accidents_injury",
+    "direction": "транспорт",
+    "name_ru": "ДТП с пострадавшими",
+    "canonical_unit": "count",
+    "better": "lower",
+    "expected_frequency": "month",
+    "max_age_days": 120,
+    "status": "candidate: источник не проверен; определение уточнить по методике владельца данных",
+    "shymkent_candidate_dataset_ids": [
+     "A12-D023"
+    ],
+    "astana_candidate_dataset_ids": [
+     "AST-A12-D007",
+     "AST-A12-D020",
+     "AST-A12-D048",
+     "AST-A12-D049"
+    ],
+    "comparability": "pending: сверить определение, единицы и детализацию в обоих городах",
+    "origin": "A12 (первый проход)"
+   },
+   {
+    "indicator_id": "TRN.pop_share_500m_stop",
+    "direction": "транспорт",
+    "name_ru": "Доля населения в 500 м от остановки (модельная)",
+    "canonical_unit": "share",
+    "better": "higher",
+    "expected_frequency": "snapshot",
+    "max_age_days": 180,
+    "status": "candidate: источник не проверен; определение уточнить по методике владельца данных",
+    "shymkent_candidate_dataset_ids": [
+     "A12-D028",
+     "A12-D030"
+    ],
+    "astana_candidate_dataset_ids": [
+     "AST-A12-D007",
+     "AST-A12-D020",
+     "AST-A12-D048",
+     "AST-A12-D049"
+    ],
+    "comparability": "pending: сверить определение, единицы и детализацию в обоих городах",
+    "origin": "A12 (первый проход)"
+   },
+   {
+    "indicator_id": "TOU.visitors_served",
+    "direction": "туризм",
+    "name_ru": "Обслужено посетителей местами размещения",
+    "canonical_unit": "persons",
+    "better": "neutral",
+    "expected_frequency": "quarter",
+    "max_age_days": 200,
+    "status": "candidate: источник не проверен; определение уточнить по методике владельца данных",
+    "shymkent_candidate_dataset_ids": [
+     "A12-D033"
+    ],
+    "astana_candidate_dataset_ids": [
+     "AST-A12-D027",
+     "AST-A12-D040"
+    ],
+    "comparability": "pending: сверить определение, единицы и детализацию в обоих городах",
+    "origin": "A12 (первый проход)"
+   },
+   {
+    "indicator_id": "TOU.accommodation_units",
+    "direction": "туризм",
+    "name_ru": "Число мест размещения",
+    "canonical_unit": "count",
+    "better": "neutral",
+    "expected_frequency": "year",
+    "max_age_days": 550,
+    "status": "candidate: источник не проверен; определение уточнить по методике владельца данных",
+    "shymkent_candidate_dataset_ids": [
+     "A12-D033"
+    ],
+    "astana_candidate_dataset_ids": [
+     "AST-A12-D027",
+     "AST-A12-D040"
+    ],
+    "comparability": "pending: сверить определение, единицы и детализацию в обоих городах",
+    "origin": "A12 (первый проход)"
+   },
+   {
+    "indicator_id": "ECO.pm25_monthly_mean",
+    "direction": "экология",
+    "name_ru": "Среднемесячная концентрация PM2.5 по посту",
+    "canonical_unit": "ug/m3",
+    "better": "lower",
+    "expected_frequency": "month",
+    "max_age_days": 120,
+    "status": "candidate: источник не проверен; определение уточнить по методике владельца данных",
+    "shymkent_candidate_dataset_ids": [
+     "A12-D020"
+    ],
+    "astana_candidate_dataset_ids": [
+     "AST-A12-D044",
+     "AST-A12-D024"
+    ],
+    "comparability": "pending: сверить определение, единицы и детализацию в обоих городах",
+    "origin": "A12 (первый проход)"
+   },
+   {
+    "indicator_id": "ECO.no2_monthly_mean",
+    "direction": "экология",
+    "name_ru": "Среднемесячная концентрация NO2 по посту",
+    "canonical_unit": "ug/m3",
+    "better": "lower",
+    "expected_frequency": "month",
+    "max_age_days": 120,
+    "status": "candidate: источник не проверен; определение уточнить по методике владельца данных",
+    "shymkent_candidate_dataset_ids": [
+     "A12-D020"
+    ],
+    "astana_candidate_dataset_ids": [
+     "AST-A12-D044",
+     "AST-A12-D024"
+    ],
+    "comparability": "pending: сверить определение, единицы и детализацию в обоих городах",
+    "origin": "A12 (первый проход)"
+   },
+   {
+    "indicator_id": "ENR.electricity_tariff_household",
+    "direction": "энергетика",
+    "name_ru": "Тариф на электроэнергию для населения",
+    "canonical_unit": "KZT/kWh",
+    "better": "neutral",
+    "expected_frequency": "irregular",
+    "max_age_days": 550,
+    "status": "candidate: источник не проверен; определение уточнить по методике владельца данных",
+    "shymkent_candidate_dataset_ids": [
+     "A12-D022"
+    ],
+    "astana_candidate_dataset_ids": [
+     "AST-A12-D022",
+     "AST-A12-D023"
+    ],
+    "comparability": "pending: сверить определение, единицы и детализацию в обоих городах",
+    "origin": "A12 (первый проход)"
+   },
+   {
+    "indicator_id": "ENR.electricity_consumption",
+    "direction": "энергетика",
+    "name_ru": "Потребление электроэнергии",
+    "canonical_unit": "kWh",
+    "better": "neutral",
+    "expected_frequency": "year",
+    "max_age_days": 550,
+    "status": "candidate: источник не проверен; определение уточнить по методике владельца данных",
+    "shymkent_candidate_dataset_ids": [
+     "A12-D010",
+     "A12-D036"
+    ],
+    "astana_candidate_dataset_ids": [
+     "AST-A12-D022",
+     "AST-A12-D023"
+    ],
+    "comparability": "pending: сверить определение, единицы и детализацию в обоих городах",
+    "origin": "A12 (первый проход)"
+   },
+   {
+    "indicator_id": "SEC.registered_crimes",
+    "direction": "безопасность",
+    "name_ru": "Зарегистрированные уголовные правонарушения",
+    "canonical_unit": "count",
+    "better": "lower",
+    "expected_frequency": "month",
+    "max_age_days": 120,
+    "status": "candidate: источник не проверен; определение уточнить по методике владельца данных",
+    "shymkent_candidate_dataset_ids": [
+     "A12-D023"
+    ],
+    "astana_candidate_dataset_ids": [
+     "AST-A12-D049"
+    ],
+    "comparability": "pending: сверить определение, единицы и детализацию в обоих городах",
+    "origin": "A12 (первый проход)"
+   },
+   {
+    "indicator_id": "SEC.crimes_per_10k",
+    "direction": "безопасность",
+    "name_ru": "Правонарушения на 10 тыс. жителей",
+    "canonical_unit": "per_10k",
+    "better": "lower",
+    "expected_frequency": "year",
+    "max_age_days": 550,
+    "status": "candidate: источник не проверен; определение уточнить по методике владельца данных",
+    "shymkent_candidate_dataset_ids": [
+     "A12-D023",
+     "A12-D010"
+    ],
+    "astana_candidate_dataset_ids": [
+     "AST-A12-D049"
+    ],
+    "comparability": "pending: сверить определение, единицы и детализацию в обоих городах",
+    "origin": "A12 (первый проход)"
+   },
+   {
+    "indicator_id": "LND.land_auction_lots",
+    "direction": "земельные отношения",
+    "name_ru": "Лоты земельных торгов",
+    "canonical_unit": "count",
+    "better": "neutral",
+    "expected_frequency": "month",
+    "max_age_days": 120,
+    "status": "candidate: источник не проверен; определение уточнить по методике владельца данных",
+    "shymkent_candidate_dataset_ids": [
+     "A12-D026"
+    ],
+    "astana_candidate_dataset_ids": [
+     "AST-A12-D025",
+     "AST-A12-D043"
+    ],
+    "comparability": "pending: сверить определение, единицы и детализацию в обоих городах",
+    "origin": "A12 (первый проход)"
+   },
+   {
+    "indicator_id": "LND.land_auction_area",
+    "direction": "земельные отношения",
+    "name_ru": "Площадь выставленных участков",
+    "canonical_unit": "ha",
+    "better": "neutral",
+    "expected_frequency": "month",
+    "max_age_days": 120,
+    "status": "candidate: источник не проверен; определение уточнить по методике владельца данных",
+    "shymkent_candidate_dataset_ids": [
+     "A12-D026"
+    ],
+    "astana_candidate_dataset_ids": [
+     "AST-A12-D025",
+     "AST-A12-D043"
+    ],
+    "comparability": "pending: сверить определение, единицы и детализацию в обоих городах",
+    "origin": "A12 (первый проход)"
+   },
+   {
+    "indicator_id": "INF.road_works_objects",
+    "direction": "инфраструктура",
+    "name_ru": "Число объектов ремонта/строительства дорог в наборе №681/№680",
+    "canonical_unit": "count",
+    "better": "neutral",
+    "expected_frequency": "halfyear",
+    "max_age_days": 200,
+    "astana_candidate_dataset_ids": [
+     "AST-A12-D020"
+    ],
+    "shymkent_candidate_dataset_ids": [],
+    "status": "derived count of rows; поля не проверены",
+    "comparability": "только при одинаковом составе полей и охвате",
+    "origin": "AST-A12"
+   },
+   {
+    "indicator_id": "LND.vacant_land_plots",
+    "direction": "земельные отношения",
+    "name_ru": "Число свободных земельных участков (№34)",
+    "canonical_unit": "count",
+    "better": "neutral",
+    "expected_frequency": "quarter",
+    "max_age_days": 200,
+    "astana_candidate_dataset_ids": [
+     "AST-A12-D025"
+    ],
+    "shymkent_candidate_dataset_ids": [],
+    "status": "derived count of rows; поля не проверены",
+    "comparability": "только при одинаковом составе полей и охвате",
+    "origin": "AST-A12"
+   },
+   {
+    "indicator_id": "EDU.schools_registry_count",
+    "direction": "образование",
+    "name_ru": "Число школ в реестре Министерства просвещения",
+    "canonical_unit": "count",
+    "better": "neutral",
+    "expected_frequency": "year",
+    "max_age_days": 550,
+    "astana_candidate_dataset_ids": [
+     "AST-A12-D030"
+    ],
+    "shymkent_candidate_dataset_ids": [],
+    "status": "derived count of rows; поля не проверены",
+    "comparability": "только при одинаковом составе полей и охвате",
+    "origin": "AST-A12"
+   },
+   {
+    "indicator_id": "TRN.gtfs_stops_per_district",
+    "direction": "транспорт",
+    "name_ru": "Число остановок фида по району (зависит от фида)",
+    "canonical_unit": "count",
+    "better": "neutral",
+    "expected_frequency": "snapshot",
+    "max_age_days": 365,
+    "astana_candidate_dataset_ids": [
+     "AST-A12-D007"
+    ],
+    "shymkent_candidate_dataset_ids": [],
+    "status": "derived count of rows; поля не проверены",
+    "comparability": "только при одинаковом составе полей и охвате",
+    "origin": "AST-A12"
+   }
+  ],
+  "top5_first_import": [
+   {
+    "dataset_id": "AST-A12-D001",
+    "why": "Уже в репозитории; основа версий границ и PIP",
+    "supports": [
+     "AST-A12-O001",
+     "AST-A12-O002",
+     "AST-A12-O003"
+    ],
+    "access": "sample_verified"
+   },
+   {
+    "dataset_id": "AST-A12-D040",
+    "why": "Население/миграция — знаменатель и проверка районной разбивки",
+    "supports": [
+     "AST-A12-O002",
+     "AST-A12-O003"
+    ],
+    "access": "не открыт"
+   },
+   {
+    "dataset_id": "AST-A12-D030",
+    "why": "Один национальный реестр для обоих городов",
+    "supports": [
+     "AST-A12-O002"
+    ],
+    "access": "метаданные; нужен ключ"
+   },
+   {
+    "dataset_id": "AST-A12-D020",
+    "why": "Инфраструктура и транспорт; обновление раз в полгода; есть у Шымкента",
+    "supports": [
+     "AST-A12-O001",
+     "AST-A12-O002"
+    ],
+    "access": "метаданные; нужен ключ"
+   },
+   {
+    "dataset_id": "AST-A12-D025",
+    "why": "Земельные отношения; №34 ежеквартально; есть у Шымкента",
+    "supports": [
+     "AST-A12-O001"
+    ],
+    "access": "метаданные; нужен ключ"
+   }
+  ],
+  "storage": "A12_schema.sql (первый проход, без изменений) + AST_A12_schema_delta.sql: boundary_versions, boundary_crosswalk, topology_conflicts, pip_assignments, game_mode_guard. Факты (evidence facts) и числа (observations) — таблицы; геослои — GeoJSON по boundary_version; документы — doc_chunks с locator; векторный индекс — только над chunk_id.",
+  "unavailable_data_requests_not_sent": [
+   {
+    "data": "Официальные границы 6 районов с датами",
+    "owner": "Акимат г. Астаны (управление архитектуры/земельных отношений — уточнить); Gov4c",
+    "minimal_fields": [
+     "district",
+     "kato",
+     "name_kk",
+     "name_ru",
+     "act",
+     "valid_from",
+     "geometry",
+     "crs"
+    ],
+    "status": "запрос не отправлялся; владелец частично по памяти модели — уточнить"
+   },
+   {
+    "data": "Население по районам и возрасту",
+    "owner": "БНС (департамент по г. Астане)",
+    "minimal_fields": [
+     "kato",
+     "year",
+     "age_group",
+     "sex",
+     "persons"
+    ],
+    "status": "запрос не отправлялся; владелец частично по памяти модели — уточнить"
+   },
+   {
+    "data": "Школы: мощность, контингент, смены",
+    "owner": "Управление образования г. Астаны",
+    "minimal_fields": [
+     "bin",
+     "address",
+     "lat",
+     "lon",
+     "design_capacity",
+     "students",
+     "shifts"
+    ],
+    "status": "запрос не отправлялся; владелец частично по памяти модели — уточнить"
+   },
+   {
+    "data": "Маршруты, остановки, интервалы",
+    "owner": "ТОО «City Transportation Systems» (по GTFS) / управление транспорта",
+    "minimal_fields": [
+     "route_id",
+     "stop_id",
+     "lat",
+     "lon",
+     "headway_peak"
+    ],
+    "status": "запрос не отправлялся; владелец частично по памяти модели — уточнить"
+   },
+   {
+    "data": "Обращения iKOMEK109 (агрегаты)",
+    "owner": "Акимат / оператор iKOMEK109",
+    "minimal_fields": [
+     "month",
+     "district",
+     "category",
+     "count",
+     "median_days"
+    ],
+    "status": "запрос не отправлялся; владелец частично по памяти модели — уточнить"
+   },
+   {
+    "data": "Аварии на сетях водо-, тепло-, электроснабжения",
+    "owner": "Городские сетевые компании (перечень уточнить)",
+    "minimal_fields": [
+     "date",
+     "utility",
+     "district",
+     "duration_h",
+     "customers_bucket"
+    ],
+    "status": "запрос не отправлялся; владелец частично по памяти модели — уточнить"
+   },
+   {
+    "data": "Концентрации по постам",
+    "owner": "РГП «Казгидромет»",
+    "minimal_fields": [
+     "post_id",
+     "lat",
+     "lon",
+     "pollutant",
+     "timestamp",
+     "value",
+     "unit"
+    ],
+    "status": "запрос не отправлялся; владелец частично по памяти модели — уточнить"
+   },
+   {
+    "data": "Преступления и ДТП по районам",
+    "owner": "КПСиСУ ГП РК",
+    "minimal_fields": [
+     "month",
+     "district",
+     "category",
+     "count"
+    ],
+    "status": "запрос не отправлялся; владелец частично по памяти модели — уточнить"
+   },
+   {
+    "data": "Исполнение бюджета по программам",
+    "owner": "Управление финансов г. Астаны",
+    "minimal_fields": [
+     "year",
+     "program_code",
+     "plan_kzt",
+     "fact_kzt"
+    ],
+    "status": "запрос не отправлялся; владелец частично по памяти модели — уточнить"
+   }
+  ],
+  "merge_with_shymkent": {
+   "rule": "Файлы A12_* первого прохода не изменяются; связь — через city_comparison и поле a12_equivalent",
+   "crosswalk": [
+    {
+     "ast": "AST-A12-D001",
+     "a12": "A12-D001",
+     "relation": "same_file"
+    },
+    {
+     "ast": "AST-A12-D002",
+     "a12": "A12-D002",
+     "relation": "same_file"
+    },
+    {
+     "ast": "AST-A12-D004",
+     "a12": "A12-D003",
+     "relation": "same_file"
+    },
+    {
+     "ast": "AST-A12-D008",
+     "a12": [
+      "A12-D004",
+      "A12-D005"
+     ],
+     "relation": "same_files"
+    },
+    {
+     "ast": "AST-A12-F006",
+     "a12": "A12-F006",
+     "relation": "extends (добавлены неиспользование и fallback-границы)"
+    }
+   ]
+  },
+  "second_pass_task": "Агенту с браузером: (1) открыть S040–S043 и раздел 38 БНС, скачать файл населения, записать районы и годы; (2) найти акты о Нуре и Сарайшыке в adilet; (3) открыть /meta для D020, D025, D030 (ссылки в egov_indices) и записать поля, нужен ли ключ; (4) проверить Zenodo 15769359: лицензия, версия, MD5; (5) выполнить Overpass §4.5 с out meta geom, проверить эксклав Байконура и Целиноградский район; (6) найти официальную страницу iKOMEK109 и бюллетень Казгидромета по Астане."
+ }
+}
