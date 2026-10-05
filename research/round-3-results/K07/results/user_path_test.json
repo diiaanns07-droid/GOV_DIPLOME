@@ -1,0 +1,182 @@
+{
+ "kind": "headless user-path check (Chromium via Playwright)",
+ "url": "prototype/index.html (file://)",
+ "passed": true,
+ "total": 34,
+ "failed": [],
+ "checks": [
+  {
+   "name": "title",
+   "ok": true,
+   "detail": "Карта доступности K07"
+  },
+  {
+   "name": "Shymkent selected by default",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "name": "Shymkent: 95 sample objects on the map",
+   "ok": true,
+   "detail": 95
+  },
+  {
+   "name": "Shymkent: 4 district labels",
+   "ok": true,
+   "detail": 4
+  },
+  {
+   "name": "Shymkent: table shows 95 of 95",
+   "ok": true,
+   "detail": "(95 из 95 в выборке)"
+  },
+  {
+   "name": "provenance: release and K10 SHA",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "name": "provenance: sample vs extract table present",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "name": "graph: view-only status",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "name": "graph: 4 reasons",
+   "ok": true,
+   "detail": 4
+  },
+  {
+   "name": "graph: K10 request with clip",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "name": "mouse click selects the clicked object",
+   "ok": true,
+   "detail": "Newline School, Школа"
+  },
+  {
+   "name": "object card opens on click",
+   "ok": true,
+   "detail": "Newline SchoolГруппаШкола (образование)правило K10Категория Overtureplace_of_learningнаблюдение · вторичноеConfidence0.7"
+  },
+  {
+   "name": "object card lists sources with licence",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "name": "table row selects object and highlights it",
+   "ok": true,
+   "detail": "Мұқтар Әуезов атындағы Оңтүстік Қазақстан Университеті"
+  },
+  {
+   "name": "road card by keyboard: permission unknown",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "name": "Astana: 105 sample objects",
+   "ok": true,
+   "detail": 105
+  },
+  {
+   "name": "Astana: 6 district labels",
+   "ok": true,
+   "detail": 6
+  },
+  {
+   "name": "filter: schools off -> 90 objects",
+   "ok": true,
+   "detail": 90
+  },
+  {
+   "name": "filter: table follows (90 из 105)",
+   "ok": true,
+   "detail": "(90 из 105 в выборке)"
+  },
+  {
+   "name": "selection cleared on city switch",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "name": "point analysis shown",
+   "ok": true,
+   "detail": "Точка 51.10506, 71.46501 · порог T = 800 мРасстояние по сети не рассчитано: вход"
+  },
+  {
+   "name": "point: network distance not computed (view_only)",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "name": "point: no 'unreachable' wording",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "name": "point inside city: no outside warning",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "name": "threshold updates analysis and map label",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "name": "point outside city: warning",
+   "ok": true,
+   "detail": "Точка 51.30199, 70.94725 · порог T = 2000 мТочка вне полигона города (Overture). Расчёт показан, но объекты за границей "
+  },
+  {
+   "name": "empty state on map",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "name": "empty state in table",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "name": "empty state in point analysis",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "name": "no network requests besides local files",
+   "ok": true,
+   "detail": []
+  },
+  {
+   "name": "no console or page errors",
+   "ok": true,
+   "detail": []
+  },
+  {
+   "name": "error state when data.js missing",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "name": "dark mode uses dark page token",
+   "ok": true,
+   "detail": "rgb(13, 13, 13)"
+  },
+  {
+   "name": "390 px wide: no horizontal page scroll",
+   "ok": true,
+   "detail": [
+    390,
+    390
+   ]
+  }
+ ]
+}

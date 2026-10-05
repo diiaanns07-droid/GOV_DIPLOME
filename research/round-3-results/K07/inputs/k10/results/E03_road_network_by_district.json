@@ -1,0 +1,279 @@
+{
+ "experiment_id": "K10-E03",
+ "note": "Overture/OSM road network; lengths geodesic WGS84 km; 'walkable_class_km' is a K10 class list, not a pedestrian-access verification.",
+ "walk_classes": [
+  "bridleway",
+  "cycleway",
+  "footway",
+  "living_street",
+  "path",
+  "pedestrian",
+  "primary",
+  "residential",
+  "secondary",
+  "service",
+  "steps",
+  "tertiary",
+  "track",
+  "unclassified"
+ ],
+ "results": [
+  {
+   "city": "shymkent",
+   "segments_in_bbox_by_subtype": {
+    "road": 47513,
+    "rail": 557
+   },
+   "road_segments_intersecting_city": 33761,
+   "road_km_inside_city": 5719.14,
+   "connected_components": 35,
+   "largest_component_share_of_km": 0.9965,
+   "districts": {
+    "Абай ауданы": {
+     "road_km_total": 1927.05,
+     "walkable_class_km": 1836.49,
+     "km_by_class": {
+      "residential": 1091.17,
+      "service": 278.24,
+      "track": 180.29,
+      "trunk": 88.15,
+      "primary": 78.76,
+      "tertiary": 64.62,
+      "footway": 52.04,
+      "secondary": 39.8,
+      "unclassified": 29.65,
+      "cycleway": 11.02,
+      "path": 9.89,
+      "unknown": 2.42,
+      "living_street": 0.66,
+      "steps": 0.27,
+      "pedestrian": 0.09
+     },
+     "segment_pieces": 10759,
+     "share_named": 0.478,
+     "share_with_road_surface": 0.119
+    },
+    "Еңбекші ауданы": {
+     "road_km_total": 1164.8,
+     "walkable_class_km": 1158.39,
+     "km_by_class": {
+      "residential": 672.26,
+      "service": 253.13,
+      "secondary": 81.14,
+      "tertiary": 42.89,
+      "primary": 39.2,
+      "footway": 25.06,
+      "unclassified": 24.91,
+      "track": 10.3,
+      "unknown": 6.41,
+      "living_street": 4.57,
+      "path": 3.33,
+      "pedestrian": 1.12,
+      "steps": 0.47
+     },
+     "segment_pieces": 7559,
+     "share_named": 0.434,
+     "share_with_road_surface": 0.081
+    },
+    "Қаратау ауданы": {
+     "road_km_total": 1982.99,
+     "walkable_class_km": 1945.22,
+     "km_by_class": {
+      "residential": 1337.43,
+      "service": 272.55,
+      "tertiary": 96.25,
+      "secondary": 87.42,
+      "primary": 61.37,
+      "footway": 42.08,
+      "trunk": 32.96,
+      "unclassified": 23.31,
+      "track": 22.76,
+      "unknown": 4.81,
+      "path": 1.59,
+      "pedestrian": 0.24,
+      "living_street": 0.15,
+      "steps": 0.07
+     },
+     "segment_pieces": 11429,
+     "share_named": 0.338,
+     "share_with_road_surface": 0.041
+    },
+    "Әл-Фараби ауданы": {
+     "road_km_total": 648.54,
+     "walkable_class_km": 633.71,
+     "km_by_class": {
+      "residential": 255.21,
+      "service": 132.68,
+      "footway": 70.66,
+      "primary": 47.72,
+      "tertiary": 45.81,
+      "secondary": 36.92,
+      "cycleway": 22.89,
+      "unclassified": 16.78,
+      "trunk": 12.6,
+      "path": 2.36,
+      "unknown": 2.23,
+      "living_street": 1.07,
+      "pedestrian": 0.87,
+      "steps": 0.74
+     },
+     "segment_pieces": 4532,
+     "share_named": 0.392,
+     "share_with_road_surface": 0.219
+    }
+   }
+  },
+  {
+   "city": "astana",
+   "segments_in_bbox_by_subtype": {
+    "road": 42326,
+    "rail": 546
+   },
+   "road_segments_intersecting_city": 37464,
+   "road_km_inside_city": 5901.25,
+   "connected_components": 88,
+   "largest_component_share_of_km": 0.9792,
+   "districts": {
+    "Алматы ауданы": {
+     "road_km_total": 811.39,
+     "walkable_class_km": 780.89,
+     "km_by_class": {
+      "service": 293.76,
+      "residential": 157.93,
+      "footway": 139.61,
+      "secondary": 65.05,
+      "track": 40.68,
+      "tertiary": 31.88,
+      "trunk": 25.12,
+      "primary": 18.42,
+      "cycleway": 15.9,
+      "unclassified": 13.83,
+      "unknown": 5.39,
+      "path": 3.15,
+      "steps": 0.41,
+      "living_street": 0.27
+     },
+     "segment_pieces": 5430,
+     "share_named": 0.228,
+     "share_with_road_surface": 0.104
+    },
+    "Байқоңыр ауданы": {
+     "road_km_total": 914.25,
+     "walkable_class_km": 842.15,
+     "km_by_class": {
+      "service": 381.35,
+      "residential": 134.7,
+      "track": 92.33,
+      "footway": 73.03,
+      "secondary": 57.78,
+      "trunk": 49.62,
+      "unclassified": 43.75,
+      "primary": 29.53,
+      "tertiary": 27.11,
+      "motorway": 18.4,
+      "unknown": 4.08,
+      "cycleway": 1.42,
+      "path": 0.82,
+      "steps": 0.32
+     },
+     "segment_pieces": 4805,
+     "share_named": 0.267,
+     "share_with_road_surface": 0.192
+    },
+    "Есіл ауданы": {
+     "road_km_total": 1391.01,
+     "walkable_class_km": 1339.07,
+     "km_by_class": {
+      "service": 420.16,
+      "footway": 371.23,
+      "residential": 162.56,
+      "track": 95.1,
+      "secondary": 88.69,
+      "tertiary": 65.48,
+      "trunk": 43.17,
+      "cycleway": 43.01,
+      "living_street": 38.93,
+      "unclassified": 20.48,
+      "primary": 15.71,
+      "path": 15.33,
+      "unknown": 8.77,
+      "steps": 1.61,
+      "pedestrian": 0.77
+     },
+     "segment_pieces": 9877,
+     "share_named": 0.146,
+     "share_with_road_surface": 0.139
+    },
+    "Нұра ауданы": {
+     "road_km_total": 1237.96,
+     "walkable_class_km": 1176.6,
+     "km_by_class": {
+      "service": 382.0,
+      "residential": 260.27,
+      "footway": 243.15,
+      "track": 82.87,
+      "trunk": 57.37,
+      "cycleway": 55.13,
+      "primary": 54.87,
+      "secondary": 37.15,
+      "tertiary": 37.01,
+      "unclassified": 21.1,
+      "unknown": 3.98,
+      "path": 2.61,
+      "steps": 0.44
+     },
+     "segment_pieces": 7181,
+     "share_named": 0.239,
+     "share_with_road_surface": 0.169
+    },
+    "Сарайшық ауданы": {
+     "road_km_total": 727.75,
+     "walkable_class_km": 703.94,
+     "km_by_class": {
+      "service": 181.81,
+      "footway": 166.01,
+      "residential": 122.86,
+      "tertiary": 74.97,
+      "track": 48.58,
+      "secondary": 46.08,
+      "unclassified": 41.37,
+      "trunk": 19.16,
+      "cycleway": 10.23,
+      "primary": 7.7,
+      "unknown": 4.64,
+      "path": 3.65,
+      "steps": 0.57,
+      "pedestrian": 0.14
+     },
+     "segment_pieces": 4794,
+     "share_named": 0.244,
+     "share_with_road_surface": 0.163
+    },
+    "Сарыарқа ауданы": {
+     "road_km_total": 835.3,
+     "walkable_class_km": 802.61,
+     "km_by_class": {
+      "service": 322.52,
+      "residential": 185.78,
+      "footway": 144.63,
+      "tertiary": 50.7,
+      "secondary": 33.01,
+      "track": 27.75,
+      "primary": 25.8,
+      "trunk": 25.26,
+      "unknown": 7.43,
+      "cycleway": 5.62,
+      "unclassified": 4.71,
+      "path": 0.92,
+      "steps": 0.67,
+      "pedestrian": 0.45,
+      "living_street": 0.05
+     },
+     "segment_pieces": 5887,
+     "share_named": 0.295,
+     "share_with_road_surface": 0.218
+    }
+   }
+  }
+ ]
+}

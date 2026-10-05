@@ -1,9 +1,9 @@
 {
- "note": "Byte-exact copies (git cat-file blob) of K10 inputs used by the K07 round-3 prototype. Do not edit; regenerate with the command below.",
+ "note": "Byte-exact copies (git cat-file blob) of K10 inputs used by the K07 round-3 prototype. Do not edit; regenerate with scripts/copy_inputs.py.",
  "source_branch": "claude/save-work-handoff-j7pc05",
  "source_sha": "e91898d596164bcf6e853b921a49f82126074a35",
  "source_listed_in": "origin/codex/research-import-2026-10-05:research/round-3/snapshots.json (commit 6602bb86f152d24edcb66f8b45122844323116bc)",
- "copy_command": "git cat-file blob e91898d596164bcf6e853b921a49f82126074a35:research/next-round/K10/<path> > inputs/k10/<path>",
+ "copy_command": "python3 research/round-3-results/K07/scripts/copy_inputs.py",
  "files": [
   {
    "copy": "inputs/k10/datasets.json",
@@ -76,6 +76,24 @@
    "bytes_identical": true,
    "sha256": "e0255a6560e6762efc6e2e179bc73595458ff2dcf8d162f39d8f45d88133a877",
    "bytes": 757
+  },
+  {
+   "copy": "inputs/k10/results/E02_social_poi_by_district.json",
+   "source_path": "research/next-round/K10/results/E02_social_poi_by_district.json",
+   "source_blob": "78eb319afa5d0aea1345e50980fa45f1a196141d",
+   "copy_blob": "78eb319afa5d0aea1345e50980fa45f1a196141d",
+   "bytes_identical": true,
+   "sha256": "ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad",
+   "bytes": 5167
+  },
+  {
+   "copy": "inputs/k10/results/E03_road_network_by_district.json",
+   "source_path": "research/next-round/K10/results/E03_road_network_by_district.json",
+   "source_blob": "5828cde6e05acc39416e4fc309deb4c0180cc16f",
+   "copy_blob": "5828cde6e05acc39416e4fc309deb4c0180cc16f",
+   "bytes_identical": true,
+   "sha256": "51af4b61255db22e2aa79c2bd9f5af68c086bbac207cdddb78f3351ede0985ff",
+   "bytes": 6752
   },
   {
    "copy": "inputs/k10/samples/astana_districts_overture.geojson",
