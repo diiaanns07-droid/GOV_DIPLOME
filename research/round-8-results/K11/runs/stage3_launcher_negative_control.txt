@@ -1,0 +1,10 @@
+K11 round 8 stage 3: negative control for tests/launcher_check.py (static part).
+Copy of a5b5e2d with run-demo.bat broken on purpose: LF-only, Cyrillic rem on line 2, 'cd %~dp0' unquoted without /d, no pause; empty .gitattributes.
+FAIL    [static] run-demo.bat: CRLF line endings only (cmd.exe misparses LF-only batch files around labels/blocks) :: {"bare_lf": 13}
+FAIL    [static] run-demo.bat: ASCII only (after chcp 65001 cmd re-reads the file in a new code page) :: {"lines": [2]}
+FAIL    [static] run-demo.bat: cd /d "%~dp0" (quoted, other drive, spaces) before serve.py :: {"cd": null, "run": 8}
+FAIL    [static] run-demo.bat: window stays open on error (pause)
+FAIL    [static] .gitattributes keeps run-demo.bat bytes (no autocrlf conversion on checkout) :: ""
+FAIL    [static] serve.py sets an explicit .js MIME type (registry-independent; see proposed_serve_mime.patch)
+{"PASS": 6, "FAIL": 6, "INFO": 2, "NOT_RUN": 2}
+exit=1

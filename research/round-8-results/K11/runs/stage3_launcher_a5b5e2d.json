@@ -1,0 +1,149 @@
+{
+ "tool": "tests/launcher_check.py",
+ "label": "BUILD a5b5e2d",
+ "platform": "linux",
+ "python": "3.11.15",
+ "kind": "static + runtime on this OS; Windows execution not_run",
+ "counts": {
+  "PASS": 11,
+  "FAIL": 1,
+  "INFO": 2,
+  "NOT_RUN": 2
+ },
+ "items": [
+  {
+   "kind": "static",
+   "name": "run-demo.bat: CRLF line endings only (cmd.exe misparses LF-only batch files around labels/blocks)",
+   "status": "PASS",
+   "detail": {
+    "bare_lf": 0
+   }
+  },
+  {
+   "kind": "static",
+   "name": "run-demo.bat: ASCII only (after chcp 65001 cmd re-reads the file in a new code page)",
+   "status": "PASS",
+   "detail": {
+    "lines": []
+   }
+  },
+  {
+   "kind": "static",
+   "name": "run-demo.bat: cd /d \"%~dp0\" (quoted, other drive, spaces) before serve.py",
+   "status": "PASS",
+   "detail": {
+    "cd": 5,
+    "run": 8
+   }
+  },
+  {
+   "kind": "static",
+   "name": "run-demo.bat: chcp 65001 and PYTHONIOENCODING=utf-8 before serve.py",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "kind": "static",
+   "name": "run-demo.bat: py -3 with fallback to python",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "kind": "static",
+   "name": "run-demo.bat: window stays open on error (pause)",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "kind": "static",
+   "name": "run-demo.bat: fixed port (a busy port is reported by serve.py, see runtime)",
+   "status": "INFO",
+   "detail": {
+    "port": 8765
+   }
+  },
+  {
+   "kind": "static",
+   "name": ".gitattributes keeps run-demo.bat bytes (no autocrlf conversion on checkout)",
+   "status": "PASS",
+   "detail": "# Byte-exact inputs and generated files: no end-of-line conversion on any OS (hashes are recorded).\n* -text"
+  },
+  {
+   "kind": "static",
+   "name": "serve.py listens on 127.0.0.1 only",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "kind": "static",
+   "name": "serve.py sets an explicit .js MIME type (registry-independent; see proposed_serve_mime.patch)",
+   "status": "FAIL",
+   "detail": null
+  },
+  {
+   "kind": "runtime",
+   "name": "serve.py from a folder 'Қала демо К11' (Kazakh letters, spaces), other cwd: index/app/data served",
+   "status": "PASS",
+   "detail": {
+    "got": {
+     "index.html": [
+      200,
+      "text/html",
+      12751
+     ],
+     "app.js": [
+      200,
+      "text/javascript",
+      52141
+     ],
+     "data.js": [
+      200,
+      "text/javascript",
+      1070322
+     ]
+    },
+    "stdout": "Городские данные: http://127.0.0.1:43067/  (Ctrl+C — остановить)\n",
+    "stderr": ".0.0.1 - - [05/Oct/2026 17:34:28] \"GET /index.html HTTP/1.1\" 200 -\n127.0.0.1 - - [05/Oct/2026 17:34:28] \"GET /app.js HTTP/1.1\" 200 -\n127.0.0.1 - - [05/Oct/2026 17:34:28] \"GET /data.js HTTP/1.1\" 200 -\n"
+   }
+  },
+  {
+   "kind": "runtime",
+   "name": "serve.py with an ASCII-only console encoding starts and prints the URL (no UnicodeEncodeError)",
+   "status": "PASS",
+   "detail": {
+    "stdout": "????????? ??????: http://127.0.0.1:38837/  (Ctrl+C ? ??????????)\n",
+    "stderr": "127.0.0.1 - - [05/Oct/2026 17:34:29] \"GET /index.html HTTP/1.1\" 200 -\n"
+   }
+  },
+  {
+   "kind": "runtime",
+   "name": "serve.py on a busy port fails loudly on linux (does not hang)",
+   "status": "PASS",
+   "detail": {
+    "exit": 1,
+    "last_stderr_line": "OSError: [Errno 98] Address already in use"
+   }
+  },
+  {
+   "kind": "runtime",
+   "name": "busy port message is a short hint rather than a Python traceback",
+   "status": "INFO",
+   "detail": {
+    "friendly": false,
+    "last_stderr_line": "OSError: [Errno 98] Address already in use"
+   }
+  },
+  {
+   "kind": "windows",
+   "name": "double-click run-demo.bat in cmd.exe, py launcher, registry MIME, Windows Defender prompt",
+   "status": "NOT_RUN",
+   "detail": "no Windows machine in this environment"
+  },
+  {
+   "kind": "windows",
+   "name": "HYPOTHESIS: busy port on Windows may NOT fail (ThreadingHTTPServer.allow_reuse_address=1; on Windows SO_REUSEADDR lets a second socket bind a port in use)",
+   "status": "NOT_RUN",
+   "detail": "needs a Windows run: start run-demo.bat twice"
+  }
+ ]
+}

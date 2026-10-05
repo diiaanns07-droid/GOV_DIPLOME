@@ -1,0 +1,3 @@
+K11 round 8 stage 3: negative control for smoke/portable_smoke.py bundle_fresh.
+A copy of K11 with one line appended to src/plan_worker.js (bundle not regenerated), node removed from PATH:
+FAIL    bundle_fresh (0.0 s) :: {"stale": ["plan_worker.js"], "fix": "python tools/make_worker_bundle.py"}

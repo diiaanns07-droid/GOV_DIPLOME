@@ -6,7 +6,7 @@
 
 | Функция | Что делает |
 |---|---|
-| `validatePlanScenario(input, context)` | Структура, диапазоны и ссылки по CORE_SPEC. Возвращает чистую копию или бросает `PlanError{code, detail}`: `bad_version`, `bad_city`, `bad_snapshot`, `bad_category`, `bad_points`, `bad_candidates`, `bad_id`, `duplicate_id`, `bad_coord`, `outside_bbox`, `bad_weight`, `bad_kind`, `bad_cost`, `bad_budget`, `bad_max_selected`, `bad_radius`, `unknown_candidate`, `required_excluded_overlap`, `unknown_field`, `missing_field`. `derived_results` разрешён и отбрасывается. Разбор строгого JSON-текста — отдельная задача (см. K11 r7 `whatif_io.py`). |
+| `validatePlanScenario(input, context)` | Структура, диапазоны и ссылки по CORE_SPEC. Возвращает чистую копию или бросает `PlanError{code, detail}`: `bad_version`, `bad_city`, `bad_snapshot`, `bad_category`, `bad_points`, `bad_candidates`, `bad_id`, `duplicate_id`, `bad_coord`, `outside_bbox`, `bad_weight`, `bad_kind`, `bad_cost`, `bad_budget`, `bad_max_selected`, `bad_radius`, `unknown_candidate`, `required_excluded_overlap`, `unknown_field`, `missing_field`. `derived_results` разрешён и отбрасывается. Строгий разбор текста и байтов файла — `src/plan_export.js`. |
 | `prepareProblem(context, sc)` | Все гаверсинусы считаются один раз и переводятся в мм (`haversine-mm-v1`). Внутри перебора гаверсинус не вызывается. |
 | `createSearch(pb, {budget?})` / `stepSearch(st, maxMasks)` / `finalizeSearch(st)` | Возобновляемый полный перебор ≤ 2^16 подмножеств мелкими шагами. Статус `optimal` — только после полного перебора; иначе `incomplete` или `cancelled`. |
 | `optimizePlansSync(context, scenario, {budget?})` | То же одним вызовом. **Блокирует поток**, для UI использовать runner. |
@@ -70,4 +70,21 @@ runner.state();    // {active, worker_alive, pending_timers, pending_cancels, wo
 - вход: `start` / `cancel`;
 - выход: `accepted`, `progress`, `result`, `cancelled`, `error`.
 
-Все сообщения несут `request_id`, а `progress`/`result` — ещё и `problem_digest`. Между чанками worker уступает свой цикл событий (`setTimeout 0`), поэтому `cancel` обрабатывается не позже чем через один чанк.
+Все сообщения несут `request_id`, а `progress`/`result` — ещё и `problem_digest`.
+
+Worker считает квантами по `slice_ms` (8 мс). Между квантами он уступает цикл событий через `MessageChannel` (браузер) или `setImmediate` (Node), а не через `setTimeout(0)`: тот зажимается до 4 мс. Поэтому `cancel` обрабатывается не позже чем через один квант. `cancel` для запроса, который уже не выполняется, подтверждается сразу.
+
+## `src/plan_export.js` — файл сценария (UMD; `CITY_PLAN_EXPORT`)
+
+| Функция | Что делает |
+|---|---|
+| `exportPlanFile(scenario, env?, label?)` | Сериализует проверенный сценарий в `{filename, text, mime}`. Текст UTF-8 без BOM, только LF, буквы без `\u`-экранов, фиксированный порядок ключей. `derived_results` с пометкой «never trusted» добавляются, только если `env.status === "optimal"`. NaN/Infinity и непарный суррогат → `ExportError` (`non_finite_number`, `lone_surrogate`), а не `null` или `\ud800` в файле. Больше 256 КиБ → `too_large`. |
+| `importPlanBytes(bytes, context, engine)` | **Основной путь импорта.** UTF-8 строго (`TextDecoder fatal`); BOM UTF-8 пропускается; UTF-16 LE/BE читается только с BOM. Windows-1251/ANSI → `not_utf8`. Дальше как `importPlanText`. Возвращает `{scenario, derived_ignored, bom, encoding}`. |
+| `importPlanText(text, context, engine)` | Для уже декодированного текста: BOM, ≤ 256 КиБ UTF-8, U+FFFD → `replacement_char` (признак чтения не в той кодировке), `parseStrict`, затем `engine.validatePlanScenario`. `derived_results` никогда не используются. |
+| `readPlanFile(file, context, engine)` | Браузер: `File` из `<input type=file>` → `arrayBuffer()` → `importPlanBytes`. Не `File.text()`: тот молча заменяет байты. |
+| `parseStrict(text)` | JSON без расширений, линейный. Ошибки: `duplicate_key`, `non_finite_number` (`1e999`), `lone_surrogate`, `bad_json` (NaN/Infinity, хвост, комментарии, висячая запятая, ведущий ноль, управляющий символ в строке, вложенность > 64). `__proto__` остаётся обычным ключом данных. |
+| `suggestFilename(scenario, label?)` / `safeFilename(name)` | Читаемое имя, например `план_Шымкент_школы.json`. NFC; символы `<>:"/\?*`, вертикальная черта и управляющие символы → `_`; без точек и пробелов в конце; зарезервированные имена Windows (`CON`, `NUL`, `COM1`, `LPT¹`… также с расширением) получают префикс `_`; ≤ 120 UTF-16 единиц, обрезка по границе кодовой точки. |
+| `downloadPlanFile(file, doc?)` | Браузер: Blob + `<a download>`, URL освобождается через 1 с. |
+| `decodePlanBytes(bytes)`, `utf8Length(s)`, `MAX_BYTES`, `ExportError{code, detail}` | Вспомогательное. |
+
+Ошибки проверки содержимого приходят из движка как `PlanError` (`bad_city`, `bad_snapshot`, …). Пример UI переводит коды на русский (`example/index.html`).

@@ -98,5 +98,7 @@ async function probe(cfg) {  // runs in the page
   if (i > 0) fs.writeFileSync(process.argv[i + 1], JSON.stringify(out, null, 1) + "\n");
   for (const [k, v] of Object.entries(verdict)) console.log((v ? "PASS " : "FAIL ") + k);
   for (const [k, v] of Object.entries(rows)) console.log("  " + k + ": raw_url=" + JSON.stringify(v.raw_url_worker) + " auto_url=" + JSON.stringify(v.runner_auto_url));
-  process.exitCode = Object.values(verdict).every(Boolean) ? 0 : 1;
+  const pass = Object.values(verdict).filter(Boolean).length;
+  console.log("summary: " + JSON.stringify({ pass, fail: Object.keys(verdict).length - pass }));
+  process.exitCode = pass === Object.keys(verdict).length ? 0 : 1;
 })().catch((e) => { console.error(e); process.exitCode = 1; });

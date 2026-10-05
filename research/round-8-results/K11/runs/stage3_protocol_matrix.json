@@ -46,7 +46,7 @@
    "raw_url_worker": {
     "ok": false,
     "stage": "error_event",
-    "error": "Uncaught NetworkError: Failed to execute 'importScripts' on 'WorkerGlobalScope': The script at 'http://127.0.0.1:32895/src/plan_core.js' failed to load."
+    "error": "Uncaught NetworkError: Failed to execute 'importScripts' on 'WorkerGlobalScope': The script at 'http://127.0.0.1:37419/src/plan_core.js' failed to load."
    },
    "raw_blob_worker": {
     "ok": true,
@@ -55,7 +55,7 @@
    "runner_auto_url": {
     "status": "optimal",
     "mode": "chunks",
-    "fallback": "Uncaught NetworkError: Failed to execute 'importScripts' on 'WorkerGlobalScope': The script at 'http://127.0.0.1:32895/src/plan_core.js' failed to load.",
+    "fallback": "Uncaught NetworkError: Failed to execute 'importScripts' on 'WorkerGlobalScope': The script at 'http://127.0.0.1:37419/src/plan_core.js' failed to load.",
     "code": null,
     "mean": "C01,C04,C05,C11,C12"
    },

@@ -1,0 +1,91 @@
+{
+ "tool": "smoke/portable_smoke.py",
+ "environment": {
+  "platform": "Linux-6.18.44-fc-v70-x86_64-with-glibc2.39",
+  "python": "3.11.15",
+  "cwd": "/tmp/claude-0/-home-user-GOV-DIPLOME/5c658b50-82f6-5aaf-9173-1d6afb9e4cdf/scratchpad",
+  "k11_root": "/tmp/claude-0/-home-user-GOV-DIPLOME/5c658b50-82f6-5aaf-9173-1d6afb9e4cdf/scratchpad/портативті К11 тексеру/K11",
+  "node": "v22.22.0",
+  "NODE_PATH_set": true
+ },
+ "counts": {
+  "PASS": 8,
+  "FAIL": 0,
+  "NOT_RUN": 0
+ },
+ "steps": [
+  {
+   "step": "oracle",
+   "status": "PASS",
+   "seconds": 2.97036075592041,
+   "detail": {
+    "fixtures": 11,
+    "mismatch": []
+   }
+  },
+  {
+   "step": "bundle_fresh",
+   "status": "PASS",
+   "seconds": 0.0013625621795654297,
+   "detail": null
+  },
+  {
+   "step": "harness",
+   "status": "PASS",
+   "seconds": 5.4218714237213135,
+   "detail": {
+    "exit": 0,
+    "last": "summary: {\"pass\":21,\"fail\":0}"
+   }
+  },
+  {
+   "step": "export",
+   "status": "PASS",
+   "seconds": 2.356128454208374,
+   "detail": {
+    "exit": 0,
+    "last": "30 PASS / 0 FAIL / 0 NOT_RUN"
+   }
+  },
+  {
+   "step": "browser",
+   "status": "PASS",
+   "seconds": 2.0171451568603516,
+   "detail": {
+    "exit": 0,
+    "last": "summary: {\"pass\":15,\"fail\":0}"
+   }
+  },
+  {
+   "step": "protocols",
+   "status": "PASS",
+   "seconds": 1.2360808849334717,
+   "detail": {
+    "exit": 0,
+    "last": "summary: {\"pass\":9,\"fail\":0}"
+   }
+  },
+  {
+   "step": "launcher",
+   "status": "PASS",
+   "seconds": 0.43588972091674805,
+   "detail": {
+    "exit": 0,
+    "last": "{\"PASS\": 12, \"FAIL\": 0, \"INFO\": 2, \"NOT_RUN\": 2}",
+    "inner_not_run": [
+     "NOT_RUN [windows] double-click run-demo.bat in cmd.exe, py launcher, registry MIME, Windows Defender prompt :: \"no Windows machine in this environment\"",
+     "NOT_RUN [windows] HYPOTHESIS: busy port on Windows may NOT fail (ThreadingHTTPServer.allow_reuse_address=1; on Windows SO_REUSEADDR lets a second socket bind a port in use) :: \"needs a Windows run: start run-demo.bat twice\""
+    ]
+   }
+  },
+  {
+   "step": "serve_mime",
+   "status": "PASS",
+   "seconds": 0.3350100517272949,
+   "detail": {
+    "exit": 0,
+    "last": "PASS .js served as JavaScript in both cases"
+   }
+  }
+ ]
+}

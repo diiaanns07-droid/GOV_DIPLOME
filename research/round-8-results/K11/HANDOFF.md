@@ -9,7 +9,11 @@
 | `src/plan_runner.js` | `web/plan_runner.js` | нет; движок передаётся параметром `engine` |
 | `src/plan_worker.js` | `web/plan_worker.js` (рядом с движком; worker делает `importScripts("plan_core.js")`) | движок как `self.CITY_PLAN_CORE` |
 | `src/plan_core.js` | `web/plan_core.js`, если сборщик не пишет свой решатель | нет |
+| `src/plan_export.js` | `web/plan_export.js`: сохранить и открыть файл `city-plan-v2` | движок с `validatePlanScenario` |
 | `tools/make_worker_bundle.py` | генератор `web/worker_bundle.js` для `file://` (Blob-worker) | Python stdlib |
+| `proposed_serve_mime.patch` | `git apply` к `serve.py` BUILD | нет |
+
+Пошагово — `INTEGRATION.md`.
 
 Свой решатель сборщика подключается через `engine`, если у него есть методы `validatePlanScenario`, `problemDigest`, `prepareProblem`, `createSearch`, `stepSearch`, `finalizeSearch`, `sensitivityBudgets`. Тогда `tests/harness.cjs` можно запустить против него, заменив `require` движка.
 
@@ -21,6 +25,7 @@ node tests/harness.cjs                                   # Node, без DOM
 python3 oracle/plan_oracle.py fixtures/real/real_shymkent_school_16x25.json   # оракул отдельно
 NODE_PATH="$(npm root -g)" node tests/browser_example.cjs [--file]            # браузер; без Playwright -> NOT_RUN (exit 3)
 python3 tools/make_worker_bundle.py                      # после правки src/: пересобрать bundle примера
+python3 smoke/portable_smoke.py [--app-root <BUILD>/prototypes/city-evidence]  # всё сразу; без инструмента -> NOT_RUN
 ```
 
 ## Открытые вопросы
@@ -36,11 +41,22 @@ python3 tools/make_worker_bundle.py                      # после правк
 - `cancel` для уже завершённого запроса worker подтверждает сразу, иначе оркестратор убьёт исправный worker.
 - Повтор замеров на целевой машине: `bench/bench_browser.cjs`, `bench/bench_node.cjs`. Цифры `BENCHMARK.md` — не SLA.
 
-## Этап 3 (промежуточно): что учесть при интеграции
+## Этап 3: что учесть при интеграции
 
-- На `file://` фабрика только `blobWorkerFactory(CITY_PLAN_WORKER_SOURCES)`, иначе `auto` молча уйдёт в чанки.
-- `serve.py` BUILD зависит от реестра Windows для MIME `.js`. Нужна явная карта типов, см. `proposed_serve_mime.patch`.
-- Файлы сценария импортировать как байты (`readPlanFile`/`importPlanBytes`), а не через `File.text()`: иначе Windows-1251 превратится в кракозябры без ошибки.
-- `src/plan_export.js` — модуль K11, в BUILD его нет; интеграция не проверялась.
+- На `file://` фабрика только `blobWorkerFactory(CITY_PLAN_WORKER_SOURCES)`. Иначе `auto` уйдёт в чанки, и это будет видно только в `env.fallback`.
+- `serve.py` BUILD `a5b5e2d` берёт MIME `.js` из `mimetypes` (на Windows — реестр). При `text/plain` worker по URL не стартует. Исправление — `proposed_serve_mime.patch`. Модельная проверка: `a5b5e2d` FAIL, с патчем PASS.
+- Файл сценария открывать как байты (`readPlanFile` / `importPlanBytes`), не через `File.text()`.
+- `run-demo.bat` статически в порядке: CRLF, ASCII, `cd /d "%~dp0"`, `chcp 65001`, `py -3` → `python`, `pause`. На занятом порту `serve.py` печатает traceback, а не подсказку. Это INFO, патч не предлагается.
+- `src/plan_export.js` и пример с кнопками — модули K11. В BUILD их нет, интеграция не проверялась.
 
-Дальнейшие этапы будут дописаны ниже.
+## Открытые вопросы этапа 3
+
+- Алфавит ID в `city-plan-v2`: CORE_SPEC ограничивает только длину (≤ 64). Если BUILD разрешит кириллицу и казахские буквы, байтовый импорт обязателен. Если оставит ASCII, как в v1, риск кракозябр остаётся только в игнорируемых полях.
+- Chromium на Linux в локали `C` сохраняет файл с кириллическим именем как `download`, содержимое верное. На Windows не проверялось. Нужна ли ASCII-транслитерация имени?
+- Windows (`NOT_RUN`):
+  - реальный `run-demo.bat`;
+  - MIME из реестра;
+  - повторный запуск на занятом порту (гипотеза про `SO_REUSEADDR`);
+  - загрузка с кириллическим именем.
+
+  Чек-лист — `INTEGRATION.md`, раздел 7.
