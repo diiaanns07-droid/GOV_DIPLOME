@@ -7,7 +7,7 @@
 | Слепой exact на JS | Только текст CORE_SPEC (`git show c3f6c00:research/round-8/CORE_SPEC.txt`) и соглашения из промпта (коды причин infeasible, Парето-представитель); входы без ответов | `blind_exact/exact.js`, `selfcheck.js`, `variants_check.js`, `blind_exact_out.json` | `scripts/compare_blind.py`: 34 задачи, 578 полей, 28 Парето, 34 набора чувствительности — **0 расхождений** |
 | Слепые G1/G2 на JS | Текстовое описание G1/G2 (в нём правило G2 при ничьей по du — (−du, cost, id), как в коде) и CORE_SPEC | `blind_greedy/greedy.js`, `check.js`, `blind_greedy_out.json` | 204 результата — **0 расхождений** |
 | Слепой пересчёт агрегатов | Только `results/runs.csv` и `results/scenarios.csv`, определения метрик | `blind_recompute/recompute.py`, `out.json`, `extra_checks.json` | `scripts/compare_recompute.py`: 220 значений — **0 расхождений**; санитарные проверки (a–h) — 0 нарушений |
-| Состязательный обзор кода | Весь код, дизайн, config, results | `review/findings.json`, `review/*.py` | 1 major, 6 minor, 5 nit; разбор и исправления — в `RESULTS.md` §8 |
+| Состязательный обзор кода | Весь код, дизайн, config, results | `review/findings.json`, `review/*.py` | 1 major, 6 minor, 5 nit; разбор и исправления — в `RESULTS.md` §6, отклонения — в §8 |
 
 Повторный запуск JS-реализаций (`node exact.js inputs.json out.json`, `node greedy.js inputs.json out.json`) даёт побайтно те же выходы (Node v22.22.0).
 
@@ -15,7 +15,7 @@
 
 Пути `/tmp/claude-0/...` и `/home/user/...` в скриптах агентов — пути сессии проверки. Скрипты читают и пишут только JSON/CSV, сетевых и системных вызовов в них нет (код просмотрен перед повторным запуском JS).
 
-Аудит транскриптов (`transcript_audit.json`): во всех вызовах инструментов агентов искались запрещённые для каждой роли пути. Для слепых JS-агентов это `round-8-results/K09`, Python-код, ожидаемые ответы и каталоги других агентов; для пересчёта — summary, tables, posthoc, RESULTS, код. Результат:
+Аудит транскриптов (`transcript_audit.json`; в поле forbidden_pattern_hits у blind_exact одна запись — это текст итогового отчёта, см. ниже): во всех вызовах инструментов агентов искались запрещённые для каждой роли пути. Для слепых JS-агентов это `round-8-results/K09`, Python-код, ожидаемые ответы и каталоги других агентов; для пересчёта — summary, tables, posthoc, RESULTS, код. Результат:
 - в вызовах Bash/Write совпадений нет. Единственное совпадение у blind_exact — текст его итогового отчёта («не читал …»), а не обращение к файлу;
 - записей вне scratchpad нет;
 - изменяющих git-команд нет.
