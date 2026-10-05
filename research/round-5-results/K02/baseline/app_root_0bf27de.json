@@ -1,0 +1,95 @@
+{
+ "target": {
+  "app_root": "<extracted prototypes/city-evidence>",
+  "build_sha": "0bf27deb8549b325b34a9610402613d745544edb"
+ },
+ "node": "v22.22.0",
+ "results": [
+  {
+   "id": "T1_value_change",
+   "title": "изменение значения при том же городе и срезе: старый план отклоняется",
+   "pass": false,
+   "observed": "accepted",
+   "scenario_same": true
+  },
+  {
+   "id": "T2_unit_change",
+   "title": "изменение единицы при том же городе и срезе: старый план отклоняется",
+   "pass": false,
+   "observed": "accepted",
+   "scenario_same": true
+  },
+  {
+   "id": "T3_coverage_change",
+   "title": "изменение охвата при том же городе и срезе: старый план отклоняется",
+   "pass": false,
+   "observed": "accepted",
+   "scenario_same": true
+  },
+  {
+   "id": "T4_digest_distinguishes",
+   "title": "старый срез и изменённый каталог различимы (catalogDigest), одинаковые — равны",
+   "pass": false,
+   "observed": "API отсутствует: catalogDigest"
+  },
+  {
+   "id": "T5_duplicate_across_sections",
+   "title": "повтор одного ID в двух секциях отклоняется (duplicate_id)",
+   "pass": false,
+   "observed": "accepted"
+  },
+  {
+   "id": "T6_null_vs_zero",
+   "title": "null: только в data_gaps и «нет данных»; настоящий 0 печатается как 0",
+   "pass": true,
+   "observed": {
+    "outside": "null_as_fact",
+    "ru_lines": [
+     "- Мощность школ (места): нет данных (неизвестно)",
+     "- Записей с неоднозначным районом: 0 (расчёт)"
+    ]
+   }
+  },
+  {
+   "id": "T7_city_substitution_observations",
+   "title": "наблюдения другого города под ключом города отклоняются при buildCatalog",
+   "pass": false,
+   "observed": "принято: числа kz.astana под shymkent"
+  },
+  {
+   "id": "T8_city_switch_stale_plan",
+   "title": "план по Астане против каталога Шымкента отклоняется (foreign_city или stale_catalog)",
+   "pass": true,
+   "observed": "foreign_city"
+  },
+  {
+   "id": "T9_nonfinite_nan",
+   "title": "неконечное число (NaN) отклоняется при buildCatalog, а не падает в render",
+   "pass": false,
+   "observed": "buildCatalog принял; render: error"
+  },
+  {
+   "id": "T9_nonfinite_inf",
+   "title": "неконечное число (Infinity) отклоняется при buildCatalog, а не падает в render",
+   "pass": false,
+   "observed": "buildCatalog принял; render: error"
+  },
+  {
+   "id": "T10_incomplete_coverage_visible",
+   "title": "значения при coverage.complete=false помечены в тексте объяснения",
+   "pass": false,
+   "observed": "- Школа: записей в квадрате: 15 (наблюдение)"
+  }
+ ],
+ "expected_baseline_failures": [
+  "T1_value_change",
+  "T2_unit_change",
+  "T3_coverage_change",
+  "T4_digest_distinguishes",
+  "T5_duplicate_across_sections",
+  "T7_city_substitution_observations",
+  "T9_nonfinite_nan",
+  "T9_nonfinite_inf",
+  "T10_incomplete_coverage_visible"
+ ]
+}
