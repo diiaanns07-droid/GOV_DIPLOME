@@ -1,0 +1,103 @@
+{
+ "pass": 24,
+ "fail": 0,
+ "skip": 0,
+ "results": [
+  {
+   "name": "shymkent/school/seed1: objectives и Парето = наивный перебор",
+   "status": "PASS"
+  },
+  {
+   "name": "shymkent/school/seed2: objectives и Парето = наивный перебор",
+   "status": "PASS"
+  },
+  {
+   "name": "shymkent/school/seed3: objectives и Парето = наивный перебор",
+   "status": "PASS"
+  },
+  {
+   "name": "shymkent/outpatient_clinic/seed1: objectives и Парето = наивный перебор",
+   "status": "PASS"
+  },
+  {
+   "name": "shymkent/outpatient_clinic/seed2: objectives и Парето = наивный перебор",
+   "status": "PASS"
+  },
+  {
+   "name": "shymkent/outpatient_clinic/seed3: objectives и Парето = наивный перебор",
+   "status": "PASS"
+  },
+  {
+   "name": "astana/school/seed1: objectives и Парето = наивный перебор",
+   "status": "PASS"
+  },
+  {
+   "name": "astana/school/seed2: objectives и Парето = наивный перебор",
+   "status": "PASS"
+  },
+  {
+   "name": "astana/school/seed3: objectives и Парето = наивный перебор",
+   "status": "PASS"
+  },
+  {
+   "name": "astana/outpatient_clinic/seed1: objectives и Парето = наивный перебор",
+   "status": "PASS"
+  },
+  {
+   "name": "astana/outpatient_clinic/seed2: objectives и Парето = наивный перебор",
+   "status": "PASS"
+  },
+  {
+   "name": "astana/outpatient_clinic/seed3: objectives и Парето = наивный перебор",
+   "status": "PASS"
+  },
+  {
+   "name": "Парето: равные (cost, sum) свёрнуты к меньшим ids; доминируемые убраны; отсортировано по cost",
+   "status": "PASS"
+  },
+  {
+   "name": "Парето: при пустом baseline пустой план (unknown) не попадает, сумма по partial не сравнивается",
+   "status": "PASS"
+  },
+  {
+   "name": "одинаковые планы разных целей помечены same_plan_as",
+   "status": "PASS"
+  },
+  {
+   "name": "optimal: evaluated = total = 2^16; progress монотонный и доходит до total",
+   "status": "PASS"
+  },
+  {
+   "name": "incomplete (maxEvaluations): status≠optimal, objectives=null, best_so_far помечен, Парето не строится",
+   "status": "PASS"
+  },
+  {
+   "name": "cancel (sync shouldCancel): incomplete, canceled=true",
+   "status": "PASS"
+  },
+  {
+   "name": "infeasible: required дороже бюджета → reasons, evaluated=0, objectives=null",
+   "status": "PASS"
+  },
+  {
+   "name": "чувствительность: бюджеты [0, floor(B/2), B] без дублей; кандидаты/веса не меняются",
+   "status": "PASS"
+  },
+  {
+   "name": "async: результат совпадает с синхронным (включая чувствительность)",
+   "status": "PASS"
+  },
+  {
+   "name": "async: event loop не блокируется (таймер срабатывает во время поиска)",
+   "status": "PASS"
+  },
+  {
+   "name": "async: AbortController отменяет — incomplete, objectives=null",
+   "status": "PASS"
+  },
+  {
+   "name": "isCurrent: старый ответ отвергается после смены задачи или request_id",
+   "status": "PASS"
+  }
+ ]
+}

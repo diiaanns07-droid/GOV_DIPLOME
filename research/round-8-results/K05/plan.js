@@ -450,18 +450,21 @@
       note: "Оптимум только среди введённых кандидатов и условий; расстояния по прямой; стоимость условная." };
   }
 
+  function sensRow(b, r) {
+    const short = {};
+    for (const o of OBJECTIVES) short[o] = r.objectives && r.objectives[o] ? { ids: r.objectives[o].ids, cost: r.objectives[o].cost,
+      weighted_sum_mm: r.objectives[o].metrics.weighted_sum_mm, max_mm: r.objectives[o].metrics.max_mm,
+      covered_weight: r.objectives[o].metrics.covered_weight, unknown_count: r.objectives[o].metrics.unknown_count } : null;
+    return { budget: b, status: r.status, feasible_count: r.feasible_count, objectives: short };
+  }
+
   function sensitivity(P, s, chunkRunner) {
     return budgetsFor(s.budget).map((b) => {
       const q = quickInfeasible(P, b);
       if (q.length) return { budget: b, status: "infeasible", reasons: q, objectives: null };
       const st = newSearch(P, b);
       chunkRunner(st);
-      const r = finish(st);
-      const short = {};
-      for (const o of OBJECTIVES) short[o] = r.objectives && r.objectives[o] ? { ids: r.objectives[o].ids, cost: r.objectives[o].cost,
-        weighted_sum_mm: r.objectives[o].metrics.weighted_sum_mm, max_mm: r.objectives[o].metrics.max_mm,
-        covered_weight: r.objectives[o].metrics.covered_weight, unknown_count: r.objectives[o].metrics.unknown_count } : null;
-      return { budget: b, status: r.status, feasible_count: r.feasible_count, objectives: short };
+      return sensRow(b, finish(st));
     });
   }
 
@@ -488,29 +491,46 @@
       sensitivity: r.complete && opt.sensitivity !== false ? sensitivity(P, scenario, (s2) => step(s2, s2.total)) : null };
   }
 
-  // Асинхронный вариант для UI: чанки с отдачей event loop; signal (AbortSignal-подобный) или shouldCancel.
+  // Асинхронный вариант для UI: чанки с отдачей event loop (основной поиск И чувствительность);
+  // signal (AbortSignal-подобный) или shouldCancel; при отмене status=incomplete, objectives=null.
   function optimizePlansAsync(ctx, scenario, options) {
     const opt = options || {};
     const tick = typeof setImmediate === "function" ? (f) => setImmediate(f) : (f) => setTimeout(f, 0);
-    return new Promise((resolve) => {
+    const chunk = opt.chunk || 2048;
+    const cancelled = () => !!((opt.signal && opt.signal.aborted) || (opt.shouldCancel && opt.shouldCancel()));
+    // прогоняет поиск st чанками; resolve(true) — завершён, resolve(false) — отменён
+    const runChunks = (st, phase) => new Promise((res) => {
+      const loop = () => {
+        if (cancelled()) { res(false); return; }
+        step(st, chunk);
+        if (opt.onProgress) opt.onProgress({ phase, evaluated: st.evaluated, total: st.total, feasible_count: st.feasible_count });
+        if (st.next < st.total) tick(loop); else res(true);
+      };
+      tick(loop);
+    });
+    return (async () => {
       const P = prepareProblem(ctx, scenario);
       const out = baseResult(ctx, scenario, P);
       if (opt.request_id !== undefined) out.request_id = opt.request_id;
       const q = quickInfeasible(P, scenario.budget);
-      if (q.length) { resolve({ ...out, status: "infeasible", reasons: q, evaluated: 0, total: 2 ** P.n, feasible_count: 0, objectives: null, pareto: [], sensitivity: null }); return; }
+      if (q.length) return { ...out, status: "infeasible", reasons: q, evaluated: 0, total: 2 ** P.n, feasible_count: 0,
+        objectives: null, pareto: [], canceled: false, sensitivity: null };
       const st = newSearch(P, scenario.budget);
-      const chunk = opt.chunk || 2048;
-      const cancelled = () => (opt.signal && opt.signal.aborted) || (opt.shouldCancel && opt.shouldCancel());
-      const loop = () => {
-        if (cancelled()) { const r = finish(st, "canceled"); r.status = "incomplete"; resolve({ ...out, ...r, canceled: true, sensitivity: null }); return; }
-        step(st, chunk);
-        if (opt.onProgress) opt.onProgress({ evaluated: st.evaluated, total: st.total, feasible_count: st.feasible_count });
-        if (st.next < st.total) { tick(loop); return; }
-        const r = finish(st);
-        resolve({ ...out, ...r, canceled: false, sensitivity: opt.sensitivity === false ? null : sensitivity(P, scenario, (s2) => step(s2, s2.total)) });
-      };
-      tick(loop);
-    });
+      if (!(await runChunks(st, "main"))) { const r = finish(st, "canceled"); r.status = "incomplete"; return { ...out, ...r, canceled: true, sensitivity: null }; }
+      const r = finish(st);
+      let sens = null;
+      if (opt.sensitivity !== false) {
+        sens = [];
+        for (const b of budgetsFor(scenario.budget)) {
+          const qb = quickInfeasible(P, b);
+          if (qb.length) { sens.push({ budget: b, status: "infeasible", reasons: qb, objectives: null }); continue; }
+          const sb = newSearch(P, b);
+          if (!(await runChunks(sb, `sensitivity:${b}`))) return { ...out, ...r, canceled: true, sensitivity: null, sensitivity_status: "incomplete" };
+          sens.push(sensRow(b, finish(sb)));
+        }
+      }
+      return { ...out, ...r, canceled: false, sensitivity: sens };
+    })();
   }
 
   // Ответ применим, только если digest и request_id совпадают с текущим состоянием.
