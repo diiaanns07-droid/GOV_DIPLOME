@@ -1,0 +1,29 @@
+{
+ "kind": "K07 round-7 UX checks of the what-if scenario UI",
+ "label": "base_c58a3b2_without_patch",
+ "sha": "c58a3b2b175cf978ad785fef7f88d8fd9b1338f2",
+ "target": {
+  "app_root": "r7-base"
+ },
+ "total": 1,
+ "pass": [],
+ "fail": [],
+ "test_incompatible": [
+  "W0"
+ ],
+ "note": "Scenario UI not found in this build: no W check was run. A build with another API needs an adapter, not a PASS.",
+ "checks": [
+  {
+   "id": "W0",
+   "area": "precondition",
+   "expect": "the build contains the K07 r7 scenario UI (window.CITY_WHATIF_UI, #whatifBtn, #whatifCard, CITY_APP hooks)",
+   "verdict": "TEST_INCOMPATIBLE",
+   "observed": {
+    "ui": false,
+    "btn": false,
+    "card": false,
+    "hooks": false
+   }
+  }
+ ]
+}

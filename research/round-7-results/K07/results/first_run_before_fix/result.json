@@ -1,0 +1,268 @@
+{
+ "kind": "K07 round-7 UX checks of the what-if scenario UI",
+ "label": "proposal_on_c58a3b2",
+ "sha": "c58a3b2+k07patch",
+ "target": {
+  "app_root": "r7-patched"
+ },
+ "total": 17,
+ "pass": [
+  "W1",
+  "W2",
+  "W3",
+  "W4",
+  "W5",
+  "W6a",
+  "W6b",
+  "W7",
+  "W11",
+  "W10",
+  "W9",
+  "W15",
+  "W12",
+  "W15b",
+  "W14"
+ ],
+ "fail": [
+  "W8",
+  "W13"
+ ],
+ "test_incompatible": [],
+ "note": "W14 uses a SYNTHETIC fixture engine injected by the test; its numbers are not distances.",
+ "checks": [
+  {
+   "id": "W1",
+   "area": "mode",
+   "expect": "scenario mode is off by default: card hidden, a map click creates no scenario item",
+   "verdict": "PASS",
+   "observed": {
+    "cardHidden": true,
+    "points": 0
+   }
+  },
+  {
+   "id": "W2",
+   "area": "placement",
+   "expect": "with the mode on, 3 clicks give 3 control points in the list and on the map",
+   "verdict": "PASS",
+   "observed": {
+    "points": 3,
+    "list": 3,
+    "layer": 3,
+    "msg": "Точка 3 поставлена: 42.32410, 69.59788 (3 из 10)."
+   }
+  },
+  {
+   "id": "W3",
+   "area": "placement",
+   "expect": "at most 10 control points: the 11th click is refused with a message, the count stays 10",
+   "verdict": "PASS",
+   "observed": {
+    "clicks": 11,
+    "points": 10,
+    "msg": "Не больше 10 контрольных точек: удалите одну, чтобы поставить новую."
+   }
+  },
+  {
+   "id": "W4",
+   "area": "delete",
+   "expect": "«Удалить» removes exactly that point from the list and the map",
+   "verdict": "PASS",
+   "observed": {
+    "deleted": "cp-5",
+    "points": 9,
+    "layer": 9
+   }
+  },
+  {
+   "id": "W5",
+   "area": "move",
+   "expect": "«Переместить» + click moves that point (same id, new coordinates), count unchanged",
+   "verdict": "PASS",
+   "observed": {
+    "id": "cp-1",
+    "before": {
+     "id": "cp-1",
+     "lon": 69.59413950885961,
+     "lat": 42.32410225955404
+    },
+    "after": {
+     "id": "cp-1",
+     "lon": 69.59673639241785,
+     "lat": 42.32355960305627
+    },
+    "points": 9
+   }
+  },
+  {
+   "id": "W6a",
+   "area": "proposed",
+   "expect": "one proposed object: a second placement moves it (layer shows exactly 1)",
+   "verdict": "PASS",
+   "observed": {
+    "first": {
+     "id": "proj-1",
+     "lon": 69.59450398364741,
+     "lat": 42.32383093130515
+    },
+    "now": {
+     "id": "proj-1",
+     "lon": 69.59637191763005,
+     "lat": 42.32383093130515
+    },
+    "layer": 1
+   }
+  },
+  {
+   "id": "W6b",
+   "area": "proposed",
+   "expect": "deleting the proposed object returns to baseline (no project on map or in the card)",
+   "verdict": "PASS",
+   "observed": {
+    "proposed": null,
+    "msg": "Проектный объект удалён: показан исходный вариант (до)."
+   }
+  },
+  {
+   "id": "W7",
+   "area": "bbox",
+   "expect": "a click outside the K10 square is refused with a message and changes nothing",
+   "verdict": "PASS",
+   "observed": {
+    "points": 9,
+    "msg": "Вне квадрата среза (69.5934, 42.3066, 69.6177, 42.3246): не поставлено. Расчёт возможен только внутри сохранённого bbox."
+   }
+  },
+  {
+   "id": "W8",
+   "area": "explicit placement",
+   "expect": "in scenario mode a click on an object marker selects the object and creates no scenario point",
+   "verdict": "FAIL",
+   "observed": {
+    "points": 9,
+    "selected": {
+     "type": "segment",
+     "id": "4784489f-42c2-416b-9c58-5a512d67eaae"
+    }
+   }
+  },
+  {
+   "id": "W11",
+   "area": "explicit placement",
+   "expect": "«Расстояние от точки» and the scenario mode exclude each other",
+   "verdict": "PASS",
+   "observed": {
+    "baseOn": true,
+    "scenarioAfterBase": false,
+    "scenarioOn": true,
+    "baseAfter": false
+   }
+  },
+  {
+   "id": "W10",
+   "area": "reset",
+   "expect": "category change resets the scenario and says why",
+   "verdict": "PASS",
+   "observed": {
+    "points": 0,
+    "msg": "Сценарий сброшен: смена категории."
+   }
+  },
+  {
+   "id": "W9",
+   "area": "reset",
+   "expect": "city switch resets the scenario with a reason; points are not carried to the other city nor restored on return",
+   "verdict": "PASS",
+   "observed": {
+    "had": 2,
+    "afterSwitch": 0,
+    "msg": "Сценарий сброшен: смена города — точки не переносятся между городами.",
+    "afterReturn": 0
+   }
+  },
+  {
+   "id": "W15",
+   "area": "general",
+   "expect": "no console or page errors during the mouse path",
+   "verdict": "PASS",
+   "observed": []
+  },
+  {
+   "id": "W12",
+   "area": "keyboard",
+   "expect": "keyboard only: mode on, centre target shown, Enter places, arrows+Enter place a second point, move via button+Enter, Escape cancels, delete via button, proposed via radio+Enter",
+   "verdict": "PASS",
+   "observed": {
+    "on": true,
+    "target": 1,
+    "two": true,
+    "pending": true,
+    "movedK": true,
+    "cancelled": true,
+    "afterDelete": 1,
+    "proposed": true
+   }
+  },
+  {
+   "id": "W15b",
+   "area": "general",
+   "expect": "no console or page errors during the keyboard path",
+   "verdict": "PASS",
+   "observed": []
+  },
+  {
+   "id": "W13",
+   "area": "390px",
+   "expect": "390 px: points placed, placement message visible on the map, no horizontal scroll, all scenario controls inside the screen",
+   "verdict": "FAIL",
+   "observed": {
+    "points": 3,
+    "msgVis": {
+     "hidden": false,
+     "top": 9,
+     "bottom": 54,
+     "vh": 844,
+     "text": "Точка 3 поставлена: 42.32127, 69.59836 (3 из 10)."
+    },
+    "fit": {
+     "pageScroll": false,
+     "cardOverflow": true,
+     "controlsOutside": 0,
+     "controls": 10
+    }
+   }
+  },
+  {
+   "id": "W14",
+   "area": "result table",
+   "expect": "without an engine the table says the calculation is not connected; with the SYNTHETIC fixture engine rows show before/after/delta, the exact no-source caption and the nearest record's source",
+   "verdict": "PASS",
+   "observed": {
+    "noEngine": "ТочкаДоПослеРазницаБлижайшая запись (до)Точка 1————Точка 2————Точка 3————Расчёт ",
+    "rows": [
+     [
+      "Точка 1",
+      "1,50 км",
+      "400 м",
+      "−1,10 км",
+      "Fixture school 0 · SYNTHETIC fixture"
+     ],
+     [
+      "Точка 2",
+      "—",
+      "640 м",
+      "—",
+      "В срезе нет исходных записей; улучшение не вычисляется"
+     ],
+     [
+      "Точка 3",
+      "1,50 км",
+      "402 м",
+      "−1,10 км",
+      "Fixture school 2 · SYNTHETIC fixture · ⚠ COLOCATED"
+     ]
+    ]
+   }
+  }
+ ]
+}
