@@ -25,13 +25,25 @@
     self.onmessage = (e) => handle(e.data);
   }
 
-  const cancelled = new Set();
+  const cancelled = new Set();   // cancels for requests that are still running
+  const running = new Set();
   let current = null;
-  const tick = () => new Promise((r) => setTimeout(r, 0));
+  const now = () => (typeof performance !== "undefined" && performance.now ? performance.now() : Date.now());
+  // Yield to the worker's event loop so "cancel" messages are processed. setTimeout(0) is clamped to >= 4 ms after
+  // nesting in browsers (measured in bench: 4x slower job), so use setImmediate (Node) or a MessageChannel (browser).
+  const tick = typeof setImmediate === "function" ? () => new Promise((r) => setImmediate(r))
+    : typeof MessageChannel !== "undefined" ? () => new Promise((r) => { const ch = new MessageChannel(); ch.port1.onmessage = () => { ch.port1.close(); r(); }; ch.port2.postMessage(0); })
+    : () => new Promise((r) => setTimeout(r, 0));
 
   function handle(m) {
     if (!m || typeof m !== "object") return;
-    if (m.type === "cancel") { cancelled.add(m.request_id); return; }
+    if (m.type === "cancel") {
+      // a cancel for a request that already finished (or never started here) is acknowledged at once, so the main
+      // thread never has to hard-kill a healthy worker that simply completed before reading the cancel
+      if (running.has(m.request_id)) cancelled.add(m.request_id);
+      else post({ type: "cancelled", request_id: m.request_id });
+      return;
+    }
     if (m.type === "start") run(m).catch((e) => post({ type: "error", request_id: m.request_id, code: e.code || "internal", detail: String(e.message || e) }));
   }
 
@@ -39,8 +51,14 @@
     const rid = m.request_id;
     if (current !== null) cancelled.add(current);  // a newer start supersedes an older one inside the worker too
     current = rid;
+    running.add(rid);
+    try { await search(m, rid); } finally { running.delete(rid); cancelled.delete(rid); if (current === rid) current = null; }
+  }
+
+  async function search(m, rid) {
     const opt = m.options || {};
     const chunk = Math.max(64, Math.min(1 << 16, opt.chunk_masks | 0 || 4096));
+    const sliceMs = Math.max(1, Math.min(100, Number(opt.slice_ms) || 8));  // work per slice before yielding
     const sc = CORE.validatePlanScenario(m.scenario, m.context);
     const pb = CORE.prepareProblem(m.context, sc);
     const budgets = opt.sensitivity ? CORE.sensitivityBudgets(sc.budget) : [];
@@ -53,8 +71,8 @@
       const st = CORE.createSearch(pb, { budget: ph.budget });
       while (!st.done) {
         if (cancelled.has(rid)) { st.cancelled = true; post({ type: "cancelled", request_id: rid }); cancelled.delete(rid); if (current === rid) current = null; return; }
-        const before = st.next;
-        CORE.stepSearch(st, chunk);
+        const before = st.next, sliceEnd = now() + sliceMs;
+        do { CORE.stepSearch(st, Math.min(chunk, 1024)); } while (!st.done && now() < sliceEnd);
         doneMasks += st.next - before;
         post({ type: "progress", request_id: rid, problem_digest: pb.problem_digest, phase: ph.phase,
           evaluated: st.evaluated, total: st.total, done_masks: doneMasks, all_masks: allMasks });

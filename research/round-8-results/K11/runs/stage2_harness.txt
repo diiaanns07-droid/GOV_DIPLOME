@@ -1,0 +1,22 @@
+PASS core = Python oracle on all fixtures (main + sensitivity budgets)
+PASS runner mode=chunks: result identical to synchronous search on 11 fixtures (with sensitivity)
+PASS runner mode=chunks: dispose releases worker and timers
+PASS runner mode=worker: result identical to synchronous search on 11 fixtures (with sensitivity)
+PASS runner mode=worker: dispose releases worker and timers
+PASS progress mode=chunks: 10 events, monotone, tagged with request_id/problem_digest, reaches 1
+PASS progress mode=worker: 14 events, monotone, tagged with request_id/problem_digest, reaches 1
+PASS cancel mode=chunks: status cancelled without result, no pending cancel/timers, next run correct
+PASS cancel mode=worker: status cancelled without result, no pending cancel/timers, next run correct
+PASS cancel mode=worker: worker acknowledged within the grace period (no hard kill needed)
+PASS supersede mode=chunks: old run 'superseded', new run optimal and equal to sync, isCurrent only for the new one
+PASS supersede mode=worker: old run 'superseded', new run optimal and equal to sync, isCurrent only for the new one
+PASS stuck worker: cancel resolves at once, worker hard-terminated after grace, timers cleared
+PASS stuck worker + newer job: newer job re-dispatched to a fresh worker after hard kill
+PASS stale messages (old request_id, or right request_id with foreign digest) are ignored; only the matching result settles
+PASS chunks cancel: no further slices/progress for the cancelled request
+PASS invalid scenario: typed errors (bad_budget, bad_snapshot, unknown_field); previous result object untouched
+PASS problem_digest independent of array order; selected_ids only in scenario_digest; budget/weight change digest; shuffled input -> same plan
+PASS auto mode: worker creation failure -> chunks, fallback reason reported, result optimal
+PASS evaluatePlan: empty set -> after null (not 0), delta null; infeasible reasons; hypothetical vs source namespace
+PASS worker protocol: late cancel (after result) and cancel of an unknown request are acknowledged immediately
+summary: {"pass":21,"fail":0}

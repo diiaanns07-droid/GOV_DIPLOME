@@ -28,7 +28,7 @@
   }
 
   function createPlanRunner(opts) {
-    const o = Object.assign({ mode: "auto", chunkMasks: 4096, sliceMs: 10, cancelGraceMs: 250, yieldFn: defaultYield,
+    const o = Object.assign({ mode: "auto", chunkMasks: 4096, sliceMs: 10, workerSliceMs: 8, cancelGraceMs: 250, yieldFn: defaultYield,
       onProgress: null, onStatus: null }, opts || {});
     const CORE = o.engine;
     if (!CORE || typeof CORE.createSearch !== "function") throw new Error("plan runner: engine with createSearch/stepSearch/finalizeSearch required");
@@ -71,6 +71,7 @@
       try { worker.terminate(); } catch (_) { /* already gone */ }
       worker = null;
       stats.workers_terminated++;
+      status("worker_terminated", { hard: !!hard });
       for (const t of pendingCancels.values()) { clearTimeout(t); timers.delete(t); }
       pendingCancels.clear();
       if (hard) {
@@ -83,12 +84,13 @@
       const w = ensureWorker();
       job.mode = "worker";
       w.postMessage({ type: "start", request_id: job.request_id, context: job.context, scenario: job.sc,
-        options: { chunk_masks: o.chunkMasks, sensitivity: !!job.options.sensitivity } });
+        options: { chunk_masks: o.chunkMasks, slice_ms: o.workerSliceMs, sensitivity: !!job.options.sensitivity } });
     }
     function onWorkerMessage(m) {
       if (m && m.type === "cancelled") {  // acknowledgement of any earlier cancel, whoever is active now
         const t = pendingCancels.get(m.request_id);
         if (t !== undefined) { clearTimeout(t); timers.delete(t); pendingCancels.delete(m.request_id); stats.cancel_acks++; }
+        status("cancel_ack", { request_id: m.request_id });
         return;
       }
       const job = active;

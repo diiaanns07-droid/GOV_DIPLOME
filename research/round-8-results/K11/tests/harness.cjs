@@ -227,6 +227,24 @@ const shuffle = (a, s) => { const b = a.slice(); let x = s; for (let i = b.lengt
       { ev2: ev2.reasons, ev3: ev3.rows.map((r) => r.nearest_after) });
   }
 
+  // 12. worker protocol: a cancel that arrives after the result (or for an unknown request) is acknowledged at once
+  {
+    const { Worker } = require("worker_threads");
+    const w = new Worker(WORKER);
+    const msgs = [];
+    const waitFor = (pred) => new Promise((res) => { const f = (m) => { msgs.push(m); if (pred(m)) { w.off("message", f); res(m); } }; w.on("message", f); });
+    const small = load("synthetic", "syn_ties.json");
+    w.postMessage({ type: "start", request_id: "r1", context: small.context, scenario: small.scenario, options: {} });
+    await waitFor((m) => m.type === "result" && m.request_id === "r1");
+    w.postMessage({ type: "cancel", request_id: "r1" });
+    const ack1 = await Promise.race([waitFor((m) => m.type === "cancelled" && m.request_id === "r1"), new Promise((r) => setTimeout(() => r(null), 1000))]);
+    w.postMessage({ type: "cancel", request_id: "never-started" });
+    const ack2 = await Promise.race([waitFor((m) => m.type === "cancelled" && m.request_id === "never-started"), new Promise((r) => setTimeout(() => r(null), 1000))]);
+    await w.terminate();
+    check("worker protocol: late cancel (after result) and cancel of an unknown request are acknowledged immediately",
+      !!ack1 && !!ack2, msgs.map((m) => m.type + ":" + m.request_id));
+  }
+
   const summary = { pass: results.filter((r) => r.ok).length, fail: results.filter((r) => !r.ok).length };
   console.log("summary:", JSON.stringify(summary));
   const outIdx = process.argv.indexOf("--out");
