@@ -74,7 +74,7 @@ def main():
         copy(slot, branch, sha, base, files, manifest)
     (DEST.parent / "source_manifest.json").write_text(
         json.dumps({"snapshots": "research/round-4/snapshots.json @ codex/research-import-2026-10-05 cadba4d",
-                    "files": manifest}, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+                    "files": manifest}, ensure_ascii=False, indent=1) + "\n", encoding="utf-8", newline="\n")
     print(f"copied {len(manifest)} files")
 
 

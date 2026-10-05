@@ -41,6 +41,6 @@ if __name__ == "__main__":
     res = main()
     p = APP.parents[1] / "research" / "round-5-results" / "BUILD" / "baseline_repro.json"
     p.write_text(json.dumps({"build": "0bf27de (round 4)", "contract": "k05-obs-v1.1 unpatched", "cases": res},
-                            ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+                            ensure_ascii=False, indent=1) + "\n", encoding="utf-8", newline="\n")
     for r in res:
         print(r)

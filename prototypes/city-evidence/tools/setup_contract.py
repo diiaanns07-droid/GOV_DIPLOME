@@ -46,7 +46,7 @@ def main():
         "patch": {"path": str(PATCH.relative_to(APP)), "sha256": h(PATCH), "applied_to": "research/round-3-results/K05/k05r3_contract.py"},
         "files": rows,
         "note": "modified=true files are local patched copies, not upstream files",
-    }, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    }, ensure_ascii=False, indent=1) + "\n", encoding="utf-8", newline="\n")
     print(f"{CONTRACT_ID}: {sum(r['modified'] for r in rows)} file(s) patched")
 
 

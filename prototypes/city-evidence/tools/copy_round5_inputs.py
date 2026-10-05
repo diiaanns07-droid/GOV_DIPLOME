@@ -28,7 +28,7 @@ def main():
                          "copied_to": str(out.relative_to(APP)), "bytes": len(data),
                          "sha256": hashlib.sha256(data).hexdigest()})
     (DEST / "MANIFEST.json").write_text(json.dumps({"snapshots": f"research/round-5/snapshots.json @ {SNAP_REF}",
-                                                    "files": rows}, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+                                                    "files": rows}, ensure_ascii=False, indent=1) + "\n", encoding="utf-8", newline="\n")
     print(f"copied {len(rows)} files")
 
 

@@ -141,7 +141,7 @@ def main():
         out.append({"city": city, "groups": groups, "lang": lang, **r})
     path = APP / "tests" / "expected_explanations.json"
     path.write_text(K.dumps_strict({"renderer": "inputs/k02v4/verified_explainer.py (K02 r4 fixed + BUILD r5)",
-                                    "cases": out}, indent=1) + "\n", encoding="utf-8")
+                                    "cases": out}, indent=1) + "\n", encoding="utf-8", newline="\n")
     print(out[0]["text"])
     print(f"wrote {path.relative_to(APP)} ({len(out)} cases)")
 

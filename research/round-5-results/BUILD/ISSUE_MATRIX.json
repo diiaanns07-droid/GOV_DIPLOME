@@ -1,4 +1,238 @@
-{"status": "draft", "issues": [
- {"id": "K12-1", "finding": "NaN/±Infinity проходят валидатор", "change": "contract k05-obs-v1.2+k12r4 (K12 patch)", "test": "tests/test_contract.py::RecordRules.test_nan_and_infinity_values_rejected", "status": "fixed_in_contract"},
- {"id": "K12-2", "finding": "json.loads принимает NaN/1e999/повтор ключа", "change": "tools/contract.py loads_strict", "test": "tests/test_contract.py::StrictJson", "status": "fixed_in_contract"}
-]}
+{
+ "build": "claude/beautiful-clarke-sbzomj",
+ "base_sha": "0bf27deb8549b325b34a9610402613d745544edb",
+ "issues": [
+  {
+   "id": "K12-1",
+   "source": "K12 r4 #1",
+   "finding": "NaN/±Infinity проходят валидатор и агрегат",
+   "change": "контракт k05-obs-v1.2+k12r4 (патч K12 к k05r3_contract в inputs/contract/)",
+   "regression_test": "prototypes/city-evidence/tests/test_contract.py::RecordRules.test_nan_and_infinity_values_rejected; baseline: tools/repro_baseline.py",
+   "status": "fixed"
+  },
+  {
+   "id": "K12-2",
+   "source": "K12 r4 #2",
+   "finding": "json.loads принимает NaN/Infinity, 1e999→inf, повтор ключа молча побеждает",
+   "change": "tools/contract.py loads_strict (K12 loads_strict); все чтения сборки и тестов через него",
+   "regression_test": "prototypes/city-evidence/tests/test_contract.py::StrictJson",
+   "status": "fixed"
+  },
+  {
+   "id": "K12-2b",
+   "source": "BUILD r5 A1",
+   "finding": "экспорт json.dumps пишет NaN",
+   "change": "dumps_strict(allow_nan=False) в build_evidence/explain_ref; build_data allow_nan=False",
+   "regression_test": "prototypes/city-evidence/tests/test_contract.py::StrictJson.test_export_refuses_nan",
+   "status": "fixed"
+  },
+  {
+   "id": "K12-3..9",
+   "source": "K12 r4 #3-#9",
+   "finding": "двойной счёт вложенных территорий, неполная география, ноль-сумма, повтор obs_id, несуществующие даты, домен счётчика, BOUNDARY_MIX, retrieved_at",
+   "change": "патч K12 сохранён под v1.2 (k05r4 вызывает пропатченный k05r3)",
+   "regression_test": "prototypes/city-evidence/tests/test_contract.py::RecordRules (даты, повтор obs_id)",
+   "status": "fixed"
+  },
+  {
+   "id": "K05-1",
+   "source": "K05 r4 FIELD_MAPPING",
+   "finding": "нет spatial_unit; квадрат можно сложить с районными E02",
+   "change": "наблюдения v1.2 (spatial_unit bbox, boundary_version квадрата); E02 не переносятся",
+   "regression_test": "prototypes/city-evidence/tests/test_contract.py::RecordRules.test_v11_district_record_cannot_be_summed_with_bbox, test_missing_spatial_unit_rejected",
+   "status": "fixed"
+  },
+  {
+   "id": "K05-2",
+   "source": "BUILD r5 A3",
+   "finding": "0 записей и «неизвестно» смешивались (пустая категория шла как missing/zero_in_partial_coverage)",
+   "change": "0 = reported_zero при coverage.complete=true (полный ответ запроса по квадрату); число по городу — отдельное наблюдение kz.<city> missing not_collected; мощность/реестр/дети missing с причиной; одинаково в контракте, каталоге и UI",
+   "regression_test": "prototypes/city-evidence/tests/conformance.cjs (every 0 is reported_zero…, city total is unknown…); test_inputs.py::EvidenceFile.test_city_level_unknowns_are_null; smoke (slice says 'complete query result')",
+   "status": "fixed"
+  },
+  {
+   "id": "K05-3",
+   "source": "K05 r4 / BUILD r5 B",
+   "finding": "объекты с совпадающими координатами и дубликаты не помечены (Шымкент: 10/55 в 69.5958,42.3167)",
+   "change": "QA по K05 check_objects (COLOCATED, POSSIBLE_DUPLICATE) + воспроизводимое правило CATEGORY_DOUBT; метки на карте, в таблице, в карточке со списком записей; район помечается «по координате под вопросом»; записи не удаляются",
+   "regression_test": "prototypes/city-evidence/tests/test_inputs.py::EvidenceFile.test_shymkent_colocated_group_of_ten; smoke (colocated group of 10…, category doubt…)",
+   "status": "fixed"
+  },
+  {
+   "id": "K02-A1..A10",
+   "source": "K02 r4 REPORT",
+   "finding": "объяснение: реальные записи не проходят грамматику ID, теряется охват, повтор ID, план по старому каталогу принят",
+   "change": "порт K02 r4 fixed в facts.js и эталон explain_ref (inputs/k02v4 — адаптированная копия): catalog_digest, duplicate_id между секциями, coverage/missing_reason в тексте",
+   "regression_test": "prototypes/city-evidence/tests/conformance.cjs (37 проверок, текст и отпечаток = Python)",
+   "status": "fixed"
+  },
+  {
+   "id": "K02-digest",
+   "source": "BUILD r5 B",
+   "finding": "отпечаток K02 не зависел от единиц и причины пропуска",
+   "change": "catalog_digest: + unit, missing_reason; release входит в ID среза",
+   "regression_test": "prototypes/city-evidence/tests/conformance.cjs (digest changes when value/unit/coverage/missing_reason/release changes; old answer rejected … same city); smoke (stale_catalog)",
+   "status": "fixed"
+  },
+  {
+   "id": "K02-compat",
+   "source": "K02 r4 §2",
+   "finding": "планы без catalog_digest несовместимы со старыми тестами",
+   "change": "старые тесты K02 r3 не запускаются против новой сборки; гарантия «план без отпечатка отклоняется» покрыта",
+   "regression_test": "prototypes/city-evidence/tests/conformance.cjs::plan without digest rejected",
+   "status": "fixed"
+  },
+  {
+   "id": "K03-v2",
+   "source": "K03 r4 REVIEW",
+   "finding": "k03_assign_v1: точки у края города в AST-Z2 → unmatched; допуск только по первой версии слоя (3 из 45 fixtures неверно)",
+   "change": "k03_assign_v2.patch применён к отдельной копии inputs/k03v2_root (исходник побайтно в inputs/k03_root, хэши в MANIFEST_K03V2.json)",
+   "regression_test": "prototypes/city-evidence/tests/test_inputs.py::K03AssignV2 (selftest 21/21, fixtures 45/45, ambiguous/unmatched без района)",
+   "status": "fixed"
+  },
+  {
+   "id": "K08-F1F2",
+   "source": "K08 r4 MATRIX",
+   "finding": "шапка attribution файлов K10 не совпадает с sources[] (места — Meta/Foursquare)",
+   "change": "атрибуция UI строится из K08 attribution.json (сверка sha256 с файлами пакета); ATTRIBUTION.md и тексты лицензий в web/attribution/, ссылки из UI",
+   "regression_test": "prototypes/city-evidence/tests/smoke (map attribution names record providers; license links resolve); check_all inputs (web/attribution equals K08)",
+   "status": "fixed"
+  },
+  {
+   "id": "K08-F3",
+   "source": "K08 r4 MATRIX",
+   "finding": "9 сегментов из TomTom без record_id",
+   "change": "dataset показан в карточке дороги с пометкой «не OSM: K08 F3»",
+   "regression_test": "smoke (road card … dataset)",
+   "status": "fixed"
+  },
+  {
+   "id": "K08-F4",
+   "source": "K08 r4 MATRIX",
+   "finding": "нет текстов лицензий рядом с пакетом",
+   "change": "web/attribution/LICENSES/*.txt (sha256 = K08)",
+   "regression_test": "tools/check_all.py inputs",
+   "status": "fixed"
+  },
+  {
+   "id": "K08-F5",
+   "source": "K08 r4 MATRIX",
+   "finding": "26 источников Астаны ссылаются на routes, колонка не извлечена",
+   "change": "пробел записан в UI и здесь; не восстанавливается из сохранённого пакета, скачивание не выполнялось",
+   "regression_test": "—",
+   "status": "deferred: нет полей в сохранённом пакете; нужна новая выгрузка K10 с колонкой routes"
+  },
+  {
+   "id": "K07-CS2",
+   "source": "K07 r4 REVIEW",
+   "finding": "подсказка объекта остаётся после смены города с клавиатуры",
+   "change": "hideTip() в renderMap и switchCity",
+   "regression_test": "smoke (Astana after keyboard switch … tooltip hidden)",
+   "status": "fixed"
+  },
+  {
+   "id": "K07-P1P2",
+   "source": "K07 r4 REVIEW",
+   "finding": "точку и выбор нельзя убрать",
+   "change": "кнопка «Сбросить точку и выбор», Escape",
+   "regression_test": "smoke (Escape clears point…)",
+   "status": "fixed"
+  },
+  {
+   "id": "K07-F2",
+   "source": "K07 r4 REVIEW",
+   "finding": "скрытый фильтром/слоем объект остаётся выбранным",
+   "change": "снятие выбора при фильтре и выключении слоя дорог",
+   "regression_test": "smoke (hiding roads deselects the road)",
+   "status": "fixed"
+  },
+  {
+   "id": "K07-O2",
+   "source": "K07 r4 REVIEW",
+   "finding": "подписи перехватывают нажатия",
+   "change": "#map text { pointer-events: none }",
+   "regression_test": "визуально/скриншоты; отдельного теста нет",
+   "status": "fixed"
+  },
+  {
+   "id": "K07-K4K5",
+   "source": "K07 r4 REVIEW",
+   "finding": "нет быстрого перехода к таблице; карта не управляется клавиатурой",
+   "change": "ссылка «Перейти к таблице», кнопки масштаба перед картой, фокус на карте, стрелки/+/−, Enter в режиме точки",
+   "regression_test": "smoke (focused map pans with arrow keys)",
+   "status": "fixed"
+  },
+  {
+   "id": "K07-W2W3A1",
+   "source": "K07 r4 REVIEW",
+   "finding": "нет статуса рядом с картой на узком экране; широкие таблицы; role=img у интерактивной карты",
+   "change": "строка статуса role=status; table-layout fixed ≤480 px; role=group + aria-roledescription",
+   "regression_test": "smoke (status line next to map; 380 px no horizontal scroll)",
+   "status": "fixed (A1 без проверки средством чтения экрана)"
+  },
+  {
+   "id": "BUILD-pointmode",
+   "source": "BUILD r5 (найдено тестом)",
+   "finding": "в режиме точки щелчок по дороге выбирал дорогу",
+   "change": "в режиме точки дороги не перехватывают щелчок; маркеры имеют приоритет",
+   "regression_test": "smoke (point selected; status line…)",
+   "status": "fixed"
+  },
+  {
+   "id": "K11-W03",
+   "source": "K11 r4 FINDINGS",
+   "finding": "\"file://\" + path ломается на Windows",
+   "change": "url.pathToFileURL в tests/smoke.cjs",
+   "regression_test": "smoke (запуск на Linux)",
+   "status": "fixed (на Windows не запускалось)"
+  },
+  {
+   "id": "K11-W05",
+   "source": "K11 r4 FINDINGS",
+   "finding": "write_text без newline даёт CRLF на Windows",
+   "change": "newline=\"\\n\" во всех write_text tools/; .gitattributes `* -text` в prototypes/city-evidence",
+   "regression_test": "check_all build (data.js/evidence.js == rebuild)",
+   "status": "fixed (на Windows не запускалось)"
+  },
+  {
+   "id": "K11-W12",
+   "source": "K11 r4 FINDINGS",
+   "finding": "команды только python3/bash",
+   "change": "run-demo.bat (py -3 или python, UTF-8 консоль), README с командами Windows",
+   "regression_test": "—",
+   "status": "fixed (на Windows не запускалось)"
+  },
+  {
+   "id": "K01-3",
+   "source": "K01 r4 REPRO #3",
+   "finding": "тест подмены проверял копию данных, но код из уже загруженного модуля",
+   "change": "тест запускает offline_check копии отдельным процессом; подмена правила в копии ловится",
+   "regression_test": "prototypes/city-evidence/tests/test_inputs.py::OfflineCheckIsolated",
+   "status": "fixed"
+  },
+  {
+   "id": "K01-4",
+   "source": "K01 r4 REPRO #4",
+   "finding": "offline_check навсегда подменяет socket при импорте",
+   "change": "сборка не импортирует offline_check: check_all и тесты запускают его отдельным процессом",
+   "regression_test": "prototypes/city-evidence/tests/test_inputs.py::OfflineCheckIsolated.test_this_process_socket_untouched; check_all package",
+   "status": "fixed (обход; код K10 не менялся)"
+  },
+  {
+   "id": "K01-2",
+   "source": "K01 r4 REPRO #2",
+   "finding": "package_manifest.json без якоря",
+   "change": "sha256 манифеста закреплён в source_manifest.json и проверяется",
+   "regression_test": "check_all inputs (K10 package_manifest.json anchored)",
+   "status": "fixed"
+  },
+  {
+   "id": "K06/K10",
+   "source": "K06 r4 REPORT, K10 r4 REVIEW",
+   "finding": "длина ребра = длина сегмента завысила бы маршруты; права прохода неизвестны",
+   "change": "маршрутный режим не включён; длины и foot_access передаются без изменений; unknown ≠ allowed",
+   "regression_test": "prototypes/city-evidence/tests/test_inputs.py::GeometryPassThrough",
+   "status": "no_change (маршрутизации нет)"
+  }
+ ]
+}

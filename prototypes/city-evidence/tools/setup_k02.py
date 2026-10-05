@@ -49,14 +49,14 @@ def main():
             raise SystemExit(f"replacement does not match exactly once: {old[:60]!r}")
         out = out.replace(old, new)
     OUT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text(out, encoding="utf-8")
+    OUT.write_text(out, encoding="utf-8", newline="\n")
     h = lambda b: hashlib.sha256(b).hexdigest()  # noqa: E731
     (OUT.parent / "MANIFEST.json").write_text(json.dumps({
         "original": {"path": str(SRC.relative_to(APP)), "sha256": h(SRC.read_bytes()), "source": "K02 @ 7020637 fixed/"},
         "adapted": {"path": str(OUT.relative_to(APP)), "sha256": h(OUT.read_bytes())},
         "changes": ["catalog_digest + unit + missing_reason", "missing_reason shown in text", "units segments/places/persons"],
         "note": "local adaptation for the demo, not upstream K02",
-    }, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    }, ensure_ascii=False, indent=1) + "\n", encoding="utf-8", newline="\n")
     print("k02v4 written", h(OUT.read_bytes())[:16])
 
 

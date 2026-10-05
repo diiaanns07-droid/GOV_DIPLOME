@@ -121,5 +121,69 @@ class EvidenceFile(unittest.TestCase):
                     self.assertIsNotNone(o["missing_reason"])
 
 
+class OfflineCheckIsolated(unittest.TestCase):
+    """K01 #3/#4: tamper detection runs the COPY's own offline_check in a separate process (no shared modules,
+    no socket monkeypatch in this process)."""
+
+    def _run_copy(self, mutate=None):
+        import subprocess
+        tmp = Path(tempfile.mkdtemp())
+        try:
+            shutil.copytree(APP / "inputs" / "k10", tmp / "k10", ignore=shutil.ignore_patterns("__pycache__"))
+            if mutate:
+                mutate(tmp / "k10")
+            r = subprocess.run([sys.executable, str(tmp / "k10" / "scripts" / "offline_check.py")],
+                               capture_output=True, text=True, encoding="utf-8")
+            return r.returncode, r.stdout
+        finally:
+            shutil.rmtree(tmp)
+
+    def test_clean_copy_passes(self):
+        code, out = self._run_copy()
+        self.assertEqual(code, 0, out[-400:])
+
+    def test_tampered_data_in_copy_fails(self):
+        def mut(d):
+            f = d / "data" / "shymkent" / "places_social.geojson"
+            f.write_bytes(f.read_bytes().replace(b'"school"', b'"schoo1"', 1))
+        code, out = self._run_copy(mut)
+        self.assertEqual(code, 1)
+        self.assertIn("sha256 mismatch", out)
+
+    def test_tampered_rule_in_copy_is_the_one_executed(self):
+        def mut(d):  # break the copy's own k10_rules: the copy's check must fail, proving it does not reuse loaded modules
+            f = d / "scripts" / "k10_rules.py"
+            f.write_text(f.read_text(encoding="utf-8").replace('return "unknown", []', 'return "allowed", []'),
+                         encoding="utf-8", newline="\n")
+        code, out = self._run_copy(mut)
+        self.assertEqual(code, 1, out[-300:])
+        self.assertIn("k10_foot_access", out)
+
+    def test_this_process_socket_untouched(self):
+        import socket
+        self.assertFalse(getattr(socket.create_connection, "__name__", "") == "_no_net")
+
+
+class GeometryPassThrough(unittest.TestCase):
+    """K06/K10: the demo shows K10 lengths and foot-access classes unchanged; unknown is never turned into allowed."""
+
+    def test_lengths_and_foot_access_unchanged(self):
+        data = build_data.build()
+        for city in ("shymkent", "astana"):
+            fc = json.loads((APP / "inputs/k10/data" / city / "segments.geojson").read_text(encoding="utf-8"))
+            src = {f["id"]: f["properties"] for f in fc["features"] if f["properties"]["subtype"] == "road"}
+            for sg in data["cities"][city]["segments"]:
+                p = src[sg["id"]]
+                self.assertLessEqual(abs(sg["length_m"] - p["k10_length_m"]), 0.05 + 1e-9)  # rounded to 0.1 m
+                self.assertEqual(sg["foot_access"], p["k10_foot_access"])
+                self.assertEqual(sg["connectors"], len(p["connectors"] or []))
+
+    def test_no_routing_or_walking_time_in_ui(self):
+        import re
+        code = re.sub(r"/\*.*?\*/|//[^\n]*", "", (APP / "web" / "app.js").read_text(encoding="utf-8"), flags=re.S).lower()
+        for bad in ("dijkstra", "isochrone", "мин пешком", "минут пешком", "недостижим"):
+            self.assertNotIn(bad, code)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -31,7 +31,7 @@ def main():
         "patch": {"path": str(PATCH.relative_to(APP)), "sha256": h(PATCH), "source": "K03 @ 3660527"},
         "modified": [{"path": TARGET, "original_sha256": h(SRC / TARGET), "patched_sha256": h(OUT / TARGET)}],
         "note": "patched local copy; other files identical to inputs/k03_root",
-    }, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    }, ensure_ascii=False, indent=1) + "\n", encoding="utf-8", newline="\n")
     print("k03_assign_v2 applied:", h(OUT / TARGET)[:16])
 
 
