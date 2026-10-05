@@ -1,0 +1,99 @@
+{
+ "app_root": "/tmp/acc-z4gg__s_/prototypes/city-evidence",
+ "url": null,
+ "python": "3.11.15",
+ "checked_utc": "2026-10-05T11:37:29Z",
+ "ok": true,
+ "results": [
+  {
+   "id": "I1",
+   "ok": true,
+   "detail": "42 inputs vs source_manifest.json",
+   "sources": [
+    [
+     "K02",
+     "24c1750"
+    ],
+    [
+     "K03_ROOT",
+     "44585de"
+    ],
+    [
+     "K04",
+     "7fb8bb8"
+    ],
+    [
+     "K05_ROOT",
+     "d913554"
+    ],
+    [
+     "K07",
+     "6778ded"
+    ],
+    [
+     "K08",
+     "e1e3c71"
+    ],
+    [
+     "K10",
+     "ea703f1"
+    ],
+    [
+     "PRODUCT_AGENT",
+     "834a25f"
+    ]
+   ]
+  },
+  {
+   "id": "I2",
+   "ok": true,
+   "detail": "6 K10 data files vs package_manifest.json"
+  },
+  {
+   "id": "I3",
+   "ok": true,
+   "detail": "no symlinks in app root"
+  },
+  {
+   "id": "I4",
+   "ok": true,
+   "detail": "tools/build_data.py on temp copy: exit 0, web/data.js byte-identical",
+   "rebuilt_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72"
+  },
+  {
+   "id": "N1",
+   "ok": true,
+   "detail": "build path (check_all.step_package, subprocess): [PASS] package: K10 offline_check.py (subprocess) exit 0, ok=true | offline_check_ok True | connect_after_run OK; tools importing offline_check: []"
+  },
+  {
+   "id": "S1",
+   "ok": true,
+   "detail": "serve.py started with cwd=/tmp/k01r5_cwd_xtp29frs (outside app root): 5 assets (index.html, data.js, evidence.js, facts.js, app.js) byte-identical to web/"
+  },
+  {
+   "id": "S2",
+   "ok": true,
+   "detail": "traversal requests -> {'../serve.py': 404, '%2e%2e/serve.py': 404, '..%2fserve.py': 404, '%2e%2e%2fREADME.md': 404}"
+  },
+  {
+   "id": "S3",
+   "ok": true,
+   "detail": "audited serve.py: opened in web/ ['README.md (absent, 404)', 'app.js', 'data.js', 'evidence.js', 'facts.js', 'index.html', 'serve.py (absent, 404)']; foreign opens []; connect/subprocess []"
+  },
+  {
+   "id": "B1",
+   "ok": true,
+   "detail": "file:// web/index.html: 5 requests, external [], failed [], console errors [], title 'Городские данные'",
+   "browser": {
+    "target": "file:///tmp/acc-z4gg__s_/prototypes/city-evidence/web/index.html",
+    "title": "Городские данные",
+    "requests": 5,
+    "external": [],
+    "failed": [],
+    "console_errors": [],
+    "has_data": true,
+    "ok": true
+   }
+  }
+ ]
+}

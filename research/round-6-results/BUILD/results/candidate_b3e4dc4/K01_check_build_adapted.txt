@@ -1,0 +1,15 @@
+$ /tmp/claude-0/-home-user-GOV-DIPLOME/cf69c9ea-684d-5fca-9dcc-2d983076f4aa/scratchpad/venv/bin/python /home/user/GOV_DIPLOME/research/round-6-results/BUILD/adapters/K01/check_build.py --app-root /tmp/acc-z4gg__s_/prototypes/city-evidence --browser --json results/candidate_b3e4dc4/K01_check_build_adapted.json
+exit=0
+--- stdout
+[PASS] I1: 42 inputs vs source_manifest.json
+[PASS] I2: 6 K10 data files vs package_manifest.json
+[PASS] I3: no symlinks in app root
+[PASS] I4: tools/build_data.py on temp copy: exit 0, web/data.js byte-identical
+[PASS] N1: build path (check_all.step_package, subprocess): [PASS] package: K10 offline_check.py (subprocess) exit 0, ok=true | offline_check_ok True | connect_after_run OK; tools importing offline_check: []
+[PASS] S1: serve.py started with cwd=/tmp/k01r5_cwd_xtp29frs (outside app root): 5 assets (index.html, data.js, evidence.js, facts.js, app.js) byte-identical to web/
+[PASS] S2: traversal requests -> {'../serve.py': 404, '%2e%2e/serve.py': 404, '..%2fserve.py': 404, '%2e%2e%2fREADME.md': 404}
+[PASS] S3: audited serve.py: opened in web/ ['README.md (absent, 404)', 'app.js', 'data.js', 'evidence.js', 'facts.js', 'index.html', 'serve.py (absent, 404)']; foreign opens []; connect/subprocess []
+[PASS] B1: file:// web/index.html: 5 requests, external [], failed [], console errors [], title 'Городские данные'
+OVERALL PASS | failed: []
+
+--- stderr

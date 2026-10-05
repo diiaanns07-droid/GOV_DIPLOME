@@ -1,0 +1,12 @@
+$ /opt/node22/bin/node /home/user/GOV_DIPLOME/research/round-6-results/BUILD/review_inputs/K10/tests/ui_coord_group.cjs --app-root /tmp/acc-z4gg__s_/prototypes/city-evidence --json results/candidate_b3e4dc4/K10_ui_coord_group.json
+exit=0
+--- stdout
+PASS [MUST] MUST_all_group_records_rendered_as_markers {"rendered":10,"of":10}
+PASS [MUST] MUST_table_rows_equal_visible_records {"rows":55,"visible":55}
+PASS [INFO] INFO_group_markers_share_one_screen_position {"distinct_positions":1}
+PASS [MUST] MUST_each_group_record_selectable_from_table {"selectable":10,"of":10}
+PASS [SHOULD] SHOULD_each_group_record_selectable_from_map {"reachable_by_map_click":10,"of":10}
+PASS [SHOULD] SHOULD_group_indicated_in_ui {"attr":true,"text":true}
+PASS [MUST] MUST_no_page_errors {"errors":[]}
+
+--- stderr

@@ -1,0 +1,332 @@
+{
+ "mode": "app-root",
+ "app_root": "city-evidence",
+ "build_python": "3.11.15 shapely 2.1.2, pyproj 3.7.2",
+ "outputs_sha256": {
+  "web/data.js": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "web/evidence.js": "df736e986145da33dee60f692e020486720b72db5b6116af31640cc8693b11b9"
+ },
+ "results": [
+  {
+   "id": "C01",
+   "kind": "control_clean",
+   "title": "неизменённая копия: пересборка побайтно равна закоммиченной",
+   "steps": {
+    "build_data": {
+     "exit": 0,
+     "outcome": "accepted",
+     "stderr_last": ""
+    },
+    "build_evidence": {
+     "exit": 0,
+     "outcome": "accepted",
+     "stderr_last": ""
+    }
+   },
+   "offline_check": {
+    "exit": 0,
+    "errors": []
+   },
+   "outputs_changed": [],
+   "artifact_problems_after": [],
+   "requirement_met": true,
+   "tmp": null
+  },
+  {
+   "id": "C02",
+   "kind": "integrity",
+   "title": "изменён байт без пересчёта hash (как test_corrupted_file_is_rejected)",
+   "steps": {
+    "build_data": {
+     "exit": 2,
+     "outcome": "rejected_integrity",
+     "stderr_last": "ОШИБКА входных данных: INTEGRITY: astana/places_social: sha256/размер не совпадают с package_manifest.json"
+    },
+    "build_evidence": {
+     "exit": 2,
+     "outcome": "rejected_integrity",
+     "stderr_last": "ОШИБКА входных данных: INTEGRITY: astana/places_social: sha256/размер не совпадают с package_manifest.json"
+    }
+   },
+   "offline_check": {
+    "exit": 1,
+    "errors": [
+     "astana/places_social: sha256 mismatch"
+    ]
+   },
+   "outputs_changed": [],
+   "artifact_problems_after": [],
+   "requirement_met": true,
+   "tmp": null
+  },
+  {
+   "id": "I01",
+   "kind": "integrity",
+   "title": "данные и package_manifest согласованно изменены, source_manifest — нет (якорь целостности)",
+   "steps": {
+    "build_data": {
+     "exit": 2,
+     "outcome": "rejected_integrity",
+     "stderr_last": "ОШИБКА входных данных: INTEGRITY: package_manifest.json не совпадает с sha256 в source_manifest.json"
+    },
+    "build_evidence": {
+     "exit": 2,
+     "outcome": "rejected_integrity",
+     "stderr_last": "ОШИБКА входных данных: INTEGRITY: package_manifest.json не совпадает с sha256 в source_manifest.json"
+    }
+   },
+   "offline_check": {
+    "exit": 0,
+    "errors": []
+   },
+   "outputs_changed": [],
+   "artifact_problems_after": [],
+   "requirement_met": true,
+   "tmp": null
+  },
+  {
+   "id": "N01",
+   "kind": "semantic",
+   "title": "NaN в confidence объекта (токен NaN)",
+   "steps": {
+    "build_data": {
+     "exit": 2,
+     "outcome": "rejected_semantic",
+     "stderr_last": "ОШИБКА входных данных: SEMANTIC: shymkent/places_social: недопустимый JSON (токен NaN)"
+    },
+    "build_evidence": {
+     "exit": 2,
+     "outcome": "rejected_semantic",
+     "stderr_last": "ОШИБКА входных данных: SEMANTIC: shymkent/places_social: недопустимый JSON (токен NaN)"
+    }
+   },
+   "offline_check": {
+    "exit": 0,
+    "errors": []
+   },
+   "outputs_changed": [],
+   "artifact_problems_after": [],
+   "requirement_met": true,
+   "tmp": null
+  },
+  {
+   "id": "N02",
+   "kind": "semantic",
+   "title": "NaN в координате объекта",
+   "steps": {
+    "build_data": {
+     "exit": 2,
+     "outcome": "rejected_semantic",
+     "stderr_last": "ОШИБКА входных данных: SEMANTIC: shymkent/places_social: недопустимый JSON (токен NaN)"
+    },
+    "build_evidence": {
+     "exit": 2,
+     "outcome": "rejected_semantic",
+     "stderr_last": "ОШИБКА входных данных: SEMANTIC: shymkent/places_social: недопустимый JSON (токен NaN)"
+    }
+   },
+   "offline_check": {
+    "exit": 1,
+    "errors": [
+     "shymkent: 1 places outside bbox"
+    ]
+   },
+   "outputs_changed": [],
+   "artifact_problems_after": [],
+   "requirement_met": true,
+   "tmp": null
+  },
+  {
+   "id": "N03",
+   "kind": "semantic",
+   "title": "Infinity в k10_length_m сегмента",
+   "steps": {
+    "build_data": {
+     "exit": 2,
+     "outcome": "rejected_semantic",
+     "stderr_last": "ОШИБКА входных данных: SEMANTIC: shymkent/segments: недопустимый JSON (токен Infinity)"
+    },
+    "build_evidence": {
+     "exit": 2,
+     "outcome": "rejected_semantic",
+     "stderr_last": "ОШИБКА входных данных: SEMANTIC: shymkent/segments: недопустимый JSON (токен Infinity)"
+    }
+   },
+   "offline_check": {
+    "exit": 1,
+    "errors": [
+     "shymkent: 1 segments with wrong k10_length_m"
+    ]
+   },
+   "outputs_changed": [],
+   "artifact_problems_after": [],
+   "requirement_met": true,
+   "tmp": null
+  },
+  {
+   "id": "N04",
+   "kind": "semantic",
+   "title": "1e999 (строго валидный JSON → inf) в k10_length_m сегмента",
+   "steps": {
+    "build_data": {
+     "exit": 2,
+     "outcome": "rejected_semantic",
+     "stderr_last": "ОШИБКА входных данных: SEMANTIC: shymkent/segments: недопустимый JSON (1e999 переполняется до inf)"
+    },
+    "build_evidence": {
+     "exit": 2,
+     "outcome": "rejected_semantic",
+     "stderr_last": "ОШИБКА входных данных: SEMANTIC: shymkent/segments: недопустимый JSON (1e999 переполняется до inf)"
+    }
+   },
+   "offline_check": {
+    "exit": 1,
+    "errors": [
+     "shymkent: 1 segments with wrong k10_length_m"
+    ]
+   },
+   "outputs_changed": [],
+   "artifact_problems_after": [],
+   "requirement_met": true,
+   "tmp": null
+  },
+  {
+   "id": "N05",
+   "kind": "semantic",
+   "title": "повтор ключа k10_group (school, затем pharmacy) — последний молча побеждает",
+   "steps": {
+    "build_data": {
+     "exit": 2,
+     "outcome": "rejected_semantic",
+     "stderr_last": "ОШИБКА входных данных: SEMANTIC: shymkent/places_social: недопустимый JSON (повтор ключа 'k10_group')"
+    },
+    "build_evidence": {
+     "exit": 2,
+     "outcome": "rejected_semantic",
+     "stderr_last": "ОШИБКА входных данных: SEMANTIC: shymkent/places_social: недопустимый JSON (повтор ключа 'k10_group')"
+    }
+   },
+   "offline_check": {
+    "exit": 0,
+    "errors": []
+   },
+   "outputs_changed": [],
+   "artifact_problems_after": [],
+   "requirement_met": true,
+   "tmp": null
+  },
+  {
+   "id": "N06",
+   "kind": "semantic",
+   "title": "конфликт ID: второй объект с тем же id/overture_id и другим содержимым",
+   "steps": {
+    "build_data": {
+     "exit": 2,
+     "outcome": "rejected_semantic",
+     "stderr_last": "ОШИБКА входных данных: SEMANTIC: shymkent/places_social: повтор id 01961e84-815f-4bd1-85c3-6bf1734256ec"
+    },
+    "build_evidence": {
+     "exit": 2,
+     "outcome": "rejected_semantic",
+     "stderr_last": "ОШИБКА входных данных: SEMANTIC: shymkent/places_social: повтор id 01961e84-815f-4bd1-85c3-6bf1734256ec"
+    }
+   },
+   "offline_check": {
+    "exit": 1,
+    "errors": [
+     "shymkent/places_social: 1 duplicate ids"
+    ]
+   },
+   "outputs_changed": [],
+   "artifact_problems_after": [],
+   "requirement_met": true,
+   "tmp": null
+  },
+  {
+   "id": "N07",
+   "kind": "semantic",
+   "title": "bbox mix: объект файла Шымкента с координатами в квадрате Астаны",
+   "steps": {
+    "build_data": {
+     "exit": 2,
+     "outcome": "rejected_semantic",
+     "stderr_last": "ОШИБКА входных данных: SEMANTIC: shymkent/places_social: 01961e84-815f-4bd1-85c3-6bf1734256ec: объект другого города или вне квадрата (71.432686, 51.172016)"
+    },
+    "build_evidence": {
+     "exit": 2,
+     "outcome": "rejected_semantic",
+     "stderr_last": "ОШИБКА входных данных: SEMANTIC: shymkent/places_social: 01961e84-815f-4bd1-85c3-6bf1734256ec: объект другого города или вне квадрата (71.432686, 51.172016)"
+    }
+   },
+   "offline_check": {
+    "exit": 1,
+    "errors": [
+     "shymkent: 1 places outside bbox"
+    ]
+   },
+   "outputs_changed": [],
+   "artifact_problems_after": [],
+   "requirement_met": true,
+   "tmp": null
+  },
+  {
+   "id": "N08",
+   "kind": "semantic",
+   "title": "bbox mix: заголовок слоя с bbox, отличным от манифеста",
+   "steps": {
+    "build_data": {
+     "exit": 2,
+     "outcome": "rejected_semantic",
+     "stderr_last": "ОШИБКА входных данных: SEMANTIC: shymkent/places_social: заголовок (city/release/bbox) shymkent/2026-09-23.1/[69.0, 42.0, 69.1, 42.1] ≠ манифесту shymkent/2026-09-23.1/[69.593365, 42.306645, 69.617658, 42.324611]"
+    },
+    "build_evidence": {
+     "exit": 2,
+     "outcome": "rejected_semantic",
+     "stderr_last": "ОШИБКА входных данных: SEMANTIC: shymkent/places_social: заголовок (city/release/bbox) shymkent/2026-09-23.1/[69.0, 42.0, 69.1, 42.1] ≠ манифесту shymkent/2026-09-23.1/[69.593365, 42.306645, 69.617658, 42.324611]"
+    }
+   },
+   "offline_check": {
+    "exit": 1,
+    "errors": [
+     "shymkent/places_social: header release/city/bbox mismatch"
+    ]
+   },
+   "outputs_changed": [],
+   "artifact_problems_after": [],
+   "requirement_met": true,
+   "tmp": null
+  },
+  {
+   "id": "N09",
+   "kind": "semantic",
+   "title": "period mix: слой объектов из выпуска 2026-08-20.0 при манифесте 2026-09-23.1",
+   "steps": {
+    "build_data": {
+     "exit": 2,
+     "outcome": "rejected_semantic",
+     "stderr_last": "ОШИБКА входных данных: SEMANTIC: shymkent/places_social: заголовок (city/release/bbox) shymkent/2026-08-20.0/[69.593365, 42.306645, 69.617658, 42.324611] ≠ манифесту shymkent/2026-09-23.1/[69.593365, 42.306645, 69.617658, 42.324611]"
+    },
+    "build_evidence": {
+     "exit": 2,
+     "outcome": "rejected_semantic",
+     "stderr_last": "ОШИБКА входных данных: SEMANTIC: shymkent/places_social: заголовок (city/release/bbox) shymkent/2026-08-20.0/[69.593365, 42.306645, 69.617658, 42.324611] ≠ манифесту shymkent/2026-09-23.1/[69.593365, 42.306645, 69.617658, 42.324611]"
+    }
+   },
+   "offline_check": {
+    "exit": 1,
+    "errors": [
+     "shymkent/places_social: header release/city/bbox mismatch"
+    ]
+   },
+   "outputs_changed": [],
+   "artifact_problems_after": [],
+   "requirement_met": true,
+   "tmp": null
+  }
+ ],
+ "summary": {
+  "requirement_met": 12,
+  "total": 12,
+  "failed": []
+ }
+}

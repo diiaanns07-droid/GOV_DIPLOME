@@ -1,0 +1,17 @@
+$ /opt/node22/bin/node /home/user/GOV_DIPLOME/research/round-6-results/BUILD/adapters/K02/facts_regression.cjs --app-root /tmp/acc-z4gg__s_/prototypes/city-evidence --json results/candidate_b3e4dc4/K02_facts_regression_adapted.json
+exit=0
+--- stdout
+PASS T1_value_change — изменение значения при том же городе и срезе: старый план отклоняется
+PASS T2_unit_change — изменение единицы при том же городе и срезе: старый план отклоняется
+PASS T3_coverage_change — изменение охвата при том же городе и срезе: старый план отклоняется
+PASS T4_digest_distinguishes — старый срез и изменённый каталог различимы (catalogDigest), одинаковые — равны
+PASS T5_duplicate_across_sections — повтор одного ID в двух секциях отклоняется (duplicate_id)
+PASS T6_null_vs_zero — null: только в data_gaps и «нет данных»; настоящий 0 печатается как 0
+PASS T7_city_substitution_observations — наблюдения другого города под ключом города отклоняются при buildCatalog
+PASS T8_city_switch_stale_plan — план по Астане против каталога Шымкента отклоняется (foreign_city или stale_catalog)
+PASS T9_nonfinite_nan — неконечное число (NaN) отклоняется при buildCatalog, а не падает в render
+PASS T9_nonfinite_inf — неконечное число (Infinity) отклоняется при buildCatalog, а не падает в render
+PASS T10_incomplete_coverage_visible — значения при coverage.complete=false помечены в тексте объяснения
+all 11 passed
+
+--- stderr

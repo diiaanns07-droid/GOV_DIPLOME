@@ -1,0 +1,79 @@
+{
+ "target": {
+  "app_root_given": true
+ },
+ "fixture": "ui_coord_group_shymkent",
+ "group_id": "shymkent:exact:69.5958000,42.3167000",
+ "results": [
+  {
+   "check": "MUST_all_group_records_rendered_as_markers",
+   "level": "MUST",
+   "status": "PASS",
+   "detail": {
+    "rendered": 10,
+    "of": 10
+   },
+   "expected_fail_at_baseline_0bf27de": false
+  },
+  {
+   "check": "MUST_table_rows_equal_visible_records",
+   "level": "MUST",
+   "status": "PASS",
+   "detail": {
+    "rows": 55,
+    "visible": 55
+   },
+   "expected_fail_at_baseline_0bf27de": false
+  },
+  {
+   "check": "INFO_group_markers_share_one_screen_position",
+   "level": "INFO",
+   "status": "PASS",
+   "detail": {
+    "distinct_positions": 1
+   },
+   "expected_fail_at_baseline_0bf27de": false
+  },
+  {
+   "check": "MUST_each_group_record_selectable_from_table",
+   "level": "MUST",
+   "status": "PASS",
+   "detail": {
+    "selectable": 10,
+    "of": 10
+   },
+   "expected_fail_at_baseline_0bf27de": false
+  },
+  {
+   "check": "SHOULD_each_group_record_selectable_from_map",
+   "level": "SHOULD",
+   "status": "PASS",
+   "detail": {
+    "reachable_by_map_click": 10,
+    "of": 10
+   },
+   "expected_fail_at_baseline_0bf27de": true
+  },
+  {
+   "check": "SHOULD_group_indicated_in_ui",
+   "level": "SHOULD",
+   "status": "PASS",
+   "detail": {
+    "attr": true,
+    "text": true
+   },
+   "expected_fail_at_baseline_0bf27de": true
+  },
+  {
+   "check": "MUST_no_page_errors",
+   "level": "MUST",
+   "status": "PASS",
+   "detail": {
+    "errors": []
+   },
+   "expected_fail_at_baseline_0bf27de": false
+  }
+ ],
+ "must_failures": [],
+ "should_failures": []
+}

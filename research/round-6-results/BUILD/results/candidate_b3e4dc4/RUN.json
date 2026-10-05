@@ -1,0 +1,107 @@
+{
+ "target_sha": "b3e4dc413d5354652e3207d4eb56f921b108669e",
+ "python": "/tmp/claude-0/-home-user-GOV-DIPLOME/cf69c9ea-684d-5fca-9dcc-2d983076f4aa/scratchpad/venv/bin/python",
+ "node": "/opt/node22/bin/node",
+ "tests": [
+  {
+   "test": "K03_boundaries_original",
+   "exit": 1,
+   "seconds": 6.1
+  },
+  {
+   "test": "K03_boundaries_adapted",
+   "exit": 0,
+   "seconds": 12.1
+  },
+  {
+   "test": "K05_compat_original",
+   "exit": 1,
+   "seconds": 0.1
+  },
+  {
+   "test": "K05_compat_adapted",
+   "exit": 0,
+   "seconds": 0.1
+  },
+  {
+   "test": "K12_negative",
+   "exit": 0,
+   "seconds": 14.5
+  },
+  {
+   "test": "K11_smoke",
+   "exit": 0,
+   "seconds": 2.5
+  },
+  {
+   "test": "K08_attribution",
+   "exit": 0,
+   "seconds": 0.6
+  },
+  {
+   "test": "K01_check_build_original",
+   "exit": 1,
+   "seconds": 4.1
+  },
+  {
+   "test": "K01_check_build_adapted",
+   "exit": 0,
+   "seconds": 3.9
+  },
+  {
+   "test": "K06_audit_numbers_original",
+   "exit": 1,
+   "seconds": 0.2
+  },
+  {
+   "test": "K06_audit_numbers_adapted",
+   "exit": 0,
+   "seconds": 0.5
+  },
+  {
+   "test": "K10_run_qa",
+   "exit": 0,
+   "seconds": 0.3
+  },
+  {
+   "test": "K02_facts_regression_original",
+   "exit": 1,
+   "seconds": 0.2
+  },
+  {
+   "test": "K02_facts_regression_adapted",
+   "exit": 0,
+   "seconds": 0.2
+  },
+  {
+   "test": "K07_regressions_original",
+   "exit": 0,
+   "seconds": 14.9
+  },
+  {
+   "test": "K07_regressions_adapted",
+   "exit": 0,
+   "seconds": 15.3
+  },
+  {
+   "test": "K10_ui_coord_group",
+   "exit": 0,
+   "seconds": 4.9
+  },
+  {
+   "test": "BUILD_smoke",
+   "exit": 0,
+   "seconds": 11.7
+  },
+  {
+   "test": "BUILD_check_all",
+   "exit": 0,
+   "seconds": 4.5
+  },
+  {
+   "test": "BUILD_check_all_no_geo",
+   "exit": 0,
+   "seconds": 3.2
+  }
+ ]
+}

@@ -1,0 +1,16 @@
+$ /tmp/claude-0/-home-user-GOV-DIPLOME/cf69c9ea-684d-5fca-9dcc-2d983076f4aa/scratchpad/venv/bin/python /home/user/GOV_DIPLOME/research/round-6-results/BUILD/review_inputs/K06/audit_numbers.py --app-root /tmp/acc-z4gg__s_/prototypes/city-evidence --json results/candidate_b3e4dc4/K06_audit_numbers_original.json
+exit=1
+--- stdout
+
+--- stderr
+Traceback (most recent call last):
+  File "/home/user/GOV_DIPLOME/research/round-6-results/BUILD/review_inputs/K06/audit_numbers.py", line 244, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/user/GOV_DIPLOME/research/round-6-results/BUILD/review_inputs/K06/audit_numbers.py", line 229, in main
+    checks = audit(src)
+             ^^^^^^^^^^
+  File "/home/user/GOV_DIPLOME/research/round-6-results/BUILD/review_inputs/K06/audit_numbers.py", line 115, in audit
+    ok = (k["places"] == len(c["places"]) == obs["places.total"]["value"] and k["places_by_group"] == by_g
+                                             ~~~^^^^^^^^^^^^^^^^
+KeyError: 'places.total'

@@ -1,0 +1,23 @@
+$ /tmp/claude-0/-home-user-GOV-DIPLOME/cf69c9ea-684d-5fca-9dcc-2d983076f4aa/scratchpad/venv/bin/python /tmp/acc-z4gg__s_/prototypes/city-evidence/tools/check_all.py --log results/candidate_b3e4dc4/BUILD_check_all.json
+exit=0
+--- stdout
+[PASS] inputs: 42 + 82 copied inputs match recorded sha256
+[PASS] inputs: contract k05-obs-v1.2+k12r4+k05r5: originals and patched copy match manifest (2 modified)
+[PASS] inputs: K03 v2.1: original byte-exact, patched copy and all its files match MANIFEST_K03.json
+[PASS] inputs: K02 v4: original byte-exact, adapted copy matches manifest
+[PASS] inputs: web/attribution equals K08 r4 originals
+[PASS] inputs: K10 package_manifest.json anchored by source_manifest sha256 (K01 #2)
+[PASS] package: K10 offline_check.py (subprocess) exit 0, ok=true
+[PASS] build: web/data.js == rebuild
+[PASS] build: committed evidence.js passes k05-obs-v1.2+k12r4+k05r5 (strict JSON, records, dataset)
+shymkent: {'matched': 55}; 26 наблюдений, ошибок 0; QA: colocated [10, 4], дубли 3, сомнения в категории 5
+astana: {'matched': 65}; 26 наблюдений, ошибок 0; QA: colocated [], дубли 5, сомнения в категории 0
+[PASS] build: web/evidence.js == rebuild (K03 v2 assign + K05 recount + QA)
+[PASS] fresh: evidence.js boundary_binding matches K03 code/layers and data.js places
+[PASS] facts: Python K02 reference reproduces 7 expected explanations
+[PASS] facts: JS facts.js conformance (44 checks)
+[PASS] tests: python -m unittest discover -s tests (Ran 32 tests in 2.355s; OK)
+
+14 passed, 0 skipped, 0 failed
+
+--- stderr

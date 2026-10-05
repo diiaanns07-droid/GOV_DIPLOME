@@ -1,0 +1,22 @@
+$ /tmp/claude-0/-home-user-GOV-DIPLOME/cf69c9ea-684d-5fca-9dcc-2d983076f4aa/scratchpad/venv/bin/python /home/user/GOV_DIPLOME/research/round-6-results/BUILD/adapters/K06/audit_numbers.py --app-root /tmp/acc-z4gg__s_/prototypes/city-evidence --json results/candidate_b3e4dc4/K06_audit_numbers_adapted.json
+exit=0
+--- stdout
+PASS astana    N1_record_counts
+PASS astana    N2_count_labels
+PASS astana    N3_unknown_not_zero
+PASS astana    N4_segments_edge
+WARN astana    N5_road_km_full_vs_inside
+PASS astana    N6_segment_length_label
+PASS astana    N7_straight_line_distance
+PASS astana    N8_provenance_k10
+PASS shymkent  N1_record_counts
+PASS shymkent  N2_count_labels
+PASS shymkent  N3_unknown_not_zero
+PASS shymkent  N4_segments_edge
+WARN shymkent  N5_road_km_full_vs_inside
+PASS shymkent  N6_segment_length_label
+PASS shymkent  N7_straight_line_distance
+PASS shymkent  N8_provenance_k10
+{'PASS': 14, 'WARN': 2}
+
+--- stderr

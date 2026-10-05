@@ -1,0 +1,268 @@
+{
+ "test": "research/round-5-results/K03/test_boundaries_demo.py",
+ "app_root": "/tmp/acc-z4gg__s_/prototypes/city-evidence",
+ "url": null,
+ "data_js": "/tmp/acc-z4gg__s_/prototypes/city-evidence/web/data.js",
+ "evidence_js": "/tmp/acc-z4gg__s_/prototypes/city-evidence/web/evidence.js",
+ "summary": {
+  "PASS": 13,
+  "FAIL": 0,
+  "XFAIL": 0,
+  "XPASS": 0,
+  "SKIP": 0
+ },
+ "results": [
+  {
+   "check": "C1-k03-inputs",
+   "outcome": "PASS",
+   "summary": "11 файлов K03 из source_manifest.json; несовпадений sha256: 0; источник K03 SHA ['44585de31be01dd131ecb7677c462fc85b4d4cc4']",
+   "details": {
+    "mismatched": [],
+    "k03_source_sha": [
+     "44585de31be01dd131ecb7677c462fc85b4d4cc4"
+    ],
+    "validator_sha256": "d5e297411d78085dafece85b25b10050672b03b2f22c46651f631d886d80760b"
+   }
+  },
+  {
+   "check": "C2-module-is-what-label-says",
+   "outcome": "PASS",
+   "summary": "поведение=v2, assign()[rule]=k03_assign_v2, evidence.assign_rule=k03_assign_v2, method.id=[]",
+   "details": {
+    "versions": {
+     "behaviour": "v2",
+     "assign_result_rule": "v2",
+     "evidence_assign_rule": "v2"
+    },
+    "fingerprint_results": {
+     "R1": [
+      "ambiguous",
+      null
+     ],
+     "R2": [
+      "ambiguous",
+      null
+     ]
+    },
+    "evidence": "/tmp/acc-z4gg__s_/prototypes/city-evidence/web/evidence.js"
+   }
+  },
+  {
+   "check": "C3-R1-AST-HOLE-out0.5",
+   "outcome": "PASS",
+   "summary": "0,5 м за контуром города у зоны AST-Z2: принадлежность городу не доказана → ambiguous, не unmatched; получено ambiguous/None",
+   "details": {
+    "point": [
+     71.409286747,
+     50.881525736
+    ],
+    "expected": [
+     "ambiguous",
+     null
+    ],
+    "got": [
+     "ambiguous",
+     null
+    ],
+    "reason": "city_edge",
+    "baseline_v1": [
+     "unmatched",
+     null
+    ],
+    "defect": "D1",
+    "source_fixture": "round-4 K03 fixtures.json:AST-HOLE-out0.5"
+   }
+  },
+  {
+   "check": "C3-R2-AST-VER-D2",
+   "outcome": "PASS",
+   "summary": "1,01 м от границы снимка OSM, 0,58 м от границы Overture той же пары районов → ambiguous; получено ambiguous/None",
+   "details": {
+    "point": [
+     71.460469423,
+     51.129017713
+    ],
+    "expected": [
+     "ambiguous",
+     null
+    ],
+    "got": [
+     "ambiguous",
+     null
+    ],
+    "reason": "near_district_boundary",
+    "baseline_v1": [
+     "matched",
+     "kz.astana.district.saraishyk"
+    ],
+    "defect": "D2",
+    "source_fixture": "round-4 K03 fixtures.json:AST-VER-D2"
+   }
+  },
+  {
+   "check": "C3-R3-AST-EX-in",
+   "outcome": "PASS",
+   "summary": "эксклав Байконура ∩ Целиноградский район (AST-Z1) → ambiguous, без района; получено ambiguous/None",
+   "details": {
+    "point": [
+     71.665106386,
+     51.330255048
+    ],
+    "expected": [
+     "ambiguous",
+     null
+    ],
+    "got": [
+     "ambiguous",
+     null
+    ],
+    "reason": "city_vs_region_overlap",
+    "baseline_v1": [
+     "ambiguous",
+     null
+    ],
+    "defect": null,
+    "source_fixture": "round-4 K03 fixtures.json:AST-EX-in"
+   }
+  },
+  {
+   "check": "C3-R4-AST-SB-a0.99",
+   "outcome": "PASS",
+   "summary": "крайний случай допуска: 0,99 м от общей границы Есиль/Нура → ambiguous; получено ambiguous/None",
+   "details": {
+    "point": [
+     71.400479487,
+     51.083375685
+    ],
+    "expected": [
+     "ambiguous",
+     null
+    ],
+    "got": [
+     "ambiguous",
+     null
+    ],
+    "reason": "near_district_boundary",
+    "baseline_v1": [
+     "ambiguous",
+     null
+    ],
+    "defect": null,
+    "source_fixture": "round-4 K03 fixtures.json:AST-SB-a0.99"
+   }
+  },
+  {
+   "check": "C3-R5-AST-SB-a1.01",
+   "outcome": "PASS",
+   "summary": "крайний случай допуска: 1,01 м → matched Есиль (защита от чрезмерного исправления); получено matched/kz.astana.district.esil",
+   "details": {
+    "point": [
+     71.400479766,
+     51.083375646
+    ],
+    "expected": [
+     "matched",
+     "kz.astana.district.esil"
+    ],
+    "got": [
+     "matched",
+     "kz.astana.district.esil"
+    ],
+    "reason": "single_district_interior",
+    "baseline_v1": [
+     "matched",
+     "kz.astana.district.esil"
+    ],
+    "defect": null,
+    "source_fixture": "round-4 K03 fixtures.json:AST-SB-a1.01"
+   }
+  },
+  {
+   "check": "C4-build-path",
+   "outcome": "PASS",
+   "summary": "tools/build_evidence.py в копии app-root воспроизводит web/evidence.js побайтно",
+   "details": {
+    "returncode": 0,
+    "stdout": "shymkent: {'matched': 55}; 26 наблюдений, ошибок 0; QA: colocated [10, 4], дубли 3, сомнения в категории 5\nastana: {'matched': 65}; 26 наблюдений, ошибок 0; QA: colocated [], дубли 5, сомнения в категории 0\nwrote web/evidence.js (151637 bytes)\n",
+    "stderr": ""
+   }
+  },
+  {
+   "check": "C5-place-district-consistent",
+   "outcome": "PASS",
+   "summary": "120 мест data.js: у каждого есть запись, форма статуса верна, совпадает с assign() модуля app-root",
+   "details": {
+    "problems": [],
+    "places": 120,
+    "recomputed": true
+   }
+  },
+  {
+   "check": "C6-binding",
+   "outcome": "PASS",
+   "summary": "boundary_binding совпадает с текущими кодом K03, слоями и точками data.js",
+   "details": {
+    "evidence": "/tmp/acc-z4gg__s_/prototypes/city-evidence/web/evidence.js",
+    "problems": []
+   }
+  },
+  {
+   "check": "C7-S1-layer-sync-real",
+   "outcome": "PASS",
+   "summary": "снимок OSM ← геометрия Алматы и Сарайшыка из Overture 2026-09-23.1 (реальные данные пакета; так будет, если слои синхронизируются); source_manifest обновлён как при copy_inputs. До пересборки: тесты приложения — FAILED (failures=1); binding — ловит; check_evidence_fresh — ловит. Пересборка: код 2",
+   "details": {
+    "app_tests": "FAILED (failures=1)",
+    "app_tests_crashed": false,
+    "app_tests_failed": true,
+    "binding_detects": true,
+    "fresh_tool_detects": true,
+    "rebuild_returncode": 2,
+    "rebuild_crashed": false,
+    "rebuild_stderr_tail": "ОШИБКА входных данных: INTEGRITY: копия K03 не совпадает с MANIFEST_K03.json: ['data/astana_districts.geojson', 'data/astana_districts.geojson']\n",
+    "place_district_changed": null,
+    "label_after_rebuild": null,
+    "code_rule_after_rebuild": null,
+    "known_baseline_issues": []
+   }
+  },
+  {
+   "check": "C7-S2-k10-place-moved-synthetic",
+   "outcome": "PASS",
+   "summary": "синтетика: место 0233b91f… (Сарыарка) перенесено к месту Байконура; K10-манифест и data.js обновлены, evidence.js не пересобран. До пересборки: тесты приложения — FAILED (failures=2); binding — ловит; check_evidence_fresh — ловит. Пересборка: код 2",
+   "details": {
+    "app_tests": "FAILED (failures=2)",
+    "app_tests_crashed": false,
+    "app_tests_failed": true,
+    "binding_detects": true,
+    "fresh_tool_detects": true,
+    "rebuild_returncode": 2,
+    "rebuild_crashed": false,
+    "rebuild_stderr_tail": "ОШИБКА входных данных: INTEGRITY: kz.astana.k10sq_r17_c7.overture_place_records.school.conf_ge_0_0@2026-09-23.1: source.sha256 K05 != файл K10 пакета\n",
+    "place_district_changed": null,
+    "label_after_rebuild": null,
+    "code_rule_after_rebuild": null,
+    "known_baseline_issues": []
+   }
+  },
+  {
+   "check": "C7-S3-rule-update-v2",
+   "outcome": "PASS",
+   "summary": "patch v2 уже применён/неприменим — в код K03 добавлена строка-комментарий (изменение кода без изменения поведения); source_manifest обновлён как при copy_inputs; evidence.js не пересобран. До пересборки: тесты приложения — FAILED (failures=1); binding — ловит; check_evidence_fresh — ловит. Пересборка: код 2",
+   "details": {
+    "app_tests": "FAILED (failures=1)",
+    "app_tests_crashed": false,
+    "app_tests_failed": true,
+    "binding_detects": true,
+    "fresh_tool_detects": true,
+    "rebuild_returncode": 2,
+    "rebuild_crashed": false,
+    "rebuild_stderr_tail": "ОШИБКА входных данных: INTEGRITY: копия K03 не совпадает с MANIFEST_K03.json: ['research/round-3-results/K03/boundary_validator.py', 'research/round-3-results/K03/boundary_validator.py']\n",
+    "place_district_changed": null,
+    "label_after_rebuild": null,
+    "code_rule_after_rebuild": "k03_assign_v2",
+    "known_baseline_issues": []
+   }
+  }
+ ],
+ "python": "3.11.15"
+}

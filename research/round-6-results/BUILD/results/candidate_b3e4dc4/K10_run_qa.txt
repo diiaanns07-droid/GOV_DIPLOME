@@ -1,0 +1,154 @@
+$ /tmp/claude-0/-home-user-GOV-DIPLOME/cf69c9ea-684d-5fca-9dcc-2d983076f4aa/scratchpad/venv/bin/python /home/user/GOV_DIPLOME/research/round-6-results/BUILD/review_inputs/K10/tests/run_qa.py --app-root /tmp/acc-z4gg__s_/prototypes/city-evidence --json results/candidate_b3e4dc4/K10_run_qa.json
+exit=0
+--- stdout
+{
+ "must_failures": [],
+ "results": [
+  {
+   "check": "MUST_fixture_ids_present",
+   "detail": {
+    "expected": 10,
+    "missing": []
+   },
+   "expected_fail_at_baseline_0bf27de": false,
+   "level": "MUST",
+   "status": "PASS"
+  },
+  {
+   "check": "MUST_fixture_group_coordinate_unchanged",
+   "detail": {
+    "ids_at_fixture_point": 10,
+    "note": "a fix may flag or annotate the group, not move/delete it"
+   },
+   "expected_fail_at_baseline_0bf27de": false,
+   "level": "MUST",
+   "status": "PASS"
+  },
+  {
+   "check": "MUST_fixture_group_inside_bbox",
+   "detail": {
+    "bbox": [
+     69.593365,
+     42.306645,
+     69.617658,
+     42.324611
+    ]
+   },
+   "expected_fail_at_baseline_0bf27de": false,
+   "level": "MUST",
+   "status": "PASS"
+  },
+  {
+   "check": "MUST_astana_places_social_ids_preserved",
+   "detail": {
+    "duplicates_in_ui": 0,
+    "extra_in_ui": 0,
+    "missing_in_ui": 0,
+    "source": 65,
+    "ui": 65
+   },
+   "expected_fail_at_baseline_0bf27de": false,
+   "level": "MUST",
+   "status": "PASS"
+  },
+  {
+   "check": "MUST_astana_segments_ids_preserved",
+   "detail": {
+    "duplicates_in_ui": 0,
+    "extra_in_ui": 0,
+    "missing_in_ui": 0,
+    "source": 1326,
+    "ui": 1326
+   },
+   "expected_fail_at_baseline_0bf27de": false,
+   "level": "MUST",
+   "status": "PASS"
+  },
+  {
+   "check": "MUST_shymkent_places_social_ids_preserved",
+   "detail": {
+    "duplicates_in_ui": 0,
+    "extra_in_ui": 0,
+    "missing_in_ui": 0,
+    "source": 55,
+    "ui": 55
+   },
+   "expected_fail_at_baseline_0bf27de": false,
+   "level": "MUST",
+   "status": "PASS"
+  },
+  {
+   "check": "MUST_shymkent_segments_ids_preserved",
+   "detail": {
+    "duplicates_in_ui": 0,
+    "extra_in_ui": 0,
+    "missing_in_ui": 0,
+    "source": 1084,
+    "ui": 1084
+   },
+   "expected_fail_at_baseline_0bf27de": false,
+   "level": "MUST",
+   "status": "PASS"
+  },
+  {
+   "check": "MUST_qa_flags_deterministic",
+   "detail": {
+    "sha256": "e2fcd33b9b70efee95548c0fce36c7da55c12b6c1751a3e8c6d514b548e29d5d"
+   },
+   "expected_fail_at_baseline_0bf27de": false,
+   "level": "MUST",
+   "status": "PASS"
+  },
+  {
+   "check": "MUST_qa_flags_ids_known",
+   "detail": {
+    "flags": 70
+   },
+   "expected_fail_at_baseline_0bf27de": false,
+   "level": "MUST",
+   "status": "PASS"
+  },
+  {
+   "check": "MUST_qa_flags_no_email_value",
+   "detail": {},
+   "expected_fail_at_baseline_0bf27de": false,
+   "level": "MUST",
+   "status": "PASS"
+  },
+  {
+   "check": "MUST_no_error_flags",
+   "detail": {
+    "error_flags": []
+   },
+   "expected_fail_at_baseline_0bf27de": false,
+   "level": "MUST",
+   "status": "PASS"
+  },
+  {
+   "check": "SHOULD_data_exposes_coord_group_flag",
+   "detail": {
+    "looked_for_keys": [
+     "qa_flags",
+     "coord_group",
+     "qa"
+    ],
+    "marked": 0,
+    "of": 10
+   },
+   "expected_fail_at_baseline_0bf27de": true,
+   "level": "SHOULD",
+   "status": "FAIL"
+  }
+ ],
+ "should_failures": [
+  "SHOULD_data_exposes_coord_group_flag"
+ ],
+ "target": {
+  "app_root_given": true,
+  "data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "url": null
+ }
+}
+
+
+--- stderr

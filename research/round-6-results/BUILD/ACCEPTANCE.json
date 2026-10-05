@@ -1,0 +1,354 @@
+{
+ "round": 6,
+ "target_code_sha": "b3e4dc413d5354652e3207d4eb56f921b108669e",
+ "base_sha": "064ed25368341edaa50289bc29e21dda7bdd9440",
+ "branch": "claude/beautiful-clarke-sbzomj",
+ "environment": "Linux container; Python 3.11 (+venv shapely 2.1.2, pyproj 3.7.2); Node 22; Playwright 1.56.1 Chromium headless; no external network",
+ "policy": "no expected-failure list of 0bf27de applied; TEST_INCOMPATIBLE only with adapter + rerun; SKIP is not PASS",
+ "summary": {
+  "PASS": 12,
+  "FAIL": 1,
+  "SKIP": 2,
+  "TEST_INCOMPATIBLE": 6
+ },
+ "open_findings": [
+  "K10-run-qa-data-flag"
+ ],
+ "status": "candidate_ready_for_owner_demo",
+ "status_note": "not production-ready; Windows run not performed; K10 SHOULD data-level QA flag open (low)",
+ "entries": [
+  {
+   "issue_id": "BUILD-portable-check_all",
+   "source_test": "prototypes/city-evidence/tools/check_all.py",
+   "source_test_sha": null,
+   "target_code_sha": "b3e4dc413d5354652e3207d4eb56f921b108669e",
+   "command": "python3 tools/check_all.py (in extracted prototypes/city-evidence)",
+   "expected": "own checks pass on a standalone extraction",
+   "actual": "14 passed, 0 skipped, 0 failed (with shapely); 13 passed, 1 skipped (rebuild of evidence.js), 0 failed (without)",
+   "verdict": "PASS",
+   "severity": "high",
+   "evidence": [
+    "results/candidate_b3e4dc4/BUILD_check_all.txt",
+    "results/candidate_b3e4dc4/BUILD_check_all_no_geo.txt"
+   ],
+   "baseline_064ed25": "FAIL: facts step crashed (StopIteration) on extracted 064ed25",
+   "note": "fixed: Python K02 reference needed agent/evidence.py outside the folder; vendored byte copy inputs/product_agent"
+  },
+  {
+   "issue_id": "K12-r5-negative",
+   "source_test": "K12/k12r5_negative_build.py --app-root",
+   "source_test_sha": "a9ed8be9163f4c302f028f6e2f69066ccd227bec",
+   "target_code_sha": "b3e4dc413d5354652e3207d4eb56f921b108669e",
+   "command": "python tools/run_acceptance.py b3e4dc4 --venv-python <py with shapely,pyproj> (extracts the SHA with git archive)",
+   "expected": "12/12 cases: correct refusal class (integrity/semantic), outputs unchanged",
+   "actual": "12/12 requirement_met",
+   "verdict": "PASS",
+   "severity": "critical",
+   "evidence": [
+    "results/candidate_b3e4dc4/K12_negative.txt",
+    "results/candidate_b3e4dc4/K12_negative.json"
+   ],
+   "baseline_064ed25": "2/12: N03/N04 Infinity/1e999 accepted and evidence.js rewritten; other refusals accidental (attribution/K05 hash)",
+   "note": "fixed: strict JSON + semantic checks + source_manifest anchor in build_data/build_evidence"
+  },
+  {
+   "issue_id": "K05-r5-compat",
+   "source_test": "K05/k05r5_compat.py (adapter: D08 uses the v1.2 validator; variant table hashes)",
+   "source_test_sha": "fb2dea60a5e42e745e6914dc063355d6db67aebe",
+   "target_code_sha": "b3e4dc413d5354652e3207d4eb56f921b108669e",
+   "command": "python tools/run_acceptance.py b3e4dc4 --venv-python <py with shapely,pyproj> (extracts the SHA with git archive)",
+   "expected": "D01-D08 and M01-M12 pass, 0 unexpected",
+   "actual": "20 PASS, 0 unexpected",
+   "verdict": "PASS",
+   "severity": "high",
+   "evidence": [
+    "results/candidate_b3e4dc4/K05_compat_adapted.txt",
+    "results/candidate_b3e4dc4/K05_compat_adapted.json",
+    "adapters/K05/k05r5_compat.diff"
+   ],
+   "baseline_064ed25": "M09 BOUNDARY_MIX on disjoint bboxes, M10 expected_units TypeError, M12 COUNT_DOMAIN not for records (reported as EXPECTED_FAIL by the old table)",
+   "note": "fixed: K05 r5 count-units + v1.2 compat patches applied over K12 (contract k05-obs-v1.2+k12r4+k05r5); M09/M10/M12 now pass"
+  },
+  {
+   "issue_id": "K05-r5-compat-original",
+   "source_test": "K05/k05r5_compat.py (original)",
+   "source_test_sha": "fb2dea60a5e42e745e6914dc063355d6db67aebe",
+   "target_code_sha": "b3e4dc413d5354652e3207d4eb56f921b108669e",
+   "command": "python tools/run_acceptance.py b3e4dc4 --venv-python <py with shapely,pyproj> (extracts the SHA with git archive)",
+   "expected": "-",
+   "actual": "D08 FAIL (v1.1 validate applied to v1.2 records: SCHEMA_VERSION)",
+   "verdict": "TEST_INCOMPATIBLE",
+   "severity": "none",
+   "evidence": [
+    "results/candidate_b3e4dc4/K05_compat_original.txt"
+   ],
+   "note": "D08 calls the v1.1 contract for every record; any v1.2 build fails it. Adapter keeps the invariant (0 validation errors) with the matching contract."
+  },
+  {
+   "issue_id": "K03-boundaries",
+   "source_test": "K03/test_boundaries_demo.py (adapter: K03 root = inputs/k03v21_root; S2 syncs source_manifest and K08 hash as a real update)",
+   "source_test_sha": "5715a7f19ffc11926a5e4836e931cadf2c8c12e0",
+   "target_code_sha": "b3e4dc413d5354652e3207d4eb56f921b108669e",
+   "command": "python tools/run_acceptance.py b3e4dc4 --venv-python <py with shapely,pyproj> (extracts the SHA with git archive)",
+   "expected": "C1-C7 PASS, no XFAIL",
+   "actual": "PASS 13, FAIL 0, XFAIL 0, SKIP 0",
+   "verdict": "PASS",
+   "severity": "high",
+   "evidence": [
+    "results/candidate_b3e4dc4/K03_boundaries_adapted.txt",
+    "results/candidate_b3e4dc4/K03_boundaries_adapted.json",
+    "adapters/K03/test_boundaries_demo.diff"
+   ],
+   "baseline_064ed25": "C6/C7: no binding, stale district undetected",
+   "note": "fixed: K03 v2.1 patch in a separate copy checked against MANIFEST_K03.json; boundary_binding k03-binding-v1; rule label from assign(); tools/check_evidence_fresh.py"
+  },
+  {
+   "issue_id": "K03-boundaries-original",
+   "source_test": "K03/test_boundaries_demo.py (original)",
+   "source_test_sha": "5715a7f19ffc11926a5e4836e931cadf2c8c12e0",
+   "target_code_sha": "b3e4dc413d5354652e3207d4eb56f921b108669e",
+   "command": "python tools/run_acceptance.py b3e4dc4 --venv-python <py with shapely,pyproj> (extracts the SHA with git archive)",
+   "expected": "-",
+   "actual": "C2 FAIL (reads v1 original in inputs/k03_root), C6 FAIL (hashes the original, not the used copy)",
+   "verdict": "TEST_INCOMPATIBLE",
+   "severity": "none",
+   "evidence": [
+    "results/candidate_b3e4dc4/K03_boundaries_original.txt"
+   ],
+   "note": "the original hard-codes inputs/k03_root, which the build keeps as the immutable original; the used copy is k03v21_root"
+  },
+  {
+   "issue_id": "K02-facts-regression",
+   "source_test": "K02/tests/facts_regression.cjs (adapter: API shim, v1.2 indicator ids, unit after 0, incomplete coverage made explicit, valid unit change)",
+   "source_test_sha": "26fd30cf1ade3f21f554784420d1502b43cce0f2",
+   "target_code_sha": "b3e4dc413d5354652e3207d4eb56f921b108669e",
+   "command": "node adapters/K02/facts_regression.cjs --app-root <extracted>",
+   "expected": "11/11",
+   "actual": "11/11 passed",
+   "verdict": "PASS",
+   "severity": "high",
+   "evidence": [
+    "results/candidate_b3e4dc4/K02_facts_regression_adapted.txt",
+    "adapters/K02/facts_regression.diff"
+   ],
+   "note": "fixed: observations of another city under a city key are rejected (T7, foreign_city); sha256 no longer needs a TextEncoder global. Unit 'km' is refused at catalog build (stricter than stale_catalog)."
+  },
+  {
+   "issue_id": "K02-facts-regression-original",
+   "source_test": "K02/tests/facts_regression.cjs (original)",
+   "source_test_sha": "26fd30cf1ade3f21f554784420d1502b43cce0f2",
+   "target_code_sha": "b3e4dc413d5354652e3207d4eb56f921b108669e",
+   "command": "node review_inputs/K02/tests/facts_regression.cjs --app-root <extracted>",
+   "expected": "-",
+   "actual": "9 FAILED of 11 (round-4 names/API)",
+   "verdict": "TEST_INCOMPATIBLE",
+   "severity": "none",
+   "evidence": [
+    "results/candidate_b3e4dc4/K02_facts_regression_original.txt"
+   ]
+  },
+  {
+   "issue_id": "K07-r5-regressions",
+   "source_test": "K07/tests/k07r5_regressions.cjs (adapter for R16 only: v1.2 school indicator id)",
+   "source_test_sha": "56c8bff12bf89dedf3f730be8b05b3024571b747",
+   "target_code_sha": "b3e4dc413d5354652e3207d4eb56f921b108669e",
+   "command": "node adapters/K07/k07r5_regressions.cjs --app-root <extracted>",
+   "expected": "19/19",
+   "actual": "19/19 passed",
+   "verdict": "PASS",
+   "severity": "medium",
+   "evidence": [
+    "results/candidate_b3e4dc4/K07_regressions_adapted.txt",
+    "results/candidate_b3e4dc4/K07_adapted/",
+    "adapters/K07/k07r5_regressions.diff"
+   ],
+   "baseline_064ed25": "R11, R12, R13 FAIL; R16 removed nothing (old id)",
+   "note": "fixed R11 (status inside the map), R12 (cards fit 390 px), R13 (evidence.js of other data is detected and not used, visible warning)"
+  },
+  {
+   "issue_id": "K07-r5-regressions-original",
+   "source_test": "K07/tests/k07r5_regressions.cjs (original)",
+   "source_test_sha": "56c8bff12bf89dedf3f730be8b05b3024571b747",
+   "target_code_sha": "b3e4dc413d5354652e3207d4eb56f921b108669e",
+   "command": "node review_inputs/K07/tests/k07r5_regressions.cjs --app-root <extracted>",
+   "expected": "-",
+   "actual": "18/19: R16 filters indicator 'places.school', which does not exist in v1.2, so the number stays",
+   "verdict": "TEST_INCOMPATIBLE",
+   "severity": "none",
+   "evidence": [
+    "results/candidate_b3e4dc4/K07_regressions_original.txt"
+   ]
+  },
+  {
+   "issue_id": "K10-ui-coord-group",
+   "source_test": "K10/tests/ui_coord_group.cjs",
+   "source_test_sha": "79fb961254f6118344302e888d4868495c4f0cf1",
+   "target_code_sha": "b3e4dc413d5354652e3207d4eb56f921b108669e",
+   "command": "node review_inputs/K10/tests/ui_coord_group.cjs --app-root <extracted>",
+   "expected": "MUST and SHOULD pass",
+   "actual": "MUST 0 failures; SHOULD 0 failures (all 10 group records reachable from the map; group indicated)",
+   "verdict": "PASS",
+   "severity": "medium",
+   "evidence": [
+    "results/candidate_b3e4dc4/K10_ui_coord_group.txt",
+    "results/candidate_b3e4dc4/K10_ui_coord_group.json"
+   ],
+   "baseline_064ed25": "SHOULD_each_group_record_selectable_from_map 1/10"
+  },
+  {
+   "issue_id": "K10-run-qa-data-flag",
+   "source_test": "K10/tests/run_qa.py",
+   "source_test_sha": "79fb961254f6118344302e888d4868495c4f0cf1",
+   "target_code_sha": "b3e4dc413d5354652e3207d4eb56f921b108669e",
+   "command": "python review_inputs/K10/tests/run_qa.py --app-root <extracted>",
+   "expected": "SHOULD: data.js records carry a coord-group flag",
+   "actual": "MUST 0 failures; SHOULD_data_exposes_coord_group_flag FAIL",
+   "verdict": "FAIL",
+   "severity": "low",
+   "evidence": [
+    "results/candidate_b3e4dc4/K10_run_qa.txt",
+    "results/candidate_b3e4dc4/K10_run_qa.json"
+   ],
+   "note": "not fixed: QA labels are delivered in evidence.js (qa.colocated, K05 check_objects rule) and the UI shows them; putting them into data.js is a design proposal. Without evidence.js the group is not marked — the UI then shows 'catalog unavailable'."
+  },
+  {
+   "issue_id": "K08-attribution",
+   "source_test": "K08/check_demo_attribution.py",
+   "source_test_sha": "cdcfd200a8444037c30ae22951e0cdf1229eb18b",
+   "target_code_sha": "b3e4dc413d5354652e3207d4eb56f921b108669e",
+   "command": "python tools/run_acceptance.py b3e4dc4 --venv-python <py with shapely,pyproj> (extracts the SHA with git archive)",
+   "expected": "no FAIL",
+   "actual": "PASS 13, WARN 0, FAIL 0, INFO 2",
+   "verdict": "PASS",
+   "severity": "medium",
+   "evidence": [
+    "results/candidate_b3e4dc4/K08_attribution.txt",
+    "results/candidate_b3e4dc4/K08_attribution.json"
+   ],
+   "baseline_064ed25": "A7 FAIL",
+   "note": "fixed A7: road card names the real provider; A7 is a static source check — behaviour verified by BUILD smoke 'TomTom road card names TomTom'"
+  },
+  {
+   "issue_id": "K11-demo-smoke",
+   "source_test": "K11/k11_demo_smoke.py --browser",
+   "source_test_sha": "6aea792f215a234dc55a9b49f68016479d283c9e",
+   "target_code_sha": "b3e4dc413d5354652e3207d4eb56f921b108669e",
+   "command": "python tools/run_acceptance.py b3e4dc4 --venv-python <py with shapely,pyproj> (extracts the SHA with git archive)",
+   "expected": "all checks pass; Windows real run only on Windows",
+   "actual": "19 pass, 0 fail; W1 (real Windows run) not_run",
+   "verdict": "PASS",
+   "severity": "medium",
+   "evidence": [
+    "results/candidate_b3e4dc4/K11_smoke.txt",
+    "results/candidate_b3e4dc4/K11_smoke.json"
+   ],
+   "baseline_064ed25": "S8 FAIL",
+   "note": "fixed S8: smoke output defaults to tests/out inside the app. Modeled Windows checks pass; real Windows not run."
+  },
+  {
+   "issue_id": "K11-W1-windows",
+   "source_test": "K11/k11_demo_smoke.py W1",
+   "source_test_sha": "6aea792f215a234dc55a9b49f68016479d283c9e",
+   "target_code_sha": "b3e4dc413d5354652e3207d4eb56f921b108669e",
+   "command": "—",
+   "expected": "run-demo.bat on Windows",
+   "actual": "not run (Linux only)",
+   "verdict": "SKIP",
+   "severity": "medium",
+   "evidence": [
+    "results/candidate_b3e4dc4/K11_smoke.txt"
+   ],
+   "note": "no Windows machine in this environment; not claimed"
+  },
+  {
+   "issue_id": "K01-check-build",
+   "source_test": "K01/check_build.py (adapter for N1: invariant on the build's own path)",
+   "source_test_sha": "295b3563d07c12bb6681b7b6a105a58c0edc7923",
+   "target_code_sha": "b3e4dc413d5354652e3207d4eb56f921b108669e",
+   "command": "python tools/run_acceptance.py b3e4dc4 --venv-python <py with shapely,pyproj> (extracts the SHA with git archive)",
+   "expected": "OVERALL PASS",
+   "actual": "OVERALL PASS (I1-I4, N1, S1-S3, B1)",
+   "verdict": "PASS",
+   "severity": "medium",
+   "evidence": [
+    "results/candidate_b3e4dc4/K01_check_build_adapted.txt",
+    "results/candidate_b3e4dc4/K01_check_build_adapted.json",
+    "adapters/K01/check_build.diff"
+   ],
+   "note": "N1': after the build's offline check (subprocess via check_all.step_package) localhost connect works in the same process; no tool imports offline_check"
+  },
+  {
+   "issue_id": "K01-check-build-original",
+   "source_test": "K01/check_build.py (original)",
+   "source_test_sha": "295b3563d07c12bb6681b7b6a105a58c0edc7923",
+   "target_code_sha": "b3e4dc413d5354652e3207d4eb56f921b108669e",
+   "command": "python tools/run_acceptance.py b3e4dc4 --venv-python <py with shapely,pyproj> (extracts the SHA with git archive)",
+   "expected": "-",
+   "actual": "N1 FAIL: archival K10 offline_check.run() imported in-process keeps socket blocked",
+   "verdict": "TEST_INCOMPATIBLE",
+   "severity": "low",
+   "evidence": [
+    "results/candidate_b3e4dc4/K01_check_build_original.txt"
+   ],
+   "note": "the K10 script is an immutable input; the build never imports it (BUILD.txt allows checking the invariant instead of editing the archive). Using offline_check as a library would still have the side effect."
+  },
+  {
+   "issue_id": "K06-audit-numbers",
+   "source_test": "K06/audit_numbers.py (adapter: round-4 indicator aliases derived from v1.2 observations; N2 per r5 semantics)",
+   "source_test_sha": "982e3b419075139f2a47ed76bcafcad145825d02",
+   "target_code_sha": "b3e4dc413d5354652e3207d4eb56f921b108669e",
+   "command": "python tools/run_acceptance.py b3e4dc4 --venv-python <py with shapely,pyproj> (extracts the SHA with git archive)",
+   "expected": "no FAIL",
+   "actual": "PASS 14, WARN 2 (N5: road km total exists in data.js but is not displayed), FAIL 0",
+   "verdict": "PASS",
+   "severity": "medium",
+   "evidence": [
+    "results/candidate_b3e4dc4/K06_audit_numbers_adapted.txt",
+    "results/candidate_b3e4dc4/K06_audit_numbers_adapted.json",
+    "adapters/K06/audit_numbers.diff"
+   ],
+   "note": "fixed N6 label: segment length is a haversine on a sphere (not 'геодезическая'). N5 WARN is a latent risk, nothing displayed."
+  },
+  {
+   "issue_id": "K06-audit-numbers-original",
+   "source_test": "K06/audit_numbers.py (original)",
+   "source_test_sha": "982e3b419075139f2a47ed76bcafcad145825d02",
+   "target_code_sha": "b3e4dc413d5354652e3207d4eb56f921b108669e",
+   "command": "python tools/run_acceptance.py b3e4dc4 --venv-python <py with shapely,pyproj> (extracts the SHA with git archive)",
+   "expected": "-",
+   "actual": "crash KeyError 'places.total' (round-4 indicator ids)",
+   "verdict": "TEST_INCOMPATIBLE",
+   "severity": "none",
+   "evidence": [
+    "results/candidate_b3e4dc4/K06_audit_numbers_original.txt"
+   ]
+  },
+  {
+   "issue_id": "BUILD-smoke",
+   "source_test": "prototypes/city-evidence/tests/smoke.cjs",
+   "source_test_sha": null,
+   "target_code_sha": "b3e4dc413d5354652e3207d4eb56f921b108669e",
+   "command": "NODE_PATH=$(npm root -g) node tests/smoke.cjs <out>",
+   "expected": "all pass",
+   "actual": "24/24 PASS",
+   "verdict": "PASS",
+   "severity": "high",
+   "evidence": [
+    "results/candidate_b3e4dc4/BUILD_smoke.txt",
+    "results/candidate_b3e4dc4/BUILD_smoke/"
+   ]
+  },
+  {
+   "issue_id": "K09",
+   "source_test": "—",
+   "source_test_sha": null,
+   "target_code_sha": "b3e4dc413d5354652e3207d4eb56f921b108669e",
+   "command": "—",
+   "expected": "—",
+   "actual": "no files in round-6 snapshot",
+   "verdict": "SKIP",
+   "severity": "none",
+   "evidence": []
+  }
+ ]
+}

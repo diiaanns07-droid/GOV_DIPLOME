@@ -1,0 +1,29 @@
+$ /tmp/claude-0/-home-user-GOV-DIPLOME/cf69c9ea-684d-5fca-9dcc-2d983076f4aa/scratchpad/venv/bin/python /home/user/GOV_DIPLOME/research/round-6-results/BUILD/review_inputs/K03/test_boundaries_demo.py --app-root /tmp/acc-z4gg__s_/prototypes/city-evidence --v2-patch /tmp/acc-z4gg__s_/prototypes/city-evidence/inputs/r4/K03/patches/k03_assign_v2.patch --json results/candidate_b3e4dc4/K03_boundaries_original.json
+exit=1
+--- stdout
+[PASS ] C1-k03-inputs: 11 файлов K03 из source_manifest.json; несовпадений sha256: 0; источник K03 SHA ['44585de31be01dd131ecb7677c462fc85b4d4cc4']
+[FAIL ] C2-module-is-what-label-says: поведение=v1, assign()[rule]=k03_assign_v1, evidence.assign_rule=k03_assign_v2, method.id=[]
+[XFAIL] C3-R1-AST-HOLE-out0.5: 0,5 м за контуром города у зоны AST-Z2: принадлежность городу не доказана → ambiguous, не unmatched; получено unmatched/None (известный дефект D1 правила v1)
+[XFAIL] C3-R2-AST-VER-D2: 1,01 м от границы снимка OSM, 0,58 м от границы Overture той же пары районов → ambiguous; получено matched/kz.astana.district.saraishyk (известный дефект D2 правила v1)
+[PASS ] C3-R3-AST-EX-in: эксклав Байконура ∩ Целиноградский район (AST-Z1) → ambiguous, без района; получено ambiguous/None
+[PASS ] C3-R4-AST-SB-a0.99: крайний случай допуска: 0,99 м от общей границы Есиль/Нура → ambiguous; получено ambiguous/None
+[PASS ] C3-R5-AST-SB-a1.01: крайний случай допуска: 1,01 м → matched Есиль (защита от чрезмерного исправления); получено matched/kz.astana.district.esil
+[PASS ] C4-build-path: tools/build_evidence.py в копии app-root воспроизводит web/evidence.js побайтно
+[PASS ] C5-place-district-consistent: 120 мест data.js: у каждого есть запись, форма статуса верна, совпадает с assign() модуля app-root
+[FAIL ] C6-binding: привязка устарела или неполна: code:research/round-3-results/K03/boundary_validator.py
+[PASS ] C7-S1-layer-sync-real: снимок OSM ← геометрия Алматы и Сарайшыка из Overture 2026-09-23.1 (реальные данные пакета; так будет, если слои синхронизируются); source_manifest обновлён как при copy_inputs. До пересборки: тесты приложения — OK; binding — ловит; check_evidence_fresh — не ловит. Пересборка: ok, place_district изменился у 0 мест, метка k03_assign_v2
+
+--- stderr
+Traceback (most recent call last):
+  File "/home/user/GOV_DIPLOME/research/round-6-results/BUILD/review_inputs/K03/test_boundaries_demo.py", line 433, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/user/GOV_DIPLOME/research/round-6-results/BUILD/review_inputs/K03/test_boundaries_demo.py", line 421, in main
+    c7_scenarios(app_root, a.v2_patch)
+  File "/home/user/GOV_DIPLOME/research/round-6-results/BUILD/review_inputs/K03/test_boundaries_demo.py", line 339, in c7_scenarios
+    desc = {'S1': _mutate_s1, 'S2': _mutate_s2}[sid[:2]](app) if sid[:2] != 'S3' else _mutate_s3(app, v2_patch)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/GOV_DIPLOME/research/round-6-results/BUILD/review_inputs/K03/test_boundaries_demo.py", line 290, in _mutate_s2
+    raise RuntimeError('build_data.py: ' + r.stderr[-300:])
+RuntimeError: build_data.py: ОШИБКА входных данных: INTEGRITY: package_manifest.json не совпадает с sha256 в source_manifest.json
+

@@ -1,0 +1,23 @@
+const { chromium } = require("playwright"); const path = require("path"); const { pathToFileURL } = require("url");
+const out = process.argv[2];
+(async () => {
+  const b = await chromium.launch(); const p = await b.newPage({ viewport: { width: 1366, height: 860 } });
+  const errs = []; p.on("pageerror", (e) => errs.push(String(e)));
+  await p.goto(pathToFileURL(path.resolve("prototypes/city-evidence/web/index.html")).href); await p.waitForSelector("#tbl tr");
+  const r = {};
+  const id = await p.evaluate(() => CITY_OBS.cities.shymkent.qa.colocated.find((g) => g.ids.length === 10).ids[0]);
+  await p.evaluate((i) => CITY_APP.selectPlace(i), id);
+  r.group_items = await p.$$eval("[data-coord-group-item]", (e) => e.length);
+  await p.screenshot({ path: out + "/1_shymkent_group.png" });
+  await p.locator("[data-coord-group-item]", { hasText: "Reklama 8888" }).click();
+  r.doubt = (await p.textContent("#selBody")).includes("сомнение в категории");
+  await p.screenshot({ path: out + "/2_category_doubt.png" });
+  await p.click("#provCard summary"); r.licenses = await p.$$eval("#provBody a", (a) => a.length);
+  await p.click("#explainBody button"); await p.waitForSelector("#explainBody .explain:not([hidden]) .who");
+  r.explain = (await p.textContent("#explainBody .explain")).includes("не LLM");
+  await p.screenshot({ path: out + "/3_explanation.png", fullPage: true });
+  await p.click('#citySeg button[data-city="astana"]');
+  r.astana = await p.evaluate(() => ({ city: CITY_APP.state.city, rows: document.querySelectorAll("#tbl tr").length, sel: CITY_APP.state.selected, explainHidden: document.querySelector("#explainBody .explain").hidden }));
+  await p.screenshot({ path: out + "/4_astana.png" });
+  r.errors = errs; console.log(JSON.stringify(r)); await b.close();
+})();

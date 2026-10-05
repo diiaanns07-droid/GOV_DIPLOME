@@ -1,0 +1,125 @@
+{
+ "checker": "K08 R5 check_demo_attribution",
+ "target": "--app-root /tmp/acc-z4gg__s_/prototypes/city-evidence",
+ "disclaimer": "Проверка наличия текстов, уведомлений и ссылок; не юридическое заключение. sources.license — поле записи, а не полная проверка условий поставщика.",
+ "results": [
+  {
+   "id": "A1",
+   "status": "INFO",
+   "text": "Поставщики и лицензии в данных демо",
+   "providers": [
+    "Foursquare",
+    "OpenStreetMap",
+    "TomTom",
+    "meta"
+   ],
+   "licenses": [
+    "Apache-2.0",
+    "CDLA-Permissive-2.0",
+    "ODbL-1.0"
+   ],
+   "providers_only_in_inputs": []
+  },
+  {
+   "id": "A2",
+   "status": "PASS",
+   "text": "Текст Apache-2.0 поставляется: attribution/LICENSES/Apache-2.0.txt",
+   "license": "Apache-2.0",
+   "path": "attribution/LICENSES/Apache-2.0.txt",
+   "sha256": "074e6e32c86a4c0ef8b3ed25b721ca23aca83df277cd88106ef7177c354615ff"
+  },
+  {
+   "id": "A2",
+   "status": "PASS",
+   "text": "Текст CDLA-Permissive-2.0 поставляется: attribution/LICENSES/CDLA-Permissive-2.0.txt",
+   "license": "CDLA-Permissive-2.0",
+   "path": "attribution/LICENSES/CDLA-Permissive-2.0.txt",
+   "sha256": "4531a67d443284d93ffed0803df5b10634aff21c3d77e381f2d48af01d875868"
+  },
+  {
+   "id": "A2",
+   "status": "PASS",
+   "text": "Текст ODbL-1.0 поставляется: attribution/LICENSES/ODbL-1.0.txt",
+   "license": "ODbL-1.0",
+   "path": "attribution/LICENSES/ODbL-1.0.txt",
+   "sha256": "77d2692c3d64efdd4db18dce2407699baf62930e2b50d6e5ed90b48acf16b7c1"
+  },
+  {
+   "id": "A3",
+   "status": "PASS",
+   "text": "Файл атрибуции поставляется: attribution/ATTRIBUTION.md",
+   "searched": [
+    "ATTRIBUTION.md",
+    "ATTRIBUTION.txt",
+    "ATTRIBUTION.html",
+    "attribution/ATTRIBUTION.md",
+    "attribution.html"
+   ]
+  },
+  {
+   "id": "A4",
+   "status": "PASS",
+   "text": "Поставщик Foursquare в общем уведомлении: UI=True, файл атрибуции=True",
+   "provider": "Foursquare"
+  },
+  {
+   "id": "A4",
+   "status": "PASS",
+   "text": "Поставщик OpenStreetMap в общем уведомлении: UI=True, файл атрибуции=True",
+   "provider": "OpenStreetMap"
+  },
+  {
+   "id": "A4",
+   "status": "PASS",
+   "text": "Поставщик TomTom в общем уведомлении: UI=True, файл атрибуции=True",
+   "provider": "TomTom"
+  },
+  {
+   "id": "A4",
+   "status": "PASS",
+   "text": "Поставщик meta в общем уведомлении: UI=True, файл атрибуции=True",
+   "provider": "meta"
+  },
+  {
+   "id": "A5",
+   "status": "PASS",
+   "text": "Ссылка на openstreetmap.org/copyright есть"
+  },
+  {
+   "id": "A6",
+   "status": "PASS",
+   "text": "Сегментов без поля dataset в data.js: 0 из 2410"
+  },
+  {
+   "id": "A7",
+   "status": "PASS",
+   "text": "Жёсткой подписи OSM у карточки дороги нет",
+   "non_osm_segment_providers": [
+    "TomTom"
+   ]
+  },
+  {
+   "id": "A8",
+   "status": "PASS",
+   "text": "Файлы inputs/ совпадают с source_manifest.json: 42/42",
+   "mismatches": []
+  },
+  {
+   "id": "A9",
+   "status": "PASS",
+   "text": "Сверка с upstream git-объектами: проверено 42, отличаются 0",
+   "modified": []
+  },
+  {
+   "id": "A10",
+   "status": "INFO",
+   "text": "Записей manifest с явной пометкой modified: 0 (поле в схеме manifest отсутствует; изменённые файлы надо помечать отдельным hash)"
+  }
+ ],
+ "summary": {
+  "PASS": 13,
+  "WARN": 0,
+  "FAIL": 0,
+  "INFO": 2
+ }
+}

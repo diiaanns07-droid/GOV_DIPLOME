@@ -1,0 +1,29 @@
+$ /opt/node22/bin/node /tmp/acc-z4gg__s_/prototypes/city-evidence/tests/smoke.cjs results/candidate_b3e4dc4/BUILD_smoke
+exit=0
+--- stdout
+PASS Shymkent: 55 records, slice says 'complete query result' and city total unknown
+PASS Shymkent colocated group of 10 drawn on the map; flagged rows in table
+PASS object card lists the 9 other records at the same coordinate, marks district as uncertain
+PASS category doubt shown with rule and reason, record kept
+PASS point selected; status line next to map; clear enabled
+PASS Escape clears point, card and disables the clear button
+PASS Astana after keyboard switch: own 65 records, no Shymkent markers, tooltip hidden
+PASS Astana has no colocated groups (QA says 0)
+PASS category filter (Astana: 8 school records)
+PASS empty state is explicit
+PASS road card: foot access status, dataset, no walking minutes
+PASS hiding roads deselects the road (K07 F2)
+PASS TomTom road card names TomTom, not OSM (K08 r5 A7)
+PASS template explanation labelled; units and missing reasons visible
+PASS old answer rejected after catalog update in the same city (stale_catalog)
+PASS pending answer discarded after city switch
+PASS source card: contract, K03 v2, K08 gap; license links resolve to committed files
+PASS map attribution names record providers (not only OSM)
+PASS focused map pans with arrow keys
+PASS narrow viewport (380 px) has no horizontal scroll
+PASS clear state when data.js is missing
+PASS clear state when evidence.js is missing
+PASS no console/page errors
+PASS no network requests (file:// only)
+
+--- stderr

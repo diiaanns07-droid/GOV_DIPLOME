@@ -1,0 +1,18 @@
+$ /tmp/claude-0/-home-user-GOV-DIPLOME/cf69c9ea-684d-5fca-9dcc-2d983076f4aa/scratchpad/venv/bin/python /home/user/GOV_DIPLOME/research/round-6-results/BUILD/review_inputs/K12/k12r5_negative_build.py --app-root /tmp/acc-z4gg__s_/prototypes/city-evidence --python /tmp/claude-0/-home-user-GOV-DIPLOME/cf69c9ea-684d-5fca-9dcc-2d983076f4aa/scratchpad/venv/bin/python --out results/candidate_b3e4dc4/K12_negative.json
+exit=0
+--- stdout
+OK   C01  неизменённая копия: пересборка побайтно равна закоммиченной            | build_data=accepted build_evidence=accepted
+OK   C02  изменён байт без пересчёта hash (как test_corrupted_file_is_rejected)  | build_data=rejected_integrity build_evidence=rejected_integrity
+OK   I01  данные и package_manifest согласованно изменены, source_manifest — нет | build_data=rejected_integrity build_evidence=rejected_integrity
+OK   N01  NaN в confidence объекта (токен NaN)                                   | build_data=rejected_semantic build_evidence=rejected_semantic
+OK   N02  NaN в координате объекта                                               | build_data=rejected_semantic build_evidence=rejected_semantic
+OK   N03  Infinity в k10_length_m сегмента                                       | build_data=rejected_semantic build_evidence=rejected_semantic
+OK   N04  1e999 (строго валидный JSON → inf) в k10_length_m сегмента             | build_data=rejected_semantic build_evidence=rejected_semantic
+OK   N05  повтор ключа k10_group (school, затем pharmacy) — последний молча побе | build_data=rejected_semantic build_evidence=rejected_semantic
+OK   N06  конфликт ID: второй объект с тем же id/overture_id и другим содержимым | build_data=rejected_semantic build_evidence=rejected_semantic
+OK   N07  bbox mix: объект файла Шымкента с координатами в квадрате Астаны       | build_data=rejected_semantic build_evidence=rejected_semantic
+OK   N08  bbox mix: заголовок слоя с bbox, отличным от манифеста                 | build_data=rejected_semantic build_evidence=rejected_semantic
+OK   N09  period mix: слой объектов из выпуска 2026-08-20.0 при манифесте 2026-0 | build_data=rejected_semantic build_evidence=rejected_semantic
+{"requirement_met": 12, "total": 12, "failed": []}
+
+--- stderr
