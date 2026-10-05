@@ -1,0 +1,41 @@
+--- review_inputs/K01/check_build.py	2026-10-05 11:13:30.526248827 +0000
++++ adapters/K01/check_build.py	2026-10-05 11:31:20.338861122 +0000
+@@ -211,7 +211,38 @@
+ '''
+ 
+ 
++# ADAPTER (BUILD r6): the archival K10 offline_check.py is an immutable input and the build never imports it; the build
++# runs it in a separate process (tools/check_all.py step_package). The invariant "after the build's offline check a
++# localhost connect still works in the same process" is checked on that real path; plus no build tool imports it.
++N1_CHILD_BUILD = r'''
++import socket, sys, threading
++sys.path.insert(0, sys.argv[1])
++import check_all
++srv = socket.socket(); srv.bind(("127.0.0.1", 0)); srv.listen(1); port = srv.getsockname()[1]
++threading.Thread(target=lambda: srv.accept(), daemon=True).start()
++check_all.step_package()
++ok = all(r["status"] == "pass" for r in check_all.RESULTS if r["step"] == "package")
++print("offline_check_ok", ok)
++try:
++    socket.create_connection(("127.0.0.1", port), timeout=2).close()
++    print("connect_after_run OK")
++except Exception as e:
++    print("connect_after_run FAIL", type(e).__name__, e)
++'''
++
++
+ def check_socket_side_effect(app):
++    imports = [str(f.relative_to(app)) for f in (app / "tools").glob("*.py")
++               if re.search(r"^\s*(import offline_check|from offline_check)", f.read_text(encoding="utf-8"), re.M)]
++    r = subprocess.run([sys.executable, "-c", N1_CHILD_BUILD, str(app / "tools")], capture_output=True, text=True, timeout=300,
++                       cwd=tempfile.gettempdir())
++    out = r.stdout.strip().replace("\n", " | ")
++    rec("N1", r.returncode == 0 and "offline_check_ok True" in out and "connect_after_run OK" in out and not imports,
++        f"build path (check_all.step_package, subprocess): {out or r.stderr.strip()[-300:]}; tools importing offline_check: {imports}")
++    return
++
++
++def _check_socket_side_effect_original(app):
+     scripts = app / "inputs" / "k10" / "scripts"
+     r = subprocess.run([sys.executable, "-c", N1_CHILD, str(scripts)], capture_output=True, text=True, timeout=120,
+                        cwd=tempfile.gettempdir())

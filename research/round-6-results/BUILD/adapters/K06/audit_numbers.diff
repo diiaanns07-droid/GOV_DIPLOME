@@ -1,0 +1,43 @@
+--- review_inputs/K06/audit_numbers.py	2026-10-05 11:13:30.652232551 +0000
++++ adapters/K06/audit_numbers.py	2026-10-05 11:30:52.787446336 +0000
+@@ -109,6 +109,17 @@
+     for city, c in D["cities"].items():
+         bb, k = c["bbox"], c["counts"]
+         obs = {o["indicator_id"]: o for o in E["cities"][city]["observations"]}
++        # ADAPTER (BUILD r6): v1.2 build uses K05 r4 indicator ids. Provide the round-4 names as aliases derived from the
++        # real observations (no value is invented): places.<g> = overture_place_records.<g>.conf_ge_0_0,
++        # places.total = sum of those, registry.official_schools = official_registry.schools.
++        if "places.total" not in obs:
++            grp = {k.split(".")[1]: o for k, o in obs.items() if k.startswith("overture_place_records.") and k.endswith(".conf_ge_0_0")}
++            for g, o in grp.items():
++                obs["places." + g] = o
++            any_o = next(iter(grp.values()))
++            obs["places.total"] = dict(any_o, value=sum(o["value"] or 0 for o in grp.values()), indicator_id="places.total")
++            if "official_registry.schools" in obs:
++                obs["registry.official_schools"] = obs["official_registry.schools"]
+ 
+         # N1 record counts are consistent across data.js and evidence.js
+         by_g = dict(Counter(p["group"] for p in c["places"]))
+@@ -121,13 +132,19 @@
+             ["data.js", "evidence.js"])
+ 
+         # N2 count labels say "records in the slice", never "facilities of the city"
+-        lab = has(app, "в срезе", "не реестр города") | has(html, "не число всех школ города") | has(facts, "записей в квадрате", "Записей выбранных категорий в квадрате")
++        # ADAPTER: label strings of the v1.2 build (same meaning: records of the square, not city facilities)
++        lab = has(app, "в полном ответе запроса по квадрату", "не реестр города") | has(html, "не число всех школ города") | has(facts, " в квадрате", "Выбранные категории в квадрате")
+         bad = re.findall(r"(школ[а-я]* (?:в )?город[а-я]*|объектов города|всего в городе)", app + facts)
+         bad = [b for b in bad if "не число всех школ города" not in html or b not in ("школ города",)]
+         cov = obs["places.total"].get("coverage") or {}
+-        status = "PASS" if all(lab.values()) and not bad and cov.get("complete") is False else "FAIL"
++        # ADAPTER: round 5 (BUILD r5 A3) made the square count a complete query result (coverage.complete=true) and moved
++        # "how many in the city" to a separate unknown observation. Invariant kept: the city total is never given as a number.
++        city_total = next((o for o in E["cities"][city]["observations"] if o["geo_unit_id"] == "kz." + city
++                           and o["indicator_id"].endswith("city_total")), None)
++        city_unknown = city_total is not None and city_total["value"] is None and city_total.get("missing_reason") is not None
++        status = "PASS" if all(lab.values()) and not bad and city_unknown else "FAIL"
+         add("N2_count_labels", city, status, "count labels: records of a 2x2 km slice, not city facilities",
+-            {"label_strings_present": lab, "claims_city_total": bad, "coverage_complete": cov.get("complete"),
++            {"label_strings_present": lab, "claims_city_total": bad, "coverage_complete": cov.get("complete"), "city_total_unknown": city_unknown,
+              "coverage_scope": cov.get("scope")}, ["app.js", "index.html", "facts.js", "evidence.js"])
+ 
+         # N3 unknowns stay null (not 0)

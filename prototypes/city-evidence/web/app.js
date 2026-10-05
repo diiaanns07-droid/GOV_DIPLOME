@@ -40,6 +40,13 @@
     return;
   }
 
+  // evidence.js must belong to this data.js; otherwise districts / facts are not used (shown as a warning).
+  window.CITY_EVIDENCE_PROBLEMS = F && F.evidenceProblems && window.CITY_OBS ? F.evidenceProblems(D, window.CITY_OBS) : [];
+  if (window.CITY_EVIDENCE_PROBLEMS.length) {
+    const b = $("banner");
+    b.append(el("p", { class: "err", role: "alert" }, "Внимание: evidence.js не совпадает с data.js (другая версия данных или устарел) — районы и каталог фактов не показываются. "
+      + window.CITY_EVIDENCE_PROBLEMS.join("; ")));
+  }
   const SHAPES = { school: "circle", outpatient_clinic: "circle", preschool: "triangle", pharmacy: "triangle",
     college_university: "square", hospital: "square", government_office: "diamond" };
   const SECTOR_LABEL = { education: "образование", health: "здравоохранение", government: "госучреждения" };
@@ -362,13 +369,13 @@
         body.append(el("h3", null, "Проверка качества записи"));
         const ul = el("ul", { class: "reasons" });
         for (const q of qa) {
-          const li = el("li", { class: "warn" }, q.text + " ");
+          const li = el("li", q.code === "COLOCATED" ? { class: "warn", "data-coord-group": `${p.lon},${p.lat}` } : { class: "warn" }, q.text + " ");
           if (q.code !== "CATEGORY_DOUBT" && q.ids.length > 1) {
             const sub = el("ul");
             for (const id of q.ids) {
               if (id === p.id) continue;
               const other = c.places.find((x) => x.id === id);
-              const b = el("button", { type: "button", class: "tool" }, other ? `${other.name || "Без названия"} · ${other.group_label}` : id);
+              const b = el("button", { type: "button", class: "tool", "data-coord-group-item": id }, other ? `${other.name || "Без названия"} · ${other.group_label}` : id);
               b.addEventListener("click", () => selectPlace(id));
               const it = el("li"); it.append(b); sub.append(it);
             }
@@ -386,12 +393,13 @@
     } else if (s.type === "segment") {
       const g = c.segments.find((x) => x.id === s.id);
       if (!g) { STATE.selected = null; empty.hidden = false; return; }
-      body.append(el("h3", null, "Дорога (OSM через Overture)"));
+      const segSource = { OpenStreetMap: "OSM", TomTom: "TomTom" }[g.dataset] || g.dataset || "источник не указан";
+      body.append(el("h3", null, `Дорога (${segSource} через Overture)`));  // provider of this segment (K08 r5 A7)
       const dl = el("dl");
       dlRows(dl, [
         ["Класс", g.class + (g.subclass ? " / " + g.subclass : ""), "наблюдение"],
         ["Название", g.name, null],
-        ["Длина", fmtM(g.length_m) + (g.crosses_edge ? " (вся линия, выходит за квадрат)" : ""), "геодезическая, K10"],
+        ["Длина", fmtM(g.length_m) + (g.crosses_edge ? " (вся линия, выходит за квадрат)" : ""), "гаверсинус по сфере, K10"],
         ["Проход пешком", D.foot_access_labels[g.foot_access], g.foot_access],
         ["Мост / тоннель", g.flags.length ? g.flags.join(", ") : "не отмечено", "road_flags"],
         ["Источник", `${g.dataset || "—"} · ${g.record_id || "id записи нет"} · ${g.license || "—"} · ${fmtDate(g.update_time)}`, g.dataset === "TomTom" ? "не OSM: K08 F3" : null],
@@ -509,5 +517,6 @@
   fitView();
   renderAll();
   updateStatus();
-  window.CITY_APP = { state: STATE, switchCity, selectPlace, visiblePlaces, clearSelection };  // for the headless smoke test
+  function selectSegment(id) { STATE.selected = { type: "segment", id }; renderSelection(); renderExplain(); updateStatus(); }
+  window.CITY_APP = { state: STATE, switchCity, selectPlace, selectSegment, visiblePlaces, clearSelection };  // for the headless smoke test
 })();

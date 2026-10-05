@@ -66,5 +66,21 @@ check("unit kept in text (records / segments)", r.text.includes("8 записе�
 check("facts_used keep unit/coverage/missing_reason", r.facts_used.every((f) => "unit" in f && "coverage_complete" in f && "missing_reason" in f));
 const shy = F.explain(D, EV, "shymkent", all, "ru");
 check("Shymkent QA facts: 14 colocated, 5 category doubts", shy.text.includes("С совпадающими координатами: 14 записей") && shy.text.includes("С сомнением в категории: 5 записей"));
+// 5. evidence.js belongs to this data.js (JS places digest = Python boundary_binding)
+for (const city of ["shymkent", "astana"]) check(`places digest JS = Python (${city})`, F.placesDigest(D, city) === EV.boundary_binding.places[city]);
+check("consistent evidence: no problems", F.evidenceProblems(D, EV).length === 0, JSON.stringify(F.evidenceProblems(D, EV)));
+const evOld = clone(EV); evOld.cities.astana.observations.forEach((o) => { if (o.source && /places_social/.test(o.source.path || "")) o.source.sha256 = "0".repeat(64); });
+check("evidence.js of another data version is detected", F.evidenceProblems(D, evOld).some((p) => p.startsWith("astana")));
+const D2 = clone(D); D2.cities.shymkent.places[0].lon += 0.001;
+check("moved place makes evidence.js stale", F.evidenceProblems(D2, EV).some((p) => p.startsWith("shymkent")));
+const evSwap = clone(EV); evSwap.cities.shymkent.observations = clone(EV.cities.astana.observations);
+check("observations of another city under this key are rejected (K02 r5 T7)", code(() => F.buildCatalog(D, evSwap, "shymkent", all)) === "foreign_city");
+// sha256 without TextEncoder (bare vm sandbox) equals node:crypto
+{
+  const sandbox = { module: { exports: {} } }; sandbox.exports = sandbox.module.exports; vm.createContext(sandbox);
+  vm.runInContext(fs.readFileSync(path.join(W, "facts.js"), "utf8"), sandbox);
+  const s = "Шымкент · Әл-Фараби · 𝔸";
+  check("sha256 in a sandbox without TextEncoder = node:crypto", typeof sandbox.TextEncoder === "undefined" && sandbox.module.exports.sha256hex(s) === crypto.createHash("sha256").update(s, "utf8").digest("hex"));
+}
 console.log(fails ? `${fails} FAILED` : "all passed");
 process.exit(fails ? 1 : 0);

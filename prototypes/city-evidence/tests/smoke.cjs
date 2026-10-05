@@ -1,11 +1,12 @@
 // Headless browser smoke test of web/index.html via file:// (Playwright + Chromium).
-// Usage:  NODE_PATH="$(npm root -g)" node tests/smoke.cjs [outdir]      (outdir default: research/round-5-results/BUILD/smoke)
+// Usage:  NODE_PATH="$(npm root -g)" node tests/smoke.cjs [outdir]      (outdir default: tests/out inside the app)
 // The page URL is built with url.pathToFileURL (works for Windows paths too — not run on Windows here).
 const { chromium } = require("playwright");
 const path = require("path"), fs = require("fs"), os = require("os");
 const { pathToFileURL } = require("url");
 const APP = path.resolve(__dirname, "..");
-const out = path.resolve(process.argv[2] || path.join(APP, "..", "..", "research", "round-5-results", "BUILD", "smoke"));
+// Default output stays inside this app folder (K11 r5 S8); pass a directory to write elsewhere.
+const out = path.resolve(process.argv[2] || path.join(APP, "tests", "out"));
 fs.mkdirSync(out, { recursive: true });
 const pageUrl = (dir) => pathToFileURL(path.join(dir, "index.html")).href;
 const results = [];
@@ -83,6 +84,13 @@ const check = (name, ok, detail) => { results.push({ name, ok: !!ok, detail: ok 
   await page.click("#tRoads");
   check("hiding roads deselects the road (K07 F2)", await page.evaluate(() => CITY_APP.state.selected === null && document.getElementById("selBody").textContent === ""));
   await page.click("#tRoads");
+  const tom = await page.evaluate(() => {
+    const sg = CITY_EVIDENCE.cities.astana.segments.find((x) => x.dataset === "TomTom");
+    if (!sg) return null;
+    CITY_APP.selectSegment(sg.id);
+    return document.getElementById("selBody").textContent;
+  });
+  check("TomTom road card names TomTom, not OSM (K08 r5 A7)", tom && tom.includes("Дорога (TomTom через Overture)") && !tom.includes("(OSM через"), String(tom).slice(0, 120));
 
   // ---- explanation: template label, units, reasons; stale after catalog update ----
   await page.click("#explainBody button");

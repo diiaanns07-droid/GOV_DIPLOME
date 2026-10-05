@@ -1,4 +1,4 @@
-# Городские данные: Шымкент / Астана (демо BUILD, раунд 5)
+# Городские данные: Шымкент / Астана (демо BUILD, раунд 6)
 
 Демо открытых вторичных данных (Overture Maps 2026-09-23.1) для **двух квадратов ~2×2 км** — по одному в Шымкенте и Астане. Это не целые города, не официальный реестр, не учебная модель STUPITS. Пешеходная проходимость не утверждается. Объяснение — шаблон, а не ответ LLM. Основной сайт (корневые `web/`, `agent/`, `engine/`, `data/`, `run.bat`) не меняется.
 
@@ -29,8 +29,9 @@ py -3 serve.py 8765 --open
 ## Проверка
 ```bash
 cd prototypes/city-evidence
-python3 tools/check_all.py [--log check.json]     # входы, пакет K10, контракт, сборка, каталог фактов, unit-тесты
-NODE_PATH="$(npm root -g)" node tests/smoke.cjs   # браузер (Playwright + Chromium), отдельно
+python3 tools/check_all.py [--log check.json]     # входы, пакет K10, контракт, сборка, свежесть привязки, факты, unit-тесты
+python3 tools/check_evidence_fresh.py             # быстро: evidence.js построен из текущих K03 и data.js (без shapely)
+NODE_PATH="$(npm root -g)" node tests/smoke.cjs   # браузер (Playwright + Chromium), отдельно; вывод в tests/out/
 ```
 `check_all` без shapely/pyproj помечает пересборку `evidence.js` как SKIP, а не как PASS. Полная проверка: `pip install -r requirements-build.txt`. Без сети после установки зависимостей.
 
@@ -40,12 +41,16 @@ NODE_PATH="$(npm root -g)" node tests/smoke.cjs   # браузер (Playwright +
 |---|---|---|
 | viewer | K07 r3 + исправления K07 r4 | `web/app.js`, `web/index.html` |
 | данные | K10 r3 @ ea703f1 | `inputs/k10/` побайтно → `tools/build_data.py` → `web/data.js` |
-| контракт | K05 r4 v1.2 + K12 r4 патч | `inputs/contract/` (пропатчен только `k05r3_contract.py`, хэши в манифесте) |
-| районы | K03 r3 + `k03_assign_v2.patch` (K03 r4) | `inputs/k03v21_root/` (отдельная копия) |
+| контракт | K05 r4 v1.2 + K12 r4 + K05 r5 (count units, v1.2 compat) | `inputs/contract/` (`k05-obs-v1.2+k12r4+k05r5`; исходные и изменённые хэши в манифесте) |
+| районы | K03 r3 + `k03_assign_v2_1.patch` (K03 r5) | `inputs/k03v21_root/` (отдельная копия, сверяется с `MANIFEST_K03.json`); `boundary_binding` в evidence.js |
+| `format_value` | `agent/evidence.py` основного сайта @ 834a25f | `inputs/product_agent/` (побайтная копия: папка демо работает отдельно от репозитория) |
 | объяснение | K02 r4 fixed + адаптация BUILD | `inputs/k02v4/` (эталон), `web/facts.js` (порт) |
 | атрибуция | K08 r4 | `web/attribution/` |
 
 Изменения и совместимость — `research/round-5-results/BUILD/MIGRATION.md`. Находки и их тесты — `ISSUE_MATRIX.json`.
+
+## Обновление входов (не нужно для демонстрации)
+Сборщики отказывают с `INTEGRITY:` или `SEMANTIC:` и ничего не записывают, если входы не согласованы: хэш не совпадает, манифест не закреплён в `source_manifest.json`, NaN, повтор ключа, чужой bbox/выпуск/город. Поэтому новые данные K10 подключаются только полным циклом: `copy_inputs.py` → наблюдения K05 для нового файла → атрибуция K08 → `build_data.py` → `build_evidence.py`. Прямая правка файла в `inputs/` намеренно не пройдёт.
 
 ## Ограничения
 - Квадраты выбраны по максимуму объектов: это не репрезентативная выборка и не сравнение городов.

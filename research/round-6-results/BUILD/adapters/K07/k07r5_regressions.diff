@@ -1,0 +1,13 @@
+--- review_inputs/K07/tests/k07r5_regressions.cjs	2026-10-05 11:13:30.716965922 +0000
++++ adapters/K07/k07r5_regressions.cjs	2026-10-05 11:26:44.031110351 +0000
+@@ -299,7 +299,9 @@
+   {
+     const { p, ctx, errors } = await open(browser, { routes: [["**/evidence.js", async (route) => {
+       const { head, obj, tail } = jsonOf(await original(route, "evidence.js"));
+-      for (const c of Object.values(obj.cities)) c.observations = c.observations.filter((o) => o.indicator_id !== "places.school");
++      // ADAPTER (BUILD r6): in the v1.2 build the school observation is "overture_place_records.school.conf_ge_*"
++      // (round-4 name "places.school" no longer exists, so the original removed nothing). Same invariant: no school number.
++      for (const c of Object.values(obj.cities)) c.observations = c.observations.filter((o) => o.indicator_id !== "places.school" && !/^overture_place_records\.school\./.test(o.indicator_id));
+       await route.fulfill({ contentType: "application/javascript", body: head + JSON.stringify(obj) + tail });
+     }]] });
+     const ex = await p.textContent("#explainBody");

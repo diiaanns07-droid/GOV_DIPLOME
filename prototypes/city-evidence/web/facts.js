@@ -59,8 +59,21 @@
     0x81c2c92e, 0x92722c85, 0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
     0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3, 0x748f82ee, 0x78a5636f,
     0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2]);
+  // UTF-8 without relying on a TextEncoder global (absent in bare vm sandboxes used by some tests).
+  function utf8(str) {
+    if (typeof TextEncoder === "function") return new TextEncoder().encode(str);
+    const out = [];
+    for (const ch of str) {
+      const c = ch.codePointAt(0);
+      if (c < 0x80) out.push(c);
+      else if (c < 0x800) out.push(0xc0 | (c >> 6), 0x80 | (c & 63));
+      else if (c < 0x10000) out.push(0xe0 | (c >> 12), 0x80 | ((c >> 6) & 63), 0x80 | (c & 63));
+      else out.push(0xf0 | (c >> 18), 0x80 | ((c >> 12) & 63), 0x80 | ((c >> 6) & 63), 0x80 | (c & 63));
+    }
+    return Uint8Array.from(out);
+  }
   function sha256hex(str) {
-    const bytes = new TextEncoder().encode(str), len = bytes.length, nblk = ((len + 9 + 63) >> 6);
+    const bytes = utf8(str), len = bytes.length, nblk = ((len + 9 + 63) >> 6);
     const buf = new Uint8Array(nblk * 64); buf.set(bytes); buf[len] = 0x80;
     const bits = len * 8, dv = new DataView(buf.buffer);
     dv.setUint32(buf.length - 4, bits >>> 0); dv.setUint32(buf.length - 8, Math.floor(bits / 0x100000000));
@@ -134,7 +147,13 @@
     const c = data.cities[city], e = ev && ev.cities && ev.cities[city];
     if (!c || !e) throw new PlanError("foreign_city", `нет данных для города ${city}`);
     const period = scenarioId(e.release, groups), cid = "kz." + city, obs = {};
-    for (const o of e.observations) obs[o.indicator_id] = o;
+    for (const o of e.observations) {
+      // K02 r5 T7: observations of another city under this city's key are rejected, never shown as this city's numbers
+      if (o.city_id !== cid || !(o.geo_unit_id === cid || String(o.geo_unit_id).startsWith(cid + ".")))
+        throw new PlanError("foreign_city", `наблюдение ${o.obs_id} относится к ${o.city_id}/${o.geo_unit_id}, а не к ${cid}`);
+      if (obs[o.indicator_id]) throw new PlanError("duplicate_id", `два наблюдения показателя ${o.indicator_id}`);
+      obs[o.indicator_id] = o;
+    }
     const sel = c.places.filter((p) => groups.has(p.group)), selIds = new Set(sel.map((p) => p.id));
     const cat = new Map();
     const add = (path, value, kind, unit, complete, reason, source, labels) => {
@@ -232,9 +251,33 @@
     return { ...render(accepted, built, lang), scenario: built.scenario, selector: sel.name };
   }
 
+  // ---------- consistency of evidence.js with data.js (K07 r5 R13, K03 r5 C6) ----------
+  // Python json.dumps(rows, separators=(",", ":")) of [[id, round(lon, 7), round(lat, 7)], ...] sorted by id.
+  function placesDigest(data, city) {
+    const r7 = (x) => Math.round(x * 1e7) / 1e7;
+    const rows = data.cities[city].places.map((p) => [p.id, r7(p.lon), r7(p.lat)]).sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0));
+    return sha256hex(JSON.stringify(rows));
+  }
+  // Returns a list of human-readable problems; empty = evidence.js was built from this data.js.
+  function evidenceProblems(data, ev) {
+    if (!ev || !ev.cities) return ["нет web/evidence.js"];
+    const out = [];
+    const b = ev.boundary_binding;
+    for (const city of Object.keys(data.cities)) {
+      const e = ev.cities[city];
+      if (!e) { out.push(`в evidence.js нет города ${city}`); continue; }
+      const want = data.cities[city].files && data.cities[city].files.places_social && data.cities[city].files.places_social.sha256;
+      const srcs = new Set(e.observations.filter((o) => o.source && /places_social/.test(o.source.path || "")).map((o) => o.source.sha256));
+      if (want && (srcs.size !== 1 || !srcs.has(want))) out.push(`${city}: наблюдения evidence.js построены не из того файла объектов, что data.js (другая версия данных)`);
+      if (!b || !b.places || b.places[city] !== placesDigest(data, city)) out.push(`${city}: точки data.js не совпадают с привязкой районов evidence.js (устарел)`);
+    }
+    return out;
+  }
+
   // ---------- UI glue (browser only) ----------
   const STATUS_RU = { matched: "проверенная привязка", ambiguous: "неоднозначно", unmatched: "в городе, вне районов", outside: "вне города", invalid: "ошибка координат" };
   function districtOf(city, place) {
+    if (root.CITY_EVIDENCE_PROBLEMS && root.CITY_EVIDENCE_PROBLEMS.length) return { text: "не определён", badge: "evidence.js другой версии" };
     const ev = root.CITY_OBS, rec = ev && ev.cities && ev.cities[city] && ev.cities[city].place_district[place.id];
     if (!rec) return { text: "не определён", badge: "нет привязки" };
     const coloc = ev.cities[city].qa.colocated.some((g) => g.ids.includes(place.id));
@@ -272,6 +315,12 @@
     body.replaceChildren();
     if (!ev || !ev.cities || !ev.cities[state.city] || ev.format !== "city-evidence/2") {
       body.append(el("p", { class: "err" }, "Каталог фактов недоступен: нет или устарел web/evidence.js. Соберите: tools/build_evidence.py."));
+      return;
+    }
+    const probs = root.CITY_EVIDENCE_PROBLEMS || [];
+    if (probs.length) {
+      body.append(el("p", { class: "err" }, "Каталог фактов не используется: evidence.js не совпадает с data.js — " + probs.join("; ") +
+        ". Пересоберите tools/build_evidence.py."));
       return;
     }
     const groups = state.places ? state.groups : new Set();
@@ -321,7 +370,7 @@
     });
   }
 
-  const api = { GROUP_ORDER, PlanError, sha256hex, catalogDigest, formatValue, scenarioId, buildCatalog, catalogView, StubSelector,
+  const api = { GROUP_ORDER, PlanError, sha256hex, placesDigest, evidenceProblems, catalogDigest, formatValue, scenarioId, buildCatalog, catalogView, StubSelector,
     validatePlan, render, explain, districtOf, qaOf, provenanceNotes, renderExplanation };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else root.CITY_FACTS = api;

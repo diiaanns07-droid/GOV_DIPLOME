@@ -39,32 +39,40 @@ def main():
         app = extract(full, tmp)
         R = lambda p: str(RI / p)  # noqa: E731
         J = lambda n: str(out / f"{n}.json")  # noqa: E731
+        A = lambda p: str(HERE / "adapters" / p)  # noqa: E731
+        k05_args = ["--app-root", str(app), "--contract-root", str(app / "inputs/contract/research"),
+                    "--k05r4", str(app / "inputs/contract/research/round-4-results/K05/k05r4_contract.py")]
+        v2_patch = str(app / "inputs/r4/K03/patches/k03_assign_v2.patch")
         tests = [
-            ("K03_boundaries", [py, R("K03/test_boundaries_demo.py"), "--app-root", str(app), "--json", J("K03_boundaries")]),
-            # TEST_INCOMPATIBLE adapter: the build's contract in use is inputs/contract/research (v1.2 + K12 patch);
-            # inputs/k05_root is the immutable original v1.1 copy kept for provenance and is not used by the build.
-            ("K05_compat", [py, R("K05/k05r5_compat.py"), "--app-root", str(app),
-                            "--contract-root", str(app / "inputs/contract/research"),
-                            "--k05r4", str(app / "inputs/contract/research/round-4-results/K05/k05r4_contract.py"),
-                            "--json", J("K05_compat")]),
+            # original tests (as published); those with a *_adapted twin are expected to be TEST_INCOMPATIBLE
+            ("K03_boundaries_original", [py, R("K03/test_boundaries_demo.py"), "--app-root", str(app), "--v2-patch", v2_patch, "--json", J("K03_boundaries_original")]),
+            ("K03_boundaries_adapted", [py, A("K03/test_boundaries_demo.py"), "--app-root", str(app), "--v2-patch", v2_patch, "--json", J("K03_boundaries_adapted")]),
+            ("K05_compat_original", [py, R("K05/k05r5_compat.py"), *k05_args, "--json", J("K05_compat_original")]),
+            ("K05_compat_adapted", [py, A("K05/k05r5_compat.py"), *k05_args, "--json", J("K05_compat_adapted")]),
             ("K12_negative", [py, R("K12/k12r5_negative_build.py"), "--app-root", str(app), "--python", py, "--out", J("K12_negative")]),
             ("K11_smoke", [py, R("K11/k11_demo_smoke.py"), "--app-root", str(app), "--python", sys.executable, "--browser", "--label", full, "--out", J("K11_smoke")]),
             ("K08_attribution", [py, R("K08/check_demo_attribution.py"), "--app-root", str(app), "--repo", str(ROOT), "--json", J("K08_attribution")]),
-            ("K01_check_build", [py, R("K01/check_build.py"), "--app-root", str(app), "--browser", "--json", J("K01_check_build")]),
-            ("K06_audit_numbers", [py, R("K06/audit_numbers.py"), "--app-root", str(app), "--json", J("K06_audit_numbers")]),
+            ("K01_check_build_original", [py, R("K01/check_build.py"), "--app-root", str(app), "--browser", "--json", J("K01_check_build_original")]),
+            ("K01_check_build_adapted", [py, A("K01/check_build.py"), "--app-root", str(app), "--browser", "--json", J("K01_check_build_adapted")]),
+            ("K06_audit_numbers_original", [py, R("K06/audit_numbers.py"), "--app-root", str(app), "--json", J("K06_audit_numbers_original")]),
+            ("K06_audit_numbers_adapted", [py, A("K06/audit_numbers.py"), "--app-root", str(app), "--json", J("K06_audit_numbers_adapted")]),
             ("K10_run_qa", [py, R("K10/tests/run_qa.py"), "--app-root", str(app), "--json", J("K10_run_qa")]),
         ]
         if node:
             tests += [
-                ("K02_facts_regression", [node, R("K02/tests/facts_regression.cjs"), "--app-root", str(app)]),
-                ("K07_regressions", [node, R("K07/tests/k07r5_regressions.cjs"), "--app-root", str(app), "--sha", full, "--out", str(out / "K07")]),
+                ("K02_facts_regression_original", [node, R("K02/tests/facts_regression.cjs"), "--app-root", str(app), "--json", J("K02_facts_regression_original")]),
+                ("K02_facts_regression_adapted", [node, A("K02/facts_regression.cjs"), "--app-root", str(app), "--json", J("K02_facts_regression_adapted")]),
+                ("K07_regressions_original", [node, R("K07/tests/k07r5_regressions.cjs"), "--app-root", str(app), "--sha", full, "--out", str(out / "K07_original")]),
+                ("K07_regressions_adapted", [node, A("K07/k07r5_regressions.cjs"), "--app-root", str(app), "--sha", full, "--out", str(out / "K07_adapted")]),
                 ("K10_ui_coord_group", [node, R("K10/tests/ui_coord_group.cjs"), "--app-root", str(app), "--json", J("K10_ui_coord_group")]),
+                ("BUILD_smoke", [node, str(app / "tests/smoke.cjs"), str(out / "BUILD_smoke")]),
             ]
         tests.append(("BUILD_check_all", [py, str(app / "tools/check_all.py"), "--log", J("BUILD_check_all")]))
+        tests.append(("BUILD_check_all_no_geo", [sys.executable if sys.executable != py else "python3", str(app / "tools/check_all.py"), "--log", J("BUILD_check_all_no_geo")]))
         summary = []
         for name, cmd in tests:
             t0 = time.time()
-            r = subprocess.run(cmd, cwd=str(app) if name == "BUILD_check_all" else str(HERE), capture_output=True, text=True,
+            r = subprocess.run(cmd, cwd=str(app) if name.startswith("BUILD_") else str(HERE), capture_output=True, text=True,
                                encoding="utf-8", errors="replace", env=env, timeout=1800)
             (out / f"{name}.txt").write_text(f"$ {' '.join(cmd)}\nexit={r.returncode}\n--- stdout\n{r.stdout}\n--- stderr\n{r.stderr}",
                                              encoding="utf-8", newline="\n")

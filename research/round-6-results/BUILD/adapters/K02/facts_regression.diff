@@ -1,0 +1,82 @@
+--- review_inputs/K02/tests/facts_regression.cjs	2026-10-05 11:13:30.554060441 +0000
++++ adapters/K02/facts_regression.cjs	2026-10-05 11:30:06.808839190 +0000
+@@ -34,7 +34,29 @@
+   const mod = { exports: {} }, fctx = { module: mod, exports: mod.exports, globalThis: {}, console };
+   vm.createContext(fctx);
+   vm.runInContext(await source("facts.js"), fctx, { filename: "facts.js" });
+-  return { F: mod.exports, D: ctx.CITY_EVIDENCE, EV: ctx.CITY_OBS };
++  return { F: shim(mod.exports), D: ctx.CITY_EVIDENCE, EV: ctx.CITY_OBS };
++}
++
++// ADAPTER (BUILD r6): the test targets the facts.js API of BUILD 0bf27de/round-4 names. The v1.2 build has:
++//   * indicator ids  overture_place_records.<g>.conf_ge_0_0, segments_foot_access.unknown (round 4: places.<g>, segments.foot_unknown);
++//   * fact ids with city "kz.<city>" (round 4: "<city>");
++//   * StubSelector.select(view, digest) and validatePlan(plan, built) / render(plan, built, lang).
++// The shim only translates names and call shapes; validation logic and assertions are the build's and the test's own.
++const IND = { "places.school": "overture_place_records.school.conf_ge_0_0", "segments.foot_unknown": "segments_foot_access.unknown" };
++function shim(F) {
++  const kz = (id) => (typeof id === "string" && /^(shymkent|astana)\//.test(id) ? "kz." + id : id);
++  const built = new WeakMap();
++  const wrapBuild = (b) => { built.set(b.catalog, b); return b; };
++  return { ...F,
++    buildCatalog: (...a) => wrapBuild(F.buildCatalog(...a)),
++    StubSelector: { name: F.StubSelector.name, select: (view, opts) => F.StubSelector.select(view, opts && typeof opts === "object" ? opts.digest : opts) },
++    validatePlan: (plan, catalog, city, scenario) => {
++      const b = built.get(catalog) || { catalog, city: "kz." + city, scenario, digest: F.catalogDigest(catalog) };
++      const p = { ...plan, sections: (plan.sections || []).map((s) => ({ ...s, fact_ids: (s.fact_ids || []).map(kz) })) };
++      return F.validatePlan(p, b);
++    },
++    render: (plan, catalog, scenario, lang) => F.render(plan, built.get(catalog) || { catalog, scenario }, lang),
++  };
+ }
+ 
+ const clone = (x) => JSON.parse(JSON.stringify(x));
+@@ -44,6 +66,7 @@
+   catch (e) { return { status: e && e.code ? e.code : "error", error: e && (e.constructor && e.constructor.name), message: String(e && e.message).slice(0, 160) }; }
+ }
+ function setObs(EV, city, indicator, patch) {
++  indicator = IND[indicator] || indicator;  // ADAPTER: v1.2 indicator id
+   const o = EV.cities[city].observations.find((x) => x.indicator_id === indicator);
+   if (!o) throw new Error(`нет наблюдения ${city}/${indicator}`);
+   Object.assign(o, patch);
+@@ -64,9 +87,11 @@
+   ["T1_value_change", "изменение значения при том же городе и срезе: старый план отклоняется",
+     (EV) => setObs(EV, "shymkent", "places.school", { value: 16 })],
+   ["T2_unit_change", "изменение единицы при том же городе и срезе: старый план отклоняется",
+-    (EV) => setObs(EV, "shymkent", "segments.foot_unknown", { unit: "km" })],
++    // ADAPTER: "km" is not a unit of the v1.2 build — buildCatalog refuses it outright ("unknown unit", stricter than
++    // stale_catalog; recorded separately). A valid unit change ("segments" -> "records") tests the digest invariant.
++    (EV) => setObs(EV, "shymkent", "segments.foot_unknown", { unit: "records" })],
+   ["T3_coverage_change", "изменение охвата при том же городе и срезе: старый план отклоняется",
+-    (EV) => setObs(EV, "shymkent", "segments.foot_unknown", { coverage: { ...EV.cities.shymkent.observations.find((o) => o.indicator_id === "segments.foot_unknown").coverage, complete: false } })],
++    (EV) => setObs(EV, "shymkent", "segments.foot_unknown", { coverage: { ...EV.cities.shymkent.observations.find((o) => o.indicator_id === IND["segments.foot_unknown"]).coverage, complete: false } })],
+ ]) {
+   test(id, title, ({ F, D, EV }) => {
+     const before = F.buildCatalog(D, EV, "shymkent", ALL(F));
+@@ -98,13 +123,13 @@
+ 
+ test("T6_null_vs_zero", "null: только в data_gaps и «нет данных»; настоящий 0 печатается как 0", ({ F, D, EV }) => {
+   const b = F.buildCatalog(D, EV, "shymkent", ALL(F));
+-  const nul = `shymkent/${b.scenario}/capacity.school_places`, zero = `shymkent/${b.scenario}/district_status.ambiguous`;
++  const nul = `kz.shymkent/${b.scenario}/capacity.school_places`, zero = `kz.shymkent/${b.scenario}/district_status.ambiguous`;  // ADAPTER: kz. prefix
+   const dg = typeof F.catalogDigest === "function" ? { catalog_digest: F.catalogDigest(b.catalog) } : {};
+   const outside = attempt(() => F.validatePlan({ sections: [{ type: "summary", fact_ids: [nul] }], ...dg }, b.catalog, "shymkent", b.scenario));
+   const gaps = F.validatePlan({ sections: [{ type: "data_gaps", fact_ids: [nul] }, { type: "risks", fact_ids: [zero] }], ...dg }, b.catalog, "shymkent", b.scenario);
+   const ru = F.render(gaps, b.catalog, b.scenario, "ru").text, kk = F.render(gaps, b.catalog, b.scenario, "kk").text;
+   const ok = outside.status === "null_as_fact" && /нет данных/.test(ru) && /дерек жоқ/.test(kk)
+-    && /неоднозначным районом: 0 \(/.test(ru) && b.catalog.get(nul).value === null && b.catalog.get(zero).value === 0;
++    && /неоднозначным районом: 0( \S+)? \(/.test(ru)  /* ADAPTER: unit after the number (K02 r4 fixed) */ && b.catalog.get(nul).value === null && b.catalog.get(zero).value === 0;
+   return { pass: ok, observed: { outside: outside.status, ru_lines: ru.split("\n").filter((l) => l.startsWith("- ")) } };
+ });
+ 
+@@ -136,7 +161,9 @@
+ }
+ 
+ test("T10_incomplete_coverage_visible", "значения при coverage.complete=false помечены в тексте объяснения", ({ F, D, EV }) => {
+-  const r = F.explain(D, EV, "shymkent", ALL(F), "ru");
++  // ADAPTER: v1.2 square counts have coverage.complete=true; make one value incomplete to test the marking itself.
++  const ev2 = clone(EV); setObs(ev2, "shymkent", "places.school", { coverage: { ...ev2.cities.shymkent.observations.find((o) => o.indicator_id === IND["places.school"]).coverage, complete: false } });
++  const r = F.explain(D, ev2, "shymkent", ALL(F), "ru");
+   const line = r.text.split("\n").find((l) => l.includes("Записи") || l.includes("записей в квадрате")) || "";
+   return { pass: /неполн/.test(r.text), observed: line };
+ });
