@@ -304,7 +304,7 @@
     const ev = root.CITY_OBS;
     if (!ev || !ev.cities || !ev.cities[city]) return ["Каталог фактов не загружен (evidence.js)."];
     const e = ev.cities[city];
-    return [`Привязка к районам: ${ev.assign_rule} (K03 + патч r4, локальная копия), границы OSM/Overture, юридически не проверены.`,
+    return [`Привязка к районам: ${ev.assign_rule} (копия K03 с патчем v2.1 раунда 5, сверяется с MANIFEST_K03.json), границы OSM/Overture, юридически не проверены.`,
       `Наблюдения: контракт ${ev.contract} — ${e.observations.length} записей, ошибок ${e.validation.errors}; предупреждения: ${e.validation.warnings.join(", ") || "нет"}.`,
       "Районные суммы E02/E03 прежних раундов к квадрату не применяются (K05 LEGACY_UNIT/SPATIAL_MIX; K08: двойной счёт границ)."];
   }
