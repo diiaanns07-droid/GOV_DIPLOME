@@ -1,0 +1,33 @@
+test_budget_conditional_and_sources (__main__.TestComparison.test_budget_conditional_and_sources) ... ok
+test_distinct_plans_each_have_point_table (__main__.TestComparison.test_distinct_plans_each_have_point_table) ... ok
+test_identical_plans_collapsed (__main__.TestComparison.test_identical_plans_collapsed) ... ok
+test_infeasible_reported (__main__.TestComparison.test_infeasible_reported) ... ok
+test_metrics_consistent_with_rows (__main__.TestComparison.test_metrics_consistent_with_rows) ... ok
+test_user_strings_are_text_not_markup (__main__.TestComparison.test_user_strings_are_text_not_markup) ... ok
+test_infeasible_reason (__main__.TestEngine.test_infeasible_reason) ... ok
+test_mm_metric_and_empty_plan (__main__.TestEngine.test_mm_metric_and_empty_plan) ... ok
+test_optimum_equals_brute (__main__.TestEngine.test_optimum_equals_brute) ... ok
+test_order_invariance (__main__.TestEngine.test_order_invariance) ... ok
+test_pareto_non_dominated (__main__.TestEngine.test_pareto_non_dominated) ... ok
+test_sensitivity_budgets (__main__.TestEngine.test_sensitivity_budgets) ... ok
+test_html_self_contained (__main__.TestReport.test_html_self_contained) ... ok
+test_metadata_provenance (__main__.TestReport.test_metadata_provenance) ... ok
+test_no_forbidden_claims (__main__.TestReport.test_no_forbidden_claims) ... ok
+test_derived_results_untrusted (__main__.TestRoundtrip.test_derived_results_untrusted) ... ok
+test_injection_strings_roundtrip_and_escape (__main__.TestRoundtrip.test_injection_strings_roundtrip_and_escape) ... ok
+test_provenance_to_raw_geojson (__main__.TestRoundtrip.test_provenance_to_raw_geojson)
+Лицензия меняется в data.js (snapshot сборки это не ловит: в нём только id/координаты) и отчёт строится заново. ... ok
+test_qa_change_is_stale (__main__.TestRoundtrip.test_qa_change_is_stale) ... ok
+test_saved_reports_verify_ok (__main__.TestRoundtrip.test_saved_reports_verify_ok) ... ok
+test_stale_snapshot (__main__.TestRoundtrip.test_stale_snapshot) ... ok
+test_strict_import_rejections_keep_contract (__main__.TestRoundtrip.test_strict_import_rejections_keep_contract) ... ok
+test_strict_json_roundtrip_of_report (__main__.TestRoundtrip.test_strict_json_roundtrip_of_report) ... ok
+test_tampering_detected (__main__.TestRoundtrip.test_tampering_detected) ... ok
+test_unknown_report_version_rejected (__main__.TestRoundtrip.test_unknown_report_version_rejected) ... ok
+test_matches_build_js (__main__.TestSnapshot.test_matches_build_js) ... ok
+test_schema_specific (__main__.TestSnapshot.test_schema_specific) ... ok
+
+----------------------------------------------------------------------
+Ran 27 tests in 0.740s
+
+OK

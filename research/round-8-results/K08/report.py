@@ -78,14 +78,15 @@ CSS = """body{font:14px/1.45 system-ui,sans-serif;margin:24px;max-width:1100px;c
 h1{font-size:20px}h2{font-size:16px;margin-top:28px;border-bottom:1px solid #d6dbe4}
 table{border-collapse:collapse;margin:8px 0;width:100%}th,td{border:1px solid #d6dbe4;padding:4px 6px;text-align:left;vertical-align:top}
 th{background:#f2f4f8}.num{text-align:right;font-variant-numeric:tabular-nums}.muted{color:#5b6577}.warn{background:#fff6e0}
-.tag{display:inline-block;border:1px solid #9aa3b2;border-radius:3px;padding:0 4px;font-size:12px}code{font-size:12px;word-break:break-all}"""
+.tag{display:inline-block;border:1px solid #9aa3b2;border-radius:3px;padding:0 4px;font-size:12px}code{font-size:12px;word-break:break-all}
+.tw{overflow-x:auto;max-width:100%}td,p,li,h1,h2{overflow-wrap:anywhere}@media (max-width:600px){body{margin:12px}}"""
 
 
 def _table(head, rows, num_cols=()):
-    h = "<table><thead><tr>" + "".join(f"<th>{e(x)}</th>" for x in head) + "</tr></thead><tbody>"
+    h = "<div class=\"tw\"><table><thead><tr>" + "".join(f"<th>{e(x)}</th>" for x in head) + "</tr></thead><tbody>"
     for r in rows:
         h += "<tr>" + "".join(f'<td class="num">{e(v)}</td>' if i in num_cols else f"<td>{e(v)}</td>" for i, v in enumerate(r)) + "</tr>"
-    return h + "</tbody></table>"
+    return h + "</tbody></table></div>"
 
 
 def render_html(meta):

@@ -1,6 +1,6 @@
 # STATUS — K08, раунд 8: экспорт отчёта и доказательства происхождения
 
-**Статус:** этапы 1–2 из 3 выполнены; этап 3 в работе.
+**Статус:** done — этапы 1–3 выполнены. В BUILD не интегрировано: в a5b5e2d нет city-plan-v2.
 
 - Роль: K08, не BUILD. Ветка `claude/dazzling-mayer-drhsxk`. Задание `research/round-8/tasks/K08.txt`, спецификация `research/round-8/CORE_SPEC.txt` (codex/research-import-2026-10-05).
 - База (только чтение): BUILD `claude/beautiful-clarke-sbzomj` @ `a5b5e2ddbe087c4eab8e947748cdf69dbae84a0d`, `prototypes/city-evidence/`. `git diff 4e93f30 a5b5e2d -- prototypes/city-evidence` пуст. В базе есть whatif v1, **city-plan-v2 в базе нет**. Интеграция отчёта не проверялась и не заявляется.
@@ -58,5 +58,32 @@
 ## Наблюдение по данным (не дефект модуля)
 В Астане категория outpatient_clinic в срезе — в основном стоматологии и диагностика (`basic_category` Overture: dental_clinic и т.п.). Отчёт показывает категорию Overture каждой ближайшей записи, а не переименовывает её.
 
+## Этап 3 — сделано
+- `verify_report.py`:
+  - **roundtrip:** сценарий извлекается из report.json как недоверенный импорт (strict JSON, `derived_results` игнорируется), всё пересчитывается и сравнивается. Статусы: `ok` / `stale` / `tampered` / `rejected` с путём поля;
+  - **stale:** другой snapshot (с причиной: data.js / файл мест / release) или изменились QA-метки сборки;
+  - смена общего `data.js` из-за **другого** города — `ok` с предупреждением, а не «подмена»;
+  - **provenance:** источники и лицензии ближайших записей сверяются с исходным GeoJSON пакета K10 (`inputs/k10/...`);
+  - **версии:** неизвестные `report_schema`, версия сценария и `metric_version` → `rejected`. Контракт не менялся.
+- `report.py`: таблицы в контейнере с прокруткой, без горизонтальной прокрутки страницы на 380 px.
+- `API.md`, `HANDOFF.md`, `browser_check.cjs`, `reports/*/verify.json`.
+
+## Реально выполненные проверки (итог)
+- `python3 test_report.py --app-root <a5b5e2d> -v` → **27 OK** (`runs_stage3.txt`). Этап 3 добавил 10 тестов:
+  - сохранённые отчёты дают `ok`; strict roundtrip;
+  - шесть видов подмены → `tampered` с путём поля (метрика, цель, лицензия, release, стоимость без пересчёта, текст объяснения);
+  - `derived_results` не влияет;
+  - устаревший срез → `stale` + `foreign_snapshot` при импорте, другой город → `ok` + warning;
+  - смена лицензии в data.js (snapshot это не ловит) → `tampered` по исходному GeoJSON;
+  - смена QA → `stale`;
+  - 10 injection-строк: только текст в HTML, точный JSON roundtrip, verify ok;
+  - отказы strict-импорта: NaN, Infinity, 1e999, дубликат ключа, >256 KiB, лишнее поле, v3, дробная стоимость, bool-вес, лишнее поле кандидата;
+  - неизвестная версия отчёта/метрики → `rejected`.
+- `verify_report.py` на трёх отчётах: exit 0.
+- `node browser_check.cjs reports/*/report.html` (Chromium, file://, 1200 и 380 px): 0 ошибок консоли, 0 сетевых запросов, 0 скриптов, нет горизонтальной прокрутки (`runs_browser.json`). Первый прогон нашёл переполнение на 380 px — исправлено, проверка добавлена в скрипт.
+
+## PASS / FAIL / SKIP
+PASS — всё перечисленное. FAIL — нет. SKIP — интеграция с JS city-plan-v2 (в базе её нет) и сверка с JS-оптимизатором (не существует).
+
 ## Следующий шаг
-Этап 3: `verify_report.py` — roundtrip report.json → сценарий → пересчёт и сравнение; устаревший snapshot (другие data.js) → отказ; derived_results не доверяются; сохранность provenance; набор injection-строк; версия контракта не меняется.
+Сборщику: после появления `optimizePlans` в BUILD сравнить его с `planlib.optimize_plans` на `fixtures/` и строить экспорт отчёта из того же результата (см. HANDOFF.md).

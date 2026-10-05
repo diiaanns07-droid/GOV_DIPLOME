@@ -1,0 +1,62 @@
+[
+ {
+  "file": "reports/astana_clinic_demo/report.html",
+  "width": 1200,
+  "title": "Сценарный отчёт: Астана",
+  "h2": 11,
+  "scripts": 0,
+  "docW": 1200,
+  "console_errors": [],
+  "extra_requests": []
+ },
+ {
+  "file": "reports/astana_clinic_demo/report.html",
+  "width": 380,
+  "title": "Сценарный отчёт: Астана",
+  "h2": 11,
+  "scripts": 0,
+  "docW": 380,
+  "console_errors": [],
+  "extra_requests": []
+ },
+ {
+  "file": "reports/astana_clinic_infeasible/report.html",
+  "width": 1200,
+  "title": "Сценарный отчёт: Астана",
+  "h2": 10,
+  "scripts": 0,
+  "docW": 1200,
+  "console_errors": [],
+  "extra_requests": []
+ },
+ {
+  "file": "reports/astana_clinic_infeasible/report.html",
+  "width": 380,
+  "title": "Сценарный отчёт: Астана",
+  "h2": 10,
+  "scripts": 0,
+  "docW": 380,
+  "console_errors": [],
+  "extra_requests": []
+ },
+ {
+  "file": "reports/shymkent_school_demo/report.html",
+  "width": 1200,
+  "title": "Сценарный отчёт: Шымкент",
+  "h2": 13,
+  "scripts": 0,
+  "docW": 1200,
+  "console_errors": [],
+  "extra_requests": []
+ },
+ {
+  "file": "reports/shymkent_school_demo/report.html",
+  "width": 380,
+  "title": "Сценарный отчёт: Шымкент",
+  "h2": 13,
+  "scripts": 0,
+  "docW": 380,
+  "console_errors": [],
+  "extra_requests": []
+ }
+]

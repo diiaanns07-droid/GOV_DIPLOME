@@ -1,0 +1,8 @@
+{
+ "status": "ok",
+ "problems": [],
+ "warnings": [],
+ "scenario_digest": "sha256:743399ceda1e60a61d9aa1aef8f8a5aebd2ef8ac7c4c8f3441cd69c52326e77a",
+ "problem_digest": "sha256:c7e128c45b755767739a1d81582cc86418efb70a923d3cb4ac255682aa9d9b7a",
+ "source_snapshot": "sha256:3ee53ad375b2b4d21df5f81c6a20697cb03f702e560192f5f353a82b54e4b681"
+}
