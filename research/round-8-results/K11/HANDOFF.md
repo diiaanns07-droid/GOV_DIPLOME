@@ -36,4 +36,11 @@ python3 tools/make_worker_bundle.py                      # после правк
 - `cancel` для уже завершённого запроса worker подтверждает сразу, иначе оркестратор убьёт исправный worker.
 - Повтор замеров на целевой машине: `bench/bench_browser.cjs`, `bench/bench_node.cjs`. Цифры `BENCHMARK.md` — не SLA.
 
+## Этап 3 (промежуточно): что учесть при интеграции
+
+- На `file://` фабрика только `blobWorkerFactory(CITY_PLAN_WORKER_SOURCES)`, иначе `auto` молча уйдёт в чанки.
+- `serve.py` BUILD зависит от реестра Windows для MIME `.js`. Нужна явная карта типов, см. `proposed_serve_mime.patch`.
+- Файлы сценария импортировать как байты (`readPlanFile`/`importPlanBytes`), а не через `File.text()`: иначе Windows-1251 превратится в кракозябры без ошибки.
+- `src/plan_export.js` — модуль K11, в BUILD его нет; интеграция не проверялась.
+
 Дальнейшие этапы будут дописаны ниже.

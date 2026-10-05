@@ -1,0 +1,11 @@
+K11 round 8 stage 3: mutation check of tests/export_unicode.cjs (node part, --no-browser --no-python).
+Each line = one deliberately broken copy of src/plan_export.js in a scratch folder; CAUGHT = test exits non-zero.
+CAUGHT no_duplicate_key_check: exit=1 4a strict parser rejects duplicate keys, NaN/Infinity, 1e999, trailing data, comments, lone surrogates, depth>64
+CAUGHT lossy_utf8_decode: exit=1 3d Windows-1251 bytes of a valid Russian file -> not_utf8 (no silent mojibake)
+CAUGHT no_replacement_char_check: exit=1 3e same file decoded lossily as text -> replacement_char error, not an import
+CAUGHT no_reserved_names: exit=1 7a file names: Cyrillic kept, forbidden chars, reserved device names, trailing dots/spaces, NFC
+CAUGHT no_finite_check: exit=1 5a export with NaN budget -> non_finite_number (not 'null' in the file)
+CAUGHT cut_inside_surrogate: exit=1 7b long names cut to <= 120 UTF-16 units on a code point boundary
+CAUGHT no_nfc: exit=1 7a file names: Cyrillic kept, forbidden chars, reserved device names, trailing dots/spaces, NFC
+CAUGHT bom_written: exit=1 1a export bytes: UTF-8 without BOM, LF only, final newline
+CAUGHT derived_flag_lost: exit=1 6 tampered derived_results ignored: flagged, dropped from scenario, recomputed result = oracle

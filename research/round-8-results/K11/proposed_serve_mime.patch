@@ -1,0 +1,22 @@
+diff --git a/prototypes/city-evidence/serve.py b/prototypes/city-evidence/serve.py
+index 2bd8523..9d38d13 100644
+--- a/prototypes/city-evidence/serve.py
++++ b/prototypes/city-evidence/serve.py
+@@ -19,7 +19,16 @@ PORT = int(args[0]) if args else 8765
+ WEB = Path(__file__).resolve().parent / "web"
+ if not (WEB / "index.html").exists() or not (WEB / "data.js").exists():
+     sys.exit(f"Не найдены файлы демо в {WEB} (index.html, data.js). Проверьте checkout.")
+-handler = functools.partial(http.server.SimpleHTTPRequestHandler, directory=str(WEB))
++
++
++class Handler(http.server.SimpleHTTPRequestHandler):
++    # Explicit types: on Windows Python's mimetypes reads the registry, where .js is sometimes text/plain;
++    # Web Workers then refuse importScripts() and the plan search would silently fall back to the main thread.
++    extensions_map = {**http.server.SimpleHTTPRequestHandler.extensions_map, ".js": "text/javascript",
++                      ".mjs": "text/javascript", ".json": "application/json", ".html": "text/html", ".css": "text/css"}
++
++
++handler = functools.partial(Handler, directory=str(WEB))
+ with http.server.ThreadingHTTPServer(("127.0.0.1", PORT), handler) as srv:
+     url = f"http://127.0.0.1:{PORT}/"
+     print(f"Городские данные: {url}  (Ctrl+C — остановить)", flush=True)

@@ -1,0 +1,24 @@
+{
+ "tool": "tests/serve_mime_modeled.py",
+ "label": "BUILD a5b5e2d",
+ "kind": "MODELED Windows registry (not a Windows run)",
+ "cases": [
+  {
+   "poisoned_js_to_text_plain": false,
+   "js_file": "app.js",
+   "content_types": {
+    "app.js": "text/javascript",
+    "index.html": "text/html"
+   }
+  },
+  {
+   "poisoned_js_to_text_plain": true,
+   "js_file": "app.js",
+   "content_types": {
+    "app.js": "text/plain",
+    "index.html": "text/html"
+   }
+  }
+ ],
+ "js_served_as_javascript_even_when_poisoned": false
+}

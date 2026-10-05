@@ -46,6 +46,11 @@ code { font-size: 12px; overflow-wrap: anywhere; }
     <button id="apply" disabled>Применить предложение</button>
     <span id="status" role="status" aria-live="polite">Готово к запуску.</span>
   </div>
+  <div class="row" style="margin-top:8px">
+    <button id="export">Сохранить сценарий (.json)</button>
+    <label>Открыть сценарий <input type="file" id="import" accept=".json,application/json"></label>
+    <span id="filestatus" role="status" aria-live="polite"></span>
+  </div>
   <div style="margin-top:8px"><progress id="prog" max="1" value="0"></progress></div>
   <p class="note" id="probe">Отзывчивость: —</p>
 </section>
@@ -59,13 +64,15 @@ code { font-size: 12px; overflow-wrap: anywhere; }
 </main>
 <script src="../src/plan_core.js"></script>
 <script src="../src/plan_runner.js"></script>
+<script src="../src/plan_export.js"></script>
 <script src="worker_bundle.js"></script>
 <script src="fixture_data.js"></script>
 <script>
 (function () {
   "use strict";
   const $ = (id) => document.getElementById(id);
-  const CORE = window.CITY_PLAN_CORE, RUN = window.CITY_PLAN_RUNNER;
+  const CORE = window.CITY_PLAN_CORE, RUN = window.CITY_PLAN_RUNNER, EXP = window.CITY_PLAN_EXPORT;
+  const imported = {};  // fixture name -> scenario loaded from a file (validated against that fixture's context)
   const fileMode = location.protocol === "file:";
   // file:// pages cannot start new Worker("file:///...") in Chromium: use a Blob worker built from inlined sources.
   const factory = fileMode ? RUN.blobWorkerFactory(window.CITY_PLAN_WORKER_SOURCES) : RUN.urlWorkerFactory("../src/plan_worker.js");
@@ -107,7 +114,7 @@ code { font-size: 12px; overflow-wrap: anywhere; }
     }
   }
   async function run() {
-    const fx = window.K11_EXAMPLE[$("fixture").value];
+    const fx = current();
     const r = getRunner();
     $("cancel").disabled = false; $("apply").disabled = true; $("prog").value = 0; progressCount = 0;
     probe.frames = 0; probe.maxGapMs = 0; probe.lastT = 0; probe.running = true;
@@ -127,6 +134,43 @@ code { font-size: 12px; overflow-wrap: anywhere; }
     $("apply").disabled = !(env.result && env.result.objectives && r.isCurrent(env));
     return env;
   }
+  function current() {
+    const name = $("fixture").value, fx = window.K11_EXAMPLE[name];
+    return { name, context: fx.context, scenario: imported[name] || fx.scenario };
+  }
+  // Export: UTF-8 without BOM; derived_results only when the shown result belongs to exactly this problem.
+  function exportNow() {
+    const fx = current(), sc = CORE.validatePlanScenario(fx.scenario, fx.context);
+    const env = last && last.status === "optimal" && last.problem_digest === CORE.problemDigest(sc) ? last : null;
+    const file = EXP.exportPlanFile(sc, env);
+    EXP.downloadPlanFile(file);
+    $("filestatus").textContent = "Сохранено: " + file.filename + (env ? " (с derived_results)" : "");
+    return file;
+  }
+  // Import: bytes, not lossy text; validated against the selected slice; derived_results are ignored and recomputed.
+  async function importFile(file) {
+    const fx = current();
+    try {
+      const r = await EXP.readPlanFile(file, fx.context, CORE);
+      imported[fx.name] = r.scenario;
+      last = null; $("apply").disabled = true; $("objectives").tBodies[0].textContent = "";
+      $("filestatus").textContent = `Открыт: ${file.name}; кандидатов ${r.scenario.candidates.length}, точек ${r.scenario.control_points.length}` +
+        (r.derived_ignored ? "; derived_results пропущены (пересчитываются запуском)" : "") + (r.bom ? "; BOM пропущен" : "");
+      $("filestatus").className = "status-optimal";
+      return { ok: true, derived_ignored: r.derived_ignored, bom: r.bom, encoding: r.encoding };
+    } catch (e) {
+      const why = { not_utf8: "файл не в UTF-8 (Windows-1251/ANSI не принимается, сохраните как UTF-8)", bad_utf16: "повреждённый UTF-16",
+        replacement_char: "в тексте символы-заменители: файл прочитан не в той кодировке", bad_json: "файл повреждён или это не JSON",
+        duplicate_key: "в файле повторяется ключ", non_finite_number: "в файле NaN/Infinity", lone_surrogate: "непарный суррогат в строке",
+        too_large: "файл больше 256 КиБ", bad_city: "файл для другого города", bad_snapshot: "файл для другого среза данных" }[e.code];
+      $("filestatus").textContent = "Файл не принят: " + (why || e.code || "ошибка") + " [" + (e.code || "error") + "]" + (!why && e.detail ? " — " + e.detail : "");
+      $("filestatus").className = "status-error";
+      return { ok: false, code: e.code || String(e) };
+    }
+  }
+  $("export").addEventListener("click", exportNow);
+  $("import").addEventListener("change", (ev) => { const f = ev.target.files[0]; ev.target.value = ""; if (f) window.K11_DEMO.lastImport = importFile(f); });
+  $("fixture").addEventListener("change", () => { $("filestatus").textContent = ""; });
   $("run").addEventListener("click", run);
   $("cancel").addEventListener("click", () => runner && runner.cancel());
   $("apply").addEventListener("click", () => {
@@ -135,7 +179,8 @@ code { font-size: 12px; overflow-wrap: anywhere; }
   });
   // test hook (Playwright): no extra behaviour, just exposes the same calls
   window.K11_DEMO = { run: async (name, m, sens) => { $("fixture").value = name; document.querySelector(`input[name="mode"][value="${m}"]`).checked = true; $("sens").checked = !!sens; return run(); },
-    cancel: () => runner && runner.cancel(), probe: () => Object.assign({}, probe), state: () => runner && runner.state(), fileMode };
+    cancel: () => runner && runner.cancel(), probe: () => Object.assign({}, probe), state: () => runner && runner.state(), fileMode,
+    exportNow, scenario: () => current().scenario, fileStatus: () => $("filestatus").textContent, lastImport: null };
 })();
 </script>
 </body>

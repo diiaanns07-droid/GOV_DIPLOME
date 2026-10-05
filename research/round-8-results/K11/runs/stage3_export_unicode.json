@@ -1,0 +1,516 @@
+{
+ "tool": "tests/export_unicode.cjs",
+ "node": "v22.22.0",
+ "platform": "linux",
+ "pass": 30,
+ "fail": 0,
+ "not_run": [],
+ "python": {
+  "exe": "python3",
+  "version": "3.11.15"
+ },
+ "results": [
+  {
+   "name": "1a export bytes: UTF-8 without BOM, LF only, final newline",
+   "ok": true,
+   "detail": {
+    "first": 123,
+    "has_cr": false
+   }
+  },
+  {
+   "name": "1b export keeps Cyrillic/Kazakh/PUA/emoji letters (no \\u escapes) and every id byte-exact",
+   "ok": true,
+   "detail": []
+  },
+  {
+   "name": "1c export is strict JSON, <= 256 KiB, derived_results labelled and equal to the run",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "name": "1d top-level key order is fixed (schema first, derived_results last)",
+   "ok": true,
+   "detail": [
+    "schema_version",
+    "city_id",
+    "source_snapshot",
+    "category",
+    "control_points",
+    "candidates",
+    "budget",
+    "max_selected",
+    "coverage_radius_m",
+    "required_ids",
+    "excluded_ids",
+    "selected_ids",
+    "derived_results"
+   ]
+  },
+  {
+   "name": "2 all 11 fixtures: export -> file in a Kazakh-named folder -> import gives the same scenario and digest",
+   "ok": true,
+   "detail": []
+  },
+  {
+   "name": "3a Notepad UTF-8 with BOM + CRLF accepted, same scenario",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "name": "3b Notepad 'Unicode' (UTF-16 LE with BOM) accepted, same scenario",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "name": "3c text-path import (string with BOM) also accepted",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "name": "3d Windows-1251 bytes of a valid Russian file -> not_utf8 (no silent mojibake)",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "name": "3e same file decoded lossily as text -> replacement_char error, not an import",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "name": "3f same Russian scenario as UTF-8 imports fine",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "name": "4a strict parser rejects duplicate keys, NaN/Infinity, 1e999, trailing data, comments, lone surrogates, depth>64",
+   "ok": true,
+   "detail": {
+    "duplicate_key": "duplicate_key",
+    "non_finite_number": "non_finite_number",
+    "bad_json_nan": "bad_json",
+    "bad_json_inf": "bad_json",
+    "bad_json_neg_inf": "bad_json",
+    "bad_json_trailing": "bad_json",
+    "bad_json_comma": "bad_json",
+    "bad_json_comment": "bad_json",
+    "bad_json_single_quote": "bad_json",
+    "bad_json_leading_zero": "bad_json",
+    "bad_json_ctrl_in_string": "bad_json",
+    "lone_surrogate": "lone_surrogate",
+    "bad_json_deep": "bad_json"
+   }
+  },
+  {
+   "name": "4b accepted JSON equals JSON.parse; __proto__ stays a plain data key",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "name": "4c > 256 KiB rejected before parsing",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "name": "4d parser is linear: 12k strings (~150 KB) parse fast",
+   "ok": true,
+   "detail": {
+    "parse_ms": 7
+   }
+  },
+  {
+   "name": "5a export with NaN budget -> non_finite_number (not 'null' in the file)",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "name": "5b export with a lone surrogate id -> lone_surrogate (not '\\ud800' in the file)",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "name": "5c non-optimal envelope (cancelled/infeasible) adds no derived_results",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "name": "6 tampered derived_results ignored: flagged, dropped from scenario, recomputed result = oracle",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "name": "7a file names: Cyrillic kept, forbidden chars, reserved device names, trailing dots/spaces, NFC",
+   "ok": true,
+   "detail": {}
+  },
+  {
+   "name": "7b long names cut to <= 120 UTF-16 units on a code point boundary",
+   "ok": true,
+   "detail": {
+    "length": 125
+   }
+  },
+  {
+   "name": "7c every sanitized name can be created and listed back byte-exact (this OS)",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "name": "8 Python oracle reads the exported file (Kazakh path, other cwd, also LC_ALL=C), ignores fake derived_results, = JS = expected",
+   "ok": true,
+   "detail": []
+  },
+  {
+   "name": "9a http: download name \"план_Шымкент_школы.json\" and bytes = Node export (UTF-8, no BOM, LF)",
+   "ok": true,
+   "detail": {
+    "name1": "план_Шымкент_школы.json",
+    "bytes1": 5008,
+    "no_bom": true,
+    "no_cr": true,
+    "same_as_node": true,
+    "run": {
+     "status": "optimal",
+     "mode": "worker",
+     "mean": [
+      "жоба-01",
+      "жоба-03",
+      "жоба-08",
+      "жоба-11",
+      "жоба-13"
+     ]
+    },
+    "derived_ok": true,
+    "imports": {
+     "bom_crlf": {
+      "ok": true,
+      "derived_ignored": true,
+      "bom": true,
+      "encoding": "utf-8",
+      "text": "Открыт: сценарий bom_crlf.json; кандидатов 16, точек 25; derived_results пропущены (пересчитываются запуском); BOM пропущен"
+     },
+     "cp1251_bytes": {
+      "ok": false,
+      "code": "not_utf8",
+      "text": "Файл не принят: файл не в UTF-8 (Windows-1251/ANSI не принимается, сохраните как UTF-8) [not_utf8]"
+     },
+     "other_slice": {
+      "ok": false,
+      "code": "bad_city",
+      "text": "Файл не принят: файл для другого города [bad_city]"
+     }
+    },
+    "after_import": {
+     "status": "optimal",
+     "mean": [
+      "жоба-01",
+      "жоба-03",
+      "жоба-08",
+      "жоба-11",
+      "жоба-13"
+     ]
+    },
+    "errors": []
+   }
+  },
+  {
+   "name": "9b http: export after an optimal run carries derived_results of that run",
+   "ok": true,
+   "detail": {
+    "status": "optimal",
+    "mode": "worker",
+    "mean": [
+     "жоба-01",
+     "жоба-03",
+     "жоба-08",
+     "жоба-11",
+     "жоба-13"
+    ]
+   }
+  },
+  {
+   "name": "9c http: file input imports BOM+CRLF, rejects Windows-1251 and another slice with a visible reason",
+   "ok": true,
+   "detail": {
+    "bom_crlf": {
+     "ok": true,
+     "derived_ignored": true,
+     "bom": true,
+     "encoding": "utf-8",
+     "text": "Открыт: сценарий bom_crlf.json; кандидатов 16, точек 25; derived_results пропущены (пересчитываются запуском); BOM пропущен"
+    },
+    "cp1251_bytes": {
+     "ok": false,
+     "code": "not_utf8",
+     "text": "Файл не принят: файл не в UTF-8 (Windows-1251/ANSI не принимается, сохраните как UTF-8) [not_utf8]"
+    },
+    "other_slice": {
+     "ok": false,
+     "code": "bad_city",
+     "text": "Файл не принят: файл для другого города [bad_city]"
+    }
+   }
+  },
+  {
+   "name": "9a file: download name \"план_Шымкент_школы.json\" and bytes = Node export (UTF-8, no BOM, LF)",
+   "ok": true,
+   "detail": {
+    "name1": "план_Шымкент_школы.json",
+    "bytes1": 5008,
+    "no_bom": true,
+    "no_cr": true,
+    "same_as_node": true,
+    "run": {
+     "status": "optimal",
+     "mode": "worker",
+     "mean": [
+      "жоба-01",
+      "жоба-03",
+      "жоба-08",
+      "жоба-11",
+      "жоба-13"
+     ]
+    },
+    "derived_ok": true,
+    "imports": {
+     "bom_crlf": {
+      "ok": true,
+      "derived_ignored": true,
+      "bom": true,
+      "encoding": "utf-8",
+      "text": "Открыт: сценарий bom_crlf.json; кандидатов 16, точек 25; derived_results пропущены (пересчитываются запуском); BOM пропущен"
+     },
+     "cp1251_bytes": {
+      "ok": false,
+      "code": "not_utf8",
+      "text": "Файл не принят: файл не в UTF-8 (Windows-1251/ANSI не принимается, сохраните как UTF-8) [not_utf8]"
+     },
+     "other_slice": {
+      "ok": false,
+      "code": "bad_city",
+      "text": "Файл не принят: файл для другого города [bad_city]"
+     }
+    },
+    "after_import": {
+     "status": "optimal",
+     "mean": [
+      "жоба-01",
+      "жоба-03",
+      "жоба-08",
+      "жоба-11",
+      "жоба-13"
+     ]
+    },
+    "errors": []
+   }
+  },
+  {
+   "name": "9b file: export after an optimal run carries derived_results of that run",
+   "ok": true,
+   "detail": {
+    "status": "optimal",
+    "mode": "worker",
+    "mean": [
+     "жоба-01",
+     "жоба-03",
+     "жоба-08",
+     "жоба-11",
+     "жоба-13"
+    ]
+   }
+  },
+  {
+   "name": "9c file: file input imports BOM+CRLF, rejects Windows-1251 and another slice with a visible reason",
+   "ok": true,
+   "detail": {
+    "bom_crlf": {
+     "ok": true,
+     "derived_ignored": true,
+     "bom": true,
+     "encoding": "utf-8",
+     "text": "Открыт: сценарий bom_crlf.json; кандидатов 16, точек 25; derived_results пропущены (пересчитываются запуском); BOM пропущен"
+    },
+    "cp1251_bytes": {
+     "ok": false,
+     "code": "not_utf8",
+     "text": "Файл не принят: файл не в UTF-8 (Windows-1251/ANSI не принимается, сохраните как UTF-8) [not_utf8]"
+    },
+    "other_slice": {
+     "ok": false,
+     "code": "bad_city",
+     "text": "Файл не принят: файл для другого города [bad_city]"
+    }
+   }
+  },
+  {
+   "name": "9d observation, Linux C locale: download name \"download\" (Cyrillic name replaced by Chromium), file bytes unchanged",
+   "ok": true,
+   "detail": {
+    "suggested": "download",
+    "same_bytes": true
+   }
+  }
+ ],
+ "python_rows": [
+  {
+   "fixture": "syn_unicode_ids.json",
+   "env": "default",
+   "exit": 0,
+   "stderr": "",
+   "ok": true
+  },
+  {
+   "fixture": "syn_unicode_ids.json",
+   "env": "LC_ALL=C",
+   "exit": 0,
+   "stderr": "",
+   "ok": true
+  },
+  {
+   "fixture": "real_shymkent_school_16x25.json",
+   "env": "default",
+   "exit": 0,
+   "stderr": "",
+   "ok": true
+  },
+  {
+   "fixture": "real_shymkent_school_16x25.json",
+   "env": "LC_ALL=C",
+   "exit": 0,
+   "stderr": "",
+   "ok": true
+  },
+  {
+   "fixture": "real_astana_outpatient_clinic_8x12.json",
+   "env": "default",
+   "exit": 0,
+   "stderr": "",
+   "ok": true
+  },
+  {
+   "fixture": "real_astana_outpatient_clinic_8x12.json",
+   "env": "LC_ALL=C",
+   "exit": 0,
+   "stderr": "",
+   "ok": true
+  },
+  {
+   "fixture": "syn_infeasible_budget.json",
+   "env": "default",
+   "exit": 0,
+   "stderr": "",
+   "ok": true
+  },
+  {
+   "fixture": "syn_infeasible_budget.json",
+   "env": "LC_ALL=C",
+   "exit": 0,
+   "stderr": "",
+   "ok": true
+  }
+ ],
+ "browser": {
+  "http": {
+   "name1": "план_Шымкент_школы.json",
+   "bytes1": 5008,
+   "no_bom": true,
+   "no_cr": true,
+   "same_as_node": true,
+   "run": {
+    "status": "optimal",
+    "mode": "worker",
+    "mean": [
+     "жоба-01",
+     "жоба-03",
+     "жоба-08",
+     "жоба-11",
+     "жоба-13"
+    ]
+   },
+   "derived_ok": true,
+   "imports": {
+    "bom_crlf": {
+     "ok": true,
+     "derived_ignored": true,
+     "bom": true,
+     "encoding": "utf-8",
+     "text": "Открыт: сценарий bom_crlf.json; кандидатов 16, точек 25; derived_results пропущены (пересчитываются запуском); BOM пропущен"
+    },
+    "cp1251_bytes": {
+     "ok": false,
+     "code": "not_utf8",
+     "text": "Файл не принят: файл не в UTF-8 (Windows-1251/ANSI не принимается, сохраните как UTF-8) [not_utf8]"
+    },
+    "other_slice": {
+     "ok": false,
+     "code": "bad_city",
+     "text": "Файл не принят: файл для другого города [bad_city]"
+    }
+   },
+   "after_import": {
+    "status": "optimal",
+    "mean": [
+     "жоба-01",
+     "жоба-03",
+     "жоба-08",
+     "жоба-11",
+     "жоба-13"
+    ]
+   },
+   "errors": []
+  },
+  "file": {
+   "name1": "план_Шымкент_школы.json",
+   "bytes1": 5008,
+   "no_bom": true,
+   "no_cr": true,
+   "same_as_node": true,
+   "run": {
+    "status": "optimal",
+    "mode": "worker",
+    "mean": [
+     "жоба-01",
+     "жоба-03",
+     "жоба-08",
+     "жоба-11",
+     "жоба-13"
+    ]
+   },
+   "derived_ok": true,
+   "imports": {
+    "bom_crlf": {
+     "ok": true,
+     "derived_ignored": true,
+     "bom": true,
+     "encoding": "utf-8",
+     "text": "Открыт: сценарий bom_crlf.json; кандидатов 16, точек 25; derived_results пропущены (пересчитываются запуском); BOM пропущен"
+    },
+    "cp1251_bytes": {
+     "ok": false,
+     "code": "not_utf8",
+     "text": "Файл не принят: файл не в UTF-8 (Windows-1251/ANSI не принимается, сохраните как UTF-8) [not_utf8]"
+    },
+    "other_slice": {
+     "ok": false,
+     "code": "bad_city",
+     "text": "Файл не принят: файл для другого города [bad_city]"
+    }
+   },
+   "after_import": {
+    "status": "optimal",
+    "mean": [
+     "жоба-01",
+     "жоба-03",
+     "жоба-08",
+     "жоба-11",
+     "жоба-13"
+    ]
+   },
+   "errors": []
+  },
+  "c_locale_observation": {
+   "suggested": "download",
+   "same_bytes": true
+  }
+ }
+}

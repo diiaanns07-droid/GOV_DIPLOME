@@ -1,0 +1,123 @@
+{
+ "tool": "tests/protocol_matrix.cjs",
+ "browser": "chromium 1.56.1",
+ "not_run": [
+  "firefox",
+  "webkit",
+  "real Windows"
+ ],
+ "rows": {
+  "http": {
+   "page_loaded": true,
+   "raw_url_worker": {
+    "ok": true,
+    "stage": "message",
+    "type": "accepted"
+   },
+   "raw_blob_worker": {
+    "ok": true,
+    "stage": "message"
+   },
+   "runner_auto_url": {
+    "status": "optimal",
+    "mode": "worker",
+    "fallback": null,
+    "code": null,
+    "mean": "C01,C04,C05,C11,C12"
+   },
+   "runner_worker_url": {
+    "status": "optimal",
+    "mode": "worker",
+    "fallback": null,
+    "code": null,
+    "mean": "C01,C04,C05,C11,C12"
+   },
+   "runner_auto_blob": {
+    "status": "optimal",
+    "mode": "worker",
+    "fallback": null,
+    "code": null,
+    "mean": "C01,C04,C05,C11,C12"
+   },
+   "console_errors": []
+  },
+  "http_textplain_modeled_windows_registry": {
+   "page_loaded": true,
+   "raw_url_worker": {
+    "ok": false,
+    "stage": "error_event",
+    "error": "Uncaught NetworkError: Failed to execute 'importScripts' on 'WorkerGlobalScope': The script at 'http://127.0.0.1:32895/src/plan_core.js' failed to load."
+   },
+   "raw_blob_worker": {
+    "ok": true,
+    "stage": "message"
+   },
+   "runner_auto_url": {
+    "status": "optimal",
+    "mode": "chunks",
+    "fallback": "Uncaught NetworkError: Failed to execute 'importScripts' on 'WorkerGlobalScope': The script at 'http://127.0.0.1:32895/src/plan_core.js' failed to load.",
+    "code": null,
+    "mean": "C01,C04,C05,C11,C12"
+   },
+   "runner_worker_url": {
+    "status": "error",
+    "mode": "worker",
+    "fallback": null,
+    "code": "worker_error",
+    "mean": null
+   },
+   "runner_auto_blob": {
+    "status": "optimal",
+    "mode": "worker",
+    "fallback": null,
+    "code": null,
+    "mean": "C01,C04,C05,C11,C12"
+   },
+   "console_errors": []
+  },
+  "file": {
+   "page_loaded": true,
+   "raw_url_worker": {
+    "ok": false,
+    "stage": "constructor",
+    "error": "SecurityError: Failed to construct 'Worker': Script at 'file:///home/user/GOV_DIPLOME/research/round-8-results/K11/src/plan_worker.js' cannot be accessed from origin 'null'."
+   },
+   "raw_blob_worker": {
+    "ok": true,
+    "stage": "message"
+   },
+   "runner_auto_url": {
+    "status": "optimal",
+    "mode": "chunks",
+    "fallback": "Failed to construct 'Worker': Script at 'file:///home/user/GOV_DIPLOME/research/round-8-results/K11/src/plan_worker.js' cannot be accessed from origin 'null'.",
+    "code": null,
+    "mean": "C01,C04,C05,C11,C12"
+   },
+   "runner_worker_url": {
+    "status": "error",
+    "fallback": null,
+    "code": "worker_unavailable",
+    "mean": null
+   },
+   "runner_auto_blob": {
+    "status": "optimal",
+    "mode": "worker",
+    "fallback": null,
+    "code": null,
+    "mean": "C01,C04,C05,C11,C12"
+   },
+   "console_errors": []
+  }
+ },
+ "verdict": {
+  "http_url_worker_works": true,
+  "file_url_worker_blocked": true,
+  "file_auto_falls_back_to_chunks": true,
+  "file_explicit_worker_reports_error": true,
+  "file_blob_worker_works": true,
+  "textplain_page_still_loads": true,
+  "textplain_url_worker_blocked": true,
+  "textplain_auto_falls_back": true,
+  "textplain_blob_worker_works": true
+ }
+}

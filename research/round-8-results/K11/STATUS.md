@@ -10,7 +10,7 @@
 |---|---|
 | 1. Адаптер Worker/чанков: request_id/digest, прогресс, отмена, инвалидация; Node harness; браузерный пример | **done** |
 | 2. Бенчмарк 16×25: отзывчивость, задержка отмены, память, освобождение ресурсов | **done** |
-| 3. `file://` против localhost, запускалка Windows, Unicode-экспорт, инструкции, переносимые smoke | следующий |
+| 3. `file://` против localhost, запускалка Windows, Unicode-экспорт, инструкции, переносимые smoke | **в работе** (промежуточный push) |
 
 ## Этап 1 — сделано
 
@@ -78,6 +78,18 @@
 - Время в отчётах — измерения этой машины, не SLA.
 - Windows не запускался.
 
+## Этап 3 — промежуточный результат
+
+Реально выполнено (Linux, Chromium из Playwright 1.56.1, Python 3.11.15):
+- `tests/protocol_matrix.cjs` → **9/9 PASS**. На `file://` `new Worker(url)` даёт SecurityError, `auto` переходит на чанки, Blob-worker работает. Если `.js` отдаётся как `text/plain` (модель реестра Windows), страница открывается, но `importScripts` не срабатывает; `auto` переходит на чанки, Blob-worker работает.
+- `tests/serve_mime_modeled.py` (модель, не Windows): `serve.py` BUILD `a5b5e2d` при отравленном `mimetypes` отдаёт `app.js` как `text/plain` → **FAIL**. С `proposed_serve_mime.patch` (копия, не BUILD) → **PASS**.
+- `src/plan_export.js`: экспорт и импорт сценария в UTF-8.
+  - Байтовый импорт: Windows-1251 даёт ошибку `not_utf8`, а не кракозябры. UTF-16 с BOM читается, строгий JSON.
+  - Имена файлов безопасны для Windows.
+  - `tests/export_unicode.cjs` → **30 PASS / 0 FAIL / 0 NOT_RUN**: Node; Python-оракул из другой cwd по пути с казахскими буквами, также при `LC_ALL=C`; браузер http и `file://` (настоящая загрузка и `<input type=file>`). Проверка порчами: 9/9 пойманы.
+- Найдено: Chromium на Linux в локали `C` заменяет кириллическое имя загрузки на `download`, байты при этом верные. В `C.UTF-8` имя сохраняется (наблюдение 9d).
+- `example/index.html`: кнопки «Сохранить сценарий» / «Открыть сценарий». Повторные прогоны: `harness` 21 PASS, `browser_example --file` 15 PASS.
+
 ## Следующий шаг
 
-1. Этап 3: `file://` против localhost (worker по URL против Blob), запускалка Windows (modeled/not_run), Unicode-экспорт, переносимые smoke и инструкции внедрения.
+1. Этап 3 (остаток): статическая и модельная проверка `run-demo.bat`/`serve.py`, переносимый smoke `smoke/portable_smoke.py`, `INTEGRATION.md`, итоговый пакет.
