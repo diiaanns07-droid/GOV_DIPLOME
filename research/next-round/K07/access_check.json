@@ -1,0 +1,31 @@
+{
+  "agent": "K07",
+  "session": "claude-session-01HEzCqfshB93DJpEk4vEM4f",
+  "checked_at_utc": "2026-10-05T05:20:46Z",
+  "method": "curl -sS -D - --max-time 25 <url>; one request per host, no retries",
+  "purpose": "two sources needed for the task: (1) pedestrian network and OSM social objects, (2) official registry of schools",
+  "results": [
+    {
+      "source": "Overpass API (OSM objects amenity=school/kindergarten and pedestrian network)",
+      "url": "https://overpass-api.de/api/status",
+      "result": "HTTP 403 on CONNECT from the session proxy; curl: (56) CONNECT tunnel failed, response 403",
+      "proxy_log": {"kind": "connect_rejected", "detail": "gateway answered 403 to CONNECT (policy denial or upstream failure)", "host": "overpass-api.de:443", "ts": "2026-10-05T05:20:46.562Z"},
+      "interpretation": "blocked by the environment egress policy; says nothing about whether the service or the data exist"
+    },
+    {
+      "source": "data.egov.kz (official open data portal; candidate registries of schools)",
+      "url": "https://data.egov.kz/",
+      "result": "HTTP 403 on CONNECT from the session proxy; curl: (56) CONNECT tunnel failed, response 403",
+      "proxy_log": {"kind": "connect_rejected", "detail": "gateway answered 403 to CONNECT (policy denial or upstream failure)", "host": "data.egov.kz:443", "ts": "2026-10-05T05:20:46.810Z"},
+      "interpretation": "blocked by the environment egress policy; says nothing about whether the registry exists"
+    }
+  ],
+  "not_attempted_on_purpose": [
+    "download.geofabrik.de, api.openstreetmap.org, stat.gov.kz, gov.kz, adilet.zan.kz: not probed in this session to avoid repeating blocked requests; A04, AST-A04, A05, AST-A05, AST-A12 recorded 403 host_not_allowed for them in their own sandboxes on 2026-10-04/05"
+  ],
+  "required_domains_to_continue": [
+    "overpass-api.de or download.geofabrik.de (OSM extract: schools, kindergartens, footways, residential buildings)",
+    "data.egov.kz (rows of the registry onirler_oblystar_kalalar_boi4 and of the Shymkent akimat dataset 'Список общеобразовательных школ')"
+  ],
+  "how_owner_can_allow": "cloud environment settings -> Network access -> Custom -> add the domains above (https://code.claude.com/docs/en/cloud-environments#network-access); adding a domain does not guarantee the site answers"
+}
