@@ -1,0 +1,6 @@
+# Python 3.12.3 (same as A04/A05 authors); install into an isolated venv
+numpy==2.4.4
+networkx==3.6.1
+scipy==1.17.1
+shapely==2.1.2
+pyproj==3.8.0

@@ -1,0 +1,611 @@
+{
+ "kind": "verification of synthetic experiments; no city data",
+ "environment": {
+  "python": "3.12.3",
+  "numpy": "2.4.4",
+  "networkx": "3.6.1",
+  "scipy": "1.17.1"
+ },
+ "inputs_sha256": {
+  "research/govtech-results/04_infrastructure/extracted_files__13_/A04_synthetic_experiment.py": "1be10684352b7b45de53ac358adcf42e5dd2ab86ab98d31be2e7230fc6ee8d89",
+  "research/govtech-results/04_infrastructure/extracted_files__13_/A04_synthetic_results.json": "525c52dcf3da1c20cf266cc10b8f2476454a3aa340bf07a676596ff6d4055de2",
+  "research/govtech-results/05_education/extracted_files__14_/A05_experiment.py": "7214a0b300f5c8b3a094ac2792ba7679c8c705feb03b853f58d06a016b69b447",
+  "research/govtech-results/05_education/extracted_files__14_/A05_synthetic_results.json": "0bd3548eeef0ac71f354c708f1cb3ef891acecb9d4d9e3dde07973e24335fe2c"
+ },
+ "A04_rerun": {
+  "exit_code": 0,
+  "stdout_sha256": "525c52dcf3da1c20cf266cc10b8f2476454a3aa340bf07a676596ff6d4055de2",
+  "byte_identical_to_stored": true,
+  "json_differences": []
+ },
+ "A05_rerun": {
+  "json_differences": [
+   {
+    "path": "/meta/platform",
+    "stored": "Linux-6.18.44-fc-v64-x86_64-with-glibc2.39",
+    "rerun": "Linux-6.18.44-fc-v70-x86_64-with-glibc2.39"
+   },
+   {
+    "path": "/meta/runtime_s",
+    "stored": 8.71,
+    "rerun": 15.98
+   }
+  ],
+  "only_environment_fields_differ": true
+ },
+ "claims": [
+  {
+   "id": "A04-T500-radius",
+   "source": "A04_report.md §11",
+   "claim": "500 м: покрытие по радиусу",
+   "reported": 67.4,
+   "computed": 67.4,
+   "status": "match"
+  },
+  {
+   "id": "A04-T500-network",
+   "source": "A04_report.md §11",
+   "claim": "500 м: покрытие по сети",
+   "reported": 44.9,
+   "computed": 44.9,
+   "status": "match"
+  },
+  {
+   "id": "A04-T500-false",
+   "source": "A04_report.md §11",
+   "claim": "500 м: «ложно покрыты»",
+   "reported": 22.5,
+   "computed": 22.5,
+   "status": "match"
+  },
+  {
+   "id": "A04-T500-SE",
+   "source": "A04_report.md §11",
+   "claim": "500 м: SE по сети",
+   "reported": 1.3,
+   "computed": 1.3,
+   "status": "match"
+  },
+  {
+   "id": "A04-T800-radius",
+   "source": "A04_report.md §11",
+   "claim": "800 м: покрытие по радиусу",
+   "reported": 94.3,
+   "computed": 94.3,
+   "status": "match"
+  },
+  {
+   "id": "A04-T800-network",
+   "source": "A04_report.md §11",
+   "claim": "800 м: покрытие по сети",
+   "reported": 83.3,
+   "computed": 83.3,
+   "status": "match"
+  },
+  {
+   "id": "A04-T800-false",
+   "source": "A04_report.md §11",
+   "claim": "800 м: «ложно покрыты»",
+   "reported": 11.0,
+   "computed": 11.0,
+   "status": "match"
+  },
+  {
+   "id": "A04-T800-SE",
+   "source": "A04_report.md §11",
+   "claim": "800 м: SE по сети",
+   "reported": 26.2,
+   "computed": 26.2,
+   "status": "match"
+  },
+  {
+   "id": "A04-T1000-radius",
+   "source": "A04_report.md §11",
+   "claim": "1000 м: покрытие по радиусу",
+   "reported": 96.7,
+   "computed": 96.7,
+   "status": "match"
+  },
+  {
+   "id": "A04-T1000-network",
+   "source": "A04_report.md §11",
+   "claim": "1000 м: покрытие по сети",
+   "reported": 93.8,
+   "computed": 93.8,
+   "status": "match"
+  },
+  {
+   "id": "A04-T1000-false",
+   "source": "A04_report.md §11",
+   "claim": "1000 м: «ложно покрыты»",
+   "reported": 2.8,
+   "computed": 2.8,
+   "status": "match"
+  },
+  {
+   "id": "A04-T1000-SE",
+   "source": "A04_report.md §11",
+   "claim": "1000 м: SE по сети",
+   "reported": 53.2,
+   "computed": 53.2,
+   "status": "match"
+  },
+  {
+   "id": "A04-detour",
+   "source": "A04_report.md §11",
+   "claim": "обход сеть/прямая: медиана, p90, максимум",
+   "reported": [
+    1.34,
+    1.41,
+    1.86
+   ],
+   "computed": [
+    1.34,
+    1.41,
+    1.86
+   ],
+   "status": "match"
+  },
+  {
+   "id": "A04-rank500",
+   "source": "A04_report.md §11",
+   "claim": "500 м: A>C>B",
+   "reported": [
+    "A",
+    "C",
+    "B"
+   ],
+   "computed": [
+    "A",
+    "C",
+    "B"
+   ],
+   "status": "match"
+  },
+  {
+   "id": "A04-rank800",
+   "source": "A04_report.md §11",
+   "claim": "800 м: C>B>A",
+   "reported": [
+    "C",
+    "B",
+    "A"
+   ],
+   "computed": [
+    "C",
+    "B",
+    "A"
+   ],
+   "status": "match"
+  },
+  {
+   "id": "A04-A800",
+   "source": "A04_report.md §11",
+   "claim": "A при 800 м: прирост по радиусу и по сети",
+   "reported": [
+    3229,
+    4937
+   ],
+   "computed": [
+    3229,
+    4937
+   ],
+   "status": "match"
+  },
+  {
+   "id": "A04-graph",
+   "source": "A04_report.md §11",
+   "claim": "1 600 узлов, 3 061 ребро",
+   "reported": [
+    1600,
+    3061
+   ],
+   "computed": [
+    1600,
+    3061
+   ],
+   "status": "match"
+  },
+  {
+   "id": "A05-H1-1000",
+   "source": "A05_report.md §7",
+   "claim": "1000 м: покрытие прямое против сети",
+   "reported": [
+    83.4,
+    74.9
+   ],
+   "computed": [
+    83.4,
+    74.9
+   ],
+   "status": "match"
+  },
+  {
+   "id": "A05-H1-1000-G",
+   "source": "A05_report.md §7",
+   "claim": "1000 м, территория Г",
+   "reported": [
+    58.7,
+    45.7
+   ],
+   "computed": [
+    58.7,
+    45.7
+   ],
+   "status": "match"
+  },
+  {
+   "id": "A05-H1-1500-G",
+   "source": "A05_report.md §7",
+   "claim": "1500 м, территория Г",
+   "reported": [
+    93.9,
+    64.2
+   ],
+   "computed": [
+    93.9,
+    64.2
+   ],
+   "status": "match"
+  },
+  {
+   "id": "A05-H1-1500-wrong",
+   "source": "A05_report.md §7",
+   "claim": "1500 м: ошибочно «покрыто» из всего спроса",
+   "reported": [
+    748.6,
+    6269.2
+   ],
+   "computed": [
+    748.6,
+    6269.2
+   ],
+   "status": "match"
+  },
+  {
+   "id": "A05-H2-three",
+   "source": "A05_report.md §7",
+   "claim": "три дефицита: арифметический, в пределах 1500 м, ближайшая школа",
+   "reported": [
+    769.2,
+    1092.6,
+    1717.2
+   ],
+   "computed": [
+    769.2,
+    1092.6,
+    1717.2
+   ],
+   "status": "match"
+  },
+  {
+   "id": "A05-H2-G",
+   "source": "A05_report.md §7",
+   "claim": "из дефицита в пределах 1500 м — в Г",
+   "reported": 1040.5,
+   "computed": 1040.5,
+   "status": "match"
+  },
+  {
+   "id": "A05-H2-S2",
+   "source": "A05_report.md §7",
+   "claim": "S2 загружена на 48% по правилу ближайшей школы",
+   "reported": 48,
+   "computed": 48,
+   "status": "match"
+  },
+  {
+   "id": "A05-H2-rezone",
+   "source": "A05_report.md §7",
+   "claim": "перезакрепление: кварталов, доля спроса %, максимальный путь м",
+   "reported": [
+    25,
+    30.5,
+    2800.0
+   ],
+   "computed": [
+    25,
+    30.5,
+    2800.0
+   ],
+   "status": "match"
+  },
+  {
+   "id": "A05-H3-dmax",
+   "source": "A05_report.md §7",
+   "claim": "С dmax=1500: C2/C3/C5, C1, C6 (непокрытые места)",
+   "reported": [
+    92.6,
+    92.6,
+    92.6,
+    154.8,
+    1092.6
+   ],
+   "computed": [
+    92.6,
+    92.6,
+    92.6,
+    154.8,
+    1092.6
+   ],
+   "status": "match"
+  },
+  {
+   "id": "A05-H3-rho",
+   "source": "A05_report.md §7",
+   "claim": "Spearman ρ географии и мест",
+   "reported": 0.8,
+   "computed": 0.8,
+   "status": "match"
+  },
+  {
+   "id": "A05-H3-C1-rank",
+   "source": "A05_report.md §7",
+   "claim": "C1 — третий по покрытию, но шестой по непокрытым местам",
+   "reported": [
+    3,
+    6
+   ],
+   "computed": [
+    3,
+    5
+   ],
+   "status": "MISMATCH"
+  },
+  {
+   "id": "A05-H3-2SFCA",
+   "source": "A05_report.md §7",
+   "claim": "2SFCA min/max: база → C3; Gini база → C3",
+   "reported": [
+    0.287,
+    0.53,
+    0.38,
+    0.261
+   ],
+   "computed": [
+    0.287,
+    0.53,
+    0.38,
+    0.261
+   ],
+   "status": "match"
+  },
+  {
+   "id": "A05-H4",
+   "source": "A05_report.md §7",
+   "claim": "200 сценариев с ничьей; C2,C3,C5 100%, C1 78%, C6 0%; регрет C1 p90 122",
+   "reported": [
+    200,
+    100,
+    100,
+    100,
+    78,
+    0,
+    122
+   ],
+   "computed": [
+    200,
+    100,
+    100,
+    100,
+    78,
+    0,
+    122
+   ],
+   "status": "match"
+  },
+  {
+   "id": "AST-A05-G-thresholds",
+   "source": "AST_A05_report.md §6",
+   "claim": "Г: 500/1000/1500 м по сети",
+   "reported": [
+    9.8,
+    45.7,
+    64.2
+   ],
+   "computed": [
+    9.8,
+    45.7,
+    64.2
+   ],
+   "status": "match"
+  },
+  {
+   "id": "A05-H3-no-dmax",
+   "source": "A05_report.md §7 (не записано в JSON; пересчитано)",
+   "claim": "без dmax все 8 участков дают 0 непокрытых",
+   "reported": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "computed": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "status": "match"
+  }
+ ],
+ "claims_summary": {
+  "total": 32,
+  "match": 31,
+  "mismatch": [
+   "A05-H3-C1-rank"
+  ]
+ },
+ "K07_gap_decomposition": {
+  "kind": "synthetic (same toy inputs as A04/A05)",
+  "why": "on a square street grid, network distance >= Manhattan >= straight line, so a radius over-states coverage even without any barrier; the obstacle effect is only the second part of the gap",
+  "A04": {
+   "500": {
+    "coverage_pct": {
+     "radius": 67.4,
+     "grid_without_obstacles": 45.8,
+     "grid_with_industrial_block_only": 45.8,
+     "a04_network_barrier_and_block": 44.9
+    },
+    "by_quadrant_coverage_pct": {
+     "NW": {
+      "radius": 77.8,
+      "grid_without_obstacles": 51.0,
+      "grid_with_industrial_block_only": 51.0,
+      "a04_network_barrier_and_block": 49.1
+     },
+     "NE": {
+      "radius": 80.0,
+      "grid_without_obstacles": 54.1,
+      "grid_with_industrial_block_only": 54.1,
+      "a04_network_barrier_and_block": 54.1
+     },
+     "SW": {
+      "radius": 61.7,
+      "grid_without_obstacles": 46.6,
+      "grid_with_industrial_block_only": 46.6,
+      "a04_network_barrier_and_block": 46.6
+     },
+     "SE": {
+      "radius": 3.1,
+      "grid_without_obstacles": 1.7,
+      "grid_with_industrial_block_only": 1.7,
+      "a04_network_barrier_and_block": 1.3
+     }
+    },
+    "gap_total_pp": 22.5,
+    "gap_grid_geometry_pp": 21.6,
+    "gap_obstacles_pp": 0.8
+   },
+   "800": {
+    "coverage_pct": {
+     "radius": 94.3,
+     "grid_without_obstacles": 84.5,
+     "grid_with_industrial_block_only": 84.5,
+     "a04_network_barrier_and_block": 83.3
+    },
+    "by_quadrant_coverage_pct": {
+     "NW": {
+      "radius": 100.0,
+      "grid_without_obstacles": 92.7,
+      "grid_with_industrial_block_only": 92.7,
+      "a04_network_barrier_and_block": 91.8
+     },
+     "NE": {
+      "radius": 100.0,
+      "grid_without_obstacles": 94.0,
+      "grid_with_industrial_block_only": 94.0,
+      "a04_network_barrier_and_block": 93.7
+     },
+     "SW": {
+      "radius": 97.0,
+      "grid_without_obstacles": 81.2,
+      "grid_with_industrial_block_only": 81.2,
+      "a04_network_barrier_and_block": 81.2
+     },
+     "SE": {
+      "radius": 52.6,
+      "grid_without_obstacles": 33.0,
+      "grid_with_industrial_block_only": 33.0,
+      "a04_network_barrier_and_block": 26.2
+     }
+    },
+    "gap_total_pp": 11.0,
+    "gap_grid_geometry_pp": 9.8,
+    "gap_obstacles_pp": 1.2
+   },
+   "1000": {
+    "coverage_pct": {
+     "radius": 96.6,
+     "grid_without_obstacles": 93.8,
+     "grid_with_industrial_block_only": 93.8,
+     "a04_network_barrier_and_block": 93.8
+    },
+    "by_quadrant_coverage_pct": {
+     "NW": {
+      "radius": 100.0,
+      "grid_without_obstacles": 100.0,
+      "grid_with_industrial_block_only": 100.0,
+      "a04_network_barrier_and_block": 100.0
+     },
+     "NE": {
+      "radius": 100.0,
+      "grid_without_obstacles": 100.0,
+      "grid_with_industrial_block_only": 100.0,
+      "a04_network_barrier_and_block": 100.0
+     },
+     "SW": {
+      "radius": 100.0,
+      "grid_without_obstacles": 94.1,
+      "grid_with_industrial_block_only": 94.1,
+      "a04_network_barrier_and_block": 94.1
+     },
+     "SE": {
+      "radius": 69.6,
+      "grid_without_obstacles": 53.2,
+      "grid_with_industrial_block_only": 53.2,
+      "a04_network_barrier_and_block": 53.2
+     }
+    },
+    "gap_total_pp": 2.8,
+    "gap_grid_geometry_pp": 2.8,
+    "gap_obstacles_pp": 0.0
+   }
+  },
+  "A05": {
+   "500": {
+    "coverage_pct": {
+     "radius": 41.0,
+     "grid_without_barrier": 32.4,
+     "a05_network_with_barrier": 31.1
+    },
+    "gap_total_pp": 10.0,
+    "gap_grid_geometry_pp": 8.6,
+    "gap_barrier_pp": 1.4,
+    "territory_G_coverage_pct": {
+     "radius": 13.1,
+     "grid_without_barrier": 11.8,
+     "a05_network_with_barrier": 9.8
+    }
+   },
+   "1000": {
+    "coverage_pct": {
+     "radius": 83.4,
+     "grid_without_barrier": 76.8,
+     "a05_network_with_barrier": 74.9
+    },
+    "gap_total_pp": 8.4,
+    "gap_grid_geometry_pp": 6.6,
+    "gap_barrier_pp": 1.9,
+    "territory_G_coverage_pct": {
+     "radius": 58.7,
+     "grid_without_barrier": 50.4,
+     "a05_network_with_barrier": 45.7
+    }
+   },
+   "1500": {
+    "coverage_pct": {
+     "radius": 97.5,
+     "grid_without_barrier": 93.4,
+     "a05_network_with_barrier": 85.6
+    },
+    "gap_total_pp": 11.9,
+    "gap_grid_geometry_pp": 4.1,
+    "gap_barrier_pp": 7.9,
+    "territory_G_coverage_pct": {
+     "radius": 93.9,
+     "grid_without_barrier": 83.7,
+     "a05_network_with_barrier": 64.2
+    }
+   }
+  }
+ }
+}
