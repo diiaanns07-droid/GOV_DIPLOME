@@ -1,0 +1,40 @@
+{
+ "summary": {
+  "PASS": 4,
+  "FAIL": 0,
+  "SKIP": 0,
+  "TEST_INCOMPATIBLE": 0
+ },
+ "results": [
+  {
+   "check": "S1-fixtures-match-build",
+   "verdict": "PASS",
+   "summary": "fixtures stage 1 построены на данных этой сборки (a5b5e2ddbe08)",
+   "details": {}
+  },
+  {
+   "check": "S1-python-oracle",
+   "verdict": "PASS",
+   "summary": "76 случаев: несоответствий 0",
+   "details": {
+    "mismatches": []
+   }
+  },
+  {
+   "check": "S1-js (geo_v2.js)",
+   "verdict": "PASS",
+   "summary": "76 случаев: несоответствий 0",
+   "details": {
+    "mismatches": []
+   }
+  },
+  {
+   "check": "S1-js-python-parity",
+   "verdict": "PASS",
+   "summary": "полное совпадение результатов JS и Python (контекст, места, мм, ничьи): расхождений 0",
+   "details": {
+    "ids": []
+   }
+  }
+ ]
+}

@@ -1,0 +1,801 @@
+{
+ "schema": "k03-point-fixtures-v1",
+ "description": "Координаты контрольных точек и проектного объекта city-whatif-v1: проверка по bbox текущего среза. Ожидаемый исход — правило point_check; k03_info — справка K03 (район не условие приёма, не официальная принадлежность).",
+ "target": {
+  "branch": "claude/beautiful-clarke-sbzomj",
+  "sha": "c58a3b2b175cf978ad785fef7f88d8fd9b1338f2",
+  "path": "prototypes/city-evidence/",
+  "web_data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "web_evidence_js_sha256": "df736e986145da33dee60f692e020486720b72db5b6116af31640cc8693b11b9",
+  "k03_root": "inputs/k03v21_root",
+  "k03_validator_sha256": "d5e297411d78085dafece85b25b10050672b03b2f22c46651f631d886d80760b"
+ },
+ "slices": {
+  "astana": {
+   "city_id": "astana",
+   "bbox": [
+    71.418372,
+    51.163033,
+    71.447,
+    51.181
+   ],
+   "edges_inclusive": true,
+   "type": "bbox",
+   "geometry_sha256": "3643892ff81e4db65a18a1a8fc397db2c47e3e8d0d23fd32c07c8243aac979a8"
+  },
+  "shymkent": {
+   "city_id": "shymkent",
+   "bbox": [
+    69.593365,
+    42.306645,
+    69.617658,
+    42.324611
+   ],
+   "edges_inclusive": true,
+   "type": "bbox",
+   "geometry_sha256": "5d76ee95e214e52390ad6b933b8e0374b088aa97df9b10a03c82e42a0e76e862"
+  }
+ },
+ "special_values": "raw_json разбирается парсером реализации (Python json / JS: NaN и Infinity подставляются вручную)",
+ "fixtures": [
+  {
+   "id": "AST-center",
+   "city": "astana",
+   "kind": "control",
+   "point": [
+    71.432686,
+    51.1720165
+   ],
+   "raw_json": null,
+   "slice_override": null,
+   "expected": {
+    "ok": true,
+    "code": "inside"
+   },
+   "why": "центр квадрата",
+   "k03_info": {
+    "status": "matched",
+    "district": "kz.astana.district.baikonur",
+    "reason": "single_district_interior",
+    "candidates": [
+     "kz.astana.district.baikonur"
+    ],
+    "rule": "k03_assign_v2",
+    "informational_only": true,
+    "legal_status": "not_verified"
+   }
+  },
+  {
+   "id": "AST-corner-SW",
+   "city": "astana",
+   "kind": "control",
+   "point": [
+    71.418372,
+    51.163033
+   ],
+   "raw_json": null,
+   "slice_override": null,
+   "expected": {
+    "ok": true,
+    "code": "on_edge"
+   },
+   "why": "угол квадрата W,S: границы включены (edges_inclusive=true)"
+  },
+  {
+   "id": "AST-corner-NE",
+   "city": "astana",
+   "kind": "proposed",
+   "point": [
+    71.447,
+    51.181
+   ],
+   "raw_json": null,
+   "slice_override": null,
+   "expected": {
+    "ok": true,
+    "code": "on_edge"
+   },
+   "why": "угол квадрата E,N, проектный объект"
+  },
+  {
+   "id": "AST-edge-W",
+   "city": "astana",
+   "kind": "control",
+   "point": [
+    71.418372,
+    51.1720165
+   ],
+   "raw_json": null,
+   "slice_override": null,
+   "expected": {
+    "ok": true,
+    "code": "on_edge"
+   },
+   "why": "середина западной стороны"
+  },
+  {
+   "id": "AST-just-out-W",
+   "city": "astana",
+   "kind": "control",
+   "point": [
+    71.418371999,
+    51.1720165
+   ],
+   "raw_json": null,
+   "slice_override": null,
+   "expected": {
+    "ok": false,
+    "code": "outside_bbox"
+   },
+   "why": "на 1e-9° западнее (~0,1 мм): допуска нет, точка вне"
+  },
+  {
+   "id": "AST-just-in-W",
+   "city": "astana",
+   "kind": "control",
+   "point": [
+    71.41837200100001,
+    51.1720165
+   ],
+   "raw_json": null,
+   "slice_override": null,
+   "expected": {
+    "ok": true,
+    "code": "inside"
+   },
+   "why": "на 1e-9° восточнее западной стороны"
+  },
+  {
+   "id": "AST-swap",
+   "city": "astana",
+   "kind": "control",
+   "point": [
+    51.1720165,
+    71.432686
+   ],
+   "raw_json": null,
+   "slice_override": null,
+   "expected": {
+    "ok": false,
+    "code": "lon_lat_swapped"
+   },
+   "why": "центр квадрата с порядком [широта, долгота]"
+  },
+  {
+   "id": "AST-other-city",
+   "city": "astana",
+   "kind": "control",
+   "point": [
+    69.6055115,
+    42.315628000000004
+   ],
+   "raw_json": null,
+   "slice_override": null,
+   "expected": {
+    "ok": false,
+    "code": "other_city"
+   },
+   "why": "центр квадрата другого города: не переносится"
+  },
+  {
+   "id": "AST-far",
+   "city": "astana",
+   "kind": "proposed",
+   "point": [
+    70.0,
+    45.0
+   ],
+   "raw_json": null,
+   "slice_override": null,
+   "expected": {
+    "ok": false,
+    "code": "outside_bbox"
+   },
+   "why": "точка в Казахстане вне обоих квадратов"
+  },
+  {
+   "id": "AST-edges-exclusive",
+   "city": "astana",
+   "kind": "control",
+   "point": [
+    71.418372,
+    51.1720165
+   ],
+   "raw_json": null,
+   "slice_override": {
+    "edges_inclusive": false
+   },
+   "expected": {
+    "ok": false,
+    "code": "outside_bbox"
+   },
+   "why": "та же точка на стороне, но срез с edges_inclusive=false"
+  },
+  {
+   "id": "SHY-center",
+   "city": "shymkent",
+   "kind": "control",
+   "point": [
+    69.6055115,
+    42.315628000000004
+   ],
+   "raw_json": null,
+   "slice_override": null,
+   "expected": {
+    "ok": true,
+    "code": "inside"
+   },
+   "why": "центр квадрата",
+   "k03_info": {
+    "status": "matched",
+    "district": "kz.shymkent.district.al-farabi",
+    "reason": "single_district_interior",
+    "candidates": [
+     "kz.shymkent.district.al-farabi"
+    ],
+    "rule": "k03_assign_v2",
+    "informational_only": true,
+    "legal_status": "not_verified"
+   }
+  },
+  {
+   "id": "SHY-corner-SW",
+   "city": "shymkent",
+   "kind": "control",
+   "point": [
+    69.593365,
+    42.306645
+   ],
+   "raw_json": null,
+   "slice_override": null,
+   "expected": {
+    "ok": true,
+    "code": "on_edge"
+   },
+   "why": "угол квадрата W,S: границы включены (edges_inclusive=true)"
+  },
+  {
+   "id": "SHY-corner-NE",
+   "city": "shymkent",
+   "kind": "proposed",
+   "point": [
+    69.617658,
+    42.324611
+   ],
+   "raw_json": null,
+   "slice_override": null,
+   "expected": {
+    "ok": true,
+    "code": "on_edge"
+   },
+   "why": "угол квадрата E,N, проектный объект"
+  },
+  {
+   "id": "SHY-edge-W",
+   "city": "shymkent",
+   "kind": "control",
+   "point": [
+    69.593365,
+    42.315628000000004
+   ],
+   "raw_json": null,
+   "slice_override": null,
+   "expected": {
+    "ok": true,
+    "code": "on_edge"
+   },
+   "why": "середина западной стороны"
+  },
+  {
+   "id": "SHY-just-out-W",
+   "city": "shymkent",
+   "kind": "control",
+   "point": [
+    69.593364999,
+    42.315628000000004
+   ],
+   "raw_json": null,
+   "slice_override": null,
+   "expected": {
+    "ok": false,
+    "code": "outside_bbox"
+   },
+   "why": "на 1e-9° западнее (~0,1 мм): допуска нет, точка вне"
+  },
+  {
+   "id": "SHY-just-in-W",
+   "city": "shymkent",
+   "kind": "control",
+   "point": [
+    69.59336500100001,
+    42.315628000000004
+   ],
+   "raw_json": null,
+   "slice_override": null,
+   "expected": {
+    "ok": true,
+    "code": "inside"
+   },
+   "why": "на 1e-9° восточнее западной стороны"
+  },
+  {
+   "id": "SHY-swap",
+   "city": "shymkent",
+   "kind": "control",
+   "point": [
+    42.315628000000004,
+    69.6055115
+   ],
+   "raw_json": null,
+   "slice_override": null,
+   "expected": {
+    "ok": false,
+    "code": "lon_lat_swapped"
+   },
+   "why": "центр квадрата с порядком [широта, долгота]"
+  },
+  {
+   "id": "SHY-other-city",
+   "city": "shymkent",
+   "kind": "control",
+   "point": [
+    71.432686,
+    51.1720165
+   ],
+   "raw_json": null,
+   "slice_override": null,
+   "expected": {
+    "ok": false,
+    "code": "other_city"
+   },
+   "why": "центр квадрата другого города: не переносится"
+  },
+  {
+   "id": "SHY-far",
+   "city": "shymkent",
+   "kind": "proposed",
+   "point": [
+    70.0,
+    45.0
+   ],
+   "raw_json": null,
+   "slice_override": null,
+   "expected": {
+    "ok": false,
+    "code": "outside_bbox"
+   },
+   "why": "точка в Казахстане вне обоих квадратов"
+  },
+  {
+   "id": "SHY-edges-exclusive",
+   "city": "shymkent",
+   "kind": "control",
+   "point": [
+    69.593365,
+    42.315628000000004
+   ],
+   "raw_json": null,
+   "slice_override": {
+    "edges_inclusive": false
+   },
+   "expected": {
+    "ok": false,
+    "code": "outside_bbox"
+   },
+   "why": "та же точка на стороне, но срез с edges_inclusive=false"
+  },
+  {
+   "id": "AST-nan-lon",
+   "city": "astana",
+   "kind": "control",
+   "point": null,
+   "raw_json": "{\"lon\": NaN, \"lat\": 51.17}",
+   "slice_override": null,
+   "expected": {
+    "ok": false,
+    "code": "not_finite"
+   },
+   "why": "NaN (в строгом JSON недопустим; здесь — если пришёл из кода)"
+  },
+  {
+   "id": "AST-inf-lat",
+   "city": "astana",
+   "kind": "control",
+   "point": null,
+   "raw_json": "[71.43, Infinity]",
+   "slice_override": null,
+   "expected": {
+    "ok": false,
+    "code": "not_finite"
+   },
+   "why": "Infinity"
+  },
+  {
+   "id": "AST-1e999",
+   "city": "astana",
+   "kind": "control",
+   "point": null,
+   "raw_json": "[1e999, 51.17]",
+   "slice_override": null,
+   "expected": {
+    "ok": false,
+    "code": "not_finite"
+   },
+   "why": "1e999 — парсеры дают бесконечность"
+  },
+  {
+   "id": "AST-bigint",
+   "city": "astana",
+   "kind": "control",
+   "point": null,
+   "raw_json": "[1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111, 51.17]",
+   "slice_override": null,
+   "expected": {
+    "ok": false,
+    "code": "not_finite"
+   },
+   "why": "целое из 400 цифр: в JS Infinity, в Python — переполнение"
+  },
+  {
+   "id": "AST-null",
+   "city": "astana",
+   "kind": "control",
+   "point": null,
+   "raw_json": "[null, 51.17]",
+   "slice_override": null,
+   "expected": {
+    "ok": false,
+    "code": "not_number"
+   },
+   "why": "null вместо числа"
+  },
+  {
+   "id": "AST-string",
+   "city": "astana",
+   "kind": "control",
+   "point": null,
+   "raw_json": "[\"71.43\", \"51.17\"]",
+   "slice_override": null,
+   "expected": {
+    "ok": false,
+    "code": "not_number"
+   },
+   "why": "строки не приводятся к числам"
+  },
+  {
+   "id": "AST-bool",
+   "city": "astana",
+   "kind": "control",
+   "point": null,
+   "raw_json": "[true, 51.17]",
+   "slice_override": null,
+   "expected": {
+    "ok": false,
+    "code": "not_number"
+   },
+   "why": "bool не число"
+  },
+  {
+   "id": "AST-short",
+   "city": "astana",
+   "kind": "control",
+   "point": null,
+   "raw_json": "[71.43]",
+   "slice_override": null,
+   "expected": {
+    "ok": false,
+    "code": "bad_shape"
+   },
+   "why": "одна координата"
+  },
+  {
+   "id": "AST-extra-key",
+   "city": "astana",
+   "kind": "control",
+   "point": null,
+   "raw_json": "{\"lon\": 71.43, \"lat\": 51.17, \"url\": \"http://example.org\"}",
+   "slice_override": null,
+   "expected": {
+    "ok": false,
+    "code": "bad_shape"
+   },
+   "why": "лишнее поле (внешний URL) не принимается"
+  },
+  {
+   "id": "AST-lon-range",
+   "city": "astana",
+   "kind": "control",
+   "point": null,
+   "raw_json": "[200.0, 51.17]",
+   "slice_override": null,
+   "expected": {
+    "ok": false,
+    "code": "out_of_range"
+   },
+   "why": "долгота > 180"
+  },
+  {
+   "id": "AST-lat-range",
+   "city": "astana",
+   "kind": "control",
+   "point": null,
+   "raw_json": "[71.43, -91.0]",
+   "slice_override": null,
+   "expected": {
+    "ok": false,
+    "code": "out_of_range"
+   },
+   "why": "широта < -90"
+  },
+  {
+   "id": "AST-bad-slice",
+   "city": "astana",
+   "kind": "control",
+   "point": [
+    71.432686,
+    51.1720165
+   ],
+   "raw_json": null,
+   "slice_override": {
+    "bbox": [
+     71.418372,
+     51.163033,
+     71.418372,
+     51.181
+    ]
+   },
+   "expected": {
+    "ok": false,
+    "code": "bad_slice"
+   },
+   "why": "срез с нулевой шириной bbox"
+  },
+  {
+   "id": "AST-Z1-exclave",
+   "city": "astana",
+   "kind": "proposed",
+   "point": [
+    71.66574,
+    51.33028
+   ],
+   "raw_json": null,
+   "slice_override": null,
+   "expected": {
+    "ok": false,
+    "code": "outside_bbox"
+   },
+   "why": "эксклав Байконура ∩ Целиноградский район (AST-Z1) — вне квадрата среза",
+   "k03_info": {
+    "status": "ambiguous",
+    "district": null,
+    "reason": "city_vs_region_overlap",
+    "candidates": [
+     "kz.astana.district.baikonur",
+     "osm:relation/3403760 (Целиноградский район, Акмолинская обл.)"
+    ],
+    "rule": "k03_assign_v2",
+    "informational_only": true,
+    "legal_status": "not_verified"
+   }
+  },
+  {
+   "id": "AST-Z2-hole",
+   "city": "astana",
+   "kind": "proposed",
+   "point": [
+    71.4046433,
+    50.8719883
+   ],
+   "raw_json": null,
+   "slice_override": null,
+   "expected": {
+    "ok": false,
+    "code": "outside_bbox"
+   },
+   "why": "часть контура города без района (AST-Z2) — вне квадрата среза",
+   "k03_info": {
+    "status": "unmatched",
+    "district": null,
+    "reason": "inside_city_no_district",
+    "candidates": [],
+    "rule": "k03_assign_v2",
+    "informational_only": true,
+    "legal_status": "not_verified"
+   }
+  },
+  {
+   "id": "AST-Z3-sliver",
+   "city": "astana",
+   "kind": "proposed",
+   "point": [
+    71.4622857,
+    51.1287367
+   ],
+   "raw_json": null,
+   "slice_override": null,
+   "expected": {
+    "ok": false,
+    "code": "outside_bbox"
+   },
+   "why": "полоса расхождения версий Алматы/Сарайшык (AST-Z3) — вне квадрата среза",
+   "k03_info": {
+    "status": "ambiguous",
+    "district": null,
+    "reason": "version_disagreement",
+    "candidates": [
+     "kz.astana.district.almaty",
+     "kz.astana.district.saraishyk"
+    ],
+    "rule": "k03_assign_v2",
+    "informational_only": true,
+    "legal_status": "not_verified"
+   }
+  },
+  {
+   "id": "AST-border-0.0",
+   "city": "astana",
+   "kind": "proposed",
+   "point": [
+    71.42428679411856,
+    51.17647338131617
+   ],
+   "raw_json": null,
+   "slice_override": null,
+   "expected": {
+    "ok": true,
+    "code": "inside"
+   },
+   "why": "гипотетический объект на общей границе районов baikonur/saryarka внутри квадрата",
+   "k03_info": {
+    "status": "ambiguous",
+    "district": null,
+    "reason": "near_district_boundary",
+    "candidates": [
+     "kz.astana.district.baikonur",
+     "kz.astana.district.saryarka"
+    ],
+    "rule": "k03_assign_v2",
+    "informational_only": true,
+    "legal_status": "not_verified"
+   }
+  },
+  {
+   "id": "AST-border-0.5",
+   "city": "astana",
+   "kind": "proposed",
+   "point": [
+    71.42429388961452,
+    51.176473936412705
+   ],
+   "raw_json": null,
+   "slice_override": null,
+   "expected": {
+    "ok": true,
+    "code": "inside"
+   },
+   "why": "гипотетический объект 0,5 м от общей границы baikonur/saryarka внутри квадрата",
+   "k03_info": {
+    "status": "ambiguous",
+    "district": null,
+    "reason": "near_district_boundary",
+    "candidates": [
+     "kz.astana.district.baikonur",
+     "kz.astana.district.saryarka"
+    ],
+    "rule": "k03_assign_v2",
+    "informational_only": true,
+    "legal_status": "not_verified"
+   }
+  },
+  {
+   "id": "AST-border-5.0",
+   "city": "astana",
+   "kind": "proposed",
+   "point": [
+    71.42435774908512,
+    51.176478932261965
+   ],
+   "raw_json": null,
+   "slice_override": null,
+   "expected": {
+    "ok": true,
+    "code": "inside"
+   },
+   "why": "гипотетический объект 5 м от общей границы baikonur/saryarka внутри квадрата",
+   "k03_info": {
+    "status": "matched",
+    "district": "kz.astana.district.baikonur",
+    "reason": "single_district_interior",
+    "candidates": [
+     "kz.astana.district.baikonur"
+    ],
+    "rule": "k03_assign_v2",
+    "informational_only": true,
+    "legal_status": "not_verified"
+   }
+  },
+  {
+   "id": "SHY-border-0.0",
+   "city": "shymkent",
+   "kind": "proposed",
+   "point": [
+    69.60637577472613,
+    42.31562865191205
+   ],
+   "raw_json": null,
+   "slice_override": null,
+   "expected": {
+    "ok": true,
+    "code": "inside"
+   },
+   "why": "гипотетический объект на общей границе районов al-farabi/enbekshi внутри квадрата",
+   "k03_info": {
+    "status": "ambiguous",
+    "district": null,
+    "reason": "near_district_boundary",
+    "candidates": [
+     "kz.shymkent.district.al-farabi",
+     "kz.shymkent.district.enbekshi"
+    ],
+    "rule": "k03_assign_v2",
+    "informational_only": true,
+    "legal_status": "not_verified"
+   }
+  },
+  {
+   "id": "SHY-border-0.5",
+   "city": "shymkent",
+   "kind": "proposed",
+   "point": [
+    69.60637021636629,
+    42.31563045711318
+   ],
+   "raw_json": null,
+   "slice_override": null,
+   "expected": {
+    "ok": true,
+    "code": "inside"
+   },
+   "why": "гипотетический объект 0,5 м от общей границы al-farabi/enbekshi внутри квадрата",
+   "k03_info": {
+    "status": "ambiguous",
+    "district": null,
+    "reason": "near_district_boundary",
+    "candidates": [
+     "kz.shymkent.district.al-farabi",
+     "kz.shymkent.district.enbekshi"
+    ],
+    "rule": "k03_assign_v2",
+    "informational_only": true,
+    "legal_status": "not_verified"
+   }
+  },
+  {
+   "id": "SHY-border-5.0",
+   "city": "shymkent",
+   "kind": "proposed",
+   "point": [
+    69.60632019111317,
+    42.315646703911135
+   ],
+   "raw_json": null,
+   "slice_override": null,
+   "expected": {
+    "ok": true,
+    "code": "inside"
+   },
+   "why": "гипотетический объект 5 м от общей границы al-farabi/enbekshi внутри квадрата",
+   "k03_info": {
+    "status": "matched",
+    "district": "kz.shymkent.district.al-farabi",
+    "reason": "single_district_interior",
+    "candidates": [
+     "kz.shymkent.district.al-farabi"
+    ],
+    "rule": "k03_assign_v2",
+    "informational_only": true,
+    "legal_status": "not_verified"
+   }
+  }
+ ]
+}

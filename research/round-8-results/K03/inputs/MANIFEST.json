@@ -1,0 +1,20 @@
+{
+ "purpose": "byte copies of inputs for K03 r8",
+ "files": [
+  {
+   "local_path": "research/round-8-results/K03/inputs/r7_point_fixtures.json",
+   "source_branch": "claude/epic-curie-iitc43",
+   "source_commit": "c2557eff881db96c4cd548fdd2cb01a83bf7de23",
+   "source_path": "research/round-7-results/K03/fixtures.json",
+   "git_blob": "9183a733907fec9ce7591c06e6b46efc0773381f",
+   "sha256": "c3723bc0946cacf3b4b028d8da3f447d18e91471067c8c24da79473425487fa4"
+  }
+ ],
+ "build_under_test": {
+  "branch": "claude/beautiful-clarke-sbzomj",
+  "sha": "a5b5e2ddbe087c4eab8e947748cdf69dbae84a0d",
+  "code_candidate": "4e93f30251b3475775439aa28df1bbc6e48ddefb",
+  "path": "prototypes/city-evidence/",
+  "extraction": "research/round-5-results/K03/extract_build.py"
+ }
+}
