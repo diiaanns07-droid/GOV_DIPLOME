@@ -1,0 +1,246 @@
+{
+ "agent": "K10",
+ "purpose": "one request per host; no retries of denied hosts",
+ "proxy_detail": "egress gateway answered 403 to CONNECT (policy denial or upstream failure); recorded in agent proxy status recentRelayFailures",
+ "started_utc": "2026-10-05T05:20:52Z",
+ "entries": [
+  {
+   "utc": "2026-10-05T05:20:53Z",
+   "url": "https://stat.gov.kz/",
+   "host": "stat.gov.kz",
+   "result": "blocked_403_connect",
+   "raw": "curl: (56) CONNECT tunnel failed, response 403 HTTP=000"
+  },
+  {
+   "utc": "2026-10-05T05:20:53Z",
+   "url": "https://www.gov.kz/",
+   "host": "www.gov.kz",
+   "result": "blocked_403_connect",
+   "raw": "curl: (56) CONNECT tunnel failed, response 403 HTTP=000"
+  },
+  {
+   "utc": "2026-10-05T05:20:53Z",
+   "url": "https://data.egov.kz/",
+   "host": "data.egov.kz",
+   "result": "blocked_403_connect",
+   "raw": "curl: (56) CONNECT tunnel failed, response 403 HTTP=000"
+  },
+  {
+   "utc": "2026-10-05T05:20:53Z",
+   "url": "https://taldau.stat.gov.kz/",
+   "host": "taldau.stat.gov.kz",
+   "result": "blocked_403_connect",
+   "raw": "curl: (56) CONNECT tunnel failed, response 403 HTTP=000"
+  },
+  {
+   "utc": "2026-10-05T05:20:54Z",
+   "url": "https://adilet.zan.kz/",
+   "host": "adilet.zan.kz",
+   "result": "blocked_403_connect",
+   "raw": "curl: (56) CONNECT tunnel failed, response 403 HTTP=000"
+  },
+  {
+   "utc": "2026-10-05T05:20:54Z",
+   "url": "https://www.kazhydromet.kz/",
+   "host": "www.kazhydromet.kz",
+   "result": "blocked_403_connect",
+   "raw": "curl: (56) CONNECT tunnel failed, response 403 HTTP=000"
+  },
+  {
+   "utc": "2026-10-05T05:20:54Z",
+   "url": "https://overpass-api.de/api/status",
+   "host": "overpass-api.de",
+   "result": "blocked_403_connect",
+   "raw": "curl: (56) CONNECT tunnel failed, response 403 HTTP=000"
+  },
+  {
+   "utc": "2026-10-05T05:20:54Z",
+   "url": "https://api.openstreetmap.org/api/0.6/capabilities",
+   "host": "api.openstreetmap.org",
+   "result": "blocked_403_connect",
+   "raw": "curl: (56) CONNECT tunnel failed, response 403 HTTP=000"
+  },
+  {
+   "utc": "2026-10-05T05:20:55Z",
+   "url": "https://nominatim.openstreetmap.org/status",
+   "host": "nominatim.openstreetmap.org",
+   "result": "blocked_403_connect",
+   "raw": "curl: (56) CONNECT tunnel failed, response 403 HTTP=000"
+  },
+  {
+   "utc": "2026-10-05T05:20:55Z",
+   "url": "https://download.geofabrik.de/asia/kazakhstan.html",
+   "host": "download.geofabrik.de",
+   "result": "blocked_403_connect",
+   "raw": "curl: (56) CONNECT tunnel failed, response 403 HTTP=000"
+  },
+  {
+   "utc": "2026-10-05T05:20:55Z",
+   "url": "https://raw.githubusercontent.com/",
+   "host": "raw.githubusercontent.com",
+   "result": "reachable_http_301",
+   "raw": "HTTP=301"
+  },
+  {
+   "utc": "2026-10-05T05:20:55Z",
+   "url": "https://codeload.github.com/",
+   "host": "codeload.github.com",
+   "result": "reachable_http_400",
+   "raw": "HTTP=400"
+  },
+  {
+   "utc": "2026-10-05T05:20:55Z",
+   "url": "https://zenodo.org/",
+   "host": "zenodo.org",
+   "result": "blocked_403_connect",
+   "raw": "curl: (56) CONNECT tunnel failed, response 403 HTTP=000"
+  },
+  {
+   "utc": "2026-10-05T05:20:56Z",
+   "url": "https://data.humdata.org/",
+   "host": "data.humdata.org",
+   "result": "blocked_403_connect",
+   "raw": "curl: (56) CONNECT tunnel failed, response 403 HTTP=000"
+  },
+  {
+   "utc": "2026-10-05T05:20:56Z",
+   "url": "https://www.geoboundaries.org/",
+   "host": "www.geoboundaries.org",
+   "result": "blocked_403_connect",
+   "raw": "curl: (56) CONNECT tunnel failed, response 403 HTTP=000"
+  },
+  {
+   "utc": "2026-10-05T05:21:48Z",
+   "url": "https://media.githubusercontent.com/",
+   "host": "media.githubusercontent.com",
+   "result": "reachable_http_302",
+   "raw": "HTTP=302"
+  },
+  {
+   "utc": "2026-10-05T05:21:48Z",
+   "url": "https://objects.githubusercontent.com/",
+   "host": "objects.githubusercontent.com",
+   "result": "reachable_http_404",
+   "raw": "HTTP=404"
+  },
+  {
+   "utc": "2026-10-05T05:21:49Z",
+   "url": "https://api.github.com/rate_limit",
+   "host": "api.github.com",
+   "result": "reachable_http_200",
+   "raw": "HTTP=200"
+  },
+  {
+   "utc": "2026-10-05T05:21:49Z",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/",
+   "host": "overturemaps-us-west-2.s3.us-west-2.amazonaws.com",
+   "result": "reachable_http_200",
+   "raw": "HTTP=200"
+  },
+  {
+   "utc": "2026-10-05T05:21:50Z",
+   "url": "https://huggingface.co/api/datasets?limit=1",
+   "host": "huggingface.co",
+   "result": "blocked_403_connect",
+   "raw": "curl: (56) CONNECT tunnel failed, response 403 HTTP=000"
+  },
+  {
+   "utc": "2026-10-05T05:21:50Z",
+   "url": "https://storage.googleapis.com/",
+   "host": "storage.googleapis.com",
+   "result": "reachable_http_400",
+   "raw": "HTTP=400"
+  },
+  {
+   "utc": "2026-10-05T05:21:50Z",
+   "url": "https://www.naturalearthdata.com/",
+   "host": "www.naturalearthdata.com",
+   "result": "blocked_403_connect",
+   "raw": "curl: (56) CONNECT tunnel failed, response 403 HTTP=000"
+  },
+  {
+   "utc": "2026-10-05T05:21:50Z",
+   "url": "https://api.worldbank.org/v2/country/KZ?format=json",
+   "host": "api.worldbank.org",
+   "result": "blocked_403_connect",
+   "raw": "curl: (56) CONNECT tunnel failed, response 403 HTTP=000"
+  },
+  {
+   "utc": "2026-10-05T05:21:50Z",
+   "url": "https://data.worldpop.org/",
+   "host": "data.worldpop.org",
+   "result": "blocked_403_connect",
+   "raw": "curl: (56) CONNECT tunnel failed, response 403 HTTP=000"
+  },
+  {
+   "utc": "2026-10-05T05:21:50Z",
+   "url": "https://ghsl.jrc.ec.europa.eu/",
+   "host": "ghsl.jrc.ec.europa.eu",
+   "result": "blocked_403_connect",
+   "raw": "curl: (56) CONNECT tunnel failed, response 403 HTTP=000"
+  },
+  {
+   "utc": "2026-10-05T05:21:51Z",
+   "url": "https://pypi.org/simple/pycountry/",
+   "host": "pypi.org",
+   "result": "reachable_http_200",
+   "raw": "HTTP=200"
+  },
+  {
+   "utc": "2026-10-05T05:21:51Z",
+   "url": "https://registry.npmjs.org/",
+   "host": "registry.npmjs.org",
+   "result": "reachable_http_200",
+   "raw": "HTTP=200"
+  },
+  {
+   "utc": "2026-10-05T05:27:35Z",
+   "url": "https://docs.overturemaps.org/attribution/",
+   "host": "docs.overturemaps.org",
+   "result": "blocked_403_connect",
+   "raw": "curl: (56) CONNECT tunnel failed, response 403 HTTP=000"
+  },
+  {
+   "utc": "2026-10-05T05:27:35Z",
+   "url": "https://overturemaps.org/",
+   "host": "overturemaps.org",
+   "result": "blocked_403_connect",
+   "raw": "curl: (56) CONNECT tunnel failed, response 403 HTTP=000"
+  }
+ ],
+ "summary": {
+  "blocked": [
+   "stat.gov.kz",
+   "www.gov.kz",
+   "data.egov.kz",
+   "taldau.stat.gov.kz",
+   "adilet.zan.kz",
+   "www.kazhydromet.kz",
+   "overpass-api.de",
+   "api.openstreetmap.org",
+   "nominatim.openstreetmap.org",
+   "download.geofabrik.de",
+   "zenodo.org",
+   "data.humdata.org",
+   "www.geoboundaries.org",
+   "huggingface.co",
+   "www.naturalearthdata.com",
+   "api.worldbank.org",
+   "data.worldpop.org",
+   "ghsl.jrc.ec.europa.eu",
+   "docs.overturemaps.org",
+   "overturemaps.org"
+  ],
+  "reachable": [
+   "raw.githubusercontent.com",
+   "codeload.github.com",
+   "media.githubusercontent.com",
+   "objects.githubusercontent.com",
+   "api.github.com",
+   "overturemaps-us-west-2.s3.us-west-2.amazonaws.com",
+   "storage.googleapis.com",
+   "pypi.org",
+   "registry.npmjs.org"
+  ]
+ }
+}

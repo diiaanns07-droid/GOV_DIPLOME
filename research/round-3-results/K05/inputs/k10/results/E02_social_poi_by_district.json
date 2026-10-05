@@ -1,0 +1,213 @@
+{
+ "experiment_id": "K10-E02",
+ "note": "Counts of Overture POIs, not official registries; completeness unknown.",
+ "results": [
+  {
+   "city": "shymkent",
+   "places_in_bbox": 2608,
+   "places_inside_city_polygon": 2553,
+   "places_outside_city_polygon": 55,
+   "places_in_city_but_outside_districts": 0,
+   "same_name_same_~100m_cell_repeats": 1,
+   "counts_by_threshold": {
+    "confidence>=0.0": {
+     "Абай ауданы": {
+      "hospital": 9,
+      "school": 16,
+      "pharmacy": 5,
+      "college_university": 3,
+      "outpatient_clinic": 6,
+      "government_office": 3,
+      "preschool": 2
+     },
+     "Еңбекші ауданы": {
+      "school": 18,
+      "government_office": 4,
+      "preschool": 3,
+      "outpatient_clinic": 19,
+      "hospital": 13,
+      "pharmacy": 4,
+      "college_university": 2
+     },
+     "Қаратау ауданы": {
+      "school": 12,
+      "college_university": 2,
+      "pharmacy": 3,
+      "outpatient_clinic": 6,
+      "government_office": 3,
+      "preschool": 1,
+      "hospital": 5
+     },
+     "Әл-Фараби ауданы": {
+      "hospital": 11,
+      "preschool": 1,
+      "school": 33,
+      "college_university": 21,
+      "outpatient_clinic": 30,
+      "pharmacy": 6,
+      "government_office": 3
+     }
+    },
+    "confidence>=0.5": {
+     "Абай ауданы": {
+      "hospital": 8,
+      "school": 11,
+      "pharmacy": 4,
+      "government_office": 3,
+      "outpatient_clinic": 3,
+      "preschool": 2,
+      "college_university": 2
+     },
+     "Еңбекші ауданы": {
+      "school": 14,
+      "preschool": 3,
+      "hospital": 11,
+      "outpatient_clinic": 12,
+      "pharmacy": 4,
+      "college_university": 2
+     },
+     "Қаратау ауданы": {
+      "school": 9,
+      "pharmacy": 3,
+      "college_university": 1,
+      "outpatient_clinic": 4,
+      "preschool": 1,
+      "government_office": 2,
+      "hospital": 4
+     },
+     "Әл-Фараби ауданы": {
+      "hospital": 10,
+      "preschool": 1,
+      "school": 22,
+      "college_university": 15,
+      "outpatient_clinic": 12,
+      "pharmacy": 6,
+      "government_office": 1
+     }
+    }
+   }
+  },
+  {
+   "city": "astana",
+   "places_in_bbox": 8815,
+   "places_inside_city_polygon": 8481,
+   "places_outside_city_polygon": 334,
+   "places_in_city_but_outside_districts": 0,
+   "same_name_same_~100m_cell_repeats": 13,
+   "counts_by_threshold": {
+    "confidence>=0.0": {
+     "Алматы ауданы": {
+      "hospital": 23,
+      "school": 36,
+      "preschool": 12,
+      "pharmacy": 6,
+      "outpatient_clinic": 22,
+      "college_university": 18,
+      "government_office": 6
+     },
+     "Байқоңыр ауданы": {
+      "preschool": 6,
+      "school": 12,
+      "pharmacy": 4,
+      "government_office": 11,
+      "college_university": 14,
+      "outpatient_clinic": 27,
+      "hospital": 9
+     },
+     "Есіл ауданы": {
+      "pharmacy": 10,
+      "outpatient_clinic": 63,
+      "school": 35,
+      "government_office": 48,
+      "preschool": 12,
+      "college_university": 17,
+      "hospital": 26
+     },
+     "Нұра ауданы": {
+      "hospital": 21,
+      "outpatient_clinic": 31,
+      "college_university": 15,
+      "school": 28,
+      "government_office": 16,
+      "preschool": 12,
+      "pharmacy": 4
+     },
+     "Сарайшық ауданы": {
+      "outpatient_clinic": 9,
+      "hospital": 6,
+      "government_office": 4,
+      "pharmacy": 2,
+      "preschool": 2,
+      "school": 4,
+      "college_university": 6
+     },
+     "Сарыарқа ауданы": {
+      "preschool": 10,
+      "college_university": 22,
+      "outpatient_clinic": 36,
+      "pharmacy": 8,
+      "hospital": 25,
+      "government_office": 34,
+      "school": 24
+     }
+    },
+    "confidence>=0.5": {
+     "Алматы ауданы": {
+      "hospital": 22,
+      "school": 32,
+      "preschool": 9,
+      "pharmacy": 4,
+      "outpatient_clinic": 16,
+      "college_university": 11,
+      "government_office": 6
+     },
+     "Байқоңыр ауданы": {
+      "preschool": 3,
+      "school": 10,
+      "pharmacy": 2,
+      "college_university": 12,
+      "outpatient_clinic": 15,
+      "hospital": 5,
+      "government_office": 8
+     },
+     "Есіл ауданы": {
+      "pharmacy": 8,
+      "school": 26,
+      "government_office": 38,
+      "preschool": 11,
+      "college_university": 12,
+      "hospital": 22,
+      "outpatient_clinic": 38
+     },
+     "Нұра ауданы": {
+      "hospital": 14,
+      "outpatient_clinic": 24,
+      "school": 26,
+      "government_office": 13,
+      "preschool": 7,
+      "pharmacy": 4,
+      "college_university": 13
+     },
+     "Сарайшық ауданы": {
+      "outpatient_clinic": 6,
+      "hospital": 5,
+      "government_office": 3,
+      "pharmacy": 2,
+      "preschool": 2,
+      "college_university": 2,
+      "school": 1
+     },
+     "Сарыарқа ауданы": {
+      "college_university": 13,
+      "pharmacy": 8,
+      "hospital": 21,
+      "government_office": 27,
+      "preschool": 8,
+      "school": 19,
+      "outpatient_clinic": 21
+     }
+    }
+   }
+  }
+ ]
+}

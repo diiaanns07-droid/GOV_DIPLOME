@@ -1,0 +1,46 @@
+--- a/fetch_real_context.py
++++ b/fetch_real_context.py
+@@ -343,7 +343,7 @@
+ 
+ def make_meta(status: str, districts_source: str, **extra) -> dict:
+     meta = {
+-        "status": status,  # "ok" или "unavailable" (тогда нули в real_context.json = «нет данных»)
++        "status": status,  # "ok" или "unavailable" (тогда null в real_context.json = «нет данных»)
+         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+         "source": "OpenStreetMap через Overpass API",
+         "attribution": "© OpenStreetMap contributors (ODbL)",
+@@ -360,16 +360,26 @@
+ 
+ 
+ def handle_failure(reason: str, districts_source: str) -> int:
+-    """Сеть/Overpass недоступны: старые данные не трогаем; если их нет — пишем
+-    заглушку с нулями и статусом unavailable, чтобы приложение не падало."""
++    """Сеть/Overpass недоступны: старые данные не трогаем, но записываем в meta
++    неудачную попытку; если данных нет — пишем null («нет данных»), не 0."""
++    attempt = {"at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
++               "status": "failed", "error": reason, "districts_source": districts_source}
+     if OUT_PATH.exists():
+-        print(f"[!] Оставляю предыдущий {OUT_PATH.relative_to(ROOT)} без изменений.")
++        try:
++            with open(META_PATH, encoding="utf-8") as f:
++                meta = json.load(f)
++        except (OSError, ValueError):
++            meta = {"status": "unknown", "warning": "meta предыдущего запуска не прочитана"}
++        meta["last_attempt"] = attempt
++        write_json(META_PATH, meta)
++        print(f"[!] Оставляю предыдущий {OUT_PATH.relative_to(ROOT)} без изменений; "
++              f"неудачная попытка записана в {META_PATH.relative_to(ROOT)}.")
+         return 1
+-    zeros = {did: {cat: 0 for cat in CATEGORIES} for did in DISTRICT_IDS}
+-    write_json(OUT_PATH, zeros)
+-    write_json(META_PATH, make_meta("unavailable", districts_source, error=reason))
+-    print(f"[!] Записана заглушка с нулями: {OUT_PATH.relative_to(ROOT)}")
+-    print("    В meta status='unavailable' — не показывайте эти нули как реальные данные.")
++    missing = {did: {cat: None for cat in CATEGORIES} for did in DISTRICT_IDS}
++    write_json(OUT_PATH, missing)
++    write_json(META_PATH, make_meta("unavailable", districts_source, error=reason,
++                                    last_attempt=attempt))
++    print(f"[!] Данных нет, записан null: {OUT_PATH.relative_to(ROOT)}")
+     return 1
+ 
+ 

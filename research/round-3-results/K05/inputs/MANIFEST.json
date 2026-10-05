@@ -1,0 +1,96 @@
+{
+ "created_by": "K05 round-3",
+ "copied_with": "git show <sha>:<path> > file (bytes verified by git hash-object == blob id)",
+ "files": [
+  {
+   "local": "inputs/k10/access_log.json",
+   "source_branch": "claude/save-work-handoff-j7pc05",
+   "source_sha": "e91898d596164bcf6e853b921a49f82126074a35",
+   "source_path": "research/next-round/K10/access_log.json",
+   "git_blob": "9ab33c33164a6d04eff2d84044f52237e7d4d596",
+   "sha256": "e58b3488a2f83e03dea683d619a56b3db3c157841b1ef77791f74a2e9571d3ad",
+   "bytes": 7282
+  },
+  {
+   "local": "inputs/k10/provenance/astana_places.provenance.json",
+   "source_branch": "claude/save-work-handoff-j7pc05",
+   "source_sha": "e91898d596164bcf6e853b921a49f82126074a35",
+   "source_path": "research/next-round/K10/provenance/astana_places.provenance.json",
+   "git_blob": "18b077560fb73b0906122ffe38828b7101a54ab9",
+   "sha256": "830c00b06a6f43d2c451dc71e0dcc655ca7e815b0b5828de63bcc3d4961b631e",
+   "bytes": 4077
+  },
+  {
+   "local": "inputs/k10/provenance/raw_extracts.sha256",
+   "source_branch": "claude/save-work-handoff-j7pc05",
+   "source_sha": "e91898d596164bcf6e853b921a49f82126074a35",
+   "source_path": "research/next-round/K10/provenance/raw_extracts.sha256",
+   "git_blob": "483011d335276e8d02ea719a54fd767d289eb7d5",
+   "sha256": "64826e3addff21153b9fd7cde1a624cbb0a0985b5cc5b03f6f62981b02ee4a77",
+   "bytes": 538
+  },
+  {
+   "local": "inputs/k10/provenance/shymkent_places.provenance.json",
+   "source_branch": "claude/save-work-handoff-j7pc05",
+   "source_sha": "e91898d596164bcf6e853b921a49f82126074a35",
+   "source_path": "research/next-round/K10/provenance/shymkent_places.provenance.json",
+   "git_blob": "605d72392909ff755f4ef0258eac7ad521a48de4",
+   "sha256": "7a75d6c366d9d531240f1964f04e01e77d79dd66cf6f1a4afbefda15ad9c8fd1",
+   "bytes": 4079
+  },
+  {
+   "local": "inputs/k10/results/E02_social_poi_by_district.json",
+   "source_branch": "claude/save-work-handoff-j7pc05",
+   "source_sha": "e91898d596164bcf6e853b921a49f82126074a35",
+   "source_path": "research/next-round/K10/results/E02_social_poi_by_district.json",
+   "git_blob": "78eb319afa5d0aea1345e50980fa45f1a196141d",
+   "sha256": "ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad",
+   "bytes": 5167
+  },
+  {
+   "local": "inputs/k10/samples/astana_districts_overture.geojson",
+   "source_branch": "claude/save-work-handoff-j7pc05",
+   "source_sha": "e91898d596164bcf6e853b921a49f82126074a35",
+   "source_path": "research/next-round/K10/samples/astana_districts_overture.geojson",
+   "git_blob": "de42bd24c0fd1b9bcced2aeff169e3d335bc648e",
+   "sha256": "ab3a7f9852ecdd0d80b68c22ed73f1e10673c20c5091cf47c6454a030f1421ca",
+   "bytes": 99459
+  },
+  {
+   "local": "inputs/k10/samples/astana_places_social_sample.jsonl",
+   "source_branch": "claude/save-work-handoff-j7pc05",
+   "source_sha": "e91898d596164bcf6e853b921a49f82126074a35",
+   "source_path": "research/next-round/K10/samples/astana_places_social_sample.jsonl",
+   "git_blob": "8bb22de492a467332d9da71a6146ae36c44fc370",
+   "sha256": "1c8eda287392644c06fcde0c00a63c0e8a69f765fab98b888c7edd98d4fe90fe",
+   "bytes": 69137
+  },
+  {
+   "local": "inputs/k10/samples/shymkent_districts_overture.geojson",
+   "source_branch": "claude/save-work-handoff-j7pc05",
+   "source_sha": "e91898d596164bcf6e853b921a49f82126074a35",
+   "source_path": "research/next-round/K10/samples/shymkent_districts_overture.geojson",
+   "git_blob": "1c4701fb5022ba97ef08a1c9727e552d0d357cbd",
+   "sha256": "e19bbd7572a7a4f46dbb793df74c5d1cfab11d4e7a217fed7e525b4cece117c3",
+   "bytes": 159823
+  },
+  {
+   "local": "inputs/k10/samples/shymkent_places_social_sample.jsonl",
+   "source_branch": "claude/save-work-handoff-j7pc05",
+   "source_sha": "e91898d596164bcf6e853b921a49f82126074a35",
+   "source_path": "research/next-round/K10/samples/shymkent_places_social_sample.jsonl",
+   "git_blob": "dbb7358b7572d8efc02e251d889224d23afdb3ee",
+   "sha256": "a1b04aa4b1032286dc14105c71cb9578db15092e80d7cde1af5722026823e024",
+   "bytes": 62577
+  },
+  {
+   "local": "inputs/overture_release_index_2026-10-05.xml",
+   "source_url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/?list-type=2&prefix=release/&delimiter=/",
+   "retrieved_at": "2026-10-05T06:17:12Z",
+   "http_status": 200,
+   "sha256": "04132a2c1b39702c8fdd2638455daf0a1cd050624ed7f0cc0fb866a7e32e8172",
+   "bytes": 498,
+   "note": "S3 ListObjectsV2 of release prefixes; newest = 2026-09-23.1"
+  }
+ ]
+}
