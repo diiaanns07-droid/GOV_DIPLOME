@@ -116,7 +116,63 @@ const check = (name, ok, detail) => { results.push({ name, ok: !!ok, detail: ok 
   check("Astana: demo plan evaluated (clinics), 65 records untouched", s.ev && s.ev.rows.length === 10 && s.tbl === 65 && s.ev.metrics.cost === 100 + 285, JSON.stringify(s.ev && s.ev.metrics));
   await page.screenshot({ path: path.join(out, "p2_astana_demo.png") });
 
-  /*__STAGE2__*/
+  // ---------- stage 2: exact search, progress, cancel, stale, apply ----------
+  // grow the Astana demo to the maximum 16 candidates × 25 points (synthetic positions inside the square)
+  await page.evaluate(() => {
+    const U = CITY_PLAN_UI, b = CITY_EVIDENCE.cities.astana.bbox, g = (fx, fy) => [b[0] + (b[2] - b[0]) * fx, b[1] + (b[3] - b[1]) * fy];
+    U.setMode("cands"); for (let k = 0; k < 8; k++) U.place(g(0.1 + 0.11 * k, 0.5));
+    U.setMode("points"); for (let k = 0; k < 15; k++) U.place(g(0.05 + 0.06 * k, 0.1 + 0.05 * (k % 4)));
+    U.setMode("points");
+  });
+  s = await S();
+  check("editor at the maximum: 16 candidates × 25 points", s.ps.cands.length === 16 && s.ps.points.length === 25);
+  const tStart = Date.now();
+  await page.click("#plRun");
+  const sawProgress = await page.evaluate(() => !!document.getElementById("plProgress"));
+  await page.waitForFunction(() => CITY_PLAN_UI.opt.status !== "running", null, { timeout: 30000 });
+  const tRun = Date.now() - tStart;
+  const opt = await page.evaluate(() => {
+    const U = CITY_PLAN_UI, sc = U.scenario(), ref = CITY_PLAN.optimizePlans(U.ctxOf(CITY_APP.state.city), sc, { F: CITY_FACTS });
+    return { st: U.opt.status, r: U.opt.result, ref, table: !!document.getElementById("plCompare"), msg: document.getElementById("plOptMsg").textContent };
+  });
+  check(`search 16×25 in the browser finished (${tRun} ms incl. sensitivity), progress shown`, opt.st === "done" && opt.r.status === "optimal" && opt.r.evaluated === 65536 && sawProgress, opt.msg);
+  check("UI result = direct optimizePlans (same winners, Pareto, digest)", JSON.stringify(opt.r.objectives) === JSON.stringify(opt.ref.objectives) && JSON.stringify(opt.r.pareto) === JSON.stringify(opt.ref.pareto) && opt.r.problem_digest === opt.ref.problem_digest);
+  check("comparison table: manual + three objectives with 'Применить'", opt.table && (await page.$$("#plCompare button")).length === 3);
+  const manualBefore = (await S()).ps.selected;
+  check("search does not auto-apply (manual plan unchanged)", JSON.stringify(manualBefore) === JSON.stringify(["K1", "K6"]));
+  await page.click("#plApply_minimax");
+  s = await S();
+  check("apply: manual plan := minimax winner; result stays valid", JSON.stringify(s.ps.selected) === JSON.stringify(opt.r.objectives.minimax.ids) && (await page.evaluate(() => CITY_PLAN_UI.opt.status)) === "done");
+  await page.click("#plRestore");
+  check("restore: manual plan back", JSON.stringify((await S()).ps.selected) === JSON.stringify(["K1", "K6"]));
+  await page.screenshot({ path: path.join(out, "p3_astana_compare.png"), fullPage: true });
+  // changing a parameter invalidates the old answer
+  await page.fill("#plBudget", "450"); await page.press("#plBudget", "Enter");
+  s = await S();
+  check("budget change: old optimum marked stale, apply buttons gone", (await page.evaluate(() => CITY_PLAN_UI.opt.status)) === "stale" && !(await page.$("#plCompare")) && (await page.textContent("#plOptMsg")).includes("устарели"));
+  // cancel while running
+  const c1 = await page.evaluate(() => { const U = CITY_PLAN_UI; U.startSearch(); const running = U.opt.status === "running"; U.cancelSearch(); return { running, st: U.opt.status, res: U.opt.result }; });
+  await page.waitForTimeout(300);
+  const c2 = await page.evaluate(() => ({ st: CITY_PLAN_UI.opt.status, table: !!document.getElementById("plCompare") }));
+  check("cancel: status cancelled, no partial result shown later", c1.running && c1.st === "cancelled" && c1.res === null && c2.st === "cancelled" && !c2.table, JSON.stringify([c1, c2]));
+  // parameter change during a run: the late answer is discarded
+  await page.evaluate(() => { CITY_PLAN_UI.startSearch(); CITY_PLAN_UI.setNumber("Радиус", "600", 100, 5000, (v) => { CITY_PLAN_UI.state.radius = v; }); });
+  await page.waitForTimeout(500);
+  const st2 = await page.evaluate(() => ({ st: CITY_PLAN_UI.opt.status, res: CITY_PLAN_UI.opt.result }));
+  check("parameter change during the search: answer discarded (stale)", st2.st === "stale" && st2.res === null, JSON.stringify(st2));
+  // infeasible: required candidate costs more than the budget
+  check("long lists collapse (16 candidates): section closed by default, opens by click", !(await page.evaluate(() => document.getElementById("plSecCands").open)));
+  await page.click("#plSecCands > summary");
+  await page.selectOption("#plS_K7", "required");
+  await page.fill("#plBudget", "100"); await page.press("#plBudget", "Enter");
+  await page.click("#plRun");
+  await page.waitForFunction(() => CITY_PLAN_UI.opt.status !== "running");
+  const inf = await page.evaluate(() => ({ r: CITY_PLAN_UI.opt.result, msg: document.getElementById("plOptMsg").textContent }));
+  check("infeasible: required cost > budget reported with reason, constraint kept", inf.r.status === "infeasible" && inf.msg.includes("Нет допустимых") && inf.msg.includes("бюджета")
+    && (await S()).ps.required.includes("K7"), inf.msg);
+  await page.selectOption("#plS_K7", "free");
+  await page.fill("#plBudget", "600"); await page.press("#plBudget", "Enter");
+  /*__STAGE3__*/
 
   await page.setViewportSize({ width: 390, height: 844 });
   const sw = await page.evaluate(() => ({ sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth }));

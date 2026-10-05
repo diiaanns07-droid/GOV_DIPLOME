@@ -109,6 +109,41 @@ check("problem digest changes with budget / weight / cost / radius / required",
     PL.problemDigest({ ...v, control_points: v.control_points.map((p, k) => (k ? p : { ...p, weight: p.weight + 1 })) }, F),
     PL.problemDigest({ ...v, candidates: v.candidates.map((c, k) => (k ? c : { ...c, cost: c.cost + 1 })) }, F)]).size === 6);
 
-/*__OPT__*/
+// 4. exact optimizer = oracle (status, reasons, winners, Pareto, counts) and sensitivity
+const pick = (o) => o && { ids: o.ids, cost: o.cost, unknown_count: o.unknown_count, weighted_sum_mm: o.weighted_sum_mm, max_mm: o.max_mm, covered_weight: o.covered_weight };
+for (const c of exp.cases) {
+  const ctx = caseCtx(c), sc = caseScenario(c, ctx), e = c.expected.optimize;
+  const t0 = Date.now(), r = PL.optimizePlans(ctx, sc, { F }), ms = Date.now() - t0;
+  const ok = r.status === e.status && J(r.reasons.map((x) => x.code)) === J(e.reasons) && r.feasible_count === e.feasible_count && r.evaluated === e.evaluated
+    && J(r.objectives && Object.fromEntries(Object.entries(r.objectives).map(([k, v]) => [k, pick(v)]))) === J(e.objectives)
+    && J(r.pareto) === J(e.pareto);
+  check(`optimizePlans = oracle: ${c.name} (${r.evaluated} subsets, ${ms} ms)`, ok, J({ js: { s: r.status, o: r.objectives, p: r.pareto.length }, py: { s: e.status, o: e.objectives, p: e.pareto.length } }));
+  const rr = PL.optimizePlans(ctx, reversed(sc), { F });
+  check(`optimizer independent of input order: ${c.name}`, J(rr.objectives) === J(r.objectives) && J(rr.pareto) === J(r.pareto) && rr.problem_digest === r.problem_digest);
+  const sens = PL.sensitivity(ctx, sc, { F });
+  check(`sensitivity budgets = oracle: ${c.name}`, J(sens.map((x) => [x.budget, x.status, x.feasible_count, x.objectives && x.objectives.mean.ids])) ===
+    J(c.expected.sensitivity.map((x) => [x.budget, x.status, x.feasible_count, x.objectives && x.objectives.mean.ids])));
+}
+// winners may coincide; the result never claims three different plans
+const same = exp.cases.find((c) => c.name === "dominated_plans"), sr = PL.optimizePlans(caseCtx(same), caseScenario(same, caseCtx(same)), { F });
+check("identical winners allowed (mean = minimax = coverage)", J(sr.objectives.mean.ids) === J(sr.objectives.coverage.ids));
+check("Pareto excludes dominated plans (Dear alone not on the front)", !sr.pareto.some((p) => J(p.ids) === J(["Dear"])));
+const cvm = exp.cases.find((c) => c.name === "coverage_vs_mean"), cr = PL.optimizePlans(caseCtx(cvm), caseScenario(cvm, caseCtx(cvm)), { F });
+check("different objectives can pick different plans (coverage ≠ mean)", J(cr.objectives.coverage.ids) !== J(cr.objectives.mean.ids));
+// chunked run + cancel + progress
+const big = exp.cases.find((c) => c.name === "shymkent_school_16x25"), bctx = caseCtx(big), bsc = caseScenario(big, bctx);
+const s1 = PL.createSearch(bctx, bsc, { F, request_id: 7 });
+let steps = 0; while (!s1.step(4096)) steps++;
+check("chunked search (4096 per step) = one-shot result", J(s1.result()) === J(PL.optimizePlans(bctx, bsc, { F, request_id: 7 })) && steps === 15 && s1.examined === 65536);
+const s2 = PL.createSearch(bctx, bsc, { F }); s2.step(1000); s2.cancel();
+const cr2 = s2.result();
+check("cancelled search: status cancelled, no objectives, progress kept", cr2.status === "cancelled" && cr2.objectives === null && cr2.evaluated === 1000 && cr2.total_subsets === 65536);
+const s3 = PL.createSearch(bctx, bsc, { F }); s3.step(10);
+check("unfinished search is never 'optimal'", s3.result().status === "incomplete" && s3.result().objectives === null);
+check("problem_digest in the result binds it to the input", PL.optimizePlans(bctx, bsc, { F }).problem_digest === PL.problemDigest(bsc, F)
+  && PL.optimizePlans(bctx, { ...bsc, budget: bsc.budget - 1 }, { F }).problem_digest !== PL.problemDigest(bsc, F));
+const t0 = Date.now(); PL.optimizePlans(bctx, bsc, { F }); const tBig = Date.now() - t0;
+check(`16×25 full search under 2 s in Node (${tBig} ms)`, tBig < 2000);
+
 console.log(fails ? `${fails} FAILED` : "all plan checks passed");
 process.exit(fails ? 1 : 0);

@@ -193,8 +193,104 @@
       source_candidates: P.src.length, metric_version: METRIC };
   }
 
+
+  // ---------- exact search: bounded exhaustive enumeration (≤ 2^16 subsets), chunked, cancellable ----------
+  const cmpIds = (a, b) => { for (let i = 0; i < Math.min(a.length, b.length); i++) { const c = cmpStr(a[i], b[i]); if (c) return c; } return a.length - b.length; };
+  // keys (smaller is better); unknown max = Infinity inside the algorithm, null outside
+  const KEYS = {
+    mean: (e) => [e.unknown, e.wsum, e.max, e.cost],
+    minimax: (e) => [e.unknown, e.max, e.wsum, e.cost],
+    coverage: (e) => [-e.covered, e.unknown, e.wsum, e.max, e.cost],
+  };
+  function better(ka, ida, kb, idb) {  // true if (ka, ida) < (kb, idb)
+    for (let i = 0; i < ka.length; i++) if (ka[i] !== kb[i]) return ka[i] < kb[i];
+    return cmpIds(ida, idb) < 0;
+  }
+  function popcount(x) { let c = 0; while (x) { x &= x - 1; c++; } return c; }
+  /* createSearch(ctx, validatedScenario, {request_id}) -> { total, examined, step(n) -> done, cancel(), result() }.
+   * Constraints are checked before any enumeration; the result is "optimal" only after every subset was examined. */
+  function createSearch(ctx, sc, opts) {
+    const F = (opts && opts.F) || null;
+    const request_id = opts && opts.request_id !== undefined ? opts.request_id : null;
+    const P = precompute(ctx, sc), nP = P.pts.length, nC = P.cands.length;
+    const weights = P.pts.map((p) => p.weight), radiusMm = sc.coverage_radius_m * 1000;
+    const req = sc.required_ids.map((id) => P.candIndex.get(id)).sort((a, b) => a - b);
+    const exc = new Set(sc.excluded_ids.map((id) => P.candIndex.get(id)));
+    const free = []; for (let i = 0; i < nC; i++) if (!req.includes(i) && !exc.has(i)) free.push(i);
+    const reqCost = req.reduce((s, i) => s + P.cands[i].cost, 0);
+    const reasons = [];
+    if (req.length > sc.max_selected) reasons.push({ code: "required_exceeds_max_selected", text: `обязательных ${req.length} > максимума ${sc.max_selected}` });
+    if (reqCost > sc.budget) reasons.push({ code: "required_cost_exceeds_budget", text: `стоимость обязательных ${reqCost} > бюджета ${sc.budget} усл. ед.` });
+    const base = { problem_digest: F ? problemDigest(sc, F) : null, metric_version: METRIC, request_id, budget: sc.budget };
+    const total = reasons.length ? 0 : 2 ** free.length;
+    // start vector: baseline + required candidates (Infinity = unknown)
+    const start = new Float64Array(nP);
+    for (let j = 0; j < nP; j++) { let a = P.base[j] ? P.base[j].mm : Infinity; for (const i of req) a = Math.min(a, P.dist[i][j].mm); start[j] = a; }
+    const dist = free.map((i) => Float64Array.from(P.dist[i].map((d) => d.mm)));
+    const fcost = free.map((i) => P.cands[i].cost), slots = sc.max_selected - req.length;
+    const best = { mean: null, minimax: null, coverage: null };
+    const front = [];  // complete plans: [cost, wsum, mask]
+    let examined = 0, feasible = 0, cancelled = false, mask = 0;
+    const after = new Float64Array(nP);
+    const idsOf = (m) => { const ids = req.map((i) => P.cands[i].id); for (let k = 0; k < free.length; k++) if (m & (1 << k)) ids.push(P.cands[free[k]].id); return ids.sort(cmpStr); };
+    function evalMask(m) {
+      let cost = reqCost;
+      for (let k = 0; k < free.length; k++) if (m & (1 << k)) cost += fcost[k];
+      if (cost > sc.budget) return null;
+      after.set(start);
+      for (let k = 0; k < free.length; k++) if (m & (1 << k)) { const d = dist[k]; for (let j = 0; j < nP; j++) if (d[j] < after[j]) after[j] = d[j]; }
+      let unknown = 0, wsum = 0, max = 0, covered = 0;
+      for (let j = 0; j < nP; j++) { const a = after[j]; if (a === Infinity) { unknown++; continue; } wsum += weights[j] * a; if (a > max) max = a; if (a <= radiusMm) covered += weights[j]; }
+      return { mask: m, cost, unknown, wsum, max: unknown ? Infinity : max, covered };
+    }
+    function step(n) {
+      if (cancelled || reasons.length) return true;
+      const end = Math.min(total, mask + n);
+      for (; mask < end; mask++) {
+        examined++;
+        if (popcount(mask) > slots) continue;
+        const e = evalMask(mask);
+        if (!e) continue;
+        feasible++;
+        for (const name of ["mean", "minimax", "coverage"]) {
+          const k = KEYS[name](e), b = best[name];
+          if (b === null) { best[name] = { e, k, ids: null }; continue; }
+          let win = false, decided = false;
+          for (let i = 0; i < k.length; i++) if (k[i] !== b.k[i]) { win = k[i] < b.k[i]; decided = true; break; }
+          if (!decided) { if (!b.ids) b.ids = idsOf(b.e.mask); win = cmpIds(idsOf(mask), b.ids) < 0; }
+          if (win) best[name] = { e, k, ids: null };
+        }
+        if (e.unknown === 0) front.push([e.cost, e.wsum, mask]);
+      }
+      return mask >= total;
+    }
+    function result() {
+      if (reasons.length) return { ...base, status: "infeasible", reasons, objectives: null, pareto: [], evaluated: 0, total_subsets: 0, feasible_count: 0 };
+      if (cancelled || mask < total) return { ...base, status: cancelled ? "cancelled" : "incomplete", reasons: [], objectives: null, pareto: [], evaluated: examined, total_subsets: total, feasible_count: feasible };
+      const objectives = {};
+      for (const name of Object.keys(best)) {
+        const e = best[name].e;
+        objectives[name] = { ids: idsOf(e.mask), cost: e.cost, unknown_count: e.unknown, weighted_sum_mm: e.wsum, max_mm: e.unknown ? null : e.max, covered_weight: e.covered };
+      }
+      // Pareto (complete plans only): sort by cost, wsum, ids; keep strictly decreasing wsum -> non-dominated, equal pairs collapsed
+      const withIds = front.map(([c, w, m]) => [c, w, m, null]);
+      withIds.sort((a, b) => a[0] - b[0] || a[1] - b[1] || cmpIds(a[3] || (a[3] = idsOf(a[2])), b[3] || (b[3] = idsOf(b[2]))));
+      const pareto = []; let bestW = Infinity;
+      for (const [c, w, m] of withIds) if (w < bestW) { pareto.push({ ids: idsOf(m), cost: c, weighted_sum_mm: w }); bestW = w; }
+      return { ...base, status: "optimal", reasons: [], objectives, pareto, pareto_excluded_unknown: feasible - front.length,
+        evaluated: examined, total_subsets: total, feasible_count: feasible };
+    }
+    return { get total() { return total; }, get examined() { return examined; }, step, cancel: () => { cancelled = true; }, result, request_id };
+  }
+  function optimizePlans(ctx, sc, opts) { const s = createSearch(ctx, sc, opts); while (!s.step(1 << 20)); return s.result(); }
+  // Budgets [0, floor(B/2), B] without duplicates; everything else unchanged.
+  function sensitivity(ctx, sc, opts) {
+    const bs = [...new Set([0, Math.floor(sc.budget / 2), sc.budget])].sort((a, b) => a - b);
+    return bs.map((b) => { const r = optimizePlans(ctx, { ...sc, budget: b }, opts); return { budget: b, status: r.status, reasons: r.reasons, objectives: r.objectives, feasible_count: r.feasible_count }; });
+  }
+
   const api = { SCHEMA, METRIC, CATEGORIES, LIMITS, PlanError, mmOf, sourceSnapshot, makeContext, validatePlanScenario, problemDigest, scenarioDigest,
-    precompute, feasibility, metricsOf, evaluatePlan };
+    precompute, feasibility, metricsOf, evaluatePlan, createSearch, optimizePlans, sensitivity };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else root.CITY_PLAN = api;
 })(typeof window !== "undefined" ? window : globalThis);
