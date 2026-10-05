@@ -13,7 +13,8 @@
   const METRIC = "haversine-mm-v1";
   const CATEGORIES = { school: "Школа", outpatient_clinic: "Поликлиника" };
   const LIMITS = { points: 25, candidates: 16, max_selected: 5, weight: [1, 100], cost: [1, 1000000], budget: [0, 1000000], radius: [100, 5000], id: 64 };
-  const ID_RE = /^[A-Za-z0-9_.-]{1,64}$/;
+  const ID_CHARS = /^[\p{L}\p{N}_.-]+$/u;  // letters of any script, digits, _ . -; NFC; 1..64 code points
+  const ID_RE = { test: (v) => typeof v === "string" && v.normalize("NFC") === v && [...v].length >= 1 && [...v].length <= 64 && ID_CHARS.test(v) };
   const TOP_KEYS = ["schema_version", "city_id", "source_snapshot", "category", "control_points", "candidates", "budget", "max_selected",
     "coverage_radius_m", "required_ids", "excluded_ids", "selected_ids"];
 
@@ -45,7 +46,7 @@
     const ks = Object.keys(o).sort().join(","), want = keys.slice().sort().join(",");
     if (ks !== want) fail("bad_shape", `${what}: поля {${ks.slice(0, 120)}} ≠ {${want}}`);
   }
-  function checkId(v, what) { if (typeof v !== "string" || !ID_RE.test(v)) fail("bad_id", `${what}: ${JSON.stringify(v).slice(0, 40)} (A–Z, 0–9, _ . -, до 64 символов)`); return v; }
+  function checkId(v, what) { if (typeof v !== "string" || !ID_RE.test(v)) fail("bad_id", `${what}: ${JSON.stringify(v).slice(0, 40)} (буквы, цифры, _ . -, NFC, до 64 символов)`); return v; }
   function checkCoord(p, what, bb) {
     if (typeof p.lon !== "number" || typeof p.lat !== "number" || !Number.isFinite(p.lon) || !Number.isFinite(p.lat) || Math.abs(p.lon) > 180 || Math.abs(p.lat) > 90)
       fail("bad_coord", `${what}: координаты не конечны или вне диапазона`);
@@ -310,7 +311,7 @@
    * the caller applies the returned scenario only on success (atomic). derived_results, if present, must equal a recomputation. */
   function importPlanScenario(text, ctxFor, F) {
     let obj;
-    try { obj = X.parseStrict(text); } catch (e) { throw new PlanError(e.code === "too_large" ? "too_large" : "bad_json", e.detail || e.message); }
+    try { obj = X.parseStrict(text); } catch (e) { throw new PlanError(e.code === "too_large" || e.code === "bad_encoding" ? e.code : "bad_json", e.detail || e.message); }
     if (!obj || typeof obj !== "object" || Array.isArray(obj)) fail("bad_shape", "ожидается объект");
     if (obj.schema_version === X.SCHEMA) fail("wrong_version", "это сценарий city-whatif-v1 (один объект) — загрузите его в режиме «Один объект (v1)»; перенос в v2 без ваших стоимостей и бюджета не делается");
     if (obj.schema_version !== SCHEMA) fail("bad_version", `версия ${String(obj.schema_version).slice(0, 40)} не поддерживается`);

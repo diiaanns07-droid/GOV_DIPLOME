@@ -80,6 +80,7 @@ rej("Infinity", txt.replace(/"lat": [0-9.]+/, '"lat": Infinity'), "bad_json");
 rej("1e999", txt.replace(/"lat": [0-9.]+/, '"lat": 1e999'), "bad_json");
 rej("-1e999", txt.replace(/"lon": [0-9.]+/, '"lon": -1e999'), "bad_json");
 rej("duplicate key", txt.replace('"category": "school",', '"category": "school", "category": "outpatient_clinic",'), "bad_json");
+rej("non-UTF-8 file (replacement characters)", txt.replace('"P1"', '"P\ufffd1"'), "bad_encoding");
 rej("trailing data", txt + "{}", "bad_json");
 rej("oversize (>256 KiB)", txt.replace('"schema_version"', `"pad": "${"x".repeat(X.MAX_BYTES)}", "schema_version"`), "too_large");
 rej("unknown version", (o) => { o.schema_version = "city-whatif-v2"; }, "bad_version");
@@ -92,6 +93,11 @@ rej("two projects (array)", (o) => { o.proposed_object = [o.proposed_object, { .
 rej("unknown field", (o) => { o.url = "https://example.com/x.js"; }, "unknown_field");
 rej("extra field in point", (o) => { o.control_points[0].href = "javascript:alert(1)"; }, "bad_shape");
 rej("ID with code", (o) => { o.control_points[0].id = "<img src=x onerror=1>"; }, "bad_id");
+check("Kazakh / Cyrillic IDs accepted (K11 r7 fixtures)", code(() => X.importScenario(JSON.stringify({ ...sc(), control_points: [{ id: "нүкте-1", lon: cx, lat: cy }],
+  proposed_object: { id: "жаңа-мектеп", lon: cx, lat: cy, category: "school", kind: "hypothetical" } }), D, F)) === "accepted");
+rej("NFD ID (visually equal, different code points)", (o) => { o.control_points[0].id = "дом-й".normalize("NFD"); }, "bad_id");
+rej("ID with a space", (o) => { o.control_points[0].id = "a b"; }, "bad_id");
+rej("ID with a URL", (o) => { o.control_points[0].id = "https://x"; }, "bad_id");
 rej("long ID", (o) => { o.control_points[0].id = "x".repeat(33); }, "bad_id");
 rej("point outside bbox", (o) => { o.control_points[0].lon = bb[2] + 0.01; }, "outside_bbox");
 rej("project outside bbox", (o) => { o.proposed_object.lat = bb[1] - 0.01; }, "outside_bbox");

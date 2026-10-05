@@ -80,6 +80,8 @@ rej("duplicate point id", (o) => { o.control_points[1].id = o.control_points[0].
 rej("duplicate candidate id", (o) => { o.candidates[1].id = o.candidates[0].id; }, "duplicate_id");
 rej("id longer than 64", (o) => { o.candidates[0].id = "x".repeat(65); }, "bad_id");
 rej("id with markup", (o) => { o.control_points[0].id = "<b>x</b>"; }, "bad_id");
+check("Kazakh candidate / point IDs accepted", code(() => { const o = base(); o.candidates[0].id = "жаңа-мектеп"; o.control_points[0].id = "нүкте-1"; o.selected_ids = ["жаңа-мектеп"]; return PL.validatePlanScenario(o, sh); }) === "accepted");
+rej("NFD id", (o) => { o.control_points[0].id = "дом-й".normalize("NFD"); }, "bad_id");
 rej("weight 0", (o) => { o.control_points[0].weight = 0; }, "bad_weight");
 rej("weight 1.5", (o) => { o.control_points[0].weight = 1.5; }, "bad_weight");
 rej("weight 101", (o) => { o.control_points[0].weight = 101; }, "bad_weight");

@@ -11,7 +11,11 @@
   const FORMULA = "haversine:R=6371008.8";
   const CATEGORIES = { school: "Школа", outpatient_clinic: "Поликлиника" };
   const CITIES = ["shymkent", "astana"];
-  const MAX_POINTS = 10, MAX_BYTES = 256 * 1024, ID_RE = /^[A-Za-z0-9_-]{1,32}$/;
+  const MAX_POINTS = 10, MAX_BYTES = 256 * 1024;
+  // IDs: letters of any script (Kazakh / Russian / Latin), digits, "_" and "-"; NFC; 1..32 code points (round 8: was ASCII-only,
+  // which rejected Kazakh IDs found by independent K11 r7 fixtures). Markup, URLs, spaces and punctuation stay forbidden.
+  const ID_CHARS = /^[\p{L}\p{N}_-]+$/u;
+  const ID_RE = { test: (v) => typeof v === "string" && v.normalize("NFC") === v && [...v].length >= 1 && [...v].length <= 32 && ID_CHARS.test(v) };
   const TOP_KEYS = new Set(["schema_version", "city_id", "source_snapshot", "category", "control_points", "proposed_object", "derived_results"]);
 
   class WhatIfError extends Error { constructor(code, detail) { super(code + ": " + detail); this.code = code; this.detail = detail; } }
@@ -72,6 +76,8 @@
     let bytes = 0;
     for (const ch of text) { const c = ch.codePointAt(0); bytes += c < 0x80 ? 1 : c < 0x800 ? 2 : c < 0x10000 ? 3 : 4; }
     if (bytes > MAX_BYTES) throw new WhatIfError("too_large", `${bytes} байт > ${MAX_BYTES}`);
+    // a file in another encoding (e.g. Windows cp1251) decoded as UTF-8 contains U+FFFD replacement characters
+    if (text.includes("\ufffd")) throw new WhatIfError("bad_encoding", "файл не в кодировке UTF-8 (сохраните его как UTF-8)");
     let i = text.charCodeAt(0) === 0xfeff ? 1 : 0;  // a UTF-8 BOM (Windows editors) is skipped, nothing else is
     const err = (m) => { throw new WhatIfError("bad_json", `${m} (позиция ${i})`); };
     const ws = () => { while (i < text.length && " \t\n\r".includes(text[i])) i++; };
@@ -157,7 +163,7 @@
       if (!p || typeof p !== "object" || Array.isArray(p)) fail("bad_shape", `${what}: ожидается объект`);
       const ks = Object.keys(p).sort().join(",");
       if (ks !== keys.slice().sort().join(",")) fail("bad_shape", `${what}: поля ${ks} ≠ ${keys.join(",")}`);
-      if (typeof p.id !== "string" || !ID_RE.test(p.id)) fail("bad_id", `${what}: id ${JSON.stringify(p.id).slice(0, 40)} (A–Z, 0–9, _-, до 32 символов)`);
+      if (typeof p.id !== "string" || !ID_RE.test(p.id)) fail("bad_id", `${what}: id ${JSON.stringify(p.id).slice(0, 40)} (буквы, цифры, _ -, NFC, до 32 символов)`);
       if (ids.has(p.id)) fail("duplicate_id", p.id);
       ids.add(p.id);
       if (!finite(p.lon) || !finite(p.lat) || Math.abs(p.lon) > 180 || Math.abs(p.lat) > 90) fail("bad_coord", `${p.id}: координаты не конечны или вне диапазона`);
