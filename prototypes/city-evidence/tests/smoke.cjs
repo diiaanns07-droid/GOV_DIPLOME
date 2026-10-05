@@ -29,7 +29,7 @@ const check = (name, ok, detail) => { results.push({ name, ok: !!ok, detail: ok 
   await page.screenshot({ path: path.join(out, "01_shymkent.png") });
 
   // ---- QA: colocated group of 10, labelled not removed ----
-  const qa = await page.evaluate(() => ({ ring: [...document.querySelectorAll("#map text")].some((t) => t.textContent.startsWith("10 зап. в одной точке")),
+  const qa = await page.evaluate(() => ({ ring: [...document.querySelectorAll("#map text")].some((t) => t.textContent.startsWith("×10 в одной точке")),
     flagged: [...document.querySelectorAll("#tbl tr")].filter((r) => r.textContent.startsWith("⚠")).length }));
   check("Shymkent colocated group of 10 drawn on the map; flagged rows in table", qa.ring && qa.flagged >= 14, JSON.stringify(qa));
   const colocId = await page.evaluate(() => CITY_OBS.cities.shymkent.qa.colocated.find((g) => g.ids.length === 10).ids[0]);
@@ -37,7 +37,7 @@ const check = (name, ok, detail) => { results.push({ name, ok: !!ok, detail: ok 
   const card = await page.textContent("#selBody");
   const others = await page.$$eval("#selBody ul ul button", (b) => b.length);
   check("object card lists the 9 other records at the same coordinate, marks district as uncertain",
-    card.includes("координата совпадает ещё с 9 записями") && others === 9 && card.includes("по координате под вопросом"), card.slice(0, 200));
+    card.includes("координата совпадает ещё с 9 записями") && others === 9 && card.includes("координата под вопросом"), card.slice(0, 200));
   await page.screenshot({ path: path.join(out, "02_colocated_card.png") });
   const doubtId = await page.evaluate(() => Object.keys(CITY_OBS.cities.shymkent.qa.category_doubt)[0]);
   await page.evaluate((id) => CITY_APP.selectPlace(id), doubtId);

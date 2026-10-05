@@ -224,7 +224,8 @@
       const [cx, cy] = toScreen(grp.lon, grp.lat);
       gPoint.append(sv("circle", { cx, cy, r: 18, fill: "none", stroke: "var(--warning)", "stroke-width": 2, "stroke-dasharray": "3 2" }));
       const t = sv("text", { x: cx + 20, y: cy - 12, "font-size": 11, fill: "var(--ink)" });
-      t.textContent = `${n} зап. в одной точке — координата под вопросом`; gLabel.append(t);
+      t.textContent = `×${n} в одной точке`; gLabel.append(t);
+      const tt = sv("title"); tt.textContent = `${n} записей с одинаковыми координатами — точное место не проверено`; t.append(tt);
     }
     for (const p of places) {
       const [sx, sy] = toScreen(p.lon, p.lat);

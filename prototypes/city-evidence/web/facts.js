@@ -241,7 +241,7 @@
     if (rec.status === "matched") {
       const n = ev.district_names[rec.district] || {};
       const name = n.kk && n.ru && n.kk !== n.ru ? `${n.ru} / ${n.kk}` : (n.ru || n.kk || rec.district);
-      return { text: name, badge: coloc ? "по координате под вопросом (COLOCATED)" : "K03 v2 · OSM, не официально" };
+      return { text: name, badge: coloc ? "координата под вопросом" : "K03 v2 · OSM, не официально" };
     }
     return { text: `не присвоен (${STATUS_RU[rec.status] || rec.status})`, badge: rec.candidates.length ? "кандидаты: " + rec.candidates.join(", ") : "K03 v2" };
   }
