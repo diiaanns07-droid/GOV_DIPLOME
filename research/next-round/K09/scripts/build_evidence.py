@@ -92,13 +92,95 @@ facts = [
  fact("K09-F010", "В SALib CITATION.cff с DOI JOSS 10.21105/joss.00097 указаны три автора (Iwanaga, Usher, Herman), а в исходнике статьи paper/paper.md и в CITATIONS.rst — два (Herman, Usher).", "observed", [{"source_id": "K09-S004", "locator": "CITATION.cff стр. 3–15; paper/paper.md стр. 11–17; CITATIONS.rst стр. 10–12"}], "high", "Для цитирования статьи использовать двух авторов."),
 ]
 
+
+# ---- Этап 2: воспроизведение пилотов (числа читаются из repro/*.json, не переписываются вручную)
+REPRO = OUT.parent / "repro"
+ROOT = OUT.parents[3]
+def jl(p):
+    return json.loads(Path(p).read_text(encoding="utf-8"))
+def same_json(a, b, drop=()):
+    A, B = jl(a), jl(b)
+    for k in drop:
+        A.pop(k, None); B.pop(k, None)
+    return A == B
+A13D = ROOT / "research/govtech-results/13_architecture_ai_thesis/extracted_files__21_"
+ASTD = ROOT / "research/astana-results/13_architecture_ai_thesis/extracted_files__34_"
+sources += [
+    {"source_id": "K09-S012", "title": "Репозиторий GOV_DIPLOME: код движка/советника (идентичен 834a25f) и data/city_data.json",
+     "publisher": "diiaanns07-droid/GOV_DIPLOME", "url": "https://github.com/diiaanns07-droid/GOV_DIPLOME",
+     "published_at": None, "accessed_at": ACC, "source_type": "code_repository", "access_status": "local_run",
+     "notes": "git diff 834a25f..HEAD по engine/agent/data/ui/web/tests пуст; city_data.json sha256 403478c1…"},
+    {"source_id": "K09-S013", "title": "Скрипты и результаты пилотов A13 (E4) и AST-A13 (E5, E6)", "publisher": "A13 / AST-A13",
+     "url": None, "published_at": "2026-10-04/05", "accessed_at": ACC, "source_type": "agent_experiment",
+     "access_status": "read_and_rerun", "notes": "Код прочитан до запуска: только чтение data/*.json и вызовы engine/agent, без сети и записи файлов."},
+]
+e6 = jl(REPRO / "E6_stdout.json")
+e6b_eq = jl(REPRO / "E6b_n60_seeds1-3_equivalence.json")["result"]
+e8 = jl(REPRO / "E8_toponym_stems.json")
+facts += [
+ fact("K09-F011", "check.py: все 12 сверок с эталонами пройдены; pytest: 112 passed (Python 3.12.3, numpy 2.4.4).", "observed",
+      [{"source_id": "K09-S012", "locator": "python check.py; python -m pytest -q"}], "high", "Подтверждает A13-E1 на той же версии кода; время прогона другое."),
+ fact("K09-F012", "Пилот A13-E4 (поручение → ограничения, словарный парсер) воспроизведён: stdout побайтно равен constraints_eval_result.json.", "observed",
+      [{"source_id": "K09-S013", "locator": "repro/E4_stdout.json vs constraints_eval_result.json"}], "high",
+      "Набор 12 поручений написан автором парсера (synthetic); регрет в E4 не вычисляется.", same_json(REPRO / "E4_stdout.json", A13D / "constraints_eval_result.json")),
+ fact("K09-F013", "Пилот AST-A13-E5 (kk/ru числительные) воспроизведён побайтно: kk — 4 утечки из 6 числовых предложений, ru — 1 из 4.", "observed",
+      [{"source_id": "K09-S013", "locator": "repro/E5_stdout.json"}], "high",
+      "12 предложений написаны автором теста (synthetic); долю утечек на реальных текстах не оценивает.", same_json(REPRO / "E5_stdout.json", ASTD / "kk_numeral_filter_result.json")),
+ fact("K09-F014", "Пилот AST-A13-E6 воспроизведён: все поля, кроме времени, равны rank_sensitivity_result.json.", "observed",
+      [{"source_id": "K09-S013", "locator": "repro/E6_stdout.json"}], "high", "Учебная модель (synthetic), диапазоны возмущений — допущение.",
+      same_json(REPRO / "E6_stdout.json", ASTD / "rank_sensitivity_result.json", drop=("seconds",))),
+ fact("K09-F015", "95% ДИ Уилсона для доли «номинальный топ-1 остаётся топ-1» в E6 (n=60): " +
+      "; ".join(f"σ=a={r['sigma_w']}: {r['base_top1_still_top1']:.3f} [{r['base_top1_still_top1_wilson95'][0]}, {r['base_top1_still_top1_wilson95'][1]}]" for r in e6b_eq["runs"]),
+      "derived", [{"source_id": "K09-S013", "locator": "repro/E6b_n60_seeds1-3_equivalence.json"}], "high", "Свойство учебной модели.",
+      None, "share", "Wilson score interval, z=1.96"),
+ fact("K09-F016", "Базовый парсер A13-E4 (подстроки DIST) распознаёт районы Астаны: ru-названия OSM — " +
+      f"{e8['summary']['name:ru']['recognised_correctly']} из {e8['summary']['name:ru']['districts']} (Байконур даёт ещё и nura); " +
+      f"kk-названия OSM (name) — {e8['summary']['name']['recognised_correctly']} из {e8['summary']['name']['districts']}.",
+      "observed", [{"source_id": "K09-S012", "locator": "data/astana_districts.geojson osm_names"}, {"source_id": "K09-S013", "locator": "constraints_eval.py DIST; repro/E8_toponym_stems.json"}],
+      "high", "Свойство тестового парсера, не города; Шымкент не проверялся (нет наблюдаемых названий районов)."),
+]
+n300 = REPRO / "E6b_n300_seeds101-103.json"
+if n300.exists():
+    r3 = jl(n300)["result"]
+    facts.append(fact("K09-F017", "E6b (метод AST-A13-E6, n=300 на уровень, seeds 101–103): доля «номинальный топ-1 остаётся топ-1» = " +
+        "; ".join(f"σ=a={r['sigma_w']}: {r['base_top1_still_top1']:.3f} [{r['base_top1_still_top1_wilson95'][0]}, {r['base_top1_still_top1_wilson95'][1]}], разных топ-1 {r['distinct_top1']}, регрет медиана/p95 {r['regret_median']}/{round(r['regret_p95'],3)}" for r in r3["runs"]),
+        "synthetic", [{"source_id": "K09-S013", "locator": "repro/E6b_n300_seeds101-103.json"}], "high",
+        "Учебная модель и допущенные диапазоны; не относится к реальным городам.", None, "share", "scripts/e6b_rank_sensitivity.py"))
+for _f in facts:
+    if _f['fact_id'] in ('K09-F012', 'K09-F013', 'K09-F014'):
+        _f['unit'] = 'identical_to_reported (bool)'
+opportunities = [
+ {"idea_id": "K09-T1", "title": "Поручение → валидируемые ограничения (ru/kk), привязка топонимов в двух городах",
+  "problem": "Словарный разбор не видит kk-орфографию и даёт ложные совпадения подстрок (F016)", "evidence_fact_ids": ["K09-F012", "K09-F016"],
+  "primary_user": "сотрудник, формулирующий условия сравнения вариантов", "user_task": "задать ограничения без формы",
+  "existing_solution": "словарный парсер A13-E4 / форма", "proposed_addition": "LLM + JSON Schema + валидатор движка против усиленного B2",
+  "required_dataset_ids": [], "ai_role": "разбор текста в схему; числа и решения считает код", "non_ai_baseline": "B1, B2 (не реализован)",
+  "success_metrics": ["доля нарушений gold", "регрет", "exact/slot-F1", "корректный отказ"], "feasibility_10_days": "харнесс и B2 — да; набор от людей — частично",
+  "blockers": ["нет официального перечня районов Шымкента", "нет каталога мер Шымкента", "нужны авторы поручений"],
+  "transfer_to_astana": "сравнимы типы ошибок, не Score", "next_action": "реализовать B2 и метрику регрета; собрать 30 пилотных поручений"},
+ {"idea_id": "K09-T2", "title": "Устойчивость рекомендации портфеля мер: топ-1 против правил выбора при неопределённости",
+  "problem": "Номинальный топ-1 часто меняется при возмущениях (F014, F015, F017 — synthetic)", "evidence_fact_ids": ["K09-F014", "K09-F015", "K09-F017"],
+  "primary_user": "аналитик сценариев", "user_task": "выбрать план при неопределённых эффектах", "existing_solution": "полный перебор, топ-1",
+  "proposed_addition": "правила max-E, minimax-regret, ε-множество с проверкой на отложенных выборках", "required_dataset_ids": [],
+  "ai_role": "не нужен", "non_ai_baseline": "номинальный топ-1", "success_metrics": ["регрет на held-out", "P(топ-1 не изменился)", "τ Кендалла"],
+  "feasibility_10_days": "да на учебной модели", "blockers": ["нет откалиброванных эффектов", "нет официальных долей населения"],
+  "transfer_to_astana": "только структурный вариант с synthetic-эффектами", "next_action": "design/held-out разбиение и SALib-выборка"},
+ {"idea_id": "K09-T3", "title": "Перенос OSM-процедуры индикатора обеспеченности объектами: Астана → Шымкент",
+  "problem": "Процедура fetch_real_context.py ни разу не дала данных; полнота OSM в городах неизвестна", "evidence_fact_ids": [],
+  "primary_user": "аналитик данных акимата / разработчик", "user_task": "понять, можно ли доверять OSM-слою", "existing_solution": "fetch_real_context.py (status unavailable)",
+  "proposed_addition": "сопоставление на уровне объектов с официальными перечнями, настройка на Астане, проверка на Шымкенте", "required_dataset_ids": [],
+  "ai_role": "не нужен", "non_ai_baseline": "B0 сырые теги; B1 текущая процедура", "success_metrics": ["полнота и точность на уровне объектов", "разница Шымкент − Астана с ДИ"],
+  "feasibility_10_days": "только при доступе к данным", "blockers": ["Overpass и госпорталы недоступны в облаке", "официальные перечни не получены", "границы Шымкента нет"],
+  "transfer_to_astana": "тема изначально двухгородная", "next_action": "K10/K08: получить по одному официальному перечню школ на город с лицензией"},
+]
+
 doc = {
  "meta": {"agent_id": "K09", "topic": "Проверяемая научная основа диплома: библиография A13/AST-A13 и узкие темы",
           "city": "shared (Шымкент и Астана; данных городов в этом этапе нет)", "searched_at": "2026-10-05T05:20:00Z",
           "access_limitations": "Все научные и издательские хосты отклонены политикой сети (см. K09-S001). Использованы только публичные репозитории авторов на GitHub на закреплённых коммитах.",
-          "stage": "1 — проверка библиографии", "branch": "claude/save-work-handoff-qho6eq",
+          "stage": "1–3: библиография, воспроизведение пилотов, темы", "branch": "claude/save-work-handoff-qho6eq",
           "verification_levels": {"R0": "не подтверждено", "R1": "в списке литературы другого источника", "R2": "метаданные в авторском файле", "R3": "прочитано авторское резюме", "R4": "прочитан текст (версия и разделы указаны)"}},
- "sources": sources, "facts": facts, "datasets": [], "opportunities": [],
+ "sources": sources, "facts": facts, "datasets": [], "opportunities": opportunities,
  "open_questions": [
    {"question": "Каково актуальное название и место публикации arXiv:2302.12173 (Greshake et al.)?", "why": "AST-A13 указал название, не подтверждаемое авторским файлом", "how": "Открыть arxiv.org/abs/2302.12173 и историю версий при разрешённом доступе"},
    {"question": "Существуют ли и что содержат Malczewski 2006, Geertman & Stillwell 2004, Vonk et al. 2005?", "why": "Без них нет обзорной главы по GIS-MCDA/PSS", "how": "Crossref/doi.org или PDF от владельца"},

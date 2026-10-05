@@ -1,0 +1,16 @@
+{
+ "pilot": "E4",
+ "script": "research/govtech-results/13_architecture_ai_thesis/extracted_files__21_/constraints_eval.py",
+ "script_sha256": "77c9f8e85949c111358a943bbf2f19fb74a8d87370e34011b434cdd43741c01d",
+ "reported_result": "research/govtech-results/13_architecture_ai_thesis/extracted_files__21_/constraints_eval_result.json",
+ "reported_sha256": "9e2a5e0f2dedeb1b53ee39eb78287e514cf1bc59004bada7deced7958adb9e8c",
+ "city_data_sha256": "403478c12fbe8cf64b9953f4d0ff0e713415be923bf1f241a2c60994b51b66e8",
+ "repo_head": "ea371711360ad9ad4f8f0a92cc023443cf6229fb",
+ "python": "3.12.3",
+ "returncode": 0,
+ "stderr_tail": "",
+ "wall_seconds": 3.8,
+ "path_substitution": "/home/claude/stupits -> repo root (только в копии)",
+ "numpy": "2.4.4",
+ "jsonschema": "4.26.0"
+}

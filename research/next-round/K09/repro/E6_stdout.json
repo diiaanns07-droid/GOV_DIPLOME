@@ -1,0 +1,47 @@
+{
+ "base_top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+ "base_score": 57.24,
+ "runs": [
+  {
+   "n": 60,
+   "sigma_w": 0.1,
+   "effect_pm": 0.1,
+   "base_top1_still_top1": 0.43333333333333335,
+   "base_top1_in_top10": 1.0,
+   "distinct_top1": 6,
+   "mean_overlap_top10": 7.82,
+   "regret_median": 0.01,
+   "regret_p95": 0.10049999999999998,
+   "most_common_top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura"
+  },
+  {
+   "n": 60,
+   "sigma_w": 0.2,
+   "effect_pm": 0.2,
+   "base_top1_still_top1": 0.2833333333333333,
+   "base_top1_in_top10": 0.8333333333333334,
+   "distinct_top1": 16,
+   "mean_overlap_top10": 5.25,
+   "regret_median": 0.065,
+   "regret_p95": 0.30049999999999993,
+   "most_common_top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura"
+  },
+  {
+   "n": 60,
+   "sigma_w": 0.3,
+   "effect_pm": 0.3,
+   "base_top1_still_top1": 0.2,
+   "base_top1_in_top10": 0.6666666666666666,
+   "distinct_top1": 23,
+   "mean_overlap_top10": 3.38,
+   "regret_median": 0.125,
+   "regret_p95": 1.003,
+   "most_common_top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura"
+  }
+ ],
+ "seconds": 103.0,
+ "versions": {
+  "python": "3.12.3",
+  "numpy": "2.4.4"
+ }
+}

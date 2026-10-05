@@ -1,0 +1,5497 @@
+{
+ "result": {
+  "label": "SYNTHETIC training model astana_hackathon; perturbation ranges are assumptions",
+  "base_top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+  "base_score": 57.24,
+  "runs": [
+   {
+    "n": 300,
+    "sigma_w": 0.1,
+    "effect_pm": 0.1,
+    "seed": 101,
+    "base_top1_still_top1": 0.43666666666666665,
+    "base_top1_still_top1_wilson95": [
+     0.3817,
+     0.4932
+    ],
+    "base_top1_in_top10": 0.9966666666666667,
+    "base_top1_in_top10_wilson95": [
+     0.9814,
+     0.9994
+    ],
+    "distinct_top1": 10,
+    "mean_overlap_top10": 7.63,
+    "regret_median": 0.01,
+    "regret_p95": 0.12,
+    "most_common_top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura"
+   },
+   {
+    "n": 300,
+    "sigma_w": 0.2,
+    "effect_pm": 0.2,
+    "seed": 102,
+    "base_top1_still_top1": 0.30666666666666664,
+    "base_top1_still_top1_wilson95": [
+     0.2572,
+     0.361
+    ],
+    "base_top1_in_top10": 0.85,
+    "base_top1_in_top10_wilson95": [
+     0.8052,
+     0.886
+    ],
+    "distinct_top1": 28,
+    "mean_overlap_top10": 5.34,
+    "regret_median": 0.05,
+    "regret_p95": 0.3005000000000001,
+    "most_common_top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura"
+   },
+   {
+    "n": 300,
+    "sigma_w": 0.3,
+    "effect_pm": 0.3,
+    "seed": 103,
+    "base_top1_still_top1": 0.16,
+    "base_top1_still_top1_wilson95": [
+     0.1229,
+     0.2057
+    ],
+    "base_top1_in_top10": 0.5333333333333333,
+    "base_top1_in_top10_wilson95": [
+     0.4768,
+     0.589
+    ],
+    "distinct_top1": 59,
+    "mean_overlap_top10": 3.28,
+    "regret_median": 0.17,
+    "regret_p95": 1.19,
+    "most_common_top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura"
+   }
+  ],
+  "seconds": 513.9,
+  "versions": {
+   "python": "3.12.3",
+   "numpy": "2.4.4"
+  }
+ },
+ "raw_samples": [
+  {
+   "sigma_w": 0.1,
+   "seed": 101,
+   "samples": [
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.02
+    },
+    {
+     "top1": "M12@city + M3@nura + M5@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.01
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.06
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.01
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.02
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.04
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 8,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.12
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.07
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 6,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.13
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.02
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.07
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.05
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.1
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.07
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.06
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M2@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.06
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.04
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.01
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 5,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.12
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.02
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.03
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.03
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.04
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.09
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.04
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.07
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.07
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.04
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.02
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 5,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.11
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.04
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.05
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.02
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.12
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.02
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.08
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.01
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.05
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 5,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.07
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.02
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.02
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.12
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.1
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.08
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.04
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 10,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.02
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.08
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 5,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.2
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 6,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.09
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 6,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.11
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.05
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.03
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.04
+    },
+    {
+     "top1": "M10@nura + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 7,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.05
+    },
+    {
+     "top1": "M10@nura + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.06
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 5,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.12
+    },
+    {
+     "top1": "M10@nura + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.04
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.08
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.02
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.09
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.02
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.03
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 5,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.06
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.06
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 5,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.08
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.01
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.06
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.01
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.01
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M14@city + M5@nura + M7@nura + M8@nura",
+     "base_top1_rank": 7,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.02
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.07
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.04
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 10,
+     "regret_of_base_top1": 0.05
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.1
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 5,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.09
+    },
+    {
+     "top1": "M10@nura + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.07
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.06
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.04
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.05
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.1
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.01
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.01
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 5,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.17
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 5,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.12
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.04
+    },
+    {
+     "top1": "M10@nura + M12@city + M14@city + M7@nura + M8@nura",
+     "base_top1_rank": 7,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.11
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.09
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.04
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.07
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.01
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.07
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.08
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.07
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.05
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.11
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.02
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.04
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 10,
+     "regret_of_base_top1": 0.02
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.01
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.01
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.02
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 6,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.09
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.03
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 10,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.05
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.02
+    },
+    {
+     "top1": "M10@nura + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.04
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.07
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 9,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.09
+    },
+    {
+     "top1": "M2@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.01
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.04
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 6,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.06
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 5,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.13
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.07
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.01
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.08
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 5,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.06
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.06
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.02
+    },
+    {
+     "top1": "M10@nura + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.01
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.08
+    },
+    {
+     "top1": "M10@nura + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 10,
+     "regret_of_base_top1": 0.02
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.06
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.04
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.04
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.08
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 10,
+     "regret_of_base_top1": 0.01
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.05
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.08
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.05
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 6,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.12
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.07
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.08
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 5,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.06
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.06
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.05
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.14
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.06
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 6,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.14
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 5,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.08
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.07
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.05
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 6,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.22
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 7,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.15
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 6,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.15
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.08
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.05
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.07
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.01
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 5,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.16
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 6,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.06
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.05
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.02
+    },
+    {
+     "top1": "M10@nura + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 5,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.13
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.03
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 6,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.1
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.05
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.06
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.1
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.03
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 5,
+     "overlap_top10": 10,
+     "regret_of_base_top1": 0.07
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.1
+    },
+    {
+     "top1": "M10@nura + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.04
+    }
+   ]
+  },
+  {
+   "sigma_w": 0.2,
+   "seed": 102,
+   "samples": [
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.06
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.09
+    },
+    {
+     "top1": "M2@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.02
+    },
+    {
+     "top1": "M10@nura + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 5,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.1
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.09
+    },
+    {
+     "top1": "M12@city + M14@city + M5@nura + M7@nura + M8@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.05
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.02
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.01
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.27
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M12@city + M14@city + M2@city + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 0,
+     "regret_of_base_top1": 0.36
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.27
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.02
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 8,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.17
+    },
+    {
+     "top1": "M12@city + M14@city + M5@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.43
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.02
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.09
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.03
+    },
+    {
+     "top1": "M10@nura + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.12
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.3
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.17
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@saryarka + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.13
+    },
+    {
+     "top1": "M10@saryarka + M14@city + M5@nura + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 0.02
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 5,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.11
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 5,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.17
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M12@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.22
+    },
+    {
+     "top1": "M10@nura + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.13
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.07
+    },
+    {
+     "top1": "M14@city + M5@nura + M6@city + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 0.26
+    },
+    {
+     "top1": "M2@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.03
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.2
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 10,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.25
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.19
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M14@city + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.17
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 6,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.17
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.1
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 6,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.22
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 5,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.23
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.08
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M12@city + M14@city + M5@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.28
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M11@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.26
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.28
+    },
+    {
+     "top1": "M14@city + M3@nura + M6@city + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.05
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.22
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.08
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.09
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.06
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 6,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.1
+    },
+    {
+     "top1": "M10@nura + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.08
+    },
+    {
+     "top1": "M14@city + M1@nura + M2@city + M7@nura + M8@nura",
+     "base_top1_rank": 7,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.12
+    },
+    {
+     "top1": "M14@city + M3@nura + M6@city + M8@nura + M9@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.04
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.23
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.01
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 7,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.16
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.11
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.08
+    },
+    {
+     "top1": "M12@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 9,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.09
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.2
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.03
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.04
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.38
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M14@city + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.06
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.06
+    },
+    {
+     "top1": "M2@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 6,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.19
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.1
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.42
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.48
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M1@nura + M2@city + M7@nura + M8@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.1
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.01
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.03
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.18
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.14
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.1
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M3@nura + M6@city + M8@nura + M9@nura",
+     "base_top1_rank": 5,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.12
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 9,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.25
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.1
+    },
+    {
+     "top1": "M10@nura + M12@city + M14@city + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.42
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.05
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.08
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.03
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@saryarka + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 0.16
+    },
+    {
+     "top1": "M10@nura + M14@city + M2@city + M7@nura + M8@nura",
+     "base_top1_rank": 9,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 0.18
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.02
+    },
+    {
+     "top1": "M12@city + M14@city + M5@nura + M7@nura + M8@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.11
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.05
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 7,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.13
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 5,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.14
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 5,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.1
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.18
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 6,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.05
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.37
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 5,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.07
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.05
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.02
+    },
+    {
+     "top1": "M10@nura + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.02
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 7,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.12
+    },
+    {
+     "top1": "M14@city + M3@nura + M6@city + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.06
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.07
+    },
+    {
+     "top1": "M12@city + M14@city + M5@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.28
+    },
+    {
+     "top1": "M14@city + M3@nura + M6@city + M8@nura + M9@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.06
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.42
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M1@nura + M2@city + M7@nura + M8@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.07
+    },
+    {
+     "top1": "M10@nura + M14@city + M2@city + M7@nura + M8@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 0.11
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.01
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.27
+    },
+    {
+     "top1": "M10@nura + M12@city + M14@city + M7@nura + M8@nura",
+     "base_top1_rank": 7,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.15
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 5,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.1
+    },
+    {
+     "top1": "M12@city + M14@city + M2@city + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.18
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.15
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 8,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.14
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.33
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M3@nura + M6@city + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.04
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 6,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.31
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M12@city + M14@city + M2@city + M7@nura + M8@nura",
+     "base_top1_rank": 6,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.12
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 6,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.08
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.06
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.02
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.05
+    },
+    {
+     "top1": "M10@nura + M12@city + M14@city + M7@nura + M8@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.04
+    },
+    {
+     "top1": "M14@city + M3@nura + M6@city + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.02
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M14@city + M5@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.36
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.24
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.24
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 6,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.06
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.09
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.05
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 6,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.2
+    },
+    {
+     "top1": "M14@city + M1@nura + M2@city + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.1
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.42
+    },
+    {
+     "top1": "M10@nura + M13@nura + M14@city + M7@nura + M8@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.05
+    },
+    {
+     "top1": "M10@nura + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 7,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.16
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 8,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.19
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.26
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 8,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.14
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 6,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.09
+    },
+    {
+     "top1": "M12@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.04
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 6,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.21
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 0.48
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.12
+    },
+    {
+     "top1": "M14@city + M1@nura + M2@city + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.01
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 7,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.16
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M3@nura + M6@city + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.06
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.05
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 9,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.17
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 10,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.23
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 8,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.12
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.19
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.05
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.07
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.07
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.09
+    },
+    {
+     "top1": "M14@city + M1@nura + M2@city + M7@nura + M8@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.02
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M2@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 5,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.14
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M11@nura + M14@city + M2@city + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.02
+    },
+    {
+     "top1": "M14@city + M1@nura + M2@city + M7@nura + M8@nura",
+     "base_top1_rank": 6,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.05
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 7,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.16
+    },
+    {
+     "top1": "M14@city + M5@nura + M6@city + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.24
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 10,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.1
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.08
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.07
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.02
+    },
+    {
+     "top1": "M14@city + M5@nura + M6@city + M8@nura + M9@nura",
+     "base_top1_rank": 5,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.08
+    },
+    {
+     "top1": "M14@city + M5@nura + M6@city + M8@nura + M9@nura",
+     "base_top1_rank": 9,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.24
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.13
+    },
+    {
+     "top1": "M2@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 6,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.06
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.03
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.15
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.05
+    },
+    {
+     "top1": "M2@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.15
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.02
+    },
+    {
+     "top1": "M10@nura + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 5,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.12
+    },
+    {
+     "top1": "M2@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.02
+    },
+    {
+     "top1": "M2@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 6,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.12
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.14
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 9,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.18
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.02
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.06
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 5,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.05
+    },
+    {
+     "top1": "M10@nura + M12@city + M14@city + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.23
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.06
+    },
+    {
+     "top1": "M12@city + M14@city + M5@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 0.3
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.02
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 9,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.04
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 8,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.13
+    },
+    {
+     "top1": "M2@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.11
+    },
+    {
+     "top1": "M10@nura + M11@nura + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.32
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.1
+    },
+    {
+     "top1": "M10@nura + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.22
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 6,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.23
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.07
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.08
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.05
+    },
+    {
+     "top1": "M12@city + M3@nura + M5@nura + M8@nura + M9@nura",
+     "base_top1_rank": 5,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.09
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.06
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.02
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.03
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.39
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M1@nura + M2@city + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.01
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.05
+    },
+    {
+     "top1": "M3@nura + M4@nura + M6@city + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.24
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 7,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.2
+    },
+    {
+     "top1": "M14@city + M1@nura + M2@city + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.03
+    }
+   ]
+  },
+  {
+   "sigma_w": 0.3,
+   "seed": 103,
+   "samples": [
+    {
+     "top1": "M12@city + M1@nura + M2@city + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 0.32
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 9,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.29
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.03
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.04
+    },
+    {
+     "top1": "M10@saryarka + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 0,
+     "regret_of_base_top1": 0.19
+    },
+    {
+     "top1": "M12@city + M14@city + M2@city + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 0.42
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.08
+    },
+    {
+     "top1": "M10@nura + M12@city + M14@city + M7@nura + M8@nura",
+     "base_top1_rank": 7,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.31
+    },
+    {
+     "top1": "M14@city + M1@nura + M5@nura + M8@nura + M9@nura",
+     "base_top1_rank": 10,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.18
+    },
+    {
+     "top1": "M10@nura + M1@nura + M2@city + M7@nura + M8@nura",
+     "base_top1_rank": 10,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.11
+    },
+    {
+     "top1": "M12@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.03
+    },
+    {
+     "top1": "M10@nura + M12@city + M14@city + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 0.17
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.99
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.54
+    },
+    {
+     "top1": "M12@city + M14@city + M6@city + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 0,
+     "regret_of_base_top1": 0.53
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 9,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.22
+    },
+    {
+     "top1": "M2@city + M3@nura + M4@saryarka + M8@nura + M9@nura",
+     "base_top1_rank": 5,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 0.06
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.32
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.34
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.42
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 1.37
+    },
+    {
+     "top1": "M10@nura + M12@city + M14@city + M8@nura + M9@nura",
+     "base_top1_rank": 5,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.05
+    },
+    {
+     "top1": "M14@city + M1@nura + M2@city + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.02
+    },
+    {
+     "top1": "M2@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.2
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 1.66
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.01
+    },
+    {
+     "top1": "M2@city + M5@nura + M6@city + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.04
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.01
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.34
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 1.2
+    },
+    {
+     "top1": "M12@city + M14@city + M5@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.4
+    },
+    {
+     "top1": "M10@nura + M14@city + M3@saryarka + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 0,
+     "regret_of_base_top1": 0.33
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M12@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.1
+    },
+    {
+     "top1": "M12@city + M14@city + M5@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 1.28
+    },
+    {
+     "top1": "M14@city + M5@nura + M6@city + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 0.34
+    },
+    {
+     "top1": "M14@city + M1@nura + M6@city + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 1.06
+    },
+    {
+     "top1": "M11@nura + M2@city + M6@city + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 0.14
+    },
+    {
+     "top1": "M10@nura + M14@city + M6@city + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 0,
+     "regret_of_base_top1": 1.03
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.23
+    },
+    {
+     "top1": "M14@city + M3@nura + M6@city + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.01
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 1.03
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.13
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.02
+    },
+    {
+     "top1": "M12@city + M14@city + M5@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.39
+    },
+    {
+     "top1": "M10@nura + M3@nura + M5@nura + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.21
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M12@city + M14@city + M6@city + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 0,
+     "regret_of_base_top1": 0.5
+    },
+    {
+     "top1": "M12@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.03
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.03
+    },
+    {
+     "top1": "M12@city + M14@city + M6@city + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 0,
+     "regret_of_base_top1": 0.39
+    },
+    {
+     "top1": "M14@city + M3@nura + M6@city + M8@nura + M9@nura",
+     "base_top1_rank": 6,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.05
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 5,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.23
+    },
+    {
+     "top1": "M14@city + M5@nura + M6@city + M8@nura + M9@nura",
+     "base_top1_rank": 7,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.26
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M11@nura + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.29
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 9,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.16
+    },
+    {
+     "top1": "M12@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.1
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.23
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 5,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.17
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 1.32
+    },
+    {
+     "top1": "M11@nura + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.1
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.15
+    },
+    {
+     "top1": "M10@nura + M14@city + M6@city + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 1.03
+    },
+    {
+     "top1": "M11@nura + M14@city + M2@city + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 0,
+     "regret_of_base_top1": 0.29
+    },
+    {
+     "top1": "M12@city + M14@city + M5@nura + M7@nura + M8@nura",
+     "base_top1_rank": 7,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.2
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.32
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.18
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.27
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 9,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.36
+    },
+    {
+     "top1": "M14@city + M3@nura + M6@city + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.26
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 10,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.41
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.25
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.99
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 1.19
+    },
+    {
+     "top1": "M10@nura + M12@city + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 0.84
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 5,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.09
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.4
+    },
+    {
+     "top1": "M12@city + M14@city + M5@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.31
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.54
+    },
+    {
+     "top1": "M12@city + M14@city + M6@city + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.42
+    },
+    {
+     "top1": "M14@city + M1@nura + M2@city + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.18
+    },
+    {
+     "top1": "M10@nura + M12@city + M14@city + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 0.19
+    },
+    {
+     "top1": "M14@city + M1@nura + M2@city + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 0.39
+    },
+    {
+     "top1": "M2@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.02
+    },
+    {
+     "top1": "M12@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.16
+    },
+    {
+     "top1": "M12@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 0,
+     "regret_of_base_top1": 0.29
+    },
+    {
+     "top1": "M12@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.04
+    },
+    {
+     "top1": "M12@city + M3@nura + M6@city + M8@nura + M9@nura",
+     "base_top1_rank": 7,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.1
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M12@city + M14@city + M5@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.34
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.59
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 7,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.23
+    },
+    {
+     "top1": "M10@nura + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.09
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M3@nura + M6@city + M8@nura + M9@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.08
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.15
+    },
+    {
+     "top1": "M10@nura + M14@city + M5@nura + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.14
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.02
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.05
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.31
+    },
+    {
+     "top1": "M10@saryarka + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 0.06
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.5
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.45
+    },
+    {
+     "top1": "M14@city + M2@city + M6@city + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 0.2
+    },
+    {
+     "top1": "M2@city + M5@esil + M6@city + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 0,
+     "regret_of_base_top1": 0.48
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M14@city + M7@nura + M8@nura",
+     "base_top1_rank": 5,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.1
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 0.51
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 1.09
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 8,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.27
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.17
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.05
+    },
+    {
+     "top1": "M10@nura + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.05
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 1.02
+    },
+    {
+     "top1": "M14@city + M4@nura + M6@city + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 0.2
+    },
+    {
+     "top1": "M10@nura + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.06
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M12@city + M14@city + M5@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 0,
+     "regret_of_base_top1": 1.03
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.13
+    },
+    {
+     "top1": "M10@saryarka + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 9,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 0.16
+    },
+    {
+     "top1": "M12@city + M14@city + M5@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 0.51
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.03
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M13@nura + M14@city + M2@city + M8@nura + M9@nura",
+     "base_top1_rank": 8,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 0.17
+    },
+    {
+     "top1": "M10@saryarka + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 0,
+     "regret_of_base_top1": 0.2
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.23
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.23
+    },
+    {
+     "top1": "M2@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.05
+    },
+    {
+     "top1": "M10@nura + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.35
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.11
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 1.47
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.06
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.02
+    },
+    {
+     "top1": "M10@nura + M12@city + M14@city + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 1.14
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.04
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.41
+    },
+    {
+     "top1": "M14@city + M1@nura + M2@city + M7@nura + M8@nura",
+     "base_top1_rank": 5,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.14
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.31
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M5@nura + M6@city + M8@nura + M9@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.07
+    },
+    {
+     "top1": "M12@city + M14@city + M2@city + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 0,
+     "regret_of_base_top1": 0.21
+    },
+    {
+     "top1": "M2@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.16
+    },
+    {
+     "top1": "M12@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.06
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 5,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.16
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 9,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.14
+    },
+    {
+     "top1": "M3@nura + M4@nura + M5@nura + M8@nura + M9@nura",
+     "base_top1_rank": 9,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.09
+    },
+    {
+     "top1": "M2@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.22
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.24
+    },
+    {
+     "top1": "M10@nura + M12@city + M14@city + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.21
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.35
+    },
+    {
+     "top1": "M10@nura + M14@city + M5@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 0,
+     "regret_of_base_top1": 0.27
+    },
+    {
+     "top1": "M10@nura + M12@city + M14@city + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 0.31
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.11
+    },
+    {
+     "top1": "M12@city + M14@city + M5@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 0,
+     "regret_of_base_top1": 0.74
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.26
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.53
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.85
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.1
+    },
+    {
+     "top1": "M12@city + M14@city + M6@city + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 0.25
+    },
+    {
+     "top1": "M10@nura + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.01
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.49
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.5
+    },
+    {
+     "top1": "M14@city + M1@nura + M6@city + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.66
+    },
+    {
+     "top1": "M12@city + M14@city + M6@city + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 0.46
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.21
+    },
+    {
+     "top1": "M11@nura + M14@city + M2@city + M7@nura + M8@nura",
+     "base_top1_rank": 7,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.14
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 6,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.3
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.12
+    },
+    {
+     "top1": "M12@city + M14@city + M6@city + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 0.31
+    },
+    {
+     "top1": "M12@city + M3@nura + M5@nura + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.21
+    },
+    {
+     "top1": "M12@city + M14@city + M5@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 0.5
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 0.39
+    },
+    {
+     "top1": "M10@nura + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.08
+    },
+    {
+     "top1": "M10@nura + M14@city + M2@city + M7@nura + M8@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 0.05
+    },
+    {
+     "top1": "M10@nura + M12@city + M14@city + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.24
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.19
+    },
+    {
+     "top1": "M3@nura + M4@nura + M5@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M11@nura + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.32
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 1.19
+    },
+    {
+     "top1": "M10@nura + M12@city + M14@city + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 0,
+     "regret_of_base_top1": 0.54
+    },
+    {
+     "top1": "M2@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 5,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.25
+    },
+    {
+     "top1": "M14@city + M5@nura + M6@city + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.3
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 0.51
+    },
+    {
+     "top1": "M14@city + M1@nura + M2@city + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 1.17
+    },
+    {
+     "top1": "M10@nura + M14@city + M5@saryarka + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 0,
+     "regret_of_base_top1": 1.4
+    },
+    {
+     "top1": "M10@nura + M14@city + M2@city + M7@nura + M8@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 0.06
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M12@city + M14@city + M5@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 0.53
+    },
+    {
+     "top1": "M10@nura + M14@city + M5@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.32
+    },
+    {
+     "top1": "M10@nura + M11@nura + M14@city + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.21
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M2@city + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 1.28
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M13@nura + M14@city + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.26
+    },
+    {
+     "top1": "M11@nura + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.01
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 1.53
+    },
+    {
+     "top1": "M11@saryarka + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 0.75
+    },
+    {
+     "top1": "M11@nura + M14@city + M2@city + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.02
+    },
+    {
+     "top1": "M12@city + M14@city + M2@city + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 0.05
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.48
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.03
+    },
+    {
+     "top1": "M12@city + M14@city + M5@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 0,
+     "regret_of_base_top1": 1.33
+    },
+    {
+     "top1": "M12@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.05
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.07
+    },
+    {
+     "top1": "M10@nura + M3@nura + M5@nura + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.34
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.41
+    },
+    {
+     "top1": "M14@city + M1@nura + M2@city + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M13@nura + M14@city + M2@city + M8@nura + M9@nura",
+     "base_top1_rank": 5,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.02
+    },
+    {
+     "top1": "M10@nura + M14@city + M5@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 1.44
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.08
+    },
+    {
+     "top1": "M10@nura + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 8,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.17
+    },
+    {
+     "top1": "M10@nura + M12@city + M2@city + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 0,
+     "regret_of_base_top1": 0.32
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M12@city + M14@city + M1@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.92
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 6,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.11
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.11
+    },
+    {
+     "top1": "M2@city + M5@nura + M6@city + M8@nura + M9@nura",
+     "base_top1_rank": 7,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.12
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M12@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 0.01
+    },
+    {
+     "top1": "M12@city + M14@city + M5@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.41
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.95
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M12@city + M3@nura + M5@nura + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.28
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.46
+    },
+    {
+     "top1": "M10@nura + M12@city + M14@city + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.61
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.34
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 7,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.25
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.16
+    },
+    {
+     "top1": "M14@city + M1@nura + M2@city + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.03
+    },
+    {
+     "top1": "M14@city + M1@nura + M2@city + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.06
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M11@nura + M14@city + M6@city + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 0,
+     "regret_of_base_top1": 1.02
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.17
+    },
+    {
+     "top1": "M12@city + M3@nura + M5@nura + M8@nura + M9@nura",
+     "base_top1_rank": 9,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.12
+    },
+    {
+     "top1": "M14@city + M4@esil + M5@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 0,
+     "regret_of_base_top1": 0.19
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 0.35
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.04
+    },
+    {
+     "top1": "M14@city + M2@city + M3@esil + M8@nura + M9@nura",
+     "base_top1_rank": 5,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 0.07
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.33
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.11
+    },
+    {
+     "top1": "M12@city + M14@city + M2@city + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 0,
+     "regret_of_base_top1": 1.71
+    },
+    {
+     "top1": "M10@nura + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.06
+    },
+    {
+     "top1": "M14@city + M5@nura + M6@city + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.05
+    },
+    {
+     "top1": "M11@nura + M14@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 1.31
+    },
+    {
+     "top1": "M2@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.18
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 7,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.09
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M12@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 1,
+     "regret_of_base_top1": 0.16
+    },
+    {
+     "top1": "M12@city + M14@city + M5@nura + M7@nura + M8@nura",
+     "base_top1_rank": 6,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.28
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M10@nura + M14@city + M2@city + M7@nura + M8@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.15
+    },
+    {
+     "top1": "M14@city + M1@nura + M2@city + M7@nura + M8@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.06
+    },
+    {
+     "top1": "M10@nura + M12@city + M2@city + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 0,
+     "regret_of_base_top1": 0.15
+    },
+    {
+     "top1": "M12@city + M14@city + M6@city + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 0,
+     "regret_of_base_top1": 0.31
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 3,
+     "overlap_top10": 7,
+     "regret_of_base_top1": 0.02
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 8,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M3@nura + M4@nura + M5@nura + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.31
+    },
+    {
+     "top1": "M14@city + M2@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 1,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.0
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 6,
+     "regret_of_base_top1": 0.04
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 5,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.06
+    },
+    {
+     "top1": "M14@city + M4@esil + M6@city + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 0,
+     "regret_of_base_top1": 0.41
+    },
+    {
+     "top1": "M2@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.07
+    },
+    {
+     "top1": "M10@nura + M12@city + M14@city + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.13
+    },
+    {
+     "top1": "M10@nura + M12@city + M14@city + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 0,
+     "regret_of_base_top1": 1.38
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.15
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 4,
+     "regret_of_base_top1": 0.1
+    },
+    {
+     "top1": "M10@nura + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": 2,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.01
+    },
+    {
+     "top1": "M12@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.42
+    },
+    {
+     "top1": "M10@nura + M12@city + M3@nura + M7@nura + M8@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 5,
+     "regret_of_base_top1": 0.39
+    },
+    {
+     "top1": "M12@city + M14@city + M3@nura + M8@nura + M9@nura",
+     "base_top1_rank": null,
+     "overlap_top10": 2,
+     "regret_of_base_top1": 0.25
+    },
+    {
+     "top1": "M14@city + M3@nura + M4@nura + M8@nura + M9@nura",
+     "base_top1_rank": 4,
+     "overlap_top10": 3,
+     "regret_of_base_top1": 0.06
+    }
+   ]
+  }
+ ]
+}

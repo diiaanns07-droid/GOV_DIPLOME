@@ -1,0 +1,172 @@
+{
+ "dist_dict": {
+  "нур": "nura",
+  "есил": "esil",
+  "сарыарк": "saryarka",
+  "байконур": "baikonur",
+  "алмат": "almaty"
+ },
+ "summary": {
+  "name:ru": {
+   "districts": 5,
+   "recognised_correctly": 4
+  },
+  "name": {
+   "districts": 5,
+   "recognised_correctly": 1
+  },
+  "name:kk": {
+   "districts": 3,
+   "recognised_correctly": 0
+  }
+ },
+ "stem_inside_other_stem": [
+  {
+   "stem": "нур",
+   "inside_other_stem": "байконур"
+  }
+ ],
+ "rows": [
+  {
+   "district_id": "esil",
+   "field": "name:ru",
+   "text": "район Есиль",
+   "parser_hits": [
+    "esil"
+   ],
+   "correct": true,
+   "in_parser_dict": true
+  },
+  {
+   "district_id": "esil",
+   "field": "name",
+   "text": "Есіл ауданы",
+   "parser_hits": [],
+   "correct": false,
+   "in_parser_dict": true
+  },
+  {
+   "district_id": "almaty",
+   "field": "name:ru",
+   "text": "район Алматы",
+   "parser_hits": [
+    "almaty"
+   ],
+   "correct": true,
+   "in_parser_dict": true
+  },
+  {
+   "district_id": "almaty",
+   "field": "name",
+   "text": "Алматы ауданы",
+   "parser_hits": [
+    "almaty"
+   ],
+   "correct": true,
+   "in_parser_dict": true
+  },
+  {
+   "district_id": "saryarka",
+   "field": "name:ru",
+   "text": "район Сарыарка",
+   "parser_hits": [
+    "saryarka"
+   ],
+   "correct": true,
+   "in_parser_dict": true
+  },
+  {
+   "district_id": "saryarka",
+   "field": "name",
+   "text": "Сарыарқа ауданы",
+   "parser_hits": [],
+   "correct": false,
+   "in_parser_dict": true
+  },
+  {
+   "district_id": "saryarka",
+   "field": "name:kk",
+   "text": "Сарыарқа ауданы",
+   "parser_hits": [],
+   "correct": false,
+   "in_parser_dict": true
+  },
+  {
+   "district_id": "baikonur",
+   "field": "name:ru",
+   "text": "район Байконур",
+   "parser_hits": [
+    "baikonur",
+    "nura"
+   ],
+   "correct": false,
+   "in_parser_dict": true
+  },
+  {
+   "district_id": "baikonur",
+   "field": "name",
+   "text": "Байқоңыр ауданы",
+   "parser_hits": [],
+   "correct": false,
+   "in_parser_dict": true
+  },
+  {
+   "district_id": "baikonur",
+   "field": "name:kk",
+   "text": "Байқоңыр ауданы",
+   "parser_hits": [],
+   "correct": false,
+   "in_parser_dict": true
+  },
+  {
+   "district_id": "nura",
+   "field": "name:ru",
+   "text": "район Нура",
+   "parser_hits": [
+    "nura"
+   ],
+   "correct": true,
+   "in_parser_dict": true
+  },
+  {
+   "district_id": "nura",
+   "field": "name",
+   "text": "Нұра ауданы",
+   "parser_hits": [],
+   "correct": false,
+   "in_parser_dict": true
+  },
+  {
+   "district_id": "nura",
+   "field": "name:kk",
+   "text": "Нұра ауданы",
+   "parser_hits": [],
+   "correct": false,
+   "in_parser_dict": true
+  },
+  {
+   "district_id": "saraishyk",
+   "field": "name:ru",
+   "text": "район Сарайшык",
+   "parser_hits": [],
+   "correct": true,
+   "in_parser_dict": false
+  },
+  {
+   "district_id": "saraishyk",
+   "field": "name",
+   "text": "Сарайшық ауданы",
+   "parser_hits": [],
+   "correct": true,
+   "in_parser_dict": false
+  },
+  {
+   "district_id": "saraishyk",
+   "field": "name:kk",
+   "text": "Сарайшық ауданы",
+   "parser_hits": [],
+   "correct": true,
+   "in_parser_dict": false
+  }
+ ]
+}

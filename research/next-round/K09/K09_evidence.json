@@ -5,7 +5,7 @@
   "city": "shared (Шымкент и Астана; данных городов в этом этапе нет)",
   "searched_at": "2026-10-05T05:20:00Z",
   "access_limitations": "Все научные и издательские хосты отклонены политикой сети (см. K09-S001). Использованы только публичные репозитории авторов на GitHub на закреплённых коммитах.",
-  "stage": "1 — проверка библиографии",
+  "stage": "1–3: библиография, воспроизведение пилотов, темы",
   "branch": "claude/save-work-handoff-qho6eq",
   "verification_levels": {
    "R0": "не подтверждено",
@@ -433,6 +433,28 @@
    "source_type": "scientific_publication",
    "access_status": "verification_level_R0",
    "notes": "в этой сессии не подтверждено; ID в исходных отчётах: A13-L004"
+  },
+  {
+   "source_id": "K09-S012",
+   "title": "Репозиторий GOV_DIPLOME: код движка/советника (идентичен 834a25f) и data/city_data.json",
+   "publisher": "diiaanns07-droid/GOV_DIPLOME",
+   "url": "https://github.com/diiaanns07-droid/GOV_DIPLOME",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "code_repository",
+   "access_status": "local_run",
+   "notes": "git diff 834a25f..HEAD по engine/agent/data/ui/web/tests пуст; city_data.json sha256 403478c1…"
+  },
+  {
+   "source_id": "K09-S013",
+   "title": "Скрипты и результаты пилотов A13 (E4) и AST-A13 (E5, E6)",
+   "publisher": "A13 / AST-A13",
+   "url": null,
+   "published_at": "2026-10-04/05",
+   "accessed_at": "2026-10-05",
+   "source_type": "agent_experiment",
+   "access_status": "read_and_rerun",
+   "notes": "Код прочитан до запуска: только чтение data/*.json и вызовы engine/agent, без сети и записи файлов."
   }
  ],
  "facts": [
@@ -615,10 +637,225 @@
    "derivation": null,
    "confidence": "high",
    "caveats": "Для цитирования статьи использовать двух авторов."
+  },
+  {
+   "fact_id": "K09-F011",
+   "statement": "check.py: все 12 сверок с эталонами пройдены; pytest: 112 passed (Python 3.12.3, numpy 2.4.4).",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": null,
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "K09-S012",
+     "locator": "python check.py; python -m pytest -q"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Подтверждает A13-E1 на той же версии кода; время прогона другое."
+  },
+  {
+   "fact_id": "K09-F012",
+   "statement": "Пилот A13-E4 (поручение → ограничения, словарный парсер) воспроизведён: stdout побайтно равен constraints_eval_result.json.",
+   "kind": "observed",
+   "value": true,
+   "unit": "identical_to_reported (bool)",
+   "geography": null,
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "K09-S013",
+     "locator": "repro/E4_stdout.json vs constraints_eval_result.json"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Набор 12 поручений написан автором парсера (synthetic); регрет в E4 не вычисляется."
+  },
+  {
+   "fact_id": "K09-F013",
+   "statement": "Пилот AST-A13-E5 (kk/ru числительные) воспроизведён побайтно: kk — 4 утечки из 6 числовых предложений, ru — 1 из 4.",
+   "kind": "observed",
+   "value": true,
+   "unit": "identical_to_reported (bool)",
+   "geography": null,
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "K09-S013",
+     "locator": "repro/E5_stdout.json"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "12 предложений написаны автором теста (synthetic); долю утечек на реальных текстах не оценивает."
+  },
+  {
+   "fact_id": "K09-F014",
+   "statement": "Пилот AST-A13-E6 воспроизведён: все поля, кроме времени, равны rank_sensitivity_result.json.",
+   "kind": "observed",
+   "value": true,
+   "unit": "identical_to_reported (bool)",
+   "geography": null,
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "K09-S013",
+     "locator": "repro/E6_stdout.json"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Учебная модель (synthetic), диапазоны возмущений — допущение."
+  },
+  {
+   "fact_id": "K09-F015",
+   "statement": "95% ДИ Уилсона для доли «номинальный топ-1 остаётся топ-1» в E6 (n=60): σ=a=0.1: 0.433 [0.3157, 0.559]; σ=a=0.2: 0.283 [0.1851, 0.4077]; σ=a=0.3: 0.200 [0.1183, 0.3178]",
+   "kind": "derived",
+   "value": null,
+   "unit": "share",
+   "geography": null,
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "K09-S013",
+     "locator": "repro/E6b_n60_seeds1-3_equivalence.json"
+    }
+   ],
+   "derivation": "Wilson score interval, z=1.96",
+   "confidence": "high",
+   "caveats": "Свойство учебной модели."
+  },
+  {
+   "fact_id": "K09-F016",
+   "statement": "Базовый парсер A13-E4 (подстроки DIST) распознаёт районы Астаны: ru-названия OSM — 4 из 5 (Байконур даёт ещё и nura); kk-названия OSM (name) — 1 из 5.",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": null,
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "K09-S012",
+     "locator": "data/astana_districts.geojson osm_names"
+    },
+    {
+     "source_id": "K09-S013",
+     "locator": "constraints_eval.py DIST; repro/E8_toponym_stems.json"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Свойство тестового парсера, не города; Шымкент не проверялся (нет наблюдаемых названий районов)."
+  },
+  {
+   "fact_id": "K09-F017",
+   "statement": "E6b (метод AST-A13-E6, n=300 на уровень, seeds 101–103): доля «номинальный топ-1 остаётся топ-1» = σ=a=0.1: 0.437 [0.3817, 0.4932], разных топ-1 10, регрет медиана/p95 0.01/0.12; σ=a=0.2: 0.307 [0.2572, 0.361], разных топ-1 28, регрет медиана/p95 0.05/0.301; σ=a=0.3: 0.160 [0.1229, 0.2057], разных топ-1 59, регрет медиана/p95 0.17/1.19",
+   "kind": "synthetic",
+   "value": null,
+   "unit": "share",
+   "geography": null,
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "K09-S013",
+     "locator": "repro/E6b_n300_seeds101-103.json"
+    }
+   ],
+   "derivation": "scripts/e6b_rank_sensitivity.py",
+   "confidence": "high",
+   "caveats": "Учебная модель и допущенные диапазоны; не относится к реальным городам."
   }
  ],
  "datasets": [],
- "opportunities": [],
+ "opportunities": [
+  {
+   "idea_id": "K09-T1",
+   "title": "Поручение → валидируемые ограничения (ru/kk), привязка топонимов в двух городах",
+   "problem": "Словарный разбор не видит kk-орфографию и даёт ложные совпадения подстрок (F016)",
+   "evidence_fact_ids": [
+    "K09-F012",
+    "K09-F016"
+   ],
+   "primary_user": "сотрудник, формулирующий условия сравнения вариантов",
+   "user_task": "задать ограничения без формы",
+   "existing_solution": "словарный парсер A13-E4 / форма",
+   "proposed_addition": "LLM + JSON Schema + валидатор движка против усиленного B2",
+   "required_dataset_ids": [],
+   "ai_role": "разбор текста в схему; числа и решения считает код",
+   "non_ai_baseline": "B1, B2 (не реализован)",
+   "success_metrics": [
+    "доля нарушений gold",
+    "регрет",
+    "exact/slot-F1",
+    "корректный отказ"
+   ],
+   "feasibility_10_days": "харнесс и B2 — да; набор от людей — частично",
+   "blockers": [
+    "нет официального перечня районов Шымкента",
+    "нет каталога мер Шымкента",
+    "нужны авторы поручений"
+   ],
+   "transfer_to_astana": "сравнимы типы ошибок, не Score",
+   "next_action": "реализовать B2 и метрику регрета; собрать 30 пилотных поручений"
+  },
+  {
+   "idea_id": "K09-T2",
+   "title": "Устойчивость рекомендации портфеля мер: топ-1 против правил выбора при неопределённости",
+   "problem": "Номинальный топ-1 часто меняется при возмущениях (F014, F015, F017 — synthetic)",
+   "evidence_fact_ids": [
+    "K09-F014",
+    "K09-F015",
+    "K09-F017"
+   ],
+   "primary_user": "аналитик сценариев",
+   "user_task": "выбрать план при неопределённых эффектах",
+   "existing_solution": "полный перебор, топ-1",
+   "proposed_addition": "правила max-E, minimax-regret, ε-множество с проверкой на отложенных выборках",
+   "required_dataset_ids": [],
+   "ai_role": "не нужен",
+   "non_ai_baseline": "номинальный топ-1",
+   "success_metrics": [
+    "регрет на held-out",
+    "P(топ-1 не изменился)",
+    "τ Кендалла"
+   ],
+   "feasibility_10_days": "да на учебной модели",
+   "blockers": [
+    "нет откалиброванных эффектов",
+    "нет официальных долей населения"
+   ],
+   "transfer_to_astana": "только структурный вариант с synthetic-эффектами",
+   "next_action": "design/held-out разбиение и SALib-выборка"
+  },
+  {
+   "idea_id": "K09-T3",
+   "title": "Перенос OSM-процедуры индикатора обеспеченности объектами: Астана → Шымкент",
+   "problem": "Процедура fetch_real_context.py ни разу не дала данных; полнота OSM в городах неизвестна",
+   "evidence_fact_ids": [],
+   "primary_user": "аналитик данных акимата / разработчик",
+   "user_task": "понять, можно ли доверять OSM-слою",
+   "existing_solution": "fetch_real_context.py (status unavailable)",
+   "proposed_addition": "сопоставление на уровне объектов с официальными перечнями, настройка на Астане, проверка на Шымкенте",
+   "required_dataset_ids": [],
+   "ai_role": "не нужен",
+   "non_ai_baseline": "B0 сырые теги; B1 текущая процедура",
+   "success_metrics": [
+    "полнота и точность на уровне объектов",
+    "разница Шымкент − Астана с ДИ"
+   ],
+   "feasibility_10_days": "только при доступе к данным",
+   "blockers": [
+    "Overpass и госпорталы недоступны в облаке",
+    "официальные перечни не получены",
+    "границы Шымкента нет"
+   ],
+   "transfer_to_astana": "тема изначально двухгородная",
+   "next_action": "K10/K08: получить по одному официальному перечню школ на город с лицензией"
+  }
+ ],
  "open_questions": [
   {
    "question": "Каково актуальное название и место публикации arXiv:2302.12173 (Greshake et al.)?",

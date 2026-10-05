@@ -1,0 +1,16 @@
+{
+ "pilot": "E5",
+ "script": "research/astana-results/13_architecture_ai_thesis/extracted_files__34_/kk_numeral_filter.py",
+ "script_sha256": "4199facae5097f92b88c767eae4cb6f308d24f16a3098f9cfd97c8a45884cb8c",
+ "reported_result": "research/astana-results/13_architecture_ai_thesis/extracted_files__34_/kk_numeral_filter_result.json",
+ "reported_sha256": "81617cd0fa2eedeec551a3f23eae9f4344de609584f5c0cba987c773152b78fa",
+ "city_data_sha256": "403478c12fbe8cf64b9953f4d0ff0e713415be923bf1f241a2c60994b51b66e8",
+ "repo_head": "ea371711360ad9ad4f8f0a92cc023443cf6229fb",
+ "python": "3.12.3",
+ "returncode": 0,
+ "stderr_tail": "",
+ "wall_seconds": 0.0,
+ "path_substitution": "/home/claude/stupits -> repo root (только в копии)",
+ "numpy": "2.4.4",
+ "jsonschema": "4.26.0"
+}
