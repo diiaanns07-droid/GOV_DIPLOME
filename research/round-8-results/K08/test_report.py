@@ -22,6 +22,32 @@ import report as R  # noqa: E402
 
 APP = None
 FIX = HERE / "fixtures"
+ALLOWED_TAGS = {"html", "head", "meta", "title", "style", "body", "h1", "h2", "p", "b", "span", "table", "thead", "tbody",
+                "tr", "th", "td", "ul", "li"}
+ALLOWED_ATTRS = {"lang", "charset", "http-equiv", "content", "name", "class"}
+
+
+def markup_audit(h):
+    """Разобрать HTML: теги и атрибуты вне белого списка (то, что браузер действительно исполнит/загрузит)."""
+    from html.parser import HTMLParser
+    bad = []
+
+    class A(HTMLParser):
+        def handle_starttag(self, tag, attrs):
+            if tag not in ALLOWED_TAGS:
+                bad.append(("tag", tag))
+            for k, v in attrs:
+                if k not in ALLOWED_ATTRS:
+                    bad.append(("attr", tag, k))
+    A(convert_charrefs=True).feed(h)
+    return bad
+
+
+def text_sentences(h):
+    """Текст страницы без тегов, разбитый на предложения/пункты."""
+    import html as H
+    t = H.unescape(re.sub(r"<[^>]+>", "\n", h))
+    return [x.strip() for x in re.split(r"[\n.;]", t) if x.strip()]
 
 
 def load(name):
@@ -132,17 +158,76 @@ class TestReport(Base):
     def test_html_self_contained(self):
         for name in ("shymkent_school_demo", "astana_clinic_demo", "astana_clinic_infeasible"):
             _, h = self.build(name)
-            self.assertNotRegex(h.lower(), r"<script|<iframe|<object|<embed|<link|<img|javascript:|\son\w+=")
-            self.assertNotRegex(h, r"(src|href)=")
+            self.assertEqual(markup_audit(h), [])
             self.assertIn("default-src 'none'", h)
             for w in ("условные единицы", "параметр анализа", "Не решение акимата", "Ограничения", "haversine-mm-v1"):
                 self.assertIn(w, h)
 
     def test_no_forbidden_claims(self):
-        _, h = self.build("astana_clinic_demo")
-        body = h.split("<h2>Ограничения</h2>")[0].split("<h2>Допущения</h2>")[0].lower()
-        for w in ("минут", "пешком за", "изохрон", "населени", "экономи", "тенге", "доказывает"):
-            self.assertNotIn(w, body, w)
+        for name in ("shymkent_school_demo", "astana_clinic_demo", "astana_clinic_infeasible"):
+            _, h = self.build(name)
+            # утверждения = предложения без отрицания/оговорки; оговорки («не учитываются», «нельзя», «не тенге») допустимы
+            claims = [x.lower() for x in text_sentences(h) if not re.search(r"\bне\b|нельзя|без ", x.lower())]
+            for w in ("минут", "пешком за", "изохрон", "населени", "экономи", "тенге", "доказывает", "обеспеченност"):
+                self.assertFalse([c for c in claims if w in c], (name, w))
+
+
+# ---------------- этап 2: сравнение стратегий ----------------
+class TestComparison(Base):
+    def build(self, sc):
+        meta = R.build_report(P.plan_result(self.ctx, sc), "2026-10-05T00:00:00Z")
+        return meta, R.render_html(meta)
+
+    def test_identical_plans_collapsed(self):
+        meta, h = self.build(self.sc("astana_clinic_demo"))
+        self.assertEqual(len(meta["comparison"]["groups"]), 1)
+        self.assertEqual(h.count("<h2>По точкам:"), 1)
+        self.assertIn("один и тот же набор, а не три решения", h)
+
+    def test_distinct_plans_each_have_point_table(self):
+        meta, h = self.build(self.sc("shymkent_school_demo"))
+        g = meta["comparison"]["groups"]
+        self.assertEqual(sorted(k for x in g for k in x["strategies"]), ["coverage", "manual", "mean", "minimax"])
+        self.assertEqual(h.count("<h2>По точкам:"), len(g))
+        npts = len(meta["scenario"]["control_points"])
+        for sec in h.split("<h2>По точкам:")[1:]:
+            self.assertEqual(sec.split("</table>")[0].count("<tr>") - 1, npts)
+
+    def test_metrics_consistent_with_rows(self):
+        meta, _ = self.build(self.sc("shymkent_school_demo"))
+        for k, p in meta["plans"].items():
+            ws = sum(r["weight"] * r["after_mm"] for r in p["rows"] if r["after_mm"] is not None)
+            self.assertEqual(ws, p["metrics"]["weighted_sum_mm"], k)
+            self.assertEqual(max(r["after_mm"] for r in p["rows"]), p["metrics"]["max_mm"], k)
+            cost = sum(c["cost"] for c in meta["scenario"]["candidates"] if c["id"] in p["selected_ids"])
+            self.assertEqual(cost, p["metrics"]["cost"], k)
+
+    def test_budget_conditional_and_sources(self):
+        _, h = self.build(self.sc("shymkent_school_demo"))
+        self.assertIn("условные единицы, не тенге и не смета", h)
+        self.assertIn("Исходные записи, использованные как ближайшие", h)
+        self.assertRegex(h, r"CDLA-Permissive-2\.0")
+        self.assertIn("Атрибуция поставщиков данных среза", h)
+        self.assertIn("не LLM", h)
+
+    def test_infeasible_reported(self):
+        meta, h = self.build(self.sc("astana_clinic_infeasible"))
+        self.assertEqual(meta["optimization"]["status"], "infeasible")
+        self.assertIn("Нет допустимых наборов", h)
+        self.assertIn("Ограничения не снимались", h)
+
+    def test_user_strings_are_text_not_markup(self):
+        raw = load("shymkent_school_demo")
+        evil = {"c1": "<script>alert(1)</script>", "c2": "https://evil.example/x", "c3": "\"><img src=x onerror=1>"}
+        for c in raw["candidates"]:
+            c["id"] = evil.get(c["id"], c["id"])
+        raw["control_points"][0]["id"] = "javascript:alert(1)"
+        raw["selected_ids"] = [evil["c1"]]
+        raw["excluded_ids"] = []
+        meta, h = self.build(P.validate_plan_scenario(raw, self.ctx))
+        self.assertEqual(markup_audit(h), [])
+        self.assertIn("&lt;script&gt;alert(1)&lt;/script&gt;", h)
+        self.assertIn("https://evil.example/x", h)  # как текст, без ссылки
 
 
 if __name__ == "__main__":

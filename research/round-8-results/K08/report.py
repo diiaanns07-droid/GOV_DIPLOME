@@ -68,6 +68,9 @@ def build_report(res, generated_utc=None):
         "assumptions": ASSUMPTIONS, "limitations": LIMITATIONS,
         "status_note": "Гипотетический сценарный отчёт. Не решение акимата и не доказательство пользы строительства.",
     }
+    meta["comparison"] = {"groups": [{"selected_ids": (res["plans"][rep] or {}).get("selected_ids"), "strategies": ks}
+                                     for rep, ks in plan_groups(res["plans"])],
+                          "explanation": explain(meta), "explanation_kind": "template over computed facts (not LLM)"}
     return meta
 
 
@@ -129,24 +132,96 @@ def render_html(meta):
     return "\n".join(parts)
 
 
+def plan_groups(plans):
+    """Свернуть одинаковые наборы: [(ключ_представителя, [ключи стратегий]), ...] в порядке manual, mean, minimax, coverage."""
+    groups = []
+    for k in ("manual", "mean", "minimax", "coverage"):
+        p = plans.get(k)
+        sel = tuple(p["selected_ids"]) if p else None
+        for g in groups:
+            if g[2] == sel:
+                g[1].append(k)
+                break
+        else:
+            groups.append((k, [k], sel))
+    return [(g[0], g[1]) for g in groups]
+
+
+def explain(meta):
+    """Шаблонное объяснение по вычисленным фактам (не LLM)."""
+    pl, opt = meta["plans"], meta["optimization"]
+    out = []
+    if opt["status"] != "optimal":
+        return ["Допустимых наборов нет: " + "; ".join(opt.get("infeasible_reasons") or []) + ". Ограничения не снимались."]
+    groups = plan_groups(pl)
+    if len(groups) == 1:
+        out.append("Ручной план совпадает со всеми тремя оптимальными наборами; это один и тот же набор, а не три решения.")
+    else:
+        for rep, ks in groups:
+            if len(ks) > 1:
+                out.append("Совпадают: " + ", ".join(STRATEGY_LABEL[k] for k in ks) + ".")
+    m = {k: pl[k]["metrics"] for k in ("mean", "minimax", "coverage") if pl.get(k)}
+    if pl["mean"]["selected_ids"] != pl["minimax"]["selected_ids"]:
+        out.append(f"«Средневзвешенное» и «худшая точка» дают разные наборы: средневзвешенное {m_fmt(m['mean']['weighted_mean_mm'])} м против "
+                   f"{m_fmt(m['minimax']['weighted_mean_mm'])} м, худшая точка {m_fmt(m['mean']['max_mm'])} м против {m_fmt(m['minimax']['max_mm'])} м.")
+    if pl["coverage"]["selected_ids"] != pl["mean"]["selected_ids"]:
+        out.append(f"«Охват» выбирает набор с весом в радиусе {m['coverage']['covered_weight']} против {m['mean']['covered_weight']} у «средневзвешенного».")
+    out.append(f"Оптимум найден полным перебором {opt['evaluated']} наборов ({opt['feasible_count']} допустимых) только среди введённых кандидатов при условном бюджете.")
+    out.append("Вывод о вместимости, нагрузке или пользе для жителей из этих расстояний сделать нельзя: мощность и население не учитываются.")
+    return out
+
+
 def _plans_section(meta, cands):
-    """Этап 1: ручной план. Этап 2 расширяет сравнением стратегий (см. _compare_section)."""
-    man = meta["plans"]["manual"]
-    out = ["<h2>Ручной план</h2>",
-           f"<p>Выбрано: {e(', '.join(man['selected_ids']) or 'ничего')} · допустим: {e('да' if man['feasibility']['feasible'] else 'нет')}"
-           + (f" ({e('; '.join(man['feasibility']['reasons']))})" if man["feasibility"]["reasons"] else "") + "</p>"]
-    out.append(_metrics_table({"manual": man}))
+    pl, opt = meta["plans"], meta["optimization"]
+    sc = meta["scenario"]
+    out = ["<h2>Сравнение планов</h2>",
+           f"<p>Бюджет {e(sc['budget'])} <span class=\"tag\">условные единицы, не тенге и не смета</span> · статус поиска: "
+           f"<b>{e(opt['status'])}</b> · перебрано {e(opt['evaluated'])}, допустимо {e(opt['feasible_count'])}. "
+           "Результат поиска — предложение; применяет пользователь.</p>"]
+    man = pl["manual"]
+    if not man["feasibility"]["feasible"]:
+        out.append(f"<p class=\"warn\">Ручной план недопустим: {e('; '.join(man['feasibility']['reasons']))}</p>")
+    if opt["status"] != "optimal":
+        out.append(f"<p class=\"warn\">Нет допустимых наборов: {e('; '.join(opt.get('infeasible_reasons') or []))}</p>")
+    groups = plan_groups(pl)
+    out.append(_metrics_table({rep: pl[rep] for rep, _ in groups}, {rep: ks for rep, ks in groups}))
+    out.append("<h2>Объяснение (шаблон по вычисленным фактам, не LLM)</h2><ul>" + "".join(f"<li>{e(x)}</li>" for x in explain(meta)) + "</ul>")
+    names = {r["id"]: r.get("name") for r in meta["source_records"]}
+    for rep, ks in groups:
+        p = pl[rep]
+        if p is None:
+            continue
+        out.append(f"<h2>По точкам: {e(' = '.join(STRATEGY_LABEL[k] for k in ks))}</h2>")
+        rows = []
+        for r in p["rows"]:
+            na = r["nearest_after"]
+            who = "—" if na is None else (f"исходная запись {na['id']} {names.get(na['id']) or ''}".strip() if na["kind"] == "source"
+                                          else f"гипотетический {na['id']}")
+            rows.append([r["id"], r["weight"], m_fmt(r["before_mm"]), m_fmt(r["after_mm"]),
+                         m_fmt(r["delta_mm"]) if r["delta_mm"] is not None else "—", who])
+        out.append(_table(["Точка", "Вес", "До, м", "После, м", "Разница, м (по прямой)", "Ближайшая после"], rows, (1, 2, 3, 4)))
+    if opt["pareto"]:
+        out.append("<h2>Парето: условная стоимость → взвешенная сумма расстояний</h2>" + _table(
+            ["Стоимость, усл. ед.", "Взвешенная сумма, м", "Объекты"],
+            [[x["cost"], m_fmt(x["weighted_sum_mm"]), ", ".join(x["selected_ids"]) or "∅"] for x in opt["pareto"]], (0, 1)))
+    out.append("<h2>Изменение бюджета (те же кандидаты, веса, ограничения)</h2>" + _table(
+        ["Бюджет, усл. ед.", "Статус", "Средневзв.", "Худшая точка", "Охват", "Средневзв., м"],
+        [[s["budget"], s["status"]] + [", ".join(s["objectives"][k]) if s["objectives"].get(k) is not None else "—" for k in ("mean", "minimax", "coverage")]
+         + [m_fmt(s["mean_metrics"]["weighted_mean_mm"]) if s["mean_metrics"] and s["mean_metrics"]["weighted_mean_mm"] is not None else "—"]
+         for s in meta["sensitivity"]], (0, 5))
+        + "<p class=\"muted\">Исследование параметра бюджета, не прогноз экономии и не вероятностная устойчивость.</p>")
     return "\n".join(out)
 
 
-def _metrics_table(plans):
+def _metrics_table(plans, merged=None):
     rows = []
     for k, p in plans.items():
+        label = " = ".join(STRATEGY_LABEL.get(x, x) for x in (merged or {}).get(k, [k]))
         if p is None:
-            rows.append([STRATEGY_LABEL.get(k, k), "нет допустимого плана", "", "", "", "", "", ""])
+            rows.append([label, "нет допустимого плана", "", "", "", "", "", ""])
             continue
         m = p["metrics"]
-        rows.append([STRATEGY_LABEL.get(k, k), ", ".join(p["selected_ids"]) or "∅", m["cost"],
+        rows.append([label, ", ".join(p["selected_ids"]) or "∅", m["cost"],
                      m_fmt(m["weighted_mean_mm"]) if m["weighted_mean_mm"] is not None else "—",
                      m_fmt(m["max_mm"]), f"{m['covered_weight']} ({m['coverage_fraction']:.0%})", m["unknown_count"],
                      "да" if p["feasibility"]["feasible"] else "нет"])
