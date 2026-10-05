@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Карта доступности K07</title>
+<style>
+:root {
+  color-scheme: light;
+  --page: #f9f9f7; --surface: #fcfcfb; --surface-2: #f3f2ee;
+  --ink: #0b0b0b; --ink-2: #52514e; --muted: #898781;
+  --grid: #e1e0d9; --base: #c3c2b7; --ring: rgba(11,11,11,0.10);
+  --s-education: #2a78d6; --s-health: #eb6834; --s-government: #1baf7a;
+  --warning: #fab219; --critical: #d03b3b; --good: #0ca30c;
+  --focus: #2a78d6;
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    color-scheme: dark;
+    --page: #0d0d0d; --surface: #1a1a19; --surface-2: #232321;
+    --ink: #ffffff; --ink-2: #c3c2b7; --muted: #898781;
+    --grid: #2c2c2a; --base: #383835; --ring: rgba(255,255,255,0.10);
+    --s-education: #3987e5; --s-health: #d95926; --s-government: #199e70;
+    --focus: #3987e5;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0d0d0d; --surface: #1a1a19; --surface-2: #232321;
+  --ink: #ffffff; --ink-2: #c3c2b7; --muted: #898781;
+  --grid: #2c2c2a; --base: #383835; --ring: rgba(255,255,255,0.10);
+  --s-education: #3987e5; --s-health: #d95926; --s-government: #199e70;
+  --focus: #3987e5;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--page); color: var(--ink);
+  font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+header { padding: 14px 16px 6px; }
+h1 { font-size: 18px; margin: 0 0 4px; }
+.sub { color: var(--ink-2); margin: 0; }
+.banner { margin: 8px 16px 0; padding: 8px 12px; border-radius: 8px; background: var(--surface-2);
+  border: 1px solid var(--ring); color: var(--ink-2); }
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; padding: 10px 16px;
+  border-bottom: 1px solid var(--grid); }
+.seg { display: inline-flex; border: 1px solid var(--base); border-radius: 8px; overflow: hidden; }
+.seg button { border: 0; background: var(--surface); color: var(--ink); padding: 6px 14px; font: inherit; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--surface); }
+.chk { display: inline-flex; align-items: center; gap: 5px; cursor: pointer; white-space: nowrap; }
+.chk svg { flex: none; }
+.ctl { display: inline-flex; align-items: center; gap: 6px; }
+#groupFilters { flex-wrap: wrap; gap: 6px 12px; }
+button.tool { border: 1px solid var(--base); background: var(--surface); color: var(--ink); border-radius: 8px;
+  padding: 5px 10px; font: inherit; cursor: pointer; }
+button.tool[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+button:focus-visible, [tabindex]:focus-visible, input:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+main { display: grid; grid-template-columns: minmax(0, 1fr) 400px; gap: 12px; padding: 12px 16px 24px; }
+@media (max-width: 960px) { main { grid-template-columns: minmax(0, 1fr); } }
+.mapwrap { position: relative; background: var(--surface); border: 1px solid var(--ring); border-radius: 10px;
+  min-height: 420px; height: 72vh; overflow: hidden; touch-action: none; }
+#map { width: 100%; height: 100%; display: block; cursor: grab; }
+#map.pointmode { cursor: crosshair; }
+.zoom { position: absolute; right: 10px; top: 10px; display: flex; flex-direction: column; gap: 4px; }
+.zoom button { width: 32px; height: 32px; }
+.overlay-msg { position: absolute; left: 50%; top: 12px; transform: translateX(-50%); background: var(--surface);
+  border: 1px solid var(--base); border-radius: 8px; padding: 6px 10px; color: var(--ink-2); max-width: 80%; }
+.tooltip { position: absolute; pointer-events: none; background: var(--surface); color: var(--ink);
+  border: 1px solid var(--base); border-radius: 6px; padding: 6px 8px; font-size: 12px; max-width: 260px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12); display: none; }
+.tooltip strong { display: block; }
+.legend-note { position: absolute; left: 10px; bottom: 8px; font-size: 11px; color: var(--muted);
+  background: var(--surface); padding: 2px 6px; border-radius: 4px; }
+aside { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.card { background: var(--surface); border: 1px solid var(--ring); border-radius: 10px; padding: 12px 14px; min-width: 0; overflow-x: auto; }
+.card h2 { font-size: 15px; margin: 0 0 8px; }
+.card h3 { font-size: 13px; margin: 10px 0 4px; color: var(--ink-2); }
+dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 3px 10px; margin: 0; }
+dt { color: var(--ink-2); }
+dd { margin: 0; overflow-wrap: anywhere; }
+.badge { display: inline-block; font-size: 11px; padding: 0 6px; border-radius: 9px; border: 1px solid var(--base);
+  color: var(--ink-2); margin-left: 4px; white-space: nowrap; }
+.status { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; padding: 3px 8px; border-radius: 6px;
+  border: 1px solid var(--base); }
+.status .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--warning); }
+.status.ok .dot { background: var(--good); }
+ul.reasons { margin: 6px 0 0; padding-left: 18px; }
+ul.reasons li { margin: 3px 0; }
+table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+th, td { text-align: left; padding: 4px 6px; border-bottom: 1px solid var(--grid); vertical-align: top; overflow-wrap: break-word; }
+td.num { white-space: nowrap; }
+#map text { paint-order: stroke; stroke: var(--surface); stroke-width: 3px; stroke-linejoin: round; }
+th { color: var(--ink-2); font-weight: 600; white-space: nowrap; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+tbody tr { cursor: pointer; }
+tbody tr:hover, tbody tr.sel { background: var(--surface-2); }
+.tablewrap { max-height: 340px; overflow: auto; }
+.muted { color: var(--muted); }
+.warn { color: var(--ink); border-left: 3px solid var(--warning); padding-left: 8px; margin: 8px 0; }
+.err { border-left: 3px solid var(--critical); padding-left: 8px; }
+details summary { cursor: pointer; color: var(--ink-2); }
+code { font-size: 12px; background: var(--surface-2); padding: 0 3px; border-radius: 3px; overflow-wrap: anywhere; }
+a { color: var(--focus); }
+</style>
+</head>
+<body>
+<header>
+  <h1>Карта доступности соцобъектов · K07 (изолированный прототип)</h1>
+  <p class="sub">Просмотр сохранённых образцов K10 (Overture Maps 2026-09-23.1) для Шымкента и Астаны. Не основной сайт и не учебная модель STUPITS.</p>
+</header>
+<div class="banner" id="banner">Это <strong>выборка</strong> объектов, а не городской реестр. Географическая доступность ≠ обеспеченность местами: мощность школ и число детей неизвестны.</div>
+
+<div class="toolbar" role="toolbar" aria-label="Фильтры и режимы">
+  <div class="seg" role="group" aria-label="Город" id="citySeg"></div>
+  <div class="ctl" id="groupFilters" role="group" aria-label="Группы объектов"></div>
+  <label class="chk"><input type="checkbox" id="tRoads" checked> Дороги (выборка)</label>
+  <label class="chk"><input type="checkbox" id="tDistricts" checked> Районы</label>
+  <label class="chk"><input type="checkbox" id="tClip" checked> Рамка запроса K10</label>
+  <span class="ctl"><button class="tool" id="pointBtn" aria-pressed="false">Выбрать точку на карте</button></span>
+  <label class="ctl" for="thr">Порог T <input type="range" id="thr" min="200" max="3000" step="100" value="800"> <output id="thrOut">800 м</output></label>
+</div>
+
+<main>
+  <section class="mapwrap" aria-label="Карта">
+    <svg id="map" role="img" aria-label="Карта выбранного города"></svg>
+    <div class="zoom">
+      <button class="tool" id="zIn" aria-label="Приблизить">+</button>
+      <button class="tool" id="zOut" aria-label="Отдалить">−</button>
+      <button class="tool" id="zReset" aria-label="Показать весь город">⟲</button>
+    </div>
+    <div class="overlay-msg" id="mapMsg" hidden></div>
+    <div class="tooltip" id="tip" role="status"></div>
+    <div class="legend-note" id="attrib"></div>
+  </section>
+  <aside>
+    <section class="card" id="selCard" aria-live="polite"><h2>Выбор</h2><p class="muted" id="selEmpty">Нажмите на объект или дорогу. Чтобы сравнить расстояния, включите «Выбрать точку на карте» и нажмите на карту.</p><div id="selBody"></div></section>
+    <section class="card" id="graphCard"><h2>Пешеходный граф</h2><div id="graphBody"></div></section>
+    <section class="card" id="provCard"><h2>Данные и происхождение</h2><div id="provBody"></div></section>
+    <section class="card"><h2>Таблица объектов <span class="muted" id="tblCount"></span></h2>
+      <div class="tablewrap"><table aria-label="Объекты выборки"><thead><tr><th>Объект</th><th>Группа</th><th>Район (K07)</th><th class="num">conf.</th></tr></thead><tbody id="tbl"></tbody></table></div>
+    </section>
+  </aside>
+</main>
+<noscript><p class="banner err">Для прототипа нужен JavaScript.</p></noscript>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

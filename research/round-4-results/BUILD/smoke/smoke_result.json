@@ -1,0 +1,50 @@
+{
+ "url": "web/index.html (file://)",
+ "results": [
+  {
+   "name": "shymkent loads with table and markers",
+   "ok": true,
+   "detail": "{\"city\":\"shymkent\",\"rows\":55,\"count\":\"(55 из 55 записей среза)\",\"markers\":55}"
+  },
+  {
+   "name": "object card opens from table",
+   "ok": true,
+   "detail": "Высший педагогический колледж ShymkentКатегорияКолледж / вуз (образование)правил"
+  },
+  {
+   "name": "astana resets selection and shows its own slice",
+   "ok": true,
+   "detail": "{\"city\":\"astana\",\"sel\":null,\"rows\":65,\"hasOld\":false}"
+  },
+  {
+   "name": "category filter (Astana schools = 8 records)",
+   "ok": true,
+   "detail": "8"
+  },
+  {
+   "name": "empty state is explicit",
+   "ok": true,
+   "detail": "Не выбрана ни одна категория — включите категории в панели фильтров."
+  },
+  {
+   "name": "segment card shows foot-access status and no walking time",
+   "ok": true,
+   "detail": "Дорога (OSM через Overture)КлассresidentialнаблюдениеНазваниеМихаил Лермонтов көшесіДлина78 мгеодези"
+  },
+  {
+   "name": "narrow viewport has no horizontal scroll",
+   "ok": true,
+   "detail": "{\"sw\":380,\"cw\":380}"
+  },
+  {
+   "name": "no console/page errors",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "no network requests (file:// only)",
+   "ok": true,
+   "detail": ""
+  }
+ ]
+}

@@ -1,0 +1,294 @@
+{
+ "package": "K10 round-3 compact geo-package (Shymkent + Astana)",
+ "release": "2026-09-23.1",
+ "bucket": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com",
+ "not_extracted_columns": {
+  "places": [
+   "phones",
+   "emails",
+   "socials",
+   "websites",
+   "brand"
+  ],
+  "segments": [
+   "rail_flags",
+   "prohibited_transitions",
+   "routes",
+   "destinations"
+  ]
+ },
+ "tool_versions": {
+  "python": "3.11.15",
+  "pyarrow": "25.0.1",
+  "shapely": "2.1.2",
+  "requests": "2.34.2"
+ },
+ "cities": {
+  "shymkent": {
+   "city": "shymkent",
+   "bbox": [
+    69.593365,
+    42.306645,
+    69.617658,
+    42.324611
+   ],
+   "selection": {
+    "path": "selection/shymkent_bbox_selection.json",
+    "sha256": "5d76ee95e214e52390ad6b933b8e0374b088aa97df9b10a03c82e42a0e76e862"
+   },
+   "started_utc": "2026-10-05T06:18:23+00:00",
+   "finished_utc": "2026-10-05T06:19:53+00:00",
+   "queries": {
+    "places": {
+     "listing_prefix": "release/2026-09-23.1/theme=places/type=place/",
+     "files": [
+      {
+       "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/part-00014-1d36203b-4312-5a97-b9e0-5c110ae7a274-c000.zstd.parquet",
+       "bytes_total": 683038313,
+       "row_groups_total": 256,
+       "row_groups_read": [
+        90
+       ]
+      }
+     ],
+     "rows_scanned_in_row_groups": 12973,
+     "columns": [
+      "id",
+      "geometry",
+      "version",
+      "confidence",
+      "names",
+      "basic_category",
+      "taxonomy",
+      "operating_status",
+      "addresses",
+      "sources",
+      "bbox"
+     ],
+     "query": "point within bbox AND K10 social rule (k10_rules.social_group)",
+     "places_in_bbox_any_category": 616
+    },
+    "segments": {
+     "listing_prefix": "release/2026-09-23.1/theme=transportation/type=segment/",
+     "files": [
+      {
+       "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=transportation/type=segment/part-00093-3890aff8-6851-5d36-bf50-ee70780d0973-c000.zstd.parquet",
+       "bytes_total": 459817294,
+       "row_groups_total": 128,
+       "row_groups_read": [
+        109,
+        120,
+        121
+       ]
+      }
+     ],
+     "rows_scanned_in_row_groups": 71965,
+     "columns": [
+      "id",
+      "geometry",
+      "version",
+      "subtype",
+      "class",
+      "subclass",
+      "subclass_rules",
+      "names",
+      "connectors",
+      "road_surface",
+      "road_flags",
+      "level_rules",
+      "width_rules",
+      "access_restrictions",
+      "speed_limits",
+      "sources",
+      "bbox"
+     ],
+     "query": "segment geometry intersects bbox (full geometry kept)"
+    },
+    "connectors": {
+     "listing_prefix": "release/2026-09-23.1/theme=transportation/type=connector/",
+     "files": [
+      {
+       "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=transportation/type=connector/part-00029-25e6c25e-cc0d-5701-aff6-402da8d56ce5-c000.zstd.parquet",
+       "bytes_total": 768931490,
+       "row_groups_total": 256,
+       "row_groups_read": [
+        106
+       ]
+      }
+     ],
+     "rows_scanned_in_row_groups": 53926,
+     "columns": [
+      "id",
+      "geometry",
+      "version",
+      "sources",
+      "bbox"
+     ],
+     "query_bbox_envelope_of_segments": [
+      69.5871079,
+      42.3017327,
+      69.6197146,
+      42.3462292
+     ],
+     "query": "connector id referenced by kept segments",
+     "referenced_ids": 1729
+    }
+   },
+   "files": {
+    "places_social": {
+     "path": "data/shymkent/places_social.geojson",
+     "sha256": "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7",
+     "bytes": 66574,
+     "features": 55
+    },
+    "segments": {
+     "path": "data/shymkent/segments.geojson",
+     "sha256": "055b0e7aaef8d5b42fdbb6663f46ef245156b33a0f92b8f94cc73ab7a9c77648",
+     "bytes": 1312363,
+     "features": 1084
+    },
+    "connectors": {
+     "path": "data/shymkent/connectors.geojson",
+     "sha256": "8bbd25959eef559abeccb39d99884d96caf920d219f5a71f11298ade5e27bca0",
+     "bytes": 851736,
+     "features": 1729
+    }
+   }
+  },
+  "astana": {
+   "city": "astana",
+   "bbox": [
+    71.418372,
+    51.163033,
+    71.447,
+    51.181
+   ],
+   "selection": {
+    "path": "selection/astana_bbox_selection.json",
+    "sha256": "3643892ff81e4db65a18a1a8fc397db2c47e3e8d0d23fd32c07c8243aac979a8"
+   },
+   "started_utc": "2026-10-05T06:19:53+00:00",
+   "finished_utc": "2026-10-05T06:20:01+00:00",
+   "queries": {
+    "places": {
+     "listing_prefix": "release/2026-09-23.1/theme=places/type=place/",
+     "files": [
+      {
+       "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/part-00014-1d36203b-4312-5a97-b9e0-5c110ae7a274-c000.zstd.parquet",
+       "bytes_total": 683038313,
+       "row_groups_total": 256,
+       "row_groups_read": [
+        91
+       ]
+      }
+     ],
+     "rows_scanned_in_row_groups": 15733,
+     "columns": [
+      "id",
+      "geometry",
+      "version",
+      "confidence",
+      "names",
+      "basic_category",
+      "taxonomy",
+      "operating_status",
+      "addresses",
+      "sources",
+      "bbox"
+     ],
+     "query": "point within bbox AND K10 social rule (k10_rules.social_group)",
+     "places_in_bbox_any_category": 801
+    },
+    "segments": {
+     "listing_prefix": "release/2026-09-23.1/theme=transportation/type=segment/",
+     "files": [
+      {
+       "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=transportation/type=segment/part-00093-3890aff8-6851-5d36-bf50-ee70780d0973-c000.zstd.parquet",
+       "bytes_total": 459817294,
+       "row_groups_total": 128,
+       "row_groups_read": [
+        123,
+        126,
+        127
+       ]
+      }
+     ],
+     "rows_scanned_in_row_groups": 65000,
+     "columns": [
+      "id",
+      "geometry",
+      "version",
+      "subtype",
+      "class",
+      "subclass",
+      "subclass_rules",
+      "names",
+      "connectors",
+      "road_surface",
+      "road_flags",
+      "level_rules",
+      "width_rules",
+      "access_restrictions",
+      "speed_limits",
+      "sources",
+      "bbox"
+     ],
+     "query": "segment geometry intersects bbox (full geometry kept)"
+    },
+    "connectors": {
+     "listing_prefix": "release/2026-09-23.1/theme=transportation/type=connector/",
+     "files": [
+      {
+       "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=transportation/type=connector/part-00029-25e6c25e-cc0d-5701-aff6-402da8d56ce5-c000.zstd.parquet",
+       "bytes_total": 768931490,
+       "row_groups_total": 256,
+       "row_groups_read": [
+        209
+       ]
+      }
+     ],
+     "rows_scanned_in_row_groups": 56475,
+     "columns": [
+      "id",
+      "geometry",
+      "version",
+      "sources",
+      "bbox"
+     ],
+     "query_bbox_envelope_of_segments": [
+      71.4138133,
+      51.158798,
+      71.4504406,
+      51.189521
+     ],
+     "query": "connector id referenced by kept segments",
+     "referenced_ids": 2309
+    }
+   },
+   "files": {
+    "places_social": {
+     "path": "data/astana/places_social.geojson",
+     "sha256": "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343",
+     "bytes": 78960,
+     "features": 65
+    },
+    "segments": {
+     "path": "data/astana/segments.geojson",
+     "sha256": "5fc1b3b5f6cabad6e2edfd042bb3727aa8fd0c7bcba9962175025e37eb08dbb9",
+     "bytes": 1712993,
+     "features": 1326
+    },
+    "connectors": {
+     "path": "data/astana/connectors.geojson",
+     "sha256": "74a77d2ed250d6a55ee478054a6e89a4de15fc96f65063176a1194345994e801",
+     "bytes": 1131848,
+     "features": 2309
+    }
+   }
+  }
+ },
+ "download_stats": {
+  "requests": 533,
+  "bytes": 350354430
+ }
+}

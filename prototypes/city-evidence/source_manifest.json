@@ -1,0 +1,140 @@
+{
+ "snapshots": "research/round-4/snapshots.json @ codex/research-import-2026-10-05 cadba4d",
+ "files": [
+  {
+   "slot": "K10",
+   "branch": "claude/save-work-handoff-j7pc05",
+   "sha": "ea703f1ddd3a411430a981164a78a7dda64ec909",
+   "path": "research/round-3-results/K10/package_manifest.json",
+   "copied_to": "inputs/k10/package_manifest.json",
+   "bytes": 7764,
+   "sha256": "0616c08b65285ed4a5324c9e0238a31bec004857705cdb22c6b26e032fa4551d"
+  },
+  {
+   "slot": "K10",
+   "branch": "claude/save-work-handoff-j7pc05",
+   "sha": "ea703f1ddd3a411430a981164a78a7dda64ec909",
+   "path": "research/round-3-results/K10/data/shymkent/places_social.geojson",
+   "copied_to": "inputs/k10/data/shymkent/places_social.geojson",
+   "bytes": 66574,
+   "sha256": "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7"
+  },
+  {
+   "slot": "K10",
+   "branch": "claude/save-work-handoff-j7pc05",
+   "sha": "ea703f1ddd3a411430a981164a78a7dda64ec909",
+   "path": "research/round-3-results/K10/data/shymkent/segments.geojson",
+   "copied_to": "inputs/k10/data/shymkent/segments.geojson",
+   "bytes": 1312363,
+   "sha256": "055b0e7aaef8d5b42fdbb6663f46ef245156b33a0f92b8f94cc73ab7a9c77648"
+  },
+  {
+   "slot": "K10",
+   "branch": "claude/save-work-handoff-j7pc05",
+   "sha": "ea703f1ddd3a411430a981164a78a7dda64ec909",
+   "path": "research/round-3-results/K10/data/shymkent/connectors.geojson",
+   "copied_to": "inputs/k10/data/shymkent/connectors.geojson",
+   "bytes": 851736,
+   "sha256": "8bbd25959eef559abeccb39d99884d96caf920d219f5a71f11298ade5e27bca0"
+  },
+  {
+   "slot": "K10",
+   "branch": "claude/save-work-handoff-j7pc05",
+   "sha": "ea703f1ddd3a411430a981164a78a7dda64ec909",
+   "path": "research/round-3-results/K10/data/astana/places_social.geojson",
+   "copied_to": "inputs/k10/data/astana/places_social.geojson",
+   "bytes": 78960,
+   "sha256": "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343"
+  },
+  {
+   "slot": "K10",
+   "branch": "claude/save-work-handoff-j7pc05",
+   "sha": "ea703f1ddd3a411430a981164a78a7dda64ec909",
+   "path": "research/round-3-results/K10/data/astana/segments.geojson",
+   "copied_to": "inputs/k10/data/astana/segments.geojson",
+   "bytes": 1712993,
+   "sha256": "5fc1b3b5f6cabad6e2edfd042bb3727aa8fd0c7bcba9962175025e37eb08dbb9"
+  },
+  {
+   "slot": "K10",
+   "branch": "claude/save-work-handoff-j7pc05",
+   "sha": "ea703f1ddd3a411430a981164a78a7dda64ec909",
+   "path": "research/round-3-results/K10/data/astana/connectors.geojson",
+   "copied_to": "inputs/k10/data/astana/connectors.geojson",
+   "bytes": 1131848,
+   "sha256": "74a77d2ed250d6a55ee478054a6e89a4de15fc96f65063176a1194345994e801"
+  },
+  {
+   "slot": "K10",
+   "branch": "claude/save-work-handoff-j7pc05",
+   "sha": "ea703f1ddd3a411430a981164a78a7dda64ec909",
+   "path": "research/round-3-results/K10/scripts/offline_check.py",
+   "copied_to": "inputs/k10/scripts/offline_check.py",
+   "bytes": 11829,
+   "sha256": "76ec71af561e814b32bbaed2d58325611a2615ff3f691ea0c44ce23632da29e5"
+  },
+  {
+   "slot": "K10",
+   "branch": "claude/save-work-handoff-j7pc05",
+   "sha": "ea703f1ddd3a411430a981164a78a7dda64ec909",
+   "path": "research/round-3-results/K10/scripts/geo_util.py",
+   "copied_to": "inputs/k10/scripts/geo_util.py",
+   "bytes": 865,
+   "sha256": "ab82d5f5567548122707c2b64a4a22136522198099403c12ed39d01fbb9940e8"
+  },
+  {
+   "slot": "K10",
+   "branch": "claude/save-work-handoff-j7pc05",
+   "sha": "ea703f1ddd3a411430a981164a78a7dda64ec909",
+   "path": "research/round-3-results/K10/scripts/k10_rules.py",
+   "copied_to": "inputs/k10/scripts/k10_rules.py",
+   "bytes": 3142,
+   "sha256": "28f4c1eff7a5a98ee2b84b376bc7448303db75bf6edecda77e4d9c178a838591"
+  },
+  {
+   "slot": "K10",
+   "branch": "claude/save-work-handoff-j7pc05",
+   "sha": "ea703f1ddd3a411430a981164a78a7dda64ec909",
+   "path": "research/round-3-results/K10/INPUT_FOR_K07.md",
+   "copied_to": "inputs/k10/INPUT_FOR_K07.md",
+   "bytes": 6265,
+   "sha256": "f5745da26c39ec12491b1e025f2730d2014e71f5d99d03b2c599b19d2709c878"
+  },
+  {
+   "slot": "K10",
+   "branch": "claude/save-work-handoff-j7pc05",
+   "sha": "ea703f1ddd3a411430a981164a78a7dda64ec909",
+   "path": "research/round-3-results/K10/README.md",
+   "copied_to": "inputs/k10/README.md",
+   "bytes": 6706,
+   "sha256": "4c00694f213eea98261f80ebb3b1183700d2c201c2424fc1343f52559f91f5ea"
+  },
+  {
+   "slot": "K07",
+   "branch": "claude/save-work-handoff-ku3ej3",
+   "sha": "6778deda6d3f3a7f27698f651c1b0046d2a9aae9",
+   "path": "research/round-3-results/K07/prototype/index.html",
+   "copied_to": "inputs/k07/prototype/index.html",
+   "bytes": 9530,
+   "sha256": "dbe69dcf3c514b30bd14543d4f235e12301d477ae4cb06a615d67190355a153a"
+  },
+  {
+   "slot": "K07",
+   "branch": "claude/save-work-handoff-ku3ej3",
+   "sha": "6778deda6d3f3a7f27698f651c1b0046d2a9aae9",
+   "path": "research/round-3-results/K07/prototype/app.js",
+   "copied_to": "inputs/k07/prototype/app.js",
+   "bytes": 29423,
+   "sha256": "710c66f704a014b3dde22fd4d854516b4ca45da3a04be84ab20c27fab94e4956"
+  },
+  {
+   "slot": "K07",
+   "branch": "claude/save-work-handoff-ku3ej3",
+   "sha": "6778deda6d3f3a7f27698f651c1b0046d2a9aae9",
+   "path": "research/round-3-results/K07/README.md",
+   "copied_to": "inputs/k07/README.md",
+   "bytes": 10371,
+   "sha256": "7e425c7a568b378d96557967a47dda5fde701b6f37222579c927c8665e1f172f"
+  }
+ ]
+}
