@@ -1,0 +1,828 @@
+{
+ "category": "outpatient_clinic",
+ "city_id": "shymkent",
+ "fictional_fields": [
+  "control_points",
+  "proposed_object"
+ ],
+ "fixture_id": "shymkent-outpatient_clinic-place-move-delete",
+ "formula": {
+  "clamp": [
+   0,
+   1
+  ],
+  "input": "[lon, lat]",
+  "name": "haversine",
+  "radius_m": 6371008.8,
+  "rounding": "output only"
+ },
+ "kind": "real_slice",
+ "rules": {
+  "control_points": "bbox fractions (x=lon share, y=lat share): cp1 (0.25,0.25), cp2 (0.50,0.50), cp3 (0.75,0.75); fixed before computing",
+  "meaning": "control points are user-chosen places, not homes with known population; delta>0 means a shorter straight-line distance only",
+  "proposed_object": "placed at bbox fraction (0.50,0.50), then moved to (0.05,0.95), then deleted; fixed before computing",
+  "qa_nearest_control_point": "at the coordinate of the largest qa.colocated group holding records of the category; else at the smallest-id QA-flagged record of the category; else not built",
+  "tie_break": "equal distances -> smallest id (string order); a proposed object at equal distance does not replace the source record"
+ },
+ "source": {
+  "build_commit": "c58a3b2b175cf978ad785fef7f88d8fd9b1338f2",
+  "k10_package": {
+   "branch": "claude/save-work-handoff-j7pc05",
+   "data_commit": "602f0c0b6d5db741d20909082086982b3c812c07"
+  },
+  "places_social_file": "inputs/k10/data/shymkent/places_social.geojson",
+  "places_social_sha256": "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7",
+  "snapshot_components": {
+   "bbox": [
+    69.593365,
+    42.306645,
+    69.617658,
+    42.324611
+   ],
+   "city": "shymkent",
+   "formula": {
+    "clamp": [
+     0,
+     1
+    ],
+    "input": "[lon, lat]",
+    "name": "haversine",
+    "radius_m": 6371008.8,
+    "rounding": "output only"
+   },
+   "places_social_sha256": "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7",
+   "release": "2026-09-23.1",
+   "schema": "k10-snapshot-v1",
+   "ui_places_digest": "056f36c056c4058c2a3ef818a6a0c5bbc144e6d86c87386dbaea6b43de36a91a"
+  },
+  "web_data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "web_evidence_js_sha256": "df736e986145da33dee60f692e020486720b72db5b6116af31640cc8693b11b9"
+ },
+ "source_copy": {
+  "category_records": [
+   {
+    "group": "outpatient_clinic",
+    "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+    "lat": 42.3167,
+    "lon": 69.5958,
+    "qa_flags": [
+     "COLOCATED"
+    ]
+   },
+   {
+    "group": "outpatient_clinic",
+    "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f",
+    "lat": 42.306934,
+    "lon": 69.607757,
+    "qa_flags": []
+   },
+   {
+    "group": "outpatient_clinic",
+    "id": "2264dcf0-549d-451a-b846-3f207d411e0c",
+    "lat": 42.3167,
+    "lon": 69.5958,
+    "qa_flags": [
+     "COLOCATED"
+    ]
+   },
+   {
+    "group": "outpatient_clinic",
+    "id": "50802484-b7f9-492e-8a4c-f75312fc7751",
+    "lat": 42.31757,
+    "lon": 69.60702,
+    "qa_flags": [
+     "COLOCATED",
+     "POSSIBLE_DUPLICATE"
+    ]
+   },
+   {
+    "group": "outpatient_clinic",
+    "id": "621acb4b-a1bd-45ce-891f-c0a4634a6103",
+    "lat": 42.317791,
+    "lon": 69.601822,
+    "qa_flags": []
+   },
+   {
+    "group": "outpatient_clinic",
+    "id": "622b4786-89fa-4853-b109-18054e3ebe0d",
+    "lat": 42.31757,
+    "lon": 69.60702,
+    "qa_flags": [
+     "CATEGORY_DOUBT",
+     "COLOCATED",
+     "POSSIBLE_DUPLICATE"
+    ]
+   },
+   {
+    "group": "outpatient_clinic",
+    "id": "6e92676a-1297-446d-9956-731023da6339",
+    "lat": 42.32423,
+    "lon": 69.59527,
+    "qa_flags": []
+   },
+   {
+    "group": "outpatient_clinic",
+    "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60",
+    "lat": 42.31437,
+    "lon": 69.609396,
+    "qa_flags": []
+   },
+   {
+    "group": "outpatient_clinic",
+    "id": "833280f2-ff82-4dd6-a174-d2a9203420fa",
+    "lat": 42.31758,
+    "lon": 69.60702,
+    "qa_flags": []
+   },
+   {
+    "group": "outpatient_clinic",
+    "id": "99c68068-aa6e-4ff2-af5f-455675f93313",
+    "lat": 42.32122,
+    "lon": 69.59586,
+    "qa_flags": []
+   },
+   {
+    "group": "outpatient_clinic",
+    "id": "a10bb8cf-c446-4066-9cda-a5befa189a60",
+    "lat": 42.313453,
+    "lon": 69.61684,
+    "qa_flags": []
+   },
+   {
+    "group": "outpatient_clinic",
+    "id": "b845d434-7da3-4755-9ae9-bb6d40fc7520",
+    "lat": 42.323312,
+    "lon": 69.602416,
+    "qa_flags": []
+   },
+   {
+    "group": "outpatient_clinic",
+    "id": "c2990416-dca7-4e3a-b539-30e69cadf724",
+    "lat": 42.3167,
+    "lon": 69.5958,
+    "qa_flags": [
+     "COLOCATED"
+    ]
+   },
+   {
+    "group": "outpatient_clinic",
+    "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354",
+    "lat": 42.31673,
+    "lon": 69.615192,
+    "qa_flags": []
+   },
+   {
+    "group": "outpatient_clinic",
+    "id": "e1b19ead-4505-4acd-8aed-9c561ceec4c0",
+    "lat": 42.31757,
+    "lon": 69.60702,
+    "qa_flags": [
+     "COLOCATED"
+    ]
+   },
+   {
+    "group": "outpatient_clinic",
+    "id": "f4d6818b-1a99-43ca-8533-4c556f448919",
+    "lat": 42.3167,
+    "lon": 69.5958,
+    "qa_flags": [
+     "COLOCATED"
+    ]
+   }
+  ]
+ },
+ "steps": [
+  {
+   "expected": {
+    "category_records_in_slice": 16,
+    "rows": [
+     {
+      "after_m": 687.169509219532,
+      "before_m": 687.169509219532,
+      "control_point_id": "cp1",
+      "delta_m": 0.0,
+      "distance_to_proposed_m": null,
+      "label": null,
+      "nearest_after_id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "nearest_after_source": {
+       "group": "outpatient_clinic",
+       "kind": "source_record",
+       "name": "Dr.Sattarkulovich",
+       "qa_flags": [
+        "COLOCATED"
+       ],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "nearest_before_id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "nearest_before_source": {
+       "group": "outpatient_clinic",
+       "kind": "source_record",
+       "name": "Dr.Sattarkulovich",
+       "qa_flags": [
+        "COLOCATED"
+       ],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "tied_at_before_ids": [
+       "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "2264dcf0-549d-451a-b846-3f207d411e0c",
+       "c2990416-dca7-4e3a-b539-30e69cadf724",
+       "f4d6818b-1a99-43ca-8533-4c556f448919"
+      ]
+     },
+     {
+      "after_m": 249.0265624410697,
+      "before_m": 249.0265624410697,
+      "control_point_id": "cp2",
+      "delta_m": 0.0,
+      "distance_to_proposed_m": null,
+      "label": null,
+      "nearest_after_id": "50802484-b7f9-492e-8a4c-f75312fc7751",
+      "nearest_after_source": {
+       "group": "outpatient_clinic",
+       "kind": "source_record",
+       "name": "Kosmetolog Жазира",
+       "qa_flags": [
+        "COLOCATED",
+        "POSSIBLE_DUPLICATE"
+       ],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "nearest_before_id": "50802484-b7f9-492e-8a4c-f75312fc7751",
+      "nearest_before_source": {
+       "group": "outpatient_clinic",
+       "kind": "source_record",
+       "name": "Kosmetolog Жазира",
+       "qa_flags": [
+        "COLOCATED",
+        "POSSIBLE_DUPLICATE"
+       ],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "tied_at_before_ids": [
+       "50802484-b7f9-492e-8a4c-f75312fc7751",
+       "622b4786-89fa-4853-b109-18054e3ebe0d",
+       "e1b19ead-4505-4acd-8aed-9c561ceec4c0"
+      ]
+     },
+     {
+      "after_m": 469.67479513193217,
+      "before_m": 469.67479513193217,
+      "control_point_id": "cp3",
+      "delta_m": 0.0,
+      "distance_to_proposed_m": null,
+      "label": null,
+      "nearest_after_id": "833280f2-ff82-4dd6-a174-d2a9203420fa",
+      "nearest_after_source": {
+       "group": "outpatient_clinic",
+       "kind": "source_record",
+       "name": "ИП Ауелбекова Р.И.",
+       "qa_flags": [],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "nearest_before_id": "833280f2-ff82-4dd6-a174-d2a9203420fa",
+      "nearest_before_source": {
+       "group": "outpatient_clinic",
+       "kind": "source_record",
+       "name": "ИП Ауелбекова Р.И.",
+       "qa_flags": [],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "tied_at_before_ids": [
+       "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      ]
+     }
+    ]
+   },
+   "scenario": {
+    "category": "outpatient_clinic",
+    "city_id": "shymkent",
+    "control_points": [
+     {
+      "id": "cp1",
+      "lat": 42.3111365,
+      "lon": 69.59943825
+     },
+     {
+      "id": "cp2",
+      "lat": 42.315628000000004,
+      "lon": 69.6055115
+     },
+     {
+      "id": "cp3",
+      "lat": 42.3201195,
+      "lon": 69.61158475
+     }
+    ],
+    "proposed_object": null,
+    "schema_version": "city-whatif-v1",
+    "source_snapshot": "k10s1-0855d9b1b7615bbde93020b8e37c2095"
+   },
+   "step": "baseline"
+  },
+  {
+   "expected": {
+    "category_records_in_slice": 16,
+    "rows": [
+     {
+      "after_m": 687.169509219532,
+      "before_m": 687.169509219532,
+      "control_point_id": "cp1",
+      "delta_m": 0.0,
+      "distance_to_proposed_m": 706.2659565903932,
+      "label": null,
+      "nearest_after_id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "nearest_after_source": {
+       "group": "outpatient_clinic",
+       "kind": "source_record",
+       "name": "Dr.Sattarkulovich",
+       "qa_flags": [
+        "COLOCATED"
+       ],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "nearest_before_id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "nearest_before_source": {
+       "group": "outpatient_clinic",
+       "kind": "source_record",
+       "name": "Dr.Sattarkulovich",
+       "qa_flags": [
+        "COLOCATED"
+       ],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "tied_at_before_ids": [
+       "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "2264dcf0-549d-451a-b846-3f207d411e0c",
+       "c2990416-dca7-4e3a-b539-30e69cadf724",
+       "f4d6818b-1a99-43ca-8533-4c556f448919"
+      ]
+     },
+     {
+      "after_m": 0.0,
+      "before_m": 249.0265624410697,
+      "control_point_id": "cp2",
+      "delta_m": 249.0265624410697,
+      "distance_to_proposed_m": 0.0,
+      "label": null,
+      "nearest_after_id": "proj1",
+      "nearest_after_source": {
+       "kind": "hypothetical"
+      },
+      "nearest_before_id": "50802484-b7f9-492e-8a4c-f75312fc7751",
+      "nearest_before_source": {
+       "group": "outpatient_clinic",
+       "kind": "source_record",
+       "name": "Kosmetolog Жазира",
+       "qa_flags": [
+        "COLOCATED",
+        "POSSIBLE_DUPLICATE"
+       ],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "tied_at_before_ids": [
+       "50802484-b7f9-492e-8a4c-f75312fc7751",
+       "622b4786-89fa-4853-b109-18054e3ebe0d",
+       "e1b19ead-4505-4acd-8aed-9c561ceec4c0"
+      ]
+     },
+     {
+      "after_m": 469.67479513193217,
+      "before_m": 469.67479513193217,
+      "control_point_id": "cp3",
+      "delta_m": 0.0,
+      "distance_to_proposed_m": 706.2407576459979,
+      "label": null,
+      "nearest_after_id": "833280f2-ff82-4dd6-a174-d2a9203420fa",
+      "nearest_after_source": {
+       "group": "outpatient_clinic",
+       "kind": "source_record",
+       "name": "ИП Ауелбекова Р.И.",
+       "qa_flags": [],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "nearest_before_id": "833280f2-ff82-4dd6-a174-d2a9203420fa",
+      "nearest_before_source": {
+       "group": "outpatient_clinic",
+       "kind": "source_record",
+       "name": "ИП Ауелбекова Р.И.",
+       "qa_flags": [],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "tied_at_before_ids": [
+       "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      ]
+     }
+    ]
+   },
+   "scenario": {
+    "category": "outpatient_clinic",
+    "city_id": "shymkent",
+    "control_points": [
+     {
+      "id": "cp1",
+      "lat": 42.3111365,
+      "lon": 69.59943825
+     },
+     {
+      "id": "cp2",
+      "lat": 42.315628000000004,
+      "lon": 69.6055115
+     },
+     {
+      "id": "cp3",
+      "lat": 42.3201195,
+      "lon": 69.61158475
+     }
+    ],
+    "proposed_object": {
+     "category": "outpatient_clinic",
+     "id": "proj1",
+     "kind": "hypothetical",
+     "lat": 42.315628000000004,
+     "lon": 69.6055115
+    },
+    "schema_version": "city-whatif-v1",
+    "source_snapshot": "k10s1-0855d9b1b7615bbde93020b8e37c2095"
+   },
+   "step": "place_proposed"
+  },
+  {
+   "expected": {
+    "category_records_in_slice": 16,
+    "rows": [
+     {
+      "after_m": 687.169509219532,
+      "before_m": 687.169509219532,
+      "control_point_id": "cp1",
+      "delta_m": 0.0,
+      "distance_to_proposed_m": 1454.3509544995602,
+      "label": null,
+      "nearest_after_id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "nearest_after_source": {
+       "group": "outpatient_clinic",
+       "kind": "source_record",
+       "name": "Dr.Sattarkulovich",
+       "qa_flags": [
+        "COLOCATED"
+       ],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "nearest_before_id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "nearest_before_source": {
+       "group": "outpatient_clinic",
+       "kind": "source_record",
+       "name": "Dr.Sattarkulovich",
+       "qa_flags": [
+        "COLOCATED"
+       ],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "tied_at_before_ids": [
+       "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "2264dcf0-549d-451a-b846-3f207d411e0c",
+       "c2990416-dca7-4e3a-b539-30e69cadf724",
+       "f4d6818b-1a99-43ca-8533-4c556f448919"
+      ]
+     },
+     {
+      "after_m": 249.0265624410697,
+      "before_m": 249.0265624410697,
+      "control_point_id": "cp2",
+      "delta_m": 0.0,
+      "distance_to_proposed_m": 1271.215218310493,
+      "label": null,
+      "nearest_after_id": "50802484-b7f9-492e-8a4c-f75312fc7751",
+      "nearest_after_source": {
+       "group": "outpatient_clinic",
+       "kind": "source_record",
+       "name": "Kosmetolog Жазира",
+       "qa_flags": [
+        "COLOCATED",
+        "POSSIBLE_DUPLICATE"
+       ],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "nearest_before_id": "50802484-b7f9-492e-8a4c-f75312fc7751",
+      "nearest_before_source": {
+       "group": "outpatient_clinic",
+       "kind": "source_record",
+       "name": "Kosmetolog Жазира",
+       "qa_flags": [
+        "COLOCATED",
+        "POSSIBLE_DUPLICATE"
+       ],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "tied_at_before_ids": [
+       "50802484-b7f9-492e-8a4c-f75312fc7751",
+       "622b4786-89fa-4853-b109-18054e3ebe0d",
+       "e1b19ead-4505-4acd-8aed-9c561ceec4c0"
+      ]
+     },
+     {
+      "after_m": 469.67479513193217,
+      "before_m": 469.67479513193217,
+      "control_point_id": "cp3",
+      "delta_m": 0.0,
+      "distance_to_proposed_m": 1454.0409093717487,
+      "label": null,
+      "nearest_after_id": "833280f2-ff82-4dd6-a174-d2a9203420fa",
+      "nearest_after_source": {
+       "group": "outpatient_clinic",
+       "kind": "source_record",
+       "name": "ИП Ауелбекова Р.И.",
+       "qa_flags": [],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "nearest_before_id": "833280f2-ff82-4dd6-a174-d2a9203420fa",
+      "nearest_before_source": {
+       "group": "outpatient_clinic",
+       "kind": "source_record",
+       "name": "ИП Ауелбекова Р.И.",
+       "qa_flags": [],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "tied_at_before_ids": [
+       "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      ]
+     }
+    ]
+   },
+   "scenario": {
+    "category": "outpatient_clinic",
+    "city_id": "shymkent",
+    "control_points": [
+     {
+      "id": "cp1",
+      "lat": 42.3111365,
+      "lon": 69.59943825
+     },
+     {
+      "id": "cp2",
+      "lat": 42.315628000000004,
+      "lon": 69.6055115
+     },
+     {
+      "id": "cp3",
+      "lat": 42.3201195,
+      "lon": 69.61158475
+     }
+    ],
+    "proposed_object": {
+     "category": "outpatient_clinic",
+     "id": "proj1",
+     "kind": "hypothetical",
+     "lat": 42.323712699999994,
+     "lon": 69.59457965
+    },
+    "schema_version": "city-whatif-v1",
+    "source_snapshot": "k10s1-0855d9b1b7615bbde93020b8e37c2095"
+   },
+   "step": "move_proposed"
+  },
+  {
+   "expected": {
+    "category_records_in_slice": 16,
+    "rows": [
+     {
+      "after_m": 687.169509219532,
+      "before_m": 687.169509219532,
+      "control_point_id": "cp1",
+      "delta_m": 0.0,
+      "distance_to_proposed_m": null,
+      "label": null,
+      "nearest_after_id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "nearest_after_source": {
+       "group": "outpatient_clinic",
+       "kind": "source_record",
+       "name": "Dr.Sattarkulovich",
+       "qa_flags": [
+        "COLOCATED"
+       ],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "nearest_before_id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "nearest_before_source": {
+       "group": "outpatient_clinic",
+       "kind": "source_record",
+       "name": "Dr.Sattarkulovich",
+       "qa_flags": [
+        "COLOCATED"
+       ],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "tied_at_before_ids": [
+       "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "2264dcf0-549d-451a-b846-3f207d411e0c",
+       "c2990416-dca7-4e3a-b539-30e69cadf724",
+       "f4d6818b-1a99-43ca-8533-4c556f448919"
+      ]
+     },
+     {
+      "after_m": 249.0265624410697,
+      "before_m": 249.0265624410697,
+      "control_point_id": "cp2",
+      "delta_m": 0.0,
+      "distance_to_proposed_m": null,
+      "label": null,
+      "nearest_after_id": "50802484-b7f9-492e-8a4c-f75312fc7751",
+      "nearest_after_source": {
+       "group": "outpatient_clinic",
+       "kind": "source_record",
+       "name": "Kosmetolog Жазира",
+       "qa_flags": [
+        "COLOCATED",
+        "POSSIBLE_DUPLICATE"
+       ],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "nearest_before_id": "50802484-b7f9-492e-8a4c-f75312fc7751",
+      "nearest_before_source": {
+       "group": "outpatient_clinic",
+       "kind": "source_record",
+       "name": "Kosmetolog Жазира",
+       "qa_flags": [
+        "COLOCATED",
+        "POSSIBLE_DUPLICATE"
+       ],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "tied_at_before_ids": [
+       "50802484-b7f9-492e-8a4c-f75312fc7751",
+       "622b4786-89fa-4853-b109-18054e3ebe0d",
+       "e1b19ead-4505-4acd-8aed-9c561ceec4c0"
+      ]
+     },
+     {
+      "after_m": 469.67479513193217,
+      "before_m": 469.67479513193217,
+      "control_point_id": "cp3",
+      "delta_m": 0.0,
+      "distance_to_proposed_m": null,
+      "label": null,
+      "nearest_after_id": "833280f2-ff82-4dd6-a174-d2a9203420fa",
+      "nearest_after_source": {
+       "group": "outpatient_clinic",
+       "kind": "source_record",
+       "name": "ИП Ауелбекова Р.И.",
+       "qa_flags": [],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "nearest_before_id": "833280f2-ff82-4dd6-a174-d2a9203420fa",
+      "nearest_before_source": {
+       "group": "outpatient_clinic",
+       "kind": "source_record",
+       "name": "ИП Ауелбекова Р.И.",
+       "qa_flags": [],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "tied_at_before_ids": [
+       "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      ]
+     }
+    ]
+   },
+   "scenario": {
+    "category": "outpatient_clinic",
+    "city_id": "shymkent",
+    "control_points": [
+     {
+      "id": "cp1",
+      "lat": 42.3111365,
+      "lon": 69.59943825
+     },
+     {
+      "id": "cp2",
+      "lat": 42.315628000000004,
+      "lon": 69.6055115
+     },
+     {
+      "id": "cp3",
+      "lat": 42.3201195,
+      "lon": 69.61158475
+     }
+    ],
+    "proposed_object": null,
+    "schema_version": "city-whatif-v1",
+    "source_snapshot": "k10s1-0855d9b1b7615bbde93020b8e37c2095"
+   },
+   "step": "delete_proposed"
+  }
+ ]
+}

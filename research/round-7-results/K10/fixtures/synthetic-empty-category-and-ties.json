@@ -1,0 +1,275 @@
+{
+ "fixture_id": "synthetic-empty-category-and-ties",
+ "formula": {
+  "clamp": [
+   0,
+   1
+  ],
+  "input": "[lon, lat]",
+  "name": "haversine",
+  "radius_m": 6371008.8,
+  "rounding": "output only"
+ },
+ "kind": "SYNTHETIC",
+ "note": "Not a real city slice. city_id is set only to satisfy the contract; coordinates are at 10E 10N.",
+ "rules": {
+  "control_points": "bbox fractions (x=lon share, y=lat share): cp1 (0.25,0.25), cp2 (0.50,0.50), cp3 (0.75,0.75); fixed before computing",
+  "meaning": "control points are user-chosen places, not homes with known population; delta>0 means a shorter straight-line distance only",
+  "proposed_object": "placed at bbox fraction (0.50,0.50), then moved to (0.05,0.95), then deleted; fixed before computing",
+  "qa_nearest_control_point": "at the coordinate of the largest qa.colocated group holding records of the category; else at the smallest-id QA-flagged record of the category; else not built",
+  "tie_break": "equal distances -> smallest id (string order); a proposed object at equal distance does not replace the source record"
+ },
+ "steps": [
+  {
+   "expected": {
+    "category_records_in_slice": 0,
+    "rows": [
+     {
+      "after_m": null,
+      "before_m": null,
+      "control_point_id": "cp1",
+      "delta_m": null,
+      "distance_to_proposed_m": null,
+      "label": "В срезе нет исходных записей; улучшение не вычисляется",
+      "nearest_after_id": null,
+      "nearest_before_id": null
+     },
+     {
+      "after_m": null,
+      "before_m": null,
+      "control_point_id": "cp2",
+      "delta_m": null,
+      "distance_to_proposed_m": null,
+      "label": "В срезе нет исходных записей; улучшение не вычисляется",
+      "nearest_after_id": null,
+      "nearest_before_id": null
+     }
+    ]
+   },
+   "scenario": {
+    "category": "outpatient_clinic",
+    "city_id": "shymkent",
+    "control_points": [
+     {
+      "id": "cp1",
+      "lat": 10.01,
+      "lon": 10.01
+     },
+     {
+      "id": "cp2",
+      "lat": 10.005,
+      "lon": 10.015
+     }
+    ],
+    "proposed_object": null,
+    "schema_version": "city-whatif-v1",
+    "source_snapshot": "k10s1-6ecd28f0560276aab5bc67310b74ce95"
+   },
+   "step": "empty_category_no_proposed"
+  },
+  {
+   "expected": {
+    "category_records_in_slice": 0,
+    "rows": [
+     {
+      "after_m": 555.9754011676299,
+      "before_m": null,
+      "control_point_id": "cp1",
+      "delta_m": null,
+      "distance_to_proposed_m": 555.9754011676299,
+      "label": "В срезе нет исходных записей; улучшение не вычисляется",
+      "nearest_after_id": "proj1",
+      "nearest_before_id": null
+     },
+     {
+      "after_m": 1239.4369712825992,
+      "before_m": null,
+      "control_point_id": "cp2",
+      "delta_m": null,
+      "distance_to_proposed_m": 1239.4369712825992,
+      "label": "В срезе нет исходных записей; улучшение не вычисляется",
+      "nearest_after_id": "proj1",
+      "nearest_before_id": null
+     }
+    ]
+   },
+   "scenario": {
+    "category": "outpatient_clinic",
+    "city_id": "shymkent",
+    "control_points": [
+     {
+      "id": "cp1",
+      "lat": 10.01,
+      "lon": 10.01
+     },
+     {
+      "id": "cp2",
+      "lat": 10.005,
+      "lon": 10.015
+     }
+    ],
+    "proposed_object": {
+     "category": "outpatient_clinic",
+     "id": "proj1",
+     "kind": "hypothetical",
+     "lat": 10.015,
+     "lon": 10.01
+    },
+    "schema_version": "city-whatif-v1",
+    "source_snapshot": "k10s1-6ecd28f0560276aab5bc67310b74ce95"
+   },
+   "step": "empty_category_with_proposed"
+  },
+  {
+   "expected": {
+    "category_records_in_slice": 2,
+    "rows": [
+     {
+      "after_m": 0.0,
+      "before_m": 0.0,
+      "control_point_id": "cp1",
+      "delta_m": 0.0,
+      "distance_to_proposed_m": null,
+      "label": null,
+      "nearest_after_id": "syn-school-a",
+      "nearest_before_id": "syn-school-a"
+     },
+     {
+      "after_m": 780.309350919338,
+      "before_m": 780.309350919338,
+      "control_point_id": "cp2",
+      "delta_m": 0.0,
+      "distance_to_proposed_m": null,
+      "label": null,
+      "nearest_after_id": "syn-school-a",
+      "nearest_before_id": "syn-school-a"
+     }
+    ]
+   },
+   "scenario": {
+    "category": "school",
+    "city_id": "shymkent",
+    "control_points": [
+     {
+      "id": "cp1",
+      "lat": 10.01,
+      "lon": 10.01
+     },
+     {
+      "id": "cp2",
+      "lat": 10.005,
+      "lon": 10.015
+     }
+    ],
+    "proposed_object": null,
+    "schema_version": "city-whatif-v1",
+    "source_snapshot": "k10s1-6ecd28f0560276aab5bc67310b74ce95"
+   },
+   "step": "tie_and_honest_zero"
+  },
+  {
+   "expected": {
+    "category_records_in_slice": 2,
+    "rows": [
+     {
+      "after_m": 0.0,
+      "before_m": 0.0,
+      "control_point_id": "cp1",
+      "delta_m": 0.0,
+      "distance_to_proposed_m": 0.0,
+      "label": null,
+      "nearest_after_id": "syn-school-a",
+      "nearest_before_id": "syn-school-a"
+     },
+     {
+      "after_m": 780.309350919338,
+      "before_m": 780.309350919338,
+      "control_point_id": "cp2",
+      "delta_m": 0.0,
+      "distance_to_proposed_m": 780.309350919338,
+      "label": null,
+      "nearest_after_id": "syn-school-a",
+      "nearest_before_id": "syn-school-a"
+     }
+    ]
+   },
+   "scenario": {
+    "category": "school",
+    "city_id": "shymkent",
+    "control_points": [
+     {
+      "id": "cp1",
+      "lat": 10.01,
+      "lon": 10.01
+     },
+     {
+      "id": "cp2",
+      "lat": 10.005,
+      "lon": 10.015
+     }
+    ],
+    "proposed_object": {
+     "category": "school",
+     "id": "proj1",
+     "kind": "hypothetical",
+     "lat": 10.01,
+     "lon": 10.01
+    },
+    "schema_version": "city-whatif-v1",
+    "source_snapshot": "k10s1-6ecd28f0560276aab5bc67310b74ce95"
+   },
+   "step": "proposed_at_equal_distance_keeps_source"
+  }
+ ],
+ "synthetic_slice": {
+  "bbox": [
+   10.0,
+   10.0,
+   10.02,
+   10.02
+  ],
+  "records": [
+   {
+    "group": "pharmacy",
+    "id": "syn-pharmacy-1",
+    "lat": 10.005,
+    "lon": 10.005
+   },
+   {
+    "group": "school",
+    "id": "syn-school-a",
+    "lat": 10.01,
+    "lon": 10.01
+   },
+   {
+    "group": "school",
+    "id": "syn-school-b",
+    "lat": 10.01,
+    "lon": 10.01
+   }
+  ],
+  "snapshot_components": {
+   "bbox": [
+    10.0,
+    10.0,
+    10.02,
+    10.02
+   ],
+   "city": "shymkent",
+   "formula": {
+    "clamp": [
+     0,
+     1
+    ],
+    "input": "[lon, lat]",
+    "name": "haversine",
+    "radius_m": 6371008.8,
+    "rounding": "output only"
+   },
+   "places_social_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+   "release": "SYNTHETIC",
+   "schema": "k10-snapshot-v1",
+   "ui_places_digest": "0548a72047d0ec33cfcd238039c5ab11363d6ecb2f1fba5586ee4002285f6d54"
+  }
+ }
+}

@@ -1,0 +1,141 @@
+{
+ "city_id": "astana",
+ "fixture_id": "astana-invalid-inputs",
+ "kind": "real_slice_invalid_input",
+ "note": "codes are K10 names; an implementation may use its own codes but must reject before computing",
+ "source": {
+  "build_commit": "c58a3b2b175cf978ad785fef7f88d8fd9b1338f2",
+  "k10_package": {
+   "branch": "claude/save-work-handoff-j7pc05",
+   "data_commit": "602f0c0b6d5db741d20909082086982b3c812c07"
+  },
+  "places_social_file": "inputs/k10/data/astana/places_social.geojson",
+  "places_social_sha256": "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343",
+  "snapshot_components": {
+   "bbox": [
+    71.418372,
+    51.163033,
+    71.447,
+    51.181
+   ],
+   "city": "astana",
+   "formula": {
+    "clamp": [
+     0,
+     1
+    ],
+    "input": "[lon, lat]",
+    "name": "haversine",
+    "radius_m": 6371008.8,
+    "rounding": "output only"
+   },
+   "places_social_sha256": "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343",
+   "release": "2026-09-23.1",
+   "schema": "k10-snapshot-v1",
+   "ui_places_digest": "b14cc1c3602444f165b6b53129d5d05efb70a24daa6908f226f8137c7f483aee"
+  },
+  "web_data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "web_evidence_js_sha256": "df736e986145da33dee60f692e020486720b72db5b6116af31640cc8693b11b9"
+ },
+ "steps": [
+  {
+   "expected": {
+    "field": "control_points[0]",
+    "k10_code": "OUT_OF_BBOX",
+    "rejected": true
+   },
+   "scenario": {
+    "category": "school",
+    "city_id": "astana",
+    "control_points": [
+     {
+      "id": "cp1",
+      "lat": 51.1720165,
+      "lon": 71.4498628
+     }
+    ],
+    "proposed_object": null,
+    "schema_version": "city-whatif-v1",
+    "source_snapshot": "k10s1-59d0f03cba8f453ff97122f1212d6e64"
+   },
+   "step": "control_point_out_of_bbox"
+  },
+  {
+   "expected": {
+    "field": "proposed_object.category",
+    "k10_code": "PROPOSED_CATEGORY_MISMATCH",
+    "rejected": true
+   },
+   "scenario": {
+    "category": "school",
+    "city_id": "astana",
+    "control_points": [
+     {
+      "id": "cp1",
+      "lat": 51.16752475,
+      "lon": 71.42552900000001
+     }
+    ],
+    "proposed_object": {
+     "category": "outpatient_clinic",
+     "id": "proj1",
+     "kind": "hypothetical",
+     "lat": 51.1720165,
+     "lon": 71.432686
+    },
+    "schema_version": "city-whatif-v1",
+    "source_snapshot": "k10s1-59d0f03cba8f453ff97122f1212d6e64"
+   },
+   "step": "proposed_category_mismatch"
+  },
+  {
+   "expected": {
+    "field": "source_snapshot",
+    "k10_code": "FOREIGN_SNAPSHOT",
+    "rejected": true
+   },
+   "scenario": {
+    "category": "school",
+    "city_id": "astana",
+    "control_points": [
+     {
+      "id": "cp1",
+      "lat": 51.16752475,
+      "lon": 71.42552900000001
+     }
+    ],
+    "proposed_object": null,
+    "schema_version": "city-whatif-v1",
+    "source_snapshot": "k10s1-00000000000000000000000000000000"
+   },
+   "step": "foreign_snapshot"
+  },
+  {
+   "expected": {
+    "field": "control_points[1].id",
+    "k10_code": "BAD_OR_DUPLICATE_ID",
+    "rejected": true
+   },
+   "scenario": {
+    "category": "school",
+    "city_id": "astana",
+    "control_points": [
+     {
+      "id": "cp1",
+      "lat": 51.16752475,
+      "lon": 71.42552900000001
+     },
+     {
+      "id": "cp1",
+      "lat": 51.1720165,
+      "lon": 71.432686
+     }
+    ],
+    "proposed_object": null,
+    "schema_version": "city-whatif-v1",
+    "source_snapshot": "k10s1-59d0f03cba8f453ff97122f1212d6e64"
+   },
+   "step": "duplicate_ids"
+  }
+ ]
+}

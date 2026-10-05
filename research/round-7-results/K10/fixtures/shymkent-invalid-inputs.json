@@ -1,0 +1,141 @@
+{
+ "city_id": "shymkent",
+ "fixture_id": "shymkent-invalid-inputs",
+ "kind": "real_slice_invalid_input",
+ "note": "codes are K10 names; an implementation may use its own codes but must reject before computing",
+ "source": {
+  "build_commit": "c58a3b2b175cf978ad785fef7f88d8fd9b1338f2",
+  "k10_package": {
+   "branch": "claude/save-work-handoff-j7pc05",
+   "data_commit": "602f0c0b6d5db741d20909082086982b3c812c07"
+  },
+  "places_social_file": "inputs/k10/data/shymkent/places_social.geojson",
+  "places_social_sha256": "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7",
+  "snapshot_components": {
+   "bbox": [
+    69.593365,
+    42.306645,
+    69.617658,
+    42.324611
+   ],
+   "city": "shymkent",
+   "formula": {
+    "clamp": [
+     0,
+     1
+    ],
+    "input": "[lon, lat]",
+    "name": "haversine",
+    "radius_m": 6371008.8,
+    "rounding": "output only"
+   },
+   "places_social_sha256": "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7",
+   "release": "2026-09-23.1",
+   "schema": "k10-snapshot-v1",
+   "ui_places_digest": "056f36c056c4058c2a3ef818a6a0c5bbc144e6d86c87386dbaea6b43de36a91a"
+  },
+  "web_data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "web_evidence_js_sha256": "df736e986145da33dee60f692e020486720b72db5b6116af31640cc8693b11b9"
+ },
+ "steps": [
+  {
+   "expected": {
+    "field": "control_points[0]",
+    "k10_code": "OUT_OF_BBOX",
+    "rejected": true
+   },
+   "scenario": {
+    "category": "school",
+    "city_id": "shymkent",
+    "control_points": [
+     {
+      "id": "cp1",
+      "lat": 42.315628000000004,
+      "lon": 69.62008730000001
+     }
+    ],
+    "proposed_object": null,
+    "schema_version": "city-whatif-v1",
+    "source_snapshot": "k10s1-0855d9b1b7615bbde93020b8e37c2095"
+   },
+   "step": "control_point_out_of_bbox"
+  },
+  {
+   "expected": {
+    "field": "proposed_object.category",
+    "k10_code": "PROPOSED_CATEGORY_MISMATCH",
+    "rejected": true
+   },
+   "scenario": {
+    "category": "school",
+    "city_id": "shymkent",
+    "control_points": [
+     {
+      "id": "cp1",
+      "lat": 42.3111365,
+      "lon": 69.59943825
+     }
+    ],
+    "proposed_object": {
+     "category": "outpatient_clinic",
+     "id": "proj1",
+     "kind": "hypothetical",
+     "lat": 42.315628000000004,
+     "lon": 69.6055115
+    },
+    "schema_version": "city-whatif-v1",
+    "source_snapshot": "k10s1-0855d9b1b7615bbde93020b8e37c2095"
+   },
+   "step": "proposed_category_mismatch"
+  },
+  {
+   "expected": {
+    "field": "source_snapshot",
+    "k10_code": "FOREIGN_SNAPSHOT",
+    "rejected": true
+   },
+   "scenario": {
+    "category": "school",
+    "city_id": "shymkent",
+    "control_points": [
+     {
+      "id": "cp1",
+      "lat": 42.3111365,
+      "lon": 69.59943825
+     }
+    ],
+    "proposed_object": null,
+    "schema_version": "city-whatif-v1",
+    "source_snapshot": "k10s1-00000000000000000000000000000000"
+   },
+   "step": "foreign_snapshot"
+  },
+  {
+   "expected": {
+    "field": "control_points[1].id",
+    "k10_code": "BAD_OR_DUPLICATE_ID",
+    "rejected": true
+   },
+   "scenario": {
+    "category": "school",
+    "city_id": "shymkent",
+    "control_points": [
+     {
+      "id": "cp1",
+      "lat": 42.3111365,
+      "lon": 69.59943825
+     },
+     {
+      "id": "cp1",
+      "lat": 42.315628000000004,
+      "lon": 69.6055115
+     }
+    ],
+    "proposed_object": null,
+    "schema_version": "city-whatif-v1",
+    "source_snapshot": "k10s1-0855d9b1b7615bbde93020b8e37c2095"
+   },
+   "step": "duplicate_ids"
+  }
+ ]
+}

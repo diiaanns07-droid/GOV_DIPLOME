@@ -1,0 +1,689 @@
+{
+ "category": "school",
+ "city_id": "astana",
+ "fictional_fields": [
+  "control_points",
+  "proposed_object"
+ ],
+ "fixture_id": "astana-school-place-move-delete",
+ "formula": {
+  "clamp": [
+   0,
+   1
+  ],
+  "input": "[lon, lat]",
+  "name": "haversine",
+  "radius_m": 6371008.8,
+  "rounding": "output only"
+ },
+ "kind": "real_slice",
+ "rules": {
+  "control_points": "bbox fractions (x=lon share, y=lat share): cp1 (0.25,0.25), cp2 (0.50,0.50), cp3 (0.75,0.75); fixed before computing",
+  "meaning": "control points are user-chosen places, not homes with known population; delta>0 means a shorter straight-line distance only",
+  "proposed_object": "placed at bbox fraction (0.50,0.50), then moved to (0.05,0.95), then deleted; fixed before computing",
+  "qa_nearest_control_point": "at the coordinate of the largest qa.colocated group holding records of the category; else at the smallest-id QA-flagged record of the category; else not built",
+  "tie_break": "equal distances -> smallest id (string order); a proposed object at equal distance does not replace the source record"
+ },
+ "source": {
+  "build_commit": "c58a3b2b175cf978ad785fef7f88d8fd9b1338f2",
+  "k10_package": {
+   "branch": "claude/save-work-handoff-j7pc05",
+   "data_commit": "602f0c0b6d5db741d20909082086982b3c812c07"
+  },
+  "places_social_file": "inputs/k10/data/astana/places_social.geojson",
+  "places_social_sha256": "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343",
+  "snapshot_components": {
+   "bbox": [
+    71.418372,
+    51.163033,
+    71.447,
+    51.181
+   ],
+   "city": "astana",
+   "formula": {
+    "clamp": [
+     0,
+     1
+    ],
+    "input": "[lon, lat]",
+    "name": "haversine",
+    "radius_m": 6371008.8,
+    "rounding": "output only"
+   },
+   "places_social_sha256": "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343",
+   "release": "2026-09-23.1",
+   "schema": "k10-snapshot-v1",
+   "ui_places_digest": "b14cc1c3602444f165b6b53129d5d05efb70a24daa6908f226f8137c7f483aee"
+  },
+  "web_data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "web_evidence_js_sha256": "df736e986145da33dee60f692e020486720b72db5b6116af31640cc8693b11b9"
+ },
+ "source_copy": {
+  "category_records": [
+   {
+    "group": "school",
+    "id": "7b39e048-341b-454a-a63c-4b7e1ae73e9f",
+    "lat": 51.17087,
+    "lon": 71.42501,
+    "qa_flags": []
+   },
+   {
+    "group": "school",
+    "id": "8ca53724-c558-46b7-826b-13e3e8fbb7e6",
+    "lat": 51.166662,
+    "lon": 71.445305,
+    "qa_flags": []
+   },
+   {
+    "group": "school",
+    "id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+    "lat": 51.16862,
+    "lon": 71.43372,
+    "qa_flags": []
+   },
+   {
+    "group": "school",
+    "id": "a4483f53-7de8-4df1-b61b-b4066b0ad5dd",
+    "lat": 51.16765,
+    "lon": 71.42298,
+    "qa_flags": []
+   },
+   {
+    "group": "school",
+    "id": "b5dd5f1a-9d55-48b1-9d68-7172ea84da3f",
+    "lat": 51.16473,
+    "lon": 71.44184,
+    "qa_flags": []
+   },
+   {
+    "group": "school",
+    "id": "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a",
+    "lat": 51.1677,
+    "lon": 71.423338,
+    "qa_flags": []
+   },
+   {
+    "group": "school",
+    "id": "c97435da-cd05-4549-bec1-ff297e858554",
+    "lat": 51.177527,
+    "lon": 71.420262,
+    "qa_flags": []
+   },
+   {
+    "group": "school",
+    "id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783",
+    "lat": 51.179297,
+    "lon": 71.426672,
+    "qa_flags": []
+   }
+  ]
+ },
+ "steps": [
+  {
+   "expected": {
+    "category_records_in_slice": 8,
+    "rows": [
+     {
+      "after_m": 154.0036700064555,
+      "before_m": 154.0036700064555,
+      "control_point_id": "cp1",
+      "delta_m": 0.0,
+      "distance_to_proposed_m": null,
+      "label": null,
+      "nearest_after_id": "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a",
+      "nearest_after_source": {
+       "group": "school",
+       "kind": "source_record",
+       "name": "Учебный Центр Expert-A",
+       "qa_flags": [],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "nearest_before_id": "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a",
+      "nearest_before_source": {
+       "group": "school",
+       "kind": "source_record",
+       "name": "Учебный Центр Expert-A",
+       "qa_flags": [],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "tied_at_before_ids": [
+       "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a"
+      ]
+     },
+     {
+      "after_m": 384.492883076367,
+      "before_m": 384.492883076367,
+      "control_point_id": "cp2",
+      "delta_m": 0.0,
+      "distance_to_proposed_m": null,
+      "label": null,
+      "nearest_after_id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+      "nearest_after_source": {
+       "group": "school",
+       "kind": "source_record",
+       "name": "Учебный ЦЕНТР ФПРК",
+       "qa_flags": [],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "nearest_before_id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+      "nearest_before_source": {
+       "group": "school",
+       "kind": "source_record",
+       "name": "Учебный ЦЕНТР ФПРК",
+       "qa_flags": [],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "tied_at_before_ids": [
+       "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2"
+      ]
+     },
+     {
+      "after_m": 969.0857925654047,
+      "before_m": 969.0857925654047,
+      "control_point_id": "cp3",
+      "delta_m": 0.0,
+      "distance_to_proposed_m": null,
+      "label": null,
+      "nearest_after_id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783",
+      "nearest_after_source": {
+       "group": "school",
+       "kind": "source_record",
+       "name": "\"Школа \"Почемучка\"\"",
+       "qa_flags": [],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "nearest_before_id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783",
+      "nearest_before_source": {
+       "group": "school",
+       "kind": "source_record",
+       "name": "\"Школа \"Почемучка\"\"",
+       "qa_flags": [],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "tied_at_before_ids": [
+       "de04f003-bb3d-4ea7-93e1-cd825e5c1783"
+      ]
+     }
+    ]
+   },
+   "scenario": {
+    "category": "school",
+    "city_id": "astana",
+    "control_points": [
+     {
+      "id": "cp1",
+      "lat": 51.16752475,
+      "lon": 71.42552900000001
+     },
+     {
+      "id": "cp2",
+      "lat": 51.1720165,
+      "lon": 71.432686
+     },
+     {
+      "id": "cp3",
+      "lat": 51.17650825,
+      "lon": 71.439843
+     }
+    ],
+    "proposed_object": null,
+    "schema_version": "city-whatif-v1",
+    "source_snapshot": "k10s1-59d0f03cba8f453ff97122f1212d6e64"
+   },
+   "step": "baseline"
+  },
+  {
+   "expected": {
+    "category_records_in_slice": 8,
+    "rows": [
+     {
+      "after_m": 154.0036700064555,
+      "before_m": 154.0036700064555,
+      "control_point_id": "cp1",
+      "delta_m": 0.0,
+      "distance_to_proposed_m": 706.0133191546685,
+      "label": null,
+      "nearest_after_id": "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a",
+      "nearest_after_source": {
+       "group": "school",
+       "kind": "source_record",
+       "name": "Учебный Центр Expert-A",
+       "qa_flags": [],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "nearest_before_id": "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a",
+      "nearest_before_source": {
+       "group": "school",
+       "kind": "source_record",
+       "name": "Учебный Центр Expert-A",
+       "qa_flags": [],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "tied_at_before_ids": [
+       "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a"
+      ]
+     },
+     {
+      "after_m": 0.0,
+      "before_m": 384.492883076367,
+      "control_point_id": "cp2",
+      "delta_m": 384.492883076367,
+      "distance_to_proposed_m": 0.0,
+      "label": null,
+      "nearest_after_id": "proj1",
+      "nearest_after_source": {
+       "kind": "hypothetical"
+      },
+      "nearest_before_id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+      "nearest_before_source": {
+       "group": "school",
+       "kind": "source_record",
+       "name": "Учебный ЦЕНТР ФПРК",
+       "qa_flags": [],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "tied_at_before_ids": [
+       "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2"
+      ]
+     },
+     {
+      "after_m": 705.97896844498,
+      "before_m": 969.0857925654047,
+      "control_point_id": "cp3",
+      "delta_m": 263.1068241204248,
+      "distance_to_proposed_m": 705.97896844498,
+      "label": null,
+      "nearest_after_id": "proj1",
+      "nearest_after_source": {
+       "kind": "hypothetical"
+      },
+      "nearest_before_id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783",
+      "nearest_before_source": {
+       "group": "school",
+       "kind": "source_record",
+       "name": "\"Школа \"Почемучка\"\"",
+       "qa_flags": [],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "tied_at_before_ids": [
+       "de04f003-bb3d-4ea7-93e1-cd825e5c1783"
+      ]
+     }
+    ]
+   },
+   "scenario": {
+    "category": "school",
+    "city_id": "astana",
+    "control_points": [
+     {
+      "id": "cp1",
+      "lat": 51.16752475,
+      "lon": 71.42552900000001
+     },
+     {
+      "id": "cp2",
+      "lat": 51.1720165,
+      "lon": 71.432686
+     },
+     {
+      "id": "cp3",
+      "lat": 51.17650825,
+      "lon": 71.439843
+     }
+    ],
+    "proposed_object": {
+     "category": "school",
+     "id": "proj1",
+     "kind": "hypothetical",
+     "lat": 51.1720165,
+     "lon": 71.432686
+    },
+    "schema_version": "city-whatif-v1",
+    "source_snapshot": "k10s1-59d0f03cba8f453ff97122f1212d6e64"
+   },
+   "step": "place_proposed"
+  },
+  {
+   "expected": {
+    "category_records_in_slice": 8,
+    "rows": [
+     {
+      "after_m": 154.0036700064555,
+      "before_m": 154.0036700064555,
+      "control_point_id": "cp1",
+      "delta_m": 0.0,
+      "distance_to_proposed_m": 1454.3386273325896,
+      "label": null,
+      "nearest_after_id": "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a",
+      "nearest_after_source": {
+       "group": "school",
+       "kind": "source_record",
+       "name": "Учебный Центр Expert-A",
+       "qa_flags": [],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "nearest_before_id": "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a",
+      "nearest_before_source": {
+       "group": "school",
+       "kind": "source_record",
+       "name": "Учебный Центр Expert-A",
+       "qa_flags": [],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "tied_at_before_ids": [
+       "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a"
+      ]
+     },
+     {
+      "after_m": 384.492883076367,
+      "before_m": 384.492883076367,
+      "control_point_id": "cp2",
+      "delta_m": 0.0,
+      "distance_to_proposed_m": 1270.7374078306084,
+      "label": null,
+      "nearest_after_id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+      "nearest_after_source": {
+       "group": "school",
+       "kind": "source_record",
+       "name": "Учебный ЦЕНТР ФПРК",
+       "qa_flags": [],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "nearest_before_id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+      "nearest_before_source": {
+       "group": "school",
+       "kind": "source_record",
+       "name": "Учебный ЦЕНТР ФПРК",
+       "qa_flags": [],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "tied_at_before_ids": [
+       "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2"
+      ]
+     },
+     {
+      "after_m": 969.0857925654047,
+      "before_m": 969.0857925654047,
+      "control_point_id": "cp3",
+      "delta_m": 0.0,
+      "distance_to_proposed_m": 1452.9437294605782,
+      "label": null,
+      "nearest_after_id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783",
+      "nearest_after_source": {
+       "group": "school",
+       "kind": "source_record",
+       "name": "\"Школа \"Почемучка\"\"",
+       "qa_flags": [],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "nearest_before_id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783",
+      "nearest_before_source": {
+       "group": "school",
+       "kind": "source_record",
+       "name": "\"Школа \"Почемучка\"\"",
+       "qa_flags": [],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "tied_at_before_ids": [
+       "de04f003-bb3d-4ea7-93e1-cd825e5c1783"
+      ]
+     }
+    ]
+   },
+   "scenario": {
+    "category": "school",
+    "city_id": "astana",
+    "control_points": [
+     {
+      "id": "cp1",
+      "lat": 51.16752475,
+      "lon": 71.42552900000001
+     },
+     {
+      "id": "cp2",
+      "lat": 51.1720165,
+      "lon": 71.432686
+     },
+     {
+      "id": "cp3",
+      "lat": 51.17650825,
+      "lon": 71.439843
+     }
+    ],
+    "proposed_object": {
+     "category": "school",
+     "id": "proj1",
+     "kind": "hypothetical",
+     "lat": 51.18010165,
+     "lon": 71.4198034
+    },
+    "schema_version": "city-whatif-v1",
+    "source_snapshot": "k10s1-59d0f03cba8f453ff97122f1212d6e64"
+   },
+   "step": "move_proposed"
+  },
+  {
+   "expected": {
+    "category_records_in_slice": 8,
+    "rows": [
+     {
+      "after_m": 154.0036700064555,
+      "before_m": 154.0036700064555,
+      "control_point_id": "cp1",
+      "delta_m": 0.0,
+      "distance_to_proposed_m": null,
+      "label": null,
+      "nearest_after_id": "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a",
+      "nearest_after_source": {
+       "group": "school",
+       "kind": "source_record",
+       "name": "Учебный Центр Expert-A",
+       "qa_flags": [],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "nearest_before_id": "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a",
+      "nearest_before_source": {
+       "group": "school",
+       "kind": "source_record",
+       "name": "Учебный Центр Expert-A",
+       "qa_flags": [],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "tied_at_before_ids": [
+       "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a"
+      ]
+     },
+     {
+      "after_m": 384.492883076367,
+      "before_m": 384.492883076367,
+      "control_point_id": "cp2",
+      "delta_m": 0.0,
+      "distance_to_proposed_m": null,
+      "label": null,
+      "nearest_after_id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+      "nearest_after_source": {
+       "group": "school",
+       "kind": "source_record",
+       "name": "Учебный ЦЕНТР ФПРК",
+       "qa_flags": [],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "nearest_before_id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+      "nearest_before_source": {
+       "group": "school",
+       "kind": "source_record",
+       "name": "Учебный ЦЕНТР ФПРК",
+       "qa_flags": [],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "tied_at_before_ids": [
+       "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2"
+      ]
+     },
+     {
+      "after_m": 969.0857925654047,
+      "before_m": 969.0857925654047,
+      "control_point_id": "cp3",
+      "delta_m": 0.0,
+      "distance_to_proposed_m": null,
+      "label": null,
+      "nearest_after_id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783",
+      "nearest_after_source": {
+       "group": "school",
+       "kind": "source_record",
+       "name": "\"Школа \"Почемучка\"\"",
+       "qa_flags": [],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "nearest_before_id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783",
+      "nearest_before_source": {
+       "group": "school",
+       "kind": "source_record",
+       "name": "\"Школа \"Почемучка\"\"",
+       "qa_flags": [],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "tied_at_before_ids": [
+       "de04f003-bb3d-4ea7-93e1-cd825e5c1783"
+      ]
+     }
+    ]
+   },
+   "scenario": {
+    "category": "school",
+    "city_id": "astana",
+    "control_points": [
+     {
+      "id": "cp1",
+      "lat": 51.16752475,
+      "lon": 71.42552900000001
+     },
+     {
+      "id": "cp2",
+      "lat": 51.1720165,
+      "lon": 71.432686
+     },
+     {
+      "id": "cp3",
+      "lat": 51.17650825,
+      "lon": 71.439843
+     }
+    ],
+    "proposed_object": null,
+    "schema_version": "city-whatif-v1",
+    "source_snapshot": "k10s1-59d0f03cba8f453ff97122f1212d6e64"
+   },
+   "step": "delete_proposed"
+  }
+ ]
+}

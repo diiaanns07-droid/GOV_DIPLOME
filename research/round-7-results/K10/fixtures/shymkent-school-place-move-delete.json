@@ -1,0 +1,779 @@
+{
+ "category": "school",
+ "city_id": "shymkent",
+ "fictional_fields": [
+  "control_points",
+  "proposed_object"
+ ],
+ "fixture_id": "shymkent-school-place-move-delete",
+ "formula": {
+  "clamp": [
+   0,
+   1
+  ],
+  "input": "[lon, lat]",
+  "name": "haversine",
+  "radius_m": 6371008.8,
+  "rounding": "output only"
+ },
+ "kind": "real_slice",
+ "rules": {
+  "control_points": "bbox fractions (x=lon share, y=lat share): cp1 (0.25,0.25), cp2 (0.50,0.50), cp3 (0.75,0.75); fixed before computing",
+  "meaning": "control points are user-chosen places, not homes with known population; delta>0 means a shorter straight-line distance only",
+  "proposed_object": "placed at bbox fraction (0.50,0.50), then moved to (0.05,0.95), then deleted; fixed before computing",
+  "qa_nearest_control_point": "at the coordinate of the largest qa.colocated group holding records of the category; else at the smallest-id QA-flagged record of the category; else not built",
+  "tie_break": "equal distances -> smallest id (string order); a proposed object at equal distance does not replace the source record"
+ },
+ "source": {
+  "build_commit": "c58a3b2b175cf978ad785fef7f88d8fd9b1338f2",
+  "k10_package": {
+   "branch": "claude/save-work-handoff-j7pc05",
+   "data_commit": "602f0c0b6d5db741d20909082086982b3c812c07"
+  },
+  "places_social_file": "inputs/k10/data/shymkent/places_social.geojson",
+  "places_social_sha256": "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7",
+  "snapshot_components": {
+   "bbox": [
+    69.593365,
+    42.306645,
+    69.617658,
+    42.324611
+   ],
+   "city": "shymkent",
+   "formula": {
+    "clamp": [
+     0,
+     1
+    ],
+    "input": "[lon, lat]",
+    "name": "haversine",
+    "radius_m": 6371008.8,
+    "rounding": "output only"
+   },
+   "places_social_sha256": "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7",
+   "release": "2026-09-23.1",
+   "schema": "k10-snapshot-v1",
+   "ui_places_digest": "056f36c056c4058c2a3ef818a6a0c5bbc144e6d86c87386dbaea6b43de36a91a"
+  },
+  "web_data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "web_evidence_js_sha256": "df736e986145da33dee60f692e020486720b72db5b6116af31640cc8693b11b9"
+ },
+ "source_copy": {
+  "category_records": [
+   {
+    "group": "school",
+    "id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+    "lat": 42.32027,
+    "lon": 69.61052,
+    "qa_flags": [
+     "CATEGORY_DOUBT"
+    ]
+   },
+   {
+    "group": "school",
+    "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+    "lat": 42.31672,
+    "lon": 69.60294,
+    "qa_flags": []
+   },
+   {
+    "group": "school",
+    "id": "176c5993-4b62-4e90-849f-88addc0153bb",
+    "lat": 42.323129,
+    "lon": 69.605699,
+    "qa_flags": []
+   },
+   {
+    "group": "school",
+    "id": "18df815b-170a-437c-977f-0769690315d4",
+    "lat": 42.31276,
+    "lon": 69.61482,
+    "qa_flags": []
+   },
+   {
+    "group": "school",
+    "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+    "lat": 42.3167,
+    "lon": 69.5958,
+    "qa_flags": [
+     "CATEGORY_DOUBT",
+     "COLOCATED"
+    ]
+   },
+   {
+    "group": "school",
+    "id": "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+    "lat": 42.321741,
+    "lon": 69.605231,
+    "qa_flags": []
+   },
+   {
+    "group": "school",
+    "id": "68c8f007-75bc-42f6-8da8-baa72042bde4",
+    "lat": 42.3167,
+    "lon": 69.5958,
+    "qa_flags": [
+     "COLOCATED"
+    ]
+   },
+   {
+    "group": "school",
+    "id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+    "lat": 42.314563,
+    "lon": 69.599229,
+    "qa_flags": []
+   },
+   {
+    "group": "school",
+    "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+    "lat": 42.32353,
+    "lon": 69.59496,
+    "qa_flags": [
+     "POSSIBLE_DUPLICATE"
+    ]
+   },
+   {
+    "group": "school",
+    "id": "9d31b953-ccc4-42bd-a3a3-3e4e21f44051",
+    "lat": 42.3167,
+    "lon": 69.5958,
+    "qa_flags": [
+     "CATEGORY_DOUBT",
+     "COLOCATED"
+    ]
+   },
+   {
+    "group": "school",
+    "id": "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6",
+    "lat": 42.32353,
+    "lon": 69.59496,
+    "qa_flags": [
+     "POSSIBLE_DUPLICATE"
+    ]
+   },
+   {
+    "group": "school",
+    "id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+    "lat": 42.31906,
+    "lon": 69.59895,
+    "qa_flags": []
+   },
+   {
+    "group": "school",
+    "id": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+    "lat": 42.32304,
+    "lon": 69.61557,
+    "qa_flags": []
+   },
+   {
+    "group": "school",
+    "id": "bcd265d0-0799-4dbf-8b15-23bae752a4d2",
+    "lat": 42.32304,
+    "lon": 69.61557,
+    "qa_flags": []
+   },
+   {
+    "group": "school",
+    "id": "fd50a858-462d-477f-8bc6-a8d3e03a9576",
+    "lat": 42.31728,
+    "lon": 69.60322,
+    "qa_flags": [
+     "POSSIBLE_DUPLICATE"
+    ]
+   }
+  ]
+ },
+ "steps": [
+  {
+   "expected": {
+    "category_records_in_slice": 15,
+    "rows": [
+     {
+      "after_m": 381.398242568175,
+      "before_m": 381.398242568175,
+      "control_point_id": "cp1",
+      "delta_m": 0.0,
+      "distance_to_proposed_m": null,
+      "label": null,
+      "nearest_after_id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+      "nearest_after_source": {
+       "group": "school",
+       "kind": "source_record",
+       "name": "Учебный центр Меруерт",
+       "qa_flags": [],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "nearest_before_id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+      "nearest_before_source": {
+       "group": "school",
+       "kind": "source_record",
+       "name": "Учебный центр Меруерт",
+       "qa_flags": [],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "tied_at_before_ids": [
+       "931d6da5-e9db-4523-a6fd-79c88f235f88"
+      ]
+     },
+     {
+      "after_m": 243.82073066477116,
+      "before_m": 243.82073066477116,
+      "control_point_id": "cp2",
+      "delta_m": 0.0,
+      "distance_to_proposed_m": null,
+      "label": null,
+      "nearest_after_id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+      "nearest_after_source": {
+       "group": "school",
+       "kind": "source_record",
+       "name": "М.Х.Дулати атындағы үш тілде оқытатын N8 мамандандырылған  гимназия\" КММ",
+       "qa_flags": [],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "nearest_before_id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+      "nearest_before_source": {
+       "group": "school",
+       "kind": "source_record",
+       "name": "М.Х.Дулати атындағы үш тілде оқытатын N8 мамандандырылған  гимназия\" КММ",
+       "qa_flags": [],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "tied_at_before_ids": [
+       "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+      ]
+     },
+     {
+      "after_m": 89.12572869064523,
+      "before_m": 89.12572869064523,
+      "control_point_id": "cp3",
+      "delta_m": 0.0,
+      "distance_to_proposed_m": null,
+      "label": null,
+      "nearest_after_id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+      "nearest_after_source": {
+       "group": "school",
+       "kind": "source_record",
+       "name": "Реклама 42",
+       "qa_flags": [
+        "CATEGORY_DOUBT"
+       ],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "nearest_before_id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+      "nearest_before_source": {
+       "group": "school",
+       "kind": "source_record",
+       "name": "Реклама 42",
+       "qa_flags": [
+        "CATEGORY_DOUBT"
+       ],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "tied_at_before_ids": [
+       "01961e84-815f-4bd1-85c3-6bf1734256ec"
+      ]
+     }
+    ]
+   },
+   "scenario": {
+    "category": "school",
+    "city_id": "shymkent",
+    "control_points": [
+     {
+      "id": "cp1",
+      "lat": 42.3111365,
+      "lon": 69.59943825
+     },
+     {
+      "id": "cp2",
+      "lat": 42.315628000000004,
+      "lon": 69.6055115
+     },
+     {
+      "id": "cp3",
+      "lat": 42.3201195,
+      "lon": 69.61158475
+     }
+    ],
+    "proposed_object": null,
+    "schema_version": "city-whatif-v1",
+    "source_snapshot": "k10s1-0855d9b1b7615bbde93020b8e37c2095"
+   },
+   "step": "baseline"
+  },
+  {
+   "expected": {
+    "category_records_in_slice": 15,
+    "rows": [
+     {
+      "after_m": 381.398242568175,
+      "before_m": 381.398242568175,
+      "control_point_id": "cp1",
+      "delta_m": 0.0,
+      "distance_to_proposed_m": 706.2659565903932,
+      "label": null,
+      "nearest_after_id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+      "nearest_after_source": {
+       "group": "school",
+       "kind": "source_record",
+       "name": "Учебный центр Меруерт",
+       "qa_flags": [],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "nearest_before_id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+      "nearest_before_source": {
+       "group": "school",
+       "kind": "source_record",
+       "name": "Учебный центр Меруерт",
+       "qa_flags": [],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "tied_at_before_ids": [
+       "931d6da5-e9db-4523-a6fd-79c88f235f88"
+      ]
+     },
+     {
+      "after_m": 0.0,
+      "before_m": 243.82073066477116,
+      "control_point_id": "cp2",
+      "delta_m": 243.82073066477116,
+      "distance_to_proposed_m": 0.0,
+      "label": null,
+      "nearest_after_id": "proj1",
+      "nearest_after_source": {
+       "kind": "hypothetical"
+      },
+      "nearest_before_id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+      "nearest_before_source": {
+       "group": "school",
+       "kind": "source_record",
+       "name": "М.Х.Дулати атындағы үш тілде оқытатын N8 мамандандырылған  гимназия\" КММ",
+       "qa_flags": [],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "tied_at_before_ids": [
+       "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+      ]
+     },
+     {
+      "after_m": 89.12572869064523,
+      "before_m": 89.12572869064523,
+      "control_point_id": "cp3",
+      "delta_m": 0.0,
+      "distance_to_proposed_m": 706.2407576459979,
+      "label": null,
+      "nearest_after_id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+      "nearest_after_source": {
+       "group": "school",
+       "kind": "source_record",
+       "name": "Реклама 42",
+       "qa_flags": [
+        "CATEGORY_DOUBT"
+       ],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "nearest_before_id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+      "nearest_before_source": {
+       "group": "school",
+       "kind": "source_record",
+       "name": "Реклама 42",
+       "qa_flags": [
+        "CATEGORY_DOUBT"
+       ],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "tied_at_before_ids": [
+       "01961e84-815f-4bd1-85c3-6bf1734256ec"
+      ]
+     }
+    ]
+   },
+   "scenario": {
+    "category": "school",
+    "city_id": "shymkent",
+    "control_points": [
+     {
+      "id": "cp1",
+      "lat": 42.3111365,
+      "lon": 69.59943825
+     },
+     {
+      "id": "cp2",
+      "lat": 42.315628000000004,
+      "lon": 69.6055115
+     },
+     {
+      "id": "cp3",
+      "lat": 42.3201195,
+      "lon": 69.61158475
+     }
+    ],
+    "proposed_object": {
+     "category": "school",
+     "id": "proj1",
+     "kind": "hypothetical",
+     "lat": 42.315628000000004,
+     "lon": 69.6055115
+    },
+    "schema_version": "city-whatif-v1",
+    "source_snapshot": "k10s1-0855d9b1b7615bbde93020b8e37c2095"
+   },
+   "step": "place_proposed"
+  },
+  {
+   "expected": {
+    "category_records_in_slice": 15,
+    "rows": [
+     {
+      "after_m": 381.398242568175,
+      "before_m": 381.398242568175,
+      "control_point_id": "cp1",
+      "delta_m": 0.0,
+      "distance_to_proposed_m": 1454.3509544995602,
+      "label": null,
+      "nearest_after_id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+      "nearest_after_source": {
+       "group": "school",
+       "kind": "source_record",
+       "name": "Учебный центр Меруерт",
+       "qa_flags": [],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "nearest_before_id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+      "nearest_before_source": {
+       "group": "school",
+       "kind": "source_record",
+       "name": "Учебный центр Меруерт",
+       "qa_flags": [],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "tied_at_before_ids": [
+       "931d6da5-e9db-4523-a6fd-79c88f235f88"
+      ]
+     },
+     {
+      "after_m": 243.82073066477116,
+      "before_m": 243.82073066477116,
+      "control_point_id": "cp2",
+      "delta_m": 0.0,
+      "distance_to_proposed_m": 1271.215218310493,
+      "label": null,
+      "nearest_after_id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+      "nearest_after_source": {
+       "group": "school",
+       "kind": "source_record",
+       "name": "М.Х.Дулати атындағы үш тілде оқытатын N8 мамандандырылған  гимназия\" КММ",
+       "qa_flags": [],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "nearest_before_id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+      "nearest_before_source": {
+       "group": "school",
+       "kind": "source_record",
+       "name": "М.Х.Дулати атындағы үш тілде оқытатын N8 мамандандырылған  гимназия\" КММ",
+       "qa_flags": [],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "tied_at_before_ids": [
+       "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+      ]
+     },
+     {
+      "after_m": 89.12572869064523,
+      "before_m": 89.12572869064523,
+      "control_point_id": "cp3",
+      "delta_m": 0.0,
+      "distance_to_proposed_m": 1454.0409093717487,
+      "label": null,
+      "nearest_after_id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+      "nearest_after_source": {
+       "group": "school",
+       "kind": "source_record",
+       "name": "Реклама 42",
+       "qa_flags": [
+        "CATEGORY_DOUBT"
+       ],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "nearest_before_id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+      "nearest_before_source": {
+       "group": "school",
+       "kind": "source_record",
+       "name": "Реклама 42",
+       "qa_flags": [
+        "CATEGORY_DOUBT"
+       ],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "tied_at_before_ids": [
+       "01961e84-815f-4bd1-85c3-6bf1734256ec"
+      ]
+     }
+    ]
+   },
+   "scenario": {
+    "category": "school",
+    "city_id": "shymkent",
+    "control_points": [
+     {
+      "id": "cp1",
+      "lat": 42.3111365,
+      "lon": 69.59943825
+     },
+     {
+      "id": "cp2",
+      "lat": 42.315628000000004,
+      "lon": 69.6055115
+     },
+     {
+      "id": "cp3",
+      "lat": 42.3201195,
+      "lon": 69.61158475
+     }
+    ],
+    "proposed_object": {
+     "category": "school",
+     "id": "proj1",
+     "kind": "hypothetical",
+     "lat": 42.323712699999994,
+     "lon": 69.59457965
+    },
+    "schema_version": "city-whatif-v1",
+    "source_snapshot": "k10s1-0855d9b1b7615bbde93020b8e37c2095"
+   },
+   "step": "move_proposed"
+  },
+  {
+   "expected": {
+    "category_records_in_slice": 15,
+    "rows": [
+     {
+      "after_m": 381.398242568175,
+      "before_m": 381.398242568175,
+      "control_point_id": "cp1",
+      "delta_m": 0.0,
+      "distance_to_proposed_m": null,
+      "label": null,
+      "nearest_after_id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+      "nearest_after_source": {
+       "group": "school",
+       "kind": "source_record",
+       "name": "Учебный центр Меруерт",
+       "qa_flags": [],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "nearest_before_id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+      "nearest_before_source": {
+       "group": "school",
+       "kind": "source_record",
+       "name": "Учебный центр Меруерт",
+       "qa_flags": [],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "tied_at_before_ids": [
+       "931d6da5-e9db-4523-a6fd-79c88f235f88"
+      ]
+     },
+     {
+      "after_m": 243.82073066477116,
+      "before_m": 243.82073066477116,
+      "control_point_id": "cp2",
+      "delta_m": 0.0,
+      "distance_to_proposed_m": null,
+      "label": null,
+      "nearest_after_id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+      "nearest_after_source": {
+       "group": "school",
+       "kind": "source_record",
+       "name": "М.Х.Дулати атындағы үш тілде оқытатын N8 мамандандырылған  гимназия\" КММ",
+       "qa_flags": [],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "nearest_before_id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+      "nearest_before_source": {
+       "group": "school",
+       "kind": "source_record",
+       "name": "М.Х.Дулати атындағы үш тілде оқытатын N8 мамандандырылған  гимназия\" КММ",
+       "qa_flags": [],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "tied_at_before_ids": [
+       "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+      ]
+     },
+     {
+      "after_m": 89.12572869064523,
+      "before_m": 89.12572869064523,
+      "control_point_id": "cp3",
+      "delta_m": 0.0,
+      "distance_to_proposed_m": null,
+      "label": null,
+      "nearest_after_id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+      "nearest_after_source": {
+       "group": "school",
+       "kind": "source_record",
+       "name": "Реклама 42",
+       "qa_flags": [
+        "CATEGORY_DOUBT"
+       ],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "nearest_before_id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+      "nearest_before_source": {
+       "group": "school",
+       "kind": "source_record",
+       "name": "Реклама 42",
+       "qa_flags": [
+        "CATEGORY_DOUBT"
+       ],
+       "sources": [
+        {
+         "dataset": "meta",
+         "license": "CDLA-Permissive-2.0"
+        }
+       ]
+      },
+      "tied_at_before_ids": [
+       "01961e84-815f-4bd1-85c3-6bf1734256ec"
+      ]
+     }
+    ]
+   },
+   "scenario": {
+    "category": "school",
+    "city_id": "shymkent",
+    "control_points": [
+     {
+      "id": "cp1",
+      "lat": 42.3111365,
+      "lon": 69.59943825
+     },
+     {
+      "id": "cp2",
+      "lat": 42.315628000000004,
+      "lon": 69.6055115
+     },
+     {
+      "id": "cp3",
+      "lat": 42.3201195,
+      "lon": 69.61158475
+     }
+    ],
+    "proposed_object": null,
+    "schema_version": "city-whatif-v1",
+    "source_snapshot": "k10s1-0855d9b1b7615bbde93020b8e37c2095"
+   },
+   "step": "delete_proposed"
+  }
+ ]
+}

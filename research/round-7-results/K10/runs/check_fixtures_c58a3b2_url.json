@@ -1,0 +1,98 @@
+{
+ "failures": [],
+ "results": [
+  {
+   "checks": {
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS"
+   },
+   "fixture_id": "astana-invalid-inputs",
+   "kind": "real_slice_invalid_input"
+  },
+  {
+   "checks": {
+    "JS": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS"
+   },
+   "fixture_id": "astana-outpatient_clinic-place-move-delete",
+   "js_max_abs_diff_m": 9.63154889177531e-10,
+   "kind": "real_slice"
+  },
+  {
+   "checks": {
+    "JS": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS"
+   },
+   "fixture_id": "astana-school-place-move-delete",
+   "js_max_abs_diff_m": 6.947971087356564e-10,
+   "kind": "real_slice"
+  },
+  {
+   "checks": {
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS"
+   },
+   "fixture_id": "shymkent-invalid-inputs",
+   "kind": "real_slice_invalid_input"
+  },
+  {
+   "checks": {
+    "JS": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS"
+   },
+   "fixture_id": "shymkent-outpatient_clinic-place-move-delete",
+   "js_max_abs_diff_m": 0.0,
+   "kind": "real_slice"
+  },
+  {
+   "checks": {
+    "JS": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS"
+   },
+   "fixture_id": "shymkent-outpatient_clinic-qa-nearest",
+   "js_max_abs_diff_m": 0.0,
+   "kind": "real_slice"
+  },
+  {
+   "checks": {
+    "JS": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS"
+   },
+   "fixture_id": "shymkent-school-place-move-delete",
+   "js_max_abs_diff_m": 5.684341886080802e-14,
+   "kind": "real_slice"
+  },
+  {
+   "checks": {
+    "JS": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS"
+   },
+   "fixture_id": "shymkent-school-qa-nearest",
+   "js_max_abs_diff_m": 0.0,
+   "kind": "real_slice"
+  },
+  {
+   "checks": {
+    "JS": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "SYNTHETIC"
+   },
+   "fixture_id": "synthetic-empty-category-and-ties",
+   "js_max_abs_diff_m": 1.7689671949483454e-10,
+   "kind": "SYNTHETIC"
+  }
+ ],
+ "stale": [],
+ "target": {
+  "data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "mode": "url",
+  "url": "http://127.0.0.1:8774/"
+ },
+ "tolerance_m": 1e-06
+}

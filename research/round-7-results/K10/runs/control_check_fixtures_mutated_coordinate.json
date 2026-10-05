@@ -1,0 +1,104 @@
+{
+ "failures": [],
+ "results": [
+  {
+   "checks": {
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS"
+   },
+   "fixture_id": "astana-invalid-inputs",
+   "kind": "real_slice_invalid_input"
+  },
+  {
+   "checks": {
+    "JS": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS"
+   },
+   "fixture_id": "astana-outpatient_clinic-place-move-delete",
+   "js_max_abs_diff_m": 9.63154889177531e-10,
+   "kind": "real_slice"
+  },
+  {
+   "checks": {
+    "JS": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS"
+   },
+   "fixture_id": "astana-school-place-move-delete",
+   "js_max_abs_diff_m": 6.947971087356564e-10,
+   "kind": "real_slice"
+  },
+  {
+   "checks": {
+    "RECOMPUTE": "PASS",
+    "SOURCE": "STALE"
+   },
+   "fixture_id": "shymkent-invalid-inputs",
+   "kind": "real_slice_invalid_input"
+  },
+  {
+   "checks": {
+    "JS": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "STALE"
+   },
+   "fixture_id": "shymkent-outpatient_clinic-place-move-delete",
+   "js_max_abs_diff_m": 0.0,
+   "kind": "real_slice"
+  },
+  {
+   "checks": {
+    "JS": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "STALE"
+   },
+   "fixture_id": "shymkent-outpatient_clinic-qa-nearest",
+   "js_max_abs_diff_m": 0.0,
+   "kind": "real_slice"
+  },
+  {
+   "checks": {
+    "JS": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "STALE"
+   },
+   "fixture_id": "shymkent-school-place-move-delete",
+   "js_max_abs_diff_m": 5.684341886080802e-14,
+   "kind": "real_slice"
+  },
+  {
+   "checks": {
+    "JS": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "STALE"
+   },
+   "fixture_id": "shymkent-school-qa-nearest",
+   "js_max_abs_diff_m": 0.0,
+   "kind": "real_slice"
+  },
+  {
+   "checks": {
+    "JS": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "SYNTHETIC"
+   },
+   "fixture_id": "synthetic-empty-category-and-ties",
+   "js_max_abs_diff_m": 1.7689671949483454e-10,
+   "kind": "SYNTHETIC"
+  }
+ ],
+ "stale": [
+  "shymkent-invalid-inputs",
+  "shymkent-outpatient_clinic-place-move-delete",
+  "shymkent-outpatient_clinic-qa-nearest",
+  "shymkent-school-place-move-delete",
+  "shymkent-school-qa-nearest"
+ ],
+ "target": {
+  "data_js_sha256": "abff0ab5c648f8a073d12174533aad4368d6bb548caa0f2ec0579646ea2655eb",
+  "mode": "app-root",
+  "url": null
+ },
+ "tolerance_m": 1e-06
+}

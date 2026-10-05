@@ -1,0 +1,60 @@
+{
+ "build_commit": "c58a3b2b175cf978ad785fef7f88d8fd9b1338f2",
+ "fixtures": [
+  {
+   "fixture_id": "shymkent-school-place-move-delete",
+   "kind": "real_slice",
+   "sha256": "d89805da68d6d691f3b8036096d45601a9788fbcfeb9963964ed795f8c626f2d"
+  },
+  {
+   "fixture_id": "shymkent-outpatient_clinic-place-move-delete",
+   "kind": "real_slice",
+   "sha256": "ee0fe3545fbe27afee76df0ad1f0bf1a15163ef4ea683a713dcb23003fac0a76"
+  },
+  {
+   "fixture_id": "shymkent-school-qa-nearest",
+   "kind": "real_slice",
+   "sha256": "a0749b1a52a805ec19fbce5a8c2e63f5c4ba097f2b1e231ec966eee4c296838f"
+  },
+  {
+   "fixture_id": "shymkent-outpatient_clinic-qa-nearest",
+   "kind": "real_slice",
+   "sha256": "864ed4f5cdb47fbd0947175abd4e38bf12bfed16bf6164df14339c4ed3a02685"
+  },
+  {
+   "fixture_id": "shymkent-invalid-inputs",
+   "kind": "real_slice_invalid_input",
+   "sha256": "f59089dd991c732e34cf5be246a67bd921235edc01cdb60078b133688bfb08c8"
+  },
+  {
+   "fixture_id": "astana-school-place-move-delete",
+   "kind": "real_slice",
+   "sha256": "0aa9baa9aaeb255df504dda6c8d3eed43e20c8abcff813bff020476e17867f0e"
+  },
+  {
+   "fixture_id": "astana-outpatient_clinic-place-move-delete",
+   "kind": "real_slice",
+   "sha256": "dd7e270054cf79bf060610085dcad4aa530dbb25276090eee73ba834504d277b"
+  },
+  {
+   "fixture_id": "astana-invalid-inputs",
+   "kind": "real_slice_invalid_input",
+   "sha256": "b3c5307451d5ce9b52bdfda4ca2e59b88312228db4ca97af12154757181ba4f1"
+  },
+  {
+   "fixture_id": "synthetic-empty-category-and-ties",
+   "kind": "SYNTHETIC",
+   "sha256": "f21471dc4bd3e6c72e38f09cc3874b763ecad865f4c7e91bc7f8552c5c308070"
+  }
+ ],
+ "not_built": [
+  {
+   "fixture_id": "astana-school-qa-nearest",
+   "reason": "no QA-flagged record of this category in the slice (web/evidence.js)"
+  },
+  {
+   "fixture_id": "astana-outpatient_clinic-qa-nearest",
+   "reason": "no QA-flagged record of this category in the slice (web/evidence.js)"
+  }
+ ]
+}
