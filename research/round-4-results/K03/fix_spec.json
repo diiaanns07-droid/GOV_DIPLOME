@@ -1,0 +1,54 @@
+{
+ "target": "research/round-3-results/K03/boundary_validator.py",
+ "target_git_blob": "23b9fe45b0b447f080ee63bb3a7792ffe7d79497",
+ "snapshot_sha": "44585de31be01dd131ecb7677c462fc85b4d4cc4",
+ "replacements": [
+  {
+   "old": "  unmatched  — внутри полигона города, но ни в одном районе;",
+   "new": "  unmatched  — внутри полигона города, но ни в одном районе, дальше TOL_M от края города (v2);"
+  },
+  {
+   "old": "            if meta['reason'] == 'version_disagreement' and not zg.covers(pp):\n                continue  # близость к этой зоне проверяется ниже обычным допуском к границам\n            return dict(res, status=meta['status'], reason=meta['reason'], zone=z, district=None,",
+   "new": "            if meta['reason'] == 'version_disagreement' and not zg.covers(pp):\n                continue  # близость к этой зоне проверяется ниже обычным допуском к границам\n            if meta['status'] == 'unmatched' and res.get('city_edge'):\n                # v2: у края города принадлежность городу не доказана (точка может лежать снаружи);\n                # исход тот же, что у любого другого участка края города\n                return dict(res, status='ambiguous', reason='city_edge', zone=z, district=None, candidates=[])\n            return dict(res, status=meta['status'], reason=meta['reason'], zone=z, district=None,"
+  },
+  {
+   "old": "    if not first['covers']:\n        return dict(res, status='ambiguous' if first['within_tol'] else 'unmatched',\n                    reason='near_district_boundary' if first['within_tol'] else 'inside_city_no_district',\n                    district=None, candidates=[u for u, _ in first['within_tol']])\n    if len(first['covers']) > 1 or first['within_tol'] or res.get('city_edge'):",
+   "new": "    # v2: допуск к границе района — в любой версии слоя (полоса охватывает все известные версии границы)\n    near_all = sorted({u for v in per.values() for u, _ in v['within_tol']})\n    if not first['covers']:\n        return dict(res, status='ambiguous' if near_all else 'unmatched',\n                    reason='near_district_boundary' if near_all else 'inside_city_no_district',\n                    district=None, candidates=near_all)\n    if len(first['covers']) > 1 or near_all or res.get('city_edge'):"
+  },
+  {
+   "old": "                    district=None, candidates=sorted(set(first['covers']) | {u for u, _ in first['within_tol']}))",
+   "new": "                    district=None, candidates=sorted(set(first['covers']) | set(near_all)))"
+  },
+  {
+   "old": "                                    '≥2 района или ближе tol_m к границе или край города → ambiguous',",
+   "new": "                                    '≥2 района или ближе tol_m к границе (v2: в любой версии слоя) или край города → ambiguous',"
+  },
+  {
+   "old": "        ('swapped lon/lat', 51.1311552, 71.447389, 'invalid', None),\n    ]\n",
+   "new": "        ('swapped lon/lat', 51.1311552, 71.447389, 'invalid', None),\n    ]\n    # v2 регрессия: край города у AST-Z2, 0,5 м снаружи и внутри → ambiguous, а не unmatched\n    z2 = L.Pzones['AST-Z2']\n    ring = (z2.geoms[0] if hasattr(z2, 'geoms') else z2).exterior\n    s = ring.length / 3\n    mid, a_, b_ = ring.interpolate(s), ring.interpolate(s - 0.5), ring.interpolate(s + 0.5)\n    nx, ny = -(b_.y - a_.y), b_.x - a_.x\n    nn = (nx * nx + ny * ny) ** 0.5\n    nx, ny = nx / nn, ny / nn\n    if z2.contains(Point(mid.x + nx * 0.5, mid.y + ny * 0.5)):\n        nx, ny = -nx, -ny  # нормаль наружу\n    to_ll = Transformer.from_crs('EPSG:32642', 'EPSG:4326', always_xy=True).transform\n    for d, label in ((0.5, 'outside'), (-0.5, 'inside')):\n        lon_, lat_ = to_ll(mid.x + nx * d, mid.y + ny * d)\n        cases.append((f'AST-Z2 city edge, 0.5 m {label} (v2 regression)', lon_, lat_, 'ambiguous', None))\n"
+  },
+  {
+   "old": "                                    'zone AST-Z1/Z2/Z3 → ambiguous/unmatched/ambiguous',",
+   "new": "                                    'zone AST-Z1/Z2/Z3 → ambiguous/unmatched/ambiguous; v2: AST-Z2 ближе tol_m к краю города → ambiguous (city_edge)',"
+  },
+  {
+   "old": "k03_assign_v1",
+   "new": "k03_assign_v2",
+   "count": 5
+  }
+ ],
+ "defects": [
+  {
+   "id": "K03-R4-D1",
+   "severity": "low",
+   "summary": "Точки ближе tol_m к краю города у зоны AST-Z2 получали unmatched/inside_city_no_district, даже если лежат вне контура города; у прочего края города тот же случай даёт ambiguous.",
+   "fix": "край города проверяется раньше статуса unmatched зоны AST-Z2 → ambiguous (city_edge)"
+  },
+  {
+   "id": "K03-R4-D2",
+   "severity": "low",
+   "summary": "Допуск tol_m применялся только к слою исследовательского просмотра (снимок OSM); у изменённого пути 903345831 точка в 1,01 м от границы снимка, но ближе 1 м к границе Overture, получала matched. Район при этом не ошибочный (обе версии согласны), но полоса допуска несимметрична и не охватывает все известные версии границы, вопреки обоснованию tol_m.",
+   "fix": "близость к границе района проверяется во всех слоях города (для Шымкента слой один — поведение не меняется)"
+  }
+ ]
+}

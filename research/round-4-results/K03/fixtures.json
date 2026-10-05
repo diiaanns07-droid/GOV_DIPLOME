@@ -1,0 +1,911 @@
+{
+ "description": "Фикстуры K03 round 4: точки с ожидаемым исходом по контракту k03_assign (v2) и происхождением",
+ "crs": "EPSG:4326 lon/lat; построение в EPSG:32642",
+ "tol_m": 1.0,
+ "layers": {
+  "astana.osm_snapshot": "data/astana_districts.geojson (osm_base 2026-09-22T08:45:51Z)",
+  "astana.overture_2026-09-23.1": "research/round-3-results/K03/inputs/K10/astana_districts_overture.geojson",
+  "shymkent.overture_2026-09-23.1": "research/round-3-results/K03/inputs/K10/shymkent_districts_overture.geojson"
+ },
+ "legal_status": "not_verified: фикстуры проверяют правило на данных сообщества, не официальные границы",
+ "fixtures": [
+  {
+   "id": "AST-SB-0",
+   "category": "shared_boundary",
+   "city": "astana",
+   "lon": 71.400465702,
+   "lat": 51.083377637,
+   "expected_status": "ambiguous",
+   "expected_district": null,
+   "contract_basis": "точка на общей границе: covers ≥2 районов → ambiguous",
+   "construction": {
+    "method": "середина самого длинного общего участка границы, смещение по нормали",
+    "layer": "astana.osm_snapshot",
+    "unit_a": "kz.astana.district.esil",
+    "unit_b": "kz.astana.district.nura",
+    "geom_sha256_a": "b6e3c9c281e104b230994e841ccc9fca4a3978db938f35deb6a68aceea210f20",
+    "geom_sha256_b": "06693aeab389abbce3452c0d5397521336c456e2ad5246511dec670ee9be94d1",
+    "shared_line_length_m": 15925.5,
+    "distance_to_other_districts_m": 4533.0,
+    "offset_m": 0
+   },
+   "measured": {},
+   "lon_is_nan": false
+  },
+  {
+   "id": "AST-SB-a0.5",
+   "category": "shared_boundary",
+   "city": "astana",
+   "lon": 71.400472664,
+   "lat": 51.083376651,
+   "expected_status": "ambiguous",
+   "expected_district": null,
+   "contract_basis": "0,5 м < tol 1 м от границы → ambiguous",
+   "construction": {
+    "method": "середина самого длинного общего участка границы, смещение по нормали",
+    "layer": "astana.osm_snapshot",
+    "unit_a": "kz.astana.district.esil",
+    "unit_b": "kz.astana.district.nura",
+    "geom_sha256_a": "b6e3c9c281e104b230994e841ccc9fca4a3978db938f35deb6a68aceea210f20",
+    "geom_sha256_b": "06693aeab389abbce3452c0d5397521336c456e2ad5246511dec670ee9be94d1",
+    "shared_line_length_m": 15925.5,
+    "distance_to_other_districts_m": 4533.0,
+    "offset_m": 0.5,
+    "side": "kz.astana.district.esil"
+   },
+   "measured": {
+    "utm_dist_to_shared_m": 0.5,
+    "geodesic_dist_to_shared_m": 0.5
+   },
+   "lon_is_nan": false
+  },
+  {
+   "id": "AST-SB-a0.99",
+   "category": "shared_boundary",
+   "city": "astana",
+   "lon": 71.400479487,
+   "lat": 51.083375685,
+   "expected_status": "ambiguous",
+   "expected_district": null,
+   "contract_basis": "крайний случай: 0,99 м ≤ tol → ambiguous",
+   "construction": {
+    "method": "середина самого длинного общего участка границы, смещение по нормали",
+    "layer": "astana.osm_snapshot",
+    "unit_a": "kz.astana.district.esil",
+    "unit_b": "kz.astana.district.nura",
+    "geom_sha256_a": "b6e3c9c281e104b230994e841ccc9fca4a3978db938f35deb6a68aceea210f20",
+    "geom_sha256_b": "06693aeab389abbce3452c0d5397521336c456e2ad5246511dec670ee9be94d1",
+    "shared_line_length_m": 15925.5,
+    "distance_to_other_districts_m": 4533.0,
+    "offset_m": 0.99,
+    "side": "kz.astana.district.esil"
+   },
+   "measured": {
+    "utm_dist_to_shared_m": 0.99,
+    "geodesic_dist_to_shared_m": 0.9901
+   },
+   "lon_is_nan": false
+  },
+  {
+   "id": "AST-SB-a1.01",
+   "category": "shared_boundary",
+   "city": "astana",
+   "lon": 71.400479766,
+   "lat": 51.083375646,
+   "expected_status": "matched",
+   "expected_district": "kz.astana.district.esil",
+   "contract_basis": "крайний случай: 1,01 м > tol, один район → matched",
+   "construction": {
+    "method": "середина самого длинного общего участка границы, смещение по нормали",
+    "layer": "astana.osm_snapshot",
+    "unit_a": "kz.astana.district.esil",
+    "unit_b": "kz.astana.district.nura",
+    "geom_sha256_a": "b6e3c9c281e104b230994e841ccc9fca4a3978db938f35deb6a68aceea210f20",
+    "geom_sha256_b": "06693aeab389abbce3452c0d5397521336c456e2ad5246511dec670ee9be94d1",
+    "shared_line_length_m": 15925.5,
+    "distance_to_other_districts_m": 4533.0,
+    "offset_m": 1.01,
+    "side": "kz.astana.district.esil"
+   },
+   "measured": {
+    "utm_dist_to_shared_m": 1.01,
+    "geodesic_dist_to_shared_m": 1.0101
+   },
+   "lon_is_nan": false
+  },
+  {
+   "id": "AST-SB-a3.0",
+   "category": "shared_boundary",
+   "city": "astana",
+   "lon": 71.400507475,
+   "lat": 51.083371722,
+   "expected_status": "matched",
+   "expected_district": "kz.astana.district.esil",
+   "contract_basis": "3 м внутрь района → matched",
+   "construction": {
+    "method": "середина самого длинного общего участка границы, смещение по нормали",
+    "layer": "astana.osm_snapshot",
+    "unit_a": "kz.astana.district.esil",
+    "unit_b": "kz.astana.district.nura",
+    "geom_sha256_a": "b6e3c9c281e104b230994e841ccc9fca4a3978db938f35deb6a68aceea210f20",
+    "geom_sha256_b": "06693aeab389abbce3452c0d5397521336c456e2ad5246511dec670ee9be94d1",
+    "shared_line_length_m": 15925.5,
+    "distance_to_other_districts_m": 4533.0,
+    "offset_m": 3.0,
+    "side": "kz.astana.district.esil"
+   },
+   "measured": {
+    "utm_dist_to_shared_m": 3.0,
+    "geodesic_dist_to_shared_m": 3.0002
+   },
+   "lon_is_nan": false
+  },
+  {
+   "id": "AST-SB-b3",
+   "category": "shared_boundary",
+   "city": "astana",
+   "lon": 71.400423929,
+   "lat": 51.083383551,
+   "expected_status": "matched",
+   "expected_district": "kz.astana.district.nura",
+   "contract_basis": "3 м внутрь второго района → matched",
+   "construction": {
+    "method": "середина самого длинного общего участка границы, смещение по нормали",
+    "layer": "astana.osm_snapshot",
+    "unit_a": "kz.astana.district.esil",
+    "unit_b": "kz.astana.district.nura",
+    "geom_sha256_a": "b6e3c9c281e104b230994e841ccc9fca4a3978db938f35deb6a68aceea210f20",
+    "geom_sha256_b": "06693aeab389abbce3452c0d5397521336c456e2ad5246511dec670ee9be94d1",
+    "shared_line_length_m": 15925.5,
+    "distance_to_other_districts_m": 4533.0,
+    "offset_m": 3.0,
+    "side": "kz.astana.district.nura"
+   },
+   "measured": {},
+   "lon_is_nan": false
+  },
+  {
+   "id": "SHY-SB-0",
+   "category": "shared_boundary",
+   "city": "shymkent",
+   "lon": 69.537671074,
+   "lat": 42.423169091,
+   "expected_status": "ambiguous",
+   "expected_district": null,
+   "contract_basis": "точка на общей границе: covers ≥2 районов → ambiguous",
+   "construction": {
+    "method": "середина самого длинного общего участка границы, смещение по нормали",
+    "layer": "shymkent.overture_2026-09-23.1",
+    "unit_a": "kz.shymkent.district.abay",
+    "unit_b": "kz.shymkent.district.karatau",
+    "geom_sha256_a": "6ca696c4dc133cd5e82b18752427baaec67d160f318a1c819b6b08c9f7e1007f",
+    "geom_sha256_b": "13296370819f3d278623d50c317e98060f90497abf159aaab624ee2548c530be",
+    "shared_line_length_m": 18759.6,
+    "distance_to_other_districts_m": 7341.1,
+    "offset_m": 0
+   },
+   "measured": {},
+   "lon_is_nan": false
+  },
+  {
+   "id": "SHY-SB-a0.5",
+   "category": "shared_boundary",
+   "city": "shymkent",
+   "lon": 69.537666052,
+   "lat": 42.423166555,
+   "expected_status": "ambiguous",
+   "expected_district": null,
+   "contract_basis": "0,5 м < tol 1 м от границы → ambiguous",
+   "construction": {
+    "method": "середина самого длинного общего участка границы, смещение по нормали",
+    "layer": "shymkent.overture_2026-09-23.1",
+    "unit_a": "kz.shymkent.district.abay",
+    "unit_b": "kz.shymkent.district.karatau",
+    "geom_sha256_a": "6ca696c4dc133cd5e82b18752427baaec67d160f318a1c819b6b08c9f7e1007f",
+    "geom_sha256_b": "13296370819f3d278623d50c317e98060f90497abf159aaab624ee2548c530be",
+    "shared_line_length_m": 18759.6,
+    "distance_to_other_districts_m": 7341.1,
+    "offset_m": 0.5,
+    "side": "kz.shymkent.district.abay"
+   },
+   "measured": {
+    "utm_dist_to_shared_m": 0.5,
+    "geodesic_dist_to_shared_m": 0.5002
+   },
+   "lon_is_nan": false
+  },
+  {
+   "id": "SHY-SB-a0.99",
+   "category": "shared_boundary",
+   "city": "shymkent",
+   "lon": 69.53766113,
+   "lat": 42.42316407,
+   "expected_status": "ambiguous",
+   "expected_district": null,
+   "contract_basis": "крайний случай: 0,99 м ≤ tol → ambiguous",
+   "construction": {
+    "method": "середина самого длинного общего участка границы, смещение по нормали",
+    "layer": "shymkent.overture_2026-09-23.1",
+    "unit_a": "kz.shymkent.district.abay",
+    "unit_b": "kz.shymkent.district.karatau",
+    "geom_sha256_a": "6ca696c4dc133cd5e82b18752427baaec67d160f318a1c819b6b08c9f7e1007f",
+    "geom_sha256_b": "13296370819f3d278623d50c317e98060f90497abf159aaab624ee2548c530be",
+    "shared_line_length_m": 18759.6,
+    "distance_to_other_districts_m": 7341.1,
+    "offset_m": 0.99,
+    "side": "kz.shymkent.district.abay"
+   },
+   "measured": {
+    "utm_dist_to_shared_m": 0.99,
+    "geodesic_dist_to_shared_m": 0.9904
+   },
+   "lon_is_nan": false
+  },
+  {
+   "id": "SHY-SB-a1.01",
+   "category": "shared_boundary",
+   "city": "shymkent",
+   "lon": 69.537660929,
+   "lat": 42.423163969,
+   "expected_status": "matched",
+   "expected_district": "kz.shymkent.district.abay",
+   "contract_basis": "крайний случай: 1,01 м > tol, один район → matched",
+   "construction": {
+    "method": "середина самого длинного общего участка границы, смещение по нормали",
+    "layer": "shymkent.overture_2026-09-23.1",
+    "unit_a": "kz.shymkent.district.abay",
+    "unit_b": "kz.shymkent.district.karatau",
+    "geom_sha256_a": "6ca696c4dc133cd5e82b18752427baaec67d160f318a1c819b6b08c9f7e1007f",
+    "geom_sha256_b": "13296370819f3d278623d50c317e98060f90497abf159aaab624ee2548c530be",
+    "shared_line_length_m": 18759.6,
+    "distance_to_other_districts_m": 7341.1,
+    "offset_m": 1.01,
+    "side": "kz.shymkent.district.abay"
+   },
+   "measured": {
+    "utm_dist_to_shared_m": 1.01,
+    "geodesic_dist_to_shared_m": 1.0104
+   },
+   "lon_is_nan": false
+  },
+  {
+   "id": "SHY-SB-a3.0",
+   "category": "shared_boundary",
+   "city": "shymkent",
+   "lon": 69.53764094,
+   "lat": 42.423153876,
+   "expected_status": "matched",
+   "expected_district": "kz.shymkent.district.abay",
+   "contract_basis": "3 м внутрь района → matched",
+   "construction": {
+    "method": "середина самого длинного общего участка границы, смещение по нормали",
+    "layer": "shymkent.overture_2026-09-23.1",
+    "unit_a": "kz.shymkent.district.abay",
+    "unit_b": "kz.shymkent.district.karatau",
+    "geom_sha256_a": "6ca696c4dc133cd5e82b18752427baaec67d160f318a1c819b6b08c9f7e1007f",
+    "geom_sha256_b": "13296370819f3d278623d50c317e98060f90497abf159aaab624ee2548c530be",
+    "shared_line_length_m": 18759.6,
+    "distance_to_other_districts_m": 7341.1,
+    "offset_m": 3.0,
+    "side": "kz.shymkent.district.abay"
+   },
+   "measured": {
+    "utm_dist_to_shared_m": 3.0,
+    "geodesic_dist_to_shared_m": 3.0011
+   },
+   "lon_is_nan": false
+  },
+  {
+   "id": "SHY-SB-b3",
+   "category": "shared_boundary",
+   "city": "shymkent",
+   "lon": 69.537701208,
+   "lat": 42.423184306,
+   "expected_status": "matched",
+   "expected_district": "kz.shymkent.district.karatau",
+   "contract_basis": "3 м внутрь второго района → matched",
+   "construction": {
+    "method": "середина самого длинного общего участка границы, смещение по нормали",
+    "layer": "shymkent.overture_2026-09-23.1",
+    "unit_a": "kz.shymkent.district.abay",
+    "unit_b": "kz.shymkent.district.karatau",
+    "geom_sha256_a": "6ca696c4dc133cd5e82b18752427baaec67d160f318a1c819b6b08c9f7e1007f",
+    "geom_sha256_b": "13296370819f3d278623d50c317e98060f90497abf159aaab624ee2548c530be",
+    "shared_line_length_m": 18759.6,
+    "distance_to_other_districts_m": 7341.1,
+    "offset_m": 3.0,
+    "side": "kz.shymkent.district.karatau"
+   },
+   "measured": {},
+   "lon_is_nan": false
+  },
+  {
+   "id": "SHY-TRI-0",
+   "category": "shared_boundary",
+   "city": "shymkent",
+   "lon": 69.61156,
+   "lat": 42.3765939,
+   "expected_status": "ambiguous",
+   "expected_district": null,
+   "contract_basis": "общая вершина ≥3 районов → ambiguous",
+   "construction": {
+    "method": "вершина, общая для границ ≥3 районов",
+    "layer": "shymkent.overture_2026-09-23.1",
+    "units": [
+     "kz.shymkent.district.abay",
+     "kz.shymkent.district.al-farabi",
+     "kz.shymkent.district.karatau"
+    ]
+   },
+   "measured": {},
+   "lon_is_nan": false
+  },
+  {
+   "id": "SHY-TRI-1",
+   "category": "shared_boundary",
+   "city": "shymkent",
+   "lon": 69.6300558,
+   "lat": 42.355762,
+   "expected_status": "ambiguous",
+   "expected_district": null,
+   "contract_basis": "общая вершина ≥3 районов → ambiguous",
+   "construction": {
+    "method": "вершина, общая для границ ≥3 районов",
+    "layer": "shymkent.overture_2026-09-23.1",
+    "units": [
+     "kz.shymkent.district.al-farabi",
+     "kz.shymkent.district.enbekshi",
+     "kz.shymkent.district.karatau"
+    ]
+   },
+   "measured": {},
+   "lon_is_nan": false
+  },
+  {
+   "id": "AST-EX-in",
+   "category": "exclave",
+   "city": "astana",
+   "lon": 71.665106386,
+   "lat": 51.330255048,
+   "expected_status": "ambiguous",
+   "expected_district": null,
+   "contract_basis": "AST-Z1: эксклав Байконура ∩ Целиноградский район → ambiguous",
+   "construction": {
+    "method": "representative_point зоны",
+    "zone": "AST-Z1",
+    "zone_area_km2": 9.021
+   },
+   "measured": {},
+   "lon_is_nan": false
+  },
+  {
+   "id": "AST-EX-out0.5",
+   "category": "exclave",
+   "city": "astana",
+   "lon": 71.670992975,
+   "lat": 51.342081722,
+   "expected_status": "ambiguous",
+   "expected_district": null,
+   "contract_basis": "0,5 м снаружи эксклава (вне города) → край города, ambiguous",
+   "construction": {
+    "method": "точка на границе AST-Z1, смещение наружу",
+    "zone": "AST-Z1",
+    "offset_m": -0.5
+   },
+   "measured": {},
+   "lon_is_nan": false
+  },
+  {
+   "id": "AST-EX-out5.0",
+   "category": "exclave",
+   "city": "astana",
+   "lon": 71.67094519,
+   "lat": 51.34210893,
+   "expected_status": "outside",
+   "expected_district": null,
+   "contract_basis": "5 м снаружи эксклава, вне контура города → outside",
+   "construction": {
+    "method": "точка на границе AST-Z1, смещение наружу",
+    "zone": "AST-Z1",
+    "offset_m": -5.0
+   },
+   "measured": {},
+   "lon_is_nan": false
+  },
+  {
+   "id": "AST-EX-ok5.032",
+   "category": "exclave",
+   "city": "astana",
+   "lon": 71.317479655,
+   "lat": 51.284125581,
+   "expected_status": "matched",
+   "expected_district": "kz.astana.district.baikonur",
+   "contract_basis": "эксклав без конфликта с соседями → matched",
+   "construction": {
+    "method": "representative_point эксклава",
+    "layer": "astana.osm_snapshot",
+    "area_km2": 5.032
+   },
+   "measured": {},
+   "lon_is_nan": false
+  },
+  {
+   "id": "AST-EX-almaty",
+   "category": "exclave",
+   "city": "astana",
+   "lon": 71.7685536,
+   "lat": 51.154241562,
+   "expected_status": "matched",
+   "expected_district": "kz.astana.district.almaty",
+   "contract_basis": "эксклав Алматы, конфликта нет → matched",
+   "construction": {
+    "method": "representative_point меньшей части Алматы",
+    "layer": "astana.osm_snapshot",
+    "area_km2": 4.794
+   },
+   "measured": {},
+   "lon_is_nan": false
+  },
+  {
+   "id": "AST-HOLE-in",
+   "category": "coverage_hole",
+   "city": "astana",
+   "lon": 71.404648892,
+   "lat": 50.871993594,
+   "expected_status": "unmatched",
+   "expected_district": null,
+   "contract_basis": "AST-Z2: внутри контура города, ни одного района, дальше tol от края → unmatched",
+   "construction": {
+    "method": "representative_point зоны",
+    "zone": "AST-Z2",
+    "zone_area_km2": 11.033,
+    "city_outline_sha256": "69de6abb0bbe5231312b0169e1f0d58596908abd8b87a1881b008559ed64a524"
+   },
+   "measured": {},
+   "lon_is_nan": false
+  },
+  {
+   "id": "AST-HOLE-in0.5",
+   "category": "coverage_hole",
+   "city": "astana",
+   "lon": 71.40928381,
+   "lat": 50.88151694,
+   "expected_status": "ambiguous",
+   "expected_district": null,
+   "contract_basis": "край города (0,5 м внутри): принадлежность городу не доказана → ambiguous (как у прочего края)",
+   "construction": {
+    "method": "граница AST-Z2 (= край города), смещение по нормали",
+    "zone": "AST-Z2",
+    "offset_m": 0.5
+   },
+   "measured": {
+    "utm_dist_to_city_edge_m": 0.5
+   },
+   "lon_is_nan": false
+  },
+  {
+   "id": "AST-HOLE-out0.5",
+   "category": "coverage_hole",
+   "city": "astana",
+   "lon": 71.409286747,
+   "lat": 50.881525736,
+   "expected_status": "ambiguous",
+   "expected_district": null,
+   "contract_basis": "0,5 м снаружи контура города: не «внутри города» → ambiguous (край), не unmatched",
+   "construction": {
+    "method": "граница AST-Z2 (= край города), смещение по нормали",
+    "zone": "AST-Z2",
+    "offset_m": -0.5
+   },
+   "measured": {
+    "utm_dist_to_city_edge_m": 0.5
+   },
+   "lon_is_nan": false
+  },
+  {
+   "id": "AST-HOLE-in5.0",
+   "category": "coverage_hole",
+   "city": "astana",
+   "lon": 71.409270593,
+   "lat": 50.881477361,
+   "expected_status": "unmatched",
+   "expected_district": null,
+   "contract_basis": "5 м внутри зоны → unmatched",
+   "construction": {
+    "method": "граница AST-Z2 (= край города), смещение по нормали",
+    "zone": "AST-Z2",
+    "offset_m": 5.0
+   },
+   "measured": {
+    "utm_dist_to_city_edge_m": 5.0
+   },
+   "lon_is_nan": false
+  },
+  {
+   "id": "AST-HOLE-out5.0",
+   "category": "coverage_hole",
+   "city": "astana",
+   "lon": 71.409299964,
+   "lat": 50.881565315,
+   "expected_status": "outside",
+   "expected_district": null,
+   "contract_basis": "5 м снаружи контура города → outside",
+   "construction": {
+    "method": "граница AST-Z2 (= край города), смещение по нормали",
+    "zone": "AST-Z2",
+    "offset_m": -5.0
+   },
+   "measured": {
+    "utm_dist_to_city_edge_m": 5.0
+   },
+   "lon_is_nan": false
+  },
+  {
+   "id": "AST-VER-in",
+   "category": "version_strip",
+   "city": "astana",
+   "lon": 71.467379697,
+   "lat": 51.127948016,
+   "expected_status": "ambiguous",
+   "expected_district": null,
+   "contract_basis": "AST-Z3: снимок OSM и Overture относят точку к разным районам → ambiguous",
+   "construction": {
+    "method": "representative_point крупнейшей части AST-Z3",
+    "zone": "AST-Z3",
+    "part_area_m2": 47.92,
+    "way": 903345831
+   },
+   "measured": {},
+   "lon_is_nan": false
+  },
+  {
+   "id": "AST-VER-almaty0.0",
+   "category": "version_strip",
+   "city": "astana",
+   "lon": 71.467379387,
+   "lat": 51.127947213,
+   "expected_status": "ambiguous",
+   "expected_district": null,
+   "contract_basis": "на границе снимка у изменённого пути → ambiguous",
+   "construction": {
+    "method": "общая граница Алматы/Сарайшык в снимке OSM у AST-Z3, смещение по нормали",
+    "offset_m": 0.0,
+    "side": "almaty",
+    "geom_sha256_almaty_snapshot": "20e8fceb4d80d42b9791a49184d55dc629f89c870ffcb4eeff3094ae527ed8f1",
+    "geom_sha256_almaty_overture": "5346b9433901e238884763bd8f7f61492748f40893deaa5139a2ae6b19a8ede9"
+   },
+   "measured": {
+    "utm_dist_to_snapshot_border_m": 0.0,
+    "utm_dist_to_overture_border_m": 0.1827
+   },
+   "lon_is_nan": false
+  },
+  {
+   "id": "AST-VER-almaty2.0",
+   "category": "version_strip",
+   "city": "astana",
+   "lon": 71.467386127,
+   "lat": 51.127964684,
+   "expected_status": "matched",
+   "expected_district": "kz.astana.district.almaty",
+   "contract_basis": "2 м от границы снимка (≥1,56 м от границы Overture) → matched",
+   "construction": {
+    "method": "общая граница Алматы/Сарайшык в снимке OSM у AST-Z3, смещение по нормали",
+    "offset_m": 2.0,
+    "side": "almaty",
+    "geom_sha256_almaty_snapshot": "20e8fceb4d80d42b9791a49184d55dc629f89c870ffcb4eeff3094ae527ed8f1",
+    "geom_sha256_almaty_overture": "5346b9433901e238884763bd8f7f61492748f40893deaa5139a2ae6b19a8ede9"
+   },
+   "measured": {
+    "utm_dist_to_snapshot_border_m": 2.0,
+    "utm_dist_to_overture_border_m": 1.8173
+   },
+   "lon_is_nan": false
+  },
+  {
+   "id": "AST-VER-saraishyk2.0",
+   "category": "version_strip",
+   "city": "astana",
+   "lon": 71.467372647,
+   "lat": 51.127929743,
+   "expected_status": "matched",
+   "expected_district": "kz.astana.district.saraishyk",
+   "contract_basis": "2 м в Сарайшык → matched",
+   "construction": {
+    "method": "общая граница Алматы/Сарайшык в снимке OSM у AST-Z3, смещение по нормали",
+    "offset_m": 2.0,
+    "side": "saraishyk",
+    "geom_sha256_almaty_snapshot": "20e8fceb4d80d42b9791a49184d55dc629f89c870ffcb4eeff3094ae527ed8f1",
+    "geom_sha256_almaty_overture": "5346b9433901e238884763bd8f7f61492748f40893deaa5139a2ae6b19a8ede9"
+   },
+   "measured": {
+    "utm_dist_to_snapshot_border_m": 2.0,
+    "utm_dist_to_overture_border_m": 2.1827
+   },
+   "lon_is_nan": false
+  },
+  {
+   "id": "AST-VER-D2",
+   "category": "version_strip",
+   "city": "astana",
+   "lon": 71.460469423,
+   "lat": 51.129017713,
+   "expected_status": "ambiguous",
+   "expected_district": null,
+   "contract_basis": "D2: дальше 1 м от границы снимка, но ближе 1 м к границе Overture той же пары районов → ambiguous (допуск во всех версиях)",
+   "construction": {
+    "method": "перебор шагом 0,5 м вдоль общей границы Алматы/Сарайшык снимка у AST-Z3; смещение 1,01 м; выбрана точка с минимальным расстоянием до границы Overture",
+    "side": "saraishyk",
+    "along_m": 946.0,
+    "way": 903345831
+   },
+   "measured": {
+    "utm_dist_to_snapshot_border_m": 1.0099,
+    "utm_dist_to_overture_border_m": 0.5811,
+    "geodesic_dist_to_snapshot_border_m": 1.01,
+    "geodesic_dist_to_overture_border_m": 0.5811
+   },
+   "lon_is_nan": false
+  },
+  {
+   "id": "OUT-15594335",
+   "category": "outside",
+   "city": "astana",
+   "lon": 71.276521696,
+   "lat": 50.987492103,
+   "expected_status": "outside",
+   "expected_district": null,
+   "contract_basis": "внутри соседнего отношения, вне контура города → outside",
+   "construction": {
+    "method": "representative_point(соседнее отношение − буфер города 50 м)",
+    "osm_relation": 15594335,
+    "name": "Қосшы қалалық әкімдігі"
+   },
+   "measured": {},
+   "lon_is_nan": false
+  },
+  {
+   "id": "OUT-3403760",
+   "category": "outside",
+   "city": "astana",
+   "lon": 71.765525389,
+   "lat": 51.374436437,
+   "expected_status": "outside",
+   "expected_district": null,
+   "contract_basis": "внутри соседнего отношения, вне контура города → outside",
+   "construction": {
+    "method": "representative_point(соседнее отношение − буфер города 50 м)",
+    "osm_relation": 3403760,
+    "name": "Целиноград ауданы"
+   },
+   "measured": {},
+   "lon_is_nan": false
+  },
+  {
+   "id": "AST-EDGE-5.0",
+   "category": "city_edge",
+   "city": "astana",
+   "lon": 71.358981411,
+   "lat": 51.288502162,
+   "expected_status": "outside",
+   "expected_district": null,
+   "contract_basis": "5 м за краем города → outside",
+   "construction": {
+    "method": "точка на внешнем кольце основной части города, смещение по нормали",
+    "offset_m": -5.0,
+    "city_outline_sha256": "69de6abb0bbe5231312b0169e1f0d58596908abd8b87a1881b008559ed64a524"
+   },
+   "measured": {},
+   "lon_is_nan": false
+  },
+  {
+   "id": "AST-EDGE-0.5",
+   "category": "city_edge",
+   "city": "astana",
+   "lon": 71.35904408,
+   "lat": 51.288511757,
+   "expected_status": "ambiguous",
+   "expected_district": null,
+   "contract_basis": "0,5 м за краем (в пределах tol) → ambiguous",
+   "construction": {
+    "method": "точка на внешнем кольце основной части города, смещение по нормали",
+    "offset_m": -0.5,
+    "city_outline_sha256": "69de6abb0bbe5231312b0169e1f0d58596908abd8b87a1881b008559ed64a524"
+   },
+   "measured": {},
+   "lon_is_nan": false
+  },
+  {
+   "id": "AST-EDGE0.5",
+   "category": "city_edge",
+   "city": "astana",
+   "lon": 71.359058006,
+   "lat": 51.28851389,
+   "expected_status": "ambiguous",
+   "expected_district": null,
+   "contract_basis": "0,5 м внутри у края → ambiguous",
+   "construction": {
+    "method": "точка на внешнем кольце основной части города, смещение по нормали",
+    "offset_m": 0.5,
+    "city_outline_sha256": "69de6abb0bbe5231312b0169e1f0d58596908abd8b87a1881b008559ed64a524"
+   },
+   "measured": {},
+   "lon_is_nan": false
+  },
+  {
+   "id": "AST-EDGE3.0",
+   "category": "city_edge",
+   "city": "astana",
+   "lon": 71.359092822,
+   "lat": 51.28851922,
+   "expected_status": "matched",
+   "expected_district": "kz.astana.district.baikonur",
+   "contract_basis": "3 м внутри района у края → matched",
+   "construction": {
+    "method": "точка на внешнем кольце основной части города, смещение по нормали",
+    "offset_m": 3.0,
+    "city_outline_sha256": "69de6abb0bbe5231312b0169e1f0d58596908abd8b87a1881b008559ed64a524"
+   },
+   "measured": {},
+   "lon_is_nan": false
+  },
+  {
+   "id": "SHY-EDGE-5.0",
+   "category": "city_edge",
+   "city": "shymkent",
+   "lon": 69.344213136,
+   "lat": 42.319370447,
+   "expected_status": "outside",
+   "expected_district": null,
+   "contract_basis": "5 м за краем города → outside",
+   "construction": {
+    "method": "точка на внешнем кольце основной части города, смещение по нормали",
+    "offset_m": -5.0,
+    "city_outline_sha256": "c62ef29c3a28b92f5406102dcf628246182ec47b147f66d741fdd033a8084ed8"
+   },
+   "measured": {},
+   "lon_is_nan": false
+  },
+  {
+   "id": "SHY-EDGE-0.5",
+   "category": "city_edge",
+   "city": "shymkent",
+   "lon": 69.34426105,
+   "lat": 42.319389892,
+   "expected_status": "ambiguous",
+   "expected_district": null,
+   "contract_basis": "0,5 м за краем (в пределах tol) → ambiguous",
+   "construction": {
+    "method": "точка на внешнем кольце основной части города, смещение по нормали",
+    "offset_m": -0.5,
+    "city_outline_sha256": "c62ef29c3a28b92f5406102dcf628246182ec47b147f66d741fdd033a8084ed8"
+   },
+   "measured": {},
+   "lon_is_nan": false
+  },
+  {
+   "id": "SHY-EDGE0.5",
+   "category": "city_edge",
+   "city": "shymkent",
+   "lon": 69.344271697,
+   "lat": 42.319394213,
+   "expected_status": "ambiguous",
+   "expected_district": null,
+   "contract_basis": "0,5 м внутри у края → ambiguous",
+   "construction": {
+    "method": "точка на внешнем кольце основной части города, смещение по нормали",
+    "offset_m": 0.5,
+    "city_outline_sha256": "c62ef29c3a28b92f5406102dcf628246182ec47b147f66d741fdd033a8084ed8"
+   },
+   "measured": {},
+   "lon_is_nan": false
+  },
+  {
+   "id": "SHY-EDGE3.0",
+   "category": "city_edge",
+   "city": "shymkent",
+   "lon": 69.344298316,
+   "lat": 42.319405015,
+   "expected_status": "matched",
+   "expected_district": "kz.shymkent.district.abay",
+   "contract_basis": "3 м внутри района у края → matched",
+   "construction": {
+    "method": "точка на внешнем кольце основной части города, смещение по нормали",
+    "offset_m": 3.0,
+    "city_outline_sha256": "c62ef29c3a28b92f5406102dcf628246182ec47b147f66d741fdd033a8084ed8"
+   },
+   "measured": {},
+   "lon_is_nan": false
+  },
+  {
+   "id": "OUT-desert",
+   "category": "outside",
+   "city": null,
+   "lon": 70.0,
+   "lat": 45.0,
+   "expected_status": "outside",
+   "expected_district": null,
+   "contract_basis": "вне обоих городов",
+   "construction": {
+    "method": "задано вручную"
+   },
+   "measured": {},
+   "lon_is_nan": false
+  },
+  {
+   "id": "SWAP-astana",
+   "category": "lon_lat_order",
+   "city": null,
+   "lon": 51.1,
+   "lat": 71.43,
+   "expected_status": "invalid",
+   "expected_district": null,
+   "contract_basis": "Астана с перепутанным порядком → invalid (lon_lat_swapped)",
+   "construction": {
+    "method": "задано вручную"
+   },
+   "measured": {},
+   "lon_is_nan": false
+  },
+  {
+   "id": "SWAP-shymkent",
+   "category": "lon_lat_order",
+   "city": null,
+   "lon": 42.3,
+   "lat": 69.6,
+   "expected_status": "invalid",
+   "expected_district": null,
+   "contract_basis": "Шымкент с перепутанным порядком → invalid (lon_lat_swapped)",
+   "construction": {
+    "method": "задано вручную"
+   },
+   "measured": {},
+   "lon_is_nan": false
+  },
+  {
+   "id": "SWAP-undetectable",
+   "category": "lon_lat_order",
+   "city": null,
+   "lon": 50.0,
+   "lat": 50.0,
+   "expected_status": "outside",
+   "expected_district": null,
+   "contract_basis": "оба порядка в диапазоне KZ: перестановка неразличима → outside (ограничение правила)",
+   "construction": {
+    "method": "задано вручную"
+   },
+   "measured": {},
+   "lon_is_nan": false
+  },
+  {
+   "id": "BAD-nan",
+   "category": "lon_lat_order",
+   "city": null,
+   "lon": null,
+   "lat": 51.1,
+   "expected_status": "invalid",
+   "expected_district": null,
+   "contract_basis": "NaN → invalid",
+   "construction": {
+    "method": "задано вручную"
+   },
+   "measured": {},
+   "lon_is_nan": true
+  },
+  {
+   "id": "BAD-range",
+   "category": "lon_lat_order",
+   "city": null,
+   "lon": 200.0,
+   "lat": 51.1,
+   "expected_status": "invalid",
+   "expected_district": null,
+   "contract_basis": "долгота вне диапазона → invalid",
+   "construction": {
+    "method": "задано вручную"
+   },
+   "measured": {},
+   "lon_is_nan": false
+  }
+ ]
+}
