@@ -1,0 +1,74 @@
+[
+ {
+  "source": "d913554bf2617a74d921af260ab8c22743ccb4b5:research/round-3-results/K05/examples/astana/k10_sample_row_counts.json",
+  "branch": "claude/optimistic-davinci-1oiqs9",
+  "dest": "research/round-4-results/K02/inputs/k05/examples__astana__k10_sample_row_counts.json",
+  "git_blob": "a9592b37e3618301d580da4233084f620904a178",
+  "blob_match": true,
+  "sha256": "8abb1e1098de1a92f206d8252126cf32f18e8c8099b19e9d01fa62f6e39153a4",
+  "bytes": 12250
+ },
+ {
+  "source": "d913554bf2617a74d921af260ab8c22743ccb4b5:research/round-3-results/K05/examples/astana/official_registry_missing.json",
+  "branch": "claude/optimistic-davinci-1oiqs9",
+  "dest": "research/round-4-results/K02/inputs/k05/examples__astana__official_registry_missing.json",
+  "git_blob": "5be342ca4db98de3d4f235bcbd06b83c7efab941",
+  "blob_match": true,
+  "sha256": "47cfa785529dd5d7beedb39cab5f6395087a45fa3b2eebd295abd4beee217a68",
+  "bytes": 1161
+ },
+ {
+  "source": "d913554bf2617a74d921af260ab8c22743ccb4b5:research/round-3-results/K05/examples/astana/sample_object_qa.json",
+  "branch": "claude/optimistic-davinci-1oiqs9",
+  "dest": "research/round-4-results/K02/inputs/k05/examples__astana__sample_object_qa.json",
+  "git_blob": "bc4f9967b62b1678229493078489401396f3a6ec",
+  "blob_match": true,
+  "sha256": "d6913704c6676a89fb92cd1e780ae542e1630ac020ba00293c86a7a3732fd5c7",
+  "bytes": 810
+ },
+ {
+  "source": "d913554bf2617a74d921af260ab8c22743ccb4b5:research/round-3-results/K05/examples/shymkent/k10_sample_row_counts.json",
+  "branch": "claude/optimistic-davinci-1oiqs9",
+  "dest": "research/round-4-results/K02/inputs/k05/examples__shymkent__k10_sample_row_counts.json",
+  "git_blob": "4e87206dc8fdee92b4876d6fc31e2876aabfbaee",
+  "blob_match": true,
+  "sha256": "cef1b2fe81163a270c7ee29e1661c63396a10ba30a98e161e2a5c865b468b921",
+  "bytes": 12305
+ },
+ {
+  "source": "d913554bf2617a74d921af260ab8c22743ccb4b5:research/round-3-results/K05/examples/shymkent/official_registry_missing.json",
+  "branch": "claude/optimistic-davinci-1oiqs9",
+  "dest": "research/round-4-results/K02/inputs/k05/examples__shymkent__official_registry_missing.json",
+  "git_blob": "e42c2c9a1bce27c1b74d843ece907c44b6eb2a83",
+  "blob_match": true,
+  "sha256": "aa74131ea122ca81b437bff63db1883a8b62adfc06ad1d980c18421d47ef8bb4",
+  "bytes": 1167
+ },
+ {
+  "source": "d913554bf2617a74d921af260ab8c22743ccb4b5:research/round-3-results/K05/examples/shymkent/sample_object_qa.json",
+  "branch": "claude/optimistic-davinci-1oiqs9",
+  "dest": "research/round-4-results/K02/inputs/k05/examples__shymkent__sample_object_qa.json",
+  "git_blob": "cd0a92d41e1cae2e289285139619e8151c120f41",
+  "blob_match": true,
+  "sha256": "2ee97952a3e2ea11d1c70c770e0a105b90035cd2bd401829e03df205168cfa0f",
+  "bytes": 1654
+ },
+ {
+  "source": "d913554bf2617a74d921af260ab8c22743ccb4b5:research/round-3-results/K05/cases/cases.json",
+  "branch": "claude/optimistic-davinci-1oiqs9",
+  "dest": "research/round-4-results/K02/inputs/k05/cases__cases.json",
+  "git_blob": "d04aa6ceed554d7f0a7e7f13d59534b6cb133766",
+  "blob_match": true,
+  "sha256": "624b760b96d69f64f4bbf2b87d71e6939be2462cbb3e8ac0de77660ec6d7795f",
+  "bytes": 32156
+ },
+ {
+  "source": "d913554bf2617a74d921af260ab8c22743ccb4b5:research/round-3-results/K05/k05r3_contract.py",
+  "branch": "claude/optimistic-davinci-1oiqs9",
+  "dest": "research/round-4-results/K02/inputs/k05/k05r3_contract.py",
+  "git_blob": "5ad8882bd0ba38f5bd0bd300ea656b8b77557a06",
+  "blob_match": true,
+  "sha256": "8dc4a177f47edcdfa6753ed41b78a31e5afb652df4d79f02c73aeb5686d2f397",
+  "bytes": 12171
+ }
+]

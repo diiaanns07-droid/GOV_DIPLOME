@@ -1,0 +1,35 @@
+{
+ "errors": [],
+ "warnings": [
+  {
+   "code": "POSSIBLE_DUPLICATE",
+   "rule": "same_group_same_house_number",
+   "distance_m": 22.7,
+   "a": {
+    "id": "1e09e9a9-4ade-4914-818c-ad8827c3145c",
+    "name": "Ministry of Foreign Affairs, Republic of Kazakhstan",
+    "group": "government_office"
+   },
+   "b": {
+    "id": "e6d15e98-18cc-42b5-92ee-ba4b49aeff97",
+    "name": "Сыртқы істер министрлігі",
+    "group": "government_office"
+   }
+  },
+  {
+   "code": "POSSIBLE_DUPLICATE",
+   "rule": "same_group_same_house_number",
+   "distance_m": 36.9,
+   "a": {
+    "id": "a95b1a91-37f3-4b54-becc-979e6357d4d8",
+    "name": "Terra Pharm",
+    "group": "pharmacy"
+   },
+   "b": {
+    "id": "17b6f84c-0be6-4d4c-9051-d6469796ba80",
+    "name": "Europharma",
+    "group": "pharmacy"
+   }
+  }
+ ]
+}
