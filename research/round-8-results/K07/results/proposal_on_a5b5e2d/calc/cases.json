@@ -146,9 +146,9 @@
      "cost": 130
     }
    ],
-   "budget": 300,
-   "max_selected": 3,
-   "coverage_radius_m": 400,
+   "budget": 150,
+   "max_selected": 2,
+   "coverage_radius_m": 300,
    "required_ids": [],
    "excluded_ids": [],
    "selected_ids": [
@@ -305,8 +305,8 @@
     }
    ],
    "budget": 0,
-   "max_selected": 3,
-   "coverage_radius_m": 400,
+   "max_selected": 2,
+   "coverage_radius_m": 300,
    "required_ids": [],
    "excluded_ids": [],
    "selected_ids": [
@@ -463,8 +463,8 @@
     }
    ],
    "budget": 150,
-   "max_selected": 3,
-   "coverage_radius_m": 400,
+   "max_selected": 2,
+   "coverage_radius_m": 300,
    "required_ids": [],
    "excluded_ids": [],
    "selected_ids": [
@@ -622,7 +622,7 @@
    ],
    "budget": 1000,
    "max_selected": 5,
-   "coverage_radius_m": 400,
+   "coverage_radius_m": 300,
    "required_ids": [],
    "excluded_ids": [],
    "selected_ids": [
@@ -778,9 +778,9 @@
      "cost": 130
     }
    ],
-   "budget": 300,
-   "max_selected": 3,
-   "coverage_radius_m": 400,
+   "budget": 150,
+   "max_selected": 2,
+   "coverage_radius_m": 300,
    "required_ids": [
     "site-5"
    ],
@@ -939,8 +939,8 @@
      "cost": 130
     }
    ],
-   "budget": 300,
-   "max_selected": 3,
+   "budget": 150,
+   "max_selected": 2,
    "coverage_radius_m": 100,
    "required_ids": [],
    "excluded_ids": [],
@@ -1097,8 +1097,8 @@
      "cost": 130
     }
    ],
-   "budget": 300,
-   "max_selected": 3,
+   "budget": 150,
+   "max_selected": 2,
    "coverage_radius_m": 5000,
    "required_ids": [],
    "excluded_ids": [],
@@ -1256,8 +1256,8 @@
     }
    ],
    "budget": 300,
-   "max_selected": 3,
-   "coverage_radius_m": 400,
+   "max_selected": 2,
+   "coverage_radius_m": 300,
    "required_ids": [
     "site-5",
     "site-3"
@@ -1416,9 +1416,9 @@
      "cost": 130
     }
    ],
-   "budget": 300,
-   "max_selected": 3,
-   "coverage_radius_m": 400,
+   "budget": 150,
+   "max_selected": 2,
+   "coverage_radius_m": 300,
    "required_ids": [],
    "excluded_ids": [],
    "selected_ids": [
@@ -1575,8 +1575,8 @@
     }
    ],
    "budget": 0,
-   "max_selected": 3,
-   "coverage_radius_m": 400,
+   "max_selected": 2,
+   "coverage_radius_m": 300,
    "required_ids": [],
    "excluded_ids": [],
    "selected_ids": [
@@ -1733,8 +1733,8 @@
     }
    ],
    "budget": 150,
-   "max_selected": 3,
-   "coverage_radius_m": 400,
+   "max_selected": 2,
+   "coverage_radius_m": 300,
    "required_ids": [],
    "excluded_ids": [],
    "selected_ids": [
@@ -1892,7 +1892,7 @@
    ],
    "budget": 1000,
    "max_selected": 5,
-   "coverage_radius_m": 400,
+   "coverage_radius_m": 300,
    "required_ids": [],
    "excluded_ids": [],
    "selected_ids": [
@@ -2048,9 +2048,9 @@
      "cost": 130
     }
    ],
-   "budget": 300,
-   "max_selected": 3,
-   "coverage_radius_m": 400,
+   "budget": 150,
+   "max_selected": 2,
+   "coverage_radius_m": 300,
    "required_ids": [
     "site-5"
    ],
@@ -2209,8 +2209,8 @@
      "cost": 130
     }
    ],
-   "budget": 300,
-   "max_selected": 3,
+   "budget": 150,
+   "max_selected": 2,
    "coverage_radius_m": 100,
    "required_ids": [],
    "excluded_ids": [],
@@ -2367,8 +2367,8 @@
      "cost": 130
     }
    ],
-   "budget": 300,
-   "max_selected": 3,
+   "budget": 150,
+   "max_selected": 2,
    "coverage_radius_m": 5000,
    "required_ids": [],
    "excluded_ids": [],
@@ -2526,8 +2526,8 @@
     }
    ],
    "budget": 300,
-   "max_selected": 3,
-   "coverage_radius_m": 400,
+   "max_selected": 2,
+   "coverage_radius_m": 300,
    "required_ids": [
     "site-5",
     "site-3"
@@ -2983,9 +2983,9 @@
      "cost": 130
     }
    ],
-   "budget": 300,
-   "max_selected": 3,
-   "coverage_radius_m": 400,
+   "budget": 150,
+   "max_selected": 2,
+   "coverage_radius_m": 300,
    "required_ids": [],
    "excluded_ids": [],
    "selected_ids": [
@@ -3142,8 +3142,8 @@
     }
    ],
    "budget": 0,
-   "max_selected": 3,
-   "coverage_radius_m": 400,
+   "max_selected": 2,
+   "coverage_radius_m": 300,
    "required_ids": [],
    "excluded_ids": [],
    "selected_ids": [
@@ -3300,8 +3300,8 @@
     }
    ],
    "budget": 150,
-   "max_selected": 3,
-   "coverage_radius_m": 400,
+   "max_selected": 2,
+   "coverage_radius_m": 300,
    "required_ids": [],
    "excluded_ids": [],
    "selected_ids": [
@@ -3459,7 +3459,7 @@
    ],
    "budget": 1000,
    "max_selected": 5,
-   "coverage_radius_m": 400,
+   "coverage_radius_m": 300,
    "required_ids": [],
    "excluded_ids": [],
    "selected_ids": [
@@ -3615,9 +3615,9 @@
      "cost": 130
     }
    ],
-   "budget": 300,
-   "max_selected": 3,
-   "coverage_radius_m": 400,
+   "budget": 150,
+   "max_selected": 2,
+   "coverage_radius_m": 300,
    "required_ids": [
     "site-5"
    ],
@@ -3776,8 +3776,8 @@
      "cost": 130
     }
    ],
-   "budget": 300,
-   "max_selected": 3,
+   "budget": 150,
+   "max_selected": 2,
    "coverage_radius_m": 100,
    "required_ids": [],
    "excluded_ids": [],
@@ -3934,8 +3934,8 @@
      "cost": 130
     }
    ],
-   "budget": 300,
-   "max_selected": 3,
+   "budget": 150,
+   "max_selected": 2,
    "coverage_radius_m": 5000,
    "required_ids": [],
    "excluded_ids": [],
@@ -4093,8 +4093,8 @@
     }
    ],
    "budget": 300,
-   "max_selected": 3,
-   "coverage_radius_m": 400,
+   "max_selected": 2,
+   "coverage_radius_m": 300,
    "required_ids": [
     "site-5",
     "site-3"
@@ -4253,9 +4253,9 @@
      "cost": 130
     }
    ],
-   "budget": 300,
-   "max_selected": 3,
-   "coverage_radius_m": 400,
+   "budget": 150,
+   "max_selected": 2,
+   "coverage_radius_m": 300,
    "required_ids": [],
    "excluded_ids": [],
    "selected_ids": [
@@ -4412,8 +4412,8 @@
     }
    ],
    "budget": 0,
-   "max_selected": 3,
-   "coverage_radius_m": 400,
+   "max_selected": 2,
+   "coverage_radius_m": 300,
    "required_ids": [],
    "excluded_ids": [],
    "selected_ids": [
@@ -4570,8 +4570,8 @@
     }
    ],
    "budget": 150,
-   "max_selected": 3,
-   "coverage_radius_m": 400,
+   "max_selected": 2,
+   "coverage_radius_m": 300,
    "required_ids": [],
    "excluded_ids": [],
    "selected_ids": [
@@ -4729,7 +4729,7 @@
    ],
    "budget": 1000,
    "max_selected": 5,
-   "coverage_radius_m": 400,
+   "coverage_radius_m": 300,
    "required_ids": [],
    "excluded_ids": [],
    "selected_ids": [
@@ -4885,9 +4885,9 @@
      "cost": 130
     }
    ],
-   "budget": 300,
-   "max_selected": 3,
-   "coverage_radius_m": 400,
+   "budget": 150,
+   "max_selected": 2,
+   "coverage_radius_m": 300,
    "required_ids": [
     "site-5"
    ],
@@ -5046,8 +5046,8 @@
      "cost": 130
     }
    ],
-   "budget": 300,
-   "max_selected": 3,
+   "budget": 150,
+   "max_selected": 2,
    "coverage_radius_m": 100,
    "required_ids": [],
    "excluded_ids": [],
@@ -5204,8 +5204,8 @@
      "cost": 130
     }
    ],
-   "budget": 300,
-   "max_selected": 3,
+   "budget": 150,
+   "max_selected": 2,
    "coverage_radius_m": 5000,
    "required_ids": [],
    "excluded_ids": [],
@@ -5363,8 +5363,8 @@
     }
    ],
    "budget": 300,
-   "max_selected": 3,
-   "coverage_radius_m": 400,
+   "max_selected": 2,
+   "coverage_radius_m": 300,
    "required_ids": [
     "site-5",
     "site-3"

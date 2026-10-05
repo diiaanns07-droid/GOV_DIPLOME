@@ -129,10 +129,10 @@ index c9a210f..aad7747 100644
 +  if (PL) PL.init(window.CITY_APP);  // K07 r8
  })();
 diff --git a/prototypes/city-evidence/web/index.html b/prototypes/city-evidence/web/index.html
-index 4bdaceb..29d7e65 100644
+index 4bdaceb..1762dc0 100644
 --- a/prototypes/city-evidence/web/index.html
 +++ b/prototypes/city-evidence/web/index.html
-@@ -131,6 +131,32 @@ button.wi-src { white-space: normal; text-align: left; font-size: 12px; padding:
+@@ -131,6 +131,43 @@ button.wi-src { white-space: normal; text-align: left; font-size: 12px; padding:
  #wiTable tr.wi-srcrow td { padding-top: 0; font-size: 12px; }
  #wiTable tbody tr[data-wi-row] td { border-bottom: 0; }
  #wiTable tbody tr { cursor: default; }
@@ -162,10 +162,21 @@ index 4bdaceb..29d7e65 100644
 +.pl-table, .pl-metrics { width: 100%; }
 +.pl-table tbody tr[data-pl-row] td { border-bottom: 0; padding-bottom: 0; }
 +.pl-table tr.pl-sub td { font-size: 12px; color: var(--ink-2); padding-top: 0; }
++#plProgress { width: 100%; }
++.pl-strats { display: grid; gap: 8px; margin: 6px 0; }
++.pl-strat { border: 1px solid var(--base); border-radius: 8px; padding: 6px 10px; }
++.pl-strat h4 { margin: 2px 0 4px; }
++.pl-rule, .pl-why, .pl-same, .pl-ids { margin: 3px 0; }
++#planCard .pl-dl { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1px 8px; margin: 4px 0; }  /* wins over .card dl at <= 480 px */
++.pl-dl dt { color: var(--ink-2); } .pl-dl dd { margin: 0; text-align: right; }
++.pl-pareto { width: 100%; font-size: 12px; }
++.pl-chart { width: 100%; max-width: 420px; height: auto; display: block; margin-top: 6px; }
++.pl-sens { margin: 4px 0; padding-left: 18px; } .pl-sens li { margin: 4px 0; }
++#planCard h4[tabindex="-1"]:focus { outline: 2px solid var(--focus); outline-offset: 2px; }
  </style>
  </head>
  <body>
-@@ -149,7 +175,8 @@ button.wi-src { white-space: normal; text-align: left; font-size: 12px; padding:
+@@ -149,7 +186,8 @@ button.wi-src { white-space: normal; text-align: left; font-size: 12px; padding:
      <select id="roadStyle"><option value="plain">один цвет</option><option value="foot">по данным о проходе пешком</option></select></label>
    <span class="ctl muted" id="roadLegend" hidden></span>
    <span class="ctl"><button class="tool" id="pointBtn" aria-pressed="false">Расстояние от точки</button>
@@ -175,7 +186,7 @@ index 4bdaceb..29d7e65 100644
    <a class="skip" href="#tblCard">Перейти к таблице объектов</a>
  </div>
  
-@@ -166,11 +193,15 @@ button.wi-src { white-space: normal; text-align: left; font-size: 12px; padding:
+@@ -166,11 +204,15 @@ button.wi-src { white-space: normal; text-align: left; font-size: 12px; padding:
      <div class="tooltip" id="tip" role="status"></div>
      <div class="legend-note" id="attrib"></div>
      <p class="mapstatus" id="mapStatus" role="status" aria-live="polite"></p>
@@ -191,7 +202,7 @@ index 4bdaceb..29d7e65 100644
      <section class="card" id="sliceCard"><h2>Срез данных</h2><div id="sliceBody"></div></section>
      <section class="card" id="explainCard" hidden><h2>Объяснение по фактам</h2><div id="explainBody"></div></section>
      <section class="card" id="tblCard" tabindex="-1"><h2>Таблица объектов <span class="muted" id="tblCount"></span></h2>
-@@ -184,6 +215,10 @@ button.wi-src { white-space: normal; text-align: left; font-size: 12px; padding:
+@@ -184,6 +226,10 @@ button.wi-src { white-space: normal; text-align: left; font-size: 12px; padding:
  <script src="evidence.js"></script>
  <script src="facts.js"></script>
  <script src="whatif.js"></script>
@@ -536,10 +547,10 @@ index 0000000..5bea011
 +})(typeof window !== "undefined" ? window : globalThis);
 diff --git a/prototypes/city-evidence/web/plan_demo.js b/prototypes/city-evidence/web/plan_demo.js
 new file mode 100644
-index 0000000..fba45e5
+index 0000000..9fb50b5
 --- /dev/null
 +++ b/prototypes/city-evidence/web/plan_demo.js
-@@ -0,0 +1,28 @@
+@@ -0,0 +1,29 @@
 +/* K07 round 8 — explicit SYNTHETIC demo set for the city-plan-v2 editor.
 + * Positions are a deterministic grid inside the slice bbox; weights and costs are made-up conditional values for
 + * checking the interface. They are NOT city statistics, NOT addresses of real sites, NOT prices in tenge.
@@ -561,7 +572,8 @@ index 0000000..fba45e5
 +      label: LABEL, synthetic: true,
 +      control_points: PTS.map(([u, v], i) => { const [lon, lat] = at(bbox, u, v); return { id: `cp-${i + 1}`, lon, lat, weight: WEIGHTS[i] }; }),
 +      candidates: SITES.map(([u, v], i) => { const [lon, lat] = at(bbox, u, v); return { id: `site-${i + 1}`, lon, lat, category, kind: "hypothetical", cost: COSTS[i] }; }),
-+      budget: 300, max_selected: 3, coverage_radius_m: 400, required_ids: [], excluded_ids: [], selected_ids: [],
++      // chosen so that in 3 of the 4 city/category slices the strategies differ and in one they coincide (both cases shown)
++      budget: 150, max_selected: 2, coverage_radius_m: 300, required_ids: [], excluded_ids: [], selected_ids: [],
 +    };
 +  }
 +  const api = { LABEL, syntheticDemo };
@@ -570,10 +582,10 @@ index 0000000..fba45e5
 +})(typeof window !== "undefined" ? window : globalThis);
 diff --git a/prototypes/city-evidence/web/planner_ui.js b/prototypes/city-evidence/web/planner_ui.js
 new file mode 100644
-index 0000000..a38fd7b
+index 0000000..3948d29
 --- /dev/null
 +++ b/prototypes/city-evidence/web/planner_ui.js
-@@ -0,0 +1,371 @@
+@@ -0,0 +1,534 @@
 +/* K07 round 8 — «План нескольких объектов» (city-plan-v2) UI module for the BUILD viewer.
 + * Editor: control points with weights (1..25), candidate sites with conditional costs (0..16), required / excluded,
 + * budget / max_selected / radius, a manual plan with feasibility and a before/after table.
@@ -640,10 +652,10 @@ index 0000000..a38fd7b
 +
 +  // ---------- state changes ----------
 +  function problemChanged(why) {  // a running search is cancelled; an old result becomes stale (checked by digest)
-+    if (S.run && !S.run.finished) { S.run.cancel(); S.run = null; S.progress = null; say(`Поиск остановлен: ${why}. Запустите заново.`); }
++    if (S.run && !S.run.finished) { const r = S.run; S.run = null; S.progress = null; r.cancel(); say(`Поиск остановлен: ${why}. Запустите заново.`); }
 +  }
 +  function reset(reason) {
-+    if (S.run && !S.run.finished) S.run.cancel();
++    if (S.run && !S.run.finished) { const r = S.run; S.run = null; r.cancel(); }  // detached first: its answer is ignored
 +    Object.assign(S, { points: [], cands: [], selected: new Set(), nextP: 1, nextC: 1, pending: null, synthetic: false,
 +      run: null, progress: null, result: null, undo: null, budget: DEF.budget, max: DEF.max, radius: DEF.radius });
 +    say(reason || "");
@@ -735,12 +747,16 @@ index 0000000..a38fd7b
 +    if (want && S.open) { const n = body.querySelector(`[data-fk="${want}"]`) || $(want); if (n && document.activeElement !== n) n.focus(); }
 +  }
 +  // Results only (manual plan, search, map): value edits keep the editor DOM, so Tab after typing is not disturbed.
-+  function fillResults(res) { res.replaceChildren(); renderManual(res); if (PLAN_UI.renderSearch) PLAN_UI.renderSearch(res); }
++  function fillResults(res) { res.replaceChildren(); renderManual(res); renderSearch(res); }
 +  function renderResults() {
 +    if (!S.open) return;
++    const fa = document.activeElement, fk = fa && fa.dataset ? fa.dataset.fk : null;
 +    const m = $("plMsg"); if (m) m.textContent = S.msg;
-+    const res = $("plResults"); if (res) fillResults(res);
++    const res = $("plResults"), inRes = !!(res && fa && res.contains(fa));  // only a focused element inside the results is rebuilt
++    if (res) fillResults(res);
 +    APP.renderMap(); APP.updateStatus();
++    const want = focusAfter || (inRes ? fk : null); focusAfter = null;
++    if (want) { const n = $("planBody").querySelector(`[data-fk="${want}"]`); if (n && document.activeElement !== n) n.focus(); }
 +  }
 +  function numInput(fk, value, lim, label, onChange, cls) {
 +    const i = el("input", { type: "number", min: lim[0], max: lim[1], step: 1, inputmode: "numeric", value, "data-fk": fk, "aria-label": label, class: cls || "pl-num" });
@@ -869,6 +885,165 @@ index 0000000..a38fd7b
 +    }
 +    t.append(b2); box.append(t);
 +    box.append(el("p", { class: "muted" }, `По прямой, в мм с округлением ${ev.metric_version}; «Разница» — уменьшение расстояния до ближайшей записи или места, не время пешком и не улучшение услуги. Охват — доля веса выбранных точек, не жителей. Вместимость, население и трафик не учитываются.`));
++  }
++
++
++  // ---------- exact search: three strategies, apply, progress / cancel / stale (stage 2) ----------
++  const STRAT = {
++    mean: { title: "Среднее расстояние", rule: "минимум средневзвешенного расстояния; при равенстве — худшая точка, затем стоимость" },
++    minimax: { title: "Худшая точка", rule: "минимум расстояния для самой дальней точки; при равенстве — среднее, затем стоимость" },
++    coverage: { title: "Охват", rule: "максимум веса точек в радиусе; при равенстве — среднее, худшая точка, стоимость" },
++  };
++  const key = (ids) => ids.join("|");
++  function currentDigest() { const v = validated(); return v.ok && S.points.length ? CALC.problemDigest(ctx(), v.scenario) : null; }
++  function runSearch() {
++    const v = validated();
++    if (!v.ok) { say(`Поиск не запущен: сценарий не прошёл проверку (${v.error.code}).`); return; }
++    if (!S.points.length) { say("Поиск не запущен: нужна хотя бы одна контрольная точка."); return; }
++    if (S.run && !S.run.finished) { const old = S.run; S.run = null; old.cancel(); }
++    S.result = null; S.progress = { evaluated: 0, total: 2 ** S.cands.length };
++    const run = RUN.start(CALC, ctx(), v.scenario, { ...S.runOpts,
++      onProgress: (pr) => { if (S.run && pr.request_id === S.run.request_id) { S.progress = pr; updateProgress(); } },
++      onDone: (r) => {
++        if (!S.run || r.request_id !== S.run.request_id) return;  // an answer of an older request is never shown
++        const pr = S.progress; S.run = null; S.progress = null;
++        if (r.status === "cancelled") say(`Поиск отменён: просмотрено ${nf.format(r.evaluated || 0)} из ${nf.format(r.total_subsets || (pr && pr.total) || 0)} наборов. Ручной план не изменён.`);
++        else if (r.status !== "optimal" && r.status !== "infeasible") say(`Поиск не завершён (${r.status}): результат не показан.`);
++        else { S.result = r; say(r.status === "optimal" ? `Поиск завершён: ${nf.format(r.feasible_count)} допустимых наборов из ${nf.format(r.total_subsets)}. Это предложение — ручной план меняется только кнопкой «Применить».` : "Поиск завершён: допустимых планов нет."); }
++        focusAfter = r.status === "cancelled" ? "plRun" : "plResTitle";
++        renderResults();
++      } });
++    S.run = run;
++    say(`Идёт точный перебор ${nf.format(2 ** S.cands.length)} наборов…`);
++    focusAfter = "plCancel";
++  }
++  function updateProgress() {
++    const pb = $("plProgress"), t = $("plProgressText"); if (!pb || !S.progress) return;
++    pb.max = S.progress.total; pb.value = S.progress.evaluated;
++    t.textContent = `Просмотрено ${nf.format(S.progress.evaluated)} из ${nf.format(S.progress.total)} наборов`;
++  }
++  function applyPlan(ids, title) {
++    S.undo = { prev: [...S.selected], title };
++    S.selected = new Set(ids);
++    say(`Применён план «${title}»: ${ids.length ? ids.map(cLabel).join(", ") : "без новых мест"}. «Вернуть прежний ручной план» отменит замену.`);
++    focusAfter = "plUndo";
++  }
++  function undoApply() {
++    if (!S.undo) return;
++    S.selected = new Set(S.undo.prev.filter((id) => S.cands.some((c) => c.id === id)));
++    say(`Возвращён прежний ручной план: ${S.selected.size ? [...S.selected].map(cLabel).join(", ") : "без мест"}.`); S.undo = null;
++    focusAfter = "plManTitle";
++  }
++  const dM = (a, b) => (a === null || b === null ? null : a - b);  // mm difference, plan a − plan b
++  function tradeoff(m, ref, refTitle) {
++    const parts = [], dm = dM(m.weighted_mean_mm, ref.weighted_mean_mm), dx = dM(m.max_mm, ref.max_mm), dc = m.covered_weight - ref.covered_weight, dcost = m.cost - ref.cost;
++    const mmText = (d, more, less) => (d === null ? null : Math.abs(d) < 500 ? null : `${d < 0 ? less : more} на ${fmtM(Math.abs(d))}`);
++    const a = mmText(dm, "среднее дальше", "среднее ближе"), b = mmText(dx, "худшая точка дальше", "худшая точка ближе");
++    if (a) parts.push(a); if (b) parts.push(b);
++    if (dc) parts.push(`охват ${dc > 0 ? "больше" : "меньше"} на ${nf.format(Math.abs(dc))} веса`);
++    if (dcost) parts.push(`${dcost > 0 ? "дороже" : "дешевле"} на ${units(Math.abs(dcost))}`);
++    return end(parts.length ? `По сравнению с планом «${refTitle}»: ${parts.join(", ")}.` : `По показателям не отличается от плана «${refTitle}» (разница меньше 1 м).`);
++  }
++  function renderSearch(res) {
++    res.append(el("h3", { id: "plSearchTitle" }, "Три плана: точный перебор"));
++    res.append(el("p", { class: "muted" }, `Перебираются все наборы введённых мест (до 65 536) с бюджетом, максимумом и ограничениями. Оптимум — только среди ${S.cands.length} введённых мест, не лучший план для города. Найденный план — предложение: ручной план меняется только кнопкой «Применить».`));
++    const running = !!(S.run && !S.run.finished);
++    const row = el("div", { class: "pl-row" });
++    row.append(btn("plRun", running ? "Идёт поиск…" : S.result ? "Найти заново" : "Найти три плана", () => { runSearch(); renderResults(); }, { disabled: running || !S.points.length }));
++    if (running) row.append(btn("plCancel", "Отменить поиск", () => { if (S.run) S.run.cancel(); }));
++    res.append(row);
++    if (running && S.progress) {
++      const pb = el("progress", { id: "plProgress", max: S.progress.total, value: S.progress.evaluated, "aria-labelledby": "plProgressText" });
++      res.append(pb, el("p", { id: "plProgressText", class: "muted" }, `Просмотрено ${nf.format(S.progress.evaluated)} из ${nf.format(S.progress.total)} наборов`));
++    }
++    if (S.undo) res.append(btn("plUndo", "Вернуть прежний ручной план", () => { undoApply(); renderResults(); }));
++    const r = S.result; if (!r) return;
++    const stale = r.problem_digest !== currentDigest();
++    res.append(el("h4", { id: "plResTitle", tabindex: "-1", "data-fk": "plResTitle" }, `Найденные планы ${r.request_id ? "(" + r.request_id + ")" : ""}`));
++    if (stale) res.append(el("p", { class: "warn", id: "plStale", role: "alert" }, "Результат устарел: точки, места, стоимости или условия изменены после поиска. «Применить» недоступно — запустите поиск заново."));
++    if (r.status === "infeasible") {
++      const RS = { required_over_budget: "обязательные места стоят больше бюджета", required_over_count: "обязательных мест больше, чем «Максимум объектов»" };
++      res.append(el("p", { class: "pl-bad", id: "plInfeasible" }, "Допустимых планов нет: " + (r.infeasible_reasons.map((x) => `${RS[x.code] || x.code} (${x.detail})`).join("; ") || "ограничения несовместимы") + ". Ограничения не снимались автоматически."));
++      return;
++    }
++    res.append(el("p", { class: "muted", id: "plSearchFacts" }, `Просмотрено ${nf.format(r.evaluated)} наборов, допустимых ${nf.format(r.feasible_count)}; метрика ${r.metric_version}, расчёт ${r.calc_version || "—"}.`));
++    // group identical plans: one card per distinct set, all titles on it
++    const groups = [];
++    for (const k of ["mean", "minimax", "coverage"]) {
++      const pl = r.objectives[k]; if (!pl) continue;
++      const g = groups.find((x) => key(x.ids) === key(pl.selected_ids));
++      if (g) g.keys.push(k); else groups.push({ ids: pl.selected_ids, metrics: pl.metrics, keys: [k] });
++    }
++    const man = S.lastEval ? S.lastEval.metrics : null, manKey = S.lastEval ? key(S.lastEval.selected_ids) : null;
++    const wrap = el("div", { class: "pl-strats", id: "plStrategies" });
++    const meanG = groups.find((g) => g.keys.includes("mean"));
++    for (const g of groups) {
++      const title = g.keys.map((k) => STRAT[k].title).join(" · ");
++      const card = el("section", { class: "pl-strat", "data-pl-strategy": g.keys.join("+"), "aria-label": `План: ${title}` });
++      card.append(el("h4", null, title));
++      for (const k of g.keys) card.append(el("p", { class: "muted pl-rule" }, `${STRAT[k].title}: ${STRAT[k].rule}.`));
++      if (g.keys.length > 1) card.append(el("p", { class: "pl-same" }, `Критерии «${g.keys.map((k) => STRAT[k].title).join("» и «")}» дают один и тот же набор: при этих точках, весах и стоимостях они не расходятся.`));
++      card.append(el("p", { class: "pl-ids" }, g.ids.length ? "Места: " + g.ids.map((id) => `${cShort(id)} (${units(S.cands.find((c) => c.id === id) ? S.cands.find((c) => c.id === id).cost : 0)})`).join(", ") : "Ни одного нового места: исходный срез уже лучший при этих условиях."));
++      const dl = el("dl", { class: "pl-dl" });
++      for (const [a, b] of metricRows(g.metrics)) dl.append(el("dt", null, a), el("dd", null, b));
++      card.append(dl);
++      if (meanG && g !== meanG) card.append(el("p", { class: "pl-why" }, tradeoff(g.metrics, meanG.metrics, STRAT.mean.title)));
++      if (man && key(g.ids) !== manKey) card.append(el("p", { class: "pl-why" }, tradeoff(g.metrics, man, "ручной")));
++      const same = key(g.ids) === manKey;
++      card.append(btn("apply-" + g.keys.join("-"), same ? "Совпадает с ручным планом" : "Применить", () => { applyPlan(g.ids, title); renderResults(); },
++        { disabled: stale || same, "aria-label": same ? `План «${title}» совпадает с ручным` : `Применить план «${title}» как ручной` }));
++      wrap.append(card);
++    }
++    res.append(wrap);
++    res.append(el("p", { class: "muted" }, "Почему нельзя сделать вывод о вместимости: учитываются только расстояния по прямой до введённых точек; число мест в учреждениях, население и спрос не известны. Стоимости условные, экономия реальных расходов не обещается."));
++    renderPareto(res, r, man);
++    renderSensitivity(res, r);
++  }
++  function renderPareto(res, r, man) {
++    res.append(el("h4", { id: "plParetoTitle" }, "Стоимость → среднее расстояние (Парето)"));
++    if (!r.pareto.length) { res.append(el("p", { class: "muted" }, "Нет допустимых планов с известным расстоянием для всех точек.")); return; }
++    const marks = (ids) => ["mean", "minimax", "coverage"].filter((k) => r.objectives[k] && key(r.objectives[k].selected_ids) === key(ids)).map((k) => STRAT[k].title);
++    const t = el("table", { id: "plPareto", class: "pl-pareto", "aria-labelledby": "plParetoTitle" });
++    const h = el("tr"); for (const x of ["Стоимость", "Среднее", "Худшая", "Места"]) h.append(el("th", null, x));
++    const th = el("thead"); th.append(h); t.append(th);
++    const tb = el("tbody");
++    for (const q of r.pareto) {
++      const tr = el("tr", { "data-pl-pareto": key(q.selected_ids) }), mk = marks(q.selected_ids);
++      [units(q.cost), fmtM(q.weighted_mean_mm), fmtM(q.max_mm), (q.selected_ids.length ? q.selected_ids.map(cShort).join(", ") : "—") + (mk.length ? ` ★ ${mk.join(", ")}` : "")].forEach((x) => tr.append(el("td", null, x)));
++      tb.append(tr);
++    }
++    t.append(tb); res.append(t);
++    res.append(el("p", { class: "muted" }, `Ни один план из таблицы нельзя сделать дешевле, не увеличив среднее расстояние. ★ — найденные стратегии.${r.pareto_excluded_unknown ? ` Не входят ${nf.format(r.pareto_excluded_unknown)} допустимых планов, где у части точек нет ни записи, ни места.` : ""}`));
++    // small chart (the table above is the accessible form)
++    const W = 320, H = 170, pad = 34, xs = r.pareto.map((q) => q.cost), ys = r.pareto.map((q) => q.weighted_mean_mm);
++    if (man && man.weighted_mean_mm !== null) { xs.push(man.cost); ys.push(man.weighted_mean_mm); }
++    const x0 = Math.min(...xs), x1 = Math.max(...xs) || 1, y0 = Math.min(...ys), y1 = Math.max(...ys) || 1;
++    const X = (v) => pad + 8 + (x1 === x0 ? 0.5 : (v - x0) / (x1 - x0)) * (W - pad - 26), Y = (v) => 22 + (y1 === y0 ? 0.5 : 1 - (v - y0) / (y1 - y0)) * (H - pad - 30);
++    const svg = sv("svg", { viewBox: `0 0 ${W} ${H}`, class: "pl-chart", role: "img", "aria-label": "График Парето: стоимость по горизонтали, среднее расстояние по вертикали; те же данные — в таблице выше" });
++    svg.append(sv("line", { x1: pad, y1: H - pad + 10, x2: W - 10, y2: H - pad + 10, stroke: "var(--base)" }), sv("line", { x1: pad, y1: 10, x2: pad, y2: H - pad + 10, stroke: "var(--base)" }));
++    const lx = sv("text", { x: W - 10, y: H - 4, "text-anchor": "end", "font-size": 10, fill: "var(--ink-2)" }); lx.textContent = "стоимость, усл. ед. →";
++    const ly = sv("text", { x: 2, y: 8, "font-size": 10, fill: "var(--ink-2)" }); ly.textContent = "↑ среднее расстояние";
++    svg.append(lx, ly);
++    let d = ""; r.pareto.forEach((q, i) => { d += (i ? "L" : "M") + X(q.cost).toFixed(1) + " " + Y(q.weighted_mean_mm).toFixed(1); });
++    svg.append(sv("path", { d, fill: "none", stroke: "var(--focus)", "stroke-width": 1.5 }));
++    for (const q of r.pareto) svg.append(sv("circle", { cx: X(q.cost), cy: Y(q.weighted_mean_mm), r: marks(q.selected_ids).length ? 5 : 3.5, fill: marks(q.selected_ids).length ? "var(--focus)" : "var(--surface)", stroke: "var(--focus)", "stroke-width": 1.5 }));
++    if (man && man.weighted_mean_mm !== null) { const cx = X(man.cost), cy = Y(man.weighted_mean_mm); svg.append(sv("path", { d: `M${cx} ${cy - 6}L${cx + 6} ${cy}L${cx} ${cy + 6}L${cx - 6} ${cy}Z`, fill: "none", stroke: "var(--ink)", "stroke-width": 1.5, "data-pl-manual": "1" })); }
++    res.append(svg, el("p", { class: "muted" }, "● точки Парето (крупные — стратегии), ◇ ручной план."));
++  }
++  function renderSensitivity(res, r) {
++    res.append(el("h4", { id: "plSensTitle" }, "Если изменить бюджет"));
++    res.append(el("p", { class: "muted" }, "Те же места, веса и ограничения, бюджеты 0, половина и полный. Это исследование параметра, а не прогноз экономии."));
++    const ul = el("ul", { class: "pl-sens", id: "plSens" });
++    for (const t of r.sensitivity) {
++      const li = el("li", { "data-pl-budget": t.budget });
++      li.append(el("strong", null, `Бюджет ${units(t.budget)}: `), document.createTextNode(t.feasible_count ? `${nf.format(t.feasible_count)} допустимых наборов.` : "допустимых наборов нет (обязательные места не помещаются)."));
++      if (t.feasible_count) for (const k of ["mean", "minimax", "coverage"]) {
++        const pl = t.objectives[k];
++        li.append(el("div", null, `${STRAT[k].title}: ${pl.selected_ids.length ? pl.selected_ids.map(cShort).join(", ") : "без мест"} — ${k === "coverage" ? `охват ${nf.format(pl.metrics.covered_weight)} из ${nf.format(pl.metrics.total_weight)}` : k === "minimax" ? `худшая ${fmtM(pl.metrics.max_mm)}` : `среднее ${pl.metrics.weighted_mean_mm === null ? "не определено" : fmtM(pl.metrics.weighted_mean_mm)}`}, ${units(pl.metrics.cost)}`));
++      }
++      ul.append(li);
++    }
++    res.append(ul);
 +  }
 +
 +  // ---------- map layer (called by app.js renderMap) ----------

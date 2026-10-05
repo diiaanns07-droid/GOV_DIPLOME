@@ -19,7 +19,8 @@
       label: LABEL, synthetic: true,
       control_points: PTS.map(([u, v], i) => { const [lon, lat] = at(bbox, u, v); return { id: `cp-${i + 1}`, lon, lat, weight: WEIGHTS[i] }; }),
       candidates: SITES.map(([u, v], i) => { const [lon, lat] = at(bbox, u, v); return { id: `site-${i + 1}`, lon, lat, category, kind: "hypothetical", cost: COSTS[i] }; }),
-      budget: 300, max_selected: 3, coverage_radius_m: 400, required_ids: [], excluded_ids: [], selected_ids: [],
+      // chosen so that in 3 of the 4 city/category slices the strategies differ and in one they coincide (both cases shown)
+      budget: 150, max_selected: 2, coverage_radius_m: 300, required_ids: [], excluded_ids: [], selected_ids: [],
     };
   }
   const api = { LABEL, syntheticDemo };

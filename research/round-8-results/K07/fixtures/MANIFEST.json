@@ -12,46 +12,46 @@
  "files": [
   {
    "file": "synthetic_demo_shymkent_school.json",
-   "sha256": "e601b72b37bcb066aacc5fb53913bdfbca55ce36c64a5b25968774e3c468f787",
+   "sha256": "f62379c2dbf74413c3a9b01339d40a77eca4cac5eaa8fd6da2c78c1f8587bd12",
    "city": "shymkent",
    "category": "school",
    "source_snapshot": "sha256:a9326b5633c513c0bfeccbb2248b26cf3b706c902f77745073a2959ad8d7ff3e",
-   "problem_digest": "sha256:6ea97baaa43e0982520a6d277e3dd7595b3a5f55ee10acbc736cc666fb1dbe53",
+   "problem_digest": "sha256:8e54f6f9af2cc2b38a26eea98033af84c5ad77951d3773d17769c5d5059718f9",
    "status": "optimal",
-   "feasible_count": 47,
+   "feasible_count": 10,
    "baseline_records": 15
   },
   {
    "file": "synthetic_demo_shymkent_outpatient_clinic.json",
-   "sha256": "46a5b9ef6ebe507a8440ba087e44637a31555c691c4cca69dac2e439390bb6ff",
+   "sha256": "93bbc9d802d4e0a3c9c0b0ba2995831898c669335b691e4dad7abf292a52e017",
    "city": "shymkent",
    "category": "outpatient_clinic",
    "source_snapshot": "sha256:a9326b5633c513c0bfeccbb2248b26cf3b706c902f77745073a2959ad8d7ff3e",
-   "problem_digest": "sha256:f17168dcf8e76b8fe85fe46cb3058aa5961b74935b9c230e08f0d940686ac714",
+   "problem_digest": "sha256:c721f39c559d9b6d2672c7b4fe3c36581ec2a30daa0b059ddf156e2a9bfbf127",
    "status": "optimal",
-   "feasible_count": 47,
+   "feasible_count": 10,
    "baseline_records": 16
   },
   {
    "file": "synthetic_demo_astana_school.json",
-   "sha256": "4e1693a7f30af3bf102eec400f5b358bdafa2e3d99a5889e345c79113b96b7db",
+   "sha256": "b87bf5cc5cd2f4e46374ed18d7966f2e78adbf4925e33163d36d2b5f170cf5ae",
    "city": "astana",
    "category": "school",
    "source_snapshot": "sha256:67a40b96d29873118780969eb11c32deba49a0c64fda1f185efe634882f04c6d",
-   "problem_digest": "sha256:e55f8df4d442c1d7a8996cae701139b030aee85e4ceec264f7fa677553f7856c",
+   "problem_digest": "sha256:15ac9d58931666278b91c71e6f4c4a83c91bd86a4bfa0579899b5111a49d8585",
    "status": "optimal",
-   "feasible_count": 47,
+   "feasible_count": 10,
    "baseline_records": 8
   },
   {
    "file": "synthetic_demo_astana_outpatient_clinic.json",
-   "sha256": "02457561006ff21d02b9842104d342671ae46950db4482af37f8844413b0188c",
+   "sha256": "ce5c5be26e09b43fef91d859d30c517b698c47c7fcb0fd16baec6d6f2be00f29",
    "city": "astana",
    "category": "outpatient_clinic",
    "source_snapshot": "sha256:67a40b96d29873118780969eb11c32deba49a0c64fda1f185efe634882f04c6d",
-   "problem_digest": "sha256:bb002578e7fce58fee2b47266d5d6c92d970e6c1b0fe27873fe4f52280e090bf",
+   "problem_digest": "sha256:d9c4804b22870974e38c2130942c475068660e99431b128679603e0db4858b42",
    "status": "optimal",
-   "feasible_count": 47,
+   "feasible_count": 10,
    "baseline_records": 16
   }
  ]

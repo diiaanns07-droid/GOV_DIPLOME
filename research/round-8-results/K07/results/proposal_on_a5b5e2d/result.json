@@ -5,7 +5,7 @@
  "target": {
   "app_root": "city-evidence"
  },
- "total": 22,
+ "total": 41,
  "pass": [
   "U1",
   "U2",
@@ -28,7 +28,26 @@
   "U16",
   "U17",
   "U20",
-  "U22"
+  "U22",
+  "S1",
+  "S2",
+  "S9",
+  "S10",
+  "S11",
+  "S12",
+  "S3",
+  "S4",
+  "S7",
+  "S5",
+  "S6",
+  "S16",
+  "S8",
+  "S13",
+  "S17",
+  "S14",
+  "S17b",
+  "S15",
+  "S17c"
  ],
  "fail": [],
  "test_incompatible": [],
@@ -392,7 +411,7 @@
   {
    "id": "U20",
    "area": "demo",
-   "expect": "SYNTHETIC demo: 12 points, 8 sites, budget 300, labelled «SYNTHETIC … не данные города» in the card and the message",
+   "expect": "SYNTHETIC demo: 12 points, 8 sites, budget 150, labelled «SYNTHETIC … не данные города» in the card and the message",
    "verdict": "PASS",
    "observed": {
     "label": "SYNTHETIC demo (K07 r8): точки, места, веса и стоимости выдуманы для проверки интерфейса, не данные города.",
@@ -404,6 +423,305 @@
    "id": "U22",
    "area": "general",
    "expect": "no console or page errors on the editor path",
+   "verdict": "PASS",
+   "observed": []
+  },
+  {
+   "id": "S1",
+   "area": "search",
+   "expect": "«Найти три плана»: progress bar while running, focus on «Отменить поиск»; at the end the result heading gets focus and the message says it is only a proposal",
+   "verdict": "PASS",
+   "observed": {
+    "mid": {
+     "running": true,
+     "result": null,
+     "cards": [],
+     "stale": false,
+     "progress": true,
+     "selected": [
+      "site-4"
+     ],
+     "undo": false,
+     "msg": "Идёт точный перебор 256 наборов…",
+     "focus": "plCancel"
+    },
+    "end": {
+     "status": "optimal",
+     "focus": "plResTitle",
+     "msg": "Поиск завершён: 10 допустимых наборов из 256. Это предложение — ручной план меняется только кнопкой «Применить»."
+    }
+   }
+  },
+  {
+   "id": "S2",
+   "area": "apply",
+   "expect": "a found plan is never applied automatically: the manual plan is unchanged after the search",
+   "verdict": "PASS",
+   "observed": {
+    "before": [
+     "site-4"
+    ],
+    "after": [
+     "site-4"
+    ]
+   }
+  },
+  {
+   "id": "S9",
+   "area": "strategies",
+   "expect": "different winners give separate cards (one per distinct set) with a trade-off line «По сравнению с планом «Среднее расстояние»»",
+   "verdict": "PASS",
+   "observed": {
+    "distinct": 2,
+    "cardIds": [
+     "mean",
+     "minimax+coverage"
+    ]
+   }
+  },
+  {
+   "id": "S10",
+   "area": "strategies",
+   "expect": "card numbers = the calculator: the «Среднее расстояние» card shows the mean and the worst point of optimizePlans' winner",
+   "verdict": "PASS",
+   "observed": {
+    "meanCard": [
+     "257 м",
+     "559 м",
+     "14 из 26 (54 %)",
+     "90 усл. ед."
+    ],
+    "mean": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 6677021,
+     "weighted_mean_mm": 256808.5,
+     "max_mm": 558828,
+     "covered_weight": 14,
+     "total_weight": 26,
+     "coverage_fraction": 0.5384615384615384,
+     "cost": 90,
+     "selected_count": 1
+    }
+   }
+  },
+  {
+   "id": "S11",
+   "area": "pareto",
+   "expect": "Pareto table = calculator's front (cost ascending, ★ on strategies) and a chart with the manual plan; the table is the accessible form",
+   "verdict": "PASS",
+   "observed": {
+    "rows": [
+     [
+      "0 усл. ед.",
+      "305 м",
+      "662 м",
+      "—"
+     ],
+     [
+      "80 усл. ед.",
+      "301 м",
+      "662 м",
+      "М6"
+     ],
+     [
+      "90 усл. ед.",
+      "257 м",
+      "559 м",
+      "М2 ★ Среднее расстояние"
+     ]
+    ],
+    "chart": true,
+    "manual": true
+   }
+  },
+  {
+   "id": "S12",
+   "area": "budgets",
+   "expect": "budget variants 0, B/2, B (no duplicates) with the winners of each, for unchanged sites/weights/constraints",
+   "verdict": "PASS",
+   "observed": [
+    [
+     0,
+     "Бюджет 0 усл. ед.: 1 допустимых наборов.Среднее расстояние: без мест — среднее 305 м, 0 усл. ед.Худшая точка: без мест — худшая 662 м, 0 усл. ед.Охват: без мест — охват 12 из 26, 0 усл. ед."
+    ],
+    [
+     75,
+     "Бюджет 75 усл. ед.: 2 допустимых наборов.Среднее расстояние: без мест — среднее 305 м, 0 усл. ед.Худшая точка: без мест — худшая 662 м, 0 усл. ед.Охват: без мест — охват 12 из 26, 0 усл. ед."
+    ],
+    [
+     150,
+     "Бюджет 150 усл. ед.: 10 допустимых наборов.Среднее расстояние: М2 — среднее 257 м, 90 усл. ед.Худшая точка: М1 — худшая 531 м, 120 усл. ед.Охват: М1 — охват 15 из 26, 120 усл. ед."
+    ]
+   ]
+  },
+  {
+   "id": "S3",
+   "area": "apply",
+   "expect": "«Применить» replaces the manual plan by that set (only on click), offers «Вернуть прежний ручной план», the card becomes «Совпадает с ручным планом»",
+   "verdict": "PASS",
+   "observed": {
+    "selected": [
+     "site-2"
+    ],
+    "want": [
+     "site-2"
+    ],
+    "focus": "plUndo",
+    "feas": "✓ План допустим по бюджету, числу мест и ограничениям.",
+    "undo": true,
+    "target": "mean",
+    "cards": [
+     {
+      "keys": "mean",
+      "ids": "Места: М2 (90 усл. ед.)",
+      "apply": true
+     },
+     {
+      "keys": "minimax+coverage",
+      "ids": "Места: М1 (120 усл. ед.)",
+      "apply": false
+     }
+    ]
+   }
+  },
+  {
+   "id": "S4",
+   "area": "apply",
+   "expect": "«Вернуть прежний ручной план» restores the manual set; records of the slice are not touched",
+   "verdict": "PASS",
+   "observed": {
+    "selected": [
+     "site-4"
+    ]
+   }
+  },
+  {
+   "id": "S7",
+   "area": "stale",
+   "expect": "changing a weight after the search marks the result stale; every «Применить» is disabled",
+   "verdict": "PASS",
+   "observed": [
+    {
+     "keys": "mean",
+     "ids": "Места: М2 (90 усл. ед.)",
+     "apply": true
+    },
+    {
+     "keys": "minimax+coverage",
+     "ids": "Места: М1 (120 усл. ед.)",
+     "apply": true
+    }
+   ]
+  },
+  {
+   "id": "S5",
+   "area": "cancel",
+   "expect": "«Отменить поиск»: no result, message with the number of examined subsets, focus back on «Найти», nothing arrives later",
+   "verdict": "PASS",
+   "observed": {
+    "msg": "Поиск отменён: просмотрено 28 из 256 наборов. Ручной план не изменён.",
+    "focus": "plRun",
+    "later": null
+   }
+  },
+  {
+   "id": "S6",
+   "area": "stale",
+   "expect": "changing the budget while searching stops that request («Поиск остановлен»); its answer never appears later",
+   "verdict": "PASS",
+   "observed": {
+    "req": "req-3",
+    "result": null,
+    "msg": "Поиск остановлен: изменено: бюджет. Запустите заново."
+   }
+  },
+  {
+   "id": "S16",
+   "area": "reset",
+   "expect": "city switch during a search: the plan and the search are dropped; no result appears in the other city",
+   "verdict": "PASS",
+   "observed": {
+    "city": "astana",
+    "result": null,
+    "msg": "Город изменён — план сброшен: точки, места и найденные планы между городами не переносятся."
+   }
+  },
+  {
+   "id": "S8",
+   "area": "strategies",
+   "expect": "identical winners are shown once, with all criteria named and a note that they do not diverge here (no illusion of three solutions)",
+   "verdict": "PASS",
+   "observed": [
+    {
+     "keys": "mean+minimax+coverage",
+     "ids": "Места: М1 (120 усл. ед.)",
+     "apply": false
+    }
+   ]
+  },
+  {
+   "id": "S13",
+   "area": "infeasible",
+   "expect": "a required site costing more than the budget: «Допустимых планов нет» with the reason and numbers; constraints are not dropped",
+   "verdict": "PASS",
+   "observed": "Допустимых планов нет: обязательные места стоят больше бюджета (200 > 150). Ограничения не снимались автоматически."
+  },
+  {
+   "id": "S17",
+   "area": "general",
+   "expect": "no console or page errors on the search path",
+   "verdict": "PASS",
+   "observed": []
+  },
+  {
+   "id": "S14",
+   "area": "keyboard",
+   "expect": "keyboard only: open (focus to «Категория»), demo, «Найти» → focus on the result heading, Tab to «Применить», Enter applies (focus to «Вернуть»), Enter undoes; the map is reachable by Tab",
+   "verdict": "PASS",
+   "observed": {
+    "f0": "plCat",
+    "f1": "plResTitle",
+    "tabsToApply": 0,
+    "f2": "plUndo",
+    "applied": [
+     "site-2"
+    ],
+    "undone": [],
+    "f3": null,
+    "tabsToMap": 4
+   }
+  },
+  {
+   "id": "S17b",
+   "area": "general",
+   "expect": "no console or page errors on the keyboard path",
+   "verdict": "PASS",
+   "observed": []
+  },
+  {
+   "id": "S15",
+   "area": "390px",
+   "expect": "390 px: no horizontal scroll, every control/cell/card/chart inside the plan card; after a tap on the map the status line is visible without scrolling",
+   "verdict": "PASS",
+   "observed": {
+    "fit": {
+     "pageScroll": false,
+     "cardOverflow": false,
+     "outside": [],
+     "n": 239
+    },
+    "msg": {
+     "text": "Точка 13 поставлена (вес 1): 42.32343, 69.60027. Т",
+     "top": 401,
+     "bottom": 446,
+     "vh": 844
+    }
+   }
+  },
+  {
+   "id": "S17c",
+   "area": "general",
+   "expect": "no console or page errors at 390 px",
    "verdict": "PASS",
    "observed": []
   }
