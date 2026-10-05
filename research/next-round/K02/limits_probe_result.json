@@ -1,0 +1,66 @@
+{
+ "probes": [
+  {
+   "text": "Есіл ауданы үшінші орынға түседі.",
+   "human_expectation": "numeric",
+   "note": "порядковые числительные вне словаря (как и в ru-фильтре)",
+   "prototype_numeric": false
+  },
+  {
+   "text": "Есиль опустится на третье место.",
+   "human_expectation": "numeric",
+   "note": "ru порядковые тоже не фильтруются",
+   "prototype_numeric": false
+  },
+  {
+   "text": "Бұл бір маңызды қадам.",
+   "human_expectation": "qualitative",
+   "note": "«бір» как неопределённый артикль",
+   "prototype_numeric": true
+  },
+  {
+   "text": "Екіншіден, экология баяу жақсарады.",
+   "human_expectation": "qualitative",
+   "note": "«екіншіден» = во-вторых",
+   "prototype_numeric": false
+  },
+  {
+   "text": "Жоспар бюджеттің жүзден бірін алады.",
+   "human_expectation": "numeric",
+   "note": "дробь «жүзден бірі»",
+   "prototype_numeric": true
+  },
+  {
+   "text": "Bul josparda bes mektep bar.",
+   "human_expectation": "numeric",
+   "note": "латиница 2021 года вне словаря",
+   "prototype_numeric": false
+  },
+  {
+   "text": "Шығын жартылай өтеледі.",
+   "human_expectation": "qualitative",
+   "note": "«жартылай» = частично, исключено",
+   "prototype_numeric": false
+  },
+  {
+   "text": "Бюджеттің жүзі экологияға кетеді.",
+   "human_expectation": "numeric",
+   "note": "«жүзі» исключено из-за омонима «лицо»",
+   "prototype_numeric": false
+  }
+ ],
+ "current_text_anchor": [
+  {
+   "text": "Әсері күшті.",
+   "current_anchor_matches": true
+  },
+  {
+   "text": "Бұл іс өңір үшін.",
+   "current_anchor_matches": false
+  },
+  {
+   "text": "Іс әлі ұзақ.",
+   "current_anchor_matches": false
+  }
+ ]
+}

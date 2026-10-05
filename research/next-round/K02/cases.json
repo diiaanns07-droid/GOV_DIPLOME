@@ -1,0 +1,41 @@
+{
+ "about": "K02 test cases for the advisor numeric-claim filter. Sentences are SYNTHETIC, written by K02 (not a native Kazakh speaker); kk wording needs native-speaker review. expected: numeric = sentence states a quantity and must be removed; qualitative = admissible comment that must be kept.",
+ "cases": [
+  {"id": "ru-01", "lang": "ru", "expected": "numeric", "category": "digit", "text": "План поднимает индекс на 5 баллов."},
+  {"id": "ru-02", "lang": "ru", "expected": "numeric", "category": "cardinal", "text": "План поднимает индекс на пять баллов."},
+  {"id": "ru-03", "lang": "ru", "expected": "numeric", "category": "approx_plural", "text": "Экономия составит десятки процентов."},
+  {"id": "ru-04", "lang": "ru", "expected": "numeric", "category": "approx_plural", "text": "Очередь в поликлиниках сократится на десяток дней."},
+  {"id": "ru-05", "lang": "ru", "expected": "numeric", "category": "multiplier", "text": "Нагрузка на бюджет вырастет вдвое."},
+  {"id": "ru-06", "lang": "ru", "expected": "numeric", "category": "multiplier", "text": "Расходы на дороги увеличатся трижды за горизонт."},
+  {"id": "ru-07", "lang": "ru", "expected": "numeric", "category": "fraction", "text": "Половина бюджета уходит в Нуру."},
+  {"id": "ru-08", "lang": "ru", "expected": "qualitative", "category": "plain", "text": "План усиливает социальную сферу Нуры."},
+  {"id": "ru-09", "lang": "ru", "expected": "qualitative", "category": "trap_root", "text": "Сотрудники замечают пятна загрязнения."},
+  {"id": "ru-10", "lang": "ru", "expected": "qualitative", "category": "plain", "text": "Главный риск в том, что экология почти не улучшается."},
+
+  {"id": "kk-01", "lang": "kk", "expected": "numeric", "category": "digit", "text": "Бұл жоспар индексті 5 балға көтереді."},
+  {"id": "kk-02", "lang": "kk", "expected": "numeric", "category": "cardinal", "text": "Бұл жоспар индексті бес балға көтереді."},
+  {"id": "kk-03", "lang": "kk", "expected": "numeric", "category": "compound", "text": "Он екі мектеп салынады."},
+  {"id": "kk-04", "lang": "kk", "expected": "numeric", "category": "cardinal", "text": "Үш аудан ғана жақсарады."},
+  {"id": "kk-05", "lang": "kk", "expected": "numeric", "category": "fraction", "text": "Жоспар бюджеттің жартысын Нұраға жұмсайды."},
+  {"id": "kk-06", "lang": "kk", "expected": "numeric", "category": "cardinal_inflected", "text": "Екі ауданға қосымша қаражат бөлінеді."},
+  {"id": "kk-07", "lang": "kk", "expected": "numeric", "category": "collective", "text": "Төртеуі де бюджетке сыяды."},
+  {"id": "kk-08", "lang": "kk", "expected": "numeric", "category": "tens", "text": "Жиырма аула абаттандырылады."},
+  {"id": "kk-09", "lang": "kk", "expected": "numeric", "category": "approx_plural", "text": "Ондаған отбасы жаңа пәтер алады."},
+  {"id": "kk-10", "lang": "kk", "expected": "numeric", "category": "percent_word", "text": "Шығын бес пайызға азаяды."},
+  {"id": "kk-11", "lang": "kk", "expected": "numeric", "category": "multiplier", "text": "Жүктеме бірнеше есе өседі."},
+  {"id": "kk-12", "lang": "kk", "expected": "numeric", "category": "large", "text": "Мың тұрғын жаңа емханаға жазылады."},
+  {"id": "kk-13", "lang": "kk", "expected": "numeric", "category": "fraction", "text": "Қаражаттың ширегі экологияға кетеді."},
+  {"id": "kk-14", "lang": "kk", "expected": "numeric", "category": "cardinal", "text": "Алты саябақ жаңартылады."},
+  {"id": "kk-15", "lang": "kk", "expected": "numeric", "category": "large", "text": "Жүз миллион теңге үнемделеді."},
+
+  {"id": "kk-16", "lang": "kk", "expected": "qualitative", "category": "plain", "text": "Жоспар Нұра ауданының әлеуметтік саласын күшейтеді."},
+  {"id": "kk-17", "lang": "kk", "expected": "qualitative", "category": "trap_ushin", "text": "Бұл шешім тұрғындар үшін маңызды."},
+  {"id": "kk-18", "lang": "kk", "expected": "qualitative", "category": "trap_birak", "text": "Бірақ экология баяу жақсарады."},
+  {"id": "kk-19", "lang": "kk", "expected": "qualitative", "category": "trap_zhuzege", "text": "Жоба жүзеге асырылса, көлік кептелісі азаяды."},
+  {"id": "kk-20", "lang": "kk", "expected": "qualitative", "category": "trap_onda", "text": "Онда денсаулық сақтау саласы әлсіз қалады."},
+  {"id": "kk-21", "lang": "kk", "expected": "qualitative", "category": "trap_oning", "text": "Оның басты тәуекелі — экологияның әлсіз өсуі."},
+  {"id": "kk-22", "lang": "kk", "expected": "qualitative", "category": "trap_birge", "text": "Мектеп пен емхана бірге дамиды."},
+  {"id": "kk-23", "lang": "kk", "expected": "qualitative", "category": "trap_altyn", "text": "Алтын орта табу маңызды."},
+  {"id": "kk-24", "lang": "kk", "expected": "qualitative", "category": "plain", "text": "Көлік пен экология арасында ымыра қажет."}
+ ]
+}

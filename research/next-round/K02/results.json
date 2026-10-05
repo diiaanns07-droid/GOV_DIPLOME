@@ -1,0 +1,343 @@
+{
+ "repo_commit": "170f95bef5f7d6df11b0315b241e0c16e1ec900b",
+ "python": "3.11.15",
+ "evaluated": "agent.evidence.qualitative_comment (current) vs kk_numeral_guard.qualitative_comment_v2",
+ "summary": {
+  "current": {
+   "ru": {
+    "numeric": 7,
+    "leaks": 3,
+    "qualitative": 3,
+    "false_removals": 0
+   },
+   "kk": {
+    "numeric": 15,
+    "leaks": 13,
+    "qualitative": 9,
+    "false_removals": 0
+   }
+  },
+  "prototype": {
+   "ru": {
+    "numeric": 7,
+    "leaks": 0,
+    "qualitative": 3,
+    "false_removals": 0
+   },
+   "kk": {
+    "numeric": 15,
+    "leaks": 0,
+    "qualitative": 9,
+    "false_removals": 0
+   }
+  }
+ },
+ "rows": [
+  {
+   "id": "ru-01",
+   "lang": "ru",
+   "expected": "numeric",
+   "category": "digit",
+   "text": "План поднимает индекс на 5 баллов.",
+   "current": "ok",
+   "prototype": "ok"
+  },
+  {
+   "id": "ru-02",
+   "lang": "ru",
+   "expected": "numeric",
+   "category": "cardinal",
+   "text": "План поднимает индекс на пять баллов.",
+   "current": "ok",
+   "prototype": "ok"
+  },
+  {
+   "id": "ru-03",
+   "lang": "ru",
+   "expected": "numeric",
+   "category": "approx_plural",
+   "text": "Экономия составит десятки процентов.",
+   "current": "LEAK",
+   "prototype": "ok"
+  },
+  {
+   "id": "ru-04",
+   "lang": "ru",
+   "expected": "numeric",
+   "category": "approx_plural",
+   "text": "Очередь в поликлиниках сократится на десяток дней.",
+   "current": "LEAK",
+   "prototype": "ok"
+  },
+  {
+   "id": "ru-05",
+   "lang": "ru",
+   "expected": "numeric",
+   "category": "multiplier",
+   "text": "Нагрузка на бюджет вырастет вдвое.",
+   "current": "ok",
+   "prototype": "ok"
+  },
+  {
+   "id": "ru-06",
+   "lang": "ru",
+   "expected": "numeric",
+   "category": "multiplier",
+   "text": "Расходы на дороги увеличатся трижды за горизонт.",
+   "current": "LEAK",
+   "prototype": "ok"
+  },
+  {
+   "id": "ru-07",
+   "lang": "ru",
+   "expected": "numeric",
+   "category": "fraction",
+   "text": "Половина бюджета уходит в Нуру.",
+   "current": "ok",
+   "prototype": "ok"
+  },
+  {
+   "id": "ru-08",
+   "lang": "ru",
+   "expected": "qualitative",
+   "category": "plain",
+   "text": "План усиливает социальную сферу Нуры.",
+   "current": "ok",
+   "prototype": "ok"
+  },
+  {
+   "id": "ru-09",
+   "lang": "ru",
+   "expected": "qualitative",
+   "category": "trap_root",
+   "text": "Сотрудники замечают пятна загрязнения.",
+   "current": "ok",
+   "prototype": "ok"
+  },
+  {
+   "id": "ru-10",
+   "lang": "ru",
+   "expected": "qualitative",
+   "category": "plain",
+   "text": "Главный риск в том, что экология почти не улучшается.",
+   "current": "ok",
+   "prototype": "ok"
+  },
+  {
+   "id": "kk-01",
+   "lang": "kk",
+   "expected": "numeric",
+   "category": "digit",
+   "text": "Бұл жоспар индексті 5 балға көтереді.",
+   "current": "ok",
+   "prototype": "ok"
+  },
+  {
+   "id": "kk-02",
+   "lang": "kk",
+   "expected": "numeric",
+   "category": "cardinal",
+   "text": "Бұл жоспар индексті бес балға көтереді.",
+   "current": "LEAK",
+   "prototype": "ok"
+  },
+  {
+   "id": "kk-03",
+   "lang": "kk",
+   "expected": "numeric",
+   "category": "compound",
+   "text": "Он екі мектеп салынады.",
+   "current": "LEAK",
+   "prototype": "ok"
+  },
+  {
+   "id": "kk-04",
+   "lang": "kk",
+   "expected": "numeric",
+   "category": "cardinal",
+   "text": "Үш аудан ғана жақсарады.",
+   "current": "LEAK",
+   "prototype": "ok"
+  },
+  {
+   "id": "kk-05",
+   "lang": "kk",
+   "expected": "numeric",
+   "category": "fraction",
+   "text": "Жоспар бюджеттің жартысын Нұраға жұмсайды.",
+   "current": "LEAK",
+   "prototype": "ok"
+  },
+  {
+   "id": "kk-06",
+   "lang": "kk",
+   "expected": "numeric",
+   "category": "cardinal_inflected",
+   "text": "Екі ауданға қосымша қаражат бөлінеді.",
+   "current": "LEAK",
+   "prototype": "ok"
+  },
+  {
+   "id": "kk-07",
+   "lang": "kk",
+   "expected": "numeric",
+   "category": "collective",
+   "text": "Төртеуі де бюджетке сыяды.",
+   "current": "LEAK",
+   "prototype": "ok"
+  },
+  {
+   "id": "kk-08",
+   "lang": "kk",
+   "expected": "numeric",
+   "category": "tens",
+   "text": "Жиырма аула абаттандырылады.",
+   "current": "LEAK",
+   "prototype": "ok"
+  },
+  {
+   "id": "kk-09",
+   "lang": "kk",
+   "expected": "numeric",
+   "category": "approx_plural",
+   "text": "Ондаған отбасы жаңа пәтер алады.",
+   "current": "LEAK",
+   "prototype": "ok"
+  },
+  {
+   "id": "kk-10",
+   "lang": "kk",
+   "expected": "numeric",
+   "category": "percent_word",
+   "text": "Шығын бес пайызға азаяды.",
+   "current": "LEAK",
+   "prototype": "ok"
+  },
+  {
+   "id": "kk-11",
+   "lang": "kk",
+   "expected": "numeric",
+   "category": "multiplier",
+   "text": "Жүктеме бірнеше есе өседі.",
+   "current": "LEAK",
+   "prototype": "ok"
+  },
+  {
+   "id": "kk-12",
+   "lang": "kk",
+   "expected": "numeric",
+   "category": "large",
+   "text": "Мың тұрғын жаңа емханаға жазылады.",
+   "current": "LEAK",
+   "prototype": "ok"
+  },
+  {
+   "id": "kk-13",
+   "lang": "kk",
+   "expected": "numeric",
+   "category": "fraction",
+   "text": "Қаражаттың ширегі экологияға кетеді.",
+   "current": "LEAK",
+   "prototype": "ok"
+  },
+  {
+   "id": "kk-14",
+   "lang": "kk",
+   "expected": "numeric",
+   "category": "cardinal",
+   "text": "Алты саябақ жаңартылады.",
+   "current": "LEAK",
+   "prototype": "ok"
+  },
+  {
+   "id": "kk-15",
+   "lang": "kk",
+   "expected": "numeric",
+   "category": "large",
+   "text": "Жүз миллион теңге үнемделеді.",
+   "current": "ok",
+   "prototype": "ok"
+  },
+  {
+   "id": "kk-16",
+   "lang": "kk",
+   "expected": "qualitative",
+   "category": "plain",
+   "text": "Жоспар Нұра ауданының әлеуметтік саласын күшейтеді.",
+   "current": "ok",
+   "prototype": "ok"
+  },
+  {
+   "id": "kk-17",
+   "lang": "kk",
+   "expected": "qualitative",
+   "category": "trap_ushin",
+   "text": "Бұл шешім тұрғындар үшін маңызды.",
+   "current": "ok",
+   "prototype": "ok"
+  },
+  {
+   "id": "kk-18",
+   "lang": "kk",
+   "expected": "qualitative",
+   "category": "trap_birak",
+   "text": "Бірақ экология баяу жақсарады.",
+   "current": "ok",
+   "prototype": "ok"
+  },
+  {
+   "id": "kk-19",
+   "lang": "kk",
+   "expected": "qualitative",
+   "category": "trap_zhuzege",
+   "text": "Жоба жүзеге асырылса, көлік кептелісі азаяды.",
+   "current": "ok",
+   "prototype": "ok"
+  },
+  {
+   "id": "kk-20",
+   "lang": "kk",
+   "expected": "qualitative",
+   "category": "trap_onda",
+   "text": "Онда денсаулық сақтау саласы әлсіз қалады.",
+   "current": "ok",
+   "prototype": "ok"
+  },
+  {
+   "id": "kk-21",
+   "lang": "kk",
+   "expected": "qualitative",
+   "category": "trap_oning",
+   "text": "Оның басты тәуекелі — экологияның әлсіз өсуі.",
+   "current": "ok",
+   "prototype": "ok"
+  },
+  {
+   "id": "kk-22",
+   "lang": "kk",
+   "expected": "qualitative",
+   "category": "trap_birge",
+   "text": "Мектеп пен емхана бірге дамиды.",
+   "current": "ok",
+   "prototype": "ok"
+  },
+  {
+   "id": "kk-23",
+   "lang": "kk",
+   "expected": "qualitative",
+   "category": "trap_altyn",
+   "text": "Алтын орта табу маңызды.",
+   "current": "ok",
+   "prototype": "ok"
+  },
+  {
+   "id": "kk-24",
+   "lang": "kk",
+   "expected": "qualitative",
+   "category": "plain",
+   "text": "Көлік пен экология арасында ымыра қажет.",
+   "current": "ok",
+   "prototype": "ok"
+  }
+ ]
+}
