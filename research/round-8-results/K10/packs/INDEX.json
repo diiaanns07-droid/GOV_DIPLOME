@@ -21,6 +21,7 @@
   "conflict_count": "base, required [c01,c02,c03,c04], max_selected 3, budget 1000000 (only the count conflicts)",
   "qa_nearest": "base + one control point at each qa.colocated group of web/evidence.js holding records of the category (largest group first, ids cp_qa1..), weight continues the weight rule; not built when no such group",
   "seeded": "LCG x=(1103515245*x+12345) mod 2^31, seed = 20261005 + index in [shymkent/school, shymkent/outpatient_clinic, astana/school, astana/outpatient_clinic]; 20 control points s01..s20 at x,y = 0.05+0.9*u, weight 1+(x mod 100); 14 candidates r01..r14 at x,y = 0.05+0.9*u, cost 10*(5+(x mod 46)); budget 900, max_selected 4, radius 300; selected_ids []; draw order per point: x, y, weight; per candidate: x, y, cost",
+  "invalid_inputs": "mutations of the base pack, one defect per case; the intended code is written first and generation stops if the oracle disagrees, so no case is stored with an expectation it does not test",
   "objectives_agree": "computed after the fact from oracle winners; reported as it came out, never searched for"
  },
  "packs": [
@@ -37,6 +38,82 @@
    "sha256": "330a0cc90d4e28db9d5c0457c7d5c02ed783e4d277e3d91fad0e3346a5c4bb9d"
   },
   {
+   "pack_id": "shymkent-school-tight-budget",
+   "kind": "real_slice",
+   "stage": 2,
+   "purpose": "limited budget: only the cheapest single candidate fits",
+   "status": "optimal",
+   "objectives_agree": true,
+   "distinct_winner_sets": 1,
+   "infeasible_reasons": null,
+   "pareto_points": 2,
+   "sha256": "e5a675a66a96a878681560d7b482514a2257462779eeec61b5defca7d236860d"
+  },
+  {
+   "pack_id": "shymkent-school-required-excluded",
+   "kind": "real_slice",
+   "stage": 2,
+   "purpose": "required corner candidate, base mean winner excluded",
+   "status": "optimal",
+   "objectives_agree": false,
+   "distinct_winner_sets": 2,
+   "infeasible_reasons": null,
+   "pareto_points": 4,
+   "sha256": "3bdcb746fa837bf330716d5e59f5c14fead5191d06227c96934400d041e01858"
+  },
+  {
+   "pack_id": "shymkent-school-conflict-budget",
+   "kind": "real_slice",
+   "stage": 2,
+   "purpose": "conflict: required candidates cost more than the budget",
+   "status": "infeasible",
+   "objectives_agree": null,
+   "distinct_winner_sets": null,
+   "infeasible_reasons": [
+    "required_cost_exceeds_budget"
+   ],
+   "pareto_points": 0,
+   "sha256": "c599c3bf83554509073408d5531a5c3e7ea5a6445f8f882d4a5e19b175f9fd7f"
+  },
+  {
+   "pack_id": "shymkent-school-conflict-count",
+   "kind": "real_slice",
+   "stage": 2,
+   "purpose": "conflict: 4 required candidates, max_selected 3",
+   "status": "infeasible",
+   "objectives_agree": null,
+   "distinct_winner_sets": null,
+   "infeasible_reasons": [
+    "required_count_exceeds_max_selected"
+   ],
+   "pareto_points": 0,
+   "sha256": "9c9ff43b6f103b1ac2a9cb8dfa43947cb6a1494d563368e581d47ff1aa19551c"
+  },
+  {
+   "pack_id": "shymkent-school-seeded",
+   "kind": "real_slice",
+   "stage": 2,
+   "purpose": "seeded random geometry: 20 points, 14 candidates, budget 900, max 4",
+   "status": "optimal",
+   "objectives_agree": true,
+   "distinct_winner_sets": 1,
+   "infeasible_reasons": null,
+   "pareto_points": 7,
+   "sha256": "62e36d0b351f7bc6bd11b3f5e68509e01549aabc750c7b0dafb984160396ab81"
+  },
+  {
+   "pack_id": "shymkent-school-qa-nearest",
+   "kind": "real_slice",
+   "stage": 2,
+   "purpose": "QA nearest: control points on colocated groups; ties and QA flags must stay visible",
+   "status": "optimal",
+   "objectives_agree": true,
+   "distinct_winner_sets": 1,
+   "infeasible_reasons": null,
+   "pareto_points": 7,
+   "sha256": "ae4b41d7fa507309f3935301f947f8beb0376872ede8542fa340ac38b8f6a44c"
+  },
+  {
    "pack_id": "shymkent-outpatient_clinic-base",
    "kind": "real_slice",
    "stage": 1,
@@ -47,6 +124,82 @@
    "infeasible_reasons": null,
    "pareto_points": 10,
    "sha256": "a99a6c3bf309425eb0d1557b8a952ef8b116a9f1246acc8b3ee0f438e9a51b6b"
+  },
+  {
+   "pack_id": "shymkent-outpatient_clinic-tight-budget",
+   "kind": "real_slice",
+   "stage": 2,
+   "purpose": "limited budget: only the cheapest single candidate fits",
+   "status": "optimal",
+   "objectives_agree": true,
+   "distinct_winner_sets": 1,
+   "infeasible_reasons": null,
+   "pareto_points": 1,
+   "sha256": "a4a2a1700c45142b3dcb638c5e72e5f96695b1248382e5c5ad68f4bfa2cfdf74"
+  },
+  {
+   "pack_id": "shymkent-outpatient_clinic-required-excluded",
+   "kind": "real_slice",
+   "stage": 2,
+   "purpose": "required corner candidate, base mean winner excluded",
+   "status": "optimal",
+   "objectives_agree": true,
+   "distinct_winner_sets": 1,
+   "infeasible_reasons": null,
+   "pareto_points": 4,
+   "sha256": "ec084c2c68770bc0c813e0776f05fc64d63eb99af85cfca8ca3f81f0eb3c279d"
+  },
+  {
+   "pack_id": "shymkent-outpatient_clinic-conflict-budget",
+   "kind": "real_slice",
+   "stage": 2,
+   "purpose": "conflict: required candidates cost more than the budget",
+   "status": "infeasible",
+   "objectives_agree": null,
+   "distinct_winner_sets": null,
+   "infeasible_reasons": [
+    "required_cost_exceeds_budget"
+   ],
+   "pareto_points": 0,
+   "sha256": "00e48d0deaae0d02aaee3e9c646c9c84eb8cde7b9c119f7d6eff2986c8803d06"
+  },
+  {
+   "pack_id": "shymkent-outpatient_clinic-conflict-count",
+   "kind": "real_slice",
+   "stage": 2,
+   "purpose": "conflict: 4 required candidates, max_selected 3",
+   "status": "infeasible",
+   "objectives_agree": null,
+   "distinct_winner_sets": null,
+   "infeasible_reasons": [
+    "required_count_exceeds_max_selected"
+   ],
+   "pareto_points": 0,
+   "sha256": "868187acfb3bc50bc64fa3c39ac6ac3c6fec8ab832dcf2065f514fe4f708b788"
+  },
+  {
+   "pack_id": "shymkent-outpatient_clinic-seeded",
+   "kind": "real_slice",
+   "stage": 2,
+   "purpose": "seeded random geometry: 20 points, 14 candidates, budget 900, max 4",
+   "status": "optimal",
+   "objectives_agree": true,
+   "distinct_winner_sets": 1,
+   "infeasible_reasons": null,
+   "pareto_points": 13,
+   "sha256": "a66ae63e1118ae7b3af7dcf170710b4a9275d96536d52f79cf0e130adc413fcc"
+  },
+  {
+   "pack_id": "shymkent-outpatient_clinic-qa-nearest",
+   "kind": "real_slice",
+   "stage": 2,
+   "purpose": "QA nearest: control points on colocated groups; ties and QA flags must stay visible",
+   "status": "optimal",
+   "objectives_agree": false,
+   "distinct_winner_sets": 2,
+   "infeasible_reasons": null,
+   "pareto_points": 10,
+   "sha256": "1786f4032ae40bcb1947a3d062612edf61afc2df17e3e452eec0a02b488edf0a"
   },
   {
    "pack_id": "astana-school-base",
@@ -61,6 +214,70 @@
    "sha256": "e12c700cb8d18d8e51e8d0aedb37b2f729f4ec0d8bac6085d37b25aab14cdf2e"
   },
   {
+   "pack_id": "astana-school-tight-budget",
+   "kind": "real_slice",
+   "stage": 2,
+   "purpose": "limited budget: only the cheapest single candidate fits",
+   "status": "optimal",
+   "objectives_agree": true,
+   "distinct_winner_sets": 1,
+   "infeasible_reasons": null,
+   "pareto_points": 2,
+   "sha256": "0ab775bedb311d1d1a2de26a61f6ad1f532a602112e6316c661362dfd06fcb0d"
+  },
+  {
+   "pack_id": "astana-school-required-excluded",
+   "kind": "real_slice",
+   "stage": 2,
+   "purpose": "required corner candidate, base mean winner excluded",
+   "status": "optimal",
+   "objectives_agree": false,
+   "distinct_winner_sets": 2,
+   "infeasible_reasons": null,
+   "pareto_points": 5,
+   "sha256": "2d27a70274b69936965dafee9e34f93da85518d1da7a62b8e7f83665d754f3f2"
+  },
+  {
+   "pack_id": "astana-school-conflict-budget",
+   "kind": "real_slice",
+   "stage": 2,
+   "purpose": "conflict: required candidates cost more than the budget",
+   "status": "infeasible",
+   "objectives_agree": null,
+   "distinct_winner_sets": null,
+   "infeasible_reasons": [
+    "required_cost_exceeds_budget"
+   ],
+   "pareto_points": 0,
+   "sha256": "f5f470121e010d3efe98684eb132fb867265ce0734bffeacf2f1745b92e9c56c"
+  },
+  {
+   "pack_id": "astana-school-conflict-count",
+   "kind": "real_slice",
+   "stage": 2,
+   "purpose": "conflict: 4 required candidates, max_selected 3",
+   "status": "infeasible",
+   "objectives_agree": null,
+   "distinct_winner_sets": null,
+   "infeasible_reasons": [
+    "required_count_exceeds_max_selected"
+   ],
+   "pareto_points": 0,
+   "sha256": "6e8ae58e6245ff2e5f4aba6e063d122be61977f1a1ab2cfc29e3ba22f57764d0"
+  },
+  {
+   "pack_id": "astana-school-seeded",
+   "kind": "real_slice",
+   "stage": 2,
+   "purpose": "seeded random geometry: 20 points, 14 candidates, budget 900, max 4",
+   "status": "optimal",
+   "objectives_agree": false,
+   "distinct_winner_sets": 3,
+   "infeasible_reasons": null,
+   "pareto_points": 14,
+   "sha256": "14cf6356802afe2e9dbb5a79de6e47f3a2caae35b0b254e29875bcc0b20a85d5"
+  },
+  {
    "pack_id": "astana-outpatient_clinic-base",
    "kind": "real_slice",
    "stage": 1,
@@ -71,9 +288,142 @@
    "infeasible_reasons": null,
    "pareto_points": 9,
    "sha256": "e8220dec32ec574bbad390e96ec0d8e8812da80464320fbc671da536fe51396b"
+  },
+  {
+   "pack_id": "astana-outpatient_clinic-tight-budget",
+   "kind": "real_slice",
+   "stage": 2,
+   "purpose": "limited budget: only the cheapest single candidate fits",
+   "status": "optimal",
+   "objectives_agree": true,
+   "distinct_winner_sets": 1,
+   "infeasible_reasons": null,
+   "pareto_points": 2,
+   "sha256": "ce14adec295c0a91947906bcc3416fa48ef3b3dae7bc5ac1ca12a9c885357f54"
+  },
+  {
+   "pack_id": "astana-outpatient_clinic-required-excluded",
+   "kind": "real_slice",
+   "stage": 2,
+   "purpose": "required corner candidate, base mean winner excluded",
+   "status": "optimal",
+   "objectives_agree": false,
+   "distinct_winner_sets": 2,
+   "infeasible_reasons": null,
+   "pareto_points": 5,
+   "sha256": "1916bdd4ce2945e5f45b31e26e45b222402809eb847c653cfdf922195eeb2afc"
+  },
+  {
+   "pack_id": "astana-outpatient_clinic-conflict-budget",
+   "kind": "real_slice",
+   "stage": 2,
+   "purpose": "conflict: required candidates cost more than the budget",
+   "status": "infeasible",
+   "objectives_agree": null,
+   "distinct_winner_sets": null,
+   "infeasible_reasons": [
+    "required_cost_exceeds_budget"
+   ],
+   "pareto_points": 0,
+   "sha256": "b61892c272ca9e520de8caf9da3ef3c94842c56b0a8e703c1e77f9819e6b3913"
+  },
+  {
+   "pack_id": "astana-outpatient_clinic-conflict-count",
+   "kind": "real_slice",
+   "stage": 2,
+   "purpose": "conflict: 4 required candidates, max_selected 3",
+   "status": "infeasible",
+   "objectives_agree": null,
+   "distinct_winner_sets": null,
+   "infeasible_reasons": [
+    "required_count_exceeds_max_selected"
+   ],
+   "pareto_points": 0,
+   "sha256": "4991e16198eca7bf953528cb891f1a896ddca8c35fd80c4a88197a2ef87ca201"
+  },
+  {
+   "pack_id": "astana-outpatient_clinic-seeded",
+   "kind": "real_slice",
+   "stage": 2,
+   "purpose": "seeded random geometry: 20 points, 14 candidates, budget 900, max 4",
+   "status": "optimal",
+   "objectives_agree": false,
+   "distinct_winner_sets": 2,
+   "infeasible_reasons": null,
+   "pareto_points": 13,
+   "sha256": "bfbea7ea6ddcd6d0b76842877236a569b3cf3eae857eff9018762e2188037f8c"
+  },
+  {
+   "pack_id": "shymkent-school-invalid-inputs",
+   "kind": "real_slice",
+   "stage": 2,
+   "purpose": "inputs that must be refused before computing (state unchanged), plus two that must be accepted",
+   "status": "validation_cases",
+   "objectives_agree": null,
+   "distinct_winner_sets": null,
+   "infeasible_reasons": null,
+   "pareto_points": null,
+   "sha256": "ecfde013cfa278e9c6f07c5844ff46282e3a83325a02600a06f8979805148e16"
+  },
+  {
+   "pack_id": "astana-school-invalid-inputs",
+   "kind": "real_slice",
+   "stage": 2,
+   "purpose": "inputs that must be refused before computing (state unchanged), plus two that must be accepted",
+   "status": "validation_cases",
+   "objectives_agree": null,
+   "distinct_winner_sets": null,
+   "infeasible_reasons": null,
+   "pareto_points": null,
+   "sha256": "38ed7e11458090df9996f53159556fb7c574472014e11a870c428ab7293bd444"
+  },
+  {
+   "pack_id": "synthetic-objectives-differ",
+   "kind": "synthetic",
+   "stage": 2,
+   "purpose": "designed so that mean, minimax and coverage pick different single candidates",
+   "status": "optimal",
+   "objectives_agree": false,
+   "distinct_winner_sets": 3,
+   "infeasible_reasons": null,
+   "pareto_points": 4,
+   "sha256": "e7a2a884f88eb81cf56d1220efcdcbf4ba6f8fa42e1df7636fa9b76259e2c8f0"
+  },
+  {
+   "pack_id": "synthetic-empty-baseline",
+   "kind": "synthetic",
+   "stage": 2,
+   "purpose": "no source record of the category: before=null, delta=null; empty plan has unknown_count=10 and is not placed on the Pareto front",
+   "status": "optimal",
+   "objectives_agree": false,
+   "distinct_winner_sets": 2,
+   "infeasible_reasons": null,
+   "pareto_points": 8,
+   "sha256": "60692e7f98ce68edafbef0dec51307c047ab14bc048338175d551b7afb302da8"
+  },
+  {
+   "pack_id": "synthetic-ties",
+   "kind": "synthetic",
+   "stage": 2,
+   "purpose": "equal distances and equal plans: source beats hypothetical on ties, smaller id beats larger, equal (cost, sum) collapse to one Pareto point",
+   "status": "optimal",
+   "objectives_agree": true,
+   "distinct_winner_sets": 1,
+   "infeasible_reasons": null,
+   "pareto_points": 2,
+   "sha256": "e467bb97f042836a8664576a60c34f72dc5e9825e998c34c9001d2f750f7ac33"
   }
  ],
- "not_built": [],
+ "not_built": [
+  {
+   "pack_id": "astana-school-qa-nearest",
+   "reason": "no qa.colocated group with records of this category in web/evidence.js"
+  },
+  {
+   "pack_id": "astana-outpatient_clinic-qa-nearest",
+   "reason": "no qa.colocated group with records of this category in web/evidence.js"
+  }
+ ],
  "inputs_unchanged_during_generation": true,
  "input_manifest": {
   "web/data.js": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",

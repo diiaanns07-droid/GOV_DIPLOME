@@ -1,0 +1,1185 @@
+{
+ "pack_format": "k10-plan-pack-v1",
+ "pack_id": "shymkent-school-conflict-count",
+ "kind": "real_slice",
+ "stage": 2,
+ "purpose": "conflict: 4 required candidates, max_selected 3",
+ "city_id": "shymkent",
+ "category": "school",
+ "synthetic_parts": [
+  "control_points (positions by rule, weights)",
+  "candidates (positions by rule, costs)",
+  "budget",
+  "max_selected",
+  "coverage_radius_m",
+  "required_ids",
+  "excluded_ids",
+  "selected_ids"
+ ],
+ "rules": {
+  "fixed_before_computing": true,
+  "coordinates": "bbox fractions (x = share of lon span, y = share of lat span), rounded to 6 decimals",
+  "control_points": "cp01..cp16: 4x4 grid, x=(i+0.5)/4, y=(j+0.5)/4, row j outer (south to north), i inner (west to east)",
+  "weights": "SYNTHETIC: cp k (1-based) weight = 1 + ((3*k) mod 5); a user priority, not residents",
+  "candidates": "c01..c12: x in (1/8,3/8,5/8,7/8) inner, y in (1/6,1/2,5/6) outer; kind=hypothetical",
+  "costs": "SYNTHETIC conditional units: candidate k cost = 100 + 50*((5*k) mod 7); not tenge, not an estimate",
+  "base": "budget 700, max_selected 3, coverage_radius_m 400 (analysis parameter, not a walking norm), required [], excluded [], selected_ids [c06, c07] (the two candidates nearest the bbox centre)",
+  "conflict_count": "base, required [c01,c02,c03,c04], max_selected 3, budget 1000000 (only the count conflicts)"
+ },
+ "provenance": {
+  "build_branch": "claude/beautiful-clarke-sbzomj",
+  "build_commit": "a5b5e2ddbe087c4eab8e947748cdf69dbae84a0d",
+  "app_path": "prototypes/city-evidence",
+  "data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "evidence_js_sha256": "df736e986145da33dee60f692e020486720b72db5b6116af31640cc8693b11b9",
+  "places_social_file": "inputs/k10/data/shymkent/places_social.geojson",
+  "places_social_sha256": "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7",
+  "release": "2026-09-23.1",
+  "bbox": [
+   69.593365,
+   42.306645,
+   69.617658,
+   42.324611
+  ],
+  "source_snapshot": "sha256:282cf187523d8b990ac9bfde69ba43763248aa9b49007149a094ccc81bd36ec2",
+  "snapshot_components": [
+   "city-whatif-v1",
+   "shymkent",
+   "2026-09-23.1",
+   "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7",
+   "30b0b9678bd5d903232e1c820f2c65a5faad7ffc9020fff3f2ed8c591f591e0f",
+   "haversine:R=6371008.8"
+  ],
+  "upstream": "Overture Maps places 2026-09-23.1 via K10 package (round-3 results); not re-downloaded"
+ },
+ "source_copy": {
+  "category_records": [
+   {
+    "id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+    "lon": 69.61052,
+    "lat": 42.32027,
+    "group": "school",
+    "name": "Реклама 42",
+    "qa_flags": [
+     "CATEGORY_DOUBT"
+    ]
+   },
+   {
+    "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+    "lon": 69.60294,
+    "lat": 42.31672,
+    "group": "school",
+    "name": "М.Х.Дулати атындағы үш тілде оқытатын N8 мамандандырылған  гимназия\" КММ",
+    "qa_flags": []
+   },
+   {
+    "id": "176c5993-4b62-4e90-849f-88addc0153bb",
+    "lon": 69.605699,
+    "lat": 42.323129,
+    "group": "school",
+    "name": "Dostyk Bilim Beru Ortalygy",
+    "qa_flags": []
+   },
+   {
+    "id": "18df815b-170a-437c-977f-0769690315d4",
+    "lon": 69.61482,
+    "lat": 42.31276,
+    "group": "school",
+    "name": "Ақпан батыр Атындағы Орта Мектеп",
+    "qa_flags": []
+   },
+   {
+    "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+    "lon": 69.5958,
+    "lat": 42.3167,
+    "group": "school",
+    "name": "Reklama 8888",
+    "qa_flags": [
+     "CATEGORY_DOUBT",
+     "COLOCATED"
+    ]
+   },
+   {
+    "id": "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+    "lon": 69.605231,
+    "lat": 42.321741,
+    "group": "school",
+    "name": "Жолдасбекова Атындағы 9 Лицей",
+    "qa_flags": []
+   },
+   {
+    "id": "68c8f007-75bc-42f6-8da8-baa72042bde4",
+    "lon": 69.5958,
+    "lat": 42.3167,
+    "group": "school",
+    "name": "Baiterek School",
+    "qa_flags": [
+     "COLOCATED"
+    ]
+   },
+   {
+    "id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+    "lon": 69.599229,
+    "lat": 42.314563,
+    "group": "school",
+    "name": "Учебный центр Меруерт",
+    "qa_flags": []
+   },
+   {
+    "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+    "lon": 69.59496,
+    "lat": 42.32353,
+    "group": "school",
+    "name": "Express toefl",
+    "qa_flags": [
+     "POSSIBLE_DUPLICATE"
+    ]
+   },
+   {
+    "id": "9d31b953-ccc4-42bd-a3a3-3e4e21f44051",
+    "lon": 69.5958,
+    "lat": 42.3167,
+    "group": "school",
+    "name": "Реклама 3131",
+    "qa_flags": [
+     "CATEGORY_DOUBT",
+     "COLOCATED"
+    ]
+   },
+   {
+    "id": "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6",
+    "lon": 69.59496,
+    "lat": 42.32353,
+    "group": "school",
+    "name": "Kasipkoy.kurs",
+    "qa_flags": [
+     "POSSIBLE_DUPLICATE"
+    ]
+   },
+   {
+    "id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+    "lon": 69.59895,
+    "lat": 42.31906,
+    "group": "school",
+    "name": "Монтессори Детский Сад \"Бала Би\"",
+    "qa_flags": []
+   },
+   {
+    "id": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+    "lon": 69.61557,
+    "lat": 42.32304,
+    "group": "school",
+    "name": "ALEM мектебі",
+    "qa_flags": []
+   },
+   {
+    "id": "bcd265d0-0799-4dbf-8b15-23bae752a4d2",
+    "lon": 69.61557,
+    "lat": 42.32304,
+    "group": "school",
+    "name": "Алем мектеп",
+    "qa_flags": []
+   },
+   {
+    "id": "fd50a858-462d-477f-8bc6-a8d3e03a9576",
+    "lon": 69.60322,
+    "lat": 42.31728,
+    "group": "school",
+    "name": "Техникалық лицей",
+    "qa_flags": [
+     "POSSIBLE_DUPLICATE"
+    ]
+   }
+  ],
+  "note": "read-only copy of web/data.js records of this category; the source records are never modified"
+ },
+ "scenario": {
+  "schema_version": "city-plan-v2",
+  "city_id": "shymkent",
+  "source_snapshot": "sha256:282cf187523d8b990ac9bfde69ba43763248aa9b49007149a094ccc81bd36ec2",
+  "category": "school",
+  "control_points": [
+   {
+    "id": "cp01",
+    "lon": 69.596402,
+    "lat": 42.308891,
+    "weight": 4
+   },
+   {
+    "id": "cp02",
+    "lon": 69.602475,
+    "lat": 42.308891,
+    "weight": 2
+   },
+   {
+    "id": "cp03",
+    "lon": 69.608548,
+    "lat": 42.308891,
+    "weight": 5
+   },
+   {
+    "id": "cp04",
+    "lon": 69.614621,
+    "lat": 42.308891,
+    "weight": 3
+   },
+   {
+    "id": "cp05",
+    "lon": 69.596402,
+    "lat": 42.313382,
+    "weight": 1
+   },
+   {
+    "id": "cp06",
+    "lon": 69.602475,
+    "lat": 42.313382,
+    "weight": 4
+   },
+   {
+    "id": "cp07",
+    "lon": 69.608548,
+    "lat": 42.313382,
+    "weight": 2
+   },
+   {
+    "id": "cp08",
+    "lon": 69.614621,
+    "lat": 42.313382,
+    "weight": 5
+   },
+   {
+    "id": "cp09",
+    "lon": 69.596402,
+    "lat": 42.317874,
+    "weight": 3
+   },
+   {
+    "id": "cp10",
+    "lon": 69.602475,
+    "lat": 42.317874,
+    "weight": 1
+   },
+   {
+    "id": "cp11",
+    "lon": 69.608548,
+    "lat": 42.317874,
+    "weight": 4
+   },
+   {
+    "id": "cp12",
+    "lon": 69.614621,
+    "lat": 42.317874,
+    "weight": 2
+   },
+   {
+    "id": "cp13",
+    "lon": 69.596402,
+    "lat": 42.322365,
+    "weight": 5
+   },
+   {
+    "id": "cp14",
+    "lon": 69.602475,
+    "lat": 42.322365,
+    "weight": 3
+   },
+   {
+    "id": "cp15",
+    "lon": 69.608548,
+    "lat": 42.322365,
+    "weight": 1
+   },
+   {
+    "id": "cp16",
+    "lon": 69.614621,
+    "lat": 42.322365,
+    "weight": 4
+   }
+  ],
+  "candidates": [
+   {
+    "id": "c01",
+    "lon": 69.596402,
+    "lat": 42.309639,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 350
+   },
+   {
+    "id": "c02",
+    "lon": 69.602475,
+    "lat": 42.309639,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 250
+   },
+   {
+    "id": "c03",
+    "lon": 69.608548,
+    "lat": 42.309639,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 150
+   },
+   {
+    "id": "c04",
+    "lon": 69.614621,
+    "lat": 42.309639,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 400
+   },
+   {
+    "id": "c05",
+    "lon": 69.596402,
+    "lat": 42.315628,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 300
+   },
+   {
+    "id": "c06",
+    "lon": 69.602475,
+    "lat": 42.315628,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 200
+   },
+   {
+    "id": "c07",
+    "lon": 69.608548,
+    "lat": 42.315628,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 100
+   },
+   {
+    "id": "c08",
+    "lon": 69.614621,
+    "lat": 42.315628,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 350
+   },
+   {
+    "id": "c09",
+    "lon": 69.596402,
+    "lat": 42.321617,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 250
+   },
+   {
+    "id": "c10",
+    "lon": 69.602475,
+    "lat": 42.321617,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 150
+   },
+   {
+    "id": "c11",
+    "lon": 69.608548,
+    "lat": 42.321617,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 400
+   },
+   {
+    "id": "c12",
+    "lon": 69.614621,
+    "lat": 42.321617,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 300
+   }
+  ],
+  "budget": 1000000,
+  "max_selected": 3,
+  "coverage_radius_m": 400,
+  "required_ids": [
+   "c01",
+   "c02",
+   "c03",
+   "c04"
+  ],
+  "excluded_ids": [],
+  "selected_ids": [
+   "c01",
+   "c02",
+   "c03",
+   "c04"
+  ]
+ },
+ "expected": {
+  "generated_by": "k10plan.oracle",
+  "metric_version": "haversine-mm-v1",
+  "validation": "accepted",
+  "problem_digest": "sha256:18e964717a5dc3dd491586fd45d164eb5d0ea1cddb855f5839c37400230421e8",
+  "scenario_digest": "sha256:5bef0489a2ab26db0af189931bad354570a6b7a28712f82780c67ccae696cbd3",
+  "optimize": {
+   "status": "infeasible",
+   "metric_version": "haversine-mm-v1",
+   "problem_digest": "sha256:18e964717a5dc3dd491586fd45d164eb5d0ea1cddb855f5839c37400230421e8",
+   "evaluated": 0,
+   "feasible_count": 0,
+   "candidate_count": 12,
+   "objectives": null,
+   "pareto": [],
+   "pareto_note": null,
+   "infeasible_reasons": [
+    "required_count_exceeds_max_selected"
+   ],
+   "sensitivity": [
+    {
+     "budget": 0,
+     "status": "infeasible",
+     "objectives": {},
+     "infeasible_reasons": [
+      "required_count_exceeds_max_selected",
+      "required_cost_exceeds_budget"
+     ]
+    },
+    {
+     "budget": 500000,
+     "status": "infeasible",
+     "objectives": {},
+     "infeasible_reasons": [
+      "required_count_exceeds_max_selected"
+     ]
+    },
+    {
+     "budget": 1000000,
+     "status": "infeasible",
+     "objectives": {},
+     "infeasible_reasons": [
+      "required_count_exceeds_max_selected"
+     ]
+    }
+   ]
+  },
+  "plan_refs": {
+   "manual": "c01+c02+c03+c04",
+   "baseline": "(empty)"
+  },
+  "plans": {
+   "c01+c02+c03+c04": {
+    "rows": [
+     {
+      "control_point_id": "cp01",
+      "weight": 4,
+      "before_mm": 672174,
+      "nearest_before": {
+       "kind": "source",
+       "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+      },
+      "after_mm": 83174,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "c01"
+      },
+      "delta_mm": 589000,
+      "tied_before_ids": [
+       "931d6da5-e9db-4523-a6fd-79c88f235f88"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp02",
+      "weight": 2,
+      "before_mm": 684852,
+      "nearest_before": {
+       "kind": "source",
+       "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+      },
+      "after_mm": 83174,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "c02"
+      },
+      "delta_mm": 601678,
+      "tied_before_ids": [
+       "931d6da5-e9db-4523-a6fd-79c88f235f88"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp03",
+      "weight": 5,
+      "before_mm": 671620,
+      "nearest_before": {
+       "kind": "source",
+       "id": "18df815b-170a-437c-977f-0769690315d4"
+      },
+      "after_mm": 83174,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "c03"
+      },
+      "delta_mm": 588446,
+      "tied_before_ids": [
+       "18df815b-170a-437c-977f-0769690315d4"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp04",
+      "weight": 3,
+      "before_mm": 430525,
+      "nearest_before": {
+       "kind": "source",
+       "id": "18df815b-170a-437c-977f-0769690315d4"
+      },
+      "after_mm": 83174,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "c04"
+      },
+      "delta_mm": 347351,
+      "tied_before_ids": [
+       "18df815b-170a-437c-977f-0769690315d4"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp05",
+      "weight": 1,
+      "before_mm": 266980,
+      "nearest_before": {
+       "kind": "source",
+       "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+      },
+      "after_mm": 266980,
+      "nearest_after": {
+       "kind": "source",
+       "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "931d6da5-e9db-4523-a6fd-79c88f235f88"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp06",
+      "weight": 4,
+      "before_mm": 297460,
+      "nearest_before": {
+       "kind": "source",
+       "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+      },
+      "after_mm": 297460,
+      "nearest_after": {
+       "kind": "source",
+       "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "931d6da5-e9db-4523-a6fd-79c88f235f88"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp07",
+      "weight": 2,
+      "before_mm": 520340,
+      "nearest_before": {
+       "kind": "source",
+       "id": "18df815b-170a-437c-977f-0769690315d4"
+      },
+      "after_mm": 416203,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "c03"
+      },
+      "delta_mm": 104137,
+      "tied_before_ids": [
+       "18df815b-170a-437c-977f-0769690315d4"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp08",
+      "weight": 5,
+      "before_mm": 71073,
+      "nearest_before": {
+       "kind": "source",
+       "id": "18df815b-170a-437c-977f-0769690315d4"
+      },
+      "after_mm": 71073,
+      "nearest_after": {
+       "kind": "source",
+       "id": "18df815b-170a-437c-977f-0769690315d4"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "18df815b-170a-437c-977f-0769690315d4"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp09",
+      "weight": 3,
+      "before_mm": 139612,
+      "nearest_before": {
+       "kind": "source",
+       "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708"
+      },
+      "after_mm": 139612,
+      "nearest_after": {
+       "kind": "source",
+       "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+       "68c8f007-75bc-42f6-8da8-baa72042bde4",
+       "9d31b953-ccc4-42bd-a3a3-3e4e21f44051"
+      ],
+      "nearest_before_qa_flags": [
+       "CATEGORY_DOUBT",
+       "COLOCATED"
+      ]
+     },
+     {
+      "control_point_id": "cp10",
+      "weight": 1,
+      "before_mm": 90081,
+      "nearest_before": {
+       "kind": "source",
+       "id": "fd50a858-462d-477f-8bc6-a8d3e03a9576"
+      },
+      "after_mm": 90081,
+      "nearest_after": {
+       "kind": "source",
+       "id": "fd50a858-462d-477f-8bc6-a8d3e03a9576"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "fd50a858-462d-477f-8bc6-a8d3e03a9576"
+      ],
+      "nearest_before_qa_flags": [
+       "POSSIBLE_DUPLICATE"
+      ]
+     },
+     {
+      "control_point_id": "cp11",
+      "weight": 4,
+      "before_mm": 311880,
+      "nearest_before": {
+       "kind": "source",
+       "id": "01961e84-815f-4bd1-85c3-6bf1734256ec"
+      },
+      "after_mm": 311880,
+      "nearest_after": {
+       "kind": "source",
+       "id": "01961e84-815f-4bd1-85c3-6bf1734256ec"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "01961e84-815f-4bd1-85c3-6bf1734256ec"
+      ],
+      "nearest_before_qa_flags": [
+       "CATEGORY_DOUBT"
+      ]
+     },
+     {
+      "control_point_id": "cp12",
+      "weight": 2,
+      "before_mm": 429733,
+      "nearest_before": {
+       "kind": "source",
+       "id": "01961e84-815f-4bd1-85c3-6bf1734256ec"
+      },
+      "after_mm": 429733,
+      "nearest_after": {
+       "kind": "source",
+       "id": "01961e84-815f-4bd1-85c3-6bf1734256ec"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "01961e84-815f-4bd1-85c3-6bf1734256ec"
+      ],
+      "nearest_before_qa_flags": [
+       "CATEGORY_DOUBT"
+      ]
+     },
+     {
+      "control_point_id": "cp13",
+      "weight": 5,
+      "before_mm": 175601,
+      "nearest_before": {
+       "kind": "source",
+       "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+      },
+      "after_mm": 175601,
+      "nearest_after": {
+       "kind": "source",
+       "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+       "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6"
+      ],
+      "nearest_before_qa_flags": [
+       "POSSIBLE_DUPLICATE"
+      ]
+     },
+     {
+      "control_point_id": "cp14",
+      "weight": 3,
+      "before_mm": 236969,
+      "nearest_before": {
+       "kind": "source",
+       "id": "537980b9-4d8b-4c25-8e27-a6af60ffac34"
+      },
+      "after_mm": 236969,
+      "nearest_after": {
+       "kind": "source",
+       "id": "537980b9-4d8b-4c25-8e27-a6af60ffac34"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "537980b9-4d8b-4c25-8e27-a6af60ffac34"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp15",
+      "weight": 1,
+      "before_mm": 249157,
+      "nearest_before": {
+       "kind": "source",
+       "id": "176c5993-4b62-4e90-849f-88addc0153bb"
+      },
+      "after_mm": 249157,
+      "nearest_after": {
+       "kind": "source",
+       "id": "176c5993-4b62-4e90-849f-88addc0153bb"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "176c5993-4b62-4e90-849f-88addc0153bb"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp16",
+      "weight": 4,
+      "before_mm": 108262,
+      "nearest_before": {
+       "kind": "source",
+       "id": "baeda67d-e701-4c2a-bba6-10a13466e76d"
+      },
+      "after_mm": 108262,
+      "nearest_after": {
+       "kind": "source",
+       "id": "baeda67d-e701-4c2a-bba6-10a13466e76d"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "baeda67d-e701-4c2a-bba6-10a13466e76d",
+       "bcd265d0-0799-4dbf-8b15-23bae752a4d2"
+      ],
+      "nearest_before_qa_flags": []
+     }
+    ],
+    "metrics": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 8696047,
+     "weighted_mean_mm": 177470.3469387755,
+     "max_mm": 429733,
+     "covered_weight": 45,
+     "coverage_fraction": 0.9183673469387755,
+     "cost": 1150,
+     "selected_ids": [
+      "c01",
+      "c02",
+      "c03",
+      "c04"
+     ]
+    },
+    "feasibility": {
+     "feasible": false,
+     "reasons": [
+      "count_exceeds_max_selected"
+     ]
+    },
+    "baseline_records_in_category": 15
+   },
+   "(empty)": {
+    "rows": [
+     {
+      "control_point_id": "cp01",
+      "weight": 4,
+      "before_mm": 672174,
+      "nearest_before": {
+       "kind": "source",
+       "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+      },
+      "after_mm": 672174,
+      "nearest_after": {
+       "kind": "source",
+       "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "931d6da5-e9db-4523-a6fd-79c88f235f88"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp02",
+      "weight": 2,
+      "before_mm": 684852,
+      "nearest_before": {
+       "kind": "source",
+       "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+      },
+      "after_mm": 684852,
+      "nearest_after": {
+       "kind": "source",
+       "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "931d6da5-e9db-4523-a6fd-79c88f235f88"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp03",
+      "weight": 5,
+      "before_mm": 671620,
+      "nearest_before": {
+       "kind": "source",
+       "id": "18df815b-170a-437c-977f-0769690315d4"
+      },
+      "after_mm": 671620,
+      "nearest_after": {
+       "kind": "source",
+       "id": "18df815b-170a-437c-977f-0769690315d4"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "18df815b-170a-437c-977f-0769690315d4"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp04",
+      "weight": 3,
+      "before_mm": 430525,
+      "nearest_before": {
+       "kind": "source",
+       "id": "18df815b-170a-437c-977f-0769690315d4"
+      },
+      "after_mm": 430525,
+      "nearest_after": {
+       "kind": "source",
+       "id": "18df815b-170a-437c-977f-0769690315d4"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "18df815b-170a-437c-977f-0769690315d4"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp05",
+      "weight": 1,
+      "before_mm": 266980,
+      "nearest_before": {
+       "kind": "source",
+       "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+      },
+      "after_mm": 266980,
+      "nearest_after": {
+       "kind": "source",
+       "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "931d6da5-e9db-4523-a6fd-79c88f235f88"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp06",
+      "weight": 4,
+      "before_mm": 297460,
+      "nearest_before": {
+       "kind": "source",
+       "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+      },
+      "after_mm": 297460,
+      "nearest_after": {
+       "kind": "source",
+       "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "931d6da5-e9db-4523-a6fd-79c88f235f88"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp07",
+      "weight": 2,
+      "before_mm": 520340,
+      "nearest_before": {
+       "kind": "source",
+       "id": "18df815b-170a-437c-977f-0769690315d4"
+      },
+      "after_mm": 520340,
+      "nearest_after": {
+       "kind": "source",
+       "id": "18df815b-170a-437c-977f-0769690315d4"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "18df815b-170a-437c-977f-0769690315d4"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp08",
+      "weight": 5,
+      "before_mm": 71073,
+      "nearest_before": {
+       "kind": "source",
+       "id": "18df815b-170a-437c-977f-0769690315d4"
+      },
+      "after_mm": 71073,
+      "nearest_after": {
+       "kind": "source",
+       "id": "18df815b-170a-437c-977f-0769690315d4"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "18df815b-170a-437c-977f-0769690315d4"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp09",
+      "weight": 3,
+      "before_mm": 139612,
+      "nearest_before": {
+       "kind": "source",
+       "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708"
+      },
+      "after_mm": 139612,
+      "nearest_after": {
+       "kind": "source",
+       "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+       "68c8f007-75bc-42f6-8da8-baa72042bde4",
+       "9d31b953-ccc4-42bd-a3a3-3e4e21f44051"
+      ],
+      "nearest_before_qa_flags": [
+       "CATEGORY_DOUBT",
+       "COLOCATED"
+      ]
+     },
+     {
+      "control_point_id": "cp10",
+      "weight": 1,
+      "before_mm": 90081,
+      "nearest_before": {
+       "kind": "source",
+       "id": "fd50a858-462d-477f-8bc6-a8d3e03a9576"
+      },
+      "after_mm": 90081,
+      "nearest_after": {
+       "kind": "source",
+       "id": "fd50a858-462d-477f-8bc6-a8d3e03a9576"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "fd50a858-462d-477f-8bc6-a8d3e03a9576"
+      ],
+      "nearest_before_qa_flags": [
+       "POSSIBLE_DUPLICATE"
+      ]
+     },
+     {
+      "control_point_id": "cp11",
+      "weight": 4,
+      "before_mm": 311880,
+      "nearest_before": {
+       "kind": "source",
+       "id": "01961e84-815f-4bd1-85c3-6bf1734256ec"
+      },
+      "after_mm": 311880,
+      "nearest_after": {
+       "kind": "source",
+       "id": "01961e84-815f-4bd1-85c3-6bf1734256ec"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "01961e84-815f-4bd1-85c3-6bf1734256ec"
+      ],
+      "nearest_before_qa_flags": [
+       "CATEGORY_DOUBT"
+      ]
+     },
+     {
+      "control_point_id": "cp12",
+      "weight": 2,
+      "before_mm": 429733,
+      "nearest_before": {
+       "kind": "source",
+       "id": "01961e84-815f-4bd1-85c3-6bf1734256ec"
+      },
+      "after_mm": 429733,
+      "nearest_after": {
+       "kind": "source",
+       "id": "01961e84-815f-4bd1-85c3-6bf1734256ec"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "01961e84-815f-4bd1-85c3-6bf1734256ec"
+      ],
+      "nearest_before_qa_flags": [
+       "CATEGORY_DOUBT"
+      ]
+     },
+     {
+      "control_point_id": "cp13",
+      "weight": 5,
+      "before_mm": 175601,
+      "nearest_before": {
+       "kind": "source",
+       "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+      },
+      "after_mm": 175601,
+      "nearest_after": {
+       "kind": "source",
+       "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+       "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6"
+      ],
+      "nearest_before_qa_flags": [
+       "POSSIBLE_DUPLICATE"
+      ]
+     },
+     {
+      "control_point_id": "cp14",
+      "weight": 3,
+      "before_mm": 236969,
+      "nearest_before": {
+       "kind": "source",
+       "id": "537980b9-4d8b-4c25-8e27-a6af60ffac34"
+      },
+      "after_mm": 236969,
+      "nearest_after": {
+       "kind": "source",
+       "id": "537980b9-4d8b-4c25-8e27-a6af60ffac34"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "537980b9-4d8b-4c25-8e27-a6af60ffac34"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp15",
+      "weight": 1,
+      "before_mm": 249157,
+      "nearest_before": {
+       "kind": "source",
+       "id": "176c5993-4b62-4e90-849f-88addc0153bb"
+      },
+      "after_mm": 249157,
+      "nearest_after": {
+       "kind": "source",
+       "id": "176c5993-4b62-4e90-849f-88addc0153bb"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "176c5993-4b62-4e90-849f-88addc0153bb"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp16",
+      "weight": 4,
+      "before_mm": 108262,
+      "nearest_before": {
+       "kind": "source",
+       "id": "baeda67d-e701-4c2a-bba6-10a13466e76d"
+      },
+      "after_mm": 108262,
+      "nearest_after": {
+       "kind": "source",
+       "id": "baeda67d-e701-4c2a-bba6-10a13466e76d"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "baeda67d-e701-4c2a-bba6-10a13466e76d",
+       "bcd265d0-0799-4dbf-8b15-23bae752a4d2"
+      ],
+      "nearest_before_qa_flags": []
+     }
+    ],
+    "metrics": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 16447960,
+     "weighted_mean_mm": 335672.6530612245,
+     "max_mm": 684852,
+     "covered_weight": 31,
+     "coverage_fraction": 0.6326530612244898,
+     "cost": 0,
+     "selected_ids": []
+    },
+    "feasibility": {
+     "feasible": false,
+     "reasons": [
+      "required_missing"
+     ]
+    },
+    "baseline_records_in_category": 15
+   }
+  }
+ },
+ "observations": {
+  "status": "infeasible",
+  "evaluated": 0,
+  "feasible_count": 0,
+  "pareto_points": 0,
+  "infeasible_reasons": [
+   "required_count_exceeds_max_selected"
+  ],
+  "sensitivity": [
+   {
+    "budget": 0,
+    "status": "infeasible",
+    "mean": null
+   },
+   {
+    "budget": 500000,
+    "status": "infeasible",
+    "mean": null
+   },
+   {
+    "budget": 1000000,
+    "status": "infeasible",
+    "mean": null
+   }
+  ]
+ },
+ "does_not_claim": [
+  "costs are not real prices or an estimate",
+  "weights are not population",
+  "the optimum is only among the entered candidates, not the best plan for the city",
+  "straight-line distance in this slice only; no walking time, capacity or social benefit"
+ ]
+}

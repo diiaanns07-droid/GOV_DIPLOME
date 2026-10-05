@@ -40,6 +40,8 @@ RULES = {
               "astana/school, astana/outpatient_clinic]; 20 control points s01..s20 at x,y = 0.05+0.9*u, weight 1+(x mod 100); "
               "14 candidates r01..r14 at x,y = 0.05+0.9*u, cost 10*(5+(x mod 46)); budget 900, max_selected 4, radius 300; "
               "selected_ids []; draw order per point: x, y, weight; per candidate: x, y, cost",
+    "invalid_inputs": "mutations of the base pack, one defect per case; the intended code is written first and generation "
+                      "stops if the oracle disagrees, so no case is stored with an expectation it does not test",
     "objectives_agree": "computed after the fact from oracle winners; reported as it came out, never searched for",
 }
 
@@ -255,17 +257,232 @@ def qa_pack(ctx, src, cat):
     return pack, None
 
 
+# ---------------------------------------------------------------- invalid input (rejected before any computation)
+def _compact(o):
+    return json.dumps(o, ensure_ascii=False, separators=(",", ":"))
+
+
+def _sub_once(text, old, new):
+    assert text.count(old) == 1, old
+    return text.replace(old, new)
+
+
+def invalid_cases(ctx, other_ctx, cat):
+    """(case_id, intended code or None for accepted, raw text, pad_to_bytes, note). Mutations of the base scenario."""
+    base = base_scenario(ctx, cat)
+    txt = _compact(base)
+    bbox = ctx["bbox"]
+    cases = []
+
+    def obj(case_id, code, fn, note=""):
+        sc = copy.deepcopy(base)
+        fn(sc)
+        cases.append((case_id, code, _compact(sc), None, note))
+
+    def raw(case_id, code, text, note="", pad=None):
+        cases.append((case_id, code, text, pad, note))
+
+    raw("duplicate_key", "duplicate_key", _sub_once(txt, '"budget":700', '"budget":700,"budget":1'))
+    raw("nan", "non_finite", _sub_once(txt, '"budget":700', '"budget":NaN'))
+    raw("infinity", "non_finite", _sub_once(txt, '"budget":700', '"budget":-Infinity'))
+    raw("float_overflow_1e999", "non_finite", _sub_once(txt, f'"id":"cp01","lon":{base["control_points"][0]["lon"]}',
+                                                                        '"id":"cp01","lon":1e999'))
+    raw("integer_overflow", "non_finite", _sub_once(txt, '"budget":700', '"budget":1' + "0" * 400))
+    raw("trailing_garbage", "bad_json", txt + "x")
+    raw("too_large", "too_large", txt, "padded with spaces after the object to 262145 bytes", 262145)
+    obj("schema_v1", "bad_schema_version", lambda s: s.update(schema_version="city-whatif-v1"),
+        "v1 file into the v2 importer is refused, v1 keeps its own path")
+    obj("missing_budget", "missing_field", lambda s: s.pop("budget"))
+    obj("unexpected_top_field", "unexpected_field", lambda s: s.update(population=100000),
+        "population is not part of the contract and must not be invented")
+    obj("url_field", "unexpected_field", lambda s: s.update(source_url="https://example.invalid/x.json"),
+        "no URL loading from a scenario")
+    obj("other_city", "bad_city", lambda s: s.update(city_id=other_ctx["city_id"], source_snapshot=other_ctx["source_snapshot"]))
+    obj("foreign_snapshot", "foreign_snapshot", lambda s: s.update(source_snapshot=other_ctx["source_snapshot"]))
+    obj("bad_category", "bad_category", lambda s: s.update(category="pharmacy"))
+    obj("point_out_of_bbox", "out_of_bbox", lambda s: s["control_points"][0].update(lon=round(bbox[2] + 0.01, 6)))
+    obj("candidate_out_of_bbox", "out_of_bbox", lambda s: s["candidates"][0].update(lat=round(bbox[1] - 0.01, 6)))
+    obj("lat_as_string", "bad_coordinate", lambda s: s["control_points"][1].update(lat=str(s["control_points"][1]["lat"])))
+    obj("point_extra_field", "bad_shape", lambda s: s["control_points"][0].update(residents=500))
+    obj("zero_points", "bad_point_count", lambda s: s.update(control_points=[]))
+    obj("26_points", "bad_point_count", lambda s: s["control_points"].extend(
+        dict(p, id=f"x{p['id']}") for p in copy.deepcopy(s["control_points"][:10])))
+    obj("17_candidates", "bad_candidate_count", lambda s: s["candidates"].extend(
+        dict(c, id=f"x{c['id']}") for c in copy.deepcopy(s["candidates"][:5])))
+    obj("duplicate_point_id", "duplicate_id", lambda s: s["control_points"][1].update(id="cp01"))
+    obj("duplicate_candidate_id", "duplicate_id", lambda s: s["candidates"][1].update(id="c01"))
+    obj("id_65_chars", "bad_id", lambda s: s["control_points"][0].update(id="p" * 65))
+    obj("id_empty", "bad_id", lambda s: s["candidates"][0].update(id=""))
+    obj("id_number", "bad_id", lambda s: s["control_points"][0].update(id=7))
+    obj("weight_0", "bad_value", lambda s: s["control_points"][0].update(weight=0))
+    obj("weight_101", "bad_value", lambda s: s["control_points"][0].update(weight=101))
+    obj("weight_fraction", "bad_value", lambda s: s["control_points"][0].update(weight=2.5))
+    obj("weight_bool", "bad_value", lambda s: s["control_points"][0].update(weight=True))
+    obj("cost_0", "bad_value", lambda s: s["candidates"][0].update(cost=0))
+    obj("cost_over_max", "bad_value", lambda s: s["candidates"][0].update(cost=1000001))
+    obj("budget_negative", "bad_value", lambda s: s.update(budget=-1))
+    obj("budget_over_max", "bad_value", lambda s: s.update(budget=1000001))
+    obj("max_selected_6", "bad_value", lambda s: s.update(max_selected=6))
+    obj("radius_99", "bad_value", lambda s: s.update(coverage_radius_m=99))
+    obj("radius_5001", "bad_value", lambda s: s.update(coverage_radius_m=5001))
+    obj("candidate_wrong_category", "candidate_category_mismatch",
+        lambda s: s["candidates"][0].update(category=[c for c in O.CATEGORIES if c != cat][0]))
+    obj("candidate_kind_source", "candidate_not_hypothetical", lambda s: s["candidates"][0].update(kind="source"))
+    obj("required_excluded_overlap", "required_excluded_overlap", lambda s: s.update(required_ids=["c01"], excluded_ids=["c01"]),
+        "conflicting conditions in the input itself: refuse, do not drop either list silently")
+    obj("required_unknown", "unknown_candidate", lambda s: s.update(required_ids=["c99"]))
+    first_src = sorted(r["id"] for r in ctx["records"] if r["group"] == cat)[0]
+    obj("selected_source_record_id", "unknown_candidate", lambda s: s.update(selected_ids=[first_src]),
+        "a source record id is not a candidate id; source and hypothetical ids are separate namespaces")
+    obj("selected_duplicate", "duplicate_id", lambda s: s.update(selected_ids=["c01", "c01"]))
+    obj("derived_results_forged", None, lambda s: s.update(derived_results={"objectives": {"mean": {"selected_ids": ["c01"],
+                                                                                                    "weighted_sum_mm": 0}}}),
+        "accepted: derived_results is the one allowed extra field; results are recomputed, the forged values are ignored")
+    obj("html_in_ids", None, lambda s: (s["candidates"][0].update(id='<img src=x onerror="alert(1)">'),
+                                         s.update(selected_ids=['<img src=x onerror="alert(1)">'])),
+        "accepted: ids are plain text; the UI must render them as text, never as HTML")
+    return cases
+
+
+def case_text(case):
+    """Exact text of an invalid-input case (too_large is stored unpadded and padded with spaces here)."""
+    t = case["raw"]
+    return t + " " * (case["pad_to_bytes"] - len(t.encode("utf-8"))) if case.get("pad_to_bytes") else t
+
+
+def invalid_pack(ctx, other_ctx, src, cat):
+    out = []
+    for case_id, intended, text, pad, note in invalid_cases(ctx, other_ctx, cat):
+        full = text + " " * (pad - len(text.encode("utf-8"))) if pad else text
+        try:
+            O.validate_plan_scenario(O.parse_strict(full), ctx)
+            got = {"rejected": False}
+        except O.PlanError as e:
+            got = {"rejected": True, "code": e.code}
+        want = {"rejected": False} if intended is None else {"rejected": True, "code": intended}
+        if got != want:  # the case did not test what it was written for: stop instead of storing a wrong expectation
+            raise SystemExit(f"invalid case {case_id}: intended {want}, oracle gave {got}")
+        case = {"case_id": case_id, "raw": text, "expected": got, "note": note}
+        if pad:
+            case["pad_to_bytes"] = pad
+        out.append(case)
+    return {"pack_format": PACK_FORMAT, "pack_id": f"{ctx['city_id']}-{cat}-invalid-inputs", "kind": "real_slice", "stage": 2,
+            "purpose": "inputs that must be refused before computing (state unchanged), plus two that must be accepted",
+            "city_id": ctx["city_id"], "category": cat, "rules": {k: RULES[k] for k in ("fixed_before_computing", "invalid_inputs")},
+            "provenance": provenance(ctx, src), "source_copy": source_copy(ctx, cat), "scenario": base_scenario(ctx, cat),
+            "invalid_cases": out,
+            "codes_note": "error codes are K10 names; an implementation may use its own codes, it must only refuse "
+                          "before computing and keep the previous state",
+            "observations": {"status": "validation_cases", "cases": len(out),
+                             "rejected": sum(c["expected"]["rejected"] for c in out),
+                             "accepted": sum(not c["expected"]["rejected"] for c in out)}}
+
+
+# ---------------------------------------------------------------- synthetic geometry (not a city)
+M_PER_DEG = 2 * 3.141592653589793 * O.R_EARTH_M / 360  # metres per degree of longitude on the equator
+
+
+def _x(m):
+    return round(m / M_PER_DEG, 7)
+
+
+def synth_context(name, records):
+    recs = [dict(r, qa_flags=[]) for r in records]
+    snap = "synthetic:" + hashlib.sha256(_compact(sorted([r["id"], r["lon"], r["lat"], r["group"]] for r in recs)).encode()).hexdigest()
+    return {"city_id": name, "bbox": [-0.01, -0.01, 0.2, 0.01], "source_snapshot": snap, "records": recs, "synthetic": True}
+
+
+def hand_problems(p):
+    """Compares a synthetic pack's oracle output with the expectation written by hand in its design block."""
+    h, e = p["design"]["hand_expectation"], p["expected"]
+    opt, plans, refs = e["optimize"], e["plans"], e["plan_refs"]
+    bad = [n for n in ("mean", "minimax", "coverage") if n in h and opt["objectives"][n]["selected_ids"] != h[n]]
+    if "pareto" in h and [[q["cost"], q["selected_ids"]] for q in opt["pareto"]] != h["pareto"]:
+        bad.append("pareto")
+    if "baseline_unknown_count" in h and plans[refs["baseline"]]["metrics"]["unknown_count"] != h["baseline_unknown_count"]:
+        bad.append("baseline_unknown_count")
+    if "delta_mm" in h and any(r["delta_mm"] != h["delta_mm"] for v in plans.values() for r in v["rows"]):
+        bad.append("delta_mm")
+    if h.get("pareto_excludes_empty_plan") and (any(q["selected_ids"] == [] for q in opt["pareto"]) or not opt["pareto_note"]):
+        bad.append("pareto_excludes_empty_plan")
+    if "P1_nearest_before" in h and plans[refs["baseline"]]["rows"][0]["nearest_before"]["id"] != h["P1_nearest_before"]:
+        bad.append("P1_nearest_before")
+    if "manual_P1_nearest_after" in h and plans[refs["manual"]]["rows"][0]["nearest_after"] != h["manual_P1_nearest_after"]:
+        bad.append("manual_P1_nearest_after")
+    return bad
+
+
+def synth_pack(pack_id, purpose, ctx, sc, design):
+    exp = expected_for(ctx, sc)
+    pack = {"pack_format": PACK_FORMAT, "pack_id": pack_id, "kind": "synthetic", "stage": 2, "purpose": purpose,
+            "city_id": ctx["city_id"], "category": sc["category"], "design": design,
+            "synthetic_slice": {"bbox": ctx["bbox"], "source_snapshot": ctx["source_snapshot"], "records": ctx["records"],
+                                "note": "SYNTHETIC geometry on the equator near 0°E; not Shymkent or Astana data"},
+            "scenario": sc, "expected": exp, "observations": observations(exp)}
+    bad = hand_problems(pack)
+    if bad:  # the oracle disagrees with the hand-derived expectation: stop, do not store
+        raise SystemExit(f"{pack_id}: oracle differs from hand expectation in {bad}")
+    return pack
+
+
+def synth_scenario(ctx, cat, cps, cands, budget, max_sel, radius, selected=()):
+    return {"schema_version": O.SCHEMA, "city_id": ctx["city_id"], "source_snapshot": ctx["source_snapshot"], "category": cat,
+            "control_points": [{"id": i, "lon": _x(x), "lat": 0.0, "weight": w} for i, x, w in cps],
+            "candidates": [{"id": i, "lon": _x(x), "lat": 0.0, "category": cat, "kind": "hypothetical", "cost": c}
+                           for i, x, c in cands],
+            "budget": budget, "max_selected": max_sel, "coverage_radius_m": radius,
+            "required_ids": [], "excluded_ids": [], "selected_ids": list(selected)}
+
+
+def synthetic_packs():
+    packs = []
+    # 1. objectives differ by design (positions in metres along the equator; margins >= 250 m, far above mm rounding)
+    ctx = synth_context("synthetic-equator", [{"id": "src1", "lon": _x(20000), "lat": 0.0, "group": "school", "name": "S"}])
+    sc = synth_scenario(ctx, "school", [("P1", 0, 5), ("P2", 1000, 4), ("P3", 1500, 4), ("P4", 5000, 1)],
+                        [("a", 0, 1), ("b", 1250, 2), ("c", 2500, 3), ("e", 1000, 4)], 10, 1, 300, ["a"])
+    packs.append(synth_pack("synthetic-objectives-differ", "designed so that mean, minimax and coverage pick different "
+                            "single candidates", ctx, sc,
+                            {"hand_expectation": {"mean": ["e"], "minimax": ["c"], "coverage": ["b"]},
+                             "why": "e: smallest weighted sum (11000 m); c: smallest worst point (2500 m); "
+                                    "b: covers P2+P3 (weight 8) within 300 m"}))
+    # 2. empty baseline: no source record of the category in the slice -> before/delta null, unknown_count
+    ctx = synth_context("synthetic-equator", [{"id": "o1", "lon": _x(100), "lat": 0.0, "group": "outpatient_clinic", "name": "O"}])
+    sc = synth_scenario(ctx, "school", [(f"P{k}", 1000 * k, 1 + k % 3) for k in range(10)],
+                        [(f"k{k}", 1500 * k + 250, 100 + 25 * k) for k in range(8)], 500, 2, 1000, [])
+    packs.append(synth_pack("synthetic-empty-baseline", "no source record of the category: before=null, delta=null; "
+                            "empty plan has unknown_count=10 and is not placed on the Pareto front", ctx, sc,
+                            {"hand_expectation": {"baseline_unknown_count": 10, "delta_mm": None,
+                                                  "pareto_excludes_empty_plan": True},
+                             "why": "coverage 0 here does not prove the city lacks the service"}))
+    # 3. ties: source and candidates at one point, equal candidates -> source wins ties, smallest ids, Pareto collapse
+    ctx = synth_context("synthetic-equator", [{"id": "s1", "lon": _x(0), "lat": 0.0, "group": "school", "name": "S1"},
+                                              {"id": "s0", "lon": _x(0), "lat": 0.0, "group": "school", "name": "S0"}])
+    sc = synth_scenario(ctx, "school", [("P1", 0, 1), ("P2", 2000, 1), ("P3", 3000, 2)],
+                        [("t2", 2000, 50), ("t1", 2000, 50), ("u", 0, 10)], 100, 1, 500, ["u"])
+    packs.append(synth_pack("synthetic-ties", "equal distances and equal plans: source beats hypothetical on ties, "
+                            "smaller id beats larger, equal (cost, sum) collapse to one Pareto point", ctx, sc,
+                            {"hand_expectation": {"P1_nearest_before": "s0", "manual_P1_nearest_after": {"kind": "source", "id": "s0"},
+                                                  "mean": ["t1"], "pareto": [[0, []], [50, ["t1"]]]},
+                             "why": "u sits on the sources and changes nothing; t1 and t2 are identical, t1 < t2"}))
+    return packs
+
+
 def build_all(app_root, src):
     cache = S.load_app(app_root)
     packs, not_built = [], []
+    ctxs = {c: S.load_context(app_root, c, cache) for c in O.CITIES}
     for index, (city, cat) in enumerate(REAL_ORDER):
-        ctx = S.load_context(app_root, city, cache)
+        ctx = ctxs[city]
         packs += real_packs(ctx, src, cat, index)
         p, nb = qa_pack(ctx, src, cat)
         if p:
             packs.append(p)
         else:
             not_built.append(nb)
+    for city in O.CITIES:
+        other = ctxs[[c for c in O.CITIES if c != city][0]]
+        packs.append(invalid_pack(ctxs[city], other, src, "school"))
+    packs += synthetic_packs()
     return packs, not_built
 
 
@@ -294,7 +511,13 @@ def main():
     index = []
     for p in packs:
         write_json(out / f"{p['pack_id']}.json", p)
-        write_json(out / "scenarios" / f"{p['pack_id']}.json", p["scenario"])
+        if "invalid_cases" not in p:
+            write_json(out / "scenarios" / f"{p['pack_id']}.json", p["scenario"])
+        for case in p.get("invalid_cases", []):
+            if not case.get("pad_to_bytes"):  # too_large: use `cli.py export-case` to write the padded file
+                d = out / "scenarios" / "invalid" / p["pack_id"]
+                d.mkdir(parents=True, exist_ok=True)
+                (d / f"{case['case_id']}.json").write_text(case["raw"], encoding="utf-8")
         index.append({"pack_id": p["pack_id"], "kind": p["kind"], "stage": p["stage"], "purpose": p["purpose"],
                       **{k: p["observations"].get(k) for k in ("status", "objectives_agree", "distinct_winner_sets",
                                                                 "infeasible_reasons", "pareto_points")},

@@ -1,0 +1,423 @@
+{
+ "IMMUTABLE": "PASS",
+ "failures": [],
+ "index_build": {
+  "branch": "claude/beautiful-clarke-sbzomj",
+  "commit": "a5b5e2ddbe087c4eab8e947748cdf69dbae84a0d",
+  "data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "evidence_js_sha256": "df736e986145da33dee60f692e020486720b72db5b6116af31640cc8693b11b9"
+ },
+ "input_manifest": {
+  "inputs/k10/data/astana/places_social.geojson": "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343",
+  "inputs/k10/data/shymkent/places_social.geojson": "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7",
+  "inputs/k10/package_manifest.json": "0616c08b65285ed4a5324c9e0238a31bec004857705cdb22c6b26e032fa4551d",
+  "web/data.js": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "web/evidence.js": "df736e986145da33dee60f692e020486720b72db5b6116af31640cc8693b11b9",
+  "web/facts.js": "3994a275ddb8c0cb857478365d94810a945752a96fff10d53d37bc8dc9808c64",
+  "web/whatif.js": "944adfa63500d9bc13b3da859cf4a56a3d3e3f92fa0f565ed655bedfb81d8f2f"
+ },
+ "packs_checked": 31,
+ "results": [
+  {
+   "checks": {
+    "INDEX": "PASS",
+    "JS": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "js_max_abs_diff_m_unrounded": 0.0,
+   "kind": "real_slice",
+   "pack_id": "astana-outpatient_clinic-base"
+  },
+  {
+   "checks": {
+    "INDEX": "PASS",
+    "JS": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "js_max_abs_diff_m_unrounded": 0.0,
+   "kind": "real_slice",
+   "pack_id": "astana-outpatient_clinic-conflict-budget"
+  },
+  {
+   "checks": {
+    "INDEX": "PASS",
+    "JS": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "js_max_abs_diff_m_unrounded": 0.0,
+   "kind": "real_slice",
+   "pack_id": "astana-outpatient_clinic-conflict-count"
+  },
+  {
+   "checks": {
+    "INDEX": "PASS",
+    "JS": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "js_max_abs_diff_m_unrounded": 0.0,
+   "kind": "real_slice",
+   "pack_id": "astana-outpatient_clinic-required-excluded"
+  },
+  {
+   "checks": {
+    "INDEX": "PASS",
+    "JS": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "js_max_abs_diff_m_unrounded": 2.2737367544323206e-13,
+   "kind": "real_slice",
+   "pack_id": "astana-outpatient_clinic-seeded"
+  },
+  {
+   "checks": {
+    "INDEX": "PASS",
+    "JS": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "js_max_abs_diff_m_unrounded": 0.0,
+   "kind": "real_slice",
+   "pack_id": "astana-outpatient_clinic-tight-budget"
+  },
+  {
+   "checks": {
+    "INDEX": "PASS",
+    "JS": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "js_max_abs_diff_m_unrounded": 0.0,
+   "kind": "real_slice",
+   "pack_id": "astana-school-base"
+  },
+  {
+   "checks": {
+    "INDEX": "PASS",
+    "JS": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "js_max_abs_diff_m_unrounded": 0.0,
+   "kind": "real_slice",
+   "pack_id": "astana-school-conflict-budget"
+  },
+  {
+   "checks": {
+    "INDEX": "PASS",
+    "JS": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "js_max_abs_diff_m_unrounded": 0.0,
+   "kind": "real_slice",
+   "pack_id": "astana-school-conflict-count"
+  },
+  {
+   "checks": {
+    "INDEX": "PASS",
+    "JS": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS"
+   },
+   "js_max_abs_diff_m_unrounded": 0.0,
+   "kind": "real_slice",
+   "pack_id": "astana-school-invalid-inputs"
+  },
+  {
+   "checks": {
+    "INDEX": "PASS",
+    "JS": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "js_max_abs_diff_m_unrounded": 0.0,
+   "kind": "real_slice",
+   "pack_id": "astana-school-required-excluded"
+  },
+  {
+   "checks": {
+    "INDEX": "PASS",
+    "JS": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "js_max_abs_diff_m_unrounded": 2.2737367544323206e-13,
+   "kind": "real_slice",
+   "pack_id": "astana-school-seeded"
+  },
+  {
+   "checks": {
+    "INDEX": "PASS",
+    "JS": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "js_max_abs_diff_m_unrounded": 0.0,
+   "kind": "real_slice",
+   "pack_id": "astana-school-tight-budget"
+  },
+  {
+   "checks": {
+    "INDEX": "PASS",
+    "JS": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "js_max_abs_diff_m_unrounded": 2.2737367544323206e-13,
+   "kind": "real_slice",
+   "pack_id": "shymkent-outpatient_clinic-base"
+  },
+  {
+   "checks": {
+    "INDEX": "PASS",
+    "JS": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "js_max_abs_diff_m_unrounded": 2.2737367544323206e-13,
+   "kind": "real_slice",
+   "pack_id": "shymkent-outpatient_clinic-conflict-budget"
+  },
+  {
+   "checks": {
+    "INDEX": "PASS",
+    "JS": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "js_max_abs_diff_m_unrounded": 2.2737367544323206e-13,
+   "kind": "real_slice",
+   "pack_id": "shymkent-outpatient_clinic-conflict-count"
+  },
+  {
+   "checks": {
+    "INDEX": "PASS",
+    "JS": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "js_max_abs_diff_m_unrounded": 4.547473508864641e-13,
+   "kind": "real_slice",
+   "pack_id": "shymkent-outpatient_clinic-qa-nearest"
+  },
+  {
+   "checks": {
+    "INDEX": "PASS",
+    "JS": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "js_max_abs_diff_m_unrounded": 2.2737367544323206e-13,
+   "kind": "real_slice",
+   "pack_id": "shymkent-outpatient_clinic-required-excluded"
+  },
+  {
+   "checks": {
+    "INDEX": "PASS",
+    "JS": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "js_max_abs_diff_m_unrounded": 4.547473508864641e-13,
+   "kind": "real_slice",
+   "pack_id": "shymkent-outpatient_clinic-seeded"
+  },
+  {
+   "checks": {
+    "INDEX": "PASS",
+    "JS": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "js_max_abs_diff_m_unrounded": 2.2737367544323206e-13,
+   "kind": "real_slice",
+   "pack_id": "shymkent-outpatient_clinic-tight-budget"
+  },
+  {
+   "checks": {
+    "INDEX": "PASS",
+    "JS": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "js_max_abs_diff_m_unrounded": 2.2737367544323206e-13,
+   "kind": "real_slice",
+   "pack_id": "shymkent-school-base"
+  },
+  {
+   "checks": {
+    "INDEX": "PASS",
+    "JS": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "js_max_abs_diff_m_unrounded": 2.2737367544323206e-13,
+   "kind": "real_slice",
+   "pack_id": "shymkent-school-conflict-budget"
+  },
+  {
+   "checks": {
+    "INDEX": "PASS",
+    "JS": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "js_max_abs_diff_m_unrounded": 2.2737367544323206e-13,
+   "kind": "real_slice",
+   "pack_id": "shymkent-school-conflict-count"
+  },
+  {
+   "checks": {
+    "INDEX": "PASS",
+    "JS": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS"
+   },
+   "js_max_abs_diff_m_unrounded": 2.2737367544323206e-13,
+   "kind": "real_slice",
+   "pack_id": "shymkent-school-invalid-inputs"
+  },
+  {
+   "checks": {
+    "INDEX": "PASS",
+    "JS": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "js_max_abs_diff_m_unrounded": 4.547473508864641e-13,
+   "kind": "real_slice",
+   "pack_id": "shymkent-school-qa-nearest"
+  },
+  {
+   "checks": {
+    "INDEX": "PASS",
+    "JS": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "js_max_abs_diff_m_unrounded": 2.2737367544323206e-13,
+   "kind": "real_slice",
+   "pack_id": "shymkent-school-required-excluded"
+  },
+  {
+   "checks": {
+    "INDEX": "PASS",
+    "JS": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "js_max_abs_diff_m_unrounded": 2.2737367544323206e-13,
+   "kind": "real_slice",
+   "pack_id": "shymkent-school-seeded"
+  },
+  {
+   "checks": {
+    "INDEX": "PASS",
+    "JS": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "js_max_abs_diff_m_unrounded": 2.2737367544323206e-13,
+   "kind": "real_slice",
+   "pack_id": "shymkent-school-tight-budget"
+  },
+  {
+   "checks": {
+    "HAND": "PASS",
+    "INDEX": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "SYNTHETIC",
+    "VALID": "PASS"
+   },
+   "kind": "synthetic",
+   "pack_id": "synthetic-empty-baseline"
+  },
+  {
+   "checks": {
+    "HAND": "PASS",
+    "INDEX": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "SYNTHETIC",
+    "VALID": "PASS"
+   },
+   "kind": "synthetic",
+   "pack_id": "synthetic-objectives-differ"
+  },
+  {
+   "checks": {
+    "HAND": "PASS",
+    "INDEX": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "SYNTHETIC",
+    "VALID": "PASS"
+   },
+   "kind": "synthetic",
+   "pack_id": "synthetic-ties"
+  }
+ ],
+ "stale": [],
+ "target": {
+  "app_root": "/tmp/claude-0/-home-user-GOV-DIPLOME/e15cd393-c9d0-5e6f-ba76-0281490195c8/scratchpad/build_a5b5e2d/prototypes/city-evidence",
+  "data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72"
+ }
+}

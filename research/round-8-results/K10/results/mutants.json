@@ -1,0 +1,59 @@
+{
+ "mutants": 13,
+ "killed": 13,
+ "survived": [],
+ "results": [
+  {
+   "mutant": "tie: hypothetical before source",
+   "killed": true
+  },
+  {
+   "mutant": "mean: sum before unknown_count",
+   "killed": true
+  },
+  {
+   "mutant": "minimax: sum before max",
+   "killed": true
+  },
+  {
+   "mutant": "coverage: ignore covered weight",
+   "killed": true
+  },
+  {
+   "mutant": "pareto: keep equal sums",
+   "killed": true
+  },
+  {
+   "mutant": "pareto: include unknown plans",
+   "killed": true
+  },
+  {
+   "mutant": "radius boundary exclusive",
+   "killed": true
+  },
+  {
+   "mutant": "mm rounding banker's",
+   "killed": true
+  },
+  {
+   "mutant": "sensitivity duplicates",
+   "killed": true
+  },
+  {
+   "mutant": "budget check strict",
+   "killed": true
+  },
+  {
+   "mutant": "overlap allowed",
+   "killed": true
+  },
+  {
+   "mutant": "derived_results refused",
+   "killed": true
+  },
+  {
+   "mutant": "weighted mean with unknown",
+   "killed": true
+  }
+ ]
+}

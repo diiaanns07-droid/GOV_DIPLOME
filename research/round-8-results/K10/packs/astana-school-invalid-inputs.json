@@ -1,0 +1,732 @@
+{
+ "pack_format": "k10-plan-pack-v1",
+ "pack_id": "astana-school-invalid-inputs",
+ "kind": "real_slice",
+ "stage": 2,
+ "purpose": "inputs that must be refused before computing (state unchanged), plus two that must be accepted",
+ "city_id": "astana",
+ "category": "school",
+ "rules": {
+  "fixed_before_computing": true,
+  "invalid_inputs": "mutations of the base pack, one defect per case; the intended code is written first and generation stops if the oracle disagrees, so no case is stored with an expectation it does not test"
+ },
+ "provenance": {
+  "build_branch": "claude/beautiful-clarke-sbzomj",
+  "build_commit": "a5b5e2ddbe087c4eab8e947748cdf69dbae84a0d",
+  "app_path": "prototypes/city-evidence",
+  "data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "evidence_js_sha256": "df736e986145da33dee60f692e020486720b72db5b6116af31640cc8693b11b9",
+  "places_social_file": "inputs/k10/data/astana/places_social.geojson",
+  "places_social_sha256": "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343",
+  "release": "2026-09-23.1",
+  "bbox": [
+   71.418372,
+   51.163033,
+   71.447,
+   51.181
+  ],
+  "source_snapshot": "sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d",
+  "snapshot_components": [
+   "city-whatif-v1",
+   "astana",
+   "2026-09-23.1",
+   "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343",
+   "4ea80e67e9ae236eee42b6ca74e650efec2d46dad0982448906d809c8eeb8a43",
+   "haversine:R=6371008.8"
+  ],
+  "upstream": "Overture Maps places 2026-09-23.1 via K10 package (round-3 results); not re-downloaded"
+ },
+ "source_copy": {
+  "category_records": [
+   {
+    "id": "7b39e048-341b-454a-a63c-4b7e1ae73e9f",
+    "lon": 71.42501,
+    "lat": 51.17087,
+    "group": "school",
+    "name": "Школа-гимназия 3",
+    "qa_flags": []
+   },
+   {
+    "id": "8ca53724-c558-46b7-826b-13e3e8fbb7e6",
+    "lon": 71.445305,
+    "lat": 51.166662,
+    "group": "school",
+    "name": "\"ГУ \"Средняя школа № 8\" УО г. Астаны\"",
+    "qa_flags": []
+   },
+   {
+    "id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+    "lon": 71.43372,
+    "lat": 51.16862,
+    "group": "school",
+    "name": "Учебный ЦЕНТР ФПРК",
+    "qa_flags": []
+   },
+   {
+    "id": "a4483f53-7de8-4df1-b61b-b4066b0ad5dd",
+    "lon": 71.42298,
+    "lat": 51.16765,
+    "group": "school",
+    "name": "Astana Garden International School",
+    "qa_flags": []
+   },
+   {
+    "id": "b5dd5f1a-9d55-48b1-9d68-7172ea84da3f",
+    "lon": 71.44184,
+    "lat": 51.16473,
+    "group": "school",
+    "name": "Образовательный центр АЗиЯ",
+    "qa_flags": []
+   },
+   {
+    "id": "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a",
+    "lon": 71.423338,
+    "lat": 51.1677,
+    "group": "school",
+    "name": "Учебный Центр Expert-A",
+    "qa_flags": []
+   },
+   {
+    "id": "c97435da-cd05-4549-bec1-ff297e858554",
+    "lon": 71.420262,
+    "lat": 51.177527,
+    "group": "school",
+    "name": "Гимназия №6",
+    "qa_flags": []
+   },
+   {
+    "id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783",
+    "lon": 71.426672,
+    "lat": 51.179297,
+    "group": "school",
+    "name": "\"Школа \"Почемучка\"\"",
+    "qa_flags": []
+   }
+  ],
+  "note": "read-only copy of web/data.js records of this category; the source records are never modified"
+ },
+ "scenario": {
+  "schema_version": "city-plan-v2",
+  "city_id": "astana",
+  "source_snapshot": "sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d",
+  "category": "school",
+  "control_points": [
+   {
+    "id": "cp01",
+    "lon": 71.421951,
+    "lat": 51.165279,
+    "weight": 4
+   },
+   {
+    "id": "cp02",
+    "lon": 71.429108,
+    "lat": 51.165279,
+    "weight": 2
+   },
+   {
+    "id": "cp03",
+    "lon": 71.436265,
+    "lat": 51.165279,
+    "weight": 5
+   },
+   {
+    "id": "cp04",
+    "lon": 71.443421,
+    "lat": 51.165279,
+    "weight": 3
+   },
+   {
+    "id": "cp05",
+    "lon": 71.421951,
+    "lat": 51.169771,
+    "weight": 1
+   },
+   {
+    "id": "cp06",
+    "lon": 71.429108,
+    "lat": 51.169771,
+    "weight": 4
+   },
+   {
+    "id": "cp07",
+    "lon": 71.436265,
+    "lat": 51.169771,
+    "weight": 2
+   },
+   {
+    "id": "cp08",
+    "lon": 71.443421,
+    "lat": 51.169771,
+    "weight": 5
+   },
+   {
+    "id": "cp09",
+    "lon": 71.421951,
+    "lat": 51.174262,
+    "weight": 3
+   },
+   {
+    "id": "cp10",
+    "lon": 71.429108,
+    "lat": 51.174262,
+    "weight": 1
+   },
+   {
+    "id": "cp11",
+    "lon": 71.436265,
+    "lat": 51.174262,
+    "weight": 4
+   },
+   {
+    "id": "cp12",
+    "lon": 71.443421,
+    "lat": 51.174262,
+    "weight": 2
+   },
+   {
+    "id": "cp13",
+    "lon": 71.421951,
+    "lat": 51.178754,
+    "weight": 5
+   },
+   {
+    "id": "cp14",
+    "lon": 71.429108,
+    "lat": 51.178754,
+    "weight": 3
+   },
+   {
+    "id": "cp15",
+    "lon": 71.436265,
+    "lat": 51.178754,
+    "weight": 1
+   },
+   {
+    "id": "cp16",
+    "lon": 71.443421,
+    "lat": 51.178754,
+    "weight": 4
+   }
+  ],
+  "candidates": [
+   {
+    "id": "c01",
+    "lon": 71.421951,
+    "lat": 51.166027,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 350
+   },
+   {
+    "id": "c02",
+    "lon": 71.429108,
+    "lat": 51.166027,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 250
+   },
+   {
+    "id": "c03",
+    "lon": 71.436265,
+    "lat": 51.166027,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 150
+   },
+   {
+    "id": "c04",
+    "lon": 71.443421,
+    "lat": 51.166027,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 400
+   },
+   {
+    "id": "c05",
+    "lon": 71.421951,
+    "lat": 51.172016,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 300
+   },
+   {
+    "id": "c06",
+    "lon": 71.429108,
+    "lat": 51.172016,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 200
+   },
+   {
+    "id": "c07",
+    "lon": 71.436265,
+    "lat": 51.172016,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 100
+   },
+   {
+    "id": "c08",
+    "lon": 71.443421,
+    "lat": 51.172016,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 350
+   },
+   {
+    "id": "c09",
+    "lon": 71.421951,
+    "lat": 51.178005,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 250
+   },
+   {
+    "id": "c10",
+    "lon": 71.429108,
+    "lat": 51.178005,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 150
+   },
+   {
+    "id": "c11",
+    "lon": 71.436265,
+    "lat": 51.178005,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 400
+   },
+   {
+    "id": "c12",
+    "lon": 71.443421,
+    "lat": 51.178005,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 300
+   }
+  ],
+  "budget": 700,
+  "max_selected": 3,
+  "coverage_radius_m": 400,
+  "required_ids": [],
+  "excluded_ids": [],
+  "selected_ids": [
+   "c06",
+   "c07"
+  ]
+ },
+ "invalid_cases": [
+  {
+   "case_id": "duplicate_key",
+   "raw": "{\"schema_version\":\"city-plan-v2\",\"city_id\":\"astana\",\"source_snapshot\":\"sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d\",\"category\":\"school\",\"control_points\":[{\"id\":\"cp01\",\"lon\":71.421951,\"lat\":51.165279,\"weight\":4},{\"id\":\"cp02\",\"lon\":71.429108,\"lat\":51.165279,\"weight\":2},{\"id\":\"cp03\",\"lon\":71.436265,\"lat\":51.165279,\"weight\":5},{\"id\":\"cp04\",\"lon\":71.443421,\"lat\":51.165279,\"weight\":3},{\"id\":\"cp05\",\"lon\":71.421951,\"lat\":51.169771,\"weight\":1},{\"id\":\"cp06\",\"lon\":71.429108,\"lat\":51.169771,\"weight\":4},{\"id\":\"cp07\",\"lon\":71.436265,\"lat\":51.169771,\"weight\":2},{\"id\":\"cp08\",\"lon\":71.443421,\"lat\":51.169771,\"weight\":5},{\"id\":\"cp09\",\"lon\":71.421951,\"lat\":51.174262,\"weight\":3},{\"id\":\"cp10\",\"lon\":71.429108,\"lat\":51.174262,\"weight\":1},{\"id\":\"cp11\",\"lon\":71.436265,\"lat\":51.174262,\"weight\":4},{\"id\":\"cp12\",\"lon\":71.443421,\"lat\":51.174262,\"weight\":2},{\"id\":\"cp13\",\"lon\":71.421951,\"lat\":51.178754,\"weight\":5},{\"id\":\"cp14\",\"lon\":71.429108,\"lat\":51.178754,\"weight\":3},{\"id\":\"cp15\",\"lon\":71.436265,\"lat\":51.178754,\"weight\":1},{\"id\":\"cp16\",\"lon\":71.443421,\"lat\":51.178754,\"weight\":4}],\"candidates\":[{\"id\":\"c01\",\"lon\":71.421951,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c02\",\"lon\":71.429108,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c03\",\"lon\":71.436265,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c04\",\"lon\":71.443421,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c05\",\"lon\":71.421951,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300},{\"id\":\"c06\",\"lon\":71.429108,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":200},{\"id\":\"c07\",\"lon\":71.436265,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":100},{\"id\":\"c08\",\"lon\":71.443421,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c09\",\"lon\":71.421951,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c10\",\"lon\":71.429108,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c11\",\"lon\":71.436265,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c12\",\"lon\":71.443421,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300}],\"budget\":700,\"budget\":1,\"max_selected\":3,\"coverage_radius_m\":400,\"required_ids\":[],\"excluded_ids\":[],\"selected_ids\":[\"c06\",\"c07\"]}",
+   "expected": {
+    "rejected": true,
+    "code": "duplicate_key"
+   },
+   "note": ""
+  },
+  {
+   "case_id": "nan",
+   "raw": "{\"schema_version\":\"city-plan-v2\",\"city_id\":\"astana\",\"source_snapshot\":\"sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d\",\"category\":\"school\",\"control_points\":[{\"id\":\"cp01\",\"lon\":71.421951,\"lat\":51.165279,\"weight\":4},{\"id\":\"cp02\",\"lon\":71.429108,\"lat\":51.165279,\"weight\":2},{\"id\":\"cp03\",\"lon\":71.436265,\"lat\":51.165279,\"weight\":5},{\"id\":\"cp04\",\"lon\":71.443421,\"lat\":51.165279,\"weight\":3},{\"id\":\"cp05\",\"lon\":71.421951,\"lat\":51.169771,\"weight\":1},{\"id\":\"cp06\",\"lon\":71.429108,\"lat\":51.169771,\"weight\":4},{\"id\":\"cp07\",\"lon\":71.436265,\"lat\":51.169771,\"weight\":2},{\"id\":\"cp08\",\"lon\":71.443421,\"lat\":51.169771,\"weight\":5},{\"id\":\"cp09\",\"lon\":71.421951,\"lat\":51.174262,\"weight\":3},{\"id\":\"cp10\",\"lon\":71.429108,\"lat\":51.174262,\"weight\":1},{\"id\":\"cp11\",\"lon\":71.436265,\"lat\":51.174262,\"weight\":4},{\"id\":\"cp12\",\"lon\":71.443421,\"lat\":51.174262,\"weight\":2},{\"id\":\"cp13\",\"lon\":71.421951,\"lat\":51.178754,\"weight\":5},{\"id\":\"cp14\",\"lon\":71.429108,\"lat\":51.178754,\"weight\":3},{\"id\":\"cp15\",\"lon\":71.436265,\"lat\":51.178754,\"weight\":1},{\"id\":\"cp16\",\"lon\":71.443421,\"lat\":51.178754,\"weight\":4}],\"candidates\":[{\"id\":\"c01\",\"lon\":71.421951,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c02\",\"lon\":71.429108,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c03\",\"lon\":71.436265,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c04\",\"lon\":71.443421,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c05\",\"lon\":71.421951,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300},{\"id\":\"c06\",\"lon\":71.429108,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":200},{\"id\":\"c07\",\"lon\":71.436265,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":100},{\"id\":\"c08\",\"lon\":71.443421,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c09\",\"lon\":71.421951,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c10\",\"lon\":71.429108,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c11\",\"lon\":71.436265,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c12\",\"lon\":71.443421,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300}],\"budget\":NaN,\"max_selected\":3,\"coverage_radius_m\":400,\"required_ids\":[],\"excluded_ids\":[],\"selected_ids\":[\"c06\",\"c07\"]}",
+   "expected": {
+    "rejected": true,
+    "code": "non_finite"
+   },
+   "note": ""
+  },
+  {
+   "case_id": "infinity",
+   "raw": "{\"schema_version\":\"city-plan-v2\",\"city_id\":\"astana\",\"source_snapshot\":\"sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d\",\"category\":\"school\",\"control_points\":[{\"id\":\"cp01\",\"lon\":71.421951,\"lat\":51.165279,\"weight\":4},{\"id\":\"cp02\",\"lon\":71.429108,\"lat\":51.165279,\"weight\":2},{\"id\":\"cp03\",\"lon\":71.436265,\"lat\":51.165279,\"weight\":5},{\"id\":\"cp04\",\"lon\":71.443421,\"lat\":51.165279,\"weight\":3},{\"id\":\"cp05\",\"lon\":71.421951,\"lat\":51.169771,\"weight\":1},{\"id\":\"cp06\",\"lon\":71.429108,\"lat\":51.169771,\"weight\":4},{\"id\":\"cp07\",\"lon\":71.436265,\"lat\":51.169771,\"weight\":2},{\"id\":\"cp08\",\"lon\":71.443421,\"lat\":51.169771,\"weight\":5},{\"id\":\"cp09\",\"lon\":71.421951,\"lat\":51.174262,\"weight\":3},{\"id\":\"cp10\",\"lon\":71.429108,\"lat\":51.174262,\"weight\":1},{\"id\":\"cp11\",\"lon\":71.436265,\"lat\":51.174262,\"weight\":4},{\"id\":\"cp12\",\"lon\":71.443421,\"lat\":51.174262,\"weight\":2},{\"id\":\"cp13\",\"lon\":71.421951,\"lat\":51.178754,\"weight\":5},{\"id\":\"cp14\",\"lon\":71.429108,\"lat\":51.178754,\"weight\":3},{\"id\":\"cp15\",\"lon\":71.436265,\"lat\":51.178754,\"weight\":1},{\"id\":\"cp16\",\"lon\":71.443421,\"lat\":51.178754,\"weight\":4}],\"candidates\":[{\"id\":\"c01\",\"lon\":71.421951,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c02\",\"lon\":71.429108,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c03\",\"lon\":71.436265,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c04\",\"lon\":71.443421,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c05\",\"lon\":71.421951,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300},{\"id\":\"c06\",\"lon\":71.429108,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":200},{\"id\":\"c07\",\"lon\":71.436265,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":100},{\"id\":\"c08\",\"lon\":71.443421,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c09\",\"lon\":71.421951,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c10\",\"lon\":71.429108,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c11\",\"lon\":71.436265,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c12\",\"lon\":71.443421,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300}],\"budget\":-Infinity,\"max_selected\":3,\"coverage_radius_m\":400,\"required_ids\":[],\"excluded_ids\":[],\"selected_ids\":[\"c06\",\"c07\"]}",
+   "expected": {
+    "rejected": true,
+    "code": "non_finite"
+   },
+   "note": ""
+  },
+  {
+   "case_id": "float_overflow_1e999",
+   "raw": "{\"schema_version\":\"city-plan-v2\",\"city_id\":\"astana\",\"source_snapshot\":\"sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d\",\"category\":\"school\",\"control_points\":[{\"id\":\"cp01\",\"lon\":1e999,\"lat\":51.165279,\"weight\":4},{\"id\":\"cp02\",\"lon\":71.429108,\"lat\":51.165279,\"weight\":2},{\"id\":\"cp03\",\"lon\":71.436265,\"lat\":51.165279,\"weight\":5},{\"id\":\"cp04\",\"lon\":71.443421,\"lat\":51.165279,\"weight\":3},{\"id\":\"cp05\",\"lon\":71.421951,\"lat\":51.169771,\"weight\":1},{\"id\":\"cp06\",\"lon\":71.429108,\"lat\":51.169771,\"weight\":4},{\"id\":\"cp07\",\"lon\":71.436265,\"lat\":51.169771,\"weight\":2},{\"id\":\"cp08\",\"lon\":71.443421,\"lat\":51.169771,\"weight\":5},{\"id\":\"cp09\",\"lon\":71.421951,\"lat\":51.174262,\"weight\":3},{\"id\":\"cp10\",\"lon\":71.429108,\"lat\":51.174262,\"weight\":1},{\"id\":\"cp11\",\"lon\":71.436265,\"lat\":51.174262,\"weight\":4},{\"id\":\"cp12\",\"lon\":71.443421,\"lat\":51.174262,\"weight\":2},{\"id\":\"cp13\",\"lon\":71.421951,\"lat\":51.178754,\"weight\":5},{\"id\":\"cp14\",\"lon\":71.429108,\"lat\":51.178754,\"weight\":3},{\"id\":\"cp15\",\"lon\":71.436265,\"lat\":51.178754,\"weight\":1},{\"id\":\"cp16\",\"lon\":71.443421,\"lat\":51.178754,\"weight\":4}],\"candidates\":[{\"id\":\"c01\",\"lon\":71.421951,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c02\",\"lon\":71.429108,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c03\",\"lon\":71.436265,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c04\",\"lon\":71.443421,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c05\",\"lon\":71.421951,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300},{\"id\":\"c06\",\"lon\":71.429108,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":200},{\"id\":\"c07\",\"lon\":71.436265,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":100},{\"id\":\"c08\",\"lon\":71.443421,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c09\",\"lon\":71.421951,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c10\",\"lon\":71.429108,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c11\",\"lon\":71.436265,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c12\",\"lon\":71.443421,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300}],\"budget\":700,\"max_selected\":3,\"coverage_radius_m\":400,\"required_ids\":[],\"excluded_ids\":[],\"selected_ids\":[\"c06\",\"c07\"]}",
+   "expected": {
+    "rejected": true,
+    "code": "non_finite"
+   },
+   "note": ""
+  },
+  {
+   "case_id": "integer_overflow",
+   "raw": "{\"schema_version\":\"city-plan-v2\",\"city_id\":\"astana\",\"source_snapshot\":\"sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d\",\"category\":\"school\",\"control_points\":[{\"id\":\"cp01\",\"lon\":71.421951,\"lat\":51.165279,\"weight\":4},{\"id\":\"cp02\",\"lon\":71.429108,\"lat\":51.165279,\"weight\":2},{\"id\":\"cp03\",\"lon\":71.436265,\"lat\":51.165279,\"weight\":5},{\"id\":\"cp04\",\"lon\":71.443421,\"lat\":51.165279,\"weight\":3},{\"id\":\"cp05\",\"lon\":71.421951,\"lat\":51.169771,\"weight\":1},{\"id\":\"cp06\",\"lon\":71.429108,\"lat\":51.169771,\"weight\":4},{\"id\":\"cp07\",\"lon\":71.436265,\"lat\":51.169771,\"weight\":2},{\"id\":\"cp08\",\"lon\":71.443421,\"lat\":51.169771,\"weight\":5},{\"id\":\"cp09\",\"lon\":71.421951,\"lat\":51.174262,\"weight\":3},{\"id\":\"cp10\",\"lon\":71.429108,\"lat\":51.174262,\"weight\":1},{\"id\":\"cp11\",\"lon\":71.436265,\"lat\":51.174262,\"weight\":4},{\"id\":\"cp12\",\"lon\":71.443421,\"lat\":51.174262,\"weight\":2},{\"id\":\"cp13\",\"lon\":71.421951,\"lat\":51.178754,\"weight\":5},{\"id\":\"cp14\",\"lon\":71.429108,\"lat\":51.178754,\"weight\":3},{\"id\":\"cp15\",\"lon\":71.436265,\"lat\":51.178754,\"weight\":1},{\"id\":\"cp16\",\"lon\":71.443421,\"lat\":51.178754,\"weight\":4}],\"candidates\":[{\"id\":\"c01\",\"lon\":71.421951,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c02\",\"lon\":71.429108,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c03\",\"lon\":71.436265,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c04\",\"lon\":71.443421,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c05\",\"lon\":71.421951,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300},{\"id\":\"c06\",\"lon\":71.429108,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":200},{\"id\":\"c07\",\"lon\":71.436265,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":100},{\"id\":\"c08\",\"lon\":71.443421,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c09\",\"lon\":71.421951,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c10\",\"lon\":71.429108,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c11\",\"lon\":71.436265,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c12\",\"lon\":71.443421,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300}],\"budget\":10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,\"max_selected\":3,\"coverage_radius_m\":400,\"required_ids\":[],\"excluded_ids\":[],\"selected_ids\":[\"c06\",\"c07\"]}",
+   "expected": {
+    "rejected": true,
+    "code": "non_finite"
+   },
+   "note": ""
+  },
+  {
+   "case_id": "trailing_garbage",
+   "raw": "{\"schema_version\":\"city-plan-v2\",\"city_id\":\"astana\",\"source_snapshot\":\"sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d\",\"category\":\"school\",\"control_points\":[{\"id\":\"cp01\",\"lon\":71.421951,\"lat\":51.165279,\"weight\":4},{\"id\":\"cp02\",\"lon\":71.429108,\"lat\":51.165279,\"weight\":2},{\"id\":\"cp03\",\"lon\":71.436265,\"lat\":51.165279,\"weight\":5},{\"id\":\"cp04\",\"lon\":71.443421,\"lat\":51.165279,\"weight\":3},{\"id\":\"cp05\",\"lon\":71.421951,\"lat\":51.169771,\"weight\":1},{\"id\":\"cp06\",\"lon\":71.429108,\"lat\":51.169771,\"weight\":4},{\"id\":\"cp07\",\"lon\":71.436265,\"lat\":51.169771,\"weight\":2},{\"id\":\"cp08\",\"lon\":71.443421,\"lat\":51.169771,\"weight\":5},{\"id\":\"cp09\",\"lon\":71.421951,\"lat\":51.174262,\"weight\":3},{\"id\":\"cp10\",\"lon\":71.429108,\"lat\":51.174262,\"weight\":1},{\"id\":\"cp11\",\"lon\":71.436265,\"lat\":51.174262,\"weight\":4},{\"id\":\"cp12\",\"lon\":71.443421,\"lat\":51.174262,\"weight\":2},{\"id\":\"cp13\",\"lon\":71.421951,\"lat\":51.178754,\"weight\":5},{\"id\":\"cp14\",\"lon\":71.429108,\"lat\":51.178754,\"weight\":3},{\"id\":\"cp15\",\"lon\":71.436265,\"lat\":51.178754,\"weight\":1},{\"id\":\"cp16\",\"lon\":71.443421,\"lat\":51.178754,\"weight\":4}],\"candidates\":[{\"id\":\"c01\",\"lon\":71.421951,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c02\",\"lon\":71.429108,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c03\",\"lon\":71.436265,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c04\",\"lon\":71.443421,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c05\",\"lon\":71.421951,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300},{\"id\":\"c06\",\"lon\":71.429108,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":200},{\"id\":\"c07\",\"lon\":71.436265,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":100},{\"id\":\"c08\",\"lon\":71.443421,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c09\",\"lon\":71.421951,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c10\",\"lon\":71.429108,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c11\",\"lon\":71.436265,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c12\",\"lon\":71.443421,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300}],\"budget\":700,\"max_selected\":3,\"coverage_radius_m\":400,\"required_ids\":[],\"excluded_ids\":[],\"selected_ids\":[\"c06\",\"c07\"]}x",
+   "expected": {
+    "rejected": true,
+    "code": "bad_json"
+   },
+   "note": ""
+  },
+  {
+   "case_id": "too_large",
+   "raw": "{\"schema_version\":\"city-plan-v2\",\"city_id\":\"astana\",\"source_snapshot\":\"sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d\",\"category\":\"school\",\"control_points\":[{\"id\":\"cp01\",\"lon\":71.421951,\"lat\":51.165279,\"weight\":4},{\"id\":\"cp02\",\"lon\":71.429108,\"lat\":51.165279,\"weight\":2},{\"id\":\"cp03\",\"lon\":71.436265,\"lat\":51.165279,\"weight\":5},{\"id\":\"cp04\",\"lon\":71.443421,\"lat\":51.165279,\"weight\":3},{\"id\":\"cp05\",\"lon\":71.421951,\"lat\":51.169771,\"weight\":1},{\"id\":\"cp06\",\"lon\":71.429108,\"lat\":51.169771,\"weight\":4},{\"id\":\"cp07\",\"lon\":71.436265,\"lat\":51.169771,\"weight\":2},{\"id\":\"cp08\",\"lon\":71.443421,\"lat\":51.169771,\"weight\":5},{\"id\":\"cp09\",\"lon\":71.421951,\"lat\":51.174262,\"weight\":3},{\"id\":\"cp10\",\"lon\":71.429108,\"lat\":51.174262,\"weight\":1},{\"id\":\"cp11\",\"lon\":71.436265,\"lat\":51.174262,\"weight\":4},{\"id\":\"cp12\",\"lon\":71.443421,\"lat\":51.174262,\"weight\":2},{\"id\":\"cp13\",\"lon\":71.421951,\"lat\":51.178754,\"weight\":5},{\"id\":\"cp14\",\"lon\":71.429108,\"lat\":51.178754,\"weight\":3},{\"id\":\"cp15\",\"lon\":71.436265,\"lat\":51.178754,\"weight\":1},{\"id\":\"cp16\",\"lon\":71.443421,\"lat\":51.178754,\"weight\":4}],\"candidates\":[{\"id\":\"c01\",\"lon\":71.421951,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c02\",\"lon\":71.429108,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c03\",\"lon\":71.436265,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c04\",\"lon\":71.443421,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c05\",\"lon\":71.421951,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300},{\"id\":\"c06\",\"lon\":71.429108,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":200},{\"id\":\"c07\",\"lon\":71.436265,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":100},{\"id\":\"c08\",\"lon\":71.443421,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c09\",\"lon\":71.421951,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c10\",\"lon\":71.429108,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c11\",\"lon\":71.436265,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c12\",\"lon\":71.443421,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300}],\"budget\":700,\"max_selected\":3,\"coverage_radius_m\":400,\"required_ids\":[],\"excluded_ids\":[],\"selected_ids\":[\"c06\",\"c07\"]}",
+   "expected": {
+    "rejected": true,
+    "code": "too_large"
+   },
+   "note": "padded with spaces after the object to 262145 bytes",
+   "pad_to_bytes": 262145
+  },
+  {
+   "case_id": "schema_v1",
+   "raw": "{\"schema_version\":\"city-whatif-v1\",\"city_id\":\"astana\",\"source_snapshot\":\"sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d\",\"category\":\"school\",\"control_points\":[{\"id\":\"cp01\",\"lon\":71.421951,\"lat\":51.165279,\"weight\":4},{\"id\":\"cp02\",\"lon\":71.429108,\"lat\":51.165279,\"weight\":2},{\"id\":\"cp03\",\"lon\":71.436265,\"lat\":51.165279,\"weight\":5},{\"id\":\"cp04\",\"lon\":71.443421,\"lat\":51.165279,\"weight\":3},{\"id\":\"cp05\",\"lon\":71.421951,\"lat\":51.169771,\"weight\":1},{\"id\":\"cp06\",\"lon\":71.429108,\"lat\":51.169771,\"weight\":4},{\"id\":\"cp07\",\"lon\":71.436265,\"lat\":51.169771,\"weight\":2},{\"id\":\"cp08\",\"lon\":71.443421,\"lat\":51.169771,\"weight\":5},{\"id\":\"cp09\",\"lon\":71.421951,\"lat\":51.174262,\"weight\":3},{\"id\":\"cp10\",\"lon\":71.429108,\"lat\":51.174262,\"weight\":1},{\"id\":\"cp11\",\"lon\":71.436265,\"lat\":51.174262,\"weight\":4},{\"id\":\"cp12\",\"lon\":71.443421,\"lat\":51.174262,\"weight\":2},{\"id\":\"cp13\",\"lon\":71.421951,\"lat\":51.178754,\"weight\":5},{\"id\":\"cp14\",\"lon\":71.429108,\"lat\":51.178754,\"weight\":3},{\"id\":\"cp15\",\"lon\":71.436265,\"lat\":51.178754,\"weight\":1},{\"id\":\"cp16\",\"lon\":71.443421,\"lat\":51.178754,\"weight\":4}],\"candidates\":[{\"id\":\"c01\",\"lon\":71.421951,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c02\",\"lon\":71.429108,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c03\",\"lon\":71.436265,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c04\",\"lon\":71.443421,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c05\",\"lon\":71.421951,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300},{\"id\":\"c06\",\"lon\":71.429108,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":200},{\"id\":\"c07\",\"lon\":71.436265,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":100},{\"id\":\"c08\",\"lon\":71.443421,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c09\",\"lon\":71.421951,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c10\",\"lon\":71.429108,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c11\",\"lon\":71.436265,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c12\",\"lon\":71.443421,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300}],\"budget\":700,\"max_selected\":3,\"coverage_radius_m\":400,\"required_ids\":[],\"excluded_ids\":[],\"selected_ids\":[\"c06\",\"c07\"]}",
+   "expected": {
+    "rejected": true,
+    "code": "bad_schema_version"
+   },
+   "note": "v1 file into the v2 importer is refused, v1 keeps its own path"
+  },
+  {
+   "case_id": "missing_budget",
+   "raw": "{\"schema_version\":\"city-plan-v2\",\"city_id\":\"astana\",\"source_snapshot\":\"sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d\",\"category\":\"school\",\"control_points\":[{\"id\":\"cp01\",\"lon\":71.421951,\"lat\":51.165279,\"weight\":4},{\"id\":\"cp02\",\"lon\":71.429108,\"lat\":51.165279,\"weight\":2},{\"id\":\"cp03\",\"lon\":71.436265,\"lat\":51.165279,\"weight\":5},{\"id\":\"cp04\",\"lon\":71.443421,\"lat\":51.165279,\"weight\":3},{\"id\":\"cp05\",\"lon\":71.421951,\"lat\":51.169771,\"weight\":1},{\"id\":\"cp06\",\"lon\":71.429108,\"lat\":51.169771,\"weight\":4},{\"id\":\"cp07\",\"lon\":71.436265,\"lat\":51.169771,\"weight\":2},{\"id\":\"cp08\",\"lon\":71.443421,\"lat\":51.169771,\"weight\":5},{\"id\":\"cp09\",\"lon\":71.421951,\"lat\":51.174262,\"weight\":3},{\"id\":\"cp10\",\"lon\":71.429108,\"lat\":51.174262,\"weight\":1},{\"id\":\"cp11\",\"lon\":71.436265,\"lat\":51.174262,\"weight\":4},{\"id\":\"cp12\",\"lon\":71.443421,\"lat\":51.174262,\"weight\":2},{\"id\":\"cp13\",\"lon\":71.421951,\"lat\":51.178754,\"weight\":5},{\"id\":\"cp14\",\"lon\":71.429108,\"lat\":51.178754,\"weight\":3},{\"id\":\"cp15\",\"lon\":71.436265,\"lat\":51.178754,\"weight\":1},{\"id\":\"cp16\",\"lon\":71.443421,\"lat\":51.178754,\"weight\":4}],\"candidates\":[{\"id\":\"c01\",\"lon\":71.421951,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c02\",\"lon\":71.429108,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c03\",\"lon\":71.436265,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c04\",\"lon\":71.443421,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c05\",\"lon\":71.421951,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300},{\"id\":\"c06\",\"lon\":71.429108,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":200},{\"id\":\"c07\",\"lon\":71.436265,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":100},{\"id\":\"c08\",\"lon\":71.443421,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c09\",\"lon\":71.421951,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c10\",\"lon\":71.429108,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c11\",\"lon\":71.436265,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c12\",\"lon\":71.443421,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300}],\"max_selected\":3,\"coverage_radius_m\":400,\"required_ids\":[],\"excluded_ids\":[],\"selected_ids\":[\"c06\",\"c07\"]}",
+   "expected": {
+    "rejected": true,
+    "code": "missing_field"
+   },
+   "note": ""
+  },
+  {
+   "case_id": "unexpected_top_field",
+   "raw": "{\"schema_version\":\"city-plan-v2\",\"city_id\":\"astana\",\"source_snapshot\":\"sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d\",\"category\":\"school\",\"control_points\":[{\"id\":\"cp01\",\"lon\":71.421951,\"lat\":51.165279,\"weight\":4},{\"id\":\"cp02\",\"lon\":71.429108,\"lat\":51.165279,\"weight\":2},{\"id\":\"cp03\",\"lon\":71.436265,\"lat\":51.165279,\"weight\":5},{\"id\":\"cp04\",\"lon\":71.443421,\"lat\":51.165279,\"weight\":3},{\"id\":\"cp05\",\"lon\":71.421951,\"lat\":51.169771,\"weight\":1},{\"id\":\"cp06\",\"lon\":71.429108,\"lat\":51.169771,\"weight\":4},{\"id\":\"cp07\",\"lon\":71.436265,\"lat\":51.169771,\"weight\":2},{\"id\":\"cp08\",\"lon\":71.443421,\"lat\":51.169771,\"weight\":5},{\"id\":\"cp09\",\"lon\":71.421951,\"lat\":51.174262,\"weight\":3},{\"id\":\"cp10\",\"lon\":71.429108,\"lat\":51.174262,\"weight\":1},{\"id\":\"cp11\",\"lon\":71.436265,\"lat\":51.174262,\"weight\":4},{\"id\":\"cp12\",\"lon\":71.443421,\"lat\":51.174262,\"weight\":2},{\"id\":\"cp13\",\"lon\":71.421951,\"lat\":51.178754,\"weight\":5},{\"id\":\"cp14\",\"lon\":71.429108,\"lat\":51.178754,\"weight\":3},{\"id\":\"cp15\",\"lon\":71.436265,\"lat\":51.178754,\"weight\":1},{\"id\":\"cp16\",\"lon\":71.443421,\"lat\":51.178754,\"weight\":4}],\"candidates\":[{\"id\":\"c01\",\"lon\":71.421951,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c02\",\"lon\":71.429108,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c03\",\"lon\":71.436265,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c04\",\"lon\":71.443421,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c05\",\"lon\":71.421951,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300},{\"id\":\"c06\",\"lon\":71.429108,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":200},{\"id\":\"c07\",\"lon\":71.436265,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":100},{\"id\":\"c08\",\"lon\":71.443421,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c09\",\"lon\":71.421951,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c10\",\"lon\":71.429108,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c11\",\"lon\":71.436265,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c12\",\"lon\":71.443421,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300}],\"budget\":700,\"max_selected\":3,\"coverage_radius_m\":400,\"required_ids\":[],\"excluded_ids\":[],\"selected_ids\":[\"c06\",\"c07\"],\"population\":100000}",
+   "expected": {
+    "rejected": true,
+    "code": "unexpected_field"
+   },
+   "note": "population is not part of the contract and must not be invented"
+  },
+  {
+   "case_id": "url_field",
+   "raw": "{\"schema_version\":\"city-plan-v2\",\"city_id\":\"astana\",\"source_snapshot\":\"sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d\",\"category\":\"school\",\"control_points\":[{\"id\":\"cp01\",\"lon\":71.421951,\"lat\":51.165279,\"weight\":4},{\"id\":\"cp02\",\"lon\":71.429108,\"lat\":51.165279,\"weight\":2},{\"id\":\"cp03\",\"lon\":71.436265,\"lat\":51.165279,\"weight\":5},{\"id\":\"cp04\",\"lon\":71.443421,\"lat\":51.165279,\"weight\":3},{\"id\":\"cp05\",\"lon\":71.421951,\"lat\":51.169771,\"weight\":1},{\"id\":\"cp06\",\"lon\":71.429108,\"lat\":51.169771,\"weight\":4},{\"id\":\"cp07\",\"lon\":71.436265,\"lat\":51.169771,\"weight\":2},{\"id\":\"cp08\",\"lon\":71.443421,\"lat\":51.169771,\"weight\":5},{\"id\":\"cp09\",\"lon\":71.421951,\"lat\":51.174262,\"weight\":3},{\"id\":\"cp10\",\"lon\":71.429108,\"lat\":51.174262,\"weight\":1},{\"id\":\"cp11\",\"lon\":71.436265,\"lat\":51.174262,\"weight\":4},{\"id\":\"cp12\",\"lon\":71.443421,\"lat\":51.174262,\"weight\":2},{\"id\":\"cp13\",\"lon\":71.421951,\"lat\":51.178754,\"weight\":5},{\"id\":\"cp14\",\"lon\":71.429108,\"lat\":51.178754,\"weight\":3},{\"id\":\"cp15\",\"lon\":71.436265,\"lat\":51.178754,\"weight\":1},{\"id\":\"cp16\",\"lon\":71.443421,\"lat\":51.178754,\"weight\":4}],\"candidates\":[{\"id\":\"c01\",\"lon\":71.421951,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c02\",\"lon\":71.429108,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c03\",\"lon\":71.436265,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c04\",\"lon\":71.443421,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c05\",\"lon\":71.421951,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300},{\"id\":\"c06\",\"lon\":71.429108,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":200},{\"id\":\"c07\",\"lon\":71.436265,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":100},{\"id\":\"c08\",\"lon\":71.443421,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c09\",\"lon\":71.421951,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c10\",\"lon\":71.429108,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c11\",\"lon\":71.436265,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c12\",\"lon\":71.443421,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300}],\"budget\":700,\"max_selected\":3,\"coverage_radius_m\":400,\"required_ids\":[],\"excluded_ids\":[],\"selected_ids\":[\"c06\",\"c07\"],\"source_url\":\"https://example.invalid/x.json\"}",
+   "expected": {
+    "rejected": true,
+    "code": "unexpected_field"
+   },
+   "note": "no URL loading from a scenario"
+  },
+  {
+   "case_id": "other_city",
+   "raw": "{\"schema_version\":\"city-plan-v2\",\"city_id\":\"shymkent\",\"source_snapshot\":\"sha256:282cf187523d8b990ac9bfde69ba43763248aa9b49007149a094ccc81bd36ec2\",\"category\":\"school\",\"control_points\":[{\"id\":\"cp01\",\"lon\":71.421951,\"lat\":51.165279,\"weight\":4},{\"id\":\"cp02\",\"lon\":71.429108,\"lat\":51.165279,\"weight\":2},{\"id\":\"cp03\",\"lon\":71.436265,\"lat\":51.165279,\"weight\":5},{\"id\":\"cp04\",\"lon\":71.443421,\"lat\":51.165279,\"weight\":3},{\"id\":\"cp05\",\"lon\":71.421951,\"lat\":51.169771,\"weight\":1},{\"id\":\"cp06\",\"lon\":71.429108,\"lat\":51.169771,\"weight\":4},{\"id\":\"cp07\",\"lon\":71.436265,\"lat\":51.169771,\"weight\":2},{\"id\":\"cp08\",\"lon\":71.443421,\"lat\":51.169771,\"weight\":5},{\"id\":\"cp09\",\"lon\":71.421951,\"lat\":51.174262,\"weight\":3},{\"id\":\"cp10\",\"lon\":71.429108,\"lat\":51.174262,\"weight\":1},{\"id\":\"cp11\",\"lon\":71.436265,\"lat\":51.174262,\"weight\":4},{\"id\":\"cp12\",\"lon\":71.443421,\"lat\":51.174262,\"weight\":2},{\"id\":\"cp13\",\"lon\":71.421951,\"lat\":51.178754,\"weight\":5},{\"id\":\"cp14\",\"lon\":71.429108,\"lat\":51.178754,\"weight\":3},{\"id\":\"cp15\",\"lon\":71.436265,\"lat\":51.178754,\"weight\":1},{\"id\":\"cp16\",\"lon\":71.443421,\"lat\":51.178754,\"weight\":4}],\"candidates\":[{\"id\":\"c01\",\"lon\":71.421951,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c02\",\"lon\":71.429108,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c03\",\"lon\":71.436265,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c04\",\"lon\":71.443421,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c05\",\"lon\":71.421951,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300},{\"id\":\"c06\",\"lon\":71.429108,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":200},{\"id\":\"c07\",\"lon\":71.436265,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":100},{\"id\":\"c08\",\"lon\":71.443421,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c09\",\"lon\":71.421951,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c10\",\"lon\":71.429108,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c11\",\"lon\":71.436265,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c12\",\"lon\":71.443421,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300}],\"budget\":700,\"max_selected\":3,\"coverage_radius_m\":400,\"required_ids\":[],\"excluded_ids\":[],\"selected_ids\":[\"c06\",\"c07\"]}",
+   "expected": {
+    "rejected": true,
+    "code": "bad_city"
+   },
+   "note": ""
+  },
+  {
+   "case_id": "foreign_snapshot",
+   "raw": "{\"schema_version\":\"city-plan-v2\",\"city_id\":\"astana\",\"source_snapshot\":\"sha256:282cf187523d8b990ac9bfde69ba43763248aa9b49007149a094ccc81bd36ec2\",\"category\":\"school\",\"control_points\":[{\"id\":\"cp01\",\"lon\":71.421951,\"lat\":51.165279,\"weight\":4},{\"id\":\"cp02\",\"lon\":71.429108,\"lat\":51.165279,\"weight\":2},{\"id\":\"cp03\",\"lon\":71.436265,\"lat\":51.165279,\"weight\":5},{\"id\":\"cp04\",\"lon\":71.443421,\"lat\":51.165279,\"weight\":3},{\"id\":\"cp05\",\"lon\":71.421951,\"lat\":51.169771,\"weight\":1},{\"id\":\"cp06\",\"lon\":71.429108,\"lat\":51.169771,\"weight\":4},{\"id\":\"cp07\",\"lon\":71.436265,\"lat\":51.169771,\"weight\":2},{\"id\":\"cp08\",\"lon\":71.443421,\"lat\":51.169771,\"weight\":5},{\"id\":\"cp09\",\"lon\":71.421951,\"lat\":51.174262,\"weight\":3},{\"id\":\"cp10\",\"lon\":71.429108,\"lat\":51.174262,\"weight\":1},{\"id\":\"cp11\",\"lon\":71.436265,\"lat\":51.174262,\"weight\":4},{\"id\":\"cp12\",\"lon\":71.443421,\"lat\":51.174262,\"weight\":2},{\"id\":\"cp13\",\"lon\":71.421951,\"lat\":51.178754,\"weight\":5},{\"id\":\"cp14\",\"lon\":71.429108,\"lat\":51.178754,\"weight\":3},{\"id\":\"cp15\",\"lon\":71.436265,\"lat\":51.178754,\"weight\":1},{\"id\":\"cp16\",\"lon\":71.443421,\"lat\":51.178754,\"weight\":4}],\"candidates\":[{\"id\":\"c01\",\"lon\":71.421951,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c02\",\"lon\":71.429108,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c03\",\"lon\":71.436265,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c04\",\"lon\":71.443421,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c05\",\"lon\":71.421951,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300},{\"id\":\"c06\",\"lon\":71.429108,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":200},{\"id\":\"c07\",\"lon\":71.436265,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":100},{\"id\":\"c08\",\"lon\":71.443421,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c09\",\"lon\":71.421951,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c10\",\"lon\":71.429108,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c11\",\"lon\":71.436265,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c12\",\"lon\":71.443421,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300}],\"budget\":700,\"max_selected\":3,\"coverage_radius_m\":400,\"required_ids\":[],\"excluded_ids\":[],\"selected_ids\":[\"c06\",\"c07\"]}",
+   "expected": {
+    "rejected": true,
+    "code": "foreign_snapshot"
+   },
+   "note": ""
+  },
+  {
+   "case_id": "bad_category",
+   "raw": "{\"schema_version\":\"city-plan-v2\",\"city_id\":\"astana\",\"source_snapshot\":\"sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d\",\"category\":\"pharmacy\",\"control_points\":[{\"id\":\"cp01\",\"lon\":71.421951,\"lat\":51.165279,\"weight\":4},{\"id\":\"cp02\",\"lon\":71.429108,\"lat\":51.165279,\"weight\":2},{\"id\":\"cp03\",\"lon\":71.436265,\"lat\":51.165279,\"weight\":5},{\"id\":\"cp04\",\"lon\":71.443421,\"lat\":51.165279,\"weight\":3},{\"id\":\"cp05\",\"lon\":71.421951,\"lat\":51.169771,\"weight\":1},{\"id\":\"cp06\",\"lon\":71.429108,\"lat\":51.169771,\"weight\":4},{\"id\":\"cp07\",\"lon\":71.436265,\"lat\":51.169771,\"weight\":2},{\"id\":\"cp08\",\"lon\":71.443421,\"lat\":51.169771,\"weight\":5},{\"id\":\"cp09\",\"lon\":71.421951,\"lat\":51.174262,\"weight\":3},{\"id\":\"cp10\",\"lon\":71.429108,\"lat\":51.174262,\"weight\":1},{\"id\":\"cp11\",\"lon\":71.436265,\"lat\":51.174262,\"weight\":4},{\"id\":\"cp12\",\"lon\":71.443421,\"lat\":51.174262,\"weight\":2},{\"id\":\"cp13\",\"lon\":71.421951,\"lat\":51.178754,\"weight\":5},{\"id\":\"cp14\",\"lon\":71.429108,\"lat\":51.178754,\"weight\":3},{\"id\":\"cp15\",\"lon\":71.436265,\"lat\":51.178754,\"weight\":1},{\"id\":\"cp16\",\"lon\":71.443421,\"lat\":51.178754,\"weight\":4}],\"candidates\":[{\"id\":\"c01\",\"lon\":71.421951,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c02\",\"lon\":71.429108,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c03\",\"lon\":71.436265,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c04\",\"lon\":71.443421,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c05\",\"lon\":71.421951,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300},{\"id\":\"c06\",\"lon\":71.429108,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":200},{\"id\":\"c07\",\"lon\":71.436265,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":100},{\"id\":\"c08\",\"lon\":71.443421,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c09\",\"lon\":71.421951,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c10\",\"lon\":71.429108,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c11\",\"lon\":71.436265,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c12\",\"lon\":71.443421,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300}],\"budget\":700,\"max_selected\":3,\"coverage_radius_m\":400,\"required_ids\":[],\"excluded_ids\":[],\"selected_ids\":[\"c06\",\"c07\"]}",
+   "expected": {
+    "rejected": true,
+    "code": "bad_category"
+   },
+   "note": ""
+  },
+  {
+   "case_id": "point_out_of_bbox",
+   "raw": "{\"schema_version\":\"city-plan-v2\",\"city_id\":\"astana\",\"source_snapshot\":\"sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d\",\"category\":\"school\",\"control_points\":[{\"id\":\"cp01\",\"lon\":71.457,\"lat\":51.165279,\"weight\":4},{\"id\":\"cp02\",\"lon\":71.429108,\"lat\":51.165279,\"weight\":2},{\"id\":\"cp03\",\"lon\":71.436265,\"lat\":51.165279,\"weight\":5},{\"id\":\"cp04\",\"lon\":71.443421,\"lat\":51.165279,\"weight\":3},{\"id\":\"cp05\",\"lon\":71.421951,\"lat\":51.169771,\"weight\":1},{\"id\":\"cp06\",\"lon\":71.429108,\"lat\":51.169771,\"weight\":4},{\"id\":\"cp07\",\"lon\":71.436265,\"lat\":51.169771,\"weight\":2},{\"id\":\"cp08\",\"lon\":71.443421,\"lat\":51.169771,\"weight\":5},{\"id\":\"cp09\",\"lon\":71.421951,\"lat\":51.174262,\"weight\":3},{\"id\":\"cp10\",\"lon\":71.429108,\"lat\":51.174262,\"weight\":1},{\"id\":\"cp11\",\"lon\":71.436265,\"lat\":51.174262,\"weight\":4},{\"id\":\"cp12\",\"lon\":71.443421,\"lat\":51.174262,\"weight\":2},{\"id\":\"cp13\",\"lon\":71.421951,\"lat\":51.178754,\"weight\":5},{\"id\":\"cp14\",\"lon\":71.429108,\"lat\":51.178754,\"weight\":3},{\"id\":\"cp15\",\"lon\":71.436265,\"lat\":51.178754,\"weight\":1},{\"id\":\"cp16\",\"lon\":71.443421,\"lat\":51.178754,\"weight\":4}],\"candidates\":[{\"id\":\"c01\",\"lon\":71.421951,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c02\",\"lon\":71.429108,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c03\",\"lon\":71.436265,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c04\",\"lon\":71.443421,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c05\",\"lon\":71.421951,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300},{\"id\":\"c06\",\"lon\":71.429108,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":200},{\"id\":\"c07\",\"lon\":71.436265,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":100},{\"id\":\"c08\",\"lon\":71.443421,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c09\",\"lon\":71.421951,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c10\",\"lon\":71.429108,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c11\",\"lon\":71.436265,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c12\",\"lon\":71.443421,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300}],\"budget\":700,\"max_selected\":3,\"coverage_radius_m\":400,\"required_ids\":[],\"excluded_ids\":[],\"selected_ids\":[\"c06\",\"c07\"]}",
+   "expected": {
+    "rejected": true,
+    "code": "out_of_bbox"
+   },
+   "note": ""
+  },
+  {
+   "case_id": "candidate_out_of_bbox",
+   "raw": "{\"schema_version\":\"city-plan-v2\",\"city_id\":\"astana\",\"source_snapshot\":\"sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d\",\"category\":\"school\",\"control_points\":[{\"id\":\"cp01\",\"lon\":71.421951,\"lat\":51.165279,\"weight\":4},{\"id\":\"cp02\",\"lon\":71.429108,\"lat\":51.165279,\"weight\":2},{\"id\":\"cp03\",\"lon\":71.436265,\"lat\":51.165279,\"weight\":5},{\"id\":\"cp04\",\"lon\":71.443421,\"lat\":51.165279,\"weight\":3},{\"id\":\"cp05\",\"lon\":71.421951,\"lat\":51.169771,\"weight\":1},{\"id\":\"cp06\",\"lon\":71.429108,\"lat\":51.169771,\"weight\":4},{\"id\":\"cp07\",\"lon\":71.436265,\"lat\":51.169771,\"weight\":2},{\"id\":\"cp08\",\"lon\":71.443421,\"lat\":51.169771,\"weight\":5},{\"id\":\"cp09\",\"lon\":71.421951,\"lat\":51.174262,\"weight\":3},{\"id\":\"cp10\",\"lon\":71.429108,\"lat\":51.174262,\"weight\":1},{\"id\":\"cp11\",\"lon\":71.436265,\"lat\":51.174262,\"weight\":4},{\"id\":\"cp12\",\"lon\":71.443421,\"lat\":51.174262,\"weight\":2},{\"id\":\"cp13\",\"lon\":71.421951,\"lat\":51.178754,\"weight\":5},{\"id\":\"cp14\",\"lon\":71.429108,\"lat\":51.178754,\"weight\":3},{\"id\":\"cp15\",\"lon\":71.436265,\"lat\":51.178754,\"weight\":1},{\"id\":\"cp16\",\"lon\":71.443421,\"lat\":51.178754,\"weight\":4}],\"candidates\":[{\"id\":\"c01\",\"lon\":71.421951,\"lat\":51.153033,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c02\",\"lon\":71.429108,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c03\",\"lon\":71.436265,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c04\",\"lon\":71.443421,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c05\",\"lon\":71.421951,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300},{\"id\":\"c06\",\"lon\":71.429108,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":200},{\"id\":\"c07\",\"lon\":71.436265,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":100},{\"id\":\"c08\",\"lon\":71.443421,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c09\",\"lon\":71.421951,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c10\",\"lon\":71.429108,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c11\",\"lon\":71.436265,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c12\",\"lon\":71.443421,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300}],\"budget\":700,\"max_selected\":3,\"coverage_radius_m\":400,\"required_ids\":[],\"excluded_ids\":[],\"selected_ids\":[\"c06\",\"c07\"]}",
+   "expected": {
+    "rejected": true,
+    "code": "out_of_bbox"
+   },
+   "note": ""
+  },
+  {
+   "case_id": "lat_as_string",
+   "raw": "{\"schema_version\":\"city-plan-v2\",\"city_id\":\"astana\",\"source_snapshot\":\"sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d\",\"category\":\"school\",\"control_points\":[{\"id\":\"cp01\",\"lon\":71.421951,\"lat\":51.165279,\"weight\":4},{\"id\":\"cp02\",\"lon\":71.429108,\"lat\":\"51.165279\",\"weight\":2},{\"id\":\"cp03\",\"lon\":71.436265,\"lat\":51.165279,\"weight\":5},{\"id\":\"cp04\",\"lon\":71.443421,\"lat\":51.165279,\"weight\":3},{\"id\":\"cp05\",\"lon\":71.421951,\"lat\":51.169771,\"weight\":1},{\"id\":\"cp06\",\"lon\":71.429108,\"lat\":51.169771,\"weight\":4},{\"id\":\"cp07\",\"lon\":71.436265,\"lat\":51.169771,\"weight\":2},{\"id\":\"cp08\",\"lon\":71.443421,\"lat\":51.169771,\"weight\":5},{\"id\":\"cp09\",\"lon\":71.421951,\"lat\":51.174262,\"weight\":3},{\"id\":\"cp10\",\"lon\":71.429108,\"lat\":51.174262,\"weight\":1},{\"id\":\"cp11\",\"lon\":71.436265,\"lat\":51.174262,\"weight\":4},{\"id\":\"cp12\",\"lon\":71.443421,\"lat\":51.174262,\"weight\":2},{\"id\":\"cp13\",\"lon\":71.421951,\"lat\":51.178754,\"weight\":5},{\"id\":\"cp14\",\"lon\":71.429108,\"lat\":51.178754,\"weight\":3},{\"id\":\"cp15\",\"lon\":71.436265,\"lat\":51.178754,\"weight\":1},{\"id\":\"cp16\",\"lon\":71.443421,\"lat\":51.178754,\"weight\":4}],\"candidates\":[{\"id\":\"c01\",\"lon\":71.421951,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c02\",\"lon\":71.429108,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c03\",\"lon\":71.436265,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c04\",\"lon\":71.443421,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c05\",\"lon\":71.421951,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300},{\"id\":\"c06\",\"lon\":71.429108,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":200},{\"id\":\"c07\",\"lon\":71.436265,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":100},{\"id\":\"c08\",\"lon\":71.443421,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c09\",\"lon\":71.421951,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c10\",\"lon\":71.429108,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c11\",\"lon\":71.436265,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c12\",\"lon\":71.443421,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300}],\"budget\":700,\"max_selected\":3,\"coverage_radius_m\":400,\"required_ids\":[],\"excluded_ids\":[],\"selected_ids\":[\"c06\",\"c07\"]}",
+   "expected": {
+    "rejected": true,
+    "code": "bad_coordinate"
+   },
+   "note": ""
+  },
+  {
+   "case_id": "point_extra_field",
+   "raw": "{\"schema_version\":\"city-plan-v2\",\"city_id\":\"astana\",\"source_snapshot\":\"sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d\",\"category\":\"school\",\"control_points\":[{\"id\":\"cp01\",\"lon\":71.421951,\"lat\":51.165279,\"weight\":4,\"residents\":500},{\"id\":\"cp02\",\"lon\":71.429108,\"lat\":51.165279,\"weight\":2},{\"id\":\"cp03\",\"lon\":71.436265,\"lat\":51.165279,\"weight\":5},{\"id\":\"cp04\",\"lon\":71.443421,\"lat\":51.165279,\"weight\":3},{\"id\":\"cp05\",\"lon\":71.421951,\"lat\":51.169771,\"weight\":1},{\"id\":\"cp06\",\"lon\":71.429108,\"lat\":51.169771,\"weight\":4},{\"id\":\"cp07\",\"lon\":71.436265,\"lat\":51.169771,\"weight\":2},{\"id\":\"cp08\",\"lon\":71.443421,\"lat\":51.169771,\"weight\":5},{\"id\":\"cp09\",\"lon\":71.421951,\"lat\":51.174262,\"weight\":3},{\"id\":\"cp10\",\"lon\":71.429108,\"lat\":51.174262,\"weight\":1},{\"id\":\"cp11\",\"lon\":71.436265,\"lat\":51.174262,\"weight\":4},{\"id\":\"cp12\",\"lon\":71.443421,\"lat\":51.174262,\"weight\":2},{\"id\":\"cp13\",\"lon\":71.421951,\"lat\":51.178754,\"weight\":5},{\"id\":\"cp14\",\"lon\":71.429108,\"lat\":51.178754,\"weight\":3},{\"id\":\"cp15\",\"lon\":71.436265,\"lat\":51.178754,\"weight\":1},{\"id\":\"cp16\",\"lon\":71.443421,\"lat\":51.178754,\"weight\":4}],\"candidates\":[{\"id\":\"c01\",\"lon\":71.421951,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c02\",\"lon\":71.429108,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c03\",\"lon\":71.436265,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c04\",\"lon\":71.443421,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c05\",\"lon\":71.421951,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300},{\"id\":\"c06\",\"lon\":71.429108,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":200},{\"id\":\"c07\",\"lon\":71.436265,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":100},{\"id\":\"c08\",\"lon\":71.443421,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c09\",\"lon\":71.421951,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c10\",\"lon\":71.429108,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c11\",\"lon\":71.436265,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c12\",\"lon\":71.443421,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300}],\"budget\":700,\"max_selected\":3,\"coverage_radius_m\":400,\"required_ids\":[],\"excluded_ids\":[],\"selected_ids\":[\"c06\",\"c07\"]}",
+   "expected": {
+    "rejected": true,
+    "code": "bad_shape"
+   },
+   "note": ""
+  },
+  {
+   "case_id": "zero_points",
+   "raw": "{\"schema_version\":\"city-plan-v2\",\"city_id\":\"astana\",\"source_snapshot\":\"sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d\",\"category\":\"school\",\"control_points\":[],\"candidates\":[{\"id\":\"c01\",\"lon\":71.421951,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c02\",\"lon\":71.429108,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c03\",\"lon\":71.436265,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c04\",\"lon\":71.443421,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c05\",\"lon\":71.421951,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300},{\"id\":\"c06\",\"lon\":71.429108,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":200},{\"id\":\"c07\",\"lon\":71.436265,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":100},{\"id\":\"c08\",\"lon\":71.443421,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c09\",\"lon\":71.421951,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c10\",\"lon\":71.429108,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c11\",\"lon\":71.436265,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c12\",\"lon\":71.443421,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300}],\"budget\":700,\"max_selected\":3,\"coverage_radius_m\":400,\"required_ids\":[],\"excluded_ids\":[],\"selected_ids\":[\"c06\",\"c07\"]}",
+   "expected": {
+    "rejected": true,
+    "code": "bad_point_count"
+   },
+   "note": ""
+  },
+  {
+   "case_id": "26_points",
+   "raw": "{\"schema_version\":\"city-plan-v2\",\"city_id\":\"astana\",\"source_snapshot\":\"sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d\",\"category\":\"school\",\"control_points\":[{\"id\":\"cp01\",\"lon\":71.421951,\"lat\":51.165279,\"weight\":4},{\"id\":\"cp02\",\"lon\":71.429108,\"lat\":51.165279,\"weight\":2},{\"id\":\"cp03\",\"lon\":71.436265,\"lat\":51.165279,\"weight\":5},{\"id\":\"cp04\",\"lon\":71.443421,\"lat\":51.165279,\"weight\":3},{\"id\":\"cp05\",\"lon\":71.421951,\"lat\":51.169771,\"weight\":1},{\"id\":\"cp06\",\"lon\":71.429108,\"lat\":51.169771,\"weight\":4},{\"id\":\"cp07\",\"lon\":71.436265,\"lat\":51.169771,\"weight\":2},{\"id\":\"cp08\",\"lon\":71.443421,\"lat\":51.169771,\"weight\":5},{\"id\":\"cp09\",\"lon\":71.421951,\"lat\":51.174262,\"weight\":3},{\"id\":\"cp10\",\"lon\":71.429108,\"lat\":51.174262,\"weight\":1},{\"id\":\"cp11\",\"lon\":71.436265,\"lat\":51.174262,\"weight\":4},{\"id\":\"cp12\",\"lon\":71.443421,\"lat\":51.174262,\"weight\":2},{\"id\":\"cp13\",\"lon\":71.421951,\"lat\":51.178754,\"weight\":5},{\"id\":\"cp14\",\"lon\":71.429108,\"lat\":51.178754,\"weight\":3},{\"id\":\"cp15\",\"lon\":71.436265,\"lat\":51.178754,\"weight\":1},{\"id\":\"cp16\",\"lon\":71.443421,\"lat\":51.178754,\"weight\":4},{\"id\":\"xcp01\",\"lon\":71.421951,\"lat\":51.165279,\"weight\":4},{\"id\":\"xcp02\",\"lon\":71.429108,\"lat\":51.165279,\"weight\":2},{\"id\":\"xcp03\",\"lon\":71.436265,\"lat\":51.165279,\"weight\":5},{\"id\":\"xcp04\",\"lon\":71.443421,\"lat\":51.165279,\"weight\":3},{\"id\":\"xcp05\",\"lon\":71.421951,\"lat\":51.169771,\"weight\":1},{\"id\":\"xcp06\",\"lon\":71.429108,\"lat\":51.169771,\"weight\":4},{\"id\":\"xcp07\",\"lon\":71.436265,\"lat\":51.169771,\"weight\":2},{\"id\":\"xcp08\",\"lon\":71.443421,\"lat\":51.169771,\"weight\":5},{\"id\":\"xcp09\",\"lon\":71.421951,\"lat\":51.174262,\"weight\":3},{\"id\":\"xcp10\",\"lon\":71.429108,\"lat\":51.174262,\"weight\":1}],\"candidates\":[{\"id\":\"c01\",\"lon\":71.421951,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c02\",\"lon\":71.429108,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c03\",\"lon\":71.436265,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c04\",\"lon\":71.443421,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c05\",\"lon\":71.421951,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300},{\"id\":\"c06\",\"lon\":71.429108,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":200},{\"id\":\"c07\",\"lon\":71.436265,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":100},{\"id\":\"c08\",\"lon\":71.443421,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c09\",\"lon\":71.421951,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c10\",\"lon\":71.429108,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c11\",\"lon\":71.436265,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c12\",\"lon\":71.443421,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300}],\"budget\":700,\"max_selected\":3,\"coverage_radius_m\":400,\"required_ids\":[],\"excluded_ids\":[],\"selected_ids\":[\"c06\",\"c07\"]}",
+   "expected": {
+    "rejected": true,
+    "code": "bad_point_count"
+   },
+   "note": ""
+  },
+  {
+   "case_id": "17_candidates",
+   "raw": "{\"schema_version\":\"city-plan-v2\",\"city_id\":\"astana\",\"source_snapshot\":\"sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d\",\"category\":\"school\",\"control_points\":[{\"id\":\"cp01\",\"lon\":71.421951,\"lat\":51.165279,\"weight\":4},{\"id\":\"cp02\",\"lon\":71.429108,\"lat\":51.165279,\"weight\":2},{\"id\":\"cp03\",\"lon\":71.436265,\"lat\":51.165279,\"weight\":5},{\"id\":\"cp04\",\"lon\":71.443421,\"lat\":51.165279,\"weight\":3},{\"id\":\"cp05\",\"lon\":71.421951,\"lat\":51.169771,\"weight\":1},{\"id\":\"cp06\",\"lon\":71.429108,\"lat\":51.169771,\"weight\":4},{\"id\":\"cp07\",\"lon\":71.436265,\"lat\":51.169771,\"weight\":2},{\"id\":\"cp08\",\"lon\":71.443421,\"lat\":51.169771,\"weight\":5},{\"id\":\"cp09\",\"lon\":71.421951,\"lat\":51.174262,\"weight\":3},{\"id\":\"cp10\",\"lon\":71.429108,\"lat\":51.174262,\"weight\":1},{\"id\":\"cp11\",\"lon\":71.436265,\"lat\":51.174262,\"weight\":4},{\"id\":\"cp12\",\"lon\":71.443421,\"lat\":51.174262,\"weight\":2},{\"id\":\"cp13\",\"lon\":71.421951,\"lat\":51.178754,\"weight\":5},{\"id\":\"cp14\",\"lon\":71.429108,\"lat\":51.178754,\"weight\":3},{\"id\":\"cp15\",\"lon\":71.436265,\"lat\":51.178754,\"weight\":1},{\"id\":\"cp16\",\"lon\":71.443421,\"lat\":51.178754,\"weight\":4}],\"candidates\":[{\"id\":\"c01\",\"lon\":71.421951,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c02\",\"lon\":71.429108,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c03\",\"lon\":71.436265,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c04\",\"lon\":71.443421,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c05\",\"lon\":71.421951,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300},{\"id\":\"c06\",\"lon\":71.429108,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":200},{\"id\":\"c07\",\"lon\":71.436265,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":100},{\"id\":\"c08\",\"lon\":71.443421,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c09\",\"lon\":71.421951,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c10\",\"lon\":71.429108,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c11\",\"lon\":71.436265,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c12\",\"lon\":71.443421,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300},{\"id\":\"xc01\",\"lon\":71.421951,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"xc02\",\"lon\":71.429108,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"xc03\",\"lon\":71.436265,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"xc04\",\"lon\":71.443421,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"xc05\",\"lon\":71.421951,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300}],\"budget\":700,\"max_selected\":3,\"coverage_radius_m\":400,\"required_ids\":[],\"excluded_ids\":[],\"selected_ids\":[\"c06\",\"c07\"]}",
+   "expected": {
+    "rejected": true,
+    "code": "bad_candidate_count"
+   },
+   "note": ""
+  },
+  {
+   "case_id": "duplicate_point_id",
+   "raw": "{\"schema_version\":\"city-plan-v2\",\"city_id\":\"astana\",\"source_snapshot\":\"sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d\",\"category\":\"school\",\"control_points\":[{\"id\":\"cp01\",\"lon\":71.421951,\"lat\":51.165279,\"weight\":4},{\"id\":\"cp01\",\"lon\":71.429108,\"lat\":51.165279,\"weight\":2},{\"id\":\"cp03\",\"lon\":71.436265,\"lat\":51.165279,\"weight\":5},{\"id\":\"cp04\",\"lon\":71.443421,\"lat\":51.165279,\"weight\":3},{\"id\":\"cp05\",\"lon\":71.421951,\"lat\":51.169771,\"weight\":1},{\"id\":\"cp06\",\"lon\":71.429108,\"lat\":51.169771,\"weight\":4},{\"id\":\"cp07\",\"lon\":71.436265,\"lat\":51.169771,\"weight\":2},{\"id\":\"cp08\",\"lon\":71.443421,\"lat\":51.169771,\"weight\":5},{\"id\":\"cp09\",\"lon\":71.421951,\"lat\":51.174262,\"weight\":3},{\"id\":\"cp10\",\"lon\":71.429108,\"lat\":51.174262,\"weight\":1},{\"id\":\"cp11\",\"lon\":71.436265,\"lat\":51.174262,\"weight\":4},{\"id\":\"cp12\",\"lon\":71.443421,\"lat\":51.174262,\"weight\":2},{\"id\":\"cp13\",\"lon\":71.421951,\"lat\":51.178754,\"weight\":5},{\"id\":\"cp14\",\"lon\":71.429108,\"lat\":51.178754,\"weight\":3},{\"id\":\"cp15\",\"lon\":71.436265,\"lat\":51.178754,\"weight\":1},{\"id\":\"cp16\",\"lon\":71.443421,\"lat\":51.178754,\"weight\":4}],\"candidates\":[{\"id\":\"c01\",\"lon\":71.421951,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c02\",\"lon\":71.429108,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c03\",\"lon\":71.436265,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c04\",\"lon\":71.443421,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c05\",\"lon\":71.421951,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300},{\"id\":\"c06\",\"lon\":71.429108,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":200},{\"id\":\"c07\",\"lon\":71.436265,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":100},{\"id\":\"c08\",\"lon\":71.443421,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c09\",\"lon\":71.421951,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c10\",\"lon\":71.429108,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c11\",\"lon\":71.436265,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c12\",\"lon\":71.443421,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300}],\"budget\":700,\"max_selected\":3,\"coverage_radius_m\":400,\"required_ids\":[],\"excluded_ids\":[],\"selected_ids\":[\"c06\",\"c07\"]}",
+   "expected": {
+    "rejected": true,
+    "code": "duplicate_id"
+   },
+   "note": ""
+  },
+  {
+   "case_id": "duplicate_candidate_id",
+   "raw": "{\"schema_version\":\"city-plan-v2\",\"city_id\":\"astana\",\"source_snapshot\":\"sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d\",\"category\":\"school\",\"control_points\":[{\"id\":\"cp01\",\"lon\":71.421951,\"lat\":51.165279,\"weight\":4},{\"id\":\"cp02\",\"lon\":71.429108,\"lat\":51.165279,\"weight\":2},{\"id\":\"cp03\",\"lon\":71.436265,\"lat\":51.165279,\"weight\":5},{\"id\":\"cp04\",\"lon\":71.443421,\"lat\":51.165279,\"weight\":3},{\"id\":\"cp05\",\"lon\":71.421951,\"lat\":51.169771,\"weight\":1},{\"id\":\"cp06\",\"lon\":71.429108,\"lat\":51.169771,\"weight\":4},{\"id\":\"cp07\",\"lon\":71.436265,\"lat\":51.169771,\"weight\":2},{\"id\":\"cp08\",\"lon\":71.443421,\"lat\":51.169771,\"weight\":5},{\"id\":\"cp09\",\"lon\":71.421951,\"lat\":51.174262,\"weight\":3},{\"id\":\"cp10\",\"lon\":71.429108,\"lat\":51.174262,\"weight\":1},{\"id\":\"cp11\",\"lon\":71.436265,\"lat\":51.174262,\"weight\":4},{\"id\":\"cp12\",\"lon\":71.443421,\"lat\":51.174262,\"weight\":2},{\"id\":\"cp13\",\"lon\":71.421951,\"lat\":51.178754,\"weight\":5},{\"id\":\"cp14\",\"lon\":71.429108,\"lat\":51.178754,\"weight\":3},{\"id\":\"cp15\",\"lon\":71.436265,\"lat\":51.178754,\"weight\":1},{\"id\":\"cp16\",\"lon\":71.443421,\"lat\":51.178754,\"weight\":4}],\"candidates\":[{\"id\":\"c01\",\"lon\":71.421951,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c01\",\"lon\":71.429108,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c03\",\"lon\":71.436265,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c04\",\"lon\":71.443421,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c05\",\"lon\":71.421951,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300},{\"id\":\"c06\",\"lon\":71.429108,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":200},{\"id\":\"c07\",\"lon\":71.436265,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":100},{\"id\":\"c08\",\"lon\":71.443421,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c09\",\"lon\":71.421951,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c10\",\"lon\":71.429108,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c11\",\"lon\":71.436265,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c12\",\"lon\":71.443421,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300}],\"budget\":700,\"max_selected\":3,\"coverage_radius_m\":400,\"required_ids\":[],\"excluded_ids\":[],\"selected_ids\":[\"c06\",\"c07\"]}",
+   "expected": {
+    "rejected": true,
+    "code": "duplicate_id"
+   },
+   "note": ""
+  },
+  {
+   "case_id": "id_65_chars",
+   "raw": "{\"schema_version\":\"city-plan-v2\",\"city_id\":\"astana\",\"source_snapshot\":\"sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d\",\"category\":\"school\",\"control_points\":[{\"id\":\"ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp\",\"lon\":71.421951,\"lat\":51.165279,\"weight\":4},{\"id\":\"cp02\",\"lon\":71.429108,\"lat\":51.165279,\"weight\":2},{\"id\":\"cp03\",\"lon\":71.436265,\"lat\":51.165279,\"weight\":5},{\"id\":\"cp04\",\"lon\":71.443421,\"lat\":51.165279,\"weight\":3},{\"id\":\"cp05\",\"lon\":71.421951,\"lat\":51.169771,\"weight\":1},{\"id\":\"cp06\",\"lon\":71.429108,\"lat\":51.169771,\"weight\":4},{\"id\":\"cp07\",\"lon\":71.436265,\"lat\":51.169771,\"weight\":2},{\"id\":\"cp08\",\"lon\":71.443421,\"lat\":51.169771,\"weight\":5},{\"id\":\"cp09\",\"lon\":71.421951,\"lat\":51.174262,\"weight\":3},{\"id\":\"cp10\",\"lon\":71.429108,\"lat\":51.174262,\"weight\":1},{\"id\":\"cp11\",\"lon\":71.436265,\"lat\":51.174262,\"weight\":4},{\"id\":\"cp12\",\"lon\":71.443421,\"lat\":51.174262,\"weight\":2},{\"id\":\"cp13\",\"lon\":71.421951,\"lat\":51.178754,\"weight\":5},{\"id\":\"cp14\",\"lon\":71.429108,\"lat\":51.178754,\"weight\":3},{\"id\":\"cp15\",\"lon\":71.436265,\"lat\":51.178754,\"weight\":1},{\"id\":\"cp16\",\"lon\":71.443421,\"lat\":51.178754,\"weight\":4}],\"candidates\":[{\"id\":\"c01\",\"lon\":71.421951,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c02\",\"lon\":71.429108,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c03\",\"lon\":71.436265,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c04\",\"lon\":71.443421,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c05\",\"lon\":71.421951,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300},{\"id\":\"c06\",\"lon\":71.429108,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":200},{\"id\":\"c07\",\"lon\":71.436265,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":100},{\"id\":\"c08\",\"lon\":71.443421,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c09\",\"lon\":71.421951,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c10\",\"lon\":71.429108,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c11\",\"lon\":71.436265,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c12\",\"lon\":71.443421,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300}],\"budget\":700,\"max_selected\":3,\"coverage_radius_m\":400,\"required_ids\":[],\"excluded_ids\":[],\"selected_ids\":[\"c06\",\"c07\"]}",
+   "expected": {
+    "rejected": true,
+    "code": "bad_id"
+   },
+   "note": ""
+  },
+  {
+   "case_id": "id_empty",
+   "raw": "{\"schema_version\":\"city-plan-v2\",\"city_id\":\"astana\",\"source_snapshot\":\"sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d\",\"category\":\"school\",\"control_points\":[{\"id\":\"cp01\",\"lon\":71.421951,\"lat\":51.165279,\"weight\":4},{\"id\":\"cp02\",\"lon\":71.429108,\"lat\":51.165279,\"weight\":2},{\"id\":\"cp03\",\"lon\":71.436265,\"lat\":51.165279,\"weight\":5},{\"id\":\"cp04\",\"lon\":71.443421,\"lat\":51.165279,\"weight\":3},{\"id\":\"cp05\",\"lon\":71.421951,\"lat\":51.169771,\"weight\":1},{\"id\":\"cp06\",\"lon\":71.429108,\"lat\":51.169771,\"weight\":4},{\"id\":\"cp07\",\"lon\":71.436265,\"lat\":51.169771,\"weight\":2},{\"id\":\"cp08\",\"lon\":71.443421,\"lat\":51.169771,\"weight\":5},{\"id\":\"cp09\",\"lon\":71.421951,\"lat\":51.174262,\"weight\":3},{\"id\":\"cp10\",\"lon\":71.429108,\"lat\":51.174262,\"weight\":1},{\"id\":\"cp11\",\"lon\":71.436265,\"lat\":51.174262,\"weight\":4},{\"id\":\"cp12\",\"lon\":71.443421,\"lat\":51.174262,\"weight\":2},{\"id\":\"cp13\",\"lon\":71.421951,\"lat\":51.178754,\"weight\":5},{\"id\":\"cp14\",\"lon\":71.429108,\"lat\":51.178754,\"weight\":3},{\"id\":\"cp15\",\"lon\":71.436265,\"lat\":51.178754,\"weight\":1},{\"id\":\"cp16\",\"lon\":71.443421,\"lat\":51.178754,\"weight\":4}],\"candidates\":[{\"id\":\"\",\"lon\":71.421951,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c02\",\"lon\":71.429108,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c03\",\"lon\":71.436265,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c04\",\"lon\":71.443421,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c05\",\"lon\":71.421951,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300},{\"id\":\"c06\",\"lon\":71.429108,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":200},{\"id\":\"c07\",\"lon\":71.436265,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":100},{\"id\":\"c08\",\"lon\":71.443421,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c09\",\"lon\":71.421951,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c10\",\"lon\":71.429108,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c11\",\"lon\":71.436265,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c12\",\"lon\":71.443421,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300}],\"budget\":700,\"max_selected\":3,\"coverage_radius_m\":400,\"required_ids\":[],\"excluded_ids\":[],\"selected_ids\":[\"c06\",\"c07\"]}",
+   "expected": {
+    "rejected": true,
+    "code": "bad_id"
+   },
+   "note": ""
+  },
+  {
+   "case_id": "id_number",
+   "raw": "{\"schema_version\":\"city-plan-v2\",\"city_id\":\"astana\",\"source_snapshot\":\"sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d\",\"category\":\"school\",\"control_points\":[{\"id\":7,\"lon\":71.421951,\"lat\":51.165279,\"weight\":4},{\"id\":\"cp02\",\"lon\":71.429108,\"lat\":51.165279,\"weight\":2},{\"id\":\"cp03\",\"lon\":71.436265,\"lat\":51.165279,\"weight\":5},{\"id\":\"cp04\",\"lon\":71.443421,\"lat\":51.165279,\"weight\":3},{\"id\":\"cp05\",\"lon\":71.421951,\"lat\":51.169771,\"weight\":1},{\"id\":\"cp06\",\"lon\":71.429108,\"lat\":51.169771,\"weight\":4},{\"id\":\"cp07\",\"lon\":71.436265,\"lat\":51.169771,\"weight\":2},{\"id\":\"cp08\",\"lon\":71.443421,\"lat\":51.169771,\"weight\":5},{\"id\":\"cp09\",\"lon\":71.421951,\"lat\":51.174262,\"weight\":3},{\"id\":\"cp10\",\"lon\":71.429108,\"lat\":51.174262,\"weight\":1},{\"id\":\"cp11\",\"lon\":71.436265,\"lat\":51.174262,\"weight\":4},{\"id\":\"cp12\",\"lon\":71.443421,\"lat\":51.174262,\"weight\":2},{\"id\":\"cp13\",\"lon\":71.421951,\"lat\":51.178754,\"weight\":5},{\"id\":\"cp14\",\"lon\":71.429108,\"lat\":51.178754,\"weight\":3},{\"id\":\"cp15\",\"lon\":71.436265,\"lat\":51.178754,\"weight\":1},{\"id\":\"cp16\",\"lon\":71.443421,\"lat\":51.178754,\"weight\":4}],\"candidates\":[{\"id\":\"c01\",\"lon\":71.421951,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c02\",\"lon\":71.429108,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c03\",\"lon\":71.436265,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c04\",\"lon\":71.443421,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c05\",\"lon\":71.421951,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300},{\"id\":\"c06\",\"lon\":71.429108,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":200},{\"id\":\"c07\",\"lon\":71.436265,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":100},{\"id\":\"c08\",\"lon\":71.443421,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c09\",\"lon\":71.421951,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c10\",\"lon\":71.429108,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c11\",\"lon\":71.436265,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c12\",\"lon\":71.443421,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300}],\"budget\":700,\"max_selected\":3,\"coverage_radius_m\":400,\"required_ids\":[],\"excluded_ids\":[],\"selected_ids\":[\"c06\",\"c07\"]}",
+   "expected": {
+    "rejected": true,
+    "code": "bad_id"
+   },
+   "note": ""
+  },
+  {
+   "case_id": "weight_0",
+   "raw": "{\"schema_version\":\"city-plan-v2\",\"city_id\":\"astana\",\"source_snapshot\":\"sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d\",\"category\":\"school\",\"control_points\":[{\"id\":\"cp01\",\"lon\":71.421951,\"lat\":51.165279,\"weight\":0},{\"id\":\"cp02\",\"lon\":71.429108,\"lat\":51.165279,\"weight\":2},{\"id\":\"cp03\",\"lon\":71.436265,\"lat\":51.165279,\"weight\":5},{\"id\":\"cp04\",\"lon\":71.443421,\"lat\":51.165279,\"weight\":3},{\"id\":\"cp05\",\"lon\":71.421951,\"lat\":51.169771,\"weight\":1},{\"id\":\"cp06\",\"lon\":71.429108,\"lat\":51.169771,\"weight\":4},{\"id\":\"cp07\",\"lon\":71.436265,\"lat\":51.169771,\"weight\":2},{\"id\":\"cp08\",\"lon\":71.443421,\"lat\":51.169771,\"weight\":5},{\"id\":\"cp09\",\"lon\":71.421951,\"lat\":51.174262,\"weight\":3},{\"id\":\"cp10\",\"lon\":71.429108,\"lat\":51.174262,\"weight\":1},{\"id\":\"cp11\",\"lon\":71.436265,\"lat\":51.174262,\"weight\":4},{\"id\":\"cp12\",\"lon\":71.443421,\"lat\":51.174262,\"weight\":2},{\"id\":\"cp13\",\"lon\":71.421951,\"lat\":51.178754,\"weight\":5},{\"id\":\"cp14\",\"lon\":71.429108,\"lat\":51.178754,\"weight\":3},{\"id\":\"cp15\",\"lon\":71.436265,\"lat\":51.178754,\"weight\":1},{\"id\":\"cp16\",\"lon\":71.443421,\"lat\":51.178754,\"weight\":4}],\"candidates\":[{\"id\":\"c01\",\"lon\":71.421951,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c02\",\"lon\":71.429108,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c03\",\"lon\":71.436265,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c04\",\"lon\":71.443421,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c05\",\"lon\":71.421951,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300},{\"id\":\"c06\",\"lon\":71.429108,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":200},{\"id\":\"c07\",\"lon\":71.436265,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":100},{\"id\":\"c08\",\"lon\":71.443421,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c09\",\"lon\":71.421951,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c10\",\"lon\":71.429108,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c11\",\"lon\":71.436265,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c12\",\"lon\":71.443421,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300}],\"budget\":700,\"max_selected\":3,\"coverage_radius_m\":400,\"required_ids\":[],\"excluded_ids\":[],\"selected_ids\":[\"c06\",\"c07\"]}",
+   "expected": {
+    "rejected": true,
+    "code": "bad_value"
+   },
+   "note": ""
+  },
+  {
+   "case_id": "weight_101",
+   "raw": "{\"schema_version\":\"city-plan-v2\",\"city_id\":\"astana\",\"source_snapshot\":\"sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d\",\"category\":\"school\",\"control_points\":[{\"id\":\"cp01\",\"lon\":71.421951,\"lat\":51.165279,\"weight\":101},{\"id\":\"cp02\",\"lon\":71.429108,\"lat\":51.165279,\"weight\":2},{\"id\":\"cp03\",\"lon\":71.436265,\"lat\":51.165279,\"weight\":5},{\"id\":\"cp04\",\"lon\":71.443421,\"lat\":51.165279,\"weight\":3},{\"id\":\"cp05\",\"lon\":71.421951,\"lat\":51.169771,\"weight\":1},{\"id\":\"cp06\",\"lon\":71.429108,\"lat\":51.169771,\"weight\":4},{\"id\":\"cp07\",\"lon\":71.436265,\"lat\":51.169771,\"weight\":2},{\"id\":\"cp08\",\"lon\":71.443421,\"lat\":51.169771,\"weight\":5},{\"id\":\"cp09\",\"lon\":71.421951,\"lat\":51.174262,\"weight\":3},{\"id\":\"cp10\",\"lon\":71.429108,\"lat\":51.174262,\"weight\":1},{\"id\":\"cp11\",\"lon\":71.436265,\"lat\":51.174262,\"weight\":4},{\"id\":\"cp12\",\"lon\":71.443421,\"lat\":51.174262,\"weight\":2},{\"id\":\"cp13\",\"lon\":71.421951,\"lat\":51.178754,\"weight\":5},{\"id\":\"cp14\",\"lon\":71.429108,\"lat\":51.178754,\"weight\":3},{\"id\":\"cp15\",\"lon\":71.436265,\"lat\":51.178754,\"weight\":1},{\"id\":\"cp16\",\"lon\":71.443421,\"lat\":51.178754,\"weight\":4}],\"candidates\":[{\"id\":\"c01\",\"lon\":71.421951,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c02\",\"lon\":71.429108,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c03\",\"lon\":71.436265,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c04\",\"lon\":71.443421,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c05\",\"lon\":71.421951,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300},{\"id\":\"c06\",\"lon\":71.429108,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":200},{\"id\":\"c07\",\"lon\":71.436265,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":100},{\"id\":\"c08\",\"lon\":71.443421,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c09\",\"lon\":71.421951,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c10\",\"lon\":71.429108,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c11\",\"lon\":71.436265,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c12\",\"lon\":71.443421,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300}],\"budget\":700,\"max_selected\":3,\"coverage_radius_m\":400,\"required_ids\":[],\"excluded_ids\":[],\"selected_ids\":[\"c06\",\"c07\"]}",
+   "expected": {
+    "rejected": true,
+    "code": "bad_value"
+   },
+   "note": ""
+  },
+  {
+   "case_id": "weight_fraction",
+   "raw": "{\"schema_version\":\"city-plan-v2\",\"city_id\":\"astana\",\"source_snapshot\":\"sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d\",\"category\":\"school\",\"control_points\":[{\"id\":\"cp01\",\"lon\":71.421951,\"lat\":51.165279,\"weight\":2.5},{\"id\":\"cp02\",\"lon\":71.429108,\"lat\":51.165279,\"weight\":2},{\"id\":\"cp03\",\"lon\":71.436265,\"lat\":51.165279,\"weight\":5},{\"id\":\"cp04\",\"lon\":71.443421,\"lat\":51.165279,\"weight\":3},{\"id\":\"cp05\",\"lon\":71.421951,\"lat\":51.169771,\"weight\":1},{\"id\":\"cp06\",\"lon\":71.429108,\"lat\":51.169771,\"weight\":4},{\"id\":\"cp07\",\"lon\":71.436265,\"lat\":51.169771,\"weight\":2},{\"id\":\"cp08\",\"lon\":71.443421,\"lat\":51.169771,\"weight\":5},{\"id\":\"cp09\",\"lon\":71.421951,\"lat\":51.174262,\"weight\":3},{\"id\":\"cp10\",\"lon\":71.429108,\"lat\":51.174262,\"weight\":1},{\"id\":\"cp11\",\"lon\":71.436265,\"lat\":51.174262,\"weight\":4},{\"id\":\"cp12\",\"lon\":71.443421,\"lat\":51.174262,\"weight\":2},{\"id\":\"cp13\",\"lon\":71.421951,\"lat\":51.178754,\"weight\":5},{\"id\":\"cp14\",\"lon\":71.429108,\"lat\":51.178754,\"weight\":3},{\"id\":\"cp15\",\"lon\":71.436265,\"lat\":51.178754,\"weight\":1},{\"id\":\"cp16\",\"lon\":71.443421,\"lat\":51.178754,\"weight\":4}],\"candidates\":[{\"id\":\"c01\",\"lon\":71.421951,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c02\",\"lon\":71.429108,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c03\",\"lon\":71.436265,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c04\",\"lon\":71.443421,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c05\",\"lon\":71.421951,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300},{\"id\":\"c06\",\"lon\":71.429108,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":200},{\"id\":\"c07\",\"lon\":71.436265,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":100},{\"id\":\"c08\",\"lon\":71.443421,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c09\",\"lon\":71.421951,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c10\",\"lon\":71.429108,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c11\",\"lon\":71.436265,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c12\",\"lon\":71.443421,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300}],\"budget\":700,\"max_selected\":3,\"coverage_radius_m\":400,\"required_ids\":[],\"excluded_ids\":[],\"selected_ids\":[\"c06\",\"c07\"]}",
+   "expected": {
+    "rejected": true,
+    "code": "bad_value"
+   },
+   "note": ""
+  },
+  {
+   "case_id": "weight_bool",
+   "raw": "{\"schema_version\":\"city-plan-v2\",\"city_id\":\"astana\",\"source_snapshot\":\"sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d\",\"category\":\"school\",\"control_points\":[{\"id\":\"cp01\",\"lon\":71.421951,\"lat\":51.165279,\"weight\":true},{\"id\":\"cp02\",\"lon\":71.429108,\"lat\":51.165279,\"weight\":2},{\"id\":\"cp03\",\"lon\":71.436265,\"lat\":51.165279,\"weight\":5},{\"id\":\"cp04\",\"lon\":71.443421,\"lat\":51.165279,\"weight\":3},{\"id\":\"cp05\",\"lon\":71.421951,\"lat\":51.169771,\"weight\":1},{\"id\":\"cp06\",\"lon\":71.429108,\"lat\":51.169771,\"weight\":4},{\"id\":\"cp07\",\"lon\":71.436265,\"lat\":51.169771,\"weight\":2},{\"id\":\"cp08\",\"lon\":71.443421,\"lat\":51.169771,\"weight\":5},{\"id\":\"cp09\",\"lon\":71.421951,\"lat\":51.174262,\"weight\":3},{\"id\":\"cp10\",\"lon\":71.429108,\"lat\":51.174262,\"weight\":1},{\"id\":\"cp11\",\"lon\":71.436265,\"lat\":51.174262,\"weight\":4},{\"id\":\"cp12\",\"lon\":71.443421,\"lat\":51.174262,\"weight\":2},{\"id\":\"cp13\",\"lon\":71.421951,\"lat\":51.178754,\"weight\":5},{\"id\":\"cp14\",\"lon\":71.429108,\"lat\":51.178754,\"weight\":3},{\"id\":\"cp15\",\"lon\":71.436265,\"lat\":51.178754,\"weight\":1},{\"id\":\"cp16\",\"lon\":71.443421,\"lat\":51.178754,\"weight\":4}],\"candidates\":[{\"id\":\"c01\",\"lon\":71.421951,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c02\",\"lon\":71.429108,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c03\",\"lon\":71.436265,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c04\",\"lon\":71.443421,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c05\",\"lon\":71.421951,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300},{\"id\":\"c06\",\"lon\":71.429108,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":200},{\"id\":\"c07\",\"lon\":71.436265,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":100},{\"id\":\"c08\",\"lon\":71.443421,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c09\",\"lon\":71.421951,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c10\",\"lon\":71.429108,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c11\",\"lon\":71.436265,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c12\",\"lon\":71.443421,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300}],\"budget\":700,\"max_selected\":3,\"coverage_radius_m\":400,\"required_ids\":[],\"excluded_ids\":[],\"selected_ids\":[\"c06\",\"c07\"]}",
+   "expected": {
+    "rejected": true,
+    "code": "bad_value"
+   },
+   "note": ""
+  },
+  {
+   "case_id": "cost_0",
+   "raw": "{\"schema_version\":\"city-plan-v2\",\"city_id\":\"astana\",\"source_snapshot\":\"sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d\",\"category\":\"school\",\"control_points\":[{\"id\":\"cp01\",\"lon\":71.421951,\"lat\":51.165279,\"weight\":4},{\"id\":\"cp02\",\"lon\":71.429108,\"lat\":51.165279,\"weight\":2},{\"id\":\"cp03\",\"lon\":71.436265,\"lat\":51.165279,\"weight\":5},{\"id\":\"cp04\",\"lon\":71.443421,\"lat\":51.165279,\"weight\":3},{\"id\":\"cp05\",\"lon\":71.421951,\"lat\":51.169771,\"weight\":1},{\"id\":\"cp06\",\"lon\":71.429108,\"lat\":51.169771,\"weight\":4},{\"id\":\"cp07\",\"lon\":71.436265,\"lat\":51.169771,\"weight\":2},{\"id\":\"cp08\",\"lon\":71.443421,\"lat\":51.169771,\"weight\":5},{\"id\":\"cp09\",\"lon\":71.421951,\"lat\":51.174262,\"weight\":3},{\"id\":\"cp10\",\"lon\":71.429108,\"lat\":51.174262,\"weight\":1},{\"id\":\"cp11\",\"lon\":71.436265,\"lat\":51.174262,\"weight\":4},{\"id\":\"cp12\",\"lon\":71.443421,\"lat\":51.174262,\"weight\":2},{\"id\":\"cp13\",\"lon\":71.421951,\"lat\":51.178754,\"weight\":5},{\"id\":\"cp14\",\"lon\":71.429108,\"lat\":51.178754,\"weight\":3},{\"id\":\"cp15\",\"lon\":71.436265,\"lat\":51.178754,\"weight\":1},{\"id\":\"cp16\",\"lon\":71.443421,\"lat\":51.178754,\"weight\":4}],\"candidates\":[{\"id\":\"c01\",\"lon\":71.421951,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":0},{\"id\":\"c02\",\"lon\":71.429108,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c03\",\"lon\":71.436265,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c04\",\"lon\":71.443421,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c05\",\"lon\":71.421951,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300},{\"id\":\"c06\",\"lon\":71.429108,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":200},{\"id\":\"c07\",\"lon\":71.436265,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":100},{\"id\":\"c08\",\"lon\":71.443421,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c09\",\"lon\":71.421951,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c10\",\"lon\":71.429108,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c11\",\"lon\":71.436265,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c12\",\"lon\":71.443421,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300}],\"budget\":700,\"max_selected\":3,\"coverage_radius_m\":400,\"required_ids\":[],\"excluded_ids\":[],\"selected_ids\":[\"c06\",\"c07\"]}",
+   "expected": {
+    "rejected": true,
+    "code": "bad_value"
+   },
+   "note": ""
+  },
+  {
+   "case_id": "cost_over_max",
+   "raw": "{\"schema_version\":\"city-plan-v2\",\"city_id\":\"astana\",\"source_snapshot\":\"sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d\",\"category\":\"school\",\"control_points\":[{\"id\":\"cp01\",\"lon\":71.421951,\"lat\":51.165279,\"weight\":4},{\"id\":\"cp02\",\"lon\":71.429108,\"lat\":51.165279,\"weight\":2},{\"id\":\"cp03\",\"lon\":71.436265,\"lat\":51.165279,\"weight\":5},{\"id\":\"cp04\",\"lon\":71.443421,\"lat\":51.165279,\"weight\":3},{\"id\":\"cp05\",\"lon\":71.421951,\"lat\":51.169771,\"weight\":1},{\"id\":\"cp06\",\"lon\":71.429108,\"lat\":51.169771,\"weight\":4},{\"id\":\"cp07\",\"lon\":71.436265,\"lat\":51.169771,\"weight\":2},{\"id\":\"cp08\",\"lon\":71.443421,\"lat\":51.169771,\"weight\":5},{\"id\":\"cp09\",\"lon\":71.421951,\"lat\":51.174262,\"weight\":3},{\"id\":\"cp10\",\"lon\":71.429108,\"lat\":51.174262,\"weight\":1},{\"id\":\"cp11\",\"lon\":71.436265,\"lat\":51.174262,\"weight\":4},{\"id\":\"cp12\",\"lon\":71.443421,\"lat\":51.174262,\"weight\":2},{\"id\":\"cp13\",\"lon\":71.421951,\"lat\":51.178754,\"weight\":5},{\"id\":\"cp14\",\"lon\":71.429108,\"lat\":51.178754,\"weight\":3},{\"id\":\"cp15\",\"lon\":71.436265,\"lat\":51.178754,\"weight\":1},{\"id\":\"cp16\",\"lon\":71.443421,\"lat\":51.178754,\"weight\":4}],\"candidates\":[{\"id\":\"c01\",\"lon\":71.421951,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":1000001},{\"id\":\"c02\",\"lon\":71.429108,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c03\",\"lon\":71.436265,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c04\",\"lon\":71.443421,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c05\",\"lon\":71.421951,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300},{\"id\":\"c06\",\"lon\":71.429108,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":200},{\"id\":\"c07\",\"lon\":71.436265,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":100},{\"id\":\"c08\",\"lon\":71.443421,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c09\",\"lon\":71.421951,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c10\",\"lon\":71.429108,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c11\",\"lon\":71.436265,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c12\",\"lon\":71.443421,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300}],\"budget\":700,\"max_selected\":3,\"coverage_radius_m\":400,\"required_ids\":[],\"excluded_ids\":[],\"selected_ids\":[\"c06\",\"c07\"]}",
+   "expected": {
+    "rejected": true,
+    "code": "bad_value"
+   },
+   "note": ""
+  },
+  {
+   "case_id": "budget_negative",
+   "raw": "{\"schema_version\":\"city-plan-v2\",\"city_id\":\"astana\",\"source_snapshot\":\"sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d\",\"category\":\"school\",\"control_points\":[{\"id\":\"cp01\",\"lon\":71.421951,\"lat\":51.165279,\"weight\":4},{\"id\":\"cp02\",\"lon\":71.429108,\"lat\":51.165279,\"weight\":2},{\"id\":\"cp03\",\"lon\":71.436265,\"lat\":51.165279,\"weight\":5},{\"id\":\"cp04\",\"lon\":71.443421,\"lat\":51.165279,\"weight\":3},{\"id\":\"cp05\",\"lon\":71.421951,\"lat\":51.169771,\"weight\":1},{\"id\":\"cp06\",\"lon\":71.429108,\"lat\":51.169771,\"weight\":4},{\"id\":\"cp07\",\"lon\":71.436265,\"lat\":51.169771,\"weight\":2},{\"id\":\"cp08\",\"lon\":71.443421,\"lat\":51.169771,\"weight\":5},{\"id\":\"cp09\",\"lon\":71.421951,\"lat\":51.174262,\"weight\":3},{\"id\":\"cp10\",\"lon\":71.429108,\"lat\":51.174262,\"weight\":1},{\"id\":\"cp11\",\"lon\":71.436265,\"lat\":51.174262,\"weight\":4},{\"id\":\"cp12\",\"lon\":71.443421,\"lat\":51.174262,\"weight\":2},{\"id\":\"cp13\",\"lon\":71.421951,\"lat\":51.178754,\"weight\":5},{\"id\":\"cp14\",\"lon\":71.429108,\"lat\":51.178754,\"weight\":3},{\"id\":\"cp15\",\"lon\":71.436265,\"lat\":51.178754,\"weight\":1},{\"id\":\"cp16\",\"lon\":71.443421,\"lat\":51.178754,\"weight\":4}],\"candidates\":[{\"id\":\"c01\",\"lon\":71.421951,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c02\",\"lon\":71.429108,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c03\",\"lon\":71.436265,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c04\",\"lon\":71.443421,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c05\",\"lon\":71.421951,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300},{\"id\":\"c06\",\"lon\":71.429108,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":200},{\"id\":\"c07\",\"lon\":71.436265,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":100},{\"id\":\"c08\",\"lon\":71.443421,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c09\",\"lon\":71.421951,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c10\",\"lon\":71.429108,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c11\",\"lon\":71.436265,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c12\",\"lon\":71.443421,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300}],\"budget\":-1,\"max_selected\":3,\"coverage_radius_m\":400,\"required_ids\":[],\"excluded_ids\":[],\"selected_ids\":[\"c06\",\"c07\"]}",
+   "expected": {
+    "rejected": true,
+    "code": "bad_value"
+   },
+   "note": ""
+  },
+  {
+   "case_id": "budget_over_max",
+   "raw": "{\"schema_version\":\"city-plan-v2\",\"city_id\":\"astana\",\"source_snapshot\":\"sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d\",\"category\":\"school\",\"control_points\":[{\"id\":\"cp01\",\"lon\":71.421951,\"lat\":51.165279,\"weight\":4},{\"id\":\"cp02\",\"lon\":71.429108,\"lat\":51.165279,\"weight\":2},{\"id\":\"cp03\",\"lon\":71.436265,\"lat\":51.165279,\"weight\":5},{\"id\":\"cp04\",\"lon\":71.443421,\"lat\":51.165279,\"weight\":3},{\"id\":\"cp05\",\"lon\":71.421951,\"lat\":51.169771,\"weight\":1},{\"id\":\"cp06\",\"lon\":71.429108,\"lat\":51.169771,\"weight\":4},{\"id\":\"cp07\",\"lon\":71.436265,\"lat\":51.169771,\"weight\":2},{\"id\":\"cp08\",\"lon\":71.443421,\"lat\":51.169771,\"weight\":5},{\"id\":\"cp09\",\"lon\":71.421951,\"lat\":51.174262,\"weight\":3},{\"id\":\"cp10\",\"lon\":71.429108,\"lat\":51.174262,\"weight\":1},{\"id\":\"cp11\",\"lon\":71.436265,\"lat\":51.174262,\"weight\":4},{\"id\":\"cp12\",\"lon\":71.443421,\"lat\":51.174262,\"weight\":2},{\"id\":\"cp13\",\"lon\":71.421951,\"lat\":51.178754,\"weight\":5},{\"id\":\"cp14\",\"lon\":71.429108,\"lat\":51.178754,\"weight\":3},{\"id\":\"cp15\",\"lon\":71.436265,\"lat\":51.178754,\"weight\":1},{\"id\":\"cp16\",\"lon\":71.443421,\"lat\":51.178754,\"weight\":4}],\"candidates\":[{\"id\":\"c01\",\"lon\":71.421951,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c02\",\"lon\":71.429108,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c03\",\"lon\":71.436265,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c04\",\"lon\":71.443421,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c05\",\"lon\":71.421951,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300},{\"id\":\"c06\",\"lon\":71.429108,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":200},{\"id\":\"c07\",\"lon\":71.436265,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":100},{\"id\":\"c08\",\"lon\":71.443421,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c09\",\"lon\":71.421951,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c10\",\"lon\":71.429108,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c11\",\"lon\":71.436265,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c12\",\"lon\":71.443421,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300}],\"budget\":1000001,\"max_selected\":3,\"coverage_radius_m\":400,\"required_ids\":[],\"excluded_ids\":[],\"selected_ids\":[\"c06\",\"c07\"]}",
+   "expected": {
+    "rejected": true,
+    "code": "bad_value"
+   },
+   "note": ""
+  },
+  {
+   "case_id": "max_selected_6",
+   "raw": "{\"schema_version\":\"city-plan-v2\",\"city_id\":\"astana\",\"source_snapshot\":\"sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d\",\"category\":\"school\",\"control_points\":[{\"id\":\"cp01\",\"lon\":71.421951,\"lat\":51.165279,\"weight\":4},{\"id\":\"cp02\",\"lon\":71.429108,\"lat\":51.165279,\"weight\":2},{\"id\":\"cp03\",\"lon\":71.436265,\"lat\":51.165279,\"weight\":5},{\"id\":\"cp04\",\"lon\":71.443421,\"lat\":51.165279,\"weight\":3},{\"id\":\"cp05\",\"lon\":71.421951,\"lat\":51.169771,\"weight\":1},{\"id\":\"cp06\",\"lon\":71.429108,\"lat\":51.169771,\"weight\":4},{\"id\":\"cp07\",\"lon\":71.436265,\"lat\":51.169771,\"weight\":2},{\"id\":\"cp08\",\"lon\":71.443421,\"lat\":51.169771,\"weight\":5},{\"id\":\"cp09\",\"lon\":71.421951,\"lat\":51.174262,\"weight\":3},{\"id\":\"cp10\",\"lon\":71.429108,\"lat\":51.174262,\"weight\":1},{\"id\":\"cp11\",\"lon\":71.436265,\"lat\":51.174262,\"weight\":4},{\"id\":\"cp12\",\"lon\":71.443421,\"lat\":51.174262,\"weight\":2},{\"id\":\"cp13\",\"lon\":71.421951,\"lat\":51.178754,\"weight\":5},{\"id\":\"cp14\",\"lon\":71.429108,\"lat\":51.178754,\"weight\":3},{\"id\":\"cp15\",\"lon\":71.436265,\"lat\":51.178754,\"weight\":1},{\"id\":\"cp16\",\"lon\":71.443421,\"lat\":51.178754,\"weight\":4}],\"candidates\":[{\"id\":\"c01\",\"lon\":71.421951,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c02\",\"lon\":71.429108,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c03\",\"lon\":71.436265,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c04\",\"lon\":71.443421,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c05\",\"lon\":71.421951,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300},{\"id\":\"c06\",\"lon\":71.429108,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":200},{\"id\":\"c07\",\"lon\":71.436265,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":100},{\"id\":\"c08\",\"lon\":71.443421,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c09\",\"lon\":71.421951,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c10\",\"lon\":71.429108,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c11\",\"lon\":71.436265,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c12\",\"lon\":71.443421,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300}],\"budget\":700,\"max_selected\":6,\"coverage_radius_m\":400,\"required_ids\":[],\"excluded_ids\":[],\"selected_ids\":[\"c06\",\"c07\"]}",
+   "expected": {
+    "rejected": true,
+    "code": "bad_value"
+   },
+   "note": ""
+  },
+  {
+   "case_id": "radius_99",
+   "raw": "{\"schema_version\":\"city-plan-v2\",\"city_id\":\"astana\",\"source_snapshot\":\"sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d\",\"category\":\"school\",\"control_points\":[{\"id\":\"cp01\",\"lon\":71.421951,\"lat\":51.165279,\"weight\":4},{\"id\":\"cp02\",\"lon\":71.429108,\"lat\":51.165279,\"weight\":2},{\"id\":\"cp03\",\"lon\":71.436265,\"lat\":51.165279,\"weight\":5},{\"id\":\"cp04\",\"lon\":71.443421,\"lat\":51.165279,\"weight\":3},{\"id\":\"cp05\",\"lon\":71.421951,\"lat\":51.169771,\"weight\":1},{\"id\":\"cp06\",\"lon\":71.429108,\"lat\":51.169771,\"weight\":4},{\"id\":\"cp07\",\"lon\":71.436265,\"lat\":51.169771,\"weight\":2},{\"id\":\"cp08\",\"lon\":71.443421,\"lat\":51.169771,\"weight\":5},{\"id\":\"cp09\",\"lon\":71.421951,\"lat\":51.174262,\"weight\":3},{\"id\":\"cp10\",\"lon\":71.429108,\"lat\":51.174262,\"weight\":1},{\"id\":\"cp11\",\"lon\":71.436265,\"lat\":51.174262,\"weight\":4},{\"id\":\"cp12\",\"lon\":71.443421,\"lat\":51.174262,\"weight\":2},{\"id\":\"cp13\",\"lon\":71.421951,\"lat\":51.178754,\"weight\":5},{\"id\":\"cp14\",\"lon\":71.429108,\"lat\":51.178754,\"weight\":3},{\"id\":\"cp15\",\"lon\":71.436265,\"lat\":51.178754,\"weight\":1},{\"id\":\"cp16\",\"lon\":71.443421,\"lat\":51.178754,\"weight\":4}],\"candidates\":[{\"id\":\"c01\",\"lon\":71.421951,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c02\",\"lon\":71.429108,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c03\",\"lon\":71.436265,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c04\",\"lon\":71.443421,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c05\",\"lon\":71.421951,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300},{\"id\":\"c06\",\"lon\":71.429108,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":200},{\"id\":\"c07\",\"lon\":71.436265,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":100},{\"id\":\"c08\",\"lon\":71.443421,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c09\",\"lon\":71.421951,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c10\",\"lon\":71.429108,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c11\",\"lon\":71.436265,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c12\",\"lon\":71.443421,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300}],\"budget\":700,\"max_selected\":3,\"coverage_radius_m\":99,\"required_ids\":[],\"excluded_ids\":[],\"selected_ids\":[\"c06\",\"c07\"]}",
+   "expected": {
+    "rejected": true,
+    "code": "bad_value"
+   },
+   "note": ""
+  },
+  {
+   "case_id": "radius_5001",
+   "raw": "{\"schema_version\":\"city-plan-v2\",\"city_id\":\"astana\",\"source_snapshot\":\"sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d\",\"category\":\"school\",\"control_points\":[{\"id\":\"cp01\",\"lon\":71.421951,\"lat\":51.165279,\"weight\":4},{\"id\":\"cp02\",\"lon\":71.429108,\"lat\":51.165279,\"weight\":2},{\"id\":\"cp03\",\"lon\":71.436265,\"lat\":51.165279,\"weight\":5},{\"id\":\"cp04\",\"lon\":71.443421,\"lat\":51.165279,\"weight\":3},{\"id\":\"cp05\",\"lon\":71.421951,\"lat\":51.169771,\"weight\":1},{\"id\":\"cp06\",\"lon\":71.429108,\"lat\":51.169771,\"weight\":4},{\"id\":\"cp07\",\"lon\":71.436265,\"lat\":51.169771,\"weight\":2},{\"id\":\"cp08\",\"lon\":71.443421,\"lat\":51.169771,\"weight\":5},{\"id\":\"cp09\",\"lon\":71.421951,\"lat\":51.174262,\"weight\":3},{\"id\":\"cp10\",\"lon\":71.429108,\"lat\":51.174262,\"weight\":1},{\"id\":\"cp11\",\"lon\":71.436265,\"lat\":51.174262,\"weight\":4},{\"id\":\"cp12\",\"lon\":71.443421,\"lat\":51.174262,\"weight\":2},{\"id\":\"cp13\",\"lon\":71.421951,\"lat\":51.178754,\"weight\":5},{\"id\":\"cp14\",\"lon\":71.429108,\"lat\":51.178754,\"weight\":3},{\"id\":\"cp15\",\"lon\":71.436265,\"lat\":51.178754,\"weight\":1},{\"id\":\"cp16\",\"lon\":71.443421,\"lat\":51.178754,\"weight\":4}],\"candidates\":[{\"id\":\"c01\",\"lon\":71.421951,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c02\",\"lon\":71.429108,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c03\",\"lon\":71.436265,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c04\",\"lon\":71.443421,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c05\",\"lon\":71.421951,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300},{\"id\":\"c06\",\"lon\":71.429108,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":200},{\"id\":\"c07\",\"lon\":71.436265,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":100},{\"id\":\"c08\",\"lon\":71.443421,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c09\",\"lon\":71.421951,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c10\",\"lon\":71.429108,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c11\",\"lon\":71.436265,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c12\",\"lon\":71.443421,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300}],\"budget\":700,\"max_selected\":3,\"coverage_radius_m\":5001,\"required_ids\":[],\"excluded_ids\":[],\"selected_ids\":[\"c06\",\"c07\"]}",
+   "expected": {
+    "rejected": true,
+    "code": "bad_value"
+   },
+   "note": ""
+  },
+  {
+   "case_id": "candidate_wrong_category",
+   "raw": "{\"schema_version\":\"city-plan-v2\",\"city_id\":\"astana\",\"source_snapshot\":\"sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d\",\"category\":\"school\",\"control_points\":[{\"id\":\"cp01\",\"lon\":71.421951,\"lat\":51.165279,\"weight\":4},{\"id\":\"cp02\",\"lon\":71.429108,\"lat\":51.165279,\"weight\":2},{\"id\":\"cp03\",\"lon\":71.436265,\"lat\":51.165279,\"weight\":5},{\"id\":\"cp04\",\"lon\":71.443421,\"lat\":51.165279,\"weight\":3},{\"id\":\"cp05\",\"lon\":71.421951,\"lat\":51.169771,\"weight\":1},{\"id\":\"cp06\",\"lon\":71.429108,\"lat\":51.169771,\"weight\":4},{\"id\":\"cp07\",\"lon\":71.436265,\"lat\":51.169771,\"weight\":2},{\"id\":\"cp08\",\"lon\":71.443421,\"lat\":51.169771,\"weight\":5},{\"id\":\"cp09\",\"lon\":71.421951,\"lat\":51.174262,\"weight\":3},{\"id\":\"cp10\",\"lon\":71.429108,\"lat\":51.174262,\"weight\":1},{\"id\":\"cp11\",\"lon\":71.436265,\"lat\":51.174262,\"weight\":4},{\"id\":\"cp12\",\"lon\":71.443421,\"lat\":51.174262,\"weight\":2},{\"id\":\"cp13\",\"lon\":71.421951,\"lat\":51.178754,\"weight\":5},{\"id\":\"cp14\",\"lon\":71.429108,\"lat\":51.178754,\"weight\":3},{\"id\":\"cp15\",\"lon\":71.436265,\"lat\":51.178754,\"weight\":1},{\"id\":\"cp16\",\"lon\":71.443421,\"lat\":51.178754,\"weight\":4}],\"candidates\":[{\"id\":\"c01\",\"lon\":71.421951,\"lat\":51.166027,\"category\":\"outpatient_clinic\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c02\",\"lon\":71.429108,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c03\",\"lon\":71.436265,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c04\",\"lon\":71.443421,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c05\",\"lon\":71.421951,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300},{\"id\":\"c06\",\"lon\":71.429108,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":200},{\"id\":\"c07\",\"lon\":71.436265,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":100},{\"id\":\"c08\",\"lon\":71.443421,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c09\",\"lon\":71.421951,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c10\",\"lon\":71.429108,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c11\",\"lon\":71.436265,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c12\",\"lon\":71.443421,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300}],\"budget\":700,\"max_selected\":3,\"coverage_radius_m\":400,\"required_ids\":[],\"excluded_ids\":[],\"selected_ids\":[\"c06\",\"c07\"]}",
+   "expected": {
+    "rejected": true,
+    "code": "candidate_category_mismatch"
+   },
+   "note": ""
+  },
+  {
+   "case_id": "candidate_kind_source",
+   "raw": "{\"schema_version\":\"city-plan-v2\",\"city_id\":\"astana\",\"source_snapshot\":\"sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d\",\"category\":\"school\",\"control_points\":[{\"id\":\"cp01\",\"lon\":71.421951,\"lat\":51.165279,\"weight\":4},{\"id\":\"cp02\",\"lon\":71.429108,\"lat\":51.165279,\"weight\":2},{\"id\":\"cp03\",\"lon\":71.436265,\"lat\":51.165279,\"weight\":5},{\"id\":\"cp04\",\"lon\":71.443421,\"lat\":51.165279,\"weight\":3},{\"id\":\"cp05\",\"lon\":71.421951,\"lat\":51.169771,\"weight\":1},{\"id\":\"cp06\",\"lon\":71.429108,\"lat\":51.169771,\"weight\":4},{\"id\":\"cp07\",\"lon\":71.436265,\"lat\":51.169771,\"weight\":2},{\"id\":\"cp08\",\"lon\":71.443421,\"lat\":51.169771,\"weight\":5},{\"id\":\"cp09\",\"lon\":71.421951,\"lat\":51.174262,\"weight\":3},{\"id\":\"cp10\",\"lon\":71.429108,\"lat\":51.174262,\"weight\":1},{\"id\":\"cp11\",\"lon\":71.436265,\"lat\":51.174262,\"weight\":4},{\"id\":\"cp12\",\"lon\":71.443421,\"lat\":51.174262,\"weight\":2},{\"id\":\"cp13\",\"lon\":71.421951,\"lat\":51.178754,\"weight\":5},{\"id\":\"cp14\",\"lon\":71.429108,\"lat\":51.178754,\"weight\":3},{\"id\":\"cp15\",\"lon\":71.436265,\"lat\":51.178754,\"weight\":1},{\"id\":\"cp16\",\"lon\":71.443421,\"lat\":51.178754,\"weight\":4}],\"candidates\":[{\"id\":\"c01\",\"lon\":71.421951,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"source\",\"cost\":350},{\"id\":\"c02\",\"lon\":71.429108,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c03\",\"lon\":71.436265,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c04\",\"lon\":71.443421,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c05\",\"lon\":71.421951,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300},{\"id\":\"c06\",\"lon\":71.429108,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":200},{\"id\":\"c07\",\"lon\":71.436265,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":100},{\"id\":\"c08\",\"lon\":71.443421,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c09\",\"lon\":71.421951,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c10\",\"lon\":71.429108,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c11\",\"lon\":71.436265,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c12\",\"lon\":71.443421,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300}],\"budget\":700,\"max_selected\":3,\"coverage_radius_m\":400,\"required_ids\":[],\"excluded_ids\":[],\"selected_ids\":[\"c06\",\"c07\"]}",
+   "expected": {
+    "rejected": true,
+    "code": "candidate_not_hypothetical"
+   },
+   "note": ""
+  },
+  {
+   "case_id": "required_excluded_overlap",
+   "raw": "{\"schema_version\":\"city-plan-v2\",\"city_id\":\"astana\",\"source_snapshot\":\"sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d\",\"category\":\"school\",\"control_points\":[{\"id\":\"cp01\",\"lon\":71.421951,\"lat\":51.165279,\"weight\":4},{\"id\":\"cp02\",\"lon\":71.429108,\"lat\":51.165279,\"weight\":2},{\"id\":\"cp03\",\"lon\":71.436265,\"lat\":51.165279,\"weight\":5},{\"id\":\"cp04\",\"lon\":71.443421,\"lat\":51.165279,\"weight\":3},{\"id\":\"cp05\",\"lon\":71.421951,\"lat\":51.169771,\"weight\":1},{\"id\":\"cp06\",\"lon\":71.429108,\"lat\":51.169771,\"weight\":4},{\"id\":\"cp07\",\"lon\":71.436265,\"lat\":51.169771,\"weight\":2},{\"id\":\"cp08\",\"lon\":71.443421,\"lat\":51.169771,\"weight\":5},{\"id\":\"cp09\",\"lon\":71.421951,\"lat\":51.174262,\"weight\":3},{\"id\":\"cp10\",\"lon\":71.429108,\"lat\":51.174262,\"weight\":1},{\"id\":\"cp11\",\"lon\":71.436265,\"lat\":51.174262,\"weight\":4},{\"id\":\"cp12\",\"lon\":71.443421,\"lat\":51.174262,\"weight\":2},{\"id\":\"cp13\",\"lon\":71.421951,\"lat\":51.178754,\"weight\":5},{\"id\":\"cp14\",\"lon\":71.429108,\"lat\":51.178754,\"weight\":3},{\"id\":\"cp15\",\"lon\":71.436265,\"lat\":51.178754,\"weight\":1},{\"id\":\"cp16\",\"lon\":71.443421,\"lat\":51.178754,\"weight\":4}],\"candidates\":[{\"id\":\"c01\",\"lon\":71.421951,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c02\",\"lon\":71.429108,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c03\",\"lon\":71.436265,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c04\",\"lon\":71.443421,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c05\",\"lon\":71.421951,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300},{\"id\":\"c06\",\"lon\":71.429108,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":200},{\"id\":\"c07\",\"lon\":71.436265,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":100},{\"id\":\"c08\",\"lon\":71.443421,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c09\",\"lon\":71.421951,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c10\",\"lon\":71.429108,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c11\",\"lon\":71.436265,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c12\",\"lon\":71.443421,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300}],\"budget\":700,\"max_selected\":3,\"coverage_radius_m\":400,\"required_ids\":[\"c01\"],\"excluded_ids\":[\"c01\"],\"selected_ids\":[\"c06\",\"c07\"]}",
+   "expected": {
+    "rejected": true,
+    "code": "required_excluded_overlap"
+   },
+   "note": "conflicting conditions in the input itself: refuse, do not drop either list silently"
+  },
+  {
+   "case_id": "required_unknown",
+   "raw": "{\"schema_version\":\"city-plan-v2\",\"city_id\":\"astana\",\"source_snapshot\":\"sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d\",\"category\":\"school\",\"control_points\":[{\"id\":\"cp01\",\"lon\":71.421951,\"lat\":51.165279,\"weight\":4},{\"id\":\"cp02\",\"lon\":71.429108,\"lat\":51.165279,\"weight\":2},{\"id\":\"cp03\",\"lon\":71.436265,\"lat\":51.165279,\"weight\":5},{\"id\":\"cp04\",\"lon\":71.443421,\"lat\":51.165279,\"weight\":3},{\"id\":\"cp05\",\"lon\":71.421951,\"lat\":51.169771,\"weight\":1},{\"id\":\"cp06\",\"lon\":71.429108,\"lat\":51.169771,\"weight\":4},{\"id\":\"cp07\",\"lon\":71.436265,\"lat\":51.169771,\"weight\":2},{\"id\":\"cp08\",\"lon\":71.443421,\"lat\":51.169771,\"weight\":5},{\"id\":\"cp09\",\"lon\":71.421951,\"lat\":51.174262,\"weight\":3},{\"id\":\"cp10\",\"lon\":71.429108,\"lat\":51.174262,\"weight\":1},{\"id\":\"cp11\",\"lon\":71.436265,\"lat\":51.174262,\"weight\":4},{\"id\":\"cp12\",\"lon\":71.443421,\"lat\":51.174262,\"weight\":2},{\"id\":\"cp13\",\"lon\":71.421951,\"lat\":51.178754,\"weight\":5},{\"id\":\"cp14\",\"lon\":71.429108,\"lat\":51.178754,\"weight\":3},{\"id\":\"cp15\",\"lon\":71.436265,\"lat\":51.178754,\"weight\":1},{\"id\":\"cp16\",\"lon\":71.443421,\"lat\":51.178754,\"weight\":4}],\"candidates\":[{\"id\":\"c01\",\"lon\":71.421951,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c02\",\"lon\":71.429108,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c03\",\"lon\":71.436265,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c04\",\"lon\":71.443421,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c05\",\"lon\":71.421951,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300},{\"id\":\"c06\",\"lon\":71.429108,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":200},{\"id\":\"c07\",\"lon\":71.436265,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":100},{\"id\":\"c08\",\"lon\":71.443421,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c09\",\"lon\":71.421951,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c10\",\"lon\":71.429108,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c11\",\"lon\":71.436265,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c12\",\"lon\":71.443421,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300}],\"budget\":700,\"max_selected\":3,\"coverage_radius_m\":400,\"required_ids\":[\"c99\"],\"excluded_ids\":[],\"selected_ids\":[\"c06\",\"c07\"]}",
+   "expected": {
+    "rejected": true,
+    "code": "unknown_candidate"
+   },
+   "note": ""
+  },
+  {
+   "case_id": "selected_source_record_id",
+   "raw": "{\"schema_version\":\"city-plan-v2\",\"city_id\":\"astana\",\"source_snapshot\":\"sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d\",\"category\":\"school\",\"control_points\":[{\"id\":\"cp01\",\"lon\":71.421951,\"lat\":51.165279,\"weight\":4},{\"id\":\"cp02\",\"lon\":71.429108,\"lat\":51.165279,\"weight\":2},{\"id\":\"cp03\",\"lon\":71.436265,\"lat\":51.165279,\"weight\":5},{\"id\":\"cp04\",\"lon\":71.443421,\"lat\":51.165279,\"weight\":3},{\"id\":\"cp05\",\"lon\":71.421951,\"lat\":51.169771,\"weight\":1},{\"id\":\"cp06\",\"lon\":71.429108,\"lat\":51.169771,\"weight\":4},{\"id\":\"cp07\",\"lon\":71.436265,\"lat\":51.169771,\"weight\":2},{\"id\":\"cp08\",\"lon\":71.443421,\"lat\":51.169771,\"weight\":5},{\"id\":\"cp09\",\"lon\":71.421951,\"lat\":51.174262,\"weight\":3},{\"id\":\"cp10\",\"lon\":71.429108,\"lat\":51.174262,\"weight\":1},{\"id\":\"cp11\",\"lon\":71.436265,\"lat\":51.174262,\"weight\":4},{\"id\":\"cp12\",\"lon\":71.443421,\"lat\":51.174262,\"weight\":2},{\"id\":\"cp13\",\"lon\":71.421951,\"lat\":51.178754,\"weight\":5},{\"id\":\"cp14\",\"lon\":71.429108,\"lat\":51.178754,\"weight\":3},{\"id\":\"cp15\",\"lon\":71.436265,\"lat\":51.178754,\"weight\":1},{\"id\":\"cp16\",\"lon\":71.443421,\"lat\":51.178754,\"weight\":4}],\"candidates\":[{\"id\":\"c01\",\"lon\":71.421951,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c02\",\"lon\":71.429108,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c03\",\"lon\":71.436265,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c04\",\"lon\":71.443421,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c05\",\"lon\":71.421951,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300},{\"id\":\"c06\",\"lon\":71.429108,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":200},{\"id\":\"c07\",\"lon\":71.436265,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":100},{\"id\":\"c08\",\"lon\":71.443421,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c09\",\"lon\":71.421951,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c10\",\"lon\":71.429108,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c11\",\"lon\":71.436265,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c12\",\"lon\":71.443421,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300}],\"budget\":700,\"max_selected\":3,\"coverage_radius_m\":400,\"required_ids\":[],\"excluded_ids\":[],\"selected_ids\":[\"7b39e048-341b-454a-a63c-4b7e1ae73e9f\"]}",
+   "expected": {
+    "rejected": true,
+    "code": "unknown_candidate"
+   },
+   "note": "a source record id is not a candidate id; source and hypothetical ids are separate namespaces"
+  },
+  {
+   "case_id": "selected_duplicate",
+   "raw": "{\"schema_version\":\"city-plan-v2\",\"city_id\":\"astana\",\"source_snapshot\":\"sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d\",\"category\":\"school\",\"control_points\":[{\"id\":\"cp01\",\"lon\":71.421951,\"lat\":51.165279,\"weight\":4},{\"id\":\"cp02\",\"lon\":71.429108,\"lat\":51.165279,\"weight\":2},{\"id\":\"cp03\",\"lon\":71.436265,\"lat\":51.165279,\"weight\":5},{\"id\":\"cp04\",\"lon\":71.443421,\"lat\":51.165279,\"weight\":3},{\"id\":\"cp05\",\"lon\":71.421951,\"lat\":51.169771,\"weight\":1},{\"id\":\"cp06\",\"lon\":71.429108,\"lat\":51.169771,\"weight\":4},{\"id\":\"cp07\",\"lon\":71.436265,\"lat\":51.169771,\"weight\":2},{\"id\":\"cp08\",\"lon\":71.443421,\"lat\":51.169771,\"weight\":5},{\"id\":\"cp09\",\"lon\":71.421951,\"lat\":51.174262,\"weight\":3},{\"id\":\"cp10\",\"lon\":71.429108,\"lat\":51.174262,\"weight\":1},{\"id\":\"cp11\",\"lon\":71.436265,\"lat\":51.174262,\"weight\":4},{\"id\":\"cp12\",\"lon\":71.443421,\"lat\":51.174262,\"weight\":2},{\"id\":\"cp13\",\"lon\":71.421951,\"lat\":51.178754,\"weight\":5},{\"id\":\"cp14\",\"lon\":71.429108,\"lat\":51.178754,\"weight\":3},{\"id\":\"cp15\",\"lon\":71.436265,\"lat\":51.178754,\"weight\":1},{\"id\":\"cp16\",\"lon\":71.443421,\"lat\":51.178754,\"weight\":4}],\"candidates\":[{\"id\":\"c01\",\"lon\":71.421951,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c02\",\"lon\":71.429108,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c03\",\"lon\":71.436265,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c04\",\"lon\":71.443421,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c05\",\"lon\":71.421951,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300},{\"id\":\"c06\",\"lon\":71.429108,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":200},{\"id\":\"c07\",\"lon\":71.436265,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":100},{\"id\":\"c08\",\"lon\":71.443421,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c09\",\"lon\":71.421951,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c10\",\"lon\":71.429108,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c11\",\"lon\":71.436265,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c12\",\"lon\":71.443421,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300}],\"budget\":700,\"max_selected\":3,\"coverage_radius_m\":400,\"required_ids\":[],\"excluded_ids\":[],\"selected_ids\":[\"c01\",\"c01\"]}",
+   "expected": {
+    "rejected": true,
+    "code": "duplicate_id"
+   },
+   "note": ""
+  },
+  {
+   "case_id": "derived_results_forged",
+   "raw": "{\"schema_version\":\"city-plan-v2\",\"city_id\":\"astana\",\"source_snapshot\":\"sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d\",\"category\":\"school\",\"control_points\":[{\"id\":\"cp01\",\"lon\":71.421951,\"lat\":51.165279,\"weight\":4},{\"id\":\"cp02\",\"lon\":71.429108,\"lat\":51.165279,\"weight\":2},{\"id\":\"cp03\",\"lon\":71.436265,\"lat\":51.165279,\"weight\":5},{\"id\":\"cp04\",\"lon\":71.443421,\"lat\":51.165279,\"weight\":3},{\"id\":\"cp05\",\"lon\":71.421951,\"lat\":51.169771,\"weight\":1},{\"id\":\"cp06\",\"lon\":71.429108,\"lat\":51.169771,\"weight\":4},{\"id\":\"cp07\",\"lon\":71.436265,\"lat\":51.169771,\"weight\":2},{\"id\":\"cp08\",\"lon\":71.443421,\"lat\":51.169771,\"weight\":5},{\"id\":\"cp09\",\"lon\":71.421951,\"lat\":51.174262,\"weight\":3},{\"id\":\"cp10\",\"lon\":71.429108,\"lat\":51.174262,\"weight\":1},{\"id\":\"cp11\",\"lon\":71.436265,\"lat\":51.174262,\"weight\":4},{\"id\":\"cp12\",\"lon\":71.443421,\"lat\":51.174262,\"weight\":2},{\"id\":\"cp13\",\"lon\":71.421951,\"lat\":51.178754,\"weight\":5},{\"id\":\"cp14\",\"lon\":71.429108,\"lat\":51.178754,\"weight\":3},{\"id\":\"cp15\",\"lon\":71.436265,\"lat\":51.178754,\"weight\":1},{\"id\":\"cp16\",\"lon\":71.443421,\"lat\":51.178754,\"weight\":4}],\"candidates\":[{\"id\":\"c01\",\"lon\":71.421951,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c02\",\"lon\":71.429108,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c03\",\"lon\":71.436265,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c04\",\"lon\":71.443421,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c05\",\"lon\":71.421951,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300},{\"id\":\"c06\",\"lon\":71.429108,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":200},{\"id\":\"c07\",\"lon\":71.436265,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":100},{\"id\":\"c08\",\"lon\":71.443421,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c09\",\"lon\":71.421951,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c10\",\"lon\":71.429108,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c11\",\"lon\":71.436265,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c12\",\"lon\":71.443421,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300}],\"budget\":700,\"max_selected\":3,\"coverage_radius_m\":400,\"required_ids\":[],\"excluded_ids\":[],\"selected_ids\":[\"c06\",\"c07\"],\"derived_results\":{\"objectives\":{\"mean\":{\"selected_ids\":[\"c01\"],\"weighted_sum_mm\":0}}}}",
+   "expected": {
+    "rejected": false
+   },
+   "note": "accepted: derived_results is the one allowed extra field; results are recomputed, the forged values are ignored"
+  },
+  {
+   "case_id": "html_in_ids",
+   "raw": "{\"schema_version\":\"city-plan-v2\",\"city_id\":\"astana\",\"source_snapshot\":\"sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d\",\"category\":\"school\",\"control_points\":[{\"id\":\"cp01\",\"lon\":71.421951,\"lat\":51.165279,\"weight\":4},{\"id\":\"cp02\",\"lon\":71.429108,\"lat\":51.165279,\"weight\":2},{\"id\":\"cp03\",\"lon\":71.436265,\"lat\":51.165279,\"weight\":5},{\"id\":\"cp04\",\"lon\":71.443421,\"lat\":51.165279,\"weight\":3},{\"id\":\"cp05\",\"lon\":71.421951,\"lat\":51.169771,\"weight\":1},{\"id\":\"cp06\",\"lon\":71.429108,\"lat\":51.169771,\"weight\":4},{\"id\":\"cp07\",\"lon\":71.436265,\"lat\":51.169771,\"weight\":2},{\"id\":\"cp08\",\"lon\":71.443421,\"lat\":51.169771,\"weight\":5},{\"id\":\"cp09\",\"lon\":71.421951,\"lat\":51.174262,\"weight\":3},{\"id\":\"cp10\",\"lon\":71.429108,\"lat\":51.174262,\"weight\":1},{\"id\":\"cp11\",\"lon\":71.436265,\"lat\":51.174262,\"weight\":4},{\"id\":\"cp12\",\"lon\":71.443421,\"lat\":51.174262,\"weight\":2},{\"id\":\"cp13\",\"lon\":71.421951,\"lat\":51.178754,\"weight\":5},{\"id\":\"cp14\",\"lon\":71.429108,\"lat\":51.178754,\"weight\":3},{\"id\":\"cp15\",\"lon\":71.436265,\"lat\":51.178754,\"weight\":1},{\"id\":\"cp16\",\"lon\":71.443421,\"lat\":51.178754,\"weight\":4}],\"candidates\":[{\"id\":\"<img src=x onerror=\\\"alert(1)\\\">\",\"lon\":71.421951,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c02\",\"lon\":71.429108,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c03\",\"lon\":71.436265,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c04\",\"lon\":71.443421,\"lat\":51.166027,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c05\",\"lon\":71.421951,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300},{\"id\":\"c06\",\"lon\":71.429108,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":200},{\"id\":\"c07\",\"lon\":71.436265,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":100},{\"id\":\"c08\",\"lon\":71.443421,\"lat\":51.172016,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":350},{\"id\":\"c09\",\"lon\":71.421951,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":250},{\"id\":\"c10\",\"lon\":71.429108,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":150},{\"id\":\"c11\",\"lon\":71.436265,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":400},{\"id\":\"c12\",\"lon\":71.443421,\"lat\":51.178005,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":300}],\"budget\":700,\"max_selected\":3,\"coverage_radius_m\":400,\"required_ids\":[],\"excluded_ids\":[],\"selected_ids\":[\"<img src=x onerror=\\\"alert(1)\\\">\"]}",
+   "expected": {
+    "rejected": false
+   },
+   "note": "accepted: ids are plain text; the UI must render them as text, never as HTML"
+  }
+ ],
+ "codes_note": "error codes are K10 names; an implementation may use its own codes, it must only refuse before computing and keep the previous state",
+ "observations": {
+  "status": "validation_cases",
+  "cases": 45,
+  "rejected": 43,
+  "accepted": 2
+ }
+}

@@ -78,8 +78,16 @@ def parse_strict(text):
             raise PlanError("non_finite", s)
         return v
 
+    def intg(s):
+        v = int(s)
+        try:
+            float(v)  # an integer literal beyond the double range would become Infinity in JSON.parse
+        except OverflowError:
+            raise PlanError("non_finite", s[:24] + "...") from None
+        return v
+
     try:
-        return json.loads(text, object_pairs_hook=pairs, parse_constant=bad_const, parse_float=flt)
+        return json.loads(text, object_pairs_hook=pairs, parse_constant=bad_const, parse_float=flt, parse_int=intg)
     except PlanError:
         raise
     except ValueError as e:

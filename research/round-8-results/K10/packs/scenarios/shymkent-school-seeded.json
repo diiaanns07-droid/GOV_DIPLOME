@@ -1,0 +1,248 @@
+{
+ "schema_version": "city-plan-v2",
+ "city_id": "shymkent",
+ "source_snapshot": "sha256:282cf187523d8b990ac9bfde69ba43763248aa9b49007149a094ccc81bd36ec2",
+ "category": "school",
+ "control_points": [
+  {
+   "id": "s01",
+   "lon": 69.610985,
+   "lat": 42.317685,
+   "weight": 61
+  },
+  {
+   "id": "s02",
+   "lon": 69.608816,
+   "lat": 42.314922,
+   "weight": 100
+  },
+  {
+   "id": "s03",
+   "lon": 69.606375,
+   "lat": 42.31664,
+   "weight": 63
+  },
+  {
+   "id": "s04",
+   "lon": 69.61057,
+   "lat": 42.322348,
+   "weight": 2
+  },
+  {
+   "id": "s05",
+   "lon": 69.601913,
+   "lat": 42.316642,
+   "weight": 53
+  },
+  {
+   "id": "s06",
+   "lon": 69.611841,
+   "lat": 42.314597,
+   "weight": 64
+  },
+  {
+   "id": "s07",
+   "lon": 69.602381,
+   "lat": 42.314297,
+   "weight": 11
+  },
+  {
+   "id": "s08",
+   "lon": 69.608638,
+   "lat": 42.320295,
+   "weight": 2
+  },
+  {
+   "id": "s09",
+   "lon": 69.599666,
+   "lat": 42.317294,
+   "weight": 25
+  },
+  {
+   "id": "s10",
+   "lon": 69.609035,
+   "lat": 42.312913,
+   "weight": 64
+  },
+  {
+   "id": "s11",
+   "lon": 69.609678,
+   "lat": 42.323645,
+   "weight": 11
+  },
+  {
+   "id": "s12",
+   "lon": 69.613615,
+   "lat": 42.31625,
+   "weight": 10
+  },
+  {
+   "id": "s13",
+   "lon": 69.615969,
+   "lat": 42.311783,
+   "weight": 57
+  },
+  {
+   "id": "s14",
+   "lon": 69.595728,
+   "lat": 42.314736,
+   "weight": 76
+  },
+  {
+   "id": "s15",
+   "lon": 69.599386,
+   "lat": 42.313257,
+   "weight": 91
+  },
+  {
+   "id": "s16",
+   "lon": 69.599235,
+   "lat": 42.318274,
+   "weight": 2
+  },
+  {
+   "id": "s17",
+   "lon": 69.611843,
+   "lat": 42.316577,
+   "weight": 37
+  },
+  {
+   "id": "s18",
+   "lon": 69.599985,
+   "lat": 42.308408,
+   "weight": 44
+  },
+  {
+   "id": "s19",
+   "lon": 69.608182,
+   "lat": 42.315137,
+   "weight": 47
+  },
+  {
+   "id": "s20",
+   "lon": 69.606961,
+   "lat": 42.320966,
+   "weight": 66
+  }
+ ],
+ "candidates": [
+  {
+   "id": "r01",
+   "lon": 69.606313,
+   "lat": 42.321759,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 350
+  },
+  {
+   "id": "r02",
+   "lon": 69.612011,
+   "lat": 42.310049,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 260
+  },
+  {
+   "id": "r03",
+   "lon": 69.605961,
+   "lat": 42.322895,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 290
+  },
+  {
+   "id": "r04",
+   "lon": 69.600641,
+   "lat": 42.314754,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 440
+  },
+  {
+   "id": "r05",
+   "lon": 69.613398,
+   "lat": 42.320629,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 410
+  },
+  {
+   "id": "r06",
+   "lon": 69.612236,
+   "lat": 42.31067,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 120
+  },
+  {
+   "id": "r07",
+   "lon": 69.603453,
+   "lat": 42.323039,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 50
+  },
+  {
+   "id": "r08",
+   "lon": 69.614228,
+   "lat": 42.312453,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 360
+  },
+  {
+   "id": "r09",
+   "lon": 69.60486,
+   "lat": 42.312995,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 110
+  },
+  {
+   "id": "r10",
+   "lon": 69.603129,
+   "lat": 42.312576,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 420
+  },
+  {
+   "id": "r11",
+   "lon": 69.60145,
+   "lat": 42.316381,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 410
+  },
+  {
+   "id": "r12",
+   "lon": 69.611131,
+   "lat": 42.316803,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 380
+  },
+  {
+   "id": "r13",
+   "lon": 69.597765,
+   "lat": 42.312988,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 390
+  },
+  {
+   "id": "r14",
+   "lon": 69.604399,
+   "lat": 42.310021,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 260
+  }
+ ],
+ "budget": 900,
+ "max_selected": 4,
+ "coverage_radius_m": 300,
+ "required_ids": [],
+ "excluded_ids": [],
+ "selected_ids": []
+}

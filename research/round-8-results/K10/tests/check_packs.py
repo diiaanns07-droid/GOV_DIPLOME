@@ -6,9 +6,12 @@ Per pack:
   SOURCE    real packs: source_copy (ids, lon, lat, group of the category), places file sha256 and source_snapshot
             still match the target app root; mismatch = STALE pack (data changed), not a product defect.
   VALID     the scenario passes oracle validation against the pack's own copy of the slice.
-  RECOMPUTE expected results recomputed by k10plan.oracle from the pack's own source copy are identical
+  RECOMPUTE expected results (or, for invalid-input packs, accept/refuse + code per case) recomputed by k10plan.oracle from the pack's own source copy are identical
             (expected values were not edited by hand).
   INDEX     sha256 of the pack file equals the value recorded in INDEX.json.
+  ORDER     reversed input arrays (points, candidates, id lists, source records) give the same digest, winners,
+            Pareto front and sensitivity.
+  HAND      synthetic packs: oracle output equals the expectation written by hand in the pack's design block.
   JS        real packs: millimetre distances (before + to every candidate) and source_snapshot computed with the
             BUILD's web/whatif.js equal the oracle values exactly (node required, else SKIP).
 Whole run:
@@ -51,8 +54,9 @@ def recompute(p):
     if "invalid_cases" in p:
         bad = []
         for case in p["invalid_cases"]:
+            raw = P.case_text(case)
             try:
-                O.validate_plan_scenario(O.parse_strict(case["raw"]), ctx)
+                O.validate_plan_scenario(O.parse_strict(raw), ctx)
                 got = {"rejected": False}
             except O.PlanError as e:
                 got = {"rejected": True, "code": e.code}
@@ -70,6 +74,19 @@ def recompute(p):
     if mutated:
         bad.append("oracle mutated its input")
     return bad
+
+
+def order_problems(p):
+    """Reversing every input array must not change the digest, the winners, the front or the sensitivity."""
+    ctx = pack_context(p)
+    sc = copy.deepcopy(p["scenario"])
+    for k in ("control_points", "candidates", "required_ids", "excluded_ids", "selected_ids"):
+        sc[k] = sc[k][::-1]
+    ctx["records"] = ctx["records"][::-1]
+    got = O.optimize_plans(ctx, O.validate_plan_scenario(sc, ctx))
+    want = p["expected"]["optimize"]
+    keys = ("status", "problem_digest", "objectives", "pareto", "sensitivity", "evaluated", "feasible_count")
+    return [k for k in keys if canon(got.get(k)) != canon(want.get(k))]
 
 
 def tree_manifest(d):
@@ -108,6 +125,12 @@ def run(app_root, packs_dir):
                 r["checks"]["VALID"] = "PASS"
             except O.PlanError as e:
                 r["checks"]["VALID"] = f"FAIL({e.code})"
+        if "invalid_cases" not in p:
+            ob = order_problems(p)
+            r["checks"]["ORDER"] = "PASS" if not ob else f"FAIL({','.join(ob)})"
+        if p["kind"] == "synthetic":
+            hb = P.hand_problems(p)
+            r["checks"]["HAND"] = "PASS" if not hb else f"FAIL({','.join(hb)})"
         bad = recompute(p)
         r["checks"]["RECOMPUTE"] = "PASS" if not bad else "FAIL"
         if bad:
