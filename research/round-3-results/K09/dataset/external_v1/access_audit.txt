@@ -1,0 +1,21 @@
+# Аудит доступа агентов workflow wf_351a59b4-c45 (из транскриптов): имя инструмента и путь
+== agent-a5db26642fcc212d9.jsonl
+Read /home/user/GOV_DIPLOME/research/round-3-results/K09/dataset/ANNOTATION_RULES.md
+Read /home/user/GOV_DIPLOME/research/round-3-results/K09/dataset/gazetteer.json
+Read /home/user/GOV_DIPLOME/research/round-3-results/K09/dataset/measure_catalog.json
+StructuredOutput (structured output)
+== agent-a74f346b83fc3dee7.jsonl
+Read /home/user/GOV_DIPLOME/research/round-3-results/K09/dataset/ANNOTATION_RULES.md
+Read /home/user/GOV_DIPLOME/research/round-3-results/K09/dataset/gazetteer.json
+Read /home/user/GOV_DIPLOME/research/round-3-results/K09/dataset/measure_catalog.json
+StructuredOutput (structured output)
+== agent-abe1f85c76fbc011b.jsonl
+Read /home/user/GOV_DIPLOME/research/round-3-results/K09/dataset/ANNOTATION_RULES.md
+Read /home/user/GOV_DIPLOME/research/round-3-results/K09/dataset/gazetteer.json
+Read /home/user/GOV_DIPLOME/research/round-3-results/K09/dataset/measure_catalog.json
+StructuredOutput (structured output)
+== agent-af3c045927edbf4e0.jsonl
+Read /home/user/GOV_DIPLOME/research/round-3-results/K09/dataset/ANNOTATION_RULES.md
+Read /home/user/GOV_DIPLOME/research/round-3-results/K09/dataset/gazetteer.json
+Read /home/user/GOV_DIPLOME/research/round-3-results/K09/dataset/measure_catalog.json
+StructuredOutput (structured output)

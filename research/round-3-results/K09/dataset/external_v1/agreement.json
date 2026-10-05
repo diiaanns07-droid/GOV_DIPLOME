@@ -1,0 +1,17 @@
+{
+ "items_total": 32,
+ "agreed_full_label": 32,
+ "disagreed": 0,
+ "cohen_kappa_status_reason": 1.0,
+ "agreed_by_lang": {
+  "ru": 16,
+  "kk": 16
+ },
+ "agreed_by_status": {
+  "ok": 16,
+  "clarify": 14,
+  "refuse": 2
+ },
+ "t1_external_sha256": "5e7d756f26a65e731f59b5835a55255a0b1fc6027045f43609d3b8d7bafeabbe",
+ "raw_sha256": "f223d0a923f93a1a13f9a733227006912691472f691643b3ed69cd919b22c30b"
+}

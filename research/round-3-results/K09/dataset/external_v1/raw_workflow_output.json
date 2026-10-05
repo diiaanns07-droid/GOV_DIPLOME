@@ -1,0 +1,1017 @@
+{
+ "results": [
+  {
+   "lang": "ru",
+   "items": [
+    {
+     "text": "Прошу заложить новую семейную поликлинику в Есиле.",
+     "context_city": "astana",
+     "intended_class": "ok_single_include_district_short_form",
+     "gold": {
+      "status": "ok",
+      "reason": null,
+      "city": "astana",
+      "constraints": {
+       "include": [
+        {
+         "measure": "M8",
+         "district": "esil"
+        }
+       ],
+       "exclude": [],
+       "budget": null
+      }
+     }
+    },
+    {
+     "text": "Поставьте адаптивные светофоры по всему городу, бюджет 70.",
+     "context_city": null,
+     "intended_class": "clarify_city_unspecified",
+     "gold": {
+      "status": "clarify",
+      "reason": "city_unspecified",
+      "city": null,
+      "constraints": null
+     }
+    },
+    {
+     "text": "Легкорельсовую линию из плана уберите, а частные дома переведите на чистое топливо. Бюджет не больше 120.",
+     "context_city": "shymkent",
+     "intended_class": "ok_exclude_plus_district_measure_without_district_budget_digits",
+     "gold": {
+      "status": "ok",
+      "reason": null,
+      "city": "shymkent",
+      "constraints": {
+       "include": [
+        "M5"
+       ],
+       "exclude": [
+        "M3"
+       ],
+       "budget": 120
+      }
+     }
+    },
+    {
+     "text": "Нужен новый парк в Левобережном районе.",
+     "context_city": "astana",
+     "intended_class": "clarify_unknown_district_astana",
+     "gold": {
+      "status": "clarify",
+      "reason": "unknown_district",
+      "city": "astana",
+      "constraints": null
+     }
+    },
+    {
+     "text": "Модернизировать тепловые и водопроводные сети в Каратауском районе.",
+     "context_city": null,
+     "intended_class": "ok_city_inferred_from_district_shymkent",
+     "gold": {
+      "status": "ok",
+      "reason": null,
+      "city": "shymkent",
+      "constraints": {
+       "include": [
+        {
+         "measure": "M13",
+         "district": "karatau"
+        }
+       ],
+       "exclude": [],
+       "budget": null
+      }
+     }
+    },
+    {
+     "text": "В Шымкенте выделите полосы под автобусы в Ордабасинском районе.",
+     "context_city": null,
+     "intended_class": "clarify_unknown_district_shymkent_city_in_text",
+     "gold": {
+      "status": "clarify",
+      "reason": "unknown_district",
+      "city": "shymkent",
+      "constraints": null
+     }
+    },
+    {
+     "text": "В Шымкенте нужны дворовые спортивные хабы в Абайском районе, общий бюджет — восемьдесят.",
+     "context_city": "astana",
+     "intended_class": "ok_text_city_overrides_context_budget_words",
+     "gold": {
+      "status": "ok",
+      "reason": null,
+      "city": "shymkent",
+      "constraints": {
+       "include": [
+        {
+         "measure": "M9",
+         "district": "abay"
+        }
+       ],
+       "exclude": [],
+       "budget": 80
+      }
+     }
+    },
+    {
+     "text": "Камеры и уличное освещение для Туранского района, бюджет девяносто.",
+     "context_city": "shymkent",
+     "intended_class": "clarify_unconfirmed_district",
+     "gold": {
+      "status": "clarify",
+      "reason": "unconfirmed_district",
+      "city": "shymkent",
+      "constraints": null
+     }
+    },
+    {
+     "text": "Без новых линий ЛРТ, пожалуйста. Нужны выделенные автобусные полосы в Сарыарке и единая цифровая платформа для обращений граждан. Бюджет сто пятьдесят.",
+     "context_city": "astana",
+     "intended_class": "ok_composite_exclude_include_city_measure_budget_words",
+     "gold": {
+      "status": "ok",
+      "reason": null,
+      "city": "astana",
+      "constraints": {
+       "include": [
+        {
+         "measure": "M1",
+         "district": "saryarka"
+        },
+        "M12"
+       ],
+       "exclude": [
+        "M3"
+       ],
+       "budget": 150
+      }
+     }
+    },
+    {
+     "text": "Нужна школа с детским садом в Енбекшинском районе, пятьдесят единиц.",
+     "context_city": "astana",
+     "intended_class": "clarify_district_not_in_city_shymkent_district_in_astana",
+     "gold": {
+      "status": "clarify",
+      "reason": "district_not_in_city",
+      "city": "astana",
+      "constraints": null
+     }
+    },
+    {
+     "text": "В районе Байконур усилить освещение и видеонаблюдение, а городскую программу озеленения не включать.",
+     "context_city": null,
+     "intended_class": "ok_city_inferred_from_district_astana_include_exclude",
+     "gold": {
+      "status": "ok",
+      "reason": null,
+      "city": "astana",
+      "constraints": {
+       "include": [
+        {
+         "measure": "M10",
+         "district": "baikonur"
+        }
+       ],
+       "exclude": [
+        "M6"
+       ],
+       "budget": null
+      }
+     }
+    },
+    {
+     "text": "Сделайте безопасные переходы возле школ в Нуре.",
+     "context_city": "shymkent",
+     "intended_class": "clarify_district_not_in_city_astana_district_in_shymkent",
+     "gold": {
+      "status": "clarify",
+      "reason": "district_not_in_city",
+      "city": "shymkent",
+      "constraints": null
+     }
+    },
+    {
+     "text": "Аль-Фарабийскому району — модульную школу с детским садом, плюс аварийные бригады ЖКХ с системой раннего оповещения.",
+     "context_city": "shymkent",
+     "intended_class": "ok_district_measure_plus_city_measure_dative",
+     "gold": {
+      "status": "ok",
+      "reason": null,
+      "city": "shymkent",
+      "constraints": {
+       "include": [
+        {
+         "measure": "M7",
+         "district": "al_farabi"
+        },
+        "M14"
+       ],
+       "exclude": [],
+       "budget": null
+      }
+     }
+    },
+    {
+     "text": "Давайте разобьём сквер в Алматы, бюджет 40.",
+     "context_city": "astana",
+     "intended_class": "clarify_ambiguous_toponym_almaty_without_raion",
+     "gold": {
+      "status": "clarify",
+      "reason": "ambiguous_toponym",
+      "city": "astana",
+      "constraints": null
+     }
+    },
+    {
+     "text": "Обойдёмся без умных светофоров. В районе Алматы разбить сквер, лимит 60.",
+     "context_city": "astana",
+     "intended_class": "ok_almaty_with_raion_exclude_budget_digits",
+     "gold": {
+      "status": "ok",
+      "reason": null,
+      "city": "astana",
+      "constraints": {
+       "include": [
+        {
+         "measure": "M4",
+         "district": "almaty"
+        }
+       ],
+       "exclude": [
+        "M2"
+       ],
+       "budget": 60
+      }
+     }
+    },
+    {
+     "text": "Нужны дворовые спортивные площадки в районе Сарайшык.",
+     "context_city": null,
+     "intended_class": "refuse_district_not_modeled",
+     "gold": {
+      "status": "refuse",
+      "reason": "district_not_modeled",
+      "city": "astana",
+      "constraints": null
+     }
+    }
+   ],
+   "labels": [
+    {
+     "idx": 0,
+     "gold": {
+      "status": "ok",
+      "reason": null,
+      "city": "astana",
+      "constraints": {
+       "include": [
+        {
+         "measure": "M8",
+         "district": "esil"
+        }
+       ],
+       "exclude": [],
+       "budget": null
+      }
+     },
+     "unsure": false
+    },
+    {
+     "idx": 1,
+     "gold": {
+      "status": "clarify",
+      "reason": "city_unspecified",
+      "city": null,
+      "constraints": null
+     },
+     "unsure": false
+    },
+    {
+     "idx": 2,
+     "gold": {
+      "status": "ok",
+      "reason": null,
+      "city": "shymkent",
+      "constraints": {
+       "include": [
+        "M5"
+       ],
+       "exclude": [
+        "M3"
+       ],
+       "budget": 120
+      }
+     },
+     "unsure": false
+    },
+    {
+     "idx": 3,
+     "gold": {
+      "status": "clarify",
+      "reason": "unknown_district",
+      "city": "astana",
+      "constraints": null
+     },
+     "unsure": false,
+     "note": "Левобережный район is an informal area name and is not in any gazetteer."
+    },
+    {
+     "idx": 4,
+     "gold": {
+      "status": "ok",
+      "reason": null,
+      "city": "shymkent",
+      "constraints": {
+       "include": [
+        {
+         "measure": "M13",
+         "district": "karatau"
+        }
+       ],
+       "exclude": [],
+       "budget": null
+      }
+     },
+     "unsure": false,
+     "note": "City comes from R1(3): Каратауский район exists only in the Shymkent gazetteer."
+    },
+    {
+     "idx": 5,
+     "gold": {
+      "status": "clarify",
+      "reason": "unknown_district",
+      "city": "shymkent",
+      "constraints": null
+     },
+     "unsure": false,
+     "note": "Ордабасинский район is a Turkistan-region district and is not in the gazetteer."
+    },
+    {
+     "idx": 6,
+     "gold": {
+      "status": "ok",
+      "reason": null,
+      "city": "shymkent",
+      "constraints": {
+       "include": [
+        {
+         "measure": "M9",
+         "district": "abay"
+        }
+       ],
+       "exclude": [],
+       "budget": 80
+      }
+     },
+     "unsure": false,
+     "note": "Text city Шымкент overrides context astana."
+    },
+    {
+     "idx": 7,
+     "gold": {
+      "status": "clarify",
+      "reason": "unconfirmed_district",
+      "city": "shymkent",
+      "constraints": null
+     },
+     "unsure": false
+    },
+    {
+     "idx": 8,
+     "gold": {
+      "status": "ok",
+      "reason": null,
+      "city": "astana",
+      "constraints": {
+       "include": [
+        {
+         "measure": "M1",
+         "district": "saryarka"
+        },
+        "M12"
+       ],
+       "exclude": [
+        "M3"
+       ],
+       "budget": 150
+      }
+     },
+     "unsure": false
+    },
+    {
+     "idx": 9,
+     "gold": {
+      "status": "clarify",
+      "reason": "district_not_in_city",
+      "city": "astana",
+      "constraints": null
+     },
+     "unsure": false
+    },
+    {
+     "idx": 10,
+     "gold": {
+      "status": "ok",
+      "reason": null,
+      "city": "astana",
+      "constraints": {
+       "include": [
+        {
+         "measure": "M10",
+         "district": "baikonur"
+        }
+       ],
+       "exclude": [
+        "M6"
+       ],
+       "budget": null
+      }
+     },
+     "unsure": false,
+     "note": "City comes from R1(3): район Байконур exists only in the Astana gazetteer."
+    },
+    {
+     "idx": 11,
+     "gold": {
+      "status": "clarify",
+      "reason": "district_not_in_city",
+      "city": "shymkent",
+      "constraints": null
+     },
+     "unsure": false
+    },
+    {
+     "idx": 12,
+     "gold": {
+      "status": "ok",
+      "reason": null,
+      "city": "shymkent",
+      "constraints": {
+       "include": [
+        {
+         "measure": "M7",
+         "district": "al_farabi"
+        },
+        "M14"
+       ],
+       "exclude": [],
+       "budget": null
+      }
+     },
+     "unsure": false
+    },
+    {
+     "idx": 13,
+     "gold": {
+      "status": "clarify",
+      "reason": "ambiguous_toponym",
+      "city": "astana",
+      "constraints": null
+     },
+     "unsure": true,
+     "note": "Under R3, Алматы without the word район is ambiguous. City kept as the context astana, since R3 does not treat the toponym as an explicitly named city."
+    },
+    {
+     "idx": 14,
+     "gold": {
+      "status": "ok",
+      "reason": null,
+      "city": "astana",
+      "constraints": {
+       "include": [
+        {
+         "measure": "M4",
+         "district": "almaty"
+        }
+       ],
+       "exclude": [
+        "M2"
+       ],
+       "budget": 60
+      }
+     },
+     "unsure": false
+    },
+    {
+     "idx": 15,
+     "gold": {
+      "status": "refuse",
+      "reason": "district_not_modeled",
+      "city": "astana",
+      "constraints": null
+     },
+     "unsure": false,
+     "note": "City comes from R1(3): Сарайшык exists only in the Astana gazetteer."
+    }
+   ]
+  },
+  {
+   "lang": "kk",
+   "items": [
+    {
+     "text": "Нұра ауданында модульдік әдіспен мектеп пен балабақша салуды жоспарлаңыз.",
+     "context_city": "astana",
+     "intended_class": "ok_single_include_district_astana",
+     "gold": {
+      "status": "ok",
+      "reason": null,
+      "city": "astana",
+      "constraints": {
+       "exclude": [],
+       "include": [
+        {
+         "measure": "M7",
+         "district": "nura"
+        }
+       ],
+       "budget": null
+      }
+     }
+    },
+    {
+     "text": "ЛРТ желісін кеңейтуді жоспардан алып тастаңыз, бюджет — 60 бірлік.",
+     "context_city": "astana",
+     "intended_class": "ok_exclude_budget_digits",
+     "gold": {
+      "status": "ok",
+      "reason": null,
+      "city": "astana",
+      "constraints": {
+       "exclude": [
+        "M3"
+       ],
+       "include": [],
+       "budget": 60
+      }
+     }
+    },
+    {
+     "text": "Астанада ақылды бағдаршамдарды енгізу керек, қаржы сексен бірліктен аспасын.",
+     "context_city": null,
+     "intended_class": "ok_city_named_in_text_city_measure_budget_words",
+     "gold": {
+      "status": "ok",
+      "reason": null,
+      "city": "astana",
+      "constraints": {
+       "exclude": [],
+       "include": [
+        "M2"
+       ],
+       "budget": 80
+      }
+     }
+    },
+    {
+     "text": "Өтінемін, Алматы ауданында автобустарға бөлек жолақ бөліп, Байқоңыр ауданында емхана ашыңыз; жылу және су желілеріне тиіспеңіз. Бюджет — 120.",
+     "context_city": "astana",
+     "intended_class": "ok_composite_include_exclude_budget_almaty_with_audany",
+     "gold": {
+      "status": "ok",
+      "reason": null,
+      "city": "astana",
+      "constraints": {
+       "exclude": [
+        "M13"
+       ],
+       "include": [
+        {
+         "measure": "M1",
+         "district": "almaty"
+        },
+        {
+         "measure": "M8",
+         "district": "baikonur"
+        }
+       ],
+       "budget": 120
+      }
+     }
+    },
+    {
+     "text": "Есіл ауданындағы аулаларға спорт алаңдарын орнатайық.",
+     "context_city": null,
+     "intended_class": "ok_context_null_district_identifies_astana",
+     "gold": {
+      "status": "ok",
+      "reason": null,
+      "city": "astana",
+      "constraints": {
+       "exclude": [],
+       "include": [
+        {
+         "measure": "M9",
+         "district": "esil"
+        }
+       ],
+       "budget": null
+      }
+     }
+    },
+    {
+     "text": "Шымкенттегі Әл-Фараби ауданында көше жарығын күшейтіп, бейнебақылау камераларын көбейту керек.",
+     "context_city": "astana",
+     "intended_class": "ok_text_city_overrides_context",
+     "gold": {
+      "status": "ok",
+      "reason": null,
+      "city": "shymkent",
+      "constraints": {
+       "exclude": [],
+       "include": [
+        {
+         "measure": "M10",
+         "district": "al_farabi"
+        }
+       ],
+       "budget": null
+      }
+     }
+    },
+    {
+     "text": "Қаратау ауданындағы жеке үйлерді көмірден газға көшіріңіз, ал қалалық көгалдандыру бағдарламасын алып тастаңыз.",
+     "context_city": "shymkent",
+     "intended_class": "ok_shymkent_include_district_exclude_city_measure",
+     "gold": {
+      "status": "ok",
+      "reason": null,
+      "city": "shymkent",
+      "constraints": {
+       "exclude": [
+        "M6"
+       ],
+       "include": [
+        {
+         "measure": "M5",
+         "district": "karatau"
+        }
+       ],
+       "budget": null
+      }
+     }
+    },
+    {
+     "text": "Абай ауданында мектеп маңындағы жаяу жүргінші өткелдерін қауіпсіз етіп, бүкіл қала бойынша ТКШ апаттық бригадалары мен ерте хабарлау жүйесін енгізіңіз. Бюджет жетпіс бес бірлік.",
+     "context_city": null,
+     "intended_class": "ok_composite_context_null_district_identifies_shymkent_budget_words",
+     "gold": {
+      "status": "ok",
+      "reason": null,
+      "city": "shymkent",
+      "constraints": {
+       "exclude": [],
+       "include": [
+        {
+         "measure": "M11",
+         "district": "abay"
+        },
+        "M14"
+       ],
+       "budget": 75
+      }
+     }
+    },
+    {
+     "text": "Өтінемін, ақылды бағдаршамдар орнатуды жоспарға қосыңыз, бюджет 50 бірліктен аспасын.",
+     "context_city": null,
+     "intended_class": "clarify_city_unspecified",
+     "gold": {
+      "status": "clarify",
+      "reason": "city_unspecified",
+      "city": null,
+      "constraints": null
+     }
+    },
+    {
+     "text": "Целиноград ауданында жаңа саябақ салу қажет.",
+     "context_city": "astana",
+     "intended_class": "clarify_unknown_district_astana",
+     "gold": {
+      "status": "clarify",
+      "reason": "unknown_district",
+      "city": "astana",
+      "constraints": null
+     }
+    },
+    {
+     "text": "Шымкенттегі Самал ауданында жылу және су құбырларын жаңартыңыз.",
+     "context_city": "astana",
+     "intended_class": "clarify_unknown_district_text_city_overrides_context",
+     "gold": {
+      "status": "clarify",
+      "reason": "unknown_district",
+      "city": "shymkent",
+      "constraints": null
+     }
+    },
+    {
+     "text": "Тұран ауданында отбасылық денсаулық орталығын ашу қажет, бюджет 70.",
+     "context_city": "shymkent",
+     "intended_class": "clarify_unconfirmed_district",
+     "gold": {
+      "status": "clarify",
+      "reason": "unconfirmed_district",
+      "city": "shymkent",
+      "constraints": null
+     }
+    },
+    {
+     "text": "Еңбекші ауданында жаңа емхана салыңыз.",
+     "context_city": "astana",
+     "intended_class": "clarify_district_not_in_city_shymkent_district_in_astana",
+     "gold": {
+      "status": "clarify",
+      "reason": "district_not_in_city",
+      "city": "astana",
+      "constraints": null
+     }
+    },
+    {
+     "text": "Сарыарқа ауданындағы аулаларда спорт хабтарын ашайық, бюджет қырық.",
+     "context_city": "shymkent",
+     "intended_class": "clarify_district_not_in_city_astana_district_in_shymkent",
+     "gold": {
+      "status": "clarify",
+      "reason": "district_not_in_city",
+      "city": "shymkent",
+      "constraints": null
+     }
+    },
+    {
+     "text": "Алматыда бір саябақ салып, ЛРТ-ға тиіспеңіз.",
+     "context_city": "astana",
+     "intended_class": "clarify_ambiguous_toponym_almaty_without_audany",
+     "gold": {
+      "status": "clarify",
+      "reason": "ambiguous_toponym",
+      "city": "astana",
+      "constraints": null
+     }
+    },
+    {
+     "text": "Сарайшықта автобустарға арналған жолақтарды бөлу керек.",
+     "context_city": "astana",
+     "intended_class": "refuse_district_not_modeled_saraishyk",
+     "gold": {
+      "status": "refuse",
+      "reason": "district_not_modeled",
+      "city": "astana",
+      "constraints": null
+     }
+    }
+   ],
+   "labels": [
+    {
+     "idx": 0,
+     "gold": {
+      "status": "ok",
+      "reason": null,
+      "city": "astana",
+      "constraints": {
+       "exclude": [],
+       "include": [
+        {
+         "measure": "M7",
+         "district": "nura"
+        }
+       ],
+       "budget": null
+      }
+     },
+     "unsure": false
+    },
+    {
+     "idx": 1,
+     "gold": {
+      "status": "ok",
+      "reason": null,
+      "city": "astana",
+      "constraints": {
+       "exclude": [
+        "M3"
+       ],
+       "include": [],
+       "budget": 60
+      }
+     },
+     "unsure": false
+    },
+    {
+     "idx": 2,
+     "gold": {
+      "status": "ok",
+      "reason": null,
+      "city": "astana",
+      "constraints": {
+       "exclude": [],
+       "include": [
+        "M2"
+       ],
+       "budget": 80
+      }
+     },
+     "unsure": false
+    },
+    {
+     "idx": 3,
+     "gold": {
+      "status": "ok",
+      "reason": null,
+      "city": "astana",
+      "constraints": {
+       "exclude": [
+        "M13"
+       ],
+       "include": [
+        {
+         "measure": "M1",
+         "district": "almaty"
+        },
+        {
+         "measure": "M8",
+         "district": "baikonur"
+        }
+       ],
+       "budget": 120
+      }
+     },
+     "unsure": false
+    },
+    {
+     "idx": 4,
+     "gold": {
+      "status": "ok",
+      "reason": null,
+      "city": "astana",
+      "constraints": {
+       "exclude": [],
+       "include": [
+        {
+         "measure": "M9",
+         "district": "esil"
+        }
+       ],
+       "budget": null
+      }
+     },
+     "unsure": false,
+     "note": "City resolved via R1(3): Есіл exists only in the Astana gazetteer."
+    },
+    {
+     "idx": 5,
+     "gold": {
+      "status": "ok",
+      "reason": null,
+      "city": "shymkent",
+      "constraints": {
+       "exclude": [],
+       "include": [
+        {
+         "measure": "M10",
+         "district": "al_farabi"
+        }
+       ],
+       "budget": null
+      }
+     },
+     "unsure": false,
+     "note": "Explicit city in text (Шымкент) overrides context astana."
+    },
+    {
+     "idx": 6,
+     "gold": {
+      "status": "ok",
+      "reason": null,
+      "city": "shymkent",
+      "constraints": {
+       "exclude": [
+        "M6"
+       ],
+       "include": [
+        {
+         "measure": "M5",
+         "district": "karatau"
+        }
+       ],
+       "budget": null
+      }
+     },
+     "unsure": false
+    },
+    {
+     "idx": 7,
+     "gold": {
+      "status": "ok",
+      "reason": null,
+      "city": "shymkent",
+      "constraints": {
+       "exclude": [],
+       "include": [
+        {
+         "measure": "M11",
+         "district": "abay"
+        },
+        "M14"
+       ],
+       "budget": 75
+      }
+     },
+     "unsure": false,
+     "note": "City via R1(3): Абай ауданы exists only in the Shymkent gazetteer; M14 is city-scope."
+    },
+    {
+     "idx": 8,
+     "gold": {
+      "status": "clarify",
+      "reason": "city_unspecified",
+      "city": null,
+      "constraints": null
+     },
+     "unsure": false
+    },
+    {
+     "idx": 9,
+     "gold": {
+      "status": "clarify",
+      "reason": "unknown_district",
+      "city": "astana",
+      "constraints": null
+     },
+     "unsure": false
+    },
+    {
+     "idx": 10,
+     "gold": {
+      "status": "clarify",
+      "reason": "unknown_district",
+      "city": "shymkent",
+      "constraints": null
+     },
+     "unsure": false,
+     "note": "Text city Шымкент overrides context; Самал is not in any gazetteer."
+    },
+    {
+     "idx": 11,
+     "gold": {
+      "status": "clarify",
+      "reason": "unconfirmed_district",
+      "city": "shymkent",
+      "constraints": null
+     },
+     "unsure": false
+    },
+    {
+     "idx": 12,
+     "gold": {
+      "status": "clarify",
+      "reason": "district_not_in_city",
+      "city": "astana",
+      "constraints": null
+     },
+     "unsure": false
+    },
+    {
+     "idx": 13,
+     "gold": {
+      "status": "clarify",
+      "reason": "district_not_in_city",
+      "city": "shymkent",
+      "constraints": null
+     },
+     "unsure": false
+    },
+    {
+     "idx": 14,
+     "gold": {
+      "status": "clarify",
+      "reason": "ambiguous_toponym",
+      "city": "astana",
+      "constraints": null
+     },
+     "unsure": true,
+     "note": "Алматыда without ауданы is ambiguous under R3, so the status is clarify. I kept context city astana, but Almaty could also be read as a city named in the text."
+    },
+    {
+     "idx": 15,
+     "gold": {
+      "status": "refuse",
+      "reason": "district_not_modeled",
+      "city": "astana",
+      "constraints": null
+     },
+     "unsure": false
+    }
+   ]
+  }
+ ],
+ "_provenance": {
+  "workflow": "k09-t1-external-set",
+  "run_id": "wf_351a59b4-c45",
+  "agents": 4,
+  "design": "per language: writer agent (text + own label) -> independent annotator agent (sees text + context only)",
+  "isolation_audit": "each agent's tool calls: Read ANNOTATION_RULES.md, gazetteer.json, measure_catalog.json, then StructuredOutput; no other file access (see access_audit.txt)"
+ }
+}
