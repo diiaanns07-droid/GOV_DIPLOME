@@ -1,0 +1,164 @@
+{
+ "role": "REVIEW K06 round 6",
+ "target_sha": "064ed25368341edaa50289bc29e21dda7bdd9440",
+ "target": "claude/beautiful-clarke-sbzomj:prototypes/city-evidence/ (174 files, git blob ids verified on extraction)",
+ "previous_build_not_retested_as_new": "0bf27deb8549b325b34a9610402613d745544edb (used only as adapter regression)",
+ "test_source_sha": "982e3b419075139f2a47ed76bcafcad145825d02 (round-5 K06 tools) + round-6 adapter in this folder",
+ "verdict": "ACCEPT (labels/distances/counts): 0 FAIL; 2 label WARNs carried over, not defects",
+ "invariants": {
+  "I1_full_segment_length_labelled_incl_beyond_bbox": {
+   "verdict": "PASS",
+   "evidence": {
+    "shymkent": {
+     "card_shows": "2,83 км",
+     "marker": true,
+     "inside_square_m": 307.9
+    },
+    "astana": {
+     "card_shows": "1,42 км",
+     "marker": true,
+     "inside_square_m": 527.7
+    }
+   },
+   "checks": {
+    "R2_cross_segment_card": {
+     "shymkent": "PASS",
+     "astana": "PASS"
+    },
+    "R2b_inner_segment_card": {
+     "shymkent": "PASS",
+     "astana": "PASS"
+    },
+    "N4_segments_edge": {
+     "astana": "PASS",
+     "shymkent": "PASS"
+    }
+   }
+  },
+  "I2_road_km_total_full_vs_inside": {
+   "verdict": "WARN (not displayed)",
+   "evidence": {
+    "astana": {
+     "stated_road_km_full_geometry": 156.18,
+     "oracle_inside_square_km": 140.71,
+     "outside_share": 0.1008,
+     "displayed_in": []
+    },
+    "shymkent": {
+     "stated_road_km_full_geometry": 125.54,
+     "oracle_inside_square_km": 108.586,
+     "outside_share": 0.1359,
+     "displayed_in": []
+    }
+   }
+  },
+  "I3_segment_length_values_and_basis_label": {
+   "verdict": "WARN",
+   "checks": {
+    "astana": "WARN",
+    "shymkent": "WARN"
+   },
+   "note": "numbers within tolerance; card still says 'геодезическая, K10' while K10 uses a sphere (app.js:394)"
+  },
+  "I4_metres_not_turned_into_minutes": {
+   "verdict": "PASS",
+   "checks": {
+    "N7_straight_line_distance": {
+     "astana": "PASS",
+     "shymkent": "PASS"
+    },
+    "R3_point_distances": {
+     "shymkent": "PASS",
+     "astana": "PASS"
+    },
+    "R4_no_walk_time_no_city_total": {
+     "shymkent": "PASS",
+     "astana": "PASS"
+    },
+    "P1_point_500m_count": {
+     "shymkent": "PASS",
+     "astana": "PASS"
+    }
+   },
+   "evidence": {
+    "shymkent": "Точка выбрана: 17 записей выбранных категорий в пределах 500 м по прямой. Время пешком не рассчитывается.",
+    "astana": "Точка выбрана: 8 записей выбранных категорий в пределах 500 м по прямой. Время пешком не рассчитывается."
+   }
+  },
+  "I5_record_counts_not_city_completeness": {
+   "verdict": "PASS",
+   "checks": {
+    "N1_record_counts": {
+     "astana": "PASS",
+     "shymkent": "PASS"
+    },
+    "N2_count_labels": {
+     "astana": "PASS",
+     "shymkent": "PASS"
+    },
+    "N3_unknown_not_zero": {
+     "astana": "PASS",
+     "shymkent": "PASS"
+    },
+    "R1_slice_card": {
+     "shymkent": "PASS",
+     "astana": "PASS"
+    },
+    "R5_table_and_banner": {
+     "shymkent": "PASS",
+     "astana": "PASS"
+    }
+   }
+  },
+  "I6_small_set_vs_sources": {
+   "verdict": "PASS",
+   "checks": {
+    "N8_provenance_k10": {
+     "astana": "PASS",
+     "shymkent": "PASS"
+    }
+   },
+   "note": "data.js counts, lengths, bbox = inputs/k10 (sha256 vs package_manifest); distances and 500 m counts = WGS84 oracle"
+  }
+ },
+ "summary": {
+  "audit_app_root": {
+   "PASS": 12,
+   "WARN": 4
+  },
+  "audit_url": {
+   "PASS": 10,
+   "WARN": 4,
+   "SKIP": 2
+  },
+  "rendered_app_root": {
+   "PASS": 12
+  },
+  "rendered_url": {
+   "PASS": 12
+  },
+  "point500": {
+   "shymkent": "PASS",
+   "astana": "PASS"
+  },
+  "mutation_tests": "11 OK on 064ed25; 11 OK on 0bf27de (adapter regression)"
+ },
+ "repeat_run": "second run of audit/rendered/point500 on 064ed25: byte-identical JSON",
+ "test_incompatible_fixed": [
+  "audit_numbers N1-N3: evidence.js schema renamed (places.total/places.<g> -> overture_place_records.<g>.conf_ge_0_0, + city_total=null; registry.official_schools -> official_registry.schools) -> KeyError in round-5 tool",
+  "N2 / rendered R1: count label changed 'N в срезе' -> 'N в полном ответе запроса по квадрату'; adapter accepts slice-scope phrases (в срезе / по квадрату / в квадрате), still requires 'не реестр города'",
+  "rendered R4 (and N2): regex matched the honest negation 'а не отсутствие объектов в городе' (facts.js:291); adapter ignores matches inside a negation; affirmative claim still FAILs (mutation test_1)"
+ ],
+ "new_defects": [],
+ "commands": [
+  "git fetch origin claude/beautiful-clarke-sbzomj",
+  "python3 research/round-6-results/K06/extract_build.py /tmp/new 064ed25368341edaa50289bc29e21dda7bdd9440",
+  "cd research/round-6-results/K06",
+  "python3 audit_numbers.py --app-root /tmp/new --json out/audit_064ed25.json",
+  "NODE_PATH=$(npm root -g) python3 rendered_check.py --app-root /tmp/new --json out/rendered_064ed25.json",
+  "NODE_PATH=$(npm root -g) python3 point500_check.py --app-root /tmp/new --json out/point500_064ed25.json",
+  "python3 test_audit_numbers.py --app-root /tmp/new -v",
+  "(cd /tmp/new && python3 serve.py 8798 &) ; python3 audit_numbers.py --url http://127.0.0.1:8798/ ; python3 rendered_check.py --url http://127.0.0.1:8798/"
+ ],
+ "environment": "Linux container, Python 3.11.15, Node 22, Playwright 1.56 Chromium; Windows not checked"
+}

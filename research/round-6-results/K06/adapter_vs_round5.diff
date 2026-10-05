@@ -1,0 +1,140 @@
+--- round5/audit_numbers.py
++++ round6/audit_numbers.py
+@@ -96,6 +96,44 @@
+     return {n: (n in text) for n in needles}
+ 
+ 
++# ---- round-6 adapter (K06): BUILD 064ed25 renamed evidence indicators and count labels -------------------
++# Old schema (0bf27de): places.total, places.<g>, capacity.school_places, registry.official_schools, population.children
++# New schema (064ed25): overture_place_records.<g>.conf_ge_0_0, overture_place_records.city_total (null),
++#                       official_registry.schools, capacity.school_places, population.children
++UNKNOWN_IDS = (("capacity.school_places",), ("registry.official_schools", "official_registry.schools"),
++               ("population.children",))
++
++
++def group_obs(obs, g):
++    return obs.get("places." + g) or obs.get(f"overture_place_records.{g}.conf_ge_0_0")
++
++
++def total_obs(obs, groups):
++    """(value, unit, kind, coverage) of the slice total, from either schema."""
++    if "places.total" in obs:
++        o = obs["places.total"]
++        return o["value"], o.get("unit"), o["kind"], o.get("coverage") or {}
++    gs = [group_obs(obs, g) for g in groups]
++    return sum(o["value"] for o in gs), gs[0].get("unit"), gs[0]["kind"], gs[0].get("coverage") or {}
++
++
++def city_total_unknown(obs):
++    """New schema states the city total explicitly; it must be null and not complete. Old schema: n/a (True)."""
++    o = obs.get("overture_place_records.city_total")
++    return True if o is None else (o["value"] is None and (o.get("coverage") or {}).get("complete") is False)
++
++
++NEG = re.compile(r"(?:\bне\b|\bнет\b|\bа не\b)[^.;:!?«»]{0,40}$")
++
++
++def affirmative_claims(pattern, text):
++    """Matches of pattern that are NOT inside a negation like '…, а не отсутствие объектов в городе'."""
++    return [m.group(0) for m in re.finditer(pattern, text) if not NEG.search(text[max(0, m.start() - 60):m.start()])]
++
++
++SCOPE_PHRASES = ("в срезе", "по квадрату", "в квадрате")   # count is limited to the 2x2 km slice
++
++
+ def audit(src):
+     D = js_object(src.web("data.js")["text"], "CITY_EVIDENCE")
+     E = js_object(src.web("evidence.js")["text"], "CITY_OBS")
+@@ -112,26 +150,37 @@
+ 
+         # N1 record counts are consistent across data.js and evidence.js
+         by_g = dict(Counter(p["group"] for p in c["places"]))
+-        ok = (k["places"] == len(c["places"]) == obs["places.total"]["value"] and k["places_by_group"] == by_g
+-              and all(obs["places." + g]["value"] == n for g, n in by_g.items()))
++        tv, tu, tk, tcov = total_obs(obs, list(D["groups"]))
++        ok = (k["places"] == len(c["places"]) == tv and k["places_by_group"] == by_g
++              and all(group_obs(obs, g)["value"] == n for g, n in by_g.items()))
+         add("N1_record_counts", city, "PASS" if ok else "FAIL",
+             "counts.places / places_by_group = len(places) = K05 observation places.*",
+-            {"places": k["places"], "by_group": by_g, "evidence_total": obs["places.total"]["value"],
+-             "evidence_unit": obs["places.total"].get("unit"), "evidence_kind": obs["places.total"]["kind"]},
++            {"places": k["places"], "by_group": by_g, "evidence_total": tv, "evidence_unit": tu, "evidence_kind": tk},
+             ["data.js", "evidence.js"])
+ 
+         # N2 count labels say "records in the slice", never "facilities of the city"
+-        lab = has(app, "в срезе", "не реестр города") | has(html, "не число всех школ города") | has(facts, "записей в квадрате", "Записей выбранных категорий в квадрате")
+-        bad = re.findall(r"(школ[а-я]* (?:в )?город[а-я]*|объектов города|всего в городе)", app + facts)
+-        bad = [b for b in bad if "не число всех школ города" not in html or b not in ("школ города",)]
+-        cov = obs["places.total"].get("coverage") or {}
+-        status = "PASS" if all(lab.values()) and not bad and cov.get("complete") is False else "FAIL"
++        lab = {"app: slice scope (" + "/".join(SCOPE_PHRASES) + ")": any(x in app for x in SCOPE_PHRASES),
++               "app: не реестр города": "не реестр города" in app,
++               "index.html: не число всех школ города": "не число всех школ города" in html,
++               "facts: scope (в квадрате) + unit записей": "в квадрате" in facts and ("записей в квадрате" in facts or '" записей"' in facts)}
++        bad = affirmative_claims(r"(школ[а-я]* (?:в )?город[а-я]*|объектов (?:в )?город[а-я]*|всего в городе)", app + facts + html)
++        cov = tcov
++        # old schema: the total observation itself is 'complete: false' (slice != city);
++        # new schema: per-square counts are 'complete: true' for the square and the city total is a separate null
++        scope_ok = cov.get("complete") is False if "places.total" in obs else city_total_unknown(obs)
++        status = "PASS" if all(lab.values()) and not bad and scope_ok else "FAIL"
+         add("N2_count_labels", city, status, "count labels: records of a 2x2 km slice, not city facilities",
+             {"label_strings_present": lab, "claims_city_total": bad, "coverage_complete": cov.get("complete"),
++             "city_total_null_and_incomplete": city_total_unknown(obs),
+              "coverage_scope": cov.get("scope")}, ["app.js", "index.html", "facts.js", "evidence.js"])
+ 
+         # N3 unknowns stay null (not 0)
+-        nulls = {i: (obs[i]["value"], obs[i]["kind"]) for i in ("capacity.school_places", "registry.official_schools", "population.children")}
++        nulls = {}
++        for alts in UNKNOWN_IDS:
++            i = next((a for a in alts if a in obs), None)
++            nulls[i or alts[0]] = (obs[i]["value"], obs[i]["kind"]) if i else ("MISSING_INDICATOR", None)
++        if "overture_place_records.city_total" in obs:
++            o = obs["overture_place_records.city_total"]; nulls["overture_place_records.city_total"] = (o["value"], o["kind"])
+         zeros = {g: n for g, n in by_g.items() if n == 0}
+         add("N3_unknown_not_zero", city, "PASS" if all(v is None for v, _ in nulls.values()) and not zeros else "FAIL",
+             "capacity / official registry / population are null (unknown), not 0",
+--- round5/rendered_check.py
++++ round6/rendered_check.py
+@@ -18,7 +18,7 @@
+ from pathlib import Path
+ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+ from geo_oracle import polyline_m, vincenty_m
+-from audit_numbers import clip_to_bbox
++from audit_numbers import clip_to_bbox, affirmative_claims, SCOPE_PHRASES
+ 
+ HERE = Path(__file__).resolve().parent
+ 
+@@ -52,7 +52,11 @@
+ 
+     for city, r in obs["cities"].items():
+         d, sl = r["data"], r["slice"]
+-        m1 = re.search(r"Записей объектов\s*(\d+) в срезе", sl)
++        # round-6 adapter: the count label may be "N в срезе" (0bf27de) or "N в полном ответе запроса по квадрату" (064ed25);
++        # either way it must carry a slice scope phrase
++        m1 = re.search(r"Записей объектов\s*(\d+) ([^\n]*?)(?:не реестр города|$)", sl)
++        if m1 and not any(x in m1.group(2) for x in SCOPE_PHRASES):
++            m1 = None
+         m2 = re.search(r"Сегментов дорог\s*(\d+) \(из них (\d+) выходят за край\)", sl)
+         ok = bool(m1 and m2) and int(m1.group(1)) == d["places"] and int(m2.group(1)) == d["segments"] \
+             and int(m2.group(2)) == d["crossing"] and "не реестр города" in sl
+@@ -96,7 +100,7 @@
+ 
+         txt = r["body_text"] + (r["cross_seg_card"] or "") + (r["point_card"] or "")
+         mins = re.findall(r"\d+\s*(?:мин\b|минут)", txt)
+-        claims = re.findall(r"(?:всего в городе|школ[а-я]* в городе|объектов в городе)", txt)
++        claims = affirmative_claims(r"(?:всего в городе|школ[а-я]* в городе|объектов в городе)", txt)
+         add("R4_no_walk_time_no_city_total", city, not mins and not claims, {"minutes": mins, "city_total_claims": claims})
+ 
+         tc, bn = r["table_count"], r["banner"]
+--- round5/test_audit_numbers.py
++++ round6/test_audit_numbers.py
+@@ -46,7 +46,8 @@
+         self.assertFalse([c for c in checks if c["status"] == "FAIL"])
+ 
+     def test_1_city_total_claim_in_count_label(self):
+-        ch = self.mutate("app.js", lambda t: t.replace("в срезе", "школ в городе"))
++        ch = self.mutate("app.js", lambda t: t.replace("в срезе", "школ в городе").replace(
++            "в полном ответе запроса по квадрату", "школ в городе"))
+         self.assertEqual(set(status(ch, "N2_count_labels").values()), {"FAIL"})
+ 
+     def test_2_unknown_capacity_becomes_zero(self):

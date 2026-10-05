@@ -1,0 +1,11 @@
+{
+ "commit": "982e3b419075139f2a47ed76bcafcad145825d02",
+ "sha256_before_adapter": {
+  "audit_numbers.py": "9b8c79d120e0bd44ac97f08734b1d6212948bd0e647f45e759353b310a7addbf",
+  "rendered_check.py": "242db662852536fdc34e892d74249b92a4ff5352e0630e5fc0bdbb39def9d3c9",
+  "rendered_labels.cjs": "9439adb0786b1c63b8656dbf97b97ab1af598af095f2594264202cb9b77fd5ee",
+  "geo_oracle.py": "94fa2654308c182e19f423737b7ce7d04cc3abca68abb12ceb7ebd5d983e115a",
+  "extract_build.py": "9ad1fd8aabebcb5fe02fc09a4a5286e93b04972f3baa61a4a5cdd038ab460545",
+  "test_audit_numbers.py": "1f202b2b0eb08d3a77cd0e0c01f5919afe74081e5cacf9fde230a89721070570"
+ }
+}

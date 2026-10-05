@@ -1,0 +1,468 @@
+{
+ "target": "http://127.0.0.1:8798/",
+ "files": {
+  "data.js": {
+   "where": "http://127.0.0.1:8798/data.js",
+   "sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72"
+  },
+  "evidence.js": {
+   "where": "http://127.0.0.1:8798/evidence.js",
+   "sha256": "abb81f8ddaded4c2e9601ec1ef36e9b52fc482c851cae920628dd1bcfbfe4baa"
+  },
+  "app.js": {
+   "where": "http://127.0.0.1:8798/app.js",
+   "sha256": "7cdf10a6e00ef613c984b500daaef30ed4609b736212d93426447022ec44c037"
+  },
+  "facts.js": {
+   "where": "http://127.0.0.1:8798/facts.js",
+   "sha256": "fd1dcde41235548eae39e9d65fb024f76c94b517666f76a319b3eb96759d35da"
+  },
+  "index.html": {
+   "where": "http://127.0.0.1:8798/index.html",
+   "sha256": "f787bb4a16e228ec95c7d035303bf6de7513d6b17f350c02f6b90d52a68a4686"
+  }
+ },
+ "summary": {
+  "PASS": 10,
+  "WARN": 4,
+  "SKIP": 2
+ },
+ "checks": [
+  {
+   "id": "N1_record_counts",
+   "city": "astana",
+   "status": "PASS",
+   "what": "counts.places / places_by_group = len(places) = K05 observation places.*",
+   "observed": {
+    "places": 65,
+    "by_group": {
+     "college_university": 10,
+     "government_office": 16,
+     "outpatient_clinic": 16,
+     "hospital": 9,
+     "preschool": 3,
+     "pharmacy": 3,
+     "school": 8
+    },
+    "evidence_total": 65,
+    "evidence_unit": "records",
+    "evidence_kind": "derived"
+   },
+   "source": [
+    {
+     "file": "http://127.0.0.1:8798/data.js",
+     "sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72"
+    },
+    {
+     "file": "http://127.0.0.1:8798/evidence.js",
+     "sha256": "abb81f8ddaded4c2e9601ec1ef36e9b52fc482c851cae920628dd1bcfbfe4baa"
+    }
+   ]
+  },
+  {
+   "id": "N2_count_labels",
+   "city": "astana",
+   "status": "PASS",
+   "what": "count labels: records of a 2x2 km slice, not city facilities",
+   "observed": {
+    "label_strings_present": {
+     "app: slice scope (в срезе/по квадрату/в квадрате)": true,
+     "app: не реестр города": true,
+     "index.html: не число всех школ города": true,
+     "facts: scope (в квадрате) + unit записей": true
+    },
+    "claims_city_total": [],
+    "coverage_complete": true,
+    "city_total_null_and_incomplete": true,
+    "coverage_scope": "все записи выпуска с точкой в квадрате (полный ответ запроса), не реестр района/города"
+   },
+   "source": [
+    {
+     "file": "http://127.0.0.1:8798/app.js",
+     "sha256": "7cdf10a6e00ef613c984b500daaef30ed4609b736212d93426447022ec44c037"
+    },
+    {
+     "file": "http://127.0.0.1:8798/index.html",
+     "sha256": "f787bb4a16e228ec95c7d035303bf6de7513d6b17f350c02f6b90d52a68a4686"
+    },
+    {
+     "file": "http://127.0.0.1:8798/facts.js",
+     "sha256": "fd1dcde41235548eae39e9d65fb024f76c94b517666f76a319b3eb96759d35da"
+    },
+    {
+     "file": "http://127.0.0.1:8798/evidence.js",
+     "sha256": "abb81f8ddaded4c2e9601ec1ef36e9b52fc482c851cae920628dd1bcfbfe4baa"
+    }
+   ]
+  },
+  {
+   "id": "N3_unknown_not_zero",
+   "city": "astana",
+   "status": "PASS",
+   "what": "capacity / official registry / population are null (unknown), not 0",
+   "observed": {
+    "values_kind": {
+     "capacity.school_places": [
+      null,
+      "observed"
+     ],
+     "official_registry.schools": [
+      null,
+      "observed"
+     ],
+     "population.children": [
+      null,
+      "observed"
+     ],
+     "overture_place_records.city_total": [
+      null,
+      "observed"
+     ]
+    },
+    "zero_groups": {}
+   },
+   "source": [
+    {
+     "file": "http://127.0.0.1:8798/evidence.js",
+     "sha256": "abb81f8ddaded4c2e9601ec1ef36e9b52fc482c851cae920628dd1bcfbfe4baa"
+    }
+   ]
+  },
+  {
+   "id": "N4_segments_edge",
+   "city": "astana",
+   "status": "PASS",
+   "what": "segment count and 'crosses edge' flag recomputed from coordinates vs bbox",
+   "observed": {
+    "segments": 1326,
+    "crossing_edge_stated": 143,
+    "crossing_edge_recomputed": 143,
+    "flag_mismatches": 0
+   },
+   "source": [
+    {
+     "file": "http://127.0.0.1:8798/data.js",
+     "sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72"
+    }
+   ]
+  },
+  {
+   "id": "N5_road_km_full_vs_inside",
+   "city": "astana",
+   "status": "WARN",
+   "what": "road_km_full_geometry includes parts of edge-crossing segments outside the square; not displayed in UI",
+   "observed": {
+    "stated_road_km_full_geometry": 156.18,
+    "oracle_full_km": 156.478,
+    "oracle_inside_square_km": 140.71,
+    "outside_km": 15.769,
+    "outside_share": 0.1008,
+    "max_outside_share_of_one_crossing_segment": 0.987,
+    "displayed_in": [],
+    "display_label_mentions_beyond_edge": {},
+    "note": "if a km total is ever shown it must say 'вся геометрия, в т.ч. за краем' or use the inside value"
+   },
+   "source": [
+    {
+     "file": "http://127.0.0.1:8798/data.js",
+     "sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72"
+    },
+    {
+     "file": "http://127.0.0.1:8798/app.js",
+     "sha256": "7cdf10a6e00ef613c984b500daaef30ed4609b736212d93426447022ec44c037"
+    },
+    {
+     "file": "http://127.0.0.1:8798/facts.js",
+     "sha256": "fd1dcde41235548eae39e9d65fb024f76c94b517666f76a319b3eb96759d35da"
+    },
+    {
+     "file": "http://127.0.0.1:8798/index.html",
+     "sha256": "f787bb4a16e228ec95c7d035303bf6de7513d6b17f350c02f6b90d52a68a4686"
+    }
+   ]
+  },
+  {
+   "id": "N6_segment_length_label",
+   "city": "astana",
+   "status": "WARN",
+   "what": "road card length = whole line (marked when it leaves the square); 'геодезическая' although K10 uses a sphere",
+   "observed": {
+    "segments_outside_tolerance": 0,
+    "max_rel_diff": 0.02812,
+    "median_rel_diff_ge10m": -0.00196,
+    "label_strings": {
+     "(вся линия, выходит за квадрат)": true,
+     "геодезическая, K10": true
+    },
+    "note": "K10 k10_length_m = haversine on a sphere R=6371008.8 (K06 round 4); WGS84 differs by -0.07..-0.18 % median"
+   },
+   "source": [
+    {
+     "file": "http://127.0.0.1:8798/data.js",
+     "sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72"
+    },
+    {
+     "file": "http://127.0.0.1:8798/app.js",
+     "sha256": "7cdf10a6e00ef613c984b500daaef30ed4609b736212d93426447022ec44c037"
+    }
+   ]
+  },
+  {
+   "id": "N7_straight_line_distance",
+   "city": "astana",
+   "status": "PASS",
+   "what": "distance from a point: haversine 'по прямой', explicitly a lower bound of the walking route; no minutes",
+   "observed": {
+    "pairs": 80,
+    "max_rel_diff_vs_wgs84": 0.00315,
+    "label_strings": {
+     "По прямой": true,
+     "нижняя граница пешего пути": true,
+     "не время в пути и не доступность": true,
+     "расстояния по прямой": true
+    },
+    "walking_time_strings": []
+   },
+   "source": [
+    {
+     "file": "http://127.0.0.1:8798/app.js",
+     "sha256": "7cdf10a6e00ef613c984b500daaef30ed4609b736212d93426447022ec44c037"
+    },
+    {
+     "file": "http://127.0.0.1:8798/index.html",
+     "sha256": "f787bb4a16e228ec95c7d035303bf6de7513d6b17f350c02f6b90d52a68a4686"
+    },
+    {
+     "file": "http://127.0.0.1:8798/facts.js",
+     "sha256": "fd1dcde41235548eae39e9d65fb024f76c94b517666f76a319b3eb96759d35da"
+    }
+   ]
+  },
+  {
+   "id": "N8_provenance_k10",
+   "city": "astana",
+   "status": "SKIP",
+   "what": "--url mode: inputs/k10 is not served",
+   "observed": {},
+   "source": []
+  },
+  {
+   "id": "N1_record_counts",
+   "city": "shymkent",
+   "status": "PASS",
+   "what": "counts.places / places_by_group = len(places) = K05 observation places.*",
+   "observed": {
+    "places": 55,
+    "by_group": {
+     "school": 15,
+     "outpatient_clinic": 16,
+     "pharmacy": 3,
+     "college_university": 9,
+     "hospital": 6,
+     "preschool": 1,
+     "government_office": 5
+    },
+    "evidence_total": 55,
+    "evidence_unit": "records",
+    "evidence_kind": "derived"
+   },
+   "source": [
+    {
+     "file": "http://127.0.0.1:8798/data.js",
+     "sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72"
+    },
+    {
+     "file": "http://127.0.0.1:8798/evidence.js",
+     "sha256": "abb81f8ddaded4c2e9601ec1ef36e9b52fc482c851cae920628dd1bcfbfe4baa"
+    }
+   ]
+  },
+  {
+   "id": "N2_count_labels",
+   "city": "shymkent",
+   "status": "PASS",
+   "what": "count labels: records of a 2x2 km slice, not city facilities",
+   "observed": {
+    "label_strings_present": {
+     "app: slice scope (в срезе/по квадрату/в квадрате)": true,
+     "app: не реестр города": true,
+     "index.html: не число всех школ города": true,
+     "facts: scope (в квадрате) + unit записей": true
+    },
+    "claims_city_total": [],
+    "coverage_complete": true,
+    "city_total_null_and_incomplete": true,
+    "coverage_scope": "все записи выпуска с точкой в квадрате (полный ответ запроса), не реестр района/города"
+   },
+   "source": [
+    {
+     "file": "http://127.0.0.1:8798/app.js",
+     "sha256": "7cdf10a6e00ef613c984b500daaef30ed4609b736212d93426447022ec44c037"
+    },
+    {
+     "file": "http://127.0.0.1:8798/index.html",
+     "sha256": "f787bb4a16e228ec95c7d035303bf6de7513d6b17f350c02f6b90d52a68a4686"
+    },
+    {
+     "file": "http://127.0.0.1:8798/facts.js",
+     "sha256": "fd1dcde41235548eae39e9d65fb024f76c94b517666f76a319b3eb96759d35da"
+    },
+    {
+     "file": "http://127.0.0.1:8798/evidence.js",
+     "sha256": "abb81f8ddaded4c2e9601ec1ef36e9b52fc482c851cae920628dd1bcfbfe4baa"
+    }
+   ]
+  },
+  {
+   "id": "N3_unknown_not_zero",
+   "city": "shymkent",
+   "status": "PASS",
+   "what": "capacity / official registry / population are null (unknown), not 0",
+   "observed": {
+    "values_kind": {
+     "capacity.school_places": [
+      null,
+      "observed"
+     ],
+     "official_registry.schools": [
+      null,
+      "observed"
+     ],
+     "population.children": [
+      null,
+      "observed"
+     ],
+     "overture_place_records.city_total": [
+      null,
+      "observed"
+     ]
+    },
+    "zero_groups": {}
+   },
+   "source": [
+    {
+     "file": "http://127.0.0.1:8798/evidence.js",
+     "sha256": "abb81f8ddaded4c2e9601ec1ef36e9b52fc482c851cae920628dd1bcfbfe4baa"
+    }
+   ]
+  },
+  {
+   "id": "N4_segments_edge",
+   "city": "shymkent",
+   "status": "PASS",
+   "what": "segment count and 'crosses edge' flag recomputed from coordinates vs bbox",
+   "observed": {
+    "segments": 1084,
+    "crossing_edge_stated": 136,
+    "crossing_edge_recomputed": 136,
+    "flag_mismatches": 0
+   },
+   "source": [
+    {
+     "file": "http://127.0.0.1:8798/data.js",
+     "sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72"
+    }
+   ]
+  },
+  {
+   "id": "N5_road_km_full_vs_inside",
+   "city": "shymkent",
+   "status": "WARN",
+   "what": "road_km_full_geometry includes parts of edge-crossing segments outside the square; not displayed in UI",
+   "observed": {
+    "stated_road_km_full_geometry": 125.54,
+    "oracle_full_km": 125.657,
+    "oracle_inside_square_km": 108.586,
+    "outside_km": 17.071,
+    "outside_share": 0.1359,
+    "max_outside_share_of_one_crossing_segment": 0.999,
+    "displayed_in": [],
+    "display_label_mentions_beyond_edge": {},
+    "note": "if a km total is ever shown it must say 'вся геометрия, в т.ч. за краем' or use the inside value"
+   },
+   "source": [
+    {
+     "file": "http://127.0.0.1:8798/data.js",
+     "sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72"
+    },
+    {
+     "file": "http://127.0.0.1:8798/app.js",
+     "sha256": "7cdf10a6e00ef613c984b500daaef30ed4609b736212d93426447022ec44c037"
+    },
+    {
+     "file": "http://127.0.0.1:8798/facts.js",
+     "sha256": "fd1dcde41235548eae39e9d65fb024f76c94b517666f76a319b3eb96759d35da"
+    },
+    {
+     "file": "http://127.0.0.1:8798/index.html",
+     "sha256": "f787bb4a16e228ec95c7d035303bf6de7513d6b17f350c02f6b90d52a68a4686"
+    }
+   ]
+  },
+  {
+   "id": "N6_segment_length_label",
+   "city": "shymkent",
+   "status": "WARN",
+   "what": "road card length = whole line (marked when it leaves the square); 'геодезическая' although K10 uses a sphere",
+   "observed": {
+    "segments_outside_tolerance": 0,
+    "max_rel_diff": 0.05964,
+    "median_rel_diff_ge10m": -0.00079,
+    "label_strings": {
+     "(вся линия, выходит за квадрат)": true,
+     "геодезическая, K10": true
+    },
+    "note": "K10 k10_length_m = haversine on a sphere R=6371008.8 (K06 round 4); WGS84 differs by -0.07..-0.18 % median"
+   },
+   "source": [
+    {
+     "file": "http://127.0.0.1:8798/data.js",
+     "sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72"
+    },
+    {
+     "file": "http://127.0.0.1:8798/app.js",
+     "sha256": "7cdf10a6e00ef613c984b500daaef30ed4609b736212d93426447022ec44c037"
+    }
+   ]
+  },
+  {
+   "id": "N7_straight_line_distance",
+   "city": "shymkent",
+   "status": "PASS",
+   "what": "distance from a point: haversine 'по прямой', explicitly a lower bound of the walking route; no minutes",
+   "observed": {
+    "pairs": 80,
+    "max_rel_diff_vs_wgs84": 0.00263,
+    "label_strings": {
+     "По прямой": true,
+     "нижняя граница пешего пути": true,
+     "не время в пути и не доступность": true,
+     "расстояния по прямой": true
+    },
+    "walking_time_strings": []
+   },
+   "source": [
+    {
+     "file": "http://127.0.0.1:8798/app.js",
+     "sha256": "7cdf10a6e00ef613c984b500daaef30ed4609b736212d93426447022ec44c037"
+    },
+    {
+     "file": "http://127.0.0.1:8798/index.html",
+     "sha256": "f787bb4a16e228ec95c7d035303bf6de7513d6b17f350c02f6b90d52a68a4686"
+    },
+    {
+     "file": "http://127.0.0.1:8798/facts.js",
+     "sha256": "fd1dcde41235548eae39e9d65fb024f76c94b517666f76a319b3eb96759d35da"
+    }
+   ]
+  },
+  {
+   "id": "N8_provenance_k10",
+   "city": "shymkent",
+   "status": "SKIP",
+   "what": "--url mode: inputs/k10 is not served",
+   "observed": {},
+   "source": []
+  }
+ ]
+}

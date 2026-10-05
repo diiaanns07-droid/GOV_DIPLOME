@@ -1,0 +1,41 @@
+{
+ "target": "file:///tmp/claude-0/-home-user-GOV-DIPLOME/19d693cf-bc24-5d40-9049-bfa1f44c4847/scratchpad/new/web/index.html",
+ "checks": [
+  {
+   "id": "P1_point_500m_count",
+   "city": "shymkent",
+   "status": "PASS",
+   "observed": {
+    "status_text": "Точка выбрана: 17 записей выбранных категорий в пределах 500 м по прямой. Время пешком не рассчитывается.",
+    "shown": 17,
+    "oracle_count_range": [
+     17,
+     17
+    ],
+    "point": [
+     69.605512,
+     42.315628
+    ],
+    "visible_places": 55
+   }
+  },
+  {
+   "id": "P1_point_500m_count",
+   "city": "astana",
+   "status": "PASS",
+   "observed": {
+    "status_text": "Точка выбрана: 8 записей выбранных категорий в пределах 500 м по прямой. Время пешком не рассчитывается.",
+    "shown": 8,
+    "oracle_count_range": [
+     8,
+     8
+    ],
+    "point": [
+     71.432686,
+     51.172016
+    ],
+    "visible_places": 65
+   }
+  }
+ ]
+}
