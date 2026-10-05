@@ -1,0 +1,211 @@
+{
+ "schema_version": "city-plan-v2",
+ "city_id": "astana",
+ "source_snapshot": "sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d",
+ "category": "outpatient_clinic",
+ "control_points": [
+  {
+   "id": "cp01",
+   "lon": 71.421951,
+   "lat": 51.165279,
+   "weight": 4
+  },
+  {
+   "id": "cp02",
+   "lon": 71.429108,
+   "lat": 51.165279,
+   "weight": 2
+  },
+  {
+   "id": "cp03",
+   "lon": 71.436265,
+   "lat": 51.165279,
+   "weight": 5
+  },
+  {
+   "id": "cp04",
+   "lon": 71.443421,
+   "lat": 51.165279,
+   "weight": 3
+  },
+  {
+   "id": "cp05",
+   "lon": 71.421951,
+   "lat": 51.169771,
+   "weight": 1
+  },
+  {
+   "id": "cp06",
+   "lon": 71.429108,
+   "lat": 51.169771,
+   "weight": 4
+  },
+  {
+   "id": "cp07",
+   "lon": 71.436265,
+   "lat": 51.169771,
+   "weight": 2
+  },
+  {
+   "id": "cp08",
+   "lon": 71.443421,
+   "lat": 51.169771,
+   "weight": 5
+  },
+  {
+   "id": "cp09",
+   "lon": 71.421951,
+   "lat": 51.174262,
+   "weight": 3
+  },
+  {
+   "id": "cp10",
+   "lon": 71.429108,
+   "lat": 51.174262,
+   "weight": 1
+  },
+  {
+   "id": "cp11",
+   "lon": 71.436265,
+   "lat": 51.174262,
+   "weight": 4
+  },
+  {
+   "id": "cp12",
+   "lon": 71.443421,
+   "lat": 51.174262,
+   "weight": 2
+  },
+  {
+   "id": "cp13",
+   "lon": 71.421951,
+   "lat": 51.178754,
+   "weight": 5
+  },
+  {
+   "id": "cp14",
+   "lon": 71.429108,
+   "lat": 51.178754,
+   "weight": 3
+  },
+  {
+   "id": "cp15",
+   "lon": 71.436265,
+   "lat": 51.178754,
+   "weight": 1
+  },
+  {
+   "id": "cp16",
+   "lon": 71.443421,
+   "lat": 51.178754,
+   "weight": 4
+  }
+ ],
+ "candidates": [
+  {
+   "id": "c01",
+   "lon": 71.421951,
+   "lat": 51.166027,
+   "category": "outpatient_clinic",
+   "kind": "hypothetical",
+   "cost": 350
+  },
+  {
+   "id": "c02",
+   "lon": 71.429108,
+   "lat": 51.166027,
+   "category": "outpatient_clinic",
+   "kind": "hypothetical",
+   "cost": 250
+  },
+  {
+   "id": "c03",
+   "lon": 71.436265,
+   "lat": 51.166027,
+   "category": "outpatient_clinic",
+   "kind": "hypothetical",
+   "cost": 150
+  },
+  {
+   "id": "c04",
+   "lon": 71.443421,
+   "lat": 51.166027,
+   "category": "outpatient_clinic",
+   "kind": "hypothetical",
+   "cost": 400
+  },
+  {
+   "id": "c05",
+   "lon": 71.421951,
+   "lat": 51.172016,
+   "category": "outpatient_clinic",
+   "kind": "hypothetical",
+   "cost": 300
+  },
+  {
+   "id": "c06",
+   "lon": 71.429108,
+   "lat": 51.172016,
+   "category": "outpatient_clinic",
+   "kind": "hypothetical",
+   "cost": 200
+  },
+  {
+   "id": "c07",
+   "lon": 71.436265,
+   "lat": 51.172016,
+   "category": "outpatient_clinic",
+   "kind": "hypothetical",
+   "cost": 100
+  },
+  {
+   "id": "c08",
+   "lon": 71.443421,
+   "lat": 51.172016,
+   "category": "outpatient_clinic",
+   "kind": "hypothetical",
+   "cost": 350
+  },
+  {
+   "id": "c09",
+   "lon": 71.421951,
+   "lat": 51.178005,
+   "category": "outpatient_clinic",
+   "kind": "hypothetical",
+   "cost": 250
+  },
+  {
+   "id": "c10",
+   "lon": 71.429108,
+   "lat": 51.178005,
+   "category": "outpatient_clinic",
+   "kind": "hypothetical",
+   "cost": 150
+  },
+  {
+   "id": "c11",
+   "lon": 71.436265,
+   "lat": 51.178005,
+   "category": "outpatient_clinic",
+   "kind": "hypothetical",
+   "cost": 400
+  },
+  {
+   "id": "c12",
+   "lon": 71.443421,
+   "lat": 51.178005,
+   "category": "outpatient_clinic",
+   "kind": "hypothetical",
+   "cost": 300
+  }
+ ],
+ "budget": 700,
+ "max_selected": 3,
+ "coverage_radius_m": 400,
+ "required_ids": [],
+ "excluded_ids": [],
+ "selected_ids": [
+  "c06",
+  "c07"
+ ]
+}

@@ -1,0 +1,87 @@
+{
+ "pack_format": "k10-plan-pack-v1",
+ "generated_by": "k10plan.packs + k10plan.oracle",
+ "build": {
+  "commit": "a5b5e2ddbe087c4eab8e947748cdf69dbae84a0d",
+  "branch": "claude/beautiful-clarke-sbzomj",
+  "data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "evidence_js_sha256": "df736e986145da33dee60f692e020486720b72db5b6116af31640cc8693b11b9"
+ },
+ "rules": {
+  "fixed_before_computing": true,
+  "coordinates": "bbox fractions (x = share of lon span, y = share of lat span), rounded to 6 decimals",
+  "control_points": "cp01..cp16: 4x4 grid, x=(i+0.5)/4, y=(j+0.5)/4, row j outer (south to north), i inner (west to east)",
+  "weights": "SYNTHETIC: cp k (1-based) weight = 1 + ((3*k) mod 5); a user priority, not residents",
+  "candidates": "c01..c12: x in (1/8,3/8,5/8,7/8) inner, y in (1/6,1/2,5/6) outer; kind=hypothetical",
+  "costs": "SYNTHETIC conditional units: candidate k cost = 100 + 50*((5*k) mod 7); not tenge, not an estimate",
+  "base": "budget 700, max_selected 3, coverage_radius_m 400 (analysis parameter, not a walking norm), required [], excluded [], selected_ids [c06, c07] (the two candidates nearest the bbox centre)",
+  "tight_budget": "base, budget = smallest candidate cost",
+  "required_excluded": "base, required [c12] (fixed corner candidate), excluded = ids of the base 'mean' winner minus c12",
+  "conflict_budget": "base, required = the two most expensive candidates (ties: smaller id), budget = their cost sum - 1",
+  "conflict_count": "base, required [c01,c02,c03,c04], max_selected 3, budget 1000000 (only the count conflicts)",
+  "qa_nearest": "base + one control point at each qa.colocated group of web/evidence.js holding records of the category (largest group first, ids cp_qa1..), weight continues the weight rule; not built when no such group",
+  "seeded": "LCG x=(1103515245*x+12345) mod 2^31, seed = 20261005 + index in [shymkent/school, shymkent/outpatient_clinic, astana/school, astana/outpatient_clinic]; 20 control points s01..s20 at x,y = 0.05+0.9*u, weight 1+(x mod 100); 14 candidates r01..r14 at x,y = 0.05+0.9*u, cost 10*(5+(x mod 46)); budget 900, max_selected 4, radius 300; selected_ids []; draw order per point: x, y, weight; per candidate: x, y, cost",
+  "objectives_agree": "computed after the fact from oracle winners; reported as it came out, never searched for"
+ },
+ "packs": [
+  {
+   "pack_id": "shymkent-school-base",
+   "kind": "real_slice",
+   "stage": 1,
+   "purpose": "base v2 pack: 16 control points, 12 candidates, budget 700, max 3",
+   "status": "optimal",
+   "objectives_agree": true,
+   "distinct_winner_sets": 1,
+   "infeasible_reasons": null,
+   "pareto_points": 7,
+   "sha256": "330a0cc90d4e28db9d5c0457c7d5c02ed783e4d277e3d91fad0e3346a5c4bb9d"
+  },
+  {
+   "pack_id": "shymkent-outpatient_clinic-base",
+   "kind": "real_slice",
+   "stage": 1,
+   "purpose": "base v2 pack: 16 control points, 12 candidates, budget 700, max 3",
+   "status": "optimal",
+   "objectives_agree": false,
+   "distinct_winner_sets": 2,
+   "infeasible_reasons": null,
+   "pareto_points": 10,
+   "sha256": "a99a6c3bf309425eb0d1557b8a952ef8b116a9f1246acc8b3ee0f438e9a51b6b"
+  },
+  {
+   "pack_id": "astana-school-base",
+   "kind": "real_slice",
+   "stage": 1,
+   "purpose": "base v2 pack: 16 control points, 12 candidates, budget 700, max 3",
+   "status": "optimal",
+   "objectives_agree": false,
+   "distinct_winner_sets": 3,
+   "infeasible_reasons": null,
+   "pareto_points": 6,
+   "sha256": "e12c700cb8d18d8e51e8d0aedb37b2f729f4ec0d8bac6085d37b25aab14cdf2e"
+  },
+  {
+   "pack_id": "astana-outpatient_clinic-base",
+   "kind": "real_slice",
+   "stage": 1,
+   "purpose": "base v2 pack: 16 control points, 12 candidates, budget 700, max 3",
+   "status": "optimal",
+   "objectives_agree": false,
+   "distinct_winner_sets": 2,
+   "infeasible_reasons": null,
+   "pareto_points": 9,
+   "sha256": "e8220dec32ec574bbad390e96ec0d8e8812da80464320fbc671da536fe51396b"
+  }
+ ],
+ "not_built": [],
+ "inputs_unchanged_during_generation": true,
+ "input_manifest": {
+  "web/data.js": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "web/evidence.js": "df736e986145da33dee60f692e020486720b72db5b6116af31640cc8693b11b9",
+  "web/whatif.js": "944adfa63500d9bc13b3da859cf4a56a3d3e3f92fa0f565ed655bedfb81d8f2f",
+  "web/facts.js": "3994a275ddb8c0cb857478365d94810a945752a96fff10d53d37bc8dc9808c64",
+  "inputs/k10/data/shymkent/places_social.geojson": "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7",
+  "inputs/k10/data/astana/places_social.geojson": "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343",
+  "inputs/k10/package_manifest.json": "0616c08b65285ed4a5324c9e0238a31bec004857705cdb22c6b26e032fa4551d"
+ }
+}
