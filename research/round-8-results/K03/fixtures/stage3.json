@@ -1,0 +1,701 @@
+{
+ "schema": "k03-geo-v2-fixtures",
+ "stage": 3,
+ "description": "Этап 3: provenance/QA ближайшей записи, ничьи в общих координатах, кандидат поверх записи. Контрольные точки и кандидаты — synthetic; записи — Overture из сборки.",
+ "target": {
+  "branch": "claude/beautiful-clarke-sbzomj",
+  "sha": "a5b5e2ddbe087c4eab8e947748cdf69dbae84a0d",
+  "path": "prototypes/city-evidence/",
+  "data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "evidence_js_sha256": "df736e986145da33dee60f692e020486720b72db5b6116af31640cc8693b11b9"
+ },
+ "cases": [
+  {
+   "id": "ASTS-evidence-all",
+   "op": "evidence",
+   "city": "astana",
+   "category": "school",
+   "expect": {
+    "ok": true,
+    "result": {
+     "[0].ok": true,
+     "[1].ok": true,
+     "[2].ok": true,
+     "[3].ok": true,
+     "[4].ok": true,
+     "[5].ok": true,
+     "[6].ok": true,
+     "[7].ok": true,
+     "[0].result.position_status": "source_reported_unverified",
+     "[1].result.position_status": "source_reported_unverified",
+     "[2].result.position_status": "source_reported_unverified",
+     "[3].result.position_status": "source_reported_unverified",
+     "[4].result.position_status": "source_reported_unverified",
+     "[5].result.position_status": "source_reported_unverified",
+     "[6].result.position_status": "source_reported_unverified",
+     "[7].result.position_status": "source_reported_unverified",
+     "[0].result.confirmation": "not_confirmed",
+     "[1].result.confirmation": "not_confirmed",
+     "[2].result.confirmation": "not_confirmed",
+     "[3].result.confirmation": "not_confirmed",
+     "[4].result.confirmation": "not_confirmed",
+     "[5].result.confirmation": "not_confirmed",
+     "[6].result.confirmation": "not_confirmed",
+     "[7].result.confirmation": "not_confirmed",
+     "[8].ok": false,
+     "[8].error.code": "unknown_source",
+     "[9].ok": false,
+     "[9].error.code": "unknown_source",
+     "[10].ok": false,
+     "[10].error.code": "unknown_source"
+    }
+   },
+   "why": "все записи категории разрешаются; неизвестный ключ, hypothetical и запись другой категории — unknown_source",
+   "keys": [
+    "source:7b39e048-341b-454a-a63c-4b7e1ae73e9f",
+    "source:8ca53724-c558-46b7-826b-13e3e8fbb7e6",
+    "source:a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+    "source:a4483f53-7de8-4df1-b61b-b4066b0ad5dd",
+    "source:b5dd5f1a-9d55-48b1-9d68-7172ea84da3f",
+    "source:c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a",
+    "source:c97435da-cd05-4549-bec1-ff297e858554",
+    "source:de04f003-bb3d-4ea7-93e1-cd825e5c1783",
+    "source:does-not-exist",
+    "hypothetical:7b39e048-341b-454a-a63c-4b7e1ae73e9f",
+    "source:0233b91f-a010-4eac-9087-0b87d3c8756d"
+   ]
+  },
+  {
+   "id": "ASTS-bind-single",
+   "op": "bind",
+   "city": "astana",
+   "category": "school",
+   "expect": {
+    "ok": true,
+    "result": {
+     "[0].status": "ok",
+     "[0].nearest.key": "source:7b39e048-341b-454a-a63c-4b7e1ae73e9f",
+     "[0].tied_count": 1,
+     "[0].tie": null,
+     "[0].nearest.position_status": "source_reported_unverified",
+     "[0].nearest.confirmation": "not_confirmed"
+    }
+   },
+   "why": "запись без общих координат: ничьи нет, но и «подтверждено» нет",
+   "places": {
+    "control_points": [
+     {
+      "id": "p",
+      "lon": 71.42501,
+      "lat": 51.17087,
+      "weight": 1
+     }
+    ],
+    "candidates": []
+   }
+  },
+  {
+   "id": "ASTS-cand-evidence",
+   "op": "cand_evidence",
+   "city": "astana",
+   "category": "school",
+   "expect": {
+    "ok": true,
+    "result": {
+     "[0].kind": "hypothetical",
+     "[0].position_status": "hypothetical",
+     "[0].confirmation": "not_confirmed",
+     "[0].flags[0].code": "coincides_with_source",
+     "[0].flags[0].sources": [
+      "source:7b39e048-341b-454a-a63c-4b7e1ae73e9f"
+     ],
+     "[1].flags": []
+    }
+   },
+   "why": "кандидат поверх записи помечен coincides_with_source и остаётся hypothetical; кандидат в другом месте — без флагов",
+   "places": {
+    "control_points": [
+     {
+      "id": "p",
+      "lon": 71.432686,
+      "lat": 51.1720165,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "on",
+      "lon": 71.42501,
+      "lat": 51.17087,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 1
+     },
+     {
+      "id": "off",
+      "lon": 71.432686,
+      "lat": 51.1720165,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 1
+     }
+    ]
+   }
+  },
+  {
+   "id": "ASTC-evidence-all",
+   "op": "evidence",
+   "city": "astana",
+   "category": "outpatient_clinic",
+   "expect": {
+    "ok": true,
+    "result": {
+     "[0].ok": true,
+     "[1].ok": true,
+     "[2].ok": true,
+     "[3].ok": true,
+     "[4].ok": true,
+     "[5].ok": true,
+     "[6].ok": true,
+     "[7].ok": true,
+     "[8].ok": true,
+     "[9].ok": true,
+     "[10].ok": true,
+     "[11].ok": true,
+     "[12].ok": true,
+     "[13].ok": true,
+     "[14].ok": true,
+     "[15].ok": true,
+     "[0].result.position_status": "source_reported_unverified",
+     "[1].result.position_status": "source_reported_unverified",
+     "[2].result.position_status": "source_reported_unverified",
+     "[3].result.position_status": "source_reported_unverified",
+     "[4].result.position_status": "source_reported_unverified",
+     "[5].result.position_status": "source_reported_unverified",
+     "[6].result.position_status": "source_reported_unverified",
+     "[7].result.position_status": "source_reported_unverified",
+     "[8].result.position_status": "source_reported_unverified",
+     "[9].result.position_status": "source_reported_unverified",
+     "[10].result.position_status": "source_reported_unverified",
+     "[11].result.position_status": "source_reported_unverified",
+     "[12].result.position_status": "source_reported_unverified",
+     "[13].result.position_status": "source_reported_unverified",
+     "[14].result.position_status": "source_reported_unverified",
+     "[15].result.position_status": "source_reported_unverified",
+     "[0].result.confirmation": "not_confirmed",
+     "[1].result.confirmation": "not_confirmed",
+     "[2].result.confirmation": "not_confirmed",
+     "[3].result.confirmation": "not_confirmed",
+     "[4].result.confirmation": "not_confirmed",
+     "[5].result.confirmation": "not_confirmed",
+     "[6].result.confirmation": "not_confirmed",
+     "[7].result.confirmation": "not_confirmed",
+     "[8].result.confirmation": "not_confirmed",
+     "[9].result.confirmation": "not_confirmed",
+     "[10].result.confirmation": "not_confirmed",
+     "[11].result.confirmation": "not_confirmed",
+     "[12].result.confirmation": "not_confirmed",
+     "[13].result.confirmation": "not_confirmed",
+     "[14].result.confirmation": "not_confirmed",
+     "[15].result.confirmation": "not_confirmed",
+     "[16].ok": false,
+     "[16].error.code": "unknown_source",
+     "[17].ok": false,
+     "[17].error.code": "unknown_source",
+     "[18].ok": false,
+     "[18].error.code": "unknown_source"
+    }
+   },
+   "why": "все записи категории разрешаются; неизвестный ключ, hypothetical и запись другой категории — unknown_source",
+   "keys": [
+    "source:0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+    "source:1116880a-cbb6-4271-9a59-a277083b792c",
+    "source:140ab4bc-e560-41e3-aeaf-cb7b8b821f08",
+    "source:166c939f-9131-4fbb-bf75-4ab543916f20",
+    "source:1d137305-49cd-450b-9626-9762db14d080",
+    "source:1e587c48-b425-4d8a-ba90-37f1ad41e24f",
+    "source:3fba1026-8464-41ab-88f8-633e3df0de30",
+    "source:410f0193-f0bc-4553-bee5-660aab0287a5",
+    "source:43c64670-1b4c-4d42-bd0f-0049a7b49371",
+    "source:5c3a8d6d-117d-4cce-9dde-ad820e6967d2",
+    "source:5f76d9b9-bdd1-4cea-9157-fef68ac60270",
+    "source:6b48e0f6-30c5-4b1f-828a-c90c408ee9f8",
+    "source:771c278a-af10-4c57-b9fc-52755437345d",
+    "source:aca68551-4a03-47c2-813f-d13dceb85c62",
+    "source:b1fc81c5-7f00-4a0a-969d-2da872515916",
+    "source:fcdc8d2f-41ff-42ea-99fe-726d7d844050",
+    "source:does-not-exist",
+    "hypothetical:0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+    "source:0233b91f-a010-4eac-9087-0b87d3c8756d"
+   ]
+  },
+  {
+   "id": "ASTC-bind-single",
+   "op": "bind",
+   "city": "astana",
+   "category": "outpatient_clinic",
+   "expect": {
+    "ok": true,
+    "result": {
+     "[0].status": "ok",
+     "[0].nearest.key": "source:0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+     "[0].tied_count": 1,
+     "[0].tie": null,
+     "[0].nearest.position_status": "source_reported_unverified",
+     "[0].nearest.confirmation": "not_confirmed"
+    }
+   },
+   "why": "запись без общих координат: ничьи нет, но и «подтверждено» нет",
+   "places": {
+    "control_points": [
+     {
+      "id": "p",
+      "lon": 71.422483,
+      "lat": 51.169953,
+      "weight": 1
+     }
+    ],
+    "candidates": []
+   }
+  },
+  {
+   "id": "ASTC-cand-evidence",
+   "op": "cand_evidence",
+   "city": "astana",
+   "category": "outpatient_clinic",
+   "expect": {
+    "ok": true,
+    "result": {
+     "[0].kind": "hypothetical",
+     "[0].position_status": "hypothetical",
+     "[0].confirmation": "not_confirmed",
+     "[0].flags[0].code": "coincides_with_source",
+     "[0].flags[0].sources": [
+      "source:0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+     ],
+     "[1].flags": []
+    }
+   },
+   "why": "кандидат поверх записи помечен coincides_with_source и остаётся hypothetical; кандидат в другом месте — без флагов",
+   "places": {
+    "control_points": [
+     {
+      "id": "p",
+      "lon": 71.432686,
+      "lat": 51.1720165,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "on",
+      "lon": 71.422483,
+      "lat": 51.169953,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 1
+     },
+     {
+      "id": "off",
+      "lon": 71.432686,
+      "lat": 51.1720165,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 1
+     }
+    ]
+   }
+  },
+  {
+   "id": "SHYS-evidence-all",
+   "op": "evidence",
+   "city": "shymkent",
+   "category": "school",
+   "expect": {
+    "ok": true,
+    "result": {
+     "[0].ok": true,
+     "[1].ok": true,
+     "[2].ok": true,
+     "[3].ok": true,
+     "[4].ok": true,
+     "[5].ok": true,
+     "[6].ok": true,
+     "[7].ok": true,
+     "[8].ok": true,
+     "[9].ok": true,
+     "[10].ok": true,
+     "[11].ok": true,
+     "[12].ok": true,
+     "[13].ok": true,
+     "[14].ok": true,
+     "[0].result.position_status": "source_reported_unverified",
+     "[1].result.position_status": "source_reported_unverified",
+     "[2].result.position_status": "source_reported_unverified",
+     "[3].result.position_status": "source_reported_unverified",
+     "[4].result.position_status": "source_reported_unverified",
+     "[5].result.position_status": "source_reported_unverified",
+     "[6].result.position_status": "source_reported_unverified",
+     "[7].result.position_status": "source_reported_unverified",
+     "[8].result.position_status": "source_reported_unverified",
+     "[9].result.position_status": "source_reported_unverified",
+     "[10].result.position_status": "source_reported_unverified",
+     "[11].result.position_status": "source_reported_unverified",
+     "[12].result.position_status": "source_reported_unverified",
+     "[13].result.position_status": "source_reported_unverified",
+     "[14].result.position_status": "source_reported_unverified",
+     "[0].result.confirmation": "not_confirmed",
+     "[1].result.confirmation": "not_confirmed",
+     "[2].result.confirmation": "not_confirmed",
+     "[3].result.confirmation": "not_confirmed",
+     "[4].result.confirmation": "not_confirmed",
+     "[5].result.confirmation": "not_confirmed",
+     "[6].result.confirmation": "not_confirmed",
+     "[7].result.confirmation": "not_confirmed",
+     "[8].result.confirmation": "not_confirmed",
+     "[9].result.confirmation": "not_confirmed",
+     "[10].result.confirmation": "not_confirmed",
+     "[11].result.confirmation": "not_confirmed",
+     "[12].result.confirmation": "not_confirmed",
+     "[13].result.confirmation": "not_confirmed",
+     "[14].result.confirmation": "not_confirmed",
+     "[15].ok": false,
+     "[15].error.code": "unknown_source",
+     "[16].ok": false,
+     "[16].error.code": "unknown_source",
+     "[17].ok": false,
+     "[17].error.code": "unknown_source"
+    }
+   },
+   "why": "все записи категории разрешаются; неизвестный ключ, hypothetical и запись другой категории — unknown_source",
+   "keys": [
+    "source:01961e84-815f-4bd1-85c3-6bf1734256ec",
+    "source:01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+    "source:176c5993-4b62-4e90-849f-88addc0153bb",
+    "source:18df815b-170a-437c-977f-0769690315d4",
+    "source:51ac9e88-456d-4b3a-a657-d3cbc516c708",
+    "source:537980b9-4d8b-4c25-8e27-a6af60ffac34",
+    "source:68c8f007-75bc-42f6-8da8-baa72042bde4",
+    "source:931d6da5-e9db-4523-a6fd-79c88f235f88",
+    "source:99759f95-3ddb-4d87-8091-c301f9c23c9b",
+    "source:9d31b953-ccc4-42bd-a3a3-3e4e21f44051",
+    "source:a2cb79c8-c922-47a9-96a2-6cc326bbc3d6",
+    "source:b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+    "source:baeda67d-e701-4c2a-bba6-10a13466e76d",
+    "source:bcd265d0-0799-4dbf-8b15-23bae752a4d2",
+    "source:fd50a858-462d-477f-8bc6-a8d3e03a9576",
+    "source:does-not-exist",
+    "hypothetical:01961e84-815f-4bd1-85c3-6bf1734256ec",
+    "source:059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+   ]
+  },
+  {
+   "id": "SHYS-bind-single",
+   "op": "bind",
+   "city": "shymkent",
+   "category": "school",
+   "expect": {
+    "ok": true,
+    "result": {
+     "[0].status": "ok",
+     "[0].nearest.key": "source:01961e84-815f-4bd1-85c3-6bf1734256ec",
+     "[0].tied_count": 1,
+     "[0].tie": null,
+     "[0].nearest.position_status": "source_reported_unverified",
+     "[0].nearest.confirmation": "not_confirmed"
+    }
+   },
+   "why": "запись без общих координат: ничьи нет, но и «подтверждено» нет",
+   "places": {
+    "control_points": [
+     {
+      "id": "p",
+      "lon": 69.61052,
+      "lat": 42.32027,
+      "weight": 1
+     }
+    ],
+    "candidates": []
+   }
+  },
+  {
+   "id": "SHYS-bind-shared-2",
+   "op": "bind",
+   "city": "shymkent",
+   "category": "school",
+   "expect": {
+    "ok": true,
+    "result": {
+     "[0].nearest.key": "source:99759f95-3ddb-4d87-8091-c301f9c23c9b",
+     "[0].tied_count": 2,
+     "[0].tie.code": "tie_shared_coordinates",
+     "[0].tie.keys": [
+      "source:99759f95-3ddb-4d87-8091-c301f9c23c9b",
+      "source:a2cb79c8-c922-47a9-96a2-6cc326bbc3d6"
+     ],
+     "[0].nearest.confirmation": "not_confirmed"
+    }
+   },
+   "why": "2 записей категории в одних координатах (COLOCATED: нет, всего в точке 2): ничья раскрыта, выбранная запись не становится подтверждённым местом",
+   "places": {
+    "control_points": [
+     {
+      "id": "p",
+      "lon": 69.59496,
+      "lat": 42.32353,
+      "weight": 1
+     }
+    ],
+    "candidates": []
+   }
+  },
+  {
+   "id": "SHYS-cand-evidence",
+   "op": "cand_evidence",
+   "city": "shymkent",
+   "category": "school",
+   "expect": {
+    "ok": true,
+    "result": {
+     "[0].kind": "hypothetical",
+     "[0].position_status": "hypothetical",
+     "[0].confirmation": "not_confirmed",
+     "[0].flags[0].code": "coincides_with_source",
+     "[0].flags[0].sources": [
+      "source:01961e84-815f-4bd1-85c3-6bf1734256ec"
+     ],
+     "[1].flags": []
+    }
+   },
+   "why": "кандидат поверх записи помечен coincides_with_source и остаётся hypothetical; кандидат в другом месте — без флагов",
+   "places": {
+    "control_points": [
+     {
+      "id": "p",
+      "lon": 69.6055115,
+      "lat": 42.315628000000004,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "on",
+      "lon": 69.61052,
+      "lat": 42.32027,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 1
+     },
+     {
+      "id": "off",
+      "lon": 69.6055115,
+      "lat": 42.315628000000004,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 1
+     }
+    ]
+   }
+  },
+  {
+   "id": "SHYC-evidence-all",
+   "op": "evidence",
+   "city": "shymkent",
+   "category": "outpatient_clinic",
+   "expect": {
+    "ok": true,
+    "result": {
+     "[0].ok": true,
+     "[1].ok": true,
+     "[2].ok": true,
+     "[3].ok": true,
+     "[4].ok": true,
+     "[5].ok": true,
+     "[6].ok": true,
+     "[7].ok": true,
+     "[8].ok": true,
+     "[9].ok": true,
+     "[10].ok": true,
+     "[11].ok": true,
+     "[12].ok": true,
+     "[13].ok": true,
+     "[14].ok": true,
+     "[15].ok": true,
+     "[0].result.position_status": "source_reported_unverified",
+     "[1].result.position_status": "source_reported_unverified",
+     "[2].result.position_status": "source_reported_unverified",
+     "[3].result.position_status": "source_reported_unverified",
+     "[4].result.position_status": "source_reported_unverified",
+     "[5].result.position_status": "source_reported_unverified",
+     "[6].result.position_status": "source_reported_unverified",
+     "[7].result.position_status": "source_reported_unverified",
+     "[8].result.position_status": "source_reported_unverified",
+     "[9].result.position_status": "source_reported_unverified",
+     "[10].result.position_status": "source_reported_unverified",
+     "[11].result.position_status": "source_reported_unverified",
+     "[12].result.position_status": "source_reported_unverified",
+     "[13].result.position_status": "source_reported_unverified",
+     "[14].result.position_status": "source_reported_unverified",
+     "[15].result.position_status": "source_reported_unverified",
+     "[0].result.confirmation": "not_confirmed",
+     "[1].result.confirmation": "not_confirmed",
+     "[2].result.confirmation": "not_confirmed",
+     "[3].result.confirmation": "not_confirmed",
+     "[4].result.confirmation": "not_confirmed",
+     "[5].result.confirmation": "not_confirmed",
+     "[6].result.confirmation": "not_confirmed",
+     "[7].result.confirmation": "not_confirmed",
+     "[8].result.confirmation": "not_confirmed",
+     "[9].result.confirmation": "not_confirmed",
+     "[10].result.confirmation": "not_confirmed",
+     "[11].result.confirmation": "not_confirmed",
+     "[12].result.confirmation": "not_confirmed",
+     "[13].result.confirmation": "not_confirmed",
+     "[14].result.confirmation": "not_confirmed",
+     "[15].result.confirmation": "not_confirmed",
+     "[16].ok": false,
+     "[16].error.code": "unknown_source",
+     "[17].ok": false,
+     "[17].error.code": "unknown_source",
+     "[18].ok": false,
+     "[18].error.code": "unknown_source"
+    }
+   },
+   "why": "все записи категории разрешаются; неизвестный ключ, hypothetical и запись другой категории — unknown_source",
+   "keys": [
+    "source:059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+    "source:1cb001b2-d62f-4c28-ba0a-864ffa56808f",
+    "source:2264dcf0-549d-451a-b846-3f207d411e0c",
+    "source:50802484-b7f9-492e-8a4c-f75312fc7751",
+    "source:621acb4b-a1bd-45ce-891f-c0a4634a6103",
+    "source:622b4786-89fa-4853-b109-18054e3ebe0d",
+    "source:6e92676a-1297-446d-9956-731023da6339",
+    "source:7cd057e0-fd66-4026-8d41-717b3d1d0c60",
+    "source:833280f2-ff82-4dd6-a174-d2a9203420fa",
+    "source:99c68068-aa6e-4ff2-af5f-455675f93313",
+    "source:a10bb8cf-c446-4066-9cda-a5befa189a60",
+    "source:b845d434-7da3-4755-9ae9-bb6d40fc7520",
+    "source:c2990416-dca7-4e3a-b539-30e69cadf724",
+    "source:da9cd7b1-eefe-40eb-aebe-8ef720de4354",
+    "source:e1b19ead-4505-4acd-8aed-9c561ceec4c0",
+    "source:f4d6818b-1a99-43ca-8533-4c556f448919",
+    "source:does-not-exist",
+    "hypothetical:059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+    "source:01961e84-815f-4bd1-85c3-6bf1734256ec"
+   ]
+  },
+  {
+   "id": "SHYC-bind-single",
+   "op": "bind",
+   "city": "shymkent",
+   "category": "outpatient_clinic",
+   "expect": {
+    "ok": true,
+    "result": {
+     "[0].status": "ok",
+     "[0].nearest.key": "source:1cb001b2-d62f-4c28-ba0a-864ffa56808f",
+     "[0].tied_count": 1,
+     "[0].tie": null,
+     "[0].nearest.position_status": "source_reported_unverified",
+     "[0].nearest.confirmation": "not_confirmed"
+    }
+   },
+   "why": "запись без общих координат: ничьи нет, но и «подтверждено» нет",
+   "places": {
+    "control_points": [
+     {
+      "id": "p",
+      "lon": 69.607757,
+      "lat": 42.306934,
+      "weight": 1
+     }
+    ],
+    "candidates": []
+   }
+  },
+  {
+   "id": "SHYC-bind-shared-4",
+   "op": "bind",
+   "city": "shymkent",
+   "category": "outpatient_clinic",
+   "expect": {
+    "ok": true,
+    "result": {
+     "[0].nearest.key": "source:059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+     "[0].tied_count": 4,
+     "[0].tie.code": "tie_shared_coordinates",
+     "[0].tie.keys": [
+      "source:059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "source:2264dcf0-549d-451a-b846-3f207d411e0c",
+      "source:c2990416-dca7-4e3a-b539-30e69cadf724",
+      "source:f4d6818b-1a99-43ca-8533-4c556f448919"
+     ],
+     "[0].nearest.confirmation": "not_confirmed"
+    }
+   },
+   "why": "4 записей категории в одних координатах (COLOCATED: 10, всего в точке 10): ничья раскрыта, выбранная запись не становится подтверждённым местом",
+   "places": {
+    "control_points": [
+     {
+      "id": "p",
+      "lon": 69.5958,
+      "lat": 42.3167,
+      "weight": 1
+     }
+    ],
+    "candidates": []
+   }
+  },
+  {
+   "id": "SHYC-cand-evidence",
+   "op": "cand_evidence",
+   "city": "shymkent",
+   "category": "outpatient_clinic",
+   "expect": {
+    "ok": true,
+    "result": {
+     "[0].kind": "hypothetical",
+     "[0].position_status": "hypothetical",
+     "[0].confirmation": "not_confirmed",
+     "[0].flags[0].code": "coincides_with_source",
+     "[0].flags[0].sources": [
+      "source:059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "source:2264dcf0-549d-451a-b846-3f207d411e0c",
+      "source:c2990416-dca7-4e3a-b539-30e69cadf724",
+      "source:f4d6818b-1a99-43ca-8533-4c556f448919"
+     ],
+     "[1].flags": []
+    }
+   },
+   "why": "кандидат поверх записи помечен coincides_with_source и остаётся hypothetical; кандидат в другом месте — без флагов",
+   "places": {
+    "control_points": [
+     {
+      "id": "p",
+      "lon": 69.6055115,
+      "lat": 42.315628000000004,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "on",
+      "lon": 69.5958,
+      "lat": 42.3167,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 1
+     },
+     {
+      "id": "off",
+      "lon": 69.6055115,
+      "lat": 42.315628000000004,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 1
+     }
+    ]
+   }
+  }
+ ]
+}

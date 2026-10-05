@@ -53,6 +53,16 @@ def py_case(c, data, ev, cache):
         if k not in cache:
             cache[k] = R.build_context(data, ev, *k)
         ctx = cache[k]
+
+        def one(f):
+            try:
+                return {'ok': True, 'result': f()}
+            except R.GeoErr as e:
+                return {'ok': False, 'error': {'code': e.code, 'path': e.path}}
+        if c['op'] == 'evidence':
+            return {'ok': True, 'result': [one(lambda key=key: R.source_evidence(ctx, key)) for key in c['keys']]}
+        if c['op'] == 'bind_table':
+            return {'ok': True, 'result': one(lambda: R.bind_nearest_sources(ctx, c['table']))}
         if c['op'] == 'context':
             return {'ok': True, 'result': ctx}
         v = R.validate_places(ctx, revive(c['places']), allow_empty_points=bool(c.get('allow_empty')))
@@ -61,6 +71,10 @@ def py_case(c, data, ev, cache):
         t = R.distance_table(ctx, v['control_points'], v['candidates'])
         if c['op'] == 'table':
             return {'ok': True, 'result': t}
+        if c['op'] == 'bind':
+            return {'ok': True, 'result': R.bind_nearest_sources(ctx, t)}
+        if c['op'] == 'cand_evidence':
+            return {'ok': True, 'result': [R.candidate_evidence(ctx, q) for q in v['candidates']]}
         return {'ok': True, 'result': [R.nearest_after(t, i, c.get('selected') or [], v['candidates'])
                                        for i in range(len(v['control_points']))]}
     except R.GeoErr as e:

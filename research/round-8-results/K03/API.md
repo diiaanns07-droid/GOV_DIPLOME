@@ -54,3 +54,34 @@
 ## Вне области K03
 
 `budget`, `max_selected`, `required/excluded`, метрики плана, перебор, Парето, digest задачи и объяснение относятся к другим модулям. Им передаются `distanceTable` и `cmpNear`.
+
+## Этап 3 — ближайшая запись, provenance и QA
+
+### `sourceEvidence(ctx, key)`
+
+Возвращает `{key, kind:'source', id, lon, lat, name, position_status, confirmation, provenance, flags[]}`.
+
+- Ключ должен быть `source:<id>` из `ctx.sources`. Неизвестный ключ, ключ `hypothetical:` или запись другой категории дают `unknown_source`.
+- `position_status` всегда `source_reported_unverified`, `confirmation` всегда `not_confirmed`. Отсутствие QA-флагов ≠ подтверждение.
+- `flags` — коды, отсортированные по `code`, затем по `other`:
+  - `colocated{size}` — группа COLOCATED из evidence (по ID, может быть межкатегорийной);
+  - `shared_coordinates{count}` — у других записей среза те же координаты (и без COLOCATED);
+  - `possible_duplicate{other, rule, distance_m}`;
+  - `category_doubt{rule}`;
+  - `qa_unavailable` — нет QA-меток среза: «замечаний нет» не показывать;
+  - `no_provenance_records` или `record_id_missing`.
+- Тексты для UI — `MESSAGES_RU[code]`. Отображать их как текст.
+
+### `candidateEvidence(ctx, candidate)`
+
+Принимает только проверенный `validatePlaces` кандидат (`hypothetical:`). Возвращает `position_status: 'hypothetical'`, `confirmation: 'not_confirmed'`. Если кандидат совпадает с записями категории по координатам — флаг `coincides_with_source{sources}`. Кандидат не становится существующим объектом и не попадает в `ctx.sources`.
+
+### `bindNearestSources(ctx, table)`
+
+- Таблица должна быть построена на этом же срезе (`source_snapshot`) и с `metric_version = haversine-mm-v1`, иначе `stale_table`.
+- Для каждой точки: `{point_key, status: 'ok'|'no_sources', nearest: sourceEvidence|null, tied_count, tie}`.
+- `tie.code`:
+  - `tie_shared_coordinates` — все ничьи в одних координатах: выбрана запись с меньшим ID, это не подтверждение места;
+  - `tie_equal_distance` — разные координаты на равном расстоянии.
+
+  В обоих случаях `tie.keys` — все ключи. Записи не сливаются.

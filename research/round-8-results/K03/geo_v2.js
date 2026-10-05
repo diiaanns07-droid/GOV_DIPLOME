@@ -208,8 +208,77 @@
     return best ? { key: best.key, kind: best.kind, mm: best.mm } : null;
   }
 
+  // ---------- stage 3: nearest source → provenance/QA; coordinates never confirm a place ----------
+  const POSITION_STATUS = { source: "source_reported_unverified", hypothetical: "hypothetical" };
+  const MESSAGES_RU = {
+    source_reported_unverified: "координаты из записи Overture (вторичный источник); положение на месте не подтверждено",
+    hypothetical: "условное место пользователя; не существующее учреждение",
+    not_confirmed: "совпадение координат или отсутствие QA-замечаний не подтверждает учреждение",
+    colocated: "координаты общие с группой записей (COLOCATED): возможно геокодирование по умолчанию",
+    shared_coordinates: "те же координаты у других записей среза",
+    possible_duplicate: "возможный дубль другой записи",
+    category_doubt: "сомнение в категории записи",
+    qa_unavailable: "QA-метки для среза не загружены — это не «замечаний нет»",
+    no_provenance_records: "у записи нет sources[] — происхождение не подтверждено",
+    record_id_missing: "у источника записи нет record_id",
+    tie_shared_coordinates: "ничья в одних координатах: выбрана запись с меньшим ID, это не подтверждение места",
+    tie_equal_distance: "ничья по расстоянию: выбрана запись с меньшим ID",
+    coincides_with_source: "кандидат в координатах исходной записи; кандидат остаётся условным",
+  };
+  const byCode = (a, b) => cmpStr(a.code, b.code) || cmpStr(a.other || "", b.other || "");
+
+  /* Provenance and QA of one source key of the context. Throws unknown_source for anything not in ctx.sources
+   * (including hypothetical keys). Flags are codes; MESSAGES_RU gives UI text. No field ever says "confirmed". */
+  function sourceEvidence(ctx, key) {
+    const s = typeof key === "string" && key.startsWith("source:") ? ctx.sources.find((x) => x.key === key) : null;
+    if (!s) throw new GeoError("unknown_source", "key", String(key).slice(0, 80));
+    const flags = [];
+    const recs = s.provenance.records;
+    if (!recs.length) flags.push({ code: "no_provenance_records" });
+    else if (recs.some((r) => !r.record_id)) flags.push({ code: "record_id_missing" });
+    if (!s.qa.available) flags.push({ code: "qa_unavailable" });
+    if (s.qa.colocated_group) flags.push({ code: "colocated", size: s.qa.colocated_group.size });
+    if (s.qa.same_exact_coordinates > 0) flags.push({ code: "shared_coordinates", count: s.qa.same_exact_coordinates });
+    for (const d of s.qa.possible_duplicates) flags.push({ code: "possible_duplicate", other: "source:" + d.other, rule: d.rule, distance_m: d.distance_m });
+    if (s.qa.category_doubt) flags.push({ code: "category_doubt", rule: s.qa.category_doubt.rule });
+    return { key: s.key, kind: "source", id: s.id, lon: s.lon, lat: s.lat, name: s.name,
+      position_status: POSITION_STATUS.source, confirmation: "not_confirmed",
+      provenance: { overture_id: s.provenance.overture_id, overture_version: s.provenance.overture_version,
+        confidence: s.provenance.confidence, records: recs.map((r) => ({ ...r })) },
+      flags: flags.sort(byCode) };
+  }
+
+  // A hypothetical candidate stays hypothetical even on top of a source record.
+  function candidateEvidence(ctx, cand) {
+    if (!cand || cand.kind !== "hypothetical" || typeof cand.key !== "string" || !cand.key.startsWith("hypothetical:"))
+      throw new GeoError("bad_kind", "candidate", "ожидается проверенный кандидат validatePlaces()");
+    const same = ctx.sources.filter((s) => s.lon === cand.lon && s.lat === cand.lat).map((s) => s.key).sort(cmpStr);
+    return { key: cand.key, kind: "hypothetical", id: cand.id, position_status: POSITION_STATUS.hypothetical,
+      confirmation: "not_confirmed", flags: same.length ? [{ code: "coincides_with_source", sources: same }] : [] };
+  }
+
+  /* Bind every baseline nearest of a distance table to source evidence. The table must come from this context
+   * (same source_snapshot), otherwise stale_table. Ties are reported, never resolved into a "confirmed" place. */
+  function bindNearestSources(ctx, table) {
+    if (!table || table.source_snapshot !== ctx.source_snapshot || table.metric_version !== METRIC_VERSION)
+      throw new GeoError("stale_table", "table.source_snapshot", "таблица расстояний построена на другом срезе или версии метрики");
+    return table.point_keys.map((pk, i) => {
+      const b = table.baseline[i];
+      if (!b) return { point_key: pk, status: "no_sources", nearest: null, tied_count: 0, tie: null };
+      const ev = sourceEvidence(ctx, b.key);
+      for (const k of b.tied_keys) sourceEvidence(ctx, k);
+      let tie = null;
+      if (b.tied_keys.length > 1) {
+        const sameXY = b.tied_keys.every((k) => { const s = ctx.sources.find((x) => x.key === k); return s.lon === ev.lon && s.lat === ev.lat; });
+        tie = { code: sameXY ? "tie_shared_coordinates" : "tie_equal_distance", keys: b.tied_keys.slice() };
+      }
+      return { point_key: pk, status: "ok", nearest: ev, tied_count: b.tied_keys.length, tie };
+    });
+  }
+
   const api = { SCHEMA, METRIC_VERSION, ADAPTER_VERSION, R_EARTH, CATEGORIES, LIMITS, GeoError, haversineM, toMm, distMm,
-    cmpNear, buildGeoContext, validatePlaces, checkCoord, distanceTable, nearestAfter };
+    cmpNear, buildGeoContext, validatePlaces, checkCoord, distanceTable, nearestAfter,
+    POSITION_STATUS, MESSAGES_RU, sourceEvidence, candidateEvidence, bindNearestSources };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else root.CITY_PLAN_GEO = api;
 })(typeof window !== "undefined" ? window : globalThis);

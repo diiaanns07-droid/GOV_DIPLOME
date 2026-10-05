@@ -1,0 +1,187 @@
+{
+ "summary": {
+  "PASS": 21,
+  "FAIL": 0,
+  "SKIP": 0,
+  "TEST_INCOMPATIBLE": 0
+ },
+ "results": [
+  {
+   "check": "S1-fixtures-match-build",
+   "verdict": "PASS",
+   "summary": "fixtures stage 1 построены на данных этой сборки (a5b5e2ddbe08)",
+   "details": {}
+  },
+  {
+   "check": "S1-python-oracle",
+   "verdict": "PASS",
+   "summary": "76 случаев: несоответствий 0",
+   "details": {
+    "mismatches": []
+   }
+  },
+  {
+   "check": "S1-js (geo_v2.js)",
+   "verdict": "PASS",
+   "summary": "76 случаев: несоответствий 0",
+   "details": {
+    "mismatches": []
+   }
+  },
+  {
+   "check": "S1-js-python-parity",
+   "verdict": "PASS",
+   "summary": "полное совпадение результатов JS и Python (контекст, места, мм, ничьи): расхождений 0",
+   "details": {
+    "ids": []
+   }
+  },
+  {
+   "check": "S2-fixtures-match-build",
+   "verdict": "PASS",
+   "summary": "fixtures stage 2 построены на данных этой сборки (a5b5e2ddbe08)",
+   "details": {}
+  },
+  {
+   "check": "S2-python-oracle",
+   "verdict": "PASS",
+   "summary": "59 случаев: несоответствий 0",
+   "details": {
+    "mismatches": []
+   }
+  },
+  {
+   "check": "S2-js (geo_v2.js)",
+   "verdict": "PASS",
+   "summary": "59 случаев: несоответствий 0",
+   "details": {
+    "mismatches": []
+   }
+  },
+  {
+   "check": "S2-js-python-parity",
+   "verdict": "PASS",
+   "summary": "полное совпадение результатов JS и Python (контекст, места, мм, ничьи): расхождений 0",
+   "details": {
+    "ids": []
+   }
+  },
+  {
+   "check": "S2-geodesic-vs-haversine",
+   "verdict": "PASS",
+   "summary": "1375 пар (25 точек × записи школ/поликлиник, оба города): макс. относительное отличие гаверсинуса R=6371008.8 от WGS84 0.315% (< 0,5% — порог, при котором ошибка порядка lon/lat или единиц была бы видна); ближайшая запись по сфере и эллипсоиду различается у 1 из 50 точек (свойство метрики, не ошибка)",
+   "details": {
+    "max_rel_diff": 0.0031489926899158534,
+    "pairs": 1375,
+    "nearest_differs": 1,
+    "points": 50
+   }
+  },
+  {
+   "check": "S2-symmetry-and-mm-parity",
+   "verdict": "PASS",
+   "summary": "1080 пар (9 точек × все записи, оба города): d(a,b)≠d(b,a) — Python 0, JS 0; мм JS≠Python 0",
+   "details": {}
+  },
+  {
+   "check": "S2-mm-rounding-dense",
+   "verdict": "PASS",
+   "summary": "25590 значений у границ k+0,5 мм (±2 ulp, до 5 км): floor(x+0.5) ≠ js_round — 0; ≠ JS Math.round — 0. Единственное расходящееся x=0.49999999999999994 не получается из d·1000",
+   "details": {}
+  },
+  {
+   "check": "S2-order-independence",
+   "verdict": "PASS",
+   "summary": "24 сценариев: обратный порядок мест в data.js, контрольных точек и кандидатов → те же ближайшие ключи, мм и ничьи (Python и JS); расхождений 0",
+   "details": {
+    "mismatches": []
+   }
+  },
+  {
+   "check": "S2-qa-groups-not-merged",
+   "verdict": "PASS",
+   "summary": "группы COLOCATED пересчитаны из точных координат data.js и совпадают с evidence; флаг привязан по ID; записи не сливаются (число записей категории = data.js)",
+   "details": {
+    "problems": [],
+    "info": [
+     "shymkent: группа (69.5958, 42.3167) из 10 записей разных категорий {'outpatient_clinic': 4, 'school': 3, 'college_university': 1, 'government_office': 1, 'pharmacy': 1}",
+     "shymkent: группа (69.60702, 42.31757) из 4 записей разных категорий {'college_university': 1, 'outpatient_clinic': 3}",
+     "shymkent: 477b7659… и 833280f2… в 1.11 м, но только одна в группе COLOCATED (правило — точное совпадение 5 знаков)",
+     "shymkent: 477b7659… и b9656404… в 1.11 м, но только одна в группе COLOCATED (правило — точное совпадение 5 знаков)",
+     "shymkent: 50802484… и 833280f2… в 1.11 м, но только одна в группе COLOCATED (правило — точное совпадение 5 знаков)",
+     "shymkent: 50802484… и b9656404… в 1.11 м, но только одна в группе COLOCATED (правило — точное совпадение 5 знаков)",
+     "shymkent: 622b4786… и 833280f2… в 1.11 м, но только одна в группе COLOCATED (правило — точное совпадение 5 знаков)",
+     "shymkent: 622b4786… и b9656404… в 1.11 м, но только одна в группе COLOCATED (правило — точное совпадение 5 знаков)",
+     "shymkent: 833280f2… и e1b19ead… в 1.11 м, но только одна в группе COLOCATED (правило — точное совпадение 5 знаков)",
+     "shymkent: b9656404… и e1b19ead… в 1.11 м, но только одна в группе COLOCATED (правило — точное совпадение 5 знаков)"
+    ]
+   }
+  },
+  {
+   "check": "S2-edges-exclusive-variant",
+   "verdict": "PASS",
+   "summary": "копия среза с edges_inclusive=false: угол bbox отклоняется — [('py', 'astana', 'outside_bbox'), ('js', 'astana', 'outside_bbox'), ('py', 'shymkent', 'outside_bbox'), ('js', 'shymkent', 'outside_bbox')]",
+   "details": {}
+  },
+  {
+   "check": "S3-fixtures-match-build",
+   "verdict": "PASS",
+   "summary": "fixtures stage 3 построены на данных этой сборки (a5b5e2ddbe08)",
+   "details": {}
+  },
+  {
+   "check": "S3-python-oracle",
+   "verdict": "PASS",
+   "summary": "14 случаев: несоответствий 0",
+   "details": {
+    "mismatches": []
+   }
+  },
+  {
+   "check": "S3-js (geo_v2.js)",
+   "verdict": "PASS",
+   "summary": "14 случаев: несоответствий 0",
+   "details": {
+    "mismatches": []
+   }
+  },
+  {
+   "check": "S3-js-python-parity",
+   "verdict": "PASS",
+   "summary": "полное совпадение результатов JS и Python (контекст, места, мм, ничьи): расхождений 0",
+   "details": {
+    "ids": []
+   }
+  },
+  {
+   "check": "S3-provenance-qa-vs-sources",
+   "verdict": "PASS",
+   "summary": "110 ответов sourceEvidence (JS и Python, оба города, обе категории): provenance = data.js, флаги QA = evidence.qa и точные совпадения координат, статус всегда source_reported_unverified/not_confirmed; несоответствий 0",
+   "details": {
+    "problems": []
+   }
+  },
+  {
+   "check": "S3-stale-and-synthetic",
+   "verdict": "PASS",
+   "summary": "таблица чужого среза/версии → stale_table (JS, Python); синтетическая ничья на равном расстоянии → tie_equal_distance, меньший ID; запись без record_id/sources[] помечена; срез без QA → qa_unavailable",
+   "details": {
+    "observations": [
+     "('stale_table', ['stale_table', 'stale_table', 'stale_table'])",
+     "('py', 'source:syn-a', 'tie_equal_distance', ['record_id_missing'])",
+     "('js', 'source:syn-a', 'tie_equal_distance', ['record_id_missing'])",
+     "('qa_unavailable', ['qa_unavailable'])"
+    ]
+   }
+  },
+  {
+   "check": "S3-v1-whatif-consistency",
+   "verdict": "PASS",
+   "summary": "100 точек (25 × 2 города × 2 категории): ближайшая исходная запись geo_v2 = nearest_before web/whatif.js (v1) сборки — расхождений 0; мм = round(before·1000) — расхождений 0",
+   "details": {
+    "diff": [],
+    "mm": []
+   }
+  }
+ ]
+}

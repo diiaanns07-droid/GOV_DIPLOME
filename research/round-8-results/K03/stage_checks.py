@@ -223,3 +223,179 @@ def edges_exclusive(doc, py, jsr, data, ev, app):
 
 
 EXTRA = {'2': [geodesic, symmetry, rounding_dense, permutation, qa_groups, edges_exclusive]}
+
+
+# ---------------- этап 3 ----------------
+
+FORBIDDEN = ('confirmed', 'verified', 'подтвержд')
+ALLOWED_STATUS = {'source_reported_unverified', 'not_confirmed', 'hypothetical'}  # отрицания, а не подтверждения
+
+
+def _walk_strings(x, path=''):
+    if isinstance(x, dict):
+        for k, v in x.items():
+            yield from _walk_strings(v, f'{path}.{k}')
+    elif isinstance(x, list):
+        for i, v in enumerate(x):
+            yield from _walk_strings(v, f'{path}[{i}]')
+    elif isinstance(x, str):
+        yield path, x
+
+
+def provenance_qa_independent(doc, py, jsr, data, ev, app):
+    """Каждое поле provenance/QA ответа сверяется с data.js/evidence.js напрямую (не через контекст модуля)."""
+    bad, n = [], 0
+    for c in doc['cases']:
+        if c['op'] != 'evidence':
+            continue
+        city, cat = c['city'], c['category']
+        rec = {p['id']: p for p in data['cities'][city]['places']}
+        q = ev['cities'][city]['qa']
+        coloc = {i: len(g['ids']) for g in q['colocated'] for i in g['ids']}
+        dups = {}
+        for d in q['possible_duplicates']:
+            dups.setdefault(d['a'], set()).add(('source:' + d['b'], d['rule']))
+            dups.setdefault(d['b'], set()).add(('source:' + d['a'], d['rule']))
+        for impl, res in (('py', py[c['id']]), ('js', jsr.get(c['id']) if jsr else None)):
+            if res is None:
+                continue
+            for k, r in zip(c['keys'], res['result']):
+                if not r['ok']:
+                    continue
+                n += 1
+                e = r['result']
+                p = rec.get(e['id'])
+                if p is None or p['group'] != cat or (p['lon'], p['lat']) != (e['lon'], e['lat']):
+                    bad.append(f'{impl} {k}: запись не найдена в data.js этой категории или координаты другие')
+                    continue
+                want_recs = [{x: s.get(x) for x in ('dataset', 'record_id', 'license', 'update_time')} for s in p.get('sources') or []]
+                if e['provenance']['records'] != want_recs or e['provenance']['overture_version'] != p.get('overture_version'):
+                    bad.append(f'{impl} {k}: provenance ≠ data.js')
+                codes = {f['code'] for f in e['flags']}
+                if ('colocated' in codes) != (p['id'] in coloc):
+                    bad.append(f'{impl} {k}: флаг colocated ≠ evidence.qa')
+                got_d = {(f['other'], f['rule']) for f in e['flags'] if f['code'] == 'possible_duplicate'}
+                if got_d != dups.get(p['id'], set()):
+                    bad.append(f'{impl} {k}: possible_duplicate ≠ evidence.qa')
+                if ('category_doubt' in codes) != (p['id'] in q['category_doubt']):
+                    bad.append(f'{impl} {k}: category_doubt ≠ evidence.qa')
+                shared = sum(1 for x in data['cities'][city]['places'] if (x['lon'], x['lat']) == (p['lon'], p['lat'])) - 1
+                if ('shared_coordinates' in codes) != (shared > 0):
+                    bad.append(f'{impl} {k}: shared_coordinates ≠ данные ({shared})')
+                if e['position_status'] != 'source_reported_unverified' or e['confirmation'] != 'not_confirmed':
+                    bad.append(f'{impl} {k}: статус положения {e["position_status"]}/{e["confirmation"]}')
+                for path, s in _walk_strings({kk: vv for kk, vv in e.items() if kk not in ('name', 'provenance')}):
+                    if any(w in s.lower() for w in FORBIDDEN) and s not in ALLOWED_STATUS:
+                        bad.append(f'{impl} {k}{path}: «{s}» похоже на подтверждение')
+    _rec('S3-provenance-qa-vs-sources', 'FAIL' if bad else 'PASS',
+         f'{n} ответов sourceEvidence (JS и Python, оба города, обе категории): provenance = data.js, флаги QA = evidence.qa и '
+         f'точные совпадения координат, статус всегда source_reported_unverified/not_confirmed; несоответствий {len(bad)}',
+         problems=bad[:20])
+
+
+def stale_and_synthetic(doc, py, jsr, data, ev, app):
+    """stale_table; ничья на равном расстоянии и запись без provenance — на явной синтетике; срез без QA."""
+    import run_tests
+    out, bad = [], []
+    city, cat = 'astana', 'school'
+    W, S, E, N = data['cities'][city]['bbox']
+    places = {'control_points': [{'id': 'p', 'lon': (W + E) / 2, 'lat': (S + N) / 2, 'weight': 1}], 'candidates': []}
+    # 1) таблица, построенная на изменённом срезе (одна школа сдвинута), не привязывается к текущему контексту
+    d2 = json.loads(json.dumps(data))
+    sch = next(p for p in d2['cities'][city]['places'] if p['group'] == cat)
+    sch['lon'] = round(sch['lon'] + 0.001, 6) if sch['lon'] + 0.001 < E else round(sch['lon'] - 0.001, 6)
+    t_py = run_tests.py_case(dict(id='t', op='table', city=city, category=cat, places=places), d2, ev, {})['result']
+    r_py = run_tests.py_case(dict(id='b', op='bind_table', city=city, category=cat, table=t_py), data, ev, {})['result']
+    js_t = run_node(app, [dict(id='t', op='table', city=city, category=cat, places=places)], data=d2)
+    r_js = run_node(app, [dict(id='b', op='bind_table', city=city, category=cat, table=js_t['t']['result'])]) if js_t else None
+    t_bad = dict(t_py, metric_version='haversine-m-v0')
+    r_py2 = run_tests.py_case(dict(id='b', op='bind_table', city=city, category=cat, table=json.loads(json.dumps(t_bad))), d2, ev, {})['result']
+    got = [r_py.get('error', {}).get('code'), r_js and r_js['b']['result'].get('error', {}).get('code'), r_py2.get('error', {}).get('code')]
+    out.append(('stale_table', got))
+    if any(g not in ('stale_table', None) for g in got) or got[0] != 'stale_table' or got[2] != 'stale_table' or (r_js and got[1] != 'stale_table'):
+        bad.append(f'stale_table: {got}')
+    # 2) синтетика: две школы симметрично относительно точки (разные координаты) и без sources[]
+    d3 = json.loads(json.dumps(data))
+    cx, cy = (W + E) / 2, (S + N) / 2
+    d3['cities'][city]['places'] = [p for p in d3['cities'][city]['places'] if p['group'] != cat] + [
+        dict(id='syn-b', lon=cx + 2e-4, lat=cy, group=cat, name='SYNTHETIC B', sources=[], overture_version=None, confidence=None),
+        dict(id='syn-a', lon=cx - 2e-4, lat=cy, group=cat, name='SYNTHETIC A',
+             sources=[{'dataset': 'meta', 'license': 'x', 'record_id': None, 'update_time': None}], overture_version=None, confidence=None)]
+    case = dict(id='s', op='bind', city=city, category=cat, places=places)
+    rp = run_tests.py_case(case, d3, ev, {})['result'][0]
+    rj = run_node(app, [case], data=d3)
+    rj = rj['s']['result'][0] if rj else None
+    for impl, r in (('py', rp), ('js', rj)):
+        if r is None:
+            continue
+        codes = [f['code'] for f in r['nearest']['flags']]
+        out.append((impl, r['nearest']['key'], r['tie'] and r['tie']['code'], codes))
+        if r['nearest']['key'] != 'source:syn-a' or not r['tie'] or r['tie']['code'] != 'tie_equal_distance' or 'record_id_missing' not in codes:
+            bad.append(f'{impl} synthetic tie/provenance: {r["nearest"]["key"]}, {r["tie"]}, {codes}')
+    ev_b = run_tests.py_case(dict(id='e', op='evidence', city=city, category=cat, keys=['source:syn-b']), d3, ev, {})['result'][0]
+    if [f['code'] for f in ev_b['result']['flags']] != ['no_provenance_records']:
+        bad.append(f'py syn-b flags {ev_b["result"]["flags"]}')
+    # 3) срез без QA: «замечаний нет» не выдаётся, есть qa_unavailable
+    ev4 = json.loads(json.dumps(ev))
+    del ev4['cities'][city]['qa']
+    k0 = 'source:' + sorted(p['id'] for p in data['cities'][city]['places'] if p['group'] == cat)[0]
+    e4 = run_tests.py_case(dict(id='q', op='evidence', city=city, category=cat, keys=[k0]), data, ev4, {})['result'][0]['result']
+    j4 = run_node(app, [dict(id='q', op='evidence', city=city, category=cat, keys=[k0])], evidence=ev4)
+    j4 = j4['q']['result'][0]['result'] if j4 else None
+    for impl, e in (('py', e4), ('js', j4)):
+        if e is not None and 'qa_unavailable' not in [f['code'] for f in e['flags']]:
+            bad.append(f'{impl}: срез без QA не помечен qa_unavailable')
+    out.append(('qa_unavailable', [f['code'] for f in e4['flags']]))
+    _rec('S3-stale-and-synthetic', 'FAIL' if bad else 'PASS',
+         'таблица чужого среза/версии → stale_table (JS, Python); синтетическая ничья на равном расстоянии → tie_equal_distance, '
+         'меньший ID; запись без record_id/sources[] помечена; срез без QA → qa_unavailable' if not bad else '; '.join(bad),
+         observations=[str(o) for o in out])
+
+
+def v1_cross_check(doc, py, jsr, data, ev, app):
+    """Сверка с действующим модулем сборки web/whatif.js (v1): nearest_before по тем же точкам."""
+    node = shutil.which('node')
+    if not node or not (app / 'web/whatif.js').exists():
+        _rec('S3-v1-whatif-consistency', 'SKIP', 'нет node или web/whatif.js в сборке')
+        return
+    st1 = json.loads((HERE / 'fixtures/stage1.json').read_text(encoding='utf-8'))
+    req = []
+    for c in st1['cases']:
+        if c['id'].endswith('-max-table'):
+            for cat in ('school', 'outpatient_clinic'):
+                req.append(dict(id=f'{c["city"]}-{cat}', city=c['city'], category=cat, points=c['places']['control_points']))
+    code = r'''
+const fs = require("fs"), path = require("path");
+const [app, reqf, geo] = process.argv.slice(1);
+const W = require(path.join(app, "web/whatif.js")), G = require(geo);
+const load = (f) => { const t = fs.readFileSync(path.join(app, "web", f), "utf8"); return JSON.parse(t.slice(t.indexOf("{"), t.trimEnd().lastIndexOf(";"))); };
+const data = load("data.js"), ev = load("evidence.js");
+const out = [];
+for (const r of JSON.parse(fs.readFileSync(reqf, "utf8"))) {
+  const v1 = W.compute(data.cities[r.city].places, r.category, r.points.map((p) => ({ id: p.id, lon: p.lon, lat: p.lat })), null);
+  const ctx = G.buildGeoContext(data, ev, r.city, r.category);
+  const v = G.validatePlaces(ctx, { control_points: r.points, candidates: [] });
+  const t = G.distanceTable(ctx, v.control_points, []);
+  out.push({ id: r.id, v1: v1.rows.map((x) => x.nearest_before), v2: t.baseline.map((b) => b && b.id),
+    v1_m: v1.rows.map((x) => x.before), v2_mm: t.baseline.map((b) => b && b.mm) });
+}
+process.stdout.write(JSON.stringify(out));
+'''
+    with tempfile.NamedTemporaryFile('w', suffix='.json', delete=False, encoding='utf-8') as fh:
+        json.dump(req, fh)
+        path = fh.name
+    r = subprocess.run([node, '-e', code, str(app), path, str(JS or HERE / 'geo_v2.js')], capture_output=True, text=True, timeout=300)
+    Path(path).unlink()
+    if r.returncode:
+        _rec('S3-v1-whatif-consistency', 'FAIL', f'node: {r.stderr[-300:]}')
+        return
+    res = json.loads(r.stdout)
+    diff = [(x['id'], i) for x in res for i, (a, b) in enumerate(zip(x['v1'], x['v2'])) if a != b]
+    mm = [(x['id'], i) for x in res for i, (m, q) in enumerate(zip(x['v1_m'], x['v2_mm'])) if (m is None) != (q is None) or (m is not None and round(m * 1000) != q)]
+    n = sum(len(x['v1']) for x in res)
+    _rec('S3-v1-whatif-consistency', 'FAIL' if diff or mm else 'PASS',
+         f'{n} точек (25 × 2 города × 2 категории): ближайшая исходная запись geo_v2 = nearest_before web/whatif.js (v1) сборки — '
+         f'расхождений {len(diff)}; мм = round(before·1000) — расхождений {len(mm)}', diff=diff[:10], mm=mm[:10])
+
+
+EXTRA['3'] = [provenance_qa_independent, stale_and_synthetic, v1_cross_check]

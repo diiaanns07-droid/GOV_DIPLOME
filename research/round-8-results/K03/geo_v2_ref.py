@@ -244,3 +244,69 @@ def nearest_after(table, i, selected, cands):
         return None
     mm, kind, ident = min(pool, key=_order)
     return {'key': f'{kind}:{ident}', 'kind': kind, 'mm': mm}
+
+
+# ---------- этап 3: ближайшая запись → provenance/QA; координаты не подтверждают место ----------
+
+def _flag_key(f):
+    return (f['code'].encode('utf-16-be'), (f.get('other') or '').encode('utf-16-be'))
+
+
+def source_evidence(ctx, key):
+    src = None
+    if isinstance(key, str) and key.startswith('source:'):
+        src = next((s for s in ctx['sources'] if s['key'] == key), None)
+    if src is None:
+        raise GeoErr('unknown_source', 'key', str(key)[:80])
+    q, recs = src['qa'], src['provenance']['records']
+    flags = []
+    if not recs:
+        flags.append({'code': 'no_provenance_records'})
+    elif any(not r.get('record_id') for r in recs):
+        flags.append({'code': 'record_id_missing'})
+    if not q['available']:
+        flags.append({'code': 'qa_unavailable'})
+    if q['colocated_group']:
+        flags.append({'code': 'colocated', 'size': q['colocated_group']['size']})
+    if q['same_exact_coordinates'] > 0:
+        flags.append({'code': 'shared_coordinates', 'count': q['same_exact_coordinates']})
+    flags += [{'code': 'possible_duplicate', 'other': 'source:' + d['other'], 'rule': d['rule'], 'distance_m': d['distance_m']}
+              for d in q['possible_duplicates']]
+    if q['category_doubt']:
+        flags.append({'code': 'category_doubt', 'rule': q['category_doubt']['rule']})
+    flags.sort(key=_flag_key)
+    pv = src['provenance']
+    return {'key': src['key'], 'kind': 'source', 'id': src['id'], 'lon': src['lon'], 'lat': src['lat'], 'name': src['name'],
+            'position_status': 'source_reported_unverified', 'confirmation': 'not_confirmed',
+            'provenance': {'overture_id': pv['overture_id'], 'overture_version': pv['overture_version'],
+                           'confidence': pv['confidence'], 'records': [dict(r) for r in recs]},
+            'flags': flags}
+
+
+def candidate_evidence(ctx, cand):
+    if not isinstance(cand, dict) or cand.get('kind') != 'hypothetical' or not str(cand.get('key', '')).startswith('hypothetical:'):
+        raise GeoErr('bad_kind', 'candidate')
+    same = sorted((s['key'] for s in ctx['sources'] if (s['lon'], s['lat']) == (cand['lon'], cand['lat'])),
+                  key=lambda k: k.encode('utf-16-be'))
+    return {'key': cand['key'], 'kind': 'hypothetical', 'id': cand['id'], 'position_status': 'hypothetical',
+            'confirmation': 'not_confirmed', 'flags': [{'code': 'coincides_with_source', 'sources': same}] if same else []}
+
+
+def bind_nearest_sources(ctx, table):
+    if not table or table.get('source_snapshot') != ctx['source_snapshot'] or table.get('metric_version') != METRIC_VERSION:
+        raise GeoErr('stale_table', 'table.source_snapshot')
+    by_key = {s['key']: s for s in ctx['sources']}
+    out = []
+    for pk, b in zip(table['point_keys'], table['baseline']):
+        if b is None:
+            out.append({'point_key': pk, 'status': 'no_sources', 'nearest': None, 'tied_count': 0, 'tie': None})
+            continue
+        ev = source_evidence(ctx, b['key'])
+        for k in b['tied_keys']:
+            source_evidence(ctx, k)
+        tie = None
+        if len(b['tied_keys']) > 1:
+            same = all((by_key[k]['lon'], by_key[k]['lat']) == (ev['lon'], ev['lat']) for k in b['tied_keys'])
+            tie = {'code': 'tie_shared_coordinates' if same else 'tie_equal_distance', 'keys': list(b['tied_keys'])}
+        out.append({'point_key': pk, 'status': 'ok', 'nearest': ev, 'tied_count': len(b['tied_keys']), 'tie': tie})
+    return out

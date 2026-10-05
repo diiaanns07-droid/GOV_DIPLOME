@@ -1,0 +1,10 @@
+# Отрицательный контроль этапа 3: испорченные копии geo_v2.js
+## mut_confirm: запись без QA-флагов помечается confirmed
+[FAIL] S3-js (mut_confirm.js): 14 случаев: несоответствий 7
+[FAIL] S3-js-python-parity: полное совпадение результатов JS и Python (контекст, места, мм, ничьи): расхождений 7
+[FAIL] S3-provenance-qa-vs-sources: 110 ответов sourceEvidence (JS и Python, оба города, обе категории): provenance = data.js, флаги QA = evidence.qa и точные совпадения координат, статус все
+SUMMARY {"PASS": 4, "FAIL": 3, "SKIP": 0, "TEST_INCOMPATIBLE": 0}
+## mut_nocoloc: флаг colocated не выставляется
+[FAIL] S3-js-python-parity: полное совпадение результатов JS и Python (контекст, места, мм, ничьи): расхождений 3
+[FAIL] S3-provenance-qa-vs-sources: 110 ответов sourceEvidence (JS и Python, оба города, обе категории): provenance = data.js, флаги QA = evidence.qa и точные совпадения координат, статус все
+SUMMARY {"PASS": 5, "FAIL": 2, "SKIP": 0, "TEST_INCOMPATIBLE": 0}

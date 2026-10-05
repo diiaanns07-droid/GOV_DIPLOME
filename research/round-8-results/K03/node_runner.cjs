@@ -24,13 +24,19 @@ for (const c of req.cases) {
     if (c.op === "dist") { out.push({ id: c.id, ok: true, result: c.pairs.map(([a, b]) => G.distMm({ lon: a[0], lat: a[1] }, { lon: b[0], lat: b[1] })) }); continue; }
     const ctx = ctxOf(c.city, c.category);
     let result;
+    const one = (f) => { try { return { ok: true, result: f() }; } catch (e) { if (!(e instanceof G.GeoError)) throw e; return { ok: false, error: { code: e.code, path: e.path } }; } };
+    if (c.op === "evidence") { out.push({ id: c.id, ok: true, result: c.keys.map((k) => one(() => G.sourceEvidence(ctx, k))) }); continue; }
+    if (c.op === "bind_table") { out.push({ id: c.id, ok: true, result: one(() => G.bindNearestSources(ctx, c.table)) }); continue; }
     if (c.op === "context") result = ctx;
     else {
       const v = G.validatePlaces(ctx, revive(c.places), { allowEmptyPoints: !!c.allow_empty });
       if (c.op === "validate") result = v;
       else {
         const t = G.distanceTable(ctx, v.control_points, v.candidates);
-        result = c.op === "table" ? t : v.control_points.map((_, i) => G.nearestAfter(t, i, c.selected || [], v.candidates));
+        if (c.op === "table") result = t;
+        else if (c.op === "bind") result = G.bindNearestSources(ctx, t);
+        else if (c.op === "cand_evidence") result = v.candidates.map((q) => G.candidateEvidence(ctx, q));
+        else result = v.control_points.map((_, i) => G.nearestAfter(t, i, c.selected || [], v.candidates));
       }
     }
     out.push({ id: c.id, ok: true, result });
