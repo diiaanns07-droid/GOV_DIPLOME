@@ -1,0 +1,224 @@
+{
+ "k03_root": "inputs/k03v2_root",
+ "summary": {
+  "PASS": 7,
+  "FAIL": 2,
+  "SKIP": 0,
+  "INFO": 1
+ },
+ "results": [
+  {
+   "invariant": "I0",
+   "check": "check_all-clean",
+   "verdict": "PASS",
+   "summary": "tools/check_all.py на неизменённой копии: {'passed': 13, 'skipped': 0, 'failed': 0}",
+   "details": {
+    "returncode": 0,
+    "failed": []
+   }
+  },
+  {
+   "invariant": "I0",
+   "check": "place_district-vs-used-module",
+   "verdict": "PASS",
+   "summary": "120 мест data.js пересчитаны модулем inputs/k03v2_root: расхождений 0",
+   "details": {
+    "mismatches": []
+   }
+  },
+  {
+   "invariant": "I3",
+   "check": "fixtures-v2-contract",
+   "verdict": "PASS",
+   "summary": "5 ключевых фикстур модулем inputs/k03v2_root: несоответствий 0 []; поведение v2",
+   "details": {
+    "results": {
+     "R1": [
+      "ambiguous",
+      null
+     ],
+     "R2": [
+      "ambiguous",
+      null
+     ],
+     "R3": [
+      "ambiguous",
+      null
+     ],
+     "R4": [
+      "ambiguous",
+      null
+     ],
+     "R5": [
+      "matched",
+      "kz.astana.district.esil"
+     ]
+    }
+   }
+  },
+  {
+   "invariant": "I3",
+   "check": "code-vs-evidence-and-ui",
+   "verdict": "PASS",
+   "summary": "поведение=v2; assign()[\"rule\"] (код)=k03_assign_v2; evidence.assign_rule=k03_assign_v2; obs.method.id (8 набл.)=['k03_assign_v2']; obs.source.source_id=['K03-k03_assign_v2']; source.sha256 наблюдений = sha256 модуля: True",
+   "details": {
+    "labels": {
+     "assign()[\"rule\"] (код)": "k03_assign_v2",
+     "evidence.assign_rule": "k03_assign_v2",
+     "obs.method.id (8 набл.)": [
+      "k03_assign_v2"
+     ],
+     "obs.source.source_id": [
+      "K03-k03_assign_v2"
+     ]
+    }
+   }
+  },
+  {
+   "invariant": "I3",
+   "check": "code-vs-k03-metadata-files",
+   "verdict": "FAIL",
+   "summary": "метаданные копии противоречат коду (k03_assign_v2): {'inputs/k03v2_root/…/boundary_registry.json:assignment_rule.id': 'k03_assign_v1', 'inputs/k03v2_root/…/validator_selftest.json:rule': 'k03_assign_v1'}; selftest кода сейчас: {'ok': True, 'n': 21}, в validator_selftest.json: 19 случаев",
+   "details": {
+    "metadata": {
+     "inputs/k03v2_root/MANIFEST_K03V2.json:rule": "k03_assign_v2",
+     "inputs/k03v2_root/…/boundary_registry.json:assignment_rule.id": "k03_assign_v1",
+     "inputs/k03v2_root/…/validator_selftest.json:rule": "k03_assign_v1"
+    },
+    "selftest_now": {
+     "ok": true,
+     "n": 21
+    },
+    "selftest_json_cases": 19,
+    "used_by_build": "boundary_registry.json читается build_evidence.district_names() (только названия)"
+   }
+  },
+  {
+   "invariant": "I3",
+   "check": "label-guard-code-swap",
+   "verdict": "PASS",
+   "summary": "код в inputs/k03v2_root подменён исходным v1: check_all код 1, упали ['inputs: K03 v2: original byte-exact, patched copy matches manifest', 'build: web/evidence.js == rebuild (K03 v2 assign + K05 recount + QA)', 'tests: python -m unittest discover -s tests (Ran 28 tests in 1.180s; FAILED (failures=1))']",
+   "details": {
+    "check_all": {
+     "passed": 10,
+     "skipped": 0,
+     "failed": 3
+    }
+   }
+  },
+  {
+   "invariant": "I1",
+   "check": "empty-AST-Z3-after-layer-sync",
+   "verdict": "FAIL",
+   "summary": "после синхронизации слоёв K03 assign() падает: ['  File \"<tmp>/prototypes/city-evidence/inputs/k03v2_root/research/round-3-results/K03/boundary_validator.py\", line 113, in assign', \"AttributeError: 'NoneType' object has no attribute 'distance'\"]; build_evidence код 1",
+   "details": {
+    "traceback_tail": [
+     "  File \"<tmp>/prototypes/city-evidence/inputs/k03v2_root/research/round-3-results/K03/boundary_validator.py\", line 113, in assign",
+     "AttributeError: 'NoneType' object has no attribute 'distance'"
+    ],
+    "build_evidence_returncode": 1,
+    "build_tail": "ndary_validator.py\", line 113, in assign\n    if z.startswith('AST') and city == 'astana' and (zg.covers(pp) or zg.boundary.distance(pp) <= TOL_M):\n                                                                      ^^^^^^^^^^^^^^^^^^^^\nAttributeError: 'NoneType' object has no attribute 'distance'\n",
+    "repro": "python3 research/round-6-results/K03/repro_d3.py --app-root <копия>"
+   }
+  },
+  {
+   "invariant": "I2",
+   "check": "point-moved",
+   "verdict": "PASS",
+   "summary": "место 0233b91f… перенесено; sha обновлён в 11 файлах; build_data код 0; до пересборки check_all код 1, упали ['build: web/evidence.js == rebuild (K03 v2 assign + K05 recount + QA)']; пересборка: изменились привязки 1: {'astana/0233b91f-a010-4eac-9087-0b87d3c8756d': ['kz.astana.district.saryarka', 'kz.astana.district.baikonur']}; после пересборки evidence.js == rebuild проходит",
+   "details": {
+    "check_all_before": {
+     "passed": 12,
+     "skipped": 0,
+     "failed": 1
+    },
+    "failed_before": [
+     "build: web/evidence.js == rebuild (K03 v2 assign + K05 recount + QA)"
+    ],
+    "rebuild_returncode": 0,
+    "changed": {
+     "astana/0233b91f-a010-4eac-9087-0b87d3c8756d": [
+      "kz.astana.district.saryarka",
+      "kz.astana.district.baikonur"
+     ]
+    },
+    "check_all_after": {
+     "passed": 13,
+     "skipped": 0,
+     "failed": 0
+    },
+    "failed_after": []
+   }
+  },
+  {
+   "invariant": "I2",
+   "check": "layer-changed",
+   "verdict": "PASS",
+   "summary": "полигон Сарыарки в inputs/k03v2_root/data/astana_districts.geojson сдвинут на 0,003° (синтетика); до пересборки check_all код 1, упали ['build: web/evidence.js == rebuild (K03 v2 assign + K05 recount + QA)']; пересборка: изменились привязки 5: {'astana/0bbf2bc3-d703-431f-bf9a-69dbd7f6bf10': ['kz.astana.district.baikonur', 'ambiguous'], 'astana/1116880a-cbb6-4271-9a59-a277083b792c': ['kz.astana.district.baikonur', 'ambiguous'], 'astana/cd7f0098-c77b-4401-a428-831bf1e1685b': ['kz.astana.district.baikonur', 'ambiguous'], 'astana/de04f003-bb3d-4ea7-93e1-cd825e5c1783': ['kz.astana.district.saryarka', 'ambiguous'], 'astana/fcdc8d2f-41ff-42ea-99fe-726d7d844050': ['kz.astana.district.saryarka', 'ambiguous']}; после пересборки evidence.js == rebuild проходит; ожидаемо зависимые проверки: ['facts: Python K02 reference reproduces 7 expected explanations', 'facts: JS facts.js conformance (35 checks)'] (эталон объяснений нужно пересоздать)",
+   "details": {
+    "check_all_before": {
+     "passed": 12,
+     "skipped": 0,
+     "failed": 1
+    },
+    "failed_before": [
+     "build: web/evidence.js == rebuild (K03 v2 assign + K05 recount + QA)"
+    ],
+    "rebuild_returncode": 0,
+    "changed": {
+     "astana/0bbf2bc3-d703-431f-bf9a-69dbd7f6bf10": [
+      "kz.astana.district.baikonur",
+      "ambiguous"
+     ],
+     "astana/1116880a-cbb6-4271-9a59-a277083b792c": [
+      "kz.astana.district.baikonur",
+      "ambiguous"
+     ],
+     "astana/cd7f0098-c77b-4401-a428-831bf1e1685b": [
+      "kz.astana.district.baikonur",
+      "ambiguous"
+     ],
+     "astana/de04f003-bb3d-4ea7-93e1-cd825e5c1783": [
+      "kz.astana.district.saryarka",
+      "ambiguous"
+     ],
+     "astana/fcdc8d2f-41ff-42ea-99fe-726d7d844050": [
+      "kz.astana.district.saryarka",
+      "ambiguous"
+     ]
+    },
+    "check_all_after": {
+     "passed": 11,
+     "skipped": 0,
+     "failed": 2
+    },
+    "failed_after": [
+     "facts: Python K02 reference reproduces 7 expected explanations",
+     "facts: JS facts.js conformance (35 checks)"
+    ]
+   }
+  },
+  {
+   "invariant": "I2",
+   "check": "layer-touched-no-effect",
+   "verdict": "INFO",
+   "summary": "в inputs/k03v2_root/data/astana_districts.geojson добавлен перевод строки (данные не изменены): check_all до пересборки код 0 ; изменение файла K03 v2 НЕ обнаружено проверкой inputs (файлы корня, кроме boundary_validator.py, не сверяются с манифестом); привязки не изменились (0)",
+   "details": {
+    "check_all_before": {
+     "passed": 13,
+     "skipped": 0,
+     "failed": 0
+    },
+    "failed_before": [],
+    "rebuild_returncode": 0,
+    "changed": {},
+    "check_all_after": {
+     "passed": 13,
+     "skipped": 0,
+     "failed": 0
+    },
+    "failed_after": []
+   }
+  }
+ ]
+}

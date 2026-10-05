@@ -1,0 +1,10 @@
+# python3 research/round-6-results/K03/repro_d3.py --app-root <копия 064ed25>
+K03 root: inputs/k03v2_root
+AST-Z3 empty: True
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "<tmp>/k03v2_root/research/round-3-results/K03/boundary_validator.py", line 113, in assign
+    if z.startswith('AST') and city == 'astana' and (zg.covers(pp) or zg.boundary.distance(pp) <= TOL_M):
+                                                                      ^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'distance'
+# exit=1

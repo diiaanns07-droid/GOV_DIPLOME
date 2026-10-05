@@ -1,0 +1,116 @@
+{
+ "target": {
+  "branch": "claude/beautiful-clarke-sbzomj",
+  "sha": "064ed25368341edaa50289bc29e21dda7bdd9440",
+  "path": "prototypes/city-evidence/",
+  "k03_root_used_by_build": "inputs/k03v2_root",
+  "previous_build_not_retested": "0bf27deb8549b325b34a9610402613d745544edb"
+ },
+ "test_source": {
+  "branch": "claude/epic-curie-iitc43",
+  "sha": "0ff776d17aa2e723faabc1db83e9b423955874e8",
+  "files": {
+   "research/round-6-results/K03/accept_k03.py": "35587bed0afcf4ddec47c5c15f910b20db991ae4980a9e7f1bf1b7574a44320e",
+   "research/round-6-results/K03/repro_d3.py": "12068502567957c6da495f631fa7edf230eaeb7facf08a3e2da4c3de3def7010"
+  }
+ },
+ "previous_test": {
+  "path": "research/round-5-results/K03/test_boundaries_demo.py",
+  "sha": "5715a7f19ffc11926a5e4836e931cadf2c8c12e0",
+  "status": "TEST_INCOMPATIBLE",
+  "log": "research/round-6-results/K03/runs/r5_test_on_064ed25.txt",
+  "why": [
+   "K03 жёстко inputs/k03_root: тест грузил исходный v1-модуль, которым сборка не пользуется → ложный FAIL C2 (v1 против метки v2)",
+   "наблюдения переименованы в k03_district_status.* → method.id не найден",
+   "список XFAIL раунда 5 к новой сборке не применяется",
+   "сценарии меняли неиспользуемую копию k03_root; S2 упал на новой проверке атрибуции K08 в build_data.py (это защита сборки, не дефект)"
+  ],
+  "adapter": "research/round-6-results/K03/accept_k03.py"
+ },
+ "environment": {
+  "python": "3.11.15",
+  "shapely": "2.1.2",
+  "pyproj": "3.7.2",
+  "node": "v22.22.0",
+  "os": "Linux (контейнер Claude Code)",
+  "layout": "<tmp>/prototypes/city-evidence + <tmp>/agent из 064ed25 (нужно explain_ref.py)"
+ },
+ "commands": [
+  "git fetch origin claude/beautiful-clarke-sbzomj",
+  "python3 research/round-5-results/K03/extract_build.py --sha 064ed25368341edaa50289bc29e21dda7bdd9440 --out <копия>",
+  "python3 research/round-6-results/K03/accept_k03.py --app-root <копия> --repo-sha 064ed25368341edaa50289bc29e21dda7bdd9440 --json research/round-6-results/K03/runs/accept_064ed25.json",
+  "python3 research/round-6-results/K03/repro_d3.py --app-root <копия>",
+  "python3 research/round-5-results/K03/test_boundaries_demo.py --app-root <копия>   # TEST_INCOMPATIBLE, только для протокола"
+ ],
+ "invariants": [
+  {
+   "id": "I1-empty-AST-Z3-after-layer-sync",
+   "verdict": "FAIL",
+   "severity": "medium (скрытый: на текущих данных зона не пуста)",
+   "what": "снимок OSM ← геометрия Алматы и Сарайшыка из Overture того же корня K03 (реальная синхронизация); AST-Z3 становится пустой",
+   "result": "после синхронизации слоёв K03 assign() падает: ['  File \"<tmp>/prototypes/city-evidence/inputs/k03v2_root/research/round-3-results/K03/boundary_validator.py\", line 113, in assign', \"AttributeError: 'NoneType' object has no attribute 'distance'\"]; build_evidence код 1",
+   "repro": {
+    "command": "python3 research/round-6-results/K03/repro_d3.py --app-root <копия 064ed25>",
+    "log": "research/round-6-results/K03/runs/repro_d3_064ed25.txt",
+    "location": "prototypes/city-evidence/inputs/k03v2_root/research/round-3-results/K03/boundary_validator.py:113",
+    "cause": "polygonal() (строка 43) для пустой зоны возвращает пустую GeometryCollection; её .boundary = None; zg.boundary.distance(pp) → AttributeError"
+   },
+   "proposed_fix": "research/round-5-results/K03/patches/k03_assign_v2_1.patch @ 5715a7f (пустая зона пропускается; selftest/registry без неё) — в 064ed25 не применён"
+  },
+  {
+   "id": "I2-stale-place_district-detected",
+   "verdict": "PASS",
+   "how": "tools/check_all.py шаг build: web/evidence.js == rebuild (нужны shapely+pyproj; без них шаг SKIP, а не PASS)",
+   "checks": {
+    "point-moved": {
+     "verdict": "PASS",
+     "result": "место 0233b91f… перенесено; sha обновлён в 11 файлах; build_data код 0; до пересборки check_all код 1, упали ['build: web/evidence.js == rebuild (K03 v2 assign + K05 recount + QA)']; пересборка: изменились привязки 1: {'astana/0233b91f-a010-4eac-9087-0b87d3c8756d': ['kz.astana.district.saryarka', 'kz.astana.district.baikonur']}; после пересборки evidence.js == rebuild проходит"
+    },
+    "layer-changed": {
+     "verdict": "PASS",
+     "result": "полигон Сарыарки в inputs/k03v2_root/data/astana_districts.geojson сдвинут на 0,003° (синтетика); до пересборки check_all код 1, упали ['build: web/evidence.js == rebuild (K03 v2 assign + K05 recount + QA)']; пересборка: изменились привязки 5: {'astana/0bbf2bc3-d703-431f-bf9a-69dbd7f6bf10': ['kz.astana.district.baikonur', 'ambiguous'], 'astana/1116880a-cbb6-4271-9a59-a277083b792c': ['kz.astana.district.baikonur', 'ambiguous'], 'astana/cd7f0098-c77b-4401-a428-831bf1e1685b': ['kz.astana.district.baikonur', 'ambiguous'], 'astana/de04f003-bb3d-4ea7-93e1-cd825e5c1783': ['kz.astana.district.saryarka', 'ambiguous'], 'astana/fcdc8d2f-41ff-42ea-99fe-726d7d844050': ['kz.astana.district.saryarka', 'ambiguous']}; после пересборки evidence.js == rebuild проходит; ожидаемо зависимые проверки: ['facts: Python K02 reference reproduces 7 expected explanations', 'facts: JS facts.js conformance (35 checks)'] (эталон объяснений нужно пересоздать)"
+    }
+   },
+   "observation_not_blocking": {
+    "check": "layer-touched-no-effect",
+    "result": "в inputs/k03v2_root/data/astana_districts.geojson добавлен перевод строки (данные не изменены): check_all до пересборки код 0 ; изменение файла K03 v2 НЕ обнаружено проверкой inputs (файлы корня, кроме boundary_validator.py, не сверяются с манифестом); привязки не изменились (0)",
+    "note": "файлы inputs/k03v2_root, кроме boundary_validator.py, не сверяются ни с одним манифестом; изменение слоя, не меняющее привязок 120 мест, проходит check_all"
+   }
+  },
+  {
+   "id": "I3-rule-in-code-equals-metadata",
+   "verdict": "FAIL",
+   "severity": "low (сборка читает реестр только ради названий районов)",
+   "checks": {
+    "fixtures-v2-contract": {
+     "verdict": "PASS",
+     "result": "5 ключевых фикстур модулем inputs/k03v2_root: несоответствий 0 []; поведение v2"
+    },
+    "code-vs-evidence-and-ui": {
+     "verdict": "PASS",
+     "result": "поведение=v2; assign()[\"rule\"] (код)=k03_assign_v2; evidence.assign_rule=k03_assign_v2; obs.method.id (8 набл.)=['k03_assign_v2']; obs.source.source_id=['K03-k03_assign_v2']; source.sha256 наблюдений = sha256 модуля: True"
+    },
+    "code-vs-k03-metadata-files": {
+     "verdict": "FAIL",
+     "result": "метаданные копии противоречат коду (k03_assign_v2): {'inputs/k03v2_root/…/boundary_registry.json:assignment_rule.id': 'k03_assign_v1', 'inputs/k03v2_root/…/validator_selftest.json:rule': 'k03_assign_v1'}; selftest кода сейчас: {'ok': True, 'n': 21}, в validator_selftest.json: 19 случаев"
+    },
+    "label-guard-code-swap": {
+     "verdict": "PASS",
+     "result": "код в inputs/k03v2_root подменён исходным v1: check_all код 1, упали ['inputs: K03 v2: original byte-exact, patched copy matches manifest', 'build: web/evidence.js == rebuild (K03 v2 assign + K05 recount + QA)', 'tests: python -m unittest discover -s tests (Ran 28 tests in 1.180s; FAILED (failures=1))']"
+    }
+   },
+   "repro": {
+    "command": "python3 -c \"import json;p='prototypes/city-evidence/inputs/k03v2_root/research/round-3-results/K03/';print(json.load(open(p+'boundary_registry.json'))['assignment_rule']['id'], json.load(open(p+'validator_selftest.json'))['rule'])\"  # → k03_assign_v1 k03_assign_v1",
+    "location": "prototypes/city-evidence/tools/setup_k03_v2.py: копирует k03_root и патчит только boundary_validator.py; boundary_registry.json и validator_selftest.json остаются от v1",
+    "proposed_fix": "после patch в setup_k03_v2.py перегенерировать registry/selftest валидатором v2 (или явно пометить их как артефакты v1 и не читать из k03v2_root)"
+   }
+  }
+ ],
+ "summary": {
+  "PASS": 7,
+  "FAIL": 2,
+  "SKIP": 0,
+  "INFO": 1
+ },
+ "overall": "FAIL: I2 выполнен; I1 (пустая зона) и I3 (метаданные копии K03) не выполнены. Привязка районов в текущем демо верна (120/120 = модуль v2), поведение v2 подтверждено фикстурами, а не надписью."
+}
