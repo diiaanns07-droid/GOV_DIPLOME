@@ -1,0 +1,53 @@
+K01 START_CHECK — доступность материалов исходной ветки для новой сессии
+Дата: 2026-10-05. Без интернет-исследования; только чтение файлов репозитория.
+
+1. Проверенная ветка
+- Исходная: origin/codex/research-import-2026-10-05, коммит b87e5af6eeb6a5bdc33037a9f16d4e3377166ee5
+  (получена git fetch из GitHub, SHA совпал с заданием).
+- Рабочая ветка K01: claude/loving-thompson-nmajdo. Была создана от старого main (834a25f);
+  исходная ветка добавлена обычным merge (коммит 9fcc5fd), без reset/force push.
+  Конфликтов не было; прежняя запись research/handoffs/unassigned/... сохранена.
+
+2. Доступные файлы (открыты и прочитаны в этой сессии)
+Шымкент, роль A01 (цифровизация, служба 109):
+- research/govtech-results/01_digitalization/extracted_files__11_/A01_report.md (205 строк)
+  sha256 8e6931060dcb11903d452e026bfe445dfb80822e8b16c047a1574f4931fa24a6
+- research/govtech-results/01_digitalization/extracted_files__11_/A01_evidence.json
+  sha256 257550a1fe909e449c3f0bd4b55ccc7960ae5550872d92fbfc2343d9025284a0
+  JSON валиден; разделы: sources 16, facts 17, datasets 8, opportunities 3, open_questions 8.
+  access_status источников: verified 5, executed 1, documented_only 3, restricted_by_agent 1, not_accessed 6.
+Астана, роль AST-A01 (цифровизация, iKOMEK 109):
+- research/astana-results/01_digitalization/extracted_files__23_/AST_A01_report.md (236 строк)
+  sha256 9722364d7e4d7b07b68b24f40085d1eef35551eef5544cdc1db6c60f1117b073
+- research/astana-results/01_digitalization/extracted_files__23_/AST_A01_evidence.json
+  sha256 ea36365761ea691d749025d3fb271a786e3c6a54288943a02d36ca56d27b6cfd
+  JSON валиден; разделы: sources 16, facts 18, datasets 6, opportunities 3, open_questions 7, city_comparison.
+  access_status источников: verified 7, executed 3, not_accessed 6.
+Также на месте: CLAUDE.md, research/README.md, research/coordination/{STATUS.txt, FIRST_REVIEW.txt,
+CLAUDE_CAPACITY_12.txt, AGENT_START_FROM_REPO.txt, CHECKPOINT_TEMPLATE.txt, INVENTORY.json},
+папки ролей 01–13 в обоих городах.
+
+3. Резюме прочитанных отчётов (пересказ утверждений авторов, мной НЕ перепроверено)
+- A01 Шымкент (поиск 2026-10-04): gov.kz, stat.gov.kz, data.egov.kz, eotinish.kz, adilet, egov
+  дали 403 host_not_allowed; доступен был только GitHub. Функции службы 109 и 3–5 проблем
+  Шымкента не подтверждены местными источниками — оформлены гипотезами P1–P5 (статус при
+  многоканальности, переадресации, три вида «повтора», разрозненные инструкции, языковой паритет).
+  Observed: интерфейс STUPITS только на русском. LLM-маршрутизатор обращений — не новизна.
+  Предложение автора: навигатор жителя по закрытому корпусу официальных карточек (ru/kk).
+  Сам автор: «ни одна цифра о Шымкенте в этом проходе не проверена».
+- AST-A01 Астана (поиск 2026-10-05): те же 403. Найдено через GitHub: политика приложения
+  iKOMEK 109 (дата 13.03.2019, домен ikomekastana.kz резолвится в DNS); неофициальный клон
+  iKOMEK (июнь 2026); OSM-слой STUPITS с 6 районами и анклавами. Официальный состав районов
+  и любые цифры обращений Астаны отсутствуют. Предложение: навигатор «каналы и статусы +
+  официальные услуги» с общим ядром для двух городов.
+
+4. Что читать следующему исполнителю первым
+1) CLAUDE.md  2) research/coordination/STATUS.txt  3) research/coordination/FIRST_REVIEW.txt
+4) research/coordination/CLAUDE_CAPACITY_12.txt — найти свой слот K02–K12 и задание
+5) только отчёт + evidence своих ролей; meta.access_limitations и access_status в evidence
+   читать до использования любых цифр.
+
+5. Ограничения
+- Проверены только наличие, читаемость, хэши и синтаксис 4 файлов; факты и ссылки не перепроверялись.
+- Известные пробелы из STATUS.txt подтверждаю по структуре папок: роль 14 отсутствует в обоих
+  городах; AST_A10_evidence.json отсутствует.
