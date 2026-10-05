@@ -1,0 +1,3138 @@
+[
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.enbekshi.overture_place_records.school.conf_ge_0_0@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.enbekshi",
+  "indicator_id": "overture_place_records.school.conf_ge_0_0",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 18,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.0']['Еңбекші ауданы']['school']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5551117@29",
+  "coverage": {
+   "complete": true,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.0; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.0,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": null
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.enbekshi.overture_place_records.preschool.conf_ge_0_0@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.enbekshi",
+  "indicator_id": "overture_place_records.preschool.conf_ge_0_0",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 3,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.0']['Еңбекші ауданы']['preschool']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5551117@29",
+  "coverage": {
+   "complete": true,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.0; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.0,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": null
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.enbekshi.overture_place_records.college_university.conf_ge_0_0@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.enbekshi",
+  "indicator_id": "overture_place_records.college_university.conf_ge_0_0",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 2,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.0']['Еңбекші ауданы']['college_university']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5551117@29",
+  "coverage": {
+   "complete": true,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.0; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.0,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": null
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.enbekshi.overture_place_records.hospital.conf_ge_0_0@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.enbekshi",
+  "indicator_id": "overture_place_records.hospital.conf_ge_0_0",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 13,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.0']['Еңбекші ауданы']['hospital']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5551117@29",
+  "coverage": {
+   "complete": true,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.0; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.0,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": null
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.enbekshi.overture_place_records.outpatient_clinic.conf_ge_0_0@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.enbekshi",
+  "indicator_id": "overture_place_records.outpatient_clinic.conf_ge_0_0",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 19,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.0']['Еңбекші ауданы']['outpatient_clinic']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5551117@29",
+  "coverage": {
+   "complete": true,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.0; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.0,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": null
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.enbekshi.overture_place_records.pharmacy.conf_ge_0_0@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.enbekshi",
+  "indicator_id": "overture_place_records.pharmacy.conf_ge_0_0",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 4,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.0']['Еңбекші ауданы']['pharmacy']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5551117@29",
+  "coverage": {
+   "complete": true,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.0; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.0,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": null
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.enbekshi.overture_place_records.government_office.conf_ge_0_0@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.enbekshi",
+  "indicator_id": "overture_place_records.government_office.conf_ge_0_0",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 4,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.0']['Еңбекші ауданы']['government_office']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5551117@29",
+  "coverage": {
+   "complete": true,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.0; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.0,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": null
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.karatau.overture_place_records.school.conf_ge_0_0@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.karatau",
+  "indicator_id": "overture_place_records.school.conf_ge_0_0",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 12,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.0']['Қаратау ауданы']['school']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5551119@30",
+  "coverage": {
+   "complete": true,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.0; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.0,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": null
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.karatau.overture_place_records.preschool.conf_ge_0_0@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.karatau",
+  "indicator_id": "overture_place_records.preschool.conf_ge_0_0",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 1,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.0']['Қаратау ауданы']['preschool']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5551119@30",
+  "coverage": {
+   "complete": true,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.0; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.0,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": null
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.karatau.overture_place_records.college_university.conf_ge_0_0@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.karatau",
+  "indicator_id": "overture_place_records.college_university.conf_ge_0_0",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 2,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.0']['Қаратау ауданы']['college_university']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5551119@30",
+  "coverage": {
+   "complete": true,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.0; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.0,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": null
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.karatau.overture_place_records.hospital.conf_ge_0_0@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.karatau",
+  "indicator_id": "overture_place_records.hospital.conf_ge_0_0",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 5,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.0']['Қаратау ауданы']['hospital']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5551119@30",
+  "coverage": {
+   "complete": true,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.0; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.0,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": null
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.karatau.overture_place_records.outpatient_clinic.conf_ge_0_0@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.karatau",
+  "indicator_id": "overture_place_records.outpatient_clinic.conf_ge_0_0",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 6,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.0']['Қаратау ауданы']['outpatient_clinic']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5551119@30",
+  "coverage": {
+   "complete": true,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.0; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.0,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": null
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.karatau.overture_place_records.pharmacy.conf_ge_0_0@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.karatau",
+  "indicator_id": "overture_place_records.pharmacy.conf_ge_0_0",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 3,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.0']['Қаратау ауданы']['pharmacy']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5551119@30",
+  "coverage": {
+   "complete": true,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.0; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.0,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": null
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.karatau.overture_place_records.government_office.conf_ge_0_0@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.karatau",
+  "indicator_id": "overture_place_records.government_office.conf_ge_0_0",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 3,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.0']['Қаратау ауданы']['government_office']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5551119@30",
+  "coverage": {
+   "complete": true,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.0; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.0,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": null
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.al_farabi.overture_place_records.school.conf_ge_0_0@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.al_farabi",
+  "indicator_id": "overture_place_records.school.conf_ge_0_0",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 33,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.0']['Әл-Фараби ауданы']['school']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5550509@19",
+  "coverage": {
+   "complete": true,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.0; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.0,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": null
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.al_farabi.overture_place_records.preschool.conf_ge_0_0@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.al_farabi",
+  "indicator_id": "overture_place_records.preschool.conf_ge_0_0",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 1,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.0']['Әл-Фараби ауданы']['preschool']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5550509@19",
+  "coverage": {
+   "complete": true,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.0; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.0,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": null
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.al_farabi.overture_place_records.college_university.conf_ge_0_0@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.al_farabi",
+  "indicator_id": "overture_place_records.college_university.conf_ge_0_0",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 21,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.0']['Әл-Фараби ауданы']['college_university']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5550509@19",
+  "coverage": {
+   "complete": true,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.0; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.0,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": null
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.al_farabi.overture_place_records.hospital.conf_ge_0_0@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.al_farabi",
+  "indicator_id": "overture_place_records.hospital.conf_ge_0_0",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 11,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.0']['Әл-Фараби ауданы']['hospital']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5550509@19",
+  "coverage": {
+   "complete": true,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.0; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.0,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": null
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.al_farabi.overture_place_records.outpatient_clinic.conf_ge_0_0@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.al_farabi",
+  "indicator_id": "overture_place_records.outpatient_clinic.conf_ge_0_0",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 30,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.0']['Әл-Фараби ауданы']['outpatient_clinic']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5550509@19",
+  "coverage": {
+   "complete": true,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.0; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.0,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": null
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.al_farabi.overture_place_records.pharmacy.conf_ge_0_0@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.al_farabi",
+  "indicator_id": "overture_place_records.pharmacy.conf_ge_0_0",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 6,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.0']['Әл-Фараби ауданы']['pharmacy']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5550509@19",
+  "coverage": {
+   "complete": true,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.0; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.0,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": null
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.al_farabi.overture_place_records.government_office.conf_ge_0_0@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.al_farabi",
+  "indicator_id": "overture_place_records.government_office.conf_ge_0_0",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 3,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.0']['Әл-Фараби ауданы']['government_office']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5550509@19",
+  "coverage": {
+   "complete": true,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.0; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.0,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": null
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.abai.overture_place_records.school.conf_ge_0_0@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.abai",
+  "indicator_id": "overture_place_records.school.conf_ge_0_0",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 16,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.0']['Абай ауданы']['school']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5548210@25",
+  "coverage": {
+   "complete": false,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 0.955393,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.0; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.0,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": "район покрыт рамкой выгрузки на 95.54%: значение — нижняя граница"
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.abai.overture_place_records.preschool.conf_ge_0_0@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.abai",
+  "indicator_id": "overture_place_records.preschool.conf_ge_0_0",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 2,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.0']['Абай ауданы']['preschool']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5548210@25",
+  "coverage": {
+   "complete": false,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 0.955393,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.0; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.0,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": "район покрыт рамкой выгрузки на 95.54%: значение — нижняя граница"
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.abai.overture_place_records.college_university.conf_ge_0_0@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.abai",
+  "indicator_id": "overture_place_records.college_university.conf_ge_0_0",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 3,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.0']['Абай ауданы']['college_university']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5548210@25",
+  "coverage": {
+   "complete": false,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 0.955393,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.0; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.0,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": "район покрыт рамкой выгрузки на 95.54%: значение — нижняя граница"
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.abai.overture_place_records.hospital.conf_ge_0_0@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.abai",
+  "indicator_id": "overture_place_records.hospital.conf_ge_0_0",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 9,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.0']['Абай ауданы']['hospital']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5548210@25",
+  "coverage": {
+   "complete": false,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 0.955393,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.0; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.0,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": "район покрыт рамкой выгрузки на 95.54%: значение — нижняя граница"
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.abai.overture_place_records.outpatient_clinic.conf_ge_0_0@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.abai",
+  "indicator_id": "overture_place_records.outpatient_clinic.conf_ge_0_0",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 6,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.0']['Абай ауданы']['outpatient_clinic']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5548210@25",
+  "coverage": {
+   "complete": false,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 0.955393,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.0; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.0,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": "район покрыт рамкой выгрузки на 95.54%: значение — нижняя граница"
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.abai.overture_place_records.pharmacy.conf_ge_0_0@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.abai",
+  "indicator_id": "overture_place_records.pharmacy.conf_ge_0_0",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 5,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.0']['Абай ауданы']['pharmacy']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5548210@25",
+  "coverage": {
+   "complete": false,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 0.955393,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.0; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.0,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": "район покрыт рамкой выгрузки на 95.54%: значение — нижняя граница"
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.abai.overture_place_records.government_office.conf_ge_0_0@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.abai",
+  "indicator_id": "overture_place_records.government_office.conf_ge_0_0",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 3,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.0']['Абай ауданы']['government_office']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5548210@25",
+  "coverage": {
+   "complete": false,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 0.955393,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.0; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.0,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": "район покрыт рамкой выгрузки на 95.54%: значение — нижняя граница"
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.enbekshi.overture_place_records.school.conf_ge_0_5@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.enbekshi",
+  "indicator_id": "overture_place_records.school.conf_ge_0_5",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 14,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.5']['Еңбекші ауданы']['school']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5551117@29",
+  "coverage": {
+   "complete": true,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.5; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.5,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": null
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.enbekshi.overture_place_records.preschool.conf_ge_0_5@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.enbekshi",
+  "indicator_id": "overture_place_records.preschool.conf_ge_0_5",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 3,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.5']['Еңбекші ауданы']['preschool']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5551117@29",
+  "coverage": {
+   "complete": true,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.5; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.5,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": null
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.enbekshi.overture_place_records.college_university.conf_ge_0_5@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.enbekshi",
+  "indicator_id": "overture_place_records.college_university.conf_ge_0_5",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 2,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.5']['Еңбекші ауданы']['college_university']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5551117@29",
+  "coverage": {
+   "complete": true,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.5; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.5,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": null
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.enbekshi.overture_place_records.hospital.conf_ge_0_5@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.enbekshi",
+  "indicator_id": "overture_place_records.hospital.conf_ge_0_5",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 11,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.5']['Еңбекші ауданы']['hospital']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5551117@29",
+  "coverage": {
+   "complete": true,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.5; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.5,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": null
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.enbekshi.overture_place_records.outpatient_clinic.conf_ge_0_5@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.enbekshi",
+  "indicator_id": "overture_place_records.outpatient_clinic.conf_ge_0_5",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 12,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.5']['Еңбекші ауданы']['outpatient_clinic']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5551117@29",
+  "coverage": {
+   "complete": true,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.5; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.5,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": null
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.enbekshi.overture_place_records.pharmacy.conf_ge_0_5@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.enbekshi",
+  "indicator_id": "overture_place_records.pharmacy.conf_ge_0_5",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 4,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.5']['Еңбекші ауданы']['pharmacy']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5551117@29",
+  "coverage": {
+   "complete": true,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.5; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.5,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": null
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.enbekshi.overture_place_records.government_office.conf_ge_0_5@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.enbekshi",
+  "indicator_id": "overture_place_records.government_office.conf_ge_0_5",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 0,
+  "unit": "records",
+  "value_status": "reported_zero",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.5']['Еңбекші ауданы']['government_office']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5551117@29",
+  "coverage": {
+   "complete": true,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.5; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.5,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": null
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.karatau.overture_place_records.school.conf_ge_0_5@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.karatau",
+  "indicator_id": "overture_place_records.school.conf_ge_0_5",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 9,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.5']['Қаратау ауданы']['school']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5551119@30",
+  "coverage": {
+   "complete": true,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.5; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.5,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": null
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.karatau.overture_place_records.preschool.conf_ge_0_5@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.karatau",
+  "indicator_id": "overture_place_records.preschool.conf_ge_0_5",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 1,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.5']['Қаратау ауданы']['preschool']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5551119@30",
+  "coverage": {
+   "complete": true,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.5; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.5,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": null
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.karatau.overture_place_records.college_university.conf_ge_0_5@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.karatau",
+  "indicator_id": "overture_place_records.college_university.conf_ge_0_5",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 1,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.5']['Қаратау ауданы']['college_university']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5551119@30",
+  "coverage": {
+   "complete": true,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.5; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.5,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": null
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.karatau.overture_place_records.hospital.conf_ge_0_5@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.karatau",
+  "indicator_id": "overture_place_records.hospital.conf_ge_0_5",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 4,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.5']['Қаратау ауданы']['hospital']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5551119@30",
+  "coverage": {
+   "complete": true,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.5; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.5,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": null
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.karatau.overture_place_records.outpatient_clinic.conf_ge_0_5@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.karatau",
+  "indicator_id": "overture_place_records.outpatient_clinic.conf_ge_0_5",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 4,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.5']['Қаратау ауданы']['outpatient_clinic']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5551119@30",
+  "coverage": {
+   "complete": true,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.5; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.5,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": null
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.karatau.overture_place_records.pharmacy.conf_ge_0_5@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.karatau",
+  "indicator_id": "overture_place_records.pharmacy.conf_ge_0_5",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 3,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.5']['Қаратау ауданы']['pharmacy']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5551119@30",
+  "coverage": {
+   "complete": true,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.5; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.5,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": null
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.karatau.overture_place_records.government_office.conf_ge_0_5@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.karatau",
+  "indicator_id": "overture_place_records.government_office.conf_ge_0_5",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 2,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.5']['Қаратау ауданы']['government_office']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5551119@30",
+  "coverage": {
+   "complete": true,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.5; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.5,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": null
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.al_farabi.overture_place_records.school.conf_ge_0_5@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.al_farabi",
+  "indicator_id": "overture_place_records.school.conf_ge_0_5",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 22,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.5']['Әл-Фараби ауданы']['school']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5550509@19",
+  "coverage": {
+   "complete": true,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.5; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.5,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": null
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.al_farabi.overture_place_records.preschool.conf_ge_0_5@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.al_farabi",
+  "indicator_id": "overture_place_records.preschool.conf_ge_0_5",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 1,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.5']['Әл-Фараби ауданы']['preschool']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5550509@19",
+  "coverage": {
+   "complete": true,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.5; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.5,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": null
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.al_farabi.overture_place_records.college_university.conf_ge_0_5@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.al_farabi",
+  "indicator_id": "overture_place_records.college_university.conf_ge_0_5",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 15,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.5']['Әл-Фараби ауданы']['college_university']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5550509@19",
+  "coverage": {
+   "complete": true,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.5; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.5,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": null
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.al_farabi.overture_place_records.hospital.conf_ge_0_5@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.al_farabi",
+  "indicator_id": "overture_place_records.hospital.conf_ge_0_5",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 10,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.5']['Әл-Фараби ауданы']['hospital']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5550509@19",
+  "coverage": {
+   "complete": true,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.5; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.5,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": null
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.al_farabi.overture_place_records.outpatient_clinic.conf_ge_0_5@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.al_farabi",
+  "indicator_id": "overture_place_records.outpatient_clinic.conf_ge_0_5",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 12,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.5']['Әл-Фараби ауданы']['outpatient_clinic']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5550509@19",
+  "coverage": {
+   "complete": true,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.5; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.5,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": null
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.al_farabi.overture_place_records.pharmacy.conf_ge_0_5@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.al_farabi",
+  "indicator_id": "overture_place_records.pharmacy.conf_ge_0_5",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 6,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.5']['Әл-Фараби ауданы']['pharmacy']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5550509@19",
+  "coverage": {
+   "complete": true,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.5; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.5,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": null
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.al_farabi.overture_place_records.government_office.conf_ge_0_5@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.al_farabi",
+  "indicator_id": "overture_place_records.government_office.conf_ge_0_5",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 1,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.5']['Әл-Фараби ауданы']['government_office']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5550509@19",
+  "coverage": {
+   "complete": true,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.5; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.5,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": null
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.abai.overture_place_records.school.conf_ge_0_5@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.abai",
+  "indicator_id": "overture_place_records.school.conf_ge_0_5",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 11,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.5']['Абай ауданы']['school']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5548210@25",
+  "coverage": {
+   "complete": false,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 0.955393,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.5; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.5,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": "район покрыт рамкой выгрузки на 95.54%: значение — нижняя граница"
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.abai.overture_place_records.preschool.conf_ge_0_5@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.abai",
+  "indicator_id": "overture_place_records.preschool.conf_ge_0_5",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 2,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.5']['Абай ауданы']['preschool']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5548210@25",
+  "coverage": {
+   "complete": false,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 0.955393,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.5; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.5,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": "район покрыт рамкой выгрузки на 95.54%: значение — нижняя граница"
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.abai.overture_place_records.college_university.conf_ge_0_5@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.abai",
+  "indicator_id": "overture_place_records.college_university.conf_ge_0_5",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 2,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.5']['Абай ауданы']['college_university']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5548210@25",
+  "coverage": {
+   "complete": false,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 0.955393,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.5; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.5,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": "район покрыт рамкой выгрузки на 95.54%: значение — нижняя граница"
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.abai.overture_place_records.hospital.conf_ge_0_5@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.abai",
+  "indicator_id": "overture_place_records.hospital.conf_ge_0_5",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 8,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.5']['Абай ауданы']['hospital']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5548210@25",
+  "coverage": {
+   "complete": false,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 0.955393,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.5; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.5,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": "район покрыт рамкой выгрузки на 95.54%: значение — нижняя граница"
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.abai.overture_place_records.outpatient_clinic.conf_ge_0_5@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.abai",
+  "indicator_id": "overture_place_records.outpatient_clinic.conf_ge_0_5",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 3,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.5']['Абай ауданы']['outpatient_clinic']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5548210@25",
+  "coverage": {
+   "complete": false,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 0.955393,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.5; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.5,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": "район покрыт рамкой выгрузки на 95.54%: значение — нижняя граница"
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.abai.overture_place_records.pharmacy.conf_ge_0_5@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.abai",
+  "indicator_id": "overture_place_records.pharmacy.conf_ge_0_5",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 4,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.5']['Абай ауданы']['pharmacy']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5548210@25",
+  "coverage": {
+   "complete": false,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 0.955393,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.5; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.5,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": "район покрыт рамкой выгрузки на 95.54%: значение — нижняя граница"
+ },
+ {
+  "schema_version": "k05-obs-v1.1",
+  "obs_id": "kz.shymkent.abai.overture_place_records.government_office.conf_ge_0_5@2026-09-23.1",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.abai",
+  "indicator_id": "overture_place_records.government_office.conf_ge_0_5",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "value": 3,
+  "unit": "records",
+  "value_status": "reported",
+  "missing_reason": null,
+  "kind": "derived",
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+   "retrieved_at": "2026-10-05T05:24:23+00:00",
+   "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.5']['Абай ауданы']['government_office']",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+   "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "overture:2026-09-23.1/osm:r5548210@25",
+  "coverage": {
+   "complete": false,
+   "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+   "selection": "все записи выгрузки K10 в рамке, без лимита",
+   "area_fraction": 0.955393,
+   "cap_per_group": null
+  },
+  "method": {
+   "id": "k10_e02_places_by_district+k05r3_adapter",
+   "steps": [
+    "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+    "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+    "фильтр confidence >= 0.5; счёт записей без дедупликации",
+    "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+   ],
+   "parameters": {
+    "confidence_min": 0.5,
+    "query_bbox": [
+     69.35,
+     42.1,
+     69.95,
+     42.55
+    ],
+    "release": "2026-09-23.1",
+    "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+    "group_rule": "places_by_district.group()"
+   }
+  },
+  "max_age_days": 45,
+  "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+  "note": "район покрыт рамкой выгрузки на 95.54%: значение — нижняя граница"
+ }
+]

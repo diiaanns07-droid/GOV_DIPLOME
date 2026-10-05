@@ -1,0 +1,38 @@
+{
+ "schema_version": "k05-obs-v1.1",
+ "obs_id": "kz.shymkent.official_registry.school_count@unknown",
+ "city_id": "kz.shymkent",
+ "geo_unit_id": "kz.shymkent",
+ "indicator_id": "official_registry.school_count",
+ "period": "unknown",
+ "release": null,
+ "value": null,
+ "unit": "schools",
+ "value_status": "missing",
+ "missing_reason": "source_access_denied",
+ "kind": "observed",
+ "source": {
+  "source_id": "stat.gov.kz",
+  "url": "https://stat.gov.kz/",
+  "retrieved_at": null,
+  "locator": "не получено",
+  "license": null,
+  "evidence": "K10 access_log 2026-10-05T05:20:53Z blocked_403_connect"
+ },
+ "data_version": "official@not_retrieved",
+ "boundary_version": null,
+ "coverage": {
+  "complete": false,
+  "scope": "официальный показатель, не открыт",
+  "selection": "нет",
+  "area_fraction": null,
+  "cap_per_group": null
+ },
+ "method": {
+  "id": "not_retrieved",
+  "steps": [
+   "один запрос, CONNECT 403 по политике сети среды"
+  ]
+ },
+ "note": "Отсутствие доступа, а не отсутствие данных. Overture-счёт сюда не подставляется."
+}

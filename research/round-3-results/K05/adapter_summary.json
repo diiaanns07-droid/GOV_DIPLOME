@@ -1,0 +1,287 @@
+{
+ "as_of": "2026-10-05",
+ "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+ "release": "2026-09-23.1",
+ "shymkent": {
+  "units": {
+   "Шымкент": {
+    "geo_unit_id": "kz.shymkent",
+    "osm_relation": "r3389772@60",
+    "subtype": "region",
+    "area_km2": 1169.968,
+    "area_fraction_in_bbox": 0.981055,
+    "boundary_version": "overture:2026-09-23.1/osm:r3389772@60"
+   },
+   "Еңбекші ауданы": {
+    "geo_unit_id": "kz.shymkent.enbekshi",
+    "osm_relation": "r5551117@29",
+    "subtype": "county",
+    "area_km2": 201.538,
+    "area_fraction_in_bbox": 1.0,
+    "boundary_version": "overture:2026-09-23.1/osm:r5551117@29"
+   },
+   "Қаратау ауданы": {
+    "geo_unit_id": "kz.shymkent.karatau",
+    "osm_relation": "r5551119@30",
+    "subtype": "county",
+    "area_km2": 321.712,
+    "area_fraction_in_bbox": 1.0,
+    "boundary_version": "overture:2026-09-23.1/osm:r5551119@30"
+   },
+   "Әл-Фараби ауданы": {
+    "geo_unit_id": "kz.shymkent.al_farabi",
+    "osm_relation": "r5550509@19",
+    "subtype": "county",
+    "area_km2": 149.813,
+    "area_fraction_in_bbox": 1.0,
+    "boundary_version": "overture:2026-09-23.1/osm:r5550509@19"
+   },
+   "Абай ауданы": {
+    "geo_unit_id": "kz.shymkent.abai",
+    "osm_relation": "r5548210@25",
+    "subtype": "county",
+    "area_km2": 496.905,
+    "area_fraction_in_bbox": 0.955393,
+    "boundary_version": "overture:2026-09-23.1/osm:r5548210@25"
+   }
+  },
+  "observations": 56,
+  "status_counts": {
+   "reported": 55,
+   "reported_zero": 1,
+   "missing": 0
+  },
+  "zero_in_partial_coverage": [],
+  "real_zero_examples": [
+   "kz.shymkent.enbekshi.overture_place_records.government_office.conf_ge_0_5@2026-09-23.1"
+  ],
+  "sample_vs_e02": {
+   "school": {
+    "sample_rows": 15,
+    "e02_district_sum_conf_ge_0_0": 79,
+    "consistent": true
+   },
+   "preschool": {
+    "sample_rows": 7,
+    "e02_district_sum_conf_ge_0_0": 7,
+    "consistent": true
+   },
+   "college_university": {
+    "sample_rows": 15,
+    "e02_district_sum_conf_ge_0_0": 28,
+    "consistent": true
+   },
+   "hospital": {
+    "sample_rows": 15,
+    "e02_district_sum_conf_ge_0_0": 38,
+    "consistent": true
+   },
+   "outpatient_clinic": {
+    "sample_rows": 15,
+    "e02_district_sum_conf_ge_0_0": 61,
+    "consistent": true
+   },
+   "pharmacy": {
+    "sample_rows": 15,
+    "e02_district_sum_conf_ge_0_0": 18,
+    "consistent": true
+   },
+   "government_office": {
+    "sample_rows": 13,
+    "e02_district_sum_conf_ge_0_0": 13,
+    "consistent": true
+   }
+  },
+  "school_conf_ge_0_5_city_sum": {
+   "value": 56,
+   "value_status": "reported",
+   "coverage_complete": false,
+   "n": "4/4"
+  },
+  "object_qa": {
+   "errors": 0,
+   "warnings": {
+    "POSSIBLE_DUPLICATE": 3,
+    "COLOCATED": 1
+   }
+  }
+ },
+ "astana": {
+  "units": {
+   "Астана": {
+    "geo_unit_id": "kz.astana",
+    "osm_relation": "r3087155@64",
+    "subtype": "region",
+    "area_km2": 800.291,
+    "area_fraction_in_bbox": 0.972321,
+    "boundary_version": "overture:2026-09-23.1/osm:r3087155@64"
+   },
+   "Байқоңыр ауданы": {
+    "geo_unit_id": "kz.astana.baikonur",
+    "osm_relation": "r8593081@14",
+    "subtype": "county",
+    "area_km2": 183.501,
+    "area_fraction_in_bbox": 0.999514,
+    "boundary_version": "overture:2026-09-23.1/osm:r8593081@14"
+   },
+   "Есіл ауданы": {
+    "geo_unit_id": "kz.astana.esil",
+    "osm_relation": "r3479876@35",
+    "subtype": "county",
+    "area_km2": 194.556,
+    "area_fraction_in_bbox": 0.943319,
+    "boundary_version": "overture:2026-09-23.1/osm:r3479876@35"
+   },
+   "Сарыарқа ауданы": {
+    "geo_unit_id": "kz.astana.saryarka",
+    "osm_relation": "r3486954@23",
+    "subtype": "county",
+    "area_km2": 67.823,
+    "area_fraction_in_bbox": 1.0,
+    "boundary_version": "overture:2026-09-23.1/osm:r3486954@23"
+   },
+   "Нұра ауданы": {
+    "geo_unit_id": "kz.astana.nura",
+    "osm_relation": "r20593940@1",
+    "subtype": "county",
+    "area_km2": 188.574,
+    "area_fraction_in_bbox": 1.0,
+    "boundary_version": "overture:2026-09-23.1/osm:r20593940@1"
+   },
+   "Алматы ауданы": {
+    "geo_unit_id": "kz.astana.almaty",
+    "osm_relation": "r3482819@46",
+    "subtype": "county",
+    "area_km2": 93.379,
+    "area_fraction_in_bbox": 1.0,
+    "boundary_version": "overture:2026-09-23.1/osm:r3482819@46"
+   },
+   "Сарайшық ауданы": {
+    "geo_unit_id": "kz.astana.saraishyk",
+    "osm_relation": "r19733918@16",
+    "subtype": "locality",
+    "area_km2": 61.425,
+    "area_fraction_in_bbox": 1.0,
+    "boundary_version": "overture:2026-09-23.1/osm:r19733918@16"
+   }
+  },
+  "observations": 84,
+  "status_counts": {
+   "reported": 84,
+   "reported_zero": 0,
+   "missing": 0
+  },
+  "zero_in_partial_coverage": [],
+  "real_zero_examples": [],
+  "sample_vs_e02": {
+   "school": {
+    "sample_rows": 15,
+    "e02_district_sum_conf_ge_0_0": 139,
+    "consistent": true
+   },
+   "preschool": {
+    "sample_rows": 15,
+    "e02_district_sum_conf_ge_0_0": 54,
+    "consistent": true
+   },
+   "college_university": {
+    "sample_rows": 15,
+    "e02_district_sum_conf_ge_0_0": 92,
+    "consistent": true
+   },
+   "hospital": {
+    "sample_rows": 15,
+    "e02_district_sum_conf_ge_0_0": 110,
+    "consistent": true
+   },
+   "outpatient_clinic": {
+    "sample_rows": 15,
+    "e02_district_sum_conf_ge_0_0": 188,
+    "consistent": true
+   },
+   "pharmacy": {
+    "sample_rows": 15,
+    "e02_district_sum_conf_ge_0_0": 34,
+    "consistent": true
+   },
+   "government_office": {
+    "sample_rows": 15,
+    "e02_district_sum_conf_ge_0_0": 119,
+    "consistent": true
+   }
+  },
+  "school_conf_ge_0_5_city_sum": {
+   "value": 114,
+   "value_status": "reported",
+   "coverage_complete": false,
+   "n": "6/6"
+  },
+  "object_qa": {
+   "errors": 0,
+   "warnings": {
+    "POSSIBLE_DUPLICATE": 2,
+    "COLOCATED": 0
+   }
+  }
+ },
+ "validation": {
+  "research/round-3-results/K05/examples/astana/k10_sample_row_counts.json": {
+   "REJECT": 0,
+   "WARN": 7,
+   "OK": 0,
+   "codes": {
+    "PARTIAL_COVERAGE": 7
+   }
+  },
+  "research/round-3-results/K05/examples/astana/official_registry_missing.json": {
+   "REJECT": 0,
+   "WARN": 1,
+   "OK": 0,
+   "codes": {
+    "PERIOD_UNKNOWN": 1
+   }
+  },
+  "research/round-3-results/K05/examples/astana/overture_place_record_counts.json": {
+   "REJECT": 0,
+   "WARN": 84,
+   "OK": 0,
+   "codes": {
+    "PARTIAL_COVERAGE": 28,
+    "BOUNDARY_VERSION_UNKNOWN": 70,
+    "BOUNDARY_MISMATCH": 14
+   }
+  },
+  "research/round-3-results/K05/examples/shymkent/k10_sample_row_counts.json": {
+   "REJECT": 0,
+   "WARN": 7,
+   "OK": 0,
+   "codes": {
+    "PARTIAL_COVERAGE": 7
+   }
+  },
+  "research/round-3-results/K05/examples/shymkent/official_registry_missing.json": {
+   "REJECT": 0,
+   "WARN": 1,
+   "OK": 0,
+   "codes": {
+    "PERIOD_UNKNOWN": 1
+   }
+  },
+  "research/round-3-results/K05/examples/shymkent/overture_place_record_counts.json": {
+   "REJECT": 0,
+   "WARN": 14,
+   "OK": 42,
+   "codes": {
+    "PARTIAL_COVERAGE": 14
+   }
+  }
+ },
+ "product_boundary_ref": {
+  "kz.astana.esil": "product:osm:r3479876@unknown",
+  "kz.astana.almaty": "product:osm:r3482819@unknown",
+  "kz.astana.saryarka": "product:osm:r3486954@unknown",
+  "kz.astana.baikonur": "product:osm:r8593081@unknown",
+  "kz.astana.nura": "product:osm:r20593940@unknown",
+  "kz.astana.saraishyk": "product:osm:r19733918@17"
+ }
+}

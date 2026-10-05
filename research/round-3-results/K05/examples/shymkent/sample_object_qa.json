@@ -1,0 +1,62 @@
+{
+ "errors": [],
+ "warnings": [
+  {
+   "code": "POSSIBLE_DUPLICATE",
+   "rule": "same_group_same_house_number",
+   "distance_m": 27.8,
+   "a": {
+    "id": "98650189-5241-4bfb-87b0-0ab66fad2391",
+    "name": "Мұқтар Әуезов атындағы Оңтүстік Қазақстан Университеті",
+    "group": "college_university"
+   },
+   "b": {
+    "id": "20280486-3454-4e5b-9ff4-0da354ea336d",
+    "name": "Коррупционерлер атындағы университет",
+    "group": "college_university"
+   }
+  },
+  {
+   "code": "POSSIBLE_DUPLICATE",
+   "rule": "same_group_same_house_number",
+   "distance_m": 32.3,
+   "a": {
+    "id": "98650189-5241-4bfb-87b0-0ab66fad2391",
+    "name": "Мұқтар Әуезов атындағы Оңтүстік Қазақстан Университеті",
+    "group": "college_university"
+   },
+   "b": {
+    "id": "bdd05296-cf97-4443-aed3-19714c1ce648",
+    "name": "Department of student affairs",
+    "group": "college_university"
+   }
+  },
+  {
+   "code": "POSSIBLE_DUPLICATE",
+   "rule": "same_group_same_house_number",
+   "distance_m": 5.1,
+   "a": {
+    "id": "20280486-3454-4e5b-9ff4-0da354ea336d",
+    "name": "Коррупционерлер атындағы университет",
+    "group": "college_university"
+   },
+   "b": {
+    "id": "bdd05296-cf97-4443-aed3-19714c1ce648",
+    "name": "Department of student affairs",
+    "group": "college_university"
+   }
+  },
+  {
+   "code": "COLOCATED",
+   "lon": 69.5958,
+   "lat": 42.3167,
+   "n": 4,
+   "names": [
+    "Казахстан",
+    "Dr.Sattarkulovich",
+    "Фитофарм",
+    "Baiterek School"
+   ]
+  }
+ ]
+}
