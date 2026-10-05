@@ -20,8 +20,7 @@ function check(id, name, ok, observed, pre) { const v = pre === false ? "TEST_IN
 const clone = (x) => JSON.parse(JSON.stringify(x));
 
 // ---------- SYNTHETIC equator test city: 0.001° of longitude at lat 0 ≈ 111.195 m ----------
-const EQ = { cities: { synthetic_eq: { bbox: [0, -0.01, 0.02, 0.01], release: "synthetic", files: {}, places: [
-  { id: "s-a", lon: 0.0, lat: 0, group: "school" }, { id: "s-b", lon: 0.02, lat: 0, group: "school" } ] } } };
+const EQ = require(path.join(HERE, "plan_cases.cjs")).EQ_DATA;  // SYNTHETIC equator test city (shared with the oracle run)
 const ctxEq = C.makeContext(EQ, "synthetic_eq", F);
 function eqScenario(over = {}) {
   return { schema_version: C.SCHEMA, city_id: "synthetic_eq", source_snapshot: ctxEq.source_snapshot, category: "school",
@@ -107,22 +106,7 @@ check("C01", "haversine: 1° of latitude = R·π/180 (111 195.08 m), mm rounding
   check("C21", "Pareto: two plans with equal cost and sum collapse to one point with the smaller IDs ({c1}, not {c3})", one.length === 1 && one[0].selected_ids.join() === "c1" && ids(r.objectives.mean) === "c1", r.pareto);
 }
 // validation refusals
-const REJ = [
-  ["schema", (o) => { o.schema_version = "city-plan-v3"; }, "bad_schema"], ["city", (o) => { o.city_id = "astana"; }, "bad_city"],
-  ["snapshot", (o) => { o.source_snapshot = "sha256:00"; }, "bad_snapshot"], ["unknown field", (o) => { o.url = "https://example.com/x.js"; }, "unknown_field"],
-  ["point extra field", (o) => { o.control_points[0].population = 5000; }, "unknown_field"], ["duplicate point id", (o) => { o.control_points[1].id = "p1"; }, "duplicate_id"],
-  ["outside bbox", (o) => { o.control_points[0].lon = 0.5; }, "outside_bbox"], ["NaN lat", (o) => { o.candidates[0].lat = NaN; }, "bad_coordinate"],
-  ["weight 0", (o) => { o.control_points[0].weight = 0; }, "out_of_range"], ["weight 1.5", (o) => { o.control_points[0].weight = 1.5; }, "not_integer"],
-  ["cost 0", (o) => { o.candidates[0].cost = 0; }, "out_of_range"], ["cost negative", (o) => { o.candidates[0].cost = -5; }, "out_of_range"],
-  ["budget too big", (o) => { o.budget = 1000001; }, "out_of_range"], ["max_selected 6", (o) => { o.max_selected = 6; }, "out_of_range"],
-  ["radius 50", (o) => { o.coverage_radius_m = 50; }, "out_of_range"], ["required∩excluded", (o) => { o.required_ids = ["c1"]; o.excluded_ids = ["c1"]; }, "required_excluded_overlap"],
-  ["unknown reference", (o) => { o.selected_ids = ["c9"]; }, "unknown_reference"], ["duplicate in required", (o) => { o.required_ids = ["c1", "c1"]; }, "duplicate_id"],
-  ["candidate kind", (o) => { o.candidates[0].kind = "observed"; }, "bad_kind"], ["candidate category", (o) => { o.candidates[0].category = "outpatient_clinic"; }, "bad_category"],
-  ["26 points", (o) => { o.control_points = Array.from({ length: 26 }, (_, i) => ({ id: "q" + i, lon: 0.001, lat: 0, weight: 1 })); }, "bad_count"],
-  ["17 candidates", (o) => { o.candidates = Array.from({ length: 17 }, (_, i) => ({ id: "k" + i, lon: 0.001, lat: 0, category: "school", kind: "hypothetical", cost: 1 })); o.selected_ids = []; }, "bad_count"],
-  ["id 65 chars", (o) => { o.control_points[0].id = "x".repeat(65); }, "bad_id"], ["id with markup", (o) => { o.candidates[0].id = "<b>"; }, "bad_id"],
-  ["0 points", (o) => { o.control_points = []; }, "bad_count"], ["missing field", (o) => { delete o.budget; }, "missing_field"],
-];
+const { REJ, eqCases, realScenarios, EQ_DATA } = require(path.join(HERE, "plan_cases.cjs"));
 for (const [name, mut, code] of REJ) {
   const o = eqScenario(); mut(o);
   const r = C.validatePlanScenario(o, ctxEq);
@@ -149,34 +133,16 @@ async function runnerChecks() {
   h1.cancel(); h2.cancel();
 }
 
-// ---------- real slices vs the Python oracle ----------
+// ---------- real slices (and the equator hand cases) vs the Python oracle ----------
 function realCases() {
-  const cases = [];
-  for (const city of ["shymkent", "astana"]) {
-    const ctx = C.makeContext(D, city, F);
-    for (const cat of ["school", "outpatient_clinic"]) {
-      const demo = DEMO.syntheticDemo(ctx.bbox, cat);
-      const base = { schema_version: C.SCHEMA, city_id: city, source_snapshot: ctx.source_snapshot, category: cat,
-        control_points: demo.control_points, candidates: demo.candidates, budget: demo.budget, max_selected: demo.max_selected,
-        coverage_radius_m: demo.coverage_radius_m, required_ids: [], excluded_ids: [], selected_ids: ["site-2", "site-4"] };
-      const vars = [["demo", {}], ["budget0", { budget: 0 }], ["budget150", { budget: 150 }], ["max5_b1000", { max_selected: 5, budget: 1000 }],
-        ["req_exc", { required_ids: ["site-5"], excluded_ids: ["site-4"], selected_ids: ["site-5"] }], ["radius100", { coverage_radius_m: 100 }],
-        ["radius5000", { coverage_radius_m: 5000 }], ["infeasible", { required_ids: ["site-5", "site-3"], budget: 300 }]];
-      for (const [name, over] of vars) cases.push({ name: `${city}/${cat}/${name}`, scenario: V({ ...base, ...over }, ctx), ctx });
-    }
-    // maximum size: 25 points × 16 sites (SYNTHETIC grid inside the real bbox)
-    const bb = ctx.bbox, g = (u, v) => [Math.round((bb[0] + (bb[2] - bb[0]) * u) * 1e6) / 1e6, Math.round((bb[1] + (bb[3] - bb[1]) * v) * 1e6) / 1e6];
-    const pts = Array.from({ length: 25 }, (_, i) => { const [lon, lat] = g(0.08 + 0.21 * (i % 5), 0.08 + 0.21 * Math.floor(i / 5)); return { id: `cp-${i + 1}`, lon, lat, weight: 1 + (i * 7) % 10 }; });
-    const sites = Array.from({ length: 16 }, (_, i) => { const [lon, lat] = g(0.12 + 0.25 * (i % 4), 0.12 + 0.25 * Math.floor(i / 4)); return { id: `site-${String(i + 1).padStart(2, "0")}`, lon, lat, category: "school", kind: "hypothetical", cost: 50 + (i * 37) % 120 }; });
-    cases.push({ name: `${city}/school/max_16x25`, ctx, scenario: V({ schema_version: C.SCHEMA, city_id: city, source_snapshot: ctx.source_snapshot, category: "school",
-      control_points: pts, candidates: sites, budget: 400, max_selected: 5, coverage_radius_m: 300, required_ids: [], excluded_ids: [], selected_ids: [] }, ctx) });
-  }
-  return cases;
+  const ctxs = {};
+  return realScenarios(C, D, F, DEMO).map((c) => { const ctx = ctxs[c.scenario.city_id] || (ctxs[c.scenario.city_id] = C.makeContext(D, c.scenario.city_id, F)); return { ...c, scenario: V(c.scenario, ctx), ctx }; });
 }
-function compareWithOracle(cases) {
-  const casesFile = path.join(OUT, "cases.json"), oracleFile = path.join(OUT, "oracle.json");
+function eqCasesV() { return eqCases(ctxEq.source_snapshot).map((c) => ({ ...c, scenario: V(c.scenario), ctx: ctxEq })); }
+function compareWithOracle(cases, dataFile, tag) {
+  const casesFile = path.join(OUT, `cases${tag}.json`), oracleFile = path.join(OUT, `oracle${tag}.json`);
   fs.writeFileSync(casesFile, JSON.stringify(cases.map((c) => ({ name: c.name, scenario: c.scenario })), null, 1) + "\n");
-  const py = spawnSync("python3", [path.join(HERE, "oracle_plan.py"), "--data", path.join(W, "data.js"), "--cases", casesFile, "--out", oracleFile], { encoding: "utf8" });
+  const py = spawnSync("python3", [path.join(HERE, "oracle_plan.py"), "--data", dataFile, "--cases", casesFile, "--out", oracleFile], { encoding: "utf8" });
   if (py.status !== 0) { check("O00", "Python oracle ran", false, (py.stderr || String(py.error)).slice(0, 300), false); return; }
   const orc = JSON.parse(fs.readFileSync(oracleFile, "utf8"));
   const pick = (p) => p && { selected_ids: p.selected_ids, unknown_count: p.metrics.unknown_count, weighted_sum_mm: p.metrics.weighted_sum_mm, max_mm: p.metrics.max_mm, covered_weight: p.metrics.covered_weight, cost: p.metrics.cost };
@@ -195,12 +161,15 @@ function compareWithOracle(cases) {
       e.metrics.weighted_sum_mm === m.weighted_sum_mm && e.metrics.max_mm === m.max_mm && e.metrics.covered_weight === m.covered_weight && e.metrics.unknown_count === m.unknown_count && e.metrics.cost === m.cost,
       { js: e.metrics, oracle: m });
   });
-  fs.writeFileSync(path.join(OUT, "timing.json"), JSON.stringify({ node: process.version, platform: `${process.platform} ${process.arch}`, cases: timing }, null, 1) + "\n");
+  if (!tag) fs.writeFileSync(path.join(OUT, "timing.json"), JSON.stringify({ node: process.version, platform: `${process.platform} ${process.arch}`, cases: timing }, null, 1) + "\n");
 }
 
 (async () => {
   await runnerChecks();
-  compareWithOracle(realCases());
+  compareWithOracle(realCases(), path.join(W, "data.js"), "");
+  const eqFile = path.join(OUT, "synthetic_eq_data.js");  // SYNTHETIC test city for the oracle (same text format as data.js)
+  fs.writeFileSync(eqFile, "// SYNTHETIC equator test city (K07 r8 tests), not city data\nwindow.CITY_EVIDENCE = " + JSON.stringify(EQ_DATA) + ";\n");
+  compareWithOracle(eqCasesV(), eqFile, "_eq");
   const by = (v) => checks.filter((c) => c.verdict === v).length;
   fs.writeFileSync(path.join(OUT, "result.json"), JSON.stringify({ kind: "K07 r8 headless calculator tests", app_root: path.basename(ROOT), calc_version: C.CALC_VERSION,
     total: checks.length, pass: by("PASS"), fail: by("FAIL"), test_incompatible: by("TEST_INCOMPATIBLE"), checks }, null, 1) + "\n");

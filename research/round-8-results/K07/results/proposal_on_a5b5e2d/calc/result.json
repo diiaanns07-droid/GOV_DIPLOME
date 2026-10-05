@@ -2,8 +2,8 @@
  "kind": "K07 r8 headless calculator tests",
  "app_root": "city-evidence",
  "calc_version": "k07-plan-calc-r8.1",
- "total": 120,
- "pass": 120,
+ "total": 144,
+ "pass": 144,
  "fail": 0,
  "test_incompatible": 0,
  "checks": [
@@ -240,6 +240,16 @@
   {
    "id": "V-missing field",
    "name": "validator rejects: missing field → missing_field",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-Infinity budget",
+   "name": "validator rejects: Infinity budget → not_integer",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-string weight",
+   "name": "validator rejects: string weight → not_integer",
    "verdict": "PASS"
   },
   {
@@ -605,6 +615,116 @@
   {
    "id": "E-astana/school/max_16x25",
    "name": "evaluatePlan (manual plan) = oracle: astana/school/max_16x25",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-eq/ties",
+   "name": "optimizePlans = Python oracle (objectives, feasible count, Pareto, budgets [0, B/2, B]): eq/ties",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-eq/ties",
+   "name": "evaluatePlan (manual plan) = oracle: eq/ties",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-eq/required_over_budget",
+   "name": "optimizePlans = Python oracle (objectives, feasible count, Pareto, budgets [0, B/2, B]): eq/required_over_budget",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-eq/required_over_budget",
+   "name": "evaluatePlan (manual plan) = oracle: eq/required_over_budget",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-eq/required_over_count",
+   "name": "optimizePlans = Python oracle (objectives, feasible count, Pareto, budgets [0, B/2, B]): eq/required_over_count",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-eq/required_over_count",
+   "name": "evaluatePlan (manual plan) = oracle: eq/required_over_count",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-eq/zero_budget",
+   "name": "optimizePlans = Python oracle (objectives, feasible count, Pareto, budgets [0, B/2, B]): eq/zero_budget",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-eq/zero_budget",
+   "name": "evaluatePlan (manual plan) = oracle: eq/zero_budget",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-eq/no_candidates",
+   "name": "optimizePlans = Python oracle (objectives, feasible count, Pareto, budgets [0, B/2, B]): eq/no_candidates",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-eq/no_candidates",
+   "name": "evaluatePlan (manual plan) = oracle: eq/no_candidates",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-eq/no_baseline",
+   "name": "optimizePlans = Python oracle (objectives, feasible count, Pareto, budgets [0, B/2, B]): eq/no_baseline",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-eq/no_baseline",
+   "name": "evaluatePlan (manual plan) = oracle: eq/no_baseline",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-eq/dominated",
+   "name": "optimizePlans = Python oracle (objectives, feasible count, Pareto, budgets [0, B/2, B]): eq/dominated",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-eq/dominated",
+   "name": "evaluatePlan (manual plan) = oracle: eq/dominated",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-eq/coverage",
+   "name": "optimizePlans = Python oracle (objectives, feasible count, Pareto, budgets [0, B/2, B]): eq/coverage",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-eq/coverage",
+   "name": "evaluatePlan (manual plan) = oracle: eq/coverage",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-eq/pareto_equal_pairs",
+   "name": "optimizePlans = Python oracle (objectives, feasible count, Pareto, budgets [0, B/2, B]): eq/pareto_equal_pairs",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-eq/pareto_equal_pairs",
+   "name": "evaluatePlan (manual plan) = oracle: eq/pareto_equal_pairs",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-eq/source_tie",
+   "name": "optimizePlans = Python oracle (objectives, feasible count, Pareto, budgets [0, B/2, B]): eq/source_tie",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-eq/source_tie",
+   "name": "evaluatePlan (manual plan) = oracle: eq/source_tie",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-eq/excluded_required",
+   "name": "optimizePlans = Python oracle (objectives, feasible count, Pareto, budgets [0, B/2, B]): eq/excluded_required",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-eq/excluded_required",
+   "name": "evaluatePlan (manual plan) = oracle: eq/excluded_required",
    "verdict": "PASS"
   }
  ]

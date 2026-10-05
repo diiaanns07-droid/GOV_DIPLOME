@@ -1,0 +1,633 @@
+{
+ "kind": "K07 round-8 independent browser tests of the BUILD planner (city-plan-v2)",
+ "label": "build_d865dd4+k07fix",
+ "sha": "d865dd4+k07fix",
+ "target": {
+  "app_root": "city-evidence"
+ },
+ "total": 31,
+ "pass": [
+  "B1",
+  "B2",
+  "B3",
+  "B4",
+  "B5",
+  "B6",
+  "B7",
+  "B8",
+  "B12",
+  "B11",
+  "B10",
+  "G1",
+  "R1",
+  "R3",
+  "R3b",
+  "R2",
+  "R6",
+  "R4",
+  "R5",
+  "G2",
+  "K1",
+  "K2",
+  "K3",
+  "K4",
+  "K5",
+  "K6",
+  "G3",
+  "N1",
+  "N2",
+  "N3",
+  "G4"
+ ],
+ "fail": [],
+ "test_incompatible": [],
+ "note": "Points, sites, costs and weights are placed by the test or come from SYNTHETIC files; they are not city data.",
+ "checks": [
+  {
+   "id": "B1",
+   "area": "path",
+   "expect": "tool «Несколько объектов (v2)» shows the plan card and hides the v1 card",
+   "verdict": "PASS",
+   "observed": {
+    "tool": "v2"
+   }
+  },
+  {
+   "id": "B2",
+   "area": "path",
+   "expect": "points mode: 3 clicks give P1..P3 with weight 1; the status line near the map names the mode",
+   "verdict": "PASS",
+   "observed": {
+    "points": 3,
+    "mapStatus": "План v2: режим «контрольные точки» — нажмите на карту (Enter — центр). 3/25. Escape — выйти."
+   }
+  },
+  {
+   "id": "B3",
+   "area": "path",
+   "expect": "candidates mode: 3 clicks give K1..K3 with the conditional default cost 100",
+   "verdict": "PASS",
+   "observed": {
+    "cands": [
+     {
+      "id": "K1",
+      "lon": 69.5994726175407,
+      "lat": 42.32406173026472,
+      "cost": 100
+     },
+     {
+      "id": "K2",
+      "lon": 69.60123521862974,
+      "lat": 42.32406173026472,
+      "cost": 100
+     },
+     {
+      "id": "K3",
+      "lon": 69.60299781971878,
+      "lat": 42.32406173026472,
+      "cost": 100
+     }
+    ],
+    "msg": "Кандидат K3 поставлен; стоимость по умолчанию 100 усл. ед. — задайте свою."
+   }
+  },
+  {
+   "id": "B4",
+   "area": "path",
+   "expect": "weights, costs, budget, max and radius are set by the inputs",
+   "verdict": "PASS",
+   "observed": {
+    "p2": 5,
+    "k1": 250,
+    "budget": 400,
+    "max": 2,
+    "radius": 300
+   }
+  },
+  {
+   "id": "B5",
+   "area": "path",
+   "expect": "manual plan K1+K2: feasible at budget 400 (370 of 400), infeasible at 300 with the reason",
+   "verdict": "PASS",
+   "observed": {
+    "f1": "План допустим: 2 объект(а), 370 из 400 усл. ед.",
+    "f2": "План недопустим: стоимость 370 > бюджета 300 усл. ед."
+   }
+  },
+  {
+   "id": "B6",
+   "area": "path",
+   "expect": "search result (three objectives: IDs, sum, worst, coverage, cost) = the K07 calculator for the same scenario; cards manual + 3",
+   "verdict": "PASS",
+   "observed": {
+    "ui": {
+     "mean": {
+      "ids": [
+       "K1"
+      ],
+      "cost": 250,
+      "unknown_count": 0,
+      "weighted_sum_mm": 733975,
+      "max_mm": 144907,
+      "covered_weight": 7
+     },
+     "minimax": {
+      "ids": [
+       "K1"
+      ],
+      "cost": 250,
+      "unknown_count": 0,
+      "weighted_sum_mm": 733975,
+      "max_mm": 144907,
+      "covered_weight": 7
+     },
+     "coverage": {
+      "ids": [
+       "K1"
+      ],
+      "cost": 250,
+      "unknown_count": 0,
+      "weighted_sum_mm": 733975,
+      "max_mm": 144907,
+      "covered_weight": 7
+     }
+    },
+    "ref": {
+     "mean": {
+      "selected_ids": [
+       "K1"
+      ],
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 733975,
+       "weighted_mean_mm": 104853.57142857143,
+       "max_mm": 144907,
+       "covered_weight": 7,
+       "total_weight": 7,
+       "coverage_fraction": 1,
+       "cost": 250,
+       "selected_count": 1
+      }
+     },
+     "minimax": {
+      "selected_ids": [
+       "K1"
+      ],
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 733975,
+       "weighted_mean_mm": 104853.57142857143,
+       "max_mm": 144907,
+       "covered_weight": 7,
+       "total_weight": 7,
+       "coverage_fraction": 1,
+       "cost": 250,
+       "selected_count": 1
+      }
+     },
+     "coverage": {
+      "selected_ids": [
+       "K1"
+      ],
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 733975,
+       "weighted_mean_mm": 104853.57142857143,
+       "max_mm": 144907,
+       "covered_weight": 7,
+       "total_weight": 7,
+       "coverage_fraction": 1,
+       "cost": 250,
+       "selected_count": 1
+      }
+     }
+    },
+    "cards": [
+     "manual",
+     "mean",
+     "minimax",
+     "coverage"
+    ],
+    "v": "ok"
+   }
+  },
+  {
+   "id": "B7",
+   "area": "path",
+   "expect": "«Применить» (Среднее) sets the manual plan to its IDs; «Вернуть ручной план» restores K1+K2",
+   "verdict": "PASS",
+   "observed": {
+    "applied": [
+     "K1"
+    ],
+    "restored": [
+     "K1",
+     "K2"
+    ]
+   }
+  },
+  {
+   "id": "B8",
+   "area": "stale",
+   "expect": "a weight change after the search drops the result (status stale, no «Применить»)",
+   "verdict": "PASS",
+   "observed": {
+    "opt": {
+     "status": "stale",
+     "result": null,
+     "backup": false
+    },
+    "optMsg": "Задача изменилась — прежние оптимумы устарели. Запустите поиск снова."
+   }
+  },
+  {
+   "id": "B12",
+   "area": "interop",
+   "expect": "a file exported by BUILD passes the K07 validator (same snapshot, derived_results dropped)",
+   "verdict": "PASS",
+   "observed": null
+  },
+  {
+   "id": "B11",
+   "area": "interop",
+   "expect": "the K07 SYNTHETIC fixture (shymkent/school) is accepted by the BUILD import: 12 points, 8 sites, budget 150",
+   "verdict": "PASS",
+   "observed": {
+    "points": 12,
+    "cands": 8,
+    "msg": "План загружен (Шымкент, Школа): значения пересчитаны и совпали с файлом. Поиск оптимумов не переносится — запустите зано"
+   }
+  },
+  {
+   "id": "B10",
+   "area": "reset",
+   "expect": "city switch resets the plan with a reason; in Astana points go into Astana's square",
+   "verdict": "PASS",
+   "observed": {
+    "msg": "Город изменён — сценарий v2 сброшен: точки и кандидаты между городами не переносятся, старые результаты поиска не применяются.",
+    "point": {
+     "id": "P1",
+     "lon": 71.41958064939267,
+     "lat": 51.18029811629637,
+     "weight": 1
+    }
+   }
+  },
+  {
+   "id": "G1",
+   "area": "general",
+   "expect": "no console or page errors on the user path",
+   "verdict": "PASS",
+   "observed": []
+  },
+  {
+   "id": "R1",
+   "area": "refusal",
+   "expect": "a click outside the K10 square places nothing and says why",
+   "verdict": "PASS",
+   "observed": {
+    "msg": "Место вне квадрата среза — туда ставить нельзя."
+   }
+  },
+  {
+   "id": "R3",
+   "area": "refusal",
+   "expect": "weight 0 / 2.5 / 101, budget 1 000 001 / −1, max 6, radius 50 / empty: refused with a message, state unchanged",
+   "verdict": "PASS",
+   "observed": [
+    {
+     "id": "plW_P1",
+     "val": "0",
+     "refused": true,
+     "shown": "1"
+    },
+    {
+     "id": "plW_P1",
+     "val": "2.5",
+     "refused": true,
+     "shown": "1"
+    },
+    {
+     "id": "plW_P1",
+     "val": "101",
+     "refused": true,
+     "shown": "1"
+    },
+    {
+     "id": "plBudget",
+     "val": "1000001",
+     "refused": true,
+     "shown": "1000"
+    },
+    {
+     "id": "plBudget",
+     "val": "-1",
+     "refused": true,
+     "shown": "1000"
+    },
+    {
+     "id": "plMax",
+     "val": "6",
+     "refused": true,
+     "shown": "3"
+    },
+    {
+     "id": "plRadius",
+     "val": "50",
+     "refused": true,
+     "shown": "500"
+    },
+    {
+     "id": "plRadius",
+     "val": "",
+     "refused": true,
+     "shown": "500"
+    }
+   ]
+  },
+  {
+   "id": "R3b",
+   "area": "refusal",
+   "expect": "after a refused value the input shows the stored value again (not the rejected text)",
+   "verdict": "PASS",
+   "observed": [
+    [
+     "plW_P1",
+     "0",
+     "1"
+    ],
+    [
+     "plW_P1",
+     "2.5",
+     "1"
+    ],
+    [
+     "plW_P1",
+     "101",
+     "1"
+    ],
+    [
+     "plBudget",
+     "1000001",
+     "1000"
+    ],
+    [
+     "plBudget",
+     "-1",
+     "1000"
+    ],
+    [
+     "plMax",
+     "6",
+     "3"
+    ],
+    [
+     "plRadius",
+     "50",
+     "500"
+    ],
+    [
+     "plRadius",
+     "",
+     "500"
+    ]
+   ]
+  },
+  {
+   "id": "R2",
+   "area": "refusal",
+   "expect": "limits: with 25 points and 16 sites the next point / site is refused with a message",
+   "verdict": "PASS",
+   "observed": {
+    "loaded": true,
+    "p": 25,
+    "c": 16,
+    "m1": "Не больше 25 контрольных точек.",
+    "m2": "Не больше 16 кандидатных мест."
+   }
+  },
+  {
+   "id": "R6",
+   "area": "cancel",
+   "expect": "«Отменить поиск» on a 16×25 search: status cancelled, no result appears later, manual plan unchanged",
+   "verdict": "PASS",
+   "observed": {
+    "mid": {
+     "status": "running",
+     "result": null,
+     "backup": false
+    },
+    "end": {
+     "status": "cancelled",
+     "result": null,
+     "backup": false
+    },
+    "msg": "Поиск отменён; ручной план не изменён, неполный результат не показывается."
+   }
+  },
+  {
+   "id": "R4",
+   "area": "refusal",
+   "expect": "required site cost > budget: «Нет допустимых планов» with the reason; constraints are not dropped",
+   "verdict": "PASS",
+   "observed": {
+    "optMsg": "Нет допустимых планов: стоимость обязательных 124 > бюджета 50 усл. ед."
+   }
+  },
+  {
+   "id": "R5",
+   "area": "refusal",
+   "expect": "11 bad files (duplicate key, NaN, 1e999, foreign snapshot, unknown field, required∩excluded, forged derived_results, v1, not JSON, deep nesting, > 256 KiB): «не принят», plan unchanged",
+   "verdict": "PASS",
+   "observed": [
+    {
+     "name": "duplicate key",
+     "unchanged": true,
+     "msg": "Файл не принят, текущий план не изменён: повтор ключа \"budget\" (позиция 1710)"
+    },
+    {
+     "name": "NaN token",
+     "unchanged": true,
+     "msg": "Файл не принят, текущий план не изменён: недопустимый токен (NaN/Infinity и прочее не допу"
+    },
+    {
+     "name": "1e999",
+     "unchanged": true,
+     "msg": "Файл не принят, текущий план не изменён: число 1e999 не конечно (позиция 1703)"
+    },
+    {
+     "name": "foreign snapshot",
+     "unchanged": true,
+     "msg": "Файл не принят, текущий план не изменён: сценарий сделан на другом срезе данных или другой"
+    },
+    {
+     "name": "unknown field url",
+     "unchanged": true,
+     "msg": "Файл не принят, текущий план не изменён: поле \"url\" не допускается"
+    },
+    {
+     "name": "required∩excluded",
+     "unchanged": true,
+     "msg": "Файл не принят, текущий план не изменён: кандидат одновременно обязателен и исключён: site"
+    },
+    {
+     "name": "forged derived_results",
+     "unchanged": true,
+     "msg": "Файл не принят, текущий план не изменён: derived_results в файле не совпадают с пересчётом"
+    },
+    {
+     "name": "v1 file",
+     "unchanged": true,
+     "msg": "Файл не принят, текущий план не изменён: это сценарий city-whatif-v1 (один объект) — загру"
+    },
+    {
+     "name": "not JSON",
+     "unchanged": true,
+     "msg": "Файл не принят, текущий план не изменён: ожидается ключ (позиция 2)"
+    },
+    {
+     "name": "deep nesting",
+     "unchanged": true,
+     "msg": "Файл не принят, текущий план не изменён: слишком глубокая вложенность (позиция 33)"
+    },
+    {
+     "name": "over 256 KiB",
+     "unchanged": true,
+     "msg": "Файл не принят: 271806 байт больше 262144. Текущий план не изменён."
+    }
+   ]
+  },
+  {
+   "id": "G2",
+   "area": "general",
+   "expect": "no console or page errors on the refusal path",
+   "verdict": "PASS",
+   "observed": []
+  },
+  {
+   "id": "K1",
+   "area": "keyboard",
+   "expect": "focused map + Enter places a point at the centre in v2 points mode (2 points after Enter, arrows, Enter)",
+   "verdict": "PASS",
+   "observed": {
+    "points": 2
+   }
+  },
+  {
+   "id": "K2",
+   "area": "keyboard",
+   "expect": "while placing, the plan card is reachable from the map in ≤ 10 Tab presses (roads and records should not stand in between)",
+   "verdict": "PASS",
+   "observed": {
+    "tabsMapToCard": 4
+   }
+  },
+  {
+   "id": "K3",
+   "area": "keyboard",
+   "expect": "typing a budget and pressing Tab applies it and moves focus to the next field («Максимум объектов»)",
+   "verdict": "PASS",
+   "observed": {
+    "budget": 350,
+    "focus": {
+     "id": "plMax",
+     "tag": "INPUT",
+     "label": null,
+     "body": false,
+     "inCard": true
+    }
+   }
+  },
+  {
+   "id": "K4",
+   "area": "keyboard",
+   "expect": "«Удалить» with Enter removes the point and keeps the focus in the plan card (not on <body>)",
+   "verdict": "PASS",
+   "observed": {
+    "points": 1,
+    "focus": {
+     "id": "plDelP_P2",
+     "tag": "BUTTON",
+     "label": "Удалить контрольную точку P2",
+     "body": false,
+     "inCard": true
+    }
+   }
+  },
+  {
+   "id": "K5",
+   "area": "keyboard",
+   "expect": "«Найти точные оптимумы» with Enter: focus stays in the card while running (e.g. on «Отменить поиск») and after the result",
+   "verdict": "PASS",
+   "observed": {
+    "running": {
+     "id": "plCancel",
+     "tag": "BUTTON",
+     "label": null,
+     "body": false,
+     "inCard": true
+    },
+    "done": {
+     "id": "plRun",
+     "tag": "BUTTON",
+     "label": null,
+     "body": false,
+     "inCard": true
+    }
+   }
+  },
+  {
+   "id": "K6",
+   "area": "keyboard",
+   "expect": "Escape leaves the placement mode",
+   "verdict": "PASS",
+   "observed": {
+    "mode": null
+   }
+  },
+  {
+   "id": "G3",
+   "area": "general",
+   "expect": "no console or page errors on the keyboard path",
+   "verdict": "PASS",
+   "observed": []
+  },
+  {
+   "id": "N1",
+   "area": "390px",
+   "expect": "390 px: no horizontal page scroll, nothing in the plan card sticks out of it",
+   "verdict": "PASS",
+   "observed": {
+    "pageScroll": false,
+    "outside": [],
+    "tablesWithInnerScroll": []
+   }
+  },
+  {
+   "id": "N2",
+   "area": "390px",
+   "expect": "390 px: the Pareto / budget tables fit without an inner horizontal scroll",
+   "verdict": "PASS",
+   "observed": []
+  },
+  {
+   "id": "N3",
+   "area": "390px",
+   "expect": "390 px: after a tap on the map in points mode the status line is visible without scrolling",
+   "verdict": "PASS",
+   "observed": {
+    "text": "План v2: режим «контрольные точки» — нажмите на карту (Enter",
+    "top": 383,
+    "bottom": 445,
+    "vh": 844
+   }
+  },
+  {
+   "id": "G4",
+   "area": "general",
+   "expect": "no console or page errors at 390 px",
+   "verdict": "PASS",
+   "observed": []
+  }
+ ]
+}

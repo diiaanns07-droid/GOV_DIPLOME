@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
-"""K07 round 8: write patch/city_evidence_planner.patch = BUILD base web/ -> patched web/ (unified diff, -p1 paths
-a/prototypes/city-evidence/web/...). The four new modules must be byte-identical to research/round-8-results/K07/web/
-(the source of truth); app.js and index.html come from the patched working copy. Usage (repo root):
+"""K07 round 8: write a unified diff BASE web/ -> PATCHED web/ with -p1 paths a/prototypes/city-evidence/web/...
+Default (proposal for a5b5e2d): patch/city_evidence_planner.patch — app.js, index.html and the four new modules, which
+must be byte-identical to research/round-8-results/K07/web/ (the source of truth). Usage (repo root):
     python3 research/round-8-results/K07/scripts/make_patch.py BASE_DIR PATCHED_DIR
+Fixes for an existing BUILD (no new files, BUILD modules are edited line by line, never replaced):
+    python3 research/round-8-results/K07/scripts/make_patch.py BASE_DIR PATCHED_DIR --files web/app.js web/plan-ui.js web/index.html --out patch/NAME.patch
 BASE_DIR / PATCHED_DIR contain web/ (BASE_DIR from scripts/extract_build.py).
 """
 import subprocess, sys
@@ -30,13 +32,22 @@ def diff(a, b, rel, new):
 
 
 def main():
-    base, pat = Path(sys.argv[1]), Path(sys.argv[2])
-    for f in NEW:
-        if (pat / f).read_bytes() != (K07 / f).read_bytes():
-            raise SystemExit(f"{f}: patched copy differs from research/round-8-results/K07/{f}")
-    out = "".join(diff(base / f, pat / f, f, False) for f in CHANGED) + "".join(diff(None, pat / f, f, True) for f in NEW)
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("base"); ap.add_argument("patched")
+    ap.add_argument("--files", nargs="+"); ap.add_argument("--out")
+    a = ap.parse_args()
+    base, pat = Path(a.base), Path(a.patched)
+    if a.files:  # edits of existing files only
+        out = "".join(diff(base / f, pat / f, f, False) for f in a.files)
+        dst = K07 / a.out
+    else:
+        for f in NEW:
+            if (pat / f).read_bytes() != (K07 / f).read_bytes():
+                raise SystemExit(f"{f}: patched copy differs from research/round-8-results/K07/{f}")
+        out = "".join(diff(base / f, pat / f, f, False) for f in CHANGED) + "".join(diff(None, pat / f, f, True) for f in NEW)
+        dst = K07 / "patch" / "city_evidence_planner.patch"
     assert "/tmp/" not in out and "scratchpad" not in out
-    dst = K07 / "patch" / "city_evidence_planner.patch"
     dst.parent.mkdir(exist_ok=True)
     dst.write_text(out, encoding="utf-8")
     print(f"wrote {dst.relative_to(K07.parents[2])}: {out.count(chr(10))} lines")

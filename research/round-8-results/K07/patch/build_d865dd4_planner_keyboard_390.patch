@@ -1,0 +1,131 @@
+diff --git a/prototypes/city-evidence/web/app.js b/prototypes/city-evidence/web/app.js
+index 0817669..13b86e7 100644
+--- a/prototypes/city-evidence/web/app.js
++++ b/prototypes/city-evidence/web/app.js
+@@ -61,6 +61,9 @@
+   // Extension points for plan-ui.js (round 8): map layers, placement tools, city-switch hooks.
+   const EXT = { layers: [], tools: [], onCity: [], onTool: [], cards: [] };
+   const extTool = () => EXT.tools.find((t) => t.placing()) || null;
++  // K07 r8 K2: while a hypothetical item is being placed (v1 or v2), roads and records leave the Tab order — otherwise
++  // 1084–1326 roads and 55–65 records stand between the map and the scenario card; mouse still works, records via the table
++  const placingTab = () => (STATE.wi.mode || extTool() ? -1 : 0);
+   const stopExt = () => { for (const t of EXT.tools) t.stop(); };
+ 
+   // ---------- projection: local equirectangular metres around the square centre ----------
+@@ -223,7 +226,7 @@
+       let d = ""; sg.coords.forEach(([x, y], i) => { const [a, b] = toScreen(x, y); d += (i ? "L" : "M") + a.toFixed(1) + " " + b.toFixed(1); });
+       const color = STATE.roadStyle === "foot" ? FOOT_COLOR[sg.foot_access] : "var(--base)";
+       gRoad.append(sv("path", { d, fill: "none", stroke: color, "stroke-width": sg.class === "footway" || sg.class === "path" ? 1.2 : 2, "stroke-linecap": "round" }));
+-      const hit = sv("path", { d, fill: "none", stroke: "transparent", "stroke-width": 10, tabindex: 0, role: "button",
++      const hit = sv("path", { d, fill: "none", stroke: "transparent", "stroke-width": 10, tabindex: placingTab(), role: "button",
+         "aria-label": `Дорога: ${sg.class}${sg.name ? ", " + sg.name : ""}` });
+       hit.style.cursor = "pointer";
+       hit.addEventListener("pointermove", (ev) => showTip(ev, [`${sg.class}${sg.name ? " · " + sg.name : ""}`, `${fmtM(sg.length_m)} · проход пешком: ${sg.foot_access}`]));
+@@ -251,7 +254,7 @@
+     }
+     for (const p of places) {
+       const [sx, sy] = toScreen(p.lon, p.lat);
+-      const g = sv("g", { transform: `translate(${sx.toFixed(1)} ${sy.toFixed(1)})`, tabindex: 0, role: "button",
++      const g = sv("g", { transform: `translate(${sx.toFixed(1)} ${sy.toFixed(1)})`, tabindex: placingTab(), role: "button",
+         "aria-label": `${p.name || "Без названия"}, ${p.group_label}`, "data-id": p.id });
+       g.style.cursor = "pointer";
+       const sel = STATE.selected && STATE.selected.type === "place" && STATE.selected.id === p.id;
+diff --git a/prototypes/city-evidence/web/plan-ui.js b/prototypes/city-evidence/web/plan-ui.js
+index 3883e36..4d09824 100644
+--- a/prototypes/city-evidence/web/plan-ui.js
++++ b/prototypes/city-evidence/web/plan-ui.js
+@@ -20,7 +20,7 @@
+   function section(parent, id, title, openByDefault) {
+     const d = el("details", { id, class: "pl-sec" });
+     d.open = id in OPEN ? OPEN[id] : openByDefault;
+-    const sm = el("summary", null, title);
++    const sm = el("summary", { id: id + "_sum" }, title);  // K07 r8: an id keeps the focus across re-renders
+     sm.addEventListener("click", () => { OPEN[id] = !d.open; });  // only a user toggle is remembered
+     d.append(sm);
+     parent.append(d);
+@@ -77,12 +77,21 @@
+   }
+   function inBbox(lon, lat) { const b = D.cities[STATE.city].bbox; return b[0] <= lon && lon <= b[2] && b[1] <= lat && lat <= b[3]; }
+   const without = (arr, id) => arr.filter((x) => x !== id);
+-  function removePoint(id) { PS.points = PS.points.filter((p) => p.id !== id); changed(`Точка ${id} удалена.`); }
++  function removePoint(id) {
++    const i = PS.points.findIndex((p) => p.id === id);
++    PS.points = PS.points.filter((p) => p.id !== id); changed(`Точка ${id} удалена.`);
++    const nx = PS.points[i] || PS.points[i - 1];  // K07 r8 K4: the pressed button is gone — keep the focus in the card
++    focusById(nx ? `plDelP_${nx.id}` : "plSecPoints_sum");
++  }
++  function focusById(id) { const f = document.getElementById(id); if (f) f.focus(); }
+   function removeCand(id) {
++    const ci = PS.cands.findIndex((c) => c.id === id);
+     PS.cands = PS.cands.filter((c) => c.id !== id);
+     PS.required = without(PS.required, id); PS.excluded = without(PS.excluded, id); PS.selected = without(PS.selected, id);
+     if (PS.moveId === id) { PS.mode = null; PS.moveId = null; }
+     changed(`Кандидат ${id} удалён (и из ограничений, и из ручного плана).`);
++    const nx = PS.cands[ci] || PS.cands[ci - 1];  // K07 r8 K4
++    focusById(nx ? `plDelK_${nx.id}` : "plSecCands_sum");
+   }
+   function setStatus(id, st) {
+     PS.required = without(PS.required, id); PS.excluded = without(PS.excluded, id);
+@@ -153,7 +162,9 @@
+   function numInput(id, label, value, lo, hi, apply, what) {
+     const lab = el("label", { class: "ctl", for: id }, label + " ");
+     const inp = el("input", { type: "number", id, min: lo, max: hi, step: 1, value: String(value), inputmode: "numeric", class: "num-in" });
+-    inp.addEventListener("change", () => setNumber(what || label, inp.value.trim(), lo, hi, apply));
++    // K07 r8 K3: «change» fires before Tab moves the focus; re-rendering inside it replaced the next control and the focus
++    // fell to <body>. The value is applied on the next turn, after the focus has moved (render() keeps it by id).
++    inp.addEventListener("change", () => { const raw = inp.value.trim(); setTimeout(() => setNumber(what || label, raw, lo, hi, apply), 0); });
+     lab.append(inp);
+     return lab;
+   }
+@@ -192,7 +203,7 @@
+         const li = el("li", { "data-plan-item": p.id });
+         li.append(el("span", null, p.id),
+           numInput(`plW_${p.id}`, "вес", p.weight, 1, 100, (v) => { p.weight = v; }, `Вес ${p.id}`),
+-          btn(null, "Удалить", () => removePoint(p.id), { "aria-label": `Удалить контрольную точку ${p.id}` }));
++          btn(`plDelP_${p.id}`, "Удалить", () => removePoint(p.id), { "aria-label": `Удалить контрольную точку ${p.id}` }));
+         ul.append(li);
+       }
+       secP.append(ul);
+@@ -216,14 +227,18 @@
+         const lab = el("label", { class: "chk", for: `plSel_${c.id}` }); lab.append(chk, document.createTextNode("в ручном плане"));
+         li.append(el("strong", null, c.id), numInput(`plC_${c.id}`, "стоимость", c.cost, 1, 1000000, (v) => { c.cost = v; }, `Стоимость ${c.id}`), st, lab,
+           btn(`plMove_${c.id}`, PS.mode === "move" && PS.moveId === c.id ? "Щёлкните на карте…" : "Перенести", () => setMode("move", c.id), { "aria-pressed": String(PS.mode === "move" && PS.moveId === c.id) }),
+-          btn(null, "Удалить", () => removeCand(c.id), { "aria-label": `Удалить кандидата ${c.id}` }));
++          btn(`plDelK_${c.id}`, "Удалить", () => removeCand(c.id), { "aria-label": `Удалить кандидата ${c.id}` }));
+         ul.append(li);
+       }
+       secC.append(ul);
+     }
+     renderManual(b);
+     for (const f of OPT.render) f(b);
+-    if (focusId) { const f = document.getElementById(focusId); if (f) f.focus(); }
++    if (focusId) {  // K07 r8 K5: «Найти» / «Отменить поиск» swap enabled state — the focus moves to the enabled one
++      let f = document.getElementById(focusId);
++      if (f && f.disabled) f = document.getElementById({ plRun: "plCancel", plCancel: "plRun" }[focusId] || "");
++      if (f && !f.disabled) f.focus();
++    }
+   }
+   function renderManual(b) {
+     b.append(el("h3", null, "Ручной план: до и после"));
+@@ -259,7 +274,7 @@
+       let srcRow = null;
+       if (r.nearest_before) {  // nearest source record before: name, QA marks, opens the record card
+         const src = byId[r.nearest_before.id], qa = src ? qaOf(src) : [];
+-        const sb = el("button", { type: "button", class: "tool wi-src", "data-plan-source": r.nearest_before.id }, `${qa.length ? "⚠ " : ""}${src ? src.name || "Без названия" : r.nearest_before.id}`);
++        const sb = el("button", { type: "button", class: "tool wi-src", id: `plSrc_${r.id}`, "data-plan-source": r.nearest_before.id }, `${qa.length ? "⚠ " : ""}${src ? src.name || "Без названия" : r.nearest_before.id}`);
+         sb.addEventListener("click", () => selectPlace(r.nearest_before.id));
+         const td = el("td", { colspan: 4, class: "muted" }, `${r.id} — ближайшая запись среза: `);
+         td.append(sb, document.createTextNode(qa.length ? " · QA: " + qa.map((q) => q.code).join(", ") : ""));
+diff --git a/prototypes/city-evidence/web/index.html b/prototypes/city-evidence/web/index.html
+index 6d71f09..7097343 100644
+--- a/prototypes/city-evidence/web/index.html
++++ b/prototypes/city-evidence/web/index.html
+@@ -141,6 +141,8 @@ figure.pl-chart { margin: 6px 0; }
+ .pl-cmp dt { color: var(--ink-2); font-size: 11px; margin-top: 3px; }
+ .pl-cmp dd { margin: 0; font-weight: 600; }
+ #plPareto td, #plSens td { font-size: 12px; }
++@media (max-width: 480px) { #plPareto, #plSens { width: 100%; table-layout: fixed; } #plPareto th, #plSens th { white-space: normal; font-size: 12px; }
++  #plPareto td.num, #plSens td.num { white-space: normal; } }  /* K07 r8 N2: no inner horizontal scroll at 390 px */
+ td.better { font-weight: 600; }
+ button.wi-src { white-space: normal; text-align: left; font-size: 12px; padding: 2px 6px; }
+ #wiTable caption { text-align: left; caption-side: top; }
