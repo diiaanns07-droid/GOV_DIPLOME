@@ -1,0 +1,233 @@
+{
+ "scenario": {
+  "city_id": "shymkent",
+  "category": "school",
+  "control_points": [
+   {
+    "id": "двор-1",
+    "lon": 69.597009,
+    "lat": 42.310238
+   },
+   {
+    "id": "двор-2",
+    "lon": 69.612799,
+    "lat": 42.320119
+   },
+   {
+    "id": "двор-3",
+    "lon": 69.605512,
+    "lat": 42.315628
+   }
+  ],
+  "proposed_object": {
+   "id": "новая-школа",
+   "lon": 69.597738,
+   "lat": 42.310598,
+   "category": "school",
+   "kind": "hypothetical"
+  }
+ },
+ "calc_result": {
+  "schema_version": "city-whatif-v1",
+  "city_id": "shymkent",
+  "category": "school",
+  "release": "2026-09-23.1",
+  "bbox": [
+   69.593365,
+   42.306645,
+   69.617658,
+   42.324611
+  ],
+  "source_snapshot": "sha256:ab5bc3980762def2b6a17808472f9b2d9de2962324b335df9f426e52c28c76b9",
+  "source_record_count": 15,
+  "params": {
+   "formula": "haversine",
+   "earth_radius_m": 6371008.8,
+   "input_order": "lon,lat",
+   "clamp": "[0,1]"
+  },
+  "control_points": [
+   {
+    "id": "двор-1",
+    "lon": 69.597009,
+    "lat": 42.310238
+   },
+   {
+    "id": "двор-2",
+    "lon": 69.612799,
+    "lat": 42.320119
+   },
+   {
+    "id": "двор-3",
+    "lon": 69.605512,
+    "lat": 42.315628
+   }
+  ],
+  "proposed_object": {
+   "id": "новая-школа",
+   "lon": 69.597738,
+   "lat": 42.310598,
+   "category": "school",
+   "kind": "hypothetical"
+  },
+  "rows": [
+   {
+    "point_id": "двор-1",
+    "before_m": 514.3979207996364,
+    "after_m": 72.08244590477607,
+    "delta_m": 442.3154748948603,
+    "distance_to_proposed_m": 72.08244590477607,
+    "nearest_source": {
+     "id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+     "name": "Учебный центр Меруерт",
+     "lon": 69.599229,
+     "lat": 42.314563
+    },
+    "nearest_after": "proposed"
+   },
+   {
+    "point_id": "двор-2",
+    "before_m": 188.12323828113006,
+    "after_m": 188.12323828113006,
+    "delta_m": 0,
+    "distance_to_proposed_m": 1629.2232187057832,
+    "nearest_source": {
+     "id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+     "name": "Реклама 42",
+     "lon": 69.61052,
+     "lat": 42.32027
+    },
+    "nearest_after": "source"
+   },
+   {
+    "point_id": "двор-3",
+    "before_m": 243.85638190754193,
+    "after_m": 243.85638190754193,
+    "delta_m": 0,
+    "distance_to_proposed_m": 849.3760433684047,
+    "nearest_source": {
+     "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+     "name": "М.Х.Дулати атындағы үш тілде оқытатын N8 мамандандырылған  гимназия\" КММ",
+     "lon": 69.60294,
+     "lat": 42.31672
+    },
+    "nearest_after": "source"
+   }
+  ]
+ },
+ "digest": "5f5d559048d68ccf",
+ "explanation_ru": "**Проверяемая часть (значения из расчётного модуля сценария).** Сценарий: whatif-school-ab5bc3980762.\n\n**Итог**\n- Точка A: до ближайшей записи в срезе, до проекта: 514 м (расчёт, ближайшая только в срезе)\n- Точка A: после условного объекта: 72 м (расчёт, с условным объектом)\n- Точка A: сокращение расстояния по прямой: 442 м (расчёт, с условным объектом)\n- Точка B: до ближайшей записи в срезе, до проекта: 188 м (расчёт, ближайшая только в срезе)\n- Точка B: после условного объекта: 188 м (расчёт)\n- Точка B: сокращение расстояния по прямой: 0 м (расчёт)\n\n**Наименьший эффект**\n- Точка C: до ближайшей записи в срезе, до проекта: 244 м (расчёт, ближайшая только в срезе)\n- Точка C: после условного объекта: 244 м (расчёт)\n- Точка C: сокращение расстояния по прямой: 0 м (расчёт)\n\n**Ограничения данных**\n- Исходных записей категории в срезе: школы: 15 записей (расчёт)\n\n**Ближайшие исходные записи (данные Overture, не проверены как учреждения)**\n- Точка A: «Учебный центр Меруерт» (id 931d6da5-e9db-4523-a6fd-79c88f235f88; QA-флаг: флагов нет (это не означает проверку))\n- Точка B: «Реклама 42» (id 01961e84-815f-4bd1-85c3-6bf1734256ec; QA-флаг: category_doubt:ad_or_business_page)\n- Точка C: «М.Х.Дулати атындағы үш тілде оқытатын N8 мамандандырылған  гимназия\" КММ» (id 01eb7090-bb5f-4e52-b3c9-4ef95707ad67; QA-флаг: флагов нет (это не означает проверку))\n\nОграничения: расстояние по прямой (гаверсинус), не время пешком и не доступность; ближайшая запись в сохранённом квадрате, не обязательно в городе; объект условный; неполнота и ошибки координат могут менять результат; положительная разница — меньшее геометрическое расстояние, не улучшение услуг.",
+ "explanation_kk": "**Тексерілетін бөлік (мәндер сценарий есептеу модулінен).** Сценарий: whatif-school-ab5bc3980762.\n\n**Қорытынды**\n- Нүкте A: кесіндідегі ең жақын жазбаға дейін, жобаға дейін: 514 м (есептелген, тек кесіндідегі ең жақын)\n- Нүкте A: шартты нысаннан кейін: 72 м (есептелген, шартты нысанмен)\n- Нүкте A: түзу бойынша қашықтықтың қысқаруы: 442 м (есептелген, шартты нысанмен)\n- Нүкте B: кесіндідегі ең жақын жазбаға дейін, жобаға дейін: 188 м (есептелген, тек кесіндідегі ең жақын)\n- Нүкте B: шартты нысаннан кейін: 188 м (есептелген)\n- Нүкте B: түзу бойынша қашықтықтың қысқаруы: 0 м (есептелген)\n\n**Ең аз әсер**\n- Нүкте C: кесіндідегі ең жақын жазбаға дейін, жобаға дейін: 244 м (есептелген, тек кесіндідегі ең жақын)\n- Нүкте C: шартты нысаннан кейін: 244 м (есептелген)\n- Нүкте C: түзу бойынша қашықтықтың қысқаруы: 0 м (есептелген)\n\n**Дерек шектеулері**\n- Кесіндідегі санат бойынша бастапқы жазбалар: мектеп: 15 жазба (есептелген)\n\n**Ең жақын бастапқы жазбалар (Overture деректері, мекеме ретінде тексерілмеген)**\n- Нүкте A: «Учебный центр Меруерт» (id 931d6da5-e9db-4523-a6fd-79c88f235f88; QA белгісі: белгі жоқ (бұл тексерілді дегенді білдірмейді))\n- Нүкте B: «Реклама 42» (id 01961e84-815f-4bd1-85c3-6bf1734256ec; QA белгісі: category_doubt:ad_or_business_page)\n- Нүкте C: «М.Х.Дулати атындағы үш тілде оқытатын N8 мамандандырылған  гимназия\" КММ» (id 01eb7090-bb5f-4e52-b3c9-4ef95707ad67; QA белгісі: белгі жоқ (бұл тексерілді дегенді білдірмейді))\n\nШектеулер: түзу бойынша қашықтық (гаверсинус), жаяу жүру уақыты емес; ең жақын жазба тек сақталған шаршыда; нысан шартты; толымсыздық пен координат қателері нәтижені өзгертуі мүмкін; оң айырма — геометриялық қашықтықтың азаюы, қызмет жақсаруы емес.",
+ "facts_used": [
+  {
+   "id": "kz.shymkent/whatif-school-ab5bc3980762/whatif.cp1.before",
+   "value": 514.3979207996364,
+   "unit": "m",
+   "kind": "derived",
+   "hypothetical": false,
+   "point_id": "двор-1",
+   "coverage_complete": false,
+   "missing_reason": null,
+   "nearest_source_id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+  },
+  {
+   "id": "kz.shymkent/whatif-school-ab5bc3980762/whatif.cp1.after",
+   "value": 72.08244590477607,
+   "unit": "m",
+   "kind": "derived",
+   "hypothetical": true,
+   "point_id": "двор-1",
+   "coverage_complete": false,
+   "missing_reason": null,
+   "nearest_source_id": null
+  },
+  {
+   "id": "kz.shymkent/whatif-school-ab5bc3980762/whatif.cp1.delta",
+   "value": 442.3154748948603,
+   "unit": "m",
+   "kind": "derived",
+   "hypothetical": true,
+   "point_id": "двор-1",
+   "coverage_complete": false,
+   "missing_reason": null,
+   "nearest_source_id": null
+  },
+  {
+   "id": "kz.shymkent/whatif-school-ab5bc3980762/whatif.cp2.before",
+   "value": 188.12323828113006,
+   "unit": "m",
+   "kind": "derived",
+   "hypothetical": false,
+   "point_id": "двор-2",
+   "coverage_complete": false,
+   "missing_reason": null,
+   "nearest_source_id": "01961e84-815f-4bd1-85c3-6bf1734256ec"
+  },
+  {
+   "id": "kz.shymkent/whatif-school-ab5bc3980762/whatif.cp2.after",
+   "value": 188.12323828113006,
+   "unit": "m",
+   "kind": "derived",
+   "hypothetical": false,
+   "point_id": "двор-2",
+   "coverage_complete": false,
+   "missing_reason": null,
+   "nearest_source_id": null
+  },
+  {
+   "id": "kz.shymkent/whatif-school-ab5bc3980762/whatif.cp2.delta",
+   "value": 0,
+   "unit": "m",
+   "kind": "derived",
+   "hypothetical": false,
+   "point_id": "двор-2",
+   "coverage_complete": false,
+   "missing_reason": null,
+   "nearest_source_id": null
+  },
+  {
+   "id": "kz.shymkent/whatif-school-ab5bc3980762/whatif.cp3.before",
+   "value": 243.85638190754193,
+   "unit": "m",
+   "kind": "derived",
+   "hypothetical": false,
+   "point_id": "двор-3",
+   "coverage_complete": false,
+   "missing_reason": null,
+   "nearest_source_id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+  },
+  {
+   "id": "kz.shymkent/whatif-school-ab5bc3980762/whatif.cp3.after",
+   "value": 243.85638190754193,
+   "unit": "m",
+   "kind": "derived",
+   "hypothetical": false,
+   "point_id": "двор-3",
+   "coverage_complete": false,
+   "missing_reason": null,
+   "nearest_source_id": null
+  },
+  {
+   "id": "kz.shymkent/whatif-school-ab5bc3980762/whatif.cp3.delta",
+   "value": 0,
+   "unit": "m",
+   "kind": "derived",
+   "hypothetical": false,
+   "point_id": "двор-3",
+   "coverage_complete": false,
+   "missing_reason": null,
+   "nearest_source_id": null
+  },
+  {
+   "id": "kz.shymkent/whatif-school-ab5bc3980762/whatif.source_records",
+   "value": 15,
+   "unit": "records",
+   "kind": "derived",
+   "hypothetical": false,
+   "point_id": null,
+   "coverage_complete": false,
+   "missing_reason": null,
+   "nearest_source_id": null
+  }
+ ]
+}

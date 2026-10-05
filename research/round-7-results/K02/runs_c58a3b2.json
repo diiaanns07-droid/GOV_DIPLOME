@@ -1,0 +1,163 @@
+{
+ "app_root": "<извлечённая prototypes/city-evidence @ c58a3b2b175cf978ad785fef7f88d8fd9b1338f2>",
+ "node": "v22.22.0",
+ "results": [
+  {
+   "id": "W01_move_project_stale",
+   "title": "перемещение проекта: старый digest отклоняется (stale_catalog)",
+   "pass": true,
+   "observed": {
+    "status": "stale_catalog",
+    "same_scenario": true
+   }
+  },
+  {
+   "id": "W02_category_change_stale",
+   "title": "смена категории: старый план отклоняется",
+   "pass": true,
+   "observed": "stale_catalog"
+  },
+  {
+   "id": "W03_city_change_stale",
+   "title": "смена города: старый план отклоняется",
+   "pass": true,
+   "observed": "stale_catalog"
+  },
+  {
+   "id": "W04_remove_project",
+   "title": "удаление проекта: старый план устарел; after=before, delta=0 печатается как 0 м",
+   "pass": true,
+   "observed": {
+    "status": "stale_catalog",
+    "deltas": [
+     0,
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "id": "W05_zero_distance_not_missing",
+   "title": "точка на исходной записи: before=0 — расчёт, не missing",
+   "pass": true,
+   "observed": {
+    "value": 0,
+    "kind": "derived"
+   }
+  },
+  {
+   "id": "W06_no_source_records",
+   "title": "в срезе нет записей категории: before=null, delta=null, after=до проекта, подпись спецификации",
+   "pass": true,
+   "observed": {
+    "count": 0,
+    "rows": [
+     [
+      null,
+      141.25419932015168,
+      null
+     ],
+     [
+      null,
+      1028.2866737322543,
+      null
+     ],
+     [
+      null,
+      1206.8963587976955,
+      null
+     ]
+    ]
+   }
+  },
+  {
+   "id": "W07_tie_by_id",
+   "title": "равные расстояния: выбирается запись с меньшим id",
+   "pass": true,
+   "observed": "aaa"
+  },
+  {
+   "id": "W08_tampered_result_rejected",
+   "title": "адаптер отклоняет подделанный результат (delta, NaN, before=null при записях, after>before)",
+   "pass": true,
+   "observed": [
+    "bad_result",
+    "non_finite",
+    "bad_result",
+    "bad_result",
+    "bad_result",
+    "bad_result"
+   ]
+  },
+  {
+   "id": "W09_imported_values_recomputed",
+   "title": "импортированные distances/delta не доверяются: расчёт пересчитывает",
+   "pass": true,
+   "observed": 151.7725806700473
+  },
+  {
+   "id": "W10_invalid_input_rejected",
+   "title": "вне bbox, NaN, 1e999, дубликат id, >10 точек, чужая категория проекта — отказ",
+   "pass": true,
+   "observed": [
+    "outside_bbox",
+    "bad_coordinates",
+    "bad_coordinates",
+    "duplicate_id",
+    "bad_points",
+    "bad_project",
+    "outside_bbox"
+   ]
+  },
+  {
+   "id": "W11_snapshot_from_data",
+   "title": "source_snapshot зависит от данных (координата записи), стабилен при повторном расчёте",
+   "pass": true,
+   "observed": [
+    "sha256:ab5bc3980762d",
+    "sha256:5c686b1c21b64"
+   ]
+  },
+  {
+   "id": "W12_numbers_in_text_from_facts",
+   "title": "ru/kk: числа в строках фактов — округлённые значения каталога; в подписях нет цифр",
+   "pass": true,
+   "observed": {
+    "ru": [
+     "293",
+     "141",
+     "152",
+     "317",
+     "317",
+     "0",
+     "38",
+     "38",
+     "0",
+     "15"
+    ],
+    "kk": [
+     "293",
+     "141",
+     "152",
+     "317",
+     "317",
+     "0",
+     "38",
+     "38",
+     "0",
+     "15"
+    ]
+   }
+  },
+  {
+   "id": "W13_haversine_reference",
+   "title": "гаверсинус: 1° широты = 2πR/360 м; одинаковые точки = 0",
+   "pass": true,
+   "observed": [
+    111195.0802335329,
+    111195.08023353292
+   ]
+  }
+ ],
+ "target_sha": "c58a3b2b175cf978ad785fef7f88d8fd9b1338f2"
+}

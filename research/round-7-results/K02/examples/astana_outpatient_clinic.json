@@ -1,0 +1,176 @@
+{
+ "scenario": {
+  "city_id": "astana",
+  "category": "outpatient_clinic",
+  "control_points": [
+   {
+    "id": "A",
+    "lon": 71.421235,
+    "lat": 51.179203
+   },
+   {
+    "id": "B",
+    "lon": 71.435549,
+    "lat": 51.17022
+   }
+  ],
+  "proposed_object": {
+   "id": "новая-поликлиника",
+   "lon": 71.421807,
+   "lat": 51.178305,
+   "category": "outpatient_clinic",
+   "kind": "hypothetical"
+  }
+ },
+ "calc_result": {
+  "schema_version": "city-whatif-v1",
+  "city_id": "astana",
+  "category": "outpatient_clinic",
+  "release": "2026-09-23.1",
+  "bbox": [
+   71.418372,
+   51.163033,
+   71.447,
+   51.181
+  ],
+  "source_snapshot": "sha256:920571f5990157422ecb44dbc28f239007fdeba3632b990b9458f084dba676cb",
+  "source_record_count": 16,
+  "params": {
+   "formula": "haversine",
+   "earth_radius_m": 6371008.8,
+   "input_order": "lon,lat",
+   "clamp": "[0,1]"
+  },
+  "control_points": [
+   {
+    "id": "A",
+    "lon": 71.421235,
+    "lat": 51.179203
+   },
+   {
+    "id": "B",
+    "lon": 71.435549,
+    "lat": 51.17022
+   }
+  ],
+  "proposed_object": {
+   "id": "новая-поликлиника",
+   "lon": 71.421807,
+   "lat": 51.178305,
+   "category": "outpatient_clinic",
+   "kind": "hypothetical"
+  },
+  "rows": [
+   {
+    "point_id": "A",
+    "before_m": 246.652812471919,
+    "after_m": 107.51969295254374,
+    "delta_m": 139.13311951937527,
+    "distance_to_proposed_m": 107.51969295254374,
+    "nearest_source": {
+     "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371",
+     "name": "Stomatologiya Kog'gan Dent",
+     "lon": 71.422047,
+     "lat": 51.177044
+    },
+    "nearest_after": "proposed"
+   },
+   {
+    "point_id": "B",
+    "before_m": 366.58114844461903,
+    "after_m": 366.58114844461903,
+    "delta_m": 0,
+    "distance_to_proposed_m": 1313.7771873117276,
+    "nearest_source": {
+     "id": "5f76d9b9-bdd1-4cea-9157-fef68ac60270",
+     "name": "Aura Clinic",
+     "lon": 71.434725,
+     "lat": 51.166964
+    },
+    "nearest_after": "source"
+   }
+  ]
+ },
+ "digest": "635f22aa8cecd730",
+ "explanation_ru": "**Проверяемая часть (значения из расчётного модуля сценария).** Сценарий: whatif-outpatient-clinic-920571f59901.\n\n**Итог**\n- Точка A: до ближайшей записи в срезе, до проекта: 247 м (расчёт, ближайшая только в срезе)\n- Точка A: после условного объекта: 108 м (расчёт, с условным объектом)\n- Точка A: сокращение расстояния по прямой: 139 м (расчёт, с условным объектом)\n- Точка B: до ближайшей записи в срезе, до проекта: 367 м (расчёт, ближайшая только в срезе)\n- Точка B: после условного объекта: 367 м (расчёт)\n- Точка B: сокращение расстояния по прямой: 0 м (расчёт)\n\n**Ограничения данных**\n- Исходных записей категории в срезе: поликлиники: 16 записей (расчёт)\n\n**Ближайшие исходные записи (данные Overture, не проверены как учреждения)**\n- Точка A: «Stomatologiya Kog'gan Dent» (id 43c64670-1b4c-4d42-bd0f-0049a7b49371; QA-флаг: флагов нет (это не означает проверку))\n- Точка B: «Aura Clinic» (id 5f76d9b9-bdd1-4cea-9157-fef68ac60270; QA-флаг: флагов нет (это не означает проверку))\n\nОграничения: расстояние по прямой (гаверсинус), не время пешком и не доступность; ближайшая запись в сохранённом квадрате, не обязательно в городе; объект условный; неполнота и ошибки координат могут менять результат; положительная разница — меньшее геометрическое расстояние, не улучшение услуг.",
+ "explanation_kk": "**Тексерілетін бөлік (мәндер сценарий есептеу модулінен).** Сценарий: whatif-outpatient-clinic-920571f59901.\n\n**Қорытынды**\n- Нүкте A: кесіндідегі ең жақын жазбаға дейін, жобаға дейін: 247 м (есептелген, тек кесіндідегі ең жақын)\n- Нүкте A: шартты нысаннан кейін: 108 м (есептелген, шартты нысанмен)\n- Нүкте A: түзу бойынша қашықтықтың қысқаруы: 139 м (есептелген, шартты нысанмен)\n- Нүкте B: кесіндідегі ең жақын жазбаға дейін, жобаға дейін: 367 м (есептелген, тек кесіндідегі ең жақын)\n- Нүкте B: шартты нысаннан кейін: 367 м (есептелген)\n- Нүкте B: түзу бойынша қашықтықтың қысқаруы: 0 м (есептелген)\n\n**Дерек шектеулері**\n- Кесіндідегі санат бойынша бастапқы жазбалар: емхана: 16 жазба (есептелген)\n\n**Ең жақын бастапқы жазбалар (Overture деректері, мекеме ретінде тексерілмеген)**\n- Нүкте A: «Stomatologiya Kog'gan Dent» (id 43c64670-1b4c-4d42-bd0f-0049a7b49371; QA белгісі: белгі жоқ (бұл тексерілді дегенді білдірмейді))\n- Нүкте B: «Aura Clinic» (id 5f76d9b9-bdd1-4cea-9157-fef68ac60270; QA белгісі: белгі жоқ (бұл тексерілді дегенді білдірмейді))\n\nШектеулер: түзу бойынша қашықтық (гаверсинус), жаяу жүру уақыты емес; ең жақын жазба тек сақталған шаршыда; нысан шартты; толымсыздық пен координат қателері нәтижені өзгертуі мүмкін; оң айырма — геометриялық қашықтықтың азаюы, қызмет жақсаруы емес.",
+ "facts_used": [
+  {
+   "id": "kz.astana/whatif-outpatient-clinic-920571f59901/whatif.cp1.before",
+   "value": 246.652812471919,
+   "unit": "m",
+   "kind": "derived",
+   "hypothetical": false,
+   "point_id": "A",
+   "coverage_complete": false,
+   "missing_reason": null,
+   "nearest_source_id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+  },
+  {
+   "id": "kz.astana/whatif-outpatient-clinic-920571f59901/whatif.cp1.after",
+   "value": 107.51969295254374,
+   "unit": "m",
+   "kind": "derived",
+   "hypothetical": true,
+   "point_id": "A",
+   "coverage_complete": false,
+   "missing_reason": null,
+   "nearest_source_id": null
+  },
+  {
+   "id": "kz.astana/whatif-outpatient-clinic-920571f59901/whatif.cp1.delta",
+   "value": 139.13311951937527,
+   "unit": "m",
+   "kind": "derived",
+   "hypothetical": true,
+   "point_id": "A",
+   "coverage_complete": false,
+   "missing_reason": null,
+   "nearest_source_id": null
+  },
+  {
+   "id": "kz.astana/whatif-outpatient-clinic-920571f59901/whatif.cp2.before",
+   "value": 366.58114844461903,
+   "unit": "m",
+   "kind": "derived",
+   "hypothetical": false,
+   "point_id": "B",
+   "coverage_complete": false,
+   "missing_reason": null,
+   "nearest_source_id": "5f76d9b9-bdd1-4cea-9157-fef68ac60270"
+  },
+  {
+   "id": "kz.astana/whatif-outpatient-clinic-920571f59901/whatif.cp2.after",
+   "value": 366.58114844461903,
+   "unit": "m",
+   "kind": "derived",
+   "hypothetical": false,
+   "point_id": "B",
+   "coverage_complete": false,
+   "missing_reason": null,
+   "nearest_source_id": null
+  },
+  {
+   "id": "kz.astana/whatif-outpatient-clinic-920571f59901/whatif.cp2.delta",
+   "value": 0,
+   "unit": "m",
+   "kind": "derived",
+   "hypothetical": false,
+   "point_id": "B",
+   "coverage_complete": false,
+   "missing_reason": null,
+   "nearest_source_id": null
+  },
+  {
+   "id": "kz.astana/whatif-outpatient-clinic-920571f59901/whatif.source_records",
+   "value": 16,
+   "unit": "records",
+   "kind": "derived",
+   "hypothetical": false,
+   "point_id": null,
+   "coverage_complete": false,
+   "missing_reason": null,
+   "nearest_source_id": null
+  }
+ ]
+}
