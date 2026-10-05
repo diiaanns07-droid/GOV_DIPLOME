@@ -37,6 +37,41 @@
    "detail": "{\"sw\":380,\"cw\":380}"
   },
   {
+   "name": "district column shows K03 names (ru / kk)",
+   "ok": true,
+   "detail": "Аль-Фарабийский район / Әл-Фараби ауданы | Аль-Фарабийский район / Әл-Фараби ауданы | Аль-Фарабийский район / Әл-Фараби ауданы"
+  },
+  {
+   "name": "template explanation is labelled and built from facts",
+   "ok": true,
+   "detail": "шаблонное объяснение (детерминированная заглушка, не LLM). Модель не вызывалась; текст собран кодом из фактов.Проверяемая часть (значения из каталога фактов сре"
+  },
+  {
+   "name": "stale explanation discarded after city switch",
+   "ok": true,
+   "detail": "{\"hidden\":true,\"text\":\"\"}"
+  },
+  {
+   "name": "catalog after switch is Astana's own (scenario k10r3_g127, 65 records)",
+   "ok": true,
+   "detail": "Каталог фактов (15) · срез k10r3_g127Записей выбранных категорий в квадрате65расчётШкола: записей в квадрате8наблюдениеД"
+  },
+  {
+   "name": "source card shows SHA, K03 rule, K05 contract and K08 note",
+   "ok": true,
+   "detail": "ПакетK10 раунд 3 · claude/save-work-handoff-j7pc05 @ ea703f1dddsource_manifest.jsonКоммит данных602f"
+  },
+  {
+   "name": "clear state when data.js is missing",
+   "ok": true,
+   "detail": "Данные не найденыФайл web/data.js отсутствует или повреждён. Соберите его из сохранённых входов:python3 tools/build_data "
+  },
+  {
+   "name": "clear state when evidence.js is missing",
+   "ok": true,
+   "detail": "\n  \n    Квадрат K10 (Шымкент, ~2×2 км) — не весь город\n    \n      +\n      −\n      ⟲\n    \n    \n    \n    © OpenStreetMap c "
+  },
+  {
    "name": "no console/page errors",
    "ok": true,
    "detail": ""

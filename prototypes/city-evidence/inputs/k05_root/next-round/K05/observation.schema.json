@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "k05-obs-v1",
+  "title": "Наблюдение k05-obs-v1: одно число (или его отсутствие) о городе",
+  "description": "Структурная часть контракта. Правила связи полей (null ⇔ missing, 0 ⇔ reported_zero, synthetic ≠ observed, давность) проверяет k05_validator.py.",
+  "type": "object",
+  "required": ["schema_version", "obs_id", "city_id", "geo_unit_id", "indicator_id", "period",
+               "value", "unit", "value_status", "kind", "source", "data_version"],
+  "properties": {
+    "schema_version": {"const": "k05-obs-v1"},
+    "obs_id": {"type": "string", "minLength": 1},
+    "city_id": {"enum": ["kz.astana", "kz.shymkent"]},
+    "geo_unit_id": {"type": "string", "description": "city_id или city_id.<район>; территория не может быть другого города"},
+    "indicator_id": {"type": "string", "minLength": 1},
+    "period": {"type": "string", "pattern": "^\\d{4}(-(0[1-9]|1[0-2])(-\\d{2})?|-Q[1-4])?(/\\d{4}(-(0[1-9]|1[0-2])(-\\d{2})?|-Q[1-4])?)?$"},
+    "value": {"type": ["number", "null"]},
+    "unit": {"type": "string", "minLength": 1},
+    "value_status": {"enum": ["reported", "reported_zero", "missing", "suppressed", "not_applicable"]},
+    "kind": {"enum": ["observed", "derived", "hypothesis", "synthetic"]},
+    "source": {
+      "type": "object",
+      "required": ["source_id", "locator"],
+      "properties": {
+        "source_id": {"type": "string", "minLength": 1},
+        "url": {"type": ["string", "null"]},
+        "path": {"type": ["string", "null"]},
+        "retrieved_at": {"type": ["string", "null"]},
+        "locator": {"type": "string", "minLength": 1},
+        "sha256": {"type": ["string", "null"]},
+        "license": {"type": ["string", "null"]}
+      }
+    },
+    "data_version": {"type": "string", "minLength": 1},
+    "boundary_version": {"type": ["string", "null"]},
+    "max_age_days": {"type": ["integer", "null"], "minimum": 0},
+    "derivation": {"type": ["string", "null"]},
+    "note": {"type": ["string", "null"]}
+  },
+  "additionalProperties": false
+}

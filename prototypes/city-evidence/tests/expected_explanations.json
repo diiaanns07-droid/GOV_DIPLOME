@@ -1,0 +1,160 @@
+{
+ "renderer": "K02 verified_explainer.render @24c1750",
+ "cases": [
+  {
+   "city": "shymkent",
+   "groups": [
+    "school",
+    "preschool",
+    "college_university",
+    "hospital",
+    "outpatient_clinic",
+    "pharmacy",
+    "government_office"
+   ],
+   "lang": "ru",
+   "text": "**Проверяемая часть (значения из каталога фактов среза).** Срез: k10r3_g127.\n\n**Итог**\n- Записей выбранных категорий в квадрате: 55 (расчёт)\n- Школа: записей в квадрате: 15 (наблюдение)\n- Детский сад: записей в квадрате: 1 (наблюдение)\n- Колледж / вуз: записей в квадрате: 9 (наблюдение)\n- Больница: записей в квадрате: 6 (наблюдение)\n- Поликлиника: записей в квадрате: 16 (наблюдение)\n\n**Риски**\n- Записей с неоднозначным районом: 0 (расчёт)\n- Записей внутри города вне районов: 0 (расчёт)\n- Сегментов дорог без данных о проходе пешком: 954 (наблюдение)\n\n**Нет данных**\n- Мощность школ (места): нет данных (неизвестно)\n- Официальный реестр школ: нет данных (неизвестно)\n- Число детей: нет данных (неизвестно)",
+   "facts_used": [
+    "shymkent/k10r3_g127/places.selected",
+    "shymkent/k10r3_g127/places.school",
+    "shymkent/k10r3_g127/places.preschool",
+    "shymkent/k10r3_g127/places.college_university",
+    "shymkent/k10r3_g127/places.hospital",
+    "shymkent/k10r3_g127/places.outpatient_clinic",
+    "shymkent/k10r3_g127/district_status.ambiguous",
+    "shymkent/k10r3_g127/district_status.unmatched",
+    "shymkent/k10r3_g127/segments.foot_unknown",
+    "shymkent/k10r3_g127/capacity.school_places",
+    "shymkent/k10r3_g127/registry.official_schools",
+    "shymkent/k10r3_g127/population.children"
+   ],
+   "scenario": "k10r3_g127"
+  },
+  {
+   "city": "astana",
+   "groups": [
+    "school",
+    "preschool",
+    "college_university",
+    "hospital",
+    "outpatient_clinic",
+    "pharmacy",
+    "government_office"
+   ],
+   "lang": "ru",
+   "text": "**Проверяемая часть (значения из каталога фактов среза).** Срез: k10r3_g127.\n\n**Итог**\n- Записей выбранных категорий в квадрате: 65 (расчёт)\n- Школа: записей в квадрате: 8 (наблюдение)\n- Детский сад: записей в квадрате: 3 (наблюдение)\n- Колледж / вуз: записей в квадрате: 10 (наблюдение)\n- Больница: записей в квадрате: 9 (наблюдение)\n- Поликлиника: записей в квадрате: 16 (наблюдение)\n\n**Риски**\n- Записей с неоднозначным районом: 0 (расчёт)\n- Записей внутри города вне районов: 0 (расчёт)\n- Сегментов дорог без данных о проходе пешком: 1138 (наблюдение)\n\n**Нет данных**\n- Мощность школ (места): нет данных (неизвестно)\n- Официальный реестр школ: нет данных (неизвестно)\n- Число детей: нет данных (неизвестно)",
+   "facts_used": [
+    "astana/k10r3_g127/places.selected",
+    "astana/k10r3_g127/places.school",
+    "astana/k10r3_g127/places.preschool",
+    "astana/k10r3_g127/places.college_university",
+    "astana/k10r3_g127/places.hospital",
+    "astana/k10r3_g127/places.outpatient_clinic",
+    "astana/k10r3_g127/district_status.ambiguous",
+    "astana/k10r3_g127/district_status.unmatched",
+    "astana/k10r3_g127/segments.foot_unknown",
+    "astana/k10r3_g127/capacity.school_places",
+    "astana/k10r3_g127/registry.official_schools",
+    "astana/k10r3_g127/population.children"
+   ],
+   "scenario": "k10r3_g127"
+  },
+  {
+   "city": "astana",
+   "groups": [
+    "school",
+    "preschool",
+    "college_university",
+    "hospital",
+    "outpatient_clinic",
+    "pharmacy",
+    "government_office"
+   ],
+   "lang": "kk",
+   "text": "**Тексерілетін бөлік (мәндер кесінді деректер каталогынан).** Кесінді: k10r3_g127.\n\n**Қорытынды**\n- Таңдалған санаттар жазбалары шаршыда: 65 (есептелген)\n- Мектеп: шаршыдағы жазбалар: 8 (бақылау)\n- Балабақша: шаршыдағы жазбалар: 3 (бақылау)\n- Колледж / ЖОО: шаршыдағы жазбалар: 10 (бақылау)\n- Аурухана: шаршыдағы жазбалар: 9 (бақылау)\n- Емхана: шаршыдағы жазбалар: 16 (бақылау)\n\n**Тәуекелдер**\n- Ауданы анық емес жазбалар: 0 (есептелген)\n- Қала ішінде, ауданнан тыс жазбалар: 0 (есептелген)\n- Жаяу өту дерегі жоқ жол сегменттері: 1138 (бақылау)\n\n**Дерек жоқ**\n- Мектептер сыйымдылығы (орын): дерек жоқ (белгісіз)\n- Мектептердің ресми тізілімі: дерек жоқ (белгісіз)\n- Балалар саны: дерек жоқ (белгісіз)",
+   "facts_used": [
+    "astana/k10r3_g127/places.selected",
+    "astana/k10r3_g127/places.school",
+    "astana/k10r3_g127/places.preschool",
+    "astana/k10r3_g127/places.college_university",
+    "astana/k10r3_g127/places.hospital",
+    "astana/k10r3_g127/places.outpatient_clinic",
+    "astana/k10r3_g127/district_status.ambiguous",
+    "astana/k10r3_g127/district_status.unmatched",
+    "astana/k10r3_g127/segments.foot_unknown",
+    "astana/k10r3_g127/capacity.school_places",
+    "astana/k10r3_g127/registry.official_schools",
+    "astana/k10r3_g127/population.children"
+   ],
+   "scenario": "k10r3_g127"
+  },
+  {
+   "city": "shymkent",
+   "groups": [
+    "school"
+   ],
+   "lang": "ru",
+   "text": "**Проверяемая часть (значения из каталога фактов среза).** Срез: k10r3_g1.\n\n**Итог**\n- Записей выбранных категорий в квадрате: 15 (расчёт)\n- Школа: записей в квадрате: 15 (наблюдение)\n\n**Риски**\n- Записей с неоднозначным районом: 0 (расчёт)\n- Записей внутри города вне районов: 0 (расчёт)\n- Сегментов дорог без данных о проходе пешком: 954 (наблюдение)\n\n**Нет данных**\n- Мощность школ (места): нет данных (неизвестно)\n- Официальный реестр школ: нет данных (неизвестно)\n- Число детей: нет данных (неизвестно)",
+   "facts_used": [
+    "shymkent/k10r3_g1/places.selected",
+    "shymkent/k10r3_g1/places.school",
+    "shymkent/k10r3_g1/district_status.ambiguous",
+    "shymkent/k10r3_g1/district_status.unmatched",
+    "shymkent/k10r3_g1/segments.foot_unknown",
+    "shymkent/k10r3_g1/capacity.school_places",
+    "shymkent/k10r3_g1/registry.official_schools",
+    "shymkent/k10r3_g1/population.children"
+   ],
+   "scenario": "k10r3_g1"
+  },
+  {
+   "city": "astana",
+   "groups": [
+    "preschool",
+    "pharmacy"
+   ],
+   "lang": "ru",
+   "text": "**Проверяемая часть (значения из каталога фактов среза).** Срез: k10r3_g34.\n\n**Итог**\n- Записей выбранных категорий в квадрате: 6 (расчёт)\n- Детский сад: записей в квадрате: 3 (наблюдение)\n- Аптека: записей в квадрате: 3 (наблюдение)\n\n**Риски**\n- Записей с неоднозначным районом: 0 (расчёт)\n- Записей внутри города вне районов: 0 (расчёт)\n- Сегментов дорог без данных о проходе пешком: 1138 (наблюдение)\n\n**Нет данных**\n- Мощность школ (места): нет данных (неизвестно)\n- Официальный реестр школ: нет данных (неизвестно)\n- Число детей: нет данных (неизвестно)",
+   "facts_used": [
+    "astana/k10r3_g34/places.selected",
+    "astana/k10r3_g34/places.preschool",
+    "astana/k10r3_g34/places.pharmacy",
+    "astana/k10r3_g34/district_status.ambiguous",
+    "astana/k10r3_g34/district_status.unmatched",
+    "astana/k10r3_g34/segments.foot_unknown",
+    "astana/k10r3_g34/capacity.school_places",
+    "astana/k10r3_g34/registry.official_schools",
+    "astana/k10r3_g34/population.children"
+   ],
+   "scenario": "k10r3_g34"
+  },
+  {
+   "city": "shymkent",
+   "groups": [
+    "school",
+    "preschool",
+    "college_university",
+    "hospital",
+    "outpatient_clinic",
+    "pharmacy"
+   ],
+   "lang": "kk",
+   "text": "**Тексерілетін бөлік (мәндер кесінді деректер каталогынан).** Кесінді: k10r3_g63.\n\n**Қорытынды**\n- Таңдалған санаттар жазбалары шаршыда: 50 (есептелген)\n- Мектеп: шаршыдағы жазбалар: 15 (бақылау)\n- Балабақша: шаршыдағы жазбалар: 1 (бақылау)\n- Колледж / ЖОО: шаршыдағы жазбалар: 9 (бақылау)\n- Аурухана: шаршыдағы жазбалар: 6 (бақылау)\n- Емхана: шаршыдағы жазбалар: 16 (бақылау)\n\n**Тәуекелдер**\n- Ауданы анық емес жазбалар: 0 (есептелген)\n- Қала ішінде, ауданнан тыс жазбалар: 0 (есептелген)\n- Жаяу өту дерегі жоқ жол сегменттері: 954 (бақылау)\n\n**Дерек жоқ**\n- Мектептер сыйымдылығы (орын): дерек жоқ (белгісіз)\n- Мектептердің ресми тізілімі: дерек жоқ (белгісіз)\n- Балалар саны: дерек жоқ (белгісіз)",
+   "facts_used": [
+    "shymkent/k10r3_g63/places.selected",
+    "shymkent/k10r3_g63/places.school",
+    "shymkent/k10r3_g63/places.preschool",
+    "shymkent/k10r3_g63/places.college_university",
+    "shymkent/k10r3_g63/places.hospital",
+    "shymkent/k10r3_g63/places.outpatient_clinic",
+    "shymkent/k10r3_g63/district_status.ambiguous",
+    "shymkent/k10r3_g63/district_status.unmatched",
+    "shymkent/k10r3_g63/segments.foot_unknown",
+    "shymkent/k10r3_g63/capacity.school_places",
+    "shymkent/k10r3_g63/registry.official_schools",
+    "shymkent/k10r3_g63/population.children"
+   ],
+   "scenario": "k10r3_g63"
+  }
+ ]
+}

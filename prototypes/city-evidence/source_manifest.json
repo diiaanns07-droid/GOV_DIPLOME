@@ -135,6 +135,231 @@
    "copied_to": "inputs/k07/README.md",
    "bytes": 10371,
    "sha256": "7e425c7a568b378d96557967a47dda5fde701b6f37222579c927c8665e1f172f"
+  },
+  {
+   "slot": "K03_ROOT",
+   "branch": "claude/epic-curie-iitc43",
+   "sha": "44585de31be01dd131ecb7677c462fc85b4d4cc4",
+   "path": "data/astana_districts.geojson",
+   "copied_to": "inputs/k03_root/data/astana_districts.geojson",
+   "bytes": 71465,
+   "sha256": "9092aebb997086d4fbf30963dd84dfae6aab483a585ba6f536944fb03a4eb95e"
+  },
+  {
+   "slot": "K03_ROOT",
+   "branch": "claude/epic-curie-iitc43",
+   "sha": "44585de31be01dd131ecb7677c462fc85b4d4cc4",
+   "path": "data/geo_sources/astana_districts_overpass.json",
+   "copied_to": "inputs/k03_root/data/geo_sources/astana_districts_overpass.json",
+   "bytes": 394658,
+   "sha256": "ebd6019b0ea32cef4d3f27c79bc0a979284fe35476551742eea8ba4839f01392"
+  },
+  {
+   "slot": "K03_ROOT",
+   "branch": "claude/epic-curie-iitc43",
+   "sha": "44585de31be01dd131ecb7677c462fc85b4d4cc4",
+   "path": "data/geo_sources/sara_osm.json",
+   "copied_to": "inputs/k03_root/data/geo_sources/sara_osm.json",
+   "bytes": 135981,
+   "sha256": "c3ef515903b405d4f05b4f512e239653df267962a8bde06824ed4e5005f62a32"
+  },
+  {
+   "slot": "K03_ROOT",
+   "branch": "claude/epic-curie-iitc43",
+   "sha": "44585de31be01dd131ecb7677c462fc85b4d4cc4",
+   "path": "research/round-3-results/K03/geo_common.py",
+   "copied_to": "inputs/k03_root/research/round-3-results/K03/geo_common.py",
+   "bytes": 4488,
+   "sha256": "729061e923517ff870af44a9a6a7f07851b23dd7ad72524b1d3d6a1ed136200f"
+  },
+  {
+   "slot": "K03_ROOT",
+   "branch": "claude/epic-curie-iitc43",
+   "sha": "44585de31be01dd131ecb7677c462fc85b4d4cc4",
+   "path": "research/round-3-results/K03/boundary_validator.py",
+   "copied_to": "inputs/k03_root/research/round-3-results/K03/boundary_validator.py",
+   "bytes": 28386,
+   "sha256": "61e354b2cf68b202e2a1a0a8aace38dd8e844c5909288eba55cf67474956e82e"
+  },
+  {
+   "slot": "K03_ROOT",
+   "branch": "claude/epic-curie-iitc43",
+   "sha": "44585de31be01dd131ecb7677c462fc85b4d4cc4",
+   "path": "research/round-3-results/K03/boundary_registry.json",
+   "copied_to": "inputs/k03_root/research/round-3-results/K03/boundary_registry.json",
+   "bytes": 33342,
+   "sha256": "f6577555a3d701923dfb7cb7fc1f9396bc529485877d495aca78cac1417fedf5"
+  },
+  {
+   "slot": "K03_ROOT",
+   "branch": "claude/epic-curie-iitc43",
+   "sha": "44585de31be01dd131ecb7677c462fc85b4d4cc4",
+   "path": "research/round-3-results/K03/ambiguity_zones.geojson",
+   "copied_to": "inputs/k03_root/research/round-3-results/K03/ambiguity_zones.geojson",
+   "bytes": 3121,
+   "sha256": "225dcc9fe04062a02a4d15f81fb6fc023a7d4c8ea7e8771edec475c65c630778"
+  },
+  {
+   "slot": "K03_ROOT",
+   "branch": "claude/epic-curie-iitc43",
+   "sha": "44585de31be01dd131ecb7677c462fc85b4d4cc4",
+   "path": "research/round-3-results/K03/validator_selftest.json",
+   "copied_to": "inputs/k03_root/research/round-3-results/K03/validator_selftest.json",
+   "bytes": 6968,
+   "sha256": "884b0e63e98ef2840fbcb70cd7bab8f900bc8bc536b55e6b60aba98f4964a5c8"
+  },
+  {
+   "slot": "K03_ROOT",
+   "branch": "claude/epic-curie-iitc43",
+   "sha": "44585de31be01dd131ecb7677c462fc85b4d4cc4",
+   "path": "research/round-3-results/K03/inputs/K10/astana_districts_overture.geojson",
+   "copied_to": "inputs/k03_root/research/round-3-results/K03/inputs/K10/astana_districts_overture.geojson",
+   "bytes": 99459,
+   "sha256": "ab3a7f9852ecdd0d80b68c22ed73f1e10673c20c5091cf47c6454a030f1421ca"
+  },
+  {
+   "slot": "K03_ROOT",
+   "branch": "claude/epic-curie-iitc43",
+   "sha": "44585de31be01dd131ecb7677c462fc85b4d4cc4",
+   "path": "research/round-3-results/K03/inputs/K10/shymkent_districts_overture.geojson",
+   "copied_to": "inputs/k03_root/research/round-3-results/K03/inputs/K10/shymkent_districts_overture.geojson",
+   "bytes": 159823,
+   "sha256": "e19bbd7572a7a4f46dbb793df74c5d1cfab11d4e7a217fed7e525b4cece117c3"
+  },
+  {
+   "slot": "K03_ROOT",
+   "branch": "claude/epic-curie-iitc43",
+   "sha": "44585de31be01dd131ecb7677c462fc85b4d4cc4",
+   "path": "research/round-3-results/K03/STATUS.md",
+   "copied_to": "inputs/k03_root/research/round-3-results/K03/STATUS.md",
+   "bytes": 10144,
+   "sha256": "de90232c68e6eb973d0ed23e43b01c4bc7083c806b48bf62ed00c227b181dc4c"
+  },
+  {
+   "slot": "K02",
+   "branch": "claude/clever-mccarthy-pywscu",
+   "sha": "24c1750f70d9e444ae551030d116bb6aa8ce5b7b",
+   "path": "research/round-3-results/K02/verified_explainer.py",
+   "copied_to": "inputs/k02/verified_explainer.py",
+   "bytes": 17313,
+   "sha256": "17b04979339e11b6c16626d3fa9c06be40a753d2fbf300079fc89668a3d51a8a"
+  },
+  {
+   "slot": "K02",
+   "branch": "claude/clever-mccarthy-pywscu",
+   "sha": "24c1750f70d9e444ae551030d116bb6aa8ce5b7b",
+   "path": "research/round-3-results/K02/demo.py",
+   "copied_to": "inputs/k02/demo.py",
+   "bytes": 1535,
+   "sha256": "1f148a090febd7c5a10145d2b9d82f4ed382d723eb976797c2602e0487153285"
+  },
+  {
+   "slot": "K02",
+   "branch": "claude/clever-mccarthy-pywscu",
+   "sha": "24c1750f70d9e444ae551030d116bb6aa8ce5b7b",
+   "path": "research/round-3-results/K02/test_verified_explainer.py",
+   "copied_to": "inputs/k02/test_verified_explainer.py",
+   "bytes": 7383,
+   "sha256": "e238827f9f37bece1898b4c161d80fa4c37a701f7eb8d911a3f5a04f7c083694"
+  },
+  {
+   "slot": "K02",
+   "branch": "claude/clever-mccarthy-pywscu",
+   "sha": "24c1750f70d9e444ae551030d116bb6aa8ce5b7b",
+   "path": "research/round-3-results/K02/STATUS.md",
+   "copied_to": "inputs/k02/STATUS.md",
+   "bytes": 2470,
+   "sha256": "77dfd1bf7e95720971579a1ee7cf8a9cd163479302eb2241fcfc189d3066e0cd"
+  },
+  {
+   "slot": "K05_ROOT",
+   "branch": "claude/optimistic-davinci-1oiqs9",
+   "sha": "d913554bf2617a74d921af260ab8c22743ccb4b5",
+   "path": "research/round-3-results/K05/schema/k05-obs-v1.1.schema.json",
+   "copied_to": "inputs/k05_root/round-3-results/K05/schema/k05-obs-v1.1.schema.json",
+   "bytes": 3614,
+   "sha256": "7b40b4a7b48f13a62ba4fe3c06f1701cf5559cd74954c799eafe8e736c22d7e6"
+  },
+  {
+   "slot": "K05_ROOT",
+   "branch": "claude/optimistic-davinci-1oiqs9",
+   "sha": "d913554bf2617a74d921af260ab8c22743ccb4b5",
+   "path": "research/round-3-results/K05/k05r3_contract.py",
+   "copied_to": "inputs/k05_root/round-3-results/K05/k05r3_contract.py",
+   "bytes": 12171,
+   "sha256": "8dc4a177f47edcdfa6753ed41b78a31e5afb652df4d79f02c73aeb5686d2f397"
+  },
+  {
+   "slot": "K05_ROOT",
+   "branch": "claude/optimistic-davinci-1oiqs9",
+   "sha": "d913554bf2617a74d921af260ab8c22743ccb4b5",
+   "path": "research/round-3-results/K05/REPORT.md",
+   "copied_to": "inputs/k05_root/round-3-results/K05/REPORT.md",
+   "bytes": 15889,
+   "sha256": "5e289d0da3c302bb8a92dcebe05ce6e34946ba81fd14b47740d88c4c869a2613"
+  },
+  {
+   "slot": "K05_ROOT",
+   "branch": "claude/optimistic-davinci-1oiqs9",
+   "sha": "d913554bf2617a74d921af260ab8c22743ccb4b5",
+   "path": "research/round-3-results/K05/STATUS.md",
+   "copied_to": "inputs/k05_root/round-3-results/K05/STATUS.md",
+   "bytes": 4413,
+   "sha256": "94883b5d59dda2378c6752b117e8e711254d5789f3eacfc6d68f8a4bdfa2013e"
+  },
+  {
+   "slot": "K05_ROOT",
+   "branch": "claude/optimistic-davinci-1oiqs9",
+   "sha": "d913554bf2617a74d921af260ab8c22743ccb4b5",
+   "path": "research/next-round/K05/k05_validator.py",
+   "copied_to": "inputs/k05_root/next-round/K05/k05_validator.py",
+   "bytes": 12617,
+   "sha256": "90086a105a0a0108dcc4a35fd5312fb29becc0787b3eef5bc880ae987dfe64ab"
+  },
+  {
+   "slot": "K05_ROOT",
+   "branch": "claude/optimistic-davinci-1oiqs9",
+   "sha": "d913554bf2617a74d921af260ab8c22743ccb4b5",
+   "path": "research/next-round/K05/observation.schema.json",
+   "copied_to": "inputs/k05_root/next-round/K05/observation.schema.json",
+   "bytes": 2215,
+   "sha256": "9a637ccc52d8e4e0950f09c874ed5371eb29ec8fe26cc44e32ab619b8cfda790"
+  },
+  {
+   "slot": "K08",
+   "branch": "claude/dazzling-mayer-drhsxk",
+   "sha": "e1e3c7170f827550948afc0448695ecb8e9bc464",
+   "path": "research/round-3-results/K08/AUDIT.md",
+   "copied_to": "inputs/k08/AUDIT.md",
+   "bytes": 16005,
+   "sha256": "fe8d89de01c16655bd41d3a09ecf8636fb4c50a797eb4ec1302560d18422e770"
+  },
+  {
+   "slot": "K08",
+   "branch": "claude/dazzling-mayer-drhsxk",
+   "sha": "e1e3c7170f827550948afc0448695ecb8e9bc464",
+   "path": "research/round-3-results/K08/verdicts.json",
+   "copied_to": "inputs/k08/verdicts.json",
+   "bytes": 16740,
+   "sha256": "d8126fc86537154f10f8b5f415a0696244012a752c46508b7bd983822d66be6a"
+  },
+  {
+   "slot": "K04",
+   "branch": "claude/beautiful-clarke-sbzomj",
+   "sha": "7fb8bb897dc80150c85fef9e68ac7183d323e6c3",
+   "path": "research/round-3-results/K04/acceptance.json",
+   "copied_to": "inputs/k04/acceptance.json",
+   "bytes": 9845,
+   "sha256": "fe61ba4f889f5b3cce6dc56466df73901a5ea6938d8679dae6459381fcff46d1"
+  },
+  {
+   "slot": "K04",
+   "branch": "claude/beautiful-clarke-sbzomj",
+   "sha": "7fb8bb897dc80150c85fef9e68ac7183d323e6c3",
+   "path": "research/round-3-results/K04/PRODUCT_DECISION.md",
+   "copied_to": "inputs/k04/PRODUCT_DECISION.md",
+   "bytes": 23480,
+   "sha256": "94946d946f4dbb28df63766e77750328999f1865f6b736764645aadaf7942515"
   }
  ]
 }

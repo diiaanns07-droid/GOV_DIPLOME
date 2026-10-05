@@ -124,6 +124,7 @@ select { font: inherit; padding: 4px 6px; border-radius: 6px; border: 1px solid 
   <label class="chk"><input type="checkbox" id="tRoads" checked> Дороги</label>
   <label class="ctl" for="roadStyle">Цвет дорог
     <select id="roadStyle"><option value="plain">один цвет</option><option value="foot">по данным о проходе пешком</option></select></label>
+  <span class="ctl muted" id="roadLegend" hidden></span>
   <span class="ctl"><button class="tool" id="pointBtn" aria-pressed="false">Расстояние от точки</button></span>
 </div>
 
@@ -151,6 +152,7 @@ select { font: inherit; padding: 4px 6px; border-radius: 6px; border: 1px solid 
 </main>
 <noscript><p class="banner err">Для демо нужен JavaScript.</p></noscript>
 <script src="data.js"></script>
+<script src="evidence.js"></script>
 <script src="facts.js"></script>
 <script src="app.js"></script>
 </body>

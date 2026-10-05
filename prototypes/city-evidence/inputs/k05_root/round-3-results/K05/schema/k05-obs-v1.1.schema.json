@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "k05-obs-v1.1",
+  "title": "Наблюдение k05-obs-v1.1",
+  "description": "Расширение k05-obs-v1 (research/next-round/K05/observation.schema.json, 6d39cc5): обязательные coverage и method, период может быть unknown, у источника нужен sha256 или url, причина отсутствия. Связи полей проверяет k05r3_contract.py.",
+  "type": "object",
+  "required": ["schema_version", "obs_id", "city_id", "geo_unit_id", "indicator_id", "period",
+               "value", "unit", "value_status", "kind", "source", "data_version",
+               "boundary_version", "coverage", "method"],
+  "properties": {
+    "schema_version": {"const": "k05-obs-v1.1"},
+    "obs_id": {"type": "string", "minLength": 1},
+    "city_id": {"enum": ["kz.astana", "kz.shymkent"]},
+    "geo_unit_id": {"type": "string", "pattern": "^kz\\.(astana|shymkent)(\\.[a-z0-9_]+)?$"},
+    "indicator_id": {"type": "string", "minLength": 1},
+    "period": {
+      "type": "string",
+      "pattern": "^(unknown|\\d{4}(-(0[1-9]|1[0-2])(-\\d{2})?|-Q[1-4])?(/\\d{4}(-(0[1-9]|1[0-2])(-\\d{2})?|-Q[1-4])?)?)$"
+    },
+    "release": {"type": ["string", "null"]},
+    "value": {"type": ["number", "null"]},
+    "unit": {"type": "string", "minLength": 1},
+    "value_status": {"enum": ["reported", "reported_zero", "missing", "suppressed", "not_applicable"]},
+    "missing_reason": {
+      "enum": [null, "source_access_denied", "not_collected", "not_in_source",
+               "zero_in_partial_coverage", "suppressed_by_publisher"]
+    },
+    "kind": {"enum": ["observed", "derived", "hypothesis", "synthetic"]},
+    "source": {
+      "type": "object",
+      "required": ["source_id", "locator"],
+      "anyOf": [
+        {"required": ["sha256"], "properties": {"sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}},
+        {"required": ["url"], "properties": {"url": {"type": "string", "pattern": "^https?://"}}}
+      ],
+      "properties": {
+        "source_id": {"type": "string", "minLength": 1},
+        "url": {"type": ["string", "null"]},
+        "path": {"type": ["string", "null"]},
+        "retrieved_at": {"type": ["string", "null"]},
+        "locator": {"type": "string", "minLength": 1},
+        "sha256": {"type": ["string", "null"]},
+        "license": {"type": ["string", "null"]},
+        "evidence": {"type": ["string", "null"]}
+      },
+      "additionalProperties": false
+    },
+    "data_version": {"type": "string", "minLength": 1},
+    "boundary_version": {"type": ["string", "null"]},
+    "coverage": {
+      "type": "object",
+      "required": ["complete", "scope", "selection"],
+      "properties": {
+        "complete": {"type": "boolean"},
+        "scope": {"type": "string", "minLength": 1},
+        "selection": {"type": "string", "minLength": 1},
+        "area_fraction": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+        "cap_per_group": {"type": ["integer", "null"], "minimum": 1}
+      },
+      "additionalProperties": false
+    },
+    "method": {
+      "type": "object",
+      "required": ["id", "steps"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "steps": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "parameters": {"type": "object"}
+      },
+      "additionalProperties": false
+    },
+    "max_age_days": {"type": ["integer", "null"], "minimum": 0},
+    "derivation": {"type": ["string", "null"]},
+    "note": {"type": ["string", "null"]}
+  },
+  "additionalProperties": false
+}

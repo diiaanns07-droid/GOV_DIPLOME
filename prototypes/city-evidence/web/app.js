@@ -112,7 +112,7 @@
     }
     $("tPlaces").addEventListener("change", (e) => { STATE.places = e.target.checked; onFilterChange(); });
     $("tRoads").addEventListener("change", (e) => { STATE.roads = e.target.checked; renderMap(); });
-    $("roadStyle").addEventListener("change", (e) => { STATE.roadStyle = e.target.value; renderMap(); });
+    $("roadStyle").addEventListener("change", (e) => { STATE.roadStyle = e.target.value; renderRoadLegend(); renderMap(); });
     $("pointBtn").addEventListener("click", () => {
       STATE.pointMode = !STATE.pointMode;
       $("pointBtn").setAttribute("aria-pressed", String(STATE.pointMode));
@@ -121,6 +121,16 @@
     $("zIn").addEventListener("click", () => zoomBy(1.5));
     $("zOut").addEventListener("click", () => zoomBy(1 / 1.5));
     $("zReset").addEventListener("click", () => { fitView(); renderMap(); });
+  }
+  function renderRoadLegend() {
+    const box = $("roadLegend");
+    box.hidden = STATE.roadStyle !== "foot";
+    box.replaceChildren();
+    for (const [k, txt] of [["unknown", "нет правил"], ["conditional", "условия"], ["denied", "запрет"], ["allowed", "разрешено"]]) {
+      const sw = sv("svg", { width: 18, height: 8, "aria-hidden": "true" });
+      sw.append(sv("line", { x1: 1, y1: 4, x2: 17, y2: 4, stroke: FOOT_COLOR[k], "stroke-width": 3 }));
+      box.append(sw, document.createTextNode(txt + " "));
+    }
   }
   // City switch: drop every per-city state (selection, point, tooltip, pending explanation) before rendering.
   function switchCity(key) {

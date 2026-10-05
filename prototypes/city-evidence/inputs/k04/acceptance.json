@@ -1,0 +1,81 @@
+{
+  "schema": "k04-acceptance-v1",
+  "status": "proposal_not_owner_approved",
+  "created": "2026-10-05",
+  "author": "K04 (claude/beautiful-clarke-sbzomj)",
+  "inputs_snapshot": "research/round-3/snapshots.json @ codex/research-import-2026-10-05 6602bb86f152d24edcb66f8b45122844323116bc",
+  "recommendation": "MVP-1",
+  "candidates": [
+    {
+      "id": "MVP-1",
+      "rank": 1,
+      "title": "Аудит данных и пешая доступность соцобъектов (исследовательский инструмент)",
+      "cities": ["shymkent", "astana"],
+      "primary_user": "аналитик/специалист управления образования или архитектуры акимата (гипотеза, интервью не было)",
+      "site_action": "город → район → тип объекта → карточка района: объекты с источником, счётчик value/unknown/partial, доступность по сети vs радиус, плашка 'обеспеченность: не вычислимо'",
+      "data_now": [
+        {"id": "K10-D01", "what": "Overture division_area 2026-09-23.1", "cities": ["shymkent", "astana"], "license": "ODbL-1.0 (+CC0 у region)", "kind": "observed_secondary"},
+        {"id": "K10-D02", "what": "Overture places (социальные категории)", "cities": ["shymkent", "astana"], "license": "CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 по полям записей", "kind": "observed_secondary", "completeness": "unknown"},
+        {"id": "K10-D04", "what": "Overture transportation/segment", "cities": ["shymkent", "astana"], "license": "ODbL-1.0", "kind": "observed_secondary"},
+        {"id": "product:data/astana_districts.geojson", "what": "OSM-границы 6 районов Астаны", "cities": ["astana"], "license": "ODbL-1.0", "kind": "observed"},
+        {"id": "K05:k05-obs-v1", "what": "контракт наблюдения и валидатор", "cities": ["shymkent", "astana"], "kind": "method"}
+      ],
+      "data_missing": ["официальный реестр школ/детсадов/ПМСП", "вместимость", "население/дети по участкам", "официальный состав районов Шымкента", "здания/жилые адреса"],
+      "acceptance": [
+        {"id": "A1.1", "check": "Счётчики объектов по районам из закреплённых выгрузок K10 совпадают с K10-E02", "metric": "число расхождений", "threshold": 0, "how": "скрипт пересчёта на raw extracts с проверкой sha256 из provenance/raw_extracts.sha256"},
+        {"id": "A1.2", "check": "Нет нулей при отсутствии данных", "metric": "число значений 0 при status in {unavailable, error, stale}", "threshold": 0, "how": "валидатор K05 на всех записях карточек"},
+        {"id": "A1.3", "check": "Каждое число имеет city, period/snapshot, source, license, kind", "metric": "доля записей с полным provenance", "threshold": 1.0},
+        {"id": "A1.4", "check": "Учебная модель STUPITS и реальные данные не смешиваются", "metric": "число карточек, где synthetic и observed суммируются", "threshold": 0},
+        {"id": "A1.5", "check": "Объекты вне районов и неразмеченные территории показаны явно (Астана 11,03 км²; эксклав Байқоңыр∩Целиноград 9,02 км²)", "metric": "отображено", "threshold": true},
+        {"id": "A2.1", "check": "Доступность по сети детерминирована", "metric": "побайтное совпадение двух прогонов", "threshold": true},
+        {"id": "A2.2", "check": "Показаны оба значения: радиус и сеть, с пометкой о полноте footway по городу", "metric": "отображено", "threshold": true},
+        {"id": "A2.3", "check": "Точность категорий объектов на выборке", "metric": "precision категории на 20 случайных объектах/район по независимой карте", "threshold": 0.8, "on_fail": "понизить слой до 'справочный, не для решений'"},
+        {"id": "A2.4", "check": "Нет межгородского вывода о доступности", "metric": "число сравнительных утверждений без пометки о смещении полноты", "threshold": 0},
+        {"id": "A3.1", "check": "AI-объяснение не вводит новых чисел", "metric": "числа в тексте, отсутствующие в карточке, на 30 карточках × 2 языка", "threshold": 0, "depends_on": "K02"},
+        {"id": "A3.2", "check": "AI-сопоставление названий ru/kk", "metric": "precision/recall на 50 размеченных парах; публикуется, порог задаётся до прогона владельцем/K09", "threshold": "pre-registered", "depends_on": "доступ к реестру"},
+        {"id": "A3.3", "check": "Польза для пользователя", "metric": "1–2 think-aloud сеанса со специалистом; зафиксированные решения 'доверяю/не доверяю числу'", "threshold": "проведено; иначе польза = hypothesis"}
+      ]
+    },
+    {
+      "id": "ALT-A",
+      "rank": 2,
+      "title": "Очередь выездного обследования пешеходных переходов",
+      "cities": ["shymkent", "astana"],
+      "primary_user": "специалист ОДД городского управления (гипотеза)",
+      "site_action": "показать 20 переходов для выезда на 2 недели с карточками и чек-листом",
+      "data_now": [
+        {"id": "A10-D001", "what": "агрегаты КПСиСУ ДТП, Шымкент (7 064 записи)", "license": null, "kind": "observed_via_webfetch", "independently_verified": false},
+        {"id": "AST-A10-D001", "what": "агрегаты КПСиСУ ДТП, Астана (12 921 запись)", "license": null, "kind": "observed_via_webfetch", "independently_verified": false}
+      ],
+      "data_missing": ["лицензия/разрешение КПСиСУ", "справочник кодов", "точечная выгрузка безопасных полей", "проверка точности координат", "OSM-переходы"],
+      "acceptance": [
+        {"id": "B1", "check": "Ретро-тест", "metric": "recall@50 ДТП с пострадавшими 2025-01..2026-08 при обучении на 2024 vs сортировка по сырому числу", "threshold": "+10 п.п. в обоих городах"},
+        {"id": "B2", "check": "Точность координат", "metric": "медианное отклонение 30 точек-перекрёстков от карты, м", "threshold": "≤ 30"},
+        {"id": "B0", "check": "Блокер", "metric": "письменные условия использования КПСиСУ", "threshold": "получены — иначе не начинать"}
+      ]
+    },
+    {
+      "id": "ALT-B",
+      "rank": 3,
+      "title": "Историческая панель регулярности автобусов (Астана, 3 маршрута, лето 2024)",
+      "cities": ["astana"],
+      "primary_user": "аналитик транспортного оператора/управления (гипотеза)",
+      "site_action": "маршрут/направление/окно → CV внутри дня, доля интервалов > 2× среднего, диапазон избыточного ожидания",
+      "data_now": [
+        {"id": "AST-A06-D001", "what": "Mansurova et al., зеркало Bussure@0356bb5", "license": "CC BY 4.0 по README зеркала, Zenodo не проверен", "kind": "observed_reconstructed_from_gps", "period": "2024-07-29..2024-09-21"}
+      ],
+      "data_missing": ["подтверждение лицензии на Zenodo", "stop_times (LFS)", "свежий AVL", "любые данные Шымкента"],
+      "acceptance": [
+        {"id": "C1", "check": "Воспроизведение K06", "metric": "побайтное совпадение results.json", "threshold": true},
+        {"id": "C2", "check": "CV считается внутри дня", "metric": "медиана CV", "threshold": "0.675 ± 0.005 (K06)"},
+        {"id": "C3", "check": "Длительность рейса не подаётся как время в пути/пробки", "metric": "число таких формулировок в UI", "threshold": 0}
+      ]
+    }
+  ],
+  "not_selected": [
+    {"id": "road_junction_editor", "reason": "нет данных о потоках ни по одному городу; сценарная модель на синтетике"},
+    {"id": "109_assistant", "reason": "нет обезличенной выгрузки обращений ни по одному городу (K08 V10 не проверено)"},
+    {"id": "energy_audit", "reason": "K12: местных входов нет, метод проверен на BDG1 (Великобритания)"}
+  ],
+  "awaiting_round3": ["K01", "K02", "K03 (две разные версии)", "K05", "K06", "K07", "K08", "K09", "K10", "K11", "K12"]
+}

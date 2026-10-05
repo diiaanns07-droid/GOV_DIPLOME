@@ -61,6 +61,43 @@ const check = (name, ok, detail) => { results.push({ name, ok: !!ok, detail }); 
   check("narrow viewport has no horizontal scroll", sw.sw <= sw.cw + 1, JSON.stringify(sw));
   await page.screenshot({ path: path.join(out, "04_narrow.png"), fullPage: false });
 
+  // ---- stage 2: districts, facts catalog, template explanation, stale reply ----
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.click('#citySeg button[data-city="shymkent"]');
+  const dist = await page.evaluate(() => [...document.querySelectorAll("#tbl tr td:nth-child(3)")].map((t) => t.textContent));
+  check("district column shows K03 names (ru / kk)", dist.length === 55 && dist.every((t) => /Әл-Фараби|Еңбекші|Аль-Фараби|Енбекши/.test(t)), dist.slice(0, 3).join(" | "));
+  await page.click("#explainBody button");
+  await page.waitForSelector("#explainBody .explain:not([hidden]) .who");
+  const ex = await page.textContent("#explainBody .explain");
+  check("template explanation is labelled and built from facts", ex.includes("шаблонное объяснение") && ex.includes("не LLM") && ex.includes("Школа: записей в квадрате: 15") && ex.includes("Мощность школ (места): нет данных"), ex.slice(0, 160));
+  await page.screenshot({ path: path.join(out, "05_explanation.png") });
+  // click "explain" and switch city in the same task: the pending reply must not appear for Astana
+  await page.evaluate(() => { document.querySelector("#explainBody button").click(); CITY_APP.switchCity("astana"); });
+  await page.waitForTimeout(100);
+  const after = await page.evaluate(() => { const b = document.querySelector("#explainBody .explain"); return { hidden: b.hidden, text: b.textContent }; });
+  check("stale explanation discarded after city switch", after.hidden && !after.text.includes("Шымкент") && !after.text.includes("15"), JSON.stringify(after));
+  const catalogText = await page.textContent("#explainBody details");
+  check("catalog after switch is Astana's own (scenario k10r3_g127, 65 records)", catalogText.includes("k10r3_g127") && catalogText.includes("65"), catalogText.slice(0, 120));
+  await page.click("#provCard summary");
+  const prov = await page.textContent("#provBody");
+  check("source card shows SHA, K03 rule, K05 contract and K08 note", prov.includes("ea703f1ddd") && prov.includes("k03_assign_v1") && prov.includes("k05-obs-v1.1") && prov.includes("K08"), prov.slice(0, 100));
+
+  // missing inputs: copy web/ without data.js, then without evidence.js
+  const os = require("os");
+  for (const missing of ["data.js", "evidence.js"]) {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "ce-"));
+    for (const f of fs.readdirSync(path.join(__dirname, "..", "web"))) if (f !== missing) fs.copyFileSync(path.join(__dirname, "..", "web", f), path.join(dir, f));
+    const p2 = await browser.newPage();
+    const errs2 = []; p2.on("pageerror", (e) => errs2.push(String(e)));
+    await p2.goto("file://" + path.join(dir, "index.html"));
+    await p2.waitForTimeout(200);
+    const txt = await p2.textContent("main");
+    const ok = missing === "data.js" ? txt.includes("Данные не найдены") : (txt.includes("Каталог фактов недоступен") && (await p2.$$("#tbl tr")).length === 55);
+    check(`clear state when ${missing} is missing`, ok && errs2.length === 0, txt.slice(0, 120) + " " + errs2.join(" "));
+    if (missing === "data.js") await p2.screenshot({ path: path.join(out, "06_missing_data.png") });
+    await p2.close(); fs.rmSync(dir, { recursive: true });
+  }
+
   check("no console/page errors", errors.length === 0, errors.join(" | "));
   check("no network requests (file:// only)", requests.length === 0, requests.join(" "));
   await browser.close();

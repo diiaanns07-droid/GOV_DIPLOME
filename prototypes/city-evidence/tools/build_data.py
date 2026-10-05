@@ -38,6 +38,13 @@ class InputError(RuntimeError):
     pass
 
 
+def rel(p):
+    try:
+        return p.relative_to(APP)
+    except ValueError:
+        return p
+
+
 def sha256(p):
     return hashlib.sha256(p.read_bytes()).hexdigest()
 
@@ -45,14 +52,14 @@ def sha256(p):
 def load_manifest():
     mp = K10 / "package_manifest.json"
     if not mp.exists():
-        raise InputError(f"нет файла {mp.relative_to(APP)} — запустите tools/copy_inputs.py")
+        raise InputError(f"нет файла {rel(mp)} — запустите tools/copy_inputs.py")
     return json.loads(mp.read_text(encoding="utf-8"))
 
 
 def load_layer(city, name, fmeta):
     path = K10 / fmeta["path"]
     if not path.exists():
-        raise InputError(f"{city}/{name}: нет файла {path.relative_to(APP)}")
+        raise InputError(f"{city}/{name}: нет файла {rel(path)}")
     if path.stat().st_size != fmeta["bytes"] or sha256(path) != fmeta["sha256"]:
         raise InputError(f"{city}/{name}: sha256/размер не совпадают с package_manifest.json")
     try:
