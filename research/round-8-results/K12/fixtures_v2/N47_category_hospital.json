@@ -1,0 +1,47 @@
+{
+ "schema_version": "city-plan-v2",
+ "city_id": "shymkent",
+ "source_snapshot": "__SNAPSHOT__",
+ "category": "hospital",
+ "control_points": [
+  {
+   "id": "cp1",
+   "lon": 69.597,
+   "lat": 42.309,
+   "weight": 1
+  },
+  {
+   "id": "cp2",
+   "lon": 69.603,
+   "lat": 42.313,
+   "weight": 2
+  },
+  {
+   "id": "cp3",
+   "lon": 69.609,
+   "lat": 42.318,
+   "weight": 3
+  },
+  {
+   "id": "cp4",
+   "lon": 69.614,
+   "lat": 42.322,
+   "weight": 1
+  },
+  {
+   "id": "cp5",
+   "lon": 69.6,
+   "lat": 42.321,
+   "weight": 5
+  }
+ ],
+ "candidates": [],
+ "budget": 500000,
+ "max_selected": 3,
+ "coverage_radius_m": 500,
+ "required_ids": [],
+ "excluded_ids": [],
+ "selected_ids": [
+  "c1"
+ ]
+}

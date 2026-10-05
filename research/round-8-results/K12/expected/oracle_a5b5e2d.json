@@ -1,0 +1,1242 @@
+{
+ "oracle": "k12r8-python-oracle",
+ "metric_version": "haversine-mm-v1",
+ "data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+ "results": [
+  {
+   "name": "V01",
+   "status": "optimal",
+   "objectives": {
+    "mean": {
+     "selected_ids": [
+      "c1",
+      "c2",
+      "c4"
+     ],
+     "metrics": {
+      "unknown_count": 0,
+      "weighted_sum_mm": 2535147,
+      "max_mm": 343569,
+      "covered_weight": 12,
+      "total_weight": 12,
+      "cost": 500000
+     }
+    },
+    "minimax": {
+     "selected_ids": [
+      "c1",
+      "c2",
+      "c4"
+     ],
+     "metrics": {
+      "unknown_count": 0,
+      "weighted_sum_mm": 2535147,
+      "max_mm": 343569,
+      "covered_weight": 12,
+      "total_weight": 12,
+      "cost": 500000
+     }
+    },
+    "coverage": {
+     "selected_ids": [
+      "c1",
+      "c2",
+      "c4"
+     ],
+     "metrics": {
+      "unknown_count": 0,
+      "weighted_sum_mm": 2535147,
+      "max_mm": 343569,
+      "covered_weight": 12,
+      "total_weight": 12,
+      "cost": 500000
+     }
+    }
+   },
+   "pareto": [
+    {
+     "cost": 0,
+     "weighted_sum_mm": 3536103,
+     "selected_ids": []
+    },
+    {
+     "cost": 100000,
+     "weighted_sum_mm": 3029240,
+     "selected_ids": [
+      "c1"
+     ]
+    },
+    {
+     "cost": 250000,
+     "weighted_sum_mm": 2558925,
+     "selected_ids": [
+      "c1",
+      "c4"
+     ]
+    },
+    {
+     "cost": 500000,
+     "weighted_sum_mm": 2535147,
+     "selected_ids": [
+      "c1",
+      "c2",
+      "c4"
+     ]
+    }
+   ],
+   "feasible_count": 24,
+   "evaluated": 64,
+   "budget": 500000,
+   "metric_version": "haversine-mm-v1",
+   "selected_evaluation": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 3029240,
+    "max_mm": 355458,
+    "covered_weight": 12,
+    "total_weight": 12,
+    "cost": 100000
+   },
+   "selected_after_mm": {
+    "cp1": 138298,
+    "cp2": 355458,
+    "cp3": 281656,
+    "cp4": 173303,
+    "cp5": 232351
+   },
+   "sensitivity": [
+    {
+     "budget": 0,
+     "status": "optimal",
+     "feasible_count": 1,
+     "mean_ids": []
+    },
+    {
+     "budget": 250000,
+     "status": "optimal",
+     "feasible_count": 8,
+     "mean_ids": [
+      "c1",
+      "c4"
+     ]
+    },
+    {
+     "budget": 500000,
+     "status": "optimal",
+     "feasible_count": 24,
+     "mean_ids": [
+      "c1",
+      "c2",
+      "c4"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "V02",
+   "status": "optimal",
+   "objectives": {
+    "mean": {
+     "selected_ids": [],
+     "metrics": {
+      "unknown_count": 0,
+      "weighted_sum_mm": 810492,
+      "max_mm": 297036,
+      "covered_weight": 3,
+      "total_weight": 3,
+      "cost": 0
+     }
+    },
+    "minimax": {
+     "selected_ids": [],
+     "metrics": {
+      "unknown_count": 0,
+      "weighted_sum_mm": 810492,
+      "max_mm": 297036,
+      "covered_weight": 3,
+      "total_weight": 3,
+      "cost": 0
+     }
+    },
+    "coverage": {
+     "selected_ids": [],
+     "metrics": {
+      "unknown_count": 0,
+      "weighted_sum_mm": 810492,
+      "max_mm": 297036,
+      "covered_weight": 3,
+      "total_weight": 3,
+      "cost": 0
+     }
+    }
+   },
+   "pareto": [
+    {
+     "cost": 0,
+     "weighted_sum_mm": 810492,
+     "selected_ids": []
+    }
+   ],
+   "feasible_count": 1,
+   "evaluated": 1,
+   "budget": 0,
+   "metric_version": "haversine-mm-v1",
+   "selected_evaluation": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 810492,
+    "max_mm": 297036,
+    "covered_weight": 3,
+    "total_weight": 3,
+    "cost": 0
+   },
+   "selected_after_mm": {
+    "cp1": 297036,
+    "cp2": 216420
+   },
+   "sensitivity": [
+    {
+     "budget": 0,
+     "status": "optimal",
+     "feasible_count": 1,
+     "mean_ids": []
+    }
+   ]
+  },
+  {
+   "name": "V03",
+   "status": "optimal",
+   "objectives": {
+    "mean": {
+     "selected_ids": [
+      "c1",
+      "c2",
+      "c4"
+     ],
+     "metrics": {
+      "unknown_count": 0,
+      "weighted_sum_mm": 2535147,
+      "max_mm": 343569,
+      "covered_weight": 12,
+      "total_weight": 12,
+      "cost": 500000
+     }
+    },
+    "minimax": {
+     "selected_ids": [
+      "c1",
+      "c2",
+      "c4"
+     ],
+     "metrics": {
+      "unknown_count": 0,
+      "weighted_sum_mm": 2535147,
+      "max_mm": 343569,
+      "covered_weight": 12,
+      "total_weight": 12,
+      "cost": 500000
+     }
+    },
+    "coverage": {
+     "selected_ids": [
+      "c1",
+      "c2",
+      "c4"
+     ],
+     "metrics": {
+      "unknown_count": 0,
+      "weighted_sum_mm": 2535147,
+      "max_mm": 343569,
+      "covered_weight": 12,
+      "total_weight": 12,
+      "cost": 500000
+     }
+    }
+   },
+   "pareto": [
+    {
+     "cost": 0,
+     "weighted_sum_mm": 3536103,
+     "selected_ids": []
+    },
+    {
+     "cost": 100000,
+     "weighted_sum_mm": 3029240,
+     "selected_ids": [
+      "c1"
+     ]
+    },
+    {
+     "cost": 250000,
+     "weighted_sum_mm": 2558925,
+     "selected_ids": [
+      "c1",
+      "c4"
+     ]
+    },
+    {
+     "cost": 500000,
+     "weighted_sum_mm": 2535147,
+     "selected_ids": [
+      "c1",
+      "c2",
+      "c4"
+     ]
+    }
+   ],
+   "feasible_count": 24,
+   "evaluated": 64,
+   "budget": 500000,
+   "metric_version": "haversine-mm-v1",
+   "selected_evaluation": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 3029240,
+    "max_mm": 355458,
+    "covered_weight": 12,
+    "total_weight": 12,
+    "cost": 100000
+   },
+   "selected_after_mm": {
+    "cp1": 138298,
+    "cp2": 355458,
+    "cp3": 281656,
+    "cp4": 173303,
+    "cp5": 232351
+   },
+   "sensitivity": [
+    {
+     "budget": 0,
+     "status": "optimal",
+     "feasible_count": 1,
+     "mean_ids": []
+    },
+    {
+     "budget": 250000,
+     "status": "optimal",
+     "feasible_count": 8,
+     "mean_ids": [
+      "c1",
+      "c4"
+     ]
+    },
+    {
+     "budget": 500000,
+     "status": "optimal",
+     "feasible_count": 24,
+     "mean_ids": [
+      "c1",
+      "c2",
+      "c4"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "V04",
+   "status": "optimal",
+   "objectives": {
+    "mean": {
+     "selected_ids": [
+      "c1",
+      "c2",
+      "c3",
+      "c5",
+      "c9"
+     ],
+     "metrics": {
+      "unknown_count": 0,
+      "weighted_sum_mm": 560876600,
+      "max_mm": 409353,
+      "covered_weight": 2500,
+      "total_weight": 2500,
+      "cost": 20000
+     }
+    },
+    "minimax": {
+     "selected_ids": [
+      "c1",
+      "c16",
+      "c3",
+      "c5",
+      "c9"
+     ],
+     "metrics": {
+      "unknown_count": 0,
+      "weighted_sum_mm": 586241200,
+      "max_mm": 392145,
+      "covered_weight": 2500,
+      "total_weight": 2500,
+      "cost": 34000
+     }
+    },
+    "coverage": {
+     "selected_ids": [
+      "c1",
+      "c2",
+      "c3",
+      "c5",
+      "c9"
+     ],
+     "metrics": {
+      "unknown_count": 0,
+      "weighted_sum_mm": 560876600,
+      "max_mm": 409353,
+      "covered_weight": 2500,
+      "total_weight": 2500,
+      "cost": 20000
+     }
+    }
+   },
+   "pareto": [
+    {
+     "cost": 0,
+     "weighted_sum_mm": 927698000,
+     "selected_ids": []
+    },
+    {
+     "cost": 1000,
+     "weighted_sum_mm": 791106600,
+     "selected_ids": [
+      "c1"
+     ]
+    },
+    {
+     "cost": 2000,
+     "weighted_sum_mm": 770386000,
+     "selected_ids": [
+      "c2"
+     ]
+    },
+    {
+     "cost": 3000,
+     "weighted_sum_mm": 715748600,
+     "selected_ids": [
+      "c1",
+      "c2"
+     ]
+    },
+    {
+     "cost": 4000,
+     "weighted_sum_mm": 673466500,
+     "selected_ids": [
+      "c1",
+      "c3"
+     ]
+    },
+    {
+     "cost": 6000,
+     "weighted_sum_mm": 646107300,
+     "selected_ids": [
+      "c1",
+      "c2",
+      "c3"
+     ]
+    },
+    {
+     "cost": 8000,
+     "weighted_sum_mm": 630476500,
+     "selected_ids": [
+      "c1",
+      "c3",
+      "c4"
+     ]
+    },
+    {
+     "cost": 9000,
+     "weighted_sum_mm": 620502700,
+     "selected_ids": [
+      "c1",
+      "c3",
+      "c5"
+     ]
+    },
+    {
+     "cost": 10000,
+     "weighted_sum_mm": 603117300,
+     "selected_ids": [
+      "c1",
+      "c2",
+      "c3",
+      "c4"
+     ]
+    },
+    {
+     "cost": 11000,
+     "weighted_sum_mm": 593143500,
+     "selected_ids": [
+      "c1",
+      "c2",
+      "c3",
+      "c5"
+     ]
+    },
+    {
+     "cost": 15000,
+     "weighted_sum_mm": 565784300,
+     "selected_ids": [
+      "c1",
+      "c2",
+      "c3",
+      "c4",
+      "c5"
+     ]
+    },
+    {
+     "cost": 20000,
+     "weighted_sum_mm": 560876600,
+     "selected_ids": [
+      "c1",
+      "c2",
+      "c3",
+      "c5",
+      "c9"
+     ]
+    }
+   ],
+   "feasible_count": 6885,
+   "evaluated": 65536,
+   "budget": 1000000,
+   "metric_version": "haversine-mm-v1",
+   "selected_evaluation": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 565784300,
+    "max_mm": 442740,
+    "covered_weight": 2500,
+    "total_weight": 2500,
+    "cost": 15000
+   },
+   "selected_after_mm": {
+    "cp1": 138299,
+    "cp2": 118553,
+    "cp3": 111195,
+    "cp4": 118553,
+    "cp5": 138299,
+    "cp6": 342599,
+    "cp7": 330648,
+    "cp8": 332584,
+    "cp9": 331577,
+    "cp10": 196118,
+    "cp11": 167721,
+    "cp12": 131994,
+    "cp13": 243856,
+    "cp14": 442740,
+    "cp15": 352905,
+    "cp16": 345357,
+    "cp17": 102285,
+    "cp18": 237084,
+    "cp19": 86011,
+    "cp20": 390774,
+    "cp21": 49739,
+    "cp22": 409353,
+    "cp23": 55757,
+    "cp24": 374151,
+    "cp25": 109691
+   },
+   "sensitivity": [
+    {
+     "budget": 0,
+     "status": "optimal",
+     "feasible_count": 1,
+     "mean_ids": []
+    },
+    {
+     "budget": 500000,
+     "status": "optimal",
+     "feasible_count": 6885,
+     "mean_ids": [
+      "c1",
+      "c2",
+      "c3",
+      "c5",
+      "c9"
+     ]
+    },
+    {
+     "budget": 1000000,
+     "status": "optimal",
+     "feasible_count": 6885,
+     "mean_ids": [
+      "c1",
+      "c2",
+      "c3",
+      "c5",
+      "c9"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "V05",
+   "status": "optimal",
+   "objectives": {
+    "mean": {
+     "selected_ids": [],
+     "metrics": {
+      "unknown_count": 0,
+      "weighted_sum_mm": 511329,
+      "max_mm": 511329,
+      "covered_weight": 0,
+      "total_weight": 1,
+      "cost": 0
+     }
+    },
+    "minimax": {
+     "selected_ids": [],
+     "metrics": {
+      "unknown_count": 0,
+      "weighted_sum_mm": 511329,
+      "max_mm": 511329,
+      "covered_weight": 0,
+      "total_weight": 1,
+      "cost": 0
+     }
+    },
+    "coverage": {
+     "selected_ids": [],
+     "metrics": {
+      "unknown_count": 0,
+      "weighted_sum_mm": 511329,
+      "max_mm": 511329,
+      "covered_weight": 0,
+      "total_weight": 1,
+      "cost": 0
+     }
+    }
+   },
+   "pareto": [
+    {
+     "cost": 0,
+     "weighted_sum_mm": 511329,
+     "selected_ids": []
+    }
+   ],
+   "feasible_count": 1,
+   "evaluated": 1,
+   "budget": 0,
+   "metric_version": "haversine-mm-v1",
+   "selected_evaluation": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 511329,
+    "max_mm": 511329,
+    "covered_weight": 0,
+    "total_weight": 1,
+    "cost": 0
+   },
+   "selected_after_mm": {
+    "cp1": 511329
+   },
+   "sensitivity": [
+    {
+     "budget": 0,
+     "status": "optimal",
+     "feasible_count": 1,
+     "mean_ids": []
+    }
+   ]
+  },
+  {
+   "name": "V06",
+   "status": "optimal",
+   "objectives": {
+    "mean": {
+     "selected_ids": [
+      "c1",
+      "c2",
+      "c4"
+     ],
+     "metrics": {
+      "unknown_count": 0,
+      "weighted_sum_mm": 2535147,
+      "max_mm": 343569,
+      "covered_weight": 12,
+      "total_weight": 12,
+      "cost": 500000
+     }
+    },
+    "minimax": {
+     "selected_ids": [
+      "c1",
+      "c2",
+      "c4"
+     ],
+     "metrics": {
+      "unknown_count": 0,
+      "weighted_sum_mm": 2535147,
+      "max_mm": 343569,
+      "covered_weight": 12,
+      "total_weight": 12,
+      "cost": 500000
+     }
+    },
+    "coverage": {
+     "selected_ids": [
+      "c1",
+      "c2",
+      "c4"
+     ],
+     "metrics": {
+      "unknown_count": 0,
+      "weighted_sum_mm": 2535147,
+      "max_mm": 343569,
+      "covered_weight": 12,
+      "total_weight": 12,
+      "cost": 500000
+     }
+    }
+   },
+   "pareto": [
+    {
+     "cost": 0,
+     "weighted_sum_mm": 3536103,
+     "selected_ids": []
+    },
+    {
+     "cost": 100000,
+     "weighted_sum_mm": 3029240,
+     "selected_ids": [
+      "c1"
+     ]
+    },
+    {
+     "cost": 250000,
+     "weighted_sum_mm": 2558925,
+     "selected_ids": [
+      "c1",
+      "c4"
+     ]
+    },
+    {
+     "cost": 500000,
+     "weighted_sum_mm": 2535147,
+     "selected_ids": [
+      "c1",
+      "c2",
+      "c4"
+     ]
+    }
+   ],
+   "feasible_count": 27,
+   "evaluated": 64,
+   "budget": 1000000,
+   "metric_version": "haversine-mm-v1",
+   "selected_evaluation": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 3536103,
+    "max_mm": 645161,
+    "covered_weight": 11,
+    "total_weight": 12,
+    "cost": 1000000
+   },
+   "selected_after_mm": {
+    "cp1": 645161,
+    "cp2": 355458,
+    "cp3": 281656,
+    "cp4": 173303,
+    "cp5": 232351
+   },
+   "sensitivity": [
+    {
+     "budget": 0,
+     "status": "optimal",
+     "feasible_count": 1,
+     "mean_ids": []
+    },
+    {
+     "budget": 500000,
+     "status": "optimal",
+     "feasible_count": 21,
+     "mean_ids": [
+      "c1",
+      "c2",
+      "c4"
+     ]
+    },
+    {
+     "budget": 1000000,
+     "status": "optimal",
+     "feasible_count": 27,
+     "mean_ids": [
+      "c1",
+      "c2",
+      "c4"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "V07",
+   "status": "infeasible",
+   "objectives": {
+    "mean": null,
+    "minimax": null,
+    "coverage": null
+   },
+   "pareto": [],
+   "feasible_count": 0,
+   "evaluated": 32,
+   "budget": 300000,
+   "metric_version": "haversine-mm-v1",
+   "selected_evaluation": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 3536103,
+    "max_mm": 645161,
+    "covered_weight": 11,
+    "total_weight": 12,
+    "cost": 400000
+   },
+   "selected_after_mm": {
+    "cp1": 645161,
+    "cp2": 355458,
+    "cp3": 281656,
+    "cp4": 173303,
+    "cp5": 232351
+   },
+   "sensitivity": [
+    {
+     "budget": 0,
+     "status": "infeasible",
+     "feasible_count": 0,
+     "mean_ids": null
+    },
+    {
+     "budget": 150000,
+     "status": "infeasible",
+     "feasible_count": 0,
+     "mean_ids": null
+    },
+    {
+     "budget": 300000,
+     "status": "infeasible",
+     "feasible_count": 0,
+     "mean_ids": null
+    }
+   ]
+  },
+  {
+   "name": "V08",
+   "status": "infeasible",
+   "objectives": {
+    "mean": null,
+    "minimax": null,
+    "coverage": null
+   },
+   "pareto": [],
+   "feasible_count": 0,
+   "evaluated": 8,
+   "budget": 500000,
+   "metric_version": "haversine-mm-v1",
+   "selected_evaluation": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 3536103,
+    "max_mm": 645161,
+    "covered_weight": 11,
+    "total_weight": 12,
+    "cost": 0
+   },
+   "selected_after_mm": {
+    "cp1": 645161,
+    "cp2": 355458,
+    "cp3": 281656,
+    "cp4": 173303,
+    "cp5": 232351
+   },
+   "sensitivity": [
+    {
+     "budget": 0,
+     "status": "infeasible",
+     "feasible_count": 0,
+     "mean_ids": null
+    },
+    {
+     "budget": 250000,
+     "status": "infeasible",
+     "feasible_count": 0,
+     "mean_ids": null
+    },
+    {
+     "budget": 500000,
+     "status": "infeasible",
+     "feasible_count": 0,
+     "mean_ids": null
+    }
+   ]
+  },
+  {
+   "name": "V09",
+   "status": "optimal",
+   "objectives": {
+    "mean": {
+     "selected_ids": [
+      "c1",
+      "c2",
+      "c4"
+     ],
+     "metrics": {
+      "unknown_count": 0,
+      "weighted_sum_mm": 2535147,
+      "max_mm": 343569,
+      "covered_weight": 12,
+      "total_weight": 12,
+      "cost": 500000
+     }
+    },
+    "minimax": {
+     "selected_ids": [
+      "c1",
+      "c2",
+      "c4"
+     ],
+     "metrics": {
+      "unknown_count": 0,
+      "weighted_sum_mm": 2535147,
+      "max_mm": 343569,
+      "covered_weight": 12,
+      "total_weight": 12,
+      "cost": 500000
+     }
+    },
+    "coverage": {
+     "selected_ids": [
+      "c1",
+      "c2",
+      "c4"
+     ],
+     "metrics": {
+      "unknown_count": 0,
+      "weighted_sum_mm": 2535147,
+      "max_mm": 343569,
+      "covered_weight": 12,
+      "total_weight": 12,
+      "cost": 500000
+     }
+    }
+   },
+   "pareto": [
+    {
+     "cost": 0,
+     "weighted_sum_mm": 3536103,
+     "selected_ids": []
+    },
+    {
+     "cost": 100000,
+     "weighted_sum_mm": 3029240,
+     "selected_ids": [
+      "c1"
+     ]
+    },
+    {
+     "cost": 250000,
+     "weighted_sum_mm": 2558925,
+     "selected_ids": [
+      "c1",
+      "c4"
+     ]
+    },
+    {
+     "cost": 500000,
+     "weighted_sum_mm": 2535147,
+     "selected_ids": [
+      "c1",
+      "c2",
+      "c4"
+     ]
+    }
+   ],
+   "feasible_count": 24,
+   "evaluated": 64,
+   "budget": 500000,
+   "metric_version": "haversine-mm-v1",
+   "selected_evaluation": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 3029240,
+    "max_mm": 355458,
+    "covered_weight": 12,
+    "total_weight": 12,
+    "cost": 100000
+   },
+   "selected_after_mm": {
+    "c1": 138298,
+    "c2": 355458,
+    "c3": 281656,
+    "c4": 173303,
+    "c5": 232351
+   },
+   "sensitivity": [
+    {
+     "budget": 0,
+     "status": "optimal",
+     "feasible_count": 1,
+     "mean_ids": []
+    },
+    {
+     "budget": 250000,
+     "status": "optimal",
+     "feasible_count": 8,
+     "mean_ids": [
+      "c1",
+      "c4"
+     ]
+    },
+    {
+     "budget": 500000,
+     "status": "optimal",
+     "feasible_count": 24,
+     "mean_ids": [
+      "c1",
+      "c2",
+      "c4"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "V10",
+   "status": "optimal",
+   "objectives": {
+    "mean": {
+     "selected_ids": [
+      "c1",
+      "c2",
+      "c4"
+     ],
+     "metrics": {
+      "unknown_count": 0,
+      "weighted_sum_mm": 2535147,
+      "max_mm": 343569,
+      "covered_weight": 12,
+      "total_weight": 12,
+      "cost": 500000
+     }
+    },
+    "minimax": {
+     "selected_ids": [
+      "c1",
+      "c2",
+      "c4"
+     ],
+     "metrics": {
+      "unknown_count": 0,
+      "weighted_sum_mm": 2535147,
+      "max_mm": 343569,
+      "covered_weight": 12,
+      "total_weight": 12,
+      "cost": 500000
+     }
+    },
+    "coverage": {
+     "selected_ids": [
+      "c1",
+      "c2",
+      "c4"
+     ],
+     "metrics": {
+      "unknown_count": 0,
+      "weighted_sum_mm": 2535147,
+      "max_mm": 343569,
+      "covered_weight": 12,
+      "total_weight": 12,
+      "cost": 500000
+     }
+    }
+   },
+   "pareto": [
+    {
+     "cost": 0,
+     "weighted_sum_mm": 3536103,
+     "selected_ids": []
+    },
+    {
+     "cost": 100000,
+     "weighted_sum_mm": 3029240,
+     "selected_ids": [
+      "c1"
+     ]
+    },
+    {
+     "cost": 250000,
+     "weighted_sum_mm": 2558925,
+     "selected_ids": [
+      "c1",
+      "c4"
+     ]
+    },
+    {
+     "cost": 500000,
+     "weighted_sum_mm": 2535147,
+     "selected_ids": [
+      "c1",
+      "c2",
+      "c4"
+     ]
+    }
+   ],
+   "feasible_count": 24,
+   "evaluated": 64,
+   "budget": 500000,
+   "metric_version": "haversine-mm-v1",
+   "selected_evaluation": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 3029240,
+    "max_mm": 355458,
+    "covered_weight": 12,
+    "total_weight": 12,
+    "cost": 100000
+   },
+   "selected_after_mm": {
+    "cp5": 232351,
+    "cp4": 173303,
+    "cp3": 281656,
+    "cp2": 355458,
+    "cp1": 138298
+   },
+   "sensitivity": [
+    {
+     "budget": 0,
+     "status": "optimal",
+     "feasible_count": 1,
+     "mean_ids": []
+    },
+    {
+     "budget": 250000,
+     "status": "optimal",
+     "feasible_count": 8,
+     "mean_ids": [
+      "c1",
+      "c4"
+     ]
+    },
+    {
+     "budget": 500000,
+     "status": "optimal",
+     "feasible_count": 24,
+     "mean_ids": [
+      "c1",
+      "c2",
+      "c4"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "V11",
+   "status": "optimal",
+   "objectives": {
+    "mean": {
+     "selected_ids": [
+      "c1",
+      "c4",
+      "c5"
+     ],
+     "metrics": {
+      "unknown_count": 0,
+      "weighted_sum_mm": 2558925,
+      "max_mm": 355458,
+      "covered_weight": 12,
+      "total_weight": 12,
+      "cost": 300000
+     }
+    },
+    "minimax": {
+     "selected_ids": [
+      "c1",
+      "c4",
+      "c5"
+     ],
+     "metrics": {
+      "unknown_count": 0,
+      "weighted_sum_mm": 2558925,
+      "max_mm": 355458,
+      "covered_weight": 12,
+      "total_weight": 12,
+      "cost": 300000
+     }
+    },
+    "coverage": {
+     "selected_ids": [
+      "c1",
+      "c4",
+      "c5"
+     ],
+     "metrics": {
+      "unknown_count": 0,
+      "weighted_sum_mm": 2558925,
+      "max_mm": 355458,
+      "covered_weight": 12,
+      "total_weight": 12,
+      "cost": 300000
+     }
+    }
+   },
+   "pareto": [
+    {
+     "cost": 50000,
+     "weighted_sum_mm": 3536103,
+     "selected_ids": [
+      "c5"
+     ]
+    },
+    {
+     "cost": 150000,
+     "weighted_sum_mm": 3029240,
+     "selected_ids": [
+      "c1",
+      "c5"
+     ]
+    },
+    {
+     "cost": 300000,
+     "weighted_sum_mm": 2558925,
+     "selected_ids": [
+      "c1",
+      "c4",
+      "c5"
+     ]
+    }
+   ],
+   "feasible_count": 5,
+   "evaluated": 8,
+   "budget": 500000,
+   "metric_version": "haversine-mm-v1",
+   "selected_evaluation": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 3512325,
+    "max_mm": 645161,
+    "covered_weight": 11,
+    "total_weight": 12,
+    "cost": 300000
+   },
+   "selected_after_mm": {
+    "cp1": 645161,
+    "cp2": 343569,
+    "cp3": 281656,
+    "cp4": 173303,
+    "cp5": 232351
+   },
+   "sensitivity": [
+    {
+     "budget": 0,
+     "status": "infeasible",
+     "feasible_count": 0,
+     "mean_ids": null
+    },
+    {
+     "budget": 250000,
+     "status": "optimal",
+     "feasible_count": 3,
+     "mean_ids": [
+      "c1",
+      "c5"
+     ]
+    },
+    {
+     "budget": 500000,
+     "status": "optimal",
+     "feasible_count": 5,
+     "mean_ids": [
+      "c1",
+      "c4",
+      "c5"
+     ]
+    }
+   ]
+  }
+ ]
+}

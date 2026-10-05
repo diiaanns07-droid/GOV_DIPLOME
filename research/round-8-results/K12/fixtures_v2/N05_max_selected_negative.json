@@ -1,0 +1,96 @@
+{
+ "schema_version": "city-plan-v2",
+ "city_id": "shymkent",
+ "source_snapshot": "__SNAPSHOT__",
+ "category": "school",
+ "control_points": [
+  {
+   "id": "cp1",
+   "lon": 69.597,
+   "lat": 42.309,
+   "weight": 1
+  },
+  {
+   "id": "cp2",
+   "lon": 69.603,
+   "lat": 42.313,
+   "weight": 2
+  },
+  {
+   "id": "cp3",
+   "lon": 69.609,
+   "lat": 42.318,
+   "weight": 3
+  },
+  {
+   "id": "cp4",
+   "lon": 69.614,
+   "lat": 42.322,
+   "weight": 1
+  },
+  {
+   "id": "cp5",
+   "lon": 69.6,
+   "lat": 42.321,
+   "weight": 5
+  }
+ ],
+ "candidates": [
+  {
+   "id": "c1",
+   "lon": 69.598,
+   "lat": 42.31,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 100000
+  },
+  {
+   "id": "c2",
+   "lon": 69.604,
+   "lat": 42.316,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 250000
+  },
+  {
+   "id": "c3",
+   "lon": 69.612,
+   "lat": 42.32,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 300000
+  },
+  {
+   "id": "c4",
+   "lon": 69.601,
+   "lat": 42.322,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 150000
+  },
+  {
+   "id": "c5",
+   "lon": 69.596,
+   "lat": 42.317,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 50000
+  },
+  {
+   "id": "c6",
+   "lon": 69.615,
+   "lat": 42.309,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 400000
+  }
+ ],
+ "budget": 500000,
+ "max_selected": -1,
+ "coverage_radius_m": 500,
+ "required_ids": [],
+ "excluded_ids": [],
+ "selected_ids": [
+  "c1"
+ ]
+}

@@ -1,0 +1,21 @@
+{
+ "schema_version": "city-plan-v2",
+ "city_id": "shymkent",
+ "source_snapshot": "__SNAPSHOT__",
+ "category": "school",
+ "control_points": [
+  {
+   "id": "cp1",
+   "lon": 69.6,
+   "lat": 42.31,
+   "weight": 1
+  }
+ ],
+ "candidates": [],
+ "budget": 0,
+ "max_selected": 0,
+ "coverage_radius_m": 100,
+ "required_ids": [],
+ "excluded_ids": [],
+ "selected_ids": []
+}
