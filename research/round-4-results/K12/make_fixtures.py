@@ -112,9 +112,13 @@ JSON_TEXT = [
 ]
 
 
-def a(geo, value=5, **over):
+RELATION = {None: 100, "fixture_a": 101, "fixture_b": 102, "fixture_c": 103}
+
+
+def a(geo, value=5, layer="fixture-layer:2026-09", **over):
+    """Aggregate record: like K05, boundary_version is per territory: <layer>/osm:r<relation>@<version>."""
     return dict({"geo_unit_id": f"kz.shymkent.{geo}" if geo else "kz.shymkent", "obs_id": f"SYNTHETIC-FIXTURE.{geo or 'city'}",
-                 "value": value}, **over)
+                 "value": value, "boundary_version": f"{layer}/osm:r{RELATION[geo]}@1"}, **over)
 
 
 AGG = [
@@ -130,9 +134,12 @@ AGG = [
      "expect": {"raises": "PERIOD_MIX"}, "rationale": "контроль: месяц и день"},
     {"id": "A06", "category": "duplicate_id", "records": [a("fixture_a"), a("fixture_a", 7, obs_id="SYNTHETIC-FIXTURE.a2")],
      "expect": {"raises": "DUPLICATE_UNIT"}, "rationale": "контроль"},
-    {"id": "A07", "category": "boundary", "records": [a("fixture_a"), a("fixture_b", boundary_version="fixture:r1@2")],
+    {"id": "A07", "category": "boundary", "records": [a("fixture_a"), a("fixture_b", layer="fixture-layer:2026-08")],
      "expect": {"raises": "BOUNDARY_MIX"}, "new_vs_k05_tests": True,
-     "rationale": "docstring k05r3_contract обещает проверку смешения границ в агрегате, aggregate_sum её не делает"},
+     "rationale": "территории из разных выпусков слоя границ при одной data_version; docstring обещает проверку смешения границ в агрегате"},
+    {"id": "A13", "category": "control", "records": [a("fixture_a"), a("fixture_b"), a("fixture_c")],
+     "expect": {"value": 15, "value_status": "reported", "coverage_complete": True},
+     "rationale": "контроль: разные relation@version одного слоя — норма (так устроены реальные данные K05)"},
     {"id": "A08", "category": "partial_geography", "records": [a(None, 12), a("fixture_a")],
      "expect": {"raises": "NESTED_UNIT"}, "new_vs_k05_tests": True,
      "rationale": "город целиком + его район: двойной счёт, DUPLICATE_UNIT видит только равные id"},

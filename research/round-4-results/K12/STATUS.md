@@ -2,68 +2,68 @@
 
 - **Роль:** REVIEW (не BUILD). Слот K12. Ветка `claude/save-work-handoff-xuav3q`.
 - **Задание:** `research/round-4/review/K12.txt` @ `codex/research-import-2026-10-05` `cadba4d`.
-- **Статус: `partial`.** Этап 1 готов (фикстуры и прогон текущего кода). Этап 2 (patch и тесты) в работе.
-- **Входы:** K05 `claude/optimistic-davinci-1oiqs9` @ `d913554bf2617a74d921af260ab8c22743ccb4b5`:
-  - `research/round-3-results/K05/k05r3_contract.py`
-  - `research/round-3-results/K05/schema/k05-obs-v1.1.schema.json`
-  - `research/next-round/K05/k05_validator.py`
-  - два выхода адаптера
+- **Статус: `done`** для объёма задания: фикстуры, проверка валидатора, новые воспроизводимые
+  крайние случаи, `FIXTURES.json`, тесты и patch. Интеграция patch в K05 — не моя задача.
 
-  Скопированы в `inputs/k05_d913554/` через `git show` + `write_bytes`; sha256 и git blob — в
-  `inputs/k05_d913554/MANIFEST.json`. Мой предыдущий результат K12 — `70faa0f`. Другие ветки не
-  сливались.
+## Входы
 
-## Этап 1 — сделано
+| Вход | Ветка / SHA | Как использован |
+|---|---|---|
+| Модель данных K05 раунда 3 | `claude/optimistic-davinci-1oiqs9` @ `d913554bf2617a74d921af260ab8c22743ccb4b5` | `k05r3_contract.py`, схема, `next-round/K05/k05_validator.py`, 2 выхода адаптера → `inputs/k05_d913554/` побайтно (`git show` → `write_bytes`), sha256 и blob в `MANIFEST.json` |
+| Реестр границ K03 | `claude/epic-curie-iitc43` @ `44585de31be01dd131ecb7677c462fc85b4d4cc4` | прочитан `boundary_registry.json` через `git show`: у Шымкента 4 района, вопрос о Туранском районе открыт. Не копировался |
+| Мой предыдущий результат | `70faa0f` | контекст: missing ≠ 0 в энергоимпортёре |
 
-- Прочитаны `k05r3_contract.py` и `k05_validator.py` целиком, а также схема, STATUS и разделы 6–7
-  REPORT K05. Тесты, случаи и REPORT K05 найденные случаи не покрывают (проверено `grep`).
-- `make_fixtures.py` → `FIXTURES.json`: **синтетика**, 56 случаев. Все `obs_id` начинаются с
-  `SYNTHETIC-FIXTURE`, территории `kz.<город>.fixture_*` не настоящие.
+Другие ветки не сливались. `prototypes/city-evidence/`, `main` и папка сборки не менялись.
+
+## Сделано
+
+- `make_fixtures.py` → `FIXTURES.json`: **синтетика**, 57 случаев.
   - записи — 34;
   - JSON-текст — 6;
-  - агрегат — 12;
+  - агрегат — 13;
   - набор — 4.
-- `stress_runner.py` → `results/current.json`: прогон текущего кода K05.
-  - **Контроли:** совпали 31 из 31.
-  - **Новые случаи:** 25 расхождений — это дефекты, см. таблицу.
+- `stress_runner.py` → `results/current.json` (код K05) и `results/patched.json`.
+- `patched/`, `patches/k05r3_contract_stress_fixes.patch`: исправления 9 групп дефектов.
+- `tests/test_k05_stress.py`: 119 тестов.
+- `REPORT.md`: таблица дефектов, влияние на реальные данные, своя исправленная ошибка, рекомендации.
 
-| Группа | Расхождения (`results/current.json`) |
-|---|---|
-| NaN/±Infinity как `reported`: `observed` проходит схему и контракт без единого предупреждения | R20–R23 |
-| JSON-загрузка: токены NaN/Infinity, `1e999` → inf, повтор ключа (последний молча побеждает) | J01–J05 |
-| Несуществующие даты периода (`2025-02-30`, `2025-02-99`, `0000`), интервал наоборот | R25–R28 |
-| Счётчик (`unit=count`) отрицательный или дробный | R30, R31 |
-| `retrieved_at = "вчера"` принят | R33 |
-| `aggregate_sum`: смешение границ (обещано в docstring, не реализовано) | A07 |
-| `aggregate_sum`: город + свой район — двойной счёт | A08 |
-| `aggregate_sum`: 2 из 3 территорий выдаются как полная сумма; полнота географии не проверяется | A09, A10 |
-| `aggregate_sum`: NaN → `reported` NaN, `coverage_complete=true` | A11 |
-| `aggregate_sum`: 0 при неполном охвате → `reported_zero` | A12 |
-| Нет проверки набора: повтор `obs_id`, конфликт двух записей одной ячейки | S01–S03 |
+**Результат:**
 
-- **Латентный дефект (чтение кода).** Адаптер K05 при сверке выборки с E02 считает
-  `sum(o["value"] or 0 …)`, то есть `null` превращается в 0. На текущих выходах не срабатывает:
-  среди 28 + 42 записей `conf_ge_0_0` значений `null` нет (проверено).
+- Текущий код K05: 32 из 32 контролей совпали, 25 новых дефектов.
+- Исправленная копия: 57 из 57.
+- Собственные тесты K05 с patch: 18 + 9 OK.
 
 ## Проверки, которые реально выполнены
 
-- Тесты K05 на `d913554` в отдельном detached worktree (jsonschema 4.26.0, Python 3.11.15):
-  `test_k05r3.py` — 18 OK, `test_k05_validator.py` — 9 OK.
-- `python3 -m json.tool FIXTURES.json` — строгий JSON.
-- `stress_runner.py --impl inputs/k05_d913554 --label current` — результат в таблице выше.
+- Тесты K05 на `d913554` в detached worktree: 18 и 9 OK — без patch и с patch.
+- `git apply --check` на `d913554`: ok. sha256 результата равен `patched/…/k05r3_contract.py`.
+- С patch: реальные примеры K05 — отклонено 0 из 56 и 0 из 84, ошибок набора 0. Суммы 56 и 114
+  прежние, с `geography_checked: false`.
+- `python -m unittest discover -s tests`: 119 OK (expected failures = 25). То же с jsonschema
+  4.26.0, без него (импорт заблокирован) и с `-W error::ResourceWarning`.
+- Повторный прогон: `results/*.json` побайтно те же. `json.tool` по новым JSON — ok.
+- Проверено чтением кода и запуском: `dump()` адаптера пишет `NaN`; `JSON.parse` в Node → `SyntaxError`.
+
+**Не выполнялось:** запуск адаптера K05 (shapely/pyproj); проверка в браузере продукта.
+
+## Ограничения
+
+- Фикстуры выдуманы. «Ожидание» в них — моё прочтение собственных правил K05 (REPORT, docstrings),
+  а не внешний стандарт.
+- Латентный `null → 0` в адаптере K05 описан, но не исправлен: на текущих выходах не срабатывает.
+- Пример по Шымкенту (4 района против открытого вопроса о пятом) — наблюдение по реестру K03,
+  а не установленный факт о городе.
 
 ## Следующий шаг
 
-Этап 2: исправленная копия контракта в `patched/`, `patches/*.patch` с проверкой `git apply --check`
-на `d913554`, тесты (текущий код — `expectedFailure`, исправленный — проходит), прогон тестов K05 с
-patch, `REPORT.md`.
+1. K05 или координатор решают, применять ли `patches/k05r3_contract_stress_fixes.patch` в ветке K05.
+2. Затем снимают `expectedFailure` в `CurrentK05`: после применения тест покажет unexpected
+   success. Городские суммы при интеграции передают `expected_units` из реестра K03.
 
-## Продолжение
+## Продолжение / воспроизведение
 
 ```
-cd research/round-4-results/K12
-python make_fixtures.py
-python stress_runner.py --impl inputs/k05_d913554 --label current
+cd research/round-4-results/K12 && python -m unittest discover -s tests -v
 ```
 
-Нужен `pip install jsonschema==4.26.0`; без него структурный слой будет `skipped`.
+Полностью — `REPORT.md`, раздел «Воспроизведение».

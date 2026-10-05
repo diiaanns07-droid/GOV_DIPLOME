@@ -1,6 +1,6 @@
 {
- "label": "current",
- "impl": "inputs/k05_d913554",
+ "label": "patched",
+ "impl": "patched",
  "fixtures": "k12r4-k05-stress-v1",
  "kind": "synthetic fixtures",
  "as_of": "2026-10-05",
@@ -8,52 +8,23 @@
  "summary": {
   "record_cases": {
    "total": 34,
-   "match": 23,
-   "mismatch_ids": [
-    "R20",
-    "R21",
-    "R22",
-    "R23",
-    "R25",
-    "R26",
-    "R27",
-    "R28",
-    "R30",
-    "R31",
-    "R33"
-   ]
+   "match": 34,
+   "mismatch_ids": []
   },
   "json_text_cases": {
    "total": 6,
-   "match": 1,
-   "mismatch_ids": [
-    "J01",
-    "J02",
-    "J03",
-    "J04",
-    "J05"
-   ]
+   "match": 6,
+   "mismatch_ids": []
   },
   "aggregate_cases": {
    "total": 13,
-   "match": 7,
-   "mismatch_ids": [
-    "A07",
-    "A08",
-    "A09",
-    "A10",
-    "A11",
-    "A12"
-   ]
+   "match": 13,
+   "mismatch_ids": []
   },
   "dataset_cases": {
    "total": 4,
-   "match": 1,
-   "mismatch_ids": [
-    "S01",
-    "S02",
-    "S03"
-   ]
+   "match": 4,
+   "mismatch_ids": []
   }
  },
  "record_cases": [
@@ -428,11 +399,13 @@
     ]
    },
    "schema_errors": [],
-   "contract_errors": [],
+   "contract_errors": [
+    "VALUE_NOT_FINITE"
+   ],
    "contract_warnings": [],
    "crash": null,
-   "accepted": true,
-   "match": false
+   "accepted": false,
+   "match": true
   },
   {
    "id": "R21",
@@ -445,11 +418,13 @@
     ]
    },
    "schema_errors": [],
-   "contract_errors": [],
+   "contract_errors": [
+    "VALUE_NOT_FINITE"
+   ],
    "contract_warnings": [],
    "crash": null,
-   "accepted": true,
-   "match": false
+   "accepted": false,
+   "match": true
   },
   {
    "id": "R22",
@@ -462,11 +437,13 @@
     ]
    },
    "schema_errors": [],
-   "contract_errors": [],
+   "contract_errors": [
+    "VALUE_NOT_FINITE"
+   ],
    "contract_warnings": [],
    "crash": null,
-   "accepted": true,
-   "match": false
+   "accepted": false,
+   "match": true
   },
   {
    "id": "R23",
@@ -479,13 +456,15 @@
     ]
    },
    "schema_errors": [],
-   "contract_errors": [],
+   "contract_errors": [
+    "VALUE_NOT_FINITE"
+   ],
    "contract_warnings": [
     "NOT_MEASUREMENT"
    ],
    "crash": null,
-   "accepted": true,
-   "match": false
+   "accepted": false,
+   "match": true
   },
   {
    "id": "R24",
@@ -517,11 +496,13 @@
     ]
    },
    "schema_errors": [],
-   "contract_errors": [],
+   "contract_errors": [
+    "PERIOD_INVALID_DATE"
+   ],
    "contract_warnings": [],
    "crash": null,
-   "accepted": true,
-   "match": false
+   "accepted": false,
+   "match": true
   },
   {
    "id": "R26",
@@ -534,11 +515,13 @@
     ]
    },
    "schema_errors": [],
-   "contract_errors": [],
+   "contract_errors": [
+    "PERIOD_INVALID_DATE"
+   ],
    "contract_warnings": [],
    "crash": null,
-   "accepted": true,
-   "match": false
+   "accepted": false,
+   "match": true
   },
   {
    "id": "R27",
@@ -551,11 +534,13 @@
     ]
    },
    "schema_errors": [],
-   "contract_errors": [],
+   "contract_errors": [
+    "PERIOD_INVALID_DATE"
+   ],
    "contract_warnings": [],
    "crash": null,
-   "accepted": true,
-   "match": false
+   "accepted": false,
+   "match": true
   },
   {
    "id": "R28",
@@ -568,11 +553,13 @@
     ]
    },
    "schema_errors": [],
-   "contract_errors": [],
+   "contract_errors": [
+    "PERIOD_REVERSED"
+   ],
    "contract_warnings": [],
    "crash": null,
-   "accepted": true,
-   "match": false
+   "accepted": false,
+   "match": true
   },
   {
    "id": "R29",
@@ -600,11 +587,13 @@
     ]
    },
    "schema_errors": [],
-   "contract_errors": [],
+   "contract_errors": [
+    "COUNT_DOMAIN"
+   ],
    "contract_warnings": [],
    "crash": null,
-   "accepted": true,
-   "match": false
+   "accepted": false,
+   "match": true
   },
   {
    "id": "R31",
@@ -617,11 +606,13 @@
     ]
    },
    "schema_errors": [],
-   "contract_errors": [],
+   "contract_errors": [
+    "COUNT_DOMAIN"
+   ],
    "contract_warnings": [],
    "crash": null,
-   "accepted": true,
-   "match": false
+   "accepted": false,
+   "match": true
   },
   {
    "id": "R32",
@@ -649,11 +640,13 @@
     ]
    },
    "schema_errors": [],
-   "contract_errors": [],
+   "contract_errors": [
+    "RETRIEVED_AT_INVALID"
+   ],
    "contract_warnings": [],
    "crash": null,
-   "accepted": true,
-   "match": false
+   "accepted": false,
+   "match": true
   },
   {
    "id": "R34",
@@ -674,88 +667,87 @@
  "json_text_cases": [
   {
    "id": "J01",
-   "loader": "json.loads (no strict loader)",
+   "loader": "loads_strict",
    "expect": {
     "accept": false,
     "codes": [
      "JSON_NONFINITE"
     ]
    },
-   "accepted": true,
-   "codes": [],
-   "parsed": {
-    "value": "<nan>"
-   },
-   "match": false
+   "accepted": false,
+   "codes": [
+    "JSON_NONFINITE"
+   ],
+   "parsed": null,
+   "match": true
   },
   {
    "id": "J02",
-   "loader": "json.loads (no strict loader)",
+   "loader": "loads_strict",
    "expect": {
     "accept": false,
     "codes": [
      "JSON_NONFINITE"
     ]
    },
-   "accepted": true,
-   "codes": [],
-   "parsed": {
-    "value": "<inf>"
-   },
-   "match": false
+   "accepted": false,
+   "codes": [
+    "JSON_NONFINITE"
+   ],
+   "parsed": null,
+   "match": true
   },
   {
    "id": "J03",
-   "loader": "json.loads (no strict loader)",
+   "loader": "loads_strict",
    "expect": {
     "accept": false,
     "codes": [
      "JSON_NONFINITE"
     ]
    },
-   "accepted": true,
-   "codes": [],
-   "parsed": {
-    "value": "<-inf>"
-   },
-   "match": false
+   "accepted": false,
+   "codes": [
+    "JSON_NONFINITE"
+   ],
+   "parsed": null,
+   "match": true
   },
   {
    "id": "J04",
-   "loader": "json.loads (no strict loader)",
+   "loader": "loads_strict",
    "expect": {
     "accept": false,
     "codes": [
      "JSON_NONFINITE"
     ]
    },
-   "accepted": true,
-   "codes": [],
-   "parsed": {
-    "value": "<inf>"
-   },
-   "match": false
+   "accepted": false,
+   "codes": [
+    "JSON_NONFINITE"
+   ],
+   "parsed": null,
+   "match": true
   },
   {
    "id": "J05",
-   "loader": "json.loads (no strict loader)",
+   "loader": "loads_strict",
    "expect": {
     "accept": false,
     "codes": [
      "JSON_DUPLICATE_KEY"
     ]
    },
-   "accepted": true,
-   "codes": [],
-   "parsed": {
-    "value": 5,
-    "value_status": "missing"
-   },
-   "match": false
+   "accepted": false,
+   "codes": [
+    "JSON_DUPLICATE_KEY"
+   ],
+   "parsed": null,
+   "match": true
   },
   {
    "id": "J06",
-   "loader": "json.loads (no strict loader)",
+   "loader": "loads_strict",
    "expect": {
     "accept": true,
     "codes": []
@@ -784,7 +776,8 @@
     "value": 12,
     "value_status": "reported",
     "coverage_complete": true,
-    "n": "2/2"
+    "n": "2/2",
+    "geography_checked": false
    },
    "note": null,
    "match": true
@@ -804,7 +797,8 @@
     "value_status": "missing",
     "coverage_complete": false,
     "n": "1/2",
-    "known_partial_sum": 5
+    "known_partial_sum": 5,
+    "geography_checked": false
    },
    "note": null,
    "match": true
@@ -864,15 +858,10 @@
    "expect": {
     "raises": "BOUNDARY_MIX"
    },
-   "raised": null,
-   "result": {
-    "value": 10,
-    "value_status": "reported",
-    "coverage_complete": true,
-    "n": "2/2"
-   },
+   "raised": "BOUNDARY_MIX",
+   "result": null,
    "note": null,
-   "match": false
+   "match": true
   },
   {
    "id": "A13",
@@ -888,7 +877,8 @@
     "value": 15,
     "value_status": "reported",
     "coverage_complete": true,
-    "n": "3/3"
+    "n": "3/3",
+    "geography_checked": false
    },
    "note": null,
    "match": true
@@ -900,15 +890,10 @@
    "expect": {
     "raises": "NESTED_UNIT"
    },
-   "raised": null,
-   "result": {
-    "value": 17,
-    "value_status": "reported",
-    "coverage_complete": true,
-    "n": "2/2"
-   },
+   "raised": "NESTED_UNIT",
+   "result": null,
    "note": null,
-   "match": false
+   "match": true
   },
   {
    "id": "A09",
@@ -924,13 +909,19 @@
    },
    "raised": null,
    "result": {
-    "value": 10,
-    "value_status": "reported",
-    "coverage_complete": true,
-    "n": "2/2"
+    "value": null,
+    "value_status": "missing",
+    "coverage_complete": false,
+    "n": "2/2",
+    "known_partial_sum": 10,
+    "geography_checked": true,
+    "units": "2/3",
+    "missing_units": [
+     "kz.shymkent.fixture_c"
+    ]
    },
-   "note": "aggregate_sum не принимает expected_units: полноту географии проверить нельзя",
-   "match": false
+   "note": null,
+   "match": true
   },
   {
    "id": "A10",
@@ -946,10 +937,11 @@
     "value": 10,
     "value_status": "reported",
     "coverage_complete": true,
-    "n": "2/2"
+    "n": "2/2",
+    "geography_checked": false
    },
    "note": null,
-   "match": false
+   "match": true
   },
   {
    "id": "A11",
@@ -958,15 +950,10 @@
    "expect": {
     "raises": "VALUE_NOT_FINITE"
    },
-   "raised": null,
-   "result": {
-    "value": "<nan>",
-    "value_status": "reported",
-    "coverage_complete": true,
-    "n": "2/2"
-   },
+   "raised": "VALUE_NOT_FINITE",
+   "result": null,
    "note": null,
-   "match": false
+   "match": true
   },
   {
    "id": "A12",
@@ -980,13 +967,16 @@
    },
    "raised": null,
    "result": {
-    "value": 0,
-    "value_status": "reported_zero",
+    "value": null,
+    "value_status": "missing",
+    "missing_reason": "zero_in_partial_coverage",
     "coverage_complete": false,
-    "n": "2/2"
+    "n": "2/2",
+    "known_partial_sum": 0,
+    "geography_checked": false
    },
    "note": null,
-   "match": false
+   "match": true
   }
  ],
  "dataset_cases": [
@@ -1000,10 +990,12 @@
      "DUPLICATE_OBS_ID"
     ]
    },
-   "accepted": true,
-   "codes": [],
-   "note": "нет проверки набора: validate() видит записи поодиночке",
-   "match": false
+   "accepted": false,
+   "codes": [
+    "DUPLICATE_OBS_ID"
+   ],
+   "note": null,
+   "match": true
   },
   {
    "id": "S02",
@@ -1016,9 +1008,11 @@
     ]
    },
    "accepted": true,
-   "codes": [],
-   "note": "нет проверки набора: validate() видит записи поодиночке",
-   "match": false
+   "codes": [
+    "DUPLICATE_RECORD"
+   ],
+   "note": null,
+   "match": true
   },
   {
    "id": "S03",
@@ -1030,10 +1024,12 @@
      "CONFLICTING_OBSERVATION"
     ]
    },
-   "accepted": true,
-   "codes": [],
-   "note": "нет проверки набора: validate() видит записи поодиночке",
-   "match": false
+   "accepted": false,
+   "codes": [
+    "CONFLICTING_OBSERVATION"
+   ],
+   "note": null,
+   "match": true
   },
   {
    "id": "S04",
@@ -1045,7 +1041,7 @@
    },
    "accepted": true,
    "codes": [],
-   "note": "нет проверки набора: validate() видит записи поодиночке",
+   "note": null,
    "match": true
   }
  ]

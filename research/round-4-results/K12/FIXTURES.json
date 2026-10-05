@@ -789,12 +789,14 @@
     {
      "geo_unit_id": "kz.shymkent.fixture_a",
      "obs_id": "SYNTHETIC-FIXTURE.fixture_a",
-     "value": 5
+     "value": 5,
+     "boundary_version": "fixture-layer:2026-09/osm:r101@1"
     },
     {
      "geo_unit_id": "kz.shymkent.fixture_b",
      "obs_id": "SYNTHETIC-FIXTURE.fixture_b",
-     "value": 7
+     "value": 7,
+     "boundary_version": "fixture-layer:2026-09/osm:r102@1"
     }
    ],
    "expect": {
@@ -811,12 +813,14 @@
     {
      "geo_unit_id": "kz.shymkent.fixture_a",
      "obs_id": "SYNTHETIC-FIXTURE.fixture_a",
-     "value": 5
+     "value": 5,
+     "boundary_version": "fixture-layer:2026-09/osm:r101@1"
     },
     {
      "geo_unit_id": "kz.shymkent.fixture_b",
      "obs_id": "SYNTHETIC-FIXTURE.fixture_b",
      "value": null,
+     "boundary_version": "fixture-layer:2026-09/osm:r102@1",
      "value_status": "missing",
      "missing_reason": "not_collected"
     }
@@ -835,12 +839,14 @@
     {
      "geo_unit_id": "kz.shymkent.fixture_a",
      "obs_id": "SYNTHETIC-FIXTURE.fixture_a",
-     "value": 5
+     "value": 5,
+     "boundary_version": "fixture-layer:2026-09/osm:r101@1"
     },
     {
      "geo_unit_id": "kz.astana.fixture_b",
      "obs_id": "SYNTHETIC-FIXTURE.fixture_b",
      "value": 5,
+     "boundary_version": "fixture-layer:2026-09/osm:r102@1",
      "city_id": "kz.astana"
     }
    ],
@@ -856,12 +862,14 @@
     {
      "geo_unit_id": "kz.shymkent.fixture_a",
      "obs_id": "SYNTHETIC-FIXTURE.fixture_a",
-     "value": 5
+     "value": 5,
+     "boundary_version": "fixture-layer:2026-09/osm:r101@1"
     },
     {
      "geo_unit_id": "kz.shymkent.fixture_b",
      "obs_id": "SYNTHETIC-FIXTURE.fixture_b",
      "value": 5,
+     "boundary_version": "fixture-layer:2026-09/osm:r102@1",
      "unit": "шт"
     }
    ],
@@ -877,12 +885,14 @@
     {
      "geo_unit_id": "kz.shymkent.fixture_a",
      "obs_id": "SYNTHETIC-FIXTURE.fixture_a",
-     "value": 5
+     "value": 5,
+     "boundary_version": "fixture-layer:2026-09/osm:r101@1"
     },
     {
      "geo_unit_id": "kz.shymkent.fixture_b",
      "obs_id": "SYNTHETIC-FIXTURE.fixture_b",
      "value": 5,
+     "boundary_version": "fixture-layer:2026-09/osm:r102@1",
      "period": "2026-09-30"
     }
    ],
@@ -898,12 +908,14 @@
     {
      "geo_unit_id": "kz.shymkent.fixture_a",
      "obs_id": "SYNTHETIC-FIXTURE.fixture_a",
-     "value": 5
+     "value": 5,
+     "boundary_version": "fixture-layer:2026-09/osm:r101@1"
     },
     {
      "geo_unit_id": "kz.shymkent.fixture_a",
      "obs_id": "SYNTHETIC-FIXTURE.a2",
-     "value": 7
+     "value": 7,
+     "boundary_version": "fixture-layer:2026-09/osm:r101@1"
     }
    ],
    "expect": {
@@ -918,20 +930,51 @@
     {
      "geo_unit_id": "kz.shymkent.fixture_a",
      "obs_id": "SYNTHETIC-FIXTURE.fixture_a",
-     "value": 5
+     "value": 5,
+     "boundary_version": "fixture-layer:2026-09/osm:r101@1"
     },
     {
      "geo_unit_id": "kz.shymkent.fixture_b",
      "obs_id": "SYNTHETIC-FIXTURE.fixture_b",
      "value": 5,
-     "boundary_version": "fixture:r1@2"
+     "boundary_version": "fixture-layer:2026-08/osm:r102@1"
     }
    ],
    "expect": {
     "raises": "BOUNDARY_MIX"
    },
    "new_vs_k05_tests": true,
-   "rationale": "docstring k05r3_contract обещает проверку смешения границ в агрегате, aggregate_sum её не делает"
+   "rationale": "территории из разных выпусков слоя границ при одной data_version; docstring обещает проверку смешения границ в агрегате"
+  },
+  {
+   "id": "A13",
+   "category": "control",
+   "records": [
+    {
+     "geo_unit_id": "kz.shymkent.fixture_a",
+     "obs_id": "SYNTHETIC-FIXTURE.fixture_a",
+     "value": 5,
+     "boundary_version": "fixture-layer:2026-09/osm:r101@1"
+    },
+    {
+     "geo_unit_id": "kz.shymkent.fixture_b",
+     "obs_id": "SYNTHETIC-FIXTURE.fixture_b",
+     "value": 5,
+     "boundary_version": "fixture-layer:2026-09/osm:r102@1"
+    },
+    {
+     "geo_unit_id": "kz.shymkent.fixture_c",
+     "obs_id": "SYNTHETIC-FIXTURE.fixture_c",
+     "value": 5,
+     "boundary_version": "fixture-layer:2026-09/osm:r103@1"
+    }
+   ],
+   "expect": {
+    "value": 15,
+    "value_status": "reported",
+    "coverage_complete": true
+   },
+   "rationale": "контроль: разные relation@version одного слоя — норма (так устроены реальные данные K05)"
   },
   {
    "id": "A08",
@@ -940,12 +983,14 @@
     {
      "geo_unit_id": "kz.shymkent",
      "obs_id": "SYNTHETIC-FIXTURE.city",
-     "value": 12
+     "value": 12,
+     "boundary_version": "fixture-layer:2026-09/osm:r100@1"
     },
     {
      "geo_unit_id": "kz.shymkent.fixture_a",
      "obs_id": "SYNTHETIC-FIXTURE.fixture_a",
-     "value": 5
+     "value": 5,
+     "boundary_version": "fixture-layer:2026-09/osm:r101@1"
     }
    ],
    "expect": {
@@ -961,12 +1006,14 @@
     {
      "geo_unit_id": "kz.shymkent.fixture_a",
      "obs_id": "SYNTHETIC-FIXTURE.fixture_a",
-     "value": 5
+     "value": 5,
+     "boundary_version": "fixture-layer:2026-09/osm:r101@1"
     },
     {
      "geo_unit_id": "kz.shymkent.fixture_b",
      "obs_id": "SYNTHETIC-FIXTURE.fixture_b",
-     "value": 5
+     "value": 5,
+     "boundary_version": "fixture-layer:2026-09/osm:r102@1"
     }
    ],
    "expected_units": [
@@ -992,12 +1039,14 @@
     {
      "geo_unit_id": "kz.shymkent.fixture_a",
      "obs_id": "SYNTHETIC-FIXTURE.fixture_a",
-     "value": 5
+     "value": 5,
+     "boundary_version": "fixture-layer:2026-09/osm:r101@1"
     },
     {
      "geo_unit_id": "kz.shymkent.fixture_b",
      "obs_id": "SYNTHETIC-FIXTURE.fixture_b",
-     "value": 5
+     "value": 5,
+     "boundary_version": "fixture-layer:2026-09/osm:r102@1"
     }
    ],
    "expect": {
@@ -1015,14 +1064,16 @@
     {
      "geo_unit_id": "kz.shymkent.fixture_a",
      "obs_id": "SYNTHETIC-FIXTURE.fixture_a",
-     "value": 5
+     "value": 5,
+     "boundary_version": "fixture-layer:2026-09/osm:r101@1"
     },
     {
      "geo_unit_id": "kz.shymkent.fixture_b",
      "obs_id": "SYNTHETIC-FIXTURE.fixture_b",
      "value": {
       "$float": "nan"
-     }
+     },
+     "boundary_version": "fixture-layer:2026-09/osm:r102@1"
     }
    ],
    "expect": {
@@ -1039,6 +1090,7 @@
      "geo_unit_id": "kz.shymkent.fixture_a",
      "obs_id": "SYNTHETIC-FIXTURE.fixture_a",
      "value": 5,
+     "boundary_version": "fixture-layer:2026-09/osm:r101@1",
      "unit": "count_change",
      "coverage": {
       "complete": false,
@@ -1052,6 +1104,7 @@
      "geo_unit_id": "kz.shymkent.fixture_b",
      "obs_id": "SYNTHETIC-FIXTURE.fixture_b",
      "value": -5,
+     "boundary_version": "fixture-layer:2026-09/osm:r102@1",
      "unit": "count_change",
      "coverage": {
       "complete": false,
