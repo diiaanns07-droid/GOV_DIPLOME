@@ -1,0 +1,347 @@
+{
+ "mode": "app-root",
+ "app_root": "city-evidence",
+ "build_python": "3.11.15 shapely 2.1.2, pyproj 3.7.2",
+ "outputs_sha256": {
+  "web/data.js": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "web/evidence.js": "abb81f8ddaded4c2e9601ec1ef36e9b52fc482c851cae920628dd1bcfbfe4baa"
+ },
+ "results": [
+  {
+   "id": "C01",
+   "kind": "control_clean",
+   "title": "неизменённая копия: пересборка побайтно равна закоммиченной",
+   "steps": {
+    "build_data": {
+     "exit": 0,
+     "outcome": "accepted",
+     "stderr_last": ""
+    },
+    "build_evidence": {
+     "exit": 0,
+     "outcome": "accepted",
+     "stderr_last": ""
+    }
+   },
+   "offline_check": {
+    "exit": 0,
+    "errors": []
+   },
+   "outputs_changed": [],
+   "artifact_problems_after": [],
+   "requirement_met": true,
+   "tmp": null
+  },
+  {
+   "id": "C02",
+   "kind": "integrity",
+   "title": "изменён байт без пересчёта hash (как test_corrupted_file_is_rejected)",
+   "steps": {
+    "build_data": {
+     "exit": 2,
+     "outcome": "rejected_integrity",
+     "stderr_last": "ОШИБКА входных данных: astana/places_social: sha256/размер не совпадают с package_manifest.json"
+    },
+    "build_evidence": {
+     "exit": 2,
+     "outcome": "rejected_integrity",
+     "stderr_last": "ОШИБКА входных данных: astana/places_social: sha256/размер не совпадают с package_manifest.json"
+    }
+   },
+   "offline_check": {
+    "exit": 1,
+    "errors": [
+     "astana/places_social: sha256 mismatch"
+    ]
+   },
+   "outputs_changed": [],
+   "artifact_problems_after": [],
+   "requirement_met": true,
+   "tmp": null
+  },
+  {
+   "id": "I01",
+   "kind": "integrity",
+   "title": "данные и package_manifest согласованно изменены, source_manifest — нет (якорь целостности)",
+   "steps": {
+    "build_data": {
+     "exit": 2,
+     "outcome": "rejected_semantic",
+     "stderr_last": "ОШИБКА входных данных: атрибуция K08 относится к другому файлу: data/shymkent/places_social.geojson"
+    },
+    "build_evidence": {
+     "exit": 2,
+     "outcome": "rejected_integrity",
+     "stderr_last": "ОШИБКА входных данных: kz.shymkent.k10sq_r11_c12.overture_place_records.school.conf_ge_0_0@2026-09-23.1: source.sha256 K05 != файл K10 пакета"
+    }
+   },
+   "offline_check": {
+    "exit": 0,
+    "errors": []
+   },
+   "outputs_changed": [],
+   "artifact_problems_after": [],
+   "requirement_met": false,
+   "tmp": null
+  },
+  {
+   "id": "N01",
+   "kind": "semantic",
+   "title": "NaN в confidence объекта (токен NaN)",
+   "steps": {
+    "build_data": {
+     "exit": 2,
+     "outcome": "rejected_semantic",
+     "stderr_last": "ОШИБКА входных данных: атрибуция K08 относится к другому файлу: data/shymkent/places_social.geojson"
+    },
+    "build_evidence": {
+     "exit": 2,
+     "outcome": "rejected_integrity",
+     "stderr_last": "ОШИБКА входных данных: kz.shymkent.k10sq_r11_c12.overture_place_records.school.conf_ge_0_0@2026-09-23.1: source.sha256 K05 != файл K10 пакета"
+    }
+   },
+   "offline_check": {
+    "exit": 0,
+    "errors": []
+   },
+   "outputs_changed": [],
+   "artifact_problems_after": [],
+   "requirement_met": false,
+   "tmp": null
+  },
+  {
+   "id": "N02",
+   "kind": "semantic",
+   "title": "NaN в координате объекта",
+   "steps": {
+    "build_data": {
+     "exit": 2,
+     "outcome": "rejected_semantic",
+     "stderr_last": "ОШИБКА входных данных: атрибуция K08 относится к другому файлу: data/shymkent/places_social.geojson"
+    },
+    "build_evidence": {
+     "exit": 2,
+     "outcome": "rejected_integrity",
+     "stderr_last": "ОШИБКА входных данных: kz.shymkent.k10sq_r11_c12.overture_place_records.school.conf_ge_0_0@2026-09-23.1: source.sha256 K05 != файл K10 пакета"
+    }
+   },
+   "offline_check": {
+    "exit": 1,
+    "errors": [
+     "shymkent: 1 places outside bbox"
+    ]
+   },
+   "outputs_changed": [],
+   "artifact_problems_after": [],
+   "requirement_met": false,
+   "tmp": null
+  },
+  {
+   "id": "N03",
+   "kind": "semantic",
+   "title": "Infinity в k10_length_m сегмента",
+   "steps": {
+    "build_data": {
+     "exit": 2,
+     "outcome": "rejected_semantic",
+     "stderr_last": "ОШИБКА входных данных: атрибуция K08 относится к другому файлу: data/shymkent/segments.geojson"
+    },
+    "build_evidence": {
+     "exit": 0,
+     "outcome": "accepted",
+     "stderr_last": ""
+    }
+   },
+   "offline_check": {
+    "exit": 1,
+    "errors": [
+     "shymkent: 1 segments with wrong k10_length_m"
+    ]
+   },
+   "outputs_changed": [
+    "web/evidence.js"
+   ],
+   "artifact_problems_after": [],
+   "requirement_met": false,
+   "tmp": null
+  },
+  {
+   "id": "N04",
+   "kind": "semantic",
+   "title": "1e999 (строго валидный JSON → inf) в k10_length_m сегмента",
+   "steps": {
+    "build_data": {
+     "exit": 2,
+     "outcome": "rejected_semantic",
+     "stderr_last": "ОШИБКА входных данных: атрибуция K08 относится к другому файлу: data/shymkent/segments.geojson"
+    },
+    "build_evidence": {
+     "exit": 0,
+     "outcome": "accepted",
+     "stderr_last": ""
+    }
+   },
+   "offline_check": {
+    "exit": 1,
+    "errors": [
+     "shymkent: 1 segments with wrong k10_length_m"
+    ]
+   },
+   "outputs_changed": [
+    "web/evidence.js"
+   ],
+   "artifact_problems_after": [],
+   "requirement_met": false,
+   "tmp": null
+  },
+  {
+   "id": "N05",
+   "kind": "semantic",
+   "title": "повтор ключа k10_group (school, затем pharmacy) — последний молча побеждает",
+   "steps": {
+    "build_data": {
+     "exit": 2,
+     "outcome": "rejected_semantic",
+     "stderr_last": "ОШИБКА входных данных: атрибуция K08 относится к другому файлу: data/shymkent/places_social.geojson"
+    },
+    "build_evidence": {
+     "exit": 2,
+     "outcome": "rejected_integrity",
+     "stderr_last": "ОШИБКА входных данных: kz.shymkent.k10sq_r11_c12.overture_place_records.school.conf_ge_0_0@2026-09-23.1: source.sha256 K05 != файл K10 пакета"
+    }
+   },
+   "offline_check": {
+    "exit": 0,
+    "errors": []
+   },
+   "outputs_changed": [],
+   "artifact_problems_after": [],
+   "requirement_met": false,
+   "tmp": null
+  },
+  {
+   "id": "N06",
+   "kind": "semantic",
+   "title": "конфликт ID: второй объект с тем же id/overture_id и другим содержимым",
+   "steps": {
+    "build_data": {
+     "exit": 2,
+     "outcome": "rejected_semantic",
+     "stderr_last": "ОШИБКА входных данных: атрибуция K08 относится к другому файлу: data/shymkent/places_social.geojson"
+    },
+    "build_evidence": {
+     "exit": 2,
+     "outcome": "rejected_integrity",
+     "stderr_last": "ОШИБКА входных данных: kz.shymkent.k10sq_r11_c12.overture_place_records.school.conf_ge_0_0@2026-09-23.1: source.sha256 K05 != файл K10 пакета"
+    }
+   },
+   "offline_check": {
+    "exit": 1,
+    "errors": [
+     "shymkent/places_social: 1 duplicate ids"
+    ]
+   },
+   "outputs_changed": [],
+   "artifact_problems_after": [],
+   "requirement_met": false,
+   "tmp": null
+  },
+  {
+   "id": "N07",
+   "kind": "semantic",
+   "title": "bbox mix: объект файла Шымкента с координатами в квадрате Астаны",
+   "steps": {
+    "build_data": {
+     "exit": 2,
+     "outcome": "rejected_semantic",
+     "stderr_last": "ОШИБКА входных данных: атрибуция K08 относится к другому файлу: data/shymkent/places_social.geojson"
+    },
+    "build_evidence": {
+     "exit": 2,
+     "outcome": "rejected_integrity",
+     "stderr_last": "ОШИБКА входных данных: kz.shymkent.k10sq_r11_c12.overture_place_records.school.conf_ge_0_0@2026-09-23.1: source.sha256 K05 != файл K10 пакета"
+    }
+   },
+   "offline_check": {
+    "exit": 1,
+    "errors": [
+     "shymkent: 1 places outside bbox"
+    ]
+   },
+   "outputs_changed": [],
+   "artifact_problems_after": [],
+   "requirement_met": false,
+   "tmp": null
+  },
+  {
+   "id": "N08",
+   "kind": "semantic",
+   "title": "bbox mix: заголовок слоя с bbox, отличным от манифеста",
+   "steps": {
+    "build_data": {
+     "exit": 2,
+     "outcome": "rejected_semantic",
+     "stderr_last": "ОШИБКА входных данных: атрибуция K08 относится к другому файлу: data/shymkent/places_social.geojson"
+    },
+    "build_evidence": {
+     "exit": 2,
+     "outcome": "rejected_integrity",
+     "stderr_last": "ОШИБКА входных данных: kz.shymkent.k10sq_r11_c12.overture_place_records.school.conf_ge_0_0@2026-09-23.1: source.sha256 K05 != файл K10 пакета"
+    }
+   },
+   "offline_check": {
+    "exit": 1,
+    "errors": [
+     "shymkent/places_social: header release/city/bbox mismatch"
+    ]
+   },
+   "outputs_changed": [],
+   "artifact_problems_after": [],
+   "requirement_met": false,
+   "tmp": null
+  },
+  {
+   "id": "N09",
+   "kind": "semantic",
+   "title": "period mix: слой объектов из выпуска 2026-08-20.0 при манифесте 2026-09-23.1",
+   "steps": {
+    "build_data": {
+     "exit": 2,
+     "outcome": "rejected_semantic",
+     "stderr_last": "ОШИБКА входных данных: атрибуция K08 относится к другому файлу: data/shymkent/places_social.geojson"
+    },
+    "build_evidence": {
+     "exit": 2,
+     "outcome": "rejected_integrity",
+     "stderr_last": "ОШИБКА входных данных: kz.shymkent.k10sq_r11_c12.overture_place_records.school.conf_ge_0_0@2026-09-23.1: source.sha256 K05 != файл K10 пакета"
+    }
+   },
+   "offline_check": {
+    "exit": 1,
+    "errors": [
+     "shymkent/places_social: header release/city/bbox mismatch"
+    ]
+   },
+   "outputs_changed": [],
+   "artifact_problems_after": [],
+   "requirement_met": false,
+   "tmp": null
+  }
+ ],
+ "summary": {
+  "requirement_met": 2,
+  "total": 12,
+  "failed": [
+   "I01",
+   "N01",
+   "N02",
+   "N03",
+   "N04",
+   "N05",
+   "N06",
+   "N07",
+   "N08",
+   "N09"
+  ]
+ }
+}

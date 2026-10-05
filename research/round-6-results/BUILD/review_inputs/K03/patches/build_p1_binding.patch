@@ -1,0 +1,281 @@
+--- a/prototypes/city-evidence/tests/test_inputs.py
++++ b/prototypes/city-evidence/tests/test_inputs.py
+@@ -1,6 +1,7 @@
+ """Input-integrity and adapter tests (unittest). Run: python3 -m unittest discover -s tests -v
+ K03 tests need shapely+pyproj (see requirements-build.txt) and are skipped without them."""
+ import importlib.util
++import json
+ import shutil
+ import sys
+ import tempfile
+@@ -82,5 +83,43 @@
+         self.assertEqual(errs_ok, [])
+ 
+ 
++class EvidenceFresh(unittest.TestCase):
++    """evidence.js связан с кодом/слоями K03 и местами data.js (k03-binding-v1); проверка без shapely."""
++
++    def setUp(self):
++        sys.path.insert(0, str(APP / "tools"))
++        import check_evidence_fresh
++        self.F = check_evidence_fresh
++
++    def test_committed_evidence_is_fresh(self):
++        self.assertEqual(self.F.problems(APP), [])
++
++    def test_changed_k03_layer_is_detected(self):
++        tmp = Path(tempfile.mkdtemp())
++        try:
++            for d in ("web", "inputs/k03_root"):
++                shutil.copytree(APP / d, tmp / d)
++            f = tmp / "inputs/k03_root/data/astana_districts.geojson"
++            f.write_bytes(f.read_bytes() + b"\n")
++            self.assertTrue(any("слой K03" in p for p in self.F.problems(tmp)))
++        finally:
++            shutil.rmtree(tmp)
++
++    def test_moved_place_is_detected(self):
++        tmp = Path(tempfile.mkdtemp())
++        try:
++            for d in ("web", "inputs/k03_root"):
++                shutil.copytree(APP / d, tmp / d)
++            p = tmp / "web/data.js"
++            t = p.read_text(encoding="utf-8")
++            d = self.F.parse_js(p)
++            d["cities"]["astana"]["places"][0]["lon"] += 0.01
++            p.write_text(t[:t.index("{")] + json.dumps(d, ensure_ascii=False) + ";\n", encoding="utf-8")
++            pr = self.F.problems(tmp)
++            self.assertTrue(any("места data.js" in x for x in pr) and any("координаты" in x for x in pr), pr)
++        finally:
++            shutil.rmtree(tmp)
++
++
+ if __name__ == "__main__":
+     unittest.main()
+--- a/prototypes/city-evidence/tools/build_evidence.py
++++ b/prototypes/city-evidence/tools/build_evidence.py
+@@ -1,8 +1,11 @@
+ """Stage 2 adapter: K10 slice -> K03 district status -> K05 observations -> web/evidence.js.
+ 
+ Minimal glue, not a platform:
+-  * district status of every place comes from K03 `assign()` (rule k03_assign_v1) run unmodified
+-    from inputs/k03_root/ (needs shapely + pyproj, see requirements-build.txt);
++  * district status of every place comes from K03 `assign()` run unmodified from inputs/k03_root/
++    (needs shapely + pyproj, see requirements-build.txt); the rule label is the one assign() returns,
++    not the registry text; K03 inputs must match source_manifest.json;
++  * place_district is bound to the K03 code/layers and to the places of web/data.js
++    (boundary_binding, k03-binding-v1; check without rebuild: tools/check_evidence_fresh.py);
+   * every number shown as a "fact" is a k05-obs-v1.1 observation validated by K05 `validate()`
+     (stdlib) from inputs/k05_root/; any validation error aborts the build;
+   * counts are numbers of Overture records in the K10 square, never city totals / capacity.
+@@ -25,6 +28,7 @@
+ 
+ sys.path.insert(0, str(HERE))
+ from build_data import GROUPS, InputError, load_layer, load_manifest  # noqa: E402
++from check_evidence_fresh import binding as k03_binding, parse_js, sha256_file  # noqa: E402
+ 
+ GROUP_KK = {  # черновик казахских подписей, требует проверки носителем
+     "school": "Мектеп", "preschool": "Балабақша", "college_university": "Колледж / ЖОО",
+@@ -37,6 +41,23 @@
+     sys.path.insert(0, str(K03_DIR))
+     import boundary_validator as BV  # noqa: E402  (K03 code, read before use: read-only, no network)
+     return BV, BV.Layers()
++
++
++def check_k03_manifest():
++    man = json.loads((APP / "source_manifest.json").read_text(encoding="utf-8"))
++    for f in man["files"]:
++        if f["copied_to"].startswith("inputs/k03_root/"):
++            p = APP / f["copied_to"]
++            if not p.exists() or sha256_file(p) != f["sha256"]:
++                raise InputError(f"K03: {f['copied_to']} не совпадает с source_manifest.json — "
++                                 "обновляйте входы K03 через tools/copy_inputs.py")
++
++
++def load_data_js():
++    p = APP / "web" / "data.js"
++    if not p.exists():
++        raise InputError("нет web/data.js — сначала tools/build_data.py")
++    return parse_js(p)
+ 
+ 
+ def load_k05():
+@@ -63,7 +84,7 @@
+             "coverage": coverage, "method": method, "max_age_days": None, "derivation": None, "note": note}
+ 
+ 
+-def city_observations(city, cm, places, assign_counts):
++def city_observations(city, cm, places, assign_counts, rule, bver):
+     city_id, geo = f"kz.{city}", f"kz.{city}.k10r3_bbox"
+     pfile = cm["files"]["places_social"]
+     src = {"source_id": "K10-r3-places", "path": "inputs/k10/" + pfile["path"], "sha256": pfile["sha256"],
+@@ -86,11 +107,11 @@
+             rows.append(obs(city_id, geo, f"places.{g}", None, "missing", "records", kind="observed", source=src,
+                             coverage=cov, method=meth, reason="zero_in_partial_coverage",
+                             note="0 записей в срезе; не доказывает, что объектов нет"))
+-    k03 = {"source_id": "K03-k03_assign_v1", "path": "inputs/k03_root/research/round-3-results/K03/boundary_validator.py",
++    k03 = {"source_id": f"K03-{rule}", "path": "inputs/k03_root/research/round-3-results/K03/boundary_validator.py",
+            "sha256": None, "url": None, "locator": "assign(L, lon, lat)['status']", "license": None,
+            "retrieved_at": "2026-10-05 (K03 commit 44585de)", "evidence": None}
+     k03["sha256"] = __import__("hashlib").sha256((K03_DIR / "boundary_validator.py").read_bytes()).hexdigest()
+-    dmeth = {"id": "k03_assign_v1", "steps": ["K03 assign() for each record", "count by status"]}
++    dmeth = {"id": rule, "steps": ["K03 assign() for each record", "count by status"]}
+     # Status counts are complete over the slice's own records (the population is the slice, not the city).
+     slice_cov = {"complete": True, "scope": f"{len(places)} записей объектов этого среза", "selection": "все записи среза",
+                  "area_fraction": None, "cap_per_group": None}
+@@ -99,6 +120,7 @@
+         o = obs(city_id, geo, f"district_status.{st}", n, "reported" if n else "reported_zero", "records",
+                 kind="derived", source=k03, coverage=slice_cov, method=dmeth)
+         o["derivation"] = "число записей среза, для которых K03 assign() вернул статус " + st
++        o["boundary_version"] = bver
+         rows.append(o)
+     segf = cm["files"]["segments"]
+     ssrc = dict(src, source_id="K10-r3-segments", path="inputs/k10/" + segf["path"], sha256=segf["sha256"],
+@@ -132,24 +154,42 @@
+ def main():
+     try:
+         man = load_manifest()
++        check_k03_manifest()
++        data = load_data_js()
+         BV, L = load_k03()
+         C = load_k05()
+-        names, rule = district_names()
+-        out = {"as_of": AS_OF, "slice_id": SLICE_ID, "assign_rule": rule, "group_kk": GROUP_KK,
+-               "district_names": names, "cities": {}}
++        names, registry_rule = district_names()
++        rules, per_city = set(), {}
+         for city, cm in man["cities"].items():
+             layers = {n: load_layer(city, n, fm) for n, fm in cm["files"].items()}
+             _SEGS[cm["bbox"][0]] = [f for f in layers["segments"]["features"] if f["properties"]["subtype"] == "road"]
+             places = layers["places_social"]["features"]
++            dmap = {p["id"]: p for p in data["cities"][city]["places"]}
+             assigned, counts = {}, Counter()
+             for f in places:
++                if f["id"] not in dmap:
++                    raise InputError(f"{city}/{f['id']}: места нет в web/data.js — сначала tools/build_data.py")
+                 lon, lat = f["geometry"]["coordinates"][:2]
+                 r = BV.assign(L, lon, lat)
++                rules.add(r["rule"])
+                 counts[r["status"]] += 1
++                dp = dmap[f["id"]]
+                 assigned[f["id"]] = {"status": r["status"], "reason": r.get("reason"), "district": r.get("district"),
+                                      "candidates": r.get("candidates") or [],
+-                                     "assign_city": r.get("city")}
+-            rows = city_observations(city, cm, places, counts)
++                                     "assign_city": r.get("city"), "lonlat": [dp["lon"], dp["lat"]]}
++            per_city[city] = (cm, places, assigned, counts)
++        if len(rules) != 1:
++            raise InputError(f"K03 assign() вернул разные правила: {sorted(rules)}")
++        rule = rules.pop()
++        if registry_rule != rule:
++            print(f"ПРЕДУПРЕЖДЕНИЕ: правило кода {rule} ≠ правилу в boundary_registry.json {registry_rule}; "
++                  "в evidence.js записано правило кода", file=sys.stderr)
++        bind = k03_binding(APP, rule, data)
++        bver = f"k03-binding:{bind['digest'][:16]}"
++        out = {"as_of": AS_OF, "slice_id": SLICE_ID, "assign_rule": rule, "registry_rule": registry_rule,
++               "boundary_binding": bind, "group_kk": GROUP_KK, "district_names": names, "cities": {}}
++        for city, (cm, places, assigned, counts) in per_city.items():
++            rows = city_observations(city, cm, places, counts, rule, bver)
+             report = []
+             for o in rows:
+                 errs, warns = C.validate(o, as_of=AS_OF)
+--- /dev/null
++++ b/prototypes/city-evidence/tools/check_evidence_fresh.py
+@@ -0,0 +1,97 @@
++"""Проверить, что web/evidence.js построен из текущих кода и слоёв K03 и текущих мест web/data.js.
++
++Формат привязки k03-binding-v1 (пишет tools/build_evidence.py, здесь — единственное описание):
++  boundary_binding = {schema, rule, code{путь: sha256}, layers{путь: sha256}, places{город: sha256}, digest}
++  - пути относительно inputs/k03_root/; code и layers — всё, что читают K03 Layers()/assign();
++  - places[город] = sha256 JSON-списка [[id, lon, lat], ...] мест web/data.js (отсортирован, lon/lat округлены до 7 знаков);
++  - digest = sha256 JSON остальных полей (sort_keys, без пробелов);
++  - каждая запись place_district хранит lonlat места из data.js, по которому сделана привязка.
++Только stdlib, без shapely. Код выхода 1, если привязка устарела или отсутствует.
++Запуск: python3 tools/check_evidence_fresh.py
++"""
++import hashlib
++import json
++import sys
++from pathlib import Path
++
++APP = Path(__file__).resolve().parents[1]
++SCHEMA = "k03-binding-v1"
++K03_CODE = ["research/round-3-results/K03/boundary_validator.py", "research/round-3-results/K03/geo_common.py"]
++K03_LAYERS = ["data/astana_districts.geojson", "data/geo_sources/astana_districts_overpass.json",
++              "data/geo_sources/sara_osm.json",
++              "research/round-3-results/K03/inputs/K10/astana_districts_overture.geojson",
++              "research/round-3-results/K03/inputs/K10/shymkent_districts_overture.geojson"]
++
++
++def sha256_file(p):
++    return hashlib.sha256(Path(p).read_bytes()).hexdigest()
++
++
++def parse_js(p):
++    t = Path(p).read_text(encoding="utf-8")
++    return json.loads(t[t.index("{"):t.rstrip().rindex(";")])
++
++
++def places_digest(data, city):
++    rows = sorted([p["id"], round(p["lon"], 7), round(p["lat"], 7)] for p in data["cities"][city]["places"])
++    return hashlib.sha256(json.dumps(rows, separators=(",", ":")).encode()).hexdigest()
++
++
++def digest(b):
++    core = {k: b[k] for k in ("schema", "rule", "code", "layers", "places")}
++    return hashlib.sha256(json.dumps(core, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
++
++
++def binding(app, rule, data):
++    k3 = Path(app) / "inputs" / "k03_root"
++    b = {"schema": SCHEMA, "rule": rule,
++         "code": {p: sha256_file(k3 / p) for p in K03_CODE},
++         "layers": {p: sha256_file(k3 / p) for p in K03_LAYERS},
++         "places": {c: places_digest(data, c) for c in data["cities"]}}
++    b["digest"] = digest(b)
++    return b
++
++
++def problems(app=APP):
++    app = Path(app)
++    ev = parse_js(app / "web" / "evidence.js")
++    data = parse_js(app / "web" / "data.js")
++    b = ev.get("boundary_binding")
++    if not b:
++        return ["в evidence.js нет boundary_binding — пересоберите tools/build_evidence.py"]
++    out = []
++    if b.get("schema") != SCHEMA:
++        out.append(f"неизвестная схема привязки {b.get('schema')}")
++    cur = binding(app, b.get("rule"), data)
++    for part, what in (("code", "код K03"), ("layers", "слой K03"), ("places", "места data.js")):
++        for k, v in cur[part].items():
++            if b.get(part, {}).get(k) != v:
++                out.append(f"{what} изменился после сборки evidence.js: {k}")
++    if b.get("digest") != digest(b):
++        out.append("digest привязки не соответствует её содержимому")
++    if ev.get("assign_rule") != b.get("rule"):
++        out.append(f"метка правила {ev.get('assign_rule')} ≠ binding.rule {b.get('rule')}")
++    for city, cd in ev["cities"].items():
++        dmap = {p["id"]: p for p in data["cities"][city]["places"]}
++        for pid, r in cd["place_district"].items():
++            p = dmap.get(pid)
++            if p is None:
++                out.append(f"{city}/{pid}: места нет в data.js")
++            elif r.get("lonlat") != [p["lon"], p["lat"]]:
++                out.append(f"{city}/{pid}: координаты в data.js не те, по которым сделана привязка")
++        missing = sorted(set(dmap) - set(cd["place_district"]))
++        if missing:
++            out.append(f"{city}: {len(missing)} мест data.js без привязки")
++    return out
++
++
++def main():
++    pr = problems()
++    for p in pr:
++        print("УСТАРЕЛО:", p)
++    print("evidence.js актуален" if not pr else f"evidence.js устарел: {len(pr)} расхождений — запустите tools/build_evidence.py")
++    return 1 if pr else 0
++
++
++if __name__ == "__main__":
++    sys.exit(main())

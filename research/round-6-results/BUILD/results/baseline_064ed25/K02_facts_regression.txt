@@ -1,0 +1,27 @@
+$ /opt/node22/bin/node /home/user/GOV_DIPLOME/research/round-6-results/BUILD/review_inputs/K02/tests/facts_regression.cjs --app-root /tmp/acc-yk3w32kb/prototypes/city-evidence
+exit=1
+--- stdout
+FAIL T1_value_change — изменение значения при том же городе и срезе: старый план отклоняется
+     observed: "исключение теста: TextEncoder is not defined"
+FAIL T2_unit_change — изменение единицы при том же городе и срезе: старый план отклоняется
+     observed: "исключение теста: TextEncoder is not defined"
+FAIL T3_coverage_change — изменение охвата при том же городе и срезе: старый план отклоняется
+     observed: "исключение теста: TextEncoder is not defined"
+FAIL T4_digest_distinguishes — старый срез и изменённый каталог различимы (catalogDigest), одинаковые — равны
+     observed: "исключение теста: TextEncoder is not defined"
+FAIL T5_duplicate_across_sections — повтор одного ID в двух секциях отклоняется (duplicate_id)
+     observed: "исключение теста: TextEncoder is not defined"
+FAIL T6_null_vs_zero — null: только в data_gaps и «нет данных»; настоящий 0 печатается как 0
+     observed: "исключение теста: TextEncoder is not defined"
+PASS T7_city_substitution_observations — наблюдения другого города под ключом города отклоняются при buildCatalog
+FAIL T8_city_switch_stale_plan — план по Астане против каталога Шымкента отклоняется (foreign_city или stale_catalog)
+     observed: "исключение теста: TextEncoder is not defined"
+FAIL T9_nonfinite_nan — неконечное число (NaN) отклоняется при buildCatalog, а не падает в render
+     observed: "исключение теста: нет наблюдения shymkent/places.school"
+FAIL T9_nonfinite_inf — неконечное число (Infinity) отклоняется при buildCatalog, а не падает в render
+     observed: "исключение теста: нет наблюдения shymkent/places.school"
+FAIL T10_incomplete_coverage_visible — значения при coverage.complete=false помечены в тексте объяснения
+     observed: "исключение теста: TextEncoder is not defined"
+10 FAILED of 11
+
+--- stderr

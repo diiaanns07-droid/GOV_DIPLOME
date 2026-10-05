@@ -1,0 +1,25 @@
+$ /opt/node22/bin/node /home/user/GOV_DIPLOME/research/round-6-results/BUILD/review_inputs/K07/tests/k07r5_regressions.cjs --app-root /tmp/acc-yk3w32kb/prototypes/city-evidence --sha 064ed25368341edaa50289bc29e21dda7bdd9440 --out results/baseline_064ed25/K07
+exit=0
+--- stdout
+PASS R1 [S1 stale tooltip] (baseline expect: fail) a filter change hides the hovered object's group -> its tooltip is hidden in the same re-render (precondition: tooltip was visible)
+PASS R2 [S1 stale tooltip] (baseline expect: fail) zoom re-renders the map (the hovered marker moves) -> its tooltip is hidden in the same re-render
+PASS R3 [S1 stale tooltip] (baseline expect: pass) city switch -> tooltip of the previous city is hidden in the same re-render
+PASS R17 [S8 general] (baseline expect: pass) no console or page errors on the normal path (S1)
+PASS R4 [S2 clear point] (baseline expect: fail) a set point can be cleared (button or Escape): no crosshair, empty card
+PASS R5a [S3 city switch] (baseline expect: pass) switching city with a point set -> point, crosshair and card of the old city are gone
+PASS R5b [S3 city switch] (baseline expect: pass) switching city with a road card open -> card cleared
+PASS R6 [S4 filters/layers] (baseline expect: fail) roads layer switched off while a road card is open -> no orphan road card
+PASS R7a [S4 filters/layers] (baseline expect: pass) category of the selected object switched off -> selection cleared
+PASS R7b [S4 filters/layers] (baseline expect: pass) objects layer switched off -> selected object cleared
+PASS R8 [S5 keyboard] (baseline expect: fail) the table and zoom are reachable without tabbing through every map feature (skip link or < 40 stops)
+PASS R9 [S5 keyboard] (baseline expect: fail) a point can be set without a mouse (focusable map + Enter)
+PASS R10 [S5 keyboard] (baseline expect: fail) interactive markers are not hidden from assistive tech (map svg role is not 'img')
+FAIL R11 [S6 390px] (baseline expect: fail) on 390 px, after tapping the map without scrolling, the point result is visible or announced next to the map  -> {"pointSet":true,"scrollY":0,"resultHeadingTop":1095,"viewportHeight":844,"resultVisible":false,"hintNextToMap":false}
+FAIL R12 [S6 390px] (baseline expect: unknown) cards and tables fit 390 px without hidden columns (no inner horizontal scroll)  -> [{"box":"card","card":"Выбор","scrollWidth":369,"clientWidth":356},{"box":"card","card":"Срез данных","scrollWidth":409,"clientWidth":356}]
+FAIL R13 [S7 data/evidence] (baseline expect: fail) evidence.js built from another data version (SHA256/data_version differ from data.js) -> the viewer warns instead of using it silently  -> {"warningShown":false,"errors":[]}
+PASS R14 [S7 data/evidence] (baseline expect: pass) truncated evidence.js -> explicit 'catalog unavailable', districts not invented, table still works
+PASS R15 [S7 data/evidence] (baseline expect: pass) truncated data.js -> clear 'data not found' state, no map from partial data
+FAIL R16 [S7 data/evidence] (baseline expect: pass) evidence.js without the school observation -> explicit error or 'нет данных', never a number for schools  -> {"explain":"Каталог фактов (18) · срез k10r3-2026-09-23.1-g127 · отпечаток 0ec09bd8d16b7067Выбранные категории в квадрате55 записейр","schoolRow":"Школа в квадрате15 записейрасчёт","errors":[]}
+15/19 passed · /home/user/GOV_DIPLOME/research/round-6-results/BUILD/results/baseline_064ed25/K07
+
+--- stderr

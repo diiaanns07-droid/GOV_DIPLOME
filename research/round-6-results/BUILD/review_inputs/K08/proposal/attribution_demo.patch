@@ -1,0 +1,182 @@
+diff --git a/prototypes/city-evidence/tests/smoke.cjs b/prototypes/city-evidence/tests/smoke.cjs
+index 523500b..72ac2e5 100644
+--- a/prototypes/city-evidence/tests/smoke.cjs
++++ b/prototypes/city-evidence/tests/smoke.cjs
+@@ -86,7 +86,7 @@ const check = (name, ok, detail) => { results.push({ name, ok: !!ok, detail });
+   const os = require("os");
+   for (const missing of ["data.js", "evidence.js"]) {
+     const dir = fs.mkdtempSync(path.join(os.tmpdir(), "ce-"));
+-    for (const f of fs.readdirSync(path.join(__dirname, "..", "web"))) if (f !== missing) fs.copyFileSync(path.join(__dirname, "..", "web", f), path.join(dir, f));
++    for (const f of fs.readdirSync(path.join(__dirname, "..", "web"))) if (f !== missing) fs.cpSync(path.join(__dirname, "..", "web", f), path.join(dir, f), { recursive: true });
+     const p2 = await browser.newPage();
+     const errs2 = []; p2.on("pageerror", (e) => errs2.push(String(e)));
+     await p2.goto("file://" + path.join(dir, "index.html"));
+diff --git a/prototypes/city-evidence/tools/build_data.py b/prototypes/city-evidence/tools/build_data.py
+index 1ebc888..963716a 100644
+--- a/prototypes/city-evidence/tools/build_data.py
++++ b/prototypes/city-evidence/tools/build_data.py
+@@ -86,8 +86,10 @@ def place_rec(f):
+         "category": p.get("basic_category"), "confidence": round(p["confidence"], 3) if p.get("confidence") is not None else None,
+         "address": addr, "operating_status": p.get("operating_status"),
+         "overture_version": p.get("overture_version"),
++        # keep property-level sources too (e.g. Overture CDLA-P-2.0 for /properties/confidence)
+         "sources": [{"dataset": s.get("dataset"), "license": s.get("license"), "record_id": s.get("record_id"),
+-                     "update_time": s.get("update_time")} for s in (p.get("sources") or []) if s.get("property", "") == ""],
++                     "update_time": s.get("update_time"), "property": s.get("property") or ""}
++                    for s in (p.get("sources") or [])],
+     }
+ 
+ 
+@@ -100,10 +102,64 @@ def seg_rec(f):
+         "length_m": round(p["k10_length_m"], 1), "foot_access": p["k10_foot_access"],
+         "flags": p.get("k10_flags") or [], "crosses_edge": p["k10_crosses_bbox_edge"],
+         "connectors": len(p.get("connectors") or []),
++        "dataset": src.get("dataset"),
+         "record_id": src.get("record_id"), "license": src.get("license"), "update_time": src.get("update_time"),
+     }
+ 
+ 
++ATTR_NAMES = {"OpenStreetMap": "© OpenStreetMap contributors", "meta": "Meta", "Foursquare": "Foursquare",
++              "TomTom": "TomTom", "Overture": "Overture Maps Foundation", "Microsoft": "Microsoft",
++              "AllThePlaces": "AllThePlaces", "PinMeTo": "PinMeTo"}
++ATTR_SRC = APP / "inputs" / "k08_attr"
++LICENSE_SHA256 = {  # SPDX license-list-data @31ba1a50e5397e00a304dbadc76531740e89ee48
++    "ODbL-1.0": "77d2692c3d64efdd4db18dce2407699baf62930e2b50d6e5ed90b48acf16b7c1",
++    "CDLA-Permissive-2.0": "4531a67d443284d93ffed0803df5b10634aff21c3d77e381f2d48af01d875868",
++    "Apache-2.0": "074e6e32c86a4c0ef8b3ed25b721ca23aca83df277cd88106ef7177c354615ff",
++}
++
++
++def attribution_of(layers):
++    """Provider/licence pairs from sources[] of every delivered layer (places, segments, connectors)."""
++    pairs = Counter()
++    for fc in layers.values():
++        for f in fc["features"]:
++            for s in f["properties"].get("sources") or []:
++                pairs[(s.get("dataset"), s.get("license"))] += 1
++    lines = sorted({f"{ATTR_NAMES.get(d, d)} ({l})" for d, l in pairs})
++    return lines, sorted({l for _, l in pairs if l}), {f"{d}|{l}": n for (d, l), n in sorted(pairs.items())}
++
++
++def write_license_files(cities):
++    """Copy SPDX texts into web/LICENSES/ (byte copy, sha256 checked) and write web/ATTRIBUTION.md."""
++    needed = sorted({l for c in cities.values() for l in c["licenses"]})
++    out = APP / "web" / "LICENSES"
++    out.mkdir(parents=True, exist_ok=True)
++    for l in needed:
++        src = ATTR_SRC / "LICENSES" / f"{l}.txt"
++        if not src.exists():
++            raise InputError(f"нет текста лицензии {rel(src)} — запустите tools/copy_inputs.py")
++        b = src.read_bytes()
++        if l in LICENSE_SHA256 and hashlib.sha256(b).hexdigest() != LICENSE_SHA256[l]:
++            raise InputError(f"{rel(src)}: sha256 не совпадает с SPDX @31ba1a50")
++        (out / f"{l}.txt").write_bytes(b)
++    L = ["# Атрибуция и лицензии демо «Городские данные: Шымкент / Астана»", "",
++         "Данные — вторичные открытые данные Overture Maps (выпуск указан в карточке «Источники»), "
++         "срез двух квадратов 2×2 км, не официальный и не полный реестр города.", "",
++         "Строки построены по полю `sources[]` каждой записи (dataset, license). Это указание лицензии в записи, "
++         "а не юридическая проверка; рекомендованные формулировки поставщиков не сверялись.", ""]
++    for c in cities.values():
++        L.append(f"## {c['label']}")
++        L.append("")
++        for k, n in c["source_counts"].items():
++            d, l = k.split("|")
++            L.append(f"- {ATTR_NAMES.get(d, d)} — {l} — записей sources: {n}")
++        L.append("")
++    L += ["## Тексты лицензий", ""] + [f"- [{l}](LICENSES/{l}.txt)" for l in needed]
++    L += ["", "Тексты — побайтные копии SPDX license-list-data @31ba1a50 (пакет K08 R4, `inputs/k08_attr/`).",
++          "", "Условия OpenStreetMap: https://www.openstreetmap.org/copyright (ссылка по практике OSM; страница из среды сборки не открывалась).", ""]
++    (APP / "web" / "ATTRIBUTION.md").write_text("\n".join(L), encoding="utf-8")
++
++
+ def build():
+     man = load_manifest()
+     src_manifest = json.loads((APP / "source_manifest.json").read_text(encoding="utf-8"))
+@@ -114,10 +170,13 @@ def build():
+         places = [place_rec(f) for f in layers["places_social"]["features"]]
+         segs = [seg_rec(f) for f in layers["segments"]["features"] if f["properties"]["subtype"] == "road"]
+         label, iso = CITY_LABEL[city]
++        attr, lics, src_counts = attribution_of(layers)
+         cities[city] = {
+             "key": city, "label": label, "iso": iso, "bbox": cm["bbox"],
+             "release": man["release"], "retrieved_utc": cm.get("finished_utc"),
+-            "attribution": layers["places_social"].get("attribution"),
++            # computed from delivered records, not the constant header of the K10 files
++            "attribution": attr, "licenses": lics, "source_counts": src_counts,
++            "attribution_file": "ATTRIBUTION.md",
+             "kind": layers["places_social"].get("kind"),
+             "places": places, "segments": segs,
+             "counts": {
+@@ -131,6 +190,7 @@ def build():
+             },
+             "files": {name: {"path": "inputs/k10/" + fm["path"], "sha256": fm["sha256"]} for name, fm in cm["files"].items()},
+         }
++    write_license_files(cities)
+     return {
+         "generated_by": "prototypes/city-evidence/tools/build_data.py",
+         "inputs": {"k10_branch": "claude/save-work-handoff-j7pc05", "k10_sha": k10_sha,
+diff --git a/prototypes/city-evidence/tools/copy_inputs.py b/prototypes/city-evidence/tools/copy_inputs.py
+index b01cc5e..8a2b952 100644
+--- a/prototypes/city-evidence/tools/copy_inputs.py
++++ b/prototypes/city-evidence/tools/copy_inputs.py
+@@ -51,6 +51,11 @@ EXTRA = {
+     "k08": ("claude/dazzling-mayer-drhsxk", "e1e3c7170f827550948afc0448695ecb8e9bc464", "research/round-3-results/K08/", [
+         "AUDIT.md", "verdicts.json",
+     ]),
++    # K08 R4 attribution package: SPDX license texts (byte copies) + package attribution notes
++    "k08_attr": ("claude/dazzling-mayer-drhsxk", "182cb1b52233baafecc1970fdfd4cb53bc8b8fad", "research/round-4-results/K08/attribution/", [
++        "LICENSES/ODbL-1.0.txt", "LICENSES/CDLA-Permissive-2.0.txt", "LICENSES/Apache-2.0.txt",
++        "ATTRIBUTION.md", "attribution.json",
++    ]),
+     "k04": ("claude/beautiful-clarke-sbzomj", "7fb8bb897dc80150c85fef9e68ac7183d323e6c3", "research/round-3-results/K04/", [
+         "acceptance.json", "PRODUCT_DECISION.md",
+     ]),
+diff --git a/prototypes/city-evidence/web/app.js b/prototypes/city-evidence/web/app.js
+index dce27e8..a3f37be 100644
+--- a/prototypes/city-evidence/web/app.js
++++ b/prototypes/city-evidence/web/app.js
+@@ -211,7 +211,9 @@
+     else if (!STATE.groups.size) { msg.hidden = false; msg.textContent = "Не выбрана ни одна категория — включите категории в панели фильтров."; }
+     else if (!places.length) { msg.hidden = false; msg.textContent = "В этом квадрате нет записей выбранных категорий. Это не значит, что таких объектов нет на местности."; }
+     else msg.hidden = true;
+-    $("attrib").textContent = "© OpenStreetMap contributors; Overture Maps Foundation · " + c.release;
++    const at = $("attrib"); at.replaceChildren();
++    at.append(document.createTextNode((c.attribution || []).join("; ") + " · Overture " + c.release + " · "),
++      el("a", { href: c.attribution_file || "ATTRIBUTION.md" }, "атрибуция и лицензии"));
+   }
+   function selectPlace(id) { STATE.selected = { type: "place", id }; renderMap(); renderSelection(); renderTable(); renderExplain(); }
+ 
+@@ -291,13 +293,13 @@
+       body.append(dl);
+       const det = el("details"); det.append(el("summary", null, "Источник записи"));
+       const ul = el("ul", { class: "reasons" });
+-      for (const src of p.sources) ul.append(el("li", null, `${src.dataset} · ${src.license} · ${fmtDate(src.update_time)}${src.record_id ? " · " + src.record_id : ""}`));
++      for (const src of p.sources) ul.append(el("li", null, `${src.dataset} · ${src.license} · ${fmtDate(src.update_time)}${src.record_id ? " · " + src.record_id : ""}${src.property ? " · только " + src.property : ""}`));
+       det.append(ul, el("p", { class: "muted" }, `Overture id ${p.id} (v${p.overture_version}). Наличие записи не подтверждает, что объект работает; отсутствие записи не означает, что объекта нет.`));
+       body.append(det);
+     } else if (s.type === "segment") {
+       const g = c.segments.find((x) => x.id === s.id);
+       if (!g) { STATE.selected = null; empty.hidden = false; return; }
+-      body.append(el("h3", null, "Дорога (OSM через Overture)"));
++      body.append(el("h3", null, `Дорога (${g.dataset === "OpenStreetMap" ? "OSM" : (g.dataset || "источник не указан")} через Overture)`));
+       const dl = el("dl");
+       dlRows(dl, [
+         ["Класс", g.class + (g.subclass ? " / " + g.subclass : ""), "наблюдение"],
+@@ -305,7 +307,7 @@
+         ["Длина", fmtM(g.length_m) + (g.crosses_edge ? " (вся линия, выходит за квадрат)" : ""), "геодезическая, K10"],
+         ["Проход пешком", D.foot_access_labels[g.foot_access], g.foot_access],
+         ["Мост / тоннель", g.flags.length ? g.flags.join(", ") : "не отмечено", "road_flags"],
+-        ["Источник", `${g.record_id || "—"} · ${g.license || "—"} · ${fmtDate(g.update_time)}`, null],
++        ["Источник", `${g.dataset || "—"} · ${g.record_id || "—"} · ${g.license || "—"} · ${fmtDate(g.update_time)}`, null],
+       ]);
+       body.append(dl, el("p", { class: "muted" }, "Режим просмотра дорог: время пешком и доступность по сети не рассчитываются — у большинства сегментов права прохода неизвестны."));
+     } else if (s.type === "point") {
+@@ -356,7 +358,7 @@
+     dlRows(dl, [
+       ["Пакет", `K10 раунд 3 · ${D.inputs.k10_branch} @ ${D.inputs.k10_sha.slice(0, 10)}`, "source_manifest.json"],
+       ["Коммит данных", D.inputs.k10_data_commit.slice(0, 10), null],
+-      ["Атрибуция", (c.attribution || []).join("; "), null],
++      ["Атрибуция", (c.attribution || []).join("; ") + " — см. ATTRIBUTION.md и LICENSES/", null],
+       ["Вид данных", c.kind, null],
+     ]);
+     b.append(dl, el("h3", null, "Файлы и SHA256"));

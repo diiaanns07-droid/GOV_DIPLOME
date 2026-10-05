@@ -1,0 +1,32 @@
+$ /tmp/claude-0/-home-user-GOV-DIPLOME/cf69c9ea-684d-5fca-9dcc-2d983076f4aa/scratchpad/venv/bin/python /tmp/acc-yk3w32kb/prototypes/city-evidence/tools/check_all.py --log results/baseline_064ed25/BUILD_check_all.json
+exit=1
+--- stdout
+[PASS] inputs: 40 + 82 copied inputs match recorded sha256
+[PASS] inputs: contract k05-obs-v1.2+k12r4: originals and patched copy match manifest (1 modified)
+[PASS] inputs: K03 v2: original byte-exact, patched copy matches manifest
+[PASS] inputs: K02 v4: original byte-exact, adapted copy matches manifest
+[PASS] inputs: web/attribution equals K08 r4 originals
+[PASS] inputs: K10 package_manifest.json anchored by source_manifest sha256 (K01 #2)
+[PASS] package: K10 offline_check.py (subprocess) exit 0, ok=true
+[PASS] build: web/data.js == rebuild
+[PASS] build: committed evidence.js passes k05-obs-v1.2+k12r4 (strict JSON, records, dataset)
+shymkent: {'matched': 55}; 26 наблюдений, ошибок 0; QA: colocated [10, 4], дубли 3, сомнения в категории 5
+astana: {'matched': 65}; 26 наблюдений, ошибок 0; QA: colocated [], дубли 5, сомнения в категории 0
+[PASS] build: web/evidence.js == rebuild (K03 v2 assign + K05 recount + QA)
+[FAIL] facts: step crashed — StopIteration: 
+[PASS] tests: python -m unittest discover -s tests (Ran 28 tests in 1.741s; OK)
+
+--- stderr
+Traceback (most recent call last):
+  File "/tmp/acc-yk3w32kb/prototypes/city-evidence/tools/check_all.py", line 139, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/tmp/acc-yk3w32kb/prototypes/city-evidence/tools/check_all.py", line 132, in main
+    Path(sys.argv[sys.argv.index("--log") + 1]).write_text(json.dumps(summary, ensure_ascii=False, indent=1) + "\n",
+  File "/usr/lib/python3.11/pathlib.py", line 1078, in write_text
+    with self.open(mode='w', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.11/pathlib.py", line 1044, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'results/baseline_064ed25/BUILD_check_all.json'

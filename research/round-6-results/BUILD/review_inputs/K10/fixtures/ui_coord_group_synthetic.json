@@ -1,0 +1,50 @@
+{
+ "fixture": "ui_coord_group_synthetic",
+ "kind": "SYNTHETIC - not real places; for UI tests of a stacked-marker group",
+ "city": "shymkent",
+ "places": [
+  {
+   "id": "synthetic-coord-group-a",
+   "lon": 69.6,
+   "lat": 42.31,
+   "name": "SYNTHETIC A",
+   "group": "school",
+   "group_label": "Школа",
+   "sector": "education",
+   "confidence": 0.5,
+   "address": "SYNTHETIC street 1",
+   "sources": []
+  },
+  {
+   "id": "synthetic-coord-group-b",
+   "lon": 69.6,
+   "lat": 42.31,
+   "name": "SYNTHETIC B",
+   "group": "pharmacy",
+   "group_label": "Аптека",
+   "sector": "health",
+   "confidence": 0.5,
+   "address": "SYNTHETIC street 2",
+   "sources": []
+  },
+  {
+   "id": "synthetic-coord-group-c",
+   "lon": 69.6,
+   "lat": 42.31,
+   "name": "SYNTHETIC C",
+   "group": "hospital",
+   "group_label": "Больница",
+   "sector": "health",
+   "confidence": 0.5,
+   "address": null,
+   "sources": []
+  }
+ ],
+ "expected": {
+  "exact_group_size": 3,
+  "rules": [
+   "COORD_EXACT_GROUP",
+   "GROUP_ADDRESS_DIVERGENT"
+  ]
+ }
+}

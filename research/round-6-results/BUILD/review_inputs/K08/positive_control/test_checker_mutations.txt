@@ -1,0 +1,8 @@
+PASS control: исходная сборка — 0 FAIL
+PASS license_text_byte_changed: ожидается ('A2', 'FAIL'), exit=1
+PASS license_text_missing: ожидается ('A2', 'FAIL'), exit=1
+PASS attribution_file_missing: ожидается ('A3', 'FAIL'), exit=1
+PASS segment_dataset_dropped: ожидается ('A6', 'FAIL'), exit=1
+PASS road_card_hardcoded_osm: ожидается ('A7', 'FAIL'), exit=1
+PASS input_byte_changed: ожидается ('A8', 'FAIL'), exit=1
+6/6 мутаций обнаружены

@@ -1,0 +1,21 @@
+$ /tmp/claude-0/-home-user-GOV-DIPLOME/cf69c9ea-684d-5fca-9dcc-2d983076f4aa/scratchpad/venv/bin/python /home/user/GOV_DIPLOME/research/round-6-results/BUILD/review_inputs/K08/check_demo_attribution.py --app-root /tmp/acc-yk3w32kb/prototypes/city-evidence --repo /home/user/GOV_DIPLOME --json results/baseline_064ed25/K08_attribution.json
+exit=1
+--- stdout
+[INFO] A1 Поставщики и лицензии в данных демо
+[PASS] A2 Текст Apache-2.0 поставляется: attribution/LICENSES/Apache-2.0.txt
+[PASS] A2 Текст CDLA-Permissive-2.0 поставляется: attribution/LICENSES/CDLA-Permissive-2.0.txt
+[PASS] A2 Текст ODbL-1.0 поставляется: attribution/LICENSES/ODbL-1.0.txt
+[PASS] A3 Файл атрибуции поставляется: attribution/ATTRIBUTION.md
+[PASS] A4 Поставщик Foursquare в общем уведомлении: UI=True, файл атрибуции=True
+[PASS] A4 Поставщик OpenStreetMap в общем уведомлении: UI=True, файл атрибуции=True
+[PASS] A4 Поставщик TomTom в общем уведомлении: UI=True, файл атрибуции=True
+[PASS] A4 Поставщик meta в общем уведомлении: UI=True, файл атрибуции=True
+[PASS] A5 Ссылка на openstreetmap.org/copyright есть
+[PASS] A6 Сегментов без поля dataset в data.js: 0 из 2410
+[FAIL] A7 Карточка дороги всегда подписана «OSM через Overture», хотя среди сегментов есть ['TomTom']
+[PASS] A8 Файлы inputs/ совпадают с source_manifest.json: 40/40
+[PASS] A9 Сверка с upstream git-объектами: проверено 40, отличаются 0
+[INFO] A10 Записей manifest с явной пометкой modified: 0 (поле в схеме manifest отсутствует; изменённые файлы надо помечать отдельным hash)
+{"PASS": 12, "WARN": 0, "FAIL": 1, "INFO": 2}
+
+--- stderr

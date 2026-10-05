@@ -1,0 +1,47 @@
+$ /tmp/claude-0/-home-user-GOV-DIPLOME/cf69c9ea-684d-5fca-9dcc-2d983076f4aa/scratchpad/venv/bin/python review_inputs/K05/k05r5_compat.py --app-root /tmp/tmpyhqabe51/prototypes/city-evidence --contract-root /tmp/tmpyhqabe51/prototypes/city-evidence/inputs/contract/research --k05r4 /tmp/tmpyhqabe51/prototypes/city-evidence/inputs/contract/research/round-4-results/K05/k05r4_contract.py --json results/baseline_064ed25/K05_compat.json
+exit=1
+--- stdout
+контракт сборки: v1.1+K12@3e84039; v1.2: orig (423cdfeeb13c)
+PASS           D01_strict_json              evidence.js — строгий JSON (нет NaN/Infinity/повтора ключей)
+                135548 символов
+PASS           D02_unique_obs_id            obs_id уникальны во всей сборке
+                52 obs_id, повторов 0 []
+PASS           D03_null_iff_missing         value=null ⇔ статус отсутствия
+                нарушений null⇔missing: []
+PASS           D04_honest_zero              reported_zero только при coverage.complete=true
+                0 при неполном охвате: []; честно переведены в missing: 0
+PASS           D05_finite_counts            числа конечны; records/segments — целые ≥ 0
+                нарушений: []
+PASS           D06_city_consistency         city_id/geo_unit_id совпадают с городом раздела
+                чужой город: []
+PASS           D07_validate_dataset         validate_dataset() сборки: нет ошибок набора
+                ошибок набора: []
+FAIL           D08_validate_all             validate() сборки на всех наблюдениях: 0 ошибок
+                ошибок validate: [('kz.astana.k10sq_r17_c7.overture_place_records.school.conf_ge_0_0@2026-09-23.1', 'SCHEMA_VERSION: ожидается k05-obs-v1.1'), ('kz.astana.k10sq_r17_c7.overture_place_records.preschool.conf_ge_0_0@2026-09-23.1', 'SCHEMA_VERSION: ожидается k05-obs-v1.1'), ('kz.astana.k10sq_r17_c7.overture_place_records.college_university.conf_ge_0_0@2026-09-23.1', 'SCHEMA_VERSION: ожидается k05-obs-v1.1')]
+PASS           M01_nan_v11                  v1.1: NaN при reported отклоняется
+                ['VALUE_NOT_FINITE']
+PASS           M02_nan_v12                  v1.2 поверх сборки: Infinity отклоняется
+                ['VALUE_NOT_FINITE']
+PASS           M03_nan_aggregate            v1.1 aggregate_sum: NaN отклоняется
+                VALUE_NOT_FINITE: ['a']
+PASS           M04_bbox_vs_district         v1.2: квадрат и район не складываются
+                SPATIAL_MIX: ['bbox', 'district_polygon']
+PASS           M05_legacy_district          v1.2: запись без spatial_unit (E02/BUILD v1.1) не смешивается
+                LEGACY_UNIT: запись без spatial_unit (например, v1.1/E02) не смешивается с v1.2
+PASS           M06_zero_partial_aggregate   сумма 0 при неполном охвате → missing, не reported_zero
+                {'value': None, 'value_status': 'missing', 'missing_reason': 'zero_in_partial_coverage', 'coverage_complete': False, 'n': '2/2', 'known_partial_sum': 0, 'geography_checked': False}
+PASS           M07_zero_vs_missing          честный 0 принят; 0 при missing и 0 при partial отклонены
+                honest0=True, missing+0 отклонён=True, 0 при partial отклонён=True
+PASS           M08_duplicate_obs_id         повтор obs_id с разным значением → DUPLICATE_OBS_ID (и для v1.2)
+                ['DUPLICATE_OBS_ID']
+EXPECTED_FAIL  M09_disjoint_bboxes_v12      v1.2: две непересекающиеся bbox одного города складываются
+                ValueError: BOUNDARY_MIX: слои границ ['k10_r3_square:sq_a@fixture', 'k10_r3_square:sq_b@fixture']
+EXPECTED_FAIL  M10_expected_units_v12       v1.2 передаёт expected_units в v1.1 (неполная география → missing)
+                TypeError: aggregate_sum() got an unexpected keyword argument 'expected_units'
+PASS           M11_overlap_v12              v1.2: пересекающиеся bbox отклоняются
+                OVERLAP: bbox [69.59, 42.3, 69.61, 42.32] и [69.6, 42.31, 69.63, 42.33] пересека
+EXPECTED_FAIL  M12_count_domain_records     домен счётчика для unit=records (единица сборки и K05 r4)
+                records=-3 отклонён=False, records=2.5 отклонён=False
+неожиданных результатов: 1 ['D08_validate_all']
+
+--- stderr

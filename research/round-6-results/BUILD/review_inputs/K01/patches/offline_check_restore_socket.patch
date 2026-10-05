@@ -1,0 +1,26 @@
+--- a/prototypes/city-evidence/inputs/k10/scripts/offline_check.py
++++ b/prototypes/city-evidence/inputs/k10/scripts/offline_check.py
+@@ -37,6 +37,14 @@
+     raise NetworkBlocked("network access attempted during offline check")
+ 
+ 
++_REAL_SOCKET = (socket.socket.connect, socket.socket.connect_ex, socket.create_connection)
++
++
++def remove_guards(real_open):
++    builtins.open = real_open
++    socket.socket.connect, socket.socket.connect_ex, socket.create_connection = _REAL_SOCKET
++
++
+ def install_guards():
+     socket.socket.connect = _no_net
+     socket.socket.connect_ex = _no_net
+@@ -257,7 +265,7 @@
+         report["ok"] = not errors
+         return report
+     finally:
+-        builtins.open = real_open
++        remove_guards(real_open)
+ 
+ 
+ MANIFEST = None

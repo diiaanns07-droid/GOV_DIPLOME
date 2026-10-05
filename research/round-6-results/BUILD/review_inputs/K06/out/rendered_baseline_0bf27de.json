@@ -1,0 +1,197 @@
+{
+ "target": "file:///tmp/claude-0/-home-user-GOV-DIPLOME/19d693cf-bc24-5d40-9049-bfa1f44c4847/scratchpad/build/web/index.html",
+ "summary": {
+  "PASS": 12
+ },
+ "checks": [
+  {
+   "id": "R1_slice_card",
+   "city": "shymkent",
+   "status": "PASS",
+   "observed": {
+    "places_shown": 55,
+    "places_data": 55,
+    "segments_shown": 1084,
+    "segments_data": 1084,
+    "crossing_shown": 136,
+    "crossing_recomputed": 136,
+    "not_registry_label": true,
+    "km_shown_in_slice": false
+   }
+  },
+  {
+   "id": "R2_cross_segment_card",
+   "city": "shymkent",
+   "status": "PASS",
+   "observed": {
+    "segment": "6c0c508c-d72f-41e1-80d3-08406cfee4ca",
+    "shown": "2,83 км",
+    "length_m_full_line": 2829.6,
+    "inside_square_m": 307.9,
+    "outside_share": 0.891,
+    "marker_present": true,
+    "length_basis_label": "геодезическая, K10"
+   }
+  },
+  {
+   "id": "R2b_inner_segment_card",
+   "city": "shymkent",
+   "status": "PASS",
+   "observed": {
+    "segment": "863e59cc-44bf-4037-9b30-61cdc3407027",
+    "length_m": 771.6,
+    "marker_present": false
+   }
+  },
+  {
+   "id": "R3_point_distances",
+   "city": "shymkent",
+   "status": "PASS",
+   "observed": {
+    "point": [
+     69.603612,
+     42.314533
+    ],
+    "rows": [
+     [
+      "ОКБ г.Шымкент",
+      "Больница",
+      "172 м"
+     ],
+     [
+      "М.Х.Дулати атындағы үш тілде оқытатын N8 мамандандырылған  гимназия\" КММ",
+      "Школа",
+      "249 м"
+     ],
+     [
+      "Эко центр доктора Тарарака",
+      "Больница",
+      "307 м"
+     ]
+    ],
+    "rows_n": 8,
+    "max_excess_over_tolerance_m": -0.968,
+    "sorted": true,
+    "header": [
+     "Объект",
+     "Категория",
+     "По прямой"
+    ],
+    "lower_bound_warning": true
+   }
+  },
+  {
+   "id": "R4_no_walk_time_no_city_total",
+   "city": "shymkent",
+   "status": "PASS",
+   "observed": {
+    "minutes": [],
+    "city_total_claims": []
+   }
+  },
+  {
+   "id": "R5_table_and_banner",
+   "city": "shymkent",
+   "status": "PASS",
+   "observed": {
+    "table_count": "(55 из 55 записей среза)",
+    "banner_mentions_not_city_total": true
+   }
+  },
+  {
+   "id": "R1_slice_card",
+   "city": "astana",
+   "status": "PASS",
+   "observed": {
+    "places_shown": 65,
+    "places_data": 65,
+    "segments_shown": 1326,
+    "segments_data": 1326,
+    "crossing_shown": 143,
+    "crossing_recomputed": 143,
+    "not_registry_label": true,
+    "km_shown_in_slice": false
+   }
+  },
+  {
+   "id": "R2_cross_segment_card",
+   "city": "astana",
+   "status": "PASS",
+   "observed": {
+    "segment": "dbe369b5-2481-41f0-88e1-56e0d6d8007e",
+    "shown": "1,42 км",
+    "length_m_full_line": 1417.4,
+    "inside_square_m": 527.7,
+    "outside_share": 0.628,
+    "marker_present": true,
+    "length_basis_label": "геодезическая, K10"
+   }
+  },
+  {
+   "id": "R2b_inner_segment_card",
+   "city": "astana",
+   "status": "PASS",
+   "observed": {
+    "segment": "b6ea2f1b-3d78-45cb-924d-930b02c52d92",
+    "length_m": 880.4,
+    "marker_present": false
+   }
+  },
+  {
+   "id": "R3_point_distances",
+   "city": "astana",
+   "status": "PASS",
+   "observed": {
+    "point": [
+     71.430445,
+     51.170921
+    ],
+    "rows": [
+     [
+      "Астана қ.,Санитариялық-эпидемиологиялық бақылау департаменті",
+      "Госучреждение",
+      "153 м"
+     ],
+     [
+      "Агентство по противодействию коррупции (Антикоррупционная служба)",
+      "Госучреждение",
+      "157 м"
+     ],
+     [
+      "ultraline.kz",
+      "Больница",
+      "211 м"
+     ]
+    ],
+    "rows_n": 8,
+    "max_excess_over_tolerance_m": -0.777,
+    "sorted": true,
+    "header": [
+     "Объект",
+     "Категория",
+     "По прямой"
+    ],
+    "lower_bound_warning": true
+   }
+  },
+  {
+   "id": "R4_no_walk_time_no_city_total",
+   "city": "astana",
+   "status": "PASS",
+   "observed": {
+    "minutes": [],
+    "city_total_claims": []
+   }
+  },
+  {
+   "id": "R5_table_and_banner",
+   "city": "astana",
+   "status": "PASS",
+   "observed": {
+    "table_count": "(65 из 65 записей среза)",
+    "banner_mentions_not_city_total": true
+   }
+  }
+ ],
+ "extracted_from_commit": "0bf27deb8549b325b34a9610402613d745544edb"
+}

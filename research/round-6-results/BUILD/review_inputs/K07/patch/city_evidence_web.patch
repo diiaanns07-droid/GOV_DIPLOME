@@ -1,0 +1,239 @@
+--- a/prototypes/city-evidence/web/index.html
++++ b/prototypes/city-evidence/web/index.html
+@@ -108,9 +108,24 @@
+ .kv-unknown { color: var(--muted); font-style: italic; }
+ select { font: inherit; padding: 4px 6px; border-radius: 6px; border: 1px solid var(--base); background: var(--surface); color: var(--ink); }
+ @media (max-width: 520px) { .mapwrap { height: 56vh; min-height: 320px; } header h1 { font-size: 16px; } .toolbar { gap: 6px 10px; } }
++/* K07 r5 proposal: skip link, map status line, narrow tables */
++.skip { position: absolute; left: 16px; top: -40px; background: var(--surface); color: var(--ink); border: 1px solid var(--base); border-radius: 6px; padding: 4px 8px; z-index: 5; }
++.skip:focus { top: 8px; }
++.map-status { position: absolute; left: 10px; right: 54px; bottom: 26px; background: var(--surface); border: 1px solid var(--base); border-radius: 6px; padding: 4px 8px; font-size: 12px; color: var(--ink); }
++#map text { pointer-events: none; }
++@media (max-width: 480px) {
++  .map-status { bottom: 48px; }  /* the attribution wraps to two lines */
++  .card table { table-layout: fixed; }
++  .card th:first-child { width: 46%; }
++  th { white-space: normal; }
++  td { overflow-wrap: anywhere; }
++  .col-cat { display: none; }
++  td[data-cat]::after { content: attr(data-cat); display: block; color: var(--muted); font-size: 11.5px; }
++}
+ </style>
+ </head>
+ <body>
++<a class="skip" href="#tblSection">Перейти к таблице объектов</a>
+ <header>
+   <h1>Городские данные: Шымкент / Астана</h1>
+   <p class="sub">Демо на открытых вторичных данных Overture Maps (OSM и др.). Два небольших квадрата ~2×2 км, а не целые города. Не учебная модель STUPITS и не официальный реестр.</p>
+@@ -125,17 +140,18 @@
+   <label class="ctl" for="roadStyle">Цвет дорог
+     <select id="roadStyle"><option value="plain">один цвет</option><option value="foot">по данным о проходе пешком</option></select></label>
+   <span class="ctl muted" id="roadLegend" hidden></span>
+-  <span class="ctl"><button class="tool" id="pointBtn" aria-pressed="false">Расстояние от точки</button></span>
++  <span class="ctl"><button class="tool" id="pointBtn" aria-pressed="false">Расстояние от точки</button><button class="tool" id="clearBtn" type="button" disabled>Сбросить точку и выбор</button></span>
+ </div>
+ 
+ <main>
+   <section class="mapwrap" aria-label="Карта">
+-    <svg id="map" role="img" aria-label="Карта выбранного квадрата"></svg>
+     <div class="zoom">
+       <button class="tool" id="zIn" aria-label="Приблизить">+</button>
+       <button class="tool" id="zOut" aria-label="Отдалить">−</button>
+       <button class="tool" id="zReset" aria-label="Показать весь квадрат">⟲</button>
+     </div>
++    <svg id="map" role="group" tabindex="0" aria-roledescription="карта" aria-label="Карта выбранного квадрата. Стрелки — сдвиг, плюс и минус — масштаб; в режиме «Расстояние от точки» Enter ставит точку в центре карты; Escape — сброс."></svg>
++    <div class="map-status" id="mapStatus" role="status" aria-live="polite" hidden></div>
+     <div class="overlay-msg" id="mapMsg" hidden></div>
+     <div class="tooltip" id="tip" role="status"></div>
+     <div class="legend-note" id="attrib"></div>
+@@ -144,8 +160,8 @@
+     <section class="card" id="selCard" aria-live="polite"><h2>Выбор</h2><p class="muted" id="selEmpty">Нажмите на объект, дорогу или строку таблицы. «Расстояние от точки» покажет расстояния по прямой.</p><div id="selBody"></div></section>
+     <section class="card" id="sliceCard"><h2>Срез данных</h2><div id="sliceBody"></div></section>
+     <section class="card" id="explainCard" hidden><h2>Объяснение по фактам</h2><div id="explainBody"></div></section>
+-    <section class="card"><h2>Таблица объектов <span class="muted" id="tblCount"></span></h2>
+-      <div class="tablewrap"><table aria-label="Объекты среза"><thead><tr><th>Объект</th><th>Категория</th><th>Район</th><th class="num">conf.</th></tr></thead><tbody id="tbl"></tbody></table></div>
++    <section class="card" id="tblSection" tabindex="-1"><h2>Таблица объектов <span class="muted" id="tblCount"></span></h2>
++      <div class="tablewrap"><table aria-label="Объекты среза"><thead><tr><th>Объект</th><th class="col-cat">Категория</th><th>Район</th><th class="num">conf.</th></tr></thead><tbody id="tbl"></tbody></table></div>
+     </section>
+     <section class="card" id="provCard"><details><summary>Источники, версии и ограничения</summary><div id="provBody"></div></details></section>
+   </aside>
+--- a/prototypes/city-evidence/web/app.js
++++ b/prototypes/city-evidence/web/app.js
+@@ -111,13 +111,19 @@
+       $("groupFilters").append(lab);
+     }
+     $("tPlaces").addEventListener("change", (e) => { STATE.places = e.target.checked; onFilterChange(); });
+-    $("tRoads").addEventListener("change", (e) => { STATE.roads = e.target.checked; renderMap(); });
++    $("tRoads").addEventListener("change", (e) => {
++      STATE.roads = e.target.checked;
++      if (!STATE.roads && STATE.selected && STATE.selected.type === "segment") STATE.selected = null;  // K07 r5: no orphan card
++      renderMap(); renderSelection(); renderExplain();
++    });
+     $("roadStyle").addEventListener("change", (e) => { STATE.roadStyle = e.target.value; renderRoadLegend(); renderMap(); });
+     $("pointBtn").addEventListener("click", () => {
+       STATE.pointMode = !STATE.pointMode;
+       $("pointBtn").setAttribute("aria-pressed", String(STATE.pointMode));
+       $("map").classList.toggle("pointmode", STATE.pointMode);
+     });
++    $("clearBtn").addEventListener("click", clearSelection);
++    document.addEventListener("keydown", (e) => { if (e.key === "Escape" && (STATE.point || STATE.selected)) clearSelection(); });
+     $("zIn").addEventListener("click", () => zoomBy(1.5));
+     $("zOut").addEventListener("click", () => zoomBy(1 / 1.5));
+     $("zReset").addEventListener("click", () => { fitView(); renderMap(); });
+@@ -132,6 +138,10 @@
+       box.append(sw, document.createTextNode(txt + " "));
+     }
+   }
++  function clearSelection() {  // K07 r5
++    STATE.point = null; STATE.selected = null;
++    renderMap(); renderSelection(); renderTable(); renderExplain();
++  }
+   // City switch: drop every per-city state (selection, point, tooltip, pending explanation) before rendering.
+   function switchCity(key) {
+     if (!D.cities[key]) return;
+@@ -162,6 +172,7 @@
+   }
+   function renderMap() {
+     const c = D.cities[STATE.city], svg = $("map");
++    hideTip();  // K07 r5: the hovered element is replaced; never keep its text over the new render
+     svg.replaceChildren();
+     const gBox = sv("g"), gRoad = sv("g"), gPoint = sv("g"), gMark = sv("g"), gLabel = sv("g");
+     svg.append(gBox, gRoad, gPoint, gMark, gLabel);
+@@ -173,7 +184,7 @@
+       let d = ""; sg.coords.forEach(([x, y], i) => { const [a, b] = toScreen(x, y); d += (i ? "L" : "M") + a.toFixed(1) + " " + b.toFixed(1); });
+       const color = STATE.roadStyle === "foot" ? FOOT_COLOR[sg.foot_access] : "var(--base)";
+       gRoad.append(sv("path", { d, fill: "none", stroke: color, "stroke-width": sg.class === "footway" || sg.class === "path" ? 1.2 : 2, "stroke-linecap": "round" }));
+-      const hit = sv("path", { d, fill: "none", stroke: "transparent", "stroke-width": 10, tabindex: 0, role: "button",
++      const hit = sv("path", { d, fill: "none", stroke: "transparent", "stroke-width": 10, tabindex: -1, role: "button",
+         "aria-label": `Дорога: ${sg.class}${sg.name ? ", " + sg.name : ""}` });
+       hit.style.cursor = "pointer";
+       hit.addEventListener("pointermove", (ev) => showTip(ev, [`${sg.class}${sg.name ? " · " + sg.name : ""}`, `${fmtM(sg.length_m)} · проход пешком: ${sg.foot_access}`]));
+@@ -187,6 +198,8 @@
+       const [sx, sy] = toScreen(STATE.point[0], STATE.point[1]);
+       gPoint.append(sv("path", { d: `M${sx - 8} ${sy}H${sx + 8}M${sx} ${sy - 8}V${sy + 8}`, stroke: "var(--ink)", "stroke-width": 2 }));
+     }
++    if (STATE.mapFocused && STATE.pointMode)  // K07 r5: keyboard target, Enter puts the point here
++      gLabel.append(sv("circle", { cx: svg.clientWidth / 2, cy: svg.clientHeight / 2, r: 9, fill: "none", stroke: "var(--focus)", "stroke-width": 2 }));
+     const places = visiblePlaces();
+     for (const p of places) {
+       const [sx, sy] = toScreen(p.lon, p.lat);
+@@ -251,6 +264,21 @@
+       zoomBy(e.deltaY < 0 ? 1.2 : 1 / 1.2, e.clientX - r.left, e.clientY - r.top);
+     }, { passive: false });
+     window.addEventListener("resize", () => renderMap());
++    svg.addEventListener("keydown", (e) => {  // K07 r5: keyboard map
++      if (e.target !== svg) return;
++      const step = 60 / STATE.view.k, keys = { ArrowLeft: [-step, 0], ArrowRight: [step, 0], ArrowUp: [0, -step], ArrowDown: [0, step] };
++      if (keys[e.key]) { e.preventDefault(); STATE.view.cx += keys[e.key][0]; STATE.view.cy += keys[e.key][1]; renderMap(); }
++      else if (e.key === "+" || e.key === "=") { e.preventDefault(); zoomBy(1.5); }
++      else if (e.key === "-") { e.preventDefault(); zoomBy(1 / 1.5); }
++      else if ((e.key === "Enter" || e.key === " ") && STATE.pointMode) {
++        e.preventDefault();
++        STATE.point = toLonLat(svg.clientWidth / 2, svg.clientHeight / 2);
++        STATE.selected = { type: "point" };
++        renderMap(); renderSelection(); renderExplain();
++      }
++    });
++    svg.addEventListener("focus", () => { STATE.mapFocused = true; renderMap(); });
++    svg.addEventListener("blur", () => { STATE.mapFocused = false; renderMap(); });
+   }
+ 
+   // ---------- side panel ----------
+@@ -267,11 +295,26 @@
+     const r = F.districtOf(STATE.city, p);
+     return [r.text, r.badge];
+   }
++  function renderStatus(c) {  // K07 r5: what is selected, next to the map (narrow screens: the card is below the fold)
++    const st = $("mapStatus"), s = STATE.selected;
++    if (!s) { st.hidden = true; st.textContent = ""; return; }
++    if (s.type === "point" && STATE.point) {
++      const [lon, lat] = STATE.point, near = visiblePlaces().map((p) => ({ p, d: haversine(lon, lat, p.lon, p.lat) })).sort((a, b) => a.d - b.d)[0];
++      st.textContent = near ? `Точка: ближайшая запись среза — ${near.p.name || "без названия"}, ${fmtM(near.d)} по прямой. Подробности — в карточке «Выбор».`
++        : "Точка: нет видимых записей среза. Подробности — в карточке «Выбор».";
++    } else if (s.type === "place") {
++      const p = c.places.find((x) => x.id === s.id);
++      st.textContent = `Выбран объект: ${p ? p.name || "без названия" : "—"}. Карточка — «Выбор».`;
++    } else st.textContent = "Выбрана дорога. Карточка — «Выбор».";
++    st.hidden = false;
++  }
+   function renderSelection() {
+     const c = D.cities[STATE.city], body = $("selBody"), empty = $("selEmpty");
+     body.replaceChildren();
+     const s = STATE.selected;
+     empty.hidden = !!s;
++    $("clearBtn").disabled = !(STATE.point || s);
++    renderStatus(c);
+     if (!s) return;
+     if (s.type === "place") {
+       const p = c.places.find((x) => x.id === s.id);
+@@ -321,12 +364,12 @@
+     const rows = visiblePlaces().map((p) => ({ p, d: haversine(lon, lat, p.lon, p.lat) })).sort((a, b) => a.d - b.d).slice(0, 8);
+     if (!rows.length) { body.append(el("p", { class: "muted" }, "Нет видимых объектов среза.")); return; }
+     const tbl = el("table"), tr = el("tr");
+-    for (const [h, cls] of [["Объект", null], ["Категория", null], ["По прямой", "num"]]) tr.append(el("th", { class: cls }, h));
++    for (const [h, cls] of [["Объект", null], ["Категория", "col-cat"], ["По прямой", "num"]]) tr.append(el("th", { class: cls }, h));
+     const th = el("thead"); th.append(tr); tbl.append(th);
+     const tb = el("tbody");
+     for (const { p, d } of rows) {
+       const r = el("tr", { tabindex: 0 });
+-      r.append(el("td", null, p.name || "Без названия"), el("td", null, p.group_label), el("td", { class: "num" }, fmtM(d)));
++      r.append(el("td", { "data-cat": p.group_label }, p.name || "Без названия"), el("td", { class: "col-cat" }, p.group_label), el("td", { class: "num" }, fmtM(d)));
+       r.addEventListener("click", () => selectPlace(p.id));
+       tb.append(r);
+     }
+@@ -379,7 +422,7 @@
+     for (const p of rows) {
+       const tr = el("tr", { tabindex: 0 });
+       if (STATE.selected && STATE.selected.type === "place" && STATE.selected.id === p.id) tr.classList.add("sel");
+-      tr.append(el("td", null, p.name || "Без названия"), el("td", null, p.group_label), el("td", null, districtText(p)[0]), el("td", { class: "num" }, p.confidence ?? "—"));
++      tr.append(el("td", { "data-cat": p.group_label }, p.name || "Без названия"), el("td", { class: "col-cat" }, p.group_label), el("td", null, districtText(p)[0]), el("td", { class: "num" }, p.confidence ?? "—"));
+       tr.addEventListener("click", () => selectPlace(p.id));
+       tr.addEventListener("keydown", (e) => { if (e.key === "Enter") selectPlace(p.id); });
+       tb.append(tr);
+--- a/prototypes/city-evidence/web/facts.js
++++ b/prototypes/city-evidence/web/facts.js
+@@ -154,9 +154,23 @@
+     return { ...render(accepted, catalog, scenario, lang), scenario, selector: (selector || StubSelector).name };
+   }
+ 
++  // K07 r5: evidence.js must be built from the same inputs as data.js (data_version commit + SHA-256 of the source files).
++  function evidenceMismatch(data, ev, city) {
++    if (!data || !ev || !ev.cities || !ev.cities[city] || !data.cities[city]) return null;
++    const commit = ((data.inputs || {}).k10_data_commit || "").slice(0, 7), files = {}, out = [];
++    for (const f of Object.values(data.cities[city].files || {})) files[f.path] = f.sha256;
++    for (const o of ev.cities[city].observations) {
++      if (commit && o.data_version && !o.data_version.endsWith("-" + commit)) out.push(`${o.indicator_id}: data_version ${o.data_version}, data.js ${commit}`);
++      const s = o.source || {};
++      if (s.path && files[s.path] && s.sha256 && s.sha256 !== files[s.path]) out.push(`${o.indicator_id}: SHA-256 ${s.path} не совпадает с data.js`);
++    }
++    return out.length ? out : null;
++  }
++
+   // ---------- UI glue (browser only) ----------
+   const STATUS_RU = { matched: "проверенная привязка", ambiguous: "неоднозначно", unmatched: "в городе, вне районов", outside: "вне города", invalid: "ошибка координат" };
+   function districtOf(city, place) {
++    if (evidenceMismatch(root.CITY_EVIDENCE, root.CITY_OBS, city)) return { text: "не определён", badge: "evidence.js от другой версии данных" };
+     const ev = root.CITY_OBS, rec = ev && ev.cities[city] && ev.cities[city].place_district[place.id];
+     if (!rec) return { text: "не определён", badge: "нет привязки" };
+     if (rec.status === "matched") {
+@@ -183,6 +197,11 @@
+       body.append(el("p", { class: "err" }, "Каталог фактов недоступен: нет web/evidence.js. Соберите: tools/build_evidence.py."));
+       return;
+     }
++    const mm = evidenceMismatch(data, ev, state.city);
++    if (mm) {
++      body.append(el("p", { class: "err" }, `Каталог фактов не показан: evidence.js не совпадает с data.js (${mm.length} расхождений, например ${mm[0]}). Пересоберите: tools/build_evidence.py.`));
++      return;
++    }
+     const groups = state.places ? state.groups : new Set();
+     let built;
+     try { built = buildCatalog(data, ev, state.city, groups); } catch (e) { body.append(el("p", { class: "err" }, "Ошибка каталога: " + e.message)); return; }
+@@ -232,7 +251,7 @@
+   }
+ 
+   const api = { GROUP_ORDER, PlanError, formatValue, scenarioId, buildCatalog, catalogView, StubSelector, validatePlan, render, explain,
+-    districtOf, provenanceNotes, renderExplanation };
++    districtOf, provenanceNotes, renderExplanation, evidenceMismatch };
+   if (typeof module !== "undefined" && module.exports) module.exports = api;
+   else root.CITY_FACTS = api;
+ })(typeof window !== "undefined" ? window : globalThis);

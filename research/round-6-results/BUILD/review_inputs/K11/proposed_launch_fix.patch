@@ -1,0 +1,96 @@
+diff --git a/prototypes/city-evidence/README.md b/prototypes/city-evidence/README.md
+index 928cc0a..def8f5a 100644
+--- a/prototypes/city-evidence/README.md
++++ b/prototypes/city-evidence/README.md
+@@ -12,6 +12,15 @@ python3 serve.py            # → http://127.0.0.1:8765/
+ # или открыть web/index.html в браузере (file:// тоже работает)
+ ```
+ 
++Windows (cmd) — **не проверено на Windows**; команда подготовлена по Linux-проверке и моделированию:
++
++```
++cd prototypes\city-evidence
++run-demo.bat
++```
++
++или `py -3 serve.py`, затем http://127.0.0.1:8765/.
++
+ ## Что на экране
+ 
+ - переключатель Шымкент / Астана; при смене сбрасываются выбранный объект, точка, подсказка, отложенное объяснение;
+@@ -50,7 +59,7 @@ python3 tools/explain_ref.py                  # → tests/expected_explanations.
+ ```bash
+ python3 -m unittest discover -s tests -v                   # входы: битый/отсутствующий файл, манифест; K05 ZERO_ON_PARTIAL; K03 (если есть shapely)
+ node tests/conformance.cjs                                 # JS = K02 Python (6 случаев); unknown ID, чужой город, устаревший срез, null vs 0
+-NODE_PATH=$(npm root -g) node tests/smoke.cjs              # Playwright Chromium, file://; скриншоты → research/round-4-results/BUILD/smoke/
++NODE_PATH=$(npm root -g) node tests/smoke.cjs              # Playwright Chromium, file://; скриншоты → tests/_smoke_out/ (или каталог из первого аргумента)
+ ```
+ 
+ Проверено только на Linux (контейнер Claude Code: Python 3.11, Node 22, Playwright 1.56 Chromium). Windows/macOS не проверялись.
+diff --git a/prototypes/city-evidence/run-demo.bat b/prototypes/city-evidence/run-demo.bat
+new file mode 100644
+index 0000000..72702cc
+--- /dev/null
++++ b/prototypes/city-evidence/run-demo.bat
+@@ -0,0 +1,11 @@
++@echo off
++rem Windows launcher for the city-evidence demo (stdlib Python only). Usage: run-demo.bat [port]
++setlocal
++cd /d "%~dp0"
++set PYTHONUTF8=1
++where py >nul 2>nul
++if %errorlevel%==0 (
++  py -3 serve.py %*
++) else (
++  python serve.py %*
++)
+diff --git a/prototypes/city-evidence/serve.py b/prototypes/city-evidence/serve.py
+index 58b992e..57dcc75 100644
+--- a/prototypes/city-evidence/serve.py
++++ b/prototypes/city-evidence/serve.py
+@@ -4,9 +4,17 @@ import http.server
+ import sys
+ from pathlib import Path
+ 
++try:  # a redirected stdout on Windows uses the ANSI code page (cp1252 has no Cyrillic): never crash on the banner
++    sys.stdout.reconfigure(errors="replace")
++except (AttributeError, ValueError):
++    pass
++
+ PORT = int(sys.argv[1]) if len(sys.argv) > 1 else 8765
+ WEB = Path(__file__).resolve().parent / "web"
+ handler = functools.partial(http.server.SimpleHTTPRequestHandler, directory=str(WEB))
+ with http.server.ThreadingHTTPServer(("127.0.0.1", PORT), handler) as srv:
+-    print(f"Городские данные: http://127.0.0.1:{PORT}/  (Ctrl+C — остановить)")
+-    srv.serve_forever()
++    print(f"Городские данные: http://127.0.0.1:{PORT}/  (Ctrl+C — остановить)", flush=True)
++    try:
++        srv.serve_forever()
++    except KeyboardInterrupt:
++        print("Остановлено.")
+diff --git a/prototypes/city-evidence/tests/smoke.cjs b/prototypes/city-evidence/tests/smoke.cjs
+index 523500b..a4b380b 100644
+--- a/prototypes/city-evidence/tests/smoke.cjs
++++ b/prototypes/city-evidence/tests/smoke.cjs
+@@ -3,9 +3,10 @@
+ const { chromium } = require("playwright");
+ const path = require("path");
+ const fs = require("fs");
+-const out = process.argv[2] || path.join(__dirname, "..", "..", "..", "research", "round-4-results", "BUILD", "smoke");
++const { pathToFileURL } = require("url");
++const out = process.argv[2] || path.join(__dirname, "_smoke_out");
+ fs.mkdirSync(out, { recursive: true });
+-const url = "file://" + path.resolve(__dirname, "..", "web", "index.html");
++const url = pathToFileURL(path.resolve(__dirname, "..", "web", "index.html")).href;
+ const results = [];
+ const check = (name, ok, detail) => { results.push({ name, ok: !!ok, detail }); console.log((ok ? "PASS " : "FAIL ") + name + (detail ? " — " + detail : "")); };
+ 
+@@ -89,7 +90,7 @@ const check = (name, ok, detail) => { results.push({ name, ok: !!ok, detail });
+     for (const f of fs.readdirSync(path.join(__dirname, "..", "web"))) if (f !== missing) fs.copyFileSync(path.join(__dirname, "..", "web", f), path.join(dir, f));
+     const p2 = await browser.newPage();
+     const errs2 = []; p2.on("pageerror", (e) => errs2.push(String(e)));
+-    await p2.goto("file://" + path.join(dir, "index.html"));
++    await p2.goto(pathToFileURL(path.join(dir, "index.html")).href);
+     await p2.waitForTimeout(200);
+     const txt = await p2.textContent("main");
+     const ok = missing === "data.js" ? txt.includes("Данные не найдены") : (txt.includes("Каталог фактов недоступен") && (await p2.$$("#tbl tr")).length === 55);

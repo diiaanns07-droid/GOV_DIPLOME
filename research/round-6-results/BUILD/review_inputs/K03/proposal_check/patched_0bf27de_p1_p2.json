@@ -1,0 +1,342 @@
+{
+ "note": "Проверка предложения во временной копии. BUILD 0bf27de не изменён; статус FIXED не заявляется.",
+ "build_under_test": "claude/beautiful-clarke-sbzomj@0bf27deb8549b325b34a9610402613d745544edb",
+ "patches": {
+  "build_p1_binding.patch": "f3028a0ef71e4d57ff3a4b990ab6a07531753debe7ed885146bd9373702a16f6",
+  "k03_assign_v2_1.patch": "428394b2b749f2da05fa78a48c4e2a32dad35ab6c3f5e115cf78aff80e6d6515"
+ },
+ "steps": {
+  "agent_from_build_sha": {
+   "cmd": "git show 0bf27deb8549:agent/*",
+   "returncode": 0,
+   "tail": "8 files"
+  },
+  "apply_p2": {
+   "cmd": "git apply --directory=inputs/k03_root /home/user/GOV_DIPLOME/research/round-5-results/K03/patches/k03_assign_v2_1.patch",
+   "returncode": 0,
+   "tail": ""
+  },
+  "apply_p1": {
+   "cmd": "git apply -p3 /home/user/GOV_DIPLOME/research/round-5-results/K03/patches/build_p1_binding.patch",
+   "returncode": 0,
+   "tail": ""
+  },
+  "build_data": {
+   "cmd": "/usr/local/bin/python3 tools/build_data.py",
+   "returncode": 0,
+   "tail": "shymkent: 55 объектов, 1084 сегментов\nastana: 65 объектов, 1326 сегментов\nwrote web/data.js (1007087 bytes)"
+  },
+  "build_evidence": {
+   "cmd": "/usr/local/bin/python3 tools/build_evidence.py",
+   "returncode": 0,
+   "tail": "shymkent: {'matched': 55}; 19 наблюдений, ошибок K05 0, предупреждений 8\nastana: {'matched': 65}; 19 наблюдений, ошибок K05 0, предупреждений 8\nwrote web/evidence.js (83225 bytes)\nПРЕДУПРЕЖДЕНИЕ: правило кода k03_assign_v2 ≠ правилу в boundary_registry.json k03_assign_v1; в evidence.js записано правило кода"
+  },
+  "explain_ref": {
+   "cmd": "/usr/local/bin/python3 tools/explain_ref.py",
+   "returncode": 0,
+   "tail": " Срез: k10r3_g127.\n\n**Итог**\n- Записей выбранных категорий в квадрате: 55 (расчёт)\n- Школа: записей в квадрате: 15 (наблюдение)\n- Детский сад: записей в квадрате: 1 (наблюдение)\n- Колледж / вуз: записей в квадрате: 9 (наблюдение)\n- Больница: записей в квадрате: 6 (наблюдение)\n- Поликлиника: записей в квадрате: 16 (наблюдение)\n\n**Риски**\n- Записей с неоднозначным районом: 0 (расчёт)\n- Записей внутри города вне районов: 0 (расчёт)\n- Сегментов дорог без данных о проходе пешком: 954 (наблюдение)\n\n**Нет данных**\n- Мощность школ (места): нет данных (неизвестно)\n- Официальный реестр школ: нет данных (неизвестно)\n- Число детей: нет данных (неизвестно)\nwrote tests/expected_explanations.json (6 cases)"
+  },
+  "app_unittest": {
+   "cmd": "/usr/local/bin/python3 -m unittest discover -s tests",
+   "returncode": 0,
+   "tail": "..........\n----------------------------------------------------------------------\nRan 10 tests in 0.670s\n\nOK"
+  },
+  "app_conformance_node": {
+   "cmd": "node tests/conformance.cjs",
+   "returncode": 0,
+   "tail": "02 parity astana kk [7 groups]\nPASS K02 parity shymkent ru [1 groups]\nPASS K02 parity astana ru [2 groups]\nPASS K02 parity shymkent kk [6 groups]\nPASS unknown fact ID rejected\nPASS foreign city ID rejected\nPASS stale scenario (filter changed) rejected\nPASS free text instead of ID rejected\nPASS null value outside data_gaps rejected\nPASS value inside data_gaps rejected\nPASS capacity is null (unknown), not 0\nPASS ambiguous count is a real 0 over the slice\nPASS groups with 0 records in a partial slice are missing/zero_in_partial_coverage (never 0)\nPASS no place count is reported as 0\nPASS formatValue: 0 → '0', 1.5 → '1,5'\nPASS catalog values equal K05 observations (astana, all groups)\nall passed"
+  },
+  "check_evidence_fresh": {
+   "cmd": "/usr/local/bin/python3 tools/check_evidence_fresh.py",
+   "returncode": 0,
+   "tail": "evidence.js актуален"
+  },
+  "expected_explanations_unchanged": {
+   "cmd": "cmp tests/expected_explanations.json (до/после explain_ref)",
+   "returncode": 0,
+   "tail": ""
+  },
+  "k03_test": {
+   "cmd": "/usr/local/bin/python3 /home/user/GOV_DIPLOME/research/round-5-results/K03/test_boundaries_demo.py --app-root <tmp>/prototypes/city-evidence --json <tmp>/k03r5_patched.json",
+   "returncode": 0,
+   "tail": "конура; K10-манифест и data.js обновлены, evidence.js не пересобран. До пересборки: тесты приложения — FAILED (failures=1); binding — ловит; check_evidence_fresh — ловит. Пересборка: ok, place_district изменился у 1 мест, метка k03_assign_v2\n[PASS ] C7-S3-rule-update-v2: patch v2 уже применён/неприменим — в код K03 добавлена строка-комментарий (изменение кода без изменения поведения); source_manifest обновлён как при copy_inputs; evidence.js не пересобран. До пересборки: тесты приложения — FAILED (failures=1); binding — ловит; check_evidence_fresh — ловит. Пересборка: ok, place_district изменился у 0 мест, метка k03_assign_v2\nSUMMARY {\"PASS\": 13, \"FAIL\": 0, \"XFAIL\": 0, \"XPASS\": 0, \"SKIP\": 0}"
+  }
+ },
+ "k03_test_summary": {
+  "PASS": 13,
+  "FAIL": 0,
+  "XFAIL": 0,
+  "XPASS": 0,
+  "SKIP": 0
+ },
+ "k03_test": {
+  "test": "research/round-5-results/K03/test_boundaries_demo.py",
+  "app_root": "<tmp copy of 0bf27de + P2 (k03_assign_v2_1.patch) + P1 (build_p1_binding.patch), rebuilt>",
+  "url": null,
+  "data_js": "<app-root>/web/data.js",
+  "evidence_js": "<app-root>/web/evidence.js",
+  "summary": {
+   "PASS": 13,
+   "FAIL": 0,
+   "XFAIL": 0,
+   "XPASS": 0,
+   "SKIP": 0
+  },
+  "results": [
+   {
+    "check": "C1-k03-inputs",
+    "outcome": "PASS",
+    "summary": "11 файлов K03 из source_manifest.json; несовпадений sha256: 0; источник K03 SHA ['44585de31be01dd131ecb7677c462fc85b4d4cc4', 'proposal: patches/k03_assign_v2_1.patch']",
+    "details": {
+     "mismatched": [],
+     "k03_source_sha": [
+      "44585de31be01dd131ecb7677c462fc85b4d4cc4",
+      "proposal: patches/k03_assign_v2_1.patch"
+     ],
+     "validator_sha256": "d5e297411d78085dafece85b25b10050672b03b2f22c46651f631d886d80760b"
+    }
+   },
+   {
+    "check": "C2-module-is-what-label-says",
+    "outcome": "PASS",
+    "summary": "поведение=v2, assign()[rule]=k03_assign_v2, evidence.assign_rule=k03_assign_v2, method.id=['k03_assign_v2']",
+    "details": {
+     "versions": {
+      "behaviour": "v2",
+      "assign_result_rule": "v2",
+      "evidence_assign_rule": "v2",
+      "obs_method:k03_assign_v2": "v2"
+     },
+     "fingerprint_results": {
+      "R1": [
+       "ambiguous",
+       null
+      ],
+      "R2": [
+       "ambiguous",
+       null
+      ]
+     },
+     "evidence": "<app-root>/web/evidence.js"
+    }
+   },
+   {
+    "check": "C3-R1-AST-HOLE-out0.5",
+    "outcome": "PASS",
+    "summary": "0,5 м за контуром города у зоны AST-Z2: принадлежность городу не доказана → ambiguous, не unmatched; получено ambiguous/None",
+    "details": {
+     "point": [
+      71.409286747,
+      50.881525736
+     ],
+     "expected": [
+      "ambiguous",
+      null
+     ],
+     "got": [
+      "ambiguous",
+      null
+     ],
+     "reason": "city_edge",
+     "baseline_v1": [
+      "unmatched",
+      null
+     ],
+     "defect": "D1",
+     "source_fixture": "round-4 K03 fixtures.json:AST-HOLE-out0.5"
+    }
+   },
+   {
+    "check": "C3-R2-AST-VER-D2",
+    "outcome": "PASS",
+    "summary": "1,01 м от границы снимка OSM, 0,58 м от границы Overture той же пары районов → ambiguous; получено ambiguous/None",
+    "details": {
+     "point": [
+      71.460469423,
+      51.129017713
+     ],
+     "expected": [
+      "ambiguous",
+      null
+     ],
+     "got": [
+      "ambiguous",
+      null
+     ],
+     "reason": "near_district_boundary",
+     "baseline_v1": [
+      "matched",
+      "kz.astana.district.saraishyk"
+     ],
+     "defect": "D2",
+     "source_fixture": "round-4 K03 fixtures.json:AST-VER-D2"
+    }
+   },
+   {
+    "check": "C3-R3-AST-EX-in",
+    "outcome": "PASS",
+    "summary": "эксклав Байконура ∩ Целиноградский район (AST-Z1) → ambiguous, без района; получено ambiguous/None",
+    "details": {
+     "point": [
+      71.665106386,
+      51.330255048
+     ],
+     "expected": [
+      "ambiguous",
+      null
+     ],
+     "got": [
+      "ambiguous",
+      null
+     ],
+     "reason": "city_vs_region_overlap",
+     "baseline_v1": [
+      "ambiguous",
+      null
+     ],
+     "defect": null,
+     "source_fixture": "round-4 K03 fixtures.json:AST-EX-in"
+    }
+   },
+   {
+    "check": "C3-R4-AST-SB-a0.99",
+    "outcome": "PASS",
+    "summary": "крайний случай допуска: 0,99 м от общей границы Есиль/Нура → ambiguous; получено ambiguous/None",
+    "details": {
+     "point": [
+      71.400479487,
+      51.083375685
+     ],
+     "expected": [
+      "ambiguous",
+      null
+     ],
+     "got": [
+      "ambiguous",
+      null
+     ],
+     "reason": "near_district_boundary",
+     "baseline_v1": [
+      "ambiguous",
+      null
+     ],
+     "defect": null,
+     "source_fixture": "round-4 K03 fixtures.json:AST-SB-a0.99"
+    }
+   },
+   {
+    "check": "C3-R5-AST-SB-a1.01",
+    "outcome": "PASS",
+    "summary": "крайний случай допуска: 1,01 м → matched Есиль (защита от чрезмерного исправления); получено matched/kz.astana.district.esil",
+    "details": {
+     "point": [
+      71.400479766,
+      51.083375646
+     ],
+     "expected": [
+      "matched",
+      "kz.astana.district.esil"
+     ],
+     "got": [
+      "matched",
+      "kz.astana.district.esil"
+     ],
+     "reason": "single_district_interior",
+     "baseline_v1": [
+      "matched",
+      "kz.astana.district.esil"
+     ],
+     "defect": null,
+     "source_fixture": "round-4 K03 fixtures.json:AST-SB-a1.01"
+    }
+   },
+   {
+    "check": "C4-build-path",
+    "outcome": "PASS",
+    "summary": "tools/build_evidence.py в копии app-root воспроизводит web/evidence.js побайтно",
+    "details": {
+     "returncode": 0,
+     "stdout": "shymkent: {'matched': 55}; 19 наблюдений, ошибок K05 0, предупреждений 8\nastana: {'matched': 65}; 19 наблюдений, ошибок K05 0, предупреждений 8\nwrote web/evidence.js (83225 bytes)\n",
+     "stderr": "ПРЕДУПРЕЖДЕНИЕ: правило кода k03_assign_v2 ≠ правилу в boundary_registry.json k03_assign_v1; в evidence.js записано правило кода\n"
+    }
+   },
+   {
+    "check": "C5-place-district-consistent",
+    "outcome": "PASS",
+    "summary": "120 мест data.js: у каждого есть запись, форма статуса верна, совпадает с assign() модуля app-root",
+    "details": {
+     "problems": [],
+     "places": 120,
+     "recomputed": true
+    }
+   },
+   {
+    "check": "C6-binding",
+    "outcome": "PASS",
+    "summary": "boundary_binding совпадает с текущими кодом K03, слоями и точками data.js",
+    "details": {
+     "evidence": "<app-root>/web/evidence.js",
+     "problems": []
+    }
+   },
+   {
+    "check": "C7-S1-layer-sync-real",
+    "outcome": "PASS",
+    "summary": "снимок OSM ← геометрия Алматы и Сарайшыка из Overture 2026-09-23.1 (реальные данные пакета; так будет, если слои синхронизируются); source_manifest обновлён как при copy_inputs. До пересборки: тесты приложения — FAILED (failures=1); binding — ловит; check_evidence_fresh — ловит. Пересборка: ok, place_district изменился у 0 мест, метка k03_assign_v2",
+    "details": {
+     "app_tests": "FAILED (failures=1)",
+     "app_tests_crashed": false,
+     "app_tests_failed": true,
+     "binding_detects": true,
+     "fresh_tool_detects": true,
+     "rebuild_returncode": 0,
+     "rebuild_crashed": false,
+     "rebuild_stderr_tail": "ПРЕДУПРЕЖДЕНИЕ: правило кода k03_assign_v2 ≠ правилу в boundary_registry.json k03_assign_v1; в evidence.js записано правило кода\n",
+     "place_district_changed": 0,
+     "label_after_rebuild": "k03_assign_v2",
+     "code_rule_after_rebuild": null,
+     "known_baseline_issues": []
+    }
+   },
+   {
+    "check": "C7-S2-k10-place-moved-synthetic",
+    "outcome": "PASS",
+    "summary": "синтетика: место 0233b91f… (Сарыарка) перенесено к месту Байконура; K10-манифест и data.js обновлены, evidence.js не пересобран. До пересборки: тесты приложения — FAILED (failures=1); binding — ловит; check_evidence_fresh — ловит. Пересборка: ok, place_district изменился у 1 мест, метка k03_assign_v2",
+    "details": {
+     "app_tests": "FAILED (failures=1)",
+     "app_tests_crashed": false,
+     "app_tests_failed": true,
+     "binding_detects": true,
+     "fresh_tool_detects": true,
+     "rebuild_returncode": 0,
+     "rebuild_crashed": false,
+     "rebuild_stderr_tail": "ПРЕДУПРЕЖДЕНИЕ: правило кода k03_assign_v2 ≠ правилу в boundary_registry.json k03_assign_v1; в evidence.js записано правило кода\n",
+     "place_district_changed": 1,
+     "label_after_rebuild": "k03_assign_v2",
+     "code_rule_after_rebuild": null,
+     "known_baseline_issues": []
+    }
+   },
+   {
+    "check": "C7-S3-rule-update-v2",
+    "outcome": "PASS",
+    "summary": "patch v2 уже применён/неприменим — в код K03 добавлена строка-комментарий (изменение кода без изменения поведения); source_manifest обновлён как при copy_inputs; evidence.js не пересобран. До пересборки: тесты приложения — FAILED (failures=1); binding — ловит; check_evidence_fresh — ловит. Пересборка: ok, place_district изменился у 0 мест, метка k03_assign_v2",
+    "details": {
+     "app_tests": "FAILED (failures=1)",
+     "app_tests_crashed": false,
+     "app_tests_failed": true,
+     "binding_detects": true,
+     "fresh_tool_detects": true,
+     "rebuild_returncode": 0,
+     "rebuild_crashed": false,
+     "rebuild_stderr_tail": "ПРЕДУПРЕЖДЕНИЕ: правило кода k03_assign_v2 ≠ правилу в boundary_registry.json k03_assign_v1; в evidence.js записано правило кода\n",
+     "place_district_changed": 0,
+     "label_after_rebuild": "k03_assign_v2",
+     "code_rule_after_rebuild": "k03_assign_v2",
+     "known_baseline_issues": []
+    }
+   }
+  ],
+  "python": "3.11.15"
+ }
+}

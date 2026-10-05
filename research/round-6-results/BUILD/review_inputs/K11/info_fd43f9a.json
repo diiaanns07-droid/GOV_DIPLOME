@@ -1,0 +1,315 @@
+{
+ "tool": "research/round-5-results/K11/k11_demo_smoke.py",
+ "label": "BUILD claude/beautiful-clarke-sbzomj @ fd43f9a9179c7b49382337d9fe82e2770d5b48f3 (newer BUILD, informational)",
+ "mode": "app-root",
+ "target": "<extract of fd43f9a>/prototypes/city-evidence",
+ "host": {
+  "os": "Linux",
+  "release": "6.18.44-fc-v70",
+  "python": "3.11.15"
+ },
+ "summary": {
+  "pass": 15,
+  "fail": 4,
+  "info": 2,
+  "modeled_pass": 1,
+  "modeled_fail": 2,
+  "not_run": 1
+ },
+ "checks": [
+  {
+   "id": "S1",
+   "status": "pass",
+   "title": "start page, server and documentation files exist",
+   "detail": {
+    "missing": []
+   }
+  },
+  {
+   "id": "S2",
+   "status": "pass",
+   "title": "all own text files (outside inputs/) are strict UTF-8",
+   "detail": {
+    "files": 22,
+    "invalid": [],
+    "bom": [],
+    "crlf": []
+   }
+  },
+  {
+   "id": "S3",
+   "status": "pass",
+   "title": "no hidden absolute paths in code, docs and generated web files",
+   "detail": []
+  },
+  {
+   "id": "S4",
+   "status": "fail",
+   "title": "Node tests build file:// URLs with url.pathToFileURL, not string concatenation",
+   "detail": {
+    "conformance.cjs": {
+     "string_concatenation": [],
+     "uses_pathToFileURL": false
+    },
+    "smoke.cjs": {
+     "string_concatenation": [
+      "L8: const url = \"file://\" + path.resolve(__dirname, \"..\", \"web\", \"index.html\");",
+      "L92: await p2.goto(\"file://\" + path.join(dir, \"index.html\"));"
+     ],
+     "uses_pathToFileURL": false
+    }
+   }
+  },
+  {
+   "id": "S5",
+   "status": "fail",
+   "title": "a Windows launcher (.bat/.cmd/.ps1) exists next to serve.py",
+   "detail": []
+  },
+  {
+   "id": "S6",
+   "status": "fail",
+   "title": "README gives a Windows start command (launcher, `py serve.py` or `python serve.py`)",
+   "detail": []
+  },
+  {
+   "id": "S7",
+   "status": "pass",
+   "title": "Python text I/O names an encoding (Windows default is the ANSI code page)",
+   "detail": []
+  },
+  {
+   "id": "S8",
+   "status": "fail",
+   "title": "browser smoke writes its default output inside the app copy (not into ../../../research)",
+   "detail": "path.join(__dirname, \"..\", \"..\", \"..\", \"research\", \"round-4-results\", \"BUILD\", \"smoke\")"
+  },
+  {
+   "id": "L1",
+   "status": "pass",
+   "title": "serve.py starts and listens on 127.0.0.1:<port> (port from argv)",
+   "detail": {
+    "port": 46325,
+    "seconds": 0.1,
+    "exited_early": null
+   }
+  },
+  {
+   "id": "H1",
+   "status": "pass",
+   "title": "GET / returns the start page",
+   "detail": {
+    "status": 200
+   }
+  },
+  {
+   "id": "H2",
+   "status": "pass",
+   "title": "start page is valid UTF-8 and declares <meta charset=utf-8>",
+   "detail": {
+    "content_type": "text/html",
+    "meta_charset": "utf-8",
+    "strict_utf8": true
+   }
+  },
+  {
+   "id": "H3",
+   "status": "info",
+   "title": "Content-Type headers carry a charset (browser otherwise relies on <meta charset>)",
+   "detail": {
+    "/": "text/html"
+   }
+  },
+  {
+   "id": "H4",
+   "status": "pass",
+   "title": "start page loads no external or file:// resources",
+   "detail": []
+  },
+  {
+   "id": "H5",
+   "status": "pass",
+   "title": "no type=module scripts (they need correct JS MIME and do not run from file://)",
+   "detail": []
+  },
+  {
+   "id": "H6",
+   "status": "pass",
+   "title": "every referenced script is served 200, JS MIME, strict UTF-8, same bytes as disk",
+   "detail": {
+    "data.js": {
+     "status": 200,
+     "content_type": "text/javascript",
+     "bytes": 1007087,
+     "strict_utf8": true,
+     "bom": false,
+     "same_bytes_as_disk": true
+    },
+    "evidence.js": {
+     "status": 200,
+     "content_type": "text/javascript",
+     "bytes": 78281,
+     "strict_utf8": true,
+     "bom": false,
+     "same_bytes_as_disk": true
+    },
+    "facts.js": {
+     "status": 200,
+     "content_type": "text/javascript",
+     "bytes": 17273,
+     "strict_utf8": true,
+     "bom": false,
+     "same_bytes_as_disk": true
+    },
+    "app.js": {
+     "status": 200,
+     "content_type": "text/javascript",
+     "bytes": 24321,
+     "strict_utf8": true,
+     "bom": false,
+     "same_bytes_as_disk": true
+    }
+   }
+  },
+  {
+   "id": "H7",
+   "status": "pass",
+   "title": "missing file returns 404",
+   "detail": {
+    "status": 404
+   }
+  },
+  {
+   "id": "H8",
+   "status": "pass",
+   "title": "files outside web/ are not served (path traversal)",
+   "detail": {
+    "/../serve.py": {
+     "status": 404,
+     "leaked_serve_py": false,
+     "leaked_readme": false
+    },
+    "/%2e%2e/serve.py": {
+     "status": 404,
+     "leaked_serve_py": false,
+     "leaked_readme": false
+    },
+    "/..%2fserve.py": {
+     "status": 404,
+     "leaked_serve_py": false,
+     "leaked_readme": false
+    },
+    "/../README.md": {
+     "status": 404,
+     "leaked_serve_py": false,
+     "leaked_readme": false
+    }
+   }
+  },
+  {
+   "id": "H9",
+   "status": "pass",
+   "title": "server is not reachable on the LAN address (loopback only)",
+   "detail": {
+    "lan_ip": "192.0.2.2",
+    "reachable": false
+   }
+  },
+  {
+   "id": "B1",
+   "status": "pass",
+   "title": "headless browser loads the demo over http and file:// (pathToFileURL), data for both cities, no console errors, no external requests",
+   "detail": {
+    "http": {
+     "loaded": true,
+     "errors": [],
+     "external_requests": [],
+     "title": "Городские данные",
+     "hasData": true,
+     "cities": [
+      "astana",
+      "shymkent"
+     ],
+     "bodyText": 6139
+    },
+    "file": {
+     "loaded": true,
+     "errors": [],
+     "external_requests": [],
+     "title": "Городские данные",
+     "hasData": true,
+     "cities": [
+      "astana",
+      "shymkent"
+     ],
+     "bodyText": 6139
+    }
+   }
+  },
+  {
+   "id": "L2",
+   "status": "pass",
+   "title": "the launched server process is stopped explicitly and the port is released",
+   "detail": {
+    "steps": [
+     "SIGINT(process group)"
+    ],
+    "returncode": -2,
+    "exited": true
+   }
+  },
+  {
+   "id": "L3",
+   "status": "info",
+   "title": "server output on start/stop",
+   "detail": {
+    "stdout_first_line": "Городские данные: http://127.0.0.1:46325/  (Ctrl+C — остановить)",
+    "stderr_has_traceback": true,
+    "stderr_tail": [
+     "KeyboardInterrupt"
+    ]
+   }
+  },
+  {
+   "id": "M1",
+   "status": "modeled_pass",
+   "title": "serve.py starts with a redirected stdout encoded as cp1251 (Windows ANSI code page, MODELED on Linux)",
+   "detail": {
+    "listening": true,
+    "exited_before_listen": null,
+    "stderr_last_line": "KeyboardInterrupt"
+   }
+  },
+  {
+   "id": "M2",
+   "status": "modeled_fail",
+   "title": "serve.py starts with a redirected stdout encoded as cp1252 (Windows ANSI code page, MODELED on Linux)",
+   "detail": {
+    "listening": false,
+    "exited_before_listen": 1,
+    "stderr_last_line": "UnicodeEncodeError: 'charmap' codec can't encode characters in position 0-8: character maps to <undefined>"
+   }
+  },
+  {
+   "id": "M3",
+   "status": "modeled_fail",
+   "title": "file:// URLs of the Node tests are valid for a Windows path (MODELED with path.win32)",
+   "detail": {
+    "concatenated": "file://C:\\Users\\u\\city-evidence\\web\\index.html",
+    "pathToFileURL": "file:///C:/Users/u/city-evidence/web/index.html",
+    "tests_using_concatenation": {
+     "smoke.cjs": [
+      "L8: const url = \"file://\" + path.resolve(__dirname, \"..\", \"web\", \"index.html\");",
+      "L92: await p2.goto(\"file://\" + path.join(dir, \"index.html\"));"
+     ]
+    }
+   }
+  },
+  {
+   "id": "W1",
+   "status": "not_run",
+   "title": "real Windows run of the launcher, serve.py and browser",
+   "detail": "no Windows host in this environment"
+  }
+ ]
+}
