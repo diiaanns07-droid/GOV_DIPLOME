@@ -1,0 +1,182 @@
+{
+ "source_branch": "claude/save-work-handoff-j7pc05",
+ "source_sha": "ea703f1ddd3a411430a981164a78a7dda64ec909",
+ "source_prefix": "research/round-3-results/K10/",
+ "files": [
+  {
+   "path": "INPUT_FOR_K07.md",
+   "mode": "100644",
+   "blob": "3af45e6a25da5f007f613e4c1f8931795e1493b9",
+   "bytes": 6265,
+   "sha256": "f5745da26c39ec12491b1e025f2730d2014e71f5d99d03b2c599b19d2709c878"
+  },
+  {
+   "path": "README.md",
+   "mode": "100644",
+   "blob": "5e9cbde24fd630f51a5003ac8920270557c14a55",
+   "bytes": 6706,
+   "sha256": "4c00694f213eea98261f80ebb3b1183700d2c201c2424fc1343f52559f91f5ea"
+  },
+  {
+   "path": "STATUS.md",
+   "mode": "100644",
+   "blob": "991829abc6c9d7ae845e24ec787705239fbd2704",
+   "bytes": 10533,
+   "sha256": "ee8b6b402c88a173a1f62e6345f3a3894c8bbd0b6bdc9158d198693180b619b5"
+  },
+  {
+   "path": "data/astana/connectors.geojson",
+   "mode": "100644",
+   "blob": "ff47fff0e5b81db7d64d6ea4257b92c37b27c8f8",
+   "bytes": 1131848,
+   "sha256": "74a77d2ed250d6a55ee478054a6e89a4de15fc96f65063176a1194345994e801"
+  },
+  {
+   "path": "data/astana/places_social.geojson",
+   "mode": "100644",
+   "blob": "b7d2338085f65dfd3935e83e7641e8db7b64c7ed",
+   "bytes": 78960,
+   "sha256": "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343"
+  },
+  {
+   "path": "data/astana/segments.geojson",
+   "mode": "100644",
+   "blob": "f246dd7ce72cf677318415875dcd74fd5472390a",
+   "bytes": 1712993,
+   "sha256": "5fc1b3b5f6cabad6e2edfd042bb3727aa8fd0c7bcba9962175025e37eb08dbb9"
+  },
+  {
+   "path": "data/shymkent/connectors.geojson",
+   "mode": "100644",
+   "blob": "dc799d5a26c02eb394ab068f66d18bbb85a7f9fc",
+   "bytes": 851736,
+   "sha256": "8bbd25959eef559abeccb39d99884d96caf920d219f5a71f11298ade5e27bca0"
+  },
+  {
+   "path": "data/shymkent/places_social.geojson",
+   "mode": "100644",
+   "blob": "08954a89355a067aba96b4ea677b99449708042d",
+   "bytes": 66574,
+   "sha256": "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7"
+  },
+  {
+   "path": "data/shymkent/segments.geojson",
+   "mode": "100644",
+   "blob": "a871370310bf4121fe394cbb567e15afa818e358",
+   "bytes": 1312363,
+   "sha256": "055b0e7aaef8d5b42fdbb6663f46ef245156b33a0f92b8f94cc73ab7a9c77648"
+  },
+  {
+   "path": "package_manifest.json",
+   "mode": "100644",
+   "blob": "09020f3b71a304efacdf5a4ced59a0c94b252011",
+   "bytes": 7764,
+   "sha256": "0616c08b65285ed4a5324c9e0238a31bec004857705cdb22c6b26e032fa4551d"
+  },
+  {
+   "path": "results/clone_proof.md",
+   "mode": "100644",
+   "blob": "05dbbdb8b60464dfb2cd3bbb41f9ae5c282cb598",
+   "bytes": 5554,
+   "sha256": "8beddf053914ede39fe4d49c05856c2ebff0d76a0d0f76e4c61b14ebea5b9115"
+  },
+  {
+   "path": "results/crosscheck_round2.json",
+   "mode": "100644",
+   "blob": "a442c4fe3b215fd8ffce26843d5aaaa0183fa03c",
+   "bytes": 1314,
+   "sha256": "48346a093bad4f79fdce054ba6fd55ce2a263c3111cab6b6ddc88e27a792d5ac"
+  },
+  {
+   "path": "results/offline_check_clean_clone_602f0c0.json",
+   "mode": "100644",
+   "blob": "e455cca8960d1f4c2dfc406472538bd92b44730e",
+   "bytes": 4410,
+   "sha256": "f263fb107672ad06374ba7dbc1c182ca98c3e81459bf2be7685a26054795d662"
+  },
+  {
+   "path": "results/offline_check_local.json",
+   "mode": "100644",
+   "blob": "e455cca8960d1f4c2dfc406472538bd92b44730e",
+   "bytes": 4410,
+   "sha256": "f263fb107672ad06374ba7dbc1c182ca98c3e81459bf2be7685a26054795d662"
+  },
+  {
+   "path": "scripts/download.py",
+   "mode": "100644",
+   "blob": "11c8d5bd860bb1165d21b56d45d0802a76a6b29f",
+   "bytes": 12702,
+   "sha256": "be9c1fe47ab092616a8282d4768be6c28ecce6978e751c71c55d74d15d688c8e"
+  },
+  {
+   "path": "scripts/geo_util.py",
+   "mode": "100644",
+   "blob": "af95fb32613a827d4f5782804e5baa98d9924ae8",
+   "bytes": 865,
+   "sha256": "ab82d5f5567548122707c2b64a4a22136522198099403c12ed39d01fbb9940e8"
+  },
+  {
+   "path": "scripts/k10_rules.py",
+   "mode": "100644",
+   "blob": "14350487185e28c4652b5cc2483e69cab5d335ec",
+   "bytes": 3142,
+   "sha256": "28f4c1eff7a5a98ee2b84b376bc7448303db75bf6edecda77e4d9c178a838591"
+  },
+  {
+   "path": "scripts/offline_check.py",
+   "mode": "100644",
+   "blob": "ef093fe64ada3300969e08c7b15782fb920cd445",
+   "bytes": 11829,
+   "sha256": "76ec71af561e814b32bbaed2d58325611a2615ff3f691ea0c44ce23632da29e5"
+  },
+  {
+   "path": "scripts/requirements-download.txt",
+   "mode": "100644",
+   "blob": "dbc8ed8dcd7b359e0671abc740ed8ed8a6b6951a",
+   "bytes": 163,
+   "sha256": "daf4f4d2f08b50001a989eb5d5d7d4ee498e1445d16e674dfb7ef6b313ed8e81"
+  },
+  {
+   "path": "selection/astana_bbox_selection.json",
+   "mode": "100644",
+   "blob": "b1943e25101b46e4ba85ab99a03e5bc8f2fa08e7",
+   "bytes": 1531,
+   "sha256": "3643892ff81e4db65a18a1a8fc397db2c47e3e8d0d23fd32c07c8243aac979a8"
+  },
+  {
+   "path": "selection/crosscheck_round2.py",
+   "mode": "100644",
+   "blob": "f429d89876738dd43c97cb62465f75c74400f73b",
+   "bytes": 2840,
+   "sha256": "5be35e42c94894d1754170d3bcc88ce3ce0128409412475cff1ca820d4b3b562"
+  },
+  {
+   "path": "selection/select_bbox.py",
+   "mode": "100644",
+   "blob": "b657a581faf4a878443339eb4a851264dd41dda7",
+   "bytes": 3546,
+   "sha256": "53aed17105b3e08e2a25643f9e395ed8b6f22d162f105ad9c9e3b7ee6d1f92e7"
+  },
+  {
+   "path": "selection/shymkent_bbox_selection.json",
+   "mode": "100644",
+   "blob": "96df8a342f7b70dc1af9d7137598feaefef33d97",
+   "bytes": 1563,
+   "sha256": "5d76ee95e214e52390ad6b933b8e0374b088aa97df9b10a03c82e42a0e76e862"
+  },
+  {
+   "path": "tests/expected_counts.json",
+   "mode": "100644",
+   "blob": "7794cb0cfff9962e51b5dac9c241a156610e7ca7",
+   "bytes": 1148,
+   "sha256": "9aa1937f72b8309b51bc6dbb63214afea0d2cfcc929fd25ca68430ee36e3f3f3"
+  },
+  {
+   "path": "tests/test_package.py",
+   "mode": "100644",
+   "blob": "9e950a4630733836d814af2200735bc7d9817549",
+   "bytes": 4429,
+   "sha256": "ade5fcf266f82c6a163173fcd2def6298b35c1d51e92a75d3584d6622ebe6572"
+  }
+ ]
+}

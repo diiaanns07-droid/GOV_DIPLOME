@@ -1,0 +1,91 @@
+{
+ "city": "astana",
+ "rule": "max social places in CELL_KM square fully inside city polygon; tie -> min(row,col)",
+ "cell_km": 2.0,
+ "grid": {
+  "origin_lon": 71.217973,
+  "origin_lat": 50.857608,
+  "dlon": 0.0286283,
+  "dlat": 0.0179662,
+  "rows": 28,
+  "cols": 20,
+  "lat_for_dlon": 51.12908
+ },
+ "inputs": {
+  "districts_geojson": "research/next-round/K10/samples/astana_districts_overture.geojson",
+  "districts_sha256": "ab3a7f9852ecdd0d80b68c22ed73f1e10673c20c5091cf47c6454a030f1421ca",
+  "places_jsonl": "astana_places.jsonl",
+  "places_sha256": "13ffb95dbf8ec06f3ee057452a42937023a3483817692ff0ee28a243a3ff66e2"
+ },
+ "social_places_in_input": 758,
+ "cells_fully_inside_city": 144,
+ "cells_with_zero": 98,
+ "selected": {
+  "row": 17,
+  "col": 7,
+  "bbox": [
+   71.418372,
+   51.163033,
+   71.447,
+   51.181
+  ],
+  "social_places": 65
+ },
+ "top5": [
+  {
+   "row": 17,
+   "col": 7,
+   "bbox": [
+    71.418372,
+    51.163033,
+    71.447,
+    51.181
+   ],
+   "social_places": 65
+  },
+  {
+   "row": 15,
+   "col": 7,
+   "bbox": [
+    71.418372,
+    51.127101,
+    71.447,
+    51.145067
+   ],
+   "social_places": 60
+  },
+  {
+   "row": 14,
+   "col": 7,
+   "bbox": [
+    71.418372,
+    51.109135,
+    71.447,
+    51.127101
+   ],
+   "social_places": 57
+  },
+  {
+   "row": 17,
+   "col": 6,
+   "bbox": [
+    71.389743,
+    51.163033,
+    71.418372,
+    51.181
+   ],
+   "social_places": 47
+  },
+  {
+   "row": 15,
+   "col": 6,
+   "bbox": [
+    71.389743,
+    51.127101,
+    71.418372,
+    51.145067
+   ],
+   "social_places": 43
+  }
+ ]
+}
