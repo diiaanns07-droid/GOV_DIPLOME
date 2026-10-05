@@ -1,0 +1,138 @@
+{
+ "purpose": "Byte-exact copies of other agents' files read by K03 round 3. Not edited.",
+ "copied_with": "git show <sha>:<path> (raw bytes via subprocess, no text re-encoding)",
+ "files": [
+  {
+   "local_path": "research/round-3-results/K03/inputs/K10/shymkent_districts_overture.geojson",
+   "source_branch": "claude/save-work-handoff-j7pc05",
+   "source_commit": "e91898d596164bcf6e853b921a49f82126074a35",
+   "source_path": "research/next-round/K10/samples/shymkent_districts_overture.geojson",
+   "git_blob": "1c4701fb5022ba97ef08a1c9727e552d0d357cbd",
+   "sha256": "e19bbd7572a7a4f46dbb793df74c5d1cfab11d4e7a217fed7e525b4cece117c3",
+   "bytes": 159823,
+   "blob_match": true
+  },
+  {
+   "local_path": "research/round-3-results/K03/inputs/K10/astana_districts_overture.geojson",
+   "source_branch": "claude/save-work-handoff-j7pc05",
+   "source_commit": "e91898d596164bcf6e853b921a49f82126074a35",
+   "source_path": "research/next-round/K10/samples/astana_districts_overture.geojson",
+   "git_blob": "de42bd24c0fd1b9bcced2aeff169e3d335bc648e",
+   "sha256": "ab3a7f9852ecdd0d80b68c22ed73f1e10673c20c5091cf47c6454a030f1421ca",
+   "bytes": 99459,
+   "blob_match": true
+  },
+  {
+   "local_path": "research/round-3-results/K03/inputs/K10/E01_district_coverage.json",
+   "source_branch": "claude/save-work-handoff-j7pc05",
+   "source_commit": "e91898d596164bcf6e853b921a49f82126074a35",
+   "source_path": "research/next-round/K10/results/E01_district_coverage.json",
+   "git_blob": "956e8323636b2978afa834dc98f89867d58e2291",
+   "sha256": "f1b8991e1753dbb6e5f17d4d5dc57dcfb0a361018335236fb13d6808ace6680b",
+   "bytes": 7147,
+   "blob_match": true
+  },
+  {
+   "local_path": "research/round-3-results/K03/inputs/K10/shymkent_division_area.provenance.json",
+   "source_branch": "claude/save-work-handoff-j7pc05",
+   "source_commit": "e91898d596164bcf6e853b921a49f82126074a35",
+   "source_path": "research/next-round/K10/provenance/shymkent_division_area.provenance.json",
+   "git_blob": "7752ed8f06f7d35968c62c31ef6d5f2950ecfffc",
+   "sha256": "581be8219eadc01c447b7a852fadb5ed2f95680770775ceffaf314e5175d4519",
+   "bytes": 2399,
+   "blob_match": true
+  },
+  {
+   "local_path": "research/round-3-results/K03/inputs/K10/astana_division_area.provenance.json",
+   "source_branch": "claude/save-work-handoff-j7pc05",
+   "source_commit": "e91898d596164bcf6e853b921a49f82126074a35",
+   "source_path": "research/next-round/K10/provenance/astana_division_area.provenance.json",
+   "git_blob": "bd95436b0760f18905333fd73803866a03e55964",
+   "sha256": "1a7ffbbb74dac015c0be99e99392b2db269a53e52e413db351b72540dbe27eab",
+   "bytes": 2379,
+   "blob_match": true
+  },
+  {
+   "local_path": "research/round-3-results/K03/inputs/K10/iso3166_2_KZ.json",
+   "source_branch": "claude/save-work-handoff-j7pc05",
+   "source_commit": "e91898d596164bcf6e853b921a49f82126074a35",
+   "source_path": "research/next-round/K10/samples/iso3166_2_KZ.json",
+   "git_blob": "2dbc433af17dd95b938c13cda2372c895087536c",
+   "sha256": "19306eb1107e07eff06709ba5d6f10a74cf4ce5717117c05975ee324641b1c38",
+   "bytes": 2346,
+   "blob_match": true
+  },
+  {
+   "local_path": "research/round-3-results/K03/inputs/K10/datasets.json",
+   "source_branch": "claude/save-work-handoff-j7pc05",
+   "source_commit": "e91898d596164bcf6e853b921a49f82126074a35",
+   "source_path": "research/next-round/K10/datasets.json",
+   "git_blob": "ff75b7a131a4212d127b0e5117480d3637fd8cc5",
+   "sha256": "cb2f1bb09e4e88c1f7b4b1f0580de1f878435a1015fab643c23ebaee8dfdef22",
+   "bytes": 17909,
+   "blob_match": true
+  },
+  {
+   "local_path": "research/round-3-results/K03/inputs/K10/check_districts.py",
+   "source_branch": "claude/save-work-handoff-j7pc05",
+   "source_commit": "e91898d596164bcf6e853b921a49f82126074a35",
+   "source_path": "research/next-round/K10/scripts/check_districts.py",
+   "git_blob": "85061d8bea0a173eef05de51fb03b0b40c701ac4",
+   "sha256": "efb47c2fccc1568d8c0d4f7aa7b95c8c52238b5e5aaf9e12bdf5e8cbdda68bbb",
+   "bytes": 4472,
+   "blob_match": true
+  },
+  {
+   "local_path": "research/round-3-results/K03/inputs/K03_clever/territory_registry.json",
+   "source_branch": "claude/clever-mccarthy-pywscu",
+   "source_commit": "c534321b45a6ceac5c9a71b378e05f8165ace2c4",
+   "source_path": "research/next-round/K03/territory_registry.json",
+   "git_blob": "b6da53a56d2b8fa3dc4bae1d23dab4f941be76d1",
+   "sha256": "10c1d0b4a5049547c943df697a9531239a440860354e8acb95235e99efbc4f4b",
+   "bytes": 18471,
+   "blob_match": true
+  },
+  {
+   "local_path": "research/round-3-results/K03/inputs/K03_clever/geometry_result.json",
+   "source_branch": "claude/clever-mccarthy-pywscu",
+   "source_commit": "c534321b45a6ceac5c9a71b378e05f8165ace2c4",
+   "source_path": "research/next-round/K03/geometry_result.json",
+   "git_blob": "f88d8a14dc7d4eb70b0d60053546d555b3cdf08f",
+   "sha256": "1a47b7c39b6124119d618e37119bbccede1f95d6be7dde20abf261e55ac0381a",
+   "bytes": 6372,
+   "blob_match": true
+  },
+  {
+   "local_path": "research/round-3-results/K03/inputs/K03_clever/REPORT.md",
+   "source_branch": "claude/clever-mccarthy-pywscu",
+   "source_commit": "c534321b45a6ceac5c9a71b378e05f8165ace2c4",
+   "source_path": "research/next-round/K03/REPORT.md",
+   "git_blob": "2e6bf89e4828d2cdd0c0faa047977ac7882de58c",
+   "sha256": "9c702b9e1cfed5c7a41833be8803977fe14e6bfcefbb2e7a268fa6da92c2dd31",
+   "bytes": 8719,
+   "blob_match": true
+  }
+ ],
+ "in_place_inputs_not_copied": [
+  {
+   "path": "data/astana_districts.geojson",
+   "note": "product layer; present on this branch since 834a25f"
+  },
+  {
+   "path": "data/geo_sources/astana_districts_overpass.json",
+   "note": "raw Overpass, osm_base 2026-09-22T08:45:51Z"
+  },
+  {
+   "path": "data/geo_sources/sara_osm.json",
+   "note": "OSM API relation 19733918 v17"
+  },
+  {
+   "path": "research/govtech-results/10_safety/A10_sample_kpssu_shymkent_aggregates.json",
+   "note": "import b87e5af"
+  },
+  {
+   "path": "research/next-round/K03/",
+   "note": "own previous K03 at a8f1e17823468020932de65bc19bada57fda07ca"
+  }
+ ]
+}

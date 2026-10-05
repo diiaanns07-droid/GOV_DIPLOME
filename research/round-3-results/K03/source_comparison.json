@@ -1,0 +1,535 @@
+{
+ "meta": {
+  "overture_release": "2026-09-23.1",
+  "product_osm_base": "2026-09-22T08:45:51Z",
+  "product_retrieved_at": "2026-09-23T11:28:06+00:00",
+  "note": "Дата выпуска Overture (2026-09-23.1) — дата сборки выпуска; версии OSM внутри неё старше. osm_base продукта — состояние базы Overpass. update_time — время исходной записи OSM.",
+  "inputs": {
+   "data/astana_districts.geojson": "9092aebb997086d4fbf30963dd84dfae6aab483a585ba6f536944fb03a4eb95e",
+   "data/geo_sources/astana_districts_overpass.json": "ebd6019b0ea32cef4d3f27c79bc0a979284fe35476551742eea8ba4839f01392",
+   "data/geo_sources/sara_osm.json": "c3ef515903b405d4f05b4f512e239653df267962a8bde06824ed4e5005f62a32",
+   "data/geo_sources/sara_nominatim.json": "43401251df6f3034d3fe17ce645bca97adf1ccd5e6a2bc4c2a754588fbf367e9",
+   "research/govtech-results/10_safety/A10_sample_kpssu_shymkent_aggregates.json": "97255e05292d0b5b1c870e3b5869061e9d3a5f834ce1ca8b60f9a7130b001ba8",
+   "research/next-round/K03/territory_registry.json": "46cb664a35350e6c8a29e5b8eaf331ae4405afb5fd447cfa66b11e331cc8ca09",
+   "research/round-3-results/K03/inputs/K10/astana_districts_overture.geojson": "ab3a7f9852ecdd0d80b68c22ed73f1e10673c20c5091cf47c6454a030f1421ca",
+   "research/round-3-results/K03/inputs/K10/shymkent_districts_overture.geojson": "e19bbd7572a7a4f46dbb793df74c5d1cfab11d4e7a217fed7e525b4cece117c3",
+   "research/round-3-results/K03/inputs/K10/E01_district_coverage.json": "f1b8991e1753dbb6e5f17d4d5dc57dcfb0a361018335236fb13d6808ace6680b",
+   "research/round-3-results/K03/inputs/K03_clever/territory_registry.json": "10c1d0b4a5049547c943df697a9531239a440860354e8acb95235e99efbc4f4b",
+   "research/round-3-results/K03/inputs/K03_clever/geometry_result.json": "1a47b7c39b6124119d618e37119bbccede1f95d6be7dde20abf261e55ac0381a"
+  }
+ },
+ "astana_districts": [
+  {
+   "city": "astana",
+   "unit": "esil",
+   "osm_relation": 3479876,
+   "s1_osm_base": "2026-09-22T08:45:51Z",
+   "s1_relation_version": null,
+   "s1_relation_version_note": "не записана: Overpass out geom без meta",
+   "s1_relation_timestamp": null,
+   "s1_osm_admin_level": "6",
+   "s1_name_ru": "район Есиль",
+   "s1_name": "Есіл ауданы",
+   "s1_name_kk": null,
+   "s1_product_name": "Есиль",
+   "s1_kato_tag": "711210000",
+   "s1_wikidata": "Q16648877",
+   "s1_geom_sha256": "b6e3c9c281e104b230994e841ccc9fca4a3978db938f35deb6a68aceea210f20",
+   "s1_area_km2": 194.556,
+   "s1_parts": 1,
+   "s2_release": "2026-09-23.1",
+   "s2_osm_relation_version": 35,
+   "s2_osm_source_update_time": "2026-06-23T13:29:44Z",
+   "s2_overture_subtype": "county",
+   "s2_overture_admin_level": 2,
+   "s2_overture_version": 8,
+   "s2_division_id": "5f2ad254-2018-4185-804d-1385bd38816d",
+   "s2_name_primary": "Есіл ауданы",
+   "s2_name_common_ru": "район Есиль",
+   "s2_geom_sha256": "b6e3c9c281e104b230994e841ccc9fca4a3978db938f35deb6a68aceea210f20",
+   "s2_area_km2": 194.556,
+   "geom_identical": true,
+   "iou": 1.0,
+   "symdiff_m2": 0.0,
+   "hausdorff_m_approx": 0.0,
+   "vertices_only_s1": 0,
+   "vertices_only_s2": 0,
+   "s3_k03_epic_area_km2": 194.56,
+   "s3_kato": "711210000",
+   "s4_k03_clever_area_km2": 194.556,
+   "s4_kato": "711210000",
+   "official_status": "not_verified"
+  },
+  {
+   "city": "astana",
+   "unit": "almaty",
+   "osm_relation": 3482819,
+   "s1_osm_base": "2026-09-22T08:45:51Z",
+   "s1_relation_version": null,
+   "s1_relation_version_note": "не записана: Overpass out geom без meta",
+   "s1_relation_timestamp": null,
+   "s1_osm_admin_level": "6",
+   "s1_name_ru": "район Алматы",
+   "s1_name": "Алматы ауданы",
+   "s1_name_kk": null,
+   "s1_product_name": "Алматы",
+   "s1_kato_tag": "711110000",
+   "s1_wikidata": "Q12528524",
+   "s1_geom_sha256": "20e8fceb4d80d42b9791a49184d55dc629f89c870ffcb4eeff3094ae527ed8f1",
+   "s1_area_km2": 93.379,
+   "s1_parts": 2,
+   "s2_release": "2026-09-23.1",
+   "s2_osm_relation_version": 46,
+   "s2_osm_source_update_time": "2026-09-10T05:16:03Z",
+   "s2_overture_subtype": "county",
+   "s2_overture_admin_level": 2,
+   "s2_overture_version": 10,
+   "s2_division_id": "e1e4c9d5-3c13-4c08-aca9-9c766495c0c6",
+   "s2_name_primary": "Алматы ауданы",
+   "s2_name_common_ru": "район Алматы",
+   "s2_geom_sha256": "5346b9433901e238884763bd8f7f61492748f40893deaa5139a2ae6b19a8ede9",
+   "s2_area_km2": 93.379,
+   "geom_identical": false,
+   "iou": 0.9999988,
+   "symdiff_m2": 114.33,
+   "hausdorff_m_approx": 0.44,
+   "vertices_only_s1": 10,
+   "vertices_only_s2": 9,
+   "s3_k03_epic_area_km2": 93.38,
+   "s3_kato": "711110000",
+   "s4_k03_clever_area_km2": 93.379,
+   "s4_kato": "711110000",
+   "official_status": "not_verified"
+  },
+  {
+   "city": "astana",
+   "unit": "saryarka",
+   "osm_relation": 3486954,
+   "s1_osm_base": "2026-09-22T08:45:51Z",
+   "s1_relation_version": null,
+   "s1_relation_version_note": "не записана: Overpass out geom без meta",
+   "s1_relation_timestamp": null,
+   "s1_osm_admin_level": "6",
+   "s1_name_ru": "район Сарыарка",
+   "s1_name": "Сарыарқа ауданы",
+   "s1_name_kk": "Сарыарқа ауданы",
+   "s1_product_name": "Сарыарка",
+   "s1_kato_tag": "711310000",
+   "s1_wikidata": "Q16694762",
+   "s1_geom_sha256": "c0cf94c56dc307f78c3fb2ec8753ee55d99e3e7e4f2a9d6aabc3a3aa999c58fa",
+   "s1_area_km2": 67.823,
+   "s1_parts": 1,
+   "s2_release": "2026-09-23.1",
+   "s2_osm_relation_version": 23,
+   "s2_osm_source_update_time": "2026-09-08T16:42:27Z",
+   "s2_overture_subtype": "county",
+   "s2_overture_admin_level": 2,
+   "s2_overture_version": 9,
+   "s2_division_id": "2e0044cd-22bd-4f35-b838-a465ef876e51",
+   "s2_name_primary": "Сарыарқа ауданы",
+   "s2_name_common_ru": "район Сарыарка",
+   "s2_geom_sha256": "c0cf94c56dc307f78c3fb2ec8753ee55d99e3e7e4f2a9d6aabc3a3aa999c58fa",
+   "s2_area_km2": 67.823,
+   "geom_identical": true,
+   "iou": 1.0,
+   "symdiff_m2": 0.0,
+   "hausdorff_m_approx": 0.0,
+   "vertices_only_s1": 0,
+   "vertices_only_s2": 0,
+   "s3_k03_epic_area_km2": 67.82,
+   "s3_kato": "711310000",
+   "s4_k03_clever_area_km2": 67.823,
+   "s4_kato": "711310000",
+   "official_status": "not_verified"
+  },
+  {
+   "city": "astana",
+   "unit": "baikonur",
+   "osm_relation": 8593081,
+   "s1_osm_base": "2026-09-22T08:45:51Z",
+   "s1_relation_version": null,
+   "s1_relation_version_note": "не записана: Overpass out geom без meta",
+   "s1_relation_timestamp": null,
+   "s1_osm_admin_level": "6",
+   "s1_name_ru": "район Байконур",
+   "s1_name": "Байқоңыр ауданы",
+   "s1_name_kk": "Байқоңыр ауданы",
+   "s1_product_name": "Байконур",
+   "s1_kato_tag": "711410000",
+   "s1_wikidata": "Q57782659",
+   "s1_geom_sha256": "c88ab7d61e8ac116d8009c9af352ae2427482a04756824907bc18d6ec4d65d03",
+   "s1_area_km2": 183.501,
+   "s1_parts": 3,
+   "s2_release": "2026-09-23.1",
+   "s2_osm_relation_version": 14,
+   "s2_osm_source_update_time": "2026-09-08T16:42:27Z",
+   "s2_overture_subtype": "county",
+   "s2_overture_admin_level": 2,
+   "s2_overture_version": 10,
+   "s2_division_id": "0fedba7f-303f-480d-a9b0-49a2508ba0c2",
+   "s2_name_primary": "Байқоңыр ауданы",
+   "s2_name_common_ru": "район Байконур",
+   "s2_geom_sha256": "c88ab7d61e8ac116d8009c9af352ae2427482a04756824907bc18d6ec4d65d03",
+   "s2_area_km2": 183.501,
+   "geom_identical": true,
+   "iou": 1.0,
+   "symdiff_m2": 0.0,
+   "hausdorff_m_approx": 0.0,
+   "vertices_only_s1": 0,
+   "vertices_only_s2": 0,
+   "s3_k03_epic_area_km2": 183.5,
+   "s3_kato": "711410000",
+   "s4_k03_clever_area_km2": 183.501,
+   "s4_kato": "711410000",
+   "official_status": "not_verified"
+  },
+  {
+   "city": "astana",
+   "unit": "nura",
+   "osm_relation": 20593940,
+   "s1_osm_base": "2026-09-22T08:45:51Z",
+   "s1_relation_version": null,
+   "s1_relation_version_note": "не записана: Overpass out geom без meta",
+   "s1_relation_timestamp": null,
+   "s1_osm_admin_level": "6",
+   "s1_name_ru": "район Нура",
+   "s1_name": "Нұра ауданы",
+   "s1_name_kk": "Нұра ауданы",
+   "s1_product_name": "Нура",
+   "s1_kato_tag": null,
+   "s1_wikidata": null,
+   "s1_geom_sha256": "06693aeab389abbce3452c0d5397521336c456e2ad5246511dec670ee9be94d1",
+   "s1_area_km2": 188.574,
+   "s1_parts": 1,
+   "s2_release": "2026-09-23.1",
+   "s2_osm_relation_version": 1,
+   "s2_osm_source_update_time": "2026-06-23T13:29:44Z",
+   "s2_overture_subtype": "county",
+   "s2_overture_admin_level": 2,
+   "s2_overture_version": 2,
+   "s2_division_id": "4efb1e7d-e3dc-4e21-8904-78ca374a5d4b",
+   "s2_name_primary": "Нұра ауданы",
+   "s2_name_common_ru": "район Нура",
+   "s2_geom_sha256": "06693aeab389abbce3452c0d5397521336c456e2ad5246511dec670ee9be94d1",
+   "s2_area_km2": 188.574,
+   "geom_identical": true,
+   "iou": 1.0,
+   "symdiff_m2": 0.0,
+   "hausdorff_m_approx": 0.0,
+   "vertices_only_s1": 0,
+   "vertices_only_s2": 0,
+   "s3_k03_epic_area_km2": 188.57,
+   "s3_kato": null,
+   "s4_k03_clever_area_km2": 188.574,
+   "s4_kato": null,
+   "official_status": "not_verified"
+  },
+  {
+   "city": "astana",
+   "unit": "saraishyk",
+   "osm_relation": 19733918,
+   "s1_osm_base": "2026-09-22T08:45:51Z",
+   "s1_relation_version": 17,
+   "s1_relation_version_note": "OSM API sara_osm.json",
+   "s1_relation_timestamp": "2026-09-21T13:44:01Z",
+   "s1_osm_admin_level": "8",
+   "s1_name_ru": "район Сарайшык",
+   "s1_name": "Сарайшық ауданы",
+   "s1_name_kk": "Сарайшық ауданы",
+   "s1_product_name": "Сарайшык",
+   "s1_kato_tag": null,
+   "s1_wikidata": null,
+   "s1_geom_sha256": "7585383bfc6e00a5dde3dab78d8afb9822c895adfff008f1ca9dfbfd8e66fa38",
+   "s1_area_km2": 61.425,
+   "s1_parts": 1,
+   "s2_release": "2026-09-23.1",
+   "s2_osm_relation_version": 16,
+   "s2_osm_source_update_time": "2026-09-10T05:16:03Z",
+   "s2_overture_subtype": "locality",
+   "s2_overture_admin_level": null,
+   "s2_overture_version": 7,
+   "s2_division_id": "18481a68-2f92-49e3-b5c1-212e666667b2",
+   "s2_name_primary": "Сарайшық ауданы",
+   "s2_name_common_ru": "район Сарайшык",
+   "s2_geom_sha256": "9158960c711b527cd017dc487fb03b03cb874c27851e1c5e36d1835e8175f871",
+   "s2_area_km2": 61.425,
+   "geom_identical": false,
+   "iou": 0.9999981,
+   "symdiff_m2": 114.33,
+   "hausdorff_m_approx": 0.44,
+   "vertices_only_s1": 10,
+   "vertices_only_s2": 9,
+   "s3_k03_epic_area_km2": 61.43,
+   "s3_kato": null,
+   "s4_k03_clever_area_km2": 61.425,
+   "s4_kato": null,
+   "official_status": "not_verified"
+  }
+ ],
+ "astana_geometry_difference_cause": [
+  {
+   "relation": 3482819,
+   "vertices_only_in_product": 10,
+   "ways": [
+    903345831
+   ],
+   "ways_meta": [
+    {
+     "way": 903345831,
+     "version": 12,
+     "timestamp": "2026-09-21T13:44:01Z",
+     "changeset": 189349743
+    }
+   ]
+  },
+  {
+   "relation": 19733918,
+   "vertices_only_in_product": 10,
+   "ways": [
+    903345831
+   ],
+   "ways_meta": [
+    {
+     "way": 903345831,
+     "version": 12,
+     "timestamp": "2026-09-21T13:44:01Z",
+     "changeset": 189349743
+    }
+   ]
+  }
+ ],
+ "saraishyk_levels": {
+  "osm_admin_level_overpass": "8",
+  "osm_admin_level_api_v17": "8",
+  "other_astana_districts_osm_admin_level": [
+   "6"
+  ],
+  "overture_subtype": "locality",
+  "overture_admin_level": null,
+  "other_astana_districts_overture": [
+   [
+    "county",
+    2
+   ]
+  ],
+  "nominatim": {
+   "addresstype": "city_district",
+   "place_rank": 16
+  },
+  "product_city_data": "отсутствует (5 учебных районов)",
+  "versions": {
+   "product": "r19733918@17 (2026-09-21T13:44:01Z)",
+   "overture": "r19733918@16 (2026-09-10T05:16:03Z)"
+  },
+  "conclusion": "три разных представления уровня; выбирать по явному списку relation id, не по уровню/подтипу"
+ },
+ "astana_city": {
+  "overture_city": {
+   "osm": "r3087155@64",
+   "update_time": "2026-06-01T05:38:24Z",
+   "area_km2": 800.291,
+   "geom_sha256": "69de6abb0bbe5231312b0169e1f0d58596908abd8b87a1881b008559ed64a524",
+   "parts": 5
+  },
+  "product_city_relation": "нет: запрос Overpass брал admin_level 5–9",
+  "districts_union_km2": 789.257,
+  "districts_outside_city_km2": 0.0,
+  "uncovered": {
+   "area_km2": 11.034,
+   "parts": [
+    11.034
+   ],
+   "rep_point": [
+    71.40464,
+    50.87199
+   ],
+   "geom_sha256": "018a4fb95321420504f555e8c9d9ff4e21584e15fc2a2de80153d989d2fad054",
+   "vs_tselinograd_inner_ring_from_product_snapshot": {
+    "inner_ring_km2": 11.034,
+    "iou": 1.0,
+    "note": "дыра Целиноградского района (Overpass 2026-09-22) и непокрытая часть города (Overture r3087155@64) — одна территория"
+   }
+  },
+  "exclave_overlap": {
+   "area_km2": 9.021,
+   "geom_sha256": "a675fad1840b6f44851c74baa4061e65f2efb8b6e0480d673eb80e33f9e36fad",
+   "inside_overture_city_polygon": 1.0,
+   "note": "эксклав Байконура входит в полигон города (Overture) и в Целиноградский район (Overpass); версии разные"
+  }
+ },
+ "shymkent": {
+  "overture_city": {
+   "osm": "r3389772@60",
+   "update_time": "2026-06-06T10:59:35Z",
+   "area_km2": 1169.968,
+   "geom_sha256": "c62ef29c3a28b92f5406102dcf628246182ec47b147f66d741fdd033a8084ed8"
+  },
+  "overture_districts": [
+   {
+    "osm": "r5551117@29",
+    "update_time": "2026-05-20T11:49:06Z",
+    "name_primary": "Еңбекші ауданы",
+    "name_common_ru": "Енбекшинский район",
+    "subtype": "county",
+    "area_km2": 201.538,
+    "geom_sha256": "f7de76c0c75c84f82f054976450b8a5d6f582c45c440cc372fa74f644647f949",
+    "valid": true
+   },
+   {
+    "osm": "r5551119@30",
+    "update_time": "2026-05-20T11:49:06Z",
+    "name_primary": "Қаратау ауданы",
+    "name_common_ru": "Каратауский район",
+    "subtype": "county",
+    "area_km2": 321.712,
+    "geom_sha256": "13296370819f3d278623d50c317e98060f90497abf159aaab624ee2548c530be",
+    "valid": true
+   },
+   {
+    "osm": "r5550509@19",
+    "update_time": "2025-03-24T18:02:34Z",
+    "name_primary": "Әл-Фараби ауданы",
+    "name_common_ru": "Аль-Фарабийский район",
+    "subtype": "county",
+    "area_km2": 149.813,
+    "geom_sha256": "6a755f2713df57aa1b1328b611d941798a8b341b9d9793b7028890454a181792",
+    "valid": true
+   },
+   {
+    "osm": "r5548210@25",
+    "update_time": "2026-04-18T05:27:28Z",
+    "name_primary": "Абай ауданы",
+    "name_common_ru": "Абайский район",
+    "subtype": "county",
+    "area_km2": 496.905,
+    "geom_sha256": "6ca696c4dc133cd5e82b18752427baaec67d160f318a1c819b6b08c9f7e1007f",
+    "valid": true
+   }
+  ],
+  "district_polygon_count": 4,
+  "districts_union_km2": 1169.968,
+  "city_not_covered_km2": 0.0,
+  "districts_outside_city_km2": 0.0,
+  "pairwise_overlaps_m2": {},
+  "a12_hypothesis_names_vs_overture": [
+   {
+    "a12_name": "Абайский район",
+    "overture_match": "r5548210"
+   },
+   {
+    "a12_name": "Аль-Фарабийский район",
+    "overture_match": "r5550509"
+   },
+   {
+    "a12_name": "Енбекшинский район",
+    "overture_match": "r5551117"
+   },
+   {
+    "a12_name": "Каратауский район",
+    "overture_match": "r5551119"
+   },
+   {
+    "a12_name": "Туранский район",
+    "overture_match": null
+   }
+  ],
+  "turan": {
+   "k10_claim": "в STATUS K10: «Тұран есть только как macrohood»",
+   "saved_record": false,
+   "check": "в samples/results K10 @ e91898d нет записи или геометрии Тұран; утверждение не проверяемо по репозиторию"
+  },
+  "kpssu_codes": {
+   "source": "research/govtech-results/10_safety/A10_sample_kpssu_shymkent_aggregates.json",
+   "codes": {
+    "197910": [
+     2018,
+     2026
+    ],
+    "197911": [
+     2018,
+     2026
+    ],
+    "197912": [
+     2018,
+     2026
+    ],
+    "197913": [
+     2018,
+     2026
+    ],
+    "197914": [
+     2023,
+     2026
+    ]
+   },
+   "note": "5 кодов при 4 полигонах; справочника кодов нет; код→район не сопоставлен"
+  },
+  "k03_epic": "5 названий районов как гипотеза A12-F016, без геометрии",
+  "k03_clever": "город (код 1979) + 5 кодов КПСиСУ, без геометрии и названий",
+  "k10_e01": {
+   "coverage": 1.0,
+   "not_covered_km2": 0.0
+  }
+ },
+ "k03_versions_agreement": {
+  "astana_districts": [
+   {
+    "osm_relation": 3479876,
+    "area_epic": 194.56,
+    "area_clever": 194.556,
+    "area_equal_0_01": true,
+    "kato_equal": true
+   },
+   {
+    "osm_relation": 3482819,
+    "area_epic": 93.38,
+    "area_clever": 93.379,
+    "area_equal_0_01": true,
+    "kato_equal": true
+   },
+   {
+    "osm_relation": 3486954,
+    "area_epic": 67.82,
+    "area_clever": 67.823,
+    "area_equal_0_01": true,
+    "kato_equal": true
+   },
+   {
+    "osm_relation": 8593081,
+    "area_epic": 183.5,
+    "area_clever": 183.501,
+    "area_equal_0_01": true,
+    "kato_equal": true
+   },
+   {
+    "osm_relation": 20593940,
+    "area_epic": 188.57,
+    "area_clever": 188.574,
+    "area_equal_0_01": true,
+    "kato_equal": true
+   },
+   {
+    "osm_relation": 19733918,
+    "area_epic": 61.43,
+    "area_clever": 61.425,
+    "area_equal_0_01": true,
+    "kato_equal": true
+   }
+  ],
+  "only_in_epic": [
+   "ISO KZ-AST (lvl15) рядом с KZ-71 в Nominatim",
+   "проверка эксклава по составу путей",
+   "3 вершины на стыке ≥3 районов",
+   "дыра Целиноградского района 11,034 км²"
+  ],
+  "only_in_clever": [
+   "коды КПСиСУ 1979 / 197910–197914 из A10",
+   "IoU продукт/сырой OSM"
+  ],
+  "shymkent_rows": {
+   "epic": "город + 5 гипотетических названий",
+   "clever": "город + 5 кодов"
+  },
+  "iso_from_k10": "pycountry 26.2.16: KZ-71 Astana, KZ-79 Shymkent (вторичная копия ISO; KZ-AST там нет)"
+ }
+}

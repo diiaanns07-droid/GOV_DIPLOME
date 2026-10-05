@@ -1,0 +1,271 @@
+{
+ "inputs": {
+  "geo_sources/astana_districts_overpass.json": "ebd6019b0ea32cef4d3f27c79bc0a979284fe35476551742eea8ba4839f01392",
+  "geo_sources/sara_osm.json": "c3ef515903b405d4f05b4f512e239653df267962a8bde06824ed4e5005f62a32",
+  "astana_districts.geojson": "9092aebb997086d4fbf30963dd84dfae6aab483a585ba6f536944fb03a4eb95e"
+ },
+ "osm_base": "2026-09-22T08:45:51Z",
+ "relations": {
+  "3403760": {
+   "name": "Целиноград ауданы",
+   "name_ru": "Целиноградский район",
+   "name_kk": "Целиноград ауданы",
+   "admin_level": "6",
+   "kato_tag": null,
+   "wikidata": "Q2224859",
+   "addr_region": "Ақмола облысы",
+   "valid": true,
+   "area_km2_geodesic": 7666.728,
+   "parts_km2": [
+    6049.245,
+    1617.483
+   ]
+  },
+  "3403782": {
+   "name": "Аршалы ауданы",
+   "name_ru": "Аршалынский район",
+   "name_kk": "Аршалы ауданы",
+   "admin_level": "6",
+   "kato_tag": null,
+   "wikidata": "Q2321988",
+   "addr_region": "Ақмола облысы",
+   "valid": true,
+   "area_km2_geodesic": 5846.904,
+   "parts_km2": [
+    5846.904
+   ]
+  },
+  "3404061": {
+   "name": "Шортанды ауданы",
+   "name_ru": "Шортандинский район",
+   "name_kk": "Шортанды ауданы",
+   "admin_level": "6",
+   "kato_tag": null,
+   "wikidata": "Q2556281",
+   "addr_region": "Ақмола облысы",
+   "valid": true,
+   "area_km2_geodesic": 4681.659,
+   "parts_km2": [
+    4681.659
+   ]
+  },
+  "3479876": {
+   "name": "Есіл ауданы",
+   "name_ru": "район Есиль",
+   "name_kk": null,
+   "admin_level": "6",
+   "kato_tag": "711210000",
+   "wikidata": "Q16648877",
+   "addr_region": null,
+   "valid": true,
+   "area_km2_geodesic": 194.556,
+   "parts_km2": [
+    194.556
+   ],
+   "product_vs_raw_iou": 1.0,
+   "product_area_km2_geodesic": 194.556
+  },
+  "3482819": {
+   "name": "Алматы ауданы",
+   "name_ru": "район Алматы",
+   "name_kk": null,
+   "admin_level": "6",
+   "kato_tag": "711110000",
+   "wikidata": "Q12528524",
+   "addr_region": null,
+   "valid": true,
+   "area_km2_geodesic": 93.379,
+   "parts_km2": [
+    88.586,
+    4.794
+   ],
+   "product_vs_raw_iou": 1.0,
+   "product_area_km2_geodesic": 93.379
+  },
+  "3486954": {
+   "name": "Сарыарқа ауданы",
+   "name_ru": "район Сарыарка",
+   "name_kk": "Сарыарқа ауданы",
+   "admin_level": "6",
+   "kato_tag": "711310000",
+   "wikidata": "Q16694762",
+   "addr_region": null,
+   "valid": true,
+   "area_km2_geodesic": 67.823,
+   "parts_km2": [
+    67.823
+   ],
+   "product_vs_raw_iou": 1.0,
+   "product_area_km2_geodesic": 67.823
+  },
+  "8593081": {
+   "name": "Байқоңыр ауданы",
+   "name_ru": "район Байконур",
+   "name_kk": "Байқоңыр ауданы",
+   "admin_level": "6",
+   "kato_tag": "711410000",
+   "wikidata": "Q57782659",
+   "addr_region": null,
+   "valid": true,
+   "area_km2_geodesic": 183.501,
+   "parts_km2": [
+    169.448,
+    9.021,
+    5.033
+   ],
+   "product_vs_raw_iou": 1.0,
+   "product_area_km2_geodesic": 183.501
+  },
+  "15594335": {
+   "name": "Қосшы қалалық әкімдігі",
+   "name_ru": "городская администрация Косшы",
+   "name_kk": "Қосшы қалалық әкімдігі",
+   "admin_level": "6",
+   "kato_tag": null,
+   "wikidata": null,
+   "addr_region": "Ақмола облысы",
+   "valid": true,
+   "area_km2_geodesic": 141.201,
+   "parts_km2": [
+    141.201
+   ]
+  },
+  "17952313": {
+   "name": "Тайтөбе ауылдық әкімдігі",
+   "name_ru": "Тайтобинская сельская администрация",
+   "name_kk": "Тайтөбе ауылдық әкімдігі",
+   "admin_level": "8",
+   "kato_tag": null,
+   "wikidata": "Q56367432",
+   "addr_region": null,
+   "valid": true,
+   "area_km2_geodesic": 89.314,
+   "parts_km2": [
+    89.314
+   ]
+  },
+  "19733918": {
+   "name": "Сарайшық ауданы",
+   "name_ru": "район Сарайшык",
+   "name_kk": "Сарайшық ауданы",
+   "admin_level": "8",
+   "kato_tag": null,
+   "wikidata": null,
+   "addr_region": null,
+   "valid": true,
+   "area_km2_geodesic": 61.425,
+   "parts_km2": [
+    61.425
+   ],
+   "product_vs_raw_iou": 1.0,
+   "product_area_km2_geodesic": 61.425
+  },
+  "20593940": {
+   "name": "Нұра ауданы",
+   "name_ru": "район Нура",
+   "name_kk": "Нұра ауданы",
+   "admin_level": "6",
+   "kato_tag": null,
+   "wikidata": null,
+   "addr_region": null,
+   "valid": true,
+   "area_km2_geodesic": 188.574,
+   "parts_km2": [
+    188.574
+   ],
+   "product_vs_raw_iou": 1.0,
+   "product_area_km2_geodesic": 188.574
+  }
+ },
+ "astana_pair_overlaps_km2": {},
+ "astana_union": {
+  "area_km2": 789.257,
+  "parts_km2": [
+   770.41,
+   9.021,
+   5.033,
+   4.794
+  ]
+ },
+ "area_conflicts_with_neighbours": [
+  {
+   "astana_district": "baikonur",
+   "neighbour_relation": 3403760,
+   "neighbour_name": "Целиноград ауданы",
+   "overlap_km2": 9.021,
+   "sample_point_lonlat": [
+    71.66574,
+    51.33028
+   ]
+  }
+ ],
+ "neighbours_touching_astana": [
+  "Аршалы ауданы",
+  "Тайтөбе ауылдық әкімдігі",
+  "Целиноград ауданы",
+  "Шортанды ауданы",
+  "Қосшы қалалық әкімдігі"
+ ],
+ "exclaves": [
+  {
+   "district": "almaty",
+   "part_km2": 4.794,
+   "point_lonlat": [
+    71.76886,
+    51.15388
+   ],
+   "also_inside": []
+  },
+  {
+   "district": "baikonur",
+   "part_km2": 9.021,
+   "point_lonlat": [
+    71.66574,
+    51.33028
+   ],
+   "also_inside": [
+    "Целиноград ауданы"
+   ]
+  },
+  {
+   "district": "baikonur",
+   "part_km2": 5.033,
+   "point_lonlat": [
+    71.31734,
+    51.28433
+   ],
+   "also_inside": []
+  }
+ ],
+ "point_checks": {
+  "AST-A12 F012 point": {
+   "covers": [
+    "baikonur",
+    "Целиноград ауданы"
+   ],
+   "contains": [
+    "baikonur",
+    "Целиноград ауданы"
+   ]
+  },
+  "AST-A12 F014 tri-point": {
+   "covers": [
+    "almaty",
+    "esil",
+    "saraishyk"
+   ],
+   "contains": []
+  }
+ },
+ "saraishyk_api_relation": {
+  "id": 19733918,
+  "version": 17,
+  "timestamp": "2026-09-21T13:44:01Z",
+  "changeset": 189349743
+ },
+ "versions": {
+  "python": "3.11.15",
+  "shapely": "2.1.2",
+  "pyproj": "3.7.2"
+ }
+}
