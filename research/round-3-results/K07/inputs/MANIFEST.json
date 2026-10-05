@@ -1,0 +1,135 @@
+{
+ "note": "Byte-exact copies (git cat-file blob) of K10 inputs used by the K07 round-3 prototype. Do not edit; regenerate with the command below.",
+ "source_branch": "claude/save-work-handoff-j7pc05",
+ "source_sha": "e91898d596164bcf6e853b921a49f82126074a35",
+ "source_listed_in": "origin/codex/research-import-2026-10-05:research/round-3/snapshots.json (commit 6602bb86f152d24edcb66f8b45122844323116bc)",
+ "copy_command": "git cat-file blob e91898d596164bcf6e853b921a49f82126074a35:research/next-round/K10/<path> > inputs/k10/<path>",
+ "files": [
+  {
+   "copy": "inputs/k10/datasets.json",
+   "source_path": "research/next-round/K10/datasets.json",
+   "source_blob": "ff75b7a131a4212d127b0e5117480d3637fd8cc5",
+   "copy_blob": "ff75b7a131a4212d127b0e5117480d3637fd8cc5",
+   "bytes_identical": true,
+   "sha256": "cb2f1bb09e4e88c1f7b4b1f0580de1f878435a1015fab643c23ebaee8dfdef22",
+   "bytes": 17909
+  },
+  {
+   "copy": "inputs/k10/provenance/astana_division_area.provenance.json",
+   "source_path": "research/next-round/K10/provenance/astana_division_area.provenance.json",
+   "source_blob": "bd95436b0760f18905333fd73803866a03e55964",
+   "copy_blob": "bd95436b0760f18905333fd73803866a03e55964",
+   "bytes_identical": true,
+   "sha256": "1a7ffbbb74dac015c0be99e99392b2db269a53e52e413db351b72540dbe27eab",
+   "bytes": 2379
+  },
+  {
+   "copy": "inputs/k10/provenance/astana_places.provenance.json",
+   "source_path": "research/next-round/K10/provenance/astana_places.provenance.json",
+   "source_blob": "18b077560fb73b0906122ffe38828b7101a54ab9",
+   "copy_blob": "18b077560fb73b0906122ffe38828b7101a54ab9",
+   "bytes_identical": true,
+   "sha256": "830c00b06a6f43d2c451dc71e0dcc655ca7e815b0b5828de63bcc3d4961b631e",
+   "bytes": 4077
+  },
+  {
+   "copy": "inputs/k10/provenance/astana_segment.provenance.json",
+   "source_path": "research/next-round/K10/provenance/astana_segment.provenance.json",
+   "source_blob": "e31717fc1b96c22c2dadb31200a1424bbcbda8a4",
+   "copy_blob": "e31717fc1b96c22c2dadb31200a1424bbcbda8a4",
+   "bytes_identical": true,
+   "sha256": "f1d23ba16a73f8829af4d4109c7c2f114be32cc9a77f71a68f6c7b769485670e",
+   "bytes": 994
+  },
+  {
+   "copy": "inputs/k10/provenance/raw_extracts.sha256",
+   "source_path": "research/next-round/K10/provenance/raw_extracts.sha256",
+   "source_blob": "483011d335276e8d02ea719a54fd767d289eb7d5",
+   "copy_blob": "483011d335276e8d02ea719a54fd767d289eb7d5",
+   "bytes_identical": true,
+   "sha256": "64826e3addff21153b9fd7cde1a624cbb0a0985b5cc5b03f6f62981b02ee4a77",
+   "bytes": 538
+  },
+  {
+   "copy": "inputs/k10/provenance/shymkent_division_area.provenance.json",
+   "source_path": "research/next-round/K10/provenance/shymkent_division_area.provenance.json",
+   "source_blob": "7752ed8f06f7d35968c62c31ef6d5f2950ecfffc",
+   "copy_blob": "7752ed8f06f7d35968c62c31ef6d5f2950ecfffc",
+   "bytes_identical": true,
+   "sha256": "581be8219eadc01c447b7a852fadb5ed2f95680770775ceffaf314e5175d4519",
+   "bytes": 2399
+  },
+  {
+   "copy": "inputs/k10/provenance/shymkent_places.provenance.json",
+   "source_path": "research/next-round/K10/provenance/shymkent_places.provenance.json",
+   "source_blob": "605d72392909ff755f4ef0258eac7ad521a48de4",
+   "copy_blob": "605d72392909ff755f4ef0258eac7ad521a48de4",
+   "bytes_identical": true,
+   "sha256": "7a75d6c366d9d531240f1964f04e01e77d79dd66cf6f1a4afbefda15ad9c8fd1",
+   "bytes": 4079
+  },
+  {
+   "copy": "inputs/k10/provenance/shymkent_segment.provenance.json",
+   "source_path": "research/next-round/K10/provenance/shymkent_segment.provenance.json",
+   "source_blob": "396c3c1cdbfd04cb55bff94901b487d348a7b6a5",
+   "copy_blob": "396c3c1cdbfd04cb55bff94901b487d348a7b6a5",
+   "bytes_identical": true,
+   "sha256": "e0255a6560e6762efc6e2e179bc73595458ff2dcf8d162f39d8f45d88133a877",
+   "bytes": 757
+  },
+  {
+   "copy": "inputs/k10/samples/astana_districts_overture.geojson",
+   "source_path": "research/next-round/K10/samples/astana_districts_overture.geojson",
+   "source_blob": "de42bd24c0fd1b9bcced2aeff169e3d335bc648e",
+   "copy_blob": "de42bd24c0fd1b9bcced2aeff169e3d335bc648e",
+   "bytes_identical": true,
+   "sha256": "ab3a7f9852ecdd0d80b68c22ed73f1e10673c20c5091cf47c6454a030f1421ca",
+   "bytes": 99459
+  },
+  {
+   "copy": "inputs/k10/samples/astana_places_social_sample.jsonl",
+   "source_path": "research/next-round/K10/samples/astana_places_social_sample.jsonl",
+   "source_blob": "8bb22de492a467332d9da71a6146ae36c44fc370",
+   "copy_blob": "8bb22de492a467332d9da71a6146ae36c44fc370",
+   "bytes_identical": true,
+   "sha256": "1c8eda287392644c06fcde0c00a63c0e8a69f765fab98b888c7edd98d4fe90fe",
+   "bytes": 69137
+  },
+  {
+   "copy": "inputs/k10/samples/astana_road_segments_sample.geojson",
+   "source_path": "research/next-round/K10/samples/astana_road_segments_sample.geojson",
+   "source_blob": "c4180ded62a53c1171c9f7df694ed6168e4ed12d",
+   "copy_blob": "c4180ded62a53c1171c9f7df694ed6168e4ed12d",
+   "bytes_identical": true,
+   "sha256": "883a36537ac7493b5dd5b2d4e0471d7cde7f565443ab8ba5988bfd90aa9b080e",
+   "bytes": 82542
+  },
+  {
+   "copy": "inputs/k10/samples/shymkent_districts_overture.geojson",
+   "source_path": "research/next-round/K10/samples/shymkent_districts_overture.geojson",
+   "source_blob": "1c4701fb5022ba97ef08a1c9727e552d0d357cbd",
+   "copy_blob": "1c4701fb5022ba97ef08a1c9727e552d0d357cbd",
+   "bytes_identical": true,
+   "sha256": "e19bbd7572a7a4f46dbb793df74c5d1cfab11d4e7a217fed7e525b4cece117c3",
+   "bytes": 159823
+  },
+  {
+   "copy": "inputs/k10/samples/shymkent_places_social_sample.jsonl",
+   "source_path": "research/next-round/K10/samples/shymkent_places_social_sample.jsonl",
+   "source_blob": "dbb7358b7572d8efc02e251d889224d23afdb3ee",
+   "copy_blob": "dbb7358b7572d8efc02e251d889224d23afdb3ee",
+   "bytes_identical": true,
+   "sha256": "a1b04aa4b1032286dc14105c71cb9578db15092e80d7cde1af5722026823e024",
+   "bytes": 62577
+  },
+  {
+   "copy": "inputs/k10/samples/shymkent_road_segments_sample.geojson",
+   "source_path": "research/next-round/K10/samples/shymkent_road_segments_sample.geojson",
+   "source_blob": "0cec9ed6000cf12ceea039364a2ccdbc0211a016",
+   "copy_blob": "0cec9ed6000cf12ceea039364a2ccdbc0211a016",
+   "bytes_identical": true,
+   "sha256": "d6152f35ca13da5e60fc23e9ad38273333f14b51baad1845e3cced23d2c67828",
+   "bytes": 89745
+  }
+ ]
+}

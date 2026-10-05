@@ -1,0 +1,135 @@
+{
+ "source": "Overture Maps Foundation",
+ "bucket": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com",
+ "release": "2026-09-23.1",
+ "theme": "places",
+ "type": "place",
+ "city": "astana",
+ "query_bbox": [
+  71.15,
+  50.95,
+  71.8,
+  51.35
+ ],
+ "started_utc": "2026-10-05T05:24:31+00:00",
+ "files": [
+  {
+   "key": "release/2026-09-23.1/theme=places/type=place/part-00000-417d568b-a25f-57b3-9e15-9876068be5d6-c000.zstd.parquet",
+   "size": 680811676,
+   "row_groups_total": 256,
+   "row_groups_read": [],
+   "rows_kept": 0
+  },
+  {
+   "key": "release/2026-09-23.1/theme=places/type=place/part-00001-947ef15d-91bf-56dd-a6a3-aad846cc7a28-c000.zstd.parquet",
+   "size": 736561336,
+   "row_groups_total": 512,
+   "row_groups_read": [],
+   "rows_kept": 0
+  },
+  {
+   "key": "release/2026-09-23.1/theme=places/type=place/part-00002-c0c1dd40-1cc6-5636-81da-0df43a88fa9d-c000.zstd.parquet",
+   "size": 752486655,
+   "row_groups_total": 512,
+   "row_groups_read": [],
+   "rows_kept": 0
+  },
+  {
+   "key": "release/2026-09-23.1/theme=places/type=place/part-00003-d872971a-e957-5cc9-a661-27396e8592fc-c000.zstd.parquet",
+   "size": 758320439,
+   "row_groups_total": 512,
+   "row_groups_read": [],
+   "rows_kept": 0
+  },
+  {
+   "key": "release/2026-09-23.1/theme=places/type=place/part-00004-4792ea94-09f0-5546-beb1-f50d71febd84-c000.zstd.parquet",
+   "size": 679312122,
+   "row_groups_total": 256,
+   "row_groups_read": [],
+   "rows_kept": 0
+  },
+  {
+   "key": "release/2026-09-23.1/theme=places/type=place/part-00005-19ebf8b3-812f-5237-8867-7e5b47d1d6dd-c000.zstd.parquet",
+   "size": 693781428,
+   "row_groups_total": 256,
+   "row_groups_read": [],
+   "rows_kept": 0
+  },
+  {
+   "key": "release/2026-09-23.1/theme=places/type=place/part-00006-4f05dab3-5982-5cee-9cd0-714856eac08e-c000.zstd.parquet",
+   "size": 729007835,
+   "row_groups_total": 256,
+   "row_groups_read": [],
+   "rows_kept": 0
+  },
+  {
+   "key": "release/2026-09-23.1/theme=places/type=place/part-00007-61ac23fc-0af6-5d61-8c46-5776ba7e6bf0-c000.zstd.parquet",
+   "size": 728373349,
+   "row_groups_total": 256,
+   "row_groups_read": [],
+   "rows_kept": 0
+  },
+  {
+   "key": "release/2026-09-23.1/theme=places/type=place/part-00008-7a297224-4f30-5864-bfad-ebbcb6047b29-c000.zstd.parquet",
+   "size": 662849078,
+   "row_groups_total": 256,
+   "row_groups_read": [],
+   "rows_kept": 0
+  },
+  {
+   "key": "release/2026-09-23.1/theme=places/type=place/part-00009-3f7e01dc-2fb9-50a7-8be5-65df80c1cdd4-c000.zstd.parquet",
+   "size": 621355675,
+   "row_groups_total": 256,
+   "row_groups_read": [],
+   "rows_kept": 0
+  },
+  {
+   "key": "release/2026-09-23.1/theme=places/type=place/part-00010-1c7c0e0e-408b-5c7c-8dc8-a1687f22ef6e-c000.zstd.parquet",
+   "size": 632147404,
+   "row_groups_total": 256,
+   "row_groups_read": [],
+   "rows_kept": 0
+  },
+  {
+   "key": "release/2026-09-23.1/theme=places/type=place/part-00011-9aa07e3a-309b-5031-8820-4ec743a80d43-c000.zstd.parquet",
+   "size": 632751442,
+   "row_groups_total": 256,
+   "row_groups_read": [],
+   "rows_kept": 0
+  },
+  {
+   "key": "release/2026-09-23.1/theme=places/type=place/part-00012-5e6c496a-f443-52b4-bc5e-0b71af05ae54-c000.zstd.parquet",
+   "size": 669380586,
+   "row_groups_total": 256,
+   "row_groups_read": [],
+   "rows_kept": 0
+  },
+  {
+   "key": "release/2026-09-23.1/theme=places/type=place/part-00013-87182afd-1282-5a98-b777-73886b671c42-c000.zstd.parquet",
+   "size": 656760524,
+   "row_groups_total": 256,
+   "row_groups_read": [],
+   "rows_kept": 0
+  },
+  {
+   "key": "release/2026-09-23.1/theme=places/type=place/part-00014-1d36203b-4312-5a97-b9e0-5c110ae7a274-c000.zstd.parquet",
+   "size": 683038313,
+   "row_groups_total": 256,
+   "row_groups_read": [
+    91
+   ],
+   "rows_kept": 8815
+  },
+  {
+   "key": "release/2026-09-23.1/theme=places/type=place/part-00015-b21e3943-1706-5729-88ab-f4f5777eaae4-c000.zstd.parquet",
+   "size": 679288164,
+   "row_groups_total": 256,
+   "row_groups_read": [],
+   "rows_kept": 0
+  }
+ ],
+ "finished_utc": "2026-10-05T05:24:39+00:00",
+ "rows_out": 8815,
+ "http_requests": 51,
+ "bytes_downloaded": 33286400
+}

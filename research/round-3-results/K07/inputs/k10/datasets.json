@@ -1,0 +1,456 @@
+{
+ "registry_version": "K10-1",
+ "created_utc": "2026-10-05",
+ "agent": "K10",
+ "status_legend": {
+  "SV": "sample_verified: file opened, rows downloaded and parsed here",
+  "META": "only metadata opened",
+  "BLOCKED": "host denied by environment egress policy"
+ },
+ "datasets": [
+  {
+   "id": "K10-D01",
+   "name": "Overture Maps divisions / division_area (административные полигоны)",
+   "publisher": "Overture Maps Foundation (геометрия из OpenStreetMap)",
+   "status": "SV",
+   "cities": [
+    "shymkent",
+    "astana"
+   ],
+   "release": "2026-09-23.1 (S3 LastModified 2026-09-25)",
+   "access": "анонимный HTTPS к публичному S3-бакету, без ключа; чтение по HTTP Range только нужных row groups",
+   "listing_url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/?list-type=2&prefix=release/2026-09-23.1/theme=divisions/type=division_area/",
+   "direct_urls": [
+    {
+     "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=divisions/type=division_area/part-00002-f7766c1a-fff7-57b4-a3ae-5905c3ea9b9e-c000.zstd.parquet",
+     "bytes_total": 628732807,
+     "row_groups_read": [
+      17
+     ],
+     "for": "shymkent_division_area"
+    },
+    {
+     "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=divisions/type=division_area/part-00003-fb0b018a-fa80-50e7-bf23-3be974708e75-c000.zstd.parquet",
+     "bytes_total": 752468253,
+     "row_groups_read": [
+      47
+     ],
+     "for": "shymkent_division_area"
+    },
+    {
+     "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=divisions/type=division_area/part-00007-4cb9c932-fb76-5f49-b66c-b8673ad784ac-c000.zstd.parquet",
+     "bytes_total": 532695847,
+     "row_groups_read": [
+      16,
+      17,
+      18,
+      19
+     ],
+     "for": "shymkent_division_area"
+    },
+    {
+     "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=divisions/type=division_area/part-00002-f7766c1a-fff7-57b4-a3ae-5905c3ea9b9e-c000.zstd.parquet",
+     "bytes_total": 628732807,
+     "row_groups_read": [
+      17
+     ],
+     "for": "astana_division_area"
+    },
+    {
+     "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=divisions/type=division_area/part-00003-fb0b018a-fa80-50e7-bf23-3be974708e75-c000.zstd.parquet",
+     "bytes_total": 752468253,
+     "row_groups_read": [
+      47
+     ],
+     "for": "astana_division_area"
+    },
+    {
+     "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=divisions/type=division_area/part-00007-4cb9c932-fb76-5f49-b66c-b8673ad784ac-c000.zstd.parquet",
+     "bytes_total": 532695847,
+     "row_groups_read": [
+      17,
+      19
+     ],
+     "for": "astana_division_area"
+    }
+   ],
+   "retrieval": {
+    "shymkent_division_area": {
+     "started_utc": "2026-10-05T05:23:40+00:00",
+     "finished_utc": "2026-10-05T05:23:46+00:00",
+     "rows_out": 181,
+     "bytes_downloaded": 55220345
+    },
+    "astana_division_area": {
+     "started_utc": "2026-10-05T05:23:46+00:00",
+     "finished_utc": "2026-10-05T05:23:53+00:00",
+     "rows_out": 91,
+     "bytes_downloaded": 49977465
+    }
+   },
+   "fields": [
+    "id",
+    "geometry (WKB, EPSG:4326)",
+    "country",
+    "sources[] {property,dataset,license,record_id,update_time,confidence,between,provider,resource,version}",
+    "subtype",
+    "admin_level",
+    "class",
+    "names {primary,common,rules}",
+    "is_land",
+    "is_territorial",
+    "region (ISO 3166-2)",
+    "division_id",
+    "version",
+    "bbox {xmin,xmax,ymin,ymax}"
+   ],
+   "units": {
+    "geometry": "градусы lon/lat WGS84",
+    "area_km2": "производное: геодезическая площадь pyproj WGS84, км²"
+   },
+   "geography": {
+    "shymkent": "region KZ-79 (OSM r3389772@60) + 4 county: Абай r5548210, Әл-Фараби r5550509, Еңбекші r5551117, Қаратау r5551119",
+    "astana": "region KZ-71 (OSM r3087155@64) + 5 county (Алматы, Байқоңыр, Есіл, Нұра, Сарыарқа) + Сарайшық как locality (OSM r19733918@16)"
+   },
+   "license_observed": "sources.license в строках: ODbL-1.0 (OpenStreetMap); для полигонов region дополнительно 'Esri Community Maps' CC0-1.0. Общие условия Overture (docs.overturemaps.org) не открыты: хост заблокирован.",
+   "attribution_required": "© OpenStreetMap contributors; Overture Maps Foundation",
+   "sample_files": [
+    "samples/shymkent_districts_overture.geojson",
+    "samples/astana_districts_overture.geojson"
+   ],
+   "checks": [
+    "results/E01_district_coverage.json"
+   ],
+   "limitations": [
+    "Не официальный источник: отражает OSM, а не акты акимата/КАТО.",
+    "Шымкент: в OSM/Overture 4 района; пятого (Туранского по гипотезе A12-F016) нет — официальный состав не проверен.",
+    "Астана: Сарайшық не county, а locality (admin_level 8 в OSM); 11,034 км² города не покрыты районами; эксклав Байқоңыр 9,021 км² пересекается с Целиноградским районом KZ-11."
+   ],
+   "usable_for": "привязка точек к районам, контракт geo_units с osm relation@version; Шымкент впервые получает районные полигоны"
+  },
+  {
+   "id": "K10-D02",
+   "name": "Overture Maps places / place (точки интереса)",
+   "publisher": "Overture Maps Foundation; источники Meta, Microsoft, Foursquare, AllThePlaces, PinMeTo",
+   "status": "SV",
+   "cities": [
+    "shymkent",
+    "astana"
+   ],
+   "release": "2026-09-23.1",
+   "access": "как K10-D01",
+   "listing_url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/?list-type=2&prefix=release/2026-09-23.1/theme=places/type=place/",
+   "direct_urls": [
+    {
+     "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/part-00014-1d36203b-4312-5a97-b9e0-5c110ae7a274-c000.zstd.parquet",
+     "bytes_total": 683038313,
+     "row_groups_read": [
+      90
+     ],
+     "for": "shymkent_places"
+    },
+    {
+     "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/part-00014-1d36203b-4312-5a97-b9e0-5c110ae7a274-c000.zstd.parquet",
+     "bytes_total": 683038313,
+     "row_groups_read": [
+      91
+     ],
+     "for": "astana_places"
+    }
+   ],
+   "retrieval": {
+    "shymkent_places": {
+     "started_utc": "2026-10-05T05:24:23+00:00",
+     "finished_utc": "2026-10-05T05:24:30+00:00",
+     "rows_out": 2608,
+     "bytes_downloaded": 33286400
+    },
+    "astana_places": {
+     "started_utc": "2026-10-05T05:24:31+00:00",
+     "finished_utc": "2026-10-05T05:24:39+00:00",
+     "rows_out": 8815,
+     "bytes_downloaded": 33286400
+    }
+   },
+   "fields_extracted": [
+    "id",
+    "geometry (point)",
+    "confidence (0..1)",
+    "names",
+    "addresses[] {freeform,locality,postcode,region,country}",
+    "sources[]",
+    "operating_status",
+    "basic_category",
+    "taxonomy {primary,hierarchy,alternates}",
+    "version",
+    "bbox"
+   ],
+   "fields_not_extracted": [
+    "phones",
+    "emails",
+    "socials",
+    "websites",
+    "brand"
+   ],
+   "units": {
+    "confidence": "безразмерная 0..1, модельная оценка Overture"
+   },
+   "geography": {
+    "shymkent": "bbox 69.35..69.95 / 42.10..42.55: 2608 точек, 2553 внутри полигона города",
+    "astana": "bbox 71.15..71.80 / 50.95..51.35: 8815 точек, 8481 внутри полигона города"
+   },
+   "license_observed": {
+    "shymkent": {
+     "Overture": "CDLA-Permissive-2.0",
+     "meta": "CDLA-Permissive-2.0",
+     "AllThePlaces": "CC0-1.0",
+     "Foursquare": "Apache-2.0",
+     "Microsoft": "CDLA-Permissive-2.0"
+    },
+    "astana": {
+     "Overture": "CDLA-Permissive-2.0",
+     "meta": "CDLA-Permissive-2.0",
+     "AllThePlaces": "CC0-1.0",
+     "Foursquare": "Apache-2.0",
+     "Microsoft": "CDLA-Permissive-2.0",
+     "PinMeTo": "CDLA-Permissive-2.0"
+    }
+   },
+   "sample_files": [
+    "samples/shymkent_places_social_sample.jsonl",
+    "samples/astana_places_social_sample.jsonl"
+   ],
+   "checks": [
+    "results/E02_social_poi_by_district.json"
+   ],
+   "limitations": [
+    "Полнота по социальным объектам неизвестна и, судя по малым числам, низкая; это не реестр школ/поликлиник.",
+    "Категории присвоены Overture автоматически; 'school' включает частные/языковые школы.",
+    "operating_status почти везде пуст.",
+    "Сверка с официальными реестрами не выполнена: data.egov.kz заблокирован."
+   ],
+   "usable_for": "прототип конвейера 'объекты → районы' для обоих городов; не для выводов об обеспеченности"
+  },
+  {
+   "id": "K10-D03",
+   "name": "geoBoundaries gbOpen KAZ ADM1/ADM2 — метаданные",
+   "publisher": "William & Mary geoLab (wmgeolab/geoBoundaries)",
+   "status": "META",
+   "cities": [
+    "shymkent",
+    "astana"
+   ],
+   "direct_urls": [
+    "https://media.githubusercontent.com/media/wmgeolab/geoBoundaries/main/releaseData/gbOpen/KAZ/ADM1/geoBoundaries-KAZ-ADM1-metaData.json",
+    "https://media.githubusercontent.com/media/wmgeolab/geoBoundaries/main/releaseData/gbOpen/KAZ/ADM2/geoBoundaries-KAZ-ADM2-metaData.json"
+   ],
+   "retrieved_utc": "2026-10-05T05:28Z",
+   "integrity": "sha256 файлов совпадает с oid LFS-указателей (84a67cf7…, a0883988…)",
+   "fields": [
+    "boundaryID",
+    "boundaryYear",
+    "boundarySource",
+    "boundaryLicense",
+    "sourceDataUpdateDate",
+    "buildDate",
+    "admUnitCount",
+    "area stats"
+   ],
+   "observed": {
+    "ADM1": "boundaryYear 2017, 16 единиц, источник OpenStreetMap/Wambacher, ODbL-1.0, build Dec 12 2023",
+    "ADM2": "boundaryYear 2017, 174 единицы, ODbL-1.0"
+   },
+   "sample_files": [
+    "samples/geoboundaries_KAZ_ADM1_metaData.json",
+    "samples/geoboundaries_KAZ_ADM2_metaData.json"
+   ],
+   "limitations": [
+    "Год границ 2017: Шымкент (город респ. значения с 2018) отдельной ADM1-единицей быть не должен — геометрия не скачивалась, вывод по admUnitCount=16 требует проверки списка имён."
+   ],
+   "usable_for": "только отрицательный контроль, как Natural Earth"
+  },
+  {
+   "id": "K10-D04",
+   "name": "Overture Maps transportation / segment (дорожная и пешеходная сеть)",
+   "publisher": "Overture Maps Foundation (геометрия и классы из OpenStreetMap)",
+   "status": "SV",
+   "cities": [
+    "shymkent",
+    "astana"
+   ],
+   "release": "2026-09-23.1",
+   "access": "как K10-D01; один проход по 128 файлам (footer ~2 МБ каждый)",
+   "listing_url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/?list-type=2&prefix=release/2026-09-23.1/theme=transportation/type=segment/",
+   "direct_urls": [
+    {
+     "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=transportation/type=segment/part-00093-3890aff8-6851-5d36-bf50-ee70780d0973-c000.zstd.parquet",
+     "bytes_total": 459817294,
+     "row_groups_read": [
+      109,
+      120,
+      121,
+      122,
+      123
+     ],
+     "for": "shymkent"
+    },
+    {
+     "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=transportation/type=segment/part-00093-3890aff8-6851-5d36-bf50-ee70780d0973-c000.zstd.parquet",
+     "bytes_total": 459817294,
+     "row_groups_read": [
+      122,
+      123,
+      126,
+      127
+     ],
+     "for": "astana"
+    },
+    {
+     "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=transportation/type=segment/part-00095-e13c85de-84e6-5430-8366-26da3dbd5d94-c000.zstd.parquet",
+     "bytes_total": 562518777,
+     "row_groups_read": [
+      84
+     ],
+     "for": "astana"
+    }
+   ],
+   "retrieval": {
+    "shymkent": {
+     "started_utc": "2026-10-05T05:30:36+00:00",
+     "finished_utc": "2026-10-05T05:31:45+00:00",
+     "rows_out": 48070
+    },
+    "astana": {
+     "started_utc": "2026-10-05T05:30:36+00:00",
+     "finished_utc": "2026-10-05T05:31:45+00:00",
+     "rows_out": 42872
+    },
+    "bytes_downloaded_both_cities": 296662578
+   },
+   "fields_extracted": [
+    "id",
+    "names",
+    "subtype (road/rail/water)",
+    "class",
+    "subclass",
+    "connectors[] {connector_id,at}",
+    "road_surface[]",
+    "road_flags[]",
+    "sources[]",
+    "geometry (LineString)",
+    "version",
+    "bbox"
+   ],
+   "fields_not_extracted": [
+    "speed_limits",
+    "access_restrictions",
+    "prohibited_transitions",
+    "routes",
+    "destinations",
+    "width_rules",
+    "level_rules",
+    "subclass_rules",
+    "rail_flags"
+   ],
+   "units": {
+    "length": "производное: геодезическая длина WGS84, км/м",
+    "at": "доля длины сегмента 0..1"
+   },
+   "geography": {
+    "shymkent": "{'road': 47513, 'rail': 557} в bbox; 33761 road-сегментов пересекают полигон города; 5719.14 км дорог внутри города; крупнейшая связная компонента 0.9965 длины",
+    "astana": "{'road': 42326, 'rail': 546} в bbox; 37464 road-сегментов пересекают полигон города; 5901.25 км дорог внутри города; крупнейшая связная компонента 0.9792 длины"
+   },
+   "license_observed": "sources.license в строках: ODbL-1.0 (OpenStreetMap)",
+   "attribution_required": "© OpenStreetMap contributors; Overture Maps Foundation",
+   "sample_files": [
+    "samples/shymkent_road_segments_sample.geojson",
+    "samples/astana_road_segments_sample.geojson"
+   ],
+   "checks": [
+    "results/E03_road_network_by_district.json"
+   ],
+   "limitations": [
+    "Полнота пешеходной разметки различается: footway в Шымкенте 25–71 км на район, в Астане 73–371 км — межгородское сравнение доступности будет смещено.",
+    "Права прохода (access_restrictions) не извлекались; 'walkable_class_km' — список классов K10, не проверка доступа пешехода.",
+    "Не официальный реестр дорог (D020 акимата заблокирован)."
+   ],
+   "usable_for": "сетевой baseline доступности для K07 вместо радиуса; связность графа проверена через connectors"
+  },
+  {
+   "id": "K10-D05",
+   "name": "ISO 3166-2:KZ — коды регионов и городов республиканского значения",
+   "publisher": "ISO 3166-2 в редакции Debian iso-codes, поставляется пакетом pycountry 26.2.16",
+   "status": "SV",
+   "cities": [
+    "shymkent",
+    "astana"
+   ],
+   "direct_urls": [
+    "https://pypi.org/simple/pycountry/ (файл pycountry-26.2.16-py3-none-any.whl, sha256 115c4baf7cceaa30f59a4694d79483c9167dbce7a9de4d3d571c5f3ea77c305a)"
+   ],
+   "retrieved_utc": "2026-10-05T05:30Z",
+   "fields": [
+    "code",
+    "name",
+    "type"
+   ],
+   "units": {},
+   "geography": "Казахстан: 20 единиц (17 областей и 3 города: KZ-71 Astana, KZ-75 Almaty, KZ-79 Shymkent)",
+   "license_observed": "LGPL (в METADATA пакета 'LGPL-2.1-only', в COPYRIGHT.txt '2.1 or any later version')",
+   "sample_files": [
+    "samples/iso3166_2_KZ.json"
+   ],
+   "checks": [
+    "region в Overture division_area совпадает: Шымкент KZ-79, Астана KZ-71; соседние области KZ-61 (Türkistan), KZ-11 (Aqmola)"
+   ],
+   "limitations": [
+    "Не КАТО: районы городов в ISO 3166-2 отсутствуют; КАТО (taldau/stat.gov.kz) заблокирован."
+   ],
+   "usable_for": "стабильный city_id/region_code для обоих городов"
+  }
+ ],
+ "not_obtained": [
+  {
+   "what": "официальный состав районов, население, КАТО",
+   "hosts": [
+    "stat.gov.kz",
+    "taldau.stat.gov.kz",
+    "www.gov.kz",
+    "adilet.zan.kz"
+   ],
+   "reason": "BLOCKED 403 CONNECT"
+  },
+  {
+   "what": "реестры школ/поликлиник, дорожные работы, земля (data.egov.kz)",
+   "hosts": [
+    "data.egov.kz"
+   ],
+   "reason": "BLOCKED; кроме того по AST-A12-F022 для выгрузки нужен API-ключ (не проверено)"
+  },
+  {
+   "what": "OSM напрямую (Overpass/API/Geofabrik)",
+   "hosts": [
+    "overpass-api.de",
+    "api.openstreetmap.org",
+    "download.geofabrik.de"
+   ],
+   "reason": "BLOCKED; частично заменено Overture (тот же OSM для границ)"
+  },
+  {
+   "what": "качество воздуха",
+   "hosts": [
+    "www.kazhydromet.kz"
+   ],
+   "reason": "BLOCKED"
+  },
+  {
+   "what": "население-сетки GHSL/WorldPop, HDX",
+   "hosts": [
+    "ghsl.jrc.ec.europa.eu",
+    "data.worldpop.org",
+    "data.humdata.org"
+   ],
+   "reason": "BLOCKED"
+  }
+ ]
+}

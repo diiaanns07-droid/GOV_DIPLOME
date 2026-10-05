@@ -1,0 +1,84 @@
+{
+ "source": "Overture Maps Foundation",
+ "bucket": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com",
+ "release": "2026-09-23.1",
+ "theme": "divisions",
+ "type": "division_area",
+ "city": "astana",
+ "query_bbox": [
+  71.15,
+  50.95,
+  71.8,
+  51.35
+ ],
+ "started_utc": "2026-10-05T05:23:46+00:00",
+ "files": [
+  {
+   "key": "release/2026-09-23.1/theme=divisions/type=division_area/part-00000-13ab2480-72f4-540b-bb23-7d270c7e9321-c000.zstd.parquet",
+   "size": 719641005,
+   "row_groups_total": 64,
+   "row_groups_read": [],
+   "rows_kept": 0
+  },
+  {
+   "key": "release/2026-09-23.1/theme=divisions/type=division_area/part-00001-4f9d9669-59af-57c7-9f75-ac3050096385-c000.zstd.parquet",
+   "size": 468449391,
+   "row_groups_total": 64,
+   "row_groups_read": [],
+   "rows_kept": 0
+  },
+  {
+   "key": "release/2026-09-23.1/theme=divisions/type=division_area/part-00002-f7766c1a-fff7-57b4-a3ae-5905c3ea9b9e-c000.zstd.parquet",
+   "size": 628732807,
+   "row_groups_total": 64,
+   "row_groups_read": [
+    17
+   ],
+   "rows_kept": 2
+  },
+  {
+   "key": "release/2026-09-23.1/theme=divisions/type=division_area/part-00003-fb0b018a-fa80-50e7-bf23-3be974708e75-c000.zstd.parquet",
+   "size": 752468253,
+   "row_groups_total": 128,
+   "row_groups_read": [
+    47
+   ],
+   "rows_kept": 6
+  },
+  {
+   "key": "release/2026-09-23.1/theme=divisions/type=division_area/part-00004-65e0f7d6-4d1f-57b7-91ee-fe9a93b805cd-c000.zstd.parquet",
+   "size": 528724724,
+   "row_groups_total": 64,
+   "row_groups_read": [],
+   "rows_kept": 0
+  },
+  {
+   "key": "release/2026-09-23.1/theme=divisions/type=division_area/part-00005-7aea9418-f56f-5c36-a1c1-6f01eb36a0f3-c000.zstd.parquet",
+   "size": 207593660,
+   "row_groups_total": 32,
+   "row_groups_read": [],
+   "rows_kept": 0
+  },
+  {
+   "key": "release/2026-09-23.1/theme=divisions/type=division_area/part-00006-ee410173-a667-5964-bf9d-c35d03bc07f1-c000.zstd.parquet",
+   "size": 692901353,
+   "row_groups_total": 64,
+   "row_groups_read": [],
+   "rows_kept": 0
+  },
+  {
+   "key": "release/2026-09-23.1/theme=divisions/type=division_area/part-00007-4cb9c932-fb76-5f49-b66c-b8673ad784ac-c000.zstd.parquet",
+   "size": 532695847,
+   "row_groups_total": 64,
+   "row_groups_read": [
+    17,
+    19
+   ],
+   "rows_kept": 83
+  }
+ ],
+ "finished_utc": "2026-10-05T05:23:53+00:00",
+ "rows_out": 91,
+ "http_requests": 25,
+ "bytes_downloaded": 49977465
+}
