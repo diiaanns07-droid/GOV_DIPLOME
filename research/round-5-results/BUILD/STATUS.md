@@ -1,27 +1,35 @@
 # BUILD раунд 5 — STATUS
 
-- owner_branch: `claude/beautiful-clarke-sbzomj`; исходная сборка `0bf27deb8549b325b34a9610402613d745544edb` (продолжение, не пересоздание)
+- owner_branch: `claude/beautiful-clarke-sbzomj`; исходная сборка `0bf27deb8549b325b34a9610402613d745544edb` (продолжена)
 - Задание: `research/round-5/BUILD.txt` @ `codex/research-import-2026-10-05` `2883aeb6eb68babc9b346b0aa927d4c633f5163d`
-- Статус: **in_progress** — этапы A и B в основном сделаны, этап C частично (см. ниже); финальная проверка не выполнена
+- Статус: **done в объёме этапов A, B, C и финальной проверки (Linux)**; Windows не проверен; K08 F5 отложен (нет полей в пакете)
+- Проверенный код: `9284a2774d7db704507b85c98ca4b795831503fa` (чистый клон); итоговый коммит добавляет только этот STATUS/журнал
 
 ## Входы
-82 файла из `research/round-5/snapshots.json` скопированы побайтно в `prototypes/city-evidence/inputs/r4/` (`MANIFEST.json`: ветка, SHA, путь, sha256).
+82 файла из `research/round-5/snapshots.json` (K01, K02, K03, K05, K06, K07, K08, K10, K11, K12, BUILD r4) → `prototypes/city-evidence/inputs/r4/` побайтно, `MANIFEST.json` (ветка, SHA, путь, sha256). Ветки не сливались.
 
 ## Сделано
-- Воспроизведено на прежнем контракте сборки (v1.1 без патча) и реальном наблюдении Шымкента: NaN/±Infinity принимаются, `1e999` → inf, повтор ключа молча побеждает, `json.dumps` пишет `NaN` → `research/round-5-results/BUILD/baseline_repro.json`.
-- Контракт сборки: `k05-obs-v1.2+k12r4` = K05 r4 `k05r4_contract` (spatial_unit) поверх `k05r3_contract` с патчем K12 (отдельная копия `inputs/contract/`, исходные и изменённые sha256 в `CONTRACT_MANIFEST.json`).
-- `tools/contract.py`: `loads_strict`, `dumps_strict(allow_nan=False)`, `validate_all` (запись + набор).
+- **A.** Контракт `k05-obs-v1.2+k12r4`: K05 v1.2 поверх k05r3 с патчем K12, копии и хэши в `inputs/contract/`. Строгий JSON на входе и выходе. Наблюдения K05 обоих городов пересчитаны из пакета K10. «0 в полном ответе запроса» отделён от «неизвестно по городу» одинаково в контракте, каталоге и UI. См. MIGRATION.md.
+- **B.**
+  - QA: COLOCATED (Шымкент: 10 записей в 69.5958, 42.3167 и 4 — в другой точке), кандидаты в дубликаты, CATEGORY_DOUBT с правилом; на карте, в таблице и в карточке; записи не удаляются.
+  - K02 r4: catalog_digest с единицей и причиной, duplicate_id, причины в тексте; JS = Python.
+  - K03 `k03_assign_v2` в отдельной копии.
+  - K08: атрибуция по sources[] и тексты лицензий.
+- **C.**
+  - K07: CS2, P1/P2, F2, O2, K4/K5, W2/W3, A1; найден и исправлен перехват щелчка дорогами в режиме точки.
+  - K11: `pathToFileURL`, LF-запись, `.gitattributes -text`, `run-demo.bat`.
+  - K01: `offline_check` только отдельным процессом, тест подмены копии, якорь манифеста.
+  - K06/K10: маршрутизации нет; длины и классы прохода передаются без изменений (тест).
+- Итог: `ISSUE_MATRIX.json` (29 находок: 27 fixed, 1 no_change, 1 deferred), `MIGRATION.md`, `CHECK_LOG.md`.
 
-## Реально выполненные проверки
-- `python3 tools/repro_baseline.py` — дефекты старой версии воспроизведены (baseline).
-- `python3 -m unittest tests.test_contract -v` — 11/11 OK: NaN/Infinity/1e999/повтор ключа отклоняются; экспорт NaN запрещён; NaN-значение → VALUE_NOT_FINITE; проверки K12 (дата) работают под v1.2; без spatial_unit → ошибка; повтор obs_id → ошибка; v1.1+bbox → LEGACY_UNIT; реальные наблюдения K05 обоих городов — 0 ошибок; значения = независимый пересчёт из пакета K10 (sha256 источника совпадает).
-
-## Промежуточно сделано (коммит 2)
-- Демо собрано контрактом v1.2+k12r4 (evidence.js формат city-evidence/2), K03 v2 (отдельная пропатченная копия), QA-метки, K02 r4 + catalog_digest (unit/missing_reason), атрибуция K08, исправления K07 в app.js, smoke через pathToFileURL.
-- Проверки на этот момент: unittest 22/22 (venv с shapely), conformance 37/37, smoke 23/23.
+## Проверки
+См. `CHECK_LOG.md`: на чистом клоне `check_all` 13/13 (без shapely 12 + 1 SKIP), браузер 23/23.
 
 ## Ограничения
-- Финальная проверка, run-demo.bat, K01, clean checkout — ещё не выполнены.
+- Только Linux; Windows-запуск и `run-demo.bat` не проверены.
+- Два квадрата ~2×2 км; Overture вторичен и неполон; районы не официальны; проходимость пешком не утверждается; объяснение — шаблон, не LLM.
+- K08 F5 (`routes` в Астане) не восстанавливается из сохранённого пакета.
+- Казахские подписи — черновик.
 
 ## Следующий шаг
-Перевести `tools/build_evidence.py` на v1.2+k12r4 и семантику «0 в полном ответе запроса ≠ неизвестно по городу»; затем этап B.
+Ручной запуск `run-demo.bat` на Windows владельцем и запись результата; при подтверждении — решение о расширении среза (новая выгрузка K10 с колонкой routes).

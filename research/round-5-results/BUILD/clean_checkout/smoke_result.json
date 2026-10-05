@@ -1,0 +1,97 @@
+{
+ "url": "web/index.html (file://, pathToFileURL)",
+ "results": [
+  {
+   "name": "Shymkent: 55 records, slice says 'complete query result' and city total unknown",
+   "ok": true
+  },
+  {
+   "name": "Shymkent colocated group of 10 drawn on the map; flagged rows in table",
+   "ok": true
+  },
+  {
+   "name": "object card lists the 9 other records at the same coordinate, marks district as uncertain",
+   "ok": true
+  },
+  {
+   "name": "category doubt shown with rule and reason, record kept",
+   "ok": true
+  },
+  {
+   "name": "point selected; status line next to map; clear enabled",
+   "ok": true
+  },
+  {
+   "name": "Escape clears point, card and disables the clear button",
+   "ok": true
+  },
+  {
+   "name": "Astana after keyboard switch: own 65 records, no Shymkent markers, tooltip hidden",
+   "ok": true
+  },
+  {
+   "name": "Astana has no colocated groups (QA says 0)",
+   "ok": true
+  },
+  {
+   "name": "category filter (Astana: 8 school records)",
+   "ok": true
+  },
+  {
+   "name": "empty state is explicit",
+   "ok": true
+  },
+  {
+   "name": "road card: foot access status, dataset, no walking minutes",
+   "ok": true
+  },
+  {
+   "name": "hiding roads deselects the road (K07 F2)",
+   "ok": true
+  },
+  {
+   "name": "template explanation labelled; units and missing reasons visible",
+   "ok": true
+  },
+  {
+   "name": "old answer rejected after catalog update in the same city (stale_catalog)",
+   "ok": true
+  },
+  {
+   "name": "pending answer discarded after city switch",
+   "ok": true
+  },
+  {
+   "name": "source card: contract, K03 v2, K08 gap; license links resolve to committed files",
+   "ok": true
+  },
+  {
+   "name": "map attribution names record providers (not only OSM)",
+   "ok": true
+  },
+  {
+   "name": "focused map pans with arrow keys",
+   "ok": true
+  },
+  {
+   "name": "narrow viewport (380 px) has no horizontal scroll",
+   "ok": true
+  },
+  {
+   "name": "clear state when data.js is missing",
+   "ok": true
+  },
+  {
+   "name": "clear state when evidence.js is missing",
+   "ok": true
+  },
+  {
+   "name": "no console/page errors",
+   "ok": true
+  },
+  {
+   "name": "no network requests (file:// only)",
+   "ok": true
+  }
+ ]
+}
