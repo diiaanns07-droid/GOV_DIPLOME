@@ -125,10 +125,16 @@ select { font: inherit; padding: 4px 6px; border-radius: 6px; border: 1px solid 
 .wi-msg:empty { display: none; }
 .wi-msg { margin: 6px 0; }
 #map.wimode { cursor: crosshair; }
+#map.planmode { cursor: crosshair; }
+input.num-in { width: 6.5em; font: inherit; padding: 3px 5px; border-radius: 6px; border: 1px solid var(--base); background: var(--surface); color: var(--ink); }
+.pl-cands li { flex-wrap: wrap; justify-content: flex-start; gap: 4px 8px; padding: 4px 0; }
+#plRows tbody tr, #plMetrics tbody tr { cursor: default; }
+#toolSeg button { padding: 6px 10px; }
 td.better { font-weight: 600; }
 button.wi-src { white-space: normal; text-align: left; font-size: 12px; padding: 2px 6px; }
 #wiTable caption { text-align: left; caption-side: top; }
-#wiTable tr.wi-srcrow td { padding-top: 0; font-size: 12px; }
+#wiTable tr.wi-srcrow td, #plRows tr.wi-srcrow td { padding-top: 0; font-size: 12px; }
+#plRows tbody tr[data-plan-row] td { border-bottom: 0; }
 #wiTable tbody tr[data-wi-row] td { border-bottom: 0; }
 #wiTable tbody tr { cursor: default; }
 </style>
@@ -170,6 +176,9 @@ button.wi-src { white-space: normal; text-align: left; font-size: 12px; padding:
   </div>
   <aside>
     <section class="card" id="selCard" aria-live="polite"><h2>Выбор</h2><p class="muted" id="selEmpty">Нажмите на объект, дорогу или строку таблицы. «Расстояние от точки» покажет расстояния по прямой.</p><div id="selBody"></div></section>
+    <section class="card" id="toolCard"><h2>Сценарии «если построить» <span class="pill">гипотеза</span></h2>
+      <div class="seg" role="group" aria-label="Вид сценария" id="toolSeg"><button type="button" data-tool="v1" aria-pressed="true">Один объект (v1)</button><button type="button" data-tool="v2" aria-pressed="false">Несколько объектов (v2)</button></div></section>
+    <section class="card" id="planCard" hidden><h2>План нескольких объектов <span class="pill">условные единицы</span></h2><div id="planBody"></div></section>
     <section class="card" id="whatifCard" hidden><h2>Если добавить объект <span class="pill">гипотеза</span></h2><div id="whatifBody"></div></section>
     <section class="card" id="sliceCard"><h2>Срез данных</h2><div id="sliceBody"></div></section>
     <section class="card" id="explainCard" hidden><h2>Объяснение по фактам</h2><div id="explainBody"></div></section>
@@ -184,6 +193,8 @@ button.wi-src { white-space: normal; text-align: left; font-size: 12px; padding:
 <script src="evidence.js"></script>
 <script src="facts.js"></script>
 <script src="whatif.js"></script>
+<script src="plan.js"></script>
 <script src="app.js"></script>
+<script src="plan-ui.js"></script>
 </body>
 </html>

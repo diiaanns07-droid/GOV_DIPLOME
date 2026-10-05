@@ -56,7 +56,12 @@
   const STATE = { city: ORDER[0], groups: new Set(Object.keys(D.groups)), places: true, roads: true,
     roadStyle: "plain", pointMode: false, point: null, selected: null, view: null, epoch: 0,
     // what-if scenario: hypothetical layer, never mixed into places / counters / QA of the observed slice
-    wi: { category: "school", points: [], proposed: null, mode: null, seq: 1, msg: "", explain: null } };
+    wi: { category: "school", points: [], proposed: null, mode: null, seq: 1, msg: "", explain: null },
+    tool: "v1" };  // round 8: "v1" = one object (city-whatif-v1), "v2" = several objects (city-plan-v2, plan-ui.js)
+  // Extension points for plan-ui.js (round 8): map layers, placement tools, city-switch hooks.
+  const EXT = { layers: [], tools: [], onCity: [], onTool: [], cards: [] };
+  const extTool = () => EXT.tools.find((t) => t.placing()) || null;
+  const stopExt = () => { for (const t of EXT.tools) t.stop(); };
 
   // ---------- projection: local equirectangular metres around the square centre ----------
   let P = null;
@@ -127,11 +132,11 @@
       renderMap(); renderSelection(); updateStatus();
     });
     $("clearBtn").addEventListener("click", clearSelection);
-    document.addEventListener("keydown", (e) => { if (e.key === "Escape") { if (STATE.wi.mode) setWiMode(null); clearSelection(); } });
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") { if (STATE.wi.mode) setWiMode(null); if (extTool()) { stopExt(); renderMap(); updateStatus(); } clearSelection(); } });
     $("roadStyle").addEventListener("change", (e) => { STATE.roadStyle = e.target.value; renderRoadLegend(); renderMap(); });
     $("pointBtn").addEventListener("click", () => {
       STATE.pointMode = !STATE.pointMode;
-      if (STATE.pointMode) setWiMode(null, true);
+      if (STATE.pointMode) { setWiMode(null, true); stopExt(); }
       $("pointBtn").setAttribute("aria-pressed", String(STATE.pointMode));
       $("map").classList.toggle("pointmode", STATE.pointMode);
       updateStatus(); renderMap();
@@ -151,6 +156,8 @@
     const s = STATE.selected, st = $("mapStatus");
     $("clearBtn").disabled = !STATE.point && !s;
     if (STATE.wi.mode) { st.textContent = wiModeText(); return; }
+    const et = extTool();
+    if (et) { st.textContent = et.statusText(); return; }
     if (!s) { st.textContent = STATE.pointMode ? "Режим точки: нажмите на карту (или Enter — точка в центре)." : ""; return; }
     if (s.type === "point") {
       const [lon, lat] = STATE.point;
@@ -175,6 +182,7 @@
   function switchCity(key) {
     if (!D.cities[key]) return;
     const hadScenario = STATE.city !== key && (STATE.wi.points.length || STATE.wi.proposed);
+    for (const f of EXT.onCity) f(key, STATE.city !== key);
     STATE.city = key; STATE.point = null; STATE.selected = null; STATE.epoch += 1;
     resetScenario(hadScenario ? "Город изменён — сценарий сброшен: точки и проектный объект между городами не переносятся." : "");
     hideTip();
@@ -221,7 +229,7 @@
       hit.addEventListener("pointermove", (ev) => showTip(ev, [`${sg.class}${sg.name ? " · " + sg.name : ""}`, `${fmtM(sg.length_m)} · проход пешком: ${sg.foot_access}`]));
       hit.addEventListener("pointerleave", hideTip);
       // In point mode a click on a road sets the point (roads cover most of the map); markers keep priority.
-      const pick = (ev) => { if ((STATE.pointMode || STATE.wi.mode) && ev.type === "click") return; ev.stopPropagation(); STATE.selected = { type: "segment", id: sg.id }; renderSelection(); renderExplain(); updateStatus(); };
+      const pick = (ev) => { if ((STATE.pointMode || STATE.wi.mode || extTool()) && ev.type === "click") return; ev.stopPropagation(); STATE.selected = { type: "segment", id: sg.id }; renderSelection(); renderExplain(); updateStatus(); };
       hit.addEventListener("click", pick);
       hit.addEventListener("keydown", (ev) => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); pick(ev); } });
       gRoad.append(hit);
@@ -256,12 +264,13 @@
       if (qa.length) g.append(sv("circle", { cx: 6, cy: -6, r: 3.5, fill: "var(--warning)", stroke: "var(--surface)", "stroke-width": 1 }));
       g.addEventListener("pointermove", (ev) => showTip(ev, [p.name || "Без названия", `${p.group_label} · conf. ${p.confidence ?? "—"}`, ...qa.map((q) => "⚠ " + q.code)]));
       g.addEventListener("pointerleave", hideTip);
-      const pick = (ev) => { if (STATE.wi.mode && ev.type === "click") return; ev.stopPropagation(); selectPlace(p.id); };
+      const pick = (ev) => { if ((STATE.wi.mode || extTool()) && ev.type === "click") return; ev.stopPropagation(); selectPlace(p.id); };
       g.addEventListener("click", pick);
       g.addEventListener("keydown", (ev) => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); pick(ev); } });
       gMark.append(g);
     }
-    renderWiLayer(gWi, gLabel);
+    if (STATE.tool === "v1") renderWiLayer(gWi, gLabel);
+    for (const f of EXT.layers) f(gWi, gLabel);
     const msg = $("mapMsg");
     if (!STATE.places) { msg.hidden = false; msg.textContent = "Слой объектов выключен."; }
     else if (!STATE.groups.size) { msg.hidden = false; msg.textContent = "Не выбрана ни одна категория — включите категории в панели фильтров."; }
@@ -307,6 +316,8 @@
     });
     svg.addEventListener("pointerup", (e) => {
       const d = drag; drag = null;
+      const et = extTool();
+      if (d && !d.moved && et) { const r = svg.getBoundingClientRect(); et.place(toLonLat(e.clientX - r.left, e.clientY - r.top)); return; }
       if (d && !d.moved && STATE.wi.mode) { const r = svg.getBoundingClientRect(); wiPlace(toLonLat(e.clientX - r.left, e.clientY - r.top)); return; }
       if (!d || d.moved || !STATE.pointMode) return;
       if (e.target.closest && e.target.closest("g[data-id]")) return;  // a click on an object marker selects the object
@@ -322,6 +333,7 @@
       if (mv) { e.preventDefault(); STATE.view.cx += mv[0]; STATE.view.cy += mv[1]; renderMap(); }
       else if (e.key === "+" || e.key === "=") { e.preventDefault(); zoomBy(1.5); }
       else if (e.key === "-") { e.preventDefault(); zoomBy(1 / 1.5); }
+      else if ((e.key === "Enter" || e.key === " ") && extTool()) { e.preventDefault(); extTool().place(toLonLat(svg.clientWidth / 2, svg.clientHeight / 2)); }
       else if ((e.key === "Enter" || e.key === " ") && STATE.wi.mode) { e.preventDefault(); wiPlace(toLonLat(svg.clientWidth / 2, svg.clientHeight / 2)); }
       else if ((e.key === "Enter" || e.key === " ") && STATE.pointMode) {
         e.preventDefault();
@@ -519,7 +531,7 @@
     const epoch = STATE.epoch, city = STATE.city;
     F.renderExplanation($("explainBody"), { state: STATE, data: D, isCurrent: () => STATE.epoch === epoch && STATE.city === city, el });
   }
-  function renderAll() { renderMap(); renderSelection(); renderWhatIf(); renderSlice(); renderExplain(); renderTable(); renderProvenance(); }
+  function renderAll() { renderMap(); renderSelection(); renderWhatIf(); for (const f of EXT.cards) f(); renderSlice(); renderExplain(); renderTable(); renderProvenance(); }
   // ---------- «Если добавить объект» (round 7, FEATURE_SPEC city-whatif-v1) ----------
   // The hypothetical object and control points live only in STATE.wi and the separate map layer; they never enter
   // places, counters, QA, the facts catalog or the objects table. Numbers come from whatif.js (pure, tested vs Python).
@@ -539,6 +551,7 @@
   }
   function setWiMode(mode, silent) {
     WI.mode = WI.mode === mode ? null : mode;
+    if (WI.mode) stopExt();
     if (WI.mode && STATE.pointMode) {  // the two placement modes are exclusive
       STATE.pointMode = false; $("pointBtn").setAttribute("aria-pressed", "false"); $("map").classList.remove("pointmode");
     }
@@ -608,7 +621,7 @@
   const fmtD = (v) => (v === null ? "нет данных" : fmtM(v));
   function renderWhatIf() {
     const card = $("whatifCard"), b = $("whatifBody");
-    if (!wiOn()) { card.hidden = true; return; }
+    if (!wiOn() || STATE.tool !== "v1") { card.hidden = true; return; }
     card.hidden = false;
     b.replaceChildren();
     b.append(el("p", { class: "muted" }, "Условный сценарий, не решение акимата. Расстояние по прямой в пределах среза от ваших контрольных точек до ближайшей записи категории: до и после одного проектного объекта."));
@@ -736,6 +749,19 @@
   renderAll();
   updateStatus();
   function selectSegment(id) { STATE.selected = { type: "segment", id }; renderSelection(); renderExplain(); updateStatus(); }
+  // Tool switch (round 8): v1 and v2 keep their own state; switching only stops placement modes and swaps the card/layer.
+  function setTool(t) {
+    if (t !== "v1" && t !== "v2") return;
+    STATE.tool = t;
+    if (STATE.pointMode) { STATE.pointMode = false; $("pointBtn").setAttribute("aria-pressed", "false"); $("map").classList.remove("pointmode"); }
+    WI.mode = null; $("map").classList.remove("wimode"); stopExt();
+    document.querySelectorAll("#toolSeg button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.tool === t)));
+    renderWhatIf(); for (const f of EXT.onTool) f(t); renderMap(); updateStatus();
+  }
+  document.querySelectorAll("#toolSeg button").forEach((b) => b.addEventListener("click", () => setTool(b.dataset.tool)));
   window.CITY_APP = { state: STATE, switchCity, selectPlace, selectSegment, visiblePlaces, clearSelection,
-    wiPlace, setWiMode, setWiCategory, wiScenario, wiResult, wiImportText, wiExportText };  // for the headless smoke test
+    wiPlace, setWiMode, setWiCategory, wiScenario, wiResult, wiImportText, wiExportText, setTool,
+    // internal helpers for plan-ui.js (same page, not a public API)
+    ui: { el, sv, $, D, F, EXT, toScreen, renderMap, updateStatus, qaOf, selectPlace, fmtM, stopV1: () => { setWiMode(null, true);
+      if (STATE.pointMode) { STATE.pointMode = false; $("pointBtn").setAttribute("aria-pressed", "false"); $("map").classList.remove("pointmode"); } } } };  // for the headless smoke test
 })();
