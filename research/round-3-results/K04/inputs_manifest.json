@@ -1,0 +1,77 @@
+{
+ "snapshots": "research/round-3/snapshots.json @ codex/research-import-2026-10-05 6602bb86f152d24edcb66f8b45122844323116bc",
+ "read_mode": "git show <sha>:<path>; branches fetched, not merged; files not copied",
+ "own_previous": {
+  "sha": "b556df0c341f6bd5530cfbe2955e2e115093cd13",
+  "paths": [
+   "research/next-round/K04/SYNTHESIS.md",
+   "research/next-round/K04/kpssu_consistency.json"
+  ]
+ },
+ "inputs": [
+  {
+   "slot": "K05",
+   "branch": "claude/optimistic-davinci-1oiqs9",
+   "sha": "6d39cc5b0e3379068794b7ef11512844516ddcb3",
+   "paths_read": [
+    "research/next-round/K05/REPORT.md"
+   ]
+  },
+  {
+   "slot": "K06",
+   "branch": "claude/ecstatic-curie-hzfzn0",
+   "sha": "bf30f7f2c04d2059d99941fd00aba143bf7843cd",
+   "paths_read": [
+    "research/next-round/K06/REPORT.md"
+   ]
+  },
+  {
+   "slot": "K07",
+   "branch": "claude/save-work-handoff-ku3ej3",
+   "sha": "3df2bce1d14aba6600431c85b2ab2cc4fa78d359",
+   "paths_read": [
+    "research/next-round/K07/README.md"
+   ]
+  },
+  {
+   "slot": "K08",
+   "branch": "claude/dazzling-mayer-drhsxk",
+   "sha": "15cd5f2db28c91ee4ead180babd13a93e3167419",
+   "paths_read": [
+    "research/next-round/K08/REGISTRY.md"
+   ]
+  },
+  {
+   "slot": "K09",
+   "branch": "claude/save-work-handoff-qho6eq",
+   "sha": "9cc36c3485045a533ba60136c0c9561e4b8acf46",
+   "paths_read": [
+    "research/next-round/K09/STATUS.md"
+   ]
+  },
+  {
+   "slot": "K10",
+   "branch": "claude/save-work-handoff-j7pc05",
+   "sha": "e91898d596164bcf6e853b921a49f82126074a35",
+   "paths_read": [
+    "research/next-round/K10/STATUS.md",
+    "research/next-round/K10/results/E02_social_poi_by_district.json",
+    "research/next-round/K10/results/E03_road_network_by_district.json"
+   ]
+  },
+  {
+   "slot": "K12",
+   "branch": "claude/save-work-handoff-xuav3q",
+   "sha": "1aec7572e3934300a1da8d3f2b6351b3aea88a74",
+   "paths_read": [
+    "research/handoffs/shared/K12/K12-energy-audit-eui-baseline/STATUS.md"
+   ]
+  }
+ ],
+ "not_read": [
+  "K01",
+  "K02",
+  "K03",
+  "K11 (not needed for product choice or results not yet relevant)"
+ ]
+}
