@@ -1,0 +1,40 @@
+{
+  "schema": "handoff-status/v1",
+  "status": "partial",
+  "research_started": false,
+  "session_id": "session_018fNvz1nR7YCCdbKwZJBr6G",
+  "task_id": "save-work-handoff-j7pc05",
+  "agent_number": null,
+  "role": null,
+  "sphere": null,
+  "cities": [],
+  "checkpoint_utc": "2026-10-05T05:00Z",
+  "repository": "diiaanns07-droid/GOV_DIPLOME",
+  "branch": "claude/save-work-handoff-j7pc05",
+  "base_commit": "834a25fb860dd5514d02c9274b70d7bf8a53a79c",
+  "results": {
+    "reports": [],
+    "evidence_files": [],
+    "samples_real": [],
+    "samples_synthetic": [],
+    "experiment_code": [],
+    "zip_archives": []
+  },
+  "network": {
+    "external_sources_requested": false,
+    "host_not_allowed_observed": false,
+    "blocked_sources": []
+  },
+  "product_code_changed": false,
+  "open_questions": [
+    "Agent number/role (NN_role) and sphere (govtech or astana) are not assigned in this chat",
+    "If earlier research exists, it was done in a different session; it is not present in this one"
+  ],
+  "next_step": "Coordinator: send this session its assignment (NN_role, sphere, cities, task_id) or a link/ZIP with prior results",
+  "push": {
+    "status": "refused",
+    "http_status": 403,
+    "gate": "repo_not_connected",
+    "note": "local commit only; delivered to user as a patch"
+  }
+}
