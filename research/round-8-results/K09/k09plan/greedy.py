@@ -3,7 +3,8 @@
 G1 «по ключу цели»: начиная с required, на каждом шаге добавить допустимого кандидата с наименьшим ключом цели
 (CORE_SPEC); остановиться, если лучший ключ не меньше текущего. Ничьи: кандидаты перебираются по возрастанию id,
 выбор только при строгом улучшении ключа (а ключ сам заканчивается отсортированными ID).
-G2 «выгода/стоимость»: приоритет — уменьшение unknown_count (больше уменьшение, затем меньшая стоимость, затем id);
+G2 «выгода/стоимость»: приоритет — уменьшение unknown_count (больше уменьшение, затем меньшая стоимость, затем id;
+  вариант G2id — без стоимости, только id);
 иначе максимум прироста основной метрики на единицу стоимости (только при приросте > 0; ничьи — меньший id).
 В конце сравнить с лучшим одиночным допустимым кандидатом (required + 1) по ключу цели.
 """
@@ -59,7 +60,9 @@ def greedy_key(pr, objective, budget, max_selected, required_ids=(), excluded_id
     return {"status": "heuristic", "plan": cur, "steps": steps}
 
 
-def greedy_ratio(pr, objective, budget, max_selected, required_ids=(), excluded_ids=()):
+def greedy_ratio(pr, objective, budget, max_selected, required_ids=(), excluded_ids=(), unknown_tie="cost"):
+    """unknown_tie: "cost" — при равном снижении unknown меньшая стоимость, затем id (реализация v1);
+    "id" — только меньший id (буквальный текст предрегистрации v1; вариант G2id)."""
     keyf = OBJECTIVES[objective]
     req, exc, free = constraint_indices(pr, required_ids, excluded_ids)
     why = infeasibility(pr, req, budget, max_selected)
@@ -79,7 +82,7 @@ def greedy_ratio(pr, objective, budget, max_selected, required_ids=(), excluded_
             m2 = _metrics(pr, sel + [c], a2)
             du = cur["unknown_count"] - m2["unknown_count"]
             if du > 0:
-                cand = (-du, pr.cost[c], pr.cand_ids[c])
+                cand = (-du, pr.cost[c], pr.cand_ids[c]) if unknown_tie == "cost" else (-du, pr.cand_ids[c])
                 if best_unknown is None or cand < best_unknown[0]:
                     best_unknown = (cand, c, a2, m2)
                 continue

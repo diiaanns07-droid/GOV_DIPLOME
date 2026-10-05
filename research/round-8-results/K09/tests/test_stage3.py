@@ -58,5 +58,57 @@ class TestPlanAndRun(unittest.TestCase):
         self.assertTrue(all(v >= 0 for k, v in t1.items() if k.startswith("t_")))
 
 
+
+CFG2 = json.loads((K / "config/experiment_config_v2.json").read_text(encoding="utf-8"))
+
+
+class TestV2(unittest.TestCase):
+    def setUp(self):
+        self.d, self.sha = data.load_slice(repo=str(K.parents[2]))
+        self.ctx = {s["id"]: suite.make_context(self.d, self.sha, s["city"], s["category"], s["baseline"]) for s in CFG2["baselines"]["slices"]}
+
+    def test_paired_nested_geometry(self):
+        cv = CFG2["config_version"]
+        a = suite.make_scenario_v2(self.ctx["astana_clinic"], 16, 25, 0.5, "uniform", 3, 300, 4, cv)
+        b = suite.make_scenario_v2(self.ctx["astana_clinic_nobase"], 6, 5, 1.0, "random_1_100", 3, 800, 4, cv)
+        geo = lambda xs: [(x["id"], x["lon"], x["lat"]) for x in xs]
+        self.assertEqual(geo(a["control_points"])[:5], geo(b["control_points"]))           # те же точки (вложенно)
+        self.assertEqual([(c["id"], c["lon"], c["lat"], c["cost"]) for c in a["candidates"][:6]],
+                         [(c["id"], c["lon"], c["lat"], c["cost"]) for c in b["candidates"]])
+        c = suite.make_scenario_v2(self.ctx["astana_clinic"], 16, 25, 0.5, "random_1_100", 3, 300, 4, cv)
+        d = suite.make_scenario_v2(self.ctx["astana_clinic"], 6, 15, 0.25, "random_1_100", 3, 300, 4, cv)
+        self.assertEqual([p["weight"] for p in c["control_points"]][:15], [p["weight"] for p in d["control_points"]])
+        self.assertNotEqual(a["source_snapshot"], b["source_snapshot"])
+
+    def test_budget_relative_to_top_costs(self):
+        cv = CFG2["config_version"]
+        for br in CFG2["factors"]["budget_ratio"]:
+            sc = suite.make_scenario_v2(self.ctx["shymkent_school"], 10, 5, br, "uniform", 3, 300, 2, cv)
+            top3 = sum(sorted((c["cost"] for c in sc["candidates"]), reverse=True)[:3])
+            self.assertEqual(sc["budget"], int(br * top3))
+        s1, _, _ = X.run_one(self.ctx["shymkent_school"], CFG2, "main", "shymkent_school", (10, 5, 1.0, "uniform", 3, 300, 2), {}, 1)
+        self.assertEqual(s1["budget_binding"], 0)                                    # 1.0 — контроль без ограничения
+
+    def test_secondary_ms_keeps_budget(self):
+        cv = CFG2["config_version"]
+        base = (16, 25, 0.5, "random_1_100", 3, 300, 1)
+        s3, _, _ = X.run_one(self.ctx["astana_clinic"], CFG2, "sec_max_selected", "astana_clinic", base, {"max_selected": 5}, 1)
+        s0, _, _ = X.run_one(self.ctx["astana_clinic"], CFG2, "main", "astana_clinic", base, {}, 1)
+        self.assertEqual(s3["budget"], s0["budget"]); self.assertEqual(s3["max_selected"], 5)
+
+    def test_run_one_three_algorithms_and_contrasts(self):
+        sl = "astana_clinic_nobase"
+        rows, scen = [], []
+        for slc in ("astana_clinic", sl):
+            for br in (0.25, 1.0):
+                s, r, t = X.run_one(self.ctx[slc], CFG2, "main", slc, (6, 5, br, "uniform", 3, 300, 0), {}, 1)
+                rows += r; scen.append(s)
+                self.assertIn("t_exact_full_output_s", t)
+        self.assertEqual({r["algorithm"] for r in rows}, {"G1", "G2", "G2id"})
+        summ = X.summarize(rows, scen, CFG2)
+        pc = summ["paired_contrasts"]["slice:astana_clinic_vs_astana_clinic_nobase"]["G1/mean"]
+        self.assertEqual(pc["pairs"], 2)
+        self.assertIn("g2_vs_g2id_mcnemar", summ)
+
 if __name__ == "__main__":
     unittest.main()

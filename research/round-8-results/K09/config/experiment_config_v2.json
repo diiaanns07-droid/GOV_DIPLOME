@@ -1,0 +1,63 @@
+{
+ "_note": "Предрегистрация v2 K09 round-8. Зафиксирована ДО прогона v2, после прогона v1 и состязательного обзора (results/independent/review/findings.json). v1 не заменяется и остаётся основным предрегистрированным результатом; v2 — подтверждающее расширение с исправленным дизайном. Seeds те же (0–9), не подбираются.",
+ "config_version": "k09-r8-exp-v2",
+ "design": "v2",
+ "results_dir": "results_v2",
+ "metric_version": "haversine-mm-v1",
+ "base_sha": "a5b5e2ddbe087c4eab8e947748cdf69dbae84a0d",
+ "reasons": [
+  "major (обзор): в v1 бюджет = доля суммы стоимостей ВСЕХ кандидатов при max_selected=3; ratio 1.0 никогда не ограничивает, 0.5 не ограничивает при 16 кандидатах — бюджет смешан с числом кандидатов",
+  "minor (обзор): в v1 геометрия различается между уровнями факторов (seed-строка включает все факторы) — сравнения непарные, в т.ч. astana real vs nobase",
+  "minor (обзор): правило G2 при ничьей по снижению unknown в коде (−du, cost, id) отличается от текста предрегистрации v1 («меньший id») — в v2 считаются оба варианта (G2 и G2id)",
+  "minor (обзор): время exact в v1 без Парето и чувствительности — в v2 дополнительно замеряется полный выход CORE_SPEC"
+ ],
+ "baselines": {
+  "slices": [
+   {"id": "shymkent_school", "city": "shymkent", "category": "school", "baseline": "real_slice_records"},
+   {"id": "astana_clinic", "city": "astana", "category": "outpatient_clinic", "baseline": "real_slice_records"},
+   {"id": "astana_clinic_nobase", "city": "astana", "category": "outpatient_clinic", "baseline": "empty_synthetic_condition"}
+  ]
+ },
+ "factors": {
+  "n_candidates": [6, 10, 16],
+  "n_points": [5, 15, 25],
+  "budget_ratio": [0.25, 0.5, 0.75, 1.0],
+  "weights": ["uniform", "random_1_100", "one_heavy"],
+  "max_selected": 3,
+  "coverage_radius_m": 300
+ },
+ "secondary": {
+  "_note": "Парно: экземпляр основной сетки (n_candidates=16, n_points=25, budget_ratio=0.5, random_1_100); меняется только max_selected или радиус. Бюджет считается по базовому max_selected=3 и при изменении max_selected не меняется.",
+  "max_selected": [1, 2, 5],
+  "coverage_radius_m": [100, 300, 800]
+ },
+ "seeds": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+ "synthetic_generation": {
+  "geometry": "для каждого (city, category, seed) один раз: 25 точек и 16 кандидатов uniform в bbox (6 знаков), стоимость целое uniform [100, 1000]; задача берёт первые n_points / n_candidates (вложенные подмножества). Не зависит от baseline, budget_ratio, весов, max_selected, радиуса.",
+  "weights": "отдельный генератор (seed-строка со схемой весов): uniform=1; random_1_100; one_heavy (p00=100, остальные 1); первые n_points из 25",
+  "budget": "floor(budget_ratio × сумма max_selected самых дорогих кандидатов задачи); budget_ratio=1.0 — любой набор из ≤ max_selected кандидатов допустим (контроль без бюджетного ограничения)",
+  "required_excluded": "пусто"
+ },
+ "algorithms_run": ["G1", "G2", "G2id"],
+ "algorithms": {
+  "exact": "как в v1",
+  "G1": "как в v1 (k09plan/greedy.greedy_key)",
+  "G2": "как реализовано в v1: при снижении unknown_count ничья (−du, cost, id); иначе максимум прироста/стоимость (Fraction), ничьи — меньший id; затем сравнение с лучшим одиночным",
+  "G2id": "G2 с буквальным правилом текста предрегистрации v1: при снижении unknown_count ничья (−du, id), без стоимости"
+ },
+ "gap_definitions": "как в v1 (config/experiment_config.json)",
+ "paired_contrasts": [
+  {"factor": "slice", "a": "astana_clinic", "b": "astana_clinic_nobase"},
+  {"factor": "budget_ratio", "a": "0.25", "b": "1.0"},
+  {"factor": "budget_ratio", "a": "0.5", "b": "1.0"},
+  {"factor": "n_candidates", "a": "6", "b": "16"},
+  {"factor": "weights", "a": "uniform", "b": "one_heavy"}
+ ],
+ "primary_questions": [
+  "Q1: зависит ли hit жадных методов от жёсткости бюджета при фиксированной геометрии (парно 0.25 и 0.5 против 1.0)?",
+  "Q2: парный эффект отсутствия исходных записей (astana real против nobase на тех же точках/кандидатах)",
+  "Q3: G2 против G2id (влияние правила ничьей на условии nobase)",
+  "Q4: время полного выхода CORE_SPEC (exact + Парето + чувствительность) против жадных"
+ ],
+ "timing": "time.perf_counter, минимум из 3 повторов; exact без Парето, полный выход (optimize с Парето + budget_sensitivity), G1/G2/G2id на одну цель"
+}

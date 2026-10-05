@@ -375,6 +375,52 @@ class TestValidate(unittest.TestCase):
         self.assertTrue(r["feasibility"]["feasible"]); self.assertEqual(len(r["rows"]), 25)
 
 
+class TestReviewFixes(unittest.TestCase):
+    """Исправления по обзору (results/independent/review/findings.json)."""
+
+    def setUp(self):
+        self.ctx = ctx_of("astana_clinic")
+        self.sc = suite.make_scenario(self.ctx, 6, 5, 0.5, "uniform", 3, 300, 1, "k09-r8-test")
+
+    def test_no_uncaught_exceptions(self):
+        s = json.loads(json.dumps(self.sc)); s["control_points"][0]["lon"] = 10 ** 400
+        self.assertIn("bad_coordinates", {e["code"] for e in validate.validate(s, self.ctx)})
+        deep = '{"a": ' + "[" * 100000 + "]" * 100000 + "}"
+        with self.assertRaises(validate.PlanError) as cm:
+            validate.parse_import(deep)
+        self.assertEqual(cm.exception.code, "invalid_json")
+        sc, errs = api.validate_plan_scenario(deep, self.ctx)
+        self.assertIsNone(sc); self.assertEqual(errs[0]["code"], "invalid_json")
+
+    def test_integral_float_accepted_fraction_rejected(self):
+        s = json.loads(json.dumps(self.sc)); s["control_points"][0]["weight"] = 1.0; s["candidates"][0]["cost"] = 300.0
+        self.assertEqual(validate.validate(s, self.ctx), [])
+        s["control_points"][0]["weight"] = 1.5
+        self.assertIn("weight_int_1_100", {e["code"] for e in validate.validate(s, self.ctx)})
+
+    def test_digest_canonical_numbers(self):
+        s = json.loads(json.dumps(self.sc))
+        s["candidates"][0]["cost"] = float(s["candidates"][0]["cost"]); s["budget"] = float(s["budget"])
+        self.assertEqual(exact.problem_digest(self.ctx, s), exact.problem_digest(self.ctx, self.sc))
+
+    def test_nobase_snapshot_differs(self):
+        real, nob = ctx_of("astana_clinic"), ctx_of("astana_clinic_nobase")
+        self.assertNotEqual(real["source_snapshot"], nob["source_snapshot"])
+        sc = suite.make_scenario(nob, 6, 5, 0.5, "uniform", 3, 300, 1, "k09-r8-test")
+        self.assertIn("foreign_or_stale_snapshot", {e["code"] for e in validate.validate(sc, real)})
+        self.assertEqual(validate.validate(sc, nob), [])
+        self.assertEqual(real["source_snapshot"], suite.slice_snapshot(SLICE_SHA, "astana", "outpatient_clinic"))  # реальный срез не изменился
+
+    def test_g2id_tie_rule(self):
+        # пустой baseline: любой кандидат снимает все unknown; G2 берёт самый дешёвый, G2id — меньший id
+        pts = [{"id": "p1", "lon": 69.6, "lat": 42.31, "weight": 1}]
+        cands = [{"id": "a", "lon": 69.6, "lat": 42.40, "cost": 500}, {"id": "b", "lon": 69.6, "lat": 42.311, "cost": 100}]
+        pr = metric.Problem(pts, [], cands, 300)
+        g2 = greedy.greedy_ratio(pr, "mean", 1000, 1)
+        g2id = greedy.greedy_ratio(pr, "mean", 1000, 1, unknown_tie="id")
+        self.assertEqual(g2["steps"], ["b"]); self.assertEqual(g2id["steps"], ["a"])
+        self.assertEqual(g2id["plan"]["selected_ids"], ["b"]); self.assertTrue(g2id["replaced_by_best_single"])  # спасает лучший одиночный
+
 class TestSuite(unittest.TestCase):
     def test_seeded_reproducible_and_independent_of_hashseed(self):
         ctx = ctx_of("astana_clinic")

@@ -27,15 +27,15 @@ def infeasibility(pr, req, budget, max_selected):
 
 
 def problem_digest(context, scenario):
-    """Не зависит от порядка массивов; selected_ids не входит (неизменная оптимизационная задача)."""
+    """Не зависит от порядка массивов и записи чисел (70 и 70.0 — один digest); selected_ids не входит."""
     payload = {
         "metric_version": METRIC_VERSION, "source_snapshot": context["source_snapshot"], "city_id": scenario["city_id"],
         "category": scenario["category"],
-        "points": sorted([p["id"], p["lon"], p["lat"], p["weight"]] for p in scenario["control_points"]),
-        "candidates": sorted([c["id"], c["lon"], c["lat"], c["cost"], c["category"], c["kind"]] for c in scenario["candidates"]),
-        "budget": scenario["budget"], "max_selected": scenario["max_selected"], "radius_m": scenario["coverage_radius_m"],
+        "points": sorted([p["id"], float(p["lon"]), float(p["lat"]), int(p["weight"])] for p in scenario["control_points"]),
+        "candidates": sorted([c["id"], float(c["lon"]), float(c["lat"]), int(c["cost"]), c["category"], c["kind"]] for c in scenario["candidates"]),
+        "budget": int(scenario["budget"]), "max_selected": int(scenario["max_selected"]), "radius_m": int(scenario["coverage_radius_m"]),
         "required": sorted(scenario["required_ids"]), "excluded": sorted(scenario["excluded_ids"]),
-        "sources": sorted([s["id"], s["lon"], s["lat"]] for s in context["sources"]),
+        "sources": sorted([s["id"], float(s["lon"]), float(s["lat"])] for s in context["sources"]),
     }
     return "sha256:" + hashlib.sha256(json.dumps(payload, sort_keys=True, ensure_ascii=False, separators=(",", ":")).encode()).hexdigest()
 

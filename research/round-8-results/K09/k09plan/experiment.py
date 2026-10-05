@@ -1,20 +1,34 @@
-"""Этап 3: прогон предрегистрированной сетки (config/experiment_config.json) и агрегирование.
+"""Этап 3: прогон предрегистрированной сетки и агрегирование.
 
-Детерминированные выходы (runs, scenarios, summary) отделены от замеров времени (timing): повторный прогон
-должен давать побайтно те же детерминированные файлы; время зависит от машины.
-Вторичный анализ парный: берётся экземпляр основной сетки (n_cand=16, n_pts=25, ratio=0.5, random_1_100,
-seed-строка с max_selected=3, радиус 300) и меняется только max_selected или радиус.
+Дизайны:
+- v1 (config/experiment_config.json): seed-строка включает все факторы → межэкземплярные сравнения факторов;
+  бюджет = доля суммы стоимостей ВСЕХ кандидатов.
+- v2 (config/experiment_config_v2.json, после обзора v1): парная вложенная геометрия (suite.make_scenario_v2),
+  бюджет = доля суммы max_selected самых дорогих кандидатов, дополнительный вариант G2id, парные контрасты.
+Детерминированные выходы (runs, scenarios, summary) отделены от замеров времени (timing).
+Вторичный анализ парный: экземпляр основной сетки (n_cand=16, n_pts=25, ratio=0.5, random_1_100, max_selected=3,
+радиус 300), меняется только max_selected или радиус (в v2 бюджет считается по базовому max_selected=3).
 """
 import math, statistics, time
+from functools import partial
 from .metric import Problem
-from .exact import optimize, problem_digest
+from .exact import optimize, problem_digest, budget_sensitivity
 from .greedy import greedy_key, greedy_ratio
 from .gap import gap
 from . import suite
 
 OBJS = ("mean", "minimax", "coverage")
-ALGS = (("G1", greedy_key), ("G2", greedy_ratio))
+ALG_FUNCS = {"G1": greedy_key, "G2": greedy_ratio, "G2id": partial(greedy_ratio, unknown_tie="id")}
+ALG_ORDER = ("G1", "G2", "G2id")
 FACTORS = ("slice", "n_candidates", "n_points", "budget_ratio", "weights")
+
+
+def design(cfg):
+    return cfg.get("design", "v1")
+
+
+def algorithms(cfg):
+    return list(cfg.get("algorithms_run", ["G1", "G2"]))
 
 
 def scenario_plan(cfg):
@@ -48,28 +62,39 @@ def _timed(fn, repeats):
     return res, best
 
 
+def make(ctx, cfg, params):
+    nc, npnt, br, w, ms, rad, seed = params
+    if design(cfg) == "v2":
+        return suite.make_scenario_v2(ctx, nc, npnt, br, w, ms, rad, seed, cfg["config_version"])
+    return suite.make_scenario(ctx, nc, npnt, br, w, ms, rad, seed, cfg["config_version"])
+
+
 def run_one(ctx, cfg, analysis, slice_id, params, override, repeats):
     nc, npnt, br, w, ms, rad, seed = params
-    sc = suite.make_scenario(ctx, nc, npnt, br, w, ms, rad, seed, cfg["config_version"])
+    sc = make(ctx, cfg, params)
     sc.update(override)
     ms, rad = sc["max_selected"], sc["coverage_radius_m"]
     key = f"{analysis}|{slice_id}|nc{nc}|np{npnt}|br{br}|{w}|ms{ms}|r{rad}|s{seed}"
     pr, t_pre = _timed(lambda: Problem(sc["control_points"], ctx["sources"], sc["candidates"], rad), repeats)
     ex, t_ex = _timed(lambda: optimize(pr, sc["budget"], ms, with_pareto=False), repeats)
     assert ex["status"] == "optimal", key
-    par = optimize(pr, sc["budget"], ms, with_pareto=True)["pareto"]
+    full, t_full = _timed(lambda: (optimize(pr, sc["budget"], ms, with_pareto=True), budget_sensitivity(pr, sc["budget"], ms)), repeats)
+    par = full[0]["pareto"]
+    unconstrained = sum(math.comb(nc, k) for k in range(min(ms, nc) + 1))
     row_s = {"scenario_key": key, "analysis": analysis, "slice": slice_id, "n_candidates": nc, "n_points": npnt,
              "budget_ratio": br, "weights": w, "max_selected": ms, "radius_m": rad, "seed": seed, "budget": sc["budget"],
              "problem_digest": problem_digest(ctx, sc), "feasible_count": ex["feasible_count"], "subsets_total": ex["subsets_total"],
+             "budget_binding": int(ex["feasible_count"] < unconstrained),
              "baseline_unknown_points": sum(1 for b in pr.base if b is None), "pareto_size": len(par),
              "distinct_exact_plans": len({tuple(ex["objectives"][o]["selected_ids"]) for o in OBJS})}
     for o in OBJS:
         row_s[f"exact_{o}_ids"] = " ".join(ex["objectives"][o]["selected_ids"])
-    timing = {"scenario_key": key, "t_precompute_s": t_pre, "t_exact_all3_s": t_ex}
+    timing = {"scenario_key": key, "t_precompute_s": t_pre, "t_exact_all3_s": t_ex, "t_exact_full_output_s": t_full}
     runs = []
     for o in OBJS:
         e = ex["objectives"][o]
-        for name, fn in ALGS:
+        for name in algorithms(cfg):
+            fn = ALG_FUNCS[name]
             r, t = _timed(lambda: fn(pr, o, sc["budget"], ms), repeats)
             g = r["plan"]
             x = gap(o, g, e)
@@ -100,13 +125,14 @@ def wilson(k, n, z=1.959963984540054):
 
 
 def mcnemar_exact(b, c):
-    """Двусторонний точный биномиальный тест для несогласных пар (b, c): p = min(1, 2·P(X ≤ min(b,c))), X ~ Bin(b+c, 1/2)."""
+    """Двусторонний точный биномиальный тест для несогласных пар (b, c): p = min(1, 2·P(X ≤ min(b,c))), X ~ Bin(b+c, 1/2).
+    Без округления; ниже наименьшего float даёт 0.0 — тогда смотреть mcnemar_log10."""
     n = b + c
     if n == 0:
         return 1.0
     k = min(b, c)
     p = sum(math.comb(n, i) for i in range(k + 1)) / 2 ** n
-    return round(min(1.0, 2 * p), 12)
+    return min(1.0, 2 * p)
 
 
 def mcnemar_log10(b, c):
@@ -138,36 +164,84 @@ def _cell(rows):
             "rel_defined": len(rel), "rel_undefined": n - len(rel),
             "rel_mean": round(statistics.fmean(rel), 6) if rel else None, "rel_p50": _q(rel, 0.5), "rel_p90": _q(rel, 0.9),
             "rel_max": max(rel) if rel else None, "rel_positive_n": len(rel_miss),
-            "rel_positive_p50": _q(rel_miss, 0.5)}
+            "rel_positive_p50": _q(rel_miss, 0.5), "rel_positive_p90": _q(rel_miss, 0.9)}
 
 
-def summarize(runs, scen):
-    out = {"overall": {}, "by_factor": {}, "secondary": {}, "g1_vs_g2_mcnemar": {}, "exact_plans": {}}
+def _mcn(xa, xb):
+    """xa, xb: {pair_key: 0/1}; общие ключи."""
+    ks = sorted(set(xa) & set(xb))
+    b = sum(1 for k in ks if xa[k] and not xb[k])
+    c = sum(1 for k in ks if xb[k] and not xa[k])
+    return {"pairs": len(ks), "a_only": b, "b_only": c, "both": sum(1 for k in ks if xa[k] and xb[k]),
+            "neither": sum(1 for k in ks if not xa[k] and not xb[k]),
+            "a_rate": round(sum(xa[k] for k in ks) / len(ks), 6) if ks else None,
+            "b_rate": round(sum(xb[k] for k in ks) / len(ks), 6) if ks else None,
+            "p_exact_two_sided": mcnemar_exact(b, c), "log10_p": mcnemar_log10(b, c)}
+
+
+def _pe(r):
+    return 1 if r["primary_equal"] == 1 else 0
+
+
+def summarize(runs, scen, cfg=None):
+    algs = [a for a in ALG_ORDER if any(r["algorithm"] == a for r in runs)]
+    out = {"algorithms": algs, "overall": {}, "by_factor": {}, "by_budget_binding": {}, "secondary": {},
+           "g1_vs_g2_mcnemar": {}, "g1_vs_g2_mcnemar_primary": {}, "exact_plans": {}}
+    binding = {s["scenario_key"]: s["budget_binding"] for s in scen}
     main = [r for r in runs if r["analysis"] == "main"]
     for o in OBJS:
-        for a, _ in ALGS:
+        for a in algs:
             sel = [r for r in main if r["objective"] == o and r["algorithm"] == a]
             out["overall"][f"{a}/{o}"] = _cell(sel)
             for fac in FACTORS:
                 levels = sorted({r[fac] for r in sel}, key=lambda v: (str(type(v)), v))
                 out["by_factor"].setdefault(fac, {})[f"{a}/{o}"] = {str(v): _cell([r for r in sel if r[fac] == v]) for v in levels}
+            out["by_budget_binding"][f"{a}/{o}"] = {str(b): _cell([r for r in sel if binding[r["scenario_key"]] == b])
+                                                    for b in (0, 1) if any(binding[r["scenario_key"]] == b for r in sel)}
             for an, fac in (("sec_max_selected", "max_selected"), ("sec_radius", "radius_m")):
                 s2 = [r for r in runs if r["analysis"] == an and r["objective"] == o and r["algorithm"] == a]
                 levels = sorted({r[fac] for r in s2})
                 out["secondary"].setdefault(an, {})[f"{a}/{o}"] = {str(v): _cell([r for r in s2 if r[fac] == v]) for v in levels}
-        g1 = {r["scenario_key"]: r["hit"] for r in main if r["objective"] == o and r["algorithm"] == "G1"}
-        g2 = {r["scenario_key"]: r["hit"] for r in main if r["objective"] == o and r["algorithm"] == "G2"}
-        b = sum(1 for k in g1 if g1[k] and not g2[k])
-        c = sum(1 for k in g1 if g2[k] and not g1[k])
-        out["g1_vs_g2_mcnemar"][o] = {"G1_only_hit": b, "G2_only_hit": c, "both_hit": sum(1 for k in g1 if g1[k] and g2[k]),
-                                      "both_miss": sum(1 for k in g1 if not g1[k] and not g2[k]), "p_exact_two_sided": mcnemar_exact(b, c),
-                                      "log10_p": mcnemar_log10(b, c)}
+        hit = {a: {r["scenario_key"]: r["hit"] for r in main if r["objective"] == o and r["algorithm"] == a} for a in algs}
+        pe = {a: {r["scenario_key"]: _pe(r) for r in main if r["objective"] == o and r["algorithm"] == a} for a in algs}
+        m = _mcn(hit["G1"], hit["G2"])
+        out["g1_vs_g2_mcnemar"][o] = {"G1_only_hit": m["a_only"], "G2_only_hit": m["b_only"], "both_hit": m["both"],
+                                      "both_miss": m["neither"], "p_exact_two_sided": m["p_exact_two_sided"], "log10_p": m["log10_p"]}
+        out["g1_vs_g2_mcnemar_primary"][o] = _mcn(pe["G1"], pe["G2"])
+        if "G2id" in algs:
+            out.setdefault("g2_vs_g2id_mcnemar", {})[o] = _mcn(hit["G2"], hit["G2id"])
     ms = [s for s in scen if s["analysis"] == "main"]
     out["exact_plans"] = {"scenarios": len(ms),
                           "distinct_plans_across_objectives": {str(k): sum(1 for s in ms if s["distinct_exact_plans"] == k) for k in (1, 2, 3)},
                           "baseline_unknown_scenarios": sum(1 for s in ms if s["baseline_unknown_points"] > 0),
+                          "budget_binding_scenarios": sum(s["budget_binding"] for s in ms),
                           "feasible_count_max": max(s["feasible_count"] for s in ms),
                           "pareto_size_p50": _q([s["pareto_size"] for s in ms], 0.5)}
+    out["budget_binding_by_cell"] = {}
+    for nc in sorted({s["n_candidates"] for s in ms}):
+        for br in sorted({s["budget_ratio"] for s in ms}):
+            cell = [s for s in ms if s["n_candidates"] == nc and s["budget_ratio"] == br]
+            out["budget_binding_by_cell"][f"nc{nc}|br{br}"] = {"n": len(cell), "binding": sum(s["budget_binding"] for s in cell)}
+    if cfg and cfg.get("paired_contrasts"):
+        out["paired_contrasts"] = paired_contrasts(main, algs, cfg["paired_contrasts"])
+    return out
+
+
+def paired_contrasts(main, algs, specs):
+    """Для дизайна v2: пары сценариев с одинаковыми прочими факторами и seed, различающиеся одним фактором."""
+    fields = ("slice", "n_candidates", "n_points", "budget_ratio", "weights", "max_selected", "radius_m", "seed")
+    out = {}
+    for sp in specs:
+        fac, a, b = sp["factor"], sp["a"], sp["b"]
+        name = f"{fac}:{a}_vs_{b}"
+        out[name] = {}
+        for o in OBJS:
+            for alg in algs:
+                rows = [r for r in main if r["objective"] == o and r["algorithm"] == alg]
+                key = lambda r: tuple(r[f] for f in fields if f != fac)
+                xa = {key(r): r["hit"] for r in rows if str(r[fac]) == str(a)}
+                xb = {key(r): r["hit"] for r in rows if str(r[fac]) == str(b)}
+                out[name][f"{alg}/{o}"] = _mcn(xa, xb)
     return out
 
 

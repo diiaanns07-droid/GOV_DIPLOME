@@ -46,7 +46,7 @@ def parse_import(raw):
         obj = json.loads(b.decode("utf-8"), parse_constant=_const, parse_float=_flt, object_pairs_hook=_dupcheck)
     except PlanError:
         raise
-    except (ValueError, UnicodeDecodeError):
+    except (ValueError, UnicodeDecodeError, RecursionError):   # RecursionError: слишком глубокая вложенность
         raise PlanError("invalid_json")
     if not isinstance(obj, dict):
         raise PlanError("root_not_object")
@@ -54,11 +54,24 @@ def parse_import(raw):
 
 
 def _int(v, lo, hi):
-    return isinstance(v, int) and not isinstance(v, bool) and lo <= v <= hi
+    """Целое в диапазоне. Целочисленный float (1.0) допускается: JSON.parse в JS не отличает 1.0 от 1."""
+    if isinstance(v, bool):
+        return False
+    if isinstance(v, float):
+        if not (math.isfinite(v) and v.is_integer()):
+            return False
+    elif not isinstance(v, int):
+        return False
+    return lo <= v <= hi
 
 
 def _num(v):
-    return isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(float(v))
+    if isinstance(v, bool) or not isinstance(v, (int, float)):
+        return False
+    try:
+        return math.isfinite(float(v))
+    except OverflowError:                       # очень длинное целое
+        return False
 
 
 def validate(sc, ctx):

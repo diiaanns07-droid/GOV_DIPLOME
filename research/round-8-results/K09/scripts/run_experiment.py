@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Воспроизводимый прогон эксперимента K09 round-8 (только stdlib, сеть не нужна).
 
-  python3 scripts/run_experiment.py                 # полная сетка -> results/
+  python3 scripts/run_experiment.py                 # v1 (предрегистрация) -> results/
+  python3 scripts/run_experiment.py --config config/experiment_config_v2.json   # v2 -> results_v2/
   python3 scripts/run_experiment.py --limit 20 --out /tmp/x   # короткая проверка
 
-Детерминированные файлы: runs.csv, scenarios.csv, summary.json, crosscheck_tasks.json, DETERMINISTIC_SHA256.txt.
+Детерминированные файлы: runs.csv, scenarios.csv, summary.json, crosscheck_tasks.json (только v1), DETERMINISTIC_SHA256.txt.
 Зависят от машины: timing.csv, timing_summary.json, run_meta.json.
 """
 import argparse, csv, hashlib, json, os, platform, sys, time
@@ -48,7 +49,7 @@ def crosscheck(cfg, ctxs):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--config", default=str(K / "config/experiment_config.json"))
-    ap.add_argument("--out", default=str(K / "results"))
+    ap.add_argument("--out", default=None, help="по умолчанию results_dir из config (results/ для v1)")
     ap.add_argument("--repeats", type=int, default=3, help="замер времени: минимум из N повторов")
     ap.add_argument("--limit", type=int, default=0, help="только первые N сценариев (проверка)")
     ap.add_argument("--repo", default=str(K.parents[2]))
@@ -62,7 +63,7 @@ def main():
     plan = X.scenario_plan(cfg)
     if a.limit:
         plan = plan[:a.limit]
-    out = Path(a.out); out.mkdir(parents=True, exist_ok=True)
+    out = Path(a.out or (K / cfg.get("results_dir", "results"))); out.mkdir(parents=True, exist_ok=True)
     scen, runs, timing = [], [], []
     t0 = time.perf_counter()
     for i, (an, sid, params, ov) in enumerate(plan):
@@ -74,14 +75,19 @@ def main():
     write_csv(out / "scenarios.csv", scen)
     write_csv(out / "timing.csv", [{k: (f"{v:.9f}" if isinstance(v, float) else v) for k, v in t.items()} for t in timing])
     dump(out / "summary.json", {"config_version": cfg["config_version"], "metric_version": METRIC_VERSION, "base_sha": data.BASE_SHA,
-                                "data_sha256": digest, "scenarios": len(scen), "runs": len(runs), **X.summarize(runs, scen)})
+                                "data_sha256": digest, "design": X.design(cfg), "scenarios": len(scen), "runs": len(runs),
+                                **X.summarize(runs, scen, cfg)})
     dump(out / "timing_summary.json", X.timing_summary(timing, scen))
-    dump(out / "crosscheck_tasks.json", crosscheck(cfg, ctxs))
+    det = list(DET)
+    if X.design(cfg) == "v1":
+        dump(out / "crosscheck_tasks.json", crosscheck(cfg, ctxs))
+    else:
+        det.remove("crosscheck_tasks.json")
     dump(out / "run_meta.json", {"python": sys.version.split()[0], "implementation": platform.python_implementation(),
                                  "platform": platform.platform(), "machine": platform.machine(), "cpu_count": os.cpu_count(),
                                  "repeats": a.repeats, "limit": a.limit, "wall_s": round(time.perf_counter() - t0, 3),
                                  "timer": "time.perf_counter, минимум из repeats, один процесс"})
-    lines = [f"{hashlib.sha256((out / n).read_bytes()).hexdigest()}  {n}" for n in DET]
+    lines = [f"{hashlib.sha256((out / n).read_bytes()).hexdigest()}  {n}" for n in det]
     (out / "DETERMINISTIC_SHA256.txt").write_text("\n".join(lines) + "\n", encoding="utf-8")
     print("\n".join(lines))
     print(f"scenarios={len(scen)} runs={len(runs)} wall={time.perf_counter() - t0:.1f}s", file=sys.stderr)
