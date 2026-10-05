@@ -1,0 +1,59 @@
+{
+ "experiment_id": "K08-E03-diagnostic",
+ "results": [
+  {
+   "city": "shymkent",
+   "city_km": 5719.135,
+   "district_sum": 5723.384,
+   "outside": 0.0,
+   "shared": 4.249,
+   "district_sum_minus_city_km": 4.249,
+   "identity_residual_km": 0.0,
+   "shared_by_pair_km": {
+    "Еңбекші ауданы | Қаратау ауданы": 4.249,
+    "Абай ауданы | Қаратау ауданы": 0.0,
+    "Абай ауданы | Әл-Фараби ауданы": 0.0,
+    "Еңбекші ауданы | Әл-Фараби ауданы": 0.0,
+    "Қаратау ауданы | Әл-Фараби ауданы": 0.0
+   },
+   "shared_by_class_km": {
+    "secondary": 4.249,
+    "primary": 0.0,
+    "tertiary": 0.0,
+    "trunk": 0.0,
+    "residential": 0.0,
+    "service": 0.0,
+    "footway": 0.0
+   },
+   "uncovered_area_km2_note": "площадь см. K10-E01 city_area_not_covered_km2"
+  },
+  {
+   "city": "astana",
+   "city_km": 5901.249,
+   "district_sum": 5917.665,
+   "outside": 0.0,
+   "shared": 16.416,
+   "district_sum_minus_city_km": 16.416,
+   "identity_residual_km": 0.0,
+   "shared_by_pair_km": {
+    "Алматы ауданы | Сарайшық ауданы": 15.345,
+    "Есіл ауданы | Нұра ауданы": 0.713,
+    "Алматы ауданы | Байқоңыр ауданы": 0.358,
+    "Нұра ауданы | Сарыарқа ауданы": 0.0,
+    "Байқоңыр ауданы | Сарыарқа ауданы": 0.0,
+    "Алматы ауданы | Есіл ауданы": 0.0
+   },
+   "shared_by_class_km": {
+    "primary": 6.933,
+    "trunk": 6.131,
+    "secondary": 2.994,
+    "residential": 0.358,
+    "tertiary": 0.0,
+    "service": 0.0,
+    "track": 0.0,
+    "footway": 0.0
+   },
+   "uncovered_area_km2_note": "площадь см. K10-E01 city_area_not_covered_km2"
+  }
+ ]
+}
