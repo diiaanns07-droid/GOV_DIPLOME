@@ -49,7 +49,7 @@ async function open(browser, opts = {}) {
   const errors = [];
   p.on("pageerror", (e) => errors.push(String(e.message || e)));
   p.on("console", (m) => { if (m.type() === "error") errors.push("console: " + m.text()); });
-  if (opts.engine) await p.addInitScript(FIXTURE_ENGINE);
+  if (opts.engine) await p.addInitScript(opts.engine === true ? FIXTURE_ENGINE : opts.engine);
   await p.goto(URL_);
   await p.waitForSelector("#map g[data-id]", { timeout: 15000 });
   return { p, ctx, errors };
@@ -77,6 +77,18 @@ async function freeSpots(p, n, offset = 0) {
     }
     return out;
   }, [n, offset]);
+}
+// SYNTHETIC fixture for W17: record strings with markup must be shown as text, never parsed
+const FIXTURE_ENGINE_MARKUP = `window.__k07xss = 0; window.CITY_WHATIF_ENGINE = { fixture: "SYNTHETIC k07r7 markup", compute({ scenario }) {
+  return { rows: scenario.control_points.map((p) => ({ control_point_id: p.id, before_m: 900, after_m: 900, delta_m: 0,
+    nearest_before: { record_id: "x", name: '<img src=x onerror="window.__k07xss=1">School', source: "<b>SYNTHETIC</b>", qa: ["<i>QA</i>"] } })),
+    notes: ['<img src=y onerror="window.__k07xss=2">note'] }; } };`;
+const active = (p) => p.evaluate(() => { const e = document.activeElement; return { id: e.id || null, tag: e.tagName, body: e === document.body || e === document.documentElement,
+  move: (e.dataset && e.dataset.wiMove) || null, del: (e.dataset && e.dataset.wiDel) || null, inCard: !!(e.closest && e.closest("#whatifCard")) }; });
+// press Tab until document.activeElement matches the selector; -1 if not reached in max presses
+async function tabTo(p, sel, max) {
+  for (let i = 1; i <= max; i++) { await p.keyboard.press("Tab"); if (await p.evaluate((sel) => document.activeElement && document.activeElement.matches(sel), sel)) return i; }
+  return -1;
 }
 // before/after table: every cell inside the scenario card (no clipped column), page without horizontal scroll
 async function tableFit(p) {
@@ -254,6 +266,77 @@ function finish(extraNote) {
       on && target === true && targetUnfocused === false && two && pend && movedK && cancelled && s3.points.length === 1 && !!s4.proposed,
       { on, targetShownOnFocus: target, targetShownUnfocused: targetUnfocused, two, pending: !!pend, movedK, cancelled, afterDelete: s3.points.length, proposed: !!s4.proposed });
     check("W15b", "general", "no console or page errors during the keyboard path", errors.length === 0, errors);
+    await ctx.close();
+  }
+
+  // ===== keyboard: natural Tab order and focus after each action (only the first focus is programmatic) =====
+  {
+    const { p, ctx, errors } = await open(browser);
+    await p.focus("#whatifBtn"); await p.keyboard.press("Enter");
+    const help = await p.evaluate(() => { const id = document.getElementById("map").getAttribute("aria-describedby"); const e = id && document.getElementById(id); return e ? e.textContent.trim() : null; });
+    const toMap = await tabTo(p, "#map", 80);
+    await p.keyboard.press("Enter");
+    for (let i = 0; i < 3; i++) await p.keyboard.press("ArrowRight");
+    await p.keyboard.press("Enter");
+    const placed = (await ws(p)).points.length;
+    const toList = await tabTo(p, "#wiList [data-wi-move]", 150);
+    const moveId = toList > 0 ? (await active(p)).move : null;
+    const before = (await ws(p)).points.find((x) => x.id === moveId);
+    await p.keyboard.press("Enter");
+    const afterMoveBtn = await active(p);
+    await p.keyboard.press("ArrowDown"); await p.keyboard.press("ArrowDown"); await p.keyboard.press("Enter");
+    let s = await ws(p);
+    const after = s.points.find((x) => x.id === moveId);
+    const moved = !!before && !!after && after.lat !== before.lat && !s.pending;
+    const toDel = await tabTo(p, "#wiList [data-wi-del]", 150);
+    const delId = toDel > 0 ? (await active(p)).del : null;
+    await p.keyboard.press("Enter");
+    s = await ws(p);
+    const afterDel = await active(p);
+    check("W16", "keyboard", "natural Tab path: from the scenario button to the map in <= 6 Tabs, from the map to the list in <= 8; the map describes the scenario keys (aria-describedby); after «Переместить» focus is on the map, after «Удалить» focus stays in the card (not lost to <body>)",
+      placed === 2 && !!help && /Enter/.test(help) && toMap > 0 && toMap <= 6 && toList > 0 && toList <= 8 && afterMoveBtn.id === "map" && moved && toDel > 0 && s.points.length === 1 && !s.points.some((x) => x.id === delId) && !afterDel.body && afterDel.inCard,
+      { placed, mapDescription: help && help.slice(0, 60), tabsToMap: toMap, tabsMapToList: toList, focusAfterMoveButton: afterMoveBtn, moved, tabsToDelete: toDel, pointsAfterDelete: s.points.length, focusAfterDelete: afterDel });
+    // cancel via the button; then the mode off restores the base Tab order
+    const left = s.points[0] && s.points[0].id;
+    if (left) { await p.focus(`#wiList [data-wi-move="${left}"]`); await p.keyboard.press("Enter"); }
+    const toCancel = left ? await tabTo(p, "#wiCancelMove", 20) : -1;
+    if (toCancel > 0) await p.keyboard.press("Enter");
+    const afterCancel = await active(p), pendingAfterCancel = (await ws(p)).pending;
+    await p.focus("#whatifBtn"); await p.keyboard.press("Enter");
+    const ti = await p.evaluate(() => ({ active: window.CITY_WHATIF_UI._state.active, markers: document.querySelectorAll("#map g[data-id]").length, markersTab: document.querySelectorAll('#map g[data-id][tabindex="0"]').length,
+      roadsTab: document.querySelectorAll('#map path[tabindex="0"]').length, roadsOff: document.querySelectorAll('#map path[tabindex="-1"]').length, describedby: document.getElementById("map").getAttribute("aria-describedby") }));
+    check("W16b", "keyboard", "«Отменить перемещение» (reached by Tab from the map) cancels and returns focus to that point's «Переместить»; with the mode off roads and records are back in the Tab order and the map description is removed",
+      toCancel > 0 && !pendingAfterCancel && afterCancel.move === left && !ti.active && ti.markers > 0 && ti.markersTab === ti.markers && ti.roadsTab > 0 && ti.roadsOff === 0 && !ti.describedby,
+      { tabsMapToCancel: toCancel, pendingAfterCancel, focusAfterCancel: afterCancel, ...ti }, !!left);
+    check("W15c", "general", "no console or page errors during the natural keyboard path", errors.length === 0, errors);
+    await ctx.close();
+  }
+
+  // ===== engine strings are text; Astana; own marker =====
+  {
+    const { p, ctx } = await open(browser, { engine: FIXTURE_ENGINE_MARKUP });
+    await p.click("#whatifBtn");
+    const sp = await freeSpots(p, 1, 5);
+    if (sp.length) await p.mouse.click(sp[0].x, sp[0].y);
+    await p.waitForTimeout(100);
+    const t = await p.evaluate(() => ({ imgs: document.querySelectorAll("#whatifCard img, #whatifCard b, #whatifCard i").length, xss: window.__k07xss,
+      cell: (document.querySelector("#wiResult tbody td:last-child") || {}).textContent || null }));
+    check("W17", "safety", "engine strings (SYNTHETIC fixture with markup) are rendered as text: no element created, no handler run",
+      sp.length === 1 && t.imgs === 0 && t.xss === 0 && !!t.cell && t.cell.includes('<img src=x onerror="window.__k07xss=1">School') && t.cell.includes("<b>SYNTHETIC</b>"), t, sp.length === 1);
+    // Astana: points go into Astana's own square; a click on an own scenario marker places nothing
+    const other = await p.evaluate(() => Object.keys(window.CITY_EVIDENCE.cities).find((c) => c !== window.CITY_APP.state.city));
+    await p.click(`#citySeg button[data-city="${other}"]`);
+    const sa = await freeSpots(p, 1, 9);
+    if (sa.length) await p.mouse.click(sa[0].x, sa[0].y);
+    let s = await ws(p);
+    const bb = await p.evaluate((c) => window.CITY_EVIDENCE.cities[c].bbox, other);
+    const pt = s.points[0];
+    const inB = !!pt && pt.lon >= bb[0] && pt.lon <= bb[2] && pt.lat >= bb[1] && pt.lat <= bb[3];
+    const own = await p.evaluate(() => { const m = document.querySelector('#map [data-whatif="cp-1"] circle'); if (!m) return null; const r = m.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; });
+    if (own) await p.mouse.click(own.x, own.y);
+    const s2 = await ws(p);
+    check("W18", "cities", "in the other city a point is placed inside that city's square; a click on the scenario's own marker adds nothing",
+      s.city === other && s.points.length === 1 && inB && !!own && s2.points.length === 1, { city: s.city, point: pt, bbox: bb, inBbox: inB, ownMarker: !!own, afterOwnClick: s2.points.length }, sa.length === 1);
     await ctx.close();
   }
 

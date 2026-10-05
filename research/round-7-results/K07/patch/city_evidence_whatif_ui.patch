@@ -1,5 +1,5 @@
 diff --git a/prototypes/city-evidence/web/app.js b/prototypes/city-evidence/web/app.js
-index 1578b28..63ebafb 100644
+index 1578b28..e861dbe 100644
 --- a/prototypes/city-evidence/web/app.js
 +++ b/prototypes/city-evidence/web/app.js
 @@ -130,6 +130,7 @@
@@ -21,7 +21,16 @@ index 1578b28..63ebafb 100644
    }
    // Filter change: a selected object that is no longer visible is deselected; explanations are recomputed.
    function onFilterChange() {
-@@ -214,7 +217,7 @@
+@@ -208,13 +211,15 @@
+       let d = ""; sg.coords.forEach(([x, y], i) => { const [a, b] = toScreen(x, y); d += (i ? "L" : "M") + a.toFixed(1) + " " + b.toFixed(1); });
+       const color = STATE.roadStyle === "foot" ? FOOT_COLOR[sg.foot_access] : "var(--base)";
+       gRoad.append(sv("path", { d, fill: "none", stroke: color, "stroke-width": sg.class === "footway" || sg.class === "path" ? 1.2 : 2, "stroke-linecap": "round" }));
+-      const hit = sv("path", { d, fill: "none", stroke: "transparent", "stroke-width": 10, tabindex: 0, role: "button",
++      // K07 r7: in scenario mode roads and records leave the Tab order (1084-1326 roads + 55-65 records sit between the map and
++      // the scenario card); mouse still works, records stay reachable from the table
++      const hit = sv("path", { d, fill: "none", stroke: "transparent", "stroke-width": 10, tabindex: whatifActive() ? -1 : 0, role: "button",
+         "aria-label": `Дорога: ${sg.class}${sg.name ? ", " + sg.name : ""}` });
+       hit.style.cursor = "pointer";
        hit.addEventListener("pointermove", (ev) => showTip(ev, [`${sg.class}${sg.name ? " · " + sg.name : ""}`, `${fmtM(sg.length_m)} · проход пешком: ${sg.foot_access}`]));
        hit.addEventListener("pointerleave", hideTip);
        // In point mode a click on a road sets the point (roads cover most of the map); markers keep priority.
@@ -30,7 +39,16 @@ index 1578b28..63ebafb 100644
        hit.addEventListener("click", pick);
        hit.addEventListener("keydown", (ev) => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); pick(ev); } });
        gRoad.append(hit);
-@@ -261,7 +264,9 @@
+@@ -236,7 +241,7 @@
+     }
+     for (const p of places) {
+       const [sx, sy] = toScreen(p.lon, p.lat);
+-      const g = sv("g", { transform: `translate(${sx.toFixed(1)} ${sy.toFixed(1)})`, tabindex: 0, role: "button",
++      const g = sv("g", { transform: `translate(${sx.toFixed(1)} ${sy.toFixed(1)})`, tabindex: whatifActive() ? -1 : 0, role: "button",
+         "aria-label": `${p.name || "Без названия"}, ${p.group_label}`, "data-id": p.id });
+       g.style.cursor = "pointer";
+       const sel = STATE.selected && STATE.selected.type === "place" && STATE.selected.id === p.id;
+@@ -261,7 +266,9 @@
      else msg.hidden = true;
      const att = $("attrib");
      att.replaceChildren(document.createTextNode(attributionLine(c) + " · "), el("a", { href: "attribution/ATTRIBUTION.md", target: "_blank", rel: "noopener" }, "лицензии"));
@@ -40,7 +58,7 @@ index 1578b28..63ebafb 100644
    // Providers are taken from records' sources[] (K08 attribution.json), not from the K10 file header.
    function attributionLine(c) {
      const names = { OpenStreetMap: "© OpenStreetMap contributors", Overture: "Overture Maps Foundation", meta: "Meta", Foursquare: "Foursquare", TomTom: "TomTom" };
-@@ -299,10 +304,12 @@
+@@ -299,10 +306,12 @@
      });
      svg.addEventListener("pointerup", (e) => {
        const d = drag; drag = null;
@@ -56,7 +74,7 @@ index 1578b28..63ebafb 100644
        STATE.selected = { type: "point" };
        renderMap(); renderSelection(); renderExplain(); updateStatus();
      });
-@@ -313,6 +320,7 @@
+@@ -313,6 +322,7 @@
        if (mv) { e.preventDefault(); STATE.view.cx += mv[0]; STATE.view.cy += mv[1]; renderMap(); }
        else if (e.key === "+" || e.key === "=") { e.preventDefault(); zoomBy(1.5); }
        else if (e.key === "-") { e.preventDefault(); zoomBy(1 / 1.5); }
@@ -64,7 +82,7 @@ index 1578b28..63ebafb 100644
        else if ((e.key === "Enter" || e.key === " ") && STATE.pointMode) {
          e.preventDefault();
          STATE.point = toLonLat(svg.clientWidth / 2, svg.clientHeight / 2);
-@@ -518,5 +526,11 @@
+@@ -518,5 +528,11 @@
    renderAll();
    updateStatus();
    function selectSegment(id) { STATE.selected = { type: "segment", id }; renderSelection(); renderExplain(); updateStatus(); }
@@ -78,10 +96,10 @@ index 1578b28..63ebafb 100644
 +  if (window.CITY_WHATIF_UI) window.CITY_WHATIF_UI.init(window.CITY_APP);  // K07 r7: scenario UI (whatif_ui.js)
  })();
 diff --git a/prototypes/city-evidence/web/index.html b/prototypes/city-evidence/web/index.html
-index 93d1761..78df677 100644
+index 93d1761..eb2aa78 100644
 --- a/prototypes/city-evidence/web/index.html
 +++ b/prototypes/city-evidence/web/index.html
-@@ -115,6 +115,31 @@ select { font: inherit; padding: 4px 6px; border-radius: 6px; border: 1px solid
+@@ -115,6 +115,33 @@ select { font: inherit; padding: 4px 6px; border-radius: 6px; border: 1px solid
  .mapstatus { position: absolute; left: 8px; right: 52px; bottom: 26px; margin: 0; padding: 4px 8px; border-radius: 6px;
    background: var(--surface); border: 1px solid var(--base); color: var(--ink); font-size: 12px; }
  .mapstatus:empty { display: none; }
@@ -98,6 +116,8 @@ index 93d1761..78df677 100644
 +.wi-list li.wi-pending .wi-label { font-weight: 600; }
 +.wi-label { min-width: 0; overflow-wrap: anywhere; }
 +#map .wi-target { pointer-events: none; }
++.wi-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
++#whatifCard h3[tabindex="-1"]:focus { outline: 2px solid var(--focus); outline-offset: 2px; }
 +#map:not(:focus) .wi-target { display: none; }  /* keyboard target only while the map itself has focus */
 +#wiResult { container-type: inline-size; }
 +.wi-table { width: 100%; }
@@ -113,7 +133,7 @@ index 93d1761..78df677 100644
  .card dd, .card td, .card li, .card p { overflow-wrap: anywhere; min-width: 0; }
  @media (max-width: 480px) { aside table { table-layout: fixed; } aside td { overflow-wrap: anywhere; }
    .card dl { grid-template-columns: minmax(0, 1fr); } .card dt { margin-top: 4px; } }
-@@ -137,7 +162,8 @@ select { font: inherit; padding: 4px 6px; border-radius: 6px; border: 1px solid
+@@ -137,7 +164,8 @@ select { font: inherit; padding: 4px 6px; border-radius: 6px; border: 1px solid
      <select id="roadStyle"><option value="plain">один цвет</option><option value="foot">по данным о проходе пешком</option></select></label>
    <span class="ctl muted" id="roadLegend" hidden></span>
    <span class="ctl"><button class="tool" id="pointBtn" aria-pressed="false">Расстояние от точки</button>
@@ -123,11 +143,12 @@ index 93d1761..78df677 100644
    <a class="skip" href="#tblCard">Перейти к таблице объектов</a>
  </div>
  
-@@ -154,9 +180,26 @@ select { font: inherit; padding: 4px 6px; border-radius: 6px; border: 1px solid
+@@ -154,9 +182,27 @@ select { font: inherit; padding: 4px 6px; border-radius: 6px; border: 1px solid
      <div class="tooltip" id="tip" role="status"></div>
      <div class="legend-note" id="attrib"></div>
      <p class="mapstatus" id="mapStatus" role="status" aria-live="polite"></p>
 +    <p class="wi-mapmsg" id="wiMapMsg" aria-hidden="true" hidden></p>
++    <span class="wi-sr" id="wiMapHelp">Режим сценария «Если добавить объект»: Enter или пробел ставит выбранный элемент в центр карты, отмеченный мишенью; стрелки сдвигают карту; Escape отменяет перемещение. Дороги и записи в этом режиме Tab пропускает, записи доступны в таблице объектов.</span>
    </section>
    </div>
    <aside>
@@ -140,8 +161,8 @@ index 93d1761..78df677 100644
 +        <label class="chk"><input type="radio" name="wiTool" value="proposed"> Проектный объект</label>
 +      </fieldset>
 +      <p id="wiMsg" class="wi-msg" role="status" aria-live="polite"></p>
-+      <h3>Контрольные точки</h3><ol id="wiList" class="wi-list"></ol>
-+      <h3>Проектный объект</h3><div id="wiProposed" class="wi-proposed"></div>
++      <h3 id="wiListTitle" tabindex="-1">Контрольные точки</h3><ol id="wiList" class="wi-list" aria-labelledby="wiListTitle"></ol>
++      <h3 id="wiProjTitle" tabindex="-1">Проектный объект</h3><div id="wiProposed" class="wi-proposed"></div>
 +      <div class="ctl"><button class="tool" id="wiCancelMove" type="button" hidden>Отменить перемещение</button>
 +        <button class="tool" id="wiReset" type="button" disabled>Сбросить сценарий</button></div>
 +      <h3>До / после (по прямой, в пределах среза)</h3><div id="wiResult"></div>
@@ -150,7 +171,7 @@ index 93d1761..78df677 100644
      <section class="card" id="selCard" aria-live="polite"><h2>Выбор</h2><p class="muted" id="selEmpty">Нажмите на объект, дорогу или строку таблицы. «Расстояние от точки» покажет расстояния по прямой.</p><div id="selBody"></div></section>
      <section class="card" id="sliceCard"><h2>Срез данных</h2><div id="sliceBody"></div></section>
      <section class="card" id="explainCard" hidden><h2>Объяснение по фактам</h2><div id="explainBody"></div></section>
-@@ -170,6 +213,7 @@ select { font: inherit; padding: 4px 6px; border-radius: 6px; border: 1px solid
+@@ -170,6 +216,7 @@ select { font: inherit; padding: 4px 6px; border-radius: 6px; border: 1px solid
  <script src="data.js"></script>
  <script src="evidence.js"></script>
  <script src="facts.js"></script>
@@ -160,10 +181,10 @@ index 93d1761..78df677 100644
  </html>
 diff --git a/prototypes/city-evidence/web/whatif_ui.js b/prototypes/city-evidence/web/whatif_ui.js
 new file mode 100644
-index 0000000..ff2534c
+index 0000000..1706a3c
 --- /dev/null
 +++ b/prototypes/city-evidence/web/whatif_ui.js
-@@ -0,0 +1,232 @@
+@@ -0,0 +1,249 @@
 +/* K07 round 7 — UX of the "если добавить объект" scenario (proposal for prototypes/city-evidence/web/).
 + * UI only: explicit mode, category, 1..10 control points, one hypothetical proposed object, move / delete,
 + * bbox rejection, reset on city / category change, keyboard and narrow screens. Spec: research/round-7/FEATURE_SPEC.txt.
@@ -253,20 +274,33 @@ index 0000000..ff2534c
 +  }
 +  function label(it) { return it.id === "proj-1" ? "Проектный объект" : `Точка ${it.id.slice(3)}`; }
 +  function remove(type, id) {
++    const i = S.points.findIndex((p) => p.id === id);
 +    if (type === "proposed") { S.proposed = null; say("Проектный объект удалён: показан исходный вариант (до)."); }
 +    else { S.points = S.points.filter((p) => p.id !== id); say(`Точка ${id.slice(3)} удалена.`); }
 +    if (S.pending && (S.pending.type === type && (type === "proposed" || S.pending.id === id))) S.pending = null;
 +    render();
++    // the pressed button is gone: keep keyboard focus in the card (next point, previous point, or the section title)
++    const next = type === "proposed" ? null : S.points[i] || S.points[i - 1];
++    focusEl(next ? `#wiList [data-wi-del="${next.id}"]` : type === "proposed" ? "#wiProjTitle" : "#wiListTitle");
 +  }
 +  function startMove(type, id) {
 +    S.pending = { type, id };
 +    const it = type === "proposed" ? S.proposed : S.points.find((p) => p.id === id);
 +    say(`Перемещение: ${label(it)}. Нажмите на карту в квадрате или наведите центр карты стрелками и нажмите Enter. Escape — отмена.`);
 +    render();
++    focusEl("#map");  // the next step happens on the map (the centre target shows while it has focus)
 +  }
++  function cancelMove() {
++    const was = S.pending; if (!was) return;
++    S.pending = null; say("Перемещение отменено."); render();
++    const fa = document.activeElement;  // the cancel button is hidden now; focus on the map stays where it is
++    if (!fa || fa === document.body || fa.id === "wiCancelMove") focusEl(was.type === "proposed" ? "#wiProjMove" : `#wiList [data-wi-move="${was.id}"]`);
++  }
++  function focusEl(sel) { const n = document.querySelector(sel); if (n) n.focus(); }
 +  function setActive(on) {
 +    S.active = !!on;
 +    const b = $("whatifBtn"); if (b) b.setAttribute("aria-pressed", String(S.active));
++    const m = $("map"); if (m) { if (S.active) m.setAttribute("aria-describedby", "wiMapHelp"); else m.removeAttribute("aria-describedby"); }
 +    if (S.active && APP && APP.state.pointMode && APP.setPointMode) APP.setPointMode(false);  // one map tool at a time
 +    if (!S.active) { S.pending = null; say(S.points.length || S.proposed ? "Сценарий скрыт; точки сохраняются до смены города или категории." : ""); }
 +    else say(`Режим сценария: ${S.tool === "proposed" ? "клик/Enter на карте ставит проектный объект" : "клик/Enter на карте ставит контрольную точку"}.`);
@@ -276,6 +310,9 @@ index 0000000..ff2534c
 +  // ---------- rendering ----------
 +  function render() {
 +    const card = $("whatifCard"); if (!card) return;
++    // list buttons are rebuilt below: remember which one had focus and give it back (same data attribute / id)
++    const fa = document.activeElement, ds = (fa && fa.dataset) || {};
++    const keep = ds.wiMove ? `#wiList [data-wi-move="${ds.wiMove}"]` : ds.wiDel ? `#wiList [data-wi-del="${ds.wiDel}"]` : fa && (fa.id === "wiProjMove" || fa.id === "wiProjDel") ? "#" + fa.id : null;
 +    card.hidden = !S.active;
 +    $("map") && $("map").classList.toggle("whatifmode", S.active);
 +    // tool radios
@@ -308,6 +345,7 @@ index 0000000..ff2534c
 +    $("wiReset").disabled = !S.points.length && !S.proposed;
 +    renderTable();
 +    if (APP) APP.renderMap();  // redraws the scenario layer through drawLayer()
++    if (keep && document.activeElement !== fa) focusEl(keep);
 +  }
 +  function renderTable() {
 +    const box = $("wiResult"); box.replaceChildren();
@@ -388,8 +426,8 @@ index 0000000..ff2534c
 +    $("wiCat").addEventListener("change", (e) => { S.category = e.target.value; reset("смена категории"); });
 +    for (const r of document.querySelectorAll('input[name="wiTool"]')) r.addEventListener("change", (e) => { S.tool = e.target.value; S.pending = null; setActive(true); });
 +    $("wiReset").addEventListener("click", () => reset("по кнопке «Сбросить сценарий»"));
-+    $("wiCancelMove").addEventListener("click", () => { S.pending = null; say("Перемещение отменено."); render(); });
-+    document.addEventListener("keydown", (e) => { if (e.key === "Escape" && S.pending) { S.pending = null; say("Перемещение отменено."); render(); } });
++    $("wiCancelMove").addEventListener("click", cancelMove);
++    document.addEventListener("keydown", (e) => { if (e.key === "Escape" && S.pending) cancelMove(); });
 +    render();
 +  }
 +

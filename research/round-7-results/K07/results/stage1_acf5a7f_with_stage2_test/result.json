@@ -1,7 +1,7 @@
 {
  "kind": "K07 round-7 UX checks of the what-if scenario UI",
- "label": "proposal_on_c58a3b2",
- "sha": "c58a3b2+k07patch",
+ "label": "stage1_acf5a7f_with_stage2_test",
+ "sha": "c58a3b2+patch@acf5a7f",
  "target": {
   "app_root": "city-evidence"
  },
@@ -22,8 +22,6 @@
   "W15",
   "W12",
   "W15b",
-  "W16",
-  "W16b",
   "W15c",
   "W17",
   "W18",
@@ -31,7 +29,10 @@
   "W13b",
   "W14"
  ],
- "fail": [],
+ "fail": [
+  "W16",
+  "W16b"
+ ],
  "test_incompatible": [],
  "note": "W13b and W14 use a SYNTHETIC fixture engine injected by the test; its numbers are not distances.",
  "checks": [
@@ -221,30 +222,30 @@
    "id": "W16",
    "area": "keyboard",
    "expect": "natural Tab path: from the scenario button to the map in <= 6 Tabs, from the map to the list in <= 8; the map describes the scenario keys (aria-describedby); after «Переместить» focus is on the map, after «Удалить» focus stays in the card (not lost to <body>)",
-   "verdict": "PASS",
+   "verdict": "FAIL",
    "observed": {
     "placed": 2,
-    "mapDescription": "Режим сценария «Если добавить объект»: Enter или пробел став",
+    "mapDescription": null,
     "tabsToMap": 5,
-    "tabsMapToList": 4,
+    "tabsMapToList": -1,
     "focusAfterMoveButton": {
-     "id": "map",
-     "tag": "svg",
+     "id": null,
+     "tag": "path",
      "body": false,
      "move": null,
      "del": null,
      "inCard": false
     },
-    "moved": true,
-    "tabsToDelete": 5,
-    "pointsAfterDelete": 1,
+    "moved": false,
+    "tabsToDelete": -1,
+    "pointsAfterDelete": 2,
     "focusAfterDelete": {
      "id": null,
-     "tag": "BUTTON",
+     "tag": "path",
      "body": false,
      "move": null,
-     "del": "cp-2",
-     "inCard": true
+     "del": null,
+     "inCard": false
     }
    }
   },
@@ -252,17 +253,17 @@
    "id": "W16b",
    "area": "keyboard",
    "expect": "«Отменить перемещение» (reached by Tab from the map) cancels and returns focus to that point's «Переместить»; with the mode off roads and records are back in the Tab order and the map description is removed",
-   "verdict": "PASS",
+   "verdict": "FAIL",
    "observed": {
-    "tabsMapToCancel": 6,
+    "tabsMapToCancel": 5,
     "pendingAfterCancel": null,
     "focusAfterCancel": {
      "id": null,
-     "tag": "BUTTON",
-     "body": false,
-     "move": "cp-2",
+     "tag": "BODY",
+     "body": true,
+     "move": null,
      "del": null,
-     "inCard": true
+     "inCard": false
     },
     "active": false,
     "markers": 55,

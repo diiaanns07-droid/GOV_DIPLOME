@@ -87,20 +87,33 @@
   }
   function label(it) { return it.id === "proj-1" ? "Проектный объект" : `Точка ${it.id.slice(3)}`; }
   function remove(type, id) {
+    const i = S.points.findIndex((p) => p.id === id);
     if (type === "proposed") { S.proposed = null; say("Проектный объект удалён: показан исходный вариант (до)."); }
     else { S.points = S.points.filter((p) => p.id !== id); say(`Точка ${id.slice(3)} удалена.`); }
     if (S.pending && (S.pending.type === type && (type === "proposed" || S.pending.id === id))) S.pending = null;
     render();
+    // the pressed button is gone: keep keyboard focus in the card (next point, previous point, or the section title)
+    const next = type === "proposed" ? null : S.points[i] || S.points[i - 1];
+    focusEl(next ? `#wiList [data-wi-del="${next.id}"]` : type === "proposed" ? "#wiProjTitle" : "#wiListTitle");
   }
   function startMove(type, id) {
     S.pending = { type, id };
     const it = type === "proposed" ? S.proposed : S.points.find((p) => p.id === id);
     say(`Перемещение: ${label(it)}. Нажмите на карту в квадрате или наведите центр карты стрелками и нажмите Enter. Escape — отмена.`);
     render();
+    focusEl("#map");  // the next step happens on the map (the centre target shows while it has focus)
   }
+  function cancelMove() {
+    const was = S.pending; if (!was) return;
+    S.pending = null; say("Перемещение отменено."); render();
+    const fa = document.activeElement;  // the cancel button is hidden now; focus on the map stays where it is
+    if (!fa || fa === document.body || fa.id === "wiCancelMove") focusEl(was.type === "proposed" ? "#wiProjMove" : `#wiList [data-wi-move="${was.id}"]`);
+  }
+  function focusEl(sel) { const n = document.querySelector(sel); if (n) n.focus(); }
   function setActive(on) {
     S.active = !!on;
     const b = $("whatifBtn"); if (b) b.setAttribute("aria-pressed", String(S.active));
+    const m = $("map"); if (m) { if (S.active) m.setAttribute("aria-describedby", "wiMapHelp"); else m.removeAttribute("aria-describedby"); }
     if (S.active && APP && APP.state.pointMode && APP.setPointMode) APP.setPointMode(false);  // one map tool at a time
     if (!S.active) { S.pending = null; say(S.points.length || S.proposed ? "Сценарий скрыт; точки сохраняются до смены города или категории." : ""); }
     else say(`Режим сценария: ${S.tool === "proposed" ? "клик/Enter на карте ставит проектный объект" : "клик/Enter на карте ставит контрольную точку"}.`);
@@ -110,6 +123,9 @@
   // ---------- rendering ----------
   function render() {
     const card = $("whatifCard"); if (!card) return;
+    // list buttons are rebuilt below: remember which one had focus and give it back (same data attribute / id)
+    const fa = document.activeElement, ds = (fa && fa.dataset) || {};
+    const keep = ds.wiMove ? `#wiList [data-wi-move="${ds.wiMove}"]` : ds.wiDel ? `#wiList [data-wi-del="${ds.wiDel}"]` : fa && (fa.id === "wiProjMove" || fa.id === "wiProjDel") ? "#" + fa.id : null;
     card.hidden = !S.active;
     $("map") && $("map").classList.toggle("whatifmode", S.active);
     // tool radios
@@ -142,6 +158,7 @@
     $("wiReset").disabled = !S.points.length && !S.proposed;
     renderTable();
     if (APP) APP.renderMap();  // redraws the scenario layer through drawLayer()
+    if (keep && document.activeElement !== fa) focusEl(keep);
   }
   function renderTable() {
     const box = $("wiResult"); box.replaceChildren();
@@ -222,8 +239,8 @@
     $("wiCat").addEventListener("change", (e) => { S.category = e.target.value; reset("смена категории"); });
     for (const r of document.querySelectorAll('input[name="wiTool"]')) r.addEventListener("change", (e) => { S.tool = e.target.value; S.pending = null; setActive(true); });
     $("wiReset").addEventListener("click", () => reset("по кнопке «Сбросить сценарий»"));
-    $("wiCancelMove").addEventListener("click", () => { S.pending = null; say("Перемещение отменено."); render(); });
-    document.addEventListener("keydown", (e) => { if (e.key === "Escape" && S.pending) { S.pending = null; say("Перемещение отменено."); render(); } });
+    $("wiCancelMove").addEventListener("click", cancelMove);
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape" && S.pending) cancelMove(); });
     render();
   }
 
