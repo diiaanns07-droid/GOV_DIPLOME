@@ -1,0 +1,215 @@
+--- a/research/round-3-results/K07/prototype/index.html
++++ b/research/round-3-results/K07/prototype/index.html
+@@ -87,7 +87,18 @@
+ table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+ th, td { text-align: left; padding: 4px 6px; border-bottom: 1px solid var(--grid); vertical-align: top; overflow-wrap: break-word; }
+ td.num { white-space: nowrap; }
+-#map text { paint-order: stroke; stroke: var(--surface); stroke-width: 3px; stroke-linejoin: round; }
++#map text { paint-order: stroke; stroke: var(--surface); stroke-width: 3px; stroke-linejoin: round; pointer-events: none; }
++.skip { position: absolute; left: 16px; top: -40px; background: var(--surface); color: var(--ink); border: 1px solid var(--base); border-radius: 6px; padding: 4px 8px; z-index: 5; }
++.skip:focus { top: 8px; }
++.map-status { position: absolute; left: 10px; right: 54px; bottom: 26px; background: var(--surface); border: 1px solid var(--base); border-radius: 6px; padding: 4px 8px; font-size: 12px; color: var(--ink); }
++@media (max-width: 480px) {
++  .card table { table-layout: fixed; }
++  .card th:first-child { width: 46%; }
++  th { white-space: normal; }
++  td { overflow-wrap: anywhere; }
++  .col-group { display: none; }
++  td[data-grp]::after { content: attr(data-grp); display: block; color: var(--muted); font-size: 11.5px; }
++}
+ th { color: var(--ink-2); font-weight: 600; white-space: nowrap; }
+ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+ tbody tr { cursor: pointer; }
+@@ -102,6 +113,7 @@
+ </style>
+ </head>
+ <body>
++<a class="skip" href="#tblSection">Перейти к таблице объектов</a>
+ <header>
+   <h1>Карта доступности соцобъектов · K07 (изолированный прототип)</h1>
+   <p class="sub">Просмотр сохранённых образцов K10 (Overture Maps 2026-09-23.1) для Шымкента и Астаны. Не основной сайт и не учебная модель STUPITS.</p>
+@@ -114,18 +126,19 @@
+   <label class="chk"><input type="checkbox" id="tRoads" checked> Дороги (выборка)</label>
+   <label class="chk"><input type="checkbox" id="tDistricts" checked> Районы</label>
+   <label class="chk"><input type="checkbox" id="tClip" checked> Рамка запроса K10</label>
+-  <span class="ctl"><button class="tool" id="pointBtn" aria-pressed="false">Выбрать точку на карте</button></span>
++  <span class="ctl"><button class="tool" id="pointBtn" aria-pressed="false">Выбрать точку на карте</button><button class="tool" id="clearBtn" disabled>Сбросить точку и выбор</button></span>
+   <label class="ctl" for="thr">Порог T <input type="range" id="thr" min="200" max="3000" step="100" value="800"> <output id="thrOut">800 м</output></label>
+ </div>
+ 
+ <main>
+   <section class="mapwrap" aria-label="Карта">
+-    <svg id="map" role="img" aria-label="Карта выбранного города"></svg>
+     <div class="zoom">
+       <button class="tool" id="zIn" aria-label="Приблизить">+</button>
+       <button class="tool" id="zOut" aria-label="Отдалить">−</button>
+       <button class="tool" id="zReset" aria-label="Показать весь город">⟲</button>
+     </div>
++    <svg id="map" role="group" tabindex="0" aria-roledescription="карта" aria-label="Карта выбранного города. Стрелки — сдвиг, плюс и минус — масштаб, в режиме точки Enter ставит точку в центре карты, Escape — сброс."></svg>
++    <div class="map-status" id="mapStatus" role="status" aria-live="polite" hidden></div>
+     <div class="overlay-msg" id="mapMsg" hidden></div>
+     <div class="tooltip" id="tip" role="status"></div>
+     <div class="legend-note" id="attrib"></div>
+@@ -134,8 +147,8 @@
+     <section class="card" id="selCard" aria-live="polite"><h2>Выбор</h2><p class="muted" id="selEmpty">Нажмите на объект или дорогу. Чтобы сравнить расстояния, включите «Выбрать точку на карте» и нажмите на карту.</p><div id="selBody"></div></section>
+     <section class="card" id="graphCard"><h2>Пешеходный граф</h2><div id="graphBody"></div></section>
+     <section class="card" id="provCard"><h2>Данные и происхождение</h2><div id="provBody"></div></section>
+-    <section class="card"><h2>Таблица объектов <span class="muted" id="tblCount"></span></h2>
+-      <div class="tablewrap"><table aria-label="Объекты выборки"><thead><tr><th>Объект</th><th>Группа</th><th>Район (K07)</th><th class="num">conf.</th></tr></thead><tbody id="tbl"></tbody></table></div>
++    <section class="card" id="tblSection" tabindex="-1"><h2>Таблица объектов <span class="muted" id="tblCount"></span></h2>
++      <div class="tablewrap"><table aria-label="Объекты выборки"><thead><tr><th>Объект</th><th class="col-group">Группа</th><th>Район (K07)</th><th class="num">conf.</th></tr></thead><tbody id="tbl"></tbody></table></div>
+     </section>
+   </aside>
+ </main>
+--- a/research/round-3-results/K07/prototype/app.js
++++ b/research/round-3-results/K07/prototype/app.js
+@@ -142,11 +142,23 @@
+       const lab = el("label", { class: "chk" });
+       const cb = el("input", { type: "checkbox", "data-group": g });
+       cb.checked = true;
+-      cb.addEventListener("change", () => { cb.checked ? STATE.groups.add(g) : STATE.groups.delete(g); renderAll(); });
++      cb.addEventListener("change", () => {
++        cb.checked ? STATE.groups.add(g) : STATE.groups.delete(g);
++        const s = STATE.selected;
++        if (s && s.type === "place") {
++          const p = D.cities[STATE.city].places.find((x) => x.id === s.id);
++          if (p && !STATE.groups.has(p.group)) STATE.selected = null;
++        }
++        renderAll();
++      });
+       lab.append(cb, legendIcon(g), document.createTextNode(info.label));
+       gf.append(lab);
+     }
+-    $("tRoads").addEventListener("change", (e) => { STATE.roads = e.target.checked; renderMap(); });
++    $("tRoads").addEventListener("change", (e) => {
++      STATE.roads = e.target.checked;
++      if (!STATE.roads && STATE.selected && STATE.selected.type === "segment") STATE.selected = null;
++      renderMap(); renderSelection();
++    });
+     $("tDistricts").addEventListener("change", (e) => { STATE.districts = e.target.checked; renderMap(); });
+     $("tClip").addEventListener("change", (e) => { STATE.clip = e.target.checked; renderMap(); });
+     $("pointBtn").addEventListener("click", () => {
+@@ -158,11 +170,18 @@
+       STATE.T = +e.target.value; $("thrOut").textContent = STATE.T + " м";
+       if (STATE.point) { renderMap(); renderSelection(); }
+     });
++    $("clearBtn").addEventListener("click", clearSelection);
++    document.addEventListener("keydown", (e) => { if (e.key === "Escape" && (STATE.point || STATE.selected)) clearSelection(); });
+     $("zIn").addEventListener("click", () => zoomBy(1.5));
+     $("zOut").addEventListener("click", () => zoomBy(1 / 1.5));
+     $("zReset").addEventListener("click", () => { fitView(); renderMap(); });
+   }
++  function clearSelection() {
++    STATE.point = null; STATE.selected = null;
++    renderMap(); renderSelection(); renderTable();
++  }
+   function switchCity(key) {
++    hideTip();
+     STATE.city = key; STATE.point = null; STATE.selected = null;
+     document.querySelectorAll("#citySeg button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.city === key)));
+     setupProjection(key); fitView(); renderAll();
+@@ -180,6 +199,7 @@
+ 
+   function renderMap() {
+     const c = D.cities[STATE.city], svg = $("map");
++    hideTip();  // the hovered element is about to be replaced; never keep its text over new data
+     svg.replaceChildren();
+     const gCity = sv("g"), gDist = sv("g"), gRoad = sv("g"), gClip = sv("g"), gPoint = sv("g"), gMark = sv("g"), gLabel = sv("g");
+     svg.append(gCity, gDist, gRoad, gClip, gPoint, gMark, gLabel);  // labels on top, with a surface halo
+@@ -222,6 +242,10 @@
+       t.textContent = `T = ${STATE.T} м по прямой (не зона пешей доступности)`; gLabel.append(t);
+       gPoint.append(sv("path", { d: `M${sx - 8} ${sy}H${sx + 8}M${sx} ${sy - 8}V${sy + 8}`, stroke: "var(--ink)", "stroke-width": 2 }));
+     }
++    if (STATE.mapFocused && STATE.pointMode) {  // keyboard target: Enter puts the point here
++      const cx = svg.clientWidth / 2, cy = svg.clientHeight / 2;
++      gLabel.append(sv("circle", { cx, cy, r: 9, fill: "none", stroke: "var(--focus)", "stroke-width": 2 }));
++    }
+     const places = visiblePlaces();
+     for (const p of places) {
+       const [sx, sy] = toScreen(p.lon, p.lat);
+@@ -284,6 +308,21 @@
+       zoomBy(e.deltaY < 0 ? 1.2 : 1 / 1.2, e.clientX - r.left, e.clientY - r.top);
+     }, { passive: false });
+     window.addEventListener("resize", () => renderMap());
++    svg.addEventListener("keydown", (e) => {
++      if (e.target !== svg) return;  // markers and roads handle their own Enter
++      const step = 60 / STATE.view.k, keys = { ArrowLeft: [-step, 0], ArrowRight: [step, 0], ArrowUp: [0, -step], ArrowDown: [0, step] };
++      if (keys[e.key]) { e.preventDefault(); STATE.view.cx += keys[e.key][0]; STATE.view.cy += keys[e.key][1]; renderMap(); }
++      else if (e.key === "+" || e.key === "=") { e.preventDefault(); zoomBy(1.5); }
++      else if (e.key === "-") { e.preventDefault(); zoomBy(1 / 1.5); }
++      else if ((e.key === "Enter" || e.key === " ") && STATE.pointMode) {
++        e.preventDefault();
++        STATE.point = toLonLat(svg.clientWidth / 2, svg.clientHeight / 2);
++        STATE.selected = { type: "point" };
++        renderMap(); renderSelection();
++      }
++    });
++    svg.addEventListener("focus", () => { STATE.mapFocused = true; renderMap(); });
++    svg.addEventListener("blur", () => { STATE.mapFocused = false; renderMap(); });
+   }
+ 
+   // ---------- side panel ----------
+@@ -299,6 +338,8 @@
+     body.replaceChildren();
+     const s = STATE.selected;
+     empty.hidden = !!s;
++    $("clearBtn").disabled = !(STATE.point || s);
++    renderStatus(c);
+     if (!s) return;
+     if (s.type === "place") {
+       const p = c.places.find((x) => x.id === s.id);
+@@ -338,6 +379,21 @@
+       renderPointAnalysis(c, body);
+     }
+   }
++  function renderStatus(c) {
++    const st = $("mapStatus"), s = STATE.selected;
++    if (!s) { st.hidden = true; st.textContent = ""; return; }
++    if (s.type === "point" && STATE.point) {
++      const [lon, lat] = STATE.point;
++      const n = visiblePlaces().filter((p) => haversine(lon, lat, p.lon, p.lat) <= STATE.T).length;
++      st.textContent = `Точка: ${n} объект(ов) выборки ≤ ${STATE.T} м по прямой; по сети не рассчитано. Подробности — в карточке «Выбор».`;
++    } else if (s.type === "place") {
++      const p = c.places.find((x) => x.id === s.id);
++      st.textContent = `Выбран объект: ${p ? (p.name || "Без названия") : "—"}. Карточка — «Выбор».`;
++    } else if (s.type === "segment") {
++      st.textContent = "Выбрана дорога из выборки. Карточка — «Выбор».";
++    }
++    st.hidden = false;
++  }
+   function renderPointAnalysis(c, body) {
+     const [lon, lat] = STATE.point, T = STATE.T;
+     body.append(el("h3", null, `Точка ${lat.toFixed(5)}, ${lon.toFixed(5)} · порог T = ${T} м`));
+@@ -352,12 +408,12 @@
+       body.append(el("p", { class: "muted" }, `В пределах ${T} м по прямой нет объектов выборки. Выборка K10 содержит до 15 объектов на группу; это не означает, что таких объектов рядом нет.`));
+     }
+     const tbl = el("table"), thead = el("thead"), tr = el("tr");
+-    for (const [h, cls] of [["Объект", null], ["Группа", null], ["Прямая", "num"], ["Сеть", "num"], ["≤ T", null]]) tr.append(el("th", { class: cls }, h));
++    for (const [h, cls] of [["Объект", null], ["Группа", "col-group"], ["Прямая", "num"], ["Сеть", "num"], ["≤ T", null]]) tr.append(el("th", { class: cls }, h));
+     thead.append(tr); tbl.append(thead);
+     const tb = el("tbody");
+     for (const { p, d } of rows.slice(0, Math.max(within.length, 5))) {
+       const r = el("tr");
+-      r.append(el("td", null, p.name || "Без названия"), el("td", null, p.group_label), el("td", { class: "num" }, fmtM(d)),
++      r.append(el("td", { "data-grp": p.group_label }, p.name || "Без названия"), el("td", { class: "col-group" }, p.group_label), el("td", { class: "num" }, fmtM(d)),
+         el("td", { class: "num muted", title: "по сети не рассчитано: граф непригоден" }, routable ? "…" : "—"), el("td", null, d <= T ? "да" : "нет"));
+       r.addEventListener("click", () => { STATE.selected = { type: "place", id: p.id }; renderMap(); renderSelection(); renderTable(); });
+       tb.append(r);
+@@ -407,7 +463,7 @@
+     ]);
+     b.append(dl, el("h3", null, "Выборка и выгрузка K10 по группам"));
+     const t = el("table"), th = el("thead"), tr = el("tr");
+-    for (const [h, cls] of [["Группа", null], ["В выборке", "num"], ["В выгрузке (районы)", "num"]]) tr.append(el("th", { class: cls }, h));
++    for (const [h, cls] of [["Группа", null], ["В выборке", "num"], ["В выгрузке", "num"]]) tr.append(el("th", { class: cls, title: h === "В выгрузке" ? "в выгрузке K10 внутри районов (E02)" : null }, h));
+     th.append(tr); t.append(th);
+     const tb = el("tbody");
+     for (const [g, info] of Object.entries(D.groups)) {
+@@ -440,7 +496,7 @@
+     for (const p of rows) {
+       const tr = el("tr", { tabindex: 0 });
+       if (STATE.selected && STATE.selected.type === "place" && STATE.selected.id === p.id) tr.classList.add("sel");
+-      tr.append(el("td", null, p.name || "Без названия"), el("td", null, p.group_label), el("td", null, p.district_k07), el("td", { class: "num" }, p.confidence));
++      tr.append(el("td", { "data-grp": p.group_label }, p.name || "Без названия"), el("td", { class: "col-group" }, p.group_label), el("td", null, p.district_k07), el("td", { class: "num" }, p.confidence));
+       const pick = () => { STATE.selected = { type: "place", id: p.id }; renderMap(); renderSelection(); renderTable(); };
+       tr.addEventListener("click", pick);
+       tr.addEventListener("keydown", (e) => { if (e.key === "Enter") pick(); });

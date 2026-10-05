@@ -218,8 +218,8 @@ async function citySwitchSuite(p, from, to) {
   });
   check("W2", "390px", "a point can be set on a 390 px screen and its result is visible or announced next to the map",
     np && ns.point !== null && (ns.cardTopVisible || ns.hintInMapArea), { foundEmptySpot: !!np, ...ns });
-  const clipped = await n.evaluate(() => [...document.querySelectorAll(".card")].filter((c) => c.scrollWidth > c.clientWidth + 1)
-    .map((c) => ({ card: (c.querySelector("h2") || {}).textContent, scrollWidth: c.scrollWidth, clientWidth: c.clientWidth })));
+  const clipped = await n.evaluate(() => [...document.querySelectorAll(".card, .tablewrap")].filter((c) => c.scrollWidth > c.clientWidth + 1)
+    .map((c) => ({ box: c.className, card: (c.closest(".card").querySelector("h2") || {}).textContent, scrollWidth: c.scrollWidth, clientWidth: c.clientWidth })));
   check("W3", "390px", "side cards and tables fit 390 px without hidden columns (no inner horizontal scroll)", clipped.length === 0, clipped);
   await n.screenshot({ path: path.join(SHOTS, "390_point_full.png"), fullPage: true });
 

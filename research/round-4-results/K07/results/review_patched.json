@@ -1,20 +1,10 @@
 {
  "kind": "REVIEW user-level checks of the K07 round-3 prototype",
- "label": "snapshot",
- "prototype_dir_name": "snapshot",
+ "label": "patched",
+ "prototype_dir_name": "prototype",
  "total": 29,
- "passed": 20,
- "failed": [
-  "CS2 shymkent->astana",
-  "F2",
-  "O2",
-  "P1",
-  "P2",
-  "K4",
-  "K5",
-  "W2",
-  "W3"
- ],
+ "passed": 29,
+ "failed": [],
  "checks": [
   {
    "id": "CS1 shymkent->astana",
@@ -31,10 +21,10 @@
    "id": "CS2 shymkent->astana",
    "area": "city switch",
    "expect": "tooltip of an old-city object does not stay on the new city's map (precondition: tooltip was visible)",
-   "ok": false,
+   "ok": true,
    "observed": {
     "tipBefore": "Newline SchoolШкола · conf. 0.7321",
-    "tipVisible": true,
+    "tipVisible": false,
     "tipText": "Newline SchoolШкола · conf. 0.7321"
    }
   },
@@ -159,14 +149,11 @@
    "id": "F2",
    "area": "filters",
    "expect": "a selected object hidden by a filter does not keep an orphan card",
-   "ok": false,
+   "ok": true,
    "observed": {
     "group": "college_university",
-    "selected": {
-     "type": "place",
-     "id": "aa3ca98c-056b-4c87-8acd-fa9a4b842094"
-    },
-    "card": "Казахский агротехнический университет им. С. Сейфу"
+    "selected": null,
+    "card": ""
    }
   },
   {
@@ -180,57 +167,33 @@
    "id": "O2",
    "area": "object",
    "expect": "no marker centre is covered by a label that swallows the click",
-   "ok": false,
+   "ok": true,
    "observed": {
     "tested": 105,
-    "covered": [
-     {
-      "id": "179964e3-61fd-4c7f-aedc-dc3eec42b2b9",
-      "label": "Рамка запроса K10: выгрузка 6×6 км, ядро"
-     },
-     {
-      "id": "d283c17c-d121-4c24-9190-9634c25bc038",
-      "label": "Рамка запроса K10: выгрузка 6×6 км, ядро"
-     },
-     {
-      "id": "7566e1e3-3130-4f4a-ad3e-80544332c796",
-      "label": "Рамка запроса K10: выгрузка 6×6 км, ядро"
-     },
-     {
-      "id": "7d77543b-b5af-4edf-baf9-3faaf3e76210",
-      "label": "Рамка запроса K10: выгрузка 6×6 км, ядро"
-     },
-     {
-      "id": "666173ac-b95e-4f07-810b-efdde7e61cee",
-      "label": "Рамка запроса K10: выгрузка 6×6 км, ядро"
-     }
-    ]
+    "covered": []
    }
   },
   {
    "id": "P1",
    "area": "point",
    "expect": "the user can clear the selected point (button or Escape)",
-   "ok": false,
+   "ok": true,
    "observed": {
-    "hasClearButton": false,
-    "point": [
-     71.46500711673897,
-     51.10505637886196
-    ]
+    "hasClearButton": true,
+    "point": null
    }
   },
   {
    "id": "P2",
    "area": "point",
    "expect": "after turning point mode off the point is either cleared or still clearable",
-   "ok": false,
+   "ok": true,
    "observed": {
     "point": [
      71.46500711673897,
      51.10505637886196
     ],
-    "hasClear": false
+    "hasClear": true
    }
   },
   {
@@ -278,21 +241,24 @@
    "id": "K4",
    "area": "keyboard",
    "expect": "table and zoom are reachable without tabbing through every map feature (skip link or < 40 stops)",
-   "ok": false,
+   "ok": true,
    "observed": {
-    "toZoom": 241,
-    "toTable": 247,
-    "skipLink": false
+    "toZoom": 16,
+    "toTable": 250,
+    "skipLink": true
    }
   },
   {
    "id": "K5",
    "area": "keyboard",
    "expect": "a point can be set without a mouse (focusable map + Enter)",
-   "ok": false,
+   "ok": true,
    "observed": {
-    "mapFocusable": false,
-    "point": null
+    "mapFocusable": true,
+    "point": [
+     71.50158239999999,
+     51.104358850000004
+    ]
    }
   },
   {
@@ -304,49 +270,30 @@
     "sw": 390,
     "iw": 390,
     "mapH": 606,
-    "btn": 216.671875
+    "btn": 192.015625
    }
   },
   {
    "id": "W2",
    "area": "390px",
    "expect": "a point can be set on a 390 px screen and its result is visible or announced next to the map",
-   "ok": false,
+   "ok": true,
    "observed": {
     "foundEmptySpot": true,
     "point": [
-     71.37782686109446,
-     51.11637546214491
+     71.46788341114475,
+     51.17330382474122
     ],
     "cardTopVisible": false,
-    "hintInMapArea": false
+    "hintInMapArea": true
    }
   },
   {
    "id": "W3",
    "area": "390px",
    "expect": "side cards and tables fit 390 px without hidden columns (no inner horizontal scroll)",
-   "ok": false,
-   "observed": [
-    {
-     "box": "card",
-     "card": "Выбор",
-     "scrollWidth": 395,
-     "clientWidth": 356
-    },
-    {
-     "box": "card",
-     "card": "Данные и происхождение",
-     "scrollWidth": 382,
-     "clientWidth": 356
-    },
-    {
-     "box": "tablewrap",
-     "card": "Таблица объектов (105 из 105 в выборке)",
-     "scrollWidth": 429,
-     "clientWidth": 328
-    }
-   ]
+   "ok": true,
+   "observed": []
   },
   {
    "id": "X1",
