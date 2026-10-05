@@ -1,0 +1,4050 @@
+[
+ {
+  "city": "shymkent",
+  "agent_id": "A01",
+  "topic": "Цифровизация муниципальных услуг и городские обращения (служба 109, маршрутизация, повторы, статус, языки)",
+  "file": "govtech-results/01_digitalization/extracted_files__11_/A01_evidence.json",
+  "access_limitations_count": 4,
+  "fact_kinds": {
+   "observed": 12,
+   "derived": 1,
+   "hypothesis": 4
+  },
+  "source_access": {
+   "executed": 1,
+   "verified": 5,
+   "restricted_by_agent": 1,
+   "documented_only": 3,
+   "not_accessed": 6
+  },
+  "dataset_access": {
+   "unavailable": 5,
+   "documented_only": 2,
+   "restricted": 1
+  },
+  "datasets": [
+   {
+    "id": "A01-D001",
+    "title": "Обращения службы 109 г. Шымкент (обезличенная выгрузка) — ТРЕБУЕТСЯ",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A01-D002",
+    "title": "Население Шымкента по районам (для нормирования объёма)",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A01-D003",
+    "title": "Каталог data.egov.kz: наборы по обращениям граждан Шымкента",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A01-D004",
+    "title": "Положения об управлениях акимата Шымкента и районных акиматах (для справочника компетенций)",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A01-D005",
+    "title": "Стандарты государственных услуг и реестр госуслуг (для карточек навигатора)",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A01-D006",
+    "title": "KazQAD",
+    "access_status": "documented_only",
+    "license": "CC BY-SA 4.0",
+    "period": "2024"
+   },
+   {
+    "id": "A01-D007",
+    "title": "KazParC / модель Tilmash",
+    "access_status": "documented_only",
+    "license": null,
+    "period": "2024"
+   },
+   {
+    "id": "A01-D008",
+    "title": "CSV в репозитории eotinish_classification — НЕ ИСПОЛЬЗОВАТЬ",
+    "access_status": "restricted",
+    "license": "Код: MIT; права на данные неизвестны",
+    "period": null
+   }
+  ],
+  "opportunities": [
+   {
+    "idea_id": "A01-O001",
+    "title": "Навигатор жителя по официальным услугам (закрытый корпус карточек ru/kk)",
+    "primary_user": "Житель Шымкента (ru/kk), с телефона",
+    "user_task": "Понять: это госуслуга, обращение, экстренный случай или вопрос не к городу; куда идти, что приложить, какой срок",
+    "required_datasets": {
+     "A01-D004": "unavailable",
+     "A01-D005": "unavailable"
+    },
+    "evidence_fact_kinds": {
+     "observed": 2,
+     "derived": 1,
+     "hypothesis": 1
+    },
+    "blockers": [
+     "Сбор и проверка карточек вручную",
+     "Условия повторного использования текстов",
+     "Возможное дублирование существующих сервисов"
+    ],
+    "feasibility_10_days": "Высокая для v0 на 30 карточках при доступе владельца к официальным страницам",
+    "non_ai_baseline": "BM25 по названиям и синонимам ru/kk"
+   },
+   {
+    "idea_id": "A01-O002",
+    "title": "Помощник оператора 109: маршрутизация с основанием компетенции и типизированные связи повторов",
+    "primary_user": "Оператор/диспетчер 109; куратор в управлении",
+    "user_task": "Назначить исполнителя, связать с существующим обращением, распознать экстренный случай",
+    "required_datasets": {
+     "A01-D001": "unavailable",
+     "A01-D004": "unavailable"
+    },
+    "evidence_fact_kinds": {
+     "observed": 3,
+     "hypothesis": 2
+    },
+    "blockers": [
+     "Нет обезличенной выгрузки",
+     "Неизвестны текущие функции 109",
+     "Правовое основание обработки"
+    ],
+    "feasibility_10_days": "Низкая для оценки (нет данных); средняя для справочника компетенций и тестовой обвязки",
+    "non_ai_baseline": "Правила по ключевым словам ru/kk + тип объекта; связи по адресу/категории/окну времени"
+   },
+   {
+    "idea_id": "A01-O003",
+    "title": "Исследование: граф компетенций города + process mining журнала обращений",
+    "primary_user": "Управление цифровизации / аналитик акимата; дипломная работа",
+    "user_task": "Найти, где ответственность не определена или пересекается и где процесс застревает",
+    "required_datasets": {
+     "A01-D004": "unavailable",
+     "A01-D001": "unavailable"
+    },
+    "evidence_fact_kinds": {
+     "hypothesis": 2
+    },
+    "blockers": [
+     "Доступ к журналу событий",
+     "Актуальность положений"
+    ],
+    "feasibility_10_days": "Низкая (нужен журнал событий); граф v0 по 8–10 положениям — средняя",
+    "non_ai_baseline": "Ручная таблица компетенций и описательная статистика журнала"
+   }
+  ]
+ },
+ {
+  "city": "shymkent",
+  "agent_id": "A02",
+  "topic": "ЖКХ: вода, канализация, тепло и обслуживание",
+  "file": "govtech-results/02_utilities/extracted_files__12_/A02_evidence.json",
+  "access_limitations_count": 302,
+  "fact_kinds": {
+   "observed": 10,
+   "hypothesis": 5,
+   "synthetic": 6
+  },
+  "source_access": {
+   "opened": 5,
+   "not_opened": 2,
+   "blocked_in_sandbox": 3
+  },
+  "dataset_access": {
+   "sample_verified": 2,
+   "unavailable": 5,
+   "restricted": 2,
+   "documented_only": 1
+  },
+  "datasets": [
+   {
+    "id": "A02-D001",
+    "title": "STUPITS city_data.json / events.json",
+    "access_status": "sample_verified",
+    "license": null,
+    "period": "датасет ТЗ"
+   },
+   {
+    "id": "A02-D002",
+    "title": "БНС: показатели ЖКХ по Шымкенту (протяжённость сетей, в т.ч. нуждающихся в замене) — ожидаемо",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A02-D003",
+    "title": "Наборы data.egov.kz по ЖКХ Шымкента",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A02-D004",
+    "title": "Паспорт сетей и журнал аварий оператора",
+    "access_status": "restricted",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A02-D005",
+    "title": "Публичные объявления об авариях и плановых отключениях",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A02-D006",
+    "title": "Инвестиционные программы и отчёты об их исполнении",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A02-D007",
+    "title": "Агрегаты обращений 109 / e-Otinish по ЖКХ",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A02-D008",
+    "title": "OSM: соцобъекты (школы, детсады, больницы)",
+    "access_status": "documented_only",
+    "license": "ODbL",
+    "period": null
+   },
+   {
+    "id": "A02-D009",
+    "title": "Синтетические участки сети (образец 20 строк)",
+    "access_status": "sample_verified",
+    "license": "по выбору владельца",
+    "period": "synthetic"
+   },
+   {
+    "id": "A02-D010",
+    "title": "Google Places: карточки организаций",
+    "access_status": "restricted",
+    "license": "Условия Google Maps Platform",
+    "period": "на 2026-10-04"
+   }
+  ],
+  "opportunities": [
+   {
+    "idea_id": "A02-O001",
+    "title": "Прозрачная очередь обследований территорий и участков (LoF × CoF) с базовым правилом",
+    "primary_user": "Планировщик эксплуатации/инвестпрограммы оператора; специалист управления ЖКХ акимата",
+    "user_task": "Выбрать N участков/зон для обследования или ремонта и обосновать выбор",
+    "required_datasets": {
+     "A02-D004": "restricted",
+     "A02-D005": "unavailable",
+     "A02-D006": "unavailable",
+     "A02-D008": "documented_only",
+     "A02-D002": "unavailable"
+    },
+    "evidence_fact_kinds": {
+     "observed": 2,
+     "synthetic": 5,
+     "hypothesis": 1
+    },
+    "blockers": [
+     "Нет данных оператора",
+     "Нет подтверждённой связи жалоб с авариями",
+     "Чувствительность геометрии сетей"
+    ],
+    "feasibility_10_days": "Интерфейс и код на синтетике + 20–50 реальных карточек — реально; проверка на истории — только с данными оператора",
+    "non_ai_baseline": "Сортировка по возрасту; случайный выбор"
+   },
+   {
+    "idea_id": "A02-O002",
+    "title": "Реестр карточек: группировка сообщений и разделение авария / плановое / хроническое / проект",
+    "primary_user": "Диспетчер оператора / сотрудник 109; житель как читатель",
+    "user_task": "Понять, сколько разных инцидентов стоит за потоком сообщений и что уже известно",
+    "required_datasets": {
+     "A02-D005": "unavailable",
+     "A02-D007": "unavailable",
+     "A02-D006": "unavailable"
+    },
+    "evidence_fact_kinds": {
+     "observed": 2
+    },
+    "blockers": [
+     "Объём и формат публичных объявлений не проверены",
+     "Агрегаты обращений могут быть закрыты"
+    ],
+    "feasibility_10_days": "Да, при наличии публичных объявлений",
+    "non_ai_baseline": "Ручное заполнение и правила по ключевым словам"
+   },
+   {
+    "idea_id": "A02-O003",
+    "title": "Исследование: план обследований по ценности информации",
+    "primary_user": "Исследователь (диплом), затем планировщик",
+    "user_task": "Выбрать обследования, максимально снижающие ожидаемый риск",
+    "required_datasets": {
+     "A02-D004": "restricted",
+     "A02-D009": "sample_verified"
+    },
+    "evidence_fact_kinds": {
+     "synthetic": 1
+    },
+    "blockers": [
+     "Нужна история аварий для калибровки"
+    ],
+    "feasibility_10_days": "Только синтетический прототип",
+    "non_ai_baseline": "O001 и «самый старый первым»"
+   }
+  ]
+ },
+ {
+  "city": "shymkent",
+  "agent_id": "A03",
+  "topic": "Муниципальная логистика: вывоз ТКО, уборка, выезды бригад, обслуживание распределённых объектов (без пассажирского транспорта)",
+  "file": "govtech-results/03_logistics/extracted_files__22_/A03_evidence.json",
+  "access_limitations_count": 258,
+  "fact_kinds": {
+   "observed": 15,
+   "synthetic": 7,
+   "hypothesis": 2
+  },
+  "source_access": {
+   "opened": 11,
+   "blocked_in_env": 3,
+   "not_opened_memory_citation": 4
+  },
+  "dataset_access": {
+   "documented_only": 3,
+   "unavailable": 2,
+   "sample_verified": 1,
+   "restricted": 1
+  },
+  "datasets": [
+   {
+    "id": "A03-D001",
+    "title": "№672 Сведения об объектах вывоза мусора (экземпляр г. Шымкент)",
+    "access_status": "documented_only",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A03-D002",
+    "title": "№674 Информация о тарифах на вывоз мусора (Шымкент)",
+    "access_status": "documented_only",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A03-D003",
+    "title": "№681 Перечень объектов ремонта дорог (Шымкент)",
+    "access_status": "documented_only",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A03-D004",
+    "title": "OSM: amenity=waste_disposal/recycling, landuse=landfill, дорожный граф",
+    "access_status": "unavailable",
+    "license": "ODbL",
+    "period": null
+   },
+   {
+    "id": "A03-D005",
+    "title": "Синтетический экземпляр A03-E001 (40 площадок, депо, полигон, барьер)",
+    "access_status": "sample_verified",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A03-D006",
+    "title": "БНС: динамические ряды по Шымкенту",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A03-D007",
+    "title": "Обращения 109 / eOtinish",
+    "access_status": "restricted",
+    "license": null,
+    "period": null
+   }
+  ],
+  "opportunities": [
+   {
+    "idea_id": "A03-O001",
+    "title": "План вывоза ТКО для района: простой маршрут против оптимизатора на карте",
+    "primary_user": "Диспетчер перевозчика или специалист профильного управления (гипотеза)",
+    "user_task": "Построить и проверить дневные маршруты, учесть окна и перекрытия",
+    "required_datasets": {
+     "A03-D001": "documented_only",
+     "A03-D004": "unavailable",
+     "A03-D005": "sample_verified"
+    },
+    "evidence_fact_kinds": {
+     "observed": 1,
+     "synthetic": 2
+    },
+    "blockers": [
+     "нет координат площадок",
+     "нет парка и смен",
+     "нет реального времени в пути"
+    ],
+    "feasibility_10_days": "высокая на синтетике, средняя на реальных точках",
+    "non_ai_baseline": "B2 — ближайший сосед с окнами; при наличии B0 — фактический маршрут"
+   },
+   {
+    "idea_id": "A03-O002",
+    "title": "Заявка 109 → внеплановый выезд",
+    "primary_user": "Оператор или диспетчер",
+    "user_task": "Разобрать обращение и назначить выезд",
+    "required_datasets": {
+     "A03-D007": "restricted"
+    },
+    "evidence_fact_kinds": {
+     "observed": 1
+    },
+    "blockers": [
+     "персональные данные",
+     "геокодирование"
+    ],
+    "feasibility_10_days": "средняя на синтетических текстах; низкая на реальных",
+    "non_ai_baseline": "Ручной ввод в форму и правила по ключевым словам"
+   }
+  ]
+ },
+ {
+  "city": "shymkent",
+  "agent_id": "A04",
+  "topic": "Инфраструктура и пространственная доступность",
+  "file": "govtech-results/04_infrastructure/extracted_files__13_/A04_evidence.json",
+  "access_limitations_count": 252,
+  "fact_kinds": {
+   "observed": 8,
+   "synthetic": 4,
+   "derived": 1,
+   "hypothesis": 8
+  },
+  "source_access": {
+   "read": 1,
+   "blocked_in_sandbox": 11,
+   "accessed": 2,
+   "executed": 1,
+   "not_accessed": 7
+  },
+  "dataset_access": {
+   "unavailable": 7,
+   "sample_verified": 1
+  },
+  "datasets": [
+   {
+    "id": "A04-D001",
+    "title": "OSM: пешеходная сеть и объекты (экстракт Kazakhstan)",
+    "access_status": "unavailable",
+    "license": "ODbL (по памяти)",
+    "period": "снимок базы на дату загрузки"
+   },
+   {
+    "id": "A04-D002",
+    "title": "Население по районам Шымкента (динамические ряды)",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A04-D003",
+    "title": "Реестры соцобъектов (ПМСП, детсады) на портале открытых данных",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A04-D004",
+    "title": "GHS-POP (население по сетке)",
+    "access_status": "unavailable",
+    "license": "CC BY 4.0 (по памяти, проверить)",
+    "period": "эпохи с шагом 5 лет (по памяти)"
+   },
+   {
+    "id": "A04-D005",
+    "title": "WorldPop (население по сетке)",
+    "access_status": "unavailable",
+    "license": "CC BY 4.0 (по памяти, проверить)",
+    "period": null
+   },
+   {
+    "id": "A04-D006",
+    "title": "Kontur Population (H3)",
+    "access_status": "unavailable",
+    "license": "CC BY 4.0 (по памяти, проверить)",
+    "period": null
+   },
+   {
+    "id": "A04-D007",
+    "title": "Ограничения размещения (зонирование генплана, кадастр, СЗЗ, водоохранные и охранные зоны)",
+    "access_status": "unavailable",
+    "license": "неизвестна",
+    "period": null
+   },
+   {
+    "id": "A04-D008",
+    "title": "Районы Астаны (OSM) из STUPITS",
+    "access_status": "sample_verified",
+    "license": "ODbL",
+    "period": "2026-09-23"
+   }
+  ],
+  "opportunities": [
+   {
+    "idea_id": "A04-O001",
+    "title": "Прототип: сетевая пешеходная доступность одного вида соцобъекта + сравнение 2–3 участков + what-if «добавить переход»",
+    "primary_user": "аналитик управления здравоохранения/образования/архитектуры акимата; депутат маслихата или НКО как проверяющий",
+    "user_task": "Найти микрорайоны с наибольшим непокрытым населением и выбрать из 2–3 участков тот, что даёт наибольший и устойчивый прирост покрытия",
+    "required_datasets": {
+     "A04-D001": "unavailable",
+     "A04-D002": "unavailable",
+     "A04-D003": "unavailable",
+     "A04-D004": "unavailable"
+    },
+    "evidence_fact_kinds": {
+     "synthetic": 3,
+     "hypothesis": 1,
+     "observed": 1
+    },
+    "blockers": [
+     "нет веб-доступа у A04 в этом проходе",
+     "реестр объектов не найден",
+     "норматив не проверен",
+     "нет границ микрорайонов (запасной вариант — H3)"
+    ],
+    "feasibility_10_days": "высокая для технического конвейера на открытых слоях; средняя для достоверности (нужен официальный реестр и проверенный норматив)",
+    "non_ai_baseline": "osmnx/networkx + многоисточниковый Дейкстра + жадное максимальное покрытие"
+   },
+   {
+    "idea_id": "A04-O002",
+    "title": "Продукт 1–3 мес.: аудит новых территорий — покрытие 4–5 видов объектов, статус запланированных, вычисляемые эффекты вместо M1–M14",
+    "primary_user": "управление архитектуры и градостроительства; отдел планирования акимата",
+    "user_task": "Сравнить «было / станет, если план выполнят» по микрорайонам и выбрать K объектов из N запланированных",
+    "required_datasets": {
+     "A04-D001": "unavailable",
+     "A04-D003": "unavailable",
+     "A04-D004": "unavailable",
+     "A04-D007": "unavailable"
+    },
+    "evidence_fact_kinds": {
+     "observed": 1,
+     "synthetic": 1,
+     "hypothesis": 2
+    },
+    "blockers": [
+     "доступ к генплану и ПДП",
+     "стоимость объектов неизвестна",
+     "зависимость от A05 и A06"
+    ],
+    "feasibility_10_days": "низкая (рамка 1–3 месяца)",
+    "non_ai_baseline": "ручной ввод перечня + тот же движок покрытия"
+   },
+   {
+    "idea_id": "A04-O003",
+    "title": "Исследование: наукаст населения новых массивов по снимкам и вводу жилья (альтернатива — модель горячих точек подтоплений)",
+    "primary_user": "исследователь / дипломник; затем планировщик",
+    "user_task": "Получить свежую оценку населения новых массивов для расчёта спроса",
+    "required_datasets": {
+     "A04-D004": "unavailable",
+     "A04-D002": "unavailable"
+    },
+    "evidence_fact_kinds": {
+     "hypothesis": 2
+    },
+    "blockers": [
+     "нет разметки и снимков",
+     "нет эталонного населения по массивам"
+    ],
+    "feasibility_10_days": "низкая",
+    "non_ai_baseline": "контуры зданий из OSM или открытых наборов (наличие для РК проверить) × коэффициенты заселённости"
+   }
+  ]
+ },
+ {
+  "city": "shymkent",
+  "agent_id": "A05",
+  "topic": "Образование: доступность и нагрузка школ и детсадов",
+  "file": "govtech-results/05_education/extracted_files__14_/A05_evidence.json",
+  "access_limitations_count": 313,
+  "fact_kinds": {
+   "observed": 9,
+   "derived": 7,
+   "hypothesis": 4
+  },
+  "source_access": {
+   "opened": 7,
+   "blocked_in_environment": 5,
+   "not_opened": 2
+  },
+  "dataset_access": {
+   "unavailable": 5,
+   "restricted": 1,
+   "sample_verified": 2
+  },
+  "datasets": [
+   {
+    "id": "A05-D001",
+    "title": "Реестр организаций образования г. Шымкент (школы, детсады)",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A05-D002",
+    "title": "Динамические ряды БНС по Шымкенту: образование, население по возрастам, ввод жилья",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A05-D003",
+    "title": "Национальный сборник статистики системы образования РК (региональные таблицы)",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A05-D004",
+    "title": "OSM: amenity=school/kindergarten, пешеходный граф, жилые здания, границы",
+    "access_status": "unavailable",
+    "license": "ODbL (по GEO_SOURCES.md STUPITS)",
+    "period": "снимок на дату выгрузки"
+   },
+   {
+    "id": "A05-D005",
+    "title": "НОБД — Национальная образовательная база данных",
+    "access_status": "restricted",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A05-D006",
+    "title": "Агрегированная статистика очереди в детские сады г. Шымкент",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A05-D007",
+    "title": "STUPITS city_data.json (учебный датасет)",
+    "access_status": "sample_verified",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A05-D008",
+    "title": "A05 синтетический набор для проверки метода",
+    "access_status": "sample_verified",
+    "license": "synthetic, для внутреннего использования",
+    "period": "n/a"
+   }
+  ],
+  "opportunities": [
+   {
+    "idea_id": "A05-I01",
+    "title": "Уровень 1: карта географической доступности школ и детсадов по пешеходной сети со слоем статусов данных",
+    "primary_user": "специалист управления образования / градостроительного отдела; аналитик проекта",
+    "user_task": "увидеть кварталы, где ближайшая школа или детсад дальше порога X по сети, и барьеры",
+    "required_datasets": {
+     "A05-D004": "unavailable"
+    },
+    "evidence_fact_kinds": {
+     "observed": 2,
+     "derived": 1
+    },
+    "blockers": [
+     "полнота OSM в Шымкенте неизвестна",
+     "нормативный радиус не проверен"
+    ],
+    "feasibility_10_days": "высокая при наличии OSM-выгрузки вне песочницы",
+    "non_ai_baseline": "буферы по прямой вокруг точек школ"
+   },
+   {
+    "idea_id": "A05-I02",
+    "title": "Уровень 2: сценарный стол размещения школы и изменения зон обслуживания",
+    "primary_user": "отдел сети организаций образования управления образования",
+    "user_task": "сравнить 3–8 допустимых участков и вариант перезакрепления кварталов",
+    "required_datasets": {
+     "A05-D001": "unavailable",
+     "A05-D002": "unavailable",
+     "A05-D003": "unavailable",
+     "A05-D004": "unavailable",
+     "A05-D005": "restricted"
+    },
+    "evidence_fact_kinds": {
+     "derived": 5
+    },
+    "blockers": [
+     "мощность и контингент по школам, вероятно, не публикуются открыто",
+     "кандидатные участки — зависимость от роли «земельные отношения»"
+    ],
+    "feasibility_10_days": "низкая: зависит от получения мощности и контингента по школам",
+    "non_ai_baseline": "правило ближайшей школы; участок у центроида худшей территории"
+   },
+   {
+    "idea_id": "A05-I03",
+    "title": "Уровень 3 (исследовательская): прогноз набора первоклассников по кварталам на 3–6 лет с бэктестом",
+    "primary_user": "управление образования, градостроители",
+    "user_task": "заранее увидеть, где через 3–6 лет не хватит мест",
+    "required_datasets": {
+     "A05-D002": "unavailable",
+     "A05-D003": "unavailable"
+    },
+    "evidence_fact_kinds": {
+     "hypothesis": 1
+    },
+    "blockers": [
+     "ряды по районам с учётом смены границ",
+     "контингент 1-х классов за 5+ лет"
+    ],
+    "feasibility_10_days": "очень низкая; это исследование на 1–3+ месяца",
+    "non_ai_baseline": "«как в прошлом году» и линейный тренд"
+   }
+  ]
+ },
+ {
+  "city": "shymkent",
+  "agent_id": "A06",
+  "topic": "Транспорт: автобусы, остановки и доступность",
+  "file": "govtech-results/06_transport/extracted_files__15_/A06_evidence.json",
+  "access_limitations_count": 344,
+  "fact_kinds": {
+   "observed": 20,
+   "derived": 2,
+   "synthetic": 5,
+   "hypothesis": 1
+  },
+  "source_access": {
+   "opened": 16,
+   "not_accessed": 2,
+   "blocked": 3,
+   "executed": 2
+  },
+  "dataset_access": {
+   "unavailable": 6,
+   "sample_verified": 2,
+   "restricted": 2
+  },
+  "datasets": [
+   {
+    "id": "A06-D001",
+    "title": "Официальный GTFS/GTFS-RT Шымкента",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A06-D002",
+    "title": "Реестр маршрутов и остановок Шымкента",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A06-D003",
+    "title": "OpenStreetMap: дороги, тротуары, переходы, остановки, маршруты, соцобъекты Шымкента",
+    "access_status": "unavailable",
+    "license": "ODbL (общеизвестно; страница лицензии не открыта)",
+    "period": null
+   },
+   {
+    "id": "A06-D004",
+    "title": "Astana bus dataset (Mansurova et al.)",
+    "access_status": "sample_verified",
+    "license": "CC BY 4.0 (по зеркалу; подтвердить)",
+    "period": "2024-07-29/2024-09-21"
+   },
+   {
+    "id": "A06-D005",
+    "title": "Население по районам г. Шымкент",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A06-D006",
+    "title": "Реестры поликлиник, школ, детсадов с адресами",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A06-D007",
+    "title": "ДТП с пострадавшими пешеходами с координатами",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A06-D008",
+    "title": "GPS автобусов (CityBus/оператор)",
+    "access_status": "restricted",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A06-D009",
+    "title": "Mobility Database catalogs (для проверки отсутствия)",
+    "access_status": "sample_verified",
+    "license": null,
+    "period": "состояние на 2026-10-01"
+   },
+   {
+    "id": "A06-D010",
+    "title": "Пассажиропотоки / валидации",
+    "access_status": "restricted",
+    "license": null,
+    "period": null
+   }
+  ],
+  "opportunities": [
+   {
+    "idea_id": "A06-O001",
+    "title": "MVP: доступность остановок и соцобъектов по пешеходной сети + сравнение локального изменения",
+    "primary_user": "Специалист отдела пассажирского транспорта / районного акимата; аналитик GovTech",
+    "user_task": "Решить, где добавить/перенести остановку или переход и какие объекты обслуживаются хуже всего",
+    "required_datasets": {
+     "A06-D002": "unavailable",
+     "A06-D003": "unavailable",
+     "A06-D005": "unavailable",
+     "A06-D006": "unavailable"
+    },
+    "evidence_fact_kinds": {
+     "observed": 3,
+     "synthetic": 2
+    },
+    "blockers": "Нет OSM-выгрузки в этой сессии; нет официального реестра; население только по районам",
+    "feasibility_10_days": "medium: прототип на одной территории реален при получении OSM; без реестра маршрутов — частичный",
+    "non_ai_baseline": "Буферы 400 м в ГИС; ручной подсчёт"
+   },
+   {
+    "idea_id": "A06-O002",
+    "title": "Черновик GTFS Шымкента с отчётом о качестве",
+    "primary_user": "Управление транспорта / оператор; разработчики приложений",
+    "user_task": "Опубликовать и поддерживать открытое описание сети",
+    "required_datasets": {
+     "A06-D001": "unavailable",
+     "A06-D002": "unavailable",
+     "A06-D003": "unavailable"
+    },
+    "evidence_fact_kinds": {
+     "observed": 4,
+     "derived": 1
+    },
+    "blockers": "Нужен официальный источник маршрутов и согласие на публикацию",
+    "feasibility_10_days": "low: за 10 дней только схема и 1–2 маршрута",
+    "non_ai_baseline": "Ручной ввод в GTFS-редактор"
+   },
+   {
+    "idea_id": "A06-O003",
+    "title": "Исследование регулярности интервалов по AVL",
+    "primary_user": "Аналитик транспорта; дипломная работа",
+    "user_task": "Понять, где нерегулярность важнее густоты остановок",
+    "required_datasets": {
+     "A06-D004": "sample_verified",
+     "A06-D008": "restricted"
+    },
+    "evidence_fact_kinds": {
+     "observed": 2,
+     "derived": 1,
+     "hypothesis": 1
+    },
+    "blockers": "Нет GPS Шымкента",
+    "feasibility_10_days": "high для Астаны (открытые данные), low для Шымкента",
+    "non_ai_baseline": "Статистика по trips.txt"
+   },
+   {
+    "idea_id": "A06-O004",
+    "title": "Сценарная лаборатория перекрытия/развязки (идея владельца)",
+    "primary_user": "Транспортный аналитик; демонстрация для жюри",
+    "user_task": "Сравнить варианты при заданном спросе",
+    "required_datasets": {
+     "A06-D003": "unavailable"
+    },
+    "evidence_fact_kinds": {
+     "observed": 5,
+     "synthetic": 3,
+     "derived": 1
+    },
+    "blockers": "Нет OD, счётов, светофорных планов",
+    "feasibility_10_days": "low для узла Шымкента без потоков; синтетика выполнена",
+    "non_ai_baseline": "Ручной анализ объезда по карте"
+   }
+  ]
+ },
+ {
+  "city": "shymkent",
+  "agent_id": "A07",
+  "topic": "Туризм: полезные маршруты и городская навигация",
+  "file": "govtech-results/07_tourism/extracted_files__16_/A07_evidence.json",
+  "access_limitations_count": 5,
+  "fact_kinds": {
+   "observed": 26,
+   "derived": 1,
+   "hypothesis": 1,
+   "synthetic": 1
+  },
+  "source_access": {
+   "snippet_only_robots_disallowed": 2,
+   "snippet_only": 13,
+   "opened": 4,
+   "abstract_only": 2,
+   "opened_static_html": 1,
+   "not_opened_robots_disallowed": 1,
+   "snippet_only_js_app": 1
+  },
+  "dataset_access": {
+   "page_only": 3,
+   "documented_only": 3
+  },
+  "datasets": [
+   {
+    "id": "A07-D001",
+    "title": "Каталог туристических объектов Visit Shymkent",
+    "access_status": "page_only",
+    "license": null,
+    "period": "текущий"
+   },
+   {
+    "id": "A07-D002",
+    "title": "Маршруты, остановки и трекинг ОТ (Avtobys)",
+    "access_status": "documented_only",
+    "license": null,
+    "period": "реальное время"
+   },
+   {
+    "id": "A07-D003",
+    "title": "Интерактивная карта доступности (inva.gov.kz)",
+    "access_status": "documented_only",
+    "license": null,
+    "period": "текущий"
+   },
+   {
+    "id": "A07-D004",
+    "title": "Динамические ряды БНС по туризму, г. Шымкент",
+    "access_status": "documented_only",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A07-D005",
+    "title": "Открытые наборы акимата г. Шымкент на data.egov.kz",
+    "access_status": "page_only",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A07-D006",
+    "title": "Список гостиниц и туристических компаний г. Шымкент",
+    "access_status": "page_only",
+    "license": null,
+    "period": null
+   }
+  ],
+  "opportunities": [
+   {
+    "idea_id": "A07-O1",
+    "title": "Реестр доказательств POI и аудит пробелов навигации/доступности",
+    "primary_user": "Специалист ТИЦ «Visit Shymkent» / Управления туризма",
+    "user_task": "Решить, какие объекты и поля обновить первыми, где нужны QR/указатели/многоязычные описания, что передавать AI-гиду как проверенное",
+    "required_datasets": {
+     "A07-D001": "page_only",
+     "A07-D003": "documented_only",
+     "A07-D005": "page_only"
+    },
+    "evidence_fact_kinds": {
+     "derived": 1,
+     "observed": 5,
+     "hypothesis": 1
+    },
+    "blockers": [
+     "robots на официальном портале",
+     "нет подтверждённой лицензии на повторное использование",
+     "свежесть без владельца данных"
+    ],
+    "feasibility_10_days": "высокая для 20–30 POI вручную",
+    "non_ai_baseline": "Ручная Excel-таблица"
+   },
+   {
+    "idea_id": "A07-O2",
+    "title": "Проверяемый маршрут на день со сравнением альтернатив на карте",
+    "primary_user": "Однодневный посетитель; сотрудник ТИЦ, собирающий маршрут для гостя",
+    "user_task": "Выбрать 3–6 мест, которые точно доступны в плановое время",
+    "required_datasets": {
+     "A07-D001": "page_only",
+     "A07-D002": "documented_only",
+     "A07-D003": "documented_only"
+    },
+    "evidence_fact_kinds": {
+     "observed": 6,
+     "synthetic": 1
+    },
+    "blockers": [
+     "нет данных ОТ (GTFS/API)",
+     "часы объектов не проверены",
+     "дублирование с AI-гидом акимата"
+    ],
+    "feasibility_10_days": "средняя: логика готова (F025), данные — узкое место",
+    "non_ai_baseline": "Форма с фильтрами + та же эвристика"
+   },
+   {
+    "idea_id": "A07-O3",
+    "title": "Слой доверия для городских туристических сервисов и событийных дней",
+    "primary_user": "Управление туризма, Управление цифровизации",
+    "user_task": "Публиковать проверенные факты в разные каналы и оценивать влияние событий на маршруты",
+    "required_datasets": {
+     "A07-D001": "page_only",
+     "A07-D002": "documented_only",
+     "A07-D003": "documented_only"
+    },
+    "evidence_fact_kinds": {
+     "observed": 3
+    },
+    "blockers": [
+     "нужен владелец данных в городе"
+    ],
+    "feasibility_10_days": "низкая (нужен партнёр)",
+    "non_ai_baseline": "Ручная публикация"
+   },
+   {
+    "idea_id": "A07-O4",
+    "title": "Робастный TTDP при неполных данных и индекс туристической доступности района",
+    "primary_user": "Исследователь/дипломник; городские планировщики",
+    "user_task": "Понять, как неполнота данных влияет на исполнимость и где инвестировать в навигацию",
+    "required_datasets": {
+     "A07-D002": "documented_only",
+     "A07-D003": "documented_only"
+    },
+    "evidence_fact_kinds": {
+     "hypothesis": 1,
+     "synthetic": 1,
+     "observed": 1
+    },
+    "blockers": [
+     "нет данных ОТ",
+     "нет полевых замеров"
+    ],
+    "feasibility_10_days": "синтетическая часть — высокая; реальная — низкая",
+    "non_ai_baseline": "Детерминированный TTDP"
+   }
+  ]
+ },
+ {
+  "city": "shymkent",
+  "agent_id": "A08",
+  "topic": "Экология: воздух, жара, зелень и отходы",
+  "file": "govtech-results/08_ecology/extracted_files__17_/A08_evidence.json",
+  "access_limitations_count": 322,
+  "fact_kinds": {
+   "observed": 8,
+   "derived": 4,
+   "hypothesis": 10,
+   "synthetic": 2
+  },
+  "source_access": {
+   "executed": 1,
+   "sample_verified": 3,
+   "page_only": 1,
+   "not_accessed_host_blocked": 5,
+   "not_opened_model_memory": 11
+  },
+  "dataset_access": {
+   "sample_verified": 1,
+   "documented_only": 7,
+   "unavailable": 2,
+   "restricted": 2
+  },
+  "datasets": [
+   {
+    "id": "A08-D001",
+    "title": "AirData_Shymkent: почасовые ряды постов Казгидромета (образец)",
+    "access_status": "sample_verified",
+    "license": "не указана",
+    "period": "2020-06-21..2022-03-24"
+   },
+   {
+    "id": "A08-D002",
+    "title": "Метеорологическая БД Казгидромета (dm_climat_ru)",
+    "access_status": "documented_only",
+    "license": "unknown",
+    "period": "2000–2023 по описанию"
+   },
+   {
+    "id": "A08-D003",
+    "title": "Бюллетени о состоянии окружающей среды (г. Шымкент)",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A08-D004",
+    "title": "Динамические ряды БНС по Шымкенту",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A08-D005",
+    "title": "OSM: публичная зелень, школы, сады, поликлиники, граница города",
+    "access_status": "documented_only",
+    "license": "ODbL 1.0",
+    "period": null
+   },
+   {
+    "id": "A08-D006",
+    "title": "Landsat 8/9 C2 L2 Surface Temperature",
+    "access_status": "documented_only",
+    "license": "public domain (по памяти)",
+    "period": null
+   },
+   {
+    "id": "A08-D007",
+    "title": "Sentinel-2 L2A (NDVI) / ESA WorldCover",
+    "access_status": "documented_only",
+    "license": "Copernicus free / CC BY 4.0 (по памяти)",
+    "period": null
+   },
+   {
+    "id": "A08-D008",
+    "title": "GHSL GHS-POP / WorldPop 100 м",
+    "access_status": "documented_only",
+    "license": "открытая (уточнить)",
+    "period": null
+   },
+   {
+    "id": "A08-D009",
+    "title": "Sentinel-5P TROPOMI NO2 (контекст)",
+    "access_status": "documented_only",
+    "license": "Copernicus free",
+    "period": null
+   },
+   {
+    "id": "A08-D010",
+    "title": "ERA5-Land (температура воздуха 2 м)",
+    "access_status": "documented_only",
+    "license": "Copernicus licence (по памяти)",
+    "period": null
+   },
+   {
+    "id": "A08-D011",
+    "title": "Свободные муниципальные участки / земельный кадастр",
+    "access_status": "restricted",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A08-D012",
+    "title": "Агрегаты обращений 109 / eOtinish по экологии",
+    "access_status": "restricted",
+    "license": null,
+    "period": null
+   }
+  ],
+  "opportunities": [
+   {
+    "idea_id": "A08-O001",
+    "title": "Эко-приоритет: карта нужды в озеленении и доступ к зелени (справочный слой STUPITS)",
+    "primary_user": "специалист акимата по благоустройству и озеленению; дипломник",
+    "user_task": "Выбрать кварталы и улицы для годового объёма посадок и обосновать выбор",
+    "required_datasets": {
+     "A08-D005": "documented_only",
+     "A08-D006": "documented_only",
+     "A08-D007": "documented_only",
+     "A08-D008": "documented_only"
+    },
+    "evidence_fact_kinds": {
+     "hypothesis": 3,
+     "synthetic": 1,
+     "observed": 1
+    },
+    "blockers": [
+     "нет доступа к хостам в среде A08",
+     "полнота OSM",
+     "LST ≠ воздух"
+    ],
+    "feasibility_10_days": "high, если доступны OSM, Landsat, GHSL; medium при ручной загрузке",
+    "non_ai_baseline": "ГИС/таблица: сортировка по LST или по NDVI"
+   },
+   {
+    "idea_id": "A08-O002",
+    "title": "Очередь обследования подозрительных и исторически загрязнённых участков",
+    "primary_user": "инспектор или аналитик территориального департамента экологии; районный акимат",
+    "user_task": "Решить, какие участки проверить в этом месяце",
+    "required_datasets": {
+     "A08-D005": "documented_only",
+     "A08-D008": "documented_only",
+     "A08-D012": "restricted"
+    },
+    "evidence_fact_kinds": {
+     "hypothesis": 2,
+     "synthetic": 1
+    },
+    "blockers": [
+     "нет открытого реестра свалок и исторических загрязнений",
+     "согласование с A03"
+    ],
+    "feasibility_10_days": "low–medium: нет реестра точек",
+    "non_ai_baseline": "Сортировка по числу жалоб"
+   },
+   {
+    "idea_id": "A08-O003",
+    "title": "Исследование: оценка эффекта озеленения и размещение недорогих датчиков",
+    "primary_user": "исследователь (диплом), акимат как заказчик пилота",
+    "user_task": "Понять, даёт ли конкретная программа посадок измеримое охлаждение, и где ставить датчики",
+    "required_datasets": {
+     "A08-D006": "documented_only",
+     "A08-D001": "sample_verified",
+     "A08-D010": "documented_only"
+    },
+    "evidence_fact_kinds": {
+     "derived": 2,
+     "hypothesis": 1
+    },
+    "blockers": [
+     "координаты и даты посадок",
+     "полевые логгеры"
+    ],
+    "feasibility_10_days": "только расчёт мощности по архиву",
+    "non_ai_baseline": "сравнение «до/после» без контроля (слабое)"
+   }
+  ]
+ },
+ {
+  "city": "shymkent",
+  "agent_id": "A09",
+  "topic": "Энергетика: муниципальные здания и ресурсы",
+  "file": "govtech-results/09_energy/extracted_files__18_/A09_evidence.json",
+  "access_limitations_count": 409,
+  "fact_kinds": {
+   "observed": 10,
+   "derived": 11,
+   "hypothesis": 4
+  },
+  "source_access": {
+   "blocked_in_environment": 9,
+   "opened": 4,
+   "opened_partial": 1,
+   "cited_not_opened": 2,
+   "not_accessed": 3
+  },
+  "dataset_access": {
+   "sample_verified": 2,
+   "page_only": 1,
+   "restricted": 1,
+   "unavailable": 5
+  },
+  "datasets": [
+   {
+    "id": "A09-D001",
+    "title": "Building Data Genome Project 1 — часовое потребление электроэнергии 507 нежилых зданий",
+    "access_status": "sample_verified",
+    "license": "MIT",
+    "period": "один год на здание, 2010–2015"
+   },
+   {
+    "id": "A09-D002",
+    "title": "Building Data Genome 2 — 3 053 счётчика (электричество, тепло, холод, пар, вода), 2016–2017",
+    "access_status": "page_only",
+    "license": "CC BY-SA 4.0 по файлу LICENSE (формулировка '4.0 Unported' — уточнить)",
+    "period": "2016–2017"
+   },
+   {
+    "id": "A09-D003",
+    "title": "STUPITS city_data.json — учебный датасет Астаны",
+    "access_status": "sample_verified",
+    "license": "не проверена (GitHub API rate limit)",
+    "period": null
+   },
+   {
+    "id": "A09-D004",
+    "title": "Помесячные счета/показания муниципальных зданий Шымкента (электричество, тепло, газ, вода)",
+    "access_status": "restricted",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A09-D005",
+    "title": "Реестр организаций образования/медицины г. Шымкент с адресами",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A09-D006",
+    "title": "Динамические ряды БНС по г. Шымкент (энергетика/ЖКХ)",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A09-D007",
+    "title": "Историческая погода (температура) по Шымкенту",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A09-D008",
+    "title": "Солнечный ресурс и удельная выработка ФЭП",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A09-D009",
+    "title": "Здания и крыши из OpenStreetMap для Шымкента",
+    "access_status": "unavailable",
+    "license": "ODbL (по метаданным STUPITS)",
+    "period": null
+   }
+  ],
+  "opportunities": [
+   {
+    "idea_id": "A09-I001",
+    "title": "Приоритизатор энергоаудита муниципальных зданий + паспорт данных (L1, прототип)",
+    "primary_user": "специалист управления энергетики/ЖКХ или образования акимата; энергоменеджер сети школ",
+    "user_task": "Выбрать N зданий для энергоаудита/обследования в бюджетном цикле и обосновать выбор",
+    "required_datasets": {
+     "A09-D004": "restricted",
+     "A09-D005": "unavailable",
+     "A09-D007": "unavailable",
+     "A09-D001": "sample_verified"
+    },
+    "evidence_fact_kinds": {
+     "derived": 6,
+     "hypothesis": 1
+    },
+    "blockers": [
+     "нет данных Шымкента",
+     "неизвестна площадь и зона учёта",
+     "неизвестны действующие тарифы"
+    ],
+    "feasibility_10_days": "high — на BDG1 и синтетических данных; без реальных данных Шымкента это демонстрация метода",
+    "non_ai_baseline": "Сортировка по EUI в электронной таблице"
+   },
+   {
+    "idea_id": "A09-I002",
+    "title": "Сценарный калькулятор наружного освещения по астрономическим часам",
+    "primary_user": "сотрудник акимата, планирующий замену светильников; студент/жюри для сравнения сценариев",
+    "user_task": "Сравнить годовые кВт·ч и затраты при разных мощностях, графиках и диммировании",
+    "required_datasets": {},
+    "evidence_fact_kinds": {
+     "derived": 1,
+     "observed": 1
+    },
+    "blockers": [
+     "реестр светильников и показания шкафов у оператора",
+     "тариф для наружного освещения не проверен"
+    ],
+    "feasibility_10_days": "high для калькулятора; low для проверки на реальных данных",
+    "non_ai_baseline": "Тот же расчёт в таблице"
+   },
+   {
+    "idea_id": "A09-I003",
+    "title": "Пилот мониторинга 20–50 зданий: baseline с календарём, оповещения о ночной нагрузке, M&V (L2, 1–3 мес.)",
+    "primary_user": "управление образования/энергетики + директора школ",
+    "user_task": "Получать короткий список зданий с подтверждённым аномальным ростом и проверять результат модернизации",
+    "required_datasets": {
+     "A09-D004": "restricted",
+     "A09-D007": "unavailable"
+    },
+    "evidence_fact_kinds": {
+     "derived": 5
+    },
+    "blockers": [
+     "соглашение о данных",
+     "интервальные счётчики могут отсутствовать"
+    ],
+    "feasibility_10_days": "low (нужен оператор и данные)",
+    "non_ai_baseline": "Сравнение с тем же месяцем прошлого года"
+   },
+   {
+    "idea_id": "A09-I004",
+    "title": "Причинная оценка программ модернизации и солнечный скрининг крыш с учётом профиля нагрузки (L3, исследование/диплом)",
+    "primary_user": "исследователь/дипломник, аналитик программы энергоэффективности",
+    "user_task": "Оценить фактический эффект прошлых модернизаций и реалистичную долю самопотребления СЭС",
+    "required_datasets": {
+     "A09-D004": "restricted",
+     "A09-D008": "unavailable",
+     "A09-D009": "unavailable"
+    },
+    "evidence_fact_kinds": {
+     "hypothesis": 1
+    },
+    "blockers": [
+     "нужна история ≥2 лет и даты работ",
+     "правила для потребителей-производителей не проверены"
+    ],
+    "feasibility_10_days": "low",
+    "non_ai_baseline": "До/после без контроля"
+   }
+  ]
+ },
+ {
+  "city": "shymkent",
+  "agent_id": "A10",
+  "topic": "Безопасность городской среды: переходы, школьные зоны, освещение, пешеходный путь, подтопления",
+  "file": "govtech-results/10_safety/A10_evidence (1).json",
+  "access_limitations_count": 5,
+  "fact_kinds": {
+   "observed": 17,
+   "derived": 6,
+   "hypothesis": 2,
+   "synthetic": 1
+  },
+  "source_access": {
+   "opened": 15,
+   "snippet_only": 2,
+   "queried": 1,
+   "page_opened": 1,
+   "opened_undated": 1,
+   "unavailable": 2,
+   "robots_disallowed": 1
+  },
+  "dataset_access": {
+   "sample_verified": 2,
+   "documented_only": 2,
+   "page_only": 1,
+   "unavailable": 3,
+   "restricted": 1
+  },
+  "datasets": [
+   {
+    "id": "A10-D001",
+    "title": "Слой «ДТП» КПСиСУ (KPSSU/DTP/FeatureServer/0)",
+    "access_status": "sample_verified",
+    "license": null,
+    "period": "2018 — 2026-09-23"
+   },
+   {
+    "id": "A10-D002",
+    "title": "«Аварийные участки» (KPSSU/DTP/FeatureServer/1)",
+    "access_status": "sample_verified",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A10-D003",
+    "title": "dtp_hotpoint (KPSSU)",
+    "access_status": "documented_only",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A10-D004",
+    "title": "Реестр общеобразовательных школ по регионам",
+    "access_status": "page_only",
+    "license": null,
+    "period": "версия обновлена 22.12.2025"
+   },
+   {
+    "id": "A10-D005",
+    "title": "OpenStreetMap: переходы, школы, остановки, освещение",
+    "access_status": "documented_only",
+    "license": "ODbL 1.0",
+    "period": "текущий снимок"
+   },
+   {
+    "id": "A10-D006",
+    "title": "Реестр нерегулируемых переходов (487) и точек освещения переходов (200)",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A10-D007",
+    "title": "Обращения I-Shymkent 109",
+    "access_status": "restricted",
+    "license": null,
+    "period": "2025-2026"
+   },
+   {
+    "id": "A10-D008",
+    "title": "Диспетчеризация уличного освещения (режимы, отказы)",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A10-D009",
+    "title": "Перечень подтопляемых участков (30 улиц с лотками; 57 решённых + 52 выявленных в Енбекшинском районе)",
+    "access_status": "unavailable",
+    "license": null,
+    "period": "2023-2026"
+   }
+  ],
+  "opportunities": [
+   {
+    "idea_id": "A10-I001",
+    "title": "Очередь выездного обследования нерегулируемых пешеходных переходов с объяснимыми карточками",
+    "primary_user": "Специалист по организации дорожного движения управления пассажирского транспорта и автодорог г. Шымкента; вторично — инспектор ДП",
+    "user_task": "Выбрать 20-30 переходов на ближайшие две недели и знать, что проверить днём и ночью",
+    "required_datasets": {
+     "A10-D001": "sample_verified",
+     "A10-D005": "documented_only",
+     "A10-D004": "page_only",
+     "A10-D006": "unavailable"
+    },
+    "evidence_fact_kinds": {
+     "derived": 4,
+     "observed": 2,
+     "hypothesis": 1
+    },
+    "blockers": [
+     "Лицензия D001",
+     "Точность координат ДТП",
+     "Справочник кодов",
+     "Нет реестра переходов"
+    ],
+    "feasibility_10_days": "Прототип на OSM+D001 и ретро-тест реальны; экспертная оценка зависит от доступа к специалисту",
+    "non_ai_baseline": "B1 сортировка по сырому числу ДТП; B2 «сначала у школ»; B3 порядок по районам"
+   },
+   {
+    "idea_id": "A10-I002",
+    "title": "Аудит 300-метровых школьных зон по логике SR4S с журналом «выявлено → устранено»",
+    "primary_user": "Специалист управления + ответственный в школе/родительский комитет как источник сигналов",
+    "user_task": "Проверить вокруг каждой школы тротуары, переходы, освещение, скорость, временные перекрытия; отследить устранение",
+    "required_datasets": {
+     "A10-D004": "page_only",
+     "A10-D005": "documented_only",
+     "A10-D001": "sample_verified"
+    },
+    "evidence_fact_kinds": {
+     "observed": 2,
+     "derived": 1,
+     "hypothesis": 1
+    },
+    "blockers": [
+     "Нужен партнёр-специалист",
+     "Реестр школ с координатами"
+    ],
+    "feasibility_10_days": "Форма и карта — да; полевой пилот — нет",
+    "non_ai_baseline": "Бумажный акт рейда"
+   }
+  ]
+ },
+ {
+  "city": "shymkent",
+  "agent_id": "A11",
+  "topic": "Земельные отношения и планировочные ограничения: публичная информация, генплан/ПДП, участки, ограничения, аукционы, процедуры",
+  "file": "govtech-results/11_land/extracted_files__19_/A11_evidence.json",
+  "access_limitations_count": 6,
+  "fact_kinds": {
+   "observed": 9,
+   "derived": 1,
+   "hypothesis": 12,
+   "synthetic": 1
+  },
+  "source_access": {
+   "accessed": 3,
+   "blocked_by_sandbox": 10,
+   "not_accessed": 5
+  },
+  "dataset_access": {
+   "unavailable": 6,
+   "sample_verified": 1
+  },
+  "datasets": [
+   {
+    "id": "A11-D001",
+    "title": "Публичная кадастровая карта (кадастровый номер, площадь, целевое назначение)",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A11-D002",
+    "title": "Лоты электронных торгов по земельным участкам (Шымкент)",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A11-D003",
+    "title": "Корпус официальных текстов НПА (ЗК, Закон № 242-II, решения маслихата и постановления акимата Шымкента)",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A11-D004",
+    "title": "Генеральный план и проекты детальной планировки г. Шымкент",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A11-D005",
+    "title": "OSM: административные границы, реки, ЛЭП, landuse Шымкента (контекст)",
+    "access_status": "unavailable",
+    "license": "ODbL 1.0 (известная лицензия OSM; конкретная выгрузка не выполнена)",
+    "period": null
+   },
+   {
+    "id": "A11-D006",
+    "title": "astana_districts.geojson (STUPITS) — образец provenance для переноса на Астану",
+    "access_status": "sample_verified",
+    "license": "ODbL (по metadata.attribution)",
+    "period": "OSM на 2026-09-22"
+   },
+   {
+    "id": "A11-D007",
+    "title": "Проекты НПА по Шымкенту в сфере земли и архитектуры",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   }
+  ],
+  "opportunities": [
+   {
+    "idea_id": "A11-O001",
+    "title": "Навигатор по публичным документам и процедурам территории (L1)",
+    "primary_user": "Житель или предприниматель МСБ перед подачей заявки на участок или участием в торгах; студент-архитектор",
+    "user_task": "Найти применимые действующие документы и процедуру по своему вопросу",
+    "required_datasets": {
+     "A11-D003": "unavailable",
+     "A11-D007": "unavailable",
+     "A11-D005": "unavailable"
+    },
+    "evidence_fact_kinds": {
+     "hypothesis": 5
+    },
+    "blockers": [
+     "нет доступа к первоисточникам из среды",
+     "актуальность реестра требует регулярной ручной проверки"
+    ],
+    "feasibility_10_days": "medium — при доступе к официальным сайтам; без доступа только синтетический каркас",
+    "non_ai_baseline": "FAQ + фасетный поиск по реестру"
+   },
+   {
+    "idea_id": "A11-O002",
+    "title": "Проверка полноты сведений о территории с происхождением каждого ограничения (L2)",
+    "primary_user": "Предприниматель или покупатель лота; консультант ЦОН; дипломник",
+    "user_task": "Понять, какие сведения о территории публично подтверждены, какие нет, и составить запросы",
+    "required_datasets": {
+     "A11-D001": "unavailable",
+     "A11-D002": "unavailable",
+     "A11-D003": "unavailable",
+     "A11-D004": "unavailable",
+     "A11-D005": "unavailable"
+    },
+    "evidence_fact_kinds": {
+     "hypothesis": 3,
+     "synthetic": 1
+    },
+    "blockers": [
+     "ПДП и зоны могут быть непубличны",
+     "условия использования кадастровой карты и площадки торгов неизвестны"
+    ],
+    "feasibility_10_days": "low–medium — каркас готов, реальные данные зависят от доступа",
+    "non_ai_baseline": "Правила R1–R5 и ручной ввод (эксперимент A11-F022 показывает работоспособность без LLM)"
+   },
+   {
+    "idea_id": "A11-O003",
+    "title": "Машиночитаемые ограничения с происхождением и оценка LLM-извлечения из актов РК (L3, исследование)",
+    "primary_user": "Исследователь, дипломник, в перспективе — орган-держатель данных",
+    "user_task": "Получить структурированные параметры ограничений с проверяемой точностью",
+    "required_datasets": {
+     "A11-D003": "unavailable"
+    },
+    "evidence_fact_kinds": {
+     "hypothesis": 2
+    },
+    "blockers": [
+     "нужны 2 разметчика и доступ к корпусу",
+     "качество сканов и двуязычие"
+    ],
+    "feasibility_10_days": "low",
+    "non_ai_baseline": "Ручная разметка и regex-шаблоны реквизитов"
+   }
+  ]
+ },
+ {
+  "city": "shymkent",
+  "agent_id": "A12",
+  "topic": "Общая база данных, знаний и география Шымкента и Астаны",
+  "file": "govtech-results/12_data_gis/extracted_files__20_/A12_evidence.json",
+  "access_limitations_count": 443,
+  "fact_kinds": {
+   "observed": 12,
+   "derived": 3,
+   "hypothesis": 3
+  },
+  "source_access": {
+   "opened": 13,
+   "pointer_only": 1,
+   "blocked_in_sandbox": 14,
+   "not_attempted": 10
+  },
+  "dataset_access": {
+   "sample_verified": 5,
+   "documented_only": 1,
+   "null": 27
+  },
+  "datasets": [
+   {
+    "id": "A12-D001",
+    "title": "Границы 6 районов Астаны (OSM, сборка STUPITS)",
+    "access_status": "sample_verified",
+    "license": "ODbL 1.0",
+    "period": "OSM base 2026-09-22"
+   },
+   {
+    "id": "A12-D002",
+    "title": "Сырой ответ Overpass по bbox Астаны",
+    "access_status": "sample_verified",
+    "license": "ODbL 1.0",
+    "period": "2026-09-22T08:45:51Z"
+   },
+   {
+    "id": "A12-D003",
+    "title": "Синтетический датасет ТЗ (city_data.json)",
+    "access_status": "sample_verified",
+    "license": "не указана",
+    "period": "условный горизонт 8 кварталов"
+   },
+   {
+    "id": "A12-D004",
+    "title": "Natural Earth 10m admin-1",
+    "access_status": "sample_verified",
+    "license": "Public domain",
+    "period": "не указан; VERSION 5.2.0-pre"
+   },
+   {
+    "id": "A12-D005",
+    "title": "Natural Earth 10m populated places",
+    "access_status": "sample_verified",
+    "license": "Public domain",
+    "period": null
+   },
+   {
+    "id": "A12-D006",
+    "title": "geoBoundaries gbOpen KAZ ADM1/ADM2",
+    "access_status": "documented_only",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A12-D010",
+    "title": "БНС: динамические таблицы по г. Шымкент",
+    "access_status": null,
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A12-D011",
+    "title": "ИАС «Талдау»: ряды показателей по регионам",
+    "access_status": null,
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A12-D012",
+    "title": "Классификатор КАТО",
+    "access_status": null,
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A12-D013",
+    "title": "Каталог data.egov.kz: наборы акимата Шымкента и Астаны",
+    "access_status": null,
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A12-D014",
+    "title": "Управление цифровизации Шымкента: служба 109 и цифровые проекты",
+    "access_status": null,
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A12-D015",
+    "title": "e-Otinish: публичная статистика обращений",
+    "access_status": null,
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A12-D016",
+    "title": "Открытые бюджеты: бюджет г. Шымкент",
+    "access_status": null,
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A12-D017",
+    "title": "Госзакупки: договоры заказчиков г. Шымкент",
+    "access_status": null,
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A12-D018",
+    "title": "Әділет: акты о районах, тарифах, правилах",
+    "access_status": null,
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A12-D019",
+    "title": "Открытые НПА: проекты актов",
+    "access_status": null,
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A12-D020",
+    "title": "Казгидромет: бюллетени о состоянии окружающей среды (Шымкент)",
+    "access_status": null,
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A12-D021",
+    "title": "Казгидромет: метеонаблюдения",
+    "access_status": null,
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A12-D022",
+    "title": "Тарифы субъектов естественных монополий (вода, тепло, электроэнергия) для Шымкента",
+    "access_status": null,
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A12-D023",
+    "title": "Правовая статистика: преступления и ДТП",
+    "access_status": null,
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A12-D024",
+    "title": "Адресный регистр (РКА)",
+    "access_status": null,
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A12-D025",
+    "title": "ЕГКН / публичная кадастровая карта",
+    "access_status": null,
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A12-D026",
+    "title": "Электронные торги земельными участками и госимуществом",
+    "access_status": null,
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A12-D027",
+    "title": "OSM: выгрузка Kazakhstan (Geofabrik)",
+    "access_status": null,
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A12-D028",
+    "title": "OSM: Overpass (точечные запросы границ и POI Шымкента)",
+    "access_status": null,
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A12-D029",
+    "title": "Overture Maps: places, buildings, transportation",
+    "access_status": null,
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A12-D030",
+    "title": "GHSL: сетка населения/застройки",
+    "access_status": null,
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A12-D031",
+    "title": "WorldPop: сетка населения",
+    "access_status": null,
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A12-D032",
+    "title": "Sentinel-5P / CAMS: NO2, аэрозоли",
+    "access_status": null,
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A12-D033",
+    "title": "БНС: деятельность мест размещения по г. Шымкент",
+    "access_status": null,
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A12-D034",
+    "title": "НОБД: национальная образовательная база данных",
+    "access_status": null,
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A12-D035",
+    "title": "Маршруты и остановки общественного транспорта Шымкента (GTFS или аналог)",
+    "access_status": null,
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A12-D036",
+    "title": "Аварии и отключения на сетях водо-, тепло-, электро-, газоснабжения",
+    "access_status": null,
+    "license": null,
+    "period": null
+   }
+  ],
+  "opportunities": [
+   {
+    "idea_id": "A12-O001",
+    "title": "Слой происхождения данных и матрица покрытия «сфера × район × период» для Шымкента и Астаны",
+    "primary_user": "Разработчик и аналитик проекта; далее — эксперт GovTech/жюри, проверяющий происхождение цифр",
+    "user_task": "Понять, каким цифрам по Шымкенту можно доверять, откуда они и чего не хватает, прежде чем строить меры/сценарии",
+    "required_datasets": {
+     "A12-D001": "sample_verified",
+     "A12-D010": null,
+     "A12-D012": null,
+     "A12-D028": null,
+     "A12-D020": null
+    },
+    "evidence_fact_kinds": {
+     "observed": 3,
+     "derived": 1
+    },
+    "blockers": [
+     "доступ A12 к stat.gov.kz/OSM заблокирован — нужен второй проход с браузером",
+     "условия повторного использования данных БНС/egov не проверены"
+    ],
+    "feasibility_10_days": "высокая для схемы, QC и Астаны; для Шымкента зависит от получения D010/D028",
+    "non_ai_baseline": "Ручной ввод + pandas/camelot для таблиц; SQL-проверки QC"
+   },
+   {
+    "idea_id": "A12-O002",
+    "title": "Доступность школ, детсадов, поликлиник и остановок по районам Шымкента с явной оценкой полноты OSM",
+    "primary_user": "Аналитик управления образования/здравоохранения или градостроительства; дипломник",
+    "user_task": "Найти районы и кварталы, где жители дальше норматива от школы/поликлиники/остановки, и понять, ошибка ли это данных",
+    "required_datasets": {
+     "A12-D027": null,
+     "A12-D028": null,
+     "A12-D030": null,
+     "A12-D013": null,
+     "A12-D010": null
+    },
+    "evidence_fact_kinds": {
+     "observed": 2,
+     "derived": 1
+    },
+    "blockers": [
+     "официальный список с адресами может быть недоступен",
+     "радиусы/нормативы доступности требуют правового источника"
+    ],
+    "feasibility_10_days": "частично: OSM-часть за 2–3 дня после доступа; официальные списки и население — неизвестно",
+    "non_ai_baseline": "Правила нормализации названий + расстояние ≤ X м; ручная проверка выборки"
+   },
+   {
+    "idea_id": "A12-O003",
+    "title": "Сопоставимые ряды показателей при изменении границ районов (Шымкент — Туран; Астана — Нура, Сарайшык)",
+    "primary_user": "Аналитик/исследователь (диплом), которому нужен ряд 2018–2026 в текущих границах",
+    "user_task": "Оценить показатель в новых границах для лет до реформы с указанием неопределённости",
+    "required_datasets": {
+     "A12-D010": null,
+     "A12-D012": null,
+     "A12-D018": null,
+     "A12-D030": null,
+     "A12-D028": null
+    },
+    "evidence_fact_kinds": {
+     "observed": 2,
+     "hypothesis": 1
+    },
+    "blockers": [
+     "возможно, БНС не публикует пересчёт",
+     "официальные полигоны старых границ могут отсутствовать"
+    ],
+    "feasibility_10_days": "низкая: только проверка предпосылки (найти год с двумя разбивками)",
+    "non_ai_baseline": "Площадная интерполяция (area weighting)"
+   }
+  ]
+ },
+ {
+  "city": "shymkent",
+  "agent_id": "A13",
+  "topic": "Техническая основа, AI и дипломный эксперимент",
+  "file": "govtech-results/13_architecture_ai_thesis/extracted_files__21_/A13_evidence.json",
+  "access_limitations_count": 268,
+  "fact_kinds": {
+   "observed": 13,
+   "derived": 1,
+   "hypothesis": 2
+  },
+  "source_access": {
+   "verified_cloned_and_run": 1,
+   "verified_read": 4,
+   "verified_read_and_run": 1,
+   "blocked_by_sandbox": 4,
+   "unavailable_lfs_blocked": 1,
+   "not_accessed_candidate_from_memory": 12
+  },
+  "dataset_access": {
+   "sample_verified": 2,
+   "unavailable": 2,
+   "restricted": 1
+  },
+  "datasets": [
+   {
+    "id": "A13-D001",
+    "title": "STUPITS учебный датасет Астаны (city_data.json, events.json)",
+    "access_status": "sample_verified",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A13-D002",
+    "title": "Границы районов Астаны из OSM",
+    "access_status": "sample_verified",
+    "license": "ODbL",
+    "period": "osm_base 2026-09-22"
+   },
+   {
+    "id": "A13-D003",
+    "title": "Статистика по Шымкенту (динамические таблицы БНС)",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A13-D004",
+    "title": "Наборы data.egov.kz по Шымкенту",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "A13-D005",
+    "title": "geoBoundaries KAZ ADM2",
+    "access_status": "restricted",
+    "license": null,
+    "period": null
+   }
+  ],
+  "opportunities": [
+   {
+    "idea_id": "A13-I001",
+    "title": "Мультигородной движок с происхождением данных (data_version + kind)",
+    "primary_user": "Разработчик и аналитик, готовящий Шымкент-версию; жюри/комиссия",
+    "user_task": "Понять, какие числа измерены, вычислены или придуманы",
+    "required_datasets": {
+     "A13-D001": "sample_verified",
+     "A13-D003": "unavailable"
+    },
+    "evidence_fact_kinds": {
+     "observed": 4
+    },
+    "blockers": [
+     "Решение владельца о схеме"
+    ],
+    "feasibility_10_days": "high",
+    "non_ai_baseline": "Это и есть baseline"
+   },
+   {
+    "idea_id": "A13-I002",
+    "title": "Поручение → валидируемые ограничения с измерением регрета",
+    "primary_user": "Сотрудник акимата/аналитик, сравнивающий варианты",
+    "user_task": "Получить лучшие планы при своих условиях",
+    "required_datasets": {
+     "A13-D001": "sample_verified"
+    },
+    "evidence_fact_kinds": {
+     "observed": 1
+    },
+    "blockers": [
+     "Нужны поручения от людей, не знающих парсер",
+     "ключ LLM"
+    ],
+    "feasibility_10_days": "medium",
+    "non_ai_baseline": "Форма-конструктор и словарный парсер (E4)"
+   }
+  ]
+ },
+ {
+  "city": "astana",
+  "agent_id": "AST-A01",
+  "topic": "Цифровизация муниципальных услуг и городские обращения: iKOMEK 109, маршрутизация, повторы, статус, языки",
+  "file": "astana-results/01_digitalization/extracted_files__23_/AST_A01_evidence.json",
+  "access_limitations_count": 5,
+  "fact_kinds": {
+   "observed": 13,
+   "derived": 2,
+   "hypothesis": 3
+  },
+  "source_access": {
+   "executed": 3,
+   "verified": 7,
+   "not_accessed": 6
+  },
+  "dataset_access": {
+   "unavailable": 5,
+   "sample_verified": 1
+  },
+  "datasets": [
+   {
+    "id": "AST-A01-D001",
+    "title": "Обращения iKOMEK 109 (обезличенная выгрузка) — ТРЕБУЕТСЯ",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A01-D002",
+    "title": "Население Астаны по районам",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A01-D003",
+    "title": "Каталог data.egov.kz: наборы по обращениям Астаны",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A01-D004",
+    "title": "Положения управлений акимата Астаны и 6 районных акиматов (справочник компетенций)",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A01-D005",
+    "title": "Границы районов Астаны из OSM (снимок в STUPITS)",
+    "access_status": "sample_verified",
+    "license": "ODbL 1.0 (© OpenStreetMap contributors)",
+    "period": "снимок 2026-09-23"
+   },
+   {
+    "id": "AST-A01-D006",
+    "title": "Официальное соответствие «адрес → район» (адресный регистр или аналог)",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   }
+  ],
+  "opportunities": [
+   {
+    "idea_id": "AST-A01-O001",
+    "title": "Навигатор каналов, статусов и официальных услуг (Астана)",
+    "primary_user": "Житель Астаны (ru/kk)",
+    "user_task": "Понять, куда обращаться, какой канал официальный и где проверить статус уже поданного обращения",
+    "required_datasets": {
+     "AST-A01-D004": "unavailable"
+    },
+    "evidence_fact_kinds": {
+     "observed": 4
+    },
+    "blockers": [
+     "Подтверждение официальных каналов и издателя приложения",
+     "Возможное дублирование функций iKOMEK"
+    ],
+    "feasibility_10_days": "Высокая для 30 карточек при доступе владельца к официальным страницам",
+    "non_ai_baseline": "BM25 по карточкам"
+   },
+   {
+    "idea_id": "AST-A01-O002",
+    "title": "Помощник оператора iKOMEK: исполнитель с основанием и район на дату обращения",
+    "primary_user": "Оператор/диспетчер iKOMEK 109",
+    "user_task": "Назначить исполнителя и район, связать повторы",
+    "required_datasets": {
+     "AST-A01-D001": "unavailable",
+     "AST-A01-D004": "unavailable",
+     "AST-A01-D005": "sample_verified",
+     "AST-A01-D006": "unavailable"
+    },
+    "evidence_fact_kinds": {
+     "observed": 2,
+     "derived": 1,
+     "hypothesis": 1
+    },
+    "blockers": [
+     "Нет обезличенной выгрузки",
+     "Нет официальных границ и адресного соответствия"
+    ],
+    "feasibility_10_days": "Низкая для оценки (нет выгрузки); геометрический модуль — проверен на OSM (AST-A01-F012)",
+    "non_ai_baseline": "Словарь + point-in-polygon"
+   },
+   {
+    "idea_id": "AST-A01-O003",
+    "title": "Исследование: временной граф компетенций и переадресации вокруг реорганизаций районов",
+    "primary_user": "Аналитик акимата; дипломная работа",
+    "user_task": "Оценить, как реорганизации влияют на переадресации и сроки",
+    "required_datasets": {
+     "AST-A01-D001": "unavailable",
+     "AST-A01-D004": "unavailable",
+     "AST-A01-D006": "unavailable"
+    },
+    "evidence_fact_kinds": {
+     "observed": 1,
+     "hypothesis": 1
+    },
+    "blockers": [
+     "Журнал статусов с датами",
+     "Официальные даты реорганизаций"
+    ],
+    "feasibility_10_days": "Низкая",
+    "non_ai_baseline": "Ручная таблица компетенций и описательная статистика"
+   }
+  ]
+ },
+ {
+  "city": "astana",
+  "agent_id": "AST-A02",
+  "topic": "ЖКХ: вода, канализация, тепло и обслуживание",
+  "file": "astana-results/02_utilities/extracted_files__24_/AST_A02_evidence.json",
+  "access_limitations_count": 320,
+  "fact_kinds": {
+   "observed": 11,
+   "derived": 2,
+   "hypothesis": 6,
+   "synthetic": 4
+  },
+  "source_access": {
+   "opened": 9,
+   "blocked_in_sandbox": 3
+  },
+  "dataset_access": {
+   "sample_verified": 3,
+   "unavailable": 5,
+   "restricted": 2
+  },
+  "datasets": [
+   {
+    "id": "AST-A02-D001",
+    "title": "STUPITS: учебный датасет Астаны",
+    "access_status": "sample_verified",
+    "license": null,
+    "period": "датасет ТЗ"
+   },
+   {
+    "id": "AST-A02-D002",
+    "title": "OSM: административные границы Астаны и соседних единиц (снимок)",
+    "access_status": "sample_verified",
+    "license": "ODbL 1.0",
+    "period": "2026-09-22"
+   },
+   {
+    "id": "AST-A02-D003",
+    "title": "БНС: показатели ЖКХ по Астане (ожидаемо)",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A02-D004",
+    "title": "data.egov.kz: наборы по ЖКХ Астаны",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A02-D005",
+    "title": "Объявления об авариях и плановых отключениях воды и тепла",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A02-D006",
+    "title": "Графики гидравлических испытаний и отключения горячей воды",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A02-D007",
+    "title": "Данные оператора: паспорт сетей, порывы, испытания, тепловые пункты, техусловия",
+    "access_status": "restricted",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A02-D008",
+    "title": "Агрегаты обращений iKOMEK109 по ЖКХ",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A02-D009",
+    "title": "Синтетические сценарии Астаны",
+    "access_status": "sample_verified",
+    "license": "по выбору владельца",
+    "period": "synthetic"
+   },
+   {
+    "id": "AST-A02-D010",
+    "title": "Google Places: карточки организаций Астаны",
+    "access_status": "restricted",
+    "license": "Условия Google Maps Platform",
+    "period": "на 2026-10-05"
+   }
+  ],
+  "opportunities": [
+   {
+    "idea_id": "AST-A02-O001",
+    "title": "Общий модуль приоритизации с конфигурацией Астаны: раздельные очереди по секторам, класс события до ранжирования, политика пропусков",
+    "primary_user": "Планировщик эксплуатации/ремонта оператора воды или теплосети; специалист ЖКХ акимата",
+    "user_task": "Выбрать участки/зоны для обследования и ремонта в рамках бюджета сектора и окна работ",
+    "required_datasets": {
+     "AST-A02-D007": "restricted",
+     "AST-A02-D005": "unavailable",
+     "AST-A02-D002": "sample_verified"
+    },
+    "evidence_fact_kinds": {
+     "synthetic": 4,
+     "derived": 1,
+     "observed": 2
+    },
+    "blockers": [
+     "Нет данных оператора",
+     "Официальный состав районов не подтверждён",
+     "k не откалиброван"
+    ],
+    "feasibility_10_days": "Код и интерфейс на синтетике + конфиги двух городов — реально; валидация — только с данными оператора",
+    "non_ai_baseline": "Сортировка по возрасту; ручная классификация"
+   },
+   {
+    "idea_id": "AST-A02-O002",
+    "title": "Реестр сезонных и аварийных отключений Астаны с разделением классов",
+    "primary_user": "Диспетчер оператора/109; житель как читатель",
+    "user_task": "Понять, сколько инцидентов за потоком сообщений, что плановое и когда восстановят",
+    "required_datasets": {
+     "AST-A02-D005": "unavailable",
+     "AST-A02-D006": "unavailable",
+     "AST-A02-D008": "unavailable"
+    },
+    "evidence_fact_kinds": {
+     "hypothesis": 2,
+     "observed": 2
+    },
+    "blockers": [
+     "Наличие и формат объявлений не проверены",
+     "Возможное дублирование существующих сервисов"
+    ],
+    "feasibility_10_days": "Да, если объявления публикуются",
+    "non_ai_baseline": "Ключевые слова и ручной ввод"
+   },
+   {
+    "idea_id": "AST-A02-O003",
+    "title": "Исследование: последствия отказа тепла в градусо-часах для калибровки зимнего множителя",
+    "primary_user": "Исследователь (диплом), затем планировщик",
+    "user_task": "Оценить тяжесть отказа тепла через длительность × температурный перепад × уязвимость",
+    "required_datasets": {
+     "AST-A02-D005": "unavailable",
+     "AST-A02-D007": "restricted"
+    },
+    "evidence_fact_kinds": {
+     "synthetic": 1,
+     "hypothesis": 1
+    },
+    "blockers": [
+     "Нужны длительности отключений и метеоданные"
+    ],
+    "feasibility_10_days": "Только постановка и синтетика",
+    "non_ai_baseline": "k = 1 и анализ чувствительности"
+   }
+  ]
+ },
+ {
+  "city": "astana",
+  "agent_id": "AST-A03",
+  "topic": "Муниципальная логистика: вывоз ТКО и снега, уборка, выезды бригад, обслуживание распределённых объектов (без пассажирского транспорта)",
+  "file": "astana-results/03_logistics/extracted_files__25_/AST_A03_evidence.json",
+  "access_limitations_count": 279,
+  "fact_kinds": {
+   "observed": 12,
+   "derived": 1,
+   "synthetic": 6,
+   "hypothesis": 3
+  },
+  "source_access": {
+   "opened": 10,
+   "opened_via_cache": 1,
+   "blocked_in_env": 3,
+   "unavailable": 1,
+   "not_opened_memory_citation": 2
+  },
+  "dataset_access": {
+   "sample_verified": 2,
+   "documented_only": 1,
+   "unavailable": 4,
+   "restricted": 1
+  },
+  "datasets": [
+   {
+    "id": "AST-A03-D001",
+    "title": "OSM: административные единицы Астаны и окрестностей (атрибуты; полигоны — во входном файле эксперимента)",
+    "access_status": "sample_verified",
+    "license": "ODbL 1.0",
+    "period": "osm_base 2026-09-22"
+   },
+   {
+    "id": "AST-A03-D002",
+    "title": "Наборы МИО «г. Астана» на data.egov.kz (в т.ч. возможные экземпляры №672/674/680/681)",
+    "access_status": "documented_only",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A03-D003",
+    "title": "Места складирования и плавления снега: адреса, мощность, часы работы",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A03-D004",
+    "title": "OSM: дорожный граф, площадки ТКО (amenity=waste_disposal/recycling), landuse=landfill в Астане",
+    "access_status": "unavailable",
+    "license": "ODbL 1.0",
+    "period": null
+   },
+   {
+    "id": "AST-A03-D005",
+    "title": "Обращения iKOMEK 109 (категории, адреса, статусы)",
+    "access_status": "restricted",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A03-D006",
+    "title": "БНС: динамические ряды по Астане (население, миграция)",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A03-D007",
+    "title": "Синтетический экземпляр E003: 30 участков погрузки снега, 3 пункта приёма, депо",
+    "access_status": "sample_verified",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A03-D008",
+    "title": "Метеоданные: снегопад и высота снежного покрова в Астане",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   }
+  ],
+  "opportunities": [
+   {
+    "idea_id": "AST-A03-O001",
+    "title": "Ночной план вывоза снега: распределение участков по пунктам приёма с учётом мощности",
+    "primary_user": "Диспетчер ночной смены коммунального предприятия или подрядчика (гипотеза)",
+    "user_task": "Решить, какие участки везти на какой пункт и сколько машин нужно, чтобы вывезти всё до утра",
+    "required_datasets": {
+     "AST-A03-D003": "unavailable",
+     "AST-A03-D001": "sample_verified",
+     "AST-A03-D007": "sample_verified",
+     "AST-A03-D008": "unavailable"
+    },
+    "evidence_fact_kinds": {
+     "synthetic": 4,
+     "hypothesis": 1
+    },
+    "blockers": [
+     "нет мест и мощностей пунктов",
+     "нет объёмов",
+     "нет графа с мостами"
+    ],
+    "feasibility_10_days": "высокая на синтетике; зависит от публикации мест и мощностей",
+    "non_ai_baseline": "B-G: ближайший пункт с остатком мощности"
+   },
+   {
+    "idea_id": "AST-A03-O002",
+    "title": "Общий модуль маршрутов вывоза ТКО с профилями параметров городов",
+    "primary_user": "Разработчик продукта; далее диспетчер ТКО (гипотеза)",
+    "user_task": "Построить маршруты ТКО по данным конкретного города",
+    "required_datasets": {
+     "AST-A03-D002": "documented_only",
+     "AST-A03-D004": "unavailable"
+    },
+    "evidence_fact_kinds": {
+     "observed": 2
+    },
+    "blockers": [
+     "нет площадок ТКО Астаны"
+    ],
+    "feasibility_10_days": "высокая для контракта и профилей; данные городов — неизвестно",
+    "non_ai_baseline": "B2 ближайший сосед с окнами (A03)"
+   }
+  ]
+ },
+ {
+  "city": "astana",
+  "agent_id": "AST-A04",
+  "topic": "Инфраструктура и пространственная доступность",
+  "file": "astana-results/04_infrastructure/extracted_files__26_/AST_A04_evidence.json",
+  "access_limitations_count": 246,
+  "fact_kinds": {
+   "observed": 7,
+   "derived": 7,
+   "hypothesis": 6
+  },
+  "source_access": {
+   "read": 2,
+   "blocked_in_sandbox": 11,
+   "accessed": 1,
+   "executed": 1,
+   "accessed_via_cache": 1,
+   "not_accessed": 2
+  },
+  "dataset_access": {
+   "sample_verified": 1,
+   "unavailable": 7
+  },
+  "datasets": [
+   {
+    "id": "AST-A04-D001",
+    "title": "Административные границы Астаны и соседей (OSM, кэш STUPITS)",
+    "access_status": "sample_verified",
+    "license": "ODbL",
+    "period": "osm_base 2026-09-22"
+   },
+   {
+    "id": "AST-A04-D002",
+    "title": "OSM: пешеходная сеть и объекты",
+    "access_status": "unavailable",
+    "license": "ODbL (по памяти)",
+    "period": null
+   },
+   {
+    "id": "AST-A04-D003",
+    "title": "БНС: население и миграция Астаны (dynamic-tables/38)",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A04-D004",
+    "title": "Справочник КАТО",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A04-D005",
+    "title": "Реестры соцобъектов (ПМСП, детсады)",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A04-D006",
+    "title": "Население по сетке (GHS-POP / WorldPop / Kontur)",
+    "access_status": "unavailable",
+    "license": "CC BY 4.0 (по памяти, проверить)",
+    "period": null
+   },
+   {
+    "id": "AST-A04-D007",
+    "title": "Агрегаты обращений iKOMEK109 (категория, район, период)",
+    "access_status": "unavailable",
+    "license": "неизвестна",
+    "period": null
+   },
+   {
+    "id": "AST-A04-D008",
+    "title": "Генплан, ПДП, зонирование, ограничения размещения",
+    "access_status": "unavailable",
+    "license": "неизвестна",
+    "period": null
+   }
+  ],
+  "opportunities": [
+   {
+    "idea_id": "AST-A04-O001",
+    "title": "Прототип: пешая доступность ПМСП или детсадов по H3 летом и зимой + сравнение 2–3 участков + QA границ",
+    "primary_user": "аналитик управления здравоохранения, образования или архитектуры акимата Астаны",
+    "user_task": "Найти ячейки с наибольшим непокрытым населением и выбрать участок с устойчивым приростом покрытия летом и зимой",
+    "required_datasets": {
+     "AST-A04-D001": "sample_verified",
+     "AST-A04-D002": "unavailable",
+     "AST-A04-D005": "unavailable",
+     "AST-A04-D006": "unavailable",
+     "AST-A04-D003": "unavailable"
+    },
+    "evidence_fact_kinds": {
+     "observed": 3,
+     "derived": 3,
+     "hypothesis": 1
+    },
+    "blockers": [
+     "нет веб-доступа",
+     "реестр не найден",
+     "норматив не проверен",
+     "зимние параметры не откалиброваны"
+    ],
+    "feasibility_10_days": "средняя: конвейер технически прост, но нет официального реестра, свежего населения и норматива",
+    "non_ai_baseline": "osmnx/networkx, многоисточниковый Дейкстра, жадное максимальное покрытие, матрица сценариев"
+   },
+   {
+    "idea_id": "AST-A04-O002",
+    "title": "Продукт 1–3 мес.: приоритет зимней уборки тротуаров по числу жителей, чей кратчайший путь к соцобъектам и остановкам проходит через ребро",
+    "primary_user": "городской оператор уборки или профильное управление акимата (кто именно — проверить)",
+    "user_task": "Определить, какие участки тротуаров чистить первыми",
+    "required_datasets": {
+     "AST-A04-D002": "unavailable",
+     "AST-A04-D006": "unavailable",
+     "AST-A04-D005": "unavailable",
+     "AST-A04-D007": "unavailable"
+    },
+    "evidence_fact_kinds": {
+     "hypothesis": 1,
+     "derived": 1
+    },
+    "blockers": [
+     "нет регламента уборки",
+     "полнота тротуаров в OSM неизвестна",
+     "зависимость от A05 и A06"
+    ],
+    "feasibility_10_days": "низкая (рамка 1–3 месяца)",
+    "non_ai_baseline": "кратчайшие пути + суммирование весов по рёбрам"
+   },
+   {
+    "idea_id": "AST-A04-O003",
+    "title": "Исследование: горячие точки подтоплений (ливни и талые воды) для переходов и массивов ИЖС",
+    "primary_user": "исследователь / дипломник; затем профильное управление",
+    "user_task": "Заранее знать вероятные точки подтопления",
+    "required_datasets": {
+     "AST-A04-D002": "unavailable",
+     "AST-A04-D007": "unavailable"
+    },
+    "evidence_fact_kinds": {
+     "hypothesis": 1
+    },
+    "blockers": [
+     "нет списка событий",
+     "ЦМР и ливнёвка не получены",
+     "пересечение с A02"
+    ],
+    "feasibility_10_days": "низкая",
+    "non_ai_baseline": "поиск понижений по ЦМР и пересечение с сетью"
+   }
+  ]
+ },
+ {
+  "city": "astana",
+  "agent_id": "AST-A05",
+  "topic": "Образование: доступность и нагрузка школ и детсадов",
+  "file": "astana-results/05_education/extracted_files__27_/AST_A05_evidence.json",
+  "access_limitations_count": 413,
+  "fact_kinds": {
+   "observed": 7,
+   "derived": 6,
+   "synthetic": 2,
+   "hypothesis": 4
+  },
+  "source_access": {
+   "opened": 7,
+   "blocked_in_environment": 7,
+   "unresolved_in_environment": 2,
+   "not_opened": 1
+  },
+  "dataset_access": {
+   "sample_verified": 3,
+   "unavailable": 6,
+   "restricted": 1
+  },
+  "datasets": [
+   {
+    "id": "AST-A05-D001",
+    "title": "Полигоны 6 районов Астаны (OSM, кэш STUPITS)",
+    "access_status": "sample_verified",
+    "license": "ODbL",
+    "period": "снимок 2026-09-22"
+   },
+   {
+    "id": "AST-A05-D002",
+    "title": "Сырой ответ Overpass с соседними единицами Акмолинской области",
+    "access_status": "sample_verified",
+    "license": "ODbL",
+    "period": "снимок 2026-09-22"
+   },
+   {
+    "id": "AST-A05-D003",
+    "title": "БНС: население по возрастам, миграция, ввод жилья, образование — Астана",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A05-D004",
+    "title": "Реестр школ и детсадов Астаны",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A05-D005",
+    "title": "OSM: amenity=school/kindergarten и пешеходный граф Астаны",
+    "access_status": "unavailable",
+    "license": "ODbL",
+    "period": null
+   },
+   {
+    "id": "AST-A05-D006",
+    "title": "НОБД (агрегаты по школам Астаны)",
+    "access_status": "restricted",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A05-D007",
+    "title": "Публичные агрегаты обращений iKOMEK109 по теме образования",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A05-D008",
+    "title": "Агрегированная очередь в детсады Астаны",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A05-D009",
+    "title": "Климатические данные Астаны для сезонного сценария",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A05-D010",
+    "title": "Синтетический тест сопоставления названий (Астана)",
+    "access_status": "sample_verified",
+    "license": "synthetic",
+    "period": "n/a"
+   }
+  ],
+  "opportunities": [
+   {
+    "idea_id": "AST-A05-I01",
+    "title": "Уровень 1: слой статусов данных и сетевая доступность школ/детсадов на реальных районах Астаны с флагами привязки",
+    "primary_user": "специалист управления образования / градостроительного отдела Астаны",
+    "user_task": "увидеть, какие объекты где учтены, какие привязки сомнительны и где жилые кварталы далеко от школы по сети",
+    "required_datasets": {
+     "AST-A05-D001": "sample_verified",
+     "AST-A05-D002": "sample_verified",
+     "AST-A05-D005": "unavailable"
+    },
+    "evidence_fact_kinds": {
+     "observed": 2,
+     "derived": 3
+    },
+    "blockers": [
+     "полнота OSM неизвестна",
+     "официальные КАТО Нуры и Сарайшыка не проверены"
+    ],
+    "feasibility_10_days": "высокая при наличии OSM-выгрузки вне песочницы",
+    "non_ai_baseline": "точки школ в районной таблице без флагов; буферы по прямой"
+   },
+   {
+    "idea_id": "AST-A05-I02",
+    "title": "Уровень 2: сценарный стол размещения и перезакрепления для Астаны (модель A с dmax, 2SFCA, устойчивость, агломерационный флаг)",
+    "primary_user": "отдел сети организаций образования управления образования г. Астаны",
+    "user_task": "сравнить допустимые участки и перезакрепление кварталов",
+    "required_datasets": {
+     "AST-A05-D001": "sample_verified",
+     "AST-A05-D003": "unavailable",
+     "AST-A05-D004": "unavailable",
+     "AST-A05-D005": "unavailable",
+     "AST-A05-D006": "restricted"
+    },
+    "evidence_fact_kinds": {
+     "hypothesis": 2,
+     "not_in_file": 3
+    },
+    "blockers": [
+     "мощность и контингент, вероятно, не открыты",
+     "участки — роль «земельные отношения»"
+    ],
+    "feasibility_10_days": "низкая: нужны мощность и контингент по школам",
+    "non_ai_baseline": "правило ближайшей школы; участок у центроида худшей территории"
+   },
+   {
+    "idea_id": "AST-A05-I03",
+    "title": "Уровень 3 (исследование): прогноз набора в 1-е классы по районам из миграции и ввода жилья с бэктестом; сезонный сценарий порога при наличии данных",
+    "primary_user": "управление образования, градостроители",
+    "user_task": "увидеть ожидаемую нехватку мест на 3–6 лет вперёд",
+    "required_datasets": {
+     "AST-A05-D003": "unavailable",
+     "AST-A05-D009": "unavailable"
+    },
+    "evidence_fact_kinds": {
+     "hypothesis": 2,
+     "observed": 1
+    },
+    "blockers": [
+     "районные ряды до и после смены сетки районов",
+     "контингент 1-х классов за 5+ лет"
+    ],
+    "feasibility_10_days": "очень низкая",
+    "non_ai_baseline": "«как в прошлом году», линейный тренд"
+   }
+  ]
+ },
+ {
+  "city": "astana",
+  "agent_id": "AST-A06",
+  "topic": "Транспорт: автобусы, остановки, регулярность и доступность",
+  "file": "astana-results/06_transport/extracted_files__28_/AST_A06_evidence.json",
+  "access_limitations_count": 426,
+  "fact_kinds": {
+   "observed": 20,
+   "derived": 8
+  },
+  "source_access": {
+   "executed": 2,
+   "opened": 15,
+   "blocked": 6,
+   "unavailable": 1
+  },
+  "dataset_access": {
+   "sample_verified": 3,
+   "unavailable": 5,
+   "restricted": 2
+  },
+  "datasets": [
+   {
+    "id": "AST-A06-D001",
+    "title": "Astana bus AVL-derived dataset (Mansurova et al.)",
+    "access_status": "sample_verified",
+    "license": "CC BY 4.0 (по README зеркала, не проверено)",
+    "period": "2024-07-29/2024-09-21"
+   },
+   {
+    "id": "AST-A06-D002",
+    "title": "OSM-границы районов Астаны (снимок в STUPITS)",
+    "access_status": "sample_verified",
+    "license": "ODbL (атрибуция указана в meta проекта)",
+    "period": "OSM 2026-09-22"
+   },
+   {
+    "id": "AST-A06-D003",
+    "title": "OSM: пешеходная сеть, переходы, остановки, соцобъекты Астаны",
+    "access_status": "unavailable",
+    "license": "ODbL",
+    "period": null
+   },
+   {
+    "id": "AST-A06-D004",
+    "title": "Официальный GTFS/GTFS-RT Астаны",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A06-D005",
+    "title": "bus_traffic_dataset.csv (сторонний сборщик)",
+    "access_status": "sample_verified",
+    "license": "не указана",
+    "period": "2026-03-15/2026-10-05"
+   },
+   {
+    "id": "AST-A06-D006",
+    "title": "Пассажиропотоки / валидации Астаны",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A06-D007",
+    "title": "Реестр маршрутов, остановок и интервалов (акимат/оператор)",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A06-D008",
+    "title": "Онлайн-позиции автобусов (api.citytransport.kz, CityBus)",
+    "access_status": "restricted",
+    "license": "неизвестна",
+    "period": null
+   },
+   {
+    "id": "AST-A06-D009",
+    "title": "Население по районам Астаны",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A06-D010",
+    "title": "Время проезда сегментов (2GIS Routing API, сторонний сбор)",
+    "access_status": "restricted",
+    "license": "условия 2GIS не проверены",
+    "period": "2026-07-21/2026-08-07"
+   }
+  ],
+  "opportunities": [
+   {
+    "idea_id": "AST-A06-O001",
+    "title": "Доступность остановок и объектов с поправкой на наблюдаемую надёжность",
+    "primary_user": "Аналитик транспортного блока акимата/оператора; исследователь (диплом)",
+    "user_task": "Найти зоны и объекты с худшим реальным доступом и оценить локальное изменение",
+    "required_datasets": {
+     "AST-A06-D001": "sample_verified",
+     "AST-A06-D002": "sample_verified",
+     "AST-A06-D003": "unavailable",
+     "AST-A06-D007": "unavailable"
+    },
+    "evidence_fact_kinds": {
+     "derived": 4,
+     "observed": 1
+    },
+    "blockers": "Нет OSM; нет привязки остановок к маршрутам; данные 2024",
+    "feasibility_10_days": "medium: расчёт ожидания готов; нужен OSM и stop_times",
+    "non_ai_baseline": "PTAL с константой; буферы"
+   },
+   {
+    "idea_id": "AST-A06-O002",
+    "title": "Мониторинг регулярности и надёжности маршрутов по AVL",
+    "primary_user": "Оператор / транспортный блок акимата; исследователь",
+    "user_task": "Увидеть, где и когда интервалы и время рейса нестабильны",
+    "required_datasets": {
+     "AST-A06-D001": "sample_verified",
+     "AST-A06-D008": "restricted"
+    },
+    "evidence_fact_kinds": {
+     "derived": 4,
+     "observed": 1
+    },
+    "blockers": "Нет свежего AVL; LFS заблокирован",
+    "feasibility_10_days": "high на открытом наборе Астаны; low для свежих данных",
+    "non_ai_baseline": "Ручная выборка из диспетчерских данных"
+   },
+   {
+    "idea_id": "AST-A06-O003",
+    "title": "Сценарии перекрытия коридора (UXsim/SUMO), идея владельца",
+    "primary_user": "Транспортный аналитик",
+    "user_task": "Сравнить варианты при заданном спросе",
+    "required_datasets": {
+     "AST-A06-D003": "unavailable"
+    },
+    "evidence_fact_kinds": {
+     "observed": 3
+    },
+    "blockers": "Нет счётов, OD, планов светофоров; статус ЛРТ неизвестен",
+    "feasibility_10_days": "low без OD/счётов",
+    "non_ai_baseline": "Графовый объезд"
+   }
+  ]
+ },
+ {
+  "city": "astana",
+  "agent_id": "AST-A07",
+  "topic": "Туризм: полезные маршруты и городская навигация",
+  "file": "astana-results/07_tourism/extracted_files__29_/AST_A07_evidence.json",
+  "access_limitations_count": 5,
+  "fact_kinds": {
+   "observed": 26,
+   "derived": 3,
+   "hypothesis": 1
+  },
+  "source_access": {
+   "opened": 8,
+   "snippet_only": 23,
+   "abstract_only": 2,
+   "not_opened": 1
+  },
+  "dataset_access": {
+   "page_only": 2,
+   "unavailable": 1,
+   "documented_only": 4,
+   "restricted": 1
+  },
+  "datasets": [
+   {
+    "id": "AST-A07-D001",
+    "title": "Карточки, события и киоски Visit Astana",
+    "access_status": "page_only",
+    "license": "«All rights reserved © 2026» — повторное использование без разрешения не подтверждено",
+    "period": "текущий"
+   },
+   {
+    "id": "AST-A07-D002",
+    "title": "Каталог достопримечательностей kazakhstan.travel (region=astana)",
+    "access_status": "page_only",
+    "license": "Portal rules не прочитаны",
+    "period": "текущий"
+   },
+   {
+    "id": "AST-A07-D003",
+    "title": "Маршруты и расписания автобусов (CTS)",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A07-D004",
+    "title": "Прогноз прибытия по QR на остановках (Avtobys)",
+    "access_status": "documented_only",
+    "license": null,
+    "period": "реальное время"
+   },
+   {
+    "id": "AST-A07-D005",
+    "title": "Tarlan Astana: станции, часы, тарифы",
+    "access_status": "documented_only",
+    "license": null,
+    "period": "с 05.2026"
+   },
+   {
+    "id": "AST-A07-D006",
+    "title": "Интерактивная карта доступности (Астана)",
+    "access_status": "documented_only",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A07-D007",
+    "title": "Обращения и оперативные сообщения iKOMEK109",
+    "access_status": "restricted",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A07-D008",
+    "title": "Набор «движение автобусов Астаны» на data.egov.kz",
+    "access_status": "documented_only",
+    "license": null,
+    "period": "2018 (анонс)"
+   }
+  ],
+  "opportunities": [
+   {
+    "idea_id": "AST-A07-O1",
+    "title": "Аудит согласованности источников и пробелов навигации у станций Tarlan Astana",
+    "primary_user": "Аналитик Управления туризма / Visit Astana; вторично CTS",
+    "user_task": "Определить, какие карточки исправить, где поставить указатели от станций к объектам, какие объекты плохо связаны",
+    "required_datasets": {
+     "AST-A07-D001": "page_only",
+     "AST-A07-D002": "page_only",
+     "AST-A07-D005": "documented_only",
+     "AST-A07-D006": "documented_only"
+    },
+    "evidence_fact_kinds": {
+     "observed": 6,
+     "derived": 2
+    },
+    "blockers": [
+     "условия использования порталов",
+     "координаты станций не получены"
+    ],
+    "feasibility_10_days": "высокая для 30 карточек вручную",
+    "non_ai_baseline": "Ручная таблица + правила resolve()"
+   },
+   {
+    "idea_id": "AST-A07-O2",
+    "title": "Проверяемый маршрут на день с окнами транспорта и сезона",
+    "primary_user": "Деловой гость с окном 3–5 ч; семья на коротком отдыхе",
+    "user_task": "Выбрать точки, которые реально открыты и достижимы",
+    "required_datasets": {
+     "AST-A07-D001": "page_only",
+     "AST-A07-D002": "page_only",
+     "AST-A07-D005": "documented_only"
+    },
+    "evidence_fact_kinds": {
+     "observed": 4,
+     "derived": 1
+    },
+    "blockers": [
+     "нет расписаний ОТ",
+     "дублирование с существующими планировщиками"
+    ],
+    "feasibility_10_days": "средняя",
+    "non_ai_baseline": "Форма + та же эвристика"
+   },
+   {
+    "idea_id": "AST-A07-O3",
+    "title": "Слой перебоев: временные изменения маршрутов и события → какие визиты ломаются",
+    "primary_user": "Visit Astana, CTS, Управление туризма",
+    "user_task": "Оценить влияние перебоя на типовые визиты и предупредить гостей",
+    "required_datasets": {
+     "AST-A07-D003": "unavailable",
+     "AST-A07-D004": "documented_only",
+     "AST-A07-D007": "restricted"
+    },
+    "evidence_fact_kinds": {
+     "observed": 3,
+     "derived": 1
+    },
+    "blockers": [
+     "нет машиночитаемых объявлений",
+     "нет расписаний"
+    ],
+    "feasibility_10_days": "низкая",
+    "non_ai_baseline": "Ручная оцифровка"
+   },
+   {
+    "idea_id": "AST-A07-O4",
+    "title": "Робастное планирование при конфликтующих и сезонных данных; измерение устаревания каналов",
+    "primary_user": "Дипломник / исследователь",
+    "user_task": "Оценить, как доверие к источникам и сезон влияют на исполнимость",
+    "required_datasets": {
+     "AST-A07-D001": "page_only",
+     "AST-A07-D002": "page_only"
+    },
+    "evidence_fact_kinds": {
+     "derived": 1,
+     "observed": 3
+    },
+    "blockers": [
+     "условия повторного сбора",
+     "нет полевых замеров"
+    ],
+    "feasibility_10_days": "низкая для реальной части",
+    "non_ai_baseline": "Детерминированный TTDP"
+   }
+  ]
+ },
+ {
+  "city": "astana",
+  "agent_id": "AST-A08",
+  "topic": "Экология: воздух, сезонные экстремумы, зелень и загрязнённые территории",
+  "file": "astana-results/08_ecology/extracted_files__30_/AST_A08_evidence.json",
+  "access_limitations_count": 297,
+  "fact_kinds": {
+   "observed": 8,
+   "derived": 9,
+   "hypothesis": 4,
+   "synthetic": 3
+  },
+  "source_access": {
+   "executed": 1,
+   "sample_verified": 4,
+   "page_only": 1,
+   "not_accessed_host_blocked": 4,
+   "unavailable": 1,
+   "not_opened_model_memory": 8
+  },
+  "dataset_access": {
+   "sample_verified": 4,
+   "unavailable": 3,
+   "documented_only": 5,
+   "restricted": 1
+  },
+  "datasets": [
+   {
+    "id": "AST-A08-D001",
+    "title": "OSM-полигоны районов Астаны (кэш STUPITS)",
+    "access_status": "sample_verified",
+    "license": "ODbL",
+    "period": "OSM 2026-09-22"
+   },
+   {
+    "id": "AST-A08-D002",
+    "title": "Посты Казгидромета, Астана: список и часовые ряды (AirData)",
+    "access_status": "sample_verified",
+    "license": "не указана",
+    "period": "2021-03-24..2022-03-24"
+   },
+   {
+    "id": "AST-A08-D003",
+    "title": "Станция «Астана»: температура воздуха по 8 срокам",
+    "access_status": "sample_verified",
+    "license": "не указана",
+    "period": "2000-01-01..2023-04-30"
+   },
+   {
+    "id": "AST-A08-D004",
+    "title": "Сторонний ряд PM2.5 по Астане (ailaris)",
+    "access_status": "sample_verified",
+    "license": "не указана",
+    "period": "2019; 2022–2024"
+   },
+   {
+    "id": "AST-A08-D005",
+    "title": "Бюллетени Казгидромета по Астане",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A08-D006",
+    "title": "Статистика БНС по Астане",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A08-D007",
+    "title": "Landsat 8/9 ST (лето)",
+    "access_status": "documented_only",
+    "license": "public domain (по памяти)",
+    "period": null
+   },
+   {
+    "id": "AST-A08-D008",
+    "title": "Sentinel-2 NDVI / WorldCover",
+    "access_status": "documented_only",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A08-D009",
+    "title": "GHSL / WorldPop 100 м",
+    "access_status": "documented_only",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A08-D010",
+    "title": "OSM: зелень, школы, поликлиники",
+    "access_status": "documented_only",
+    "license": "ODbL",
+    "period": null
+   },
+   {
+    "id": "AST-A08-D011",
+    "title": "Sentinel-5P NO2 (фон)",
+    "access_status": "documented_only",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A08-D012",
+    "title": "Агрегаты обращений iKOMEK109 по эко-категориям",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A08-D013",
+    "title": "Тип отопления и газификация по кварталам",
+    "access_status": "restricted",
+    "license": null,
+    "period": null
+   }
+  ],
+  "opportunities": [
+   {
+    "idea_id": "AST-A08-O001",
+    "title": "Справочный слой: посты с QC, «дыры» мониторинга и летняя карта озеленения",
+    "primary_user": "аналитик департамента экологии / акимата; дипломник",
+    "user_task": "Решить, каким данным о воздухе доверять и где наблюдений не хватает",
+    "required_datasets": {
+     "AST-A08-D001": "sample_verified",
+     "AST-A08-D002": "sample_verified",
+     "AST-A08-D009": "documented_only",
+     "AST-A08-D007": "documented_only",
+     "AST-A08-D010": "documented_only"
+    },
+    "evidence_fact_kinds": {
+     "observed": 2,
+     "derived": 3
+    },
+    "blockers": [
+     "нет доступа к официальным данным из среды",
+     "устаревший список постов"
+    ],
+    "feasibility_10_days": "medium: часть уже работает на реальных образцах; нужны GHSL и актуальные посты",
+    "non_ai_baseline": "Таблица постов без QC"
+   },
+   {
+    "idea_id": "AST-A08-O002",
+    "title": "Зимняя очередь обследования и временных датчиков",
+    "primary_user": "Казгидромет / департамент экологии / акимат",
+    "user_task": "Где поставить временные датчики и что обследовать в отопительный сезон",
+    "required_datasets": {
+     "AST-A08-D002": "sample_verified",
+     "AST-A08-D009": "documented_only",
+     "AST-A08-D013": "restricted"
+    },
+    "evidence_fact_kinds": {
+     "derived": 2,
+     "hypothesis": 1,
+     "synthetic": 1
+    },
+    "blockers": [
+     "тип отопления по кварталам",
+     "население"
+    ],
+    "feasibility_10_days": "low: нет данных о типе отопления",
+    "non_ai_baseline": "Размещение по площади или по одному на район"
+   },
+   {
+    "idea_id": "AST-A08-O003",
+    "title": "Исследование: калиброванная сеть недорогих датчиков и квазиэксперимент по посадкам",
+    "primary_user": "исследователь (диплом), акимат",
+    "user_task": "Проверить, работают ли посадки и где реальные горячие точки",
+    "required_datasets": {
+     "AST-A08-D007": "documented_only",
+     "AST-A08-D002": "sample_verified"
+    },
+    "evidence_fact_kinds": {
+     "derived": 2
+    },
+    "blockers": [
+     "полевые работы",
+     "координаты посадок"
+    ],
+    "feasibility_10_days": "только расчёт мощности",
+    "non_ai_baseline": "Сравнение «до/после» без контроля"
+   }
+  ]
+ },
+ {
+  "city": "astana",
+  "agent_id": "AST-A09",
+  "topic": "Энергетика: муниципальные здания и ресурсы",
+  "file": "astana-results/09_energy/extracted_files__31_/AST_A09_evidence.json",
+  "access_limitations_count": 522,
+  "fact_kinds": {
+   "observed": 12,
+   "derived": 12,
+   "hypothesis": 4
+  },
+  "source_access": {
+   "blocked_in_environment": 12,
+   "no_response": 5,
+   "opened": 9
+  },
+  "dataset_access": {
+   "documented_only": 5,
+   "restricted": 1,
+   "unavailable": 1,
+   "sample_verified": 3
+  },
+  "datasets": [
+   {
+    "id": "AST-A09-D001",
+    "title": "№654 Сведения о качестве предоставления тепла в отопительный период (Астана)",
+    "access_status": "documented_only",
+    "license": null,
+    "period": "обновлён 02.12.2025"
+   },
+   {
+    "id": "AST-A09-D002",
+    "title": "№668 Сведения об объектах энергоснабжения (Астана)",
+    "access_status": "documented_only",
+    "license": null,
+    "period": "обновлён 04.12.2025"
+   },
+   {
+    "id": "AST-A09-D003",
+    "title": "№669 Сведения об объектах газоснабжения (Астана)",
+    "access_status": "documented_only",
+    "license": null,
+    "period": "обновлён 09.12.2025"
+   },
+   {
+    "id": "AST-A09-D004",
+    "title": "№677 Строительство инженерно-коммуникационной инфраструктуры — сети теплоснабжения (Астана)",
+    "access_status": "documented_only",
+    "license": null,
+    "period": "создан 19.11.2019, обновлён 08.12.2025"
+   },
+   {
+    "id": "AST-A09-D005",
+    "title": "Государственный энергетический реестр — количество субъектов по регионам (РК)",
+    "access_status": "documented_only",
+    "license": null,
+    "period": "обновлён 19.09.2022; статус актуальности «Нет»"
+   },
+   {
+    "id": "AST-A09-D006",
+    "title": "Потребление тепла и электроэнергии муниципальными зданиями Астаны (счета/показания)",
+    "access_status": "restricted",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A09-D007",
+    "title": "Историческая температура Астаны (станция / реанализ)",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A09-D008",
+    "title": "Районы Астаны (OSM, кэш STUPITS)",
+    "access_status": "sample_verified",
+    "license": "ODbL",
+    "period": "OSM 2026-09-22"
+   },
+   {
+    "id": "AST-A09-D009",
+    "title": "Выгрузка каталога data.egov.kz (сторонний снимок)",
+    "access_status": "sample_verified",
+    "license": "не указана",
+    "period": "снимок 2026-02-01"
+   },
+   {
+    "id": "AST-A09-D010",
+    "title": "Холодный прокси-ряд температуры (BDG1 weather3.csv)",
+    "access_status": "sample_verified",
+    "license": "MIT",
+    "period": "2014-05-01…2015-05-01"
+   }
+  ],
+  "opportunities": [
+   {
+    "idea_id": "AST-A09-I001",
+    "title": "Общий модуль «приоритизатор энергоаудита + паспорт данных» с тепловыми проверками для Астаны (L1)",
+    "primary_user": "специалист управления энергетики или образования акимата Астаны (роль не подтверждена)",
+    "user_task": "Выбрать здания для обследования или установки регулирования и обосновать выбор",
+    "required_datasets": {
+     "AST-A09-D006": "restricted",
+     "AST-A09-D007": "unavailable"
+    },
+    "evidence_fact_kinds": {
+     "observed": 3,
+     "derived": 3
+    },
+    "blockers": [
+     "нет рядов Астаны",
+     "нет сведений об ИТП/учёте",
+     "тарифы не проверены"
+    ],
+    "feasibility_10_days": "high на синтетике и BDG1; без реальных рядов это демонстрация",
+    "non_ai_baseline": "Сортировка по Гкал/м² в таблице"
+   },
+   {
+    "idea_id": "AST-A09-I002",
+    "title": "Калькулятор наружного освещения с помесячными астрономическими часами (общий для двух городов)",
+    "primary_user": "сотрудник акимата или жюри, сравнивающие сценарии замены и графиков",
+    "user_task": "Оценить годовые и помесячные кВт·ч и затраты при разных мощностях и порогах включения",
+    "required_datasets": {},
+    "evidence_fact_kinds": {
+     "derived": 3
+    },
+    "blockers": [
+     "реестр светильников и шкафов у оператора, оператор не установлен"
+    ],
+    "feasibility_10_days": "high",
+    "non_ai_baseline": "Тот же расчёт в таблице"
+   },
+   {
+    "idea_id": "AST-A09-I003",
+    "title": "Пилот суточного теплоучёта 20–30 школ: отопление пустых зданий и эффект регулирования (L2)",
+    "primary_user": "управление образования и теплоснабжающая организация",
+    "user_task": "Найти здания, где тепло потребляется в каникулы и выходные без снижения, и выбрать здания для установки ИТП",
+    "required_datasets": {
+     "AST-A09-D006": "restricted",
+     "AST-A09-D007": "unavailable"
+    },
+    "evidence_fact_kinds": {
+     "derived": 3
+    },
+    "blockers": [
+     "соглашение о данных",
+     "наличие суточного учёта"
+    ],
+    "feasibility_10_days": "low",
+    "non_ai_baseline": "Сравнение месяц к месяцу"
+   },
+   {
+    "idea_id": "AST-A09-I004",
+    "title": "Исследование: где теряется экономия от модернизации — утепление против регулирования (L3)",
+    "primary_user": "исследователь, аналитик программ модернизации",
+    "user_task": "Оценить фактический эффект прошлых модернизаций и очерёдность установки ИТП",
+    "required_datasets": {
+     "AST-A09-D006": "restricted",
+     "AST-A09-D004": "documented_only"
+    },
+    "evidence_fact_kinds": {
+     "derived": 2
+    },
+    "blockers": [
+     "нужны ≥2 года данных и даты работ"
+    ],
+    "feasibility_10_days": "low",
+    "non_ai_baseline": "До/после без контроля"
+   }
+  ]
+ },
+ {
+  "city": "astana",
+  "agent_id": "AST-A11",
+  "topic": "Земельные отношения и планировочные ограничения: публичная информация, генплан/ПДП, участки, ограничения, аукционы, процедуры, границы",
+  "file": "astana-results/11_land/extracted_files__32_/AST_A11_evidence.json",
+  "access_limitations_count": 7,
+  "fact_kinds": {
+   "observed": 8,
+   "derived": 4,
+   "hypothesis": 10,
+   "synthetic": 2
+  },
+  "source_access": {
+   "accessed": 4,
+   "blocked_by_sandbox": 11,
+   "dns_failed_in_sandbox": 2,
+   "not_accessed": 3
+  },
+  "dataset_access": {
+   "sample_verified": 1,
+   "unavailable": 6
+  },
+  "datasets": [
+   {
+    "id": "AST-A11-D001",
+    "title": "Кэш OSM: районы Астаны и соседние единицы Акмолинской области (репозиторий STUPITS)",
+    "access_status": "sample_verified",
+    "license": "ODbL 1.0",
+    "period": "OSM base 2026-09-22T08:45:51Z"
+   },
+   {
+    "id": "AST-A11-D002",
+    "title": "Официальная черта города Астаны (акт и/или кадастровые границы)",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A11-D003",
+    "title": "Генплан и ПДП Астаны",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A11-D004",
+    "title": "Корпус НПА Астаны (акимат, маслихат) о земле, ПДП, водоохранных зонах, зелёном поясе",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A11-D005",
+    "title": "Лоты торгов по земельным участкам Астаны",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A11-D006",
+    "title": "Публичные агрегаты обращений iKOMEK 109 по земле и строительству",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A11-D007",
+    "title": "ESA WorldCover 10 m (для L3: план/факт)",
+    "access_status": "unavailable",
+    "license": null,
+    "period": "2020/2021"
+   }
+  ],
+  "opportunities": [
+   {
+    "idea_id": "AST-A11-O001",
+    "title": "Проверка юрисдикции у края города + навигатор документов Астаны (L1)",
+    "primary_user": "Житель или МСБ, выбирающий участок на окраине или в новом районе; покупатель лота",
+    "user_task": "Понять, город это или Акмолинская область, и какие действующие документы применимы",
+    "required_datasets": {
+     "AST-A11-D001": "sample_verified",
+     "AST-A11-D002": "unavailable",
+     "AST-A11-D004": "unavailable"
+    },
+    "evidence_fact_kinds": {
+     "derived": 3,
+     "hypothesis": 1
+    },
+    "blockers": [
+     "официальная черта города не найдена",
+     "нет доступа к adilet"
+    ],
+    "feasibility_10_days": "medium для каркаса и данных OSM; low для официальной границы без доступа",
+    "non_ai_baseline": "Point-in-polygon + правила R1–R8 + фасетный поиск"
+   },
+   {
+    "idea_id": "AST-A11-O002",
+    "title": "Трекер изменений генплана и ПДП Астаны + карточки полноты новых районов (L2)",
+    "primary_user": "Житель, активист, студент-архитектор, журналист",
+    "user_task": "Узнать, что меняется в планах для территории, и где официальный документ",
+    "required_datasets": {
+     "AST-A11-D003": "unavailable",
+     "AST-A11-D004": "unavailable"
+    },
+    "evidence_fact_kinds": {
+     "hypothesis": 3
+    },
+    "blockers": [
+     "публичность ПДП неизвестна",
+     "нагрузка на курацию"
+    ],
+    "feasibility_10_days": "low",
+    "non_ai_baseline": "Ручной ввод и правила статусов"
+   },
+   {
+    "idea_id": "AST-A11-O003",
+    "title": "План/факт: сравнение утверждённого зонирования и фактической застройки (L3, исследование)",
+    "primary_user": "Исследователь / дипломник",
+    "user_task": "Оценить соответствие застройки плану с известной ошибкой",
+    "required_datasets": {
+     "AST-A11-D003": "unavailable",
+     "AST-A11-D007": "unavailable"
+    },
+    "evidence_fact_kinds": {
+     "hypothesis": 1
+    },
+    "blockers": [
+     "нужен векторный или привязанный план",
+     "юридическая деликатность: не формулировать как нарушения"
+    ],
+    "feasibility_10_days": "low",
+    "non_ai_baseline": "Готовый класс built-up из открытого продукта"
+   }
+  ]
+ },
+ {
+  "city": "astana",
+  "agent_id": "AST-A12",
+  "topic": "База данных и знаний по Астане для 11 сфер; география и аудит STUPITS",
+  "file": "astana-results/12_data_gis/extracted_files__33_/AST_A12_evidence.json",
+  "access_limitations_count": 413,
+  "fact_kinds": {
+   "observed": 21,
+   "derived": 7,
+   "hypothesis": 2
+  },
+  "source_access": {
+   "opened": 22,
+   "blocked_in_sandbox": 7,
+   "not_attempted": 8,
+   "unknown": 1
+  },
+  "dataset_access": {
+   "sample_verified": 10,
+   "null": 23
+  },
+  "datasets": [
+   {
+    "id": "AST-A12-D001",
+    "title": "Границы 6 районов Астаны (OSM, сборка STUPITS)",
+    "access_status": "sample_verified",
+    "license": "ODbL 1.0",
+    "period": "OSM base 2026-09-22"
+   },
+   {
+    "id": "AST-A12-D002",
+    "title": "Сырой ответ Overpass по bbox Астаны (11 отношений)",
+    "access_status": "sample_verified",
+    "license": "ODbL 1.0",
+    "period": "2026-09-22T08:45:51Z"
+   },
+   {
+    "id": "AST-A12-D003",
+    "title": "OSM API full relation 19733918 (Сарайшык)",
+    "access_status": "sample_verified",
+    "license": "ODbL 1.0",
+    "period": "v17, 2026-09-21"
+   },
+   {
+    "id": "AST-A12-D004",
+    "title": "Синтетический датасет ТЗ (city_data.json)",
+    "access_status": "sample_verified",
+    "license": "не указана",
+    "period": "условные 8 кварталов"
+   },
+   {
+    "id": "AST-A12-D005",
+    "title": "Сценарные события (events.json)",
+    "access_status": "sample_verified",
+    "license": "не указана",
+    "period": "—"
+   },
+   {
+    "id": "AST-A12-D006",
+    "title": "Справочный слой OSM-объектов (real_context.json)",
+    "access_status": "sample_verified",
+    "license": "ODbL 1.0",
+    "period": "2026-09-23"
+   },
+   {
+    "id": "AST-A12-D007",
+    "title": "Astana bus dataset (GTFS по GPS, 3 маршрута) — копия",
+    "access_status": "sample_verified",
+    "license": "CC BY 4.0 (по READ-ME копии; проверить на Zenodo)",
+    "period": "2024-07-29…2024-09-21"
+   },
+   {
+    "id": "AST-A12-D008",
+    "title": "Natural Earth admin-1 и populated places (отрицательный контроль)",
+    "access_status": "sample_verified",
+    "license": "Public domain",
+    "period": null
+   },
+   {
+    "id": "AST-A12-D009",
+    "title": "Каталог data.egov.kz — метаданные паспортов (сторонний обход)",
+    "access_status": "sample_verified",
+    "license": "не указана",
+    "period": "crawled 2026-02-01"
+   },
+   {
+    "id": "AST-A12-D010",
+    "title": "Статистика публикаций по местным исполнительным органам + список data/meta-ссылок",
+    "access_status": "sample_verified",
+    "license": "MIT (репозиторий)",
+    "period": "≤2025-04-30"
+   },
+   {
+    "id": "AST-A12-D020",
+    "title": "Объекты ремонта и строительства дорог (№681, №680)",
+    "access_status": null,
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A12-D021",
+    "title": "Объекты водоснабжения и водоотведения (№670, №671)",
+    "access_status": null,
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A12-D022",
+    "title": "Объекты энерго- и газоснабжения (№668, №669)",
+    "access_status": null,
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A12-D023",
+    "title": "Качество предоставления тепла в отопительный период (№654)",
+    "access_status": null,
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A12-D024",
+    "title": "Объекты вывоза мусора и тарифы (№672, №674)",
+    "access_status": null,
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A12-D025",
+    "title": "Земельные участки: свободные, реализованные для коммерческих целей, земельный фонд по категориям (№34, №35, №36)",
+    "access_status": null,
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A12-D026",
+    "title": "Строительство жилых домов, объектов социального назначения, инженерно-коммуникационной инфраструктуры (№676, №675, №677)",
+    "access_status": null,
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A12-D027",
+    "title": "Туристские маршруты и учреждения культуры (№731, №729)",
+    "access_status": null,
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A12-D028",
+    "title": "Деятельность Центра городских услуг iQala",
+    "access_status": null,
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A12-D029",
+    "title": "Государственные поликлиники и больницы (№305, №304) — для показателя S2 игрового режима и реальной доступности",
+    "access_status": null,
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A12-D030",
+    "title": "Реестры общеобразовательных школ и детских садов (Министерство просвещения)",
+    "access_status": null,
+    "license": null,
+    "period": "паспорт 22.12.2025 / 28.07.2025"
+   },
+   {
+    "id": "AST-A12-D040",
+    "title": "БНС: динамические таблицы г. Астаны, раздел 38 (население/миграция)",
+    "access_status": null,
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A12-D041",
+    "title": "ИАС «Талдау» и классификатор КАТО",
+    "access_status": null,
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A12-D042",
+    "title": "Акимат Астаны: документы, постановления, отчёты управлений",
+    "access_status": null,
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A12-D043",
+    "title": "Акты о районах Астаны в «Әділет»",
+    "access_status": null,
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A12-D044",
+    "title": "Казгидромет: бюллетени и посты наблюдения по Астане",
+    "access_status": null,
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A12-D045",
+    "title": "iKOMEK109: публичная статистика обращений",
+    "access_status": null,
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A12-D046",
+    "title": "City Transportation Systems: маршруты, остановки, расписания",
+    "access_status": null,
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A12-D047",
+    "title": "Открытые бюджеты и госзакупки: г. Астана",
+    "access_status": null,
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A12-D048",
+    "title": "OSM: дороги, пешеходная сеть, адреса, объекты (Overpass/Geofabrik)",
+    "access_status": null,
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A12-D049",
+    "title": "Правовая статистика КПСиСУ (преступления, ДТП)",
+    "access_status": null,
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A12-D050",
+    "title": "GHSL / WorldPop: модельная сетка населения",
+    "access_status": null,
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A12-D051",
+    "title": "Overture Maps: здания, места, транспортная сеть",
+    "access_status": null,
+    "license": null,
+    "period": null
+   }
+  ],
+  "opportunities": [
+   {
+    "idea_id": "AST-A12-O001",
+    "title": "Каталог открытых данных Астаны с матрицей покрытия 11 сфер и разделением «игра / реальность»",
+    "primary_user": "Разработчик и аналитик проекта; эксперт GovTech, проверяющий происхождение цифр",
+    "user_task": "Понять, какие реальные данные по каждой сфере есть, насколько свежи и что нужно для доступа",
+    "required_datasets": {
+     "AST-A12-D009": "sample_verified",
+     "AST-A12-D010": "sample_verified",
+     "AST-A12-D004": "sample_verified",
+     "AST-A12-D001": "sample_verified"
+    },
+    "evidence_fact_kinds": {
+     "observed": 6,
+     "derived": 1
+    },
+    "blockers": [
+     "портал недоступен из среды A12",
+     "условия API"
+    ],
+    "feasibility_10_days": "высокая для каталога и разделения режимов; живой статус — после второго прохода",
+    "non_ai_baseline": "Ключевые слова + ручная разметка"
+   },
+   {
+    "idea_id": "AST-A12-O002",
+    "title": "Паспорт района Астаны в зафиксированной версии границ",
+    "primary_user": "Аналитик акимата/управления; дипломник",
+    "user_task": "Получить по району число школ, поликлиник, остановок, объектов ремонта дорог и население с указанием версии границ и неопределённости",
+    "required_datasets": {
+     "AST-A12-D001": "sample_verified",
+     "AST-A12-D030": null,
+     "AST-A12-D029": null,
+     "AST-A12-D020": null,
+     "AST-A12-D040": null,
+     "AST-A12-D048": null
+    },
+    "evidence_fact_kinds": {
+     "observed": 2,
+     "derived": 3
+    },
+    "blockers": [
+     "наличие адресов/координат в реестрах неизвестно",
+     "официальные границы"
+    ],
+    "feasibility_10_days": "частично: правило PIP проверено (E103, E104); реестры и население — после доступа",
+    "non_ai_baseline": "Правила нормализации + геокодер OSM"
+   },
+   {
+    "idea_id": "AST-A12-O003",
+    "title": "Согласование районных рядов при изменении границ и конфликтах OSM (Нура, Сарайшык, эксклав Байконура)",
+    "primary_user": "Исследователь / дипломник",
+    "user_task": "Построить ряд показателя в текущих границах с интервалом неопределённости",
+    "required_datasets": {
+     "AST-A12-D040": null,
+     "AST-A12-D043": null,
+     "AST-A12-D050": null,
+     "AST-A12-D001": "sample_verified"
+    },
+    "evidence_fact_kinds": {
+     "derived": 2,
+     "hypothesis": 1
+    },
+    "blockers": [
+     "БНС может не публиковать пересчёт",
+     "нет старых официальных полигонов"
+    ],
+    "feasibility_10_days": "низкая: только проверка, есть ли год с обеими разбивками",
+    "non_ai_baseline": "Площадная интерполяция"
+   }
+  ]
+ },
+ {
+  "city": "astana",
+  "agent_id": "AST-A13",
+  "topic": "Техническая и научная основа: две городские конфигурации на общем коде",
+  "file": "astana-results/13_architecture_ai_thesis/extracted_files__34_/AST_A13_evidence.json",
+  "access_limitations_count": 307,
+  "fact_kinds": {
+   "observed": 10,
+   "derived": 1,
+   "hypothesis": 1
+  },
+  "source_access": {
+   "verified_cloned_and_run": 1,
+   "verified_read": 2,
+   "verified_read_and_run": 1,
+   "blocked_by_sandbox": 4,
+   "no_response": 1,
+   "metadata_verified_author_repo_fulltext_not_read": 12
+  },
+  "dataset_access": {
+   "sample_verified": 1,
+   "unavailable": 3
+  },
+  "datasets": [
+   {
+    "id": "AST-A13-D001",
+    "title": "OSM-границы районов Астаны (в репозитории)",
+    "access_status": "sample_verified",
+    "license": "ODbL",
+    "period": "2026-09-22"
+   },
+   {
+    "id": "AST-A13-D002",
+    "title": "Динамические ряды БНС: Астана (население, миграция)",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A13-D003",
+    "title": "Наборы data.egov.kz по Астане",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   },
+   {
+    "id": "AST-A13-D004",
+    "title": "Обращения iKOMEK109 (агрегаты)",
+    "access_status": "unavailable",
+    "license": null,
+    "period": null
+   }
+  ],
+  "opportunities": [
+   {
+    "idea_id": "AST-A13-I001",
+    "title": "Двуязычный фильтр чисел для советника",
+    "primary_user": "Житель или сотрудник, читающий ответ на казахском",
+    "user_task": "Доверять тому, что числа в ответе пришли из расчёта",
+    "required_datasets": {},
+    "evidence_fact_kinds": {
+     "observed": 2
+    },
+    "blockers": [
+     "Набор kk-примеров от носителя языка"
+    ],
+    "feasibility_10_days": "high",
+    "non_ai_baseline": "Это и есть решение"
+   },
+   {
+    "idea_id": "AST-A13-I002",
+    "title": "Множество почти-оптимальных планов вместо одного топ-1",
+    "primary_user": "Лицо, сравнивающее варианты программ мер",
+    "user_task": "Выбрать план, не переоценивая точность модели",
+    "required_datasets": {},
+    "evidence_fact_kinds": {
+     "observed": 3,
+     "derived": 1
+    },
+    "blockers": [
+     "Диапазоны параметров для реальных моделей"
+    ],
+    "feasibility_10_days": "medium",
+    "non_ai_baseline": "Показ топ-1"
+   }
+  ]
+ }
+]

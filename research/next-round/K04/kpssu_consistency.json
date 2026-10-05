@@ -1,0 +1,158 @@
+{
+ "note": "offline arithmetic consistency only; live service not reachable from this environment (403 proxy CONNECT, 2026-10-05)",
+ "shymkent": [
+  {
+   "check": "sum district×year == area total 7064",
+   "claimed": 7064,
+   "computed": 7064,
+   "match": true
+  },
+  {
+   "check": "sum year×type_dtp == 7064",
+   "claimed": 7064,
+   "computed": 7064,
+   "match": true
+  },
+  {
+   "check": "sum crash_code×year == 7064",
+   "claimed": 7064,
+   "computed": 7064,
+   "match": true
+  },
+  {
+   "check": "share code05 2021 %",
+   "claimed": 44.1,
+   "computed": 44.1,
+   "match": true
+  },
+  {
+   "check": "share code05 2022 %",
+   "claimed": 46.3,
+   "computed": 46.3,
+   "match": true
+  },
+  {
+   "check": "share code05 2023 %",
+   "claimed": 43.6,
+   "computed": 43.6,
+   "match": true
+  },
+  {
+   "check": "share code05 2024 %",
+   "claimed": 48.8,
+   "computed": 48.8,
+   "match": true
+  },
+  {
+   "check": "share code05 2025 %",
+   "claimed": 46.4,
+   "computed": 46.4,
+   "match": true
+  },
+  {
+   "check": "share code05 2026 %",
+   "claimed": 46.1,
+   "computed": 46.1,
+   "match": true
+  },
+  {
+   "check": "deaths code05 2025 share % (35/68)",
+   "claimed": 51.5,
+   "computed": 51.5,
+   "match": true
+  },
+  {
+   "check": "records 2024/2023 ratio ('в 2,4 раза')",
+   "claimed": 2.4,
+   "computed": 2.39,
+   "match": true
+  },
+  {
+   "check": "dark (сумерки+ночь) code05 2025 == 302",
+   "claimed": 302,
+   "computed": 302,
+   "match": true
+  },
+  {
+   "check": "code05 by light condition 2025 sums to code05 2025",
+   "claimed": 855,
+   "computed": 855,
+   "match": true
+  },
+  {
+   "check": "104 of 302 dark code05 with lighting off/absent (2025)",
+   "claimed": 104,
+   "computed": null,
+   "match": null,
+   "note": "needs a light×outdoor-lighting cross-tab that is not in the saved file; unverifiable offline"
+  }
+ ],
+ "astana": [
+  {
+   "check": "sum district×year == 12921",
+   "claimed": 12921,
+   "computed": 12921,
+   "match": true
+  },
+  {
+   "check": "sum year×type_dtp == 12921",
+   "claimed": 12921,
+   "computed": 12921,
+   "match": true
+  },
+  {
+   "check": "sum crash_code×year == 12921",
+   "claimed": 12921,
+   "computed": 12921,
+   "match": true
+  },
+  {
+   "check": "share code05 2021-2026 within claimed 38-47 %",
+   "claimed": [
+    38,
+    47
+   ],
+   "computed": {
+    "2021": 47.0,
+    "2022": 47.0,
+    "2023": 40.2,
+    "2024": 40.3,
+    "2025": 41.3,
+    "2026": 37.8
+   },
+   "match": true
+  },
+  {
+   "check": "monthly code05 2025 sums to code05 2025",
+   "claimed": 834,
+   "computed": 834,
+   "match": true
+  },
+  {
+   "check": "Sep-Dec share of 2025 code05 % (41)",
+   "claimed": 41,
+   "computed": 41.0,
+   "match": true
+  },
+  {
+   "check": "code05 on snow/ice % (17.4), all years — agent definition incl. de-iced surface",
+   "claimed": 17.4,
+   "computed": 17.4,
+   "match": true,
+   "note": "matches only if 'обработанная противогололедным материалом' is counted (report §2 says so; summary line says 'на снегу или льду')"
+  },
+  {
+   "check": "code05 on snow/ice % — strict (icy/snowy/packed snow only)",
+   "claimed": null,
+   "computed": 14.8,
+   "match": null,
+   "note": "K04 alternative definition; use this figure if 'snow or ice' is meant literally"
+  },
+  {
+   "check": "surface rows total == all-years code05",
+   "claimed": 5773,
+   "computed": 5773,
+   "match": true
+  }
+ ]
+}
