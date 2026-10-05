@@ -1,0 +1,68 @@
+{
+ "name": "synthetic_radius_boundary",
+ "provenance": {
+  "kind": "synthetic",
+  "note": "Точка ровно на расстоянии радиуса: проверка правила <= coverage_radius_m*1000."
+ },
+ "context": {
+  "city": "astana",
+  "category": "outpatient_clinic",
+  "bbox": [
+   10,
+   10,
+   10.02,
+   10.02
+  ],
+  "release": "synthetic",
+  "sources": [
+   {
+    "id": "s-edge",
+    "lon": 10.01,
+    "lat": 10.005,
+    "name": "synthetic s-edge"
+   }
+  ],
+  "source_snapshot": "sha256:21412fc26e7137332178acae764f772158c4ff7e8805ff3071e38e81d537e92a",
+  "versions": {
+   "schema": "city-plan-v2",
+   "metric": "haversine-mm-v1",
+   "formula": "haversine:R=6371008.8"
+  }
+ },
+ "scenario": {
+  "schema_version": "city-plan-v2",
+  "city_id": "astana",
+  "source_snapshot": "sha256:21412fc26e7137332178acae764f772158c4ff7e8805ff3071e38e81d537e92a",
+  "category": "outpatient_clinic",
+  "control_points": [
+   {
+    "id": "edge",
+    "lon": 10.01,
+    "lat": 10.007697961091175,
+    "weight": 1
+   },
+   {
+    "id": "far",
+    "lon": 10.019,
+    "lat": 10.019,
+    "weight": 1
+   }
+  ],
+  "candidates": [
+   {
+    "id": "k1",
+    "lon": 10.018,
+    "lat": 10.018,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 5
+   }
+  ],
+  "budget": 5,
+  "max_selected": 1,
+  "coverage_radius_m": 300,
+  "required_ids": [],
+  "excluded_ids": [],
+  "selected_ids": []
+ }
+}

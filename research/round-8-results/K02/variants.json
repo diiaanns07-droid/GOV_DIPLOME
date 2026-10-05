@@ -1,0 +1,126 @@
+{
+ "about": "Варианты для оракула и JS-теста: смена radius/weights/required/excluded при тех же данных.",
+ "variants": [
+  {
+   "fixture": "real_shymkent_school",
+   "name": "base"
+  },
+  {
+   "fixture": "real_shymkent_school",
+   "name": "radius_600",
+   "patch": {
+    "coverage_radius_m": 600
+   }
+  },
+  {
+   "fixture": "real_shymkent_school",
+   "name": "radius_100",
+   "patch": {
+    "coverage_radius_m": 100
+   }
+  },
+  {
+   "fixture": "real_shymkent_school",
+   "name": "weight_center_10",
+   "patch": {
+    "control_points": [
+     {
+      "id": "двор-север",
+      "lon": 69.598224,
+      "lat": 42.321916,
+      "weight": 3
+     },
+     {
+      "id": "двор-центр",
+      "lon": 69.605512,
+      "lat": 42.315628,
+      "weight": 10
+     },
+     {
+      "id": "двор-юг",
+      "lon": 69.600653,
+      "lat": 42.308442,
+      "weight": 2
+     },
+     {
+      "id": "рынок",
+      "lon": 69.612799,
+      "lat": 42.310238,
+      "weight": 1
+     },
+     {
+      "id": "парк",
+      "lon": 69.615229,
+      "lat": 42.322814,
+      "weight": 1
+     },
+     {
+      "id": "остановка",
+      "lon": 69.607941,
+      "lat": 42.319221,
+      "weight": 2
+     }
+    ]
+   }
+  },
+  {
+   "fixture": "real_shymkent_school",
+   "name": "required_park",
+   "patch": {
+    "required_ids": [
+     "c-park"
+    ]
+   }
+  },
+  {
+   "fixture": "real_shymkent_school",
+   "name": "excluded_sev",
+   "patch": {
+    "excluded_ids": [
+     "c-sev"
+    ]
+   }
+  },
+  {
+   "fixture": "real_astana_clinic",
+   "name": "base"
+  },
+  {
+   "fixture": "real_astana_clinic",
+   "name": "no_required",
+   "patch": {
+    "required_ids": []
+   }
+  },
+  {
+   "fixture": "real_astana_clinic",
+   "name": "radius_150",
+   "patch": {
+    "coverage_radius_m": 150
+   }
+  },
+  {
+   "fixture": "synthetic_empty_sources",
+   "name": "base"
+  },
+  {
+   "fixture": "synthetic_infeasible_required",
+   "name": "base"
+  },
+  {
+   "fixture": "synthetic_infeasible_required",
+   "name": "budget_600",
+   "patch": {
+    "budget": 600
+   }
+  },
+  {
+   "fixture": "synthetic_tie_same_winners",
+   "name": "base"
+  },
+  {
+   "fixture": "synthetic_radius_boundary",
+   "name": "base"
+  }
+ ]
+}

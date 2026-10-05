@@ -1,0 +1,296 @@
+{
+ "fixture": "synthetic_infeasible_required",
+ "provenance": {
+  "kind": "synthetic",
+  "note": "Полностью синтетическая геометрия в условном квадрате [10,10,10.02,10.02]; city_id нужен схеме, это НЕ данные города."
+ },
+ "problem_digest": "ac3f6fd71341f8397f6810356ee3f0ab4599e1fa0ede0cf6dceb0257b2f33432",
+ "catalog_digest": "d89ccb97a9c35858",
+ "status": "infeasible",
+ "explanation": {
+  "ru": "**Сравнение планов (значения из расчётного модуля; объекты условные).** plan-school-ac3f6fd71341.\n\nПлан | среднее | худшая точка | вес в радиусе | условная стоимость | объекты\nБез новых объектов | 936,4 м | 936,4 м | 0 / 2 | 0 усл. ед. | нет\nРучной план (недопустим) | 468,2 м | 936,4 м | 1 / 2 | 10 усл. ед. | small\n\n**Невыполнимые условия**\n- Ручной план: не выбраны обязательные кандидаты: big\n- Задача: стоимость 500 больше бюджета 100. Ограничения не снимаются молча.\n\n**Изменение условного бюджета (те же кандидаты и веса)**\n- 0 усл. ед.: нет допустимого плана\n- 50 усл. ед.: нет допустимого плана\n- 100 усл. ед.: нет допустимого плана\n\n**Отмеченные факты**\n- Ручной план: взвешенное среднее расстояние по прямой: 468,2 м\n- Ручной план: расстояние для худшей точки: 936,4 м\n- Ручной план: условная стоимость: 10 усл. ед.\n- Условный бюджет: 100 усл. ед.\n- Радиус анализа (не норматив доступности): 200 м\n- Допустимых наборов: 0\n- Оптимум по среднему: взвешенное среднее: неизвестно\n- Оптимум по среднему: условная стоимость: неизвестно\n- Оптимум по среднему: взвешенное среднее: неизвестно\n- Оптимум по среднему: условная стоимость: неизвестно\n- Оптимум по среднему: взвешенное среднее: неизвестно\n- Оптимум по среднему: условная стоимость: неизвестно\n\n**Ограничения**\n- Расстояния — по прямой (гаверсинус) до записей в сохранённом квадрате; не время пешком, не транспорт и не ближайшее учреждение города.\n- Веса точек — приоритет пользователя, не численность жителей; радиус — параметр анализа, не норматив доступности.\n- Стоимости и бюджет условные, не тенге и не смета; вывод о снижении реальных расходов не делается.\n- Вместимость, нагрузка, население и социальный эффект не моделировались: из этих чисел нельзя сделать вывод, что объектов достаточно или услуга улучшится.\n- Оптимум найден полным перебором только среди введённых кандидатных мест и условий — это не лучший план города.",
+  "kk": "**Жоспарларды салыстыру (мәндер есептеу модулінен; нысандар шартты).** plan-school-ac3f6fd71341.\n\nЖоспар | орташа | ең нашар нүкте | радиустағы салмақ | шартты құны | нысандар\nЖаңа нысандарсыз | 936,4 м | 936,4 м | 0 / 2 | 0 шартты бірл. | жоқ\nҚолмен жасалған жоспар (рұқсат етілмеген) | 468,2 м | 936,4 м | 1 / 2 | 10 шартты бірл. | small\n\n**Орындалмайтын шарттар**\n- Қолмен жасалған жоспар: міндетті үміткерлер таңдалмаған: big\n- Есеп: құны 500 > бюджет 100. Шектеулер үнсіз алынбайды.\n\n**Шартты бюджетті өзгерту (сол үміткерлер мен салмақтар)**\n- 0 шартты бірл.: рұқсат етілген жоспар жоқ\n- 50 шартты бірл.: рұқсат етілген жоспар жоқ\n- 100 шартты бірл.: рұқсат етілген жоспар жоқ\n\n**Белгіленген деректер**\n- Қолмен жасалған жоспар: түзу бойынша өлшенген орташа қашықтық: 468,2 м\n- Қолмен жасалған жоспар: ең нашар нүктеге дейінгі қашықтық: 936,4 м\n- Қолмен жасалған жоспар: шартты құны: 10 шартты бірл.\n- Шартты бюджет: 100 шартты бірл.\n- Талдау радиусы (қолжетімділік нормативі емес): 200 м\n- Рұқсат етілген жиындар: 0\n- Орташа бойынша оңтайлы: өлшенген орташа: белгісіз\n- Орташа бойынша оңтайлы: шартты құны: белгісіз\n- Орташа бойынша оңтайлы: өлшенген орташа: белгісіз\n- Орташа бойынша оңтайлы: шартты құны: белгісіз\n- Орташа бойынша оңтайлы: өлшенген орташа: белгісіз\n- Орташа бойынша оңтайлы: шартты құны: белгісіз\n\n**Шектеулер**\n- Қашықтықтар — сақталған шаршыдағы жазбаларға дейін түзу бойынша; жаяу уақыт емес.\n- Нүкте салмақтары — пайдаланушы басымдығы, тұрғындар саны емес; радиус — талдау параметрі.\n- Құны мен бюджет шартты, теңге емес; нақты шығындар туралы қорытынды жасалмайды.\n- Сыйымдылық, жүктеме, халық және әлеуметтік әсер модельденбеді.\n- Оңтайлы жоспар тек енгізілген үміткер орындар арасында толық іріктеумен табылды — бұл қаланың ең жақсы жоспары емес."
+ },
+ "facts": {
+  "constraint.budget": {
+   "value": 100,
+   "unit": "conditional_units",
+   "kind": "user_input",
+   "scope": "user_input",
+   "hypothetical": false
+  },
+  "constraint.max_selected": {
+   "value": 2,
+   "unit": "count",
+   "kind": "user_input",
+   "scope": "user_input",
+   "hypothetical": false
+  },
+  "constraint.radius": {
+   "value": 200,
+   "unit": "m",
+   "kind": "user_input",
+   "scope": "analysis_parameter",
+   "hypothetical": false
+  },
+  "constraint.required": {
+   "value": 1,
+   "unit": "count",
+   "kind": "user_input",
+   "scope": "user_input",
+   "hypothetical": false
+  },
+  "constraint.excluded": {
+   "value": 0,
+   "unit": "count",
+   "kind": "user_input",
+   "scope": "user_input",
+   "hypothetical": false
+  },
+  "constraint.points": {
+   "value": 2,
+   "unit": "count",
+   "kind": "user_input",
+   "scope": "user_input",
+   "hypothetical": false
+  },
+  "constraint.total_weight": {
+   "value": 2,
+   "unit": "weight",
+   "kind": "user_input",
+   "scope": "user_input",
+   "hypothetical": false
+  },
+  "constraint.candidates": {
+   "value": 2,
+   "unit": "count",
+   "kind": "user_input",
+   "scope": "user_input",
+   "hypothetical": false
+  },
+  "constraint.sources": {
+   "value": 1,
+   "unit": "count",
+   "kind": "derived",
+   "scope": "search_space",
+   "hypothetical": false
+  },
+  "constraint.evaluated": {
+   "value": 2,
+   "unit": "count",
+   "kind": "derived",
+   "scope": "search_space",
+   "hypothetical": false
+  },
+  "constraint.feasible_count": {
+   "value": 0,
+   "unit": "count",
+   "kind": "derived",
+   "scope": "search_space",
+   "hypothetical": false
+  },
+  "plan.baseline.weighted_mean": {
+   "value": 936367.5,
+   "unit": "mm",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": false
+  },
+  "plan.baseline.max": {
+   "value": 936372,
+   "unit": "mm",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": false
+  },
+  "plan.baseline.covered_weight": {
+   "value": 0,
+   "unit": "weight",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": false
+  },
+  "plan.baseline.coverage_fraction": {
+   "value": 0,
+   "unit": "share",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": false
+  },
+  "plan.baseline.cost": {
+   "value": 0,
+   "unit": "conditional_units",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": false
+  },
+  "plan.baseline.count": {
+   "value": 0,
+   "unit": "count",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": false
+  },
+  "plan.baseline.unknown_count": {
+   "value": 0,
+   "unit": "count",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": false
+  },
+  "plan.baseline.selection": {
+   "value": "",
+   "unit": "text",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": false
+  },
+  "plan.manual.weighted_mean": {
+   "value": 468186,
+   "unit": "mm",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": true
+  },
+  "plan.manual.max": {
+   "value": 936372,
+   "unit": "mm",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": true
+  },
+  "plan.manual.covered_weight": {
+   "value": 1,
+   "unit": "weight",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": true
+  },
+  "plan.manual.coverage_fraction": {
+   "value": 0.5,
+   "unit": "share",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": true
+  },
+  "plan.manual.cost": {
+   "value": 10,
+   "unit": "conditional_units",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": true
+  },
+  "plan.manual.count": {
+   "value": 1,
+   "unit": "count",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": true
+  },
+  "plan.manual.unknown_count": {
+   "value": 0,
+   "unit": "count",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": true
+  },
+  "plan.manual.selection": {
+   "value": "small",
+   "unit": "text",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": true
+  },
+  "plan.manual.feasible": {
+   "value": 0,
+   "unit": "flag",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": true
+  },
+  "sensitivity.s1.budget": {
+   "value": 0,
+   "unit": "conditional_units",
+   "kind": "user_input",
+   "scope": "user_input",
+   "hypothetical": false
+  },
+  "sensitivity.s1.status": {
+   "value": "infeasible",
+   "unit": "text",
+   "kind": "derived",
+   "scope": "search_space",
+   "hypothetical": false
+  },
+  "sensitivity.s1.mean_weighted_mean": {
+   "value": null,
+   "unit": "mm",
+   "kind": "unknown",
+   "scope": "selected_control_points",
+   "hypothetical": false
+  },
+  "sensitivity.s1.mean_cost": {
+   "value": null,
+   "unit": "conditional_units",
+   "kind": "unknown",
+   "scope": "selected_control_points",
+   "hypothetical": false
+  },
+  "sensitivity.s2.budget": {
+   "value": 50,
+   "unit": "conditional_units",
+   "kind": "user_input",
+   "scope": "user_input",
+   "hypothetical": false
+  },
+  "sensitivity.s2.status": {
+   "value": "infeasible",
+   "unit": "text",
+   "kind": "derived",
+   "scope": "search_space",
+   "hypothetical": false
+  },
+  "sensitivity.s2.mean_weighted_mean": {
+   "value": null,
+   "unit": "mm",
+   "kind": "unknown",
+   "scope": "selected_control_points",
+   "hypothetical": false
+  },
+  "sensitivity.s2.mean_cost": {
+   "value": null,
+   "unit": "conditional_units",
+   "kind": "unknown",
+   "scope": "selected_control_points",
+   "hypothetical": false
+  },
+  "sensitivity.s3.budget": {
+   "value": 100,
+   "unit": "conditional_units",
+   "kind": "user_input",
+   "scope": "user_input",
+   "hypothetical": false
+  },
+  "sensitivity.s3.status": {
+   "value": "infeasible",
+   "unit": "text",
+   "kind": "derived",
+   "scope": "search_space",
+   "hypothetical": false
+  },
+  "sensitivity.s3.mean_weighted_mean": {
+   "value": null,
+   "unit": "mm",
+   "kind": "unknown",
+   "scope": "selected_control_points",
+   "hypothetical": false
+  },
+  "sensitivity.s3.mean_cost": {
+   "value": null,
+   "unit": "conditional_units",
+   "kind": "unknown",
+   "scope": "selected_control_points",
+   "hypothetical": false
+  }
+ }
+}

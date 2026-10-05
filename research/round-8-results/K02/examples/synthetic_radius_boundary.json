@@ -1,0 +1,513 @@
+{
+ "fixture": "synthetic_radius_boundary",
+ "provenance": {
+  "kind": "synthetic",
+  "note": "Точка ровно на расстоянии радиуса: проверка правила <= coverage_radius_m*1000."
+ },
+ "problem_digest": "647be3892fafcf8d8addc7f8d7c7ea32df0304f6a6c2b89a34d52477d8eb80a0",
+ "catalog_digest": "6e2140e36de58f06",
+ "status": "optimal",
+ "explanation": {
+  "ru": "**Сравнение планов (значения из расчётного модуля; объекты условные).** plan-outpatient-clinic-647be3892faf.\n\nПлан | среднее | худшая точка | вес в радиусе | условная стоимость | объекты\nБез новых объектов | 1071,2 м | 1842,5 м | 1 / 2 | 0 усл. ед. | нет\nРучной план | 1071,2 м | 1842,5 м | 1 / 2 | 0 усл. ед. | нет\nОптимум по среднему расстоянию | 228 м | 300 м | 2 / 2 | 5 усл. ед. | k1\nОптимум по худшей точке | 228 м | 300 м | 2 / 2 | 5 усл. ед. | k1\nОптимум по охвату радиуса | 228 м | 300 м | 2 / 2 | 5 усл. ед. | k1\n\nСовпадают по набору объектов: Оптимум по среднему расстоянию = Оптимум по худшей точке = Оптимум по охвату радиуса (k1).\n\n**Компромиссы**\n- Ручной план дешевле оптимума по среднему на 5 усл. ед.\n\n**Изменение условного бюджета (те же кандидаты и веса)**\n- 0 усл. ед.: оптимум по среднему 1071,2 м, 0 усл. ед.\n- 2 усл. ед.: оптимум по среднему 1071,2 м, 0 усл. ед.\n- 5 усл. ед.: оптимум по среднему 228 м, 5 усл. ед.\n\n**Парето: стоимость → взвешенное среднее (только планы без неизвестных точек)**\n- 0 усл. ед. → 1071,2 м (нет)\n- 5 усл. ед. → 228 м (k1)\n\n**Отмеченные факты**\n- Ручной план: взвешенное среднее расстояние по прямой: 1071,2 м\n- Ручной план: расстояние для худшей точки: 1842,5 м\n- Ручной план: условная стоимость: 0 усл. ед.\n- Оптимум по среднему расстоянию: взвешенное среднее расстояние по прямой: 228 м\n- Оптимум по среднему расстоянию: расстояние для худшей точки: 300 м\n- Оптимум по среднему расстоянию: условная стоимость: 5 усл. ед.\n- Оптимум по худшей точке: расстояние для худшей точки: 300 м\n- Оптимум по худшей точке: взвешенное среднее расстояние по прямой: 228 м\n- Оптимум по охвату радиуса: вес точек в радиусе: 2\n- Оптимум по охвату радиуса: взвешенное среднее расстояние по прямой: 228 м\n- Условный бюджет: 5 усл. ед.\n- Радиус анализа (не норматив доступности): 300 м\n- Допустимых наборов: 2\n\n**Ограничения**\n- Расстояния — по прямой (гаверсинус) до записей в сохранённом квадрате; не время пешком, не транспорт и не ближайшее учреждение города.\n- Веса точек — приоритет пользователя, не численность жителей; радиус — параметр анализа, не норматив доступности.\n- Стоимости и бюджет условные, не тенге и не смета; вывод о снижении реальных расходов не делается.\n- Вместимость, нагрузка, население и социальный эффект не моделировались: из этих чисел нельзя сделать вывод, что объектов достаточно или услуга улучшится.\n- Оптимум найден полным перебором только среди введённых кандидатных мест и условий — это не лучший план города.",
+  "kk": "**Жоспарларды салыстыру (мәндер есептеу модулінен; нысандар шартты).** plan-outpatient-clinic-647be3892faf.\n\nЖоспар | орташа | ең нашар нүкте | радиустағы салмақ | шартты құны | нысандар\nЖаңа нысандарсыз | 1071,2 м | 1842,5 м | 1 / 2 | 0 шартты бірл. | жоқ\nҚолмен жасалған жоспар | 1071,2 м | 1842,5 м | 1 / 2 | 0 шартты бірл. | жоқ\nОрташа қашықтық бойынша оңтайлы | 228 м | 300 м | 2 / 2 | 5 шартты бірл. | k1\nЕң нашар нүкте бойынша оңтайлы | 228 м | 300 м | 2 / 2 | 5 шартты бірл. | k1\nРадиус қамтуы бойынша оңтайлы | 228 м | 300 м | 2 / 2 | 5 шартты бірл. | k1\n\nНысандар жиыны бойынша сәйкес: Орташа қашықтық бойынша оңтайлы = Ең нашар нүкте бойынша оңтайлы = Радиус қамтуы бойынша оңтайлы (k1).\n\n**Ымыралар**\n- Қолмен жасалған жоспар орташа бойынша оңтайлыдан 5 шартты бірлікке арзан.\n\n**Шартты бюджетті өзгерту (сол үміткерлер мен салмақтар)**\n- 0 шартты бірл.: орташа бойынша оңтайлы 1071,2 м, 0 шартты бірл.\n- 2 шартты бірл.: орташа бойынша оңтайлы 1071,2 м, 0 шартты бірл.\n- 5 шартты бірл.: орташа бойынша оңтайлы 228 м, 5 шартты бірл.\n\n**Парето: құны → өлшенген орташа**\n- 0 шартты бірл. → 1071,2 м (жоқ)\n- 5 шартты бірл. → 228 м (k1)\n\n**Белгіленген деректер**\n- Қолмен жасалған жоспар: түзу бойынша өлшенген орташа қашықтық: 1071,2 м\n- Қолмен жасалған жоспар: ең нашар нүктеге дейінгі қашықтық: 1842,5 м\n- Қолмен жасалған жоспар: шартты құны: 0 шартты бірл.\n- Орташа қашықтық бойынша оңтайлы: түзу бойынша өлшенген орташа қашықтық: 228 м\n- Орташа қашықтық бойынша оңтайлы: ең нашар нүктеге дейінгі қашықтық: 300 м\n- Орташа қашықтық бойынша оңтайлы: шартты құны: 5 шартты бірл.\n- Ең нашар нүкте бойынша оңтайлы: ең нашар нүктеге дейінгі қашықтық: 300 м\n- Ең нашар нүкте бойынша оңтайлы: түзу бойынша өлшенген орташа қашықтық: 228 м\n- Радиус қамтуы бойынша оңтайлы: радиустағы нүктелер салмағы: 2\n- Радиус қамтуы бойынша оңтайлы: түзу бойынша өлшенген орташа қашықтық: 228 м\n- Шартты бюджет: 5 шартты бірл.\n- Талдау радиусы (қолжетімділік нормативі емес): 300 м\n- Рұқсат етілген жиындар: 2\n\n**Шектеулер**\n- Қашықтықтар — сақталған шаршыдағы жазбаларға дейін түзу бойынша; жаяу уақыт емес.\n- Нүкте салмақтары — пайдаланушы басымдығы, тұрғындар саны емес; радиус — талдау параметрі.\n- Құны мен бюджет шартты, теңге емес; нақты шығындар туралы қорытынды жасалмайды.\n- Сыйымдылық, жүктеме, халық және әлеуметтік әсер модельденбеді.\n- Оңтайлы жоспар тек енгізілген үміткер орындар арасында толық іріктеумен табылды — бұл қаланың ең жақсы жоспары емес."
+ },
+ "facts": {
+  "constraint.budget": {
+   "value": 5,
+   "unit": "conditional_units",
+   "kind": "user_input",
+   "scope": "user_input",
+   "hypothetical": false
+  },
+  "constraint.max_selected": {
+   "value": 1,
+   "unit": "count",
+   "kind": "user_input",
+   "scope": "user_input",
+   "hypothetical": false
+  },
+  "constraint.radius": {
+   "value": 300,
+   "unit": "m",
+   "kind": "user_input",
+   "scope": "analysis_parameter",
+   "hypothetical": false
+  },
+  "constraint.required": {
+   "value": 0,
+   "unit": "count",
+   "kind": "user_input",
+   "scope": "user_input",
+   "hypothetical": false
+  },
+  "constraint.excluded": {
+   "value": 0,
+   "unit": "count",
+   "kind": "user_input",
+   "scope": "user_input",
+   "hypothetical": false
+  },
+  "constraint.points": {
+   "value": 2,
+   "unit": "count",
+   "kind": "user_input",
+   "scope": "user_input",
+   "hypothetical": false
+  },
+  "constraint.total_weight": {
+   "value": 2,
+   "unit": "weight",
+   "kind": "user_input",
+   "scope": "user_input",
+   "hypothetical": false
+  },
+  "constraint.candidates": {
+   "value": 1,
+   "unit": "count",
+   "kind": "user_input",
+   "scope": "user_input",
+   "hypothetical": false
+  },
+  "constraint.sources": {
+   "value": 1,
+   "unit": "count",
+   "kind": "derived",
+   "scope": "search_space",
+   "hypothetical": false
+  },
+  "constraint.evaluated": {
+   "value": 2,
+   "unit": "count",
+   "kind": "derived",
+   "scope": "search_space",
+   "hypothetical": false
+  },
+  "constraint.feasible_count": {
+   "value": 2,
+   "unit": "count",
+   "kind": "derived",
+   "scope": "search_space",
+   "hypothetical": false
+  },
+  "plan.baseline.weighted_mean": {
+   "value": 1071229,
+   "unit": "mm",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": false
+  },
+  "plan.baseline.max": {
+   "value": 1842458,
+   "unit": "mm",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": false
+  },
+  "plan.baseline.covered_weight": {
+   "value": 1,
+   "unit": "weight",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": false
+  },
+  "plan.baseline.coverage_fraction": {
+   "value": 0.5,
+   "unit": "share",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": false
+  },
+  "plan.baseline.cost": {
+   "value": 0,
+   "unit": "conditional_units",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": false
+  },
+  "plan.baseline.count": {
+   "value": 0,
+   "unit": "count",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": false
+  },
+  "plan.baseline.unknown_count": {
+   "value": 0,
+   "unit": "count",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": false
+  },
+  "plan.baseline.selection": {
+   "value": "",
+   "unit": "text",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": false
+  },
+  "plan.manual.weighted_mean": {
+   "value": 1071229,
+   "unit": "mm",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": false
+  },
+  "plan.manual.max": {
+   "value": 1842458,
+   "unit": "mm",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": false
+  },
+  "plan.manual.covered_weight": {
+   "value": 1,
+   "unit": "weight",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": false
+  },
+  "plan.manual.coverage_fraction": {
+   "value": 0.5,
+   "unit": "share",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": false
+  },
+  "plan.manual.cost": {
+   "value": 0,
+   "unit": "conditional_units",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": false
+  },
+  "plan.manual.count": {
+   "value": 0,
+   "unit": "count",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": false
+  },
+  "plan.manual.unknown_count": {
+   "value": 0,
+   "unit": "count",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": false
+  },
+  "plan.manual.selection": {
+   "value": "",
+   "unit": "text",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": false
+  },
+  "plan.manual.feasible": {
+   "value": 1,
+   "unit": "flag",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": false
+  },
+  "plan.mean.weighted_mean": {
+   "value": 228029.5,
+   "unit": "mm",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": true
+  },
+  "plan.mean.max": {
+   "value": 300000,
+   "unit": "mm",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": true
+  },
+  "plan.mean.covered_weight": {
+   "value": 2,
+   "unit": "weight",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": true
+  },
+  "plan.mean.coverage_fraction": {
+   "value": 1,
+   "unit": "share",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": true
+  },
+  "plan.mean.cost": {
+   "value": 5,
+   "unit": "conditional_units",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": true
+  },
+  "plan.mean.count": {
+   "value": 1,
+   "unit": "count",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": true
+  },
+  "plan.mean.unknown_count": {
+   "value": 0,
+   "unit": "count",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": true
+  },
+  "plan.mean.selection": {
+   "value": "k1",
+   "unit": "text",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": true
+  },
+  "plan.minimax.weighted_mean": {
+   "value": 228029.5,
+   "unit": "mm",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": true
+  },
+  "plan.minimax.max": {
+   "value": 300000,
+   "unit": "mm",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": true
+  },
+  "plan.minimax.covered_weight": {
+   "value": 2,
+   "unit": "weight",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": true
+  },
+  "plan.minimax.coverage_fraction": {
+   "value": 1,
+   "unit": "share",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": true
+  },
+  "plan.minimax.cost": {
+   "value": 5,
+   "unit": "conditional_units",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": true
+  },
+  "plan.minimax.count": {
+   "value": 1,
+   "unit": "count",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": true
+  },
+  "plan.minimax.unknown_count": {
+   "value": 0,
+   "unit": "count",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": true
+  },
+  "plan.minimax.selection": {
+   "value": "k1",
+   "unit": "text",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": true
+  },
+  "plan.coverage.weighted_mean": {
+   "value": 228029.5,
+   "unit": "mm",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": true
+  },
+  "plan.coverage.max": {
+   "value": 300000,
+   "unit": "mm",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": true
+  },
+  "plan.coverage.covered_weight": {
+   "value": 2,
+   "unit": "weight",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": true
+  },
+  "plan.coverage.coverage_fraction": {
+   "value": 1,
+   "unit": "share",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": true
+  },
+  "plan.coverage.cost": {
+   "value": 5,
+   "unit": "conditional_units",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": true
+  },
+  "plan.coverage.count": {
+   "value": 1,
+   "unit": "count",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": true
+  },
+  "plan.coverage.unknown_count": {
+   "value": 0,
+   "unit": "count",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": true
+  },
+  "plan.coverage.selection": {
+   "value": "k1",
+   "unit": "text",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": true
+  },
+  "compare.manual_vs_mean.cost_difference": {
+   "value": -5,
+   "unit": "conditional_units",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": true
+  },
+  "sensitivity.s1.budget": {
+   "value": 0,
+   "unit": "conditional_units",
+   "kind": "user_input",
+   "scope": "user_input",
+   "hypothetical": false
+  },
+  "sensitivity.s1.status": {
+   "value": "optimal",
+   "unit": "text",
+   "kind": "derived",
+   "scope": "search_space",
+   "hypothetical": false
+  },
+  "sensitivity.s1.mean_weighted_mean": {
+   "value": 1071229,
+   "unit": "mm",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": false
+  },
+  "sensitivity.s1.mean_cost": {
+   "value": 0,
+   "unit": "conditional_units",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": false
+  },
+  "sensitivity.s2.budget": {
+   "value": 2,
+   "unit": "conditional_units",
+   "kind": "user_input",
+   "scope": "user_input",
+   "hypothetical": false
+  },
+  "sensitivity.s2.status": {
+   "value": "optimal",
+   "unit": "text",
+   "kind": "derived",
+   "scope": "search_space",
+   "hypothetical": false
+  },
+  "sensitivity.s2.mean_weighted_mean": {
+   "value": 1071229,
+   "unit": "mm",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": false
+  },
+  "sensitivity.s2.mean_cost": {
+   "value": 0,
+   "unit": "conditional_units",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": false
+  },
+  "sensitivity.s3.budget": {
+   "value": 5,
+   "unit": "conditional_units",
+   "kind": "user_input",
+   "scope": "user_input",
+   "hypothetical": false
+  },
+  "sensitivity.s3.status": {
+   "value": "optimal",
+   "unit": "text",
+   "kind": "derived",
+   "scope": "search_space",
+   "hypothetical": false
+  },
+  "sensitivity.s3.mean_weighted_mean": {
+   "value": 228029.5,
+   "unit": "mm",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": true
+  },
+  "sensitivity.s3.mean_cost": {
+   "value": 5,
+   "unit": "conditional_units",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": false
+  },
+  "pareto.p1.cost": {
+   "value": 0,
+   "unit": "conditional_units",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": false
+  },
+  "pareto.p1.weighted_mean": {
+   "value": 1071229,
+   "unit": "mm",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": false
+  },
+  "pareto.p1.selection": {
+   "value": "",
+   "unit": "text",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": false
+  },
+  "pareto.p2.cost": {
+   "value": 5,
+   "unit": "conditional_units",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": true
+  },
+  "pareto.p2.weighted_mean": {
+   "value": 228029.5,
+   "unit": "mm",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": true
+  },
+  "pareto.p2.selection": {
+   "value": "k1",
+   "unit": "text",
+   "kind": "derived",
+   "scope": "selected_control_points",
+   "hypothetical": true
+  }
+ }
+}

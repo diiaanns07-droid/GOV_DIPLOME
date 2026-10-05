@@ -61,3 +61,17 @@ synthetic("synthetic_tie_same_winners", "shymkent", "outpatient_clinic", [["s1",
   [["a", 0.5, 0.5, 1]],
   [["t1", 0.45, 0.5, 10], ["t2", 0.55, 0.5, 10]],
   { ...C, budget: 10, max_selected: 1, coverage_radius_m: 1000, selected_ids: ["t2"] });
+// Граница радиуса: точка ровно в 300 м к северу от записи (один меридиан) и radius = 300 → after_mm = 300000 должно входить в охват (<=).
+(() => {
+  const bbox = [10, 10, 10.02, 10.02], src = { id: "s-edge", lon: 10.01, lat: 10.005, name: "synthetic s-edge" };
+  const lat = src.lat + (300 / 6371008.8) * 180 / Math.PI;
+  const ctx = { city: "astana", category: "outpatient_clinic", bbox, release: "synthetic", sources: [src],
+    source_snapshot: "sha256:" + crypto.createHash("sha256").update(JSON.stringify(["synthetic", "radius_boundary", bbox, [src]])).digest("hex"),
+    versions: { schema: E.SCHEMA, metric: E.METRIC, formula: X.FORMULA } };
+  const sc = { schema_version: E.SCHEMA, city_id: "astana", source_snapshot: ctx.source_snapshot, category: "outpatient_clinic",
+    control_points: [{ id: "edge", lon: src.lon, lat, weight: 1 }, { id: "far", lon: 10.019, lat: 10.019, weight: 1 }],
+    candidates: [{ id: "k1", lon: 10.018, lat: 10.018, category: "outpatient_clinic", kind: "hypothetical", cost: 5 }],
+    budget: 5, max_selected: 1, coverage_radius_m: 300, required_ids: [], excluded_ids: [], selected_ids: [] };
+  write("synthetic_radius_boundary", { kind: "synthetic", note: "Точка ровно на расстоянии радиуса: проверка правила <= coverage_radius_m*1000." }, ctx, sc);
+})();
+

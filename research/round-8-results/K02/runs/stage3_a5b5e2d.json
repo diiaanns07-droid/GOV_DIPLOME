@@ -1,0 +1,201 @@
+{
+ "suite": "stage3_oracle",
+ "app_root": "<city-evidence>",
+ "node": "v22.22.0",
+ "results": [
+  {
+   "id": "O_real_shymkent_school__base",
+   "title": "факты = оракул (real_shymkent_school, base)",
+   "pass": true,
+   "observed": {
+    "status": [
+     "optimal",
+     "optimal"
+    ],
+    "mism": [],
+    "named": true
+   }
+  },
+  {
+   "id": "O_real_shymkent_school__radius_600",
+   "title": "факты = оракул (real_shymkent_school, radius_600)",
+   "pass": true,
+   "observed": {
+    "status": [
+     "optimal",
+     "optimal"
+    ],
+    "mism": [],
+    "named": true
+   }
+  },
+  {
+   "id": "O_real_shymkent_school__radius_100",
+   "title": "факты = оракул (real_shymkent_school, radius_100)",
+   "pass": true,
+   "observed": {
+    "status": [
+     "optimal",
+     "optimal"
+    ],
+    "mism": [],
+    "named": true
+   }
+  },
+  {
+   "id": "O_real_shymkent_school__weight_center_10",
+   "title": "факты = оракул (real_shymkent_school, weight_center_10)",
+   "pass": true,
+   "observed": {
+    "status": [
+     "optimal",
+     "optimal"
+    ],
+    "mism": [],
+    "named": true
+   }
+  },
+  {
+   "id": "O_real_shymkent_school__required_park",
+   "title": "факты = оракул (real_shymkent_school, required_park)",
+   "pass": true,
+   "observed": {
+    "status": [
+     "optimal",
+     "optimal"
+    ],
+    "mism": [],
+    "named": true
+   }
+  },
+  {
+   "id": "O_real_shymkent_school__excluded_sev",
+   "title": "факты = оракул (real_shymkent_school, excluded_sev)",
+   "pass": true,
+   "observed": {
+    "status": [
+     "optimal",
+     "optimal"
+    ],
+    "mism": [],
+    "named": true
+   }
+  },
+  {
+   "id": "O_real_astana_clinic__base",
+   "title": "факты = оракул (real_astana_clinic, base)",
+   "pass": true,
+   "observed": {
+    "status": [
+     "optimal",
+     "optimal"
+    ],
+    "mism": [],
+    "named": true
+   }
+  },
+  {
+   "id": "O_real_astana_clinic__no_required",
+   "title": "факты = оракул (real_astana_clinic, no_required)",
+   "pass": true,
+   "observed": {
+    "status": [
+     "optimal",
+     "optimal"
+    ],
+    "mism": [],
+    "named": true
+   }
+  },
+  {
+   "id": "O_real_astana_clinic__radius_150",
+   "title": "факты = оракул (real_astana_clinic, radius_150)",
+   "pass": true,
+   "observed": {
+    "status": [
+     "optimal",
+     "optimal"
+    ],
+    "mism": [],
+    "named": true
+   }
+  },
+  {
+   "id": "O_synthetic_empty_sources__base",
+   "title": "факты = оракул (synthetic_empty_sources, base)",
+   "pass": true,
+   "observed": {
+    "status": [
+     "optimal",
+     "optimal"
+    ],
+    "mism": [],
+    "named": true
+   }
+  },
+  {
+   "id": "O_synthetic_infeasible_required__base",
+   "title": "факты = оракул (synthetic_infeasible_required, base)",
+   "pass": true,
+   "observed": {
+    "status": [
+     "infeasible",
+     "infeasible"
+    ],
+    "mism": [],
+    "named": true
+   }
+  },
+  {
+   "id": "O_synthetic_infeasible_required__budget_600",
+   "title": "факты = оракул (synthetic_infeasible_required, budget_600)",
+   "pass": true,
+   "observed": {
+    "status": [
+     "optimal",
+     "optimal"
+    ],
+    "mism": [],
+    "named": true
+   }
+  },
+  {
+   "id": "O_synthetic_tie_same_winners__base",
+   "title": "факты = оракул (synthetic_tie_same_winners, base)",
+   "pass": true,
+   "observed": {
+    "status": [
+     "optimal",
+     "optimal"
+    ],
+    "mism": [],
+    "named": true
+   }
+  },
+  {
+   "id": "O_synthetic_radius_boundary__base",
+   "title": "факты = оракул (synthetic_radius_boundary, base)",
+   "pass": true,
+   "observed": {
+    "status": [
+     "optimal",
+     "optimal"
+    ],
+    "mism": [],
+    "named": true
+   }
+  },
+  {
+   "id": "O_variants_change_facts",
+   "title": "смена radius/weights/required действительно меняет ожидаемые факты (тест не вырожден)",
+   "pass": true,
+   "observed": {
+    "radius_600": true,
+    "radius_100": true,
+    "weight": true,
+    "required": true,
+    "excluded": true
+   }
+  }
+ ]
+}
