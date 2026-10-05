@@ -4,9 +4,10 @@
 не начиналась: результатов для сохранения **0 файлов**. Этот файл фиксирует именно это,
 чтобы координатор не ждал от ветки данных, которых нет.
 
-**Push не выполнен, только локальный commit.** GitHub отклонил `git push` с ошибкой 403:
-у Claude нет доступа к репозиторию для этой организации (см. п. 6 и 8). Файл передан
-пользователю как patch.
+**Push выполнен.** Первая попытка получила отказ 403: у Claude не было доступа к
+репозиторию (см. п. 6 и 8), и файл был передан пользователю как patch. После того как
+пользователь восстановил доступ, `check_repo_access` вернул `push_check: ok`, и коммит
+`13aa95bd712e13913200bec5ad1d7e6ff113a7b6` отправлен в `origin/claude/save-work-handoff-xuav3q`.
 
 Дата: 2026-10-05 (UTC).
 
@@ -62,8 +63,10 @@
    `chromedriver-linux64.zip`. Это не результаты исследования. Они не перемещались
    и не копировались.
 3. Создан этот `STATUS.md`. Других файлов нет.
-4. Сделан локальный commit этого файла в `claude/save-work-handoff-xuav3q`. Push не прошёл
-   (403, см. п. 6). Коммит передан пользователю как patch.
+4. Сделан commit этого файла в `claude/save-work-handoff-xuav3q`. Первый push не прошёл
+   (403, см. п. 6), и коммит был передан пользователю как patch. После восстановления
+   доступа push прошёл: новая ветка на origin = `13aa95b`. Затем этим же способом
+   отправлено обновление статуса.
 
 **Не создавалось** (сознательно): `research/govtech-results/<NN_роль>/`,
 `research/astana-results/<NN_роль>/`, `evidence.json`, образцы, код экспериментов.
@@ -93,6 +96,9 @@
 | Удалённая ветка перед push | `git ls-remote origin` | ветки сессии нет, чужих изменений нет |
 | Push | `git push -u origin claude/save-work-handoff-xuav3q` | **отказ, HTTP 403**: «Claude doesn't have GitHub access to diiaanns07-droid/GOV_DIPLOME for your organization» |
 | Причина отказа | `check_repo_access` | `push_check: refused`, gate `repo_not_connected` (уровень identity) |
+| Доступ после исправления пользователем | `check_repo_access` | `push_check: ok` |
+| Удалённая ветка перед повторным push | `git ls-remote origin` | ветки сессии нет; `main` = `834a25f` без изменений; есть ветки других сессий (п. 7) |
+| Повторный push | `git push -u origin claude/save-work-handoff-xuav3q` | **успех**, `[new branch]`; `ls-remote` → `13aa95bd712e13913200bec5ad1d7e6ff113a7b6` |
 
 Тесты продукта не запускались: исполнимый код не менялся, добавлен один `.md`.
 Новых JSON-файлов нет, поэтому проверять синтаксис JSON было нечего.
@@ -103,6 +109,9 @@
 - **Гипотеза, не проверена:** поручение о checkpoint могло предназначаться другой
   сессии, где на самом деле велось исследование (например, сессии другого аккаунта или
   уже закрытой). Из этой сессии такие сессии не видны, поэтому гипотеза не подтверждена.
+  Факт для координатора: на момент повторного push на origin были ветки других сессий,
+  включая `claude/save-work-handoff-ku3ej3` (`2ffe5d9`) и `claude/save-work-handoff-qho6eq`
+  (`a1eca41`). Их содержимое не открывалось и не копировалось сюда, так как это чужая работа.
 
 ## 8. Ограничения сети
 
@@ -111,9 +120,9 @@
 - `host_not_allowed` **не возникал**. Список недоступных источников пуст, потому что
   источники не запрашивались. Из этого **нельзя** делать вывод, что какие-либо
   гос-источники или источники по городам доступны либо недоступны.
-- Выполнялись только git-операции с `github.com`: fetch и ls-remote прошли успешно,
-  **push отклонён (403)**. Это отказ авторизации GitHub App, а не сетевой блок.
-  Повторять push или обходить запрет не пытались.
+- Выполнялись только git-операции с `github.com`: fetch и ls-remote прошли успешно.
+  Первый push отклонён (403): это отказ авторизации GitHub App, а не сетевой блок,
+  и обходить его не пытались. После восстановления доступа пользователем push прошёл.
 
 ## 9. Нерешённые вопросы
 
@@ -121,35 +130,21 @@
 2. Где лежит фактическая история исследования (какая сессия или аккаунт), если она есть?
    Если результаты есть в виде ZIP или файлов вне этой сессии, их нужно передать сюда:
    отсюда они недоступны.
-3. Доступ Claude GitHub App к `diiaanns07-droid/GOV_DIPLOME`: без него ни одна сессия
-   этого аккаунта не сможет сделать push (см. п. 10).
+3. ~~Доступ Claude GitHub App к `diiaanns07-droid/GOV_DIPLOME`~~: решено, push работает.
 
 ## 10. Следующий конкретный шаг
 
-Владельцу репозитория: подключить GitHub для Claude (https://claude.ai/connect-github)
-и установить Claude GitHub App на `diiaanns07-droid/GOV_DIPLOME`, если его там нет. Затем
-в этой сессии выполнить `git push -u origin claude/save-work-handoff-xuav3q` или
-применить переданный patch (п. 11). Назначение `NN_роль`, город и `task_id` — открытый
-вопрос 1. После его решения статус переносится в
+Координатору: прислать в эту сессию назначение (`NN_роль`, город, `task_id`) и, если
+результаты уже есть, их файлы или архив. Агент сохранит их без смешивания городов в
+`research/<govtech|astana>-results/<NN_роль>/` и перенесёт этот статус в
 `research/handoffs/<city>/<NN_роль>/<task_id>/STATUS.md`.
 
 ## 11. Команды воспроизведения
 
-Пока push не прошёл, коммит существует только локально и как patch:
-
-```bash
-git clone https://github.com/diiaanns07-droid/GOV_DIPLOME && cd GOV_DIPLOME
-git checkout -b claude/save-work-handoff-xuav3q 834a25fb860dd5514d02c9274b70d7bf8a53a79c
-git am 0001-research-checkpoint-STATUS.patch
-git push -u origin claude/save-work-handoff-xuav3q
-```
-
-Когда ветка окажется на origin:
-
 ```bash
 git clone https://github.com/diiaanns07-droid/GOV_DIPLOME && cd GOV_DIPLOME
 git fetch origin claude/save-work-handoff-xuav3q
-git log --oneline main..origin/claude/save-work-handoff-xuav3q   # ожидается 1 коммит
+git log --oneline main..origin/claude/save-work-handoff-xuav3q   # ожидается 2 коммита (checkpoint + обновление статуса)
 git diff --stat main origin/claude/save-work-handoff-xuav3q      # ожидается 1 файл: этот STATUS.md
 git ls-tree -r --name-only origin/claude/save-work-handoff-xuav3q research/
 ```
