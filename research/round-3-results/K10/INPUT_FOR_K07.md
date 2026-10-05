@@ -1,6 +1,6 @@
 # Вход для K07: компактный геопакет K10 (раунд 3)
 
-- **Ветка:** `claude/save-work-handoff-j7pc05`. Точный SHA коммита указан в STATUS.md и в ответе K10. Читать нужно по SHA, а не по названию ветки.
+- **Ветка:** `claude/save-work-handoff-j7pc05`, коммит данных `602f0c0b6d5db741d20909082086982b3c812c07`. Читать нужно по SHA, а не по названию ветки. Более поздние коммиты K10 файлы данных не меняют, это подтверждает `offline_check.py` по SHA256 из манифеста.
 - **Папка:** `research/round-3-results/K10/`.
 - **Выпуск Overture:** `2026-09-23.1`.
 
@@ -8,7 +8,7 @@
 
 ```bash
 git fetch origin claude/save-work-handoff-j7pc05
-SHA=<sha из STATUS K10>
+SHA=602f0c0b6d5db741d20909082086982b3c812c07
 mkdir -p inputs/K10 && for f in package_manifest.json \
   data/shymkent/places_social.geojson data/shymkent/segments.geojson data/shymkent/connectors.geojson \
   data/astana/places_social.geojson   data/astana/segments.geojson   data/astana/connectors.geojson \
@@ -17,6 +17,7 @@ mkdir -p inputs/K10 && for f in package_manifest.json \
   git show "$SHA:research/round-3-results/K10/$f" > "inputs/K10/$f"   # bash: байты без перекодирования
 done
 python3 inputs/K10/scripts/offline_check.py   # должно вывести "ok": true и exit 0; сеть внутри заблокирована
+# этот рецепт выполнен K10 на чистом клоне: results/clone_proof.md
 ```
 
 `git show … > file` в bash сохраняет байты как есть. В PowerShell используйте `git show "$SHA:path" | Set-Content -AsByteStream` или `git archive`. После копирования SHA256 файлов должны совпасть с `package_manifest.json`, это и проверяет `offline_check.py`.
