@@ -1,0 +1,51 @@
+{
+ "checks": [
+  {
+   "name": "zero_distance_identical_points",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "one_degree_latitude_m",
+   "pass": true,
+   "detail": "111195.080234"
+  },
+  {
+   "name": "symmetry",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "antipodal_clamp_finite",
+   "pass": true,
+   "detail": "20015114.442 ≈ πR=20015114.442"
+  },
+  {
+   "name": "after<=before, delta>=0, delta=before-after, after=min(before,dp)",
+   "pass": true,
+   "detail": "rows ok=17, bad=[]"
+  },
+  {
+   "name": "deterministic_recompute",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "tie_order_independent",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "app.js_haversine_matches_reference_in_bbox",
+   "pass": true,
+   "detail": "pairs=203, max_abs_diff_m=2.274e-13"
+  },
+  {
+   "name": "app.js_haversine_has_clamp_per_spec",
+   "pass": false,
+   "detail": "app.js:79 haversine не зажимает a в [0,1]; внутри bbox на результат не влияет (см. предыдущую проверку)"
+  }
+ ],
+ "node": "v22.22.0",
+ "python": "3.11.15"
+}

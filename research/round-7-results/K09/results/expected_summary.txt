@@ -1,0 +1,34 @@
+K09-W1 — Базовый расчёт до/после/разница; одна точка улучшается, другие нет
+   step1 cp1: before=246.143 after=99.891 delta=146.252 nb=99759f95 qa=['POSSIBLE_DUPLICATE'] ties=2 na=proj1(hyp) edge=299.6 edge_conf=False
+   step1 cp2: before=243.856 after=243.856 delta=0.000 nb=01eb7090 qa=[] ties=0 na=01eb7090 edge=998.7 edge_conf=False
+   step1 cp3: before=386.019 after=386.019 delta=0.000 nb=18df815b qa=[] ties=0 na=18df815b edge=299.7 edge_conf=True
+K09-W2 — Контрольная точка совпадает с двумя записями: честный 0 и выбор по ID
+   step1 cp1: before=0.000 after=0.000 delta=0.000 nb=baeda67d qa=[] ties=2 na=baeda67d edge=171.7 edge_conf=False
+K09-W3 — Ближайшая «школа» помечена CATEGORY_DOUBT
+   step1 cp1: before=33.359 after=33.359 delta=0.000 nb=01961e84 qa=['CATEGORY_DOUBT'] ties=0 na=01961e84 edge=449.3 edge_conf=False
+   diagnostic before_excluding_qa_flagged_m=453.916
+K09-W4 — Четыре поликлиники в одной координате (COLOCATED)
+   step1 cp1: before=0.000 after=0.000 delta=0.000 nb=059c59dd qa=['COLOCATED'] ties=4 na=059c59dd edge=200.2 edge_conf=False
+   step1 cp2: before=249.006 after=249.006 delta=0.000 nb=50802484 qa=['COLOCATED', 'POSSIBLE_DUPLICATE'] ties=3 na=50802484 edge=998.7 edge_conf=False
+K09-W5 — Проект в точке контроля: после = 0, разница = до
+   step1 cp1: before=152.970 after=0.000 delta=152.970 nb=b1fc81c5 qa=[] ties=0 na=proj1(hyp) edge=598.7 edge_conf=False
+   step1 cp2: before=18.625 after=18.625 delta=0.000 nb=3fba1026 qa=[] ties=0 na=3fba1026 edge=399.2 edge_conf=False
+K09-W6 — Поставить → переместить → удалить проект
+   step1 cp1: before=154.000 after=99.853 delta=54.147 nb=c83fb2da qa=[] ties=0 na=proj1(hyp) edge=499.0 edge_conf=False
+   step1 cp2: before=969.095 after=969.095 delta=0.000 nb=de04f003 qa=[] ties=0 na=de04f003 edge=498.9 edge_conf=True
+   step2 cp1: before=154.000 after=154.000 delta=0.000 nb=c83fb2da qa=[] ties=0 na=c83fb2da edge=499.0 edge_conf=False
+   step2 cp2: before=969.095 after=99.853 delta=869.242 nb=de04f003 qa=[] ties=0 na=proj1(hyp) edge=498.9 edge_conf=True
+   step3 cp1: before=154.000 after=154.000 delta=0.000 nb=c83fb2da qa=[] ties=0 na=c83fb2da edge=499.0 edge_conf=False
+   step3 cp2: before=969.095 after=969.095 delta=0.000 nb=de04f003 qa=[] ties=0 na=de04f003 edge=498.9 edge_conf=True
+K09-W7 — Точка у границы среза: объект вне bbox может быть ближе
+   step1 cp1: before=441.626 after=441.626 delta=0.000 nb=7b39e048 qa=[] ties=0 na=7b39e048 edge=39.9 edge_conf=True
+   step1 cp2: before=384.438 after=384.438 delta=0.000 nb=a1e56dec qa=[] ties=0 na=a1e56dec edge=997.9 edge_conf=False
+K09-W8 — Недопустимые сценарии отклоняются до расчёта
+   proposed_outside_bbox: rejected ['proposed_outside_bbox']
+   control_point_outside_bbox: rejected ['control_point_outside_bbox:cp1']
+   eleven_control_points: rejected ['control_points_count_not_1_10']
+   duplicate_id: rejected ['duplicate_id']
+   category_mismatch: rejected ['proposed_category_mismatch']
+   two_proposed_objects: rejected ['more_than_one_proposed']
+   unknown_city: rejected ['unknown_city']
+   unknown_schema_version: rejected ['unknown_schema_version']

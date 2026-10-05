@@ -1,0 +1,58 @@
+{
+ "build": {
+  "branch": "claude/beautiful-clarke-sbzomj",
+  "sha": "c58a3b2b175cf978ad785fef7f88d8fd9b1338f2",
+  "code_candidate": "b3e4dc413d5354652e3207d4eb56f921b108669e",
+  "prototype_tree_diff_candidate_vs_base": "пусто (git diff --stat b3e4dc4 c58a3b2 -- prototypes/city-evidence)",
+  "feature_present": "нет: в c58a3b2 нет кода what-if; ветка BUILD на 2026-10-05 не продвинулась дальше c58a3b2"
+ },
+ "assignment_branch": {
+  "branch": "codex/research-import-2026-10-05",
+  "sha": "7927fa871d314e3af6ebfc70947916f57027f436"
+ },
+ "inputs_read_by_sha_not_copied": [
+  {
+   "commit": "c58a3b2b175cf978ad785fef7f88d8fd9b1338f2",
+   "path": "prototypes/city-evidence/web/data.js",
+   "git_blob": "e61ff9925a51505dbf2b307d950aab558b4d2a5d",
+   "sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72"
+  },
+  {
+   "commit": "c58a3b2b175cf978ad785fef7f88d8fd9b1338f2",
+   "path": "prototypes/city-evidence/web/evidence.js",
+   "git_blob": "3158f6fa1a419f84c78a6aa04f9db194e4a83004",
+   "sha256": "df736e986145da33dee60f692e020486720b72db5b6116af31640cc8693b11b9"
+  },
+  {
+   "commit": "c58a3b2b175cf978ad785fef7f88d8fd9b1338f2",
+   "path": "prototypes/city-evidence/web/app.js",
+   "git_blob": "1578b2877271c40d3c06e230b4f20fc022fce008",
+   "sha256": "bd58ff374c12243b7d58effb1e2c2de33b9bf0ea1e0bcc42733948b7e84aa0bd"
+  },
+  {
+   "commit": "c58a3b2b175cf978ad785fef7f88d8fd9b1338f2",
+   "path": "prototypes/city-evidence/web/facts.js",
+   "git_blob": "e085eaf8be575de06ad2cf9857c1f05cafa86ff8",
+   "sha256": "3994a275ddb8c0cb857478365d94810a945752a96fff10d53d37bc8dc9808c64"
+  },
+  {
+   "commit": "7927fa871d314e3af6ebfc70947916f57027f436",
+   "path": "research/round-7/FEATURE_SPEC.txt",
+   "git_blob": "fbf1070cc7c2f4b1e769234dc746248ee9d33d80",
+   "sha256": "8e0636408f279ea642b190e9d1fb5a6a8df3d1de3a006f1eeeb7b626a4c382c3"
+  },
+  {
+   "commit": "7927fa871d314e3af6ebfc70947916f57027f436",
+   "path": "research/round-7/tasks/K09.txt",
+   "git_blob": "0fe374ef2f1a446578153abc89632b78113493ae",
+   "sha256": "7c134dadceebab0d92f8476c9812066c16e446e7bb755c3a142412cefba8d20c"
+  },
+  {
+   "commit": "7927fa871d314e3af6ebfc70947916f57027f436",
+   "path": "research/round-7/snapshots.json",
+   "git_blob": "e3dc6ae7f48c408910733b1d53967a893eb28545",
+   "sha256": "483a7dea1792d18361496f587e6a345e8dfc7585c8595285424c2cd49edd6467"
+  }
+ ],
+ "t1_frozen": "research/round-3-results/K09 не изменялся (B2 sha256 dbd53d44…)"
+}

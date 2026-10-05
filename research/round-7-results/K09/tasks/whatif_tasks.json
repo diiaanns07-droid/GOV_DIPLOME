@@ -1,0 +1,964 @@
+{
+ "generated_by": "research/round-7-results/K09/scripts/make_tasks.py",
+ "prototype_base_sha": "c58a3b2b175cf978ad785fef7f88d8fd9b1338f2",
+ "inputs": {
+  "data.js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "evidence.js_sha256": "df736e986145da33dee60f692e020486720b72db5b6116af31640cc8693b11b9"
+ },
+ "formula": "haversine, R=6371008.8 m, [lon,lat], a clamped to [0,1], no rounding; ties by smallest ID",
+ "display_rounding_reference": "app.js fmtM: <1000 м — Math.round(м); ≥1000 — км с 2 знаками и запятой (вывод может отличаться у BUILD)",
+ "note": "Ожидаемые числа — эталон K09 по FEATURE_SPEC на данных c58a3b2; функция в прототипе на этом SHA отсутствует.",
+ "tasks": [
+  {
+   "id": "K09-W1",
+   "title": "Базовый расчёт до/после/разница; одна точка улучшается, другие нет",
+   "steps": [
+    {
+     "schema_version": "city-whatif-v1",
+     "city_id": "shymkent",
+     "source_snapshot": "k09ref-sha256:9e8cb6d3cc6a0cbc390bea2f3e20a2d1140bcccfe388e64b6690e63e6bb6b4e4",
+     "category": "school",
+     "control_points": [
+      {
+       "id": "cp1",
+       "lon": 69.597009,
+       "lat": 42.321916
+      },
+      {
+       "id": "cp2",
+       "lon": 69.605512,
+       "lat": 42.315628
+      },
+      {
+       "id": "cp3",
+       "lon": 69.614014,
+       "lat": 42.30934
+      }
+     ],
+     "proposed_object": {
+      "id": "proj1",
+      "lon": 69.598224,
+      "lat": 42.321916,
+      "category": "school",
+      "kind": "hypothetical"
+     }
+    }
+   ],
+   "confounds": [
+    "delta — изменение расстояния по прямой, не времени и не доступности"
+   ],
+   "ui_must_show": [
+    "до/после/разница по каждой точке",
+    "источник ближайшей записи до и после",
+    "метка hypothetical у проекта"
+   ],
+   "expected": [
+    {
+     "status": "ok",
+     "source_snapshot_k09": "k09ref-sha256:9e8cb6d3cc6a0cbc390bea2f3e20a2d1140bcccfe388e64b6690e63e6bb6b4e4",
+     "candidates_n": 15,
+     "rows": [
+      {
+       "control_point_id": "cp1",
+       "before_m": 246.1430881960289,
+       "after_m": 99.8908699882996,
+       "delta_m": 146.2522182077293,
+       "distance_to_proposed_m": 99.8908699882996,
+       "nearest_before_id": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+       "nearest_before_qa": [
+        "POSSIBLE_DUPLICATE"
+       ],
+       "ties_before_ids": [
+        "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+        "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6"
+       ],
+       "nearest_after_id": "proj1",
+       "nearest_after_is_hypothetical": true,
+       "distance_to_slice_edge_m": 299.5903952357839,
+       "edge_confound": false,
+       "label_if_no_records": null
+      },
+      {
+       "control_point_id": "cp2",
+       "before_m": 243.85638190754193,
+       "after_m": 243.85638190754193,
+       "delta_m": 0.0,
+       "distance_to_proposed_m": 920.8293416934274,
+       "nearest_before_id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+       "nearest_before_qa": [],
+       "ties_before_ids": [],
+       "nearest_after_id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+       "nearest_after_is_hypothetical": false,
+       "distance_to_slice_edge_m": 998.6796304843883,
+       "edge_confound": false,
+       "label_if_no_records": null
+      },
+      {
+       "control_point_id": "cp3",
+       "before_m": 386.019311804883,
+       "after_m": 386.019311804883,
+       "delta_m": 0.0,
+       "distance_to_proposed_m": 1908.1602362008841,
+       "nearest_before_id": "18df815b-170a-437c-977f-0769690315d4",
+       "nearest_before_qa": [],
+       "ties_before_ids": [],
+       "nearest_after_id": "18df815b-170a-437c-977f-0769690315d4",
+       "nearest_after_is_hypothetical": false,
+       "distance_to_slice_edge_m": 299.65026907851035,
+       "edge_confound": true,
+       "label_if_no_records": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "K09-W2",
+   "title": "Контрольная точка совпадает с двумя записями: честный 0 и выбор по ID",
+   "steps": [
+    {
+     "schema_version": "city-whatif-v1",
+     "city_id": "shymkent",
+     "source_snapshot": "k09ref-sha256:9e8cb6d3cc6a0cbc390bea2f3e20a2d1140bcccfe388e64b6690e63e6bb6b4e4",
+     "category": "school",
+     "control_points": [
+      {
+       "id": "cp1",
+       "lon": 69.61557,
+       "lat": 42.32304
+      }
+     ],
+     "proposed_object": {
+      "id": "proj1",
+      "lon": 69.605512,
+      "lat": 42.315628,
+      "category": "school",
+      "kind": "hypothetical"
+     }
+    }
+   ],
+   "confounds": [
+    "две записи с одинаковыми координатами без QA-флага: возможный дубль, но правило evidence.js его не пометило",
+    "0 м означает совпадение координат записи, а не «объект рядом с домом»"
+   ],
+   "ui_must_show": [
+    "0 м без округлительных артефактов",
+    "ближайшая запись — меньший ID при ничьей; длина от ничьей не зависит"
+   ],
+   "expected": [
+    {
+     "status": "ok",
+     "source_snapshot_k09": "k09ref-sha256:9e8cb6d3cc6a0cbc390bea2f3e20a2d1140bcccfe388e64b6690e63e6bb6b4e4",
+     "candidates_n": 15,
+     "rows": [
+      {
+       "control_point_id": "cp1",
+       "before_m": 0.0,
+       "after_m": 0.0,
+       "delta_m": 0.0,
+       "distance_to_proposed_m": 1167.525023549923,
+       "nearest_before_id": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+       "nearest_before_qa": [],
+       "ties_before_ids": [
+        "baeda67d-e701-4c2a-bba6-10a13466e76d",
+        "bcd265d0-0799-4dbf-8b15-23bae752a4d2"
+       ],
+       "nearest_after_id": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+       "nearest_after_is_hypothetical": false,
+       "distance_to_slice_edge_m": 171.66124321146813,
+       "edge_confound": false,
+       "label_if_no_records": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "K09-W3",
+   "title": "Ближайшая «школа» помечена CATEGORY_DOUBT",
+   "steps": [
+    {
+     "schema_version": "city-whatif-v1",
+     "city_id": "shymkent",
+     "source_snapshot": "k09ref-sha256:9e8cb6d3cc6a0cbc390bea2f3e20a2d1140bcccfe388e64b6690e63e6bb6b4e4",
+     "category": "school",
+     "control_points": [
+      {
+       "id": "cp1",
+       "lon": 69.61052,
+       "lat": 42.32057
+      }
+     ],
+     "proposed_object": {
+      "id": "proj1",
+      "lon": 69.605512,
+      "lat": 42.315628,
+      "category": "school",
+      "kind": "hypothetical"
+     }
+    }
+   ],
+   "diagnostic_not_product": {
+    "before_excluding_qa_flagged_m": 453.9155421176,
+    "note": "только для протокола: насколько число зависит от QA; продукт QA-записи не удаляет"
+   },
+   "confounds": [
+    "запись может не быть школой (название «Реклама 42»)",
+    "без QA-записи расстояние было бы больше"
+   ],
+   "ui_must_show": [
+    "название/ID ближайшей записи и QA-флаг CATEGORY_DOUBT",
+    "запись не названа проверенной"
+   ],
+   "expected": [
+    {
+     "status": "ok",
+     "source_snapshot_k09": "k09ref-sha256:9e8cb6d3cc6a0cbc390bea2f3e20a2d1140bcccfe388e64b6690e63e6bb6b4e4",
+     "candidates_n": 15,
+     "rows": [
+      {
+       "control_point_id": "cp1",
+       "before_m": 33.358524069587084,
+       "after_m": 33.358524069587084,
+       "delta_m": 0.0,
+       "distance_to_proposed_m": 686.6746793725698,
+       "nearest_before_id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+       "nearest_before_qa": [
+        "CATEGORY_DOUBT"
+       ],
+       "ties_before_ids": [],
+       "nearest_after_id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+       "nearest_after_is_hypothetical": false,
+       "distance_to_slice_edge_m": 449.33931922380094,
+       "edge_confound": false,
+       "label_if_no_records": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "K09-W4",
+   "title": "Четыре поликлиники в одной координате (COLOCATED)",
+   "steps": [
+    {
+     "schema_version": "city-whatif-v1",
+     "city_id": "shymkent",
+     "source_snapshot": "k09ref-sha256:1d2ac4d7c2f28658cfdc0186c333dbd97a111af1a3c2cff13b6abe54369a67a6",
+     "category": "outpatient_clinic",
+     "control_points": [
+      {
+       "id": "cp1",
+       "lon": 69.5958,
+       "lat": 42.3167
+      },
+      {
+       "id": "cp2",
+       "lon": 69.605512,
+       "lat": 42.315628
+      }
+     ],
+     "proposed_object": {
+      "id": "proj1",
+      "lon": 69.600653,
+      "lat": 42.312035,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical"
+     }
+    }
+   ],
+   "confounds": [
+    "совпадающая координата — признак геокодирования «в центр здания/квартала», точное место не проверено"
+   ],
+   "ui_must_show": [
+    "0 м для cp1 и выбор по наименьшему ID",
+    "QA-флаг COLOCATED у источника"
+   ],
+   "expected": [
+    {
+     "status": "ok",
+     "source_snapshot_k09": "k09ref-sha256:1d2ac4d7c2f28658cfdc0186c333dbd97a111af1a3c2cff13b6abe54369a67a6",
+     "candidates_n": 16,
+     "rows": [
+      {
+       "control_point_id": "cp1",
+       "before_m": 0.0,
+       "after_m": 0.0,
+       "delta_m": 0.0,
+       "distance_to_proposed_m": 654.4503638440693,
+       "nearest_before_id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "nearest_before_qa": [
+        "COLOCATED"
+       ],
+       "ties_before_ids": [
+        "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+        "2264dcf0-549d-451a-b846-3f207d411e0c",
+        "c2990416-dca7-4e3a-b539-30e69cadf724",
+        "f4d6818b-1a99-43ca-8533-4c556f448919"
+       ],
+       "nearest_after_id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "nearest_after_is_hypothetical": false,
+       "distance_to_slice_edge_m": 200.2094087446794,
+       "edge_confound": false,
+       "label_if_no_records": null
+      },
+      {
+       "control_point_id": "cp2",
+       "before_m": 249.00608913716383,
+       "after_m": 249.00608913716383,
+       "delta_m": 0.0,
+       "distance_to_proposed_m": 565.018279603997,
+       "nearest_before_id": "50802484-b7f9-492e-8a4c-f75312fc7751",
+       "nearest_before_qa": [
+        "COLOCATED",
+        "POSSIBLE_DUPLICATE"
+       ],
+       "ties_before_ids": [
+        "50802484-b7f9-492e-8a4c-f75312fc7751",
+        "622b4786-89fa-4853-b109-18054e3ebe0d",
+        "e1b19ead-4505-4acd-8aed-9c561ceec4c0"
+       ],
+       "nearest_after_id": "50802484-b7f9-492e-8a4c-f75312fc7751",
+       "nearest_after_is_hypothetical": false,
+       "distance_to_slice_edge_m": 998.6796304843883,
+       "edge_confound": false,
+       "label_if_no_records": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "K09-W5",
+   "title": "Проект в точке контроля: после = 0, разница = до",
+   "steps": [
+    {
+     "schema_version": "city-whatif-v1",
+     "city_id": "astana",
+     "source_snapshot": "k09ref-sha256:52be8b7b9d9235f5f5220e2fc8030a86a6e4d9c4fe175622ca8975fcb0002643",
+     "category": "outpatient_clinic",
+     "control_points": [
+      {
+       "id": "cp1",
+       "lon": 71.42696,
+       "lat": 51.17561
+      },
+      {
+       "id": "cp2",
+       "lon": 71.441274,
+       "lat": 51.166626
+      }
+     ],
+     "proposed_object": {
+      "id": "proj1",
+      "lon": 71.42696,
+      "lat": 51.17561,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical"
+     }
+    }
+   ],
+   "confounds": [
+    "0 м до гипотетического объекта не означает реального учреждения"
+   ],
+   "ui_must_show": [
+    "после = 0 м, источник — проект (hypothetical)",
+    "вторая точка не изменилась или изменилась по формуле"
+   ],
+   "expected": [
+    {
+     "status": "ok",
+     "source_snapshot_k09": "k09ref-sha256:52be8b7b9d9235f5f5220e2fc8030a86a6e4d9c4fe175622ca8975fcb0002643",
+     "candidates_n": 16,
+     "rows": [
+      {
+       "control_point_id": "cp1",
+       "before_m": 152.97041728579632,
+       "after_m": 0.0,
+       "delta_m": 152.97041728579632,
+       "distance_to_proposed_m": 0.0,
+       "nearest_before_id": "b1fc81c5-7f00-4a0a-969d-2da872515916",
+       "nearest_before_qa": [],
+       "ties_before_ids": [],
+       "nearest_after_id": "proj1",
+       "nearest_after_is_hypothetical": true,
+       "distance_to_slice_edge_m": 598.6878930082744,
+       "edge_confound": false,
+       "label_if_no_records": null
+      },
+      {
+       "control_point_id": "cp2",
+       "before_m": 18.624900059582014,
+       "after_m": 18.624900059582014,
+       "delta_m": 0.0,
+       "distance_to_proposed_m": 1412.0453593176442,
+       "nearest_before_id": "3fba1026-8464-41ab-88f8-633e3df0de30",
+       "nearest_before_qa": [],
+       "ties_before_ids": [],
+       "nearest_after_id": "3fba1026-8464-41ab-88f8-633e3df0de30",
+       "nearest_after_is_hypothetical": false,
+       "distance_to_slice_edge_m": 399.24951077182317,
+       "edge_confound": false,
+       "label_if_no_records": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "K09-W6",
+   "title": "Поставить → переместить → удалить проект",
+   "steps": [
+    {
+     "schema_version": "city-whatif-v1",
+     "city_id": "astana",
+     "source_snapshot": "k09ref-sha256:7eb148646895f7a8dd03ab707b6a6819f0b3237d52ec081bee5ddab2def856b1",
+     "category": "school",
+     "control_points": [
+      {
+       "id": "cp1",
+       "lon": 71.425529,
+       "lat": 51.167525
+      },
+      {
+       "id": "cp2",
+       "lon": 71.439843,
+       "lat": 51.176508
+      }
+     ],
+     "proposed_object": {
+      "id": "proj1",
+      "lon": 71.425529,
+      "lat": 51.168423,
+      "category": "school",
+      "kind": "hypothetical"
+     }
+    },
+    {
+     "schema_version": "city-whatif-v1",
+     "city_id": "astana",
+     "source_snapshot": "k09ref-sha256:7eb148646895f7a8dd03ab707b6a6819f0b3237d52ec081bee5ddab2def856b1",
+     "category": "school",
+     "control_points": [
+      {
+       "id": "cp1",
+       "lon": 71.425529,
+       "lat": 51.167525
+      },
+      {
+       "id": "cp2",
+       "lon": 71.439843,
+       "lat": 51.176508
+      }
+     ],
+     "proposed_object": {
+      "id": "proj1",
+      "lon": 71.439843,
+      "lat": 51.17561,
+      "category": "school",
+      "kind": "hypothetical"
+     }
+    },
+    {
+     "schema_version": "city-whatif-v1",
+     "city_id": "astana",
+     "source_snapshot": "k09ref-sha256:7eb148646895f7a8dd03ab707b6a6819f0b3237d52ec081bee5ddab2def856b1",
+     "category": "school",
+     "control_points": [
+      {
+       "id": "cp1",
+       "lon": 71.425529,
+       "lat": 51.167525
+      },
+      {
+       "id": "cp2",
+       "lon": 71.439843,
+       "lat": 51.176508
+      }
+     ],
+     "proposed_object": null
+    }
+   ],
+   "confounds": [
+    "«до» не должно меняться между шагами: та же исходная выборка"
+   ],
+   "ui_must_show": [
+    "пересчёт после перемещения",
+    "после удаления: после = до, разница = 0"
+   ],
+   "expected": [
+    {
+     "status": "ok",
+     "source_snapshot_k09": "k09ref-sha256:7eb148646895f7a8dd03ab707b6a6819f0b3237d52ec081bee5ddab2def856b1",
+     "candidates_n": 8,
+     "rows": [
+      {
+       "control_point_id": "cp1",
+       "before_m": 154.0001545311446,
+       "after_m": 99.85318204964577,
+       "delta_m": 54.146972481498835,
+       "distance_to_proposed_m": 99.85318204964577,
+       "nearest_before_id": "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a",
+       "nearest_before_qa": [],
+       "ties_before_ids": [],
+       "nearest_after_id": "proj1",
+       "nearest_after_is_hypothetical": true,
+       "distance_to_slice_edge_m": 499.0172985350518,
+       "edge_confound": false,
+       "label_if_no_records": null
+      },
+      {
+       "control_point_id": "cp2",
+       "before_m": 969.0946905389586,
+       "after_m": 969.0946905389586,
+       "delta_m": 0.0,
+       "distance_to_proposed_m": 1343.1614295264576,
+       "nearest_before_id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783",
+       "nearest_before_qa": [],
+       "ties_before_ids": [],
+       "nearest_after_id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783",
+       "nearest_after_is_hypothetical": false,
+       "distance_to_slice_edge_m": 498.92009757416406,
+       "edge_confound": true,
+       "label_if_no_records": null
+      }
+     ]
+    },
+    {
+     "status": "ok",
+     "source_snapshot_k09": "k09ref-sha256:7eb148646895f7a8dd03ab707b6a6819f0b3237d52ec081bee5ddab2def856b1",
+     "candidates_n": 8,
+     "rows": [
+      {
+       "control_point_id": "cp1",
+       "before_m": 154.0001545311446,
+       "after_m": 154.0001545311446,
+       "delta_m": 0.0,
+       "distance_to_proposed_m": 1343.1758682316538,
+       "nearest_before_id": "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a",
+       "nearest_before_qa": [],
+       "ties_before_ids": [],
+       "nearest_after_id": "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a",
+       "nearest_after_is_hypothetical": false,
+       "distance_to_slice_edge_m": 499.0172985350518,
+       "edge_confound": false,
+       "label_if_no_records": null
+      },
+      {
+       "control_point_id": "cp2",
+       "before_m": 969.0946905389586,
+       "after_m": 99.85318204964577,
+       "delta_m": 869.2415084893129,
+       "distance_to_proposed_m": 99.85318204964577,
+       "nearest_before_id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783",
+       "nearest_before_qa": [],
+       "ties_before_ids": [],
+       "nearest_after_id": "proj1",
+       "nearest_after_is_hypothetical": true,
+       "distance_to_slice_edge_m": 498.92009757416406,
+       "edge_confound": true,
+       "label_if_no_records": null
+      }
+     ]
+    },
+    {
+     "status": "ok",
+     "source_snapshot_k09": "k09ref-sha256:7eb148646895f7a8dd03ab707b6a6819f0b3237d52ec081bee5ddab2def856b1",
+     "candidates_n": 8,
+     "rows": [
+      {
+       "control_point_id": "cp1",
+       "before_m": 154.0001545311446,
+       "after_m": 154.0001545311446,
+       "delta_m": 0.0,
+       "distance_to_proposed_m": null,
+       "nearest_before_id": "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a",
+       "nearest_before_qa": [],
+       "ties_before_ids": [],
+       "nearest_after_id": "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a",
+       "nearest_after_is_hypothetical": false,
+       "distance_to_slice_edge_m": 499.0172985350518,
+       "edge_confound": false,
+       "label_if_no_records": null
+      },
+      {
+       "control_point_id": "cp2",
+       "before_m": 969.0946905389586,
+       "after_m": 969.0946905389586,
+       "delta_m": 0.0,
+       "distance_to_proposed_m": null,
+       "nearest_before_id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783",
+       "nearest_before_qa": [],
+       "ties_before_ids": [],
+       "nearest_after_id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783",
+       "nearest_after_is_hypothetical": false,
+       "distance_to_slice_edge_m": 498.92009757416406,
+       "edge_confound": true,
+       "label_if_no_records": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "K09-W7",
+   "title": "Точка у границы среза: объект вне bbox может быть ближе",
+   "steps": [
+    {
+     "schema_version": "city-whatif-v1",
+     "city_id": "astana",
+     "source_snapshot": "k09ref-sha256:7eb148646895f7a8dd03ab707b6a6819f0b3237d52ec081bee5ddab2def856b1",
+     "category": "school",
+     "control_points": [
+      {
+       "id": "cp1",
+       "lon": 71.418945,
+       "lat": 51.172016
+      },
+      {
+       "id": "cp2",
+       "lon": 71.432686,
+       "lat": 51.172016
+      }
+     ],
+     "proposed_object": null
+    }
+   ],
+   "confounds": [
+    "срез Overture в bbox ≈ несколько км², не весь город",
+    "полнота мест Overture неизвестна (K10: мало объектов)"
+   ],
+   "ui_must_show": [
+    "ограничение «ближайшая запись в срезе не обязательно ближайшая в городе»",
+    "без проекта: после = до, разница = 0"
+   ],
+   "expected": [
+    {
+     "status": "ok",
+     "source_snapshot_k09": "k09ref-sha256:7eb148646895f7a8dd03ab707b6a6819f0b3237d52ec081bee5ddab2def856b1",
+     "candidates_n": 8,
+     "rows": [
+      {
+       "control_point_id": "cp1",
+       "before_m": 441.6264916466284,
+       "after_m": 441.6264916466284,
+       "delta_m": 0.0,
+       "distance_to_proposed_m": null,
+       "nearest_before_id": "7b39e048-341b-454a-a63c-4b7e1ae73e9f",
+       "nearest_before_qa": [],
+       "ties_before_ids": [],
+       "nearest_after_id": "7b39e048-341b-454a-a63c-4b7e1ae73e9f",
+       "nearest_after_is_hypothetical": false,
+       "distance_to_slice_edge_m": 39.948172148985655,
+       "edge_confound": true,
+       "label_if_no_records": null
+      },
+      {
+       "control_point_id": "cp2",
+       "before_m": 384.4382717461044,
+       "after_m": 384.4382717461044,
+       "delta_m": 0.0,
+       "distance_to_proposed_m": null,
+       "nearest_before_id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+       "nearest_before_qa": [],
+       "ties_before_ids": [],
+       "nearest_after_id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+       "nearest_after_is_hypothetical": false,
+       "distance_to_slice_edge_m": 997.9374088147887,
+       "edge_confound": false,
+       "label_if_no_records": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "K09-W8",
+   "title": "Недопустимые сценарии отклоняются до расчёта",
+   "steps": [],
+   "invalid_cases": {
+    "proposed_outside_bbox": {
+     "scenario": {
+      "schema_version": "city-whatif-v1",
+      "city_id": "shymkent",
+      "source_snapshot": "k09ref-sha256:9e8cb6d3cc6a0cbc390bea2f3e20a2d1140bcccfe388e64b6690e63e6bb6b4e4",
+      "category": "school",
+      "control_points": [
+       {
+        "id": "cp1",
+        "lon": 69.605512,
+        "lat": 42.315628
+       }
+      ],
+      "proposed_object": {
+       "id": "proj1",
+       "lon": 69.7,
+       "lat": 42.4,
+       "category": "school",
+       "kind": "hypothetical"
+      }
+     },
+     "expected": {
+      "status": "rejected",
+      "errors": [
+       "proposed_outside_bbox"
+      ]
+     }
+    },
+    "control_point_outside_bbox": {
+     "scenario": {
+      "schema_version": "city-whatif-v1",
+      "city_id": "shymkent",
+      "source_snapshot": "k09ref-sha256:9e8cb6d3cc6a0cbc390bea2f3e20a2d1140bcccfe388e64b6690e63e6bb6b4e4",
+      "category": "school",
+      "control_points": [
+       {
+        "id": "cp1",
+        "lon": 71.43,
+        "lat": 51.17
+       }
+      ],
+      "proposed_object": null
+     },
+     "expected": {
+      "status": "rejected",
+      "errors": [
+       "control_point_outside_bbox:cp1"
+      ]
+     }
+    },
+    "eleven_control_points": {
+     "scenario": {
+      "schema_version": "city-whatif-v1",
+      "city_id": "shymkent",
+      "source_snapshot": "k09ref-sha256:9e8cb6d3cc6a0cbc390bea2f3e20a2d1140bcccfe388e64b6690e63e6bb6b4e4",
+      "category": "school",
+      "control_points": [
+       {
+        "id": "cp1",
+        "lon": 69.59458,
+        "lat": 42.315628
+       },
+       {
+        "id": "cp2",
+        "lon": 69.595794,
+        "lat": 42.315628
+       },
+       {
+        "id": "cp3",
+        "lon": 69.597009,
+        "lat": 42.315628
+       },
+       {
+        "id": "cp4",
+        "lon": 69.598224,
+        "lat": 42.315628
+       },
+       {
+        "id": "cp5",
+        "lon": 69.599438,
+        "lat": 42.315628
+       },
+       {
+        "id": "cp6",
+        "lon": 69.600653,
+        "lat": 42.315628
+       },
+       {
+        "id": "cp7",
+        "lon": 69.601868,
+        "lat": 42.315628
+       },
+       {
+        "id": "cp8",
+        "lon": 69.603082,
+        "lat": 42.315628
+       },
+       {
+        "id": "cp9",
+        "lon": 69.604297,
+        "lat": 42.315628
+       },
+       {
+        "id": "cp10",
+        "lon": 69.605512,
+        "lat": 42.315628
+       },
+       {
+        "id": "cp11",
+        "lon": 69.606726,
+        "lat": 42.315628
+       }
+      ],
+      "proposed_object": null
+     },
+     "expected": {
+      "status": "rejected",
+      "errors": [
+       "control_points_count_not_1_10"
+      ]
+     }
+    },
+    "duplicate_id": {
+     "scenario": {
+      "schema_version": "city-whatif-v1",
+      "city_id": "shymkent",
+      "source_snapshot": "k09ref-sha256:9e8cb6d3cc6a0cbc390bea2f3e20a2d1140bcccfe388e64b6690e63e6bb6b4e4",
+      "category": "school",
+      "control_points": [
+       {
+        "id": "cp1",
+        "lon": 69.603082,
+        "lat": 42.313831
+       },
+       {
+        "id": "cp1",
+        "lon": 69.607941,
+        "lat": 42.317425
+       }
+      ],
+      "proposed_object": null
+     },
+     "expected": {
+      "status": "rejected",
+      "errors": [
+       "duplicate_id"
+      ]
+     }
+    },
+    "category_mismatch": {
+     "scenario": {
+      "schema_version": "city-whatif-v1",
+      "city_id": "shymkent",
+      "source_snapshot": "k09ref-sha256:9e8cb6d3cc6a0cbc390bea2f3e20a2d1140bcccfe388e64b6690e63e6bb6b4e4",
+      "category": "school",
+      "control_points": [
+       {
+        "id": "cp1",
+        "lon": 69.605512,
+        "lat": 42.315628
+       }
+      ],
+      "proposed_object": {
+       "id": "proj1",
+       "lon": 69.605512,
+       "lat": 42.317425,
+       "category": "outpatient_clinic",
+       "kind": "hypothetical"
+      }
+     },
+     "expected": {
+      "status": "rejected",
+      "errors": [
+       "proposed_category_mismatch"
+      ]
+     }
+    },
+    "two_proposed_objects": {
+     "scenario": {
+      "schema_version": "city-whatif-v1",
+      "city_id": "shymkent",
+      "source_snapshot": "k09ref-sha256:9e8cb6d3cc6a0cbc390bea2f3e20a2d1140bcccfe388e64b6690e63e6bb6b4e4",
+      "category": "school",
+      "control_points": [
+       {
+        "id": "cp1",
+        "lon": 69.605512,
+        "lat": 42.315628
+       }
+      ],
+      "proposed_object": [
+       {
+        "id": "p1",
+        "lon": 69.603082,
+        "lat": 42.313831,
+        "category": "school",
+        "kind": "hypothetical"
+       },
+       {
+        "id": "p2",
+        "lon": 69.607941,
+        "lat": 42.317425,
+        "category": "school",
+        "kind": "hypothetical"
+       }
+      ]
+     },
+     "expected": {
+      "status": "rejected",
+      "errors": [
+       "more_than_one_proposed"
+      ]
+     }
+    },
+    "unknown_city": {
+     "scenario": {
+      "schema_version": "city-whatif-v1",
+      "city_id": "almaty",
+      "source_snapshot": "k09ref-sha256:9e8cb6d3cc6a0cbc390bea2f3e20a2d1140bcccfe388e64b6690e63e6bb6b4e4",
+      "category": "school",
+      "control_points": [
+       {
+        "id": "cp1",
+        "lon": 69.605512,
+        "lat": 42.315628
+       }
+      ],
+      "proposed_object": null
+     },
+     "expected": {
+      "status": "rejected",
+      "errors": [
+       "unknown_city"
+      ]
+     }
+    },
+    "unknown_schema_version": {
+     "scenario": {
+      "schema_version": "city-whatif-v0",
+      "city_id": "shymkent",
+      "source_snapshot": "k09ref-sha256:9e8cb6d3cc6a0cbc390bea2f3e20a2d1140bcccfe388e64b6690e63e6bb6b4e4",
+      "category": "school",
+      "control_points": [
+       {
+        "id": "cp1",
+        "lon": 69.605512,
+        "lat": 42.315628
+       }
+      ],
+      "proposed_object": null
+     },
+     "expected": {
+      "status": "rejected",
+      "errors": [
+       "unknown_schema_version"
+      ]
+     }
+    }
+   },
+   "raw_json_import_cases": {
+    "nan_literal": "{\"lon\": NaN}",
+    "infinity_literal": "{\"lon\": Infinity}",
+    "overflow_1e999": "{\"lon\": 1e999}",
+    "oversize": "> 262144 байт (256 KiB) — генерировать при тесте"
+   },
+   "synthetic_unit_case_no_records": {
+    "note": "synthetic: категория без записей в срезе (в реальных данных обе категории есть в обоих городах)",
+    "expected": {
+     "before_m": null,
+     "after_m": "distance_to_proposed",
+     "delta_m": null,
+     "label": "В срезе нет исходных записей; улучшение не вычисляется"
+    }
+   },
+   "confounds": [
+    "строгий JSON-парсер Python принимает NaN/Infinity по умолчанию — импорт должен отклонять явно"
+   ],
+   "ui_must_show": [
+    "понятное сообщение об отклонении",
+    "активный сценарий не меняется частично"
+   ],
+   "expected": []
+  }
+ ]
+}

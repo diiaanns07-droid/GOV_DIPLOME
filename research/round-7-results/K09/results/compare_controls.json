@@ -1,0 +1,47 @@
+[
+ {
+  "task": "K09-W1",
+  "positive": "PASS",
+  "negative": "FAIL"
+ },
+ {
+  "task": "K09-W2",
+  "positive": "PASS",
+  "negative": "FAIL"
+ },
+ {
+  "task": "K09-W3",
+  "positive": "PASS",
+  "negative": "FAIL"
+ },
+ {
+  "task": "K09-W4",
+  "positive": "PASS",
+  "negative": "FAIL"
+ },
+ {
+  "task": "K09-W5",
+  "positive": "PASS",
+  "negative": "FAIL"
+ },
+ {
+  "task": "K09-W6",
+  "positive": "PASS",
+  "negative": "FAIL"
+ },
+ {
+  "task": "K09-W6",
+  "positive": "PASS",
+  "negative": "FAIL"
+ },
+ {
+  "task": "K09-W6",
+  "positive": "PASS",
+  "negative": "FAIL"
+ },
+ {
+  "task": "K09-W7",
+  "positive": "PASS",
+  "negative": "FAIL"
+ }
+]
