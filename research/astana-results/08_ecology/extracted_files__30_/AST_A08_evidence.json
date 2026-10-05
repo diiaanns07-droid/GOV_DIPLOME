@@ -1,0 +1,1626 @@
+{
+ "meta": {
+  "agent_id": "AST-A08",
+  "topic": "Экология: воздух, сезонные экстремумы, зелень и загрязнённые территории",
+  "city": "astana",
+  "round": "astana-2026-10-05",
+  "searched_at": "2026-10-05T04:08Z–04:40Z",
+  "access_limitations": "Нет браузера и веб-поиска; исходящая сеть только к GitHub/PyPI/npm. Все официальные, спутниковые и альтернативные источники — 403 или нет соединения (AST-A08-S001). Реальные данные — только сторонние репозитории GitHub без лицензии и OSM-полигоны из STUPITS; публикуются агрегаты, не сырые строки."
+ },
+ "sources": [
+  {
+   "source_id": "AST-A08-S001",
+   "title": "Журнал сетевой проверки доступа AST-A08",
+   "publisher": "AST-A08 (собственный эксперимент)",
+   "url": null,
+   "published_at": "2026-10-05",
+   "accessed_at": "2026-10-05",
+   "source_type": "experiment_log",
+   "access_status": "executed",
+   "notes": "curl -m 15, 2026-10-05T04:08:50Z–04:08:52Z. 403 host_not_allowed: www.gov.kz/memleket/entities/astana, stat.gov.kz/ru/region/astana/dynamic-tables/38/, data.egov.kz, www.kazhydromet.kz, adilet.zan.kz, www.iqair.com, api.openaq.org, overpass-api.de, dataspace.copernicus.eu. Код 000 (нет соединения): ikomek109.kz, 109.astana.kz, astana.gov.kz — имена хостов предположены агентом, их существование не подтверждено. git clone 3 репозиториев: HTTP 429."
+  },
+  {
+   "source_id": "AST-A08-S002",
+   "title": "BAITC-Hacks/hack-d3b2c613-stupits",
+   "publisher": "BAITC-Hacks / GitHub",
+   "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits",
+   "published_at": "2026-09-23",
+   "accessed_at": "2026-10-05",
+   "source_type": "code_repository",
+   "access_status": "sample_verified",
+   "notes": "Коммит 834a25fb860dd5514d02c9274b70d7bf8a53a79c. Использованы data/astana_districts.geojson (metadata.retrieved_at 2026-09-23T11:28:06Z, osm_base_timestamp 2026-09-22T08:45:51Z, ODbL), data/city_data.json, data/real_context.json, data/real_context_meta.json, docs/GEO_SOURCES.md. Только чтение."
+  },
+  {
+   "source_id": "AST-A08-S003",
+   "title": "DinaAssylbekova/AirData_Shymkent (содержит и посты Нур-Султана)",
+   "publisher": "Dina Assylbekova / GitHub (проект AirData.kz)",
+   "url": "https://github.com/DinaAssylbekova/AirData_Shymkent",
+   "published_at": "2022-04-03",
+   "accessed_at": "2026-10-05",
+   "source_type": "third_party_dataset",
+   "access_status": "sample_verified",
+   "notes": "Тот же репозиторий, что A08-S003 первого прохода. Коммит cacb98c19046bc441c4bfce29d74122ba525cfe2. sensors.xlsx: строки 18–23 (0-индекс) — 6 постов Казгидромета, city='Нур-Султан'. Лицензии нет; единицы не указаны."
+  },
+  {
+   "source_id": "AST-A08-S004",
+   "title": "SaniyaAbushakimova/Kazhydromet-Web-Scraping",
+   "publisher": "Saniya Abushakimova / GitHub",
+   "url": "https://github.com/SaniyaAbushakimova/Kazhydromet-Web-Scraping",
+   "published_at": "2024-07-13",
+   "accessed_at": "2026-10-05",
+   "source_type": "third_party_dataset",
+   "access_status": "sample_verified",
+   "notes": "Тот же, что A08-S004. Файл kazgydromet_data/темп/возд/KZ-AKM/темп_возд_KZ-AKM_Астана.csv: 8490 строк, 2000-01-01..2023-04-30, 8 сроков (18,21,00,03,06,09,12,15). Источник скрейпинга: http://ecodata.kz:3838/dm_climat_ru/. station_geocode/final_coordinates.csv строка 4: «Астана, Акмолинская область, KZ-AKM». Лицензии нет."
+  },
+  {
+   "source_id": "AST-A08-S005",
+   "title": "ailaris/astana-air-quality",
+   "publisher": "ailaris / GitHub",
+   "url": "https://github.com/ailaris/astana-air-quality",
+   "published_at": "2026-09-23",
+   "accessed_at": "2026-10-05",
+   "source_type": "third_party_dataset",
+   "access_status": "sample_verified",
+   "notes": "Коммит 921aafa. air_quality_data.csv: 1045 строк (2019: 317, 2022: 69, 2023: 296, 2024: 363), 895 непустых pm25; weather-data.csv в схеме Meteostat (по названиям полей). README пустой, источник PM2.5 и единицы не указаны, лицензии нет."
+  },
+  {
+   "source_id": "AST-A08-S006",
+   "title": "Результаты GitHub search API по Астане (описания репозиториев)",
+   "publisher": "GitHub",
+   "url": "https://api.github.com/search/repositories",
+   "published_at": "2026-10-05",
+   "accessed_at": "2026-10-05",
+   "source_type": "search_results",
+   "access_status": "page_only",
+   "notes": "Запросы astana+air+quality, nur-sultan+air, astana+pm2.5, astana+green, astana+ndvi, astana+heat+island. Найдены, но не скачаны (429): Estay123/ML_EDA, EGSY8p7/astana_air_quality, janelcv/AirData. Описания: Madi-y-a-r/GreenTree «App for LLC Astana-Zelenstroy»; SiliconHackClub/green-map-astana (MIT) — карта пунктов вторсырья; OhKazakh/greenranger-v2 — карта проверенных пунктов приёма; ayanatmyrzabek/Jasyl-Astana — платформа мониторинга деревьев (клонирован: README + 1 HTML, данных нет). Это указатели, не доказательства."
+  },
+  {
+   "source_id": "AST-A08-S007",
+   "title": "Официальный сайт акимата г. Астаны",
+   "publisher": "Акимат г. Астаны / gov.kz",
+   "url": "https://www.gov.kz/memleket/entities/astana?lang=ru",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "official_page",
+   "access_status": "not_accessed_host_blocked",
+   "notes": "Указатель координатора; 403."
+  },
+  {
+   "source_id": "AST-A08-S008",
+   "title": "Динамические таблицы БНС по Астане (38)",
+   "publisher": "БНС АСПиР РК",
+   "url": "https://stat.gov.kz/ru/region/astana/dynamic-tables/38/",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "official_statistics",
+   "access_status": "not_accessed_host_blocked",
+   "notes": "403."
+  },
+  {
+   "source_id": "AST-A08-S009",
+   "title": "Портал открытых данных",
+   "publisher": "data.egov.kz",
+   "url": "https://data.egov.kz/",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "open_data_portal",
+   "access_status": "not_accessed_host_blocked",
+   "notes": "403."
+  },
+  {
+   "source_id": "AST-A08-S010",
+   "title": "Бюллетени о состоянии окружающей среды (г. Астана)",
+   "publisher": "РГП «Казгидромет»",
+   "url": "https://www.kazhydromet.kz/ru/",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "official_bulletin",
+   "access_status": "not_accessed_host_blocked",
+   "notes": "403; содержание неизвестно."
+  },
+  {
+   "source_id": "AST-A08-S011",
+   "title": "iKOMEK109 (единый контакт-центр)",
+   "publisher": "акимат г. Астаны (по памяти)",
+   "url": null,
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "city_service",
+   "access_status": "unavailable",
+   "notes": "Предполагаемые хосты не соединились; официальный адрес и публикация агрегатов не установлены."
+  },
+  {
+   "source_id": "AST-A08-S012",
+   "title": "Urban green spaces and health: a review of evidence",
+   "publisher": "WHO Regional Office for Europe",
+   "url": null,
+   "published_at": "2016",
+   "accessed_at": null,
+   "source_type": "guideline_review",
+   "access_status": "not_opened_model_memory",
+   "notes": "300 м / ≥0,5–1 га — по памяти."
+  },
+  {
+   "source_id": "AST-A08-S013",
+   "title": "Bowler et al. Urban greening to cool towns and cities. Landscape and Urban Planning 97(3):147–155",
+   "publisher": "Elsevier",
+   "url": null,
+   "published_at": "2010",
+   "accessed_at": null,
+   "source_type": "peer_reviewed",
+   "access_status": "not_opened_model_memory",
+   "notes": "По памяти; не открыто."
+  },
+  {
+   "source_id": "AST-A08-S014",
+   "title": "Landsat 8–9 Collection 2 Level-2 Surface Temperature",
+   "publisher": "USGS",
+   "url": null,
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "technical_documentation",
+   "access_status": "not_opened_model_memory",
+   "notes": "30 м, 16 сут/спутник — по памяти."
+  },
+  {
+   "source_id": "AST-A08-S015",
+   "title": "Sentinel-2 L2A / ESA WorldCover",
+   "publisher": "ESA Copernicus",
+   "url": null,
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "technical_documentation",
+   "access_status": "not_opened_model_memory",
+   "notes": "10 м — по памяти."
+  },
+  {
+   "source_id": "AST-A08-S016",
+   "title": "Sentinel-5P TROPOMI NO2",
+   "publisher": "ESA Copernicus",
+   "url": null,
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "technical_documentation",
+   "access_status": "not_opened_model_memory",
+   "notes": "~5,5×3,5 км, сутки, столб — по памяти; поведение зимой на 51° с.ш. — гипотеза."
+  },
+  {
+   "source_id": "AST-A08-S017",
+   "title": "GHSL GHS-POP / WorldPop",
+   "publisher": "EC JRC / WorldPop",
+   "url": null,
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "dataset_documentation",
+   "access_status": "not_opened_model_memory",
+   "notes": "100 м — по памяти."
+  },
+  {
+   "source_id": "AST-A08-S018",
+   "title": "US EPA AQI breakpoints for PM2.5 (до ревизии 2024)",
+   "publisher": "US EPA",
+   "url": null,
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "technical_documentation",
+   "access_status": "not_opened_model_memory",
+   "notes": "Нужны были для проверки единиц стороннего ряда; проверка не состоялась (0 общих суток)."
+  },
+  {
+   "source_id": "AST-A08-S019",
+   "title": "Экологический кодекс РК от 02.01.2021 № 400-VI",
+   "publisher": "Парламент РК",
+   "url": null,
+   "published_at": "2021",
+   "accessed_at": null,
+   "source_type": "law",
+   "access_status": "not_opened_model_memory",
+   "notes": "Компетенции МИО и контроль — по памяти; не открыто."
+  }
+ ],
+ "facts": [
+  {
+   "fact_id": "AST-A08-F001",
+   "statement": "Официальные, спутниковые и альтернативные источники по Астане недоступны из среды агента; предполагаемые адреса iKOMEK109 и акимата не соединились.",
+   "kind": "observed",
+   "value": 12,
+   "unit": "hosts_tested",
+   "geography": null,
+   "period": "2026-10-05",
+   "source_refs": [
+    {
+     "source_id": "AST-A08-S001",
+     "locator": "лог curl 04:08:50–04:08:52Z"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Ограничение среды, не источников."
+  },
+  {
+   "fact_id": "AST-A08-F002",
+   "statement": "В STUPITS 6 OSM-полигонов районов Астаны: Есиль, Алматы, Сарыарка, Байконур, Нура, Сарайшык (база OSM 2026-09-22).",
+   "kind": "observed",
+   "value": 6,
+   "unit": "districts",
+   "geography": "г. Астана",
+   "period": "OSM 2026-09-22",
+   "source_refs": [
+    {
+     "source_id": "AST-A08-S002",
+     "locator": "data/astana_districts.geojson: features[].properties; docs/GEO_SOURCES.md"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Общественная карта, не официальный акт; официальный перечень не сверен (403)."
+  },
+  {
+   "fact_id": "AST-A08-F003",
+   "statement": "Учебный датасет STUPITS содержит 5 районов без Сарайшыка; в geojson у Сарайшыка scoring_enabled=false.",
+   "kind": "observed",
+   "value": 5,
+   "unit": "districts",
+   "geography": "Астана (учебная модель)",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "AST-A08-S002",
+     "locator": "data/city_data.json: districts; geojson properties.saraishyk"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Игровая и реальная территории расходятся."
+  },
+  {
+   "fact_id": "AST-A08-F004",
+   "statement": "В списке AirData (~2022) 6 постов Казгидромета в «Нур-Султане»: ПНЗ №5, 6, 7, 8, 9, 10 с адресами и координатами.",
+   "kind": "observed",
+   "value": 6,
+   "unit": "posts",
+   "geography": "г. Астана",
+   "period": "~2022-03",
+   "source_refs": [
+    {
+     "source_id": "AST-A08-S003",
+     "locator": "sensors.xlsx, city='Нур-Султан', sId k4,k7,k8,k9,k12,k14"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Список агрегатора, не реестр Казгидромета; состав сети в 2026 неизвестен."
+  },
+  {
+   "fact_id": "AST-A08-F005",
+   "statement": "По point-in-polygon в каждом из 6 OSM-районов ровно по одному посту.",
+   "kind": "derived",
+   "value": {
+    "esil": 1,
+    "almaty": 1,
+    "saryarka": 1,
+    "baikonur": 1,
+    "nura": 1,
+    "saraishyk": 1
+   },
+   "unit": "posts per district",
+   "geography": "г. Астана",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "AST-A08-S002",
+     "locator": "astana_districts.geojson"
+    },
+    {
+     "source_id": "AST-A08-S003",
+     "locator": "sensors.xlsx lat/lng"
+    }
+   ],
+   "derivation": "shapely contains(Point(lng,lat)); AST_A08_astana_real_checks.py раздел B",
+   "confidence": "medium",
+   "caveats": "Посты ~2022 против границ 2026."
+  },
+  {
+   "fact_id": "AST-A08-F006",
+   "statement": "Площади OSM-районов, км²: Есиль 194,5; Алматы 93,4; Сарыарка 67,8; Байконур 183,5; Нура 188,5; Сарайшык 61,4; объединение 789,2.",
+   "kind": "derived",
+   "value": {
+    "esil": 194.5,
+    "almaty": 93.4,
+    "saryarka": 67.8,
+    "baikonur": 183.5,
+    "nura": 188.5,
+    "saraishyk": 61.4
+   },
+   "unit": "km2",
+   "geography": "г. Астана",
+   "period": "OSM 2026-09-22",
+   "source_refs": [
+    {
+     "source_id": "AST-A08-S002",
+     "locator": "astana_districts.geojson"
+    }
+   ],
+   "derivation": "площадь в EPSG:32642 (pyproj 3.8.0, shapely 2.1.2)",
+   "confidence": "high",
+   "caveats": "Не официальные площади."
+  },
+  {
+   "fact_id": "AST-A08-F007",
+   "statement": "Доля площади города далее 2 км от ближайшего поста — 0,910, далее 5 км — 0,688 (по районам — см. value).",
+   "kind": "derived",
+   "value": {
+    "esil": {
+     "share_area_gt_2km": 0.945,
+     "share_area_gt_5km": 0.808
+    },
+    "almaty": {
+     "share_area_gt_2km": 0.882,
+     "share_area_gt_5km": 0.684
+    },
+    "saryarka": {
+     "share_area_gt_2km": 0.761,
+     "share_area_gt_5km": 0.262
+    },
+    "baikonur": {
+     "share_area_gt_2km": 0.91,
+     "share_area_gt_5km": 0.701
+    },
+    "nura": {
+     "share_area_gt_2km": 0.962,
+     "share_area_gt_5km": 0.729
+    },
+    "saraishyk": {
+     "share_area_gt_2km": 0.843,
+     "share_area_gt_5km": 0.624
+    },
+    "city": {
+     "share_area_gt_2km": 0.91,
+     "share_area_gt_5km": 0.688
+    }
+   },
+   "unit": "доля площади",
+   "geography": "г. Астана / районы",
+   "period": "посты ~2022, границы 2026",
+   "source_refs": [
+    {
+     "source_id": "AST-A08-S002",
+     "locator": "geojson"
+    },
+    {
+     "source_id": "AST-A08-S003",
+     "locator": "sensors.xlsx"
+    }
+   ],
+   "derivation": "сетка 250 м внутри полигонов, евклидово расстояние до ближайшего поста",
+   "confidence": "high",
+   "caveats": "Вес по площади, не по населению; включает незастроенные земли."
+  },
+  {
+   "fact_id": "AST-A08-F008",
+   "statement": "Полнота часовых PM2.5 за 2021 год: 62,6–75,1% у пяти постов, 19,3% у ПНЗ №5; PM10/NO2/SO2/CO около 7,8–7,9%.",
+   "kind": "derived",
+   "value": {
+    "k4": {
+     "PM2.5": 67.6,
+     "PM10": 7.8,
+     "NO2": 7.8,
+     "SO2": 7.8,
+     "CO": 7.8
+    },
+    "k7": {
+     "PM2.5": 75.1,
+     "PM10": 7.9,
+     "NO2": 7.9,
+     "SO2": 7.9,
+     "CO": 7.9
+    },
+    "k8": {
+     "PM2.5": 75.1,
+     "PM10": 7.9,
+     "NO2": 7.9,
+     "SO2": 7.9,
+     "CO": 7.9
+    },
+    "k9": {
+     "PM2.5": 74.8,
+     "PM10": 7.9,
+     "NO2": 7.9,
+     "SO2": 7.9,
+     "CO": 7.9
+    },
+    "k12": {
+     "PM2.5": 62.6,
+     "PM10": 7.8,
+     "NO2": 7.8,
+     "SO2": 7.8,
+     "CO": 7.8
+    },
+    "k14": {
+     "PM2.5": 19.3,
+     "PM10": 0.0,
+     "NO2": 7.9,
+     "SO2": 7.9,
+     "CO": 7.9
+    }
+   },
+   "unit": "%",
+   "geography": "г. Астана, 6 точек",
+   "period": "2021",
+   "source_refs": [
+    {
+     "source_id": "AST-A08-S003",
+     "locator": "layer_03_data_prepared_25.03.22.csv"
+    }
+   ],
+   "derivation": "уникальные часы / 8760 × 100",
+   "confidence": "high",
+   "caveats": "Низкая полнота газов, вероятно, артефакт сбора AirData (ряды газов начинаются позже)."
+  },
+  {
+   "fact_id": "AST-A08-F009",
+   "statement": "Медианы суточных PM2.5 зима/лето: ПНЗ №7 144,1/33,3; ПНЗ №6 122,4/28,9; ПНЗ №9 43,9/9,5; суток > 35: 227 из 309, 189 из 286, 91 из 351 (если мкг/м³).",
+   "kind": "derived",
+   "value": {
+    "k4": {
+     "valid_days_DJF": 79,
+     "median_DJF": 144.1,
+     "valid_days_JJA": 75,
+     "median_JJA": 33.3,
+     "days_gt_35_if_ugm3_all": 227,
+     "valid_days_all": 309
+    },
+    "k12": {
+     "valid_days_DJF": 74,
+     "median_DJF": 122.4,
+     "valid_days_JJA": 78,
+     "median_JJA": 28.9,
+     "days_gt_35_if_ugm3_all": 189,
+     "valid_days_all": 286
+    },
+    "k7": {
+     "valid_days_DJF": 81,
+     "median_DJF": 43.9,
+     "valid_days_JJA": 91,
+     "median_JJA": 9.5,
+     "days_gt_35_if_ugm3_all": 91,
+     "valid_days_all": 351
+    }
+   },
+   "unit": "единицы не указаны (предп. мкг/м³)",
+   "geography": "3 точки г. Астаны",
+   "period": "2021-03-24..2022-03-24",
+   "source_refs": [
+    {
+     "source_id": "AST-A08-S003",
+     "locator": "layer_03_data_prepared_25.03.22.csv"
+    }
+   ],
+   "derivation": "суточное среднее при ≥18 ч; DJF и JJA по локальным суткам Asia/Almaty",
+   "confidence": "medium",
+   "caveats": "Причины контраста не установлены; один год; единицы не подтверждены."
+  },
+  {
+   "fact_id": "AST-A08-F010",
+   "statement": "QC: ПНЗ №10 (k9) — Spearman с медианой сети −0,52, 77% суток < 2, обратная сезонность; ПНЗ №8 (k8) — обратная сезонность; ПНЗ №5 (k14) — нет зимних данных.",
+   "kind": "derived",
+   "value": {
+    "k12": {
+     "spearman_vs_network": 0.79,
+     "share_below_low": 0.0,
+     "flags": []
+    },
+    "k14": {
+     "spearman_vs_network": 0.77,
+     "share_below_low": 0.0,
+     "flags": []
+    },
+    "k4": {
+     "spearman_vs_network": 0.58,
+     "share_below_low": 0.0,
+     "flags": []
+    },
+    "k7": {
+     "spearman_vs_network": 0.67,
+     "share_below_low": 0.0,
+     "flags": []
+    },
+    "k8": {
+     "spearman_vs_network": 0.2,
+     "share_below_low": 0.06,
+     "flags": [
+      "season_inverted"
+     ]
+    },
+    "k9": {
+     "spearman_vs_network": -0.52,
+     "share_below_low": 0.766,
+     "flags": [
+      "neg_corr_network",
+      "season_inverted",
+      "share_below_low>30%"
+     ]
+    }
+   },
+   "unit": null,
+   "geography": "г. Астана, посты",
+   "period": "2021-03..2022-03",
+   "source_refs": [
+    {
+     "source_id": "AST-A08-S003",
+     "locator": "layer_03_data_prepared_25.03.22.csv"
+    }
+   ],
+   "derivation": "eco_priority_core.qc_daily_series; порог low=2",
+   "confidence": "medium",
+   "caveats": "Флаг = «проверить», не диагноз неисправности; возможна ошибка агрегатора."
+  },
+  {
+   "fact_id": "AST-A08-F011",
+   "statement": "Станция «Астана» по 8 срокам: суток с максимумом ≥30 °C — от 3 (2016) до 35 (2010) в год; средние 15,8 (2000–09), 17,9 (2010–19), 24,3 (2020–22); ≥35 °C — 0–9; минимум ≤−30 °C — 0–16 суток; экстремумы +38,6/−40,6 °C.",
+   "kind": "derived",
+   "value": {
+    "mean_2000_2009": {
+     "days": 365.3,
+     "d_ge30": 15.8,
+     "d_ge35": 0.6,
+     "d_le_m30": 3.9,
+     "d_le_m35": 1.0
+    },
+    "mean_2010_2019": {
+     "days": 362.1,
+     "d_ge30": 17.9,
+     "d_ge35": 2.1,
+     "d_le_m30": 6.2,
+     "d_le_m35": 0.9
+    },
+    "mean_2020_2022": {
+     "days": 365.3,
+     "d_ge30": 24.3,
+     "d_ge35": 1.3,
+     "d_le_m30": 1.3,
+     "d_le_m35": 0.0
+    },
+    "max": 38.6,
+    "min": -40.6
+   },
+   "unit": "°C / сутки в год",
+   "geography": "точка станции «Астана»",
+   "period": "2000-01-01..2023-04-30",
+   "source_refs": [
+    {
+     "source_id": "AST-A08-S004",
+     "locator": "темп_возд_KZ-AKM_Астана.csv"
+    }
+   ],
+   "derivation": "max/min по 8 срокам при ≥7 значениях; годы с ≥330 сутками",
+   "confidence": "medium",
+   "caveats": "Сроки занижают Tmax; паспорт станции неизвестен; тренд не заявлен."
+  },
+  {
+   "fact_id": "AST-A08-F012",
+   "statement": "В БД Казгидромета (по скрейперу) станция «Астана» имеет регион KZ-AKM (Акмолинская область); геокод получен по названию.",
+   "kind": "observed",
+   "value": "KZ-AKM",
+   "unit": null,
+   "geography": "станция «Астана»",
+   "period": "2023",
+   "source_refs": [
+    {
+     "source_id": "AST-A08-S004",
+     "locator": "CSV поле region; final_coordinates.csv строка 4"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Риск смешения города и области; координаты ненадёжны."
+  },
+  {
+   "fact_id": "AST-A08-F013",
+   "statement": "Адрес поста ПНЗ №6 в списке: «ул. Акжол, район отстойника сточных вод «Астана Тазалык»» (район Байконур по OSM).",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": "г. Астана, 51.1813, 71.4658",
+   "period": "~2022",
+   "source_refs": [
+    {
+     "source_id": "AST-A08-S003",
+     "locator": "sensors.xlsx sId=k12"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Подтверждает только наличие ориентира; загрязнение отстойником не установлено."
+  },
+  {
+   "fact_id": "AST-A08-F014",
+   "statement": "Доступ к публичной зелени ≥0,5 га в 300 м распределён неравномерно; зелёный пояс за городом не входит в 300-метровый доступ.",
+   "kind": "hypothesis",
+   "value": null,
+   "unit": null,
+   "geography": "г. Астана",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "AST-A08-S012",
+     "locator": "не открыто"
+    }
+   ],
+   "derivation": null,
+   "confidence": "low",
+   "caveats": "Проверяется A300 на OSM + GHSL."
+  },
+  {
+   "fact_id": "AST-A08-F015",
+   "statement": "Зимний контраст PM2.5 связан с выбросами отопления (ТЭЦ, частный сектор), инверсиями и транспортом в неизвестных пропорциях.",
+   "kind": "hypothesis",
+   "value": null,
+   "unit": null,
+   "geography": "г. Астана",
+   "period": null,
+   "source_refs": [],
+   "derivation": null,
+   "confidence": "low",
+   "caveats": "Сезонный график не разделяет причины; нужны инвентаризация выбросов и метеоданные."
+  },
+  {
+   "fact_id": "AST-A08-F016",
+   "statement": "Синтетика: пересечение летнего G и зимнего W = 0,00; смешанный индекс сохраняет 23% летнего и 40% зимнего топ-K.",
+   "kind": "synthetic",
+   "value": {
+    "jaccard_summerG_vs_winterW": 0.0,
+    "blend_keeps_share_of_summer_topK": 0.229,
+    "blend_keeps_share_of_winter_topK": 0.396,
+    "random_expected_jaccard": 0.0256
+   },
+   "unit": "Jaccard / доля",
+   "geography": "синтетическая сетка",
+   "period": "n/a",
+   "source_refs": [
+    {
+     "source_id": "AST-A08-S001",
+     "locator": "AST_A08_mvp_seasonal_synthetic.py seed 7"
+    }
+   ],
+   "derivation": "см. скрипт",
+   "confidence": "high",
+   "caveats": "Высокая уверенность только в вычислении; нулевое пересечение заложено допущением синтетики."
+  },
+  {
+   "fact_id": "AST-A08-F017",
+   "statement": "Синтетика: ядро G 67%/22% и W 78%/24% при умеренном возмущении/любых весах; отказ 2 из 6 постов меняет зимний топ-K до Jaccard 0,59.",
+   "kind": "synthetic",
+   "value": {
+    "weights": {
+     "G_moderate": {
+      "median_jaccard": 0.75,
+      "p10_jaccard": 0.585,
+      "core_share_80pct": 0.667
+     },
+     "G_any_weights": {
+      "median_jaccard": 0.534,
+      "p10_jaccard": 0.1,
+      "core_share_80pct": 0.222
+     },
+     "W_moderate": {
+      "median_jaccard": 0.831,
+      "p10_jaccard": 0.707,
+      "core_share_80pct": 0.784
+     },
+     "W_any_weights": {
+      "median_jaccard": 0.558,
+      "p10_jaccard": 0.134,
+      "core_share_80pct": 0.237
+     }
+    },
+    "outage": [
+     {
+      "posts_down": [
+       1
+      ],
+      "jaccard_W": 0.967
+     },
+     {
+      "posts_down": [
+       0,
+       3
+      ],
+      "jaccard_W": 0.593
+     },
+     {
+      "posts_down": [
+       1,
+       2,
+       4
+      ],
+      "jaccard_W": 0.642
+     }
+    ]
+   },
+   "unit": null,
+   "geography": "синтетическая сетка",
+   "period": "n/a",
+   "source_refs": [
+    {
+     "source_id": "AST-A08-S001",
+     "locator": "AST_A08_mvp_results_synthetic.json"
+    }
+   ],
+   "derivation": "см. скрипт",
+   "confidence": "high",
+   "caveats": "Метод, не город."
+  },
+  {
+   "fact_id": "AST-A08-F018",
+   "statement": "Реальная геометрия, вес по площади: +5 датчиков повышают долю площади в 2 км от поста с 0,090 до 0,173, но жадный выбор ставит все точки на южных окраинах (широта 50,95–51,04).",
+   "kind": "derived",
+   "value": {
+    "now": 0.09,
+    "plus5": 0.173,
+    "sites": [
+     [
+      50.953,
+      71.5024
+     ],
+     [
+      50.9892,
+      71.4901
+     ],
+     [
+      51.0266,
+      71.4207
+     ],
+     [
+      51.0254,
+      71.4777
+     ],
+     [
+      51.0371,
+      71.35
+     ]
+    ]
+   },
+   "unit": "доля площади",
+   "geography": "г. Астана",
+   "period": "посты ~2022, границы 2026",
+   "source_refs": [
+    {
+     "source_id": "AST-A08-S002",
+     "locator": "geojson"
+    },
+    {
+     "source_id": "AST-A08-S003",
+     "locator": "sensors.xlsx"
+    }
+   ],
+   "derivation": "AST_A08_sensor_gap_real_geometry.py: кандидаты — сетка 1 км, жадное покрытие 2 км",
+   "confidence": "high",
+   "caveats": "Без населения размещение неприменимо: точки на вероятно малонаселённых окраинах."
+  },
+  {
+   "fact_id": "AST-A08-F019",
+   "statement": "real_context.json в STUPITS хранит нули по всем категориям при статусе unavailable (Overpass ReadTimeout).",
+   "kind": "observed",
+   "value": 0,
+   "unit": "objects (фиктивный ноль)",
+   "geography": "Астана (учебная модель)",
+   "period": "2026-09-23",
+   "source_refs": [
+    {
+     "source_id": "AST-A08-S002",
+     "locator": "data/real_context.json; data/real_context_meta.json status/error"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Нет данных ≠ ноль; для реального слоя нужен null."
+  },
+  {
+   "fact_id": "AST-A08-F020",
+   "statement": "Сторонний ряд PM2.5 по Астане (2019–2024) не имеет общих суток с рядами Казгидромета 2021–2022; проверка единиц невозможна, источник не указан.",
+   "kind": "observed",
+   "value": {
+    "overlap_days": 0,
+    "rows_by_year": {
+     "2019": 317,
+     "2022": 69,
+     "2023": 296,
+     "2024": 363
+    }
+   },
+   "unit": "days",
+   "geography": "г. Астана",
+   "period": "2019–2024",
+   "source_refs": [
+    {
+     "source_id": "AST-A08-S005",
+     "locator": "air_quality_data.csv"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Ряд не использовать до установления происхождения."
+  },
+  {
+   "fact_id": "AST-A08-F021",
+   "statement": "Территория осушённых/засыпанных отстойников (Талдыколь) и старые свалки — потенциальные загрязнённые участки Астаны.",
+   "kind": "hypothesis",
+   "value": null,
+   "unit": null,
+   "geography": "г. Астана",
+   "period": null,
+   "source_refs": [],
+   "derivation": null,
+   "confidence": "low",
+   "caveats": "Только память модели; первоисточник не открыт; не публиковать без подтверждения."
+  },
+  {
+   "fact_id": "AST-A08-F022",
+   "statement": "Зелёный пояс вокруг Астаны управляется отдельным оператором (по памяти «Жасыл аймақ»); внутригородское озеленение может вести другой оператор (указатель: «LLC Astana-Zelenstroy» в описании стороннего репозитория).",
+   "kind": "hypothesis",
+   "value": null,
+   "unit": null,
+   "geography": "г. Астана и пригород",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "AST-A08-S006",
+     "locator": "описание Madi-y-a-r/GreenTree"
+    }
+   ],
+   "derivation": null,
+   "confidence": "low",
+   "caveats": "Существование и функции операторов не проверены."
+  },
+  {
+   "fact_id": "AST-A08-F023",
+   "statement": "Синтетика: S1 охват 10,7% населения (50,2% горячего дециля), кроной 6,4–10,1% при приживаемости 0,6–0,95; S2 A300 0,108 → 0,142 (жадно); S3 размещение по населению и по площади дало 0,906 против 0,901 охвата населения.",
+   "kind": "synthetic",
+   "value": {
+    "S1": {
+     "label": "S1 летние посадки/тень в топ-5% G — ОХВАТ, не эффект",
+     "pop_share_in_treated": 0.1066,
+     "hot_decile_pop_covered": 0.502,
+     "survival_note": "доля приживаемости — параметр-гипотеза {0.6; 0.8; 0.95}; ожидаемый охват кроной = охват × приживаемость; местных данных нет",
+     "expected_canopy_coverage_by_survival": {
+      "0.6": 0.064,
+      "0.8": 0.0853,
+      "0.95": 0.1013
+     }
+    },
+    "S2": {
+     "label": "S2 5 скверов >=0.5 га (геометрия; при условии, что построены, публичны и прижились)",
+     "a300_base": 0.1077,
+     "greedy": 0.1415,
+     "hottest": 0.1353,
+     "random_mean_100": 0.1247
+    },
+    "S3": {
+     "label": "S3 +4 датчика PM2.5: информационный эффект (покрытие 2 км), не снижение загрязнения",
+     "pop_within_2km_now": 0.6684,
+     "pop_within_2km_area_weighted_siting": 0.9012,
+     "pop_within_2km_pop_weighted_siting": 0.9063
+    }
+   },
+   "unit": null,
+   "geography": "синтетическая сетка",
+   "period": "n/a",
+   "source_refs": [
+    {
+     "source_id": "AST-A08-S001",
+     "locator": "AST_A08_mvp_results_synthetic.json scenarios"
+    }
+   ],
+   "derivation": "см. скрипт",
+   "confidence": "high",
+   "caveats": "Методическая демонстрация, не прогноз."
+  },
+  {
+   "fact_id": "AST-A08-F024",
+   "statement": "Без поста ПНЗ №10 (флаги QC) доля площади в 2 км от поста снижается с 0,090 до 0,079.",
+   "kind": "derived",
+   "value": {
+    "with": 0.09,
+    "without_k9": 0.079
+   },
+   "unit": "доля площади",
+   "geography": "г. Астана",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "AST-A08-S003",
+     "locator": "sensors.xlsx"
+    }
+   ],
+   "derivation": "AST_A08_sensor_gap_real_geometry.py",
+   "confidence": "high",
+   "caveats": "Информационное, не физическое покрытие."
+  }
+ ],
+ "datasets": [
+  {
+   "dataset_id": "AST-A08-D001",
+   "title": "OSM-полигоны районов Астаны (кэш STUPITS)",
+   "publisher": "OpenStreetMap contributors / STUPITS",
+   "source_ids": [
+    "AST-A08-S002"
+   ],
+   "landing_url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits",
+   "download_or_api_url": "data/astana_districts.geojson",
+   "access_status": "sample_verified",
+   "tested_at": "2026-10-05T04:15Z",
+   "geography": "г. Астана, 6 районов",
+   "granularity": "полигон района",
+   "period": "OSM 2026-09-22",
+   "format": "GeoJSON",
+   "fields": [
+    "id",
+    "name",
+    "osm_id",
+    "scoring_enabled",
+    "geometry"
+   ],
+   "units": null,
+   "update_frequency": null,
+   "license": "ODbL",
+   "auth_requirement": "нет",
+   "limitations": "Не юридические границы.",
+   "next_retrieval_step": "Сверить с официальным перечнем районов акимата."
+  },
+  {
+   "dataset_id": "AST-A08-D002",
+   "title": "Посты Казгидромета, Астана: список и часовые ряды (AirData)",
+   "publisher": "AirData.kz / Казгидромет",
+   "source_ids": [
+    "AST-A08-S003"
+   ],
+   "landing_url": "https://github.com/DinaAssylbekova/AirData_Shymkent",
+   "download_or_api_url": "git clone --depth 1 https://github.com/DinaAssylbekova/AirData_Shymkent.git",
+   "access_status": "sample_verified",
+   "tested_at": "2026-10-05T04:20Z",
+   "geography": "г. Астана, 6 постов",
+   "granularity": "точка, час",
+   "period": "2021-03-24..2022-03-24",
+   "format": "CSV/XLSX",
+   "fields": [
+    "datetime",
+    "stationId",
+    "code",
+    "value",
+    "pnz",
+    "address",
+    "lat",
+    "lng"
+   ],
+   "units": "не указаны",
+   "update_frequency": "не обновляется",
+   "license": "не указана",
+   "auth_requirement": "нет",
+   "limitations": "Устарел, без лицензии, ПНЗ №10 не проходит QC.",
+   "next_retrieval_step": "Официальный запрос в Казгидромет на ряды 2023–2026."
+  },
+  {
+   "dataset_id": "AST-A08-D003",
+   "title": "Станция «Астана»: температура воздуха по 8 срокам",
+   "publisher": "Казгидромет (через сторонний скрейпинг ecodata.kz)",
+   "source_ids": [
+    "AST-A08-S004"
+   ],
+   "landing_url": "https://github.com/SaniyaAbushakimova/Kazhydromet-Web-Scraping",
+   "download_or_api_url": "kazgydromet_data/темп/возд/KZ-AKM/темп_возд_KZ-AKM_Астана.csv",
+   "access_status": "sample_verified",
+   "tested_at": "2026-10-05T04:20Z",
+   "geography": "точка станции",
+   "granularity": "3 ч (8 сроков)",
+   "period": "2000-01-01..2023-04-30",
+   "format": "CSV",
+   "fields": [
+    "type",
+    "region",
+    "station",
+    "date",
+    "18",
+    "21",
+    "00",
+    "03",
+    "06",
+    "09",
+    "12",
+    "15"
+   ],
+   "units": "°C",
+   "update_frequency": null,
+   "license": "не указана",
+   "auth_requirement": "нет",
+   "limitations": "Нет Tmax/Tmin как таковых; регион KZ-AKM; паспорт станции неизвестен.",
+   "next_retrieval_step": "Открыть ecodata.kz вручную, проверить условия и продлить ряд до 2026."
+  },
+  {
+   "dataset_id": "AST-A08-D004",
+   "title": "Сторонний ряд PM2.5 по Астане (ailaris)",
+   "publisher": "ailaris (GitHub)",
+   "source_ids": [
+    "AST-A08-S005"
+   ],
+   "landing_url": "https://github.com/ailaris/astana-air-quality",
+   "download_or_api_url": null,
+   "access_status": "sample_verified",
+   "tested_at": "2026-10-05T04:22Z",
+   "geography": "г. Астана (точка неизвестна)",
+   "granularity": "сутки",
+   "period": "2019; 2022–2024",
+   "format": "CSV",
+   "fields": [
+    "date",
+    "pm25"
+   ],
+   "units": "неизвестно (AQI или мкг/м³)",
+   "update_frequency": null,
+   "license": "не указана",
+   "auth_requirement": null,
+   "limitations": "Происхождение не указано; пересечение с Казгидрометом 0 суток.",
+   "next_retrieval_step": "Не использовать; искать первоисточник."
+  },
+  {
+   "dataset_id": "AST-A08-D005",
+   "title": "Бюллетени Казгидромета по Астане",
+   "publisher": "РГП «Казгидромет»",
+   "source_ids": [
+    "AST-A08-S010"
+   ],
+   "landing_url": "https://www.kazhydromet.kz/ru/",
+   "download_or_api_url": null,
+   "access_status": "unavailable",
+   "tested_at": "2026-10-05T04:08Z",
+   "geography": "г. Астана",
+   "granularity": null,
+   "period": null,
+   "format": "PDF (ожидается)",
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "403.",
+   "next_retrieval_step": "Второй проход с браузером."
+  },
+  {
+   "dataset_id": "AST-A08-D006",
+   "title": "Статистика БНС по Астане",
+   "publisher": "БНС АСПиР РК",
+   "source_ids": [
+    "AST-A08-S008"
+   ],
+   "landing_url": "https://stat.gov.kz/ru/region/astana/dynamic-tables/38/",
+   "download_or_api_url": null,
+   "access_status": "unavailable",
+   "tested_at": "2026-10-05T04:08Z",
+   "geography": "город / районы",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "403.",
+   "next_retrieval_step": "Население и возраст по районам; выбросы от стационарных источников."
+  },
+  {
+   "dataset_id": "AST-A08-D007",
+   "title": "Landsat 8/9 ST (лето)",
+   "publisher": "USGS",
+   "source_ids": [
+    "AST-A08-S014"
+   ],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": "documented_only",
+   "tested_at": null,
+   "geography": null,
+   "granularity": "30 м",
+   "period": null,
+   "format": "COG",
+   "fields": [
+    "ST_B10",
+    "QA_PIXEL"
+   ],
+   "units": null,
+   "update_frequency": null,
+   "license": "public domain (по памяти)",
+   "auth_requirement": null,
+   "limitations": "LST ≠ воздух; зимой снег.",
+   "next_retrieval_step": "Медиана июнь–август 2023–2025."
+  },
+  {
+   "dataset_id": "AST-A08-D008",
+   "title": "Sentinel-2 NDVI / WorldCover",
+   "publisher": "ESA",
+   "source_ids": [
+    "AST-A08-S015"
+   ],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": "documented_only",
+   "tested_at": null,
+   "geography": null,
+   "granularity": "10 м",
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "NDVI ≠ качество, доступность и приживаемость.",
+   "next_retrieval_step": "Медиана NDVI за вегетационный сезон."
+  },
+  {
+   "dataset_id": "AST-A08-D009",
+   "title": "GHSL / WorldPop 100 м",
+   "publisher": "JRC / WorldPop",
+   "source_ids": [
+    "AST-A08-S017"
+   ],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": "documented_only",
+   "tested_at": null,
+   "geography": null,
+   "granularity": "100 м",
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "Модельные данные.",
+   "next_retrieval_step": "Пересчёт Gap и S3 с весом по населению."
+  },
+  {
+   "dataset_id": "AST-A08-D010",
+   "title": "OSM: зелень, школы, поликлиники",
+   "publisher": "OpenStreetMap contributors",
+   "source_ids": [
+    "AST-A08-S002"
+   ],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": "documented_only",
+   "tested_at": null,
+   "geography": null,
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": "ODbL",
+   "auth_requirement": null,
+   "limitations": "Кэш STUPITS пуст (ReadTimeout); полнота неизвестна.",
+   "next_retrieval_step": "Overpass с кэшем и provenance."
+  },
+  {
+   "dataset_id": "AST-A08-D011",
+   "title": "Sentinel-5P NO2 (фон)",
+   "publisher": "ESA",
+   "source_ids": [
+    "AST-A08-S016"
+   ],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": "documented_only",
+   "tested_at": null,
+   "geography": null,
+   "granularity": "~5,5×3,5 км, сутки",
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "Столб; зимние отбраковки.",
+   "next_retrieval_step": "Только сезонный фон; в индекс не включать."
+  },
+  {
+   "dataset_id": "AST-A08-D012",
+   "title": "Агрегаты обращений iKOMEK109 по эко-категориям",
+   "publisher": "акимат г. Астаны",
+   "source_ids": [
+    "AST-A08-S011"
+   ],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": "unavailable",
+   "tested_at": null,
+   "geography": null,
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "Хост не установлен; только агрегаты без ПДн.",
+   "next_retrieval_step": "Зависимость от исследователя «цифровизация»."
+  },
+  {
+   "dataset_id": "AST-A08-D013",
+   "title": "Тип отопления и газификация по кварталам",
+   "publisher": "акимат / энергооператоры",
+   "source_ids": [],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": "restricted",
+   "tested_at": null,
+   "geography": null,
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "Ключевой вход зимнего W.",
+   "next_retrieval_step": "Зависимость от исследователя энергетики/ЖКХ."
+  }
+ ],
+ "opportunities": [
+  {
+   "idea_id": "AST-A08-O001",
+   "title": "Справочный слой: посты с QC, «дыры» мониторинга и летняя карта озеленения",
+   "problem": "Пользователь видит графики постов без оценки правдоподобия и не знает, какие районы фактически не наблюдаются.",
+   "evidence_fact_ids": [
+    "AST-A08-F004",
+    "AST-A08-F007",
+    "AST-A08-F008",
+    "AST-A08-F010",
+    "AST-A08-F019"
+   ],
+   "primary_user": "аналитик департамента экологии / акимата; дипломник",
+   "user_task": "Решить, каким данным о воздухе доверять и где наблюдений не хватает",
+   "existing_solution": "unknown (публичные карты качества воздуха не проверены)",
+   "proposed_addition": "QC-флаги постов + индикатор Gap по районам + карта G; в STUPITS отдельным справочным слоем, null вместо 0",
+   "required_dataset_ids": [
+    "AST-A08-D001",
+    "AST-A08-D002",
+    "AST-A08-D009",
+    "AST-A08-D007",
+    "AST-A08-D010"
+   ],
+   "ai_role": "Не требуется; LLM объясняет готовые флаги",
+   "non_ai_baseline": "Таблица постов без QC",
+   "success_metrics": [
+    "доля постов с флагами",
+    "доля населения дальше 2 км от поста с прошедшим QC",
+    "ядро топ-K G ≥60%"
+   ],
+   "feasibility_10_days": "medium: часть уже работает на реальных образцах; нужны GHSL и актуальные посты",
+   "blockers": [
+    "нет доступа к официальным данным из среды",
+    "устаревший список постов"
+   ],
+   "transfer_to_shymkent": "Высокая: тот же код (2 поста в Шымкенте, A08-F005/F007)",
+   "next_action": "Пересчитать Gap по населению GHSL"
+  },
+  {
+   "idea_id": "AST-A08-O002",
+   "title": "Зимняя очередь обследования и временных датчиков",
+   "problem": "Зимние эпизоды PM2.5 видны на постах, но где живут подвергающиеся воздействию люди вне постов — неизвестно.",
+   "evidence_fact_ids": [
+    "AST-A08-F009",
+    "AST-A08-F015",
+    "AST-A08-F017",
+    "AST-A08-F018"
+   ],
+   "primary_user": "Казгидромет / департамент экологии / акимат",
+   "user_task": "Где поставить временные датчики и что обследовать в отопительный сезон",
+   "existing_solution": "unknown",
+   "proposed_addition": "Индекс W (малоэтажка, население, объекты, удалённость от поста) + жадное размещение с весом по населению; выход — информационный",
+   "required_dataset_ids": [
+    "AST-A08-D002",
+    "AST-A08-D009",
+    "AST-A08-D013"
+   ],
+   "ai_role": "Не требуется",
+   "non_ai_baseline": "Размещение по площади или по одному на район",
+   "success_metrics": [
+    "прирост доли населения в 2 км от поста на датчик",
+    "доля мест очереди, где обследование подтвердило проблему"
+   ],
+   "feasibility_10_days": "low: нет данных о типе отопления",
+   "blockers": [
+    "тип отопления по кварталам",
+    "население"
+   ],
+   "transfer_to_shymkent": "Средняя: сезонность и топливо иные",
+   "next_action": "Получить слой отопления от исследователя энергетики/ЖКХ"
+  },
+  {
+   "idea_id": "AST-A08-O003",
+   "title": "Исследование: калиброванная сеть недорогих датчиков и квазиэксперимент по посадкам",
+   "problem": "Эффекты посадок и пространственная картина PM2.5 в Астане не измерены.",
+   "evidence_fact_ids": [
+    "AST-A08-F007",
+    "AST-A08-F011"
+   ],
+   "primary_user": "исследователь (диплом), акимат",
+   "user_task": "Проверить, работают ли посадки и где реальные горячие точки",
+   "existing_solution": "нет данных",
+   "proposed_addition": "Разность разностей по LST и логгерам; калибровка датчиков по постам с QC",
+   "required_dataset_ids": [
+    "AST-A08-D007",
+    "AST-A08-D002"
+   ],
+   "ai_role": "Не обязателен",
+   "non_ai_baseline": "Сравнение «до/после» без контроля",
+   "success_metrics": [
+    "минимально обнаружимый эффект",
+    "погрешность датчиков после калибровки"
+   ],
+   "feasibility_10_days": "только расчёт мощности",
+   "blockers": [
+    "полевые работы",
+    "координаты посадок"
+   ],
+   "transfer_to_shymkent": "Высокая (метод)",
+   "next_action": "Расчёт межгодовой дисперсии LST по архиву"
+  }
+ ],
+ "open_questions": [
+  {
+   "question": "Сколько постов Казгидромета в Астане в 2026 году и где они?",
+   "why_important": "Gap и QC построены на списке ~2022",
+   "how_to_check": "Бюллетени 2025–2026 по г. Астане"
+  },
+  {
+   "question": "Корректны ли низкие значения ПНЗ №10 или это ошибка агрегатора AirData?",
+   "why_important": "Определяет, есть ли наблюдения в районе Алматы",
+   "how_to_check": "Сравнить с официальными рядами или бюллетенем за 2021"
+  },
+  {
+   "question": "Каков официальный перечень районов Астаны и дата последнего изменения границ?",
+   "why_important": "Справочник территорий реальной аналитики",
+   "how_to_check": "Постановление акимата / страница акимата на gov.kz"
+  },
+  {
+   "question": "Совпадают ли зоны летней жары и зимнего риска загрязнения?",
+   "why_important": "Решает, нужны ли два сезонных представления",
+   "how_to_check": "Jaccard G/W на реальных Landsat, GHSL и слое отопления"
+  },
+  {
+   "question": "Кто в Астане планирует внутригородские посадки и ведёт учёт приживаемости?",
+   "why_important": "Без пользователя и данных о приживаемости S1/S2 условны",
+   "how_to_check": "Положения об управлениях акимата; сайты операторов"
+  },
+  {
+   "question": "Публикует ли iKOMEK109 агрегаты обращений по экологии?",
+   "why_important": "Сигналы для очереди обследования",
+   "how_to_check": "Официальный сайт сервиса; data.egov.kz"
+  },
+  {
+   "question": "Что известно официально о состоянии территорий бывших отстойников и старых свалок?",
+   "why_important": "P4 пока на уровне гипотез",
+   "how_to_check": "МЭПР, акимат, Экокодекс (исторические загрязнения)"
+  },
+  {
+   "question": "Происхождение и единицы ряда ailaris (2019–2024)?",
+   "why_important": "Единственный найденный ряд PM2.5 после 2022",
+   "how_to_check": "Найти первоисточник; сверить с официальными данными за 2023–2024"
+  }
+ ],
+ "city_comparison": [
+  {
+   "topic": "Полнота и покрытие постов",
+   "astana_fact_ids": [
+    "AST-A08-F004",
+    "AST-A08-F005",
+    "AST-A08-F007",
+    "AST-A08-F008",
+    "AST-A08-F024"
+   ],
+   "shymkent_fact_ids": [
+    "A08-F005",
+    "A08-F007",
+    "A08-F008",
+    "A08-F010"
+   ],
+   "comparison_status": "compared_same_source_same_period",
+   "shared_component": "eco_priority_core.qc_daily_series; полнота; Gap",
+   "city_specific_inputs": [
+    "список и координаты постов",
+    "границы районов",
+    "окно анализа"
+   ],
+   "caveats": "Один сторонний источник для обоих городов, устаревший; число постов 6 против 2 не нормировано по населению."
+  },
+  {
+   "topic": "Сезонность PM2.5",
+   "astana_fact_ids": [
+    "AST-A08-F009",
+    "AST-A08-F010"
+   ],
+   "shymkent_fact_ids": [
+    "A08-F009"
+   ],
+   "comparison_status": "not_comparable_yet",
+   "shared_component": "суточные средние, сезонные медианы",
+   "city_specific_inputs": [
+    "месяцы сезонов",
+    "отопительный период"
+   ],
+   "caveats": "Разные окна и полнота; единицы не подтверждены в обоих городах."
+  },
+  {
+   "topic": "Станция отнесена к области",
+   "astana_fact_ids": [
+    "AST-A08-F012"
+   ],
+   "shymkent_fact_ids": [
+    "A08-F011"
+   ],
+   "comparison_status": "compared_same_pattern",
+   "shared_component": "проверка координат и региона станции",
+   "city_specific_inputs": [
+    "паспорт станции"
+   ],
+   "caveats": "Риск смешения города и области в обоих городах."
+  },
+  {
+   "topic": "Температурные экстремумы",
+   "astana_fact_ids": [
+    "AST-A08-F011"
+   ],
+   "shymkent_fact_ids": [],
+   "comparison_status": "pending",
+   "shared_component": "счётчики порогов по срокам",
+   "city_specific_inputs": [
+    "пороги жары и холода"
+   ],
+   "caveats": "Ряд Шымкента отсутствует в стороннем образце."
+  },
+  {
+   "topic": "Индекс приоритета и чувствительность",
+   "astana_fact_ids": [
+    "AST-A08-F016",
+    "AST-A08-F017",
+    "AST-A08-F023"
+   ],
+   "shymkent_fact_ids": [
+    "A08-F023",
+    "A08-F024"
+   ],
+   "comparison_status": "method_only_synthetic",
+   "shared_component": "prank, score, topk, weight_sensitivity, greedy_max_cover",
+   "city_specific_inputs": [
+    "веса",
+    "сезонные представления (Астана)",
+    "приживаемость"
+   ],
+   "caveats": "Синтетика; числа не сравнимы."
+  },
+  {
+   "topic": "Доступ к зелени A300",
+   "astana_fact_ids": [
+    "AST-A08-F014"
+   ],
+   "shymkent_fact_ids": [
+    "A08-F015"
+   ],
+   "comparison_status": "pending_both",
+   "shared_component": "access_distance",
+   "city_specific_inputs": [
+    "OSM-зелень",
+    "GHSL",
+    "полив и приживаемость"
+   ],
+   "caveats": "Обе стороны — гипотезы без данных."
+  },
+  {
+   "topic": "Загрязнённые территории",
+   "astana_fact_ids": [
+    "AST-A08-F013",
+    "AST-A08-F021"
+   ],
+   "shymkent_fact_ids": [
+    "A08-F016"
+   ],
+   "comparison_status": "not_comparable",
+   "shared_component": "очередь обследования по экспозиции",
+   "city_specific_inputs": [
+    "реестр участков и тип загрязнения"
+   ],
+   "caveats": "Разные типы проблем (отстойники против свинцового наследия); всё на уровне гипотез, кроме ориентира ПНЗ №6."
+  }
+ ],
+ "deliverables": {
+  "scripts": [
+   {
+    "file": "AST_A08_astana_real_checks.py",
+    "kind": "real_sample_checks",
+    "executed": true,
+    "command": "python3 AST_A08_astana_real_checks.py /home/claude",
+    "env": "Python 3.12.3, pandas 3.0.2, numpy 2.4.4, shapely 2.1.2, pyproj 3.8.0",
+    "output": "AST_A08_real_aggregates.json"
+   },
+   {
+    "file": "AST_A08_sensor_gap_real_geometry.py",
+    "kind": "real_geometry_scenario",
+    "executed": true,
+    "command": "python3 AST_A08_sensor_gap_real_geometry.py /home/claude",
+    "output": "AST_A08_sensor_gap_results.json"
+   },
+   {
+    "file": "AST_A08_mvp_seasonal_synthetic.py",
+    "kind": "synthetic_method_test",
+    "executed": true,
+    "seed": 7,
+    "command": "python3 AST_A08_mvp_seasonal_synthetic.py",
+    "output": "AST_A08_mvp_results_synthetic.json"
+   },
+   {
+    "file": "eco_priority_core.py",
+    "kind": "shared_component_both_cities",
+    "executed": true,
+    "note": "используется Астана-скриптами; скрипт Шымкента первого прохода не изменён"
+   }
+  ],
+  "unexecuted": [
+   {
+    "what": "Проверка единиц ряда ailaris (AQI против мкг/м³)",
+    "reason": "0 общих суток с рядами Казгидромета"
+   },
+   {
+    "what": "Overpass-запрос зелени Астаны",
+    "reason": "overpass-api.de: 403"
+   }
+  ],
+  "indicator_definitions": [
+   {
+    "id": "Gap_r",
+    "formula": "доля 250-метровых ячеек района с расстоянием до ближайшего поста > r км, r ∈ {2,5}",
+    "inputs": [
+     "AST-A08-D001",
+     "AST-A08-D002"
+    ]
+   },
+   {
+    "id": "QC",
+    "formula": "neg_corr_network (Spearman с медианой остальных < 0); season_inverted; share_below_low > 30%",
+    "inputs": [
+     "AST-A08-D002"
+    ]
+   },
+   {
+    "id": "G_summer / W_winter",
+    "formula": "Σ w·rank / Σ w по непропущенным компонентам; веса в отчёте, раздел 4",
+    "inputs": [
+     "AST-A08-D007",
+     "AST-A08-D008",
+     "AST-A08-D009",
+     "AST-A08-D010",
+     "AST-A08-D013"
+    ]
+   }
+  ],
+  "api_contract_draft": {
+   "GET /api/eco/layers?city=": "[{layer_id, source_id, period, resolution_m, license, missing_share}]",
+   "GET /api/eco/priority?city=&season=summer|winter": "[{cell_id, score, components{}, core_freq, flags[]}]",
+   "GET /api/eco/qc?city=": "[{post_id, flags[], completeness}]"
+  },
+  "dependencies": [
+   "A03 — реестр полигонов/навалов",
+   "энергетика/ЖКХ — тип отопления, газификация",
+   "земельные отношения — участки",
+   "цифровизация — iKOMEK109, data.egov.kz",
+   "транспорт — интенсивность",
+   "A14 — объединение"
+  ]
+ }
+}

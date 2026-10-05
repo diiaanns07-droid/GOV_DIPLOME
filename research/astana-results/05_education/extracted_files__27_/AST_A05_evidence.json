@@ -1,0 +1,1341 @@
+{
+ "meta": {
+  "agent_id": "AST-A05",
+  "topic": "Образование: доступность и нагрузка школ и детсадов",
+  "city": "astana",
+  "round": "astana-2026-10-05",
+  "searched_at": "2026-10-05T04:07:51Z",
+  "access_limitations": "Нет браузера и веб-поиска. Прокси блокирует gov.kz, stat.gov.kz, data.egov.kz, egov.kz, adilet.zan.kz, iac.kz, Overpass, Geofabrik, Open-Meteo (403 host_not_allowed); astana.gov.kz и ikomek109.kz не разрешаются DNS. Реальные данные — только OSM-кэш репозитория STUPITS (снимок 2026-09-22). Проблемы образования Астаны первоисточниками не подтверждены; сезонность не исследована. Научные ссылки — по памяти модели.",
+  "related_round": {
+   "agent_id": "A05",
+   "city": "shymkent",
+   "files": [
+    "A05_report.md",
+    "A05_evidence.json",
+    "A05_experiment.py",
+    "A05_synthetic_results.json",
+    "A05_run_log.txt"
+   ],
+   "ids_preserved": true
+  }
+ },
+ "sources": [
+  {
+   "source_id": "AST-A05-S001",
+   "title": "STUPITS «Аким на 5 часов» — репозиторий, ветка main (архив)",
+   "publisher": "BAITC-Hacks / STUPITS",
+   "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "code_repository",
+   "access_status": "opened",
+   "notes": "Архив скачан 2026-10-04 (codeload, 9404339 байт), переиспользован 2026-10-05. Тот же объект, что A05-S001."
+  },
+  {
+   "source_id": "AST-A05-S002",
+   "title": "data/astana_districts.geojson (6 OSM-полигонов районов Астаны)",
+   "publisher": "STUPITS на основе OpenStreetMap (ODbL)",
+   "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/blob/main/data/astana_districts.geojson",
+   "published_at": "2026-09-23T11:32:42+00:00",
+   "accessed_at": "2026-10-05",
+   "source_type": "geodata_osm_derived",
+   "access_status": "opened",
+   "notes": "metadata.osm_base_timestamp 2026-09-22T08:45:51Z; sha256 9092aebb…; общественные, не юридические границы."
+  },
+  {
+   "source_id": "AST-A05-S003",
+   "title": "data/geo_sources/astana_districts_overpass.json (сырой ответ Overpass, 11 отношений)",
+   "publisher": "OpenStreetMap contributors через Overpass API; сохранено STUPITS",
+   "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/blob/main/data/geo_sources/astana_districts_overpass.json",
+   "published_at": "2026-09-23T11:28:06+00:00",
+   "accessed_at": "2026-10-05",
+   "source_type": "geodata_osm_raw",
+   "access_status": "opened",
+   "notes": "Запрос: rel[boundary=administrative][admin_level~5-9](50.90,71.0,51.5,72.0); out geom. sha256 ebd6019b…"
+  },
+  {
+   "source_id": "AST-A05-S004",
+   "title": "Лог сетевой проверки AST-A05",
+   "publisher": "AST-A05 (собственный эксперимент)",
+   "url": null,
+   "published_at": "2026-10-05",
+   "accessed_at": "2026-10-05",
+   "source_type": "experiment_log",
+   "access_status": "opened",
+   "notes": "AST_A05_run_log.txt, запуск 2026-10-05T04:07:51Z."
+  },
+  {
+   "source_id": "AST-A05-S005",
+   "title": "Официальный сайт акимата г. Астаны на gov.kz",
+   "publisher": "gov.kz",
+   "url": "https://www.gov.kz/memleket/entities/astana?lang=ru",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "official_portal",
+   "access_status": "blocked_in_environment",
+   "notes": "Недоступно из среды: HTTP 403, x-deny-reason: host_not_allowed (AST_A05_run_log.txt). Ограничение среды, не свойство источника."
+  },
+  {
+   "source_id": "AST-A05-S006",
+   "title": "БНС: динамические таблицы по г. Астане (раздел 38)",
+   "publisher": "Бюро национальной статистики АСПиР РК",
+   "url": "https://stat.gov.kz/ru/region/astana/dynamic-tables/38/",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "official_statistics_portal",
+   "access_status": "blocked_in_environment",
+   "notes": "Недоступно из среды: HTTP 403, x-deny-reason: host_not_allowed (AST_A05_run_log.txt). Ограничение среды, не свойство источника. По словам координатора — ряды населения/миграции; не проверено."
+  },
+  {
+   "source_id": "AST-A05-S007",
+   "title": "Портал открытых данных data.egov.kz",
+   "publisher": "Электронное правительство РК",
+   "url": "https://data.egov.kz/",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "open_data_portal",
+   "access_status": "blocked_in_environment",
+   "notes": "Недоступно из среды: HTTP 403, x-deny-reason: host_not_allowed (AST_A05_run_log.txt). Ограничение среды, не свойство источника."
+  },
+  {
+   "source_id": "AST-A05-S008",
+   "title": "iKOMEK109 (кандидат: городской контакт-центр 109)",
+   "publisher": "неизвестно",
+   "url": "https://ikomek109.kz/",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "city_operator_candidate",
+   "access_status": "unresolved_in_environment",
+   "notes": "В песочнице не разрешается DNS (curl: Could not resolve host). Существование и содержимое домена не установлены."
+  },
+  {
+   "source_id": "AST-A05-S009",
+   "title": "astana.gov.kz (кандидат)",
+   "publisher": "неизвестно",
+   "url": "https://astana.gov.kz/",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "official_portal_candidate",
+   "access_status": "unresolved_in_environment",
+   "notes": "В песочнице не разрешается DNS (curl: Could not resolve host). Существование и содержимое домена не установлены."
+  },
+  {
+   "source_id": "AST-A05-S010",
+   "title": "Эталонный банк НПА adilet.zan.kz",
+   "publisher": "Министерство юстиции РК (ожидаемо)",
+   "url": "https://adilet.zan.kz/rus",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "legal_database",
+   "access_status": "blocked_in_environment",
+   "notes": "Недоступно из среды: HTTP 403, x-deny-reason: host_not_allowed (AST_A05_run_log.txt). Ограничение среды, не свойство источника."
+  },
+  {
+   "source_id": "AST-A05-S011",
+   "title": "ИАЦ (кандидат: сборник статистики образования)",
+   "publisher": "ИАЦ",
+   "url": "https://iac.kz/",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "official_statistics_candidate",
+   "access_status": "blocked_in_environment",
+   "notes": "Недоступно из среды: HTTP 403, x-deny-reason: host_not_allowed (AST_A05_run_log.txt). Ограничение среды, не свойство источника."
+  },
+  {
+   "source_id": "AST-A05-S012",
+   "title": "Overpass API / Geofabrik (OSM-точки школ и пешеходная сеть)",
+   "publisher": "OpenStreetMap contributors",
+   "url": "https://download.geofabrik.de/asia/kazakhstan.html",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "open_geodata",
+   "access_status": "blocked_in_environment",
+   "notes": "Недоступно из среды: HTTP 403, x-deny-reason: host_not_allowed (AST_A05_run_log.txt). Ограничение среды, не свойство источника."
+  },
+  {
+   "source_id": "AST-A05-S013",
+   "title": "Open-Meteo archive (кандидат для климатических данных)",
+   "publisher": "Open-Meteo",
+   "url": "https://archive-api.open-meteo.com/v1/archive",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "climate_api_candidate",
+   "access_status": "blocked_in_environment",
+   "notes": "Недоступно из среды: HTTP 403, x-deny-reason: host_not_allowed (AST_A05_run_log.txt). Ограничение среды, не свойство источника. Официальный источник климата РК (Казгидромет) также не проверен."
+  },
+  {
+   "source_id": "AST-A05-S014",
+   "title": "ТЗ хакатона: docs/presentation/source_docs/tz_data_and_rules.txt",
+   "publisher": "организаторы хакатона (через STUPITS)",
+   "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/blob/main/docs/presentation/source_docs/tz_data_and_rules.txt",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "training_task_document",
+   "access_status": "opened",
+   "notes": "Учебные правила и значения, не измерения."
+  },
+  {
+   "source_id": "AST-A05-S015",
+   "title": "AST-A05 эксперимент: AST_A05_experiment.py → AST_A05_results.json",
+   "publisher": "AST-A05",
+   "url": null,
+   "published_at": "2026-10-05",
+   "accessed_at": "2026-10-05",
+   "source_type": "experiment",
+   "access_status": "opened",
+   "notes": "Часть A — реальная геометрия OSM (derived); часть B — synthetic. sha256 скрипта d895896e…, результата 654c864a…"
+  },
+  {
+   "source_id": "AST-A05-S016",
+   "title": "Задание координатора AST-A05 (раунд astana-2026-10-05)",
+   "publisher": "координатор проекта",
+   "url": null,
+   "published_at": "2026-10-05",
+   "accessed_at": "2026-10-05",
+   "source_type": "task_document",
+   "access_status": "opened",
+   "notes": "Предоставлено в задании координатора как указатель; не открыто."
+  },
+  {
+   "source_id": "AST-A05-S017",
+   "title": "Luo W., Wang F. (2003) Environment and Planning B 30(6) — 2SFCA; Church R., ReVelle C. (1974) — MCLP",
+   "publisher": "научные журналы",
+   "url": null,
+   "published_at": "2003; 1974",
+   "accessed_at": null,
+   "source_type": "scientific_paper_from_model_memory",
+   "access_status": "not_opened",
+   "notes": "Реквизиты по памяти модели; см. также A05-S013, A05-S014."
+  }
+ ],
+ "facts": [
+  {
+   "fact_id": "AST-A05-F001",
+   "statement": "Из среды недоступны официальные источники Астаны (gov.kz, stat.gov.kz, data.egov.kz, egov.kz, adilet, iac.kz), OSM-сервисы и Open-Meteo; astana.gov.kz и ikomek109.kz не разрешаются DNS",
+   "kind": "observed",
+   "value": 403,
+   "unit": "HTTP status",
+   "geography": null,
+   "period": "2026-10-05",
+   "source_refs": [
+    {
+     "source_id": "AST-A05-S004",
+     "locator": "строки 2–14 лога"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": [
+    "Ограничение среды; о самих порталах вывода нет."
+   ]
+  },
+  {
+   "fact_id": "AST-A05-F002",
+   "statement": "В OSM-снимке шесть отношений районов Астаны: Есиль 3479876, Алматы 3482819, Сарыарка 3486954, Байконур 8593081, Нура 20593940, Сарайшык 19733918",
+   "kind": "observed",
+   "value": 6,
+   "unit": "районов",
+   "geography": "Астана (объединение 6 районов OSM)",
+   "period": "2026-09-22",
+   "source_refs": [
+    {
+     "source_id": "AST-A05-S002",
+     "locator": "features[*].properties.osm_id, name"
+    },
+    {
+     "source_id": "AST-A05-S003",
+     "locator": "elements[type=relation]"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": [
+    "Общественные границы OSM на снимок 2026-09-22, не юридический акт.",
+    "Официальный состав районов не подтверждён (adilet заблокирован)."
+   ]
+  },
+  {
+   "fact_id": "AST-A05-F003",
+   "statement": "Тег kato есть у 4 районов (Есиль 711210000, Алматы 711110000, Сарыарка 711310000, Байконур 711410000) и отсутствует у Нуры и Сарайшыка",
+   "kind": "observed",
+   "value": {
+    "esil": "711210000",
+    "almaty": "711110000",
+    "saryarka": "711310000",
+    "baikonur": "711410000",
+    "nura": null,
+    "saraishyk": null
+   },
+   "unit": "код КАТО (тег OSM)",
+   "geography": "Астана (объединение 6 районов OSM)",
+   "period": "2026-09-22",
+   "source_refs": [
+    {
+     "source_id": "AST-A05-S003",
+     "locator": "elements[id=3479876,3482819,3486954,8593081].tags.kato"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": [
+    "Коды из OSM, не из официального классификатора; сверить."
+   ]
+  },
+  {
+   "fact_id": "AST-A05-F004",
+   "statement": "Геодезические площади районов: Есиль 194.56, Алматы 93.38, Сарыарка 67.82, Байконур 183.50, Нура 188.57, Сарайшык 61.43 км²; сумма 789.2 км²; перекрытий и внутренних пустот нет",
+   "kind": "derived",
+   "value": {
+    "esil": 194.56,
+    "almaty": 93.38,
+    "saryarka": 67.82,
+    "baikonur": 183.5,
+    "nura": 188.57,
+    "saraishyk": 61.43
+   },
+   "unit": "км²",
+   "geography": "Астана (объединение 6 районов OSM)",
+   "period": "2026-09-22",
+   "source_refs": [
+    {
+     "source_id": "AST-A05-S015",
+     "locator": "A1_districts; A2_union"
+    }
+   ],
+   "derivation": "pyproj.Geod.geometry_area_perimeter по полигонам AST-A05-S002; проверка EPSG:32642",
+   "confidence": "high",
+   "caveats": [
+    "Общественные границы OSM на снимок 2026-09-22, не юридический акт.",
+    "Площадь не равна официальной площади города."
+   ]
+  },
+  {
+   "fact_id": "AST-A05-F005",
+   "statement": "Объединение районов состоит из 4 частей: основная 770.348 км² и отделённые части Байконура 9.021 км² (≈71.674, 51.333) и 5.032 км² (≈71.317, 51.278), Алматы 4.794 км² (≈71.767, 51.157)",
+   "kind": "derived",
+   "value": [
+    {
+     "area_km2": 770.348,
+     "centroid_lon": 71.443,
+     "centroid_lat": 51.1291,
+     "districts": [
+      "esil",
+      "almaty",
+      "saryarka",
+      "baikonur",
+      "nura",
+      "saraishyk"
+     ]
+    },
+    {
+     "area_km2": 9.021,
+     "centroid_lon": 71.6742,
+     "centroid_lat": 51.3327,
+     "districts": [
+      "baikonur"
+     ]
+    },
+    {
+     "area_km2": 5.032,
+     "centroid_lon": 71.3171,
+     "centroid_lat": 51.2783,
+     "districts": [
+      "baikonur"
+     ]
+    },
+    {
+     "area_km2": 4.794,
+     "centroid_lon": 71.7669,
+     "centroid_lat": 51.1574,
+     "districts": [
+      "almaty"
+     ]
+    }
+   ],
+   "unit": "км²; градусы WGS84",
+   "geography": "Астана (объединение 6 районов OSM)",
+   "period": "2026-09-22",
+   "source_refs": [
+    {
+     "source_id": "AST-A05-S015",
+     "locator": "A2_union_parts"
+    }
+   ],
+   "derivation": "shapely.unary_union; центроиды частей",
+   "confidence": "high",
+   "caveats": [
+    "Общественные границы OSM на снимок 2026-09-22, не юридический акт.",
+    "Назначение участков неизвестно."
+   ]
+  },
+  {
+   "fact_id": "AST-A05-F006",
+   "statement": "Контур Целиноградского района Акмолинской области, собранный из outer-путей отношения 3403760, накрывает отделённую часть Байконура 9.021 км² целиком (перекрытие с остальными районами Астаны — 0)",
+   "kind": "derived",
+   "value": {
+    "baikonur": 9.021
+   },
+   "unit": "км²",
+   "geography": "Астана / Акмолинская область",
+   "period": "2026-09-22",
+   "source_refs": [
+    {
+     "source_id": "AST-A05-S015",
+     "locator": "A4_neighbors[osm_id=3403760]"
+    },
+    {
+     "source_id": "AST-A05-S003",
+     "locator": "elements[id=3403760].members (54 outer, 1 inner)"
+    }
+   ],
+   "derivation": "polygonize(linemerge(outer ways)) ∩ union(районы)",
+   "confidence": "medium",
+   "caveats": [
+    "Сборка упрощённая; единственный inner-член лежит у ~50.87° с.ш., не в зоне перекрытия, но топологию стоит проверить в OSM-редакторе.",
+    "Несогласованность данных OSM, а не правовой вывод."
+   ]
+  },
+  {
+   "fact_id": "AST-A05-F007",
+   "statement": "Общая граница объединения районов Астаны с единицами Акмолинской области (буфер 50 м): Целиноградский 159.5 км, Шортандинский 22.4, Косшы 12.6, Аршалынский 11.0, Тайтобинский с.о. 7.5; периметр объединения 204.5 км",
+   "kind": "derived",
+   "value": {
+    "Целиноградский район": 159.5,
+    "Аршалынский район": 11.0,
+    "Шортандинский район": 22.4,
+    "городская администрация Косшы": 12.6,
+    "Тайтобинская сельская администрация": 7.5
+   },
+   "unit": "км",
+   "geography": "Астана / Акмолинская область",
+   "period": "2026-09-22",
+   "source_refs": [
+    {
+     "source_id": "AST-A05-S015",
+     "locator": "A4_neighbors; A4_union_perimeter_km"
+    }
+   ],
+   "derivation": "длина U.boundary ∩ buffer(сосед, 50 м)",
+   "confidence": "medium",
+   "caveats": [
+    "Тайтобинский с.о. входит в Целиноградский район — длины пересекаются.",
+    "Буфер 50 м завышает длину на изломах."
+   ]
+  },
+  {
+   "fact_id": "AST-A05-F008",
+   "statement": "Доля площади в пределах 250 м от межрайонных границ: город 6.0%, Сарайшык 13.8%, Сарыарка 10.7%, Алматы 9.2%, Есиль 4.3%, Байконур 4.1%, Нура 3.9%; в пределах 500 м: город 11.9%, Сарайшык 27.1%; длина межрайонных границ 48.7 км",
+   "kind": "derived",
+   "value": {
+    "city_250": 0.0603,
+    "city_500": 0.1185,
+    "by_district_250": {
+     "esil": 0.0427,
+     "almaty": 0.0923,
+     "saryarka": 0.1072,
+     "baikonur": 0.0414,
+     "nura": 0.039,
+     "saraishyk": 0.1376
+    }
+   },
+   "unit": "доля площади",
+   "geography": "Астана (объединение 6 районов OSM)",
+   "period": "2026-09-22",
+   "source_refs": [
+    {
+     "source_id": "AST-A05-S015",
+     "locator": "A3_share_of_area_near_internal_boundary; A3_internal_boundary_km"
+    }
+   ],
+   "derivation": "area(район ∩ buffer(внутренние границы, m)) / area(район)",
+   "confidence": "high",
+   "caveats": [
+    "Доля площади, а не населения или школ."
+   ]
+  },
+  {
+   "fact_id": "AST-A05-F009",
+   "statement": "У отношения Сарайшыка admin_level=8, у остальных районов — 6; в STUPITS Сарайшык имеет scoring_enabled=false (нет в учебном пятирайонном наборе)",
+   "kind": "observed",
+   "value": {
+    "saraishyk_admin_level": "8",
+    "others": "6"
+   },
+   "unit": null,
+   "geography": "Астана (объединение 6 районов OSM)",
+   "period": "2026-09-22",
+   "source_refs": [
+    {
+     "source_id": "AST-A05-S003",
+     "locator": "elements[id=19733918].tags.admin_level"
+    },
+    {
+     "source_id": "AST-A05-S002",
+     "locator": "features[id=saraishyk].properties.scoring_enabled"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": [
+    "Общественные границы OSM на снимок 2026-09-22, не юридический акт."
+   ]
+  },
+  {
+   "fact_id": "AST-A05-F010",
+   "statement": "Сопоставление названий на 6 синтетических записях с ловушками Астаны: 4 авто, все верны; 2 на проверку с верным кандидатом; ложных авто 0; школа-лицей №59 и ясли-сад №59 не склеены",
+   "kind": "synthetic",
+   "value": {
+    "auto": 4,
+    "auto_correct": 4,
+    "false_auto": 0,
+    "review": 2,
+    "none": 0
+   },
+   "unit": "записей",
+   "geography": "synthetic",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "AST-A05-S015",
+     "locator": "B_name_matching_synthetic"
+    }
+   ],
+   "derivation": "правила A05 + словари Астаны",
+   "confidence": "medium",
+   "caveats": [
+    "Малая авторская выборка; не точность на реальных данных."
+   ]
+  },
+  {
+   "fact_id": "AST-A05-F011",
+   "statement": "Гипотеза о необходимости городских стоп-слов («Нур-Султан», «Астаны», «қаласы») не подтвердилась на синтетике: результаты с ними и без них совпали",
+   "kind": "synthetic",
+   "value": {
+    "without": 4,
+    "with": 4
+   },
+   "unit": "верных авто",
+   "geography": "synthetic",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "AST-A05-S015",
+     "locator": "B_name_matching_synthetic.without_city_stopwords / with_city_stopwords"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": [
+    "Нулевой результат на 6 записях; для объектов без номера вопрос открыт."
+   ]
+  },
+  {
+   "fact_id": "AST-A05-F012",
+   "statement": "ТЗ хакатона определяет шкалу S1 «Школы и детсады» как «100 = 100% нормативной потребности, без 2-й смены»; базовое значение Нуры — 38 (критическое, порог строго ниже 40)",
+   "kind": "observed",
+   "value": {
+    "S1_nura": 38
+   },
+   "unit": "баллы учебной шкалы",
+   "geography": "Астана (учебная модель)",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "AST-A05-S014",
+     "locator": "строки 25–26"
+    },
+    {
+     "source_id": "AST-A05-S001",
+     "locator": "docs/presentation/PROJECT_FACTS.md, стр. 37"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": [
+    "Учебные значения; не измерение реального города."
+   ]
+  },
+  {
+   "fact_id": "AST-A05-F013",
+   "statement": "В репозитории STUPITS нет точечного слоя школ/детсадов Астаны: файл data/real_context_points.geojson, который должен создавать fetch_real_context.py, отсутствует; справочный слой имеет статус unavailable (см. A05-F005)",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": "Астана",
+   "period": "2026-09-23",
+   "source_refs": [
+    {
+     "source_id": "AST-A05-S001",
+     "locator": "ls data/; fetch_real_context.py стр. 14, 54"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": [
+    "Отсутствие в репозитории не означает отсутствие объектов в OSM."
+   ]
+  },
+  {
+   "fact_id": "AST-A05-F014",
+   "statement": "Отношения OSM Нуры (20593940) и Сарайшыка (19733918) имеют гораздо большие идентификаторы, чем у остальных районов, то есть созданы в OSM позже",
+   "kind": "derived",
+   "value": {
+    "nura": 20593940,
+    "saraishyk": 19733918,
+    "max_other": 8593081
+   },
+   "unit": "OSM relation id",
+   "geography": "Астана (объединение 6 районов OSM)",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "AST-A05-S003",
+     "locator": "elements[type=relation].id"
+    }
+   ],
+   "derivation": "идентификаторы OSM выдаются последовательно",
+   "confidence": "low",
+   "caveats": [
+    "Ничего не говорит о дате юридического создания районов."
+   ]
+  },
+  {
+   "fact_id": "AST-A05-F015",
+   "statement": "Дефицит ученических мест и многосменность — актуальная проблема Астаны",
+   "kind": "hypothesis",
+   "value": null,
+   "unit": null,
+   "geography": "Астана",
+   "period": "2024–2026",
+   "source_refs": [],
+   "derivation": null,
+   "confidence": "low",
+   "caveats": [
+    "Из общих знаний модели; первоисточник не открыт; чисел не приводится."
+   ]
+  },
+  {
+   "fact_id": "AST-A05-F016",
+   "statement": "Город назывался Нур-Султан примерно в 2019–2022 годах; ряды и названия организаций могут быть под старым именем",
+   "kind": "hypothesis",
+   "value": null,
+   "unit": null,
+   "geography": "Астана",
+   "period": "2019–2022",
+   "source_refs": [],
+   "derivation": null,
+   "confidence": "low",
+   "caveats": [
+    "Из памяти модели; даты проверить по официальным актам."
+   ]
+  },
+  {
+   "fact_id": "AST-A05-F017",
+   "statement": "Часть детского спроса пересекает городскую черту (Косшы, Целиноградский район ↔ Астана)",
+   "kind": "hypothesis",
+   "value": null,
+   "unit": null,
+   "geography": "Астана / Акмолинская область",
+   "period": null,
+   "source_refs": [],
+   "derivation": null,
+   "confidence": "low",
+   "caveats": [
+    "Основание — только смежность (AST-A05-F007); потоков данных нет."
+   ]
+  },
+  {
+   "fact_id": "AST-A05-F018",
+   "statement": "Сезон (зима) снижает пешую доступность школ в Астане",
+   "kind": "hypothesis",
+   "value": null,
+   "unit": null,
+   "geography": "Астана",
+   "period": null,
+   "source_refs": [],
+   "derivation": null,
+   "confidence": "low",
+   "caveats": [
+    "Не исследовано: нет климатических данных и данных о способе поездки (AST-A05-S013 заблокирован)."
+   ]
+  },
+  {
+   "fact_id": "AST-A05-F019",
+   "statement": "Координатор указывает, что stat.gov.kz/ru/region/astana/dynamic-tables/38/ — страница рядов по населению/миграции Астаны со ссылками на файлы",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": "Астана",
+   "period": "2026-10-05",
+   "source_refs": [
+    {
+     "source_id": "AST-A05-S016",
+     "locator": "раздел «Стартовые указатели»"
+    }
+   ],
+   "derivation": null,
+   "confidence": "low",
+   "caveats": [
+    "Утверждение задания, не проверка содержимого страницы."
+   ]
+  }
+ ],
+ "datasets": [
+  {
+   "dataset_id": "AST-A05-D001",
+   "title": "Полигоны 6 районов Астаны (OSM, кэш STUPITS)",
+   "publisher": "OpenStreetMap contributors; сборка STUPITS",
+   "source_ids": [
+    "AST-A05-S002",
+    "AST-A05-S015"
+   ],
+   "landing_url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits",
+   "download_or_api_url": "https://codeload.github.com/BAITC-Hacks/hack-d3b2c613-stupits/zip/refs/heads/main",
+   "access_status": "sample_verified",
+   "tested_at": "2026-10-05",
+   "geography": "Астана",
+   "granularity": "район",
+   "period": "снимок 2026-09-22",
+   "format": "GeoJSON",
+   "fields": [
+    "id",
+    "name",
+    "osm_id",
+    "osm_admin_level",
+    "area_km2",
+    "scoring_enabled",
+    "geometry"
+   ],
+   "units": "WGS84",
+   "update_frequency": "по мере обновления OSM",
+   "license": "ODbL",
+   "auth_requirement": "нет",
+   "limitations": "Общественные границы; КАТО только у 4; отделённые части; пересечение с Целиноградским районом.",
+   "next_retrieval_step": "Сверить состав и коды с официальным КАТО и актами; обновить снимок. Образец: AST_A05_sample_osm_districts.json."
+  },
+  {
+   "dataset_id": "AST-A05-D002",
+   "title": "Сырой ответ Overpass с соседними единицами Акмолинской области",
+   "publisher": "OpenStreetMap contributors",
+   "source_ids": [
+    "AST-A05-S003"
+   ],
+   "landing_url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits",
+   "download_or_api_url": null,
+   "access_status": "sample_verified",
+   "tested_at": "2026-10-05",
+   "geography": "Астана и окрестности (bbox 50.90–51.5, 71.0–72.0)",
+   "granularity": "отношение",
+   "period": "снимок 2026-09-22",
+   "format": "Overpass JSON",
+   "fields": [
+    "id",
+    "tags.name",
+    "tags.admin_level",
+    "tags.kato",
+    "tags.wikidata",
+    "members.geometry"
+   ],
+   "units": "WGS84",
+   "update_frequency": null,
+   "license": "ODbL",
+   "auth_requirement": "нет",
+   "limitations": "bbox ограничен; inner-члены не обработаны в сборке A05.",
+   "next_retrieval_step": "Использовать для флага «вне города / пересечение»."
+  },
+  {
+   "dataset_id": "AST-A05-D003",
+   "title": "БНС: население по возрастам, миграция, ввод жилья, образование — Астана",
+   "publisher": "Бюро национальной статистики АСПиР РК",
+   "source_ids": [
+    "AST-A05-S006",
+    "AST-A05-S016"
+   ],
+   "landing_url": "https://stat.gov.kz/ru/region/astana/dynamic-tables/38/",
+   "download_or_api_url": null,
+   "access_status": "unavailable",
+   "tested_at": "2026-10-05",
+   "geography": "Астана",
+   "granularity": "город; район — неизвестно",
+   "period": null,
+   "format": null,
+   "fields": [
+    "year",
+    "indicator",
+    "territory",
+    "value"
+   ],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "Заблокировано в среде; гранулярность и годы неизвестны.",
+   "next_retrieval_step": "Открыть страницу, записать URL файлов, период, гранулярность; проверить ряды «Нур-Султан»."
+  },
+  {
+   "dataset_id": "AST-A05-D004",
+   "title": "Реестр школ и детсадов Астаны",
+   "publisher": "кандидат: управление образования г. Астаны / data.egov.kz",
+   "source_ids": [
+    "AST-A05-S007",
+    "AST-A05-S005"
+   ],
+   "landing_url": "https://data.egov.kz/",
+   "download_or_api_url": null,
+   "access_status": "unavailable",
+   "tested_at": "2026-10-05",
+   "geography": "Астана",
+   "granularity": "объект",
+   "period": null,
+   "format": null,
+   "fields": [
+    "name_ru",
+    "name_kk",
+    "bin",
+    "address",
+    "ownership",
+    "kind",
+    "district",
+    "lon",
+    "lat"
+   ],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "Существование набора не подтверждено.",
+   "next_retrieval_step": "Поиск «школы/мектептер/детские сады Астана (Нур-Султан)»; API-запрос; 5 строк; лицензия."
+  },
+  {
+   "dataset_id": "AST-A05-D005",
+   "title": "OSM: amenity=school/kindergarten и пешеходный граф Астаны",
+   "publisher": "OpenStreetMap contributors",
+   "source_ids": [
+    "AST-A05-S012",
+    "AST-A05-S001"
+   ],
+   "landing_url": "https://www.openstreetmap.org/",
+   "download_or_api_url": "https://download.geofabrik.de/asia/kazakhstan.html",
+   "access_status": "unavailable",
+   "tested_at": "2026-10-05",
+   "geography": "Астана",
+   "granularity": "объект / ребро",
+   "period": null,
+   "format": "PBF",
+   "fields": [
+    "osm_id",
+    "name",
+    "name:kk",
+    "name:ru",
+    "amenity",
+    "geometry"
+   ],
+   "units": "WGS84",
+   "update_frequency": "непрерывно",
+   "license": "ODbL",
+   "auth_requirement": "нет",
+   "limitations": "Загрузка STUPITS 2026-09-23 упала по таймауту (A05-F005); из песочницы недоступно.",
+   "next_retrieval_step": "Скачать PBF вне песочницы, обрезать по AST-A05-D001."
+  },
+  {
+   "dataset_id": "AST-A05-D006",
+   "title": "НОБД (агрегаты по школам Астаны)",
+   "publisher": "ответственный орган — проверить",
+   "source_ids": [
+    "AST-A05-S001"
+   ],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": "restricted",
+   "tested_at": "2026-10-05",
+   "geography": "Казахстан / Астана",
+   "granularity": "объект",
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": "закрытая ИС",
+   "limitations": "Тот же национальный объект, что A05-D005; содержит персональные данные.",
+   "next_retrieval_step": "Выяснить, публикуются ли агрегаты по школам."
+  },
+  {
+   "dataset_id": "AST-A05-D007",
+   "title": "Публичные агрегаты обращений iKOMEK109 по теме образования",
+   "publisher": "кандидат: городской контакт-центр 109",
+   "source_ids": [
+    "AST-A05-S008"
+   ],
+   "landing_url": "https://ikomek109.kz/",
+   "download_or_api_url": null,
+   "access_status": "unavailable",
+   "tested_at": "2026-10-05",
+   "geography": "Астана",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [
+    "topic",
+    "district",
+    "period",
+    "count"
+   ],
+   "units": "обращений",
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "DNS не разрешён; наличие открытых агрегатов неизвестно; внутренние данные не запрашивать.",
+   "next_retrieval_step": "Найти опубликованные отчёты или агрегаты."
+  },
+  {
+   "dataset_id": "AST-A05-D008",
+   "title": "Агрегированная очередь в детсады Астаны",
+   "publisher": "кандидат: управление образования / egov",
+   "source_ids": [
+    "AST-A05-S005"
+   ],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": "unavailable",
+   "tested_at": "2026-10-05",
+   "geography": "Астана",
+   "granularity": "город/район (ожидание)",
+   "period": null,
+   "format": null,
+   "fields": [
+    "age_group",
+    "queue_size",
+    "date",
+    "district"
+   ],
+   "units": "детей",
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "Источник не найден; персональные записи не собирать.",
+   "next_retrieval_step": "Поиск публичной статистики очереди."
+  },
+  {
+   "dataset_id": "AST-A05-D009",
+   "title": "Климатические данные Астаны для сезонного сценария",
+   "publisher": "кандидаты: Казгидромет; Open-Meteo",
+   "source_ids": [
+    "AST-A05-S013"
+   ],
+   "landing_url": null,
+   "download_or_api_url": "https://archive-api.open-meteo.com/v1/archive",
+   "access_status": "unavailable",
+   "tested_at": "2026-10-05",
+   "geography": "Астана",
+   "granularity": "станция / сетка",
+   "period": null,
+   "format": null,
+   "fields": [
+    "date",
+    "t_min",
+    "t_mean",
+    "snow_depth",
+    "wind"
+   ],
+   "units": "°C, см, м/с",
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "Заблокировано; без данных о способе поездки сезонный эффект не оценивается.",
+   "next_retrieval_step": "Получить климатические нормы и поискать открытые данные о способах поездки в школу."
+  },
+  {
+   "dataset_id": "AST-A05-D010",
+   "title": "Синтетический тест сопоставления названий (Астана)",
+   "publisher": "AST-A05",
+   "source_ids": [
+    "AST-A05-S015"
+   ],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": "sample_verified",
+   "tested_at": "2026-10-05",
+   "geography": "synthetic",
+   "granularity": "запись",
+   "period": "n/a",
+   "format": "JSON",
+   "fields": [
+    "reg",
+    "osm",
+    "rule",
+    "truth"
+   ],
+   "units": null,
+   "update_frequency": null,
+   "license": "synthetic",
+   "auth_requirement": null,
+   "limitations": "SYNTHETIC.",
+   "next_retrieval_step": "Заменить ручной разметкой 50 реальных пар."
+  }
+ ],
+ "opportunities": [
+  {
+   "idea_id": "AST-A05-I01",
+   "title": "Уровень 1: слой статусов данных и сетевая доступность школ/детсадов на реальных районах Астаны с флагами привязки",
+   "problem": "Привязка объектов к районам ненадёжна у границ, в отделённых частях и на стыке с областью; точек школ в продукте нет",
+   "evidence_fact_ids": [
+    "AST-A05-F003",
+    "AST-A05-F005",
+    "AST-A05-F006",
+    "AST-A05-F008",
+    "AST-A05-F013"
+   ],
+   "primary_user": "специалист управления образования / градостроительного отдела Астаны",
+   "user_task": "увидеть, какие объекты где учтены, какие привязки сомнительны и где жилые кварталы далеко от школы по сети",
+   "existing_solution": "коммерческие карты; районные таблицы без геопривязки (гипотеза)",
+   "proposed_addition": "флаги ≤250 м от границы, отделённая часть, пересечение с областью; КАТО-таблица; сетевое покрытие; null вместо 0",
+   "required_dataset_ids": [
+    "AST-A05-D001",
+    "AST-A05-D002",
+    "AST-A05-D005"
+   ],
+   "ai_role": "LLM объясняет флаги и ограничения; расчёт без AI",
+   "non_ai_baseline": "точки школ в районной таблице без флагов; буферы по прямой",
+   "success_metrics": [
+    "полнота OSM-точек против официального списка, %",
+    "доля объектов с флагами привязки",
+    "доля районов с КАТО"
+   ],
+   "feasibility_10_days": "высокая при наличии OSM-выгрузки вне песочницы",
+   "blockers": [
+    "полнота OSM неизвестна",
+    "официальные КАТО Нуры и Сарайшыка не проверены"
+   ],
+   "transfer_to_shymkent": "общий код флагов и покрытия; для Шымкента нужны свои полигоны (не получены в A05)",
+   "next_action": "Скачать PBF, посчитать школы по 6 районам, сверить 30 со списком"
+  },
+  {
+   "idea_id": "AST-A05-I02",
+   "title": "Уровень 2: сценарный стол размещения и перезакрепления для Астаны (модель A с dmax, 2SFCA, устойчивость, агломерационный флаг)",
+   "problem": "Гипотезы дефицита мест и роста спроса (AST-A05-F015, F017) требуют сравнения вариантов на подтверждённых данных",
+   "evidence_fact_ids": [
+    "AST-A05-F015",
+    "AST-A05-F017",
+    "A05-F011",
+    "A05-F012",
+    "A05-F014"
+   ],
+   "primary_user": "отдел сети организаций образования управления образования г. Астаны",
+   "user_task": "сравнить допустимые участки и перезакрепление кварталов",
+   "existing_solution": "неизвестно",
+   "proposed_addition": "три определения дефицита, группа равноценных вариантов, учёт отделённых частей и спроса из-за городской черты как unknown",
+   "required_dataset_ids": [
+    "AST-A05-D001",
+    "AST-A05-D003",
+    "AST-A05-D004",
+    "AST-A05-D005",
+    "AST-A05-D006"
+   ],
+   "ai_role": "объяснение со ссылками на source_id; без генерации чисел",
+   "non_ai_baseline": "правило ближайшей школы; участок у центроида худшей территории",
+   "success_metrics": [
+    "совпадение ранжирования с экспертом",
+    "время подготовки сравнения",
+    "доля школ с подтверждёнными мощностью/контингентом/сменами"
+   ],
+   "feasibility_10_days": "низкая: нужны мощность и контингент по школам",
+   "blockers": [
+    "мощность и контингент, вероятно, не открыты",
+    "участки — роль «земельные отношения»"
+   ],
+   "transfer_to_shymkent": "общий оптимизатор (A05-I02); отдельно — нормы, dmax, участки",
+   "next_action": "Найти 1 таблицу БНС по районам Астаны и 5 школ с мощностью"
+  },
+  {
+   "idea_id": "AST-A05-I03",
+   "title": "Уровень 3 (исследование): прогноз набора в 1-е классы по районам из миграции и ввода жилья с бэктестом; сезонный сценарий порога при наличии данных",
+   "problem": "Рост спроса может опережать ввод мест (гипотеза)",
+   "evidence_fact_ids": [
+    "AST-A05-F015",
+    "AST-A05-F018",
+    "AST-A05-F019"
+   ],
+   "primary_user": "управление образования, градостроители",
+   "user_task": "увидеть ожидаемую нехватку мест на 3–6 лет вперёд",
+   "existing_solution": "неизвестно",
+   "proposed_addition": "когортная модель с миграцией и вводом жилья; ретро-проверка",
+   "required_dataset_ids": [
+    "AST-A05-D003",
+    "AST-A05-D009"
+   ],
+   "ai_role": "не обязателен",
+   "non_ai_baseline": "«как в прошлом году», линейный тренд",
+   "success_metrics": [
+    "MAE против наивного baseline на ретро-данных"
+   ],
+   "feasibility_10_days": "очень низкая",
+   "blockers": [
+    "районные ряды до и после смены сетки районов",
+    "контингент 1-х классов за 5+ лет"
+   ],
+   "transfer_to_shymkent": "метод общий; ряды и параметры миграции — свои",
+   "next_action": "Проверить наличие районных рядов миграции и ввода жилья у БНС"
+  }
+ ],
+ "open_questions": [
+  {
+   "question": "Какие коды КАТО у районов Нура и Сарайшык и когда районы образованы?",
+   "why_important": "Без ключа нельзя стыковать статистику с геометрией; ряды до и после несопоставимы",
+   "how_to_check": "официальный классификатор КАТО; акты на adilet"
+  },
+  {
+   "question": "Что находится на отделённых частях Байконура (9.02 и 5.03 км²) и Алматы (4.79 км²) и корректна ли зона пересечения с Целиноградским районом?",
+   "why_important": "Объекты там могут быть ошибочно отнесены к городу или району",
+   "how_to_check": "официальные границы; просмотр OSM-отношений 8593081, 3482819, 3403760"
+  },
+  {
+   "question": "Публикует ли БНС население по возрастам, миграцию и ввод жилья с разбивкой по районам Астаны?",
+   "why_important": "Определяет, возможен ли спрос по территориям",
+   "how_to_check": "dynamic-tables Астаны; описание гранулярности файлов"
+  },
+  {
+   "question": "Есть ли открытый реестр школ и детсадов Астаны с адресами, мощностью и контингентом?",
+   "why_important": "Уровень 2",
+   "how_to_check": "data.egov.kz; сайт управления образования"
+  },
+  {
+   "question": "Публикуются ли данные о сменности по Астане отдельно и за какие годы?",
+   "why_important": "Гипотеза П1",
+   "how_to_check": "сборник ИАЦ; БНС"
+  },
+  {
+   "question": "Есть ли открытые данные о способе поездки детей в школу и климатические нормы для сезонного сценария?",
+   "why_important": "Без них сезонный эффект не оценивается",
+   "how_to_check": "Казгидромет; городские обследования мобильности"
+  },
+  {
+   "question": "Публикует ли iKOMEK109 агрегаты обращений по образованию?",
+   "why_important": "Независимый сигнал проблем по районам",
+   "how_to_check": "сайт и отчёты оператора; только агрегаты"
+  }
+ ],
+ "city_comparison": [
+  {
+   "topic": "Слой статусов данных, null вместо 0",
+   "astana_fact_ids": [
+    "AST-A05-F013",
+    "A05-F005"
+   ],
+   "shymkent_fact_ids": [
+    "A05-F001"
+   ],
+   "comparison_status": "shared_method_astana_partial_shymkent_pending",
+   "shared_component": "контракт карточки и статусов",
+   "city_specific_inputs": [
+    "перечень источников и доступных полей"
+   ],
+   "caveats": [
+    "A05-F005 относится к Астане (кэш STUPITS), хотя получен в проходе по Шымкенту."
+   ]
+  },
+  {
+   "topic": "Привязка объектов к районам и флаги границ",
+   "astana_fact_ids": [
+    "AST-A05-F002",
+    "AST-A05-F003",
+    "AST-A05-F004",
+    "AST-A05-F005",
+    "AST-A05-F008",
+    "AST-A05-F009"
+   ],
+   "shymkent_fact_ids": [
+    "A05-F018"
+   ],
+   "comparison_status": "astana_observed_shymkent_pending",
+   "shared_component": "point-in-polygon, буфер внутренних границ, разбор частей мультиполигона",
+   "city_specific_inputs": [
+    "полигоны районов",
+    "КАТО",
+    "дата снимка"
+   ],
+   "caveats": [
+    "Для Шымкента полигоны не получены; A05-F018 — гипотеза."
+   ]
+  },
+  {
+   "topic": "Граница город/область, агломерация",
+   "astana_fact_ids": [
+    "AST-A05-F006",
+    "AST-A05-F007",
+    "AST-A05-F017"
+   ],
+   "shymkent_fact_ids": [
+    "A05-F017"
+   ],
+   "comparison_status": "astana_partially_observed_shymkent_hypothesis",
+   "shared_component": "флаг «вне города / пересечение с областью»",
+   "city_specific_inputs": [
+    "соседние единицы (Акмолинская / Туркестанская область)"
+   ],
+   "caveats": [
+    "История выделения городов разная; потоки детей нигде не наблюдались."
+   ]
+  },
+  {
+   "topic": "Сетевая пешая доступность",
+   "astana_fact_ids": [],
+   "shymkent_fact_ids": [
+    "A05-F010"
+   ],
+   "comparison_status": "both_pending_real_data_method_synthetic",
+   "shared_component": "граф OSM, Дейкстра, Coverage(T), отношение сеть/прямая",
+   "city_specific_inputs": [
+    "пороги",
+    "барьеры",
+    "сезонный сценарий (Астана)"
+   ],
+   "caveats": [
+    "A05-F010 — синтетика; пороги и сезон не переносить."
+   ]
+  },
+  {
+   "topic": "Дефицит мест и размещение (LP с dmax, 2SFCA)",
+   "astana_fact_ids": [
+    "AST-A05-F015"
+   ],
+   "shymkent_fact_ids": [
+    "A05-F011",
+    "A05-F012",
+    "A05-F013",
+    "A05-F014",
+    "A05-F015"
+   ],
+   "comparison_status": "method_shared_data_pending_both",
+   "shared_component": "модель A, перебор участков, группа равноценных вариантов",
+   "city_specific_inputs": [
+    "мощность",
+    "контингент",
+    "смены",
+    "спрос",
+    "dmax",
+    "участки"
+   ],
+   "caveats": [
+    "Нормы и dmax проверять отдельно для каждого города."
+   ]
+  },
+  {
+   "topic": "Сопоставление названий",
+   "astana_fact_ids": [
+    "AST-A05-F010",
+    "AST-A05-F011"
+   ],
+   "shymkent_fact_ids": [
+    "A05-F016"
+   ],
+   "comparison_status": "both_synthetic",
+   "shared_component": "matcher (тип, номер, расстояние, статусы)",
+   "city_specific_inputs": [
+    "словари старых названий (Нур-Султан)",
+    "языковые формы"
+   ],
+   "caveats": [
+    "Точность на реальных данных не проверена ни в одном городе."
+   ]
+  },
+  {
+   "topic": "Дефицит мест и многосменность как проблема",
+   "astana_fact_ids": [
+    "AST-A05-F015"
+   ],
+   "shymkent_fact_ids": [
+    "A05-F019"
+   ],
+   "comparison_status": "both_unconfirmed",
+   "shared_component": null,
+   "city_specific_inputs": [],
+   "caveats": [
+    "Гипотезы без чисел в обоих городах."
+   ]
+  },
+  {
+   "topic": "Учебный режим отдельно от реальной аналитики",
+   "astana_fact_ids": [
+    "AST-A05-F012"
+   ],
+   "shymkent_fact_ids": [
+    "A05-F002",
+    "A05-F003"
+   ],
+   "comparison_status": "game_model_only",
+   "shared_component": "движок STUPITS без изменений",
+   "city_specific_inputs": [],
+   "caveats": [
+    "Учебные S1/M7 не переносятся ни в один реальный город."
+   ]
+  }
+ ],
+ "experiments": [
+  {
+   "experiment_id": "AST-A05-E001",
+   "purpose": "Проверить пригодность реальных OSM-границ Астаны для привязки объектов и стыковки со статистикой; ловушки названий",
+   "inputs": [
+    "data/astana_districts.geojson (sha256 9092aebb997086d4fbf30963dd84dfae6aab483a585ba6f536944fb03a4eb95e)",
+    "data/geo_sources/astana_districts_overpass.json (sha256 ebd6019b0ea32cef4d3f27c79bc0a979284fe35476551742eea8ba4839f01392)"
+   ],
+   "versions": {
+    "python": "3.12.3",
+    "numpy": "2.4.4",
+    "shapely": "2.1.2",
+    "pyproj": "3.8.0",
+    "platform": "Linux-6.18.44-fc-v70-x86_64-with-glibc2.39",
+    "input_geojson_generated_at": "2026-09-23T11:32:42+00:00",
+    "input_osm_base_timestamp": "2026-09-22T08:45:51Z",
+    "crs_metric": "EPSG:32642 (UTM 42N)",
+    "license": "ODbL, © OpenStreetMap contributors"
+   },
+   "command": "python3 AST_A05_experiment.py repo/hack-d3b2c613-stupits-main",
+   "outputs": [
+    "AST_A05_results.json",
+    "AST_A05_sample_osm_districts.json"
+   ],
+   "sha256": {
+    "AST_A05_experiment.py": "d895896e39b0d7eced0d8b975b80744e40092a45461855ba5c9c637de4c8e02e",
+    "AST_A05_results.json": "654c864af92ca6e0de9eed18efda31390c1b81ef389b84ab7862039994853f3e"
+   },
+   "kind": "part A real-derived, part B synthetic",
+   "status": "executed"
+  }
+ ],
+ "deliverables": {
+  "real_samples": [
+   {
+    "file": "AST_A05_sample_osm_districts.json",
+    "dataset_id": "AST-A05-D001",
+    "license": "ODbL"
+   }
+  ],
+  "school_card_contract": {
+   "kind": "synthetic",
+   "added_fields_vs_A05": [
+    "names.former_names",
+    "district.kato",
+    "district.boundary_snapshot",
+    "district.flags.near_internal_boundary_250m",
+    "district.flags.detached_part",
+    "district.flags.overlaps_oblast_polygon",
+    "access.season_scenario",
+    "game_model_link"
+   ]
+  },
+  "integrity_metrics": [
+   "доля объектов ≤250 м от межрайонной границы",
+   "доля объектов в отделённых частях / зоне пересечения с областью",
+   "доля районов с КАТО",
+   "доля школ с подтверждённой мощностью"
+  ],
+  "interpretation_errors": [
+   "Астана против Акмолинской области и агломерации",
+   "смена районной сетки (Нура, Сарайшык)",
+   "привязка у границы",
+   "переименование Нур-Султан/Астана",
+   "учебная шкала S1 как реальная"
+  ]
+ }
+}

@@ -1,0 +1,72 @@
+{
+ "kind": "derived_real_geometry_area_weighted",
+ "city_cells_250m": 12622,
+ "candidates_1km": 791,
+ "all_6_posts": {
+  "posts_used": [
+   "k4",
+   "k7",
+   "k8",
+   "k9",
+   "k12",
+   "k14"
+  ],
+  "share_area_within_2km_now": 0.09,
+  "share_area_within_2km_plus5": 0.173,
+  "new_sites_latlon": [
+   [
+    50.953,
+    71.5024
+   ],
+   [
+    50.9892,
+    71.4901
+   ],
+   [
+    51.0266,
+    71.4207
+   ],
+   [
+    51.0254,
+    71.4777
+   ],
+   [
+    51.0371,
+    71.35
+   ]
+  ]
+ },
+ "excluding_qc_flagged_k9": {
+  "posts_used": [
+   "k4",
+   "k7",
+   "k8",
+   "k12",
+   "k14"
+  ],
+  "share_area_within_2km_now": 0.079,
+  "share_area_within_2km_plus5": 0.161,
+  "new_sites_latlon": [
+   [
+    50.953,
+    71.5024
+   ],
+   [
+    50.9892,
+    71.4901
+   ],
+   [
+    51.0266,
+    71.4207
+   ],
+   [
+    51.0254,
+    71.4777
+   ],
+   [
+    51.0371,
+    71.35
+   ]
+  ]
+ }
+}

@@ -1,0 +1,1535 @@
+{
+  "scope": "Local files only; source claims and imported code have not been independently verified",
+  "agents": [
+    {
+      "city": "shymkent",
+      "agent": "01_digitalization",
+      "status": "complete_files",
+      "reports": [
+        "research/govtech-results/01_digitalization/extracted_files__11_/A01_report.md"
+      ],
+      "evidence": [
+        "research/govtech-results/01_digitalization/extracted_files__11_/A01_evidence.json"
+      ],
+      "file_count": 4,
+      "invalid_json": [],
+      "duplicate_groups": [],
+      "files": [
+        {
+          "path": "research/govtech-results/01_digitalization/extracted_files__11_/A01_evidence.json",
+          "bytes": 54263,
+          "sha256": "257550a1fe909e449c3f0bd4b55ccc7960ae5550872d92fbfc2343d9025284a0"
+        },
+        {
+          "path": "research/govtech-results/01_digitalization/extracted_files__11_/A01_report.md",
+          "bytes": 35858,
+          "sha256": "8e6931060dcb11903d452e026bfe445dfb80822e8b16c047a1574f4931fa24a6"
+        },
+        {
+          "path": "research/govtech-results/01_digitalization/extracted_files__11_/A01_synthetic_test_cases.json",
+          "bytes": 13393,
+          "sha256": "1fe40c0720615517ff23ffa49dd6768afc956aa2b5ed81151ee0b4a277de1282"
+        },
+        {
+          "path": "research/govtech-results/01_digitalization/files (11).zip",
+          "bytes": 29205,
+          "sha256": "77bb3a92aeef53f9e1c7d0667a9b8dec1993af02d10460b2046e7f257ff1cde3"
+        }
+      ]
+    },
+    {
+      "city": "shymkent",
+      "agent": "02_utilities",
+      "status": "complete_files",
+      "reports": [
+        "research/govtech-results/02_utilities/extracted_files__12_/A02_report.md"
+      ],
+      "evidence": [
+        "research/govtech-results/02_utilities/extracted_files__12_/A02_evidence.json"
+      ],
+      "file_count": 7,
+      "invalid_json": [],
+      "duplicate_groups": [],
+      "files": [
+        {
+          "path": "research/govtech-results/02_utilities/extracted_files__12_/A02_evidence.json",
+          "bytes": 44661,
+          "sha256": "c159bc7192c4c21a8ab1606aa0e1b17976b20a1eb62461aca664229e641f7b13"
+        },
+        {
+          "path": "research/govtech-results/02_utilities/extracted_files__12_/A02_experiment_results.json",
+          "bytes": 7343,
+          "sha256": "f013643a11298961d213288f5c843fc01c5796a24926e9f72202e927030f6a28"
+        },
+        {
+          "path": "research/govtech-results/02_utilities/extracted_files__12_/A02_priority_experiment.py",
+          "bytes": 10893,
+          "sha256": "c953a0357d186b7dd21b62ced9efe0ed0d2bfaae7ca1dc90d186143e103472e9"
+        },
+        {
+          "path": "research/govtech-results/02_utilities/extracted_files__12_/A02_problem_card.schema.json",
+          "bytes": 6751,
+          "sha256": "18819b48452711d595d9023bb6b5195537535f5776d578238801af2eb7ec0125"
+        },
+        {
+          "path": "research/govtech-results/02_utilities/extracted_files__12_/A02_report.md",
+          "bytes": 34556,
+          "sha256": "d472146d170226a84bb465a3cd5b751e54dee4a6233dfde804fe4f5f436e349a"
+        },
+        {
+          "path": "research/govtech-results/02_utilities/extracted_files__12_/A02_synthetic_segments_sample.csv",
+          "bytes": 1259,
+          "sha256": "5c129556884feda48720aa8a912bd8b4c85d8eab48627e2e17b211b687e3f190"
+        },
+        {
+          "path": "research/govtech-results/02_utilities/files (12).zip",
+          "bytes": 31123,
+          "sha256": "96fb6fd772e1dbe1a0ba5c1364ed653c3b8a8c827f54fca8dafa913cdf67de21"
+        }
+      ]
+    },
+    {
+      "city": "shymkent",
+      "agent": "03_logistics",
+      "status": "complete_files",
+      "reports": [
+        "research/govtech-results/03_logistics/extracted_files__22_/A03_report.md"
+      ],
+      "evidence": [
+        "research/govtech-results/03_logistics/extracted_files__22_/A03_evidence.json"
+      ],
+      "file_count": 10,
+      "invalid_json": [],
+      "duplicate_groups": [],
+      "files": [
+        {
+          "path": "research/govtech-results/03_logistics/extracted_files__22_/A03_evidence.json",
+          "bytes": 35451,
+          "sha256": "d036ac0136a001dac84ac2a5d19fdb38867d92699c2a9b11046c169a7751cdca"
+        },
+        {
+          "path": "research/govtech-results/03_logistics/extracted_files__22_/A03_experiment_results.json",
+          "bytes": 14869,
+          "sha256": "aa7249331058efa2593ddcd061eb80d50f2342dac0e651908ba81d9748b1617b"
+        },
+        {
+          "path": "research/govtech-results/03_logistics/extracted_files__22_/A03_multiseed.py",
+          "bytes": 3439,
+          "sha256": "f0b90b22e071f3142847f65302bba64e4563d65de3247b9ab64a36d973ea7478"
+        },
+        {
+          "path": "research/govtech-results/03_logistics/extracted_files__22_/A03_multiseed_results.json",
+          "bytes": 5723,
+          "sha256": "a860b8590dead01b24de5464cb22fbf81d8f3fe1cdd2f5bf87b24d1940423961"
+        },
+        {
+          "path": "research/govtech-results/03_logistics/extracted_files__22_/A03_multiseed_rows.jsonl",
+          "bytes": 3382,
+          "sha256": "194c1518b2b03dba3580cfb33939d8a5e9ebd058ecaa3821966bae85e88c0689"
+        },
+        {
+          "path": "research/govtech-results/03_logistics/extracted_files__22_/A03_report.md",
+          "bytes": 40381,
+          "sha256": "1455925ab5e3d3088fc5d5f50d9aa0cab4896615adceb66cdd3ec4ff85585c88"
+        },
+        {
+          "path": "research/govtech-results/03_logistics/extracted_files__22_/A03_run_log.txt",
+          "bytes": 4599,
+          "sha256": "1dd755f0e0c27981ab59f337b2af1b4aea3345940eef49b05d4aa5c420b28c69"
+        },
+        {
+          "path": "research/govtech-results/03_logistics/extracted_files__22_/A03_synthetic_instance.geojson",
+          "bytes": 22703,
+          "sha256": "5897d628e9829ede93da2ddd691a61f5e8e31be49789395bc9a0ca23bb62875a"
+        },
+        {
+          "path": "research/govtech-results/03_logistics/extracted_files__22_/A03_vrp_experiment.py",
+          "bytes": 24043,
+          "sha256": "a651df4ef38632e3089fea746a52f7d558e8f29c1a8694de89fd946c7cfbda13"
+        },
+        {
+          "path": "research/govtech-results/03_logistics/files (22).zip",
+          "bytes": 41237,
+          "sha256": "9529a95db1e00672fd4cfd0da776754fa06734c93c9225e1c38d4d7d74cc1080"
+        }
+      ]
+    },
+    {
+      "city": "shymkent",
+      "agent": "04_infrastructure",
+      "status": "complete_files",
+      "reports": [
+        "research/govtech-results/04_infrastructure/extracted_files__13_/A04_report.md"
+      ],
+      "evidence": [
+        "research/govtech-results/04_infrastructure/extracted_files__13_/A04_evidence.json"
+      ],
+      "file_count": 5,
+      "invalid_json": [],
+      "duplicate_groups": [],
+      "files": [
+        {
+          "path": "research/govtech-results/04_infrastructure/extracted_files__13_/A04_evidence.json",
+          "bytes": 49851,
+          "sha256": "ea85902cd926717dd4f319e3e4ee51875af5d3e7459fbe29f347398ab59f4cab"
+        },
+        {
+          "path": "research/govtech-results/04_infrastructure/extracted_files__13_/A04_report.md",
+          "bytes": 40606,
+          "sha256": "8bbdc0029079cfb99be2825fff3f8de252f82c06cea60f77d07d4185245edb99"
+        },
+        {
+          "path": "research/govtech-results/04_infrastructure/extracted_files__13_/A04_synthetic_experiment.py",
+          "bytes": 5743,
+          "sha256": "1be10684352b7b45de53ac358adcf42e5dd2ab86ab98d31be2e7230fc6ee8d89"
+        },
+        {
+          "path": "research/govtech-results/04_infrastructure/extracted_files__13_/A04_synthetic_results.json",
+          "bytes": 4114,
+          "sha256": "525c52dcf3da1c20cf266cc10b8f2476454a3aa340bf07a676596ff6d4055de2"
+        },
+        {
+          "path": "research/govtech-results/04_infrastructure/files (13).zip",
+          "bytes": 29215,
+          "sha256": "f55033c99db15bda2bc1a339ff758dda46d365829c8aa55c89c1a6a95237bb31"
+        }
+      ]
+    },
+    {
+      "city": "shymkent",
+      "agent": "05_education",
+      "status": "complete_files",
+      "reports": [
+        "research/govtech-results/05_education/extracted_files__14_/A05_report.md"
+      ],
+      "evidence": [
+        "research/govtech-results/05_education/extracted_files__14_/A05_evidence.json"
+      ],
+      "file_count": 6,
+      "invalid_json": [],
+      "duplicate_groups": [],
+      "files": [
+        {
+          "path": "research/govtech-results/05_education/extracted_files__14_/A05_evidence.json",
+          "bytes": 47970,
+          "sha256": "e2e1b329ce650b1e6c3dea8095d58ebde840491ba5891f6f90d48cc1ad1ddbd9"
+        },
+        {
+          "path": "research/govtech-results/05_education/extracted_files__14_/A05_experiment.py",
+          "bytes": 20386,
+          "sha256": "7214a0b300f5c8b3a094ac2792ba7679c8c705feb03b853f58d06a016b69b447"
+        },
+        {
+          "path": "research/govtech-results/05_education/extracted_files__14_/A05_report.md",
+          "bytes": 36396,
+          "sha256": "268fe506234ec49664081c0205ccc6ec3471350711060c1f45bf074ec6e0249e"
+        },
+        {
+          "path": "research/govtech-results/05_education/extracted_files__14_/A05_run_log.txt",
+          "bytes": 1242,
+          "sha256": "64d7dd6ad621c64a558e56445769861f73e16bce0ecb0afa674055cc08159256"
+        },
+        {
+          "path": "research/govtech-results/05_education/extracted_files__14_/A05_synthetic_results.json",
+          "bytes": 8920,
+          "sha256": "0bd3548eeef0ac71f354c708f1cb3ef891acecb9d4d9e3dde07973e24335fe2c"
+        },
+        {
+          "path": "research/govtech-results/05_education/files (14).zip",
+          "bytes": 35610,
+          "sha256": "ea6cb392e07b05b93d43568b63fb05267d64703fde1ca891ab030bea6c3d29c8"
+        }
+      ]
+    },
+    {
+      "city": "shymkent",
+      "agent": "06_transport",
+      "status": "complete_files",
+      "reports": [
+        "research/govtech-results/06_transport/extracted_files__15_/A06_report.md"
+      ],
+      "evidence": [
+        "research/govtech-results/06_transport/extracted_files__15_/A06_evidence.json"
+      ],
+      "file_count": 18,
+      "invalid_json": [],
+      "duplicate_groups": [],
+      "files": [
+        {
+          "path": "research/govtech-results/06_transport/extracted_files__15_/A06_evidence.json",
+          "bytes": 53337,
+          "sha256": "d113bb6102caec57cf53a8e768c778f7487603db9a7a494b4afac0e12b9815d7"
+        },
+        {
+          "path": "research/govtech-results/06_transport/extracted_files__15_/A06_experiments_synthetic.zip",
+          "bytes": 13508,
+          "sha256": "d6097194f45bb4cb141edef2ebbca2be5460309786d200e357e8c8f433ecaaed"
+        },
+        {
+          "path": "research/govtech-results/06_transport/extracted_files__15_/A06_report.md",
+          "bytes": 40678,
+          "sha256": "0de3f3dd8496c31da09e7b28e2a074f3c8be18d6ec3ff9c42ec15e0064b31d26"
+        },
+        {
+          "path": "research/govtech-results/06_transport/extracted_files__15_/extracted_A06_experiments_synthetic/e1/A.edg.xml",
+          "bytes": 512,
+          "sha256": "51eaf77d4e28e4ed185cea5f86af19a9926f6a04cf0e7e598751c8dfe5bfd6e2"
+        },
+        {
+          "path": "research/govtech-results/06_transport/extracted_files__15_/extracted_A06_experiments_synthetic/e1/A.nod.xml",
+          "bytes": 255,
+          "sha256": "8d0d7563e40ccf4d33a11588ceb9942c2da7e0b9a1a1db002ee628c2fd500d27"
+        },
+        {
+          "path": "research/govtech-results/06_transport/extracted_files__15_/extracted_A06_experiments_synthetic/e1/B.edg.xml",
+          "bytes": 264,
+          "sha256": "518cae72712a2047fe45bd2fbec95737b5481fde19d4848dc8b92a3d3c518015"
+        },
+        {
+          "path": "research/govtech-results/06_transport/extracted_files__15_/extracted_A06_experiments_synthetic/e1/B.nod.xml",
+          "bytes": 205,
+          "sha256": "90292017d51c47b9106a32f4fb1858b64eba7a5fc394426da99aeba1312335f6"
+        },
+        {
+          "path": "research/govtech-results/06_transport/extracted_files__15_/extracted_A06_experiments_synthetic/e1/C.edg.xml",
+          "bytes": 1324,
+          "sha256": "4c751642e7d34b7a972301ee5f57004303d222dd020898ca7623f780a2cd0830"
+        },
+        {
+          "path": "research/govtech-results/06_transport/extracted_files__15_/extracted_A06_experiments_synthetic/e1/C.nod.xml",
+          "bytes": 486,
+          "sha256": "f1f08a32acd91b6dce694d61e11babcee202aa41578ebf9428f6b23979533d5c"
+        },
+        {
+          "path": "research/govtech-results/06_transport/extracted_files__15_/extracted_A06_experiments_synthetic/e1/results.json",
+          "bytes": 3516,
+          "sha256": "5e453b88c7429868ea2793ce78c9ca1508e8d0957d4ab7f671cdd7771de09f28"
+        },
+        {
+          "path": "research/govtech-results/06_transport/extracted_files__15_/extracted_A06_experiments_synthetic/e1_flyover.py",
+          "bytes": 7209,
+          "sha256": "8db4f2ee770dbed1b414f8a7179aca82c5ebff32da4fcdb49368a92e2bf52f3a"
+        },
+        {
+          "path": "research/govtech-results/06_transport/extracted_files__15_/extracted_A06_experiments_synthetic/e2/closure.add.xml",
+          "bytes": 739,
+          "sha256": "30573ba958818eee47eca284d00928a7747f32ac72aa49b15f775445c57da0b8"
+        },
+        {
+          "path": "research/govtech-results/06_transport/extracted_files__15_/extracted_A06_experiments_synthetic/e2/results.json",
+          "bytes": 1440,
+          "sha256": "a19d3308509ae714de592da0dfb2c7b8f589ac0883d9cedeceeb10357bd49585"
+        },
+        {
+          "path": "research/govtech-results/06_transport/extracted_files__15_/extracted_A06_experiments_synthetic/e2_closure.py",
+          "bytes": 5142,
+          "sha256": "a40aa1de4fb2b104052b324db761e47743e348b5b8dcc2324ce5fd470f83d368"
+        },
+        {
+          "path": "research/govtech-results/06_transport/extracted_files__15_/extracted_A06_experiments_synthetic/e3/results.json",
+          "bytes": 2205,
+          "sha256": "b84ac683186935b2a0ab132719403d0ac1cddebea58f2ccbcb448b703b6a2ad5"
+        },
+        {
+          "path": "research/govtech-results/06_transport/extracted_files__15_/extracted_A06_experiments_synthetic/e3_access.py",
+          "bytes": 5395,
+          "sha256": "bfa192e25739ffd08a1de4be2317eca5e80c396a32e72ea7c404c190522ff9bd"
+        },
+        {
+          "path": "research/govtech-results/06_transport/extracted_files__15_/extracted_A06_experiments_synthetic/README_SYNTHETIC.md",
+          "bytes": 2107,
+          "sha256": "64ba772728722e8e25cf63089dc1ea83f30b1c0ea7c4c5bf95ed14cffaa915f2"
+        },
+        {
+          "path": "research/govtech-results/06_transport/files (15).zip",
+          "bytes": 39576,
+          "sha256": "0530fbd6149d2b612cb687a7bcf68ca5264b06c0ddbb124abdc33bde6be58d25"
+        }
+      ]
+    },
+    {
+      "city": "shymkent",
+      "agent": "07_tourism",
+      "status": "complete_files",
+      "reports": [
+        "research/govtech-results/07_tourism/extracted_files__16_/A07_report.md"
+      ],
+      "evidence": [
+        "research/govtech-results/07_tourism/extracted_files__16_/A07_evidence.json"
+      ],
+      "file_count": 5,
+      "invalid_json": [],
+      "duplicate_groups": [],
+      "files": [
+        {
+          "path": "research/govtech-results/07_tourism/extracted_files__16_/A07_evidence.json",
+          "bytes": 56655,
+          "sha256": "7a6d39eed3e6e7926fd26960da1fa2dfaf65596b2ceab88e6274f147ff98c345"
+        },
+        {
+          "path": "research/govtech-results/07_tourism/extracted_files__16_/A07_report.md",
+          "bytes": 36357,
+          "sha256": "db46c46d7e66f9b9794072209d17c8489e4d80edb7ae285d28d8df29f8165dcb"
+        },
+        {
+          "path": "research/govtech-results/07_tourism/extracted_files__16_/A07_validator_experiment.py",
+          "bytes": 4743,
+          "sha256": "17e76e22ce6e8d8edb9170d8f832323a2f536f16f2e894256f5f8847852bea20"
+        },
+        {
+          "path": "research/govtech-results/07_tourism/extracted_files__16_/A07_validator_output.synthetic.json",
+          "bytes": 1184,
+          "sha256": "2da9d2ae23eb39eae828051086553ac03472ebe45fce782e5178d8aa65480261"
+        },
+        {
+          "path": "research/govtech-results/07_tourism/files (16).zip",
+          "bytes": 29372,
+          "sha256": "46fc2deff017fc2a9dfe02025135a334124d181d569cf02fc68692cc793fd661"
+        }
+      ]
+    },
+    {
+      "city": "shymkent",
+      "agent": "08_ecology",
+      "status": "complete_files",
+      "reports": [
+        "research/govtech-results/08_ecology/extracted_files__17_/A08_report.md"
+      ],
+      "evidence": [
+        "research/govtech-results/08_ecology/extracted_files__17_/A08_evidence.json"
+      ],
+      "file_count": 7,
+      "invalid_json": [],
+      "duplicate_groups": [],
+      "files": [
+        {
+          "path": "research/govtech-results/08_ecology/extracted_files__17_/A08_airdata_sample_aggregates.json",
+          "bytes": 1228,
+          "sha256": "3f961530e26c9aa108aecc713e39ef86a1134af6342320c2d7d9aaaa95246622"
+        },
+        {
+          "path": "research/govtech-results/08_ecology/extracted_files__17_/A08_airdata_sample_check.py",
+          "bytes": 3535,
+          "sha256": "731c0dbf513f578cc6150fce9cb69c6959108e29d34f77610f4e73481baa8850"
+        },
+        {
+          "path": "research/govtech-results/08_ecology/extracted_files__17_/A08_evidence.json",
+          "bytes": 53863,
+          "sha256": "89a84d156b51871c0a329a964bd571a3e309284225c2b56d365cec903fedfa27"
+        },
+        {
+          "path": "research/govtech-results/08_ecology/extracted_files__17_/A08_mvp_priority_synthetic.py",
+          "bytes": 12047,
+          "sha256": "f47b4075313f18bd01a14bba328f6c49be2c8acc7bca47c69c4d66001ae66621"
+        },
+        {
+          "path": "research/govtech-results/08_ecology/extracted_files__17_/A08_mvp_results_synthetic.json",
+          "bytes": 2689,
+          "sha256": "c63f5bd1408f7b0091c57a431e139fd7b7bed6964da13479c9fc945cf1553e41"
+        },
+        {
+          "path": "research/govtech-results/08_ecology/extracted_files__17_/A08_report.md",
+          "bytes": 31996,
+          "sha256": "4b7c1886f919886a886c0274789816bdbff613b42b926cbec1b90dcf47567a2b"
+        },
+        {
+          "path": "research/govtech-results/08_ecology/files (17).zip",
+          "bytes": 35149,
+          "sha256": "8e3954b3e66311887810852420b04a2547ad53c0b615de38b1da0f807f4bd9ea"
+        }
+      ]
+    },
+    {
+      "city": "shymkent",
+      "agent": "09_energy",
+      "status": "complete_files",
+      "reports": [
+        "research/govtech-results/09_energy/extracted_files__18_/A09_report.md"
+      ],
+      "evidence": [
+        "research/govtech-results/09_energy/extracted_files__18_/A09_evidence.json"
+      ],
+      "file_count": 12,
+      "invalid_json": [],
+      "duplicate_groups": [],
+      "files": [
+        {
+          "path": "research/govtech-results/09_energy/extracted_files__18_/a09_bdg1_experiment.py",
+          "bytes": 10790,
+          "sha256": "d3673b9156f59ddc4fcba042a5a8e44330e3c0c8782c1b33c253d721f7c11619"
+        },
+        {
+          "path": "research/govtech-results/09_energy/extracted_files__18_/a09_bdg1_experiment_part2.py",
+          "bytes": 5170,
+          "sha256": "002d53fa64f4766f69c4c3c99b735af03b24118e1d3370596e2e9289604dcc90"
+        },
+        {
+          "path": "research/govtech-results/09_energy/extracted_files__18_/A09_bdg1_experiment_part2_summary.json",
+          "bytes": 2353,
+          "sha256": "c212622d86960520e876c6a17050ce2887d48e861bcafd4691ac5b2de88066d1"
+        },
+        {
+          "path": "research/govtech-results/09_energy/extracted_files__18_/A09_bdg1_experiment_summary.json",
+          "bytes": 3824,
+          "sha256": "295e4d30d1beb9b4217ab6baba7847c3fb3015b8c21f4161d7309822827c161c"
+        },
+        {
+          "path": "research/govtech-results/09_energy/extracted_files__18_/A09_bdg1_per_building_results.csv",
+          "bytes": 51116,
+          "sha256": "5e54196136f7f0291e371db9d82629ff4d9a11c09c0f061ddc224b0a34430889"
+        },
+        {
+          "path": "research/govtech-results/09_energy/extracted_files__18_/A09_evidence.json",
+          "bytes": 61370,
+          "sha256": "bbd87afd7f809bced5b1ba3c91fe4827a10900d7035e1e60f5d5ac9c947a93bb"
+        },
+        {
+          "path": "research/govtech-results/09_energy/extracted_files__18_/A09_lighting_hours.txt",
+          "bytes": 435,
+          "sha256": "15cc3aafc87859d36f2c837093b69519e1fcc92718118a6ebe78db40042ef115"
+        },
+        {
+          "path": "research/govtech-results/09_energy/extracted_files__18_/A09_report.md",
+          "bytes": 39826,
+          "sha256": "d3c5fd63d8ac14c8d23a18f4fd68403ad220bbdd6c775a70263911c097fa86c0"
+        },
+        {
+          "path": "research/govtech-results/09_energy/extracted_files__18_/A09_sample_real_BDG1_school_hourly.csv",
+          "bytes": 45203,
+          "sha256": "eace1e0dba666ee0bfe5f902705e9e3ecc63630ee8305a3618ec5823aa293b18"
+        },
+        {
+          "path": "research/govtech-results/09_energy/extracted_files__18_/A09_template_SYNTHETIC_buildings.csv",
+          "bytes": 851,
+          "sha256": "30b651edd0fbcb4a63ff3b5a272afef86756a8c4104c0aa8b515f8f6006af6da"
+        },
+        {
+          "path": "research/govtech-results/09_energy/extracted_files__18_/A09_template_SYNTHETIC_readings.csv",
+          "bytes": 705,
+          "sha256": "bdb6bd7ed619212fd62c869502baccab4e4372f1681210bcc0f798a55fafe9cf"
+        },
+        {
+          "path": "research/govtech-results/09_energy/files (18).zip",
+          "bytes": 68201,
+          "sha256": "6e85f78eefdab951d946325e896721a5d994e4df05fbb9f7ba17ed9d17cbece4"
+        }
+      ]
+    },
+    {
+      "city": "shymkent",
+      "agent": "10_safety",
+      "status": "complete_files",
+      "reports": [
+        "research/govtech-results/10_safety/A10_report (1).md",
+        "research/govtech-results/10_safety/A10_report.md"
+      ],
+      "evidence": [
+        "research/govtech-results/10_safety/A10_evidence (1).json",
+        "research/govtech-results/10_safety/A10_evidence.json"
+      ],
+      "file_count": 10,
+      "invalid_json": [],
+      "duplicate_groups": [
+        [
+          "research/govtech-results/10_safety/A10_evidence (1).json",
+          "research/govtech-results/10_safety/A10_evidence.json"
+        ],
+        [
+          "research/govtech-results/10_safety/a10_experiment (1).py",
+          "research/govtech-results/10_safety/a10_experiment.py"
+        ],
+        [
+          "research/govtech-results/10_safety/A10_experiment_output (1).txt",
+          "research/govtech-results/10_safety/A10_experiment_output.txt"
+        ],
+        [
+          "research/govtech-results/10_safety/A10_report (1).md",
+          "research/govtech-results/10_safety/A10_report.md"
+        ],
+        [
+          "research/govtech-results/10_safety/A10_sample_kpssu_shymkent_aggregates (1).json",
+          "research/govtech-results/10_safety/A10_sample_kpssu_shymkent_aggregates.json"
+        ]
+      ],
+      "files": [
+        {
+          "path": "research/govtech-results/10_safety/A10_evidence (1).json",
+          "bytes": 60756,
+          "sha256": "2eed52247c05268b2f1d0b6db2f3955e794a16504c6e260cdf6e5aeda48f78d9"
+        },
+        {
+          "path": "research/govtech-results/10_safety/A10_evidence.json",
+          "bytes": 60756,
+          "sha256": "2eed52247c05268b2f1d0b6db2f3955e794a16504c6e260cdf6e5aeda48f78d9"
+        },
+        {
+          "path": "research/govtech-results/10_safety/a10_experiment (1).py",
+          "bytes": 10865,
+          "sha256": "1c2c445ff1d122594ff7ff51287fdf52db148b3edcf20bef837c7dacc780fd20"
+        },
+        {
+          "path": "research/govtech-results/10_safety/a10_experiment.py",
+          "bytes": 10865,
+          "sha256": "1c2c445ff1d122594ff7ff51287fdf52db148b3edcf20bef837c7dacc780fd20"
+        },
+        {
+          "path": "research/govtech-results/10_safety/A10_experiment_output (1).txt",
+          "bytes": 7952,
+          "sha256": "301d65a75c188ce57d7642745e956d3f2d1ee27787256d0a1b62eab81e847b34"
+        },
+        {
+          "path": "research/govtech-results/10_safety/A10_experiment_output.txt",
+          "bytes": 7952,
+          "sha256": "301d65a75c188ce57d7642745e956d3f2d1ee27787256d0a1b62eab81e847b34"
+        },
+        {
+          "path": "research/govtech-results/10_safety/A10_report (1).md",
+          "bytes": 32983,
+          "sha256": "1d53042e2914d3ce7910a3382c3f755e7cdbce9046c3b283c2157dde52ab13f2"
+        },
+        {
+          "path": "research/govtech-results/10_safety/A10_report.md",
+          "bytes": 32983,
+          "sha256": "1d53042e2914d3ce7910a3382c3f755e7cdbce9046c3b283c2157dde52ab13f2"
+        },
+        {
+          "path": "research/govtech-results/10_safety/A10_sample_kpssu_shymkent_aggregates (1).json",
+          "bytes": 9667,
+          "sha256": "97255e05292d0b5b1c870e3b5869061e9d3a5f834ce1ca8b60f9a7130b001ba8"
+        },
+        {
+          "path": "research/govtech-results/10_safety/A10_sample_kpssu_shymkent_aggregates.json",
+          "bytes": 9667,
+          "sha256": "97255e05292d0b5b1c870e3b5869061e9d3a5f834ce1ca8b60f9a7130b001ba8"
+        }
+      ]
+    },
+    {
+      "city": "shymkent",
+      "agent": "11_land",
+      "status": "complete_files",
+      "reports": [
+        "research/govtech-results/11_land/extracted_files__19_/A11_report.md"
+      ],
+      "evidence": [
+        "research/govtech-results/11_land/extracted_files__19_/A11_evidence.json"
+      ],
+      "file_count": 6,
+      "invalid_json": [],
+      "duplicate_groups": [],
+      "files": [
+        {
+          "path": "research/govtech-results/11_land/extracted_files__19_/A11_completeness_check.py",
+          "bytes": 6886,
+          "sha256": "ee5f23d088e2e9aaf6e54f0beae0a2397e4101fab6d7d903d9d3d6dce27d864e"
+        },
+        {
+          "path": "research/govtech-results/11_land/extracted_files__19_/A11_evidence.json",
+          "bytes": 44557,
+          "sha256": "b9162629c3adbb0f53b1201ba0200a67c2220790f0e91f363639ed59e1438a8d"
+        },
+        {
+          "path": "research/govtech-results/11_land/extracted_files__19_/A11_report.md",
+          "bytes": 48972,
+          "sha256": "db7aedf6b4e84f0f47f9bec4ecc0796a21e43614e80a74bf93ba8679c7913801"
+        },
+        {
+          "path": "research/govtech-results/11_land/extracted_files__19_/A11_synthetic_card.json",
+          "bytes": 8493,
+          "sha256": "c5892288e05968c47b83bc81f4cead522f83e34fa839b7abd9d7bceb0b39b67e"
+        },
+        {
+          "path": "research/govtech-results/11_land/extracted_files__19_/A11_territory_card.schema.json",
+          "bytes": 6280,
+          "sha256": "0677aaeadfa7aad01680e008d9b38a32eb8edd42591da3c52f6ee54f734d8682"
+        },
+        {
+          "path": "research/govtech-results/11_land/files (19).zip",
+          "bytes": 34130,
+          "sha256": "5353970011735274984ecf8ff90f99bade174c9fd35dd7984959f29f8e9e86dc"
+        }
+      ]
+    },
+    {
+      "city": "shymkent",
+      "agent": "12_data_gis",
+      "status": "complete_files",
+      "reports": [
+        "research/govtech-results/12_data_gis/extracted_files__20_/A12_report.md"
+      ],
+      "evidence": [
+        "research/govtech-results/12_data_gis/extracted_files__20_/A12_evidence.json"
+      ],
+      "file_count": 8,
+      "invalid_json": [],
+      "duplicate_groups": [],
+      "files": [
+        {
+          "path": "research/govtech-results/12_data_gis/extracted_files__20_/A12_evidence.json",
+          "bytes": 113993,
+          "sha256": "eab05606a6e7fd9ea680568088c76cd45aa558245fb9c457ab8bf222d59db01d"
+        },
+        {
+          "path": "research/govtech-results/12_data_gis/extracted_files__20_/a12_experiment.py",
+          "bytes": 6133,
+          "sha256": "7a22c9504778af976e17b48032adb0c670b97d9a72ef199880546c2b4d9fe26c"
+        },
+        {
+          "path": "research/govtech-results/12_data_gis/extracted_files__20_/A12_manifest.json",
+          "bytes": 5297,
+          "sha256": "77873fadcfed927721e37ddd0c0ef8451fe0839be6903174c709a5045fffca5c"
+        },
+        {
+          "path": "research/govtech-results/12_data_gis/extracted_files__20_/A12_report.md",
+          "bytes": 34976,
+          "sha256": "e5eadcb6d3c77a34fc0ee2be8d8d211252312f1d7080c9db28a78581668886cf"
+        },
+        {
+          "path": "research/govtech-results/12_data_gis/extracted_files__20_/A12_samples_real.json",
+          "bytes": 4770,
+          "sha256": "7b32eb809c57567fbcf2c3520d824e096662f972feed45f1ce543f91dc6714a9"
+        },
+        {
+          "path": "research/govtech-results/12_data_gis/extracted_files__20_/A12_samples_synthetic.json",
+          "bytes": 2472,
+          "sha256": "577240a44abd5e0ed7ff722f3e643ce4d3248259c39adb6bfa5ce09c87ab3ec6"
+        },
+        {
+          "path": "research/govtech-results/12_data_gis/extracted_files__20_/A12_schema.sql",
+          "bytes": 5244,
+          "sha256": "b139142cf93c468d4d56543907143d62c514ab18934070d6be35c7e1977851dc"
+        },
+        {
+          "path": "research/govtech-results/12_data_gis/files (20).zip",
+          "bytes": 46104,
+          "sha256": "e0a235b67c037a21ad6f5466c8fb914fd1af50773dd94c0b80de68dc3705203e"
+        }
+      ]
+    },
+    {
+      "city": "shymkent",
+      "agent": "13_architecture_ai_thesis",
+      "status": "complete_files",
+      "reports": [
+        "research/govtech-results/13_architecture_ai_thesis/extracted_files__21_/A13_report.md"
+      ],
+      "evidence": [
+        "research/govtech-results/13_architecture_ai_thesis/extracted_files__21_/A13_evidence.json"
+      ],
+      "file_count": 9,
+      "invalid_json": [],
+      "duplicate_groups": [],
+      "files": [
+        {
+          "path": "research/govtech-results/13_architecture_ai_thesis/extracted_files__21_/A13_evidence.json",
+          "bytes": 36612,
+          "sha256": "b86290f060a3afb545a32cc6cffcc84b1a83695666d4eec6b3c76d859b792c9a"
+        },
+        {
+          "path": "research/govtech-results/13_architecture_ai_thesis/extracted_files__21_/A13_report.md",
+          "bytes": 40514,
+          "sha256": "b08273e42a79702e29fcfb8c09270c1113219d1ee8a19d23085b22dc3d73f470"
+        },
+        {
+          "path": "research/govtech-results/13_architecture_ai_thesis/extracted_files__21_/api_probe.py",
+          "bytes": 2290,
+          "sha256": "be499b89c870ea24339d6e7d2aded53f21ffb0c2f9ed2ad76ceaae9a2d4425bf"
+        },
+        {
+          "path": "research/govtech-results/13_architecture_ai_thesis/extracted_files__21_/api_probe_result.json",
+          "bytes": 1018,
+          "sha256": "ed97aead40fcdf241a47fc83ed44ab9c1a8fbcc745f3ace82ddbf6d64efb802b"
+        },
+        {
+          "path": "research/govtech-results/13_architecture_ai_thesis/extracted_files__21_/constraints_eval.py",
+          "bytes": 4978,
+          "sha256": "77c9f8e85949c111358a943bbf2f19fb74a8d87370e34011b434cdd43741c01d"
+        },
+        {
+          "path": "research/govtech-results/13_architecture_ai_thesis/extracted_files__21_/constraints_eval_result.json",
+          "bytes": 859,
+          "sha256": "9e2a5e0f2dedeb1b53ee39eb78287e514cf1bc59004bada7deced7958adb9e8c"
+        },
+        {
+          "path": "research/govtech-results/13_architecture_ai_thesis/extracted_files__21_/scale_exp.py",
+          "bytes": 2756,
+          "sha256": "4ccd53e4361da25ce036852197f0ef3ae0a1a7301c07092297b52039bc5f1936"
+        },
+        {
+          "path": "research/govtech-results/13_architecture_ai_thesis/extracted_files__21_/stats.py",
+          "bytes": 409,
+          "sha256": "948ffdbaeb02aa9104ec9d4747a65786541a136f50345b3537f1dac3f2802505"
+        },
+        {
+          "path": "research/govtech-results/13_architecture_ai_thesis/files (21).zip",
+          "bytes": 29557,
+          "sha256": "ec9b8aad8f4f4fce6eef1d690e2f4af1f25e05c263c5605c6762681feafd206e"
+        }
+      ]
+    },
+    {
+      "city": "shymkent",
+      "agent": "14_synthesis_product_audit",
+      "status": "missing",
+      "reports": [],
+      "evidence": [],
+      "file_count": 0,
+      "invalid_json": [],
+      "duplicate_groups": [],
+      "files": []
+    },
+    {
+      "city": "astana",
+      "agent": "01_digitalization",
+      "status": "complete_files",
+      "reports": [
+        "research/astana-results/01_digitalization/extracted_files__23_/AST_A01_report.md"
+      ],
+      "evidence": [
+        "research/astana-results/01_digitalization/extracted_files__23_/AST_A01_evidence.json"
+      ],
+      "file_count": 5,
+      "invalid_json": [],
+      "duplicate_groups": [],
+      "files": [
+        {
+          "path": "research/astana-results/01_digitalization/extracted_files__23_/AST_A01_evidence.json",
+          "bytes": 52819,
+          "sha256": "ea36365761ea691d749025d3fb271a786e3c6a54288943a02d36ca56d27b6cfd"
+        },
+        {
+          "path": "research/astana-results/01_digitalization/extracted_files__23_/AST_A01_report.md",
+          "bytes": 30734,
+          "sha256": "9722364d7e4d7b07b68b24f40085d1eef35551eef5544cdc1db6c60f1117b073"
+        },
+        {
+          "path": "research/astana-results/01_digitalization/extracted_files__23_/AST_A01_sample_osm_districts.csv",
+          "bytes": 1712,
+          "sha256": "606a5ba894c807b2c7944d08abeb3468490ef1446376a36e7b589f3ab781dc1d"
+        },
+        {
+          "path": "research/astana-results/01_digitalization/extracted_files__23_/AST_A01_synthetic_test_cases.json",
+          "bytes": 12575,
+          "sha256": "7bb73a507b60d6a56dc5433ae54838dfc0167a6b633b14caf04c2abee5f970f2"
+        },
+        {
+          "path": "research/astana-results/01_digitalization/files (23).zip",
+          "bytes": 26649,
+          "sha256": "436ce981e3baeaf4888e612cbed34e94d52c5211bd3da0e86224ac66fe574296"
+        }
+      ]
+    },
+    {
+      "city": "astana",
+      "agent": "02_utilities",
+      "status": "complete_files",
+      "reports": [
+        "research/astana-results/02_utilities/extracted_files__24_/AST_A02_report.md"
+      ],
+      "evidence": [
+        "research/astana-results/02_utilities/extracted_files__24_/AST_A02_evidence.json"
+      ],
+      "file_count": 8,
+      "invalid_json": [],
+      "duplicate_groups": [],
+      "files": [
+        {
+          "path": "research/astana-results/02_utilities/extracted_files__24_/A02_priority_experiment.py",
+          "bytes": 10893,
+          "sha256": "c953a0357d186b7dd21b62ced9efe0ed0d2bfaae7ca1dc90d186143e103472e9"
+        },
+        {
+          "path": "research/astana-results/02_utilities/extracted_files__24_/AST_A02_astana_scenarios.py",
+          "bytes": 7792,
+          "sha256": "9782ee589d4450d68df4c0ce2bfbee7ec632393235c59dedb1a4c01236496ee1"
+        },
+        {
+          "path": "research/astana-results/02_utilities/extracted_files__24_/AST_A02_evidence.json",
+          "bytes": 51391,
+          "sha256": "9bbc177c74b48f42b79751657bde7f6825c6040d9a54dde76656a186571b2871"
+        },
+        {
+          "path": "research/astana-results/02_utilities/extracted_files__24_/AST_A02_experiment_results.json",
+          "bytes": 4496,
+          "sha256": "10b82d23a0bf9a08192bd5f4db99c199bdad32d0a8ded05915a179e379418e09"
+        },
+        {
+          "path": "research/astana-results/02_utilities/extracted_files__24_/AST_A02_osm_districts_sample.csv",
+          "bytes": 4114,
+          "sha256": "5ad697b806d7f8dca11807b8855f2784718a1cda684d1d8f212c4388ed3d5ee1"
+        },
+        {
+          "path": "research/astana-results/02_utilities/extracted_files__24_/AST_A02_problem_card.schema.json",
+          "bytes": 12796,
+          "sha256": "8857d3c0580d342e5039e2a71668979c758cd51b9e005efd2fa56a23627b96c2"
+        },
+        {
+          "path": "research/astana-results/02_utilities/extracted_files__24_/AST_A02_report.md",
+          "bytes": 32726,
+          "sha256": "911f54dc375131a799e1d66466a54fb151a17d0d4eaa5d0ee4f7f6910bb3e2c4"
+        },
+        {
+          "path": "research/astana-results/02_utilities/files (24).zip",
+          "bytes": 35706,
+          "sha256": "0af73c7faf8ad264e003aabe3082a82a214dd884be07797451d3ecbe8626a7c5"
+        }
+      ]
+    },
+    {
+      "city": "astana",
+      "agent": "03_logistics",
+      "status": "complete_files",
+      "reports": [
+        "research/astana-results/03_logistics/extracted_files__25_/AST_A03_report.md"
+      ],
+      "evidence": [
+        "research/astana-results/03_logistics/extracted_files__25_/AST_A03_evidence.json"
+      ],
+      "file_count": 9,
+      "invalid_json": [],
+      "duplicate_groups": [],
+      "files": [
+        {
+          "path": "research/astana-results/03_logistics/extracted_files__25_/AST_A03_E003_results.json",
+          "bytes": 57223,
+          "sha256": "c2ca55e6cce158d81e28162b58108a69358ce3f3c91d5be21fa7c107114e961d"
+        },
+        {
+          "path": "research/astana-results/03_logistics/extracted_files__25_/AST_A03_evidence.json",
+          "bytes": 46402,
+          "sha256": "d336ba6df1a7d9d5942e68cd1236f914e4f9bec7eba9fcdae44bc74d617a630c"
+        },
+        {
+          "path": "research/astana-results/03_logistics/extracted_files__25_/AST_A03_input_astana_districts_osm.geojson",
+          "bytes": 71465,
+          "sha256": "9092aebb997086d4fbf30963dd84dfae6aab483a585ba6f536944fb03a4eb95e"
+        },
+        {
+          "path": "research/astana-results/03_logistics/extracted_files__25_/AST_A03_report.md",
+          "bytes": 34600,
+          "sha256": "58b3879477592ffdd3946d05dc745e25f94cc9577d352bf519b6a8d50c33d430"
+        },
+        {
+          "path": "research/astana-results/03_logistics/extracted_files__25_/AST_A03_run_log.txt",
+          "bytes": 2740,
+          "sha256": "86f718f02496c3318e613d132d71008ea0ad886eea5bcb192f25bba1ba94882f"
+        },
+        {
+          "path": "research/astana-results/03_logistics/extracted_files__25_/AST_A03_sample_osm_admin_units.json",
+          "bytes": 5720,
+          "sha256": "1054a0ad28ea7205031537944f102c63a9d8b3373e817d65bcb5ff3bb6a45b87"
+        },
+        {
+          "path": "research/astana-results/03_logistics/extracted_files__25_/AST_A03_snow_experiment.py",
+          "bytes": 18843,
+          "sha256": "43ff3e3cdde7efd19b593ca71183fbde45cad2cb69ef74f14f7210138fb99a24"
+        },
+        {
+          "path": "research/astana-results/03_logistics/extracted_files__25_/AST_A03_synthetic_snow_instance.geojson",
+          "bytes": 10255,
+          "sha256": "26e7a25ebe9f40489366f811352fb2e7a5367783ed4463959e7b01fc2a6a2000"
+        },
+        {
+          "path": "research/astana-results/03_logistics/files (25).zip",
+          "bytes": 59292,
+          "sha256": "1b33b3b9d0d21fdda41c6c064b43f7bddce69f774887451ef719378767d47fe9"
+        }
+      ]
+    },
+    {
+      "city": "astana",
+      "agent": "04_infrastructure",
+      "status": "complete_files",
+      "reports": [
+        "research/astana-results/04_infrastructure/extracted_files__26_/AST_A04_report.md"
+      ],
+      "evidence": [
+        "research/astana-results/04_infrastructure/extracted_files__26_/AST_A04_evidence.json"
+      ],
+      "file_count": 6,
+      "invalid_json": [],
+      "duplicate_groups": [],
+      "files": [
+        {
+          "path": "research/astana-results/04_infrastructure/extracted_files__26_/AST_A04_evidence.json",
+          "bytes": 52017,
+          "sha256": "5c1a3ad0ec06f0b7a8a13c5f6ce772bf12fdd900f854a24e73f5682341c5b618"
+        },
+        {
+          "path": "research/astana-results/04_infrastructure/extracted_files__26_/AST_A04_osm_boundary_check.py",
+          "bytes": 5540,
+          "sha256": "f01f0b6e857a200642d4046de3dd861c48d0ede1a5df396eb9db8fff45b1dc41"
+        },
+        {
+          "path": "research/astana-results/04_infrastructure/extracted_files__26_/AST_A04_osm_boundary_results.json",
+          "bytes": 5979,
+          "sha256": "7b79775a450e95d1496702417ab23c6dfe096cff883a6c487a23ed8e42ac4142"
+        },
+        {
+          "path": "research/astana-results/04_infrastructure/extracted_files__26_/AST_A04_report.md",
+          "bytes": 34459,
+          "sha256": "742e03a81c641a925c545aeb733c575965566f21c37d2748df456ff24ed263af"
+        },
+        {
+          "path": "research/astana-results/04_infrastructure/extracted_files__26_/AST_A04_sample_osm_admin_units.csv",
+          "bytes": 2752,
+          "sha256": "37de872d3036073a4b437074a32084fcbffe0866eb0b49cefd6fb024082873ab"
+        },
+        {
+          "path": "research/astana-results/04_infrastructure/files (26).zip",
+          "bytes": 28943,
+          "sha256": "7cd6f62a5c7e1036b5b50c56220cbaa10bcfaf392579e532151597d89834d914"
+        }
+      ]
+    },
+    {
+      "city": "astana",
+      "agent": "05_education",
+      "status": "complete_files",
+      "reports": [
+        "research/astana-results/05_education/extracted_files__27_/AST_A05_report.md"
+      ],
+      "evidence": [
+        "research/astana-results/05_education/extracted_files__27_/AST_A05_evidence.json"
+      ],
+      "file_count": 7,
+      "invalid_json": [],
+      "duplicate_groups": [],
+      "files": [
+        {
+          "path": "research/astana-results/05_education/extracted_files__27_/AST_A05_evidence.json",
+          "bytes": 55227,
+          "sha256": "38a917851661cd088c163100ecd0adabeddcdf1614e26b1c125e9ad22f85c1b9"
+        },
+        {
+          "path": "research/astana-results/05_education/extracted_files__27_/AST_A05_experiment.py",
+          "bytes": 12881,
+          "sha256": "d895896e39b0d7eced0d8b975b80744e40092a45461855ba5c9c637de4c8e02e"
+        },
+        {
+          "path": "research/astana-results/05_education/extracted_files__27_/AST_A05_report.md",
+          "bytes": 37181,
+          "sha256": "66312c66fac64b2daca7161ccb8a41188f172e5d68e14ca546b9a6c21547eb65"
+        },
+        {
+          "path": "research/astana-results/05_education/extracted_files__27_/AST_A05_results.json",
+          "bytes": 8056,
+          "sha256": "654c864af92ca6e0de9eed18efda31390c1b81ef389b84ab7862039994853f3e"
+        },
+        {
+          "path": "research/astana-results/05_education/extracted_files__27_/AST_A05_run_log.txt",
+          "bytes": 1980,
+          "sha256": "b709eecda10099b7313e4a9012021646eb1afa792c98efe3735fa7d74d6577c9"
+        },
+        {
+          "path": "research/astana-results/05_education/extracted_files__27_/AST_A05_sample_osm_districts.json",
+          "bytes": 4088,
+          "sha256": "cd5b5e95acce0a94ecc38f1d40daa5cf53e64bba0ae2658eb1cad57ee77f345c"
+        },
+        {
+          "path": "research/astana-results/05_education/files (27).zip",
+          "bytes": 35092,
+          "sha256": "7af74da08db3e76dc431aed3748b7f4ca4ef5157458864945ca43a7e1657c48a"
+        }
+      ]
+    },
+    {
+      "city": "astana",
+      "agent": "06_transport",
+      "status": "complete_files",
+      "reports": [
+        "research/astana-results/06_transport/extracted_files__28_/AST_A06_report.md"
+      ],
+      "evidence": [
+        "research/astana-results/06_transport/extracted_files__28_/AST_A06_evidence.json"
+      ],
+      "file_count": 16,
+      "invalid_json": [],
+      "duplicate_groups": [],
+      "files": [
+        {
+          "path": "research/astana-results/06_transport/extracted_files__28_/AST_A06_evidence.json",
+          "bytes": 54463,
+          "sha256": "f20a1d79d61cdc43d2e138a752cd8ca79b55ef5c150da93265711d78369e9b81"
+        },
+        {
+          "path": "research/astana-results/06_transport/extracted_files__28_/AST_A06_real_aggregates.zip",
+          "bytes": 12783,
+          "sha256": "575383c17635e75292365dd738b22e26d3b17618281fc74bc70c16cd54164a2c"
+        },
+        {
+          "path": "research/astana-results/06_transport/extracted_files__28_/AST_A06_report.md",
+          "bytes": 31922,
+          "sha256": "6045b9425d81b66e267a54da8bf88486fa9fe48bbee04945f8e1fe5648932eaa"
+        },
+        {
+          "path": "research/astana-results/06_transport/extracted_files__28_/extracted_AST_A06_real_aggregates/r1/cv_sensitivity.json",
+          "bytes": 2710,
+          "sha256": "1e8ae7bf00a2231c9864e081eb42ee7b7953faeaf294bc6e5142788bec30081b"
+        },
+        {
+          "path": "research/astana-results/06_transport/extracted_files__28_/extracted_AST_A06_real_aggregates/r1/ptal_vs_observed.json",
+          "bytes": 3035,
+          "sha256": "900599e226a558d0aded3a12d47b97f6e14eef7fa5ecfb06b25d4880fc986c6b"
+        },
+        {
+          "path": "research/astana-results/06_transport/extracted_files__28_/extracted_AST_A06_real_aggregates/r1/regularity.csv",
+          "bytes": 1518,
+          "sha256": "ec8c8a9e135e220ee2781d04d8d4de69cbee716872b7579c0bd274886c303f62"
+        },
+        {
+          "path": "research/astana-results/06_transport/extracted_files__28_/extracted_AST_A06_real_aggregates/r1/results.json",
+          "bytes": 12209,
+          "sha256": "bd67bf851efac2f3e86c57b8e8408851677e78b2ebb898bcbd3f1fb760f8ddaf"
+        },
+        {
+          "path": "research/astana-results/06_transport/extracted_files__28_/extracted_AST_A06_real_aggregates/r1/sample_stops_5rows.json",
+          "bytes": 1112,
+          "sha256": "8cd2e471bdfcaaad1a3ef528468a044f72222b2981ed2b056b981993ebffbfc1"
+        },
+        {
+          "path": "research/astana-results/06_transport/extracted_files__28_/extracted_AST_A06_real_aggregates/r1/third_party_zero_profile.json",
+          "bytes": 502,
+          "sha256": "c1de16eaa46ea0e539319e9405dbd99b45d2cb45a4fbfae37eb1576b5c7f5105"
+        },
+        {
+          "path": "research/astana-results/06_transport/extracted_files__28_/extracted_AST_A06_real_aggregates/r1/trip_duration.csv",
+          "bytes": 984,
+          "sha256": "c1c6b53fd8cd10e6eb14437b27102217ad13c54120cfb2dc75ac852685351bcc"
+        },
+        {
+          "path": "research/astana-results/06_transport/extracted_files__28_/extracted_AST_A06_real_aggregates/r1/versions.txt",
+          "bytes": 27,
+          "sha256": "dcc54b29cf99bfbe492234e8b19307581cf8f47264b67bb1d1c0a0f8b65a96f0"
+        },
+        {
+          "path": "research/astana-results/06_transport/extracted_files__28_/extracted_AST_A06_real_aggregates/r1_astana_regularity.py",
+          "bytes": 6247,
+          "sha256": "e30950900f8a3b277d437b7f934773c19bba292b93acc39064e03a118fb487d1"
+        },
+        {
+          "path": "research/astana-results/06_transport/extracted_files__28_/extracted_AST_A06_real_aggregates/r1b_sensitivity.py",
+          "bytes": 1997,
+          "sha256": "6dce277d8b12858a54e5e57d24b64c03014f722ac67d383221db2126d3e05988"
+        },
+        {
+          "path": "research/astana-results/06_transport/extracted_files__28_/extracted_AST_A06_real_aggregates/r2_ptal_vs_observed.py",
+          "bytes": 947,
+          "sha256": "81b69378df5ee9424459cf70263ff5c0643443a4236f3946bc9b6487520e3370"
+        },
+        {
+          "path": "research/astana-results/06_transport/extracted_files__28_/extracted_AST_A06_real_aggregates/README_REAL.md",
+          "bytes": 2185,
+          "sha256": "c168336e29561632bc2802116c893f075dba7f5525a836b31cf96e0a14bad66d"
+        },
+        {
+          "path": "research/astana-results/06_transport/files (28).zip",
+          "bytes": 36261,
+          "sha256": "c08818adaa19ae89f07ef2f1cd05700fbb2e22d3307499860a2e175fbb33b693"
+        }
+      ]
+    },
+    {
+      "city": "astana",
+      "agent": "07_tourism",
+      "status": "complete_files",
+      "reports": [
+        "research/astana-results/07_tourism/extracted_files__29_/AST_A07_report.md"
+      ],
+      "evidence": [
+        "research/astana-results/07_tourism/extracted_files__29_/AST_A07_evidence.json"
+      ],
+      "file_count": 5,
+      "invalid_json": [],
+      "duplicate_groups": [],
+      "files": [
+        {
+          "path": "research/astana-results/07_tourism/extracted_files__29_/AST_A07_evidence.json",
+          "bytes": 67688,
+          "sha256": "2beb745a0ee45678ee9f710372a56f2f77b0c579eb868fb45a34656fcddb351d"
+        },
+        {
+          "path": "research/astana-results/07_tourism/extracted_files__29_/AST_A07_report.md",
+          "bytes": 37600,
+          "sha256": "67a942cc1cb0585ed8069c3669cd2a524b207490eded002d97245685f0a9962f"
+        },
+        {
+          "path": "research/astana-results/07_tourism/extracted_files__29_/AST_A07_validator_output.real_sample.json",
+          "bytes": 2671,
+          "sha256": "54e2baf0ac62f53eaf569916d7bfbd98d8e946ea11186c0ab8fba287bb754a04"
+        },
+        {
+          "path": "research/astana-results/07_tourism/extracted_files__29_/AST_A07_validator_real_sample.py",
+          "bytes": 7203,
+          "sha256": "76cad991adc16041ee7437d239db2bfbde0240a6afbb61e4cc947095df59c80d"
+        },
+        {
+          "path": "research/astana-results/07_tourism/files (29).zip",
+          "bytes": 32515,
+          "sha256": "6cf0b248e823b349cf166335f059b6caf67b1f4ccab0f1e61d5bc4705ec3369d"
+        }
+      ]
+    },
+    {
+      "city": "astana",
+      "agent": "08_ecology",
+      "status": "complete_files",
+      "reports": [
+        "research/astana-results/08_ecology/extracted_files__30_/AST_A08_report.md"
+      ],
+      "evidence": [
+        "research/astana-results/08_ecology/extracted_files__30_/AST_A08_evidence.json"
+      ],
+      "file_count": 10,
+      "invalid_json": [],
+      "duplicate_groups": [],
+      "files": [
+        {
+          "path": "research/astana-results/08_ecology/extracted_files__30_/AST_A08_astana_real_checks.py",
+          "bytes": 9225,
+          "sha256": "85a56dab095166ae5b134f02985f58fae1fa530603dfbe6688b79616a5559205"
+        },
+        {
+          "path": "research/astana-results/08_ecology/extracted_files__30_/AST_A08_evidence.json",
+          "bytes": 60433,
+          "sha256": "4d5cfbcc6643cbcff0cfe149a2788dc0d8a5ce0b9ed941a49edd080ddb553ee2"
+        },
+        {
+          "path": "research/astana-results/08_ecology/extracted_files__30_/AST_A08_mvp_results_synthetic.json",
+          "bytes": 2549,
+          "sha256": "4f9e4d2cc8305a0225223069d939daddce1bbe7fa7b55354ff76ab5a2de7643b"
+        },
+        {
+          "path": "research/astana-results/08_ecology/extracted_files__30_/AST_A08_mvp_seasonal_synthetic.py",
+          "bytes": 8817,
+          "sha256": "7cd9cff30c4df29c6faca51245cd5349eda80e295c8b74614958893d7c5b4a31"
+        },
+        {
+          "path": "research/astana-results/08_ecology/extracted_files__30_/AST_A08_real_aggregates.json",
+          "bytes": 7259,
+          "sha256": "ea198fa7c6f6c00be6eae979b75303f59aee375b7aaa976276c51e837ca4c04a"
+        },
+        {
+          "path": "research/astana-results/08_ecology/extracted_files__30_/AST_A08_report.md",
+          "bytes": 32878,
+          "sha256": "db19a3ba98baf2e8a84555cde0d50b1a061acd7723dae1823b32708a2039e2f1"
+        },
+        {
+          "path": "research/astana-results/08_ecology/extracted_files__30_/AST_A08_sensor_gap_real_geometry.py",
+          "bytes": 2874,
+          "sha256": "e78837745e4d04cb645f40aa10241cb6a0961119e6d9b260d94b3a8a133c6ff9"
+        },
+        {
+          "path": "research/astana-results/08_ecology/extracted_files__30_/AST_A08_sensor_gap_results.json",
+          "bytes": 868,
+          "sha256": "cb233c76f1898e3bee129cecaa3d00c1f88433f6d14832edb8a0b46b465ee9f6"
+        },
+        {
+          "path": "research/astana-results/08_ecology/extracted_files__30_/eco_priority_core.py",
+          "bytes": 5793,
+          "sha256": "0e1d28ad89f225ef49547e03dd67e91d58e1d6299ec3fae678a6606c447859da"
+        },
+        {
+          "path": "research/astana-results/08_ecology/files (30).zip",
+          "bytes": 43300,
+          "sha256": "6c11bddc908d95e3462d6eecce853ceca9de78a86e3e2d832e7c99eff9105380"
+        }
+      ]
+    },
+    {
+      "city": "astana",
+      "agent": "09_energy",
+      "status": "complete_files",
+      "reports": [
+        "research/astana-results/09_energy/extracted_files__31_/AST_A09_report.md"
+      ],
+      "evidence": [
+        "research/astana-results/09_energy/extracted_files__31_/AST_A09_evidence.json"
+      ],
+      "file_count": 9,
+      "invalid_json": [],
+      "duplicate_groups": [],
+      "files": [
+        {
+          "path": "research/astana-results/09_energy/extracted_files__31_/ast_a09_astro.py",
+          "bytes": 2744,
+          "sha256": "101cd496ba3ac207d93b9525608961279e158ed1529342409075f10263a81d7f"
+        },
+        {
+          "path": "research/astana-results/09_energy/extracted_files__31_/AST_A09_astro_result.json",
+          "bytes": 2224,
+          "sha256": "db24398c2a694bd99dab8561da4a00fbefd8f17f5d0a64e8176986711d4a4a8e"
+        },
+        {
+          "path": "research/astana-results/09_energy/extracted_files__31_/AST_A09_egov_catalog_extract_energy.csv",
+          "bytes": 6272,
+          "sha256": "4c26db8b57ea693df1aad1eb9e790eb4460e96ad12ef880fc3a0fb1fa1baa0a4"
+        },
+        {
+          "path": "research/astana-results/09_energy/extracted_files__31_/AST_A09_evidence.json",
+          "bytes": 73596,
+          "sha256": "c1393bbb6fbf4b68f2ecb432cc4667b2710c684819a7c6fdd45814a57b2deff8"
+        },
+        {
+          "path": "research/astana-results/09_energy/extracted_files__31_/ast_a09_heating_experiment.py",
+          "bytes": 9522,
+          "sha256": "e2bd2a4d6fe365466f906002e1d1e45d5dcfdbdf55f561b65545c39f315976d9"
+        },
+        {
+          "path": "research/astana-results/09_energy/extracted_files__31_/AST_A09_heating_experiment_result.json",
+          "bytes": 4232,
+          "sha256": "09d6727b46c546bad6194c474823f6122089be01ace31607059ccab0f9974e3c"
+        },
+        {
+          "path": "research/astana-results/09_energy/extracted_files__31_/AST_A09_report.md",
+          "bytes": 34143,
+          "sha256": "76a1a2d612154cbf69b79e278e0ee3f2c6553758148aeddecfaeced94e7aae70"
+        },
+        {
+          "path": "research/astana-results/09_energy/extracted_files__31_/AST_A09_template_SYNTHETIC_heat_meta.csv",
+          "bytes": 759,
+          "sha256": "eb5e36e0423ed57c2297699dcfe818e4a2da1315da4de5060971b3e049c9bf46"
+        },
+        {
+          "path": "research/astana-results/09_energy/files (31).zip",
+          "bytes": 37853,
+          "sha256": "1f7b0b386e1ceb7777b255d8032dfac61c4b8886a33daa53d8c83b3c36717e55"
+        }
+      ]
+    },
+    {
+      "city": "astana",
+      "agent": "10_safety",
+      "status": "partial",
+      "reports": [
+        "research/astana-results/10_safety/AST_A10_report.md"
+      ],
+      "evidence": [],
+      "file_count": 5,
+      "invalid_json": [],
+      "duplicate_groups": [],
+      "files": [
+        {
+          "path": "research/astana-results/10_safety/ast_a10_experiment.py",
+          "bytes": 15549,
+          "sha256": "1b3dcf4a684813a13e3af823864f942b23fa57fc7978c7bfd665a3fa23133171"
+        },
+        {
+          "path": "research/astana-results/10_safety/AST_A10_experiment_output.txt",
+          "bytes": 8768,
+          "sha256": "a57f3fdde043512bbb7492da644484d8885f47219481fe4a49f5198990501fcd"
+        },
+        {
+          "path": "research/astana-results/10_safety/AST_A10_report.md",
+          "bytes": 35024,
+          "sha256": "14195a5212ec7f00112a097eec83965d96c3413f3c041eb40de7fdf3aad6b79d"
+        },
+        {
+          "path": "research/astana-results/10_safety/AST_A10_sample_kpssu_astana_aggregates.json",
+          "bytes": 15588,
+          "sha256": "203f09aadef6f1b955d3a55f147644b6f121c9f0c2d490bf1ad9120780f8ed8b"
+        },
+        {
+          "path": "research/astana-results/10_safety/AST_A10_sample_shymkent_supplement.json",
+          "bytes": 1273,
+          "sha256": "93ef92997ccf910602e1f1ac37c156b2fdf4ae69a4fe516b15c22317026f90f7"
+        }
+      ]
+    },
+    {
+      "city": "astana",
+      "agent": "11_land",
+      "status": "complete_files",
+      "reports": [
+        "research/astana-results/11_land/extracted_files__32_/AST_A11_report.md"
+      ],
+      "evidence": [
+        "research/astana-results/11_land/extracted_files__32_/AST_A11_evidence.json"
+      ],
+      "file_count": 8,
+      "invalid_json": [],
+      "duplicate_groups": [],
+      "files": [
+        {
+          "path": "research/astana-results/11_land/extracted_files__32_/AST_A11_boundary_check.py",
+          "bytes": 3071,
+          "sha256": "054bd895c6cf1f9e6666bcc396010e1635988479355e0c02f98f423c033d81ee"
+        },
+        {
+          "path": "research/astana-results/11_land/extracted_files__32_/AST_A11_completeness_check.py",
+          "bytes": 9044,
+          "sha256": "e59050514a9e83964bc40b9e61d4e21488fe0e7112d001e3945d77f51ddca961"
+        },
+        {
+          "path": "research/astana-results/11_land/extracted_files__32_/AST_A11_evidence.json",
+          "bytes": 45882,
+          "sha256": "6651d0de21e643bd5c3b9e80de9252788f748b9f8bca69c6710d11cb811ce11f"
+        },
+        {
+          "path": "research/astana-results/11_land/extracted_files__32_/AST_A11_osm_boundary_sample.json",
+          "bytes": 4419,
+          "sha256": "f70556add031c480f62be6c875a873f54e9a6efa08f5bf605503402400a321d8"
+        },
+        {
+          "path": "research/astana-results/11_land/extracted_files__32_/AST_A11_report.md",
+          "bytes": 43913,
+          "sha256": "956832c517e7fbb899dcf1d97b15f95de1775e6c4f8381321cc69b5ac0b6edf7"
+        },
+        {
+          "path": "research/astana-results/11_land/extracted_files__32_/AST_A11_synthetic_card_astana.json",
+          "bytes": 6944,
+          "sha256": "5231ff8025a5dd422d396235b32a0f525907dbc1949e50a0fb15e15810a6ff97"
+        },
+        {
+          "path": "research/astana-results/11_land/extracted_files__32_/AST_A11_territory_card.schema.json",
+          "bytes": 11222,
+          "sha256": "1aaf195121ceeabbc7938bb835cb91d7a00f96ad296393db35318b6a7e9f85fa"
+        },
+        {
+          "path": "research/astana-results/11_land/files (32).zip",
+          "bytes": 37605,
+          "sha256": "08895df964aa77092c1b825d9b17a790da44d7db507afe590920aa35adb825c8"
+        }
+      ]
+    },
+    {
+      "city": "astana",
+      "agent": "12_data_gis",
+      "status": "complete_files",
+      "reports": [
+        "research/astana-results/12_data_gis/extracted_files__33_/AST_A12_report.md"
+      ],
+      "evidence": [
+        "research/astana-results/12_data_gis/extracted_files__33_/AST_A12_evidence.json"
+      ],
+      "file_count": 9,
+      "invalid_json": [],
+      "duplicate_groups": [],
+      "files": [
+        {
+          "path": "research/astana-results/12_data_gis/extracted_files__33_/AST_A12_evidence.json",
+          "bytes": 146868,
+          "sha256": "0889ef97015eac340cdf5d532e5975268b3b8261a6c177a63ff03beba0f808b9"
+        },
+        {
+          "path": "research/astana-results/12_data_gis/extracted_files__33_/AST_A12_experiments.py",
+          "bytes": 7318,
+          "sha256": "8d5906eda2f45cda569c93756c51335032cb23955e860fceaf9a0b88b4d54622"
+        },
+        {
+          "path": "research/astana-results/12_data_gis/extracted_files__33_/AST_A12_experiments_output.json",
+          "bytes": 3407,
+          "sha256": "c846ab2773e14d0a48020db98bb18115ba994869cce5dbfb1674e1f1eb0e3c35"
+        },
+        {
+          "path": "research/astana-results/12_data_gis/extracted_files__33_/AST_A12_manifest.json",
+          "bytes": 9970,
+          "sha256": "a9ec4e06a634f5eafbb1ca2511efafe3c0c9c52ff0d817bf9bdf597ed1fc6b83"
+        },
+        {
+          "path": "research/astana-results/12_data_gis/extracted_files__33_/AST_A12_report.md",
+          "bytes": 34422,
+          "sha256": "25b14727e9c98e076c1d66bb41ff606c62d3b6eb7e70e4880ad1fafa6a20a111"
+        },
+        {
+          "path": "research/astana-results/12_data_gis/extracted_files__33_/AST_A12_samples_real.json",
+          "bytes": 12928,
+          "sha256": "353e9ea02a2d4d48777a6b189522347303a64b5be2a9b8b13c2367dcf0e0a507"
+        },
+        {
+          "path": "research/astana-results/12_data_gis/extracted_files__33_/AST_A12_samples_synthetic.json",
+          "bytes": 2595,
+          "sha256": "dbbc42da0e2f01c35466cb76c3266d97fda11cbabadbe6539fe5f267273aa90d"
+        },
+        {
+          "path": "research/astana-results/12_data_gis/extracted_files__33_/AST_A12_schema_delta.sql",
+          "bytes": 2064,
+          "sha256": "aa9d8e799b83377c899066498976b0acaa571ab0a172fa9296ad7287fd4ba9ea"
+        },
+        {
+          "path": "research/astana-results/12_data_gis/files (33).zip",
+          "bytes": 54159,
+          "sha256": "655dd3d881a8e8d9c3a7a0eb6a3cbc7c88229862da67d648af033b80694e9078"
+        }
+      ]
+    },
+    {
+      "city": "astana",
+      "agent": "13_architecture_ai_thesis",
+      "status": "complete_files",
+      "reports": [
+        "research/astana-results/13_architecture_ai_thesis/extracted_files__34_/AST_A13_report.md"
+      ],
+      "evidence": [
+        "research/astana-results/13_architecture_ai_thesis/extracted_files__34_/AST_A13_evidence.json"
+      ],
+      "file_count": 10,
+      "invalid_json": [],
+      "duplicate_groups": [],
+      "files": [
+        {
+          "path": "research/astana-results/13_architecture_ai_thesis/extracted_files__34_/AST_A13_evidence.json",
+          "bytes": 33930,
+          "sha256": "dab12a1ad93f4bda21192010c0e5aec513a3e3f6a4cb9da75a588158479c5979"
+        },
+        {
+          "path": "research/astana-results/13_architecture_ai_thesis/extracted_files__34_/AST_A13_report.md",
+          "bytes": 34637,
+          "sha256": "c6916bd82bbba63e9d2facb202e8bba3a3beff10f19956826450b9a8260f0ad4"
+        },
+        {
+          "path": "research/astana-results/13_architecture_ai_thesis/extracted_files__34_/cityconf_proto.py",
+          "bytes": 4826,
+          "sha256": "187b0263a2ba1995479cfd6f69d5bd9d4a1a323e66e071e957d064839939c287"
+        },
+        {
+          "path": "research/astana-results/13_architecture_ai_thesis/extracted_files__34_/cityconf_proto_result.json",
+          "bytes": 947,
+          "sha256": "b0a05a1e36b596945ff42fae8266a8e6c3b1de3218c55c6f166312868e32086b"
+        },
+        {
+          "path": "research/astana-results/13_architecture_ai_thesis/extracted_files__34_/kk_numeral_filter.py",
+          "bytes": 2213,
+          "sha256": "4199facae5097f92b88c767eae4cb6f308d24f16a3098f9cfd97c8a45884cb8c"
+        },
+        {
+          "path": "research/astana-results/13_architecture_ai_thesis/extracted_files__34_/kk_numeral_filter_result.json",
+          "bytes": 2675,
+          "sha256": "81617cd0fa2eedeec551a3f23eae9f4344de609584f5c0cba987c773152b78fa"
+        },
+        {
+          "path": "research/astana-results/13_architecture_ai_thesis/extracted_files__34_/rank_sensitivity.py",
+          "bytes": 2998,
+          "sha256": "b76f76e3b6d052226a37194a73263d436eec81da8a61acc8c04af46e16c27c5c"
+        },
+        {
+          "path": "research/astana-results/13_architecture_ai_thesis/extracted_files__34_/rank_sensitivity_result.json",
+          "bytes": 1179,
+          "sha256": "22be1977ccbd6c699aa17de694fda34b4e75a62a06a1dfff06224c42cba0e95a"
+        },
+        {
+          "path": "research/astana-results/13_architecture_ai_thesis/extracted_files__34_/SHA256SUMS.txt",
+          "bytes": 1528,
+          "sha256": "dee38edcef54c490c367fa5a171abccecee898cf5d0b4161614e78c93a49f004"
+        },
+        {
+          "path": "research/astana-results/13_architecture_ai_thesis/files (34).zip",
+          "bytes": 27951,
+          "sha256": "7c4c3fc2a01eaaa05719ead4c27499e0c0d7e9c5e87abf27ff4a1f687939bef1"
+        }
+      ]
+    },
+    {
+      "city": "astana",
+      "agent": "14_synthesis_product_audit",
+      "status": "missing",
+      "reports": [],
+      "evidence": [],
+      "file_count": 0,
+      "invalid_json": [],
+      "duplicate_groups": [],
+      "files": []
+    }
+  ],
+  "extraction_errors": []
+}

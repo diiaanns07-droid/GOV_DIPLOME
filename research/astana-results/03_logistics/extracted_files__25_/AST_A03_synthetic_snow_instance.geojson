@@ -1,0 +1,583 @@
+{
+ "type": "FeatureCollection",
+ "name": "AST-A03 synthetic snow instance (NOT real data)",
+ "note": "Points synthetic; district labels from real OSM polygons (ODbL)",
+ "features": [
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.41041,
+     51.1001
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "snow_loading_site",
+    "district_from_real_osm_polygon": "esil",
+    "id": "SYN-S01",
+    "volume_m3": 40
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.47219,
+     51.19469
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "snow_loading_site",
+    "district_from_real_osm_polygon": "baikonur",
+    "id": "SYN-S02",
+    "volume_m3": 120
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.51321,
+     51.13971
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "snow_loading_site",
+    "district_from_real_osm_polygon": "almaty",
+    "id": "SYN-S03",
+    "volume_m3": 60
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.34842,
+     51.18458
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "snow_loading_site",
+    "district_from_real_osm_polygon": "saryarka",
+    "id": "SYN-S04",
+    "volume_m3": 40
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.47639,
+     51.22648
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "snow_loading_site",
+    "district_from_real_osm_polygon": "baikonur",
+    "id": "SYN-S05",
+    "volume_m3": 60
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.5734,
+     51.20592
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "snow_loading_site",
+    "district_from_real_osm_polygon": "baikonur",
+    "id": "SYN-S06",
+    "volume_m3": 40
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.40509,
+     51.19495
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "snow_loading_site",
+    "district_from_real_osm_polygon": "saryarka",
+    "id": "SYN-S07",
+    "volume_m3": 60
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.37452,
+     51.01468
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "snow_loading_site",
+    "district_from_real_osm_polygon": "nura",
+    "id": "SYN-S08",
+    "volume_m3": 80
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.41553,
+     51.13709
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "snow_loading_site",
+    "district_from_real_osm_polygon": "nura",
+    "id": "SYN-S09",
+    "volume_m3": 80
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.60911,
+     51.15417
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "snow_loading_site",
+    "district_from_real_osm_polygon": "almaty",
+    "id": "SYN-S10",
+    "volume_m3": 120
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.30352,
+     51.13268
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "snow_loading_site",
+    "district_from_real_osm_polygon": "nura",
+    "id": "SYN-S11",
+    "volume_m3": 120
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.37698,
+     51.12553
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "snow_loading_site",
+    "district_from_real_osm_polygon": "nura",
+    "id": "SYN-S12",
+    "volume_m3": 60
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.46045,
+     51.01292
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "snow_loading_site",
+    "district_from_real_osm_polygon": "esil",
+    "id": "SYN-S13",
+    "volume_m3": 60
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.60553,
+     51.16583
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "snow_loading_site",
+    "district_from_real_osm_polygon": "almaty",
+    "id": "SYN-S14",
+    "volume_m3": 80
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.45489,
+     51.0247
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "snow_loading_site",
+    "district_from_real_osm_polygon": "esil",
+    "id": "SYN-S15",
+    "volume_m3": 60
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.68806,
+     51.10852
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "snow_loading_site",
+    "district_from_real_osm_polygon": "saraishyk",
+    "id": "SYN-S16",
+    "volume_m3": 40
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.59123,
+     51.24803
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "snow_loading_site",
+    "district_from_real_osm_polygon": "baikonur",
+    "id": "SYN-S17",
+    "volume_m3": 60
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.28752,
+     51.0969
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "snow_loading_site",
+    "district_from_real_osm_polygon": "nura",
+    "id": "SYN-S18",
+    "volume_m3": 80
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.50347,
+     50.97921
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "snow_loading_site",
+    "district_from_real_osm_polygon": "esil",
+    "id": "SYN-S19",
+    "volume_m3": 60
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.37139,
+     51.22926
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "snow_loading_site",
+    "district_from_real_osm_polygon": "baikonur",
+    "id": "SYN-S20",
+    "volume_m3": 60
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.47413,
+     51.14396
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "snow_loading_site",
+    "district_from_real_osm_polygon": "almaty",
+    "id": "SYN-S21",
+    "volume_m3": 40
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.54138,
+     51.06121
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "snow_loading_site",
+    "district_from_real_osm_polygon": "esil",
+    "id": "SYN-S22",
+    "volume_m3": 240
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.68974,
+     51.34549
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "snow_loading_site",
+    "district_from_real_osm_polygon": "baikonur",
+    "id": "SYN-S23",
+    "volume_m3": 60
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.48547,
+     50.95436
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "snow_loading_site",
+    "district_from_real_osm_polygon": "esil",
+    "id": "SYN-S24",
+    "volume_m3": 160
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.33459,
+     51.03487
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "snow_loading_site",
+    "district_from_real_osm_polygon": "nura",
+    "id": "SYN-S25",
+    "volume_m3": 120
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.52336,
+     51.09645
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "snow_loading_site",
+    "district_from_real_osm_polygon": "esil",
+    "id": "SYN-S26",
+    "volume_m3": 40
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.24024,
+     51.08027
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "snow_loading_site",
+    "district_from_real_osm_polygon": "nura",
+    "id": "SYN-S27",
+    "volume_m3": 80
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.53957,
+     51.12598
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "snow_loading_site",
+    "district_from_real_osm_polygon": "saraishyk",
+    "id": "SYN-S28",
+    "volume_m3": 60
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.51383,
+     51.21221
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "snow_loading_site",
+    "district_from_real_osm_polygon": "baikonur",
+    "id": "SYN-S29",
+    "volume_m3": 120
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.55671,
+     51.2133
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "snow_loading_site",
+    "district_from_real_osm_polygon": "baikonur",
+    "id": "SYN-S30",
+    "volume_m3": 80
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.43,
+     51.27
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "snow_dump",
+    "id": "SYN-DUMP-N",
+    "unload_min": 4,
+    "cap_m3": 1047
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.62,
+     51.05
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "snow_dump",
+    "id": "SYN-DUMP-SE",
+    "unload_min": 4,
+    "cap_m3": 916
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.45,
+     51.15
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "melting_point",
+    "id": "SYN-MELT-C",
+    "unload_min": 8,
+    "cap_m3": 654
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     71.36,
+     51.16
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "depot",
+    "id": "SYN-DEPOT"
+   }
+  }
+ ]
+}
