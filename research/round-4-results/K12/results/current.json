@@ -1,0 +1,1033 @@
+{
+ "label": "current",
+ "impl": "inputs/k05_d913554",
+ "fixtures": "k12r4-k05-stress-v1",
+ "kind": "synthetic fixtures",
+ "as_of": "2026-10-05",
+ "jsonschema": true,
+ "summary": {
+  "record_cases": {
+   "total": 34,
+   "match": 23,
+   "mismatch_ids": [
+    "R20",
+    "R21",
+    "R22",
+    "R23",
+    "R25",
+    "R26",
+    "R27",
+    "R28",
+    "R30",
+    "R31",
+    "R33"
+   ]
+  },
+  "json_text_cases": {
+   "total": 6,
+   "match": 1,
+   "mismatch_ids": [
+    "J01",
+    "J02",
+    "J03",
+    "J04",
+    "J05"
+   ]
+  },
+  "aggregate_cases": {
+   "total": 12,
+   "match": 6,
+   "mismatch_ids": [
+    "A07",
+    "A08",
+    "A09",
+    "A10",
+    "A11",
+    "A12"
+   ]
+  },
+  "dataset_cases": {
+   "total": 4,
+   "match": 1,
+   "mismatch_ids": [
+    "S01",
+    "S02",
+    "S03"
+   ]
+  }
+ },
+ "record_cases": [
+  {
+   "id": "R01",
+   "category": "control",
+   "new": false,
+   "expect": {
+    "accept": true,
+    "codes": [
+     "NOT_MEASUREMENT"
+    ]
+   },
+   "schema_errors": [],
+   "contract_errors": [],
+   "contract_warnings": [
+    "NOT_MEASUREMENT"
+   ],
+   "crash": null,
+   "accepted": true,
+   "match": true
+  },
+  {
+   "id": "R02",
+   "category": "control",
+   "new": false,
+   "expect": {
+    "accept": true,
+    "codes": []
+   },
+   "schema_errors": [],
+   "contract_errors": [],
+   "contract_warnings": [],
+   "crash": null,
+   "accepted": true,
+   "match": true
+  },
+  {
+   "id": "R03",
+   "category": "missing_field",
+   "new": false,
+   "expect": {
+    "accept": false,
+    "codes": [
+     "MISSING_FIELD"
+    ]
+   },
+   "schema_errors": [
+    "'coverage' is a required property"
+   ],
+   "contract_errors": [
+    "MISSING_FIELD"
+   ],
+   "contract_warnings": [],
+   "crash": null,
+   "accepted": false,
+   "match": true
+  },
+  {
+   "id": "R04",
+   "category": "missing_field",
+   "new": false,
+   "expect": {
+    "accept": false,
+    "codes": [
+     "MISSING_FIELD"
+    ]
+   },
+   "schema_errors": [
+    "'value' is a required property"
+   ],
+   "contract_errors": [
+    "MISSING_FIELD"
+   ],
+   "contract_warnings": [],
+   "crash": null,
+   "accepted": false,
+   "match": true
+  },
+  {
+   "id": "R05",
+   "category": "null",
+   "new": false,
+   "expect": {
+    "accept": false,
+    "codes": [
+     "NULL_REPORTED"
+    ]
+   },
+   "schema_errors": [],
+   "contract_errors": [
+    "NULL_REPORTED"
+   ],
+   "contract_warnings": [],
+   "crash": null,
+   "accepted": false,
+   "match": true
+  },
+  {
+   "id": "R06",
+   "category": "null",
+   "new": false,
+   "expect": {
+    "accept": true,
+    "codes": []
+   },
+   "schema_errors": [],
+   "contract_errors": [],
+   "contract_warnings": [],
+   "crash": null,
+   "accepted": true,
+   "match": true
+  },
+  {
+   "id": "R07",
+   "category": "null",
+   "new": false,
+   "expect": {
+    "accept": true,
+    "codes": [
+     "MISSING_REASON"
+    ]
+   },
+   "schema_errors": [],
+   "contract_errors": [],
+   "contract_warnings": [
+    "MISSING_REASON"
+   ],
+   "crash": null,
+   "accepted": true,
+   "match": true
+  },
+  {
+   "id": "R08",
+   "category": "zero",
+   "new": false,
+   "expect": {
+    "accept": false,
+    "codes": [
+     "FALSE_VALUE"
+    ]
+   },
+   "schema_errors": [],
+   "contract_errors": [
+    "FALSE_VALUE"
+   ],
+   "contract_warnings": [],
+   "crash": null,
+   "accepted": false,
+   "match": true
+  },
+  {
+   "id": "R09",
+   "category": "zero",
+   "new": false,
+   "expect": {
+    "accept": false,
+    "codes": [
+     "IMPLICIT_ZERO"
+    ]
+   },
+   "schema_errors": [],
+   "contract_errors": [
+    "IMPLICIT_ZERO"
+   ],
+   "contract_warnings": [],
+   "crash": null,
+   "accepted": false,
+   "match": true
+  },
+  {
+   "id": "R10",
+   "category": "zero",
+   "new": false,
+   "expect": {
+    "accept": true,
+    "codes": []
+   },
+   "schema_errors": [],
+   "contract_errors": [],
+   "contract_warnings": [],
+   "crash": null,
+   "accepted": true,
+   "match": true
+  },
+  {
+   "id": "R11",
+   "category": "zero",
+   "new": false,
+   "expect": {
+    "accept": false,
+    "codes": [
+     "ZERO_ON_PARTIAL"
+    ]
+   },
+   "schema_errors": [],
+   "contract_errors": [
+    "ZERO_ON_PARTIAL"
+   ],
+   "contract_warnings": [],
+   "crash": null,
+   "accepted": false,
+   "match": true
+  },
+  {
+   "id": "R12",
+   "category": "city",
+   "new": false,
+   "expect": {
+    "accept": false,
+    "codes": [
+     "CITY_MIX"
+    ]
+   },
+   "schema_errors": [],
+   "contract_errors": [
+    "CITY_MIX"
+   ],
+   "contract_warnings": [],
+   "crash": null,
+   "accepted": false,
+   "match": true
+  },
+  {
+   "id": "R13",
+   "category": "city",
+   "new": false,
+   "expect": {
+    "accept": false,
+    "codes": [
+     "CITY"
+    ]
+   },
+   "schema_errors": [
+    "'kz.almaty' is not one of ['kz.astana', 'kz.shymkent']",
+    "'kz.almaty.fixture_a' does not match '^kz\\\\.(astana|shymkent)(\\\\.[a-z0-9_]+)?$'"
+   ],
+   "contract_errors": [
+    "CITY"
+   ],
+   "contract_warnings": [],
+   "crash": null,
+   "accepted": false,
+   "match": true
+  },
+  {
+   "id": "R14",
+   "category": "unit",
+   "new": false,
+   "expect": {
+    "accept": false,
+    "codes": [
+     "UNIT"
+    ]
+   },
+   "schema_errors": [],
+   "contract_errors": [
+    "UNIT"
+   ],
+   "contract_warnings": [],
+   "crash": null,
+   "accepted": false,
+   "match": true
+  },
+  {
+   "id": "R15",
+   "category": "period",
+   "new": false,
+   "expect": {
+    "accept": false,
+    "codes": [
+     "PERIOD_UNKNOWN"
+    ]
+   },
+   "schema_errors": [],
+   "contract_errors": [
+    "PERIOD_UNKNOWN"
+   ],
+   "contract_warnings": [],
+   "crash": null,
+   "accepted": false,
+   "match": true
+  },
+  {
+   "id": "R16",
+   "category": "period",
+   "new": false,
+   "expect": {
+    "accept": true,
+    "codes": [
+     "PERIOD_UNKNOWN"
+    ]
+   },
+   "schema_errors": [],
+   "contract_errors": [],
+   "contract_warnings": [
+    "PERIOD_UNKNOWN"
+   ],
+   "crash": null,
+   "accepted": true,
+   "match": true
+  },
+  {
+   "id": "R17",
+   "category": "type",
+   "new": false,
+   "expect": {
+    "accept": false,
+    "codes": [
+     "VALUE_TYPE"
+    ]
+   },
+   "schema_errors": [
+    "True is not of type 'number', 'null'"
+   ],
+   "contract_errors": [
+    "VALUE_TYPE"
+   ],
+   "contract_warnings": [],
+   "crash": null,
+   "accepted": false,
+   "match": true
+  },
+  {
+   "id": "R18",
+   "category": "type",
+   "new": false,
+   "expect": {
+    "accept": false,
+    "codes": [
+     "VALUE_TYPE"
+    ]
+   },
+   "schema_errors": [
+    "'5' is not of type 'number', 'null'"
+   ],
+   "contract_errors": [
+    "VALUE_TYPE"
+   ],
+   "contract_warnings": [],
+   "crash": null,
+   "accepted": false,
+   "match": true
+  },
+  {
+   "id": "R19",
+   "category": "coverage",
+   "new": false,
+   "expect": {
+    "accept": false,
+    "codes": [
+     "COVERAGE"
+    ]
+   },
+   "schema_errors": [],
+   "contract_errors": [
+    "COVERAGE"
+   ],
+   "contract_warnings": [],
+   "crash": null,
+   "accepted": false,
+   "match": true
+  },
+  {
+   "id": "R20",
+   "category": "nan_inf",
+   "new": true,
+   "expect": {
+    "accept": false,
+    "codes": [
+     "VALUE_NOT_FINITE"
+    ]
+   },
+   "schema_errors": [],
+   "contract_errors": [],
+   "contract_warnings": [],
+   "crash": null,
+   "accepted": true,
+   "match": false
+  },
+  {
+   "id": "R21",
+   "category": "nan_inf",
+   "new": true,
+   "expect": {
+    "accept": false,
+    "codes": [
+     "VALUE_NOT_FINITE"
+    ]
+   },
+   "schema_errors": [],
+   "contract_errors": [],
+   "contract_warnings": [],
+   "crash": null,
+   "accepted": true,
+   "match": false
+  },
+  {
+   "id": "R22",
+   "category": "nan_inf",
+   "new": true,
+   "expect": {
+    "accept": false,
+    "codes": [
+     "VALUE_NOT_FINITE"
+    ]
+   },
+   "schema_errors": [],
+   "contract_errors": [],
+   "contract_warnings": [],
+   "crash": null,
+   "accepted": true,
+   "match": false
+  },
+  {
+   "id": "R23",
+   "category": "nan_inf",
+   "new": true,
+   "expect": {
+    "accept": false,
+    "codes": [
+     "VALUE_NOT_FINITE"
+    ]
+   },
+   "schema_errors": [],
+   "contract_errors": [],
+   "contract_warnings": [
+    "NOT_MEASUREMENT"
+   ],
+   "crash": null,
+   "accepted": true,
+   "match": false
+  },
+  {
+   "id": "R24",
+   "category": "nan_inf",
+   "new": false,
+   "expect": {
+    "accept": false,
+    "codes": [
+     "ZERO_STATUS"
+    ]
+   },
+   "schema_errors": [],
+   "contract_errors": [
+    "ZERO_STATUS"
+   ],
+   "contract_warnings": [],
+   "crash": null,
+   "accepted": false,
+   "match": true
+  },
+  {
+   "id": "R25",
+   "category": "period",
+   "new": true,
+   "expect": {
+    "accept": false,
+    "codes": [
+     "PERIOD_INVALID_DATE"
+    ]
+   },
+   "schema_errors": [],
+   "contract_errors": [],
+   "contract_warnings": [],
+   "crash": null,
+   "accepted": true,
+   "match": false
+  },
+  {
+   "id": "R26",
+   "category": "period",
+   "new": true,
+   "expect": {
+    "accept": false,
+    "codes": [
+     "PERIOD_INVALID_DATE"
+    ]
+   },
+   "schema_errors": [],
+   "contract_errors": [],
+   "contract_warnings": [],
+   "crash": null,
+   "accepted": true,
+   "match": false
+  },
+  {
+   "id": "R27",
+   "category": "period",
+   "new": true,
+   "expect": {
+    "accept": false,
+    "codes": [
+     "PERIOD_INVALID_DATE"
+    ]
+   },
+   "schema_errors": [],
+   "contract_errors": [],
+   "contract_warnings": [],
+   "crash": null,
+   "accepted": true,
+   "match": false
+  },
+  {
+   "id": "R28",
+   "category": "period",
+   "new": true,
+   "expect": {
+    "accept": false,
+    "codes": [
+     "PERIOD_REVERSED"
+    ]
+   },
+   "schema_errors": [],
+   "contract_errors": [],
+   "contract_warnings": [],
+   "crash": null,
+   "accepted": true,
+   "match": false
+  },
+  {
+   "id": "R29",
+   "category": "period",
+   "new": false,
+   "expect": {
+    "accept": true,
+    "codes": []
+   },
+   "schema_errors": [],
+   "contract_errors": [],
+   "contract_warnings": [],
+   "crash": null,
+   "accepted": true,
+   "match": true
+  },
+  {
+   "id": "R30",
+   "category": "unit",
+   "new": true,
+   "expect": {
+    "accept": false,
+    "codes": [
+     "COUNT_DOMAIN"
+    ]
+   },
+   "schema_errors": [],
+   "contract_errors": [],
+   "contract_warnings": [],
+   "crash": null,
+   "accepted": true,
+   "match": false
+  },
+  {
+   "id": "R31",
+   "category": "unit",
+   "new": true,
+   "expect": {
+    "accept": false,
+    "codes": [
+     "COUNT_DOMAIN"
+    ]
+   },
+   "schema_errors": [],
+   "contract_errors": [],
+   "contract_warnings": [],
+   "crash": null,
+   "accepted": true,
+   "match": false
+  },
+  {
+   "id": "R32",
+   "category": "unit",
+   "new": false,
+   "expect": {
+    "accept": true,
+    "codes": []
+   },
+   "schema_errors": [],
+   "contract_errors": [],
+   "contract_warnings": [],
+   "crash": null,
+   "accepted": true,
+   "match": true
+  },
+  {
+   "id": "R33",
+   "category": "source",
+   "new": true,
+   "expect": {
+    "accept": false,
+    "codes": [
+     "RETRIEVED_AT_INVALID"
+    ]
+   },
+   "schema_errors": [],
+   "contract_errors": [],
+   "contract_warnings": [],
+   "crash": null,
+   "accepted": true,
+   "match": false
+  },
+  {
+   "id": "R34",
+   "category": "type",
+   "new": true,
+   "expect": {
+    "accept": true,
+    "codes": []
+   },
+   "schema_errors": [],
+   "contract_errors": [],
+   "contract_warnings": [],
+   "crash": null,
+   "accepted": true,
+   "match": true
+  }
+ ],
+ "json_text_cases": [
+  {
+   "id": "J01",
+   "loader": "json.loads (no strict loader)",
+   "expect": {
+    "accept": false,
+    "codes": [
+     "JSON_NONFINITE"
+    ]
+   },
+   "accepted": true,
+   "codes": [],
+   "parsed": {
+    "value": "<nan>"
+   },
+   "match": false
+  },
+  {
+   "id": "J02",
+   "loader": "json.loads (no strict loader)",
+   "expect": {
+    "accept": false,
+    "codes": [
+     "JSON_NONFINITE"
+    ]
+   },
+   "accepted": true,
+   "codes": [],
+   "parsed": {
+    "value": "<inf>"
+   },
+   "match": false
+  },
+  {
+   "id": "J03",
+   "loader": "json.loads (no strict loader)",
+   "expect": {
+    "accept": false,
+    "codes": [
+     "JSON_NONFINITE"
+    ]
+   },
+   "accepted": true,
+   "codes": [],
+   "parsed": {
+    "value": "<-inf>"
+   },
+   "match": false
+  },
+  {
+   "id": "J04",
+   "loader": "json.loads (no strict loader)",
+   "expect": {
+    "accept": false,
+    "codes": [
+     "JSON_NONFINITE"
+    ]
+   },
+   "accepted": true,
+   "codes": [],
+   "parsed": {
+    "value": "<inf>"
+   },
+   "match": false
+  },
+  {
+   "id": "J05",
+   "loader": "json.loads (no strict loader)",
+   "expect": {
+    "accept": false,
+    "codes": [
+     "JSON_DUPLICATE_KEY"
+    ]
+   },
+   "accepted": true,
+   "codes": [],
+   "parsed": {
+    "value": 5,
+    "value_status": "missing"
+   },
+   "match": false
+  },
+  {
+   "id": "J06",
+   "loader": "json.loads (no strict loader)",
+   "expect": {
+    "accept": true,
+    "codes": []
+   },
+   "accepted": true,
+   "codes": [],
+   "parsed": {
+    "value": 5,
+    "value_status": "reported"
+   },
+   "match": true
+  }
+ ],
+ "aggregate_cases": [
+  {
+   "id": "A01",
+   "category": "control",
+   "new": false,
+   "expect": {
+    "value": 12,
+    "value_status": "reported",
+    "coverage_complete": true
+   },
+   "raised": null,
+   "result": {
+    "value": 12,
+    "value_status": "reported",
+    "coverage_complete": true,
+    "n": "2/2"
+   },
+   "note": null,
+   "match": true
+  },
+  {
+   "id": "A02",
+   "category": "null",
+   "new": false,
+   "expect": {
+    "value": null,
+    "value_status": "missing",
+    "coverage_complete": false
+   },
+   "raised": null,
+   "result": {
+    "value": null,
+    "value_status": "missing",
+    "coverage_complete": false,
+    "n": "1/2",
+    "known_partial_sum": 5
+   },
+   "note": null,
+   "match": true
+  },
+  {
+   "id": "A03",
+   "category": "city",
+   "new": false,
+   "expect": {
+    "raises": "CITY_MIX"
+   },
+   "raised": "CITY_MIX",
+   "result": null,
+   "note": null,
+   "match": true
+  },
+  {
+   "id": "A04",
+   "category": "unit",
+   "new": false,
+   "expect": {
+    "raises": "UNIT_MIX"
+   },
+   "raised": "UNIT_MIX",
+   "result": null,
+   "note": null,
+   "match": true
+  },
+  {
+   "id": "A05",
+   "category": "period",
+   "new": false,
+   "expect": {
+    "raises": "PERIOD_MIX"
+   },
+   "raised": "PERIOD_MIX",
+   "result": null,
+   "note": null,
+   "match": true
+  },
+  {
+   "id": "A06",
+   "category": "duplicate_id",
+   "new": false,
+   "expect": {
+    "raises": "DUPLICATE_UNIT"
+   },
+   "raised": "DUPLICATE_UNIT",
+   "result": null,
+   "note": null,
+   "match": true
+  },
+  {
+   "id": "A07",
+   "category": "boundary",
+   "new": true,
+   "expect": {
+    "raises": "BOUNDARY_MIX"
+   },
+   "raised": null,
+   "result": {
+    "value": 10,
+    "value_status": "reported",
+    "coverage_complete": true,
+    "n": "2/2"
+   },
+   "note": null,
+   "match": false
+  },
+  {
+   "id": "A08",
+   "category": "partial_geography",
+   "new": true,
+   "expect": {
+    "raises": "NESTED_UNIT"
+   },
+   "raised": null,
+   "result": {
+    "value": 17,
+    "value_status": "reported",
+    "coverage_complete": true,
+    "n": "2/2"
+   },
+   "note": null,
+   "match": false
+  },
+  {
+   "id": "A09",
+   "category": "partial_geography",
+   "new": true,
+   "expect": {
+    "value": null,
+    "value_status": "missing",
+    "coverage_complete": false,
+    "missing_units": [
+     "kz.shymkent.fixture_c"
+    ]
+   },
+   "raised": null,
+   "result": {
+    "value": 10,
+    "value_status": "reported",
+    "coverage_complete": true,
+    "n": "2/2"
+   },
+   "note": "aggregate_sum не принимает expected_units: полноту географии проверить нельзя",
+   "match": false
+  },
+  {
+   "id": "A10",
+   "category": "partial_geography",
+   "new": true,
+   "expect": {
+    "value": 10,
+    "value_status": "reported",
+    "geography_checked": false
+   },
+   "raised": null,
+   "result": {
+    "value": 10,
+    "value_status": "reported",
+    "coverage_complete": true,
+    "n": "2/2"
+   },
+   "note": null,
+   "match": false
+  },
+  {
+   "id": "A11",
+   "category": "nan_inf",
+   "new": true,
+   "expect": {
+    "raises": "VALUE_NOT_FINITE"
+   },
+   "raised": null,
+   "result": {
+    "value": "<nan>",
+    "value_status": "reported",
+    "coverage_complete": true,
+    "n": "2/2"
+   },
+   "note": null,
+   "match": false
+  },
+  {
+   "id": "A12",
+   "category": "zero",
+   "new": true,
+   "expect": {
+    "value": null,
+    "value_status": "missing",
+    "coverage_complete": false,
+    "missing_reason": "zero_in_partial_coverage"
+   },
+   "raised": null,
+   "result": {
+    "value": 0,
+    "value_status": "reported_zero",
+    "coverage_complete": false,
+    "n": "2/2"
+   },
+   "note": null,
+   "match": false
+  }
+ ],
+ "dataset_cases": [
+  {
+   "id": "S01",
+   "category": "duplicate_id",
+   "new": true,
+   "expect": {
+    "accept": false,
+    "codes": [
+     "DUPLICATE_OBS_ID"
+    ]
+   },
+   "accepted": true,
+   "codes": [],
+   "note": "нет проверки набора: validate() видит записи поодиночке",
+   "match": false
+  },
+  {
+   "id": "S02",
+   "category": "duplicate_id",
+   "new": true,
+   "expect": {
+    "accept": true,
+    "codes": [
+     "DUPLICATE_RECORD"
+    ]
+   },
+   "accepted": true,
+   "codes": [],
+   "note": "нет проверки набора: validate() видит записи поодиночке",
+   "match": false
+  },
+  {
+   "id": "S03",
+   "category": "duplicate_id",
+   "new": true,
+   "expect": {
+    "accept": false,
+    "codes": [
+     "CONFLICTING_OBSERVATION"
+    ]
+   },
+   "accepted": true,
+   "codes": [],
+   "note": "нет проверки набора: validate() видит записи поодиночке",
+   "match": false
+  },
+  {
+   "id": "S04",
+   "category": "control",
+   "new": false,
+   "expect": {
+    "accept": true,
+    "codes": []
+   },
+   "accepted": true,
+   "codes": [],
+   "note": "нет проверки набора: validate() видит записи поодиночке",
+   "match": true
+  }
+ ]
+}

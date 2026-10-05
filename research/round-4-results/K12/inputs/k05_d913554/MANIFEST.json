@@ -1,0 +1,38 @@
+{
+  "purpose": "Входы K12 round 4 REVIEW: код и схема модели данных K05 раунда 3 и два выхода адаптера (для проверки null→0 в сверке). Побайтные копии через git show.",
+  "source_branch": "claude/optimistic-davinci-1oiqs9",
+  "source_commit": "d913554bf2617a74d921af260ab8c22743ccb4b5",
+  "layout": "пути research/ сохранены без префикса research/, чтобы импорт k05r3_contract → next-round/K05/k05_validator работал",
+  "files": {
+    "round-3-results/K05/k05r3_contract.py": {
+      "source_path": "research/round-3-results/K05/k05r3_contract.py",
+      "git_blob": "5ad8882bd0ba38f5bd0bd300ea656b8b77557a06",
+      "sha256": "8dc4a177f47edcdfa6753ed41b78a31e5afb652df4d79f02c73aeb5686d2f397",
+      "bytes": 12171
+    },
+    "round-3-results/K05/schema/k05-obs-v1.1.schema.json": {
+      "source_path": "research/round-3-results/K05/schema/k05-obs-v1.1.schema.json",
+      "git_blob": "8ef8de28119a1be793ce9830ee991103c1d43b3a",
+      "sha256": "7b40b4a7b48f13a62ba4fe3c06f1701cf5559cd74954c799eafe8e736c22d7e6",
+      "bytes": 3614
+    },
+    "next-round/K05/k05_validator.py": {
+      "source_path": "research/next-round/K05/k05_validator.py",
+      "git_blob": "d9d0d9dc689661110c03b673801ed03b76ffb86d",
+      "sha256": "90086a105a0a0108dcc4a35fd5312fb29becc0787b3eef5bc880ae987dfe64ab",
+      "bytes": 12617
+    },
+    "round-3-results/K05/examples/shymkent/overture_place_record_counts.json": {
+      "source_path": "research/round-3-results/K05/examples/shymkent/overture_place_record_counts.json",
+      "git_blob": "bbe3fff5eab319ca6aeb32036faf33bcac511bca",
+      "sha256": "16626f0df0a04d0044928f0188d0abb7de84090fc82eb6c9c5ea05bcc484c69d",
+      "bytes": 149801
+    },
+    "round-3-results/K05/examples/astana/overture_place_record_counts.json": {
+      "source_path": "research/round-3-results/K05/examples/astana/overture_place_record_counts.json",
+      "git_blob": "2e6e7f17d6758d3d8e789da6da22c5a4f148b62d",
+      "sha256": "c77b0da4f4e2f79622d628eac9a26229700ec48663ebfcc5c18b664b61fdb29c",
+      "bytes": 224760
+    }
+  }
+}
