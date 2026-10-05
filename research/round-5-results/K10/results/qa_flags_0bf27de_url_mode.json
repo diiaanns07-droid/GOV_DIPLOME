@@ -1,0 +1,1157 @@
+{
+ "cities": {
+  "astana": {
+   "bbox": [
+    71.418372,
+    51.163033,
+    71.447,
+    51.181
+   ],
+   "flag_counts": {
+    "COORD_EXACT_GROUP": 6,
+    "GROUP_ADDRESS_DIVERGENT": 2
+   },
+   "id_integrity": {
+    "source_places": null,
+    "ui_places": 65
+   },
+   "records_flagged": 6
+  },
+  "shymkent": {
+   "bbox": [
+    69.593365,
+    42.306645,
+    69.617658,
+    42.324611
+   ],
+   "flag_counts": {
+    "ADDRESS_CITY_OR_COUNTRY_ONLY": 4,
+    "ADDRESS_EMAIL_LIKE": 1,
+    "COORD_EXACT_GROUP": 22,
+    "COORD_LOW_PRECISION": 11,
+    "COORD_NEAR_GROUP": 6,
+    "GROUP_ADDRESS_DIVERGENT": 18
+   },
+   "id_integrity": {
+    "source_places": null,
+    "ui_places": 55
+   },
+   "records_flagged": 23
+  }
+ },
+ "flags": [
+  {
+   "city": "astana",
+   "group_id": "astana:exact:71.4422900,51.1699000",
+   "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08",
+   "reason": "2 records share coordinate (71.44229, 51.1699)",
+   "rule": "COORD_EXACT_GROUP",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "astana",
+   "group_id": "astana:exact:71.4199900,51.1668300",
+   "id": "1be5a31a-4a8c-48f4-af6c-449035e7c80b",
+   "reason": "2 records share coordinate (71.41999, 51.16683)",
+   "rule": "COORD_EXACT_GROUP",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "astana",
+   "group_id": "astana:exact:71.4422900,51.1699000",
+   "id": "646f13c2-ad9e-4430-bbf2-1897b79120c9",
+   "reason": "2 records share coordinate (71.44229, 51.1699)",
+   "rule": "COORD_EXACT_GROUP",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "astana",
+   "group_id": "astana:exact:71.4412700,51.1675600",
+   "id": "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8",
+   "reason": "2 records share coordinate (71.44127, 51.16756)",
+   "rule": "COORD_EXACT_GROUP",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "astana",
+   "group_id": "astana:exact:71.4412700,51.1675600",
+   "id": "f313843a-b41d-44d3-8086-db329296d309",
+   "reason": "2 records share coordinate (71.44127, 51.16756)",
+   "rule": "COORD_EXACT_GROUP",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "astana",
+   "group_id": "astana:exact:71.4199900,51.1668300",
+   "id": "f8748e3f-294d-4ce4-bad0-cc6a55ee86fd",
+   "reason": "2 records share coordinate (71.41999, 51.16683)",
+   "rule": "COORD_EXACT_GROUP",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "astana",
+   "group_id": "astana:exact:71.4422900,51.1699000",
+   "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08",
+   "reason": "2 different addresses at one coordinate",
+   "rule": "GROUP_ADDRESS_DIVERGENT",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "astana",
+   "group_id": "astana:exact:71.4422900,51.1699000",
+   "id": "646f13c2-ad9e-4430-bbf2-1897b79120c9",
+   "reason": "2 different addresses at one coordinate",
+   "rule": "GROUP_ADDRESS_DIVERGENT",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "id": "477b7659-21b2-4f90-a526-2817bc77fe79",
+   "reason": "address is only a city/country name",
+   "rule": "ADDRESS_CITY_OR_COUNTRY_ONLY",
+   "severity": "info",
+   "source": {
+    "field": "addresses[].freeform",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "id": "50802484-b7f9-492e-8a4c-f75312fc7751",
+   "reason": "address is only a city/country name",
+   "rule": "ADDRESS_CITY_OR_COUNTRY_ONLY",
+   "severity": "info",
+   "source": {
+    "field": "addresses[].freeform",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "id": "622b4786-89fa-4853-b109-18054e3ebe0d",
+   "reason": "address is only a city/country name",
+   "rule": "ADDRESS_CITY_OR_COUNTRY_ONLY",
+   "severity": "info",
+   "source": {
+    "field": "addresses[].freeform",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "id": "7bc29930-e875-4c3d-b805-97cbcfc81159",
+   "reason": "address is only a city/country name",
+   "rule": "ADDRESS_CITY_OR_COUNTRY_ONLY",
+   "severity": "info",
+   "source": {
+    "field": "addresses[].freeform",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "id": "e1b19ead-4505-4acd-8aed-9c561ceec4c0",
+   "reason": "address field contains an e-mail-like string, not an address (value not reproduced)",
+   "rule": "ADDRESS_EMAIL_LIKE",
+   "severity": "review",
+   "source": {
+    "field": "addresses[].freeform",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "group_id": "shymkent:exact:69.5958000,42.3167000",
+   "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+   "reason": "10 records share coordinate (69.5958, 42.3167)",
+   "rule": "COORD_EXACT_GROUP",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "group_id": "shymkent:exact:69.6032200,42.3172800",
+   "id": "1b81c33b-d088-46b1-a390-8d6d81102c21",
+   "reason": "2 records share coordinate (69.60322, 42.31728)",
+   "rule": "COORD_EXACT_GROUP",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "group_id": "shymkent:exact:69.5958000,42.3167000",
+   "id": "2264dcf0-549d-451a-b846-3f207d411e0c",
+   "reason": "10 records share coordinate (69.5958, 42.3167)",
+   "rule": "COORD_EXACT_GROUP",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "group_id": "shymkent:exact:69.6070200,42.3175700",
+   "id": "477b7659-21b2-4f90-a526-2817bc77fe79",
+   "reason": "4 records share coordinate (69.60702, 42.31757)",
+   "rule": "COORD_EXACT_GROUP",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "group_id": "shymkent:exact:69.6070200,42.3175700",
+   "id": "50802484-b7f9-492e-8a4c-f75312fc7751",
+   "reason": "4 records share coordinate (69.60702, 42.31757)",
+   "rule": "COORD_EXACT_GROUP",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "group_id": "shymkent:exact:69.5958000,42.3167000",
+   "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+   "reason": "10 records share coordinate (69.5958, 42.3167)",
+   "rule": "COORD_EXACT_GROUP",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "group_id": "shymkent:exact:69.6070200,42.3175700",
+   "id": "622b4786-89fa-4853-b109-18054e3ebe0d",
+   "reason": "4 records share coordinate (69.60702, 42.31757)",
+   "rule": "COORD_EXACT_GROUP",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "group_id": "shymkent:exact:69.5958000,42.3167000",
+   "id": "68c8f007-75bc-42f6-8da8-baa72042bde4",
+   "reason": "10 records share coordinate (69.5958, 42.3167)",
+   "rule": "COORD_EXACT_GROUP",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "group_id": "shymkent:exact:69.5958000,42.3167000",
+   "id": "6d4636dd-c9f3-4d9b-8c01-b361e86c8659",
+   "reason": "10 records share coordinate (69.5958, 42.3167)",
+   "rule": "COORD_EXACT_GROUP",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "group_id": "shymkent:exact:69.5958000,42.3167000",
+   "id": "7bc29930-e875-4c3d-b805-97cbcfc81159",
+   "reason": "10 records share coordinate (69.5958, 42.3167)",
+   "rule": "COORD_EXACT_GROUP",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "group_id": "shymkent:exact:69.6070200,42.3175800",
+   "id": "833280f2-ff82-4dd6-a174-d2a9203420fa",
+   "reason": "2 records share coordinate (69.60702, 42.31758)",
+   "rule": "COORD_EXACT_GROUP",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "group_id": "shymkent:exact:69.5949600,42.3235300",
+   "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+   "reason": "2 records share coordinate (69.59496, 42.32353)",
+   "rule": "COORD_EXACT_GROUP",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "group_id": "shymkent:exact:69.5958000,42.3167000",
+   "id": "9d31b953-ccc4-42bd-a3a3-3e4e21f44051",
+   "reason": "10 records share coordinate (69.5958, 42.3167)",
+   "rule": "COORD_EXACT_GROUP",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "group_id": "shymkent:exact:69.5949600,42.3235300",
+   "id": "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6",
+   "reason": "2 records share coordinate (69.59496, 42.32353)",
+   "rule": "COORD_EXACT_GROUP",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "group_id": "shymkent:exact:69.5958000,42.3167000",
+   "id": "b08d41c4-c682-4335-94fc-65dac48411ed",
+   "reason": "10 records share coordinate (69.5958, 42.3167)",
+   "rule": "COORD_EXACT_GROUP",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "group_id": "shymkent:exact:69.6070200,42.3175800",
+   "id": "b9656404-dad2-4021-b6ef-65a9fbab074a",
+   "reason": "2 records share coordinate (69.60702, 42.31758)",
+   "rule": "COORD_EXACT_GROUP",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "group_id": "shymkent:exact:69.6155700,42.3230400",
+   "id": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+   "reason": "2 records share coordinate (69.61557, 42.32304)",
+   "rule": "COORD_EXACT_GROUP",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "group_id": "shymkent:exact:69.6155700,42.3230400",
+   "id": "bcd265d0-0799-4dbf-8b15-23bae752a4d2",
+   "reason": "2 records share coordinate (69.61557, 42.32304)",
+   "rule": "COORD_EXACT_GROUP",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "group_id": "shymkent:exact:69.5958000,42.3167000",
+   "id": "c2990416-dca7-4e3a-b539-30e69cadf724",
+   "reason": "10 records share coordinate (69.5958, 42.3167)",
+   "rule": "COORD_EXACT_GROUP",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "group_id": "shymkent:exact:69.6070200,42.3175700",
+   "id": "e1b19ead-4505-4acd-8aed-9c561ceec4c0",
+   "reason": "4 records share coordinate (69.60702, 42.31757)",
+   "rule": "COORD_EXACT_GROUP",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "group_id": "shymkent:exact:69.5958000,42.3167000",
+   "id": "f4d6818b-1a99-43ca-8533-4c556f448919",
+   "reason": "10 records share coordinate (69.5958, 42.3167)",
+   "rule": "COORD_EXACT_GROUP",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "group_id": "shymkent:exact:69.6032200,42.3172800",
+   "id": "fd50a858-462d-477f-8bc6-a8d3e03a9576",
+   "reason": "2 records share coordinate (69.60322, 42.31728)",
+   "rule": "COORD_EXACT_GROUP",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+   "reason": "coordinate (69.5958, 42.3167) has <= 4 decimals",
+   "rule": "COORD_LOW_PRECISION",
+   "severity": "info",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "id": "122547d2-f7ca-409e-9dc2-0d4d15288b57",
+   "reason": "coordinate (69.6042, 42.3225) has <= 4 decimals",
+   "rule": "COORD_LOW_PRECISION",
+   "severity": "info",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "id": "2264dcf0-549d-451a-b846-3f207d411e0c",
+   "reason": "coordinate (69.5958, 42.3167) has <= 4 decimals",
+   "rule": "COORD_LOW_PRECISION",
+   "severity": "info",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+   "reason": "coordinate (69.5958, 42.3167) has <= 4 decimals",
+   "rule": "COORD_LOW_PRECISION",
+   "severity": "info",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "id": "68c8f007-75bc-42f6-8da8-baa72042bde4",
+   "reason": "coordinate (69.5958, 42.3167) has <= 4 decimals",
+   "rule": "COORD_LOW_PRECISION",
+   "severity": "info",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "id": "6d4636dd-c9f3-4d9b-8c01-b361e86c8659",
+   "reason": "coordinate (69.5958, 42.3167) has <= 4 decimals",
+   "rule": "COORD_LOW_PRECISION",
+   "severity": "info",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "id": "7bc29930-e875-4c3d-b805-97cbcfc81159",
+   "reason": "coordinate (69.5958, 42.3167) has <= 4 decimals",
+   "rule": "COORD_LOW_PRECISION",
+   "severity": "info",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "id": "9d31b953-ccc4-42bd-a3a3-3e4e21f44051",
+   "reason": "coordinate (69.5958, 42.3167) has <= 4 decimals",
+   "rule": "COORD_LOW_PRECISION",
+   "severity": "info",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "id": "b08d41c4-c682-4335-94fc-65dac48411ed",
+   "reason": "coordinate (69.5958, 42.3167) has <= 4 decimals",
+   "rule": "COORD_LOW_PRECISION",
+   "severity": "info",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "id": "c2990416-dca7-4e3a-b539-30e69cadf724",
+   "reason": "coordinate (69.5958, 42.3167) has <= 4 decimals",
+   "rule": "COORD_LOW_PRECISION",
+   "severity": "info",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "id": "f4d6818b-1a99-43ca-8533-4c556f448919",
+   "reason": "coordinate (69.5958, 42.3167) has <= 4 decimals",
+   "rule": "COORD_LOW_PRECISION",
+   "severity": "info",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "group_id": "shymkent:near:69.6070200,42.3175700",
+   "id": "477b7659-21b2-4f90-a526-2817bc77fe79",
+   "reason": "6 records at 2 coordinates within 1.11 m",
+   "rule": "COORD_NEAR_GROUP",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "group_id": "shymkent:near:69.6070200,42.3175700",
+   "id": "50802484-b7f9-492e-8a4c-f75312fc7751",
+   "reason": "6 records at 2 coordinates within 1.11 m",
+   "rule": "COORD_NEAR_GROUP",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "group_id": "shymkent:near:69.6070200,42.3175700",
+   "id": "622b4786-89fa-4853-b109-18054e3ebe0d",
+   "reason": "6 records at 2 coordinates within 1.11 m",
+   "rule": "COORD_NEAR_GROUP",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "group_id": "shymkent:near:69.6070200,42.3175700",
+   "id": "833280f2-ff82-4dd6-a174-d2a9203420fa",
+   "reason": "6 records at 2 coordinates within 1.11 m",
+   "rule": "COORD_NEAR_GROUP",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "group_id": "shymkent:near:69.6070200,42.3175700",
+   "id": "b9656404-dad2-4021-b6ef-65a9fbab074a",
+   "reason": "6 records at 2 coordinates within 1.11 m",
+   "rule": "COORD_NEAR_GROUP",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "group_id": "shymkent:near:69.6070200,42.3175700",
+   "id": "e1b19ead-4505-4acd-8aed-9c561ceec4c0",
+   "reason": "6 records at 2 coordinates within 1.11 m",
+   "rule": "COORD_NEAR_GROUP",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "group_id": "shymkent:exact:69.5958000,42.3167000",
+   "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+   "reason": "8 different addresses at one coordinate",
+   "rule": "GROUP_ADDRESS_DIVERGENT",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "group_id": "shymkent:exact:69.5958000,42.3167000",
+   "id": "2264dcf0-549d-451a-b846-3f207d411e0c",
+   "reason": "8 different addresses at one coordinate",
+   "rule": "GROUP_ADDRESS_DIVERGENT",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "group_id": "shymkent:exact:69.6070200,42.3175700",
+   "id": "477b7659-21b2-4f90-a526-2817bc77fe79",
+   "reason": "3 different addresses at one coordinate",
+   "rule": "GROUP_ADDRESS_DIVERGENT",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "group_id": "shymkent:exact:69.6070200,42.3175700",
+   "id": "50802484-b7f9-492e-8a4c-f75312fc7751",
+   "reason": "3 different addresses at one coordinate",
+   "rule": "GROUP_ADDRESS_DIVERGENT",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "group_id": "shymkent:exact:69.5958000,42.3167000",
+   "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+   "reason": "8 different addresses at one coordinate",
+   "rule": "GROUP_ADDRESS_DIVERGENT",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "group_id": "shymkent:exact:69.6070200,42.3175700",
+   "id": "622b4786-89fa-4853-b109-18054e3ebe0d",
+   "reason": "3 different addresses at one coordinate",
+   "rule": "GROUP_ADDRESS_DIVERGENT",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "group_id": "shymkent:exact:69.5958000,42.3167000",
+   "id": "68c8f007-75bc-42f6-8da8-baa72042bde4",
+   "reason": "8 different addresses at one coordinate",
+   "rule": "GROUP_ADDRESS_DIVERGENT",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "group_id": "shymkent:exact:69.5958000,42.3167000",
+   "id": "6d4636dd-c9f3-4d9b-8c01-b361e86c8659",
+   "reason": "8 different addresses at one coordinate",
+   "rule": "GROUP_ADDRESS_DIVERGENT",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "group_id": "shymkent:exact:69.5958000,42.3167000",
+   "id": "7bc29930-e875-4c3d-b805-97cbcfc81159",
+   "reason": "8 different addresses at one coordinate",
+   "rule": "GROUP_ADDRESS_DIVERGENT",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "group_id": "shymkent:exact:69.6070200,42.3175800",
+   "id": "833280f2-ff82-4dd6-a174-d2a9203420fa",
+   "reason": "2 different addresses at one coordinate",
+   "rule": "GROUP_ADDRESS_DIVERGENT",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "group_id": "shymkent:exact:69.5958000,42.3167000",
+   "id": "9d31b953-ccc4-42bd-a3a3-3e4e21f44051",
+   "reason": "8 different addresses at one coordinate",
+   "rule": "GROUP_ADDRESS_DIVERGENT",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "group_id": "shymkent:exact:69.5958000,42.3167000",
+   "id": "b08d41c4-c682-4335-94fc-65dac48411ed",
+   "reason": "8 different addresses at one coordinate",
+   "rule": "GROUP_ADDRESS_DIVERGENT",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "group_id": "shymkent:exact:69.6070200,42.3175800",
+   "id": "b9656404-dad2-4021-b6ef-65a9fbab074a",
+   "reason": "2 different addresses at one coordinate",
+   "rule": "GROUP_ADDRESS_DIVERGENT",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "group_id": "shymkent:exact:69.6155700,42.3230400",
+   "id": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+   "reason": "2 different addresses at one coordinate",
+   "rule": "GROUP_ADDRESS_DIVERGENT",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "group_id": "shymkent:exact:69.6155700,42.3230400",
+   "id": "bcd265d0-0799-4dbf-8b15-23bae752a4d2",
+   "reason": "2 different addresses at one coordinate",
+   "rule": "GROUP_ADDRESS_DIVERGENT",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "group_id": "shymkent:exact:69.5958000,42.3167000",
+   "id": "c2990416-dca7-4e3a-b539-30e69cadf724",
+   "reason": "8 different addresses at one coordinate",
+   "rule": "GROUP_ADDRESS_DIVERGENT",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "group_id": "shymkent:exact:69.6070200,42.3175700",
+   "id": "e1b19ead-4505-4acd-8aed-9c561ceec4c0",
+   "reason": "3 different addresses at one coordinate",
+   "rule": "GROUP_ADDRESS_DIVERGENT",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  },
+  {
+   "city": "shymkent",
+   "group_id": "shymkent:exact:69.5958000,42.3167000",
+   "id": "f4d6818b-1a99-43ca-8533-4c556f448919",
+   "reason": "8 different addresses at one coordinate",
+   "rule": "GROUP_ADDRESS_DIVERGENT",
+   "severity": "review",
+   "source": {
+    "field": "places[].lon/lat (rounded to 1e-6 by build_data.py)",
+    "file": "web/data.js",
+    "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00"
+   }
+  }
+ ],
+ "generator": "research/round-5-results/K10/tools/qa_flags.py",
+ "groups": [
+  {
+   "city": "astana",
+   "distinct_nonempty_addresses": 1,
+   "group_id": "astana:exact:71.4199900,51.1668300",
+   "ids": [
+    "1be5a31a-4a8c-48f4-af6c-449035e7c80b",
+    "f8748e3f-294d-4ce4-bad0-cc6a55ee86fd"
+   ],
+   "inside_bbox": true,
+   "kind": "exact",
+   "lat": 51.16683,
+   "lon": 71.41999,
+   "size": 2
+  },
+  {
+   "city": "astana",
+   "distinct_nonempty_addresses": 1,
+   "group_id": "astana:exact:71.4412700,51.1675600",
+   "ids": [
+    "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8",
+    "f313843a-b41d-44d3-8086-db329296d309"
+   ],
+   "inside_bbox": true,
+   "kind": "exact",
+   "lat": 51.16756,
+   "lon": 71.44127,
+   "size": 2
+  },
+  {
+   "city": "astana",
+   "distinct_nonempty_addresses": 2,
+   "group_id": "astana:exact:71.4422900,51.1699000",
+   "ids": [
+    "140ab4bc-e560-41e3-aeaf-cb7b8b821f08",
+    "646f13c2-ad9e-4430-bbf2-1897b79120c9"
+   ],
+   "inside_bbox": true,
+   "kind": "exact",
+   "lat": 51.1699,
+   "lon": 71.44229,
+   "size": 2
+  },
+  {
+   "city": "shymkent",
+   "distinct_nonempty_addresses": 1,
+   "group_id": "shymkent:exact:69.5949600,42.3235300",
+   "ids": [
+    "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+    "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6"
+   ],
+   "inside_bbox": true,
+   "kind": "exact",
+   "lat": 42.32353,
+   "lon": 69.59496,
+   "size": 2
+  },
+  {
+   "city": "shymkent",
+   "distinct_nonempty_addresses": 8,
+   "group_id": "shymkent:exact:69.5958000,42.3167000",
+   "ids": [
+    "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+    "2264dcf0-549d-451a-b846-3f207d411e0c",
+    "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+    "68c8f007-75bc-42f6-8da8-baa72042bde4",
+    "6d4636dd-c9f3-4d9b-8c01-b361e86c8659",
+    "7bc29930-e875-4c3d-b805-97cbcfc81159",
+    "9d31b953-ccc4-42bd-a3a3-3e4e21f44051",
+    "b08d41c4-c682-4335-94fc-65dac48411ed",
+    "c2990416-dca7-4e3a-b539-30e69cadf724",
+    "f4d6818b-1a99-43ca-8533-4c556f448919"
+   ],
+   "inside_bbox": true,
+   "kind": "exact",
+   "lat": 42.3167,
+   "lon": 69.5958,
+   "size": 10
+  },
+  {
+   "city": "shymkent",
+   "distinct_nonempty_addresses": 1,
+   "group_id": "shymkent:exact:69.6032200,42.3172800",
+   "ids": [
+    "1b81c33b-d088-46b1-a390-8d6d81102c21",
+    "fd50a858-462d-477f-8bc6-a8d3e03a9576"
+   ],
+   "inside_bbox": true,
+   "kind": "exact",
+   "lat": 42.31728,
+   "lon": 69.60322,
+   "size": 2
+  },
+  {
+   "city": "shymkent",
+   "distinct_nonempty_addresses": 3,
+   "group_id": "shymkent:exact:69.6070200,42.3175700",
+   "ids": [
+    "477b7659-21b2-4f90-a526-2817bc77fe79",
+    "50802484-b7f9-492e-8a4c-f75312fc7751",
+    "622b4786-89fa-4853-b109-18054e3ebe0d",
+    "e1b19ead-4505-4acd-8aed-9c561ceec4c0"
+   ],
+   "inside_bbox": true,
+   "kind": "exact",
+   "lat": 42.31757,
+   "lon": 69.60702,
+   "size": 4
+  },
+  {
+   "city": "shymkent",
+   "distinct_nonempty_addresses": 2,
+   "group_id": "shymkent:exact:69.6070200,42.3175800",
+   "ids": [
+    "833280f2-ff82-4dd6-a174-d2a9203420fa",
+    "b9656404-dad2-4021-b6ef-65a9fbab074a"
+   ],
+   "inside_bbox": true,
+   "kind": "exact",
+   "lat": 42.31758,
+   "lon": 69.60702,
+   "size": 2
+  },
+  {
+   "city": "shymkent",
+   "distinct_nonempty_addresses": 2,
+   "group_id": "shymkent:exact:69.6155700,42.3230400",
+   "ids": [
+    "baeda67d-e701-4c2a-bba6-10a13466e76d",
+    "bcd265d0-0799-4dbf-8b15-23bae752a4d2"
+   ],
+   "inside_bbox": true,
+   "kind": "exact",
+   "lat": 42.32304,
+   "lon": 69.61557,
+   "size": 2
+  },
+  {
+   "city": "shymkent",
+   "coordinates": [
+    [
+     69.60702,
+     42.31757
+    ],
+    [
+     69.60702,
+     42.31758
+    ]
+   ],
+   "group_id": "shymkent:near:69.6070200,42.3175700",
+   "ids": [
+    "477b7659-21b2-4f90-a526-2817bc77fe79",
+    "50802484-b7f9-492e-8a4c-f75312fc7751",
+    "622b4786-89fa-4853-b109-18054e3ebe0d",
+    "833280f2-ff82-4dd6-a174-d2a9203420fa",
+    "b9656404-dad2-4021-b6ef-65a9fbab074a",
+    "e1b19ead-4505-4acd-8aed-9c561ceec4c0"
+   ],
+   "inside_bbox": true,
+   "kind": "near",
+   "max_span_m": 1.11,
+   "size": 6
+  }
+ ],
+ "input": {
+  "data_js_sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00",
+  "mode": "url",
+  "source_files": {}
+ },
+ "near_threshold_m": 2.0,
+ "policy": "flags are for review; no record is removed, merged, moved or re-categorised",
+ "rules": {
+  "ADDRESS_CITY_OR_COUNTRY_ONLY": {
+   "description": "address is only a city or country name",
+   "severity": "info"
+  },
+  "ADDRESS_EMAIL_LIKE": {
+   "description": "address field contains an e-mail-like string, not an address (value not reproduced)",
+   "severity": "review"
+  },
+  "COORD_CHANGED_IN_UI": {
+   "description": "web/data.js coordinate differs from source by more than 1e-6 deg",
+   "severity": "error"
+  },
+  "COORD_EXACT_GROUP": {
+   "description": "2+ records share exactly the same coordinate",
+   "severity": "review"
+  },
+  "COORD_LOW_PRECISION": {
+   "description": "both lon and lat have <= 4 decimals (grid of ~8-11 m or coarser)",
+   "severity": "info"
+  },
+  "COORD_NEAR_GROUP": {
+   "description": "records within 2.0 m of each other but not identical (single-linkage cluster)",
+   "severity": "review"
+  },
+  "GROUP_ADDRESS_DIVERGENT": {
+   "description": "one coordinate carries 2+ different non-empty addresses: possible placeholder geocode",
+   "severity": "review"
+  },
+  "ID_DUPLICATE": {
+   "description": "place id occurs more than once",
+   "severity": "error"
+  },
+  "ID_EXTRA_IN_UI": {
+   "description": "web/data.js place id absent from the K10 source file",
+   "severity": "error"
+  },
+  "ID_MISSING_IN_UI": {
+   "description": "source place id absent from web/data.js",
+   "severity": "error"
+  },
+  "OUTSIDE_BBOX": {
+   "description": "point lies outside the city square bbox",
+   "severity": "error"
+  }
+ },
+ "schema": "k10-qa-flags-v1"
+}
