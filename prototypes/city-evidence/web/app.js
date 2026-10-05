@@ -661,7 +661,7 @@
         }
         const tdA = el("td", { class: "num" }, fmtD(r.after));
         if (r.nearest_after === "proposed") tdA.append(el("div", { class: "muted" }, "проектный объект"));
-        const dtxt = r.delta === null ? "не вычисляется" : r.delta > 0 ? `ближе на ${fmtM(r.delta)}` : "без изменений";
+        const dtxt = r.delta === null ? "не вычисляется" : r.delta >= 0.5 ? `ближе на ${fmtM(r.delta)}` : r.delta > 0 ? "ближе менее чем на 1 м" : "без изменений";
         tr.append(tdP, tdB, tdA, el("td", { class: "num" + (r.delta > 0 ? " better" : "") }, dtxt));
         tb.append(tr);
         if (srcRow) tb.append(srcRow);

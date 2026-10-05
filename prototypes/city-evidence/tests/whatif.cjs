@@ -102,6 +102,8 @@ rej("project category ≠ scenario", (o) => { o.proposed_object.category = "outp
 rej("kind ≠ hypothetical", (o) => { o.proposed_object.kind = "observed"; }, "bad_kind");
 rej("missing proposed_object", (o) => { delete o.proposed_object; }, "missing_field");
 rej("not an object", "[1,2]", "bad_shape");
+check("UTF-8 BOM before JSON accepted", code(() => X.importScenario("\ufeff" + txt, D, F)) === "accepted");
+rej("BOM in the middle", txt.replace('"category"', '\ufeff"category"'), "bad_json");
 check("proposed_object null accepted", code(() => X.importScenario(JSON.stringify({ ...sc(), proposed_object: null }), D, F)) === "accepted");
 check("export has no local paths or tokens", !/[A-Za-z]:\\|\/home\/|\/tmp\/|token|secret/i.test(txt));
 

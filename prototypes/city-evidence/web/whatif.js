@@ -72,7 +72,7 @@
     let bytes = 0;
     for (const ch of text) { const c = ch.codePointAt(0); bytes += c < 0x80 ? 1 : c < 0x800 ? 2 : c < 0x10000 ? 3 : 4; }
     if (bytes > MAX_BYTES) throw new WhatIfError("too_large", `${bytes} байт > ${MAX_BYTES}`);
-    let i = 0;
+    let i = text.charCodeAt(0) === 0xfeff ? 1 : 0;  // a UTF-8 BOM (Windows editors) is skipped, nothing else is
     const err = (m) => { throw new WhatIfError("bad_json", `${m} (позиция ${i})`); };
     const ws = () => { while (i < text.length && " \t\n\r".includes(text[i])) i++; };
     function value(depth) {
