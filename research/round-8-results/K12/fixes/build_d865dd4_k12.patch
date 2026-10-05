@@ -1,0 +1,23 @@
+--- a/prototypes/city-evidence/web/plan.js
++++ b/prototypes/city-evidence/web/plan.js
+@@ -213,6 +213,9 @@
+   function createSearch(ctx, sc, opts) {
+     const F = (opts && opts.F) || null;
+     const request_id = opts && opts.request_id !== undefined ? opts.request_id : null;
++    // refuse before any enumeration also for callers that skipped validatePlanScenario (2^n grows past 16 into a freeze)
++    if (!sc || !Array.isArray(sc.candidates) || sc.candidates.length > LIMITS.candidates)
++      fail("too_many_candidates", `кандидатов не больше ${LIMITS.candidates}: точный перебор не запускается`);
+     const P = precompute(ctx, sc), nP = P.pts.length, nC = P.cands.length;
+     const weights = P.pts.map((p) => p.weight), radiusMm = sc.coverage_radius_m * 1000;
+     const req = sc.required_ids.map((id) => P.candIndex.get(id)).sort((a, b) => a - b);
+--- a/prototypes/city-evidence/web/whatif.js
++++ b/prototypes/city-evidence/web/whatif.js
+@@ -146,6 +146,8 @@
+   function validateScenario(obj, data, F, { requirePoints = true } = {}) {
+     const fail = (code, d) => { throw new WhatIfError(code, d); };
+     if (!obj || typeof obj !== "object" || Array.isArray(obj)) fail("bad_shape", "ожидается объект");
++    // a file of another schema (e.g. city-plan-v2) is named as such, before its fields are reported as unknown
++    if ("schema_version" in obj && obj.schema_version !== SCHEMA) fail("bad_version", `версия ${String(obj.schema_version).slice(0, 40)} ≠ ${SCHEMA}`);
+     for (const k of Object.keys(obj)) if (!TOP_KEYS.has(k)) fail("unknown_field", `поле ${JSON.stringify(k).slice(0, 40)} не допускается`);
+     for (const k of ["schema_version", "city_id", "source_snapshot", "category", "control_points", "proposed_object"])
+       if (!(k in obj)) fail("missing_field", k);

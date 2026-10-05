@@ -1,18 +1,38 @@
 {
  "summary": {
-  "adapter": "reference_v2_adapter.cjs",
-  "app_root": "build_a5b5e2d",
+  "adapter": "build_v2_plan_adapter.cjs",
+  "app_root": "build_d865dd4",
   "data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
   "oracle": "oracle oracle_a5b5e2d.json (data.js bb2a7e6673ff)",
   "fixtures": "k12r8-city-plan-v2-import-stress-v1",
   "total": 75,
-  "pass": 75,
-  "advisory": [],
+  "pass": 73,
+  "advisory": [
+   "V03: refused (forged_derived); CORE_SPEC: импорт не доверяет derived_results — отказ поддельного файла тоже допустим",
+   "V08: reason name required_exceeds_max_selected (K12 name required_count_exceeds_max_selected)"
+  ],
   "fail": [],
   "error": [],
-  "code_mismatch": [],
+  "code_mismatch": [
+   "N01:bad_points",
+   "N02:bad_points",
+   "N03:too_many_candidates",
+   "N13:bad_shape",
+   "N25:unknown_ref",
+   "N26:unknown_ref",
+   "N27:unknown_ref",
+   "N28:required_excluded_overlap",
+   "N41:bad_shape",
+   "N43:wrong_version",
+   "N50:bad_json",
+   "N51:bad_json",
+   "N52:bad_json",
+   "N55:bad_json",
+   "N58:bad_shape",
+   "N63:bad_json"
+  ],
   "network_attempts": 0,
-  "max_import_ms": 6.85
+  "max_import_ms": 8.26
  },
  "results": [
   {
@@ -34,7 +54,7 @@
    "bytes": 1516,
    "outcome": "accepted",
    "code": null,
-   "import_ms": 0.58,
+   "import_ms": 1.24,
    "summary": {
     "status": "optimal",
     "feasible": 24,
@@ -66,7 +86,7 @@
    "bytes": 504,
    "outcome": "accepted",
    "code": null,
-   "import_ms": 0.16,
+   "import_ms": 2.02,
    "summary": {
     "status": "optimal",
     "feasible": 1,
@@ -85,29 +105,15 @@
     "no_network": true,
     "prototype_unchanged": true,
     "no_new_globals": true,
-    "accepted": true,
-    "optimize_status": true,
-    "strict_json_output": true,
-    "optimize_equals_oracle": true,
-    "poison_not_used": true,
-    "evaluate_equals_oracle": true,
-    "poison_not_used_eval": true
+    "returned_state_unchanged": true
    },
    "bytes": 1853,
-   "outcome": "accepted",
-   "code": null,
-   "import_ms": 0.5,
-   "summary": {
-    "status": "optimal",
-    "feasible": 24,
-    "mean": [
-     "c1",
-     "c2",
-     "c4"
-    ]
-   },
+   "outcome": "rejected",
+   "code": "forged_derived",
+   "import_ms": 2.36,
+   "advisory": "refused (forged_derived); CORE_SPEC: импорт не доверяет derived_results — отказ поддельного файла тоже допустим",
    "failed_checks": [],
-   "status": "PASS"
+   "status": "ADVISORY"
   },
   {
    "id": "V04",
@@ -128,7 +134,7 @@
    "bytes": 4659,
    "outcome": "accepted",
    "code": null,
-   "import_ms": 1.66,
+   "import_ms": 1.81,
    "summary": {
     "status": "optimal",
     "feasible": 6885,
@@ -162,7 +168,7 @@
    "bytes": 419,
    "outcome": "accepted",
    "code": null,
-   "import_ms": 0.26,
+   "import_ms": 0.18,
    "summary": {
     "status": "optimal",
     "feasible": 1,
@@ -190,7 +196,7 @@
    "bytes": 1518,
    "outcome": "accepted",
    "code": null,
-   "import_ms": 0.44,
+   "import_ms": 0.47,
    "summary": {
     "status": "optimal",
     "feasible": 27,
@@ -223,7 +229,7 @@
    "bytes": 1525,
    "outcome": "accepted",
    "code": null,
-   "import_ms": 0.27,
+   "import_ms": 0.43,
    "summary": {
     "status": "infeasible",
     "feasible": 0,
@@ -252,14 +258,15 @@
    "bytes": 1532,
    "outcome": "accepted",
    "code": null,
-   "import_ms": 0.2,
+   "import_ms": 0.43,
+   "advisory": "reason name required_exceeds_max_selected (K12 name required_count_exceeds_max_selected)",
    "summary": {
     "status": "infeasible",
     "feasible": 0,
     "mean": null
    },
    "failed_checks": [],
-   "status": "PASS"
+   "status": "ADVISORY"
   },
   {
    "id": "V09",
@@ -280,7 +287,7 @@
    "bytes": 1511,
    "outcome": "accepted",
    "code": null,
-   "import_ms": 0.14,
+   "import_ms": 1.02,
    "summary": {
     "status": "optimal",
     "feasible": 24,
@@ -314,7 +321,7 @@
    "bytes": 1516,
    "outcome": "accepted",
    "code": null,
-   "import_ms": 0.15,
+   "import_ms": 0.43,
    "summary": {
     "status": "optimal",
     "feasible": 24,
@@ -347,7 +354,7 @@
    "bytes": 1550,
    "outcome": "accepted",
    "code": null,
-   "import_ms": 0.24,
+   "import_ms": 0.42,
    "summary": {
     "status": "optimal",
     "feasible": 5,
@@ -375,7 +382,7 @@
    "bytes": 262144,
    "outcome": "accepted",
    "code": null,
-   "import_ms": 5.97,
+   "import_ms": 6.83,
    "failed_checks": [],
    "status": "PASS"
   },
@@ -397,9 +404,9 @@
    },
    "bytes": 1137,
    "outcome": "rejected",
-   "code": "bad_count",
-   "import_ms": 0.26,
-   "code_match": true,
+   "code": "bad_points",
+   "import_ms": 0.17,
+   "code_match": false,
    "failed_checks": [],
    "status": "PASS"
   },
@@ -421,9 +428,9 @@
    },
    "bytes": 3287,
    "outcome": "rejected",
-   "code": "bad_count",
-   "import_ms": 0.24,
-   "code_match": true,
+   "code": "bad_points",
+   "import_ms": 0.34,
+   "code_match": false,
    "failed_checks": [],
    "status": "PASS"
   },
@@ -445,9 +452,9 @@
    },
    "bytes": 3015,
    "outcome": "rejected",
-   "code": "bad_count",
-   "import_ms": 0.17,
-   "code_match": true,
+   "code": "too_many_candidates",
+   "import_ms": 0.33,
+   "code_match": false,
    "failed_checks": [],
    "status": "PASS"
   },
@@ -470,7 +477,7 @@
    "bytes": 1516,
    "outcome": "rejected",
    "code": "bad_max_selected",
-   "import_ms": 0.13,
+   "import_ms": 0.19,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -494,7 +501,7 @@
    "bytes": 1517,
    "outcome": "rejected",
    "code": "bad_max_selected",
-   "import_ms": 0.12,
+   "import_ms": 1.08,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -518,7 +525,7 @@
    "bytes": 1518,
    "outcome": "rejected",
    "code": "bad_max_selected",
-   "import_ms": 0.12,
+   "import_ms": 0.16,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -542,7 +549,7 @@
    "bytes": 1518,
    "outcome": "rejected",
    "code": "bad_max_selected",
-   "import_ms": 0.12,
+   "import_ms": 0.15,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -566,7 +573,7 @@
    "bytes": 1519,
    "outcome": "rejected",
    "code": "bad_max_selected",
-   "import_ms": 0.11,
+   "import_ms": 0.15,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -590,7 +597,7 @@
    "bytes": 1516,
    "outcome": "rejected",
    "code": "bad_weight",
-   "import_ms": 0.5,
+   "import_ms": 0.14,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -614,7 +621,7 @@
    "bytes": 1518,
    "outcome": "rejected",
    "code": "bad_weight",
-   "import_ms": 0.1,
+   "import_ms": 0.12,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -638,7 +645,7 @@
    "bytes": 1518,
    "outcome": "rejected",
    "code": "bad_weight",
-   "import_ms": 0.09,
+   "import_ms": 0.13,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -662,7 +669,7 @@
    "bytes": 1517,
    "outcome": "rejected",
    "code": "bad_weight",
-   "import_ms": 0.13,
+   "import_ms": 0.19,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -685,9 +692,9 @@
    },
    "bytes": 1500,
    "outcome": "rejected",
-   "code": "missing_field",
-   "import_ms": 0.1,
-   "code_match": true,
+   "code": "bad_shape",
+   "import_ms": 0.13,
+   "code_match": false,
    "failed_checks": [],
    "status": "PASS"
   },
@@ -710,7 +717,7 @@
    "bytes": 1511,
    "outcome": "rejected",
    "code": "bad_cost",
-   "import_ms": 0.11,
+   "import_ms": 0.19,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -734,7 +741,7 @@
    "bytes": 1517,
    "outcome": "rejected",
    "code": "bad_cost",
-   "import_ms": 0.1,
+   "import_ms": 0.16,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -758,7 +765,7 @@
    "bytes": 1513,
    "outcome": "rejected",
    "code": "bad_cost",
-   "import_ms": 0.1,
+   "import_ms": 0.16,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -782,7 +789,7 @@
    "bytes": 1512,
    "outcome": "rejected",
    "code": "bad_cost",
-   "import_ms": 0.1,
+   "import_ms": 0.17,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -806,7 +813,7 @@
    "bytes": 1518,
    "outcome": "rejected",
    "code": "bad_cost",
-   "import_ms": 0.1,
+   "import_ms": 0.16,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -830,7 +837,7 @@
    "bytes": 1512,
    "outcome": "rejected",
    "code": "bad_budget",
-   "import_ms": 0.11,
+   "import_ms": 0.19,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -854,7 +861,7 @@
    "bytes": 1517,
    "outcome": "rejected",
    "code": "bad_budget",
-   "import_ms": 0.11,
+   "import_ms": 0.21,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -878,7 +885,7 @@
    "bytes": 1513,
    "outcome": "rejected",
    "code": "bad_budget",
-   "import_ms": 0.18,
+   "import_ms": 0.31,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -902,7 +909,7 @@
    "bytes": 1515,
    "outcome": "rejected",
    "code": "bad_radius",
-   "import_ms": 0.11,
+   "import_ms": 0.18,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -926,7 +933,7 @@
    "bytes": 1517,
    "outcome": "rejected",
    "code": "bad_radius",
-   "import_ms": 2.27,
+   "import_ms": 0.28,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -950,7 +957,7 @@
    "bytes": 1518,
    "outcome": "rejected",
    "code": "bad_radius",
-   "import_ms": 0.12,
+   "import_ms": 0.19,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -973,9 +980,9 @@
    },
    "bytes": 1526,
    "outcome": "rejected",
-   "code": "unknown_id",
-   "import_ms": 0.14,
-   "code_match": true,
+   "code": "unknown_ref",
+   "import_ms": 0.2,
+   "code_match": false,
    "failed_checks": [],
    "status": "PASS"
   },
@@ -997,9 +1004,9 @@
    },
    "bytes": 1526,
    "outcome": "rejected",
-   "code": "unknown_id",
-   "import_ms": 0.2,
-   "code_match": true,
+   "code": "unknown_ref",
+   "import_ms": 0.21,
+   "code_match": false,
    "failed_checks": [],
    "status": "PASS"
   },
@@ -1021,9 +1028,9 @@
    },
    "bytes": 1527,
    "outcome": "rejected",
-   "code": "unknown_id",
-   "import_ms": 0.15,
-   "code_match": true,
+   "code": "unknown_ref",
+   "import_ms": 0.19,
+   "code_match": false,
    "failed_checks": [],
    "status": "PASS"
   },
@@ -1045,9 +1052,9 @@
    },
    "bytes": 1542,
    "outcome": "rejected",
-   "code": "conflicting_constraints",
-   "import_ms": 0.15,
-   "code_match": true,
+   "code": "required_excluded_overlap",
+   "import_ms": 0.2,
+   "code_match": false,
    "failed_checks": [],
    "status": "PASS"
   },
@@ -1070,7 +1077,7 @@
    "bytes": 1533,
    "outcome": "rejected",
    "code": "duplicate_id",
-   "import_ms": 0.14,
+   "import_ms": 0.18,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1118,7 +1125,7 @@
    "bytes": 1592,
    "outcome": "rejected",
    "code": "duplicate_id",
-   "import_ms": 0.12,
+   "import_ms": 0.19,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1142,7 +1149,7 @@
    "bytes": 1570,
    "outcome": "rejected",
    "code": "bad_id",
-   "import_ms": 0.21,
+   "import_ms": 0.16,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1166,7 +1173,7 @@
    "bytes": 1541,
    "outcome": "rejected",
    "code": "bad_id",
-   "import_ms": 0.12,
+   "import_ms": 0.13,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1190,7 +1197,7 @@
    "bytes": 1512,
    "outcome": "rejected",
    "code": "bad_kind",
-   "import_ms": 0.12,
+   "import_ms": 0.14,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1214,7 +1221,7 @@
    "bytes": 1527,
    "outcome": "rejected",
    "code": "bad_category",
-   "import_ms": 0.15,
+   "import_ms": 0.14,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1238,7 +1245,7 @@
    "bytes": 1514,
    "outcome": "rejected",
    "code": "outside_bbox",
-   "import_ms": 0.12,
+   "import_ms": 0.21,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1262,7 +1269,7 @@
    "bytes": 1514,
    "outcome": "rejected",
    "code": "outside_bbox",
-   "import_ms": 0.1,
+   "import_ms": 0.14,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1287,7 +1294,7 @@
    "bytes": 1516,
    "outcome": "rejected",
    "code": "outside_bbox",
-   "import_ms": 0.1,
+   "import_ms": 0.24,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1311,7 +1318,7 @@
    "bytes": 1518,
    "outcome": "rejected",
    "code": "bad_coord",
-   "import_ms": 0.15,
+   "import_ms": 0.14,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1335,7 +1342,7 @@
    "bytes": 1551,
    "outcome": "rejected",
    "code": "unknown_field",
-   "import_ms": 0.12,
+   "import_ms": 0.13,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1358,9 +1365,9 @@
    },
    "bytes": 1536,
    "outcome": "rejected",
-   "code": "unknown_field",
-   "import_ms": 0.13,
-   "code_match": true,
+   "code": "bad_shape",
+   "import_ms": 0.15,
+   "code_match": false,
    "failed_checks": [],
    "status": "PASS"
   },
@@ -1383,7 +1390,7 @@
    "bytes": 1489,
    "outcome": "rejected",
    "code": "missing_field",
-   "import_ms": 0.1,
+   "import_ms": 0.15,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1406,9 +1413,9 @@
    },
    "bytes": 1518,
    "outcome": "rejected",
-   "code": "bad_version",
+   "code": "wrong_version",
    "import_ms": 0.1,
-   "code_match": true,
+   "code_match": false,
    "failed_checks": [],
    "status": "PASS"
   },
@@ -1431,7 +1438,7 @@
    "bytes": 1516,
    "outcome": "rejected",
    "code": "foreign_snapshot",
-   "import_ms": 0.1,
+   "import_ms": 0.13,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1455,7 +1462,7 @@
    "bytes": 1456,
    "outcome": "rejected",
    "code": "foreign_snapshot",
-   "import_ms": 0.09,
+   "import_ms": 0.13,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1479,7 +1486,7 @@
    "bytes": 1514,
    "outcome": "rejected",
    "code": "bad_city",
-   "import_ms": 0.1,
+   "import_ms": 0.09,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1503,7 +1510,7 @@
    "bytes": 740,
    "outcome": "rejected",
    "code": "bad_category",
-   "import_ms": 0.07,
+   "import_ms": 0.08,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1527,7 +1534,7 @@
    "bytes": 1616,
    "outcome": "rejected",
    "code": "bad_shape",
-   "import_ms": 0.1,
+   "import_ms": 0.11,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1574,9 +1581,9 @@
    },
    "bytes": 1530,
    "outcome": "rejected",
-   "code": "duplicate_key",
-   "import_ms": 0.21,
-   "code_match": true,
+   "code": "bad_json",
+   "import_ms": 0.28,
+   "code_match": false,
    "failed_checks": [],
    "status": "PASS"
   },
@@ -1598,9 +1605,9 @@
    },
    "bytes": 1527,
    "outcome": "rejected",
-   "code": "duplicate_key",
-   "import_ms": 0.1,
-   "code_match": true,
+   "code": "bad_json",
+   "import_ms": 0.12,
+   "code_match": false,
    "failed_checks": [],
    "status": "PASS"
   },
@@ -1622,9 +1629,9 @@
    },
    "bytes": 1540,
    "outcome": "rejected",
-   "code": "duplicate_key",
-   "import_ms": 0.1,
-   "code_match": true,
+   "code": "bad_json",
+   "import_ms": 0.16,
+   "code_match": false,
    "failed_checks": [],
    "status": "PASS"
   },
@@ -1648,7 +1655,7 @@
    "bytes": 1513,
    "outcome": "rejected",
    "code": "bad_json",
-   "import_ms": 0.06,
+   "import_ms": 0.09,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1673,7 +1680,7 @@
    "bytes": 1523,
    "outcome": "rejected",
    "code": "bad_json",
-   "import_ms": 0.04,
+   "import_ms": 0.08,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1696,9 +1703,9 @@
    },
    "bytes": 1515,
    "outcome": "rejected",
-   "code": "nonfinite_number",
-   "import_ms": 0.1,
-   "code_match": true,
+   "code": "bad_json",
+   "import_ms": 0.16,
+   "code_match": false,
    "failed_checks": [],
    "status": "PASS"
   },
@@ -1722,7 +1729,7 @@
    "bytes": 1519,
    "outcome": "rejected",
    "code": "bad_json",
-   "import_ms": 0.06,
+   "import_ms": 0.09,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1746,7 +1753,7 @@
    "bytes": 1554,
    "outcome": "rejected",
    "code": "unknown_field",
-   "import_ms": 0.1,
+   "import_ms": 0.12,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1769,9 +1776,9 @@
    },
    "bytes": 1570,
    "outcome": "rejected",
-   "code": "unknown_field",
-   "import_ms": 0.13,
-   "code_match": true,
+   "code": "bad_shape",
+   "import_ms": 0.2,
+   "code_match": false,
    "failed_checks": [],
    "status": "PASS"
   },
@@ -1794,7 +1801,7 @@
    "bytes": 1486,
    "outcome": "rejected",
    "code": "bad_json",
-   "import_ms": 0.1,
+   "import_ms": 0.14,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1818,7 +1825,7 @@
    "bytes": 262145,
    "outcome": "rejected",
    "code": "too_large",
-   "import_ms": 2.17,
+   "import_ms": 3.16,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1842,7 +1849,7 @@
    "bytes": 281550,
    "outcome": "rejected",
    "code": "too_large",
-   "import_ms": 6.85,
+   "import_ms": 8.26,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1866,8 +1873,8 @@
    },
    "bytes": 41538,
    "outcome": "rejected",
-   "code": "too_deep",
-   "import_ms": 1.4,
+   "code": "bad_json",
+   "import_ms": 0.82,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1890,9 +1897,9 @@
    },
    "bytes": 1604,
    "outcome": "rejected",
-   "code": "too_deep",
-   "import_ms": 0.14,
-   "code_match": true,
+   "code": "bad_json",
+   "import_ms": 0.17,
+   "code_match": false,
    "failed_checks": [],
    "status": "PASS"
   }

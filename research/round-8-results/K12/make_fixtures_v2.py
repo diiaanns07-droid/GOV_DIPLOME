@@ -112,7 +112,8 @@ poison = sc(derived_results={"objectives": {"mean": {"selected_ids": ["c6"], "me
                              "note": "<script>window.__K12_PWNED__=1</script>", "url": "https://example.invalid/x.js"})
 add("V03", "poisoned_derived_results", dumps(poison), "accept", spec="derived_results не доверять, пересчитать",
     why="подделанные цели/расстояния, HTML и URL внутри derived_results должны быть проигнорированы", obj=BASE,
-    check={"optimize": "optimal", "must_not_contain": [999999999]})
+    check={"optimize": "optimal", "must_not_contain": [999999999],
+           "reject_allowed": "CORE_SPEC: импорт не доверяет derived_results — отказ поддельного файла тоже допустим"})
 g_pts, g_c = grid("shymkent", 25), grid("shymkent", 16, 0.002)
 maxi = sc(control_points=[pt(i + 1, lon, lat, 100) for i, (lon, lat) in enumerate(g_pts)],
           candidates=[cand(i + 1, lon, lat, 1000 * (i + 1)) for i, (lon, lat) in enumerate(g_c)],
@@ -128,10 +129,10 @@ add("V06", "cost_and_budget_max", dumps(top_cost), "accept", spec="cost 1..10000
 inf_budget = sc(required_ids=["c6"], budget=300000, selected_ids=["c6"])
 add("V07", "infeasible_required_cost", dumps(inf_budget), "accept", spec="required невыполнимы по бюджету → infeasible с причиной",
     why="валиден как сценарий, но точный поиск обязан вернуть infeasible, не убирая ограничения", obj=inf_budget,
-    check={"optimize": "infeasible", "reason": "required_cost_exceeds_budget"})
+    check={"optimize": "infeasible", "reason": "required_cost_exceeds_budget", "reason_pattern": "budget"})
 inf_count = sc(required_ids=["c1", "c4", "c5"], max_selected=2, selected_ids=[])
 add("V08", "infeasible_required_count", dumps(inf_count), "accept", spec="required невыполнимы по max_selected",
-    obj=inf_count, check={"optimize": "infeasible", "reason": "required_count_exceeds_max_selected"})
+    obj=inf_count, check={"optimize": "infeasible", "reason": "required_count_exceeds_max_selected", "reason_pattern": "max_selected"})
 ns = sc(control_points=[dict(p, id=f"c{i + 1}") for i, p in enumerate(BASE["control_points"])])
 add("V09", "same_ids_points_candidates", dumps(ns), "accept", spec="ID уникальны внутри каждого массива; source/proposed по namespace",
     why="ID точки равен ID кандидата — разные массивы", obj=ns, check={"optimize": "optimal"})

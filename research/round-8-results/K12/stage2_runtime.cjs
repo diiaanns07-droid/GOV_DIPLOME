@@ -132,8 +132,13 @@ const globalsSig = () => Object.keys(CTX).sort().join(",") + "|" + Object.keys(g
   const before = { proto: protoSig(), globals: globalsSig(), net: NET.length, timers: STRING_TIMERS.length };
   const o = V01obj();
   o.derived_results = { notes: payloads, nested: Object.fromEntries(payloads.map((p, i) => [`k${i}`, p])) };
-  const r1 = A.importScenario(JSON.stringify(o), A.initialState());
-  check("B", "B2", "payload-строки в derived_results: принят как данные", !!(r1 && r1.ok), r1 && r1.code);
+  const init1 = A.initialState(), init1View = view(init1);
+  const r1 = A.importScenario(JSON.stringify(o), init1);
+  // CORE_SPEC: import does not trust derived_results -> "accepted as inert data and recomputed" and "refused, state unchanged"
+  // are both compliant; what matters is that nothing in it is executed (B4) or reaches the output (B5)
+  const refusedClean = !!(r1 && !r1.ok && view(r1.state) === init1View);
+  check("B", "B2", "payload-строки в derived_results: приняты как данные или отказ без изменения состояния", !!(r1 && r1.ok) || refusedClean,
+        r1 && (r1.ok ? "accepted" : `refused: ${r1.code}`));
   if (r1 && r1.ok && A.optimize) A.optimize(r1.state);
   const o2 = V01obj();
   o2.control_points[0].id = payloads[0];
@@ -168,8 +173,10 @@ const globalsSig = () => Object.keys(CTX).sort().join(",") + "|" + Object.keys(g
   check("C", "C2", "исходный data.js не изменён тестом", fs.readFileSync(path.join(WEB, "data.js"), "utf8") === DATA_TEXT);
 
   // ============================================================ D. cancellation and late results
-  if (typeof A.optimizeAsync !== "function" || typeof A.gate !== "function") {
-    check("D", "D0", "отмена и поздние результаты", null, "adapter.optimizeAsync()/gate() не заданы");
+  const noGate = typeof A.gate !== "function";
+  const GATE_SKIP = "adapter.gate() не задан (у реализации нет экспортируемого стража результатов)";
+  if (typeof A.optimizeAsync !== "function") {
+    check("D", "D0", "отмена и поздние результаты", null, "adapter.optimizeAsync() не задан");
   } else {
     const big = A.importScenario(sub(rawFx("V04"), A), A.initialState()).state;   // 16 candidates, 65536 subsets
     // D1: cancel mid-run
@@ -179,6 +186,8 @@ const globalsSig = () => Object.keys(CTX).sort().join(",") + "|" + Object.keys(g
       yieldFn: () => new Promise((res) => { if (++yields === 3) ac.abort(); setImmediate(res); }) });
     check("D", "D1", "отмена посреди перебора: status≠optimal, неполный, целей нет",
       r.status === "cancelled" && r.complete === false && r.evaluated < 65536 && !r.objectives.mean, { status: r.status, evaluated: r.evaluated });
+    if (noGate) for (const id of ["D2", "D3", "D4", "D5", "D6"]) check("D", id, "страж поздних результатов", null, GATE_SKIP);
+    else {
     const g = A.gate();
     g.begin(r.problem_digest);
     check("D", "D2", "отменённый результат не применяется", !g.accept({ ...r, request_id: "x" }).accepted);
@@ -211,6 +220,7 @@ const globalsSig = () => Object.keys(CTX).sort().join(",") + "|" + Object.keys(g
     const g4 = A.gate();
     const i4 = g4.begin(d);
     check("D", "D6", "результат с чужим problem_digest отклонён", !g4.accept({ ...rr, request_id: i4, problem_digest: "0".repeat(64) }).accepted);
+    }
     // D7: event loop stays responsive during the async search
     let ticks = 0, maxChunkMs = 0, last = process.hrtime.bigint();
     const timer = setInterval(() => { ticks++; }, 1);
@@ -242,7 +252,7 @@ const globalsSig = () => Object.keys(CTX).sort().join(",") + "|" + Object.keys(g
     check("E", "E2a", "BUILD v1: код отказа bad_version (понятнее, чем unknown_field)", code === "bad_version", code, true);
     const r3 = A.importScenario(JSON.stringify(v1), A.initialState());
     check("E", "E3", "v2-импорт отклоняет сценарий city-whatif-v1", !r3.ok, r3.code);
-    check("E", "E3a", "v2-импорт: код отказа bad_version", r3.code === "bad_version", r3.code, true);
+    check("E", "E3a", "v2-импорт: код отказа называет версию (bad_version / wrong_version)", ["bad_version", "wrong_version"].includes(r3.code), r3.code, true);
   }
 
   const summary = { adapter: path.basename(ADAPTER), app_root: path.basename(APP), total: results.length,

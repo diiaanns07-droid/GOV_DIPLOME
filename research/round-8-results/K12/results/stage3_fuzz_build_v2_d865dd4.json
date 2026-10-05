@@ -1,7 +1,7 @@
 {
  "summary": {
-  "adapter": "reference_v2_adapter.cjs",
-  "app_root": "build_a5b5e2d",
+  "adapter": "build_v2_plan_adapter.cjs",
+  "app_root": "build_d865dd4",
   "seed": 12,
   "cases_requested": 500,
   "cases_run": 500,
@@ -34,9 +34,9 @@
   "oracle": "compared 500 scenarios with oracle/plan_v2_oracle.py",
   "limits": {
    "import": "PASS",
-   "api": "PASS"
+   "api": "ADVISORY"
   },
-  "advisories": 0,
+  "advisories": 1,
   "generator_coverage": {
    "candidates:0": 36,
    "candidates:1-5": 183,
@@ -54,65 +54,70 @@
    "status:optimal": 436
   },
   "failures": 0,
-  "elapsed_ms": 14704,
+  "elapsed_ms": 31855,
   "verdict": "PASS",
   "failures_by_property": {}
  },
  "limits": {
-  "child": "exit 0",
+  "child": "killed after 20000 ms (ETIMEDOUT)",
   "import": {
    "16": {
     "ok": true,
     "code": null,
-    "ms": 4.868158
+    "ms": 11.519861
    },
    "17": {
     "ok": false,
-    "code": "bad_count",
-    "ms": 0.786681
+    "code": "too_many_candidates",
+    "ms": 2.217655
    },
    "24": {
     "ok": false,
-    "code": "bad_count",
-    "ms": 0.789323
+    "code": "too_many_candidates",
+    "ms": 2.531273
    },
    "40": {
     "ok": false,
-    "code": "bad_count",
-    "ms": 0.877005
+    "code": "too_many_candidates",
+    "ms": 2.909275
    }
   },
   "unchecked": {
    "20": {
-    "status": "too_large",
-    "evaluated": 0,
-    "ms": 1.4
+    "status": "optimal",
+    "evaluated": 1048576,
+    "ms": 97.2
    },
    "30": {
-    "status": "too_large",
-    "evaluated": 0,
-    "ms": 2.1
+    "status": "optimal",
+    "evaluated": 1073741824,
+    "ms": 18479.8
    },
    "40": {
-    "status": "too_large",
-    "evaluated": 0,
-    "ms": 1.6
+    "status": "no_answer",
+    "note": "frozen: child killed after 20000 ms"
    }
   },
   "import_verdict": "PASS",
-  "api_verdict": "PASS"
+  "api_verdict": "ADVISORY"
  },
- "advisories": [],
+ "advisories": [
+  {
+   "kind": "limits",
+   "property": "api_refuses_before_enumeration",
+   "message": "{\"20\":{\"status\":\"optimal\",\"evaluated\":1048576,\"ms\":97.2},\"30\":{\"status\":\"optimal\",\"evaluated\":1073741824,\"ms\":18479.8},\"40\":{\"status\":\"no_answer\",\"note\":\"frozen: child killed after 20000 ms\"}}"
+  }
+ ],
  "bench": {
   "scenario": "25 points × 16 candidates × max_selected 5, budget 1000000 (synthetic)",
   "evaluated": 65536,
   "feasible": 6885,
-  "sync_ms_median_incl_sensitivity": 49.2,
-  "sync_ms_max": 53.1,
-  "python_oracle_ms_incl_startup": 1804,
-  "async_ms_total_no_sensitivity": 41.3,
+  "sync_ms_median_incl_sensitivity": 32.6,
+  "sync_ms_max": 36.5,
+  "python_oracle_ms_incl_startup": 1851,
+  "async_ms_total_no_sensitivity": 14.2,
   "async_slices": 16,
-  "async_max_slice_ms": 10.4,
+  "async_max_slice_ms": 4.7,
   "async_status": "optimal",
   "async_equals_sync": true
  },

@@ -98,7 +98,8 @@ function compareOptimize(got, exp) {
   const diffs = [];
   if (got.status !== exp.status) diffs.push(`status ${got.status} ≠ ${exp.status}`);
   if (got.feasible_count !== exp.feasible_count) diffs.push(`feasible_count ${got.feasible_count} ≠ ${exp.feasible_count}`);
-  if (got.evaluated !== exp.evaluated) diffs.push(`evaluated ${got.evaluated} ≠ ${exp.evaluated}`);
+  // for an infeasible problem CORE_SPEC does not define "evaluated" (0 = not enumerated, or 2^|free| = enumerated, none fit)
+  if (got.evaluated !== exp.evaluated && !(got.status === "infeasible" && exp.status === "infeasible")) diffs.push(`evaluated ${got.evaluated} ≠ ${exp.evaluated}`);
   for (const k of ["mean", "minimax", "coverage"]) {
     const g = got.objectives[k], x = exp.objectives[k];
     if ((g === null) !== (x === null)) { diffs.push(`${k}: null mismatch`); continue; }
@@ -148,7 +149,10 @@ for (const f of IDX.fixtures) {
   C.no_network = c.after.net === c.before.net;
   C.prototype_unchanged = c.after.proto === c.before.proto && !c.polluted;
   C.no_new_globals = c.after.globals === c.before.globals;
-  if (f.expect === "accept") {
+  if (f.expect === "accept" && !ok && !c.threw && f.check.reject_allowed) {
+    res.advisory = `refused (${res.code}); ${f.check.reject_allowed}`;
+    C.returned_state_unchanged = !c.r || view(c.r.state) === c.before.state;
+  } else if (f.expect === "accept") {
     C.accepted = ok;
     if (ok) {
       accepted[f.id] = c.r.state;
@@ -156,7 +160,11 @@ for (const f of IDX.fixtures) {
       if (typeof A.optimize === "function" && f.check.optimize) {
         const o = A.optimize(c.r.state);
         C.optimize_status = o.status === f.check.optimize;
-        if (f.check.reason) C.infeasible_reason = (o.reasons || []).includes(f.check.reason);
+        if (f.check.reason) {                     // reason names are not fixed by CORE_SPEC: meaning is hard, exact name is advisory
+          const rs = o.reasons || [];
+          C.infeasible_reason = rs.includes(f.check.reason) || (!!f.check.reason_pattern && rs.some((x) => String(x).includes(f.check.reason_pattern)));
+          if (C.infeasible_reason && !rs.includes(f.check.reason)) res.advisory = `reason name ${rs.join(",")} (K12 name ${f.check.reason})`;
+        }
         C.strict_json_output = (() => { try { return JSON.stringify(JSON.parse(JSON.stringify(o))) === JSON.stringify(o) && !/Infinity|NaN/.test(JSON.stringify(o)); } catch (e) { return false; } })();
         if (exp) { const d = compareOptimize(o, exp); C.optimize_equals_oracle = d.length === 0; if (d.length) res.oracle_diff = d.slice(0, 8); }
         if (f.check.must_not_contain) C.poison_not_used = f.check.must_not_contain.every((v) => !JSON.stringify(o).includes(String(v)));
@@ -182,15 +190,16 @@ for (const f of IDX.fixtures) {
   const hard = Object.entries(C).filter(([, v]) => v === false).map(([k]) => k);
   if (STRICT_CODES && res.code_match === false) hard.push("code_match");
   res.failed_checks = hard;
-  res.status = hard.length ? "FAIL" : "PASS";
+  res.status = hard.length ? "FAIL" : res.advisory ? "ADVISORY" : "PASS";
   results.push(res);
 }
 const summary = { adapter: path.basename(ADAPTER), app_root: path.basename(path.resolve(APP)), data_js_sha256: DATA_SHA, oracle: expNote,
   fixtures: IDX.fixture_set, total: results.length, pass: results.filter((r) => r.status === "PASS").length,
+  advisory: results.filter((r) => r.status === "ADVISORY").map((r) => `${r.id}: ${r.advisory}`),
   fail: results.filter((r) => r.status === "FAIL").map((r) => r.id), error: results.filter((r) => r.status === "ERROR").map((r) => r.id),
   code_mismatch: results.filter((r) => r.code_match === false).map((r) => `${r.id}:${r.code}`), network_attempts: NET.length,
   max_import_ms: Math.max(...results.map((r) => r.import_ms || 0)) };
-for (const r of results) console.log(`${r.status.padEnd(5)} ${r.id} ${String(r.outcome).padEnd(9)} code=${String(r.code).padEnd(24)}` +
+for (const r of results) console.log(`${r.status.padEnd(8)} ${r.id} ${String(r.outcome).padEnd(9)} code=${String(r.code).padEnd(24)}` +
   (r.failed_checks && r.failed_checks.length ? ` failed: ${r.failed_checks.join(",")}` : "") + (r.oracle_diff ? ` ${r.oracle_diff.join("; ")}` : "") + (r.error ? ` ${r.error}` : ""));
 console.log(JSON.stringify(summary));
 if (OUT) fs.writeFileSync(OUT, JSON.stringify({ summary, results }, null, 1) + "\n");

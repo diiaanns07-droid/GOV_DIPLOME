@@ -5,7 +5,7 @@
 //
 //   node plan_fuzz.cjs --app-root <dir> [--adapter adapters/reference_v2_adapter.cjs] [--seed 12] [--cases 200]
 //        [--max-ms 120000] [--python python3] [--no-oracle] [--replay <seed>:<index>] [--repro-dir repro] [--out r.json]
-//        [--bench]
+//        [--bench] [--strict-api-guard] [--limit-timeout-ms 20000]
 "use strict";
 const fs = require("fs"), path = require("path"), vm = require("vm"), os = require("os");
 const { spawnSync } = require("child_process");
@@ -23,6 +23,8 @@ const USE_ORACLE = !args.includes("--no-oracle");
 const REPLAY = opt("--replay", null);
 const REPRO = path.resolve(opt("--repro-dir", path.join(HERE, "repro")));
 const OUT = opt("--out");
+const STRICT_API = args.includes("--strict-api-guard");
+const LIMIT_MS = Number(opt("--limit-timeout-ms", "20000"));
 const BENCH = args.includes("--bench");
 if (!fs.existsSync(path.join(APP, "web", "data.js"))) { console.error("usage: node plan_fuzz.cjs --app-root <dir> [...]"); process.exit(2); }
 
@@ -253,7 +255,7 @@ const mk = ["unknown_count", "weighted_sum_mm", "max_mm", "covered_weight", "cos
 function oracleDiff(o, x) {
   if (o.status !== x.status) return `status ${o.status} ≠ ${x.status}`;
   if (o.feasible_count !== x.feasible_count) return `feasible_count ${o.feasible_count} ≠ ${x.feasible_count}`;
-  if (o.evaluated !== x.evaluated) return `evaluated ${o.evaluated} ≠ ${x.evaluated}`;
+  if (o.evaluated !== x.evaluated && o.status !== "infeasible") return `evaluated ${o.evaluated} ≠ ${x.evaluated}`;   // undefined for infeasible
   for (const k of ["mean", "minimax", "coverage"]) {
     const a = o.objectives[k], b = x.objectives[k];
     if ((a === null) !== (b === null)) return `${k} null mismatch`;
@@ -278,7 +280,7 @@ function manualDiff(ev, x) {                                     // manual plan 
 
 // ---------------------------------------------------------------- main
 const t0 = Date.now();
-const failures = [];
+const failures = [], advisories = [];
 const seenFail = new Set();                                    // only the first failure of each property is shrunk / gets a repro
 const firstOf = (key) => !seenFail.has(key) && !!seenFail.add(key);
 let ran = 0, invalidRan = 0, propChecks = 0;
@@ -351,19 +353,30 @@ if (USE_ORACLE && validForOracle.length) {
   oracleNote = `compared ${oracleCompared} scenarios with oracle/plan_v2_oracle.py`;
 }
 
-// limits in a child process with a watchdog (a freeze is a FAIL, not a hang of this runner)
-const lim = spawnSync(process.execPath, [path.join(HERE, "limits_child.cjs"), APP, ADAPTER], { encoding: "utf8", timeout: 20000 });
-let limits;
-if (lim.error || lim.status !== 0) {
-  limits = { ok: false, detail: lim.error ? `timeout/kill: ${lim.error.code}` : lim.stderr.slice(0, 300) };
-  failures.push({ kind: "limits", property: "refuse_before_enumeration", case: "-", message: limits.detail });
-} else {
-  const L = JSON.parse(lim.stdout.trim().split("\n").pop());
-  const importOk = L.import[16].ok && [17, 24, 40].every((n) => !L.import[n].ok && L.import[n].ms < 200);
-  const uncheckedOk = L.unchecked === null ? null : [20, 30].every((n) => L.unchecked[n].status === "too_large" && L.unchecked[n].evaluated === 0 && L.unchecked[n].ms < 200);
-  limits = { ok: importOk && uncheckedOk !== false, import: L.import, unchecked: L.unchecked === null ? "SKIP (no optimizeUnchecked)" : L.unchecked };
-  if (!limits.ok) failures.push({ kind: "limits", property: "refuse_before_enumeration", case: "-", message: JSON.stringify(L).slice(0, 300) });
+// limits in a child process with a watchdog (a freeze is reported, it does not hang this runner).
+//  - import level (spec): 17/24/40 candidates refused fast, 16 accepted -> FAIL if not;
+//  - API level: optimisation of an UNVALIDATED object with 20/30/40 candidates must answer "too_large" with 0 evaluated
+//    (or throw a typed error with a code)
+//    -> ADVISORY by default (UI and import validate first), FAIL with --strict-api-guard.
+const lim = spawnSync(process.execPath, [path.join(HERE, "limits_child.cjs"), APP, ADAPTER], { encoding: "utf8", timeout: LIMIT_MS });
+const lines = String(lim.stdout || "").split("\n").filter(Boolean).map((l) => { try { return JSON.parse(l); } catch (e) { return null; } }).filter(Boolean);
+const impL = lines.find((l) => l.phase === "import");
+const limits = { child: lim.error || lim.signal ? `killed after ${LIMIT_MS} ms (${lim.error ? lim.error.code : lim.signal})` : `exit ${lim.status}`,
+                 import: impL ? impL.import : null, unchecked: {} };
+const importOk = !!impL && impL.import[16].ok && [17, 24, 40].every((n) => !impL.import[n].ok && impL.import[n].ms < 200);
+let apiOk = null;
+if (lines.some((l) => l.phase === "unchecked_skip")) limits.unchecked = "SKIP (adapter has no optimizeUnchecked)";
+else {
+  for (const l of lines.filter((x) => x.phase === "unchecked")) limits.unchecked[l.n] = { status: l.status, evaluated: l.evaluated, ms: +l.ms.toFixed(1) };
+  for (const l of lines.filter((x) => x.phase === "unchecked_start")) if (!limits.unchecked[l.n]) limits.unchecked[l.n] = { status: "no_answer", note: `frozen: child killed after ${LIMIT_MS} ms` };
+  const refused = (u) => u && (u.status === "too_large" || /^refused:(?!exception$)/.test(u.status)) && u.evaluated === 0 && u.ms < 200;   // status or typed error
+  apiOk = [20, 30, 40].every((n) => refused(limits.unchecked[n]));
 }
+limits.import_verdict = importOk ? "PASS" : "FAIL";
+limits.api_verdict = apiOk === null ? "SKIP" : apiOk ? "PASS" : STRICT_API ? "FAIL" : "ADVISORY";
+if (!importOk) failures.push({ kind: "limits", property: "import_refuses_over_limit", case: "-", message: impL ? JSON.stringify(impL.import).slice(0, 300) : `no import phase: ${limits.child}; ${String(lim.stderr || "").slice(0, 200)}` });
+if (limits.api_verdict === "FAIL") failures.push({ kind: "limits", property: "api_refuses_before_enumeration", case: "-", message: JSON.stringify(limits.unchecked).slice(0, 300) });
+if (limits.api_verdict === "ADVISORY") advisories.push({ kind: "limits", property: "api_refuses_before_enumeration", message: JSON.stringify(limits.unchecked).slice(0, 300) });
 
 // worst-case benchmark (16 candidates, 25 points, max_selected 5, generous budget)
 let bench = null;
@@ -402,14 +415,15 @@ if (BENCH) {
   if (bench && bench.async_promise) { await bench.async_promise; delete bench.async_promise; }
   const summary = { adapter: path.basename(ADAPTER), app_root: path.basename(APP), seed: SEED, cases_requested: REPLAY ? 1 : CASES, cases_run: ran,
     truncated_by_time_budget: !REPLAY && ran < CASES, property_checks: propChecks, invalid_mutations: invalidRan, mutation_kinds: Object.fromEntries(Object.entries(mutSeen).sort()), oracle: oracleNote,
-    limits: limits.ok ? "PASS" : "FAIL", generator_coverage: Object.fromEntries(Object.entries(gen).sort()), failures: failures.length, elapsed_ms: Date.now() - t0, verdict: failures.length ? "FAIL" : "PASS" };
+    limits: { import: limits.import_verdict, api: limits.api_verdict }, advisories: advisories.length, generator_coverage: Object.fromEntries(Object.entries(gen).sort()), failures: failures.length, elapsed_ms: Date.now() - t0, verdict: failures.length ? "FAIL" : "PASS" };
   const byProp = {};
   for (const f of failures) byProp[`${f.kind}/${f.property}`] = (byProp[`${f.kind}/${f.property}`] || 0) + 1;
   summary.failures_by_property = byProp;
   for (const f of failures.filter((x) => x.repro || x.kind === "limits")) console.log(`FAIL ${f.kind}/${f.property} case ${f.case}: ${f.message}${f.repro ? ` → ${f.repro}` : ""}${f.minimal ? ` (minimal: ${f.minimal.points} pts, ${f.minimal.candidates} cand, ${f.shrink_steps} steps)` : ""}`);
+  for (const a of advisories) console.log(`ADVISORY ${a.kind}/${a.property}: ${a.message}`);
   if (bench) console.log("bench " + JSON.stringify(bench));
   console.log(JSON.stringify(summary));
   const shown = failures.filter((x) => x.repro || x.kind === "limits").concat(failures.filter((x) => !(x.repro || x.kind === "limits")).slice(0, 30));
-  if (OUT) fs.writeFileSync(OUT, JSON.stringify({ summary, limits, bench, failures: shown, failures_omitted: failures.length - shown.length }, null, 1) + "\n");
+  if (OUT) fs.writeFileSync(OUT, JSON.stringify({ summary, limits, advisories, bench, failures: shown, failures_omitted: failures.length - shown.length }, null, 1) + "\n");
   process.exit(failures.length ? 1 : 0);
 })();

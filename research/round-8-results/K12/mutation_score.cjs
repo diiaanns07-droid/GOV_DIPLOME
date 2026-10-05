@@ -20,7 +20,7 @@ function fuzz(adapter, mutant, reproDir) {
   const tmp = path.join(fs.mkdtempSync(path.join(os.tmpdir(), "k12ms_")), "r.json");
   const t0 = Date.now();
   const r = spawnSync(process.execPath, [path.join(HERE, "plan_fuzz.cjs"), "--app-root", APP, "--adapter", adapter, "--seed", SEED,
-    "--cases", CASES, "--max-ms", "60000", "--repro-dir", reproDir, "--out", tmp],
+    "--cases", CASES, "--max-ms", "60000", "--strict-api-guard", "--repro-dir", reproDir, "--out", tmp],
     { encoding: "utf8", timeout: 180000, env: { ...process.env, K12_MUTANT: mutant || "" } });
   const ms = Date.now() - t0;
   let rep = null;

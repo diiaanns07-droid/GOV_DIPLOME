@@ -1,7 +1,7 @@
 // K12 round 8, stage 3: limit checks run in a CHILD process so that a freeze is observable (the parent kills it on timeout).
-//   node limits_child.cjs <app-root> <adapter>   -> prints one JSON line
+//   node limits_child.cjs <app-root> <adapter>   -> prints one JSON line per phase
 // Over-limit plans must be refused BEFORE enumeration: import of 17/24/40 candidates is rejected, and (if the adapter
-// exposes optimizeUnchecked) a direct optimisation call with 20/30 candidates returns status "too_large" with 0 evaluated.
+// exposes optimizeUnchecked) a direct optimisation call with 20/30/40 candidates returns status "too_large" with 0 evaluated.
 "use strict";
 const fs = require("fs"), path = require("path"), vm = require("vm");
 const [APP, ADAPTER] = process.argv.slice(2);
@@ -17,17 +17,22 @@ function scenario(nc, np = 25) {
     candidates: Array.from({ length: nc }, (_, k) => ({ id: `c${k}`, lon: at(k, nc)[0], lat: at(k, nc)[1], category: "school", kind: "hypothetical", cost: 1 })),
     budget: 1000000, max_selected: 5, coverage_radius_m: 500, required_ids: [], excluded_ids: [], selected_ids: [] };
 }
-const out = { import: {}, unchecked: {} };
+// One JSON line per phase, written synchronously, so the parent still sees the finished phases if a later one freezes.
+const emit = (o) => fs.writeSync(1, JSON.stringify(o) + "\n");
+const imp = {};
 for (const n of [16, 17, 24, 40]) {
   const t0 = process.hrtime.bigint();
   const r = A.importScenario(JSON.stringify(scenario(n)), A.initialState());
-  out.import[n] = { ok: !!r.ok, code: r.code || null, ms: Number(process.hrtime.bigint() - t0) / 1e6 };
+  imp[n] = { ok: !!r.ok, code: r.code || null, ms: Number(process.hrtime.bigint() - t0) / 1e6 };
 }
+emit({ phase: "import", import: imp });
 if (typeof A.optimizeUnchecked === "function") {
-  for (const n of [20, 30]) {
+  for (const n of [20, 30, 40]) {
+    emit({ phase: "unchecked_start", n });
     const t0 = process.hrtime.bigint();
-    const r = A.optimizeUnchecked(scenario(n));
-    out.unchecked[n] = { status: r.status, evaluated: r.evaluated, ms: Number(process.hrtime.bigint() - t0) / 1e6 };
+    let r;
+    try { r = A.optimizeUnchecked(scenario(n)); } catch (e) { r = { status: `refused:${(e && e.code) || "exception"}`, evaluated: 0 }; }   // a typed refusal is fine too
+    emit({ phase: "unchecked", n, status: r.status, evaluated: r.evaluated, ms: Number(process.hrtime.bigint() - t0) / 1e6 });
   }
-} else out.unchecked = null;
-process.stdout.write(JSON.stringify(out) + "\n");
+} else emit({ phase: "unchecked_skip" });
+emit({ phase: "done" });

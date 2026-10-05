@@ -1,14 +1,19 @@
 {
  "summary": {
-  "adapter": "reference_v2_adapter.cjs",
-  "app_root": "build_a5b5e2d",
-  "total": 38,
-  "pass": 37,
+  "adapter": "build_v2_plan_adapter.cjs",
+  "app_root": "build_d865dd4_k12fix",
+  "total": 39,
+  "pass": 33,
   "fail": [],
-  "skip": [],
-  "advisory": [
-   "E2a:\"unknown_field\""
+  "skip": [
+   "B5",
+   "D2",
+   "D3",
+   "D4",
+   "D5",
+   "D6"
   ],
+  "advisory": [],
   "network_attempts": 0,
   "string_timers": 0
  },
@@ -53,14 +58,14 @@
    "id": "A3",
    "title": "дефект только в последнем элементе (last_selected_unknown): отказ, состояние прежнее",
    "status": "PASS",
-   "detail": "unknown_id"
+   "detail": "unknown_ref"
   },
   {
    "group": "A",
    "id": "A3",
    "title": "дефект только в последнем элементе (last_excluded_conflicts): отказ, состояние прежнее",
    "status": "PASS",
-   "detail": "conflicting_constraints"
+   "detail": "required_excluded_overlap"
   },
   {
    "group": "A",
@@ -74,35 +79,35 @@
    "id": "A4",
    "title": "вход null: отказ без исключения",
    "status": "PASS",
-   "detail": "bad_shape"
+   "detail": "bad_json"
   },
   {
    "group": "A",
    "id": "A4",
    "title": "вход number: отказ без исключения",
    "status": "PASS",
-   "detail": "bad_shape"
+   "detail": "bad_json"
   },
   {
    "group": "A",
    "id": "A4",
    "title": "вход object: отказ без исключения",
    "status": "PASS",
-   "detail": "missing_field"
+   "detail": "bad_json"
   },
   {
    "group": "A",
    "id": "A4",
    "title": "вход array: отказ без исключения",
    "status": "PASS",
-   "detail": "bad_shape"
+   "detail": "bad_json"
   },
   {
    "group": "A",
    "id": "A4",
    "title": "вход buffer: отказ без исключения",
    "status": "PASS",
-   "detail": "unknown_field"
+   "detail": "bad_json"
   },
   {
    "group": "A",
@@ -128,7 +133,14 @@
   {
    "group": "B",
    "id": "B1",
-   "title": "в plan_v2_ref.cjs нет eval/new Function/innerHTML/import()/строковых таймеров",
+   "title": "в plan.js нет eval/new Function/innerHTML/import()/строковых таймеров",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "group": "B",
+   "id": "B1",
+   "title": "в plan-ui.js нет eval/new Function/innerHTML/import()/строковых таймеров",
    "status": "PASS",
    "detail": []
   },
@@ -137,7 +149,7 @@
    "id": "B2",
    "title": "payload-строки в derived_results: приняты как данные или отказ без изменения состояния",
    "status": "PASS",
-   "detail": "accepted"
+   "detail": "refused: forged_derived"
   },
   {
    "group": "B",
@@ -160,7 +172,7 @@
    "group": "B",
    "id": "B5",
    "title": "в результатах нет payload-строк (derived_results не попал в вывод)",
-   "status": "PASS",
+   "status": "SKIP",
    "detail": null
   },
   {
@@ -231,40 +243,37 @@
   {
    "group": "D",
    "id": "D2",
-   "title": "отменённый результат не применяется",
-   "status": "PASS",
-   "detail": null
+   "title": "страж поздних результатов",
+   "status": "SKIP",
+   "detail": "adapter.gate() не задан (у реализации нет экспортируемого стража результатов)"
   },
   {
    "group": "D",
    "id": "D3",
-   "title": "поздний результат старой задачи отклонён, новый принят",
-   "status": "PASS",
-   "detail": {
-    "A": "stale_request",
-    "B": null
-   }
+   "title": "страж поздних результатов",
+   "status": "SKIP",
+   "detail": "adapter.gate() не задан (у реализации нет экспортируемого стража результатов)"
   },
   {
    "group": "D",
    "id": "D4",
-   "title": "тот же problem_digest, повторный запрос: принят только последний",
-   "status": "PASS",
-   "detail": null
+   "title": "страж поздних результатов",
+   "status": "SKIP",
+   "detail": "adapter.gate() не задан (у реализации нет экспортируемого стража результатов)"
   },
   {
    "group": "D",
    "id": "D5",
-   "title": "после смены города/категории (reset) старый ответ не применяется",
-   "status": "PASS",
-   "detail": null
+   "title": "страж поздних результатов",
+   "status": "SKIP",
+   "detail": "adapter.gate() не задан (у реализации нет экспортируемого стража результатов)"
   },
   {
    "group": "D",
    "id": "D6",
-   "title": "результат с чужим problem_digest отклонён",
-   "status": "PASS",
-   "detail": null
+   "title": "страж поздних результатов",
+   "status": "SKIP",
+   "detail": "adapter.gate() не задан (у реализации нет экспортируемого стража результатов)"
   },
   {
    "group": "D",
@@ -273,8 +282,8 @@
    "status": "PASS",
    "detail": {
     "ticks": 63,
-    "maxChunkMs": 2.06,
-    "total_ms": 134
+    "maxChunkMs": 1.85,
+    "total_ms": 138
    }
   },
   {
@@ -289,28 +298,28 @@
    "id": "E2",
    "title": "BUILD v1 отклоняет сценарий city-plan-v2 (режимы раздельны)",
    "status": "PASS",
-   "detail": "unknown_field"
+   "detail": "bad_version"
   },
   {
    "group": "E",
    "id": "E2a",
    "title": "BUILD v1: код отказа bad_version (понятнее, чем unknown_field)",
-   "status": "ADVISORY",
-   "detail": "unknown_field"
+   "status": "PASS",
+   "detail": "bad_version"
   },
   {
    "group": "E",
    "id": "E3",
    "title": "v2-импорт отклоняет сценарий city-whatif-v1",
    "status": "PASS",
-   "detail": "bad_version"
+   "detail": "wrong_version"
   },
   {
    "group": "E",
    "id": "E3a",
    "title": "v2-импорт: код отказа называет версию (bad_version / wrong_version)",
    "status": "PASS",
-   "detail": "bad_version"
+   "detail": "wrong_version"
   }
  ]
 }

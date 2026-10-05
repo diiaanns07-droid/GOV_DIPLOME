@@ -12,14 +12,14 @@
  "control": {
   "verdict": "PASS",
   "failures": 0,
-  "ms": 4948
+  "ms": 5034
  },
  "mutants": [
   {
    "mutant": "round_floor",
    "bug": "мм округляются вниз (floor) вместо Math.round",
    "verdict": "KILLED",
-   "ms": 6146,
+   "ms": 6736,
    "failures": 188,
    "caught_by": {
     "oracle/equals_python_oracle": 188
@@ -31,17 +31,20 @@
     "candidates": 0,
     "shrink_steps": 21
    },
-   "limits": "PASS"
+   "limits": {
+    "import": "PASS",
+    "api": "PASS"
+   }
   },
   {
    "mutant": "ignore_excluded",
    "bug": "перебор не исключает excluded_ids",
    "verdict": "KILLED",
-   "ms": 8894,
-   "failures": 42,
+   "ms": 8795,
+   "failures": 36,
    "caught_by": {
     "property/winners_feasible_and_consistent": 6,
-    "oracle/equals_python_oracle": 36
+    "oracle/equals_python_oracle": 30
    },
    "first": "property/winners_feasible_and_consistent 12:46: mean includes excluded",
    "smallest_repro": {
@@ -50,13 +53,16 @@
     "candidates": 1,
     "shrink_steps": 23
    },
-   "limits": "PASS"
+   "limits": {
+    "import": "PASS",
+    "api": "PASS"
+   }
   },
   {
    "mutant": "budget_strict",
    "bug": "план стоимостью ровно budget считается неподходящим (>= вместо >)",
    "verdict": "KILLED",
-   "ms": 6452,
+   "ms": 6559,
    "failures": 160,
    "caught_by": {
     "oracle/equals_python_oracle": 160
@@ -68,13 +74,16 @@
     "candidates": 0,
     "shrink_steps": 21
    },
-   "limits": "PASS"
+   "limits": {
+    "import": "PASS",
+    "api": "PASS"
+   }
   },
   {
    "mutant": "pareto_nonstrict",
    "bug": "Парето сохраняет точки с равной суммой и большей стоимостью",
    "verdict": "KILLED",
-   "ms": 6629,
+   "ms": 7194,
    "failures": 150,
    "caught_by": {
     "property/pareto_valid": 75,
@@ -87,13 +96,16 @@
     "candidates": 1,
     "shrink_steps": 25
    },
-   "limits": "PASS"
+   "limits": {
+    "import": "PASS",
+    "api": "PASS"
+   }
   },
   {
    "mutant": "minimax_key",
    "bug": "в цели minimax перепутан порядок max и weighted_sum",
    "verdict": "KILLED",
-   "ms": 9640,
+   "ms": 9619,
    "failures": 2,
    "caught_by": {
     "oracle/equals_python_oracle": 2
@@ -105,13 +117,16 @@
     "candidates": 3,
     "shrink_steps": 60
    },
-   "limits": "PASS"
+   "limits": {
+    "import": "PASS",
+    "api": "PASS"
+   }
   },
   {
    "mutant": "sensitivity_ceil",
    "bug": "средний бюджет чувствительности ceil(B/2) вместо floor(B/2)",
    "verdict": "KILLED",
-   "ms": 5355,
+   "ms": 5512,
    "failures": 35,
    "caught_by": {
     "oracle/equals_python_oracle": 35
@@ -123,13 +138,16 @@
     "candidates": 0,
     "shrink_steps": 9
    },
-   "limits": "PASS"
+   "limits": {
+    "import": "PASS",
+    "api": "PASS"
+   }
   },
   {
    "mutant": "digest_order",
    "bug": "problem_digest зависит от порядка control_points",
    "verdict": "KILLED",
-   "ms": 4557,
+   "ms": 4581,
    "failures": 161,
    "caught_by": {
     "property/permutation_invariant": 161
@@ -141,13 +159,16 @@
     "candidates": 0,
     "shrink_steps": 50
    },
-   "limits": "PASS"
+   "limits": {
+    "import": "PASS",
+    "api": "PASS"
+   }
   },
   {
    "mutant": "state_reset_on_refusal",
    "bug": "при отказе импорта состояние сбрасывается",
    "verdict": "KILLED",
-   "ms": 4688,
+   "ms": 4762,
    "failures": 200,
    "caught_by": {
     "mutation/coord_string": 12,
@@ -174,59 +195,74 @@
    },
    "first": "mutation/coord_string 12:0: state changed on refusal",
    "smallest_repro": null,
-   "limits": "PASS"
+   "limits": {
+    "import": "PASS",
+    "api": "PASS"
+   }
   },
   {
    "mutant": "extra_fields_ignored",
    "bug": "лишние поля точек и кандидатов молча игнорируются",
    "verdict": "KILLED",
-   "ms": 4711,
+   "ms": 5045,
    "failures": 6,
    "caught_by": {
     "mutation/extra_field": 6
    },
    "first": "mutation/extra_field 12:36: invalid scenario accepted",
    "smallest_repro": null,
-   "limits": "PASS"
+   "limits": {
+    "import": "PASS",
+    "api": "PASS"
+   }
   },
   {
    "mutant": "weight_loose",
    "bug": "вес проверяется сравнением без проверки целого (1.5, \"5\", true проходят)",
    "verdict": "KILLED",
-   "ms": 4996,
+   "ms": 4708,
    "failures": 4,
    "caught_by": {
     "mutation/weight_out_of_range": 4
    },
    "first": "mutation/weight_out_of_range 12:40: invalid scenario accepted",
    "smallest_repro": null,
-   "limits": "PASS"
+   "limits": {
+    "import": "PASS",
+    "api": "PASS"
+   }
   },
   {
    "mutant": "import_limit_off",
    "bug": "импорт пропускает больше 16 кандидатов",
    "verdict": "KILLED",
-   "ms": 4723,
+   "ms": 4972,
    "failures": 1,
    "caught_by": {
-    "limits/refuse_before_enumeration": 1
+    "limits/import_refuses_over_limit": 1
    },
-   "first": "limits/refuse_before_enumeration -: {\"import\":{\"16\":{\"ok\":true,\"code\":null,\"ms\":6.974216},\"17\":{\"ok\":true,\"code\":null,\"ms\":1.042377},\"24\":{\"ok\":true,\"code\":null,\"ms\":1.366301},\"40\":{\"ok\":true,\"code\":n",
+   "first": "limits/import_refuses_over_limit -: {\"16\":{\"ok\":true,\"code\":null,\"ms\":5.929565},\"17\":{\"ok\":true,\"code\":null,\"ms\":1.591289},\"24\":{\"ok\":true,\"code\":null,\"ms\":1.654779},\"40\":{\"ok\":true,\"code\":null,\"ms\":4",
    "smallest_repro": null,
-   "limits": "FAIL"
+   "limits": {
+    "import": "FAIL",
+    "api": "PASS"
+   }
   },
   {
    "mutant": "no_size_guard",
    "bug": "нет отказа до перебора: 2^n подмножеств перебираются при любом n (зависание)",
    "verdict": "KILLED",
-   "ms": 24623,
+   "ms": 24970,
    "failures": 1,
    "caught_by": {
-    "limits/refuse_before_enumeration": 1
+    "limits/api_refuses_before_enumeration": 1
    },
-   "first": "limits/refuse_before_enumeration -: timeout/kill: ETIMEDOUT",
+   "first": "limits/api_refuses_before_enumeration -: {\"20\":{\"status\":\"optimal\",\"evaluated\":1048576,\"ms\":432.7},\"30\":{\"status\":\"no_answer\",\"note\":\"frozen: child killed after 20000 ms\"}}",
    "smallest_repro": null,
-   "limits": "FAIL"
+   "limits": {
+    "import": "PASS",
+    "api": "FAIL"
+   }
   }
  ]
 }

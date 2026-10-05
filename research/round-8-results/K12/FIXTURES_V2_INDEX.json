@@ -70,7 +70,8 @@
     "optimize": "optimal",
     "must_not_contain": [
      999999999
-    ]
+    ],
+    "reject_allowed": "CORE_SPEC: импорт не доверяет derived_results — отказ поддельного файла тоже допустим"
    },
    "bytes": 1794,
    "sha256": "817a36c5a8bd65e1beb40d5db5dd05003ef93c93a90addb499f6fe9f4d68a472"
@@ -135,7 +136,8 @@
    "oracle": true,
    "check": {
     "optimize": "infeasible",
-    "reason": "required_cost_exceeds_budget"
+    "reason": "required_cost_exceeds_budget",
+    "reason_pattern": "budget"
    },
    "bytes": 1466,
    "sha256": "a3dd4ce1d74a4fb55872e78ddbdbe4014cb2270373d6fbe155414c5603834d86"
@@ -152,7 +154,8 @@
    "oracle": true,
    "check": {
     "optimize": "infeasible",
-    "reason": "required_count_exceeds_max_selected"
+    "reason": "required_count_exceeds_max_selected",
+    "reason_pattern": "max_selected"
    },
    "bytes": 1473,
    "sha256": "10252506fca3e002a2b4939d7f72d67259ca98ce125118179becb27fa885039d"
