@@ -1,0 +1,50 @@
+{
+ "summary": {
+  "n": 12,
+  "schema_valid": 12,
+  "exact_match": 11,
+  "slot_precision": 0.955,
+  "slot_recall": 1.0,
+  "slot_f1": 0.977,
+  "gold_rejected_by_engine": [
+   "Спорт-хабы в Байконуре и в Алматы"
+  ]
+ },
+ "misses": [
+  {
+   "text": "Спорт-хабы в Байконуре и в Алматы",
+   "pred": {
+    "include": [
+     {
+      "measure": "M9",
+      "district": "nura"
+     },
+     {
+      "measure": "M9",
+      "district": "baikonur"
+     },
+     {
+      "measure": "M9",
+      "district": "almaty"
+     }
+    ]
+   },
+   "gold": {
+    "include": [
+     {
+      "measure": "M9",
+      "district": "baikonur"
+     },
+     {
+      "measure": "M9",
+      "district": "almaty"
+     }
+    ]
+   },
+   "schema_valid": true,
+   "exact": false,
+   "engine_errors_pred": true,
+   "engine_errors_gold": true
+  }
+ ]
+}

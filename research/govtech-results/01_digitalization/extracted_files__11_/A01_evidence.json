@@ -1,0 +1,1013 @@
+{
+  "meta": {
+    "agent_id": "A01",
+    "topic": "Цифровизация муниципальных услуг и городские обращения (служба 109, маршрутизация, повторы, статус, языки)",
+    "city": "Шымкент (город республиканского значения)",
+    "searched_at": "2026-10-04T17:14:13Z",
+    "access_limitations": [
+      "Нет инструмента веб-поиска; сетевой доступ ограничен allowlist песочницы (github.com, raw.githubusercontent.com, api.github.com, pypi, npm, ubuntu).",
+      "gov.kz, stat.gov.kz, data.egov.kz, eotinish.kz, adilet.zan.kz, egov.kz: HTTP 403 host_not_allowed (см. A01-S001).",
+      "Функции службы 109, публичность её данных, нормы АППК, данные БНС не проверены; соответствующие утверждения имеют kind=hypothesis.",
+      "Знания модели ограничены серединой 2026 г.; воспоминания не считаются доказательством."
+    ]
+  },
+  "sources": [
+    {
+      "source_id": "A01-S001",
+      "title": "Журнал проверки доступа агента к официальным доменам",
+      "publisher": "A01 (выполненный эксперимент)",
+      "url": null,
+      "published_at": null,
+      "accessed_at": "2026-10-04T17:14:13Z",
+      "source_type": "experiment_log",
+      "access_status": "executed",
+      "notes": "curl -sS -o /dev/null -D - --max-time 15 для 6 URL; все 403, x-deny-reason: host_not_allowed. curl 8.5.0."
+    },
+    {
+      "source_id": "A01-S002",
+      "title": "STUPITS «Аким на 5 часов» (репозиторий)",
+      "publisher": "BAITC-Hacks / команда STUPITS",
+      "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits",
+      "published_at": "2026-09-23",
+      "accessed_at": "2026-10-04",
+      "source_type": "code_repository",
+      "access_status": "verified",
+      "notes": "Shallow clone, коммит 834a25fb860dd5514d02c9274b70d7bf8a53a79c (2026-09-23T18:36:48+06:00). Просмотрены agent/README.md, agent/evidence.py, .env.example, web/index.html."
+    },
+    {
+      "source_id": "A01-S003",
+      "title": "e-Otinish Smart Router AI",
+      "publisher": "GitHub: Sa1yd",
+      "url": "https://github.com/Sa1yd/eOtinish-Router-AI",
+      "published_at": "2026-09-15",
+      "accessed_at": "2026-10-04",
+      "source_type": "code_repository_prior_art",
+      "access_status": "verified",
+      "notes": "Хакатонный проект (Case 5). README + data.json. Не официальный источник; утверждения README о сроках не являются правовым основанием."
+    },
+    {
+      "source_id": "A01-S004",
+      "title": "PRD и README: Анализ обращений граждан по ЦОН (e-Otinish и 1414)",
+      "publisher": "GitHub: abaiarlanb-ops",
+      "url": "https://github.com/abaiarlanb-ops/con-dashboard",
+      "published_at": "2026-10-02",
+      "accessed_at": "2026-10-04",
+      "source_type": "code_repository_prior_art",
+      "access_status": "verified",
+      "notes": "Сторонний PRD; утверждения о выгрузках e-Otinish/1414 — мнение автора, не документация оператора."
+    },
+    {
+      "source_id": "A01-S005",
+      "title": "eotinish_classification",
+      "publisher": "GitHub: povchingiz",
+      "url": "https://github.com/povchingiz/eotinish_classification",
+      "published_at": "2024-12-30",
+      "accessed_at": "2026-10-04",
+      "source_type": "code_repository_prior_art",
+      "access_status": "restricted_by_agent",
+      "notes": "Код под MIT. Файл eobr_floods_final.csv: просмотрены только заголовок и агрегаты; строки не выводились; копия удалена. Происхождение данных неизвестно, возможны персональные данные. НЕ ИСПОЛЬЗОВАТЬ."
+    },
+    {
+      "source_id": "A01-S006",
+      "title": "KazParC: Kazakh Parallel Corpus for Machine Translation (README)",
+      "publisher": "ISSAI (IS2AI), Назарбаев Университет",
+      "url": "https://github.com/IS2AI/KazParC",
+      "published_at": "2024",
+      "accessed_at": "2026-10-04",
+      "source_type": "dataset_documentation",
+      "access_status": "documented_only",
+      "notes": "README прочитан; данные на Hugging Face (домен недоступен из песочницы). Лицензия в README не указана → null."
+    },
+    {
+      "source_id": "A01-S007",
+      "title": "KazQAD: Kazakh Open-Domain Question Answering Dataset (README, LICENSE)",
+      "publisher": "ISSAI (IS2AI); LREC-COLING 2024",
+      "url": "https://github.com/IS2AI/KazQAD",
+      "published_at": "2024",
+      "accessed_at": "2026-10-04",
+      "source_type": "dataset_documentation",
+      "access_status": "documented_only",
+      "notes": "LICENSE: CC BY-SA 4.0. Статья: https://aclanthology.org/2024.lrec-main.843 (ссылка из README, сама статья не открывалась)."
+    },
+    {
+      "source_id": "A01-S008",
+      "title": "KazNERD: Kazakh Named Entity Recognition Dataset (README)",
+      "publisher": "ISSAI (IS2AI)",
+      "url": "https://github.com/IS2AI/KazNERD",
+      "published_at": null,
+      "accessed_at": "2026-10-04",
+      "source_type": "dataset_documentation",
+      "access_status": "documented_only",
+      "notes": "Лицензия CC BY 4.0 — по тексту аннотации в README (BibTeX). Дата публикации статьи в просмотренном фрагменте не зафиксирована."
+    },
+    {
+      "source_id": "A01-S009",
+      "title": "Сторонние краулеры каталога data.egov.kz (результаты поиска GitHub)",
+      "publisher": "GitHub: opengov-kz/data-egov-kz; Yerassyl20036/egov-web-crawler",
+      "url": "https://github.com/Yerassyl20036/egov-web-crawler",
+      "published_at": "2026-02-01",
+      "accessed_at": "2026-10-04",
+      "source_type": "code_repository",
+      "access_status": "verified",
+      "notes": "Подтверждает лишь, что третьи лица собирали каталог data.egov.kz парсингом HTML. Не является проверкой API или лицензии портала."
+    },
+    {
+      "source_id": "A01-S010",
+      "title": "Управление цифровизации г. Шымкент (страница на gov.kz), в т.ч. сведения о службе 109",
+      "publisher": "gov.kz",
+      "url": "https://www.gov.kz/memleket/entities/shymkent-sandyk?lang=ru",
+      "published_at": null,
+      "accessed_at": "2026-10-04",
+      "source_type": "official_web_page",
+      "access_status": "not_accessed",
+      "notes": "Недоступно из песочницы агента: HTTP 403, x-deny-reason: host_not_allowed (политика среды, а не сайта). Содержимое не проверено."
+    },
+    {
+      "source_id": "A01-S011",
+      "title": "БНС: динамические таблицы по Шымкенту",
+      "publisher": "Бюро национальной статистики (stat.gov.kz)",
+      "url": "https://stat.gov.kz/ru/region/shymkent/dynamic-tables/38/",
+      "published_at": null,
+      "accessed_at": "2026-10-04",
+      "source_type": "official_statistics",
+      "access_status": "not_accessed",
+      "notes": "Недоступно из песочницы агента: HTTP 403, x-deny-reason: host_not_allowed (политика среды, а не сайта). Содержимое не проверено."
+    },
+    {
+      "source_id": "A01-S012",
+      "title": "Портал открытых данных",
+      "publisher": "data.egov.kz",
+      "url": "https://data.egov.kz/",
+      "published_at": null,
+      "accessed_at": "2026-10-04",
+      "source_type": "open_data_portal",
+      "access_status": "not_accessed",
+      "notes": "Недоступно из песочницы агента: HTTP 403, x-deny-reason: host_not_allowed (политика среды, а не сайта). Содержимое не проверено. Координатор также сообщал об ошибке прямого открытия."
+    },
+    {
+      "source_id": "A01-S013",
+      "title": "eOtinish (предполагаемый официальный портал обращений)",
+      "publisher": null,
+      "url": "https://eotinish.kz/",
+      "published_at": null,
+      "accessed_at": "2026-10-04",
+      "source_type": "official_web_page_candidate",
+      "access_status": "not_accessed",
+      "notes": "Недоступно из песочницы агента: HTTP 403, x-deny-reason: host_not_allowed (политика среды, а не сайта). Содержимое не проверено. Официальность домена не проверена."
+    },
+    {
+      "source_id": "A01-S014",
+      "title": "Административный процедурно-процессуальный кодекс РК (действующая редакция)",
+      "publisher": "ИПС «Әділет» (adilet.zan.kz)",
+      "url": "https://adilet.zan.kz/rus",
+      "published_at": null,
+      "accessed_at": "2026-10-04",
+      "source_type": "law",
+      "access_status": "not_accessed",
+      "notes": "Недоступно из песочницы агента: HTTP 403, x-deny-reason: host_not_allowed (политика среды, а не сайта). Содержимое не проверено. Нужный документ не найден; указана стартовая страница."
+    },
+    {
+      "source_id": "A01-S015",
+      "title": "Портал электронного правительства",
+      "publisher": "egov.kz",
+      "url": "https://egov.kz/",
+      "published_at": null,
+      "accessed_at": "2026-10-04",
+      "source_type": "official_web_page",
+      "access_status": "not_accessed",
+      "notes": "Недоступно из песочницы агента: HTTP 403, x-deny-reason: host_not_allowed (политика среды, а не сайта). Содержимое не проверено."
+    },
+    {
+      "source_id": "A01-S016",
+      "title": "Задание координатора A01 (ПРОМПТ 01)",
+      "publisher": "Владелец проекта / координатор",
+      "url": null,
+      "published_at": "2026-10-04",
+      "accessed_at": "2026-10-04",
+      "source_type": "assignment",
+      "access_status": "verified",
+      "notes": "Утверждение «Служба 109 уже существует» — со слов координатора, не проверено агентом."
+    }
+  ],
+  "facts": [
+    {
+      "fact_id": "A01-F001",
+      "statement": "Прямые HTTP-запросы агента к 6 официальным доменам отклонены прокси песочницы.",
+      "kind": "observed",
+      "value": 403,
+      "unit": "HTTP status",
+      "geography": null,
+      "period": "2026-10-04",
+      "source_refs": [
+        {
+          "source_id": "A01-S001",
+          "locator": "вывод curl, заголовок x-deny-reason"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "Ограничение среды агента; о доступности сайтов для людей ничего не говорит."
+    },
+    {
+      "fact_id": "A01-F002",
+      "statement": "Советник STUPITS использует OpenAI-совместимый Chat Completions с function calling и имеет офлайн-режим без ключа.",
+      "kind": "observed",
+      "value": null,
+      "unit": null,
+      "geography": "Астана (учебная модель)",
+      "period": "коммит 2026-09-23",
+      "source_refs": [
+        {
+          "source_id": "A01-S002",
+          "locator": "agent/README.md, раздел «Настройка»; .env.example"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": null
+    },
+    {
+      "fact_id": "A01-F003",
+      "statement": "В STUPITS публичный ответ советника собирается из отчёта движка; от LLM используется только качественный комментарий без числовых утверждений.",
+      "kind": "observed",
+      "value": null,
+      "unit": null,
+      "geography": null,
+      "period": "коммит 2026-09-23",
+      "source_refs": [
+        {
+          "source_id": "A01-S002",
+          "locator": "agent/evidence.py, строки 1–6 (docstring)"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "Это декларация в коде; поведение во всех ветках не тестировалось агентом."
+    },
+    {
+      "fact_id": "A01-F004",
+      "statement": "Интерфейс и промпты STUPITS не содержат казахского текста: lang=\"ru\", 0 казахских букв в 6 файлах.",
+      "kind": "derived",
+      "value": 0,
+      "unit": "символов [әғқңөұүһі + заглавные]",
+      "geography": null,
+      "period": "коммит 2026-09-23",
+      "source_refs": [
+        {
+          "source_id": "A01-S002",
+          "locator": "web/index.html строка 2; web/app.js, web/interface.js, web/map.js, agent/prompts.py, agent/offline.py"
+        }
+      ],
+      "derivation": "Python re.findall по классу казахских букв в UTF-8; сумма по файлам.",
+      "confidence": "high",
+      "caveats": "Казахский текст мог бы храниться в других файлах (data/*.json не проверялись)."
+    },
+    {
+      "fact_id": "A01-F005",
+      "statement": "Хакатонный проект e-Otinish Smart Router AI распределяет обращения по департаментам через LLM (Gemini), выдаёт ссылки eOtinish и 2GIS и срок «15 жұмыс күні»; справочник на ключевых словах указывает на Кызылорду, Шымкент в данных не упоминается.",
+      "kind": "observed",
+      "value": 0,
+      "unit": "упоминаний «Шымкент»/«Shymkent» в data.json",
+      "geography": "Кызылорда (по ссылкам 2GIS)",
+      "period": "коммит 2026-09-15",
+      "source_refs": [
+        {
+          "source_id": "A01-S003",
+          "locator": "README.md; data.json, поле departments[].gis_url"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "Срок «15 рабочих дней» взят из README, правового значения не имеет."
+    },
+    {
+      "fact_id": "A01-F006",
+      "statement": "Сторонний PRD утверждает, что e-Otinish и 1414 позволяют выгружать данные и что выгрузки не анализируются системно (в контексте ЦОН).",
+      "kind": "observed",
+      "value": null,
+      "unit": null,
+      "geography": "Казахстан, ЦОН (не Шымкент)",
+      "period": "PRD, коммит 2026-10-02",
+      "source_refs": [
+        {
+          "source_id": "A01-S004",
+          "locator": "PRD.md, строки 15–18"
+        }
+      ],
+      "derivation": null,
+      "confidence": "low",
+      "caveats": "Мнение автора PRD; не подтверждено оператором; к службе 109 Шымкента напрямую не относится."
+    },
+    {
+      "fact_id": "A01-F007",
+      "statement": "В стороннем PRD повторные обращения определены как обращения заявителей, писавших/звонивших больше одного раза за месяц; используется нормирование «на 1000 обслуживаний» и принцип «жалоба не равна доказанной вине».",
+      "kind": "observed",
+      "value": null,
+      "unit": null,
+      "geography": "Казахстан, ЦОН",
+      "period": "PRD, коммит 2026-10-02",
+      "source_refs": [
+        {
+          "source_id": "A01-S004",
+          "locator": "PRD.md, FR-12 (стр. 122), стр. 102, стр. 196"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "Цитирование документа, а не эффективность метода."
+    },
+    {
+      "fact_id": "A01-F008",
+      "statement": "Публичный репозиторий содержит CSV (2 639 строк, 38 столбцов) со столбцами, похожими на выгрузку eOtinish: deadline, finish_dt, kato, issue_category_name_ru/kk, org_name_ru/kz, text_message, iin_bin, law_address.",
+      "kind": "observed",
+      "value": 2639,
+      "unit": "строк",
+      "geography": "не определено (столбец region: 21 уникальное значение)",
+      "period": null,
+      "source_refs": [
+        {
+          "source_id": "A01-S005",
+          "locator": "eobr_floods_final.csv, строка заголовка; агрегаты по столбцам"
+        }
+      ],
+      "derivation": "Подсчёт строк и уникальных значений через csv.reader; содержимое строк не выводилось.",
+      "confidence": "medium",
+      "caveats": "Происхождение и легальность неизвестны; возможны ПД. Не использовать; схема — только подсказка."
+    },
+    {
+      "fact_id": "A01-F009",
+      "statement": "Средняя длина значения iin_bin в этом CSV — 64 символа, что согласуется с хешированием (например, SHA-256 в hex); хеш структурированного 12-значного ИИН без соли обратим перебором.",
+      "kind": "hypothesis",
+      "value": 64,
+      "unit": "символов (средняя длина)",
+      "geography": null,
+      "period": null,
+      "source_refs": [
+        {
+          "source_id": "A01-S005",
+          "locator": "агрегат по столбцу iin_bin"
+        }
+      ],
+      "derivation": "Средняя длина строки по столбцу.",
+      "confidence": "low",
+      "caveats": "Формат хеша не проверялся; вывод о переборе требует проверки структуры ИИН по официальному источнику."
+    },
+    {
+      "fact_id": "A01-F010",
+      "statement": "KazQAD содержит чуть менее 6 000 уникальных вопросов и почти 12 000 оценок релевантности на уровне пассажей; лицензия CC BY-SA 4.0.",
+      "kind": "observed",
+      "value": 6000,
+      "unit": "вопросов (верхняя граница, «just under»)",
+      "geography": "казахский язык",
+      "period": "2024",
+      "source_refs": [
+        {
+          "source_id": "A01-S007",
+          "locator": "README.md, abstract; LICENSE"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "Домен — открытые вопросы, не государственные услуги."
+    },
+    {
+      "fact_id": "A01-F011",
+      "statement": "KazParC — параллельный корпус kk/en/ru/tr, источники включают государственные и нормативные правовые документы Казахстана; к нему выпущена модель перевода Tilmash.",
+      "kind": "observed",
+      "value": null,
+      "unit": null,
+      "geography": "Казахстан",
+      "period": "2024",
+      "source_refs": [
+        {
+          "source_id": "A01-S006",
+          "locator": "README.md, раздел Domains"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "Лицензия в README не найдена (null)."
+    },
+    {
+      "fact_id": "A01-F012",
+      "statement": "KazNERD: 112 702 предложения из теленовостей, 136 333 аннотации, 25 классов сущностей; CC BY 4.0.",
+      "kind": "observed",
+      "value": 25,
+      "unit": "классов сущностей",
+      "geography": "казахский язык",
+      "period": null,
+      "source_refs": [
+        {
+          "source_id": "A01-S008",
+          "locator": "README.md, раздел 1 и BibTeX abstract"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "Применимость к обезличиванию текстов обращений не проверена (другой домен)."
+    },
+    {
+      "fact_id": "A01-F013",
+      "statement": "Предположительно (по памяти модели): АППК РК действует с 2021 г.; общий срок рассмотрения обращения около 15 рабочих дней; предусмотрена передача по подведомственности с коротким сроком; есть правила для повторных обращений.",
+      "kind": "hypothesis",
+      "value": null,
+      "unit": null,
+      "geography": "Казахстан",
+      "period": null,
+      "source_refs": [
+        {
+          "source_id": "A01-S014",
+          "locator": "не открыт"
+        }
+      ],
+      "derivation": null,
+      "confidence": "low",
+      "caveats": "Номера статей и сроки обязательно проверить в действующей редакции на adilet.zan.kz."
+    },
+    {
+      "fact_id": "A01-F014",
+      "statement": "Предположительно (по памяти модели): закон о языках требует давать ответы на обращения на государственном языке или на языке обращения.",
+      "kind": "hypothesis",
+      "value": null,
+      "unit": null,
+      "geography": "Казахстан",
+      "period": null,
+      "source_refs": [],
+      "derivation": null,
+      "confidence": "low",
+      "caveats": "Проверить статью закона «О языках в РК» в действующей редакции."
+    },
+    {
+      "fact_id": "A01-F015",
+      "statement": "Число обращений в районе отражает не только проблемы, но и доступность канала, доверие и плотность населения/объектов; без нормирования и метрик качества сравнение районов по объёму вводит в заблуждение.",
+      "kind": "hypothesis",
+      "value": null,
+      "unit": null,
+      "geography": "Шымкент, районы",
+      "period": null,
+      "source_refs": [
+        {
+          "source_id": "A01-S004",
+          "locator": "PRD.md, стр. 102 — аналог нормирования"
+        }
+      ],
+      "derivation": null,
+      "confidence": "medium",
+      "caveats": "Методологический тезис; на данных Шымкента не проверен."
+    },
+    {
+      "fact_id": "A01-F016",
+      "statement": "По словам координатора, служба 109 в Шымкенте существует, а страница управления цифровизации на gov.kz содержит сведения о ней.",
+      "kind": "observed",
+      "value": null,
+      "unit": null,
+      "geography": "Шымкент",
+      "period": null,
+      "source_refs": [
+        {
+          "source_id": "A01-S016",
+          "locator": "раздел «Стартовые указатели»"
+        }
+      ],
+      "derivation": null,
+      "confidence": "low",
+      "caveats": "Наблюдение в тексте задания, агентом не проверено."
+    },
+    {
+      "fact_id": "A01-F017",
+      "statement": "Поиск репозиториев GitHub по запросу shymkent+109 вернул 0 результатов.",
+      "kind": "observed",
+      "value": 0,
+      "unit": "репозиториев",
+      "geography": null,
+      "period": "2026-10-04",
+      "source_refs": [
+        {
+          "source_id": "A01-S001",
+          "locator": "лог запроса api.github.com/search/repositories?q=shymkent+109"
+        }
+      ],
+      "derivation": null,
+      "confidence": "medium",
+      "caveats": "Отсутствие кода на GitHub не означает отсутствие проектов."
+    }
+  ],
+  "datasets": [
+    {
+      "dataset_id": "A01-D001",
+      "title": "Обращения службы 109 г. Шымкент (обезличенная выгрузка) — ТРЕБУЕТСЯ",
+      "publisher": null,
+      "source_ids": [
+        "A01-S010",
+        "A01-S016"
+      ],
+      "landing_url": null,
+      "download_or_api_url": null,
+      "access_status": "unavailable",
+      "tested_at": null,
+      "geography": "Шымкент",
+      "granularity": "обращение",
+      "period": null,
+      "format": null,
+      "fields": [
+        "case_id",
+        "received_at",
+        "assigned_first_at",
+        "assigned_final_at",
+        "deadline_at",
+        "answered_at",
+        "channel",
+        "language",
+        "text_redacted",
+        "district",
+        "kato",
+        "geo_cell_250m",
+        "category_initial",
+        "category_final",
+        "executor_initial",
+        "executor_final",
+        "reassign_count",
+        "status_final",
+        "resolution_type",
+        "reopened_flag",
+        "reopen_of_case_id",
+        "prior_cases_same_applicant_30d"
+      ],
+      "units": null,
+      "update_frequency": null,
+      "license": null,
+      "auth_requirement": "Согласие владельца данных; правовое основание обработки",
+      "limitations": "Публичность не подтверждена. Не утверждать, что набор открыт.",
+      "next_retrieval_step": "Владелец проекта проверяет страницу 109 (A01-S010) на наличие публичной статистики; при её отсутствии — запрос владельцу данных по спецификации (отчёт, раздел 7), вариант «код к данным»."
+    },
+    {
+      "dataset_id": "A01-D002",
+      "title": "Население Шымкента по районам (для нормирования объёма)",
+      "publisher": "Бюро национальной статистики",
+      "source_ids": [
+        "A01-S011"
+      ],
+      "landing_url": "https://stat.gov.kz/ru/region/shymkent/dynamic-tables/38/",
+      "download_or_api_url": null,
+      "access_status": "unavailable",
+      "tested_at": "2026-10-04",
+      "geography": "Шымкент, районы (уточнить)",
+      "granularity": "район",
+      "period": null,
+      "format": null,
+      "fields": [],
+      "units": "человек",
+      "update_frequency": null,
+      "license": null,
+      "auth_requirement": null,
+      "limitations": "Недоступно из песочницы; содержимое страницы и наличие разбивки по районам не проверены.",
+      "next_retrieval_step": "Открыть страницу, найти ряд «численность населения» по районам с явным годом, сохранить файл и условия использования."
+    },
+    {
+      "dataset_id": "A01-D003",
+      "title": "Каталог data.egov.kz: наборы по обращениям граждан Шымкента",
+      "publisher": "data.egov.kz",
+      "source_ids": [
+        "A01-S012",
+        "A01-S009"
+      ],
+      "landing_url": "https://data.egov.kz/",
+      "download_or_api_url": null,
+      "access_status": "unavailable",
+      "tested_at": "2026-10-04",
+      "geography": "Шымкент",
+      "granularity": null,
+      "period": null,
+      "format": null,
+      "fields": [],
+      "units": null,
+      "update_frequency": null,
+      "license": null,
+      "auth_requirement": "По памяти: API требует apiKey (не проверено)",
+      "limitations": "Наличие наборов неизвестно. Сторонние краулеры (A01-S009) не доказывают работоспособность API.",
+      "next_retrieval_step": "Поиск по каталогу запросами 9–10 из отчёта; при находке — реальный запрос с фиксацией URL, ответа и лицензии."
+    },
+    {
+      "dataset_id": "A01-D004",
+      "title": "Положения об управлениях акимата Шымкента и районных акиматах (для справочника компетенций)",
+      "publisher": "gov.kz / акимат г. Шымкент",
+      "source_ids": [
+        "A01-S010"
+      ],
+      "landing_url": null,
+      "download_or_api_url": null,
+      "access_status": "unavailable",
+      "tested_at": "2026-10-04",
+      "geography": "Шымкент",
+      "granularity": "орган",
+      "period": null,
+      "format": "HTML/PDF (предположительно)",
+      "fields": [
+        "орган",
+        "задачи",
+        "функции (пункты)",
+        "дата утверждения"
+      ],
+      "units": null,
+      "update_frequency": "при реорганизации",
+      "license": null,
+      "auth_requirement": null,
+      "limitations": "Не открыты.",
+      "next_retrieval_step": "Собрать 8–10 положений, извлечь пункты функций с URL и датой в таблицу «тип вопроса × территория → исполнитель, основание»."
+    },
+    {
+      "dataset_id": "A01-D005",
+      "title": "Стандарты государственных услуг и реестр госуслуг (для карточек навигатора)",
+      "publisher": "adilet.zan.kz / egov.kz",
+      "source_ids": [
+        "A01-S014",
+        "A01-S015"
+      ],
+      "landing_url": null,
+      "download_or_api_url": null,
+      "access_status": "unavailable",
+      "tested_at": "2026-10-04",
+      "geography": "Казахстан",
+      "granularity": "услуга",
+      "period": null,
+      "format": null,
+      "fields": [
+        "код/название услуги",
+        "получатель",
+        "срок",
+        "документы",
+        "канал",
+        "язык"
+      ],
+      "units": null,
+      "update_frequency": null,
+      "license": null,
+      "auth_requirement": null,
+      "limitations": "Не открыты; условия повторного использования текстов не проверены.",
+      "next_retrieval_step": "Для 30 ситуаций найти стандарт/страницу услуги, сохранить цитату, URL, дату."
+    },
+    {
+      "dataset_id": "A01-D006",
+      "title": "KazQAD",
+      "publisher": "ISSAI",
+      "source_ids": [
+        "A01-S007"
+      ],
+      "landing_url": "https://github.com/IS2AI/KazQAD",
+      "download_or_api_url": "https://huggingface.co/datasets/issai/kazqad",
+      "access_status": "documented_only",
+      "tested_at": "2026-10-04",
+      "geography": "казахский язык",
+      "granularity": "вопрос/пассаж",
+      "period": "2024",
+      "format": null,
+      "fields": [],
+      "units": null,
+      "update_frequency": null,
+      "license": "CC BY-SA 4.0",
+      "auth_requirement": null,
+      "limitations": "Домен не госуслуги; ShareAlike влияет на производные наборы. Данные не скачивались (HF недоступен из песочницы).",
+      "next_retrieval_step": "Только если понадобится оценка поиска на казахском; иначе не использовать."
+    },
+    {
+      "dataset_id": "A01-D007",
+      "title": "KazParC / модель Tilmash",
+      "publisher": "ISSAI",
+      "source_ids": [
+        "A01-S006"
+      ],
+      "landing_url": "https://github.com/IS2AI/KazParC",
+      "download_or_api_url": "https://huggingface.co/datasets/issai/kazparc",
+      "access_status": "documented_only",
+      "tested_at": "2026-10-04",
+      "geography": "kk/ru/en/tr",
+      "granularity": "пара предложений",
+      "period": "2024",
+      "format": null,
+      "fields": [],
+      "units": null,
+      "update_frequency": null,
+      "license": null,
+      "auth_requirement": null,
+      "limitations": "Лицензия не найдена в README; машинный перевод карточек недопустим без проверки человеком.",
+      "next_retrieval_step": "Проверить лицензию на странице HF; рассматривать как вспомогательный словарь терминов ru↔kk."
+    },
+    {
+      "dataset_id": "A01-D008",
+      "title": "CSV в репозитории eotinish_classification — НЕ ИСПОЛЬЗОВАТЬ",
+      "publisher": "GitHub: povchingiz (происхождение данных неизвестно)",
+      "source_ids": [
+        "A01-S005"
+      ],
+      "landing_url": "https://github.com/povchingiz/eotinish_classification",
+      "download_or_api_url": null,
+      "access_status": "restricted",
+      "tested_at": "2026-10-04",
+      "geography": "не определено",
+      "granularity": "обращение",
+      "period": null,
+      "format": "CSV",
+      "fields": [
+        "start_dt",
+        "deadline",
+        "finish_dt",
+        "appeal_id",
+        "current_working_state",
+        "appeal_type",
+        "issue",
+        "appeal_decision",
+        "kato",
+        "region",
+        "raion",
+        "org_name_ru",
+        "org_name_kz",
+        "issue_category_name_ru",
+        "issue_category_name_kk",
+        "text_message",
+        "iin_bin",
+        "law_address",
+        "…(38 всего)"
+      ],
+      "units": null,
+      "update_frequency": null,
+      "license": "Код: MIT; права на данные неизвестны",
+      "auth_requirement": null,
+      "limitations": "Технически публичен, но возможны персональные данные и неизвестна законность публикации. Агент прочитал только заголовок и агрегаты, копию удалил.",
+      "next_retrieval_step": "Не извлекать. Использовать перечень полей только как вопросы к владельцу данных."
+    }
+  ],
+  "opportunities": [
+    {
+      "idea_id": "A01-O001",
+      "title": "Навигатор жителя по официальным услугам (закрытый корпус карточек ru/kk)",
+      "problem": "P4 разрозненные инструкции, P5 языковой паритет, частично P2 (обращения «не туда»)",
+      "evidence_fact_ids": [
+        "A01-F003",
+        "A01-F004",
+        "A01-F005",
+        "A01-F014"
+      ],
+      "primary_user": "Житель Шымкента (ru/kk), с телефона",
+      "user_task": "Понять: это госуслуга, обращение, экстренный случай или вопрос не к городу; куда идти, что приложить, какой срок",
+      "existing_solution": "egov.kz, страницы органов на gov.kz, служба 109 (функции не проверены), возможные чат-боты — unknown",
+      "proposed_addition": "Ответ только из верифицированных карточек с цитатой, URL и датой проверки; allowlist ссылок; экстренное первым; явный отказ при отсутствии карточки; паритет ru/kk",
+      "required_dataset_ids": [
+        "A01-D004",
+        "A01-D005"
+      ],
+      "ai_role": "Распознать намерение в свободном/смешанном тексте и выбрать id карточек; текст и ссылки выдаёт детерминированный код (принцип A01-F003)",
+      "non_ai_baseline": "BM25 по названиям и синонимам ru/kk",
+      "success_metrics": [
+        "Acc@1 выбора карточки",
+        "полнота и точность ссылок (выдуманных = 0)",
+        "доля правильных отказов / ложных отказов",
+        "медиана времени до правильного канала и доля успешных задач (ru и kk отдельно)"
+      ],
+      "feasibility_10_days": "Высокая для v0 на 30 карточках при доступе владельца к официальным страницам",
+      "blockers": [
+        "Сбор и проверка карточек вручную",
+        "Условия повторного использования текстов",
+        "Возможное дублирование существующих сервисов"
+      ],
+      "transfer_to_astana": "Да: корпус и экстренные каналы — конфигурация города; собрать заново",
+      "next_action": "Собрать 30 карточек для тем T01–T10 и смежных; реализовать BM25-baseline; прогнать synthetic-набор"
+    },
+    {
+      "idea_id": "A01-O002",
+      "title": "Помощник оператора 109: маршрутизация с основанием компетенции и типизированные связи повторов",
+      "problem": "P2 переадресации, P3 смешение типов повторов, P1 статус",
+      "evidence_fact_ids": [
+        "A01-F005",
+        "A01-F006",
+        "A01-F007",
+        "A01-F013",
+        "A01-F015"
+      ],
+      "primary_user": "Оператор/диспетчер 109; куратор в управлении",
+      "user_task": "Назначить исполнителя, связать с существующим обращением, распознать экстренный случай",
+      "existing_solution": "Unknown: функции 109 не проверены; prior art — LLM-маршрутизатор без основания (A01-S003)",
+      "proposed_addition": "Топ-3 исполнителя с пунктом положения и URL; флаг «вне компетенции → куда»; связи трёх типов (повтор заявителя / кластер / reopen) с подтверждением человеком",
+      "required_dataset_ids": [
+        "A01-D001",
+        "A01-D004"
+      ],
+      "ai_role": "Ранжирование кандидатов из справочника и семантическая близость для кластеров; без генерации исполнителя",
+      "non_ai_baseline": "Правила по ключевым словам ru/kk + тип объекта; связи по адресу/категории/окну времени",
+      "success_metrics": [
+        "Recall@3 итогового исполнителя (ретротест)",
+        "доля переадресованных и время до финального назначения (до/после, только при пилоте)",
+        "точность предложенных связей по типам"
+      ],
+      "feasibility_10_days": "Низкая для оценки (нет данных); средняя для справочника компетенций и тестовой обвязки",
+      "blockers": [
+        "Нет обезличенной выгрузки",
+        "Неизвестны текущие функции 109",
+        "Правовое основание обработки"
+      ],
+      "transfer_to_astana": "Частично: метод переносим, справочник — городской",
+      "next_action": "Подготовить спецификацию выгрузки и скрипт оценки «код к данным»"
+    },
+    {
+      "idea_id": "A01-O003",
+      "title": "Исследование: граф компетенций города + process mining журнала обращений",
+      "problem": "Задержки на стыках компетенций и непрозрачность узких мест",
+      "evidence_fact_ids": [
+        "A01-F013",
+        "A01-F015"
+      ],
+      "primary_user": "Управление цифровизации / аналитик акимата; дипломная работа",
+      "user_task": "Найти, где ответственность не определена или пересекается и где процесс застревает",
+      "existing_solution": "Unknown",
+      "proposed_addition": "Машиночитаемая модель «тип вопроса × территория → орган, основание» из положений; поиск дыр и пересечений; анализ журнала статусов",
+      "required_dataset_ids": [
+        "A01-D004",
+        "A01-D001"
+      ],
+      "ai_role": "Помощь в извлечении функций из текстов положений (с ручной проверкой); анализ процесса — без AI",
+      "non_ai_baseline": "Ручная таблица компетенций и описательная статистика журнала",
+      "success_metrics": [
+        "число найденных пересечений/дыр, подтверждённых экспертом",
+        "доля задержек, объяснённых неоднозначностью компетенций (на размеченной выборке)"
+      ],
+      "feasibility_10_days": "Низкая (нужен журнал событий); граф v0 по 8–10 положениям — средняя",
+      "blockers": [
+        "Доступ к журналу событий",
+        "Актуальность положений"
+      ],
+      "transfer_to_astana": "Да, как метод",
+      "next_action": "Вручную разметить 50 обезличенных переадресованных обращений, когда появится доступ"
+    }
+  ],
+  "open_questions": [
+    {
+      "question": "Какие функции у службы 109 Шымкента сейчас: каналы, языки, номер и трекинг статуса, классификатор, передача в eOtinish?",
+      "why_important": "Без этого нельзя оценить пользу обеих альтернатив относительно существующего сервиса",
+      "how_to_check": "Открыть A01-S010 и страницу 109; пройти путь подачи без отправки; запросы 1–4"
+    },
+    {
+      "question": "Публикует ли 109/акимат агрегированную статистику обращений (по темам, районам, срокам)?",
+      "why_important": "Определяет, можно ли строить панель «объём ≠ качество» на открытых данных",
+      "how_to_check": "Запросы 5, 6, 9, 10; отчёты акима перед населением"
+    },
+    {
+      "question": "Какие статьи АППК задают сроки рассмотрения, переадресацию и правила повторных обращений в действующей редакции?",
+      "why_important": "Метрика «в срок» и логика повторов опираются на норму, а не на память модели",
+      "how_to_check": "Запросы 7–8 на adilet.zan.kz; зафиксировать номер статьи и редакцию"
+    },
+    {
+      "question": "Есть ли разбивка населения Шымкента по районам с явным годом?",
+      "why_important": "Нормирование объёма обращений",
+      "how_to_check": "A01-S011; сохранить файл и год"
+    },
+    {
+      "question": "Есть ли на data.egov.kz наборы по обращениям в Шымкенте и работает ли API?",
+      "why_important": "Источник открытых агрегатов",
+      "how_to_check": "Поиск по каталогу и реальный API-запрос с фиксацией ответа и лицензии"
+    },
+    {
+      "question": "Как 109 определяет «повторное обращение» и есть ли статус reopen?",
+      "why_important": "Разделение трёх типов повторов — ключ к метрике качества",
+      "how_to_check": "Документация 109 или запрос владельцу данных"
+    },
+    {
+      "question": "Насколько паритетны ru/kk-версии официальных инструкций по частым ситуациям?",
+      "why_important": "Языковая доступность — отдельная ценность навигатора",
+      "how_to_check": "Сравнить 10 карточек на gov.kz/egov в обеих версиях"
+    },
+    {
+      "question": "Существуют ли уже официальные чат-боты или навигаторы акимата Шымкента?",
+      "why_important": "Риск дублирования (возражение 1)",
+      "how_to_check": "Страница 109, соцсети акимата, запрос 10 вариант «Telegram бот 109 Шымкент»"
+    }
+  ],
+  "deliverables": {
+    "search_queries": [
+      {
+        "n": 1,
+        "lang": "ru",
+        "q": "\"служба 109\" Шымкент акимат каналы статус обращения"
+      },
+      {
+        "n": 2,
+        "lang": "kk",
+        "q": "\"109 қызметі\" Шымкент әкімдігі өтініш"
+      },
+      {
+        "n": 3,
+        "lang": "ru",
+        "q": "управление цифровизации города Шымкент положение site:gov.kz"
+      },
+      {
+        "n": 4,
+        "lang": "kk",
+        "q": "Шымкент қаласы цифрландыру басқармасы туралы ереже site:gov.kz"
+      },
+      {
+        "n": 5,
+        "lang": "ru",
+        "q": "Шымкент 109 количество обращений 2025 отчёт акима"
+      },
+      {
+        "n": 6,
+        "lang": "kk",
+        "q": "Шымкент 109 өтініштер саны 2025 есеп"
+      },
+      {
+        "n": 7,
+        "lang": "ru",
+        "q": "срок рассмотрения обращения передача по подведомственности Административный процедурно-процессуальный кодекс site:adilet.zan.kz"
+      },
+      {
+        "n": 8,
+        "lang": "kk",
+        "q": "өтінішті қарау мерзімі Әкімшілік рәсімдік-процестік кодекс site:adilet.zan.kz"
+      },
+      {
+        "n": 9,
+        "lang": "ru",
+        "q": "eOtinish статистика обращений Шымкент 2025"
+      },
+      {
+        "n": 10,
+        "lang": "kk",
+        "q": "азаматтардың өтініштері Шымкент ашық деректер data.egov.kz"
+      }
+    ],
+    "test_cases_file": "A01_synthetic_test_cases.json (10 ситуаций, все synthetic)",
+    "metrics": {
+      "routing_accuracy": {
+        "formula": "Acc@1 = |{i∈R: ŷ1(i)=y(i)}|/|R|; Recall@3; Jaccard для многоисполнительных; macro-F1",
+        "current_value": null
+      },
+      "link_completeness": {
+        "formula": "LC = Σ|L̂i ∩ L*i| / Σ|L*i|; link precision = доля выданных ссылок из allowlist, открывающихся и совпадающих по заголовку; выдуманных ссылок = 0",
+        "current_value": null
+      },
+      "correct_refusal_rate": {
+        "formula": "CR = корректные отказы/перенаправления / случаи с эталоном «отказ»; плюс false refusal rate на отвечаемых",
+        "current_value": null
+      },
+      "task_time": {
+        "formula": "медиана секунд до правильно названного канала; доля успешных задач; ru и kk отдельно; против контроля",
+        "current_value": null
+      },
+      "processing_quality": {
+        "formula": "доля в срок = |answered_at ≤ deadline_at|/|closed|; медиана часов до финального назначения; доля reassign_count≥1; доля reopen за 30 дней; интервалы Уилсона",
+        "current_value": null
+      }
+    },
+    "experiments": [
+      {
+        "id": "A01-E001",
+        "purpose": "Проверить доступ к официальным доменам",
+        "command": "curl -sS -o /dev/null -D - --max-time 15 <URL>",
+        "inputs": [
+          "https://www.gov.kz/memleket/entities/shymkent-sandyk?lang=ru",
+          "https://stat.gov.kz/ru/region/shymkent/dynamic-tables/38/",
+          "https://data.egov.kz/",
+          "https://eotinish.kz/",
+          "https://adilet.zan.kz/rus",
+          "https://egov.kz/"
+        ],
+        "versions": "curl 8.5.0",
+        "result": "Все 403, x-deny-reason: host_not_allowed"
+      },
+      {
+        "id": "A01-E002",
+        "purpose": "Проверить репозиторий STUPITS",
+        "command": "git clone --depth 1 https://github.com/BAITC-Hacks/hack-d3b2c613-stupits.git",
+        "versions": "git 2.43.0",
+        "result": "HEAD 834a25fb860dd5514d02c9274b70d7bf8a53a79c, 2026-09-23T18:36:48+06:00"
+      },
+      {
+        "id": "A01-E003",
+        "purpose": "Наличие казахского текста в UI/промптах",
+        "command": "python3: re.findall('[әғқңөұүһіӘҒҚҢӨҰҮҺІ]') по web/index.html, web/app.js, web/interface.js, web/map.js, agent/prompts.py, agent/offline.py",
+        "versions": "Python 3.12.3",
+        "result": "0 во всех файлах. Первая попытка через grep дала ложные числа из-за байтовой локали — отброшена."
+      },
+      {
+        "id": "A01-E004",
+        "purpose": "Поиск prior art и клиентов data.egov.kz",
+        "command": "curl https://api.github.com/search/repositories?q=<data.egov.kz|eotinish|e-otinish|shymkent+109>",
+        "versions": "curl 8.5.0",
+        "result": "Найдены A01-S003..S005, S009; shymkent+109 → 0. Первый вызов API упёрся в rate limit."
+      },
+      {
+        "id": "A01-E005",
+        "purpose": "Схема CSV в S005 без чтения содержимого",
+        "command": "python3 csv.reader: заголовок, число строк, число уникальных значений и средняя длина по столбцам",
+        "versions": "Python 3.12.3",
+        "result": "2639 строк, 38 столбцов; клон удалён после проверки"
+      }
+    ],
+    "second_pass_task": "Агент с веб-доступом: открыть A01-S010..S015, выполнить 10 запросов; зафиксировать функции 109, публичную статистику и условия использования; найти статьи АППК о сроках/переадресации/повторах; население по районам из БНС с годом; реальный запрос к data.egov.kz; собрать 30 карточек с цитатами и заполнить эталоны T01–T10; обновить статусы P1–P5.",
+    "dependencies": [
+      "ЖКХ/энергетика: ответственные за сети, аварийные службы, ОСИ/КСК",
+      "Земельные отношения: границы компетенции (T10)",
+      "Безопасность: официальные экстренные номера (T06, T07)",
+      "Поперечная роль по данным: тест API data.egov.kz",
+      "Правовая роль: повторное использование текстов НПА, закон о ПД"
+    ]
+  }
+}

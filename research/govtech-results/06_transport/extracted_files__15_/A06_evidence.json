@@ -1,0 +1,1394 @@
+{
+ "meta": {
+  "agent_id": "A06",
+  "topic": "Транспорт: автобусы, остановки и доступность",
+  "city": "Шымкент",
+  "searched_at": "2026-10-04T17:17:00Z/2026-10-04T17:45:00Z",
+  "access_limitations": "Нет браузера и веб-поиска. Egress-прокси блокирует gov.kz, stat.gov.kz, data.egov.kz, sumo.dlr.de, overpass-api.de, openstreetmap.org, zenodo.org, doi.org (403 host_not_allowed). Доступны github.com, raw.githubusercontent.com, api.github.com (лимит исчерпан), PyPI. Ни один местный источник по Шымкенту не открыт; городские проблемы — гипотезы."
+ },
+ "sources": [
+  {
+   "source_id": "A06-S001",
+   "title": "STUPITS «Аким на 5 часов» (repo)",
+   "publisher": "BAITC-Hacks / команда STUPITS",
+   "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits",
+   "published_at": "2026-09-23",
+   "accessed_at": "2026-10-04",
+   "source_type": "code_repository",
+   "access_status": "opened",
+   "notes": "Shallow clone, commit 834a25fb860dd5514d02c9274b70d7bf8a53a79c (2026-09-23 18:36 +0600). Read-only; project not modified."
+  },
+  {
+   "source_id": "A06-S002",
+   "title": "mobility-database-catalogs",
+   "publisher": "MobilityData",
+   "url": "https://github.com/MobilityData/mobility-database-catalogs",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "open_data_catalog",
+   "access_status": "opened",
+   "notes": "Shallow clone, commit 18849648c647 (2026-10-01). 3515 JSON records parsed by script."
+  },
+  {
+   "source_id": "A06-S003",
+   "title": "transitland-atlas",
+   "publisher": "Interline / Transitland",
+   "url": "https://github.com/transitland/transitland-atlas",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "open_data_catalog",
+   "access_status": "opened",
+   "notes": "Shallow clone, commit 55d6eae05013 (2026-10-04). 811 feed JSON files grepped."
+  },
+  {
+   "source_id": "A06-S004",
+   "title": "GitHub repository search API (queries: shymkent, chimkent, shymkent+bus, shymkent+gtfs, shymkent+transport, gtfs+kazakhstan, almaty+gtfs, astana+gtfs, citybus+kz, kazakhstan+bus+routes)",
+   "publisher": "GitHub",
+   "url": "https://api.github.com/search/repositories",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "search_api",
+   "access_status": "opened",
+   "notes": "Unauthenticated; rate limit reached after ~10 calls. Search covers repo names/descriptions only, not code."
+  },
+  {
+   "source_id": "A06-S005",
+   "title": "city-bus-auth-token-retriever README",
+   "publisher": "GitHub user LidLowe (third party)",
+   "url": "https://github.com/LidLowe/city-bus-auth-token-retriever",
+   "published_at": "2026-08-08",
+   "accessed_at": "2026-10-04",
+   "source_type": "third_party_readme",
+   "access_status": "opened",
+   "notes": "Claims citybus.tha.kz has no public API and requires multi-step JWT auth. Unverified third-party statement; date = last push."
+  },
+  {
+   "source_id": "A06-S006",
+   "title": "BusSure datasets (mirror of Astana bus dataset) — datasets/astana",
+   "publisher": "GitHub user Mrithula742 (third party)",
+   "url": "https://github.com/Mrithula742/Bussure/tree/main/datasets/astana",
+   "published_at": "2026-09-30",
+   "accessed_at": "2026-10-04",
+   "source_type": "dataset_mirror",
+   "access_status": "opened",
+   "notes": "Sparse clone commit 0356bb5b37ef. READ-ME.txt states source Zenodo 15769359, CC BY 4.0, MD5 matched. stop_times.txt and segment_level_data.csv are Git LFS pointers only."
+  },
+  {
+   "source_id": "A06-S007",
+   "title": "Astana bus dataset (Zenodo record 15769359)",
+   "publisher": "Zenodo / Mansurova, Mussina, Aubakirov, Nugumanova, Yedilkhan",
+   "url": "https://zenodo.org/records/15769359",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "dataset",
+   "access_status": "not_accessed",
+   "notes": "Domain blocked in this session; referenced from S006."
+  },
+  {
+   "source_id": "A06-S008",
+   "title": "Data paper describing the Astana bus dataset",
+   "publisher": "MDPI Data (per DOI prefix)",
+   "url": "https://doi.org/10.3390/data10080119",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "scientific_paper",
+   "access_status": "not_accessed",
+   "notes": "Not opened; DOI taken from S006 READ-ME.txt. Title/issue unverified."
+  },
+  {
+   "source_id": "A06-S009",
+   "title": "GTFS Schedule Reference",
+   "publisher": "google/transit (MobilityData-maintained spec)",
+   "url": "https://github.com/google/transit/blob/master/gtfs/spec/en/reference.md",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "specification",
+   "access_status": "opened",
+   "notes": "Raw file at commit 3c9e7b904b50, 912 lines."
+  },
+  {
+   "source_id": "A06-S010",
+   "title": "GTFS Realtime Reference",
+   "publisher": "google/transit",
+   "url": "https://github.com/google/transit/blob/master/gtfs-realtime/spec/en/reference.md",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "specification",
+   "access_status": "opened",
+   "notes": "Raw file, 736 lines."
+  },
+  {
+   "source_id": "A06-S011",
+   "title": "SUMO docs: Simulation/Rerouter",
+   "publisher": "Eclipse SUMO (DLR)",
+   "url": "https://github.com/eclipse-sumo/sumo/blob/main/docs/web/docs/Simulation/Rerouter.md",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "official_documentation",
+   "access_status": "opened",
+   "notes": "Source of https://sumo.dlr.de/docs/Simulation/Rerouter.html (site blocked). Repo commit 1b33dffbd8dd."
+  },
+  {
+   "source_id": "A06-S012",
+   "title": "SUMO docs: Demand/Dynamic_User_Assignment",
+   "publisher": "Eclipse SUMO (DLR)",
+   "url": "https://github.com/eclipse-sumo/sumo/blob/main/docs/web/docs/Demand/Dynamic_User_Assignment.md",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "official_documentation",
+   "access_status": "opened",
+   "notes": "Source of sumo.dlr.de page."
+  },
+  {
+   "source_id": "A06-S013",
+   "title": "SUMO docs: Networks/Import/OpenStreetMap",
+   "publisher": "Eclipse SUMO (DLR)",
+   "url": "https://github.com/eclipse-sumo/sumo/blob/main/docs/web/docs/Networks/Import/OpenStreetMap.md",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "official_documentation",
+   "access_status": "opened",
+   "notes": ""
+  },
+  {
+   "source_id": "A06-S014",
+   "title": "SUMO docs: Simulation/Why_Vehicles_are_teleporting",
+   "publisher": "Eclipse SUMO (DLR)",
+   "url": "https://github.com/eclipse-sumo/sumo/blob/main/docs/web/docs/Simulation/Why_Vehicles_are_teleporting.md",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "official_documentation",
+   "access_status": "opened",
+   "notes": ""
+  },
+  {
+   "source_id": "A06-S015",
+   "title": "SUMO docs: Simulation/Output/StatisticOutput",
+   "publisher": "Eclipse SUMO (DLR)",
+   "url": "https://github.com/eclipse-sumo/sumo/blob/main/docs/web/docs/Simulation/Output/StatisticOutput.md",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "official_documentation",
+   "access_status": "opened",
+   "notes": ""
+  },
+  {
+   "source_id": "A06-S016",
+   "title": "SUMO docs: Tools/Import/GTFS",
+   "publisher": "Eclipse SUMO (DLR)",
+   "url": "https://github.com/eclipse-sumo/sumo/blob/main/docs/web/docs/Tools/Import/GTFS.md",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "official_documentation",
+   "access_status": "opened",
+   "notes": ""
+  },
+  {
+   "source_id": "A06-S017",
+   "title": "MapLibre GL JS example: Add a 3D model using three.js",
+   "publisher": "MapLibre",
+   "url": "https://github.com/maplibre/maplibre-gl-js/blob/main/test/examples/add-a-3d-model-using-threejs.html",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "official_documentation",
+   "access_status": "opened",
+   "notes": "Source of https://maplibre.org/maplibre-gl-js/docs/examples/add-a-3d-model-using-threejs/ (site not tried separately)."
+  },
+  {
+   "source_id": "A06-S018",
+   "title": "Управление цифровизации г. Шымкент (gov.kz, shymkent-sandyk)",
+   "publisher": "gov.kz",
+   "url": "https://www.gov.kz/memleket/entities/shymkent-sandyk?lang=ru",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "government_page",
+   "access_status": "blocked",
+   "notes": "403 host_not_allowed from egress proxy. Content unknown."
+  },
+  {
+   "source_id": "A06-S019",
+   "title": "БНС: динамические ряды по Шымкенту",
+   "publisher": "stat.gov.kz",
+   "url": "https://stat.gov.kz/ru/region/shymkent/dynamic-tables/38/",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "official_statistics",
+   "access_status": "blocked",
+   "notes": "403 host_not_allowed."
+  },
+  {
+   "source_id": "A06-S020",
+   "title": "Портал открытых данных",
+   "publisher": "data.egov.kz",
+   "url": "https://data.egov.kz/",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "open_data_portal",
+   "access_status": "blocked",
+   "notes": "403 host_not_allowed."
+  },
+  {
+   "source_id": "A06-S021",
+   "title": "A06 isolated experiments E1–E3 (synthetic)",
+   "publisher": "A06 (own)",
+   "url": "A06_experiments_synthetic.zip",
+   "published_at": "2026-10-04",
+   "accessed_at": "2026-10-04",
+   "source_type": "own_experiment",
+   "access_status": "executed",
+   "notes": "Python 3.12.3, Eclipse SUMO 1.24.0 (PyPI eclipse-sumo, EPL-2.0). Synthetic networks and demand; not Shymkent."
+  },
+  {
+   "source_id": "A06-S022",
+   "title": "Shymkent Hub · Battle of Problems README",
+   "publisher": "GitHub user facei7505-droid (third party)",
+   "url": "https://github.com/facei7505-droid/shymhub",
+   "published_at": "2026-10-01",
+   "accessed_at": "2026-10-04",
+   "source_type": "third_party_readme",
+   "access_status": "opened",
+   "notes": "Civic problem-ranking app for Shymkent (Elo voting, Leaflet map). Context only; deployment/usage not verified."
+  },
+  {
+   "source_id": "A06-S023",
+   "title": "Egress network check (session)",
+   "publisher": "A06 (own)",
+   "url": null,
+   "published_at": "2026-10-04",
+   "accessed_at": "2026-10-04",
+   "source_type": "session_observation",
+   "access_status": "executed",
+   "notes": "curl to gov.kz, stat.gov.kz, data.egov.kz, sumo.dlr.de, overpass-api.de, openstreetmap.org, zenodo.org, doi.org returned 403 with x-deny-reason: host_not_allowed; github.com 200."
+  }
+ ],
+ "facts": [
+  {
+   "fact_id": "A06-F001",
+   "statement": "В сессии заблокированы gov.kz, stat.gov.kz, data.egov.kz, sumo.dlr.de, overpass-api.de, openstreetmap.org; доступен GitHub",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": null,
+   "period": "2026-10-04",
+   "source_refs": [
+    {
+     "source_id": "A06-S023",
+     "locator": "curl output, x-deny-reason header"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Ограничение среды агента, не свойство сайтов."
+  },
+  {
+   "fact_id": "A06-F002",
+   "statement": "В каталоге MobilityData нет фидов с country_code KZ (0 schedule, 0 realtime) при 3515 записях и 87 странах; контроль RU=2, TR=24, GE=1",
+   "kind": "observed",
+   "value": 0,
+   "unit": "feeds",
+   "geography": "Kazakhstan",
+   "period": "catalog state 2026-10-01",
+   "source_refs": [
+    {
+     "source_id": "A06-S002",
+     "locator": "catalogs/sources/**/*.json, поле location.country_code; скрипт в сессии"
+    }
+   ],
+   "derivation": "Подсчёт по полю location.country_code",
+   "confidence": "high",
+   "caveats": "Отсутствие в каталоге ≠ отсутствие данных у владельца."
+  },
+  {
+   "fact_id": "A06-F003",
+   "statement": "В transitland-atlas (811 файлов feeds/*.json) нет совпадений по kazakhstan, .kz, shymkent, шымкент, almaty, astana",
+   "kind": "observed",
+   "value": 0,
+   "unit": "matches",
+   "geography": "Kazakhstan",
+   "period": "atlas state 2026-10-04",
+   "source_refs": [
+    {
+     "source_id": "A06-S003",
+     "locator": "feeds/ — grep -ril"
+    }
+   ],
+   "derivation": "grep без учёта регистра",
+   "confidence": "high",
+   "caveats": "grep по строкам; фиды с иным описанием теоретически возможны."
+  },
+  {
+   "fact_id": "A06-F004",
+   "statement": "GitHub-поиск репозиториев: shymkent+gtfs=0, shymkent+bus=0, shymkent+transport=0, chimkent=0, almaty+gtfs=0, gtfs+kazakhstan=0",
+   "kind": "observed",
+   "value": 0,
+   "unit": "repositories",
+   "geography": "Shymkent/Kazakhstan",
+   "period": "2026-10-04",
+   "source_refs": [
+    {
+     "source_id": "A06-S004",
+     "locator": "total_count в ответах API"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Поиск по названию/описанию, не по коду."
+  },
+  {
+   "fact_id": "A06-F005",
+   "statement": "По заявлению стороннего README, у CityBus (citybus.tha.kz) нет публичного API, доступ требует многошаговой JWT-авторизации",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": "Kazakhstan (охват городов не проверен)",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A06-S005",
+     "locator": "README, раздел Why It Exists"
+    }
+   ],
+   "derivation": null,
+   "confidence": "low",
+   "caveats": "Сторонний источник; охват Шымкента и условия сервиса не проверены; использовать обход авторизации нельзя."
+  },
+  {
+   "fact_id": "A06-F006",
+   "statement": "Зеркало набора Астаны: агентство CTS, 3 маршрута (10, 12, 46), 201 остановка, 19 769 рейсов, 148 бортов, 55 дат обслуживания 2024-07-29…2024-09-21",
+   "kind": "observed",
+   "value": {
+    "routes": 3,
+    "stops": 201,
+    "trips": 19769,
+    "vehicles": 148,
+    "service_dates": 55
+   },
+   "unit": "count",
+   "geography": "Астана",
+   "period": "2024-07-29/2024-09-21",
+   "source_refs": [
+    {
+     "source_id": "A06-S006",
+     "locator": "gtfs_data/agency.txt, routes.txt, stops.txt, trips.txt, calendar_dates.txt"
+    }
+   ],
+   "derivation": "Подсчёт строк и уникальных значений скриптом",
+   "confidence": "high",
+   "caveats": "Зеркало, не первоисточник; stop_times.txt — LFS-указатель (49 841 502 байт)."
+  },
+  {
+   "fact_id": "A06-F007",
+   "statement": "Файлы набора Астаны разделены табуляцией, тогда как GTFS требует comma-delimited text",
+   "kind": "derived",
+   "value": null,
+   "unit": null,
+   "geography": "Астана",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A06-S006",
+     "locator": "заголовки *.txt"
+    },
+    {
+     "source_id": "A06-S009",
+     "locator": "reference.md, строка 155"
+    }
+   ],
+   "derivation": "Сравнение формата файла с требованием спецификации",
+   "confidence": "high",
+   "caveats": "Нужна конвертация перед GTFS-инструментами."
+  },
+  {
+   "fact_id": "A06-F008",
+   "statement": "Лицензия набора Астаны заявлена как CC BY 4.0",
+   "kind": "observed",
+   "value": "CC BY 4.0",
+   "unit": null,
+   "geography": "Астана",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A06-S006",
+     "locator": "READ-ME.txt, строка 4"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Подтвердить на странице Zenodo (S007 не открыт)."
+  },
+  {
+   "fact_id": "A06-F009",
+   "statement": "GTFS: stops.txt имеет опциональное поле wheelchair_boarding; есть frequencies.txt для интервалов и pathways.txt/levels.txt для графа переходов внутри станций",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": null,
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A06-S009",
+     "locator": "строки 223, 649, 725–731, 759"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": null
+  },
+  {
+   "fact_id": "A06-F010",
+   "statement": "SUMO closingReroute без allow/disallow: машины без альтернативы игнорируют закрытие; с allow/disallow — останавливаются перед закрытым участком до конца интервала",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": null,
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A06-S011",
+     "locator": "строки 89–127"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Версия main, не обязательно совпадает с релизом 1.24.0."
+  },
+  {
+   "fact_id": "A06-F011",
+   "statement": "duaIterate.py ищет приближённое динамическое равновесие итерационно; сходимость трудно предсказать, результаты могут меняться и после 1000 итераций",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": null,
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A06-S012",
+     "locator": "строки 25–50, 134–141"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": null
+  },
+  {
+   "fact_id": "A06-F012",
+   "statement": "Импорт OSM: высота из тега layer только с --osm.layer-elevation, эвристически, может потребоваться ручная правка",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": null,
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A06-S013",
+     "locator": "раздел Layer Information, строки 268–273"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": null
+  },
+  {
+   "fact_id": "A06-F013",
+   "statement": "Импорт OSM: соединения полоса-к-полосе угадываются netconvert; разметка поворотов используется с --osm.turn-lanes",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": null,
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A06-S013",
+     "locator": "раздел Lane-To-Lane Connections, строки 121–126"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": null
+  },
+  {
+   "fact_id": "A06-F014",
+   "statement": "statistic-output SUMO: running — машины в сети на конец, waiting — не въехавшие из-за задержки вставки; teleports по причинам jam/yield/wrongLane",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": null,
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A06-S015",
+     "locator": "строки 55–56, 59–66"
+    },
+    {
+     "source_id": "A06-S014",
+     "locator": "строки 48–76"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": null
+  },
+  {
+   "fact_id": "A06-F015",
+   "statement": "MapLibre поддерживает 3D-модель через custom-слой с three.js (пример грузит three@0.169.0)",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": null,
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A06-S017",
+     "locator": "строки 22, 69–75"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Визуализация, не модель движения."
+  },
+  {
+   "fact_id": "A06-F016",
+   "statement": "Карта STUPITS: вендорный MapLibre GL JS 5.6.2, стиль OpenFreeMap Liberty, районы — geojson-источник",
+   "kind": "observed",
+   "value": "5.6.2",
+   "unit": "version",
+   "geography": null,
+   "period": "commit 834a25f",
+   "source_refs": [
+    {
+     "source_id": "A06-S001",
+     "locator": "web/vendor/maplibre-gl.js header; web/map.js строки 204, 253–258"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": null
+  },
+  {
+   "fact_id": "A06-F017",
+   "statement": "Сервер STUPITS отдаёт статику по белому списку ASSETS и обслуживает GET /api/bootstrap, /api/baseline, /api/events",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": null,
+   "period": "commit 834a25f",
+   "source_refs": [
+    {
+     "source_id": "A06-S001",
+     "locator": "ui/web_server.py строки 27–35, 223–240"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": null
+  },
+  {
+   "fact_id": "A06-F018",
+   "statement": "Транспортные меры STUPITS (M1–M3) — абстрактные эффекты учебного датасета на T1/T2 и не переносятся на Шымкент",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": "Астана (учебный)",
+   "period": "commit 834a25f",
+   "source_refs": [
+    {
+     "source_id": "A06-S001",
+     "locator": "data/city_data.json строки 21–22, 75–77"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": null
+  },
+  {
+   "fact_id": "A06-F019",
+   "statement": "E1: в варианте «эстакада без съездов» путь W→S отсутствует (нет общего узла)",
+   "kind": "synthetic",
+   "value": false,
+   "unit": "route_exists",
+   "geography": "synthetic",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A06-S021",
+     "locator": "e1/results.json → connectivity.B"
+    }
+   ],
+   "derivation": "sumolib getShortestPath",
+   "confidence": "high",
+   "caveats": "Проверяет семантику графа, не реальный узел."
+  },
+  {
+   "fact_id": "A06-F020",
+   "statement": "E1: доля завершённых поездок A/C: транзитный спрос 3600 — 95,8%/59,7%; поворотный 2400 — 100%/41,2%; при транзитном 2400 потери 58,7 с (A) и 28,9 с (C)",
+   "kind": "synthetic",
+   "value": {
+    "A_th3600": 0.958,
+    "C_th3600": 0.597,
+    "A_turn2400": 1.0,
+    "C_turn2400": 0.412
+   },
+   "unit": "share",
+   "geography": "synthetic",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A06-S021",
+     "locator": "e1/results.json → runs"
+    }
+   ],
+   "derivation": "completed=(inserted−running)/(inserted+waiting)",
+   "confidence": "high",
+   "caveats": "Свойство конкретной синтетической схемы (однополосное кольцо, приоритетные слияния, статический светофор по умолчанию). Телепортированные считаются доехавшими."
+  },
+  {
+   "fact_id": "A06-F021",
+   "statement": "E1: средние потери по завершённым поездкам в C снижаются с 926,7 с (2400) до 528,8 с (3600) при росте спроса — артефакт отбора по доехавшим",
+   "kind": "derived",
+   "value": null,
+   "unit": "s",
+   "geography": "synthetic",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A06-S021",
+     "locator": "e1/results.json → C turn_heavy 2400/3600"
+    }
+   ],
+   "derivation": "Сравнение mean_timeLoss при росте waiting",
+   "confidence": "high",
+   "caveats": "Показывает необходимость метрик завершения и очереди за границей."
+  },
+  {
+   "fact_id": "A06-F022",
+   "statement": "E2: закрытие моста — граф +5,64 авт-ч, динамика ≈+8,67 авт-ч при 1200 авт/ч; при 3000 авт/ч доехало 1703 против 2736, телепорты 195 против 59",
+   "kind": "synthetic",
+   "value": {
+    "static_vh_1200": 5.64,
+    "dynamic_vh_1200": 8.67,
+    "completed_closure_3000": 1703,
+    "completed_base_3000": 2736
+   },
+   "unit": null,
+   "geography": "synthetic",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A06-S021",
+     "locator": "e2/results.json"
+    }
+   ],
+   "derivation": "dynamic = Δmean_duration × trips / 3600 = 26,0 × 1200 / 3600",
+   "confidence": "high",
+   "caveats": "Синтетическая сеть и спрос; closingReroute + device.rerouting.probability=1."
+  },
+  {
+   "fact_id": "A06-F023",
+   "statement": "E3: при барьере-магистрали евклидов охват 400 м = 24,7%, сетевой = 20,9%",
+   "kind": "synthetic",
+   "value": {
+    "euclid": 0.247,
+    "network": 0.209
+   },
+   "unit": "share of grid nodes",
+   "geography": "synthetic",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A06-S021",
+     "locator": "e3/results.json → baseline"
+    }
+   ],
+   "derivation": "Многоисточниковая Дейкстра по решётке 200 м",
+   "confidence": "high",
+   "caveats": "Величина для Шымкента неизвестна."
+  },
+  {
+   "fact_id": "A06-F024",
+   "statement": "E3: новый переход у пересадки меняет сетевой охват (20,9%→21,5%), не меняя евклидов; разброс медианы времени до объекта между оптимистичным и пессимистичным сценариями (~16 мин) больше эффекта локальных изменений",
+   "kind": "synthetic",
+   "value": null,
+   "unit": null,
+   "geography": "synthetic",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A06-S021",
+     "locator": "e3/results.json → A1, A2"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Параметры иллюстративные."
+  },
+  {
+   "fact_id": "A06-F025",
+   "statement": "Ожидаемое ожидание при случайном приходе пассажиров E[W]=E[H]/2·(1+CV²)",
+   "kind": "hypothesis",
+   "value": null,
+   "unit": null,
+   "geography": null,
+   "period": null,
+   "source_refs": [],
+   "derivation": "Классическая формула из литературы по регулярности; первоисточник в сессии не открыт",
+   "confidence": "medium",
+   "caveats": "Требует ссылки на первоисточник во втором проходе; верна при случайном приходе пассажиров и короткие интервалы."
+  },
+  {
+   "fact_id": "A06-F026",
+   "statement": "В репозитории STUPITS нет упоминаний Шымкента",
+   "kind": "observed",
+   "value": 0,
+   "unit": "matches",
+   "geography": null,
+   "period": "commit 834a25f",
+   "source_refs": [
+    {
+     "source_id": "A06-S001",
+     "locator": "grep -ri shymkent|шымкент по *.md,*.py,*.js,*.json"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": null
+  },
+  {
+   "fact_id": "A06-F027",
+   "statement": "SUMO имеет инструмент gtfs2pt.py для импорта GTFS (нужен pandas)",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": null,
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A06-S016",
+     "locator": "строки 1–20"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": null
+  },
+  {
+   "fact_id": "A06-F028",
+   "statement": "Существует сторонний гражданский проект Shymkent Hub (рейтинг проблем, Leaflet-карта)",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": "Шымкент",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A06-S022",
+     "locator": "README, разделы Idea, Features"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Использование жителями и статус не проверены."
+  }
+ ],
+ "datasets": [
+  {
+   "dataset_id": "A06-D001",
+   "title": "Официальный GTFS/GTFS-RT Шымкента",
+   "publisher": "неизвестно (гипотеза: управление пассажирского транспорта и автодорог г. Шымкент или городской оператор)",
+   "source_ids": [
+    "A06-S002",
+    "A06-S003",
+    "A06-S004"
+   ],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": "unavailable",
+   "tested_at": "2026-10-04",
+   "geography": "г. Шымкент",
+   "granularity": null,
+   "period": null,
+   "format": "GTFS",
+   "fields": [
+    "stops",
+    "routes",
+    "trips",
+    "stop_times или frequencies",
+    "calendar"
+   ],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "Не найден в MobilityData, Transitland, GitHub; госпорталы не открыты.",
+   "next_retrieval_step": "Второй проход: data.egov.kz, сайт акимата; при отсутствии — собрать черновик GTFS из официальных схем и OSM."
+  },
+  {
+   "dataset_id": "A06-D002",
+   "title": "Реестр маршрутов и остановок Шымкента",
+   "publisher": "неизвестно",
+   "source_ids": [
+    "A06-S018",
+    "A06-S020"
+   ],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": "unavailable",
+   "tested_at": "2026-10-04",
+   "geography": "г. Шымкент",
+   "granularity": "маршрут/остановка",
+   "period": null,
+   "format": null,
+   "fields": [
+    "route_no",
+    "operator",
+    "stops_ordered",
+    "stop_coords",
+    "headway_by_timeband"
+   ],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "Не проверен из-за блокировки доменов.",
+   "next_retrieval_step": "Открыть data.egov.kz и страницы акимата; записать поля и лицензию."
+  },
+  {
+   "dataset_id": "A06-D003",
+   "title": "OpenStreetMap: дороги, тротуары, переходы, остановки, маршруты, соцобъекты Шымкента",
+   "publisher": "OpenStreetMap contributors",
+   "source_ids": [],
+   "landing_url": "https://www.openstreetmap.org",
+   "download_or_api_url": "https://overpass-api.de/api/interpreter",
+   "access_status": "unavailable",
+   "tested_at": "2026-10-04",
+   "geography": "г. Шымкент (проверить отношение границы)",
+   "granularity": "объект",
+   "period": null,
+   "format": "OSM JSON/PBF",
+   "fields": [
+    "highway",
+    "crossing",
+    "public_transport",
+    "route relations",
+    "amenity"
+   ],
+   "units": null,
+   "update_frequency": "непрерывно",
+   "license": "ODbL (общеизвестно; страница лицензии не открыта)",
+   "auth_requirement": "нет",
+   "limitations": null,
+   "next_retrieval_step": "Выполнить подготовленный Overpass-запрос (отчёт 6.6), сохранить с датой и версией."
+  },
+  {
+   "dataset_id": "A06-D004",
+   "title": "Astana bus dataset (Mansurova et al.)",
+   "publisher": "Zenodo / авторы",
+   "source_ids": [
+    "A06-S006",
+    "A06-S007",
+    "A06-S008"
+   ],
+   "landing_url": "https://zenodo.org/records/15769359",
+   "download_or_api_url": "https://github.com/Mrithula742/Bussure/tree/main/datasets/astana",
+   "access_status": "sample_verified",
+   "tested_at": "2026-10-04",
+   "geography": "Астана, 3 маршрута",
+   "granularity": "рейс/сегмент/GPS-точка",
+   "period": "2024-07-29/2024-09-21",
+   "format": "TSV в стиле GTFS; CSV; ZIP",
+   "fields": [
+    "agency_id",
+    "route_id",
+    "route_short_name",
+    "stop_id",
+    "stop_lat",
+    "stop_lon",
+    "trip_id",
+    "direction_id",
+    "start_time",
+    "end_time",
+    "vehicle_id",
+    "service_id",
+    "date"
+   ],
+   "units": null,
+   "update_frequency": "разовая публикация",
+   "license": "CC BY 4.0 (по зеркалу; подтвердить)",
+   "auth_requirement": "нет",
+   "limitations": "Проверено через стороннее зеркало; stop_times и segment-данные в зеркале — LFS-указатели; GPS 2,44 ГБ не скачан.",
+   "next_retrieval_step": "Скачать с Zenodo без GPS-архива, сверить MD5, конвертировать в CSV-GTFS."
+  },
+  {
+   "dataset_id": "A06-D005",
+   "title": "Население по районам г. Шымкент",
+   "publisher": "БНС АСПиР РК",
+   "source_ids": [
+    "A06-S019"
+   ],
+   "landing_url": "https://stat.gov.kz/ru/region/shymkent/dynamic-tables/38/",
+   "download_or_api_url": null,
+   "access_status": "unavailable",
+   "tested_at": "2026-10-04",
+   "geography": "г. Шымкент, районы",
+   "granularity": "район",
+   "period": null,
+   "format": null,
+   "fields": [
+    "district",
+    "population",
+    "year"
+   ],
+   "units": "чел.",
+   "update_frequency": "годовая (гипотеза)",
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "Не открыт. Районный уровень нельзя приписывать кварталам.",
+   "next_retrieval_step": "Второй проход или результат агента по статистике."
+  },
+  {
+   "dataset_id": "A06-D006",
+   "title": "Реестры поликлиник, школ, детсадов с адресами",
+   "publisher": "неизвестно",
+   "source_ids": [
+    "A06-S020"
+   ],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": "unavailable",
+   "tested_at": "2026-10-04",
+   "geography": "г. Шымкент",
+   "granularity": "объект",
+   "period": null,
+   "format": null,
+   "fields": [
+    "name",
+    "type",
+    "address",
+    "coords"
+   ],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "Не проверено.",
+   "next_retrieval_step": "data.egov.kz; сайты управлений; OSM как резерв с пометкой."
+  },
+  {
+   "dataset_id": "A06-D007",
+   "title": "ДТП с пострадавшими пешеходами с координатами",
+   "publisher": "неизвестно (гипотеза: органы правовой статистики)",
+   "source_ids": [],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": "unavailable",
+   "tested_at": "2026-10-04",
+   "geography": "г. Шымкент",
+   "granularity": "ДТП",
+   "period": null,
+   "format": null,
+   "fields": [
+    "date",
+    "coords",
+    "type",
+    "victims"
+   ],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "Не проверено; возможно только агрегаты.",
+   "next_retrieval_step": "Зависимость от агента по безопасности."
+  },
+  {
+   "dataset_id": "A06-D008",
+   "title": "GPS автобусов (CityBus/оператор)",
+   "publisher": "CityBus (tha.kz) / оператор",
+   "source_ids": [
+    "A06-S005"
+   ],
+   "landing_url": "https://citybus.tha.kz",
+   "download_or_api_url": null,
+   "access_status": "restricted",
+   "tested_at": "2026-10-04",
+   "geography": "не проверено",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": "JWT-авторизация (по стороннему README)",
+   "limitations": "Нет публичного API; обход авторизации недопустим.",
+   "next_retrieval_step": "Запрос агрегатов через владельца проекта/акимат."
+  },
+  {
+   "dataset_id": "A06-D009",
+   "title": "Mobility Database catalogs (для проверки отсутствия)",
+   "publisher": "MobilityData",
+   "source_ids": [
+    "A06-S002"
+   ],
+   "landing_url": "https://github.com/MobilityData/mobility-database-catalogs",
+   "download_or_api_url": "https://github.com/MobilityData/mobility-database-catalogs/tree/main/catalogs/sources",
+   "access_status": "sample_verified",
+   "tested_at": "2026-10-04",
+   "geography": "мир",
+   "granularity": "фид",
+   "period": "состояние на 2026-10-01",
+   "format": "JSON",
+   "fields": [
+    "mdb_source_id",
+    "location.country_code",
+    "urls"
+   ],
+   "units": null,
+   "update_frequency": "непрерывно",
+   "license": null,
+   "auth_requirement": "нет",
+   "limitations": "Каталог, не данные.",
+   "next_retrieval_step": "Повторять проверку раз в месяц."
+  },
+  {
+   "dataset_id": "A06-D010",
+   "title": "Пассажиропотоки / валидации",
+   "publisher": "неизвестно (оператор платёжной системы/перевозчик)",
+   "source_ids": [],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": "restricted",
+   "tested_at": "2026-10-04",
+   "geography": "г. Шымкент",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [
+    "route",
+    "stop или зона",
+    "time_band",
+    "boardings"
+   ],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "Не найдено; без них загрузку не прогнозировать.",
+   "next_retrieval_step": "Запрос только агрегатов через официальные каналы."
+  }
+ ],
+ "opportunities": [
+  {
+   "idea_id": "A06-O001",
+   "title": "MVP: доступность остановок и соцобъектов по пешеходной сети + сравнение локального изменения",
+   "problem": "Охват остановок и время до объектов не измерены по реальной пешеходной сети; локальные решения (остановка, переход) не оцениваются заранее",
+   "evidence_fact_ids": [
+    "A06-F002",
+    "A06-F016",
+    "A06-F017",
+    "A06-F023",
+    "A06-F024"
+   ],
+   "primary_user": "Специалист отдела пассажирского транспорта / районного акимата; аналитик GovTech",
+   "user_task": "Решить, где добавить/перенести остановку или переход и какие объекты обслуживаются хуже всего",
+   "existing_solution": "Пассажирские приложения (2ГИС, Яндекс, CityBus — не проверено) отвечают пассажиру, а не планировщику",
+   "proposed_addition": "Слой карты STUPITS: сетевой охват 300/500 м, время дверь→объект с разложением и диапазоном, «было/стало» для изменения",
+   "required_dataset_ids": [
+    "A06-D002",
+    "A06-D003",
+    "A06-D005",
+    "A06-D006"
+   ],
+   "ai_role": "Извлечение остановок из документов с ручной проверкой; NL→вызов расчёта; объяснение разницы. Расчёт — без AI",
+   "non_ai_baseline": "Буферы 400 м в ГИС; ручной подсчёт",
+   "success_metrics": [
+    "разница сетевого и евклидова охвата по 10 остановкам",
+    "доля жителей/зданий в 300/500 м сетевого пути",
+    "медиана, p90, доля >30 мин до объектов с диапазоном",
+    "Δ этих метрик для 2–3 изменений",
+    "доля связей verified"
+   ],
+   "feasibility_10_days": "medium: прототип на одной территории реален при получении OSM; без реестра маршрутов — частичный",
+   "blockers": "Нет OSM-выгрузки в этой сессии; нет официального реестра; население только по районам",
+   "transfer_to_astana": "Прямой: та же карта, есть открытый набор Астаны",
+   "next_action": "Выполнить Overpass для одной территории, посчитать охват двумя способами"
+  },
+  {
+   "idea_id": "A06-O002",
+   "title": "Черновик GTFS Шымкента с отчётом о качестве",
+   "problem": "Нет открытого машиночитаемого описания сети",
+   "evidence_fact_ids": [
+    "A06-F002",
+    "A06-F003",
+    "A06-F004",
+    "A06-F007",
+    "A06-F009"
+   ],
+   "primary_user": "Управление транспорта / оператор; разработчики приложений",
+   "user_task": "Опубликовать и поддерживать открытое описание сети",
+   "existing_solution": "Не найдено",
+   "proposed_addition": "Конвейер: официальные схемы + OSM → контракт → GTFS + валидация + список неподтверждённого",
+   "required_dataset_ids": [
+    "A06-D001",
+    "A06-D002",
+    "A06-D003"
+   ],
+   "ai_role": "Разбор неструктурированных описаний маршрутов; сверка названий остановок (с проверкой человеком)",
+   "non_ai_baseline": "Ручной ввод в GTFS-редактор",
+   "success_metrics": [
+    "доля остановок с подтверждённым источником",
+    "число ошибок валидатора GTFS",
+    "подтверждение владельцем данных"
+   ],
+   "feasibility_10_days": "low: за 10 дней только схема и 1–2 маршрута",
+   "blockers": "Нужен официальный источник маршрутов и согласие на публикацию",
+   "transfer_to_astana": "Для Астаны есть частичный открытый набор (3 маршрута)",
+   "next_action": "Найти официальный перечень маршрутов во втором проходе"
+  },
+  {
+   "idea_id": "A06-O003",
+   "title": "Исследование регулярности интервалов по AVL",
+   "problem": "Нерегулярность увеличивает ожидание; величина неизвестна",
+   "evidence_fact_ids": [
+    "A06-F006",
+    "A06-F007",
+    "A06-F008",
+    "A06-F025"
+   ],
+   "primary_user": "Аналитик транспорта; дипломная работа",
+   "user_task": "Понять, где нерегулярность важнее густоты остановок",
+   "existing_solution": "Не найдено",
+   "proposed_addition": "Расчёт CV интервалов и избыточного ожидания по маршрутам и времени суток",
+   "required_dataset_ids": [
+    "A06-D004",
+    "A06-D008"
+   ],
+   "ai_role": "Не нужен для расчёта; возможна помощь в интерпретации",
+   "non_ai_baseline": "Статистика по trips.txt",
+   "success_metrics": [
+    "CV интервалов по маршруту/направлению/часу",
+    "избыточное ожидание, мин"
+   ],
+   "feasibility_10_days": "high для Астаны (открытые данные), low для Шымкента",
+   "blockers": "Нет GPS Шымкента",
+   "transfer_to_astana": "Сначала Астана",
+   "next_action": "Скачать набор с Zenodo, посчитать CV по start_time"
+  },
+  {
+   "idea_id": "A06-O004",
+   "title": "Сценарная лаборатория перекрытия/развязки (идея владельца)",
+   "problem": "Нужно понимать последствия перекрытий и вариантов развязок",
+   "evidence_fact_ids": [
+    "A06-F010",
+    "A06-F011",
+    "A06-F012",
+    "A06-F013",
+    "A06-F014",
+    "A06-F019",
+    "A06-F020",
+    "A06-F021",
+    "A06-F022"
+   ],
+   "primary_user": "Транспортный аналитик; демонстрация для жюри",
+   "user_task": "Сравнить варианты при заданном спросе",
+   "existing_solution": "SUMO и коммерческие пакеты; у города — неизвестно",
+   "proposed_addition": "Уровень 1 (графовый объезд) и уровень 2 (SUMO со сценарным спросом) с метриками доли завершения и очереди за границей; 3D через MapLibre custom layer",
+   "required_dataset_ids": [
+    "A06-D003"
+   ],
+   "ai_role": "Не нужен для расчёта; генерация описания сценария и объяснение",
+   "non_ai_baseline": "Ручной анализ объезда по карте",
+   "success_metrics": [
+    "доля завершённых поездок",
+    "очередь за границей (waiting)",
+    "телепорты",
+    "Δ потерь времени по сценариям спроса"
+   ],
+   "feasibility_10_days": "low для узла Шымкента без потоков; синтетика выполнена",
+   "blockers": "Нет OD, счётов, светофорных планов",
+   "transfer_to_astana": "Те же ограничения",
+   "next_action": "Только после MVP и при наличии счётов хотя бы по одному узлу"
+  }
+ ],
+ "open_questions": [
+  {
+   "question": "Публикует ли акимат или оператор реестр маршрутов, остановок и интервалов Шымкента в машиночитаемом виде и под какой лицензией?",
+   "why_important": "Определяет, будет MVP опираться на официальные данные или на OSM с ручной проверкой",
+   "how_to_check": "data.egov.kz поиск «маршрут/аялдама/остановка»; сайт акимата; страница управления транспорта"
+  },
+  {
+   "question": "Какой орган владеет транспортными данными Шымкента (управление, ТОО-оператор, ITS-центр)?",
+   "why_important": "Нужен адресат для запроса данных и проверки черновика GTFS",
+   "how_to_check": "gov.kz структура акимата Шымкента; постановления о маршрутах"
+  },
+  {
+   "question": "Что показывают 2ГИС, Яндекс и CityBus по Шымкенту (маршруты, онлайн-позиции) и каковы условия использования?",
+   "why_important": "Определяет незакрытую задачу и запрет на извлечение",
+   "how_to_check": "Открыть сервисы и их пользовательские соглашения без сбора данных"
+  },
+  {
+   "question": "Есть ли в Шымкенте городская ITS/ситуационный центр с аналитикой доступности или моделированием?",
+   "why_important": "Если есть, MVP должен дополнять, а не дублировать",
+   "how_to_check": "gov.kz новости и госзакупки; страница управления цифровизации (S018)"
+  },
+  {
+   "question": "Какой объект OSM соответствует границе г. Шымкент после изменений границ и есть ли там маршрутные отношения автобусов?",
+   "why_important": "Корректная география; полнота сети",
+   "how_to_check": "Overpass: найти relation boundary, сверить с официальной картой районов"
+  },
+  {
+   "question": "Первоисточник и условия применимости формулы ожидания E[H]/2·(1+CV²)",
+   "why_important": "Формула лежит в метрике времени",
+   "how_to_check": "Найти и открыть классические работы по регулярности интервалов и времени ожидания"
+  },
+  {
+   "question": "Лицензия и полный состав набора Astana Zenodo 15769359",
+   "why_important": "Перенос метода и диплом",
+   "how_to_check": "Открыть страницу Zenodo и статью doi:10.3390/data10080119"
+  }
+ ],
+ "experiments": [
+  {
+   "experiment_id": "A06-E1",
+   "kind": "synthetic",
+   "goal": "Проверить связность разноуровневого пересечения и чувствительность варианта развязки к структуре спроса",
+   "inputs": "e1/*.nod.xml, e1/*.edg.xml; потоки в e1_flyover.py (2 структуры × 1200/2400/3600 авт/ч)",
+   "versions": {
+    "python": "3.12.3",
+    "sumo": "1.24.0"
+   },
+   "commands": [
+    "python3 e1_flyover.py"
+   ],
+   "result_file": "e1/results.json",
+   "result_fact_ids": [
+    "A06-F019",
+    "A06-F020",
+    "A06-F021"
+   ]
+  },
+  {
+   "experiment_id": "A06-E2",
+   "kind": "synthetic",
+   "goal": "Сравнить графовый объезд и динамику при закрытии участка",
+   "inputs": "netgenerate grid 6x6/250 м, удалены связи C-D кроме рядов 2 и 4; randomTrips seed 7; closingReroute C2D2,D2C2",
+   "versions": {
+    "python": "3.12.3",
+    "sumo": "1.24.0"
+   },
+   "commands": [
+    "python3 e2_closure.py"
+   ],
+   "result_file": "e2/results.json",
+   "result_fact_ids": [
+    "A06-F022"
+   ]
+  },
+  {
+   "experiment_id": "A06-E3",
+   "kind": "synthetic",
+   "goal": "Проверить метрику доступности: сетевой против евклидова охвата, разложение времени, диапазон",
+   "inputs": "решётка 4×4 км/200 м, барьер y=2000, два маршрута, объект (3600,3600)",
+   "versions": {
+    "python": "3.12.3"
+   },
+   "commands": [
+    "python3 e3_access.py"
+   ],
+   "result_file": "e3/results.json",
+   "result_fact_ids": [
+    "A06-F023",
+    "A06-F024"
+   ]
+  }
+ ],
+ "deliverables": {
+  "data_contract": {
+   "status": "proposal",
+   "tables": {
+    "stops.csv": [
+     "stop_id",
+     "name",
+     "lat",
+     "lon",
+     "source_id",
+     "source_locator",
+     "verified_at",
+     "status",
+     "wheelchair_boarding"
+    ],
+    "routes.csv": [
+     "route_id",
+     "short_name",
+     "long_name",
+     "operator",
+     "source_id"
+    ],
+    "route_stops.csv": [
+     "route_id",
+     "direction_id",
+     "seq",
+     "stop_id"
+    ],
+    "service.csv": [
+     "route_id",
+     "direction_id",
+     "time_band",
+     "headway_min_low",
+     "headway_min_high",
+     "cv_low",
+     "cv_high",
+     "source_id"
+    ],
+    "segment_speed.csv": [
+     "route_id",
+     "from_stop",
+     "to_stop",
+     "time_band",
+     "kmh_low",
+     "kmh_high",
+     "source"
+    ],
+    "facilities.geojson": [
+     "facility_id",
+     "type",
+     "name",
+     "source_id",
+     "verified"
+    ],
+    "population": [
+     "zone_id",
+     "residents_or_dwellings",
+     "source_id",
+     "period"
+    ],
+    "ped_links": [
+     "osm_id",
+     "verification_status(verified|unverified|barrier)",
+     "crossing_type",
+     "steps"
+    ],
+    "change.json": [
+     "change_id",
+     "type(add_stop|move_stop|add_crossing|reroute_segment)",
+     "geometry",
+     "params",
+     "rationale"
+    ],
+    "access_grid.geojson (output)": [
+     "cell_id",
+     "t_walk",
+     "t_wait",
+     "t_ivt",
+     "t_transfer",
+     "t_egress",
+     "total_low",
+     "total_high",
+     "n_transfers",
+     "scenario"
+    ]
+   },
+   "overpass_query_status": "prepared_not_executed"
+  },
+  "report": "A06_report.md",
+  "synthetic_package": "A06_experiments_synthetic.zip"
+ }
+}
