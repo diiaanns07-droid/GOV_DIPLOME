@@ -1,0 +1,30 @@
+{
+  "purpose": "Входы K12 round 3: собственный результат K12 round 2, скопирован побайтно через git show",
+  "source_branch": "claude/save-work-handoff-xuav3q",
+  "source_commit": "1aec7572e3934300a1da8d3f2b6351b3aea88a74",
+  "source_dir": "research/next-round/K12/data/",
+  "upstream_data": "BDG1 github.com/buds-lab/the-building-data-genome-project @521a6c0f0efe760a96dac656191ed7f4067c4b4d (см. K12_provenance.json)",
+  "data_class": "real international (Великобритания и др., 2010-2015); НЕ Шымкент, НЕ Астана",
+  "files": {
+    "BDG1_LICENSE.txt": {
+      "sha256": "a7ed134d435c25cf554d3ba87b4dc5ca2bd17cfe35aa8b8f6ad424175a085e6f",
+      "bytes": 1083
+    },
+    "K12_bdg1_schools_meta.csv": {
+      "sha256": "dad27828b77d4eba87deb1e06d8c202c95e914a51d054e614a35a2b71305558f",
+      "bytes": 19000
+    },
+    "K12_bdg1_schools_monthly.csv": {
+      "sha256": "8f9ad721c7de4e7506d4ddff61a21bda4b2f5eeb7f8221249fda7b64aeb44ac5",
+      "bytes": 64193
+    },
+    "K12_bdg1_schools_qc.csv": {
+      "sha256": "1b074da18efbead189dafb32dd3fc23fb1ad63f85f402aa48bbefd1763784ab4",
+      "bytes": 5296
+    },
+    "K12_provenance.json": {
+      "sha256": "9a56a7a0f1c6d4173aa00b71fac2d78645cd18235ebd9672b8457cbae5a0b1d8",
+      "bytes": 1139
+    }
+  }
+}

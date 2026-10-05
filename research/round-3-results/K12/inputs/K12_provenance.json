@@ -1,0 +1,20 @@
+{
+  "kind": "observed (real international open data, not Kazakhstan)",
+  "source": "https://github.com/buds-lab/the-building-data-genome-project",
+  "upstream_commit": "521a6c0f0efe760a96dac656191ed7f4067c4b4d",
+  "upstream_files_sha256": {
+    "LICENSE": "a7ed134d435c25cf554d3ba87b4dc5ca2bd17cfe35aa8b8f6ad424175a085e6f",
+    "data/raw/meta_open.csv": "3032035004ea8e16bd5def27ee3f11e2e9b40262c8926ca779fb87d6c2da84e1",
+    "data/raw/temp_open_utc.csv": "59bbc45c89b2e85768244013183dd17a2fdcc0a7ac241804b15d8d82ea5e32bc"
+  },
+  "license": "MIT (Copyright (c) 2016, Clayton Miller); notice copied to BDG1_LICENSE.txt",
+  "citation": "Miller C., Meggers F. The Building Data Genome Project. Energy Procedia 122 (2017) 439-444, doi:10.1016/j.egypro.2017.07.400",
+  "selection": "primaryspaceusage == 'Primary/Secondary Classroom' (105 buildings)",
+  "period_rule": "meta datastart..dataend, local wall-clock, hourly; negative readings set to missing",
+  "units": "kWh per hour as assumed by A09; units are NOT stated in README/meta (not verified)",
+  "versions": {
+    "python": "3.11.15",
+    "numpy": "2.4.6",
+    "pandas": "3.0.6"
+  }
+}

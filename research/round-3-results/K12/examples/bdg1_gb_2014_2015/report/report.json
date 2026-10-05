@@ -1,0 +1,1313 @@
+{
+  "schema_version": "k12-energy-monthly-v1",
+  "input": "examples/bdg1_gb_2014_2015/input.csv",
+  "delimiter": ",",
+  "extra_columns": [],
+  "window": [
+    "2014-12-01",
+    "2015-11-30"
+  ],
+  "policy": {
+    "top_share": 0.2,
+    "min_building_coverage": 0.9,
+    "min_row_coverage": null,
+    "n_sim": 1000,
+    "seed": 12
+  },
+  "rows_total": 888,
+  "rows_accepted": 888,
+  "rows_rejected": 0,
+  "row_reason_counts": {},
+  "row_flag_counts": {
+    "COVERAGE_LOW": 62
+  },
+  "row_exclusion_counts": {},
+  "buildings_total": 74,
+  "buildings_ranked": 74,
+  "building_reason_counts": {},
+  "building_flag_counts": {
+    "AREA_SOURCE_WEAK": 74,
+    "LOW_ROW_COVERAGE": 62
+  },
+  "data_classes": {
+    "real": 74
+  },
+  "countries": [
+    "GB"
+  ],
+  "measurement_terms": [
+    "unknown: repository LICENSE is MIT (software); terms of the original measurement sources are not listed"
+  ],
+  "sensitivity_strict_row_coverage": {
+    "min_row_coverage": 0.8,
+    "buildings_ranked": 12,
+    "dropped_from_ranking": [
+      "bdg1:PrimClass_Jacob",
+      "bdg1:PrimClass_Jacqueline",
+      "bdg1:PrimClass_Jacquelyn",
+      "bdg1:PrimClass_Jaiden",
+      "bdg1:PrimClass_Jamal",
+      "bdg1:PrimClass_Jamie",
+      "bdg1:PrimClass_Janelle",
+      "bdg1:PrimClass_Janice",
+      "bdg1:PrimClass_Janis",
+      "bdg1:PrimClass_Janiya",
+      "bdg1:PrimClass_Jarrett",
+      "bdg1:PrimClass_Jasmine",
+      "bdg1:PrimClass_Javier",
+      "bdg1:PrimClass_Jaxson",
+      "bdg1:PrimClass_Jayda",
+      "bdg1:PrimClass_Jayla",
+      "bdg1:PrimClass_Jaylin",
+      "bdg1:PrimClass_Jaylinn",
+      "bdg1:PrimClass_Jayson",
+      "bdg1:PrimClass_Jazmine",
+      "bdg1:PrimClass_Jean",
+      "bdg1:PrimClass_Jeanette",
+      "bdg1:PrimClass_Jeanine",
+      "bdg1:PrimClass_Jeannine",
+      "bdg1:PrimClass_Jediah",
+      "bdg1:PrimClass_Jeff",
+      "bdg1:PrimClass_Jeffrey",
+      "bdg1:PrimClass_Jenna",
+      "bdg1:PrimClass_Jennifer",
+      "bdg1:PrimClass_Jensen",
+      "bdg1:PrimClass_Jeremy",
+      "bdg1:PrimClass_Jermaine",
+      "bdg1:PrimClass_Jerome",
+      "bdg1:PrimClass_Jessie",
+      "bdg1:PrimClass_Jill",
+      "bdg1:PrimClass_Jim",
+      "bdg1:PrimClass_Jimmie",
+      "bdg1:PrimClass_Joanna",
+      "bdg1:PrimClass_Jodie",
+      "bdg1:PrimClass_Jody",
+      "bdg1:PrimClass_Joel",
+      "bdg1:PrimClass_Joey",
+      "bdg1:PrimClass_Johanna",
+      "bdg1:PrimClass_Johnathan",
+      "bdg1:PrimClass_Johnathon",
+      "bdg1:PrimClass_Johnnie",
+      "bdg1:PrimClass_Jolie",
+      "bdg1:PrimClass_Jon",
+      "bdg1:PrimClass_Jonathon",
+      "bdg1:PrimClass_Jose",
+      "bdg1:PrimClass_Joselyn",
+      "bdg1:PrimClass_Josephine",
+      "bdg1:PrimClass_Josue",
+      "bdg1:PrimClass_Juanita",
+      "bdg1:PrimClass_Judith",
+      "bdg1:PrimClass_Judy",
+      "bdg1:PrimClass_Julianna",
+      "bdg1:PrimClass_Julianne",
+      "bdg1:PrimClass_Julio",
+      "bdg1:PrimClass_Julius",
+      "bdg1:PrimClass_Justice",
+      "bdg1:PrimClass_Justin"
+    ]
+  },
+  "groups": [
+    {
+      "city_id": "gb.unknown",
+      "object_type": "school",
+      "data_class": "real",
+      "n": 74,
+      "top_n": 15,
+      "ranking": [
+        {
+          "rank": 1,
+          "building_id": "bdg1:PrimClass_Jaiden",
+          "eui_window": 92.4826,
+          "eui_is_annual": true,
+          "in_top_n": true,
+          "p_top_sigma_0_2": 1.0,
+          "band": "stable_in_top",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 811.0,
+          "metering_coverage_weighted": 0.9326
+        },
+        {
+          "rank": 2,
+          "building_id": "bdg1:PrimClass_Jazmin",
+          "eui_window": 91.267,
+          "eui_is_annual": true,
+          "in_top_n": true,
+          "p_top_sigma_0_2": 0.999,
+          "band": "stable_in_top",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK"
+          ],
+          "floor_area_m2": 1047.0,
+          "metering_coverage_weighted": 0.9645
+        },
+        {
+          "rank": 3,
+          "building_id": "bdg1:PrimClass_Jacob",
+          "eui_window": 61.9172,
+          "eui_is_annual": true,
+          "in_top_n": true,
+          "p_top_sigma_0_2": 0.888,
+          "band": "boundary",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 6149.0,
+          "metering_coverage_weighted": 0.9285
+        },
+        {
+          "rank": 4,
+          "building_id": "bdg1:PrimClass_Jamie",
+          "eui_window": 61.2088,
+          "eui_is_annual": true,
+          "in_top_n": true,
+          "p_top_sigma_0_2": 0.881,
+          "band": "boundary",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 14868.0,
+          "metering_coverage_weighted": 0.9298
+        },
+        {
+          "rank": 5,
+          "building_id": "bdg1:PrimClass_Johnathon",
+          "eui_window": 60.8303,
+          "eui_is_annual": true,
+          "in_top_n": true,
+          "p_top_sigma_0_2": 0.844,
+          "band": "boundary",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 2253.0,
+          "metering_coverage_weighted": 0.951
+        },
+        {
+          "rank": 6,
+          "building_id": "bdg1:PrimClass_Johnnie",
+          "eui_window": 58.964,
+          "eui_is_annual": true,
+          "in_top_n": true,
+          "p_top_sigma_0_2": 0.831,
+          "band": "boundary",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 1769.0,
+          "metering_coverage_weighted": 0.9445
+        },
+        {
+          "rank": 7,
+          "building_id": "bdg1:PrimClass_Jake",
+          "eui_window": 56.7995,
+          "eui_is_annual": true,
+          "in_top_n": true,
+          "p_top_sigma_0_2": 0.764,
+          "band": "boundary",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK"
+          ],
+          "floor_area_m2": 1432.0,
+          "metering_coverage_weighted": 0.97
+        },
+        {
+          "rank": 8,
+          "building_id": "bdg1:PrimClass_Jon",
+          "eui_window": 54.8824,
+          "eui_is_annual": true,
+          "in_top_n": true,
+          "p_top_sigma_0_2": 0.736,
+          "band": "boundary",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 1589.0,
+          "metering_coverage_weighted": 0.9416
+        },
+        {
+          "rank": 9,
+          "building_id": "bdg1:PrimClass_Jane",
+          "eui_window": 54.3503,
+          "eui_is_annual": true,
+          "in_top_n": true,
+          "p_top_sigma_0_2": 0.691,
+          "band": "boundary",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK"
+          ],
+          "floor_area_m2": 11247.0,
+          "metering_coverage_weighted": 0.9922
+        },
+        {
+          "rank": 10,
+          "building_id": "bdg1:PrimClass_Janelle",
+          "eui_window": 51.3529,
+          "eui_is_annual": true,
+          "in_top_n": true,
+          "p_top_sigma_0_2": 0.571,
+          "band": "boundary",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 1201.0,
+          "metering_coverage_weighted": 0.9347
+        },
+        {
+          "rank": 11,
+          "building_id": "bdg1:PrimClass_Jediah",
+          "eui_window": 50.7102,
+          "eui_is_annual": true,
+          "in_top_n": true,
+          "p_top_sigma_0_2": 0.536,
+          "band": "boundary",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 6382.0,
+          "metering_coverage_weighted": 0.9651
+        },
+        {
+          "rank": 12,
+          "building_id": "bdg1:PrimClass_Joanna",
+          "eui_window": 50.395,
+          "eui_is_annual": true,
+          "in_top_n": true,
+          "p_top_sigma_0_2": 0.549,
+          "band": "boundary",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 9516.0,
+          "metering_coverage_weighted": 0.9273
+        },
+        {
+          "rank": 13,
+          "building_id": "bdg1:PrimClass_Joey",
+          "eui_window": 49.7085,
+          "eui_is_annual": true,
+          "in_top_n": true,
+          "p_top_sigma_0_2": 0.512,
+          "band": "boundary",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 14475.0,
+          "metering_coverage_weighted": 0.9285
+        },
+        {
+          "rank": 14,
+          "building_id": "bdg1:PrimClass_Joel",
+          "eui_window": 47.6065,
+          "eui_is_annual": true,
+          "in_top_n": true,
+          "p_top_sigma_0_2": 0.443,
+          "band": "boundary",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 1295.0,
+          "metering_coverage_weighted": 0.9598
+        },
+        {
+          "rank": 15,
+          "building_id": "bdg1:PrimClass_Juanita",
+          "eui_window": 46.7513,
+          "eui_is_annual": true,
+          "in_top_n": true,
+          "p_top_sigma_0_2": 0.378,
+          "band": "boundary",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 2844.0,
+          "metering_coverage_weighted": 0.9644
+        },
+        {
+          "rank": 16,
+          "building_id": "bdg1:PrimClass_Jacquelyn",
+          "eui_window": 46.4591,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.392,
+          "band": "boundary",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 1597.0,
+          "metering_coverage_weighted": 0.9587
+        },
+        {
+          "rank": 17,
+          "building_id": "bdg1:PrimClass_Julio",
+          "eui_window": 45.481,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.367,
+          "band": "boundary",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 8794.0,
+          "metering_coverage_weighted": 0.9253
+        },
+        {
+          "rank": 18,
+          "building_id": "bdg1:PrimClass_Josue",
+          "eui_window": 44.7879,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.323,
+          "band": "boundary",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 1584.0,
+          "metering_coverage_weighted": 0.933
+        },
+        {
+          "rank": 19,
+          "building_id": "bdg1:PrimClass_Jeremy",
+          "eui_window": 44.4053,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.328,
+          "band": "boundary",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 2151.0,
+          "metering_coverage_weighted": 0.9557
+        },
+        {
+          "rank": 20,
+          "building_id": "bdg1:PrimClass_Jaqueline",
+          "eui_window": 43.508,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.269,
+          "band": "boundary",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK"
+          ],
+          "floor_area_m2": 2193.0,
+          "metering_coverage_weighted": 0.9807
+        },
+        {
+          "rank": 21,
+          "building_id": "bdg1:PrimClass_Jonathon",
+          "eui_window": 42.508,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.245,
+          "band": "boundary",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 11285.0,
+          "metering_coverage_weighted": 0.92
+        },
+        {
+          "rank": 22,
+          "building_id": "bdg1:PrimClass_Jennie",
+          "eui_window": 42.389,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.233,
+          "band": "boundary",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK"
+          ],
+          "floor_area_m2": 2692.0,
+          "metering_coverage_weighted": 0.9843
+        },
+        {
+          "rank": 23,
+          "building_id": "bdg1:PrimClass_Jayson",
+          "eui_window": 41.7783,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.198,
+          "band": "boundary",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 12924.0,
+          "metering_coverage_weighted": 0.9303
+        },
+        {
+          "rank": 24,
+          "building_id": "bdg1:PrimClass_Jeffery",
+          "eui_window": 40.9884,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.185,
+          "band": "boundary",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK"
+          ],
+          "floor_area_m2": 11201.0,
+          "metering_coverage_weighted": 0.9867
+        },
+        {
+          "rank": 25,
+          "building_id": "bdg1:PrimClass_Jocelyn",
+          "eui_window": 40.9727,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.179,
+          "band": "boundary",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK"
+          ],
+          "floor_area_m2": 1391.0,
+          "metering_coverage_weighted": 0.9762
+        },
+        {
+          "rank": 26,
+          "building_id": "bdg1:PrimClass_Jayda",
+          "eui_window": 40.1609,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.157,
+          "band": "boundary",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 2215.0,
+          "metering_coverage_weighted": 0.9504
+        },
+        {
+          "rank": 27,
+          "building_id": "bdg1:PrimClass_Jimmie",
+          "eui_window": 39.4705,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.133,
+          "band": "boundary",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 3462.0,
+          "metering_coverage_weighted": 0.9423
+        },
+        {
+          "rank": 28,
+          "building_id": "bdg1:PrimClass_Jaxson",
+          "eui_window": 39.4248,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.112,
+          "band": "boundary",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 11955.0,
+          "metering_coverage_weighted": 0.9231
+        },
+        {
+          "rank": 29,
+          "building_id": "bdg1:PrimClass_Jesse",
+          "eui_window": 39.2802,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.115,
+          "band": "boundary",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK"
+          ],
+          "floor_area_m2": 1468.0,
+          "metering_coverage_weighted": 0.976
+        },
+        {
+          "rank": 30,
+          "building_id": "bdg1:PrimClass_Jennifer",
+          "eui_window": 38.7396,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.11,
+          "band": "boundary",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 2164.0,
+          "metering_coverage_weighted": 0.9646
+        },
+        {
+          "rank": 31,
+          "building_id": "bdg1:PrimClass_Jeffrey",
+          "eui_window": 38.1937,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.098,
+          "band": "outside",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 1281.0,
+          "metering_coverage_weighted": 0.9502
+        },
+        {
+          "rank": 32,
+          "building_id": "bdg1:PrimClass_Jensen",
+          "eui_window": 37.7426,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.087,
+          "band": "outside",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 3323.0,
+          "metering_coverage_weighted": 0.9615
+        },
+        {
+          "rank": 33,
+          "building_id": "bdg1:PrimClass_Janie",
+          "eui_window": 37.6255,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.101,
+          "band": "boundary",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK"
+          ],
+          "floor_area_m2": 1691.0,
+          "metering_coverage_weighted": 0.9793
+        },
+        {
+          "rank": 34,
+          "building_id": "bdg1:PrimClass_Janet",
+          "eui_window": 37.4878,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.084,
+          "band": "outside",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK"
+          ],
+          "floor_area_m2": 8711.0,
+          "metering_coverage_weighted": 0.9688
+        },
+        {
+          "rank": 35,
+          "building_id": "bdg1:PrimClass_Jim",
+          "eui_window": 37.3011,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.089,
+          "band": "outside",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 1014.0,
+          "metering_coverage_weighted": 0.9685
+        },
+        {
+          "rank": 36,
+          "building_id": "bdg1:PrimClass_Jill",
+          "eui_window": 36.5199,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.061,
+          "band": "outside",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 2238.0,
+          "metering_coverage_weighted": 0.9578
+        },
+        {
+          "rank": 37,
+          "building_id": "bdg1:PrimClass_Jacqueline",
+          "eui_window": 36.1729,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.058,
+          "band": "outside",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 2777.0,
+          "metering_coverage_weighted": 0.9613
+        },
+        {
+          "rank": 38,
+          "building_id": "bdg1:PrimClass_Jerome",
+          "eui_window": 36.1382,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.068,
+          "band": "outside",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 8255.0,
+          "metering_coverage_weighted": 0.9256
+        },
+        {
+          "rank": 39,
+          "building_id": "bdg1:PrimClass_Jeanine",
+          "eui_window": 35.3933,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.054,
+          "band": "outside",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 2991.0,
+          "metering_coverage_weighted": 0.9512
+        },
+        {
+          "rank": 40,
+          "building_id": "bdg1:PrimClass_Julian",
+          "eui_window": 35.014,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.043,
+          "band": "outside",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK"
+          ],
+          "floor_area_m2": 1737.0,
+          "metering_coverage_weighted": 0.9759
+        },
+        {
+          "rank": 41,
+          "building_id": "bdg1:PrimClass_Jeff",
+          "eui_window": 34.785,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.039,
+          "band": "outside",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 1086.0,
+          "metering_coverage_weighted": 0.937
+        },
+        {
+          "rank": 42,
+          "building_id": "bdg1:PrimClass_Jeannine",
+          "eui_window": 34.0772,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.037,
+          "band": "outside",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 12732.0,
+          "metering_coverage_weighted": 0.9206
+        },
+        {
+          "rank": 43,
+          "building_id": "bdg1:PrimClass_Jarrett",
+          "eui_window": 34.0472,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.041,
+          "band": "outside",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 2708.0,
+          "metering_coverage_weighted": 0.9622
+        },
+        {
+          "rank": 44,
+          "building_id": "bdg1:PrimClass_Judy",
+          "eui_window": 33.8337,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.029,
+          "band": "outside",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 1065.0,
+          "metering_coverage_weighted": 0.9552
+        },
+        {
+          "rank": 45,
+          "building_id": "bdg1:PrimClass_Joselyn",
+          "eui_window": 33.4714,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.029,
+          "band": "outside",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 2961.0,
+          "metering_coverage_weighted": 0.9532
+        },
+        {
+          "rank": 46,
+          "building_id": "bdg1:PrimClass_Jessie",
+          "eui_window": 32.0561,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.009,
+          "band": "outside",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 3157.0,
+          "metering_coverage_weighted": 0.9636
+        },
+        {
+          "rank": 47,
+          "building_id": "bdg1:PrimClass_Judith",
+          "eui_window": 31.8063,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.012,
+          "band": "outside",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 1205.0,
+          "metering_coverage_weighted": 0.9555
+        },
+        {
+          "rank": 48,
+          "building_id": "bdg1:PrimClass_Jean",
+          "eui_window": 31.509,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.014,
+          "band": "outside",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 2678.0,
+          "metering_coverage_weighted": 0.9648
+        },
+        {
+          "rank": 49,
+          "building_id": "bdg1:PrimClass_Jenna",
+          "eui_window": 31.3948,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.013,
+          "band": "outside",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 1078.0,
+          "metering_coverage_weighted": 0.9345
+        },
+        {
+          "rank": 50,
+          "building_id": "bdg1:PrimClass_Justice",
+          "eui_window": 30.2467,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.008,
+          "band": "outside",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 11710.0,
+          "metering_coverage_weighted": 0.9223
+        },
+        {
+          "rank": 51,
+          "building_id": "bdg1:PrimClass_Julianne",
+          "eui_window": 30.204,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.006,
+          "band": "outside",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 2403.0,
+          "metering_coverage_weighted": 0.964
+        },
+        {
+          "rank": 52,
+          "building_id": "bdg1:PrimClass_Jody",
+          "eui_window": 30.0044,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.006,
+          "band": "outside",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 2418.0,
+          "metering_coverage_weighted": 0.9601
+        },
+        {
+          "rank": 53,
+          "building_id": "bdg1:PrimClass_Justin",
+          "eui_window": 29.8098,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.007,
+          "band": "outside",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 1303.0,
+          "metering_coverage_weighted": 0.9475
+        },
+        {
+          "rank": 54,
+          "building_id": "bdg1:PrimClass_Jazmine",
+          "eui_window": 29.6955,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.01,
+          "band": "outside",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 2061.0,
+          "metering_coverage_weighted": 0.9519
+        },
+        {
+          "rank": 55,
+          "building_id": "bdg1:PrimClass_Jasmine",
+          "eui_window": 29.5326,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.01,
+          "band": "outside",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 2555.0,
+          "metering_coverage_weighted": 0.962
+        },
+        {
+          "rank": 56,
+          "building_id": "bdg1:PrimClass_Julianna",
+          "eui_window": 28.8931,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.004,
+          "band": "outside",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 3211.0,
+          "metering_coverage_weighted": 0.9509
+        },
+        {
+          "rank": 57,
+          "building_id": "bdg1:PrimClass_Jose",
+          "eui_window": 27.8475,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.003,
+          "band": "outside",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 1123.0,
+          "metering_coverage_weighted": 0.9508
+        },
+        {
+          "rank": 58,
+          "building_id": "bdg1:PrimClass_Jamal",
+          "eui_window": 27.5337,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.002,
+          "band": "outside",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 2335.0,
+          "metering_coverage_weighted": 0.9511
+        },
+        {
+          "rank": 59,
+          "building_id": "bdg1:PrimClass_Janis",
+          "eui_window": 27.0886,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.003,
+          "band": "outside",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 736.0,
+          "metering_coverage_weighted": 0.9605
+        },
+        {
+          "rank": 60,
+          "building_id": "bdg1:PrimClass_Johnathan",
+          "eui_window": 26.9319,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.002,
+          "band": "outside",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 2815.0,
+          "metering_coverage_weighted": 0.9607
+        },
+        {
+          "rank": 61,
+          "building_id": "bdg1:PrimClass_Jodie",
+          "eui_window": 26.782,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.002,
+          "band": "outside",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 2570.0,
+          "metering_coverage_weighted": 0.9565
+        },
+        {
+          "rank": 62,
+          "building_id": "bdg1:PrimClass_Johanna",
+          "eui_window": 25.7652,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.0,
+          "band": "outside",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 2619.0,
+          "metering_coverage_weighted": 0.9479
+        },
+        {
+          "rank": 63,
+          "building_id": "bdg1:PrimClass_Jaylinn",
+          "eui_window": 24.8519,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.001,
+          "band": "outside",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 2939.0,
+          "metering_coverage_weighted": 0.9564
+        },
+        {
+          "rank": 64,
+          "building_id": "bdg1:PrimClass_Julius",
+          "eui_window": 24.1881,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.0,
+          "band": "outside",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 8866.0,
+          "metering_coverage_weighted": 0.9307
+        },
+        {
+          "rank": 65,
+          "building_id": "bdg1:PrimClass_Jeanette",
+          "eui_window": 23.9583,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.001,
+          "band": "outside",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 2182.0,
+          "metering_coverage_weighted": 0.9539
+        },
+        {
+          "rank": 66,
+          "building_id": "bdg1:PrimClass_Javier",
+          "eui_window": 23.1575,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.0,
+          "band": "outside",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 1877.0,
+          "metering_coverage_weighted": 0.9233
+        },
+        {
+          "rank": 67,
+          "building_id": "bdg1:PrimClass_Josephine",
+          "eui_window": 20.5544,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.0,
+          "band": "outside",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 3984.0,
+          "metering_coverage_weighted": 0.9588
+        },
+        {
+          "rank": 68,
+          "building_id": "bdg1:PrimClass_Jermaine",
+          "eui_window": 20.338,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.0,
+          "band": "outside",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 2154.0,
+          "metering_coverage_weighted": 0.954
+        },
+        {
+          "rank": 69,
+          "building_id": "bdg1:PrimClass_Jaden",
+          "eui_window": 19.7802,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.0,
+          "band": "outside",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK"
+          ],
+          "floor_area_m2": 2572.0,
+          "metering_coverage_weighted": 0.9844
+        },
+        {
+          "rank": 70,
+          "building_id": "bdg1:PrimClass_Janice",
+          "eui_window": 15.5129,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.0,
+          "band": "outside",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 2152.0,
+          "metering_coverage_weighted": 0.9429
+        },
+        {
+          "rank": 71,
+          "building_id": "bdg1:PrimClass_Janiya",
+          "eui_window": 14.5669,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.0,
+          "band": "outside",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 2937.0,
+          "metering_coverage_weighted": 0.9491
+        },
+        {
+          "rank": 72,
+          "building_id": "bdg1:PrimClass_Jayla",
+          "eui_window": 13.3882,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.0,
+          "band": "outside",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 2132.0,
+          "metering_coverage_weighted": 0.952
+        },
+        {
+          "rank": 73,
+          "building_id": "bdg1:PrimClass_Jaylin",
+          "eui_window": 3.9516,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.0,
+          "band": "outside",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 4373.0,
+          "metering_coverage_weighted": 0.9285
+        },
+        {
+          "rank": 74,
+          "building_id": "bdg1:PrimClass_Jolie",
+          "eui_window": 3.5242,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.0,
+          "band": "outside",
+          "confidence": "medium",
+          "flags": [
+            "AREA_SOURCE_WEAK",
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 2927.0,
+          "metering_coverage_weighted": 0.9492
+        }
+      ],
+      "area_error_mc": {
+        "sigma_log_0.1": {
+          "mean_overlap": 0.851,
+          "p10_overlap": 0.8
+        },
+        "sigma_log_0.2": {
+          "mean_overlap": 0.708,
+          "p10_overlap": 0.6
+        },
+        "sigma_log_0.3": {
+          "mean_overlap": 0.607,
+          "p10_overlap": 0.467
+        }
+      },
+      "coverage_adjusted_top_overlap": 0.933,
+      "coverage_adjusted_entering": [
+        "bdg1:PrimClass_Jacquelyn"
+      ],
+      "coverage_adjusted_leaving": [
+        "bdg1:PrimClass_Juanita"
+      ]
+    }
+  ]
+}

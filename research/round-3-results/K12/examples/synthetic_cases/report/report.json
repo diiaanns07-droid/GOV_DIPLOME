@@ -1,0 +1,337 @@
+{
+  "schema_version": "k12-energy-monthly-v1",
+  "input": "examples/synthetic_cases/input.csv",
+  "delimiter": ",",
+  "extra_columns": [],
+  "window": [
+    "2025-01-01",
+    "2025-12-31"
+  ],
+  "policy": {
+    "top_share": 0.2,
+    "min_building_coverage": 0.9,
+    "min_row_coverage": null,
+    "n_sim": 1000,
+    "seed": 12
+  },
+  "rows_total": 333,
+  "rows_accepted": 317,
+  "rows_rejected": 16,
+  "row_reason_counts": {
+    "CITY_INVALID": 1,
+    "DUPLICATE_CONFLICT": 2,
+    "DUPLICATE_EXACT": 1,
+    "KIND_INVALID": 1,
+    "PERIOD_END_BEFORE_START": 1,
+    "PERIOD_INVALID": 1,
+    "PERIOD_OVERLAP": 4,
+    "REQUIRED_EMPTY": 1,
+    "UNIT_NOT_ELECTRIC_ENERGY": 2,
+    "VALUE_NEGATIVE": 1,
+    "ZERO_NOT_CONFIRMED": 1
+  },
+  "row_flag_counts": {
+    "COVERAGE_LOW": 3,
+    "DECIMAL_COMMA": 1,
+    "UNIT_CONVERTED": 12,
+    "ZERO_REPORTED": 1
+  },
+  "row_exclusion_counts": {
+    "PERIOD_CROSSES_WINDOW": 1
+  },
+  "buildings_total": 32,
+  "buildings_ranked": 15,
+  "building_reason_counts": {
+    "AREA_NOT_POSITIVE": 1,
+    "AREA_UNKNOWN": 1,
+    "CITY_INCONSISTENT": 1,
+    "INCOMPLETE_WINDOW": 9,
+    "NORM_ACCRUAL_IN_WINDOW": 1,
+    "NO_ACCEPTED_ROWS": 4
+  },
+  "building_flag_counts": {
+    "AREA_SOURCE_UNKNOWN": 1,
+    "ESTIMATED_IN_WINDOW": 1,
+    "LOW_ROW_COVERAGE": 1,
+    "UNIT_CONVERTED": 1,
+    "ZERO_REPORTED_IN_WINDOW": 1
+  },
+  "data_classes": {
+    "unknown": 4,
+    "synthetic": 28
+  },
+  "countries": [
+    "KZ"
+  ],
+  "measurement_terms": [
+    "synthetic: invented test values"
+  ],
+  "sensitivity_strict_row_coverage": {
+    "min_row_coverage": 0.8,
+    "buildings_ranked": 14,
+    "dropped_from_ranking": [
+      "SYN-SHY-LOWCOV"
+    ]
+  },
+  "groups": [
+    {
+      "city_id": "kz.astana",
+      "object_type": "school",
+      "data_class": "synthetic",
+      "n": 5,
+      "top_n": 1,
+      "ranking": [
+        {
+          "rank": 1,
+          "building_id": "SYN-AST-01",
+          "eui_window": 32.3077,
+          "eui_is_annual": true,
+          "in_top_n": true,
+          "p_top_sigma_0_2": 0.733,
+          "band": "boundary",
+          "confidence": "high",
+          "flags": [],
+          "floor_area_m2": 2600.0,
+          "metering_coverage_weighted": 1.0
+        },
+        {
+          "rank": 2,
+          "building_id": "SYN-AST-04",
+          "eui_window": 26.6667,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.24,
+          "band": "boundary",
+          "confidence": "high",
+          "flags": [],
+          "floor_area_m2": 3600.0,
+          "metering_coverage_weighted": 1.0
+        },
+        {
+          "rank": 3,
+          "building_id": "SYN-AST-02",
+          "eui_window": 20.0,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.026,
+          "band": "outside",
+          "confidence": "high",
+          "flags": [],
+          "floor_area_m2": 3000.0,
+          "metering_coverage_weighted": 1.0
+        },
+        {
+          "rank": 4,
+          "building_id": "SYN-AST-05",
+          "eui_window": 15.0,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.001,
+          "band": "outside",
+          "confidence": "high",
+          "flags": [],
+          "floor_area_m2": 2000.0,
+          "metering_coverage_weighted": 1.0
+        },
+        {
+          "rank": 5,
+          "building_id": "SYN-AST-03",
+          "eui_window": 14.4828,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.0,
+          "band": "outside",
+          "confidence": "high",
+          "flags": [],
+          "floor_area_m2": 2900.0,
+          "metering_coverage_weighted": 1.0
+        }
+      ],
+      "area_error_mc": {
+        "sigma_log_0.1": {
+          "mean_overlap": 0.909,
+          "p10_overlap": 1.0
+        },
+        "sigma_log_0.2": {
+          "mean_overlap": 0.733,
+          "p10_overlap": 0.0
+        },
+        "sigma_log_0.3": {
+          "mean_overlap": 0.609,
+          "p10_overlap": 0.0
+        }
+      },
+      "coverage_adjusted_top_overlap": 1.0,
+      "coverage_adjusted_entering": [],
+      "coverage_adjusted_leaving": []
+    },
+    {
+      "city_id": "kz.shymkent",
+      "object_type": "school",
+      "data_class": "synthetic",
+      "n": 10,
+      "top_n": 2,
+      "ranking": [
+        {
+          "rank": 1,
+          "building_id": "SYN-SHY-01",
+          "eui_window": 36.0,
+          "eui_is_annual": true,
+          "in_top_n": true,
+          "p_top_sigma_0_2": 0.555,
+          "band": "boundary",
+          "confidence": "high",
+          "flags": [],
+          "floor_area_m2": 3000.0,
+          "metering_coverage_weighted": 1.0
+        },
+        {
+          "rank": 2,
+          "building_id": "SYN-SHY-05",
+          "eui_window": 34.6667,
+          "eui_is_annual": true,
+          "in_top_n": true,
+          "p_top_sigma_0_2": 0.457,
+          "band": "boundary",
+          "confidence": "high",
+          "flags": [],
+          "floor_area_m2": 1800.0,
+          "metering_coverage_weighted": 1.0
+        },
+        {
+          "rank": 3,
+          "building_id": "SYN-SHY-DUP-EXACT",
+          "eui_window": 30.0,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.219,
+          "band": "boundary",
+          "confidence": "high",
+          "flags": [],
+          "floor_area_m2": 2000.0,
+          "metering_coverage_weighted": 1.0
+        },
+        {
+          "rank": 4,
+          "building_id": "SYN-SHY-ESTIMATED",
+          "eui_window": 30.0,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.228,
+          "band": "boundary",
+          "confidence": "low",
+          "flags": [
+            "ESTIMATED_IN_WINDOW"
+          ],
+          "floor_area_m2": 2000.0,
+          "metering_coverage_weighted": 1.0
+        },
+        {
+          "rank": 5,
+          "building_id": "SYN-SHY-LOWCOV",
+          "eui_window": 30.0,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.192,
+          "band": "boundary",
+          "confidence": "medium",
+          "flags": [
+            "LOW_ROW_COVERAGE"
+          ],
+          "floor_area_m2": 2000.0,
+          "metering_coverage_weighted": 0.9014
+        },
+        {
+          "rank": 6,
+          "building_id": "SYN-SHY-MWH",
+          "eui_window": 30.0,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.206,
+          "band": "boundary",
+          "confidence": "high",
+          "flags": [
+            "UNIT_CONVERTED"
+          ],
+          "floor_area_m2": 2000.0,
+          "metering_coverage_weighted": 1.0
+        },
+        {
+          "rank": 7,
+          "building_id": "SYN-SHY-ZERO-CONFIRMED",
+          "eui_window": 27.5,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.125,
+          "band": "boundary",
+          "confidence": "high",
+          "flags": [
+            "ZERO_REPORTED_IN_WINDOW"
+          ],
+          "floor_area_m2": 2000.0,
+          "metering_coverage_weighted": 1.0
+        },
+        {
+          "rank": 8,
+          "building_id": "SYN-SHY-02",
+          "eui_window": 22.5,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.015,
+          "band": "outside",
+          "confidence": "high",
+          "flags": [],
+          "floor_area_m2": 3200.0,
+          "metering_coverage_weighted": 1.0
+        },
+        {
+          "rank": 9,
+          "building_id": "SYN-SHY-03",
+          "eui_window": 19.2,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.003,
+          "band": "outside",
+          "confidence": "high",
+          "flags": [],
+          "floor_area_m2": 2500.0,
+          "metering_coverage_weighted": 1.0
+        },
+        {
+          "rank": 10,
+          "building_id": "SYN-SHY-04",
+          "eui_window": 8.7805,
+          "eui_is_annual": true,
+          "in_top_n": false,
+          "p_top_sigma_0_2": 0.0,
+          "band": "outside",
+          "confidence": "high",
+          "flags": [],
+          "floor_area_m2": 4100.0,
+          "metering_coverage_weighted": 1.0
+        }
+      ],
+      "area_error_mc": {
+        "sigma_log_0.1": {
+          "mean_overlap": 0.735,
+          "p10_overlap": 0.5
+        },
+        "sigma_log_0.2": {
+          "mean_overlap": 0.506,
+          "p10_overlap": 0.0
+        },
+        "sigma_log_0.3": {
+          "mean_overlap": 0.417,
+          "p10_overlap": 0.0
+        }
+      },
+      "coverage_adjusted_top_overlap": 0.5,
+      "coverage_adjusted_entering": [
+        "SYN-SHY-LOWCOV"
+      ],
+      "coverage_adjusted_leaving": [
+        "SYN-SHY-05"
+      ]
+    }
+  ]
+}
