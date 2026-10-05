@@ -1,0 +1,17 @@
+{
+ "rule": "k03_assign_v2",
+ "base": "inputs/k03_root (K03 @ 44585de, byte-exact)",
+ "patch": {
+  "path": "inputs/r4/K03/patches/k03_assign_v2.patch",
+  "sha256": "caa62f7530ff3db80428b850a3af07a58c25c95f66cd873fb8baa85dcba388f5",
+  "source": "K03 @ 3660527"
+ },
+ "modified": [
+  {
+   "path": "research/round-3-results/K03/boundary_validator.py",
+   "original_sha256": "61e354b2cf68b202e2a1a0a8aace38dd8e844c5909288eba55cf67474956e82e",
+   "patched_sha256": "891cd7e5b4a58eda5cdbf75e7aa5db96839dc80587536b6a4060f0cfe5858f1f"
+  }
+ ],
+ "note": "patched local copy; other files identical to inputs/k03_root"
+}

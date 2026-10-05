@@ -1,171 +1,217 @@
-"""Stage 2 adapter: K10 slice -> K03 district status -> K05 observations -> web/evidence.js.
+"""Build web/evidence.js (format city-evidence/2) — contract k05-obs-v1.2+k12r4, K03 k03_assign_v2, QA labels.
 
-Minimal glue, not a platform:
-  * district status of every place comes from K03 `assign()` (rule k03_assign_v1) run unmodified
-    from inputs/k03_root/ (needs shapely + pyproj, see requirements-build.txt);
-  * every number shown as a "fact" is a k05-obs-v1.1 observation validated by K05 `validate()`
-    (stdlib) from inputs/k05_root/; any validation error aborts the build;
-  * counts are numbers of Overture records in the K10 square, never city totals / capacity.
+Inputs (all committed, see source_manifest.json and inputs/r4/MANIFEST.json):
+  * K10 r3 package (inputs/k10)              — places, segments, bbox, sha256-checked by build_data.load_layer
+  * K05 r4 square observations (inputs/r4/K05/examples/<city>/square_place_record_counts.json)
+      — read with loads_strict; every value is re-counted here from the K10 file; mismatch aborts
+  * K03 v2 (inputs/k03v2_root, patched copy) — district status per record (needs shapely + pyproj)
+  * contract (tools/contract.py)             — validate_all over every observation; any error aborts
+
+Semantics (same in contract, catalog and UI):
+  * value 0 + reported_zero + coverage.complete=true  -> "0 records in the complete query result for this square"
+  * the number of objects in the CITY is a separate observation with value null (missing, reason given)
+  * capacity / official registry / population are null with missing_reason, never 0
 
 Usage (from prototypes/city-evidence/):  <python with shapely,pyproj> tools/build_evidence.py
-Writes web/evidence.js only.
 """
+import copy
+import hashlib
 import json
+import re
 import sys
-from collections import Counter
+from collections import Counter, defaultdict
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 APP = HERE.parent
-K03_DIR = APP / "inputs" / "k03_root" / "research" / "round-3-results" / "K03"
-K05_DIR = APP / "inputs" / "k05_root" / "round-3-results" / "K05"
+K03_DIR = APP / "inputs" / "k03v2_root" / "research" / "round-3-results" / "K03"
+K05_EX = APP / "inputs" / "r4" / "K05" / "examples"
 OUT = APP / "web" / "evidence.js"
 AS_OF = "2026-10-05"
-SLICE_ID = "k10r3"                         # scenario part of fact IDs (K02 ID pattern: [A-Za-z0-9_]+)
+FORMAT = "city-evidence/2"
 
 sys.path.insert(0, str(HERE))
 from build_data import GROUPS, InputError, load_layer, load_manifest  # noqa: E402
+import contract as K  # noqa: E402
 
 GROUP_KK = {  # черновик казахских подписей, требует проверки носителем
     "school": "Мектеп", "preschool": "Балабақша", "college_university": "Колледж / ЖОО",
     "hospital": "Аурухана", "outpatient_clinic": "Емхана", "pharmacy": "Дәріхана",
     "government_office": "Мемлекеттік мекеме",
 }
+# Reproducible category-doubt rule (QA only; records are never removed or re-categorised).
+CATEGORY_DOUBT = [
+    ("ad_or_business_page", re.compile(r"реклам|reklama|бизнес\s*страниц|business\s*page", re.I),
+     "название похоже на рекламу или страницу бизнеса, а не на учреждение категории"),
+    ("bare_place_name", re.compile(r"^(казахстан|kazakhstan|шымкент|shymkent|астана|astana)$", re.I),
+     "название совпадает с названием страны или города, а не учреждения"),
+]
+
+
+def sha256(p):
+    return hashlib.sha256(p.read_bytes()).hexdigest()
 
 
 def load_k03():
     sys.path.insert(0, str(K03_DIR))
-    import boundary_validator as BV  # noqa: E402  (K03 code, read before use: read-only, no network)
+    import boundary_validator as BV  # noqa: E402  (K03 v2 patched copy, read-only, no network)
     return BV, BV.Layers()
 
 
-def load_k05():
-    sys.path.insert(0, str(K05_DIR))
-    import k05r3_contract as C  # noqa: E402
-    return C
-
-
 def district_names():
-    reg = json.loads((K03_DIR / "boundary_registry.json").read_text(encoding="utf-8"))
-    out = {}
-    for u in reg["units"]:
-        out[u["unit_id"]] = {"ru": (u["names"].get("ru") or {}).get("value"),
-                             "kk": (u["names"].get("kk") or {}).get("value"),
-                             "legal_status": u.get("legal_status")}
-    return out, reg.get("assignment_rule", {}).get("id", "k03_assign_v1")
+    reg = K.loads_strict((K03_DIR / "boundary_registry.json").read_text(encoding="utf-8"))
+    return {u["unit_id"]: {"ru": (u["names"].get("ru") or {}).get("value"), "kk": (u["names"].get("kk") or {}).get("value")}
+            for u in reg["units"]}
 
 
-def obs(city_id, geo, indicator, value, status, unit, *, kind, source, coverage, method, reason=None, note=None):
-    return {"schema_version": "k05-obs-v1.1", "obs_id": f"{geo}/{SLICE_ID}/{indicator}", "city_id": city_id,
-            "geo_unit_id": geo, "indicator_id": indicator, "period": "2026-09-23", "release": "2026-09-23.1",
-            "value": value, "unit": unit, "value_status": status, "missing_reason": reason, "kind": kind,
-            "source": source, "data_version": "overture-2026-09-23.1/k10r3-602f0c0", "boundary_version": None,
-            "coverage": coverage, "method": method, "max_age_days": None, "derivation": None, "note": note}
+def k05_square_obs(city, places_path, features):
+    """K05 r4 observations for the square; values re-counted from the pinned K10 file."""
+    obs = K.loads_strict((K05_EX / city / "square_place_record_counts.json").read_text(encoding="utf-8"))
+    want_sha = sha256(places_path)
+    for o in obs:
+        if o["source"]["sha256"] != want_sha:
+            raise InputError(f"{o['obs_id']}: source.sha256 K05 != файл K10 пакета")
+        g = o["indicator_id"].split(".")[1]
+        t = o["method"]["parameters"]["confidence_min"]
+        n = sum(1 for f in features if f["properties"]["k10_group"] == g
+                and f["properties"]["confidence"] is not None and f["properties"]["confidence"] >= t)
+        if o["value"] != n:
+            raise InputError(f"{o['obs_id']}: значение K05 {o['value']} != пересчёт {n}")
+    return obs
 
 
-def city_observations(city, cm, places, assign_counts):
-    city_id, geo = f"kz.{city}", f"kz.{city}.k10r3_bbox"
-    pfile = cm["files"]["places_social"]
-    src = {"source_id": "K10-r3-places", "path": "inputs/k10/" + pfile["path"], "sha256": pfile["sha256"],
-           "locator": "features[].properties.k10_group", "license": "CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 / ODbL-1.0 по записям",
-           "retrieved_at": cm.get("finished_utc"), "url": None, "evidence": None}
-    cov = {"complete": False, "scope": f"квадрат K10 {cm['bbox']} (~2×2 км), не весь город",
-           "selection": "все записи Overture places внутри квадрата, отнесённые правилом K10 к соцгруппам",
-           "area_fraction": None, "cap_per_group": None}
-    meth = {"id": "count_records_in_bbox", "steps": ["k10_rules.social_group", "point in bbox", "count by group"]}
-    rows = []
-    by_group = Counter(p["properties"]["k10_group"] for p in places)
-    rows.append(obs(city_id, geo, "places.total", len(places), "reported", "records", kind="observed",
-                    source=src, coverage=cov, method=meth))
-    for g in GROUPS:
-        n = by_group.get(g, 0)
-        if n:
-            rows.append(obs(city_id, geo, f"places.{g}", n, "reported", "records", kind="observed",
-                            source=src, coverage=cov, method=meth))
-        else:  # zero records in a partial slice does not prove absence (K05 ZERO_ON_PARTIAL)
-            rows.append(obs(city_id, geo, f"places.{g}", None, "missing", "records", kind="observed", source=src,
-                            coverage=cov, method=meth, reason="zero_in_partial_coverage",
-                            note="0 записей в срезе; не доказывает, что объектов нет"))
-    k03 = {"source_id": "K03-k03_assign_v1", "path": "inputs/k03_root/research/round-3-results/K03/boundary_validator.py",
-           "sha256": None, "url": None, "locator": "assign(L, lon, lat)['status']", "license": None,
-           "retrieved_at": "2026-10-05 (K03 commit 44585de)", "evidence": None}
-    k03["sha256"] = __import__("hashlib").sha256((K03_DIR / "boundary_validator.py").read_bytes()).hexdigest()
-    dmeth = {"id": "k03_assign_v1", "steps": ["K03 assign() for each record", "count by status"]}
-    # Status counts are complete over the slice's own records (the population is the slice, not the city).
-    slice_cov = {"complete": True, "scope": f"{len(places)} записей объектов этого среза", "selection": "все записи среза",
-                 "area_fraction": None, "cap_per_group": None}
-    for st in ("matched", "ambiguous", "unmatched", "outside"):
-        n = assign_counts.get(st, 0)
-        o = obs(city_id, geo, f"district_status.{st}", n, "reported" if n else "reported_zero", "records",
-                kind="derived", source=k03, coverage=slice_cov, method=dmeth)
-        o["derivation"] = "число записей среза, для которых K03 assign() вернул статус " + st
-        rows.append(o)
-    segf = cm["files"]["segments"]
-    ssrc = dict(src, source_id="K10-r3-segments", path="inputs/k10/" + segf["path"], sha256=segf["sha256"],
-                locator="features[].properties.k10_foot_access")
-    fa = Counter(s["properties"]["k10_foot_access"] for s in segs_of(cm))
-    for k in ("unknown", "conditional", "denied", "allowed"):
-        n = fa.get(k, 0)
-        rows.append(obs(city_id, geo, f"segments.foot_{k}", n, "reported" if n else "reported_zero", "segments", kind="observed",
-                        source=ssrc, coverage=dict(slice_cov, scope="все сегменты road пакета K10, пересекающие квадрат"),
-                        method={"id": "count_segments_by_foot_access", "steps": ["k10_rules.foot_access"]}))
-    nosrc = {"source_id": "none", "url": "https://data.egov.kz/", "locator": "официальный реестр не получен",
-             "sha256": None, "path": None, "license": None, "retrieved_at": None, "evidence": "K10/K07 access_log: 403"}
-    gap_cov = dict(cov, selection="нет данных")
-    gap_meth = {"id": "not_computed", "steps": ["источник отсутствует в пакете"]}
-    rows.append(obs(city_id, geo, "capacity.school_places", None, "missing", "places", kind="observed", source=nosrc,
-                    coverage=gap_cov, method=gap_meth, reason="not_in_source"))
-    rows.append(obs(city_id, geo, "registry.official_schools", None, "missing", "records", kind="observed", source=nosrc,
-                    coverage=gap_cov, method=gap_meth, reason="source_access_denied"))
-    rows.append(obs(city_id, geo, "population.children", None, "missing", "persons", kind="observed", source=nosrc,
-                    coverage=gap_cov, method=gap_meth, reason="not_collected"))
-    return rows
+def derived_obs(template, indicator, value, unit, *, scope, derivation, method_id, steps, source):
+    o = copy.deepcopy(template)
+    o.update({"indicator_id": indicator, "value": value, "unit": unit,
+              "value_status": "reported_zero" if value == 0 else "reported", "missing_reason": None,
+              "obs_id": f"{o['geo_unit_id']}.{indicator}@{o['release']}", "derivation": derivation,
+              "method": {"id": method_id, "steps": steps}, "note": None, "source": source})
+    o["coverage"] = {"complete": True, "scope": scope, "selection": "все записи пакета K10 для этого квадрата",
+                     "area_fraction": 1.0, "cap_per_group": None}
+    return o
 
 
-_SEGS = {}
+def city_missing_obs(template, city, indicator, unit, reason, note):
+    o = copy.deepcopy(template)
+    o.update({"geo_unit_id": f"kz.{city}", "indicator_id": indicator, "value": None, "unit": unit,
+              "value_status": "missing", "missing_reason": reason, "kind": "observed", "derivation": None,
+              "obs_id": f"kz.{city}.{indicator}@{o['release']}", "note": note, "boundary_version": None,
+              "method": {"id": "not_available", "steps": ["в сохранённом пакете источника нет"]},
+              "spatial_unit": {"type": "city_polygon", "crs": "EPSG:4326", "bbox": None, "edges_inclusive": None,
+                               "area_km2": None, "geometry_source": None, "geometry_sha256": None,
+                               "overlaps_districts": None}})
+    o["coverage"] = {"complete": False, "scope": "город целиком", "selection": "нет данных", "area_fraction": None,
+                     "cap_per_group": None}
+    o["source"] = {"source_id": "none", "url": "https://data.egov.kz/", "path": None, "sha256": None,
+                   "retrieved_at": None, "license": None, "locator": "официальный источник не получен",
+                   "evidence": "K10/K07 access_log: 403 по политике сети"}
+    return o
 
 
-def segs_of(cm):
-    return _SEGS[cm["bbox"][0]]
+def qa_labels(city, features):
+    """COLOCATED groups and POSSIBLE_DUPLICATE pairs from the K05 contract rule + category-doubt rule."""
+    rows = [{"overture_id": f["id"], "lon": f["geometry"]["coordinates"][0], "lat": f["geometry"]["coordinates"][1],
+             "name_primary": f["properties"].get("name_primary"), "k10_group": f["properties"]["k10_group"],
+             "address_freeform": [a.get("freeform") for a in (f["properties"].get("addresses") or [])][:1]}
+            for f in features]
+    qa = K.C3.check_objects(rows)
+    by_xy = defaultdict(list)  # same key as check_objects (5 decimals)
+    for r in rows:
+        by_xy[(round(r["lon"], 5), round(r["lat"], 5))].append(r["overture_id"])
+    colocated = [{"lon": xy[0], "lat": xy[1], "ids": ids} for xy, ids in by_xy.items() if len(ids) >= 3]
+    n_reported = sum(1 for w in qa["warnings"] if w["code"] == "COLOCATED")
+    if n_reported != len(colocated):
+        raise InputError(f"{city}: COLOCATED {n_reported} у контракта != {len(colocated)} групп")
+    dups = [{"rule": w["rule"], "distance_m": w["distance_m"], "a": w["a"]["id"], "b": w["b"]["id"]}
+            for w in qa["warnings"] if w["code"] == "POSSIBLE_DUPLICATE"]
+    doubts = {}
+    for f in features:
+        name = (f["properties"].get("name_primary") or "").strip()
+        for rule_id, rx, why in CATEGORY_DOUBT:
+            if rx.search(name):
+                doubts[f["id"]] = {"rule": rule_id, "reason": why}
+                break
+    return {"colocated": colocated, "possible_duplicates": dups, "category_doubt": doubts,
+            "rules": {"colocated": "≥3 записей с одинаковыми координатами (округление до 5 знаков) — K05 check_objects",
+                      "possible_duplicate": "одинаковый адрес или имя < 100 м; одна группа и номер дома < 50 м — K05 check_objects",
+                      "category_doubt": {r: why for r, _, why in CATEGORY_DOUBT}}}
+
+
+def build():
+    man = load_manifest()
+    BV, L = load_k03()
+    names = district_names()
+    out = {"format": FORMAT, "as_of": AS_OF, "contract": K.CONTRACT_ID, "assign_rule": "k03_assign_v2",
+           "group_kk": GROUP_KK, "district_names": names, "cities": {}}
+    for city, cm in man["cities"].items():
+        layers = {n: load_layer(city, n, fm) for n, fm in cm["files"].items()}
+        places = layers["places_social"]["features"]
+        segs = [f for f in layers["segments"]["features"] if f["properties"]["subtype"] == "road"]
+        k05 = k05_square_obs(city, APP / "inputs" / "k10" / cm["files"]["places_social"]["path"], places)
+        tmpl = next(o for o in k05 if o["indicator_id"].endswith("conf_ge_0_0"))
+        assigned, counts = {}, Counter()
+        for f in places:
+            lon, lat = f["geometry"]["coordinates"][:2]
+            r = BV.assign(L, lon, lat)
+            if r.get("city") not in (city, None):
+                raise InputError(f"{city}: {f['id']} привязан к городу {r.get('city')}")
+            counts[r["status"]] += 1
+            assigned[f["id"]] = {"status": r["status"], "reason": r.get("reason"), "district": r.get("district"),
+                                 "candidates": r.get("candidates") or []}
+        k03_src = {"source_id": "K03-k03_assign_v2", "url": None,
+                   "path": "inputs/k03v2_root/research/round-3-results/K03/boundary_validator.py",
+                   "sha256": sha256(K03_DIR / "boundary_validator.py"), "retrieved_at": "2026-10-05T00:00:00Z",
+                   "license": None, "locator": "assign(L, lon, lat)['status'] (patched copy, not upstream)",
+                   "evidence": "K03 @ 44585de + k03_assign_v2.patch @ 3660527", "query": None}
+        rows = list(k05)
+        for st in ("matched", "ambiguous", "unmatched", "outside"):
+            rows.append(derived_obs(tmpl, f"k03_district_status.{st}", counts.get(st, 0), "records",
+                                    scope=f"{len(places)} записей объектов этого квадрата",
+                                    derivation=f"число записей квадрата со статусом {st} по k03_assign_v2",
+                                    method_id="k03_assign_v2", steps=["K03 assign() для каждой записи", "счёт по статусу"],
+                                    source=k03_src))
+        seg_src = dict(tmpl["source"], source_id="K10-r3-segments", path="inputs/k10/" + cm["files"]["segments"]["path"],
+                       sha256=cm["files"]["segments"]["sha256"], url=man["cities"][city]["queries"]["segments"]["files"][0]["url"],
+                       query="segment geometry intersects bbox", locator="features[].properties.k10_foot_access")
+        fa = Counter(s["properties"]["k10_foot_access"] for s in segs)
+        for k in ("unknown", "conditional", "denied", "allowed"):
+            rows.append(derived_obs(tmpl, f"segments_foot_access.{k}", fa.get(k, 0), "segments",
+                                    scope="все сегменты road пакета K10, пересекающие квадрат",
+                                    derivation=f"число сегментов с k10_foot_access={k}",
+                                    method_id="k10_rules.foot_access", steps=["K10 k10_rules.foot_access по access_restrictions"],
+                                    source=seg_src))
+        rows.append(city_missing_obs(tmpl, city, "overture_place_records.city_total", "records", "not_collected",
+                                     "в пакете K10 r3 только квадрат; число записей по городу не собиралось"))
+        rows.append(city_missing_obs(tmpl, city, "official_registry.schools", "records", "source_access_denied",
+                                     "официальный реестр (data.egov.kz) недоступен из среды"))
+        rows.append(city_missing_obs(tmpl, city, "capacity.school_places", "places", "not_in_source",
+                                     "мощности школ нет ни в одном сохранённом источнике"))
+        rows.append(city_missing_obs(tmpl, city, "population.children", "persons", "not_collected",
+                                     "численность детей не собиралась"))
+        errors, warnings = K.validate_all(rows, AS_OF)
+        if errors:
+            raise InputError(f"{city}: контракт {K.CONTRACT_ID}: {errors[:5]}")
+        out["cities"][city] = {"geo_unit_id": tmpl["geo_unit_id"], "spatial_unit": tmpl["spatial_unit"],
+                               "release": tmpl["release"], "place_district": assigned,
+                               "district_status_counts": dict(counts), "observations": rows,
+                               "validation": {"errors": 0, "warnings": sorted({w.split(": ", 1)[1].split(":")[0] for w in warnings})},
+                               "qa": qa_labels(city, places)}
+        q = out["cities"][city]["qa"]
+        print(f"{city}: {dict(counts)}; {len(rows)} наблюдений, ошибок 0; QA: colocated "
+              f"{[len(g['ids']) for g in q['colocated']]}, дубли {len(q['possible_duplicates'])}, "
+              f"сомнения в категории {len(q['category_doubt'])}")
+    return out
 
 
 def main():
     try:
-        man = load_manifest()
-        BV, L = load_k03()
-        C = load_k05()
-        names, rule = district_names()
-        out = {"as_of": AS_OF, "slice_id": SLICE_ID, "assign_rule": rule, "group_kk": GROUP_KK,
-               "district_names": names, "cities": {}}
-        for city, cm in man["cities"].items():
-            layers = {n: load_layer(city, n, fm) for n, fm in cm["files"].items()}
-            _SEGS[cm["bbox"][0]] = [f for f in layers["segments"]["features"] if f["properties"]["subtype"] == "road"]
-            places = layers["places_social"]["features"]
-            assigned, counts = {}, Counter()
-            for f in places:
-                lon, lat = f["geometry"]["coordinates"][:2]
-                r = BV.assign(L, lon, lat)
-                counts[r["status"]] += 1
-                assigned[f["id"]] = {"status": r["status"], "reason": r.get("reason"), "district": r.get("district"),
-                                     "candidates": r.get("candidates") or [],
-                                     "assign_city": r.get("city")}
-            rows = city_observations(city, cm, places, counts)
-            report = []
-            for o in rows:
-                errs, warns = C.validate(o, as_of=AS_OF)
-                if errs:
-                    raise InputError(f"K05 validate {o['obs_id']}: {errs}")
-                report.append({"obs_id": o["obs_id"], "warnings": warns})
-            mism = [pid for pid, a in assigned.items() if a["assign_city"] not in (city, None)]
-            out["cities"][city] = {"place_district": assigned, "district_status_counts": dict(counts),
-                                   "observations": rows, "validation": report, "city_mismatch": mism}
-            print(f"{city}: {dict(counts)}; {len(rows)} наблюдений, ошибок K05 0, предупреждений "
-                  f"{sum(len(r['warnings']) for r in report)}")
-    except InputError as e:
+        out = build()
+    except (InputError, K.ContractError) as e:
         print(f"ОШИБКА входных данных: {e}", file=sys.stderr)
         return 2
-    txt = json.dumps(out, ensure_ascii=False, separators=(",", ":"), sort_keys=True)
-    OUT.write_text("// GENERATED by tools/build_evidence.py (K03 assign + K05 validate) — do not edit.\n"
+    txt = K.dumps_strict(out, separators=(",", ":"), sort_keys=True)
+    K.loads_strict(txt)  # round-trip: strict JSON only
+    OUT.write_text("// GENERATED by tools/build_evidence.py (contract k05-obs-v1.2+k12r4, K03 v2, QA) — do not edit.\n"
                    f"window.CITY_OBS = {txt};\n", encoding="utf-8")
     print(f"wrote {OUT.relative_to(APP)} ({OUT.stat().st_size} bytes)")
     return 0

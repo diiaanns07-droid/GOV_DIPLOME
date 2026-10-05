@@ -111,16 +111,43 @@
       $("groupFilters").append(lab);
     }
     $("tPlaces").addEventListener("change", (e) => { STATE.places = e.target.checked; onFilterChange(); });
-    $("tRoads").addEventListener("change", (e) => { STATE.roads = e.target.checked; renderMap(); });
+    $("tRoads").addEventListener("change", (e) => {
+      STATE.roads = e.target.checked;
+      if (!STATE.roads && STATE.selected && STATE.selected.type === "segment") STATE.selected = null;  // K07 F2
+      renderMap(); renderSelection(); updateStatus();
+    });
+    $("clearBtn").addEventListener("click", clearSelection);
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") clearSelection(); });
     $("roadStyle").addEventListener("change", (e) => { STATE.roadStyle = e.target.value; renderRoadLegend(); renderMap(); });
     $("pointBtn").addEventListener("click", () => {
       STATE.pointMode = !STATE.pointMode;
       $("pointBtn").setAttribute("aria-pressed", String(STATE.pointMode));
       $("map").classList.toggle("pointmode", STATE.pointMode);
+      updateStatus(); renderMap();
     });
     $("zIn").addEventListener("click", () => zoomBy(1.5));
     $("zOut").addEventListener("click", () => zoomBy(1 / 1.5));
     $("zReset").addEventListener("click", () => { fitView(); renderMap(); });
+  }
+  // K07 P1/P2: point and selection can always be removed (button or Escape).
+  function clearSelection() {
+    if (!STATE.point && !STATE.selected) return;
+    STATE.point = null; STATE.selected = null; STATE.epoch += 1;
+    renderMap(); renderSelection(); renderTable(); renderExplain(); updateStatus();
+  }
+  // K07 W2: the result of a point / selection is announced next to the map (narrow screens show the card far below).
+  function updateStatus() {
+    const s = STATE.selected, st = $("mapStatus");
+    $("clearBtn").disabled = !STATE.point && !s;
+    if (!s) { st.textContent = STATE.pointMode ? "Режим точки: нажмите на карту (или Enter — точка в центре)." : ""; return; }
+    if (s.type === "point") {
+      const [lon, lat] = STATE.point;
+      const n = visiblePlaces().filter((p) => haversine(lon, lat, p.lon, p.lat) <= 500).length;
+      st.textContent = `Точка выбрана: ${n} записей выбранных категорий в пределах 500 м по прямой. Время пешком не рассчитывается.`;
+    } else if (s.type === "place") {
+      const p = D.cities[STATE.city].places.find((x) => x.id === s.id);
+      st.textContent = p ? `Выбрано: ${p.name || "Без названия"} (${p.group_label}). Карточка — в панели «Выбор».` : "";
+    } else st.textContent = "Выбрана дорога. Карточка — в панели «Выбор».";
   }
   function renderRoadLegend() {
     const box = $("roadLegend");
@@ -138,14 +165,14 @@
     STATE.city = key; STATE.point = null; STATE.selected = null; STATE.epoch += 1;
     hideTip();
     document.querySelectorAll("#citySeg button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.city === key)));
-    setupProjection(key); fitView(); renderAll();
+    setupProjection(key); fitView(); renderAll(); updateStatus();
   }
   // Filter change: a selected object that is no longer visible is deselected; explanations are recomputed.
   function onFilterChange() {
     STATE.epoch += 1;
     const s = STATE.selected;
     if (s && s.type === "place" && !visiblePlaces().some((p) => p.id === s.id)) STATE.selected = null;
-    renderAll();
+    renderAll(); updateStatus();
   }
   function zoomBy(f, sx, sy) {
     const svg = $("map"), W = svg.clientWidth, H = svg.clientHeight, v = STATE.view;
@@ -162,6 +189,7 @@
   }
   function renderMap() {
     const c = D.cities[STATE.city], svg = $("map");
+    hideTip();  // K07 CS2: a tooltip of a removed element must not survive a re-render / city switch
     svg.replaceChildren();
     const gBox = sv("g"), gRoad = sv("g"), gPoint = sv("g"), gMark = sv("g"), gLabel = sv("g");
     svg.append(gBox, gRoad, gPoint, gMark, gLabel);
@@ -178,7 +206,8 @@
       hit.style.cursor = "pointer";
       hit.addEventListener("pointermove", (ev) => showTip(ev, [`${sg.class}${sg.name ? " · " + sg.name : ""}`, `${fmtM(sg.length_m)} · проход пешком: ${sg.foot_access}`]));
       hit.addEventListener("pointerleave", hideTip);
-      const pick = (ev) => { ev.stopPropagation(); STATE.selected = { type: "segment", id: sg.id }; renderSelection(); renderExplain(); };
+      // In point mode a click on a road sets the point (roads cover most of the map); markers keep priority.
+      const pick = (ev) => { if (STATE.pointMode && ev.type === "click") return; ev.stopPropagation(); STATE.selected = { type: "segment", id: sg.id }; renderSelection(); renderExplain(); updateStatus(); };
       hit.addEventListener("click", pick);
       hit.addEventListener("keydown", (ev) => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); pick(ev); } });
       gRoad.append(hit);
@@ -188,6 +217,15 @@
       gPoint.append(sv("path", { d: `M${sx - 8} ${sy}H${sx + 8}M${sx} ${sy - 8}V${sy + 8}`, stroke: "var(--ink)", "stroke-width": 2 }));
     }
     const places = visiblePlaces();
+    const visIds = new Set(places.map((p) => p.id));
+    for (const grp of colocatedGroups()) {
+      const n = grp.ids.filter((i) => visIds.has(i)).length;
+      if (!n) continue;
+      const [cx, cy] = toScreen(grp.lon, grp.lat);
+      gPoint.append(sv("circle", { cx, cy, r: 18, fill: "none", stroke: "var(--warning)", "stroke-width": 2, "stroke-dasharray": "3 2" }));
+      const t = sv("text", { x: cx + 20, y: cy - 12, "font-size": 11, fill: "var(--ink)" });
+      t.textContent = `${n} зап. в одной точке — координата под вопросом`; gLabel.append(t);
+    }
     for (const p of places) {
       const [sx, sy] = toScreen(p.lon, p.lat);
       const g = sv("g", { transform: `translate(${sx.toFixed(1)} ${sy.toFixed(1)})`, tabindex: 0, role: "button",
@@ -199,7 +237,9 @@
       const m = markerShape(p.group, 11);
       m.setAttribute("fill", `var(--s-${p.sector})`); m.setAttribute("stroke", "var(--surface)"); m.setAttribute("stroke-width", "2");
       g.append(m);
-      g.addEventListener("pointermove", (ev) => showTip(ev, [p.name || "Без названия", `${p.group_label} · conf. ${p.confidence ?? "—"}`]));
+      const qa = qaOf(p);
+      if (qa.length) g.append(sv("circle", { cx: 6, cy: -6, r: 3.5, fill: "var(--warning)", stroke: "var(--surface)", "stroke-width": 1 }));
+      g.addEventListener("pointermove", (ev) => showTip(ev, [p.name || "Без названия", `${p.group_label} · conf. ${p.confidence ?? "—"}`, ...qa.map((q) => "⚠ " + q.code)]));
       g.addEventListener("pointerleave", hideTip);
       const pick = (ev) => { ev.stopPropagation(); selectPlace(p.id); };
       g.addEventListener("click", pick);
@@ -211,9 +251,22 @@
     else if (!STATE.groups.size) { msg.hidden = false; msg.textContent = "Не выбрана ни одна категория — включите категории в панели фильтров."; }
     else if (!places.length) { msg.hidden = false; msg.textContent = "В этом квадрате нет записей выбранных категорий. Это не значит, что таких объектов нет на местности."; }
     else msg.hidden = true;
-    $("attrib").textContent = "© OpenStreetMap contributors; Overture Maps Foundation · " + c.release;
+    const att = $("attrib");
+    att.replaceChildren(document.createTextNode(attributionLine(c) + " · "), el("a", { href: "attribution/ATTRIBUTION.md", target: "_blank", rel: "noopener" }, "лицензии"));
   }
-  function selectPlace(id) { STATE.selected = { type: "place", id }; renderMap(); renderSelection(); renderTable(); renderExplain(); }
+  // Providers are taken from records' sources[] (K08 attribution.json), not from the K10 file header.
+  function attributionLine(c) {
+    const names = { OpenStreetMap: "© OpenStreetMap contributors", Overture: "Overture Maps Foundation", meta: "Meta", Foursquare: "Foursquare", TomTom: "TomTom" };
+    const seen = [];
+    for (const a of c.attribution || []) { const n = names[a.dataset] || a.dataset; if (!seen.includes(n)) seen.push(n); }
+    return (seen.length ? seen.join("; ") : "источники не указаны") + " · Overture " + c.release;
+  }
+  function qaOf(p) { return F && F.qaOf ? F.qaOf(STATE.city, p) : []; }
+  function colocatedGroups() {
+    const ev = window.CITY_OBS;
+    return ev && ev.cities && ev.cities[STATE.city] ? ev.cities[STATE.city].qa.colocated : [];
+  }
+  function selectPlace(id) { STATE.selected = { type: "place", id }; renderMap(); renderSelection(); renderTable(); renderExplain(); updateStatus(); }
 
   // ---------- tooltip ----------
   function showTip(e, lines) {
@@ -239,11 +292,25 @@
     svg.addEventListener("pointerup", (e) => {
       const d = drag; drag = null;
       if (!d || d.moved || !STATE.pointMode) return;
-      if (e.target.closest && e.target.closest('[role="button"]')) return;
+      if (e.target.closest && e.target.closest("g[data-id]")) return;  // a click on an object marker selects the object
       const r = svg.getBoundingClientRect();
       STATE.point = toLonLat(e.clientX - r.left, e.clientY - r.top);
       STATE.selected = { type: "point" };
-      renderMap(); renderSelection(); renderExplain();
+      renderMap(); renderSelection(); renderExplain(); updateStatus();
+    });
+    // K07 K5: keyboard on the focused map (only when the map itself has focus, not a marker inside it)
+    svg.addEventListener("keydown", (e) => {
+      if (e.target !== svg) return;
+      const step = 60 / STATE.view.k, mv = { ArrowLeft: [-step, 0], ArrowRight: [step, 0], ArrowUp: [0, -step], ArrowDown: [0, step] }[e.key];
+      if (mv) { e.preventDefault(); STATE.view.cx += mv[0]; STATE.view.cy += mv[1]; renderMap(); }
+      else if (e.key === "+" || e.key === "=") { e.preventDefault(); zoomBy(1.5); }
+      else if (e.key === "-") { e.preventDefault(); zoomBy(1 / 1.5); }
+      else if ((e.key === "Enter" || e.key === " ") && STATE.pointMode) {
+        e.preventDefault();
+        STATE.point = toLonLat(svg.clientWidth / 2, svg.clientHeight / 2);
+        STATE.selected = { type: "point" };
+        renderMap(); renderSelection(); renderExplain(); updateStatus();
+      }
     });
     svg.addEventListener("wheel", (e) => {
       e.preventDefault();
@@ -285,10 +352,31 @@
         ["Адрес", p.address, "наблюдение · вторичное"],
         ["Район", dt, db],
         ["Координаты", `${p.lat.toFixed(6)}, ${p.lon.toFixed(6)}`, null],
-        ["Мощность / места", null, "нет источника"],
+        ["Мощность / места", null, "нет в источнике (not_in_source)"],
         ["Работает ли сейчас", p.operating_status, "Overture"],
       ]);
       body.append(dl);
+      const qa = qaOf(p);
+      if (qa.length) {
+        body.append(el("h3", null, "Проверка качества записи"));
+        const ul = el("ul", { class: "reasons" });
+        for (const q of qa) {
+          const li = el("li", { class: "warn" }, q.text + " ");
+          if (q.code !== "CATEGORY_DOUBT" && q.ids.length > 1) {
+            const sub = el("ul");
+            for (const id of q.ids) {
+              if (id === p.id) continue;
+              const other = c.places.find((x) => x.id === id);
+              const b = el("button", { type: "button", class: "tool" }, other ? `${other.name || "Без названия"} · ${other.group_label}` : id);
+              b.addEventListener("click", () => selectPlace(id));
+              const it = el("li"); it.append(b); sub.append(it);
+            }
+            li.append(sub);
+          }
+          ul.append(li);
+        }
+        body.append(ul, el("p", { class: "muted" }, "Метки не означают, что запись неверна: их ставит воспроизводимое правило. Записи не удаляются и не перекатегоризируются."));
+      }
       const det = el("details"); det.append(el("summary", null, "Источник записи"));
       const ul = el("ul", { class: "reasons" });
       for (const src of p.sources) ul.append(el("li", null, `${src.dataset} · ${src.license} · ${fmtDate(src.update_time)}${src.record_id ? " · " + src.record_id : ""}`));
@@ -305,7 +393,7 @@
         ["Длина", fmtM(g.length_m) + (g.crosses_edge ? " (вся линия, выходит за квадрат)" : ""), "геодезическая, K10"],
         ["Проход пешком", D.foot_access_labels[g.foot_access], g.foot_access],
         ["Мост / тоннель", g.flags.length ? g.flags.join(", ") : "не отмечено", "road_flags"],
-        ["Источник", `${g.record_id || "—"} · ${g.license || "—"} · ${fmtDate(g.update_time)}`, null],
+        ["Источник", `${g.dataset || "—"} · ${g.record_id || "id записи нет"} · ${g.license || "—"} · ${fmtDate(g.update_time)}`, g.dataset === "TomTom" ? "не OSM: K08 F3" : null],
       ]);
       body.append(dl, el("p", { class: "muted" }, "Режим просмотра дорог: время пешком и доступность по сети не рассчитываются — у большинства сегментов права прохода неизвестны."));
     } else if (s.type === "point") {
@@ -340,14 +428,24 @@
       ["Квадрат", `${c.label}: ${c.bbox.map((x) => x.toFixed(4)).join(", ")}`, "W,S,E,N"],
       ["Источник", `Overture Maps ${c.release}`, "вторичный"],
       ["Выгружено", c.retrieved_utc ? c.retrieved_utc.replace("T", " ").slice(0, 16) + " UTC" : null, "K10"],
-      ["Записей объектов", `${k.places} в срезе`, "не реестр города"],
+      ["Записей объектов", `${k.places} в полном ответе запроса по квадрату`, "не реестр города"],
+      ["Объектов по всему городу", null, "не собиралось (not_collected)"],
       ["Сегментов дорог", `${k.segments} (из них ${k.segments_crossing_edge} выходят за край)`, null],
     ]);
     b.append(dl, el("h3", null, "Проход пешком по данным"));
     const ul = el("ul", { class: "reasons" });
     for (const key of ["unknown", "conditional", "denied", "allowed"])
       ul.append(el("li", null, `${D.foot_access_labels[key]}: ${k.foot_access[key] || 0}`));
-    b.append(ul, el("p", { class: "muted" }, "Неполнота: Overture не содержит все соцобъекты; мощность, население и официальный состав районов в пакете отсутствуют."));
+    b.append(ul, el("p", { class: "muted" }, "«0 записей» = ноль в полном ответе запроса по этому квадрату и выпуску. Это не значит, что объектов нет в городе: число по городу неизвестно. Overture неполон; мощность, население и официальный состав районов в пакете отсутствуют."));
+    const ev = window.CITY_OBS, q = ev && ev.cities && ev.cities[STATE.city] && ev.cities[STATE.city].qa;
+    if (q) {
+      b.append(el("h3", null, "Проверка качества среза"));
+      const qul = el("ul", { class: "reasons" });
+      qul.append(el("li", null, `групп с совпадающими координатами (≥3 записей): ${q.colocated.length}${q.colocated.length ? " — " + q.colocated.map((g) => g.ids.length).join(", ") + " записей" : ""}`),
+        el("li", null, `пар — кандидатов в дубликаты: ${q.possible_duplicates.length}`),
+        el("li", null, `записей с сомнением в категории: ${Object.keys(q.category_doubt).length}`));
+      b.append(qul);
+    }
   }
   function renderProvenance() {
     const c = D.cities[STATE.city], b = $("provBody");
@@ -356,10 +454,18 @@
     dlRows(dl, [
       ["Пакет", `K10 раунд 3 · ${D.inputs.k10_branch} @ ${D.inputs.k10_sha.slice(0, 10)}`, "source_manifest.json"],
       ["Коммит данных", D.inputs.k10_data_commit.slice(0, 10), null],
-      ["Атрибуция", (c.attribution || []).join("; "), null],
+      ["Атрибуция", attributionLine(c), "по sources[] записей (K08)"],
       ["Вид данных", c.kind, null],
     ]);
-    b.append(dl, el("h3", null, "Файлы и SHA256"));
+    b.append(dl);
+    const la = el("p");
+    la.append(document.createTextNode("Лицензии: "));
+    [["ATTRIBUTION.md", "attribution/ATTRIBUTION.md"], ["ODbL-1.0", "attribution/LICENSES/ODbL-1.0.txt"], ["CDLA-Permissive-2.0", "attribution/LICENSES/CDLA-Permissive-2.0.txt"], ["Apache-2.0", "attribution/LICENSES/Apache-2.0.txt"]]
+      .forEach(([t, h], i) => { if (i) la.append(document.createTextNode(" · ")); la.append(el("a", { href: h, target: "_blank", rel: "noopener" }, t)); });
+    const ul0 = el("ul", { class: "reasons" });
+    for (const a of c.attribution || []) ul0.append(el("li", null, `${a.layer}: ${a.dataset} — ${a.license}`));
+    b.append(la, ul0, el("p", { class: "muted" }, "Пробел происхождения (K08 F5): в Астане 26 источников ссылаются на свойство routes, которое не извлекалось в пакет K10; восстановить из сохранённых файлов нельзя."));
+    b.append(el("h3", null, "Файлы и SHA256"));
     const ul = el("ul", { class: "reasons" });
     for (const [name, f] of Object.entries(c.files)) ul.append(el("li", null, `${name}: ${f.path} · ${f.sha256.slice(0, 16)}…`));
     b.append(ul);
@@ -379,7 +485,9 @@
     for (const p of rows) {
       const tr = el("tr", { tabindex: 0 });
       if (STATE.selected && STATE.selected.type === "place" && STATE.selected.id === p.id) tr.classList.add("sel");
-      tr.append(el("td", null, p.name || "Без названия"), el("td", null, p.group_label), el("td", null, districtText(p)[0]), el("td", { class: "num" }, p.confidence ?? "—"));
+      const qa = qaOf(p);
+      tr.append(el("td", null, (qa.length ? "⚠ " : "") + (p.name || "Без названия")), el("td", null, p.group_label), el("td", null, districtText(p)[0]), el("td", { class: "num" }, p.confidence ?? "—"));
+      if (qa.length) tr.title = qa.map((q) => q.code).join(", ");
       tr.addEventListener("click", () => selectPlace(p.id));
       tr.addEventListener("keydown", (e) => { if (e.key === "Enter") selectPlace(p.id); });
       tb.append(tr);
@@ -399,5 +507,6 @@
   setupProjection(STATE.city);
   fitView();
   renderAll();
-  window.CITY_APP = { state: STATE, switchCity, selectPlace, visiblePlaces };  // for the headless smoke test
+  updateStatus();
+  window.CITY_APP = { state: STATE, switchCity, selectPlace, visiblePlaces, clearSelection };  // for the headless smoke test
 })();

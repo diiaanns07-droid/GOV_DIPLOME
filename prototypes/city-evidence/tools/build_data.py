@@ -71,6 +71,30 @@ def load_layer(city, name, fmeta):
     return fc
 
 
+ATTR = APP / "web" / "attribution" / "attribution.json"
+
+
+def load_attribution(man):
+    """Per-city provider list from K08 r4 attribution.json (built from records' sources[]).
+
+    The file header `attribution` of K10 files names OSM/Overture only and does not match the records
+    (K08 F1/F2); the UI must use this list. Each K08 entry must refer to the exact K10 file (sha256)."""
+    if not ATTR.exists():
+        raise InputError(f"нет файла {rel(ATTR)} (K08 атрибуция)")
+    att = json.loads(ATTR.read_text(encoding="utf-8"))
+    want = {f"data/{c}/{n}.geojson": fm["sha256"] for c, cm in man["cities"].items()
+            for n, fm in ((k, v) for k, v in cm["files"].items())}
+    out = {c: [] for c in man["cities"]}
+    for f in att["files"]:
+        if want.get(f["file"]) != f["sha256"]:
+            raise InputError(f"атрибуция K08 относится к другому файлу: {f['file']}")
+        for pv in f["providers"]:
+            item = {"dataset": pv["dataset"], "license": pv["license"], "layer": f["file"].split("/")[-1].split(".")[0]}
+            if item not in out[f["city"]]:
+                out[f["city"]].append(item)
+    return out
+
+
 def r6(x):
     return round(x, 6)
 
@@ -101,6 +125,7 @@ def seg_rec(f):
         "flags": p.get("k10_flags") or [], "crosses_edge": p["k10_crosses_bbox_edge"],
         "connectors": len(p.get("connectors") or []),
         "record_id": src.get("record_id"), "license": src.get("license"), "update_time": src.get("update_time"),
+        "dataset": src.get("dataset"),
     }
 
 
@@ -131,6 +156,9 @@ def build():
             },
             "files": {name: {"path": "inputs/k10/" + fm["path"], "sha256": fm["sha256"]} for name, fm in cm["files"].items()},
         }
+    attribution = load_attribution(man)
+    for city, c in cities.items():
+        c["attribution"] = attribution[city]
     return {
         "generated_by": "prototypes/city-evidence/tools/build_data.py",
         "inputs": {"k10_branch": "claude/save-work-handoff-j7pc05", "k10_sha": k10_sha,

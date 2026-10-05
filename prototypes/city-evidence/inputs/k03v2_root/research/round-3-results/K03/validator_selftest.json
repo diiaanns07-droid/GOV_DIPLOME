@@ -1,0 +1,312 @@
+{
+ "rule": "k03_assign_v1",
+ "passed": true,
+ "cases": [
+  {
+   "case": "interior kz.astana.district.esil",
+   "point": [
+    71.4644792,
+    51.041006
+   ],
+   "expected": "matched",
+   "expected_district": "kz.astana.district.esil",
+   "got": "matched",
+   "district": "kz.astana.district.esil",
+   "reason": "single_district_interior",
+   "candidates": [
+    "kz.astana.district.esil"
+   ],
+   "passed": true
+  },
+  {
+   "case": "interior kz.astana.district.almaty",
+   "point": [
+    71.5473172,
+    51.1550554
+   ],
+   "expected": "matched",
+   "expected_district": "kz.astana.district.almaty",
+   "got": "matched",
+   "district": "kz.astana.district.almaty",
+   "reason": "single_district_interior",
+   "candidates": [
+    "kz.astana.district.almaty"
+   ],
+   "passed": true
+  },
+  {
+   "case": "interior kz.astana.district.saryarka",
+   "point": [
+    71.3226517,
+    51.1988462
+   ],
+   "expected": "matched",
+   "expected_district": "kz.astana.district.saryarka",
+   "got": "matched",
+   "district": "kz.astana.district.saryarka",
+   "reason": "single_district_interior",
+   "candidates": [
+    "kz.astana.district.saryarka"
+   ],
+   "passed": true
+  },
+  {
+   "case": "interior kz.astana.district.baikonur",
+   "point": [
+    71.4580973,
+    51.226469
+   ],
+   "expected": "matched",
+   "expected_district": "kz.astana.district.baikonur",
+   "got": "matched",
+   "district": "kz.astana.district.baikonur",
+   "reason": "single_district_interior",
+   "candidates": [
+    "kz.astana.district.baikonur"
+   ],
+   "passed": true
+  },
+  {
+   "case": "interior kz.astana.district.nura",
+   "point": [
+    71.3160362,
+    51.1008961
+   ],
+   "expected": "matched",
+   "expected_district": "kz.astana.district.nura",
+   "got": "matched",
+   "district": "kz.astana.district.nura",
+   "reason": "single_district_interior",
+   "candidates": [
+    "kz.astana.district.nura"
+   ],
+   "passed": true
+  },
+  {
+   "case": "interior kz.astana.district.saraishyk",
+   "point": [
+    71.5658681,
+    51.1127271
+   ],
+   "expected": "matched",
+   "expected_district": "kz.astana.district.saraishyk",
+   "got": "matched",
+   "district": "kz.astana.district.saraishyk",
+   "reason": "single_district_interior",
+   "candidates": [
+    "kz.astana.district.saraishyk"
+   ],
+   "passed": true
+  },
+  {
+   "case": "interior kz.shymkent.district.enbekshi",
+   "point": [
+    69.7353154,
+    42.2733683
+   ],
+   "expected": "matched",
+   "expected_district": "kz.shymkent.district.enbekshi",
+   "got": "matched",
+   "district": "kz.shymkent.district.enbekshi",
+   "reason": "single_district_interior",
+   "candidates": [
+    "kz.shymkent.district.enbekshi"
+   ],
+   "passed": true
+  },
+  {
+   "case": "interior kz.shymkent.district.karatau",
+   "point": [
+    69.7038044,
+    42.3771416
+   ],
+   "expected": "matched",
+   "expected_district": "kz.shymkent.district.karatau",
+   "got": "matched",
+   "district": "kz.shymkent.district.karatau",
+   "reason": "single_district_interior",
+   "candidates": [
+    "kz.shymkent.district.karatau"
+   ],
+   "passed": true
+  },
+  {
+   "case": "interior kz.shymkent.district.al-farabi",
+   "point": [
+    69.5819167,
+    42.2556266
+   ],
+   "expected": "matched",
+   "expected_district": "kz.shymkent.district.al-farabi",
+   "got": "matched",
+   "district": "kz.shymkent.district.al-farabi",
+   "reason": "single_district_interior",
+   "candidates": [
+    "kz.shymkent.district.al-farabi"
+   ],
+   "passed": true
+  },
+  {
+   "case": "interior kz.shymkent.district.abay",
+   "point": [
+    69.4552803,
+    42.2767843
+   ],
+   "expected": "matched",
+   "expected_district": "kz.shymkent.district.abay",
+   "got": "matched",
+   "district": "kz.shymkent.district.abay",
+   "reason": "single_district_interior",
+   "candidates": [
+    "kz.shymkent.district.abay"
+   ],
+   "passed": true
+  },
+  {
+   "case": "AST-A12 tri-point Almaty/Esil/Saraishyk",
+   "point": [
+    71.447389,
+    51.1311552
+   ],
+   "expected": "ambiguous",
+   "expected_district": null,
+   "got": "ambiguous",
+   "district": null,
+   "reason": "boundary_tie",
+   "candidates": [
+    "kz.astana.district.almaty",
+    "kz.astana.district.esil",
+    "kz.astana.district.saraishyk"
+   ],
+   "passed": true
+  },
+  {
+   "case": "4-district vertex Baikonur/Esil/Nura/Saryarka",
+   "point": [
+    71.428229,
+    51.1518972
+   ],
+   "expected": "ambiguous",
+   "expected_district": null,
+   "got": "ambiguous",
+   "district": null,
+   "reason": "boundary_tie",
+   "candidates": [
+    "kz.astana.district.baikonur",
+    "kz.astana.district.esil",
+    "kz.astana.district.nura",
+    "kz.astana.district.saryarka"
+   ],
+   "passed": true
+  },
+  {
+   "case": "Baikonur exclave ∩ Tselinograd (AST-A12-F012)",
+   "point": [
+    71.66574,
+    51.33028
+   ],
+   "expected": "ambiguous",
+   "expected_district": null,
+   "got": "ambiguous",
+   "district": null,
+   "reason": "city_vs_region_overlap",
+   "candidates": [
+    "kz.astana.district.baikonur",
+    "osm:relation/3403760 (Целиноградский район, Акмолинская обл.)"
+   ],
+   "passed": true
+  },
+  {
+   "case": "uncovered city area (K10 E01)",
+   "point": [
+    71.4046433,
+    50.8719883
+   ],
+   "expected": "unmatched",
+   "expected_district": null,
+   "got": "unmatched",
+   "district": null,
+   "reason": "inside_city_no_district",
+   "candidates": [],
+   "passed": true
+  },
+  {
+   "case": "Almaty/Saraishyk version-difference sliver",
+   "point": [
+    71.4622857,
+    51.1287367
+   ],
+   "expected": "ambiguous",
+   "expected_district": null,
+   "got": "ambiguous",
+   "district": null,
+   "reason": "version_disagreement",
+   "candidates": [
+    "kz.astana.district.almaty",
+    "kz.astana.district.saraishyk"
+   ],
+   "passed": true
+  },
+  {
+   "case": "outside both cities",
+   "point": [
+    70.0,
+    45.0
+   ],
+   "expected": "outside",
+   "expected_district": null,
+   "got": "outside",
+   "district": null,
+   "reason": "outside_known_city_polygons",
+   "candidates": null,
+   "passed": true
+  },
+  {
+   "case": "swapped lon/lat",
+   "point": [
+    51.1311552,
+    71.447389
+   ],
+   "expected": "invalid",
+   "expected_district": null,
+   "got": "invalid",
+   "district": null,
+   "reason": "lon_lat_swapped",
+   "candidates": null,
+   "passed": true
+  },
+  {
+   "case": "Shymkent shared vertex Abay/Al-Farabi",
+   "point": [
+    69.5409801,
+    42.1223759
+   ],
+   "expected": "ambiguous",
+   "expected_district": null,
+   "got": "ambiguous",
+   "district": null,
+   "reason": "boundary_tie",
+   "candidates": [
+    "kz.shymkent.district.abay",
+    "kz.shymkent.district.al-farabi"
+   ],
+   "passed": true
+  },
+  {
+   "case": "Shymkent 5 m inside Abay from shared vertex",
+   "point": [
+    69.5409571,
+    42.1224175
+   ],
+   "expected": "matched",
+   "expected_district": "kz.shymkent.district.abay",
+   "got": "matched",
+   "district": "kz.shymkent.district.abay",
+   "reason": "single_district_interior",
+   "candidates": [
+    "kz.shymkent.district.abay"
+   ],
+   "passed": true
+  }
+ ]
+}

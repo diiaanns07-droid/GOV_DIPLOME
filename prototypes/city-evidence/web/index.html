@@ -107,6 +107,12 @@ a { color: var(--focus); }
 .explain .who { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
 .kv-unknown { color: var(--muted); font-style: italic; }
 select { font: inherit; padding: 4px 6px; border-radius: 6px; border: 1px solid var(--base); background: var(--surface); color: var(--ink); }
+#map text { pointer-events: none; }
+.skip { position: absolute; left: -9999px; }
+.skip:focus { position: static; }
+.mapcol { min-width: 0; }
+.mapstatus { margin: 4px 2px 0; min-height: 1.2em; }
+@media (max-width: 480px) { aside table { table-layout: fixed; } aside td { overflow-wrap: anywhere; } }
 @media (max-width: 520px) { .mapwrap { height: 56vh; min-height: 320px; } header h1 { font-size: 16px; } .toolbar { gap: 6px 10px; } }
 </style>
 </head>
@@ -125,26 +131,31 @@ select { font: inherit; padding: 4px 6px; border-radius: 6px; border: 1px solid 
   <label class="ctl" for="roadStyle">Цвет дорог
     <select id="roadStyle"><option value="plain">один цвет</option><option value="foot">по данным о проходе пешком</option></select></label>
   <span class="ctl muted" id="roadLegend" hidden></span>
-  <span class="ctl"><button class="tool" id="pointBtn" aria-pressed="false">Расстояние от точки</button></span>
+  <span class="ctl"><button class="tool" id="pointBtn" aria-pressed="false">Расстояние от точки</button>
+    <button class="tool" id="clearBtn" type="button" disabled>Сбросить точку и выбор</button></span>
+  <a class="skip" href="#tblCard">Перейти к таблице объектов</a>
 </div>
 
 <main>
+  <div class="mapcol">
   <section class="mapwrap" aria-label="Карта">
-    <svg id="map" role="img" aria-label="Карта выбранного квадрата"></svg>
     <div class="zoom">
       <button class="tool" id="zIn" aria-label="Приблизить">+</button>
       <button class="tool" id="zOut" aria-label="Отдалить">−</button>
       <button class="tool" id="zReset" aria-label="Показать весь квадрат">⟲</button>
     </div>
+    <svg id="map" role="group" aria-roledescription="карта" tabindex="0" aria-label="Карта выбранного квадрата. Стрелки — сдвиг, плюс и минус — масштаб, Escape — сбросить выбор; в режиме точки Enter ставит точку в центре."></svg>
     <div class="overlay-msg" id="mapMsg" hidden></div>
     <div class="tooltip" id="tip" role="status"></div>
     <div class="legend-note" id="attrib"></div>
   </section>
+  <p class="mapstatus muted" id="mapStatus" role="status" aria-live="polite"></p>
+  </div>
   <aside>
     <section class="card" id="selCard" aria-live="polite"><h2>Выбор</h2><p class="muted" id="selEmpty">Нажмите на объект, дорогу или строку таблицы. «Расстояние от точки» покажет расстояния по прямой.</p><div id="selBody"></div></section>
     <section class="card" id="sliceCard"><h2>Срез данных</h2><div id="sliceBody"></div></section>
     <section class="card" id="explainCard" hidden><h2>Объяснение по фактам</h2><div id="explainBody"></div></section>
-    <section class="card"><h2>Таблица объектов <span class="muted" id="tblCount"></span></h2>
+    <section class="card" id="tblCard" tabindex="-1"><h2>Таблица объектов <span class="muted" id="tblCount"></span></h2>
       <div class="tablewrap"><table aria-label="Объекты среза"><thead><tr><th>Объект</th><th>Категория</th><th>Район</th><th class="num">conf.</th></tr></thead><tbody id="tbl"></tbody></table></div>
     </section>
     <section class="card" id="provCard"><details><summary>Источники, версии и ограничения</summary><div id="provBody"></div></details></section>

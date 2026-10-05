@@ -1,0 +1,17 @@
+{
+ "original": {
+  "path": "inputs/r4/K02/fixed/verified_explainer.py",
+  "sha256": "2993aebb2817a0d1d2912b211308405034f30db6bc7ef227f4a1e146a76e9129",
+  "source": "K02 @ 7020637 fixed/"
+ },
+ "adapted": {
+  "path": "inputs/k02v4/verified_explainer.py",
+  "sha256": "86e46e57d737eb6bb06bd0ef2b50a9356c8c184e87ba181791c7051c778e64d0"
+ },
+ "changes": [
+  "catalog_digest + unit + missing_reason",
+  "missing_reason shown in text",
+  "units segments/places/persons"
+ ],
+ "note": "local adaptation for the demo, not upstream K02"
+}
