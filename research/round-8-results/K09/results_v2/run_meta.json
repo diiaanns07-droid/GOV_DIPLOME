@@ -7,5 +7,5 @@
  "python": "3.11.15",
  "repeats": 3,
  "timer": "time.perf_counter, минимум из repeats, один процесс",
- "wall_s": 152.166
+ "wall_s": 150.621
 }

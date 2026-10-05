@@ -1,0 +1,79 @@
+{
+ "note": "post-hoc, v1 main grid; G2 — как в runs.csv (−du, cost, id); G2id — (−du, id)",
+ "by_objective": {
+  "mean": {
+   "n": 2430,
+   "G2_hits": 1252,
+   "G2id_hits": 1191,
+   "G2_rate": 0.515226,
+   "G2id_rate": 0.490123
+  },
+  "minimax": {
+   "n": 2430,
+   "G2_hits": 640,
+   "G2id_hits": 595,
+   "G2_rate": 0.263374,
+   "G2id_rate": 0.244856
+  },
+  "coverage": {
+   "n": 2430,
+   "G2_hits": 807,
+   "G2id_hits": 745,
+   "G2_rate": 0.332099,
+   "G2id_rate": 0.306584
+  }
+ },
+ "by_slice": {
+  "shymkent_school": {
+   "mean": {
+    "n": 810,
+    "G2_hits": 501,
+    "G2id_hits": 501
+   },
+   "minimax": {
+    "n": 810,
+    "G2_hits": 244,
+    "G2id_hits": 244
+   },
+   "coverage": {
+    "n": 810,
+    "G2_hits": 297,
+    "G2id_hits": 297
+   }
+  },
+  "astana_clinic": {
+   "mean": {
+    "n": 810,
+    "G2_hits": 567,
+    "G2id_hits": 567
+   },
+   "minimax": {
+    "n": 810,
+    "G2_hits": 258,
+    "G2id_hits": 258
+   },
+   "coverage": {
+    "n": 810,
+    "G2_hits": 311,
+    "G2id_hits": 311
+   }
+  },
+  "astana_clinic_nobase": {
+   "mean": {
+    "n": 810,
+    "G2_hits": 184,
+    "G2id_hits": 123
+   },
+   "minimax": {
+    "n": 810,
+    "G2_hits": 138,
+    "G2id_hits": 93
+   },
+   "coverage": {
+    "n": 810,
+    "G2_hits": 199,
+    "G2id_hits": 137
+   }
+  }
+ }
+}

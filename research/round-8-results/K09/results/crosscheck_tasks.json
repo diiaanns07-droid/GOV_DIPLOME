@@ -1327,7 +1327,7 @@
     "category": "outpatient_clinic",
     "city_id": "astana",
     "metric_version": "haversine-mm-v1",
-    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "source_snapshot": "k09r8-slice:538b5ec17ab156ee28f54eb80e50cf1c",
     "sources": []
    },
    "expected": {
@@ -1661,7 +1661,7 @@
       "weighted_sum_mm": 564633090
      }
     ],
-    "problem_digest": "sha256:07ef02cc5316438cd1107da6334c0aec84d3efda5a9d6bb83779a3bdbe7b5135"
+    "problem_digest": "sha256:a49d4f655407028f0648a9b82886550140121eda0a1cf17d08240aac66bc8c5e"
    },
    "kind": "synthetic_points_and_candidates",
    "scenario": {
@@ -1956,7 +1956,7 @@
     "required_ids": [],
     "schema_version": "city-plan-v2",
     "selected_ids": [],
-    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7"
+    "source_snapshot": "k09r8-slice:538b5ec17ab156ee28f54eb80e50cf1c"
    },
    "slice": "astana_clinic_nobase"
   }
