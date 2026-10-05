@@ -1,0 +1,398 @@
+{
+ "kind": "K07 round-6 acceptance of prototypes/city-evidence (adapter of the r5 test, see header)",
+ "label": "acceptance_064ed25_run2",
+ "sha": "064ed25368341edaa50289bc29e21dda7bdd9440",
+ "target": {
+  "app_root": "r6-new"
+ },
+ "default_target_sha": "064ed25368341edaa50289bc29e21dda7bdd9440",
+ "total": 27,
+ "pass": [
+  "R1",
+  "R2",
+  "R3",
+  "R17",
+  "R4",
+  "R5a",
+  "R5b",
+  "R6",
+  "R7a",
+  "R7b",
+  "R8",
+  "R9",
+  "R10",
+  "R14",
+  "R15",
+  "R16",
+  "G1",
+  "G2",
+  "G3",
+  "G4",
+  "R17b",
+  "G5",
+  "E1",
+  "E2"
+ ],
+ "fail": [
+  "R11",
+  "R12",
+  "R13"
+ ],
+ "test_incompatible": [],
+ "note": "No baseline XFAIL list is applied. TEST_INCOMPATIBLE = the test could not exercise the invariant; it is not a PASS.",
+ "checks": [
+  {
+   "id": "R1",
+   "scenario": "S1 stale tooltip",
+   "expect": "a filter change hides the hovered object's group -> its tooltip is hidden in the same re-render (precondition: tooltip was visible)",
+   "verdict": "PASS",
+   "ok": true,
+   "observed": {
+    "before": "Техникалық лицейШкола · conf. 0.776⚠ POSSIBLE_DUPLICATE",
+    "after_same_task": null,
+    "after_300ms": null,
+    "group": "school"
+   }
+  },
+  {
+   "id": "R2",
+   "scenario": "S1 stale tooltip",
+   "expect": "zoom re-renders the map (the hovered marker moves) -> its tooltip is hidden in the same re-render",
+   "verdict": "PASS",
+   "ok": true,
+   "observed": {
+    "before": "Техникалық лицейШкола · conf. 0.776⚠ POSSIBLE_DUPLICATE",
+    "after_same_task": null,
+    "after_300ms": null
+   }
+  },
+  {
+   "id": "R3",
+   "scenario": "S1 stale tooltip",
+   "expect": "city switch -> tooltip of the previous city is hidden in the same re-render",
+   "verdict": "PASS",
+   "ok": true,
+   "observed": {
+    "before": "Техникалық лицейШкола · conf. 0.776⚠ POSSIBLE_DUPLICATE",
+    "after_same_task": null,
+    "after_300ms": null
+   }
+  },
+  {
+   "id": "R17",
+   "scenario": "S8 general",
+   "expect": "no console or page errors on the normal path (S1)",
+   "verdict": "PASS",
+   "ok": true,
+   "observed": []
+  },
+  {
+   "id": "R4",
+   "scenario": "S2 clear point",
+   "expect": "a set point can be cleared (button or Escape): no crosshair, empty card",
+   "verdict": "PASS",
+   "ok": true,
+   "observed": {
+    "pointWasSet": true,
+    "hasClearButton": true,
+    "point": null,
+    "crosshair": 0
+   }
+  },
+  {
+   "id": "R5a",
+   "scenario": "S3 city switch",
+   "expect": "switching city with a point set -> point, crosshair and card of the old city are gone",
+   "verdict": "PASS",
+   "ok": true,
+   "observed": {
+    "hadPoint": true,
+    "point": null,
+    "crosshair": 0,
+    "card": ""
+   }
+  },
+  {
+   "id": "R5b",
+   "scenario": "S3 city switch",
+   "expect": "switching city with a road card open -> card cleared",
+   "verdict": "PASS",
+   "ok": true,
+   "observed": {
+    "hadSegment": true,
+    "selected": null
+   }
+  },
+  {
+   "id": "R6",
+   "scenario": "S4 filters/layers",
+   "expect": "roads layer switched off while a road card is open -> no orphan road card",
+   "verdict": "PASS",
+   "ok": true,
+   "observed": {
+    "hadSegment": true,
+    "selected": null,
+    "card": ""
+   }
+  },
+  {
+   "id": "R7a",
+   "scenario": "S4 filters/layers",
+   "expect": "category of the selected object switched off -> selection cleared",
+   "verdict": "PASS",
+   "ok": true,
+   "observed": {
+    "group": "college_university",
+    "selected": null
+   }
+  },
+  {
+   "id": "R7b",
+   "scenario": "S4 filters/layers",
+   "expect": "objects layer switched off -> selected object cleared",
+   "verdict": "PASS",
+   "ok": true,
+   "observed": {
+    "selected": null,
+    "markers": 0
+   }
+  },
+  {
+   "id": "R8",
+   "scenario": "S5 keyboard",
+   "expect": "the table and zoom are reachable without tabbing through every map feature (skip link or < 40 stops)",
+   "verdict": "PASS",
+   "ok": true,
+   "observed": {
+    "toZoom": 14,
+    "toTable": 1161,
+    "mapStops": 1140,
+    "skipLink": true
+   }
+  },
+  {
+   "id": "R9",
+   "scenario": "S5 keyboard",
+   "expect": "a point can be set without a mouse (focusable map + Enter)",
+   "verdict": "PASS",
+   "ok": true,
+   "observed": {
+    "mapFocusable": true,
+    "point": [
+     69.6055115,
+     42.315628
+    ]
+   }
+  },
+  {
+   "id": "R10",
+   "scenario": "S5 keyboard",
+   "expect": "interactive markers are not hidden from assistive tech (map svg role is not 'img')",
+   "verdict": "PASS",
+   "ok": true,
+   "observed": {
+    "role": "group"
+   }
+  },
+  {
+   "id": "R11",
+   "scenario": "S6 390px",
+   "expect": "on 390 px, after tapping the map without scrolling, the point result is visible or announced next to the map",
+   "verdict": "FAIL",
+   "ok": false,
+   "observed": {
+    "pointSet": true,
+    "scrollY": 0,
+    "resultHeadingTop": 1095,
+    "viewportHeight": 844,
+    "resultVisible": false,
+    "hintNextToMap": false,
+    "statusLine": {
+     "text": "Точка выбрана: 18 записей выбранных категорий в пределах 500 м по прямой. Время ",
+     "top": 977,
+     "bottom": 1038,
+     "role": "status",
+     "ariaLive": "polite"
+    }
+   }
+  },
+  {
+   "id": "R12",
+   "scenario": "S6 390px",
+   "expect": "cards and tables fit 390 px without hidden columns (no inner horizontal scroll)",
+   "verdict": "FAIL",
+   "ok": false,
+   "observed": [
+    {
+     "box": "card",
+     "card": "Выбор",
+     "scrollWidth": 369,
+     "clientWidth": 356
+    },
+    {
+     "box": "card",
+     "card": "Срез данных",
+     "scrollWidth": 409,
+     "clientWidth": 356
+    }
+   ]
+  },
+  {
+   "id": "R13",
+   "scenario": "S7 data/evidence",
+   "expect": "evidence.js of another release / data version (release, data_version, source SHA differ from data.js) -> the viewer warns instead of using it silently",
+   "verdict": "FAIL",
+   "ok": false,
+   "observed": {
+    "mutatedFields": 186,
+    "warningShown": false,
+    "errors": []
+   }
+  },
+  {
+   "id": "R14",
+   "scenario": "S7 data/evidence",
+   "expect": "truncated evidence.js -> explicit 'catalog unavailable', districts not invented, table still works",
+   "verdict": "PASS",
+   "ok": true,
+   "observed": {
+    "rows": 55,
+    "errors": [
+     "Invalid or unexpected token"
+    ]
+   }
+  },
+  {
+   "id": "R15",
+   "scenario": "S7 data/evidence",
+   "expect": "truncated data.js -> clear 'data not found' state, no map from partial data",
+   "verdict": "PASS",
+   "ok": true,
+   "observed": {
+    "text": "Данные не найденыФайл web/data.js отсутствует или повреждён. Соберите его из сох",
+    "errors": [
+     "Invalid or unexpected token"
+    ]
+   }
+  },
+  {
+   "id": "R16",
+   "scenario": "S7 data/evidence",
+   "expect": "evidence.js without the school observation -> explicit error or 'нет данных', never a number for schools",
+   "verdict": "PASS",
+   "ok": true,
+   "observed": {
+    "removedObservations": 4,
+    "explain": "Ошибка каталога: Cannot read properties of undefined (reading 'value')",
+    "schoolRow": null,
+    "errors": []
+   }
+  },
+  {
+   "id": "G1",
+   "scenario": "G group of 10",
+   "expect": "clicking the group point on the map opens a member's card listing the other 9 records",
+   "verdict": "PASS",
+   "ok": true,
+   "observed": {
+    "selected": {
+     "type": "place",
+     "id": "f4d6818b-1a99-43ca-8533-4c556f448919"
+    },
+    "inGroup": true,
+    "buttons": 9
+   }
+  },
+  {
+   "id": "G2",
+   "scenario": "G group of 10",
+   "expect": "all 10 records are reachable from the object card (buttons of the other records)",
+   "verdict": "PASS",
+   "ok": true,
+   "observed": {
+    "reached": 10,
+    "clipped": []
+   }
+  },
+  {
+   "id": "G3",
+   "scenario": "G group of 10",
+   "expect": "all 10 records are reachable from the table (mouse)",
+   "verdict": "PASS",
+   "ok": true,
+   "observed": {
+    "reached": 10
+   }
+  },
+  {
+   "id": "G4",
+   "scenario": "G group of 10",
+   "expect": "keyboard: skip link reaches the table (≤5 Tab to a row), all 10 rows select with Enter, a card button selects with Enter",
+   "verdict": "PASS",
+   "ok": true,
+   "observed": {
+    "skip": "#tblCard",
+    "afterSkip": "tblCard",
+    "tabsToRow": 1,
+    "rowsByKeyboard": 10,
+    "cardButtonByKeyboard": true
+   }
+  },
+  {
+   "id": "R17b",
+   "scenario": "S8 general",
+   "expect": "no console or page errors on the group path",
+   "verdict": "PASS",
+   "ok": true,
+   "observed": []
+  },
+  {
+   "id": "G5",
+   "scenario": "G group of 10",
+   "expect": "390 px: all 10 reachable via card buttons and via table, buttons fully on screen and not covered, no horizontal page scroll",
+   "verdict": "PASS",
+   "ok": true,
+   "observed": {
+    "card": {
+     "reached": 10,
+     "clipped": []
+    },
+    "table": 10,
+    "scroll": {
+     "sw": 390,
+     "iw": 390
+    }
+   }
+  },
+  {
+   "id": "E1",
+   "scenario": "E explanation",
+   "expect": "an explanation requested before a city switch is not shown for the new city",
+   "verdict": "PASS",
+   "ok": true,
+   "observed": {
+    "from": "shymkent",
+    "to": "astana",
+    "box": {
+     "visible": false,
+     "text": ""
+    }
+   }
+  },
+  {
+   "id": "E2",
+   "scenario": "E explanation",
+   "expect": "after a category filter change the previous explanation is not left on screen",
+   "verdict": "PASS",
+   "ok": true,
+   "observed": {
+    "explanationShownBeforeFilter": true,
+    "filterOff": "college_university",
+    "after": {
+     "visible": false,
+     "text": ""
+    }
+   }
+  }
+ ]
+}

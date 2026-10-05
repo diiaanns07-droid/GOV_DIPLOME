@@ -1,0 +1,66 @@
+{
+ "build_sha": "064ed25368341edaa50289bc29e21dda7bdd9440",
+ "source_dir": "prototypes/city-evidence/web",
+ "files": [
+  {
+   "file": "web/app.js",
+   "bytes": 32880,
+   "sha256": "7cdf10a6e00ef613c984b500daaef30ed4609b736212d93426447022ec44c037",
+   "identical": true
+  },
+  {
+   "file": "web/attribution/ATTRIBUTION.md",
+   "bytes": 7708,
+   "sha256": "4de942304f8657f1747a8f8976887255fad4a76d4c35129aa871ed1cbb9615c6",
+   "identical": true
+  },
+  {
+   "file": "web/attribution/LICENSES/Apache-2.0.txt",
+   "bytes": 10280,
+   "sha256": "074e6e32c86a4c0ef8b3ed25b721ca23aca83df277cd88106ef7177c354615ff",
+   "identical": true
+  },
+  {
+   "file": "web/attribution/LICENSES/CDLA-Permissive-2.0.txt",
+   "bytes": 2354,
+   "sha256": "4531a67d443284d93ffed0803df5b10634aff21c3d77e381f2d48af01d875868",
+   "identical": true
+  },
+  {
+   "file": "web/attribution/LICENSES/ODbL-1.0.txt",
+   "bytes": 25289,
+   "sha256": "77d2692c3d64efdd4db18dce2407699baf62930e2b50d6e5ed90b48acf16b7c1",
+   "identical": true
+  },
+  {
+   "file": "web/attribution/attribution.json",
+   "bytes": 32634,
+   "sha256": "313c9b0eaaa695aa4a0221077bc5487fed91ff443d1b204bafb80b0cc4bf8588",
+   "identical": true
+  },
+  {
+   "file": "web/data.js",
+   "bytes": 1070322,
+   "sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+   "identical": true
+  },
+  {
+   "file": "web/evidence.js",
+   "bytes": 146872,
+   "sha256": "abb81f8ddaded4c2e9601ec1ef36e9b52fc482c851cae920628dd1bcfbfe4baa",
+   "identical": true
+  },
+  {
+   "file": "web/facts.js",
+   "bytes": 25101,
+   "sha256": "fd1dcde41235548eae39e9d65fb024f76c94b517666f76a319b3eb96759d35da",
+   "identical": true
+  },
+  {
+   "file": "web/index.html",
+   "bytes": 11449,
+   "sha256": "f787bb4a16e228ec95c7d035303bf6de7513d6b17f350c02f6b90d52a68a4686",
+   "identical": true
+  }
+ ]
+}

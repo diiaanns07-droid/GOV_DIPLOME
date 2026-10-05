@@ -1,0 +1,127 @@
+{
+ "role": "REVIEW K07 round 6 (interface acceptance)",
+ "target": {
+  "branch": "claude/beautiful-clarke-sbzomj",
+  "sha": "064ed25368341edaa50289bc29e21dda7bdd9440",
+  "path": "prototypes/city-evidence/web/",
+  "extraction": "research/round-6-results/K07/scripts/extract_build.py (10 files, SHA-256 checked) → results/build_snapshot_064ed25.json"
+ },
+ "test_source": {
+  "r5_test": {
+   "branch": "claude/save-work-handoff-ku3ej3",
+   "sha": "56c8bff12bf89dedf3f730be8b05b3024571b747",
+   "path": "research/round-5-results/K07/tests/k07r5_regressions.cjs",
+   "sha256": "7c61465156659fc36b297e1ab67bf1272e75aafe27bfecc00b92a3788879cc9f"
+  },
+  "adapter": {
+   "path": "research/round-6-results/K07/tests/k07r6_acceptance.cjs",
+   "sha256": "658b83c2d950b7d0cd5627d6ffcc74c94e050ae077f2a17eb63df15939fbb513",
+   "changes": [
+    "A1 no baseline XFAIL list",
+    "A2 R11 looks at #mapStatus, still requires visibility",
+    "A3 R13/R16 mutations for city-evidence/2 with 'mutation changed something' precondition",
+    "A4 group-of-10 path G1–G5, stale explanation E1–E2"
+   ]
+  },
+  "extractor": {
+   "path": "research/round-6-results/K07/scripts/extract_build.py",
+   "why": "r5 extractor stops on the web/attribution/ tree (CalledProcessError on git cat-file blob …/web/attribution)"
+  }
+ },
+ "commands": [
+  "git fetch origin claude/beautiful-clarke-sbzomj claude/save-work-handoff-ku3ej3",
+  "python3 research/round-6-results/K07/scripts/extract_build.py /tmp/k07r6/app --sha 064ed25368341edaa50289bc29e21dda7bdd9440",
+  "node <r5 test extracted from 56c8bff> --app-root /tmp/k07r6/app --label r5_test_unmodified_on_064ed25 --sha 064ed25… --out research/round-6-results/K07/results/r5_test_unmodified",
+  "node research/round-6-results/K07/tests/k07r6_acceptance.cjs --app-root /tmp/k07r6/app --label acceptance_064ed25_run1 --sha 064ed25…",
+  "node research/round-6-results/K07/tests/k07r6_acceptance.cjs --app-root /tmp/k07r6/app --label acceptance_064ed25_run2 --sha 064ed25…"
+ ],
+ "runs": {
+  "r5_test_unmodified": {
+   "pass": 15,
+   "total": 19,
+   "fail": [
+    "R11",
+    "R12",
+    "R13",
+    "R16"
+   ],
+   "classification": {
+    "R11": "TEST_INCOMPATIBLE (status line moved below .mapwrap) — real FAIL confirmed by adapter",
+    "R12": "real FAIL",
+    "R13": "TEST_INCOMPATIBLE (mutation changed 0 fields) — real FAIL confirmed by adapter",
+    "R16": "TEST_INCOMPATIBLE (removed 0 observations) — PASS with adapter"
+   },
+   "note": "its baseline_expectation fields describe 0bf27de only and were not applied"
+  },
+  "acceptance_run1": {
+   "pass": 24,
+   "fail": [
+    "R11",
+    "R12",
+    "R13"
+   ],
+   "test_incompatible": [],
+   "total": 27
+  },
+  "acceptance_run2": {
+   "pass": 24,
+   "fail": [
+    "R11",
+    "R12",
+    "R13"
+   ],
+   "test_incompatible": [],
+   "total": 27,
+   "same_verdicts_as_run1": true
+  }
+ },
+ "verdict": {
+  "overall": "NOT FULLY ACCEPTED: 24 PASS, 3 FAIL, 0 TEST_INCOMPATIBLE, 0 SKIP of 27 on 064ed25",
+  "critical_path_group_of_10": "PASS (G1–G5: map, card, table, keyboard, 390 px)",
+  "city_filter_switch_and_stale_explanation": "PASS (R3, R5a, R5b, R6, R7a, R7b, E1, E2)",
+  "fixed_since_0bf27de_confirmed_on_064ed25": [
+   "R1",
+   "R2",
+   "R4",
+   "R6",
+   "R8",
+   "R9",
+   "R10"
+  ],
+  "failing": [
+   "R11",
+   "R12",
+   "R13"
+  ]
+ },
+ "defects": [
+  {
+   "id": "R11",
+   "severity": "low-medium",
+   "repro": "390×844, open web/index.html, press «Расстояние от точки», tap the visible map centre without scrolling → #mapStatus top 977 px > 844 px, result heading 1095 px",
+   "where": "web/index.html:153 (<p id=mapStatus> after the map section at :142) with web/index.html:117 (.mapwrap height 56vh at ≤520 px)",
+   "suggestion": "put the status line above the map or overlay it inside .mapwrap on narrow screens"
+  },
+  {
+   "id": "R12",
+   "severity": "low",
+   "repro": "390 px, click the first table row → #selCard scrollWidth 369 > clientWidth 356; #sliceCard 409 > 356",
+   "where": "web/index.html:70 `.badge { white-space: normal; }` is overridden by the later rule web/index.html:80-81 `.badge { … white-space: nowrap; }` (same specificity, later wins)",
+   "suggestion": "move the :70 rule after :81 or change nowrap to normal at :81"
+  },
+  {
+   "id": "R13",
+   "severity": "medium (runtime; build-time check reported by BUILD, not run here)",
+   "repro": "serve evidence.js with cities[*].release / observations[*].release, data_version and source.evidence SHA changed → catalog and districts are shown, no warning",
+   "where": "web/facts.js:273 renderExplanation checks only ev.format; web/facts.js:237 districtOf uses CITY_OBS without comparing it with data.js (cities[c].release, inputs.k10_sha)",
+   "suggestion": "compare evidence release / source.evidence SHA with data.js before using the catalog and districts"
+  }
+ ],
+ "screenshots": "research/round-6-results/K07/results/acceptance_064ed25_run2/screenshots/ (taken by the real Chromium runs)",
+ "limits": [
+  "Chromium only (Playwright 1.56.1), 390 px is width emulation without touch",
+  "screen reader not used (R10/R11 live region only by attributes)",
+  "--url mode not run",
+  "BUILD tests (smoke/check_all) were not re-run by K07"
+ ]
+}
