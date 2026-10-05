@@ -1,0 +1,2629 @@
+{
+ "schema": "k06-whatif-fixture-v1",
+ "spec": "research/round-7/FEATURE_SPEC.txt @ codex/research-import-2026-10-05 7927fa8",
+ "source_build_commit": "c58a3b2b175cf978ad785fef7f88d8fd9b1338f2",
+ "formula": {
+  "haversine_R_m": 6371008.8,
+  "clamp": [
+   0,
+   1
+  ],
+  "input": "[lon, lat]"
+ },
+ "tolerance_m": 1e-06,
+ "display_note": "values are unrounded metres; round only for display",
+ "cases": [
+  {
+   "case": "shymkent/school/no_project",
+   "bbox": [
+    69.593365,
+    42.306645,
+    69.617658,
+    42.324611
+   ],
+   "records_in_category": 15,
+   "scenario": {
+    "schema_version": "city-whatif-v1",
+    "city_id": "shymkent",
+    "source_snapshot": "k06ref-sha256:b9063fd2ef935433d9caf741d8d0a7a21144c9f177ab24c405640ee090c1854a",
+    "category": "school",
+    "control_points": [
+     {
+      "id": "cp1",
+      "lon": 69.60008996076472,
+      "lat": 42.31196885729225
+     },
+     {
+      "id": "cp2",
+      "lon": 69.59711812227599,
+      "lat": 42.316587408072195
+     },
+     {
+      "id": "cp3",
+      "lon": 69.59389774355631,
+      "lat": 42.308652599118325
+     },
+     {
+      "id": "cp4",
+      "lon": 69.60034168897421,
+      "lat": 42.31175531612717
+     },
+     {
+      "id": "cp5",
+      "lon": 69.61483050638206,
+      "lat": 42.31815771858874
+     },
+     {
+      "id": "cp6",
+      "lon": 69.607617147202,
+      "lat": 42.32202936395828
+     },
+     {
+      "id": "cp7",
+      "lon": 69.59888773290047,
+      "lat": 42.3068192477025
+     },
+     {
+      "id": "cp8",
+      "lon": 69.59699892985782,
+      "lat": 42.31393716321879
+     },
+     {
+      "id": "cp9",
+      "lon": 69.60049432150485,
+      "lat": 42.3115658525432
+     },
+     {
+      "id": "cp10",
+      "lon": 69.59702183550863,
+      "lat": 42.320485482826804
+     }
+    ],
+    "proposed_object": null
+   },
+   "expected": [
+    {
+     "control_point": "cp1",
+     "before_m": 297.01601133561803,
+     "after_m": 297.01601133561803,
+     "delta_m": 0.0,
+     "nearest_record_id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 297.01601133555386,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp2",
+     "before_m": 109.09884776930546,
+     "after_m": 109.09884776930546,
+     "delta_m": 0.0,
+     "nearest_record_id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 109.09884777020488,
+     "nearest_record_qa": [
+      "CATEGORY_DOUBT",
+      "COLOCATED"
+     ]
+    },
+    {
+     "control_point": "cp3",
+     "before_m": 789.9989098980134,
+     "after_m": 789.9989098980134,
+     "delta_m": 0.0,
+     "nearest_record_id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 789.998909898279,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp4",
+     "before_m": 325.3306707680402,
+     "after_m": 325.3306707680402,
+     "delta_m": 0.0,
+     "nearest_record_id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 325.33067076772517,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp5",
+     "before_m": 425.1674447331776,
+     "after_m": 425.1674447331776,
+     "delta_m": 0.0,
+     "nearest_record_id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 425.1674447334387,
+     "nearest_record_qa": [
+      "CATEGORY_DOUBT"
+     ]
+    },
+    {
+     "control_point": "cp6",
+     "before_m": 198.7796711363604,
+     "after_m": 198.7796711363604,
+     "delta_m": 0.0,
+     "nearest_record_id": "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 198.77967113666926,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp7",
+     "before_m": 861.5243099103382,
+     "after_m": 861.5243099103382,
+     "delta_m": 0.0,
+     "nearest_record_id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 861.5243099106683,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp8",
+     "before_m": 196.1279805887973,
+     "after_m": 196.1279805887973,
+     "delta_m": 0.0,
+     "nearest_record_id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 196.12798058994645,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp9",
+     "before_m": 349.13102399519255,
+     "after_m": 349.13102399519255,
+     "delta_m": 0.0,
+     "nearest_record_id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 349.1310239952827,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp10",
+     "before_m": 224.17799303348508,
+     "after_m": 224.17799303348508,
+     "delta_m": 0.0,
+     "nearest_record_id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 224.17799303305893,
+     "nearest_record_qa": []
+    }
+   ]
+  },
+  {
+   "case": "shymkent/school/project_random",
+   "bbox": [
+    69.593365,
+    42.306645,
+    69.617658,
+    42.324611
+   ],
+   "records_in_category": 15,
+   "scenario": {
+    "schema_version": "city-whatif-v1",
+    "city_id": "shymkent",
+    "source_snapshot": "k06ref-sha256:b9063fd2ef935433d9caf741d8d0a7a21144c9f177ab24c405640ee090c1854a",
+    "category": "school",
+    "control_points": [
+     {
+      "id": "cp1",
+      "lon": 69.60008996076472,
+      "lat": 42.31196885729225
+     },
+     {
+      "id": "cp2",
+      "lon": 69.59711812227599,
+      "lat": 42.316587408072195
+     },
+     {
+      "id": "cp3",
+      "lon": 69.59389774355631,
+      "lat": 42.308652599118325
+     },
+     {
+      "id": "cp4",
+      "lon": 69.60034168897421,
+      "lat": 42.31175531612717
+     },
+     {
+      "id": "cp5",
+      "lon": 69.61483050638206,
+      "lat": 42.31815771858874
+     },
+     {
+      "id": "cp6",
+      "lon": 69.607617147202,
+      "lat": 42.32202936395828
+     },
+     {
+      "id": "cp7",
+      "lon": 69.59888773290047,
+      "lat": 42.3068192477025
+     },
+     {
+      "id": "cp8",
+      "lon": 69.59699892985782,
+      "lat": 42.31393716321879
+     },
+     {
+      "id": "cp9",
+      "lon": 69.60049432150485,
+      "lat": 42.3115658525432
+     },
+     {
+      "id": "cp10",
+      "lon": 69.59702183550863,
+      "lat": 42.320485482826804
+     }
+    ],
+    "proposed_object": {
+     "id": "proj1",
+     "lon": 69.61667315914694,
+     "lat": 42.30945573122957,
+     "category": "school",
+     "kind": "hypothetical"
+    }
+   },
+   "expected": [
+    {
+     "control_point": "cp1",
+     "before_m": 297.01601133561803,
+     "after_m": 297.01601133561803,
+     "delta_m": 0.0,
+     "nearest_record_id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 297.01601133555386,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp2",
+     "before_m": 109.09884776930546,
+     "after_m": 109.09884776930546,
+     "delta_m": 0.0,
+     "nearest_record_id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 109.09884777020488,
+     "nearest_record_qa": [
+      "CATEGORY_DOUBT",
+      "COLOCATED"
+     ]
+    },
+    {
+     "control_point": "cp3",
+     "before_m": 789.9989098980134,
+     "after_m": 789.9989098980134,
+     "delta_m": 0.0,
+     "nearest_record_id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 789.998909898279,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp4",
+     "before_m": 325.3306707680402,
+     "after_m": 325.3306707680402,
+     "delta_m": 0.0,
+     "nearest_record_id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 325.33067076772517,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp5",
+     "before_m": 425.1674447331776,
+     "after_m": 425.1674447331776,
+     "delta_m": 0.0,
+     "nearest_record_id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 425.1674447334387,
+     "nearest_record_qa": [
+      "CATEGORY_DOUBT"
+     ]
+    },
+    {
+     "control_point": "cp6",
+     "before_m": 198.7796711363604,
+     "after_m": 198.7796711363604,
+     "delta_m": 0.0,
+     "nearest_record_id": "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 198.77967113666926,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp7",
+     "before_m": 861.5243099103382,
+     "after_m": 861.5243099103382,
+     "delta_m": 0.0,
+     "nearest_record_id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 861.5243099106683,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp8",
+     "before_m": 196.1279805887973,
+     "after_m": 196.1279805887973,
+     "delta_m": 0.0,
+     "nearest_record_id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 196.12798058994645,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp9",
+     "before_m": 349.13102399519255,
+     "after_m": 349.13102399519255,
+     "delta_m": 0.0,
+     "nearest_record_id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 349.1310239952827,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp10",
+     "before_m": 224.17799303348508,
+     "after_m": 224.17799303348508,
+     "delta_m": 0.0,
+     "nearest_record_id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 224.17799303305893,
+     "nearest_record_qa": []
+    }
+   ]
+  },
+  {
+   "case": "shymkent/school/project_at_cp1",
+   "bbox": [
+    69.593365,
+    42.306645,
+    69.617658,
+    42.324611
+   ],
+   "records_in_category": 15,
+   "scenario": {
+    "schema_version": "city-whatif-v1",
+    "city_id": "shymkent",
+    "source_snapshot": "k06ref-sha256:b9063fd2ef935433d9caf741d8d0a7a21144c9f177ab24c405640ee090c1854a",
+    "category": "school",
+    "control_points": [
+     {
+      "id": "cp1",
+      "lon": 69.60008996076472,
+      "lat": 42.31196885729225
+     },
+     {
+      "id": "cp2",
+      "lon": 69.59711812227599,
+      "lat": 42.316587408072195
+     },
+     {
+      "id": "cp3",
+      "lon": 69.59389774355631,
+      "lat": 42.308652599118325
+     },
+     {
+      "id": "cp4",
+      "lon": 69.60034168897421,
+      "lat": 42.31175531612717
+     },
+     {
+      "id": "cp5",
+      "lon": 69.61483050638206,
+      "lat": 42.31815771858874
+     },
+     {
+      "id": "cp6",
+      "lon": 69.607617147202,
+      "lat": 42.32202936395828
+     },
+     {
+      "id": "cp7",
+      "lon": 69.59888773290047,
+      "lat": 42.3068192477025
+     },
+     {
+      "id": "cp8",
+      "lon": 69.59699892985782,
+      "lat": 42.31393716321879
+     },
+     {
+      "id": "cp9",
+      "lon": 69.60049432150485,
+      "lat": 42.3115658525432
+     },
+     {
+      "id": "cp10",
+      "lon": 69.59702183550863,
+      "lat": 42.320485482826804
+     }
+    ],
+    "proposed_object": {
+     "id": "proj1",
+     "lon": 69.60008996076472,
+     "lat": 42.31196885729225,
+     "category": "school",
+     "kind": "hypothetical"
+    }
+   },
+   "expected": [
+    {
+     "control_point": "cp1",
+     "before_m": 297.01601133561803,
+     "after_m": 0.0,
+     "delta_m": 297.01601133561803,
+     "nearest_record_id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+     "nearest_is_proposed": true,
+     "note": null,
+     "before_m_independent_chord": 297.01601133555386,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp2",
+     "before_m": 109.09884776930546,
+     "after_m": 109.09884776930546,
+     "delta_m": 0.0,
+     "nearest_record_id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 109.09884777020488,
+     "nearest_record_qa": [
+      "CATEGORY_DOUBT",
+      "COLOCATED"
+     ]
+    },
+    {
+     "control_point": "cp3",
+     "before_m": 789.9989098980134,
+     "after_m": 628.6869847271475,
+     "delta_m": 161.31192517086583,
+     "nearest_record_id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+     "nearest_is_proposed": true,
+     "note": null,
+     "before_m_independent_chord": 789.998909898279,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp4",
+     "before_m": 325.3306707680402,
+     "after_m": 31.500213821408646,
+     "delta_m": 293.83045694663156,
+     "nearest_record_id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+     "nearest_is_proposed": true,
+     "note": null,
+     "before_m_independent_chord": 325.33067076772517,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp5",
+     "before_m": 425.1674447331776,
+     "after_m": 425.1674447331776,
+     "delta_m": 0.0,
+     "nearest_record_id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 425.1674447334387,
+     "nearest_record_qa": [
+      "CATEGORY_DOUBT"
+     ]
+    },
+    {
+     "control_point": "cp6",
+     "before_m": 198.7796711363604,
+     "after_m": 198.7796711363604,
+     "delta_m": 0.0,
+     "nearest_record_id": "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 198.77967113666926,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp7",
+     "before_m": 861.5243099103382,
+     "after_m": 581.0826447931624,
+     "delta_m": 280.4416651171757,
+     "nearest_record_id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+     "nearest_is_proposed": true,
+     "note": null,
+     "before_m_independent_chord": 861.5243099106683,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp8",
+     "before_m": 196.1279805887973,
+     "after_m": 196.1279805887973,
+     "delta_m": 0.0,
+     "nearest_record_id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 196.12798058994645,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp9",
+     "before_m": 349.13102399519255,
+     "after_m": 55.80031394448077,
+     "delta_m": 293.3307100507118,
+     "nearest_record_id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+     "nearest_is_proposed": true,
+     "note": null,
+     "before_m_independent_chord": 349.1310239952827,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp10",
+     "before_m": 224.17799303348508,
+     "after_m": 224.17799303348508,
+     "delta_m": 0.0,
+     "nearest_record_id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 224.17799303305893,
+     "nearest_record_qa": []
+    }
+   ]
+  },
+  {
+   "case": "shymkent/outpatient_clinic/no_project",
+   "bbox": [
+    69.593365,
+    42.306645,
+    69.617658,
+    42.324611
+   ],
+   "records_in_category": 16,
+   "scenario": {
+    "schema_version": "city-whatif-v1",
+    "city_id": "shymkent",
+    "source_snapshot": "k06ref-sha256:5f28ebc0a6456180f5bebc0fb10b69f48bc75ca968063300001e97505bbfbd1f",
+    "category": "outpatient_clinic",
+    "control_points": [
+     {
+      "id": "cp1",
+      "lon": 69.59971103961614,
+      "lat": 42.32438841039799
+     },
+     {
+      "id": "cp2",
+      "lon": 69.61070725717558,
+      "lat": 42.31601889357109
+     },
+     {
+      "id": "cp3",
+      "lon": 69.61220083530672,
+      "lat": 42.31079275997601
+     },
+     {
+      "id": "cp4",
+      "lon": 69.611692591378,
+      "lat": 42.30973297833486
+     },
+     {
+      "id": "cp5",
+      "lon": 69.60485385853892,
+      "lat": 42.30907618153713
+     },
+     {
+      "id": "cp6",
+      "lon": 69.61248107724768,
+      "lat": 42.31243084108048
+     },
+     {
+      "id": "cp7",
+      "lon": 69.59934220039297,
+      "lat": 42.30780027310732
+     },
+     {
+      "id": "cp8",
+      "lon": 69.60819329278246,
+      "lat": 42.3180790806886
+     },
+     {
+      "id": "cp9",
+      "lon": 69.6038484178223,
+      "lat": 42.30764401951632
+     },
+     {
+      "id": "cp10",
+      "lon": 69.60883141988154,
+      "lat": 42.32340815675163
+     }
+    ],
+    "proposed_object": null
+   },
+   "expected": [
+    {
+     "control_point": "cp1",
+     "before_m": 252.5455139242499,
+     "after_m": 252.5455139242499,
+     "delta_m": 0.0,
+     "nearest_record_id": "b845d434-7da3-4755-9ae9-bb6d40fc7520",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 252.5455139247037,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp2",
+     "before_m": 212.6996056145861,
+     "after_m": 212.6996056145861,
+     "delta_m": 0.0,
+     "nearest_record_id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 212.6996056141685,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp3",
+     "before_m": 459.79746068490897,
+     "after_m": 459.79746068490897,
+     "delta_m": 0.0,
+     "nearest_record_id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 459.7974606857894,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp4",
+     "before_m": 449.0036518935716,
+     "after_m": 449.0036518935716,
+     "delta_m": 0.0,
+     "nearest_record_id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 449.00365189385604,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp5",
+     "before_m": 337.24329169421685,
+     "after_m": 337.24329169421685,
+     "delta_m": 0.0,
+     "nearest_record_id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 337.24329169400926,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp6",
+     "before_m": 332.9326167069887,
+     "after_m": 332.9326167069887,
+     "delta_m": 0.0,
+     "nearest_record_id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 332.93261670722524,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp7",
+     "before_m": 698.6524290702453,
+     "after_m": 698.6524290702453,
+     "delta_m": 0.0,
+     "nearest_record_id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 698.652429070041,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp8",
+     "before_m": 111.2916957316064,
+     "after_m": 111.2916957316064,
+     "delta_m": 0.0,
+     "nearest_record_id": "833280f2-ff82-4dd6-a174-d2a9203420fa",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 111.29169573180278,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp9",
+     "before_m": 330.97206151121026,
+     "after_m": 330.97206151121026,
+     "delta_m": 0.0,
+     "nearest_record_id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 330.97206151183866,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp10",
+     "before_m": 527.5381308052889,
+     "after_m": 527.5381308052889,
+     "delta_m": 0.0,
+     "nearest_record_id": "b845d434-7da3-4755-9ae9-bb6d40fc7520",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 527.5381308052827,
+     "nearest_record_qa": []
+    }
+   ]
+  },
+  {
+   "case": "shymkent/outpatient_clinic/project_random",
+   "bbox": [
+    69.593365,
+    42.306645,
+    69.617658,
+    42.324611
+   ],
+   "records_in_category": 16,
+   "scenario": {
+    "schema_version": "city-whatif-v1",
+    "city_id": "shymkent",
+    "source_snapshot": "k06ref-sha256:5f28ebc0a6456180f5bebc0fb10b69f48bc75ca968063300001e97505bbfbd1f",
+    "category": "outpatient_clinic",
+    "control_points": [
+     {
+      "id": "cp1",
+      "lon": 69.59971103961614,
+      "lat": 42.32438841039799
+     },
+     {
+      "id": "cp2",
+      "lon": 69.61070725717558,
+      "lat": 42.31601889357109
+     },
+     {
+      "id": "cp3",
+      "lon": 69.61220083530672,
+      "lat": 42.31079275997601
+     },
+     {
+      "id": "cp4",
+      "lon": 69.611692591378,
+      "lat": 42.30973297833486
+     },
+     {
+      "id": "cp5",
+      "lon": 69.60485385853892,
+      "lat": 42.30907618153713
+     },
+     {
+      "id": "cp6",
+      "lon": 69.61248107724768,
+      "lat": 42.31243084108048
+     },
+     {
+      "id": "cp7",
+      "lon": 69.59934220039297,
+      "lat": 42.30780027310732
+     },
+     {
+      "id": "cp8",
+      "lon": 69.60819329278246,
+      "lat": 42.3180790806886
+     },
+     {
+      "id": "cp9",
+      "lon": 69.6038484178223,
+      "lat": 42.30764401951632
+     },
+     {
+      "id": "cp10",
+      "lon": 69.60883141988154,
+      "lat": 42.32340815675163
+     }
+    ],
+    "proposed_object": {
+     "id": "proj1",
+     "lon": 69.61537337601855,
+     "lat": 42.30994275790106,
+     "category": "outpatient_clinic",
+     "kind": "hypothetical"
+    }
+   },
+   "expected": [
+    {
+     "control_point": "cp1",
+     "before_m": 252.5455139242499,
+     "after_m": 252.5455139242499,
+     "delta_m": 0.0,
+     "nearest_record_id": "b845d434-7da3-4755-9ae9-bb6d40fc7520",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 252.5455139247037,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp2",
+     "before_m": 212.6996056145861,
+     "after_m": 212.6996056145861,
+     "delta_m": 0.0,
+     "nearest_record_id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 212.6996056141685,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp3",
+     "before_m": 459.79746068490897,
+     "after_m": 277.4712390715882,
+     "delta_m": 182.3262216133208,
+     "nearest_record_id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60",
+     "nearest_is_proposed": true,
+     "note": null,
+     "before_m_independent_chord": 459.7974606857894,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp4",
+     "before_m": 449.0036518935716,
+     "after_m": 303.57025173694984,
+     "delta_m": 145.43340015662176,
+     "nearest_record_id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f",
+     "nearest_is_proposed": true,
+     "note": null,
+     "before_m_independent_chord": 449.00365189385604,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp5",
+     "before_m": 337.24329169421685,
+     "after_m": 337.24329169421685,
+     "delta_m": 0.0,
+     "nearest_record_id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 337.24329169400926,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp6",
+     "before_m": 332.9326167069887,
+     "after_m": 332.9326167069887,
+     "delta_m": 0.0,
+     "nearest_record_id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 332.93261670722524,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp7",
+     "before_m": 698.6524290702453,
+     "after_m": 698.6524290702453,
+     "delta_m": 0.0,
+     "nearest_record_id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 698.652429070041,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp8",
+     "before_m": 111.2916957316064,
+     "after_m": 111.2916957316064,
+     "delta_m": 0.0,
+     "nearest_record_id": "833280f2-ff82-4dd6-a174-d2a9203420fa",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 111.29169573180278,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp9",
+     "before_m": 330.97206151121026,
+     "after_m": 330.97206151121026,
+     "delta_m": 0.0,
+     "nearest_record_id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 330.97206151183866,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp10",
+     "before_m": 527.5381308052889,
+     "after_m": 527.5381308052889,
+     "delta_m": 0.0,
+     "nearest_record_id": "b845d434-7da3-4755-9ae9-bb6d40fc7520",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 527.5381308052827,
+     "nearest_record_qa": []
+    }
+   ]
+  },
+  {
+   "case": "shymkent/outpatient_clinic/project_at_cp1",
+   "bbox": [
+    69.593365,
+    42.306645,
+    69.617658,
+    42.324611
+   ],
+   "records_in_category": 16,
+   "scenario": {
+    "schema_version": "city-whatif-v1",
+    "city_id": "shymkent",
+    "source_snapshot": "k06ref-sha256:5f28ebc0a6456180f5bebc0fb10b69f48bc75ca968063300001e97505bbfbd1f",
+    "category": "outpatient_clinic",
+    "control_points": [
+     {
+      "id": "cp1",
+      "lon": 69.59971103961614,
+      "lat": 42.32438841039799
+     },
+     {
+      "id": "cp2",
+      "lon": 69.61070725717558,
+      "lat": 42.31601889357109
+     },
+     {
+      "id": "cp3",
+      "lon": 69.61220083530672,
+      "lat": 42.31079275997601
+     },
+     {
+      "id": "cp4",
+      "lon": 69.611692591378,
+      "lat": 42.30973297833486
+     },
+     {
+      "id": "cp5",
+      "lon": 69.60485385853892,
+      "lat": 42.30907618153713
+     },
+     {
+      "id": "cp6",
+      "lon": 69.61248107724768,
+      "lat": 42.31243084108048
+     },
+     {
+      "id": "cp7",
+      "lon": 69.59934220039297,
+      "lat": 42.30780027310732
+     },
+     {
+      "id": "cp8",
+      "lon": 69.60819329278246,
+      "lat": 42.3180790806886
+     },
+     {
+      "id": "cp9",
+      "lon": 69.6038484178223,
+      "lat": 42.30764401951632
+     },
+     {
+      "id": "cp10",
+      "lon": 69.60883141988154,
+      "lat": 42.32340815675163
+     }
+    ],
+    "proposed_object": {
+     "id": "proj1",
+     "lon": 69.59971103961614,
+     "lat": 42.32438841039799,
+     "category": "outpatient_clinic",
+     "kind": "hypothetical"
+    }
+   },
+   "expected": [
+    {
+     "control_point": "cp1",
+     "before_m": 252.5455139242499,
+     "after_m": 0.0,
+     "delta_m": 252.5455139242499,
+     "nearest_record_id": "b845d434-7da3-4755-9ae9-bb6d40fc7520",
+     "nearest_is_proposed": true,
+     "note": null,
+     "before_m_independent_chord": 252.5455139247037,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp2",
+     "before_m": 212.6996056145861,
+     "after_m": 212.6996056145861,
+     "delta_m": 0.0,
+     "nearest_record_id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 212.6996056141685,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp3",
+     "before_m": 459.79746068490897,
+     "after_m": 459.79746068490897,
+     "delta_m": 0.0,
+     "nearest_record_id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 459.7974606857894,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp4",
+     "before_m": 449.0036518935716,
+     "after_m": 449.0036518935716,
+     "delta_m": 0.0,
+     "nearest_record_id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 449.00365189385604,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp5",
+     "before_m": 337.24329169421685,
+     "after_m": 337.24329169421685,
+     "delta_m": 0.0,
+     "nearest_record_id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 337.24329169400926,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp6",
+     "before_m": 332.9326167069887,
+     "after_m": 332.9326167069887,
+     "delta_m": 0.0,
+     "nearest_record_id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 332.93261670722524,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp7",
+     "before_m": 698.6524290702453,
+     "after_m": 698.6524290702453,
+     "delta_m": 0.0,
+     "nearest_record_id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 698.652429070041,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp8",
+     "before_m": 111.2916957316064,
+     "after_m": 111.2916957316064,
+     "delta_m": 0.0,
+     "nearest_record_id": "833280f2-ff82-4dd6-a174-d2a9203420fa",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 111.29169573180278,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp9",
+     "before_m": 330.97206151121026,
+     "after_m": 330.97206151121026,
+     "delta_m": 0.0,
+     "nearest_record_id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 330.97206151183866,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp10",
+     "before_m": 527.5381308052889,
+     "after_m": 527.5381308052889,
+     "delta_m": 0.0,
+     "nearest_record_id": "b845d434-7da3-4755-9ae9-bb6d40fc7520",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 527.5381308052827,
+     "nearest_record_qa": []
+    }
+   ]
+  },
+  {
+   "case": "astana/school/no_project",
+   "bbox": [
+    71.418372,
+    51.163033,
+    71.447,
+    51.181
+   ],
+   "records_in_category": 8,
+   "scenario": {
+    "schema_version": "city-whatif-v1",
+    "city_id": "astana",
+    "source_snapshot": "k06ref-sha256:302b218052c042c615f1408479913d113630137fefe3c635ea9e475b24804141",
+    "category": "school",
+    "control_points": [
+     {
+      "id": "cp1",
+      "lon": 71.43999224191928,
+      "lat": 51.17673415163969
+     },
+     {
+      "id": "cp2",
+      "lon": 71.44603265392868,
+      "lat": 51.166236689565594
+     },
+     {
+      "id": "cp3",
+      "lon": 71.41844126651563,
+      "lat": 51.17719843823699
+     },
+     {
+      "id": "cp4",
+      "lon": 71.44537220202004,
+      "lat": 51.16850431603225
+     },
+     {
+      "id": "cp5",
+      "lon": 71.43498462755359,
+      "lat": 51.18002952760672
+     },
+     {
+      "id": "cp6",
+      "lon": 71.42600839311311,
+      "lat": 51.16839735714045
+     },
+     {
+      "id": "cp7",
+      "lon": 71.41891360648353,
+      "lat": 51.176675632034154
+     },
+     {
+      "id": "cp8",
+      "lon": 71.43374094139124,
+      "lat": 51.16328525418648
+     },
+     {
+      "id": "cp9",
+      "lon": 71.4234350110488,
+      "lat": 51.169437748903384
+     },
+     {
+      "id": "cp10",
+      "lon": 71.42552541935456,
+      "lat": 51.171140067198394
+     }
+    ],
+    "proposed_object": null
+   },
+   "expected": [
+    {
+     "control_point": "cp1",
+     "before_m": 971.2811673801626,
+     "after_m": 971.2811673801626,
+     "delta_m": 0.0,
+     "nearest_record_id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 971.2811673808852,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp2",
+     "before_m": 69.35960882266143,
+     "after_m": 69.35960882266143,
+     "delta_m": 0.0,
+     "nearest_record_id": "8ca53724-c558-46b7-826b-13e3e8fbb7e6",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 69.35960882313776,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp3",
+     "before_m": 132.07597923680655,
+     "after_m": 132.07597923680655,
+     "delta_m": 0.0,
+     "nearest_record_id": "c97435da-cd05-4549-bec1-ff297e858554",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 132.07597923669795,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp4",
+     "before_m": 204.91005822214055,
+     "after_m": 204.91005822214055,
+     "delta_m": 0.0,
+     "nearest_record_id": "8ca53724-c558-46b7-826b-13e3e8fbb7e6",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 204.91005822250085,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp5",
+     "before_m": 585.1372051299309,
+     "after_m": 585.1372051299309,
+     "delta_m": 0.0,
+     "nearest_record_id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 585.1372051299797,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp6",
+     "before_m": 201.6912103060624,
+     "after_m": 201.6912103060624,
+     "delta_m": 0.0,
+     "nearest_record_id": "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 201.69121030617384,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp7",
+     "before_m": 133.4066453765081,
+     "after_m": 133.4066453765081,
+     "delta_m": 0.0,
+     "nearest_record_id": "c97435da-cd05-4549-bec1-ff297e858554",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 133.40664537638716,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp8",
+     "before_m": 587.149619714601,
+     "after_m": 587.149619714601,
+     "delta_m": 0.0,
+     "nearest_record_id": "b5dd5f1a-9d55-48b1-9d68-7172ea84da3f",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 587.149619714353,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp9",
+     "before_m": 193.34747548801693,
+     "after_m": 193.34747548801693,
+     "delta_m": 0.0,
+     "nearest_record_id": "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 193.34747548807877,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp10",
+     "before_m": 46.83058131820663,
+     "after_m": 46.83058131820663,
+     "delta_m": 0.0,
+     "nearest_record_id": "7b39e048-341b-454a-a63c-4b7e1ae73e9f",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 46.83058131827438,
+     "nearest_record_qa": []
+    }
+   ]
+  },
+  {
+   "case": "astana/school/project_random",
+   "bbox": [
+    71.418372,
+    51.163033,
+    71.447,
+    51.181
+   ],
+   "records_in_category": 8,
+   "scenario": {
+    "schema_version": "city-whatif-v1",
+    "city_id": "astana",
+    "source_snapshot": "k06ref-sha256:302b218052c042c615f1408479913d113630137fefe3c635ea9e475b24804141",
+    "category": "school",
+    "control_points": [
+     {
+      "id": "cp1",
+      "lon": 71.43999224191928,
+      "lat": 51.17673415163969
+     },
+     {
+      "id": "cp2",
+      "lon": 71.44603265392868,
+      "lat": 51.166236689565594
+     },
+     {
+      "id": "cp3",
+      "lon": 71.41844126651563,
+      "lat": 51.17719843823699
+     },
+     {
+      "id": "cp4",
+      "lon": 71.44537220202004,
+      "lat": 51.16850431603225
+     },
+     {
+      "id": "cp5",
+      "lon": 71.43498462755359,
+      "lat": 51.18002952760672
+     },
+     {
+      "id": "cp6",
+      "lon": 71.42600839311311,
+      "lat": 51.16839735714045
+     },
+     {
+      "id": "cp7",
+      "lon": 71.41891360648353,
+      "lat": 51.176675632034154
+     },
+     {
+      "id": "cp8",
+      "lon": 71.43374094139124,
+      "lat": 51.16328525418648
+     },
+     {
+      "id": "cp9",
+      "lon": 71.4234350110488,
+      "lat": 51.169437748903384
+     },
+     {
+      "id": "cp10",
+      "lon": 71.42552541935456,
+      "lat": 51.171140067198394
+     }
+    ],
+    "proposed_object": {
+     "id": "proj1",
+     "lon": 71.4457657202518,
+     "lat": 51.16678836565549,
+     "category": "school",
+     "kind": "hypothetical"
+    }
+   },
+   "expected": [
+    {
+     "control_point": "cp1",
+     "before_m": 971.2811673801626,
+     "after_m": 971.2811673801626,
+     "delta_m": 0.0,
+     "nearest_record_id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 971.2811673808852,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp2",
+     "before_m": 69.35960882266143,
+     "after_m": 64.10506315015195,
+     "delta_m": 5.2545456725094795,
+     "nearest_record_id": "8ca53724-c558-46b7-826b-13e3e8fbb7e6",
+     "nearest_is_proposed": true,
+     "note": null,
+     "before_m_independent_chord": 69.35960882313776,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp3",
+     "before_m": 132.07597923680655,
+     "after_m": 132.07597923680655,
+     "delta_m": 0.0,
+     "nearest_record_id": "c97435da-cd05-4549-bec1-ff297e858554",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 132.07597923669795,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp4",
+     "before_m": 204.91005822214055,
+     "after_m": 192.76791483504024,
+     "delta_m": 12.142143387100305,
+     "nearest_record_id": "8ca53724-c558-46b7-826b-13e3e8fbb7e6",
+     "nearest_is_proposed": true,
+     "note": null,
+     "before_m_independent_chord": 204.91005822250085,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp5",
+     "before_m": 585.1372051299309,
+     "after_m": 585.1372051299309,
+     "delta_m": 0.0,
+     "nearest_record_id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 585.1372051299797,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp6",
+     "before_m": 201.6912103060624,
+     "after_m": 201.6912103060624,
+     "delta_m": 0.0,
+     "nearest_record_id": "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 201.69121030617384,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp7",
+     "before_m": 133.4066453765081,
+     "after_m": 133.4066453765081,
+     "delta_m": 0.0,
+     "nearest_record_id": "c97435da-cd05-4549-bec1-ff297e858554",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 133.40664537638716,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp8",
+     "before_m": 587.149619714601,
+     "after_m": 587.149619714601,
+     "delta_m": 0.0,
+     "nearest_record_id": "b5dd5f1a-9d55-48b1-9d68-7172ea84da3f",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 587.149619714353,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp9",
+     "before_m": 193.34747548801693,
+     "after_m": 193.34747548801693,
+     "delta_m": 0.0,
+     "nearest_record_id": "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 193.34747548807877,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp10",
+     "before_m": 46.83058131820663,
+     "after_m": 46.83058131820663,
+     "delta_m": 0.0,
+     "nearest_record_id": "7b39e048-341b-454a-a63c-4b7e1ae73e9f",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 46.83058131827438,
+     "nearest_record_qa": []
+    }
+   ]
+  },
+  {
+   "case": "astana/school/project_at_cp1",
+   "bbox": [
+    71.418372,
+    51.163033,
+    71.447,
+    51.181
+   ],
+   "records_in_category": 8,
+   "scenario": {
+    "schema_version": "city-whatif-v1",
+    "city_id": "astana",
+    "source_snapshot": "k06ref-sha256:302b218052c042c615f1408479913d113630137fefe3c635ea9e475b24804141",
+    "category": "school",
+    "control_points": [
+     {
+      "id": "cp1",
+      "lon": 71.43999224191928,
+      "lat": 51.17673415163969
+     },
+     {
+      "id": "cp2",
+      "lon": 71.44603265392868,
+      "lat": 51.166236689565594
+     },
+     {
+      "id": "cp3",
+      "lon": 71.41844126651563,
+      "lat": 51.17719843823699
+     },
+     {
+      "id": "cp4",
+      "lon": 71.44537220202004,
+      "lat": 51.16850431603225
+     },
+     {
+      "id": "cp5",
+      "lon": 71.43498462755359,
+      "lat": 51.18002952760672
+     },
+     {
+      "id": "cp6",
+      "lon": 71.42600839311311,
+      "lat": 51.16839735714045
+     },
+     {
+      "id": "cp7",
+      "lon": 71.41891360648353,
+      "lat": 51.176675632034154
+     },
+     {
+      "id": "cp8",
+      "lon": 71.43374094139124,
+      "lat": 51.16328525418648
+     },
+     {
+      "id": "cp9",
+      "lon": 71.4234350110488,
+      "lat": 51.169437748903384
+     },
+     {
+      "id": "cp10",
+      "lon": 71.42552541935456,
+      "lat": 51.171140067198394
+     }
+    ],
+    "proposed_object": {
+     "id": "proj1",
+     "lon": 71.43999224191928,
+     "lat": 51.17673415163969,
+     "category": "school",
+     "kind": "hypothetical"
+    }
+   },
+   "expected": [
+    {
+     "control_point": "cp1",
+     "before_m": 971.2811673801626,
+     "after_m": 0.0,
+     "delta_m": 971.2811673801626,
+     "nearest_record_id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783",
+     "nearest_is_proposed": true,
+     "note": null,
+     "before_m_independent_chord": 971.2811673808852,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp2",
+     "before_m": 69.35960882266143,
+     "after_m": 69.35960882266143,
+     "delta_m": 0.0,
+     "nearest_record_id": "8ca53724-c558-46b7-826b-13e3e8fbb7e6",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 69.35960882313776,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp3",
+     "before_m": 132.07597923680655,
+     "after_m": 132.07597923680655,
+     "delta_m": 0.0,
+     "nearest_record_id": "c97435da-cd05-4549-bec1-ff297e858554",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 132.07597923669795,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp4",
+     "before_m": 204.91005822214055,
+     "after_m": 204.91005822214055,
+     "delta_m": 0.0,
+     "nearest_record_id": "8ca53724-c558-46b7-826b-13e3e8fbb7e6",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 204.91005822250085,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp5",
+     "before_m": 585.1372051299309,
+     "after_m": 506.0838812695169,
+     "delta_m": 79.05332386041397,
+     "nearest_record_id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783",
+     "nearest_is_proposed": true,
+     "note": null,
+     "before_m_independent_chord": 585.1372051299797,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp6",
+     "before_m": 201.6912103060624,
+     "after_m": 201.6912103060624,
+     "delta_m": 0.0,
+     "nearest_record_id": "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 201.69121030617384,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp7",
+     "before_m": 133.4066453765081,
+     "after_m": 133.4066453765081,
+     "delta_m": 0.0,
+     "nearest_record_id": "c97435da-cd05-4549-bec1-ff297e858554",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 133.40664537638716,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp8",
+     "before_m": 587.149619714601,
+     "after_m": 587.149619714601,
+     "delta_m": 0.0,
+     "nearest_record_id": "b5dd5f1a-9d55-48b1-9d68-7172ea84da3f",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 587.149619714353,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp9",
+     "before_m": 193.34747548801693,
+     "after_m": 193.34747548801693,
+     "delta_m": 0.0,
+     "nearest_record_id": "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 193.34747548807877,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp10",
+     "before_m": 46.83058131820663,
+     "after_m": 46.83058131820663,
+     "delta_m": 0.0,
+     "nearest_record_id": "7b39e048-341b-454a-a63c-4b7e1ae73e9f",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 46.83058131827438,
+     "nearest_record_qa": []
+    }
+   ]
+  },
+  {
+   "case": "astana/outpatient_clinic/no_project",
+   "bbox": [
+    71.418372,
+    51.163033,
+    71.447,
+    51.181
+   ],
+   "records_in_category": 16,
+   "scenario": {
+    "schema_version": "city-whatif-v1",
+    "city_id": "astana",
+    "source_snapshot": "k06ref-sha256:0f757b9508497c561df327d05c1d70d571c500044d0531beab8425518e1dfd17",
+    "category": "outpatient_clinic",
+    "control_points": [
+     {
+      "id": "cp1",
+      "lon": 71.42831779967622,
+      "lat": 51.174860591004624
+     },
+     {
+      "id": "cp2",
+      "lon": 71.44542544952807,
+      "lat": 51.173815648497076
+     },
+     {
+      "id": "cp3",
+      "lon": 71.4441434154518,
+      "lat": 51.17572580801279
+     },
+     {
+      "id": "cp4",
+      "lon": 71.43482777038632,
+      "lat": 51.175106261153104
+     },
+     {
+      "id": "cp5",
+      "lon": 71.41958700244537,
+      "lat": 51.16501142854637
+     },
+     {
+      "id": "cp6",
+      "lon": 71.44360895742204,
+      "lat": 51.177944654231524
+     },
+     {
+      "id": "cp7",
+      "lon": 71.42249495265752,
+      "lat": 51.16825417961605
+     },
+     {
+      "id": "cp8",
+      "lon": 71.42736659604871,
+      "lat": 51.18007364306624
+     },
+     {
+      "id": "cp9",
+      "lon": 71.4226637147587,
+      "lat": 51.17340049536121
+     },
+     {
+      "id": "cp10",
+      "lon": 71.43612211358123,
+      "lat": 51.17434435092313
+     }
+    ],
+    "proposed_object": null
+   },
+   "expected": [
+    {
+     "control_point": "cp1",
+     "before_m": 269.11388387181063,
+     "after_m": 269.11388387181063,
+     "delta_m": 0.0,
+     "nearest_record_id": "b1fc81c5-7f00-4a0a-969d-2da872515916",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 269.113883871551,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp2",
+     "before_m": 487.1944322294743,
+     "after_m": 487.1944322294743,
+     "delta_m": 0.0,
+     "nearest_record_id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 487.1944322292433,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp3",
+     "before_m": 514.5250135140423,
+     "after_m": 514.5250135140423,
+     "delta_m": 0.0,
+     "nearest_record_id": "1d137305-49cd-450b-9626-9762db14d080",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 514.5250135133695,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp4",
+     "before_m": 149.2356775736005,
+     "after_m": 149.2356775736005,
+     "delta_m": 0.0,
+     "nearest_record_id": "1d137305-49cd-450b-9626-9762db14d080",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 149.23567757400815,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp5",
+     "before_m": 443.80074885851536,
+     "after_m": 443.80074885851536,
+     "delta_m": 0.0,
+     "nearest_record_id": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 443.80074885883266,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp6",
+     "before_m": 583.2834011650757,
+     "after_m": 583.2834011650757,
+     "delta_m": 0.0,
+     "nearest_record_id": "1d137305-49cd-450b-9626-9762db14d080",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 583.2834011648364,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp7",
+     "before_m": 188.90230714013282,
+     "after_m": 188.90230714013282,
+     "delta_m": 0.0,
+     "nearest_record_id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 188.9023071406444,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp8",
+     "before_m": 358.6101423068951,
+     "after_m": 358.6101423068951,
+     "delta_m": 0.0,
+     "nearest_record_id": "b1fc81c5-7f00-4a0a-969d-2da872515916",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 358.6101423066227,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp9",
+     "before_m": 337.05310243795964,
+     "after_m": 337.05310243795964,
+     "delta_m": 0.0,
+     "nearest_record_id": "166c939f-9131-4fbb-bf75-4ab543916f20",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 337.0531024385241,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp10",
+     "before_m": 74.8284174689641,
+     "after_m": 74.8284174689641,
+     "delta_m": 0.0,
+     "nearest_record_id": "1d137305-49cd-450b-9626-9762db14d080",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 74.82841746936477,
+     "nearest_record_qa": []
+    }
+   ]
+  },
+  {
+   "case": "astana/outpatient_clinic/project_random",
+   "bbox": [
+    71.418372,
+    51.163033,
+    71.447,
+    51.181
+   ],
+   "records_in_category": 16,
+   "scenario": {
+    "schema_version": "city-whatif-v1",
+    "city_id": "astana",
+    "source_snapshot": "k06ref-sha256:0f757b9508497c561df327d05c1d70d571c500044d0531beab8425518e1dfd17",
+    "category": "outpatient_clinic",
+    "control_points": [
+     {
+      "id": "cp1",
+      "lon": 71.42831779967622,
+      "lat": 51.174860591004624
+     },
+     {
+      "id": "cp2",
+      "lon": 71.44542544952807,
+      "lat": 51.173815648497076
+     },
+     {
+      "id": "cp3",
+      "lon": 71.4441434154518,
+      "lat": 51.17572580801279
+     },
+     {
+      "id": "cp4",
+      "lon": 71.43482777038632,
+      "lat": 51.175106261153104
+     },
+     {
+      "id": "cp5",
+      "lon": 71.41958700244537,
+      "lat": 51.16501142854637
+     },
+     {
+      "id": "cp6",
+      "lon": 71.44360895742204,
+      "lat": 51.177944654231524
+     },
+     {
+      "id": "cp7",
+      "lon": 71.42249495265752,
+      "lat": 51.16825417961605
+     },
+     {
+      "id": "cp8",
+      "lon": 71.42736659604871,
+      "lat": 51.18007364306624
+     },
+     {
+      "id": "cp9",
+      "lon": 71.4226637147587,
+      "lat": 51.17340049536121
+     },
+     {
+      "id": "cp10",
+      "lon": 71.43612211358123,
+      "lat": 51.17434435092313
+     }
+    ],
+    "proposed_object": {
+     "id": "proj1",
+     "lon": 71.43852850560499,
+     "lat": 51.18007718547061,
+     "category": "outpatient_clinic",
+     "kind": "hypothetical"
+    }
+   },
+   "expected": [
+    {
+     "control_point": "cp1",
+     "before_m": 269.11388387181063,
+     "after_m": 269.11388387181063,
+     "delta_m": 0.0,
+     "nearest_record_id": "b1fc81c5-7f00-4a0a-969d-2da872515916",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 269.113883871551,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp2",
+     "before_m": 487.1944322294743,
+     "after_m": 487.1944322294743,
+     "delta_m": 0.0,
+     "nearest_record_id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 487.1944322292433,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp3",
+     "before_m": 514.5250135140423,
+     "after_m": 514.5250135140423,
+     "delta_m": 0.0,
+     "nearest_record_id": "1d137305-49cd-450b-9626-9762db14d080",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 514.5250135133695,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp4",
+     "before_m": 149.2356775736005,
+     "after_m": 149.2356775736005,
+     "delta_m": 0.0,
+     "nearest_record_id": "1d137305-49cd-450b-9626-9762db14d080",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 149.23567757400815,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp5",
+     "before_m": 443.80074885851536,
+     "after_m": 443.80074885851536,
+     "delta_m": 0.0,
+     "nearest_record_id": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 443.80074885883266,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp6",
+     "before_m": 583.2834011650757,
+     "after_m": 426.2000887994539,
+     "delta_m": 157.0833123656218,
+     "nearest_record_id": "1d137305-49cd-450b-9626-9762db14d080",
+     "nearest_is_proposed": true,
+     "note": null,
+     "before_m_independent_chord": 583.2834011648364,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp7",
+     "before_m": 188.90230714013282,
+     "after_m": 188.90230714013282,
+     "delta_m": 0.0,
+     "nearest_record_id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 188.9023071406444,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp8",
+     "before_m": 358.6101423068951,
+     "after_m": 358.6101423068951,
+     "delta_m": 0.0,
+     "nearest_record_id": "b1fc81c5-7f00-4a0a-969d-2da872515916",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 358.6101423066227,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp9",
+     "before_m": 337.05310243795964,
+     "after_m": 337.05310243795964,
+     "delta_m": 0.0,
+     "nearest_record_id": "166c939f-9131-4fbb-bf75-4ab543916f20",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 337.0531024385241,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp10",
+     "before_m": 74.8284174689641,
+     "after_m": 74.8284174689641,
+     "delta_m": 0.0,
+     "nearest_record_id": "1d137305-49cd-450b-9626-9762db14d080",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 74.82841746936477,
+     "nearest_record_qa": []
+    }
+   ]
+  },
+  {
+   "case": "astana/outpatient_clinic/project_at_cp1",
+   "bbox": [
+    71.418372,
+    51.163033,
+    71.447,
+    51.181
+   ],
+   "records_in_category": 16,
+   "scenario": {
+    "schema_version": "city-whatif-v1",
+    "city_id": "astana",
+    "source_snapshot": "k06ref-sha256:0f757b9508497c561df327d05c1d70d571c500044d0531beab8425518e1dfd17",
+    "category": "outpatient_clinic",
+    "control_points": [
+     {
+      "id": "cp1",
+      "lon": 71.42831779967622,
+      "lat": 51.174860591004624
+     },
+     {
+      "id": "cp2",
+      "lon": 71.44542544952807,
+      "lat": 51.173815648497076
+     },
+     {
+      "id": "cp3",
+      "lon": 71.4441434154518,
+      "lat": 51.17572580801279
+     },
+     {
+      "id": "cp4",
+      "lon": 71.43482777038632,
+      "lat": 51.175106261153104
+     },
+     {
+      "id": "cp5",
+      "lon": 71.41958700244537,
+      "lat": 51.16501142854637
+     },
+     {
+      "id": "cp6",
+      "lon": 71.44360895742204,
+      "lat": 51.177944654231524
+     },
+     {
+      "id": "cp7",
+      "lon": 71.42249495265752,
+      "lat": 51.16825417961605
+     },
+     {
+      "id": "cp8",
+      "lon": 71.42736659604871,
+      "lat": 51.18007364306624
+     },
+     {
+      "id": "cp9",
+      "lon": 71.4226637147587,
+      "lat": 51.17340049536121
+     },
+     {
+      "id": "cp10",
+      "lon": 71.43612211358123,
+      "lat": 51.17434435092313
+     }
+    ],
+    "proposed_object": {
+     "id": "proj1",
+     "lon": 71.42831779967622,
+     "lat": 51.174860591004624,
+     "category": "outpatient_clinic",
+     "kind": "hypothetical"
+    }
+   },
+   "expected": [
+    {
+     "control_point": "cp1",
+     "before_m": 269.11388387181063,
+     "after_m": 0.0,
+     "delta_m": 269.11388387181063,
+     "nearest_record_id": "b1fc81c5-7f00-4a0a-969d-2da872515916",
+     "nearest_is_proposed": true,
+     "note": null,
+     "before_m_independent_chord": 269.113883871551,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp2",
+     "before_m": 487.1944322294743,
+     "after_m": 487.1944322294743,
+     "delta_m": 0.0,
+     "nearest_record_id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 487.1944322292433,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp3",
+     "before_m": 514.5250135140423,
+     "after_m": 514.5250135140423,
+     "delta_m": 0.0,
+     "nearest_record_id": "1d137305-49cd-450b-9626-9762db14d080",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 514.5250135133695,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp4",
+     "before_m": 149.2356775736005,
+     "after_m": 149.2356775736005,
+     "delta_m": 0.0,
+     "nearest_record_id": "1d137305-49cd-450b-9626-9762db14d080",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 149.23567757400815,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp5",
+     "before_m": 443.80074885851536,
+     "after_m": 443.80074885851536,
+     "delta_m": 0.0,
+     "nearest_record_id": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 443.80074885883266,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp6",
+     "before_m": 583.2834011650757,
+     "after_m": 583.2834011650757,
+     "delta_m": 0.0,
+     "nearest_record_id": "1d137305-49cd-450b-9626-9762db14d080",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 583.2834011648364,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp7",
+     "before_m": 188.90230714013282,
+     "after_m": 188.90230714013282,
+     "delta_m": 0.0,
+     "nearest_record_id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 188.9023071406444,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp8",
+     "before_m": 358.6101423068951,
+     "after_m": 358.6101423068951,
+     "delta_m": 0.0,
+     "nearest_record_id": "b1fc81c5-7f00-4a0a-969d-2da872515916",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 358.6101423066227,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp9",
+     "before_m": 337.05310243795964,
+     "after_m": 337.05310243795964,
+     "delta_m": 0.0,
+     "nearest_record_id": "166c939f-9131-4fbb-bf75-4ab543916f20",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 337.0531024385241,
+     "nearest_record_qa": []
+    },
+    {
+     "control_point": "cp10",
+     "before_m": 74.8284174689641,
+     "after_m": 74.8284174689641,
+     "delta_m": 0.0,
+     "nearest_record_id": "1d137305-49cd-450b-9626-9762db14d080",
+     "nearest_is_proposed": false,
+     "note": null,
+     "before_m_independent_chord": 74.82841746936477,
+     "nearest_record_qa": []
+    }
+   ]
+  }
+ ],
+ "synthetic_edge_cases": {
+  "kind": "synthetic",
+  "bbox": [
+   71.418372,
+   51.163033,
+   71.447,
+   51.181
+  ],
+  "records": [
+   {
+    "id": "b",
+    "lon": 71.43,
+    "lat": 51.1702,
+    "group": "school"
+   },
+   {
+    "id": "a",
+    "lon": 71.43,
+    "lat": 51.1702,
+    "group": "school"
+   }
+  ],
+  "cases": [
+   {
+    "case": "tie_by_id",
+    "scenario": {
+     "schema_version": "city-whatif-v1",
+     "city_id": "astana",
+     "source_snapshot": "synthetic",
+     "category": "school",
+     "control_points": [
+      {
+       "id": "cp1",
+       "lon": 71.43,
+       "lat": 51.17
+      }
+     ],
+     "proposed_object": null
+    },
+    "expected": [
+     {
+      "control_point": "cp1",
+      "before_m": 22.23901604622422,
+      "after_m": 22.23901604622422,
+      "delta_m": 0.0,
+      "nearest_record_id": "a",
+      "nearest_is_proposed": false,
+      "note": null
+     }
+    ]
+   },
+   {
+    "case": "same_point_zero",
+    "scenario": {
+     "schema_version": "city-whatif-v1",
+     "city_id": "astana",
+     "source_snapshot": "synthetic",
+     "category": "school",
+     "control_points": [
+      {
+       "id": "cp1",
+       "lon": 71.43,
+       "lat": 51.1702
+      }
+     ],
+     "proposed_object": null
+    },
+    "expected": [
+     {
+      "control_point": "cp1",
+      "before_m": 0.0,
+      "after_m": 0.0,
+      "delta_m": 0.0,
+      "nearest_record_id": "a",
+      "nearest_is_proposed": false,
+      "note": null
+     }
+    ]
+   },
+   {
+    "case": "project_on_point",
+    "scenario": {
+     "schema_version": "city-whatif-v1",
+     "city_id": "astana",
+     "source_snapshot": "synthetic",
+     "category": "school",
+     "control_points": [
+      {
+       "id": "cp1",
+       "lon": 71.435,
+       "lat": 51.172
+      }
+     ],
+     "proposed_object": {
+      "id": "proj1",
+      "lon": 71.435,
+      "lat": 51.172,
+      "category": "school",
+      "kind": "hypothetical"
+     }
+    },
+    "expected": [
+     {
+      "control_point": "cp1",
+      "before_m": 401.9686864084323,
+      "after_m": 0.0,
+      "delta_m": 401.9686864084323,
+      "nearest_record_id": "a",
+      "nearest_is_proposed": true,
+      "note": null
+     }
+    ]
+   },
+   {
+    "case": "no_records_with_project",
+    "scenario": {
+     "schema_version": "city-whatif-v1",
+     "city_id": "astana",
+     "source_snapshot": "synthetic",
+     "category": "outpatient_clinic",
+     "control_points": [
+      {
+       "id": "cp1",
+       "lon": 71.435,
+       "lat": 51.172
+      }
+     ],
+     "proposed_object": {
+      "id": "proj1",
+      "lon": 71.436,
+      "lat": 51.172,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical"
+     }
+    },
+    "expected": [
+     {
+      "control_point": "cp1",
+      "before_m": null,
+      "after_m": 69.71760211292191,
+      "delta_m": null,
+      "nearest_record_id": null,
+      "nearest_is_proposed": true,
+      "note": "В срезе нет исходных записей; улучшение не вычисляется"
+     }
+    ]
+   },
+   {
+    "case": "no_records_no_project",
+    "scenario": {
+     "schema_version": "city-whatif-v1",
+     "city_id": "astana",
+     "source_snapshot": "synthetic",
+     "category": "outpatient_clinic",
+     "control_points": [
+      {
+       "id": "cp1",
+       "lon": 71.435,
+       "lat": 51.172
+      }
+     ],
+     "proposed_object": null
+    },
+    "expected": [
+     {
+      "control_point": "cp1",
+      "before_m": null,
+      "after_m": null,
+      "delta_m": null,
+      "nearest_record_id": null,
+      "nearest_is_proposed": false,
+      "note": "В срезе нет исходных записей; улучшение не вычисляется"
+     }
+    ]
+   }
+  ],
+  "must_reject": [
+   {
+    "case": "zero_points",
+    "scenario": {
+     "schema_version": "city-whatif-v1",
+     "city_id": "astana",
+     "source_snapshot": "synthetic",
+     "category": "school",
+     "control_points": [],
+     "proposed_object": null
+    }
+   },
+   {
+    "case": "eleven_points",
+    "scenario": {
+     "schema_version": "city-whatif-v1",
+     "city_id": "astana",
+     "source_snapshot": "synthetic",
+     "category": "school",
+     "control_points": [
+      {
+       "id": "cp0",
+       "lon": 71.43,
+       "lat": 51.17
+      },
+      {
+       "id": "cp1",
+       "lon": 71.43,
+       "lat": 51.17
+      },
+      {
+       "id": "cp2",
+       "lon": 71.43,
+       "lat": 51.17
+      },
+      {
+       "id": "cp3",
+       "lon": 71.43,
+       "lat": 51.17
+      },
+      {
+       "id": "cp4",
+       "lon": 71.43,
+       "lat": 51.17
+      },
+      {
+       "id": "cp5",
+       "lon": 71.43,
+       "lat": 51.17
+      },
+      {
+       "id": "cp6",
+       "lon": 71.43,
+       "lat": 51.17
+      },
+      {
+       "id": "cp7",
+       "lon": 71.43,
+       "lat": 51.17
+      },
+      {
+       "id": "cp8",
+       "lon": 71.43,
+       "lat": 51.17
+      },
+      {
+       "id": "cp9",
+       "lon": 71.43,
+       "lat": 51.17
+      },
+      {
+       "id": "cp10",
+       "lon": 71.43,
+       "lat": 51.17
+      }
+     ],
+     "proposed_object": null
+    }
+   },
+   {
+    "case": "duplicate_id",
+    "scenario": {
+     "schema_version": "city-whatif-v1",
+     "city_id": "astana",
+     "source_snapshot": "synthetic",
+     "category": "school",
+     "control_points": [
+      {
+       "id": "cp1",
+       "lon": 71.43,
+       "lat": 51.17
+      },
+      {
+       "id": "cp1",
+       "lon": 71.431,
+       "lat": 51.171
+      }
+     ],
+     "proposed_object": null
+    }
+   },
+   {
+    "case": "point_outside_bbox",
+    "scenario": {
+     "schema_version": "city-whatif-v1",
+     "city_id": "astana",
+     "source_snapshot": "synthetic",
+     "category": "school",
+     "control_points": [
+      {
+       "id": "cp1",
+       "lon": 71.5,
+       "lat": 51.17
+      }
+     ],
+     "proposed_object": null
+    }
+   },
+   {
+    "case": "project_outside_bbox",
+    "scenario": {
+     "schema_version": "city-whatif-v1",
+     "city_id": "astana",
+     "source_snapshot": "synthetic",
+     "category": "school",
+     "control_points": [
+      {
+       "id": "cp1",
+       "lon": 71.43,
+       "lat": 51.17
+      }
+     ],
+     "proposed_object": {
+      "id": "proj1",
+      "lon": 71.6,
+      "lat": 51.171,
+      "category": "school",
+      "kind": "hypothetical"
+     }
+    }
+   },
+   {
+    "case": "category_mismatch",
+    "scenario": {
+     "schema_version": "city-whatif-v1",
+     "city_id": "astana",
+     "source_snapshot": "synthetic",
+     "category": "school",
+     "control_points": [
+      {
+       "id": "cp1",
+       "lon": 71.43,
+       "lat": 51.17
+      }
+     ],
+     "proposed_object": {
+      "id": "proj1",
+      "lon": 71.43,
+      "lat": 51.171,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical"
+     }
+    }
+   },
+   {
+    "case": "category_not_in_mvp",
+    "scenario": {
+     "schema_version": "city-whatif-v1",
+     "city_id": "astana",
+     "source_snapshot": "synthetic",
+     "category": "hospital",
+     "control_points": [
+      {
+       "id": "cp1",
+       "lon": 71.43,
+       "lat": 51.17
+      }
+     ],
+     "proposed_object": null
+    }
+   }
+  ],
+  "must_reject_numbers": [
+   "NaN",
+   "Infinity",
+   "-Infinity",
+   "1e999"
+  ],
+  "clamp_case": {
+   "a": [
+    0,
+    -74.6
+   ],
+   "b": [
+    180,
+    74.6
+   ],
+   "expected_m": 20015114.442035925,
+   "note": "unclamped intermediate = 1.0000000000000002; without clamp asin(sqrt(a)) fails"
+  }
+ }
+}
