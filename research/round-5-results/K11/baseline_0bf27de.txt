@@ -1,0 +1,26 @@
+pass          S1  start page, server and documentation files exist
+pass          S2  all own text files (outside inputs/) are strict UTF-8
+pass          S3  no hidden absolute paths in code, docs and generated web files
+fail          S4  Node tests build file:// URLs with url.pathToFileURL, not string concatenation
+fail          S5  a Windows launcher (.bat/.cmd/.ps1) exists next to serve.py
+fail          S6  README gives a Windows start command (launcher, `py serve.py` or `python serve.py`)
+pass          S7  Python text I/O names an encoding (Windows default is the ANSI code page)
+fail          S8  browser smoke writes its default output inside the app copy (not into ../../../research)
+pass          L1  serve.py starts and listens on 127.0.0.1:<port> (port from argv)
+pass          H1  GET / returns the start page
+pass          H2  start page is valid UTF-8 and declares <meta charset=utf-8>
+info          H3  Content-Type headers carry a charset (browser otherwise relies on <meta charset>)
+pass          H4  start page loads no external or file:// resources
+pass          H5  no type=module scripts (they need correct JS MIME and do not run from file://)
+pass          H6  every referenced script is served 200, JS MIME, strict UTF-8, same bytes as disk
+pass          H7  missing file returns 404
+pass          H8  files outside web/ are not served (path traversal)
+pass          H9  server is not reachable on the LAN address (loopback only)
+pass          B1  headless browser loads the demo over http and file:// (pathToFileURL), data for both cities, no console errors, no external requests
+pass          L2  the launched server process is stopped explicitly and the port is released
+info          L3  server output on start/stop
+modeled_pass  M1  serve.py starts with a redirected stdout encoded as cp1251 (Windows ANSI code page, MODELED on Linux)
+modeled_fail  M2  serve.py starts with a redirected stdout encoded as cp1252 (Windows ANSI code page, MODELED on Linux)
+modeled_fail  M3  file:// URL built by string concatenation for a Windows path (MODELED with path.win32)
+not_run       W1  real Windows run of the launcher, serve.py and browser
+summary: {"pass": 15, "fail": 4, "info": 2, "modeled_pass": 1, "modeled_fail": 2, "not_run": 1}
