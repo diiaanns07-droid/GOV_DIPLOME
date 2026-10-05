@@ -1,0 +1,24 @@
+{
+ "kind": "derived_from_observed_secondary",
+ "city_id": "shymkent",
+ "bbox": [
+  69.593365,
+  42.306645,
+  69.617658,
+  42.324611
+ ],
+ "source_snapshot": "sha256:a9326b5633c513c0bfeccbb2248b26cf3b706c902f77745073a2959ad8d7ff3e",
+ "release": "2026-09-23.1",
+ "provenance": {
+  "build_branch": "claude/beautiful-clarke-sbzomj",
+  "build_sha": "a5b5e2ddbe087c4eab8e947748cdf69dbae84a0d",
+  "data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "places_social_sha256": "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7",
+  "places_digest": "30b0b9678bd5d903232e1c820f2c65a5faad7ffc9020fff3f2ed8c591f591e0f",
+  "snapshot_rule": "sha256(JSON.stringify(['city-plan-v2', city, release, places_social_sha256, placesDigest, 'haversine-mm-v1']))"
+ },
+ "category_records": {
+  "school": 15,
+  "outpatient_clinic": 16
+ }
+}

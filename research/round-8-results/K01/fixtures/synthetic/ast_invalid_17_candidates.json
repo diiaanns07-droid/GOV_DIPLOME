@@ -1,0 +1,184 @@
+{
+ "schema_version": "city-plan-v2",
+ "city_id": "astana",
+ "source_snapshot": "sha256:67a40b96d29873118780969eb11c32deba49a0c64fda1f185efe634882f04c6d",
+ "category": "school",
+ "control_points": [
+  {
+   "id": "cp-01",
+   "lon": 71.421235,
+   "lat": 51.165728,
+   "weight": 1
+  },
+  {
+   "id": "cp-02",
+   "lon": 71.430396,
+   "lat": 51.173274,
+   "weight": 4
+  },
+  {
+   "id": "cp-03",
+   "lon": 71.439557,
+   "lat": 51.168243,
+   "weight": 2
+  },
+  {
+   "id": "cp-04",
+   "lon": 71.425815,
+   "lat": 51.17579,
+   "weight": 5
+  },
+  {
+   "id": "cp-05",
+   "lon": 71.434976,
+   "lat": 51.170759,
+   "weight": 3
+  }
+ ],
+ "candidates": [
+  {
+   "id": "cand-01",
+   "lon": 71.424098,
+   "lat": 51.177407,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 3000
+  },
+  {
+   "id": "cand-02",
+   "lon": 71.42915,
+   "lat": 51.176772,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 10000
+  },
+  {
+   "id": "cand-03",
+   "lon": 71.434202,
+   "lat": 51.176138,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 8000
+  },
+  {
+   "id": "cand-04",
+   "lon": 71.439254,
+   "lat": 51.175504,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 6000
+  },
+  {
+   "id": "cand-05",
+   "lon": 71.427129,
+   "lat": 51.17487,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 4000
+  },
+  {
+   "id": "cand-06",
+   "lon": 71.432181,
+   "lat": 51.174236,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 11000
+  },
+  {
+   "id": "cand-07",
+   "lon": 71.437233,
+   "lat": 51.173602,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 9000
+  },
+  {
+   "id": "cand-08",
+   "lon": 71.425108,
+   "lat": 51.172968,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 7000
+  },
+  {
+   "id": "cand-09",
+   "lon": 71.43016,
+   "lat": 51.172334,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 5000
+  },
+  {
+   "id": "cand-10",
+   "lon": 71.435212,
+   "lat": 51.171699,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 3000
+  },
+  {
+   "id": "cand-11",
+   "lon": 71.440264,
+   "lat": 51.171065,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 10000
+  },
+  {
+   "id": "cand-12",
+   "lon": 71.428139,
+   "lat": 51.170431,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 8000
+  },
+  {
+   "id": "cand-13",
+   "lon": 71.433191,
+   "lat": 51.169797,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 6000
+  },
+  {
+   "id": "cand-14",
+   "lon": 71.438243,
+   "lat": 51.169163,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 4000
+  },
+  {
+   "id": "cand-15",
+   "lon": 71.426118,
+   "lat": 51.168529,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 11000
+  },
+  {
+   "id": "cand-16",
+   "lon": 71.43117,
+   "lat": 51.167895,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 9000
+  },
+  {
+   "id": "cand-17",
+   "lon": 71.436222,
+   "lat": 51.167261,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 7000
+  }
+ ],
+ "budget": 12000,
+ "max_selected": 2,
+ "coverage_radius_m": 500,
+ "required_ids": [],
+ "excluded_ids": [],
+ "selected_ids": [
+  "cand-01"
+ ]
+}

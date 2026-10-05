@@ -1,0 +1,14 @@
+{
+ "schema_version": "city-whatif-v1",
+ "city_id": "astana",
+ "source_snapshot": "sha256:67a40b96d29873118780969eb11c32deba49a0c64fda1f185efe634882f04c6d",
+ "category": "school",
+ "control_points": [],
+ "candidates": [],
+ "budget": 0,
+ "max_selected": 0,
+ "coverage_radius_m": 100,
+ "required_ids": [],
+ "excluded_ids": [],
+ "selected_ids": []
+}

@@ -1,0 +1,80 @@
+{
+ "schema_version": "city-plan-v2",
+ "city_id": "shymkent",
+ "source_snapshot": "sha256:a9326b5633c513c0bfeccbb2248b26cf3b706c902f77745073a2959ad8d7ff3e",
+ "category": "school",
+ "control_points": [
+  {
+   "id": "cp-01",
+   "lon": 69.595794,
+   "lat": 42.30934,
+   "weight": 1
+  },
+  {
+   "id": "cp-02",
+   "lon": 69.603568,
+   "lat": 42.316886,
+   "weight": 4
+  },
+  {
+   "id": "cp-03",
+   "lon": 69.611342,
+   "lat": 42.311855,
+   "weight": 2
+  },
+  {
+   "id": "cp-04",
+   "lon": 69.599681,
+   "lat": 42.319401,
+   "weight": 5
+  },
+  {
+   "id": "cp-05",
+   "lon": 69.607455,
+   "lat": 42.31437,
+   "weight": 3
+  }
+ ],
+ "candidates": [
+  {
+   "id": "cand-01",
+   "lon": 69.598224,
+   "lat": 42.321018,
+   "category": "school",
+   "kind": "planned",
+   "cost": 3000
+  },
+  {
+   "id": "cand-02",
+   "lon": 69.601868,
+   "lat": 42.318323,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 10000
+  },
+  {
+   "id": "cand-03",
+   "lon": 69.605512,
+   "lat": 42.315628,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 8000
+  },
+  {
+   "id": "cand-04",
+   "lon": 69.609155,
+   "lat": 42.312933,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 6000
+  }
+ ],
+ "budget": 12000,
+ "max_selected": 2,
+ "coverage_radius_m": 500,
+ "required_ids": [],
+ "excluded_ids": [],
+ "selected_ids": [
+  "cand-01"
+ ]
+}

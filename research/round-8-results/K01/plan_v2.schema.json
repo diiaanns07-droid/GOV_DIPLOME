@@ -1,0 +1,37 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "city-plan-v2.schema.json",
+ "title": "city-plan-v2 scenario (structural part; semantics — snapshot/bbox/references/uniqueness — in planv2.js / planv2_ref.py)",
+ "type": "object",
+ "additionalProperties": false,
+ "required": ["schema_version", "city_id", "source_snapshot", "category", "control_points", "candidates", "budget",
+              "max_selected", "coverage_radius_m", "required_ids", "excluded_ids", "selected_ids"],
+ "properties": {
+  "schema_version": {"const": "city-plan-v2"},
+  "city_id": {"enum": ["shymkent", "astana"]},
+  "source_snapshot": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+  "category": {"enum": ["school", "outpatient_clinic"]},
+  "control_points": {"type": "array", "minItems": 1, "maxItems": 25, "items": {"$ref": "#/$defs/control_point"}},
+  "candidates": {"type": "array", "minItems": 0, "maxItems": 16, "items": {"$ref": "#/$defs/candidate"}},
+  "budget": {"type": "integer", "minimum": 0, "maximum": 1000000},
+  "max_selected": {"type": "integer", "minimum": 0, "maximum": 5},
+  "coverage_radius_m": {"type": "integer", "minimum": 100, "maximum": 5000},
+  "required_ids": {"$ref": "#/$defs/id_list"},
+  "excluded_ids": {"$ref": "#/$defs/id_list"},
+  "selected_ids": {"$ref": "#/$defs/id_list"},
+  "derived_results": {"description": "allowed, never trusted: dropped on import and recomputed"}
+ },
+ "$defs": {
+  "id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,63}$"},
+  "id_list": {"type": "array", "maxItems": 16, "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
+  "lon": {"type": "number", "minimum": -180, "maximum": 180},
+  "lat": {"type": "number", "minimum": -90, "maximum": 90},
+  "control_point": {"type": "object", "additionalProperties": false, "required": ["id", "lon", "lat", "weight"],
+   "properties": {"id": {"$ref": "#/$defs/id"}, "lon": {"$ref": "#/$defs/lon"}, "lat": {"$ref": "#/$defs/lat"},
+                  "weight": {"type": "integer", "minimum": 1, "maximum": 100}}},
+  "candidate": {"type": "object", "additionalProperties": false, "required": ["id", "lon", "lat", "category", "kind", "cost"],
+   "properties": {"id": {"$ref": "#/$defs/id"}, "lon": {"$ref": "#/$defs/lon"}, "lat": {"$ref": "#/$defs/lat"},
+                  "category": {"enum": ["school", "outpatient_clinic"]}, "kind": {"const": "hypothetical"},
+                  "cost": {"type": "integer", "minimum": 1, "maximum": 1000000}}}
+ }
+}

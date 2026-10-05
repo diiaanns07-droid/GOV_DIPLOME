@@ -1,0 +1,50 @@
+PASS fixtures MANIFEST sha256
+PASS real contexts == contextFromData(app data.js, facts.js)
+PASS fixture shy_valid_basic.json
+PASS fixture shy_valid_clinic_constraints.json
+PASS fixture shy_valid_forged_derived.json
+PASS fixture shy_valid_limits.json
+PASS fixture shy_valid_empty_candidates.json
+PASS fixture shy_invalid_foreign_snapshot.json
+PASS fixture shy_invalid_foreign_city.json
+PASS fixture shy_invalid_outside_bbox.json
+PASS fixture shy_invalid_weight_fraction.json
+PASS fixture shy_invalid_cost_zero.json
+PASS fixture shy_invalid_conflict.json
+PASS fixture shy_invalid_unknown_ref.json
+PASS fixture shy_invalid_17_candidates.json
+PASS fixture ast_valid_basic.json
+PASS fixture ast_valid_clinic_constraints.json
+PASS fixture ast_valid_forged_derived.json
+PASS fixture ast_valid_limits.json
+PASS fixture ast_valid_empty_candidates.json
+PASS fixture ast_invalid_foreign_snapshot.json
+PASS fixture ast_invalid_foreign_city.json
+PASS fixture ast_invalid_outside_bbox.json
+PASS fixture ast_invalid_weight_fraction.json
+PASS fixture ast_invalid_cost_zero.json
+PASS fixture ast_invalid_conflict.json
+PASS fixture ast_invalid_unknown_ref.json
+PASS fixture ast_invalid_17_candidates.json
+PASS fixture shy_invalid_26_points.json
+PASS fixture shy_invalid_dup_candidate_id.json
+PASS fixture shy_invalid_kind.json
+PASS fixture shy_invalid_candidate_category.json
+PASS fixture shy_invalid_extra_field.json
+PASS fixture shy_invalid_missing_field.json
+PASS fixture shy_invalid_url_id.json
+PASS fixture shy_invalid_long_id.json
+PASS fixture shy_invalid_bool_weight.json
+PASS fixture ast_invalid_budget.json
+PASS fixture ast_invalid_max_selected.json
+PASS fixture ast_invalid_radius.json
+PASS fixture ast_invalid_v1_schema.json
+PASS fixture shy_valid_unicode_escaped_keys.json
+PASS fixture shy_invalid_dup_key_via_escape.json
+PASS fixture shy_invalid_nan.json
+PASS fixture shy_invalid_1e999.json
+PASS fixture shy_invalid_bad_utf8.json
+PASS fixture shy_invalid_too_large.json
+PASS fixture shy_valid_exactly_256k.json
+
+48 passed, 0 failed, 0 skipped

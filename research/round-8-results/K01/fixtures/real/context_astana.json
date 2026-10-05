@@ -1,0 +1,24 @@
+{
+ "kind": "derived_from_observed_secondary",
+ "city_id": "astana",
+ "bbox": [
+  71.418372,
+  51.163033,
+  71.447,
+  51.181
+ ],
+ "source_snapshot": "sha256:67a40b96d29873118780969eb11c32deba49a0c64fda1f185efe634882f04c6d",
+ "release": "2026-09-23.1",
+ "provenance": {
+  "build_branch": "claude/beautiful-clarke-sbzomj",
+  "build_sha": "a5b5e2ddbe087c4eab8e947748cdf69dbae84a0d",
+  "data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "places_social_sha256": "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343",
+  "places_digest": "4ea80e67e9ae236eee42b6ca74e650efec2d46dad0982448906d809c8eeb8a43",
+  "snapshot_rule": "sha256(JSON.stringify(['city-plan-v2', city, release, places_social_sha256, placesDigest, 'haversine-mm-v1']))"
+ },
+ "category_records": {
+  "school": 8,
+  "outpatient_clinic": 16
+ }
+}

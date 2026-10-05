@@ -1,0 +1,230 @@
+{
+ "note": "SYNTHETIC scenarios (invented points/weights/costs/budgets) on REAL slice contexts of build a5b5e2d",
+ "build_sha": "a5b5e2ddbe087c4eab8e947748cdf69dbae84a0d",
+ "fixtures": {
+  "shy_valid_basic.json": {
+   "context_city": "shymkent",
+   "valid": true
+  },
+  "shy_valid_clinic_constraints.json": {
+   "context_city": "shymkent",
+   "valid": true
+  },
+  "shy_valid_forged_derived.json": {
+   "context_city": "shymkent",
+   "valid": true,
+   "note": "derived_results forged: must be dropped"
+  },
+  "shy_valid_limits.json": {
+   "context_city": "shymkent",
+   "valid": true
+  },
+  "shy_valid_empty_candidates.json": {
+   "context_city": "shymkent",
+   "valid": true
+  },
+  "shy_invalid_foreign_snapshot.json": {
+   "context_city": "shymkent",
+   "valid": false,
+   "code": "foreign_snapshot"
+  },
+  "shy_invalid_foreign_city.json": {
+   "context_city": "astana",
+   "valid": false,
+   "code": "foreign_city",
+   "note": "valid file of the other city opened in this context"
+  },
+  "shy_invalid_outside_bbox.json": {
+   "context_city": "shymkent",
+   "valid": false,
+   "code": "outside_bbox"
+  },
+  "shy_invalid_weight_fraction.json": {
+   "context_city": "shymkent",
+   "valid": false,
+   "code": "bad_weight"
+  },
+  "shy_invalid_cost_zero.json": {
+   "context_city": "shymkent",
+   "valid": false,
+   "code": "bad_cost"
+  },
+  "shy_invalid_conflict.json": {
+   "context_city": "shymkent",
+   "valid": false,
+   "code": "constraint_conflict"
+  },
+  "shy_invalid_unknown_ref.json": {
+   "context_city": "shymkent",
+   "valid": false,
+   "code": "unknown_ref"
+  },
+  "shy_invalid_17_candidates.json": {
+   "context_city": "shymkent",
+   "valid": false,
+   "code": "bad_candidates"
+  },
+  "ast_valid_basic.json": {
+   "context_city": "astana",
+   "valid": true
+  },
+  "ast_valid_clinic_constraints.json": {
+   "context_city": "astana",
+   "valid": true
+  },
+  "ast_valid_forged_derived.json": {
+   "context_city": "astana",
+   "valid": true,
+   "note": "derived_results forged: must be dropped"
+  },
+  "ast_valid_limits.json": {
+   "context_city": "astana",
+   "valid": true
+  },
+  "ast_valid_empty_candidates.json": {
+   "context_city": "astana",
+   "valid": true
+  },
+  "ast_invalid_foreign_snapshot.json": {
+   "context_city": "astana",
+   "valid": false,
+   "code": "foreign_snapshot"
+  },
+  "ast_invalid_foreign_city.json": {
+   "context_city": "shymkent",
+   "valid": false,
+   "code": "foreign_city",
+   "note": "valid file of the other city opened in this context"
+  },
+  "ast_invalid_outside_bbox.json": {
+   "context_city": "astana",
+   "valid": false,
+   "code": "outside_bbox"
+  },
+  "ast_invalid_weight_fraction.json": {
+   "context_city": "astana",
+   "valid": false,
+   "code": "bad_weight"
+  },
+  "ast_invalid_cost_zero.json": {
+   "context_city": "astana",
+   "valid": false,
+   "code": "bad_cost"
+  },
+  "ast_invalid_conflict.json": {
+   "context_city": "astana",
+   "valid": false,
+   "code": "constraint_conflict"
+  },
+  "ast_invalid_unknown_ref.json": {
+   "context_city": "astana",
+   "valid": false,
+   "code": "unknown_ref"
+  },
+  "ast_invalid_17_candidates.json": {
+   "context_city": "astana",
+   "valid": false,
+   "code": "bad_candidates"
+  },
+  "shy_invalid_26_points.json": {
+   "context_city": "shymkent",
+   "valid": false,
+   "code": "bad_points"
+  },
+  "shy_invalid_dup_candidate_id.json": {
+   "context_city": "shymkent",
+   "valid": false,
+   "code": "duplicate_id"
+  },
+  "shy_invalid_kind.json": {
+   "context_city": "shymkent",
+   "valid": false,
+   "code": "bad_kind"
+  },
+  "shy_invalid_candidate_category.json": {
+   "context_city": "shymkent",
+   "valid": false,
+   "code": "bad_category"
+  },
+  "shy_invalid_extra_field.json": {
+   "context_city": "shymkent",
+   "valid": false,
+   "code": "unknown_field"
+  },
+  "shy_invalid_missing_field.json": {
+   "context_city": "shymkent",
+   "valid": false,
+   "code": "missing_field"
+  },
+  "shy_invalid_url_id.json": {
+   "context_city": "shymkent",
+   "valid": false,
+   "code": "bad_id"
+  },
+  "shy_invalid_long_id.json": {
+   "context_city": "shymkent",
+   "valid": false,
+   "code": "bad_id"
+  },
+  "shy_invalid_bool_weight.json": {
+   "context_city": "shymkent",
+   "valid": false,
+   "code": "bad_weight"
+  },
+  "ast_invalid_budget.json": {
+   "context_city": "astana",
+   "valid": false,
+   "code": "bad_budget"
+  },
+  "ast_invalid_max_selected.json": {
+   "context_city": "astana",
+   "valid": false,
+   "code": "bad_max_selected"
+  },
+  "ast_invalid_radius.json": {
+   "context_city": "astana",
+   "valid": false,
+   "code": "bad_radius"
+  },
+  "ast_invalid_v1_schema.json": {
+   "context_city": "astana",
+   "valid": false,
+   "code": "bad_version"
+  },
+  "shy_valid_unicode_escaped_keys.json": {
+   "context_city": "shymkent",
+   "valid": true,
+   "note": "keys spelled with \\u escapes are the same keys"
+  },
+  "shy_invalid_dup_key_via_escape.json": {
+   "context_city": "shymkent",
+   "valid": false,
+   "code": "duplicate_key"
+  },
+  "shy_invalid_nan.json": {
+   "context_city": "shymkent",
+   "valid": false,
+   "code": "non_finite"
+  },
+  "shy_invalid_1e999.json": {
+   "context_city": "shymkent",
+   "valid": false,
+   "code": "non_finite"
+  },
+  "shy_invalid_bad_utf8.json": {
+   "context_city": "shymkent",
+   "valid": false,
+   "code": "bad_encoding"
+  },
+  "shy_invalid_too_large.json": {
+   "context_city": "shymkent",
+   "valid": false,
+   "code": "too_large"
+  },
+  "shy_valid_exactly_256k.json": {
+   "context_city": "shymkent",
+   "valid": true,
+   "note": "exactly 262144 bytes"
+  }
+ }
+}

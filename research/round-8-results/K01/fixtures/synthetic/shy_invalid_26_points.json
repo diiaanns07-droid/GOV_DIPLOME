@@ -1,0 +1,206 @@
+{
+ "schema_version": "city-plan-v2",
+ "city_id": "shymkent",
+ "source_snapshot": "sha256:a9326b5633c513c0bfeccbb2248b26cf3b706c902f77745073a2959ad8d7ff3e",
+ "category": "school",
+ "control_points": [
+  {
+   "id": "cp-01",
+   "lon": 69.595794,
+   "lat": 42.30934,
+   "weight": 1
+  },
+  {
+   "id": "cp-02",
+   "lon": 69.601027,
+   "lat": 42.310791,
+   "weight": 4
+  },
+  {
+   "id": "cp-03",
+   "lon": 69.606259,
+   "lat": 42.312242,
+   "weight": 2
+  },
+  {
+   "id": "cp-04",
+   "lon": 69.611491,
+   "lat": 42.313693,
+   "weight": 5
+  },
+  {
+   "id": "cp-05",
+   "lon": 69.597289,
+   "lat": 42.315144,
+   "weight": 3
+  },
+  {
+   "id": "cp-06",
+   "lon": 69.602522,
+   "lat": 42.316595,
+   "weight": 1
+  },
+  {
+   "id": "cp-07",
+   "lon": 69.607754,
+   "lat": 42.318047,
+   "weight": 4
+  },
+  {
+   "id": "cp-08",
+   "lon": 69.612986,
+   "lat": 42.319498,
+   "weight": 2
+  },
+  {
+   "id": "cp-09",
+   "lon": 69.598784,
+   "lat": 42.320949,
+   "weight": 5
+  },
+  {
+   "id": "cp-10",
+   "lon": 69.604017,
+   "lat": 42.309824,
+   "weight": 3
+  },
+  {
+   "id": "cp-11",
+   "lon": 69.609249,
+   "lat": 42.311275,
+   "weight": 1
+  },
+  {
+   "id": "cp-12",
+   "lon": 69.614481,
+   "lat": 42.312726,
+   "weight": 4
+  },
+  {
+   "id": "cp-13",
+   "lon": 69.600279,
+   "lat": 42.314177,
+   "weight": 2
+  },
+  {
+   "id": "cp-14",
+   "lon": 69.605512,
+   "lat": 42.315628,
+   "weight": 5
+  },
+  {
+   "id": "cp-15",
+   "lon": 69.610744,
+   "lat": 42.317079,
+   "weight": 3
+  },
+  {
+   "id": "cp-16",
+   "lon": 69.596542,
+   "lat": 42.31853,
+   "weight": 1
+  },
+  {
+   "id": "cp-17",
+   "lon": 69.601774,
+   "lat": 42.319981,
+   "weight": 4
+  },
+  {
+   "id": "cp-18",
+   "lon": 69.607006,
+   "lat": 42.321432,
+   "weight": 2
+  },
+  {
+   "id": "cp-19",
+   "lon": 69.612239,
+   "lat": 42.310307,
+   "weight": 5
+  },
+  {
+   "id": "cp-20",
+   "lon": 69.598037,
+   "lat": 42.311758,
+   "weight": 3
+  },
+  {
+   "id": "cp-21",
+   "lon": 69.603269,
+   "lat": 42.313209,
+   "weight": 1
+  },
+  {
+   "id": "cp-22",
+   "lon": 69.608501,
+   "lat": 42.314661,
+   "weight": 4
+  },
+  {
+   "id": "cp-23",
+   "lon": 69.613734,
+   "lat": 42.316112,
+   "weight": 2
+  },
+  {
+   "id": "cp-24",
+   "lon": 69.599532,
+   "lat": 42.317563,
+   "weight": 5
+  },
+  {
+   "id": "cp-25",
+   "lon": 69.604764,
+   "lat": 42.319014,
+   "weight": 3
+  },
+  {
+   "id": "cp-26",
+   "lon": 69.609996,
+   "lat": 42.320465,
+   "weight": 1
+  }
+ ],
+ "candidates": [
+  {
+   "id": "cand-01",
+   "lon": 69.598224,
+   "lat": 42.321018,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 3000
+  },
+  {
+   "id": "cand-02",
+   "lon": 69.601868,
+   "lat": 42.318323,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 10000
+  },
+  {
+   "id": "cand-03",
+   "lon": 69.605512,
+   "lat": 42.315628,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 8000
+  },
+  {
+   "id": "cand-04",
+   "lon": 69.609155,
+   "lat": 42.312933,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 6000
+  }
+ ],
+ "budget": 12000,
+ "max_selected": 2,
+ "coverage_radius_m": 500,
+ "required_ids": [],
+ "excluded_ids": [],
+ "selected_ids": [
+  "cand-01"
+ ]
+}
