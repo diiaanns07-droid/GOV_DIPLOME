@@ -1,0 +1,75 @@
+{
+ "note": "Байтовые копии через `git show <sha>:<path> > file` (bash, без перекодирования). Проверка: git hash-object <copy> == blob.",
+ "snapshots_json": "origin/codex/research-import-2026-10-05:research/round-3/snapshots.json @ 6602bb8",
+ "copies": [
+  {
+   "slot": "K03",
+   "branch": "claude/epic-curie-iitc43",
+   "commit": "a8f1e17823468020932de65bc19bada57fda07ca",
+   "source_path": "research/next-round/K03/territory_registry.json",
+   "copy": "research/round-3-results/K09/inputs/K03_territory_registry.json",
+   "git_blob": "89f13c1ebfd6d7817f10b7d255217bb1cbfb5e51",
+   "copy_blob_matches": true,
+   "sha256": "46cb664a35350e6c8a29e5b8eaf331ae4405afb5fd447cfa66b11e331cc8ca09",
+   "bytes": 21094
+  },
+  {
+   "slot": "K10",
+   "branch": "claude/save-work-handoff-j7pc05",
+   "commit": "e91898d596164bcf6e853b921a49f82126074a35",
+   "source_path": "research/next-round/K10/samples/shymkent_districts_overture.geojson",
+   "copy": "research/round-3-results/K09/inputs/K10_shymkent_districts_overture.geojson",
+   "git_blob": "1c4701fb5022ba97ef08a1c9727e552d0d357cbd",
+   "copy_blob_matches": true,
+   "sha256": "e19bbd7572a7a4f46dbb793df74c5d1cfab11d4e7a217fed7e525b4cece117c3",
+   "bytes": 159823
+  },
+  {
+   "slot": "K10",
+   "branch": "claude/save-work-handoff-j7pc05",
+   "commit": "e91898d596164bcf6e853b921a49f82126074a35",
+   "source_path": "research/next-round/K10/samples/astana_districts_overture.geojson",
+   "copy": "research/round-3-results/K09/inputs/K10_astana_districts_overture.geojson",
+   "git_blob": "de42bd24c0fd1b9bcced2aeff169e3d335bc648e",
+   "copy_blob_matches": true,
+   "sha256": "ab3a7f9852ecdd0d80b68c22ed73f1e10673c20c5091cf47c6454a030f1421ca",
+   "bytes": 99459
+  },
+  {
+   "slot": "in-branch",
+   "branch": "claude/save-work-handoff-qho6eq",
+   "commit": "11bd74afddcae7df6ee87cd7fe92715397d44997",
+   "source_path": "data/astana_districts.geojson",
+   "copy": null,
+   "git_blob": "bf799c7d5bc53524ef8f7630b40b4bbd9a27b51c",
+   "sha256": "9092aebb997086d4fbf30963dd84dfae6aab483a585ba6f536944fb03a4eb95e"
+  },
+  {
+   "slot": "in-branch",
+   "branch": "claude/save-work-handoff-qho6eq",
+   "commit": "11bd74afddcae7df6ee87cd7fe92715397d44997",
+   "source_path": "data/city_data.json",
+   "copy": null,
+   "git_blob": "070a3413db19774a0d2e49595db4bf71e3df78c8",
+   "sha256": "403478c12fbe8cf64b9953f4d0ff0e713415be923bf1f241a2c60994b51b66e8"
+  },
+  {
+   "slot": "in-branch",
+   "branch": "claude/save-work-handoff-qho6eq",
+   "commit": "11bd74afddcae7df6ee87cd7fe92715397d44997",
+   "source_path": "research/govtech-results/13_architecture_ai_thesis/extracted_files__21_/constraints_eval.py",
+   "copy": null,
+   "git_blob": "3dfef0710d1dc77a03cccdfaa05111ec948b9f08",
+   "sha256": "77c9f8e85949c111358a943bbf2f19fb74a8d87370e34011b434cdd43741c01d"
+  },
+  {
+   "slot": "in-branch",
+   "branch": "claude/save-work-handoff-qho6eq",
+   "commit": "11bd74afddcae7df6ee87cd7fe92715397d44997",
+   "source_path": "research/next-round/K09/repro/E8_toponym_stems.json",
+   "copy": null,
+   "git_blob": "a452da9c9e1b93e8f01649ee305abae4eb6ede59",
+   "sha256": "4573ebf23fcf3b1a9e06eb070b14e5940b8b001e03a014df436f35d874c04cab"
+  }
+ ]
+}

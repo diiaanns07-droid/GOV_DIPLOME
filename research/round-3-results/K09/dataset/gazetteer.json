@@ -1,0 +1,260 @@
+{
+ "generated_by": "research/round-3-results/K09/scripts/build_gazetteer.py",
+ "note": "Ни одно название не подтверждено официально (БНС/НПА недоступны). Локальные ID Шымкента — только для эксперимента.",
+ "cities": [
+  {
+   "entity_id": "astana",
+   "level": "city",
+   "names": {
+    "ru": [
+     "Астана"
+    ],
+    "kk": [
+     "Астана"
+    ]
+   },
+   "status": "observed (OSM/Overture name)"
+  },
+  {
+   "entity_id": "shymkent",
+   "level": "city",
+   "names": {
+    "ru": [
+     "Шымкент"
+    ],
+    "kk": [
+     "Шымкент"
+    ]
+   },
+   "status": "observed (Overture name_primary)"
+  }
+ ],
+ "districts": [
+  {
+   "entity_id": "astana.esil",
+   "city": "astana",
+   "level": "district",
+   "engine_id": "esil",
+   "names": {
+    "ru": [
+     "район Есиль"
+    ],
+    "kk": [
+     "Есіл ауданы"
+    ]
+   },
+   "status": "observed_osm_overture_not_official",
+   "modeled_in_training_model": true,
+   "sources": [
+    "data/astana_districts.geojson osm_id 3479876 (OSM 2026-09-22)",
+    "K10 Overture 2026-09-23.1 r3479876@35",
+    "K03 territory_registry: geometry verified_locally, official not_verified"
+   ]
+  },
+  {
+   "entity_id": "astana.almaty",
+   "city": "astana",
+   "level": "district",
+   "engine_id": "almaty",
+   "names": {
+    "ru": [
+     "район Алматы"
+    ],
+    "kk": [
+     "Алматы ауданы"
+    ]
+   },
+   "status": "observed_osm_overture_not_official",
+   "modeled_in_training_model": true,
+   "sources": [
+    "data/astana_districts.geojson osm_id 3482819 (OSM 2026-09-22)",
+    "K10 Overture 2026-09-23.1 r3482819@46",
+    "K03 territory_registry: geometry verified_locally, official not_verified"
+   ]
+  },
+  {
+   "entity_id": "astana.saryarka",
+   "city": "astana",
+   "level": "district",
+   "engine_id": "saryarka",
+   "names": {
+    "ru": [
+     "район Сарыарка"
+    ],
+    "kk": [
+     "Сарыарқа ауданы"
+    ]
+   },
+   "status": "observed_osm_overture_not_official",
+   "modeled_in_training_model": true,
+   "sources": [
+    "data/astana_districts.geojson osm_id 3486954 (OSM 2026-09-22)",
+    "K10 Overture 2026-09-23.1 r3486954@23",
+    "K03 territory_registry: geometry verified_locally, official not_verified"
+   ]
+  },
+  {
+   "entity_id": "astana.baikonur",
+   "city": "astana",
+   "level": "district",
+   "engine_id": "baikonur",
+   "names": {
+    "ru": [
+     "район Байконур"
+    ],
+    "kk": [
+     "Байқоңыр ауданы"
+    ]
+   },
+   "status": "observed_osm_overture_not_official",
+   "modeled_in_training_model": true,
+   "sources": [
+    "data/astana_districts.geojson osm_id 8593081 (OSM 2026-09-22)",
+    "K10 Overture 2026-09-23.1 r8593081@14",
+    "K03 territory_registry: geometry verified_locally, official not_verified"
+   ]
+  },
+  {
+   "entity_id": "astana.nura",
+   "city": "astana",
+   "level": "district",
+   "engine_id": "nura",
+   "names": {
+    "ru": [
+     "район Нура"
+    ],
+    "kk": [
+     "Нұра ауданы"
+    ]
+   },
+   "status": "observed_osm_overture_not_official",
+   "modeled_in_training_model": true,
+   "sources": [
+    "data/astana_districts.geojson osm_id 20593940 (OSM 2026-09-22)",
+    "K10 Overture 2026-09-23.1 r20593940@1",
+    "K03 territory_registry: geometry verified_locally, official not_verified"
+   ]
+  },
+  {
+   "entity_id": "astana.saraishyk",
+   "city": "astana",
+   "level": "district",
+   "engine_id": "saraishyk",
+   "names": {
+    "ru": [
+     "район Сарайшык"
+    ],
+    "kk": [
+     "Сарайшық ауданы"
+    ]
+   },
+   "status": "observed_osm_overture_not_official",
+   "modeled_in_training_model": false,
+   "sources": [
+    "data/astana_districts.geojson osm_id 19733918 (OSM 2026-09-22)",
+    "K10 Overture 2026-09-23.1 r19733918@16",
+    "K03 territory_registry: geometry verified_locally, official not_verified"
+   ]
+  },
+  {
+   "entity_id": "shymkent.enbekshi",
+   "city": "shymkent",
+   "level": "district",
+   "engine_id": null,
+   "names": {
+    "ru": [
+     "Енбекшинский район"
+    ],
+    "kk": [
+     "Еңбекші ауданы"
+    ]
+   },
+   "status": "observed_overture_osm_not_official",
+   "modeled_in_training_model": false,
+   "sources": [
+    "K10 Overture 2026-09-23.1 r5551117@29 division 4ec591c8-3a63-4878-ae3d-3402e23f2741",
+    "K03: русские названия есть как hypothesis A12-F016; стабильные ID не выданы"
+   ]
+  },
+  {
+   "entity_id": "shymkent.karatau",
+   "city": "shymkent",
+   "level": "district",
+   "engine_id": null,
+   "names": {
+    "ru": [
+     "Каратауский район"
+    ],
+    "kk": [
+     "Қаратау ауданы"
+    ]
+   },
+   "status": "observed_overture_osm_not_official",
+   "modeled_in_training_model": false,
+   "sources": [
+    "K10 Overture 2026-09-23.1 r5551119@30 division e40b12ae-7d7f-448f-9df4-713204748b12",
+    "K03: русские названия есть как hypothesis A12-F016; стабильные ID не выданы"
+   ]
+  },
+  {
+   "entity_id": "shymkent.al_farabi",
+   "city": "shymkent",
+   "level": "district",
+   "engine_id": null,
+   "names": {
+    "ru": [
+     "Аль-Фарабийский район"
+    ],
+    "kk": [
+     "Әл-Фараби ауданы"
+    ]
+   },
+   "status": "observed_overture_osm_not_official",
+   "modeled_in_training_model": false,
+   "sources": [
+    "K10 Overture 2026-09-23.1 r5550509@19 division 9b976a38-60bc-4526-93f3-9d2e8078501d",
+    "K03: русские названия есть как hypothesis A12-F016; стабильные ID не выданы"
+   ]
+  },
+  {
+   "entity_id": "shymkent.abay",
+   "city": "shymkent",
+   "level": "district",
+   "engine_id": null,
+   "names": {
+    "ru": [
+     "Абайский район"
+    ],
+    "kk": [
+     "Абай ауданы"
+    ]
+   },
+   "status": "observed_overture_osm_not_official",
+   "modeled_in_training_model": false,
+   "sources": [
+    "K10 Overture 2026-09-23.1 r5548210@25 division 38b96b7d-38d9-40d7-a305-bb6a3c703353",
+    "K03: русские названия есть как hypothesis A12-F016; стабильные ID не выданы"
+   ]
+  },
+  {
+   "entity_id": "shymkent.turan?",
+   "city": "shymkent",
+   "level": "district_unconfirmed",
+   "engine_id": null,
+   "names": {
+    "ru": [
+     "Туранский район"
+    ],
+    "kk": [
+     "Тұран"
+    ]
+   },
+   "status": "unconfirmed: district by memory hypothesis (A04-F014, A11-F016, A12-F016); macrohood (not county) in Overture per K10 STATUS",
+   "modeled_in_training_model": false,
+   "sources": [
+    "K03 territory_registry (name_source: A12-F016 hypothesis)",
+    "K10 STATUS.md п.3 «Тұран есть только как macrohood»"
+   ]
+  }
+ ]
+}
