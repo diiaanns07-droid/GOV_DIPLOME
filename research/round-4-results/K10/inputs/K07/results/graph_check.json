@@ -1,0 +1,120 @@
+{
+ "kind": "graph usability check",
+ "inputs": {},
+ "cities": {
+  "shymkent": {
+   "input": "inputs/k10/samples/shymkent_road_segments_sample.geojson",
+   "segments": 118,
+   "length_km_geodesic": 66.45,
+   "sampling_declared": "shymkent_road_segments_sample_overture_2026-09-23.1",
+   "C1_topology_from_connector_ids": false,
+   "C2_walk_permission_field_present_share": 0.0,
+   "C3_direction_for_pedestrians": "unknown",
+   "C4_grade_separation_field_present_share": 0.0,
+   "C5_complete_clip_not_sample": false,
+   "diagnostics_not_used_for_graph": {
+    "geometric_crossings_between_input_segments": 1,
+    "median_gap_to_nearest_other_segment_m": 0.0,
+    "segments_without_other_segment_within_5km": 0,
+    "endpoint_coordinates_shared_by_2plus_segments": 37
+   },
+   "verdict": "view_only",
+   "reasons": [
+    "connector ids and positions are absent (only a count) -> topology cannot be rebuilt without joining intersecting lines, which is not allowed",
+    "access_restrictions absent -> pedestrian permission and direction unknown",
+    "road_flags / level_rules absent -> bridges and tunnels cannot be told apart",
+    "input is a sample, not all segments of a clip area -> any distance would be cut by the sample edge"
+   ]
+  },
+  "astana": {
+   "input": "inputs/k10/samples/astana_road_segments_sample.geojson",
+   "segments": 122,
+   "length_km_geodesic": 45.24,
+   "sampling_declared": "astana_road_segments_sample_overture_2026-09-23.1",
+   "C1_topology_from_connector_ids": false,
+   "C2_walk_permission_field_present_share": 0.0,
+   "C3_direction_for_pedestrians": "unknown",
+   "C4_grade_separation_field_present_share": 0.0,
+   "C5_complete_clip_not_sample": false,
+   "diagnostics_not_used_for_graph": {
+    "geometric_crossings_between_input_segments": 7,
+    "median_gap_to_nearest_other_segment_m": 0.0,
+    "segments_without_other_segment_within_5km": 0,
+    "endpoint_coordinates_shared_by_2plus_segments": 43
+   },
+   "verdict": "view_only",
+   "reasons": [
+    "connector ids and positions are absent (only a count) -> topology cannot be rebuilt without joining intersecting lines, which is not allowed",
+    "access_restrictions absent -> pedestrian permission and direction unknown",
+    "road_flags / level_rules absent -> bridges and tunnels cannot be told apart",
+    "input is a sample, not all segments of a clip area -> any distance would be cut by the sample edge"
+   ]
+  }
+ },
+ "synthetic_selftest": {
+  "kind": "SYNTHETIC fixture at Null Island; tests the checker, not a city",
+  "check": {
+   "input": "synthetic_fixture",
+   "segments": 5,
+   "length_km_geodesic": 0.94,
+   "sampling_declared": "all_segments_intersecting_clip",
+   "C1_topology_from_connector_ids": true,
+   "C2_walk_permission_field_present_share": 1.0,
+   "C3_direction_for_pedestrians": "from access_restrictions",
+   "C4_grade_separation_field_present_share": 1.0,
+   "C5_complete_clip_not_sample": true,
+   "diagnostics_not_used_for_graph": {
+    "geometric_crossings_between_input_segments": 1,
+    "median_gap_to_nearest_other_segment_m": 0.0,
+    "segments_without_other_segment_within_5km": 0,
+    "endpoint_coordinates_shared_by_2plus_segments": 2
+   },
+   "graph_nodes": 7,
+   "graph_edges_directed": 8,
+   "components": 3,
+   "largest_component_nodes": 3,
+   "km_permission_unknown": 0.0,
+   "km_denied_for_foot": 0.223,
+   "crossings_without_shared_connector_not_joined": 1,
+   "edge_nodes_within_m_of_clip": {
+    "buffer_m": 200,
+    "count": 2
+   },
+   "verdict": "routable",
+   "reasons": []
+  },
+  "comparison_from_origin_0_0.0001": [
+   {
+    "id": "near_c3",
+    "straight_m": 313.8,
+    "status": "ok",
+    "network_m": 465.9,
+    "ratio": 1.485,
+    "within_threshold_network": true,
+    "within_threshold_straight": true
+   },
+   {
+    "id": "bridge_end_c5",
+    "straight_m": 156.9,
+    "status": "no_path_in_graph",
+    "network_m": null
+   },
+   {
+    "id": "isolated_c8",
+    "straight_m": 710.9,
+    "status": "no_path_in_graph_edge_of_clip",
+    "network_m": null
+   }
+  ],
+  "expectations": {
+   "only connector topology": true,
+   "bridge not joined -> 3 components": true,
+   "motorway excluded for foot": true,
+   "network longer than straight": true,
+   "bridge end: no path in graph (interior), never 'unreachable'": true,
+   "isolated piece at clip edge is flagged as edge": true,
+   "edge nodes are only the isolated piece": true
+  },
+  "passed": true
+ }
+}

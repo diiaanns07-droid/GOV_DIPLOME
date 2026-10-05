@@ -1,0 +1,90 @@
+{
+ "note": "byte copies via git show <sha>:<path>; sha256 of copied bytes",
+ "files": [
+  {
+   "slot": "K07",
+   "branch": "claude/save-work-handoff-ku3ej3",
+   "commit": "6778deda6d3f3a7f27698f651c1b0046d2a9aae9",
+   "source_path": "research/round-3-results/K07/scripts/graph_check.py",
+   "copy": "inputs/K07/scripts/graph_check.py",
+   "bytes": 16057,
+   "sha256": "aa7a782eee8c8e06551b7ad3bd94c9d0860cccacb0cb6e08062ec190a3eff397"
+  },
+  {
+   "slot": "K07",
+   "branch": "claude/save-work-handoff-ku3ej3",
+   "commit": "6778deda6d3f3a7f27698f651c1b0046d2a9aae9",
+   "source_path": "research/round-3-results/K07/scripts/requirements.txt",
+   "copy": "inputs/K07/scripts/requirements.txt",
+   "bytes": 93,
+   "sha256": "355c287b282733d14dbecc0be690e5bea4bef7feef7b2c13f31791d2296224c2"
+  },
+  {
+   "slot": "K07",
+   "branch": "claude/save-work-handoff-ku3ej3",
+   "commit": "6778deda6d3f3a7f27698f651c1b0046d2a9aae9",
+   "source_path": "research/round-3-results/K07/K10_REQUEST.md",
+   "copy": "inputs/K07/K10_REQUEST.md",
+   "bytes": 6014,
+   "sha256": "96ffec172e31b7d69a600a1f0e2e04ada3452132368f1fe773ed43f2fccf44d4"
+  },
+  {
+   "slot": "K07",
+   "branch": "claude/save-work-handoff-ku3ej3",
+   "commit": "6778deda6d3f3a7f27698f651c1b0046d2a9aae9",
+   "source_path": "research/round-3-results/K07/results/graph_check.json",
+   "copy": "inputs/K07/results/graph_check.json",
+   "bytes": 4402,
+   "sha256": "d2f6e25bb47fff93865d7198354e2cdc42d32e8f6b9a5e6c0d67f1741de618b3"
+  }
+ ],
+ "k10_package_referenced_in_place": {
+  "branch": "claude/save-work-handoff-j7pc05",
+  "commit": "ea703f1ddd3a411430a981164a78a7dda64ec909",
+  "package_manifest_sha256": "0616c08b65285ed4a5324c9e0238a31bec004857705cdb22c6b26e032fa4551d",
+  "files": [
+   {
+    "path": "research/round-3-results/K10/data/shymkent/places_social.geojson",
+    "commit": "ea703f1ddd3a411430a981164a78a7dda64ec909",
+    "sha256_manifest": "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7",
+    "sha256_on_disk": "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7",
+    "match": true
+   },
+   {
+    "path": "research/round-3-results/K10/data/shymkent/segments.geojson",
+    "commit": "ea703f1ddd3a411430a981164a78a7dda64ec909",
+    "sha256_manifest": "055b0e7aaef8d5b42fdbb6663f46ef245156b33a0f92b8f94cc73ab7a9c77648",
+    "sha256_on_disk": "055b0e7aaef8d5b42fdbb6663f46ef245156b33a0f92b8f94cc73ab7a9c77648",
+    "match": true
+   },
+   {
+    "path": "research/round-3-results/K10/data/shymkent/connectors.geojson",
+    "commit": "ea703f1ddd3a411430a981164a78a7dda64ec909",
+    "sha256_manifest": "8bbd25959eef559abeccb39d99884d96caf920d219f5a71f11298ade5e27bca0",
+    "sha256_on_disk": "8bbd25959eef559abeccb39d99884d96caf920d219f5a71f11298ade5e27bca0",
+    "match": true
+   },
+   {
+    "path": "research/round-3-results/K10/data/astana/places_social.geojson",
+    "commit": "ea703f1ddd3a411430a981164a78a7dda64ec909",
+    "sha256_manifest": "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343",
+    "sha256_on_disk": "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343",
+    "match": true
+   },
+   {
+    "path": "research/round-3-results/K10/data/astana/segments.geojson",
+    "commit": "ea703f1ddd3a411430a981164a78a7dda64ec909",
+    "sha256_manifest": "5fc1b3b5f6cabad6e2edfd042bb3727aa8fd0c7bcba9962175025e37eb08dbb9",
+    "sha256_on_disk": "5fc1b3b5f6cabad6e2edfd042bb3727aa8fd0c7bcba9962175025e37eb08dbb9",
+    "match": true
+   },
+   {
+    "path": "research/round-3-results/K10/data/astana/connectors.geojson",
+    "commit": "ea703f1ddd3a411430a981164a78a7dda64ec909",
+    "sha256_manifest": "74a77d2ed250d6a55ee478054a6e89a4de15fc96f65063176a1194345994e801",
+    "sha256_on_disk": "74a77d2ed250d6a55ee478054a6e89a4de15fc96f65063176a1194345994e801",
+    "match": true
+   }
+  ]
+ }
+}

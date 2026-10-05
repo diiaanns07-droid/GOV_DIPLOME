@@ -1,0 +1,629 @@
+{
+ "review": "K10 round 4: K10 round-3 package (ea703f1) vs K07 round-3 graph_check (6778ded)",
+ "k07_graph_check_sha256": "aa7a782eee8c8e06551b7ad3bd94c9d0860cccacb0cb6e08062ec190a3eff397",
+ "k07_synthetic_selftest_passed": true,
+ "cities": {
+  "shymkent": {
+   "package_files_sha256": {
+    "segments": "055b0e7aaef8d5b42fdbb6663f46ef245156b33a0f92b8f94cc73ab7a9c77648",
+    "connectors": "8bbd25959eef559abeccb39d99884d96caf920d219f5a71f11298ade5e27bca0",
+    "places_social": "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7"
+   },
+   "k07_check_as_is": {
+    "verdict": "routable_with_warnings",
+    "reasons": [
+     "not a complete clip",
+     "pedestrian permission unknown on part of the segments",
+     "grade separation unknown on part of the segments"
+    ],
+    "C1_topology_from_connector_ids": true,
+    "C2_walk_permission_field_present_share": 0.12,
+    "C4_grade_separation_field_present_share": 0.043,
+    "C5_complete_clip_not_sample": false,
+    "graph_nodes": 1727,
+    "components": 8,
+    "largest_component_nodes": 1688,
+    "km_permission_unknown": 103.867,
+    "km_denied_for_foot": 1.491,
+    "crossings_without_shared_connector_not_joined": 4,
+    "edge_nodes_within_m_of_clip": {
+     "buffer_m": 200,
+     "count": 0
+    }
+   },
+   "k07_check_adapted": {
+    "verdict": "routable_with_warnings",
+    "reasons": [
+     "pedestrian permission unknown on part of the segments",
+     "grade separation unknown on part of the segments"
+    ],
+    "C1_topology_from_connector_ids": true,
+    "C2_walk_permission_field_present_share": 0.12,
+    "C4_grade_separation_field_present_share": 0.043,
+    "C5_complete_clip_not_sample": true,
+    "graph_nodes": 1727,
+    "components": 8,
+    "largest_component_nodes": 1688,
+    "km_permission_unknown": 103.867,
+    "km_denied_for_foot": 1.491,
+    "crossings_without_shared_connector_not_joined": 4,
+    "edge_nodes_within_m_of_clip": {
+     "buffer_m": 200,
+     "count": 634
+    }
+   },
+   "k07_clip_written_by_adapter": {
+    "bbox": [
+     69.593365,
+     42.306645,
+     69.617658,
+     42.324611
+    ],
+    "core_bbox": null,
+    "selection": "all_segments_intersecting_clip",
+    "source": "K10 round-3 package @ ea703f1ddd3a411430a981164a78a7dda64ec909, data/shymkent/segments.geojson",
+    "frame_km_w_h": [
+     2.003,
+     1.996
+    ],
+    "k07_requested_clip_6x6km_satisfied": false,
+    "k07_requested_clip_bbox": [
+     69.56683,
+     42.29027,
+     69.63961,
+     42.34428
+    ],
+    "share_of_k07_requested_clip_covered": 0.111,
+    "share_of_k07_requested_core_covered": 0.2498,
+    "note": "2x2 km K10 square is complete for its own query only; it is not the 6x6 km frame K07 asked for."
+   },
+   "foot_status_k10_vs_k07": {
+    "allowed -> allowed": 7,
+    "conditional -> allowed": 114,
+    "conditional -> denied": 1,
+    "denied -> denied": 8,
+    "unknown -> unknown": 954
+   },
+   "k07_planar_at_node_error_m": {
+    "n": 3344,
+    "p50": 0.0,
+    "p99": 9.657,
+    "max": 28.304
+   },
+   "k07_planar_at_edge_length_error": {
+    "edges": 2260,
+    "abs_m_p99": 8.658,
+    "abs_m_max": 22.62,
+    "rel_p99": 0.164,
+    "rel_max": 0.242
+   },
+   "crossings_without_shared_connector": {
+    "count": 4,
+    "without_any_bridge_tunnel_level_flag": 1,
+    "pairs": [
+     {
+      "a": [
+       "1eec6a8b-7f94-472e-90a9-17a31c39f0ba",
+       "footway",
+       [
+        "is_bridge"
+       ],
+       [
+        1
+       ]
+      ],
+      "b": [
+       "b3b275c5-ef8a-4f4e-9e85-90c47e2f09a1",
+       "tertiary",
+       [],
+       []
+      ],
+      "grade_separation_flagged": true
+     },
+     {
+      "a": [
+       "1eec6a8b-7f94-472e-90a9-17a31c39f0ba",
+       "footway",
+       [
+        "is_bridge"
+       ],
+       [
+        1
+       ]
+      ],
+      "b": [
+       "cdb736e6-7500-479b-9eb2-dbb4eadc36fd",
+       "footway",
+       [],
+       []
+      ],
+      "grade_separation_flagged": true
+     },
+     {
+      "a": [
+       "3a6d24ca-b4ee-4d6d-ad72-df8865e1d3c9",
+       "pedestrian",
+       [
+        "is_bridge"
+       ],
+       [
+        1
+       ]
+      ],
+      "b": [
+       "9be2b33f-3b0d-4045-b2e6-15f34dc377d2",
+       "steps",
+       [
+        "is_bridge"
+       ],
+       [
+        1
+       ]
+      ],
+      "grade_separation_flagged": true
+     },
+     {
+      "a": [
+       "7cbe7f59-aad3-4964-b5b3-89abf3d50488",
+       "footway",
+       [],
+       []
+      ],
+      "b": [
+       "b80e16c8-ea5a-4b31-95c8-3079b89a2f45",
+       "service",
+       [],
+       []
+      ],
+      "grade_separation_flagged": false
+     }
+    ]
+   },
+   "edge_nodes": {
+    "k07_rule_within_200m_of_clip": 634,
+    "k10_data_flags": 506,
+    "graph_nodes_topology_mode": 1728,
+    "minor_components": 6,
+    "minor_components_touching_edge_by_k10_flags": 6,
+    "minor_components_touching_edge_by_k07_200m": 6
+   },
+   "graph_modes": {
+    "topology": {
+     "nodes": 1728,
+     "components": 7,
+     "largest_component_nodes": 1691
+    },
+    "strict_foot": {
+     "nodes": 28,
+     "segments": 7
+    }
+   },
+   "topology_mode_example": {
+    "mode": "topology_only (link exists in Overture/OSM graph; NOT pedestrian permission)",
+    "origin_place": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+    "origin_snap_m": 59.2,
+    "rows": [
+     {
+      "status": "ok",
+      "network_m": 1046.2,
+      "segments_on_path": 22,
+      "foot_status_on_path": {
+       "conditional": 1,
+       "unknown": 21
+      },
+      "pedestrian_permission": "not_established",
+      "target": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+      "snap_m": 28.4,
+      "straight_m": 738.9
+     },
+     {
+      "status": "ok",
+      "network_m": 1767.8,
+      "segments_on_path": 33,
+      "foot_status_on_path": {
+       "conditional": 14,
+       "unknown": 19
+      },
+      "pedestrian_permission": "not_established",
+      "target": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "snap_m": 36.6,
+      "straight_m": 1276.6
+     },
+     {
+      "status": "ok",
+      "network_m": 948.9,
+      "segments_on_path": 11,
+      "foot_status_on_path": {
+       "unknown": 11
+      },
+      "pedestrian_permission": "not_established",
+      "target": "06dd25e4-78c5-4412-9949-41714f8c2a64",
+      "snap_m": 23.8,
+      "straight_m": 532.0
+     },
+     {
+      "status": "ok",
+      "network_m": 701.5,
+      "segments_on_path": 9,
+      "foot_status_on_path": {
+       "unknown": 9
+      },
+      "pedestrian_permission": "not_established",
+      "target": "122547d2-f7ca-409e-9dc2-0d4d15288b57",
+      "snap_m": 22.2,
+      "straight_m": 576.9
+     },
+     {
+      "status": "ok",
+      "network_m": 667.5,
+      "segments_on_path": 7,
+      "foot_status_on_path": {
+       "unknown": 7
+      },
+      "pedestrian_permission": "not_established",
+      "target": "176c5993-4b62-4e90-849f-88addc0153bb",
+      "snap_m": 28.9,
+      "straight_m": 508.7
+     }
+    ]
+   }
+  },
+  "astana": {
+   "package_files_sha256": {
+    "segments": "5fc1b3b5f6cabad6e2edfd042bb3727aa8fd0c7bcba9962175025e37eb08dbb9",
+    "connectors": "74a77d2ed250d6a55ee478054a6e89a4de15fc96f65063176a1194345994e801",
+    "places_social": "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343"
+   },
+   "k07_check_as_is": {
+    "verdict": "routable_with_warnings",
+    "reasons": [
+     "not a complete clip",
+     "pedestrian permission unknown on part of the segments",
+     "grade separation unknown on part of the segments"
+    ],
+    "C1_topology_from_connector_ids": true,
+    "C2_walk_permission_field_present_share": 0.142,
+    "C4_grade_separation_field_present_share": 0.037,
+    "C5_complete_clip_not_sample": false,
+    "graph_nodes": 2296,
+    "components": 9,
+    "largest_component_nodes": 2275,
+    "km_permission_unknown": 130.746,
+    "km_denied_for_foot": 2.708,
+    "crossings_without_shared_connector_not_joined": 9,
+    "edge_nodes_within_m_of_clip": {
+     "buffer_m": 200,
+     "count": 0
+    }
+   },
+   "k07_check_adapted": {
+    "verdict": "routable_with_warnings",
+    "reasons": [
+     "pedestrian permission unknown on part of the segments",
+     "grade separation unknown on part of the segments"
+    ],
+    "C1_topology_from_connector_ids": true,
+    "C2_walk_permission_field_present_share": 0.142,
+    "C4_grade_separation_field_present_share": 0.037,
+    "C5_complete_clip_not_sample": true,
+    "graph_nodes": 2296,
+    "components": 9,
+    "largest_component_nodes": 2275,
+    "km_permission_unknown": 130.746,
+    "km_denied_for_foot": 2.708,
+    "crossings_without_shared_connector_not_joined": 9,
+    "edge_nodes_within_m_of_clip": {
+     "buffer_m": 200,
+     "count": 954
+    }
+   },
+   "k07_clip_written_by_adapter": {
+    "bbox": [
+     71.418372,
+     51.163033,
+     71.447,
+     51.181
+    ],
+    "core_bbox": null,
+    "selection": "all_segments_intersecting_clip",
+    "source": "K10 round-3 package @ ea703f1ddd3a411430a981164a78a7dda64ec909, data/astana/segments.geojson",
+    "frame_km_w_h": [
+     2.002,
+     1.999
+    ],
+    "k07_requested_clip_6x6km_satisfied": false,
+    "k07_requested_clip_bbox": [
+     71.3696,
+     51.1113,
+     71.45533,
+     51.16523
+    ],
+    "share_of_k07_requested_clip_covered": 0.0136,
+    "share_of_k07_requested_core_covered": 0.0,
+    "note": "2x2 km K10 square is complete for its own query only; it is not the 6x6 km frame K07 asked for."
+   },
+   "foot_status_k10_vs_k07": {
+    "conditional -> allowed": 166,
+    "denied -> denied": 22,
+    "unknown -> unknown": 1138
+   },
+   "k07_planar_at_node_error_m": {
+    "n": 4595,
+    "p50": 0.0,
+    "p99": 28.106,
+    "max": 61.158
+   },
+   "k07_planar_at_edge_length_error": {
+    "edges": 3269,
+    "abs_m_p99": 21.395,
+    "abs_m_max": 58.27,
+    "rel_p99": 0.314,
+    "rel_max": 0.441
+   },
+   "crossings_without_shared_connector": {
+    "count": 9,
+    "without_any_bridge_tunnel_level_flag": 1,
+    "pairs": [
+     {
+      "a": [
+       "07a1a6bc-f5c7-46c6-9cbf-74d2e171cd3c",
+       "service",
+       [],
+       []
+      ],
+      "b": [
+       "bd659759-bdb3-4d06-9fa1-bf1bcb0eef38",
+       "footway",
+       [],
+       []
+      ],
+      "grade_separation_flagged": false
+     },
+     {
+      "a": [
+       "5a37ae2d-2d3f-4bee-b94b-c0131c2e22d1",
+       "footway",
+       [
+        "is_tunnel"
+       ],
+       [
+        -1
+       ]
+      ],
+      "b": [
+       "925dad61-66d4-437d-91d8-e1d0186d08f8",
+       "service",
+       [],
+       []
+      ],
+      "grade_separation_flagged": true
+     },
+     {
+      "a": [
+       "5a37ae2d-2d3f-4bee-b94b-c0131c2e22d1",
+       "footway",
+       [
+        "is_tunnel"
+       ],
+       [
+        -1
+       ]
+      ],
+      "b": [
+       "b0a154bd-6f6a-47e3-9fc4-98b3c3b5262f",
+       "primary",
+       [],
+       []
+      ],
+      "grade_separation_flagged": true
+     },
+     {
+      "a": [
+       "5a37ae2d-2d3f-4bee-b94b-c0131c2e22d1",
+       "footway",
+       [
+        "is_tunnel"
+       ],
+       [
+        -1
+       ]
+      ],
+      "b": [
+       "c6c22cb9-705a-429a-bf0f-89333e04fb36",
+       "tertiary",
+       [],
+       []
+      ],
+      "grade_separation_flagged": true
+     },
+     {
+      "a": [
+       "5a37ae2d-2d3f-4bee-b94b-c0131c2e22d1",
+       "footway",
+       [
+        "is_tunnel"
+       ],
+       [
+        -1
+       ]
+      ],
+      "b": [
+       "f33262a7-3ea8-4683-be60-e179c0971f5c",
+       "primary",
+       [],
+       []
+      ],
+      "grade_separation_flagged": true
+     },
+     {
+      "a": [
+       "7b12ac0c-9f0a-4145-a8b1-36d77b46c91f",
+       "footway",
+       [
+        "is_tunnel"
+       ],
+       [
+        -1
+       ]
+      ],
+      "b": [
+       "e461a2c2-a812-4c4d-8e62-2d9045f8b556",
+       "secondary",
+       [],
+       []
+      ],
+      "grade_separation_flagged": true
+     },
+     {
+      "a": [
+       "84a6a888-93ce-43fb-b591-5763fd1521f1",
+       "tertiary",
+       [],
+       []
+      ],
+      "b": [
+       "bdc73dcf-5842-48bc-809c-dff5623582f1",
+       "footway",
+       [
+        "is_tunnel"
+       ],
+       [
+        -1
+       ]
+      ],
+      "grade_separation_flagged": true
+     },
+     {
+      "a": [
+       "ae7f6c59-e3eb-4893-b961-d85207eeeccb",
+       "residential",
+       [],
+       []
+      ],
+      "b": [
+       "dbe369b5-2481-41f0-88e1-56e0d6d8007e",
+       "primary",
+       [
+        "is_bridge"
+       ],
+       [
+        1
+       ]
+      ],
+      "grade_separation_flagged": true
+     },
+     {
+      "a": [
+       "ae7f6c59-e3eb-4893-b961-d85207eeeccb",
+       "residential",
+       [],
+       []
+      ],
+      "b": [
+       "f968b910-16eb-4d81-b74b-1950324bb81e",
+       "primary",
+       [
+        "is_bridge"
+       ],
+       [
+        1
+       ]
+      ],
+      "grade_separation_flagged": true
+     }
+    ]
+   },
+   "edge_nodes": {
+    "k07_rule_within_200m_of_clip": 954,
+    "k10_data_flags": 528,
+    "graph_nodes_topology_mode": 2296,
+    "minor_components": 8,
+    "minor_components_touching_edge_by_k10_flags": 5,
+    "minor_components_touching_edge_by_k07_200m": 5
+   },
+   "graph_modes": {
+    "topology": {
+     "nodes": 2296,
+     "components": 9,
+     "largest_component_nodes": 2275
+    },
+    "strict_foot": {
+     "nodes": 0,
+     "segments": 0
+    }
+   },
+   "topology_mode_example": {
+    "mode": "topology_only (link exists in Overture/OSM graph; NOT pedestrian permission)",
+    "origin_place": "0233b91f-a010-4eac-9087-0b87d3c8756d",
+    "origin_snap_m": 20.2,
+    "rows": [
+     {
+      "status": "ok",
+      "network_m": 1513.7,
+      "segments_on_path": 40,
+      "foot_status_on_path": {
+       "conditional": 16,
+       "unknown": 24
+      },
+      "pedestrian_permission": "not_established",
+      "target": "0288437e-eea6-4ac4-97eb-c05620ff6dc2",
+      "snap_m": 10.9,
+      "straight_m": 1336.0
+     },
+     {
+      "status": "ok",
+      "network_m": 1039.1,
+      "segments_on_path": 28,
+      "foot_status_on_path": {
+       "conditional": 22,
+       "unknown": 6
+      },
+      "pedestrian_permission": "not_established",
+      "target": "0bbf2bc3-d703-431f-bf9a-69dbd7f6bf10",
+      "snap_m": 25.2,
+      "straight_m": 897.0
+     },
+     {
+      "status": "ok",
+      "network_m": 1322.9,
+      "segments_on_path": 35,
+      "foot_status_on_path": {
+       "conditional": 31,
+       "unknown": 4
+      },
+      "pedestrian_permission": "not_established",
+      "target": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+      "snap_m": 27.5,
+      "straight_m": 1164.1
+     },
+     {
+      "status": "ok",
+      "network_m": 656.2,
+      "segments_on_path": 22,
+      "foot_status_on_path": {
+       "conditional": 4,
+       "unknown": 18
+      },
+      "pedestrian_permission": "not_established",
+      "target": "1116880a-cbb6-4271-9a59-a277083b792c",
+      "snap_m": 18.1,
+      "straight_m": 511.0
+     },
+     {
+      "status": "ok",
+      "network_m": 2679.5,
+      "segments_on_path": 66,
+      "foot_status_on_path": {
+       "conditional": 31,
+       "unknown": 35
+      },
+      "pedestrian_permission": "not_established",
+      "target": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08",
+      "snap_m": 47.0,
+      "straight_m": 1924.3
+     }
+    ]
+   }
+  }
+ }
+}
