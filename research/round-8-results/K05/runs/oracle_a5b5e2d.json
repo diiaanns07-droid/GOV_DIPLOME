@@ -1,0 +1,146 @@
+{
+ "cases": 28,
+ "ok": 28,
+ "results": [
+  {
+   "name": "shymkent/school/seed1/n0",
+   "ok": true,
+   "problems": []
+  },
+  {
+   "name": "shymkent/school/seed2/n1",
+   "ok": true,
+   "problems": []
+  },
+  {
+   "name": "shymkent/school/seed3/n5",
+   "ok": true,
+   "problems": []
+  },
+  {
+   "name": "shymkent/school/seed4/n9",
+   "ok": true,
+   "problems": []
+  },
+  {
+   "name": "shymkent/school/seed5/n12",
+   "ok": true,
+   "problems": []
+  },
+  {
+   "name": "shymkent/school/seed6/n16",
+   "ok": true,
+   "problems": []
+  },
+  {
+   "name": "shymkent/outpatient_clinic/seed1/n0",
+   "ok": true,
+   "problems": []
+  },
+  {
+   "name": "shymkent/outpatient_clinic/seed2/n1",
+   "ok": true,
+   "problems": []
+  },
+  {
+   "name": "shymkent/outpatient_clinic/seed3/n5",
+   "ok": true,
+   "problems": []
+  },
+  {
+   "name": "shymkent/outpatient_clinic/seed4/n9",
+   "ok": true,
+   "problems": []
+  },
+  {
+   "name": "shymkent/outpatient_clinic/seed5/n12",
+   "ok": true,
+   "problems": []
+  },
+  {
+   "name": "shymkent/outpatient_clinic/seed6/n16",
+   "ok": true,
+   "problems": []
+  },
+  {
+   "name": "astana/school/seed1/n0",
+   "ok": true,
+   "problems": []
+  },
+  {
+   "name": "astana/school/seed2/n1",
+   "ok": true,
+   "problems": []
+  },
+  {
+   "name": "astana/school/seed3/n5",
+   "ok": true,
+   "problems": []
+  },
+  {
+   "name": "astana/school/seed4/n9",
+   "ok": true,
+   "problems": []
+  },
+  {
+   "name": "astana/school/seed5/n12",
+   "ok": true,
+   "problems": []
+  },
+  {
+   "name": "astana/school/seed6/n16",
+   "ok": true,
+   "problems": []
+  },
+  {
+   "name": "astana/outpatient_clinic/seed1/n0",
+   "ok": true,
+   "problems": []
+  },
+  {
+   "name": "astana/outpatient_clinic/seed2/n1",
+   "ok": true,
+   "problems": []
+  },
+  {
+   "name": "astana/outpatient_clinic/seed3/n5",
+   "ok": true,
+   "problems": []
+  },
+  {
+   "name": "astana/outpatient_clinic/seed4/n9",
+   "ok": true,
+   "problems": []
+  },
+  {
+   "name": "astana/outpatient_clinic/seed5/n12",
+   "ok": true,
+   "problems": []
+  },
+  {
+   "name": "astana/outpatient_clinic/seed6/n16",
+   "ok": true,
+   "problems": []
+  },
+  {
+   "name": "synthetic/empty-baseline",
+   "ok": true,
+   "problems": []
+  },
+  {
+   "name": "synthetic/all-candidates-same-point",
+   "ok": true,
+   "problems": []
+  },
+  {
+   "name": "shymkent/school/infeasible-budget",
+   "ok": true,
+   "problems": []
+  },
+  {
+   "name": "shymkent/outpatient_clinic/infeasible-count",
+   "ok": true,
+   "problems": []
+  }
+ ]
+}

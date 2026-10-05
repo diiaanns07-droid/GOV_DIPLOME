@@ -7,7 +7,7 @@
 |---|---|
 | 1. validate/evaluate/optimize, полный перебор ≤16, ограничения, ничьи | **done** (checkpoint 1) |
 | 2. три objective, Парето, counters/progress/cancel, статусы | **done** (checkpoint 2) |
-| 3. edge cases, benchmark max-size, независимый оракул, README/API | не начат |
+| 3. edge cases, benchmark max-size, независимый оракул, README/API | в работе: оракул done (checkpoint 3a) |
 
 ## Этап 1 — сделано
 - `plan.js`: строгий JSON (≤256 KiB, повтор ключа, NaN/Infinity/1e999), `validatePlanScenario` (типизированные ошибки code/message/path), `prepareProblem` (расстояния в мм один раз: m·(src+n) гаверсинусов), `evaluatePlan` (строки до/после/дельта, ns source/candidate, метрики CORE_SPEC), `optimizePlans` (полный перебор 2^n масок, required/excluded/бюджет/max_selected, лексикографические ключи mean/minimax/coverage, ничьи source<candidate<id), digest задачи/сценария, независимые от порядка массивов.
@@ -31,6 +31,12 @@
 - `node research/round-8-results/K05/tests/test_stage2.cjs --app-root …` → 24 passed (`runs/stage2_a5b5e2d.json`): 12 сценариев (2 города × 2 категории × 3 seed) — objectives и Парето совпали с наивным перебором через evaluatePlan + отдельный компаратор + O(N²) доминирование; статусы, progress, cancel sync/async, неблокирующий event loop, isCurrent.
 - Этап 1 после изменений повторно: 17 passed.
 - Мутация Парето (`<=` вместо `<`) → 7 FAIL.
+
+## Этап 3a — независимый Python-оракул (сделано)
+- `oracle/oracle.py`: свой гаверсинус с floor(x+0.5), itertools.combinations, кортежные ключи, Парето по определению O(N²). Не трансляция plan.js.
+- `tests/dump_cases.cjs` → `runs/cases_dump_a5b5e2d.json`: 28 задач (2 города × 2 категории × 6 размеров 0..16 кандидатов, 7..25 точек, required/excluded, бюджеты 0..1000; пустой baseline; все кандидаты в одной точке; 2 infeasible) — 280 844+ масок.
+- `python research/round-8-results/K05/oracle/oracle.py --cases research/round-8-results/K05/runs/cases_dump_a5b5e2d.json` → **28/28** совпали (objectives ids+метрики, Парето, feasible_count, чувствительность) — `runs/oracle_a5b5e2d.json`.
+- Мутации: «sum раньше covered» в ключе coverage → 27/28 (поймано). «unknown раньше covered» — эквивалентный мутант: unknown_count>0 возможен только у пустого плана при пустом baseline, у него covered=0; порядок не наблюдаем.
 
 ## Следующий шаг
 Этап 3: edge cases, benchmark 16×25, независимый Python-оракул: `node research/round-8-results/K05/tests/test_stage3.cjs --app-root …`, `python research/round-8-results/K05/oracle/oracle.py`.
