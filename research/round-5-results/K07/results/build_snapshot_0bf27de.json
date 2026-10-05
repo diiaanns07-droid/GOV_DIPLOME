@@ -1,0 +1,36 @@
+{
+ "build_sha": "0bf27deb8549b325b34a9610402613d745544edb",
+ "source_dir": "prototypes/city-evidence/web",
+ "files": [
+  {
+   "file": "web/app.js",
+   "bytes": 24321,
+   "sha256": "d78ca42f83517df68d838ba13eb05df6f0bd5ef9797bf29dd6046a3d507e01e3",
+   "identical": true
+  },
+  {
+   "file": "web/data.js",
+   "bytes": 1007087,
+   "sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00",
+   "identical": true
+  },
+  {
+   "file": "web/evidence.js",
+   "bytes": 78281,
+   "sha256": "7e905a3a423ee35c4802248f1a0402fea3744986f24b471fdd7eba0d9af68f37",
+   "identical": true
+  },
+  {
+   "file": "web/facts.js",
+   "bytes": 17273,
+   "sha256": "cd3c4845820f51496a4c16051b576094a4842b306b2f1c8f497207f03b2d8b70",
+   "identical": true
+  },
+  {
+   "file": "web/index.html",
+   "bytes": 10538,
+   "sha256": "35abbdd029260142b93c8e092bc6afcc8e026dee638b6128900ddd59ea031536",
+   "identical": true
+  }
+ ]
+}

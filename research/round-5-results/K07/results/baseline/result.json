@@ -1,0 +1,279 @@
+{
+ "kind": "K07 round-5 browser regressions of prototypes/city-evidence",
+ "label": "baseline",
+ "sha": "0bf27deb8549b325b34a9610402613d745544edb",
+ "target": {
+  "app_root": "ce-base"
+ },
+ "baseline_sha": "0bf27deb8549b325b34a9610402613d745544edb",
+ "total": 19,
+ "passed": 9,
+ "failed": [
+  "R1",
+  "R2",
+  "R4",
+  "R6",
+  "R8",
+  "R9",
+  "R10",
+  "R11",
+  "R12",
+  "R13"
+ ],
+ "vs_baseline_expectation": {
+  "failed_as_expected": [
+   "R1",
+   "R2",
+   "R4",
+   "R6",
+   "R8",
+   "R9",
+   "R10",
+   "R11",
+   "R13"
+  ],
+  "failed_unexpected": [],
+  "failed_unknown_expectation": [
+   "R12"
+  ],
+  "passed_although_expected_fail": []
+ },
+ "note": "baseline_expectation describes K04 @ 0bf27de only. For another version a FAIL is a finding of that version only if this run used it (see sha).",
+ "checks": [
+  {
+   "id": "R1",
+   "scenario": "S1 stale tooltip",
+   "expect": "a filter change hides the hovered object's group -> its tooltip is hidden in the same re-render (precondition: tooltip was visible)",
+   "ok": false,
+   "observed": {
+    "before": "Техникалық лицейШкола · conf. 0.776",
+    "after_same_task": "Техникалық лицейШкола · conf. 0.776",
+    "after_300ms": "Техникалық лицейШкола · conf. 0.776",
+    "group": "school"
+   },
+   "baseline_expectation": "fail"
+  },
+  {
+   "id": "R2",
+   "scenario": "S1 stale tooltip",
+   "expect": "zoom re-renders the map (the hovered marker moves) -> its tooltip is hidden in the same re-render",
+   "ok": false,
+   "observed": {
+    "before": "Техникалық лицейШкола · conf. 0.776",
+    "after_same_task": "Техникалық лицейШкола · conf. 0.776",
+    "after_300ms": "Техникалық лицейШкола · conf. 0.776"
+   },
+   "baseline_expectation": "fail"
+  },
+  {
+   "id": "R3",
+   "scenario": "S1 stale tooltip",
+   "expect": "city switch -> tooltip of the previous city is hidden in the same re-render",
+   "ok": true,
+   "observed": {
+    "before": "Техникалық лицейШкола · conf. 0.776",
+    "after_same_task": null,
+    "after_300ms": null
+   },
+   "baseline_expectation": "pass"
+  },
+  {
+   "id": "R17",
+   "scenario": "S8 general",
+   "expect": "no console or page errors on the normal path (S1)",
+   "ok": true,
+   "observed": [],
+   "baseline_expectation": "pass"
+  },
+  {
+   "id": "R4",
+   "scenario": "S2 clear point",
+   "expect": "a set point can be cleared (button or Escape): no crosshair, empty card",
+   "ok": false,
+   "observed": {
+    "pointWasSet": true,
+    "hasClearButton": false,
+    "point": [
+     69.6055115,
+     42.31515317556445
+    ],
+    "crosshair": 1
+   },
+   "baseline_expectation": "fail"
+  },
+  {
+   "id": "R5a",
+   "scenario": "S3 city switch",
+   "expect": "switching city with a point set -> point, crosshair and card of the old city are gone",
+   "ok": true,
+   "observed": {
+    "hadPoint": true,
+    "point": null,
+    "crosshair": 0,
+    "card": ""
+   },
+   "baseline_expectation": "pass"
+  },
+  {
+   "id": "R5b",
+   "scenario": "S3 city switch",
+   "expect": "switching city with a road card open -> card cleared",
+   "ok": true,
+   "observed": {
+    "hadSegment": true,
+    "selected": null
+   },
+   "baseline_expectation": "pass"
+  },
+  {
+   "id": "R6",
+   "scenario": "S4 filters/layers",
+   "expect": "roads layer switched off while a road card is open -> no orphan road card",
+   "ok": false,
+   "observed": {
+    "hadSegment": true,
+    "selected": {
+     "type": "segment",
+     "id": "6c0c508c-d72f-41e1-80d3-08406cfee4ca"
+    },
+    "card": "Дорога (OSM через Overture)Классcycleway"
+   },
+   "baseline_expectation": "fail"
+  },
+  {
+   "id": "R7a",
+   "scenario": "S4 filters/layers",
+   "expect": "category of the selected object switched off -> selection cleared",
+   "ok": true,
+   "observed": {
+    "group": "college_university",
+    "selected": null
+   },
+   "baseline_expectation": "pass"
+  },
+  {
+   "id": "R7b",
+   "scenario": "S4 filters/layers",
+   "expect": "objects layer switched off -> selected object cleared",
+   "ok": true,
+   "observed": {
+    "selected": null,
+    "markers": 0
+   },
+   "baseline_expectation": "pass"
+  },
+  {
+   "id": "R8",
+   "scenario": "S5 keyboard",
+   "expect": "the table and zoom are reachable without tabbing through every map feature (skip link or < 40 stops)",
+   "ok": false,
+   "observed": {
+    "toZoom": 1152,
+    "toTable": 1158,
+    "mapStops": 1139,
+    "skipLink": false
+   },
+   "baseline_expectation": "fail"
+  },
+  {
+   "id": "R9",
+   "scenario": "S5 keyboard",
+   "expect": "a point can be set without a mouse (focusable map + Enter)",
+   "ok": false,
+   "observed": {
+    "mapFocusable": false,
+    "point": null
+   },
+   "baseline_expectation": "fail"
+  },
+  {
+   "id": "R10",
+   "scenario": "S5 keyboard",
+   "expect": "interactive markers are not hidden from assistive tech (map svg role is not 'img')",
+   "ok": false,
+   "observed": {
+    "role": "img"
+   },
+   "baseline_expectation": "fail"
+  },
+  {
+   "id": "R11",
+   "scenario": "S6 390px",
+   "expect": "on 390 px, after tapping the map without scrolling, the point result is visible or announced next to the map",
+   "ok": false,
+   "observed": {
+    "pointSet": true,
+    "scrollY": 0,
+    "resultHeadingTop": 1010,
+    "viewportHeight": 844,
+    "resultVisible": false,
+    "hintNextToMap": false
+   },
+   "baseline_expectation": "fail"
+  },
+  {
+   "id": "R12",
+   "scenario": "S6 390px",
+   "expect": "cards and tables fit 390 px without hidden columns (no inner horizontal scroll)",
+   "ok": false,
+   "observed": [
+    {
+     "box": "tablewrap",
+     "card": "Таблица объектов (55 из 55 записей среза)",
+     "scrollWidth": 420,
+     "clientWidth": 328
+    }
+   ],
+   "baseline_expectation": "unknown"
+  },
+  {
+   "id": "R13",
+   "scenario": "S7 data/evidence",
+   "expect": "evidence.js built from another data version (SHA256/data_version differ from data.js) -> the viewer warns instead of using it silently",
+   "ok": false,
+   "observed": {
+    "warningShown": false,
+    "errors": []
+   },
+   "baseline_expectation": "fail"
+  },
+  {
+   "id": "R14",
+   "scenario": "S7 data/evidence",
+   "expect": "truncated evidence.js -> explicit 'catalog unavailable', districts not invented, table still works",
+   "ok": true,
+   "observed": {
+    "rows": 55,
+    "errors": [
+     "Invalid or unexpected token"
+    ]
+   },
+   "baseline_expectation": "pass"
+  },
+  {
+   "id": "R15",
+   "scenario": "S7 data/evidence",
+   "expect": "truncated data.js -> clear 'data not found' state, no map from partial data",
+   "ok": true,
+   "observed": {
+    "text": "Данные не найденыФайл web/data.js отсутствует или повреждён. Соберите его из сох",
+    "errors": [
+     "Invalid or unexpected token"
+    ]
+   },
+   "baseline_expectation": "pass"
+  },
+  {
+   "id": "R16",
+   "scenario": "S7 data/evidence",
+   "expect": "evidence.js without the school observation -> explicit error or 'нет данных', never a number for schools",
+   "ok": true,
+   "observed": {
+    "explain": "Ошибка каталога: Cannot read properties of undefined (reading 'value')",
+    "schoolRow": null,
+    "errors": []
+   },
+   "baseline_expectation": "pass"
+  }
+ ]
+}
