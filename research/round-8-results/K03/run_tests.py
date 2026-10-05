@@ -44,6 +44,10 @@ def revive(v):
 
 
 def py_case(c, data, ev, cache):
+    if c['op'] == 'tomm':
+        return {'ok': True, 'result': [R.to_mm(m) for m in c['values']]}
+    if c['op'] == 'dist':
+        return {'ok': True, 'result': [R.mm_between({'lon': a[0], 'lat': a[1]}, {'lon': b[0], 'lat': b[1]}) for a, b in c['pairs']]}
     try:
         k = (c['city'], c['category'])
         if k not in cache:
@@ -82,7 +86,23 @@ def check_expect(name, c, r):
         return f'{name}: ok={r["ok"]} ({r.get("error")}), ожидалось {e}'
     if not e['ok'] and (r['error']['code'], r['error']['path']) != (e['code'], e['path']):
         return f'{name}: {r["error"]} ≠ ожидаемого {e["code"]} @ {e["path"]}'
+    for path, want in (e.get('result') or {}).items():
+        got = get_path(r.get('result'), path)
+        if norm(got) != norm(want):
+            return f'{name}: {path} = {json.dumps(got, ensure_ascii=False)[:120]}, ожидалось {json.dumps(want, ensure_ascii=False)[:120]}'
     return None
+
+
+def get_path(obj, path):
+    """'a.b[2].c' → obj['a']['b'][2]['c']; отсутствие → '<missing>'."""
+    import re
+    cur = obj
+    for tok in re.findall(r'[^.\[\]]+|\[\d+\]', path):
+        try:
+            cur = cur[int(tok[1:-1])] if tok.startswith('[') else cur[tok]
+        except (KeyError, IndexError, TypeError):
+            return '<missing>'
+    return cur
 
 
 def run_stage(fx_path, app, js, data, ev, extra_checks):
@@ -119,7 +139,7 @@ def run_stage(fx_path, app, js, data, ev, extra_checks):
     par = [c['id'] for c in doc['cases'] if norm({k: v for k, v in jsr[c['id']].items() if k != 'id'}) != norm(py[c['id']])]
     rec(f'S{st}-js-python-parity', 'FAIL' if par else 'PASS',
         f'полное совпадение результатов JS и Python (контекст, места, мм, ничьи): расхождений {len(par)}', ids=par[:20])
-    for fn in extra_checks.get(st, []):
+    for fn in extra_checks.get(str(st), []):
         fn(doc, py, jsr, data, ev, app)
 
 
@@ -135,6 +155,8 @@ def main():
     extra = {}
     try:
         import stage_checks  # noqa: E402  (этапы 2 и 3)
+        stage_checks.REC = rec
+        stage_checks.JS = a.js.resolve()
         extra = stage_checks.EXTRA
     except ImportError:
         pass

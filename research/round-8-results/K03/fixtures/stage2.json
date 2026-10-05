@@ -1,0 +1,1851 @@
+{
+ "schema": "k03-geo-v2-fixtures",
+ "stage": 2,
+ "description": "Этап 2: края bbox по сторонам, перестановка lon/lat, точка в координатах записи, общие координаты (QA), ничьи source/кандидат/кандидат, почти-ничья < 1 мм, округление мм. Места — synthetic.",
+ "target": {
+  "branch": "claude/beautiful-clarke-sbzomj",
+  "sha": "a5b5e2ddbe087c4eab8e947748cdf69dbae84a0d",
+  "path": "prototypes/city-evidence/",
+  "data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "evidence_js_sha256": "df736e986145da33dee60f692e020486720b72db5b6116af31640cc8693b11b9"
+ },
+ "cases": [
+  {
+   "id": "ASTS-edge-W",
+   "op": "validate",
+   "city": "astana",
+   "category": "school",
+   "places": {
+    "control_points": [
+     {
+      "id": "e",
+      "lon": 71.418372,
+      "lat": 51.1720165,
+      "weight": 1
+     }
+    ],
+    "candidates": []
+   },
+   "expect": {
+    "ok": true
+   },
+   "why": "середина стороны W (edges_inclusive)"
+  },
+  {
+   "id": "ASTS-edge-W-out",
+   "op": "validate",
+   "city": "astana",
+   "category": "school",
+   "places": {
+    "control_points": [
+     {
+      "id": "e",
+      "lon": 71.432686,
+      "lat": 51.1720165,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "x",
+      "lon": 71.418371999,
+      "lat": 51.1720165,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 1000
+     }
+    ]
+   },
+   "expect": {
+    "ok": false,
+    "code": "outside_bbox",
+    "path": "candidates[0]"
+   },
+   "why": "на 1e-9° за стороной W"
+  },
+  {
+   "id": "ASTS-edge-E",
+   "op": "validate",
+   "city": "astana",
+   "category": "school",
+   "places": {
+    "control_points": [
+     {
+      "id": "e",
+      "lon": 71.447,
+      "lat": 51.1720165,
+      "weight": 1
+     }
+    ],
+    "candidates": []
+   },
+   "expect": {
+    "ok": true
+   },
+   "why": "середина стороны E (edges_inclusive)"
+  },
+  {
+   "id": "ASTS-edge-E-out",
+   "op": "validate",
+   "city": "astana",
+   "category": "school",
+   "places": {
+    "control_points": [
+     {
+      "id": "e",
+      "lon": 71.432686,
+      "lat": 51.1720165,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "x",
+      "lon": 71.447000001,
+      "lat": 51.1720165,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 1000
+     }
+    ]
+   },
+   "expect": {
+    "ok": false,
+    "code": "outside_bbox",
+    "path": "candidates[0]"
+   },
+   "why": "на 1e-9° за стороной E"
+  },
+  {
+   "id": "ASTS-edge-S",
+   "op": "validate",
+   "city": "astana",
+   "category": "school",
+   "places": {
+    "control_points": [
+     {
+      "id": "e",
+      "lon": 71.432686,
+      "lat": 51.163033,
+      "weight": 1
+     }
+    ],
+    "candidates": []
+   },
+   "expect": {
+    "ok": true
+   },
+   "why": "середина стороны S (edges_inclusive)"
+  },
+  {
+   "id": "ASTS-edge-S-out",
+   "op": "validate",
+   "city": "astana",
+   "category": "school",
+   "places": {
+    "control_points": [
+     {
+      "id": "e",
+      "lon": 71.432686,
+      "lat": 51.1720165,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "x",
+      "lon": 71.432686,
+      "lat": 51.163032999,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 1000
+     }
+    ]
+   },
+   "expect": {
+    "ok": false,
+    "code": "outside_bbox",
+    "path": "candidates[0]"
+   },
+   "why": "на 1e-9° за стороной S"
+  },
+  {
+   "id": "ASTS-edge-N",
+   "op": "validate",
+   "city": "astana",
+   "category": "school",
+   "places": {
+    "control_points": [
+     {
+      "id": "e",
+      "lon": 71.432686,
+      "lat": 51.181,
+      "weight": 1
+     }
+    ],
+    "candidates": []
+   },
+   "expect": {
+    "ok": true
+   },
+   "why": "середина стороны N (edges_inclusive)"
+  },
+  {
+   "id": "ASTS-edge-N-out",
+   "op": "validate",
+   "city": "astana",
+   "category": "school",
+   "places": {
+    "control_points": [
+     {
+      "id": "e",
+      "lon": 71.432686,
+      "lat": 51.1720165,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "x",
+      "lon": 71.432686,
+      "lat": 51.181000000999994,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 1000
+     }
+    ]
+   },
+   "expect": {
+    "ok": false,
+    "code": "outside_bbox",
+    "path": "candidates[0]"
+   },
+   "why": "на 1e-9° за стороной N"
+  },
+  {
+   "id": "ASTS-swap-cp",
+   "op": "validate",
+   "city": "astana",
+   "category": "school",
+   "places": {
+    "control_points": [
+     {
+      "id": "s",
+      "lon": 51.1720165,
+      "lat": 71.432686,
+      "weight": 1
+     }
+    ],
+    "candidates": []
+   },
+   "expect": {
+    "ok": false,
+    "code": "lon_lat_swapped",
+    "path": "control_points[0]"
+   },
+   "why": null
+  },
+  {
+   "id": "ASTS-cp-on-source",
+   "op": "table",
+   "city": "astana",
+   "category": "school",
+   "places": {
+    "control_points": [
+     {
+      "id": "on",
+      "lon": 71.42501,
+      "lat": 51.17087,
+      "weight": 1
+     }
+    ],
+    "candidates": []
+   },
+   "expect": {
+    "ok": true,
+    "result": {
+     "baseline[0].mm": 0,
+     "baseline[0].key": "source:7b39e048-341b-454a-a63c-4b7e1ae73e9f",
+     "baseline[0].tied_keys": [
+      "source:7b39e048-341b-454a-a63c-4b7e1ae73e9f"
+     ]
+    }
+   },
+   "why": "точка в координатах записи: расстояние 0, а не «нет данных»"
+  },
+  {
+   "id": "ASTS-cand-on-source-tie",
+   "op": "after",
+   "city": "astana",
+   "category": "school",
+   "places": {
+    "control_points": [
+     {
+      "id": "on",
+      "lon": 71.42501,
+      "lat": 51.17087,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "h",
+      "lon": 71.42501,
+      "lat": 51.17087,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 1000
+     }
+    ]
+   },
+   "expect": {
+    "ok": true,
+    "result": {
+     "[0].key": "source:7b39e048-341b-454a-a63c-4b7e1ae73e9f",
+     "[0].kind": "source",
+     "[0].mm": 0
+    }
+   },
+   "why": "проектный объект поверх существующей записи: улучшения 0, ближайшей остаётся source",
+   "selected": [
+    0
+   ]
+  },
+  {
+   "id": "ASTS-two-cands-same-xy",
+   "op": "after",
+   "city": "astana",
+   "category": "school",
+   "places": {
+    "control_points": [
+     {
+      "id": "p",
+      "lon": 71.432686,
+      "lat": 51.1720165,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "b",
+      "lon": 71.432696,
+      "lat": 51.1720165,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 1000
+     },
+     {
+      "id": "a",
+      "lon": 71.432696,
+      "lat": 51.1720165,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 1000
+     }
+    ]
+   },
+   "expect": {
+    "ok": true,
+    "result": {
+     "[0].key": "hypothetical:a",
+     "[0].kind": "hypothetical"
+    }
+   },
+   "why": null,
+   "selected": [
+    0,
+    1
+   ]
+  },
+  {
+   "id": "ASTS-mirror-tie",
+   "op": "after",
+   "city": "astana",
+   "category": "school",
+   "places": {
+    "control_points": [
+     {
+      "id": "m",
+      "lon": 71.42503,
+      "lat": 51.17087,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "mirror",
+      "lon": 71.42505000000001,
+      "lat": 51.17087,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 1000
+     }
+    ]
+   },
+   "expect": {
+    "ok": true,
+    "result": {
+     "[0].key": "source:7b39e048-341b-454a-a63c-4b7e1ae73e9f",
+     "[0].kind": "source"
+    }
+   },
+   "why": "source и кандидат на равном расстоянии (симметрия по долготе на одной широте) → побеждает source",
+   "selected": [
+    0
+   ]
+  },
+  {
+   "id": "ASTS-submm-tie",
+   "op": "after",
+   "city": "astana",
+   "category": "school",
+   "places": {
+    "control_points": [
+     {
+      "id": "p",
+      "lon": 71.432686,
+      "lat": 51.1720165,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "b",
+      "lon": 71.432686,
+      "lat": 51.17291582036372,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 1000
+     },
+     {
+      "id": "a",
+      "lon": 71.432686,
+      "lat": 51.171117179124415,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 1000
+     }
+    ]
+   },
+   "expect": {
+    "ok": true,
+    "result": {
+     "[0].key": "hypothetical:a",
+     "[0].mm": 100000
+    }
+   },
+   "why": "кандидат a дальше b на 0.057 мм, но в мм равны → ничья по ID (haversine-mm-v1)",
+   "selected": [
+    0,
+    1
+   ]
+  },
+  {
+   "id": "ASTC-edge-W",
+   "op": "validate",
+   "city": "astana",
+   "category": "outpatient_clinic",
+   "places": {
+    "control_points": [
+     {
+      "id": "e",
+      "lon": 71.418372,
+      "lat": 51.1720165,
+      "weight": 1
+     }
+    ],
+    "candidates": []
+   },
+   "expect": {
+    "ok": true
+   },
+   "why": "середина стороны W (edges_inclusive)"
+  },
+  {
+   "id": "ASTC-edge-W-out",
+   "op": "validate",
+   "city": "astana",
+   "category": "outpatient_clinic",
+   "places": {
+    "control_points": [
+     {
+      "id": "e",
+      "lon": 71.432686,
+      "lat": 51.1720165,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "x",
+      "lon": 71.418371999,
+      "lat": 51.1720165,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 1000
+     }
+    ]
+   },
+   "expect": {
+    "ok": false,
+    "code": "outside_bbox",
+    "path": "candidates[0]"
+   },
+   "why": "на 1e-9° за стороной W"
+  },
+  {
+   "id": "ASTC-edge-E",
+   "op": "validate",
+   "city": "astana",
+   "category": "outpatient_clinic",
+   "places": {
+    "control_points": [
+     {
+      "id": "e",
+      "lon": 71.447,
+      "lat": 51.1720165,
+      "weight": 1
+     }
+    ],
+    "candidates": []
+   },
+   "expect": {
+    "ok": true
+   },
+   "why": "середина стороны E (edges_inclusive)"
+  },
+  {
+   "id": "ASTC-edge-E-out",
+   "op": "validate",
+   "city": "astana",
+   "category": "outpatient_clinic",
+   "places": {
+    "control_points": [
+     {
+      "id": "e",
+      "lon": 71.432686,
+      "lat": 51.1720165,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "x",
+      "lon": 71.447000001,
+      "lat": 51.1720165,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 1000
+     }
+    ]
+   },
+   "expect": {
+    "ok": false,
+    "code": "outside_bbox",
+    "path": "candidates[0]"
+   },
+   "why": "на 1e-9° за стороной E"
+  },
+  {
+   "id": "ASTC-edge-S",
+   "op": "validate",
+   "city": "astana",
+   "category": "outpatient_clinic",
+   "places": {
+    "control_points": [
+     {
+      "id": "e",
+      "lon": 71.432686,
+      "lat": 51.163033,
+      "weight": 1
+     }
+    ],
+    "candidates": []
+   },
+   "expect": {
+    "ok": true
+   },
+   "why": "середина стороны S (edges_inclusive)"
+  },
+  {
+   "id": "ASTC-edge-S-out",
+   "op": "validate",
+   "city": "astana",
+   "category": "outpatient_clinic",
+   "places": {
+    "control_points": [
+     {
+      "id": "e",
+      "lon": 71.432686,
+      "lat": 51.1720165,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "x",
+      "lon": 71.432686,
+      "lat": 51.163032999,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 1000
+     }
+    ]
+   },
+   "expect": {
+    "ok": false,
+    "code": "outside_bbox",
+    "path": "candidates[0]"
+   },
+   "why": "на 1e-9° за стороной S"
+  },
+  {
+   "id": "ASTC-edge-N",
+   "op": "validate",
+   "city": "astana",
+   "category": "outpatient_clinic",
+   "places": {
+    "control_points": [
+     {
+      "id": "e",
+      "lon": 71.432686,
+      "lat": 51.181,
+      "weight": 1
+     }
+    ],
+    "candidates": []
+   },
+   "expect": {
+    "ok": true
+   },
+   "why": "середина стороны N (edges_inclusive)"
+  },
+  {
+   "id": "ASTC-edge-N-out",
+   "op": "validate",
+   "city": "astana",
+   "category": "outpatient_clinic",
+   "places": {
+    "control_points": [
+     {
+      "id": "e",
+      "lon": 71.432686,
+      "lat": 51.1720165,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "x",
+      "lon": 71.432686,
+      "lat": 51.181000000999994,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 1000
+     }
+    ]
+   },
+   "expect": {
+    "ok": false,
+    "code": "outside_bbox",
+    "path": "candidates[0]"
+   },
+   "why": "на 1e-9° за стороной N"
+  },
+  {
+   "id": "ASTC-swap-cp",
+   "op": "validate",
+   "city": "astana",
+   "category": "outpatient_clinic",
+   "places": {
+    "control_points": [
+     {
+      "id": "s",
+      "lon": 51.1720165,
+      "lat": 71.432686,
+      "weight": 1
+     }
+    ],
+    "candidates": []
+   },
+   "expect": {
+    "ok": false,
+    "code": "lon_lat_swapped",
+    "path": "control_points[0]"
+   },
+   "why": null
+  },
+  {
+   "id": "ASTC-cp-on-source",
+   "op": "table",
+   "city": "astana",
+   "category": "outpatient_clinic",
+   "places": {
+    "control_points": [
+     {
+      "id": "on",
+      "lon": 71.422483,
+      "lat": 51.169953,
+      "weight": 1
+     }
+    ],
+    "candidates": []
+   },
+   "expect": {
+    "ok": true,
+    "result": {
+     "baseline[0].mm": 0,
+     "baseline[0].key": "source:0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+     "baseline[0].tied_keys": [
+      "source:0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+     ]
+    }
+   },
+   "why": "точка в координатах записи: расстояние 0, а не «нет данных»"
+  },
+  {
+   "id": "ASTC-cand-on-source-tie",
+   "op": "after",
+   "city": "astana",
+   "category": "outpatient_clinic",
+   "places": {
+    "control_points": [
+     {
+      "id": "on",
+      "lon": 71.422483,
+      "lat": 51.169953,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "h",
+      "lon": 71.422483,
+      "lat": 51.169953,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 1000
+     }
+    ]
+   },
+   "expect": {
+    "ok": true,
+    "result": {
+     "[0].key": "source:0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+     "[0].kind": "source",
+     "[0].mm": 0
+    }
+   },
+   "why": "проектный объект поверх существующей записи: улучшения 0, ближайшей остаётся source",
+   "selected": [
+    0
+   ]
+  },
+  {
+   "id": "ASTC-two-cands-same-xy",
+   "op": "after",
+   "city": "astana",
+   "category": "outpatient_clinic",
+   "places": {
+    "control_points": [
+     {
+      "id": "p",
+      "lon": 71.432686,
+      "lat": 51.1720165,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "b",
+      "lon": 71.432696,
+      "lat": 51.1720165,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 1000
+     },
+     {
+      "id": "a",
+      "lon": 71.432696,
+      "lat": 51.1720165,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 1000
+     }
+    ]
+   },
+   "expect": {
+    "ok": true,
+    "result": {
+     "[0].key": "hypothetical:a",
+     "[0].kind": "hypothetical"
+    }
+   },
+   "why": null,
+   "selected": [
+    0,
+    1
+   ]
+  },
+  {
+   "id": "ASTC-mirror-tie",
+   "op": "after",
+   "city": "astana",
+   "category": "outpatient_clinic",
+   "places": {
+    "control_points": [
+     {
+      "id": "m",
+      "lon": 71.422503,
+      "lat": 51.169953,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "mirror",
+      "lon": 71.42252300000001,
+      "lat": 51.169953,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 1000
+     }
+    ]
+   },
+   "expect": {
+    "ok": true,
+    "result": {
+     "[0].key": "source:0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+     "[0].kind": "source"
+    }
+   },
+   "why": "source и кандидат на равном расстоянии (симметрия по долготе на одной широте) → побеждает source",
+   "selected": [
+    0
+   ]
+  },
+  {
+   "id": "ASTC-submm-tie",
+   "op": "after",
+   "city": "astana",
+   "category": "outpatient_clinic",
+   "places": {
+    "control_points": [
+     {
+      "id": "p",
+      "lon": 71.432686,
+      "lat": 51.1720165,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "b",
+      "lon": 71.432686,
+      "lat": 51.17291582036372,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 1000
+     },
+     {
+      "id": "a",
+      "lon": 71.432686,
+      "lat": 51.171117179124415,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 1000
+     }
+    ]
+   },
+   "expect": {
+    "ok": true,
+    "result": {
+     "[0].key": "hypothetical:a",
+     "[0].mm": 100000
+    }
+   },
+   "why": "кандидат a дальше b на 0.057 мм, но в мм равны → ничья по ID (haversine-mm-v1)",
+   "selected": [
+    0,
+    1
+   ]
+  },
+  {
+   "id": "SHYS-edge-W",
+   "op": "validate",
+   "city": "shymkent",
+   "category": "school",
+   "places": {
+    "control_points": [
+     {
+      "id": "e",
+      "lon": 69.593365,
+      "lat": 42.315628000000004,
+      "weight": 1
+     }
+    ],
+    "candidates": []
+   },
+   "expect": {
+    "ok": true
+   },
+   "why": "середина стороны W (edges_inclusive)"
+  },
+  {
+   "id": "SHYS-edge-W-out",
+   "op": "validate",
+   "city": "shymkent",
+   "category": "school",
+   "places": {
+    "control_points": [
+     {
+      "id": "e",
+      "lon": 69.6055115,
+      "lat": 42.315628000000004,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "x",
+      "lon": 69.593364999,
+      "lat": 42.315628000000004,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 1000
+     }
+    ]
+   },
+   "expect": {
+    "ok": false,
+    "code": "outside_bbox",
+    "path": "candidates[0]"
+   },
+   "why": "на 1e-9° за стороной W"
+  },
+  {
+   "id": "SHYS-edge-E",
+   "op": "validate",
+   "city": "shymkent",
+   "category": "school",
+   "places": {
+    "control_points": [
+     {
+      "id": "e",
+      "lon": 69.617658,
+      "lat": 42.315628000000004,
+      "weight": 1
+     }
+    ],
+    "candidates": []
+   },
+   "expect": {
+    "ok": true
+   },
+   "why": "середина стороны E (edges_inclusive)"
+  },
+  {
+   "id": "SHYS-edge-E-out",
+   "op": "validate",
+   "city": "shymkent",
+   "category": "school",
+   "places": {
+    "control_points": [
+     {
+      "id": "e",
+      "lon": 69.6055115,
+      "lat": 42.315628000000004,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "x",
+      "lon": 69.61765800100001,
+      "lat": 42.315628000000004,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 1000
+     }
+    ]
+   },
+   "expect": {
+    "ok": false,
+    "code": "outside_bbox",
+    "path": "candidates[0]"
+   },
+   "why": "на 1e-9° за стороной E"
+  },
+  {
+   "id": "SHYS-edge-S",
+   "op": "validate",
+   "city": "shymkent",
+   "category": "school",
+   "places": {
+    "control_points": [
+     {
+      "id": "e",
+      "lon": 69.6055115,
+      "lat": 42.306645,
+      "weight": 1
+     }
+    ],
+    "candidates": []
+   },
+   "expect": {
+    "ok": true
+   },
+   "why": "середина стороны S (edges_inclusive)"
+  },
+  {
+   "id": "SHYS-edge-S-out",
+   "op": "validate",
+   "city": "shymkent",
+   "category": "school",
+   "places": {
+    "control_points": [
+     {
+      "id": "e",
+      "lon": 69.6055115,
+      "lat": 42.315628000000004,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "x",
+      "lon": 69.6055115,
+      "lat": 42.30664499900001,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 1000
+     }
+    ]
+   },
+   "expect": {
+    "ok": false,
+    "code": "outside_bbox",
+    "path": "candidates[0]"
+   },
+   "why": "на 1e-9° за стороной S"
+  },
+  {
+   "id": "SHYS-edge-N",
+   "op": "validate",
+   "city": "shymkent",
+   "category": "school",
+   "places": {
+    "control_points": [
+     {
+      "id": "e",
+      "lon": 69.6055115,
+      "lat": 42.324611,
+      "weight": 1
+     }
+    ],
+    "candidates": []
+   },
+   "expect": {
+    "ok": true
+   },
+   "why": "середина стороны N (edges_inclusive)"
+  },
+  {
+   "id": "SHYS-edge-N-out",
+   "op": "validate",
+   "city": "shymkent",
+   "category": "school",
+   "places": {
+    "control_points": [
+     {
+      "id": "e",
+      "lon": 69.6055115,
+      "lat": 42.315628000000004,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "x",
+      "lon": 69.6055115,
+      "lat": 42.324611000999994,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 1000
+     }
+    ]
+   },
+   "expect": {
+    "ok": false,
+    "code": "outside_bbox",
+    "path": "candidates[0]"
+   },
+   "why": "на 1e-9° за стороной N"
+  },
+  {
+   "id": "SHYS-swap-cp",
+   "op": "validate",
+   "city": "shymkent",
+   "category": "school",
+   "places": {
+    "control_points": [
+     {
+      "id": "s",
+      "lon": 42.315628000000004,
+      "lat": 69.6055115,
+      "weight": 1
+     }
+    ],
+    "candidates": []
+   },
+   "expect": {
+    "ok": false,
+    "code": "lon_lat_swapped",
+    "path": "control_points[0]"
+   },
+   "why": null
+  },
+  {
+   "id": "SHYS-cp-on-source",
+   "op": "table",
+   "city": "shymkent",
+   "category": "school",
+   "places": {
+    "control_points": [
+     {
+      "id": "on",
+      "lon": 69.61052,
+      "lat": 42.32027,
+      "weight": 1
+     }
+    ],
+    "candidates": []
+   },
+   "expect": {
+    "ok": true,
+    "result": {
+     "baseline[0].mm": 0,
+     "baseline[0].key": "source:01961e84-815f-4bd1-85c3-6bf1734256ec",
+     "baseline[0].tied_keys": [
+      "source:01961e84-815f-4bd1-85c3-6bf1734256ec"
+     ]
+    }
+   },
+   "why": "точка в координатах записи: расстояние 0, а не «нет данных»"
+  },
+  {
+   "id": "SHYS-cp-on-shared-2",
+   "op": "table",
+   "city": "shymkent",
+   "category": "school",
+   "places": {
+    "control_points": [
+     {
+      "id": "on",
+      "lon": 69.59496,
+      "lat": 42.32353,
+      "weight": 1
+     }
+    ],
+    "candidates": []
+   },
+   "expect": {
+    "ok": true,
+    "result": {
+     "baseline[0].mm": 0,
+     "baseline[0].key": "source:99759f95-3ddb-4d87-8091-c301f9c23c9b",
+     "baseline[0].tied_keys": [
+      "source:99759f95-3ddb-4d87-8091-c301f9c23c9b",
+      "source:a2cb79c8-c922-47a9-96a2-6cc326bbc3d6"
+     ]
+    }
+   },
+   "why": "2 записей категории в одних координатах: ничья 0 мм, выбирается меньший ID; записи не сливаются"
+  },
+  {
+   "id": "SHYS-cand-on-source-tie",
+   "op": "after",
+   "city": "shymkent",
+   "category": "school",
+   "places": {
+    "control_points": [
+     {
+      "id": "on",
+      "lon": 69.61052,
+      "lat": 42.32027,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "h",
+      "lon": 69.61052,
+      "lat": 42.32027,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 1000
+     }
+    ]
+   },
+   "expect": {
+    "ok": true,
+    "result": {
+     "[0].key": "source:01961e84-815f-4bd1-85c3-6bf1734256ec",
+     "[0].kind": "source",
+     "[0].mm": 0
+    }
+   },
+   "why": "проектный объект поверх существующей записи: улучшения 0, ближайшей остаётся source",
+   "selected": [
+    0
+   ]
+  },
+  {
+   "id": "SHYS-two-cands-same-xy",
+   "op": "after",
+   "city": "shymkent",
+   "category": "school",
+   "places": {
+    "control_points": [
+     {
+      "id": "p",
+      "lon": 69.6055115,
+      "lat": 42.315628000000004,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "b",
+      "lon": 69.60552150000001,
+      "lat": 42.315628000000004,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 1000
+     },
+     {
+      "id": "a",
+      "lon": 69.60552150000001,
+      "lat": 42.315628000000004,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 1000
+     }
+    ]
+   },
+   "expect": {
+    "ok": true,
+    "result": {
+     "[0].key": "hypothetical:a",
+     "[0].kind": "hypothetical"
+    }
+   },
+   "why": null,
+   "selected": [
+    0,
+    1
+   ]
+  },
+  {
+   "id": "SHYS-mirror-tie",
+   "op": "after",
+   "city": "shymkent",
+   "category": "school",
+   "places": {
+    "control_points": [
+     {
+      "id": "m",
+      "lon": 69.61054,
+      "lat": 42.32027,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "mirror",
+      "lon": 69.61056,
+      "lat": 42.32027,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 1000
+     }
+    ]
+   },
+   "expect": {
+    "ok": true,
+    "result": {
+     "[0].key": "source:01961e84-815f-4bd1-85c3-6bf1734256ec",
+     "[0].kind": "source"
+    }
+   },
+   "why": "source и кандидат на равном расстоянии (симметрия по долготе на одной широте) → побеждает source",
+   "selected": [
+    0
+   ]
+  },
+  {
+   "id": "SHYS-submm-tie",
+   "op": "after",
+   "city": "shymkent",
+   "category": "school",
+   "places": {
+    "control_points": [
+     {
+      "id": "p",
+      "lon": 69.6055115,
+      "lat": 42.315628000000004,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "b",
+      "lon": 69.6055115,
+      "lat": 42.316527320363726,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 1000
+     },
+     {
+      "id": "a",
+      "lon": 69.6055115,
+      "lat": 42.31472867912442,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 1000
+     }
+    ]
+   },
+   "expect": {
+    "ok": true,
+    "result": {
+     "[0].key": "hypothetical:a",
+     "[0].mm": 100000
+    }
+   },
+   "why": "кандидат a дальше b на 0.057 мм, но в мм равны → ничья по ID (haversine-mm-v1)",
+   "selected": [
+    0,
+    1
+   ]
+  },
+  {
+   "id": "SHYC-edge-W",
+   "op": "validate",
+   "city": "shymkent",
+   "category": "outpatient_clinic",
+   "places": {
+    "control_points": [
+     {
+      "id": "e",
+      "lon": 69.593365,
+      "lat": 42.315628000000004,
+      "weight": 1
+     }
+    ],
+    "candidates": []
+   },
+   "expect": {
+    "ok": true
+   },
+   "why": "середина стороны W (edges_inclusive)"
+  },
+  {
+   "id": "SHYC-edge-W-out",
+   "op": "validate",
+   "city": "shymkent",
+   "category": "outpatient_clinic",
+   "places": {
+    "control_points": [
+     {
+      "id": "e",
+      "lon": 69.6055115,
+      "lat": 42.315628000000004,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "x",
+      "lon": 69.593364999,
+      "lat": 42.315628000000004,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 1000
+     }
+    ]
+   },
+   "expect": {
+    "ok": false,
+    "code": "outside_bbox",
+    "path": "candidates[0]"
+   },
+   "why": "на 1e-9° за стороной W"
+  },
+  {
+   "id": "SHYC-edge-E",
+   "op": "validate",
+   "city": "shymkent",
+   "category": "outpatient_clinic",
+   "places": {
+    "control_points": [
+     {
+      "id": "e",
+      "lon": 69.617658,
+      "lat": 42.315628000000004,
+      "weight": 1
+     }
+    ],
+    "candidates": []
+   },
+   "expect": {
+    "ok": true
+   },
+   "why": "середина стороны E (edges_inclusive)"
+  },
+  {
+   "id": "SHYC-edge-E-out",
+   "op": "validate",
+   "city": "shymkent",
+   "category": "outpatient_clinic",
+   "places": {
+    "control_points": [
+     {
+      "id": "e",
+      "lon": 69.6055115,
+      "lat": 42.315628000000004,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "x",
+      "lon": 69.61765800100001,
+      "lat": 42.315628000000004,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 1000
+     }
+    ]
+   },
+   "expect": {
+    "ok": false,
+    "code": "outside_bbox",
+    "path": "candidates[0]"
+   },
+   "why": "на 1e-9° за стороной E"
+  },
+  {
+   "id": "SHYC-edge-S",
+   "op": "validate",
+   "city": "shymkent",
+   "category": "outpatient_clinic",
+   "places": {
+    "control_points": [
+     {
+      "id": "e",
+      "lon": 69.6055115,
+      "lat": 42.306645,
+      "weight": 1
+     }
+    ],
+    "candidates": []
+   },
+   "expect": {
+    "ok": true
+   },
+   "why": "середина стороны S (edges_inclusive)"
+  },
+  {
+   "id": "SHYC-edge-S-out",
+   "op": "validate",
+   "city": "shymkent",
+   "category": "outpatient_clinic",
+   "places": {
+    "control_points": [
+     {
+      "id": "e",
+      "lon": 69.6055115,
+      "lat": 42.315628000000004,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "x",
+      "lon": 69.6055115,
+      "lat": 42.30664499900001,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 1000
+     }
+    ]
+   },
+   "expect": {
+    "ok": false,
+    "code": "outside_bbox",
+    "path": "candidates[0]"
+   },
+   "why": "на 1e-9° за стороной S"
+  },
+  {
+   "id": "SHYC-edge-N",
+   "op": "validate",
+   "city": "shymkent",
+   "category": "outpatient_clinic",
+   "places": {
+    "control_points": [
+     {
+      "id": "e",
+      "lon": 69.6055115,
+      "lat": 42.324611,
+      "weight": 1
+     }
+    ],
+    "candidates": []
+   },
+   "expect": {
+    "ok": true
+   },
+   "why": "середина стороны N (edges_inclusive)"
+  },
+  {
+   "id": "SHYC-edge-N-out",
+   "op": "validate",
+   "city": "shymkent",
+   "category": "outpatient_clinic",
+   "places": {
+    "control_points": [
+     {
+      "id": "e",
+      "lon": 69.6055115,
+      "lat": 42.315628000000004,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "x",
+      "lon": 69.6055115,
+      "lat": 42.324611000999994,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 1000
+     }
+    ]
+   },
+   "expect": {
+    "ok": false,
+    "code": "outside_bbox",
+    "path": "candidates[0]"
+   },
+   "why": "на 1e-9° за стороной N"
+  },
+  {
+   "id": "SHYC-swap-cp",
+   "op": "validate",
+   "city": "shymkent",
+   "category": "outpatient_clinic",
+   "places": {
+    "control_points": [
+     {
+      "id": "s",
+      "lon": 42.315628000000004,
+      "lat": 69.6055115,
+      "weight": 1
+     }
+    ],
+    "candidates": []
+   },
+   "expect": {
+    "ok": false,
+    "code": "lon_lat_swapped",
+    "path": "control_points[0]"
+   },
+   "why": null
+  },
+  {
+   "id": "SHYC-cp-on-source",
+   "op": "table",
+   "city": "shymkent",
+   "category": "outpatient_clinic",
+   "places": {
+    "control_points": [
+     {
+      "id": "on",
+      "lon": 69.607757,
+      "lat": 42.306934,
+      "weight": 1
+     }
+    ],
+    "candidates": []
+   },
+   "expect": {
+    "ok": true,
+    "result": {
+     "baseline[0].mm": 0,
+     "baseline[0].key": "source:1cb001b2-d62f-4c28-ba0a-864ffa56808f",
+     "baseline[0].tied_keys": [
+      "source:1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+     ]
+    }
+   },
+   "why": "точка в координатах записи: расстояние 0, а не «нет данных»"
+  },
+  {
+   "id": "SHYC-cp-on-shared-4",
+   "op": "table",
+   "city": "shymkent",
+   "category": "outpatient_clinic",
+   "places": {
+    "control_points": [
+     {
+      "id": "on",
+      "lon": 69.5958,
+      "lat": 42.3167,
+      "weight": 1
+     }
+    ],
+    "candidates": []
+   },
+   "expect": {
+    "ok": true,
+    "result": {
+     "baseline[0].mm": 0,
+     "baseline[0].key": "source:059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+     "baseline[0].tied_keys": [
+      "source:059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "source:2264dcf0-549d-451a-b846-3f207d411e0c",
+      "source:c2990416-dca7-4e3a-b539-30e69cadf724",
+      "source:f4d6818b-1a99-43ca-8533-4c556f448919"
+     ]
+    }
+   },
+   "why": "4 записей категории в одних координатах: ничья 0 мм, выбирается меньший ID; записи не сливаются"
+  },
+  {
+   "id": "SHYC-cand-on-source-tie",
+   "op": "after",
+   "city": "shymkent",
+   "category": "outpatient_clinic",
+   "places": {
+    "control_points": [
+     {
+      "id": "on",
+      "lon": 69.607757,
+      "lat": 42.306934,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "h",
+      "lon": 69.607757,
+      "lat": 42.306934,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 1000
+     }
+    ]
+   },
+   "expect": {
+    "ok": true,
+    "result": {
+     "[0].key": "source:1cb001b2-d62f-4c28-ba0a-864ffa56808f",
+     "[0].kind": "source",
+     "[0].mm": 0
+    }
+   },
+   "why": "проектный объект поверх существующей записи: улучшения 0, ближайшей остаётся source",
+   "selected": [
+    0
+   ]
+  },
+  {
+   "id": "SHYC-two-cands-same-xy",
+   "op": "after",
+   "city": "shymkent",
+   "category": "outpatient_clinic",
+   "places": {
+    "control_points": [
+     {
+      "id": "p",
+      "lon": 69.6055115,
+      "lat": 42.315628000000004,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "b",
+      "lon": 69.60552150000001,
+      "lat": 42.315628000000004,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 1000
+     },
+     {
+      "id": "a",
+      "lon": 69.60552150000001,
+      "lat": 42.315628000000004,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 1000
+     }
+    ]
+   },
+   "expect": {
+    "ok": true,
+    "result": {
+     "[0].key": "hypothetical:a",
+     "[0].kind": "hypothetical"
+    }
+   },
+   "why": null,
+   "selected": [
+    0,
+    1
+   ]
+  },
+  {
+   "id": "SHYC-mirror-tie",
+   "op": "after",
+   "city": "shymkent",
+   "category": "outpatient_clinic",
+   "places": {
+    "control_points": [
+     {
+      "id": "m",
+      "lon": 69.60777700000001,
+      "lat": 42.306934,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "mirror",
+      "lon": 69.60779700000002,
+      "lat": 42.306934,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 1000
+     }
+    ]
+   },
+   "expect": {
+    "ok": true,
+    "result": {
+     "[0].key": "source:1cb001b2-d62f-4c28-ba0a-864ffa56808f",
+     "[0].kind": "source"
+    }
+   },
+   "why": "source и кандидат на равном расстоянии (симметрия по долготе на одной широте) → побеждает source",
+   "selected": [
+    0
+   ]
+  },
+  {
+   "id": "SHYC-submm-tie",
+   "op": "after",
+   "city": "shymkent",
+   "category": "outpatient_clinic",
+   "places": {
+    "control_points": [
+     {
+      "id": "p",
+      "lon": 69.6055115,
+      "lat": 42.315628000000004,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "b",
+      "lon": 69.6055115,
+      "lat": 42.316527320363726,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 1000
+     },
+     {
+      "id": "a",
+      "lon": 69.6055115,
+      "lat": 42.31472867912442,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 1000
+     }
+    ]
+   },
+   "expect": {
+    "ok": true,
+    "result": {
+     "[0].key": "hypothetical:a",
+     "[0].mm": 100000
+    }
+   },
+   "why": "кандидат a дальше b на 0.057 мм, но в мм равны → ничья по ID (haversine-mm-v1)",
+   "selected": [
+    0,
+    1
+   ]
+  },
+  {
+   "id": "tomm-half-boundaries",
+   "op": "tomm",
+   "city": null,
+   "category": null,
+   "places": null,
+   "expect": {
+    "ok": true,
+    "result": {
+     "[0]": 0,
+     "[1]": 1,
+     "[2]": 1,
+     "[3]": 1,
+     "[4]": 2,
+     "[5]": 2,
+     "[6]": 7,
+     "[7]": 8,
+     "[8]": 8,
+     "[9]": 123,
+     "[10]": 124,
+     "[11]": 124,
+     "[12]": 4999,
+     "[13]": 5000,
+     "[14]": 4999,
+     "[15]": 99999,
+     "[16]": 100000,
+     "[17]": 99999,
+     "[18]": 1234567,
+     "[19]": 1234568,
+     "[20]": 1234567
+    }
+   },
+   "why": "значения у границ k+0.5 мм ±3 ulp: Math.round(x) и floor(x+0.5) совпадают для x = d·1000",
+   "values": [
+    0.0004999999999999997,
+    0.0005,
+    0.0005000000000000003,
+    0.0014999999999999994,
+    0.0015,
+    0.0015000000000000007,
+    0.007499999999999997,
+    0.0075,
+    0.007500000000000002,
+    0.12349999999999996,
+    0.1235,
+    0.12350000000000004,
+    4.999499999999998,
+    4.9995,
+    4.999499999999998,
+    99.99949999999995,
+    99.9995,
+    99.99949999999995,
+    1234.5674999999994,
+    1234.5675,
+    1234.5674999999994
+   ]
+  }
+ ]
+}

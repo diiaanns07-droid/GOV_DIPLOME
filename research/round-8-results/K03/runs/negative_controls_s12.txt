@@ -1,0 +1,11 @@
+# Отрицательный контроль этапов 1–2: испорченные копии geo_v2.js на тех же fixtures
+## mut_kind: ничья: hypothetical раньше source
+[FAIL] S2-js (mut_kind.js): 59 случаев: несоответствий 8
+[FAIL] S2-js-python-parity: полное совпадение результатов JS и Python (контекст, места, мм, ничьи): расхождений 8
+SUMMARY {"PASS": 12, "FAIL": 2, "SKIP": 0, "TEST_INCOMPATIBLE": 0}
+## mut_edges: границы bbox всегда исключены
+[FAIL] S1-js (mut_edges.js): 76 случаев: несоответствий 2
+[FAIL] S1-js-python-parity: полное совпадение результатов JS и Python (контекст, места, мм, ничьи): расхождений 2
+[FAIL] S2-js (mut_edges.js): 59 случаев: несоответствий 16
+[FAIL] S2-js-python-parity: полное совпадение результатов JS и Python (контекст, места, мм, ничьи): расхождений 16
+SUMMARY {"PASS": 10, "FAIL": 4, "SKIP": 0, "TEST_INCOMPATIBLE": 0}

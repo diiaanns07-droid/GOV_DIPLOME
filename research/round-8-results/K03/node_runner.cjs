@@ -20,6 +20,8 @@ const revive = (v) => Array.isArray(v) ? v.map(revive) : v && typeof v === "obje
 const out = [];
 for (const c of req.cases) {
   try {
+    if (c.op === "tomm") { out.push({ id: c.id, ok: true, result: c.values.map((m) => G.toMm(m)) }); continue; }
+    if (c.op === "dist") { out.push({ id: c.id, ok: true, result: c.pairs.map(([a, b]) => G.distMm({ lon: a[0], lat: a[1] }, { lon: b[0], lat: b[1] })) }); continue; }
     const ctx = ctxOf(c.city, c.category);
     let result;
     if (c.op === "context") result = ctx;
