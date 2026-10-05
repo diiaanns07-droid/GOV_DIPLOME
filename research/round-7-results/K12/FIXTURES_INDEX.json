@@ -1,0 +1,811 @@
+{
+ "fixture_set": "k12r7-city-whatif-import-stress-v1",
+ "kind": "synthetic",
+ "spec": "research/round-7/FEATURE_SPEC.txt @ codex/research-import-2026-10-05 7927fa8",
+ "notice": "СИНТЕТИКА: точки, ID и подписи выдуманы; это не дома, не население и не реальные проекты. Файлы не исполнять, адреса не открывать.",
+ "bbox_at": {
+  "build": "claude/beautiful-clarke-sbzomj@c58a3b2",
+  "bbox": {
+   "shymkent": [
+    69.593365,
+    42.306645,
+    69.617658,
+    42.324611
+   ],
+   "astana": [
+    71.418372,
+    51.163033,
+    71.447,
+    51.181
+   ]
+  }
+ },
+ "placeholders": [
+  "__SNAPSHOT__",
+  "__SNAPSHOT_OTHER_CITY__",
+  "__SNAPSHOT_OTHER_CATEGORY__"
+ ],
+ "max_bytes": 262144,
+ "invariant": "после любого отказа: активный сценарий, вычисленные строки и объяснение те же, что до импорта; входной объект состояния не изменён; нет сетевых обращений; Object.prototype не изменён; новые глобальные переменные не появились",
+ "fixtures": [
+  {
+   "id": "P01",
+   "file": "fixtures/P01_valid_shymkent_school.json",
+   "expect": "accept",
+   "expected_codes": [],
+   "spec": "контракт city-whatif-v1",
+   "rationale": "3 контрольные точки, один условный объект школы внутри bbox Шымкента; база для проверки неизменности состояния",
+   "advisory": false,
+   "city": "shymkent",
+   "category": "school",
+   "recipe": null,
+   "bytes": 448,
+   "sha256": "2bf7997ddb9dc26809463e810c21e68aff6e1f06e0d9b2559f5c8f7301202dd3"
+  },
+  {
+   "id": "P02",
+   "file": "fixtures/P02_valid_astana_clinic_no_project.json",
+   "expect": "accept",
+   "expected_codes": [],
+   "spec": "proposed_object может быть null",
+   "rationale": "без проекта: after = before, delta = 0",
+   "advisory": false,
+   "city": "astana",
+   "category": "outpatient_clinic",
+   "recipe": null,
+   "bytes": 239,
+   "sha256": "ce597e26ca1ad4efec07097fefdde7e5094e3bbca37bc8449d77c04b13e2304d"
+  },
+  {
+   "id": "P03",
+   "file": "fixtures/P03_tampered_results_are_ignored.json",
+   "expect": "accept",
+   "expected_codes": [],
+   "spec": "импорт результатов не доверенный: вычислить заново",
+   "rationale": "поле results допускается как выводимое, но значения должны быть пересчитаны; 999999 не должно появиться",
+   "advisory": false,
+   "city": "shymkent",
+   "category": "school",
+   "recipe": null,
+   "bytes": 657,
+   "sha256": "4e510ea96194c911b305dd84ec856463f9667d3a1198c9cc96d09b280683474a"
+  },
+  {
+   "id": "P04",
+   "file": "fixtures/P04_ten_points_boundary.json",
+   "expect": "accept",
+   "expected_codes": [],
+   "spec": "контрольных точек 1..10",
+   "rationale": "граница 10",
+   "advisory": false,
+   "city": "shymkent",
+   "category": "school",
+   "recipe": null,
+   "bytes": 1063,
+   "sha256": "bbbb6970447eef27d0350fee33b2c50e80f237125175854fa9f368353d68383b"
+  },
+  {
+   "id": "P05",
+   "file": "fixtures/generated/P05_exactly_256_KiB.json",
+   "expect": "accept",
+   "expected_codes": [],
+   "spec": "JSON импорта до 256 KiB",
+   "rationale": "ровно 262144 байта UTF-8, валидный JSON с пробелами",
+   "advisory": false,
+   "city": "shymkent",
+   "category": "school",
+   "recipe": {
+    "op": "pad",
+    "from": "P01",
+    "total_bytes": 262144
+   },
+   "bytes": 262144,
+   "sha256": "f3df69393fd9fd4b598013c12c9406a0e41fc4671728e895d0e1201dd7cd7d3f"
+  },
+  {
+   "id": "P06",
+   "file": "fixtures/P06_project_on_control_point.json",
+   "expect": "accept",
+   "expected_codes": [],
+   "spec": "расстояния одинаковой точки дают честный 0",
+   "rationale": "after для cp1 = 0, delta = before",
+   "advisory": false,
+   "city": "shymkent",
+   "category": "school",
+   "recipe": null,
+   "bytes": 445,
+   "sha256": "dfe5f44d53b64a79e53fc5d5217e7b165eb4453d431e3aecdf7359a04f7470b4"
+  },
+  {
+   "id": "N01",
+   "file": "fixtures/N01_nan_token_lon.json",
+   "expect": "reject",
+   "expected_codes": [
+    "invalid_json",
+    "nonfinite_number"
+   ],
+   "spec": "не принимать NaN",
+   "rationale": "токен NaN — не JSON, но некоторые парсеры его принимают",
+   "advisory": false,
+   "city": "shymkent",
+   "category": "school",
+   "recipe": null,
+   "bytes": 447,
+   "sha256": "32d24c55a7fa3c16103109336aa88e58a43a2fdcdc248cea2669bc22b44caf66"
+  },
+  {
+   "id": "N02",
+   "file": "fixtures/N02_infinity_token_lat.json",
+   "expect": "reject",
+   "expected_codes": [
+    "invalid_json",
+    "nonfinite_number"
+   ],
+   "spec": "не принимать Infinity",
+   "rationale": "",
+   "advisory": false,
+   "city": "shymkent",
+   "category": "school",
+   "recipe": null,
+   "bytes": 450,
+   "sha256": "6cf52853f1ad948fd087a317c6d2efef73b13789d79f64e800e8b6b8407caa58"
+  },
+  {
+   "id": "N03",
+   "file": "fixtures/N03_minus_infinity_project.json",
+   "expect": "reject",
+   "expected_codes": [
+    "invalid_json",
+    "nonfinite_number"
+   ],
+   "spec": "не принимать Infinity",
+   "rationale": "",
+   "advisory": false,
+   "city": "shymkent",
+   "category": "school",
+   "recipe": null,
+   "bytes": 451,
+   "sha256": "41ada38aebcdd8cdc2cd603c36fe05ba5ff411c3de8461ba7751bc69cccec82b"
+  },
+  {
+   "id": "N04",
+   "file": "fixtures/N04_1e999_lon.json",
+   "expect": "reject",
+   "expected_codes": [
+    "nonfinite_number"
+   ],
+   "spec": "не принимать 1e999",
+   "rationale": "строго валидный JSON; JSON.parse даёт Infinity",
+   "advisory": false,
+   "city": "shymkent",
+   "category": "school",
+   "recipe": null,
+   "bytes": 449,
+   "sha256": "bc02b096a0014c34d2aee8d17be9915e7f29ea9c727f7014c85ec55de5f781e3"
+  },
+  {
+   "id": "N05",
+   "file": "fixtures/N05_duplicate_key_category.json",
+   "expect": "reject",
+   "expected_codes": [
+    "duplicate_key"
+   ],
+   "spec": "строгая валидация",
+   "rationale": "JSON.parse молча берёт последнее значение",
+   "advisory": false,
+   "city": "shymkent",
+   "category": "school",
+   "recipe": null,
+   "bytes": 481,
+   "sha256": "bb309fa0404fac1b381db0c44e06259032b9f720ff6d68e9cec8a697f40bc85d"
+  },
+  {
+   "id": "N06",
+   "file": "fixtures/N06_duplicate_key_in_point.json",
+   "expect": "reject",
+   "expected_codes": [
+    "duplicate_key"
+   ],
+   "spec": "строгая валидация",
+   "rationale": "второй lon вне bbox; last-wins подменил бы координату",
+   "advisory": false,
+   "city": "shymkent",
+   "category": "school",
+   "recipe": null,
+   "bytes": 461,
+   "sha256": "c6ddfe8efe7b55fbfbb381bda3ded22bcc88bf00da555b27bb9a680b2524e7a3"
+  },
+  {
+   "id": "N07",
+   "file": "fixtures/N07_duplicate_key_proposed.json",
+   "expect": "reject",
+   "expected_codes": [
+    "duplicate_key"
+   ],
+   "spec": "число проектов >1 / строгая валидация",
+   "rationale": "null, затем объект: проект появляется через повтор ключа",
+   "advisory": false,
+   "city": "shymkent",
+   "category": "school",
+   "recipe": null,
+   "bytes": 460,
+   "sha256": "59112149e85c3e64f66389f5e72e1299e2684a0faf211c12b038a9706a4429ea"
+  },
+  {
+   "id": "N08",
+   "file": "fixtures/N08_duplicate_point_ids.json",
+   "expect": "reject",
+   "expected_codes": [
+    "duplicate_id"
+   ],
+   "spec": "ID уникальны",
+   "rationale": "",
+   "advisory": false,
+   "city": "shymkent",
+   "category": "school",
+   "recipe": null,
+   "bytes": 448,
+   "sha256": "4b93e4fc95c1b18a9730f69bfb9b2d51d6adb74cdc34e9925a0537dadb205587"
+  },
+  {
+   "id": "N09",
+   "file": "fixtures/N09_project_id_equals_point_id.json",
+   "expect": "reject",
+   "expected_codes": [
+    "duplicate_id"
+   ],
+   "spec": "ID уникальны",
+   "rationale": "ID общий для сценария",
+   "advisory": false,
+   "city": "shymkent",
+   "category": "school",
+   "recipe": null,
+   "bytes": 446,
+   "sha256": "d6cd21c44271512137414bdb03de5925751d13b4251de8717e4dc0f499a54405"
+  },
+  {
+   "id": "N10",
+   "file": "fixtures/N10_id_too_long.json",
+   "expect": "reject",
+   "expected_codes": [
+    "bad_id"
+   ],
+   "spec": "ID ограничены по длине",
+   "rationale": "",
+   "advisory": false,
+   "city": "shymkent",
+   "category": "school",
+   "recipe": null,
+   "bytes": 626,
+   "sha256": "e6abcd50174df508c3ad692554e36544e7969f48f4c4c979dc8b558fa6e36fa5"
+  },
+  {
+   "id": "N11",
+   "file": "fixtures/N11_foreign_snapshot_other_city.json",
+   "expect": "reject",
+   "expected_codes": [
+    "foreign_snapshot"
+   ],
+   "spec": "чужой snapshot",
+   "rationale": "отпечаток Астаны в сценарии Шымкента",
+   "advisory": false,
+   "city": "shymkent",
+   "category": "school",
+   "recipe": null,
+   "bytes": 459,
+   "sha256": "e70992b8db1a9b7ae7fdd4cc33645abe712d9bdedd3d9a5c432f6c4f1fbdc560"
+  },
+  {
+   "id": "N12",
+   "file": "fixtures/N12_foreign_snapshot_wrong_hash.json",
+   "expect": "reject",
+   "expected_codes": [
+    "foreign_snapshot"
+   ],
+   "spec": "чужой snapshot",
+   "rationale": "правдоподобный, но не совпадающий отпечаток",
+   "advisory": false,
+   "city": "shymkent",
+   "category": "school",
+   "recipe": null,
+   "bytes": 507,
+   "sha256": "5f185a1010a7546d9cfb2152215d9e7f17a39ddad900641543b207cc692639cc"
+  },
+  {
+   "id": "N13",
+   "file": "fixtures/N13_snapshot_is_file_name.json",
+   "expect": "reject",
+   "expected_codes": [
+    "foreign_snapshot"
+   ],
+   "spec": "имя файла не подтверждает версию",
+   "rationale": "",
+   "advisory": false,
+   "city": "shymkent",
+   "category": "school",
+   "recipe": null,
+   "bytes": 447,
+   "sha256": "90cb9bb7d5fb02e133ffadb1d45e8125085731100f9eb60ee536d3c5ce000127"
+  },
+  {
+   "id": "N14",
+   "file": "fixtures/N14_snapshot_is_url.json",
+   "expect": "reject",
+   "expected_codes": [
+    "foreign_snapshot",
+    "external_reference"
+   ],
+   "spec": "не загружать адреса из текста",
+   "rationale": "URL нельзя открывать",
+   "advisory": false,
+   "city": "shymkent",
+   "category": "school",
+   "recipe": null,
+   "bytes": 473,
+   "sha256": "5701a241d48a160249f6560a328bc0cadce75e5a21f6438964eca7a93541a0d0"
+  },
+  {
+   "id": "N15",
+   "file": "fixtures/N15_snapshot_other_category.json",
+   "expect": "reject",
+   "expected_codes": [
+    "foreign_snapshot"
+   ],
+   "spec": "отпечаток включает параметры расчёта",
+   "rationale": "advisory: отказ ожидается, если категория входит в параметры отпечатка",
+   "advisory": true,
+   "city": "shymkent",
+   "category": "school",
+   "recipe": null,
+   "bytes": 463,
+   "sha256": "534cfb5fd79bd812021c1ac9e67c57a74334c98301691ba24cdb2fbd14955985"
+  },
+  {
+   "id": "N16",
+   "file": "fixtures/N16_unknown_city.json",
+   "expect": "reject",
+   "expected_codes": [
+    "unknown_city"
+   ],
+   "spec": "неизвестный город",
+   "rationale": "",
+   "advisory": false,
+   "city": "shymkent",
+   "category": "school",
+   "recipe": null,
+   "bytes": 446,
+   "sha256": "0e17295cac1d36a673f04d9fbfa101c063551a64e0af426eaf0e32bd7829e353"
+  },
+  {
+   "id": "N17",
+   "file": "fixtures/N17_lookalike_city.json",
+   "expect": "reject",
+   "expected_codes": [
+    "unknown_city"
+   ],
+   "spec": "неизвестный город",
+   "rationale": "кириллическая «е» в shymkent",
+   "advisory": false,
+   "city": "shymkent",
+   "category": "school",
+   "recipe": null,
+   "bytes": 449,
+   "sha256": "162c36e1eae0aeacbbd1e90e2eea07851448ce6b51fbf56ac4619d9840f8b6d2"
+  },
+  {
+   "id": "N18",
+   "file": "fixtures/N18_city_astana_points_in_shymkent.json",
+   "expect": "reject",
+   "expected_codes": [
+    "outside_bbox",
+    "foreign_snapshot"
+   ],
+   "spec": "не переносить точки между городами",
+   "rationale": "город сменён, координаты остались шымкентские",
+   "advisory": false,
+   "city": "astana",
+   "category": "school",
+   "recipe": null,
+   "bytes": 446,
+   "sha256": "cca0fb17e963600205af663542102e1b3ecd0d410b1f75cc7b850568054999da"
+  },
+  {
+   "id": "N19",
+   "file": "fixtures/N19_unknown_schema_version.json",
+   "expect": "reject",
+   "expected_codes": [
+    "unknown_version"
+   ],
+   "spec": "неизвестная версия",
+   "rationale": "",
+   "advisory": false,
+   "city": "shymkent",
+   "category": "school",
+   "recipe": null,
+   "bytes": 448,
+   "sha256": "6c73b3aa51b3d2a4e5623e8e6abb86e73a2a4ef1e6d3b966be9efc2e9967e982"
+  },
+  {
+   "id": "N20",
+   "file": "fixtures/N20_missing_schema_version.json",
+   "expect": "reject",
+   "expected_codes": [
+    "missing_field",
+    "unknown_version"
+   ],
+   "spec": "обязательные поля",
+   "rationale": "",
+   "advisory": false,
+   "city": "shymkent",
+   "category": "school",
+   "recipe": null,
+   "bytes": 411,
+   "sha256": "fa59b3312c67e66fd8f2e92e96dbd69e40ceca65f99fc45d36830e3437741c5f"
+  },
+  {
+   "id": "N21",
+   "file": "fixtures/N21_category_not_in_mvp.json",
+   "expect": "reject",
+   "expected_codes": [
+    "bad_category"
+   ],
+   "spec": "категории MVP: school, outpatient_clinic",
+   "rationale": "",
+   "advisory": false,
+   "city": "shymkent",
+   "category": "school",
+   "recipe": null,
+   "bytes": 452,
+   "sha256": "920686926b40b8a39080bd6d766995b01377645bc147e4fb314488f85608dbe3"
+  },
+  {
+   "id": "N22",
+   "file": "fixtures/N22_project_category_mismatch.json",
+   "expect": "reject",
+   "expected_codes": [
+    "category_mismatch"
+   ],
+   "spec": "категория проекта совпадает с category",
+   "rationale": "",
+   "advisory": false,
+   "city": "shymkent",
+   "category": "school",
+   "recipe": null,
+   "bytes": 459,
+   "sha256": "f021852ce109e8b6047a3c5901b40cdcd6811fbf743b3eda831892830429cc9b"
+  },
+  {
+   "id": "N23",
+   "file": "fixtures/N23_project_kind_not_hypothetical.json",
+   "expect": "reject",
+   "expected_codes": [
+    "bad_project"
+   ],
+   "spec": "kind: hypothetical",
+   "rationale": "условный объект нельзя выдать за существующий",
+   "advisory": false,
+   "city": "shymkent",
+   "category": "school",
+   "recipe": null,
+   "bytes": 444,
+   "sha256": "e291d32594f5f48eff39ac8419caad7498a1cfc5585db2c50cd21924f3c7133b"
+  },
+  {
+   "id": "N24",
+   "file": "fixtures/N24_point_outside_bbox.json",
+   "expect": "reject",
+   "expected_codes": [
+    "outside_bbox"
+   ],
+   "spec": "вне bbox отклонять",
+   "rationale": "",
+   "advisory": false,
+   "city": "shymkent",
+   "category": "school",
+   "recipe": null,
+   "bytes": 449,
+   "sha256": "cfb6d53c4ba9f0330e064031f62a1f5e322c31679f07f4307d1bfcdc6dc9a445"
+  },
+  {
+   "id": "N25",
+   "file": "fixtures/N25_project_outside_bbox.json",
+   "expect": "reject",
+   "expected_codes": [
+    "outside_bbox"
+   ],
+   "spec": "вне bbox отклонять",
+   "rationale": "",
+   "advisory": false,
+   "city": "shymkent",
+   "category": "school",
+   "recipe": null,
+   "bytes": 446,
+   "sha256": "70735e4eb4f2a6ac688b107af4e389d079ba9fa017dd1b5c22232fcd8bf92fd3"
+  },
+  {
+   "id": "N26",
+   "file": "fixtures/N26_lat_lon_swapped.json",
+   "expect": "reject",
+   "expected_codes": [
+    "outside_bbox",
+    "bad_coordinate"
+   ],
+   "spec": "вход [longitude, latitude]",
+   "rationale": "перепутанный порядок даёт lat=69.6 — вне диапазона/bbox",
+   "advisory": false,
+   "city": "shymkent",
+   "category": "school",
+   "recipe": null,
+   "bytes": 448,
+   "sha256": "d8155e002bdf08f98e691afafa62b1db49cba9f444f713d38d808c819a64e3ae"
+  },
+  {
+   "id": "N27",
+   "file": "fixtures/N27_lon_out_of_range.json",
+   "expect": "reject",
+   "expected_codes": [
+    "bad_coordinate",
+    "outside_bbox"
+   ],
+   "spec": "координаты конечные в диапазоне",
+   "rationale": "",
+   "advisory": false,
+   "city": "shymkent",
+   "category": "school",
+   "recipe": null,
+   "bytes": 330,
+   "sha256": "f3dec59d56c2612e0eb5f0eda34de418c66cfeefc407f553c27f6e69e5ef8ace"
+  },
+  {
+   "id": "N28",
+   "file": "fixtures/N28_coordinate_as_string.json",
+   "expect": "reject",
+   "expected_codes": [
+    "bad_coordinate"
+   ],
+   "spec": "координаты — числа",
+   "rationale": "",
+   "advisory": false,
+   "city": "shymkent",
+   "category": "school",
+   "recipe": null,
+   "bytes": 332,
+   "sha256": "93c27c4c44acf6c0cd8ec8a1d403780994d98afcbac6203d5bd10c2be5cc8e63"
+  },
+  {
+   "id": "N29",
+   "file": "fixtures/N29_coordinate_as_bool.json",
+   "expect": "reject",
+   "expected_codes": [
+    "bad_coordinate"
+   ],
+   "spec": "координаты — числа",
+   "rationale": "",
+   "advisory": false,
+   "city": "shymkent",
+   "category": "school",
+   "recipe": null,
+   "bytes": 329,
+   "sha256": "62990dace63a4c022ba60c7a7cbbd93150a2ad7507f8190b78109362fcb8505e"
+  },
+  {
+   "id": "N30",
+   "file": "fixtures/N30_eleven_points.json",
+   "expect": "reject",
+   "expected_codes": [
+    "too_many_points"
+   ],
+   "spec": "контрольных точек 1..10",
+   "rationale": "",
+   "advisory": false,
+   "city": "shymkent",
+   "category": "school",
+   "recipe": null,
+   "bytes": 1147,
+   "sha256": "84be9953f8e2d064f825e0e0b2b67fe3f7122c50a170d9b5d71cdf46ce453f47"
+  },
+  {
+   "id": "N31",
+   "file": "fixtures/N31_zero_points.json",
+   "expect": "reject",
+   "expected_codes": [
+    "no_points"
+   ],
+   "spec": "1..10 для расчёта/экспорта",
+   "rationale": "пустое состояние UI допустимо, но не импорт пустого сценария",
+   "advisory": false,
+   "city": "shymkent",
+   "category": "school",
+   "recipe": null,
+   "bytes": 271,
+   "sha256": "8668d2bb57d5bf025d4a1280ebb80830621f011127507877211944b149a227b7"
+  },
+  {
+   "id": "N32",
+   "file": "fixtures/N32_two_projects_array.json",
+   "expect": "reject",
+   "expected_codes": [
+    "multiple_projects",
+    "bad_project"
+   ],
+   "spec": "число проектов >1",
+   "rationale": "",
+   "advisory": false,
+   "city": "shymkent",
+   "category": "school",
+   "recipe": null,
+   "bytes": 574,
+   "sha256": "1e0ced45638473c457694744ca0aa22d8490e59ae2ad5d1d8b051b4972f1e6a1"
+  },
+  {
+   "id": "N33",
+   "file": "fixtures/N33_two_projects_extra_key.json",
+   "expect": "reject",
+   "expected_codes": [
+    "multiple_projects",
+    "unknown_field"
+   ],
+   "spec": "число проектов >1",
+   "rationale": "",
+   "advisory": false,
+   "city": "shymkent",
+   "category": "school",
+   "recipe": null,
+   "bytes": 588,
+   "sha256": "354a1577939a6adab536fcf8c55a7da3278bc75f8feb108b96a18b7bb1e57d7b"
+  },
+  {
+   "id": "N34",
+   "file": "fixtures/generated/N34_over_256_KiB.json",
+   "expect": "reject",
+   "expected_codes": [
+    "too_large"
+   ],
+   "spec": "JSON импорта до 256 KiB",
+   "rationale": "на 1 байт больше; размер проверяется до разбора",
+   "advisory": false,
+   "city": "shymkent",
+   "category": "school",
+   "recipe": {
+    "op": "pad",
+    "from": "P01",
+    "total_bytes": 262145
+   },
+   "bytes": 262145,
+   "sha256": "ebf0034c2a321b74502a40a769467a6d830517ecee27a7fac49cc8536543dab6"
+  },
+  {
+   "id": "N35",
+   "file": "fixtures/generated/N35_over_256_KiB_multibyte.json",
+   "expect": "reject",
+   "expected_codes": [
+    "too_large"
+   ],
+   "spec": "JSON импорта до 256 KiB",
+   "rationale": "около 140 тыс. символов, но >256 KiB в UTF-8: считать байты, а не символы",
+   "advisory": false,
+   "city": "shymkent",
+   "category": "school",
+   "recipe": {
+    "op": "insert_label",
+    "from": "P01",
+    "char": "Ж",
+    "count": 140000
+   },
+   "bytes": 280461,
+   "sha256": "baa4b5aa3c90422a38a11fdc1c7b6c79414a4dfb6e43a1837e45b7d382b55b64"
+  },
+  {
+   "id": "N36",
+   "file": "fixtures/N36_html_in_point_id.json",
+   "expect": "reject",
+   "expected_codes": [
+    "bad_id"
+   ],
+   "spec": "строки безопасно как текст; ID ограничены",
+   "rationale": "HTML-подобный ID",
+   "advisory": false,
+   "city": "shymkent",
+   "category": "school",
+   "recipe": null,
+   "bytes": 354,
+   "sha256": "86a59c6b229f12f69862c7f61da7784b36e357182e5323f1d303930fd065aab8"
+  },
+  {
+   "id": "N37",
+   "file": "fixtures/N37_html_label_field.json",
+   "expect": "reject",
+   "expected_codes": [
+    "unknown_field",
+    "unsafe_text"
+   ],
+   "spec": "не принимать внешний код",
+   "rationale": "если поле label поддерживается — только как текст; эталон отклоняет неизвестное поле",
+   "advisory": false,
+   "city": "shymkent",
+   "category": "school",
+   "recipe": null,
+   "bytes": 384,
+   "sha256": "ef2da16b96edb3901dae1475111feada966e83b37129e172ed9a2209568a3032"
+  },
+  {
+   "id": "N38",
+   "file": "fixtures/N38_url_instead_of_points.json",
+   "expect": "reject",
+   "expected_codes": [
+    "bad_points",
+    "external_reference"
+   ],
+   "spec": "не загружать адреса из текста",
+   "rationale": "",
+   "advisory": false,
+   "city": "shymkent",
+   "category": "school",
+   "recipe": null,
+   "bytes": 306,
+   "sha256": "5ea3f71f71b8c860417590e0a081e184e7269b154fdf504cc94badde6b290d87"
+  },
+  {
+   "id": "N39",
+   "file": "fixtures/N39_proto_pollution.json",
+   "expect": "reject",
+   "expected_codes": [
+    "unknown_field"
+   ],
+   "spec": "строгая валидация",
+   "rationale": "ключ __proto__ не должен менять прототип объектов",
+   "advisory": false,
+   "city": "shymkent",
+   "category": "school",
+   "recipe": null,
+   "bytes": 486,
+   "sha256": "e612558e9cbbf7e52f8c7ccdd396af166f5ea5f168d455b0e647254dd12b5569"
+  },
+  {
+   "id": "N40",
+   "file": "fixtures/N40_top_level_array.json",
+   "expect": "reject",
+   "expected_codes": [
+    "bad_root"
+   ],
+   "spec": "контракт — объект",
+   "rationale": "",
+   "advisory": false,
+   "city": "shymkent",
+   "category": "school",
+   "recipe": null,
+   "bytes": 482,
+   "sha256": "7e4102ee1e2b2950b85a53d559d3c9ec6d802098b270ce4422520aeb776fd186"
+  },
+  {
+   "id": "N41",
+   "file": "fixtures/N41_truncated_json.json",
+   "expect": "reject",
+   "expected_codes": [
+    "invalid_json"
+   ],
+   "spec": "строгая валидация",
+   "rationale": "",
+   "advisory": false,
+   "city": "shymkent",
+   "category": "school",
+   "recipe": null,
+   "bytes": 428,
+   "sha256": "257dded95813bff991cf729c35059af47d16bdba57f49a63fa5b560ffe301efd"
+  },
+  {
+   "id": "N42",
+   "file": "fixtures/N42_utf8_bom.json",
+   "expect": "reject_or_accept",
+   "expected_codes": [],
+   "spec": "строгая валидация",
+   "rationale": "advisory: файл из Windows с BOM; допустимо снять BOM или отказать, но не падать",
+   "advisory": true,
+   "city": "shymkent",
+   "category": "school",
+   "recipe": null,
+   "bytes": 451,
+   "sha256": "fb618afcdeada2a02135bf3786fcbaa9573d85994564f1def18c2bf905c24717"
+  }
+ ]
+}

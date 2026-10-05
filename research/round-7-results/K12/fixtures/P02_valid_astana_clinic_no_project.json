@@ -1,0 +1,14 @@
+{
+ "schema_version": "city-whatif-v1",
+ "city_id": "astana",
+ "source_snapshot": "__SNAPSHOT__",
+ "category": "outpatient_clinic",
+ "control_points": [
+  {
+   "id": "cp1",
+   "lon": 71.43,
+   "lat": 51.17
+  }
+ ],
+ "proposed_object": null
+}

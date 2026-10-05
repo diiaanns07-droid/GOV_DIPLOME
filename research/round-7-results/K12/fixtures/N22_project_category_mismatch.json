@@ -1,0 +1,30 @@
+{
+ "schema_version": "city-whatif-v1",
+ "city_id": "shymkent",
+ "source_snapshot": "__SNAPSHOT__",
+ "category": "school",
+ "control_points": [
+  {
+   "id": "cp1",
+   "lon": 69.6,
+   "lat": 42.31
+  },
+  {
+   "id": "cp2",
+   "lon": 69.605,
+   "lat": 42.315
+  },
+  {
+   "id": "cp3",
+   "lon": 69.612,
+   "lat": 42.32
+  }
+ ],
+ "proposed_object": {
+  "id": "proj1",
+  "lon": 69.608,
+  "lat": 42.312,
+  "category": "outpatient_clinic",
+  "kind": "hypothetical"
+ }
+}

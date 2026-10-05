@@ -1,0 +1,1575 @@
+{
+ "summary": {
+  "adapter": "naive_adapter.cjs",
+  "app_root": "build_c58a3b2",
+  "index": "k12r7-city-whatif-import-stress-v1",
+  "total": 48,
+  "pass": 12,
+  "fail": [
+   "P01",
+   "P02",
+   "P03",
+   "P04",
+   "P05",
+   "P06",
+   "N04",
+   "N05",
+   "N06",
+   "N07",
+   "N08",
+   "N09",
+   "N10",
+   "N11",
+   "N12",
+   "N13",
+   "N14",
+   "N18",
+   "N21",
+   "N22",
+   "N23",
+   "N24",
+   "N25",
+   "N26",
+   "N27",
+   "N28",
+   "N29",
+   "N30",
+   "N32",
+   "N33",
+   "N34",
+   "N35",
+   "N36",
+   "N37",
+   "N39"
+  ],
+  "advisory_fail": [
+   "N15"
+  ],
+  "error": [],
+  "code_mismatch": [
+   "N04:null",
+   "N05:null",
+   "N06:null",
+   "N07:null",
+   "N08:null",
+   "N09:null",
+   "N10:null",
+   "N11:null",
+   "N12:null",
+   "N13:null",
+   "N14:null",
+   "N15:null",
+   "N18:null",
+   "N21:null",
+   "N22:null",
+   "N23:null",
+   "N24:null",
+   "N25:null",
+   "N26:null",
+   "N27:null",
+   "N28:null",
+   "N29:null",
+   "N30:null",
+   "N32:null",
+   "N33:null",
+   "N34:null",
+   "N35:null",
+   "N36:null",
+   "N37:null",
+   "N38:no_points",
+   "N39:null",
+   "N40:unknown_version"
+  ],
+  "network_attempts": 0
+ },
+ "results": [
+  {
+   "id": "P01",
+   "expect": "accept",
+   "advisory": false,
+   "expected_codes": [],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": false,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "accepted": true,
+    "recomputed_equals_oracle": false
+   },
+   "bytes": 457,
+   "outcome": "accepted",
+   "code": null,
+   "oracle_rows": [
+    {
+     "id": "cp1",
+     "before_m": 511.329,
+     "after_m": 511.329,
+     "delta_m": 0,
+     "nearest_before_id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+    },
+    {
+     "id": "cp2",
+     "before_m": 255.476,
+     "after_m": 255.476,
+     "delta_m": 0,
+     "nearest_before_id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+    },
+    {
+     "id": "cp3",
+     "before_m": 125.33,
+     "after_m": 125.33,
+     "delta_m": 0,
+     "nearest_before_id": "01961e84-815f-4bd1-85c3-6bf1734256ec"
+    }
+   ],
+   "failed_checks": [
+    "passed_state_not_mutated",
+    "recomputed_equals_oracle"
+   ],
+   "status": "FAIL"
+  },
+  {
+   "id": "P02",
+   "expect": "accept",
+   "advisory": false,
+   "expected_codes": [],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": false,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "accepted": true,
+    "recomputed_equals_oracle": false
+   },
+   "bytes": 257,
+   "outcome": "accepted",
+   "code": null,
+   "oracle_rows": [
+    {
+     "id": "cp1",
+     "before_m": 297.036,
+     "after_m": 297.036,
+     "delta_m": 0,
+     "nearest_before_id": "410f0193-f0bc-4553-bee5-660aab0287a5"
+    }
+   ],
+   "failed_checks": [
+    "passed_state_not_mutated",
+    "recomputed_equals_oracle"
+   ],
+   "status": "FAIL"
+  },
+  {
+   "id": "P03",
+   "expect": "accept",
+   "advisory": false,
+   "expected_codes": [],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": false,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "accepted": true,
+    "recomputed_equals_oracle": false
+   },
+   "bytes": 666,
+   "outcome": "accepted",
+   "code": null,
+   "oracle_rows": [
+    {
+     "id": "cp1",
+     "before_m": 511.329,
+     "after_m": 511.329,
+     "delta_m": 0,
+     "nearest_before_id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+    },
+    {
+     "id": "cp2",
+     "before_m": 255.476,
+     "after_m": 255.476,
+     "delta_m": 0,
+     "nearest_before_id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+    },
+    {
+     "id": "cp3",
+     "before_m": 125.33,
+     "after_m": 125.33,
+     "delta_m": 0,
+     "nearest_before_id": "01961e84-815f-4bd1-85c3-6bf1734256ec"
+    }
+   ],
+   "failed_checks": [
+    "passed_state_not_mutated",
+    "recomputed_equals_oracle"
+   ],
+   "status": "FAIL"
+  },
+  {
+   "id": "P04",
+   "expect": "accept",
+   "advisory": false,
+   "expected_codes": [],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": false,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "accepted": true,
+    "recomputed_equals_oracle": false
+   },
+   "bytes": 1072,
+   "outcome": "accepted",
+   "code": null,
+   "oracle_rows": [
+    {
+     "id": "cp1",
+     "before_m": 770.065,
+     "after_m": 770.065,
+     "delta_m": 0,
+     "nearest_before_id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+    },
+    {
+     "id": "cp2",
+     "before_m": 713.827,
+     "after_m": 713.827,
+     "delta_m": 0,
+     "nearest_before_id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+    },
+    {
+     "id": "cp3",
+     "before_m": 675.667,
+     "after_m": 675.667,
+     "delta_m": 0,
+     "nearest_before_id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+    },
+    {
+     "id": "cp4",
+     "before_m": 658.733,
+     "after_m": 658.733,
+     "delta_m": 0,
+     "nearest_before_id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+    },
+    {
+     "id": "cp5",
+     "before_m": 664.649,
+     "after_m": 664.649,
+     "delta_m": 0,
+     "nearest_before_id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+    },
+    {
+     "id": "cp6",
+     "before_m": 692.831,
+     "after_m": 627.434,
+     "delta_m": 65.397,
+     "nearest_before_id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+    },
+    {
+     "id": "cp7",
+     "before_m": 740.742,
+     "after_m": 533.327,
+     "delta_m": 207.415,
+     "nearest_before_id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+    },
+    {
+     "id": "cp8",
+     "before_m": 804.865,
+     "after_m": 453.464,
+     "delta_m": 351.401,
+     "nearest_before_id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+    },
+    {
+     "id": "cp9",
+     "before_m": 832.31,
+     "after_m": 396.546,
+     "delta_m": 435.763,
+     "nearest_before_id": "18df815b-170a-437c-977f-0769690315d4"
+    },
+    {
+     "id": "cp10",
+     "before_m": 732.423,
+     "after_m": 373.225,
+     "delta_m": 359.199,
+     "nearest_before_id": "18df815b-170a-437c-977f-0769690315d4"
+    }
+   ],
+   "failed_checks": [
+    "passed_state_not_mutated",
+    "recomputed_equals_oracle"
+   ],
+   "status": "FAIL"
+  },
+  {
+   "id": "P05",
+   "expect": "accept",
+   "advisory": false,
+   "expected_codes": [],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": false,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "accepted": true,
+    "recomputed_equals_oracle": false
+   },
+   "bytes": 262144,
+   "outcome": "accepted",
+   "code": null,
+   "oracle_rows": [
+    {
+     "id": "cp1",
+     "before_m": 511.329,
+     "after_m": 511.329,
+     "delta_m": 0,
+     "nearest_before_id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+    },
+    {
+     "id": "cp2",
+     "before_m": 255.476,
+     "after_m": 255.476,
+     "delta_m": 0,
+     "nearest_before_id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+    },
+    {
+     "id": "cp3",
+     "before_m": 125.33,
+     "after_m": 125.33,
+     "delta_m": 0,
+     "nearest_before_id": "01961e84-815f-4bd1-85c3-6bf1734256ec"
+    }
+   ],
+   "failed_checks": [
+    "passed_state_not_mutated",
+    "recomputed_equals_oracle"
+   ],
+   "status": "FAIL"
+  },
+  {
+   "id": "P06",
+   "expect": "accept",
+   "advisory": false,
+   "expected_codes": [],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": false,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "accepted": true,
+    "recomputed_equals_oracle": false
+   },
+   "bytes": 454,
+   "outcome": "accepted",
+   "code": null,
+   "oracle_rows": [
+    {
+     "id": "cp1",
+     "before_m": 511.329,
+     "after_m": 0,
+     "delta_m": 511.329,
+     "nearest_before_id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+    },
+    {
+     "id": "cp2",
+     "before_m": 255.476,
+     "after_m": 255.476,
+     "delta_m": 0,
+     "nearest_before_id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+    },
+    {
+     "id": "cp3",
+     "before_m": 125.33,
+     "after_m": 125.33,
+     "delta_m": 0,
+     "nearest_before_id": "01961e84-815f-4bd1-85c3-6bf1734256ec"
+    }
+   ],
+   "failed_checks": [
+    "passed_state_not_mutated",
+    "recomputed_equals_oracle"
+   ],
+   "status": "FAIL"
+  },
+  {
+   "id": "N01",
+   "expect": "reject",
+   "advisory": false,
+   "expected_codes": [
+    "invalid_json",
+    "nonfinite_number"
+   ],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": true,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "rejected": true,
+    "returned_state_unchanged": true,
+    "current_state_unchanged": true,
+    "compute_unchanged": true
+   },
+   "bytes": 456,
+   "outcome": "rejected",
+   "code": "invalid_json",
+   "code_match": true,
+   "failed_checks": [],
+   "status": "PASS"
+  },
+  {
+   "id": "N02",
+   "expect": "reject",
+   "advisory": false,
+   "expected_codes": [
+    "invalid_json",
+    "nonfinite_number"
+   ],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": true,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "rejected": true,
+    "returned_state_unchanged": true,
+    "current_state_unchanged": true,
+    "compute_unchanged": true
+   },
+   "bytes": 459,
+   "outcome": "rejected",
+   "code": "invalid_json",
+   "code_match": true,
+   "failed_checks": [],
+   "status": "PASS"
+  },
+  {
+   "id": "N03",
+   "expect": "reject",
+   "advisory": false,
+   "expected_codes": [
+    "invalid_json",
+    "nonfinite_number"
+   ],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": true,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "rejected": true,
+    "returned_state_unchanged": true,
+    "current_state_unchanged": true,
+    "compute_unchanged": true
+   },
+   "bytes": 460,
+   "outcome": "rejected",
+   "code": "invalid_json",
+   "code_match": true,
+   "failed_checks": [],
+   "status": "PASS"
+  },
+  {
+   "id": "N04",
+   "expect": "reject",
+   "advisory": false,
+   "expected_codes": [
+    "nonfinite_number"
+   ],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": false,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "rejected": false,
+    "returned_state_unchanged": false,
+    "current_state_unchanged": true,
+    "compute_unchanged": true
+   },
+   "bytes": 458,
+   "outcome": "accepted",
+   "code": null,
+   "code_match": false,
+   "failed_checks": [
+    "passed_state_not_mutated",
+    "rejected",
+    "returned_state_unchanged"
+   ],
+   "status": "FAIL"
+  },
+  {
+   "id": "N05",
+   "expect": "reject",
+   "advisory": false,
+   "expected_codes": [
+    "duplicate_key"
+   ],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": false,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "rejected": false,
+    "returned_state_unchanged": false,
+    "current_state_unchanged": true,
+    "compute_unchanged": true
+   },
+   "bytes": 490,
+   "outcome": "accepted",
+   "code": null,
+   "code_match": false,
+   "failed_checks": [
+    "passed_state_not_mutated",
+    "rejected",
+    "returned_state_unchanged"
+   ],
+   "status": "FAIL"
+  },
+  {
+   "id": "N06",
+   "expect": "reject",
+   "advisory": false,
+   "expected_codes": [
+    "duplicate_key"
+   ],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": false,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "rejected": false,
+    "returned_state_unchanged": false,
+    "current_state_unchanged": true,
+    "compute_unchanged": true
+   },
+   "bytes": 470,
+   "outcome": "accepted",
+   "code": null,
+   "code_match": false,
+   "failed_checks": [
+    "passed_state_not_mutated",
+    "rejected",
+    "returned_state_unchanged"
+   ],
+   "status": "FAIL"
+  },
+  {
+   "id": "N07",
+   "expect": "reject",
+   "advisory": false,
+   "expected_codes": [
+    "duplicate_key"
+   ],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": true,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "rejected": false,
+    "returned_state_unchanged": true,
+    "current_state_unchanged": true,
+    "compute_unchanged": true
+   },
+   "bytes": 469,
+   "outcome": "accepted",
+   "code": null,
+   "code_match": false,
+   "failed_checks": [
+    "rejected"
+   ],
+   "status": "FAIL"
+  },
+  {
+   "id": "N08",
+   "expect": "reject",
+   "advisory": false,
+   "expected_codes": [
+    "duplicate_id"
+   ],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": false,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "rejected": false,
+    "returned_state_unchanged": false,
+    "current_state_unchanged": true,
+    "compute_unchanged": false
+   },
+   "bytes": 457,
+   "outcome": "accepted",
+   "code": null,
+   "code_match": false,
+   "failed_checks": [
+    "passed_state_not_mutated",
+    "rejected",
+    "returned_state_unchanged",
+    "compute_unchanged"
+   ],
+   "status": "FAIL"
+  },
+  {
+   "id": "N09",
+   "expect": "reject",
+   "advisory": false,
+   "expected_codes": [
+    "duplicate_id"
+   ],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": false,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "rejected": false,
+    "returned_state_unchanged": false,
+    "current_state_unchanged": true,
+    "compute_unchanged": true
+   },
+   "bytes": 455,
+   "outcome": "accepted",
+   "code": null,
+   "code_match": false,
+   "failed_checks": [
+    "passed_state_not_mutated",
+    "rejected",
+    "returned_state_unchanged"
+   ],
+   "status": "FAIL"
+  },
+  {
+   "id": "N10",
+   "expect": "reject",
+   "advisory": false,
+   "expected_codes": [
+    "bad_id"
+   ],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": false,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "rejected": false,
+    "returned_state_unchanged": false,
+    "current_state_unchanged": true,
+    "compute_unchanged": false
+   },
+   "bytes": 635,
+   "outcome": "accepted",
+   "code": null,
+   "code_match": false,
+   "failed_checks": [
+    "passed_state_not_mutated",
+    "rejected",
+    "returned_state_unchanged",
+    "compute_unchanged"
+   ],
+   "status": "FAIL"
+  },
+  {
+   "id": "N11",
+   "expect": "reject",
+   "advisory": false,
+   "expected_codes": [
+    "foreign_snapshot"
+   ],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": false,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "rejected": false,
+    "returned_state_unchanged": false,
+    "current_state_unchanged": true,
+    "compute_unchanged": true
+   },
+   "bytes": 455,
+   "outcome": "accepted",
+   "code": null,
+   "code_match": false,
+   "failed_checks": [
+    "passed_state_not_mutated",
+    "rejected",
+    "returned_state_unchanged"
+   ],
+   "status": "FAIL"
+  },
+  {
+   "id": "N12",
+   "expect": "reject",
+   "advisory": false,
+   "expected_codes": [
+    "foreign_snapshot"
+   ],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": false,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "rejected": false,
+    "returned_state_unchanged": false,
+    "current_state_unchanged": true,
+    "compute_unchanged": true
+   },
+   "bytes": 507,
+   "outcome": "accepted",
+   "code": null,
+   "code_match": false,
+   "failed_checks": [
+    "passed_state_not_mutated",
+    "rejected",
+    "returned_state_unchanged"
+   ],
+   "status": "FAIL"
+  },
+  {
+   "id": "N13",
+   "expect": "reject",
+   "advisory": false,
+   "expected_codes": [
+    "foreign_snapshot"
+   ],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": false,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "rejected": false,
+    "returned_state_unchanged": false,
+    "current_state_unchanged": true,
+    "compute_unchanged": true
+   },
+   "bytes": 447,
+   "outcome": "accepted",
+   "code": null,
+   "code_match": false,
+   "failed_checks": [
+    "passed_state_not_mutated",
+    "rejected",
+    "returned_state_unchanged"
+   ],
+   "status": "FAIL"
+  },
+  {
+   "id": "N14",
+   "expect": "reject",
+   "advisory": false,
+   "expected_codes": [
+    "foreign_snapshot",
+    "external_reference"
+   ],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": false,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "rejected": false,
+    "returned_state_unchanged": false,
+    "current_state_unchanged": true,
+    "compute_unchanged": true
+   },
+   "bytes": 473,
+   "outcome": "accepted",
+   "code": null,
+   "code_match": false,
+   "failed_checks": [
+    "passed_state_not_mutated",
+    "rejected",
+    "returned_state_unchanged"
+   ],
+   "status": "FAIL"
+  },
+  {
+   "id": "N15",
+   "expect": "reject",
+   "advisory": true,
+   "expected_codes": [
+    "foreign_snapshot"
+   ],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": false,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "rejected": false,
+    "returned_state_unchanged": false,
+    "current_state_unchanged": true,
+    "compute_unchanged": true
+   },
+   "bytes": 468,
+   "outcome": "accepted",
+   "code": null,
+   "code_match": false,
+   "failed_checks": [
+    "passed_state_not_mutated",
+    "rejected",
+    "returned_state_unchanged"
+   ],
+   "status": "ADVISORY_FAIL"
+  },
+  {
+   "id": "N16",
+   "expect": "reject",
+   "advisory": false,
+   "expected_codes": [
+    "unknown_city"
+   ],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": true,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "rejected": true,
+    "returned_state_unchanged": true,
+    "current_state_unchanged": true,
+    "compute_unchanged": true
+   },
+   "bytes": 455,
+   "outcome": "rejected",
+   "code": "unknown_city",
+   "code_match": true,
+   "failed_checks": [],
+   "status": "PASS"
+  },
+  {
+   "id": "N17",
+   "expect": "reject",
+   "advisory": false,
+   "expected_codes": [
+    "unknown_city"
+   ],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": true,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "rejected": true,
+    "returned_state_unchanged": true,
+    "current_state_unchanged": true,
+    "compute_unchanged": true
+   },
+   "bytes": 458,
+   "outcome": "rejected",
+   "code": "unknown_city",
+   "code_match": true,
+   "failed_checks": [],
+   "status": "PASS"
+  },
+  {
+   "id": "N18",
+   "expect": "reject",
+   "advisory": false,
+   "expected_codes": [
+    "outside_bbox",
+    "foreign_snapshot"
+   ],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": false,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "rejected": false,
+    "returned_state_unchanged": false,
+    "current_state_unchanged": true,
+    "compute_unchanged": true
+   },
+   "bytes": 453,
+   "outcome": "accepted",
+   "code": null,
+   "code_match": false,
+   "failed_checks": [
+    "passed_state_not_mutated",
+    "rejected",
+    "returned_state_unchanged"
+   ],
+   "status": "FAIL"
+  },
+  {
+   "id": "N19",
+   "expect": "reject",
+   "advisory": false,
+   "expected_codes": [
+    "unknown_version"
+   ],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": true,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "rejected": true,
+    "returned_state_unchanged": true,
+    "current_state_unchanged": true,
+    "compute_unchanged": true
+   },
+   "bytes": 457,
+   "outcome": "rejected",
+   "code": "unknown_version",
+   "code_match": true,
+   "failed_checks": [],
+   "status": "PASS"
+  },
+  {
+   "id": "N20",
+   "expect": "reject",
+   "advisory": false,
+   "expected_codes": [
+    "missing_field",
+    "unknown_version"
+   ],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": true,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "rejected": true,
+    "returned_state_unchanged": true,
+    "current_state_unchanged": true,
+    "compute_unchanged": true
+   },
+   "bytes": 420,
+   "outcome": "rejected",
+   "code": "unknown_version",
+   "code_match": true,
+   "failed_checks": [],
+   "status": "PASS"
+  },
+  {
+   "id": "N21",
+   "expect": "reject",
+   "advisory": false,
+   "expected_codes": [
+    "bad_category"
+   ],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": false,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "rejected": false,
+    "returned_state_unchanged": false,
+    "current_state_unchanged": true,
+    "compute_unchanged": true
+   },
+   "bytes": 461,
+   "outcome": "accepted",
+   "code": null,
+   "code_match": false,
+   "failed_checks": [
+    "passed_state_not_mutated",
+    "rejected",
+    "returned_state_unchanged"
+   ],
+   "status": "FAIL"
+  },
+  {
+   "id": "N22",
+   "expect": "reject",
+   "advisory": false,
+   "expected_codes": [
+    "category_mismatch"
+   ],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": false,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "rejected": false,
+    "returned_state_unchanged": false,
+    "current_state_unchanged": true,
+    "compute_unchanged": true
+   },
+   "bytes": 468,
+   "outcome": "accepted",
+   "code": null,
+   "code_match": false,
+   "failed_checks": [
+    "passed_state_not_mutated",
+    "rejected",
+    "returned_state_unchanged"
+   ],
+   "status": "FAIL"
+  },
+  {
+   "id": "N23",
+   "expect": "reject",
+   "advisory": false,
+   "expected_codes": [
+    "bad_project"
+   ],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": false,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "rejected": false,
+    "returned_state_unchanged": false,
+    "current_state_unchanged": true,
+    "compute_unchanged": true
+   },
+   "bytes": 453,
+   "outcome": "accepted",
+   "code": null,
+   "code_match": false,
+   "failed_checks": [
+    "passed_state_not_mutated",
+    "rejected",
+    "returned_state_unchanged"
+   ],
+   "status": "FAIL"
+  },
+  {
+   "id": "N24",
+   "expect": "reject",
+   "advisory": false,
+   "expected_codes": [
+    "outside_bbox"
+   ],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": false,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "rejected": false,
+    "returned_state_unchanged": false,
+    "current_state_unchanged": true,
+    "compute_unchanged": true
+   },
+   "bytes": 458,
+   "outcome": "accepted",
+   "code": null,
+   "code_match": false,
+   "failed_checks": [
+    "passed_state_not_mutated",
+    "rejected",
+    "returned_state_unchanged"
+   ],
+   "status": "FAIL"
+  },
+  {
+   "id": "N25",
+   "expect": "reject",
+   "advisory": false,
+   "expected_codes": [
+    "outside_bbox"
+   ],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": false,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "rejected": false,
+    "returned_state_unchanged": false,
+    "current_state_unchanged": true,
+    "compute_unchanged": true
+   },
+   "bytes": 455,
+   "outcome": "accepted",
+   "code": null,
+   "code_match": false,
+   "failed_checks": [
+    "passed_state_not_mutated",
+    "rejected",
+    "returned_state_unchanged"
+   ],
+   "status": "FAIL"
+  },
+  {
+   "id": "N26",
+   "expect": "reject",
+   "advisory": false,
+   "expected_codes": [
+    "outside_bbox",
+    "bad_coordinate"
+   ],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": false,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "rejected": false,
+    "returned_state_unchanged": false,
+    "current_state_unchanged": true,
+    "compute_unchanged": true
+   },
+   "bytes": 457,
+   "outcome": "accepted",
+   "code": null,
+   "code_match": false,
+   "failed_checks": [
+    "passed_state_not_mutated",
+    "rejected",
+    "returned_state_unchanged"
+   ],
+   "status": "FAIL"
+  },
+  {
+   "id": "N27",
+   "expect": "reject",
+   "advisory": false,
+   "expected_codes": [
+    "bad_coordinate",
+    "outside_bbox"
+   ],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": false,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "rejected": false,
+    "returned_state_unchanged": false,
+    "current_state_unchanged": true,
+    "compute_unchanged": false
+   },
+   "bytes": 339,
+   "outcome": "accepted",
+   "code": null,
+   "code_match": false,
+   "failed_checks": [
+    "passed_state_not_mutated",
+    "rejected",
+    "returned_state_unchanged",
+    "compute_unchanged"
+   ],
+   "status": "FAIL"
+  },
+  {
+   "id": "N28",
+   "expect": "reject",
+   "advisory": false,
+   "expected_codes": [
+    "bad_coordinate"
+   ],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": false,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "rejected": false,
+    "returned_state_unchanged": false,
+    "current_state_unchanged": true,
+    "compute_unchanged": false
+   },
+   "bytes": 341,
+   "outcome": "accepted",
+   "code": null,
+   "code_match": false,
+   "failed_checks": [
+    "passed_state_not_mutated",
+    "rejected",
+    "returned_state_unchanged",
+    "compute_unchanged"
+   ],
+   "status": "FAIL"
+  },
+  {
+   "id": "N29",
+   "expect": "reject",
+   "advisory": false,
+   "expected_codes": [
+    "bad_coordinate"
+   ],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": false,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "rejected": false,
+    "returned_state_unchanged": false,
+    "current_state_unchanged": true,
+    "compute_unchanged": false
+   },
+   "bytes": 338,
+   "outcome": "accepted",
+   "code": null,
+   "code_match": false,
+   "failed_checks": [
+    "passed_state_not_mutated",
+    "rejected",
+    "returned_state_unchanged",
+    "compute_unchanged"
+   ],
+   "status": "FAIL"
+  },
+  {
+   "id": "N30",
+   "expect": "reject",
+   "advisory": false,
+   "expected_codes": [
+    "too_many_points"
+   ],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": false,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "rejected": false,
+    "returned_state_unchanged": false,
+    "current_state_unchanged": true,
+    "compute_unchanged": false
+   },
+   "bytes": 1156,
+   "outcome": "accepted",
+   "code": null,
+   "code_match": false,
+   "failed_checks": [
+    "passed_state_not_mutated",
+    "rejected",
+    "returned_state_unchanged",
+    "compute_unchanged"
+   ],
+   "status": "FAIL"
+  },
+  {
+   "id": "N31",
+   "expect": "reject",
+   "advisory": false,
+   "expected_codes": [
+    "no_points"
+   ],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": true,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "rejected": true,
+    "returned_state_unchanged": true,
+    "current_state_unchanged": true,
+    "compute_unchanged": true
+   },
+   "bytes": 280,
+   "outcome": "rejected",
+   "code": "no_points",
+   "code_match": true,
+   "failed_checks": [],
+   "status": "PASS"
+  },
+  {
+   "id": "N32",
+   "expect": "reject",
+   "advisory": false,
+   "expected_codes": [
+    "multiple_projects",
+    "bad_project"
+   ],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": false,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "rejected": false,
+    "returned_state_unchanged": false,
+    "current_state_unchanged": true,
+    "compute_unchanged": true
+   },
+   "bytes": 583,
+   "outcome": "accepted",
+   "code": null,
+   "code_match": false,
+   "failed_checks": [
+    "passed_state_not_mutated",
+    "rejected",
+    "returned_state_unchanged"
+   ],
+   "status": "FAIL"
+  },
+  {
+   "id": "N33",
+   "expect": "reject",
+   "advisory": false,
+   "expected_codes": [
+    "multiple_projects",
+    "unknown_field"
+   ],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": true,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "rejected": false,
+    "returned_state_unchanged": true,
+    "current_state_unchanged": true,
+    "compute_unchanged": true
+   },
+   "bytes": 597,
+   "outcome": "accepted",
+   "code": null,
+   "code_match": false,
+   "failed_checks": [
+    "rejected"
+   ],
+   "status": "FAIL"
+  },
+  {
+   "id": "N34",
+   "expect": "reject",
+   "advisory": false,
+   "expected_codes": [
+    "too_large"
+   ],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": true,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "rejected": false,
+    "returned_state_unchanged": true,
+    "current_state_unchanged": true,
+    "compute_unchanged": true
+   },
+   "bytes": 262145,
+   "outcome": "accepted",
+   "code": null,
+   "code_match": false,
+   "failed_checks": [
+    "rejected"
+   ],
+   "status": "FAIL"
+  },
+  {
+   "id": "N35",
+   "expect": "reject",
+   "advisory": false,
+   "expected_codes": [
+    "too_large"
+   ],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": false,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "rejected": false,
+    "returned_state_unchanged": false,
+    "current_state_unchanged": true,
+    "compute_unchanged": true
+   },
+   "bytes": 280470,
+   "outcome": "accepted",
+   "code": null,
+   "code_match": false,
+   "failed_checks": [
+    "passed_state_not_mutated",
+    "rejected",
+    "returned_state_unchanged"
+   ],
+   "status": "FAIL"
+  },
+  {
+   "id": "N36",
+   "expect": "reject",
+   "advisory": false,
+   "expected_codes": [
+    "bad_id"
+   ],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": false,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "rejected": false,
+    "returned_state_unchanged": false,
+    "current_state_unchanged": true,
+    "compute_unchanged": false
+   },
+   "bytes": 363,
+   "outcome": "accepted",
+   "code": null,
+   "code_match": false,
+   "failed_checks": [
+    "passed_state_not_mutated",
+    "rejected",
+    "returned_state_unchanged",
+    "compute_unchanged"
+   ],
+   "status": "FAIL"
+  },
+  {
+   "id": "N37",
+   "expect": "reject",
+   "advisory": false,
+   "expected_codes": [
+    "unknown_field",
+    "unsafe_text"
+   ],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": false,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "rejected": false,
+    "returned_state_unchanged": false,
+    "current_state_unchanged": true,
+    "compute_unchanged": false
+   },
+   "bytes": 393,
+   "outcome": "accepted",
+   "code": null,
+   "code_match": false,
+   "failed_checks": [
+    "passed_state_not_mutated",
+    "rejected",
+    "returned_state_unchanged",
+    "compute_unchanged"
+   ],
+   "status": "FAIL"
+  },
+  {
+   "id": "N38",
+   "expect": "reject",
+   "advisory": false,
+   "expected_codes": [
+    "bad_points",
+    "external_reference"
+   ],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": true,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "rejected": true,
+    "returned_state_unchanged": true,
+    "current_state_unchanged": true,
+    "compute_unchanged": true
+   },
+   "bytes": 315,
+   "outcome": "rejected",
+   "code": "no_points",
+   "code_match": false,
+   "failed_checks": [],
+   "status": "PASS"
+  },
+  {
+   "id": "N39",
+   "expect": "reject",
+   "advisory": false,
+   "expected_codes": [
+    "unknown_field"
+   ],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": true,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "rejected": false,
+    "returned_state_unchanged": true,
+    "current_state_unchanged": true,
+    "compute_unchanged": true
+   },
+   "bytes": 495,
+   "outcome": "accepted",
+   "code": null,
+   "code_match": false,
+   "failed_checks": [
+    "rejected"
+   ],
+   "status": "FAIL"
+  },
+  {
+   "id": "N40",
+   "expect": "reject",
+   "advisory": false,
+   "expected_codes": [
+    "bad_root"
+   ],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": true,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "rejected": true,
+    "returned_state_unchanged": true,
+    "current_state_unchanged": true,
+    "compute_unchanged": true
+   },
+   "bytes": 491,
+   "outcome": "rejected",
+   "code": "unknown_version",
+   "code_match": false,
+   "failed_checks": [],
+   "status": "PASS"
+  },
+  {
+   "id": "N41",
+   "expect": "reject",
+   "advisory": false,
+   "expected_codes": [
+    "invalid_json"
+   ],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": true,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "rejected": true,
+    "returned_state_unchanged": true,
+    "current_state_unchanged": true,
+    "compute_unchanged": true
+   },
+   "bytes": 437,
+   "outcome": "rejected",
+   "code": "invalid_json",
+   "code_match": true,
+   "failed_checks": [],
+   "status": "PASS"
+  },
+  {
+   "id": "N42",
+   "expect": "reject_or_accept",
+   "advisory": true,
+   "expected_codes": [],
+   "checks": {
+    "no_exception": true,
+    "passed_state_not_mutated": true,
+    "no_network": true,
+    "prototype_unchanged": true,
+    "no_new_globals": true,
+    "no_crash": true,
+    "returned_state_unchanged": true
+   },
+   "bytes": 460,
+   "outcome": "rejected",
+   "code": "invalid_json",
+   "failed_checks": [],
+   "status": "PASS"
+  }
+ ]
+}
