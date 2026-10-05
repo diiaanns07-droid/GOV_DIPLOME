@@ -1,0 +1,22 @@
+{
+ "sunset_to_sunrise(-0.833)": 4301.9,
+ "civil_twilight(-6)": 3930.6,
+ "switch_at_+3deg(early_on/late_off)": 4560.2,
+ "dark_hours_per_day_min_max": [
+  8.72,
+  14.93
+ ],
+ "versions": {
+  "pvlib": "0.16.1",
+  "pandas": "3.0.2"
+ },
+ "inputs": {
+  "lat": 42.32,
+  "lon": 69.6,
+  "alt_m": 500,
+  "tz": "Asia/Almaty (UTC+5 since 2024-03-01, per tzdata \u2014 verify)",
+  "year": 2027,
+  "resolution": "1 min"
+ }
+}
+tz offset check: 5:00:00

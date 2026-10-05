@@ -1,0 +1,115 @@
+{
+  "inputs": {
+    "weather_file": "/home/claude/bdg1/the-building-data-genome-project-master/data/external/weather/weather3.csv",
+    "weather_period": "2014-05-01..2015-04-30 (relabelled)",
+    "reporting_year": "same series +1.5 degC (synthetic)",
+    "A_m2": 5000.0,
+    "H0_W_per_K": 10000.0,
+    "H1_W_per_K": 8000.0,
+    "gains_W_m2": [
+      15.0,
+      2.0
+    ],
+    "setpoints_C": [
+      20.0,
+      16.0
+    ],
+    "heating_on_rule": "5-day mean < +8 degC (assumption)",
+    "shifts": {
+      "one": "8-15",
+      "two": "8-19"
+    }
+  },
+  "baseline_year_heat_gcal": 619.5,
+  "hdd18_baseline_year": 4136,
+  "scenarios_pct_of_weather_adjusted_baseline": {
+    "A_no_change_warmer_year": {
+      "note": "Ничего не менялось, отчётный год теплее на 1.5 °C",
+      "true_envelope_savings_kwh": 0.0,
+      "true_envelope_savings_pct_of_weather_adjusted_baseline": 0.0,
+      "naive_year_on_year": 11.0,
+      "hdd18_fixed": -3.2,
+      "r2_hdd18_baseline": 0.986,
+      "vbdd_prism_like": -1.8,
+      "vbdd_base_c": 12.0,
+      "schedule_aware_physical": 0.0
+    },
+    "B_envelope_retrofit": {
+      "note": "Утепление H -20%",
+      "true_envelope_savings_kwh": 145468.65151814098,
+      "true_envelope_savings_pct_of_weather_adjusted_baseline": 22.4,
+      "naive_year_on_year": 33.4,
+      "hdd18_fixed": 19.2,
+      "r2_hdd18_baseline": 0.986,
+      "vbdd_prism_like": 20.6,
+      "vbdd_base_c": 12.0,
+      "schedule_aware_physical": 22.4
+    },
+    "C_second_shift_only": {
+      "note": "Без модернизации, добавлена вторая смена",
+      "true_envelope_savings_kwh": 0.0,
+      "true_envelope_savings_pct_of_weather_adjusted_baseline": 0.0,
+      "naive_year_on_year": 12.5,
+      "hdd18_fixed": -1.9,
+      "r2_hdd18_baseline": 0.986,
+      "vbdd_prism_like": -0.4,
+      "vbdd_base_c": 12.0,
+      "schedule_aware_physical": 0.0
+    },
+    "D_retrofit_plus_second_shift": {
+      "note": "Утепление и вторая смена одновременно",
+      "true_envelope_savings_kwh": 148341.71818480763,
+      "true_envelope_savings_pct_of_weather_adjusted_baseline": 23.2,
+      "naive_year_on_year": 35.7,
+      "hdd18_fixed": 21.3,
+      "r2_hdd18_baseline": 0.986,
+      "vbdd_prism_like": 22.7,
+      "vbdd_base_c": 12.0,
+      "schedule_aware_physical": 23.2
+    },
+    "E_setback_introduced_only": {
+      "note": "Без модернизации, введено ночное/каникулярное снижение температуры (эксплуатационная мера)",
+      "true_envelope_savings_kwh": 0.0,
+      "true_envelope_savings_pct_of_weather_adjusted_baseline": 0.0,
+      "naive_year_on_year": 30.9,
+      "hdd18_fixed": 14.8,
+      "r2_hdd18_baseline": 0.983,
+      "vbdd_prism_like": 16.1,
+      "vbdd_base_c": 13.0,
+      "schedule_aware_physical": 0.0
+    },
+    "F_retrofit_without_substation_network_driven": {
+      "note": "Утепление, но здание без регулирования (подача по графику сети): учтённое тепло не меняется, растёт перегрев",
+      "true_envelope_savings_kwh": 145468.65151814098,
+      "true_envelope_savings_pct_of_weather_adjusted_baseline": 15.6,
+      "naive_year_on_year": 9.1,
+      "hdd18_fixed": -2.9,
+      "r2_hdd18_baseline": 0.982,
+      "vbdd_prism_like": -2.1,
+      "vbdd_base_c": 13.5,
+      "schedule_aware_physical": -2.8
+    },
+    "G_norm_based_billing": {
+      "note": "Начисление по нормативу (не измерение); утепление выполнено",
+      "true_envelope_savings_kwh": 145468.65151814098,
+      "estimates_kwh": {
+        "naive_year_on_year": 0.0,
+        "hdd18_fixed": -0.0,
+        "r2_hdd18_baseline": null,
+        "vbdd_prism_like": 0.0,
+        "vbdd_base_c": 15.0,
+        "schedule_aware_physical": -72462.4
+      }
+    }
+  },
+  "diagnostics": {
+    "r2_hdd18_metered_with_control": 0.986,
+    "r2_hdd18_network_driven": 0.982,
+    "r2_hdd18_norm_billing": null,
+    "F_mean_indoor_temp_heating_season_after_retrofit_c": 27.0
+  },
+  "versions": {
+    "numpy": "2.4.4",
+    "pandas": "3.0.2"
+  }
+}

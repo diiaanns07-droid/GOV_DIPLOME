@@ -1,0 +1,176 @@
+{
+  "n_school_buildings_used": 105,
+  "tz_breakdown": {
+    "Europe/London": 74,
+    "America/New_York": 15,
+    "America/Chicago": 7,
+    "Asia/Singapore": 4,
+    "America/Denver": 3,
+    "America/Phoenix": 2
+  },
+  "missing_frac_median": 0.0387,
+  "eui_kwh_m2_quantiles": {
+    "0.1": 6.8,
+    "0.25": 11.3,
+    "0.5": 31.5,
+    "0.75": 42.3,
+    "0.9": 54.9
+  },
+  "night_to_day_ratio_quantiles": {
+    "0.1": 0.135,
+    "0.25": 0.165,
+    "0.5": 0.21,
+    "0.75": 0.279,
+    "0.9": 0.39
+  },
+  "corr_spearman_eui_vs_night_ratio": -0.13902135600248808,
+  "E1_holdout_metrics": {
+    "M1_hour_of_week_val_hourly_cvrmse": {
+      "median": 51.6,
+      "p25": 41.9,
+      "p75": 64.4
+    },
+    "M1_hour_of_week_val_nmbe": {
+      "median": -15.3,
+      "p25": -25.9,
+      "p75": -4.4
+    },
+    "M1_hour_of_week_val_daily_cvrmse": {
+      "median": 36.3,
+      "p25": 28.8,
+      "p75": 46.2
+    },
+    "M1_hour_of_week_test_hourly_cvrmse": {
+      "median": 60.9,
+      "p25": 43.8,
+      "p75": 71.9
+    },
+    "M1_hour_of_week_test_nmbe": {
+      "median": -10.0,
+      "p25": -20.3,
+      "p75": -3.6
+    },
+    "M1_hour_of_week_test_daily_cvrmse": {
+      "median": 43.6,
+      "p25": 31.1,
+      "p75": 51.0
+    },
+    "M2_how_plus_temp_val_hourly_cvrmse": {
+      "median": 105.8,
+      "p25": 60.8,
+      "p75": 148.5
+    },
+    "M2_how_plus_temp_val_nmbe": {
+      "median": 54.6,
+      "p25": 17.0,
+      "p75": 70.8
+    },
+    "M2_how_plus_temp_val_daily_cvrmse": {
+      "median": 83.6,
+      "p25": 42.1,
+      "p75": 116.1
+    },
+    "M2_how_plus_temp_test_hourly_cvrmse": {
+      "median": 66.3,
+      "p25": 46.5,
+      "p75": 80.8
+    },
+    "M2_how_plus_temp_test_nmbe": {
+      "median": 23.4,
+      "p25": 5.2,
+      "p75": 32.6
+    },
+    "M2_how_plus_temp_test_daily_cvrmse": {
+      "median": 45.8,
+      "p25": 30.9,
+      "p75": 54.4
+    }
+  },
+  "E1_share_daily_cvrmse_test_le_20pct": {
+    "M1_hour_of_week": 0.02857142857142857,
+    "M2_how_plus_temp": 0.06666666666666667
+  },
+  "E1_M2_test_nmbe_by_relative_month_median": {
+    "8": 31.8,
+    "9": 31.0,
+    "10": 13.5,
+    "11": 22.6
+  },
+  "E1_M2_test_nmbe_by_relative_month_median_UK_only(Dec2014start)": {
+    "8": 47.4,
+    "9": 34.5,
+    "10": 16.8,
+    "11": 25.4
+  },
+  "E2_detection": {
+    "0.1": {
+      "model_detect": 0.082,
+      "model_detect_clean_same_window": 0.067,
+      "rule_detect": 0.554,
+      "rule_detect_clean_same_window": 0.352
+    },
+    "0.25": {
+      "model_detect": 0.082,
+      "model_detect_clean_same_window": 0.061,
+      "rule_detect": 0.899,
+      "rule_detect_clean_same_window": 0.396
+    },
+    "0.5": {
+      "model_detect": 0.122,
+      "model_detect_clean_same_window": 0.07,
+      "rule_detect": 0.977,
+      "rule_detect_clean_same_window": 0.364
+    },
+    "1.0": {
+      "model_detect": 0.204,
+      "model_detect_clean_same_window": 0.061,
+      "rule_detect": 0.996,
+      "rule_detect_clean_same_window": 0.358
+    }
+  },
+  "E2_false_alarm_daily_rate_test_clean": {
+    "model_median": 0.0,
+    "rule_median": 0.13114754098360656
+  },
+  "E3_area_error_top20_overlap": {
+    "sigma_log_0.1": {
+      "mean_overlap_top20pct": 0.879,
+      "p10": 0.81
+    },
+    "sigma_log_0.2": {
+      "mean_overlap_top20pct": 0.763,
+      "p10": 0.667
+    },
+    "sigma_log_0.3": {
+      "mean_overlap_top20pct": 0.675,
+      "p10": 0.571
+    },
+    "sigma_log_0.5": {
+      "mean_overlap_top20pct": 0.56,
+      "p10": 0.476
+    }
+  },
+  "E3_k": 21,
+  "E4_missing_months_abs_err_pct": {
+    "1": {
+      "median": 1.3,
+      "p90": 3.5,
+      "max": 7.9
+    },
+    "2": {
+      "median": 2.0,
+      "p90": 5.4,
+      "max": 13.6
+    },
+    "3": {
+      "median": 2.7,
+      "p90": 6.7,
+      "max": 17.9
+    }
+  },
+  "versions": {
+    "python": "3.12.3",
+    "numpy": "2.4.4",
+    "pandas": "3.0.2"
+  }
+}
