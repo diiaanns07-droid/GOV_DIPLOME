@@ -1,0 +1,1208 @@
+{
+ "meta": {
+  "agent_id": "AST-A04",
+  "topic": "Инфраструктура и пространственная доступность",
+  "city": "astana",
+  "round": "astana-2026-10-05",
+  "searched_at": "2026-10-05T04:08:01Z/2026-10-05T04:40:00Z",
+  "access_limitations": "Нет поиска и браузера; прокси песочницы блокирует все целевые домены, включая google.com (403 host_not_allowed). Реальные данные — только кэш Overpass из STUPITS (osm_base 2026-09-22). Официальные источники Астаны не открыты; проблемы — гипотезы."
+ },
+ "sources": [
+  {
+   "source_id": "AST-A04-S001",
+   "title": "АСТАНА. Второй исследовательский проход. Агент AST-A04 (задание)",
+   "publisher": "Координатор проекта (передан в чате)",
+   "url": null,
+   "published_at": "2026-10-05",
+   "accessed_at": "2026-10-05T04:08:01Z",
+   "source_type": "task_document",
+   "access_status": "read",
+   "notes": "Задание; не источник фактов о городе."
+  },
+  {
+   "source_id": "AST-A04-S002",
+   "title": "Официальный сайт акимата Астаны",
+   "publisher": "gov.kz",
+   "url": "https://www.gov.kz/memleket/entities/astana?lang=ru",
+   "published_at": null,
+   "accessed_at": "2026-10-05T04:08:01Z",
+   "source_type": "official_page",
+   "access_status": "blocked_in_sandbox",
+   "notes": "HTTP 403, x-deny-reason: host_not_allowed (прокси песочницы AST-A04, не свойство сайта)"
+  },
+  {
+   "source_id": "AST-A04-S003",
+   "title": "БНС: динамические ряды по Астане (население/миграция)",
+   "publisher": "Бюро национальной статистики АСПиР РК",
+   "url": "https://stat.gov.kz/ru/region/astana/dynamic-tables/38/",
+   "published_at": null,
+   "accessed_at": "2026-10-05T04:08:01Z",
+   "source_type": "official_statistics",
+   "access_status": "blocked_in_sandbox",
+   "notes": "HTTP 403, x-deny-reason: host_not_allowed (прокси песочницы AST-A04, не свойство сайта)"
+  },
+  {
+   "source_id": "AST-A04-S004",
+   "title": "Портал открытых данных",
+   "publisher": "Портал электронного правительства РК",
+   "url": "https://data.egov.kz/",
+   "published_at": null,
+   "accessed_at": "2026-10-05T04:08:01Z",
+   "source_type": "open_data_portal",
+   "access_status": "blocked_in_sandbox",
+   "notes": "HTTP 403, x-deny-reason: host_not_allowed (прокси песочницы AST-A04, не свойство сайта)"
+  },
+  {
+   "source_id": "AST-A04-S005",
+   "title": "Adilet — ИПС НПА",
+   "publisher": "Министерство юстиции РК",
+   "url": "https://adilet.zan.kz/rus",
+   "published_at": null,
+   "accessed_at": "2026-10-05T04:08:01Z",
+   "source_type": "legal_database",
+   "access_status": "blocked_in_sandbox",
+   "notes": "HTTP 403, x-deny-reason: host_not_allowed (прокси песочницы AST-A04, не свойство сайта)"
+  },
+  {
+   "source_id": "AST-A04-S006",
+   "title": "Overpass API (overpass-api.de, overpass.kumi.systems, maps.mail.ru)",
+   "publisher": "OpenStreetMap community",
+   "url": "https://overpass-api.de/api/status",
+   "published_at": null,
+   "accessed_at": "2026-10-05T04:08:01Z",
+   "source_type": "api",
+   "access_status": "blocked_in_sandbox",
+   "notes": "HTTP 403, x-deny-reason: host_not_allowed (прокси песочницы AST-A04, не свойство сайта); все три зеркала из STUPITS"
+  },
+  {
+   "source_id": "AST-A04-S007",
+   "title": "Geofabrik: экстракт OSM Kazakhstan",
+   "publisher": "Geofabrik GmbH",
+   "url": "https://download.geofabrik.de/asia/kazakhstan.html",
+   "published_at": null,
+   "accessed_at": "2026-10-05T04:08:01Z",
+   "source_type": "data_download",
+   "access_status": "blocked_in_sandbox",
+   "notes": "HTTP 403, x-deny-reason: host_not_allowed (прокси песочницы AST-A04, не свойство сайта)"
+  },
+  {
+   "source_id": "AST-A04-S008",
+   "title": "Nominatim",
+   "publisher": "OpenStreetMap Foundation",
+   "url": "https://nominatim.openstreetmap.org/status",
+   "published_at": null,
+   "accessed_at": "2026-10-05T04:08:01Z",
+   "source_type": "api",
+   "access_status": "blocked_in_sandbox",
+   "notes": "HTTP 403, x-deny-reason: host_not_allowed (прокси песочницы AST-A04, не свойство сайта)"
+  },
+  {
+   "source_id": "AST-A04-S009",
+   "title": "WorldPop Hub",
+   "publisher": "WorldPop",
+   "url": "https://hub.worldpop.org",
+   "published_at": null,
+   "accessed_at": "2026-10-05T04:08:01Z",
+   "source_type": "population_grid",
+   "access_status": "blocked_in_sandbox",
+   "notes": "HTTP 403, x-deny-reason: host_not_allowed (прокси песочницы AST-A04, не свойство сайта)"
+  },
+  {
+   "source_id": "AST-A04-S010",
+   "title": "Global Human Settlement Layer",
+   "publisher": "EC JRC",
+   "url": "https://ghsl.jrc.ec.europa.eu",
+   "published_at": null,
+   "accessed_at": "2026-10-05T04:08:01Z",
+   "source_type": "population_grid",
+   "access_status": "blocked_in_sandbox",
+   "notes": "HTTP 403, x-deny-reason: host_not_allowed (прокси песочницы AST-A04, не свойство сайта)"
+  },
+  {
+   "source_id": "AST-A04-S011",
+   "title": "Humanitarian Data Exchange",
+   "publisher": "UN OCHA",
+   "url": "https://data.humdata.org",
+   "published_at": null,
+   "accessed_at": "2026-10-05T04:08:01Z",
+   "source_type": "data_portal",
+   "access_status": "blocked_in_sandbox",
+   "notes": "HTTP 403, x-deny-reason: host_not_allowed (прокси песочницы AST-A04, не свойство сайта)"
+  },
+  {
+   "source_id": "AST-A04-S012",
+   "title": "2GIS Казахстан (и контроль: google.com)",
+   "publisher": "2GIS",
+   "url": "https://2gis.kz",
+   "published_at": null,
+   "accessed_at": "2026-10-05T04:08:01Z",
+   "source_type": "commercial_map",
+   "access_status": "blocked_in_sandbox",
+   "notes": "HTTP 403, x-deny-reason: host_not_allowed (прокси песочницы AST-A04, не свойство сайта); google.com тоже 403 — общего веб-доступа нет"
+  },
+  {
+   "source_id": "AST-A04-S013",
+   "title": "STUPITS «Аким на 5 часов», архив ветки main",
+   "publisher": "BAITC-Hacks / GitHub",
+   "url": "https://codeload.github.com/BAITC-Hacks/hack-d3b2c613-stupits/zip/refs/heads/main",
+   "published_at": null,
+   "accessed_at": "2026-10-05T04:08:01Z",
+   "source_type": "code_repository",
+   "access_status": "accessed",
+   "notes": "Повторно загружен 2026-10-05: коммит 834a25fb860dd5514d02c9274b70d7bf8a53a79c не изменился; проект не изменялся."
+  },
+  {
+   "source_id": "AST-A04-S014",
+   "title": "Проверка границ AST-A04 на кэше OSM (скрипт и результаты)",
+   "publisher": "AST-A04 (собственный расчёт)",
+   "url": null,
+   "published_at": "2026-10-05",
+   "accessed_at": "2026-10-05T04:20:00Z",
+   "source_type": "experiment",
+   "access_status": "executed",
+   "notes": "AST_A04_osm_boundary_check.py → AST_A04_osm_boundary_results.json; shapely 2.1.2, pyproj 3.8.0, Python 3.12.3."
+  },
+  {
+   "source_id": "AST-A04-S015",
+   "title": "Ответ Overpass: административные отношения admin_level 5–9 в рамке 50.90,71.0,51.5,72.0 (кэш в STUPITS data/geo_sources/astana_districts_overpass.json)",
+   "publisher": "OpenStreetMap contributors (ODbL)",
+   "url": "https://overpass-api.de/api/interpreter?data=%5Bout%3Ajson%5D%5Btimeout%3A25%5D%3Brel%5B%22boundary%22%3D%22administrative%22%5D%5B%22admin_level%22~%22%5E%285%7C6%7C7%7C8%7C9%29%24%22%5D%2850.90%2C71.0%2C51.5%2C72.0%29%3Bout+geom%3B",
+   "published_at": "2026-09-22",
+   "accessed_at": "2026-10-05T04:20:00Z",
+   "source_type": "community_geodata",
+   "access_status": "accessed_via_cache",
+   "notes": "osm_base 2026-09-22T08:45:51Z; загружено STUPITS 2026-09-23T11:28:06Z; SHA-256 ebd6019b0ea32cef4d3f27c79bc0a979284fe35476551742eea8ba4839f01392; прочитано из кэша 2026-10-05. Не юридические границы."
+  },
+  {
+   "source_id": "AST-A04-S016",
+   "title": "Результаты первого прохода по Шымкенту: A04_report.md, A04_evidence.json",
+   "publisher": "A04 (этот чат)",
+   "url": null,
+   "published_at": "2026-10-04",
+   "accessed_at": "2026-10-05T04:20:00Z",
+   "source_type": "prior_round_output",
+   "access_status": "read",
+   "notes": "Используются только для сравнения; IDs A04-* сохранены без изменений."
+  },
+  {
+   "source_id": "AST-A04-S017",
+   "title": "Luo W., Qi Y. (2009) E2SFCA. Health & Place",
+   "publisher": "по памяти модели",
+   "url": null,
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "scientific_paper",
+   "access_status": "not_accessed",
+   "notes": "Не открыт; выходные данные по памяти, возможна ошибка."
+  },
+  {
+   "source_id": "AST-A04-S018",
+   "title": "Church R., ReVelle C. (1974) The maximal covering location problem",
+   "publisher": "по памяти модели",
+   "url": null,
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "scientific_paper",
+   "access_status": "not_accessed",
+   "notes": "Не открыт; выходные данные по памяти, возможна ошибка."
+  }
+ ],
+ "facts": [
+  {
+   "fact_id": "AST-A04-F001",
+   "statement": "Из среды AST-A04 недоступны 14 доменов (gov.kz/astana, stat.gov.kz, data.egov.kz, adilet, 3 зеркала Overpass, Geofabrik, Nominatim, WorldPop, GHSL, HDX, 2GIS, google.com): HTTP 403 host_not_allowed.",
+   "kind": "observed",
+   "value": 14,
+   "unit": "доменов",
+   "geography": "среда AST-A04",
+   "period": "2026-10-05 04:08 UTC",
+   "source_refs": [
+    {
+     "source_id": "AST-A04-S002",
+     "locator": "curl -D, заголовки ответа"
+    },
+    {
+     "source_id": "AST-A04-S003",
+     "locator": "curl -D, заголовки ответа"
+    },
+    {
+     "source_id": "AST-A04-S004",
+     "locator": "curl -D, заголовки ответа"
+    },
+    {
+     "source_id": "AST-A04-S005",
+     "locator": "curl -D, заголовки ответа"
+    },
+    {
+     "source_id": "AST-A04-S006",
+     "locator": "curl -D, заголовки ответа"
+    },
+    {
+     "source_id": "AST-A04-S007",
+     "locator": "curl -D, заголовки ответа"
+    },
+    {
+     "source_id": "AST-A04-S008",
+     "locator": "curl -D, заголовки ответа"
+    },
+    {
+     "source_id": "AST-A04-S009",
+     "locator": "curl -D, заголовки ответа"
+    },
+    {
+     "source_id": "AST-A04-S010",
+     "locator": "curl -D, заголовки ответа"
+    },
+    {
+     "source_id": "AST-A04-S011",
+     "locator": "curl -D, заголовки ответа"
+    },
+    {
+     "source_id": "AST-A04-S012",
+     "locator": "curl -D, заголовки ответа"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Ограничение песочницы; о доступности сайтов ничего не говорит."
+  },
+  {
+   "fact_id": "AST-A04-F002",
+   "statement": "В OSM (база 2026-09-22) 6 административных отношений названы районами Астаны: Есиль, Алматы, Сарыарка, Байконур, Нура, Сарайшык.",
+   "kind": "observed",
+   "value": 6,
+   "unit": "районов",
+   "geography": "Астана",
+   "period": "2026-09-22",
+   "source_refs": [
+    {
+     "source_id": "AST-A04-S015",
+     "locator": "elements: relations 3479876, 3482819, 3486954, 8593081, 20593940, 19733918 → tags.name:ru"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Общественный источник; официальный перечень не проверен."
+  },
+  {
+   "fact_id": "AST-A04-F003",
+   "statement": "Теги kato есть у 4 районов (Алматы 711110000, Есиль 711210000, Сарыарка 711310000, Байконур 711410000); у Нуры и Сарайшыка нет ни kato, ни wikidata.",
+   "kind": "observed",
+   "value": {
+    "almaty": "711110000",
+    "esil": "711210000",
+    "saryarka": "711310000",
+    "baikonur": "711410000",
+    "nura": null,
+    "saraishyk": null
+   },
+   "unit": null,
+   "geography": "Астана",
+   "period": "2026-09-22",
+   "source_refs": [
+    {
+     "source_id": "AST-A04-S015",
+     "locator": "tags.kato, tags.wikidata для 6 отношений"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Высокая уверенность относится к содержимому OSM, а не к официальному КАТО."
+  },
+  {
+   "fact_id": "AST-A04-F004",
+   "statement": "Сарайшык размечен admin_level=8, остальные районы — admin_level=6.",
+   "kind": "observed",
+   "value": {
+    "saraishyk": "8",
+    "others": "6"
+   },
+   "unit": null,
+   "geography": "Астана",
+   "period": "2026-09-22",
+   "source_refs": [
+    {
+     "source_id": "AST-A04-S015",
+     "locator": "relation 19733918 tags.admin_level"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Фильтр по admin_level=6 потеряет район."
+  },
+  {
+   "fact_id": "AST-A04-F005",
+   "statement": "Геодезические площади районов по OSM: Есиль 194,6; Алматы 93,4; Сарыарка 67,8; Байконур 183,5; Нура 188,6; Сарайшык 61,4; сумма 789,3 км².",
+   "kind": "derived",
+   "value": {
+    "esil": 194.6,
+    "almaty": 93.4,
+    "saryarka": 67.8,
+    "baikonur": 183.5,
+    "nura": 188.6,
+    "saraishyk": 61.4,
+    "total": 789.3
+   },
+   "unit": "км²",
+   "geography": "Астана",
+   "period": "2026-09-22",
+   "source_refs": [
+    {
+     "source_id": "AST-A04-S014",
+     "locator": "AST_A04_osm_boundary_results.json → units[*].area_km2_geodesic"
+    }
+   ],
+   "derivation": "pyproj.Geod(WGS84).geometry_area_perimeter по полигонам из polygonize(outer) − polygonize(inner)",
+   "confidence": "high",
+   "caveats": "Площадь OSM-полигонов; официальную площадь города сверить."
+  },
+  {
+   "fact_id": "AST-A04-F006",
+   "statement": "Объединение районов: 4 части — основное тело 770,41 км² и эксклавы Алматы 4,79 км² (≈51,154 с.ш., 71,769 в.д.), Байконура 5,03 км² (≈51,284, 71,317) и 9,02 км² (≈51,330, 71,666); дыр нет; перекрытий между районами >0,01 км² нет.",
+   "kind": "derived",
+   "value": {
+    "main": 770.41,
+    "exclaves": {
+     "almaty": 4.79,
+     "baikonur_1": 5.03,
+     "baikonur_2": 9.02
+    },
+    "holes": 0,
+    "overlaps": 0
+   },
+   "unit": "км²",
+   "geography": "Астана",
+   "period": "2026-09-22",
+   "source_refs": [
+    {
+     "source_id": "AST-A04-S014",
+     "locator": "AST_A04_osm_boundary_results.json → astana_union; диагностика частей (отдельная команда, вывод в отчёте, раздел 2 п.4)"
+    }
+   ],
+   "derivation": "unary_union; representative_point частей; владелец части — район с >50 % площади",
+   "confidence": "high",
+   "caveats": "Назначение эксклавов не проверено."
+  },
+  {
+   "fact_id": "AST-A04-F007",
+   "statement": "Эксклав Байконура 9,02 км² полностью перекрыт полигоном Целиноградского района (пересечение 9,021 км²) — двойная атрибуция в OSM.",
+   "kind": "derived",
+   "value": 9.021,
+   "unit": "км²",
+   "geography": "граница Астаны и Акмолинской области",
+   "period": "2026-09-22",
+   "source_refs": [
+    {
+     "source_id": "AST-A04-S014",
+     "locator": "AST_A04_osm_boundary_results.json → neighbours_outside_astana[Целиноградский].overlap_with_astana_km2; диагностика Tselinograd∩baikonur"
+    }
+   ],
+   "derivation": "intersection полигонов",
+   "confidence": "high",
+   "caveats": "Какая разметка верна, по OSM определить нельзя; нужен официальный источник."
+  },
+  {
+   "fact_id": "AST-A04-F008",
+   "statement": "В рамке запроса 5 единиц вне Астаны: Целиноградский, Аршалынский, Шортандинский районы и городская администрация Косшы (addr:region = Ақмола облысы), а также Тайтобинская сельская администрация, целиком вложенная в Косшы.",
+   "kind": "observed",
+   "value": 5,
+   "unit": "единиц",
+   "geography": "окрестности Астаны",
+   "period": "2026-09-22",
+   "source_refs": [
+    {
+     "source_id": "AST-A04-S015",
+     "locator": "relations 3403760, 3403782, 3404061, 15594335, 17952313 → tags"
+    },
+    {
+     "source_id": "AST-A04-S014",
+     "locator": "проверка вложенности Тайтобе: доля площади в Косшы = 1,0"
+    }
+   ],
+   "derivation": "Вложенность — derived (intersection/area)",
+   "confidence": "high",
+   "caveats": "У Тайтобе нет тега addr:region; принадлежность области выведена из вложенности."
+  },
+  {
+   "fact_id": "AST-A04-F009",
+   "statement": "Общая граница Астаны с соседями по OSM: Целиноградский район 144,2 км; Шортандинский 22,2; Косшы 12,5 (в т.ч. Тайтобе 7,4); Аршалынский 10,8.",
+   "kind": "derived",
+   "value": {
+    "tselinograd": 144.2,
+    "shortandy": 22.2,
+    "kosshy": 12.5,
+    "arshaly": 10.8,
+    "taitobe_within_kosshy": 7.4
+   },
+   "unit": "км",
+   "geography": "граница Астаны",
+   "period": "2026-09-22",
+   "source_refs": [
+    {
+     "source_id": "AST-A04-S014",
+     "locator": "AST_A04_osm_boundary_results.json → neighbours_outside_astana[*].shared_boundary_km"
+    }
+   ],
+   "derivation": "длина пересечения границ в UTM 42N",
+   "confidence": "medium",
+   "caveats": "Длина зависит от детализации линий OSM."
+  },
+  {
+   "fact_id": "AST-A04-F010",
+   "statement": "Полоса 2 км вокруг Астаны (403,7 км²) целиком лежит в единицах Акмолинской области: Целиноградский 317,1 + Шортандинский 38,3 + Косшы 26,6 (вкл. Тайтобе 13,7) + Аршалынский 21,6 = 403,6 км². Полосы 5 и 10 км — 1000,1 и 2013,2 км².",
+   "kind": "derived",
+   "value": {
+    "ring_2km": 403.7,
+    "ring_5km": 1000.1,
+    "ring_10km": 2013.2
+   },
+   "unit": "км²",
+   "geography": "окрестности Астаны",
+   "period": "2026-09-22",
+   "source_refs": [
+    {
+     "source_id": "AST-A04-S014",
+     "locator": "AST_A04_osm_boundary_results.json → buffer_ring_area_km2; neighbours_outside_astana[*].area_in_2km_buffer_km2"
+    }
+   ],
+   "derivation": "buffer(UTM) − union, пересечение с полигонами соседей; Тайтобе исключён из суммы как вложенный",
+   "confidence": "high",
+   "caveats": "Площадь, а не население; заселённость полосы неизвестна."
+  },
+  {
+   "fact_id": "AST-A04-F011",
+   "statement": "В ответе Overpass нет ни одной единицы admin_level 7 или 9; единиц ниже района Астаны этим запросом не найдено.",
+   "kind": "observed",
+   "value": 0,
+   "unit": "единиц",
+   "geography": "Астана",
+   "period": "2026-09-22",
+   "source_refs": [
+    {
+     "source_id": "AST-A04-S015",
+     "locator": "распределение tags.admin_level по 11 отношениям"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Микрорайоны могут быть в OSM как place=* или landuse — запросом не проверялось."
+  },
+  {
+   "fact_id": "AST-A04-F012",
+   "statement": "Учебный датасет STUPITS содержит 5 районов с долями населения (Есиль 0,27; Алматы 0,24; Сарыарка 0,20; Байконур 0,13; Нура 0,16); Сарайшыка нет; README называет данные синтетическими.",
+   "kind": "observed",
+   "value": {
+    "esil": 0.27,
+    "almaty": 0.24,
+    "saryarka": 0.2,
+    "baikonur": 0.13,
+    "nura": 0.16
+   },
+   "unit": "доля",
+   "geography": "учебная Астана",
+   "period": "ТЗ хакатона",
+   "source_refs": [
+    {
+     "source_id": "AST-A04-S013",
+     "locator": "data/city_data.json → districts[*].population_share; README.md, раздел «Ограничения»"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Не измерения: реальным районам не приписывать."
+  },
+  {
+   "fact_id": "AST-A04-F013",
+   "statement": "Значения area_km2 в STUPITS на 0,74–0,86 % меньше геодезических (например, Есиль 193,0 против 194,6).",
+   "kind": "derived",
+   "value": {
+    "min_pct": 0.74,
+    "max_pct": 0.86
+   },
+   "unit": "%",
+   "geography": "Астана",
+   "period": "2026-09-22",
+   "source_refs": [
+    {
+     "source_id": "AST-A04-S013",
+     "locator": "data/astana_districts.geojson → properties.area_km2"
+    },
+    {
+     "source_id": "AST-A04-S014",
+     "locator": "AST_A04_osm_boundary_results.json → units[*].area_km2_geodesic"
+    }
+   ],
+   "derivation": "(геодезич. − STUPITS)/геодезич.",
+   "confidence": "high",
+   "caveats": "Мелкое расхождение; важно только для плотностей."
+  },
+  {
+   "fact_id": "AST-A04-F014",
+   "statement": "Зона пешей доступности одного объекта при пороге 800 м — примерно 1,2–2,0 км², то есть в 30–165 раз меньше площади района (61–195 км²).",
+   "kind": "derived",
+   "value": {
+    "catchment_km2": [
+     1.19,
+     2.01
+    ],
+    "ratio_range": [
+     30,
+     165
+    ]
+   },
+   "unit": "км²; раз",
+   "geography": "Астана",
+   "period": "—",
+   "source_refs": [
+    {
+     "source_id": "AST-A04-S014",
+     "locator": "units[*].area_km2_geodesic"
+    }
+   ],
+   "derivation": "π·0,8² = 2,01 км² (радиус, верхняя граница); при коэффициенте обхода 1,3 радиус ≈0,615 км → 1,19 км²; 61,4/2,01 ≈ 30; 194,6/1,19 ≈ 164",
+   "confidence": "medium",
+   "caveats": "Коэффициент 1,3 — допущение, по порядку близкое к синтетике A04 (медиана 1,34); реальный обход не измерен."
+  },
+  {
+   "fact_id": "AST-A04-F015",
+   "statement": "Зимой (снег, гололёд, неочищенные тропы) пешая скорость ниже, а часть рёбер сети фактически недоступна; для Астаны это обязательный сценарный параметр.",
+   "kind": "hypothesis",
+   "value": null,
+   "unit": null,
+   "geography": "Астана",
+   "period": null,
+   "source_refs": [],
+   "derivation": "Память модели о климате; без калибровки",
+   "confidence": "low",
+   "caveats": "Значения скорости и доли отключаемых рёбер неизвестны."
+  },
+  {
+   "fact_id": "AST-A04-F016",
+   "statement": "В Астане бывают подтопления улиц, подземных переходов и низин ИЖС — от ливней летом и талых вод весной.",
+   "kind": "hypothesis",
+   "value": null,
+   "unit": null,
+   "geography": "Астана",
+   "period": null,
+   "source_refs": [],
+   "derivation": "Память модели о публикациях",
+   "confidence": "low",
+   "caveats": "Нужно ≥10 датированных случаев с адресами."
+  },
+  {
+   "fact_id": "AST-A04-F017",
+   "statement": "В новых районах (Нура, Сарайшык) и на массивах ИЖС соцобъекты в пешей доступности отстают от ввода жилья.",
+   "kind": "hypothesis",
+   "value": null,
+   "unit": null,
+   "geography": "Астана",
+   "period": null,
+   "source_refs": [],
+   "derivation": "Память модели",
+   "confidence": "low",
+   "caveats": "Нужен расчёт покрытия и сверка с вводом жилья."
+  },
+  {
+   "fact_id": "AST-A04-F018",
+   "statement": "Байконурский район образован около 2018 г., Нура и Сарайшык — в 2022–2024 гг.",
+   "kind": "hypothesis",
+   "value": null,
+   "unit": null,
+   "geography": "Астана",
+   "period": null,
+   "source_refs": [],
+   "derivation": "Память модели",
+   "confidence": "low",
+   "caveats": "Проверить акты; OSM даты образования не содержит."
+  },
+  {
+   "fact_id": "AST-A04-F019",
+   "statement": "Город назывался Нур-Султан с 2019 по 2022 г.; документы этого периода могут быть под этим названием.",
+   "kind": "hypothesis",
+   "value": null,
+   "unit": null,
+   "geography": "Астана",
+   "period": "2019–2022",
+   "source_refs": [],
+   "derivation": "Общеизвестный факт по памяти модели; акт не открыт",
+   "confidence": "medium",
+   "caveats": "Учитывать при поиске генплана и рядов."
+  },
+  {
+   "fact_id": "AST-A04-F020",
+   "statement": "Жители приграничных единиц Акмолинской области (Косшы, Целиноградский район) пользуются соцобъектами Астаны и наоборот.",
+   "kind": "hypothesis",
+   "value": null,
+   "unit": null,
+   "geography": "агломерация",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "AST-A04-S014",
+     "locator": "F010: геометрическое соседство"
+    }
+   ],
+   "derivation": "Геометрия есть, потоки не измерены",
+   "confidence": "low",
+   "caveats": "Нужны агрегаты прикрепления или обращений."
+  }
+ ],
+ "datasets": [
+  {
+   "dataset_id": "AST-A04-D001",
+   "title": "Административные границы Астаны и соседей (OSM, кэш STUPITS)",
+   "publisher": "OpenStreetMap contributors",
+   "source_ids": [
+    "AST-A04-S015",
+    "AST-A04-S013"
+   ],
+   "landing_url": "https://www.openstreetmap.org/relation/3479876",
+   "download_or_api_url": "https://overpass-api.de/api/interpreter?data=%5Bout%3Ajson%5D%5Btimeout%3A25%5D%3Brel%5B%22boundary%22%3D%22administrative%22%5D%5B%22admin_level%22~%22%5E%285%7C6%7C7%7C8%7C9%29%24%22%5D%2850.90%2C71.0%2C51.5%2C72.0%29%3Bout+geom%3B",
+   "access_status": "sample_verified",
+   "tested_at": "2026-10-05T04:20:00Z",
+   "geography": "Астана + окрестности",
+   "granularity": "район / сельская администрация",
+   "period": "osm_base 2026-09-22",
+   "format": "Overpass JSON (out geom); образец AST_A04_sample_osm_admin_units.csv",
+   "fields": [
+    "relation id",
+    "name:ru",
+    "name:kk",
+    "admin_level",
+    "addr:region",
+    "kato",
+    "wikidata",
+    "геометрия"
+   ],
+   "units": "км² (derived)",
+   "update_frequency": "по повторному запросу",
+   "license": "ODbL",
+   "auth_requirement": "нет",
+   "limitations": "Не юридические границы; эксклав 9,02 км² конфликтует с Целиноградским районом; нет единиц ниже района.",
+   "next_retrieval_step": "Обновить запросом out meta geom; сверить с официальным перечнем и КАТО."
+  },
+  {
+   "dataset_id": "AST-A04-D002",
+   "title": "OSM: пешеходная сеть и объекты",
+   "publisher": "OpenStreetMap contributors / Geofabrik",
+   "source_ids": [
+    "AST-A04-S006",
+    "AST-A04-S007"
+   ],
+   "landing_url": "https://download.geofabrik.de/asia/kazakhstan.html",
+   "download_or_api_url": null,
+   "access_status": "unavailable",
+   "tested_at": "2026-10-05T04:08:01Z",
+   "geography": "Казахстан → Астана + полоса 10 км",
+   "granularity": "ребро/объект",
+   "period": null,
+   "format": "osm.pbf",
+   "fields": [
+    "highway",
+    "footway",
+    "sidewalk",
+    "crossing",
+    "bridge",
+    "lit",
+    "amenity",
+    "healthcare",
+    "leisure",
+    "place",
+    "landuse"
+   ],
+   "units": null,
+   "update_frequency": null,
+   "license": "ODbL (по памяти)",
+   "auth_requirement": "нет",
+   "limitations": "Недоступно из песочницы; полнота тротуаров и POI неизвестна.",
+   "next_retrieval_step": "Экстракт + обрезка по городу и полосе 10 км; сохранить provenance."
+  },
+  {
+   "dataset_id": "AST-A04-D003",
+   "title": "БНС: население и миграция Астаны (dynamic-tables/38)",
+   "publisher": "БНС АСПиР РК",
+   "source_ids": [
+    "AST-A04-S003"
+   ],
+   "landing_url": "https://stat.gov.kz/ru/region/astana/dynamic-tables/38/",
+   "download_or_api_url": null,
+   "access_status": "unavailable",
+   "tested_at": "2026-10-05T04:08:01Z",
+   "geography": "Астана",
+   "granularity": "город / район (предположительно)",
+   "period": null,
+   "format": null,
+   "fields": [
+    "район",
+    "год",
+    "численность"
+   ],
+   "units": "чел.",
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "Недоступно; детализация неизвестна.",
+   "next_retrieval_step": "Открыть страницу, записать файлы, таблицы и периоды."
+  },
+  {
+   "dataset_id": "AST-A04-D004",
+   "title": "Справочник КАТО",
+   "publisher": "БНС АСПиР РК (по памяти)",
+   "source_ids": [],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": "unavailable",
+   "tested_at": null,
+   "geography": "РК",
+   "granularity": "административная единица",
+   "period": null,
+   "format": null,
+   "fields": [
+    "код КАТО",
+    "наименование",
+    "уровень",
+    "родитель"
+   ],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "Не найден в этом проходе; нужен для связи с таблицами БНС у Нуры и Сарайшыка.",
+   "next_retrieval_step": "Найти официальный справочник на stat.gov.kz."
+  },
+  {
+   "dataset_id": "AST-A04-D005",
+   "title": "Реестры соцобъектов (ПМСП, детсады)",
+   "publisher": "владелец неизвестен (управления акимата / министерства)",
+   "source_ids": [
+    "AST-A04-S004"
+   ],
+   "landing_url": "https://data.egov.kz/",
+   "download_or_api_url": null,
+   "access_status": "unavailable",
+   "tested_at": "2026-10-05T04:08:01Z",
+   "geography": "Астана",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [
+    "наименование",
+    "адрес",
+    "тип",
+    "мощность",
+    "координаты"
+   ],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "Наличие не проверено.",
+   "next_retrieval_step": "Поиск на портале и сайтах управлений; при отсутствии — зафиксировать владельца."
+  },
+  {
+   "dataset_id": "AST-A04-D006",
+   "title": "Население по сетке (GHS-POP / WorldPop / Kontur)",
+   "publisher": "EC JRC / WorldPop / Kontur",
+   "source_ids": [
+    "AST-A04-S009",
+    "AST-A04-S010",
+    "AST-A04-S011"
+   ],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": "unavailable",
+   "tested_at": "2026-10-05T04:08:01Z",
+   "geography": "Астана + полоса",
+   "granularity": "100 м / H3",
+   "period": null,
+   "format": "GeoTIFF / GPKG",
+   "fields": [
+    "population"
+   ],
+   "units": "чел./ячейку",
+   "update_frequency": null,
+   "license": "CC BY 4.0 (по памяти, проверить)",
+   "auth_requirement": "нет",
+   "limitations": "Новые районы могут отсутствовать.",
+   "next_retrieval_step": "Скачать, сравнить с БНС по районам."
+  },
+  {
+   "dataset_id": "AST-A04-D007",
+   "title": "Агрегаты обращений iKOMEK109 (категория, район, период)",
+   "publisher": "акимат Астаны (по памяти модели; проверить)",
+   "source_ids": [
+    "AST-A04-S002"
+   ],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": "unavailable",
+   "tested_at": null,
+   "geography": "Астана",
+   "granularity": "категория × район × месяц (желательно)",
+   "period": null,
+   "format": null,
+   "fields": [
+    "категория",
+    "район или адрес-агрегат",
+    "период",
+    "число обращений"
+   ],
+   "units": "обращений",
+   "update_frequency": null,
+   "license": "неизвестна",
+   "auth_requirement": "неизвестно",
+   "limitations": "Публичных материалов не нашёл (нет веб-доступа); персональные данные не собирать.",
+   "next_retrieval_step": "Найти публичные отчёты и дашборды; при отсутствии — описать владельца и поля."
+  },
+  {
+   "dataset_id": "AST-A04-D008",
+   "title": "Генплан, ПДП, зонирование, ограничения размещения",
+   "publisher": "акимат Астаны / уполномоченные органы",
+   "source_ids": [
+    "AST-A04-S002",
+    "AST-A04-S005"
+   ],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": "unavailable",
+   "tested_at": null,
+   "geography": "Астана",
+   "granularity": "участок/полигон",
+   "period": null,
+   "format": null,
+   "fields": [
+    "функциональная зона",
+    "статус участка",
+    "тип ограничения",
+    "статус объекта"
+   ],
+   "units": null,
+   "update_frequency": null,
+   "license": "неизвестна",
+   "auth_requirement": "вероятно ограничено",
+   "limitations": "Не проверено.",
+   "next_retrieval_step": "Найти акт генплана (в т.ч. под названием Нур-Султан) и графические материалы."
+  }
+ ],
+ "opportunities": [
+  {
+   "idea_id": "AST-A04-O001",
+   "title": "Прототип: пешая доступность ПМСП или детсадов по H3 летом и зимой + сравнение 2–3 участков + QA границ",
+   "problem": "Районные агрегаты и прямые радиусы скрывают зоны без пешей доступности; у новых районов нет ключей КАТО, а граница конфликтует с областью.",
+   "evidence_fact_ids": [
+    "AST-A04-F003",
+    "AST-A04-F004",
+    "AST-A04-F007",
+    "AST-A04-F010",
+    "AST-A04-F011",
+    "AST-A04-F014",
+    "AST-A04-F017"
+   ],
+   "primary_user": "аналитик управления здравоохранения, образования или архитектуры акимата Астаны",
+   "user_task": "Найти ячейки с наибольшим непокрытым населением и выбрать участок с устойчивым приростом покрытия летом и зимой",
+   "existing_solution": "неизвестно",
+   "proposed_addition": "Общий движок доступности (как в A04-O001) + городские параметры Астаны: полоса Акмолинской области, правило атрибуции конфликтов, сезонный сценарий, 6 районов",
+   "required_dataset_ids": [
+    "AST-A04-D001",
+    "AST-A04-D002",
+    "AST-A04-D005",
+    "AST-A04-D006",
+    "AST-A04-D003"
+   ],
+   "ai_role": "Для расчёта не нужен; опционально — извлечение реестра из документов с ручной сверкой и объяснение результатов (числа от кода)",
+   "non_ai_baseline": "osmnx/networkx, многоисточниковый Дейкстра, жадное максимальное покрытие, матрица сценариев",
+   "success_metrics": [
+    "полнота и точность объектов против реестра",
+    "доля населения с плохой привязкой",
+    "20 маршрутов, замеренных летом и зимой",
+    "изменение решения у 3–5 пользователей"
+   ],
+   "feasibility_10_days": "средняя: конвейер технически прост, но нет официального реестра, свежего населения и норматива",
+   "blockers": [
+    "нет веб-доступа",
+    "реестр не найден",
+    "норматив не проверен",
+    "зимние параметры не откалиброваны"
+   ],
+   "transfer_to_shymkent": "Общий движок и QA границ переносимы; сезон (жара вместо снега), сосед-область, норматив и реестр — свои",
+   "next_action": "Официальный перечень районов и КАТО → OSM-экстракт → прогон одного вида объекта"
+  },
+  {
+   "idea_id": "AST-A04-O002",
+   "title": "Продукт 1–3 мес.: приоритет зимней уборки тротуаров по числу жителей, чей кратчайший путь к соцобъектам и остановкам проходит через ребро",
+   "problem": "Гипотеза: маршруты к соцобъектам зимой обслуживаются неравномерно (AST-A04-F015).",
+   "evidence_fact_ids": [
+    "AST-A04-F015",
+    "AST-A04-F014"
+   ],
+   "primary_user": "городской оператор уборки или профильное управление акимата (кто именно — проверить)",
+   "user_task": "Определить, какие участки тротуаров чистить первыми",
+   "existing_solution": "регламенты и перечни приоритетных улиц (не проверены)",
+   "proposed_addition": "Взвешенная по населению загрузка рёбер на путях «ячейка → ближайший объект» для нескольких видов объектов",
+   "required_dataset_ids": [
+    "AST-A04-D002",
+    "AST-A04-D006",
+    "AST-A04-D005",
+    "AST-A04-D007"
+   ],
+   "ai_role": "Не нужен для ранжирования; возможен для разбора публичных агрегатов обращений по категории «уборка»",
+   "non_ai_baseline": "кратчайшие пути + суммирование весов по рёбрам",
+   "success_metrics": [
+    "пересечение топ-50 рёбер с текущим перечнем приоритетов",
+    "полевая проверка 20 рёбер",
+    "согласие оператора с перечнем"
+   ],
+   "feasibility_10_days": "низкая (рамка 1–3 месяца)",
+   "blockers": [
+    "нет регламента уборки",
+    "полнота тротуаров в OSM неизвестна",
+    "зависимость от A05 и A06"
+   ],
+   "transfer_to_shymkent": "Метод переносим, но сезонная постановка не нужна; возможный аналог — затенение или полив пешеходных путей в жару (гипотеза)",
+   "next_action": "Найти публичный регламент или перечень приоритетных улиц уборки"
+  },
+  {
+   "idea_id": "AST-A04-O003",
+   "title": "Исследование: горячие точки подтоплений (ливни и талые воды) для переходов и массивов ИЖС",
+   "problem": "Гипотеза AST-A04-F016",
+   "evidence_fact_ids": [
+    "AST-A04-F016"
+   ],
+   "primary_user": "исследователь / дипломник; затем профильное управление",
+   "user_task": "Заранее знать вероятные точки подтопления",
+   "existing_solution": "неизвестно",
+   "proposed_addition": "ЦМР + сеть + геокодированные датированные события + сезонные факторы",
+   "required_dataset_ids": [
+    "AST-A04-D002",
+    "AST-A04-D007"
+   ],
+   "ai_role": "Извлечение адресов и дат событий из публичных текстов с ручной проверкой",
+   "non_ai_baseline": "поиск понижений по ЦМР и пересечение с сетью",
+   "success_metrics": [
+    "доля зафиксированных событий в топ-10 % понижений",
+    "число новых точек, подтверждённых полевой проверкой"
+   ],
+   "feasibility_10_days": "низкая",
+   "blockers": [
+    "нет списка событий",
+    "ЦМР и ливнёвка не получены",
+    "пересечение с A02"
+   ],
+   "transfer_to_shymkent": "Метод общий (A04-F017); механизм другой: в Шымкенте ливни и арыки, в Астане ещё и талые воды",
+   "next_action": "Собрать 10 датированных случаев с адресами"
+  }
+ ],
+ "open_questions": [
+  {
+   "question": "Каков официальный перечень районов Астаны, даты их образования и коды КАТО?",
+   "why_important": "OSM расходится по admin_level и не даёт КАТО для Нуры и Сарайшыка.",
+   "how_to_check": "Акты на adilet.zan.kz, справочник КАТО БНС."
+  },
+  {
+   "question": "Что расположено в трёх эксклавах и чей официально эксклав 9,02 км²?",
+   "why_important": "Двойная атрибуция объектов и населения.",
+   "how_to_check": "Акты об изменении границ, публичная кадастровая карта, генплан."
+  },
+  {
+   "question": "Публикует ли БНС население ниже района?",
+   "why_important": "Иначе микрорайонный уровень только на сетке.",
+   "how_to_check": "stat.gov.kz, dynamic-tables/38."
+  },
+  {
+   "question": "Есть ли открытый реестр ПМСП и детсадов Астаны с адресами и мощностью?",
+   "why_important": "OSM не доказывает отсутствие объекта.",
+   "how_to_check": "data.egov.kz, сайты управлений акимата."
+  },
+  {
+   "question": "Каковы реквизиты генплана и Плана развития (в т.ч. под названием Нур-Султан)?",
+   "why_important": "Нужно для матрицы статусов объектов.",
+   "how_to_check": "adilet.zan.kz, сайт акимата."
+  },
+  {
+   "question": "Публикует ли iKOMEK109 агрегаты обращений по категориям и районам?",
+   "why_important": "Независимая локализация P2, P3 и P5.",
+   "how_to_check": "Публичные отчёты и страницы акимата; только агрегаты."
+  },
+  {
+   "question": "Есть ли публичный регламент зимней уборки тротуаров с приоритетами?",
+   "why_important": "Базовая линия для идеи AST-A04-O002.",
+   "how_to_check": "Сайт акимата и городских операторов."
+  }
+ ],
+ "city_comparison": [
+  {
+   "topic": "Состав и границы районов",
+   "astana_fact_ids": [
+    "AST-A04-F002",
+    "AST-A04-F003",
+    "AST-A04-F004",
+    "AST-A04-F005",
+    "AST-A04-F006",
+    "AST-A04-F007"
+   ],
+   "shymkent_fact_ids": [
+    "A04-F013",
+    "A04-F014"
+   ],
+   "comparison_status": "astana_observed_osm__shymkent_hypothesis",
+   "shared_component": "загрузчик границ + QA (валидность, перекрытия, эксклавы, admin_level, КАТО)",
+   "city_specific_inputs": [
+    "relation IDs",
+    "соседняя область",
+    "КАТО",
+    "акты об образовании районов"
+   ],
+   "caveats": "В обоих городах OSM ≠ юридические границы; официальная проверка pending."
+  },
+  {
+   "topic": "Район против микрорайона",
+   "astana_fact_ids": [
+    "AST-A04-F005",
+    "AST-A04-F011",
+    "AST-A04-F014"
+   ],
+   "shymkent_fact_ids": [
+    "A04-F009"
+   ],
+   "comparison_status": "astana_derived_sizes__shymkent_synthetic",
+   "shared_component": "метрики C(T), U(T), Gap по H3",
+   "city_specific_inputs": [
+    "единица ниже района",
+    "источник населения"
+   ],
+   "caveats": "Реального расчёта ни для одного города нет."
+  },
+  {
+   "topic": "Пешая доступность соцобъекта (MVP)",
+   "astana_fact_ids": [
+    "AST-A04-F014",
+    "AST-A04-F017"
+   ],
+   "shymkent_fact_ids": [
+    "A04-F008",
+    "A04-F010",
+    "A04-F018"
+   ],
+   "comparison_status": "pending_both",
+   "shared_component": "граф, Дейкстра, покрытие, сравнение участков, Rank1",
+   "city_specific_inputs": [
+    "норматив",
+    "скорость",
+    "сезон",
+    "реестр объектов",
+    "владелец данных"
+   ],
+   "caveats": "Пороги и скорость не переносить."
+  },
+  {
+   "topic": "Сезонный фактор",
+   "astana_fact_ids": [
+    "AST-A04-F015"
+   ],
+   "shymkent_fact_ids": [],
+   "comparison_status": "hypothesis_both",
+   "shared_component": "модуль сценарного сопротивления рёбер",
+   "city_specific_inputs": [
+    "Астана: снег и гололёд",
+    "Шымкент: жара (в отчёте A04 упомянута без fact_id)"
+   ],
+   "caveats": "Коэффициенты не переносятся."
+  },
+  {
+   "topic": "Подтопления",
+   "astana_fact_ids": [
+    "AST-A04-F016"
+   ],
+   "shymkent_fact_ids": [
+    "A04-F017"
+   ],
+   "comparison_status": "hypothesis_both",
+   "shared_component": "геокодирование событий + понижения ЦМР",
+   "city_specific_inputs": [
+    "причины и сезоны",
+    "операторы сетей"
+   ],
+   "caveats": "Совпадение названия проблемы не означает сопоставимости."
+  },
+  {
+   "topic": "Новые территории и население по сетке",
+   "astana_fact_ids": [
+    "AST-A04-F017"
+   ],
+   "shymkent_fact_ids": [
+    "A04-F018",
+    "A04-F019"
+   ],
+   "comparison_status": "hypothesis_both",
+   "shared_component": "матрица статусов объектов; проверка сетки против БНС",
+   "city_specific_inputs": [
+    "акты, ПДП, ввод жилья"
+   ],
+   "caveats": "—"
+  },
+  {
+   "topic": "Краевой эффект агломерации",
+   "astana_fact_ids": [
+    "AST-A04-F008",
+    "AST-A04-F009",
+    "AST-A04-F010",
+    "AST-A04-F020"
+   ],
+   "shymkent_fact_ids": [],
+   "comparison_status": "astana_derived__shymkent_pending",
+   "shared_component": "буферная полоса и правило атрибуции",
+   "city_specific_inputs": [
+    "соседние единицы и их данные"
+   ],
+   "caveats": "Для Шымкента геометрия не проверялась."
+  },
+  {
+   "topic": "Нули вместо null в STUPITS",
+   "astana_fact_ids": [
+    "AST-A04-F012"
+   ],
+   "shymkent_fact_ids": [
+    "A04-F003"
+   ],
+   "comparison_status": "same_repository",
+   "shared_component": "правило unknown = null + status",
+   "city_specific_inputs": [],
+   "caveats": "A04-F003 описывает код STUPITS, общий для обоих городов."
+  }
+ ],
+ "deliverables": {
+  "real_sample_files": [
+   "AST_A04_sample_osm_admin_units.csv (dataset AST-A04-D001, ODbL)"
+  ],
+  "experiment_files": [
+   "AST_A04_osm_boundary_check.py",
+   "AST_A04_osm_boundary_results.json"
+  ],
+  "boundary_qa_checks": [
+   "валидность геометрии",
+   "перекрытия районов",
+   "перекрытия с соседними единицами",
+   "эксклавы и число частей",
+   "внутренние дыры",
+   "разные admin_level",
+   "отсутствие КАТО/wikidata",
+   "вложенность соседних единиц"
+  ],
+  "astana_specific_parameters": {
+   "study_area": "6 районов + полоса 5–10 км Акмолинской области (в итоги города не входит)",
+   "season": [
+    "summer",
+    "winter"
+   ],
+   "thresholds_m": [
+    500,
+    800,
+    1000
+   ],
+   "walk_speed_kmh": "параметр сценария; зимние значения — допущение до калибровки",
+   "attribution_rule": "при конфликте — официальная граница; до неё флаг boundary_conflict"
+  },
+  "game_vs_real": "Игровой режим (5 районов ТЗ, M1–M14) остаётся отдельной моделью; реальная аналитика — отдельный модуль и каталог данных",
+  "next_pass_task": "AST_A04_report.md, раздел 14"
+ }
+}

@@ -1,0 +1,864 @@
+{
+  "meta": {
+    "agent_id": "A13",
+    "topic": "Техническая основа, AI и дипломный эксперимент",
+    "city": "Шымкент (цель); Астана (учебная модель)",
+    "searched_at": "2026-10-04T17:20:00Z",
+    "access_limitations": "Веб-поиска нет. Прокси среды блокирует gov.kz, stat.gov.kz, data.egov.kz, doi.org, api.crossref.org, sumo.dlr.de, overpass-api.de, media.githubusercontent.com (403 host_not_allowed). Доступен github.com — репозиторий клонирован и запущен. Научные источники не открыты."
+  },
+  "sources": [
+    {
+      "source_id": "A13-S001",
+      "title": "STUPITS «Аким на 5 часов» — репозиторий",
+      "publisher": "BAITC-Hacks / команда STUPITS",
+      "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits",
+      "published_at": "2026-09-23",
+      "accessed_at": "2026-10-04",
+      "source_type": "code_repository",
+      "access_status": "verified_cloned_and_run",
+      "notes": "Коммит 834a25fb860dd5514d02c9274b70d7bf8a53a79c (2026-09-23 18:36 +0600). LICENSE-файла в корне нет."
+    },
+    {
+      "source_id": "A13-S002",
+      "title": "README.md репозитория",
+      "publisher": "BAITC-Hacks / STUPITS",
+      "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/blob/main/README.md",
+      "published_at": "2026-09-23",
+      "accessed_at": "2026-10-04",
+      "source_type": "documentation",
+      "access_status": "verified_read",
+      "notes": "Разделы «Как считается Score», «Ограничения», «Планы развития»."
+    },
+    {
+      "source_id": "A13-S003",
+      "title": "data/city_data.json и docs/tz/tz_data_and_rules.txt",
+      "publisher": "BAITC-Hacks / STUPITS (данные ТЗ хакатона)",
+      "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/tree/main/data",
+      "published_at": "2026-09-23",
+      "accessed_at": "2026-10-04",
+      "source_type": "dataset_file",
+      "access_status": "verified_read",
+      "notes": "Синтетический учебный датасет Астаны (по README)."
+    },
+    {
+      "source_id": "A13-S004",
+      "title": "ui/web_server.py",
+      "publisher": "BAITC-Hacks / STUPITS",
+      "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/blob/main/ui/web_server.py",
+      "published_at": "2026-09-23",
+      "accessed_at": "2026-10-04",
+      "source_type": "code",
+      "access_status": "verified_read_and_run",
+      "notes": "ThreadingHTTPServer, MAX_BODY=128 КБ, optimize_lock (стр. 66, 141), проверка Host (стр. 261–266)."
+    },
+    {
+      "source_id": "A13-S005",
+      "title": "data/real_context.json и real_context_meta.json",
+      "publisher": "BAITC-Hacks / STUPITS",
+      "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/tree/main/data",
+      "published_at": "2026-09-23",
+      "accessed_at": "2026-10-04",
+      "source_type": "dataset_file",
+      "access_status": "verified_read",
+      "notes": "meta: status=unavailable, ошибка ReadTimeout overpass-api.de; значения 0 во всех районах."
+    },
+    {
+      "source_id": "A13-S006",
+      "title": "data/astana_districts.geojson (metadata)",
+      "publisher": "BAITC-Hacks / STUPITS на основе OpenStreetMap",
+      "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/blob/main/data/astana_districts.geojson",
+      "published_at": "2026-09-23",
+      "accessed_at": "2026-10-04",
+      "source_type": "geodata",
+      "access_status": "verified_read",
+      "notes": "6 полигонов, source=osm, ODbL, retrieved_at 2026-09-23T11:28:06Z, проверка топологии."
+    },
+    {
+      "source_id": "A13-S007",
+      "title": "Управление цифровизации г. Шымкент (страница gov.kz)",
+      "publisher": "gov.kz",
+      "url": "https://www.gov.kz/memleket/entities/shymkent-sandyk?lang=ru",
+      "published_at": null,
+      "accessed_at": "2026-10-04",
+      "source_type": "official_page",
+      "access_status": "blocked_by_sandbox",
+      "notes": "HTTP 403 x-deny-reason: host_not_allowed (прокси среды A13). Содержимое не видел."
+    },
+    {
+      "source_id": "A13-S008",
+      "title": "Динамические таблицы БНС по Шымкенту",
+      "publisher": "Бюро национальной статистики АСПиР РК",
+      "url": "https://stat.gov.kz/ru/region/shymkent/dynamic-tables/38/",
+      "published_at": null,
+      "accessed_at": "2026-10-04",
+      "source_type": "official_statistics",
+      "access_status": "blocked_by_sandbox",
+      "notes": "HTTP 403 host_not_allowed."
+    },
+    {
+      "source_id": "A13-S009",
+      "title": "Портал открытых данных",
+      "publisher": "data.egov.kz",
+      "url": "https://data.egov.kz/",
+      "published_at": null,
+      "accessed_at": "2026-10-04",
+      "source_type": "open_data_portal",
+      "access_status": "blocked_by_sandbox",
+      "notes": "HTTP 403 host_not_allowed. API и наборы не проверены."
+    },
+    {
+      "source_id": "A13-S010",
+      "title": "SUMO документация (Rerouter); doi.org; api.crossref.org",
+      "publisher": "DLR / DOI Foundation / Crossref",
+      "url": "https://sumo.dlr.de/docs/Simulation/Rerouter.html",
+      "published_at": null,
+      "accessed_at": "2026-10-04",
+      "source_type": "documentation",
+      "access_status": "blocked_by_sandbox",
+      "notes": "Все три хоста: 403 host_not_allowed."
+    },
+    {
+      "source_id": "A13-S011",
+      "title": "geoBoundaries gbOpen KAZ ADM2",
+      "publisher": "wmgeolab / William & Mary",
+      "url": "https://github.com/wmgeolab/geoBoundaries/tree/main/releaseData/gbOpen/KAZ/ADM2",
+      "published_at": null,
+      "accessed_at": "2026-10-04",
+      "source_type": "geodata",
+      "access_status": "unavailable_lfs_blocked",
+      "notes": "raw.githubusercontent вернул только указатели Git LFS; media.githubusercontent.com заблокирован. Лицензия и состав не проверены."
+    },
+    {
+      "source_id": "A13-L001",
+      "title": "Malczewski J. GIS-based multicriteria decision analysis: a survey of the literature. IJGIS 20(7)",
+      "publisher": "Taylor & Francis",
+      "url": "https://doi.org/10.1080/13658810600661508",
+      "published_at": "2006",
+      "accessed_at": null,
+      "source_type": "scientific_publication",
+      "access_status": "not_accessed_candidate_from_memory",
+      "notes": "Не открыт и не прочитан в сессии (doi.org/crossref заблокированы). Авторы/год/DOI требуют проверки; возможны неточности."
+    },
+    {
+      "source_id": "A13-L002",
+      "title": "Malczewski J., Rinner C. Multicriteria Decision Analysis in Geographic Information Science",
+      "publisher": "Springer",
+      "url": null,
+      "published_at": "2015",
+      "accessed_at": null,
+      "source_type": "scientific_publication",
+      "access_status": "not_accessed_candidate_from_memory",
+      "notes": "Не открыт и не прочитан в сессии (doi.org/crossref заблокированы). Авторы/год/DOI требуют проверки; возможны неточности."
+    },
+    {
+      "source_id": "A13-L003",
+      "title": "Geertman S., Stillwell J. Planning support systems: an inventory of current practice. CEUS 28(4)",
+      "publisher": "Elsevier",
+      "url": null,
+      "published_at": "2004",
+      "accessed_at": null,
+      "source_type": "scientific_publication",
+      "access_status": "not_accessed_candidate_from_memory",
+      "notes": "Не открыт и не прочитан в сессии (doi.org/crossref заблокированы). Авторы/год/DOI требуют проверки; возможны неточности."
+    },
+    {
+      "source_id": "A13-L004",
+      "title": "Vonk G., Geertman S., Schot P. Bottlenecks blocking widespread usage of planning support systems. Environment and Planning A 37(5)",
+      "publisher": "SAGE/Pion",
+      "url": null,
+      "published_at": "2005",
+      "accessed_at": null,
+      "source_type": "scientific_publication",
+      "access_status": "not_accessed_candidate_from_memory",
+      "notes": "Не открыт и не прочитан в сессии (doi.org/crossref заблокированы). Авторы/год/DOI требуют проверки; возможны неточности."
+    },
+    {
+      "source_id": "A13-L005",
+      "title": "Lempert R., Popper S., Bankes S. Shaping the Next One Hundred Years (MR-1626)",
+      "publisher": "RAND",
+      "url": null,
+      "published_at": "2003",
+      "accessed_at": null,
+      "source_type": "scientific_publication",
+      "access_status": "not_accessed_candidate_from_memory",
+      "notes": "Не открыт и не прочитан в сессии (doi.org/crossref заблокированы). Авторы/год/DOI требуют проверки; возможны неточности."
+    },
+    {
+      "source_id": "A13-L006",
+      "title": "Kwakkel J. The Exploratory Modeling Workbench. Environmental Modelling & Software 96",
+      "publisher": "Elsevier",
+      "url": null,
+      "published_at": "2017",
+      "accessed_at": null,
+      "source_type": "scientific_publication",
+      "access_status": "not_accessed_candidate_from_memory",
+      "notes": "Не открыт и не прочитан в сессии (doi.org/crossref заблокированы). Авторы/год/DOI требуют проверки; возможны неточности."
+    },
+    {
+      "source_id": "A13-L007",
+      "title": "Lewis P. et al. Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+      "publisher": "NeurIPS",
+      "url": "https://arxiv.org/abs/2005.11401",
+      "published_at": "2020",
+      "accessed_at": null,
+      "source_type": "scientific_publication",
+      "access_status": "not_accessed_candidate_from_memory",
+      "notes": "Не открыт и не прочитан в сессии (doi.org/crossref заблокированы). Авторы/год/DOI требуют проверки; возможны неточности."
+    },
+    {
+      "source_id": "A13-L008",
+      "title": "Gao T. et al. Enabling Large Language Models to Generate Text with Citations",
+      "publisher": "EMNLP",
+      "url": "https://arxiv.org/abs/2305.14627",
+      "published_at": "2023",
+      "accessed_at": null,
+      "source_type": "scientific_publication",
+      "access_status": "not_accessed_candidate_from_memory",
+      "notes": "Не открыт и не прочитан в сессии (doi.org/crossref заблокированы). Авторы/год/DOI требуют проверки; возможны неточности."
+    },
+    {
+      "source_id": "A13-L009",
+      "title": "Ji Z. et al. Survey of Hallucination in Natural Language Generation. ACM CSUR 55(12)",
+      "publisher": "ACM",
+      "url": null,
+      "published_at": "2023",
+      "accessed_at": null,
+      "source_type": "scientific_publication",
+      "access_status": "not_accessed_candidate_from_memory",
+      "notes": "Не открыт и не прочитан в сессии (doi.org/crossref заблокированы). Авторы/год/DOI требуют проверки; возможны неточности."
+    },
+    {
+      "source_id": "A13-L010",
+      "title": "Greshake K. et al. Not what you've signed up for: Indirect Prompt Injection",
+      "publisher": "arXiv",
+      "url": "https://arxiv.org/abs/2302.12173",
+      "published_at": "2023",
+      "accessed_at": null,
+      "source_type": "scientific_publication",
+      "access_status": "not_accessed_candidate_from_memory",
+      "notes": "Не открыт и не прочитан в сессии (doi.org/crossref заблокированы). Авторы/год/DOI требуют проверки; возможны неточности."
+    },
+    {
+      "source_id": "A13-L011",
+      "title": "Ramamonjison R. et al. NL4Opt Competition",
+      "publisher": "arXiv",
+      "url": "https://arxiv.org/abs/2303.08233",
+      "published_at": "2023",
+      "accessed_at": null,
+      "source_type": "scientific_publication",
+      "access_status": "not_accessed_candidate_from_memory",
+      "notes": "Не открыт и не прочитан в сессии (doi.org/crossref заблокированы). Авторы/год/DOI требуют проверки; возможны неточности."
+    },
+    {
+      "source_id": "A13-L012",
+      "title": "AhmadiTeshnizi A., Gao W., Udell M. OptiMUS",
+      "publisher": "arXiv",
+      "url": "https://arxiv.org/abs/2402.10172",
+      "published_at": "2024",
+      "accessed_at": null,
+      "source_type": "scientific_publication",
+      "access_status": "not_accessed_candidate_from_memory",
+      "notes": "Не открыт и не прочитан в сессии (doi.org/crossref заблокированы). Авторы/год/DOI требуют проверки; возможны неточности."
+    }
+  ],
+  "facts": [
+    {
+      "fact_id": "A13-F001",
+      "statement": "Все автотесты репозитория проходят",
+      "kind": "observed",
+      "value": 112,
+      "unit": "тестов",
+      "geography": "n/a",
+      "period": "commit 834a25f",
+      "source_refs": [
+        {
+          "source_id": "A13-S001",
+          "locator": "pytest -q, запуск A13 2026-10-04"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "Python 3.12.3/numpy 2.4.4 в Linux, не Windows-среда авторов"
+    },
+    {
+      "fact_id": "A13-F002",
+      "statement": "check.py завершается с кодом 0, все 12 эталонных проверок пройдены",
+      "kind": "observed",
+      "value": 12,
+      "unit": "проверок",
+      "geography": "Астана (учебная)",
+      "period": "commit 834a25f",
+      "source_refs": [
+        {
+          "source_id": "A13-S001",
+          "locator": "python3 check.py, последняя строка"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": ""
+    },
+    {
+      "fact_id": "A13-F003",
+      "statement": "Базовый Score 52.56 и пример ТЗ 56.54 воспроизводятся через локальный API",
+      "kind": "observed",
+      "value": {
+        "baseline": 52.56,
+        "tz_example": 56.54
+      },
+      "unit": "баллы учебного индекса",
+      "geography": "Астана (учебная)",
+      "period": "commit 834a25f",
+      "source_refs": [
+        {
+          "source_id": "A13-S001",
+          "locator": "api_probe_result.json: simulate_tz_example"
+        },
+        {
+          "source_id": "A13-S002",
+          "locator": "раздел «Как считается Score»"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "Индекс синтетический; не характеристика реальной Астаны"
+    },
+    {
+      "fact_id": "A13-F004",
+      "statement": "Полный перебор находит лучший план 57.24 (стоимость 98) за ~0.57 с, 1 407 050 сценариев",
+      "kind": "observed",
+      "value": {
+        "score": 57.24,
+        "cost": 98,
+        "seconds": 0.57,
+        "scenarios_total": 1407050,
+        "scenarios_valid": 694395
+      },
+      "unit": "",
+      "geography": "Астана (учебная)",
+      "period": "commit 834a25f",
+      "source_refs": [
+        {
+          "source_id": "A13-S001",
+          "locator": "api_probe_result.json: optimize.stats"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "Время зависит от машины"
+    },
+    {
+      "fact_id": "A13-F005",
+      "statement": "Данные модели синтетические; эффекты и веса не откалиброваны",
+      "kind": "observed",
+      "value": null,
+      "unit": null,
+      "geography": "Астана (учебная)",
+      "period": null,
+      "source_refs": [
+        {
+          "source_id": "A13-S002",
+          "locator": "раздел «Ограничения», п.1"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": ""
+    },
+    {
+      "fact_id": "A13-F006",
+      "statement": "CityData и optimize работают без изменения кода на синтетических городах 6–8 районов и 14–20 мер",
+      "kind": "observed",
+      "value": null,
+      "unit": null,
+      "geography": "синтетический",
+      "period": "2026-10-04",
+      "source_refs": [
+        {
+          "source_id": "A13-S001",
+          "locator": "эксперимент E2, scale_exp.py"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "Проверена загрузка и оптимизация, не UI и не советник"
+    },
+    {
+      "fact_id": "A13-F007",
+      "statement": "Время полного перебора: 8 районов × 20 мер = 33.8 с; 6×20 ≈ 4.9–5.6 с; 8×14 ≈ 4.6–4.9 с",
+      "kind": "observed",
+      "value": {
+        "8x20": 33.81,
+        "6x20": 4.87,
+        "8x14": 4.57
+      },
+      "unit": "секунды",
+      "geography": "синтетический",
+      "period": "2026-10-04",
+      "source_refs": [
+        {
+          "source_id": "A13-S001",
+          "locator": "E2 вывод scale_exp.py/stats.py"
+        }
+      ],
+      "derivation": null,
+      "confidence": "medium",
+      "caveats": "Один запуск на каждую точку, общая VM; порядок величины, не бенчмарк"
+    },
+    {
+      "fact_id": "A13-F008",
+      "statement": "Рост пространства поиска примерно как (число районов)^(число районных мер в наборе): 5→8 районов при 14 мерах увеличивает сценарии в 8.6 раза",
+      "kind": "derived",
+      "value": 8.58,
+      "unit": "раз",
+      "geography": "синтетический",
+      "period": "2026-10-04",
+      "source_refs": [
+        {
+          "source_id": "A13-S001",
+          "locator": "stats.py: 12078416/1407050"
+        }
+      ],
+      "derivation": "12 078 416 / 1 407 050",
+      "confidence": "high",
+      "caveats": "Справедливо для текущего алгоритма перебора"
+    },
+    {
+      "fact_id": "A13-F009",
+      "statement": "Параллельные optimize сериализуются блокировкой: 4 запроса завершились за 0.56/1.07/1.59/2.09 с",
+      "kind": "observed",
+      "value": [
+        0.56,
+        1.07,
+        1.59,
+        2.09
+      ],
+      "unit": "секунды",
+      "geography": "n/a",
+      "period": "2026-10-04",
+      "source_refs": [
+        {
+          "source_id": "A13-S004",
+          "locator": "optimize_lock стр. 66, 141"
+        },
+        {
+          "source_id": "A13-S001",
+          "locator": "api_probe_result.json"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "Для публичного сайта нужна очередь/кэш"
+    },
+    {
+      "fact_id": "A13-F010",
+      "statement": "POST с чужим Host отклоняется кодом 403",
+      "kind": "observed",
+      "value": 403,
+      "unit": "HTTP",
+      "geography": "n/a",
+      "period": "2026-10-04",
+      "source_refs": [
+        {
+          "source_id": "A13-S004",
+          "locator": "стр. 261–266"
+        },
+        {
+          "source_id": "A13-S001",
+          "locator": "api_probe_result.json: foreign_host"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": ""
+    },
+    {
+      "fact_id": "A13-F011",
+      "statement": "real_context.json содержит нули при статусе unavailable (нет данных записано как 0)",
+      "kind": "observed",
+      "value": 0,
+      "unit": "шт",
+      "geography": "Астана",
+      "period": "2026-09-23",
+      "source_refs": [
+        {
+          "source_id": "A13-S005",
+          "locator": "real_context_meta.json: status; real_context.json: все категории"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "Файл, судя по grep, не используется движком/UI"
+    },
+    {
+      "fact_id": "A13-F012",
+      "statement": "Привязка к Астане находится в советнике/промптах (nura_priority, «акима Астаны»), а не в движке",
+      "kind": "observed",
+      "value": null,
+      "unit": null,
+      "geography": "n/a",
+      "period": "commit 834a25f",
+      "source_refs": [
+        {
+          "source_id": "A13-S001",
+          "locator": "agent/advisor.py:114; agent/prompts.py:10; grep 'Астан' в engine/ = 0"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": ""
+    },
+    {
+      "fact_id": "A13-F013",
+      "statement": "Файла LICENSE в корне репозитория нет",
+      "kind": "observed",
+      "value": null,
+      "unit": null,
+      "geography": "n/a",
+      "period": "commit 834a25f",
+      "source_refs": [
+        {
+          "source_id": "A13-S001",
+          "locator": "ls LICENSE* — пусто"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "Права на повторное использование не определены"
+    },
+    {
+      "fact_id": "A13-F014",
+      "statement": "Словарный baseline для «поручение→ограничения» на 12 синтетических запросах: exact 11/12, slot-F1 0.977, schema-valid 12/12",
+      "kind": "observed",
+      "value": {
+        "exact": 11,
+        "n": 12,
+        "slot_f1": 0.977
+      },
+      "unit": "",
+      "geography": "синтетический",
+      "period": "2026-10-04",
+      "source_refs": [
+        {
+          "source_id": "A13-S001",
+          "locator": "E4 constraints_eval_result.json"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "Набор написан автором парсера — смещён; цифра не оценивает реальную задачу"
+    },
+    {
+      "fact_id": "A13-F015",
+      "statement": "Шымкент разделён на 5 районов (Абайский, Аль-Фарабийский, Енбекшинский, Каратауский, Туранский)",
+      "kind": "hypothesis",
+      "value": 5,
+      "unit": "районов",
+      "geography": "г. Шымкент",
+      "period": null,
+      "source_refs": [],
+      "derivation": null,
+      "confidence": "low",
+      "caveats": "По памяти, официальный источник не открыт (S007–S009 заблокированы)"
+    },
+    {
+      "fact_id": "A13-F016",
+      "statement": "Для 5–6 районов полный перебор пригоден для интерактива; для микрорайонного уровня нужен MILP/эвристика",
+      "kind": "hypothesis",
+      "value": null,
+      "unit": null,
+      "geography": "г. Шымкент",
+      "period": null,
+      "source_refs": [
+        {
+          "source_id": "A13-S001",
+          "locator": "E2"
+        }
+      ],
+      "derivation": "экстраполяция F7",
+      "confidence": "medium",
+      "caveats": "Зависит от числа мер и правил"
+    }
+  ],
+  "datasets": [
+    {
+      "dataset_id": "A13-D001",
+      "title": "STUPITS учебный датасет Астаны (city_data.json, events.json)",
+      "publisher": "BAITC-Hacks / STUPITS",
+      "source_ids": [
+        "A13-S003"
+      ],
+      "landing_url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/tree/main/data",
+      "download_or_api_url": "https://raw.githubusercontent.com/BAITC-Hacks/hack-d3b2c613-stupits/main/data/city_data.json",
+      "access_status": "sample_verified",
+      "tested_at": "2026-10-04",
+      "geography": "Астана (5 районов, синтетика)",
+      "granularity": "район",
+      "period": null,
+      "format": "JSON",
+      "fields": [
+        "districts[].indicators{T1..C2}",
+        "population_share",
+        "measures[].effects/cost/lag",
+        "synergies",
+        "incompatibilities"
+      ],
+      "units": "индекс 0–100; у.е.; кварталы",
+      "update_frequency": "static",
+      "license": null,
+      "auth_requirement": "none",
+      "limitations": "Синтетика для хакатона; нельзя переносить на Шымкент как факт; лицензия не указана",
+      "next_retrieval_step": "Заморозить как astana-tz-2026, kind=training"
+    },
+    {
+      "dataset_id": "A13-D002",
+      "title": "Границы районов Астаны из OSM",
+      "publisher": "OpenStreetMap contributors (через STUPITS)",
+      "source_ids": [
+        "A13-S006"
+      ],
+      "landing_url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/blob/main/data/astana_districts.geojson",
+      "download_or_api_url": null,
+      "access_status": "sample_verified",
+      "tested_at": "2026-10-04",
+      "geography": "Астана",
+      "granularity": "район",
+      "period": "osm_base 2026-09-22",
+      "format": "GeoJSON",
+      "fields": [
+        "id",
+        "name",
+        "source",
+        "center_lon",
+        "center_lat"
+      ],
+      "units": "WGS84",
+      "update_frequency": "по запросу fetch_districts.py",
+      "license": "ODbL",
+      "auth_requirement": "none",
+      "limitations": "Не юридическое описание границ",
+      "next_retrieval_step": "Повторить fetch_districts.py с bbox Шымкента локально у владельца"
+    },
+    {
+      "dataset_id": "A13-D003",
+      "title": "Статистика по Шымкенту (динамические таблицы БНС)",
+      "publisher": "БНС АСПиР РК",
+      "source_ids": [
+        "A13-S008"
+      ],
+      "landing_url": "https://stat.gov.kz/ru/region/shymkent/dynamic-tables/38/",
+      "download_or_api_url": null,
+      "access_status": "unavailable",
+      "tested_at": "2026-10-04",
+      "geography": "г. Шымкент",
+      "granularity": null,
+      "period": null,
+      "format": null,
+      "fields": [],
+      "units": null,
+      "update_frequency": null,
+      "license": null,
+      "auth_requirement": null,
+      "limitations": "Хост заблокирован в среде A13; ничего не проверено",
+      "next_retrieval_step": "Открыть из другой сети, выяснить районную детализацию и формат (A01–A12)"
+    },
+    {
+      "dataset_id": "A13-D004",
+      "title": "Наборы data.egov.kz по Шымкенту",
+      "publisher": "data.egov.kz",
+      "source_ids": [
+        "A13-S009"
+      ],
+      "landing_url": "https://data.egov.kz/",
+      "download_or_api_url": null,
+      "access_status": "unavailable",
+      "tested_at": "2026-10-04",
+      "geography": "г. Шымкент",
+      "granularity": null,
+      "period": null,
+      "format": null,
+      "fields": [],
+      "units": null,
+      "update_frequency": null,
+      "license": null,
+      "auth_requirement": null,
+      "limitations": "Хост заблокирован; API не проверено",
+      "next_retrieval_step": "Поиск наборов по 'Шымкент' и проверка API-запросом из другой сети"
+    },
+    {
+      "dataset_id": "A13-D005",
+      "title": "geoBoundaries KAZ ADM2",
+      "publisher": "wmgeolab",
+      "source_ids": [
+        "A13-S011"
+      ],
+      "landing_url": "https://github.com/wmgeolab/geoBoundaries/tree/main/releaseData/gbOpen/KAZ/ADM2",
+      "download_or_api_url": null,
+      "access_status": "restricted",
+      "tested_at": "2026-10-04",
+      "geography": "Казахстан",
+      "granularity": "ADM2",
+      "period": null,
+      "format": "GeoJSON (LFS)",
+      "fields": [],
+      "units": null,
+      "update_frequency": null,
+      "license": null,
+      "auth_requirement": "none, но LFS-хост заблокирован в среде",
+      "limitations": "Неизвестно, отражает ли текущее деление Шымкента",
+      "next_retrieval_step": "Скачать из другой сети, проверить лицензию и наличие районов Шымкента"
+    }
+  ],
+  "opportunities": [
+    {
+      "idea_id": "A13-I001",
+      "title": "Мультигородной движок с происхождением данных (data_version + kind)",
+      "problem": "Учебные синтетические числа легко выдать за реальные; нули вместо null",
+      "evidence_fact_ids": [
+        "A13-F005",
+        "A13-F006",
+        "A13-F011",
+        "A13-F012"
+      ],
+      "primary_user": "Разработчик и аналитик, готовящий Шымкент-версию; жюри/комиссия",
+      "user_task": "Понять, какие числа измерены, вычислены или придуманы",
+      "existing_solution": "Один файл city_data.json без пометок",
+      "proposed_addition": "Observation/DataVersion контракты, бейдж режима, запрет mode=city при synthetic",
+      "required_dataset_ids": [
+        "A13-D001",
+        "A13-D003"
+      ],
+      "ai_role": "Не нужен",
+      "non_ai_baseline": "Это и есть baseline",
+      "success_metrics": [
+        "0 значений без kind",
+        "112 тестов зелёные",
+        "проверки 1–5 из отчёта"
+      ],
+      "feasibility_10_days": "high",
+      "blockers": [
+        "Решение владельца о схеме"
+      ],
+      "transfer_to_astana": "Астана остаётся training-версией; позже — калиброванная версия",
+      "next_action": "JSON Schema для Observation и адаптер CityData"
+    },
+    {
+      "idea_id": "A13-I002",
+      "title": "Поручение → валидируемые ограничения с измерением регрета",
+      "problem": "Пользователь формулирует цель словами; ошибка перевода незаметно даёт другой план",
+      "evidence_fact_ids": [
+        "A13-F014"
+      ],
+      "primary_user": "Сотрудник акимата/аналитик, сравнивающий варианты",
+      "user_task": "Получить лучшие планы при своих условиях",
+      "existing_solution": "optimize-инструмент советника с JSON Schema",
+      "proposed_addition": "Отложенный набор поручений и харнесс метрик; уточняющий вопрос при двусмысленности",
+      "required_dataset_ids": [
+        "A13-D001"
+      ],
+      "ai_role": "Перевод текста в constraints; движок валидирует",
+      "non_ai_baseline": "Форма-конструктор и словарный парсер (E4)",
+      "success_metrics": [
+        "slot-F1",
+        "exact match",
+        "регрет решения",
+        "корректный отказ на невыполнимых"
+      ],
+      "feasibility_10_days": "medium",
+      "blockers": [
+        "Нужны поручения от людей, не знающих парсер",
+        "ключ LLM"
+      ],
+      "transfer_to_astana": "Прямо; каталог меняется",
+      "next_action": "Собрать 30+ поручений от 3–5 человек"
+    }
+  ],
+  "open_questions": [
+    {
+      "question": "Какой официальный состав и границы районов Шымкента на дату данных?",
+      "why_important": "Без этого любой районный показатель может быть приписан не той территории",
+      "how_to_check": "gov.kz/акимат Шымкента, НПА об образовании районов; сверить с OSM"
+    },
+    {
+      "question": "Есть ли районная детализация показателей Шымкента в БНС/data.egov.kz и какая лицензия?",
+      "why_important": "Определяет, возможен ли вообще районный профиль",
+      "how_to_check": "Открыть S008/S009 из сети без блокировок, скачать 1 таблицу"
+    },
+    {
+      "question": "Нужен ли пользователям композитный Score или достаточно отдельных показателей?",
+      "why_important": "Композит требует нормативных весов, которых нет",
+      "how_to_check": "Интервью/опрос 3–5 потенциальных пользователей; обзор практики"
+    },
+    {
+      "question": "Совпадает ли MILP-формулировка с полным перебором на учебной модели?",
+      "why_important": "Условие масштабирования на мелкую сетку",
+      "how_to_check": "OR-Tools/PuLP, сравнить топ-10 с optimize() 5×14"
+    },
+    {
+      "question": "Чьи права на код STUPITS и какая лицензия?",
+      "why_important": "GovTech-публикация и диплом",
+      "how_to_check": "Решение владельца и команды; добавить LICENSE"
+    }
+  ],
+  "deliverables": {
+    "experiments": [
+      {
+        "id": "A13-E1",
+        "what": "pytest + check.py",
+        "inputs": "commit 834a25f",
+        "versions": {
+          "python": "3.12.3",
+          "numpy": "2.4.4"
+        },
+        "commands": [
+          "python3 -m pytest -q",
+          "python3 check.py"
+        ],
+        "result": "112 passed in 13.11s; exit 0, 12/12"
+      },
+      {
+        "id": "A13-E2",
+        "what": "Обобщаемость и масштаб перебора",
+        "inputs": "Синтетические города (клоны Астаны с шумом, seed=0)",
+        "versions": {
+          "python": "3.12.3",
+          "numpy": "2.4.4"
+        },
+        "commands": [
+          "python3 scale_exp.py",
+          "python3 stats.py"
+        ],
+        "result": "см. A13-F006–F008"
+      },
+      {
+        "id": "A13-E3",
+        "what": "Пробы локального API",
+        "inputs": "app.py --port 8612, без ключа",
+        "versions": {
+          "python": "3.12.3"
+        },
+        "commands": [
+          "python3 api_probe.py"
+        ],
+        "result": "см. api_probe_result.json; F003, F004, F009, F010"
+      },
+      {
+        "id": "A13-E4",
+        "what": "Харнесс поручение→ограничения, без LLM",
+        "inputs": "12 синтетических запросов",
+        "versions": {
+          "jsonschema": "4.26.0"
+        },
+        "commands": [
+          "python3 constraints_eval.py"
+        ],
+        "result": "см. F014; LLM не вызывался"
+      }
+    ],
+    "synthetic_note": "Все данные E2 и E4 синтетические и не относятся к Шымкенту.",
+    "dependencies": [
+      "A01–A12: реальные показатели, границы, стоимости",
+      "A14: выбор MVP"
+    ]
+  }
+}
