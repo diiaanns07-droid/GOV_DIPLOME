@@ -1,0 +1,75 @@
+{
+ "pass": 17,
+ "fail": 0,
+ "skip": 0,
+ "results": [
+  {
+   "name": "экватор: расстояние в мм = round(R·Δλ·1000) (независимая формула)",
+   "status": "PASS"
+  },
+  {
+   "name": "экватор: пустой план — baseline; delta=0; метрики по формулам",
+   "status": "PASS"
+  },
+  {
+   "name": "экватор: ручной оптимум (бюджет 300, ≤2): mean → c_mid+c_near2; minimax → c_mid+c_near2; coverage → тот же",
+   "status": "PASS"
+  },
+  {
+   "name": "экватор: required/excluded/бюджет/max_selected соблюдаются",
+   "status": "PASS"
+  },
+  {
+   "name": "экватор: required невыполним → infeasible с причиной, ограничения не снимаются",
+   "status": "PASS"
+  },
+  {
+   "name": "ничья: источник выигрывает у кандидата на том же расстоянии; среди кандидатов — меньший id",
+   "status": "PASS"
+  },
+  {
+   "name": "пустой baseline и пустой план: after=null, unknown_count, max/mean=null",
+   "status": "PASS"
+  },
+  {
+   "name": "валидация: поля, версии, город, срез, категория",
+   "status": "PASS"
+  },
+  {
+   "name": "валидация: числа, пределы, координаты, bbox",
+   "status": "PASS"
+  },
+  {
+   "name": "валидация: ID, ссылки, required∩excluded",
+   "status": "PASS"
+  },
+  {
+   "name": "строгий JSON: NaN, Infinity, 1e999, повтор ключа, лишние данные, >256 KiB",
+   "status": "PASS"
+  },
+  {
+   "name": "перестановка массивов не меняет план, метрики и problem_digest; selected_ids — только в scenario digest",
+   "status": "PASS"
+  },
+  {
+   "name": "гаверсинус только при подготовке: m·(src+n) вызовов, не в переборе",
+   "status": "PASS"
+  },
+  {
+   "name": "shymkent/school: реальный срез + synthetic кандидаты — оптимизация, проверка допустимости победителей",
+   "status": "PASS"
+  },
+  {
+   "name": "shymkent/outpatient_clinic: реальный срез + synthetic кандидаты — оптимизация, проверка допустимости победителей",
+   "status": "PASS"
+  },
+  {
+   "name": "astana/school: реальный срез + synthetic кандидаты — оптимизация, проверка допустимости победителей",
+   "status": "PASS"
+  },
+  {
+   "name": "astana/outpatient_clinic: реальный срез + synthetic кандидаты — оптимизация, проверка допустимости победителей",
+   "status": "PASS"
+  }
+ ]
+}
