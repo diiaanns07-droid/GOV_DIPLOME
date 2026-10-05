@@ -1,0 +1,411 @@
+{
+ "kind": "K07 round-8 browser checks of the city-plan-v2 planner UI",
+ "label": "proposal_on_a5b5e2d",
+ "sha": "a5b5e2d+k07r8patch",
+ "target": {
+  "app_root": "city-evidence"
+ },
+ "total": 22,
+ "pass": [
+  "U1",
+  "U2",
+  "U3",
+  "U5",
+  "U4",
+  "U6",
+  "U7",
+  "U8",
+  "U9",
+  "U10",
+  "U11",
+  "U12",
+  "U13",
+  "U14",
+  "U15",
+  "U19",
+  "U18",
+  "U23",
+  "U16",
+  "U17",
+  "U20",
+  "U22"
+ ],
+ "fail": [],
+ "test_incompatible": [],
+ "note": "Sites, costs and weights are placed by the test or come from the explicit SYNTHETIC demo set; they are not city data.",
+ "checks": [
+  {
+   "id": "U1",
+   "area": "mode",
+   "expect": "plan closed by default: card hidden, a map click creates no plan item",
+   "verdict": "PASS",
+   "observed": {
+    "cardHidden": true,
+    "points": 0
+   }
+  },
+  {
+   "id": "U2",
+   "area": "placement",
+   "expect": "plan open: 3 clicks give 3 control points (weight 1) in the list and on the map; the map status says so",
+   "verdict": "PASS",
+   "observed": {
+    "points": 3,
+    "layer": 3,
+    "mapStatus": "Точка 3 поставлена (вес 1): 42.32415, 69.59787. Точек 3 из 25."
+   }
+  },
+  {
+   "id": "U3",
+   "area": "placement",
+   "expect": "candidate tool: 2 clicks give 2 hypothetical sites with the conditional default cost 100, labelled as such",
+   "verdict": "PASS",
+   "observed": {
+    "cands": [
+     {
+      "id": "site-1",
+      "lon": 69.59914469175669,
+      "lat": 42.324153275206626,
+      "cost": 100,
+      "status": "free"
+     },
+     {
+      "id": "site-2",
+      "lon": 69.60041540416972,
+      "lat": 42.324153275206626,
+      "cost": 100,
+      "status": "free"
+     }
+    ],
+    "msg": "Место 2 поставлено: стоимость 100 усл. ед. — условное значение, задайте свою. Мест 2 из 16."
+   }
+  },
+  {
+   "id": "U5",
+   "area": "limits",
+   "expect": "at most 16 sites: the 17th click is refused with a message about the exact search limit",
+   "verdict": "PASS",
+   "observed": {
+    "cands": 16,
+    "msg": "Не больше 16 кандидатных мест — точный перебор ограничен 65 536 наборами."
+   }
+  },
+  {
+   "id": "U4",
+   "area": "limits",
+   "expect": "at most 25 control points: the 26th click is refused with a message",
+   "verdict": "PASS",
+   "observed": {
+    "points": 25,
+    "msg": "Не больше 25 контрольных точек — удалите одну из списка."
+   }
+  },
+  {
+   "id": "U6",
+   "area": "bbox",
+   "expect": "a click outside the K10 square is refused with a message",
+   "verdict": "PASS",
+   "observed": {
+    "msg": "Место вне квадрата среза: там нет исходных записей, точку или кандидатное место туда поставить нельзя."
+   }
+  },
+  {
+   "id": "U7",
+   "area": "inputs",
+   "expect": "weight: 0 and 2.5 refused (value restored, message), 7 accepted",
+   "verdict": "PASS",
+   "observed": {
+    "msg": "Вес Точка 1: нужно целое число 1…100. Значение не изменено.",
+    "weight": 7,
+    "shown": "1"
+   }
+  },
+  {
+   "id": "U8",
+   "area": "inputs",
+   "expect": "cost: 1 000 001 refused, 250 accepted (conditional units)",
+   "verdict": "PASS",
+   "observed": {
+    "msg": "Стоимость Место 1: нужно целое число 1…1 000 000. Значение не изменено.",
+    "cost": 250
+   }
+  },
+  {
+   "id": "U9",
+   "area": "inputs",
+   "expect": "radius 50, max 6, budget −1 refused; radius 300, max 2, budget 400 accepted",
+   "verdict": "PASS",
+   "observed": {
+    "radius": 300,
+    "max": 2,
+    "budget": 400
+   }
+  },
+  {
+   "id": "U10",
+   "area": "manual plan",
+   "expect": "manual plan: feasible within budget/count; over budget and over count are reported with numbers, not hidden",
+   "verdict": "PASS",
+   "observed": {
+    "feas": "✗ План недопустим: стоимость больше бюджета (350 > 300); мест больше, чем «Максимум объектов» (2 > 1). Расчёт показан, но такой план нарушает условия.",
+    "sel": "Выбрано: Место 1, Место 2 — 2 из максимум 2; 350 усл. ед. из бюджета 400 усл. ед."
+   }
+  },
+  {
+   "id": "U11",
+   "area": "constraints",
+   "expect": "«обязательно» puts the site into the manual plan (locked), «исключено» removes it (locked); the message says so",
+   "verdict": "PASS",
+   "observed": {
+    "selected": [
+     "site-2",
+     "site-3"
+    ],
+    "msg": "Место 1 исключено: убрано из ручного плана и не войдёт в найденные планы."
+   }
+  },
+  {
+   "id": "U12",
+   "area": "table",
+   "expect": "per-point table = calculator: one row per point, before/after as computed; nearest object says «запись среза (source)» or «(гипотеза)»",
+   "verdict": "PASS",
+   "observed": {
+    "rows": [
+     [
+      "cp-1",
+      "Т1 (×7)",
+      "101 м",
+      "101 м",
+      "0"
+     ],
+     [
+      "cp-2",
+      "Т2 (×1)",
+      "152 м",
+      "152 м",
+      "0"
+     ],
+     [
+      "cp-3",
+      "Т3 (×1)",
+      "249 м",
+      "209 м",
+      "−40 м"
+     ]
+    ],
+    "ev": [
+     {
+      "control_point_id": "cp-1",
+      "weight": 7,
+      "before_mm": 101269,
+      "after_mm": 101269,
+      "delta_mm": 0,
+      "nearest_before": {
+       "kind": "source",
+       "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+      },
+      "nearest_after": {
+       "kind": "source",
+       "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+      },
+      "covered": true
+     },
+     {
+      "control_point_id": "cp-2",
+      "weight": 1,
+      "before_mm": 151836,
+      "after_mm": 151836,
+      "delta_mm": 0,
+      "nearest_before": {
+       "kind": "source",
+       "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+      },
+      "nearest_after": {
+       "kind": "source",
+       "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+      },
+      "covered": true
+     },
+     {
+      "control_point_id": "cp-3",
+      "weight": 1,
+      "before_mm": 249388,
+      "after_mm": 208935,
+      "delta_mm": 40453,
+      "nearest_before": {
+       "kind": "source",
+       "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+      },
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "site-2"
+      },
+      "covered": true
+     }
+    ]
+   }
+  },
+  {
+   "id": "U13",
+   "area": "table",
+   "expect": "metrics table compares «Исходный срез» and «Ручной план»: mean, worst point, coverage of point weight, cost",
+   "verdict": "PASS",
+   "observed": [
+    [
+     "Показатель",
+     "Исходный срез",
+     "Ручной план"
+    ],
+    [
+     "Средневзвешенное расстояние",
+     "207 м",
+     "167 м"
+    ],
+    [
+     "Худшая точка",
+     "428 м",
+     "327 м"
+    ],
+    [
+     "Охват (вес точек в радиусе)",
+     "24 из 31 (77 %)",
+     "29 из 31 (94 %)"
+    ],
+    [
+     "Стоимость",
+     "0 усл. ед.",
+     "200 усл. ед."
+    ]
+   ]
+  },
+  {
+   "id": "U14",
+   "area": "move",
+   "expect": "«Перенести» moves the focus to the map; the next click moves that point (same id, new coordinates)",
+   "verdict": "PASS",
+   "observed": {
+    "focus": {
+     "id": "map",
+     "fk": null,
+     "tag": "svg",
+     "body": false,
+     "inCard": false
+    },
+    "before": {
+     "id": "cp-2",
+     "lon": 69.59660326693063,
+     "lat": 42.324153275206626,
+     "weight": 1
+    },
+    "moved": {
+     "id": "cp-2",
+     "lon": 69.59590642463961,
+     "lat": 42.32372606547771,
+     "weight": 1
+    }
+   }
+  },
+  {
+   "id": "U15",
+   "area": "delete",
+   "expect": "deleting a site removes it from the list, the map and the manual plan; focus goes to the next «Удалить»",
+   "verdict": "PASS",
+   "observed": {
+    "cands": 15,
+    "focus": {
+     "id": null,
+     "fk": "dlc-site-5",
+     "tag": "BUTTON",
+     "body": false,
+     "inCard": true
+    }
+   }
+  },
+  {
+   "id": "U19",
+   "area": "placement",
+   "expect": "a click on the plan's own marker adds nothing",
+   "verdict": "PASS",
+   "observed": {
+    "own": true,
+    "points": 25
+   }
+  },
+  {
+   "id": "U18",
+   "area": "modes",
+   "expect": "one placement mode at a time: v1 «контрольные точки» or «Расстояние от точки» switch plan placement off, the plan tool switches them off",
+   "verdict": "PASS",
+   "observed": {
+    "offByWi": true,
+    "wiAfter": null,
+    "offByPoint": true,
+    "pmAfter": false
+   }
+  },
+  {
+   "id": "U23",
+   "area": "modes",
+   "expect": "tool «Ничего»: a click on a record marker selects the record and adds no point",
+   "verdict": "PASS",
+   "observed": {
+    "selected": {
+     "type": "place",
+     "id": "fd50a858-462d-477f-8bc6-a8d3e03a9576"
+    },
+    "points": 25
+   }
+  },
+  {
+   "id": "U16",
+   "area": "reset",
+   "expect": "category change resets the plan with a reason",
+   "verdict": "PASS",
+   "observed": {
+    "msg": "Категория изменена на «Поликлиника» — план сброшен: места относятся к одной категории."
+   }
+  },
+  {
+   "id": "U17",
+   "area": "reset",
+   "expect": "city switch resets the plan with a reason; in the other city points go into its own square; nothing is restored on return",
+   "verdict": "PASS",
+   "observed": {
+    "had": 2,
+    "afterSwitch": 0,
+    "msg": "Город изменён — план сброшен: точки, места и найденные планы между городами не переносятся.",
+    "point": {
+     "id": "cp-1",
+     "lon": 71.4192905735044,
+     "lat": 51.180481216371106,
+     "weight": 1
+    },
+    "bbox": [
+     71.418372,
+     51.163033,
+     71.447,
+     51.181
+    ],
+    "afterReturn": 0
+   }
+  },
+  {
+   "id": "U20",
+   "area": "demo",
+   "expect": "SYNTHETIC demo: 12 points, 8 sites, budget 300, labelled «SYNTHETIC … не данные города» in the card and the message",
+   "verdict": "PASS",
+   "observed": {
+    "label": "SYNTHETIC demo (K07 r8): точки, места, веса и стоимости выдуманы для проверки интерфейса, не данные города.",
+    "points": 12,
+    "cands": 8
+   }
+  },
+  {
+   "id": "U22",
+   "area": "general",
+   "expect": "no console or page errors on the editor path",
+   "verdict": "PASS",
+   "observed": []
+  }
+ ]
+}

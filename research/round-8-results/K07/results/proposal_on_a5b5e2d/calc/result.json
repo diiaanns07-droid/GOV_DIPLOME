@@ -1,0 +1,611 @@
+{
+ "kind": "K07 r8 headless calculator tests",
+ "app_root": "city-evidence",
+ "calc_version": "k07-plan-calc-r8.1",
+ "total": 120,
+ "pass": 120,
+ "fail": 0,
+ "test_incompatible": 0,
+ "checks": [
+  {
+   "id": "C01",
+   "name": "haversine: 1° of latitude = R·π/180 (111 195.08 m), mm rounding once",
+   "verdict": "PASS"
+  },
+  {
+   "id": "C02",
+   "name": "mean objective on the equator case is {c1,c2}: ties of equal cost/sum broken by sorted IDs",
+   "verdict": "PASS"
+  },
+  {
+   "id": "C03",
+   "name": "all subsets enumerated (2^3=8), feasible = subsets with ≤2 sites and cost ≤ 20 (7)",
+   "verdict": "PASS"
+  },
+  {
+   "id": "C04",
+   "name": "three objectives may coincide: no artificial difference",
+   "verdict": "PASS"
+  },
+  {
+   "id": "C05",
+   "name": "required sites cost more than the budget → infeasible with reason, constraints not dropped",
+   "verdict": "PASS"
+  },
+  {
+   "id": "C06",
+   "name": "more required sites than max_selected → infeasible (required_over_count)",
+   "verdict": "PASS"
+  },
+  {
+   "id": "C07",
+   "name": "zero budget: only the empty plan is feasible; all three winners are the empty plan",
+   "verdict": "PASS"
+  },
+  {
+   "id": "C08",
+   "name": "no candidates: one subset (the empty plan), status optimal",
+   "verdict": "PASS"
+  },
+  {
+   "id": "C09",
+   "name": "no baseline records of the category: before = null, after = null for the empty plan (not 0)",
+   "verdict": "PASS"
+  },
+  {
+   "id": "C10",
+   "name": "no baseline: after known from a site, delta stays null",
+   "verdict": "PASS"
+  },
+  {
+   "id": "C11",
+   "name": "no baseline: winners minimise unknown_count first (never a partial sum before it)",
+   "verdict": "PASS"
+  },
+  {
+   "id": "C12",
+   "name": "Pareto (cost, weighted_sum_mm): no point dominated, equal pairs collapsed, sorted by cost, plans with c4 absent",
+   "verdict": "PASS"
+  },
+  {
+   "id": "C13",
+   "name": "coverage objective maximises covered weight first",
+   "verdict": "PASS"
+  },
+  {
+   "id": "C14",
+   "name": "input order of points/candidates changes neither the plans nor problem_digest",
+   "verdict": "PASS"
+  },
+  {
+   "id": "C15",
+   "name": "selected_ids: same problem_digest, different scenario digest",
+   "verdict": "PASS"
+  },
+  {
+   "id": "C16",
+   "name": "budget (or any problem field) changes problem_digest",
+   "verdict": "PASS"
+  },
+  {
+   "id": "C17",
+   "name": "unfinished search is never 'optimal' and carries no winners",
+   "verdict": "PASS"
+  },
+  {
+   "id": "C18",
+   "name": "manual plan over count and budget is evaluated and marked infeasible with both reasons",
+   "verdict": "PASS"
+  },
+  {
+   "id": "C19",
+   "name": "manual plan with an excluded site and without a required one → has_excluded, missing_required",
+   "verdict": "PASS"
+  },
+  {
+   "id": "C20",
+   "name": "tie between a source record and a site at the same place: nearest after stays the source (no fake improvement)",
+   "verdict": "PASS"
+  },
+  {
+   "id": "C21",
+   "name": "Pareto: two plans with equal cost and sum collapse to one point with the smaller IDs ({c1}, not {c3})",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-schema",
+   "name": "validator rejects: schema → bad_schema",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-city",
+   "name": "validator rejects: city → bad_city",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-snapshot",
+   "name": "validator rejects: snapshot → bad_snapshot",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-unknown field",
+   "name": "validator rejects: unknown field → unknown_field",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-point extra field",
+   "name": "validator rejects: point extra field → unknown_field",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-duplicate point id",
+   "name": "validator rejects: duplicate point id → duplicate_id",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-outside bbox",
+   "name": "validator rejects: outside bbox → outside_bbox",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-NaN lat",
+   "name": "validator rejects: NaN lat → bad_coordinate",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-weight 0",
+   "name": "validator rejects: weight 0 → out_of_range",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-weight 1.5",
+   "name": "validator rejects: weight 1.5 → not_integer",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-cost 0",
+   "name": "validator rejects: cost 0 → out_of_range",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-cost negative",
+   "name": "validator rejects: cost negative → out_of_range",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-budget too big",
+   "name": "validator rejects: budget too big → out_of_range",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-max_selected 6",
+   "name": "validator rejects: max_selected 6 → out_of_range",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-radius 50",
+   "name": "validator rejects: radius 50 → out_of_range",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-required∩excluded",
+   "name": "validator rejects: required∩excluded → required_excluded_overlap",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-unknown reference",
+   "name": "validator rejects: unknown reference → unknown_reference",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-duplicate in required",
+   "name": "validator rejects: duplicate in required → duplicate_id",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-candidate kind",
+   "name": "validator rejects: candidate kind → bad_kind",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-candidate category",
+   "name": "validator rejects: candidate category → bad_category",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-26 points",
+   "name": "validator rejects: 26 points → bad_count",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-17 candidates",
+   "name": "validator rejects: 17 candidates → bad_count",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-id 65 chars",
+   "name": "validator rejects: id 65 chars → bad_id",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-id with markup",
+   "name": "validator rejects: id with markup → bad_id",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-0 points",
+   "name": "validator rejects: 0 points → bad_count",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-missing field",
+   "name": "validator rejects: missing field → missing_field",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-derived",
+   "name": "derived_results is allowed but dropped (never trusted)",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-empty-ui",
+   "name": "editor state with 0 points is accepted only with allowEmptyPoints",
+   "verdict": "PASS"
+  },
+  {
+   "id": "R01",
+   "name": "chunked run: progress grows in steps to 4096 and the result equals the one-call search",
+   "verdict": "PASS"
+  },
+  {
+   "id": "R02",
+   "name": "cancel stops the search: status cancelled, no winners, fewer subsets than total",
+   "verdict": "PASS"
+  },
+  {
+   "id": "R03",
+   "name": "each run has its own request_id; a changed problem has another problem_digest",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-shymkent/school/demo",
+   "name": "optimizePlans = Python oracle (objectives, feasible count, Pareto, budgets [0, B/2, B]): shymkent/school/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-shymkent/school/demo",
+   "name": "evaluatePlan (manual plan) = oracle: shymkent/school/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-shymkent/school/budget0",
+   "name": "optimizePlans = Python oracle (objectives, feasible count, Pareto, budgets [0, B/2, B]): shymkent/school/budget0",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-shymkent/school/budget0",
+   "name": "evaluatePlan (manual plan) = oracle: shymkent/school/budget0",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-shymkent/school/budget150",
+   "name": "optimizePlans = Python oracle (objectives, feasible count, Pareto, budgets [0, B/2, B]): shymkent/school/budget150",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-shymkent/school/budget150",
+   "name": "evaluatePlan (manual plan) = oracle: shymkent/school/budget150",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-shymkent/school/max5_b1000",
+   "name": "optimizePlans = Python oracle (objectives, feasible count, Pareto, budgets [0, B/2, B]): shymkent/school/max5_b1000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-shymkent/school/max5_b1000",
+   "name": "evaluatePlan (manual plan) = oracle: shymkent/school/max5_b1000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-shymkent/school/req_exc",
+   "name": "optimizePlans = Python oracle (objectives, feasible count, Pareto, budgets [0, B/2, B]): shymkent/school/req_exc",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-shymkent/school/req_exc",
+   "name": "evaluatePlan (manual plan) = oracle: shymkent/school/req_exc",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-shymkent/school/radius100",
+   "name": "optimizePlans = Python oracle (objectives, feasible count, Pareto, budgets [0, B/2, B]): shymkent/school/radius100",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-shymkent/school/radius100",
+   "name": "evaluatePlan (manual plan) = oracle: shymkent/school/radius100",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-shymkent/school/radius5000",
+   "name": "optimizePlans = Python oracle (objectives, feasible count, Pareto, budgets [0, B/2, B]): shymkent/school/radius5000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-shymkent/school/radius5000",
+   "name": "evaluatePlan (manual plan) = oracle: shymkent/school/radius5000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-shymkent/school/infeasible",
+   "name": "optimizePlans = Python oracle (objectives, feasible count, Pareto, budgets [0, B/2, B]): shymkent/school/infeasible",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-shymkent/school/infeasible",
+   "name": "evaluatePlan (manual plan) = oracle: shymkent/school/infeasible",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-shymkent/outpatient_clinic/demo",
+   "name": "optimizePlans = Python oracle (objectives, feasible count, Pareto, budgets [0, B/2, B]): shymkent/outpatient_clinic/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-shymkent/outpatient_clinic/demo",
+   "name": "evaluatePlan (manual plan) = oracle: shymkent/outpatient_clinic/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-shymkent/outpatient_clinic/budget0",
+   "name": "optimizePlans = Python oracle (objectives, feasible count, Pareto, budgets [0, B/2, B]): shymkent/outpatient_clinic/budget0",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-shymkent/outpatient_clinic/budget0",
+   "name": "evaluatePlan (manual plan) = oracle: shymkent/outpatient_clinic/budget0",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-shymkent/outpatient_clinic/budget150",
+   "name": "optimizePlans = Python oracle (objectives, feasible count, Pareto, budgets [0, B/2, B]): shymkent/outpatient_clinic/budget150",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-shymkent/outpatient_clinic/budget150",
+   "name": "evaluatePlan (manual plan) = oracle: shymkent/outpatient_clinic/budget150",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-shymkent/outpatient_clinic/max5_b1000",
+   "name": "optimizePlans = Python oracle (objectives, feasible count, Pareto, budgets [0, B/2, B]): shymkent/outpatient_clinic/max5_b1000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-shymkent/outpatient_clinic/max5_b1000",
+   "name": "evaluatePlan (manual plan) = oracle: shymkent/outpatient_clinic/max5_b1000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-shymkent/outpatient_clinic/req_exc",
+   "name": "optimizePlans = Python oracle (objectives, feasible count, Pareto, budgets [0, B/2, B]): shymkent/outpatient_clinic/req_exc",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-shymkent/outpatient_clinic/req_exc",
+   "name": "evaluatePlan (manual plan) = oracle: shymkent/outpatient_clinic/req_exc",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-shymkent/outpatient_clinic/radius100",
+   "name": "optimizePlans = Python oracle (objectives, feasible count, Pareto, budgets [0, B/2, B]): shymkent/outpatient_clinic/radius100",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-shymkent/outpatient_clinic/radius100",
+   "name": "evaluatePlan (manual plan) = oracle: shymkent/outpatient_clinic/radius100",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-shymkent/outpatient_clinic/radius5000",
+   "name": "optimizePlans = Python oracle (objectives, feasible count, Pareto, budgets [0, B/2, B]): shymkent/outpatient_clinic/radius5000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-shymkent/outpatient_clinic/radius5000",
+   "name": "evaluatePlan (manual plan) = oracle: shymkent/outpatient_clinic/radius5000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-shymkent/outpatient_clinic/infeasible",
+   "name": "optimizePlans = Python oracle (objectives, feasible count, Pareto, budgets [0, B/2, B]): shymkent/outpatient_clinic/infeasible",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-shymkent/outpatient_clinic/infeasible",
+   "name": "evaluatePlan (manual plan) = oracle: shymkent/outpatient_clinic/infeasible",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-shymkent/school/max_16x25",
+   "name": "optimizePlans = Python oracle (objectives, feasible count, Pareto, budgets [0, B/2, B]): shymkent/school/max_16x25",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-shymkent/school/max_16x25",
+   "name": "evaluatePlan (manual plan) = oracle: shymkent/school/max_16x25",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-astana/school/demo",
+   "name": "optimizePlans = Python oracle (objectives, feasible count, Pareto, budgets [0, B/2, B]): astana/school/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-astana/school/demo",
+   "name": "evaluatePlan (manual plan) = oracle: astana/school/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-astana/school/budget0",
+   "name": "optimizePlans = Python oracle (objectives, feasible count, Pareto, budgets [0, B/2, B]): astana/school/budget0",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-astana/school/budget0",
+   "name": "evaluatePlan (manual plan) = oracle: astana/school/budget0",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-astana/school/budget150",
+   "name": "optimizePlans = Python oracle (objectives, feasible count, Pareto, budgets [0, B/2, B]): astana/school/budget150",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-astana/school/budget150",
+   "name": "evaluatePlan (manual plan) = oracle: astana/school/budget150",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-astana/school/max5_b1000",
+   "name": "optimizePlans = Python oracle (objectives, feasible count, Pareto, budgets [0, B/2, B]): astana/school/max5_b1000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-astana/school/max5_b1000",
+   "name": "evaluatePlan (manual plan) = oracle: astana/school/max5_b1000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-astana/school/req_exc",
+   "name": "optimizePlans = Python oracle (objectives, feasible count, Pareto, budgets [0, B/2, B]): astana/school/req_exc",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-astana/school/req_exc",
+   "name": "evaluatePlan (manual plan) = oracle: astana/school/req_exc",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-astana/school/radius100",
+   "name": "optimizePlans = Python oracle (objectives, feasible count, Pareto, budgets [0, B/2, B]): astana/school/radius100",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-astana/school/radius100",
+   "name": "evaluatePlan (manual plan) = oracle: astana/school/radius100",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-astana/school/radius5000",
+   "name": "optimizePlans = Python oracle (objectives, feasible count, Pareto, budgets [0, B/2, B]): astana/school/radius5000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-astana/school/radius5000",
+   "name": "evaluatePlan (manual plan) = oracle: astana/school/radius5000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-astana/school/infeasible",
+   "name": "optimizePlans = Python oracle (objectives, feasible count, Pareto, budgets [0, B/2, B]): astana/school/infeasible",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-astana/school/infeasible",
+   "name": "evaluatePlan (manual plan) = oracle: astana/school/infeasible",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-astana/outpatient_clinic/demo",
+   "name": "optimizePlans = Python oracle (objectives, feasible count, Pareto, budgets [0, B/2, B]): astana/outpatient_clinic/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-astana/outpatient_clinic/demo",
+   "name": "evaluatePlan (manual plan) = oracle: astana/outpatient_clinic/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-astana/outpatient_clinic/budget0",
+   "name": "optimizePlans = Python oracle (objectives, feasible count, Pareto, budgets [0, B/2, B]): astana/outpatient_clinic/budget0",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-astana/outpatient_clinic/budget0",
+   "name": "evaluatePlan (manual plan) = oracle: astana/outpatient_clinic/budget0",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-astana/outpatient_clinic/budget150",
+   "name": "optimizePlans = Python oracle (objectives, feasible count, Pareto, budgets [0, B/2, B]): astana/outpatient_clinic/budget150",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-astana/outpatient_clinic/budget150",
+   "name": "evaluatePlan (manual plan) = oracle: astana/outpatient_clinic/budget150",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-astana/outpatient_clinic/max5_b1000",
+   "name": "optimizePlans = Python oracle (objectives, feasible count, Pareto, budgets [0, B/2, B]): astana/outpatient_clinic/max5_b1000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-astana/outpatient_clinic/max5_b1000",
+   "name": "evaluatePlan (manual plan) = oracle: astana/outpatient_clinic/max5_b1000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-astana/outpatient_clinic/req_exc",
+   "name": "optimizePlans = Python oracle (objectives, feasible count, Pareto, budgets [0, B/2, B]): astana/outpatient_clinic/req_exc",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-astana/outpatient_clinic/req_exc",
+   "name": "evaluatePlan (manual plan) = oracle: astana/outpatient_clinic/req_exc",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-astana/outpatient_clinic/radius100",
+   "name": "optimizePlans = Python oracle (objectives, feasible count, Pareto, budgets [0, B/2, B]): astana/outpatient_clinic/radius100",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-astana/outpatient_clinic/radius100",
+   "name": "evaluatePlan (manual plan) = oracle: astana/outpatient_clinic/radius100",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-astana/outpatient_clinic/radius5000",
+   "name": "optimizePlans = Python oracle (objectives, feasible count, Pareto, budgets [0, B/2, B]): astana/outpatient_clinic/radius5000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-astana/outpatient_clinic/radius5000",
+   "name": "evaluatePlan (manual plan) = oracle: astana/outpatient_clinic/radius5000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-astana/outpatient_clinic/infeasible",
+   "name": "optimizePlans = Python oracle (objectives, feasible count, Pareto, budgets [0, B/2, B]): astana/outpatient_clinic/infeasible",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-astana/outpatient_clinic/infeasible",
+   "name": "evaluatePlan (manual plan) = oracle: astana/outpatient_clinic/infeasible",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-astana/school/max_16x25",
+   "name": "optimizePlans = Python oracle (objectives, feasible count, Pareto, budgets [0, B/2, B]): astana/school/max_16x25",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-astana/school/max_16x25",
+   "name": "evaluatePlan (manual plan) = oracle: astana/school/max_16x25",
+   "verdict": "PASS"
+  }
+ ]
+}

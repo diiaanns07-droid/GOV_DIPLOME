@@ -1,0 +1,152 @@
+{
+ "schema_version": "city-plan-v2",
+ "city_id": "astana",
+ "source_snapshot": "sha256:67a40b96d29873118780969eb11c32deba49a0c64fda1f185efe634882f04c6d",
+ "category": "school",
+ "control_points": [
+  {
+   "id": "cp-1",
+   "lon": 71.42238,
+   "lat": 51.166267,
+   "weight": 3
+  },
+  {
+   "id": "cp-2",
+   "lon": 71.429251,
+   "lat": 51.165548,
+   "weight": 1
+  },
+  {
+   "id": "cp-3",
+   "lon": 71.437266,
+   "lat": 51.166555,
+   "weight": 2
+  },
+  {
+   "id": "cp-4",
+   "lon": 71.442992,
+   "lat": 51.16598,
+   "weight": 1
+  },
+  {
+   "id": "cp-5",
+   "lon": 71.42467,
+   "lat": 51.170579,
+   "weight": 2
+  },
+  {
+   "id": "cp-6",
+   "lon": 71.432686,
+   "lat": 51.16986,
+   "weight": 5
+  },
+  {
+   "id": "cp-7",
+   "lon": 71.440702,
+   "lat": 51.171298,
+   "weight": 1
+  },
+  {
+   "id": "cp-8",
+   "lon": 71.42238,
+   "lat": 51.17561,
+   "weight": 1
+  },
+  {
+   "id": "cp-9",
+   "lon": 71.430396,
+   "lat": 51.174891,
+   "weight": 3
+  },
+  {
+   "id": "cp-10",
+   "lon": 71.438412,
+   "lat": 51.176329,
+   "weight": 2
+  },
+  {
+   "id": "cp-11",
+   "lon": 71.42696,
+   "lat": 51.178772,
+   "weight": 1
+  },
+  {
+   "id": "cp-12",
+   "lon": 71.442992,
+   "lat": 51.178485,
+   "weight": 4
+  }
+ ],
+ "candidates": [
+  {
+   "id": "site-1",
+   "lon": 71.425815,
+   "lat": 51.167704,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 120
+  },
+  {
+   "id": "site-2",
+   "lon": 71.434976,
+   "lat": 51.166986,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 90
+  },
+  {
+   "id": "site-3",
+   "lon": 71.441847,
+   "lat": 51.169142,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 150
+  },
+  {
+   "id": "site-4",
+   "lon": 71.428106,
+   "lat": 51.172735,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 60
+  },
+  {
+   "id": "site-5",
+   "lon": 71.436121,
+   "lat": 51.173454,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 200
+  },
+  {
+   "id": "site-6",
+   "lon": 71.423525,
+   "lat": 51.177766,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 80
+  },
+  {
+   "id": "site-7",
+   "lon": 71.433831,
+   "lat": 51.177766,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 110
+  },
+  {
+   "id": "site-8",
+   "lon": 71.440702,
+   "lat": 51.17561,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 130
+  }
+ ],
+ "budget": 300,
+ "max_selected": 3,
+ "coverage_radius_m": 400,
+ "required_ids": [],
+ "excluded_ids": [],
+ "selected_ids": []
+}

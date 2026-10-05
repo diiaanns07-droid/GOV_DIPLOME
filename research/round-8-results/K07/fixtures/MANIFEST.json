@@ -1,0 +1,58 @@
+{
+ "kind": "K07 r8 SYNTHETIC demo scenarios (city-plan-v2)",
+ "synthetic": true,
+ "label": "SYNTHETIC demo (K07 r8): точки, места, веса и стоимости выдуманы для проверки интерфейса, не данные города",
+ "real_parts": "city_id, bbox (positions are a grid inside it), source_snapshot — from the BUILD slice data.js",
+ "synthetic_parts": "control points, weights, candidate sites, costs, budget, max_selected, radius — made up for checking the interface; not city statistics, not addresses, not prices",
+ "generated_by": "research/round-8-results/K07/scripts/make_fixtures.cjs",
+ "calc_version": "k07-plan-calc-r8.1",
+ "metric_version": "haversine-mm-v1",
+ "data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+ "data_generated_by": "prototypes/city-evidence/tools/build_data.py",
+ "files": [
+  {
+   "file": "synthetic_demo_shymkent_school.json",
+   "sha256": "e601b72b37bcb066aacc5fb53913bdfbca55ce36c64a5b25968774e3c468f787",
+   "city": "shymkent",
+   "category": "school",
+   "source_snapshot": "sha256:a9326b5633c513c0bfeccbb2248b26cf3b706c902f77745073a2959ad8d7ff3e",
+   "problem_digest": "sha256:6ea97baaa43e0982520a6d277e3dd7595b3a5f55ee10acbc736cc666fb1dbe53",
+   "status": "optimal",
+   "feasible_count": 47,
+   "baseline_records": 15
+  },
+  {
+   "file": "synthetic_demo_shymkent_outpatient_clinic.json",
+   "sha256": "46a5b9ef6ebe507a8440ba087e44637a31555c691c4cca69dac2e439390bb6ff",
+   "city": "shymkent",
+   "category": "outpatient_clinic",
+   "source_snapshot": "sha256:a9326b5633c513c0bfeccbb2248b26cf3b706c902f77745073a2959ad8d7ff3e",
+   "problem_digest": "sha256:f17168dcf8e76b8fe85fe46cb3058aa5961b74935b9c230e08f0d940686ac714",
+   "status": "optimal",
+   "feasible_count": 47,
+   "baseline_records": 16
+  },
+  {
+   "file": "synthetic_demo_astana_school.json",
+   "sha256": "4e1693a7f30af3bf102eec400f5b358bdafa2e3d99a5889e345c79113b96b7db",
+   "city": "astana",
+   "category": "school",
+   "source_snapshot": "sha256:67a40b96d29873118780969eb11c32deba49a0c64fda1f185efe634882f04c6d",
+   "problem_digest": "sha256:e55f8df4d442c1d7a8996cae701139b030aee85e4ceec264f7fa677553f7856c",
+   "status": "optimal",
+   "feasible_count": 47,
+   "baseline_records": 8
+  },
+  {
+   "file": "synthetic_demo_astana_outpatient_clinic.json",
+   "sha256": "02457561006ff21d02b9842104d342671ae46950db4482af37f8844413b0188c",
+   "city": "astana",
+   "category": "outpatient_clinic",
+   "source_snapshot": "sha256:67a40b96d29873118780969eb11c32deba49a0c64fda1f185efe634882f04c6d",
+   "problem_digest": "sha256:bb002578e7fce58fee2b47266d5d6c92d970e6c1b0fe27873fe4f52280e090bf",
+   "status": "optimal",
+   "feasible_count": 47,
+   "baseline_records": 16
+  }
+ ]
+}

@@ -1,0 +1,947 @@
+diff --git a/prototypes/city-evidence/web/app.js b/prototypes/city-evidence/web/app.js
+index c9a210f..aad7747 100644
+--- a/prototypes/city-evidence/web/app.js
++++ b/prototypes/city-evidence/web/app.js
+@@ -12,6 +12,8 @@
+   const D = window.CITY_EVIDENCE;
+   const F = window.CITY_FACTS || null;  // optional stage-2 module (facts.js)
+   const X = window.CITY_WHATIF || null;  // round-7 «Если добавить объект» (whatif.js), needs facts.js for the snapshot
++  const PL = window.CITY_PLAN_UI || null;  // K07 r8: «План нескольких объектов» (city-plan-v2, planner_ui.js), a separate mode
++  const plPlacing = () => !!(PL && PL.placing());
+ 
+   function el(tag, attrs, text) {
+     const e = document.createElement(tag);
+@@ -131,7 +133,7 @@
+     $("roadStyle").addEventListener("change", (e) => { STATE.roadStyle = e.target.value; renderRoadLegend(); renderMap(); });
+     $("pointBtn").addEventListener("click", () => {
+       STATE.pointMode = !STATE.pointMode;
+-      if (STATE.pointMode) setWiMode(null, true);
++      if (STATE.pointMode) { setWiMode(null, true); if (PL) PL.onOtherMode(); }
+       $("pointBtn").setAttribute("aria-pressed", String(STATE.pointMode));
+       $("map").classList.toggle("pointmode", STATE.pointMode);
+       updateStatus(); renderMap();
+@@ -151,6 +153,7 @@
+     const s = STATE.selected, st = $("mapStatus");
+     $("clearBtn").disabled = !STATE.point && !s;
+     if (STATE.wi.mode) { st.textContent = wiModeText(); return; }
++    const pt = PL ? PL.statusText() : ""; if (pt) { st.textContent = pt; return; }  // K07 r8
+     if (!s) { st.textContent = STATE.pointMode ? "Режим точки: нажмите на карту (или Enter — точка в центре)." : ""; return; }
+     if (s.type === "point") {
+       const [lon, lat] = STATE.point;
+@@ -179,7 +182,9 @@
+     resetScenario(hadScenario ? "Город изменён — сценарий сброшен: точки и проектный объект между городами не переносятся." : "");
+     hideTip();
+     document.querySelectorAll("#citySeg button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.city === key)));
+-    setupProjection(key); fitView(); renderAll(); updateStatus();
++    setupProjection(key); fitView();
++    if (PL) PL.onCitySwitch(key);  // K07 r8: the plan never moves between cities
++    renderAll(); updateStatus();
+   }
+   // Filter change: a selected object that is no longer visible is deselected; explanations are recomputed.
+   function onFilterChange() {
+@@ -206,7 +211,8 @@
+     hideTip();  // K07 CS2: a tooltip of a removed element must not survive a re-render / city switch
+     svg.replaceChildren();
+     const gBox = sv("g"), gRoad = sv("g"), gPoint = sv("g"), gMark = sv("g"), gWi = sv("g", { "data-layer": "hypothetical" }), gLabel = sv("g");
+-    svg.append(gBox, gRoad, gPoint, gMark, gWi, gLabel);
++    const gPlan = sv("g", { "data-layer": "hypothetical-plan" });  // K07 r8
++    svg.append(gBox, gRoad, gPoint, gMark, gWi, gPlan, gLabel);
+     const [w, s, e, n] = c.bbox, [x0, y0] = toScreen(w, n), [x1, y1] = toScreen(e, s);
+     gBox.append(sv("rect", { x: x0, y: y0, width: x1 - x0, height: y1 - y0, fill: "var(--surface-2)", stroke: "var(--ink)", "stroke-width": 1.5, "stroke-dasharray": "6 4" }));
+     const t = sv("text", { x: x0 + 4, y: y0 - 6, "font-size": 11, fill: "var(--ink)" });
+@@ -215,13 +221,14 @@
+       let d = ""; sg.coords.forEach(([x, y], i) => { const [a, b] = toScreen(x, y); d += (i ? "L" : "M") + a.toFixed(1) + " " + b.toFixed(1); });
+       const color = STATE.roadStyle === "foot" ? FOOT_COLOR[sg.foot_access] : "var(--base)";
+       gRoad.append(sv("path", { d, fill: "none", stroke: color, "stroke-width": sg.class === "footway" || sg.class === "path" ? 1.2 : 2, "stroke-linecap": "round" }));
+-      const hit = sv("path", { d, fill: "none", stroke: "transparent", "stroke-width": 10, tabindex: 0, role: "button",
++      // K07 r8: while the plan places items, roads and records leave the Tab order (mouse still works; records via the table)
++      const hit = sv("path", { d, fill: "none", stroke: "transparent", "stroke-width": 10, tabindex: plPlacing() ? -1 : 0, role: "button",
+         "aria-label": `Дорога: ${sg.class}${sg.name ? ", " + sg.name : ""}` });
+       hit.style.cursor = "pointer";
+       hit.addEventListener("pointermove", (ev) => showTip(ev, [`${sg.class}${sg.name ? " · " + sg.name : ""}`, `${fmtM(sg.length_m)} · проход пешком: ${sg.foot_access}`]));
+       hit.addEventListener("pointerleave", hideTip);
+       // In point mode a click on a road sets the point (roads cover most of the map); markers keep priority.
+-      const pick = (ev) => { if ((STATE.pointMode || STATE.wi.mode) && ev.type === "click") return; ev.stopPropagation(); STATE.selected = { type: "segment", id: sg.id }; renderSelection(); renderExplain(); updateStatus(); };
++      const pick = (ev) => { if ((STATE.pointMode || STATE.wi.mode || plPlacing()) && ev.type === "click") return; ev.stopPropagation(); STATE.selected = { type: "segment", id: sg.id }; renderSelection(); renderExplain(); updateStatus(); };
+       hit.addEventListener("click", pick);
+       hit.addEventListener("keydown", (ev) => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); pick(ev); } });
+       gRoad.append(hit);
+@@ -243,7 +250,7 @@
+     }
+     for (const p of places) {
+       const [sx, sy] = toScreen(p.lon, p.lat);
+-      const g = sv("g", { transform: `translate(${sx.toFixed(1)} ${sy.toFixed(1)})`, tabindex: 0, role: "button",
++      const g = sv("g", { transform: `translate(${sx.toFixed(1)} ${sy.toFixed(1)})`, tabindex: plPlacing() ? -1 : 0, role: "button",
+         "aria-label": `${p.name || "Без названия"}, ${p.group_label}`, "data-id": p.id });
+       g.style.cursor = "pointer";
+       const sel = STATE.selected && STATE.selected.type === "place" && STATE.selected.id === p.id;
+@@ -256,12 +263,13 @@
+       if (qa.length) g.append(sv("circle", { cx: 6, cy: -6, r: 3.5, fill: "var(--warning)", stroke: "var(--surface)", "stroke-width": 1 }));
+       g.addEventListener("pointermove", (ev) => showTip(ev, [p.name || "Без названия", `${p.group_label} · conf. ${p.confidence ?? "—"}`, ...qa.map((q) => "⚠ " + q.code)]));
+       g.addEventListener("pointerleave", hideTip);
+-      const pick = (ev) => { if (STATE.wi.mode && ev.type === "click") return; ev.stopPropagation(); selectPlace(p.id); };
++      const pick = (ev) => { if ((STATE.wi.mode || plPlacing()) && ev.type === "click") return; ev.stopPropagation(); selectPlace(p.id); };
+       g.addEventListener("click", pick);
+       g.addEventListener("keydown", (ev) => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); pick(ev); } });
+       gMark.append(g);
+     }
+     renderWiLayer(gWi, gLabel);
++    if (PL) PL.drawLayer(gPlan, { toScreen });  // K07 r8
+     const msg = $("mapMsg");
+     if (!STATE.places) { msg.hidden = false; msg.textContent = "Слой объектов выключен."; }
+     else if (!STATE.groups.size) { msg.hidden = false; msg.textContent = "Не выбрана ни одна категория — включите категории в панели фильтров."; }
+@@ -307,6 +315,7 @@
+     });
+     svg.addEventListener("pointerup", (e) => {
+       const d = drag; drag = null;
++      if (d && !d.moved && plPlacing()) { const r = svg.getBoundingClientRect(); PL.onMapClick(toLonLat(e.clientX - r.left, e.clientY - r.top), e); return; }  // K07 r8
+       if (d && !d.moved && STATE.wi.mode) { const r = svg.getBoundingClientRect(); wiPlace(toLonLat(e.clientX - r.left, e.clientY - r.top)); return; }
+       if (!d || d.moved || !STATE.pointMode) return;
+       if (e.target.closest && e.target.closest("g[data-id]")) return;  // a click on an object marker selects the object
+@@ -322,6 +331,7 @@
+       if (mv) { e.preventDefault(); STATE.view.cx += mv[0]; STATE.view.cy += mv[1]; renderMap(); }
+       else if (e.key === "+" || e.key === "=") { e.preventDefault(); zoomBy(1.5); }
+       else if (e.key === "-") { e.preventDefault(); zoomBy(1 / 1.5); }
++      else if ((e.key === "Enter" || e.key === " ") && plPlacing()) { e.preventDefault(); PL.onMapEnter(toLonLat(svg.clientWidth / 2, svg.clientHeight / 2)); }  // K07 r8
+       else if ((e.key === "Enter" || e.key === " ") && STATE.wi.mode) { e.preventDefault(); wiPlace(toLonLat(svg.clientWidth / 2, svg.clientHeight / 2)); }
+       else if ((e.key === "Enter" || e.key === " ") && STATE.pointMode) {
+         e.preventDefault();
+@@ -539,6 +549,7 @@
+   }
+   function setWiMode(mode, silent) {
+     WI.mode = WI.mode === mode ? null : mode;
++    if (WI.mode && PL) PL.onOtherMode();  // K07 r8: one placement mode at a time
+     if (WI.mode && STATE.pointMode) {  // the two placement modes are exclusive
+       STATE.pointMode = false; $("pointBtn").setAttribute("aria-pressed", "false"); $("map").classList.remove("pointmode");
+     }
+@@ -736,6 +747,12 @@
+   renderAll();
+   updateStatus();
+   function selectSegment(id) { STATE.selected = { type: "segment", id }; renderSelection(); renderExplain(); updateStatus(); }
++  function setPointMode(on) {  // K07 r8: lets the plan module switch the base point mode off
++    STATE.pointMode = !!on; $("pointBtn").setAttribute("aria-pressed", String(STATE.pointMode));
++    $("map").classList.toggle("pointmode", STATE.pointMode); updateStatus(); renderMap();
++  }
+   window.CITY_APP = { state: STATE, switchCity, selectPlace, selectSegment, visiblePlaces, clearSelection,
+-    wiPlace, setWiMode, setWiCategory, wiScenario, wiResult, wiImportText, wiExportText };  // for the headless smoke test
++    wiPlace, setWiMode, setWiCategory, wiScenario, wiResult, wiImportText, wiExportText,  // for the headless smoke test
++    toScreen, toLonLat, renderMap, updateStatus, setPointMode };
++  if (PL) PL.init(window.CITY_APP);  // K07 r8
+ })();
+diff --git a/prototypes/city-evidence/web/index.html b/prototypes/city-evidence/web/index.html
+index 4bdaceb..29d7e65 100644
+--- a/prototypes/city-evidence/web/index.html
++++ b/prototypes/city-evidence/web/index.html
+@@ -131,6 +131,32 @@ button.wi-src { white-space: normal; text-align: left; font-size: 12px; padding:
+ #wiTable tr.wi-srcrow td { padding-top: 0; font-size: 12px; }
+ #wiTable tbody tr[data-wi-row] td { border-bottom: 0; }
+ #wiTable tbody tr { cursor: default; }
++/* K07 r8: «План нескольких объектов» (city-plan-v2) */
++#map.planmode { cursor: crosshair; }
++#map .pl-target { pointer-events: none; }
++#map:not(:focus) .pl-target { display: none; }
++.pl-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
++.pl-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 6px 0; }
++fieldset.pl-tools { border: 1px solid var(--grid); border-radius: 8px; margin: 8px 0; padding: 4px 10px; display: flex; flex-direction: column; gap: 2px; }
++.pl-msg { margin: 6px 0; } .pl-msg:empty { display: none; }
++.pl-params { display: grid; gap: 8px; }
++.pl-param { display: grid; grid-template-columns: minmax(0, 1fr) 8em; gap: 2px 8px; align-items: center; }
++.pl-param small { grid-column: 1 / -1; }
++.pl-num { width: 8em; max-width: 100%; font: inherit; padding: 3px 6px; border-radius: 6px; border: 1px solid var(--base); background: var(--surface); color: var(--ink); }
++.pl-list { margin: 4px 0; padding-left: 20px; }
++.pl-list li { display: flex; flex-wrap: wrap; gap: 4px 6px; align-items: center; padding: 3px 0; border-bottom: 1px solid var(--grid); }
++.pl-label { flex: 0 0 2.4em; min-width: 0; font-weight: 600; white-space: nowrap; }
++.pl-break { flex-basis: 100%; height: 0; }
++.pl-w { width: 4.2em; } .pl-c { width: 6.5em; }
++.pl-list button.tool { padding: 2px 8px; }
++.pl-list li.pl-pending .pl-label { text-decoration: underline; }
++.pl-inline { color: var(--ink-2); }
++#planCard h3[tabindex="-1"]:focus { outline: 2px solid var(--focus); outline-offset: 2px; }
++.pl-ok { color: var(--good); } .pl-bad { color: var(--critical); }
++.pl-synth { border: 1px dashed var(--warning); border-radius: 6px; padding: 4px 8px; }
++.pl-table, .pl-metrics { width: 100%; }
++.pl-table tbody tr[data-pl-row] td { border-bottom: 0; padding-bottom: 0; }
++.pl-table tr.pl-sub td { font-size: 12px; color: var(--ink-2); padding-top: 0; }
+ </style>
+ </head>
+ <body>
+@@ -149,7 +175,8 @@ button.wi-src { white-space: normal; text-align: left; font-size: 12px; padding:
+     <select id="roadStyle"><option value="plain">один цвет</option><option value="foot">по данным о проходе пешком</option></select></label>
+   <span class="ctl muted" id="roadLegend" hidden></span>
+   <span class="ctl"><button class="tool" id="pointBtn" aria-pressed="false">Расстояние от точки</button>
+-    <button class="tool" id="clearBtn" type="button" disabled>Сбросить точку и выбор</button></span>
++    <button class="tool" id="clearBtn" type="button" disabled>Сбросить точку и выбор</button>
++    <button class="tool" id="planBtn" type="button" aria-pressed="false" aria-controls="planCard">План: несколько объектов</button></span>
+   <a class="skip" href="#tblCard">Перейти к таблице объектов</a>
+ </div>
+ 
+@@ -166,11 +193,15 @@ button.wi-src { white-space: normal; text-align: left; font-size: 12px; padding:
+     <div class="tooltip" id="tip" role="status"></div>
+     <div class="legend-note" id="attrib"></div>
+     <p class="mapstatus" id="mapStatus" role="status" aria-live="polite"></p>
++    <span class="pl-sr" id="plMapHelp">Режим плана: Enter или пробел ставит выбранный элемент в центр карты, отмеченный мишенью; стрелки сдвигают карту; Escape отменяет перенос или выключает постановку. Дороги и записи в этом режиме Tab пропускает, записи доступны в таблице объектов.</span>
+   </section>
+   </div>
+   <aside>
+     <section class="card" id="selCard" aria-live="polite"><h2>Выбор</h2><p class="muted" id="selEmpty">Нажмите на объект, дорогу или строку таблицы. «Расстояние от точки» покажет расстояния по прямой.</p><div id="selBody"></div></section>
+     <section class="card" id="whatifCard" hidden><h2>Если добавить объект <span class="pill">гипотеза</span></h2><div id="whatifBody"></div></section>
++    <section class="card" id="planCard" hidden aria-labelledby="plTitle"><h2 id="plTitle">План нескольких объектов <span class="pill">гипотеза · city-plan-v2</span></h2>
++      <p class="muted">Контрольные точки, их веса, кандидатные места и стоимости задаёт пользователь. Сравнивается расстояние по прямой до ближайшей записи среза или выбранного места. Оптимум — только среди введённых мест и условий, не лучший план для города.</p>
++      <div id="planBody"></div></section>
+     <section class="card" id="sliceCard"><h2>Срез данных</h2><div id="sliceBody"></div></section>
+     <section class="card" id="explainCard" hidden><h2>Объяснение по фактам</h2><div id="explainBody"></div></section>
+     <section class="card" id="tblCard" tabindex="-1"><h2>Таблица объектов <span class="muted" id="tblCount"></span></h2>
+@@ -184,6 +215,10 @@ button.wi-src { white-space: normal; text-align: left; font-size: 12px; padding:
+ <script src="evidence.js"></script>
+ <script src="facts.js"></script>
+ <script src="whatif.js"></script>
++<script src="plan_calc.js"></script>
++<script src="plan_runner.js"></script>
++<script src="plan_demo.js"></script>
++<script src="planner_ui.js"></script>
+ <script src="app.js"></script>
+ </body>
+ </html>
+diff --git a/prototypes/city-evidence/web/plan_calc.js b/prototypes/city-evidence/web/plan_calc.js
+new file mode 100644
+index 0000000..e6f24e9
+--- /dev/null
++++ b/prototypes/city-evidence/web/plan_calc.js
+@@ -0,0 +1,275 @@
++/* K07 round 8 — city-plan-v2 calculator ADAPTER for the planner UI (research/round-8/CORE_SPEC.txt).
++ * Pure functions, no DOM. Browser: window.CITY_PLAN_CALC; Node: module.exports (headless tests).
++ * K07's own implementation so that the UI can be built and tested before K05's engine exists. The UI talks only to
++ * the API below (validatePlanScenario / evaluatePlan / optimizePlans / createSearch), so K05's module can replace it
++ * through CITY_PLAN_UI.setCalculator(engine) without UI changes. Cross-checked by tests/oracle_plan.py (independent
++ * Python, written from CORE_SPEC). Straight-line distance inside the slice only: no walking time, population, capacity.
++ * Costs are conditional units set by the user (or explicit SYNTHETIC demo), weights are user priorities.
++ */
++(function (root) {
++  "use strict";
++  const SCHEMA = "city-plan-v2", METRIC_VERSION = "haversine-mm-v1", CALC_VERSION = "k07-plan-calc-r8.1";
++  const R_EARTH = 6371008.8;
++  const CATEGORIES = { school: "Школа", outpatient_clinic: "Поликлиника" };
++  const LIMITS = { points: [1, 25], candidates: [0, 16], max_selected: [0, 5], weight: [1, 100], cost: [1, 1000000],
++    budget: [0, 1000000], radius: [100, 5000] };
++  const ID_RE = /^[A-Za-z0-9_-]{1,64}$/;  // ASCII only: JS and Python order these IDs identically
++  const TOP = ["schema_version", "city_id", "source_snapshot", "category", "control_points", "candidates", "budget",
++    "max_selected", "coverage_radius_m", "required_ids", "excluded_ids", "selected_ids"];
++  const POINT_KEYS = ["id", "lon", "lat", "weight"], CAND_KEYS = ["id", "lon", "lat", "category", "kind", "cost"];
++
++  class PlanError extends Error {
++    constructor(code, path, detail) { super(`${code} at ${path}: ${detail}`); this.code = code; this.path = path; this.detail = detail; }
++  }
++
++  // ---------- geometry ----------
++  function haversine(lon1, lat1, lon2, lat2) {
++    const r = Math.PI / 180, dp = (lat2 - lat1) * r, dl = (lon2 - lon1) * r;
++    let a = Math.sin(dp / 2) ** 2 + Math.cos(lat1 * r) * Math.cos(lat2 * r) * Math.sin(dl / 2) ** 2;
++    a = Math.min(1, Math.max(0, a));
++    return 2 * R_EARTH * Math.asin(Math.sqrt(a));
++  }
++  const toMm = (d) => Math.round(d * 1000);  // once per distance (haversine-mm-v1); all values are >= 0
++  const inBbox = (bb, lon, lat) => bb[0] <= lon && lon <= bb[2] && bb[1] <= lat && lat <= bb[3];
++  const cmpStr = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
++
++  // ---------- context: the slice the scenario belongs to ----------
++  // F: facts.js API (sha256hex, placesDigest). The snapshot binds city, release, the places file hash, a digest of all
++  // record coordinates, the schema and the metric version; a file name alone is never accepted as a version.
++  function makeContext(data, city, F) {
++    const c = data && data.cities && data.cities[city];
++    if (!c) throw new PlanError("bad_city", "city_id", String(city));
++    const fsha = c.files && c.files.places_social && c.files.places_social.sha256;
++    const snap = "sha256:" + F.sha256hex(JSON.stringify([SCHEMA, city, c.release, fsha || null, F.placesDigest(data, city), METRIC_VERSION]));
++    return { city_id: city, bbox: c.bbox.slice(), source_snapshot: snap, release: c.release, places_sha256: fsha || null,
++      places: c.places, hash: F.sha256hex, versions: { schema: SCHEMA, metric_version: METRIC_VERSION, calc_version: CALC_VERSION } };
++  }
++
++  // ---------- validation ----------
++  const isObj = (v) => v !== null && typeof v === "object" && !Array.isArray(v);
++  const isInt = (v) => typeof v === "number" && Number.isInteger(v);
++  function intIn(v, [lo, hi], path) {
++    if (!isInt(v)) throw new PlanError("not_integer", path, String(v));
++    if (v < lo || v > hi) throw new PlanError("out_of_range", path, `${v} not in ${lo}..${hi}`);
++  }
++  function exactKeys(o, keys, path) {
++    if (!isObj(o)) throw new PlanError("bad_type", path, "object expected");
++    for (const k of Object.keys(o)) if (!keys.includes(k)) throw new PlanError("unknown_field", `${path}.${k}`, "not allowed");
++    for (const k of keys) if (!(k in o)) throw new PlanError("missing_field", `${path}.${k}`, "required");
++  }
++  function coord(o, bb, path) {
++    for (const k of ["lon", "lat"]) if (typeof o[k] !== "number" || !Number.isFinite(o[k])) throw new PlanError("bad_coordinate", `${path}.${k}`, String(o[k]));
++    if (o.lon < -180 || o.lon > 180 || o.lat < -90 || o.lat > 90) throw new PlanError("bad_coordinate", path, "out of WGS84 range");
++    if (!inBbox(bb, o.lon, o.lat)) throw new PlanError("outside_bbox", path, `${o.lon}, ${o.lat} outside ${bb.join(", ")}`);
++  }
++  function idList(v, path, known) {
++    if (!Array.isArray(v)) throw new PlanError("bad_type", path, "array expected");
++    const seen = new Set();
++    v.forEach((id, i) => {
++      if (typeof id !== "string" || !ID_RE.test(id)) throw new PlanError("bad_id", `${path}[${i}]`, String(id));
++      if (seen.has(id)) throw new PlanError("duplicate_id", `${path}[${i}]`, id);
++      if (!known.has(id)) throw new PlanError("unknown_reference", `${path}[${i}]`, id);
++      seen.add(id);
++    });
++    return v.slice();
++  }
++  // Returns {ok:true, scenario} (normalised copy; derived_results dropped, never trusted) or {ok:false, error}.
++  // opts.allowEmptyPoints: the editor may hold 0 points (empty UI state); calculation/export need 1..25.
++  function validatePlanScenario(input, context, opts = {}) {
++    try { return { ok: true, scenario: validateOrThrow(input, context, opts) }; }
++    catch (e) { if (e instanceof PlanError) return { ok: false, error: { code: e.code, path: e.path, detail: e.detail } }; throw e; }
++  }
++  function validateOrThrow(o, ctx, opts) {
++    exactKeys(o, TOP.concat("derived_results" in (isObj(o) ? o : {}) ? ["derived_results"] : []), "$");
++    if (o.schema_version !== SCHEMA) throw new PlanError("bad_schema", "$.schema_version", String(o.schema_version));
++    if (o.city_id !== ctx.city_id) throw new PlanError("bad_city", "$.city_id", `${o.city_id} ≠ ${ctx.city_id}`);
++    if (o.source_snapshot !== ctx.source_snapshot) throw new PlanError("bad_snapshot", "$.source_snapshot", "another slice or version");
++    if (!CATEGORIES[o.category]) throw new PlanError("bad_category", "$.category", String(o.category));
++    if (!Array.isArray(o.control_points)) throw new PlanError("bad_type", "$.control_points", "array expected");
++    const [pmin, pmax] = LIMITS.points;
++    if (o.control_points.length > pmax || (o.control_points.length < pmin && !opts.allowEmptyPoints))
++      throw new PlanError("bad_count", "$.control_points", `${o.control_points.length} not in ${pmin}..${pmax}`);
++    const pids = new Set();
++    const points = o.control_points.map((p, i) => {
++      const path = `$.control_points[${i}]`;
++      exactKeys(p, POINT_KEYS, path);
++      if (typeof p.id !== "string" || !ID_RE.test(p.id)) throw new PlanError("bad_id", `${path}.id`, String(p.id));
++      if (pids.has(p.id)) throw new PlanError("duplicate_id", `${path}.id`, p.id);
++      pids.add(p.id); coord(p, ctx.bbox, path); intIn(p.weight, LIMITS.weight, `${path}.weight`);
++      return { id: p.id, lon: p.lon, lat: p.lat, weight: p.weight };
++    });
++    if (!Array.isArray(o.candidates)) throw new PlanError("bad_type", "$.candidates", "array expected");
++    if (o.candidates.length > LIMITS.candidates[1]) throw new PlanError("bad_count", "$.candidates", `${o.candidates.length} > ${LIMITS.candidates[1]}`);
++    const cids = new Set();
++    const cands = o.candidates.map((c, i) => {
++      const path = `$.candidates[${i}]`;
++      exactKeys(c, CAND_KEYS, path);
++      if (typeof c.id !== "string" || !ID_RE.test(c.id)) throw new PlanError("bad_id", `${path}.id`, String(c.id));
++      if (cids.has(c.id)) throw new PlanError("duplicate_id", `${path}.id`, c.id);
++      cids.add(c.id); coord(c, ctx.bbox, path);
++      if (c.category !== o.category) throw new PlanError("bad_category", `${path}.category`, `${c.category} ≠ ${o.category}`);
++      if (c.kind !== "hypothetical") throw new PlanError("bad_kind", `${path}.kind`, String(c.kind));
++      intIn(c.cost, LIMITS.cost, `${path}.cost`);
++      return { id: c.id, lon: c.lon, lat: c.lat, category: c.category, kind: "hypothetical", cost: c.cost };
++    });
++    intIn(o.budget, LIMITS.budget, "$.budget");
++    intIn(o.max_selected, LIMITS.max_selected, "$.max_selected");
++    intIn(o.coverage_radius_m, LIMITS.radius, "$.coverage_radius_m");
++    const req = idList(o.required_ids, "$.required_ids", cids), exc = idList(o.excluded_ids, "$.excluded_ids", cids);
++    const both = req.filter((x) => exc.includes(x));
++    if (both.length) throw new PlanError("required_excluded_overlap", "$.required_ids", both.join(", "));
++    const sel = idList(o.selected_ids, "$.selected_ids", cids);
++    return { schema_version: SCHEMA, city_id: o.city_id, source_snapshot: o.source_snapshot, category: o.category,
++      control_points: points, candidates: cands, budget: o.budget, max_selected: o.max_selected,
++      coverage_radius_m: o.coverage_radius_m, required_ids: req, excluded_ids: exc, selected_ids: sel };
++  }
++
++  // ---------- digests (order-independent) ----------
++  function canon(v) {
++    if (Array.isArray(v)) return "[" + v.map(canon).join(",") + "]";
++    if (isObj(v)) return "{" + Object.keys(v).sort().map((k) => JSON.stringify(k) + ":" + canon(v[k])).join(",") + "}";
++    return JSON.stringify(v);
++  }
++  function problemCore(sc) {
++    const byId = (a, b) => cmpStr(a.id, b.id);
++    return { schema_version: SCHEMA, metric_version: METRIC_VERSION, city_id: sc.city_id, source_snapshot: sc.source_snapshot,
++      category: sc.category, control_points: sc.control_points.slice().sort(byId), candidates: sc.candidates.slice().sort(byId),
++      budget: sc.budget, max_selected: sc.max_selected, coverage_radius_m: sc.coverage_radius_m,
++      required_ids: sc.required_ids.slice().sort(cmpStr), excluded_ids: sc.excluded_ids.slice().sort(cmpStr) };
++  }
++  // The optimisation problem (no selected_ids) and the manual scenario (with selected_ids).
++  const problemDigest = (ctx, sc) => "sha256:" + ctx.hash(canon(problemCore(sc)));
++  const scenarioDigest = (ctx, sc) => "sha256:" + ctx.hash(canon({ ...problemCore(sc), selected_ids: sc.selected_ids.slice().sort(cmpStr) }));
++
++  // ---------- precomputed distance matrix ----------
++  // Candidates are ordered by ID (bit i = i-th smallest ID), so input order never changes a plan or a tie.
++  function prepare(ctx, sc) {
++    const sources = ctx.places.filter((p) => p.group === sc.category).slice().sort((a, b) => cmpStr(a.id, b.id));
++    const cands = sc.candidates.slice().sort((a, b) => cmpStr(a.id, b.id));
++    const pts = sc.control_points;
++    const before = pts.map((cp) => {  // nearest source: (mm, id) — ties to the smaller ID
++      let best = null;
++      for (const s of sources) { const d = toMm(haversine(cp.lon, cp.lat, s.lon, s.lat)); if (best === null || d < best.mm) best = { mm: d, id: s.id }; }
++      return best;
++    });
++    const dist = cands.map((c) => pts.map((cp) => toMm(haversine(cp.lon, cp.lat, c.lon, c.lat))));
++    const bit = (id) => 1 << cands.findIndex((c) => c.id === id);
++    const mask = (ids) => ids.reduce((m, id) => m | bit(id), 0);
++    return { sources, cands, pts, before, dist, weights: pts.map((p) => p.weight), totalWeight: pts.reduce((s, p) => s + p.weight, 0),
++      costs: cands.map((c) => c.cost), radiusMm: sc.coverage_radius_m * 1000, reqMask: mask(sc.required_ids), excMask: mask(sc.excluded_ids), mask };
++  }
++  // Metrics of one subset (mask over pr.cands). Nearest-after ties: source before hypothetical, then the smaller ID.
++  function metricsOf(pr, m) {
++    let unknown = 0, wsum = 0, max = 0, covered = 0, cost = 0, count = 0;
++    for (let c = 0; c < pr.cands.length; c++) if (m & (1 << c)) { cost += pr.costs[c]; count++; }
++    for (let p = 0; p < pr.pts.length; p++) {
++      let a = pr.before[p] ? pr.before[p].mm : null;
++      for (let c = 0; c < pr.cands.length; c++) if (m & (1 << c)) { const d = pr.dist[c][p]; if (a === null || d < a) a = d; }
++      if (a === null) { unknown++; continue; }
++      wsum += pr.weights[p] * a; if (a > max) max = a;
++      if (a <= pr.radiusMm) covered += pr.weights[p];
++    }
++    return { unknown_count: unknown, weighted_sum_mm: wsum, weighted_mean_mm: unknown ? null : wsum / pr.totalWeight,
++      max_mm: unknown ? null : max, covered_weight: covered, total_weight: pr.totalWeight,
++      coverage_fraction: pr.totalWeight ? covered / pr.totalWeight : 0, cost, selected_count: count };
++  }
++  const idsOf = (pr, m) => pr.cands.filter((_, c) => m & (1 << c)).map((c) => c.id);
++  function feasibility(pr, sc, m, cost, count, budget) {
++    const reasons = [];
++    if (cost > budget) reasons.push({ code: "over_budget", detail: `${cost} > ${budget}` });
++    if (count > sc.max_selected) reasons.push({ code: "too_many", detail: `${count} > ${sc.max_selected}` });
++    const missing = idsOf(pr, pr.reqMask & ~m); if (missing.length) reasons.push({ code: "missing_required", detail: missing.join(", ") });
++    const banned = idsOf(pr, pr.excMask & m); if (banned.length) reasons.push({ code: "has_excluded", detail: banned.join(", ") });
++    return { feasible: !reasons.length, reasons };
++  }
++
++  // ---------- manual plan ----------
++  function evaluatePlan(ctx, sc, selectedIds) {
++    const pr = prepare(ctx, sc), ids = selectedIds === undefined ? sc.selected_ids : selectedIds;
++    for (const id of ids) if (!pr.cands.some((c) => c.id === id)) throw new PlanError("unknown_reference", "selected_ids", id);
++    const m = pr.mask(ids), met = metricsOf(pr, m);
++    const rows = pr.pts.map((cp, p) => {
++      const b = pr.before[p];
++      let after = b ? { mm: b.mm, kind: "source", id: b.id } : null;
++      for (let c = 0; c < pr.cands.length; c++) if (m & (1 << c)) {
++        const d = pr.dist[c][p];
++        if (after === null || d < after.mm) after = { mm: d, kind: "hypothetical", id: pr.cands[c].id };
++      }
++      return { control_point_id: cp.id, weight: cp.weight, before_mm: b ? b.mm : null, after_mm: after ? after.mm : null,
++        delta_mm: b && after ? b.mm - after.mm : null, nearest_before: b ? { kind: "source", id: b.id } : null,
++        nearest_after: after ? { kind: after.kind, id: after.id } : null, covered: after ? after.mm <= pr.radiusMm : false };
++    });
++    return { metric_version: METRIC_VERSION, selected_ids: idsOf(pr, m), rows, metrics: met, baseline_records: pr.sources.length,
++      feasibility: feasibility(pr, sc, m, met.cost, met.selected_count, sc.budget), scenario_digest: scenarioDigest(ctx, sc) };
++  }
++
++  // ---------- exact search ----------
++  const INF = Number.POSITIVE_INFINITY;
++  function cmpIds(a, b) { for (let i = 0; i < Math.min(a.length, b.length); i++) { const c = cmpStr(a[i], b[i]); if (c) return c; } return a.length - b.length; }
++  function cmpKey(a, b) { for (let i = 0; i < a.length; i++) { const c = Array.isArray(a[i]) ? cmpIds(a[i], b[i]) : a[i] - b[i]; if (c) return c < 0 ? -1 : 1; } return 0; }
++  const KEYS = {
++    mean: (x, ids) => [x.unknown_count, x.weighted_sum_mm, x.max_mm === null ? INF : x.max_mm, x.cost, ids],
++    minimax: (x, ids) => [x.unknown_count, x.max_mm === null ? INF : x.max_mm, x.weighted_sum_mm, x.cost, ids],
++    coverage: (x, ids) => [-x.covered_weight, x.unknown_count, x.weighted_sum_mm, x.max_mm === null ? INF : x.max_mm, x.cost, ids],
++  };
++  function budgetsOf(B) { return [...new Set([0, Math.floor(B / 2), B])].sort((a, b) => a - b); }
++  // Incremental exhaustive search: step(n) examines up to n more subsets; result() is never "optimal" before done.
++  function createSearch(ctx, sc) {
++    const pr = prepare(ctx, sc), n = pr.cands.length, total = 2 ** n, budgets = budgetsOf(sc.budget);
++    const tiers = budgets.map((b) => ({ budget: b, feasible: 0, best: { mean: null, minimax: null, coverage: null } }));
++    const main = tiers[tiers.length - 1];
++    let next = 0, pareto = [], unknownFeasible = 0;
++    const reqCount = idsOf(pr, pr.reqMask).length, reqCost = pr.costs.reduce((s, c, i) => s + (pr.reqMask & (1 << i) ? c : 0), 0);
++    const pc = (m) => { let k = 0; while (m) { m &= m - 1; k++; } return k; };
++    function consider(m) {
++      if (m & pr.excMask || (m & pr.reqMask) !== pr.reqMask || pc(m) > sc.max_selected) return;
++      let cost = 0; for (let c = 0; c < n; c++) if (m & (1 << c)) cost += pr.costs[c];
++      if (cost > sc.budget) return;
++      const x = metricsOf(pr, m), ids = idsOf(pr, m);
++      for (const t of tiers) {
++        if (cost > t.budget) continue;
++        t.feasible++;
++        for (const k of Object.keys(KEYS)) {
++          const key = KEYS[k](x, ids);
++          if (!t.best[k] || cmpKey(key, t.best[k].key) < 0) t.best[k] = { key, mask: m, metrics: x, ids };
++        }
++      }
++      if (x.unknown_count) { unknownFeasible++; return; }
++      // Pareto on (cost, weighted_sum_mm): drop dominated, equal pairs collapse to the smaller sorted IDs
++      for (const q of pareto) {
++        if (q.cost <= cost && q.wsum <= x.weighted_sum_mm && (q.cost < cost || q.wsum < x.weighted_sum_mm)) return;
++        if (q.cost === cost && q.wsum === x.weighted_sum_mm && cmpIds(q.ids, ids) <= 0) return;
++      }
++      pareto = pareto.filter((q) => !(cost <= q.cost && x.weighted_sum_mm <= q.wsum));
++      pareto.push({ cost, wsum: x.weighted_sum_mm, ids, metrics: x });
++    }
++    const plan = (b) => b && { selected_ids: b.ids, metrics: b.metrics };
++    return {
++      total, problem_digest: problemDigest(ctx, sc),
++      get evaluated() { return next; },
++      get done() { return next >= total; },
++      step(limit) { const end = Math.min(total, next + limit); for (; next < end; next++) consider(next); return next >= total; },
++      result(interrupted) {
++        const complete = next >= total && !interrupted;
++        const reasons = [];
++        if (reqCost > sc.budget) reasons.push({ code: "required_over_budget", detail: `${reqCost} > ${sc.budget}` });
++        if (reqCount > sc.max_selected) reasons.push({ code: "required_over_count", detail: `${reqCount} > ${sc.max_selected}` });
++        const status = !complete ? (interrupted === "cancelled" ? "cancelled" : "partial") : main.feasible ? "optimal" : "infeasible";
++        return { status, problem_digest: this.problem_digest, metric_version: METRIC_VERSION, calc_version: CALC_VERSION,
++          evaluated: next, total_subsets: total, feasible_count: main.feasible, infeasible_reasons: main.feasible ? [] : reasons,
++          objectives: complete ? { mean: plan(main.best.mean), minimax: plan(main.best.minimax), coverage: plan(main.best.coverage) } : null,
++          pareto: complete ? pareto.slice().sort((a, b) => a.cost - b.cost || a.wsum - b.wsum).map((q) => ({ selected_ids: q.ids, cost: q.cost,
++            weighted_sum_mm: q.wsum, weighted_mean_mm: q.metrics.weighted_mean_mm, max_mm: q.metrics.max_mm })) : null,
++          pareto_excluded_unknown: unknownFeasible,
++          sensitivity: complete ? tiers.map((t) => ({ budget: t.budget, feasible_count: t.feasible,
++            objectives: { mean: plan(t.best.mean), minimax: plan(t.best.minimax), coverage: plan(t.best.coverage) } })) : null };
++      },
++    };
++  }
++  function optimizePlans(ctx, sc) { const s = createSearch(ctx, sc); s.step(s.total); return s.result(); }
++
++  const api = { SCHEMA, METRIC_VERSION, CALC_VERSION, R_EARTH, CATEGORIES, LIMITS, ID_RE, PlanError, haversine, toMm, inBbox,
++    makeContext, validatePlanScenario, evaluatePlan, optimizePlans, createSearch, problemDigest, scenarioDigest, budgetsOf, canon };
++  if (typeof module !== "undefined" && module.exports) module.exports = api;
++  else root.CITY_PLAN_CALC = api;
++})(typeof window !== "undefined" ? window : globalThis);
+diff --git a/prototypes/city-evidence/web/plan_runner.js b/prototypes/city-evidence/web/plan_runner.js
+new file mode 100644
+index 0000000..5bea011
+--- /dev/null
++++ b/prototypes/city-evidence/web/plan_runner.js
+@@ -0,0 +1,45 @@
++/* K07 round 8 — chunked runner for optimizePlans (CORE_SPEC «UI не блокируется»).
++ * Runs engine.createSearch(ctx, scenario).step(chunk) between event-loop turns (setTimeout), reports progress from the
++ * number of examined subsets, supports cancel. Every run has a request_id and the problem_digest of its input; the UI
++ * applies a result only if both still match (a newer run or changed parameters make it stale).
++ * A Worker is not used: the viewer runs from file://, where Chromium refuses module/worker scripts from disk.
++ * An engine without createSearch is run by one optimizePlans() call (no intermediate progress; said in the result).
++ * Browser: window.CITY_PLAN_RUNNER; Node: module.exports.
++ */
++(function (root) {
++  "use strict";
++  let seq = 0;
++  // opts: chunk (subsets per turn, default 2048), delayMs (pause between turns, default 0; tests slow it down),
++  // onProgress({request_id, evaluated, total}), onDone(result + request_id). Returns {request_id, problem_digest, cancel}.
++  function start(engine, ctx, scenario, opts = {}) {
++    const request_id = "req-" + (++seq), chunk = opts.chunk || 2048, delay = opts.delayMs || 0;
++    const later = (fn) => setTimeout(fn, delay);
++    let cancelled = false, finished = false;
++    const search = typeof engine.createSearch === "function" ? engine.createSearch(ctx, scenario) : null;
++    const problem_digest = search ? search.problem_digest : (engine.problemDigest ? engine.problemDigest(ctx, scenario) : null);
++    const done = (r) => { if (finished) return; finished = true; if (opts.onDone) opts.onDone({ ...r, request_id }); };
++    const h = {
++      request_id, problem_digest,
++      get finished() { return finished; },
++      cancel() {
++        if (finished) return false;
++        cancelled = true;
++        done(search ? search.result("cancelled") : { status: "cancelled", problem_digest, evaluated: null, total_subsets: null });
++        return true;
++      },
++    };
++    function tick() {
++      if (cancelled || finished) return;
++      search.step(chunk);
++      if (opts.onProgress) opts.onProgress({ request_id, evaluated: search.evaluated, total: search.total });
++      if (search.done) done(search.result());
++      else later(tick);
++    }
++    if (search) later(tick);
++    else later(() => { if (!cancelled) done({ ...engine.optimizePlans(ctx, scenario), note: "engine without createSearch: no intermediate progress" }); });
++    return h;
++  }
++  const api = { start };
++  if (typeof module !== "undefined" && module.exports) module.exports = api;
++  else root.CITY_PLAN_RUNNER = api;
++})(typeof window !== "undefined" ? window : globalThis);
+diff --git a/prototypes/city-evidence/web/plan_demo.js b/prototypes/city-evidence/web/plan_demo.js
+new file mode 100644
+index 0000000..fba45e5
+--- /dev/null
++++ b/prototypes/city-evidence/web/plan_demo.js
+@@ -0,0 +1,28 @@
++/* K07 round 8 — explicit SYNTHETIC demo set for the city-plan-v2 editor.
++ * Positions are a deterministic grid inside the slice bbox; weights and costs are made-up conditional values for
++ * checking the interface. They are NOT city statistics, NOT addresses of real sites, NOT prices in tenge.
++ * Browser: window.CITY_PLAN_DEMO; Node: module.exports (tools/make_fixtures.cjs writes the same set to fixtures/).
++ */
++(function (root) {
++  "use strict";
++  const LABEL = "SYNTHETIC demo (K07 r8): точки, места, веса и стоимости выдуманы для проверки интерфейса, не данные города";
++  const r6 = (x) => Math.round(x * 1e6) / 1e6;
++  // u, v in [0, 1] → a point inside bbox with a 10 % margin
++  const at = (bb, u, v) => [r6(bb[0] + (bb[2] - bb[0]) * (0.1 + 0.8 * u)), r6(bb[1] + (bb[3] - bb[1]) * (0.1 + 0.8 * v))];
++  const PTS = [[0.05, 0.1], [0.35, 0.05], [0.7, 0.12], [0.95, 0.08], [0.15, 0.4], [0.5, 0.35], [0.85, 0.45], [0.05, 0.75],
++    [0.4, 0.7], [0.75, 0.8], [0.25, 0.97], [0.95, 0.95]];
++  const WEIGHTS = [3, 1, 2, 1, 2, 5, 1, 1, 3, 2, 1, 4];
++  const SITES = [[0.2, 0.2], [0.6, 0.15], [0.9, 0.3], [0.3, 0.55], [0.65, 0.6], [0.1, 0.9], [0.55, 0.9], [0.85, 0.75]];
++  const COSTS = [120, 90, 150, 60, 200, 80, 110, 130];
++  function syntheticDemo(bbox, category) {
++    return {
++      label: LABEL, synthetic: true,
++      control_points: PTS.map(([u, v], i) => { const [lon, lat] = at(bbox, u, v); return { id: `cp-${i + 1}`, lon, lat, weight: WEIGHTS[i] }; }),
++      candidates: SITES.map(([u, v], i) => { const [lon, lat] = at(bbox, u, v); return { id: `site-${i + 1}`, lon, lat, category, kind: "hypothetical", cost: COSTS[i] }; }),
++      budget: 300, max_selected: 3, coverage_radius_m: 400, required_ids: [], excluded_ids: [], selected_ids: [],
++    };
++  }
++  const api = { LABEL, syntheticDemo };
++  if (typeof module !== "undefined" && module.exports) module.exports = api;
++  else root.CITY_PLAN_DEMO = api;
++})(typeof window !== "undefined" ? window : globalThis);
+diff --git a/prototypes/city-evidence/web/planner_ui.js b/prototypes/city-evidence/web/planner_ui.js
+new file mode 100644
+index 0000000..a38fd7b
+--- /dev/null
++++ b/prototypes/city-evidence/web/planner_ui.js
+@@ -0,0 +1,371 @@
++/* K07 round 8 — «План нескольких объектов» (city-plan-v2) UI module for the BUILD viewer.
++ * Editor: control points with weights (1..25), candidate sites with conditional costs (0..16), required / excluded,
++ * budget / max_selected / radius, a manual plan with feasibility and a before/after table.
++ * All numbers come from a calculator adapter with the CORE_SPEC API (default window.CITY_PLAN_CALC = web/plan_calc.js;
++ * another engine via CITY_PLAN_UI.setCalculator). The plan lives only in this module and its map layer: it never
++ * enters the records, counters, QA, the facts catalog, the objects table or the what-if v1 scenario.
++ * Strings are inserted with textContent only. Hooks used by app.js: init, drawLayer, placing, onMapClick, onMapEnter,
++ * onCitySwitch, onOtherMode, statusText.
++ */
++(function () {
++  "use strict";
++  const $ = (id) => document.getElementById(id);
++  const SVGNS = "http://www.w3.org/2000/svg";
++  const D = window.CITY_EVIDENCE, F = window.CITY_FACTS;
++  let CALC = window.CITY_PLAN_CALC, makeCtx = CALC && CALC.makeContext;
++  const RUN = window.CITY_PLAN_RUNNER, DEMO = window.CITY_PLAN_DEMO;
++  const CAT = { school: "Школа", outpatient_clinic: "Поликлиника" };
++  const LIM = { points: 25, cands: 16, weight: [1, 100], cost: [1, 1000000], budget: [0, 1000000], max: [0, 5], radius: [100, 5000] };
++  const DEF = { cost: 100, budget: 300, max: 3, radius: 500 };  // conditional starting values, shown as such
++  const STATUS = { free: "можно выбрать", required: "обязательно", excluded: "исключено" };
++  let APP = null;
++  const S = { open: false, tool: "control", category: "school", city: null, points: [], cands: [], selected: new Set(),
++    budget: DEF.budget, max: DEF.max, radius: DEF.radius, nextP: 1, nextC: 1, pending: null, msg: "", synthetic: false,
++    run: null, progress: null, result: null, undo: null, runOpts: {} };
++  const ctxCache = {};
++
++  // ---------- small DOM helpers ----------
++  function el(tag, attrs, text) {
++    const e = document.createElement(tag);
++    if (attrs) for (const [k, v] of Object.entries(attrs)) if (v !== undefined && v !== null && v !== false) e.setAttribute(k, v === true ? "" : v);
++    if (text !== undefined && text !== null) e.textContent = String(text);
++    return e;
++  }
++  function sv(tag, attrs) {
++    const e = document.createElementNS(SVGNS, tag);
++    if (attrs) for (const [k, v] of Object.entries(attrs)) if (v !== undefined && v !== null) e.setAttribute(k, v);
++    return e;
++  }
++  const btn = (fk, text, fn, attrs) => { const b = el("button", { type: "button", class: "tool", "data-fk": fk, ...attrs }, text); b.addEventListener("click", fn); return b; };
++  const nf = new Intl.NumberFormat("ru-RU"), nf2 = new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 2 });
++  const fmtM = (mm) => (mm === null || mm === undefined ? "—" : mm >= 1e6 ? nf2.format(mm / 1e6) + " км" : nf.format(Math.round(mm / 1000)) + " м");
++  const fmtCoord = (o) => `${o.lat.toFixed(5)}, ${o.lon.toFixed(5)}`;
++  const pLabel = (id) => "Точка " + id.replace(/^cp-/, "");
++  const cLabel = (id) => "Место " + id.replace(/^site-/, "");
++  const pShort = (id) => "Т" + id.replace(/^cp-/, ""), cShort = (id) => "М" + id.replace(/^site-/, "");  // as on the map
++  const units = (v) => `${nf.format(v)} усл. ед.`;
++  const end = (t) => t.replace(/ед\.\./g, "ед.");  // "… усл. ед." before a full stop keeps one dot
++
++  // ---------- scenario / calculator ----------
++  function ctx() { return ctxCache[S.city] || (ctxCache[S.city] = makeCtx(D, S.city, F)); }
++  function scenario(selected) {
++    return { schema_version: "city-plan-v2", city_id: S.city, source_snapshot: ctx().source_snapshot, category: S.category,
++      control_points: S.points.map((p) => ({ id: p.id, lon: p.lon, lat: p.lat, weight: p.weight })),
++      candidates: S.cands.map((c) => ({ id: c.id, lon: c.lon, lat: c.lat, category: S.category, kind: "hypothetical", cost: c.cost })),
++      budget: S.budget, max_selected: S.max, coverage_radius_m: S.radius,
++      required_ids: S.cands.filter((c) => c.status === "required").map((c) => c.id),
++      excluded_ids: S.cands.filter((c) => c.status === "excluded").map((c) => c.id),
++      selected_ids: selected || S.cands.filter((c) => S.selected.has(c.id)).map((c) => c.id) };
++  }
++  function validated() { return CALC.validatePlanScenario(scenario(), ctx(), { allowEmptyPoints: true }); }
++  const bbox = () => D.cities[S.city].bbox;
++  const inBbox = (lon, lat) => { const b = bbox(); return b[0] <= lon && lon <= b[2] && b[1] <= lat && lat <= b[3]; };
++  function say(t) { S.msg = end(t); }
++
++  // ---------- state changes ----------
++  function problemChanged(why) {  // a running search is cancelled; an old result becomes stale (checked by digest)
++    if (S.run && !S.run.finished) { S.run.cancel(); S.run = null; S.progress = null; say(`Поиск остановлен: ${why}. Запустите заново.`); }
++  }
++  function reset(reason) {
++    if (S.run && !S.run.finished) S.run.cancel();
++    Object.assign(S, { points: [], cands: [], selected: new Set(), nextP: 1, nextC: 1, pending: null, synthetic: false,
++      run: null, progress: null, result: null, undo: null, budget: DEF.budget, max: DEF.max, radius: DEF.radius });
++    say(reason || "");
++  }
++  function place(lon, lat) {
++    if (!inBbox(lon, lat)) { say("Место вне квадрата среза: там нет исходных записей, точку или кандидатное место туда поставить нельзя."); return false; }
++    if (S.pending) {
++      const it = (S.pending.type === "point" ? S.points : S.cands).find((x) => x.id === S.pending.id);
++      S.pending = null;
++      if (it) { it.lon = lon; it.lat = lat; problemChanged("место перенесено"); say(`${it.id.startsWith("cp-") ? pLabel(it.id) : cLabel(it.id)} перенесено: ${fmtCoord(it)}.`); }
++      return true;
++    }
++    if (S.tool === "control") {
++      if (S.points.length >= LIM.points) { say(`Не больше ${LIM.points} контрольных точек — удалите одну из списка.`); return false; }
++      const p = { id: `cp-${S.nextP++}`, lon, lat, weight: 1 };
++      S.points.push(p); problemChanged("добавлена точка");
++      say(`${pLabel(p.id)} поставлена (вес 1): ${fmtCoord(p)}. Точек ${S.points.length} из ${LIM.points}.`);
++      return true;
++    }
++    if (S.tool === "candidate") {
++      if (S.cands.length >= LIM.cands) { say(`Не больше ${LIM.cands} кандидатных мест — точный перебор ограничен 65 536 наборами.`); return false; }
++      const c = { id: `site-${S.nextC++}`, lon, lat, cost: DEF.cost, status: "free" };
++      S.cands.push(c); problemChanged("добавлено место");
++      say(`${cLabel(c.id)} поставлено: стоимость ${units(DEF.cost)} — условное значение, задайте свою. Мест ${S.cands.length} из ${LIM.cands}.`);
++      return true;
++    }
++    return false;
++  }
++  function removePoint(id) { S.points = S.points.filter((p) => p.id !== id); if (S.pending && S.pending.id === id) S.pending = null; problemChanged("удалена точка"); say(`${pLabel(id)} удалена.`); }
++  function removeCand(id) { S.cands = S.cands.filter((c) => c.id !== id); S.selected.delete(id); if (S.pending && S.pending.id === id) S.pending = null; problemChanged("удалено место"); say(`${cLabel(id)} удалено из кандидатов и из ручного плана.`); }
++  function startMove(type, id) { S.pending = { type, id }; say(`Перенос: ${type === "point" ? pLabel(id) : cLabel(id)}. Нажмите на карту в квадрате (или Enter — в центр карты). Escape — отмена.`); }
++  function cancelMove() { if (!S.pending) return false; S.pending = null; say("Перенос отменён."); return true; }
++  function intIn(raw, [lo, hi]) { const v = Number(raw); return raw !== "" && Number.isInteger(v) && v >= lo && v <= hi ? v : null; }
++  function setNum(what, raw, apply, lim, text) {
++    const v = intIn(String(raw).trim(), lim);
++    if (v === null) { say(`${text}: нужно целое число ${nf.format(lim[0])}…${nf.format(lim[1])}. Значение не изменено.`); return false; }
++    apply(v); problemChanged(`изменено: ${text.toLowerCase()}`); return true;
++  }
++  function setStatus(id, st) {
++    const c = S.cands.find((x) => x.id === id); if (!c || !STATUS[st]) return;
++    c.status = st;
++    if (st === "required") { S.selected.add(id); say(`${cLabel(id)} обязательно: включено в ручной план и в каждый найденный план.`); }
++    else if (st === "excluded") { S.selected.delete(id); say(`${cLabel(id)} исключено: убрано из ручного плана и не войдёт в найденные планы.`); }
++    else say(`${cLabel(id)}: ${STATUS.free}.`);
++    problemChanged("изменены ограничения");
++  }
++  function toggleSelected(id, on) {
++    const c = S.cands.find((x) => x.id === id); if (!c || c.status !== "free") return;
++    if (on) S.selected.add(id); else S.selected.delete(id);
++    S.undo = null; say(`${cLabel(id)} ${on ? "добавлено в ручной план" : "убрано из ручного плана"}.`);
++  }
++  function loadDemo() {
++    const d = DEMO.syntheticDemo(bbox(), S.category);
++    reset("");
++    S.points = d.control_points.map((p) => ({ id: p.id, lon: p.lon, lat: p.lat, weight: p.weight }));
++    S.cands = d.candidates.map((c) => ({ id: c.id, lon: c.lon, lat: c.lat, cost: c.cost, status: "free" }));
++    Object.assign(S, { budget: d.budget, max: d.max_selected, radius: d.coverage_radius_m, nextP: S.points.length + 1, nextC: S.cands.length + 1, synthetic: true });
++    say(`Загружен демо-набор SYNTHETIC: ${S.points.length} точек, ${S.cands.length} мест, бюджет ${units(S.budget)}. Это не данные города.`);
++  }
++  function setOpen(on) {
++    S.open = !!on;
++    if (S.open) { if (!S.city) S.city = APP.state.city; exclusive(); }
++    else { S.pending = null; say(S.points.length || S.cands.length ? "План скрыт; точки и места сохраняются до смены города или категории." : ""); }
++  }
++  function setTool(t) { S.tool = t; S.pending = null; if (placing()) exclusive(); say(t === "none" ? "Постановка выключена: клики по карте выбирают записи, как обычно." : `Клик или Enter на карте ставит: ${t === "control" ? "контрольную точку" : "кандидатное место"}.`); }
++  function exclusive() {  // one map tool at a time: the base point mode and what-if v1 placement are switched off
++    if (!placing() || !APP) return;
++    if (APP.state.pointMode && APP.setPointMode) APP.setPointMode(false);
++    if (APP.state.wi && APP.state.wi.mode && APP.setWiMode) APP.setWiMode(null, true);
++  }
++  const placing = () => S.open && S.tool !== "none";
++
++  // ---------- rendering ----------
++  let focusAfter = null;
++  function render() {
++    const card = $("planCard"); if (!card || !APP) return;
++    const fa = document.activeElement, fk = fa && fa.dataset ? fa.dataset.fk : null;
++    card.hidden = !S.open;
++    $("planBtn").setAttribute("aria-pressed", String(S.open));
++    $("map").classList.toggle("planmode", placing());
++    const m = $("map"); if (placing()) m.setAttribute("aria-describedby", "plMapHelp"); else if (m.getAttribute("aria-describedby") === "plMapHelp") m.removeAttribute("aria-describedby");
++    const body = $("planBody"); body.replaceChildren();
++    if (S.open) {
++      renderEditor(body);
++      const res = el("div", { id: "plResults" }); body.append(res); fillResults(res);
++    }
++    APP.renderMap(); APP.updateStatus();
++    const want = focusAfter || fk; focusAfter = null;
++    if (want && S.open) { const n = body.querySelector(`[data-fk="${want}"]`) || $(want); if (n && document.activeElement !== n) n.focus(); }
++  }
++  // Results only (manual plan, search, map): value edits keep the editor DOM, so Tab after typing is not disturbed.
++  function fillResults(res) { res.replaceChildren(); renderManual(res); if (PLAN_UI.renderSearch) PLAN_UI.renderSearch(res); }
++  function renderResults() {
++    if (!S.open) return;
++    const m = $("plMsg"); if (m) m.textContent = S.msg;
++    const res = $("plResults"); if (res) fillResults(res);
++    APP.renderMap(); APP.updateStatus();
++  }
++  function numInput(fk, value, lim, label, onChange, cls) {
++    const i = el("input", { type: "number", min: lim[0], max: lim[1], step: 1, inputmode: "numeric", value, "data-fk": fk, "aria-label": label, class: cls || "pl-num" });
++    let last = String(value);
++    i.addEventListener("change", () => { if (onChange(i.value)) last = i.value.trim(); else i.value = last; renderResults(); });
++    return i;
++  }
++  function renderEditor(body) {
++    if (S.synthetic) body.append(el("p", { class: "pl-synth", id: "plSynth" }, DEMO.LABEL + "."));
++    const r1 = el("div", { class: "pl-row" });
++    const sel = el("select", { id: "plCat", "data-fk": "plCat" });
++    for (const [k, v] of Object.entries(CAT)) { const o = el("option", { value: k }, v); if (k === S.category) o.selected = true; sel.append(o); }
++    sel.addEventListener("change", () => { const had = S.points.length || S.cands.length; S.category = sel.value; reset(had ? `Категория изменена на «${CAT[sel.value]}» — план сброшен: места относятся к одной категории.` : ""); render(); });
++    r1.append(el("label", { for: "plCat" }, "Категория "), sel,
++      btn("plDemo", "Демо-набор (SYNTHETIC)", () => { loadDemo(); render(); }),
++      btn("plReset", "Сбросить план", () => { reset("План сброшен."); focusAfter = "plCat"; render(); }, { disabled: !S.points.length && !S.cands.length }));
++    body.append(r1);
++    const fs = el("fieldset", { class: "pl-tools" });
++    fs.append(el("legend", null, "Что ставить кликом или Enter на карте"));
++    for (const [v, t] of [["control", `Контрольная точка (${S.points.length} из ${LIM.points})`], ["candidate", `Кандидатное место (${S.cands.length} из ${LIM.cands})`], ["none", "Ничего (просмотр карты)"]]) {
++      const lab = el("label", { class: "chk" }), r = el("input", { type: "radio", name: "plTool", value: v, "data-fk": "plTool-" + v });
++      r.checked = S.tool === v; r.addEventListener("change", () => { setTool(v); render(); });
++      lab.append(r, el("span", null, t)); fs.append(lab);
++    }
++    body.append(fs, el("p", { class: "pl-msg", id: "plMsg", role: "status", "aria-live": "polite" }, S.msg));
++    if (S.pending) body.append(btn("plCancelMove", "Отменить перенос", () => { const was = S.pending; cancelMove(); focusAfter = (was.type === "point" ? "mvp-" : "mvc-") + was.id; render(); }));
++    // parameters
++    const pr = el("div", { class: "pl-params" });
++    const prm = (id, text, hint, value, lim, apply) => {
++      const w = el("label", { class: "pl-param", for: id }); w.append(el("span", null, text));
++      const i = numInput(id, value, lim, text, (raw) => setNum(id, raw, apply, lim, text)); i.id = id;
++      w.append(i, el("small", { class: "muted" }, hint)); pr.append(w);
++    };
++    prm("plBudget", "Бюджет", "условные единицы, не тенге и не смета", S.budget, LIM.budget, (v) => { S.budget = v; });
++    prm("plMax", "Максимум объектов", "сколько мест можно выбрать (0–5)", S.max, LIM.max, (v) => { S.max = v; });
++    prm("plRadius", "Радиус охвата, м", "параметр анализа по прямой, не норматив пешей доступности", S.radius, LIM.radius, (v) => { S.radius = v; });
++    body.append(el("h3", { id: "plParamTitle" }, "Условия"), pr);
++    // control points
++    body.append(el("h3", { id: "plPtsTitle", tabindex: "-1", "data-fk": "plPtsTitle" }, `Контрольные точки (${S.points.length})`));
++    body.append(el("p", { class: "muted" }, "Вес — приоритет точки, заданный пользователем (1–100), не число жителей."));
++    const ol = el("ol", { class: "pl-list", id: "plPts", "aria-labelledby": "plPtsTitle" });
++    if (!S.points.length) ol.append(el("li", { class: "muted" }, "Точек нет. Выберите «Контрольная точка» и нажмите на карту (1–25 точек)."));
++    S.points.forEach((p, i) => {
++      const li = el("li", { "data-pl-point": p.id, class: S.pending && S.pending.id === p.id ? "pl-pending" : null });
++      li.append(el("span", { class: "pl-label", title: `${pLabel(p.id)} · ${fmtCoord(p)}` }, pShort(p.id)),
++        el("span", { class: "pl-inline" }, "вес"), numInput("w-" + p.id, p.weight, LIM.weight, `Вес: ${pLabel(p.id)}`, (raw) => setNum("w", raw, (v) => { p.weight = v; }, LIM.weight, `Вес ${pLabel(p.id)}`), "pl-num pl-w"),
++        btn("mvp-" + p.id, "Перенести", () => { startMove("point", p.id); focusAfter = "map"; render(); }, { "aria-label": `Перенести: ${pLabel(p.id)}` }),
++        btn("dlp-" + p.id, "Удалить", () => { removePoint(p.id); const nx = S.points[i] || S.points[i - 1]; focusAfter = nx ? "dlp-" + nx.id : "plPtsTitle"; render(); }, { "aria-label": `Удалить: ${pLabel(p.id)}` }));
++      ol.append(li);
++    });
++    body.append(ol);
++    // candidates
++    body.append(el("h3", { id: "plCandTitle", tabindex: "-1", "data-fk": "plCandTitle" }, `Кандидатные места (${S.cands.length}) `, null));
++    body.lastChild.append(el("span", { class: "pill" }, "гипотеза"));
++    body.append(el("p", { class: "muted" }, "Места и стоимости задаёт пользователь: это не существующие учреждения, не адреса и не цены в тенге."));
++    const cl = el("ol", { class: "pl-list", id: "plCands", "aria-labelledby": "plCandTitle" });
++    if (!S.cands.length) cl.append(el("li", { class: "muted" }, "Мест нет. Выберите «Кандидатное место» и нажмите на карту (0–16 мест)."));
++    S.cands.forEach((c, i) => {
++      const li = el("li", { "data-pl-cand": c.id, class: S.pending && S.pending.id === c.id ? "pl-pending" : null });
++      const st = el("select", { "data-fk": "st-" + c.id, "aria-label": `Ограничение: ${cLabel(c.id)}` });
++      for (const [k, v] of Object.entries(STATUS)) { const o = el("option", { value: k }, v); if (k === c.status) o.selected = true; st.append(o); }
++      st.addEventListener("change", () => { setStatus(c.id, st.value); render(); });
++      const cb = el("input", { type: "checkbox", "data-fk": "sel-" + c.id, "aria-label": `В ручном плане: ${cLabel(c.id)}`, disabled: c.status !== "free" });
++      cb.checked = S.selected.has(c.id);
++      cb.addEventListener("change", () => { toggleSelected(c.id, cb.checked); render(); });
++      const inPlan = el("label", { class: "chk" }); inPlan.append(cb, el("span", null, "в плане"));
++      li.append(el("span", { class: "pl-label", title: `${cLabel(c.id)} · ${fmtCoord(c)}` }, cShort(c.id)),
++        numInput("c-" + c.id, c.cost, LIM.cost, `Стоимость, условные единицы: ${cLabel(c.id)}`, (raw) => setNum("c", raw, (v) => { c.cost = v; }, LIM.cost, `Стоимость ${cLabel(c.id)}`), "pl-num pl-c"),
++        el("span", { class: "pl-inline" }, "усл. ед."), inPlan, el("span", { class: "pl-break", "aria-hidden": "true" }), st,
++        btn("mvc-" + c.id, "Перенести", () => { startMove("cand", c.id); focusAfter = "map"; render(); }, { "aria-label": `Перенести: ${cLabel(c.id)}` }),
++        btn("dlc-" + c.id, "Удалить", () => { removeCand(c.id); const nx = S.cands[i] || S.cands[i - 1]; focusAfter = nx ? "dlc-" + nx.id : "plCandTitle"; render(); }, { "aria-label": `Удалить: ${cLabel(c.id)}` }));
++      cl.append(li);
++    });
++    body.append(cl);
++  }
++  function placeById(id) { return D.cities[S.city].places.find((p) => p.id === id); }
++  function nearestText(n) {
++    if (!n) return "—";
++    if (n.kind === "hypothetical") return `${cShort(n.id)} — ${cLabel(n.id)} (гипотеза)`;
++    const p = placeById(n.id), qa = p && F && F.qaOf ? F.qaOf(S.city, p) : [];
++    const src = p && p.sources && p.sources.length ? p.sources.map((s) => s.dataset).join("/") : "источник не указан";
++    return `${p ? p.name || "Без названия" : n.id} · запись среза (${src})${qa.length ? " · ⚠ " + qa.map((q) => q.code).join(", ") : ""}`;
++  }
++  function metricRows(m) {
++    return [
++      ["Средневзвешенное расстояние", m.weighted_mean_mm === null ? `не определено: ${m.unknown_count} точ. без объектов` : fmtM(m.weighted_mean_mm)],
++      ["Худшая точка", m.max_mm === null ? "не определено" : fmtM(m.max_mm)],
++      ["Охват (вес точек в радиусе)", `${nf.format(m.covered_weight)} из ${nf.format(m.total_weight)} (${nf.format(Math.round(m.coverage_fraction * 100))} %)`],
++      ["Стоимость", units(m.cost)],
++    ];
++  }
++  function renderManual(body) {
++    body.append(el("h3", { id: "plManTitle" }, "Ручной план"));
++    const box = el("div", { id: "plManual" }); body.append(box);
++    S.lastEval = null;
++    if (!S.points.length) { box.append(el("p", { class: "muted" }, "Расчёт появится после первой контрольной точки.")); return; }
++    const v = validated();
++    if (!v.ok) { box.append(el("p", { class: "err", role: "alert" }, `Сценарий не прошёл проверку (${v.error.code}, ${v.error.path}): ${v.error.detail}`)); return; }
++    let ev, ev0;
++    try { ev = CALC.evaluatePlan(ctx(), v.scenario); ev0 = CALC.evaluatePlan(ctx(), v.scenario, []); }
++    catch (e) { box.append(el("p", { class: "err", role: "alert" }, "Расчёт не выполнен: " + (e.detail || e.message))); return; }
++    S.lastEval = ev;
++    const ids = ev.selected_ids;
++    box.append(el("p", { id: "plManSel" }, end(ids.length ? `Выбрано: ${ids.map(cLabel).join(", ")} — ${ids.length} из максимум ${S.max}; ${units(ev.metrics.cost)} из бюджета ${units(S.budget)}.` : `Ничего не выбрано: показан исходный срез. Бюджет ${units(S.budget)}.`)));
++    const REASON = { over_budget: "стоимость больше бюджета", too_many: "мест больше, чем «Максимум объектов»", missing_required: "нет обязательного места", has_excluded: "есть исключённое место" };
++    box.append(el("p", { id: "plFeas", class: ev.feasibility.feasible ? "pl-ok" : "pl-bad" }, ev.feasibility.feasible ? "✓ План допустим по бюджету, числу мест и ограничениям."
++      : "✗ План недопустим: " + ev.feasibility.reasons.map((r) => `${REASON[r.code] || r.code} (${r.detail})`).join("; ") + ". Расчёт показан, но такой план нарушает условия."));
++    if (!ev.baseline_records) box.append(el("p", { class: "warn", id: "plNoBase" }, `В срезе нет записей категории «${CAT[S.category]}»: «не определено» означает отсутствие записей в этом наборе данных, а не отсутствие услуги в городе.`));
++    const mt = el("table", { class: "pl-metrics", id: "plMetrics", "aria-label": "Показатели ручного плана и исходного среза" });
++    const hr = el("tr"); for (const h of ["Показатель", "Исходный срез", "Ручной план"]) hr.append(el("th", null, h));
++    const th = el("thead"); th.append(hr); mt.append(th);
++    const tb = el("tbody"), a = metricRows(ev0.metrics), b = metricRows(ev.metrics);
++    a.forEach((r, i) => { const tr = el("tr"); tr.append(el("td", null, r[0]), el("td", null, r[1]), el("td", null, b[i][1])); tb.append(tr); });
++    mt.append(tb); box.append(mt);
++    const t = el("table", { class: "pl-table", id: "plTable", "aria-label": "Расстояние по прямой до ближайшей записи среза или выбранного места: до и после" });
++    const h2 = el("tr"); ["Т (вес)", "До", "После", "Разница"].forEach((h, i) => h2.append(el("th", { class: i ? "num" : null }, h)));
++    const t2 = el("thead"); t2.append(h2); t.append(t2);
++    const b2 = el("tbody");
++    for (const r of ev.rows) {
++      const tr = el("tr", { "data-pl-row": r.control_point_id });
++      const delta = r.delta_mm === null ? "—" : r.delta_mm > 0 ? "−" + fmtM(r.delta_mm) : "0";
++      [`${pShort(r.control_point_id)} (×${nf.format(r.weight)})`, fmtM(r.before_mm), fmtM(r.after_mm), delta].forEach((x, i) => tr.append(el("td", { class: i ? "num" : null }, x)));
++      const sub = el("tr", { class: "pl-sub", "data-pl-near": r.control_point_id });
++      sub.append(el("td", { colspan: 4 }, "ближайшее после: " + nearestText(r.nearest_after)));
++      b2.append(tr, sub);
++    }
++    t.append(b2); box.append(t);
++    box.append(el("p", { class: "muted" }, `По прямой, в мм с округлением ${ev.metric_version}; «Разница» — уменьшение расстояния до ближайшей записи или места, не время пешком и не улучшение услуги. Охват — доля веса выбранных точек, не жителей. Вместимость, население и трафик не учитываются.`));
++  }
++
++  // ---------- map layer (called by app.js renderMap) ----------
++  function drawLayer(g, info) {
++    if (!S.open || (!S.points.length && !S.cands.length && !placing())) return;
++    const ev = S.lastEval && S.points.length ? S.lastEval : null;
++    if (ev) for (const r of ev.rows) {  // thin lines: point → its nearest object in the manual plan
++      const p = S.points.find((x) => x.id === r.control_point_id), n = r.nearest_after;
++      const o = !n ? null : n.kind === "hypothetical" ? S.cands.find((c) => c.id === n.id) : placeById(n.id);
++      if (!p || !o) continue;
++      const [x1, y1] = info.toScreen(p.lon, p.lat), [x2, y2] = info.toScreen(o.lon, o.lat);
++      g.append(sv("line", { x1, y1, x2, y2, stroke: "var(--muted)", "stroke-width": 1, "stroke-dasharray": "2 3", "aria-hidden": "true" }));
++    }
++    for (const c of S.cands) {
++      const [x, y] = info.toScreen(c.lon, c.lat), on = S.selected.has(c.id);
++      const m = sv("g", { transform: `translate(${x.toFixed(1)} ${y.toFixed(1)})`, "data-plan": c.id, "aria-hidden": "true" });
++      m.append(sv("rect", { x: -8, y: -8, width: 16, height: 16, rx: 2, fill: on ? "var(--focus)" : "var(--surface)", stroke: c.status === "excluded" ? "var(--muted)" : "var(--ink)",
++        "stroke-width": c.status === "required" ? 3 : 1.5, "stroke-dasharray": on ? null : "3 2" }));
++      if (c.status === "excluded") m.append(sv("path", { d: "M-6 -6L6 6M6 -6L-6 6", stroke: "var(--muted)", "stroke-width": 1.5 }));
++      const t = sv("text", { x: 11, y: 4, "font-size": 10, fill: "var(--ink)" }); t.textContent = "М" + c.id.replace(/^site-/, "");
++      m.append(t); g.append(m);
++    }
++    for (const p of S.points) {
++      const [x, y] = info.toScreen(p.lon, p.lat);
++      const m = sv("g", { transform: `translate(${x.toFixed(1)} ${y.toFixed(1)})`, "data-plan": p.id, "aria-hidden": "true" });
++      m.append(sv("circle", { r: 8, fill: "var(--surface)", stroke: "var(--ink)", "stroke-width": 2, "stroke-dasharray": S.pending && S.pending.id === p.id ? "3 2" : null }));
++      const t = sv("text", { "text-anchor": "middle", y: 3.5, "font-size": 9, "font-weight": 700, fill: "var(--ink)" }); t.textContent = p.id.replace(/^cp-/, "");
++      m.append(t); g.append(m);
++    }
++    if (placing()) {  // keyboard target; shown by CSS only while the map itself has focus (no re-render on focus/blur)
++      const svg = $("map"), cx = svg.clientWidth / 2, cy = svg.clientHeight / 2, tg = sv("g", { class: "pl-target", "data-plan": "target", "aria-hidden": "true" });
++      tg.append(sv("circle", { cx, cy, r: 11, fill: "none", stroke: "var(--focus)", "stroke-width": 2 }),
++        sv("path", { d: `M${cx - 15} ${cy}H${cx - 6}M${cx + 6} ${cy}H${cx + 15}M${cx} ${cy - 15}V${cy - 6}M${cx} ${cy + 6}V${cy + 15}`, stroke: "var(--focus)", "stroke-width": 2 }));
++      g.append(tg);
++    }
++  }
++
++  // ---------- hooks for app.js ----------
++  function onMapClick(lonlat, ev) {
++    if (!placing()) return false;
++    if (ev && ev.target && ev.target.closest && ev.target.closest("[data-plan]") && !S.pending) return true;  // own marker: nothing new
++    place(lonlat[0], lonlat[1]); render(); return true;
++  }
++  function onMapEnter(lonlat) { if (!placing()) return false; place(lonlat[0], lonlat[1]); render(); return true; }
++  function onCitySwitch(city) {
++    if (S.city && city !== S.city) {
++      const had = S.points.length || S.cands.length || S.result || S.run;
++      reset(had ? "Город изменён — план сброшен: точки, места и найденные планы между городами не переносятся." : "");
++    }
++    S.city = city;
++    if (S.open) render();
++  }
++  function onOtherMode() { if (placing()) { S.tool = "none"; S.pending = null; say("Постановка плана выключена: включён другой режим карты."); render(); } }
++  function statusText() { return placing() ? (S.msg || "План: нажмите на карту, чтобы поставить выбранный элемент (Enter — в центр карты). Escape — выключить постановку.") : ""; }
++  function setCalculator(engine, opts = {}) {
++    for (const f of ["validatePlanScenario", "evaluatePlan", "optimizePlans"]) if (typeof engine[f] !== "function") throw new Error("calculator without " + f);
++    CALC = engine; makeCtx = opts.makeContext || engine.makeContext || window.CITY_PLAN_CALC.makeContext;
++    for (const k of Object.keys(ctxCache)) delete ctxCache[k];
++    reset("Подключён другой расчётный модуль — план сброшен."); render();
++  }
++  function init(app) {
++    APP = app; S.city = app.state.city;
++    if (!CALC || !F || !F.sha256hex || !F.placesDigest || !D) { const b = $("planBtn"); if (b) b.hidden = true; return; }
++    $("planBtn").addEventListener("click", () => { setOpen(!S.open); if (S.open) focusAfter = "plCat"; render(); });
++    document.addEventListener("keydown", (e) => {
++      if (e.key !== "Escape" || !S.open) return;
++      if (cancelMove()) { render(); return; }
++      if (placing()) { setTool("none"); render(); }
++    });
++    render();
++  }
++  const PLAN_UI = { init, drawLayer, placing, onMapClick, onMapEnter, onCitySwitch, onOtherMode, statusText, setCalculator, render, renderResults,
++    _state: S, _scenario: scenario, _ctx: ctx, _units: units, _fmtM: fmtM, _cLabel: cLabel, _pLabel: pLabel, _metricRows: metricRows,
++    _btn: btn, _el: el, _problemChanged: problemChanged, _say: say, _RUN: RUN, _calc: () => CALC, _validated: validated };
++  window.CITY_PLAN_UI = PLAN_UI;
++})();

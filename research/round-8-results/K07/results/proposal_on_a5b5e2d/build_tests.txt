@@ -1,0 +1,58 @@
+conformance: all passed
+whatif: all what-if checks passed
+smoke: PASS Shymkent: 55 records, slice says 'complete query result' and city total unknown
+smoke: PASS Shymkent colocated group of 10 drawn on the map; flagged rows in table
+smoke: PASS object card lists the 9 other records at the same coordinate, marks district as uncertain
+smoke: PASS category doubt shown with rule and reason, record kept
+smoke: PASS point selected; status line next to map; clear enabled
+smoke: PASS Escape clears point, card and disables the clear button
+smoke: PASS Astana after keyboard switch: own 65 records, no Shymkent markers, tooltip hidden
+smoke: PASS Astana has no colocated groups (QA says 0)
+smoke: PASS category filter (Astana: 8 school records)
+smoke: PASS empty state is explicit
+smoke: PASS road card: foot access status, dataset, no walking minutes
+smoke: PASS hiding roads deselects the road (K07 F2)
+smoke: PASS TomTom road card names TomTom, not OSM (K08 r5 A7)
+smoke: PASS template explanation labelled; units and missing reasons visible
+smoke: PASS old answer rejected after catalog update in the same city (stale_catalog)
+smoke: PASS pending answer discarded after city switch
+smoke: PASS source card: contract, K03 v2, K08 gap; license links resolve to committed files
+smoke: PASS map attribution names record providers (not only OSM)
+smoke: PASS focused map pans with arrow keys
+smoke: PASS narrow viewport (380 px) has no horizontal scroll
+smoke: PASS clear state when data.js is missing
+smoke: PASS clear state when evidence.js is missing
+smoke: PASS no console/page errors
+smoke: PASS no network requests (file:// only)
+whatif_smoke: PASS card shown with category, explicit modes and 'по прямой' wording
+whatif_smoke: PASS 4 control points by click (one on a marker), object not selected
+whatif_smoke: PASS without project: after = before, 'без изменений'
+whatif_smoke: PASS click outside the square rejected with a clear message
+whatif_smoke: PASS keyboard: Enter on map adds a point (P5)
+whatif_smoke: PASS keyboard: point removed from the list
+whatif_smoke: PASS project placed: P2 nearer to project, delta > 0 shown as 'ближе на'
+whatif_smoke: PASS other rows: after ≤ before, delta = before − after
+whatif_smoke: PASS hypothetical not in observed counters (55 markers / 55 table rows / slice 55)
+whatif_smoke: PASS project drawn in separate hypothetical layer, labelled 'Проектный объект'
+whatif_smoke: PASS source of the nearest record shown (with QA mark when flagged)
+whatif_smoke: PASS move: project moved, recomputed (P3 now nearer to project)
+whatif_smoke: PASS template explanation over computed facts (not LLM), with digest
+whatif_smoke: PASS delete project: baseline restored exactly; old explanation dropped
+whatif_smoke: PASS project mode stays on after delete (next click puts it back)
+whatif_smoke: PASS project returned: same numbers as first placement
+whatif_smoke: PASS export: city-whatif-v1, snapshot, 4 points, hypothetical project, derived block labelled
+whatif_smoke: PASS export file name and no local paths
+whatif_smoke: PASS import nan.json rejected, scenario unchanged
+whatif_smoke: PASS import dup.json rejected, scenario unchanged
+whatif_smoke: PASS import foreign.json rejected, scenario unchanged
+whatif_smoke: PASS import two.json rejected, scenario unchanged
+whatif_smoke: PASS import big.json rejected, scenario unchanged
+whatif_smoke: PASS category change resets scenario with a reason
+whatif_smoke: PASS valid import restores scenario, category and recomputed numbers (file values ignored)
+whatif_smoke: PASS city switch: scenario reset with a reason, nothing carried over
+whatif_smoke: PASS Astana: clinic scenario computed (P1 nearer to project), 65 records untouched
+whatif_smoke: PASS Shymkent file in Astana: city switched, same scenario and numbers
+whatif_smoke: PASS Shymkent scenario with the Astana snapshot rejected
+whatif_smoke: PASS narrow viewport (380 px): no horizontal scroll with the what-if card
+whatif_smoke: PASS no console/page errors
+whatif_smoke: PASS no network requests

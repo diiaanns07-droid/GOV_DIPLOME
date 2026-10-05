@@ -1,0 +1,6488 @@
+[
+ {
+  "name": "shymkent/school/demo",
+  "status": "optimal",
+  "feasible_count": 47,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "site-1",
+     "site-2",
+     "site-6"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 5654802,
+    "max_mm": 357287,
+    "covered_weight": 26,
+    "cost": 290
+   },
+   "minimax": {
+    "selected_ids": [
+     "site-1",
+     "site-2",
+     "site-6"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 5654802,
+    "max_mm": 357287,
+    "covered_weight": 26,
+    "cost": 290
+   },
+   "coverage": {
+    "selected_ids": [
+     "site-1",
+     "site-2",
+     "site-6"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 5654802,
+    "max_mm": 357287,
+    "covered_weight": 26,
+    "cost": 290
+   }
+  },
+  "pareto": [
+   {
+    "selected_ids": [],
+    "cost": 0,
+    "weighted_sum_mm": 7942695
+   },
+   {
+    "selected_ids": [
+     "site-6"
+    ],
+    "cost": 80,
+    "weighted_sum_mm": 7824084
+   },
+   {
+    "selected_ids": [
+     "site-2"
+    ],
+    "cost": 90,
+    "weighted_sum_mm": 6677021
+   },
+   {
+    "selected_ids": [
+     "site-2",
+     "site-6"
+    ],
+    "cost": 170,
+    "weighted_sum_mm": 6558410
+   },
+   {
+    "selected_ids": [
+     "site-1",
+     "site-2"
+    ],
+    "cost": 210,
+    "weighted_sum_mm": 5773413
+   },
+   {
+    "selected_ids": [
+     "site-1",
+     "site-2",
+     "site-6"
+    ],
+    "cost": 290,
+    "weighted_sum_mm": 5654802
+   }
+  ],
+  "pareto_excluded_unknown": 0,
+  "sensitivity": [
+   {
+    "budget": 0,
+    "feasible_count": 1,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7942695,
+      "max_mm": 661511,
+      "covered_weight": 15,
+      "cost": 0
+     },
+     "minimax": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7942695,
+      "max_mm": 661511,
+      "covered_weight": 15,
+      "cost": 0
+     },
+     "coverage": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7942695,
+      "max_mm": 661511,
+      "covered_weight": 15,
+      "cost": 0
+     }
+    }
+   },
+   {
+    "budget": 150,
+    "feasible_count": 10,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "site-2"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 6677021,
+      "max_mm": 558828,
+      "covered_weight": 22,
+      "cost": 90
+     },
+     "minimax": {
+      "selected_ids": [
+       "site-1"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 6807941,
+      "max_mm": 531011,
+      "covered_weight": 19,
+      "cost": 120
+     },
+     "coverage": {
+      "selected_ids": [
+       "site-2"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 6677021,
+      "max_mm": 558828,
+      "covered_weight": 22,
+      "cost": 90
+     }
+    }
+   },
+   {
+    "budget": 300,
+    "feasible_count": 47,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "site-1",
+       "site-2",
+       "site-6"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 5654802,
+      "max_mm": 357287,
+      "covered_weight": 26,
+      "cost": 290
+     },
+     "minimax": {
+      "selected_ids": [
+       "site-1",
+       "site-2",
+       "site-6"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 5654802,
+      "max_mm": 357287,
+      "covered_weight": 26,
+      "cost": 290
+     },
+     "coverage": {
+      "selected_ids": [
+       "site-1",
+       "site-2",
+       "site-6"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 5654802,
+      "max_mm": 357287,
+      "covered_weight": 26,
+      "cost": 290
+     }
+    }
+   }
+  ],
+  "manual": {
+   "selected_ids": [
+    "site-2",
+    "site-4"
+   ],
+   "unknown_count": 0,
+   "weighted_sum_mm": 6677021,
+   "max_mm": 558828,
+   "covered_weight": 22,
+   "total_weight": 26,
+   "cost": 150,
+   "before_mm": [
+    558828,
+    661511,
+    531011,
+    355405,
+    59491,
+    418523,
+    315532,
+    180455,
+    138969,
+    38711,
+    383088,
+    150568
+   ]
+  }
+ },
+ {
+  "name": "shymkent/school/budget0",
+  "status": "optimal",
+  "feasible_count": 1,
+  "objectives": {
+   "mean": {
+    "selected_ids": [],
+    "unknown_count": 0,
+    "weighted_sum_mm": 7942695,
+    "max_mm": 661511,
+    "covered_weight": 15,
+    "cost": 0
+   },
+   "minimax": {
+    "selected_ids": [],
+    "unknown_count": 0,
+    "weighted_sum_mm": 7942695,
+    "max_mm": 661511,
+    "covered_weight": 15,
+    "cost": 0
+   },
+   "coverage": {
+    "selected_ids": [],
+    "unknown_count": 0,
+    "weighted_sum_mm": 7942695,
+    "max_mm": 661511,
+    "covered_weight": 15,
+    "cost": 0
+   }
+  },
+  "pareto": [
+   {
+    "selected_ids": [],
+    "cost": 0,
+    "weighted_sum_mm": 7942695
+   }
+  ],
+  "pareto_excluded_unknown": 0,
+  "sensitivity": [
+   {
+    "budget": 0,
+    "feasible_count": 1,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7942695,
+      "max_mm": 661511,
+      "covered_weight": 15,
+      "cost": 0
+     },
+     "minimax": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7942695,
+      "max_mm": 661511,
+      "covered_weight": 15,
+      "cost": 0
+     },
+     "coverage": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7942695,
+      "max_mm": 661511,
+      "covered_weight": 15,
+      "cost": 0
+     }
+    }
+   }
+  ],
+  "manual": {
+   "selected_ids": [
+    "site-2",
+    "site-4"
+   ],
+   "unknown_count": 0,
+   "weighted_sum_mm": 6677021,
+   "max_mm": 558828,
+   "covered_weight": 22,
+   "total_weight": 26,
+   "cost": 150,
+   "before_mm": [
+    558828,
+    661511,
+    531011,
+    355405,
+    59491,
+    418523,
+    315532,
+    180455,
+    138969,
+    38711,
+    383088,
+    150568
+   ]
+  }
+ },
+ {
+  "name": "shymkent/school/budget150",
+  "status": "optimal",
+  "feasible_count": 10,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "site-2"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 6677021,
+    "max_mm": 558828,
+    "covered_weight": 22,
+    "cost": 90
+   },
+   "minimax": {
+    "selected_ids": [
+     "site-1"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 6807941,
+    "max_mm": 531011,
+    "covered_weight": 19,
+    "cost": 120
+   },
+   "coverage": {
+    "selected_ids": [
+     "site-2"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 6677021,
+    "max_mm": 558828,
+    "covered_weight": 22,
+    "cost": 90
+   }
+  },
+  "pareto": [
+   {
+    "selected_ids": [],
+    "cost": 0,
+    "weighted_sum_mm": 7942695
+   },
+   {
+    "selected_ids": [
+     "site-6"
+    ],
+    "cost": 80,
+    "weighted_sum_mm": 7824084
+   },
+   {
+    "selected_ids": [
+     "site-2"
+    ],
+    "cost": 90,
+    "weighted_sum_mm": 6677021
+   }
+  ],
+  "pareto_excluded_unknown": 0,
+  "sensitivity": [
+   {
+    "budget": 0,
+    "feasible_count": 1,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7942695,
+      "max_mm": 661511,
+      "covered_weight": 15,
+      "cost": 0
+     },
+     "minimax": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7942695,
+      "max_mm": 661511,
+      "covered_weight": 15,
+      "cost": 0
+     },
+     "coverage": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7942695,
+      "max_mm": 661511,
+      "covered_weight": 15,
+      "cost": 0
+     }
+    }
+   },
+   {
+    "budget": 75,
+    "feasible_count": 2,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7942695,
+      "max_mm": 661511,
+      "covered_weight": 15,
+      "cost": 0
+     },
+     "minimax": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7942695,
+      "max_mm": 661511,
+      "covered_weight": 15,
+      "cost": 0
+     },
+     "coverage": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7942695,
+      "max_mm": 661511,
+      "covered_weight": 15,
+      "cost": 0
+     }
+    }
+   },
+   {
+    "budget": 150,
+    "feasible_count": 10,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "site-2"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 6677021,
+      "max_mm": 558828,
+      "covered_weight": 22,
+      "cost": 90
+     },
+     "minimax": {
+      "selected_ids": [
+       "site-1"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 6807941,
+      "max_mm": 531011,
+      "covered_weight": 19,
+      "cost": 120
+     },
+     "coverage": {
+      "selected_ids": [
+       "site-2"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 6677021,
+      "max_mm": 558828,
+      "covered_weight": 22,
+      "cost": 90
+     }
+    }
+   }
+  ],
+  "manual": {
+   "selected_ids": [
+    "site-2",
+    "site-4"
+   ],
+   "unknown_count": 0,
+   "weighted_sum_mm": 6677021,
+   "max_mm": 558828,
+   "covered_weight": 22,
+   "total_weight": 26,
+   "cost": 150,
+   "before_mm": [
+    558828,
+    661511,
+    531011,
+    355405,
+    59491,
+    418523,
+    315532,
+    180455,
+    138969,
+    38711,
+    383088,
+    150568
+   ]
+  }
+ },
+ {
+  "name": "shymkent/school/max5_b1000",
+  "status": "optimal",
+  "feasible_count": 219,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "site-1",
+     "site-2",
+     "site-3",
+     "site-6"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 5591952,
+    "max_mm": 357287,
+    "covered_weight": 26,
+    "cost": 440
+   },
+   "minimax": {
+    "selected_ids": [
+     "site-1",
+     "site-2",
+     "site-3",
+     "site-6"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 5591952,
+    "max_mm": 357287,
+    "covered_weight": 26,
+    "cost": 440
+   },
+   "coverage": {
+    "selected_ids": [
+     "site-1",
+     "site-2",
+     "site-3",
+     "site-6"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 5591952,
+    "max_mm": 357287,
+    "covered_weight": 26,
+    "cost": 440
+   }
+  },
+  "pareto": [
+   {
+    "selected_ids": [],
+    "cost": 0,
+    "weighted_sum_mm": 7942695
+   },
+   {
+    "selected_ids": [
+     "site-6"
+    ],
+    "cost": 80,
+    "weighted_sum_mm": 7824084
+   },
+   {
+    "selected_ids": [
+     "site-2"
+    ],
+    "cost": 90,
+    "weighted_sum_mm": 6677021
+   },
+   {
+    "selected_ids": [
+     "site-2",
+     "site-6"
+    ],
+    "cost": 170,
+    "weighted_sum_mm": 6558410
+   },
+   {
+    "selected_ids": [
+     "site-1",
+     "site-2"
+    ],
+    "cost": 210,
+    "weighted_sum_mm": 5773413
+   },
+   {
+    "selected_ids": [
+     "site-1",
+     "site-2",
+     "site-6"
+    ],
+    "cost": 290,
+    "weighted_sum_mm": 5654802
+   },
+   {
+    "selected_ids": [
+     "site-1",
+     "site-2",
+     "site-3",
+     "site-6"
+    ],
+    "cost": 440,
+    "weighted_sum_mm": 5591952
+   }
+  ],
+  "pareto_excluded_unknown": 0,
+  "sensitivity": [
+   {
+    "budget": 0,
+    "feasible_count": 1,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7942695,
+      "max_mm": 661511,
+      "covered_weight": 15,
+      "cost": 0
+     },
+     "minimax": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7942695,
+      "max_mm": 661511,
+      "covered_weight": 15,
+      "cost": 0
+     },
+     "coverage": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7942695,
+      "max_mm": 661511,
+      "covered_weight": 15,
+      "cost": 0
+     }
+    }
+   },
+   {
+    "budget": 500,
+    "feasible_count": 147,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "site-1",
+       "site-2",
+       "site-3",
+       "site-6"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 5591952,
+      "max_mm": 357287,
+      "covered_weight": 26,
+      "cost": 440
+     },
+     "minimax": {
+      "selected_ids": [
+       "site-1",
+       "site-2",
+       "site-3",
+       "site-6"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 5591952,
+      "max_mm": 357287,
+      "covered_weight": 26,
+      "cost": 440
+     },
+     "coverage": {
+      "selected_ids": [
+       "site-1",
+       "site-2",
+       "site-3",
+       "site-6"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 5591952,
+      "max_mm": 357287,
+      "covered_weight": 26,
+      "cost": 440
+     }
+    }
+   },
+   {
+    "budget": 1000,
+    "feasible_count": 219,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "site-1",
+       "site-2",
+       "site-3",
+       "site-6"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 5591952,
+      "max_mm": 357287,
+      "covered_weight": 26,
+      "cost": 440
+     },
+     "minimax": {
+      "selected_ids": [
+       "site-1",
+       "site-2",
+       "site-3",
+       "site-6"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 5591952,
+      "max_mm": 357287,
+      "covered_weight": 26,
+      "cost": 440
+     },
+     "coverage": {
+      "selected_ids": [
+       "site-1",
+       "site-2",
+       "site-3",
+       "site-6"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 5591952,
+      "max_mm": 357287,
+      "covered_weight": 26,
+      "cost": 440
+     }
+    }
+   }
+  ],
+  "manual": {
+   "selected_ids": [
+    "site-2",
+    "site-4"
+   ],
+   "unknown_count": 0,
+   "weighted_sum_mm": 6677021,
+   "max_mm": 558828,
+   "covered_weight": 22,
+   "total_weight": 26,
+   "cost": 150,
+   "before_mm": [
+    558828,
+    661511,
+    531011,
+    355405,
+    59491,
+    418523,
+    315532,
+    180455,
+    138969,
+    38711,
+    383088,
+    150568
+   ]
+  }
+ },
+ {
+  "name": "shymkent/school/req_exc",
+  "status": "optimal",
+  "feasible_count": 3,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "site-2",
+     "site-5"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 6677021,
+    "max_mm": 558828,
+    "covered_weight": 22,
+    "cost": 290
+   },
+   "minimax": {
+    "selected_ids": [
+     "site-2",
+     "site-5"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 6677021,
+    "max_mm": 558828,
+    "covered_weight": 22,
+    "cost": 290
+   },
+   "coverage": {
+    "selected_ids": [
+     "site-2",
+     "site-5"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 6677021,
+    "max_mm": 558828,
+    "covered_weight": 22,
+    "cost": 290
+   }
+  },
+  "pareto": [
+   {
+    "selected_ids": [
+     "site-5"
+    ],
+    "cost": 200,
+    "weighted_sum_mm": 7942695
+   },
+   {
+    "selected_ids": [
+     "site-5",
+     "site-6"
+    ],
+    "cost": 280,
+    "weighted_sum_mm": 7824084
+   },
+   {
+    "selected_ids": [
+     "site-2",
+     "site-5"
+    ],
+    "cost": 290,
+    "weighted_sum_mm": 6677021
+   }
+  ],
+  "pareto_excluded_unknown": 0,
+  "sensitivity": [
+   {
+    "budget": 0,
+    "feasible_count": 0,
+    "objectives": {
+     "mean": null,
+     "minimax": null,
+     "coverage": null
+    }
+   },
+   {
+    "budget": 150,
+    "feasible_count": 0,
+    "objectives": {
+     "mean": null,
+     "minimax": null,
+     "coverage": null
+    }
+   },
+   {
+    "budget": 300,
+    "feasible_count": 3,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "site-2",
+       "site-5"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 6677021,
+      "max_mm": 558828,
+      "covered_weight": 22,
+      "cost": 290
+     },
+     "minimax": {
+      "selected_ids": [
+       "site-2",
+       "site-5"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 6677021,
+      "max_mm": 558828,
+      "covered_weight": 22,
+      "cost": 290
+     },
+     "coverage": {
+      "selected_ids": [
+       "site-2",
+       "site-5"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 6677021,
+      "max_mm": 558828,
+      "covered_weight": 22,
+      "cost": 290
+     }
+    }
+   }
+  ],
+  "manual": {
+   "selected_ids": [
+    "site-5"
+   ],
+   "unknown_count": 0,
+   "weighted_sum_mm": 7942695,
+   "max_mm": 661511,
+   "covered_weight": 15,
+   "total_weight": 26,
+   "cost": 200,
+   "before_mm": [
+    558828,
+    661511,
+    531011,
+    355405,
+    59491,
+    418523,
+    315532,
+    180455,
+    138969,
+    38711,
+    383088,
+    150568
+   ]
+  }
+ },
+ {
+  "name": "shymkent/school/radius100",
+  "status": "optimal",
+  "feasible_count": 47,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "site-1",
+     "site-2",
+     "site-6"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 5654802,
+    "max_mm": 357287,
+    "covered_weight": 4,
+    "cost": 290
+   },
+   "minimax": {
+    "selected_ids": [
+     "site-1",
+     "site-2",
+     "site-6"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 5654802,
+    "max_mm": 357287,
+    "covered_weight": 4,
+    "cost": 290
+   },
+   "coverage": {
+    "selected_ids": [
+     "site-1",
+     "site-2",
+     "site-6"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 5654802,
+    "max_mm": 357287,
+    "covered_weight": 4,
+    "cost": 290
+   }
+  },
+  "pareto": [
+   {
+    "selected_ids": [],
+    "cost": 0,
+    "weighted_sum_mm": 7942695
+   },
+   {
+    "selected_ids": [
+     "site-6"
+    ],
+    "cost": 80,
+    "weighted_sum_mm": 7824084
+   },
+   {
+    "selected_ids": [
+     "site-2"
+    ],
+    "cost": 90,
+    "weighted_sum_mm": 6677021
+   },
+   {
+    "selected_ids": [
+     "site-2",
+     "site-6"
+    ],
+    "cost": 170,
+    "weighted_sum_mm": 6558410
+   },
+   {
+    "selected_ids": [
+     "site-1",
+     "site-2"
+    ],
+    "cost": 210,
+    "weighted_sum_mm": 5773413
+   },
+   {
+    "selected_ids": [
+     "site-1",
+     "site-2",
+     "site-6"
+    ],
+    "cost": 290,
+    "weighted_sum_mm": 5654802
+   }
+  ],
+  "pareto_excluded_unknown": 0,
+  "sensitivity": [
+   {
+    "budget": 0,
+    "feasible_count": 1,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7942695,
+      "max_mm": 661511,
+      "covered_weight": 4,
+      "cost": 0
+     },
+     "minimax": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7942695,
+      "max_mm": 661511,
+      "covered_weight": 4,
+      "cost": 0
+     },
+     "coverage": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7942695,
+      "max_mm": 661511,
+      "covered_weight": 4,
+      "cost": 0
+     }
+    }
+   },
+   {
+    "budget": 150,
+    "feasible_count": 10,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "site-2"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 6677021,
+      "max_mm": 558828,
+      "covered_weight": 4,
+      "cost": 90
+     },
+     "minimax": {
+      "selected_ids": [
+       "site-1"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 6807941,
+      "max_mm": 531011,
+      "covered_weight": 4,
+      "cost": 120
+     },
+     "coverage": {
+      "selected_ids": [
+       "site-2"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 6677021,
+      "max_mm": 558828,
+      "covered_weight": 4,
+      "cost": 90
+     }
+    }
+   },
+   {
+    "budget": 300,
+    "feasible_count": 47,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "site-1",
+       "site-2",
+       "site-6"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 5654802,
+      "max_mm": 357287,
+      "covered_weight": 4,
+      "cost": 290
+     },
+     "minimax": {
+      "selected_ids": [
+       "site-1",
+       "site-2",
+       "site-6"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 5654802,
+      "max_mm": 357287,
+      "covered_weight": 4,
+      "cost": 290
+     },
+     "coverage": {
+      "selected_ids": [
+       "site-1",
+       "site-2",
+       "site-6"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 5654802,
+      "max_mm": 357287,
+      "covered_weight": 4,
+      "cost": 290
+     }
+    }
+   }
+  ],
+  "manual": {
+   "selected_ids": [
+    "site-2",
+    "site-4"
+   ],
+   "unknown_count": 0,
+   "weighted_sum_mm": 6677021,
+   "max_mm": 558828,
+   "covered_weight": 4,
+   "total_weight": 26,
+   "cost": 150,
+   "before_mm": [
+    558828,
+    661511,
+    531011,
+    355405,
+    59491,
+    418523,
+    315532,
+    180455,
+    138969,
+    38711,
+    383088,
+    150568
+   ]
+  }
+ },
+ {
+  "name": "shymkent/school/radius5000",
+  "status": "optimal",
+  "feasible_count": 47,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "site-1",
+     "site-2",
+     "site-6"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 5654802,
+    "max_mm": 357287,
+    "covered_weight": 26,
+    "cost": 290
+   },
+   "minimax": {
+    "selected_ids": [
+     "site-1",
+     "site-2",
+     "site-6"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 5654802,
+    "max_mm": 357287,
+    "covered_weight": 26,
+    "cost": 290
+   },
+   "coverage": {
+    "selected_ids": [
+     "site-1",
+     "site-2",
+     "site-6"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 5654802,
+    "max_mm": 357287,
+    "covered_weight": 26,
+    "cost": 290
+   }
+  },
+  "pareto": [
+   {
+    "selected_ids": [],
+    "cost": 0,
+    "weighted_sum_mm": 7942695
+   },
+   {
+    "selected_ids": [
+     "site-6"
+    ],
+    "cost": 80,
+    "weighted_sum_mm": 7824084
+   },
+   {
+    "selected_ids": [
+     "site-2"
+    ],
+    "cost": 90,
+    "weighted_sum_mm": 6677021
+   },
+   {
+    "selected_ids": [
+     "site-2",
+     "site-6"
+    ],
+    "cost": 170,
+    "weighted_sum_mm": 6558410
+   },
+   {
+    "selected_ids": [
+     "site-1",
+     "site-2"
+    ],
+    "cost": 210,
+    "weighted_sum_mm": 5773413
+   },
+   {
+    "selected_ids": [
+     "site-1",
+     "site-2",
+     "site-6"
+    ],
+    "cost": 290,
+    "weighted_sum_mm": 5654802
+   }
+  ],
+  "pareto_excluded_unknown": 0,
+  "sensitivity": [
+   {
+    "budget": 0,
+    "feasible_count": 1,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7942695,
+      "max_mm": 661511,
+      "covered_weight": 26,
+      "cost": 0
+     },
+     "minimax": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7942695,
+      "max_mm": 661511,
+      "covered_weight": 26,
+      "cost": 0
+     },
+     "coverage": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7942695,
+      "max_mm": 661511,
+      "covered_weight": 26,
+      "cost": 0
+     }
+    }
+   },
+   {
+    "budget": 150,
+    "feasible_count": 10,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "site-2"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 6677021,
+      "max_mm": 558828,
+      "covered_weight": 26,
+      "cost": 90
+     },
+     "minimax": {
+      "selected_ids": [
+       "site-1"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 6807941,
+      "max_mm": 531011,
+      "covered_weight": 26,
+      "cost": 120
+     },
+     "coverage": {
+      "selected_ids": [
+       "site-2"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 6677021,
+      "max_mm": 558828,
+      "covered_weight": 26,
+      "cost": 90
+     }
+    }
+   },
+   {
+    "budget": 300,
+    "feasible_count": 47,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "site-1",
+       "site-2",
+       "site-6"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 5654802,
+      "max_mm": 357287,
+      "covered_weight": 26,
+      "cost": 290
+     },
+     "minimax": {
+      "selected_ids": [
+       "site-1",
+       "site-2",
+       "site-6"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 5654802,
+      "max_mm": 357287,
+      "covered_weight": 26,
+      "cost": 290
+     },
+     "coverage": {
+      "selected_ids": [
+       "site-1",
+       "site-2",
+       "site-6"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 5654802,
+      "max_mm": 357287,
+      "covered_weight": 26,
+      "cost": 290
+     }
+    }
+   }
+  ],
+  "manual": {
+   "selected_ids": [
+    "site-2",
+    "site-4"
+   ],
+   "unknown_count": 0,
+   "weighted_sum_mm": 6677021,
+   "max_mm": 558828,
+   "covered_weight": 26,
+   "total_weight": 26,
+   "cost": 150,
+   "before_mm": [
+    558828,
+    661511,
+    531011,
+    355405,
+    59491,
+    418523,
+    315532,
+    180455,
+    138969,
+    38711,
+    383088,
+    150568
+   ]
+  }
+ },
+ {
+  "name": "shymkent/school/infeasible",
+  "status": "infeasible",
+  "feasible_count": 0,
+  "objectives": {
+   "mean": null,
+   "minimax": null,
+   "coverage": null
+  },
+  "pareto": [],
+  "pareto_excluded_unknown": 0,
+  "sensitivity": [
+   {
+    "budget": 0,
+    "feasible_count": 0,
+    "objectives": {
+     "mean": null,
+     "minimax": null,
+     "coverage": null
+    }
+   },
+   {
+    "budget": 150,
+    "feasible_count": 0,
+    "objectives": {
+     "mean": null,
+     "minimax": null,
+     "coverage": null
+    }
+   },
+   {
+    "budget": 300,
+    "feasible_count": 0,
+    "objectives": {
+     "mean": null,
+     "minimax": null,
+     "coverage": null
+    }
+   }
+  ],
+  "manual": {
+   "selected_ids": [
+    "site-2",
+    "site-4"
+   ],
+   "unknown_count": 0,
+   "weighted_sum_mm": 6677021,
+   "max_mm": 558828,
+   "covered_weight": 22,
+   "total_weight": 26,
+   "cost": 150,
+   "before_mm": [
+    558828,
+    661511,
+    531011,
+    355405,
+    59491,
+    418523,
+    315532,
+    180455,
+    138969,
+    38711,
+    383088,
+    150568
+   ]
+  }
+ },
+ {
+  "name": "shymkent/outpatient_clinic/demo",
+  "status": "optimal",
+  "feasible_count": 47,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "site-1",
+     "site-8"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 7720655,
+    "max_mm": 479089,
+    "covered_weight": 25,
+    "cost": 250
+   },
+   "minimax": {
+    "selected_ids": [
+     "site-1",
+     "site-8"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 7720655,
+    "max_mm": 479089,
+    "covered_weight": 25,
+    "cost": 250
+   },
+   "coverage": {
+    "selected_ids": [
+     "site-1",
+     "site-8"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 7720655,
+    "max_mm": 479089,
+    "covered_weight": 25,
+    "cost": 250
+   }
+  },
+  "pareto": [
+   {
+    "selected_ids": [],
+    "cost": 0,
+    "weighted_sum_mm": 10752824
+   },
+   {
+    "selected_ids": [
+     "site-4"
+    ],
+    "cost": 60,
+    "weighted_sum_mm": 10695970
+   },
+   {
+    "selected_ids": [
+     "site-2"
+    ],
+    "cost": 90,
+    "weighted_sum_mm": 10257790
+   },
+   {
+    "selected_ids": [
+     "site-1"
+    ],
+    "cost": 120,
+    "weighted_sum_mm": 9101009
+   },
+   {
+    "selected_ids": [
+     "site-1",
+     "site-2"
+    ],
+    "cost": 210,
+    "weighted_sum_mm": 8666919
+   },
+   {
+    "selected_ids": [
+     "site-1",
+     "site-8"
+    ],
+    "cost": 250,
+    "weighted_sum_mm": 7720655
+   }
+  ],
+  "pareto_excluded_unknown": 0,
+  "sensitivity": [
+   {
+    "budget": 0,
+    "feasible_count": 1,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 10752824,
+      "max_mm": 762609,
+      "covered_weight": 17,
+      "cost": 0
+     },
+     "minimax": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 10752824,
+      "max_mm": 762609,
+      "covered_weight": 17,
+      "cost": 0
+     },
+     "coverage": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 10752824,
+      "max_mm": 762609,
+      "covered_weight": 17,
+      "cost": 0
+     }
+    }
+   },
+   {
+    "budget": 150,
+    "feasible_count": 10,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "site-1"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 9101009,
+      "max_mm": 601605,
+      "covered_weight": 21,
+      "cost": 120
+     },
+     "minimax": {
+      "selected_ids": [
+       "site-1"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 9101009,
+      "max_mm": 601605,
+      "covered_weight": 21,
+      "cost": 120
+     },
+     "coverage": {
+      "selected_ids": [
+       "site-1"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 9101009,
+      "max_mm": 601605,
+      "covered_weight": 21,
+      "cost": 120
+     }
+    }
+   },
+   {
+    "budget": 300,
+    "feasible_count": 47,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "site-1",
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7720655,
+      "max_mm": 479089,
+      "covered_weight": 25,
+      "cost": 250
+     },
+     "minimax": {
+      "selected_ids": [
+       "site-1",
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7720655,
+      "max_mm": 479089,
+      "covered_weight": 25,
+      "cost": 250
+     },
+     "coverage": {
+      "selected_ids": [
+       "site-1",
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7720655,
+      "max_mm": 479089,
+      "covered_weight": 25,
+      "cost": 250
+     }
+    }
+   }
+  ],
+  "manual": {
+   "selected_ids": [
+    "site-2",
+    "site-4"
+   ],
+   "unknown_count": 0,
+   "weighted_sum_mm": 10200936,
+   "max_mm": 762609,
+   "covered_weight": 17,
+   "total_weight": 26,
+   "cost": 150,
+   "before_mm": [
+    762609,
+    491309,
+    383882,
+    479089,
+    367485,
+    334609,
+    247303,
+    234428,
+    163940,
+    380431,
+    177987,
+    601605
+   ]
+  }
+ },
+ {
+  "name": "shymkent/outpatient_clinic/budget0",
+  "status": "optimal",
+  "feasible_count": 1,
+  "objectives": {
+   "mean": {
+    "selected_ids": [],
+    "unknown_count": 0,
+    "weighted_sum_mm": 10752824,
+    "max_mm": 762609,
+    "covered_weight": 17,
+    "cost": 0
+   },
+   "minimax": {
+    "selected_ids": [],
+    "unknown_count": 0,
+    "weighted_sum_mm": 10752824,
+    "max_mm": 762609,
+    "covered_weight": 17,
+    "cost": 0
+   },
+   "coverage": {
+    "selected_ids": [],
+    "unknown_count": 0,
+    "weighted_sum_mm": 10752824,
+    "max_mm": 762609,
+    "covered_weight": 17,
+    "cost": 0
+   }
+  },
+  "pareto": [
+   {
+    "selected_ids": [],
+    "cost": 0,
+    "weighted_sum_mm": 10752824
+   }
+  ],
+  "pareto_excluded_unknown": 0,
+  "sensitivity": [
+   {
+    "budget": 0,
+    "feasible_count": 1,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 10752824,
+      "max_mm": 762609,
+      "covered_weight": 17,
+      "cost": 0
+     },
+     "minimax": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 10752824,
+      "max_mm": 762609,
+      "covered_weight": 17,
+      "cost": 0
+     },
+     "coverage": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 10752824,
+      "max_mm": 762609,
+      "covered_weight": 17,
+      "cost": 0
+     }
+    }
+   }
+  ],
+  "manual": {
+   "selected_ids": [
+    "site-2",
+    "site-4"
+   ],
+   "unknown_count": 0,
+   "weighted_sum_mm": 10200936,
+   "max_mm": 762609,
+   "covered_weight": 17,
+   "total_weight": 26,
+   "cost": 150,
+   "before_mm": [
+    762609,
+    491309,
+    383882,
+    479089,
+    367485,
+    334609,
+    247303,
+    234428,
+    163940,
+    380431,
+    177987,
+    601605
+   ]
+  }
+ },
+ {
+  "name": "shymkent/outpatient_clinic/budget150",
+  "status": "optimal",
+  "feasible_count": 10,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "site-1"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 9101009,
+    "max_mm": 601605,
+    "covered_weight": 21,
+    "cost": 120
+   },
+   "minimax": {
+    "selected_ids": [
+     "site-1"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 9101009,
+    "max_mm": 601605,
+    "covered_weight": 21,
+    "cost": 120
+   },
+   "coverage": {
+    "selected_ids": [
+     "site-1"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 9101009,
+    "max_mm": 601605,
+    "covered_weight": 21,
+    "cost": 120
+   }
+  },
+  "pareto": [
+   {
+    "selected_ids": [],
+    "cost": 0,
+    "weighted_sum_mm": 10752824
+   },
+   {
+    "selected_ids": [
+     "site-4"
+    ],
+    "cost": 60,
+    "weighted_sum_mm": 10695970
+   },
+   {
+    "selected_ids": [
+     "site-2"
+    ],
+    "cost": 90,
+    "weighted_sum_mm": 10257790
+   },
+   {
+    "selected_ids": [
+     "site-1"
+    ],
+    "cost": 120,
+    "weighted_sum_mm": 9101009
+   }
+  ],
+  "pareto_excluded_unknown": 0,
+  "sensitivity": [
+   {
+    "budget": 0,
+    "feasible_count": 1,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 10752824,
+      "max_mm": 762609,
+      "covered_weight": 17,
+      "cost": 0
+     },
+     "minimax": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 10752824,
+      "max_mm": 762609,
+      "covered_weight": 17,
+      "cost": 0
+     },
+     "coverage": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 10752824,
+      "max_mm": 762609,
+      "covered_weight": 17,
+      "cost": 0
+     }
+    }
+   },
+   {
+    "budget": 75,
+    "feasible_count": 2,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "site-4"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 10695970,
+      "max_mm": 762609,
+      "covered_weight": 17,
+      "cost": 60
+     },
+     "minimax": {
+      "selected_ids": [
+       "site-4"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 10695970,
+      "max_mm": 762609,
+      "covered_weight": 17,
+      "cost": 60
+     },
+     "coverage": {
+      "selected_ids": [
+       "site-4"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 10695970,
+      "max_mm": 762609,
+      "covered_weight": 17,
+      "cost": 60
+     }
+    }
+   },
+   {
+    "budget": 150,
+    "feasible_count": 10,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "site-1"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 9101009,
+      "max_mm": 601605,
+      "covered_weight": 21,
+      "cost": 120
+     },
+     "minimax": {
+      "selected_ids": [
+       "site-1"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 9101009,
+      "max_mm": 601605,
+      "covered_weight": 21,
+      "cost": 120
+     },
+     "coverage": {
+      "selected_ids": [
+       "site-1"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 9101009,
+      "max_mm": 601605,
+      "covered_weight": 21,
+      "cost": 120
+     }
+    }
+   }
+  ],
+  "manual": {
+   "selected_ids": [
+    "site-2",
+    "site-4"
+   ],
+   "unknown_count": 0,
+   "weighted_sum_mm": 10200936,
+   "max_mm": 762609,
+   "covered_weight": 17,
+   "total_weight": 26,
+   "cost": 150,
+   "before_mm": [
+    762609,
+    491309,
+    383882,
+    479089,
+    367485,
+    334609,
+    247303,
+    234428,
+    163940,
+    380431,
+    177987,
+    601605
+   ]
+  }
+ },
+ {
+  "name": "shymkent/outpatient_clinic/max5_b1000",
+  "status": "optimal",
+  "feasible_count": 219,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "site-1",
+     "site-2",
+     "site-3",
+     "site-8"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 7168045,
+    "max_mm": 360569,
+    "covered_weight": 26,
+    "cost": 490
+   },
+   "minimax": {
+    "selected_ids": [
+     "site-1",
+     "site-2",
+     "site-3",
+     "site-8"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 7168045,
+    "max_mm": 360569,
+    "covered_weight": 26,
+    "cost": 490
+   },
+   "coverage": {
+    "selected_ids": [
+     "site-1",
+     "site-2",
+     "site-3",
+     "site-8"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 7168045,
+    "max_mm": 360569,
+    "covered_weight": 26,
+    "cost": 490
+   }
+  },
+  "pareto": [
+   {
+    "selected_ids": [],
+    "cost": 0,
+    "weighted_sum_mm": 10752824
+   },
+   {
+    "selected_ids": [
+     "site-4"
+    ],
+    "cost": 60,
+    "weighted_sum_mm": 10695970
+   },
+   {
+    "selected_ids": [
+     "site-2"
+    ],
+    "cost": 90,
+    "weighted_sum_mm": 10257790
+   },
+   {
+    "selected_ids": [
+     "site-1"
+    ],
+    "cost": 120,
+    "weighted_sum_mm": 9101009
+   },
+   {
+    "selected_ids": [
+     "site-1",
+     "site-2"
+    ],
+    "cost": 210,
+    "weighted_sum_mm": 8666919
+   },
+   {
+    "selected_ids": [
+     "site-1",
+     "site-8"
+    ],
+    "cost": 250,
+    "weighted_sum_mm": 7720655
+   },
+   {
+    "selected_ids": [
+     "site-1",
+     "site-2",
+     "site-8"
+    ],
+    "cost": 340,
+    "weighted_sum_mm": 7286565
+   },
+   {
+    "selected_ids": [
+     "site-1",
+     "site-2",
+     "site-3",
+     "site-8"
+    ],
+    "cost": 490,
+    "weighted_sum_mm": 7168045
+   }
+  ],
+  "pareto_excluded_unknown": 0,
+  "sensitivity": [
+   {
+    "budget": 0,
+    "feasible_count": 1,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 10752824,
+      "max_mm": 762609,
+      "covered_weight": 17,
+      "cost": 0
+     },
+     "minimax": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 10752824,
+      "max_mm": 762609,
+      "covered_weight": 17,
+      "cost": 0
+     },
+     "coverage": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 10752824,
+      "max_mm": 762609,
+      "covered_weight": 17,
+      "cost": 0
+     }
+    }
+   },
+   {
+    "budget": 500,
+    "feasible_count": 147,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "site-1",
+       "site-2",
+       "site-3",
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7168045,
+      "max_mm": 360569,
+      "covered_weight": 26,
+      "cost": 490
+     },
+     "minimax": {
+      "selected_ids": [
+       "site-1",
+       "site-2",
+       "site-3",
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7168045,
+      "max_mm": 360569,
+      "covered_weight": 26,
+      "cost": 490
+     },
+     "coverage": {
+      "selected_ids": [
+       "site-1",
+       "site-2",
+       "site-3",
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7168045,
+      "max_mm": 360569,
+      "covered_weight": 26,
+      "cost": 490
+     }
+    }
+   },
+   {
+    "budget": 1000,
+    "feasible_count": 219,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "site-1",
+       "site-2",
+       "site-3",
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7168045,
+      "max_mm": 360569,
+      "covered_weight": 26,
+      "cost": 490
+     },
+     "minimax": {
+      "selected_ids": [
+       "site-1",
+       "site-2",
+       "site-3",
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7168045,
+      "max_mm": 360569,
+      "covered_weight": 26,
+      "cost": 490
+     },
+     "coverage": {
+      "selected_ids": [
+       "site-1",
+       "site-2",
+       "site-3",
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7168045,
+      "max_mm": 360569,
+      "covered_weight": 26,
+      "cost": 490
+     }
+    }
+   }
+  ],
+  "manual": {
+   "selected_ids": [
+    "site-2",
+    "site-4"
+   ],
+   "unknown_count": 0,
+   "weighted_sum_mm": 10200936,
+   "max_mm": 762609,
+   "covered_weight": 17,
+   "total_weight": 26,
+   "cost": 150,
+   "before_mm": [
+    762609,
+    491309,
+    383882,
+    479089,
+    367485,
+    334609,
+    247303,
+    234428,
+    163940,
+    380431,
+    177987,
+    601605
+   ]
+  }
+ },
+ {
+  "name": "shymkent/outpatient_clinic/req_exc",
+  "status": "optimal",
+  "feasible_count": 3,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "site-2",
+     "site-5"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 10211686,
+    "max_mm": 762609,
+    "covered_weight": 17,
+    "cost": 290
+   },
+   "minimax": {
+    "selected_ids": [
+     "site-2",
+     "site-5"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 10211686,
+    "max_mm": 762609,
+    "covered_weight": 17,
+    "cost": 290
+   },
+   "coverage": {
+    "selected_ids": [
+     "site-2",
+     "site-5"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 10211686,
+    "max_mm": 762609,
+    "covered_weight": 17,
+    "cost": 290
+   }
+  },
+  "pareto": [
+   {
+    "selected_ids": [
+     "site-5"
+    ],
+    "cost": 200,
+    "weighted_sum_mm": 10706720
+   },
+   {
+    "selected_ids": [
+     "site-2",
+     "site-5"
+    ],
+    "cost": 290,
+    "weighted_sum_mm": 10211686
+   }
+  ],
+  "pareto_excluded_unknown": 0,
+  "sensitivity": [
+   {
+    "budget": 0,
+    "feasible_count": 0,
+    "objectives": {
+     "mean": null,
+     "minimax": null,
+     "coverage": null
+    }
+   },
+   {
+    "budget": 150,
+    "feasible_count": 0,
+    "objectives": {
+     "mean": null,
+     "minimax": null,
+     "coverage": null
+    }
+   },
+   {
+    "budget": 300,
+    "feasible_count": 3,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "site-2",
+       "site-5"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 10211686,
+      "max_mm": 762609,
+      "covered_weight": 17,
+      "cost": 290
+     },
+     "minimax": {
+      "selected_ids": [
+       "site-2",
+       "site-5"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 10211686,
+      "max_mm": 762609,
+      "covered_weight": 17,
+      "cost": 290
+     },
+     "coverage": {
+      "selected_ids": [
+       "site-2",
+       "site-5"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 10211686,
+      "max_mm": 762609,
+      "covered_weight": 17,
+      "cost": 290
+     }
+    }
+   }
+  ],
+  "manual": {
+   "selected_ids": [
+    "site-5"
+   ],
+   "unknown_count": 0,
+   "weighted_sum_mm": 10706720,
+   "max_mm": 762609,
+   "covered_weight": 17,
+   "total_weight": 26,
+   "cost": 200,
+   "before_mm": [
+    762609,
+    491309,
+    383882,
+    479089,
+    367485,
+    334609,
+    247303,
+    234428,
+    163940,
+    380431,
+    177987,
+    601605
+   ]
+  }
+ },
+ {
+  "name": "shymkent/outpatient_clinic/radius100",
+  "status": "optimal",
+  "feasible_count": 47,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "site-1",
+     "site-8"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 7720655,
+    "max_mm": 479089,
+    "covered_weight": 0,
+    "cost": 250
+   },
+   "minimax": {
+    "selected_ids": [
+     "site-1",
+     "site-8"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 7720655,
+    "max_mm": 479089,
+    "covered_weight": 0,
+    "cost": 250
+   },
+   "coverage": {
+    "selected_ids": [
+     "site-1",
+     "site-8"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 7720655,
+    "max_mm": 479089,
+    "covered_weight": 0,
+    "cost": 250
+   }
+  },
+  "pareto": [
+   {
+    "selected_ids": [],
+    "cost": 0,
+    "weighted_sum_mm": 10752824
+   },
+   {
+    "selected_ids": [
+     "site-4"
+    ],
+    "cost": 60,
+    "weighted_sum_mm": 10695970
+   },
+   {
+    "selected_ids": [
+     "site-2"
+    ],
+    "cost": 90,
+    "weighted_sum_mm": 10257790
+   },
+   {
+    "selected_ids": [
+     "site-1"
+    ],
+    "cost": 120,
+    "weighted_sum_mm": 9101009
+   },
+   {
+    "selected_ids": [
+     "site-1",
+     "site-2"
+    ],
+    "cost": 210,
+    "weighted_sum_mm": 8666919
+   },
+   {
+    "selected_ids": [
+     "site-1",
+     "site-8"
+    ],
+    "cost": 250,
+    "weighted_sum_mm": 7720655
+   }
+  ],
+  "pareto_excluded_unknown": 0,
+  "sensitivity": [
+   {
+    "budget": 0,
+    "feasible_count": 1,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 10752824,
+      "max_mm": 762609,
+      "covered_weight": 0,
+      "cost": 0
+     },
+     "minimax": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 10752824,
+      "max_mm": 762609,
+      "covered_weight": 0,
+      "cost": 0
+     },
+     "coverage": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 10752824,
+      "max_mm": 762609,
+      "covered_weight": 0,
+      "cost": 0
+     }
+    }
+   },
+   {
+    "budget": 150,
+    "feasible_count": 10,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "site-1"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 9101009,
+      "max_mm": 601605,
+      "covered_weight": 0,
+      "cost": 120
+     },
+     "minimax": {
+      "selected_ids": [
+       "site-1"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 9101009,
+      "max_mm": 601605,
+      "covered_weight": 0,
+      "cost": 120
+     },
+     "coverage": {
+      "selected_ids": [
+       "site-1"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 9101009,
+      "max_mm": 601605,
+      "covered_weight": 0,
+      "cost": 120
+     }
+    }
+   },
+   {
+    "budget": 300,
+    "feasible_count": 47,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "site-1",
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7720655,
+      "max_mm": 479089,
+      "covered_weight": 0,
+      "cost": 250
+     },
+     "minimax": {
+      "selected_ids": [
+       "site-1",
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7720655,
+      "max_mm": 479089,
+      "covered_weight": 0,
+      "cost": 250
+     },
+     "coverage": {
+      "selected_ids": [
+       "site-1",
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7720655,
+      "max_mm": 479089,
+      "covered_weight": 0,
+      "cost": 250
+     }
+    }
+   }
+  ],
+  "manual": {
+   "selected_ids": [
+    "site-2",
+    "site-4"
+   ],
+   "unknown_count": 0,
+   "weighted_sum_mm": 10200936,
+   "max_mm": 762609,
+   "covered_weight": 0,
+   "total_weight": 26,
+   "cost": 150,
+   "before_mm": [
+    762609,
+    491309,
+    383882,
+    479089,
+    367485,
+    334609,
+    247303,
+    234428,
+    163940,
+    380431,
+    177987,
+    601605
+   ]
+  }
+ },
+ {
+  "name": "shymkent/outpatient_clinic/radius5000",
+  "status": "optimal",
+  "feasible_count": 47,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "site-1",
+     "site-8"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 7720655,
+    "max_mm": 479089,
+    "covered_weight": 26,
+    "cost": 250
+   },
+   "minimax": {
+    "selected_ids": [
+     "site-1",
+     "site-8"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 7720655,
+    "max_mm": 479089,
+    "covered_weight": 26,
+    "cost": 250
+   },
+   "coverage": {
+    "selected_ids": [
+     "site-1",
+     "site-8"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 7720655,
+    "max_mm": 479089,
+    "covered_weight": 26,
+    "cost": 250
+   }
+  },
+  "pareto": [
+   {
+    "selected_ids": [],
+    "cost": 0,
+    "weighted_sum_mm": 10752824
+   },
+   {
+    "selected_ids": [
+     "site-4"
+    ],
+    "cost": 60,
+    "weighted_sum_mm": 10695970
+   },
+   {
+    "selected_ids": [
+     "site-2"
+    ],
+    "cost": 90,
+    "weighted_sum_mm": 10257790
+   },
+   {
+    "selected_ids": [
+     "site-1"
+    ],
+    "cost": 120,
+    "weighted_sum_mm": 9101009
+   },
+   {
+    "selected_ids": [
+     "site-1",
+     "site-2"
+    ],
+    "cost": 210,
+    "weighted_sum_mm": 8666919
+   },
+   {
+    "selected_ids": [
+     "site-1",
+     "site-8"
+    ],
+    "cost": 250,
+    "weighted_sum_mm": 7720655
+   }
+  ],
+  "pareto_excluded_unknown": 0,
+  "sensitivity": [
+   {
+    "budget": 0,
+    "feasible_count": 1,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 10752824,
+      "max_mm": 762609,
+      "covered_weight": 26,
+      "cost": 0
+     },
+     "minimax": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 10752824,
+      "max_mm": 762609,
+      "covered_weight": 26,
+      "cost": 0
+     },
+     "coverage": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 10752824,
+      "max_mm": 762609,
+      "covered_weight": 26,
+      "cost": 0
+     }
+    }
+   },
+   {
+    "budget": 150,
+    "feasible_count": 10,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "site-1"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 9101009,
+      "max_mm": 601605,
+      "covered_weight": 26,
+      "cost": 120
+     },
+     "minimax": {
+      "selected_ids": [
+       "site-1"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 9101009,
+      "max_mm": 601605,
+      "covered_weight": 26,
+      "cost": 120
+     },
+     "coverage": {
+      "selected_ids": [
+       "site-1"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 9101009,
+      "max_mm": 601605,
+      "covered_weight": 26,
+      "cost": 120
+     }
+    }
+   },
+   {
+    "budget": 300,
+    "feasible_count": 47,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "site-1",
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7720655,
+      "max_mm": 479089,
+      "covered_weight": 26,
+      "cost": 250
+     },
+     "minimax": {
+      "selected_ids": [
+       "site-1",
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7720655,
+      "max_mm": 479089,
+      "covered_weight": 26,
+      "cost": 250
+     },
+     "coverage": {
+      "selected_ids": [
+       "site-1",
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7720655,
+      "max_mm": 479089,
+      "covered_weight": 26,
+      "cost": 250
+     }
+    }
+   }
+  ],
+  "manual": {
+   "selected_ids": [
+    "site-2",
+    "site-4"
+   ],
+   "unknown_count": 0,
+   "weighted_sum_mm": 10200936,
+   "max_mm": 762609,
+   "covered_weight": 26,
+   "total_weight": 26,
+   "cost": 150,
+   "before_mm": [
+    762609,
+    491309,
+    383882,
+    479089,
+    367485,
+    334609,
+    247303,
+    234428,
+    163940,
+    380431,
+    177987,
+    601605
+   ]
+  }
+ },
+ {
+  "name": "shymkent/outpatient_clinic/infeasible",
+  "status": "infeasible",
+  "feasible_count": 0,
+  "objectives": {
+   "mean": null,
+   "minimax": null,
+   "coverage": null
+  },
+  "pareto": [],
+  "pareto_excluded_unknown": 0,
+  "sensitivity": [
+   {
+    "budget": 0,
+    "feasible_count": 0,
+    "objectives": {
+     "mean": null,
+     "minimax": null,
+     "coverage": null
+    }
+   },
+   {
+    "budget": 150,
+    "feasible_count": 0,
+    "objectives": {
+     "mean": null,
+     "minimax": null,
+     "coverage": null
+    }
+   },
+   {
+    "budget": 300,
+    "feasible_count": 0,
+    "objectives": {
+     "mean": null,
+     "minimax": null,
+     "coverage": null
+    }
+   }
+  ],
+  "manual": {
+   "selected_ids": [
+    "site-2",
+    "site-4"
+   ],
+   "unknown_count": 0,
+   "weighted_sum_mm": 10200936,
+   "max_mm": 762609,
+   "covered_weight": 17,
+   "total_weight": 26,
+   "cost": 150,
+   "before_mm": [
+    762609,
+    491309,
+    383882,
+    479089,
+    367485,
+    334609,
+    247303,
+    234428,
+    163940,
+    380431,
+    177987,
+    601605
+   ]
+  }
+ },
+ {
+  "name": "shymkent/school/max_16x25",
+  "status": "optimal",
+  "feasible_count": 1670,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "site-02",
+     "site-04",
+     "site-05",
+     "site-14"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 30511384,
+    "max_mm": 584814,
+    "covered_weight": 89,
+    "cost": 377
+   },
+   "minimax": {
+    "selected_ids": [
+     "site-01",
+     "site-03",
+     "site-04",
+     "site-11"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 33511120,
+    "max_mm": 427184,
+    "covered_weight": 72,
+    "cost": 395
+   },
+   "coverage": {
+    "selected_ids": [
+     "site-02",
+     "site-07",
+     "site-12",
+     "site-14"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 32269990,
+    "max_mm": 606573,
+    "covered_weight": 104,
+    "cost": 387
+   }
+  },
+  "pareto": [
+   {
+    "selected_ids": [],
+    "cost": 0,
+    "weighted_sum_mm": 47363378
+   },
+   {
+    "selected_ids": [
+     "site-01"
+    ],
+    "cost": 50,
+    "weighted_sum_mm": 42490348
+   },
+   {
+    "selected_ids": [
+     "site-02"
+    ],
+    "cost": 87,
+    "weighted_sum_mm": 38163238
+   },
+   {
+    "selected_ids": [
+     "site-01",
+     "site-02"
+    ],
+    "cost": 137,
+    "weighted_sum_mm": 37137751
+   },
+   {
+    "selected_ids": [
+     "site-02",
+     "site-14"
+    ],
+    "cost": 138,
+    "weighted_sum_mm": 36253294
+   },
+   {
+    "selected_ids": [
+     "site-01",
+     "site-02",
+     "site-14"
+    ],
+    "cost": 188,
+    "weighted_sum_mm": 35227807
+   },
+   {
+    "selected_ids": [
+     "site-02",
+     "site-05",
+     "site-14"
+    ],
+    "cost": 216,
+    "weighted_sum_mm": 34678321
+   },
+   {
+    "selected_ids": [
+     "site-02",
+     "site-04"
+    ],
+    "cost": 248,
+    "weighted_sum_mm": 33996301
+   },
+   {
+    "selected_ids": [
+     "site-01",
+     "site-02",
+     "site-12",
+     "site-14"
+    ],
+    "cost": 285,
+    "weighted_sum_mm": 33681229
+   },
+   {
+    "selected_ids": [
+     "site-02",
+     "site-07",
+     "site-14"
+    ],
+    "cost": 290,
+    "weighted_sum_mm": 33674620
+   },
+   {
+    "selected_ids": [
+     "site-01",
+     "site-02",
+     "site-04"
+    ],
+    "cost": 298,
+    "weighted_sum_mm": 32970814
+   },
+   {
+    "selected_ids": [
+     "site-02",
+     "site-04",
+     "site-14"
+    ],
+    "cost": 299,
+    "weighted_sum_mm": 32086357
+   },
+   {
+    "selected_ids": [
+     "site-01",
+     "site-02",
+     "site-04",
+     "site-14"
+    ],
+    "cost": 349,
+    "weighted_sum_mm": 31060870
+   },
+   {
+    "selected_ids": [
+     "site-02",
+     "site-04",
+     "site-05",
+     "site-14"
+    ],
+    "cost": 377,
+    "weighted_sum_mm": 30511384
+   }
+  ],
+  "pareto_excluded_unknown": 0,
+  "sensitivity": [
+   {
+    "budget": 0,
+    "feasible_count": 1,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 47363378,
+      "max_mm": 886715,
+      "covered_weight": 53,
+      "cost": 0
+     },
+     "minimax": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 47363378,
+      "max_mm": 886715,
+      "covered_weight": 53,
+      "cost": 0
+     },
+     "coverage": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 47363378,
+      "max_mm": 886715,
+      "covered_weight": 53,
+      "cost": 0
+     }
+    }
+   },
+   {
+    "budget": 200,
+    "feasible_count": 86,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "site-01",
+       "site-02",
+       "site-14"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 35227807,
+      "max_mm": 624702,
+      "covered_weight": 75,
+      "cost": 188
+     },
+     "minimax": {
+      "selected_ids": [
+       "site-01",
+       "site-03"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 37429343,
+      "max_mm": 525351,
+      "covered_weight": 61,
+      "cost": 174
+     },
+     "coverage": {
+      "selected_ids": [
+       "site-02",
+       "site-12"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 36616660,
+      "max_mm": 624702,
+      "covered_weight": 79,
+      "cost": 184
+     }
+    }
+   },
+   {
+    "budget": 400,
+    "feasible_count": 1670,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "site-02",
+       "site-04",
+       "site-05",
+       "site-14"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 30511384,
+      "max_mm": 584814,
+      "covered_weight": 89,
+      "cost": 377
+     },
+     "minimax": {
+      "selected_ids": [
+       "site-01",
+       "site-03",
+       "site-04",
+       "site-11"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 33511120,
+      "max_mm": 427184,
+      "covered_weight": 72,
+      "cost": 395
+     },
+     "coverage": {
+      "selected_ids": [
+       "site-02",
+       "site-07",
+       "site-12",
+       "site-14"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 32269990,
+      "max_mm": 606573,
+      "covered_weight": 104,
+      "cost": 387
+     }
+    }
+   }
+  ],
+  "manual": {
+   "selected_ids": [],
+   "unknown_count": 0,
+   "weighted_sum_mm": 47363378,
+   "max_mm": 886715,
+   "covered_weight": 53,
+   "total_weight": 135,
+   "cost": 0,
+   "before_mm": [
+    789492,
+    727169,
+    886715,
+    624702,
+    525351,
+    441156,
+    316388,
+    580833,
+    360270,
+    124670,
+    125878,
+    153145,
+    243856,
+    470492,
+    327288,
+    301830,
+    125885,
+    261220,
+    96931,
+    404814,
+    48842,
+    427184,
+    16168,
+    323001,
+    19082
+   ]
+  }
+ },
+ {
+  "name": "astana/school/demo",
+  "status": "optimal",
+  "feasible_count": 47,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "site-2",
+     "site-4",
+     "site-8"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 5711253,
+    "max_mm": 479473,
+    "covered_weight": 24,
+    "cost": 280
+   },
+   "minimax": {
+    "selected_ids": [
+     "site-2",
+     "site-4",
+     "site-8"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 5711253,
+    "max_mm": 479473,
+    "covered_weight": 24,
+    "cost": 280
+   },
+   "coverage": {
+    "selected_ids": [
+     "site-2",
+     "site-4",
+     "site-8"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 5711253,
+    "max_mm": 479473,
+    "covered_weight": 24,
+    "cost": 280
+   }
+  },
+  "pareto": [
+   {
+    "selected_ids": [],
+    "cost": 0,
+    "weighted_sum_mm": 11518722
+   },
+   {
+    "selected_ids": [
+     "site-4"
+    ],
+    "cost": 60,
+    "weighted_sum_mm": 10598877
+   },
+   {
+    "selected_ids": [
+     "site-7"
+    ],
+    "cost": 110,
+    "weighted_sum_mm": 8012497
+   },
+   {
+    "selected_ids": [
+     "site-8"
+    ],
+    "cost": 130,
+    "weighted_sum_mm": 6884298
+   },
+   {
+    "selected_ids": [
+     "site-4",
+     "site-8"
+    ],
+    "cost": 190,
+    "weighted_sum_mm": 6085023
+   },
+   {
+    "selected_ids": [
+     "site-4",
+     "site-6",
+     "site-8"
+    ],
+    "cost": 270,
+    "weighted_sum_mm": 6078396
+   },
+   {
+    "selected_ids": [
+     "site-2",
+     "site-4",
+     "site-8"
+    ],
+    "cost": 280,
+    "weighted_sum_mm": 5711253
+   }
+  ],
+  "pareto_excluded_unknown": 0,
+  "sensitivity": [
+   {
+    "budget": 0,
+    "feasible_count": 1,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 11518722,
+      "max_mm": 1141199,
+      "covered_weight": 15,
+      "cost": 0
+     },
+     "minimax": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 11518722,
+      "max_mm": 1141199,
+      "covered_weight": 15,
+      "cost": 0
+     },
+     "coverage": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 11518722,
+      "max_mm": 1141199,
+      "covered_weight": 15,
+      "cost": 0
+     }
+    }
+   },
+   {
+    "budget": 150,
+    "feasible_count": 10,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 6884298,
+      "max_mm": 554454,
+      "covered_weight": 21,
+      "cost": 130
+     },
+     "minimax": {
+      "selected_ids": [
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 6884298,
+      "max_mm": 554454,
+      "covered_weight": 21,
+      "cost": 130
+     },
+     "coverage": {
+      "selected_ids": [
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 6884298,
+      "max_mm": 554454,
+      "covered_weight": 21,
+      "cost": 130
+     }
+    }
+   },
+   {
+    "budget": 300,
+    "feasible_count": 47,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "site-2",
+       "site-4",
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 5711253,
+      "max_mm": 479473,
+      "covered_weight": 24,
+      "cost": 280
+     },
+     "minimax": {
+      "selected_ids": [
+       "site-2",
+       "site-4",
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 5711253,
+      "max_mm": 479473,
+      "covered_weight": 24,
+      "cost": 280
+     },
+     "coverage": {
+      "selected_ids": [
+       "site-2",
+       "site-4",
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 5711253,
+      "max_mm": 479473,
+      "covered_weight": 24,
+      "cost": 280
+     }
+    }
+   }
+  ],
+  "manual": {
+   "selected_ids": [
+    "site-2",
+    "site-4"
+   ],
+   "unknown_count": 0,
+   "weighted_sum_mm": 10225107,
+   "max_mm": 1141199,
+   "covered_weight": 18,
+   "total_weight": 26,
+   "cost": 150,
+   "before_mm": [
+    159372,
+    462363,
+    337421,
+    160535,
+    40112,
+    155592,
+    570647,
+    259302,
+    554454,
+    882421,
+    61733,
+    1141199
+   ]
+  }
+ },
+ {
+  "name": "astana/school/budget0",
+  "status": "optimal",
+  "feasible_count": 1,
+  "objectives": {
+   "mean": {
+    "selected_ids": [],
+    "unknown_count": 0,
+    "weighted_sum_mm": 11518722,
+    "max_mm": 1141199,
+    "covered_weight": 15,
+    "cost": 0
+   },
+   "minimax": {
+    "selected_ids": [],
+    "unknown_count": 0,
+    "weighted_sum_mm": 11518722,
+    "max_mm": 1141199,
+    "covered_weight": 15,
+    "cost": 0
+   },
+   "coverage": {
+    "selected_ids": [],
+    "unknown_count": 0,
+    "weighted_sum_mm": 11518722,
+    "max_mm": 1141199,
+    "covered_weight": 15,
+    "cost": 0
+   }
+  },
+  "pareto": [
+   {
+    "selected_ids": [],
+    "cost": 0,
+    "weighted_sum_mm": 11518722
+   }
+  ],
+  "pareto_excluded_unknown": 0,
+  "sensitivity": [
+   {
+    "budget": 0,
+    "feasible_count": 1,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 11518722,
+      "max_mm": 1141199,
+      "covered_weight": 15,
+      "cost": 0
+     },
+     "minimax": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 11518722,
+      "max_mm": 1141199,
+      "covered_weight": 15,
+      "cost": 0
+     },
+     "coverage": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 11518722,
+      "max_mm": 1141199,
+      "covered_weight": 15,
+      "cost": 0
+     }
+    }
+   }
+  ],
+  "manual": {
+   "selected_ids": [
+    "site-2",
+    "site-4"
+   ],
+   "unknown_count": 0,
+   "weighted_sum_mm": 10225107,
+   "max_mm": 1141199,
+   "covered_weight": 18,
+   "total_weight": 26,
+   "cost": 150,
+   "before_mm": [
+    159372,
+    462363,
+    337421,
+    160535,
+    40112,
+    155592,
+    570647,
+    259302,
+    554454,
+    882421,
+    61733,
+    1141199
+   ]
+  }
+ },
+ {
+  "name": "astana/school/budget150",
+  "status": "optimal",
+  "feasible_count": 10,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "site-8"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 6884298,
+    "max_mm": 554454,
+    "covered_weight": 21,
+    "cost": 130
+   },
+   "minimax": {
+    "selected_ids": [
+     "site-8"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 6884298,
+    "max_mm": 554454,
+    "covered_weight": 21,
+    "cost": 130
+   },
+   "coverage": {
+    "selected_ids": [
+     "site-8"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 6884298,
+    "max_mm": 554454,
+    "covered_weight": 21,
+    "cost": 130
+   }
+  },
+  "pareto": [
+   {
+    "selected_ids": [],
+    "cost": 0,
+    "weighted_sum_mm": 11518722
+   },
+   {
+    "selected_ids": [
+     "site-4"
+    ],
+    "cost": 60,
+    "weighted_sum_mm": 10598877
+   },
+   {
+    "selected_ids": [
+     "site-7"
+    ],
+    "cost": 110,
+    "weighted_sum_mm": 8012497
+   },
+   {
+    "selected_ids": [
+     "site-8"
+    ],
+    "cost": 130,
+    "weighted_sum_mm": 6884298
+   }
+  ],
+  "pareto_excluded_unknown": 0,
+  "sensitivity": [
+   {
+    "budget": 0,
+    "feasible_count": 1,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 11518722,
+      "max_mm": 1141199,
+      "covered_weight": 15,
+      "cost": 0
+     },
+     "minimax": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 11518722,
+      "max_mm": 1141199,
+      "covered_weight": 15,
+      "cost": 0
+     },
+     "coverage": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 11518722,
+      "max_mm": 1141199,
+      "covered_weight": 15,
+      "cost": 0
+     }
+    }
+   },
+   {
+    "budget": 75,
+    "feasible_count": 2,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "site-4"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 10598877,
+      "max_mm": 1141199,
+      "covered_weight": 18,
+      "cost": 60
+     },
+     "minimax": {
+      "selected_ids": [
+       "site-4"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 10598877,
+      "max_mm": 1141199,
+      "covered_weight": 18,
+      "cost": 60
+     },
+     "coverage": {
+      "selected_ids": [
+       "site-4"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 10598877,
+      "max_mm": 1141199,
+      "covered_weight": 18,
+      "cost": 60
+     }
+    }
+   },
+   {
+    "budget": 150,
+    "feasible_count": 10,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 6884298,
+      "max_mm": 554454,
+      "covered_weight": 21,
+      "cost": 130
+     },
+     "minimax": {
+      "selected_ids": [
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 6884298,
+      "max_mm": 554454,
+      "covered_weight": 21,
+      "cost": 130
+     },
+     "coverage": {
+      "selected_ids": [
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 6884298,
+      "max_mm": 554454,
+      "covered_weight": 21,
+      "cost": 130
+     }
+    }
+   }
+  ],
+  "manual": {
+   "selected_ids": [
+    "site-2",
+    "site-4"
+   ],
+   "unknown_count": 0,
+   "weighted_sum_mm": 10225107,
+   "max_mm": 1141199,
+   "covered_weight": 18,
+   "total_weight": 26,
+   "cost": 150,
+   "before_mm": [
+    159372,
+    462363,
+    337421,
+    160535,
+    40112,
+    155592,
+    570647,
+    259302,
+    554454,
+    882421,
+    61733,
+    1141199
+   ]
+  }
+ },
+ {
+  "name": "astana/school/max5_b1000",
+  "status": "optimal",
+  "feasible_count": 219,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "site-1",
+     "site-2",
+     "site-3",
+     "site-4",
+     "site-8"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 5393367,
+    "max_mm": 357327,
+    "covered_weight": 26,
+    "cost": 550
+   },
+   "minimax": {
+    "selected_ids": [
+     "site-1",
+     "site-2",
+     "site-3",
+     "site-4",
+     "site-8"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 5393367,
+    "max_mm": 357327,
+    "covered_weight": 26,
+    "cost": 550
+   },
+   "coverage": {
+    "selected_ids": [
+     "site-1",
+     "site-2",
+     "site-3",
+     "site-4",
+     "site-8"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 5393367,
+    "max_mm": 357327,
+    "covered_weight": 26,
+    "cost": 550
+   }
+  },
+  "pareto": [
+   {
+    "selected_ids": [],
+    "cost": 0,
+    "weighted_sum_mm": 11518722
+   },
+   {
+    "selected_ids": [
+     "site-4"
+    ],
+    "cost": 60,
+    "weighted_sum_mm": 10598877
+   },
+   {
+    "selected_ids": [
+     "site-7"
+    ],
+    "cost": 110,
+    "weighted_sum_mm": 8012497
+   },
+   {
+    "selected_ids": [
+     "site-8"
+    ],
+    "cost": 130,
+    "weighted_sum_mm": 6884298
+   },
+   {
+    "selected_ids": [
+     "site-4",
+     "site-8"
+    ],
+    "cost": 190,
+    "weighted_sum_mm": 6085023
+   },
+   {
+    "selected_ids": [
+     "site-4",
+     "site-6",
+     "site-8"
+    ],
+    "cost": 270,
+    "weighted_sum_mm": 6078396
+   },
+   {
+    "selected_ids": [
+     "site-2",
+     "site-4",
+     "site-8"
+    ],
+    "cost": 280,
+    "weighted_sum_mm": 5711253
+   },
+   {
+    "selected_ids": [
+     "site-2",
+     "site-4",
+     "site-6",
+     "site-8"
+    ],
+    "cost": 360,
+    "weighted_sum_mm": 5704626
+   },
+   {
+    "selected_ids": [
+     "site-1",
+     "site-2",
+     "site-4",
+     "site-8"
+    ],
+    "cost": 400,
+    "weighted_sum_mm": 5620162
+   },
+   {
+    "selected_ids": [
+     "site-2",
+     "site-3",
+     "site-4",
+     "site-8"
+    ],
+    "cost": 430,
+    "weighted_sum_mm": 5484458
+   },
+   {
+    "selected_ids": [
+     "site-2",
+     "site-3",
+     "site-4",
+     "site-6",
+     "site-8"
+    ],
+    "cost": 510,
+    "weighted_sum_mm": 5477831
+   },
+   {
+    "selected_ids": [
+     "site-1",
+     "site-2",
+     "site-3",
+     "site-4",
+     "site-8"
+    ],
+    "cost": 550,
+    "weighted_sum_mm": 5393367
+   }
+  ],
+  "pareto_excluded_unknown": 0,
+  "sensitivity": [
+   {
+    "budget": 0,
+    "feasible_count": 1,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 11518722,
+      "max_mm": 1141199,
+      "covered_weight": 15,
+      "cost": 0
+     },
+     "minimax": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 11518722,
+      "max_mm": 1141199,
+      "covered_weight": 15,
+      "cost": 0
+     },
+     "coverage": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 11518722,
+      "max_mm": 1141199,
+      "covered_weight": 15,
+      "cost": 0
+     }
+    }
+   },
+   {
+    "budget": 500,
+    "feasible_count": 147,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "site-2",
+       "site-3",
+       "site-4",
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 5484458,
+      "max_mm": 430017,
+      "covered_weight": 25,
+      "cost": 430
+     },
+     "minimax": {
+      "selected_ids": [
+       "site-1",
+       "site-3",
+       "site-4",
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 5734791,
+      "max_mm": 357327,
+      "covered_weight": 26,
+      "cost": 460
+     },
+     "coverage": {
+      "selected_ids": [
+       "site-1",
+       "site-3",
+       "site-4",
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 5734791,
+      "max_mm": 357327,
+      "covered_weight": 26,
+      "cost": 460
+     }
+    }
+   },
+   {
+    "budget": 1000,
+    "feasible_count": 219,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "site-1",
+       "site-2",
+       "site-3",
+       "site-4",
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 5393367,
+      "max_mm": 357327,
+      "covered_weight": 26,
+      "cost": 550
+     },
+     "minimax": {
+      "selected_ids": [
+       "site-1",
+       "site-2",
+       "site-3",
+       "site-4",
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 5393367,
+      "max_mm": 357327,
+      "covered_weight": 26,
+      "cost": 550
+     },
+     "coverage": {
+      "selected_ids": [
+       "site-1",
+       "site-2",
+       "site-3",
+       "site-4",
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 5393367,
+      "max_mm": 357327,
+      "covered_weight": 26,
+      "cost": 550
+     }
+    }
+   }
+  ],
+  "manual": {
+   "selected_ids": [
+    "site-2",
+    "site-4"
+   ],
+   "unknown_count": 0,
+   "weighted_sum_mm": 10225107,
+   "max_mm": 1141199,
+   "covered_weight": 18,
+   "total_weight": 26,
+   "cost": 150,
+   "before_mm": [
+    159372,
+    462363,
+    337421,
+    160535,
+    40112,
+    155592,
+    570647,
+    259302,
+    554454,
+    882421,
+    61733,
+    1141199
+   ]
+  }
+ },
+ {
+  "name": "astana/school/req_exc",
+  "status": "optimal",
+  "feasible_count": 3,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "site-2",
+     "site-5"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 7930974,
+    "max_mm": 736467,
+    "covered_weight": 18,
+    "cost": 290
+   },
+   "minimax": {
+    "selected_ids": [
+     "site-2",
+     "site-5"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 7930974,
+    "max_mm": 736467,
+    "covered_weight": 18,
+    "cost": 290
+   },
+   "coverage": {
+    "selected_ids": [
+     "site-2",
+     "site-5"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 7930974,
+    "max_mm": 736467,
+    "covered_weight": 18,
+    "cost": 290
+   }
+  },
+  "pareto": [
+   {
+    "selected_ids": [
+     "site-5"
+    ],
+    "cost": 200,
+    "weighted_sum_mm": 8304744
+   },
+   {
+    "selected_ids": [
+     "site-5",
+     "site-6"
+    ],
+    "cost": 280,
+    "weighted_sum_mm": 8298117
+   },
+   {
+    "selected_ids": [
+     "site-2",
+     "site-5"
+    ],
+    "cost": 290,
+    "weighted_sum_mm": 7930974
+   }
+  ],
+  "pareto_excluded_unknown": 0,
+  "sensitivity": [
+   {
+    "budget": 0,
+    "feasible_count": 0,
+    "objectives": {
+     "mean": null,
+     "minimax": null,
+     "coverage": null
+    }
+   },
+   {
+    "budget": 150,
+    "feasible_count": 0,
+    "objectives": {
+     "mean": null,
+     "minimax": null,
+     "coverage": null
+    }
+   },
+   {
+    "budget": 300,
+    "feasible_count": 3,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "site-2",
+       "site-5"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7930974,
+      "max_mm": 736467,
+      "covered_weight": 18,
+      "cost": 290
+     },
+     "minimax": {
+      "selected_ids": [
+       "site-2",
+       "site-5"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7930974,
+      "max_mm": 736467,
+      "covered_weight": 18,
+      "cost": 290
+     },
+     "coverage": {
+      "selected_ids": [
+       "site-2",
+       "site-5"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7930974,
+      "max_mm": 736467,
+      "covered_weight": 18,
+      "cost": 290
+     }
+    }
+   }
+  ],
+  "manual": {
+   "selected_ids": [
+    "site-5"
+   ],
+   "unknown_count": 0,
+   "weighted_sum_mm": 8304744,
+   "max_mm": 736467,
+   "covered_weight": 18,
+   "total_weight": 26,
+   "cost": 200,
+   "before_mm": [
+    159372,
+    462363,
+    337421,
+    160535,
+    40112,
+    155592,
+    570647,
+    259302,
+    554454,
+    882421,
+    61733,
+    1141199
+   ]
+  }
+ },
+ {
+  "name": "astana/school/radius100",
+  "status": "optimal",
+  "feasible_count": 47,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "site-2",
+     "site-4",
+     "site-8"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 5711253,
+    "max_mm": 479473,
+    "covered_weight": 3,
+    "cost": 280
+   },
+   "minimax": {
+    "selected_ids": [
+     "site-2",
+     "site-4",
+     "site-8"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 5711253,
+    "max_mm": 479473,
+    "covered_weight": 3,
+    "cost": 280
+   },
+   "coverage": {
+    "selected_ids": [
+     "site-2",
+     "site-4",
+     "site-8"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 5711253,
+    "max_mm": 479473,
+    "covered_weight": 3,
+    "cost": 280
+   }
+  },
+  "pareto": [
+   {
+    "selected_ids": [],
+    "cost": 0,
+    "weighted_sum_mm": 11518722
+   },
+   {
+    "selected_ids": [
+     "site-4"
+    ],
+    "cost": 60,
+    "weighted_sum_mm": 10598877
+   },
+   {
+    "selected_ids": [
+     "site-7"
+    ],
+    "cost": 110,
+    "weighted_sum_mm": 8012497
+   },
+   {
+    "selected_ids": [
+     "site-8"
+    ],
+    "cost": 130,
+    "weighted_sum_mm": 6884298
+   },
+   {
+    "selected_ids": [
+     "site-4",
+     "site-8"
+    ],
+    "cost": 190,
+    "weighted_sum_mm": 6085023
+   },
+   {
+    "selected_ids": [
+     "site-4",
+     "site-6",
+     "site-8"
+    ],
+    "cost": 270,
+    "weighted_sum_mm": 6078396
+   },
+   {
+    "selected_ids": [
+     "site-2",
+     "site-4",
+     "site-8"
+    ],
+    "cost": 280,
+    "weighted_sum_mm": 5711253
+   }
+  ],
+  "pareto_excluded_unknown": 0,
+  "sensitivity": [
+   {
+    "budget": 0,
+    "feasible_count": 1,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 11518722,
+      "max_mm": 1141199,
+      "covered_weight": 3,
+      "cost": 0
+     },
+     "minimax": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 11518722,
+      "max_mm": 1141199,
+      "covered_weight": 3,
+      "cost": 0
+     },
+     "coverage": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 11518722,
+      "max_mm": 1141199,
+      "covered_weight": 3,
+      "cost": 0
+     }
+    }
+   },
+   {
+    "budget": 150,
+    "feasible_count": 10,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 6884298,
+      "max_mm": 554454,
+      "covered_weight": 3,
+      "cost": 130
+     },
+     "minimax": {
+      "selected_ids": [
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 6884298,
+      "max_mm": 554454,
+      "covered_weight": 3,
+      "cost": 130
+     },
+     "coverage": {
+      "selected_ids": [
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 6884298,
+      "max_mm": 554454,
+      "covered_weight": 3,
+      "cost": 130
+     }
+    }
+   },
+   {
+    "budget": 300,
+    "feasible_count": 47,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "site-2",
+       "site-4",
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 5711253,
+      "max_mm": 479473,
+      "covered_weight": 3,
+      "cost": 280
+     },
+     "minimax": {
+      "selected_ids": [
+       "site-2",
+       "site-4",
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 5711253,
+      "max_mm": 479473,
+      "covered_weight": 3,
+      "cost": 280
+     },
+     "coverage": {
+      "selected_ids": [
+       "site-2",
+       "site-4",
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 5711253,
+      "max_mm": 479473,
+      "covered_weight": 3,
+      "cost": 280
+     }
+    }
+   }
+  ],
+  "manual": {
+   "selected_ids": [
+    "site-2",
+    "site-4"
+   ],
+   "unknown_count": 0,
+   "weighted_sum_mm": 10225107,
+   "max_mm": 1141199,
+   "covered_weight": 3,
+   "total_weight": 26,
+   "cost": 150,
+   "before_mm": [
+    159372,
+    462363,
+    337421,
+    160535,
+    40112,
+    155592,
+    570647,
+    259302,
+    554454,
+    882421,
+    61733,
+    1141199
+   ]
+  }
+ },
+ {
+  "name": "astana/school/radius5000",
+  "status": "optimal",
+  "feasible_count": 47,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "site-2",
+     "site-4",
+     "site-8"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 5711253,
+    "max_mm": 479473,
+    "covered_weight": 26,
+    "cost": 280
+   },
+   "minimax": {
+    "selected_ids": [
+     "site-2",
+     "site-4",
+     "site-8"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 5711253,
+    "max_mm": 479473,
+    "covered_weight": 26,
+    "cost": 280
+   },
+   "coverage": {
+    "selected_ids": [
+     "site-2",
+     "site-4",
+     "site-8"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 5711253,
+    "max_mm": 479473,
+    "covered_weight": 26,
+    "cost": 280
+   }
+  },
+  "pareto": [
+   {
+    "selected_ids": [],
+    "cost": 0,
+    "weighted_sum_mm": 11518722
+   },
+   {
+    "selected_ids": [
+     "site-4"
+    ],
+    "cost": 60,
+    "weighted_sum_mm": 10598877
+   },
+   {
+    "selected_ids": [
+     "site-7"
+    ],
+    "cost": 110,
+    "weighted_sum_mm": 8012497
+   },
+   {
+    "selected_ids": [
+     "site-8"
+    ],
+    "cost": 130,
+    "weighted_sum_mm": 6884298
+   },
+   {
+    "selected_ids": [
+     "site-4",
+     "site-8"
+    ],
+    "cost": 190,
+    "weighted_sum_mm": 6085023
+   },
+   {
+    "selected_ids": [
+     "site-4",
+     "site-6",
+     "site-8"
+    ],
+    "cost": 270,
+    "weighted_sum_mm": 6078396
+   },
+   {
+    "selected_ids": [
+     "site-2",
+     "site-4",
+     "site-8"
+    ],
+    "cost": 280,
+    "weighted_sum_mm": 5711253
+   }
+  ],
+  "pareto_excluded_unknown": 0,
+  "sensitivity": [
+   {
+    "budget": 0,
+    "feasible_count": 1,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 11518722,
+      "max_mm": 1141199,
+      "covered_weight": 26,
+      "cost": 0
+     },
+     "minimax": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 11518722,
+      "max_mm": 1141199,
+      "covered_weight": 26,
+      "cost": 0
+     },
+     "coverage": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 11518722,
+      "max_mm": 1141199,
+      "covered_weight": 26,
+      "cost": 0
+     }
+    }
+   },
+   {
+    "budget": 150,
+    "feasible_count": 10,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 6884298,
+      "max_mm": 554454,
+      "covered_weight": 26,
+      "cost": 130
+     },
+     "minimax": {
+      "selected_ids": [
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 6884298,
+      "max_mm": 554454,
+      "covered_weight": 26,
+      "cost": 130
+     },
+     "coverage": {
+      "selected_ids": [
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 6884298,
+      "max_mm": 554454,
+      "covered_weight": 26,
+      "cost": 130
+     }
+    }
+   },
+   {
+    "budget": 300,
+    "feasible_count": 47,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "site-2",
+       "site-4",
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 5711253,
+      "max_mm": 479473,
+      "covered_weight": 26,
+      "cost": 280
+     },
+     "minimax": {
+      "selected_ids": [
+       "site-2",
+       "site-4",
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 5711253,
+      "max_mm": 479473,
+      "covered_weight": 26,
+      "cost": 280
+     },
+     "coverage": {
+      "selected_ids": [
+       "site-2",
+       "site-4",
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 5711253,
+      "max_mm": 479473,
+      "covered_weight": 26,
+      "cost": 280
+     }
+    }
+   }
+  ],
+  "manual": {
+   "selected_ids": [
+    "site-2",
+    "site-4"
+   ],
+   "unknown_count": 0,
+   "weighted_sum_mm": 10225107,
+   "max_mm": 1141199,
+   "covered_weight": 26,
+   "total_weight": 26,
+   "cost": 150,
+   "before_mm": [
+    159372,
+    462363,
+    337421,
+    160535,
+    40112,
+    155592,
+    570647,
+    259302,
+    554454,
+    882421,
+    61733,
+    1141199
+   ]
+  }
+ },
+ {
+  "name": "astana/school/infeasible",
+  "status": "infeasible",
+  "feasible_count": 0,
+  "objectives": {
+   "mean": null,
+   "minimax": null,
+   "coverage": null
+  },
+  "pareto": [],
+  "pareto_excluded_unknown": 0,
+  "sensitivity": [
+   {
+    "budget": 0,
+    "feasible_count": 0,
+    "objectives": {
+     "mean": null,
+     "minimax": null,
+     "coverage": null
+    }
+   },
+   {
+    "budget": 150,
+    "feasible_count": 0,
+    "objectives": {
+     "mean": null,
+     "minimax": null,
+     "coverage": null
+    }
+   },
+   {
+    "budget": 300,
+    "feasible_count": 0,
+    "objectives": {
+     "mean": null,
+     "minimax": null,
+     "coverage": null
+    }
+   }
+  ],
+  "manual": {
+   "selected_ids": [
+    "site-2",
+    "site-4"
+   ],
+   "unknown_count": 0,
+   "weighted_sum_mm": 10225107,
+   "max_mm": 1141199,
+   "covered_weight": 18,
+   "total_weight": 26,
+   "cost": 150,
+   "before_mm": [
+    159372,
+    462363,
+    337421,
+    160535,
+    40112,
+    155592,
+    570647,
+    259302,
+    554454,
+    882421,
+    61733,
+    1141199
+   ]
+  }
+ },
+ {
+  "name": "astana/outpatient_clinic/demo",
+  "status": "optimal",
+  "feasible_count": 47,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "site-1",
+     "site-8"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 7059046,
+    "max_mm": 364463,
+    "covered_weight": 26,
+    "cost": 250
+   },
+   "minimax": {
+    "selected_ids": [
+     "site-1",
+     "site-8"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 7059046,
+    "max_mm": 364463,
+    "covered_weight": 26,
+    "cost": 250
+   },
+   "coverage": {
+    "selected_ids": [
+     "site-1",
+     "site-8"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 7059046,
+    "max_mm": 364463,
+    "covered_weight": 26,
+    "cost": 250
+   }
+  },
+  "pareto": [
+   {
+    "selected_ids": [],
+    "cost": 0,
+    "weighted_sum_mm": 8202666
+   },
+   {
+    "selected_ids": [
+     "site-4"
+    ],
+    "cost": 60,
+    "weighted_sum_mm": 7973364
+   },
+   {
+    "selected_ids": [
+     "site-1"
+    ],
+    "cost": 120,
+    "weighted_sum_mm": 7848804
+   },
+   {
+    "selected_ids": [
+     "site-8"
+    ],
+    "cost": 130,
+    "weighted_sum_mm": 7412908
+   },
+   {
+    "selected_ids": [
+     "site-4",
+     "site-8"
+    ],
+    "cost": 190,
+    "weighted_sum_mm": 7183606
+   },
+   {
+    "selected_ids": [
+     "site-1",
+     "site-8"
+    ],
+    "cost": 250,
+    "weighted_sum_mm": 7059046
+   }
+  ],
+  "pareto_excluded_unknown": 0,
+  "sensitivity": [
+   {
+    "budget": 0,
+    "feasible_count": 1,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 8202666,
+      "max_mm": 544236,
+      "covered_weight": 19,
+      "cost": 0
+     },
+     "minimax": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 8202666,
+      "max_mm": 544236,
+      "covered_weight": 19,
+      "cost": 0
+     },
+     "coverage": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 8202666,
+      "max_mm": 544236,
+      "covered_weight": 19,
+      "cost": 0
+     }
+    }
+   },
+   {
+    "budget": 150,
+    "feasible_count": 10,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7412908,
+      "max_mm": 405869,
+      "covered_weight": 23,
+      "cost": 130
+     },
+     "minimax": {
+      "selected_ids": [
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7412908,
+      "max_mm": 405869,
+      "covered_weight": 23,
+      "cost": 130
+     },
+     "coverage": {
+      "selected_ids": [
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7412908,
+      "max_mm": 405869,
+      "covered_weight": 23,
+      "cost": 130
+     }
+    }
+   },
+   {
+    "budget": 300,
+    "feasible_count": 47,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "site-1",
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7059046,
+      "max_mm": 364463,
+      "covered_weight": 26,
+      "cost": 250
+     },
+     "minimax": {
+      "selected_ids": [
+       "site-1",
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7059046,
+      "max_mm": 364463,
+      "covered_weight": 26,
+      "cost": 250
+     },
+     "coverage": {
+      "selected_ids": [
+       "site-1",
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7059046,
+      "max_mm": 364463,
+      "covered_weight": 26,
+      "cost": 250
+     }
+    }
+   }
+  ],
+  "manual": {
+   "selected_ids": [
+    "site-2",
+    "site-4"
+   ],
+   "unknown_count": 0,
+   "weighted_sum_mm": 7940950,
+   "max_mm": 544236,
+   "covered_weight": 19,
+   "total_weight": 26,
+   "cost": 150,
+   "before_mm": [
+    405869,
+    203717,
+    182916,
+    144890,
+    167615,
+    340542,
+    190847,
+    161135,
+    364463,
+    199601,
+    211163,
+    544236
+   ]
+  }
+ },
+ {
+  "name": "astana/outpatient_clinic/budget0",
+  "status": "optimal",
+  "feasible_count": 1,
+  "objectives": {
+   "mean": {
+    "selected_ids": [],
+    "unknown_count": 0,
+    "weighted_sum_mm": 8202666,
+    "max_mm": 544236,
+    "covered_weight": 19,
+    "cost": 0
+   },
+   "minimax": {
+    "selected_ids": [],
+    "unknown_count": 0,
+    "weighted_sum_mm": 8202666,
+    "max_mm": 544236,
+    "covered_weight": 19,
+    "cost": 0
+   },
+   "coverage": {
+    "selected_ids": [],
+    "unknown_count": 0,
+    "weighted_sum_mm": 8202666,
+    "max_mm": 544236,
+    "covered_weight": 19,
+    "cost": 0
+   }
+  },
+  "pareto": [
+   {
+    "selected_ids": [],
+    "cost": 0,
+    "weighted_sum_mm": 8202666
+   }
+  ],
+  "pareto_excluded_unknown": 0,
+  "sensitivity": [
+   {
+    "budget": 0,
+    "feasible_count": 1,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 8202666,
+      "max_mm": 544236,
+      "covered_weight": 19,
+      "cost": 0
+     },
+     "minimax": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 8202666,
+      "max_mm": 544236,
+      "covered_weight": 19,
+      "cost": 0
+     },
+     "coverage": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 8202666,
+      "max_mm": 544236,
+      "covered_weight": 19,
+      "cost": 0
+     }
+    }
+   }
+  ],
+  "manual": {
+   "selected_ids": [
+    "site-2",
+    "site-4"
+   ],
+   "unknown_count": 0,
+   "weighted_sum_mm": 7940950,
+   "max_mm": 544236,
+   "covered_weight": 19,
+   "total_weight": 26,
+   "cost": 150,
+   "before_mm": [
+    405869,
+    203717,
+    182916,
+    144890,
+    167615,
+    340542,
+    190847,
+    161135,
+    364463,
+    199601,
+    211163,
+    544236
+   ]
+  }
+ },
+ {
+  "name": "astana/outpatient_clinic/budget150",
+  "status": "optimal",
+  "feasible_count": 10,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "site-8"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 7412908,
+    "max_mm": 405869,
+    "covered_weight": 23,
+    "cost": 130
+   },
+   "minimax": {
+    "selected_ids": [
+     "site-8"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 7412908,
+    "max_mm": 405869,
+    "covered_weight": 23,
+    "cost": 130
+   },
+   "coverage": {
+    "selected_ids": [
+     "site-8"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 7412908,
+    "max_mm": 405869,
+    "covered_weight": 23,
+    "cost": 130
+   }
+  },
+  "pareto": [
+   {
+    "selected_ids": [],
+    "cost": 0,
+    "weighted_sum_mm": 8202666
+   },
+   {
+    "selected_ids": [
+     "site-4"
+    ],
+    "cost": 60,
+    "weighted_sum_mm": 7973364
+   },
+   {
+    "selected_ids": [
+     "site-1"
+    ],
+    "cost": 120,
+    "weighted_sum_mm": 7848804
+   },
+   {
+    "selected_ids": [
+     "site-8"
+    ],
+    "cost": 130,
+    "weighted_sum_mm": 7412908
+   }
+  ],
+  "pareto_excluded_unknown": 0,
+  "sensitivity": [
+   {
+    "budget": 0,
+    "feasible_count": 1,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 8202666,
+      "max_mm": 544236,
+      "covered_weight": 19,
+      "cost": 0
+     },
+     "minimax": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 8202666,
+      "max_mm": 544236,
+      "covered_weight": 19,
+      "cost": 0
+     },
+     "coverage": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 8202666,
+      "max_mm": 544236,
+      "covered_weight": 19,
+      "cost": 0
+     }
+    }
+   },
+   {
+    "budget": 75,
+    "feasible_count": 2,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "site-4"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7973364,
+      "max_mm": 544236,
+      "covered_weight": 19,
+      "cost": 60
+     },
+     "minimax": {
+      "selected_ids": [
+       "site-4"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7973364,
+      "max_mm": 544236,
+      "covered_weight": 19,
+      "cost": 60
+     },
+     "coverage": {
+      "selected_ids": [
+       "site-4"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7973364,
+      "max_mm": 544236,
+      "covered_weight": 19,
+      "cost": 60
+     }
+    }
+   },
+   {
+    "budget": 150,
+    "feasible_count": 10,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7412908,
+      "max_mm": 405869,
+      "covered_weight": 23,
+      "cost": 130
+     },
+     "minimax": {
+      "selected_ids": [
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7412908,
+      "max_mm": 405869,
+      "covered_weight": 23,
+      "cost": 130
+     },
+     "coverage": {
+      "selected_ids": [
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7412908,
+      "max_mm": 405869,
+      "covered_weight": 23,
+      "cost": 130
+     }
+    }
+   }
+  ],
+  "manual": {
+   "selected_ids": [
+    "site-2",
+    "site-4"
+   ],
+   "unknown_count": 0,
+   "weighted_sum_mm": 7940950,
+   "max_mm": 544236,
+   "covered_weight": 19,
+   "total_weight": 26,
+   "cost": 150,
+   "before_mm": [
+    405869,
+    203717,
+    182916,
+    144890,
+    167615,
+    340542,
+    190847,
+    161135,
+    364463,
+    199601,
+    211163,
+    544236
+   ]
+  }
+ },
+ {
+  "name": "astana/outpatient_clinic/max5_b1000",
+  "status": "optimal",
+  "feasible_count": 219,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "site-1",
+     "site-2",
+     "site-4",
+     "site-8"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 6797330,
+    "max_mm": 357327,
+    "covered_weight": 26,
+    "cost": 400
+   },
+   "minimax": {
+    "selected_ids": [
+     "site-1",
+     "site-2",
+     "site-4",
+     "site-8"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 6797330,
+    "max_mm": 357327,
+    "covered_weight": 26,
+    "cost": 400
+   },
+   "coverage": {
+    "selected_ids": [
+     "site-1",
+     "site-2",
+     "site-4",
+     "site-8"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 6797330,
+    "max_mm": 357327,
+    "covered_weight": 26,
+    "cost": 400
+   }
+  },
+  "pareto": [
+   {
+    "selected_ids": [],
+    "cost": 0,
+    "weighted_sum_mm": 8202666
+   },
+   {
+    "selected_ids": [
+     "site-4"
+    ],
+    "cost": 60,
+    "weighted_sum_mm": 7973364
+   },
+   {
+    "selected_ids": [
+     "site-1"
+    ],
+    "cost": 120,
+    "weighted_sum_mm": 7848804
+   },
+   {
+    "selected_ids": [
+     "site-8"
+    ],
+    "cost": 130,
+    "weighted_sum_mm": 7412908
+   },
+   {
+    "selected_ids": [
+     "site-4",
+     "site-8"
+    ],
+    "cost": 190,
+    "weighted_sum_mm": 7183606
+   },
+   {
+    "selected_ids": [
+     "site-1",
+     "site-8"
+    ],
+    "cost": 250,
+    "weighted_sum_mm": 7059046
+   },
+   {
+    "selected_ids": [
+     "site-1",
+     "site-4",
+     "site-8"
+    ],
+    "cost": 310,
+    "weighted_sum_mm": 6829744
+   },
+   {
+    "selected_ids": [
+     "site-1",
+     "site-2",
+     "site-4",
+     "site-8"
+    ],
+    "cost": 400,
+    "weighted_sum_mm": 6797330
+   }
+  ],
+  "pareto_excluded_unknown": 0,
+  "sensitivity": [
+   {
+    "budget": 0,
+    "feasible_count": 1,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 8202666,
+      "max_mm": 544236,
+      "covered_weight": 19,
+      "cost": 0
+     },
+     "minimax": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 8202666,
+      "max_mm": 544236,
+      "covered_weight": 19,
+      "cost": 0
+     },
+     "coverage": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 8202666,
+      "max_mm": 544236,
+      "covered_weight": 19,
+      "cost": 0
+     }
+    }
+   },
+   {
+    "budget": 500,
+    "feasible_count": 147,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "site-1",
+       "site-2",
+       "site-4",
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 6797330,
+      "max_mm": 357327,
+      "covered_weight": 26,
+      "cost": 400
+     },
+     "minimax": {
+      "selected_ids": [
+       "site-1",
+       "site-2",
+       "site-4",
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 6797330,
+      "max_mm": 357327,
+      "covered_weight": 26,
+      "cost": 400
+     },
+     "coverage": {
+      "selected_ids": [
+       "site-1",
+       "site-2",
+       "site-4",
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 6797330,
+      "max_mm": 357327,
+      "covered_weight": 26,
+      "cost": 400
+     }
+    }
+   },
+   {
+    "budget": 1000,
+    "feasible_count": 219,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "site-1",
+       "site-2",
+       "site-4",
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 6797330,
+      "max_mm": 357327,
+      "covered_weight": 26,
+      "cost": 400
+     },
+     "minimax": {
+      "selected_ids": [
+       "site-1",
+       "site-2",
+       "site-4",
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 6797330,
+      "max_mm": 357327,
+      "covered_weight": 26,
+      "cost": 400
+     },
+     "coverage": {
+      "selected_ids": [
+       "site-1",
+       "site-2",
+       "site-4",
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 6797330,
+      "max_mm": 357327,
+      "covered_weight": 26,
+      "cost": 400
+     }
+    }
+   }
+  ],
+  "manual": {
+   "selected_ids": [
+    "site-2",
+    "site-4"
+   ],
+   "unknown_count": 0,
+   "weighted_sum_mm": 7940950,
+   "max_mm": 544236,
+   "covered_weight": 19,
+   "total_weight": 26,
+   "cost": 150,
+   "before_mm": [
+    405869,
+    203717,
+    182916,
+    144890,
+    167615,
+    340542,
+    190847,
+    161135,
+    364463,
+    199601,
+    211163,
+    544236
+   ]
+  }
+ },
+ {
+  "name": "astana/outpatient_clinic/req_exc",
+  "status": "optimal",
+  "feasible_count": 3,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "site-2",
+     "site-5"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 8170252,
+    "max_mm": 544236,
+    "covered_weight": 19,
+    "cost": 290
+   },
+   "minimax": {
+    "selected_ids": [
+     "site-2",
+     "site-5"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 8170252,
+    "max_mm": 544236,
+    "covered_weight": 19,
+    "cost": 290
+   },
+   "coverage": {
+    "selected_ids": [
+     "site-2",
+     "site-5"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 8170252,
+    "max_mm": 544236,
+    "covered_weight": 19,
+    "cost": 290
+   }
+  },
+  "pareto": [
+   {
+    "selected_ids": [
+     "site-5"
+    ],
+    "cost": 200,
+    "weighted_sum_mm": 8202666
+   },
+   {
+    "selected_ids": [
+     "site-2",
+     "site-5"
+    ],
+    "cost": 290,
+    "weighted_sum_mm": 8170252
+   }
+  ],
+  "pareto_excluded_unknown": 0,
+  "sensitivity": [
+   {
+    "budget": 0,
+    "feasible_count": 0,
+    "objectives": {
+     "mean": null,
+     "minimax": null,
+     "coverage": null
+    }
+   },
+   {
+    "budget": 150,
+    "feasible_count": 0,
+    "objectives": {
+     "mean": null,
+     "minimax": null,
+     "coverage": null
+    }
+   },
+   {
+    "budget": 300,
+    "feasible_count": 3,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "site-2",
+       "site-5"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 8170252,
+      "max_mm": 544236,
+      "covered_weight": 19,
+      "cost": 290
+     },
+     "minimax": {
+      "selected_ids": [
+       "site-2",
+       "site-5"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 8170252,
+      "max_mm": 544236,
+      "covered_weight": 19,
+      "cost": 290
+     },
+     "coverage": {
+      "selected_ids": [
+       "site-2",
+       "site-5"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 8170252,
+      "max_mm": 544236,
+      "covered_weight": 19,
+      "cost": 290
+     }
+    }
+   }
+  ],
+  "manual": {
+   "selected_ids": [
+    "site-5"
+   ],
+   "unknown_count": 0,
+   "weighted_sum_mm": 8202666,
+   "max_mm": 544236,
+   "covered_weight": 19,
+   "total_weight": 26,
+   "cost": 200,
+   "before_mm": [
+    405869,
+    203717,
+    182916,
+    144890,
+    167615,
+    340542,
+    190847,
+    161135,
+    364463,
+    199601,
+    211163,
+    544236
+   ]
+  }
+ },
+ {
+  "name": "astana/outpatient_clinic/radius100",
+  "status": "optimal",
+  "feasible_count": 47,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "site-1",
+     "site-8"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 7059046,
+    "max_mm": 364463,
+    "covered_weight": 0,
+    "cost": 250
+   },
+   "minimax": {
+    "selected_ids": [
+     "site-1",
+     "site-8"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 7059046,
+    "max_mm": 364463,
+    "covered_weight": 0,
+    "cost": 250
+   },
+   "coverage": {
+    "selected_ids": [
+     "site-1",
+     "site-8"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 7059046,
+    "max_mm": 364463,
+    "covered_weight": 0,
+    "cost": 250
+   }
+  },
+  "pareto": [
+   {
+    "selected_ids": [],
+    "cost": 0,
+    "weighted_sum_mm": 8202666
+   },
+   {
+    "selected_ids": [
+     "site-4"
+    ],
+    "cost": 60,
+    "weighted_sum_mm": 7973364
+   },
+   {
+    "selected_ids": [
+     "site-1"
+    ],
+    "cost": 120,
+    "weighted_sum_mm": 7848804
+   },
+   {
+    "selected_ids": [
+     "site-8"
+    ],
+    "cost": 130,
+    "weighted_sum_mm": 7412908
+   },
+   {
+    "selected_ids": [
+     "site-4",
+     "site-8"
+    ],
+    "cost": 190,
+    "weighted_sum_mm": 7183606
+   },
+   {
+    "selected_ids": [
+     "site-1",
+     "site-8"
+    ],
+    "cost": 250,
+    "weighted_sum_mm": 7059046
+   }
+  ],
+  "pareto_excluded_unknown": 0,
+  "sensitivity": [
+   {
+    "budget": 0,
+    "feasible_count": 1,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 8202666,
+      "max_mm": 544236,
+      "covered_weight": 0,
+      "cost": 0
+     },
+     "minimax": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 8202666,
+      "max_mm": 544236,
+      "covered_weight": 0,
+      "cost": 0
+     },
+     "coverage": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 8202666,
+      "max_mm": 544236,
+      "covered_weight": 0,
+      "cost": 0
+     }
+    }
+   },
+   {
+    "budget": 150,
+    "feasible_count": 10,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7412908,
+      "max_mm": 405869,
+      "covered_weight": 0,
+      "cost": 130
+     },
+     "minimax": {
+      "selected_ids": [
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7412908,
+      "max_mm": 405869,
+      "covered_weight": 0,
+      "cost": 130
+     },
+     "coverage": {
+      "selected_ids": [
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7412908,
+      "max_mm": 405869,
+      "covered_weight": 0,
+      "cost": 130
+     }
+    }
+   },
+   {
+    "budget": 300,
+    "feasible_count": 47,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "site-1",
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7059046,
+      "max_mm": 364463,
+      "covered_weight": 0,
+      "cost": 250
+     },
+     "minimax": {
+      "selected_ids": [
+       "site-1",
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7059046,
+      "max_mm": 364463,
+      "covered_weight": 0,
+      "cost": 250
+     },
+     "coverage": {
+      "selected_ids": [
+       "site-1",
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7059046,
+      "max_mm": 364463,
+      "covered_weight": 0,
+      "cost": 250
+     }
+    }
+   }
+  ],
+  "manual": {
+   "selected_ids": [
+    "site-2",
+    "site-4"
+   ],
+   "unknown_count": 0,
+   "weighted_sum_mm": 7940950,
+   "max_mm": 544236,
+   "covered_weight": 0,
+   "total_weight": 26,
+   "cost": 150,
+   "before_mm": [
+    405869,
+    203717,
+    182916,
+    144890,
+    167615,
+    340542,
+    190847,
+    161135,
+    364463,
+    199601,
+    211163,
+    544236
+   ]
+  }
+ },
+ {
+  "name": "astana/outpatient_clinic/radius5000",
+  "status": "optimal",
+  "feasible_count": 47,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "site-1",
+     "site-8"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 7059046,
+    "max_mm": 364463,
+    "covered_weight": 26,
+    "cost": 250
+   },
+   "minimax": {
+    "selected_ids": [
+     "site-1",
+     "site-8"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 7059046,
+    "max_mm": 364463,
+    "covered_weight": 26,
+    "cost": 250
+   },
+   "coverage": {
+    "selected_ids": [
+     "site-1",
+     "site-8"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 7059046,
+    "max_mm": 364463,
+    "covered_weight": 26,
+    "cost": 250
+   }
+  },
+  "pareto": [
+   {
+    "selected_ids": [],
+    "cost": 0,
+    "weighted_sum_mm": 8202666
+   },
+   {
+    "selected_ids": [
+     "site-4"
+    ],
+    "cost": 60,
+    "weighted_sum_mm": 7973364
+   },
+   {
+    "selected_ids": [
+     "site-1"
+    ],
+    "cost": 120,
+    "weighted_sum_mm": 7848804
+   },
+   {
+    "selected_ids": [
+     "site-8"
+    ],
+    "cost": 130,
+    "weighted_sum_mm": 7412908
+   },
+   {
+    "selected_ids": [
+     "site-4",
+     "site-8"
+    ],
+    "cost": 190,
+    "weighted_sum_mm": 7183606
+   },
+   {
+    "selected_ids": [
+     "site-1",
+     "site-8"
+    ],
+    "cost": 250,
+    "weighted_sum_mm": 7059046
+   }
+  ],
+  "pareto_excluded_unknown": 0,
+  "sensitivity": [
+   {
+    "budget": 0,
+    "feasible_count": 1,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 8202666,
+      "max_mm": 544236,
+      "covered_weight": 26,
+      "cost": 0
+     },
+     "minimax": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 8202666,
+      "max_mm": 544236,
+      "covered_weight": 26,
+      "cost": 0
+     },
+     "coverage": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 8202666,
+      "max_mm": 544236,
+      "covered_weight": 26,
+      "cost": 0
+     }
+    }
+   },
+   {
+    "budget": 150,
+    "feasible_count": 10,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7412908,
+      "max_mm": 405869,
+      "covered_weight": 26,
+      "cost": 130
+     },
+     "minimax": {
+      "selected_ids": [
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7412908,
+      "max_mm": 405869,
+      "covered_weight": 26,
+      "cost": 130
+     },
+     "coverage": {
+      "selected_ids": [
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7412908,
+      "max_mm": 405869,
+      "covered_weight": 26,
+      "cost": 130
+     }
+    }
+   },
+   {
+    "budget": 300,
+    "feasible_count": 47,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "site-1",
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7059046,
+      "max_mm": 364463,
+      "covered_weight": 26,
+      "cost": 250
+     },
+     "minimax": {
+      "selected_ids": [
+       "site-1",
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7059046,
+      "max_mm": 364463,
+      "covered_weight": 26,
+      "cost": 250
+     },
+     "coverage": {
+      "selected_ids": [
+       "site-1",
+       "site-8"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 7059046,
+      "max_mm": 364463,
+      "covered_weight": 26,
+      "cost": 250
+     }
+    }
+   }
+  ],
+  "manual": {
+   "selected_ids": [
+    "site-2",
+    "site-4"
+   ],
+   "unknown_count": 0,
+   "weighted_sum_mm": 7940950,
+   "max_mm": 544236,
+   "covered_weight": 26,
+   "total_weight": 26,
+   "cost": 150,
+   "before_mm": [
+    405869,
+    203717,
+    182916,
+    144890,
+    167615,
+    340542,
+    190847,
+    161135,
+    364463,
+    199601,
+    211163,
+    544236
+   ]
+  }
+ },
+ {
+  "name": "astana/outpatient_clinic/infeasible",
+  "status": "infeasible",
+  "feasible_count": 0,
+  "objectives": {
+   "mean": null,
+   "minimax": null,
+   "coverage": null
+  },
+  "pareto": [],
+  "pareto_excluded_unknown": 0,
+  "sensitivity": [
+   {
+    "budget": 0,
+    "feasible_count": 0,
+    "objectives": {
+     "mean": null,
+     "minimax": null,
+     "coverage": null
+    }
+   },
+   {
+    "budget": 150,
+    "feasible_count": 0,
+    "objectives": {
+     "mean": null,
+     "minimax": null,
+     "coverage": null
+    }
+   },
+   {
+    "budget": 300,
+    "feasible_count": 0,
+    "objectives": {
+     "mean": null,
+     "minimax": null,
+     "coverage": null
+    }
+   }
+  ],
+  "manual": {
+   "selected_ids": [
+    "site-2",
+    "site-4"
+   ],
+   "unknown_count": 0,
+   "weighted_sum_mm": 7940950,
+   "max_mm": 544236,
+   "covered_weight": 19,
+   "total_weight": 26,
+   "cost": 150,
+   "before_mm": [
+    405869,
+    203717,
+    182916,
+    144890,
+    167615,
+    340542,
+    190847,
+    161135,
+    364463,
+    199601,
+    211163,
+    544236
+   ]
+  }
+ },
+ {
+  "name": "astana/school/max_16x25",
+  "status": "optimal",
+  "feasible_count": 1670,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "site-02",
+     "site-08",
+     "site-11",
+     "site-14",
+     "site-16"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 29865959,
+    "max_mm": 388788,
+    "covered_weight": 112,
+    "cost": 392
+   },
+   "minimax": {
+    "selected_ids": [
+     "site-02",
+     "site-08",
+     "site-11",
+     "site-14",
+     "site-16"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 29865959,
+    "max_mm": 388788,
+    "covered_weight": 112,
+    "cost": 392
+   },
+   "coverage": {
+    "selected_ids": [
+     "site-02",
+     "site-08",
+     "site-11",
+     "site-14",
+     "site-16"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 29865959,
+    "max_mm": 388788,
+    "covered_weight": 112,
+    "cost": 392
+   }
+  },
+  "pareto": [
+   {
+    "selected_ids": [],
+    "cost": 0,
+    "weighted_sum_mm": 57989334
+   },
+   {
+    "selected_ids": [
+     "site-01"
+    ],
+    "cost": 50,
+    "weighted_sum_mm": 57079557
+   },
+   {
+    "selected_ids": [
+     "site-14"
+    ],
+    "cost": 51,
+    "weighted_sum_mm": 53028454
+   },
+   {
+    "selected_ids": [
+     "site-11"
+    ],
+    "cost": 60,
+    "weighted_sum_mm": 44611802
+   },
+   {
+    "selected_ids": [
+     "site-15"
+    ],
+    "cost": 88,
+    "weighted_sum_mm": 43461178
+   },
+   {
+    "selected_ids": [
+     "site-12"
+    ],
+    "cost": 97,
+    "weighted_sum_mm": 41794277
+   },
+   {
+    "selected_ids": [
+     "site-16"
+    ],
+    "cost": 125,
+    "weighted_sum_mm": 41284102
+   },
+   {
+    "selected_ids": [
+     "site-01",
+     "site-12"
+    ],
+    "cost": 147,
+    "weighted_sum_mm": 40884500
+   },
+   {
+    "selected_ids": [
+     "site-12",
+     "site-14"
+    ],
+    "cost": 148,
+    "weighted_sum_mm": 39375800
+   },
+   {
+    "selected_ids": [
+     "site-11",
+     "site-12"
+    ],
+    "cost": 157,
+    "weighted_sum_mm": 37742739
+   },
+   {
+    "selected_ids": [
+     "site-11",
+     "site-16"
+    ],
+    "cost": 185,
+    "weighted_sum_mm": 36514876
+   },
+   {
+    "selected_ids": [
+     "site-01",
+     "site-11",
+     "site-16"
+    ],
+    "cost": 235,
+    "weighted_sum_mm": 35605099
+   },
+   {
+    "selected_ids": [
+     "site-02",
+     "site-11",
+     "site-12"
+    ],
+    "cost": 244,
+    "weighted_sum_mm": 34770634
+   },
+   {
+    "selected_ids": [
+     "site-08",
+     "site-11",
+     "site-16"
+    ],
+    "cost": 254,
+    "weighted_sum_mm": 33647341
+   },
+   {
+    "selected_ids": [
+     "site-02",
+     "site-11",
+     "site-16"
+    ],
+    "cost": 272,
+    "weighted_sum_mm": 33542771
+   },
+   {
+    "selected_ids": [
+     "site-11",
+     "site-12",
+     "site-16"
+    ],
+    "cost": 282,
+    "weighted_sum_mm": 32963492
+   },
+   {
+    "selected_ids": [
+     "site-01",
+     "site-08",
+     "site-11",
+     "site-16"
+    ],
+    "cost": 304,
+    "weighted_sum_mm": 32737564
+   },
+   {
+    "selected_ids": [
+     "site-02",
+     "site-11",
+     "site-14",
+     "site-16"
+    ],
+    "cost": 323,
+    "weighted_sum_mm": 32733494
+   },
+   {
+    "selected_ids": [
+     "site-01",
+     "site-11",
+     "site-12",
+     "site-16"
+    ],
+    "cost": 332,
+    "weighted_sum_mm": 32053715
+   },
+   {
+    "selected_ids": [
+     "site-02",
+     "site-08",
+     "site-11",
+     "site-16"
+    ],
+    "cost": 341,
+    "weighted_sum_mm": 30675236
+   },
+   {
+    "selected_ids": [
+     "site-02",
+     "site-11",
+     "site-12",
+     "site-16"
+    ],
+    "cost": 369,
+    "weighted_sum_mm": 29991387
+   },
+   {
+    "selected_ids": [
+     "site-02",
+     "site-08",
+     "site-11",
+     "site-14",
+     "site-16"
+    ],
+    "cost": 392,
+    "weighted_sum_mm": 29865959
+   }
+  ],
+  "pareto_excluded_unknown": 0,
+  "sensitivity": [
+   {
+    "budget": 0,
+    "feasible_count": 1,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 57989334,
+      "max_mm": 1257711,
+      "covered_weight": 57,
+      "cost": 0
+     },
+     "minimax": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 57989334,
+      "max_mm": 1257711,
+      "covered_weight": 57,
+      "cost": 0
+     },
+     "coverage": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 57989334,
+      "max_mm": 1257711,
+      "covered_weight": 57,
+      "cost": 0
+     }
+    }
+   },
+   {
+    "budget": 200,
+    "feasible_count": 86,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "site-11",
+       "site-16"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 36514876,
+      "max_mm": 596893,
+      "covered_weight": 85,
+      "cost": 185
+     },
+     "minimax": {
+      "selected_ids": [
+       "site-08",
+       "site-16"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 38213877,
+      "max_mm": 572560,
+      "covered_weight": 75,
+      "cost": 194
+     },
+     "coverage": {
+      "selected_ids": [
+       "site-02",
+       "site-11",
+       "site-14"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 40830420,
+      "max_mm": 847173,
+      "covered_weight": 94,
+      "cost": 198
+     }
+    }
+   },
+   {
+    "budget": 400,
+    "feasible_count": 1670,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "site-02",
+       "site-08",
+       "site-11",
+       "site-14",
+       "site-16"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 29865959,
+      "max_mm": 388788,
+      "covered_weight": 112,
+      "cost": 392
+     },
+     "minimax": {
+      "selected_ids": [
+       "site-02",
+       "site-08",
+       "site-11",
+       "site-14",
+       "site-16"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 29865959,
+      "max_mm": 388788,
+      "covered_weight": 112,
+      "cost": 392
+     },
+     "coverage": {
+      "selected_ids": [
+       "site-02",
+       "site-08",
+       "site-11",
+       "site-14",
+       "site-16"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 29865959,
+      "max_mm": 388788,
+      "covered_weight": 112,
+      "cost": 392
+     }
+    }
+   }
+  ],
+  "manual": {
+   "selected_ids": [],
+   "unknown_count": 0,
+   "weighted_sum_mm": 57989334,
+   "max_mm": 1257711,
+   "covered_weight": 57,
+   "total_weight": 135,
+   "cost": 0,
+   "before_mm": [
+    388788,
+    427905,
+    467058,
+    220987,
+    202199,
+    174553,
+    240307,
+    83396,
+    349604,
+    180628,
+    328874,
+    172410,
+    384547,
+    512967,
+    596893,
+    195148,
+    389961,
+    572560,
+    869530,
+    1015836,
+    228104,
+    29578,
+    420256,
+    838810,
+    1257711
+   ]
+  }
+ }
+]
