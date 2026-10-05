@@ -1,0 +1,15 @@
+--- a/prototypes/city-evidence/web/facts.js
++++ b/prototypes/city-evidence/web/facts.js
+@@ -134,7 +134,11 @@
+     const c = data.cities[city], e = ev && ev.cities && ev.cities[city];
+     if (!c || !e) throw new PlanError("foreign_city", `нет данных для города ${city}`);
+     const period = scenarioId(e.release, groups), cid = "kz." + city, obs = {};
+-    for (const o of e.observations) obs[o.indicator_id] = o;
++    for (const o of e.observations) {
++      // K02 r6: observations stored under the city key must belong to that city
++      if (o.city_id !== cid) throw new PlanError("foreign_city", `наблюдение ${o.obs_id}: ${o.city_id}, каталог ${cid}`);
++      obs[o.indicator_id] = o;
++    }
+     const sel = c.places.filter((p) => groups.has(p.group)), selIds = new Set(sel.map((p) => p.id));
+     const cat = new Map();
+     const add = (path, value, kind, unit, complete, reason, source, labels) => {

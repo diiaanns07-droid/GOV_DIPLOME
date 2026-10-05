@@ -1,0 +1,87 @@
+{
+ "target": {
+  "app_root": "/tmp/claude-0/-home-user-GOV-DIPLOME/8b0c5549-2e52-575b-8e45-b0a258d47233/scratchpad/build6/prototypes/city-evidence"
+ },
+ "node": "v22.22.0",
+ "results": [
+  {
+   "id": "T1_value_change",
+   "title": "изменение значения при том же городе и срезе: старый план отклоняется",
+   "pass": true,
+   "observed": "stale_catalog",
+   "scenario_same": true
+  },
+  {
+   "id": "T2_unit_change",
+   "title": "изменение единицы при том же городе и срезе: старый план отклоняется",
+   "pass": true,
+   "observed": "stale_catalog",
+   "scenario_same": true
+  },
+  {
+   "id": "T3_coverage_change",
+   "title": "изменение охвата при том же городе и срезе: старый план отклоняется",
+   "pass": true,
+   "observed": "stale_catalog",
+   "scenario_same": true
+  },
+  {
+   "id": "T4_digest_distinguishes",
+   "title": "старый срез и изменённый каталог различимы (catalogDigest), одинаковые — равны",
+   "pass": true,
+   "observed": {
+    "same_scenario": true,
+    "da": "0ec09bd8d16b7067",
+    "db": "93f6d0c45ec9126e"
+   }
+  },
+  {
+   "id": "T5_duplicate_across_sections",
+   "title": "повтор одного ID в двух секциях отклоняется (duplicate_id)",
+   "pass": true,
+   "observed": "duplicate_id"
+  },
+  {
+   "id": "T6_null_vs_zero",
+   "title": "null: только в data_gaps и «нет данных»; настоящий 0 печатается как 0",
+   "pass": true,
+   "observed": {
+    "outside": "null_as_fact",
+    "ru_lines": [
+     "- Мощность школ: нет данных (неизвестно, нет в источнике)",
+     "- С неоднозначным районом: 0 записей (расчёт)"
+    ]
+   }
+  },
+  {
+   "id": "T7_city_substitution_observations",
+   "title": "наблюдения другого города под ключом города отклоняются при buildCatalog",
+   "pass": false,
+   "observed": "принято: числа kz.astana под shymkent"
+  },
+  {
+   "id": "T8_city_switch_stale_plan",
+   "title": "план по Астане против каталога Шымкента отклоняется (foreign_city или stale_catalog)",
+   "pass": true,
+   "observed": "stale_catalog"
+  },
+  {
+   "id": "T9_nonfinite_nan",
+   "title": "неконечное число (NaN) отклоняется при buildCatalog, а не падает в render",
+   "pass": true,
+   "observed": "error"
+  },
+  {
+   "id": "T9_nonfinite_inf",
+   "title": "неконечное число (Infinity) отклоняется при buildCatalog, а не падает в render",
+   "pass": true,
+   "observed": "error"
+  },
+  {
+   "id": "T10_incomplete_coverage_visible",
+   "title": "значения при coverage.complete=false помечены в тексте объяснения",
+   "pass": true,
+   "observed": "- Дороги без данных о проходе пешком: 954 сегментов (расчёт, неполный охват)"
+  }
+ ]
+}

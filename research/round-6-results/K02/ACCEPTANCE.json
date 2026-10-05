@@ -1,0 +1,74 @@
+{
+ "target_sha": "064ed25368341edaa50289bc29e21dda7bdd9440",
+ "target_branch": "claude/beautiful-clarke-sbzomj",
+ "target_path": "prototypes/city-evidence/",
+ "target_facts_js_sha256": "fd1dcde41235548eae39e9d65fb024f76c94b517666f76a319b3eb96759d35da",
+ "previous_build_not_retested_as_new": "0bf27deb8549b325b34a9610402613d745544edb",
+ "test_source_sha": "26fd30cf1ade3f21f554784420d1502b43cce0f2 (research/round-5-results/K02/tests/facts_regression.cjs)",
+ "test_used": "research/round-6-results/K02/tests/facts_acceptance.cjs (адаптер r5; инварианты не ослаблены)",
+ "r5_test_unmodified": {
+  "status": "TEST_INCOMPATIBLE",
+  "run": "runs/r5_test_unmodified_064ed25.json",
+  "reasons": [
+   "vm-контекст без TextEncoder (новый SHA-256 в facts.js)",
+   "API: validatePlan(plan, built), StubSelector.select(view, digest), render(plan, built, lang)",
+   "индикаторы K05 v1.2 переименованы",
+   "T7 в r5 засчитывал любое исключение как отказ (ложный PASS)"
+  ]
+ },
+ "commands": [
+  "node research/round-6-results/K02/tests/facts_acceptance.cjs --app-root <извлечённая 064ed25 prototypes/city-evidence> --json runs/app_root_064ed25.json",
+  "python3 prototypes/city-evidence/serve.py 8806 && node research/round-6-results/K02/tests/facts_acceptance.cjs --url http://127.0.0.1:8806/ --json runs/url_064ed25.json",
+  "python3 prototypes/city-evidence/tools/explain_ref.py  (в копии; результат сравнён cmp с закоммиченным tests/expected_explanations.json)",
+  "node research/round-6-results/K02/tests/py_js_parity.cjs --app-root <app-root>",
+  "node prototypes/city-evidence/tests/conformance.cjs; node prototypes/city-evidence/tests/smoke.cjs"
+ ],
+ "invariants": {
+  "stale_on_value_change (T1)": "PASS",
+  "stale_on_unit_change (T2)": "PASS — смена на допустимую единицу records; неизвестная 'km' отклоняется при buildCatalog (Error: unknown unit km)",
+  "stale_on_coverage_change (T3)": "PASS",
+  "digest_distinguishes_changed_catalog (T4)": "PASS",
+  "duplicate_id_across_sections (T5)": "PASS",
+  "null_vs_zero (T6)": "PASS",
+  "observations_of_other_city_rejected (T7)": "FAIL",
+  "city_switch_stale_plan (T8)": "PASS",
+  "nonfinite_nan_rejected_at_build (T9)": "PASS",
+  "nonfinite_inf_rejected_at_build (T9)": "PASS",
+  "incomplete_coverage_visible_ru_kk (T10)": "PASS"
+ },
+ "summary": {
+  "pass": 10,
+  "fail": 1,
+  "skip": 0
+ },
+ "url_equals_app_root": true,
+ "python_reference_vs_js": {
+  "verdict": "PASS",
+  "cases": 7,
+  "compared": [
+   "text",
+   "catalog_digest",
+   "scenario",
+   "facts_used ids"
+  ],
+  "reference_regenerated_equals_committed": true,
+  "run": "runs/py_js_parity_064ed25.json"
+ },
+ "build_own_tests": {
+  "conformance.cjs": "all passed",
+  "smoke.cjs": "PASS (exit 0)"
+ },
+ "new_defect": {
+  "id": "T7",
+  "location": "prototypes/city-evidence/web/facts.js:137 (buildCatalog: obs[o.indicator_id] = o без проверки o.city_id)",
+  "repro": "node research/round-6-results/K02/repro_t7_city_substitution.cjs <app-root> → факт kz.shymkent/…/segments.foot_unknown = 1138 из наблюдения kz.astana",
+  "severity": "low: evidence.js генерируется build_evidence.py с контролем city_mismatch; в JS нет защиты при подмене/порче данных",
+  "patch_proposal": "patches/facts_obs_city_check.patch (не применён к сборке)",
+  "patch_check_on_copy": "facts_acceptance 11/11, conformance all passed, smoke PASS, py_js_parity PASS (runs/proposal_check_064ed25_plus_city_patch.json)"
+ },
+ "verdict": "ACCEPT_WITH_ONE_MINOR_DEFECT: 10/11 PASS на 064ed25; T7 FAIL (минорный, patch предложен). Остальные исправления раунда 5 подтверждены на новой сборке.",
+ "not_claimed": [
+  "точность выбора фактов LLM (StubSelector — детерминированная заглушка, LLM не вызывалась)",
+  "ручная браузерная проверка устаревания после смены фильтра"
+ ]
+}
