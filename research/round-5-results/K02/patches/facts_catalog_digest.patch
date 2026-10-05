@@ -1,0 +1,179 @@
+--- a/prototypes/city-evidence/web/facts.js
++++ b/prototypes/city-evidence/web/facts.js
+@@ -22,6 +22,7 @@
+     kind_model: { ru: "учебная модель", kk: "оқу моделі" }, kind_observed: { ru: "наблюдение", kk: "бақылау" },
+     kind_derived: { ru: "расчёт", kk: "есептелген" }, kind_synthetic: { ru: "синтетика", kk: "синтетикалық" },
+     kind_unknown: { ru: "неизвестно", kk: "белгісіз" },
++    incomplete: { ru: "неполный охват", kk: "толық емес қамту" },
+   };
+   const KINDS = new Set(["observed", "derived", "model", "synthetic", "unknown"]);
+   const FIXED_LABELS = {
+@@ -60,54 +61,77 @@
+   }
+ 
+   // Catalog of the current city / category filter / slice (same rows as tools/explain_ref.py catalog_rows).
++  // K02 r5: observations must belong to the city; values must be finite or null; facts carry unit and coverage.
+   function buildCatalog(data, ev, city, groups) {
+     const c = data.cities[city], e = ev.cities[city];
+     if (!c || !e) throw new PlanError("foreign_city", `нет данных для города ${city}`);
+     const period = scenarioId(ev.slice_id, groups), obs = {};
+-    for (const o of e.observations) obs[o.indicator_id] = o;
++    for (const o of e.observations) {
++      if (o.city_id !== "kz." + city) throw new PlanError("foreign_city", `наблюдение ${o.obs_id || o.indicator_id}: ${o.city_id}, каталог ${city}`);
++      obs[o.indicator_id] = o;
++    }
++    const cov = (o) => (o && o.coverage && typeof o.coverage.complete === "boolean" ? o.coverage.complete : null);
+     const sel = c.places.filter((p) => groups.has(p.group));
+     const cat = new Map();
+-    const add = (path, value, kind, source) => {
++    const add = (path, value, kind, source, unit, coverage) => {
+       const fid = `${city}/${period}/${path}`, m = ID_PATTERN.exec(fid);
+       if (!m || m[1] !== city || m[2] !== period) throw new Error("bad fact id " + fid);
++      if (value !== null && value !== undefined && (typeof value !== "number" || !Number.isFinite(value)))
++        throw new PlanError("non_finite", `${fid}: значение ${value} не конечное число`);
+       const k = value === null || value === undefined ? "unknown" : kind;
+       if (!KINDS.has(k)) throw new Error("unknown kind " + k);
+       const [ru, kk] = labels(path, data, ev);
+-      cat.set(fid, { id: fid, city, scenario: period, kind: k, value: value === undefined ? null : value, label: { ru, kk }, source });
++      cat.set(fid, { id: fid, city, scenario: period, kind: k, value: value === undefined ? null : value, label: { ru, kk }, source,
++        unit: unit || null, coverage_complete: coverage });
+     };
+-    add("places.selected", sel.length, "derived", "data.js: число записей выбранных категорий");
+-    for (const g of GROUP_ORDER) if (groups.has(g)) { const o = obs["places." + g]; add("places." + g, o.value, o.kind, "k05:" + o.obs_id); }
++    add("places.selected", sel.length, "derived", "data.js: число записей выбранных категорий", "records", cov(obs["places.total"]));
++    for (const g of GROUP_ORDER) if (groups.has(g)) { const o = obs["places." + g]; add("places." + g, o.value, o.kind, "k05:" + o.obs_id, o.unit, cov(o)); }
+     const st = {};
+     for (const p of sel) { const s = (e.place_district[p.id] || { status: "unknown" }).status; st[s] = (st[s] || 0) + 1; }
+-    for (const s of ["matched", "ambiguous", "unmatched"]) add("district_status." + s, st[s] || 0, "derived", "K03 k03_assign_v1 по записям фильтра");
+-    const fu = obs["segments.foot_unknown"]; add("segments.foot_unknown", fu.value, fu.kind, "k05:" + fu.obs_id);
+-    for (const ind of ["capacity.school_places", "registry.official_schools", "population.children"]) { const o = obs[ind]; add(ind, o.value, o.kind, "k05:" + o.obs_id); }
++    for (const s of ["matched", "ambiguous", "unmatched"]) add("district_status." + s, st[s] || 0, "derived", "K03 k03_assign_v1 по записям фильтра", "records", cov(obs["district_status." + s]));
++    const fu = obs["segments.foot_unknown"]; add("segments.foot_unknown", fu.value, fu.kind, "k05:" + fu.obs_id, fu.unit, cov(fu));
++    for (const ind of ["capacity.school_places", "registry.official_schools", "population.children"]) { const o = obs[ind]; add(ind, o.value, o.kind, "k05:" + o.obs_id, o.unit, cov(o)); }
+     return { catalog: cat, scenario: period, city };
+   }
+ 
++  // K02 r5: fingerprint of the catalog (id, value, kind, unit, coverage). Not cryptographic: detects a plan
++  // built for another catalog (value/unit/coverage changed under the same city and slice), not tampering.
++  function catalogDigest(cat) {
++    const rows = [...cat.values()].map((f) => [f.id, f.value, f.kind, f.unit ?? null, f.coverage_complete ?? null])
++      .sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0));
++    const str = JSON.stringify(rows);
++    let h1 = 0x811c9dc5, h2 = 0x01000193 ^ str.length;
++    for (let i = 0; i < str.length; i++) {
++      const ch = str.charCodeAt(i);
++      h1 = Math.imul(h1 ^ ch, 0x01000193) >>> 0;
++      h2 = Math.imul(h2 ^ ch, 0x5bd1e995) >>> 0;
++    }
++    return h1.toString(16).padStart(8, "0") + h2.toString(16).padStart(8, "0");
++  }
++
+   function catalogView(cat) {
+     return [...cat.values()].map((f) => ({ id: f.id, label_ru: f.label.ru, kind: f.kind, has_value: f.value !== null }));
+   }
+ 
+   const StubSelector = {
+     name: STUB_NAME,
+-    select(view) {
++    select(view, opts) {
+       const ends = (v, ...s) => s.some((x) => v.id.endsWith("/" + x));
+       const summary = view.filter((v) => v.has_value && v.id.includes("/places.")).map((v) => v.id).slice(0, MAX_FACTS);
+       const risks = view.filter((v) => v.has_value && ends(v, "district_status.ambiguous", "district_status.unmatched", "segments.foot_unknown")).map((v) => v.id);
+       const gaps = view.filter((v) => !v.has_value).map((v) => v.id).slice(0, MAX_FACTS);
+       const sections = [{ type: "summary", fact_ids: summary }, { type: "risks", fact_ids: risks }, { type: "data_gaps", fact_ids: gaps }];
+-      return { sections: sections.filter((s) => s.fact_ids.length), comment: null };
++      return { sections: sections.filter((s) => s.fact_ids.length), comment: null, catalog_digest: opts && opts.digest };
+     },
+   };
+ 
+   // validate_plan (K02): shape, section types, ID syntax, city, scenario, catalog membership, null only in data_gaps.
+   function validatePlan(plan, cat, city, scenario, knownIds) {
+-    if (!plan || typeof plan !== "object" || Array.isArray(plan) || !("sections" in plan) || Object.keys(plan).some((k) => k !== "sections" && k !== "comment"))
+-      throw new PlanError("bad_shape", "ожидается объект {sections, comment?}");
++    if (!plan || typeof plan !== "object" || Array.isArray(plan) || !("sections" in plan) || Object.keys(plan).some((k) => !["sections", "comment", "catalog_digest"].includes(k)))
++      throw new PlanError("bad_shape", "ожидается объект {sections, catalog_digest, comment?}");
+     const secs = plan.sections;
+     if (!Array.isArray(secs) || !secs.length || secs.length > MAX_SECTIONS) throw new PlanError("bad_shape", `нужно 1–${MAX_SECTIONS} секций`);
+-    const seen = new Set(), out = [];
++    const seen = new Set(), used = new Set(), out = [];
+     for (const s of secs) {
+       if (!s || typeof s !== "object" || Object.keys(s).sort().join() !== "fact_ids,type") throw new PlanError("bad_shape", "секция = {type, fact_ids}");
+       if (!SECTION_TYPES.includes(s.type)) throw new PlanError("bad_section", `тип секции ${s.type} не разрешён`);
+@@ -125,14 +149,18 @@
+         if (f.value === null && s.type !== "data_gaps") throw new PlanError("null_as_fact", `${fid} не имеет значения; его место только в data_gaps`);
+         if (f.value !== null && s.type === "data_gaps") throw new PlanError("value_in_gaps", `${fid} имеет значение, а секция data_gaps для неизвестных`);
+       }
+-      if (new Set(s.fact_ids).size !== s.fact_ids.length) throw new PlanError("duplicate_id", "ID в секции повторяется");
++      if (new Set(s.fact_ids).size !== s.fact_ids.length || s.fact_ids.some((f) => used.has(f))) throw new PlanError("duplicate_id", "ID повторяется в секции или между секциями");
++      s.fact_ids.forEach((f) => used.add(f));
+       out.push({ type: s.type, fact_ids: s.fact_ids.slice() });
+     }
+     if (plan.comment !== undefined && plan.comment !== null && typeof plan.comment !== "string") throw new PlanError("bad_shape", "comment — строка или null");
+-    return { sections: out, comment: plan.comment ?? null };
++    // Checked last so that ID/scenario errors keep their specific codes.
++    if (plan.catalog_digest !== catalogDigest(cat)) throw new PlanError("stale_catalog", "план построен по другому каталогу (значение, единица или охват изменились)");
++    return { sections: out, comment: plan.comment ?? null, catalog_digest: plan.catalog_digest };
+   }
+ 
+-  function render(plan, cat, scenario, lang) {
++  function render(plan, cat, scenario, lang, opts) {
++    const markCoverage = !(opts && opts.markCoverage === false);
+     if (lang !== "ru" && lang !== "kk") throw new Error("lang: ru | kk");
+     const lines = [`**${TEXT.header[lang]}.** ${TEXT.scenario[lang]}: ${scenario}.`], used = [];
+     for (const s of plan.sections) {
+@@ -140,18 +168,19 @@
+       for (const fid of s.fact_ids) {
+         const f = cat.get(fid);
+         const val = f.value === null ? TEXT.unknown[lang] : formatValue(f.value);
+-        lines.push(`- ${f.label[lang]}: ${val} (${TEXT["kind_" + f.kind][lang]})`);
+-        used.push({ id: fid, value: f.value, kind: f.kind, source: f.source });
++        const partial = markCoverage && f.value !== null && f.coverage_complete === false ? ", " + TEXT.incomplete[lang] : "";
++        lines.push(`- ${f.label[lang]}: ${val} (${TEXT["kind_" + f.kind][lang]}${partial})`);
++        used.push({ id: fid, value: f.value, kind: f.kind, source: f.source, unit: f.unit, coverage_complete: f.coverage_complete });
+       }
+     }
+-    return { text: lines.join("\n"), facts_used: used };  // comments are dropped (K02 comment_policy="drop")
++    return { text: lines.join("\n"), facts_used: used, catalog_digest: plan.catalog_digest };  // comments are dropped (K02 comment_policy="drop")
+   }
+ 
+-  function explain(data, ev, city, groups, lang, selector) {
++  function explain(data, ev, city, groups, lang, selector, opts) {
+     const { catalog, scenario } = buildCatalog(data, ev, city, groups);
+-    const plan = (selector || StubSelector).select(catalogView(catalog));
++    const plan = (selector || StubSelector).select(catalogView(catalog), { digest: catalogDigest(catalog) });
+     const accepted = validatePlan(plan, catalog, city, scenario);
+-    return { ...render(accepted, catalog, scenario, lang), scenario, selector: (selector || StubSelector).name };
++    return { ...render(accepted, catalog, scenario, lang, opts), scenario, selector: (selector || StubSelector).name };
+   }
+ 
+   // ---------- UI glue (browser only) ----------
+@@ -209,7 +238,7 @@
+     btn.addEventListener("click", () => {
+       btn.disabled = true;
+       // Async like a future provider call: a reply that arrives after a city/filter change is discarded.
+-      Promise.resolve().then(() => StubSelector.select(catalogView(built.catalog))).then((plan) => {
++      Promise.resolve().then(() => StubSelector.select(catalogView(built.catalog), { digest: catalogDigest(built.catalog) })).then((plan) => {
+         if (!isCurrent()) return;  // stale reply: city or filter changed meanwhile
+         btn.disabled = false;
+         outBox.hidden = false; outBox.replaceChildren();
+@@ -231,7 +260,7 @@
+     });
+   }
+ 
+-  const api = { GROUP_ORDER, PlanError, formatValue, scenarioId, buildCatalog, catalogView, StubSelector, validatePlan, render, explain,
++  const api = { GROUP_ORDER, PlanError, formatValue, scenarioId, buildCatalog, catalogDigest, catalogView, StubSelector, validatePlan, render, explain,
+     districtOf, provenanceNotes, renderExplanation };
+   if (typeof module !== "undefined" && module.exports) module.exports = api;
+   else root.CITY_FACTS = api;
+--- a/prototypes/city-evidence/tests/conformance.cjs
++++ b/prototypes/city-evidence/tests/conformance.cjs
+@@ -12,7 +12,8 @@
+ // 1. text equality with the unmodified K02 Python renderer
+ const exp = JSON.parse(fs.readFileSync(path.join(__dirname, "expected_explanations.json"), "utf8"));
+ for (const c of exp.cases) {
+-  const r = F.explain(D, EV, c.city, new Set(c.groups), c.lang);
++  // K02 r5: parity with the unmodified K02 r3 Python renderer, which has no coverage marker.
++  const r = F.explain(D, EV, c.city, new Set(c.groups), c.lang, undefined, { markCoverage: false });
+   check(`K02 parity ${c.city} ${c.lang} [${c.groups.length} groups]`, r.text === c.text && r.scenario === c.scenario, `\n--- js ---\n${r.text}\n--- py ---\n${c.text}`);
+ }
+ 
