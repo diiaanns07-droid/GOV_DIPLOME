@@ -8,7 +8,11 @@
     {
       "check_id": "V01",
       "city": "astana",
-      "source_claim_ids": ["AST-A06-F007", "AST-A06-F008", "AST-A06-F009"],
+      "source_claim_ids": [
+        "AST-A06-F007",
+        "AST-A06-F008",
+        "AST-A06-F009"
+      ],
       "claim": "Набор AVL Астаны (Bussure/datasets/astana): агентство CTS, 3 маршрута (10, 12, 46), 201 остановка, 19 769 рейсов, 55 дней 2024-07-29…2024-09-21; формат не GTFS (табуляция, direction_id 1/2); stop_times.txt и segment_level_data.csv — LFS-указатели",
       "primary_source": "https://github.com/Mrithula742/Bussure/tree/0356bb5b37ef0992ec0df3a4f09be35e3147b094/datasets/astana",
       "source_date": "коммит 2026-09-30T13:37:27+05:30; период данных 2024-07-29…2024-09-21",
@@ -19,13 +23,74 @@
     {
       "check_id": "V02",
       "city": "astana",
-      "source_claim_ids": ["AST-A06-F019", "AST-A06-F020"],
+      "source_claim_ids": [
+        "AST-A06-F019",
+        "AST-A06-F020"
+      ],
       "claim": "Сторонний сборщик опрашивает api.citytransport.kz/api/v1/vehicles каждые 15 мин, при ошибке возвращает пустой список; собранный CSV — 324 300 строк (3243 снимка × 100 точек, 2026-03-15…2026-10-05), все нули",
       "primary_source": "https://github.com/iilenza/bus-traffic-astana/tree/49374628625ba98f67c01b6178c4436676d08e69",
       "source_date": "коммит 2026-10-05T01:03:58Z; первый коммит 2026-03-15",
       "verdict": "confirmed",
       "explanation": "collect_bus_data.py, строка 15: URL api.citytransport.kz/api/v1/vehicles; голый except возвращает []. Расписание workflow: cron */15. CSV: 324 300 строк, 3243 уникальных timestamp от 2026-03-15 09:22 до 2026-10-05 01:03; bus_count = 0 во всех строках. Важно для MVP: этот набор не содержит данных о движении автобусов. Нельзя использовать его как живой источник.",
       "not_verified_parts": "Отчёт не утверждает, что сам API не работает. Нули могут означать, что API отказывает раннерам GitHub Actions, что изменился формат ответа или что эндпоинт закрыт. Различить эти причины нельзя: ошибка проглатывается, а api.citytransport.kz из этой среды заблокирован."
+    },
+    {
+      "check_id": "V03",
+      "city": "shymkent+astana",
+      "source_claim_ids": [
+        "AST-A06-F005",
+        "AST-A06-F006",
+        "A06-F004"
+      ],
+      "claim": "В открытых каталогах GTFS нет фидов Казахстана: MobilityData — 0 KZ (контроль RU 2 / TR 24 / GE 1), transitland-atlas — 0 совпадений по Астане и .kz; поиск GitHub shymkent+gtfs и др. = 0",
+      "primary_source": "https://github.com/MobilityData/mobility-database-catalogs @189bbb215159; https://github.com/transitland/transitland-atlas @55d6eae05013",
+      "source_date": "коммиты 2026-10-04",
+      "verdict": "confirmed (каталоги); not_checked (поиск GitHub A06-F004)",
+      "explanation": "MobilityData: 3517 JSON-файлов в catalogs/, country_code KZ — 0; RU 2, TR 24, GE 1, UZ 0, KG 0. Совпадений shymkent/chimkent/шымкент/astana/nur-sultan/астана/kazakhstan нет. Число файлов 3517 против 3515 в отчёте: каталог обновился, вывод тот же. transitland-atlas: 881 файл, совпадений по тем же словам и '.kz' нет (в отчёте было 811 файлов; расхождение в числе не влияет на вывод). Для MVP: готового открытого GTFS ни у одного из городов нет, транспортный модуль требует данных от оператора или собственной оцифровки.",
+      "not_verified_parts": "API поиска GitHub (search/repositories) в этой сессии недоступен, поэтому нулевые результаты A06-F004 не воспроизведены. Каталоги охватывают не все фиды: отсутствие там не доказывает, что у оператора нет непубличного GTFS."
+    },
+    {
+      "check_id": "V04",
+      "city": "astana (+ отсутствие для shymkent)",
+      "source_claim_ids": [
+        "AST-A11-F003",
+        "AST-A11-F004",
+        "AST-A06-F002",
+        "AST-A06-F028",
+        "AST-A06-F004"
+      ],
+      "claim": "В продукте (STUPITS) хранятся OSM-границы шести районов Астаны (OSM base 2026-09-22T08:45:51Z): Есиль 3479876, Алматы 3482819, Сарыарка 3486954, Байконур 8593081, Нура 20593940, Сарайшык 19733918; у Сарайшыка admin_level=8, у остальных 6; Сарайшык исключён из расчёта; слой реальных POI недоступен (Overpass timeout)",
+      "primary_source": "GOV_DIPLOME main @834a25f: data/astana_districts.geojson, data/geo_sources/astana_districts_overpass.json, data/real_context_meta.json",
+      "source_date": "retrieved_at 2026-09-23T11:28:06Z; osm_base 2026-09-22T08:45:51Z",
+      "verdict": "confirmed",
+      "explanation": "6 features с указанными osm_id; scoring_enabled=false только у Сарайшыка; в ответе Overpass relation 19733918 admin_level=8, остальные районы города — 6. В ответе есть единицы области (Целиноград, Аршалы, Шортанды, Косшы, Тайтобе), что совпадает с AST-A06-F003. real_context_meta.status = 'unavailable', districts_source = 'fallback_approx'. Уточнение: поле osm_timestamp есть, но равно null, как и osm_version. Валидация в metadata: overlapping_pairs 0 из 15. Для MVP: границы Астаны есть (OSM, не юридические). Для Шымкента в data/ геоданных районов нет вообще.",
+      "not_verified_parts": "Актуальность OSM после 2026-09-22 и совпадение с официальными границами не проверены: openstreetmap.org, overpass и gov.kz заблокированы."
+    },
+    {
+      "check_id": "V05",
+      "city": "astana",
+      "source_claim_ids": [
+        "AST-A01-F004"
+      ],
+      "claim": "Существует политика конфиденциальности «мобильного приложения iKOMEK 109» с датой публикации 13.03.2019 и адресом manager@ikomekastana.kz",
+      "primary_source": "https://github.com/ikomek/ikomek109 @2cc30cb8b07e (README.md, строки 207–209)",
+      "source_date": "коммит 2023-07-05; дата в тексте 13.03.2019",
+      "verdict": "confirmed (текст зеркала); not_checked (официальность и текущая работа)",
+      "explanation": "README.md начинается с «Политика конфиденциальности»; строка 207 — manager@ikomekastana.kz; строка 209 — «Дата публикации: 13.03.2019г.». Репозиторий содержит один файл, история за 2023-07-05. Для MVP это подтверждает только существование текста политики, а не то, что приложение работает сейчас или что у него есть API.",
+      "not_verified_parts": "Принадлежность аккаунта github.com/ikomek оператору не подтверждена. Сайт оператора и магазины приложений не проверялись."
+    },
+    {
+      "check_id": "V06",
+      "city": "astana",
+      "source_claim_ids": [
+        "AST-A01-F007"
+      ],
+      "claim": "На GitHub есть неофициальная платформа «iKOMEK 109» для Астаны (июнь 2026): публичная лента, карта с тепловой шкалой, RU/KZ/EN, AI-ассистент, MyMemory/LibreTranslate, демо-аккаунты demo1…demo49@ikomek.kz; LICENSE нет",
+      "primary_source": "https://github.com/argamegg/ikomek_platform @e099af957843 (README.md)",
+      "source_date": "коммит 2026-06-10",
+      "verdict": "confirmed",
+      "explanation": "В README.md: бейдж languages RU|KZ|EN (стр. 7); «публичная лента, карта» (32); AI-ассистент (39); тепловая карта с жёлто-красной шкалой (42); MyMemory + LibreTranslate (38, 99); demo1@ikomek.kz … demo49@ikomek.kz (403); центр ASTANA_CENTER_LAT/LNG (224–225). Файла LICENSE нет. Значит, переиспользовать код без разрешения автора нельзя. В README нет прямого заявления, что это официальный сервис.",
+      "not_verified_parts": "Гипотеза отчёта о путанице у жителей не проверялась. Развёрнут ли сервис, тоже не проверено."
     }
   ]
 }

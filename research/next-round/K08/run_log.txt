@@ -1,0 +1,39 @@
+bussure HEAD 0356bb5b37ef0992ec0df3a4f09be35e3147b094 2026-09-30T13:37:27+05:30
+V01 agency: ['CTS']
+V01 stops 201 trips 19769 trips/route {'10': 6480, '46': 8139, '12': 5150}
+V01 direction_id {'1': 10206, '2': 9563}
+V01 dates 55 2024-07-29 2024-09-21
+V01 stop_times.txt first line: version https://git-lfs.github.com/spec/v1
+bta HEAD 49374628625ba98f67c01b6178c4436676d08e69 2026-10-05T01:03:58+00:00
+15:    url = "https://api.citytransport.kz/api/v1/vehicles"
+33:    except:
+5:    - cron: "*/15 * * * *"
+V02 rows 324300 snapshots 3243 2026-03-15 09:22:16.450751 2026-10-05 01:03:55.855451 bus_count values {'0': 324300}
+mdb HEAD 189bbb215159fac7a19b0c975b19e747434be44d 2026-10-04T18:08:30-04:00
+V03 MobilityData json: 3517
+V03 country KZ: 0
+V03 country RU: 2
+V03 country TR: 24
+V03 country GE: 1
+V03 country UZ: 0
+V03 country KG: 0
+V03 MobilityData name hits: 0
+tla HEAD 55d6eae050136fe2ff90c594ce435fe09e135e86 2026-10-04T08:37:15-07:00
+V03 transitland files: 881, hits: 0
+V04 features [('Есиль', 3479876, True, None), ('Алматы', 3482819, True, None), ('Сарыарка', 3486954, True, None), ('Байконур', 8593081, True, None), ('Нура', 20593940, True, None), ('Сарайшык', 19733918, False, None)]
+V04 osm_base 2026-09-22T08:45:51Z
+V04 relations [(3403760, '6'), (3403782, '6'), (3404061, '6'), (3479876, '6'), (3482819, '6'), (3486954, '6'), (8593081, '6'), (15594335, '6'), (17952313, '8'), (19733918, '8'), (20593940, '6')]
+V04 real_context status unavailable
+ikomek109 HEAD 2cc30cb8b07e74df4ea2495fa188092770bb06b8 2023-07-05T10:09:48+06:00
+207:электронное почте <manager@ikomekastana.kz>[.](mailto:manager@ikomekastana.kz)
+209:Дата публикации: 13.03.2019г.
+ikomek_platform HEAD e099af95784329982d76a64812698a339d0e019a 2026-06-10T02:51:55+05:00
+7:![Language](https://img.shields.io/badge/languages-RU%20%7C%20KZ%20%7C%20EN-334155)
+38:| Переводы | MyMemory + LibreTranslate fallback, локализация типовых полей |
+39:| AI-ассистент | Помощь по навигации, заявкам, статусам, настройкам, профилю и разделам платформы |
+42:| Карта | Точки заявок, фильтры по статусу/приоритету/категории, мобильная и web-версии, тепловая карта с желто-красной шкалой плотности |
+98:| Gemini API | AI-ассистент |
+99:| MyMemory / LibreTranslate | автоматические переводы |
+403:demo1@ikomek.kz ... demo49@ikomek.kz
+520:- Внешние сервисы MyMemory, LibreTranslate и Gemini могут иметь лимиты и fallback-поведение.
+V06 LICENSE: none
