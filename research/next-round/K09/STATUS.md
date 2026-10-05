@@ -21,7 +21,7 @@
    - Код трёх присланных скриптов прочитан до запуска.
    - check.py: 12 из 12; pytest: 112 passed.
    - A13-E4 и AST-A13-E5 воспроизведены побайтно; AST-A13-E6 совпадает во всех полях, кроме времени.
-   - Новый прогон E6b с n = 300 (seeds 101–103) согласуется с n = 60.
+   - Новый прогон E6b с n = 300 (seeds 101–103) согласуется с n = 60 по доле «остаётся топ-1»; доля «в топ-10» при σ = 0.3 ниже (0.533 вне ДИ n = 60).
    - Новый E8: словарный парсер A13 распознаёт kk-названия районов Астаны из OSM в 1 из 5 случаев.
 3. Этап 3 — темы.
    - Т1: поручение → ограничения ru/kk и топонимы двух городов.
@@ -35,7 +35,7 @@
 - research/next-round/K09/02_pilot_reproduction.md
 - research/next-round/K09/03_thesis_topics.md
 - research/next-round/K09/K09_evidence.json (40 sources, 17 facts, 3 opportunities)
-- research/next-round/K09/sources/SHA256SUMS.txt
+- research/next-round/K09/sources/SHA256SUMS.txt, sources/REPO_COMMIT_AUTHORS.txt
 - research/next-round/K09/repro/: E4/E5/E6 stdout и run_meta, E6b_n60_seeds1-3_equivalence.json, E6b_n300_seeds101-103.json (с сырыми выборками), E8_toponym_stems.json
 - research/next-round/K09/scripts/: fetch_bib_sources.sh, compare_with_ast_a13.py, build_evidence.py, run_pilots.py, e6b_rank_sensitivity.py, e8_toponym_stems.py
 - research/handoffs/shared/K09/diploma-basis/STATUS.md (указатель на этот файл)
@@ -50,12 +50,13 @@
 - e6b --n 300 --seeds 101 102 103 → 513.9 с, результат в repro.
 - e8_toponym_stems.py → ru 4 из 5, kk(name) 1 из 5, kk(name:kk) 0 из 3.
 - json.tool для K09_evidence.json и всех repro/*.json → валидны.
+- Независимая проверка документов (workflow, 5 проверяющих + 1 опровергатель, только чтение): из 37 замечаний подтверждено 27 (≈16 различных, в основном локаторы и формулировки), 10 отклонено. Все подтверждённые исправлены: строки CITATIONS.rst, название OptiMUS v0.2, уровень L03 R2→R1, основание R2 через авторов коммитов (sources/REPO_COMMIT_AUTHORS.txt), список прочитанного в ALCE, «побайтно» для E6, согласие n=300 с n=60 только для доли топ-1, name:kk у 4 районов, утверждения о доступе к gov.kz/stat.gov.kz/Overpass (K09 их не проверял), кандидат реестра школ (A10-S017, AST-A12-F024).
 - Не запускалось: A13-E2 (масштаб), A13-E3 (API-сервер), AST-A13-E7 (конфигурации). Харнесс LLM не запускался, LLM-ключи не использовались.
 
 Доказательства и ограничения:
 - Литература подтверждена только авторскими файлами на GitHub. doi.org, Crossref, arXiv, издатели отклонены политикой (connect_rejected), обход не делался; WebSearch/WebFetch не использовались.
 - Все эксперименты относятся к учебной (synthetic) модели или к синтетическим тестовым фразам. О реальных Астане и Шымкенте они ничего не говорят.
-- Названия районов Шымкента есть только как гипотезы A04, A11 и A12. В E8 Шымкент не проверялся.
+- Перечень районов Шымкента есть только как гипотеза A04, A11 и A12; отдельно наблюдалось название «Енбекшинский район» (A10-F019, по СМИ). В E8 Шымкент не проверялся.
 - Копии авторских файлов (README, CITATION, ALCE.pdf) в Git не добавлены. Их можно воспроизвести скриптом и проверить по хэшам.
 
 Незавершённое:

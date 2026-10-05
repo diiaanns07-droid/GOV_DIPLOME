@@ -157,7 +157,7 @@
    "accessed_at": "2026-10-05",
    "source_type": "scientific_publication",
    "access_status": "verification_level_R2",
-   "notes": "подтверждено через K09-S003 (README.md стр. 141–143); ID в исходных отчётах: AST-A13-L02; текст не читан"
+   "notes": "подтверждено через K09-S003 (README.md стр. 141–143); ID в исходных отчётах: AST-A13-L02; Rhodium ведёт Hadka: 198 из 214 коммитов (sources/REPO_COMMIT_AUTHORS.txt); текст не читан"
   },
   {
    "source_id": "K09-L03",
@@ -167,8 +167,8 @@
    "published_at": null,
    "accessed_at": "2026-10-05",
    "source_type": "scientific_publication",
-   "access_status": "verification_level_R2",
-   "notes": "подтверждено через K09-S003 (README.md стр. 14–17, 144–145); ID в исходных отчётах: AST-A13-L03; PDF par.nsf.gov не открывался"
+   "access_status": "verification_level_R1",
+   "notes": "подтверждено через K09-S003 (README.md стр. 14–17, 144–145); ID в исходных отчётах: AST-A13-L03; автор(ы) в README сокращены до «et al.»; участие сопровождающих не показано; PDF par.nsf.gov не открывался"
   },
   {
    "source_id": "K09-L04",
@@ -212,7 +212,7 @@
    "accessed_at": "2026-10-05",
    "source_type": "scientific_publication",
    "access_status": "verification_level_R4",
-   "notes": "подтверждено через K09-S004 (paper/paper.md (весь), CITATIONS.rst стр. 10–12); ID в исходных отчётах: AST-A13-L05; прочитан исходник JOSS; CITATION.cff даёт 3 авторов для этого DOI — несогласованность"
+   "notes": "подтверждено через K09-S004 (paper/paper.md (весь), CITATIONS.rst стр. 11–13); ID в исходных отчётах: AST-A13-L05; прочитан исходник JOSS; CITATION.cff даёт 3 авторов для этого DOI — несогласованность"
   },
   {
    "source_id": "K09-L08",
@@ -260,7 +260,7 @@
   },
   {
    "source_id": "K09-L12",
-   "title": "AhmadiTeshnizi A., Gao W., Udell M. OptiMUS v0.1 arXiv:2310.06116; v0.2 arXiv:2402.10172; v0.3 arXiv:2407.19633 (+Brunborg, Talaei)",
+   "title": "AhmadiTeshnizi A., Gao W., Udell M. OptiMUS v0.1 arXiv:2310.06116; v0.2 «OptiMUS: Scalable Optimization Modeling with (MI) LP Solvers and Large Language Models» arXiv:2402.10172; v0.3 arXiv:2407.19633 (+Brunborg, Talaei)",
    "publisher": null,
    "url": null,
    "published_at": null,
@@ -289,7 +289,7 @@
    "accessed_at": "2026-10-05",
    "source_type": "scientific_publication",
    "access_status": "verification_level_R4_partial_preprint",
-   "notes": "подтверждено через K09-S006 (ALCE.pdf: аннотация, §1–§4.3, §6 (фрагмент), §8; README стр. 171–177); ID в исходных отчётах: A13-L008, AST-A13-L07; §5 и приложения не прочитаны полностью; сверки с версией EMNLP нет"
+   "notes": "подтверждено через K09-S006 (ALCE.pdf: аннотация, §1–§4.3, §6 (фрагмент), §8; README стр. 171–177); ID в исходных отчётах: A13-L008, AST-A13-L07; §5, §6 (кроме фрагмента), §7, Limitation и приложения не прочитаны полностью; сверки с версией EMNLP нет"
   },
   {
    "source_id": "K09-L15",
@@ -310,7 +310,7 @@
    "published_at": null,
    "accessed_at": "2026-10-05",
    "source_type": "scientific_publication",
-   "access_status": "verification_level_R2",
+   "access_status": "verification_level_R2_R3",
    "notes": "подтверждено через K09-S007 (README.md стр. 150–161; описание стр. 6–7, 23–25); ID в исходных отчётах: A13-L010, AST-A13-L08; название «Not what you've signed up for…» не подтверждено (R0)"
   },
   {
@@ -487,7 +487,43 @@
    "source_refs": [
     {
      "source_id": "K09-S002",
-     "locator": "sources/SHA256SUMS.txt"
+     "locator": "sources/SHA256SUMS.txt против astana-results/13_architecture_ai_thesis/extracted_files__34_/SHA256SUMS.txt"
+    },
+    {
+     "source_id": "K09-S003",
+     "locator": "sources/SHA256SUMS.txt против astana-results/13_architecture_ai_thesis/extracted_files__34_/SHA256SUMS.txt"
+    },
+    {
+     "source_id": "K09-S004",
+     "locator": "sources/SHA256SUMS.txt против astana-results/13_architecture_ai_thesis/extracted_files__34_/SHA256SUMS.txt"
+    },
+    {
+     "source_id": "K09-S005",
+     "locator": "sources/SHA256SUMS.txt против astana-results/13_architecture_ai_thesis/extracted_files__34_/SHA256SUMS.txt"
+    },
+    {
+     "source_id": "K09-S006",
+     "locator": "sources/SHA256SUMS.txt против astana-results/13_architecture_ai_thesis/extracted_files__34_/SHA256SUMS.txt"
+    },
+    {
+     "source_id": "K09-S007",
+     "locator": "sources/SHA256SUMS.txt против astana-results/13_architecture_ai_thesis/extracted_files__34_/SHA256SUMS.txt"
+    },
+    {
+     "source_id": "K09-S008",
+     "locator": "sources/SHA256SUMS.txt против astana-results/13_architecture_ai_thesis/extracted_files__34_/SHA256SUMS.txt"
+    },
+    {
+     "source_id": "K09-S009",
+     "locator": "sources/SHA256SUMS.txt против astana-results/13_architecture_ai_thesis/extracted_files__34_/SHA256SUMS.txt"
+    },
+    {
+     "source_id": "K09-S010",
+     "locator": "sources/SHA256SUMS.txt против astana-results/13_architecture_ai_thesis/extracted_files__34_/SHA256SUMS.txt"
+    },
+    {
+     "source_id": "K09-S011",
+     "locator": "sources/SHA256SUMS.txt против astana-results/13_architecture_ai_thesis/extracted_files__34_/SHA256SUMS.txt"
     }
    ],
    "derivation": "scripts/compare_with_ast_a13.py",
@@ -532,7 +568,7 @@
   },
   {
    "fact_id": "K09-F005",
-   "statement": "Набор NLP4LP (OptiMUS) распространяется по CC BY-NC 4.0 «only for research»; непригоден для коммерческого/продуктового использования без отдельного разрешения.",
+   "statement": "Набор NLP4LP (OptiMUS) распространяется по CC BY-NC 4.0, «intended and licensed for research use only» (README стр. 21); непригоден для коммерческого/продуктового использования без отдельного разрешения.",
    "kind": "observed",
    "value": null,
    "unit": null,
@@ -631,7 +667,7 @@
    "source_refs": [
     {
      "source_id": "K09-S004",
-     "locator": "CITATION.cff стр. 3–15; paper/paper.md стр. 11–17; CITATIONS.rst стр. 10–12"
+     "locator": "CITATION.cff стр. 3–15; paper/paper.md стр. 11–17; CITATIONS.rst стр. 11–13"
     }
    ],
    "derivation": null,
@@ -880,7 +916,23 @@
    "research/next-round/K09/sources/SHA256SUMS.txt",
    "research/next-round/K09/scripts/fetch_bib_sources.sh",
    "research/next-round/K09/scripts/compare_with_ast_a13.py",
-   "research/next-round/K09/scripts/build_evidence.py"
+   "research/next-round/K09/scripts/build_evidence.py",
+   "research/next-round/K09/02_pilot_reproduction.md",
+   "research/next-round/K09/03_thesis_topics.md",
+   "research/next-round/K09/STATUS.md",
+   "research/next-round/K09/sources/REPO_COMMIT_AUTHORS.txt",
+   "research/next-round/K09/scripts/run_pilots.py",
+   "research/next-round/K09/scripts/e6b_rank_sensitivity.py",
+   "research/next-round/K09/scripts/e8_toponym_stems.py",
+   "research/next-round/K09/repro/E4_run_meta.json",
+   "research/next-round/K09/repro/E4_stdout.json",
+   "research/next-round/K09/repro/E5_run_meta.json",
+   "research/next-round/K09/repro/E5_stdout.json",
+   "research/next-round/K09/repro/E6_run_meta.json",
+   "research/next-round/K09/repro/E6_stdout.json",
+   "research/next-round/K09/repro/E6b_n60_seeds1-3_equivalence.json",
+   "research/next-round/K09/repro/E6b_n300_seeds101-103.json",
+   "research/next-round/K09/repro/E8_toponym_stems.json"
   ],
   "not_committed": "Копии файлов авторов (README, CITATION, ALCE.pdf) не добавлены в репозиторий из-за лицензий; их можно воспроизвести скриптом fetch_bib_sources.sh и проверить по SHA256SUMS.txt."
  }

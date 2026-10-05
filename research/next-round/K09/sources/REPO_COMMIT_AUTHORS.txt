@@ -1,0 +1,75 @@
+# K09: авторы коммитов (git log, до 1000 последних коммитов ветки по умолчанию), получено 2026-10-05T06:14Z
+# Команда: git fetch --depth=1000 origin && git log --format='%an' | sort | uniq -c | sort -rn | head -8
+== quaquel_EMAworkbench (коммитов в выборке: 1620; первый: 2012-07-20 quaquel)
+   1279 Jan Kwakkel
+    127 quaquel
+     96 Ewout ter Hoeven
+     33 pre-commit-ci[bot]
+     18 Floris Boendermaker
+     11 dependabot[bot]
+     11 Jeffrey Newman
+      7 J.H. Kwakkel
+== Project-Platypus_Rhodium (коммитов в выборке: 214; первый: 2015-10-29 David Hadka)
+    191 David Hadka
+      7 dependabot[bot]
+      7 Dave Hadka
+      6 David Anthoff
+      1 dgoldri25
+      1 Sascha T. Ishikawa
+      1 Oscar Stenström
+== SALib_SALib (коммитов в выборке: 2104; первый: 2013-04-02 jdherman)
+    509 ConnectedSystems
+    487 Will Usher
+    480 Takuya Iwanaga
+    178 jdherman
+     72 Pamphile Roy
+     66 Lucas Teixeira
+     66 Jon Herman
+     55 Abdullah Sahin
+== gboeing_osmnx (коммитов в выборке: 4653; первый: 2016-07-23 gboeing)
+   3212 Geoff Boeing
+    823 gboeing
+    141 Nick Bristow
+     52 Max Gardner
+     41 Henrikki Tenkanen
+     34 Michal Migurski
+     26 pablo
+     23 Ewout ter Hoeven
+== princeton-nlp_ALCE (коммитов в выборке: 32; первый: 2023-05-23 Tianyu Gao)
+     13 Tianyu Gao
+      9 Howard Yen
+      5 howard-yen
+      3 Danqi Chen
+      1 d223302
+      1 Erjan Kalybek
+== greshake_llm-security (коммитов в выборке: 88; первый: 2023-02-19 Kai Greshake)
+     69 Kai Greshake
+     17 shhra
+      1 Shailesh Mishra
+      1 Ikko Eltociear Ashimine
+== nl4opt_nl4opt-competition (коммитов в выборке: 42; первый: 2022-05-25 nl4opt)
+     21 nl4opt
+     12 Raymond Li
+      6 Mahdi Mostajabdaveh
+      2 NL4OPT
+      1 Haley
+== teshnizi_OptiMUS (коммитов в выборке: 32; первый: 2023-10-05 Ali Teshnizi)
+     27 Ali Teshnizi
+      5 Wenzhi Gao
+== reasoning-machines_pal (коммитов в выборке: 61; первый: 2022-11-18 luyug)
+     32 Aman Madaan
+      8 urialon
+      8 Luyu Gao
+      4 Uri Alon
+      4 Shuyan Zhou
+      3 luyug
+      2 alexisxy
+== r5py_r5py (коммитов в выборке: 442; первый: 2022-03-23 Christoph Fink)
+    363 Christoph Fink
+     57 Henrikki Tenkanen
+     15 Willem Klumpenhouwer
+      3 Rafael H M Pereira
+      1 rafapereirabr
+      1 Thomas Dutkiewicz
+      1 Marcus Saraiva
+      1 Geoff Boeing
