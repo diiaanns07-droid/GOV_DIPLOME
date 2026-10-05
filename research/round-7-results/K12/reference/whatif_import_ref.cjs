@@ -206,7 +206,16 @@ function makeImporter({ D, sha256hex }) {
     });
   }
 
-  return { snapshot, initialState, importScenario, compute, parseStrict, haversineM };
+  // Export: the source copy (inputs) and derived values are kept apart; derived values are recomputed on import.
+  function exportScenario(state) {
+    const doc = { schema_version: SCHEMA, city_id: state.city, source_snapshot: state.snapshot, category: state.category,
+                  control_points: state.control_points.map((p) => ({ id: p.id, lon: p.lon, lat: p.lat })),
+                  proposed_object: state.proposed_object ? { ...state.proposed_object } : null,
+                  results: { derived: true, recomputed_on_import: true, rows: compute(state) } };
+    return JSON.stringify(doc, null, 1);
+  }
+
+  return { snapshot, initialState, importScenario, compute, exportScenario, parseStrict, haversineM };
 }
 
 module.exports = { makeImporter, parseStrict, haversineM, ImportError, MAX_BYTES, SCHEMA };

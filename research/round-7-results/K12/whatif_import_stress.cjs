@@ -182,6 +182,29 @@ for (const f of IDX.fixtures) {
   results.push(res);
 }
 
+// ---------------------------------------------------------------- optional: export round-trip (if the adapter exports)
+if (typeof A.exportScenario === "function") {
+  const res = { id: "E01", expect: "export", advisory: false, expected_codes: [], checks: {} };
+  try {
+    const text = A.exportScenario(START);
+    res.bytes = Buffer.byteLength(text, "utf8");
+    const C = res.checks;
+    C.size_le_256KiB = res.bytes <= IDX.max_bytes;
+    let parsed = null;
+    try { parsed = JSON.parse(text); } catch (e) { parsed = null; }
+    C.strict_json = parsed !== null && !/\bNaN\b|Infinity/.test(text);
+    C.no_local_paths_or_tokens = !/(\/home\/|\/Users\/|[A-Za-z]:\\\\|\/tmp\/|file:\/\/|token|api[_-]?key|secret|password)/i.test(text);
+    const back = callImport(text, A.initialState("shymkent", "school"));
+    C.reimport_accepted = !!(back.r && back.r.ok) && !back.threw;
+    C.reimport_same_state = C.reimport_accepted && view(back.r.state) === view(START);
+    C.no_network = back.after.net === back.before.net;
+    res.outcome = "exported";
+    res.failed_checks = Object.entries(C).filter(([, v]) => v === false).map(([k]) => k);
+    res.status = res.failed_checks.length ? "FAIL" : "PASS";
+  } catch (e) { res.status = "FAIL"; res.outcome = "exception"; res.error = e.message; res.failed_checks = ["exception"]; }
+  results.push(res);
+}
+
 const summary = { adapter: path.basename(ADAPTER), app_root: path.basename(path.resolve(APP)), index: IDX.fixture_set,
   total: results.length, pass: results.filter((r) => r.status === "PASS").length,
   fail: results.filter((r) => r.status === "FAIL").map((r) => r.id),

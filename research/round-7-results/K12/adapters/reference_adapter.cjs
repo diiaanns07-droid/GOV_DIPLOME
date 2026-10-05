@@ -6,5 +6,6 @@ module.exports = function ({ D, requireWeb }) {
   const { makeImporter } = require(path.join(__dirname, "..", "reference", "whatif_import_ref.cjs"));
   const imp = makeImporter({ D, sha256hex: F.sha256hex });
   return { name: "k12-reference", snapshot: imp.snapshot, initialState: imp.initialState,
-           importScenario: imp.importScenario, compute: imp.compute };
+           importScenario: imp.importScenario, compute: imp.compute,
+           exportScenario: imp.exportScenario };
 };

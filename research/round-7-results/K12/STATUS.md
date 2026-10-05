@@ -2,8 +2,13 @@
 
 - **Роль:** TASK K12 (не BUILD). Ветка `claude/save-work-handoff-xuav3q`.
 - **Задание:** `research/round-7/tasks/K12.txt` и `FEATURE_SPEC.txt` @ `codex/research-import-2026-10-05` `7927fa8`.
-- **Статус: `partial`.** Этап 1 готов: фикстуры, переносимый модуль, эталонный импортёр, прогоны.
-  Расширения — следующий этап.
+- **Статус: `done`** для объёма задания:
+  - негативные фикстуры, ожидаемые отказы и инвариант;
+  - переносимый тестовый модуль;
+  - эталонный импортёр (предложение);
+  - самопроверка.
+
+  Проверки импортёра самого BUILD нет: в базе его ещё нет.
 - **База:** BUILD `claude/beautiful-clarke-sbzomj` @ `c58a3b2b175cf978ad785fef7f88d8fd9b1338f2`.
   - Папка прототипа совпадает с кандидатом `b3e4dc4`: я проверил это `git diff --stat`, расхождений нет.
   - Копия извлечена `research/round-5-results/K12/extract_build.py` (`git show` → `write_bytes`,
@@ -36,12 +41,21 @@
   инварианты описаны в `ADAPTER.md`.
 - `reference/whatif_import_ref.cjs`: эталонный импортёр по спецификации (строгий JSON-парсер,
   отпечаток, проверки, пересчёт гаверсинусом). Это предложение логики, не UI.
-- `adapters/reference_adapter.cjs` и `adapters/naive_adapter.cjs` (намеренно плохой, для проверки самого теста).
+- `adapters/reference_adapter.cjs`, `adapters/naive_adapter.cjs`, `adapters/fetching_adapter.cjs`: два последних
+  намеренно плохие, для проверки самого теста.
+- Этап 2:
+  - экспорт в эталоне (входы и выводимые значения раздельно) и проверка круга E01 в модуле;
+  - сетевая ловушка показана адаптером, который пытается открыть URL из текста;
+  - `selfcheck.cjs`;
+  - `REPORT.md`.
 
 ## Проверки, которые реально выполнены (Linux, Node 22.22, Python 3.11.15)
 
 - `node whatif_import_stress.cjs --app-root <копия c58a3b2> --adapter adapters/reference_adapter.cjs`:
-  **48/48 PASS**, коды совпали, сетевых попыток 0 (`results/reference_on_c58a3b2.json`).
+  **49/49 PASS** (48 фикстур + E01), коды совпали, сетевых попыток 0 (`results/reference_on_c58a3b2.json`).
+- `adapters/fetching_adapter.cjs`: FAIL ровно N14 и N38 по `no_network`, 2 попытки перехвачены
+  (`results/fetching_on_c58a3b2.json`).
+- `node selfcheck.cjs --app-root <копия>`: 18/18 PASS.
 - То же с `adapters/naive_adapter.cjs`: 12 PASS, 35 FAIL, 1 ADVISORY_FAIL, exit 1
   (`results/naive_on_c58a3b2.json`). Тест ловит:
   - мутацию состояния;
@@ -52,8 +66,24 @@
 **Не выполнялось:** импортёр BUILD — его ещё нет; браузерный DOM (отображение строк как текста);
 Windows.
 
+## Ограничения
+
+- Безопасное отображение строк в DOM не проверено: тест безголовый.
+- Коды отказов — advisory; без `--strict-codes` расхождение кода не считается FAIL.
+- N15 и N42 — advisory.
+
 ## Следующий шаг
 
-1. Расширение: демонстрация сетевой ловушки (адаптер, который пытается открыть URL из фикстуры)
-   и общий скрипт прогона.
-2. После появления импортёра в BUILD — прогон модуля на его SHA с адаптером BUILD.
+1. Когда в BUILD появится импортёр, извлечь его SHA:
+
+   ```
+   extract_build.py <SHA> <dir>
+   ```
+
+2. Написать адаптер по `ADAPTER.md` и прогнать:
+
+   ```
+   node whatif_import_stress.cjs --app-root <dir> --adapter <адаптер>
+   ```
+
+   Только после этого можно говорить, что импорт BUILD проверен.

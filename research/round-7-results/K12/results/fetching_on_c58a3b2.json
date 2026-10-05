@@ -1,15 +1,18 @@
 {
  "summary": {
-  "adapter": "reference_adapter.cjs",
+  "adapter": "fetching_adapter.cjs",
   "app_root": "build_c58a3b2",
   "index": "k12r7-city-whatif-import-stress-v1",
   "total": 49,
-  "pass": 49,
-  "fail": [],
+  "pass": 47,
+  "fail": [
+   "N14",
+   "N38"
+  ],
   "advisory_fail": [],
   "error": [],
   "code_mismatch": [],
-  "network_attempts": 0
+  "network_attempts": 2
  },
  "results": [
   {
@@ -644,7 +647,7 @@
    "checks": {
     "no_exception": true,
     "passed_state_not_mutated": true,
-    "no_network": true,
+    "no_network": false,
     "prototype_unchanged": true,
     "no_new_globals": true,
     "rejected": true,
@@ -656,8 +659,10 @@
    "outcome": "rejected",
    "code": "foreign_snapshot",
    "code_match": true,
-   "failed_checks": [],
-   "status": "PASS"
+   "failed_checks": [
+    "no_network"
+   ],
+   "status": "FAIL"
   },
   {
    "id": "N15",
@@ -1252,7 +1257,7 @@
    "checks": {
     "no_exception": true,
     "passed_state_not_mutated": true,
-    "no_network": true,
+    "no_network": false,
     "prototype_unchanged": true,
     "no_new_globals": true,
     "rejected": true,
@@ -1264,8 +1269,10 @@
    "outcome": "rejected",
    "code": "bad_points",
    "code_match": true,
-   "failed_checks": [],
-   "status": "PASS"
+   "failed_checks": [
+    "no_network"
+   ],
+   "status": "FAIL"
   },
   {
    "id": "N39",
