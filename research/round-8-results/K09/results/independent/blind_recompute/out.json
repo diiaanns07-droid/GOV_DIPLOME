@@ -1,0 +1,395 @@
+{
+ "overall": {
+  "G1/mean": {
+   "n": 2430,
+   "hits": 2043,
+   "primary_equal": 2043,
+   "primary_defined": 2430,
+   "rel_positive_n": 387,
+   "rel_p90": 0.025331246,
+   "rel_max": 0.786837743,
+   "unknown_worse": 0,
+   "rel_undefined": 0,
+   "wilson_lo": 0.825656,
+   "wilson_hi": 0.85475
+  },
+  "G1/minimax": {
+   "n": 2430,
+   "hits": 1757,
+   "primary_equal": 1893,
+   "primary_defined": 2430,
+   "rel_positive_n": 537,
+   "rel_p90": 0.175721587,
+   "rel_max": 1.761628204,
+   "unknown_worse": 0,
+   "rel_undefined": 0,
+   "wilson_lo": 0.704911,
+   "wilson_hi": 0.740475
+  },
+  "G1/coverage": {
+   "n": 2430,
+   "hits": 2266,
+   "primary_equal": 2385,
+   "primary_defined": 2430,
+   "rel_positive_n": 45,
+   "rel_p90": 0.0,
+   "rel_max": 0.5,
+   "unknown_worse": 0,
+   "rel_undefined": 26,
+   "wilson_lo": 0.921838,
+   "wilson_hi": 0.941818
+  },
+  "G2/mean": {
+   "n": 2430,
+   "hits": 1252,
+   "primary_equal": 1287,
+   "primary_defined": 2430,
+   "rel_positive_n": 1143,
+   "rel_p90": 0.153067169,
+   "rel_max": 2.214973613,
+   "unknown_worse": 0,
+   "rel_undefined": 0,
+   "wilson_lo": 0.495347,
+   "wilson_hi": 0.535057
+  },
+  "G2/minimax": {
+   "n": 2430,
+   "hits": 640,
+   "primary_equal": 1782,
+   "primary_defined": 2430,
+   "rel_positive_n": 648,
+   "rel_p90": 0.240341512,
+   "rel_max": 1.761628204,
+   "unknown_worse": 0,
+   "rel_undefined": 0,
+   "wilson_lo": 0.246245,
+   "wilson_hi": 0.281251
+  },
+  "G2/coverage": {
+   "n": 2430,
+   "hits": 807,
+   "primary_equal": 1970,
+   "primary_defined": 2430,
+   "rel_positive_n": 460,
+   "rel_p90": 0.121827411,
+   "rel_max": 0.6,
+   "unknown_worse": 0,
+   "rel_undefined": 26,
+   "wilson_lo": 0.313651,
+   "wilson_hi": 0.351076
+  }
+ },
+ "by_slice_hits": {
+  "G1/mean": {
+   "astana_clinic": 799,
+   "astana_clinic_nobase": 470,
+   "shymkent_school": 774
+  },
+  "G1/minimax": {
+   "astana_clinic": 784,
+   "astana_clinic_nobase": 266,
+   "shymkent_school": 707
+  },
+  "G1/coverage": {
+   "astana_clinic": 793,
+   "astana_clinic_nobase": 693,
+   "shymkent_school": 780
+  },
+  "G2/mean": {
+   "astana_clinic": 567,
+   "astana_clinic_nobase": 184,
+   "shymkent_school": 501
+  },
+  "G2/minimax": {
+   "astana_clinic": 258,
+   "astana_clinic_nobase": 138,
+   "shymkent_school": 244
+  },
+  "G2/coverage": {
+   "astana_clinic": 311,
+   "astana_clinic_nobase": 199,
+   "shymkent_school": 297
+  }
+ },
+ "by_factor_hits": {
+  "n_candidates": {
+   "G1/mean": {
+    "6": 734,
+    "10": 665,
+    "16": 644
+   },
+   "G1/minimax": {
+    "6": 694,
+    "10": 565,
+    "16": 498
+   },
+   "G1/coverage": {
+    "6": 775,
+    "10": 740,
+    "16": 751
+   },
+   "G2/mean": {
+    "6": 635,
+    "10": 386,
+    "16": 231
+   },
+   "G2/minimax": {
+    "6": 339,
+    "10": 175,
+    "16": 126
+   },
+   "G2/coverage": {
+    "6": 395,
+    "10": 258,
+    "16": 154
+   }
+  },
+  "n_points": {
+   "G1/mean": {
+    "5": 728,
+    "15": 664,
+    "25": 651
+   },
+   "G1/minimax": {
+    "5": 648,
+    "15": 572,
+    "25": 537
+   },
+   "G1/coverage": {
+    "5": 760,
+    "15": 755,
+    "25": 751
+   },
+   "G2/mean": {
+    "5": 539,
+    "15": 383,
+    "25": 330
+   },
+   "G2/minimax": {
+    "5": 332,
+    "15": 157,
+    "25": 151
+   },
+   "G2/coverage": {
+    "5": 310,
+    "15": 237,
+    "25": 260
+   }
+  },
+  "budget_ratio": {
+   "G1/mean": {
+    "0.25": 674,
+    "0.5": 673,
+    "1.0": 696
+   },
+   "G1/minimax": {
+    "0.25": 593,
+    "0.5": 575,
+    "1.0": 589
+   },
+   "G1/coverage": {
+    "0.25": 724,
+    "0.5": 765,
+    "1.0": 777
+   },
+   "G2/mean": {
+    "0.25": 493,
+    "0.5": 397,
+    "1.0": 362
+   },
+   "G2/minimax": {
+    "0.25": 320,
+    "0.5": 158,
+    "1.0": 162
+   },
+   "G2/coverage": {
+    "0.25": 369,
+    "0.5": 228,
+    "1.0": 210
+   }
+  },
+  "weights": {
+   "G1/mean": {
+    "one_heavy": 725,
+    "random_1_100": 677,
+    "uniform": 641
+   },
+   "G1/minimax": {
+    "one_heavy": 600,
+    "random_1_100": 577,
+    "uniform": 580
+   },
+   "G1/coverage": {
+    "one_heavy": 764,
+    "random_1_100": 766,
+    "uniform": 736
+   },
+   "G2/mean": {
+    "one_heavy": 433,
+    "random_1_100": 427,
+    "uniform": 392
+   },
+   "G2/minimax": {
+    "one_heavy": 217,
+    "random_1_100": 223,
+    "uniform": 200
+   },
+   "G2/coverage": {
+    "one_heavy": 262,
+    "random_1_100": 292,
+    "uniform": 253
+   }
+  }
+ },
+ "mcnemar": {
+  "mean": {
+   "G1_only": 846,
+   "G2_only": 55,
+   "both": 1197,
+   "neither": 332
+  },
+  "minimax": {
+   "G1_only": 1195,
+   "G2_only": 78,
+   "both": 562,
+   "neither": 595
+  },
+  "coverage": {
+   "G1_only": 1493,
+   "G2_only": 34,
+   "both": 773,
+   "neither": 130
+  }
+ },
+ "size_distribution": {
+  "mean": {
+   "0": 46,
+   "1": 269,
+   "2": 441,
+   "3": 1674
+  },
+  "minimax": {
+   "0": 46,
+   "1": 272,
+   "2": 434,
+   "3": 1678
+  },
+  "coverage": {
+   "0": 46,
+   "1": 272,
+   "2": 447,
+   "3": 1665
+  }
+ },
+ "nontrivial": {
+  "G1/mean": {
+   "n": 2115,
+   "hits": 1728
+  },
+  "G1/minimax": {
+   "n": 2112,
+   "hits": 1439
+  },
+  "G1/coverage": {
+   "n": 2112,
+   "hits": 1948
+  },
+  "G2/mean": {
+   "n": 2115,
+   "hits": 937
+  },
+  "G2/minimax": {
+   "n": 2112,
+   "hits": 322
+  },
+  "G2/coverage": {
+   "n": 2112,
+   "hits": 489
+  }
+ },
+ "secondary": {
+  "sec_max_selected": {
+   "G1/mean": {
+    "1": 30,
+    "2": 22,
+    "5": 20
+   },
+   "G1/minimax": {
+    "1": 30,
+    "2": 15,
+    "5": 14
+   },
+   "G1/coverage": {
+    "1": 30,
+    "2": 28,
+    "5": 25
+   },
+   "G2/mean": {
+    "1": 30,
+    "2": 5,
+    "5": 5
+   },
+   "G2/minimax": {
+    "1": 30,
+    "2": 3,
+    "5": 0
+   },
+   "G2/coverage": {
+    "1": 30,
+    "2": 5,
+    "5": 3
+   }
+  },
+  "sec_radius": {
+   "G1/mean": {
+    "100": 20,
+    "300": 20,
+    "800": 20
+   },
+   "G1/minimax": {
+    "100": 13,
+    "300": 13,
+    "800": 13
+   },
+   "G1/coverage": {
+    "100": 30,
+    "300": 27,
+    "800": 21
+   },
+   "G2/mean": {
+    "100": 5,
+    "300": 5,
+    "800": 5
+   },
+   "G2/minimax": {
+    "100": 2,
+    "300": 2,
+    "800": 2
+   },
+   "G2/coverage": {
+    "100": 15,
+    "300": 4,
+    "800": 0
+   }
+  }
+ },
+ "distinct_exact_plans": {
+  "1": 1281,
+  "2": 791,
+  "3": 358
+ },
+ "sanity": {
+  "a": 0,
+  "b": 0,
+  "c": 0,
+  "d": 0,
+  "e": 0,
+  "f": 0,
+  "g": {
+   "main": 2430,
+   "sec_max_selected": 90,
+   "sec_radius": 90
+  },
+  "h": 0
+ }
+}

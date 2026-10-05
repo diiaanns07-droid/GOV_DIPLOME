@@ -1,0 +1,4914 @@
+{
+ "shymkent_school#0": {
+  "status": "optimal",
+  "reason": null,
+  "feasible_count": 8,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "c03"
+    ],
+    "weighted_sum_mm": 1882883,
+    "max_mm": 776882,
+    "covered_weight": 2,
+    "unknown_count": 0,
+    "cost": 588
+   },
+   "minimax": {
+    "selected_ids": [
+     "c03"
+    ],
+    "weighted_sum_mm": 1882883,
+    "max_mm": 776882,
+    "covered_weight": 2,
+    "unknown_count": 0,
+    "cost": 588
+   },
+   "coverage": {
+    "selected_ids": [
+     "c03"
+    ],
+    "weighted_sum_mm": 1882883,
+    "max_mm": 776882,
+    "covered_weight": 2,
+    "unknown_count": 0,
+    "cost": 588
+   }
+  },
+  "pareto": [
+   {
+    "cost": 0,
+    "weighted_sum_mm": 2328344,
+    "selected_ids": []
+   },
+   {
+    "cost": 292,
+    "weighted_sum_mm": 1978388,
+    "selected_ids": [
+     "c01"
+    ]
+   },
+   {
+    "cost": 588,
+    "weighted_sum_mm": 1882883,
+    "selected_ids": [
+     "c03"
+    ]
+   }
+  ],
+  "budget_sensitivity": [
+   {
+    "budget": 0,
+    "status": "optimal",
+    "objectives": {
+     "mean": [],
+     "minimax": [],
+     "coverage": []
+    }
+   },
+   {
+    "budget": 378,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c01"
+     ],
+     "minimax": [
+      "c01"
+     ],
+     "coverage": [
+      "c01"
+     ]
+    }
+   },
+   {
+    "budget": 757,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c03"
+     ],
+     "minimax": [
+      "c03"
+     ],
+     "coverage": [
+      "c03"
+     ]
+    }
+   }
+  ]
+ },
+ "shymkent_school#1": {
+  "status": "optimal",
+  "reason": null,
+  "feasible_count": 176,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "c02",
+     "c03",
+     "c08"
+    ],
+    "weighted_sum_mm": 211110455,
+    "max_mm": 734837,
+    "covered_weight": 551,
+    "unknown_count": 0,
+    "cost": 1133
+   },
+   "minimax": {
+    "selected_ids": [
+     "c01",
+     "c02",
+     "c08"
+    ],
+    "weighted_sum_mm": 218806296,
+    "max_mm": 612874,
+    "covered_weight": 551,
+    "unknown_count": 0,
+    "cost": 1816
+   },
+   "coverage": {
+    "selected_ids": [
+     "c02",
+     "c03",
+     "c08"
+    ],
+    "weighted_sum_mm": 211110455,
+    "max_mm": 734837,
+    "covered_weight": 551,
+    "unknown_count": 0,
+    "cost": 1133
+   }
+  },
+  "pareto": [
+   {
+    "cost": 0,
+    "weighted_sum_mm": 318806466,
+    "selected_ids": []
+   },
+   {
+    "cost": 220,
+    "weighted_sum_mm": 273892921,
+    "selected_ids": [
+     "c08"
+    ]
+   },
+   {
+    "cost": 537,
+    "weighted_sum_mm": 260952045,
+    "selected_ids": [
+     "c03",
+     "c08"
+    ]
+   },
+   {
+    "cost": 816,
+    "weighted_sum_mm": 222472841,
+    "selected_ids": [
+     "c02",
+     "c08"
+    ]
+   },
+   {
+    "cost": 1133,
+    "weighted_sum_mm": 211110455,
+    "selected_ids": [
+     "c02",
+     "c03",
+     "c08"
+    ]
+   }
+  ],
+  "budget_sensitivity": [
+   {
+    "budget": 0,
+    "status": "optimal",
+    "objectives": {
+     "mean": [],
+     "minimax": [],
+     "coverage": []
+    }
+   },
+   {
+    "budget": 1389,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c02",
+      "c03",
+      "c08"
+     ],
+     "minimax": [
+      "c01",
+      "c08"
+     ],
+     "coverage": [
+      "c02",
+      "c03",
+      "c08"
+     ]
+    }
+   },
+   {
+    "budget": 2778,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c02",
+      "c03",
+      "c08"
+     ],
+     "minimax": [
+      "c01",
+      "c02",
+      "c08"
+     ],
+     "coverage": [
+      "c02",
+      "c03",
+      "c08"
+     ]
+    }
+   }
+  ]
+ },
+ "shymkent_school#2": {
+  "status": "optimal",
+  "reason": null,
+  "feasible_count": 697,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "c02",
+     "c08",
+     "c14"
+    ],
+    "weighted_sum_mm": 25729692,
+    "max_mm": 570022,
+    "covered_weight": 117,
+    "unknown_count": 0,
+    "cost": 1533
+   },
+   "minimax": {
+    "selected_ids": [
+     "c02",
+     "c08",
+     "c14"
+    ],
+    "weighted_sum_mm": 25729692,
+    "max_mm": 570022,
+    "covered_weight": 117,
+    "unknown_count": 0,
+    "cost": 1533
+   },
+   "coverage": {
+    "selected_ids": [
+     "c02",
+     "c08",
+     "c14"
+    ],
+    "weighted_sum_mm": 25729692,
+    "max_mm": 570022,
+    "covered_weight": 117,
+    "unknown_count": 0,
+    "cost": 1533
+   }
+  },
+  "pareto": [
+   {
+    "cost": 0,
+    "weighted_sum_mm": 66462619,
+    "selected_ids": []
+   },
+   {
+    "cost": 110,
+    "weighted_sum_mm": 66136985,
+    "selected_ids": [
+     "c04"
+    ]
+   },
+   {
+    "cost": 174,
+    "weighted_sum_mm": 66065597,
+    "selected_ids": [
+     "c10"
+    ]
+   },
+   {
+    "cost": 284,
+    "weighted_sum_mm": 65739963,
+    "selected_ids": [
+     "c04",
+     "c10"
+    ]
+   },
+   {
+    "cost": 322,
+    "weighted_sum_mm": 40658698,
+    "selected_ids": [
+     "c00"
+    ]
+   },
+   {
+    "cost": 432,
+    "weighted_sum_mm": 40333064,
+    "selected_ids": [
+     "c00",
+     "c04"
+    ]
+   },
+   {
+    "cost": 496,
+    "weighted_sum_mm": 40261676,
+    "selected_ids": [
+     "c00",
+     "c10"
+    ]
+   },
+   {
+    "cost": 606,
+    "weighted_sum_mm": 39936042,
+    "selected_ids": [
+     "c00",
+     "c04",
+     "c10"
+    ]
+   },
+   {
+    "cost": 674,
+    "weighted_sum_mm": 39877895,
+    "selected_ids": [
+     "c00",
+     "c10",
+     "c13"
+    ]
+   },
+   {
+    "cost": 747,
+    "weighted_sum_mm": 26796913,
+    "selected_ids": [
+     "c14"
+    ]
+   },
+   {
+    "cost": 857,
+    "weighted_sum_mm": 26471279,
+    "selected_ids": [
+     "c04",
+     "c14"
+    ]
+   },
+   {
+    "cost": 921,
+    "weighted_sum_mm": 26399891,
+    "selected_ids": [
+     "c10",
+     "c14"
+    ]
+   },
+   {
+    "cost": 1031,
+    "weighted_sum_mm": 26074257,
+    "selected_ids": [
+     "c04",
+     "c10",
+     "c14"
+    ]
+   },
+   {
+    "cost": 1099,
+    "weighted_sum_mm": 26016110,
+    "selected_ids": [
+     "c10",
+     "c13",
+     "c14"
+    ]
+   },
+   {
+    "cost": 1256,
+    "weighted_sum_mm": 25820392,
+    "selected_ids": [
+     "c08",
+     "c10",
+     "c14"
+    ]
+   },
+   {
+    "cost": 1533,
+    "weighted_sum_mm": 25729692,
+    "selected_ids": [
+     "c02",
+     "c08",
+     "c14"
+    ]
+   }
+  ],
+  "budget_sensitivity": [
+   {
+    "budget": 0,
+    "status": "optimal",
+    "objectives": {
+     "mean": [],
+     "minimax": [],
+     "coverage": []
+    }
+   },
+   {
+    "budget": 4134,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c02",
+      "c08",
+      "c14"
+     ],
+     "minimax": [
+      "c02",
+      "c08",
+      "c14"
+     ],
+     "coverage": [
+      "c02",
+      "c08",
+      "c14"
+     ]
+    }
+   },
+   {
+    "budget": 8269,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c02",
+      "c08",
+      "c14"
+     ],
+     "minimax": [
+      "c02",
+      "c08",
+      "c14"
+     ],
+     "coverage": [
+      "c02",
+      "c08",
+      "c14"
+     ]
+    }
+   }
+  ]
+ },
+ "shymkent_school#3": {
+  "status": "optimal",
+  "reason": null,
+  "feasible_count": 6885,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "c02",
+     "c08",
+     "c09",
+     "c10",
+     "c15"
+    ],
+    "weighted_sum_mm": 297618860,
+    "max_mm": 441238,
+    "covered_weight": 1244,
+    "unknown_count": 0,
+    "cost": 3079
+   },
+   "minimax": {
+    "selected_ids": [
+     "c02",
+     "c08",
+     "c09",
+     "c10",
+     "c15"
+    ],
+    "weighted_sum_mm": 297618860,
+    "max_mm": 441238,
+    "covered_weight": 1244,
+    "unknown_count": 0,
+    "cost": 3079
+   },
+   "coverage": {
+    "selected_ids": [
+     "c02",
+     "c08",
+     "c09",
+     "c10",
+     "c15"
+    ],
+    "weighted_sum_mm": 297618860,
+    "max_mm": 441238,
+    "covered_weight": 1244,
+    "unknown_count": 0,
+    "cost": 3079
+   }
+  },
+  "pareto": [
+   {
+    "cost": 0,
+    "weighted_sum_mm": 488899356,
+    "selected_ids": []
+   },
+   {
+    "cost": 106,
+    "weighted_sum_mm": 392547579,
+    "selected_ids": [
+     "c01"
+    ]
+   },
+   {
+    "cost": 273,
+    "weighted_sum_mm": 379370309,
+    "selected_ids": [
+     "c01",
+     "c09"
+    ]
+   },
+   {
+    "cost": 569,
+    "weighted_sum_mm": 378082886,
+    "selected_ids": [
+     "c01",
+     "c14"
+    ]
+   },
+   {
+    "cost": 573,
+    "weighted_sum_mm": 375401177,
+    "selected_ids": [
+     "c01",
+     "c15"
+    ]
+   },
+   {
+    "cost": 691,
+    "weighted_sum_mm": 371257771,
+    "selected_ids": [
+     "c01",
+     "c07"
+    ]
+   },
+   {
+    "cost": 711,
+    "weighted_sum_mm": 370518056,
+    "selected_ids": [
+     "c01",
+     "c03",
+     "c09"
+    ]
+   },
+   {
+    "cost": 736,
+    "weighted_sum_mm": 364905616,
+    "selected_ids": [
+     "c01",
+     "c09",
+     "c14"
+    ]
+   },
+   {
+    "cost": 740,
+    "weighted_sum_mm": 362223907,
+    "selected_ids": [
+     "c01",
+     "c09",
+     "c15"
+    ]
+   },
+   {
+    "cost": 858,
+    "weighted_sum_mm": 358080501,
+    "selected_ids": [
+     "c01",
+     "c07",
+     "c09"
+    ]
+   },
+   {
+    "cost": 1026,
+    "weighted_sum_mm": 357455291,
+    "selected_ids": [
+     "c01",
+     "c08",
+     "c09"
+    ]
+   },
+   {
+    "cost": 1105,
+    "weighted_sum_mm": 353810488,
+    "selected_ids": [
+     "c01",
+     "c09",
+     "c10"
+    ]
+   },
+   {
+    "cost": 1178,
+    "weighted_sum_mm": 353371654,
+    "selected_ids": [
+     "c01",
+     "c03",
+     "c09",
+     "c15"
+    ]
+   },
+   {
+    "cost": 1203,
+    "weighted_sum_mm": 347759214,
+    "selected_ids": [
+     "c01",
+     "c09",
+     "c14",
+     "c15"
+    ]
+   },
+   {
+    "cost": 1321,
+    "weighted_sum_mm": 343615808,
+    "selected_ids": [
+     "c01",
+     "c07",
+     "c09",
+     "c14"
+    ]
+   },
+   {
+    "cost": 1325,
+    "weighted_sum_mm": 340934099,
+    "selected_ids": [
+     "c01",
+     "c07",
+     "c09",
+     "c15"
+    ]
+   },
+   {
+    "cost": 1493,
+    "weighted_sum_mm": 340308889,
+    "selected_ids": [
+     "c01",
+     "c08",
+     "c09",
+     "c15"
+    ]
+   },
+   {
+    "cost": 1568,
+    "weighted_sum_mm": 339345795,
+    "selected_ids": [
+     "c01",
+     "c09",
+     "c10",
+     "c14"
+    ]
+   },
+   {
+    "cost": 1572,
+    "weighted_sum_mm": 336664086,
+    "selected_ids": [
+     "c01",
+     "c09",
+     "c10",
+     "c15"
+    ]
+   },
+   {
+    "cost": 1611,
+    "weighted_sum_mm": 336165483,
+    "selected_ids": [
+     "c01",
+     "c07",
+     "c08",
+     "c09"
+    ]
+   },
+   {
+    "cost": 1718,
+    "weighted_sum_mm": 333054141,
+    "selected_ids": [
+     "c01",
+     "c02",
+     "c07",
+     "c09"
+    ]
+   },
+   {
+    "cost": 1763,
+    "weighted_sum_mm": 332081846,
+    "selected_ids": [
+     "c01",
+     "c03",
+     "c07",
+     "c09",
+     "c15"
+    ]
+   },
+   {
+    "cost": 1788,
+    "weighted_sum_mm": 326469406,
+    "selected_ids": [
+     "c01",
+     "c07",
+     "c09",
+     "c14",
+     "c15"
+    ]
+   },
+   {
+    "cost": 1956,
+    "weighted_sum_mm": 326317383,
+    "selected_ids": [
+     "c01",
+     "c08",
+     "c09",
+     "c14",
+     "c15"
+    ]
+   },
+   {
+    "cost": 2018,
+    "weighted_sum_mm": 325785009,
+    "selected_ids": [
+     "c01",
+     "c02",
+     "c07",
+     "c15"
+    ]
+   },
+   {
+    "cost": 2035,
+    "weighted_sum_mm": 322199393,
+    "selected_ids": [
+     "c01",
+     "c09",
+     "c10",
+     "c14",
+     "c15"
+    ]
+   },
+   {
+    "cost": 2074,
+    "weighted_sum_mm": 322173977,
+    "selected_ids": [
+     "c01",
+     "c07",
+     "c08",
+     "c09",
+     "c14"
+    ]
+   },
+   {
+    "cost": 2078,
+    "weighted_sum_mm": 319019081,
+    "selected_ids": [
+     "c01",
+     "c07",
+     "c08",
+     "c09",
+     "c15"
+    ]
+   },
+   {
+    "cost": 2185,
+    "weighted_sum_mm": 315907739,
+    "selected_ids": [
+     "c01",
+     "c02",
+     "c07",
+     "c09",
+     "c15"
+    ]
+   },
+   {
+    "cost": 2325,
+    "weighted_sum_mm": 314749068,
+    "selected_ids": [
+     "c01",
+     "c08",
+     "c09",
+     "c10",
+     "c15"
+    ]
+   },
+   {
+    "cost": 2432,
+    "weighted_sum_mm": 311637726,
+    "selected_ids": [
+     "c01",
+     "c02",
+     "c09",
+     "c10",
+     "c15"
+    ]
+   },
+   {
+    "cost": 2471,
+    "weighted_sum_mm": 311612310,
+    "selected_ids": [
+     "c01",
+     "c02",
+     "c07",
+     "c08",
+     "c09"
+    ]
+   },
+   {
+    "cost": 2682,
+    "weighted_sum_mm": 308180527,
+    "selected_ids": [
+     "c08",
+     "c09",
+     "c10",
+     "c14",
+     "c15"
+    ]
+   },
+   {
+    "cost": 2718,
+    "weighted_sum_mm": 307342297,
+    "selected_ids": [
+     "c01",
+     "c02",
+     "c08",
+     "c09",
+     "c10"
+    ]
+   },
+   {
+    "cost": 2771,
+    "weighted_sum_mm": 304343178,
+    "selected_ids": [
+     "c01",
+     "c02",
+     "c07",
+     "c08",
+     "c15"
+    ]
+   },
+   {
+    "cost": 2832,
+    "weighted_sum_mm": 301888873,
+    "selected_ids": [
+     "c02",
+     "c07",
+     "c08",
+     "c09",
+     "c15"
+    ]
+   },
+   {
+    "cost": 3018,
+    "weighted_sum_mm": 300073165,
+    "selected_ids": [
+     "c01",
+     "c02",
+     "c08",
+     "c10",
+     "c15"
+    ]
+   },
+   {
+    "cost": 3079,
+    "weighted_sum_mm": 297618860,
+    "selected_ids": [
+     "c02",
+     "c08",
+     "c09",
+     "c10",
+     "c15"
+    ]
+   }
+  ],
+  "budget_sensitivity": [
+   {
+    "budget": 0,
+    "status": "optimal",
+    "objectives": {
+     "mean": [],
+     "minimax": [],
+     "coverage": []
+    }
+   },
+   {
+    "budget": 2243,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c01",
+      "c02",
+      "c07",
+      "c09",
+      "c15"
+     ],
+     "minimax": [
+      "c02",
+      "c07",
+      "c08"
+     ],
+     "coverage": [
+      "c01",
+      "c02",
+      "c07",
+      "c09",
+      "c15"
+     ]
+    }
+   },
+   {
+    "budget": 4487,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c02",
+      "c08",
+      "c09",
+      "c10",
+      "c15"
+     ],
+     "minimax": [
+      "c02",
+      "c08",
+      "c09",
+      "c10",
+      "c15"
+     ],
+     "coverage": [
+      "c02",
+      "c08",
+      "c09",
+      "c10",
+      "c15"
+     ]
+    }
+   }
+  ]
+ },
+ "shymkent_school#4": {
+  "status": "optimal",
+  "reason": null,
+  "feasible_count": 37,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "c03",
+     "c06"
+    ],
+    "weighted_sum_mm": 2658289,
+    "max_mm": 372445,
+    "covered_weight": 0,
+    "unknown_count": 0,
+    "cost": 1225
+   },
+   "minimax": {
+    "selected_ids": [
+     "c03",
+     "c06"
+    ],
+    "weighted_sum_mm": 2658289,
+    "max_mm": 372445,
+    "covered_weight": 0,
+    "unknown_count": 0,
+    "cost": 1225
+   },
+   "coverage": {
+    "selected_ids": [
+     "c03",
+     "c06"
+    ],
+    "weighted_sum_mm": 2658289,
+    "max_mm": 372445,
+    "covered_weight": 0,
+    "unknown_count": 0,
+    "cost": 1225
+   }
+  },
+  "pareto": [
+   {
+    "cost": 0,
+    "weighted_sum_mm": 3506960,
+    "selected_ids": []
+   },
+   {
+    "cost": 434,
+    "weighted_sum_mm": 2929892,
+    "selected_ids": [
+     "c06"
+    ]
+   },
+   {
+    "cost": 968,
+    "weighted_sum_mm": 2914853,
+    "selected_ids": [
+     "c01",
+     "c06"
+    ]
+   },
+   {
+    "cost": 1168,
+    "weighted_sum_mm": 2914847,
+    "selected_ids": [
+     "c06",
+     "c07"
+    ]
+   },
+   {
+    "cost": 1225,
+    "weighted_sum_mm": 2658289,
+    "selected_ids": [
+     "c03",
+     "c06"
+    ]
+   }
+  ],
+  "budget_sensitivity": [
+   {
+    "budget": 0,
+    "status": "optimal",
+    "objectives": {
+     "mean": [],
+     "minimax": [],
+     "coverage": []
+    }
+   },
+   {
+    "budget": 1079,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c01",
+      "c06"
+     ],
+     "minimax": [
+      "c01",
+      "c06"
+     ],
+     "coverage": [
+      "c01",
+      "c06"
+     ]
+    }
+   },
+   {
+    "budget": 2159,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c03",
+      "c06"
+     ],
+     "minimax": [
+      "c03",
+      "c06"
+     ],
+     "coverage": [
+      "c03",
+      "c06"
+     ]
+    }
+   }
+  ]
+ },
+ "shymkent_school#5": {
+  "status": "optimal",
+  "reason": null,
+  "feasible_count": 29,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "c01",
+     "c07",
+     "c08"
+    ],
+    "weighted_sum_mm": 248837422,
+    "max_mm": 612874,
+    "covered_weight": 390,
+    "unknown_count": 0,
+    "cost": 1877
+   },
+   "minimax": {
+    "selected_ids": [
+     "c01",
+     "c07",
+     "c08"
+    ],
+    "weighted_sum_mm": 248837422,
+    "max_mm": 612874,
+    "covered_weight": 390,
+    "unknown_count": 0,
+    "cost": 1877
+   },
+   "coverage": {
+    "selected_ids": [
+     "c01",
+     "c07",
+     "c08"
+    ],
+    "weighted_sum_mm": 248837422,
+    "max_mm": 612874,
+    "covered_weight": 390,
+    "unknown_count": 0,
+    "cost": 1877
+   }
+  },
+  "pareto": [
+   {
+    "cost": 1000,
+    "weighted_sum_mm": 294631704,
+    "selected_ids": [
+     "c01"
+    ]
+   },
+   {
+    "cost": 1220,
+    "weighted_sum_mm": 270226376,
+    "selected_ids": [
+     "c01",
+     "c08"
+    ]
+   },
+   {
+    "cost": 1537,
+    "weighted_sum_mm": 257285500,
+    "selected_ids": [
+     "c01",
+     "c03",
+     "c08"
+    ]
+   },
+   {
+    "cost": 1877,
+    "weighted_sum_mm": 248837422,
+    "selected_ids": [
+     "c01",
+     "c07",
+     "c08"
+    ]
+   }
+  ],
+  "budget_sensitivity": [
+   {
+    "budget": 0,
+    "status": "infeasible",
+    "objectives": {
+     "mean": null,
+     "minimax": null,
+     "coverage": null
+    }
+   },
+   {
+    "budget": 1389,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c01",
+      "c08"
+     ],
+     "minimax": [
+      "c01",
+      "c08"
+     ],
+     "coverage": [
+      "c01",
+      "c08"
+     ]
+    }
+   },
+   {
+    "budget": 2778,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c01",
+      "c07",
+      "c08"
+     ],
+     "minimax": [
+      "c01",
+      "c07",
+      "c08"
+     ],
+     "coverage": [
+      "c01",
+      "c07",
+      "c08"
+     ]
+    }
+   }
+  ]
+ },
+ "shymkent_school#6": {
+  "status": "optimal",
+  "reason": null,
+  "feasible_count": 378,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "c05",
+     "c08",
+     "c09",
+     "c10",
+     "c15"
+    ],
+    "weighted_sum_mm": 311428780,
+    "max_mm": 466777,
+    "covered_weight": 1244,
+    "unknown_count": 0,
+    "cost": 2920
+   },
+   "minimax": {
+    "selected_ids": [
+     "c02",
+     "c05",
+     "c08",
+     "c09",
+     "c10"
+    ],
+    "weighted_sum_mm": 312294332,
+    "max_mm": 441238,
+    "covered_weight": 1244,
+    "unknown_count": 0,
+    "cost": 3313
+   },
+   "coverage": {
+    "selected_ids": [
+     "c05",
+     "c08",
+     "c09",
+     "c10",
+     "c15"
+    ],
+    "weighted_sum_mm": 311428780,
+    "max_mm": 466777,
+    "covered_weight": 1244,
+    "unknown_count": 0,
+    "cost": 2920
+   }
+  },
+  "pareto": [
+   {
+    "cost": 868,
+    "weighted_sum_mm": 399955553,
+    "selected_ids": [
+     "c05",
+     "c09"
+    ]
+   },
+   {
+    "cost": 1306,
+    "weighted_sum_mm": 391818410,
+    "selected_ids": [
+     "c03",
+     "c05",
+     "c09"
+    ]
+   },
+   {
+    "cost": 1335,
+    "weighted_sum_mm": 382809151,
+    "selected_ids": [
+     "c05",
+     "c09",
+     "c15"
+    ]
+   },
+   {
+    "cost": 1453,
+    "weighted_sum_mm": 375763365,
+    "selected_ids": [
+     "c05",
+     "c07",
+     "c09"
+    ]
+   },
+   {
+    "cost": 1621,
+    "weighted_sum_mm": 354135003,
+    "selected_ids": [
+     "c05",
+     "c08",
+     "c09"
+    ]
+   },
+   {
+    "cost": 2059,
+    "weighted_sum_mm": 345997860,
+    "selected_ids": [
+     "c03",
+     "c05",
+     "c08",
+     "c09"
+    ]
+   },
+   {
+    "cost": 2088,
+    "weighted_sum_mm": 336988601,
+    "selected_ids": [
+     "c05",
+     "c08",
+     "c09",
+     "c15"
+    ]
+   },
+   {
+    "cost": 2206,
+    "weighted_sum_mm": 332845195,
+    "selected_ids": [
+     "c05",
+     "c07",
+     "c08",
+     "c09"
+    ]
+   },
+   {
+    "cost": 2453,
+    "weighted_sum_mm": 328575182,
+    "selected_ids": [
+     "c05",
+     "c08",
+     "c09",
+     "c10"
+    ]
+   },
+   {
+    "cost": 2644,
+    "weighted_sum_mm": 324708052,
+    "selected_ids": [
+     "c03",
+     "c05",
+     "c07",
+     "c08",
+     "c09"
+    ]
+   },
+   {
+    "cost": 2673,
+    "weighted_sum_mm": 315698793,
+    "selected_ids": [
+     "c05",
+     "c07",
+     "c08",
+     "c09",
+     "c15"
+    ]
+   },
+   {
+    "cost": 2920,
+    "weighted_sum_mm": 311428780,
+    "selected_ids": [
+     "c05",
+     "c08",
+     "c09",
+     "c10",
+     "c15"
+    ]
+   }
+  ],
+  "budget_sensitivity": [
+   {
+    "budget": 0,
+    "status": "infeasible",
+    "objectives": {
+     "mean": null,
+     "minimax": null,
+     "coverage": null
+    }
+   },
+   {
+    "budget": 2243,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c05",
+      "c07",
+      "c08",
+      "c09"
+     ],
+     "minimax": [
+      "c05",
+      "c07",
+      "c08",
+      "c09"
+     ],
+     "coverage": [
+      "c05",
+      "c07",
+      "c08",
+      "c09"
+     ]
+    }
+   },
+   {
+    "budget": 4487,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c05",
+      "c08",
+      "c09",
+      "c10",
+      "c15"
+     ],
+     "minimax": [
+      "c02",
+      "c05",
+      "c08",
+      "c09",
+      "c10"
+     ],
+     "coverage": [
+      "c05",
+      "c08",
+      "c09",
+      "c10",
+      "c15"
+     ]
+    }
+   }
+  ]
+ },
+ "shymkent_school#7": {
+  "status": "optimal",
+  "reason": null,
+  "feasible_count": 190,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "c02",
+     "c07",
+     "c10"
+    ],
+    "weighted_sum_mm": 211576722,
+    "max_mm": 640709,
+    "covered_weight": 896,
+    "unknown_count": 0,
+    "cost": 1275
+   },
+   "minimax": {
+    "selected_ids": [
+     "c02",
+     "c07",
+     "c10"
+    ],
+    "weighted_sum_mm": 211576722,
+    "max_mm": 640709,
+    "covered_weight": 896,
+    "unknown_count": 0,
+    "cost": 1275
+   },
+   "coverage": {
+    "selected_ids": [
+     "c02",
+     "c07",
+     "c10"
+    ],
+    "weighted_sum_mm": 211576722,
+    "max_mm": 640709,
+    "covered_weight": 896,
+    "unknown_count": 0,
+    "cost": 1275
+   }
+  },
+  "pareto": [
+   {
+    "cost": 0,
+    "weighted_sum_mm": 351893925,
+    "selected_ids": []
+   },
+   {
+    "cost": 158,
+    "weighted_sum_mm": 322149478,
+    "selected_ids": [
+     "c07"
+    ]
+   },
+   {
+    "cost": 383,
+    "weighted_sum_mm": 257560049,
+    "selected_ids": [
+     "c10"
+    ]
+   },
+   {
+    "cost": 541,
+    "weighted_sum_mm": 227815602,
+    "selected_ids": [
+     "c07",
+     "c10"
+    ]
+   },
+   {
+    "cost": 1070,
+    "weighted_sum_mm": 211907204,
+    "selected_ids": [
+     "c05",
+     "c07",
+     "c10"
+    ]
+   },
+   {
+    "cost": 1275,
+    "weighted_sum_mm": 211576722,
+    "selected_ids": [
+     "c02",
+     "c07",
+     "c10"
+    ]
+   }
+  ],
+  "budget_sensitivity": [
+   {
+    "budget": 0,
+    "status": "optimal",
+    "objectives": {
+     "mean": [],
+     "minimax": [],
+     "coverage": []
+    }
+   },
+   {
+    "budget": 796,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c07",
+      "c10"
+     ],
+     "minimax": [
+      "c07",
+      "c10"
+     ],
+     "coverage": [
+      "c07",
+      "c10"
+     ]
+    }
+   },
+   {
+    "budget": 1592,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c02",
+      "c07",
+      "c10"
+     ],
+     "minimax": [
+      "c02",
+      "c07",
+      "c10"
+     ],
+     "coverage": [
+      "c02",
+      "c07",
+      "c10"
+     ]
+    }
+   }
+  ]
+ },
+ "shymkent_school#8": {
+  "status": "infeasible",
+  "reason": "required_count_exceeds_max_selected",
+  "feasible_count": 0,
+  "budget_sensitivity": [
+   {
+    "budget": 0,
+    "status": "infeasible",
+    "objectives": {
+     "mean": null,
+     "minimax": null,
+     "coverage": null
+    }
+   },
+   {
+    "budget": 610,
+    "status": "infeasible",
+    "objectives": {
+     "mean": null,
+     "minimax": null,
+     "coverage": null
+    }
+   },
+   {
+    "budget": 1220,
+    "status": "infeasible",
+    "objectives": {
+     "mean": null,
+     "minimax": null,
+     "coverage": null
+    }
+   }
+  ]
+ },
+ "shymkent_school#9": {
+  "status": "infeasible",
+  "reason": "required_cost_exceeds_budget",
+  "feasible_count": 0,
+  "budget_sensitivity": [
+   {
+    "budget": 0,
+    "status": "infeasible",
+    "objectives": {
+     "mean": null,
+     "minimax": null,
+     "coverage": null
+    }
+   }
+  ]
+ },
+ "shymkent_school#10": {
+  "status": "optimal",
+  "reason": null,
+  "feasible_count": 1,
+  "objectives": {
+   "mean": {
+    "selected_ids": [],
+    "weighted_sum_mm": 8960294,
+    "max_mm": 805772,
+    "covered_weight": 11,
+    "unknown_count": 0,
+    "cost": 0
+   },
+   "minimax": {
+    "selected_ids": [],
+    "weighted_sum_mm": 8960294,
+    "max_mm": 805772,
+    "covered_weight": 11,
+    "unknown_count": 0,
+    "cost": 0
+   },
+   "coverage": {
+    "selected_ids": [],
+    "weighted_sum_mm": 8960294,
+    "max_mm": 805772,
+    "covered_weight": 11,
+    "unknown_count": 0,
+    "cost": 0
+   }
+  },
+  "pareto": [
+   {
+    "cost": 0,
+    "weighted_sum_mm": 8960294,
+    "selected_ids": []
+   }
+  ],
+  "budget_sensitivity": [
+   {
+    "budget": 0,
+    "status": "optimal",
+    "objectives": {
+     "mean": [],
+     "minimax": [],
+     "coverage": []
+    }
+   },
+   {
+    "budget": 1206,
+    "status": "optimal",
+    "objectives": {
+     "mean": [],
+     "minimax": [],
+     "coverage": []
+    }
+   },
+   {
+    "budget": 2412,
+    "status": "optimal",
+    "objectives": {
+     "mean": [],
+     "minimax": [],
+     "coverage": []
+    }
+   }
+  ]
+ },
+ "astana_clinic#0": {
+  "status": "optimal",
+  "reason": null,
+  "feasible_count": 10,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "c04"
+    ],
+    "weighted_sum_mm": 1249868,
+    "max_mm": 477893,
+    "covered_weight": 4,
+    "unknown_count": 0,
+    "cost": 667
+   },
+   "minimax": {
+    "selected_ids": [
+     "c04"
+    ],
+    "weighted_sum_mm": 1249868,
+    "max_mm": 477893,
+    "covered_weight": 4,
+    "unknown_count": 0,
+    "cost": 667
+   },
+   "coverage": {
+    "selected_ids": [
+     "c04"
+    ],
+    "weighted_sum_mm": 1249868,
+    "max_mm": 477893,
+    "covered_weight": 4,
+    "unknown_count": 0,
+    "cost": 667
+   }
+  },
+  "pareto": [
+   {
+    "cost": 0,
+    "weighted_sum_mm": 1257655,
+    "selected_ids": []
+   },
+   {
+    "cost": 667,
+    "weighted_sum_mm": 1249868,
+    "selected_ids": [
+     "c04"
+    ]
+   }
+  ],
+  "budget_sensitivity": [
+   {
+    "budget": 0,
+    "status": "optimal",
+    "objectives": {
+     "mean": [],
+     "minimax": [],
+     "coverage": []
+    }
+   },
+   {
+    "budget": 404,
+    "status": "optimal",
+    "objectives": {
+     "mean": [],
+     "minimax": [],
+     "coverage": []
+    }
+   },
+   {
+    "budget": 809,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c04"
+     ],
+     "minimax": [
+      "c04"
+     ],
+     "coverage": [
+      "c04"
+     ]
+    }
+   }
+  ]
+ },
+ "astana_clinic#1": {
+  "status": "optimal",
+  "reason": null,
+  "feasible_count": 176,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "c00",
+     "c03",
+     "c08"
+    ],
+    "weighted_sum_mm": 203932629,
+    "max_mm": 712628,
+    "covered_weight": 544,
+    "unknown_count": 0,
+    "cost": 1058
+   },
+   "minimax": {
+    "selected_ids": [
+     "c03",
+     "c07",
+     "c08"
+    ],
+    "weighted_sum_mm": 205677385,
+    "max_mm": 666679,
+    "covered_weight": 506,
+    "unknown_count": 0,
+    "cost": 1698
+   },
+   "coverage": {
+    "selected_ids": [
+     "c00",
+     "c03",
+     "c08"
+    ],
+    "weighted_sum_mm": 203932629,
+    "max_mm": 712628,
+    "covered_weight": 544,
+    "unknown_count": 0,
+    "cost": 1058
+   }
+  },
+  "pareto": [
+   {
+    "cost": 0,
+    "weighted_sum_mm": 227292720,
+    "selected_ids": []
+   },
+   {
+    "cost": 244,
+    "weighted_sum_mm": 221786748,
+    "selected_ids": [
+     "c00"
+    ]
+   },
+   {
+    "cost": 347,
+    "weighted_sum_mm": 219381880,
+    "selected_ids": [
+     "c08"
+    ]
+   },
+   {
+    "cost": 467,
+    "weighted_sum_mm": 217349441,
+    "selected_ids": [
+     "c03"
+    ]
+   },
+   {
+    "cost": 591,
+    "weighted_sum_mm": 213875908,
+    "selected_ids": [
+     "c00",
+     "c08"
+    ]
+   },
+   {
+    "cost": 711,
+    "weighted_sum_mm": 211843469,
+    "selected_ids": [
+     "c00",
+     "c03"
+    ]
+   },
+   {
+    "cost": 814,
+    "weighted_sum_mm": 209438601,
+    "selected_ids": [
+     "c03",
+     "c08"
+    ]
+   },
+   {
+    "cost": 1058,
+    "weighted_sum_mm": 203932629,
+    "selected_ids": [
+     "c00",
+     "c03",
+     "c08"
+    ]
+   }
+  ],
+  "budget_sensitivity": [
+   {
+    "budget": 0,
+    "status": "optimal",
+    "objectives": {
+     "mean": [],
+     "minimax": [],
+     "coverage": []
+    }
+   },
+   {
+    "budget": 1335,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c00",
+      "c03",
+      "c08"
+     ],
+     "minimax": [
+      "c07",
+      "c08"
+     ],
+     "coverage": [
+      "c00",
+      "c03",
+      "c08"
+     ]
+    }
+   },
+   {
+    "budget": 2670,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c00",
+      "c03",
+      "c08"
+     ],
+     "minimax": [
+      "c03",
+      "c07",
+      "c08"
+     ],
+     "coverage": [
+      "c00",
+      "c03",
+      "c08"
+     ]
+    }
+   }
+  ]
+ },
+ "astana_clinic#2": {
+  "status": "optimal",
+  "reason": null,
+  "feasible_count": 697,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "c04",
+     "c06",
+     "c09"
+    ],
+    "weighted_sum_mm": 44131280,
+    "max_mm": 485362,
+    "covered_weight": 16,
+    "unknown_count": 0,
+    "cost": 1679
+   },
+   "minimax": {
+    "selected_ids": [
+     "c04",
+     "c06",
+     "c09"
+    ],
+    "weighted_sum_mm": 44131280,
+    "max_mm": 485362,
+    "covered_weight": 16,
+    "unknown_count": 0,
+    "cost": 1679
+   },
+   "coverage": {
+    "selected_ids": [
+     "c04",
+     "c06",
+     "c09"
+    ],
+    "weighted_sum_mm": 44131280,
+    "max_mm": 485362,
+    "covered_weight": 16,
+    "unknown_count": 0,
+    "cost": 1679
+   }
+  },
+  "pareto": [
+   {
+    "cost": 0,
+    "weighted_sum_mm": 45295050,
+    "selected_ids": []
+   },
+   {
+    "cost": 115,
+    "weighted_sum_mm": 45187097,
+    "selected_ids": [
+     "c00"
+    ]
+   },
+   {
+    "cost": 291,
+    "weighted_sum_mm": 45046866,
+    "selected_ids": [
+     "c12"
+    ]
+   },
+   {
+    "cost": 377,
+    "weighted_sum_mm": 44859933,
+    "selected_ids": [
+     "c06"
+    ]
+   },
+   {
+    "cost": 492,
+    "weighted_sum_mm": 44751980,
+    "selected_ids": [
+     "c00",
+     "c06"
+    ]
+   },
+   {
+    "cost": 668,
+    "weighted_sum_mm": 44611749,
+    "selected_ids": [
+     "c06",
+     "c12"
+    ]
+   },
+   {
+    "cost": 783,
+    "weighted_sum_mm": 44503796,
+    "selected_ids": [
+     "c00",
+     "c06",
+     "c12"
+    ]
+   },
+   {
+    "cost": 788,
+    "weighted_sum_mm": 44486664,
+    "selected_ids": [
+     "c02",
+     "c06"
+    ]
+   },
+   {
+    "cost": 903,
+    "weighted_sum_mm": 44378711,
+    "selected_ids": [
+     "c00",
+     "c02",
+     "c06"
+    ]
+   },
+   {
+    "cost": 1079,
+    "weighted_sum_mm": 44335233,
+    "selected_ids": [
+     "c02",
+     "c06",
+     "c12"
+    ]
+   },
+   {
+    "cost": 1220,
+    "weighted_sum_mm": 44331037,
+    "selected_ids": [
+     "c04",
+     "c06",
+     "c12"
+    ]
+   },
+   {
+    "cost": 1242,
+    "weighted_sum_mm": 44304039,
+    "selected_ids": [
+     "c00",
+     "c06",
+     "c09"
+    ]
+   },
+   {
+    "cost": 1340,
+    "weighted_sum_mm": 44205952,
+    "selected_ids": [
+     "c02",
+     "c04",
+     "c06"
+    ]
+   },
+   {
+    "cost": 1679,
+    "weighted_sum_mm": 44131280,
+    "selected_ids": [
+     "c04",
+     "c06",
+     "c09"
+    ]
+   }
+  ],
+  "budget_sensitivity": [
+   {
+    "budget": 0,
+    "status": "optimal",
+    "objectives": {
+     "mean": [],
+     "minimax": [],
+     "coverage": []
+    }
+   },
+   {
+    "budget": 4302,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c04",
+      "c06",
+      "c09"
+     ],
+     "minimax": [
+      "c04",
+      "c06",
+      "c09"
+     ],
+     "coverage": [
+      "c04",
+      "c06",
+      "c09"
+     ]
+    }
+   },
+   {
+    "budget": 8604,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c04",
+      "c06",
+      "c09"
+     ],
+     "minimax": [
+      "c04",
+      "c06",
+      "c09"
+     ],
+     "coverage": [
+      "c04",
+      "c06",
+      "c09"
+     ]
+    }
+   }
+  ]
+ },
+ "astana_clinic#3": {
+  "status": "optimal",
+  "reason": null,
+  "feasible_count": 6885,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "c02",
+     "c04",
+     "c05",
+     "c06",
+     "c15"
+    ],
+    "weighted_sum_mm": 256158642,
+    "max_mm": 483356,
+    "covered_weight": 1507,
+    "unknown_count": 0,
+    "cost": 2717
+   },
+   "minimax": {
+    "selected_ids": [
+     "c02",
+     "c04",
+     "c05",
+     "c06",
+     "c11"
+    ],
+    "weighted_sum_mm": 261919040,
+    "max_mm": 445238,
+    "covered_weight": 1507,
+    "unknown_count": 0,
+    "cost": 2940
+   },
+   "coverage": {
+    "selected_ids": [
+     "c02",
+     "c04",
+     "c05",
+     "c06",
+     "c15"
+    ],
+    "weighted_sum_mm": 256158642,
+    "max_mm": 483356,
+    "covered_weight": 1507,
+    "unknown_count": 0,
+    "cost": 2717
+   }
+  },
+  "pareto": [
+   {
+    "cost": 0,
+    "weighted_sum_mm": 350906396,
+    "selected_ids": []
+   },
+   {
+    "cost": 125,
+    "weighted_sum_mm": 338126138,
+    "selected_ids": [
+     "c01"
+    ]
+   },
+   {
+    "cost": 275,
+    "weighted_sum_mm": 337095596,
+    "selected_ids": [
+     "c12"
+    ]
+   },
+   {
+    "cost": 376,
+    "weighted_sum_mm": 336509200,
+    "selected_ids": [
+     "c07"
+    ]
+   },
+   {
+    "cost": 395,
+    "weighted_sum_mm": 327095680,
+    "selected_ids": [
+     "c04"
+    ]
+   },
+   {
+    "cost": 418,
+    "weighted_sum_mm": 326551540,
+    "selected_ids": [
+     "c08"
+    ]
+   },
+   {
+    "cost": 520,
+    "weighted_sum_mm": 314315422,
+    "selected_ids": [
+     "c01",
+     "c04"
+    ]
+   },
+   {
+    "cost": 670,
+    "weighted_sum_mm": 313284880,
+    "selected_ids": [
+     "c04",
+     "c12"
+    ]
+   },
+   {
+    "cost": 771,
+    "weighted_sum_mm": 312698484,
+    "selected_ids": [
+     "c04",
+     "c07"
+    ]
+   },
+   {
+    "cost": 795,
+    "weighted_sum_mm": 312146330,
+    "selected_ids": [
+     "c01",
+     "c04",
+     "c12"
+    ]
+   },
+   {
+    "cost": 813,
+    "weighted_sum_mm": 302740824,
+    "selected_ids": [
+     "c04",
+     "c08"
+    ]
+   },
+   {
+    "cost": 938,
+    "weighted_sum_mm": 300685454,
+    "selected_ids": [
+     "c01",
+     "c04",
+     "c08"
+    ]
+   },
+   {
+    "cost": 971,
+    "weighted_sum_mm": 295550484,
+    "selected_ids": [
+     "c01",
+     "c04",
+     "c06"
+    ]
+   },
+   {
+    "cost": 1121,
+    "weighted_sum_mm": 294519942,
+    "selected_ids": [
+     "c04",
+     "c06",
+     "c12"
+    ]
+   },
+   {
+    "cost": 1222,
+    "weighted_sum_mm": 293933546,
+    "selected_ids": [
+     "c04",
+     "c06",
+     "c07"
+    ]
+   },
+   {
+    "cost": 1246,
+    "weighted_sum_mm": 293381392,
+    "selected_ids": [
+     "c01",
+     "c04",
+     "c06",
+     "c12"
+    ]
+   },
+   {
+    "cost": 1264,
+    "weighted_sum_mm": 283975886,
+    "selected_ids": [
+     "c04",
+     "c06",
+     "c08"
+    ]
+   },
+   {
+    "cost": 1389,
+    "weighted_sum_mm": 281920516,
+    "selected_ids": [
+     "c01",
+     "c04",
+     "c06",
+     "c08"
+    ]
+   },
+   {
+    "cost": 1437,
+    "weighted_sum_mm": 281719496,
+    "selected_ids": [
+     "c04",
+     "c06",
+     "c08",
+     "c09"
+    ]
+   },
+   {
+    "cost": 1558,
+    "weighted_sum_mm": 279055938,
+    "selected_ids": [
+     "c01",
+     "c02",
+     "c04",
+     "c06"
+    ]
+   },
+   {
+    "cost": 1708,
+    "weighted_sum_mm": 278025396,
+    "selected_ids": [
+     "c02",
+     "c04",
+     "c06",
+     "c12"
+    ]
+   },
+   {
+    "cost": 1746,
+    "weighted_sum_mm": 275280402,
+    "selected_ids": [
+     "c04",
+     "c06",
+     "c08",
+     "c15"
+    ]
+   },
+   {
+    "cost": 1851,
+    "weighted_sum_mm": 267481340,
+    "selected_ids": [
+     "c02",
+     "c04",
+     "c06",
+     "c08"
+    ]
+   },
+   {
+    "cost": 1976,
+    "weighted_sum_mm": 265425970,
+    "selected_ids": [
+     "c01",
+     "c02",
+     "c04",
+     "c06",
+     "c08"
+    ]
+   },
+   {
+    "cost": 2024,
+    "weighted_sum_mm": 265224950,
+    "selected_ids": [
+     "c02",
+     "c04",
+     "c06",
+     "c08",
+     "c09"
+    ]
+   },
+   {
+    "cost": 2235,
+    "weighted_sum_mm": 264854126,
+    "selected_ids": [
+     "c02",
+     "c04",
+     "c05",
+     "c06"
+    ]
+   },
+   {
+    "cost": 2314,
+    "weighted_sum_mm": 262912373,
+    "selected_ids": [
+     "c02",
+     "c03",
+     "c04",
+     "c06",
+     "c08"
+    ]
+   },
+   {
+    "cost": 2333,
+    "weighted_sum_mm": 258785856,
+    "selected_ids": [
+     "c02",
+     "c04",
+     "c06",
+     "c08",
+     "c15"
+    ]
+   },
+   {
+    "cost": 2717,
+    "weighted_sum_mm": 256158642,
+    "selected_ids": [
+     "c02",
+     "c04",
+     "c05",
+     "c06",
+     "c15"
+    ]
+   }
+  ],
+  "budget_sensitivity": [
+   {
+    "budget": 0,
+    "status": "optimal",
+    "objectives": {
+     "mean": [],
+     "minimax": [],
+     "coverage": []
+    }
+   },
+   {
+    "budget": 2033,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c02",
+      "c04",
+      "c06",
+      "c08",
+      "c09"
+     ],
+     "minimax": [
+      "c04",
+      "c06",
+      "c08",
+      "c11"
+     ],
+     "coverage": [
+      "c02",
+      "c04",
+      "c06",
+      "c08",
+      "c09"
+     ]
+    }
+   },
+   {
+    "budget": 4067,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c02",
+      "c04",
+      "c05",
+      "c06",
+      "c15"
+     ],
+     "minimax": [
+      "c02",
+      "c04",
+      "c05",
+      "c06",
+      "c11"
+     ],
+     "coverage": [
+      "c02",
+      "c04",
+      "c05",
+      "c06",
+      "c15"
+     ]
+    }
+   }
+  ]
+ },
+ "astana_clinic#4": {
+  "status": "optimal",
+  "reason": null,
+  "feasible_count": 37,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "c01",
+     "c04"
+    ],
+    "weighted_sum_mm": 2186378,
+    "max_mm": 380218,
+    "covered_weight": 2,
+    "unknown_count": 0,
+    "cost": 942
+   },
+   "minimax": {
+    "selected_ids": [
+     "c01",
+     "c04"
+    ],
+    "weighted_sum_mm": 2186378,
+    "max_mm": 380218,
+    "covered_weight": 2,
+    "unknown_count": 0,
+    "cost": 942
+   },
+   "coverage": {
+    "selected_ids": [
+     "c01",
+     "c04"
+    ],
+    "weighted_sum_mm": 2186378,
+    "max_mm": 380218,
+    "covered_weight": 2,
+    "unknown_count": 0,
+    "cost": 942
+   }
+  },
+  "pareto": [
+   {
+    "cost": 0,
+    "weighted_sum_mm": 2664102,
+    "selected_ids": []
+   },
+   {
+    "cost": 230,
+    "weighted_sum_mm": 2374555,
+    "selected_ids": [
+     "c04"
+    ]
+   },
+   {
+    "cost": 942,
+    "weighted_sum_mm": 2186378,
+    "selected_ids": [
+     "c01",
+     "c04"
+    ]
+   }
+  ],
+  "budget_sensitivity": [
+   {
+    "budget": 0,
+    "status": "optimal",
+    "objectives": {
+     "mean": [],
+     "minimax": [],
+     "coverage": []
+    }
+   },
+   {
+    "budget": 979,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c01",
+      "c04"
+     ],
+     "minimax": [
+      "c01",
+      "c04"
+     ],
+     "coverage": [
+      "c01",
+      "c04"
+     ]
+    }
+   },
+   {
+    "budget": 1959,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c01",
+      "c04"
+     ],
+     "minimax": [
+      "c01",
+      "c04"
+     ],
+     "coverage": [
+      "c01",
+      "c04"
+     ]
+    }
+   }
+  ]
+ },
+ "astana_clinic#5": {
+  "status": "optimal",
+  "reason": null,
+  "feasible_count": 29,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "c01",
+     "c03",
+     "c08"
+    ],
+    "weighted_sum_mm": 209438601,
+    "max_mm": 712628,
+    "covered_weight": 506,
+    "unknown_count": 0,
+    "cost": 1330
+   },
+   "minimax": {
+    "selected_ids": [
+     "c01",
+     "c07",
+     "c08"
+    ],
+    "weighted_sum_mm": 211380280,
+    "max_mm": 666679,
+    "covered_weight": 506,
+    "unknown_count": 0,
+    "cost": 1747
+   },
+   "coverage": {
+    "selected_ids": [
+     "c01",
+     "c05",
+     "c08"
+    ],
+    "weighted_sum_mm": 210544773,
+    "max_mm": 712628,
+    "covered_weight": 521,
+    "unknown_count": 0,
+    "cost": 1783
+   }
+  },
+  "pareto": [
+   {
+    "cost": 516,
+    "weighted_sum_mm": 223052336,
+    "selected_ids": [
+     "c01"
+    ]
+   },
+   {
+    "cost": 863,
+    "weighted_sum_mm": 215141496,
+    "selected_ids": [
+     "c01",
+     "c08"
+    ]
+   },
+   {
+    "cost": 1330,
+    "weighted_sum_mm": 209438601,
+    "selected_ids": [
+     "c01",
+     "c03",
+     "c08"
+    ]
+   }
+  ],
+  "budget_sensitivity": [
+   {
+    "budget": 0,
+    "status": "infeasible",
+    "objectives": {
+     "mean": null,
+     "minimax": null,
+     "coverage": null
+    }
+   },
+   {
+    "budget": 1335,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c01",
+      "c03",
+      "c08"
+     ],
+     "minimax": [
+      "c01",
+      "c03",
+      "c08"
+     ],
+     "coverage": [
+      "c01",
+      "c03",
+      "c08"
+     ]
+    }
+   },
+   {
+    "budget": 2670,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c01",
+      "c03",
+      "c08"
+     ],
+     "minimax": [
+      "c01",
+      "c07",
+      "c08"
+     ],
+     "coverage": [
+      "c01",
+      "c05",
+      "c08"
+     ]
+    }
+   }
+  ]
+ },
+ "astana_clinic#6": {
+  "status": "optimal",
+  "reason": null,
+  "feasible_count": 378,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "c02",
+     "c04",
+     "c05",
+     "c06",
+     "c09"
+    ],
+    "weighted_sum_mm": 262597736,
+    "max_mm": 483356,
+    "covered_weight": 1507,
+    "unknown_count": 0,
+    "cost": 2408
+   },
+   "minimax": {
+    "selected_ids": [
+     "c04",
+     "c05",
+     "c06",
+     "c09",
+     "c11"
+    ],
+    "weighted_sum_mm": 276157196,
+    "max_mm": 445238,
+    "covered_weight": 1507,
+    "unknown_count": 0,
+    "cost": 2526
+   },
+   "coverage": {
+    "selected_ids": [
+     "c02",
+     "c04",
+     "c05",
+     "c06",
+     "c09"
+    ],
+    "weighted_sum_mm": 262597736,
+    "max_mm": 483356,
+    "covered_weight": 1507,
+    "unknown_count": 0,
+    "cost": 2408
+   }
+  },
+  "pareto": [
+   {
+    "cost": 975,
+    "weighted_sum_mm": 321667936,
+    "selected_ids": [
+     "c05",
+     "c09"
+    ]
+   },
+   {
+    "cost": 1370,
+    "weighted_sum_mm": 297857220,
+    "selected_ids": [
+     "c04",
+     "c05",
+     "c09"
+    ]
+   },
+   {
+    "cost": 1821,
+    "weighted_sum_mm": 279092282,
+    "selected_ids": [
+     "c04",
+     "c05",
+     "c06",
+     "c09"
+    ]
+   },
+   {
+    "cost": 2284,
+    "weighted_sum_mm": 274523315,
+    "selected_ids": [
+     "c03",
+     "c04",
+     "c05",
+     "c06",
+     "c09"
+    ]
+   },
+   {
+    "cost": 2303,
+    "weighted_sum_mm": 270396798,
+    "selected_ids": [
+     "c04",
+     "c05",
+     "c06",
+     "c09",
+     "c15"
+    ]
+   },
+   {
+    "cost": 2408,
+    "weighted_sum_mm": 262597736,
+    "selected_ids": [
+     "c02",
+     "c04",
+     "c05",
+     "c06",
+     "c09"
+    ]
+   }
+  ],
+  "budget_sensitivity": [
+   {
+    "budget": 0,
+    "status": "infeasible",
+    "objectives": {
+     "mean": null,
+     "minimax": null,
+     "coverage": null
+    }
+   },
+   {
+    "budget": 2033,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c04",
+      "c05",
+      "c06",
+      "c09"
+     ],
+     "minimax": [
+      "c05",
+      "c09",
+      "c11"
+     ],
+     "coverage": [
+      "c04",
+      "c05",
+      "c06",
+      "c09"
+     ]
+    }
+   },
+   {
+    "budget": 4067,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c02",
+      "c04",
+      "c05",
+      "c06",
+      "c09"
+     ],
+     "minimax": [
+      "c04",
+      "c05",
+      "c06",
+      "c09",
+      "c11"
+     ],
+     "coverage": [
+      "c02",
+      "c04",
+      "c05",
+      "c06",
+      "c09"
+     ]
+    }
+   }
+  ]
+ },
+ "astana_clinic#7": {
+  "status": "optimal",
+  "reason": null,
+  "feasible_count": 208,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "c00",
+     "c08",
+     "c09",
+     "c11"
+    ],
+    "weighted_sum_mm": 249710234,
+    "max_mm": 368856,
+    "covered_weight": 1223,
+    "unknown_count": 0,
+    "cost": 1192
+   },
+   "minimax": {
+    "selected_ids": [
+     "c00",
+     "c08",
+     "c09",
+     "c11"
+    ],
+    "weighted_sum_mm": 249710234,
+    "max_mm": 368856,
+    "covered_weight": 1223,
+    "unknown_count": 0,
+    "cost": 1192
+   },
+   "coverage": {
+    "selected_ids": [
+     "c00",
+     "c08",
+     "c09",
+     "c11"
+    ],
+    "weighted_sum_mm": 249710234,
+    "max_mm": 368856,
+    "covered_weight": 1223,
+    "unknown_count": 0,
+    "cost": 1192
+   }
+  },
+  "pareto": [
+   {
+    "cost": 0,
+    "weighted_sum_mm": 273802715,
+    "selected_ids": []
+   },
+   {
+    "cost": 157,
+    "weighted_sum_mm": 273682397,
+    "selected_ids": [
+     "c09"
+    ]
+   },
+   {
+    "cost": 229,
+    "weighted_sum_mm": 266604074,
+    "selected_ids": [
+     "c00"
+    ]
+   },
+   {
+    "cost": 386,
+    "weighted_sum_mm": 266483756,
+    "selected_ids": [
+     "c00",
+     "c09"
+    ]
+   },
+   {
+    "cost": 486,
+    "weighted_sum_mm": 257389441,
+    "selected_ids": [
+     "c11"
+    ]
+   },
+   {
+    "cost": 643,
+    "weighted_sum_mm": 257269123,
+    "selected_ids": [
+     "c09",
+     "c11"
+    ]
+   },
+   {
+    "cost": 715,
+    "weighted_sum_mm": 250190800,
+    "selected_ids": [
+     "c00",
+     "c11"
+    ]
+   },
+   {
+    "cost": 872,
+    "weighted_sum_mm": 250070482,
+    "selected_ids": [
+     "c00",
+     "c09",
+     "c11"
+    ]
+   },
+   {
+    "cost": 1035,
+    "weighted_sum_mm": 249830552,
+    "selected_ids": [
+     "c00",
+     "c08",
+     "c11"
+    ]
+   },
+   {
+    "cost": 1192,
+    "weighted_sum_mm": 249710234,
+    "selected_ids": [
+     "c00",
+     "c08",
+     "c09",
+     "c11"
+    ]
+   }
+  ],
+  "budget_sensitivity": [
+   {
+    "budget": 0,
+    "status": "optimal",
+    "objectives": {
+     "mean": [],
+     "minimax": [],
+     "coverage": []
+    }
+   },
+   {
+    "budget": 800,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c00",
+      "c11"
+     ],
+     "minimax": [
+      "c00",
+      "c11"
+     ],
+     "coverage": [
+      "c00",
+      "c11"
+     ]
+    }
+   },
+   {
+    "budget": 1601,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c00",
+      "c08",
+      "c09",
+      "c11"
+     ],
+     "minimax": [
+      "c00",
+      "c08",
+      "c09",
+      "c11"
+     ],
+     "coverage": [
+      "c00",
+      "c08",
+      "c09",
+      "c11"
+     ]
+    }
+   }
+  ]
+ },
+ "astana_clinic#8": {
+  "status": "infeasible",
+  "reason": "required_count_exceeds_max_selected",
+  "feasible_count": 0,
+  "budget_sensitivity": [
+   {
+    "budget": 0,
+    "status": "infeasible",
+    "objectives": {
+     "mean": null,
+     "minimax": null,
+     "coverage": null
+    }
+   },
+   {
+    "budget": 582,
+    "status": "infeasible",
+    "objectives": {
+     "mean": null,
+     "minimax": null,
+     "coverage": null
+    }
+   },
+   {
+    "budget": 1165,
+    "status": "infeasible",
+    "objectives": {
+     "mean": null,
+     "minimax": null,
+     "coverage": null
+    }
+   }
+  ]
+ },
+ "astana_clinic#9": {
+  "status": "infeasible",
+  "reason": "required_cost_exceeds_budget",
+  "feasible_count": 0,
+  "budget_sensitivity": [
+   {
+    "budget": 0,
+    "status": "infeasible",
+    "objectives": {
+     "mean": null,
+     "minimax": null,
+     "coverage": null
+    }
+   }
+  ]
+ },
+ "astana_clinic#10": {
+  "status": "optimal",
+  "reason": null,
+  "feasible_count": 1,
+  "objectives": {
+   "mean": {
+    "selected_ids": [],
+    "weighted_sum_mm": 7537633,
+    "max_mm": 635213,
+    "covered_weight": 12,
+    "unknown_count": 0,
+    "cost": 0
+   },
+   "minimax": {
+    "selected_ids": [],
+    "weighted_sum_mm": 7537633,
+    "max_mm": 635213,
+    "covered_weight": 12,
+    "unknown_count": 0,
+    "cost": 0
+   },
+   "coverage": {
+    "selected_ids": [],
+    "weighted_sum_mm": 7537633,
+    "max_mm": 635213,
+    "covered_weight": 12,
+    "unknown_count": 0,
+    "cost": 0
+   }
+  },
+  "pareto": [
+   {
+    "cost": 0,
+    "weighted_sum_mm": 7537633,
+    "selected_ids": []
+   }
+  ],
+  "budget_sensitivity": [
+   {
+    "budget": 0,
+    "status": "optimal",
+    "objectives": {
+     "mean": [],
+     "minimax": [],
+     "coverage": []
+    }
+   },
+   {
+    "budget": 967,
+    "status": "optimal",
+    "objectives": {
+     "mean": [],
+     "minimax": [],
+     "coverage": []
+    }
+   },
+   {
+    "budget": 1934,
+    "status": "optimal",
+    "objectives": {
+     "mean": [],
+     "minimax": [],
+     "coverage": []
+    }
+   }
+  ]
+ },
+ "astana_clinic_nobase#0": {
+  "status": "optimal",
+  "reason": null,
+  "feasible_count": 9,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "c01",
+     "c05"
+    ],
+    "weighted_sum_mm": 2742234,
+    "max_mm": 805500,
+    "covered_weight": 0,
+    "unknown_count": 0,
+    "cost": 468
+   },
+   "minimax": {
+    "selected_ids": [
+     "c01",
+     "c05"
+    ],
+    "weighted_sum_mm": 2742234,
+    "max_mm": 805500,
+    "covered_weight": 0,
+    "unknown_count": 0,
+    "cost": 468
+   },
+   "coverage": {
+    "selected_ids": [
+     "c02"
+    ],
+    "weighted_sum_mm": 3071442,
+    "max_mm": 930636,
+    "covered_weight": 1,
+    "unknown_count": 0,
+    "cost": 470
+   }
+  },
+  "pareto": [
+   {
+    "cost": 168,
+    "weighted_sum_mm": 3968325,
+    "selected_ids": [
+     "c00"
+    ]
+   },
+   {
+    "cost": 378,
+    "weighted_sum_mm": 2809713,
+    "selected_ids": [
+     "c00",
+     "c01"
+    ]
+   },
+   {
+    "cost": 468,
+    "weighted_sum_mm": 2742234,
+    "selected_ids": [
+     "c01",
+     "c05"
+    ]
+   }
+  ],
+  "budget_sensitivity": [
+   {
+    "budget": 0,
+    "status": "optimal",
+    "objectives": {
+     "mean": [],
+     "minimax": [],
+     "coverage": []
+    }
+   },
+   {
+    "budget": 315,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c00"
+     ],
+     "minimax": [
+      "c00"
+     ],
+     "coverage": [
+      "c00"
+     ]
+    }
+   },
+   {
+    "budget": 631,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c01",
+      "c05"
+     ],
+     "minimax": [
+      "c01",
+      "c05"
+     ],
+     "coverage": [
+      "c02"
+     ]
+    }
+   }
+  ]
+ },
+ "astana_clinic_nobase#1": {
+  "status": "optimal",
+  "reason": null,
+  "feasible_count": 176,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "c03",
+     "c07",
+     "c09"
+    ],
+    "weighted_sum_mm": 333913010,
+    "max_mm": 1206595,
+    "covered_weight": 260,
+    "unknown_count": 0,
+    "cost": 1274
+   },
+   "minimax": {
+    "selected_ids": [
+     "c03",
+     "c08",
+     "c09"
+    ],
+    "weighted_sum_mm": 346417188,
+    "max_mm": 794582,
+    "covered_weight": 217,
+    "unknown_count": 0,
+    "cost": 1727
+   },
+   "coverage": {
+    "selected_ids": [
+     "c01",
+     "c03",
+     "c09"
+    ],
+    "weighted_sum_mm": 357643933,
+    "max_mm": 1020507,
+    "covered_weight": 272,
+    "unknown_count": 0,
+    "cost": 1597
+   }
+  },
+  "pareto": [
+   {
+    "cost": 136,
+    "weighted_sum_mm": 654169030,
+    "selected_ids": [
+     "c07"
+    ]
+   },
+   {
+    "cost": 211,
+    "weighted_sum_mm": 648161615,
+    "selected_ids": [
+     "c04"
+    ]
+   },
+   {
+    "cost": 347,
+    "weighted_sum_mm": 536426537,
+    "selected_ids": [
+     "c04",
+     "c07"
+    ]
+   },
+   {
+    "cost": 418,
+    "weighted_sum_mm": 447506927,
+    "selected_ids": [
+     "c07",
+     "c09"
+    ]
+   },
+   {
+    "cost": 629,
+    "weighted_sum_mm": 420321116,
+    "selected_ids": [
+     "c04",
+     "c07",
+     "c09"
+    ]
+   },
+   {
+    "cost": 877,
+    "weighted_sum_mm": 389772877,
+    "selected_ids": [
+     "c01",
+     "c07",
+     "c09"
+    ]
+   },
+   {
+    "cost": 1274,
+    "weighted_sum_mm": 333913010,
+    "selected_ids": [
+     "c03",
+     "c07",
+     "c09"
+    ]
+   }
+  ],
+  "budget_sensitivity": [
+   {
+    "budget": 0,
+    "status": "optimal",
+    "objectives": {
+     "mean": [],
+     "minimax": [],
+     "coverage": []
+    }
+   },
+   {
+    "budget": 1444,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c03",
+      "c07",
+      "c09"
+     ],
+     "minimax": [
+      "c03",
+      "c07",
+      "c09"
+     ],
+     "coverage": [
+      "c01",
+      "c07",
+      "c09"
+     ]
+    }
+   },
+   {
+    "budget": 2888,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c03",
+      "c07",
+      "c09"
+     ],
+     "minimax": [
+      "c03",
+      "c08",
+      "c09"
+     ],
+     "coverage": [
+      "c01",
+      "c03",
+      "c09"
+     ]
+    }
+   }
+  ]
+ },
+ "astana_clinic_nobase#2": {
+  "status": "optimal",
+  "reason": null,
+  "feasible_count": 697,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "c00",
+     "c11",
+     "c15"
+    ],
+    "weighted_sum_mm": 57752394,
+    "max_mm": 949365,
+    "covered_weight": 8,
+    "unknown_count": 0,
+    "cost": 1457
+   },
+   "minimax": {
+    "selected_ids": [
+     "c02",
+     "c08",
+     "c12"
+    ],
+    "weighted_sum_mm": 68525349,
+    "max_mm": 822977,
+    "covered_weight": 3,
+    "unknown_count": 0,
+    "cost": 1383
+   },
+   "coverage": {
+    "selected_ids": [
+     "c12",
+     "c14",
+     "c15"
+    ],
+    "weighted_sum_mm": 118038426,
+    "max_mm": 1076928,
+    "covered_weight": 10,
+    "unknown_count": 0,
+    "cost": 1825
+   }
+  },
+  "pareto": [
+   {
+    "cost": 147,
+    "weighted_sum_mm": 135497006,
+    "selected_ids": [
+     "c11"
+    ]
+   },
+   {
+    "cost": 316,
+    "weighted_sum_mm": 73361872,
+    "selected_ids": [
+     "c13"
+    ]
+   },
+   {
+    "cost": 463,
+    "weighted_sum_mm": 70800985,
+    "selected_ids": [
+     "c11",
+     "c13"
+    ]
+   },
+   {
+    "cost": 553,
+    "weighted_sum_mm": 68974868,
+    "selected_ids": [
+     "c00"
+    ]
+   },
+   {
+    "cost": 700,
+    "weighted_sum_mm": 64494131,
+    "selected_ids": [
+     "c00",
+     "c11"
+    ]
+   },
+   {
+    "cost": 976,
+    "weighted_sum_mm": 63090730,
+    "selected_ids": [
+     "c00",
+     "c03",
+     "c11"
+    ]
+   },
+   {
+    "cost": 1024,
+    "weighted_sum_mm": 62671427,
+    "selected_ids": [
+     "c00",
+     "c08"
+    ]
+   },
+   {
+    "cost": 1171,
+    "weighted_sum_mm": 59742017,
+    "selected_ids": [
+     "c00",
+     "c08",
+     "c11"
+    ]
+   },
+   {
+    "cost": 1350,
+    "weighted_sum_mm": 59654502,
+    "selected_ids": [
+     "c00",
+     "c08",
+     "c12"
+    ]
+   },
+   {
+    "cost": 1444,
+    "weighted_sum_mm": 58580627,
+    "selected_ids": [
+     "c00",
+     "c04",
+     "c11"
+    ]
+   },
+   {
+    "cost": 1457,
+    "weighted_sum_mm": 57752394,
+    "selected_ids": [
+     "c00",
+     "c11",
+     "c15"
+    ]
+   }
+  ],
+  "budget_sensitivity": [
+   {
+    "budget": 0,
+    "status": "optimal",
+    "objectives": {
+     "mean": [],
+     "minimax": [],
+     "coverage": []
+    }
+   },
+   {
+    "budget": 5162,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c00",
+      "c11",
+      "c15"
+     ],
+     "minimax": [
+      "c02",
+      "c08",
+      "c12"
+     ],
+     "coverage": [
+      "c12",
+      "c14",
+      "c15"
+     ]
+    }
+   },
+   {
+    "budget": 10324,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c00",
+      "c11",
+      "c15"
+     ],
+     "minimax": [
+      "c02",
+      "c08",
+      "c12"
+     ],
+     "coverage": [
+      "c12",
+      "c14",
+      "c15"
+     ]
+    }
+   }
+  ]
+ },
+ "astana_clinic_nobase#3": {
+  "status": "optimal",
+  "reason": null,
+  "feasible_count": 6885,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "c02",
+     "c03",
+     "c07",
+     "c10",
+     "c13"
+    ],
+    "weighted_sum_mm": 758002159,
+    "max_mm": 1284074,
+    "covered_weight": 1193,
+    "unknown_count": 0,
+    "cost": 2800
+   },
+   "minimax": {
+    "selected_ids": [
+     "c02",
+     "c03",
+     "c07",
+     "c10",
+     "c13"
+    ],
+    "weighted_sum_mm": 758002159,
+    "max_mm": 1284074,
+    "covered_weight": 1193,
+    "unknown_count": 0,
+    "cost": 2800
+   },
+   "coverage": {
+    "selected_ids": [
+     "c02",
+     "c03",
+     "c07",
+     "c10",
+     "c13"
+    ],
+    "weighted_sum_mm": 758002159,
+    "max_mm": 1284074,
+    "covered_weight": 1193,
+    "unknown_count": 0,
+    "cost": 2800
+   }
+  },
+  "pareto": [
+   {
+    "cost": 136,
+    "weighted_sum_mm": 1711159208,
+    "selected_ids": [
+     "c02"
+    ]
+   },
+   {
+    "cost": 292,
+    "weighted_sum_mm": 1598364503,
+    "selected_ids": [
+     "c01",
+     "c02"
+    ]
+   },
+   {
+    "cost": 346,
+    "weighted_sum_mm": 1269596538,
+    "selected_ids": [
+     "c15"
+    ]
+   },
+   {
+    "cost": 482,
+    "weighted_sum_mm": 1025538642,
+    "selected_ids": [
+     "c02",
+     "c15"
+    ]
+   },
+   {
+    "cost": 638,
+    "weighted_sum_mm": 938023692,
+    "selected_ids": [
+     "c01",
+     "c02",
+     "c15"
+    ]
+   },
+   {
+    "cost": 897,
+    "weighted_sum_mm": 934389049,
+    "selected_ids": [
+     "c00",
+     "c01",
+     "c02",
+     "c15"
+    ]
+   },
+   {
+    "cost": 1086,
+    "weighted_sum_mm": 887162276,
+    "selected_ids": [
+     "c02",
+     "c09",
+     "c13"
+    ]
+   },
+   {
+    "cost": 1095,
+    "weighted_sum_mm": 851483613,
+    "selected_ids": [
+     "c01",
+     "c02",
+     "c09",
+     "c15"
+    ]
+   },
+   {
+    "cost": 1242,
+    "weighted_sum_mm": 805087719,
+    "selected_ids": [
+     "c01",
+     "c02",
+     "c09",
+     "c13"
+    ]
+   },
+   {
+    "cost": 1501,
+    "weighted_sum_mm": 801453076,
+    "selected_ids": [
+     "c00",
+     "c01",
+     "c02",
+     "c09",
+     "c13"
+    ]
+   },
+   {
+    "cost": 1588,
+    "weighted_sum_mm": 791619919,
+    "selected_ids": [
+     "c01",
+     "c02",
+     "c09",
+     "c13",
+     "c15"
+    ]
+   },
+   {
+    "cost": 1719,
+    "weighted_sum_mm": 780395359,
+    "selected_ids": [
+     "c01",
+     "c02",
+     "c08",
+     "c09",
+     "c13"
+    ]
+   },
+   {
+    "cost": 1746,
+    "weighted_sum_mm": 773080664,
+    "selected_ids": [
+     "c01",
+     "c02",
+     "c03",
+     "c09",
+     "c13"
+    ]
+   },
+   {
+    "cost": 2010,
+    "weighted_sum_mm": 772388474,
+    "selected_ids": [
+     "c01",
+     "c02",
+     "c03",
+     "c12",
+     "c13"
+    ]
+   },
+   {
+    "cost": 2247,
+    "weighted_sum_mm": 766714128,
+    "selected_ids": [
+     "c01",
+     "c02",
+     "c03",
+     "c07",
+     "c13"
+    ]
+   },
+   {
+    "cost": 2299,
+    "weighted_sum_mm": 764368695,
+    "selected_ids": [
+     "c02",
+     "c03",
+     "c09",
+     "c10",
+     "c13"
+    ]
+   },
+   {
+    "cost": 2563,
+    "weighted_sum_mm": 763676505,
+    "selected_ids": [
+     "c02",
+     "c03",
+     "c10",
+     "c12",
+     "c13"
+    ]
+   },
+   {
+    "cost": 2800,
+    "weighted_sum_mm": 758002159,
+    "selected_ids": [
+     "c02",
+     "c03",
+     "c07",
+     "c10",
+     "c13"
+    ]
+   }
+  ],
+  "budget_sensitivity": [
+   {
+    "budget": 0,
+    "status": "optimal",
+    "objectives": {
+     "mean": [],
+     "minimax": [],
+     "coverage": []
+    }
+   },
+   {
+    "budget": 2321,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c02",
+      "c03",
+      "c09",
+      "c10",
+      "c13"
+     ],
+     "minimax": [
+      "c02",
+      "c03",
+      "c09",
+      "c10",
+      "c13"
+     ],
+     "coverage": [
+      "c02",
+      "c03",
+      "c09",
+      "c10",
+      "c13"
+     ]
+    }
+   },
+   {
+    "budget": 4642,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c02",
+      "c03",
+      "c07",
+      "c10",
+      "c13"
+     ],
+     "minimax": [
+      "c02",
+      "c03",
+      "c07",
+      "c10",
+      "c13"
+     ],
+     "coverage": [
+      "c02",
+      "c03",
+      "c07",
+      "c10",
+      "c13"
+     ]
+    }
+   }
+  ]
+ },
+ "astana_clinic_nobase#4": {
+  "status": "optimal",
+  "reason": null,
+  "feasible_count": 37,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "c01",
+     "c02"
+    ],
+    "weighted_sum_mm": 4671887,
+    "max_mm": 1128168,
+    "covered_weight": 0,
+    "unknown_count": 0,
+    "cost": 1431
+   },
+   "minimax": {
+    "selected_ids": [
+     "c05",
+     "c07"
+    ],
+    "weighted_sum_mm": 5864890,
+    "max_mm": 912199,
+    "covered_weight": 0,
+    "unknown_count": 0,
+    "cost": 575
+   },
+   "coverage": {
+    "selected_ids": [
+     "c01",
+     "c02"
+    ],
+    "weighted_sum_mm": 4671887,
+    "max_mm": 1128168,
+    "covered_weight": 0,
+    "unknown_count": 0,
+    "cost": 1431
+   }
+  },
+  "pareto": [
+   {
+    "cost": 124,
+    "weighted_sum_mm": 10478799,
+    "selected_ids": [
+     "c04"
+    ]
+   },
+   {
+    "cost": 126,
+    "weighted_sum_mm": 7130631,
+    "selected_ids": [
+     "c05"
+    ]
+   },
+   {
+    "cost": 250,
+    "weighted_sum_mm": 6547383,
+    "selected_ids": [
+     "c04",
+     "c05"
+    ]
+   },
+   {
+    "cost": 343,
+    "weighted_sum_mm": 6002434,
+    "selected_ids": [
+     "c05",
+     "c06"
+    ]
+   },
+   {
+    "cost": 575,
+    "weighted_sum_mm": 5864890,
+    "selected_ids": [
+     "c05",
+     "c07"
+    ]
+   },
+   {
+    "cost": 739,
+    "weighted_sum_mm": 5358689,
+    "selected_ids": [
+     "c02",
+     "c04"
+    ]
+   },
+   {
+    "cost": 1431,
+    "weighted_sum_mm": 4671887,
+    "selected_ids": [
+     "c01",
+     "c02"
+    ]
+   }
+  ],
+  "budget_sensitivity": [
+   {
+    "budget": 0,
+    "status": "optimal",
+    "objectives": {
+     "mean": [],
+     "minimax": [],
+     "coverage": []
+    }
+   },
+   {
+    "budget": 1039,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c02",
+      "c04"
+     ],
+     "minimax": [
+      "c05",
+      "c07"
+     ],
+     "coverage": [
+      "c02",
+      "c04"
+     ]
+    }
+   },
+   {
+    "budget": 2079,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c01",
+      "c02"
+     ],
+     "minimax": [
+      "c05",
+      "c07"
+     ],
+     "coverage": [
+      "c01",
+      "c02"
+     ]
+    }
+   }
+  ]
+ },
+ "astana_clinic_nobase#5": {
+  "status": "optimal",
+  "reason": null,
+  "feasible_count": 29,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "c01",
+     "c03",
+     "c09"
+    ],
+    "weighted_sum_mm": 357643933,
+    "max_mm": 1020507,
+    "covered_weight": 272,
+    "unknown_count": 0,
+    "cost": 1597
+   },
+   "minimax": {
+    "selected_ids": [
+     "c01",
+     "c03",
+     "c04"
+    ],
+    "weighted_sum_mm": 391300668,
+    "max_mm": 974694,
+    "covered_weight": 131,
+    "unknown_count": 0,
+    "cost": 1526
+   },
+   "coverage": {
+    "selected_ids": [
+     "c01",
+     "c03",
+     "c09"
+    ],
+    "weighted_sum_mm": 357643933,
+    "max_mm": 1020507,
+    "covered_weight": 272,
+    "unknown_count": 0,
+    "cost": 1597
+   }
+  },
+  "pareto": [
+   {
+    "cost": 459,
+    "weighted_sum_mm": 1097877120,
+    "selected_ids": [
+     "c01"
+    ]
+   },
+   {
+    "cost": 595,
+    "weighted_sum_mm": 596434980,
+    "selected_ids": [
+     "c01",
+     "c07"
+    ]
+   },
+   {
+    "cost": 670,
+    "weighted_sum_mm": 529363871,
+    "selected_ids": [
+     "c01",
+     "c04"
+    ]
+   },
+   {
+    "cost": 741,
+    "weighted_sum_mm": 523167421,
+    "selected_ids": [
+     "c01",
+     "c09"
+    ]
+   },
+   {
+    "cost": 806,
+    "weighted_sum_mm": 478692487,
+    "selected_ids": [
+     "c01",
+     "c04",
+     "c07"
+    ]
+   },
+   {
+    "cost": 877,
+    "weighted_sum_mm": 389772877,
+    "selected_ids": [
+     "c01",
+     "c07",
+     "c09"
+    ]
+   },
+   {
+    "cost": 1597,
+    "weighted_sum_mm": 357643933,
+    "selected_ids": [
+     "c01",
+     "c03",
+     "c09"
+    ]
+   }
+  ],
+  "budget_sensitivity": [
+   {
+    "budget": 0,
+    "status": "infeasible",
+    "objectives": {
+     "mean": null,
+     "minimax": null,
+     "coverage": null
+    }
+   },
+   {
+    "budget": 1444,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c01",
+      "c07",
+      "c09"
+     ],
+     "minimax": [
+      "c01",
+      "c07",
+      "c09"
+     ],
+     "coverage": [
+      "c01",
+      "c07",
+      "c09"
+     ]
+    }
+   },
+   {
+    "budget": 2888,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c01",
+      "c03",
+      "c09"
+     ],
+     "minimax": [
+      "c01",
+      "c03",
+      "c04"
+     ],
+     "coverage": [
+      "c01",
+      "c03",
+      "c09"
+     ]
+    }
+   }
+  ]
+ },
+ "astana_clinic_nobase#6": {
+  "status": "optimal",
+  "reason": null,
+  "feasible_count": 378,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "c02",
+     "c05",
+     "c09",
+     "c10",
+     "c13"
+    ],
+    "weighted_sum_mm": 786426817,
+    "max_mm": 1284074,
+    "covered_weight": 1193,
+    "unknown_count": 0,
+    "cost": 2515
+   },
+   "minimax": {
+    "selected_ids": [
+     "c02",
+     "c05",
+     "c09",
+     "c10",
+     "c13"
+    ],
+    "weighted_sum_mm": 786426817,
+    "max_mm": 1284074,
+    "covered_weight": 1193,
+    "unknown_count": 0,
+    "cost": 2515
+   },
+   "coverage": {
+    "selected_ids": [
+     "c02",
+     "c05",
+     "c09",
+     "c10",
+     "c13"
+    ],
+    "weighted_sum_mm": 786426817,
+    "max_mm": 1284074,
+    "covered_weight": 1193,
+    "unknown_count": 0,
+    "cost": 2515
+   }
+  },
+  "pareto": [
+   {
+    "cost": 1177,
+    "weighted_sum_mm": 1341258869,
+    "selected_ids": [
+     "c05",
+     "c09"
+    ]
+   },
+   {
+    "cost": 1313,
+    "weighted_sum_mm": 1072899436,
+    "selected_ids": [
+     "c02",
+     "c05",
+     "c09"
+    ]
+   },
+   {
+    "cost": 1572,
+    "weighted_sum_mm": 1049761023,
+    "selected_ids": [
+     "c00",
+     "c02",
+     "c05",
+     "c09"
+    ]
+   },
+   {
+    "cost": 1659,
+    "weighted_sum_mm": 929049630,
+    "selected_ids": [
+     "c02",
+     "c05",
+     "c09",
+     "c15"
+    ]
+   },
+   {
+    "cost": 1806,
+    "weighted_sum_mm": 877213343,
+    "selected_ids": [
+     "c02",
+     "c05",
+     "c09",
+     "c13"
+    ]
+   },
+   {
+    "cost": 2065,
+    "weighted_sum_mm": 854074930,
+    "selected_ids": [
+     "c00",
+     "c02",
+     "c05",
+     "c09",
+     "c13"
+    ]
+   },
+   {
+    "cost": 2283,
+    "weighted_sum_mm": 852520983,
+    "selected_ids": [
+     "c02",
+     "c05",
+     "c08",
+     "c09",
+     "c13"
+    ]
+   },
+   {
+    "cost": 2310,
+    "weighted_sum_mm": 852401032,
+    "selected_ids": [
+     "c02",
+     "c03",
+     "c05",
+     "c09",
+     "c13"
+    ]
+   },
+   {
+    "cost": 2368,
+    "weighted_sum_mm": 834205518,
+    "selected_ids": [
+     "c02",
+     "c05",
+     "c09",
+     "c10",
+     "c15"
+    ]
+   },
+   {
+    "cost": 2515,
+    "weighted_sum_mm": 786426817,
+    "selected_ids": [
+     "c02",
+     "c05",
+     "c09",
+     "c10",
+     "c13"
+    ]
+   }
+  ],
+  "budget_sensitivity": [
+   {
+    "budget": 0,
+    "status": "infeasible",
+    "objectives": {
+     "mean": null,
+     "minimax": null,
+     "coverage": null
+    }
+   },
+   {
+    "budget": 2321,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c02",
+      "c03",
+      "c05",
+      "c09",
+      "c13"
+     ],
+     "minimax": [
+      "c02",
+      "c03",
+      "c05",
+      "c09",
+      "c13"
+     ],
+     "coverage": [
+      "c00",
+      "c02",
+      "c05",
+      "c09",
+      "c13"
+     ]
+    }
+   },
+   {
+    "budget": 4642,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c02",
+      "c05",
+      "c09",
+      "c10",
+      "c13"
+     ],
+     "minimax": [
+      "c02",
+      "c05",
+      "c09",
+      "c10",
+      "c13"
+     ],
+     "coverage": [
+      "c02",
+      "c05",
+      "c09",
+      "c10",
+      "c13"
+     ]
+    }
+   }
+  ]
+ },
+ "astana_clinic_nobase#7": {
+  "status": "optimal",
+  "reason": null,
+  "feasible_count": 179,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "c00",
+     "c01",
+     "c02",
+     "c07"
+    ],
+    "weighted_sum_mm": 341215670,
+    "max_mm": 760910,
+    "covered_weight": 709,
+    "unknown_count": 0,
+    "cost": 1329
+   },
+   "minimax": {
+    "selected_ids": [
+     "c00",
+     "c01",
+     "c02",
+     "c07"
+    ],
+    "weighted_sum_mm": 341215670,
+    "max_mm": 760910,
+    "covered_weight": 709,
+    "unknown_count": 0,
+    "cost": 1329
+   },
+   "coverage": {
+    "selected_ids": [
+     "c00",
+     "c01",
+     "c02",
+     "c07"
+    ],
+    "weighted_sum_mm": 341215670,
+    "max_mm": 760910,
+    "covered_weight": 709,
+    "unknown_count": 0,
+    "cost": 1329
+   }
+  },
+  "pareto": [
+   {
+    "cost": 107,
+    "weighted_sum_mm": 744556780,
+    "selected_ids": [
+     "c07"
+    ]
+   },
+   {
+    "cost": 292,
+    "weighted_sum_mm": 654713503,
+    "selected_ids": [
+     "c02",
+     "c07"
+    ]
+   },
+   {
+    "cost": 395,
+    "weighted_sum_mm": 507977181,
+    "selected_ids": [
+     "c07",
+     "c11"
+    ]
+   },
+   {
+    "cost": 580,
+    "weighted_sum_mm": 449025071,
+    "selected_ids": [
+     "c02",
+     "c07",
+     "c11"
+    ]
+   },
+   {
+    "cost": 788,
+    "weighted_sum_mm": 400708257,
+    "selected_ids": [
+     "c00",
+     "c02",
+     "c07"
+    ]
+   },
+   {
+    "cost": 1076,
+    "weighted_sum_mm": 388264335,
+    "selected_ids": [
+     "c00",
+     "c02",
+     "c07",
+     "c11"
+    ]
+   },
+   {
+    "cost": 1121,
+    "weighted_sum_mm": 385282545,
+    "selected_ids": [
+     "c01",
+     "c02",
+     "c07",
+     "c11"
+    ]
+   },
+   {
+    "cost": 1329,
+    "weighted_sum_mm": 341215670,
+    "selected_ids": [
+     "c00",
+     "c01",
+     "c02",
+     "c07"
+    ]
+   }
+  ],
+  "budget_sensitivity": [
+   {
+    "budget": 0,
+    "status": "optimal",
+    "objectives": {
+     "mean": [],
+     "minimax": [],
+     "coverage": []
+    }
+   },
+   {
+    "budget": 723,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c02",
+      "c07",
+      "c11"
+     ],
+     "minimax": [
+      "c00",
+      "c02"
+     ],
+     "coverage": [
+      "c00",
+      "c07"
+     ]
+    }
+   },
+   {
+    "budget": 1447,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c00",
+      "c01",
+      "c02",
+      "c07"
+     ],
+     "minimax": [
+      "c00",
+      "c01",
+      "c02",
+      "c07"
+     ],
+     "coverage": [
+      "c00",
+      "c01",
+      "c02",
+      "c07"
+     ]
+    }
+   }
+  ]
+ },
+ "astana_clinic_nobase#8": {
+  "status": "infeasible",
+  "reason": "required_count_exceeds_max_selected",
+  "feasible_count": 0,
+  "budget_sensitivity": [
+   {
+    "budget": 0,
+    "status": "infeasible",
+    "objectives": {
+     "mean": null,
+     "minimax": null,
+     "coverage": null
+    }
+   },
+   {
+    "budget": 825,
+    "status": "infeasible",
+    "objectives": {
+     "mean": null,
+     "minimax": null,
+     "coverage": null
+    }
+   },
+   {
+    "budget": 1650,
+    "status": "infeasible",
+    "objectives": {
+     "mean": null,
+     "minimax": null,
+     "coverage": null
+    }
+   }
+  ]
+ },
+ "astana_clinic_nobase#9": {
+  "status": "infeasible",
+  "reason": "required_cost_exceeds_budget",
+  "feasible_count": 0,
+  "budget_sensitivity": [
+   {
+    "budget": 0,
+    "status": "infeasible",
+    "objectives": {
+     "mean": null,
+     "minimax": null,
+     "coverage": null
+    }
+   }
+  ]
+ },
+ "astana_clinic_nobase#10": {
+  "status": "optimal",
+  "reason": null,
+  "feasible_count": 1,
+  "objectives": {
+   "mean": {
+    "selected_ids": [],
+    "weighted_sum_mm": 0,
+    "max_mm": null,
+    "covered_weight": 0,
+    "unknown_count": 25,
+    "cost": 0
+   },
+   "minimax": {
+    "selected_ids": [],
+    "weighted_sum_mm": 0,
+    "max_mm": null,
+    "covered_weight": 0,
+    "unknown_count": 25,
+    "cost": 0
+   },
+   "coverage": {
+    "selected_ids": [],
+    "weighted_sum_mm": 0,
+    "max_mm": null,
+    "covered_weight": 0,
+    "unknown_count": 25,
+    "cost": 0
+   }
+  },
+  "pareto": [],
+  "budget_sensitivity": [
+   {
+    "budget": 0,
+    "status": "optimal",
+    "objectives": {
+     "mean": [],
+     "minimax": [],
+     "coverage": []
+    }
+   },
+   {
+    "budget": 1076,
+    "status": "optimal",
+    "objectives": {
+     "mean": [],
+     "minimax": [],
+     "coverage": []
+    }
+   },
+   {
+    "budget": 2152,
+    "status": "optimal",
+    "objectives": {
+     "mean": [],
+     "minimax": [],
+     "coverage": []
+    }
+   }
+  ]
+ },
+ "tie#dup": {
+  "status": "optimal",
+  "reason": null,
+  "feasible_count": 46,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "c04",
+     "c05"
+    ],
+    "weighted_sum_mm": 2394597,
+    "max_mm": 490077,
+    "covered_weight": 7,
+    "unknown_count": 0,
+    "cost": 1710
+   },
+   "minimax": {
+    "selected_ids": [
+     "c04",
+     "c05"
+    ],
+    "weighted_sum_mm": 2394597,
+    "max_mm": 490077,
+    "covered_weight": 7,
+    "unknown_count": 0,
+    "cost": 1710
+   },
+   "coverage": {
+    "selected_ids": [
+     "c04",
+     "c05"
+    ],
+    "weighted_sum_mm": 2394597,
+    "max_mm": 490077,
+    "covered_weight": 7,
+    "unknown_count": 0,
+    "cost": 1710
+   }
+  },
+  "pareto": [
+   {
+    "cost": 0,
+    "weighted_sum_mm": 2955551,
+    "selected_ids": []
+   },
+   {
+    "cost": 131,
+    "weighted_sum_mm": 2868634,
+    "selected_ids": [
+     "c06"
+    ]
+   },
+   {
+    "cost": 306,
+    "weighted_sum_mm": 2807828,
+    "selected_ids": [
+     "c00"
+    ]
+   },
+   {
+    "cost": 437,
+    "weighted_sum_mm": 2720911,
+    "selected_ids": [
+     "c00",
+     "c06"
+    ]
+   },
+   {
+    "cost": 757,
+    "weighted_sum_mm": 2690346,
+    "selected_ids": [
+     "c05"
+    ]
+   },
+   {
+    "cost": 953,
+    "weighted_sum_mm": 2659802,
+    "selected_ids": [
+     "c04"
+    ]
+   },
+   {
+    "cost": 1063,
+    "weighted_sum_mm": 2542623,
+    "selected_ids": [
+     "c00",
+     "c05"
+    ]
+   },
+   {
+    "cost": 1689,
+    "weighted_sum_mm": 2480848,
+    "selected_ids": [
+     "c02",
+     "c05"
+    ]
+   },
+   {
+    "cost": 1710,
+    "weighted_sum_mm": 2394597,
+    "selected_ids": [
+     "c04",
+     "c05"
+    ]
+   }
+  ],
+  "budget_sensitivity": [
+   {
+    "budget": 0,
+    "status": "optimal",
+    "objectives": {
+     "mean": [],
+     "minimax": [],
+     "coverage": []
+    }
+   },
+   {
+    "budget": 2678,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c04",
+      "c05"
+     ],
+     "minimax": [
+      "c04",
+      "c05"
+     ],
+     "coverage": [
+      "c04",
+      "c05"
+     ]
+    }
+   },
+   {
+    "budget": 5356,
+    "status": "optimal",
+    "objectives": {
+     "mean": [
+      "c04",
+      "c05"
+     ],
+     "minimax": [
+      "c04",
+      "c05"
+     ],
+     "coverage": [
+      "c04",
+      "c05"
+     ]
+    }
+   }
+  ]
+ }
+}

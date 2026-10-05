@@ -1,0 +1,122 @@
+{
+ "sanity_legend": {
+  "a": "hit==1 but greedy_ids != exact_ids",
+  "b": "hit==1 but greedy_cost != exact_cost",
+  "c": "abs_gap present and < 0",
+  "d": "greedy_cost > budget (join scenarios.csv)",
+  "d_missing_scenario_join": 0,
+  "e": "len(greedy_ids) > max_selected",
+  "f": "<=1 id in exact_ids and hit==0",
+  "g": "distinct scenario_keys per analysis",
+  "h": "scenario_keys with rows != 6"
+ },
+ "secondary_n_per_level_G1_mean": {
+  "sec_max_selected": {
+   "1": 30,
+   "2": 30,
+   "5": 30
+  },
+  "sec_radius": {
+   "100": 30,
+   "300": 30,
+   "800": 30
+  }
+ },
+ "checks": {
+  "dup_key_obj_alg": 0,
+  "dup_full_rows": 0,
+  "run_keys_not_in_scenarios": 0,
+  "scenario_keys_not_in_runs": 0,
+  "run_vs_scenario_field_mismatch": {},
+  "scenario_key_vs_columns_mismatch": 0,
+  "exact_ids_runs_vs_scenarios_mismatch": 0,
+  "exact_plan_differs_between_G1_G2": 0,
+  "distinct_exact_plans_vs_id_columns_mismatch": 0,
+  "exact_cost_over_budget": 0,
+  "exact_ids_over_max_selected": 0,
+  "id_lists_not_sorted": 0,
+  "id_lists_with_duplicate_ids": 0,
+  "ids_numerically_above_n_candidates": 0,
+  "empty_plan_nonzero_cost": 0,
+  "same_ids_diff_cost": 0,
+  "same_ids_but_hit0": 0,
+  "hit1_abs_gap_nonzero": 0,
+  "hit1_primary_equal_ne_1": 0,
+  "hit1_rel_gap_nonzero": 0,
+  "primary_equal1_abs_gap_nonzero": 0,
+  "primary_equal0_abs_gap_zero": 0,
+  "primary_equal0_abs_gap_le0": 0,
+  "abs_gap_empty": 0,
+  "rel_gap_empty": 52,
+  "rel_gap_empty_abs_gap_nonzero": 0,
+  "rel_gap_empty_abs_gap_zero": 52,
+  "rel_gap_negative": 0,
+  "rel_gap_sign_vs_abs_gap_sign_mismatch": 0,
+  "rel_gap_empty_by_analysis_alg_obj": {
+   "main|G1/coverage": 26,
+   "main|G2/coverage": 26
+  },
+  "hit0_primary_equal1": 2773,
+  "hit0_primary_equal1_main": 2595,
+  "G1_replaced_nonempty": 0,
+  "G2_replaced_empty": 0,
+  "G2_replaced1_greedy_ids_ne1": 0,
+  "G1_steps_ne_len_greedy": 0,
+  "G2_steps_ne_len_greedy_not_replaced": 0,
+  "G2_not_replaced_but_greedy_differs_from_G1": 4569,
+  "G2_replaced_but_greedy_same_as_G1": 401,
+  "unknown_worse_nonzero": 0,
+  "subsets_total_ne_2pow_nc": 0,
+  "feasible_count_out_of_range": 0,
+  "scenarios_rows_per_analysis": {
+   "main": 2430,
+   "sec_max_selected": 90,
+   "sec_radius": 90
+  },
+  "problem_digest_duplicates": 30,
+  "main_design_cells": 243,
+  "main_scenarios_per_cell": {
+   "10": 243
+  },
+  "main_nc_np_pairs": [
+   [
+    "10",
+    "15"
+   ],
+   [
+    "10",
+    "25"
+   ],
+   [
+    "10",
+    "5"
+   ],
+   [
+    "16",
+    "15"
+   ],
+   [
+    "16",
+    "25"
+   ],
+   [
+    "16",
+    "5"
+   ],
+   [
+    "6",
+    "15"
+   ],
+   [
+    "6",
+    "25"
+   ],
+   [
+    "6",
+    "5"
+   ]
+  ],
+  "main_seed_values": 10
+ },
+ "anomalies": []
+}

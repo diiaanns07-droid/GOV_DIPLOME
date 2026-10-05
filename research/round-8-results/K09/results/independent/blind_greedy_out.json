@@ -1,0 +1,991 @@
+{
+ "shymkent_school#0": {
+  "G1": {
+   "mean": [
+    "c03"
+   ],
+   "minimax": [
+    "c03"
+   ],
+   "coverage": [
+    "c03"
+   ]
+  },
+  "G2": {
+   "mean": [
+    "c03"
+   ],
+   "minimax": [
+    "c03"
+   ],
+   "coverage": [
+    "c03"
+   ]
+  }
+ },
+ "shymkent_school#1": {
+  "G1": {
+   "mean": [
+    "c02",
+    "c03",
+    "c08"
+   ],
+   "minimax": [
+    "c01",
+    "c02",
+    "c08"
+   ],
+   "coverage": [
+    "c02",
+    "c03",
+    "c08"
+   ]
+  },
+  "G2": {
+   "mean": [
+    "c02",
+    "c03",
+    "c08"
+   ],
+   "minimax": [
+    "c01",
+    "c08"
+   ],
+   "coverage": [
+    "c02",
+    "c08"
+   ]
+  }
+ },
+ "shymkent_school#2": {
+  "G1": {
+   "mean": [
+    "c02",
+    "c08",
+    "c14"
+   ],
+   "minimax": [
+    "c02",
+    "c08",
+    "c14"
+   ],
+   "coverage": [
+    "c02",
+    "c08",
+    "c14"
+   ]
+  },
+  "G2": {
+   "mean": [
+    "c00",
+    "c04",
+    "c14"
+   ],
+   "minimax": [
+    "c04",
+    "c08",
+    "c14"
+   ],
+   "coverage": [
+    "c04",
+    "c10",
+    "c14"
+   ]
+  }
+ },
+ "shymkent_school#3": {
+  "G1": {
+   "mean": [
+    "c02",
+    "c08",
+    "c09",
+    "c10",
+    "c15"
+   ],
+   "minimax": [
+    "c02",
+    "c08",
+    "c09",
+    "c10",
+    "c15"
+   ],
+   "coverage": [
+    "c02",
+    "c08",
+    "c09",
+    "c10",
+    "c15"
+   ]
+  },
+  "G2": {
+   "mean": [
+    "c01",
+    "c07",
+    "c09",
+    "c14",
+    "c15"
+   ],
+   "minimax": [
+    "c01",
+    "c02",
+    "c07",
+    "c08",
+    "c09"
+   ],
+   "coverage": [
+    "c08"
+   ]
+  }
+ },
+ "shymkent_school#4": {
+  "G1": {
+   "mean": [
+    "c03",
+    "c06"
+   ],
+   "minimax": [
+    "c03",
+    "c06"
+   ],
+   "coverage": [
+    "c03",
+    "c06"
+   ]
+  },
+  "G2": {
+   "mean": [
+    "c03",
+    "c06"
+   ],
+   "minimax": [
+    "c03",
+    "c06"
+   ],
+   "coverage": [
+    "c06"
+   ]
+  }
+ },
+ "shymkent_school#5": {
+  "G1": {
+   "mean": [
+    "c01",
+    "c07",
+    "c08"
+   ],
+   "minimax": [
+    "c01",
+    "c07",
+    "c08"
+   ],
+   "coverage": [
+    "c01",
+    "c07",
+    "c08"
+   ]
+  },
+  "G2": {
+   "mean": [
+    "c01",
+    "c03",
+    "c08"
+   ],
+   "minimax": [
+    "c01",
+    "c08"
+   ],
+   "coverage": [
+    "c01",
+    "c07",
+    "c08"
+   ]
+  }
+ },
+ "shymkent_school#6": {
+  "G1": {
+   "mean": [
+    "c05",
+    "c08",
+    "c09",
+    "c10",
+    "c15"
+   ],
+   "minimax": [
+    "c02",
+    "c05",
+    "c08",
+    "c09",
+    "c10"
+   ],
+   "coverage": [
+    "c05",
+    "c08",
+    "c09",
+    "c10",
+    "c15"
+   ]
+  },
+  "G2": {
+   "mean": [
+    "c05",
+    "c07",
+    "c08",
+    "c09",
+    "c15"
+   ],
+   "minimax": [
+    "c02",
+    "c05",
+    "c08",
+    "c09",
+    "c10"
+   ],
+   "coverage": [
+    "c05",
+    "c08",
+    "c09"
+   ]
+  }
+ },
+ "shymkent_school#7": {
+  "G1": {
+   "mean": [
+    "c02",
+    "c07",
+    "c10"
+   ],
+   "minimax": [
+    "c02",
+    "c07",
+    "c10"
+   ],
+   "coverage": [
+    "c02",
+    "c07",
+    "c10"
+   ]
+  },
+  "G2": {
+   "mean": [
+    "c05",
+    "c07",
+    "c10"
+   ],
+   "minimax": [
+    "c10"
+   ],
+   "coverage": [
+    "c10"
+   ]
+  }
+ },
+ "shymkent_school#8": {
+  "G1": {
+   "mean": null,
+   "minimax": null,
+   "coverage": null
+  },
+  "G2": {
+   "mean": null,
+   "minimax": null,
+   "coverage": null
+  }
+ },
+ "shymkent_school#9": {
+  "G1": {
+   "mean": null,
+   "minimax": null,
+   "coverage": null
+  },
+  "G2": {
+   "mean": null,
+   "minimax": null,
+   "coverage": null
+  }
+ },
+ "shymkent_school#10": {
+  "G1": {
+   "mean": [],
+   "minimax": [],
+   "coverage": []
+  },
+  "G2": {
+   "mean": [],
+   "minimax": [],
+   "coverage": []
+  }
+ },
+ "astana_clinic#0": {
+  "G1": {
+   "mean": [
+    "c04"
+   ],
+   "minimax": [
+    "c04"
+   ],
+   "coverage": [
+    "c04"
+   ]
+  },
+  "G2": {
+   "mean": [
+    "c04"
+   ],
+   "minimax": [
+    "c04"
+   ],
+   "coverage": [
+    "c04"
+   ]
+  }
+ },
+ "astana_clinic#1": {
+  "G1": {
+   "mean": [
+    "c00",
+    "c03",
+    "c08"
+   ],
+   "minimax": [
+    "c03",
+    "c07",
+    "c08"
+   ],
+   "coverage": [
+    "c00",
+    "c03",
+    "c08"
+   ]
+  },
+  "G2": {
+   "mean": [
+    "c00",
+    "c03",
+    "c08"
+   ],
+   "minimax": [
+    "c07"
+   ],
+   "coverage": [
+    "c00",
+    "c03",
+    "c08"
+   ]
+  }
+ },
+ "astana_clinic#2": {
+  "G1": {
+   "mean": [
+    "c04",
+    "c06",
+    "c09"
+   ],
+   "minimax": [
+    "c04",
+    "c06",
+    "c09"
+   ],
+   "coverage": [
+    "c04",
+    "c06",
+    "c09"
+   ]
+  },
+  "G2": {
+   "mean": [
+    "c00",
+    "c02",
+    "c06"
+   ],
+   "minimax": [
+    "c09"
+   ],
+   "coverage": [
+    "c02",
+    "c04",
+    "c06"
+   ]
+  }
+ },
+ "astana_clinic#3": {
+  "G1": {
+   "mean": [
+    "c02",
+    "c04",
+    "c05",
+    "c06",
+    "c15"
+   ],
+   "minimax": [
+    "c02",
+    "c04",
+    "c05",
+    "c06",
+    "c11"
+   ],
+   "coverage": [
+    "c02",
+    "c04",
+    "c05",
+    "c06",
+    "c15"
+   ]
+  },
+  "G2": {
+   "mean": [
+    "c01",
+    "c02",
+    "c04",
+    "c06",
+    "c08"
+   ],
+   "minimax": [
+    "c01",
+    "c11"
+   ],
+   "coverage": [
+    "c05"
+   ]
+  }
+ },
+ "astana_clinic#4": {
+  "G1": {
+   "mean": [
+    "c01",
+    "c04"
+   ],
+   "minimax": [
+    "c01",
+    "c04"
+   ],
+   "coverage": [
+    "c01",
+    "c04"
+   ]
+  },
+  "G2": {
+   "mean": [
+    "c01",
+    "c04"
+   ],
+   "minimax": [
+    "c04"
+   ],
+   "coverage": [
+    "c04"
+   ]
+  }
+ },
+ "astana_clinic#5": {
+  "G1": {
+   "mean": [
+    "c01",
+    "c03",
+    "c08"
+   ],
+   "minimax": [
+    "c01",
+    "c07",
+    "c08"
+   ],
+   "coverage": [
+    "c01",
+    "c05",
+    "c08"
+   ]
+  },
+  "G2": {
+   "mean": [
+    "c01",
+    "c03",
+    "c08"
+   ],
+   "minimax": [
+    "c01",
+    "c07"
+   ],
+   "coverage": [
+    "c01",
+    "c05",
+    "c08"
+   ]
+  }
+ },
+ "astana_clinic#6": {
+  "G1": {
+   "mean": [
+    "c02",
+    "c04",
+    "c05",
+    "c06",
+    "c09"
+   ],
+   "minimax": [
+    "c04",
+    "c05",
+    "c06",
+    "c09",
+    "c11"
+   ],
+   "coverage": [
+    "c02",
+    "c04",
+    "c05",
+    "c06",
+    "c09"
+   ]
+  },
+  "G2": {
+   "mean": [
+    "c02",
+    "c04",
+    "c05",
+    "c06",
+    "c09"
+   ],
+   "minimax": [
+    "c05",
+    "c09",
+    "c11"
+   ],
+   "coverage": [
+    "c04",
+    "c05",
+    "c09"
+   ]
+  }
+ },
+ "astana_clinic#7": {
+  "G1": {
+   "mean": [
+    "c00",
+    "c08",
+    "c09",
+    "c11"
+   ],
+   "minimax": [
+    "c00",
+    "c08",
+    "c09",
+    "c11"
+   ],
+   "coverage": [
+    "c00",
+    "c08",
+    "c09",
+    "c11"
+   ]
+  },
+  "G2": {
+   "mean": [
+    "c00",
+    "c08",
+    "c09",
+    "c11"
+   ],
+   "minimax": [
+    "c00",
+    "c08",
+    "c11"
+   ],
+   "coverage": [
+    "c11"
+   ]
+  }
+ },
+ "astana_clinic#8": {
+  "G1": {
+   "mean": null,
+   "minimax": null,
+   "coverage": null
+  },
+  "G2": {
+   "mean": null,
+   "minimax": null,
+   "coverage": null
+  }
+ },
+ "astana_clinic#9": {
+  "G1": {
+   "mean": null,
+   "minimax": null,
+   "coverage": null
+  },
+  "G2": {
+   "mean": null,
+   "minimax": null,
+   "coverage": null
+  }
+ },
+ "astana_clinic#10": {
+  "G1": {
+   "mean": [],
+   "minimax": [],
+   "coverage": []
+  },
+  "G2": {
+   "mean": [],
+   "minimax": [],
+   "coverage": []
+  }
+ },
+ "astana_clinic_nobase#0": {
+  "G1": {
+   "mean": [
+    "c02"
+   ],
+   "minimax": [
+    "c02"
+   ],
+   "coverage": [
+    "c02"
+   ]
+  },
+  "G2": {
+   "mean": [
+    "c00",
+    "c01"
+   ],
+   "minimax": [
+    "c00",
+    "c01"
+   ],
+   "coverage": [
+    "c02"
+   ]
+  }
+ },
+ "astana_clinic_nobase#1": {
+  "G1": {
+   "mean": [
+    "c03",
+    "c06",
+    "c09"
+   ],
+   "minimax": [
+    "c03",
+    "c07",
+    "c09"
+   ],
+   "coverage": [
+    "c01",
+    "c03",
+    "c09"
+   ]
+  },
+  "G2": {
+   "mean": [
+    "c03",
+    "c07",
+    "c09"
+   ],
+   "minimax": [
+    "c03",
+    "c04",
+    "c07"
+   ],
+   "coverage": [
+    "c04",
+    "c07",
+    "c09"
+   ]
+  }
+ },
+ "astana_clinic_nobase#2": {
+  "G1": {
+   "mean": [
+    "c00",
+    "c11",
+    "c15"
+   ],
+   "minimax": [
+    "c07",
+    "c13",
+    "c15"
+   ],
+   "coverage": [
+    "c12",
+    "c14",
+    "c15"
+   ]
+  },
+  "G2": {
+   "mean": [
+    "c00",
+    "c11",
+    "c13"
+   ],
+   "minimax": [
+    "c04",
+    "c11",
+    "c13"
+   ],
+   "coverage": [
+    "c11",
+    "c14",
+    "c15"
+   ]
+  }
+ },
+ "astana_clinic_nobase#3": {
+  "G1": {
+   "mean": [
+    "c03",
+    "c07",
+    "c10",
+    "c13",
+    "c15"
+   ],
+   "minimax": [
+    "c02",
+    "c07",
+    "c10",
+    "c11",
+    "c13"
+   ],
+   "coverage": [
+    "c02",
+    "c07",
+    "c10",
+    "c11",
+    "c13"
+   ]
+  },
+  "G2": {
+   "mean": [
+    "c01",
+    "c02",
+    "c09",
+    "c13",
+    "c15"
+   ],
+   "minimax": [
+    "c01",
+    "c02",
+    "c13",
+    "c15"
+   ],
+   "coverage": [
+    "c01",
+    "c02",
+    "c15"
+   ]
+  }
+ },
+ "astana_clinic_nobase#4": {
+  "G1": {
+   "mean": [
+    "c02",
+    "c03"
+   ],
+   "minimax": [
+    "c03",
+    "c07"
+   ],
+   "coverage": [
+    "c02",
+    "c03"
+   ]
+  },
+  "G2": {
+   "mean": [
+    "c04",
+    "c05"
+   ],
+   "minimax": [
+    "c03"
+   ],
+   "coverage": [
+    "c03"
+   ]
+  }
+ },
+ "astana_clinic_nobase#5": {
+  "G1": {
+   "mean": [
+    "c01",
+    "c03",
+    "c09"
+   ],
+   "minimax": [
+    "c01",
+    "c03",
+    "c07"
+   ],
+   "coverage": [
+    "c01",
+    "c03",
+    "c09"
+   ]
+  },
+  "G2": {
+   "mean": [
+    "c01",
+    "c07",
+    "c09"
+   ],
+   "minimax": [
+    "c01",
+    "c03",
+    "c07"
+   ],
+   "coverage": [
+    "c01",
+    "c07",
+    "c09"
+   ]
+  }
+ },
+ "astana_clinic_nobase#6": {
+  "G1": {
+   "mean": [
+    "c02",
+    "c05",
+    "c09",
+    "c10",
+    "c13"
+   ],
+   "minimax": [
+    "c02",
+    "c05",
+    "c09",
+    "c10",
+    "c13"
+   ],
+   "coverage": [
+    "c02",
+    "c05",
+    "c09",
+    "c10",
+    "c13"
+   ]
+  },
+  "G2": {
+   "mean": [
+    "c02",
+    "c05",
+    "c09",
+    "c10",
+    "c15"
+   ],
+   "minimax": [
+    "c02",
+    "c05",
+    "c09",
+    "c13"
+   ],
+   "coverage": [
+    "c00",
+    "c02",
+    "c05",
+    "c09",
+    "c15"
+   ]
+  }
+ },
+ "astana_clinic_nobase#7": {
+  "G1": {
+   "mean": [
+    "c00",
+    "c01",
+    "c02",
+    "c07"
+   ],
+   "minimax": [
+    "c00",
+    "c01",
+    "c06"
+   ],
+   "coverage": [
+    "c00",
+    "c01",
+    "c02",
+    "c07"
+   ]
+  },
+  "G2": {
+   "mean": [
+    "c00",
+    "c02",
+    "c07",
+    "c11"
+   ],
+   "minimax": [
+    "c01",
+    "c02",
+    "c07",
+    "c11"
+   ],
+   "coverage": [
+    "c00",
+    "c01",
+    "c02",
+    "c07"
+   ]
+  }
+ },
+ "astana_clinic_nobase#8": {
+  "G1": {
+   "mean": null,
+   "minimax": null,
+   "coverage": null
+  },
+  "G2": {
+   "mean": null,
+   "minimax": null,
+   "coverage": null
+  }
+ },
+ "astana_clinic_nobase#9": {
+  "G1": {
+   "mean": null,
+   "minimax": null,
+   "coverage": null
+  },
+  "G2": {
+   "mean": null,
+   "minimax": null,
+   "coverage": null
+  }
+ },
+ "astana_clinic_nobase#10": {
+  "G1": {
+   "mean": [],
+   "minimax": [],
+   "coverage": []
+  },
+  "G2": {
+   "mean": [],
+   "minimax": [],
+   "coverage": []
+  }
+ },
+ "tie#dup": {
+  "G1": {
+   "mean": [
+    "c04",
+    "c05"
+   ],
+   "minimax": [
+    "c04",
+    "c05"
+   ],
+   "coverage": [
+    "c04",
+    "c05"
+   ]
+  },
+  "G2": {
+   "mean": [
+    "c04"
+   ],
+   "minimax": [
+    "c04"
+   ],
+   "coverage": [
+    "c04",
+    "c05"
+   ]
+  }
+ }
+}

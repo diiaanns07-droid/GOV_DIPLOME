@@ -1,0 +1,176 @@
+{
+ "workflow_run": "wf_ed7c4b79-450",
+ "agents": {
+  "blind_exact": {
+   "out_path": "/tmp/claude-0/-home-user-GOV-DIPLOME/e220e412-94a1-5250-b65e-0d50545b9515/scratchpad/blind_exact/out.json",
+   "tasks_processed": 34,
+   "ambiguities": [
+    "Haversine central-angle form is not given (2*asin(sqrt(a)) vs 2*atan2(sqrt(a),sqrt(1-a))), nor the order of the degree-to-radian conversion. I used 2*R*asin(sqrt(a)) with a clamped to [0,1] and (lat2-lat1)*PI/180. variants_check.js computed all 12605 point-object pairs with three formulations (asin+floor, atan2+floor, and asin+Math.round with per-coordinate radians). No mm value differed. No unrounded distance had a fractional mm within 1e-4 of .5, so the choice does not change any result here.",
+    "Rounding: the spec says Math.round(d_m*1000) for JS and floor(x+0.5) for Python. I used floor(d_m*1000+0.5) as the notes require, and the variants check found no difference from Math.round on these inputs.",
+    "Infeasible tasks: the output format does not say whether budget_sensitivity should be dropped. I kept it (only objectives and pareto are omitted) and set feasible_count=0 and reason=null for optimal tasks. In infeasible sensitivity rows, objectives is {mean:null, minimax:null, coverage:null} and no reason field is added. For example, shymkent_school#9 has B=0, so its only sensitivity row is budget 0, infeasible.",
+    "Sensitivity rows rerun both infeasibility checks against the row's budget, count check first. Rows below cost(required) are infeasible with reason required_cost_exceeds_budget; the reason is computed but not output. Tasks #8 fail the count check, so every one of their budgets is infeasible.",
+    "Sensitivity winners for an empty plan are output as [], not null. Example: budget 0 with no required items, where the empty plan is the only feasible plan.",
+    "When no sources and no candidates are selected (the nobase tasks with max_selected=0 or budget 0), all points are unknown. In that case weighted_sum_mm=0, max_mm=null, covered_weight=0 and unknown_count equals the number of points. The Pareto set is [] because no plan has unknown_count=0, e.g. astana_clinic_nobase#10.",
+    "max_mm for a fully known plan is the plain maximum of after_mm. The case of zero control points cannot occur because the spec requires 1..25.",
+    "IDs are compared by Unicode code point (Array.from plus codePointAt), not UTF-16 code units. All input IDs are ASCII (c00..c15, c99), so this makes no difference here.",
+    "Pareto: equal (cost, weighted_sum_mm) pairs are collapsed first, keeping the lexicographically smallest id array, and then dominated pairs are removed. Since all kept pairs are distinct, the two orders give the same result. Output is sorted by cost ascending. Non-dominated pairs never share a cost, so no secondary key is needed. In tie#dup, c02 and c99 are identical duplicates, and the Pareto point keeps [c02,c05].",
+    "The spec's 'stable source/hypothetical key' for nearest-object ties is not implemented, because only the nearest distance enters the metrics. Which tied object counts as nearest therefore never changes any output field.",
+    "No input validation is done: bbox, snapshot and city checks, duplicate keys, and the 256 KiB limit are skipped. Required and excluded IDs are assumed valid and disjoint. All candidates match the context category, which I checked.",
+    "If both infeasibility checks pass, at least the required-only plan is always feasible. So the defensive fallback reason 'no_feasible_plan' in exact.js is unreachable on valid inputs."
+   ],
+   "notes": "I wrote exact.js using only the CORE_SPEC text from git show c3f6c00:research/round-8/CORE_SPEC.txt and the interpretation notes. I did not read anything under research/round-8-results/K09, any Python from the project, or the hidden expected directory, and I made no changes to the repository.\n\nMethod: distances are computed once per point and object, in integer mm. Then every candidate bitmask is enumerated by brute force (up to 2^16) with the feasibility filters, and each feasible plan is evaluated in full. There are three lexicographic winners, with a null max treated as Infinity. Pareto uses only plans with unknown_count==0. Budget sensitivity uses the sorted unique set {0, floor(B/2), B}.\n\nI cross-checked out.json against selfcheck.js, a second enumeration written differently (recursive over candidates sorted by id, with fully sorted ranking). All 34 tasks match on status, reason, feasible_count, every objective field, pareto and every budget_sensitivity row.\n\nResults: 6 tasks are infeasible. The three #8 tasks fail with required_count_exceeds_max_selected and the three #9 tasks with required_cost_exceeds_budget. The other 28 are optimal.\n\nTie diagnostics: in shymkent_school#7 (3 plans) and astana_clinic#0 (2 plans), the numeric keys tie before cost. Those winners are decided by cost, not by ids.\n\nFiles in /tmp/claude-0/-home-user-GOV-DIPLOME/e220e412-94a1-5250-b65e-0d50545b9515/scratchpad/blind_exact/:\n- exact.js, the optimizer. Run it with: node exact.js <inputs> <out>.\n- out.json, the output.\n- selfcheck.js, the independent cross-check.\n- variants_check.js, the check of alternative distance formulas and rounding."
+  },
+  "blind_greedy": {
+   "out_path": "/tmp/claude-0/-home-user-GOV-DIPLOME/e220e412-94a1-5250-b65e-0d50545b9515/scratchpad/blind_greedy/out.json",
+   "tasks_processed": 34,
+   "ambiguities": [
+    "Where the 'After the loop' best-single step applies: it sits under G2 at an in-between indent, so it could be read as applying to G1 as well. I applied it only to G2. I checked that it changes nothing for G1 on any of the 34 tasks: G1's first step already scans every single-candidate plan required∪{c}, and later steps only accept a strictly smaller key, so either reading gives the same result.",
+    "The form of the haversine formula is not fixed (asin(sqrt(a)) vs atan2(sqrt(a), sqrt(1-a)), and the order of operations). I used 2R*asin(sqrt(a)) with lat/lon converted via PI/180. On all 12,605 point-object distances the two forms round to the same mm. The smallest distance from a .5 mm rounding boundary was 1.2e-4 mm, so floating-point differences between implementations cannot change the result here.",
+    "G2 'Skip c if P(S) or P(S∪{c}) is undefined': for the mean and coverage objectives, P is always defined, even when some points are unknown (mean uses the weighted sum over known points only). I treated only minimax with max_mm=null as undefined. In practice the ratio branch is reached only when no candidate reduces unknown_count, and then unknown_count is already 0 (or nothing is addable), so this case does not come up.",
+    "G2 phase-1 tie tuple (-du, cost(c), id): I compare the id element by plain code-point string order, the same rule as for the keys. All ids here are ASCII 'cNN', so this has no effect.",
+    "Ratio tie-breaking in G2: gain/cost is compared as an exact rational using BigInt cross-multiplication. On equal ratios the earlier (smaller-id) candidate is kept even if its gain is smaller. The text implies this but does not say it outright.",
+    "Context sources have no category or kind field. I treated all context.sources as baseline records of the scenario category, with no filtering. scenario.selected_ids (the manual plan) is ignored by the greedies.",
+    "When several sources or candidates are equally near a point, the spec's 'stable source/hypothetical key' tie-break is irrelevant to G1 and G2: they only use distance values, not the identity of the nearest object. tie#dup has c02 and c99 at the same location with the same cost, but neither greedy reaches a tie between them in this run.",
+    "The infeasibility checks (|required| > max_selected, then cost(required) > budget) return null for all three objectives of both greedies. A required/excluded overlap is not defined in the text and does not occur in the inputs."
+   ],
+   "notes": "I processed all 34 tasks with Node 22 and no npm packages. The code is in greedy.js in the output directory and the result is out.json.\n\nout.json results:\n- 6 tasks are infeasible and return null for every objective of G1 and G2: #8 (required count 4 > max_selected 3) and #9 (budget 0 with one required candidate) in each of the three task groups (shymkent_school, astana_clinic, astana_clinic_nobase).\n- 3 tasks have max_selected 0 and return [] (the #10 tasks).\n- The other 25 tasks return candidate-id plans for both greedies.\n\ncheck.js in the same directory is an independent brute-force self-check over every subset, all from the task text:\n- Every non-null greedy plan is feasible.\n- No greedy plan is null while some feasible plan exists.\n- No greedy key is better than the exhaustive optimum (0 violations).\n- G1 matches the exact winner key in 71 of 84 non-null objective results; G2 matches in 31 of 84.\n\nDistance details:\n- Distances use haversine with R=6371008.8, a clamped to [0,1], and mm = floor(d*1000+0.5).\n- A point is unknown only when there is no source and no selected candidate. This happens in the astana_clinic_nobase tasks, which have 0 sources.\n\nI did not touch /home/user/GOV_DIPLOME, did not read K09 or any Python code, did not read the hidden-expected or other agent directories, and ran no state-changing git commands. I only ran git show of CORE_SPEC at c3f6c00."
+  },
+  "blind_recompute": {
+   "out_path": "/tmp/claude-0/-home-user-GOV-DIPLOME/e220e412-94a1-5250-b65e-0d50545b9515/scratchpad/blind_recompute/out.json",
+   "anomalies": [
+    "No structural violations found. All required sanity checks (a) to (h) are 0. Distinct scenario_keys per analysis: main 2430, sec_max_selected 90, sec_radius 90. All 2610 keys have exactly 6 rows. There are no duplicate (scenario_key, objective, algorithm) rows, no duplicate full rows and no orphan keys between runs.csv and scenarios.csv.",
+    "Design is balanced: main is a full 3^5 factorial (243 cells x 10 seeds = 2430). The scenario_key text matches the row columns everywhere. Shared fields in runs.csv and scenarios.csv agree. exact_ids in runs.csv match exact_<objective>_ids in scenarios.csv and are the same for G1 and G2. distinct_exact_plans matches the three exact id columns. subsets_total = 2^n_candidates. feasible_count rises with budget_ratio and with max_selected.",
+    "Exact plans never exceed the budget or max_selected. ID lists are sorted with no duplicate ids. Empty plans have cost 0. Identical id lists always have the same cost and hit=1. When hit=1, abs_gap=0, rel_gap=0 and primary_equal=1. primary_equal=0 always comes with abs_gap>0. abs_gap is never empty or negative. rel_gap is never negative, and its sign matches abs_gap.",
+    "primary_equal is never empty, so primary_defined = n = 2430 for every A/o. unknown_worse is 0 in all 15660 rows. These two columns carry no information in this run.",
+    "rel_gap is empty in 52 rows, all main coverage rows (26 G1 + 26 G2), all with abs_gap=0 and nearly all with n_points=5. The likely cause is a zero exact objective (0 in the denominator). 27 of these rows have hit=0 but primary_equal=1.",
+    "Strict plan identity (hit) understates greedy quality on the primary objective. 2595 main rows have hit=0 but primary_equal=1. In 2255 of them (G2/coverage 1148, G2/minimax 1107) the greedy plan is cheaper than the exact plan at the same primary value. Example: shymkent nc6 np5 br0.5 one_heavy s6, coverage: G2 picks c00 (cost 671), exact picks c00 c03 (cost 1526). This points to an exact tie-break that does not prefer the lower cost. In 3 G2/coverage rows the plans differ at equal cost and equal primary.",
+    "The 30 sec_radius r300 scenarios repeat 30 main scenarios: same problem_digest, and the scenario rows and run results are identical. So the r300 level of sec_radius is not independent data.",
+    "sec_radius: mean and minimax exact plans do not change with radius (each base has 1 distinct plan across 100/300/800 m), so hits for G1/G2 mean and minimax are the same at every radius. Only coverage depends on radius.",
+    "sec_max_selected ms=1 gives 30/30 hits for every A/o. This is a trivial level.",
+    "46 main scenarios (35 astana_clinic, 11 shymkent_school, all with baseline_unknown_points=0) have an empty exact plan for all three objectives. Greedy is also empty there (hit=1). They count as trivial and are excluded from nontrivial.",
+    "G2 replaced_by_best_single=1 occurs in 880 rows, always with a 1-id greedy plan. 465 of those have steps=0. In 401 rows the replacement equals the G1 plan.",
+    "Small apparent inconsistency, not a data error: in 2 main mean scenarios (shymkent nc6 np25 br0.5 uniform s7 and s8), the exact objective implied by abs_gap/rel_gap differs slightly between G1 and G2. This is explained by rel_gap having only 9 decimals (for example 0.000004541).",
+    "Budget is not a fixed multiple across budget_ratio levels (0.5/0.25 ratios run from about 1.5 to 2.2). It also changes with n_points and weights for the same seed. budget_ratio cannot be checked against candidate costs from these two files.",
+    "Helper outputs in the same directory: recompute.py (the script), extra_checks.json (legend for the sanity letters a to h, secondary n per level = 30 each, and all extra consistency counts) and run.log."
+   ]
+  },
+  "review": {
+   "findings": [
+    {
+     "severity": "major",
+     "file": "research/round-8-results/K09/k09plan/suite.py",
+     "line": 45,
+     "claim": "The 'budget tightness' factor does not vary tightness consistently. Budget is ratio × the sum of ALL candidate costs, but only max_selected=3 candidates can be bought. Ratio 1.0 never binds. Ratio 0.5 never binds at n_candidates=16 and binds in only 22% of runs at n_candidates=10. So the budget levels mean different things at each n_candidates, and the budget and n_candidates factors are confounded. The secondary analysis (nc=16, ratio 0.5) runs with no budget constraint at all. Ratio 0.25 at nc=6 often allows only about one facility, and then greedy is right by construction. These effects make the RESULTS factor statements misleading: 'Число кандидатов — сильнейший фактор' (RESULTS.md:96) and 'G2 ухудшается при ослаблении бюджета… нормировка на стоимость вредит' (RESULTS.md:97-100). The design question 'как разрыв зависит от жёсткости бюджета' (EXPERIMENT_DESIGN.md) is not answered by this manipulation.",
+     "evidence": "Command: python3 /tmp/claude-0/-home-user-GOV-DIPLOME/e220e412-94a1-5250-b65e-0d50545b9515/scratchpad/review/budget_binding.py. It reads results/scenarios.csv and counts a run as non-binding when feasible_count == sum C(nc,k), k<=max_selected. Output, main grid: nc6 0.25:0/270, 0.5:0/270, 1.0:270/270; nc10 0.25:0/270, 0.5:211/270, 1.0:270/270; nc16 0.25:2/270, 0.5:270/270, 1.0:270/270. Secondary: ms1 30/30, ms2 30/30, ms5 24/30, radius 90/90 non-binding. Hit% by nc for ratio 0.25/0.5/1.0, G2/mean: nc6 96/73/66, nc10 56/46/41, nc16 31/27/27. At nc16, 0.5 and 1.0 are the same constraint, yet G2/minimax is 12 vs 16 and G2/coverage 15 vs 19, which is pure instance-sampling noise. Exact mean-plan size at nc6/0.25 is {0:11, 1:118, 2:130, 3:11}: 48% of exact plans have at most 1 object, where both greedy methods hit by construction. Restricted to |exact|>=2, the G2/minimax budget effect shrinks from 39.5→20.0 to 23.0→11.7, and G2/mean from 60.9→44.7 to 50.4→39.0. At ratio 1.0 only, G2/mean by nc is 66/41/27 versus the marginal 78.4/47.7/28.5 reported in RESULTS.",
+     "suggested_fix": "Define budget relative to what can actually be bought, e.g. ratio × sum of the max_selected most expensive (or median-cost) candidates, or report the binding share per cell. In RESULTS, add a caveat that ratio 0.5/1.0 are non-binding for nc≥10 and that the secondary analysis is budget-free. Show factor effects within the |exact|>=2 stratum or within nc."
+    },
+    {
+     "severity": "minor",
+     "file": "research/round-8-results/K09/k09plan/greedy.py",
+     "line": 82,
+     "claim": "In the no-baseline condition (1/3 of the main grid), G2's first step ignores geometry and always takes the cheapest candidate. Every candidate turns all unknown points into known ones, so du ties for all candidates, and ties are broken by cost (-du, cost, id). The preregistered config and EXPERIMENT_DESIGN say only 'unknown_count уменьшается — приоритет … ничьи — меньший id'. The cost tie-break was added in code (df53f1b) after the preregistration (ed3bd66). The reported nobase G2 numbers therefore measure a 'cheapest-first' rule that was not preregistered.",
+     "evidence": "Command: python3 /tmp/claude-0/-home-user-GOV-DIPLOME/e220e412-94a1-5250-b65e-0d50545b9515/scratchpad/review/g2_nobase.py. It regenerates all 810 astana_clinic_nobase main-grid instances. G2 first step == cheapest candidate in 810/810 runs for every objective. Nobase hit rates: implemented rule mean 22.7% / minimax 17.0% / coverage 24.6%; literal preregistered rule (ties on du → smaller id) 15.2% / 11.5% / 16.9%; tie broken by objective key 28.0% / 14.7% / 32.6%. Under the literal preregistered rule, the overall G2 headline becomes 1191/2430 = 49.0% (reported 51.5%), 595/2430 = 24.5% (26.3%) and 745/2430 = 30.7% (33.2%). EXPERIMENT_DESIGN also says 'при ничьей выбирается меньший id' for G1, but G1's key puts cost before IDs.",
+     "suggested_fix": "Document the (−du, cost, id) rule in EXPERIMENT_DESIGN as a post-registration deviation, or report nobase G2 under both tie rules. State in RESULTS that G2's nobase first step does not depend on geometry."
+    },
+    {
+     "severity": "minor",
+     "file": "research/round-8-results/K09/k09plan/experiment.py",
+     "line": 58,
+     "claim": "The exact runtime used for 'Время не оправдывает эвристику' leaves out the Pareto front and the budget sensitivity (up to 3 more full enumerations) that CORE_SPEC's optimizePlans must return. The reported exact time therefore understates the cost of the product output by about 2.6–3.3×. In the other direction, exact.py:75 loops over all 2^n masks even when max_selected is small (4.65 ms at ms=1 with only 17 feasible plans). Exact (3 objectives) is also compared with a single-objective greedy run. The conclusion survives, but the numbers are not the product cost.",
+     "evidence": "Command: python3 /tmp/claude-0/-home-user-GOV-DIPLOME/e220e412-94a1-5250-b65e-0d50545b9515/scratchpad/review/timing_probe.py. Setup: nc=16, np=25, ms=5, 3 slices × 10 seeds, min of 3 repeats. ratio 0.5: exact only (as in timing.csv) median 45.1 ms, max 50.8; api.optimize_plans (pareto + sensitivity) median 117.4 ms, max 144.9. ratio 1.0: 46.7 / 54.3 vs 151.8 / 190.2 ms. feasible_count is 6885 (all subsets) in both cases.",
+     "suggested_fix": "Also time api.optimize_plans (full CORE_SPEC output), or state explicitly that Pareto and sensitivity are excluded. Optionally enumerate only combinations up to size max_selected so the comparison at small ms is fair."
+    },
+    {
+     "severity": "minor",
+     "file": "research/round-8-results/K09/RESULTS.md",
+     "line": 10,
+     "claim": "The headline 'G2 заметно хуже G1 по всем трём целям … p < 1e-180 для каждой цели' uses the strict full-key hit, which includes the secondary keys G2 does not optimize. For minimax, the G1–G2 gap on the primary metric is about 10× smaller (77.9% vs 73.3%) than on the full key (72.3% vs 26.3%), and the paired p is about 1e-8.7, not below 1e-180. RESULTS gives the primary-equal rates but not the paired test on them, so 'заметно хуже' overstates the minimax primary-metric difference.",
+     "evidence": "Paired McNemar on primary_equal, from results/runs.csv with experiment.mcnemar_log10 (inline script in the review session): mean discordant G1only/G2only 812/56, log10 p −172.0; minimax 227/116, log10 p −8.68; coverage 445/30, log10 p −95.2.",
+     "suggested_fix": "Report the paired primary-metric McNemar next to the full-key one and soften the minimax wording."
+    },
+    {
+     "severity": "minor",
+     "file": "research/round-8-results/K09/k09plan/suite.py",
+     "line": 23,
+     "claim": "The seed string includes budget_ratio, weights, n_points, n_candidates and baseline, so every factor level and slice uses a different random geometry. Main-grid factor contrasts are therefore unpaired, including 'astana_clinic vs astana_clinic_nobase' (same bbox, could have been the same points and candidates with sources removed). Effect sizes in by_factor tables carry instance-sampling noise of several pp; the identical-constraint contrast (nc16, 0.5 vs 1.0) differs by up to 4 pp. RESULTS correctly calls only the secondary analysis paired, but presents the nobase drop as an effect of the condition.",
+     "evidence": "suite.make_scenario rng seed = f\"{config_version}|{city}|{category}|{baseline}|{n_candidates}|{n_points}|{budget_ratio}|{weights}|{max_selected}|{radius_m}|{seed}\". Different baseline gives different points and candidates. Observed: nc16, ratio 0.5 vs 1.0 (both 100% non-binding, i.e. the same problem class), n=270 each: G2/minimax 12% vs 16%, G2/coverage 15% vs 19%, G1/minimax 61% vs 63%.",
+     "suggested_fix": "For factor contrasts, derive geometry from a seed that excludes the factor under study (at least baseline and budget_ratio), so that slice and budget comparisons are paired. Otherwise state that factor contrasts are between-instance."
+    },
+    {
+     "severity": "minor",
+     "file": "research/round-8-results/K09/k09plan/suite.py",
+     "line": 11,
+     "claim": "source_snapshot depends only on (data sha, city, category). The synthetic no-baseline context and the real Astana context therefore share one snapshot ID while having different source records (16 vs 0). A nobase scenario validates in the real context and gives a different optimum. results/crosscheck_tasks.json ships the nobase task under the real Astana snapshot, so a BUILD that resolves sources by snapshot would reconcile against the wrong records.",
+     "evidence": "Command: python3 /tmp/claude-0/-home-user-GOV-DIPLOME/e220e412-94a1-5250-b65e-0d50545b9515/scratchpad/review/validate_probe.py, section 5. Output: 'same snapshot: True sources: 16 0'; 'nobase scenario validates under REAL context: []'; mean plan real ['c02'] wsum 1269142 vs nobase ['c01','c02','c03'] wsum 2857458. crosscheck_tasks.json: astana_clinic and astana_clinic_nobase both have k09r8-slice:a886e697cf583e6947d4c40c68e656b7.",
+     "suggested_fix": "Include baseline (or a hash of the source list) in slice_snapshot for the synthetic condition."
+    },
+    {
+     "severity": "minor",
+     "file": "research/round-8-results/K09/k09plan/validate.py",
+     "line": 60,
+     "claim": "validate_plan_scenario is documented as returning typed errors and never raising on bad types, but two inputs of at most 256 KiB make it raise uncaught exceptions. A 400-digit integer longitude raises OverflowError in _num (float(v)). Deeply nested JSON (for example inside the allowed derived_results) raises RecursionError, which the except (ValueError, UnicodeDecodeError) at line 46-50 does not catch. CORE_SPEC requires 'при отказе состояние неизменно'/typed error.",
+     "evidence": "validate_probe.py sections 1-2. Output: '1: EXCEPTION OverflowError int too large to convert to float'; '2: size 200021' then '2: EXCEPTION RecursionError maximum recursion depth exceeded while decoding a JSON array'.",
+     "suggested_fix": "Wrap float() in _num with try/except (OverflowError) and catch RecursionError in parse_import as invalid_json (or set a depth limit)."
+    },
+    {
+     "severity": "nit",
+     "file": "research/round-8-results/K09/k09plan/validate.py",
+     "line": 14,
+     "claim": "The oracle is stricter than CORE_SPEC and JS in ways that would produce false mismatches when cross-checking the BUILD validator. (a) Integral floats (weight/cost/budget written as 1.0) are rejected, while JS JSON.parse cannot tell 1.0 from 1. (b) The 64-character ID limit counts code points, not UTF-16 units. (c) The [\\w.:-] charset rejects IDs the spec allows (spaces, '/', '№').",
+     "evidence": "validate_probe.py section 3: changing '\"weight\": 1' to '\"weight\": 1.0' gives [{'code': 'weight_int_1_100', 'path': 'control_points[0]'}]. Code reading: ID_RE = re.compile(r\"[\\w.:-]{1,64}\") matches code points, and _int requires type int.",
+     "suggested_fix": "Document these as deliberate deviations, or accept float values that are integers and count UTF-16 length."
+    },
+    {
+     "severity": "nit",
+     "file": "research/round-8-results/K09/k09plan/exact.py",
+     "line": 40,
+     "claim": "problem_digest hashes json.dumps of the raw numbers, so the same problem written with lon 70 versus 70.0 gets a different digest. This weakens the stale-result and duplicate protection the digest is meant to give, and the format is not portable to JS, where JSON.stringify(70.0) is '70'.",
+     "evidence": "validate_probe.py section 4 (bbox widened to [69,42,71,43]): both variants validate ([] []), 'digest equal? False', 'objectives equal? True'.",
+     "suggested_fix": "Canonicalise numbers before hashing (for example coordinates as float repr, or as integer micro-degrees)."
+    },
+    {
+     "severity": "nit",
+     "file": "research/round-8-results/K09/RESULTS.md",
+     "line": 126,
+     "claim": "'при budget_ratio = 1.0 все промахи G1 имеют тот же размер плана, что exact' is false: one G1/minimax miss has a larger plan than exact. Separately, the guarantee note 'G1 … ничьи — меньший id' omits that cost is the tie-break before ID.",
+     "evidence": "posthoc.json, G1/minimax at 1.0: miss 221, same_size 220, fewer 0. The case in runs.csv is main|astana_clinic_nobase|nc10|np5|br1.0|uniform|ms3|r300|s4, minimax: greedy c03 c05 c06 (cost 1798) vs exact c03 c05 (cost 882), abs_gap 0.",
+     "suggested_fix": "Say '220 из 221'."
+    },
+    {
+     "severity": "nit",
+     "file": "research/round-8-results/K09/k09plan/experiment.py",
+     "line": 109,
+     "claim": "p_exact_two_sided is rounded to 12 decimals, so summary.json and tables.md print p = 0 even where the float is representable (true p ≈ 10^-182.2 for mean, 10^-256.8 for minimax). Only the coverage p (~1e-390) actually underflows a float.",
+     "evidence": "stats_check.py: mcnemar_exact(846,55) returns 0.0, while the exact Fraction gives log10 −182.222. tables.md row: '| mean | 846 | 55 | 1197 | 332 | 0 (-182.222) |'.",
+     "suggested_fix": "Drop round(…,12), or print p as 'см. log10'."
+    },
+    {
+     "severity": "nit",
+     "file": "research/round-8-results/K09/RESULTS.md",
+     "line": 57,
+     "claim": "'unknown_worse не встретился ни разу' is a structural certainty here, not an empirical finding. Any non-empty plan makes every point known, and both greedy methods always add a candidate when unknown>0 and one is affordable (budget ≥ 0.25×sum ≥ min cost). Separately, 'rel p90' is taken over all runs including hits (zeros), not over misses; G1/coverage shows p90 0.000.",
+     "evidence": "Code: metric.Problem.cand_mm gives finite distances from every candidate to every point. greedy_key's key starts with unknown_count, and greedy_ratio prioritises du>0. experiment._cell computes rel over all defined values, including 0.",
+     "suggested_fix": "State that unknown_worse cannot occur in this design. Label the quantiles as computed over all runs, or report rel_positive_p50/p90."
+    }
+   ],
+   "checked_ok": [
+    "exact.optimize vs an independent brute force (own haversine, itertools.combinations, own keys): 3000 random instances with 0-9 candidates, coarse-grid coordinates for many distance ties, equal costs, budget 0, max_selected 0-5, required/excluded, no-source (unknown) cases. 2211 feasible plus 789 infeasible: winners, all metrics, feasible_count and Pareto identical, and infeasible status correct (scratchpad/review/fuzz_exact.py).",
+    "Incremental enumeration: parent = mask minus lowest bit is always enumerated earlier, and pruning by `parent not in after` is sound because feasibility is downward-closed for nonnegative costs. The after vector is an element-wise min with one candidate row. The empty/required-only plan is always evaluated.",
+    "Pareto: sorted by (cost, wsum, ids), kept only on strictly smaller wsum. This gives the correct non-dominated set, collapses equal pairs to the lexicographically smallest ids and excludes unknown>0 plans. Matches the naive dominance check on all fuzz instances.",
+    "budget_sensitivity: {0, B//2, B} without duplicates, infeasible marked with a reason. too_large is not reported as optimal, and infeasible is checked before too_large.",
+    "problem_digest: sorted arrays, so independent of input order; excludes selected_ids, while scenario_digest includes them. Covers snapshot, city, category, points/weights, candidates/costs/kind/category, budget, max_selected, radius, required/excluded, sources and metric_version.",
+    "G1 and G2 match an independent reimplementation of the described algorithms (using the implemented G2 tie rule) on 15000 runs, including required/excluded and infeasible cases. Greedy plans always satisfy budget, max_selected, required and excluded, and are never better than exact.",
+    "Post-hoc claim in make_tables.py (both greedy methods equal exact when |exact| <= 1, required empty) holds for all three objectives. Proof sketch: G1's first step is the min-key single and it never adds without strict key improvement. G2 is replaced by the best single whenever that single's key is smaller. If exact is empty, no single reduces unknown or improves the primary metric, so G2 picks nothing. Adversarial search: 180316 checks, 0 violations (scratchpad/review/posthoc_search.py).",
+    "gap.py matches config gap_definitions. Mean abs only with equal unknown_count (an equal non-zero count implies both plans are empty, so no partial-sum comparison across different unknown sets). Minimax only when both max are defined. rel is null when the denominator is <= 0, so no division by zero or null. abs >= 0 holds by exact optimality.",
+    "Reproducibility: full rerun with PYTHONHASHSEED=12345 into scratch gives the 4 deterministic SHA256 hashes in results/DETERMINISTIC_SHA256.txt byte for byte. random.Random(str) seeds via sha512, and there is no dict/set-order dependence.",
+    "The secondary analysis is truly paired: the instance is generated with ms=3/r=300 in the seed string, then only max_selected or radius is overridden (test_stage3 also checks problem_digest equality).",
+    "McNemar: pairs are matched by scenario_key. The exact two-sided binomial matches an independent Fraction computation, and log10 p matches (−182.222, −256.804, −389.742). Wilson matches an independent formula. Nearest-rank quantile has no floating-point off-by-one for n < 5000.",
+    "Preregistration timeline: config/experiment_config.json and EXPERIMENT_DESIGN.md are unchanged since ed3bd66. Algorithm modules are unchanged after befadfa (run committed in e5cd96f); only the stats helper (mcnemar_log10) and make_tables were added after the run.",
+    "Generated coordinates stay inside the bbox: bbox values have at most 6 decimals, so round(uniform, 6) cannot leave it. Budget int() equals floor for positive values.",
+    "Haversine (R=6371008.8, clamp, [lon,lat]), floor(x+0.5) mm rounding, plan metrics with null semantics, the three objective keys, and the source-before-hypothetical tie in rows match CORE_SPEC.",
+    "The 41 unit tests pass (run with PYTHONDONTWRITEBYTECODE=1; the repository tree was left clean).",
+    "Timing protocol is the same perf_counter, min-of-3 for all algorithms, with precompute timed separately. The exact (3 objectives) vs greedy (1 objective) mismatch is disclosed and is conservative against exact."
+   ]
+  }
+ }
+}

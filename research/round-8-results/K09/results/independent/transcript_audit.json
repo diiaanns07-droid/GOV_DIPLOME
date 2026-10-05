@@ -1,0 +1,50 @@
+{
+ "review": {
+  "tool_calls": 38,
+  "tools": [
+   "Bash",
+   "StructuredOutput"
+  ],
+  "forbidden_pattern_hits": [],
+  "writes_outside_scratchpad": [],
+  "git_mutations": []
+ },
+ "blind_exact": {
+  "tool_calls": 10,
+  "tools": [
+   "Bash",
+   "StructuredOutput",
+   "Write"
+  ],
+  "forbidden_pattern_hits": [
+   [
+    "StructuredOutput",
+    "{\"out_path\": \"/tmp/claude-0/-home-user-GOV-DIPLOME/e220e412-94a1-5250-b65e-0d50545b9515/scratchpad/blind_exact/out.json\", \"tasks_processed\": 34, \"ambiguities\": [\"Haversine central-angle form is not given (2*asin(sqrt(a))"
+   ]
+  ],
+  "writes_outside_scratchpad": [],
+  "git_mutations": []
+ },
+ "blind_recompute": {
+  "tool_calls": 13,
+  "tools": [
+   "Bash",
+   "StructuredOutput",
+   "Write"
+  ],
+  "forbidden_pattern_hits": [],
+  "writes_outside_scratchpad": [],
+  "git_mutations": []
+ },
+ "blind_greedy": {
+  "tool_calls": 8,
+  "tools": [
+   "Bash",
+   "StructuredOutput",
+   "Write"
+  ],
+  "forbidden_pattern_hits": [],
+  "writes_outside_scratchpad": [],
+  "git_mutations": []
+ }
+}

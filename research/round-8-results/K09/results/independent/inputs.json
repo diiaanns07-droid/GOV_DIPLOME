@@ -1,0 +1,9168 @@
+{
+ "note": "Входы для слепой сверки: context + scenario (city-plan-v2). Точки/кандидаты/стоимости synthetic.",
+ "tasks": [
+  {
+   "task_id": "shymkent_school#0",
+   "context": {
+    "city_id": "shymkent",
+    "category": "school",
+    "bbox": [
+     69.593365,
+     42.306645,
+     69.617658,
+     42.324611
+    ],
+    "source_snapshot": "k09r8-slice:0a7508473d7c18966b15cccd7c3a083f",
+    "sources": [
+     {
+      "id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+      "lon": 69.61052,
+      "lat": 42.32027
+     },
+     {
+      "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+      "lon": 69.60294,
+      "lat": 42.31672
+     },
+     {
+      "id": "176c5993-4b62-4e90-849f-88addc0153bb",
+      "lon": 69.605699,
+      "lat": 42.323129
+     },
+     {
+      "id": "18df815b-170a-437c-977f-0769690315d4",
+      "lon": 69.61482,
+      "lat": 42.31276
+     },
+     {
+      "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+      "lon": 69.5958,
+      "lat": 42.3167
+     },
+     {
+      "id": "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+      "lon": 69.605231,
+      "lat": 42.321741
+     },
+     {
+      "id": "68c8f007-75bc-42f6-8da8-baa72042bde4",
+      "lon": 69.5958,
+      "lat": 42.3167
+     },
+     {
+      "id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+      "lon": 69.599229,
+      "lat": 42.314563
+     },
+     {
+      "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+      "lon": 69.59496,
+      "lat": 42.32353
+     },
+     {
+      "id": "9d31b953-ccc4-42bd-a3a3-3e4e21f44051",
+      "lon": 69.5958,
+      "lat": 42.3167
+     },
+     {
+      "id": "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6",
+      "lon": 69.59496,
+      "lat": 42.32353
+     },
+     {
+      "id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+      "lon": 69.59895,
+      "lat": 42.31906
+     },
+     {
+      "id": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+      "lon": 69.61557,
+      "lat": 42.32304
+     },
+     {
+      "id": "bcd265d0-0799-4dbf-8b15-23bae752a4d2",
+      "lon": 69.61557,
+      "lat": 42.32304
+     },
+     {
+      "id": "fd50a858-462d-477f-8bc6-a8d3e03a9576",
+      "lon": 69.60322,
+      "lat": 42.31728
+     }
+    ],
+    "metric_version": "haversine-mm-v1"
+   },
+   "scenario": {
+    "schema_version": "city-plan-v2",
+    "city_id": "shymkent",
+    "source_snapshot": "k09r8-slice:0a7508473d7c18966b15cccd7c3a083f",
+    "category": "school",
+    "control_points": [
+     {
+      "id": "p00",
+      "lon": 69.608249,
+      "lat": 42.30774,
+      "weight": 1
+     },
+     {
+      "id": "p01",
+      "lon": 69.61247,
+      "lat": 42.321029,
+      "weight": 1
+     },
+     {
+      "id": "p02",
+      "lon": 69.611837,
+      "lat": 42.316211,
+      "weight": 1
+     },
+     {
+      "id": "p03",
+      "lon": 69.59606,
+      "lat": 42.310289,
+      "weight": 1
+     },
+     {
+      "id": "p04",
+      "lon": 69.600356,
+      "lat": 42.311315,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "c00",
+      "lon": 69.595185,
+      "lat": 42.318247,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 525
+     },
+     {
+      "id": "c01",
+      "lon": 69.610562,
+      "lat": 42.316107,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 292
+     },
+     {
+      "id": "c02",
+      "lon": 69.616122,
+      "lat": 42.319219,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 176
+     },
+     {
+      "id": "c03",
+      "lon": 69.59551,
+      "lat": 42.309522,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 588
+     },
+     {
+      "id": "c04",
+      "lon": 69.61467,
+      "lat": 42.315735,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 685
+     },
+     {
+      "id": "c05",
+      "lon": 69.611356,
+      "lat": 42.308649,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 762
+     }
+    ],
+    "budget": 757,
+    "max_selected": 3,
+    "coverage_radius_m": 300,
+    "required_ids": [],
+    "excluded_ids": [],
+    "selected_ids": []
+   }
+  },
+  {
+   "task_id": "shymkent_school#1",
+   "context": {
+    "city_id": "shymkent",
+    "category": "school",
+    "bbox": [
+     69.593365,
+     42.306645,
+     69.617658,
+     42.324611
+    ],
+    "source_snapshot": "k09r8-slice:0a7508473d7c18966b15cccd7c3a083f",
+    "sources": [
+     {
+      "id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+      "lon": 69.61052,
+      "lat": 42.32027
+     },
+     {
+      "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+      "lon": 69.60294,
+      "lat": 42.31672
+     },
+     {
+      "id": "176c5993-4b62-4e90-849f-88addc0153bb",
+      "lon": 69.605699,
+      "lat": 42.323129
+     },
+     {
+      "id": "18df815b-170a-437c-977f-0769690315d4",
+      "lon": 69.61482,
+      "lat": 42.31276
+     },
+     {
+      "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+      "lon": 69.5958,
+      "lat": 42.3167
+     },
+     {
+      "id": "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+      "lon": 69.605231,
+      "lat": 42.321741
+     },
+     {
+      "id": "68c8f007-75bc-42f6-8da8-baa72042bde4",
+      "lon": 69.5958,
+      "lat": 42.3167
+     },
+     {
+      "id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+      "lon": 69.599229,
+      "lat": 42.314563
+     },
+     {
+      "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+      "lon": 69.59496,
+      "lat": 42.32353
+     },
+     {
+      "id": "9d31b953-ccc4-42bd-a3a3-3e4e21f44051",
+      "lon": 69.5958,
+      "lat": 42.3167
+     },
+     {
+      "id": "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6",
+      "lon": 69.59496,
+      "lat": 42.32353
+     },
+     {
+      "id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+      "lon": 69.59895,
+      "lat": 42.31906
+     },
+     {
+      "id": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+      "lon": 69.61557,
+      "lat": 42.32304
+     },
+     {
+      "id": "bcd265d0-0799-4dbf-8b15-23bae752a4d2",
+      "lon": 69.61557,
+      "lat": 42.32304
+     },
+     {
+      "id": "fd50a858-462d-477f-8bc6-a8d3e03a9576",
+      "lon": 69.60322,
+      "lat": 42.31728
+     }
+    ],
+    "metric_version": "haversine-mm-v1"
+   },
+   "scenario": {
+    "schema_version": "city-plan-v2",
+    "city_id": "shymkent",
+    "source_snapshot": "k09r8-slice:0a7508473d7c18966b15cccd7c3a083f",
+    "category": "school",
+    "control_points": [
+     {
+      "id": "p00",
+      "lon": 69.596649,
+      "lat": 42.316879,
+      "weight": 93
+     },
+     {
+      "id": "p01",
+      "lon": 69.608111,
+      "lat": 42.31751,
+      "weight": 72
+     },
+     {
+      "id": "p02",
+      "lon": 69.609423,
+      "lat": 42.314938,
+      "weight": 37
+     },
+     {
+      "id": "p03",
+      "lon": 69.594087,
+      "lat": 42.309158,
+      "weight": 23
+     },
+     {
+      "id": "p04",
+      "lon": 69.610745,
+      "lat": 42.317505,
+      "weight": 74
+     },
+     {
+      "id": "p05",
+      "lon": 69.61633,
+      "lat": 42.316684,
+      "weight": 76
+     },
+     {
+      "id": "p06",
+      "lon": 69.617292,
+      "lat": 42.317663,
+      "weight": 46
+     },
+     {
+      "id": "p07",
+      "lon": 69.614046,
+      "lat": 42.323321,
+      "weight": 7
+     },
+     {
+      "id": "p08",
+      "lon": 69.599613,
+      "lat": 42.322019,
+      "weight": 24
+     },
+     {
+      "id": "p09",
+      "lon": 69.603992,
+      "lat": 42.306843,
+      "weight": 44
+     },
+     {
+      "id": "p10",
+      "lon": 69.603371,
+      "lat": 42.310231,
+      "weight": 69
+     },
+     {
+      "id": "p11",
+      "lon": 69.596834,
+      "lat": 42.322955,
+      "weight": 75
+     },
+     {
+      "id": "p12",
+      "lon": 69.601056,
+      "lat": 42.307587,
+      "weight": 28
+     },
+     {
+      "id": "p13",
+      "lon": 69.60968,
+      "lat": 42.315104,
+      "weight": 52
+     },
+     {
+      "id": "p14",
+      "lon": 69.611983,
+      "lat": 42.321073,
+      "weight": 97
+     }
+    ],
+    "candidates": [
+     {
+      "id": "c00",
+      "lon": 69.60677,
+      "lat": 42.322621,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 358
+     },
+     {
+      "id": "c01",
+      "lon": 69.599398,
+      "lat": 42.313025,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 1000
+     },
+     {
+      "id": "c02",
+      "lon": 69.611469,
+      "lat": 42.31667,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 596
+     },
+     {
+      "id": "c03",
+      "lon": 69.612353,
+      "lat": 42.320966,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 317
+     },
+     {
+      "id": "c04",
+      "lon": 69.614071,
+      "lat": 42.32079,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 624
+     },
+     {
+      "id": "c05",
+      "lon": 69.596621,
+      "lat": 42.315356,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 930
+     },
+     {
+      "id": "c06",
+      "lon": 69.604172,
+      "lat": 42.315782,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 523
+     },
+     {
+      "id": "c07",
+      "lon": 69.613429,
+      "lat": 42.318954,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 657
+     },
+     {
+      "id": "c08",
+      "lon": 69.607444,
+      "lat": 42.307352,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 220
+     },
+     {
+      "id": "c09",
+      "lon": 69.60546,
+      "lat": 42.320136,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 331
+     }
+    ],
+    "budget": 2778,
+    "max_selected": 3,
+    "coverage_radius_m": 300,
+    "required_ids": [],
+    "excluded_ids": [],
+    "selected_ids": []
+   }
+  },
+  {
+   "task_id": "shymkent_school#2",
+   "context": {
+    "city_id": "shymkent",
+    "category": "school",
+    "bbox": [
+     69.593365,
+     42.306645,
+     69.617658,
+     42.324611
+    ],
+    "source_snapshot": "k09r8-slice:0a7508473d7c18966b15cccd7c3a083f",
+    "sources": [
+     {
+      "id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+      "lon": 69.61052,
+      "lat": 42.32027
+     },
+     {
+      "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+      "lon": 69.60294,
+      "lat": 42.31672
+     },
+     {
+      "id": "176c5993-4b62-4e90-849f-88addc0153bb",
+      "lon": 69.605699,
+      "lat": 42.323129
+     },
+     {
+      "id": "18df815b-170a-437c-977f-0769690315d4",
+      "lon": 69.61482,
+      "lat": 42.31276
+     },
+     {
+      "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+      "lon": 69.5958,
+      "lat": 42.3167
+     },
+     {
+      "id": "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+      "lon": 69.605231,
+      "lat": 42.321741
+     },
+     {
+      "id": "68c8f007-75bc-42f6-8da8-baa72042bde4",
+      "lon": 69.5958,
+      "lat": 42.3167
+     },
+     {
+      "id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+      "lon": 69.599229,
+      "lat": 42.314563
+     },
+     {
+      "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+      "lon": 69.59496,
+      "lat": 42.32353
+     },
+     {
+      "id": "9d31b953-ccc4-42bd-a3a3-3e4e21f44051",
+      "lon": 69.5958,
+      "lat": 42.3167
+     },
+     {
+      "id": "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6",
+      "lon": 69.59496,
+      "lat": 42.32353
+     },
+     {
+      "id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+      "lon": 69.59895,
+      "lat": 42.31906
+     },
+     {
+      "id": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+      "lon": 69.61557,
+      "lat": 42.32304
+     },
+     {
+      "id": "bcd265d0-0799-4dbf-8b15-23bae752a4d2",
+      "lon": 69.61557,
+      "lat": 42.32304
+     },
+     {
+      "id": "fd50a858-462d-477f-8bc6-a8d3e03a9576",
+      "lon": 69.60322,
+      "lat": 42.31728
+     }
+    ],
+    "metric_version": "haversine-mm-v1"
+   },
+   "scenario": {
+    "schema_version": "city-plan-v2",
+    "city_id": "shymkent",
+    "source_snapshot": "k09r8-slice:0a7508473d7c18966b15cccd7c3a083f",
+    "category": "school",
+    "control_points": [
+     {
+      "id": "p00",
+      "lon": 69.607214,
+      "lat": 42.312586,
+      "weight": 100
+     },
+     {
+      "id": "p01",
+      "lon": 69.603908,
+      "lat": 42.315538,
+      "weight": 1
+     },
+     {
+      "id": "p02",
+      "lon": 69.609295,
+      "lat": 42.317769,
+      "weight": 1
+     },
+     {
+      "id": "p03",
+      "lon": 69.609049,
+      "lat": 42.32419,
+      "weight": 1
+     },
+     {
+      "id": "p04",
+      "lon": 69.610637,
+      "lat": 42.307109,
+      "weight": 1
+     },
+     {
+      "id": "p05",
+      "lon": 69.601752,
+      "lat": 42.322301,
+      "weight": 1
+     },
+     {
+      "id": "p06",
+      "lon": 69.607745,
+      "lat": 42.323914,
+      "weight": 1
+     },
+     {
+      "id": "p07",
+      "lon": 69.609268,
+      "lat": 42.313163,
+      "weight": 1
+     },
+     {
+      "id": "p08",
+      "lon": 69.60175,
+      "lat": 42.323289,
+      "weight": 1
+     },
+     {
+      "id": "p09",
+      "lon": 69.613021,
+      "lat": 42.307188,
+      "weight": 1
+     },
+     {
+      "id": "p10",
+      "lon": 69.608746,
+      "lat": 42.307569,
+      "weight": 1
+     },
+     {
+      "id": "p11",
+      "lon": 69.598968,
+      "lat": 42.311699,
+      "weight": 1
+     },
+     {
+      "id": "p12",
+      "lon": 69.595257,
+      "lat": 42.320174,
+      "weight": 1
+     },
+     {
+      "id": "p13",
+      "lon": 69.60994,
+      "lat": 42.320679,
+      "weight": 1
+     },
+     {
+      "id": "p14",
+      "lon": 69.615875,
+      "lat": 42.308795,
+      "weight": 1
+     },
+     {
+      "id": "p15",
+      "lon": 69.613075,
+      "lat": 42.311699,
+      "weight": 1
+     },
+     {
+      "id": "p16",
+      "lon": 69.612061,
+      "lat": 42.324323,
+      "weight": 1
+     },
+     {
+      "id": "p17",
+      "lon": 69.594624,
+      "lat": 42.317265,
+      "weight": 1
+     },
+     {
+      "id": "p18",
+      "lon": 69.602723,
+      "lat": 42.31662,
+      "weight": 1
+     },
+     {
+      "id": "p19",
+      "lon": 69.593811,
+      "lat": 42.307177,
+      "weight": 1
+     },
+     {
+      "id": "p20",
+      "lon": 69.609808,
+      "lat": 42.309396,
+      "weight": 1
+     },
+     {
+      "id": "p21",
+      "lon": 69.605906,
+      "lat": 42.312411,
+      "weight": 1
+     },
+     {
+      "id": "p22",
+      "lon": 69.607387,
+      "lat": 42.3238,
+      "weight": 1
+     },
+     {
+      "id": "p23",
+      "lon": 69.594133,
+      "lat": 42.319997,
+      "weight": 1
+     },
+     {
+      "id": "p24",
+      "lon": 69.59585,
+      "lat": 42.323149,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "c00",
+      "lon": 69.608264,
+      "lat": 42.315397,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 322
+     },
+     {
+      "id": "c01",
+      "lon": 69.611775,
+      "lat": 42.317899,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 942
+     },
+     {
+      "id": "c02",
+      "lon": 69.594921,
+      "lat": 42.321033,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 451
+     },
+     {
+      "id": "c03",
+      "lon": 69.610499,
+      "lat": 42.317235,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 476
+     },
+     {
+      "id": "c04",
+      "lon": 69.597098,
+      "lat": 42.313084,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 110
+     },
+     {
+      "id": "c05",
+      "lon": 69.616777,
+      "lat": 42.312108,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 426
+     },
+     {
+      "id": "c06",
+      "lon": 69.600669,
+      "lat": 42.31794,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 500
+     },
+     {
+      "id": "c07",
+      "lon": 69.609479,
+      "lat": 42.315588,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 854
+     },
+     {
+      "id": "c08",
+      "lon": 69.597574,
+      "lat": 42.30947,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 335
+     },
+     {
+      "id": "c09",
+      "lon": 69.60032,
+      "lat": 42.312481,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 388
+     },
+     {
+      "id": "c10",
+      "lon": 69.595906,
+      "lat": 42.319011,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 174
+     },
+     {
+      "id": "c11",
+      "lon": 69.603753,
+      "lat": 42.316043,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 931
+     },
+     {
+      "id": "c12",
+      "lon": 69.598525,
+      "lat": 42.318418,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 513
+     },
+     {
+      "id": "c13",
+      "lon": 69.5976,
+      "lat": 42.312827,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 178
+     },
+     {
+      "id": "c14",
+      "lon": 69.608723,
+      "lat": 42.31121,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 747
+     },
+     {
+      "id": "c15",
+      "lon": 69.607561,
+      "lat": 42.316923,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 922
+     }
+    ],
+    "budget": 8269,
+    "max_selected": 3,
+    "coverage_radius_m": 300,
+    "required_ids": [],
+    "excluded_ids": [],
+    "selected_ids": []
+   }
+  },
+  {
+   "task_id": "shymkent_school#3",
+   "context": {
+    "city_id": "shymkent",
+    "category": "school",
+    "bbox": [
+     69.593365,
+     42.306645,
+     69.617658,
+     42.324611
+    ],
+    "source_snapshot": "k09r8-slice:0a7508473d7c18966b15cccd7c3a083f",
+    "sources": [
+     {
+      "id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+      "lon": 69.61052,
+      "lat": 42.32027
+     },
+     {
+      "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+      "lon": 69.60294,
+      "lat": 42.31672
+     },
+     {
+      "id": "176c5993-4b62-4e90-849f-88addc0153bb",
+      "lon": 69.605699,
+      "lat": 42.323129
+     },
+     {
+      "id": "18df815b-170a-437c-977f-0769690315d4",
+      "lon": 69.61482,
+      "lat": 42.31276
+     },
+     {
+      "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+      "lon": 69.5958,
+      "lat": 42.3167
+     },
+     {
+      "id": "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+      "lon": 69.605231,
+      "lat": 42.321741
+     },
+     {
+      "id": "68c8f007-75bc-42f6-8da8-baa72042bde4",
+      "lon": 69.5958,
+      "lat": 42.3167
+     },
+     {
+      "id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+      "lon": 69.599229,
+      "lat": 42.314563
+     },
+     {
+      "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+      "lon": 69.59496,
+      "lat": 42.32353
+     },
+     {
+      "id": "9d31b953-ccc4-42bd-a3a3-3e4e21f44051",
+      "lon": 69.5958,
+      "lat": 42.3167
+     },
+     {
+      "id": "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6",
+      "lon": 69.59496,
+      "lat": 42.32353
+     },
+     {
+      "id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+      "lon": 69.59895,
+      "lat": 42.31906
+     },
+     {
+      "id": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+      "lon": 69.61557,
+      "lat": 42.32304
+     },
+     {
+      "id": "bcd265d0-0799-4dbf-8b15-23bae752a4d2",
+      "lon": 69.61557,
+      "lat": 42.32304
+     },
+     {
+      "id": "fd50a858-462d-477f-8bc6-a8d3e03a9576",
+      "lon": 69.60322,
+      "lat": 42.31728
+     }
+    ],
+    "metric_version": "haversine-mm-v1"
+   },
+   "scenario": {
+    "schema_version": "city-plan-v2",
+    "city_id": "shymkent",
+    "source_snapshot": "k09r8-slice:0a7508473d7c18966b15cccd7c3a083f",
+    "category": "school",
+    "control_points": [
+     {
+      "id": "p00",
+      "lon": 69.602479,
+      "lat": 42.308137,
+      "weight": 55
+     },
+     {
+      "id": "p01",
+      "lon": 69.607126,
+      "lat": 42.313326,
+      "weight": 75
+     },
+     {
+      "id": "p02",
+      "lon": 69.607556,
+      "lat": 42.32121,
+      "weight": 32
+     },
+     {
+      "id": "p03",
+      "lon": 69.597211,
+      "lat": 42.319617,
+      "weight": 31
+     },
+     {
+      "id": "p04",
+      "lon": 69.607475,
+      "lat": 42.31559,
+      "weight": 65
+     },
+     {
+      "id": "p05",
+      "lon": 69.606541,
+      "lat": 42.320637,
+      "weight": 60
+     },
+     {
+      "id": "p06",
+      "lon": 69.60303,
+      "lat": 42.31071,
+      "weight": 91
+     },
+     {
+      "id": "p07",
+      "lon": 69.606334,
+      "lat": 42.31014,
+      "weight": 21
+     },
+     {
+      "id": "p08",
+      "lon": 69.609455,
+      "lat": 42.312679,
+      "weight": 65
+     },
+     {
+      "id": "p09",
+      "lon": 69.601552,
+      "lat": 42.319853,
+      "weight": 42
+     },
+     {
+      "id": "p10",
+      "lon": 69.61627,
+      "lat": 42.306892,
+      "weight": 19
+     },
+     {
+      "id": "p11",
+      "lon": 69.596553,
+      "lat": 42.317799,
+      "weight": 20
+     },
+     {
+      "id": "p12",
+      "lon": 69.604562,
+      "lat": 42.312617,
+      "weight": 33
+     },
+     {
+      "id": "p13",
+      "lon": 69.612974,
+      "lat": 42.309823,
+      "weight": 79
+     },
+     {
+      "id": "p14",
+      "lon": 69.609151,
+      "lat": 42.308375,
+      "weight": 78
+     },
+     {
+      "id": "p15",
+      "lon": 69.607746,
+      "lat": 42.321349,
+      "weight": 46
+     },
+     {
+      "id": "p16",
+      "lon": 69.613309,
+      "lat": 42.321726,
+      "weight": 24
+     },
+     {
+      "id": "p17",
+      "lon": 69.603767,
+      "lat": 42.320474,
+      "weight": 13
+     },
+     {
+      "id": "p18",
+      "lon": 69.599284,
+      "lat": 42.316114,
+      "weight": 45
+     },
+     {
+      "id": "p19",
+      "lon": 69.599098,
+      "lat": 42.312487,
+      "weight": 53
+     },
+     {
+      "id": "p20",
+      "lon": 69.598908,
+      "lat": 42.316451,
+      "weight": 31
+     },
+     {
+      "id": "p21",
+      "lon": 69.608615,
+      "lat": 42.310994,
+      "weight": 73
+     },
+     {
+      "id": "p22",
+      "lon": 69.597321,
+      "lat": 42.321984,
+      "weight": 91
+     },
+     {
+      "id": "p23",
+      "lon": 69.613934,
+      "lat": 42.307872,
+      "weight": 32
+     },
+     {
+      "id": "p24",
+      "lon": 69.611476,
+      "lat": 42.323002,
+      "weight": 70
+     }
+    ],
+    "candidates": [
+     {
+      "id": "c00",
+      "lon": 69.598799,
+      "lat": 42.323069,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 901
+     },
+     {
+      "id": "c01",
+      "lon": 69.603772,
+      "lat": 42.308645,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 106
+     },
+     {
+      "id": "c02",
+      "lon": 69.602819,
+      "lat": 42.311831,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 860
+     },
+     {
+      "id": "c03",
+      "lon": 69.5995,
+      "lat": 42.311856,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 438
+     },
+     {
+      "id": "c04",
+      "lon": 69.600983,
+      "lat": 42.322604,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 149
+     },
+     {
+      "id": "c05",
+      "lon": 69.60146,
+      "lat": 42.309873,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 701
+     },
+     {
+      "id": "c06",
+      "lon": 69.600754,
+      "lat": 42.322055,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 902
+     },
+     {
+      "id": "c07",
+      "lon": 69.616635,
+      "lat": 42.308745,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 585
+     },
+     {
+      "id": "c08",
+      "lon": 69.605457,
+      "lat": 42.308788,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 753
+     },
+     {
+      "id": "c09",
+      "lon": 69.609564,
+      "lat": 42.317117,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 167
+     },
+     {
+      "id": "c10",
+      "lon": 69.616009,
+      "lat": 42.309386,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 832
+     },
+     {
+      "id": "c11",
+      "lon": 69.599534,
+      "lat": 42.313385,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 484
+     },
+     {
+      "id": "c12",
+      "lon": 69.596879,
+      "lat": 42.309006,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 940
+     },
+     {
+      "id": "c13",
+      "lon": 69.59429,
+      "lat": 42.324478,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 226
+     },
+     {
+      "id": "c14",
+      "lon": 69.601626,
+      "lat": 42.310491,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 463
+     },
+     {
+      "id": "c15",
+      "lon": 69.596607,
+      "lat": 42.322341,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 467
+     }
+    ],
+    "budget": 4487,
+    "max_selected": 5,
+    "coverage_radius_m": 800,
+    "required_ids": [],
+    "excluded_ids": [],
+    "selected_ids": []
+   }
+  },
+  {
+   "task_id": "shymkent_school#4",
+   "context": {
+    "city_id": "shymkent",
+    "category": "school",
+    "bbox": [
+     69.593365,
+     42.306645,
+     69.617658,
+     42.324611
+    ],
+    "source_snapshot": "k09r8-slice:0a7508473d7c18966b15cccd7c3a083f",
+    "sources": [
+     {
+      "id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+      "lon": 69.61052,
+      "lat": 42.32027
+     },
+     {
+      "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+      "lon": 69.60294,
+      "lat": 42.31672
+     },
+     {
+      "id": "176c5993-4b62-4e90-849f-88addc0153bb",
+      "lon": 69.605699,
+      "lat": 42.323129
+     },
+     {
+      "id": "18df815b-170a-437c-977f-0769690315d4",
+      "lon": 69.61482,
+      "lat": 42.31276
+     },
+     {
+      "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+      "lon": 69.5958,
+      "lat": 42.3167
+     },
+     {
+      "id": "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+      "lon": 69.605231,
+      "lat": 42.321741
+     },
+     {
+      "id": "68c8f007-75bc-42f6-8da8-baa72042bde4",
+      "lon": 69.5958,
+      "lat": 42.3167
+     },
+     {
+      "id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+      "lon": 69.599229,
+      "lat": 42.314563
+     },
+     {
+      "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+      "lon": 69.59496,
+      "lat": 42.32353
+     },
+     {
+      "id": "9d31b953-ccc4-42bd-a3a3-3e4e21f44051",
+      "lon": 69.5958,
+      "lat": 42.3167
+     },
+     {
+      "id": "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6",
+      "lon": 69.59496,
+      "lat": 42.32353
+     },
+     {
+      "id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+      "lon": 69.59895,
+      "lat": 42.31906
+     },
+     {
+      "id": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+      "lon": 69.61557,
+      "lat": 42.32304
+     },
+     {
+      "id": "bcd265d0-0799-4dbf-8b15-23bae752a4d2",
+      "lon": 69.61557,
+      "lat": 42.32304
+     },
+     {
+      "id": "fd50a858-462d-477f-8bc6-a8d3e03a9576",
+      "lon": 69.60322,
+      "lat": 42.31728
+     }
+    ],
+    "metric_version": "haversine-mm-v1"
+   },
+   "scenario": {
+    "schema_version": "city-plan-v2",
+    "city_id": "shymkent",
+    "source_snapshot": "k09r8-slice:0a7508473d7c18966b15cccd7c3a083f",
+    "category": "school",
+    "control_points": [
+     {
+      "id": "p00",
+      "lon": 69.612383,
+      "lat": 42.318951,
+      "weight": 1
+     },
+     {
+      "id": "p01",
+      "lon": 69.602631,
+      "lat": 42.314411,
+      "weight": 1
+     },
+     {
+      "id": "p02",
+      "lon": 69.60747,
+      "lat": 42.307399,
+      "weight": 1
+     },
+     {
+      "id": "p03",
+      "lon": 69.611927,
+      "lat": 42.317159,
+      "weight": 1
+     },
+     {
+      "id": "p04",
+      "lon": 69.617409,
+      "lat": 42.311104,
+      "weight": 1
+     },
+     {
+      "id": "p05",
+      "lon": 69.613033,
+      "lat": 42.316557,
+      "weight": 1
+     },
+     {
+      "id": "p06",
+      "lon": 69.600231,
+      "lat": 42.318743,
+      "weight": 1
+     },
+     {
+      "id": "p07",
+      "lon": 69.610731,
+      "lat": 42.316149,
+      "weight": 1
+     },
+     {
+      "id": "p08",
+      "lon": 69.604821,
+      "lat": 42.313673,
+      "weight": 1
+     },
+     {
+      "id": "p09",
+      "lon": 69.597149,
+      "lat": 42.319393,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "c00",
+      "lon": 69.609035,
+      "lat": 42.321205,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 191
+     },
+     {
+      "id": "c01",
+      "lon": 69.595545,
+      "lat": 42.319746,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 534
+     },
+     {
+      "id": "c02",
+      "lon": 69.603913,
+      "lat": 42.321611,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 254
+     },
+     {
+      "id": "c03",
+      "lon": 69.610449,
+      "lat": 42.313806,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 791
+     },
+     {
+      "id": "c04",
+      "lon": 69.596288,
+      "lat": 42.311938,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 776
+     },
+     {
+      "id": "c05",
+      "lon": 69.60089,
+      "lat": 42.319938,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 604
+     },
+     {
+      "id": "c06",
+      "lon": 69.609036,
+      "lat": 42.309552,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 434
+     },
+     {
+      "id": "c07",
+      "lon": 69.601827,
+      "lat": 42.311343,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 734
+     }
+    ],
+    "budget": 2159,
+    "max_selected": 2,
+    "coverage_radius_m": 100,
+    "required_ids": [],
+    "excluded_ids": [],
+    "selected_ids": []
+   }
+  },
+  {
+   "task_id": "shymkent_school#5",
+   "context": {
+    "city_id": "shymkent",
+    "category": "school",
+    "bbox": [
+     69.593365,
+     42.306645,
+     69.617658,
+     42.324611
+    ],
+    "source_snapshot": "k09r8-slice:0a7508473d7c18966b15cccd7c3a083f",
+    "sources": [
+     {
+      "id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+      "lon": 69.61052,
+      "lat": 42.32027
+     },
+     {
+      "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+      "lon": 69.60294,
+      "lat": 42.31672
+     },
+     {
+      "id": "176c5993-4b62-4e90-849f-88addc0153bb",
+      "lon": 69.605699,
+      "lat": 42.323129
+     },
+     {
+      "id": "18df815b-170a-437c-977f-0769690315d4",
+      "lon": 69.61482,
+      "lat": 42.31276
+     },
+     {
+      "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+      "lon": 69.5958,
+      "lat": 42.3167
+     },
+     {
+      "id": "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+      "lon": 69.605231,
+      "lat": 42.321741
+     },
+     {
+      "id": "68c8f007-75bc-42f6-8da8-baa72042bde4",
+      "lon": 69.5958,
+      "lat": 42.3167
+     },
+     {
+      "id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+      "lon": 69.599229,
+      "lat": 42.314563
+     },
+     {
+      "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+      "lon": 69.59496,
+      "lat": 42.32353
+     },
+     {
+      "id": "9d31b953-ccc4-42bd-a3a3-3e4e21f44051",
+      "lon": 69.5958,
+      "lat": 42.3167
+     },
+     {
+      "id": "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6",
+      "lon": 69.59496,
+      "lat": 42.32353
+     },
+     {
+      "id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+      "lon": 69.59895,
+      "lat": 42.31906
+     },
+     {
+      "id": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+      "lon": 69.61557,
+      "lat": 42.32304
+     },
+     {
+      "id": "bcd265d0-0799-4dbf-8b15-23bae752a4d2",
+      "lon": 69.61557,
+      "lat": 42.32304
+     },
+     {
+      "id": "fd50a858-462d-477f-8bc6-a8d3e03a9576",
+      "lon": 69.60322,
+      "lat": 42.31728
+     }
+    ],
+    "metric_version": "haversine-mm-v1"
+   },
+   "scenario": {
+    "schema_version": "city-plan-v2",
+    "city_id": "shymkent",
+    "source_snapshot": "k09r8-slice:0a7508473d7c18966b15cccd7c3a083f",
+    "category": "school",
+    "control_points": [
+     {
+      "id": "p00",
+      "lon": 69.596649,
+      "lat": 42.316879,
+      "weight": 93
+     },
+     {
+      "id": "p01",
+      "lon": 69.608111,
+      "lat": 42.31751,
+      "weight": 72
+     },
+     {
+      "id": "p02",
+      "lon": 69.609423,
+      "lat": 42.314938,
+      "weight": 37
+     },
+     {
+      "id": "p03",
+      "lon": 69.594087,
+      "lat": 42.309158,
+      "weight": 23
+     },
+     {
+      "id": "p04",
+      "lon": 69.610745,
+      "lat": 42.317505,
+      "weight": 74
+     },
+     {
+      "id": "p05",
+      "lon": 69.61633,
+      "lat": 42.316684,
+      "weight": 76
+     },
+     {
+      "id": "p06",
+      "lon": 69.617292,
+      "lat": 42.317663,
+      "weight": 46
+     },
+     {
+      "id": "p07",
+      "lon": 69.614046,
+      "lat": 42.323321,
+      "weight": 7
+     },
+     {
+      "id": "p08",
+      "lon": 69.599613,
+      "lat": 42.322019,
+      "weight": 24
+     },
+     {
+      "id": "p09",
+      "lon": 69.603992,
+      "lat": 42.306843,
+      "weight": 44
+     },
+     {
+      "id": "p10",
+      "lon": 69.603371,
+      "lat": 42.310231,
+      "weight": 69
+     },
+     {
+      "id": "p11",
+      "lon": 69.596834,
+      "lat": 42.322955,
+      "weight": 75
+     },
+     {
+      "id": "p12",
+      "lon": 69.601056,
+      "lat": 42.307587,
+      "weight": 28
+     },
+     {
+      "id": "p13",
+      "lon": 69.60968,
+      "lat": 42.315104,
+      "weight": 52
+     },
+     {
+      "id": "p14",
+      "lon": 69.611983,
+      "lat": 42.321073,
+      "weight": 97
+     }
+    ],
+    "candidates": [
+     {
+      "id": "c00",
+      "lon": 69.60677,
+      "lat": 42.322621,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 358
+     },
+     {
+      "id": "c01",
+      "lon": 69.599398,
+      "lat": 42.313025,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 1000
+     },
+     {
+      "id": "c02",
+      "lon": 69.611469,
+      "lat": 42.31667,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 596
+     },
+     {
+      "id": "c03",
+      "lon": 69.612353,
+      "lat": 42.320966,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 317
+     },
+     {
+      "id": "c04",
+      "lon": 69.614071,
+      "lat": 42.32079,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 624
+     },
+     {
+      "id": "c05",
+      "lon": 69.596621,
+      "lat": 42.315356,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 930
+     },
+     {
+      "id": "c06",
+      "lon": 69.604172,
+      "lat": 42.315782,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 523
+     },
+     {
+      "id": "c07",
+      "lon": 69.613429,
+      "lat": 42.318954,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 657
+     },
+     {
+      "id": "c08",
+      "lon": 69.607444,
+      "lat": 42.307352,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 220
+     },
+     {
+      "id": "c09",
+      "lon": 69.60546,
+      "lat": 42.320136,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 331
+     }
+    ],
+    "budget": 2778,
+    "max_selected": 3,
+    "coverage_radius_m": 300,
+    "required_ids": [
+     "c01"
+    ],
+    "excluded_ids": [
+     "c00",
+     "c02"
+    ],
+    "selected_ids": []
+   }
+  },
+  {
+   "task_id": "shymkent_school#6",
+   "context": {
+    "city_id": "shymkent",
+    "category": "school",
+    "bbox": [
+     69.593365,
+     42.306645,
+     69.617658,
+     42.324611
+    ],
+    "source_snapshot": "k09r8-slice:0a7508473d7c18966b15cccd7c3a083f",
+    "sources": [
+     {
+      "id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+      "lon": 69.61052,
+      "lat": 42.32027
+     },
+     {
+      "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+      "lon": 69.60294,
+      "lat": 42.31672
+     },
+     {
+      "id": "176c5993-4b62-4e90-849f-88addc0153bb",
+      "lon": 69.605699,
+      "lat": 42.323129
+     },
+     {
+      "id": "18df815b-170a-437c-977f-0769690315d4",
+      "lon": 69.61482,
+      "lat": 42.31276
+     },
+     {
+      "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+      "lon": 69.5958,
+      "lat": 42.3167
+     },
+     {
+      "id": "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+      "lon": 69.605231,
+      "lat": 42.321741
+     },
+     {
+      "id": "68c8f007-75bc-42f6-8da8-baa72042bde4",
+      "lon": 69.5958,
+      "lat": 42.3167
+     },
+     {
+      "id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+      "lon": 69.599229,
+      "lat": 42.314563
+     },
+     {
+      "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+      "lon": 69.59496,
+      "lat": 42.32353
+     },
+     {
+      "id": "9d31b953-ccc4-42bd-a3a3-3e4e21f44051",
+      "lon": 69.5958,
+      "lat": 42.3167
+     },
+     {
+      "id": "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6",
+      "lon": 69.59496,
+      "lat": 42.32353
+     },
+     {
+      "id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+      "lon": 69.59895,
+      "lat": 42.31906
+     },
+     {
+      "id": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+      "lon": 69.61557,
+      "lat": 42.32304
+     },
+     {
+      "id": "bcd265d0-0799-4dbf-8b15-23bae752a4d2",
+      "lon": 69.61557,
+      "lat": 42.32304
+     },
+     {
+      "id": "fd50a858-462d-477f-8bc6-a8d3e03a9576",
+      "lon": 69.60322,
+      "lat": 42.31728
+     }
+    ],
+    "metric_version": "haversine-mm-v1"
+   },
+   "scenario": {
+    "schema_version": "city-plan-v2",
+    "city_id": "shymkent",
+    "source_snapshot": "k09r8-slice:0a7508473d7c18966b15cccd7c3a083f",
+    "category": "school",
+    "control_points": [
+     {
+      "id": "p00",
+      "lon": 69.602479,
+      "lat": 42.308137,
+      "weight": 55
+     },
+     {
+      "id": "p01",
+      "lon": 69.607126,
+      "lat": 42.313326,
+      "weight": 75
+     },
+     {
+      "id": "p02",
+      "lon": 69.607556,
+      "lat": 42.32121,
+      "weight": 32
+     },
+     {
+      "id": "p03",
+      "lon": 69.597211,
+      "lat": 42.319617,
+      "weight": 31
+     },
+     {
+      "id": "p04",
+      "lon": 69.607475,
+      "lat": 42.31559,
+      "weight": 65
+     },
+     {
+      "id": "p05",
+      "lon": 69.606541,
+      "lat": 42.320637,
+      "weight": 60
+     },
+     {
+      "id": "p06",
+      "lon": 69.60303,
+      "lat": 42.31071,
+      "weight": 91
+     },
+     {
+      "id": "p07",
+      "lon": 69.606334,
+      "lat": 42.31014,
+      "weight": 21
+     },
+     {
+      "id": "p08",
+      "lon": 69.609455,
+      "lat": 42.312679,
+      "weight": 65
+     },
+     {
+      "id": "p09",
+      "lon": 69.601552,
+      "lat": 42.319853,
+      "weight": 42
+     },
+     {
+      "id": "p10",
+      "lon": 69.61627,
+      "lat": 42.306892,
+      "weight": 19
+     },
+     {
+      "id": "p11",
+      "lon": 69.596553,
+      "lat": 42.317799,
+      "weight": 20
+     },
+     {
+      "id": "p12",
+      "lon": 69.604562,
+      "lat": 42.312617,
+      "weight": 33
+     },
+     {
+      "id": "p13",
+      "lon": 69.612974,
+      "lat": 42.309823,
+      "weight": 79
+     },
+     {
+      "id": "p14",
+      "lon": 69.609151,
+      "lat": 42.308375,
+      "weight": 78
+     },
+     {
+      "id": "p15",
+      "lon": 69.607746,
+      "lat": 42.321349,
+      "weight": 46
+     },
+     {
+      "id": "p16",
+      "lon": 69.613309,
+      "lat": 42.321726,
+      "weight": 24
+     },
+     {
+      "id": "p17",
+      "lon": 69.603767,
+      "lat": 42.320474,
+      "weight": 13
+     },
+     {
+      "id": "p18",
+      "lon": 69.599284,
+      "lat": 42.316114,
+      "weight": 45
+     },
+     {
+      "id": "p19",
+      "lon": 69.599098,
+      "lat": 42.312487,
+      "weight": 53
+     },
+     {
+      "id": "p20",
+      "lon": 69.598908,
+      "lat": 42.316451,
+      "weight": 31
+     },
+     {
+      "id": "p21",
+      "lon": 69.608615,
+      "lat": 42.310994,
+      "weight": 73
+     },
+     {
+      "id": "p22",
+      "lon": 69.597321,
+      "lat": 42.321984,
+      "weight": 91
+     },
+     {
+      "id": "p23",
+      "lon": 69.613934,
+      "lat": 42.307872,
+      "weight": 32
+     },
+     {
+      "id": "p24",
+      "lon": 69.611476,
+      "lat": 42.323002,
+      "weight": 70
+     }
+    ],
+    "candidates": [
+     {
+      "id": "c00",
+      "lon": 69.598799,
+      "lat": 42.323069,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 901
+     },
+     {
+      "id": "c01",
+      "lon": 69.603772,
+      "lat": 42.308645,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 106
+     },
+     {
+      "id": "c02",
+      "lon": 69.602819,
+      "lat": 42.311831,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 860
+     },
+     {
+      "id": "c03",
+      "lon": 69.5995,
+      "lat": 42.311856,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 438
+     },
+     {
+      "id": "c04",
+      "lon": 69.600983,
+      "lat": 42.322604,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 149
+     },
+     {
+      "id": "c05",
+      "lon": 69.60146,
+      "lat": 42.309873,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 701
+     },
+     {
+      "id": "c06",
+      "lon": 69.600754,
+      "lat": 42.322055,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 902
+     },
+     {
+      "id": "c07",
+      "lon": 69.616635,
+      "lat": 42.308745,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 585
+     },
+     {
+      "id": "c08",
+      "lon": 69.605457,
+      "lat": 42.308788,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 753
+     },
+     {
+      "id": "c09",
+      "lon": 69.609564,
+      "lat": 42.317117,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 167
+     },
+     {
+      "id": "c10",
+      "lon": 69.616009,
+      "lat": 42.309386,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 832
+     },
+     {
+      "id": "c11",
+      "lon": 69.599534,
+      "lat": 42.313385,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 484
+     },
+     {
+      "id": "c12",
+      "lon": 69.596879,
+      "lat": 42.309006,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 940
+     },
+     {
+      "id": "c13",
+      "lon": 69.59429,
+      "lat": 42.324478,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 226
+     },
+     {
+      "id": "c14",
+      "lon": 69.601626,
+      "lat": 42.310491,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 463
+     },
+     {
+      "id": "c15",
+      "lon": 69.596607,
+      "lat": 42.322341,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 467
+     }
+    ],
+    "budget": 4487,
+    "max_selected": 5,
+    "coverage_radius_m": 800,
+    "required_ids": [
+     "c05",
+     "c09"
+    ],
+    "excluded_ids": [
+     "c01"
+    ],
+    "selected_ids": []
+   }
+  },
+  {
+   "task_id": "shymkent_school#7",
+   "context": {
+    "city_id": "shymkent",
+    "category": "school",
+    "bbox": [
+     69.593365,
+     42.306645,
+     69.617658,
+     42.324611
+    ],
+    "source_snapshot": "k09r8-slice:0a7508473d7c18966b15cccd7c3a083f",
+    "sources": [
+     {
+      "id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+      "lon": 69.61052,
+      "lat": 42.32027
+     },
+     {
+      "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+      "lon": 69.60294,
+      "lat": 42.31672
+     },
+     {
+      "id": "176c5993-4b62-4e90-849f-88addc0153bb",
+      "lon": 69.605699,
+      "lat": 42.323129
+     },
+     {
+      "id": "18df815b-170a-437c-977f-0769690315d4",
+      "lon": 69.61482,
+      "lat": 42.31276
+     },
+     {
+      "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+      "lon": 69.5958,
+      "lat": 42.3167
+     },
+     {
+      "id": "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+      "lon": 69.605231,
+      "lat": 42.321741
+     },
+     {
+      "id": "68c8f007-75bc-42f6-8da8-baa72042bde4",
+      "lon": 69.5958,
+      "lat": 42.3167
+     },
+     {
+      "id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+      "lon": 69.599229,
+      "lat": 42.314563
+     },
+     {
+      "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+      "lon": 69.59496,
+      "lat": 42.32353
+     },
+     {
+      "id": "9d31b953-ccc4-42bd-a3a3-3e4e21f44051",
+      "lon": 69.5958,
+      "lat": 42.3167
+     },
+     {
+      "id": "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6",
+      "lon": 69.59496,
+      "lat": 42.32353
+     },
+     {
+      "id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+      "lon": 69.59895,
+      "lat": 42.31906
+     },
+     {
+      "id": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+      "lon": 69.61557,
+      "lat": 42.32304
+     },
+     {
+      "id": "bcd265d0-0799-4dbf-8b15-23bae752a4d2",
+      "lon": 69.61557,
+      "lat": 42.32304
+     },
+     {
+      "id": "fd50a858-462d-477f-8bc6-a8d3e03a9576",
+      "lon": 69.60322,
+      "lat": 42.31728
+     }
+    ],
+    "metric_version": "haversine-mm-v1"
+   },
+   "scenario": {
+    "schema_version": "city-plan-v2",
+    "city_id": "shymkent",
+    "source_snapshot": "k09r8-slice:0a7508473d7c18966b15cccd7c3a083f",
+    "category": "school",
+    "control_points": [
+     {
+      "id": "p00",
+      "lon": 69.612572,
+      "lat": 42.307243,
+      "weight": 41
+     },
+     {
+      "id": "p01",
+      "lon": 69.617076,
+      "lat": 42.322167,
+      "weight": 83
+     },
+     {
+      "id": "p02",
+      "lon": 69.594056,
+      "lat": 42.314667,
+      "weight": 2
+     },
+     {
+      "id": "p03",
+      "lon": 69.596841,
+      "lat": 42.318316,
+      "weight": 99
+     },
+     {
+      "id": "p04",
+      "lon": 69.615997,
+      "lat": 42.318872,
+      "weight": 70
+     },
+     {
+      "id": "p05",
+      "lon": 69.601487,
+      "lat": 42.313448,
+      "weight": 43
+     },
+     {
+      "id": "p06",
+      "lon": 69.597246,
+      "lat": 42.310755,
+      "weight": 80
+     },
+     {
+      "id": "p07",
+      "lon": 69.611684,
+      "lat": 42.315393,
+      "weight": 81
+     },
+     {
+      "id": "p08",
+      "lon": 69.597201,
+      "lat": 42.308822,
+      "weight": 46
+     },
+     {
+      "id": "p09",
+      "lon": 69.613383,
+      "lat": 42.314099,
+      "weight": 12
+     },
+     {
+      "id": "p10",
+      "lon": 69.601183,
+      "lat": 42.309461,
+      "weight": 17
+     },
+     {
+      "id": "p11",
+      "lon": 69.611523,
+      "lat": 42.319412,
+      "weight": 29
+     },
+     {
+      "id": "p12",
+      "lon": 69.600523,
+      "lat": 42.30895,
+      "weight": 31
+     },
+     {
+      "id": "p13",
+      "lon": 69.60405,
+      "lat": 42.323415,
+      "weight": 29
+     },
+     {
+      "id": "p14",
+      "lon": 69.610332,
+      "lat": 42.317441,
+      "weight": 79
+     },
+     {
+      "id": "p15",
+      "lon": 69.59376,
+      "lat": 42.321505,
+      "weight": 66
+     },
+     {
+      "id": "p16",
+      "lon": 69.598714,
+      "lat": 42.307038,
+      "weight": 66
+     },
+     {
+      "id": "p17",
+      "lon": 69.616653,
+      "lat": 42.314634,
+      "weight": 59
+     },
+     {
+      "id": "p18",
+      "lon": 69.601308,
+      "lat": 42.307253,
+      "weight": 1
+     },
+     {
+      "id": "p19",
+      "lon": 69.613184,
+      "lat": 42.323216,
+      "weight": 3
+     }
+    ],
+    "candidates": [
+     {
+      "id": "c00",
+      "lon": 69.603254,
+      "lat": 42.316988,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 396
+     },
+     {
+      "id": "c01",
+      "lon": 69.615322,
+      "lat": 42.323686,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 836
+     },
+     {
+      "id": "c02",
+      "lon": 69.617106,
+      "lat": 42.317907,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 734
+     },
+     {
+      "id": "c03",
+      "lon": 69.595209,
+      "lat": 42.319769,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 577
+     },
+     {
+      "id": "c04",
+      "lon": 69.613986,
+      "lat": 42.319775,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 867
+     },
+     {
+      "id": "c05",
+      "lon": 69.601168,
+      "lat": 42.307472,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 529
+     },
+     {
+      "id": "c06",
+      "lon": 69.60737,
+      "lat": 42.318877,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 274
+     },
+     {
+      "id": "c07",
+      "lon": 69.613113,
+      "lat": 42.316285,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 158
+     },
+     {
+      "id": "c08",
+      "lon": 69.603326,
+      "lat": 42.317609,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 386
+     },
+     {
+      "id": "c09",
+      "lon": 69.606915,
+      "lat": 42.318988,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 241
+     },
+     {
+      "id": "c10",
+      "lon": 69.596276,
+      "lat": 42.309179,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 383
+     },
+     {
+      "id": "c11",
+      "lon": 69.614958,
+      "lat": 42.320263,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 988
+     }
+    ],
+    "budget": 1592,
+    "max_selected": 4,
+    "coverage_radius_m": 500,
+    "required_ids": [],
+    "excluded_ids": [
+     "c03"
+    ],
+    "selected_ids": []
+   }
+  },
+  {
+   "task_id": "shymkent_school#8",
+   "context": {
+    "city_id": "shymkent",
+    "category": "school",
+    "bbox": [
+     69.593365,
+     42.306645,
+     69.617658,
+     42.324611
+    ],
+    "source_snapshot": "k09r8-slice:0a7508473d7c18966b15cccd7c3a083f",
+    "sources": [
+     {
+      "id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+      "lon": 69.61052,
+      "lat": 42.32027
+     },
+     {
+      "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+      "lon": 69.60294,
+      "lat": 42.31672
+     },
+     {
+      "id": "176c5993-4b62-4e90-849f-88addc0153bb",
+      "lon": 69.605699,
+      "lat": 42.323129
+     },
+     {
+      "id": "18df815b-170a-437c-977f-0769690315d4",
+      "lon": 69.61482,
+      "lat": 42.31276
+     },
+     {
+      "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+      "lon": 69.5958,
+      "lat": 42.3167
+     },
+     {
+      "id": "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+      "lon": 69.605231,
+      "lat": 42.321741
+     },
+     {
+      "id": "68c8f007-75bc-42f6-8da8-baa72042bde4",
+      "lon": 69.5958,
+      "lat": 42.3167
+     },
+     {
+      "id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+      "lon": 69.599229,
+      "lat": 42.314563
+     },
+     {
+      "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+      "lon": 69.59496,
+      "lat": 42.32353
+     },
+     {
+      "id": "9d31b953-ccc4-42bd-a3a3-3e4e21f44051",
+      "lon": 69.5958,
+      "lat": 42.3167
+     },
+     {
+      "id": "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6",
+      "lon": 69.59496,
+      "lat": 42.32353
+     },
+     {
+      "id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+      "lon": 69.59895,
+      "lat": 42.31906
+     },
+     {
+      "id": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+      "lon": 69.61557,
+      "lat": 42.32304
+     },
+     {
+      "id": "bcd265d0-0799-4dbf-8b15-23bae752a4d2",
+      "lon": 69.61557,
+      "lat": 42.32304
+     },
+     {
+      "id": "fd50a858-462d-477f-8bc6-a8d3e03a9576",
+      "lon": 69.60322,
+      "lat": 42.31728
+     }
+    ],
+    "metric_version": "haversine-mm-v1"
+   },
+   "scenario": {
+    "schema_version": "city-plan-v2",
+    "city_id": "shymkent",
+    "source_snapshot": "k09r8-slice:0a7508473d7c18966b15cccd7c3a083f",
+    "category": "school",
+    "control_points": [
+     {
+      "id": "p00",
+      "lon": 69.598262,
+      "lat": 42.309821,
+      "weight": 1
+     },
+     {
+      "id": "p01",
+      "lon": 69.596815,
+      "lat": 42.30888,
+      "weight": 1
+     },
+     {
+      "id": "p02",
+      "lon": 69.61194,
+      "lat": 42.317924,
+      "weight": 1
+     },
+     {
+      "id": "p03",
+      "lon": 69.601366,
+      "lat": 42.3238,
+      "weight": 1
+     },
+     {
+      "id": "p04",
+      "lon": 69.60844,
+      "lat": 42.317425,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "c00",
+      "lon": 69.602571,
+      "lat": 42.323588,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 100
+     },
+     {
+      "id": "c01",
+      "lon": 69.605131,
+      "lat": 42.313653,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 192
+     },
+     {
+      "id": "c02",
+      "lon": 69.598682,
+      "lat": 42.313136,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 122
+     },
+     {
+      "id": "c03",
+      "lon": 69.602905,
+      "lat": 42.320315,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 920
+     },
+     {
+      "id": "c04",
+      "lon": 69.601363,
+      "lat": 42.318256,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 341
+     },
+     {
+      "id": "c05",
+      "lon": 69.615954,
+      "lat": 42.314783,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 766
+     }
+    ],
+    "budget": 1220,
+    "max_selected": 3,
+    "coverage_radius_m": 300,
+    "required_ids": [
+     "c00",
+     "c01",
+     "c02",
+     "c03"
+    ],
+    "excluded_ids": [],
+    "selected_ids": []
+   }
+  },
+  {
+   "task_id": "shymkent_school#9",
+   "context": {
+    "city_id": "shymkent",
+    "category": "school",
+    "bbox": [
+     69.593365,
+     42.306645,
+     69.617658,
+     42.324611
+    ],
+    "source_snapshot": "k09r8-slice:0a7508473d7c18966b15cccd7c3a083f",
+    "sources": [
+     {
+      "id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+      "lon": 69.61052,
+      "lat": 42.32027
+     },
+     {
+      "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+      "lon": 69.60294,
+      "lat": 42.31672
+     },
+     {
+      "id": "176c5993-4b62-4e90-849f-88addc0153bb",
+      "lon": 69.605699,
+      "lat": 42.323129
+     },
+     {
+      "id": "18df815b-170a-437c-977f-0769690315d4",
+      "lon": 69.61482,
+      "lat": 42.31276
+     },
+     {
+      "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+      "lon": 69.5958,
+      "lat": 42.3167
+     },
+     {
+      "id": "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+      "lon": 69.605231,
+      "lat": 42.321741
+     },
+     {
+      "id": "68c8f007-75bc-42f6-8da8-baa72042bde4",
+      "lon": 69.5958,
+      "lat": 42.3167
+     },
+     {
+      "id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+      "lon": 69.599229,
+      "lat": 42.314563
+     },
+     {
+      "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+      "lon": 69.59496,
+      "lat": 42.32353
+     },
+     {
+      "id": "9d31b953-ccc4-42bd-a3a3-3e4e21f44051",
+      "lon": 69.5958,
+      "lat": 42.3167
+     },
+     {
+      "id": "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6",
+      "lon": 69.59496,
+      "lat": 42.32353
+     },
+     {
+      "id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+      "lon": 69.59895,
+      "lat": 42.31906
+     },
+     {
+      "id": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+      "lon": 69.61557,
+      "lat": 42.32304
+     },
+     {
+      "id": "bcd265d0-0799-4dbf-8b15-23bae752a4d2",
+      "lon": 69.61557,
+      "lat": 42.32304
+     },
+     {
+      "id": "fd50a858-462d-477f-8bc6-a8d3e03a9576",
+      "lon": 69.60322,
+      "lat": 42.31728
+     }
+    ],
+    "metric_version": "haversine-mm-v1"
+   },
+   "scenario": {
+    "schema_version": "city-plan-v2",
+    "city_id": "shymkent",
+    "source_snapshot": "k09r8-slice:0a7508473d7c18966b15cccd7c3a083f",
+    "category": "school",
+    "control_points": [
+     {
+      "id": "p00",
+      "lon": 69.607362,
+      "lat": 42.321159,
+      "weight": 1
+     },
+     {
+      "id": "p01",
+      "lon": 69.610434,
+      "lat": 42.310544,
+      "weight": 1
+     },
+     {
+      "id": "p02",
+      "lon": 69.611077,
+      "lat": 42.315615,
+      "weight": 1
+     },
+     {
+      "id": "p03",
+      "lon": 69.600035,
+      "lat": 42.317937,
+      "weight": 1
+     },
+     {
+      "id": "p04",
+      "lon": 69.602212,
+      "lat": 42.31359,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "c00",
+      "lon": 69.609708,
+      "lat": 42.312554,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 967
+     },
+     {
+      "id": "c01",
+      "lon": 69.594521,
+      "lat": 42.314312,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 753
+     },
+     {
+      "id": "c02",
+      "lon": 69.594016,
+      "lat": 42.321453,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 558
+     },
+     {
+      "id": "c03",
+      "lon": 69.598256,
+      "lat": 42.312657,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 815
+     },
+     {
+      "id": "c04",
+      "lon": 69.607649,
+      "lat": 42.317946,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 100
+     },
+     {
+      "id": "c05",
+      "lon": 69.616568,
+      "lat": 42.318918,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 954
+     }
+    ],
+    "budget": 0,
+    "max_selected": 3,
+    "coverage_radius_m": 300,
+    "required_ids": [
+     "c00"
+    ],
+    "excluded_ids": [],
+    "selected_ids": []
+   }
+  },
+  {
+   "task_id": "shymkent_school#10",
+   "context": {
+    "city_id": "shymkent",
+    "category": "school",
+    "bbox": [
+     69.593365,
+     42.306645,
+     69.617658,
+     42.324611
+    ],
+    "source_snapshot": "k09r8-slice:0a7508473d7c18966b15cccd7c3a083f",
+    "sources": [
+     {
+      "id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+      "lon": 69.61052,
+      "lat": 42.32027
+     },
+     {
+      "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+      "lon": 69.60294,
+      "lat": 42.31672
+     },
+     {
+      "id": "176c5993-4b62-4e90-849f-88addc0153bb",
+      "lon": 69.605699,
+      "lat": 42.323129
+     },
+     {
+      "id": "18df815b-170a-437c-977f-0769690315d4",
+      "lon": 69.61482,
+      "lat": 42.31276
+     },
+     {
+      "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+      "lon": 69.5958,
+      "lat": 42.3167
+     },
+     {
+      "id": "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+      "lon": 69.605231,
+      "lat": 42.321741
+     },
+     {
+      "id": "68c8f007-75bc-42f6-8da8-baa72042bde4",
+      "lon": 69.5958,
+      "lat": 42.3167
+     },
+     {
+      "id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+      "lon": 69.599229,
+      "lat": 42.314563
+     },
+     {
+      "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+      "lon": 69.59496,
+      "lat": 42.32353
+     },
+     {
+      "id": "9d31b953-ccc4-42bd-a3a3-3e4e21f44051",
+      "lon": 69.5958,
+      "lat": 42.3167
+     },
+     {
+      "id": "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6",
+      "lon": 69.59496,
+      "lat": 42.32353
+     },
+     {
+      "id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+      "lon": 69.59895,
+      "lat": 42.31906
+     },
+     {
+      "id": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+      "lon": 69.61557,
+      "lat": 42.32304
+     },
+     {
+      "id": "bcd265d0-0799-4dbf-8b15-23bae752a4d2",
+      "lon": 69.61557,
+      "lat": 42.32304
+     },
+     {
+      "id": "fd50a858-462d-477f-8bc6-a8d3e03a9576",
+      "lon": 69.60322,
+      "lat": 42.31728
+     }
+    ],
+    "metric_version": "haversine-mm-v1"
+   },
+   "scenario": {
+    "schema_version": "city-plan-v2",
+    "city_id": "shymkent",
+    "source_snapshot": "k09r8-slice:0a7508473d7c18966b15cccd7c3a083f",
+    "category": "school",
+    "control_points": [
+     {
+      "id": "p00",
+      "lon": 69.616877,
+      "lat": 42.310627,
+      "weight": 1
+     },
+     {
+      "id": "p01",
+      "lon": 69.596336,
+      "lat": 42.312634,
+      "weight": 1
+     },
+     {
+      "id": "p02",
+      "lon": 69.601768,
+      "lat": 42.307564,
+      "weight": 1
+     },
+     {
+      "id": "p03",
+      "lon": 69.601672,
+      "lat": 42.310924,
+      "weight": 1
+     },
+     {
+      "id": "p04",
+      "lon": 69.605793,
+      "lat": 42.320627,
+      "weight": 1
+     },
+     {
+      "id": "p05",
+      "lon": 69.606461,
+      "lat": 42.319991,
+      "weight": 1
+     },
+     {
+      "id": "p06",
+      "lon": 69.609088,
+      "lat": 42.308634,
+      "weight": 1
+     },
+     {
+      "id": "p07",
+      "lon": 69.604431,
+      "lat": 42.313832,
+      "weight": 1
+     },
+     {
+      "id": "p08",
+      "lon": 69.599496,
+      "lat": 42.318165,
+      "weight": 1
+     },
+     {
+      "id": "p09",
+      "lon": 69.614808,
+      "lat": 42.321927,
+      "weight": 1
+     },
+     {
+      "id": "p10",
+      "lon": 69.603625,
+      "lat": 42.313564,
+      "weight": 1
+     },
+     {
+      "id": "p11",
+      "lon": 69.600263,
+      "lat": 42.31902,
+      "weight": 1
+     },
+     {
+      "id": "p12",
+      "lon": 69.610704,
+      "lat": 42.314992,
+      "weight": 1
+     },
+     {
+      "id": "p13",
+      "lon": 69.595369,
+      "lat": 42.308493,
+      "weight": 1
+     },
+     {
+      "id": "p14",
+      "lon": 69.601689,
+      "lat": 42.322266,
+      "weight": 1
+     },
+     {
+      "id": "p15",
+      "lon": 69.61754,
+      "lat": 42.320205,
+      "weight": 1
+     },
+     {
+      "id": "p16",
+      "lon": 69.608614,
+      "lat": 42.321601,
+      "weight": 1
+     },
+     {
+      "id": "p17",
+      "lon": 69.594089,
+      "lat": 42.309298,
+      "weight": 1
+     },
+     {
+      "id": "p18",
+      "lon": 69.597931,
+      "lat": 42.311282,
+      "weight": 1
+     },
+     {
+      "id": "p19",
+      "lon": 69.606212,
+      "lat": 42.315993,
+      "weight": 1
+     },
+     {
+      "id": "p20",
+      "lon": 69.612368,
+      "lat": 42.321529,
+      "weight": 1
+     },
+     {
+      "id": "p21",
+      "lon": 69.600021,
+      "lat": 42.309508,
+      "weight": 1
+     },
+     {
+      "id": "p22",
+      "lon": 69.597073,
+      "lat": 42.311068,
+      "weight": 1
+     },
+     {
+      "id": "p23",
+      "lon": 69.613802,
+      "lat": 42.312208,
+      "weight": 1
+     },
+     {
+      "id": "p24",
+      "lon": 69.614237,
+      "lat": 42.319941,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "c00",
+      "lon": 69.602568,
+      "lat": 42.309992,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 614
+     },
+     {
+      "id": "c01",
+      "lon": 69.608995,
+      "lat": 42.319515,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 693
+     },
+     {
+      "id": "c02",
+      "lon": 69.614946,
+      "lat": 42.31622,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 728
+     },
+     {
+      "id": "c03",
+      "lon": 69.607838,
+      "lat": 42.307375,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 235
+     },
+     {
+      "id": "c04",
+      "lon": 69.614811,
+      "lat": 42.321187,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 497
+     },
+     {
+      "id": "c05",
+      "lon": 69.605772,
+      "lat": 42.312819,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 972
+     },
+     {
+      "id": "c06",
+      "lon": 69.615552,
+      "lat": 42.317463,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 217
+     },
+     {
+      "id": "c07",
+      "lon": 69.596223,
+      "lat": 42.311704,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 835
+     },
+     {
+      "id": "c08",
+      "lon": 69.597864,
+      "lat": 42.31927,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 326
+     },
+     {
+      "id": "c09",
+      "lon": 69.605288,
+      "lat": 42.312018,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 251
+     },
+     {
+      "id": "c10",
+      "lon": 69.600302,
+      "lat": 42.309968,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 748
+     },
+     {
+      "id": "c11",
+      "lon": 69.609254,
+      "lat": 42.313178,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 992
+     },
+     {
+      "id": "c12",
+      "lon": 69.610622,
+      "lat": 42.322912,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 486
+     },
+     {
+      "id": "c13",
+      "lon": 69.61324,
+      "lat": 42.308669,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 490
+     },
+     {
+      "id": "c14",
+      "lon": 69.612269,
+      "lat": 42.31819,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 749
+     },
+     {
+      "id": "c15",
+      "lon": 69.605556,
+      "lat": 42.314426,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 815
+     }
+    ],
+    "budget": 2412,
+    "max_selected": 0,
+    "coverage_radius_m": 300,
+    "required_ids": [],
+    "excluded_ids": [],
+    "selected_ids": []
+   }
+  },
+  {
+   "task_id": "astana_clinic#0",
+   "context": {
+    "city_id": "astana",
+    "category": "outpatient_clinic",
+    "bbox": [
+     71.418372,
+     51.163033,
+     71.447,
+     51.181
+    ],
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "sources": [
+     {
+      "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+      "lon": 71.422483,
+      "lat": 51.169953
+     },
+     {
+      "id": "1116880a-cbb6-4271-9a59-a277083b792c",
+      "lon": 71.424931,
+      "lat": 51.176756
+     },
+     {
+      "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08",
+      "lon": 71.44229,
+      "lat": 51.1699
+     },
+     {
+      "id": "166c939f-9131-4fbb-bf75-4ab543916f20",
+      "lon": 71.41939,
+      "lat": 51.17117
+     },
+     {
+      "id": "1d137305-49cd-450b-9626-9762db14d080",
+      "lon": 71.436912,
+      "lat": 51.1748
+     },
+     {
+      "id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f",
+      "lon": 71.44025,
+      "lat": 51.16873
+     },
+     {
+      "id": "3fba1026-8464-41ab-88f8-633e3df0de30",
+      "lon": 71.441358,
+      "lat": 51.166785
+     },
+     {
+      "id": "410f0193-f0bc-4553-bee5-660aab0287a5",
+      "lon": 71.429936,
+      "lat": 51.167329
+     },
+     {
+      "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371",
+      "lon": 71.422047,
+      "lat": 51.177044
+     },
+     {
+      "id": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2",
+      "lon": 71.42513,
+      "lat": 51.16305
+     },
+     {
+      "id": "5f76d9b9-bdd1-4cea-9157-fef68ac60270",
+      "lon": 71.434725,
+      "lat": 51.166964
+     },
+     {
+      "id": "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8",
+      "lon": 71.44127,
+      "lat": 51.16756
+     },
+     {
+      "id": "771c278a-af10-4c57-b9fc-52755437345d",
+      "lon": 71.438397,
+      "lat": 51.164151
+     },
+     {
+      "id": "aca68551-4a03-47c2-813f-d13dceb85c62",
+      "lon": 71.44606,
+      "lat": 51.16817
+     },
+     {
+      "id": "b1fc81c5-7f00-4a0a-969d-2da872515916",
+      "lon": 71.42629,
+      "lat": 51.17692
+     },
+     {
+      "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050",
+      "lon": 71.435461,
+      "lat": 51.179776
+     }
+    ],
+    "metric_version": "haversine-mm-v1"
+   },
+   "scenario": {
+    "schema_version": "city-plan-v2",
+    "city_id": "astana",
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "category": "outpatient_clinic",
+    "control_points": [
+     {
+      "id": "p00",
+      "lon": 71.427334,
+      "lat": 51.177341,
+      "weight": 1
+     },
+     {
+      "id": "p01",
+      "lon": 71.418461,
+      "lat": 51.173391,
+      "weight": 1
+     },
+     {
+      "id": "p02",
+      "lon": 71.433761,
+      "lat": 51.173048,
+      "weight": 1
+     },
+     {
+      "id": "p03",
+      "lon": 71.443337,
+      "lat": 51.167625,
+      "weight": 1
+     },
+     {
+      "id": "p04",
+      "lon": 71.445844,
+      "lat": 51.173575,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "c00",
+      "lon": 71.424616,
+      "lat": 51.163111,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 988
+     },
+     {
+      "id": "c01",
+      "lon": 71.428894,
+      "lat": 51.176281,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 131
+     },
+     {
+      "id": "c02",
+      "lon": 71.438955,
+      "lat": 51.178675,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 608
+     },
+     {
+      "id": "c03",
+      "lon": 71.426108,
+      "lat": 51.165448,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 544
+     },
+     {
+      "id": "c04",
+      "lon": 71.44168,
+      "lat": 51.168279,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 667
+     },
+     {
+      "id": "c05",
+      "lon": 71.427554,
+      "lat": 51.173214,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 298
+     }
+    ],
+    "budget": 809,
+    "max_selected": 3,
+    "coverage_radius_m": 300,
+    "required_ids": [],
+    "excluded_ids": [],
+    "selected_ids": []
+   }
+  },
+  {
+   "task_id": "astana_clinic#1",
+   "context": {
+    "city_id": "astana",
+    "category": "outpatient_clinic",
+    "bbox": [
+     71.418372,
+     51.163033,
+     71.447,
+     51.181
+    ],
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "sources": [
+     {
+      "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+      "lon": 71.422483,
+      "lat": 51.169953
+     },
+     {
+      "id": "1116880a-cbb6-4271-9a59-a277083b792c",
+      "lon": 71.424931,
+      "lat": 51.176756
+     },
+     {
+      "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08",
+      "lon": 71.44229,
+      "lat": 51.1699
+     },
+     {
+      "id": "166c939f-9131-4fbb-bf75-4ab543916f20",
+      "lon": 71.41939,
+      "lat": 51.17117
+     },
+     {
+      "id": "1d137305-49cd-450b-9626-9762db14d080",
+      "lon": 71.436912,
+      "lat": 51.1748
+     },
+     {
+      "id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f",
+      "lon": 71.44025,
+      "lat": 51.16873
+     },
+     {
+      "id": "3fba1026-8464-41ab-88f8-633e3df0de30",
+      "lon": 71.441358,
+      "lat": 51.166785
+     },
+     {
+      "id": "410f0193-f0bc-4553-bee5-660aab0287a5",
+      "lon": 71.429936,
+      "lat": 51.167329
+     },
+     {
+      "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371",
+      "lon": 71.422047,
+      "lat": 51.177044
+     },
+     {
+      "id": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2",
+      "lon": 71.42513,
+      "lat": 51.16305
+     },
+     {
+      "id": "5f76d9b9-bdd1-4cea-9157-fef68ac60270",
+      "lon": 71.434725,
+      "lat": 51.166964
+     },
+     {
+      "id": "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8",
+      "lon": 71.44127,
+      "lat": 51.16756
+     },
+     {
+      "id": "771c278a-af10-4c57-b9fc-52755437345d",
+      "lon": 71.438397,
+      "lat": 51.164151
+     },
+     {
+      "id": "aca68551-4a03-47c2-813f-d13dceb85c62",
+      "lon": 71.44606,
+      "lat": 51.16817
+     },
+     {
+      "id": "b1fc81c5-7f00-4a0a-969d-2da872515916",
+      "lon": 71.42629,
+      "lat": 51.17692
+     },
+     {
+      "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050",
+      "lon": 71.435461,
+      "lat": 51.179776
+     }
+    ],
+    "metric_version": "haversine-mm-v1"
+   },
+   "scenario": {
+    "schema_version": "city-plan-v2",
+    "city_id": "astana",
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "category": "outpatient_clinic",
+    "control_points": [
+     {
+      "id": "p00",
+      "lon": 71.437467,
+      "lat": 51.173875,
+      "weight": 38
+     },
+     {
+      "id": "p01",
+      "lon": 71.438949,
+      "lat": 51.169891,
+      "weight": 10
+     },
+     {
+      "id": "p02",
+      "lon": 71.421811,
+      "lat": 51.180243,
+      "weight": 15
+     },
+     {
+      "id": "p03",
+      "lon": 71.441566,
+      "lat": 51.164681,
+      "weight": 94
+     },
+     {
+      "id": "p04",
+      "lon": 71.445526,
+      "lat": 51.178251,
+      "weight": 60
+     },
+     {
+      "id": "p05",
+      "lon": 71.431313,
+      "lat": 51.177159,
+      "weight": 41
+     },
+     {
+      "id": "p06",
+      "lon": 71.424773,
+      "lat": 51.165858,
+      "weight": 40
+     },
+     {
+      "id": "p07",
+      "lon": 71.442057,
+      "lat": 51.178917,
+      "weight": 89
+     },
+     {
+      "id": "p08",
+      "lon": 71.432801,
+      "lat": 51.172619,
+      "weight": 38
+     },
+     {
+      "id": "p09",
+      "lon": 71.434683,
+      "lat": 51.1652,
+      "weight": 96
+     },
+     {
+      "id": "p10",
+      "lon": 71.425028,
+      "lat": 51.173389,
+      "weight": 72
+     },
+     {
+      "id": "p11",
+      "lon": 71.441703,
+      "lat": 51.166943,
+      "weight": 32
+     },
+     {
+      "id": "p12",
+      "lon": 71.442286,
+      "lat": 51.165421,
+      "weight": 83
+     },
+     {
+      "id": "p13",
+      "lon": 71.42063,
+      "lat": 51.178958,
+      "weight": 11
+     },
+     {
+      "id": "p14",
+      "lon": 71.423021,
+      "lat": 51.177672,
+      "weight": 61
+     }
+    ],
+    "candidates": [
+     {
+      "id": "c00",
+      "lon": 71.436107,
+      "lat": 51.172572,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 244
+     },
+     {
+      "id": "c01",
+      "lon": 71.432031,
+      "lat": 51.179341,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 516
+     },
+     {
+      "id": "c02",
+      "lon": 71.42302,
+      "lat": 51.16337,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 318
+     },
+     {
+      "id": "c03",
+      "lon": 71.432867,
+      "lat": 51.177233,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 467
+     },
+     {
+      "id": "c04",
+      "lon": 71.419832,
+      "lat": 51.167397,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 596
+     },
+     {
+      "id": "c05",
+      "lon": 71.419826,
+      "lat": 51.179541,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 920
+     },
+     {
+      "id": "c06",
+      "lon": 71.426704,
+      "lat": 51.164703,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 636
+     },
+     {
+      "id": "c07",
+      "lon": 71.43613,
+      "lat": 51.177133,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 884
+     },
+     {
+      "id": "c08",
+      "lon": 71.423618,
+      "lat": 51.165114,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 347
+     },
+     {
+      "id": "c09",
+      "lon": 71.43951,
+      "lat": 51.166587,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 413
+     }
+    ],
+    "budget": 2670,
+    "max_selected": 3,
+    "coverage_radius_m": 300,
+    "required_ids": [],
+    "excluded_ids": [],
+    "selected_ids": []
+   }
+  },
+  {
+   "task_id": "astana_clinic#2",
+   "context": {
+    "city_id": "astana",
+    "category": "outpatient_clinic",
+    "bbox": [
+     71.418372,
+     51.163033,
+     71.447,
+     51.181
+    ],
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "sources": [
+     {
+      "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+      "lon": 71.422483,
+      "lat": 51.169953
+     },
+     {
+      "id": "1116880a-cbb6-4271-9a59-a277083b792c",
+      "lon": 71.424931,
+      "lat": 51.176756
+     },
+     {
+      "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08",
+      "lon": 71.44229,
+      "lat": 51.1699
+     },
+     {
+      "id": "166c939f-9131-4fbb-bf75-4ab543916f20",
+      "lon": 71.41939,
+      "lat": 51.17117
+     },
+     {
+      "id": "1d137305-49cd-450b-9626-9762db14d080",
+      "lon": 71.436912,
+      "lat": 51.1748
+     },
+     {
+      "id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f",
+      "lon": 71.44025,
+      "lat": 51.16873
+     },
+     {
+      "id": "3fba1026-8464-41ab-88f8-633e3df0de30",
+      "lon": 71.441358,
+      "lat": 51.166785
+     },
+     {
+      "id": "410f0193-f0bc-4553-bee5-660aab0287a5",
+      "lon": 71.429936,
+      "lat": 51.167329
+     },
+     {
+      "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371",
+      "lon": 71.422047,
+      "lat": 51.177044
+     },
+     {
+      "id": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2",
+      "lon": 71.42513,
+      "lat": 51.16305
+     },
+     {
+      "id": "5f76d9b9-bdd1-4cea-9157-fef68ac60270",
+      "lon": 71.434725,
+      "lat": 51.166964
+     },
+     {
+      "id": "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8",
+      "lon": 71.44127,
+      "lat": 51.16756
+     },
+     {
+      "id": "771c278a-af10-4c57-b9fc-52755437345d",
+      "lon": 71.438397,
+      "lat": 51.164151
+     },
+     {
+      "id": "aca68551-4a03-47c2-813f-d13dceb85c62",
+      "lon": 71.44606,
+      "lat": 51.16817
+     },
+     {
+      "id": "b1fc81c5-7f00-4a0a-969d-2da872515916",
+      "lon": 71.42629,
+      "lat": 51.17692
+     },
+     {
+      "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050",
+      "lon": 71.435461,
+      "lat": 51.179776
+     }
+    ],
+    "metric_version": "haversine-mm-v1"
+   },
+   "scenario": {
+    "schema_version": "city-plan-v2",
+    "city_id": "astana",
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "category": "outpatient_clinic",
+    "control_points": [
+     {
+      "id": "p00",
+      "lon": 71.419846,
+      "lat": 51.163913,
+      "weight": 100
+     },
+     {
+      "id": "p01",
+      "lon": 71.444866,
+      "lat": 51.173702,
+      "weight": 1
+     },
+     {
+      "id": "p02",
+      "lon": 71.446021,
+      "lat": 51.16452,
+      "weight": 1
+     },
+     {
+      "id": "p03",
+      "lon": 71.420277,
+      "lat": 51.164446,
+      "weight": 1
+     },
+     {
+      "id": "p04",
+      "lon": 71.421254,
+      "lat": 51.165446,
+      "weight": 1
+     },
+     {
+      "id": "p05",
+      "lon": 71.442049,
+      "lat": 51.173876,
+      "weight": 1
+     },
+     {
+      "id": "p06",
+      "lon": 71.426502,
+      "lat": 51.178415,
+      "weight": 1
+     },
+     {
+      "id": "p07",
+      "lon": 71.446013,
+      "lat": 51.163955,
+      "weight": 1
+     },
+     {
+      "id": "p08",
+      "lon": 71.438897,
+      "lat": 51.164034,
+      "weight": 1
+     },
+     {
+      "id": "p09",
+      "lon": 71.420881,
+      "lat": 51.178711,
+      "weight": 1
+     },
+     {
+      "id": "p10",
+      "lon": 71.429849,
+      "lat": 51.169293,
+      "weight": 1
+     },
+     {
+      "id": "p11",
+      "lon": 71.443819,
+      "lat": 51.175349,
+      "weight": 1
+     },
+     {
+      "id": "p12",
+      "lon": 71.423261,
+      "lat": 51.174674,
+      "weight": 1
+     },
+     {
+      "id": "p13",
+      "lon": 71.429076,
+      "lat": 51.164753,
+      "weight": 1
+     },
+     {
+      "id": "p14",
+      "lon": 71.41871,
+      "lat": 51.179455,
+      "weight": 1
+     },
+     {
+      "id": "p15",
+      "lon": 71.430883,
+      "lat": 51.164074,
+      "weight": 1
+     },
+     {
+      "id": "p16",
+      "lon": 71.421135,
+      "lat": 51.178715,
+      "weight": 1
+     },
+     {
+      "id": "p17",
+      "lon": 71.445092,
+      "lat": 51.171955,
+      "weight": 1
+     },
+     {
+      "id": "p18",
+      "lon": 71.428851,
+      "lat": 51.172777,
+      "weight": 1
+     },
+     {
+      "id": "p19",
+      "lon": 71.418883,
+      "lat": 51.176288,
+      "weight": 1
+     },
+     {
+      "id": "p20",
+      "lon": 71.435285,
+      "lat": 51.171356,
+      "weight": 1
+     },
+     {
+      "id": "p21",
+      "lon": 71.441405,
+      "lat": 51.166528,
+      "weight": 1
+     },
+     {
+      "id": "p22",
+      "lon": 71.438535,
+      "lat": 51.170929,
+      "weight": 1
+     },
+     {
+      "id": "p23",
+      "lon": 71.428146,
+      "lat": 51.164788,
+      "weight": 1
+     },
+     {
+      "id": "p24",
+      "lon": 71.435999,
+      "lat": 51.178187,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "c00",
+      "lon": 71.440256,
+      "lat": 51.16978,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 115
+     },
+     {
+      "id": "c01",
+      "lon": 71.440086,
+      "lat": 51.168556,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 794
+     },
+     {
+      "id": "c02",
+      "lon": 71.427436,
+      "lat": 51.173404,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 411
+     },
+     {
+      "id": "c03",
+      "lon": 71.432455,
+      "lat": 51.177649,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 675
+     },
+     {
+      "id": "c04",
+      "lon": 71.436506,
+      "lat": 51.169749,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 552
+     },
+     {
+      "id": "c05",
+      "lon": 71.423499,
+      "lat": 51.17037,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 352
+     },
+     {
+      "id": "c06",
+      "lon": 71.443931,
+      "lat": 51.165603,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 377
+     },
+     {
+      "id": "c07",
+      "lon": 71.437834,
+      "lat": 51.169726,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 993
+     },
+     {
+      "id": "c08",
+      "lon": 71.423554,
+      "lat": 51.180768,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 220
+     },
+     {
+      "id": "c09",
+      "lon": 71.428195,
+      "lat": 51.172723,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 750
+     },
+     {
+      "id": "c10",
+      "lon": 71.439771,
+      "lat": 51.165293,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 549
+     },
+     {
+      "id": "c11",
+      "lon": 71.428244,
+      "lat": 51.17977,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 822
+     },
+     {
+      "id": "c12",
+      "lon": 71.428898,
+      "lat": 51.169204,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 291
+     },
+     {
+      "id": "c13",
+      "lon": 71.418498,
+      "lat": 51.175872,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 582
+     },
+     {
+      "id": "c14",
+      "lon": 71.432296,
+      "lat": 51.179605,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 288
+     },
+     {
+      "id": "c15",
+      "lon": 71.426815,
+      "lat": 51.173681,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 833
+     }
+    ],
+    "budget": 8604,
+    "max_selected": 3,
+    "coverage_radius_m": 300,
+    "required_ids": [],
+    "excluded_ids": [],
+    "selected_ids": []
+   }
+  },
+  {
+   "task_id": "astana_clinic#3",
+   "context": {
+    "city_id": "astana",
+    "category": "outpatient_clinic",
+    "bbox": [
+     71.418372,
+     51.163033,
+     71.447,
+     51.181
+    ],
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "sources": [
+     {
+      "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+      "lon": 71.422483,
+      "lat": 51.169953
+     },
+     {
+      "id": "1116880a-cbb6-4271-9a59-a277083b792c",
+      "lon": 71.424931,
+      "lat": 51.176756
+     },
+     {
+      "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08",
+      "lon": 71.44229,
+      "lat": 51.1699
+     },
+     {
+      "id": "166c939f-9131-4fbb-bf75-4ab543916f20",
+      "lon": 71.41939,
+      "lat": 51.17117
+     },
+     {
+      "id": "1d137305-49cd-450b-9626-9762db14d080",
+      "lon": 71.436912,
+      "lat": 51.1748
+     },
+     {
+      "id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f",
+      "lon": 71.44025,
+      "lat": 51.16873
+     },
+     {
+      "id": "3fba1026-8464-41ab-88f8-633e3df0de30",
+      "lon": 71.441358,
+      "lat": 51.166785
+     },
+     {
+      "id": "410f0193-f0bc-4553-bee5-660aab0287a5",
+      "lon": 71.429936,
+      "lat": 51.167329
+     },
+     {
+      "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371",
+      "lon": 71.422047,
+      "lat": 51.177044
+     },
+     {
+      "id": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2",
+      "lon": 71.42513,
+      "lat": 51.16305
+     },
+     {
+      "id": "5f76d9b9-bdd1-4cea-9157-fef68ac60270",
+      "lon": 71.434725,
+      "lat": 51.166964
+     },
+     {
+      "id": "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8",
+      "lon": 71.44127,
+      "lat": 51.16756
+     },
+     {
+      "id": "771c278a-af10-4c57-b9fc-52755437345d",
+      "lon": 71.438397,
+      "lat": 51.164151
+     },
+     {
+      "id": "aca68551-4a03-47c2-813f-d13dceb85c62",
+      "lon": 71.44606,
+      "lat": 51.16817
+     },
+     {
+      "id": "b1fc81c5-7f00-4a0a-969d-2da872515916",
+      "lon": 71.42629,
+      "lat": 51.17692
+     },
+     {
+      "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050",
+      "lon": 71.435461,
+      "lat": 51.179776
+     }
+    ],
+    "metric_version": "haversine-mm-v1"
+   },
+   "scenario": {
+    "schema_version": "city-plan-v2",
+    "city_id": "astana",
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "category": "outpatient_clinic",
+    "control_points": [
+     {
+      "id": "p00",
+      "lon": 71.43757,
+      "lat": 51.173337,
+      "weight": 22
+     },
+     {
+      "id": "p01",
+      "lon": 71.42087,
+      "lat": 51.176012,
+      "weight": 95
+     },
+     {
+      "id": "p02",
+      "lon": 71.430233,
+      "lat": 51.165775,
+      "weight": 6
+     },
+     {
+      "id": "p03",
+      "lon": 71.428011,
+      "lat": 51.163106,
+      "weight": 63
+     },
+     {
+      "id": "p04",
+      "lon": 71.428938,
+      "lat": 51.168328,
+      "weight": 81
+     },
+     {
+      "id": "p05",
+      "lon": 71.446573,
+      "lat": 51.163835,
+      "weight": 77
+     },
+     {
+      "id": "p06",
+      "lon": 71.42883,
+      "lat": 51.178809,
+      "weight": 82
+     },
+     {
+      "id": "p07",
+      "lon": 71.428418,
+      "lat": 51.165517,
+      "weight": 77
+     },
+     {
+      "id": "p08",
+      "lon": 71.428093,
+      "lat": 51.168973,
+      "weight": 81
+     },
+     {
+      "id": "p09",
+      "lon": 71.434109,
+      "lat": 51.166573,
+      "weight": 40
+     },
+     {
+      "id": "p10",
+      "lon": 71.42711,
+      "lat": 51.172806,
+      "weight": 86
+     },
+     {
+      "id": "p11",
+      "lon": 71.438395,
+      "lat": 51.171469,
+      "weight": 88
+     },
+     {
+      "id": "p12",
+      "lon": 71.44034,
+      "lat": 51.176978,
+      "weight": 19
+     },
+     {
+      "id": "p13",
+      "lon": 71.421666,
+      "lat": 51.179882,
+      "weight": 8
+     },
+     {
+      "id": "p14",
+      "lon": 71.432112,
+      "lat": 51.175461,
+      "weight": 10
+     },
+     {
+      "id": "p15",
+      "lon": 71.431508,
+      "lat": 51.163862,
+      "weight": 71
+     },
+     {
+      "id": "p16",
+      "lon": 71.425541,
+      "lat": 51.167407,
+      "weight": 14
+     },
+     {
+      "id": "p17",
+      "lon": 71.433643,
+      "lat": 51.170278,
+      "weight": 85
+     },
+     {
+      "id": "p18",
+      "lon": 71.419569,
+      "lat": 51.171245,
+      "weight": 88
+     },
+     {
+      "id": "p19",
+      "lon": 71.441808,
+      "lat": 51.170154,
+      "weight": 66
+     },
+     {
+      "id": "p20",
+      "lon": 71.421027,
+      "lat": 51.173948,
+      "weight": 27
+     },
+     {
+      "id": "p21",
+      "lon": 71.419479,
+      "lat": 51.164136,
+      "weight": 94
+     },
+     {
+      "id": "p22",
+      "lon": 71.435025,
+      "lat": 51.179605,
+      "weight": 99
+     },
+     {
+      "id": "p23",
+      "lon": 71.435624,
+      "lat": 51.175197,
+      "weight": 69
+     },
+     {
+      "id": "p24",
+      "lon": 71.440209,
+      "lat": 51.167225,
+      "weight": 59
+     }
+    ],
+    "candidates": [
+     {
+      "id": "c00",
+      "lon": 71.433395,
+      "lat": 51.174078,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 875
+     },
+     {
+      "id": "c01",
+      "lon": 71.431032,
+      "lat": 51.174431,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 125
+     },
+     {
+      "id": "c02",
+      "lon": 71.429227,
+      "lat": 51.179422,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 587
+     },
+     {
+      "id": "c03",
+      "lon": 71.422338,
+      "lat": 51.172766,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 463
+     },
+     {
+      "id": "c04",
+      "lon": 71.429889,
+      "lat": 51.163695,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 395
+     },
+     {
+      "id": "c05",
+      "lon": 71.427156,
+      "lat": 51.174053,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 802
+     },
+     {
+      "id": "c06",
+      "lon": 71.422127,
+      "lat": 51.16319,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 451
+     },
+     {
+      "id": "c07",
+      "lon": 71.428788,
+      "lat": 51.175269,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 376
+     },
+     {
+      "id": "c08",
+      "lon": 71.426357,
+      "lat": 51.174253,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 418
+     },
+     {
+      "id": "c09",
+      "lon": 71.431649,
+      "lat": 51.17445,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 173
+     },
+     {
+      "id": "c10",
+      "lon": 71.433292,
+      "lat": 51.166566,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 465
+     },
+     {
+      "id": "c11",
+      "lon": 71.446825,
+      "lat": 51.167836,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 705
+     },
+     {
+      "id": "c12",
+      "lon": 71.428515,
+      "lat": 51.17538,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 275
+     },
+     {
+      "id": "c13",
+      "lon": 71.424165,
+      "lat": 51.168307,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 792
+     },
+     {
+      "id": "c14",
+      "lon": 71.423058,
+      "lat": 51.165491,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 751
+     },
+     {
+      "id": "c15",
+      "lon": 71.426279,
+      "lat": 51.168233,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 482
+     }
+    ],
+    "budget": 4067,
+    "max_selected": 5,
+    "coverage_radius_m": 800,
+    "required_ids": [],
+    "excluded_ids": [],
+    "selected_ids": []
+   }
+  },
+  {
+   "task_id": "astana_clinic#4",
+   "context": {
+    "city_id": "astana",
+    "category": "outpatient_clinic",
+    "bbox": [
+     71.418372,
+     51.163033,
+     71.447,
+     51.181
+    ],
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "sources": [
+     {
+      "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+      "lon": 71.422483,
+      "lat": 51.169953
+     },
+     {
+      "id": "1116880a-cbb6-4271-9a59-a277083b792c",
+      "lon": 71.424931,
+      "lat": 51.176756
+     },
+     {
+      "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08",
+      "lon": 71.44229,
+      "lat": 51.1699
+     },
+     {
+      "id": "166c939f-9131-4fbb-bf75-4ab543916f20",
+      "lon": 71.41939,
+      "lat": 51.17117
+     },
+     {
+      "id": "1d137305-49cd-450b-9626-9762db14d080",
+      "lon": 71.436912,
+      "lat": 51.1748
+     },
+     {
+      "id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f",
+      "lon": 71.44025,
+      "lat": 51.16873
+     },
+     {
+      "id": "3fba1026-8464-41ab-88f8-633e3df0de30",
+      "lon": 71.441358,
+      "lat": 51.166785
+     },
+     {
+      "id": "410f0193-f0bc-4553-bee5-660aab0287a5",
+      "lon": 71.429936,
+      "lat": 51.167329
+     },
+     {
+      "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371",
+      "lon": 71.422047,
+      "lat": 51.177044
+     },
+     {
+      "id": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2",
+      "lon": 71.42513,
+      "lat": 51.16305
+     },
+     {
+      "id": "5f76d9b9-bdd1-4cea-9157-fef68ac60270",
+      "lon": 71.434725,
+      "lat": 51.166964
+     },
+     {
+      "id": "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8",
+      "lon": 71.44127,
+      "lat": 51.16756
+     },
+     {
+      "id": "771c278a-af10-4c57-b9fc-52755437345d",
+      "lon": 71.438397,
+      "lat": 51.164151
+     },
+     {
+      "id": "aca68551-4a03-47c2-813f-d13dceb85c62",
+      "lon": 71.44606,
+      "lat": 51.16817
+     },
+     {
+      "id": "b1fc81c5-7f00-4a0a-969d-2da872515916",
+      "lon": 71.42629,
+      "lat": 51.17692
+     },
+     {
+      "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050",
+      "lon": 71.435461,
+      "lat": 51.179776
+     }
+    ],
+    "metric_version": "haversine-mm-v1"
+   },
+   "scenario": {
+    "schema_version": "city-plan-v2",
+    "city_id": "astana",
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "category": "outpatient_clinic",
+    "control_points": [
+     {
+      "id": "p00",
+      "lon": 71.432652,
+      "lat": 51.177815,
+      "weight": 1
+     },
+     {
+      "id": "p01",
+      "lon": 71.43752,
+      "lat": 51.164838,
+      "weight": 1
+     },
+     {
+      "id": "p02",
+      "lon": 71.441121,
+      "lat": 51.16503,
+      "weight": 1
+     },
+     {
+      "id": "p03",
+      "lon": 71.425346,
+      "lat": 51.163483,
+      "weight": 1
+     },
+     {
+      "id": "p04",
+      "lon": 71.436196,
+      "lat": 51.17197,
+      "weight": 1
+     },
+     {
+      "id": "p05",
+      "lon": 71.420087,
+      "lat": 51.178956,
+      "weight": 1
+     },
+     {
+      "id": "p06",
+      "lon": 71.445547,
+      "lat": 51.176655,
+      "weight": 1
+     },
+     {
+      "id": "p07",
+      "lon": 71.424768,
+      "lat": 51.173857,
+      "weight": 1
+     },
+     {
+      "id": "p08",
+      "lon": 71.440622,
+      "lat": 51.169955,
+      "weight": 1
+     },
+     {
+      "id": "p09",
+      "lon": 71.430578,
+      "lat": 51.163191,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "c00",
+      "lon": 71.427152,
+      "lat": 51.169013,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 806
+     },
+     {
+      "id": "c01",
+      "lon": 71.423487,
+      "lat": 51.172954,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 712
+     },
+     {
+      "id": "c02",
+      "lon": 71.443374,
+      "lat": 51.168437,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 319
+     },
+     {
+      "id": "c03",
+      "lon": 71.428036,
+      "lat": 51.180981,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 263
+     },
+     {
+      "id": "c04",
+      "lon": 71.442221,
+      "lat": 51.174336,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 230
+     },
+     {
+      "id": "c05",
+      "lon": 71.421117,
+      "lat": 51.176221,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 907
+     },
+     {
+      "id": "c06",
+      "lon": 71.435358,
+      "lat": 51.165155,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 390
+     },
+     {
+      "id": "c07",
+      "lon": 71.435271,
+      "lat": 51.175453,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 292
+     }
+    ],
+    "budget": 1959,
+    "max_selected": 2,
+    "coverage_radius_m": 100,
+    "required_ids": [],
+    "excluded_ids": [],
+    "selected_ids": []
+   }
+  },
+  {
+   "task_id": "astana_clinic#5",
+   "context": {
+    "city_id": "astana",
+    "category": "outpatient_clinic",
+    "bbox": [
+     71.418372,
+     51.163033,
+     71.447,
+     51.181
+    ],
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "sources": [
+     {
+      "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+      "lon": 71.422483,
+      "lat": 51.169953
+     },
+     {
+      "id": "1116880a-cbb6-4271-9a59-a277083b792c",
+      "lon": 71.424931,
+      "lat": 51.176756
+     },
+     {
+      "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08",
+      "lon": 71.44229,
+      "lat": 51.1699
+     },
+     {
+      "id": "166c939f-9131-4fbb-bf75-4ab543916f20",
+      "lon": 71.41939,
+      "lat": 51.17117
+     },
+     {
+      "id": "1d137305-49cd-450b-9626-9762db14d080",
+      "lon": 71.436912,
+      "lat": 51.1748
+     },
+     {
+      "id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f",
+      "lon": 71.44025,
+      "lat": 51.16873
+     },
+     {
+      "id": "3fba1026-8464-41ab-88f8-633e3df0de30",
+      "lon": 71.441358,
+      "lat": 51.166785
+     },
+     {
+      "id": "410f0193-f0bc-4553-bee5-660aab0287a5",
+      "lon": 71.429936,
+      "lat": 51.167329
+     },
+     {
+      "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371",
+      "lon": 71.422047,
+      "lat": 51.177044
+     },
+     {
+      "id": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2",
+      "lon": 71.42513,
+      "lat": 51.16305
+     },
+     {
+      "id": "5f76d9b9-bdd1-4cea-9157-fef68ac60270",
+      "lon": 71.434725,
+      "lat": 51.166964
+     },
+     {
+      "id": "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8",
+      "lon": 71.44127,
+      "lat": 51.16756
+     },
+     {
+      "id": "771c278a-af10-4c57-b9fc-52755437345d",
+      "lon": 71.438397,
+      "lat": 51.164151
+     },
+     {
+      "id": "aca68551-4a03-47c2-813f-d13dceb85c62",
+      "lon": 71.44606,
+      "lat": 51.16817
+     },
+     {
+      "id": "b1fc81c5-7f00-4a0a-969d-2da872515916",
+      "lon": 71.42629,
+      "lat": 51.17692
+     },
+     {
+      "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050",
+      "lon": 71.435461,
+      "lat": 51.179776
+     }
+    ],
+    "metric_version": "haversine-mm-v1"
+   },
+   "scenario": {
+    "schema_version": "city-plan-v2",
+    "city_id": "astana",
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "category": "outpatient_clinic",
+    "control_points": [
+     {
+      "id": "p00",
+      "lon": 71.437467,
+      "lat": 51.173875,
+      "weight": 38
+     },
+     {
+      "id": "p01",
+      "lon": 71.438949,
+      "lat": 51.169891,
+      "weight": 10
+     },
+     {
+      "id": "p02",
+      "lon": 71.421811,
+      "lat": 51.180243,
+      "weight": 15
+     },
+     {
+      "id": "p03",
+      "lon": 71.441566,
+      "lat": 51.164681,
+      "weight": 94
+     },
+     {
+      "id": "p04",
+      "lon": 71.445526,
+      "lat": 51.178251,
+      "weight": 60
+     },
+     {
+      "id": "p05",
+      "lon": 71.431313,
+      "lat": 51.177159,
+      "weight": 41
+     },
+     {
+      "id": "p06",
+      "lon": 71.424773,
+      "lat": 51.165858,
+      "weight": 40
+     },
+     {
+      "id": "p07",
+      "lon": 71.442057,
+      "lat": 51.178917,
+      "weight": 89
+     },
+     {
+      "id": "p08",
+      "lon": 71.432801,
+      "lat": 51.172619,
+      "weight": 38
+     },
+     {
+      "id": "p09",
+      "lon": 71.434683,
+      "lat": 51.1652,
+      "weight": 96
+     },
+     {
+      "id": "p10",
+      "lon": 71.425028,
+      "lat": 51.173389,
+      "weight": 72
+     },
+     {
+      "id": "p11",
+      "lon": 71.441703,
+      "lat": 51.166943,
+      "weight": 32
+     },
+     {
+      "id": "p12",
+      "lon": 71.442286,
+      "lat": 51.165421,
+      "weight": 83
+     },
+     {
+      "id": "p13",
+      "lon": 71.42063,
+      "lat": 51.178958,
+      "weight": 11
+     },
+     {
+      "id": "p14",
+      "lon": 71.423021,
+      "lat": 51.177672,
+      "weight": 61
+     }
+    ],
+    "candidates": [
+     {
+      "id": "c00",
+      "lon": 71.436107,
+      "lat": 51.172572,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 244
+     },
+     {
+      "id": "c01",
+      "lon": 71.432031,
+      "lat": 51.179341,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 516
+     },
+     {
+      "id": "c02",
+      "lon": 71.42302,
+      "lat": 51.16337,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 318
+     },
+     {
+      "id": "c03",
+      "lon": 71.432867,
+      "lat": 51.177233,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 467
+     },
+     {
+      "id": "c04",
+      "lon": 71.419832,
+      "lat": 51.167397,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 596
+     },
+     {
+      "id": "c05",
+      "lon": 71.419826,
+      "lat": 51.179541,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 920
+     },
+     {
+      "id": "c06",
+      "lon": 71.426704,
+      "lat": 51.164703,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 636
+     },
+     {
+      "id": "c07",
+      "lon": 71.43613,
+      "lat": 51.177133,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 884
+     },
+     {
+      "id": "c08",
+      "lon": 71.423618,
+      "lat": 51.165114,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 347
+     },
+     {
+      "id": "c09",
+      "lon": 71.43951,
+      "lat": 51.166587,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 413
+     }
+    ],
+    "budget": 2670,
+    "max_selected": 3,
+    "coverage_radius_m": 300,
+    "required_ids": [
+     "c01"
+    ],
+    "excluded_ids": [
+     "c00",
+     "c02"
+    ],
+    "selected_ids": []
+   }
+  },
+  {
+   "task_id": "astana_clinic#6",
+   "context": {
+    "city_id": "astana",
+    "category": "outpatient_clinic",
+    "bbox": [
+     71.418372,
+     51.163033,
+     71.447,
+     51.181
+    ],
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "sources": [
+     {
+      "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+      "lon": 71.422483,
+      "lat": 51.169953
+     },
+     {
+      "id": "1116880a-cbb6-4271-9a59-a277083b792c",
+      "lon": 71.424931,
+      "lat": 51.176756
+     },
+     {
+      "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08",
+      "lon": 71.44229,
+      "lat": 51.1699
+     },
+     {
+      "id": "166c939f-9131-4fbb-bf75-4ab543916f20",
+      "lon": 71.41939,
+      "lat": 51.17117
+     },
+     {
+      "id": "1d137305-49cd-450b-9626-9762db14d080",
+      "lon": 71.436912,
+      "lat": 51.1748
+     },
+     {
+      "id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f",
+      "lon": 71.44025,
+      "lat": 51.16873
+     },
+     {
+      "id": "3fba1026-8464-41ab-88f8-633e3df0de30",
+      "lon": 71.441358,
+      "lat": 51.166785
+     },
+     {
+      "id": "410f0193-f0bc-4553-bee5-660aab0287a5",
+      "lon": 71.429936,
+      "lat": 51.167329
+     },
+     {
+      "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371",
+      "lon": 71.422047,
+      "lat": 51.177044
+     },
+     {
+      "id": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2",
+      "lon": 71.42513,
+      "lat": 51.16305
+     },
+     {
+      "id": "5f76d9b9-bdd1-4cea-9157-fef68ac60270",
+      "lon": 71.434725,
+      "lat": 51.166964
+     },
+     {
+      "id": "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8",
+      "lon": 71.44127,
+      "lat": 51.16756
+     },
+     {
+      "id": "771c278a-af10-4c57-b9fc-52755437345d",
+      "lon": 71.438397,
+      "lat": 51.164151
+     },
+     {
+      "id": "aca68551-4a03-47c2-813f-d13dceb85c62",
+      "lon": 71.44606,
+      "lat": 51.16817
+     },
+     {
+      "id": "b1fc81c5-7f00-4a0a-969d-2da872515916",
+      "lon": 71.42629,
+      "lat": 51.17692
+     },
+     {
+      "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050",
+      "lon": 71.435461,
+      "lat": 51.179776
+     }
+    ],
+    "metric_version": "haversine-mm-v1"
+   },
+   "scenario": {
+    "schema_version": "city-plan-v2",
+    "city_id": "astana",
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "category": "outpatient_clinic",
+    "control_points": [
+     {
+      "id": "p00",
+      "lon": 71.43757,
+      "lat": 51.173337,
+      "weight": 22
+     },
+     {
+      "id": "p01",
+      "lon": 71.42087,
+      "lat": 51.176012,
+      "weight": 95
+     },
+     {
+      "id": "p02",
+      "lon": 71.430233,
+      "lat": 51.165775,
+      "weight": 6
+     },
+     {
+      "id": "p03",
+      "lon": 71.428011,
+      "lat": 51.163106,
+      "weight": 63
+     },
+     {
+      "id": "p04",
+      "lon": 71.428938,
+      "lat": 51.168328,
+      "weight": 81
+     },
+     {
+      "id": "p05",
+      "lon": 71.446573,
+      "lat": 51.163835,
+      "weight": 77
+     },
+     {
+      "id": "p06",
+      "lon": 71.42883,
+      "lat": 51.178809,
+      "weight": 82
+     },
+     {
+      "id": "p07",
+      "lon": 71.428418,
+      "lat": 51.165517,
+      "weight": 77
+     },
+     {
+      "id": "p08",
+      "lon": 71.428093,
+      "lat": 51.168973,
+      "weight": 81
+     },
+     {
+      "id": "p09",
+      "lon": 71.434109,
+      "lat": 51.166573,
+      "weight": 40
+     },
+     {
+      "id": "p10",
+      "lon": 71.42711,
+      "lat": 51.172806,
+      "weight": 86
+     },
+     {
+      "id": "p11",
+      "lon": 71.438395,
+      "lat": 51.171469,
+      "weight": 88
+     },
+     {
+      "id": "p12",
+      "lon": 71.44034,
+      "lat": 51.176978,
+      "weight": 19
+     },
+     {
+      "id": "p13",
+      "lon": 71.421666,
+      "lat": 51.179882,
+      "weight": 8
+     },
+     {
+      "id": "p14",
+      "lon": 71.432112,
+      "lat": 51.175461,
+      "weight": 10
+     },
+     {
+      "id": "p15",
+      "lon": 71.431508,
+      "lat": 51.163862,
+      "weight": 71
+     },
+     {
+      "id": "p16",
+      "lon": 71.425541,
+      "lat": 51.167407,
+      "weight": 14
+     },
+     {
+      "id": "p17",
+      "lon": 71.433643,
+      "lat": 51.170278,
+      "weight": 85
+     },
+     {
+      "id": "p18",
+      "lon": 71.419569,
+      "lat": 51.171245,
+      "weight": 88
+     },
+     {
+      "id": "p19",
+      "lon": 71.441808,
+      "lat": 51.170154,
+      "weight": 66
+     },
+     {
+      "id": "p20",
+      "lon": 71.421027,
+      "lat": 51.173948,
+      "weight": 27
+     },
+     {
+      "id": "p21",
+      "lon": 71.419479,
+      "lat": 51.164136,
+      "weight": 94
+     },
+     {
+      "id": "p22",
+      "lon": 71.435025,
+      "lat": 51.179605,
+      "weight": 99
+     },
+     {
+      "id": "p23",
+      "lon": 71.435624,
+      "lat": 51.175197,
+      "weight": 69
+     },
+     {
+      "id": "p24",
+      "lon": 71.440209,
+      "lat": 51.167225,
+      "weight": 59
+     }
+    ],
+    "candidates": [
+     {
+      "id": "c00",
+      "lon": 71.433395,
+      "lat": 51.174078,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 875
+     },
+     {
+      "id": "c01",
+      "lon": 71.431032,
+      "lat": 51.174431,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 125
+     },
+     {
+      "id": "c02",
+      "lon": 71.429227,
+      "lat": 51.179422,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 587
+     },
+     {
+      "id": "c03",
+      "lon": 71.422338,
+      "lat": 51.172766,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 463
+     },
+     {
+      "id": "c04",
+      "lon": 71.429889,
+      "lat": 51.163695,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 395
+     },
+     {
+      "id": "c05",
+      "lon": 71.427156,
+      "lat": 51.174053,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 802
+     },
+     {
+      "id": "c06",
+      "lon": 71.422127,
+      "lat": 51.16319,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 451
+     },
+     {
+      "id": "c07",
+      "lon": 71.428788,
+      "lat": 51.175269,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 376
+     },
+     {
+      "id": "c08",
+      "lon": 71.426357,
+      "lat": 51.174253,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 418
+     },
+     {
+      "id": "c09",
+      "lon": 71.431649,
+      "lat": 51.17445,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 173
+     },
+     {
+      "id": "c10",
+      "lon": 71.433292,
+      "lat": 51.166566,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 465
+     },
+     {
+      "id": "c11",
+      "lon": 71.446825,
+      "lat": 51.167836,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 705
+     },
+     {
+      "id": "c12",
+      "lon": 71.428515,
+      "lat": 51.17538,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 275
+     },
+     {
+      "id": "c13",
+      "lon": 71.424165,
+      "lat": 51.168307,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 792
+     },
+     {
+      "id": "c14",
+      "lon": 71.423058,
+      "lat": 51.165491,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 751
+     },
+     {
+      "id": "c15",
+      "lon": 71.426279,
+      "lat": 51.168233,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 482
+     }
+    ],
+    "budget": 4067,
+    "max_selected": 5,
+    "coverage_radius_m": 800,
+    "required_ids": [
+     "c05",
+     "c09"
+    ],
+    "excluded_ids": [
+     "c01"
+    ],
+    "selected_ids": []
+   }
+  },
+  {
+   "task_id": "astana_clinic#7",
+   "context": {
+    "city_id": "astana",
+    "category": "outpatient_clinic",
+    "bbox": [
+     71.418372,
+     51.163033,
+     71.447,
+     51.181
+    ],
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "sources": [
+     {
+      "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+      "lon": 71.422483,
+      "lat": 51.169953
+     },
+     {
+      "id": "1116880a-cbb6-4271-9a59-a277083b792c",
+      "lon": 71.424931,
+      "lat": 51.176756
+     },
+     {
+      "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08",
+      "lon": 71.44229,
+      "lat": 51.1699
+     },
+     {
+      "id": "166c939f-9131-4fbb-bf75-4ab543916f20",
+      "lon": 71.41939,
+      "lat": 51.17117
+     },
+     {
+      "id": "1d137305-49cd-450b-9626-9762db14d080",
+      "lon": 71.436912,
+      "lat": 51.1748
+     },
+     {
+      "id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f",
+      "lon": 71.44025,
+      "lat": 51.16873
+     },
+     {
+      "id": "3fba1026-8464-41ab-88f8-633e3df0de30",
+      "lon": 71.441358,
+      "lat": 51.166785
+     },
+     {
+      "id": "410f0193-f0bc-4553-bee5-660aab0287a5",
+      "lon": 71.429936,
+      "lat": 51.167329
+     },
+     {
+      "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371",
+      "lon": 71.422047,
+      "lat": 51.177044
+     },
+     {
+      "id": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2",
+      "lon": 71.42513,
+      "lat": 51.16305
+     },
+     {
+      "id": "5f76d9b9-bdd1-4cea-9157-fef68ac60270",
+      "lon": 71.434725,
+      "lat": 51.166964
+     },
+     {
+      "id": "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8",
+      "lon": 71.44127,
+      "lat": 51.16756
+     },
+     {
+      "id": "771c278a-af10-4c57-b9fc-52755437345d",
+      "lon": 71.438397,
+      "lat": 51.164151
+     },
+     {
+      "id": "aca68551-4a03-47c2-813f-d13dceb85c62",
+      "lon": 71.44606,
+      "lat": 51.16817
+     },
+     {
+      "id": "b1fc81c5-7f00-4a0a-969d-2da872515916",
+      "lon": 71.42629,
+      "lat": 51.17692
+     },
+     {
+      "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050",
+      "lon": 71.435461,
+      "lat": 51.179776
+     }
+    ],
+    "metric_version": "haversine-mm-v1"
+   },
+   "scenario": {
+    "schema_version": "city-plan-v2",
+    "city_id": "astana",
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "category": "outpatient_clinic",
+    "control_points": [
+     {
+      "id": "p00",
+      "lon": 71.43254,
+      "lat": 51.163943,
+      "weight": 72
+     },
+     {
+      "id": "p01",
+      "lon": 71.445765,
+      "lat": 51.164346,
+      "weight": 74
+     },
+     {
+      "id": "p02",
+      "lon": 71.426331,
+      "lat": 51.169171,
+      "weight": 100
+     },
+     {
+      "id": "p03",
+      "lon": 71.425847,
+      "lat": 51.170685,
+      "weight": 46
+     },
+     {
+      "id": "p04",
+      "lon": 71.418796,
+      "lat": 51.178706,
+      "weight": 15
+     },
+     {
+      "id": "p05",
+      "lon": 71.433799,
+      "lat": 51.18071,
+      "weight": 87
+     },
+     {
+      "id": "p06",
+      "lon": 71.427933,
+      "lat": 51.173382,
+      "weight": 2
+     },
+     {
+      "id": "p07",
+      "lon": 71.421609,
+      "lat": 51.170093,
+      "weight": 86
+     },
+     {
+      "id": "p08",
+      "lon": 71.435478,
+      "lat": 51.16334,
+      "weight": 45
+     },
+     {
+      "id": "p09",
+      "lon": 71.419348,
+      "lat": 51.164413,
+      "weight": 87
+     },
+     {
+      "id": "p10",
+      "lon": 71.419217,
+      "lat": 51.175443,
+      "weight": 76
+     },
+     {
+      "id": "p11",
+      "lon": 71.43996,
+      "lat": 51.163708,
+      "weight": 69
+     },
+     {
+      "id": "p12",
+      "lon": 71.431868,
+      "lat": 51.167042,
+      "weight": 66
+     },
+     {
+      "id": "p13",
+      "lon": 71.423019,
+      "lat": 51.163658,
+      "weight": 4
+     },
+     {
+      "id": "p14",
+      "lon": 71.435586,
+      "lat": 51.180983,
+      "weight": 43
+     },
+     {
+      "id": "p15",
+      "lon": 71.438257,
+      "lat": 51.171934,
+      "weight": 34
+     },
+     {
+      "id": "p16",
+      "lon": 71.428991,
+      "lat": 51.167937,
+      "weight": 84
+     },
+     {
+      "id": "p17",
+      "lon": 71.419827,
+      "lat": 51.179452,
+      "weight": 98
+     },
+     {
+      "id": "p18",
+      "lon": 71.442621,
+      "lat": 51.169832,
+      "weight": 91
+     },
+     {
+      "id": "p19",
+      "lon": 71.438279,
+      "lat": 51.18076,
+      "weight": 44
+     }
+    ],
+    "candidates": [
+     {
+      "id": "c00",
+      "lon": 71.421208,
+      "lat": 51.167317,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 229
+     },
+     {
+      "id": "c01",
+      "lon": 71.435759,
+      "lat": 51.167572,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 300
+     },
+     {
+      "id": "c02",
+      "lon": 71.442347,
+      "lat": 51.168151,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 591
+     },
+     {
+      "id": "c03",
+      "lon": 71.438607,
+      "lat": 51.16628,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 728
+     },
+     {
+      "id": "c04",
+      "lon": 71.435166,
+      "lat": 51.178765,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 965
+     },
+     {
+      "id": "c05",
+      "lon": 71.426297,
+      "lat": 51.1754,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 911
+     },
+     {
+      "id": "c06",
+      "lon": 71.443541,
+      "lat": 51.17546,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 743
+     },
+     {
+      "id": "c07",
+      "lon": 71.434116,
+      "lat": 51.173376,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 673
+     },
+     {
+      "id": "c08",
+      "lon": 71.430923,
+      "lat": 51.172516,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 320
+     },
+     {
+      "id": "c09",
+      "lon": 71.431005,
+      "lat": 51.168145,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 157
+     },
+     {
+      "id": "c10",
+      "lon": 71.440604,
+      "lat": 51.174566,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 302
+     },
+     {
+      "id": "c11",
+      "lon": 71.444426,
+      "lat": 51.165814,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 486
+     }
+    ],
+    "budget": 1601,
+    "max_selected": 4,
+    "coverage_radius_m": 500,
+    "required_ids": [],
+    "excluded_ids": [
+     "c03"
+    ],
+    "selected_ids": []
+   }
+  },
+  {
+   "task_id": "astana_clinic#8",
+   "context": {
+    "city_id": "astana",
+    "category": "outpatient_clinic",
+    "bbox": [
+     71.418372,
+     51.163033,
+     71.447,
+     51.181
+    ],
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "sources": [
+     {
+      "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+      "lon": 71.422483,
+      "lat": 51.169953
+     },
+     {
+      "id": "1116880a-cbb6-4271-9a59-a277083b792c",
+      "lon": 71.424931,
+      "lat": 51.176756
+     },
+     {
+      "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08",
+      "lon": 71.44229,
+      "lat": 51.1699
+     },
+     {
+      "id": "166c939f-9131-4fbb-bf75-4ab543916f20",
+      "lon": 71.41939,
+      "lat": 51.17117
+     },
+     {
+      "id": "1d137305-49cd-450b-9626-9762db14d080",
+      "lon": 71.436912,
+      "lat": 51.1748
+     },
+     {
+      "id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f",
+      "lon": 71.44025,
+      "lat": 51.16873
+     },
+     {
+      "id": "3fba1026-8464-41ab-88f8-633e3df0de30",
+      "lon": 71.441358,
+      "lat": 51.166785
+     },
+     {
+      "id": "410f0193-f0bc-4553-bee5-660aab0287a5",
+      "lon": 71.429936,
+      "lat": 51.167329
+     },
+     {
+      "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371",
+      "lon": 71.422047,
+      "lat": 51.177044
+     },
+     {
+      "id": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2",
+      "lon": 71.42513,
+      "lat": 51.16305
+     },
+     {
+      "id": "5f76d9b9-bdd1-4cea-9157-fef68ac60270",
+      "lon": 71.434725,
+      "lat": 51.166964
+     },
+     {
+      "id": "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8",
+      "lon": 71.44127,
+      "lat": 51.16756
+     },
+     {
+      "id": "771c278a-af10-4c57-b9fc-52755437345d",
+      "lon": 71.438397,
+      "lat": 51.164151
+     },
+     {
+      "id": "aca68551-4a03-47c2-813f-d13dceb85c62",
+      "lon": 71.44606,
+      "lat": 51.16817
+     },
+     {
+      "id": "b1fc81c5-7f00-4a0a-969d-2da872515916",
+      "lon": 71.42629,
+      "lat": 51.17692
+     },
+     {
+      "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050",
+      "lon": 71.435461,
+      "lat": 51.179776
+     }
+    ],
+    "metric_version": "haversine-mm-v1"
+   },
+   "scenario": {
+    "schema_version": "city-plan-v2",
+    "city_id": "astana",
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "category": "outpatient_clinic",
+    "control_points": [
+     {
+      "id": "p00",
+      "lon": 71.438875,
+      "lat": 51.176667,
+      "weight": 1
+     },
+     {
+      "id": "p01",
+      "lon": 71.427146,
+      "lat": 51.169989,
+      "weight": 1
+     },
+     {
+      "id": "p02",
+      "lon": 71.433804,
+      "lat": 51.168814,
+      "weight": 1
+     },
+     {
+      "id": "p03",
+      "lon": 71.435958,
+      "lat": 51.178576,
+      "weight": 1
+     },
+     {
+      "id": "p04",
+      "lon": 71.446352,
+      "lat": 51.179049,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "c00",
+      "lon": 71.424316,
+      "lat": 51.171083,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 296
+     },
+     {
+      "id": "c01",
+      "lon": 71.442137,
+      "lat": 51.167615,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 578
+     },
+     {
+      "id": "c02",
+      "lon": 71.434834,
+      "lat": 51.174341,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 390
+     },
+     {
+      "id": "c03",
+      "lon": 71.43748,
+      "lat": 51.167935,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 118
+     },
+     {
+      "id": "c04",
+      "lon": 71.428915,
+      "lat": 51.164499,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 492
+     },
+     {
+      "id": "c05",
+      "lon": 71.422833,
+      "lat": 51.163763,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 456
+     }
+    ],
+    "budget": 1165,
+    "max_selected": 3,
+    "coverage_radius_m": 300,
+    "required_ids": [
+     "c00",
+     "c01",
+     "c02",
+     "c03"
+    ],
+    "excluded_ids": [],
+    "selected_ids": []
+   }
+  },
+  {
+   "task_id": "astana_clinic#9",
+   "context": {
+    "city_id": "astana",
+    "category": "outpatient_clinic",
+    "bbox": [
+     71.418372,
+     51.163033,
+     71.447,
+     51.181
+    ],
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "sources": [
+     {
+      "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+      "lon": 71.422483,
+      "lat": 51.169953
+     },
+     {
+      "id": "1116880a-cbb6-4271-9a59-a277083b792c",
+      "lon": 71.424931,
+      "lat": 51.176756
+     },
+     {
+      "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08",
+      "lon": 71.44229,
+      "lat": 51.1699
+     },
+     {
+      "id": "166c939f-9131-4fbb-bf75-4ab543916f20",
+      "lon": 71.41939,
+      "lat": 51.17117
+     },
+     {
+      "id": "1d137305-49cd-450b-9626-9762db14d080",
+      "lon": 71.436912,
+      "lat": 51.1748
+     },
+     {
+      "id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f",
+      "lon": 71.44025,
+      "lat": 51.16873
+     },
+     {
+      "id": "3fba1026-8464-41ab-88f8-633e3df0de30",
+      "lon": 71.441358,
+      "lat": 51.166785
+     },
+     {
+      "id": "410f0193-f0bc-4553-bee5-660aab0287a5",
+      "lon": 71.429936,
+      "lat": 51.167329
+     },
+     {
+      "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371",
+      "lon": 71.422047,
+      "lat": 51.177044
+     },
+     {
+      "id": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2",
+      "lon": 71.42513,
+      "lat": 51.16305
+     },
+     {
+      "id": "5f76d9b9-bdd1-4cea-9157-fef68ac60270",
+      "lon": 71.434725,
+      "lat": 51.166964
+     },
+     {
+      "id": "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8",
+      "lon": 71.44127,
+      "lat": 51.16756
+     },
+     {
+      "id": "771c278a-af10-4c57-b9fc-52755437345d",
+      "lon": 71.438397,
+      "lat": 51.164151
+     },
+     {
+      "id": "aca68551-4a03-47c2-813f-d13dceb85c62",
+      "lon": 71.44606,
+      "lat": 51.16817
+     },
+     {
+      "id": "b1fc81c5-7f00-4a0a-969d-2da872515916",
+      "lon": 71.42629,
+      "lat": 51.17692
+     },
+     {
+      "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050",
+      "lon": 71.435461,
+      "lat": 51.179776
+     }
+    ],
+    "metric_version": "haversine-mm-v1"
+   },
+   "scenario": {
+    "schema_version": "city-plan-v2",
+    "city_id": "astana",
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "category": "outpatient_clinic",
+    "control_points": [
+     {
+      "id": "p00",
+      "lon": 71.435466,
+      "lat": 51.169443,
+      "weight": 1
+     },
+     {
+      "id": "p01",
+      "lon": 71.440365,
+      "lat": 51.165786,
+      "weight": 1
+     },
+     {
+      "id": "p02",
+      "lon": 71.439658,
+      "lat": 51.170247,
+      "weight": 1
+     },
+     {
+      "id": "p03",
+      "lon": 71.423592,
+      "lat": 51.16405,
+      "weight": 1
+     },
+     {
+      "id": "p04",
+      "lon": 71.422881,
+      "lat": 51.165129,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "c00",
+      "lon": 71.441651,
+      "lat": 51.175817,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 665
+     },
+     {
+      "id": "c01",
+      "lon": 71.440647,
+      "lat": 51.175647,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 988
+     },
+     {
+      "id": "c02",
+      "lon": 71.423784,
+      "lat": 51.176302,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 560
+     },
+     {
+      "id": "c03",
+      "lon": 71.432947,
+      "lat": 51.164709,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 115
+     },
+     {
+      "id": "c04",
+      "lon": 71.422976,
+      "lat": 51.163062,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 965
+     },
+     {
+      "id": "c05",
+      "lon": 71.426602,
+      "lat": 51.174359,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 271
+     }
+    ],
+    "budget": 0,
+    "max_selected": 3,
+    "coverage_radius_m": 300,
+    "required_ids": [
+     "c00"
+    ],
+    "excluded_ids": [],
+    "selected_ids": []
+   }
+  },
+  {
+   "task_id": "astana_clinic#10",
+   "context": {
+    "city_id": "astana",
+    "category": "outpatient_clinic",
+    "bbox": [
+     71.418372,
+     51.163033,
+     71.447,
+     51.181
+    ],
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "sources": [
+     {
+      "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+      "lon": 71.422483,
+      "lat": 51.169953
+     },
+     {
+      "id": "1116880a-cbb6-4271-9a59-a277083b792c",
+      "lon": 71.424931,
+      "lat": 51.176756
+     },
+     {
+      "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08",
+      "lon": 71.44229,
+      "lat": 51.1699
+     },
+     {
+      "id": "166c939f-9131-4fbb-bf75-4ab543916f20",
+      "lon": 71.41939,
+      "lat": 51.17117
+     },
+     {
+      "id": "1d137305-49cd-450b-9626-9762db14d080",
+      "lon": 71.436912,
+      "lat": 51.1748
+     },
+     {
+      "id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f",
+      "lon": 71.44025,
+      "lat": 51.16873
+     },
+     {
+      "id": "3fba1026-8464-41ab-88f8-633e3df0de30",
+      "lon": 71.441358,
+      "lat": 51.166785
+     },
+     {
+      "id": "410f0193-f0bc-4553-bee5-660aab0287a5",
+      "lon": 71.429936,
+      "lat": 51.167329
+     },
+     {
+      "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371",
+      "lon": 71.422047,
+      "lat": 51.177044
+     },
+     {
+      "id": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2",
+      "lon": 71.42513,
+      "lat": 51.16305
+     },
+     {
+      "id": "5f76d9b9-bdd1-4cea-9157-fef68ac60270",
+      "lon": 71.434725,
+      "lat": 51.166964
+     },
+     {
+      "id": "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8",
+      "lon": 71.44127,
+      "lat": 51.16756
+     },
+     {
+      "id": "771c278a-af10-4c57-b9fc-52755437345d",
+      "lon": 71.438397,
+      "lat": 51.164151
+     },
+     {
+      "id": "aca68551-4a03-47c2-813f-d13dceb85c62",
+      "lon": 71.44606,
+      "lat": 51.16817
+     },
+     {
+      "id": "b1fc81c5-7f00-4a0a-969d-2da872515916",
+      "lon": 71.42629,
+      "lat": 51.17692
+     },
+     {
+      "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050",
+      "lon": 71.435461,
+      "lat": 51.179776
+     }
+    ],
+    "metric_version": "haversine-mm-v1"
+   },
+   "scenario": {
+    "schema_version": "city-plan-v2",
+    "city_id": "astana",
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "category": "outpatient_clinic",
+    "control_points": [
+     {
+      "id": "p00",
+      "lon": 71.429873,
+      "lat": 51.174753,
+      "weight": 1
+     },
+     {
+      "id": "p01",
+      "lon": 71.443399,
+      "lat": 51.163044,
+      "weight": 1
+     },
+     {
+      "id": "p02",
+      "lon": 71.432006,
+      "lat": 51.168669,
+      "weight": 1
+     },
+     {
+      "id": "p03",
+      "lon": 71.44374,
+      "lat": 51.179981,
+      "weight": 1
+     },
+     {
+      "id": "p04",
+      "lon": 71.433692,
+      "lat": 51.179517,
+      "weight": 1
+     },
+     {
+      "id": "p05",
+      "lon": 71.444125,
+      "lat": 51.171643,
+      "weight": 1
+     },
+     {
+      "id": "p06",
+      "lon": 71.442204,
+      "lat": 51.163474,
+      "weight": 1
+     },
+     {
+      "id": "p07",
+      "lon": 71.444657,
+      "lat": 51.164519,
+      "weight": 1
+     },
+     {
+      "id": "p08",
+      "lon": 71.432524,
+      "lat": 51.172569,
+      "weight": 1
+     },
+     {
+      "id": "p09",
+      "lon": 71.441238,
+      "lat": 51.167137,
+      "weight": 1
+     },
+     {
+      "id": "p10",
+      "lon": 71.440318,
+      "lat": 51.179293,
+      "weight": 1
+     },
+     {
+      "id": "p11",
+      "lon": 71.421832,
+      "lat": 51.179352,
+      "weight": 1
+     },
+     {
+      "id": "p12",
+      "lon": 71.431838,
+      "lat": 51.171586,
+      "weight": 1
+     },
+     {
+      "id": "p13",
+      "lon": 71.445504,
+      "lat": 51.163186,
+      "weight": 1
+     },
+     {
+      "id": "p14",
+      "lon": 71.437836,
+      "lat": 51.171041,
+      "weight": 1
+     },
+     {
+      "id": "p15",
+      "lon": 71.426777,
+      "lat": 51.172955,
+      "weight": 1
+     },
+     {
+      "id": "p16",
+      "lon": 71.430868,
+      "lat": 51.16587,
+      "weight": 1
+     },
+     {
+      "id": "p17",
+      "lon": 71.428612,
+      "lat": 51.174314,
+      "weight": 1
+     },
+     {
+      "id": "p18",
+      "lon": 71.432684,
+      "lat": 51.172704,
+      "weight": 1
+     },
+     {
+      "id": "p19",
+      "lon": 71.441533,
+      "lat": 51.165408,
+      "weight": 1
+     },
+     {
+      "id": "p20",
+      "lon": 71.422775,
+      "lat": 51.163314,
+      "weight": 1
+     },
+     {
+      "id": "p21",
+      "lon": 71.437131,
+      "lat": 51.174759,
+      "weight": 1
+     },
+     {
+      "id": "p22",
+      "lon": 71.427161,
+      "lat": 51.165028,
+      "weight": 1
+     },
+     {
+      "id": "p23",
+      "lon": 71.42797,
+      "lat": 51.178103,
+      "weight": 1
+     },
+     {
+      "id": "p24",
+      "lon": 71.444571,
+      "lat": 51.179917,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "c00",
+      "lon": 71.440076,
+      "lat": 51.172109,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 353
+     },
+     {
+      "id": "c01",
+      "lon": 71.432996,
+      "lat": 51.174567,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 702
+     },
+     {
+      "id": "c02",
+      "lon": 71.42129,
+      "lat": 51.180809,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 133
+     },
+     {
+      "id": "c03",
+      "lon": 71.443605,
+      "lat": 51.175405,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 788
+     },
+     {
+      "id": "c04",
+      "lon": 71.443821,
+      "lat": 51.178998,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 850
+     },
+     {
+      "id": "c05",
+      "lon": 71.421303,
+      "lat": 51.168507,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 420
+     },
+     {
+      "id": "c06",
+      "lon": 71.418635,
+      "lat": 51.165034,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 492
+     },
+     {
+      "id": "c07",
+      "lon": 71.431809,
+      "lat": 51.17264,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 957
+     },
+     {
+      "id": "c08",
+      "lon": 71.423057,
+      "lat": 51.17269,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 671
+     },
+     {
+      "id": "c09",
+      "lon": 71.426993,
+      "lat": 51.172056,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 330
+     },
+     {
+      "id": "c10",
+      "lon": 71.427872,
+      "lat": 51.176799,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 135
+     },
+     {
+      "id": "c11",
+      "lon": 71.442212,
+      "lat": 51.17504,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 102
+     },
+     {
+      "id": "c12",
+      "lon": 71.442704,
+      "lat": 51.179201,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 382
+     },
+     {
+      "id": "c13",
+      "lon": 71.437541,
+      "lat": 51.178815,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 310
+     },
+     {
+      "id": "c14",
+      "lon": 71.442222,
+      "lat": 51.17917,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 863
+     },
+     {
+      "id": "c15",
+      "lon": 71.432666,
+      "lat": 51.179845,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 249
+     }
+    ],
+    "budget": 1934,
+    "max_selected": 0,
+    "coverage_radius_m": 300,
+    "required_ids": [],
+    "excluded_ids": [],
+    "selected_ids": []
+   }
+  },
+  {
+   "task_id": "astana_clinic_nobase#0",
+   "context": {
+    "city_id": "astana",
+    "category": "outpatient_clinic",
+    "bbox": [
+     71.418372,
+     51.163033,
+     71.447,
+     51.181
+    ],
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "sources": [],
+    "metric_version": "haversine-mm-v1"
+   },
+   "scenario": {
+    "schema_version": "city-plan-v2",
+    "city_id": "astana",
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "category": "outpatient_clinic",
+    "control_points": [
+     {
+      "id": "p00",
+      "lon": 71.444607,
+      "lat": 51.165575,
+      "weight": 1
+     },
+     {
+      "id": "p01",
+      "lon": 71.430247,
+      "lat": 51.17278,
+      "weight": 1
+     },
+     {
+      "id": "p02",
+      "lon": 71.436488,
+      "lat": 51.172909,
+      "weight": 1
+     },
+     {
+      "id": "p03",
+      "lon": 71.431512,
+      "lat": 51.176276,
+      "weight": 1
+     },
+     {
+      "id": "p04",
+      "lon": 71.431248,
+      "lat": 51.168718,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "c00",
+      "lon": 71.432217,
+      "lat": 51.165861,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 168
+     },
+     {
+      "id": "c01",
+      "lon": 71.437851,
+      "lat": 51.176993,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 210
+     },
+     {
+      "id": "c02",
+      "lon": 71.435465,
+      "lat": 51.168282,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 470
+     },
+     {
+      "id": "c03",
+      "lon": 71.436872,
+      "lat": 51.165828,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 802
+     },
+     {
+      "id": "c04",
+      "lon": 71.446113,
+      "lat": 51.177539,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 617
+     },
+     {
+      "id": "c05",
+      "lon": 71.440494,
+      "lat": 51.164375,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 258
+     }
+    ],
+    "budget": 631,
+    "max_selected": 3,
+    "coverage_radius_m": 300,
+    "required_ids": [],
+    "excluded_ids": [],
+    "selected_ids": []
+   }
+  },
+  {
+   "task_id": "astana_clinic_nobase#1",
+   "context": {
+    "city_id": "astana",
+    "category": "outpatient_clinic",
+    "bbox": [
+     71.418372,
+     51.163033,
+     71.447,
+     51.181
+    ],
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "sources": [],
+    "metric_version": "haversine-mm-v1"
+   },
+   "scenario": {
+    "schema_version": "city-plan-v2",
+    "city_id": "astana",
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "category": "outpatient_clinic",
+    "control_points": [
+     {
+      "id": "p00",
+      "lon": 71.438048,
+      "lat": 51.168149,
+      "weight": 78
+     },
+     {
+      "id": "p01",
+      "lon": 71.442962,
+      "lat": 51.179969,
+      "weight": 55
+     },
+     {
+      "id": "p02",
+      "lon": 71.424669,
+      "lat": 51.171411,
+      "weight": 26
+     },
+     {
+      "id": "p03",
+      "lon": 71.440311,
+      "lat": 51.164815,
+      "weight": 47
+     },
+     {
+      "id": "p04",
+      "lon": 71.438315,
+      "lat": 51.173127,
+      "weight": 90
+     },
+     {
+      "id": "p05",
+      "lon": 71.418698,
+      "lat": 51.164685,
+      "weight": 97
+     },
+     {
+      "id": "p06",
+      "lon": 71.420548,
+      "lat": 51.17369,
+      "weight": 9
+     },
+     {
+      "id": "p07",
+      "lon": 71.43018,
+      "lat": 51.180322,
+      "weight": 8
+     },
+     {
+      "id": "p08",
+      "lon": 71.436481,
+      "lat": 51.168768,
+      "weight": 29
+     },
+     {
+      "id": "p09",
+      "lon": 71.42235,
+      "lat": 51.164403,
+      "weight": 55
+     },
+     {
+      "id": "p10",
+      "lon": 71.420164,
+      "lat": 51.166391,
+      "weight": 73
+     },
+     {
+      "id": "p11",
+      "lon": 71.44166,
+      "lat": 51.168853,
+      "weight": 42
+     },
+     {
+      "id": "p12",
+      "lon": 71.43143,
+      "lat": 51.173904,
+      "weight": 43
+     },
+     {
+      "id": "p13",
+      "lon": 71.424496,
+      "lat": 51.173257,
+      "weight": 3
+     },
+     {
+      "id": "p14",
+      "lon": 71.421732,
+      "lat": 51.173855,
+      "weight": 94
+     }
+    ],
+    "candidates": [
+     {
+      "id": "c00",
+      "lon": 71.424984,
+      "lat": 51.18051,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 509
+     },
+     {
+      "id": "c01",
+      "lon": 71.443919,
+      "lat": 51.178692,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 459
+     },
+     {
+      "id": "c02",
+      "lon": 71.428053,
+      "lat": 51.174157,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 973
+     },
+     {
+      "id": "c03",
+      "lon": 71.443736,
+      "lat": 51.165785,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 856
+     },
+     {
+      "id": "c04",
+      "lon": 71.423666,
+      "lat": 51.171291,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 211
+     },
+     {
+      "id": "c05",
+      "lon": 71.418862,
+      "lat": 51.178175,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 780
+     },
+     {
+      "id": "c06",
+      "lon": 71.425931,
+      "lat": 51.172658,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 981
+     },
+     {
+      "id": "c07",
+      "lon": 71.428797,
+      "lat": 51.173733,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 136
+     },
+     {
+      "id": "c08",
+      "lon": 71.433202,
+      "lat": 51.177438,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 589
+     },
+     {
+      "id": "c09",
+      "lon": 71.419335,
+      "lat": 51.166869,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 282
+     }
+    ],
+    "budget": 2888,
+    "max_selected": 3,
+    "coverage_radius_m": 300,
+    "required_ids": [],
+    "excluded_ids": [],
+    "selected_ids": []
+   }
+  },
+  {
+   "task_id": "astana_clinic_nobase#2",
+   "context": {
+    "city_id": "astana",
+    "category": "outpatient_clinic",
+    "bbox": [
+     71.418372,
+     51.163033,
+     71.447,
+     51.181
+    ],
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "sources": [],
+    "metric_version": "haversine-mm-v1"
+   },
+   "scenario": {
+    "schema_version": "city-plan-v2",
+    "city_id": "astana",
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "category": "outpatient_clinic",
+    "control_points": [
+     {
+      "id": "p00",
+      "lon": 71.432498,
+      "lat": 51.17978,
+      "weight": 100
+     },
+     {
+      "id": "p01",
+      "lon": 71.430427,
+      "lat": 51.168253,
+      "weight": 1
+     },
+     {
+      "id": "p02",
+      "lon": 71.420878,
+      "lat": 51.18036,
+      "weight": 1
+     },
+     {
+      "id": "p03",
+      "lon": 71.445732,
+      "lat": 51.171283,
+      "weight": 1
+     },
+     {
+      "id": "p04",
+      "lon": 71.435559,
+      "lat": 51.174616,
+      "weight": 1
+     },
+     {
+      "id": "p05",
+      "lon": 71.444415,
+      "lat": 51.172601,
+      "weight": 1
+     },
+     {
+      "id": "p06",
+      "lon": 71.42789,
+      "lat": 51.173716,
+      "weight": 1
+     },
+     {
+      "id": "p07",
+      "lon": 71.444774,
+      "lat": 51.173157,
+      "weight": 1
+     },
+     {
+      "id": "p08",
+      "lon": 71.420842,
+      "lat": 51.171388,
+      "weight": 1
+     },
+     {
+      "id": "p09",
+      "lon": 71.421468,
+      "lat": 51.173586,
+      "weight": 1
+     },
+     {
+      "id": "p10",
+      "lon": 71.440161,
+      "lat": 51.165906,
+      "weight": 1
+     },
+     {
+      "id": "p11",
+      "lon": 71.44165,
+      "lat": 51.166188,
+      "weight": 1
+     },
+     {
+      "id": "p12",
+      "lon": 71.440201,
+      "lat": 51.167131,
+      "weight": 1
+     },
+     {
+      "id": "p13",
+      "lon": 71.432233,
+      "lat": 51.166487,
+      "weight": 1
+     },
+     {
+      "id": "p14",
+      "lon": 71.432383,
+      "lat": 51.177829,
+      "weight": 1
+     },
+     {
+      "id": "p15",
+      "lon": 71.437511,
+      "lat": 51.170802,
+      "weight": 1
+     },
+     {
+      "id": "p16",
+      "lon": 71.442553,
+      "lat": 51.163635,
+      "weight": 1
+     },
+     {
+      "id": "p17",
+      "lon": 71.424748,
+      "lat": 51.163729,
+      "weight": 1
+     },
+     {
+      "id": "p18",
+      "lon": 71.440639,
+      "lat": 51.168989,
+      "weight": 1
+     },
+     {
+      "id": "p19",
+      "lon": 71.440774,
+      "lat": 51.168605,
+      "weight": 1
+     },
+     {
+      "id": "p20",
+      "lon": 71.423211,
+      "lat": 51.174945,
+      "weight": 1
+     },
+     {
+      "id": "p21",
+      "lon": 71.44616,
+      "lat": 51.171249,
+      "weight": 1
+     },
+     {
+      "id": "p22",
+      "lon": 71.427735,
+      "lat": 51.166906,
+      "weight": 1
+     },
+     {
+      "id": "p23",
+      "lon": 71.426487,
+      "lat": 51.178231,
+      "weight": 1
+     },
+     {
+      "id": "p24",
+      "lon": 71.444101,
+      "lat": 51.175542,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "c00",
+      "lon": 71.435946,
+      "lat": 51.176137,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 553
+     },
+     {
+      "id": "c01",
+      "lon": 71.43537,
+      "lat": 51.175454,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 931
+     },
+     {
+      "id": "c02",
+      "lon": 71.439559,
+      "lat": 51.177385,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 586
+     },
+     {
+      "id": "c03",
+      "lon": 71.422914,
+      "lat": 51.166964,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 276
+     },
+     {
+      "id": "c04",
+      "lon": 71.438122,
+      "lat": 51.170272,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 744
+     },
+     {
+      "id": "c05",
+      "lon": 71.444803,
+      "lat": 51.178587,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 915
+     },
+     {
+      "id": "c06",
+      "lon": 71.445226,
+      "lat": 51.176199,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 944
+     },
+     {
+      "id": "c07",
+      "lon": 71.431179,
+      "lat": 51.170735,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 838
+     },
+     {
+      "id": "c08",
+      "lon": 71.434725,
+      "lat": 51.164793,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 471
+     },
+     {
+      "id": "c09",
+      "lon": 71.420269,
+      "lat": 51.17953,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 826
+     },
+     {
+      "id": "c10",
+      "lon": 71.433535,
+      "lat": 51.164245,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 952
+     },
+     {
+      "id": "c11",
+      "lon": 71.422456,
+      "lat": 51.172145,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 147
+     },
+     {
+      "id": "c12",
+      "lon": 71.419922,
+      "lat": 51.174155,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 326
+     },
+     {
+      "id": "c13",
+      "lon": 71.432454,
+      "lat": 51.175039,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 316
+     },
+     {
+      "id": "c14",
+      "lon": 71.431253,
+      "lat": 51.167375,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 742
+     },
+     {
+      "id": "c15",
+      "lon": 71.441264,
+      "lat": 51.167553,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 757
+     }
+    ],
+    "budget": 10324,
+    "max_selected": 3,
+    "coverage_radius_m": 300,
+    "required_ids": [],
+    "excluded_ids": [],
+    "selected_ids": []
+   }
+  },
+  {
+   "task_id": "astana_clinic_nobase#3",
+   "context": {
+    "city_id": "astana",
+    "category": "outpatient_clinic",
+    "bbox": [
+     71.418372,
+     51.163033,
+     71.447,
+     51.181
+    ],
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "sources": [],
+    "metric_version": "haversine-mm-v1"
+   },
+   "scenario": {
+    "schema_version": "city-plan-v2",
+    "city_id": "astana",
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "category": "outpatient_clinic",
+    "control_points": [
+     {
+      "id": "p00",
+      "lon": 71.440522,
+      "lat": 51.179624,
+      "weight": 27
+     },
+     {
+      "id": "p01",
+      "lon": 71.421037,
+      "lat": 51.174865,
+      "weight": 74
+     },
+     {
+      "id": "p02",
+      "lon": 71.431752,
+      "lat": 51.164501,
+      "weight": 13
+     },
+     {
+      "id": "p03",
+      "lon": 71.427578,
+      "lat": 51.163802,
+      "weight": 61
+     },
+     {
+      "id": "p04",
+      "lon": 71.424909,
+      "lat": 51.164351,
+      "weight": 90
+     },
+     {
+      "id": "p05",
+      "lon": 71.437361,
+      "lat": 51.174311,
+      "weight": 97
+     },
+     {
+      "id": "p06",
+      "lon": 71.429848,
+      "lat": 51.180312,
+      "weight": 96
+     },
+     {
+      "id": "p07",
+      "lon": 71.427495,
+      "lat": 51.170701,
+      "weight": 50
+     },
+     {
+      "id": "p08",
+      "lon": 71.433934,
+      "lat": 51.16399,
+      "weight": 75
+     },
+     {
+      "id": "p09",
+      "lon": 71.426245,
+      "lat": 51.179001,
+      "weight": 50
+     },
+     {
+      "id": "p10",
+      "lon": 71.438631,
+      "lat": 51.170552,
+      "weight": 22
+     },
+     {
+      "id": "p11",
+      "lon": 71.424619,
+      "lat": 51.168713,
+      "weight": 42
+     },
+     {
+      "id": "p12",
+      "lon": 71.437673,
+      "lat": 51.167716,
+      "weight": 18
+     },
+     {
+      "id": "p13",
+      "lon": 71.444278,
+      "lat": 51.170557,
+      "weight": 19
+     },
+     {
+      "id": "p14",
+      "lon": 71.439407,
+      "lat": 51.164991,
+      "weight": 25
+     },
+     {
+      "id": "p15",
+      "lon": 71.426444,
+      "lat": 51.163197,
+      "weight": 99
+     },
+     {
+      "id": "p16",
+      "lon": 71.434389,
+      "lat": 51.176615,
+      "weight": 67
+     },
+     {
+      "id": "p17",
+      "lon": 71.444058,
+      "lat": 51.165989,
+      "weight": 93
+     },
+     {
+      "id": "p18",
+      "lon": 71.421976,
+      "lat": 51.179977,
+      "weight": 88
+     },
+     {
+      "id": "p19",
+      "lon": 71.43547,
+      "lat": 51.170496,
+      "weight": 80
+     },
+     {
+      "id": "p20",
+      "lon": 71.420346,
+      "lat": 51.167078,
+      "weight": 20
+     },
+     {
+      "id": "p21",
+      "lon": 71.42374,
+      "lat": 51.172395,
+      "weight": 83
+     },
+     {
+      "id": "p22",
+      "lon": 71.427389,
+      "lat": 51.17377,
+      "weight": 84
+     },
+     {
+      "id": "p23",
+      "lon": 71.428395,
+      "lat": 51.178778,
+      "weight": 98
+     },
+     {
+      "id": "p24",
+      "lon": 71.421515,
+      "lat": 51.176637,
+      "weight": 80
+     }
+    ],
+    "candidates": [
+     {
+      "id": "c00",
+      "lon": 71.445515,
+      "lat": 51.171047,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 259
+     },
+     {
+      "id": "c01",
+      "lon": 71.445554,
+      "lat": 51.163839,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 156
+     },
+     {
+      "id": "c02",
+      "lon": 71.441792,
+      "lat": 51.172685,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 136
+     },
+     {
+      "id": "c03",
+      "lon": 71.433491,
+      "lat": 51.17835,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 504
+     },
+     {
+      "id": "c04",
+      "lon": 71.421189,
+      "lat": 51.177172,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 914
+     },
+     {
+      "id": "c05",
+      "lon": 71.445846,
+      "lat": 51.178096,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 720
+     },
+     {
+      "id": "c06",
+      "lon": 71.422219,
+      "lat": 51.175325,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 795
+     },
+     {
+      "id": "c07",
+      "lon": 71.426707,
+      "lat": 51.180209,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 958
+     },
+     {
+      "id": "c08",
+      "lon": 71.420645,
+      "lat": 51.180163,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 477
+     },
+     {
+      "id": "c09",
+      "lon": 71.426572,
+      "lat": 51.178213,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 457
+     },
+     {
+      "id": "c10",
+      "lon": 71.444522,
+      "lat": 51.167527,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 709
+     },
+     {
+      "id": "c11",
+      "lon": 71.430274,
+      "lat": 51.176474,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 836
+     },
+     {
+      "id": "c12",
+      "lon": 71.424607,
+      "lat": 51.179163,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 721
+     },
+     {
+      "id": "c13",
+      "lon": 71.422371,
+      "lat": 51.174459,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 493
+     },
+     {
+      "id": "c14",
+      "lon": 71.434098,
+      "lat": 51.179202,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 804
+     },
+     {
+      "id": "c15",
+      "lon": 71.426115,
+      "lat": 51.175442,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 346
+     }
+    ],
+    "budget": 4642,
+    "max_selected": 5,
+    "coverage_radius_m": 800,
+    "required_ids": [],
+    "excluded_ids": [],
+    "selected_ids": []
+   }
+  },
+  {
+   "task_id": "astana_clinic_nobase#4",
+   "context": {
+    "city_id": "astana",
+    "category": "outpatient_clinic",
+    "bbox": [
+     71.418372,
+     51.163033,
+     71.447,
+     51.181
+    ],
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "sources": [],
+    "metric_version": "haversine-mm-v1"
+   },
+   "scenario": {
+    "schema_version": "city-plan-v2",
+    "city_id": "astana",
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "category": "outpatient_clinic",
+    "control_points": [
+     {
+      "id": "p00",
+      "lon": 71.438361,
+      "lat": 51.167529,
+      "weight": 1
+     },
+     {
+      "id": "p01",
+      "lon": 71.430945,
+      "lat": 51.179061,
+      "weight": 1
+     },
+     {
+      "id": "p02",
+      "lon": 71.444899,
+      "lat": 51.166033,
+      "weight": 1
+     },
+     {
+      "id": "p03",
+      "lon": 71.432268,
+      "lat": 51.177292,
+      "weight": 1
+     },
+     {
+      "id": "p04",
+      "lon": 71.440667,
+      "lat": 51.170624,
+      "weight": 1
+     },
+     {
+      "id": "p05",
+      "lon": 71.419748,
+      "lat": 51.177898,
+      "weight": 1
+     },
+     {
+      "id": "p06",
+      "lon": 71.440219,
+      "lat": 51.180172,
+      "weight": 1
+     },
+     {
+      "id": "p07",
+      "lon": 71.433786,
+      "lat": 51.174658,
+      "weight": 1
+     },
+     {
+      "id": "p08",
+      "lon": 71.434397,
+      "lat": 51.175481,
+      "weight": 1
+     },
+     {
+      "id": "p09",
+      "lon": 71.428411,
+      "lat": 51.169141,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "c00",
+      "lon": 71.440029,
+      "lat": 51.177599,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 842
+     },
+     {
+      "id": "c01",
+      "lon": 71.43916,
+      "lat": 51.165992,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 816
+     },
+     {
+      "id": "c02",
+      "lon": 71.435793,
+      "lat": 51.176572,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 615
+     },
+     {
+      "id": "c03",
+      "lon": 71.437058,
+      "lat": 51.173165,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 970
+     },
+     {
+      "id": "c04",
+      "lon": 71.430778,
+      "lat": 51.166395,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 124
+     },
+     {
+      "id": "c05",
+      "lon": 71.438579,
+      "lat": 51.173216,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 126
+     },
+     {
+      "id": "c06",
+      "lon": 71.426554,
+      "lat": 51.172339,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 217
+     },
+     {
+      "id": "c07",
+      "lon": 71.428539,
+      "lat": 51.173165,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 449
+     }
+    ],
+    "budget": 2079,
+    "max_selected": 2,
+    "coverage_radius_m": 100,
+    "required_ids": [],
+    "excluded_ids": [],
+    "selected_ids": []
+   }
+  },
+  {
+   "task_id": "astana_clinic_nobase#5",
+   "context": {
+    "city_id": "astana",
+    "category": "outpatient_clinic",
+    "bbox": [
+     71.418372,
+     51.163033,
+     71.447,
+     51.181
+    ],
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "sources": [],
+    "metric_version": "haversine-mm-v1"
+   },
+   "scenario": {
+    "schema_version": "city-plan-v2",
+    "city_id": "astana",
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "category": "outpatient_clinic",
+    "control_points": [
+     {
+      "id": "p00",
+      "lon": 71.438048,
+      "lat": 51.168149,
+      "weight": 78
+     },
+     {
+      "id": "p01",
+      "lon": 71.442962,
+      "lat": 51.179969,
+      "weight": 55
+     },
+     {
+      "id": "p02",
+      "lon": 71.424669,
+      "lat": 51.171411,
+      "weight": 26
+     },
+     {
+      "id": "p03",
+      "lon": 71.440311,
+      "lat": 51.164815,
+      "weight": 47
+     },
+     {
+      "id": "p04",
+      "lon": 71.438315,
+      "lat": 51.173127,
+      "weight": 90
+     },
+     {
+      "id": "p05",
+      "lon": 71.418698,
+      "lat": 51.164685,
+      "weight": 97
+     },
+     {
+      "id": "p06",
+      "lon": 71.420548,
+      "lat": 51.17369,
+      "weight": 9
+     },
+     {
+      "id": "p07",
+      "lon": 71.43018,
+      "lat": 51.180322,
+      "weight": 8
+     },
+     {
+      "id": "p08",
+      "lon": 71.436481,
+      "lat": 51.168768,
+      "weight": 29
+     },
+     {
+      "id": "p09",
+      "lon": 71.42235,
+      "lat": 51.164403,
+      "weight": 55
+     },
+     {
+      "id": "p10",
+      "lon": 71.420164,
+      "lat": 51.166391,
+      "weight": 73
+     },
+     {
+      "id": "p11",
+      "lon": 71.44166,
+      "lat": 51.168853,
+      "weight": 42
+     },
+     {
+      "id": "p12",
+      "lon": 71.43143,
+      "lat": 51.173904,
+      "weight": 43
+     },
+     {
+      "id": "p13",
+      "lon": 71.424496,
+      "lat": 51.173257,
+      "weight": 3
+     },
+     {
+      "id": "p14",
+      "lon": 71.421732,
+      "lat": 51.173855,
+      "weight": 94
+     }
+    ],
+    "candidates": [
+     {
+      "id": "c00",
+      "lon": 71.424984,
+      "lat": 51.18051,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 509
+     },
+     {
+      "id": "c01",
+      "lon": 71.443919,
+      "lat": 51.178692,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 459
+     },
+     {
+      "id": "c02",
+      "lon": 71.428053,
+      "lat": 51.174157,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 973
+     },
+     {
+      "id": "c03",
+      "lon": 71.443736,
+      "lat": 51.165785,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 856
+     },
+     {
+      "id": "c04",
+      "lon": 71.423666,
+      "lat": 51.171291,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 211
+     },
+     {
+      "id": "c05",
+      "lon": 71.418862,
+      "lat": 51.178175,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 780
+     },
+     {
+      "id": "c06",
+      "lon": 71.425931,
+      "lat": 51.172658,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 981
+     },
+     {
+      "id": "c07",
+      "lon": 71.428797,
+      "lat": 51.173733,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 136
+     },
+     {
+      "id": "c08",
+      "lon": 71.433202,
+      "lat": 51.177438,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 589
+     },
+     {
+      "id": "c09",
+      "lon": 71.419335,
+      "lat": 51.166869,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 282
+     }
+    ],
+    "budget": 2888,
+    "max_selected": 3,
+    "coverage_radius_m": 300,
+    "required_ids": [
+     "c01"
+    ],
+    "excluded_ids": [
+     "c00",
+     "c02"
+    ],
+    "selected_ids": []
+   }
+  },
+  {
+   "task_id": "astana_clinic_nobase#6",
+   "context": {
+    "city_id": "astana",
+    "category": "outpatient_clinic",
+    "bbox": [
+     71.418372,
+     51.163033,
+     71.447,
+     51.181
+    ],
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "sources": [],
+    "metric_version": "haversine-mm-v1"
+   },
+   "scenario": {
+    "schema_version": "city-plan-v2",
+    "city_id": "astana",
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "category": "outpatient_clinic",
+    "control_points": [
+     {
+      "id": "p00",
+      "lon": 71.440522,
+      "lat": 51.179624,
+      "weight": 27
+     },
+     {
+      "id": "p01",
+      "lon": 71.421037,
+      "lat": 51.174865,
+      "weight": 74
+     },
+     {
+      "id": "p02",
+      "lon": 71.431752,
+      "lat": 51.164501,
+      "weight": 13
+     },
+     {
+      "id": "p03",
+      "lon": 71.427578,
+      "lat": 51.163802,
+      "weight": 61
+     },
+     {
+      "id": "p04",
+      "lon": 71.424909,
+      "lat": 51.164351,
+      "weight": 90
+     },
+     {
+      "id": "p05",
+      "lon": 71.437361,
+      "lat": 51.174311,
+      "weight": 97
+     },
+     {
+      "id": "p06",
+      "lon": 71.429848,
+      "lat": 51.180312,
+      "weight": 96
+     },
+     {
+      "id": "p07",
+      "lon": 71.427495,
+      "lat": 51.170701,
+      "weight": 50
+     },
+     {
+      "id": "p08",
+      "lon": 71.433934,
+      "lat": 51.16399,
+      "weight": 75
+     },
+     {
+      "id": "p09",
+      "lon": 71.426245,
+      "lat": 51.179001,
+      "weight": 50
+     },
+     {
+      "id": "p10",
+      "lon": 71.438631,
+      "lat": 51.170552,
+      "weight": 22
+     },
+     {
+      "id": "p11",
+      "lon": 71.424619,
+      "lat": 51.168713,
+      "weight": 42
+     },
+     {
+      "id": "p12",
+      "lon": 71.437673,
+      "lat": 51.167716,
+      "weight": 18
+     },
+     {
+      "id": "p13",
+      "lon": 71.444278,
+      "lat": 51.170557,
+      "weight": 19
+     },
+     {
+      "id": "p14",
+      "lon": 71.439407,
+      "lat": 51.164991,
+      "weight": 25
+     },
+     {
+      "id": "p15",
+      "lon": 71.426444,
+      "lat": 51.163197,
+      "weight": 99
+     },
+     {
+      "id": "p16",
+      "lon": 71.434389,
+      "lat": 51.176615,
+      "weight": 67
+     },
+     {
+      "id": "p17",
+      "lon": 71.444058,
+      "lat": 51.165989,
+      "weight": 93
+     },
+     {
+      "id": "p18",
+      "lon": 71.421976,
+      "lat": 51.179977,
+      "weight": 88
+     },
+     {
+      "id": "p19",
+      "lon": 71.43547,
+      "lat": 51.170496,
+      "weight": 80
+     },
+     {
+      "id": "p20",
+      "lon": 71.420346,
+      "lat": 51.167078,
+      "weight": 20
+     },
+     {
+      "id": "p21",
+      "lon": 71.42374,
+      "lat": 51.172395,
+      "weight": 83
+     },
+     {
+      "id": "p22",
+      "lon": 71.427389,
+      "lat": 51.17377,
+      "weight": 84
+     },
+     {
+      "id": "p23",
+      "lon": 71.428395,
+      "lat": 51.178778,
+      "weight": 98
+     },
+     {
+      "id": "p24",
+      "lon": 71.421515,
+      "lat": 51.176637,
+      "weight": 80
+     }
+    ],
+    "candidates": [
+     {
+      "id": "c00",
+      "lon": 71.445515,
+      "lat": 51.171047,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 259
+     },
+     {
+      "id": "c01",
+      "lon": 71.445554,
+      "lat": 51.163839,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 156
+     },
+     {
+      "id": "c02",
+      "lon": 71.441792,
+      "lat": 51.172685,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 136
+     },
+     {
+      "id": "c03",
+      "lon": 71.433491,
+      "lat": 51.17835,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 504
+     },
+     {
+      "id": "c04",
+      "lon": 71.421189,
+      "lat": 51.177172,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 914
+     },
+     {
+      "id": "c05",
+      "lon": 71.445846,
+      "lat": 51.178096,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 720
+     },
+     {
+      "id": "c06",
+      "lon": 71.422219,
+      "lat": 51.175325,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 795
+     },
+     {
+      "id": "c07",
+      "lon": 71.426707,
+      "lat": 51.180209,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 958
+     },
+     {
+      "id": "c08",
+      "lon": 71.420645,
+      "lat": 51.180163,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 477
+     },
+     {
+      "id": "c09",
+      "lon": 71.426572,
+      "lat": 51.178213,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 457
+     },
+     {
+      "id": "c10",
+      "lon": 71.444522,
+      "lat": 51.167527,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 709
+     },
+     {
+      "id": "c11",
+      "lon": 71.430274,
+      "lat": 51.176474,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 836
+     },
+     {
+      "id": "c12",
+      "lon": 71.424607,
+      "lat": 51.179163,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 721
+     },
+     {
+      "id": "c13",
+      "lon": 71.422371,
+      "lat": 51.174459,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 493
+     },
+     {
+      "id": "c14",
+      "lon": 71.434098,
+      "lat": 51.179202,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 804
+     },
+     {
+      "id": "c15",
+      "lon": 71.426115,
+      "lat": 51.175442,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 346
+     }
+    ],
+    "budget": 4642,
+    "max_selected": 5,
+    "coverage_radius_m": 800,
+    "required_ids": [
+     "c05",
+     "c09"
+    ],
+    "excluded_ids": [
+     "c01"
+    ],
+    "selected_ids": []
+   }
+  },
+  {
+   "task_id": "astana_clinic_nobase#7",
+   "context": {
+    "city_id": "astana",
+    "category": "outpatient_clinic",
+    "bbox": [
+     71.418372,
+     51.163033,
+     71.447,
+     51.181
+    ],
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "sources": [],
+    "metric_version": "haversine-mm-v1"
+   },
+   "scenario": {
+    "schema_version": "city-plan-v2",
+    "city_id": "astana",
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "category": "outpatient_clinic",
+    "control_points": [
+     {
+      "id": "p00",
+      "lon": 71.440413,
+      "lat": 51.164849,
+      "weight": 30
+     },
+     {
+      "id": "p01",
+      "lon": 71.43712,
+      "lat": 51.171693,
+      "weight": 7
+     },
+     {
+      "id": "p02",
+      "lon": 71.427031,
+      "lat": 51.170375,
+      "weight": 95
+     },
+     {
+      "id": "p03",
+      "lon": 71.438471,
+      "lat": 51.177776,
+      "weight": 52
+     },
+     {
+      "id": "p04",
+      "lon": 71.418838,
+      "lat": 51.165443,
+      "weight": 22
+     },
+     {
+      "id": "p05",
+      "lon": 71.439055,
+      "lat": 51.16982,
+      "weight": 15
+     },
+     {
+      "id": "p06",
+      "lon": 71.441996,
+      "lat": 51.177659,
+      "weight": 81
+     },
+     {
+      "id": "p07",
+      "lon": 71.431585,
+      "lat": 51.179368,
+      "weight": 52
+     },
+     {
+      "id": "p08",
+      "lon": 71.443581,
+      "lat": 51.164265,
+      "weight": 19
+     },
+     {
+      "id": "p09",
+      "lon": 71.432873,
+      "lat": 51.16386,
+      "weight": 100
+     },
+     {
+      "id": "p10",
+      "lon": 71.420125,
+      "lat": 51.163767,
+      "weight": 18
+     },
+     {
+      "id": "p11",
+      "lon": 71.439529,
+      "lat": 51.169103,
+      "weight": 7
+     },
+     {
+      "id": "p12",
+      "lon": 71.419448,
+      "lat": 51.170268,
+      "weight": 57
+     },
+     {
+      "id": "p13",
+      "lon": 71.420728,
+      "lat": 51.172099,
+      "weight": 45
+     },
+     {
+      "id": "p14",
+      "lon": 71.442793,
+      "lat": 51.165066,
+      "weight": 24
+     },
+     {
+      "id": "p15",
+      "lon": 71.437014,
+      "lat": 51.172863,
+      "weight": 40
+     },
+     {
+      "id": "p16",
+      "lon": 71.426139,
+      "lat": 51.170193,
+      "weight": 85
+     },
+     {
+      "id": "p17",
+      "lon": 71.420458,
+      "lat": 51.176947,
+      "weight": 12
+     },
+     {
+      "id": "p18",
+      "lon": 71.424791,
+      "lat": 51.179978,
+      "weight": 35
+     },
+     {
+      "id": "p19",
+      "lon": 71.437142,
+      "lat": 51.175023,
+      "weight": 89
+     }
+    ],
+    "candidates": [
+     {
+      "id": "c00",
+      "lon": 71.428792,
+      "lat": 51.167488,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 496
+     },
+     {
+      "id": "c01",
+      "lon": 71.439445,
+      "lat": 51.163993,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 541
+     },
+     {
+      "id": "c02",
+      "lon": 71.428032,
+      "lat": 51.178679,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 185
+     },
+     {
+      "id": "c03",
+      "lon": 71.44123,
+      "lat": 51.176869,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 284
+     },
+     {
+      "id": "c04",
+      "lon": 71.421696,
+      "lat": 51.179203,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 944
+     },
+     {
+      "id": "c05",
+      "lon": 71.442098,
+      "lat": 51.169809,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 798
+     },
+     {
+      "id": "c06",
+      "lon": 71.431428,
+      "lat": 51.180827,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 371
+     },
+     {
+      "id": "c07",
+      "lon": 71.437804,
+      "lat": 51.174592,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 107
+     },
+     {
+      "id": "c08",
+      "lon": 71.436661,
+      "lat": 51.179845,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 383
+     },
+     {
+      "id": "c09",
+      "lon": 71.433787,
+      "lat": 51.167172,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 936
+     },
+     {
+      "id": "c10",
+      "lon": 71.423134,
+      "lat": 51.179039,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 456
+     },
+     {
+      "id": "c11",
+      "lon": 71.426506,
+      "lat": 51.164943,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 288
+     }
+    ],
+    "budget": 1447,
+    "max_selected": 4,
+    "coverage_radius_m": 500,
+    "required_ids": [],
+    "excluded_ids": [
+     "c03"
+    ],
+    "selected_ids": []
+   }
+  },
+  {
+   "task_id": "astana_clinic_nobase#8",
+   "context": {
+    "city_id": "astana",
+    "category": "outpatient_clinic",
+    "bbox": [
+     71.418372,
+     51.163033,
+     71.447,
+     51.181
+    ],
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "sources": [],
+    "metric_version": "haversine-mm-v1"
+   },
+   "scenario": {
+    "schema_version": "city-plan-v2",
+    "city_id": "astana",
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "category": "outpatient_clinic",
+    "control_points": [
+     {
+      "id": "p00",
+      "lon": 71.423799,
+      "lat": 51.180224,
+      "weight": 1
+     },
+     {
+      "id": "p01",
+      "lon": 71.433651,
+      "lat": 51.171278,
+      "weight": 1
+     },
+     {
+      "id": "p02",
+      "lon": 71.440786,
+      "lat": 51.174813,
+      "weight": 1
+     },
+     {
+      "id": "p03",
+      "lon": 71.418786,
+      "lat": 51.17628,
+      "weight": 1
+     },
+     {
+      "id": "p04",
+      "lon": 71.431973,
+      "lat": 51.17739,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "c00",
+      "lon": 71.428806,
+      "lat": 51.173338,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 529
+     },
+     {
+      "id": "c01",
+      "lon": 71.418698,
+      "lat": 51.168048,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 803
+     },
+     {
+      "id": "c02",
+      "lon": 71.428961,
+      "lat": 51.1756,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 365
+     },
+     {
+      "id": "c03",
+      "lon": 71.44429,
+      "lat": 51.169829,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 551
+     },
+     {
+      "id": "c04",
+      "lon": 71.440961,
+      "lat": 51.165339,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 163
+     },
+     {
+      "id": "c05",
+      "lon": 71.438247,
+      "lat": 51.172371,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 889
+     }
+    ],
+    "budget": 1650,
+    "max_selected": 3,
+    "coverage_radius_m": 300,
+    "required_ids": [
+     "c00",
+     "c01",
+     "c02",
+     "c03"
+    ],
+    "excluded_ids": [],
+    "selected_ids": []
+   }
+  },
+  {
+   "task_id": "astana_clinic_nobase#9",
+   "context": {
+    "city_id": "astana",
+    "category": "outpatient_clinic",
+    "bbox": [
+     71.418372,
+     51.163033,
+     71.447,
+     51.181
+    ],
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "sources": [],
+    "metric_version": "haversine-mm-v1"
+   },
+   "scenario": {
+    "schema_version": "city-plan-v2",
+    "city_id": "astana",
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "category": "outpatient_clinic",
+    "control_points": [
+     {
+      "id": "p00",
+      "lon": 71.442876,
+      "lat": 51.16467,
+      "weight": 1
+     },
+     {
+      "id": "p01",
+      "lon": 71.43655,
+      "lat": 51.169353,
+      "weight": 1
+     },
+     {
+      "id": "p02",
+      "lon": 71.434485,
+      "lat": 51.164656,
+      "weight": 1
+     },
+     {
+      "id": "p03",
+      "lon": 71.425818,
+      "lat": 51.173487,
+      "weight": 1
+     },
+     {
+      "id": "p04",
+      "lon": 71.418607,
+      "lat": 51.163919,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "c00",
+      "lon": 71.41948,
+      "lat": 51.177382,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 424
+     },
+     {
+      "id": "c01",
+      "lon": 71.42669,
+      "lat": 51.17136,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 862
+     },
+     {
+      "id": "c02",
+      "lon": 71.434249,
+      "lat": 51.176743,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 887
+     },
+     {
+      "id": "c03",
+      "lon": 71.420957,
+      "lat": 51.175111,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 117
+     },
+     {
+      "id": "c04",
+      "lon": 71.441084,
+      "lat": 51.179817,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 434
+     },
+     {
+      "id": "c05",
+      "lon": 71.440503,
+      "lat": 51.168921,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 363
+     }
+    ],
+    "budget": 0,
+    "max_selected": 3,
+    "coverage_radius_m": 300,
+    "required_ids": [
+     "c00"
+    ],
+    "excluded_ids": [],
+    "selected_ids": []
+   }
+  },
+  {
+   "task_id": "astana_clinic_nobase#10",
+   "context": {
+    "city_id": "astana",
+    "category": "outpatient_clinic",
+    "bbox": [
+     71.418372,
+     51.163033,
+     71.447,
+     51.181
+    ],
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "sources": [],
+    "metric_version": "haversine-mm-v1"
+   },
+   "scenario": {
+    "schema_version": "city-plan-v2",
+    "city_id": "astana",
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "category": "outpatient_clinic",
+    "control_points": [
+     {
+      "id": "p00",
+      "lon": 71.430074,
+      "lat": 51.16797,
+      "weight": 1
+     },
+     {
+      "id": "p01",
+      "lon": 71.427622,
+      "lat": 51.168625,
+      "weight": 1
+     },
+     {
+      "id": "p02",
+      "lon": 71.433364,
+      "lat": 51.1785,
+      "weight": 1
+     },
+     {
+      "id": "p03",
+      "lon": 71.418418,
+      "lat": 51.16465,
+      "weight": 1
+     },
+     {
+      "id": "p04",
+      "lon": 71.420306,
+      "lat": 51.168904,
+      "weight": 1
+     },
+     {
+      "id": "p05",
+      "lon": 71.433177,
+      "lat": 51.178461,
+      "weight": 1
+     },
+     {
+      "id": "p06",
+      "lon": 71.431713,
+      "lat": 51.170497,
+      "weight": 1
+     },
+     {
+      "id": "p07",
+      "lon": 71.4329,
+      "lat": 51.164386,
+      "weight": 1
+     },
+     {
+      "id": "p08",
+      "lon": 71.445713,
+      "lat": 51.164274,
+      "weight": 1
+     },
+     {
+      "id": "p09",
+      "lon": 71.438569,
+      "lat": 51.164709,
+      "weight": 1
+     },
+     {
+      "id": "p10",
+      "lon": 71.4296,
+      "lat": 51.175199,
+      "weight": 1
+     },
+     {
+      "id": "p11",
+      "lon": 71.423375,
+      "lat": 51.179117,
+      "weight": 1
+     },
+     {
+      "id": "p12",
+      "lon": 71.43021,
+      "lat": 51.176099,
+      "weight": 1
+     },
+     {
+      "id": "p13",
+      "lon": 71.427465,
+      "lat": 51.178035,
+      "weight": 1
+     },
+     {
+      "id": "p14",
+      "lon": 71.43289,
+      "lat": 51.180686,
+      "weight": 1
+     },
+     {
+      "id": "p15",
+      "lon": 71.438046,
+      "lat": 51.178124,
+      "weight": 1
+     },
+     {
+      "id": "p16",
+      "lon": 71.438515,
+      "lat": 51.177245,
+      "weight": 1
+     },
+     {
+      "id": "p17",
+      "lon": 71.42316,
+      "lat": 51.173389,
+      "weight": 1
+     },
+     {
+      "id": "p18",
+      "lon": 71.436139,
+      "lat": 51.174527,
+      "weight": 1
+     },
+     {
+      "id": "p19",
+      "lon": 71.444678,
+      "lat": 51.168033,
+      "weight": 1
+     },
+     {
+      "id": "p20",
+      "lon": 71.435552,
+      "lat": 51.177473,
+      "weight": 1
+     },
+     {
+      "id": "p21",
+      "lon": 71.426691,
+      "lat": 51.165545,
+      "weight": 1
+     },
+     {
+      "id": "p22",
+      "lon": 71.440001,
+      "lat": 51.17614,
+      "weight": 1
+     },
+     {
+      "id": "p23",
+      "lon": 71.441815,
+      "lat": 51.170233,
+      "weight": 1
+     },
+     {
+      "id": "p24",
+      "lon": 71.436603,
+      "lat": 51.171102,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "c00",
+      "lon": 71.439528,
+      "lat": 51.169796,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 640
+     },
+     {
+      "id": "c01",
+      "lon": 71.426757,
+      "lat": 51.179325,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 510
+     },
+     {
+      "id": "c02",
+      "lon": 71.434597,
+      "lat": 51.174138,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 747
+     },
+     {
+      "id": "c03",
+      "lon": 71.425257,
+      "lat": 51.16588,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 229
+     },
+     {
+      "id": "c04",
+      "lon": 71.429868,
+      "lat": 51.173069,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 186
+     },
+     {
+      "id": "c05",
+      "lon": 71.437314,
+      "lat": 51.175502,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 829
+     },
+     {
+      "id": "c06",
+      "lon": 71.435626,
+      "lat": 51.168854,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 464
+     },
+     {
+      "id": "c07",
+      "lon": 71.44212,
+      "lat": 51.176026,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 198
+     },
+     {
+      "id": "c08",
+      "lon": 71.427087,
+      "lat": 51.168431,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 778
+     },
+     {
+      "id": "c09",
+      "lon": 71.438978,
+      "lat": 51.171245,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 887
+     },
+     {
+      "id": "c10",
+      "lon": 71.428495,
+      "lat": 51.174384,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 689
+     },
+     {
+      "id": "c11",
+      "lon": 71.444897,
+      "lat": 51.175198,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 986
+     },
+     {
+      "id": "c12",
+      "lon": 71.441085,
+      "lat": 51.178914,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 675
+     },
+     {
+      "id": "c13",
+      "lon": 71.442459,
+      "lat": 51.170804,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 208
+     },
+     {
+      "id": "c14",
+      "lon": 71.422434,
+      "lat": 51.174281,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 190
+     },
+     {
+      "id": "c15",
+      "lon": 71.445755,
+      "lat": 51.177814,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 395
+     }
+    ],
+    "budget": 2152,
+    "max_selected": 0,
+    "coverage_radius_m": 300,
+    "required_ids": [],
+    "excluded_ids": [],
+    "selected_ids": []
+   }
+  },
+  {
+   "task_id": "tie#dup",
+   "context": {
+    "city_id": "astana",
+    "category": "outpatient_clinic",
+    "bbox": [
+     71.418372,
+     51.163033,
+     71.447,
+     51.181
+    ],
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "sources": [
+     {
+      "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+      "lon": 71.422483,
+      "lat": 51.169953
+     },
+     {
+      "id": "1116880a-cbb6-4271-9a59-a277083b792c",
+      "lon": 71.424931,
+      "lat": 51.176756
+     },
+     {
+      "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08",
+      "lon": 71.44229,
+      "lat": 51.1699
+     },
+     {
+      "id": "166c939f-9131-4fbb-bf75-4ab543916f20",
+      "lon": 71.41939,
+      "lat": 51.17117
+     },
+     {
+      "id": "1d137305-49cd-450b-9626-9762db14d080",
+      "lon": 71.436912,
+      "lat": 51.1748
+     },
+     {
+      "id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f",
+      "lon": 71.44025,
+      "lat": 51.16873
+     },
+     {
+      "id": "3fba1026-8464-41ab-88f8-633e3df0de30",
+      "lon": 71.441358,
+      "lat": 51.166785
+     },
+     {
+      "id": "410f0193-f0bc-4553-bee5-660aab0287a5",
+      "lon": 71.429936,
+      "lat": 51.167329
+     },
+     {
+      "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371",
+      "lon": 71.422047,
+      "lat": 51.177044
+     },
+     {
+      "id": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2",
+      "lon": 71.42513,
+      "lat": 51.16305
+     },
+     {
+      "id": "5f76d9b9-bdd1-4cea-9157-fef68ac60270",
+      "lon": 71.434725,
+      "lat": 51.166964
+     },
+     {
+      "id": "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8",
+      "lon": 71.44127,
+      "lat": 51.16756
+     },
+     {
+      "id": "771c278a-af10-4c57-b9fc-52755437345d",
+      "lon": 71.438397,
+      "lat": 51.164151
+     },
+     {
+      "id": "aca68551-4a03-47c2-813f-d13dceb85c62",
+      "lon": 71.44606,
+      "lat": 51.16817
+     },
+     {
+      "id": "b1fc81c5-7f00-4a0a-969d-2da872515916",
+      "lon": 71.42629,
+      "lat": 51.17692
+     },
+     {
+      "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050",
+      "lon": 71.435461,
+      "lat": 51.179776
+     }
+    ],
+    "metric_version": "haversine-mm-v1"
+   },
+   "scenario": {
+    "schema_version": "city-plan-v2",
+    "city_id": "astana",
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "category": "outpatient_clinic",
+    "control_points": [
+     {
+      "id": "p00",
+      "lon": 71.429301,
+      "lat": 51.172229,
+      "weight": 1
+     },
+     {
+      "id": "p01",
+      "lon": 71.418595,
+      "lat": 51.178431,
+      "weight": 1
+     },
+     {
+      "id": "p02",
+      "lon": 71.434223,
+      "lat": 51.17949,
+      "weight": 1
+     },
+     {
+      "id": "p03",
+      "lon": 71.44326,
+      "lat": 51.168985,
+      "weight": 1
+     },
+     {
+      "id": "p04",
+      "lon": 71.440948,
+      "lat": 51.169249,
+      "weight": 1
+     },
+     {
+      "id": "p05",
+      "lon": 71.431078,
+      "lat": 51.180057,
+      "weight": 1
+     },
+     {
+      "id": "p06",
+      "lon": 71.446523,
+      "lat": 51.164307,
+      "weight": 1
+     },
+     {
+      "id": "p07",
+      "lon": 71.42325,
+      "lat": 51.179501,
+      "weight": 1
+     },
+     {
+      "id": "p08",
+      "lon": 71.424072,
+      "lat": 51.172728,
+      "weight": 1
+     },
+     {
+      "id": "p09",
+      "lon": 71.44303,
+      "lat": 51.176971,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "c00",
+      "lon": 71.433689,
+      "lat": 51.174416,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 306
+     },
+     {
+      "id": "c01",
+      "lon": 71.433248,
+      "lat": 51.169174,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 516
+     },
+     {
+      "id": "c02",
+      "lon": 71.427458,
+      "lat": 51.174953,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 932
+     },
+     {
+      "id": "c03",
+      "lon": 71.43467,
+      "lat": 51.177726,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 480
+     },
+     {
+      "id": "c04",
+      "lon": 71.431421,
+      "lat": 51.170497,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 953
+     },
+     {
+      "id": "c05",
+      "lon": 71.444249,
+      "lat": 51.163879,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 757
+     },
+     {
+      "id": "c06",
+      "lon": 71.444873,
+      "lat": 51.167221,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 131
+     },
+     {
+      "id": "c07",
+      "lon": 71.436294,
+      "lat": 51.168865,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 349
+     },
+     {
+      "id": "c99",
+      "lon": 71.427458,
+      "lat": 51.174953,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 932
+     }
+    ],
+    "budget": 5356,
+    "max_selected": 2,
+    "coverage_radius_m": 300,
+    "required_ids": [],
+    "excluded_ids": [],
+    "selected_ids": []
+   }
+  }
+ ]
+}
