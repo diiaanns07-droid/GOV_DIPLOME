@@ -1,0 +1,13 @@
+{
+ "baseline_score": 52.56,
+ "tz_example": 56.54,
+ "best": 57.24,
+ "references_ok": true,
+ "legacy_byte_identical": true,
+ "result_id_deterministic": true,
+ "result_id": "sha256:682cd808cc7b5d000895ac774dd213821c3075a8e799a8292ad8260f4f6b24b4",
+ "data_version": "astana_hackathon@0cda24ae15a0",
+ "astana_real": "refused: astana_real: композитный индекс не определён для реальной конфигурации; нет значений: ['population_total']. Показывайте наблюдения по отдельности.",
+ "shymkent_real": "refused: shymkent_real: композитный индекс не определён для реальной конфигурации; нет значений: нет наблюдений. Показывайте наблюдения по отдельности.",
+ "golden_sha256_simulate_tz": "ff3b5e86ff00afa4d5072fc415271ee81fe2225b3ed6a2575e7464129ec6d257"
+}

@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "A02_problem_card.schema.json",
+  "title": "Карточка коммунальной проблемы, Шымкент, v0.1 (A02, проект контракта)",
+  "description": "Одна карточка = одна проблема в одной зоне за один интервал. Персональные данные жителей не хранятся. Поля, которых нет, заполняются null, а не нулём.",
+  "type": "object",
+  "required": ["card_id", "sector", "event_class", "status", "geography", "time", "sources", "data_kind", "confidence", "privacy"],
+  "additionalProperties": false,
+  "properties": {
+    "card_id": {"type": "string", "pattern": "^UC-[0-9]{4}-[0-9]{6}$", "description": "UC-<год>-<номер>"},
+    "sector": {"enum": ["water_supply", "sewerage", "heating", "hot_water", "maintenance_other"]},
+    "event_class": {
+      "enum": ["emergency_outage", "planned_outage", "chronic_deficit", "wear_condition", "announced_project"],
+      "description": "Главное различение: авария / плановое отключение / хронический дефицит (давление, график подачи) / износ (состояние без аварии) / анонсированный проект (обещание, не внедрение)"
+    },
+    "symptom": {"enum": ["no_water", "low_pressure", "water_quality", "leak_flooding", "sewer_blockage_overflow", "no_heating", "low_temperature", "no_hot_water", "other", null]},
+    "status": {"enum": ["signal", "confirmed", "scheduled", "in_progress", "restored", "verified_closed", "rejected_duplicate"]},
+    "geography": {
+      "type": "object",
+      "required": ["city", "precision"],
+      "properties": {
+        "city": {"const": "Шымкент", "description": "Только город республиканского значения; данные Туркестанской области сюда не попадают"},
+        "district": {"type": ["string", "null"], "description": "Название района по действующему административному делению; список не зафиксирован в A02, проверить"},
+        "district_source_id": {"type": ["string", "null"]},
+        "boundary_version": {"type": ["string", "null"], "description": "Дата/версия границ, по которым присвоен район"},
+        "microdistrict": {"type": ["string", "null"]},
+        "street": {"type": ["string", "null"]},
+        "house_range": {"type": ["string", "null"], "description": "Диапазон домов из публичного объявления, без квартир"},
+        "cell_id": {"type": ["string", "null"], "description": "Ячейка агрегирования, напр. H3 res 8"},
+        "precision": {"enum": ["city", "district", "microdistrict", "street", "building", "cell"]}
+      }
+    },
+    "time": {
+      "type": "object",
+      "description": "ISO 8601 с явным смещением; неизвестно = null",
+      "properties": {
+        "reported_at": {"type": ["string", "null"], "format": "date-time"},
+        "started_at": {"type": ["string", "null"], "format": "date-time"},
+        "planned_end_at": {"type": ["string", "null"], "format": "date-time"},
+        "actual_end_at": {"type": ["string", "null"], "format": "date-time"}
+      }
+    },
+    "affected": {
+      "type": "object",
+      "properties": {
+        "households_est": {"type": ["integer", "null"]},
+        "population_est": {"type": ["integer", "null"]},
+        "estimate_method": {"type": ["string", "null"], "description": "Откуда оценка: из объявления оператора / derived из числа домов / неизвестно"},
+        "critical_facilities": {
+          "type": "array",
+          "items": {"type": "object", "properties": {"type": {"enum": ["hospital", "clinic", "school", "kindergarten", "social", "other"]}, "name": {"type": "string"}, "source_id": {"type": "string"}}}
+        }
+      }
+    },
+    "asset_ref": {
+      "type": "object",
+      "properties": {
+        "asset_id": {"type": ["string", "null"]},
+        "asset_type": {"enum": ["pipe_segment", "pump_station", "boiler_house", "substation_heat", "treatment_plant", "reservoir", "unknown", null]},
+        "owner_operator": {"type": ["string", "null"]},
+        "known": {"type": "boolean", "description": "false, если объект сети по открытым данным не установлен"}
+      }
+    },
+    "linked_project": {
+      "type": ["object", "null"],
+      "properties": {"project_ref": {"type": "string"}, "program": {"type": "string"}, "stage": {"enum": ["announced", "funded", "contracted", "in_works", "completed_claimed", "completed_verified"]}, "source_id": {"type": "string"}}
+    },
+    "signals": {
+      "type": "object",
+      "properties": {
+        "complaint_count": {"type": ["integer", "null"], "description": "Только агрегат"},
+        "channels": {"type": "array", "items": {"enum": ["service_109", "e_otinish", "operator_notice", "akimat_notice", "media", "social_public", "other"]}},
+        "dedup_cluster_id": {"type": ["string", "null"]}
+      }
+    },
+    "sources": {
+      "type": "array", "minItems": 1,
+      "items": {"type": "object", "required": ["source_id", "accessed_at"], "properties": {"source_id": {"type": "string"}, "url": {"type": ["string", "null"]}, "published_at": {"type": ["string", "null"]}, "accessed_at": {"type": "string"}, "locator": {"type": ["string", "null"]}}}
+    },
+    "data_kind": {"enum": ["observed", "derived", "hypothesis", "synthetic"]},
+    "confidence": {"enum": ["high", "medium", "low"]},
+    "privacy": {
+      "type": "object", "required": ["contains_personal_data"],
+      "properties": {"contains_personal_data": {"const": false}, "aggregation_level": {"type": "string"}}
+    },
+    "priority": {
+      "type": ["object", "null"],
+      "description": "Заполняет код, не LLM",
+      "properties": {
+        "objective": {"enum": ["min_failures", "min_consequences"]},
+        "score": {"type": "number"}, "rank": {"type": "integer"},
+        "criteria_contrib": {"type": "object", "additionalProperties": {"type": "number"}},
+        "missing_criteria": {"type": "array", "items": {"type": "string"}},
+        "rank_range_under_weight_perturbation": {"type": "array", "items": {"type": "integer"}, "minItems": 2, "maxItems": 2},
+        "baseline_rank_oldest_first": {"type": ["integer", "null"]},
+        "model_version": {"type": "string"}
+      }
+    }
+  }
+}

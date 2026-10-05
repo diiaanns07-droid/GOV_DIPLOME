@@ -1,0 +1,1165 @@
+{
+ "meta": {
+  "agent_id": "A07",
+  "topic": "Туризм: полезные маршруты и городская навигация",
+  "city": "Шымкент (город республиканского значения); Туркестанская область — только как выезд, помечено",
+  "searched_at": "2026-10-04",
+  "access_limitations": [
+   "visit-shymkent.com, visit-shymkent.kz, stat.gov.kz — robots запрещает автоматический доступ; использованы только сниппеты",
+   "gov.kz отдаёт JS-оболочку без содержимого",
+   "data.egov.kz открылся статически, список наборов не отрисован",
+   "сеть в песочнице отключена: OSM/Overpass/API не вызывались",
+   "полные тексты научных статей не открывались (только аннотации)"
+  ]
+ },
+ "sources": [
+  {
+   "source_id": "A07-S001",
+   "title": "Visit Shymkent — Tourist Information Center (home, parks pages)",
+   "publisher": "КГУ «Туристский информационный центр «Visit Shymkent»» Управления туризма, внешних связей и креативной индустрии г. Шымкент",
+   "url": "https://visit-shymkent.com/en/home-page/",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "official_portal",
+   "access_status": "snippet_only_robots_disallowed",
+   "notes": "Автоматический доступ запрещён robots (web_fetch ROBOTS_DISALLOWED). Использованы только поисковые сниппеты: горячая линия +7 (702) 109-17-17, режим пн–пт 9:00–18:00, 3 ТИЦ, каталог категорий. Также http://visit-shymkent.com/rus, https://visit-shymkent.com/en/parks/."
+  },
+  {
+   "source_id": "A07-S002",
+   "title": "Visit-Shymkent — Туристический портал города Шымкент",
+   "publisher": "не подтверждён",
+   "url": "https://visit-shymkent.kz/",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "portal_unverified_owner",
+   "access_status": "snippet_only_robots_disallowed",
+   "notes": "Телефон +7 777 269 5885, email info@visit-shymkent.kz — отличаются от официального ТИЦ. Афиша, билеты в зоопарк, табло аэропорта. Владелец не установлен."
+  },
+  {
+   "source_id": "A07-S003",
+   "title": "О внесении изменения в постановление акимата г. Шымкент от 9 января 2023 года № 22 «Об утверждении Положения о ГУ «Управление туризма, внешних связей и креативной индустрии города Шымкент»»",
+   "publisher": "ИПС «Әділет» (Минюст РК)",
+   "url": "https://adilet.zan.kz/rus/docs/G24E003842A",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "legal_act",
+   "access_status": "snippet_only",
+   "notes": "Не открыт полностью. Сниппет: перечень подведомственных — КГУ «Туристский информационный центр «Visit Shymkent»». Номер документа указывает на 2024 г., дата не проверена."
+  },
+  {
+   "source_id": "A07-S004",
+   "title": "Чем Шымкент удивляет туристов летом 2026 года (интервью замруководителя управления туризма С. Искакова)",
+   "publisher": "МИА «Казинформ»",
+   "url": "https://www.inform.kz/ru/chem-shimkent-udivlyaet-turistov-letom-2026-goda-gid-po-tsenam-i-glavnim-sobitiy-42ba23e4",
+   "published_at": "2026-06-20",
+   "accessed_at": "2026-10-04",
+   "source_type": "media_official_interview",
+   "access_status": "opened",
+   "notes": "Открыт полностью. Перепечатка: kapital.kz/gosudarstvo/149508 (там имя «Руслан Искаков» — расхождение в имени) — считается одним основанием."
+  },
+  {
+   "source_id": "A07-S005",
+   "title": "Туристический поток в Шымкент увеличился на 13%",
+   "publisher": "otyrar.kz",
+   "url": "https://otyrar.kz/2025/05/turisticheskij-potok-v-shymkent-uvelichilsya-na-13/",
+   "published_at": "2025-05",
+   "accessed_at": "2026-10-04",
+   "source_type": "media_regional",
+   "access_status": "snippet_only",
+   "notes": "615 503 прибывших в места размещения (2024), 17 маршрутов, бесплатная автобусная экскурсия по четвергам."
+  },
+  {
+   "source_id": "A07-S006",
+   "title": "Проезд в автобусах Казахстана подорожал до 700 тенге",
+   "publisher": "inbusiness.kz (Atameken Business)",
+   "url": "https://inbusiness.kz/ru/news/proezd-v-avtobusah-kazahstana-podorozhal-do-700-tenge",
+   "published_at": "2026-04-15",
+   "accessed_at": "2026-10-04",
+   "source_type": "media_national",
+   "access_status": "opened",
+   "notes": "Открыт. Цитаты управления пассажирского транспорта Шымкента; тариф по данным БНС."
+  },
+  {
+   "source_id": "A07-S007",
+   "title": "Avtobys запускается в Шымкенте: что изменится для пассажиров уже с 1 апреля",
+   "publisher": "МИА «Казинформ»",
+   "url": "https://www.inform.kz/ru/avtobys-zapuskaetsya-v-shimkente-chto-izmenitsya-dlya-passazhirov-uzhe-s-1-aprelya-67ab87",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "media_national",
+   "access_status": "snippet_only",
+   "notes": "По контексту опубликовано до 01.04.2025. Подтверждающий источник того же события: inbusiness.kz/ru/last/v-shymkente-perestanet-rabotat-prilozhenie-po-obshestvennomu-transportu-s-1-aprelya."
+  },
+  {
+   "source_id": "A07-S008",
+   "title": "Avtobys — Apps on Google Play",
+   "publisher": "Google Play / разработчик LLP «Softrack», INNOFORCE SOLUTIONS TOO",
+   "url": "https://play.google.com/store/apps/details?id=kz.avtobys.userapp&hl=en_US",
+   "published_at": "2026-09-18",
+   "accessed_at": "2026-10-04",
+   "source_type": "app_store_page",
+   "access_status": "opened",
+   "notes": "Открыт. Рейтинг 3.1, 14.3K отзывов, 1M+ загрузок, обновлено 18.09.2026, Шымкент в списке городов. Отзывы пользователей — не верифицированы и не привязаны к Шымкенту."
+  },
+  {
+   "source_id": "A07-S009",
+   "title": "Как оплатить проезд в транспорте Шымкента?",
+   "publisher": "sxodim.com",
+   "url": "https://sxodim.com/shymkent/article/kak-oplatit-proezd-v-transporte-shymkente",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "media_guide",
+   "access_status": "snippet_only",
+   "notes": "Описывает карты Tolem и наличные 100 ₸ с чеком, штраф 6 900 ₸. Вероятно, устарел (Tolem отключён с мая 2025 по S007). Дата обновления неизвестна."
+  },
+  {
+   "source_id": "A07-S010",
+   "title": "От 70 до 120 тенге: стоимость проезда в автобусах в городах Казахстана",
+   "publisher": "МИА «Казинформ»",
+   "url": "https://www.inform.kz/ru/ot-70-do-120-tenge-stoimost-proezda-v-avtobusah-v-gorodah-kazahstana-8a54a4",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "media_national",
+   "access_status": "snippet_only",
+   "notes": "Утверждает, что в Шымкенте наличные не принимаются. Дата ≈ конец 2024 по контексту, не проверена."
+  },
+  {
+   "source_id": "A07-S011",
+   "title": "Транспорт Шымкента в прямом эфире: 2ГИС начал показывать движение автобусов",
+   "publisher": "2ГИС",
+   "url": "https://info.2gis.kz/shymkent/company/news/transport-shymkenta-v-pryamom-efire-2gis-nachal-pokazyvat-dvizhenie-avtobusov",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "company_news",
+   "access_status": "snippet_only",
+   "notes": "Данные от ГУ «Управление цифровизации г. Шымкент» через ГЛОНАСС; ≈2019 г. Текущий статус неизвестен."
+  },
+  {
+   "source_id": "A07-S012",
+   "title": "Система QR-кодов в Казахстане защитит туристов от обмана",
+   "publisher": "МИА «Казинформ»",
+   "url": "https://www.inform.kz/ru/sistema-qr-kodov-v-kazahstane-zashitit-turistov-ot-obmana-618449",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "media_national",
+   "access_status": "snippet_only",
+   "notes": "Заявление министра туризма и спорта на заседании Правительства. Дублирующие: tengrinews.kz/my-country/...567148, informburo.kz."
+  },
+  {
+   "source_id": "A07-S013",
+   "title": "Более 27 тыс. объектов адаптировано для лиц с инвалидностью в Казахстане",
+   "publisher": "Министерство труда и социальной защиты населения РК (gov.kz/enbek)",
+   "url": "https://www.gov.kz/memleket/entities/enbek/press/news/details/1143137?lang=ru",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "government_news",
+   "access_status": "snippet_only",
+   "notes": "Итоги 2025 г.; Шымкент — 1 401 объект. gov.kz — JS, полностью не открыт."
+  },
+  {
+   "source_id": "A07-S014",
+   "title": "Более 29,5 тыс. объектов адаптировано для лиц с инвалидностью в Казахстане",
+   "publisher": "Министерство труда и социальной защиты населения РК",
+   "url": "https://www.gov.kz/memleket/entities/enbek/press/news/details/1205415?lang=ru",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "government_news",
+   "access_status": "snippet_only",
+   "notes": "Шымкент — 1 562 объекта; дата не установлена (позже S013)."
+  },
+  {
+   "source_id": "A07-S015",
+   "title": "Обеспечение доступности объектов социальной инфраструктуры для лиц с инвалидностью и развитие Карты доступности",
+   "publisher": "gov.kz (enbek-sko) и Kazinform",
+   "url": "https://www.gov.kz/memleket/entities/enbek-sko/press/news/details/1247481?lang=ru",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "government_news",
+   "access_status": "snippet_only",
+   "notes": "Интерактивная карта на inva.gov.kz: 42 897 объектов, план 80% до конца 2026; онлайн-самоопросник балансодержателей. Также https://www.inform.kz/ru/tolko-polovina-obektov-v-kazahstane-adaptirovana-dlya-lits-s-invalidnostyu-a93cc8 (>40 тыс. объектов)."
+  },
+  {
+   "source_id": "A07-S016",
+   "title": "Пандусы, подъёмники и говорящие светофоры: как хотят изменить Шымкент",
+   "publisher": "BES.media",
+   "url": "https://bes.media/news/pandusy-podemniki-i-govoryaschie-svetofory-kak-hotyat-izmenit-shymkent/",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "media_regional",
+   "access_status": "snippet_only",
+   "notes": "Проект единых правил доступной среды от управления архитектуры и градостроительства; план, не внедрение."
+  },
+  {
+   "source_id": "A07-S017",
+   "title": "Онлайн-гид для туристов появится в Шымкенте",
+   "publisher": "24KZ (Хабар)",
+   "url": "https://24.kz/ru/news/social/768575-onlajn-gid-dlya-turistov-poyavitsya-v-shymkente",
+   "published_at": "2026-05-15",
+   "accessed_at": "2026-10-04",
+   "source_type": "media_national",
+   "access_status": "opened",
+   "notes": "Открыт. Цитата руководителя управления туризма Б. Адилханова об AI-онлайн-гиде."
+  },
+  {
+   "source_id": "A07-S018",
+   "title": "A survey on algorithmic approaches for solving tourist trip design problems",
+   "publisher": "Journal of Heuristics 20(3):291–328 (Springer)",
+   "url": "https://doi.org/10.1007/s10732-014-9242-5",
+   "published_at": "2014-03-20",
+   "accessed_at": "2026-10-04",
+   "source_type": "peer_reviewed",
+   "access_status": "abstract_only",
+   "notes": "Аннотация через unpaywall/OpenAlex; полный текст не открыт (не OA по OpenAlex)."
+  },
+  {
+   "source_id": "A07-S019",
+   "title": "A systematic literature review for the tourist trip design problem: Extensions, solution techniques and future research lines",
+   "publisher": "Operations Research Perspectives 9:100228 (Elsevier, OA)",
+   "url": "https://doi.org/10.1016/j.orp.2022.100228",
+   "published_at": "2022",
+   "accessed_at": "2026-10-04",
+   "source_type": "peer_reviewed",
+   "access_status": "abstract_only",
+   "notes": "Аннотация через DOAJ: Orienteering Problem — наиболее применяемая модель."
+  },
+  {
+   "source_id": "A07-S020",
+   "title": "Портал «Открытые данные» (Ашық деректер)",
+   "publisher": "АО «НИТ» / data.egov.kz",
+   "url": "https://data.egov.kz/",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "open_data_portal",
+   "access_status": "opened_static_html",
+   "notes": "Главная открылась (у координатора была ошибка). Фильтр владельца «Шымкент қаласы әкімдігі» (govAgencyId=AWcb8GRsX_a8Qs4fl5LW) существует; статический список показал «Деректер жинақтары жоқ» — вероятно, загрузка скриптом; наличие наборов не проверено."
+  },
+  {
+   "source_id": "A07-S021",
+   "title": "Динамические ряды — г. Шымкент",
+   "publisher": "Бюро национальной статистики АСПиР РК",
+   "url": "https://stat.gov.kz/ru/region/shymkent/dynamic-tables/38/",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "official_statistics",
+   "access_status": "not_opened_robots_disallowed",
+   "notes": "Автоматический доступ запрещён. Общенациональный перечень туристических рядов виден в сниппете stat.gov.kz/ru/industries/business-statistics/stat-tourism/dynamic-tables/."
+  },
+  {
+   "source_id": "A07-S022",
+   "title": "Расписание автобусов Шымкент — Туркестан",
+   "publisher": "avokzal.kz (Электронные автовокзалы)",
+   "url": "https://avokzal.kz/%D1%80%D0%B0%D1%81%D0%BF%D0%B8%D1%81%D0%B0%D0%BD%D0%B8%D0%B5-%D0%B0%D0%B2%D1%82%D0%BE%D0%B1%D1%83%D1%81%D0%BE%D0%B2/%D0%BC%D0%B0%D1%80%D1%88%D1%80%D1%83%D1%82/shymkent-region-33?to=1068434721&from=2684785706",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "commercial_schedule",
+   "access_status": "snippet_only",
+   "notes": "Межгородской выезд (Туркестанская область) — вне городской географии. Дата состояния неизвестна."
+  },
+  {
+   "source_id": "A07-S023",
+   "title": "Шымкент: туризм нужно развивать комплексно, улучшая инфраструктуру и сервис",
+   "publisher": "inbusiness.kz (Atameken Business)",
+   "url": "https://inbusiness.kz/ru/last/shymkent-turizm-nuzhno-razvivat-kompleksno-uluchshaya-infrastrukturu-i-servis",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "media_national",
+   "access_status": "snippet_only",
+   "notes": "Оценка экспертов: сервис и инфраструктура неудовлетворительны; 390 тыс. туристов (+14%) — год не ясен."
+  },
+  {
+   "source_id": "A07-S024",
+   "title": "С территории «Shymkent Plaza» начали курсировать автобусы в направлении Ташкента",
+   "publisher": "КГУ «Управление туризма, внешних связей и креативной индустрии г. Шымкент» (gov.kz)",
+   "url": "https://www.gov.kz/memleket/entities/shymkent-turizm/press/news/details/382234?lang=ru",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "government_news",
+   "access_status": "snippet_only_js_app",
+   "notes": "web_fetch вернул JS-оболочку. Меморандум ТИЦ «Visit Shymkent» и ТОО «Silk Road». Дата не установлена."
+  }
+ ],
+ "facts": [
+  {
+   "fact_id": "A07-F001",
+   "statement": "В 2025 г. Шымкент посетили 550 063 человека (+8,3%), внутренний турпоток 511 605, въездной 38 458",
+   "kind": "observed",
+   "value": 550063,
+   "unit": "чел.",
+   "geography": "г. Шымкент",
+   "period": "2025",
+   "source_refs": [
+    {
+     "source_id": "A07-S004",
+     "locator": "ответ на вопрос о рейтинге по турпотоку"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Заявление управления в интервью; не сверено с БНС; определение «посетили» не раскрыто. Сумма 511 605 + 38 458 = 550 063 согласована."
+  },
+  {
+   "fact_id": "A07-F002",
+   "statement": "В 2024 г. в местах размещения города прибыло 615 503 человека",
+   "kind": "observed",
+   "value": 615503,
+   "unit": "чел.",
+   "geography": "г. Шымкент",
+   "period": "2024",
+   "source_refs": [
+    {
+     "source_id": "A07-S005",
+     "locator": "абзац «Согласно статистической информации…»"
+    }
+   ],
+   "derivation": null,
+   "confidence": "low",
+   "caveats": "Только сниппет; противоречит F001/F003."
+  },
+  {
+   "fact_id": "A07-F003",
+   "statement": "Расхождение: из F001 база 2024 г. ≈ 507 907, что на ≈107 596 (21,2%) меньше 615 503 из F002",
+   "kind": "derived",
+   "value": 107596,
+   "unit": "чел.",
+   "geography": "г. Шымкент",
+   "period": "2024",
+   "source_refs": [
+    {
+     "source_id": "A07-S004",
+     "locator": "F001"
+    },
+    {
+     "source_id": "A07-S005",
+     "locator": "F002"
+    }
+   ],
+   "derivation": "550063/1.083 = 507907; 615503 − 507907 = 107596; 107596/507907 = 21,2% (python3, см. отчёт)",
+   "confidence": "high",
+   "caveats": "Высокая уверенность в арифметике, не в каком-либо из исходных чисел. Вероятно, разные определения показателя."
+  },
+  {
+   "fact_id": "A07-F004",
+   "statement": "В городе 162 объекта размещения, 4 146 номеров, 8 879 койко-мест; в 2026 открыто 4 отеля, строятся ещё 9",
+   "kind": "observed",
+   "value": 162,
+   "unit": "объектов",
+   "geography": "г. Шымкент",
+   "period": "2026 (на 20.06)",
+   "source_refs": [
+    {
+     "source_id": "A07-S004",
+     "locator": "ответ о готовности к наплыву гостей"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Данные управления, не БНС."
+  },
+  {
+   "fact_id": "A07-F005",
+   "statement": "Сформировано 17 туристических маршрутов; на visit-shymkent.com — информация о пеших маршрутах, объектах, событиях и контакты 40+ сертифицированных гидов и туроператоров",
+   "kind": "observed",
+   "value": 17,
+   "unit": "маршрутов",
+   "geography": "г. Шымкент",
+   "period": "2026",
+   "source_refs": [
+    {
+     "source_id": "A07-S004",
+     "locator": "ответы о достопримечательностях и экскурсионной инфраструктуре"
+    },
+    {
+     "source_id": "A07-S005",
+     "locator": "абзац о 17 маршрутах (2025)"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Состав маршрутов и наличие часов работы по точкам не проверены (портал закрыт для автоматического доступа)."
+  },
+  {
+   "fact_id": "A07-F006",
+   "statement": "Анонсирован запуск в июне 2026 проекта QR-маршрутов: 70 QR-кодов, 3 языка, аудиогид, самостоятельное построение маршрутов по ближайшим локациям",
+   "kind": "observed",
+   "value": "promise",
+   "unit": "—",
+   "geography": "г. Шымкент",
+   "period": "анонс июнь 2026",
+   "source_refs": [
+    {
+     "source_id": "A07-S004",
+     "locator": "последний ответ интервью"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Обещание, не доказательство внедрения; подтверждений запуска не найдено на 04.10.2026."
+  },
+  {
+   "fact_id": "A07-F007",
+   "statement": "Управление туризма анонсировало запуск в 2026 круглосуточного AI-онлайн-гида (гостиницы, достопримечательности, маршрут, «как добраться», разные языки)",
+   "kind": "observed",
+   "value": "promise",
+   "unit": "—",
+   "geography": "г. Шымкент",
+   "period": "анонс 15.05.2026",
+   "source_refs": [
+    {
+     "source_id": "A07-S017",
+     "locator": "цитата Б. Адилханова"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Высокая уверенность в факте анонса; внедрение не подтверждено."
+  },
+  {
+   "fact_id": "A07-F008",
+   "statement": "Официальные ориентиры расходов летом 2026: хостел 2 000–5 000 ₸/ночь; бюджетный отель 10 000–25 000 ₸; питание 1 500–4 000 ₸ (столовые) и 4 000–10 000 ₸ (кафе); дневной бюджет 15 000–25 000 ₸ (эконом), 30 000–60 000 ₸ (комфорт)",
+   "kind": "observed",
+   "value": "15000–25000",
+   "unit": "KZT/день",
+   "geography": "г. Шымкент",
+   "period": "лето 2026",
+   "source_refs": [
+    {
+     "source_id": "A07-S004",
+     "locator": "ответ о стоимости отдыха"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Оценки чиновника, не ценовое обследование; не использовать как точные цены в маршрутах."
+  },
+  {
+   "fact_id": "A07-F009",
+   "statement": "Прямые рейсы из Шымкента в 21 город 14 стран и в 10 городов Казахстана",
+   "kind": "observed",
+   "value": 21,
+   "unit": "городов за рубежом",
+   "geography": "г. Шымкент",
+   "period": "2026",
+   "source_refs": [
+    {
+     "source_id": "A07-S004",
+     "locator": "ответ о транспортной доступности"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Сезонность рейсов не раскрыта."
+  },
+  {
+   "fact_id": "A07-F010",
+   "statement": "Горячая линия ТИЦ +7 (702) 109-17-17 работает пн–пт 9:00–18:00; ТИЦ: ж/д вокзал (Анарова, 9), Цитадель (Айтеке би, 30/29), Арбат (пл. Аль-Фараби, 11/3)",
+   "kind": "observed",
+   "value": "Mon–Fri 09:00–18:00",
+   "unit": "часы",
+   "geography": "г. Шымкент",
+   "period": "на дату доступа",
+   "source_refs": [
+    {
+     "source_id": "A07-S001",
+     "locator": "сниппет главной: «Call Mon-Fri: 9:00 - 18:00», «Tourist information centers»"
+    }
+   ],
+   "derivation": null,
+   "confidence": "low",
+   "caveats": "Только сниппет; часы работы самих ТИЦ в выходные неизвестны."
+  },
+  {
+   "fact_id": "A07-F011",
+   "statement": "Существует второй портал visit-shymkent.kz с другими контактами (+7 777 269 5885)",
+   "kind": "observed",
+   "value": "+7 777 269 5885",
+   "unit": "—",
+   "geography": "г. Шымкент",
+   "period": "на дату доступа",
+   "source_refs": [
+    {
+     "source_id": "A07-S002",
+     "locator": "сниппет главной"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Владелец и официальный статус не установлены."
+  },
+  {
+   "fact_id": "A07-F012",
+   "statement": "С 1 апреля 2025 приложение i-Kolik заменено на Avtobys (трекинг в реальном времени, маршруты, оплата QR/NFC/Bluetooth/Visa/Mastercard)",
+   "kind": "observed",
+   "value": "2025-04-01",
+   "unit": "дата",
+   "geography": "г. Шымкент",
+   "period": "2025",
+   "source_refs": [
+    {
+     "source_id": "A07-S007",
+     "locator": "перечень функций"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Сниппет; функции по описанию, не протестированы."
+  },
+  {
+   "fact_id": "A07-F013",
+   "statement": "С 1 мая (2025) валидаторы перестают принимать карты Tolem",
+   "kind": "observed",
+   "value": "2025-05-01",
+   "unit": "дата",
+   "geography": "г. Шымкент",
+   "period": "2025",
+   "source_refs": [
+    {
+     "source_id": "A07-S007",
+     "locator": "последний абзац сниппета"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Год выведен из контекста статьи о запуске 1 апреля 2025."
+  },
+  {
+   "fact_id": "A07-F014",
+   "statement": "Тариф 70 ₸ (безнал), не пересматривался с 2016; 83 городских маршрута, 79 социально значимых; субсидии 44,8 млрд ₸ (2026); обсуждается повышение до 120 ₸",
+   "kind": "observed",
+   "value": 70,
+   "unit": "KZT/поездка",
+   "geography": "г. Шымкент",
+   "period": "на 15.04.2026",
+   "source_refs": [
+    {
+     "source_id": "A07-S006",
+     "locator": "раздел «Шымкент – лидер по субсидиям»"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Тариф может измениться — хранить как параметр с датой."
+  },
+  {
+   "fact_id": "A07-F015",
+   "statement": "Противоречие об оплате наличными: «100 ₸ наличными с чеком» (sxodim) vs «в Шымкенте наличные не принимаются» (Kazinform)",
+   "kind": "observed",
+   "value": "conflict",
+   "unit": "—",
+   "geography": "г. Шымкент",
+   "period": "2024–2026",
+   "source_refs": [
+    {
+     "source_id": "A07-S009",
+     "locator": "раздел о наличных"
+    },
+    {
+     "source_id": "A07-S010",
+     "locator": "абзац о Туркестане и Шымкенте"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Текущий статус — unknown; требует проверки."
+  },
+  {
+   "fact_id": "A07-F016",
+   "statement": "Avtobys: рейтинг 3.1 при 14.3K отзывах; два отзыва (29.08.2025 и 17.04.2026) сообщают о невозможности купить билет с не-казахстанской картой",
+   "kind": "observed",
+   "value": 3.1,
+   "unit": "звёзды",
+   "geography": null,
+   "period": "на 04.10.2026",
+   "source_refs": [
+    {
+     "source_id": "A07-S008",
+     "locator": "Ratings and reviews"
+    }
+   ],
+   "derivation": null,
+   "confidence": "low",
+   "caveats": "Отзывы не привязаны к Шымкенту (приложение работает в 20+ городах); это сигнал, не доказательство."
+  },
+  {
+   "fact_id": "A07-F017",
+   "statement": "Оператор электронного билетирования сообщал: суточный пассажиропоток >600 тыс., платят около 300 тыс.",
+   "kind": "observed",
+   "value": 600000,
+   "unit": "пасс./сутки",
+   "geography": "г. Шымкент",
+   "period": "осень 2025",
+   "source_refs": [
+    {
+     "source_id": "A07-S006",
+     "locator": "абзац о безбилетниках"
+    }
+   ],
+   "derivation": null,
+   "confidence": "low",
+   "caveats": "Пересказ слов оператора в СМИ."
+  },
+  {
+   "fact_id": "A07-F018",
+   "statement": "QR-коды для туристов (такси, связь, eSIM, бронирование, регистрация) размещены в 4 городах, включая Шымкент; аэропорты запрашивали средства на размещение",
+   "kind": "observed",
+   "value": "4 города",
+   "unit": "—",
+   "geography": "Казахстан (вкл. Шымкент)",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A07-S012",
+     "locator": "цитата министра"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Где именно в Шымкенте — неизвестно."
+  },
+  {
+   "fact_id": "A07-F019",
+   "statement": "Интерактивная карта доступности на inva.gov.kz содержит 42 897 объектов; есть онлайн-самоопросник балансодержателей",
+   "kind": "observed",
+   "value": 42897,
+   "unit": "объектов",
+   "geography": "Казахстан",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A07-S015",
+     "locator": "абзац об Интерактивной карте"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Доля по Шымкенту и возможность выгрузки не проверены."
+  },
+  {
+   "fact_id": "A07-F020",
+   "statement": "В Шымкенте адаптировано 1 401 объект (итоги 2025), позже — 1 562",
+   "kind": "observed",
+   "value": 1562,
+   "unit": "объектов",
+   "geography": "г. Шымкент",
+   "period": "2025–2026",
+   "source_refs": [
+    {
+     "source_id": "A07-S013",
+     "locator": "перечень по регионам"
+    },
+    {
+     "source_id": "A07-S014",
+     "locator": "перечень по регионам"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Это соцобъекты, не обязательно туристические; знаменатель по городу не найден."
+  },
+  {
+   "fact_id": "A07-F021",
+   "statement": "В Шымкенте разрабатываются единые правила доступной среды, включая указатели маршрутов в парках и на вокзалах",
+   "kind": "observed",
+   "value": "plan",
+   "unit": "—",
+   "geography": "г. Шымкент",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A07-S016",
+     "locator": "абзацы о плане управления архитектуры"
+    }
+   ],
+   "derivation": null,
+   "confidence": "low",
+   "caveats": "План/проект, не внедрение."
+  },
+  {
+   "fact_id": "A07-F022",
+   "statement": "По четвергам проводится бесплатная автобусная экскурсия для иностранных туристов",
+   "kind": "observed",
+   "value": "weekly",
+   "unit": "—",
+   "geography": "г. Шымкент",
+   "period": "2025",
+   "source_refs": [
+    {
+     "source_id": "A07-S005",
+     "locator": "абзац о маршрутах"
+    }
+   ],
+   "derivation": null,
+   "confidence": "low",
+   "caveats": "Статус в 2026 неизвестен."
+  },
+  {
+   "fact_id": "A07-F023",
+   "statement": "data.egov.kz доступен; фильтр владельца «Шымкент қаласы әкімдігі» есть; статический список наборов пуст",
+   "kind": "observed",
+   "value": "not_verified",
+   "unit": "—",
+   "geography": "г. Шымкент",
+   "period": "на 04.10.2026",
+   "source_refs": [
+    {
+     "source_id": "A07-S020",
+     "locator": "страница listbygovagency?govAgencyId=AWcb8GRsX_a8Qs4fl5LW"
+    }
+   ],
+   "derivation": null,
+   "confidence": "low",
+   "caveats": "Пустой статический список не доказывает отсутствие наборов."
+  },
+  {
+   "fact_id": "A07-F024",
+   "statement": "Публичный GTFS по Шымкенту, вероятно, отсутствует",
+   "kind": "hypothesis",
+   "value": null,
+   "unit": null,
+   "geography": "г. Шымкент",
+   "period": null,
+   "source_refs": [],
+   "derivation": "Поиск «Shymkent GTFS public transport feed» и тематические запросы 04.10.2026 не дали результатов по Шымкенту",
+   "confidence": "low",
+   "caveats": "Отсутствие в поиске ≠ отсутствие; проверить у Avtobys и Управления цифровизации."
+  },
+  {
+   "fact_id": "A07-F025",
+   "statement": "Синтетический эксперимент: валидатор не трактует неизвестные часы как «открыто», помечает устаревшие (>90 дней) и неисточниковые поля и нарушения последовательности; итог синтетического маршрута NOT_EXECUTABLE, U=0.25",
+   "kind": "synthetic",
+   "value": 0.25,
+   "unit": "доля",
+   "geography": null,
+   "period": null,
+   "source_refs": [],
+   "derivation": "A07_validator_experiment.py, Python 3.12.3, данные SYNTH",
+   "confidence": "high",
+   "caveats": "Проверяет только логику контракта; о реальной полезности ничего не говорит."
+  },
+  {
+   "fact_id": "A07-F026",
+   "statement": "2GIS показывал автобусы Шымкента в реальном времени по данным Управления цифровизации (ГЛОНАСС, обновление ~30 с)",
+   "kind": "observed",
+   "value": "realtime",
+   "unit": "—",
+   "geography": "г. Шымкент",
+   "period": "≈2019",
+   "source_refs": [
+    {
+     "source_id": "A07-S011",
+     "locator": "новость 2GIS"
+    }
+   ],
+   "derivation": null,
+   "confidence": "low",
+   "caveats": "Старый источник; текущий статус после перехода на Avtobys неизвестен."
+  },
+  {
+   "fact_id": "A07-F027",
+   "statement": "Эксперты (Atameken Business) оценивают сервис и инфраструктуру туризма Шымкента как неудовлетворительные",
+   "kind": "observed",
+   "value": "qualitative",
+   "unit": "—",
+   "geography": "г. Шымкент",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A07-S023",
+     "locator": "сниппет"
+    }
+   ],
+   "derivation": null,
+   "confidence": "low",
+   "caveats": "Оценочное мнение СМИ; год неясен."
+  },
+  {
+   "fact_id": "A07-F028",
+   "statement": "TTDP — задача построения упорядоченных посещений POI с учётом ограничений туриста и атрибутов объектов; Orienteering Problem — наиболее применяемая модель",
+   "kind": "observed",
+   "value": "method",
+   "unit": "—",
+   "geography": null,
+   "period": "2014–2022",
+   "source_refs": [
+    {
+     "source_id": "A07-S018",
+     "locator": "abstract"
+    },
+    {
+     "source_id": "A07-S019",
+     "locator": "abstract"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Методы предполагают известные часы и время в пути."
+  },
+  {
+   "fact_id": "A07-F029",
+   "statement": "Самый посещаемый ознакомительный маршрут по рекомендации управления: Цитадель → Дендропарк → зоопарк → Арбат → ж/м Сайрам → мечеть им. Сейтжан қари",
+   "kind": "observed",
+   "value": "route",
+   "unit": "—",
+   "geography": "г. Шымкент",
+   "period": "2026",
+   "source_refs": [
+    {
+     "source_id": "A07-S004",
+     "locator": "ответ о достопримечательностях"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Часы и цены по точкам в источнике не приведены."
+  }
+ ],
+ "datasets": [
+  {
+   "dataset_id": "A07-D001",
+   "title": "Каталог туристических объектов Visit Shymkent",
+   "publisher": "КГУ ТИЦ «Visit Shymkent»",
+   "source_ids": [
+    "A07-S001"
+   ],
+   "landing_url": "https://visit-shymkent.com/en/home-page/",
+   "download_or_api_url": null,
+   "access_status": "page_only",
+   "tested_at": "2026-10-04",
+   "geography": "г. Шымкент",
+   "granularity": "объект",
+   "period": "текущий",
+   "format": "HTML",
+   "fields": [
+    "name",
+    "category",
+    "address",
+    "phone (ожидаемо)",
+    "hours (не проверено)"
+   ],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "robots запрещает автоматический доступ; условия использования не проверены; массовое копирование недопустимо без разрешения",
+   "next_retrieval_step": "Ручной просмотр в браузере 20–50 объектов с локаторами; при необходимости — официальный запрос (решение владельца проекта)"
+  },
+  {
+   "dataset_id": "A07-D002",
+   "title": "Маршруты, остановки и трекинг ОТ (Avtobys)",
+   "publisher": "ТОО «Softrack» / INNOFORCE SOLUTIONS",
+   "source_ids": [
+    "A07-S007",
+    "A07-S008"
+   ],
+   "landing_url": "https://avtobys.kz/application?lang=ru",
+   "download_or_api_url": null,
+   "access_status": "documented_only",
+   "tested_at": "2026-10-04",
+   "geography": "г. Шымкент",
+   "granularity": "маршрут/остановка/ТС",
+   "period": "реальное время",
+   "format": null,
+   "fields": [
+    "route",
+    "stop",
+    "vehicle position (по описанию)"
+   ],
+   "units": null,
+   "update_frequency": "реальное время (по описанию)",
+   "license": null,
+   "auth_requirement": "приложение с регистрацией",
+   "limitations": "Публичный API/GTFS не найден",
+   "next_retrieval_step": "Уточнить у транспортного исследователя (зависимость); проверить OSM как открытую альтернативу для остановок"
+  },
+  {
+   "dataset_id": "A07-D003",
+   "title": "Интерактивная карта доступности (inva.gov.kz)",
+   "publisher": "Министерство труда и социальной защиты населения РК",
+   "source_ids": [
+    "A07-S015",
+    "A07-S013",
+    "A07-S014"
+   ],
+   "landing_url": "https://inva.gov.kz",
+   "download_or_api_url": null,
+   "access_status": "documented_only",
+   "tested_at": "2026-10-04",
+   "geography": "Казахстан, в т.ч. Шымкент",
+   "granularity": "объект",
+   "period": "текущий",
+   "format": null,
+   "fields": [
+    "объект",
+    "статус адаптации (по описанию)"
+   ],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "Сайт не открывался в этом проходе; соцобъекты ≠ туристические объекты",
+   "next_retrieval_step": "Открыть в браузере, проверить фильтр по Шымкенту, наличие экспорта и условий использования"
+  },
+  {
+   "dataset_id": "A07-D004",
+   "title": "Динамические ряды БНС по туризму, г. Шымкент",
+   "publisher": "Бюро национальной статистики",
+   "source_ids": [
+    "A07-S021"
+   ],
+   "landing_url": "https://stat.gov.kz/ru/region/shymkent/dynamic-tables/38/",
+   "download_or_api_url": null,
+   "access_status": "documented_only",
+   "tested_at": "2026-10-04",
+   "geography": "г. Шымкент",
+   "granularity": "город, год",
+   "period": null,
+   "format": null,
+   "fields": [
+    "обслужено посетителей местами размещения (по перечню рядов)"
+   ],
+   "units": "чел.",
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "robots запрещает автоматический доступ",
+   "next_retrieval_step": "Вручную скачать ряды 2023–2025 и снять противоречие F002/F003"
+  },
+  {
+   "dataset_id": "A07-D005",
+   "title": "Открытые наборы акимата г. Шымкент на data.egov.kz",
+   "publisher": "Шымкент қаласы әкімдігі / АО «НИТ»",
+   "source_ids": [
+    "A07-S020"
+   ],
+   "landing_url": "https://data.egov.kz/datasets/listbygovagency?govAgencyId=AWcb8GRsX_a8Qs4fl5LW",
+   "download_or_api_url": null,
+   "access_status": "page_only",
+   "tested_at": "2026-10-04",
+   "geography": "г. Шымкент",
+   "granularity": null,
+   "period": null,
+   "format": "XML/Excel/JSON (по описанию портала)",
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": "API-ключ для API (кабинет программиста, по описанию)",
+   "limitations": "Статический HTML показал отсутствие наборов; вероятна JS-загрузка",
+   "next_retrieval_step": "Открыть в браузере, отфильтровать «Туризм және спорт» и «Көлік»; выполнить и задокументировать реальный API-запрос"
+  },
+  {
+   "dataset_id": "A07-D006",
+   "title": "Список гостиниц и туристических компаний г. Шымкент",
+   "publisher": "Акимат г. Шымкент (gov.kz)",
+   "source_ids": [],
+   "landing_url": "https://www.gov.kz/memleket/entities/shymkent/activities/2362?lang=en",
+   "download_or_api_url": null,
+   "access_status": "page_only",
+   "tested_at": "2026-10-04",
+   "geography": "г. Шымкент",
+   "granularity": "организация",
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "Найден только упоминание в сниппете поиска; gov.kz отдаёт JS",
+   "next_retrieval_step": "Открыть в браузере, проверить формат вложения и дату"
+  }
+ ],
+ "opportunities": [
+  {
+   "idea_id": "A07-O1",
+   "level": "MVP (первый прототип)",
+   "title": "Реестр доказательств POI и аудит пробелов навигации/доступности",
+   "problem": "Факты для гостя раздроблены, без даты проверки; противоречия в оплате ОТ и статистике; неизвестные часы не помечаются",
+   "evidence_fact_ids": [
+    "A07-F003",
+    "A07-F010",
+    "A07-F011",
+    "A07-F015",
+    "A07-F019",
+    "A07-F023",
+    "A07-F024"
+   ],
+   "primary_user": "Специалист ТИЦ «Visit Shymkent» / Управления туризма",
+   "user_task": "Решить, какие объекты и поля обновить первыми, где нужны QR/указатели/многоязычные описания, что передавать AI-гиду как проверенное",
+   "existing_solution": "Каталог visit-shymkent.com; карты 2GIS/Яндекс; карта доступности inva.gov.kz",
+   "proposed_addition": "Слой MapLibre «полнота/свежесть», таблица пробелов и противоречий, экспорт по контракту с source_id/verified_at",
+   "required_dataset_ids": [
+    "A07-D001",
+    "A07-D003",
+    "A07-D005"
+   ],
+   "ai_role": "Не нужен для ядра; опционально LLM-черновик извлечения часов/цен с обязательным подтверждением человеком (мерить precision)",
+   "non_ai_baseline": "Ручная Excel-таблица",
+   "success_metrics": [
+    "Доля полей с source_id и locator (C)",
+    "Доля POI с verified_at ≤90 дней",
+    "Доля POI с известным статусом доступности",
+    "Число выявленных противоречий",
+    "Минуты на обновление 1 POI"
+   ],
+   "feasibility_10_days": "высокая для 20–30 POI вручную",
+   "blockers": [
+    "robots на официальном портале",
+    "нет подтверждённой лицензии на повторное использование",
+    "свежесть без владельца данных"
+   ],
+   "transfer_to_astana": "Схема и валидатор переносимы; источники пересобирать",
+   "next_action": "Вручную внести 20 POI официального ознакомительного маршрута и посчитать доли known/unknown/conflict"
+  },
+  {
+   "idea_id": "A07-O2",
+   "level": "MVP (демонстратор поверх O1)",
+   "title": "Проверяемый маршрут на день со сравнением альтернатив на карте",
+   "problem": "Неизвестно, реально ли успеть набор мест за окно времени, бюджет и при ограничениях мобильности",
+   "evidence_fact_ids": [
+    "A07-F005",
+    "A07-F008",
+    "A07-F014",
+    "A07-F016",
+    "A07-F025",
+    "A07-F028",
+    "A07-F029"
+   ],
+   "primary_user": "Однодневный посетитель; сотрудник ТИЦ, собирающий маршрут для гостя",
+   "user_task": "Выбрать 3–6 мест, которые точно доступны в плановое время",
+   "existing_solution": "17 официальных маршрутов; 2GIS; анонсированные QR-маршруты и AI-гид",
+   "proposed_addition": "Детерминированная эвристика orienteering с временными окнами + валидатор: каждая точка с источником, датой, флагами; статус VERIFIED/UNVERIFIED/NOT_EXECUTABLE",
+   "required_dataset_ids": [
+    "A07-D001",
+    "A07-D002",
+    "A07-D003"
+   ],
+   "ai_role": "Разбор свободного запроса в ограничения и объяснение на kk/ru/en; выбор и числа — код",
+   "non_ai_baseline": "Форма с фильтрами + та же эвристика",
+   "success_metrics": [
+    "E — исполнимость при полевой/телефонной проверке",
+    "F — ложная уверенность (цель 0)",
+    "U — доля неизвестного",
+    "A — точность фактов"
+   ],
+   "feasibility_10_days": "средняя: логика готова (F025), данные — узкое место",
+   "blockers": [
+    "нет данных ОТ (GTFS/API)",
+    "часы объектов не проверены",
+    "дублирование с AI-гидом акимата"
+   ],
+   "transfer_to_astana": "Да при наличии реестра",
+   "next_action": "После O1: сгенерировать 10 маршрутов и проверить E и F"
+  },
+  {
+   "idea_id": "A07-O3",
+   "level": "Продукт на 1–3 месяца",
+   "title": "Слой доверия для городских туристических сервисов и событийных дней",
+   "problem": "Анонсированные QR-маршруты и AI-гид нуждаются в проверенных данных; события (День города) меняют доступность",
+   "evidence_fact_ids": [
+    "A07-F006",
+    "A07-F007",
+    "A07-F021"
+   ],
+   "primary_user": "Управление туризма, Управление цифровизации",
+   "user_task": "Публиковать проверенные факты в разные каналы и оценивать влияние событий на маршруты",
+   "existing_solution": "Не найдено",
+   "proposed_addition": "API/контракт проверенных POI + сценарии закрытий на дату события",
+   "required_dataset_ids": [
+    "A07-D001",
+    "A07-D002",
+    "A07-D003"
+   ],
+   "ai_role": "Ограниченная: перевод и объяснение",
+   "non_ai_baseline": "Ручная публикация",
+   "success_metrics": [
+    "Доля каналов, использующих один реестр",
+    "Расхождения между каналами"
+   ],
+   "feasibility_10_days": "низкая (нужен партнёр)",
+   "blockers": [
+    "нужен владелец данных в городе"
+   ],
+   "transfer_to_astana": "Да",
+   "next_action": "Показать владельцу продукта таблицу пробелов из O1"
+  },
+  {
+   "idea_id": "A07-O4",
+   "level": "Исследовательская идея",
+   "title": "Робастный TTDP при неполных данных и индекс туристической доступности района",
+   "problem": "Классические TTDP предполагают известные часы и время в пути — в Шымкенте их нет",
+   "evidence_fact_ids": [
+    "A07-F024",
+    "A07-F025",
+    "A07-F028"
+   ],
+   "primary_user": "Исследователь/дипломник; городские планировщики",
+   "user_task": "Понять, как неполнота данных влияет на исполнимость и где инвестировать в навигацию",
+   "existing_solution": "Литература TTDP (S018, S019)",
+   "proposed_addition": "Интервальные часы и время в пути, Монте-Карло; районный индекс POI × остановки × доступность × язык",
+   "required_dataset_ids": [
+    "A07-D002",
+    "A07-D003"
+   ],
+   "ai_role": "Не обязателен",
+   "non_ai_baseline": "Детерминированный TTDP",
+   "success_metrics": [
+    "Кривая исполнимость vs доля неизвестных полей"
+   ],
+   "feasibility_10_days": "синтетическая часть — высокая; реальная — низкая",
+   "blockers": [
+    "нет данных ОТ",
+    "нет полевых замеров"
+   ],
+   "transfer_to_astana": "Да",
+   "next_action": "Расширить A07_validator_experiment.py до Монте-Карло на синтетике"
+  }
+ ],
+ "open_questions": [
+  {
+   "вопрос": "Запущены ли 70 QR-кодов маршрутов и AI-онлайн-гид; какие данные они используют?",
+   "почему_важно": "Определяет, дублирует ли проект городские сервисы или дополняет их",
+   "как_проверить": "Новости июль–октябрь 2026; visit-shymkent.com вручную; физическая проверка на Арбате/в Цитадели"
+  },
+  {
+   "вопрос": "Принимаются ли наличные и иностранные карты в автобусах Шымкента на 04.10.2026?",
+   "почему_важно": "Ключевое препятствие для иностранного гостя; противоречие F015",
+   "как_проверить": "Официальная справка Avtobys/управления пассажирского транспорта; полевая проверка"
+  },
+  {
+   "вопрос": "Какое число турпотока за 2024 верно (615 503 или ≈508 тыс.) и что измеряется?",
+   "почему_важно": "Нельзя приводить контекстные цифры с противоречием",
+   "как_проверить": "Динамические ряды БНС вручную"
+  },
+  {
+   "вопрос": "Есть ли открытые данные остановок/маршрутов (GTFS/API) и каково покрытие OSM в Шымкенте?",
+   "почему_важно": "Без этого время в пути на ОТ остаётся unknown",
+   "как_проверить": "Запрос транспортному исследователю; Overpass из среды с сетью; data.egov.kz категория «Көлік»"
+  },
+  {
+   "вопрос": "Можно ли выгрузить данные карты доступности inva.gov.kz по Шымкенту и на каких условиях?",
+   "почему_важно": "Основа для слоя доступности в MVP-1",
+   "как_проверить": "Открыть inva.gov.kz в браузере; проверить экспорт и правила"
+  },
+  {
+   "вопрос": "Кто официальный владелец visit-shymkent.kz?",
+   "почему_важно": "Два «официальных» портала — риск недостоверной информации",
+   "как_проверить": "WHOIS/реквизиты на сайте; сверка с ТИЦ"
+  }
+ ],
+ "deliverables": {
+  "poi_schema": "см. A07_report.md §4",
+  "metrics": [
+   "E",
+   "U",
+   "A",
+   "F",
+   "C",
+   "свежесть"
+  ],
+  "synthetic_experiment_files": [
+   "A07_validator_experiment.py",
+   "A07_validator_output.synthetic.json"
+  ],
+  "note": "Синтетические данные помечены SYNTH и не являются данными Шымкента"
+ }
+}

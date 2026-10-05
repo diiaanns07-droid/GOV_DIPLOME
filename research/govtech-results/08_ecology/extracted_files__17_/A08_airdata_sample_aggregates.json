@@ -1,0 +1,61 @@
+{
+ "window_utc": [
+  "2021-12-21 00:00:00+00:00",
+  "2022-03-24 23:00:00+00:00"
+ ],
+ "expected_hours": 2256,
+ "posts": [
+  {
+   "sId": "k15",
+   "pnz": "ПНЗ №6",
+   "address": "микрорайон \"Нурсат\"",
+   "lat": 42.3627133676337,
+   "lng": 69.6309184789672
+  },
+  {
+   "sId": "k49",
+   "pnz": "ПНЗ №5",
+   "address": "микрорайон \"Самал-3\"",
+   "lat": 42.3622594356871,
+   "lng": 69.5935987086878
+  }
+ ],
+ "completeness_pct": {
+  "k15/CO": 89.5,
+  "k15/H2S": 62.6,
+  "k15/NO": 3.9,
+  "k15/NO2": 3.9,
+  "k15/PM10": 4.0,
+  "k15/PM2.5": 4.0,
+  "k15/PMtot": 4.0,
+  "k15/SO2": 62.6,
+  "k49/CO": 0.9,
+  "k49/H2S": 84.6,
+  "k49/NO": 83.5,
+  "k49/NO2": 83.5,
+  "k49/PM10": 80.4,
+  "k49/PM2.5": 80.4,
+  "k49/PMtot": 80.4,
+  "k49/SO2": 84.6
+ },
+ "distance_between_posts_km": 3.07,
+ "pm25_daily": {
+  "k15": {
+   "valid_days": 3,
+   "first_day": "2022-03-06",
+   "last_day": "2022-03-08",
+   "median_daily_mean": 10.5,
+   "days_gt_15_if_ugm3": 0,
+   "days_gt_35_if_ugm3": 0
+  },
+  "k49": {
+   "valid_days": 229,
+   "first_day": "2021-03-26",
+   "last_day": "2022-03-24",
+   "median_daily_mean": 19.6,
+   "days_gt_15_if_ugm3": 146,
+   "days_gt_35_if_ugm3": 64
+  }
+ },
+ "pm25_common_valid_days": 0
+}

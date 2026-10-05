@@ -1,0 +1,102 @@
+{
+ "note": "SYNTHETIC. Parameters are illustrative, not calibrated.",
+ "baseline": {
+  "label": "baseline",
+  "coverage_400m_euclid": 0.247,
+  "coverage_400m_network": 0.209,
+  "optimistic": {
+   "cv_headway": 0.2,
+   "walk_speed_mps": 1.3,
+   "median_min": 42.9,
+   "p90_min": 58.3,
+   "share_over_30min": 0.751,
+   "share_best_by_transit": 0.345,
+   "mean_parts_min_transit_users": {
+    "walk": 31.4,
+    "wait": 7.1,
+    "ride": 10.4,
+    "transfer": 2.3
+   }
+  },
+  "pessimistic": {
+   "cv_headway": 0.8,
+   "walk_speed_mps": 0.9,
+   "median_min": 59.3,
+   "p90_min": 81.5,
+   "share_over_30min": 0.823,
+   "share_best_by_transit": 0.354,
+   "mean_parts_min_transit_users": {
+    "walk": 45.3,
+    "wait": 11.2,
+    "ride": 10.3,
+    "transfer": 3.4
+   }
+  }
+ },
+ "A1": {
+  "label": "A1: add stop on R1 at x=3200",
+  "coverage_400m_euclid": 0.256,
+  "coverage_400m_network": 0.213,
+  "optimistic": {
+   "cv_headway": 0.2,
+   "walk_speed_mps": 1.3,
+   "median_min": 42.9,
+   "p90_min": 58.3,
+   "share_over_30min": 0.751,
+   "share_best_by_transit": 0.345,
+   "mean_parts_min_transit_users": {
+    "walk": 31.4,
+    "wait": 7.1,
+    "ride": 10.4,
+    "transfer": 2.3
+   }
+  },
+  "pessimistic": {
+   "cv_headway": 0.8,
+   "walk_speed_mps": 0.9,
+   "median_min": 59.3,
+   "p90_min": 81.5,
+   "share_over_30min": 0.823,
+   "share_best_by_transit": 0.354,
+   "mean_parts_min_transit_users": {
+    "walk": 45.3,
+    "wait": 11.2,
+    "ride": 10.3,
+    "transfer": 3.4
+   }
+  }
+ },
+ "A2": {
+  "label": "A2: add crosswalk at transfer stop x=2000",
+  "coverage_400m_euclid": 0.247,
+  "coverage_400m_network": 0.215,
+  "optimistic": {
+   "cv_headway": 0.2,
+   "walk_speed_mps": 1.3,
+   "median_min": 42.9,
+   "p90_min": 58.3,
+   "share_over_30min": 0.751,
+   "share_best_by_transit": 0.356,
+   "mean_parts_min_transit_users": {
+    "walk": 31.3,
+    "wait": 7.1,
+    "ride": 10.2,
+    "transfer": 2.2
+   }
+  },
+  "pessimistic": {
+   "cv_headway": 0.8,
+   "walk_speed_mps": 0.9,
+   "median_min": 59.3,
+   "p90_min": 81.5,
+   "share_over_30min": 0.823,
+   "share_best_by_transit": 0.365,
+   "mean_parts_min_transit_users": {
+    "walk": 45.1,
+    "wait": 11.3,
+    "ride": 10.2,
+    "transfer": 3.3
+   }
+  }
+ }
+}

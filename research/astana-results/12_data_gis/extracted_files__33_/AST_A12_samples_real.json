@@ -1,0 +1,383 @@
+{
+ "note": "Реальные небольшие образцы. Вторичные источники помечены. Персональные данные не включены (имена пользователей OSM удалены).",
+ "samples": [
+  {
+   "dataset_id": "AST-A12-D009",
+   "source_id": "AST-A12-S016",
+   "secondary": true,
+   "locator": "datasets_export.csv, строки с выбранными api_uri",
+   "rows": [
+    {
+     "api_uri": "435_the_number_of_cattle_by_r",
+     "title": "№654 Сведения о качестве предоставления тепла в отопительный период в разрезе регионов",
+     "passport_gov_agency": "Акимат города Астана",
+     "passport_actualization_type": "Ежегодно",
+     "passport_actuality_status": "Да",
+     "passport_creation_date": "02.12.2021 11:14",
+     "passport_renewal_date": "02.12.2025 10:03",
+     "crawled_at": "2026-02-01T14:40:59.415Z"
+    },
+    {
+     "api_uri": "696_sumen_zhabdyktau_obektil",
+     "title": "№670 Сведения об объектах водоснабжения в разрезе регионов",
+     "passport_gov_agency": "Акимат города Астана",
+     "passport_actualization_type": "Ежегодно",
+     "passport_actuality_status": "Да",
+     "passport_creation_date": "30.11.2021 15:48",
+     "passport_renewal_date": "02.12.2025 15:41",
+     "crawled_at": "2026-02-01T14:41:31.305Z"
+    },
+    {
+     "api_uri": "39_information_about_vacant_l1",
+     "title": "№34 Информация о свободных земельных участках в разрезе регионов",
+     "passport_gov_agency": "Акимат города Астана",
+     "passport_actualization_type": "Ежеквартально",
+     "passport_actuality_status": "Да",
+     "passport_creation_date": "30.11.2021 14:30",
+     "passport_renewal_date": "13.01.2026 10:12",
+     "crawled_at": "2026-02-01T14:41:48.922Z"
+    },
+    {
+     "api_uri": "bir_tereze_kagidaty_boiynsha_i",
+     "title": "Информация о деятельности Центра городских услуг iQala",
+     "passport_gov_agency": "Акимат города Астана",
+     "passport_actualization_type": "Ежегодно",
+     "passport_actuality_status": "Да",
+     "passport_creation_date": "21.10.2021 14:56",
+     "passport_renewal_date": "20.01.2026 10:08",
+     "crawled_at": "2026-02-01T14:42:42.140Z"
+    },
+    {
+     "api_uri": "onirler_oblystar_kalalar_boi4",
+     "title": "Реестр общеобразовательных школ по областям, городам республиканского значения, столицы (дневные/вечерние, лицей/гимназия/средняя школа)",
+     "passport_gov_agency": "Министерство просвещения РК",
+     "passport_actualization_type": "Ежегодно",
+     "passport_actuality_status": "Да",
+     "passport_creation_date": "24.01.2019 09:35",
+     "passport_renewal_date": "22.12.2025 19:06",
+     "crawled_at": "2026-02-01T14:57:46.770Z"
+    },
+    {
+     "api_uri": "zholdy_zhondeu_obektileri_tur",
+     "title": "№681 Перечень объектов ремонта дорог в разрезе регионов",
+     "passport_gov_agency": "Акимат города Астана",
+     "passport_actualization_type": "1 раз в полгода",
+     "passport_actuality_status": "Да",
+     "passport_creation_date": "19.10.2016 15:07",
+     "passport_renewal_date": "03.12.2025 16:46",
+     "crawled_at": "2026-02-01T15:02:36.678Z"
+    }
+   ]
+  },
+  {
+   "dataset_id": "AST-A12-D009",
+   "source_id": "AST-A12-S016",
+   "secondary": true,
+   "locator": "те же темы у Акимата г. Шымкент",
+   "rows": [
+    {
+     "api_uri": "opendata-api-uri981",
+     "title": "Список общеобразовательных школ",
+     "passport_gov_agency": "Акимат города Шымкент",
+     "passport_actualization_type": "Ежегодно",
+     "passport_actuality_status": "Да",
+     "passport_creation_date": "29.07.2025 18:02",
+     "passport_renewal_date": "30.01.2026 16:19",
+     "crawled_at": "2026-02-01T14:18:59.823Z"
+    },
+    {
+     "api_uri": "zholdardy_zhondeu_obektileri1",
+     "title": "Перечень объектов ремонта дорог в разрезе регионов",
+     "passport_gov_agency": "Акимат города Шымкент",
+     "passport_actualization_type": "2 раза в год",
+     "passport_actuality_status": "Да",
+     "passport_creation_date": "11.12.2018 10:53",
+     "passport_renewal_date": "29.01.2026 17:13",
+     "crawled_at": "2026-02-01T14:58:03.616Z"
+    },
+    {
+     "api_uri": "shymkent_kalasy_boiynsha_bos_z",
+     "title": "Информация о свободных земельных участках в разрезе регионов",
+     "passport_gov_agency": "Акимат города Шымкент",
+     "passport_actualization_type": "Ежеквартально",
+     "passport_actuality_status": "Да",
+     "passport_creation_date": "08.12.2018 15:24",
+     "passport_renewal_date": "27.01.2026 11:43",
+     "crawled_at": "2026-02-01T14:58:07.097Z"
+    },
+    {
+     "api_uri": "sumen_zhabdyktau_obektileri",
+     "title": "Сведения об объектах водоснабжения в разрезе регионов",
+     "passport_gov_agency": "Акимат города Шымкент",
+     "passport_actualization_type": "Ежегодно",
+     "passport_actuality_status": "Да",
+     "passport_creation_date": "04.12.2018 18:43",
+     "passport_renewal_date": "27.01.2026 10:22",
+     "crawled_at": "2026-02-01T14:58:34.176Z"
+    }
+   ]
+  },
+  {
+   "dataset_id": "AST-A12-D010",
+   "source_id": "AST-A12-S017",
+   "secondary": true,
+   "locator": "getstatisticsbymiogovagencies.json",
+   "rows": [
+    {
+     "nameRu": "Акмолинская обл.",
+     "nameEn": "Akmola r.",
+     "nameKk": "Ақмола обл.",
+     "govAgency": "AVUvuyGE99eXTcgzf9tb",
+     "actualPlacedDatasetsCount": 52,
+     "placedDatasetsCount": 54,
+     "allDatasetsCount": 92,
+     "allActualDatasetsCount": 89,
+     "allPlacedDatasetsCount": 54
+    },
+    {
+     "nameRu": "г. Астана",
+     "nameEn": "Astana c.",
+     "nameKk": "Астана қ.",
+     "govAgency": "AVUvu_Wu99eXTcgzf9td",
+     "actualPlacedDatasetsCount": 54,
+     "placedDatasetsCount": 54,
+     "allDatasetsCount": 56,
+     "allActualDatasetsCount": 56,
+     "allPlacedDatasetsCount": 54
+    },
+    {
+     "nameRu": "г. Шымкент",
+     "nameEn": "Shymkent c.",
+     "nameKk": "Шымкент қ.",
+     "govAgency": "AWcb8GRsX_a8Qs4fl5LW",
+     "actualPlacedDatasetsCount": 49,
+     "placedDatasetsCount": 54,
+     "allDatasetsCount": 61,
+     "allActualDatasetsCount": 56,
+     "allPlacedDatasetsCount": 54
+    }
+   ]
+  },
+  {
+   "dataset_id": "AST-A12-D007",
+   "source_id": "AST-A12-S019",
+   "secondary": true,
+   "locator": "agency.txt",
+   "rows": [
+    {
+     "agency_id": "CTS",
+     "agency_name": "City Transportation Systems",
+     "agency_url": "https://cts.gov.kz/ru/",
+     "agency_timezone": "Asia/Almaty"
+    }
+   ]
+  },
+  {
+   "dataset_id": "AST-A12-D007",
+   "source_id": "AST-A12-S019",
+   "secondary": true,
+   "locator": "routes.txt (cp1251)",
+   "rows": [
+    {
+     "route_id": "a3d30efc-b517-4ed6-b6a7-f5a87a3d5fa0",
+     "agency_id": "CTS",
+     "route_long_name": "Karasu Street – Comfort Town – Karasu Street",
+     "route_type": "3",
+     "route_short_name": "46"
+    },
+    {
+     "route_id": "d626b854-27aa-41d4-8625-ebafa73d8f21",
+     "agency_id": "CTS",
+     "route_long_name": "Astana Railway Station – International Airport – Astana Railway Station",
+     "route_type": "3",
+     "route_short_name": "10"
+    },
+    {
+     "route_id": "c453217f-9f9d-49ce-8b32-14a6b7013691",
+     "agency_id": "CTS",
+     "route_long_name": "Astana Railway Station – International Airport – Astana Railway Station",
+     "route_type": "3",
+     "route_short_name": "12"
+    }
+   ]
+  },
+  {
+   "dataset_id": "AST-A12-D007",
+   "source_id": "AST-A12-S019",
+   "secondary": true,
+   "locator": "stops.txt, первые 5 строк",
+   "rows": [
+    {
+     "stop_id": "69d3a2a0-c1c5-4c40-9930-6f7f2fa2ae2a",
+     "stop_name": "Kafe Sulukol'",
+     "stop_lat": "51.18512276135868",
+     "stop_lon": "71.3528443759532"
+    },
+    {
+     "stop_id": "18e751ea-9e23-49dd-9275-4559c1ed40b0",
+     "stop_name": "Shugyla",
+     "stop_lat": "51.186013677553625",
+     "stop_lon": "71.35458807996658"
+    },
+    {
+     "stop_id": "77be7d79-bc6c-4c3d-a629-42529171f5da",
+     "stop_name": "Kladbishche",
+     "stop_lat": "51.1848232789926",
+     "stop_lon": "71.35934473401416"
+    },
+    {
+     "stop_id": "439de39e-eed6-49be-9fc7-e232cc3c3f84",
+     "stop_name": "Medeu",
+     "stop_lat": "51.1834920085524",
+     "stop_lon": "71.3647279589701"
+    },
+    {
+     "stop_id": "cb356626-5f8b-4acd-82b4-d01a06d43b3f",
+     "stop_name": "K'artaly",
+     "stop_lat": "51.18221342546384",
+     "stop_lon": "71.37000604315571"
+    }
+   ]
+  },
+  {
+   "dataset_id": "AST-A12-D007",
+   "source_id": "AST-A12-S019",
+   "secondary": true,
+   "locator": "trips.txt, первые 3 строки",
+   "rows": [
+    {
+     "route_id": "d626b854-27aa-41d4-8625-ebafa73d8f21",
+     "service_id": "service_2024-09-20",
+     "trip_id": "23809",
+     "direction_id": "1",
+     "start_time": "10:42:01",
+     "end_time": "12:29:50",
+     "vehicle_id": "07f4d1a4-b216-4906-a4b7-5a3d7af38266"
+    },
+    {
+     "route_id": "d626b854-27aa-41d4-8625-ebafa73d8f21",
+     "service_id": "service_2024-09-20",
+     "trip_id": "23705",
+     "direction_id": "1",
+     "start_time": "07:58:53",
+     "end_time": "09:15:12",
+     "vehicle_id": "07f4d1a4-b216-4906-a4b7-5a3d7af38266"
+    },
+    {
+     "route_id": "d626b854-27aa-41d4-8625-ebafa73d8f21",
+     "service_id": "service_2024-09-19",
+     "trip_id": "23547",
+     "direction_id": "2",
+     "start_time": "19:41:44",
+     "end_time": "20:56:25",
+     "vehicle_id": "07f4d1a4-b216-4906-a4b7-5a3d7af38266"
+    }
+   ]
+  },
+  {
+   "dataset_id": "AST-A12-D001",
+   "source_id": "AST-A12-S007",
+   "secondary": false,
+   "locator": "features[*].properties (без геометрии)",
+   "rows": [
+    {
+     "id": "esil",
+     "osm_id": 3479876,
+     "osm_admin_level": "6",
+     "osm_names": {
+      "name": "Есіл ауданы",
+      "name:ru": "район Есиль",
+      "name:en": "Esil district",
+      "int_name": "Esil awdanı"
+     },
+     "area_km2": 193.0
+    },
+    {
+     "id": "almaty",
+     "osm_id": 3482819,
+     "osm_admin_level": "6",
+     "osm_names": {
+      "name": "Алматы ауданы",
+      "name:ru": "район Алматы",
+      "name:en": "Almaty District",
+      "int_name": "Almatı awdanı"
+     },
+     "area_km2": 92.6
+    },
+    {
+     "id": "saryarka",
+     "osm_id": 3486954,
+     "osm_admin_level": "6",
+     "osm_names": {
+      "name": "Сарыарқа ауданы",
+      "name:ru": "район Сарыарка",
+      "name:kk": "Сарыарқа ауданы",
+      "name:en": "Sarıarqa district",
+      "int_name": "Sarıarqa awdanı"
+     },
+     "area_km2": 67.3
+    },
+    {
+     "id": "baikonur",
+     "osm_id": 8593081,
+     "osm_admin_level": "6",
+     "osm_names": {
+      "name": "Байқоңыр ауданы",
+      "name:ru": "район Байконур",
+      "name:kk": "Байқоңыр ауданы",
+      "name:en": "Bayqoñır district",
+      "int_name": "Bayqoñır awdanı"
+     },
+     "area_km2": 182.0
+    },
+    {
+     "id": "nura",
+     "osm_id": 20593940,
+     "osm_admin_level": "6",
+     "osm_names": {
+      "name": "Нұра ауданы",
+      "name:ru": "район Нура",
+      "name:kk": "Нұра ауданы",
+      "name:en": "Nura district"
+     },
+     "area_km2": 187.0
+    },
+    {
+     "id": "saraishyk",
+     "osm_id": 19733918,
+     "osm_admin_level": "8",
+     "osm_names": {
+      "name": "Сарайшық ауданы",
+      "name:ru": "район Сарайшык",
+      "name:kk": "Сарайшық ауданы",
+      "name:en": "Saraişyq audany"
+     },
+     "area_km2": 60.9
+    }
+   ]
+  },
+  {
+   "dataset_id": "AST-A12-D003",
+   "source_id": "AST-A12-S009",
+   "secondary": false,
+   "locator": "elements[type=relation] (user/uid удалены)",
+   "rows": [
+    {
+     "id": 19733918,
+     "version": 17,
+     "timestamp": "2026-09-21T13:44:01Z",
+     "changeset": 189349743,
+     "tags": {
+      "admin_level": "8",
+      "boundary": "administrative",
+      "name": "Сарайшық ауданы",
+      "name:en": "Saraişyq audany",
+      "name:kk": "Сарайшық ауданы",
+      "name:ru": "район Сарайшык",
+      "type": "boundary"
+     }
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,344 @@
+{
+ "manifest_version": "0.1",
+ "created_by": "AST-A12",
+ "created_at": "2026-10-05",
+ "tools": {
+  "python": "3.12.3",
+  "sqlite": "3.45.1",
+  "shapely": "2.1.2",
+  "pyproj": "3.8.0",
+  "curl": "8.5.0"
+ },
+ "imports": [
+  {
+   "import_id": "AST-A12-I001",
+   "dataset_id": [
+    "AST-A12-D001",
+    "AST-A12-D002",
+    "AST-A12-D003",
+    "AST-A12-D004",
+    "AST-A12-D005",
+    "AST-A12-D006"
+   ],
+   "url": "https://codeload.github.com/BAITC-Hacks/hack-d3b2c613-stupits/zip/refs/heads/main",
+   "retrieved_at": "2026-10-05T04:1xZ",
+   "http_status": 200,
+   "bytes": 9404339,
+   "sha256": "497921e48e58af5ccbedaa6ee3fc12f7bf6b214e95ec09e5ad5a23b8d77d0357",
+   "commit": "834a25fb860dd5514d02c9274b70d7bf8a53a79c",
+   "notes": "совпадает с A12-I001"
+  },
+  {
+   "import_id": "AST-A12-I002",
+   "dataset_id": "AST-A12-D009",
+   "url": "https://codeload.github.com/Yerassyl20036/egov-web-crawler/zip/refs/heads/main",
+   "commit": "8c1f4a34688cfb825089bb96055eef89dbb24207",
+   "bytes": 519195,
+   "sha256": "959ff7fe3dcf7cc0c5d8c1911c64dd3e0286d2018262ce1b30e0fdbd3355c526",
+   "file_sha256": {
+    "datasets_export.csv": "54755f65bb2a7f2b9a7d779a0e7809fa0e9f2048473493bcb59fa6cf82ace9ff"
+   },
+   "license": "не указана",
+   "secondary": true
+  },
+  {
+   "import_id": "AST-A12-I003",
+   "dataset_id": "AST-A12-D010",
+   "url": "https://codeload.github.com/opengov-kz/data-egov-kz/zip/refs/heads/main",
+   "commit": "46ca0c01653387b9381b6fece30d36ca69c582c4",
+   "bytes": 532844,
+   "sha256": "a01f13160f0f93d2dc6694701fc08fcaafc00e930bd8d42b9b112a475d8155b8",
+   "file_sha256": {
+    "getstatisticsbymiogovagencies.json": "9f08a51588661c2b543843880bdab31e6038926bec944dc03d74a03cf7b3ca6d",
+    "byMIO.csv": "d346d56774a16056af0cae34428102d77ed4105ff30a3ec9aafc6b8637ea2174"
+   },
+   "license": "MIT",
+   "secondary": true,
+   "notes": "config.py содержит чужой API-ключ — не использован"
+  },
+  {
+   "import_id": "AST-A12-I004",
+   "dataset_id": "AST-A12-D030",
+   "url": "https://codeload.github.com/Aizhan-05/open-data-backend/zip/refs/heads/main",
+   "commit": "d3f3ee038e7316196fd883b9585d96b7b978bfca",
+   "bytes": 14383,
+   "sha256": "ca3875e7a63216872cc0df7b8524f29214427a5777d6e59443d170f2bc50f7a5",
+   "secondary": true
+  },
+  {
+   "import_id": "AST-A12-I005",
+   "dataset_id": "AST-A12-D007",
+   "url": "https://codeload.github.com/Mrithula742/Bussure/zip/refs/heads/main",
+   "commit": "0356bb5b37ef0992ec0df3a4f09be35e3147b094",
+   "bytes": 25293689,
+   "sha256": "f6229c70833c2e009364603fb8d5e67ea5b51a335f766e9013b94091f2ed8776",
+   "file_sha256": {
+    "stops.txt": "c299b76be3c4e7cfaac7c6bce8d366a0c7b4e2584d6250da4b33ff865f1b27f6",
+    "routes.txt": "211d42b4875af9dc3e9c6b79e975755f0f8aa84b115ad1bf49b857cdd1f3dad1",
+    "trips.txt": "4d5efbd2f1ac7db61b460306a436291ab5db8a0f82aa26a04f44a7e8d60e7c44"
+   },
+   "license": "CC BY 4.0 по READ-ME копии (оригинал не проверен)",
+   "secondary": true
+  },
+  {
+   "import_id": "AST-A12-I006",
+   "dataset_id": null,
+   "url": "https://codeload.github.com/ailaris/astana-air-quality/zip/refs/heads/master",
+   "commit": "921aafa38cf314f66908a92841a499a7cabd4f1b",
+   "bytes": 120499,
+   "sha256": "5e93a1f2669503a21702892ce2db2892e45378bc0b295d652c01ca506a855094",
+   "status": "rejected: нет источника и лицензии"
+  },
+  {
+   "import_id": "AST-A12-I007",
+   "dataset_id": "AST-A12-D008",
+   "notes": "файлы Natural Earth из A12-I002/I003 переиспользованы (sha256 22d0e3ad…, fd3fa867…)"
+  }
+ ],
+ "blocked_attempts": {
+  "at": "2026-10-05T04:09:07Z",
+  "http_403_host_not_allowed": [
+   "https://www.gov.kz/memleket/entities/astana?lang=ru",
+   "https://stat.gov.kz/ru/region/astana/dynamic-tables/38/",
+   "https://data.egov.kz/",
+   "https://lrt.kz/ (догадка A12)",
+   "https://www.kazhydromet.kz/",
+   "https://overpass-api.de/api/status",
+   "https://api.openstreetmap.org/api/0.6/relation/19733918",
+   "https://planet.openstreetmap.org/",
+   "https://query.wikidata.org/",
+   "https://www.bing.com/",
+   "https://duckduckgo.com/"
+  ],
+  "dns_unresolved_guesses": [
+   "https://ikomek109.kz/",
+   "https://www.ikomek109.kz/",
+   "https://astana.gov.kz/"
+  ],
+  "other": [
+   "github-cloud.githubusercontent.com (LFS) — не в allowlist"
+  ]
+ },
+ "experiments": [
+  {
+   "experiment_id": "E101",
+   "command": "python3 AST_A12_experiments.py",
+   "result": {
+    "indicators": 10,
+    "districts": [
+     "esil",
+     "almaty",
+     "saryarka",
+     "baikonur",
+     "nura"
+    ],
+    "population_share_sum": 1.0,
+    "measures": 14,
+    "budget": 100,
+    "events": 8,
+    "events_with_district": 5,
+    "real_context_cells": 25,
+    "real_context_nonzero": 0,
+    "real_context_districts": [
+     "almaty",
+     "baikonur",
+     "esil",
+     "nura",
+     "saryarka"
+    ],
+    "real_context_meta": {
+     "status": "unavailable",
+     "generated_at": "2026-09-23T09:25:25+00:00",
+     "districts_source": "fallback_approx"
+    },
+    "real_context_referenced_by": []
+   }
+  },
+  {
+   "experiment_id": "E102",
+   "command": "python3 AST_A12_experiments.py",
+   "result": {
+    "union_km2": 789.3,
+    "union_parts_km2": [
+     770.41,
+     9.021,
+     5.033,
+     4.794
+    ],
+    "neighbours": {
+     "3403760": {
+      "name": "Целиноград ауданы",
+      "area_km2": 7666.7,
+      "overlap_with_astana_km2": 9.021,
+      "shares_boundary": true
+     },
+     "3403782": {
+      "name": "Аршалы ауданы",
+      "area_km2": 5846.9,
+      "overlap_with_astana_km2": 0.0,
+      "shares_boundary": true
+     },
+     "3404061": {
+      "name": "Шортанды ауданы",
+      "area_km2": 4681.7,
+      "overlap_with_astana_km2": 0.0,
+      "shares_boundary": true
+     },
+     "15594335": {
+      "name": "Қосшы қалалық әкімдігі",
+      "area_km2": 141.2,
+      "overlap_with_astana_km2": 0.0,
+      "shares_boundary": true
+     },
+     "17952313": {
+      "name": "Тайтөбе ауылдық әкімдігі",
+      "area_km2": 89.3,
+      "overlap_with_astana_km2": 0.0,
+      "shares_boundary": true
+     }
+    },
+    "natural_earth": {
+     "astana_polygon_km2": 619.8,
+     "iou_with_osm_union": 0.675,
+     "osm_outside_ne_km2": 221.6,
+     "ne_outside_osm_km2": 52.2,
+     "populated_place": {
+      "name": "Nur-Sultan",
+      "nameascii": "Astana",
+      "adm1name": "Aqmola",
+      "pop_max": 345604
+     }
+    },
+    "saraishyk_relation": {
+     "id": 19733918,
+     "version": 17,
+     "timestamp": "2026-09-21T13:44:01Z",
+     "overpass_base": "2026-09-22T08:45:51Z",
+     "relation_edit_before_snapshot": true
+    }
+   }
+  },
+  {
+   "experiment_id": "E103",
+   "command": "python3 AST_A12_experiments.py",
+   "result": {
+    "tri_point": [
+     71.447389,
+     51.1311552
+    ],
+    "contains": {
+     "esil": false,
+     "almaty": false,
+     "saraishyk": false
+    },
+    "covers": [
+     "almaty",
+     "esil",
+     "saraishyk"
+    ],
+    "rule_result": "almaty",
+    "exclave_point": [
+     71.66574,
+     51.33028
+    ],
+    "exclave_in_baikonur": true,
+    "exclave_in_tselinograd": true
+   }
+  },
+  {
+   "experiment_id": "E104",
+   "command": "python3 AST_A12_experiments.py",
+   "result": {
+    "stops": 201,
+    "per_district": {
+     "saryarka": 80,
+     "nura": 24,
+     "esil": 88,
+     "baikonur": 7,
+     "almaty": 2
+    },
+    "ties": 0,
+    "outside": 0,
+    "routes": [
+     "46",
+     "10",
+     "12"
+    ],
+    "trips": 19769,
+    "service_dates": [
+     "2024-07-29",
+     "2024-09-21",
+     55
+    ]
+   }
+  },
+  {
+   "experiment_id": "E105",
+   "command": "python3 AST_A12_experiments.py",
+   "result": {
+    "catalog_rows": 3882,
+    "crawled": [
+     "2026-02-01T14:16:20.126Z",
+     "2026-02-01T15:04:03.102Z"
+    ],
+    "akimat_astana": 52,
+    "akimat_akmola": 68,
+    "akimat_shymkent": 56,
+    "astana_frequency": {
+     "Ежегодно": 44,
+     "Ежеквартально": 5,
+     "Ежемесячно": 1,
+     "1 раз в полгода": 2
+    },
+    "astana_legacy_nur_sultan_slugs": 15,
+    "astana_in_opengov_list": 51
+   }
+  },
+  {
+   "experiment_id": "E106",
+   "command": "python3 AST_A12_experiments.py",
+   "result": {
+    "tables": [
+     "boundary_crosswalk",
+     "boundary_versions",
+     "datasets",
+     "doc_chunks",
+     "game_mode_guard",
+     "geo_units",
+     "imports",
+     "indicators",
+     "observations",
+     "pip_assignments",
+     "sources",
+     "topology_conflicts"
+    ]
+   }
+  }
+ ],
+ "planned_not_executed": [
+  {
+   "id": "AST-A12-P001",
+   "what": "Overpass: районы Астаны с метаданными",
+   "query": "[out:json][timeout:120];rel(id:3479876,3482819,3486954,8593081,20593940,19733918,3403760,15594335);out meta geom;"
+  },
+  {
+   "id": "AST-A12-P002",
+   "what": "Overpass: школы, детсады, поликлиники, остановки, адреса внутри районов",
+   "query": "[out:json][timeout:180];rel(id:3479876,3482819,3486954,8593081,20593940,19733918);map_to_area->.a;(nwr[amenity~\"^(school|kindergarten|clinic|hospital)$\"](area.a);node[highway=bus_stop](area.a);nwr[\"addr:housenumber\"](area.a););out center tags;"
+  },
+  {
+   "id": "AST-A12-P003",
+   "what": "Пешеходная и дорожная сеть (объём большой — лучше вырезка из Geofabrik pbf через osmium)",
+   "query": "osmium extract -p astana_union.geojson kazakhstan-latest.osm.pbf -o astana.osm.pbf; osmium tags-filter astana.osm.pbf w/highway -o astana_roads.osm.pbf"
+  },
+  {
+   "id": "AST-A12-P004",
+   "what": "Метаданные наборов data.egov.kz (шаблон из стороннего списка)",
+   "urls": [
+    "https://data.egov.kz/meta/zholdy_zhondeu_obektileri_tur/v15?pretty",
+    "https://data.egov.kz/meta/39_information_about_vacant_l1/v9?pretty",
+    "https://data.egov.kz/meta/onirler_oblystar_kalalar_boi4/v7?pretty"
+   ]
+  }
+ ]
+}
