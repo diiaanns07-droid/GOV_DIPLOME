@@ -1,0 +1,7 @@
+{
+  "note": "K08 читает входы K10 напрямую через git show <SHA>:<path>; файлы K10 в эту папку не копировались.",
+  "inputs": [
+    {"slot": "K10", "branch": "claude/save-work-handoff-j7pc05", "sha": "e91898d596164bcf6e853b921a49f82126074a35", "path": "research/next-round/K10/", "source_of_assignment": "research/round-3/snapshots.json @ codex/research-import-2026-10-05"},
+    {"slot": "product", "sha": "15cd5f2db28c91ee4ead180babd13a93e3167419", "path": "data/astana_districts.geojson, data/geo_sources/", "note": "data/ совпадает с main 834a25f"}
+  ]
+}

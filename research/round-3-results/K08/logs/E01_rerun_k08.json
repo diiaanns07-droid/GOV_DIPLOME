@@ -1,0 +1,250 @@
+{
+ "experiment_id": "K10-E01",
+ "shymkent": {
+  "city": "shymkent",
+  "region_code": "KZ-79",
+  "city_polygon": {
+   "name": "Шымкент",
+   "osm": "r3389772@60",
+   "overture_division_id": "985e401d-c6f9-4bfd-bd6d-57ada1965ad7",
+   "area_km2": 1169.968
+  },
+  "districts": [
+   {
+    "name": "Еңбекші ауданы",
+    "subtype": "county",
+    "admin_level": 2,
+    "overture_division_id": "4ec591c8-3a63-4878-ae3d-3402e23f2741",
+    "overture_area_id": "f8d05717-1210-4422-89e8-5bc417f7b8c2",
+    "osm": "r5551117@29",
+    "overture_version": 4,
+    "area_km2": 201.538,
+    "is_valid": true,
+    "share_inside_city": 1.0
+   },
+   {
+    "name": "Қаратау ауданы",
+    "subtype": "county",
+    "admin_level": 2,
+    "overture_division_id": "e40b12ae-7d7f-448f-9df4-713204748b12",
+    "overture_area_id": "cd126018-d92b-4069-8da6-6dc3aa03147e",
+    "osm": "r5551119@30",
+    "overture_version": 5,
+    "area_km2": 321.712,
+    "is_valid": true,
+    "share_inside_city": 1.0
+   },
+   {
+    "name": "Әл-Фараби ауданы",
+    "subtype": "county",
+    "admin_level": 2,
+    "overture_division_id": "9b976a38-60bc-4526-93f3-9d2e8078501d",
+    "overture_area_id": "4c02e4c8-8de4-408a-95d8-3f9696c53112",
+    "osm": "r5550509@19",
+    "overture_version": 3,
+    "area_km2": 149.813,
+    "is_valid": true,
+    "share_inside_city": 1.0
+   },
+   {
+    "name": "Абай ауданы",
+    "subtype": "county",
+    "admin_level": 2,
+    "overture_division_id": "38b96b7d-38d9-40d7-a305-bb6a3c703353",
+    "overture_area_id": "090d0ef3-67e9-403f-81d6-3832534ea8f3",
+    "osm": "r5548210@25",
+    "overture_version": 4,
+    "area_km2": 496.905,
+    "is_valid": true,
+    "share_inside_city": 1.0
+   }
+  ],
+  "districts_union_km2": 1169.968,
+  "city_area_covered_by_districts_share": 1.0,
+  "city_area_not_covered_km2": 0.0,
+  "pairwise_overlaps": []
+ },
+ "astana": {
+  "city": "astana",
+  "region_code": "KZ-71",
+  "city_polygon": {
+   "name": "Астана",
+   "osm": "r3087155@64",
+   "overture_division_id": "6e28f59e-b1ce-440e-bec9-a80814b35f7c",
+   "area_km2": 800.291
+  },
+  "districts": [
+   {
+    "name": "Байқоңыр ауданы",
+    "subtype": "county",
+    "admin_level": 2,
+    "overture_division_id": "0fedba7f-303f-480d-a9b0-49a2508ba0c2",
+    "overture_area_id": "718684fa-c7e0-4383-8c2b-26883e4c2711",
+    "osm": "r8593081@14",
+    "overture_version": 10,
+    "area_km2": 183.501,
+    "is_valid": true,
+    "share_inside_city": 1.0
+   },
+   {
+    "name": "Есіл ауданы",
+    "subtype": "county",
+    "admin_level": 2,
+    "overture_division_id": "5f2ad254-2018-4185-804d-1385bd38816d",
+    "overture_area_id": "3a849ecf-96c1-4ac9-a957-36f883836726",
+    "osm": "r3479876@35",
+    "overture_version": 8,
+    "area_km2": 194.556,
+    "is_valid": true,
+    "share_inside_city": 1.0
+   },
+   {
+    "name": "Сарыарқа ауданы",
+    "subtype": "county",
+    "admin_level": 2,
+    "overture_division_id": "2e0044cd-22bd-4f35-b838-a465ef876e51",
+    "overture_area_id": "64324e0b-0706-4ff3-88d0-7e4af753d9a9",
+    "osm": "r3486954@23",
+    "overture_version": 9,
+    "area_km2": 67.823,
+    "is_valid": true,
+    "share_inside_city": 1.0
+   },
+   {
+    "name": "Нұра ауданы",
+    "subtype": "county",
+    "admin_level": 2,
+    "overture_division_id": "4efb1e7d-e3dc-4e21-8904-78ca374a5d4b",
+    "overture_area_id": "8083aa2f-525b-4e48-aee3-1219d6efaa9f",
+    "osm": "r20593940@1",
+    "overture_version": 2,
+    "area_km2": 188.574,
+    "is_valid": true,
+    "share_inside_city": 1.0
+   },
+   {
+    "name": "Алматы ауданы",
+    "subtype": "county",
+    "admin_level": 2,
+    "overture_division_id": "e1e4c9d5-3c13-4c08-aca9-9c766495c0c6",
+    "overture_area_id": "6110c8b6-be5d-4028-baff-623caddf6585",
+    "osm": "r3482819@46",
+    "overture_version": 10,
+    "area_km2": 93.379,
+    "is_valid": true,
+    "share_inside_city": 1.0
+   },
+   {
+    "name": "Сарайшық ауданы",
+    "subtype": "locality",
+    "admin_level": null,
+    "overture_division_id": "18481a68-2f92-49e3-b5c1-212e666667b2",
+    "overture_area_id": "b367ecc9-9ec4-4cc0-a73c-b7e3cea38787",
+    "osm": "r19733918@16",
+    "overture_version": 7,
+    "area_km2": 61.425,
+    "is_valid": true,
+    "share_inside_city": 1.0
+   }
+  ],
+  "districts_union_km2": 789.257,
+  "city_area_covered_by_districts_share": 0.9862,
+  "city_area_not_covered_km2": 11.034,
+  "pairwise_overlaps": [],
+  "product_layer_comparison": {
+   "file": "/home/user/gov_diplome/data/astana_districts.geojson",
+   "features": [
+    {
+     "product_props": {
+      "id": "esil",
+      "name": "Есиль",
+      "name_full": "район Есиль",
+      "source": "osm",
+      "osm_id": 3479876,
+      "source_url": "https://www.openstreetmap.org/relation/3479876"
+     },
+     "matched_overture": "Есіл ауданы",
+     "osm": "r3479876@35",
+     "product_area_km2": 194.556,
+     "overture_area_km2": 194.556,
+     "iou": 1.0
+    },
+    {
+     "product_props": {
+      "id": "almaty",
+      "name": "Алматы",
+      "name_full": "район Алматы",
+      "source": "osm",
+      "osm_id": 3482819,
+      "source_url": "https://www.openstreetmap.org/relation/3482819"
+     },
+     "matched_overture": "Алматы ауданы",
+     "osm": "r3482819@46",
+     "product_area_km2": 93.379,
+     "overture_area_km2": 93.379,
+     "iou": 1.0
+    },
+    {
+     "product_props": {
+      "id": "saryarka",
+      "name": "Сарыарка",
+      "name_full": "район Сарыарка",
+      "source": "osm",
+      "osm_id": 3486954,
+      "source_url": "https://www.openstreetmap.org/relation/3486954"
+     },
+     "matched_overture": "Сарыарқа ауданы",
+     "osm": "r3486954@23",
+     "product_area_km2": 67.823,
+     "overture_area_km2": 67.823,
+     "iou": 1.0
+    },
+    {
+     "product_props": {
+      "id": "baikonur",
+      "name": "Байконур",
+      "name_full": "район Байконур",
+      "source": "osm",
+      "osm_id": 8593081,
+      "source_url": "https://www.openstreetmap.org/relation/8593081"
+     },
+     "matched_overture": "Байқоңыр ауданы",
+     "osm": "r8593081@14",
+     "product_area_km2": 183.501,
+     "overture_area_km2": 183.501,
+     "iou": 1.0
+    },
+    {
+     "product_props": {
+      "id": "nura",
+      "name": "Нура",
+      "name_full": "район Нура",
+      "source": "osm",
+      "osm_id": 20593940,
+      "source_url": "https://www.openstreetmap.org/relation/20593940"
+     },
+     "matched_overture": "Нұра ауданы",
+     "osm": "r20593940@1",
+     "product_area_km2": 188.574,
+     "overture_area_km2": 188.574,
+     "iou": 1.0
+    },
+    {
+     "product_props": {
+      "id": "saraishyk",
+      "name": "Сарайшык",
+      "name_full": "район Сарайшык",
+      "source": "osm",
+      "osm_id": 19733918,
+      "source_url": "https://www.openstreetmap.org/relation/19733918"
+     },
+     "matched_overture": "Сарайшық ауданы",
+     "osm": "r19733918@16",
+     "product_area_km2": 61.425,
+     "overture_area_km2": 61.425,
+     "iou": 1.0
+    }
+   ]
+  }
+ }
+}
