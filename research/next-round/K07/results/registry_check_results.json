@@ -1,0 +1,395 @@
+{
+ "kind": "registry check; real repository files + secondary catalogue sample; validator self-test on synthetic rows",
+ "product_layer_findings": [
+  {
+   "id": "K07-R01",
+   "kind": "observed",
+   "statement": "real_context.json holds 0 for every district and category while meta.status is 'unavailable'",
+   "evidence": {
+    "meta_status": "unavailable",
+    "n_values": 25,
+    "n_zero": 25,
+    "meta_generated_at": "2026-09-23T09:25:25+00:00"
+   },
+   "confirms": [
+    "A05 §2 (A05-F005)",
+    "A04 §2 item 2"
+   ],
+   "consequence": "a future layer must write null + status, otherwise 0 reads as 'no schools'"
+  },
+  {
+   "id": "K07-R02",
+   "kind": "observed",
+   "statement": "line 346 of fetch_real_context.py documents that zeros mean 'no data' when status is unavailable",
+   "evidence": {
+    "line_346": "\"status\": status,  # \"ok\" или \"unavailable\" (тогда нули в real_context.json = «нет данных»)"
+   },
+   "confirms": [
+    "A05 §2"
+   ]
+  },
+  {
+   "id": "K07-R03",
+   "kind": "observed",
+   "statement": "no code outside the collector reads real_context (zeros do not reach the UI today)",
+   "evidence": {
+    "consumers_in_code": []
+   },
+   "confirms": [
+    "A04 §2 item 2"
+   ]
+  },
+  {
+   "id": "K07-R04",
+   "kind": "observed",
+   "statement": "the stored stub was generated with schematic districts before the OSM polygons were saved",
+   "evidence": {
+    "meta_districts_source": "fallback_approx",
+    "meta_generated_at": "2026-09-23T09:25:25+00:00",
+    "geojson_metadata_source": "osm",
+    "geojson_generated_at": "2026-09-23T11:32:42+00:00"
+   },
+   "consequence": "meta.warning about schematic districts is stale; rerun the collector before any use"
+  },
+  {
+   "id": "K07-R05",
+   "kind": "derived_from_code",
+   "statement": "the collector loads 5 district ids; the GeoJSON has 6 features. Objects in Sarayshyk would be counted as 'outside districts' together with objects outside the city",
+   "evidence": {
+    "DISTRICT_IDS": [
+     "esil",
+     "almaty",
+     "saryarka",
+     "baikonur",
+     "nura"
+    ],
+    "geojson_ids": [
+     "esil",
+     "almaty",
+     "saryarka",
+     "baikonur",
+     "nura",
+     "saraishyk"
+    ],
+    "saraishyk_scoring_enabled": false,
+    "code": "aggregate(): find_district() is None -> outside[category] += 1; meta.outside_districts"
+   },
+   "consequence": "for real accessibility the 6th district needs its own bucket; 'outside' must mean outside the city"
+  },
+  {
+   "id": "K07-R06",
+   "kind": "derived_from_code",
+   "statement": "duplicates are removed only for named objects (same category + normalized name within 150 m schools / 100 m kindergartens); unnamed objects are never de-duplicated",
+   "evidence": {
+    "dedup_radius_m": {
+     "schools": 150,
+     "kindergartens": 100,
+     "clinics": 100,
+     "bus_stops": 25,
+     "parks": 150
+    },
+    "code": "key = (cat, normalize_name(name)) if name else None"
+   },
+   "confirms": [
+    "A05 §2 (dedup by normalized name)"
+   ],
+   "consequence": "an unnamed school mapped as node + building would be counted twice; two buildings of one named school within 150 m are merged"
+  }
+ ],
+ "aggregated_layer_check_real_context": {
+  "status": "unavailable",
+  "values_that_should_be_null": 25,
+  "ok": false
+ },
+ "registry_candidates": {
+  "astana": [
+   {
+    "city": "astana",
+    "api_uri": "onirler_oblystar_kalalar_boi4",
+    "present_in_stored_sample": true,
+    "title": "Реестр общеобразовательных школ по областям, городам республиканского значения, столицы (дневные/вечерние, лицей/гимназия/средняя школа)",
+    "publisher": "Министерство просвещения РК",
+    "renewal_date": "22.12.2025 19:06",
+    "crawled_at": "2026-02-01T14:57:46.770Z",
+    "geographic_scope": "national registry (all regions); Astana rows must be filtered by region field, not by name",
+    "source": {
+     "source_id": "AST-A12-S016",
+     "url": "https://github.com/Yerassyl20036/egov-web-crawler/blob/8c1f4a34688cfb825089bb96055eef89dbb24207/datasets_export.csv",
+     "type": "secondary_catalog"
+    },
+    "known_fields": [
+     "nate1 (region filter, from third-party code AST-A12-S018)"
+    ],
+    "unknown": [
+     "rows",
+     "coordinates",
+     "addresses",
+     "design capacity",
+     "enrolment",
+     "shifts",
+     "license"
+    ],
+    "portal_check": "not done: data.egov.kz returns 403 on CONNECT in this environment (access_check.json)"
+   }
+  ],
+  "shymkent": [
+   {
+    "city": "shymkent",
+    "api_uri": "opendata-api-uri981",
+    "present_in_stored_sample": true,
+    "title": "Список общеобразовательных школ",
+    "publisher": "Акимат города Шымкент",
+    "renewal_date": "30.01.2026 16:19",
+    "crawled_at": "2026-02-01T14:18:59.823Z",
+    "geographic_scope": "akimat of Shymkent dataset; city scope by publisher",
+    "source": {
+     "source_id": "AST-A12-S016",
+     "url": "https://github.com/Yerassyl20036/egov-web-crawler/blob/8c1f4a34688cfb825089bb96055eef89dbb24207/datasets_export.csv",
+     "type": "secondary_catalog"
+    },
+    "known_fields": [],
+    "unknown": [
+     "rows",
+     "coordinates",
+     "addresses",
+     "design capacity",
+     "enrolment",
+     "shifts",
+     "license"
+    ],
+    "portal_check": "not done: data.egov.kz returns 403 on CONNECT in this environment (access_check.json)"
+   }
+  ]
+ },
+ "registry_notes": [
+  {
+   "id": "K07-R07",
+   "kind": "observed",
+   "statement": "AST-A12-F024 also names a kindergarten registry 'boi6', but the stored sample has no row with that api_uri",
+   "evidence": {
+    "api_uris_in_sample": [
+     "39_information_about_vacant_l1",
+     "435_the_number_of_cattle_by_r",
+     "696_sumen_zhabdyktau_obektil",
+     "bir_tereze_kagidaty_boiynsha_i",
+     "onirler_oblystar_kalalar_boi4",
+     "opendata-api-uri981",
+     "shymkent_kalasy_boiynsha_bos_z",
+     "sumen_zhabdyktau_obektileri",
+     "zholdardy_zhondeu_obektileri1",
+     "zholdy_zhondeu_obektileri_tur"
+    ]
+   },
+   "status": "not verifiable from the repository; needs the original crawl CSV or the portal"
+  },
+  {
+   "id": "K07-R08",
+   "kind": "observed",
+   "statement": "in the stored crawl sample api_uri and title disagree for at least one row (api_uri about cattle, title about heat supply)",
+   "evidence": {
+    "api_uri": "435_the_number_of_cattle_by_r",
+    "title": "№654 Сведения о качестве предоставления тепла в отопительный период в разрезе регионов"
+   },
+   "status": "secondary catalogue metadata can be inconsistent; registry cards must be confirmed on the portal"
+  }
+ ],
+ "AST_A12_F024_as_stated": "Министерство просвещения публикует «Реестр общеобразовательных школ по областям, городам республиканского значения, столицы» (onirler_oblystar_kalalar_boi4, ежегодно, паспорт обновлён 22.12.2025) и «Реестр детских садов…» (boi6, обновлён 28.07.2025); сторонний код фильтрует строки по полю nate1 (регион).",
+ "contract": {
+  "registry_row": {
+   "object_id": "stable id from the source (BIN / portal id); required",
+   "city": "astana | shymkent; one city per file, never mixed",
+   "kind": "school | kindergarten | other",
+   "operating_status": "operating | closed | planned | unknown; only operating objects count",
+   "lon": "WGS84, null if unknown (never 0)",
+   "lat": "WGS84, null if unknown (never 0)",
+   "coord_source": "registry | osm | manual | null",
+   "design_capacity": {
+    "value": "int or null",
+    "source_id": "required if value",
+    "period": "required if value"
+   },
+   "enrolled": {
+    "value": "int or null",
+    "source_id": "required if value",
+    "period": "required if value"
+   },
+   "shifts": {
+    "value": "int or null",
+    "source_id": "required if value"
+   },
+   "source_id": "provenance of the row",
+   "retrieved_at": "ISO date",
+   "license": "string or null"
+  },
+  "demand_area_row": {
+   "area_id": "district / block / grid cell id with boundary version",
+   "children_by_age": {
+    "value": "int or null",
+    "age_band": "e.g. 6-17",
+    "source_id": "required if value",
+    "period": "required if value"
+   }
+  }
+ },
+ "analyses_and_inputs": {
+  "geographic_access_radius_baseline": [
+   "object coordinates",
+   "residential locations"
+  ],
+  "geographic_access_network": [
+   "object coordinates",
+   "residential locations",
+   "pedestrian network"
+  ],
+  "provision_arithmetic_by_area": [
+   "design capacity",
+   "children by area",
+   "area of each object"
+  ],
+  "provision_within_reach_2sfca": [
+   "object coordinates",
+   "design capacity",
+   "children by area",
+   "pedestrian network"
+  ],
+  "utilization": [
+   "design capacity",
+   "enrolled",
+   "shifts"
+  ]
+ },
+ "status_today_by_city": {
+  "astana": {
+   "object_registry_rows": "not obtained (data.egov.kz blocked; only a catalogue card from a secondary crawl)",
+   "object_coordinates": "not obtained (Overpass blocked; OSM points of schools absent from the repo)",
+   "pedestrian_network": "not obtained (Overpass blocked; data/geo_sources/sara_osm.json has only 66 boundary roads, not a walk network)",
+   "district_polygons": "available: 6 OSM community boundaries, snapshot 2026-09-22 (not legal boundaries)",
+   "design_capacity": "unknown, no source",
+   "children_by_area": "unknown, no source",
+   "computable_now": [],
+   "computable_after_osm_access": [
+    "geographic_access_radius_baseline",
+    "geographic_access_network"
+   ],
+   "needs_capacity_and_demand_sources": [
+    "provision_arithmetic_by_area",
+    "provision_within_reach_2sfca",
+    "utilization"
+   ]
+  },
+  "shymkent": {
+   "object_registry_rows": "not obtained (data.egov.kz blocked; only a catalogue card from a secondary crawl)",
+   "object_coordinates": "not obtained (Overpass blocked; OSM points of schools absent from the repo)",
+   "pedestrian_network": "not obtained (no OSM data for Shymkent in the repo)",
+   "district_polygons": "not available in the repo",
+   "design_capacity": "unknown, no source",
+   "children_by_area": "unknown, no source",
+   "computable_now": [],
+   "computable_after_osm_access": [
+    "geographic_access_radius_baseline",
+    "geographic_access_network"
+   ],
+   "needs_capacity_and_demand_sources": [
+    "provision_arithmetic_by_area",
+    "provision_within_reach_2sfca",
+    "utilization"
+   ]
+  }
+ },
+ "validator_selftest_synthetic": {
+  "expected_codes": [
+   [
+    "TEST-2",
+    "V2_zero_as_unknown"
+   ],
+   [
+    "TEST-2",
+    "V2_zero_coordinate"
+   ],
+   [
+    "TEST-3",
+    "V3_outside_city"
+   ],
+   [
+    "TEST-3",
+    "V4_duplicate_id"
+   ],
+   [
+    "TEST-3",
+    "V5_number_without_provenance"
+   ],
+   [
+    "TEST-3",
+    "V6_city_mix"
+   ]
+  ],
+  "got_codes": [
+   [
+    "TEST-2",
+    "V2_zero_as_unknown"
+   ],
+   [
+    "TEST-2",
+    "V2_zero_coordinate"
+   ],
+   [
+    "TEST-3",
+    "V3_outside_city"
+   ],
+   [
+    "TEST-3",
+    "V4_duplicate_id"
+   ],
+   [
+    "TEST-3",
+    "V5_number_without_provenance"
+   ],
+   [
+    "TEST-3",
+    "V6_city_mix"
+   ]
+  ],
+  "passed": true
+ },
+ "validator_result_on_synthetic_fixture": {
+  "n_rows": 4,
+  "n_issues": 6,
+  "issues": [
+   {
+    "object_id": "TEST-2",
+    "code": "V2_zero_coordinate",
+    "message": "0 used instead of null for a coordinate"
+   },
+   {
+    "object_id": "TEST-2",
+    "code": "V2_zero_as_unknown",
+    "message": "design_capacity=0 without observed status; unknown must be null"
+   },
+   {
+    "object_id": "TEST-3",
+    "code": "V3_outside_city",
+    "message": "point outside the city polygon (check region filter / geocoding)"
+   },
+   {
+    "object_id": "TEST-3",
+    "code": "V5_number_without_provenance",
+    "message": "design_capacity has a value but no source_id/period"
+   },
+   {
+    "object_id": "TEST-3",
+    "code": "V4_duplicate_id",
+    "message": "object_id repeats"
+   },
+   {
+    "object_id": "TEST-3",
+    "code": "V6_city_mix",
+    "message": "row city 'shymkent' in a 'astana' file"
+   }
+  ],
+  "rows_with_sourced_capacity": 0,
+  "computability_note": {
+   "geographic_access_network": "needs pedestrian network (blocked) and residential locations",
+   "provision": "computable only for rows with design_capacity provenance AND an area demand table"
+  }
+ }
+}
