@@ -1,0 +1,2 @@
+D1 REPRODUCED [{'step': 'facts', 'check': 'step crashed', 'status': 'FAIL', 'detail': 'StopIteration: '}]
+D2 REPRODUCED inputs checks after byte flip: ['pass', 'pass', 'pass', 'pass', 'pass', 'pass']

@@ -1,0 +1,149 @@
+{
+ "slot": "K01",
+ "role": "REVIEW",
+ "round": 6,
+ "target": {
+  "branch": "claude/beautiful-clarke-sbzomj",
+  "sha": "064ed25368341edaa50289bc29e21dda7bdd9440",
+  "path": "prototypes/city-evidence/",
+  "previous_build_not_retested_as_new": "0bf27deb8549b325b34a9610402613d745544edb"
+ },
+ "test_source": {
+  "branch": "claude/loving-thompson-nmajdo",
+  "round5_tools_sha": "295b3563d07c12bb6681b7b6a105a58c0edc7923",
+  "round6_adapter": "research/round-6-results/K01/check_r6.py (this commit)"
+ },
+ "snapshots": "research/round-6/snapshots.json @ codex/research-import-2026-10-05 edee718",
+ "environment": {
+  "os": "Linux (Claude Code container)",
+  "python": "3.11.15",
+  "node": "22",
+  "shapely_pyproj": "not installed"
+ },
+ "commands": [
+  "git fetch origin claude/beautiful-clarke-sbzomj",
+  "git show 295b356:research/round-5-results/K01/{extract_build.py,check_build.py,browser_check.cjs,test_socket_side_effect.py} > <TMP>/tools/",
+  "APP=$(python3 <TMP>/tools/extract_build.py --sha 064ed25368341edaa50289bc29e21dda7bdd9440 --dest <TMP>/run1)",
+  "cd /tmp && python3 <TMP>/tools/check_build.py --app-root $APP --browser --json r5tool_on_new.json",
+  "cd /tmp && python3 research/round-6-results/K01/check_r6.py --app-root $APP --extract-manifest <TMP>/run1/EXTRACT_MANIFEST.json --json r6_isolated.json",
+  "git archive 064ed25 | tar -x -C <TMP>/full && python3 research/round-6-results/K01/check_r6.py --app-root <TMP>/full/prototypes/city-evidence --json r6_fulltree.json",
+  "cd /tmp && NODE_PATH=$(npm root -g) node $APP/tests/smoke.cjs <TMPDIR>"
+ ],
+ "invariants": [
+  {
+   "id": "I1-I4",
+   "what": "inputs vs source_manifest, K10 package_manifest, no symlinks, data.js rebuild byte-equal (round-5 tool)",
+   "verdict": "PASS"
+  },
+  {
+   "id": "S1-S3",
+   "what": "serve.py from foreign cwd serves byte-identical assets; traversal 404; no opens outside web/, no connect (round-5 tool)",
+   "verdict": "PASS"
+  },
+  {
+   "id": "B1",
+   "what": "headless Chromium file://: no external requests/console errors (round-5 tool)",
+   "verdict": "PASS"
+  },
+  {
+   "id": "N1_round5",
+   "what": "round-5 N1 + test_socket_side_effect import archived offline_check in-process",
+   "verdict": "TEST_INCOMPATIBLE",
+   "why": "new build never imports offline_check in-process (check_all/test_inputs use subprocess); archived K10 copy stays byte-exact by design. Round-5 'known on baseline' label is hard-coded to 0bf27de and not applied here. Replaced by P1-P3, rerun below."
+  },
+  {
+   "id": "P1",
+   "what": "no in-process import of offline_check in build code (AST)",
+   "verdict": "PASS"
+  },
+  {
+   "id": "P2",
+   "what": "parent process after check_all.step_package(): socket attrs unchanged, localhost connect works",
+   "verdict": "PASS"
+  },
+  {
+   "id": "P3",
+   "what": "network still blocked inside offline_check subprocess",
+   "verdict": "PASS"
+  },
+  {
+   "id": "M1",
+   "what": "extracted app root == git blobs of 064ed25 (174 files)",
+   "verdict": "PASS"
+  },
+  {
+   "id": "M2",
+   "what": "every inputs/ file anchored by a manifest hash",
+   "verdict": "FAIL",
+   "defect": "D2"
+  },
+  {
+   "id": "M3_isolated",
+   "what": "tools/check_all.py on extracted prototype only",
+   "verdict": "FAIL",
+   "defect": "D1"
+  },
+  {
+   "id": "M3_full_tree",
+   "what": "tools/check_all.py inside full repo tree of 064ed25 (git archive)",
+   "verdict": "PASS",
+   "note": "12 pass, 1 skip (evidence.js rebuild: no shapely), 0 fail; skip is not pass"
+  },
+  {
+   "id": "T1",
+   "what": "no writes/creates/removes outside private TMPDIR during check_all (audit hook in all Python children)",
+   "verdict": "PASS",
+   "note": "full tree: only __pycache__ in repo-root agent/ (consequence of D1)"
+  },
+  {
+   "id": "T2",
+   "what": "TMPDIR empty after check_all",
+   "verdict": "PASS"
+  },
+  {
+   "id": "T3",
+   "what": "app root unchanged after check_all (only __pycache__ added)",
+   "verdict": "PASS"
+  },
+  {
+   "id": "SMOKE",
+   "what": "tests/smoke.cjs with explicit tmp output dir",
+   "verdict": "PASS",
+   "note": "exit 0, 23 PASS lines (runs/smoke.txt)"
+  },
+  {
+   "id": "EVIDENCE_REBUILD",
+   "what": "web/evidence.js rebuild",
+   "verdict": "SKIP",
+   "note": "shapely/pyproj not installed"
+  }
+ ],
+ "defects": [
+  {
+   "id": "D1",
+   "severity": "medium",
+   "where": "prototypes/city-evidence/inputs/k02v4/verified_explainer.py:29 (REPO = next(... (p/'agent'/'evidence.py').exists())), imported by tools/explain_ref.py:19",
+   "what": "the build's own check_all 'facts' step depends on agent/evidence.py of the hackathon site outside the prototype; file is not pinned by any manifest",
+   "repro": "APP=$(python3 extract_build.py --sha 064ed25...) ; cd $APP && python3 tools/check_all.py  -> [FAIL] facts: step crashed — StopIteration (10 pass, 1 skip, 1 fail); same SHA via git archive full tree -> 12 pass, 0 fail",
+   "impact": "web runtime unaffected (facts.js, serve.py, browser checks pass); reproducibility/isolation of the Python reference and README 'only Python 3' claim for checks",
+   "fix_proposal": "vendor format_value into inputs/k02v4 (or copy agent/evidence.py byte-exact with sha256 in MANIFEST) and drop the parents search"
+  },
+  {
+   "id": "D2",
+   "severity": "low",
+   "where": "prototypes/city-evidence/inputs/k03v2_root/ (MANIFEST_K03V2.json lists only boundary_validator.py); tools/check_all.py step_inputs",
+   "what": "10 unmodified K03 v2 files (district geometries, registry, geo_common.py) used by build_evidence.py are not hash-checked; manifest only states 'identical to k03_root'",
+   "repro": "flip one byte in inputs/k03v2_root/data/astana_districts.geojson -> all 6 check_all 'inputs' checks still PASS (runs: see STATUS)",
+   "fix_proposal": "in check_all compare every k03v2_root file except the patched one byte-for-byte with inputs/k03_root, or list their sha256 in MANIFEST_K03V2.json"
+  },
+  {
+   "id": "D3",
+   "severity": "low",
+   "where": "prototypes/city-evidence/tests/smoke.cjs:8",
+   "what": "default screenshot dir path.join(APP,'..','..','research','round-5-results','BUILD','smoke') is outside the app root (round-5 K01 finding #3 still open; not in ISSUE_MATRIX)",
+   "repro": "static; run with explicit dir works (SMOKE PASS)"
+  }
+ ],
+ "verdict": "NOT ACCEPTED as fully isolated: runtime/serving/network isolation PASS; build self-check fails outside the repo (D1); input anchoring gap (D2)",
+ "results_branch": "claude/loving-thompson-nmajdo"
+}

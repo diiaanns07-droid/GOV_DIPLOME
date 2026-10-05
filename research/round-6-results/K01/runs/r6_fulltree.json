@@ -1,0 +1,155 @@
+{
+ "app_root": "<TMP>/full/prototypes/city-evidence",
+ "python": "3.11.15",
+ "results": [
+  {
+   "id": "M1",
+   "verdict": "SKIP",
+   "detail": "no --extract-manifest given"
+  },
+  {
+   "id": "M2",
+   "verdict": "FAIL",
+   "detail": "142 files under inputs/; not named in any manifest: 10",
+   "unlisted": [
+    "inputs/k03v2_root/data/astana_districts.geojson",
+    "inputs/k03v2_root/data/geo_sources/astana_districts_overpass.json",
+    "inputs/k03v2_root/data/geo_sources/sara_osm.json",
+    "inputs/k03v2_root/research/round-3-results/K03/STATUS.md",
+    "inputs/k03v2_root/research/round-3-results/K03/ambiguity_zones.geojson",
+    "inputs/k03v2_root/research/round-3-results/K03/boundary_registry.json",
+    "inputs/k03v2_root/research/round-3-results/K03/geo_common.py",
+    "inputs/k03v2_root/research/round-3-results/K03/inputs/K10/astana_districts_overture.geojson",
+    "inputs/k03v2_root/research/round-3-results/K03/inputs/K10/shymkent_districts_overture.geojson",
+    "inputs/k03v2_root/research/round-3-results/K03/validator_selftest.json"
+   ]
+  },
+  {
+   "id": "P1",
+   "verdict": "PASS",
+   "detail": "no in-process import of offline_check outside inputs/"
+  },
+  {
+   "id": "P3",
+   "verdict": "PASS",
+   "detail": "offline_check subprocess exit 0; network probe during check -> NetworkBlocked"
+  },
+  {
+   "id": "M3",
+   "verdict": "PASS",
+   "detail": "check_all.py from foreign cwd: exit 0; 12 pass, 1 skip, 0 fail; 1.7s",
+   "skipped": [
+    "web/evidence.js rebuild — shapely/pyproj not installed: pip install -r requirements-build.txt"
+   ],
+   "failed": [],
+   "check_all": {
+    "when_utc": "2026-10-05T11:17:03+00:00",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v70-x86_64-with-glibc2.39",
+    "passed": 12,
+    "skipped": 1,
+    "failed": 0,
+    "results": [
+     {
+      "step": "inputs",
+      "check": "40 + 82 copied inputs match recorded sha256",
+      "status": "pass",
+      "detail": ""
+     },
+     {
+      "step": "inputs",
+      "check": "contract k05-obs-v1.2+k12r4: originals and patched copy match manifest (1 modified)",
+      "status": "pass",
+      "detail": ""
+     },
+     {
+      "step": "inputs",
+      "check": "K03 v2: original byte-exact, patched copy matches manifest",
+      "status": "pass",
+      "detail": ""
+     },
+     {
+      "step": "inputs",
+      "check": "K02 v4: original byte-exact, adapted copy matches manifest",
+      "status": "pass",
+      "detail": ""
+     },
+     {
+      "step": "inputs",
+      "check": "web/attribution equals K08 r4 originals",
+      "status": "pass",
+      "detail": ""
+     },
+     {
+      "step": "inputs",
+      "check": "K10 package_manifest.json anchored by source_manifest sha256 (K01 #2)",
+      "status": "pass",
+      "detail": ""
+     },
+     {
+      "step": "package",
+      "check": "K10 offline_check.py (subprocess) exit 0, ok=true",
+      "status": "pass",
+      "detail": ""
+     },
+     {
+      "step": "build",
+      "check": "web/data.js == rebuild",
+      "status": "pass",
+      "detail": ""
+     },
+     {
+      "step": "build",
+      "check": "committed evidence.js passes k05-obs-v1.2+k12r4 (strict JSON, records, dataset)",
+      "status": "pass",
+      "detail": ""
+     },
+     {
+      "step": "build",
+      "check": "web/evidence.js rebuild",
+      "status": "skip",
+      "detail": "shapely/pyproj not installed: pip install -r requirements-build.txt"
+     },
+     {
+      "step": "facts",
+      "check": "Python K02 reference reproduces 7 expected explanations",
+      "status": "pass",
+      "detail": ""
+     },
+     {
+      "step": "facts",
+      "check": "JS facts.js conformance (37 checks)",
+      "status": "pass",
+      "detail": ""
+     },
+     {
+      "step": "tests",
+      "check": "python -m unittest discover -s tests (Ran 28 tests in 0.954s; OK (skipped=3))",
+      "status": "pass",
+      "detail": ""
+     }
+    ]
+   }
+  },
+  {
+   "id": "T1",
+   "verdict": "PASS",
+   "detail": "336 write/fs events; outside TMPDIR+app: []; in app root (non-pycache): []; socket.connect: []; __pycache__ writes outside app (informational): ['<TMP>/full/agent/']"
+  },
+  {
+   "id": "T2",
+   "verdict": "PASS",
+   "detail": "TMPDIR leftovers after run: []"
+  },
+  {
+   "id": "T3",
+   "verdict": "PASS",
+   "detail": "app root after run: changed [], new non-pycache [], new __pycache__ files 9 (informational)"
+  },
+  {
+   "id": "P2",
+   "verdict": "PASS",
+   "detail": "check_all.step_package() -> pass; socket attrs unchanged=True; localhost connect after=ok"
+  }
+ ]
+}
