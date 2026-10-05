@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # K08: воспроизведение проверок утверждений. Только чтение публичных репозиториев GitHub.
 # Не скачивает LFS-файлы (GIT_LFS_SKIP_SMUDGE=1). Запуск: bash verify_claims.sh <рабочая_папка>
+# Переменные: GOV_DIPLOME_ROOT=<корень клона GOV_DIPLOME> (для V04, V07); PYTHON=<python с numpy, pytest, openpyxl> (для V07, V09).
 set -euo pipefail
 W="${1:-./k08_work}"; mkdir -p "$W"; cd "$W"
 clone() { [ -d "$2" ] || GIT_LFS_SKIP_SMUDGE=1 git clone -q "$1" "$2"; git -C "$2" log -1 --format="$2 HEAD %H %cI"; }
@@ -64,3 +65,47 @@ grep -n 'manager@ikomekastana.kz\|Дата публикации' ikomek109/READM
 git -C ikomek_platform log -1 --format='ikomek_platform HEAD %H %cI'
 grep -n -iE 'languages-RU|MyMemory|тепловая|AI-ассистент|demo49' ikomek_platform/README.md
 ls ikomek_platform | grep -i license || echo "V06 LICENSE: none"
+
+# V07 — A13-F001/F002: тесты исходного репозитория на 834a25f (нужны numpy, pytest; код не меняется)
+PY="${PYTHON:-python3}"
+WT="$PWD/stupits_834a25f"
+[ -d "$WT" ] || git -C "$R" worktree add -q --detach "$WT" 834a25fb860dd5514d02c9274b70d7bf8a53a79c
+( cd "$WT" && "$PY" -m pytest -q 2>&1 | tail -1 && "$PY" check.py > ../check_out.txt 2>&1; echo "V07 check.py exit=$?"; tail -1 ../check_out.txt )
+git -C "$R" worktree remove --force "$WT"
+
+# V08 — A12-F010/F011: Natural Earth
+for f in ne_10m_admin_1_states_provinces ne_10m_populated_places_simple; do [ -f $f.geojson ] || curl -sS -o $f.geojson https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/$f.geojson; done
+echo "V08 VERSION $(curl -sS https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/VERSION)"
+python3 - <<'PY'
+import json
+a=json.load(open('ne_10m_admin_1_states_provinces.geojson'))
+kz=sorted((f['properties']['iso_3166_2'],f['properties']['name'],f['properties'].get('name_ru')) for f in a['features'] if f['properties'].get('adm0_a3')=='KAZ')
+print('V08 KAZ admin1', len(kz), kz)
+for f in json.load(open('ne_10m_populated_places_simple.geojson'))['features']:
+    p=f['properties']
+    if p.get('adm0_a3')=='KAZ' and p['name'] in ('Shymkent','Nur-Sultan','Astana'): print('V08 place', p['name'], f['geometry']['coordinates'], p.get('pop_max'), p.get('adm1name'))
+PY
+
+# V09 — A08-F005/F006: AirData_Shymkent (нужен openpyxl)
+[ -d airdata ] || git clone -q https://github.com/DinaAssylbekova/AirData_Shymkent airdata
+git -C airdata log -1 --format='airdata HEAD %H %cI'
+"$PY" - <<'PY'
+import openpyxl,csv
+from collections import Counter
+rows=[r for r in openpyxl.load_workbook('airdata/sensors.xlsx',read_only=True).active.iter_rows(values_only=True)][1:]
+ne=[r for r in rows if r[0]]; print('V09 sensors', len(ne), dict(Counter(r[1] for r in ne)))
+for r in ne:
+    if r[2]=='Шымкент': print('V09 shymkent sensor', r)
+st=Counter(); codes=Counter(); t=[None,None]; shy={}
+for r in csv.DictReader(open('airdata/layer_03_data_prepared_25.03.22.csv',encoding='utf-8')):
+    st[r['stationId']]+=1; codes[r['code']]+=1; dt=r['datetime']
+    t=[min(t[0] or dt,dt),max(t[1] or dt,dt)]
+    if r['stationId'] in ('k15','k49'):
+        a=shy.setdefault(r['stationId'],[dt,dt,0]); a[0]=min(a[0],dt); a[1]=max(a[1],dt); a[2]+=1
+print('V09 rows', sum(st.values()), 'stations', len(st), 'period', t, 'codes', sorted(codes))
+print('V09 shymkent rows', shy)
+PY
+
+# V12 — A08-F012: репозиторий KazHydroMet2324
+[ -d khm ] || git clone -q https://github.com/Beibut/KazHydroMet2324 khm 2>&1 | tail -1
+echo "V12 commits: $(git -C khm rev-list --all --count 2>/dev/null || echo 0)"
