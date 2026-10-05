@@ -1,0 +1,28 @@
+{
+ "snapshot_branch": "claude/save-work-handoff-ku3ej3",
+ "snapshot_sha": "6778deda6d3f3a7f27698f651c1b0046d2a9aae9",
+ "source_dir": "research/round-3-results/K07/prototype",
+ "files": [
+  {
+   "file": "index.html",
+   "bytes": 9530,
+   "sha256_git": "dbe69dcf3c514b30bd14543d4f235e12301d477ae4cb06a615d67190355a153a",
+   "sha256_written": "dbe69dcf3c514b30bd14543d4f235e12301d477ae4cb06a615d67190355a153a",
+   "identical": true
+  },
+  {
+   "file": "app.js",
+   "bytes": 29423,
+   "sha256_git": "710c66f704a014b3dde22fd4d854516b4ca45da3a04be84ab20c27fab94e4956",
+   "sha256_written": "710c66f704a014b3dde22fd4d854516b4ca45da3a04be84ab20c27fab94e4956",
+   "identical": true
+  },
+  {
+   "file": "data.js",
+   "bytes": 477038,
+   "sha256_git": "20906b2bcc82b11e197db2197b5a454b23cf613964262c5b3f6c31a13f6475b0",
+   "sha256_written": "20906b2bcc82b11e197db2197b5a454b23cf613964262c5b3f6c31a13f6475b0",
+   "identical": true
+  }
+ ]
+}

@@ -1,0 +1,351 @@
+{
+ "kind": "REVIEW user-level checks of the K07 round-3 prototype",
+ "label": "snapshot",
+ "prototype_dir_name": "k07r4-snapshot",
+ "total": 29,
+ "passed": 20,
+ "failed": [
+  "CS2 shymkent->astana",
+  "F2",
+  "O2",
+  "P1",
+  "P2",
+  "K4",
+  "K5",
+  "W2",
+  "W3"
+ ],
+ "checks": [
+  {
+   "id": "CS1 shymkent->astana",
+   "area": "city switch",
+   "expect": "selected object card of the old city is cleared",
+   "ok": true,
+   "observed": {
+    "selected": null,
+    "selBodyStart": "",
+    "was": "Коррупционерлер атындағы униве"
+   }
+  },
+  {
+   "id": "CS2 shymkent->astana",
+   "area": "city switch",
+   "expect": "tooltip of an old-city object does not stay on the new city's map (precondition: tooltip was visible)",
+   "ok": false,
+   "observed": {
+    "tipBefore": "Newline SchoolШкола · conf. 0.7321",
+    "tipVisible": true,
+    "tipText": "Newline SchoolШкола · conf. 0.7321"
+   }
+  },
+  {
+   "id": "CS3 shymkent->astana",
+   "area": "city switch",
+   "expect": "markers and table count belong to the new city only",
+   "ok": true,
+   "observed": {
+    "markers": 105,
+    "foreign": 0,
+    "tbl": "(105 из 105 в выборке)"
+   }
+  },
+  {
+   "id": "CS4 shymkent->astana",
+   "area": "city switch",
+   "expect": "provenance and graph cards show the new city",
+   "ok": true,
+   "observed": {
+    "city": "Астана"
+   }
+  },
+  {
+   "id": "CS5 shymkent->astana",
+   "area": "city switch",
+   "expect": "point, radius, crosshair and T label of the old city are cleared",
+   "ok": true,
+   "observed": {
+    "hadPoint": true,
+    "point": null,
+    "drawn": 0,
+    "tLabel": false
+   }
+  },
+  {
+   "id": "CS6 shymkent->astana",
+   "area": "city switch",
+   "expect": "switching back starts clean (no restored point/selection)",
+   "ok": true,
+   "observed": {
+    "point": null,
+    "selected": null
+   }
+  },
+  {
+   "id": "CS1 astana->shymkent",
+   "area": "city switch",
+   "expect": "selected object card of the old city is cleared",
+   "ok": true,
+   "observed": {
+    "selected": null,
+    "selBodyStart": "",
+    "was": "Центр немецкого языка АстанаГр"
+   }
+  },
+  {
+   "id": "CS2 astana->shymkent",
+   "area": "city switch",
+   "expect": "tooltip of an old-city object does not stay on the new city's map (precondition: tooltip was visible)",
+   "ok": true,
+   "observed": {
+    "tipBefore": "Tamos Space SchoolШкола · conf. 0.9346",
+    "tipVisible": false,
+    "tipText": "Tamos Space SchoolШкола · conf. 0.9346"
+   }
+  },
+  {
+   "id": "CS3 astana->shymkent",
+   "area": "city switch",
+   "expect": "markers and table count belong to the new city only",
+   "ok": true,
+   "observed": {
+    "markers": 95,
+    "foreign": 0,
+    "tbl": "(95 из 95 в выборке)"
+   }
+  },
+  {
+   "id": "CS4 astana->shymkent",
+   "area": "city switch",
+   "expect": "provenance and graph cards show the new city",
+   "ok": true,
+   "observed": {
+    "city": "Шымкент"
+   }
+  },
+  {
+   "id": "CS5 astana->shymkent",
+   "area": "city switch",
+   "expect": "point, radius, crosshair and T label of the old city are cleared",
+   "ok": true,
+   "observed": {
+    "hadPoint": true,
+    "point": null,
+    "drawn": 0,
+    "tLabel": false
+   }
+  },
+  {
+   "id": "CS6 astana->shymkent",
+   "area": "city switch",
+   "expect": "switching back starts clean (no restored point/selection)",
+   "ok": true,
+   "observed": {
+    "point": null,
+    "selected": null
+   }
+  },
+  {
+   "id": "F1",
+   "area": "filters",
+   "expect": "unchecking a group removes exactly its objects from map and table",
+   "ok": true,
+   "observed": {
+    "before": 105,
+    "after": 90,
+    "nSchool": 15
+   }
+  },
+  {
+   "id": "F2",
+   "area": "filters",
+   "expect": "a selected object hidden by a filter does not keep an orphan card",
+   "ok": false,
+   "observed": {
+    "group": "college_university",
+    "selected": {
+     "type": "place",
+     "id": "aa3ca98c-056b-4c87-8acd-fa9a4b842094"
+    },
+    "card": "Казахский агротехнический университет им. С. Сейфу"
+   }
+  },
+  {
+   "id": "O1",
+   "area": "object",
+   "expect": "click opens the card of that object with 'capacity unknown' and kind badges",
+   "ok": true,
+   "observed": "Tamos Space School"
+  },
+  {
+   "id": "O2",
+   "area": "object",
+   "expect": "no marker centre is covered by a label that swallows the click",
+   "ok": false,
+   "observed": {
+    "tested": 105,
+    "covered": [
+     {
+      "id": "179964e3-61fd-4c7f-aedc-dc3eec42b2b9",
+      "label": "Рамка запроса K10: выгрузка 6×6 км, ядро"
+     },
+     {
+      "id": "d283c17c-d121-4c24-9190-9634c25bc038",
+      "label": "Рамка запроса K10: выгрузка 6×6 км, ядро"
+     },
+     {
+      "id": "7566e1e3-3130-4f4a-ad3e-80544332c796",
+      "label": "Рамка запроса K10: выгрузка 6×6 км, ядро"
+     },
+     {
+      "id": "7d77543b-b5af-4edf-baf9-3faaf3e76210",
+      "label": "Рамка запроса K10: выгрузка 6×6 км, ядро"
+     },
+     {
+      "id": "666173ac-b95e-4f07-810b-efdde7e61cee",
+      "label": "Рамка запроса K10: выгрузка 6×6 км, ядро"
+     }
+    ]
+   }
+  },
+  {
+   "id": "P1",
+   "area": "point",
+   "expect": "the user can clear the selected point (button or Escape)",
+   "ok": false,
+   "observed": {
+    "hasClearButton": false,
+    "point": [
+     71.46500711673897,
+     51.10505637886196
+    ]
+   }
+  },
+  {
+   "id": "P2",
+   "area": "point",
+   "expect": "after turning point mode off the point is either cleared or still clearable",
+   "ok": false,
+   "observed": {
+    "point": [
+     71.46500711673897,
+     51.10505637886196
+    ],
+    "hasClear": false
+   }
+  },
+  {
+   "id": "E1",
+   "area": "empty",
+   "expect": "no groups -> clear empty messages on map and in table, no markers",
+   "ok": true,
+   "observed": null
+  },
+  {
+   "id": "E2",
+   "area": "empty",
+   "expect": "empty state survives a city switch without stale numbers",
+   "ok": true,
+   "observed": "(0 из 95 в выборке)"
+  },
+  {
+   "id": "K1",
+   "area": "keyboard",
+   "expect": "city buttons work with the keyboard",
+   "ok": true,
+   "observed": "astana"
+  },
+  {
+   "id": "K2",
+   "area": "keyboard",
+   "expect": "group checkboxes work with the keyboard",
+   "ok": true,
+   "observed": {
+    "before": 105,
+    "after": 90
+   }
+  },
+  {
+   "id": "K3",
+   "area": "keyboard",
+   "expect": "a focused marker opens its card with Enter",
+   "ok": true,
+   "observed": {
+    "type": "place",
+    "id": "db5b4a64-5782-4077-a3ca-4fc76ddd17b7"
+   }
+  },
+  {
+   "id": "K4",
+   "area": "keyboard",
+   "expect": "table and zoom are reachable without tabbing through every map feature (skip link or < 40 stops)",
+   "ok": false,
+   "observed": {
+    "toZoom": 241,
+    "toTable": 247,
+    "skipLink": false
+   }
+  },
+  {
+   "id": "K5",
+   "area": "keyboard",
+   "expect": "a point can be set without a mouse (focusable map + Enter)",
+   "ok": false,
+   "observed": {
+    "mapFocusable": false,
+    "point": null
+   }
+  },
+  {
+   "id": "W1",
+   "area": "390px",
+   "expect": "no horizontal page scroll; controls inside the viewport; map at least 300 px high",
+   "ok": true,
+   "observed": {
+    "sw": 390,
+    "iw": 390,
+    "mapH": 606,
+    "btn": 216.671875
+   }
+  },
+  {
+   "id": "W2",
+   "area": "390px",
+   "expect": "a point can be set on a 390 px screen and its result is visible or announced next to the map",
+   "ok": false,
+   "observed": {
+    "foundEmptySpot": true,
+    "point": [
+     71.37782686109446,
+     51.11637546214491
+    ],
+    "cardTopVisible": false,
+    "hintInMapArea": false
+   }
+  },
+  {
+   "id": "W3",
+   "area": "390px",
+   "expect": "side cards and tables fit 390 px without hidden columns (no inner horizontal scroll)",
+   "ok": false,
+   "observed": [
+    {
+     "card": "Выбор",
+     "scrollWidth": 395,
+     "clientWidth": 356
+    },
+    {
+     "card": "Данные и происхождение",
+     "scrollWidth": 382,
+     "clientWidth": 356
+    }
+   ]
+  },
+  {
+   "id": "X1",
+   "area": "general",
+   "expect": "no console or page errors during the run",
+   "ok": true,
+   "observed": []
+  }
+ ]
+}
