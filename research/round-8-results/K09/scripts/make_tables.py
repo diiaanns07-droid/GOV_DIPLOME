@@ -122,6 +122,23 @@ def main():
     for k in ("G1/mean", "G2/mean", "G1/minimax", "G2/minimax", "G1/coverage", "G2/coverage"):
         d = post["nontrivial_by_slice"][k]
         A(f"| {k} | " + " | ".join(f"{pct(d[s]['hit_rate'])} (n={d[s]['n']})" if s in d else "—" for s in sls) + " |")
+    A("\n## 4б. POST-HOC: структура промахов (hit=0), основная сетка\n")
+    A("Сравнение промахнувшегося жадного плана с exact-планом той же цели: дешевле, меньше объектов, тот же размер.\n")
+    A("| Алгоритм/цель | budget_ratio | промахов | дешевле exact | меньше объектов | тот же размер |")
+    A("|---|---|---|---|---|---|")
+    post["miss_structure"] = {}
+    for k in ("G1/mean", "G2/mean", "G1/minimax", "G2/minimax", "G1/coverage", "G2/coverage"):
+        a, o = k.split("/")
+        for br in sorted({r["budget_ratio"] for r in main_runs}, key=float):
+            ms_ = [r for r in main_runs if r["algorithm"] == a and r["objective"] == o and r["budget_ratio"] == br and r["hit"] == "0"]
+            c = {"miss": len(ms_), "cheaper": sum(int(r["greedy_cost"]) < int(r["exact_cost"]) for r in ms_),
+                 "fewer": sum(len(r["greedy_ids"].split()) < len(r["exact_ids"].split()) for r in ms_),
+                 "same_size": sum(len(r["greedy_ids"].split()) == len(r["exact_ids"].split()) for r in ms_)}
+            post["miss_structure"].setdefault(k, {})[br] = c
+            A(f"| {k} | {br} | {c['miss']} | {c['cheaper']} | {c['fewer']} | {c['same_size']} |")
+    g2 = [r for r in main_runs if r["algorithm"] == "G2"]
+    post["g2_replaced_by_best_single"] = {o: sum(r["replaced_by_best_single"] == "1" for r in g2 if r["objective"] == o) for o in OBJS}
+    A("\nG2 заменён лучшим одиночным кандидатом (из 2430): " + ", ".join(f"{o} {post['g2_replaced_by_best_single'][o]}" for o in OBJS) + ".")
     A("\n## 5. Время, мс (time.perf_counter, минимум из 3 повторов, медиана / p90 по сценариям)\n")
     A("Exact считает три цели за один проход; G1/G2 — одна цель за запуск. Абсолютные значения зависят от машины (results/run_meta.json).\n")
     A("| Группа | n | предвычисление | exact (3 цели) | G1 mean | G2 mean | G1 minimax | G2 minimax |")

@@ -1,4 +1,131 @@
 {
+ "g2_replaced_by_best_single": {
+  "coverage": 326,
+  "mean": 76,
+  "minimax": 377
+ },
+ "miss_structure": {
+  "G1/coverage": {
+   "0.25": {
+    "cheaper": 44,
+    "fewer": 37,
+    "miss": 86,
+    "same_size": 48
+   },
+   "0.5": {
+    "cheaper": 23,
+    "fewer": 11,
+    "miss": 45,
+    "same_size": 34
+   },
+   "1.0": {
+    "cheaper": 21,
+    "fewer": 0,
+    "miss": 33,
+    "same_size": 33
+   }
+  },
+  "G1/mean": {
+   "0.25": {
+    "cheaper": 63,
+    "fewer": 44,
+    "miss": 136,
+    "same_size": 91
+   },
+   "0.5": {
+    "cheaper": 71,
+    "fewer": 15,
+    "miss": 137,
+    "same_size": 120
+   },
+   "1.0": {
+    "cheaper": 63,
+    "fewer": 0,
+    "miss": 114,
+    "same_size": 114
+   }
+  },
+  "G1/minimax": {
+   "0.25": {
+    "cheaper": 106,
+    "fewer": 42,
+    "miss": 217,
+    "same_size": 170
+   },
+   "0.5": {
+    "cheaper": 122,
+    "fewer": 15,
+    "miss": 235,
+    "same_size": 216
+   },
+   "1.0": {
+    "cheaper": 107,
+    "fewer": 0,
+    "miss": 221,
+    "same_size": 220
+   }
+  },
+  "G2/coverage": {
+   "0.25": {
+    "cheaper": 433,
+    "fewer": 215,
+    "miss": 441,
+    "same_size": 217
+   },
+   "0.5": {
+    "cheaper": 580,
+    "fewer": 309,
+    "miss": 582,
+    "same_size": 270
+   },
+   "1.0": {
+    "cheaper": 593,
+    "fewer": 274,
+    "miss": 600,
+    "same_size": 321
+   }
+  },
+  "G2/mean": {
+   "0.25": {
+    "cheaper": 299,
+    "fewer": 10,
+    "miss": 317,
+    "same_size": 281
+   },
+   "0.5": {
+    "cheaper": 399,
+    "fewer": 8,
+    "miss": 413,
+    "same_size": 386
+   },
+   "1.0": {
+    "cheaper": 428,
+    "fewer": 4,
+    "miss": 448,
+    "same_size": 425
+   }
+  },
+  "G2/minimax": {
+   "0.25": {
+    "cheaper": 462,
+    "fewer": 246,
+    "miss": 490,
+    "same_size": 228
+   },
+   "0.5": {
+    "cheaper": 632,
+    "fewer": 328,
+    "miss": 652,
+    "same_size": 316
+   },
+   "1.0": {
+    "cheaper": 629,
+    "fewer": 327,
+    "miss": 648,
+    "same_size": 312
+   }
+  }
+ },
  "nontrivial": {
   "G1/coverage": {
    "hit_rate": 0.922348,
