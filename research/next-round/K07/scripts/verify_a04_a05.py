@@ -108,8 +108,11 @@ def main():
             os.chdir(cwd)
         rerun05 = json.loads((tmp / "A05_synthetic_results.json").read_text())
         diffs05 = json_diff(stored05, rerun05)
-        res["A05_rerun"] = {"json_differences": diffs05,
-                            "only_environment_fields_differ": all(d["path"] in ("/meta/platform", "/meta/runtime_s") for d in diffs05)}
+        env_fields = ("/meta/platform", "/meta/runtime_s")
+        res["A05_rerun"] = {  # values of environment fields are not stored, so the output file is deterministic
+            "json_differences": [d if d["path"] not in env_fields else {"path": d["path"], "note": "environment field, value not stored"}
+                                 for d in diffs05],
+            "only_environment_fields_differ": all(d["path"] in env_fields for d in diffs05)}
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
 

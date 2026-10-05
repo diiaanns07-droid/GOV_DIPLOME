@@ -1,0 +1,415 @@
+{
+ "kind": "synthetic example; no city data; capacity and demand only as unknown shares",
+ "assumptions": [
+  "children spread evenly over blocks inside each area (unknown in reality)",
+  "walking threshold T is a parameter, not a norm",
+  "blocks are not population: geographic access is a share of blocks"
+ ],
+ "toy": {
+  "grid": "2.0 x 1.0 km, 100 m step",
+  "railway": "between x=1000 and x=1100, one crossing at y=1000",
+  "schools": {
+   "S_W": [
+    900,
+    100
+   ],
+   "S_E": [
+    1500,
+    500
+   ]
+  },
+  "blocks_per_area": 25,
+  "T_main_m": 800
+ },
+ "geographic_access_pct_by_threshold": {
+  "500": {
+   "network": {
+    "W": 24.0,
+    "E": 52.0
+   },
+   "radius_baseline": {
+    "W": 32.0,
+    "E": 88.0
+   }
+  },
+  "800": {
+   "network": {
+    "W": 60.0,
+    "E": 100.0
+   },
+   "radius_baseline": {
+    "W": 68.0,
+    "E": 100.0
+   }
+  },
+  "1000": {
+   "network": {
+    "W": 76.0,
+    "E": 100.0
+   },
+   "radius_baseline": {
+    "W": 96.0,
+    "E": 100.0
+   }
+  }
+ },
+ "catchment_sizes_blocks_T800": {
+  "net": {
+   "S_W": 15,
+   "S_E": 25
+  },
+  "radius": {
+   "S_W": 29,
+   "S_E": 31
+  }
+ },
+ "catchment_blocks_from_other_area_T800": {
+  "net": {
+   "S_W": 0,
+   "S_E": 0
+  },
+  "radius": {
+   "S_W": 12,
+   "S_E": 6
+  }
+ },
+ "scenarios_T800": [
+  {
+   "s_seat_share_E": 0.3,
+   "q_child_share_E": 0.3,
+   "geographic_access_network_pct": {
+    "W": 60.0,
+    "E": 100.0
+   },
+   "provision_arithmetic_area_balance": {
+    "W": 1.0,
+    "E": 1.0
+   },
+   "provision_2sfca_network": {
+    "W": 1.0,
+    "E": 1.0
+   },
+   "no_seats_in_reach_network_pct": {
+    "W": 40.0,
+    "E": 0.0
+   },
+   "provision_2sfca_radius_baseline": {
+    "W": 0.922,
+    "E": 1.183
+   },
+   "no_seats_in_reach_radius_pct": {
+    "W": 32.0,
+    "E": 0.0
+   },
+   "worse_area": {
+    "geographic_access": "W",
+    "provision_arithmetic": "equal",
+    "provision_2sfca_network": "equal",
+    "provision_2sfca_radius": "W"
+   },
+   "seats_vs_geography": "seats_do_not_separate",
+   "radius_vs_network_seats": "radius_breaks_tie"
+  },
+  {
+   "s_seat_share_E": 0.3,
+   "q_child_share_E": 0.5,
+   "geographic_access_network_pct": {
+    "W": 60.0,
+    "E": 100.0
+   },
+   "provision_arithmetic_area_balance": {
+    "W": 1.4,
+    "E": 0.6
+   },
+   "provision_2sfca_network": {
+    "W": 1.4,
+    "E": 0.6
+   },
+   "no_seats_in_reach_network_pct": {
+    "W": 40.0,
+    "E": 0.0
+   },
+   "provision_2sfca_radius_baseline": {
+    "W": 0.937,
+    "E": 1.063
+   },
+   "no_seats_in_reach_radius_pct": {
+    "W": 32.0,
+    "E": 0.0
+   },
+   "worse_area": {
+    "geographic_access": "W",
+    "provision_arithmetic": "E",
+    "provision_2sfca_network": "E",
+    "provision_2sfca_radius": "W"
+   },
+   "seats_vs_geography": "opposite",
+   "radius_vs_network_seats": "opposite"
+  },
+  {
+   "s_seat_share_E": 0.3,
+   "q_child_share_E": 0.7,
+   "geographic_access_network_pct": {
+    "W": 60.0,
+    "E": 100.0
+   },
+   "provision_arithmetic_area_balance": {
+    "W": 2.333,
+    "E": 0.429
+   },
+   "provision_2sfca_network": {
+    "W": 2.333,
+    "E": 0.429
+   },
+   "no_seats_in_reach_network_pct": {
+    "W": 40.0,
+    "E": 0.0
+   },
+   "provision_2sfca_radius_baseline": {
+    "W": 0.975,
+    "E": 1.011
+   },
+   "no_seats_in_reach_radius_pct": {
+    "W": 32.0,
+    "E": 0.0
+   },
+   "worse_area": {
+    "geographic_access": "W",
+    "provision_arithmetic": "E",
+    "provision_2sfca_network": "E",
+    "provision_2sfca_radius": "W"
+   },
+   "seats_vs_geography": "opposite",
+   "radius_vs_network_seats": "opposite"
+  },
+  {
+   "s_seat_share_E": 0.5,
+   "q_child_share_E": 0.3,
+   "geographic_access_network_pct": {
+    "W": 60.0,
+    "E": 100.0
+   },
+   "provision_arithmetic_area_balance": {
+    "W": 0.714,
+    "E": 1.667
+   },
+   "provision_2sfca_network": {
+    "W": 0.714,
+    "E": 1.667
+   },
+   "no_seats_in_reach_network_pct": {
+    "W": 40.0,
+    "E": 0.0
+   },
+   "provision_2sfca_radius_baseline": {
+    "W": 0.805,
+    "E": 1.455
+   },
+   "no_seats_in_reach_radius_pct": {
+    "W": 32.0,
+    "E": 0.0
+   },
+   "worse_area": {
+    "geographic_access": "W",
+    "provision_arithmetic": "W",
+    "provision_2sfca_network": "W",
+    "provision_2sfca_radius": "W"
+   },
+   "seats_vs_geography": "same",
+   "radius_vs_network_seats": "same"
+  },
+  {
+   "s_seat_share_E": 0.5,
+   "q_child_share_E": 0.5,
+   "geographic_access_network_pct": {
+    "W": 60.0,
+    "E": 100.0
+   },
+   "provision_arithmetic_area_balance": {
+    "W": 1.0,
+    "E": 1.0
+   },
+   "provision_2sfca_network": {
+    "W": 1.0,
+    "E": 1.0
+   },
+   "no_seats_in_reach_network_pct": {
+    "W": 40.0,
+    "E": 0.0
+   },
+   "provision_2sfca_radius_baseline": {
+    "W": 0.78,
+    "E": 1.22
+   },
+   "no_seats_in_reach_radius_pct": {
+    "W": 32.0,
+    "E": 0.0
+   },
+   "worse_area": {
+    "geographic_access": "W",
+    "provision_arithmetic": "equal",
+    "provision_2sfca_network": "equal",
+    "provision_2sfca_radius": "W"
+   },
+   "seats_vs_geography": "seats_do_not_separate",
+   "radius_vs_network_seats": "radius_breaks_tie"
+  },
+  {
+   "s_seat_share_E": 0.5,
+   "q_child_share_E": 0.7,
+   "geographic_access_network_pct": {
+    "W": 60.0,
+    "E": 100.0
+   },
+   "provision_arithmetic_area_balance": {
+    "W": 1.667,
+    "E": 0.714
+   },
+   "provision_2sfca_network": {
+    "W": 1.667,
+    "E": 0.714
+   },
+   "no_seats_in_reach_network_pct": {
+    "W": 40.0,
+    "E": 0.0
+   },
+   "provision_2sfca_radius_baseline": {
+    "W": 0.785,
+    "E": 1.092
+   },
+   "no_seats_in_reach_radius_pct": {
+    "W": 32.0,
+    "E": 0.0
+   },
+   "worse_area": {
+    "geographic_access": "W",
+    "provision_arithmetic": "E",
+    "provision_2sfca_network": "E",
+    "provision_2sfca_radius": "W"
+   },
+   "seats_vs_geography": "opposite",
+   "radius_vs_network_seats": "opposite"
+  },
+  {
+   "s_seat_share_E": 0.7,
+   "q_child_share_E": 0.3,
+   "geographic_access_network_pct": {
+    "W": 60.0,
+    "E": 100.0
+   },
+   "provision_arithmetic_area_balance": {
+    "W": 0.429,
+    "E": 2.333
+   },
+   "provision_2sfca_network": {
+    "W": 0.429,
+    "E": 2.333
+   },
+   "no_seats_in_reach_network_pct": {
+    "W": 40.0,
+    "E": 0.0
+   },
+   "provision_2sfca_radius_baseline": {
+    "W": 0.688,
+    "E": 1.728
+   },
+   "no_seats_in_reach_radius_pct": {
+    "W": 32.0,
+    "E": 0.0
+   },
+   "worse_area": {
+    "geographic_access": "W",
+    "provision_arithmetic": "W",
+    "provision_2sfca_network": "W",
+    "provision_2sfca_radius": "W"
+   },
+   "seats_vs_geography": "same",
+   "radius_vs_network_seats": "same"
+  },
+  {
+   "s_seat_share_E": 0.7,
+   "q_child_share_E": 0.5,
+   "geographic_access_network_pct": {
+    "W": 60.0,
+    "E": 100.0
+   },
+   "provision_arithmetic_area_balance": {
+    "W": 0.6,
+    "E": 1.4
+   },
+   "provision_2sfca_network": {
+    "W": 0.6,
+    "E": 1.4
+   },
+   "no_seats_in_reach_network_pct": {
+    "W": 40.0,
+    "E": 0.0
+   },
+   "provision_2sfca_radius_baseline": {
+    "W": 0.623,
+    "E": 1.377
+   },
+   "no_seats_in_reach_radius_pct": {
+    "W": 32.0,
+    "E": 0.0
+   },
+   "worse_area": {
+    "geographic_access": "W",
+    "provision_arithmetic": "W",
+    "provision_2sfca_network": "W",
+    "provision_2sfca_radius": "W"
+   },
+   "seats_vs_geography": "same",
+   "radius_vs_network_seats": "same"
+  },
+  {
+   "s_seat_share_E": 0.7,
+   "q_child_share_E": 0.7,
+   "geographic_access_network_pct": {
+    "W": 60.0,
+    "E": 100.0
+   },
+   "provision_arithmetic_area_balance": {
+    "W": 1.0,
+    "E": 1.0
+   },
+   "provision_2sfca_network": {
+    "W": 1.0,
+    "E": 1.0
+   },
+   "no_seats_in_reach_network_pct": {
+    "W": 40.0,
+    "E": 0.0
+   },
+   "provision_2sfca_radius_baseline": {
+    "W": 0.595,
+    "E": 1.173
+   },
+   "no_seats_in_reach_radius_pct": {
+    "W": 32.0,
+    "E": 0.0
+   },
+   "worse_area": {
+    "geographic_access": "W",
+    "provision_arithmetic": "equal",
+    "provision_2sfca_network": "equal",
+    "provision_2sfca_radius": "W"
+   },
+   "seats_vs_geography": "seats_do_not_separate",
+   "radius_vs_network_seats": "radius_breaks_tie"
+  }
+ ],
+ "seats_vs_geography_counts": {
+  "same": 3,
+  "seats_do_not_separate": 3,
+  "opposite": 3
+ },
+ "radius_vs_network_seats_counts": {
+  "same": 3,
+  "radius_breaks_tie": 3,
+  "opposite": 3
+ },
+ "versions": {
+  "networkx": "3.6.1"
+ }
+}
