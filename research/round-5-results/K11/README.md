@@ -72,3 +72,26 @@ python research/round-5-results/K11/k11_demo_smoke.py --url http://127.0.0.1:876
 - Chromium открывает демо по http и `file://`.
 
 Как информация: заголовки `Content-type` без `charset` (`text/html`, `text/javascript`), кодировку браузер берёт из `<meta charset>`. При Ctrl+C сервер печатает трассировку `KeyboardInterrupt`.
+
+## Patch-предложение (не FIXED)
+
+`proposed_launch_fix.patch` — предложение для сборщика, а не изменение BUILD. Правит 4 файла `prototypes/city-evidence/`:
+- `serve.py`: `sys.stdout.reconfigure(errors="replace")` перед печатью приветствия; чистый выход по Ctrl+C;
+- новый `run-demo.bat`: `cd /d "%~dp0"`, `PYTHONUTF8=1`, `py -3 serve.py` или `python serve.py`;
+- `tests/smoke.cjs`: `pathToFileURL` вместо склейки строк, вывод по умолчанию в `tests/_smoke_out/`;
+- `README.md`: команда для Windows с пометкой «не проверено на Windows».
+
+Что проверено на Linux:
+- `git apply --check` на дереве `0bf27de`: OK;
+- `k11_demo_smoke.py --browser` на копии с патчем: **19 pass, 3 modeled_pass, 2 info, 1 not_run, 0 fail** (`proposal_on_0bf27de.*`). На этой копии S4, S5, S6, S8, M2, M3 переключились на pass;
+- собственный `tests/smoke.cjs` сборщика на этой копии: exit 0, 16 PASS, результаты в `tests/_smoke_out/`;
+- остановка по SIGINT: код 0, без трассировки.
+
+`run-demo.bat` на Windows **не запускался**: Windows нет. Сам `.bat` проверен только чтением.
+
+В патче строки `run-demo.bat` записаны с CRLF. Если `.patch` выгружен с `core.autocrlf=true`, `git apply` может не совпасть по байтам. Эталон предложения — `make_proposal.py`: запустить его в корне копии.
+
+## Другие прогоны
+
+- `url_mode_0bf27de.*`: `--url` против отдельно запущенного `serve.py` из `0bf27de` с `--browser`: 8 pass, 1 info. Сервер запускал и останавливал проверяющий, а не тест.
+- `info_fd43f9a.*`: новый коммит сборщика `fd43f9a` (этап A раунда 5, после `0bf27de`), только для информации. Те же 4 fail (S4, S5, S6, S8) и 2 modeled_fail (M2, M3). По проверкам запуска эта версия не отличается от baseline. Это не оценка всего этапа A.

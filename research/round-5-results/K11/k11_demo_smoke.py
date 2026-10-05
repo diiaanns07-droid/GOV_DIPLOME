@@ -39,6 +39,7 @@ import urllib.request
 TEXT_EXT = {".html", ".js", ".cjs", ".py", ".json", ".md", ".txt", ".css", ".bat", ".cmd", ".ps1", ".geojson"}
 ABS_PATH_RE = re.compile(r"(?<![\w.])(/tmp/|/home/\w|/root/|/mnt/|/opt/\w|[A-Za-z]:\\\\?[A-Za-z])")
 CHECKS: list[dict] = []
+STATE: dict = {}  # facts shared between checks (e.g. S4 -> M3)
 
 
 def check(cid, status, title, detail=None):
@@ -278,6 +279,7 @@ def static_checks(app_root):
                   if re.search(r"""["'`]file://["'`]?\s*\+|`file://\$\{""", l)]
         file_url[p.name] = {"string_concatenation": concat, "uses_pathToFileURL": "pathToFileURL" in t}
     bad = {k: v for k, v in file_url.items() if v["string_concatenation"]}
+    STATE["file_url_concat"] = {k: v["string_concatenation"] for k, v in bad.items()}
     check("S4", "pass" if not bad else "fail",
           "Node tests build file:// URLs with url.pathToFileURL, not string concatenation", file_url or "no Node tests")
 
@@ -346,8 +348,12 @@ def modeled_windows(app_root, python):
         out = subprocess.run([node, "-e", js], capture_output=True, text=True, timeout=20).stdout.strip()
         try:
             r = json.loads(out)
-            check("M3", "modeled_fail" if "\\" in r["concatenated"] else "modeled_pass",
-                  "file:// URL built by string concatenation for a Windows path (MODELED with path.win32)", r)
+            concat = STATE.get("file_url_concat", {})
+            r["tests_using_concatenation"] = concat
+            # the app's own tests decide: concatenation present -> the Windows URL they would build is broken
+            broken = bool(concat) and "\\" in r["concatenated"]
+            check("M3", "modeled_fail" if broken else "modeled_pass",
+                  "file:// URLs of the Node tests are valid for a Windows path (MODELED with path.win32)", r)
         except ValueError:
             check("M3", "not_run", "file:// URL for a Windows path", out[:200])
     else:
@@ -393,8 +399,9 @@ def browser_check(base, app_root):
         return
     ok = all(v.get("loaded") and v.get("hasData") and not v.get("errors") and not v.get("external_requests")
              and set(v.get("cities", [])) >= {"shymkent", "astana"} for v in res.values())
-    check("B1", "pass" if ok else "fail", "headless browser loads the demo over http and file:// "
-          "(pathToFileURL), data for both cities, no console errors, no external requests", res)
+    over = "http and file:// (pathToFileURL)" if "file" in urls else "http"
+    check("B1", "pass" if ok else "fail", f"headless browser loads the demo over {over}, data for both cities, "
+          "no console errors, no external requests", res)
 
 
 def main():

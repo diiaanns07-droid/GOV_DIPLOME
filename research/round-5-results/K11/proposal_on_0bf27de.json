@@ -1,19 +1,17 @@
 {
  "tool": "research/round-5-results/K11/k11_demo_smoke.py",
- "label": "BUILD claude/beautiful-clarke-sbzomj @ 0bf27deb8549b325b34a9610402613d745544edb (baseline)",
+ "label": "0bf27de + K11 proposed_launch_fix.patch (PROPOSAL, not BUILD)",
  "mode": "app-root",
- "target": "<extract of 0bf27de>/prototypes/city-evidence",
+ "target": "<0bf27de + proposed_launch_fix.patch>/prototypes/city-evidence",
  "host": {
   "os": "Linux",
   "release": "6.18.44-fc-v70",
   "python": "3.11.15"
  },
  "summary": {
-  "pass": 15,
-  "fail": 4,
+  "pass": 19,
   "info": 2,
-  "modeled_pass": 1,
-  "modeled_fail": 2,
+  "modeled_pass": 3,
   "not_run": 1
  },
  "checks": [
@@ -30,10 +28,12 @@
    "status": "pass",
    "title": "all own text files (outside inputs/) are strict UTF-8",
    "detail": {
-    "files": 17,
+    "files": 19,
     "invalid": [],
     "bom": [],
-    "crlf": []
+    "crlf": [
+     "run-demo.bat"
+    ]
    }
   },
   {
@@ -44,7 +44,7 @@
   },
   {
    "id": "S4",
-   "status": "fail",
+   "status": "pass",
    "title": "Node tests build file:// URLs with url.pathToFileURL, not string concatenation",
    "detail": {
     "conformance.cjs": {
@@ -52,25 +52,26 @@
      "uses_pathToFileURL": false
     },
     "smoke.cjs": {
-     "string_concatenation": [
-      "L8: const url = \"file://\" + path.resolve(__dirname, \"..\", \"web\", \"index.html\");",
-      "L92: await p2.goto(\"file://\" + path.join(dir, \"index.html\"));"
-     ],
-     "uses_pathToFileURL": false
+     "string_concatenation": [],
+     "uses_pathToFileURL": true
     }
    }
   },
   {
    "id": "S5",
-   "status": "fail",
+   "status": "pass",
    "title": "a Windows launcher (.bat/.cmd/.ps1) exists next to serve.py",
-   "detail": []
+   "detail": [
+    "run-demo.bat"
+   ]
   },
   {
    "id": "S6",
-   "status": "fail",
+   "status": "pass",
    "title": "README gives a Windows start command (launcher, `py serve.py` or `python serve.py`)",
-   "detail": []
+   "detail": [
+    "run-demo.bat"
+   ]
   },
   {
    "id": "S7",
@@ -80,16 +81,16 @@
   },
   {
    "id": "S8",
-   "status": "fail",
+   "status": "pass",
    "title": "browser smoke writes its default output inside the app copy (not into ../../../research)",
-   "detail": "path.join(__dirname, \"..\", \"..\", \"..\", \"research\", \"round-4-results\", \"BUILD\", \"smoke\")"
+   "detail": "path.join(__dirname, \"_smoke_out\")"
   },
   {
    "id": "L1",
    "status": "pass",
    "title": "serve.py starts and listens on 127.0.0.1:<port> (port from argv)",
    "detail": {
-    "port": 52215,
+    "port": 37725,
     "seconds": 0.1,
     "exited_early": null
    }
@@ -254,7 +255,7 @@
     "steps": [
      "SIGINT(process group)"
     ],
-    "returncode": -2,
+    "returncode": 0,
     "exited": true
    }
   },
@@ -263,10 +264,10 @@
    "status": "info",
    "title": "server output on start/stop",
    "detail": {
-    "stdout_first_line": "Городские данные: http://127.0.0.1:52215/  (Ctrl+C — остановить)",
-    "stderr_has_traceback": true,
+    "stdout_first_line": "Городские данные: http://127.0.0.1:37725/  (Ctrl+C — остановить)",
+    "stderr_has_traceback": false,
     "stderr_tail": [
-     "KeyboardInterrupt"
+     "127.0.0.1 - - [05/Oct/2026 08:07:40] \"GET /facts.js HTTP/1.1\" 200 -"
     ]
    }
   },
@@ -277,32 +278,27 @@
    "detail": {
     "listening": true,
     "exited_before_listen": null,
-    "stderr_last_line": "KeyboardInterrupt"
+    "stderr_last_line": ""
    }
   },
   {
    "id": "M2",
-   "status": "modeled_fail",
+   "status": "modeled_pass",
    "title": "serve.py starts with a redirected stdout encoded as cp1252 (Windows ANSI code page, MODELED on Linux)",
    "detail": {
-    "listening": false,
-    "exited_before_listen": 1,
-    "stderr_last_line": "UnicodeEncodeError: 'charmap' codec can't encode characters in position 0-8: character maps to <undefined>"
+    "listening": true,
+    "exited_before_listen": null,
+    "stderr_last_line": ""
    }
   },
   {
    "id": "M3",
-   "status": "modeled_fail",
+   "status": "modeled_pass",
    "title": "file:// URLs of the Node tests are valid for a Windows path (MODELED with path.win32)",
    "detail": {
     "concatenated": "file://C:\\Users\\u\\city-evidence\\web\\index.html",
     "pathToFileURL": "file:///C:/Users/u/city-evidence/web/index.html",
-    "tests_using_concatenation": {
-     "smoke.cjs": [
-      "L8: const url = \"file://\" + path.resolve(__dirname, \"..\", \"web\", \"index.html\");",
-      "L92: await p2.goto(\"file://\" + path.join(dir, \"index.html\"));"
-     ]
-    }
+    "tests_using_concatenation": {}
    }
   },
   {
