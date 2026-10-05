@@ -73,6 +73,10 @@ Checkpoint выполнен, но **результатов исследован�
 | Поиск секретов в staged diff (`ghp_`, `github_pat_`, `sk-ant-`, `api_key=`, `token=`, `password=`, `PRIVATE KEY`, e-mail) | совпадений нет; файлов `.env*` в коммите нет |
 | `git push -u origin claude/save-work-handoff-ku3ej3` (без force, 1 попытка + 4 повтора) | **отказ: HTTP 403** «Claude doesn't have GitHub access to diiaanns07-droid/GOV_DIPLOME for your organization» |
 | `check_repo_access` | репозиторий подключён к сессии на чтение; push: `gate: repo_not_connected`, `gate_scope: identity`, `push_check: refused` |
+| Повторный push по hook (до исправления доступа) | снова HTTP 403 |
+| `check_repo_access` после того, как владелец подключил доступ | `push_check: ok` |
+| `git ls-remote origin` перед push | `main` = `834a25f`; ветки `claude/save-work-handoff-ku3ej3` нет; есть шесть веток других агентов (см. ниже), их я не трогал |
+| `git push -u origin claude/save-work-handoff-ku3ej3` (без force) | **успех**: `* [new branch]`, удалённая ветка = `2ffe5d99fd7d7e9f8f51a5183f0b0877cc21aa6c` |
 
 Тестовая система проекта (`pytest`, `check.py`) не запускалась: исполняемый код
 продукта не менялся, коммит содержит только этот Markdown-файл.
@@ -90,25 +94,26 @@ Checkpoint выполнен, но **результатов исследован�
   ретрансляции нет. Доступность конкретных государственных и городских
   источников **не проверялась**. Отсутствие проверки не означает, что данных нет.
 
-- **Push в GitHub недоступен**: учётная запись или Claude GitHub App не подключены
-  к `diiaanns07-droid/GOV_DIPLOME` (403, `repo_not_connected`). Это ограничение доступа,
-  а не сети. Коммит сохранён **только локально** в контейнере сессии, а файл передан
-  пользователю как patch. Обходных путей не применялось.
+- **Доступ к GitHub (исправлен)**: сначала push отклонялся (403, `repo_not_connected`),
+  потому что Claude GitHub App или учётная запись не были подключены к репозиторию.
+  Это было ограничение доступа, а не сети, и обходных путей не применялось. После того
+  как владелец подключил доступ, обычный push без force прошёл успешно.
 
 ## Нерешённые вопросы
 
 1. Какой номер и роль (`NN_роль`) закреплены за этим агентом?
 2. Какой город (или города) и какое направление: `govtech-results` или `astana-results`?
 3. Если раньше в **другом** чате или сессии была работа для этой роли, где её файлы?
-   В контейнере этой сессии и в репозитории их нет. Нужны ссылка на ветку/сессию
+   В контейнере этой сессии и в `main` их нет. Нужны ссылка на ветку/сессию
    или переданные файлы/ZIP.
+4. На момент push на origin были ветки других агентов: `claude/beautiful-clarke-sbzomj`,
+   `claude/clever-mccarthy-pywscu`, `claude/ecstatic-curie-hzfzn0`, `claude/epic-curie-iitc43`,
+   `claude/loving-thompson-nmajdo`, `claude/optimistic-davinci-1oiqs9`. Их содержимое
+   я не читал и не изменял. Объединяет их координатор.
 
 ## Один следующий конкретный шаг
 
-Владелец репозитория подключает GitHub-доступ для Claude: https://claude.ai/connect-github
-или устанавливает Claude GitHub App на репозиторий. Затем агент повторяет
-`git push -u origin claude/save-work-handoff-ku3ej3` (или координатор применяет patch).
-Параллельно координатор назначает `NN_роль` и город или передаёт файлы/ZIP предыдущей сессии.
+Координатор назначает `NN_роль` и город или передаёт файлы/ZIP предыдущей сессии.
 После этого агент раскладывает их без смешивания городов и с сохранением ID в
 `research/<govtech|astana>-results/<NN_роль>/`, распаковывает ZIP рядом в читаемом
 виде и обновляет этот STATUS.md.
