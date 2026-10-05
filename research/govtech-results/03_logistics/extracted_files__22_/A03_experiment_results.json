@@ -1,0 +1,996 @@
+{
+ "meta": {
+  "kind": "synthetic",
+  "experiment": "A03-E001",
+  "env": {
+   "python": "3.12.3",
+   "platform": "Linux-6.18.44-fc-v64-x86_64-with-glibc2.39",
+   "ortools": "9.15.6755",
+   "pyvroom": "1.15.2",
+   "numpy": "2.4.4",
+   "seed": 20261004
+  },
+  "assumptions": {
+   "shift_s": 25200,
+   "unload_s": 900,
+   "setup_s": 120,
+   "per_container_s": 90,
+   "capacity_units": 280,
+   "capacity_unit": "0.1 container-1.1m3-equivalent",
+   "vehicles": 4,
+   "detour": 1.35,
+   "speed_kmh": 25.0,
+   "barrier": "synthetic line with 2 crossings"
+  }
+ },
+ "runs": {
+  "B1_nearest_neighbor_no_tw": {
+   "metrics": {
+    "total_km": 142.08,
+    "total_duration_min": 920.8,
+    "makespan_min": 380.1,
+    "wait_min": 294.2,
+    "late_sites": 3,
+    "late_min": 334.6,
+    "unserved_sites": 0,
+    "vehicles_used": 3,
+    "shift_overrun_vehicles": 0,
+    "capacity_overflow_vehicles": 0,
+    "balance_max_minus_min_min": 147.1,
+    "balance_cv": 0.196,
+    "per_vehicle": [
+     {
+      "sites": 15,
+      "km": 54.57,
+      "duration_min": 233.0,
+      "load": 280,
+      "used": true
+     },
+     {
+      "sites": 14,
+      "km": 49.54,
+      "duration_min": 307.7,
+      "load": 280,
+      "used": true
+     },
+     {
+      "sites": 11,
+      "km": 37.97,
+      "duration_min": 380.1,
+      "load": 237,
+      "used": true
+     },
+     {
+      "sites": 0,
+      "km": 0.0,
+      "duration_min": 0.0,
+      "load": 0,
+      "used": false
+     }
+    ]
+   },
+   "wall_s": 0.001,
+   "route_hash": "d28093bfd55d",
+   "routes": [
+    [
+     24,
+     18,
+     36,
+     12,
+     30,
+     22,
+     4,
+     10,
+     16,
+     28,
+     34,
+     0,
+     6,
+     35,
+     29
+    ],
+    [
+     23,
+     11,
+     5,
+     17,
+     39,
+     27,
+     9,
+     33,
+     3,
+     21,
+     15,
+     20,
+     32,
+     2
+    ],
+    [
+     1,
+     7,
+     37,
+     25,
+     13,
+     19,
+     31,
+     14,
+     38,
+     26,
+     8
+    ],
+    []
+   ]
+  },
+  "B2_nearest_neighbor_tw": {
+   "metrics": {
+    "total_km": 159.35,
+    "total_duration_min": 768.6,
+    "makespan_min": 331.7,
+    "wait_min": 100.6,
+    "late_sites": 0,
+    "late_min": 0.0,
+    "unserved_sites": 0,
+    "vehicles_used": 3,
+    "shift_overrun_vehicles": 0,
+    "capacity_overflow_vehicles": 0,
+    "balance_max_minus_min_min": 127.8,
+    "balance_cv": 0.213,
+    "per_vehicle": [
+     {
+      "sites": 15,
+      "km": 54.57,
+      "duration_min": 233.0,
+      "load": 280,
+      "used": true
+     },
+     {
+      "sites": 13,
+      "km": 45.36,
+      "duration_min": 203.9,
+      "load": 277,
+      "used": true
+     },
+     {
+      "sites": 12,
+      "km": 59.42,
+      "duration_min": 331.7,
+      "load": 240,
+      "used": true
+     },
+     {
+      "sites": 0,
+      "km": 0.0,
+      "duration_min": 0.0,
+      "load": 0,
+      "used": false
+     }
+    ]
+   },
+   "wall_s": 0.001,
+   "route_hash": "26f3d0a3b8fa",
+   "routes": [
+    [
+     24,
+     18,
+     36,
+     12,
+     30,
+     22,
+     4,
+     10,
+     16,
+     28,
+     34,
+     0,
+     6,
+     35,
+     29
+    ],
+    [
+     23,
+     11,
+     5,
+     17,
+     39,
+     27,
+     9,
+     33,
+     3,
+     21,
+     8,
+     14,
+     7
+    ],
+    [
+     25,
+     13,
+     19,
+     2,
+     32,
+     38,
+     26,
+     15,
+     1,
+     37,
+     31,
+     20
+    ],
+    []
+   ]
+  },
+  "OR_gls_5s": {
+   "metrics": {
+    "total_km": 126.47,
+    "total_duration_min": 846.3,
+    "makespan_min": 318.4,
+    "wait_min": 257.3,
+    "late_sites": 0,
+    "late_min": 0.0,
+    "unserved_sites": 0,
+    "vehicles_used": 3,
+    "shift_overrun_vehicles": 0,
+    "capacity_overflow_vehicles": 0,
+    "balance_max_minus_min_min": 106.0,
+    "balance_cv": 0.175,
+    "per_vehicle": [
+     {
+      "sites": 14,
+      "km": 36.91,
+      "duration_min": 315.5,
+      "load": 261,
+      "used": true
+     },
+     {
+      "sites": 0,
+      "km": 0.0,
+      "duration_min": 0.0,
+      "load": 0,
+      "used": false
+     },
+     {
+      "sites": 11,
+      "km": 41.05,
+      "duration_min": 318.4,
+      "load": 280,
+      "used": true
+     },
+     {
+      "sites": 15,
+      "km": 48.51,
+      "duration_min": 212.4,
+      "load": 256,
+      "used": true
+     }
+    ]
+   },
+   "wall_s": 5.001,
+   "route_hash": "bd0507c4781e",
+   "routes": [
+    [
+     24,
+     18,
+     0,
+     6,
+     7,
+     26,
+     14,
+     32,
+     2,
+     31,
+     19,
+     13,
+     37,
+     25
+    ],
+    [],
+    [
+     39,
+     15,
+     27,
+     33,
+     9,
+     3,
+     21,
+     20,
+     8,
+     38,
+     1
+    ],
+    [
+     35,
+     29,
+     17,
+     5,
+     11,
+     23,
+     34,
+     28,
+     16,
+     10,
+     4,
+     22,
+     30,
+     36,
+     12
+    ]
+   ],
+   "objective": 18211
+  },
+  "OR_gls_5s_balance_span20": {
+   "metrics": {
+    "total_km": 129.78,
+    "total_duration_min": 881.7,
+    "makespan_min": 296.1,
+    "wait_min": 284.6,
+    "late_sites": 0,
+    "late_min": 0.0,
+    "unserved_sites": 0,
+    "vehicles_used": 3,
+    "shift_overrun_vehicles": 0,
+    "capacity_overflow_vehicles": 0,
+    "balance_max_minus_min_min": 5.5,
+    "balance_cv": 0.008,
+    "per_vehicle": [
+     {
+      "sites": 11,
+      "km": 40.37,
+      "duration_min": 295.0,
+      "load": 246,
+      "used": true
+     },
+     {
+      "sites": 16,
+      "km": 39.11,
+      "duration_min": 290.6,
+      "load": 273,
+      "used": true
+     },
+     {
+      "sites": 0,
+      "km": 0.0,
+      "duration_min": 0.0,
+      "load": 0,
+      "used": false
+     },
+     {
+      "sites": 13,
+      "km": 50.3,
+      "duration_min": 296.1,
+      "load": 278,
+      "used": true
+     }
+    ]
+   },
+   "wall_s": 5.0,
+   "route_hash": "4987005180f2",
+   "routes": [
+    [
+     21,
+     8,
+     32,
+     2,
+     14,
+     38,
+     26,
+     19,
+     13,
+     31,
+     1
+    ],
+    [
+     34,
+     28,
+     16,
+     10,
+     4,
+     22,
+     30,
+     36,
+     12,
+     18,
+     24,
+     0,
+     6,
+     7,
+     37,
+     25
+    ],
+    [],
+    [
+     35,
+     29,
+     23,
+     11,
+     5,
+     17,
+     39,
+     15,
+     27,
+     33,
+     9,
+     3,
+     20
+    ]
+   ],
+   "objective": 355948
+  },
+  "OR_gls_5s_cost_travel_plus_duration": {
+   "metrics": {
+    "total_km": 137.46,
+    "total_duration_min": 708.1,
+    "makespan_min": 317.1,
+    "wait_min": 92.7,
+    "late_sites": 0,
+    "late_min": 0.0,
+    "unserved_sites": 0,
+    "vehicles_used": 3,
+    "shift_overrun_vehicles": 0,
+    "capacity_overflow_vehicles": 0,
+    "balance_max_minus_min_min": 138.0,
+    "balance_cv": 0.249,
+    "per_vehicle": [
+     {
+      "sites": 11,
+      "km": 38.6,
+      "duration_min": 179.1,
+      "load": 249,
+      "used": true
+     },
+     {
+      "sites": 0,
+      "km": 0.0,
+      "duration_min": 0.0,
+      "load": 0,
+      "used": false
+     },
+     {
+      "sites": 15,
+      "km": 51.59,
+      "duration_min": 317.1,
+      "load": 278,
+      "used": true
+     },
+     {
+      "sites": 14,
+      "km": 47.27,
+      "duration_min": 211.9,
+      "load": 270,
+      "used": true
+     }
+    ]
+   },
+   "wall_s": 5.001,
+   "route_hash": "8a109ed0f582",
+   "routes": [
+    [
+     3,
+     8,
+     32,
+     38,
+     26,
+     14,
+     2,
+     19,
+     13,
+     7,
+     25
+    ],
+    [],
+    [
+     29,
+     23,
+     11,
+     5,
+     17,
+     39,
+     15,
+     27,
+     33,
+     9,
+     21,
+     20,
+     31,
+     37,
+     1
+    ],
+    [
+     34,
+     28,
+     16,
+     10,
+     4,
+     22,
+     30,
+     36,
+     12,
+     18,
+     24,
+     0,
+     6,
+     35
+    ]
+   ],
+   "objective": 59582
+  },
+  "VROOM_x5": {
+   "metrics": {
+    "total_km": 123.88,
+    "total_duration_min": 916.7,
+    "makespan_min": 319.5,
+    "wait_min": 333.9,
+    "late_sites": 0,
+    "late_min": 0.0,
+    "unserved_sites": 0,
+    "vehicles_used": 3,
+    "shift_overrun_vehicles": 0,
+    "capacity_overflow_vehicles": 0,
+    "balance_max_minus_min_min": 39.6,
+    "balance_cv": 0.059,
+    "per_vehicle": [
+     {
+      "sites": 14,
+      "km": 36.81,
+      "duration_min": 279.9,
+      "load": 240,
+      "used": true
+     },
+     {
+      "sites": 11,
+      "km": 41.49,
+      "duration_min": 319.5,
+      "load": 277,
+      "used": true
+     },
+     {
+      "sites": 15,
+      "km": 45.58,
+      "duration_min": 317.3,
+      "load": 280,
+      "used": true
+     },
+     {
+      "sites": 0,
+      "km": 0.0,
+      "duration_min": 0.0,
+      "load": 0,
+      "used": false
+     }
+    ]
+   },
+   "wall_s": 0.255,
+   "route_hash": "3ea8be634066",
+   "routes": [
+    [
+     34,
+     28,
+     16,
+     10,
+     4,
+     22,
+     30,
+     36,
+     12,
+     18,
+     24,
+     0,
+     6,
+     1
+    ],
+    [
+     39,
+     15,
+     27,
+     33,
+     9,
+     3,
+     21,
+     20,
+     8,
+     38,
+     25
+    ],
+    [
+     35,
+     29,
+     23,
+     11,
+     5,
+     17,
+     26,
+     14,
+     32,
+     2,
+     31,
+     19,
+     13,
+     37,
+     7
+    ],
+    []
+   ]
+  },
+  "OR_planned_on_crowfly_eval_on_network": {
+   "metrics": {
+    "total_km": 124.18,
+    "total_duration_min": 916.7,
+    "makespan_min": 319.5,
+    "wait_min": 333.2,
+    "late_sites": 0,
+    "late_min": 0.0,
+    "unserved_sites": 0,
+    "vehicles_used": 3,
+    "shift_overrun_vehicles": 0,
+    "capacity_overflow_vehicles": 0,
+    "balance_max_minus_min_min": 39.6,
+    "balance_cv": 0.059,
+    "per_vehicle": [
+     {
+      "sites": 15,
+      "km": 45.58,
+      "duration_min": 317.3,
+      "load": 280,
+      "used": true
+     },
+     {
+      "sites": 14,
+      "km": 36.81,
+      "duration_min": 279.9,
+      "load": 240,
+      "used": true
+     },
+     {
+      "sites": 0,
+      "km": 0.0,
+      "duration_min": 0.0,
+      "load": 0,
+      "used": false
+     },
+     {
+      "sites": 11,
+      "km": 41.79,
+      "duration_min": 319.5,
+      "load": 277,
+      "used": true
+     }
+    ]
+   },
+   "wall_s": 5.001,
+   "route_hash": "cc47d697b6d9",
+   "routes": [
+    [
+     35,
+     29,
+     23,
+     11,
+     5,
+     17,
+     26,
+     14,
+     32,
+     2,
+     31,
+     19,
+     13,
+     37,
+     7
+    ],
+    [
+     34,
+     28,
+     16,
+     10,
+     4,
+     22,
+     30,
+     36,
+     12,
+     18,
+     24,
+     0,
+     6,
+     1
+    ],
+    [],
+    [
+     21,
+     3,
+     9,
+     33,
+     27,
+     39,
+     15,
+     20,
+     8,
+     38,
+     25
+    ]
+   ],
+   "predicted_by_crowfly_model": {
+    "total_km": 87.2,
+    "total_duration_min": 892.1,
+    "makespan_min": 309.0,
+    "late_sites": 0
+   }
+  }
+ },
+ "determinism": {
+  "time_1s_a": {
+   "objective": 18561,
+   "route_hash": "351175f10c26",
+   "wall_s": 1.0,
+   "total_km": 128.92
+  },
+  "time_1s_b": {
+   "objective": 18561,
+   "route_hash": "351175f10c26",
+   "wall_s": 1.0,
+   "total_km": 128.92
+  },
+  "time_10s": {
+   "objective": 18211,
+   "route_hash": "bd0507c4781e",
+   "wall_s": 10.001,
+   "total_km": 126.47
+  },
+  "sol_limit_3000_a": {
+   "objective": 17911,
+   "route_hash": "a3c9d37d3391",
+   "wall_s": 36.093,
+   "total_km": 124.38
+  },
+  "sol_limit_3000_b": {
+   "objective": 17911,
+   "route_hash": "a3c9d37d3391",
+   "wall_s": 35.007,
+   "total_km": 124.38
+  }
+ },
+ "sensitivity": [
+  {
+   "speed_kmh": 18.0,
+   "detour": 1.2,
+   "B2": {
+    "km": 164.05,
+    "dur": 971.1,
+    "unserved": 0,
+    "late": 0
+   },
+   "OR": {
+    "km": 113.2,
+    "dur": 933.5,
+    "unserved": 0,
+    "late": 0
+   },
+   "OR_dur": {
+    "km": 117.39,
+    "dur": 791.4,
+    "unserved": 0,
+    "late": 0
+   }
+  },
+  {
+   "speed_kmh": 18.0,
+   "detour": 1.35,
+   "B2": {
+    "km": 219.59,
+    "dur": 1110.8,
+    "unserved": 0,
+    "late": 0
+   },
+   "OR": {
+    "km": 129.39,
+    "dur": 934.6,
+    "unserved": 0,
+    "late": 0
+   },
+   "OR_dur": {
+    "km": 144.99,
+    "dur": 823.1,
+    "unserved": 0,
+    "late": 0
+   }
+  },
+  {
+   "speed_kmh": 18.0,
+   "detour": 1.5,
+   "B2": {
+    "km": 225.15,
+    "dur": 1116.5,
+    "unserved": 0,
+    "late": 0
+   },
+   "OR": {
+    "km": 144.15,
+    "dur": 969.7,
+    "unserved": 0,
+    "late": 0
+   },
+   "OR_dur": {
+    "km": 146.59,
+    "dur": 831.3,
+    "unserved": 0,
+    "late": 0
+   }
+  },
+  {
+   "speed_kmh": 25.0,
+   "detour": 1.2,
+   "B2": {
+    "km": 141.65,
+    "dur": 735.9,
+    "unserved": 0,
+    "late": 0
+   },
+   "OR": {
+    "km": 112.62,
+    "dur": 892.6,
+    "unserved": 0,
+    "late": 0
+   },
+   "OR_dur": {
+    "km": 122.23,
+    "dur": 680.9,
+    "unserved": 0,
+    "late": 0
+   }
+  },
+  {
+   "speed_kmh": 25.0,
+   "detour": 1.35,
+   "B2": {
+    "km": 159.35,
+    "dur": 768.6,
+    "unserved": 0,
+    "late": 0
+   },
+   "OR": {
+    "km": 127.05,
+    "dur": 904.0,
+    "unserved": 0,
+    "late": 0
+   },
+   "OR_dur": {
+    "km": 137.46,
+    "dur": 708.1,
+    "unserved": 0,
+    "late": 0
+   }
+  },
+  {
+   "speed_kmh": 25.0,
+   "detour": 1.5,
+   "B2": {
+    "km": 177.05,
+    "dur": 801.1,
+    "unserved": 0,
+    "late": 0
+   },
+   "OR": {
+    "km": 140.5,
+    "dur": 906.6,
+    "unserved": 0,
+    "late": 0
+   },
+   "OR_dur": {
+    "km": 153.3,
+    "dur": 737.7,
+    "unserved": 0,
+    "late": 0
+   }
+  },
+  {
+   "speed_kmh": 32.0,
+   "detour": 1.2,
+   "B2": {
+    "km": 135.81,
+    "dur": 685.9,
+    "unserved": 0,
+    "late": 0
+   },
+   "OR": {
+    "km": 114.18,
+    "dur": 853.9,
+    "unserved": 0,
+    "late": 0
+   },
+   "OR_dur": {
+    "km": 122.01,
+    "dur": 643.8,
+    "unserved": 0,
+    "late": 0
+   }
+  },
+  {
+   "speed_kmh": 32.0,
+   "detour": 1.35,
+   "B2": {
+    "km": 152.79,
+    "dur": 712.3,
+    "unserved": 0,
+    "late": 0
+   },
+   "OR": {
+    "km": 128.43,
+    "dur": 884.7,
+    "unserved": 0,
+    "late": 0
+   },
+   "OR_dur": {
+    "km": 128.96,
+    "dur": 639.1,
+    "unserved": 0,
+    "late": 0
+   }
+  },
+  {
+   "speed_kmh": 32.0,
+   "detour": 1.5,
+   "B2": {
+    "km": 177.05,
+    "dur": 729.8,
+    "unserved": 0,
+    "late": 0
+   },
+   "OR": {
+    "km": 140.77,
+    "dur": 890.8,
+    "unserved": 0,
+    "late": 0
+   },
+   "OR_dur": {
+    "km": 152.78,
+    "dur": 675.9,
+    "unserved": 0,
+    "late": 0
+   }
+  }
+ ],
+ "scale": {
+  "200_sites_16_veh": {
+   "B2": {
+    "total_km": 546.86,
+    "total_duration_min": 3348.4,
+    "makespan_min": 406.3,
+    "wait_min": 579.8,
+    "late_sites": 0,
+    "late_min": 0.0,
+    "unserved_sites": 0,
+    "vehicles_used": 16,
+    "shift_overrun_vehicles": 0,
+    "capacity_overflow_vehicles": 0,
+    "balance_max_minus_min_min": 258.5,
+    "balance_cv": 0.376
+   },
+   "OR_20s": {
+    "wall_s": 20.0,
+    "total_km": 404.26,
+    "total_duration_min": 3985.3,
+    "makespan_min": 378.1,
+    "wait_min": 1574.2,
+    "late_sites": 0,
+    "late_min": 0.0,
+    "unserved_sites": 0,
+    "vehicles_used": 15,
+    "shift_overrun_vehicles": 0,
+    "capacity_overflow_vehicles": 0,
+    "balance_max_minus_min_min": 241.9,
+    "balance_cv": 0.348
+   },
+   "VROOM_x5": {
+    "wall_s": 18.25,
+    "total_km": 386.33,
+    "total_duration_min": 3973.6,
+    "makespan_min": 400.2,
+    "wait_min": 1605.5,
+    "late_sites": 0,
+    "late_min": 0.0,
+    "unserved_sites": 0,
+    "vehicles_used": 15,
+    "shift_overrun_vehicles": 0,
+    "capacity_overflow_vehicles": 0,
+    "balance_max_minus_min_min": 274.4,
+    "balance_cv": 0.384
+   }
+  }
+ }
+}

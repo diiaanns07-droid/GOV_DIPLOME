@@ -1,0 +1,1135 @@
+{
+  "meta": {
+    "agent_id": "AST-A01",
+    "topic": "Цифровизация муниципальных услуг и городские обращения: iKOMEK 109, маршрутизация, повторы, статус, языки",
+    "city": "astana",
+    "round": "astana-2026-10-05",
+    "searched_at": "2026-10-05T04:07:03Z",
+    "access_limitations": [
+      "Нет инструмента веб-поиска; HTTP-доступ ограничен allowlist песочницы (github.com, raw.githubusercontent.com, api.github.com, pypi, npm, ubuntu).",
+      "gov.kz (акимат Астаны), stat.gov.kz, data.egov.kz, web.archive.org, overpass-api.de, huggingface.co: HTTP 403 host_not_allowed (AST-A01-S001).",
+      "DNS-резолвинг доступен и использован только как слабый сигнал существования домена (AST-A01-S002).",
+      "Функции iKOMEK 109, публичная статистика, анонсы, нормы права, данные БНС не проверены.",
+      "Сравнение с Шымкентом опирается на первый проход A01 из этого чата; там большинство утверждений — hypothesis."
+    ]
+  },
+  "sources": [
+    {
+      "source_id": "AST-A01-S001",
+      "title": "Журнал HTTP-проверки доступа (Астана)",
+      "publisher": "AST-A01 (выполненный эксперимент)",
+      "url": null,
+      "published_at": null,
+      "accessed_at": "2026-10-05",
+      "source_type": "experiment_log",
+      "access_status": "executed",
+      "notes": "curl 8.5.0; 6 URL; все 403 host_not_allowed; 2026-10-05T04:07Z."
+    },
+    {
+      "source_id": "AST-A01-S002",
+      "title": "Журнал DNS-проверки доменов",
+      "publisher": "AST-A01 (выполненный эксперимент)",
+      "url": null,
+      "published_at": null,
+      "accessed_at": "2026-10-05",
+      "source_type": "experiment_log",
+      "access_status": "executed",
+      "notes": "getent hosts. Резолвятся: gov.kz 195.12.109.3; egov.kz 195.12.123.250; eotinish.kz 195.12.106.1; ikomek.kz и www.ikomek.kz 2.134.15.10; ikomekastana.kz и www 88.204.170.21. Не резолвятся: ikomek109.kz, www.ikomek109.kz, astana.gov.kz, smartastana.kz, astana-innovations.kz, контроль zzqx-not-existing-1931.kz. Имена доменов частично угаданы агентом."
+    },
+    {
+      "source_id": "AST-A01-S003",
+      "title": "Политика конфиденциальности мобильного приложения iKOMEK 109 (README)",
+      "publisher": "GitHub: организация «ikomek» (аффилиация с оператором не подтверждена)",
+      "url": "https://github.com/ikomek/ikomek109",
+      "published_at": "2019-03-13",
+      "accessed_at": "2026-10-05",
+      "source_type": "policy_document_mirror",
+      "access_status": "verified",
+      "notes": "Коммит 2cc30cb8 от 2023-07-05; в тексте «Дата публикации: 13.03.2019г.»; поддержка manager@ikomekastana.kz. Текст не на официальном домене."
+    },
+    {
+      "source_id": "AST-A01-S004",
+      "title": "iKOMEK 109 — full-stack платформа городских обращений для Астаны (неофициальная)",
+      "publisher": "GitHub: argamegg (Arman)",
+      "url": "https://github.com/argamegg/ikomek_platform",
+      "published_at": "2026-06-10",
+      "accessed_at": "2026-10-05",
+      "source_type": "code_repository_prior_art",
+      "access_status": "verified",
+      "notes": "Коммит e099af95 2026-06-10; README «Обновлено: июнь 2026»; демо-seed; LICENSE отсутствует. Не официальный сервис."
+    },
+    {
+      "source_id": "AST-A01-S005",
+      "title": "iKomek Project Office for Laravel 5",
+      "publisher": "GitHub: darmen (Darmen Amanbayev)",
+      "url": "https://github.com/darmen/ikomek-project-office",
+      "published_at": "2018-08-01",
+      "accessed_at": "2026-10-05",
+      "source_type": "code_repository",
+      "access_status": "verified",
+      "notes": "src/app/Console/Commands/Fetch.php строка 46: http://192.168.10.61/restapi/getproject (частный адрес). Связь с действующим iKOMEK не подтверждена."
+    },
+    {
+      "source_id": "AST-A01-S006",
+      "title": "STUPITS: data/astana_districts.geojson, data/real_context_meta.json, PROJECT_CONTEXT.md, agent/evidence.py",
+      "publisher": "BAITC-Hacks / STUPITS",
+      "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits",
+      "published_at": "2026-09-23",
+      "accessed_at": "2026-10-05",
+      "source_type": "code_repository",
+      "access_status": "verified",
+      "notes": "Коммит 834a25fb860dd5514d02c9274b70d7bf8a53a79c (проверен повторно 2026-10-05). Границы — OSM, неофициальные."
+    },
+    {
+      "source_id": "AST-A01-S007",
+      "title": "Smart City Advisor — RAG-ассистент по местам и событиям Астаны (1st place GDG Astana)",
+      "publisher": "GitHub: MakazhanAlpamys",
+      "url": "https://github.com/MakazhanAlpamys/Smart-City-Advisor",
+      "published_at": null,
+      "accessed_at": "2026-10-05",
+      "source_type": "code_repository_prior_art",
+      "access_status": "verified",
+      "notes": "README; Gemini 2.0; MIT. Не про госуслуги."
+    },
+    {
+      "source_id": "AST-A01-S008",
+      "title": "Официальный сайт акимата Астаны",
+      "publisher": "gov.kz",
+      "url": "https://www.gov.kz/memleket/entities/astana?lang=ru",
+      "published_at": null,
+      "accessed_at": "2026-10-05",
+      "source_type": "official_web_page",
+      "access_status": "not_accessed",
+      "notes": "Недоступно из песочницы агента: HTTP 403, x-deny-reason: host_not_allowed (политика среды, а не сайта). Содержимое не проверено."
+    },
+    {
+      "source_id": "AST-A01-S009",
+      "title": "БНС: динамические ряды по Астане (население/миграция)",
+      "publisher": "Бюро национальной статистики",
+      "url": "https://stat.gov.kz/ru/region/astana/dynamic-tables/38/",
+      "published_at": null,
+      "accessed_at": "2026-10-05",
+      "source_type": "official_statistics",
+      "access_status": "not_accessed",
+      "notes": "Недоступно из песочницы агента: HTTP 403, x-deny-reason: host_not_allowed (политика среды, а не сайта). Содержимое не проверено."
+    },
+    {
+      "source_id": "AST-A01-S010",
+      "title": "Портал открытых данных",
+      "publisher": "data.egov.kz",
+      "url": "https://data.egov.kz/",
+      "published_at": null,
+      "accessed_at": "2026-10-05",
+      "source_type": "open_data_portal",
+      "access_status": "not_accessed",
+      "notes": "Недоступно из песочницы агента: HTTP 403, x-deny-reason: host_not_allowed (политика среды, а не сайта). Содержимое не проверено."
+    },
+    {
+      "source_id": "AST-A01-S011",
+      "title": "Сайт iKOMEK (предполагаемый)",
+      "publisher": null,
+      "url": "https://ikomekastana.kz/",
+      "published_at": null,
+      "accessed_at": "2026-10-05",
+      "source_type": "official_web_page_candidate",
+      "access_status": "not_accessed",
+      "notes": "HTTP не проверялся (домен вне allowlist); DNS-запись есть (AST-A01-S002). Официальность не подтверждена."
+    },
+    {
+      "source_id": "AST-A01-S012",
+      "title": "eOtinish (предполагаемый портал обращений)",
+      "publisher": null,
+      "url": "https://eotinish.kz/",
+      "published_at": null,
+      "accessed_at": "2026-10-05",
+      "source_type": "official_web_page_candidate",
+      "access_status": "not_accessed",
+      "notes": "Недоступно из песочницы агента: HTTP 403, x-deny-reason: host_not_allowed (политика среды, а не сайта). Содержимое не проверено. DNS-запись есть."
+    },
+    {
+      "source_id": "AST-A01-S013",
+      "title": "ИПС «Әділет»: решения о границах районов Астаны, АППК",
+      "publisher": "adilet.zan.kz",
+      "url": "https://adilet.zan.kz/rus",
+      "published_at": null,
+      "accessed_at": "2026-10-05",
+      "source_type": "law",
+      "access_status": "not_accessed",
+      "notes": "Недоступно из песочницы агента: HTTP 403, x-deny-reason: host_not_allowed (политика среды, а не сайта). Содержимое не проверено."
+    },
+    {
+      "source_id": "AST-A01-S014",
+      "title": "Результаты поиска репозиториев GitHub (ikomek, ikomek109, astana+109, smart+astana, astana+innovations, astana+akimat, astana+open+data, egov+assistant, egov+rag, egov+kz+bot)",
+      "publisher": "GitHub Search API",
+      "url": "https://api.github.com/search/repositories",
+      "published_at": "2026-10-05",
+      "accessed_at": "2026-10-05",
+      "source_type": "search_log",
+      "access_status": "executed",
+      "notes": "ikomek: 4; ikomek109: 1; astana+109: 0; astana+innovations: 0; astana+akimat: 0."
+    },
+    {
+      "source_id": "AST-A01-S015",
+      "title": "Первый проход A01 по Шымкенту (A01_report.md, A01_evidence.json)",
+      "publisher": "AST-A01/A01 (этот чат)",
+      "url": null,
+      "published_at": "2026-10-04",
+      "accessed_at": "2026-10-05",
+      "source_type": "previous_pass",
+      "access_status": "verified",
+      "notes": "Используется только для city_comparison; ID A01-* сохранены."
+    },
+    {
+      "source_id": "AST-A01-S016",
+      "title": "Задание координатора AST-A01 (второй проход, Астана)",
+      "publisher": "Владелец проекта / координатор",
+      "url": null,
+      "published_at": "2026-10-05",
+      "accessed_at": "2026-10-05",
+      "source_type": "assignment",
+      "access_status": "verified",
+      "notes": "Утверждения «служба 109 существует», «проверь iKOMEK109» — со слов координатора."
+    }
+  ],
+  "facts": [
+    {
+      "fact_id": "AST-A01-F001",
+      "statement": "HTTP-запросы агента к gov.kz (Астана), stat.gov.kz, data.egov.kz, web.archive.org, overpass-api.de, huggingface.co отклонены прокси песочницы.",
+      "kind": "observed",
+      "value": 403,
+      "unit": "HTTP status",
+      "geography": null,
+      "period": "2026-10-05",
+      "source_refs": [
+        {
+          "source_id": "AST-A01-S001",
+          "locator": "вывод curl, x-deny-reason"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "Ограничение среды агента."
+    },
+    {
+      "fact_id": "AST-A01-F002",
+      "statement": "Домены ikomekastana.kz и ikomek.kz имеют DNS-записи A; ikomek109.kz, astana.gov.kz, smartastana.kz, astana-innovations.kz — нет.",
+      "kind": "observed",
+      "value": null,
+      "unit": null,
+      "geography": null,
+      "period": "2026-10-05",
+      "source_refs": [
+        {
+          "source_id": "AST-A01-S002",
+          "locator": "вывод getent hosts"
+        }
+      ],
+      "derivation": null,
+      "confidence": "medium",
+      "caveats": "DNS не доказывает владельца и работу сайта; отсутствие записи не доказывает отсутствие сервиса на другом домене."
+    },
+    {
+      "fact_id": "AST-A01-F003",
+      "statement": "eotinish.kz резолвится в диапазон 195.12.x.x, как gov.kz и egov.kz.",
+      "kind": "derived",
+      "value": null,
+      "unit": null,
+      "geography": null,
+      "period": "2026-10-05",
+      "source_refs": [
+        {
+          "source_id": "AST-A01-S002",
+          "locator": "IP-адреса"
+        }
+      ],
+      "derivation": "Сравнение первых двух октетов IP.",
+      "confidence": "low",
+      "caveats": "Слабый сигнал общего хостинга; не доказывает официальность домена."
+    },
+    {
+      "fact_id": "AST-A01-F004",
+      "statement": "Существует политика конфиденциальности «мобильного приложения iKOMEK 109» с датой публикации 13.03.2019 и адресом поддержки manager@ikomekastana.kz.",
+      "kind": "observed",
+      "value": "2019-03-13",
+      "unit": "дата публикации (по тексту)",
+      "geography": "Астана (по домену ikomekastana.kz)",
+      "period": "2019 — н.в.?",
+      "source_refs": [
+        {
+          "source_id": "AST-A01-S003",
+          "locator": "README.md, раздел 7.1 и последняя строка"
+        }
+      ],
+      "derivation": null,
+      "confidence": "medium",
+      "caveats": "Зеркало на GitHub (коммит 2023-07-05), аффилиация аккаунта не подтверждена; текущая версия и доступность приложения неизвестны."
+    },
+    {
+      "fact_id": "AST-A01-F005",
+      "statement": "Политика iKOMEK 109 заявляет цели: обработка запросов и обращений пользователя (п. 2.2.3) и статистические исследования на обезличенных данных (п. 2.2.5).",
+      "kind": "observed",
+      "value": null,
+      "unit": null,
+      "geography": "Астана",
+      "period": null,
+      "source_refs": [
+        {
+          "source_id": "AST-A01-S003",
+          "locator": "README.md, пп. 2.2.3, 2.2.5"
+        }
+      ],
+      "derivation": null,
+      "confidence": "medium",
+      "caveats": "Заявление в политике ≠ подтверждение функций; публикация статистики не подтверждена."
+    },
+    {
+      "fact_id": "AST-A01-F006",
+      "statement": "Политика iKOMEK 109 (п. 3.2): при использовании отдельных сервисов часть персональной информации пользователя становится общедоступной; это указывает на возможную публичную часть сервиса.",
+      "kind": "hypothesis",
+      "value": null,
+      "unit": null,
+      "geography": "Астана",
+      "period": null,
+      "source_refs": [
+        {
+          "source_id": "AST-A01-S003",
+          "locator": "README.md, п. 3.2"
+        }
+      ],
+      "derivation": "Интерпретация пункта политики.",
+      "confidence": "low",
+      "caveats": "Наличие публичной ленты/карты не проверено."
+    },
+    {
+      "fact_id": "AST-A01-F007",
+      "statement": "На GitHub есть неофициальная платформа с тем же названием «iKOMEK 109» для Астаны (июнь 2026): публичная лента, карта с тепловой шкалой плотности, RU/KZ/EN, AI-ассистент, перевод через MyMemory/LibreTranslate, демо-аккаунты demo1@ikomek.kz…demo49@ikomek.kz; LICENSE нет.",
+      "kind": "observed",
+      "value": null,
+      "unit": null,
+      "geography": "Астана",
+      "period": null,
+      "source_refs": [
+        {
+          "source_id": "AST-A01-S004",
+          "locator": "README.md: «Что Это», «Основные Возможности», «Демо-Данные»"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "Это не официальный сервис; вывод о путанице у жителей — hypothesis."
+    },
+    {
+      "fact_id": "AST-A01-F008",
+      "statement": "Пакет 2018 г. «iKomek Project Office» получает данные с частного адреса 192.168.10.61/restapi/getproject.",
+      "kind": "observed",
+      "value": null,
+      "unit": null,
+      "geography": null,
+      "period": "2018",
+      "source_refs": [
+        {
+          "source_id": "AST-A01-S005",
+          "locator": "src/app/Console/Commands/Fetch.php, строка 46"
+        }
+      ],
+      "derivation": null,
+      "confidence": "medium",
+      "caveats": "Связь с действующим iKOMEK 109 не подтверждена; частный адрес означает внутренний, а не публичный API."
+    },
+    {
+      "fact_id": "AST-A01-F009",
+      "statement": "Интерфейс и промпты STUPITS только на русском (lang=\"ru\", 0 казахских букв); коммит не изменился с первого прохода.",
+      "kind": "observed",
+      "value": 0,
+      "unit": "казахских букв",
+      "geography": null,
+      "period": "коммит 2026-09-23",
+      "source_refs": [
+        {
+          "source_id": "AST-A01-S006",
+          "locator": "web/index.html стр. 2; проверка A01-E003 на том же коммите 834a25f"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "data/*.json не проверялись."
+    },
+    {
+      "fact_id": "AST-A01-F010",
+      "statement": "В STUPITS публичный ответ советника собирается из отчёта движка, от LLM — только качественный комментарий без чисел.",
+      "kind": "observed",
+      "value": null,
+      "unit": null,
+      "geography": null,
+      "period": "коммит 2026-09-23",
+      "source_refs": [
+        {
+          "source_id": "AST-A01-S006",
+          "locator": "agent/evidence.py, строки 1–6"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "Декларация в коде."
+    },
+    {
+      "fact_id": "AST-A01-F011",
+      "statement": "Слой районов STUPITS содержит 6 районов из OSM: Есиль, Алматы, Сарыарка, Байконур, Нура, Сарайшык; Сарайшык имеет scoring_enabled=false и отсутствует в учебной модели.",
+      "kind": "observed",
+      "value": 6,
+      "unit": "районов (OSM)",
+      "geography": "Астана",
+      "period": "снимок 2026-09-23",
+      "source_refs": [
+        {
+          "source_id": "AST-A01-S006",
+          "locator": "data/astana_districts.geojson, properties; PROJECT_CONTEXT.md стр. 58, 430"
+        }
+      ],
+      "derivation": null,
+      "confidence": "medium",
+      "caveats": "OSM — не официальный источник; официальный состав и даты создания районов не проверены."
+    },
+    {
+      "fact_id": "AST-A01-F012",
+      "statement": "Геометрия 6 OSM-полигонов: все валидны; перекрытий > 0,01 км² нет; сумма площадей = площадь объединения = 789,2 км²; объединение из 4 частей (770,3; 9,0; 5,0; 4,8 км²) — анклавы Байконура (2) и Алматы (1); щели при замыкании 5 м — 0,0004 км².",
+      "kind": "derived",
+      "value": 789.2,
+      "unit": "км² (UTM 42N)",
+      "geography": "Астана (границы OSM)",
+      "period": "снимок 2026-09-23",
+      "source_refs": [
+        {
+          "source_id": "AST-A01-S006",
+          "locator": "data/astana_districts.geojson"
+        }
+      ],
+      "derivation": "shapely 2.1.2: shape → transform EPSG:4326→EPSG:32642 (pyproj 3.8.0) → is_valid, попарные intersection().area, unary_union, buffer(5).buffer(-5).",
+      "confidence": "high",
+      "caveats": "Высокая уверенность относится к вычислению на этом файле, а не к официальным границам города."
+    },
+    {
+      "fact_id": "AST-A01-F013",
+      "statement": "Слой реального контекста STUPITS (OSM POI) имеет status=unavailable: ReadTimeout к overpass-api.de; districts_source=fallback_approx.",
+      "kind": "observed",
+      "value": null,
+      "unit": null,
+      "geography": "Астана",
+      "period": "2026-09-23",
+      "source_refs": [
+        {
+          "source_id": "AST-A01-S006",
+          "locator": "data/real_context_meta.json, поля status, error, districts_source"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "Реальных POI-образцов (в т.ч. госорганов) в репозитории нет."
+    },
+    {
+      "fact_id": "AST-A01-F014",
+      "statement": "Если в Астане менялся состав районов (по OSM — 6 районов), ряды обращений и населения по районам до и после изменения несопоставимы без пересчёта в единой версии границ.",
+      "kind": "hypothesis",
+      "value": null,
+      "unit": null,
+      "geography": "Астана, районы",
+      "period": null,
+      "source_refs": [
+        {
+          "source_id": "AST-A01-S006",
+          "locator": "data/astana_districts.geojson"
+        },
+        {
+          "source_id": "AST-A01-S009",
+          "locator": "не открыт"
+        }
+      ],
+      "derivation": "Логическое следствие изменения границ.",
+      "confidence": "medium",
+      "caveats": "Нужны официальные даты создания районов и разбивка БНС."
+    },
+    {
+      "fact_id": "AST-A01-F015",
+      "statement": "Зимние темы (отопление, снег) вероятно сдвигают объём и структуру обращений; сравнивать периоды следует сезон к сезону.",
+      "kind": "hypothesis",
+      "value": null,
+      "unit": null,
+      "geography": "Астана",
+      "period": null,
+      "source_refs": [],
+      "derivation": null,
+      "confidence": "low",
+      "caveats": "Не проверено на данных."
+    },
+    {
+      "fact_id": "AST-A01-F016",
+      "statement": "По словам координатора, служба 109 в Астане существует, iKOMEK109 нужно проверить.",
+      "kind": "observed",
+      "value": null,
+      "unit": null,
+      "geography": "Астана",
+      "period": null,
+      "source_refs": [
+        {
+          "source_id": "AST-A01-S016",
+          "locator": "разделы «Твоя конкретная задача», «Дополнительные вопросы»"
+        }
+      ],
+      "derivation": null,
+      "confidence": "low",
+      "caveats": "Утверждение задания, не проверка."
+    },
+    {
+      "fact_id": "AST-A01-F017",
+      "statement": "Найден RAG-ассистент Smart City Advisor для Астаны (места и события, Gemini, MIT); к госуслугам и обращениям не относится.",
+      "kind": "observed",
+      "value": null,
+      "unit": null,
+      "geography": "Астана",
+      "period": null,
+      "source_refs": [
+        {
+          "source_id": "AST-A01-S007",
+          "locator": "README.md, заголовок и описание"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "Смежный prior art."
+    },
+    {
+      "fact_id": "AST-A01-F018",
+      "statement": "Поиск GitHub: «ikomek» — 4 репозитория, «ikomek109» — 1, «astana+109» — 0, «astana+akimat» — 0.",
+      "kind": "observed",
+      "value": null,
+      "unit": null,
+      "geography": null,
+      "period": "2026-10-05",
+      "source_refs": [
+        {
+          "source_id": "AST-A01-S014",
+          "locator": "total_count по запросам"
+        }
+      ],
+      "derivation": null,
+      "confidence": "medium",
+      "caveats": "Отсутствие на GitHub не означает отсутствие проектов."
+    }
+  ],
+  "datasets": [
+    {
+      "dataset_id": "AST-A01-D001",
+      "title": "Обращения iKOMEK 109 (обезличенная выгрузка) — ТРЕБУЕТСЯ",
+      "publisher": null,
+      "source_ids": [
+        "AST-A01-S003",
+        "AST-A01-S016"
+      ],
+      "landing_url": null,
+      "download_or_api_url": null,
+      "access_status": "unavailable",
+      "tested_at": null,
+      "geography": "Астана",
+      "granularity": "обращение",
+      "period": null,
+      "format": null,
+      "fields": [
+        "case_id",
+        "received_at",
+        "assigned_first_at",
+        "assigned_final_at",
+        "deadline_at",
+        "answered_at",
+        "channel",
+        "language",
+        "text_redacted",
+        "district_at_receipt",
+        "boundary_version",
+        "geo_cell_250m",
+        "app_category",
+        "category_final",
+        "executor_initial",
+        "executor_final",
+        "reassign_count",
+        "status_final",
+        "resolution_type",
+        "reopened_flag",
+        "reopen_of_case_id",
+        "public_visibility_flag",
+        "season_bucket",
+        "prior_cases_same_applicant_30d"
+      ],
+      "units": null,
+      "update_frequency": null,
+      "license": null,
+      "auth_requirement": "Согласие владельца данных; правовое основание",
+      "limitations": "Внутренняя база не публична (AST-A01-F008 — внутренний API). Не утверждать открытость.",
+      "next_retrieval_step": "Проверить публичную статистику на ikomekastana.kz и сайте акимата; затем запрос по спецификации (отчёт, раздел 7) или «код к данным»."
+    },
+    {
+      "dataset_id": "AST-A01-D002",
+      "title": "Население Астаны по районам",
+      "publisher": "БНС",
+      "source_ids": [
+        "AST-A01-S009"
+      ],
+      "landing_url": "https://stat.gov.kz/ru/region/astana/dynamic-tables/38/",
+      "download_or_api_url": null,
+      "access_status": "unavailable",
+      "tested_at": "2026-10-05",
+      "geography": "Астана, районы",
+      "granularity": "район",
+      "period": null,
+      "format": null,
+      "fields": [],
+      "units": "человек",
+      "update_frequency": null,
+      "license": null,
+      "auth_requirement": null,
+      "limitations": "Недоступно из песочницы; версия границ (5 или 6 районов) неизвестна.",
+      "next_retrieval_step": "Открыть страницу, скачать ряд с годом; зафиксировать, учтены ли Нура и Сарайшык."
+    },
+    {
+      "dataset_id": "AST-A01-D003",
+      "title": "Каталог data.egov.kz: наборы по обращениям Астаны",
+      "publisher": "data.egov.kz",
+      "source_ids": [
+        "AST-A01-S010"
+      ],
+      "landing_url": "https://data.egov.kz/",
+      "download_or_api_url": null,
+      "access_status": "unavailable",
+      "tested_at": "2026-10-05",
+      "geography": "Астана",
+      "granularity": null,
+      "period": null,
+      "format": null,
+      "fields": [],
+      "units": null,
+      "update_frequency": null,
+      "license": null,
+      "auth_requirement": null,
+      "limitations": "Недоступно; наличие наборов неизвестно.",
+      "next_retrieval_step": "Запрос 10; при находке — реальный API-запрос с фиксацией ответа и лицензии."
+    },
+    {
+      "dataset_id": "AST-A01-D004",
+      "title": "Положения управлений акимата Астаны и 6 районных акиматов (справочник компетенций)",
+      "publisher": "gov.kz",
+      "source_ids": [
+        "AST-A01-S008"
+      ],
+      "landing_url": null,
+      "download_or_api_url": null,
+      "access_status": "unavailable",
+      "tested_at": "2026-10-05",
+      "geography": "Астана",
+      "granularity": "орган",
+      "period": null,
+      "format": null,
+      "fields": [
+        "орган",
+        "функции (пункты)",
+        "территория",
+        "дата утверждения"
+      ],
+      "units": null,
+      "update_frequency": "при реорганизации",
+      "license": null,
+      "auth_requirement": null,
+      "limitations": "Не открыты.",
+      "next_retrieval_step": "Собрать положения, внести в таблицу с valid_from/valid_to."
+    },
+    {
+      "dataset_id": "AST-A01-D005",
+      "title": "Границы районов Астаны из OSM (снимок в STUPITS)",
+      "publisher": "OpenStreetMap contributors (через репозиторий STUPITS)",
+      "source_ids": [
+        "AST-A01-S006"
+      ],
+      "landing_url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/blob/main/data/astana_districts.geojson",
+      "download_or_api_url": "https://raw.githubusercontent.com/BAITC-Hacks/hack-d3b2c613-stupits/main/data/astana_districts.geojson",
+      "access_status": "sample_verified",
+      "tested_at": "2026-10-05",
+      "geography": "Астана",
+      "granularity": "район (полигон)",
+      "period": "снимок 2026-09-23",
+      "format": "GeoJSON",
+      "fields": [
+        "id",
+        "name",
+        "name_full",
+        "source",
+        "osm_id",
+        "source_url",
+        "scoring_enabled",
+        "geometry_status"
+      ],
+      "units": "градусы WGS84; площади — км² (derived)",
+      "update_frequency": null,
+      "license": "ODbL 1.0 (© OpenStreetMap contributors)",
+      "auth_requirement": null,
+      "limitations": "Неофициальные границы сообщества; не для юридически значимой маршрутизации. Образец: AST_A01_sample_osm_districts.csv.",
+      "next_retrieval_step": "Сверить с официальными решениями о границах; найти официальный адресный источник."
+    },
+    {
+      "dataset_id": "AST-A01-D006",
+      "title": "Официальное соответствие «адрес → район» (адресный регистр или аналог)",
+      "publisher": null,
+      "source_ids": [],
+      "landing_url": null,
+      "download_or_api_url": null,
+      "access_status": "unavailable",
+      "tested_at": null,
+      "geography": "Астана",
+      "granularity": "адрес",
+      "period": null,
+      "format": null,
+      "fields": [
+        "адрес",
+        "район",
+        "дата действия"
+      ],
+      "units": null,
+      "update_frequency": null,
+      "license": null,
+      "auth_requirement": null,
+      "limitations": "Существование публичного источника не проверено (hypothesis).",
+      "next_retrieval_step": "Поиск официального адресного сервиса и условий использования (поперечная роль по данным)."
+    }
+  ],
+  "opportunities": [
+    {
+      "idea_id": "AST-A01-O001",
+      "title": "Навигатор каналов, статусов и официальных услуг (Астана)",
+      "problem": "AP1 путаница каналов и названий, AP4 разрозненные инструкции, AP5 языки",
+      "evidence_fact_ids": [
+        "AST-A01-F004",
+        "AST-A01-F007",
+        "AST-A01-F009",
+        "AST-A01-F010"
+      ],
+      "primary_user": "Житель Астаны (ru/kk)",
+      "user_task": "Понять, куда обращаться, какой канал официальный и где проверить статус уже поданного обращения",
+      "existing_solution": "iKOMEK 109 (функции не проверены), egov, eOtinish, сайт акимата",
+      "proposed_addition": "Карточки каналов с официальным путём проверки статуса + карточки услуг; только ссылки из allowlist; явный отказ; паритет ru/kk",
+      "required_dataset_ids": [
+        "AST-A01-D004"
+      ],
+      "ai_role": "Распознавание намерения; выбор id карточек; текст и ссылки — детерминированно",
+      "non_ai_baseline": "BM25 по карточкам",
+      "success_metrics": [
+        "Acc@1 карточки",
+        "полнота/точность ссылок (выдуманных = 0)",
+        "доля правильных отказов",
+        "время до официального пути проверки статуса (ru/kk)"
+      ],
+      "feasibility_10_days": "Высокая для 30 карточек при доступе владельца к официальным страницам",
+      "blockers": [
+        "Подтверждение официальных каналов и издателя приложения",
+        "Возможное дублирование функций iKOMEK"
+      ],
+      "transfer_to_shymkent": "Да: общее ядро; карточки каналов Шымкента (служба 109, A01) собираются отдельно",
+      "next_action": "Заполнить таблицу iKOMEK (отчёт, раздел 2) и собрать 15 карточек каналов"
+    },
+    {
+      "idea_id": "AST-A01-O002",
+      "title": "Помощник оператора iKOMEK: исполнитель с основанием и район на дату обращения",
+      "problem": "AP2 маршрутизация при изменении границ, AP3 типы повторов",
+      "evidence_fact_ids": [
+        "AST-A01-F011",
+        "AST-A01-F012",
+        "AST-A01-F014",
+        "AST-A01-F008"
+      ],
+      "primary_user": "Оператор/диспетчер iKOMEK 109",
+      "user_task": "Назначить исполнителя и район, связать повторы",
+      "existing_solution": "Unknown",
+      "proposed_addition": "Топ-3 исполнителя с пунктом положения; район по версии границ с указанием источника; связи повтор заявителя / кластер / reopen",
+      "required_dataset_ids": [
+        "AST-A01-D001",
+        "AST-A01-D004",
+        "AST-A01-D005",
+        "AST-A01-D006"
+      ],
+      "ai_role": "Ранжирование кандидатов из справочника и семантические кластеры; район — геометрия без AI",
+      "non_ai_baseline": "Словарь + point-in-polygon",
+      "success_metrics": [
+        "Recall@3 исполнителя (ретротест)",
+        "точность района: у границ/анклавов и в остальных точках",
+        "точность связей по типам"
+      ],
+      "feasibility_10_days": "Низкая для оценки (нет выгрузки); геометрический модуль — проверен на OSM (AST-A01-F012)",
+      "blockers": [
+        "Нет обезличенной выгрузки",
+        "Нет официальных границ и адресного соответствия"
+      ],
+      "transfer_to_shymkent": "Метод да; границы и справочник — свои (pending)",
+      "next_action": "Подготовить спецификацию выгрузки и скрипт «код к данным»"
+    },
+    {
+      "idea_id": "AST-A01-O003",
+      "title": "Исследование: временной граф компетенций и переадресации вокруг реорганизаций районов",
+      "problem": "Ошибки маршрутизации после изменения границ и компетенций",
+      "evidence_fact_ids": [
+        "AST-A01-F011",
+        "AST-A01-F014"
+      ],
+      "primary_user": "Аналитик акимата; дипломная работа",
+      "user_task": "Оценить, как реорганизации влияют на переадресации и сроки",
+      "existing_solution": "Unknown",
+      "proposed_addition": "Граф «тип вопроса × территория × период → орган, основание»; прерванный временной ряд переадресаций",
+      "required_dataset_ids": [
+        "AST-A01-D001",
+        "AST-A01-D004",
+        "AST-A01-D006"
+      ],
+      "ai_role": "Помощь в извлечении функций из положений (с ручной проверкой); статистика — без AI",
+      "non_ai_baseline": "Ручная таблица компетенций и описательная статистика",
+      "success_metrics": [
+        "изменение доли переадресаций вокруг даты реорганизации (с интервалами)",
+        "число пересечений/дыр, подтверждённых экспертом"
+      ],
+      "feasibility_10_days": "Низкая",
+      "blockers": [
+        "Журнал статусов с датами",
+        "Официальные даты реорганизаций"
+      ],
+      "transfer_to_shymkent": "Да, как метод, если в Шымкенте были изменения границ (pending)",
+      "next_action": "Найти официальные даты создания районов (запросы 8–9)"
+    }
+  ],
+  "open_questions": [
+    {
+      "question": "Какие каналы, языки и трекинг статуса у iKOMEK 109 сейчас, кто юрлицо-оператор и издатель приложения?",
+      "why_important": "Определяет пользу навигатора и риск дублирования",
+      "how_to_check": "ikomekastana.kz, сайт акимата, магазины приложений; запросы 1–4, 7"
+    },
+    {
+      "question": "Публикует ли iKOMEK или акимат статистику обращений и есть ли публичная лента?",
+      "why_important": "Возможна ли панель «объём ≠ качество» на открытых данных",
+      "how_to_check": "Запросы 5–6, 10; проверка п. 3.2 политики на практике"
+    },
+    {
+      "question": "Официальный состав районов Астаны и даты создания Нуры и Сарайшыка?",
+      "why_important": "Справочник маршрутизации и сопоставимость рядов",
+      "how_to_check": "Решения на adilet.zan.kz; запросы 8–9"
+    },
+    {
+      "question": "Есть ли официальное публичное соответствие «адрес → район»?",
+      "why_important": "Без него резолвер района неофициален",
+      "how_to_check": "Поперечная роль по данным; адресные сервисы госорганов"
+    },
+    {
+      "question": "Разбивка населения по районам у БНС — в какой версии границ и за какой год?",
+      "why_important": "Нормирование объёма",
+      "how_to_check": "AST-A01-S009"
+    },
+    {
+      "question": "Какие функции iKOMEK анонсированы в 2025–2026 и какие подтверждены внедрением?",
+      "why_important": "Не путать обещание и внедрение",
+      "how_to_check": "Официальные новости акимата; разделять даты анонса и запуска"
+    },
+    {
+      "question": "Кому принадлежит домен ikomek.kz и связан ли он с iKOMEK 109 Астаны?",
+      "why_important": "Риск путаницы каналов (AP1)",
+      "how_to_check": "Открыть сайт; ссылки с официальной страницы акимата"
+    }
+  ],
+  "city_comparison": [
+    {
+      "topic": "Доступ к официальным источникам",
+      "astana_fact_ids": [
+        "AST-A01-F001"
+      ],
+      "shymkent_fact_ids": [
+        "A01-F001"
+      ],
+      "comparison_status": "both_blocked",
+      "shared_component": "—",
+      "city_specific_inputs": [
+        "официальные URL каждого города"
+      ],
+      "caveats": "Ограничение среды агента, а не сайтов."
+    },
+    {
+      "topic": "Наличие и функции службы 109",
+      "astana_fact_ids": [
+        "AST-A01-F004",
+        "AST-A01-F005",
+        "AST-A01-F002",
+        "AST-A01-F016"
+      ],
+      "shymkent_fact_ids": [
+        "A01-F016"
+      ],
+      "comparison_status": "astana_partially_observed_shymkent_assignment_only",
+      "shared_component": "Схема карточки канала",
+      "city_specific_inputs": [
+        "каналы",
+        "оператор",
+        "URL",
+        "языки"
+      ],
+      "caveats": "Названия и функции 109 в городах не обязаны совпадать."
+    },
+    {
+      "topic": "«Приложение/маршрутизатор жалоб» как prior art",
+      "astana_fact_ids": [
+        "AST-A01-F007"
+      ],
+      "shymkent_fact_ids": [
+        "A01-F005"
+      ],
+      "comparison_status": "consistent",
+      "shared_component": "—",
+      "city_specific_inputs": [],
+      "caveats": "Оба — неофициальные проекты; говорят о новизне, а не о проблемах жителей."
+    },
+    {
+      "topic": "Grounding ответов (факты из кода, не из LLM)",
+      "astana_fact_ids": [
+        "AST-A01-F010"
+      ],
+      "shymkent_fact_ids": [
+        "A01-F003"
+      ],
+      "comparison_status": "shared_observed_same_repo",
+      "shared_component": "Ядро карточек + allowlist + офлайн BM25",
+      "city_specific_inputs": [
+        "корпус карточек"
+      ],
+      "caveats": "Декларация в коде; не тест поведения."
+    },
+    {
+      "topic": "Язык интерфейса продукта",
+      "astana_fact_ids": [
+        "AST-A01-F009"
+      ],
+      "shymkent_fact_ids": [
+        "A01-F004"
+      ],
+      "comparison_status": "shared_observed_same_repo",
+      "shared_component": "i18n ru/kk",
+      "city_specific_inputs": [
+        "тексты карточек на двух языках"
+      ],
+      "caveats": "Паритет официальных каналов городов не проверен."
+    },
+    {
+      "topic": "Территориальная маршрутизация и состав районов",
+      "astana_fact_ids": [
+        "AST-A01-F011",
+        "AST-A01-F012"
+      ],
+      "shymkent_fact_ids": [],
+      "comparison_status": "pending",
+      "shared_component": "point-in-polygon с версиями границ",
+      "city_specific_inputs": [
+        "границы",
+        "даты действия",
+        "справочник компетенций"
+      ],
+      "caveats": "Районы Шымкента в первом проходе не проверялись; OSM неофициален."
+    },
+    {
+      "topic": "Объём ≠ качество, нормирование",
+      "astana_fact_ids": [
+        "AST-A01-F014",
+        "AST-A01-F015"
+      ],
+      "shymkent_fact_ids": [
+        "A01-F015",
+        "A01-F007"
+      ],
+      "comparison_status": "both_hypothesis",
+      "shared_component": "Метрики качества с интервалами",
+      "city_specific_inputs": [
+        "население по районам",
+        "сезонные окна",
+        "версии границ"
+      ],
+      "caveats": "Сезонность и климат различаются; параметры не переносить."
+    },
+    {
+      "topic": "Правовые сроки рассмотрения (общенациональные)",
+      "astana_fact_ids": [],
+      "shymkent_fact_ids": [
+        "A01-F013"
+      ],
+      "comparison_status": "shared_national_unverified",
+      "shared_component": "Расчёт «в срок»",
+      "city_specific_inputs": [],
+      "caveats": "Норма одна для страны, но не проверена в действующей редакции."
+    },
+    {
+      "topic": "Казахскоязычные NLP-ресурсы",
+      "astana_fact_ids": [],
+      "shymkent_fact_ids": [
+        "A01-F010",
+        "A01-F011",
+        "A01-F012"
+      ],
+      "comparison_status": "shared_language_level",
+      "shared_component": "PII-редакция, словари",
+      "city_specific_inputs": [],
+      "caveats": "Домен ресурсов не совпадает с обращениями."
+    }
+  ],
+  "deliverables": {
+    "search_queries": [
+      {
+        "n": 1,
+        "lang": "ru",
+        "q": "iKOMEK 109 Астана приложение статус обращения функции"
+      },
+      {
+        "n": 2,
+        "lang": "kk",
+        "q": "\"iKOMEK 109\" Астана өтініш қосымша"
+      },
+      {
+        "n": 3,
+        "lang": "ru",
+        "q": "единый контакт-центр 109 акимат Астаны site:gov.kz"
+      },
+      {
+        "n": 4,
+        "lang": "kk",
+        "q": "Астана қаласы әкімдігі 109 бірыңғай байланыс орталығы"
+      },
+      {
+        "n": 5,
+        "lang": "ru",
+        "q": "iKOMEK 109 количество обращений 2025 Астана отчёт"
+      },
+      {
+        "n": 6,
+        "lang": "kk",
+        "q": "Астана 109 өтініштер саны 2025 жыл"
+      },
+      {
+        "n": 7,
+        "lang": "any",
+        "q": "site:ikomekastana.kz"
+      },
+      {
+        "n": 8,
+        "lang": "ru",
+        "q": "образование района Сарайшык Астана решение дата"
+      },
+      {
+        "n": 9,
+        "lang": "kk",
+        "q": "Астана аудандары Сарайшық Нұра құрылуы шешім"
+      },
+      {
+        "n": 10,
+        "lang": "kk",
+        "q": "Астана азаматтардың өтініштері ашық деректер data.egov.kz"
+      }
+    ],
+    "test_cases_file": "AST_A01_synthetic_test_cases.json (10, synthetic)",
+    "real_sample_files": [
+      {
+        "file": "AST_A01_sample_osm_districts.csv",
+        "dataset_id": "AST-A01-D005",
+        "source_id": "AST-A01-S006",
+        "license": "ODbL 1.0",
+        "note": "Неофициальные границы; площади derived"
+      }
+    ],
+    "metrics": {
+      "same_as": "A01_evidence.json → deliverables.metrics",
+      "astana_addition": {
+        "district_accuracy": {
+          "formula": "доля обращений с верно определённым районом; отдельно для точек в 200 м от границы/в анклавах и прочих",
+          "current_value": null
+        }
+      },
+      "rule": "Считать по городам отдельно; не усреднять города."
+    },
+    "ikomek_status_checklist": [
+      {
+        "item": "мобильное приложение",
+        "status": "existed_since_2019_medium",
+        "fact": "AST-A01-F004"
+      },
+      {
+        "item": "обработка обращений в приложении",
+        "status": "declared_in_policy",
+        "fact": "AST-A01-F005"
+      },
+      {
+        "item": "публичная часть",
+        "status": "hypothesis",
+        "fact": "AST-A01-F006"
+      },
+      {
+        "item": "публичная статистика",
+        "status": "unknown",
+        "fact": null
+      },
+      {
+        "item": "телефон 109 / мессенджеры / казахский язык",
+        "status": "unknown",
+        "fact": "AST-A01-F016"
+      },
+      {
+        "item": "открытые данные",
+        "status": "unknown",
+        "fact": null
+      },
+      {
+        "item": "анонсы 2025–2026",
+        "status": "not_checked",
+        "fact": null
+      }
+    ],
+    "experiments": [
+      {
+        "id": "AST-A01-E001",
+        "purpose": "HTTP-доступ",
+        "command": "curl -sS -o /dev/null -D - --max-time 15 <URL>",
+        "versions": "curl 8.5.0",
+        "result": "6 × 403 host_not_allowed"
+      },
+      {
+        "id": "AST-A01-E002",
+        "purpose": "Существование доменов",
+        "command": "getent hosts <домен> (10 доменов, включая контрольный)",
+        "versions": "glibc getent (Ubuntu 24)",
+        "result": "см. AST-A01-S002"
+      },
+      {
+        "id": "AST-A01-E003",
+        "purpose": "Prior art и тексты iKOMEK",
+        "command": "git clone --depth 1 (3 репозитория) + чтение README/Fetch.php Python-скриптом",
+        "versions": "git 2.43.0, Python 3.12.3",
+        "result": "AST-A01-F004…F008"
+      },
+      {
+        "id": "AST-A01-E004",
+        "purpose": "Пригодность OSM-полигонов для однозначного point-in-polygon",
+        "command": "shapely.shape → pyproj EPSG:4326→32642 → is_valid; pairwise intersection; unary_union; buffer(5).buffer(-5); representative_point covers-test",
+        "versions": "shapely 2.1.2, pyproj 3.8.0",
+        "result": "AST-A01-F012; все representative points резолвятся в свой район однозначно"
+      },
+      {
+        "id": "AST-A01-E005",
+        "purpose": "Проверка района на реальных адресах",
+        "command": null,
+        "versions": null,
+        "result": "НЕ ИСПОЛНЕНО: нет официального эталона; координаты по памяти не использовались"
+      }
+    ],
+    "second_pass_task": "Агент с веб-доступом: заполнить ikomek_status_checklist по официальным страницам и магазинам; структура акимата и 6 районных акиматов с положениями; решения о создании Нуры и Сарайшыка с датами; население по районам (год, версия границ); поиск data.egov.kz с реальным запросом; 30 карточек (15 каналов/статусов, 15 услуг) и эталоны AST-T01–T10; обновить city_comparison.",
+    "dependencies": [
+      "ЖКХ: ОСИ, отопление, снег (AST-T01, T02, T10)",
+      "Безопасность: экстренные номера (AST-T07)",
+      "Поперечная роль по данным: data.egov.kz, адресный регистр",
+      "Правовая роль: решения о границах, ПД",
+      "Шымкент: состав районов — pending"
+    ]
+  }
+}

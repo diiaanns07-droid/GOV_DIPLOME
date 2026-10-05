@@ -1,0 +1,2657 @@
+{
+ "meta": {
+  "kind": "mixed",
+  "experiment": "AST-A03-E003",
+  "env": {
+   "python": "3.12.3",
+   "platform": "Linux-6.18.44-fc-v70-x86_64-with-glibc2.39",
+   "ortools": "9.15.6755",
+   "numpy": "2.4.4",
+   "seed": 20261005,
+   "districts_sha256": "9092aebb997086d4fbf30963dd84dfae6aab483a585ba6f536944fb03a4eb95e"
+  },
+  "real_inputs": "OSM district polygons of Astana (STUPITS cache, osm_base 2026-09-22, ODbL)",
+  "synthetic_inputs": "sites, volumes, dumps, capacities, depot, fleet, speeds, times",
+  "assumptions": {
+   "truck_m3": 20,
+   "load_min": 6,
+   "shift_min": 480,
+   "n_trucks": 60,
+   "detour": 1.3
+  }
+ },
+ "grid": [
+  {
+   "seed": 20261005,
+   "cap_ratio": 5.0,
+   "speed_kmh": 20.0,
+   "results": {
+    "nearest": {
+     "total_volume_m3": 2380,
+     "served_m3": 2380,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.05,
+      0.149,
+      0.511
+     ],
+     "dump_utilization": [
+      0.05,
+      0.149,
+      0.511
+     ],
+     "trips": 119,
+     "truck_km": 4791.9,
+     "truck_km_per_served_m3": 2.013,
+     "truck_hours_per_1000_m3": 111.1,
+     "truck_hours": 264.5,
+     "makespan_h": 6.15,
+     "trucks_used": 60,
+     "balance_cv": 0.189
+    },
+    "greedy_cap": {
+     "total_volume_m3": 2380,
+     "served_m3": 2380,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.05,
+      0.149,
+      0.511
+     ],
+     "dump_utilization": [
+      0.05,
+      0.149,
+      0.511
+     ],
+     "trips": 119,
+     "truck_km": 4791.9,
+     "truck_km_per_served_m3": 2.013,
+     "truck_hours_per_1000_m3": 111.1,
+     "truck_hours": 264.5,
+     "makespan_h": 6.15,
+     "trucks_used": 60,
+     "balance_cv": 0.189
+    },
+    "min_cost_flow": {
+     "total_volume_m3": 2380,
+     "served_m3": 2380,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.076,
+      0.178,
+      0.43
+     ],
+     "dump_utilization": [
+      0.076,
+      0.178,
+      0.43
+     ],
+     "trips": 119,
+     "truck_km": 4927.9,
+     "truck_km_per_served_m3": 2.071,
+     "truck_hours_per_1000_m3": 113.7,
+     "truck_hours": 270.5,
+     "makespan_h": 6.15,
+     "trucks_used": 60,
+     "balance_cv": 0.175
+    }
+   }
+  },
+  {
+   "seed": 20261005,
+   "cap_ratio": 2.0,
+   "speed_kmh": 20.0,
+   "results": {
+    "nearest": {
+     "total_volume_m3": 2380,
+     "served_m3": 2050,
+     "unserved_m3": 330,
+     "unserved_due_to_dump_overflow_m3": 330,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.126,
+      0.372,
+      1.277
+     ],
+     "dump_utilization": [
+      0.126,
+      0.372,
+      1.0
+     ],
+     "trips": 103,
+     "truck_km": 4488.4,
+     "truck_km_per_served_m3": 2.189,
+     "truck_hours_per_1000_m3": 119.8,
+     "truck_hours": 245.6,
+     "makespan_h": 5.6,
+     "trucks_used": 60,
+     "balance_cv": 0.191
+    },
+    "greedy_cap": {
+     "total_volume_m3": 2380,
+     "served_m3": 2380,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.226,
+      0.456,
+      1.0
+     ],
+     "dump_utilization": [
+      0.226,
+      0.456,
+      1.0
+     ],
+     "trips": 120,
+     "truck_km": 5116.4,
+     "truck_km_per_served_m3": 2.15,
+     "truck_hours_per_1000_m3": 117.6,
+     "truck_hours": 279.8,
+     "makespan_h": 6.15,
+     "trucks_used": 60,
+     "balance_cv": 0.162
+    },
+    "min_cost_flow": {
+     "total_volume_m3": 2380,
+     "served_m3": 2380,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.231,
+      0.45,
+      1.0
+     ],
+     "dump_utilization": [
+      0.231,
+      0.45,
+      1.0
+     ],
+     "trips": 120,
+     "truck_km": 4971.9,
+     "truck_km_per_served_m3": 2.089,
+     "truck_hours_per_1000_m3": 114.5,
+     "truck_hours": 272.6,
+     "makespan_h": 6.16,
+     "trucks_used": 60,
+     "balance_cv": 0.164
+    }
+   }
+  },
+  {
+   "seed": 20261005,
+   "cap_ratio": 1.3,
+   "speed_kmh": 20.0,
+   "results": {
+    "nearest": {
+     "total_volume_m3": 2380,
+     "served_m3": 1634,
+     "unserved_m3": 746,
+     "unserved_due_to_dump_overflow_m3": 746,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.194,
+      0.572,
+      1.964
+     ],
+     "dump_utilization": [
+      0.194,
+      0.572,
+      1.0
+     ],
+     "trips": 82,
+     "truck_km": 4100.3,
+     "truck_km_per_served_m3": 2.509,
+     "truck_hours_per_1000_m3": 135.4,
+     "truck_hours": 221.3,
+     "makespan_h": 5.15,
+     "trucks_used": 60,
+     "balance_cv": 0.243
+    },
+    "greedy_cap": {
+     "total_volume_m3": 2380,
+     "served_m3": 2380,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.582,
+      0.818,
+      1.0
+     ],
+     "dump_utilization": [
+      0.582,
+      0.818,
+      1.0
+     ],
+     "trips": 120,
+     "truck_km": 5667.4,
+     "truck_km_per_served_m3": 2.381,
+     "truck_hours_per_1000_m3": 128.6,
+     "truck_hours": 306.0,
+     "makespan_h": 7.01,
+     "trucks_used": 60,
+     "balance_cv": 0.168
+    },
+    "min_cost_flow": {
+     "total_volume_m3": 2380,
+     "served_m3": 2380,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.489,
+      0.923,
+      1.0
+     ],
+     "dump_utilization": [
+      0.489,
+      0.923,
+      1.0
+     ],
+     "trips": 120,
+     "truck_km": 5303.1,
+     "truck_km_per_served_m3": 2.228,
+     "truck_hours_per_1000_m3": 120.9,
+     "truck_hours": 287.8,
+     "makespan_h": 6.36,
+     "trucks_used": 60,
+     "balance_cv": 0.157
+    }
+   }
+  },
+  {
+   "seed": 20261005,
+   "cap_ratio": 1.1,
+   "speed_kmh": 20.0,
+   "results": {
+    "nearest": {
+     "total_volume_m3": 2380,
+     "served_m3": 1514,
+     "unserved_m3": 866,
+     "unserved_due_to_dump_overflow_m3": 866,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.229,
+      0.677,
+      2.324
+     ],
+     "dump_utilization": [
+      0.229,
+      0.677,
+      1.0
+     ],
+     "trips": 76,
+     "truck_km": 4045.5,
+     "truck_km_per_served_m3": 2.672,
+     "truck_hours_per_1000_m3": 143.4,
+     "truck_hours": 217.1,
+     "makespan_h": 5.09,
+     "trucks_used": 60,
+     "balance_cv": 0.25
+    },
+    "greedy_cap": {
+     "total_volume_m3": 2380,
+     "served_m3": 2380,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.774,
+      1.0,
+      1.0
+     ],
+     "dump_utilization": [
+      0.774,
+      1.0,
+      1.0
+     ],
+     "trips": 121,
+     "truck_km": 5952.1,
+     "truck_km_per_served_m3": 2.501,
+     "truck_hours_per_1000_m3": 134.4,
+     "truck_hours": 320.0,
+     "makespan_h": 7.4,
+     "trucks_used": 60,
+     "balance_cv": 0.173
+    },
+    "min_cost_flow": {
+     "total_volume_m3": 2380,
+     "served_m3": 2380,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.774,
+      1.0,
+      1.0
+     ],
+     "dump_utilization": [
+      0.774,
+      1.0,
+      1.0
+     ],
+     "trips": 121,
+     "truck_km": 5420.0,
+     "truck_km_per_served_m3": 2.277,
+     "truck_hours_per_1000_m3": 123.3,
+     "truck_hours": 293.4,
+     "makespan_h": 6.36,
+     "trucks_used": 60,
+     "balance_cv": 0.148
+    }
+   }
+  },
+  {
+   "seed": 20261005,
+   "cap_ratio": 1.0,
+   "speed_kmh": 20.0,
+   "results": {
+    "nearest": {
+     "total_volume_m3": 2380,
+     "served_m3": 1455,
+     "unserved_m3": 925,
+     "unserved_due_to_dump_overflow_m3": 925,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.252,
+      0.744,
+      2.555
+     ],
+     "dump_utilization": [
+      0.252,
+      0.744,
+      1.0
+     ],
+     "trips": 73,
+     "truck_km": 3995.9,
+     "truck_km_per_served_m3": 2.746,
+     "truck_hours_per_1000_m3": 147.1,
+     "truck_hours": 214.0,
+     "makespan_h": 5.09,
+     "trucks_used": 60,
+     "balance_cv": 0.271
+    },
+    "greedy_cap": {
+     "total_volume_m3": 2380,
+     "served_m3": 2380,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      1.0,
+      1.0,
+      1.0
+     ],
+     "dump_utilization": [
+      1.0,
+      1.0,
+      1.0
+     ],
+     "trips": 121,
+     "truck_km": 6158.4,
+     "truck_km_per_served_m3": 2.588,
+     "truck_hours_per_1000_m3": 138.7,
+     "truck_hours": 330.1,
+     "makespan_h": 7.5,
+     "trucks_used": 60,
+     "balance_cv": 0.164
+    },
+    "min_cost_flow": {
+     "total_volume_m3": 2380,
+     "served_m3": 2380,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      1.0,
+      1.0,
+      1.0
+     ],
+     "dump_utilization": [
+      1.0,
+      1.0,
+      1.0
+     ],
+     "trips": 121,
+     "truck_km": 5521.2,
+     "truck_km_per_served_m3": 2.32,
+     "truck_hours_per_1000_m3": 125.3,
+     "truck_hours": 298.2,
+     "makespan_h": 6.81,
+     "trucks_used": 60,
+     "balance_cv": 0.154
+    }
+   }
+  },
+  {
+   "seed": 20261006,
+   "cap_ratio": 5.0,
+   "speed_kmh": 20.0,
+   "results": {
+    "nearest": {
+     "total_volume_m3": 3120,
+     "served_m3": 3120,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.147,
+      0.176,
+      0.318
+     ],
+     "dump_utilization": [
+      0.147,
+      0.176,
+      0.318
+     ],
+     "trips": 156,
+     "truck_km": 6114.0,
+     "truck_km_per_served_m3": 1.96,
+     "truck_hours_per_1000_m3": 107.6,
+     "truck_hours": 335.8,
+     "makespan_h": 6.93,
+     "trucks_used": 60,
+     "balance_cv": 0.136
+    },
+    "greedy_cap": {
+     "total_volume_m3": 3120,
+     "served_m3": 3120,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.147,
+      0.176,
+      0.318
+     ],
+     "dump_utilization": [
+      0.147,
+      0.176,
+      0.318
+     ],
+     "trips": 156,
+     "truck_km": 6114.0,
+     "truck_km_per_served_m3": 1.96,
+     "truck_hours_per_1000_m3": 107.6,
+     "truck_hours": 335.8,
+     "makespan_h": 6.93,
+     "trucks_used": 60,
+     "balance_cv": 0.136
+    },
+    "min_cost_flow": {
+     "total_volume_m3": 3120,
+     "served_m3": 3120,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.167,
+      0.176,
+      0.287
+     ],
+     "dump_utilization": [
+      0.167,
+      0.176,
+      0.287
+     ],
+     "trips": 156,
+     "truck_km": 6117.0,
+     "truck_km_per_served_m3": 1.961,
+     "truck_hours_per_1000_m3": 107.6,
+     "truck_hours": 335.6,
+     "makespan_h": 6.93,
+     "trucks_used": 60,
+     "balance_cv": 0.137
+    }
+   }
+  },
+  {
+   "seed": 20261006,
+   "cap_ratio": 2.0,
+   "speed_kmh": 20.0,
+   "results": {
+    "nearest": {
+     "total_volume_m3": 3120,
+     "served_m3": 3120,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.369,
+      0.44,
+      0.795
+     ],
+     "dump_utilization": [
+      0.369,
+      0.44,
+      0.795
+     ],
+     "trips": 156,
+     "truck_km": 6114.0,
+     "truck_km_per_served_m3": 1.96,
+     "truck_hours_per_1000_m3": 107.6,
+     "truck_hours": 335.8,
+     "makespan_h": 6.93,
+     "trucks_used": 60,
+     "balance_cv": 0.136
+    },
+    "greedy_cap": {
+     "total_volume_m3": 3120,
+     "served_m3": 3120,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.369,
+      0.44,
+      0.795
+     ],
+     "dump_utilization": [
+      0.369,
+      0.44,
+      0.795
+     ],
+     "trips": 156,
+     "truck_km": 6114.0,
+     "truck_km_per_served_m3": 1.96,
+     "truck_hours_per_1000_m3": 107.6,
+     "truck_hours": 335.8,
+     "makespan_h": 6.93,
+     "trucks_used": 60,
+     "balance_cv": 0.136
+    },
+    "min_cost_flow": {
+     "total_volume_m3": 3120,
+     "served_m3": 3120,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.417,
+      0.44,
+      0.718
+     ],
+     "dump_utilization": [
+      0.417,
+      0.44,
+      0.718
+     ],
+     "trips": 156,
+     "truck_km": 6117.0,
+     "truck_km_per_served_m3": 1.961,
+     "truck_hours_per_1000_m3": 107.6,
+     "truck_hours": 335.6,
+     "makespan_h": 6.93,
+     "trucks_used": 60,
+     "balance_cv": 0.137
+    }
+   }
+  },
+  {
+   "seed": 20261006,
+   "cap_ratio": 1.3,
+   "speed_kmh": 20.0,
+   "results": {
+    "nearest": {
+     "total_volume_m3": 3120,
+     "served_m3": 2894,
+     "unserved_m3": 226,
+     "unserved_due_to_dump_overflow_m3": 226,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.567,
+      0.676,
+      1.223
+     ],
+     "dump_utilization": [
+      0.567,
+      0.676,
+      1.0
+     ],
+     "trips": 145,
+     "truck_km": 5815.3,
+     "truck_km_per_served_m3": 2.009,
+     "truck_hours_per_1000_m3": 110.0,
+     "truck_hours": 318.3,
+     "makespan_h": 6.58,
+     "trucks_used": 60,
+     "balance_cv": 0.155
+    },
+    "greedy_cap": {
+     "total_volume_m3": 3120,
+     "served_m3": 3080,
+     "unserved_m3": 40,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 40,
+     "dump_demand_over_capacity": [
+      0.617,
+      0.779,
+      1.0
+     ],
+     "dump_utilization": [
+      0.617,
+      0.779,
+      1.0
+     ],
+     "trips": 157,
+     "truck_km": 6372.7,
+     "truck_km_per_served_m3": 2.069,
+     "truck_hours_per_1000_m3": 112.9,
+     "truck_hours": 347.9,
+     "makespan_h": 7.98,
+     "trucks_used": 60,
+     "balance_cv": 0.157
+    },
+    "min_cost_flow": {
+     "total_volume_m3": 3120,
+     "served_m3": 3120,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.691,
+      0.694,
+      1.0
+     ],
+     "dump_utilization": [
+      0.691,
+      0.694,
+      1.0
+     ],
+     "trips": 157,
+     "truck_km": 6261.9,
+     "truck_km_per_served_m3": 2.007,
+     "truck_hours_per_1000_m3": 109.8,
+     "truck_hours": 342.7,
+     "makespan_h": 6.97,
+     "trucks_used": 60,
+     "balance_cv": 0.126
+    }
+   }
+  },
+  {
+   "seed": 20261006,
+   "cap_ratio": 1.1,
+   "speed_kmh": 20.0,
+   "results": {
+    "nearest": {
+     "total_volume_m3": 3120,
+     "served_m3": 2738,
+     "unserved_m3": 382,
+     "unserved_due_to_dump_overflow_m3": 382,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.67,
+      0.799,
+      1.445
+     ],
+     "dump_utilization": [
+      0.67,
+      0.799,
+      1.0
+     ],
+     "trips": 137,
+     "truck_km": 5542.4,
+     "truck_km_per_served_m3": 2.024,
+     "truck_hours_per_1000_m3": 110.6,
+     "truck_hours": 302.8,
+     "makespan_h": 6.46,
+     "trucks_used": 60,
+     "balance_cv": 0.188
+    },
+    "greedy_cap": {
+     "total_volume_m3": 3120,
+     "served_m3": 3080,
+     "unserved_m3": 40,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 40,
+     "dump_demand_over_capacity": [
+      0.773,
+      1.0,
+      1.0
+     ],
+     "dump_utilization": [
+      0.773,
+      1.0,
+      1.0
+     ],
+     "trips": 158,
+     "truck_km": 6596.9,
+     "truck_km_per_served_m3": 2.142,
+     "truck_hours_per_1000_m3": 116.5,
+     "truck_hours": 358.7,
+     "makespan_h": 7.89,
+     "trucks_used": 60,
+     "balance_cv": 0.151
+    },
+    "min_cost_flow": {
+     "total_volume_m3": 3120,
+     "served_m3": 3120,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.817,
+      0.949,
+      1.0
+     ],
+     "dump_utilization": [
+      0.817,
+      0.949,
+      1.0
+     ],
+     "trips": 157,
+     "truck_km": 6311.2,
+     "truck_km_per_served_m3": 2.023,
+     "truck_hours_per_1000_m3": 110.4,
+     "truck_hours": 344.6,
+     "makespan_h": 7.06,
+     "trucks_used": 60,
+     "balance_cv": 0.125
+    }
+   }
+  },
+  {
+   "seed": 20261006,
+   "cap_ratio": 1.0,
+   "speed_kmh": 20.0,
+   "results": {
+    "nearest": {
+     "total_volume_m3": 3120,
+     "served_m3": 2660,
+     "unserved_m3": 460,
+     "unserved_due_to_dump_overflow_m3": 460,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.737,
+      0.879,
+      1.59
+     ],
+     "dump_utilization": [
+      0.737,
+      0.879,
+      1.0
+     ],
+     "trips": 133,
+     "truck_km": 5437.7,
+     "truck_km_per_served_m3": 2.044,
+     "truck_hours_per_1000_m3": 111.5,
+     "truck_hours": 296.7,
+     "makespan_h": 6.36,
+     "trucks_used": 60,
+     "balance_cv": 0.186
+    },
+    "greedy_cap": {
+     "total_volume_m3": 3120,
+     "served_m3": 3100,
+     "unserved_m3": 20,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 20,
+     "dump_demand_over_capacity": [
+      1.0,
+      1.0,
+      1.0
+     ],
+     "dump_utilization": [
+      1.0,
+      1.0,
+      1.0
+     ],
+     "trips": 157,
+     "truck_km": 6655.4,
+     "truck_km_per_served_m3": 2.147,
+     "truck_hours_per_1000_m3": 116.6,
+     "truck_hours": 361.4,
+     "makespan_h": 7.91,
+     "trucks_used": 60,
+     "balance_cv": 0.157
+    },
+    "min_cost_flow": {
+     "total_volume_m3": 3120,
+     "served_m3": 3120,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      1.0,
+      1.0,
+      1.0
+     ],
+     "dump_utilization": [
+      1.0,
+      1.0,
+      1.0
+     ],
+     "trips": 157,
+     "truck_km": 6327.1,
+     "truck_km_per_served_m3": 2.028,
+     "truck_hours_per_1000_m3": 110.6,
+     "truck_hours": 345.1,
+     "makespan_h": 7.06,
+     "trucks_used": 60,
+     "balance_cv": 0.132
+    }
+   }
+  },
+  {
+   "seed": 20261007,
+   "cap_ratio": 5.0,
+   "speed_kmh": 20.0,
+   "results": {
+    "nearest": {
+     "total_volume_m3": 3640,
+     "served_m3": 3640,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.091,
+      0.21,
+      0.36
+     ],
+     "dump_utilization": [
+      0.091,
+      0.21,
+      0.36
+     ],
+     "trips": 182,
+     "truck_km": 6078.6,
+     "truck_km_per_served_m3": 1.67,
+     "truck_hours_per_1000_m3": 93.3,
+     "truck_hours": 339.7,
+     "makespan_h": 6.91,
+     "trucks_used": 60,
+     "balance_cv": 0.111
+    },
+    "greedy_cap": {
+     "total_volume_m3": 3640,
+     "served_m3": 3640,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.091,
+      0.21,
+      0.36
+     ],
+     "dump_utilization": [
+      0.091,
+      0.21,
+      0.36
+     ],
+     "trips": 182,
+     "truck_km": 6078.6,
+     "truck_km_per_served_m3": 1.67,
+     "truck_hours_per_1000_m3": 93.3,
+     "truck_hours": 339.7,
+     "makespan_h": 6.91,
+     "trucks_used": 60,
+     "balance_cv": 0.111
+    },
+    "min_cost_flow": {
+     "total_volume_m3": 3640,
+     "served_m3": 3640,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.091,
+      0.21,
+      0.36
+     ],
+     "dump_utilization": [
+      0.091,
+      0.21,
+      0.36
+     ],
+     "trips": 182,
+     "truck_km": 6078.6,
+     "truck_km_per_served_m3": 1.67,
+     "truck_hours_per_1000_m3": 93.3,
+     "truck_hours": 339.7,
+     "makespan_h": 6.91,
+     "trucks_used": 60,
+     "balance_cv": 0.111
+    }
+   }
+  },
+  {
+   "seed": 20261007,
+   "cap_ratio": 2.0,
+   "speed_kmh": 20.0,
+   "results": {
+    "nearest": {
+     "total_volume_m3": 3640,
+     "served_m3": 3640,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.227,
+      0.526,
+      0.901
+     ],
+     "dump_utilization": [
+      0.227,
+      0.526,
+      0.901
+     ],
+     "trips": 182,
+     "truck_km": 6078.6,
+     "truck_km_per_served_m3": 1.67,
+     "truck_hours_per_1000_m3": 93.3,
+     "truck_hours": 339.7,
+     "makespan_h": 6.91,
+     "trucks_used": 60,
+     "balance_cv": 0.111
+    },
+    "greedy_cap": {
+     "total_volume_m3": 3640,
+     "served_m3": 3640,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.227,
+      0.526,
+      0.901
+     ],
+     "dump_utilization": [
+      0.227,
+      0.526,
+      0.901
+     ],
+     "trips": 182,
+     "truck_km": 6078.6,
+     "truck_km_per_served_m3": 1.67,
+     "truck_hours_per_1000_m3": 93.3,
+     "truck_hours": 339.7,
+     "makespan_h": 6.91,
+     "trucks_used": 60,
+     "balance_cv": 0.111
+    },
+    "min_cost_flow": {
+     "total_volume_m3": 3640,
+     "served_m3": 3640,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.227,
+      0.526,
+      0.901
+     ],
+     "dump_utilization": [
+      0.227,
+      0.526,
+      0.901
+     ],
+     "trips": 182,
+     "truck_km": 6078.6,
+     "truck_km_per_served_m3": 1.67,
+     "truck_hours_per_1000_m3": 93.3,
+     "truck_hours": 339.7,
+     "makespan_h": 6.91,
+     "trucks_used": 60,
+     "balance_cv": 0.111
+    }
+   }
+  },
+  {
+   "seed": 20261007,
+   "cap_ratio": 1.3,
+   "speed_kmh": 20.0,
+   "results": {
+    "nearest": {
+     "total_volume_m3": 3640,
+     "served_m3": 3183,
+     "unserved_m3": 457,
+     "unserved_due_to_dump_overflow_m3": 457,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.349,
+      0.809,
+      1.386
+     ],
+     "dump_utilization": [
+      0.349,
+      0.809,
+      1.0
+     ],
+     "trips": 160,
+     "truck_km": 5683.5,
+     "truck_km_per_served_m3": 1.786,
+     "truck_hours_per_1000_m3": 98.9,
+     "truck_hours": 314.8,
+     "makespan_h": 6.25,
+     "trucks_used": 60,
+     "balance_cv": 0.13
+    },
+    "greedy_cap": {
+     "total_volume_m3": 3640,
+     "served_m3": 3640,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.463,
+      0.954,
+      1.0
+     ],
+     "dump_utilization": [
+      0.463,
+      0.954,
+      1.0
+     ],
+     "trips": 183,
+     "truck_km": 6800.4,
+     "truck_km_per_served_m3": 1.868,
+     "truck_hours_per_1000_m3": 102.9,
+     "truck_hours": 374.5,
+     "makespan_h": 7.71,
+     "trucks_used": 60,
+     "balance_cv": 0.132
+    },
+    "min_cost_flow": {
+     "total_volume_m3": 3640,
+     "served_m3": 3640,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.59,
+      0.809,
+      1.0
+     ],
+     "dump_utilization": [
+      0.59,
+      0.809,
+      1.0
+     ],
+     "trips": 183,
+     "truck_km": 6348.0,
+     "truck_km_per_served_m3": 1.744,
+     "truck_hours_per_1000_m3": 96.7,
+     "truck_hours": 351.9,
+     "makespan_h": 6.91,
+     "trucks_used": 60,
+     "balance_cv": 0.099
+    }
+   }
+  },
+  {
+   "seed": 20261007,
+   "cap_ratio": 1.1,
+   "speed_kmh": 20.0,
+   "results": {
+    "nearest": {
+     "total_volume_m3": 3640,
+     "served_m3": 3001,
+     "unserved_m3": 639,
+     "unserved_due_to_dump_overflow_m3": 639,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.412,
+      0.956,
+      1.638
+     ],
+     "dump_utilization": [
+      0.412,
+      0.956,
+      1.0
+     ],
+     "trips": 151,
+     "truck_km": 5616.9,
+     "truck_km_per_served_m3": 1.872,
+     "truck_hours_per_1000_m3": 103.1,
+     "truck_hours": 309.4,
+     "makespan_h": 6.18,
+     "trucks_used": 60,
+     "balance_cv": 0.134
+    },
+    "greedy_cap": {
+     "total_volume_m3": 3640,
+     "served_m3": 3241,
+     "unserved_m3": 399,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 399,
+     "dump_demand_over_capacity": [
+      0.773,
+      1.0,
+      1.0
+     ],
+     "dump_utilization": [
+      0.773,
+      1.0,
+      1.0
+     ],
+     "trips": 184,
+     "truck_km": 6367.2,
+     "truck_km_per_served_m3": 1.965,
+     "truck_hours_per_1000_m3": 107.7,
+     "truck_hours": 349.1,
+     "makespan_h": 7.58,
+     "trucks_used": 60,
+     "balance_cv": 0.147
+    },
+    "min_cost_flow": {
+     "total_volume_m3": 3640,
+     "served_m3": 3640,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.773,
+      1.0,
+      1.0
+     ],
+     "dump_utilization": [
+      0.773,
+      1.0,
+      1.0
+     ],
+     "trips": 184,
+     "truck_km": 6506.3,
+     "truck_km_per_served_m3": 1.787,
+     "truck_hours_per_1000_m3": 98.7,
+     "truck_hours": 359.4,
+     "makespan_h": 6.91,
+     "trucks_used": 60,
+     "balance_cv": 0.091
+    }
+   }
+  },
+  {
+   "seed": 20261007,
+   "cap_ratio": 1.0,
+   "speed_kmh": 20.0,
+   "results": {
+    "nearest": {
+     "total_volume_m3": 3640,
+     "served_m3": 2844,
+     "unserved_m3": 796,
+     "unserved_due_to_dump_overflow_m3": 796,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.453,
+      1.052,
+      1.802
+     ],
+     "dump_utilization": [
+      0.453,
+      1.0,
+      1.0
+     ],
+     "trips": 143,
+     "truck_km": 5615.4,
+     "truck_km_per_served_m3": 1.974,
+     "truck_hours_per_1000_m3": 108.2,
+     "truck_hours": 307.7,
+     "makespan_h": 6.25,
+     "trucks_used": 60,
+     "balance_cv": 0.144
+    },
+    "greedy_cap": {
+     "total_volume_m3": 3640,
+     "served_m3": 3120,
+     "unserved_m3": 520,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 520,
+     "dump_demand_over_capacity": [
+      1.0,
+      1.0,
+      1.0
+     ],
+     "dump_utilization": [
+      1.0,
+      1.0,
+      1.0
+     ],
+     "trips": 184,
+     "truck_km": 6303.6,
+     "truck_km_per_served_m3": 2.02,
+     "truck_hours_per_1000_m3": 110.4,
+     "truck_hours": 344.6,
+     "makespan_h": 7.28,
+     "trucks_used": 60,
+     "balance_cv": 0.138
+    },
+    "min_cost_flow": {
+     "total_volume_m3": 3640,
+     "served_m3": 3640,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      1.0,
+      1.0,
+      1.0
+     ],
+     "dump_utilization": [
+      1.0,
+      1.0,
+      1.0
+     ],
+     "trips": 184,
+     "truck_km": 6621.4,
+     "truck_km_per_served_m3": 1.819,
+     "truck_hours_per_1000_m3": 100.2,
+     "truck_hours": 364.9,
+     "makespan_h": 7.07,
+     "trucks_used": 60,
+     "balance_cv": 0.115
+    }
+   }
+  },
+  {
+   "seed": 20261008,
+   "cap_ratio": 5.0,
+   "speed_kmh": 20.0,
+   "results": {
+    "nearest": {
+     "total_volume_m3": 2700,
+     "served_m3": 2700,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.081,
+      0.131,
+      0.486
+     ],
+     "dump_utilization": [
+      0.081,
+      0.131,
+      0.486
+     ],
+     "trips": 135,
+     "truck_km": 5423.2,
+     "truck_km_per_served_m3": 2.009,
+     "truck_hours_per_1000_m3": 110.8,
+     "truck_hours": 299.1,
+     "makespan_h": 6.72,
+     "trucks_used": 60,
+     "balance_cv": 0.159
+    },
+    "greedy_cap": {
+     "total_volume_m3": 2700,
+     "served_m3": 2700,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.081,
+      0.131,
+      0.486
+     ],
+     "dump_utilization": [
+      0.081,
+      0.131,
+      0.486
+     ],
+     "trips": 135,
+     "truck_km": 5423.2,
+     "truck_km_per_served_m3": 2.009,
+     "truck_hours_per_1000_m3": 110.8,
+     "truck_hours": 299.1,
+     "makespan_h": 6.72,
+     "trucks_used": 60,
+     "balance_cv": 0.159
+    },
+    "min_cost_flow": {
+     "total_volume_m3": 2700,
+     "served_m3": 2700,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.089,
+      0.131,
+      0.474
+     ],
+     "dump_utilization": [
+      0.089,
+      0.131,
+      0.474
+     ],
+     "trips": 135,
+     "truck_km": 5423.8,
+     "truck_km_per_served_m3": 2.009,
+     "truck_hours_per_1000_m3": 110.7,
+     "truck_hours": 299.0,
+     "makespan_h": 6.72,
+     "trucks_used": 60,
+     "balance_cv": 0.159
+    }
+   }
+  },
+  {
+   "seed": 20261008,
+   "cap_ratio": 2.0,
+   "speed_kmh": 20.0,
+   "results": {
+    "nearest": {
+     "total_volume_m3": 2700,
+     "served_m3": 2410,
+     "unserved_m3": 290,
+     "unserved_due_to_dump_overflow_m3": 290,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.204,
+      0.328,
+      1.215
+     ],
+     "dump_utilization": [
+      0.204,
+      0.328,
+      1.0
+     ],
+     "trips": 121,
+     "truck_km": 5068.9,
+     "truck_km_per_served_m3": 2.103,
+     "truck_hours_per_1000_m3": 115.4,
+     "truck_hours": 278.1,
+     "makespan_h": 5.71,
+     "trucks_used": 60,
+     "balance_cv": 0.184
+    },
+    "greedy_cap": {
+     "total_volume_m3": 2700,
+     "served_m3": 2680,
+     "unserved_m3": 20,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 20,
+     "dump_demand_over_capacity": [
+      0.278,
+      0.397,
+      1.0
+     ],
+     "dump_utilization": [
+      0.278,
+      0.397,
+      1.0
+     ],
+     "trips": 136,
+     "truck_km": 5798.0,
+     "truck_km_per_served_m3": 2.163,
+     "truck_hours_per_1000_m3": 118.3,
+     "truck_hours": 316.9,
+     "makespan_h": 7.82,
+     "trucks_used": 60,
+     "balance_cv": 0.187
+    },
+    "min_cost_flow": {
+     "total_volume_m3": 2700,
+     "served_m3": 2700,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.264,
+      0.413,
+      1.0
+     ],
+     "dump_utilization": [
+      0.264,
+      0.413,
+      1.0
+     ],
+     "trips": 136,
+     "truck_km": 5491.3,
+     "truck_km_per_served_m3": 2.034,
+     "truck_hours_per_1000_m3": 111.8,
+     "truck_hours": 301.8,
+     "makespan_h": 6.72,
+     "trucks_used": 60,
+     "balance_cv": 0.165
+    }
+   }
+  },
+  {
+   "seed": 20261008,
+   "cap_ratio": 1.3,
+   "speed_kmh": 20.0,
+   "results": {
+    "nearest": {
+     "total_volume_m3": 2700,
+     "served_m3": 1938,
+     "unserved_m3": 762,
+     "unserved_due_to_dump_overflow_m3": 762,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.313,
+      0.505,
+      1.868
+     ],
+     "dump_utilization": [
+      0.313,
+      0.505,
+      1.0
+     ],
+     "trips": 97,
+     "truck_km": 4574.4,
+     "truck_km_per_served_m3": 2.36,
+     "truck_hours_per_1000_m3": 127.9,
+     "truck_hours": 247.8,
+     "makespan_h": 5.37,
+     "trucks_used": 60,
+     "balance_cv": 0.227
+    },
+    "greedy_cap": {
+     "total_volume_m3": 2700,
+     "served_m3": 2660,
+     "unserved_m3": 40,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 40,
+     "dump_demand_over_capacity": [
+      0.641,
+      0.751,
+      1.0
+     ],
+     "dump_utilization": [
+      0.641,
+      0.751,
+      1.0
+     ],
+     "trips": 136,
+     "truck_km": 6283.1,
+     "truck_km_per_served_m3": 2.362,
+     "truck_hours_per_1000_m3": 127.6,
+     "truck_hours": 339.4,
+     "makespan_h": 7.92,
+     "trucks_used": 60,
+     "balance_cv": 0.16
+    },
+    "min_cost_flow": {
+     "total_volume_m3": 2700,
+     "served_m3": 2700,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.543,
+      0.863,
+      1.0
+     ],
+     "dump_utilization": [
+      0.543,
+      0.863,
+      1.0
+     ],
+     "trips": 136,
+     "truck_km": 5706.2,
+     "truck_km_per_served_m3": 2.113,
+     "truck_hours_per_1000_m3": 115.2,
+     "truck_hours": 310.9,
+     "makespan_h": 6.74,
+     "trucks_used": 60,
+     "balance_cv": 0.159
+    }
+   }
+  },
+  {
+   "seed": 20261008,
+   "cap_ratio": 1.1,
+   "speed_kmh": 20.0,
+   "results": {
+    "nearest": {
+     "total_volume_m3": 2700,
+     "served_m3": 1803,
+     "unserved_m3": 897,
+     "unserved_due_to_dump_overflow_m3": 897,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.37,
+      0.596,
+      2.207
+     ],
+     "dump_utilization": [
+      0.37,
+      0.596,
+      1.0
+     ],
+     "trips": 91,
+     "truck_km": 4518.1,
+     "truck_km_per_served_m3": 2.506,
+     "truck_hours_per_1000_m3": 135.1,
+     "truck_hours": 243.6,
+     "makespan_h": 5.37,
+     "trucks_used": 60,
+     "balance_cv": 0.225
+    },
+    "greedy_cap": {
+     "total_volume_m3": 2700,
+     "served_m3": 2640,
+     "unserved_m3": 60,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 60,
+     "dump_demand_over_capacity": [
+      0.772,
+      1.0,
+      1.0
+     ],
+     "dump_utilization": [
+      0.772,
+      1.0,
+      1.0
+     ],
+     "trips": 137,
+     "truck_km": 6278.3,
+     "truck_km_per_served_m3": 2.378,
+     "truck_hours_per_1000_m3": 128.3,
+     "truck_hours": 338.8,
+     "makespan_h": 7.72,
+     "trucks_used": 60,
+     "balance_cv": 0.153
+    },
+    "min_cost_flow": {
+     "total_volume_m3": 2700,
+     "served_m3": 2700,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.772,
+      1.0,
+      1.0
+     ],
+     "dump_utilization": [
+      0.772,
+      1.0,
+      1.0
+     ],
+     "trips": 136,
+     "truck_km": 5843.8,
+     "truck_km_per_served_m3": 2.164,
+     "truck_hours_per_1000_m3": 117.6,
+     "truck_hours": 317.4,
+     "makespan_h": 6.76,
+     "trucks_used": 60,
+     "balance_cv": 0.137
+    }
+   }
+  },
+  {
+   "seed": 20261008,
+   "cap_ratio": 1.0,
+   "speed_kmh": 20.0,
+   "results": {
+    "nearest": {
+     "total_volume_m3": 2700,
+     "served_m3": 1735,
+     "unserved_m3": 965,
+     "unserved_due_to_dump_overflow_m3": 965,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.407,
+      0.656,
+      2.43
+     ],
+     "dump_utilization": [
+      0.407,
+      0.656,
+      1.0
+     ],
+     "trips": 87,
+     "truck_km": 4397.9,
+     "truck_km_per_served_m3": 2.535,
+     "truck_hours_per_1000_m3": 136.4,
+     "truck_hours": 236.7,
+     "makespan_h": 5.29,
+     "trucks_used": 60,
+     "balance_cv": 0.24
+    },
+    "greedy_cap": {
+     "total_volume_m3": 2700,
+     "served_m3": 2640,
+     "unserved_m3": 60,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 60,
+     "dump_demand_over_capacity": [
+      1.0,
+      1.0,
+      1.0
+     ],
+     "dump_utilization": [
+      1.0,
+      1.0,
+      1.0
+     ],
+     "trips": 136,
+     "truck_km": 6331.8,
+     "truck_km_per_served_m3": 2.398,
+     "truck_hours_per_1000_m3": 129.2,
+     "truck_hours": 341.0,
+     "makespan_h": 7.63,
+     "trucks_used": 60,
+     "balance_cv": 0.166
+    },
+    "min_cost_flow": {
+     "total_volume_m3": 2700,
+     "served_m3": 2700,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      1.0,
+      1.0,
+      1.0
+     ],
+     "dump_utilization": [
+      1.0,
+      1.0,
+      1.0
+     ],
+     "trips": 136,
+     "truck_km": 6004.0,
+     "truck_km_per_served_m3": 2.224,
+     "truck_hours_per_1000_m3": 120.4,
+     "truck_hours": 325.1,
+     "makespan_h": 6.76,
+     "trucks_used": 60,
+     "balance_cv": 0.101
+    }
+   }
+  },
+  {
+   "seed": 20261009,
+   "cap_ratio": 5.0,
+   "speed_kmh": 20.0,
+   "results": {
+    "nearest": {
+     "total_volume_m3": 2680,
+     "served_m3": 2680,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.034,
+      0.154,
+      0.531
+     ],
+     "dump_utilization": [
+      0.034,
+      0.154,
+      0.531
+     ],
+     "trips": 134,
+     "truck_km": 3981.0,
+     "truck_km_per_served_m3": 1.485,
+     "truck_hours_per_1000_m3": 84.8,
+     "truck_hours": 227.3,
+     "makespan_h": 4.75,
+     "trucks_used": 60,
+     "balance_cv": 0.17
+    },
+    "greedy_cap": {
+     "total_volume_m3": 2680,
+     "served_m3": 2680,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.034,
+      0.154,
+      0.531
+     ],
+     "dump_utilization": [
+      0.034,
+      0.154,
+      0.531
+     ],
+     "trips": 134,
+     "truck_km": 3981.0,
+     "truck_km_per_served_m3": 1.485,
+     "truck_hours_per_1000_m3": 84.8,
+     "truck_hours": 227.3,
+     "makespan_h": 4.75,
+     "trucks_used": 60,
+     "balance_cv": 0.17
+    },
+    "min_cost_flow": {
+     "total_volume_m3": 2680,
+     "served_m3": 2680,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.045,
+      0.154,
+      0.513
+     ],
+     "dump_utilization": [
+      0.045,
+      0.154,
+      0.513
+     ],
+     "trips": 134,
+     "truck_km": 4011.5,
+     "truck_km_per_served_m3": 1.497,
+     "truck_hours_per_1000_m3": 85.3,
+     "truck_hours": 228.6,
+     "makespan_h": 4.8,
+     "trucks_used": 60,
+     "balance_cv": 0.176
+    }
+   }
+  },
+  {
+   "seed": 20261009,
+   "cap_ratio": 2.0,
+   "speed_kmh": 20.0,
+   "results": {
+    "nearest": {
+     "total_volume_m3": 2680,
+     "served_m3": 2240,
+     "unserved_m3": 440,
+     "unserved_due_to_dump_overflow_m3": 440,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.084,
+      0.384,
+      1.328
+     ],
+     "dump_utilization": [
+      0.084,
+      0.384,
+      1.0
+     ],
+     "trips": 112,
+     "truck_km": 3923.4,
+     "truck_km_per_served_m3": 1.752,
+     "truck_hours_per_1000_m3": 97.9,
+     "truck_hours": 219.3,
+     "makespan_h": 4.41,
+     "trucks_used": 60,
+     "balance_cv": 0.136
+    },
+    "greedy_cap": {
+     "total_volume_m3": 2680,
+     "served_m3": 2680,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.252,
+      0.426,
+      1.0
+     ],
+     "dump_utilization": [
+      0.252,
+      0.426,
+      1.0
+     ],
+     "trips": 134,
+     "truck_km": 4390.7,
+     "truck_km_per_served_m3": 1.638,
+     "truck_hours_per_1000_m3": 91.9,
+     "truck_hours": 246.3,
+     "makespan_h": 6.39,
+     "trucks_used": 60,
+     "balance_cv": 0.209
+    },
+    "min_cost_flow": {
+     "total_volume_m3": 2680,
+     "served_m3": 2680,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.187,
+      0.501,
+      1.0
+     ],
+     "dump_utilization": [
+      0.187,
+      0.501,
+      1.0
+     ],
+     "trips": 134,
+     "truck_km": 4397.9,
+     "truck_km_per_served_m3": 1.641,
+     "truck_hours_per_1000_m3": 92.1,
+     "truck_hours": 246.7,
+     "makespan_h": 5.2,
+     "trucks_used": 60,
+     "balance_cv": 0.156
+    }
+   }
+  },
+  {
+   "seed": 20261009,
+   "cap_ratio": 1.3,
+   "speed_kmh": 20.0,
+   "results": {
+    "nearest": {
+     "total_volume_m3": 2680,
+     "served_m3": 1771,
+     "unserved_m3": 909,
+     "unserved_due_to_dump_overflow_m3": 909,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.129,
+      0.591,
+      2.044
+     ],
+     "dump_utilization": [
+      0.129,
+      0.591,
+      1.0
+     ],
+     "trips": 89,
+     "truck_km": 3757.7,
+     "truck_km_per_served_m3": 2.122,
+     "truck_hours_per_1000_m3": 116.1,
+     "truck_hours": 205.6,
+     "makespan_h": 4.22,
+     "trucks_used": 60,
+     "balance_cv": 0.131
+    },
+    "greedy_cap": {
+     "total_volume_m3": 2680,
+     "served_m3": 2680,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.545,
+      0.861,
+      1.0
+     ],
+     "dump_utilization": [
+      0.545,
+      0.861,
+      1.0
+     ],
+     "trips": 135,
+     "truck_km": 5274.9,
+     "truck_km_per_served_m3": 1.968,
+     "truck_hours_per_1000_m3": 107.9,
+     "truck_hours": 289.2,
+     "makespan_h": 6.75,
+     "trucks_used": 60,
+     "balance_cv": 0.215
+    },
+    "min_cost_flow": {
+     "total_volume_m3": 2680,
+     "served_m3": 2680,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.423,
+      1.0,
+      1.0
+     ],
+     "dump_utilization": [
+      0.423,
+      1.0,
+      1.0
+     ],
+     "trips": 136,
+     "truck_km": 5006.9,
+     "truck_km_per_served_m3": 1.868,
+     "truck_hours_per_1000_m3": 103.0,
+     "truck_hours": 276.0,
+     "makespan_h": 6.29,
+     "trucks_used": 60,
+     "balance_cv": 0.16
+    }
+   }
+  },
+  {
+   "seed": 20261009,
+   "cap_ratio": 1.1,
+   "speed_kmh": 20.0,
+   "results": {
+    "nearest": {
+     "total_volume_m3": 2680,
+     "served_m3": 1637,
+     "unserved_m3": 1043,
+     "unserved_due_to_dump_overflow_m3": 1043,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.153,
+      0.698,
+      2.415
+     ],
+     "dump_utilization": [
+      0.153,
+      0.698,
+      1.0
+     ],
+     "trips": 82,
+     "truck_km": 3753.2,
+     "truck_km_per_served_m3": 2.293,
+     "truck_hours_per_1000_m3": 124.5,
+     "truck_hours": 203.8,
+     "makespan_h": 4.22,
+     "trucks_used": 60,
+     "balance_cv": 0.143
+    },
+    "greedy_cap": {
+     "total_volume_m3": 2680,
+     "served_m3": 2680,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.773,
+      1.0,
+      1.0
+     ],
+     "dump_utilization": [
+      0.773,
+      1.0,
+      1.0
+     ],
+     "trips": 136,
+     "truck_km": 5866.5,
+     "truck_km_per_served_m3": 2.189,
+     "truck_hours_per_1000_m3": 118.8,
+     "truck_hours": 318.5,
+     "makespan_h": 7.45,
+     "trucks_used": 60,
+     "balance_cv": 0.189
+    },
+    "min_cost_flow": {
+     "total_volume_m3": 2680,
+     "served_m3": 2680,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.773,
+      1.0,
+      1.0
+     ],
+     "dump_utilization": [
+      0.773,
+      1.0,
+      1.0
+     ],
+     "trips": 136,
+     "truck_km": 5233.2,
+     "truck_km_per_served_m3": 1.953,
+     "truck_hours_per_1000_m3": 107.0,
+     "truck_hours": 286.9,
+     "makespan_h": 5.7,
+     "trucks_used": 60,
+     "balance_cv": 0.113
+    }
+   }
+  },
+  {
+   "seed": 20261009,
+   "cap_ratio": 1.0,
+   "speed_kmh": 20.0,
+   "results": {
+    "nearest": {
+     "total_volume_m3": 2680,
+     "served_m3": 1570,
+     "unserved_m3": 1110,
+     "unserved_due_to_dump_overflow_m3": 1110,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.168,
+      0.768,
+      2.657
+     ],
+     "dump_utilization": [
+      0.168,
+      0.768,
+      1.0
+     ],
+     "trips": 79,
+     "truck_km": 3739.3,
+     "truck_km_per_served_m3": 2.382,
+     "truck_hours_per_1000_m3": 128.9,
+     "truck_hours": 202.4,
+     "makespan_h": 4.22,
+     "trucks_used": 60,
+     "balance_cv": 0.152
+    },
+    "greedy_cap": {
+     "total_volume_m3": 2680,
+     "served_m3": 2680,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      1.0,
+      1.0,
+      1.0
+     ],
+     "dump_utilization": [
+      1.0,
+      1.0,
+      1.0
+     ],
+     "trips": 136,
+     "truck_km": 6014.0,
+     "truck_km_per_served_m3": 2.244,
+     "truck_hours_per_1000_m3": 121.5,
+     "truck_hours": 325.6,
+     "makespan_h": 7.52,
+     "trucks_used": 60,
+     "balance_cv": 0.183
+    },
+    "min_cost_flow": {
+     "total_volume_m3": 2680,
+     "served_m3": 2680,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      1.0,
+      1.0,
+      1.0
+     ],
+     "dump_utilization": [
+      1.0,
+      1.0,
+      1.0
+     ],
+     "trips": 136,
+     "truck_km": 5392.2,
+     "truck_km_per_served_m3": 2.012,
+     "truck_hours_per_1000_m3": 109.9,
+     "truck_hours": 294.6,
+     "makespan_h": 6.73,
+     "trucks_used": 60,
+     "balance_cv": 0.173
+    }
+   }
+  }
+ ],
+ "speed_sensitivity": [
+  {
+   "seed": 20261005,
+   "cap_ratio": 1.1,
+   "speed_kmh": 15.0,
+   "results": {
+    "nearest": {
+     "total_volume_m3": 2380,
+     "served_m3": 1514,
+     "unserved_m3": 866,
+     "unserved_due_to_dump_overflow_m3": 866,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.229,
+      0.677,
+      2.324
+     ],
+     "dump_utilization": [
+      0.229,
+      0.677,
+      1.0
+     ],
+     "trips": 76,
+     "truck_km": 4063.2,
+     "truck_km_per_served_m3": 2.684,
+     "truck_hours_per_1000_m3": 188.7,
+     "truck_hours": 285.7,
+     "makespan_h": 6.65,
+     "trucks_used": 60,
+     "balance_cv": 0.243
+    },
+    "greedy_cap": {
+     "total_volume_m3": 2380,
+     "served_m3": 2124,
+     "unserved_m3": 256,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 256,
+     "dump_demand_over_capacity": [
+      0.774,
+      1.0,
+      1.0
+     ],
+     "dump_utilization": [
+      0.774,
+      1.0,
+      1.0
+     ],
+     "trips": 121,
+     "truck_km": 5175.6,
+     "truck_km_per_served_m3": 2.437,
+     "truck_hours_per_1000_m3": 171.9,
+     "truck_hours": 365.1,
+     "makespan_h": 7.51,
+     "trucks_used": 60,
+     "balance_cv": 0.147
+    },
+    "min_cost_flow": {
+     "total_volume_m3": 2380,
+     "served_m3": 2320,
+     "unserved_m3": 60,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 60,
+     "dump_demand_over_capacity": [
+      0.774,
+      1.0,
+      1.0
+     ],
+     "dump_utilization": [
+      0.774,
+      1.0,
+      1.0
+     ],
+     "trips": 121,
+     "truck_km": 5291.2,
+     "truck_km_per_served_m3": 2.281,
+     "truck_hours_per_1000_m3": 161.5,
+     "truck_hours": 374.6,
+     "makespan_h": 7.92,
+     "trucks_used": 60,
+     "balance_cv": 0.147
+    }
+   }
+  },
+  {
+   "seed": 20261005,
+   "cap_ratio": 1.1,
+   "speed_kmh": 20.0,
+   "results": {
+    "nearest": {
+     "total_volume_m3": 2380,
+     "served_m3": 1514,
+     "unserved_m3": 866,
+     "unserved_due_to_dump_overflow_m3": 866,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.229,
+      0.677,
+      2.324
+     ],
+     "dump_utilization": [
+      0.229,
+      0.677,
+      1.0
+     ],
+     "trips": 76,
+     "truck_km": 4045.5,
+     "truck_km_per_served_m3": 2.672,
+     "truck_hours_per_1000_m3": 143.4,
+     "truck_hours": 217.1,
+     "makespan_h": 5.09,
+     "trucks_used": 60,
+     "balance_cv": 0.25
+    },
+    "greedy_cap": {
+     "total_volume_m3": 2380,
+     "served_m3": 2380,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.774,
+      1.0,
+      1.0
+     ],
+     "dump_utilization": [
+      0.774,
+      1.0,
+      1.0
+     ],
+     "trips": 121,
+     "truck_km": 5952.1,
+     "truck_km_per_served_m3": 2.501,
+     "truck_hours_per_1000_m3": 134.4,
+     "truck_hours": 320.0,
+     "makespan_h": 7.4,
+     "trucks_used": 60,
+     "balance_cv": 0.173
+    },
+    "min_cost_flow": {
+     "total_volume_m3": 2380,
+     "served_m3": 2380,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.774,
+      1.0,
+      1.0
+     ],
+     "dump_utilization": [
+      0.774,
+      1.0,
+      1.0
+     ],
+     "trips": 121,
+     "truck_km": 5420.0,
+     "truck_km_per_served_m3": 2.277,
+     "truck_hours_per_1000_m3": 123.3,
+     "truck_hours": 293.4,
+     "makespan_h": 6.36,
+     "trucks_used": 60,
+     "balance_cv": 0.148
+    }
+   }
+  },
+  {
+   "seed": 20261005,
+   "cap_ratio": 1.1,
+   "speed_kmh": 30.0,
+   "results": {
+    "nearest": {
+     "total_volume_m3": 2380,
+     "served_m3": 1514,
+     "unserved_m3": 866,
+     "unserved_due_to_dump_overflow_m3": 866,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.229,
+      0.677,
+      2.324
+     ],
+     "dump_utilization": [
+      0.229,
+      0.677,
+      1.0
+     ],
+     "trips": 76,
+     "truck_km": 4045.5,
+     "truck_km_per_served_m3": 2.672,
+     "truck_hours_per_1000_m3": 98.9,
+     "truck_hours": 149.7,
+     "makespan_h": 3.53,
+     "trucks_used": 60,
+     "balance_cv": 0.248
+    },
+    "greedy_cap": {
+     "total_volume_m3": 2380,
+     "served_m3": 2380,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.774,
+      1.0,
+      1.0
+     ],
+     "dump_utilization": [
+      0.774,
+      1.0,
+      1.0
+     ],
+     "trips": 121,
+     "truck_km": 5952.1,
+     "truck_km_per_served_m3": 2.501,
+     "truck_hours_per_1000_m3": 92.8,
+     "truck_hours": 220.8,
+     "makespan_h": 5.12,
+     "trucks_used": 60,
+     "balance_cv": 0.165
+    },
+    "min_cost_flow": {
+     "total_volume_m3": 2380,
+     "served_m3": 2380,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.774,
+      1.0,
+      1.0
+     ],
+     "dump_utilization": [
+      0.774,
+      1.0,
+      1.0
+     ],
+     "trips": 121,
+     "truck_km": 5452.4,
+     "truck_km_per_served_m3": 2.291,
+     "truck_hours_per_1000_m3": 85.8,
+     "truck_hours": 204.1,
+     "makespan_h": 4.29,
+     "trucks_used": 60,
+     "balance_cv": 0.132
+    }
+   }
+  }
+ ],
+ "fleet_sensitivity": [
+  {
+   "seed": 20261005,
+   "cap_ratio": 1.1,
+   "speed_kmh": 20.0,
+   "n_trucks": 20,
+   "results": {
+    "nearest": {
+     "total_volume_m3": 2380,
+     "served_m3": 1454,
+     "unserved_m3": 926,
+     "unserved_due_to_dump_overflow_m3": 866,
+     "unserved_due_to_shift_m3": 60,
+     "dump_demand_over_capacity": [
+      0.229,
+      0.677,
+      2.324
+     ],
+     "dump_utilization": [
+      0.229,
+      0.677,
+      1.0
+     ],
+     "trips": 76,
+     "truck_km": 2444.4,
+     "truck_km_per_served_m3": 1.681,
+     "truck_hours_per_1000_m3": 93.9,
+     "truck_hours": 136.6,
+     "makespan_h": 7.86,
+     "trucks_used": 20,
+     "balance_cv": 0.109
+    },
+    "greedy_cap": {
+     "total_volume_m3": 2380,
+     "served_m3": 1590,
+     "unserved_m3": 790,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 790,
+     "dump_demand_over_capacity": [
+      0.774,
+      1.0,
+      1.0
+     ],
+     "dump_utilization": [
+      0.774,
+      1.0,
+      1.0
+     ],
+     "trips": 121,
+     "truck_km": 2657.7,
+     "truck_km_per_served_m3": 1.672,
+     "truck_hours_per_1000_m3": 93.1,
+     "truck_hours": 148.0,
+     "makespan_h": 7.98,
+     "trucks_used": 20,
+     "balance_cv": 0.091
+    },
+    "min_cost_flow": {
+     "total_volume_m3": 2380,
+     "served_m3": 1690,
+     "unserved_m3": 690,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 690,
+     "dump_demand_over_capacity": [
+      0.774,
+      1.0,
+      1.0
+     ],
+     "dump_utilization": [
+      0.774,
+      1.0,
+      1.0
+     ],
+     "trips": 121,
+     "truck_km": 2625.8,
+     "truck_km_per_served_m3": 1.554,
+     "truck_hours_per_1000_m3": 87.1,
+     "truck_hours": 147.2,
+     "makespan_h": 7.98,
+     "trucks_used": 20,
+     "balance_cv": 0.063
+    }
+   }
+  },
+  {
+   "seed": 20261005,
+   "cap_ratio": 1.1,
+   "speed_kmh": 20.0,
+   "n_trucks": 30,
+   "results": {
+    "nearest": {
+     "total_volume_m3": 2380,
+     "served_m3": 1514,
+     "unserved_m3": 866,
+     "unserved_due_to_dump_overflow_m3": 866,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.229,
+      0.677,
+      2.324
+     ],
+     "dump_utilization": [
+      0.229,
+      0.677,
+      1.0
+     ],
+     "trips": 76,
+     "truck_km": 2855.2,
+     "truck_km_per_served_m3": 1.886,
+     "truck_hours_per_1000_m3": 104.1,
+     "truck_hours": 157.6,
+     "makespan_h": 6.89,
+     "trucks_used": 30,
+     "balance_cv": 0.17
+    },
+    "greedy_cap": {
+     "total_volume_m3": 2380,
+     "served_m3": 2024,
+     "unserved_m3": 356,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 356,
+     "dump_demand_over_capacity": [
+      0.774,
+      1.0,
+      1.0
+     ],
+     "dump_utilization": [
+      0.774,
+      1.0,
+      1.0
+     ],
+     "trips": 121,
+     "truck_km": 3874.8,
+     "truck_km_per_served_m3": 1.914,
+     "truck_hours_per_1000_m3": 105.2,
+     "truck_hours": 212.9,
+     "makespan_h": 7.69,
+     "trucks_used": 30,
+     "balance_cv": 0.043
+    },
+    "min_cost_flow": {
+     "total_volume_m3": 2380,
+     "served_m3": 2210,
+     "unserved_m3": 170,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 170,
+     "dump_demand_over_capacity": [
+      0.774,
+      1.0,
+      1.0
+     ],
+     "dump_utilization": [
+      0.774,
+      1.0,
+      1.0
+     ],
+     "trips": 121,
+     "truck_km": 3810.3,
+     "truck_km_per_served_m3": 1.724,
+     "truck_hours_per_1000_m3": 95.7,
+     "truck_hours": 211.4,
+     "makespan_h": 7.84,
+     "trucks_used": 30,
+     "balance_cv": 0.093
+    }
+   }
+  },
+  {
+   "seed": 20261005,
+   "cap_ratio": 1.1,
+   "speed_kmh": 20.0,
+   "n_trucks": 40,
+   "results": {
+    "nearest": {
+     "total_volume_m3": 2380,
+     "served_m3": 1514,
+     "unserved_m3": 866,
+     "unserved_due_to_dump_overflow_m3": 866,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.229,
+      0.677,
+      2.324
+     ],
+     "dump_utilization": [
+      0.229,
+      0.677,
+      1.0
+     ],
+     "trips": 76,
+     "truck_km": 3197.1,
+     "truck_km_per_served_m3": 2.112,
+     "truck_hours_per_1000_m3": 115.4,
+     "truck_hours": 174.7,
+     "makespan_h": 5.6,
+     "trucks_used": 40,
+     "balance_cv": 0.177
+    },
+    "greedy_cap": {
+     "total_volume_m3": 2380,
+     "served_m3": 2260,
+     "unserved_m3": 120,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 120,
+     "dump_demand_over_capacity": [
+      0.774,
+      1.0,
+      1.0
+     ],
+     "dump_utilization": [
+      0.774,
+      1.0,
+      1.0
+     ],
+     "trips": 121,
+     "truck_km": 4832.4,
+     "truck_km_per_served_m3": 2.138,
+     "truck_hours_per_1000_m3": 116.4,
+     "truck_hours": 263.0,
+     "makespan_h": 7.77,
+     "trucks_used": 40,
+     "balance_cv": 0.096
+    },
+    "min_cost_flow": {
+     "total_volume_m3": 2380,
+     "served_m3": 2380,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.774,
+      1.0,
+      1.0
+     ],
+     "dump_utilization": [
+      0.774,
+      1.0,
+      1.0
+     ],
+     "trips": 121,
+     "truck_km": 4620.6,
+     "truck_km_per_served_m3": 1.941,
+     "truck_hours_per_1000_m3": 106.5,
+     "truck_hours": 253.5,
+     "makespan_h": 7.54,
+     "trucks_used": 40,
+     "balance_cv": 0.128
+    }
+   }
+  },
+  {
+   "seed": 20261005,
+   "cap_ratio": 1.1,
+   "speed_kmh": 20.0,
+   "n_trucks": 60,
+   "results": {
+    "nearest": {
+     "total_volume_m3": 2380,
+     "served_m3": 1514,
+     "unserved_m3": 866,
+     "unserved_due_to_dump_overflow_m3": 866,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.229,
+      0.677,
+      2.324
+     ],
+     "dump_utilization": [
+      0.229,
+      0.677,
+      1.0
+     ],
+     "trips": 76,
+     "truck_km": 4045.5,
+     "truck_km_per_served_m3": 2.672,
+     "truck_hours_per_1000_m3": 143.4,
+     "truck_hours": 217.1,
+     "makespan_h": 5.09,
+     "trucks_used": 60,
+     "balance_cv": 0.25
+    },
+    "greedy_cap": {
+     "total_volume_m3": 2380,
+     "served_m3": 2380,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.774,
+      1.0,
+      1.0
+     ],
+     "dump_utilization": [
+      0.774,
+      1.0,
+      1.0
+     ],
+     "trips": 121,
+     "truck_km": 5952.1,
+     "truck_km_per_served_m3": 2.501,
+     "truck_hours_per_1000_m3": 134.4,
+     "truck_hours": 320.0,
+     "makespan_h": 7.4,
+     "trucks_used": 60,
+     "balance_cv": 0.173
+    },
+    "min_cost_flow": {
+     "total_volume_m3": 2380,
+     "served_m3": 2380,
+     "unserved_m3": 0,
+     "unserved_due_to_dump_overflow_m3": 0,
+     "unserved_due_to_shift_m3": 0,
+     "dump_demand_over_capacity": [
+      0.774,
+      1.0,
+      1.0
+     ],
+     "dump_utilization": [
+      0.774,
+      1.0,
+      1.0
+     ],
+     "trips": 121,
+     "truck_km": 5420.0,
+     "truck_km_per_served_m3": 2.277,
+     "truck_hours_per_1000_m3": 123.3,
+     "truck_hours": 293.4,
+     "makespan_h": 6.36,
+     "trucks_used": 60,
+     "balance_cv": 0.148
+    }
+   }
+  }
+ ]
+}

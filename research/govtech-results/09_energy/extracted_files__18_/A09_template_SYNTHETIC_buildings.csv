@@ -1,0 +1,5 @@
+# SYNTHETIC — шаблон паспорта здания для приёма данных. Значения выдуманы для проверки формата, НЕ Шымкент, НЕ реальные объекты.
+building_id,object_type,district,public_name,lat,lon,year_built,floors,heated_area_m2,area_source,shifts,capacity,heating_source,has_cooling,meter_coverage,last_audit_date,data_owner
+SYN-B001,school,district_A,Синтетическая школа 1,,,1975,3,4200,техпаспорт,2,1200,district_heat,partial,whole_building,,unknown
+SYN-B002,kindergarten,district_B,Синтетический детсад 2,,,2016,2,1800,OSM_footprint_x_floors,1,240,gas_boiler,yes,unknown,2021-05,unknown
+SYN-B003,school,district_A,Синтетическая школа 3,,,1988,4,6100,unknown,3,2000,district_heat,no,partial,,unknown

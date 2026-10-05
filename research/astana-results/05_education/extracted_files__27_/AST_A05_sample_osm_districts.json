@@ -1,0 +1,171 @@
+{
+ "dataset_id": "AST-A05-D001",
+ "kind": "real_sample",
+ "source_ids": [
+  "AST-A05-S002",
+  "AST-A05-S003"
+ ],
+ "attribution": "© OpenStreetMap contributors, ODbL (https://www.openstreetmap.org/copyright)",
+ "osm_base_timestamp": "2026-09-22T08:45:51Z",
+ "retrieved_at_by_repo": "2026-09-23T11:28:06+00:00",
+ "extracted_at": "2026-10-05",
+ "note": "Атрибуты взяты из кэша репозитория STUPITS; площади вычислены A05 (EPSG:32642 и геодезически). Это общественные границы OSM, не юридические. Геометрия — в data/astana_districts.geojson репозитория.",
+ "districts": [
+  {
+   "id": "esil",
+   "name": "Есиль",
+   "osm_id": 3479876,
+   "osm_admin_level": "6",
+   "kato": "711210000",
+   "wikidata": "Q16648877",
+   "valid": true,
+   "area_km2_utm": 194.54,
+   "area_km2_geodesic": 194.56,
+   "area_km2_repo": 193.0,
+   "scoring_enabled_in_stupits": true
+  },
+  {
+   "id": "almaty",
+   "name": "Алматы",
+   "osm_id": 3482819,
+   "osm_admin_level": "6",
+   "kato": "711110000",
+   "wikidata": "Q12528524",
+   "valid": true,
+   "area_km2_utm": 93.38,
+   "area_km2_geodesic": 93.38,
+   "area_km2_repo": 92.6,
+   "scoring_enabled_in_stupits": true
+  },
+  {
+   "id": "saryarka",
+   "name": "Сарыарка",
+   "osm_id": 3486954,
+   "osm_admin_level": "6",
+   "kato": "711310000",
+   "wikidata": "Q16694762",
+   "valid": true,
+   "area_km2_utm": 67.81,
+   "area_km2_geodesic": 67.82,
+   "area_km2_repo": 67.3,
+   "scoring_enabled_in_stupits": true
+  },
+  {
+   "id": "baikonur",
+   "name": "Байконур",
+   "osm_id": 8593081,
+   "osm_admin_level": "6",
+   "kato": "711410000",
+   "wikidata": "Q57782659",
+   "valid": true,
+   "area_km2_utm": 183.49,
+   "area_km2_geodesic": 183.5,
+   "area_km2_repo": 182.0,
+   "scoring_enabled_in_stupits": true
+  },
+  {
+   "id": "nura",
+   "name": "Нура",
+   "osm_id": 20593940,
+   "osm_admin_level": "6",
+   "kato": null,
+   "wikidata": null,
+   "valid": true,
+   "area_km2_utm": 188.55,
+   "area_km2_geodesic": 188.57,
+   "area_km2_repo": 187.0,
+   "scoring_enabled_in_stupits": true
+  },
+  {
+   "id": "saraishyk",
+   "name": "Сарайшык",
+   "osm_id": 19733918,
+   "osm_admin_level": "8",
+   "kato": null,
+   "wikidata": null,
+   "valid": true,
+   "area_km2_utm": 61.43,
+   "area_km2_geodesic": 61.43,
+   "area_km2_repo": 60.9,
+   "scoring_enabled_in_stupits": false
+  }
+ ],
+ "union_parts": [
+  {
+   "area_km2": 770.348,
+   "centroid_lon": 71.443,
+   "centroid_lat": 51.1291,
+   "districts": [
+    "esil",
+    "almaty",
+    "saryarka",
+    "baikonur",
+    "nura",
+    "saraishyk"
+   ]
+  },
+  {
+   "area_km2": 9.021,
+   "centroid_lon": 71.6742,
+   "centroid_lat": 51.3327,
+   "districts": [
+    "baikonur"
+   ]
+  },
+  {
+   "area_km2": 5.032,
+   "centroid_lon": 71.3171,
+   "centroid_lat": 51.2783,
+   "districts": [
+    "baikonur"
+   ]
+  },
+  {
+   "area_km2": 4.794,
+   "centroid_lon": 71.7669,
+   "centroid_lat": 51.1574,
+   "districts": [
+    "almaty"
+   ]
+  }
+ ],
+ "akmola_neighbors": [
+  {
+   "osm_id": 3403760,
+   "name_ru": "Целиноградский район",
+   "admin_level": "6",
+   "shared_border_with_astana_union_km": 159.5,
+   "overlap_by_district_km2": {
+    "baikonur": 9.021
+   }
+  },
+  {
+   "osm_id": 3403782,
+   "name_ru": "Аршалынский район",
+   "admin_level": "6",
+   "shared_border_with_astana_union_km": 11.0,
+   "overlap_by_district_km2": {}
+  },
+  {
+   "osm_id": 3404061,
+   "name_ru": "Шортандинский район",
+   "admin_level": "6",
+   "shared_border_with_astana_union_km": 22.4,
+   "overlap_by_district_km2": {}
+  },
+  {
+   "osm_id": 15594335,
+   "name_ru": "городская администрация Косшы",
+   "admin_level": "6",
+   "shared_border_with_astana_union_km": 12.6,
+   "overlap_by_district_km2": {}
+  },
+  {
+   "osm_id": 17952313,
+   "name_ru": "Тайтобинская сельская администрация",
+   "admin_level": "8",
+   "shared_border_with_astana_union_km": 7.5,
+   "overlap_by_district_km2": {}
+  }
+ ]
+}

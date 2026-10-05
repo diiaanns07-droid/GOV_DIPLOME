@@ -1,0 +1,109 @@
+{
+ "kind": "synthetic",
+ "seed": 7,
+ "grid": "100x100 x 100 m",
+ "populated_cells": 9545,
+ "top_k": 477,
+ "weights": {
+  "G": {
+   "heat": 0.35,
+   "veg_deficit": 0.2,
+   "access_deficit": 0.15,
+   "population": 0.2,
+   "receptors": 0.1
+  },
+  "W": {
+   "lowrise": 0.4,
+   "population": 0.3,
+   "receptors": 0.15,
+   "monitoring_gap": 0.15
+  }
+ },
+ "seasonal_overlap": {
+  "jaccard_summerG_vs_winterW": 0.0,
+  "blend_keeps_share_of_summer_topK": 0.229,
+  "blend_keeps_share_of_winter_topK": 0.396,
+  "random_expected_jaccard": 0.0256
+ },
+ "sensitivity_weights": {
+  "G_moderate": {
+   "median_jaccard": 0.75,
+   "p10_jaccard": 0.585,
+   "core_share_80pct": 0.667
+  },
+  "G_any_weights": {
+   "median_jaccard": 0.534,
+   "p10_jaccard": 0.1,
+   "core_share_80pct": 0.222
+  },
+  "W_moderate": {
+   "median_jaccard": 0.831,
+   "p10_jaccard": 0.707,
+   "core_share_80pct": 0.784
+  },
+  "W_any_weights": {
+   "median_jaccard": 0.558,
+   "p10_jaccard": 0.134,
+   "core_share_80pct": 0.237
+  }
+ },
+ "sensitivity_missing": {
+  "LST_clustered_10pct": {
+   "neighbors": 0.922,
+   "renormalize": 0.8
+  },
+  "LST_clustered_30pct": {
+   "neighbors": 0.716,
+   "renormalize": 0.684
+  },
+  "post_outage": [
+   {
+    "posts_down": [
+     1
+    ],
+    "jaccard_W": 0.967
+   },
+   {
+    "posts_down": [
+     0,
+     3
+    ],
+    "jaccard_W": 0.593
+   },
+   {
+    "posts_down": [
+     1,
+     2,
+     4
+    ],
+    "jaccard_W": 0.642
+   }
+  ]
+ },
+ "scenarios": {
+  "S1": {
+   "label": "S1 летние посадки/тень в топ-5% G — ОХВАТ, не эффект",
+   "pop_share_in_treated": 0.1066,
+   "hot_decile_pop_covered": 0.502,
+   "survival_note": "доля приживаемости — параметр-гипотеза {0.6; 0.8; 0.95}; ожидаемый охват кроной = охват × приживаемость; местных данных нет",
+   "expected_canopy_coverage_by_survival": {
+    "0.6": 0.064,
+    "0.8": 0.0853,
+    "0.95": 0.1013
+   }
+  },
+  "S2": {
+   "label": "S2 5 скверов >=0.5 га (геометрия; при условии, что построены, публичны и прижились)",
+   "a300_base": 0.1077,
+   "greedy": 0.1415,
+   "hottest": 0.1353,
+   "random_mean_100": 0.1247
+  },
+  "S3": {
+   "label": "S3 +4 датчика PM2.5: информационный эффект (покрытие 2 км), не снижение загрязнения",
+   "pop_within_2km_now": 0.6684,
+   "pop_within_2km_area_weighted_siting": 0.9012,
+   "pop_within_2km_pop_weighted_siting": 0.9063
+  }
+ }
+}

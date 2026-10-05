@@ -1,0 +1,59 @@
+{
+ "stops": [
+  {
+   "poi": "P1",
+   "name": "SYNTH Музей A",
+   "hours_status": "open",
+   "hours_source_id": "SYN-S1",
+   "verified_at": "2026-09-20",
+   "flags": []
+  },
+  {
+   "poi": "P4",
+   "name": "SYNTH Мечеть D",
+   "hours_status": "closed_or_partial",
+   "hours_source_id": "SYN-S3",
+   "verified_at": "2026-09-30",
+   "flags": [
+    "CLOSED_DURING_VISIT"
+   ]
+  },
+  {
+   "poi": "P2",
+   "name": "SYNTH Парк B",
+   "hours_status": "open",
+   "hours_source_id": "SYN-S2",
+   "verified_at": "2026-03-01",
+   "flags": [
+    "STALE_SOURCE_217d",
+    "TRAVEL_TIME_UNSOURCED"
+   ]
+  },
+  {
+   "poi": "P3",
+   "name": "SYNTH Зоопарк C",
+   "hours_status": "unknown",
+   "hours_source_id": null,
+   "verified_at": null,
+   "flags": [
+    "HOURS_UNKNOWN",
+    "NO_SOURCE",
+    "PRICE_UNKNOWN",
+    "ACCESS_UNKNOWN"
+   ]
+  }
+ ],
+ "metrics": {
+  "stops": 4,
+  "verified_executable_stops": 1,
+  "unknown_hours_share": 0.25,
+  "stale_or_unsourced_share": 0.5,
+  "sequence_violations": [
+   "P2: earliest 12:45 > planned 12:40"
+  ],
+  "known_cost_kzt": 1000,
+  "cost_status": "partial",
+  "within_budget_if_known": true,
+  "itinerary_status": "NOT_EXECUTABLE"
+ }
+}

@@ -1,0 +1,101 @@
+{
+  "card_id": "SYN-Q1",
+  "data_kind": "synthetic",
+  "schema_version": "0.1",
+  "generated_at": "2026-10-04T17:40:00Z",
+  "disclaimer": "SYNTHETIC. Вымышленный квартал, вымышленные акты (SYN-ACT-*), ссылки на example.invalid. Не описывает реальную территорию Шымкента. Не юридическое заключение.",
+  "territory": {
+    "level": "block",
+    "name": "Синтетический квартал Q1 (не существует)",
+    "city": "Шымкент",
+    "admin_district": null,
+    "cadastral_number_user_supplied": null,
+    "geometry_ref": {"source_type": "none", "legal_weight": "none", "source_id": null, "method_note": "Геометрия намеренно не задана: синтетический пример не размещается на реальной карте."}
+  },
+  "items": [
+    {
+      "item_id": "SYN-Q1-I01",
+      "topic": "general_plan_zone",
+      "status": "found_official",
+      "value_text": "Жилая зона (синтетическое значение)",
+      "legal_basis": {"kind": "code_or_law", "title": "SYN: закон о градостроительной деятельности", "issuer": "SYN-парламент", "number": "SYN-LAW-1", "date": null, "document_status": "in_force", "official_url": "https://example.invalid/law1", "locator": "ст. SYN-1", "text_checked_at": "2026-10-04"},
+      "establishing_act": {"kind": "approved_plan", "title": "SYN: генеральный план", "issuer": "SYN-орган", "number": "SYN-ACT-01", "date": "2025-01-01", "document_status": "in_force", "official_url": "https://example.invalid/gp", "locator": "лист SYN-3", "text_checked_at": "2026-10-04"},
+      "geometry": {"source_type": "approved_plan_raster_georef", "legal_weight": "illustrative", "source_id": "SYN-S01", "method_note": "Привязка растра по 4 точкам, точность не оценена"},
+      "authority_for_binding_answer": "Уполномоченный орган по архитектуре и градостроительству (SYN)",
+      "provenance": {"source_ids": ["SYN-S01"], "accessed_at": "2026-10-04", "extracted_by": "human"},
+      "notes": null
+    },
+    {
+      "item_id": "SYN-Q1-I02",
+      "topic": "pdp_status",
+      "status": "found_official_draft",
+      "value_text": "Проект ПДП вынесен на обсуждение (синтетика)",
+      "legal_basis": null,
+      "establishing_act": {"kind": "draft_act", "title": "SYN: проект ПДП", "issuer": "SYN-орган", "number": null, "date": "2026-09-01", "document_status": "draft", "official_url": "https://example.invalid/pdp-draft", "locator": null, "text_checked_at": "2026-10-04"},
+      "geometry": {"source_type": "none", "legal_weight": "none", "source_id": null, "method_note": null},
+      "authority_for_binding_answer": "Уполномоченный орган по архитектуре и градостроительству (SYN)",
+      "provenance": {"source_ids": ["SYN-S02"], "accessed_at": "2026-10-04", "extracted_by": "human"},
+      "notes": null
+    },
+    {
+      "item_id": "SYN-Q1-I03",
+      "topic": "water_protection_zone",
+      "status": "found_official",
+      "value_text": "Водоохранная зона реки SYN (ширина в акте)",
+      "legal_basis": {"kind": "code_or_law", "title": "SYN: водный кодекс", "issuer": "SYN-парламент", "number": "SYN-LAW-2", "date": null, "document_status": "in_force", "official_url": "https://example.invalid/water", "locator": "ст. SYN-2", "text_checked_at": "2026-10-04"},
+      "establishing_act": {"kind": "akimat_resolution", "title": "SYN: постановление об установлении водоохранных зон", "issuer": "SYN-акимат", "number": "SYN-ACT-02", "date": "2019-05-05", "document_status": "superseded", "official_url": "https://example.invalid/wpz", "locator": "приложение SYN", "text_checked_at": "2026-10-04"},
+      "geometry": {"source_type": "derived_buffer", "legal_weight": "illustrative", "source_id": "SYN-S03", "method_note": "Буфер от осевой линии реки из OSM — не граница из проекта водоохранной зоны"},
+      "authority_for_binding_answer": "Бассейновая инспекция / акимат (SYN)",
+      "provenance": {"source_ids": ["SYN-S03"], "accessed_at": "2026-04-01", "extracted_by": "human"},
+      "notes": "Пример устаревшей ссылки и недействующего акта"
+    },
+    {
+      "item_id": "SYN-Q1-I04",
+      "topic": "power_line_protection_zone",
+      "status": "found_unofficial",
+      "value_text": "ЛЭП на карте OSM (синтетика)",
+      "legal_basis": null,
+      "establishing_act": null,
+      "geometry": {"source_type": "osm_context", "legal_weight": "context_only", "source_id": "SYN-S04", "method_note": "Линия из OSM, ширина зоны не установлена"},
+      "authority_for_binding_answer": "Сетевая организация (технические условия) / уполномоченный орган (SYN)",
+      "provenance": {"source_ids": ["SYN-S04"], "accessed_at": "2026-10-04", "extracted_by": "rule"},
+      "notes": null
+    },
+    {
+      "item_id": "SYN-Q1-I05",
+      "topic": "red_lines",
+      "status": "found_official",
+      "value_text": "Красная линия вдоль улицы SYN",
+      "legal_basis": null,
+      "establishing_act": {"kind": "approved_plan", "title": "SYN: утверждённый ПДП", "issuer": "SYN-орган", "number": "SYN-ACT-03", "date": "2024-02-02", "document_status": "in_force", "official_url": "https://example.invalid/pdp", "locator": null, "text_checked_at": null},
+      "geometry": {"source_type": "approved_plan_vector", "legal_weight": "legally_certified", "source_id": "SYN-S05", "method_note": "Синтетика: проверка правила о заверенной геометрии"},
+      "authority_for_binding_answer": "Уполномоченный орган по архитектуре и градостроительству (SYN)",
+      "provenance": {"source_ids": ["SYN-S05"], "accessed_at": "2026-10-04", "extracted_by": "llm_unchecked"},
+      "notes": "Пример извлечения LLM без проверки человеком"
+    },
+    {
+      "item_id": "SYN-Q1-I06",
+      "topic": "sanitary_protection_zone",
+      "status": "not_public",
+      "value_text": null,
+      "legal_basis": null,
+      "establishing_act": null,
+      "geometry": {"source_type": "none", "legal_weight": "none", "source_id": null, "method_note": null},
+      "authority_for_binding_answer": "Орган санитарно-эпидемиологического контроля (SYN)",
+      "provenance": {"source_ids": [], "accessed_at": "2026-10-04", "extracted_by": "human"},
+      "notes": "Проект СЗЗ предприятия не опубликован (синтетика)"
+    },
+    {
+      "item_id": "SYN-Q1-I07",
+      "topic": "heritage_protection_zone",
+      "status": "not_applicable_confirmed",
+      "value_text": "Объектов наследия в перечне нет (синтетика)",
+      "legal_basis": {"kind": "code_or_law", "title": "SYN: закон об охране наследия", "issuer": "SYN-парламент", "number": "SYN-LAW-3", "date": null, "document_status": "in_force", "official_url": "https://example.invalid/heritage", "locator": null, "text_checked_at": "2026-10-04"},
+      "establishing_act": {"kind": "akimat_resolution", "title": "SYN: перечень памятников местного значения", "issuer": "SYN-акимат", "number": "SYN-ACT-04", "date": "2023-03-03", "document_status": "in_force", "official_url": "https://example.invalid/heritage-list", "locator": "весь перечень", "text_checked_at": "2026-10-04"},
+      "geometry": {"source_type": "none", "legal_weight": "none", "source_id": null, "method_note": null},
+      "authority_for_binding_answer": "Уполномоченный орган по охране историко-культурного наследия (SYN)",
+      "provenance": {"source_ids": ["SYN-S06"], "accessed_at": "2026-10-04", "extracted_by": "human"},
+      "notes": null
+    }
+  ]
+}
