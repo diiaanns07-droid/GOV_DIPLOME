@@ -1,0 +1,15 @@
+test_fixture_snapshots_match_app_copy (__main__.AgainstApp.test_fixture_snapshots_match_app_copy) ... ok
+test_expected_outcomes_from_other_directory (__main__.Fixtures.test_expected_outcomes_from_other_directory) ... ok
+test_foreign_city_rejected_when_city_is_selected (__main__.Fixtures.test_foreign_city_rejected_when_city_is_selected) ... ok
+test_manifest_hashes_and_nfc_names (__main__.Fixtures.test_manifest_hashes_and_nfc_names) ... ok
+test_notes_bom_and_untrusted_results (__main__.Fixtures.test_notes_bom_and_untrusted_results) ... ok
+test_too_large_rejected_before_parsing (__main__.Fixtures.test_too_large_rejected_before_parsing) ... ok
+test_cli_from_other_directory_with_legacy_console_encoding (__main__.SaveAndReopen.test_cli_from_other_directory_with_legacy_console_encoding)
+MODELED Windows console: stdout encoded as cp1252 (no Cyrillic). The CLI prints ASCII JSON only. ... ok
+test_invalid_scenario_is_not_written (__main__.SaveAndReopen.test_invalid_scenario_is_not_written) ... ok
+test_save_kazakh_name_reopen_elsewhere_relative_and_absolute (__main__.SaveAndReopen.test_save_kazakh_name_reopen_elsewhere_relative_and_absolute) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.094s
+
+OK

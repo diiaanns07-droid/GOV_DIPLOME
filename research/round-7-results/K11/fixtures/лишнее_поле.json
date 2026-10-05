@@ -1,0 +1,31 @@
+{
+ "schema_version": "city-whatif-v1",
+ "city_id": "shymkent",
+ "source_snapshot": "k11fx-sha256:439532ff1f88753591e2721acbd45196089187ba4764aec15dd94457d77eaf5f",
+ "category": "school",
+ "control_points": [
+  {
+   "id": "нүкте-1",
+   "lon": 69.595794,
+   "lat": 42.310238
+  },
+  {
+   "id": "дүкен-2",
+   "lon": 69.597738,
+   "lat": 42.311316
+  },
+  {
+   "id": "аялдама-3",
+   "lon": 69.599681,
+   "lat": 42.312394
+  }
+ ],
+ "proposed_object": {
+  "id": "жаңа-мектеп",
+  "lon": 69.605512,
+  "lat": 42.315628,
+  "category": "school",
+  "kind": "hypothetical"
+ },
+ "script": "<script>alert(1)</script>"
+}

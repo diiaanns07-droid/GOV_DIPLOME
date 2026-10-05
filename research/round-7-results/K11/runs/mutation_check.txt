@@ -1,0 +1,5 @@
+Mutation check of test_whatif_io.py (temporary copies of whatif_io.py, discarded after the run):
+no_duplicate_key_check     exit=1 FAILED (failures=1, skipped=1)
+ensure_ascii_true          exit=1 FAILED (failures=5, skipped=1)
+read_as_cp1251_text        exit=1 FAILED (failures=4, errors=4, skipped=1)
+Stale-fixture path: copy of c58a3b2 with one comment appended to web/data.js -> run_k11r7 step scenario_files = fixtures_stale (FAILED failures=2), exit 1.

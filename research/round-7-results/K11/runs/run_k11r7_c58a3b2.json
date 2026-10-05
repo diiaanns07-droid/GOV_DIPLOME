@@ -1,0 +1,49 @@
+{
+ "tool": "research/round-7-results/K11/run_k11r7.py",
+ "label": "candidate c58a3b2b175cf978ad785fef7f88d8fd9b1338f2 (= b3e4dc4 prototype tree)",
+ "app_root": "<given>",
+ "host": {
+  "os": "Linux",
+  "python": "3.11.15"
+ },
+ "steps": [
+  {
+   "step": "launcher_smoke",
+   "status": "pass",
+   "exit": 0,
+   "summary": {
+    "pass": 19,
+    "info": 2,
+    "modeled_pass": 3,
+    "not_run": 1
+   },
+   "failing": []
+  },
+  {
+   "step": "launch_extra",
+   "status": "pass",
+   "exit": 0,
+   "lines": [
+    "pass   X1 serve.py <port> --open starts, keeps serving after the opener fired, stops on Ctrl+C",
+    "pass   X2 port already in use: serve.py exits non-zero (run-demo.bat then pauses on errorlevel 1)",
+    "pass   X3 copy without web/data.js: serve.py exits non-zero with its own message, no traceback"
+   ]
+  },
+  {
+   "step": "scenario_files",
+   "status": "pass",
+   "exit": 0,
+   "result": [
+    "Ran 9 tests in 0.118s",
+    "OK"
+   ],
+   "note": ""
+  },
+  {
+   "step": "feature_in_app",
+   "status": "not_present",
+   "files": [],
+   "integration_checks": "not_run (feature absent in this copy)"
+  }
+ ]
+}

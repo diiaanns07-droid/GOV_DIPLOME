@@ -1,0 +1,196 @@
+{
+ "generated_by": "research/round-7-results/K11/make_fixtures.py",
+ "app_sha": "c58a3b2b175cf978ad785fef7f88d8fd9b1338f2",
+ "schema": "city-whatif-v1",
+ "snapshot_convention": "whatif_io.snapshot_fingerprint (K11 fixture convention, not BUILD API)",
+ "cities": {
+  "shymkent": {
+   "source_snapshot": "k11fx-sha256:439532ff1f88753591e2721acbd45196089187ba4764aec15dd94457d77eaf5f",
+   "bbox": [
+    69.593365,
+    42.306645,
+    69.617658,
+    42.324611
+   ]
+  },
+  "astana": {
+   "source_snapshot": "k11fx-sha256:c189897ff81055362a0d1b5a0efa9db6faa9618ddbbe2a4a0df09ee1cb8d734e",
+   "bbox": [
+    71.418372,
+    51.163033,
+    71.447,
+    51.181
+   ]
+  }
+ },
+ "files": [
+  {
+   "file": "Шымкент_мектеп_жоба.json",
+   "expected": "accept",
+   "city_id": "shymkent",
+   "bytes": 589,
+   "sha256": "8a6a88c0777f194d87588583296e4d23fdb27d69b476f17d41a231aed4f38d4f",
+   "note": "Kazakh ids, school, 3 points + project"
+  },
+  {
+   "file": "Астана емхана ұсынысы.json",
+   "expected": "accept",
+   "city_id": "astana",
+   "bytes": 472,
+   "sha256": "d470b6cde85e4c5c37a86ccd767fd07bd6f914c5b1a48be5edf080c1e4b9caa6",
+   "note": "spaces + Kazakh in file name"
+  },
+  {
+   "file": "Шымкент_без_проекта_10_точек.json",
+   "expected": "accept",
+   "city_id": "shymkent",
+   "bytes": 916,
+   "sha256": "52009268db7a384d514f1b6a5a3ff6850ab2db1aa1b91d60b91fd1586ab7cf33",
+   "note": "max 10 points, proposed_object null"
+  },
+  {
+   "file": "с_BOM_блокнот.json",
+   "expected": "accept",
+   "city_id": "shymkent",
+   "bytes": 622,
+   "sha256": "d17b7d8d9f06a6d4eec1a4bd9d7d2aa08195e9b1df64f61ce172e90040c403d8",
+   "note": "UTF-8 BOM + CRLF as saved by Windows Notepad -> note utf8_bom_stripped"
+  },
+  {
+   "file": "с_результатами.json",
+   "expected": "accept",
+   "city_id": "shymkent",
+   "bytes": 716,
+   "sha256": "1db51e1fc10c839d30fc47e184ad56545e5f2340557ff8a2f887d065e9581cea",
+   "note": "imported results are dropped, never trusted"
+  },
+  {
+   "file": "nan.json",
+   "expected": "E_NONFINITE",
+   "city_id": "shymkent",
+   "bytes": 583,
+   "sha256": "925e757f33fd3942b4040935fa5a6e51bd91cedc1eafa427ba01b25d92d0306d",
+   "note": ""
+  },
+  {
+   "file": "infinity.json",
+   "expected": "E_NONFINITE",
+   "city_id": "shymkent",
+   "bytes": 588,
+   "sha256": "353e15b3beb9334aa84abdcb166428b701c80b9b0c0ee1ffe1eb7e085b5399f6",
+   "note": ""
+  },
+  {
+   "file": "1e999.json",
+   "expected": "E_NONFINITE",
+   "city_id": "shymkent",
+   "bytes": 585,
+   "sha256": "70c19a7c3aea770f827881f642531085589c967f3d49603dab138a2cd1e4003f",
+   "note": ""
+  },
+  {
+   "file": "дубль_ключа.json",
+   "expected": "E_DUPLICATE_KEY",
+   "city_id": "shymkent",
+   "bytes": 611,
+   "sha256": "1b5383528607c8340997717aeee2b18678e5c958edc0a728f26ca82ce0d7068e",
+   "note": ""
+  },
+  {
+   "file": "дубль_id.json",
+   "expected": "E_DUPLICATE_ID",
+   "city_id": "shymkent",
+   "bytes": 589,
+   "sha256": "387c76b3b090b1cc863435a1464ed08efa97af1b9f3942212e71122d00f52c2b",
+   "note": ""
+  },
+  {
+   "file": "чужой_срез.json",
+   "expected": "E_SNAPSHOT",
+   "city_id": "shymkent",
+   "bytes": 589,
+   "sha256": "e066489f5e78dab2564c6c894b2e17d7e78583ada79ca06fc5eb8e1ab5c7e268",
+   "note": "snapshot of the other city"
+  },
+  {
+   "file": "чужой_город.json",
+   "expected": "E_CITY",
+   "city_id": "shymkent",
+   "bytes": 587,
+   "sha256": "738e1b212658f5475e1006e562bd3e6634e6f6015806de5dd4597c0b9b77400b",
+   "note": ""
+  },
+  {
+   "file": "вне_квадрата_Астана.json",
+   "expected": "E_OUTSIDE_BBOX",
+   "city_id": "astana",
+   "bytes": 480,
+   "sha256": "3ad286c14ebfd31b1e5feed3563d4d6f406470502fdef6823bc7431722103470",
+   "note": ""
+  },
+  {
+   "file": "11_точек.json",
+   "expected": "E_POINTS",
+   "city_id": "shymkent",
+   "bytes": 984,
+   "sha256": "2a078d0ca93fbb82ec0d06aa801fcf14a790e4cd74cb0ad33f127649dcfedb20",
+   "note": ""
+  },
+  {
+   "file": "два_проекта.json",
+   "expected": "E_MULTIPLE_PROJECTS",
+   "city_id": "shymkent",
+   "bytes": 729,
+   "sha256": "123f6bd916b5f42db47ff2e5cef673a2b81c116f2d418b7707a53661126b19e0",
+   "note": ""
+  },
+  {
+   "file": "url_в_id.json",
+   "expected": "E_ID_FORBIDDEN",
+   "city_id": "shymkent",
+   "bytes": 598,
+   "sha256": "4dbd423a5fc123b436b908b059dfab83cf05f2d0d81c3f2b865ab8a408efb701",
+   "note": ""
+  },
+  {
+   "file": "nfd_id.json",
+   "expected": "E_ID_NOT_NFC",
+   "city_id": "shymkent",
+   "bytes": 588,
+   "sha256": "06db61de8abab523f56128d65d498801b7930ddbea19381fd177b992f3557cd6",
+   "note": "visually equal to NFC 'дом-й' but different code points"
+  },
+  {
+   "file": "cp1251.json",
+   "expected": "E_NOT_UTF8",
+   "city_id": "shymkent",
+   "bytes": 566,
+   "sha256": "1722a562c85b02d5947292524c158e7fc0cbf03660e8bc231c5a6785ec0b693d",
+   "note": "Russian-only scenario saved in the Windows ANSI code page (Kazakh text cannot be encoded in cp1251)"
+  },
+  {
+   "file": "версия_2.json",
+   "expected": "E_VERSION",
+   "city_id": "shymkent",
+   "bytes": 589,
+   "sha256": "e8c18da305b493b726ffb458515965c6dd95c8b95c15dab5efeefc2892b80ead",
+   "note": ""
+  },
+  {
+   "file": "категория_проекта.json",
+   "expected": "E_CATEGORY",
+   "city_id": "shymkent",
+   "bytes": 600,
+   "sha256": "c2714a9fb31eb5de0445be8c3d17ba8422aa086ca5bb0d1b01b2c3f1c87a5d7e",
+   "note": ""
+  },
+  {
+   "file": "лишнее_поле.json",
+   "expected": "E_UNKNOWN_FIELD",
+   "city_id": "shymkent",
+   "bytes": 629,
+   "sha256": "8d835ba3a391983b9e377f41dfa4dd1801c56773a5884e197203bc219491563c",
+   "note": ""
+  }
+ ]
+}
