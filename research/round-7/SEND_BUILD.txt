@@ -1,0 +1,9 @@
+Ты единственный BUILD седьмого раунда GOV_DIPLOME.
+Продолжи существующий прототип и добавь сценарий условного размещения школы/поликлиники.
+git fetch origin codex/research-import-2026-10-05
+git show origin/codex/research-import-2026-10-05:research/round-7/snapshots.json
+git show origin/codex/research-import-2026-10-05:research/round-7/FEATURE_SPEC.txt
+git show origin/codex/research-import-2026-10-05:research/round-7/BUILD.txt
+Выполни BUILD.txt в своей ветке. Не создавай сайт заново. Расстояния только по прямой, проектный объект явно hypothetical.
+После первого работающего этапа с тестом: STATUS/HANDOFF → commit → push.
+Других агентов не жди. Финал: что работает, команда запуска, тесты, ограничения, ветка и SHA.
