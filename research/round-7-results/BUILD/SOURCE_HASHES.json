@@ -1,0 +1,27 @@
+{
+ "commit": "4e93f30251b3475775439aa28df1bbc6e48ddefb",
+ "note": "sha256 of files at the verified code commit; data.js/evidence.js/facts.js and inputs/ are byte-equal to base c58a3b2",
+ "inputs": {
+  "FEATURE_SPEC.txt": "codex/research-import-2026-10-05 @ 7927fa871d314e3af6ebfc70947916f57027f436:research/round-7/FEATURE_SPEC.txt",
+  "BUILD.txt": "same commit:research/round-7/BUILD.txt",
+  "base": "c58a3b2b175cf978ad785fef7f88d8fd9b1338f2 (prototype code = b3e4dc413d5354652e3207d4eb56f921b108669e)",
+  "FEATURE_SPEC.txt.sha256": "8e0636408f279ea642b190e9d1fb5a6a8df3d1de3a006f1eeeb7b626a4c382c3",
+  "BUILD.txt.sha256": "62c4a90abf3f5afa91a919abce7bd874496b1e1cff1b8927289b8a20b91b0a73"
+ },
+ "files": {
+  "prototypes/city-evidence/web/whatif.js": "944adfa63500d9bc13b3da859cf4a56a3d3e3f92fa0f565ed655bedfb81d8f2f",
+  "prototypes/city-evidence/web/app.js": "132ef384e6b83520ba2fa50a7e04a7624872011d7ee101c43fdd17bd7046fb5d",
+  "prototypes/city-evidence/web/index.html": "7bcd33c8b587882cfaeb3622634945171f138b5a3303d7f25e4061e12b85751e",
+  "prototypes/city-evidence/web/data.js": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "prototypes/city-evidence/web/evidence.js": "df736e986145da33dee60f692e020486720b72db5b6116af31640cc8693b11b9",
+  "prototypes/city-evidence/web/facts.js": "3994a275ddb8c0cb857478365d94810a945752a96fff10d53d37bc8dc9808c64",
+  "prototypes/city-evidence/tools/whatif_ref.py": "14960af742ea9390656897c444281ca821a31d47a3bf30b40c29cb100d149d79",
+  "prototypes/city-evidence/tools/check_all.py": "8fa6c2977a0cf2b9edf97bb057110074680c38870697332bd0c1e895f883ea2b",
+  "prototypes/city-evidence/tests/whatif.cjs": "cdf8a61947fa1c6613391f5191f7d438e0f001c887934300fdca6bb59afa6c36",
+  "prototypes/city-evidence/tests/whatif_smoke.cjs": "2fa30cead34f6e27d115aebafb0dba26a90bbce746bd8f28c33bba16068e68cb",
+  "prototypes/city-evidence/tests/test_whatif.py": "dda9da8a344b115d4ab0e553ccbf8468cf472e20ea438468d18f900ca40d415d",
+  "prototypes/city-evidence/tests/expected_whatif.json": "adf227f612e6cf86ab628a97aec44a9074e5c4c7a91c7cc69b5425021c1362bc",
+  "prototypes/city-evidence/tests/smoke.cjs": "db947b46a5feaf91b28626442d99a28cdcc642ca6e9041599dc666deb2c970b2",
+  "prototypes/city-evidence/README.md": "17dba14fa859f458395567702c20689607db11b8dd15b8fc18ce1631dc2222eb"
+ }
+}

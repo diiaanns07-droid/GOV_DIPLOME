@@ -1,0 +1,202 @@
+{
+ "build": "round 7",
+ "verified_code_commit": "4e93f30251b3475775439aa28df1bbc6e48ddefb",
+ "branch": "claude/beautiful-clarke-sbzomj",
+ "spec": "codex/research-import-2026-10-05 @ 7927fa8:research/round-7/FEATURE_SPEC.txt",
+ "runs": {
+  "check_all (venv shapely+pyproj)": "16 passed, 0 skipped, 0 failed — results/check_all.json",
+  "check_all (system python3, no shapely)": "15 passed, 1 skipped (evidence rebuild), 0 failed",
+  "tests/smoke.cjs": "24/24 — results/smoke.txt",
+  "tests/whatif_smoke.cjs": "32/32 — results/whatif_smoke.txt",
+  "tests/whatif.cjs": "66/66 — results/whatif.txt",
+  "environment": "Linux, Node + Playwright 1.56.1 Chromium headless, file://; clean worktree of the verified commit"
+ },
+ "requirements": [
+  {
+   "requirement": "Категории MVP: school и outpatient_clinic; проект только выбранной категории",
+   "tests": [
+    "tests/whatif.cjs: project of another category rejected / unknown category rejected",
+    "tests/whatif_smoke.cjs: category change resets scenario"
+   ],
+   "outcome": "pass"
+  },
+  {
+   "requirement": "1..10 контрольных точек; пустое состояние интерфейса допустимо",
+   "tests": [
+    "tests/whatif.cjs: 0 points / 11 points rejected on import",
+    "tests/whatif_smoke.cjs: 4 control points by click; keyboard Enter adds P5"
+   ],
+   "outcome": "pass"
+  },
+  {
+   "requirement": "Гаверсинус R=6371008.8, вход [lon,lat], clamp [0,1], без округления до вывода",
+   "tests": [
+    "tests/test_whatif.py: test_one_degree_on_equator (111195.08 м)",
+    "tests/whatif.cjs: 1° on the equator; antipodes finite (clamp)",
+    "tests/whatif.cjs: JS = Python ×16"
+   ],
+   "outcome": "pass"
+  },
+  {
+   "requirement": "before = min до исходных записей категории в срезе; after = min(before, до проекта); delta = before − after",
+   "tests": [
+    "tests/whatif.cjs: nearer / farther / same point",
+    "tests/whatif_smoke.cjs: other rows: after ≤ before, delta = before − after"
+   ],
+   "outcome": "pass"
+  },
+  {
+   "requirement": "Нет исходных записей: before=null, after=до проекта, delta=null + подпись",
+   "tests": [
+    "tests/whatif.cjs: empty category: before null, delta null",
+    "tests/test_whatif.py: test_empty_category_delta_null"
+   ],
+   "outcome": "pass (UI-подпись есть в коде; в браузере не проверена — в обоих срезах школы и поликлиники есть)"
+  },
+  {
+   "requirement": "Без проекта after=before, delta=0",
+   "tests": [
+    "tests/whatif.cjs: no project",
+    "tests/whatif_smoke.cjs: without project: after = before, 'без изменений'"
+   ],
+   "outcome": "pass"
+  },
+  {
+   "requirement": "Ничья — стабильно по ID; одинаковая точка — честный 0",
+   "tests": [
+    "tests/whatif.cjs: tie -> smaller ID; project at the point: after = 0",
+    "tests/whatif.cjs: QA-colocated school stays a candidate (distance 0)"
+   ],
+   "outcome": "pass"
+  },
+  {
+   "requirement": "Поставить / передвинуть / удалить проект; удаление восстанавливает baseline",
+   "tests": [
+    "tests/whatif_smoke.cjs: project placed; move; delete project: baseline restored exactly; project returned"
+   ],
+   "outcome": "pass"
+  },
+  {
+   "requirement": "Отдельный слой hypothetical с подписью «Проектный объект»; не в observed-счётчиках",
+   "tests": [
+    "tests/whatif_smoke.cjs: project drawn in separate hypothetical layer; hypothetical not in observed counters (55/55/55)"
+   ],
+   "outcome": "pass"
+  },
+  {
+   "requirement": "Явный режим постановки; клики по карточкам не ставят объект; точки доступны из списка и клавиатурой",
+   "tests": [
+    "tests/whatif_smoke.cjs: click on a marker in mode places a point, object not selected; keyboard Enter / remove from list"
+   ],
+   "outcome": "pass"
+  },
+  {
+   "requirement": "Вне bbox — отказ с понятным сообщением (UI и импорт)",
+   "tests": [
+    "tests/whatif_smoke.cjs: click outside the square rejected",
+    "tests/whatif.cjs: point / project outside bbox"
+   ],
+   "outcome": "pass"
+  },
+  {
+   "requirement": "Источник ближайшей записи и QA-метки показаны; QA-записи не удаляются",
+   "tests": [
+    "tests/whatif_smoke.cjs: source of the nearest record shown",
+    "tests/whatif.cjs: QA-colocated school stays a candidate"
+   ],
+   "outcome": "pass"
+  },
+  {
+   "requirement": "Не показывать время пешком, изохроны, обеспеченность, население, бюджет, пробки",
+   "tests": [
+    "tests/whatif.cjs: explanation is a template with units (no minutes)",
+    "ручной просмотр карточки (скриншот w1)"
+   ],
+   "outcome": "pass (текстовая проверка + ручной просмотр)"
+  },
+  {
+   "requirement": "Смена города/категории сбрасывает сценарий и объяснение с причиной; точки не переносятся",
+   "tests": [
+    "tests/whatif_smoke.cjs: category change resets; city switch: scenario reset with a reason"
+   ],
+   "outcome": "pass"
+  },
+  {
+   "requirement": "city-whatif-v1: обязательные поля, версия, город, snapshot из данных и параметров",
+   "tests": [
+    "tests/whatif.cjs: export -> import round trip; snapshots differ between cities; unknown version/city; missing field"
+   ],
+   "outcome": "pass"
+  },
+  {
+   "requirement": "Импорт ≤256 KiB; NaN/Infinity/1e999/дубли ключей и ID/>1 проекта/неизвестные поля/URL-код отклоняются",
+   "tests": [
+    "tests/whatif.cjs: 20+ rejection cases",
+    "tests/whatif_smoke.cjs: nan/dup/foreign/two/big rejected, scenario unchanged"
+   ],
+   "outcome": "pass"
+  },
+  {
+   "requirement": "Чужой snapshot отклоняется",
+   "tests": [
+    "tests/whatif.cjs: foreign snapshot; Astana snapshot with Shymkent city",
+    "tests/whatif_smoke.cjs: Shymkent scenario with the Astana snapshot rejected"
+   ],
+   "outcome": "pass"
+  },
+  {
+   "requirement": "Результаты из файла не доверенные — пересчитываются",
+   "tests": [
+    "tests/whatif.cjs: derived values in file ignored, recomputed",
+    "tests/whatif_smoke.cjs: valid import restores scenario ... (file values ignored)"
+   ],
+   "outcome": "pass"
+  },
+  {
+   "requirement": "Импорт не меняет состояние при отказе",
+   "tests": [
+    "tests/whatif_smoke.cjs: import *.json rejected, scenario unchanged (5 cases)"
+   ],
+   "outcome": "pass"
+  },
+  {
+   "requirement": "Экспорт без токенов и локальных путей; производные значения отдельно и помечены",
+   "tests": [
+    "tests/whatif.cjs: export has no local paths or tokens",
+    "tests/whatif_smoke.cjs: export: derived block labelled; file name and no local paths"
+   ],
+   "outcome": "pass"
+  },
+  {
+   "requirement": "Digest объяснения учитывает snapshot, категорию, точки, проект, значения; старое объяснение отклоняется; шаблон, не LLM",
+   "tests": [
+    "tests/whatif.cjs: digest changes when project moves / with category; stale explanation rejected",
+    "tests/whatif_smoke.cjs: template explanation; delete project: old explanation dropped"
+   ],
+   "outcome": "pass"
+  },
+  {
+   "requirement": "Оба города",
+   "tests": [
+    "tests/whatif_smoke.cjs: Astana clinic scenario; Shymkent file in Astana switches city"
+   ],
+   "outcome": "pass"
+  },
+  {
+   "requirement": "Исходные данные не изменены; без сети",
+   "tests": [
+    "git diff c58a3b2 4e93f30 -- web/data.js web/evidence.js web/facts.js inputs/ пуст",
+    "tests/whatif_smoke.cjs: no network requests",
+    "check_all build: data.js/evidence.js == rebuild"
+   ],
+   "outcome": "pass"
+  },
+  {
+   "requirement": "Windows launcher",
+   "tests": [
+    "не запускался"
+   ],
+   "outcome": "not_run (Linux only)"
+  }
+ ]
+}
