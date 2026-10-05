@@ -1,0 +1,111 @@
+{
+ "suite": "stage1_catalog",
+ "app_root": "<city-evidence>",
+ "node": "v22.22.0",
+ "results": [
+  {
+   "id": "S1_required_fields",
+   "title": "у каждого факта kind/unit/scope/hypothetical/label ru+kk без цифр",
+   "pass": true,
+   "observed": []
+  },
+  {
+   "id": "S1_values_from_engine",
+   "title": "значения фактов равны метрикам evaluatePlan/optimizePlans",
+   "pass": true,
+   "observed": []
+  },
+  {
+   "id": "S1_hypothetical_and_kinds",
+   "title": "planы с кандидатами hypothetical; без объектов — нет; бюджет/радиус — user_input, радиус analysis_parameter",
+   "pass": true,
+   "observed": [
+    true,
+    "analysis_parameter"
+   ]
+  },
+  {
+   "id": "S1_unknown_is_null_not_zero",
+   "title": "пустой срез: baseline mean/max = null (unknown, unknown_points), unknown_count = 3, covered_weight = 0",
+   "pass": true,
+   "observed": [
+    null,
+    "unknown",
+    null
+   ]
+  },
+  {
+   "id": "S1_infeasible_no_objective_facts",
+   "title": "infeasible: фактов победителей нет, статус и причины в meta; ручной план feasible=0 с причинами",
+   "pass": true,
+   "observed": {
+    "problem_digest": "ac3f6fd71341f8397f6810356ee3f0ab4599e1fa0ede0cf6dceb0257b2f33432",
+    "status": "infeasible",
+    "infeasible_reasons": [
+     {
+      "code": "over_budget",
+      "cost": 500,
+      "budget": 100
+     }
+    ],
+    "manual_reasons": [
+     {
+      "code": "missing_required",
+      "ids": [
+       "big"
+      ]
+     }
+    ],
+    "sensitivity": [
+     {
+      "budget": 0,
+      "status": "infeasible",
+      "feasible_count": 0,
+      "objectives": {
+       "mean": null,
+       "minimax": null,
+       "coverage": null
+      }
+     },
+     {
+      "budget": 50,
+      "status": "infeasible",
+      "feasible_count": 0,
+      "objectives": {
+       "mean": null,
+       "minimax": null,
+       "coverage": null
+      }
+     },
+     {
+      "budget": 100,
+      "status": "infeasible",
+      "feasible_count": 0,
+      "objectives": {
+       "mean": null,
+       "minimax": null,
+       "coverage": null
+      }
+     }
+    ],
+    "pareto": [],
+    "exact": true,
+    "sources_empty": false,
+    "city_id": "astana",
+    "category": "school",
+    "source_snapshot": "sha256:02c33cf60a66d725e6d7a85d476c03c71bac7098e98ca71d9ef045cbc8f7d051"
+   }
+  },
+  {
+   "id": "S1_digest_changes",
+   "title": "digest каталога меняется при смене ручного набора, бюджета, радиуса; стабилен при перестановке массивов",
+   "pass": true,
+   "observed": {
+    "sel": "e4d7f2be60ea8b84",
+    "budget": "b811baf46d6ca0ba",
+    "radius": "843f0319efa153b3",
+    "reordered": "8459ac5a573c1e75"
+   }
+  }
+ ]
+}

@@ -1,0 +1,83 @@
+{
+ "name": "synthetic_empty_sources",
+ "provenance": {
+  "kind": "synthetic",
+  "note": "Полностью синтетическая геометрия в условном квадрате [10,10,10.02,10.02]; city_id нужен схеме, это НЕ данные города."
+ },
+ "context": {
+  "city": "shymkent",
+  "category": "school",
+  "bbox": [
+   10,
+   10,
+   10.02,
+   10.02
+  ],
+  "release": "synthetic",
+  "source_snapshot": "sha256:ee693cb79fbb55297e9a5a86ca12217ade446c34a3a8205901d671bfd6964464",
+  "sources": [],
+  "versions": {
+   "schema": "city-plan-v2",
+   "metric": "haversine-mm-v1",
+   "formula": "haversine:R=6371008.8"
+  }
+ },
+ "scenario": {
+  "schema_version": "city-plan-v2",
+  "city_id": "shymkent",
+  "source_snapshot": "sha256:ee693cb79fbb55297e9a5a86ca12217ade446c34a3a8205901d671bfd6964464",
+  "category": "school",
+  "control_points": [
+   {
+    "id": "a",
+    "lon": 10.002,
+    "lat": 10.002,
+    "weight": 1
+   },
+   {
+    "id": "b",
+    "lon": 10.018,
+    "lat": 10.018,
+    "weight": 1
+   },
+   {
+    "id": "c",
+    "lon": 10.01,
+    "lat": 10.01,
+    "weight": 2
+   }
+  ],
+  "candidates": [
+   {
+    "id": "x",
+    "lon": 10.002,
+    "lat": 10.0024,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 10
+   },
+   {
+    "id": "y",
+    "lon": 10.018,
+    "lat": 10.0176,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 10
+   },
+   {
+    "id": "z",
+    "lon": 10.01,
+    "lat": 10.0104,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 25
+   }
+  ],
+  "budget": 30,
+  "max_selected": 2,
+  "coverage_radius_m": 500,
+  "required_ids": [],
+  "excluded_ids": [],
+  "selected_ids": []
+ }
+}
