@@ -124,7 +124,7 @@
    "severity": "medium",
    "where": "prototypes/city-evidence/inputs/k02v4/verified_explainer.py:29 (REPO = next(... (p/'agent'/'evidence.py').exists())), imported by tools/explain_ref.py:19",
    "what": "the build's own check_all 'facts' step depends on agent/evidence.py of the hackathon site outside the prototype; file is not pinned by any manifest",
-   "repro": "APP=$(python3 extract_build.py --sha 064ed25...) ; cd $APP && python3 tools/check_all.py  -> [FAIL] facts: step crashed — StopIteration (10 pass, 1 skip, 1 fail); same SHA via git archive full tree -> 12 pass, 0 fail",
+   "repro": "python3 repro_defects.py --app-root $APP -> D1 REPRODUCED (runs/repro_defects.txt); manual: cd $APP && python3 tools/check_all.py -> [FAIL] facts: step crashed — StopIteration; git archive full tree of same SHA -> 12 pass, 0 fail",
    "impact": "web runtime unaffected (facts.js, serve.py, browser checks pass); reproducibility/isolation of the Python reference and README 'only Python 3' claim for checks",
    "fix_proposal": "vendor format_value into inputs/k02v4 (or copy agent/evidence.py byte-exact with sha256 in MANIFEST) and drop the parents search"
   },
@@ -133,7 +133,7 @@
    "severity": "low",
    "where": "prototypes/city-evidence/inputs/k03v2_root/ (MANIFEST_K03V2.json lists only boundary_validator.py); tools/check_all.py step_inputs",
    "what": "10 unmodified K03 v2 files (district geometries, registry, geo_common.py) used by build_evidence.py are not hash-checked; manifest only states 'identical to k03_root'",
-   "repro": "flip one byte in inputs/k03v2_root/data/astana_districts.geojson -> all 6 check_all 'inputs' checks still PASS (runs: see STATUS)",
+   "repro": "python3 repro_defects.py --app-root $APP -> D2 REPRODUCED: byte flip in inputs/k03v2_root/data/astana_districts.geojson, all 6 check_all inputs checks still pass (runs/repro_defects.txt)",
    "fix_proposal": "in check_all compare every k03v2_root file except the patched one byte-for-byte with inputs/k03_root, or list their sha256 in MANIFEST_K03V2.json"
   },
   {
