@@ -1,0 +1,8 @@
+Astana bus dataset (separate from Chennai)
+Source: https://zenodo.org/records/15769359
+Paper: https://doi.org/10.3390/data10080119
+Authors: Mansurova, Mussina, Aubakirov, Nugumanova, Yedilkhan. License: CC BY 4.0.
+Downloaded 29 September 2026. Both files match Zenodo MD5 checksums and passed ZIP integrity checks.
+Use segment_level_data.csv for historical travel-time experiments, and matching GTFS files to interpret routes/stops/trips. GTFS timings are reconstructed observations, not verified Chennai schedules.
+We did NOT download gps_data.csv.zip (about 2.44 GB).
+For 8 GB RAM: use selected routes/days or read CSV in chunks. Keep Chennai data separate; do not join unrelated stop/trip IDs.

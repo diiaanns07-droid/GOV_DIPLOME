@@ -1,0 +1,145 @@
+{
+ "task": "K06 transport verification (A06, AST-A06)",
+ "city": "astana",
+ "date_utc": "2026-10-05",
+ "source_branch": "codex/research-import-2026-10-05",
+ "source_commit": "b87e5af6eeb6a5bdc33037a9f16d4e3377166ee5",
+ "sources": [
+  {
+   "id": "K06-S001",
+   "name": "Mansurova et al. Astana bus dataset",
+   "locator": "https://zenodo.org/records/15769359",
+   "opened": false,
+   "reason": "proxy 403 CONNECT (host not allowed)"
+  },
+  {
+   "id": "K06-S002",
+   "name": "Paper doi:10.3390/data10080119",
+   "locator": "https://www.mdpi.com/2306-5729/10/8/119",
+   "opened": false,
+   "reason": "proxy 403 CONNECT"
+  },
+  {
+   "id": "K06-S003",
+   "name": "GitHub mirror Mrithula742/Bussure",
+   "locator": "https://github.com/Mrithula742/Bussure datasets/astana",
+   "commit": "0356bb5b37ef0992ec0df3a4f09be35e3147b094",
+   "opened": true,
+   "via": "git sparse clone, LFS skipped",
+   "accessed_utc": "2026-10-05"
+  },
+  {
+   "id": "K06-S004",
+   "name": "Project OSM district boundaries",
+   "locator": "data/astana_districts.geojson",
+   "commit": "6d606b32dabb88b40fc456d556758762a0f12823",
+   "opened": true
+  },
+  {
+   "id": "K06-S005",
+   "name": "AST-A06 scripts and outputs",
+   "locator": "research/astana-results/06_transport/extracted_files__28_/extracted_AST_A06_real_aggregates/",
+   "opened": true
+  }
+ ],
+ "facts": [
+  {
+   "id": "K06-F001",
+   "status": "observed",
+   "claim": "zenodo.org and mdpi.com blocked by proxy (403 CONNECT); GitHub HTML page 403 for this session",
+   "source": [
+    "K06-S001",
+    "K06-S002",
+    "K06-S003"
+   ]
+  },
+  {
+   "id": "K06-F002",
+   "status": "observed",
+   "claim": "Mirror readable via git; HEAD 0356bb5b37ef0992ec0df3a4f09be35e3147b094, same commit as AST-A06",
+   "source": [
+    "K06-S003"
+   ]
+  },
+  {
+   "id": "K06-F003",
+   "status": "observed",
+   "claim": "stop_times.txt (167675554 B) and segment_level_data.csv (49841502 B) are Git LFS pointers only",
+   "source": [
+    "K06-S003"
+   ]
+  },
+  {
+   "id": "K06-F004",
+   "status": "derived",
+   "claim": "55 consecutive service days 2024-07-29..2024-09-21, no gaps; 15 weekend days",
+   "source": [
+    "K06-S003"
+   ],
+   "artifact": "repro/out/k06_checks.json"
+  },
+  {
+   "id": "K06-F005",
+   "status": "derived",
+   "claim": "AST-A06 R1/R1b/R2 reproduced: JSON outputs byte-identical, CSV identical except line endings; 19769 trips, 201 stops, 3 routes",
+   "source": [
+    "K06-S003",
+    "K06-S004",
+    "K06-S005"
+   ],
+   "artifact": "repro/out/r1/"
+  },
+  {
+   "id": "K06-F006",
+   "status": "hypothesis",
+   "claim": "License CC BY 4.0 stated only in mirror READ-ME.txt; mirror has no LICENSE; not verified on Zenodo",
+   "source": [
+    "K06-S003"
+   ]
+  },
+  {
+   "id": "K06-F007",
+   "status": "observed",
+   "claim": "Mirror Astana README contains 'not verified Chennai schedules' - likely copy-paste; secondary source not proofread",
+   "source": [
+    "K06-S003"
+   ]
+  },
+  {
+   "id": "K06-F008",
+   "status": "derived",
+   "claim": "0 of 16909 consecutive same-vehicle trip pairs overlap; no vehicle switches route within a day",
+   "source": [
+    "K06-S003"
+   ],
+   "artifact": "repro/out/k06_checks.json"
+  },
+  {
+   "id": "K06-F009",
+   "status": "derived",
+   "claim": "Within-day headway CV median 0.675 vs pooled 0.82 (weekday, cleaned); excess wait H/2*CV^2 becomes 1.4-7.8 min (median 3.75), >2 min in 16 of 18 (formula = assumption)",
+   "source": [
+    "K06-S003"
+   ],
+   "artifact": "repro/out/k06_checks.json; repro/out/k06_excess_within_day.txt"
+  },
+  {
+   "id": "K06-F010",
+   "status": "derived",
+   "claim": "76.7% of consecutive same-vehicle trips start <=60 s after previous end (median 13 s): trip duration includes terminal layover, not a congestion measure",
+   "source": [
+    "K06-S003"
+   ],
+   "artifact": "repro/out/k06_gap_check.json"
+  }
+ ],
+ "not_verified": [
+  "Dataset license on Zenodo",
+  "Trip reconstruction method",
+  "Current (2026) status of routes 10/12/46 and LRT",
+  "AST-A06-F019/F020 third-party zero dataset (not re-checked)"
+ ],
+ "synthetic_not_real": [
+  "A06 E1/E2/E3 SUMO and access experiments on invented networks (govtech-results/06_transport/extracted_files__15_/extracted_A06_experiments_synthetic)"
+ ]
+}

@@ -1,0 +1,2 @@
+agency_id	agency_name	agency_url	agency_timezone
+CTS	City Transportation Systems	https://cts.gov.kz/ru/	Asia/Almaty

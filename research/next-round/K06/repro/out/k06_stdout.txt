@@ -1,0 +1,45 @@
+{
+ "C1_vehicle_overlap": {
+  "vehicle_day_consecutive_pairs": 16909,
+  "next_trip_starts_before_prev_end": 0,
+  "share": 0.0,
+  "overlap_gt_5min": 0,
+  "vehicles": 148,
+  "consecutive_pairs_switching_route": 0
+ },
+ "C2_summary": {
+  "pooled_median": 0.8200000000000001,
+  "within_day_median": 0.675
+ },
+ "C3_coverage": {
+  "first_day": "2024-07-29",
+  "last_day": "2024-09-21",
+  "days_present": 55,
+  "days_in_range": 55,
+  "weekend_days": 15,
+  "trips": 19769,
+  "routes": [
+   "10",
+   "12",
+   "46"
+  ]
+ }
+}
+{'key': '10/1/06-09', 'pooled_cv': 0.94, 'median_within_day_cv': 0.8, 'days_used': 34}
+{'key': '10/1/09-16', 'pooled_cv': 0.8, 'median_within_day_cv': 0.72, 'days_used': 35}
+{'key': '10/1/16-19', 'pooled_cv': 1.03, 'median_within_day_cv': 0.71, 'days_used': 32}
+{'key': '10/2/06-09', 'pooled_cv': 0.89, 'median_within_day_cv': 0.81, 'days_used': 35}
+{'key': '10/2/09-16', 'pooled_cv': 0.85, 'median_within_day_cv': 0.72, 'days_used': 35}
+{'key': '10/2/16-19', 'pooled_cv': 0.75, 'median_within_day_cv': 0.6, 'days_used': 32}
+{'key': '12/1/06-09', 'pooled_cv': 0.9, 'median_within_day_cv': 0.8, 'days_used': 37}
+{'key': '12/1/09-16', 'pooled_cv': 0.64, 'median_within_day_cv': 0.56, 'days_used': 37}
+{'key': '12/1/16-19', 'pooled_cv': 0.91, 'median_within_day_cv': 0.48, 'days_used': 34}
+{'key': '12/2/06-09', 'pooled_cv': 0.84, 'median_within_day_cv': 0.74, 'days_used': 35}
+{'key': '12/2/09-16', 'pooled_cv': 0.74, 'median_within_day_cv': 0.64, 'days_used': 38}
+{'key': '12/2/16-19', 'pooled_cv': 0.77, 'median_within_day_cv': 0.59, 'days_used': 36}
+{'key': '46/1/06-09', 'pooled_cv': 1.08, 'median_within_day_cv': 1.0, 'days_used': 38}
+{'key': '46/1/09-16', 'pooled_cv': 0.74, 'median_within_day_cv': 0.64, 'days_used': 38}
+{'key': '46/1/16-19', 'pooled_cv': 0.76, 'median_within_day_cv': 0.59, 'days_used': 36}
+{'key': '46/2/06-09', 'pooled_cv': 1.01, 'median_within_day_cv': 0.99, 'days_used': 38}
+{'key': '46/2/09-16', 'pooled_cv': 0.57, 'median_within_day_cv': 0.5, 'days_used': 38}
+{'key': '46/2/16-19', 'pooled_cv': 0.78, 'median_within_day_cv': 0.54, 'days_used': 36}

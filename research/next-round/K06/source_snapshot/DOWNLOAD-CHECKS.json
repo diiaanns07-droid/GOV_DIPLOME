@@ -1,0 +1,14 @@
+{
+  "segment_level_data.zip": {
+    "md5": "98d9710c17f26107286ca44a97bb4dc6",
+    "checksum_matches": true,
+    "bytes": 20550538,
+    "uncompressed_bytes": 167675554
+  },
+  "gtfs_data.zip": {
+    "md5": "20fb42670d4c2befeb12ca6764675562",
+    "checksum_matches": true,
+    "bytes": 8602660,
+    "uncompressed_bytes": 52205972
+  }
+}

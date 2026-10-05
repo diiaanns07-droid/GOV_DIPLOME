@@ -1,0 +1,4 @@
+route_id	agency_id	route_long_name	route_type	route_short_name
+a3d30efc-b517-4ed6-b6a7-f5a87a3d5fa0	CTS	Karasu Street – Comfort Town – Karasu Street	3	46
+d626b854-27aa-41d4-8625-ebafa73d8f21	CTS	Astana Railway Station – International Airport – Astana Railway Station	3	10
+c453217f-9f9d-49ce-8b32-14a6b7013691	CTS	Astana Railway Station – International Airport – Astana Railway Station	3	12

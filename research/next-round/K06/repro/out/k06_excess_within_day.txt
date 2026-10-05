@@ -1,0 +1,19 @@
+10/d1/06-09 H 16.2 cv_pooled 0.94 cv_within 0.8 excess_within 5.2 excess_pooled 7.2
+10/d1/09-16 H 12.9 cv_pooled 0.8 cv_within 0.72 excess_within 3.3 excess_pooled 4.1
+10/d1/16-19 H 17.6 cv_pooled 1.03 cv_within 0.71 excess_within 4.4 excess_pooled 9.3
+10/d2/06-09 H 14.6 cv_pooled 0.89 cv_within 0.81 excess_within 4.8 excess_pooled 5.8
+10/d2/09-16 H 14.0 cv_pooled 0.85 cv_within 0.72 excess_within 3.6 excess_pooled 5.1
+10/d2/16-19 H 16.7 cv_pooled 0.75 cv_within 0.6 excess_within 3.0 excess_pooled 4.7
+12/d1/06-09 H 22.5 cv_pooled 0.9 cv_within 0.8 excess_within 7.2 excess_pooled 9.1
+12/d1/09-16 H 15.3 cv_pooled 0.64 cv_within 0.56 excess_within 2.4 excess_pooled 3.1
+12/d1/16-19 H 19.8 cv_pooled 0.91 cv_within 0.48 excess_within 2.3 excess_pooled 8.2
+12/d2/06-09 H 24.8 cv_pooled 0.84 cv_within 0.74 excess_within 6.8 excess_pooled 8.7
+12/d2/09-16 H 19.9 cv_pooled 0.74 cv_within 0.64 excess_within 4.1 excess_pooled 5.4
+12/d2/16-19 H 22.5 cv_pooled 0.77 cv_within 0.59 excess_within 3.9 excess_pooled 6.7
+46/d1/06-09 H 15.5 cv_pooled 1.08 cv_within 1.0 excess_within 7.8 excess_pooled 9.0
+46/d1/09-16 H 11.8 cv_pooled 0.74 cv_within 0.64 excess_within 2.4 excess_pooled 3.2
+46/d1/16-19 H 14.3 cv_pooled 0.76 cv_within 0.59 excess_within 2.5 excess_pooled 4.1
+46/d2/06-09 H 14.6 cv_pooled 1.01 cv_within 0.99 excess_within 7.2 excess_pooled 7.4
+46/d2/09-16 H 11.0 cv_pooled 0.57 cv_within 0.5 excess_within 1.4 excess_pooled 1.8
+46/d2/16-19 H 12.4 cv_pooled 0.78 cv_within 0.54 excess_within 1.8 excess_pooled 3.8
+excess (within-day CV) min/median/max: 1.4 3.75 7.8 | >2 min: 16 of 18

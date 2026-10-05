@@ -1,0 +1,19 @@
+{'key': '10/d1/06-09', 'mean_headway_min': 16.2, 'cv': 0.94, 'n': 407, 'ptal_awt_min': 10.1, 'random_arrival_wait_min': 15.3, 'excess_wait_min': 7.2}
+{'key': '10/d1/09-16', 'mean_headway_min': 12.9, 'cv': 0.8, 'n': 1118, 'ptal_awt_min': 8.4, 'random_arrival_wait_min': 10.6, 'excess_wait_min': 4.1}
+{'key': '10/d1/16-19', 'mean_headway_min': 17.6, 'cv': 1.03, 'n': 349, 'ptal_awt_min': 10.8, 'random_arrival_wait_min': 18.1, 'excess_wait_min': 9.3}
+{'key': '10/d2/06-09', 'mean_headway_min': 14.6, 'cv': 0.89, 'n': 454, 'ptal_awt_min': 9.3, 'random_arrival_wait_min': 13.1, 'excess_wait_min': 5.8}
+{'key': '10/d2/09-16', 'mean_headway_min': 14.0, 'cv': 0.85, 'n': 1048, 'ptal_awt_min': 9.0, 'random_arrival_wait_min': 12.1, 'excess_wait_min': 5.1}
+{'key': '10/d2/16-19', 'mean_headway_min': 16.7, 'cv': 0.75, 'n': 343, 'ptal_awt_min': 10.3, 'random_arrival_wait_min': 13.0, 'excess_wait_min': 4.7}
+{'key': '12/d1/06-09', 'mean_headway_min': 22.5, 'cv': 0.9, 'n': 312, 'ptal_awt_min': 13.2, 'random_arrival_wait_min': 20.4, 'excess_wait_min': 9.1}
+{'key': '12/d1/09-16', 'mean_headway_min': 15.3, 'cv': 0.64, 'n': 1024, 'ptal_awt_min': 9.7, 'random_arrival_wait_min': 10.8, 'excess_wait_min': 3.1}
+{'key': '12/d1/16-19', 'mean_headway_min': 19.8, 'cv': 0.91, 'n': 351, 'ptal_awt_min': 11.9, 'random_arrival_wait_min': 18.1, 'excess_wait_min': 8.2}
+{'key': '12/d2/06-09', 'mean_headway_min': 24.8, 'cv': 0.84, 'n': 290, 'ptal_awt_min': 14.4, 'random_arrival_wait_min': 21.1, 'excess_wait_min': 8.7}
+{'key': '12/d2/09-16', 'mean_headway_min': 19.9, 'cv': 0.74, 'n': 808, 'ptal_awt_min': 11.9, 'random_arrival_wait_min': 15.4, 'excess_wait_min': 5.4}
+{'key': '12/d2/16-19', 'mean_headway_min': 22.5, 'cv': 0.77, 'n': 303, 'ptal_awt_min': 13.2, 'random_arrival_wait_min': 17.9, 'excess_wait_min': 6.7}
+{'key': '46/d1/06-09', 'mean_headway_min': 15.5, 'cv': 1.08, 'n': 462, 'ptal_awt_min': 9.8, 'random_arrival_wait_min': 16.8, 'excess_wait_min': 9.0}
+{'key': '46/d1/09-16', 'mean_headway_min': 11.8, 'cv': 0.74, 'n': 1357, 'ptal_awt_min': 7.9, 'random_arrival_wait_min': 9.1, 'excess_wait_min': 3.2}
+{'key': '46/d1/16-19', 'mean_headway_min': 14.3, 'cv': 0.76, 'n': 462, 'ptal_awt_min': 9.2, 'random_arrival_wait_min': 11.3, 'excess_wait_min': 4.1}
+{'key': '46/d2/06-09', 'mean_headway_min': 14.6, 'cv': 1.01, 'n': 483, 'ptal_awt_min': 9.3, 'random_arrival_wait_min': 14.7, 'excess_wait_min': 7.4}
+{'key': '46/d2/09-16', 'mean_headway_min': 11.0, 'cv': 0.57, 'n': 1444, 'ptal_awt_min': 7.5, 'random_arrival_wait_min': 7.3, 'excess_wait_min': 1.8}
+{'key': '46/d2/16-19', 'mean_headway_min': 12.4, 'cv': 0.78, 'n': 538, 'ptal_awt_min': 8.2, 'random_arrival_wait_min': 10.0, 'excess_wait_min': 3.8}
+excess wait min/median/max: 1.8 5.6 9.3 | bands with excess > 2 min: 17 of 18
