@@ -1,0 +1,8 @@
+test_connect_after_run (test_socket_side_effect.SocketSideEffect.test_connect_after_run) ... ok
+test_network_blocked_during_run (test_socket_side_effect.SocketSideEffect.test_network_blocked_during_run) ... ok
+test_socket_attrs_restored (test_socket_side_effect.SocketSideEffect.test_socket_attrs_restored) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.473s
+
+OK

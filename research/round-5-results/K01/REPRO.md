@@ -29,7 +29,7 @@ python3 check_build.py --url http://127.0.0.1:8765/ [--app-root "$APP"] [--brows
 | B1 | headless Chromium, `file://web/index.html` и `--url`: внешних запросов, ошибок консоли нет | PASS |
 
 Режим `--url` (сервер запущен отдельно): S1/S2/B1 PASS; только `--url` без app-root: S1 PASS.
-Логи: `baseline/check_0bf27de.{json,log}`, `baseline/check_0bf27de_url.{json,log}`, `baseline/check_0bf27de_url_only.log`.
+Логи: `baseline/check_0bf27de.{json,log}`, `baseline/check_0bf27de_url.{json,log}`, `baseline/check_0bf27de_url_only.txt`.
 
 Собственные тесты BUILD на извлечённой копии (cwd=/tmp):
 - `python3 -m unittest discover -s $APP/tests -t $APP/tests` — 7 тестов, OK, **2 skipped** (K03: нет shapely/pyproj);
@@ -38,14 +38,14 @@ python3 check_build.py --url http://127.0.0.1:8765/ [--app-root "$APP"] [--brows
 
 ## Regression test `test_socket_side_effect.py`
 Каждый тест в отдельном subprocess. На 0bf27de: `test_connect_after_run` **FAIL (ожидаемо)**,
-`test_socket_attrs_restored` **FAIL (ожидаемо)**, `test_network_blocked_during_run` PASS → `baseline/regression_0bf27de.log`.
+`test_socket_attrs_restored` **FAIL (ожидаемо)**, `test_network_blocked_during_run` PASS → `baseline/regression_0bf27de.txt`.
 Третий тест страхует от «исправления», которое просто убирает блокировку сети.
 
 ## Находки
 1. **N1: блокировка `socket` остаётся после `offline_check.run()`** (подтверждено на BUILD). `install_guards()` восстанавливает
    в `finally` только `builtins.open`. Любой процесс, импортирующий проверку (тесты, сборка), теряет сеть до выхода.
    Предложение: `patches/offline_check_restore_socket.patch`. **Не FIXED в BUILD**: проверено только на временной
-   пропатченной копии (`baseline/regression_patched_tempcopy.log`: 3/3 OK; `offline_check.py` exit 0).
+   пропатченной копии (`baseline/regression_patched_tempcopy.txt`: 3/3 OK; `offline_check.py` exit 0).
 2. **Исправление N1 в BUILD конфликтует с закреплёнными входами.** `inputs/k10/scripts/offline_check.py` хэширован в
    `source_manifest.json` как побайтная копия K10 @ ea703f1; на пропатченной копии I1 падает (проверено). Нужно либо
    исправление у K10 и новый `copy_inputs.py` с новым SHA, либо явная запись «локальная правка» в манифесте.

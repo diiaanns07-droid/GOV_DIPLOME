@@ -1,0 +1,10 @@
+[PASS] I1: 40 inputs vs source_manifest.json
+[PASS] I2: 6 K10 data files vs package_manifest.json
+[PASS] I3: no symlinks in app root
+[PASS] I4: tools/build_data.py on temp copy: exit 0, web/data.js byte-identical
+[FAIL] N1: localhost connect after offline_check.run(): offline_check_ok True | connect_after_run FAIL NetworkBlocked network access attempted during offline check
+[PASS] S1: serve.py started with cwd=<TMPCWD> (outside app root): 5 assets (index.html, data.js, evidence.js, facts.js, app.js) byte-identical to web/
+[PASS] S2: traversal requests -> {'../serve.py': 404, '%2e%2e/serve.py': 404, '..%2fserve.py': 404, '%2e%2e%2fREADME.md': 404}
+[PASS] S3: audited serve.py: opened in web/ ['README.md (absent, 404)', 'app.js', 'data.js', 'evidence.js', 'facts.js', 'index.html', 'serve.py (absent, 404)']; foreign opens []; connect/subprocess []
+[PASS] B1: file:// web/index.html: 5 requests, external [], failed [], console errors [], title 'Городские данные'
+OVERALL FAIL | failed: ['N1 (known on baseline)']
