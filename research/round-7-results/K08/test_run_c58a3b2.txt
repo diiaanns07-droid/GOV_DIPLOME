@@ -1,0 +1,26 @@
+test_after_le_before_and_delta (__main__.TestCard.test_after_le_before_and_delta) ... ok
+test_card_fields_cover_registry (__main__.TestCard.test_card_fields_cover_registry) ... ok
+test_haversine_reference (__main__.TestCard.test_haversine_reference) ... ok
+test_imported_results_ignored (__main__.TestCard.test_imported_results_ignored) ... ok
+test_no_forbidden_claims (__main__.TestCard.test_no_forbidden_claims) ... ok
+test_no_project_delta_zero (__main__.TestCard.test_no_project_delta_zero) ... ok
+test_provenance_present_for_nearest (__main__.TestCard.test_provenance_present_for_nearest) ... ok
+test_qa_flag_kept_not_removed (__main__.TestCard.test_qa_flag_kept_not_removed) ... ok
+test_same_point_zero (__main__.TestCard.test_same_point_zero) ... ok
+test_synthetic_no_source_records (__main__.TestCard.test_synthetic_no_source_records)
+synthetic: из копии data.js удалены все школы — before=null, after=до проекта, delta=null. ... ok
+test_tie_stable_by_id (__main__.TestCard.test_tie_stable_by_id) ... ok
+test_cities_differ (__main__.TestSnapshot.test_cities_differ) ... ok
+test_modified_places_bytes_rejected (__main__.TestSnapshot.test_modified_places_bytes_rejected) ... ok
+test_snapshot_not_from_filename (__main__.TestSnapshot.test_snapshot_not_from_filename) ... ok
+test_duplicate_ids_and_two_projects (__main__.TestValidation.test_duplicate_ids_and_two_projects) ... ok
+test_foreign_snapshot (__main__.TestValidation.test_foreign_snapshot) ... ok
+test_points_bounds_and_count (__main__.TestValidation.test_points_bounds_and_count) ... ok
+test_project_category_and_kind (__main__.TestValidation.test_project_category_and_kind) ... ok
+test_strict_json (__main__.TestValidation.test_strict_json) ... ok
+test_unknown_version_city_category (__main__.TestValidation.test_unknown_version_city_category) ... ok
+
+----------------------------------------------------------------------
+Ran 20 tests in 0.385s
+
+OK
