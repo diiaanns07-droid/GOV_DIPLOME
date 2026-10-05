@@ -10,7 +10,7 @@
 | Репозиторий (origin) | `https://github.com/diiaanns07-droid/GOV_DIPLOME`, тот, который назвал владелец. Origin не перенастраивался |
 | Рабочая ветка | `claude/save-work-handoff-fmjw6r` (`main` не изменялась) |
 | Исходный коммит | `834a25fb860dd5514d02c9274b70d7bf8a53a79c` (`origin/main`, «Add presentation and README link») |
-| Сохранение на GitHub | **только локальный commit.** Push отклонён с ошибкой 403 (нет доступа Claude GitHub App), см. «Проверки» |
+| Сохранение на GitHub | **сохранено.** Первая попытка push отклонена с ошибкой 403. После того как владелец восстановил доступ, повторный push прошёл: ветка создана на `origin`, первый checkpoint-коммит `d7653cd`. См. «Проверки» |
 
 ## Задача
 
@@ -44,8 +44,10 @@
 | Ссылки на схему исследования в репозитории | grep по `govtech`, `astana-results`, `handoffs/`, `evidence.json`, `NN_` | совпадений нет |
 | История сессии | `get_session` (claude-code-remote) | см. раздел «Что установлено», п. 1 |
 | Секреты в коммите | просмотр `git diff --cached` перед commit | только этот Markdown-файл. Токенов, `.env` и чужих изменений нет |
-| Push ветки | `git push -u origin claude/save-work-handoff-fmjw6r` (одна попытка) | **отклонён, HTTP 403**: «Claude doesn't have GitHub access to diiaanns07-droid/GOV_DIPLOME for your organization». Это ошибка доступа, не сети, поэтому повторов не было |
-| Причина отказа | `check_repo_access` (claude-code-remote) | `push_check: refused`, `gate: repo_not_connected`, `gate_scope: identity`: Claude GitHub App не подключён к репозиторию. Чтение (fetch) работает |
+| Push ветки, попытка 1 | `git push -u origin claude/save-work-handoff-fmjw6r` | **отклонён, HTTP 403**: «Claude doesn't have GitHub access to diiaanns07-droid/GOV_DIPLOME for your organization». Это ошибка доступа, не сети, поэтому сразу не повторялся |
+| Причина отказа | `check_repo_access` (claude-code-remote) | `push_check: refused`, `gate: repo_not_connected`, `gate_scope: identity`: Claude GitHub App не был подключён к репозиторию. Чтение (fetch) работало |
+| Перед попыткой 2 | `git ls-remote --heads origin` | ветки `claude/save-work-handoff-fmjw6r` на `origin` нет, перезаписывать нечего. Видны ветки других агентов (`claude/*`, в том числе `claude/save-work-handoff-ku3ej3`). Их содержимое не читалось и не изменялось |
+| Push ветки, попытка 2 (по команде владельца «попробуй теперь») | `git push -u origin claude/save-work-handoff-fmjw6r` | **успешно**, exit 0, `* [new branch]`. `git ls-remote` показывает `d7653cd82dd193de2b5f1c7dd90ed56683c00b33` |
 
 Тестовая система не запускалась: исполнимый код не изменялся, добавлен только текст.
 
@@ -55,30 +57,19 @@
 
 ## Ограничения сети
 
-Внешних исследовательских запросов не выполнялось, поэтому ошибок `host_not_allowed` не было. Доступность внешних источников **не проверялась**: отсутствие проверки не означает отсутствия данных. Использовался только доступ к `origin`: fetch прошёл, **push отклонён (403, нет доступа GitHub App)**. Значит, этот checkpoint существует **только как локальный commit** в контейнере сессии и как patch, переданный владельцу в чате. На GitHub его нет, пока push не выполнен.
+Внешних исследовательских запросов не выполнялось, поэтому ошибок `host_not_allowed` не было. Доступность внешних источников **не проверялась**: отсутствие проверки не означает отсутствия данных. Использовался только доступ к `origin`: fetch прошёл. Первый push был отклонён с ошибкой 403 (не было доступа GitHub App), повторный push после восстановления доступа прошёл. Checkpoint теперь лежит на GitHub в ветке `claude/save-work-handoff-fmjw6r`.
 
 ## Нерешённые вопросы
 
 1. Какие номер `NN_роль`, сфера, город (govtech или Астана) и `task_id` назначены этой сессии?
-2. Если исследование велось в **другом** чате или сессии, его результатов нет ни в этом контейнере, ни на `origin` (там была только `main`). Нужна ссылка на ту сессию или переданные файлы. Иначе сохранить их невозможно.
+2. Если исследование велось в **другом** чате или сессии, его результатов нет в этом контейнере. На `origin` при первой проверке была только `main`. Позже появились ветки других агентов (`claude/*`), но эта сессия их не просматривала. Нужна ссылка на исходную сессию или ветку, либо переданные файлы.
 3. `PROJECT_CONTEXT.md` запрещает помощнику выполнять Git-команды. Для этого задания владелец явно разрешил commit и push своей ветки. На другие задачи это разрешение не переносится.
 
 ## Следующий конкретный шаг
 
-Владелец подключает Claude GitHub App к `diiaanns07-droid/GOV_DIPLOME` (https://claude.ai/connect-github) и выполняет push ветки `claude/save-work-handoff-fmjw6r`. Другой вариант: применить переданный patch командой `git am`. Только после этого стоит передавать назначение из вопроса 1, иначе новые результаты тоже останутся локальными.
+Координатор передаёт этой ветке назначение (`NN_роль`, город, `task_id`) или ссылку на исходную сессию с результатами. Затем агент создаёт `research/<govtech|astana>-results/<NN_роль>/` и коммитит туда результаты небольшими этапами.
 
 ## Команды воспроизведения
-
-Если ветки ещё нет на GitHub (push не прошёл), примените patch из чата:
-
-```bash
-git clone https://github.com/diiaanns07-droid/GOV_DIPLOME && cd GOV_DIPLOME
-git checkout -b claude/save-work-handoff-fmjw6r 834a25fb860dd5514d02c9274b70d7bf8a53a79c
-git am 0001-*.patch
-git push -u origin claude/save-work-handoff-fmjw6r
-```
-
-Если ветка уже на GitHub:
 
 ```bash
 git clone https://github.com/diiaanns07-droid/GOV_DIPLOME && cd GOV_DIPLOME
