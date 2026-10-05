@@ -1,0 +1,133 @@
+{
+ "schema_version": "city-plan-v2",
+ "city_id": "astana",
+ "source_snapshot": "sha256:3ee53ad375b2b4d21df5f81c6a20697cb03f702e560192f5f353a82b54e4b681",
+ "category": "outpatient_clinic",
+ "control_points": [
+  {
+   "id": "p1",
+   "lon": 71.421807,
+   "lat": 51.165189,
+   "weight": 1
+  },
+  {
+   "id": "p2",
+   "lon": 71.42906,
+   "lat": 51.165189,
+   "weight": 8
+  },
+  {
+   "id": "p3",
+   "lon": 71.436312,
+   "lat": 51.165189,
+   "weight": 5
+  },
+  {
+   "id": "p4",
+   "lon": 71.443565,
+   "lat": 51.165189,
+   "weight": 2
+  },
+  {
+   "id": "p5",
+   "lon": 71.421807,
+   "lat": 51.178844,
+   "weight": 9
+  },
+  {
+   "id": "p6",
+   "lon": 71.42906,
+   "lat": 51.178844,
+   "weight": 6
+  },
+  {
+   "id": "p7",
+   "lon": 71.436312,
+   "lat": 51.178844,
+   "weight": 3
+  },
+  {
+   "id": "p8",
+   "lon": 71.443565,
+   "lat": 51.178844,
+   "weight": 10
+  }
+ ],
+ "candidates": [
+  {
+   "id": "c1",
+   "lon": 71.424098,
+   "lat": 51.166626,
+   "category": "outpatient_clinic",
+   "kind": "hypothetical",
+   "cost": 50
+  },
+  {
+   "id": "c2",
+   "lon": 71.429823,
+   "lat": 51.166626,
+   "category": "outpatient_clinic",
+   "kind": "hypothetical",
+   "cost": 70
+  },
+  {
+   "id": "c3",
+   "lon": 71.435549,
+   "lat": 51.166626,
+   "category": "outpatient_clinic",
+   "kind": "hypothetical",
+   "cost": 40
+  },
+  {
+   "id": "c4",
+   "lon": 71.441274,
+   "lat": 51.166626,
+   "category": "outpatient_clinic",
+   "kind": "hypothetical",
+   "cost": 90
+  },
+  {
+   "id": "c5",
+   "lon": 71.424098,
+   "lat": 51.177407,
+   "category": "outpatient_clinic",
+   "kind": "hypothetical",
+   "cost": 60
+  },
+  {
+   "id": "c6",
+   "lon": 71.429823,
+   "lat": 51.177407,
+   "category": "outpatient_clinic",
+   "kind": "hypothetical",
+   "cost": 30
+  },
+  {
+   "id": "c7",
+   "lon": 71.435549,
+   "lat": 51.177407,
+   "category": "outpatient_clinic",
+   "kind": "hypothetical",
+   "cost": 80
+  },
+  {
+   "id": "c8",
+   "lon": 71.441274,
+   "lat": 51.177407,
+   "category": "outpatient_clinic",
+   "kind": "hypothetical",
+   "cost": 100
+  }
+ ],
+ "budget": 150,
+ "max_selected": 2,
+ "coverage_radius_m": 300,
+ "required_ids": [
+  "c3"
+ ],
+ "excluded_ids": [],
+ "selected_ids": [
+  "c3",
+  "c8"
+ ]
+}

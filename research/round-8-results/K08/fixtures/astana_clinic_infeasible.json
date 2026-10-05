@@ -1,0 +1,75 @@
+{
+ "schema_version": "city-plan-v2",
+ "city_id": "astana",
+ "source_snapshot": "sha256:3ee53ad375b2b4d21df5f81c6a20697cb03f702e560192f5f353a82b54e4b681",
+ "category": "outpatient_clinic",
+ "control_points": [
+  {
+   "id": "p1",
+   "lon": 71.421807,
+   "lat": 51.165189,
+   "weight": 1
+  },
+  {
+   "id": "p2",
+   "lon": 71.443565,
+   "lat": 51.165189,
+   "weight": 8
+  },
+  {
+   "id": "p3",
+   "lon": 71.421807,
+   "lat": 51.178844,
+   "weight": 5
+  },
+  {
+   "id": "p4",
+   "lon": 71.443565,
+   "lat": 51.178844,
+   "weight": 2
+  }
+ ],
+ "candidates": [
+  {
+   "id": "c1",
+   "lon": 71.424098,
+   "lat": 51.166626,
+   "category": "outpatient_clinic",
+   "kind": "hypothetical",
+   "cost": 500
+  },
+  {
+   "id": "c2",
+   "lon": 71.441274,
+   "lat": 51.166626,
+   "category": "outpatient_clinic",
+   "kind": "hypothetical",
+   "cost": 600
+  },
+  {
+   "id": "c3",
+   "lon": 71.424098,
+   "lat": 51.177407,
+   "category": "outpatient_clinic",
+   "kind": "hypothetical",
+   "cost": 700
+  },
+  {
+   "id": "c4",
+   "lon": 71.441274,
+   "lat": 51.177407,
+   "category": "outpatient_clinic",
+   "kind": "hypothetical",
+   "cost": 800
+  }
+ ],
+ "budget": 900,
+ "max_selected": 3,
+ "coverage_radius_m": 300,
+ "required_ids": [
+  "c1",
+  "c2"
+ ],
+ "excluded_ids": [],
+ "selected_ids": []
+}

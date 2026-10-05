@@ -1,0 +1,1186 @@
+{
+ "report_schema": "k08-plan-report/v1",
+ "generator": "research/round-8-results/K08/report.py",
+ "generated_utc": "2026-10-05T00:00:00Z",
+ "scenario_schema": "city-plan-v2",
+ "metric_version": "haversine-mm-v1",
+ "formula": "haversine:R=6371008.8",
+ "scenario_digest": "sha256:7a3d82900112d8af4f7254378ea28afffc0be36cb9eec91635b2f887d7481732",
+ "problem_digest": "sha256:0e3556c89dcb99b26a01c763079894c5019ef21c1f7b67a729f483425a85b7be",
+ "source": {
+  "city_id": "shymkent",
+  "label": "Шымкент",
+  "source_snapshot": "sha256:636dac5ea07462a0d10575c26a8037eedf67f75bc3d06edcd6b210755bd15018",
+  "release": "2026-09-23.1",
+  "retrieved_utc": "2026-10-05T06:19:53+00:00",
+  "bbox": [
+   69.593365,
+   42.306645,
+   69.617658,
+   42.324611
+  ],
+  "places_file": {
+   "path": "inputs/k10/data/shymkent/places_social.geojson",
+   "sha256": "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7"
+  },
+  "inputs": {
+   "k10_branch": "claude/save-work-handoff-j7pc05",
+   "k10_data_commit": "602f0c0b6d5db741d20909082086982b3c812c07",
+   "k10_sha": "ea703f1ddd3a411430a981164a78a7dda64ec909"
+  },
+  "data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "evidence_js_sha256": "df736e986145da33dee60f692e020486720b72db5b6116af31640cc8693b11b9",
+  "records_in_slice": 15,
+  "attribution": [
+   {
+    "dataset": "OpenStreetMap",
+    "layer": "connectors",
+    "license": "ODbL-1.0"
+   },
+   {
+    "dataset": "Overture",
+    "layer": "places_social",
+    "license": "CDLA-Permissive-2.0"
+   },
+   {
+    "dataset": "meta",
+    "layer": "places_social",
+    "license": "CDLA-Permissive-2.0"
+   },
+   {
+    "dataset": "OpenStreetMap",
+    "layer": "segments",
+    "license": "ODbL-1.0"
+   },
+   {
+    "dataset": "TomTom",
+    "layer": "segments",
+    "license": "ODbL-1.0"
+   }
+  ]
+ },
+ "scenario": {
+  "schema_version": "city-plan-v2",
+  "city_id": "shymkent",
+  "source_snapshot": "sha256:636dac5ea07462a0d10575c26a8037eedf67f75bc3d06edcd6b210755bd15018",
+  "category": "school",
+  "control_points": [
+   {
+    "id": "p1",
+    "lon": 69.59628,
+    "lat": 42.308801,
+    "weight": 1
+   },
+   {
+    "id": "p2",
+    "lon": 69.605512,
+    "lat": 42.308801,
+    "weight": 8
+   },
+   {
+    "id": "p3",
+    "lon": 69.614743,
+    "lat": 42.308801,
+    "weight": 5
+   },
+   {
+    "id": "p4",
+    "lon": 69.59628,
+    "lat": 42.315628,
+    "weight": 2
+   },
+   {
+    "id": "p5",
+    "lon": 69.605512,
+    "lat": 42.315628,
+    "weight": 9
+   },
+   {
+    "id": "p6",
+    "lon": 69.614743,
+    "lat": 42.315628,
+    "weight": 6
+   },
+   {
+    "id": "p7",
+    "lon": 69.59628,
+    "lat": 42.322455,
+    "weight": 3
+   },
+   {
+    "id": "p8",
+    "lon": 69.605512,
+    "lat": 42.322455,
+    "weight": 10
+   },
+   {
+    "id": "p9",
+    "lon": 69.614743,
+    "lat": 42.322455,
+    "weight": 7
+   }
+  ],
+  "candidates": [
+   {
+    "id": "c1",
+    "lon": 69.598224,
+    "lat": 42.310238,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 120
+   },
+   {
+    "id": "c2",
+    "lon": 69.605512,
+    "lat": 42.310238,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 90
+   },
+   {
+    "id": "c3",
+    "lon": 69.612799,
+    "lat": 42.310238,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 150
+   },
+   {
+    "id": "c4",
+    "lon": 69.598224,
+    "lat": 42.321018,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 60
+   },
+   {
+    "id": "c5",
+    "lon": 69.605512,
+    "lat": 42.321018,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 200
+   },
+   {
+    "id": "c6",
+    "lon": 69.612799,
+    "lat": 42.321018,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 80
+   }
+  ],
+  "budget": 300,
+  "max_selected": 3,
+  "coverage_radius_m": 400,
+  "required_ids": [],
+  "excluded_ids": [
+   "c6"
+  ],
+  "selected_ids": [
+   "c1"
+  ]
+ },
+ "plans": {
+  "manual": {
+   "selected_ids": [
+    "c1"
+   ],
+   "rows": [
+    {
+     "id": "p1",
+     "weight": 1,
+     "before_mm": 685059,
+     "after_mm": 226023,
+     "delta_mm": 459036,
+     "nearest_before": {
+      "kind": "source",
+      "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+     },
+     "nearest_after": {
+      "kind": "hypothetical",
+      "id": "c1"
+     }
+    },
+    {
+     "id": "p2",
+     "weight": 8,
+     "before_mm": 823055,
+     "after_mm": 620235,
+     "delta_mm": 202820,
+     "nearest_before": {
+      "kind": "source",
+      "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+     },
+     "nearest_after": {
+      "kind": "hypothetical",
+      "id": "c1"
+     }
+    },
+    {
+     "id": "p3",
+     "weight": 5,
+     "before_mm": 440267,
+     "after_mm": 440267,
+     "delta_mm": 0,
+     "nearest_before": {
+      "kind": "source",
+      "id": "18df815b-170a-437c-977f-0769690315d4"
+     },
+     "nearest_after": {
+      "kind": "source",
+      "id": "18df815b-170a-437c-977f-0769690315d4"
+     }
+    },
+    {
+     "id": "p4",
+     "weight": 2,
+     "before_mm": 125565,
+     "after_mm": 125565,
+     "delta_mm": 0,
+     "nearest_before": {
+      "kind": "source",
+      "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708"
+     },
+     "nearest_after": {
+      "kind": "source",
+      "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708"
+     }
+    },
+    {
+     "id": "p5",
+     "weight": 9,
+     "before_mm": 243856,
+     "after_mm": 243856,
+     "delta_mm": 0,
+     "nearest_before": {
+      "kind": "source",
+      "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+     },
+     "nearest_after": {
+      "kind": "source",
+      "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+     }
+    },
+    {
+     "id": "p6",
+     "weight": 6,
+     "before_mm": 318970,
+     "after_mm": 318970,
+     "delta_mm": 0,
+     "nearest_before": {
+      "kind": "source",
+      "id": "18df815b-170a-437c-977f-0769690315d4"
+     },
+     "nearest_after": {
+      "kind": "source",
+      "id": "18df815b-170a-437c-977f-0769690315d4"
+     }
+    },
+    {
+     "id": "p7",
+     "weight": 3,
+     "before_mm": 161448,
+     "after_mm": 161448,
+     "delta_mm": 0,
+     "nearest_before": {
+      "kind": "source",
+      "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+     },
+     "nearest_after": {
+      "kind": "source",
+      "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+     }
+    },
+    {
+     "id": "p8",
+     "weight": 10,
+     "before_mm": 76506,
+     "after_mm": 76506,
+     "delta_mm": 0,
+     "nearest_before": {
+      "kind": "source",
+      "id": "176c5993-4b62-4e90-849f-88addc0153bb"
+     },
+     "nearest_after": {
+      "kind": "source",
+      "id": "176c5993-4b62-4e90-849f-88addc0153bb"
+     }
+    },
+    {
+     "id": "p9",
+     "weight": 7,
+     "before_mm": 94096,
+     "after_mm": 94096,
+     "delta_mm": 0,
+     "nearest_before": {
+      "kind": "source",
+      "id": "baeda67d-e701-4c2a-bba6-10a13466e76d"
+     },
+     "nearest_after": {
+      "kind": "source",
+      "id": "baeda67d-e701-4c2a-bba6-10a13466e76d"
+     }
+    }
+   ],
+   "metrics": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 13656968,
+    "weighted_mean_mm": 267783.6862745098,
+    "max_mm": 620235,
+    "covered_weight": 38,
+    "coverage_fraction": 0.7450980392156863,
+    "cost": 120
+   },
+   "feasibility": {
+    "feasible": true,
+    "reasons": []
+   }
+  },
+  "mean": {
+   "selected_ids": [
+    "c2",
+    "c3"
+   ],
+   "rows": [
+    {
+     "id": "p1",
+     "weight": 1,
+     "before_mm": 685059,
+     "after_mm": 685059,
+     "delta_mm": 0,
+     "nearest_before": {
+      "kind": "source",
+      "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+     },
+     "nearest_after": {
+      "kind": "source",
+      "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+     }
+    },
+    {
+     "id": "p2",
+     "weight": 8,
+     "before_mm": 823055,
+     "after_mm": 159787,
+     "delta_mm": 663268,
+     "nearest_before": {
+      "kind": "source",
+      "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+     },
+     "nearest_after": {
+      "kind": "hypothetical",
+      "id": "c2"
+     }
+    },
+    {
+     "id": "p3",
+     "weight": 5,
+     "before_mm": 440267,
+     "after_mm": 226023,
+     "delta_mm": 214244,
+     "nearest_before": {
+      "kind": "source",
+      "id": "18df815b-170a-437c-977f-0769690315d4"
+     },
+     "nearest_after": {
+      "kind": "hypothetical",
+      "id": "c3"
+     }
+    },
+    {
+     "id": "p4",
+     "weight": 2,
+     "before_mm": 125565,
+     "after_mm": 125565,
+     "delta_mm": 0,
+     "nearest_before": {
+      "kind": "source",
+      "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708"
+     },
+     "nearest_after": {
+      "kind": "source",
+      "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708"
+     }
+    },
+    {
+     "id": "p5",
+     "weight": 9,
+     "before_mm": 243856,
+     "after_mm": 243856,
+     "delta_mm": 0,
+     "nearest_before": {
+      "kind": "source",
+      "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+     },
+     "nearest_after": {
+      "kind": "source",
+      "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+     }
+    },
+    {
+     "id": "p6",
+     "weight": 6,
+     "before_mm": 318970,
+     "after_mm": 318970,
+     "delta_mm": 0,
+     "nearest_before": {
+      "kind": "source",
+      "id": "18df815b-170a-437c-977f-0769690315d4"
+     },
+     "nearest_after": {
+      "kind": "source",
+      "id": "18df815b-170a-437c-977f-0769690315d4"
+     }
+    },
+    {
+     "id": "p7",
+     "weight": 3,
+     "before_mm": 161448,
+     "after_mm": 161448,
+     "delta_mm": 0,
+     "nearest_before": {
+      "kind": "source",
+      "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+     },
+     "nearest_after": {
+      "kind": "source",
+      "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+     }
+    },
+    {
+     "id": "p8",
+     "weight": 10,
+     "before_mm": 76506,
+     "after_mm": 76506,
+     "delta_mm": 0,
+     "nearest_before": {
+      "kind": "source",
+      "id": "176c5993-4b62-4e90-849f-88addc0153bb"
+     },
+     "nearest_after": {
+      "kind": "source",
+      "id": "176c5993-4b62-4e90-849f-88addc0153bb"
+     }
+    },
+    {
+     "id": "p9",
+     "weight": 7,
+     "before_mm": 94096,
+     "after_mm": 94096,
+     "delta_mm": 0,
+     "nearest_before": {
+      "kind": "source",
+      "id": "baeda67d-e701-4c2a-bba6-10a13466e76d"
+     },
+     "nearest_after": {
+      "kind": "source",
+      "id": "baeda67d-e701-4c2a-bba6-10a13466e76d"
+     }
+    }
+   ],
+   "metrics": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 9361200,
+    "weighted_mean_mm": 183552.9411764706,
+    "max_mm": 685059,
+    "covered_weight": 50,
+    "coverage_fraction": 0.9803921568627451,
+    "cost": 240
+   },
+   "feasibility": {
+    "feasible": true,
+    "reasons": []
+   }
+  },
+  "minimax": {
+   "selected_ids": [
+    "c1",
+    "c2"
+   ],
+   "rows": [
+    {
+     "id": "p1",
+     "weight": 1,
+     "before_mm": 685059,
+     "after_mm": 226023,
+     "delta_mm": 459036,
+     "nearest_before": {
+      "kind": "source",
+      "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+     },
+     "nearest_after": {
+      "kind": "hypothetical",
+      "id": "c1"
+     }
+    },
+    {
+     "id": "p2",
+     "weight": 8,
+     "before_mm": 823055,
+     "after_mm": 159787,
+     "delta_mm": 663268,
+     "nearest_before": {
+      "kind": "source",
+      "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+     },
+     "nearest_after": {
+      "kind": "hypothetical",
+      "id": "c2"
+     }
+    },
+    {
+     "id": "p3",
+     "weight": 5,
+     "before_mm": 440267,
+     "after_mm": 440267,
+     "delta_mm": 0,
+     "nearest_before": {
+      "kind": "source",
+      "id": "18df815b-170a-437c-977f-0769690315d4"
+     },
+     "nearest_after": {
+      "kind": "source",
+      "id": "18df815b-170a-437c-977f-0769690315d4"
+     }
+    },
+    {
+     "id": "p4",
+     "weight": 2,
+     "before_mm": 125565,
+     "after_mm": 125565,
+     "delta_mm": 0,
+     "nearest_before": {
+      "kind": "source",
+      "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708"
+     },
+     "nearest_after": {
+      "kind": "source",
+      "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708"
+     }
+    },
+    {
+     "id": "p5",
+     "weight": 9,
+     "before_mm": 243856,
+     "after_mm": 243856,
+     "delta_mm": 0,
+     "nearest_before": {
+      "kind": "source",
+      "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+     },
+     "nearest_after": {
+      "kind": "source",
+      "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+     }
+    },
+    {
+     "id": "p6",
+     "weight": 6,
+     "before_mm": 318970,
+     "after_mm": 318970,
+     "delta_mm": 0,
+     "nearest_before": {
+      "kind": "source",
+      "id": "18df815b-170a-437c-977f-0769690315d4"
+     },
+     "nearest_after": {
+      "kind": "source",
+      "id": "18df815b-170a-437c-977f-0769690315d4"
+     }
+    },
+    {
+     "id": "p7",
+     "weight": 3,
+     "before_mm": 161448,
+     "after_mm": 161448,
+     "delta_mm": 0,
+     "nearest_before": {
+      "kind": "source",
+      "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+     },
+     "nearest_after": {
+      "kind": "source",
+      "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+     }
+    },
+    {
+     "id": "p8",
+     "weight": 10,
+     "before_mm": 76506,
+     "after_mm": 76506,
+     "delta_mm": 0,
+     "nearest_before": {
+      "kind": "source",
+      "id": "176c5993-4b62-4e90-849f-88addc0153bb"
+     },
+     "nearest_after": {
+      "kind": "source",
+      "id": "176c5993-4b62-4e90-849f-88addc0153bb"
+     }
+    },
+    {
+     "id": "p9",
+     "weight": 7,
+     "before_mm": 94096,
+     "after_mm": 94096,
+     "delta_mm": 0,
+     "nearest_before": {
+      "kind": "source",
+      "id": "baeda67d-e701-4c2a-bba6-10a13466e76d"
+     },
+     "nearest_after": {
+      "kind": "source",
+      "id": "baeda67d-e701-4c2a-bba6-10a13466e76d"
+     }
+    }
+   ],
+   "metrics": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 9973384,
+    "weighted_mean_mm": 195556.54901960783,
+    "max_mm": 440267,
+    "covered_weight": 46,
+    "coverage_fraction": 0.9019607843137255,
+    "cost": 210
+   },
+   "feasibility": {
+    "feasible": true,
+    "reasons": []
+   }
+  },
+  "coverage": {
+   "selected_ids": [
+    "c2",
+    "c3"
+   ],
+   "rows": [
+    {
+     "id": "p1",
+     "weight": 1,
+     "before_mm": 685059,
+     "after_mm": 685059,
+     "delta_mm": 0,
+     "nearest_before": {
+      "kind": "source",
+      "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+     },
+     "nearest_after": {
+      "kind": "source",
+      "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+     }
+    },
+    {
+     "id": "p2",
+     "weight": 8,
+     "before_mm": 823055,
+     "after_mm": 159787,
+     "delta_mm": 663268,
+     "nearest_before": {
+      "kind": "source",
+      "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+     },
+     "nearest_after": {
+      "kind": "hypothetical",
+      "id": "c2"
+     }
+    },
+    {
+     "id": "p3",
+     "weight": 5,
+     "before_mm": 440267,
+     "after_mm": 226023,
+     "delta_mm": 214244,
+     "nearest_before": {
+      "kind": "source",
+      "id": "18df815b-170a-437c-977f-0769690315d4"
+     },
+     "nearest_after": {
+      "kind": "hypothetical",
+      "id": "c3"
+     }
+    },
+    {
+     "id": "p4",
+     "weight": 2,
+     "before_mm": 125565,
+     "after_mm": 125565,
+     "delta_mm": 0,
+     "nearest_before": {
+      "kind": "source",
+      "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708"
+     },
+     "nearest_after": {
+      "kind": "source",
+      "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708"
+     }
+    },
+    {
+     "id": "p5",
+     "weight": 9,
+     "before_mm": 243856,
+     "after_mm": 243856,
+     "delta_mm": 0,
+     "nearest_before": {
+      "kind": "source",
+      "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+     },
+     "nearest_after": {
+      "kind": "source",
+      "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+     }
+    },
+    {
+     "id": "p6",
+     "weight": 6,
+     "before_mm": 318970,
+     "after_mm": 318970,
+     "delta_mm": 0,
+     "nearest_before": {
+      "kind": "source",
+      "id": "18df815b-170a-437c-977f-0769690315d4"
+     },
+     "nearest_after": {
+      "kind": "source",
+      "id": "18df815b-170a-437c-977f-0769690315d4"
+     }
+    },
+    {
+     "id": "p7",
+     "weight": 3,
+     "before_mm": 161448,
+     "after_mm": 161448,
+     "delta_mm": 0,
+     "nearest_before": {
+      "kind": "source",
+      "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+     },
+     "nearest_after": {
+      "kind": "source",
+      "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+     }
+    },
+    {
+     "id": "p8",
+     "weight": 10,
+     "before_mm": 76506,
+     "after_mm": 76506,
+     "delta_mm": 0,
+     "nearest_before": {
+      "kind": "source",
+      "id": "176c5993-4b62-4e90-849f-88addc0153bb"
+     },
+     "nearest_after": {
+      "kind": "source",
+      "id": "176c5993-4b62-4e90-849f-88addc0153bb"
+     }
+    },
+    {
+     "id": "p9",
+     "weight": 7,
+     "before_mm": 94096,
+     "after_mm": 94096,
+     "delta_mm": 0,
+     "nearest_before": {
+      "kind": "source",
+      "id": "baeda67d-e701-4c2a-bba6-10a13466e76d"
+     },
+     "nearest_after": {
+      "kind": "source",
+      "id": "baeda67d-e701-4c2a-bba6-10a13466e76d"
+     }
+    }
+   ],
+   "metrics": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 9361200,
+    "weighted_mean_mm": 183552.9411764706,
+    "max_mm": 685059,
+    "covered_weight": 50,
+    "coverage_fraction": 0.9803921568627451,
+    "cost": 240
+   },
+   "feasibility": {
+    "feasible": true,
+    "reasons": []
+   }
+  }
+ },
+ "optimization": {
+  "status": "optimal",
+  "budget": 300,
+  "metric_version": "haversine-mm-v1",
+  "evaluated": 64,
+  "feasible_count": 16,
+  "problem_digest": "sha256:0e3556c89dcb99b26a01c763079894c5019ef21c1f7b67a729f483425a85b7be",
+  "search": "exhaustive",
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "c2",
+     "c3"
+    ],
+    "metrics": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 9361200,
+     "weighted_mean_mm": 183552.9411764706,
+     "max_mm": 685059,
+     "covered_weight": 50,
+     "coverage_fraction": 0.9803921568627451,
+     "cost": 240
+    }
+   },
+   "minimax": {
+    "selected_ids": [
+     "c1",
+     "c2"
+    ],
+    "metrics": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 9973384,
+     "weighted_mean_mm": 195556.54901960783,
+     "max_mm": 440267,
+     "covered_weight": 46,
+     "coverage_fraction": 0.9019607843137255,
+     "cost": 210
+    }
+   },
+   "coverage": {
+    "selected_ids": [
+     "c2",
+     "c3"
+    ],
+    "metrics": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 9361200,
+     "weighted_mean_mm": 183552.9411764706,
+     "max_mm": 685059,
+     "covered_weight": 50,
+     "coverage_fraction": 0.9803921568627451,
+     "cost": 240
+    }
+   }
+  },
+  "pareto": [
+   {
+    "cost": 0,
+    "weighted_sum_mm": 15738564,
+    "selected_ids": []
+   },
+   {
+    "cost": 90,
+    "weighted_sum_mm": 10432420,
+    "selected_ids": [
+     "c2"
+    ]
+   },
+   {
+    "cost": 210,
+    "weighted_sum_mm": 9973384,
+    "selected_ids": [
+     "c1",
+     "c2"
+    ]
+   },
+   {
+    "cost": 240,
+    "weighted_sum_mm": 9361200,
+    "selected_ids": [
+     "c2",
+     "c3"
+    ]
+   }
+  ]
+ },
+ "sensitivity": [
+  {
+   "budget": 0,
+   "status": "optimal",
+   "objectives": {
+    "mean": [],
+    "minimax": [],
+    "coverage": []
+   },
+   "mean_metrics": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 15738564,
+    "weighted_mean_mm": 308599.29411764705,
+    "max_mm": 823055,
+    "covered_weight": 37,
+    "coverage_fraction": 0.7254901960784313,
+    "cost": 0
+   },
+   "infeasible_reasons": null
+  },
+  {
+   "budget": 150,
+   "status": "optimal",
+   "objectives": {
+    "mean": [
+     "c2"
+    ],
+    "minimax": [
+     "c1"
+    ],
+    "coverage": [
+     "c2"
+    ]
+   },
+   "mean_metrics": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 10432420,
+    "weighted_mean_mm": 204557.25490196078,
+    "max_mm": 685059,
+    "covered_weight": 45,
+    "coverage_fraction": 0.8823529411764706,
+    "cost": 90
+   },
+   "infeasible_reasons": null
+  },
+  {
+   "budget": 300,
+   "status": "optimal",
+   "objectives": {
+    "mean": [
+     "c2",
+     "c3"
+    ],
+    "minimax": [
+     "c1",
+     "c2"
+    ],
+    "coverage": [
+     "c2",
+     "c3"
+    ]
+   },
+   "mean_metrics": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 9361200,
+    "weighted_mean_mm": 183552.9411764706,
+    "max_mm": 685059,
+    "covered_weight": 50,
+    "coverage_fraction": 0.9803921568627451,
+    "cost": 240
+   },
+   "infeasible_reasons": null
+  }
+ ],
+ "source_records": [
+  {
+   "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+   "name": "М.Х.Дулати атындағы үш тілде оқытатын N8 мамандандырылған  гимназия\" КММ",
+   "category_overture": "high_school",
+   "group": "school",
+   "lon": 69.60294,
+   "lat": 42.31672,
+   "confidence": 0.662,
+   "overture_version": 9,
+   "sources": [
+    {
+     "dataset": "meta",
+     "license": "CDLA-Permissive-2.0",
+     "record_id": "109733650870275",
+     "update_time": "2026-09-14T00:00:00.000Z"
+    }
+   ],
+   "qa": {
+    "available": true,
+    "flags": []
+   },
+   "kind": "observed_secondary"
+  },
+  {
+   "id": "176c5993-4b62-4e90-849f-88addc0153bb",
+   "name": "Dostyk Bilim Beru Ortalygy",
+   "category_overture": "middle_school",
+   "group": "school",
+   "lon": 69.605699,
+   "lat": 42.323129,
+   "confidence": 0.385,
+   "overture_version": 2,
+   "sources": [
+    {
+     "dataset": "meta",
+     "license": "CDLA-Permissive-2.0",
+     "record_id": "198636846666153",
+     "update_time": "2026-09-14T00:00:00.000Z"
+    }
+   ],
+   "qa": {
+    "available": true,
+    "flags": []
+   },
+   "kind": "observed_secondary"
+  },
+  {
+   "id": "18df815b-170a-437c-977f-0769690315d4",
+   "name": "Ақпан батыр Атындағы Орта Мектеп",
+   "category_overture": "elementary_school",
+   "group": "school",
+   "lon": 69.61482,
+   "lat": 42.31276,
+   "confidence": 0.762,
+   "overture_version": 9,
+   "sources": [
+    {
+     "dataset": "meta",
+     "license": "CDLA-Permissive-2.0",
+     "record_id": "321415295158302",
+     "update_time": "2026-09-14T00:00:00.000Z"
+    }
+   ],
+   "qa": {
+    "available": true,
+    "flags": []
+   },
+   "kind": "observed_secondary"
+  },
+  {
+   "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+   "name": "Reklama 8888",
+   "category_overture": "place_of_learning",
+   "group": "school",
+   "lon": 69.5958,
+   "lat": 42.3167,
+   "confidence": 0.254,
+   "overture_version": 2,
+   "sources": [
+    {
+     "dataset": "meta",
+     "license": "CDLA-Permissive-2.0",
+     "record_id": "457518577441642",
+     "update_time": "2026-09-14T00:00:00.000Z"
+    }
+   ],
+   "qa": {
+    "available": true,
+    "flags": [
+     {
+      "rule": "ad_or_business_page",
+      "reason": "название похоже на рекламу или страницу бизнеса, а не на учреждение категории"
+     },
+     {
+      "rule": "colocated"
+     }
+    ]
+   },
+   "kind": "observed_secondary"
+  },
+  {
+   "id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+   "name": "Учебный центр Меруерт",
+   "category_overture": "place_of_learning",
+   "group": "school",
+   "lon": 69.599229,
+   "lat": 42.314563,
+   "confidence": 0.68,
+   "overture_version": 8,
+   "sources": [
+    {
+     "dataset": "meta",
+     "license": "CDLA-Permissive-2.0",
+     "record_id": "101309298709568",
+     "update_time": "2026-09-14T00:00:00.000Z"
+    }
+   ],
+   "qa": {
+    "available": true,
+    "flags": []
+   },
+   "kind": "observed_secondary"
+  },
+  {
+   "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+   "name": "Express toefl",
+   "category_overture": "place_of_learning",
+   "group": "school",
+   "lon": 69.59496,
+   "lat": 42.32353,
+   "confidence": 0.33,
+   "overture_version": 8,
+   "sources": [
+    {
+     "dataset": "meta",
+     "license": "CDLA-Permissive-2.0",
+     "record_id": "103951562798946",
+     "update_time": "2026-09-14T00:00:00.000Z"
+    }
+   ],
+   "qa": {
+    "available": true,
+    "flags": [
+     {
+      "rule": "possible_duplicate:same_address",
+      "other": "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6"
+     }
+    ]
+   },
+   "kind": "observed_secondary"
+  },
+  {
+   "id": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+   "name": "ALEM мектебі",
+   "category_overture": "place_of_learning",
+   "group": "school",
+   "lon": 69.61557,
+   "lat": 42.32304,
+   "confidence": 0.438,
+   "overture_version": 1,
+   "sources": [
+    {
+     "dataset": "meta",
+     "license": "CDLA-Permissive-2.0",
+     "record_id": "100576409602303",
+     "update_time": "2026-09-14T00:00:00.000Z"
+    }
+   ],
+   "qa": {
+    "available": true,
+    "flags": []
+   },
+   "kind": "observed_secondary"
+  }
+ ],
+ "classes": {
+  "user_input": [
+   "scenario.*"
+  ],
+  "observed_secondary": [
+   "source.release",
+   "source.bbox",
+   "source.places_file",
+   "source.attribution",
+   "source_records[*] (кроме qa)"
+  ],
+  "derived": [
+   "source.source_snapshot",
+   "*_digest",
+   "plans",
+   "optimization",
+   "sensitivity",
+   "source_records[*].qa"
+  ],
+  "config": [
+   "metric_version",
+   "formula",
+   "assumptions",
+   "limitations"
+  ]
+ },
+ "assumptions": [
+  "Стоимости кандидатов и бюджет — условные единицы, заданные пользователем (или явно synthetic demo). Это не тенге и не смета.",
+  "Вес контрольной точки — приоритет пользователя, не численность жителей.",
+  "coverage_radius_m — параметр анализа, не норматив пешей доступности.",
+  "Кандидаты — гипотетические места (kind=hypothetical). Исходные записи не удаляются и не изменяются."
+ ],
+ "limitations": [
+  "Расстояния по прямой (гаверсинус), не путь по улицам и не время в пути; население, мощность, трафик не учитываются.",
+  "База — записи Overture внутри сохранённого квадрата; ближайшая запись в срезе не обязательно ближайшее учреждение в городе.",
+  "Срез неполон, координаты могут быть ошибочны; QA-флаги — правила сборки, отсутствие флага не означает проверку.",
+  "Оптимум найден только среди введённых кандидатов и условий; это не лучший план города и не прогноз социальной пользы.",
+  "Если исходных записей нет, before=null: нулевое покрытие в этом наборе записей не доказывает отсутствие услуги в городе.",
+  "Отчёт — сценарный анализ, не решение акимата и не обоснование расходов."
+ ],
+ "status_note": "Гипотетический сценарный отчёт. Не решение акимата и не доказательство пользы строительства."
+}

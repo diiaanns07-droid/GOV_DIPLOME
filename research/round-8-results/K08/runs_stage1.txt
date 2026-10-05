@@ -1,0 +1,16 @@
+test_infeasible_reason (__main__.TestEngine.test_infeasible_reason) ... ok
+test_mm_metric_and_empty_plan (__main__.TestEngine.test_mm_metric_and_empty_plan) ... ok
+test_optimum_equals_brute (__main__.TestEngine.test_optimum_equals_brute) ... ok
+test_order_invariance (__main__.TestEngine.test_order_invariance) ... ok
+test_pareto_non_dominated (__main__.TestEngine.test_pareto_non_dominated) ... ok
+test_sensitivity_budgets (__main__.TestEngine.test_sensitivity_budgets) ... ok
+test_html_self_contained (__main__.TestReport.test_html_self_contained) ... ok
+test_metadata_provenance (__main__.TestReport.test_metadata_provenance) ... ok
+test_no_forbidden_claims (__main__.TestReport.test_no_forbidden_claims) ... ok
+test_matches_build_js (__main__.TestSnapshot.test_matches_build_js) ... ok
+test_schema_specific (__main__.TestSnapshot.test_schema_specific) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.251s
+
+OK

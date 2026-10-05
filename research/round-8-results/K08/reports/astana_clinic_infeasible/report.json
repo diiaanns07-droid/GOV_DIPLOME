@@ -1,0 +1,421 @@
+{
+ "report_schema": "k08-plan-report/v1",
+ "generator": "research/round-8-results/K08/report.py",
+ "generated_utc": "2026-10-05T00:00:00Z",
+ "scenario_schema": "city-plan-v2",
+ "metric_version": "haversine-mm-v1",
+ "formula": "haversine:R=6371008.8",
+ "scenario_digest": "sha256:967c4fb10442a21cfbdd565fb7392fe3883f547a582ec1869802e0824fac7607",
+ "problem_digest": "sha256:4ffc727779e81f82771604b8a9fee41e998b7211eebf764e7c7b0c9d632e440c",
+ "source": {
+  "city_id": "astana",
+  "label": "Астана",
+  "source_snapshot": "sha256:3ee53ad375b2b4d21df5f81c6a20697cb03f702e560192f5f353a82b54e4b681",
+  "release": "2026-09-23.1",
+  "retrieved_utc": "2026-10-05T06:20:01+00:00",
+  "bbox": [
+   71.418372,
+   51.163033,
+   71.447,
+   51.181
+  ],
+  "places_file": {
+   "path": "inputs/k10/data/astana/places_social.geojson",
+   "sha256": "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343"
+  },
+  "inputs": {
+   "k10_branch": "claude/save-work-handoff-j7pc05",
+   "k10_data_commit": "602f0c0b6d5db741d20909082086982b3c812c07",
+   "k10_sha": "ea703f1ddd3a411430a981164a78a7dda64ec909"
+  },
+  "data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "evidence_js_sha256": "df736e986145da33dee60f692e020486720b72db5b6116af31640cc8693b11b9",
+  "records_in_slice": 16,
+  "attribution": [
+   {
+    "dataset": "OpenStreetMap",
+    "layer": "connectors",
+    "license": "ODbL-1.0"
+   },
+   {
+    "dataset": "Overture",
+    "layer": "places_social",
+    "license": "CDLA-Permissive-2.0"
+   },
+   {
+    "dataset": "meta",
+    "layer": "places_social",
+    "license": "CDLA-Permissive-2.0"
+   },
+   {
+    "dataset": "Foursquare",
+    "layer": "places_social",
+    "license": "Apache-2.0"
+   },
+   {
+    "dataset": "OpenStreetMap",
+    "layer": "segments",
+    "license": "ODbL-1.0"
+   },
+   {
+    "dataset": "TomTom",
+    "layer": "segments",
+    "license": "ODbL-1.0"
+   }
+  ]
+ },
+ "scenario": {
+  "schema_version": "city-plan-v2",
+  "city_id": "astana",
+  "source_snapshot": "sha256:3ee53ad375b2b4d21df5f81c6a20697cb03f702e560192f5f353a82b54e4b681",
+  "category": "outpatient_clinic",
+  "control_points": [
+   {
+    "id": "p1",
+    "lon": 71.421807,
+    "lat": 51.165189,
+    "weight": 1
+   },
+   {
+    "id": "p2",
+    "lon": 71.443565,
+    "lat": 51.165189,
+    "weight": 8
+   },
+   {
+    "id": "p3",
+    "lon": 71.421807,
+    "lat": 51.178844,
+    "weight": 5
+   },
+   {
+    "id": "p4",
+    "lon": 71.443565,
+    "lat": 51.178844,
+    "weight": 2
+   }
+  ],
+  "candidates": [
+   {
+    "id": "c1",
+    "lon": 71.424098,
+    "lat": 51.166626,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 500
+   },
+   {
+    "id": "c2",
+    "lon": 71.441274,
+    "lat": 51.166626,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 600
+   },
+   {
+    "id": "c3",
+    "lon": 71.424098,
+    "lat": 51.177407,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 700
+   },
+   {
+    "id": "c4",
+    "lon": 71.441274,
+    "lat": 51.177407,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 800
+   }
+  ],
+  "budget": 900,
+  "max_selected": 3,
+  "coverage_radius_m": 300,
+  "required_ids": [
+   "c1",
+   "c2"
+  ],
+  "excluded_ids": [],
+  "selected_ids": []
+ },
+ "plans": {
+  "manual": {
+   "selected_ids": [],
+   "rows": [
+    {
+     "id": "p1",
+     "weight": 1,
+     "before_mm": 332056,
+     "after_mm": 332056,
+     "delta_mm": 0,
+     "nearest_before": {
+      "kind": "source",
+      "id": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2"
+     },
+     "nearest_after": {
+      "kind": "source",
+      "id": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2"
+     }
+    },
+    {
+     "id": "p2",
+     "weight": 8,
+     "before_mm": 234895,
+     "after_mm": 234895,
+     "delta_mm": 0,
+     "nearest_before": {
+      "kind": "source",
+      "id": "3fba1026-8464-41ab-88f8-633e3df0de30"
+     },
+     "nearest_after": {
+      "kind": "source",
+      "id": "3fba1026-8464-41ab-88f8-633e3df0de30"
+     }
+    },
+    {
+     "id": "p3",
+     "weight": 5,
+     "before_mm": 200849,
+     "after_mm": 200849,
+     "delta_mm": 0,
+     "nearest_before": {
+      "kind": "source",
+      "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+     },
+     "nearest_after": {
+      "kind": "source",
+      "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+     }
+    },
+    {
+     "id": "p4",
+     "weight": 2,
+     "before_mm": 574329,
+     "after_mm": 574329,
+     "delta_mm": 0,
+     "nearest_before": {
+      "kind": "source",
+      "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+     },
+     "nearest_after": {
+      "kind": "source",
+      "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+     }
+    }
+   ],
+   "metrics": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 4364119,
+    "weighted_mean_mm": 272757.4375,
+    "max_mm": 574329,
+    "covered_weight": 13,
+    "coverage_fraction": 0.8125,
+    "cost": 0
+   },
+   "feasibility": {
+    "feasible": false,
+    "reasons": [
+     "не выбраны обязательные ['c1', 'c2']"
+    ]
+   }
+  },
+  "mean": null,
+  "minimax": null,
+  "coverage": null
+ },
+ "optimization": {
+  "status": "infeasible",
+  "budget": 900,
+  "metric_version": "haversine-mm-v1",
+  "evaluated": 16,
+  "feasible_count": 0,
+  "problem_digest": "sha256:4ffc727779e81f82771604b8a9fee41e998b7211eebf764e7c7b0c9d632e440c",
+  "search": "exhaustive",
+  "objectives": {
+   "mean": null,
+   "minimax": null,
+   "coverage": null
+  },
+  "pareto": [],
+  "infeasible_reasons": [
+   "стоимость обязательных 1100 > бюджета 900"
+  ]
+ },
+ "sensitivity": [
+  {
+   "budget": 0,
+   "status": "infeasible",
+   "objectives": {
+    "mean": null,
+    "minimax": null,
+    "coverage": null
+   },
+   "mean_metrics": null,
+   "infeasible_reasons": [
+    "стоимость обязательных 1100 > бюджета 0"
+   ]
+  },
+  {
+   "budget": 450,
+   "status": "infeasible",
+   "objectives": {
+    "mean": null,
+    "minimax": null,
+    "coverage": null
+   },
+   "mean_metrics": null,
+   "infeasible_reasons": [
+    "стоимость обязательных 1100 > бюджета 450"
+   ]
+  },
+  {
+   "budget": 900,
+   "status": "infeasible",
+   "objectives": {
+    "mean": null,
+    "minimax": null,
+    "coverage": null
+   },
+   "mean_metrics": null,
+   "infeasible_reasons": [
+    "стоимость обязательных 1100 > бюджета 900"
+   ]
+  }
+ ],
+ "source_records": [
+  {
+   "id": "3fba1026-8464-41ab-88f8-633e3df0de30",
+   "name": "Astana Clinic",
+   "category_overture": "diagnostics_imaging_or_lab_service",
+   "group": "outpatient_clinic",
+   "lon": 71.441358,
+   "lat": 51.166785,
+   "confidence": 0.83,
+   "overture_version": 11,
+   "sources": [
+    {
+     "dataset": "meta",
+     "license": "CDLA-Permissive-2.0",
+     "record_id": "104721805755565",
+     "update_time": "2026-09-14T00:00:00.000Z"
+    }
+   ],
+   "qa": {
+    "available": true,
+    "flags": []
+   },
+   "kind": "observed_secondary"
+  },
+  {
+   "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371",
+   "name": "Stomatologiya Kog'gan Dent",
+   "category_overture": "dental_clinic",
+   "group": "outpatient_clinic",
+   "lon": 71.422047,
+   "lat": 51.177044,
+   "confidence": 0.419,
+   "overture_version": 9,
+   "sources": [
+    {
+     "dataset": "meta",
+     "license": "CDLA-Permissive-2.0",
+     "record_id": "107986207224422",
+     "update_time": "2026-09-14T00:00:00.000Z"
+    }
+   ],
+   "qa": {
+    "available": true,
+    "flags": []
+   },
+   "kind": "observed_secondary"
+  },
+  {
+   "id": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2",
+   "name": "Akademiya Ortopedii",
+   "category_overture": "specialized_health_care",
+   "group": "outpatient_clinic",
+   "lon": 71.42513,
+   "lat": 51.16305,
+   "confidence": 0.283,
+   "overture_version": 3,
+   "sources": [
+    {
+     "dataset": "meta",
+     "license": "CDLA-Permissive-2.0",
+     "record_id": "504627759406073",
+     "update_time": "2026-09-14T00:00:00.000Z"
+    }
+   ],
+   "qa": {
+    "available": true,
+    "flags": []
+   },
+   "kind": "observed_secondary"
+  },
+  {
+   "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050",
+   "name": "Visa Dent",
+   "category_overture": "dental_clinic",
+   "group": "outpatient_clinic",
+   "lon": 71.435461,
+   "lat": 51.179776,
+   "confidence": 0.584,
+   "overture_version": 12,
+   "sources": [
+    {
+     "dataset": "meta",
+     "license": "CDLA-Permissive-2.0",
+     "record_id": "103873835494337",
+     "update_time": "2026-09-14T00:00:00.000Z"
+    }
+   ],
+   "qa": {
+    "available": true,
+    "flags": []
+   },
+   "kind": "observed_secondary"
+  }
+ ],
+ "classes": {
+  "user_input": [
+   "scenario.*"
+  ],
+  "observed_secondary": [
+   "source.release",
+   "source.bbox",
+   "source.places_file",
+   "source.attribution",
+   "source_records[*] (кроме qa)"
+  ],
+  "derived": [
+   "source.source_snapshot",
+   "*_digest",
+   "plans",
+   "optimization",
+   "sensitivity",
+   "source_records[*].qa"
+  ],
+  "config": [
+   "metric_version",
+   "formula",
+   "assumptions",
+   "limitations"
+  ]
+ },
+ "assumptions": [
+  "Стоимости кандидатов и бюджет — условные единицы, заданные пользователем (или явно synthetic demo). Это не тенге и не смета.",
+  "Вес контрольной точки — приоритет пользователя, не численность жителей.",
+  "coverage_radius_m — параметр анализа, не норматив пешей доступности.",
+  "Кандидаты — гипотетические места (kind=hypothetical). Исходные записи не удаляются и не изменяются."
+ ],
+ "limitations": [
+  "Расстояния по прямой (гаверсинус), не путь по улицам и не время в пути; население, мощность, трафик не учитываются.",
+  "База — записи Overture внутри сохранённого квадрата; ближайшая запись в срезе не обязательно ближайшее учреждение в городе.",
+  "Срез неполон, координаты могут быть ошибочны; QA-флаги — правила сборки, отсутствие флага не означает проверку.",
+  "Оптимум найден только среди введённых кандидатов и условий; это не лучший план города и не прогноз социальной пользы.",
+  "Если исходных записей нет, before=null: нулевое покрытие в этом наборе записей не доказывает отсутствие услуги в городе.",
+  "Отчёт — сценарный анализ, не решение акимата и не обоснование расходов."
+ ],
+ "status_note": "Гипотетический сценарный отчёт. Не решение акимата и не доказательство пользы строительства."
+}

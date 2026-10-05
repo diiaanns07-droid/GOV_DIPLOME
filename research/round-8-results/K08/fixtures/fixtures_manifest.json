@@ -1,0 +1,39 @@
+{
+ "fixtures_schema": "k08-r8-fixtures/v1",
+ "app_root_note": "реальные срезы data.js сборки; см. snapshot",
+ "synthetic": [
+  "control_points.weight",
+  "candidates.cost",
+  "candidates (места)",
+  "budget",
+  "max_selected",
+  "coverage_radius_m",
+  "required_ids/excluded_ids/selected_ids"
+ ],
+ "observed_secondary": [
+  "записи Overture в срезе (web/data.js)"
+ ],
+ "fixtures": [
+  {
+   "file": "shymkent_school_demo.json",
+   "city_id": "shymkent",
+   "category": "school",
+   "source_snapshot": "sha256:636dac5ea07462a0d10575c26a8037eedf67f75bc3d06edcd6b210755bd15018",
+   "kind": "synthetic demo inputs over real slice"
+  },
+  {
+   "file": "astana_clinic_demo.json",
+   "city_id": "astana",
+   "category": "outpatient_clinic",
+   "source_snapshot": "sha256:3ee53ad375b2b4d21df5f81c6a20697cb03f702e560192f5f353a82b54e4b681",
+   "kind": "synthetic demo inputs over real slice"
+  },
+  {
+   "file": "astana_clinic_infeasible.json",
+   "city_id": "astana",
+   "category": "outpatient_clinic",
+   "source_snapshot": "sha256:3ee53ad375b2b4d21df5f81c6a20697cb03f702e560192f5f353a82b54e4b681",
+   "kind": "synthetic demo inputs over real slice"
+  }
+ ]
+}
