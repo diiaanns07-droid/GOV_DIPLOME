@@ -264,7 +264,9 @@ def _mutate_s1(app):
         if x['properties']['osm_id'] in (3482819, 19733918):
             x['geometry'] = by_rel[x['properties']['osm_id']]
     f.write_text(json.dumps(g, ensure_ascii=False), encoding='utf-8')
-    return 'снимок OSM ← геометрия Алматы и Сарайшыка из Overture 2026-09-23.1 (реальные данные пакета; так будет, если слои синхронизируются)'
+    _sync_k03_manifest(app, {str(K03_ROOT_REL / 'data/astana_districts.geojson')})
+    return ('снимок OSM ← геометрия Алматы и Сарайшыка из Overture 2026-09-23.1 (реальные данные пакета; так будет, '
+            'если слои синхронизируются); source_manifest обновлён как при copy_inputs')
 
 
 def _mutate_s2(app):
@@ -289,10 +291,37 @@ def _mutate_s2(app):
     return f'синтетика: место {sary["id"][:8]}… (Сарыарка) перенесено к месту Байконура; K10-манифест и data.js обновлены, evidence.js не пересобран'
 
 
+def _sync_k03_manifest(app, rels):
+    """Как сделал бы tools/copy_inputs.py при новом входе K03: обновить sha256/bytes в source_manifest.json."""
+    mp = app / 'source_manifest.json'
+    m = json.loads(mp.read_text(encoding='utf-8'))
+    for f in m['files']:
+        if f['copied_to'] in rels:
+            b = (app / f['copied_to']).read_bytes()
+            f['sha256'], f['bytes'], f['sha'] = sha256_bytes(b), len(b), 'scenario-local-change'
+    mp.write_text(json.dumps(m, ensure_ascii=False, indent=1) + '\n', encoding='utf-8')
+
+
 def _mutate_s3(app, v2_patch):
-    subprocess.run(['git', 'apply', '--directory=inputs/k03_root', str(Path(v2_patch).resolve())],
-                   cwd=app, check=True, capture_output=True)
-    return 'к копии применён patch k03_assign_v2 (round-4 K03); evidence.js не пересобран'
+    bv = app / K03_REL / 'boundary_validator.py'
+    chk = subprocess.run(['git', 'apply', '--check', '--directory=inputs/k03_root', str(Path(v2_patch).resolve())],
+                         cwd=app, capture_output=True)
+    if chk.returncode == 0:
+        subprocess.run(['git', 'apply', '--directory=inputs/k03_root', str(Path(v2_patch).resolve())],
+                       cwd=app, check=True, capture_output=True)
+        desc = 'к копии применён patch k03_assign_v2 (round-4 K03)'
+    else:
+        bv.write_bytes(bv.read_bytes() + '\n# K03 r5 S3: изменение кода без изменения поведения\n'.encode('utf-8'))
+        desc = 'patch v2 уже применён/неприменим — в код K03 добавлена строка-комментарий (изменение кода без изменения поведения)'
+    _sync_k03_manifest(app, {str(K03_REL / 'boundary_validator.py')})
+    return desc + '; source_manifest обновлён как при copy_inputs; evidence.js не пересобран'
+
+
+def _code_rule(app):
+    code = ('import sys; sys.path.insert(0, sys.argv[1]); import boundary_validator as B; '
+            'print(B.assign(B.Layers(), 71.43, 51.128)["rule"])')
+    r = subprocess.run([sys.executable, '-c', code, str(app / K03_REL)], capture_output=True, text=True, timeout=300)
+    return r.stdout.strip() if r.returncode == 0 else None
 
 
 def c7_scenarios(app_root, v2_patch):
@@ -339,9 +368,11 @@ def c7_scenarios(app_root, v2_patch):
             if not detected:
                 outcome = 'XFAIL'
                 notes.append('устаревание evidence.js не обнаруживается до пересборки (нет привязки к версии, предложение P1)')
-            if sid.startswith('S3') and label is not None and rule_version(label) != 'v2':
+            code_rule = _code_rule(app) if sid.startswith('S3') else None
+            if sid.startswith('S3') and label is not None and label != code_rule:
                 outcome = 'XFAIL'
-                notes.append(f'после пересборки код ведёт себя как v2, но метка в evidence.js {label}: метка берётся из реестра, а не из кода (P1)')
+                notes.append(f'после пересборки assign() возвращает {code_rule}, а метка в evidence.js {label}: '
+                             'метка берётся из реестра, а не из кода (P1)')
             rec(f'C7-{sid}', outcome,
                 f'{desc}. До пересборки: тесты приложения — {tail or "?"}; binding — '
                 f'{"нет" if fp_detect is None else ("ловит" if fp_detect else "не ловит")}; check_evidence_fresh — '
@@ -351,6 +382,7 @@ def c7_scenarios(app_root, v2_patch):
                 app_tests=tail, app_tests_crashed=crashed, app_tests_failed=failed, binding_detects=fp_detect,
                 fresh_tool_detects=tool_detect, rebuild_returncode=p.returncode, rebuild_crashed=crash_build,
                 rebuild_stderr_tail=p.stderr[-300:], place_district_changed=changed, label_after_rebuild=label,
+                code_rule_after_rebuild=code_rule,
                 known_baseline_issues=notes)
         finally:
             shutil.rmtree(tmp, ignore_errors=True)

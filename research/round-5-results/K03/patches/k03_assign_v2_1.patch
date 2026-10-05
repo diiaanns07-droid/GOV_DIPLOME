@@ -1,0 +1,144 @@
+--- a/research/round-3-results/K03/boundary_validator.py
++++ b/research/round-3-results/K03/boundary_validator.py
+@@ -8,11 +8,11 @@
+   python3 research/round-3-results/K03/boundary_validator.py --point LON LAT
+       привязать одну точку, напечатать JSON, ничего не записывать.
+ 
+-Правило k03_assign_v1 возвращает один из статусов:
++Правило k03_assign_v2 возвращает один из статусов:
+   matched    — ровно один район, точка дальше TOL_M от любой его границы, слои не расходятся;
+   ambiguous  — общая граница / ближе TOL_M к границе / зона конфликта город–область /
+                разные ответы двух версий слоя (Астана);
+-  unmatched  — внутри полигона города, но ни в одном районе;
++  unmatched  — внутри полигона города, но ни в одном районе, дальше TOL_M от края города (v2);
+   outside    — вне известных полигонов обоих городов;
+   invalid    — координаты вне диапазона Казахстана или перепутаны lon/lat.
+ Произвольный район при конфликте не выбирается.
+@@ -98,7 +98,7 @@
+ 
+ 
+ def assign(L, lon, lat):
+-    res = dict(rule='k03_assign_v1', tol_m=TOL_M, point=[lon, lat])
++    res = dict(rule='k03_assign_v2', tol_m=TOL_M, point=[lon, lat])
+     if not (KZ_LON[0] <= lon <= KZ_LON[1] and KZ_LAT[0] <= lat <= KZ_LAT[1]):
+         swapped = KZ_LON[0] <= lat <= KZ_LON[1] and KZ_LAT[0] <= lon <= KZ_LAT[1]
+         return dict(res, status='invalid', reason='lon_lat_swapped' if swapped else 'outside_kazakhstan_range')
+@@ -110,10 +110,16 @@
+     if L.Pcity[city].boundary.distance(pp) <= TOL_M:
+         res['city_edge'] = True
+     for z, zg in L.Pzones.items():
++        if zg.is_empty:
++            continue  # v2.1 (D3): зона может исчезнуть в новой версии слоёв (например, AST-Z3 при их синхронизации)
+         if z.startswith('AST') and city == 'astana' and (zg.covers(pp) or zg.boundary.distance(pp) <= TOL_M):
+             meta = L.zones[z]
+             if meta['reason'] == 'version_disagreement' and not zg.covers(pp):
+                 continue  # близость к этой зоне проверяется ниже обычным допуском к границам
++            if meta['status'] == 'unmatched' and res.get('city_edge'):
++                # v2: у края города принадлежность городу не доказана (точка может лежать снаружи);
++                # исход тот же, что у любого другого участка края города
++                return dict(res, status='ambiguous', reason='city_edge', zone=z, district=None, candidates=[])
+             return dict(res, status=meta['status'], reason=meta['reason'], zone=z, district=None,
+                         candidates=meta['candidates'])
+     layers = {'astana': [('osm_snapshot', L.P['ast_prod']), ('overture', L.P['ast_ov'])],
+@@ -127,14 +133,16 @@
+     if len({tuple(v['covers']) for v in per.values()}) > 1:
+         return dict(res, status='ambiguous', reason='version_disagreement', district=None,
+                     candidates=sorted({u for v in per.values() for u in v['covers']}))
++    # v2: допуск к границе района — в любой версии слоя (полоса охватывает все известные версии границы)
++    near_all = sorted({u for v in per.values() for u, _ in v['within_tol']})
+     if not first['covers']:
+-        return dict(res, status='ambiguous' if first['within_tol'] else 'unmatched',
+-                    reason='near_district_boundary' if first['within_tol'] else 'inside_city_no_district',
+-                    district=None, candidates=[u for u, _ in first['within_tol']])
+-    if len(first['covers']) > 1 or first['within_tol'] or res.get('city_edge'):
++        return dict(res, status='ambiguous' if near_all else 'unmatched',
++                    reason='near_district_boundary' if near_all else 'inside_city_no_district',
++                    district=None, candidates=near_all)
++    if len(first['covers']) > 1 or near_all or res.get('city_edge'):
+         return dict(res, status='ambiguous',
+                     reason='boundary_tie' if len(first['covers']) > 1 else 'near_district_boundary',
+-                    district=None, candidates=sorted(set(first['covers']) | {u for u, _ in first['within_tol']}))
++                    district=None, candidates=sorted(set(first['covers']) | set(near_all)))
+     return dict(res, status='matched', reason='single_district_interior', district=first['covers'][0],
+                 candidates=first['covers'])
+ 
+@@ -147,12 +155,31 @@
+     cases += [
+         ('AST-A12 tri-point Almaty/Esil/Saraishyk', 71.447389, 51.1311552, 'ambiguous', None),
+         ('4-district vertex Baikonur/Esil/Nura/Saryarka', 71.428229, 51.1518972, 'ambiguous', None),
+-        ('Baikonur exclave ∩ Tselinograd (AST-A12-F012)', 71.66574, 51.33028, 'ambiguous', None),
+-        ('uncovered city area (K10 E01)', *L.zones['AST-Z2']['geom'].representative_point().coords[0], 'unmatched', None),
+-        ('Almaty/Saraishyk version-difference sliver', *L.zones['AST-Z3']['geom'].representative_point().coords[0], 'ambiguous', None),
++        # v2.1 (D3): случаи, зависящие от зон, — только если зона есть в текущих слоях
++        *([('Baikonur exclave ∩ Tselinograd (AST-A12-F012)', 71.66574, 51.33028, 'ambiguous', None)]
++          if not L.zones['AST-Z1']['geom'].is_empty else []),
++        *([('uncovered city area (K10 E01)', *L.zones['AST-Z2']['geom'].representative_point().coords[0], 'unmatched', None)]
++          if not L.zones['AST-Z2']['geom'].is_empty else []),
++        *([('Almaty/Saraishyk version-difference sliver', *L.zones['AST-Z3']['geom'].representative_point().coords[0], 'ambiguous', None)]
++          if not L.zones['AST-Z3']['geom'].is_empty else []),
+         ('outside both cities', 70.0, 45.0, 'outside', None),
+         ('swapped lon/lat', 51.1311552, 71.447389, 'invalid', None),
+     ]
++    if not L.Pzones['AST-Z2'].is_empty:  # v2.1 (D3): зоны может не быть в новой версии слоёв
++        # v2 регрессия: край города у AST-Z2, 0,5 м снаружи и внутри → ambiguous, а не unmatched
++        z2 = L.Pzones['AST-Z2']
++        ring = (z2.geoms[0] if hasattr(z2, 'geoms') else z2).exterior
++        s = ring.length / 3
++        mid, a_, b_ = ring.interpolate(s), ring.interpolate(s - 0.5), ring.interpolate(s + 0.5)
++        nx, ny = -(b_.y - a_.y), b_.x - a_.x
++        nn = (nx * nx + ny * ny) ** 0.5
++        nx, ny = nx / nn, ny / nn
++        if z2.contains(Point(mid.x + nx * 0.5, mid.y + ny * 0.5)):
++            nx, ny = -nx, -ny  # нормаль наружу
++        to_ll = Transformer.from_crs('EPSG:32642', 'EPSG:4326', always_xy=True).transform
++        for d, label in ((0.5, 'outside'), (-0.5, 'inside')):
++            lon_, lat_ = to_ll(mid.x + nx * d, mid.y + ny * d)
++            cases.append((f'AST-Z2 city edge, 0.5 m {label} (v2 regression)', lon_, lat_, 'ambiguous', None))
+     # Шымкент: общая вершина двух районов и точка в 5 м от неё внутри района
+     a, b = 'kz.shymkent.district.abay', 'kz.shymkent.district.al-farabi'
+     shared = L.shy[a].boundary.intersection(L.shy[b].boundary)
+@@ -252,7 +279,8 @@
+     zones = [dict(zone_id=z, city='kz.astana', type=v['reason'], assign_status=v['status'],
+                   area_km2=round(km2(v['geom']), 3) if v['reason'] != 'version_disagreement' else None,
+                   area_m2=round(km2(v['geom']) * 1e6, 2) if v['reason'] == 'version_disagreement' else None,
+-                  rep_point=[round(c, 6) for c in v['geom'].representative_point().coords[0]],
++                  rep_point=([round(c, 6) for c in v['geom'].representative_point().coords[0]]
++                             if not v['geom'].is_empty else None),
+                   geom_sha256=ghash(v['geom']), candidates=v['candidates'], kind='derived', legal_status='not_verified')
+              for z, v in L.zones.items()]
+     unresolved = [
+@@ -293,7 +321,7 @@
+              why='Сарайшыка нет в учебной модели'),
+         dict(id='L7', rule='Каждое наблюдение хранит layer_id, версию relation/выпуск и geom_sha256; при смене hash — новая версия, а не перезапись.',
+              why='одинаковый номер версии relation не гарантирует одинаковую геометрию (Алматы @46)'),
+-        dict(id='L8', rule='Точки привязывать правилом k03_assign_v1; ambiguous/unmatched не превращать в район и не отбрасывать молча — показывать отдельной строкой.',
++        dict(id='L8', rule='Точки привязывать правилом k03_assign_v2; ambiguous/unmatched не превращать в район и не отбрасывать молча — показывать отдельной строкой.',
+              why='конфликтные зоны AST-Z1…Z3 и общие границы'),
+         dict(id='L9', rule='Все юридические статусы not_verified, пока акты/КАТО не открыты. Недостающие официальные границы не рисуются.',
+              why='официальные источники заблокированы политикой сети'),
+@@ -327,13 +355,13 @@
+                  license='ODbL-1.0 (OSM via Overture)', units=4,
+                  has_city_outline=True)],
+         cities=cities, units=units, zones=zones, unresolved=unresolved, layer_selection_rules=rules,
+-        assignment_rule=dict(id='k03_assign_v1', tol_m=TOL_M, metric_crs='EPSG:32642',
++        assignment_rule=dict(id='k03_assign_v2', tol_m=TOL_M, metric_crs='EPSG:32642',
+                              order=['invalid: вне диапазона KZ или lon/lat перепутаны',
+                                     'outside: вне контуров обоих городов (с допуском tol_m)',
+-                                    'zone AST-Z1/Z2/Z3 → ambiguous/unmatched/ambiguous',
++                                    'zone AST-Z1/Z2/Z3 → ambiguous/unmatched/ambiguous; v2: AST-Z2 ближе tol_m к краю города → ambiguous (city_edge)',
+                                     'Астана: разные ответы снимка OSM и Overture → ambiguous (version_disagreement)',
+                                     'нет района: ближе tol_m к границе → ambiguous, иначе unmatched',
+-                                    '≥2 района или ближе tol_m к границе или край города → ambiguous',
++                                    '≥2 района или ближе tol_m к границе (v2: в любой версии слоя) или край города → ambiguous',
+                                     'иначе matched'],
+                              tol_note='tol_m=1 м > 0,44 м наибольшего измеренного расхождения версий; это параметр исследования, не норматив'),
+         selftest=dict(passed=tests_ok, cases=len(tests), failed=[t['case'] for t in tests if not t['passed']]))
+@@ -349,7 +377,7 @@
+         print(json.dumps(assign(L, *a.point), ensure_ascii=False, indent=1))
+         return 0
+     ok, tests = selftest(L)
+-    (HERE / 'validator_selftest.json').write_text(json.dumps(dict(rule='k03_assign_v1', passed=ok, cases=tests),
++    (HERE / 'validator_selftest.json').write_text(json.dumps(dict(rule='k03_assign_v2', passed=ok, cases=tests),
+                                                              ensure_ascii=False, indent=1) + '\n', encoding='utf-8')
+     reg = build_registry(L, ok, tests)
+     (HERE / 'boundary_registry.json').write_text(json.dumps(reg, ensure_ascii=False, indent=1) + '\n', encoding='utf-8')

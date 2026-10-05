@@ -217,7 +217,7 @@
   {
    "check": "C7-S1-layer-sync-real",
    "outcome": "XFAIL",
-   "summary": "снимок OSM ← геометрия Алматы и Сарайшыка из Overture 2026-09-23.1 (реальные данные пакета; так будет, если слои синхронизируются). До пересборки: тесты приложения — FAILED (errors=2); binding — нет; check_evidence_fresh — нет. Пересборка: код 1, исключение. K03 assign() падает с исключением (дефект D3: пустая зона неоднозначности) — пересборка невозможна; устаревание evidence.js не обнаруживается до пересборки (нет привязки к версии, предложение P1)",
+   "summary": "снимок OSM ← геометрия Алматы и Сарайшыка из Overture 2026-09-23.1 (реальные данные пакета; так будет, если слои синхронизируются); source_manifest обновлён как при copy_inputs. До пересборки: тесты приложения — FAILED (errors=2); binding — нет; check_evidence_fresh — нет. Пересборка: код 1, исключение. K03 assign() падает с исключением (дефект D3: пустая зона неоднозначности) — пересборка невозможна; устаревание evidence.js не обнаруживается до пересборки (нет привязки к версии, предложение P1)",
    "details": {
     "app_tests": "FAILED (errors=2)",
     "app_tests_crashed": true,
@@ -229,6 +229,7 @@
     "rebuild_stderr_tail": "ndary_validator.py\", line 113, in assign\n    if z.startswith('AST') and city == 'astana' and (zg.covers(pp) or zg.boundary.distance(pp) <= TOL_M):\n                                                                      ^^^^^^^^^^^^^^^^^^^^\nAttributeError: 'NoneType' object has no attribute 'distance'\n",
     "place_district_changed": null,
     "label_after_rebuild": null,
+    "code_rule_after_rebuild": null,
     "known_baseline_issues": [
      "K03 assign() падает с исключением (дефект D3: пустая зона неоднозначности) — пересборка невозможна",
      "устаревание evidence.js не обнаруживается до пересборки (нет привязки к версии, предложение P1)"
@@ -250,6 +251,7 @@
     "rebuild_stderr_tail": "",
     "place_district_changed": 1,
     "label_after_rebuild": "k03_assign_v1",
+    "code_rule_after_rebuild": null,
     "known_baseline_issues": [
      "устаревание evidence.js не обнаруживается до пересборки (нет привязки к версии, предложение P1)"
     ]
@@ -258,7 +260,7 @@
   {
    "check": "C7-S3-rule-update-v2",
    "outcome": "XFAIL",
-   "summary": "к копии применён patch k03_assign_v2 (round-4 K03); evidence.js не пересобран. До пересборки: тесты приложения — OK; binding — нет; check_evidence_fresh — нет. Пересборка: ok, place_district изменился у 0 мест, метка k03_assign_v1. устаревание evidence.js не обнаруживается до пересборки (нет привязки к версии, предложение P1); после пересборки код ведёт себя как v2, но метка в evidence.js k03_assign_v1: метка берётся из реестра, а не из кода (P1)",
+   "summary": "к копии применён patch k03_assign_v2 (round-4 K03); source_manifest обновлён как при copy_inputs; evidence.js не пересобран. До пересборки: тесты приложения — OK; binding — нет; check_evidence_fresh — нет. Пересборка: ok, place_district изменился у 0 мест, метка k03_assign_v1. устаревание evidence.js не обнаруживается до пересборки (нет привязки к версии, предложение P1); после пересборки assign() возвращает k03_assign_v2, а метка в evidence.js k03_assign_v1: метка берётся из реестра, а не из кода (P1)",
    "details": {
     "app_tests": "OK",
     "app_tests_crashed": false,
@@ -270,9 +272,10 @@
     "rebuild_stderr_tail": "",
     "place_district_changed": 0,
     "label_after_rebuild": "k03_assign_v1",
+    "code_rule_after_rebuild": "k03_assign_v2",
     "known_baseline_issues": [
      "устаревание evidence.js не обнаруживается до пересборки (нет привязки к версии, предложение P1)",
-     "после пересборки код ведёт себя как v2, но метка в evidence.js k03_assign_v1: метка берётся из реестра, а не из кода (P1)"
+     "после пересборки assign() возвращает k03_assign_v2, а метка в evidence.js k03_assign_v1: метка берётся из реестра, а не из кода (P1)"
     ]
    }
   }

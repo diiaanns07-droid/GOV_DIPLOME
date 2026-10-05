@@ -8,6 +8,14 @@
    "source_path": "research/round-4-results/K03/patches/k03_assign_v2.patch",
    "git_blob": "3d71d9343922e6e6ff8f08572755fd1d72acb0d6",
    "sha256": "caa62f7530ff3db80428b850a3af07a58c25c95f66cd873fb8baa85dcba388f5"
+  },
+  {
+   "local_path": "research/round-5-results/K03/inputs/fix_spec_v2.json",
+   "source_branch": "claude/epic-curie-iitc43",
+   "source_commit": "3660527f2784445f9fc8b51d68124c0b0d73a5dd",
+   "source_path": "research/round-4-results/K03/fix_spec.json",
+   "git_blob": "696d978e3895539a6ae56637b1276b17881234ed",
+   "sha256": "cf9db620cf9254af016ff99d2efdf7da0f9cc37a5a46df1b8e38928081b934d0"
   }
  ],
  "build_under_test": {
