@@ -1,0 +1,46 @@
+astana-school-invalid-inputs: 45 случаев неверного ввода
+  duplicate_key                отказ: duplicate_key  
+  nan                          отказ: non_finite  
+  infinity                     отказ: non_finite  
+  float_overflow_1e999         отказ: non_finite  
+  integer_overflow             отказ: non_finite  
+  trailing_garbage             отказ: bad_json  
+  too_large                    отказ: too_large  padded with spaces after the object to 262145 bytes
+  schema_v1                    отказ: bad_schema_version  v1 file into the v2 importer is refused, v1 keeps its own path
+  missing_budget               отказ: missing_field  
+  unexpected_top_field         отказ: unexpected_field  population is not part of the contract and must not be invented
+  url_field                    отказ: unexpected_field  no URL loading from a scenario
+  other_city                   отказ: bad_city  
+  foreign_snapshot             отказ: foreign_snapshot  
+  bad_category                 отказ: bad_category  
+  point_out_of_bbox            отказ: out_of_bbox  
+  candidate_out_of_bbox        отказ: out_of_bbox  
+  lat_as_string                отказ: bad_coordinate  
+  point_extra_field            отказ: bad_shape  
+  zero_points                  отказ: bad_point_count  
+  26_points                    отказ: bad_point_count  
+  17_candidates                отказ: bad_candidate_count  
+  duplicate_point_id           отказ: duplicate_id  
+  duplicate_candidate_id       отказ: duplicate_id  
+  id_65_chars                  отказ: bad_id  
+  id_empty                     отказ: bad_id  
+  id_number                    отказ: bad_id  
+  weight_0                     отказ: bad_value  
+  weight_101                   отказ: bad_value  
+  weight_fraction              отказ: bad_value  
+  weight_bool                  отказ: bad_value  
+  cost_0                       отказ: bad_value  
+  cost_over_max                отказ: bad_value  
+  budget_negative              отказ: bad_value  
+  budget_over_max              отказ: bad_value  
+  max_selected_6               отказ: bad_value  
+  radius_99                    отказ: bad_value  
+  radius_5001                  отказ: bad_value  
+  candidate_wrong_category     отказ: candidate_category_mismatch  
+  candidate_kind_source        отказ: candidate_not_hypothetical  
+  required_excluded_overlap    отказ: required_excluded_overlap  conflicting conditions in the input itself: refuse, do not drop either list silently
+  required_unknown             отказ: unknown_candidate  
+  selected_source_record_id    отказ: unknown_candidate  a source record id is not a candidate id; source and hypothetical ids are separate namespaces
+  selected_duplicate           отказ: duplicate_id  
+  derived_results_forged       принять  accepted: derived_results is the one allowed extra field; results are recomputed, the forged values are ignored
+  html_in_ids                  принять  accepted: ids are plain text; the UI must render them as text, never as HTML

@@ -8,7 +8,8 @@
 | 1. Базовые пакеты v2 (Шымкент/Астана × школа/поликлиника) | готово | `tests/check_packs.py` на a5b5e2d: SOURCE/VALID/RECOMPUTE/INDEX/JS = PASS ×4, IMMUTABLE = PASS |
 | 2. Сложные задачи (бюджет, required/excluded, конфликты, QA, seed, неверный ввод, синтетика) | готово | `check_packs.py`: 37 пакетов, все проверки PASS на a5b5e2d и 60f44d9, IMMUTABLE PASS; `test_oracle.py` 23 OK; мутанты оракула 13/13 убиты |
 | 3а. Прогон пакетов через `web/plan.js` сборки BUILD `60f44d9` | готово | `run_build_v2.cjs`: 37/37 пакетов без FAIL; мутанты plan.js 15/15 обнаружены |
-| 3б. CLI-предпросмотр, итоговый пакет | в работе | — |
+| 3б. CLI-предпросмотр (`k10plan/cli.py`: preview/run/export-case/verify-inputs), проверка неизменности исходников | готово | `test_cli.py` + `test_oracle.py`: 33 OK на a5b5e2d и 60f44d9; `verify-inputs`: данные = git-блобы сборки = пакет K10 |
+| 3в. Прогон на новой сборке BUILD `d865dd4`, итоговый HANDOFF | в работе | — |
 
 В a5b5e2d реализации `city-plan-v2` нет. Она появилась в BUILD `claude/beautiful-clarke-sbzomj` @ `60f44d9` (`web/plan.js`). Проверены только функции модуля без DOM. Импорт файла и интерфейс не проверялись.
 С этого шага `source_snapshot` в пакетах имеет формат `plan.js` (`city-plan-v2`/`haversine-mm-v1`). Прежний формат v1 сохранён в `provenance.whatif_v1_snapshot_same_slice`. Расстояния не изменились.

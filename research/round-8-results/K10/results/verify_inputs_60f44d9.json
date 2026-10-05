@@ -1,0 +1,53 @@
+{
+ "app_root": "<scratchpad>/build_60f44d9/prototypes/city-evidence",
+ "data_files": {
+  "web/data.js": {
+   "sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+   "matches_index": true,
+   "matches_git": true
+  },
+  "web/evidence.js": {
+   "sha256": "df736e986145da33dee60f692e020486720b72db5b6116af31640cc8693b11b9",
+   "matches_index": true,
+   "matches_git": true
+  },
+  "inputs/k10/data/shymkent/places_social.geojson": {
+   "sha256": "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7",
+   "matches_index": true,
+   "matches_git": true,
+   "matches_k10_package": true
+  },
+  "inputs/k10/data/astana/places_social.geojson": {
+   "sha256": "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343",
+   "matches_index": true,
+   "matches_git": true,
+   "matches_k10_package": true
+  },
+  "inputs/k10/package_manifest.json": {
+   "sha256": "0616c08b65285ed4a5324c9e0238a31bec004857705cdb22c6b26e032fa4551d",
+   "matches_index": true,
+   "matches_git": true
+  }
+ },
+ "code_files": {
+  "web/whatif.js": {
+   "sha256": "944adfa63500d9bc13b3da859cf4a56a3d3e3f92fa0f565ed655bedfb81d8f2f",
+   "same_as_index": true,
+   "note": "code may differ between builds; informational"
+  },
+  "web/facts.js": {
+   "sha256": "3994a275ddb8c0cb857478365d94810a945752a96fff10d53d37bc8dc9808c64",
+   "same_as_index": true,
+   "note": "code may differ between builds; informational"
+  },
+  "web/plan.js": {
+   "sha256": "d3d09243bc1a48dda88f9ec09743df72c0d510551ab4ee1d5087315efa58bb33",
+   "same_as_index": false,
+   "note": "code may differ between builds; informational"
+  }
+ },
+ "ok": true,
+ "git_sha": "60f44d9",
+ "k10_package": "../../round-3-results/K10",
+ "unchanged_while_checking": true
+}

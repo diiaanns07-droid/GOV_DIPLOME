@@ -1,6 +1,6 @@
 {
  "build": {
-  "app_root": "/tmp/claude-0/-home-user-GOV-DIPLOME/e15cd393-c9d0-5e6f-ba76-0281490195c8/scratchpad/build_60f44d9/prototypes/city-evidence",
+  "app_root": "<scratchpad>/build_60f44d9/prototypes/city-evidence",
   "plan_js_sha256": "d3d09243bc1a48dda88f9ec09743df72c0d510551ab4ee1d5087315efa58bb33",
   "whatif_js_sha256": "944adfa63500d9bc13b3da859cf4a56a3d3e3f92fa0f565ed655bedfb81d8f2f",
   "data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72"

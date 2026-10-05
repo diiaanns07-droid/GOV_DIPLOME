@@ -526,7 +526,7 @@
  ],
  "stale": [],
  "target": {
-  "app_root": "/tmp/claude-0/-home-user-GOV-DIPLOME/e15cd393-c9d0-5e6f-ba76-0281490195c8/scratchpad/build_60f44d9/prototypes/city-evidence",
+  "app_root": "<scratchpad>/build_60f44d9/prototypes/city-evidence",
   "data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72"
  }
 }

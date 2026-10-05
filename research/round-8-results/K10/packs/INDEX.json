@@ -501,11 +501,11 @@
  "input_manifest": {
   "web/data.js": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
   "web/evidence.js": "df736e986145da33dee60f692e020486720b72db5b6116af31640cc8693b11b9",
-  "web/whatif.js": "944adfa63500d9bc13b3da859cf4a56a3d3e3f92fa0f565ed655bedfb81d8f2f",
-  "web/facts.js": "3994a275ddb8c0cb857478365d94810a945752a96fff10d53d37bc8dc9808c64",
-  "web/plan.js": null,
   "inputs/k10/data/shymkent/places_social.geojson": "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7",
   "inputs/k10/data/astana/places_social.geojson": "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343",
-  "inputs/k10/package_manifest.json": "0616c08b65285ed4a5324c9e0238a31bec004857705cdb22c6b26e032fa4551d"
+  "inputs/k10/package_manifest.json": "0616c08b65285ed4a5324c9e0238a31bec004857705cdb22c6b26e032fa4551d",
+  "web/whatif.js": "944adfa63500d9bc13b3da859cf4a56a3d3e3f92fa0f565ed655bedfb81d8f2f",
+  "web/facts.js": "3994a275ddb8c0cb857478365d94810a945752a96fff10d53d37bc8dc9808c64",
+  "web/plan.js": null
  }
 }

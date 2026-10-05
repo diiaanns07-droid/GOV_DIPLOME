@@ -19,9 +19,10 @@ from pathlib import Path
 
 SNAPSHOT_FORMATS = {"plan-v2": ("city-plan-v2", "haversine-mm-v1"), "whatif-v1": ("city-whatif-v1", "haversine:R=6371008.8")}
 DEFAULT_SNAPSHOT = "plan-v2"
-INPUT_FILES = ("web/data.js", "web/evidence.js", "web/whatif.js", "web/facts.js", "web/plan.js",
-               "inputs/k10/data/shymkent/places_social.geojson", "inputs/k10/data/astana/places_social.geojson",
-               "inputs/k10/package_manifest.json")
+DATA_FILES = ("web/data.js", "web/evidence.js", "inputs/k10/data/shymkent/places_social.geojson",
+              "inputs/k10/data/astana/places_social.geojson", "inputs/k10/package_manifest.json")
+CODE_FILES = ("web/whatif.js", "web/facts.js", "web/plan.js")  # informational: code may change between builds
+INPUT_FILES = DATA_FILES + CODE_FILES
 
 
 def parse_js(raw):
