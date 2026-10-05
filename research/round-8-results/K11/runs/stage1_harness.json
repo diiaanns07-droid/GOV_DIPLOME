@@ -1,0 +1,298 @@
+{
+ "tool": "tests/harness.cjs",
+ "node": "v22.22.0",
+ "summary": {
+  "pass": 20,
+  "fail": 0
+ },
+ "results": [
+  {
+   "name": "core = Python oracle on all fixtures (main + sensitivity budgets)",
+   "ok": true,
+   "detail": []
+  },
+  {
+   "name": "runner mode=chunks: result identical to synchronous search on 11 fixtures (with sensitivity)",
+   "ok": true,
+   "detail": []
+  },
+  {
+   "name": "runner mode=chunks: dispose releases worker and timers",
+   "ok": true,
+   "detail": {
+    "active": null,
+    "worker_alive": false,
+    "pending_timers": 0,
+    "pending_cancels": 0,
+    "worker_broken": null,
+    "disposed": true,
+    "stats": {
+     "workers_created": 0,
+     "workers_terminated": 0,
+     "hard_terminations": 0,
+     "stale_messages_ignored": 0,
+     "cancel_acks": 0,
+     "redispatched": 0
+    }
+   }
+  },
+  {
+   "name": "runner mode=worker: result identical to synchronous search on 11 fixtures (with sensitivity)",
+   "ok": true,
+   "detail": []
+  },
+  {
+   "name": "runner mode=worker: dispose releases worker and timers",
+   "ok": true,
+   "detail": {
+    "active": null,
+    "worker_alive": false,
+    "pending_timers": 0,
+    "pending_cancels": 0,
+    "worker_broken": null,
+    "disposed": true,
+    "stats": {
+     "workers_created": 1,
+     "workers_terminated": 1,
+     "hard_terminations": 0,
+     "stale_messages_ignored": 0,
+     "cancel_acks": 0,
+     "redispatched": 0
+    }
+   }
+  },
+  {
+   "name": "progress mode=chunks: 9 events, monotone, tagged with request_id/problem_digest, reaches 1",
+   "ok": true,
+   "detail": {
+    "n": 9,
+    "last": {
+     "request_id": "req-1",
+     "problem_digest": "sha256:ef8de21c74c60c2e599bab2e88f71119caddd7b9d5fdc2c7168f79b015765cb0",
+     "phase": "budget:1000000",
+     "fraction": 1,
+     "done_masks": 262144,
+     "all_masks": 262144
+    }
+   }
+  },
+  {
+   "name": "progress mode=worker: 64 events, monotone, tagged with request_id/problem_digest, reaches 1",
+   "ok": true,
+   "detail": {
+    "n": 64,
+    "last": {
+     "request_id": "req-1",
+     "problem_digest": "sha256:ef8de21c74c60c2e599bab2e88f71119caddd7b9d5fdc2c7168f79b015765cb0",
+     "phase": "budget:1000000",
+     "fraction": 1,
+     "done_masks": 262144,
+     "all_masks": 262144
+    }
+   }
+  },
+  {
+   "name": "cancel mode=chunks: status cancelled without result, no pending cancel/timers, next run correct",
+   "ok": true,
+   "detail": {
+    "env": "cancelled",
+    "state": {
+     "active": null,
+     "worker_alive": false,
+     "pending_timers": 0,
+     "pending_cancels": 0,
+     "worker_broken": null,
+     "disposed": false,
+     "stats": {
+      "workers_created": 0,
+      "workers_terminated": 0,
+      "hard_terminations": 0,
+      "stale_messages_ignored": 0,
+      "cancel_acks": 0,
+      "redispatched": 0
+     }
+    }
+   }
+  },
+  {
+   "name": "cancel mode=worker: status cancelled without result, no pending cancel/timers, next run correct",
+   "ok": true,
+   "detail": {
+    "env": "cancelled",
+    "state": {
+     "active": null,
+     "worker_alive": true,
+     "pending_timers": 0,
+     "pending_cancels": 0,
+     "worker_broken": null,
+     "disposed": false,
+     "stats": {
+      "workers_created": 1,
+      "workers_terminated": 0,
+      "hard_terminations": 0,
+      "stale_messages_ignored": 0,
+      "cancel_acks": 1,
+      "redispatched": 0
+     }
+    }
+   }
+  },
+  {
+   "name": "cancel mode=worker: worker acknowledged within the grace period (no hard kill needed)",
+   "ok": true,
+   "detail": {
+    "workers_created": 1,
+    "workers_terminated": 0,
+    "hard_terminations": 0,
+    "stale_messages_ignored": 0,
+    "cancel_acks": 1,
+    "redispatched": 0
+   }
+  },
+  {
+   "name": "supersede mode=chunks: old run 'superseded', new run optimal and equal to sync, isCurrent only for the new one",
+   "ok": true,
+   "detail": {
+    "ea": "superseded",
+    "eb": "optimal",
+    "stats": {
+     "workers_created": 0,
+     "workers_terminated": 0,
+     "hard_terminations": 0,
+     "stale_messages_ignored": 0,
+     "cancel_acks": 0,
+     "redispatched": 0
+    }
+   }
+  },
+  {
+   "name": "supersede mode=worker: old run 'superseded', new run optimal and equal to sync, isCurrent only for the new one",
+   "ok": true,
+   "detail": {
+    "ea": "superseded",
+    "eb": "optimal",
+    "stats": {
+     "workers_created": 1,
+     "workers_terminated": 0,
+     "hard_terminations": 0,
+     "stale_messages_ignored": 2,
+     "cancel_acks": 1,
+     "redispatched": 0
+    }
+   }
+  },
+  {
+   "name": "stuck worker: cancel resolves at once, worker hard-terminated after grace, timers cleared",
+   "ok": true,
+   "detail": {
+    "active": null,
+    "worker_alive": false,
+    "pending_timers": 0,
+    "pending_cancels": 0,
+    "worker_broken": null,
+    "disposed": false,
+    "stats": {
+     "workers_created": 1,
+     "workers_terminated": 1,
+     "hard_terminations": 1,
+     "stale_messages_ignored": 0,
+     "cancel_acks": 0,
+     "redispatched": 0
+    }
+   }
+  },
+  {
+   "name": "stuck worker + newer job: newer job re-dispatched to a fresh worker after hard kill",
+   "ok": true,
+   "detail": {
+    "active": "req-2",
+    "worker_alive": true,
+    "pending_timers": 0,
+    "pending_cancels": 0,
+    "worker_broken": null,
+    "disposed": false,
+    "stats": {
+     "workers_created": 2,
+     "workers_terminated": 1,
+     "hard_terminations": 1,
+     "stale_messages_ignored": 0,
+     "cancel_acks": 0,
+     "redispatched": 1
+    }
+   }
+  },
+  {
+   "name": "stale messages (old request_id, or right request_id with foreign digest) are ignored; only the matching result settles",
+   "ok": true,
+   "detail": {
+    "stillActive": true,
+    "progress_seen": 0,
+    "stats": {
+     "workers_created": 1,
+     "workers_terminated": 0,
+     "hard_terminations": 0,
+     "stale_messages_ignored": 3,
+     "cancel_acks": 0,
+     "redispatched": 0
+    }
+   }
+  },
+  {
+   "name": "chunks cancel: no further slices/progress for the cancelled request",
+   "ok": true,
+   "detail": {
+    "after": 0
+   }
+  },
+  {
+   "name": "invalid scenario: typed errors (bad_budget, bad_snapshot, unknown_field); previous result object untouched",
+   "ok": true,
+   "detail": [
+    "bad_budget",
+    "bad_snapshot",
+    "unknown_field"
+   ]
+  },
+  {
+   "name": "problem_digest independent of array order; selected_ids only in scenario_digest; budget/weight change digest; shuffled input -> same plan",
+   "ok": true,
+   "detail": null
+  },
+  {
+   "name": "auto mode: worker creation failure -> chunks, fallback reason reported, result optimal",
+   "ok": true,
+   "detail": {
+    "mode": "chunks",
+    "fallback": "SecurityError: Worker from file:// denied (simulated)"
+   }
+  },
+  {
+   "name": "evaluatePlan: empty set -> after null (not 0), delta null; infeasible reasons; hypothetical vs source namespace",
+   "ok": true,
+   "detail": {
+    "ev2": [
+     "missing_required",
+     "contains_excluded"
+    ],
+    "ev3": [
+     {
+      "kind": "hypothetical",
+      "id": "b"
+     },
+     {
+      "kind": "source",
+      "id": "src-центр"
+     },
+     {
+      "kind": "source",
+      "id": "src-центр"
+     },
+     {
+      "kind": "hypothetical",
+      "id": "d"
+     }
+    ]
+   }
+  }
+ ]
+}

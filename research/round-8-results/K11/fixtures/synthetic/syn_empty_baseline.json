@@ -1,0 +1,97 @@
+{
+ "provenance": {
+  "kind": "synthetic",
+  "generator": "fixtures/make_fixtures.py",
+  "note": "explicit synthetic geometry; not city statistics"
+ },
+ "context": {
+  "city_id": "synthetic",
+  "bbox": [
+   0.0,
+   0.0,
+   0.02,
+   0.02
+  ],
+  "source_snapshot": "synthetic:k11-r8",
+  "records": [],
+  "kind": "SYNTHETIC — not a city"
+ },
+ "scenario": {
+  "schema_version": "city-plan-v2",
+  "city_id": "synthetic",
+  "source_snapshot": "synthetic:k11-r8",
+  "category": "school",
+  "control_points": [
+   {
+    "id": "q0",
+    "lon": 0.002,
+    "lat": 0.01,
+    "weight": 1
+   },
+   {
+    "id": "q1",
+    "lon": 0.006,
+    "lat": 0.01,
+    "weight": 2
+   },
+   {
+    "id": "q2",
+    "lon": 0.01,
+    "lat": 0.01,
+    "weight": 3
+   },
+   {
+    "id": "q3",
+    "lon": 0.014,
+    "lat": 0.01,
+    "weight": 4
+   },
+   {
+    "id": "q4",
+    "lon": 0.018,
+    "lat": 0.01,
+    "weight": 5
+   }
+  ],
+  "candidates": [
+   {
+    "id": "c0",
+    "lon": 0.003,
+    "lat": 0.012,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 10
+   },
+   {
+    "id": "c1",
+    "lon": 0.008,
+    "lat": 0.012,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 20
+   },
+   {
+    "id": "c2",
+    "lon": 0.013,
+    "lat": 0.012,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 30
+   },
+   {
+    "id": "c3",
+    "lon": 0.018,
+    "lat": 0.012,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 40
+   }
+  ],
+  "budget": 60,
+  "max_selected": 2,
+  "coverage_radius_m": 400,
+  "required_ids": [],
+  "excluded_ids": [],
+  "selected_ids": []
+ }
+}

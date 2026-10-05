@@ -1,0 +1,193 @@
+{
+ "tool": "tests/browser_example.cjs",
+ "node": "v22.22.0",
+ "summary": {
+  "pass": 7,
+  "fail": 0
+ },
+ "results": [
+  {
+   "name": "http mode=worker: optimal, ran as worker, objectives = Python oracle",
+   "ok": true,
+   "detail": {
+    "status": "optimal",
+    "mode": "worker",
+    "fallback": null,
+    "ids": {
+     "mean": [
+      "C01",
+      "C04",
+      "C05",
+      "C11",
+      "C12"
+     ],
+     "minimax": [
+      "C04",
+      "C05",
+      "C07",
+      "C11",
+      "C12"
+     ],
+     "coverage": [
+      "C01",
+      "C04",
+      "C05",
+      "C11",
+      "C12"
+     ]
+    }
+   },
+   "measure": {
+    "elapsed_ms": 239,
+    "frames": 15,
+    "max_frame_gap_ms": 17
+   }
+  },
+  {
+   "name": "http mode=chunks: optimal, ran as chunks, objectives = Python oracle",
+   "ok": true,
+   "detail": {
+    "status": "optimal",
+    "mode": "chunks",
+    "fallback": null,
+    "ids": {
+     "mean": [
+      "C01",
+      "C04",
+      "C05",
+      "C11",
+      "C12"
+     ],
+     "minimax": [
+      "C04",
+      "C05",
+      "C07",
+      "C11",
+      "C12"
+     ],
+     "coverage": [
+      "C01",
+      "C04",
+      "C05",
+      "C11",
+      "C12"
+     ]
+    }
+   },
+   "measure": {
+    "elapsed_ms": 62.6,
+    "frames": 4,
+    "max_frame_gap_ms": 17
+   }
+  },
+  {
+   "name": "http mode=auto: optimal, ran as worker, objectives = Python oracle",
+   "ok": true,
+   "detail": {
+    "status": "optimal",
+    "mode": "worker",
+    "fallback": null,
+    "ids": {
+     "mean": [
+      "C01",
+      "C04",
+      "C05",
+      "C11",
+      "C12"
+     ],
+     "minimax": [
+      "C04",
+      "C05",
+      "C07",
+      "C11",
+      "C12"
+     ],
+     "coverage": [
+      "C01",
+      "C04",
+      "C05",
+      "C11",
+      "C12"
+     ]
+    }
+   },
+   "measure": {
+    "elapsed_ms": 184.2,
+    "frames": 11,
+    "max_frame_gap_ms": 17
+   }
+  },
+  {
+   "name": "http real Shymkent slice + sensitivity in worker: mean plan = oracle, 3 budgets",
+   "ok": true,
+   "detail": {
+    "status": "optimal",
+    "ids": [
+     "жоба-01",
+     "жоба-03",
+     "жоба-08",
+     "жоба-11",
+     "жоба-13"
+    ],
+    "sens": [
+     [
+      0,
+      "optimal"
+     ],
+     [
+      450000,
+      "optimal"
+     ],
+     [
+      900000,
+      "optimal"
+     ]
+    ]
+   }
+  },
+  {
+   "name": "http cancel in browser: cancelled, no result, Apply disabled, no pending cancel",
+   "ok": true,
+   "detail": {
+    "status": "cancelled",
+    "hasResult": false,
+    "state": {
+     "active": null,
+     "worker_alive": true,
+     "pending_timers": 0,
+     "pending_cancels": 0,
+     "worker_broken": null,
+     "disposed": false,
+     "stats": {
+      "workers_created": 1,
+      "workers_terminated": 0,
+      "hard_terminations": 0,
+      "stale_messages_ignored": 0,
+      "cancel_acks": 1,
+      "redispatched": 0
+     }
+    },
+    "applyDisabled": true
+   }
+  },
+  {
+   "name": "http infeasible shown with reason, not as optimal",
+   "ok": true,
+   "detail": {
+    "status": "infeasible",
+    "reasons": [
+     "required_exceeds_budget"
+    ],
+    "text": "Статус: infeasible — required_exceeds_budget"
+   }
+  },
+  {
+   "name": "http no page errors, no external requests",
+   "ok": true,
+   "detail": {
+    "errors": [],
+    "external": []
+   }
+  }
+ ]
+}

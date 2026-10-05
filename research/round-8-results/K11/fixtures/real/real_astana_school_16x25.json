@@ -1,0 +1,365 @@
+{
+ "provenance": {
+  "kind": "real_slice_with_synthetic_inputs",
+  "app_branch": "claude/beautiful-clarke-sbzomj",
+  "app_sha": "a5b5e2ddbe087c4eab8e947748cdf69dbae84a0d",
+  "data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "records": "web/data.js cities.astana.places with group=school (8 records; id, lon, lat, group)",
+  "release": "2026-09-23.1",
+  "synthetic": "control points, candidates, weights, costs (conditional units) and budget"
+ },
+ "context": {
+  "city_id": "astana",
+  "bbox": [
+   71.418372,
+   51.163033,
+   71.447,
+   51.181
+  ],
+  "source_snapshot": "k11-r8:astana:school:data.js-sha256:bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "records": [
+   {
+    "id": "7b39e048-341b-454a-a63c-4b7e1ae73e9f",
+    "lon": 71.42501,
+    "lat": 51.17087,
+    "group": "school"
+   },
+   {
+    "id": "8ca53724-c558-46b7-826b-13e3e8fbb7e6",
+    "lon": 71.445305,
+    "lat": 51.166662,
+    "group": "school"
+   },
+   {
+    "id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+    "lon": 71.43372,
+    "lat": 51.16862,
+    "group": "school"
+   },
+   {
+    "id": "a4483f53-7de8-4df1-b61b-b4066b0ad5dd",
+    "lon": 71.42298,
+    "lat": 51.16765,
+    "group": "school"
+   },
+   {
+    "id": "b5dd5f1a-9d55-48b1-9d68-7172ea84da3f",
+    "lon": 71.44184,
+    "lat": 51.16473,
+    "group": "school"
+   },
+   {
+    "id": "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a",
+    "lon": 71.423338,
+    "lat": 51.1677,
+    "group": "school"
+   },
+   {
+    "id": "c97435da-cd05-4549-bec1-ff297e858554",
+    "lon": 71.420262,
+    "lat": 51.177527,
+    "group": "school"
+   },
+   {
+    "id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783",
+    "lon": 71.426672,
+    "lat": 51.179297,
+    "group": "school"
+   }
+  ]
+ },
+ "scenario": {
+  "schema_version": "city-plan-v2",
+  "city_id": "astana",
+  "source_snapshot": "k11-r8:astana:school:data.js-sha256:bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "category": "school",
+  "control_points": [
+   {
+    "id": "нүкте-00",
+    "lon": 71.426063,
+    "lat": 51.175212,
+    "weight": 88
+   },
+   {
+    "id": "нүкте-01",
+    "lon": 71.440986,
+    "lat": 51.178743,
+    "weight": 84
+   },
+   {
+    "id": "нүкте-02",
+    "lon": 71.425281,
+    "lat": 51.165931,
+    "weight": 29
+   },
+   {
+    "id": "нүкте-03",
+    "lon": 71.43656,
+    "lat": 51.166624,
+    "weight": 10
+   },
+   {
+    "id": "нүкте-04",
+    "lon": 71.433547,
+    "lat": 51.167082,
+    "weight": 38
+   },
+   {
+    "id": "нүкте-05",
+    "lon": 71.419768,
+    "lat": 51.165571,
+    "weight": 88
+   },
+   {
+    "id": "нүкте-06",
+    "lon": 71.435665,
+    "lat": 51.163641,
+    "weight": 36
+   },
+   {
+    "id": "нүкте-07",
+    "lon": 71.441876,
+    "lat": 51.164858,
+    "weight": 34
+   },
+   {
+    "id": "нүкте-08",
+    "lon": 71.441655,
+    "lat": 51.176238,
+    "weight": 18
+   },
+   {
+    "id": "нүкте-09",
+    "lon": 71.44076,
+    "lat": 51.16782,
+    "weight": 30
+   },
+   {
+    "id": "нүкте-10",
+    "lon": 71.432323,
+    "lat": 51.176415,
+    "weight": 73
+   },
+   {
+    "id": "нүкте-11",
+    "lon": 71.445917,
+    "lat": 51.174961,
+    "weight": 56
+   },
+   {
+    "id": "нүкте-12",
+    "lon": 71.436496,
+    "lat": 51.174694,
+    "weight": 45
+   },
+   {
+    "id": "нүкте-13",
+    "lon": 71.441471,
+    "lat": 51.177161,
+    "weight": 34
+   },
+   {
+    "id": "нүкте-14",
+    "lon": 71.437933,
+    "lat": 51.172952,
+    "weight": 96
+   },
+   {
+    "id": "нүкте-15",
+    "lon": 71.446074,
+    "lat": 51.170988,
+    "weight": 94
+   },
+   {
+    "id": "нүкте-16",
+    "lon": 71.43113,
+    "lat": 51.166439,
+    "weight": 26
+   },
+   {
+    "id": "нүкте-17",
+    "lon": 71.423875,
+    "lat": 51.169537,
+    "weight": 48
+   },
+   {
+    "id": "нүкте-18",
+    "lon": 71.431572,
+    "lat": 51.173836,
+    "weight": 51
+   },
+   {
+    "id": "нүкте-19",
+    "lon": 71.443384,
+    "lat": 51.173348,
+    "weight": 71
+   },
+   {
+    "id": "нүкте-20",
+    "lon": 71.425415,
+    "lat": 51.167457,
+    "weight": 25
+   },
+   {
+    "id": "нүкте-21",
+    "lon": 71.438225,
+    "lat": 51.165654,
+    "weight": 56
+   },
+   {
+    "id": "нүкте-22",
+    "lon": 71.436842,
+    "lat": 51.179841,
+    "weight": 50
+   },
+   {
+    "id": "нүкте-23",
+    "lon": 71.419005,
+    "lat": 51.170711,
+    "weight": 6
+   },
+   {
+    "id": "нүкте-24",
+    "lon": 71.425126,
+    "lat": 51.171982,
+    "weight": 90
+   }
+  ],
+  "candidates": [
+   {
+    "id": "жоба-00",
+    "lon": 71.441979,
+    "lat": 51.174415,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 84758
+   },
+   {
+    "id": "жоба-01",
+    "lon": 71.439094,
+    "lat": 51.176092,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 132741
+   },
+   {
+    "id": "жоба-02",
+    "lon": 71.4433,
+    "lat": 51.177246,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 107461
+   },
+   {
+    "id": "жоба-03",
+    "lon": 71.438331,
+    "lat": 51.174267,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 273814
+   },
+   {
+    "id": "жоба-04",
+    "lon": 71.438636,
+    "lat": 51.165755,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 370046
+   },
+   {
+    "id": "жоба-05",
+    "lon": 71.43553,
+    "lat": 51.175858,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 111999
+   },
+   {
+    "id": "жоба-06",
+    "lon": 71.442623,
+    "lat": 51.164126,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 368942
+   },
+   {
+    "id": "жоба-07",
+    "lon": 71.435193,
+    "lat": 51.169591,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 382521
+   },
+   {
+    "id": "жоба-08",
+    "lon": 71.434607,
+    "lat": 51.166534,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 102121
+   },
+   {
+    "id": "жоба-09",
+    "lon": 71.423465,
+    "lat": 51.175191,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 59856
+   },
+   {
+    "id": "жоба-10",
+    "lon": 71.443696,
+    "lat": 51.166278,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 225995
+   },
+   {
+    "id": "жоба-11",
+    "lon": 71.436631,
+    "lat": 51.172985,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 285853
+   },
+   {
+    "id": "жоба-12",
+    "lon": 71.438049,
+    "lat": 51.180142,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 433724
+   },
+   {
+    "id": "жоба-13",
+    "lon": 71.428373,
+    "lat": 51.164991,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 2559
+   },
+   {
+    "id": "жоба-14",
+    "lon": 71.422421,
+    "lat": 51.168749,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 214932
+   },
+   {
+    "id": "жоба-15",
+    "lon": 71.427231,
+    "lat": 51.168031,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 314135
+   }
+  ],
+  "budget": 900000,
+  "max_selected": 5,
+  "coverage_radius_m": 300,
+  "required_ids": [],
+  "excluded_ids": [],
+  "selected_ids": []
+ }
+}

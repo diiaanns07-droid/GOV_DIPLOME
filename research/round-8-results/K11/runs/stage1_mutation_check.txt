@@ -1,0 +1,8 @@
+Mutation check of tests/harness.cjs (temporary copies, discarded):
+no_request_id_guard          exit=1 fails=1 (stale messages test)
+no_digest_guard              exit=1 fails=1 (stale messages test)
+no_settled_check_in_chunks   exit=1 fails=1 (chunks cancel test)
+no_cancel_ack_clear          exit=1 fails=1 (worker cancel ack test)
+floor_instead_of_round       exit=1 fails=1 (core = Python oracle)
+no_redispatch                exit=1 fails=1 (stuck worker + newer job)
+First harness version missed no_request_id_guard and no_settled_check_in_chunks; tests 7b and 7c were added for them.

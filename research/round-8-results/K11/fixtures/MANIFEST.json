@@ -1,0 +1,62 @@
+{
+ "generator": "fixtures/make_fixtures.py",
+ "app_sha": "a5b5e2ddbe087c4eab8e947748cdf69dbae84a0d",
+ "data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+ "synthetic": [
+  {
+   "file": "syn_ties.json",
+   "kind": "synthetic"
+  },
+  {
+   "file": "syn_empty_baseline.json",
+   "kind": "synthetic"
+  },
+  {
+   "file": "syn_infeasible_budget.json",
+   "kind": "synthetic"
+  },
+  {
+   "file": "syn_infeasible_count.json",
+   "kind": "synthetic"
+  },
+  {
+   "file": "syn_equal_pareto.json",
+   "kind": "synthetic"
+  },
+  {
+   "file": "syn_required_excluded.json",
+   "kind": "synthetic"
+  },
+  {
+   "file": "syn_unicode_ids.json",
+   "kind": "synthetic"
+  },
+  {
+   "file": "syn_bench_16x25.json",
+   "kind": "synthetic"
+  }
+ ],
+ "real": [
+  {
+   "file": "real_shymkent_school_16x25.json",
+   "kind": "real_slice",
+   "city": "shymkent",
+   "category": "school",
+   "records": 15
+  },
+  {
+   "file": "real_astana_outpatient_clinic_8x12.json",
+   "kind": "real_slice",
+   "city": "astana",
+   "category": "outpatient_clinic",
+   "records": 16
+  },
+  {
+   "file": "real_astana_school_16x25.json",
+   "kind": "real_slice",
+   "city": "astana",
+   "category": "school",
+   "records": 8
+  }
+ ]
+}

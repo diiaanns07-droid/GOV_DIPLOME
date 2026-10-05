@@ -1,0 +1,271 @@
+{
+ "provenance": {
+  "kind": "real_slice_with_synthetic_inputs",
+  "app_branch": "claude/beautiful-clarke-sbzomj",
+  "app_sha": "a5b5e2ddbe087c4eab8e947748cdf69dbae84a0d",
+  "data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "records": "web/data.js cities.astana.places with group=outpatient_clinic (16 records; id, lon, lat, group)",
+  "release": "2026-09-23.1",
+  "synthetic": "control points, candidates, weights, costs (conditional units) and budget"
+ },
+ "context": {
+  "city_id": "astana",
+  "bbox": [
+   71.418372,
+   51.163033,
+   71.447,
+   51.181
+  ],
+  "source_snapshot": "k11-r8:astana:outpatient_clinic:data.js-sha256:bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "records": [
+   {
+    "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+    "lon": 71.422483,
+    "lat": 51.169953,
+    "group": "outpatient_clinic"
+   },
+   {
+    "id": "1116880a-cbb6-4271-9a59-a277083b792c",
+    "lon": 71.424931,
+    "lat": 51.176756,
+    "group": "outpatient_clinic"
+   },
+   {
+    "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08",
+    "lon": 71.44229,
+    "lat": 51.1699,
+    "group": "outpatient_clinic"
+   },
+   {
+    "id": "166c939f-9131-4fbb-bf75-4ab543916f20",
+    "lon": 71.41939,
+    "lat": 51.17117,
+    "group": "outpatient_clinic"
+   },
+   {
+    "id": "1d137305-49cd-450b-9626-9762db14d080",
+    "lon": 71.436912,
+    "lat": 51.1748,
+    "group": "outpatient_clinic"
+   },
+   {
+    "id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f",
+    "lon": 71.44025,
+    "lat": 51.16873,
+    "group": "outpatient_clinic"
+   },
+   {
+    "id": "3fba1026-8464-41ab-88f8-633e3df0de30",
+    "lon": 71.441358,
+    "lat": 51.166785,
+    "group": "outpatient_clinic"
+   },
+   {
+    "id": "410f0193-f0bc-4553-bee5-660aab0287a5",
+    "lon": 71.429936,
+    "lat": 51.167329,
+    "group": "outpatient_clinic"
+   },
+   {
+    "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371",
+    "lon": 71.422047,
+    "lat": 51.177044,
+    "group": "outpatient_clinic"
+   },
+   {
+    "id": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2",
+    "lon": 71.42513,
+    "lat": 51.16305,
+    "group": "outpatient_clinic"
+   },
+   {
+    "id": "5f76d9b9-bdd1-4cea-9157-fef68ac60270",
+    "lon": 71.434725,
+    "lat": 51.166964,
+    "group": "outpatient_clinic"
+   },
+   {
+    "id": "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8",
+    "lon": 71.44127,
+    "lat": 51.16756,
+    "group": "outpatient_clinic"
+   },
+   {
+    "id": "771c278a-af10-4c57-b9fc-52755437345d",
+    "lon": 71.438397,
+    "lat": 51.164151,
+    "group": "outpatient_clinic"
+   },
+   {
+    "id": "aca68551-4a03-47c2-813f-d13dceb85c62",
+    "lon": 71.44606,
+    "lat": 51.16817,
+    "group": "outpatient_clinic"
+   },
+   {
+    "id": "b1fc81c5-7f00-4a0a-969d-2da872515916",
+    "lon": 71.42629,
+    "lat": 51.17692,
+    "group": "outpatient_clinic"
+   },
+   {
+    "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050",
+    "lon": 71.435461,
+    "lat": 51.179776,
+    "group": "outpatient_clinic"
+   }
+  ]
+ },
+ "scenario": {
+  "schema_version": "city-plan-v2",
+  "city_id": "astana",
+  "source_snapshot": "k11-r8:astana:outpatient_clinic:data.js-sha256:bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "category": "outpatient_clinic",
+  "control_points": [
+   {
+    "id": "нүкте-00",
+    "lon": 71.431987,
+    "lat": 51.174733,
+    "weight": 86
+   },
+   {
+    "id": "нүкте-01",
+    "lon": 71.428558,
+    "lat": 51.169975,
+    "weight": 48
+   },
+   {
+    "id": "нүкте-02",
+    "lon": 71.432206,
+    "lat": 51.17449,
+    "weight": 59
+   },
+   {
+    "id": "нүкте-03",
+    "lon": 71.437924,
+    "lat": 51.173766,
+    "weight": 72
+   },
+   {
+    "id": "нүкте-04",
+    "lon": 71.41899,
+    "lat": 51.174159,
+    "weight": 57
+   },
+   {
+    "id": "нүкте-05",
+    "lon": 71.429049,
+    "lat": 51.169251,
+    "weight": 27
+   },
+   {
+    "id": "нүкте-06",
+    "lon": 71.420561,
+    "lat": 51.177516,
+    "weight": 10
+   },
+   {
+    "id": "нүкте-07",
+    "lon": 71.433058,
+    "lat": 51.177523,
+    "weight": 88
+   },
+   {
+    "id": "нүкте-08",
+    "lon": 71.430065,
+    "lat": 51.177922,
+    "weight": 3
+   },
+   {
+    "id": "нүкте-09",
+    "lon": 71.444199,
+    "lat": 51.17753,
+    "weight": 85
+   },
+   {
+    "id": "нүкте-10",
+    "lon": 71.432931,
+    "lat": 51.164962,
+    "weight": 55
+   },
+   {
+    "id": "нүкте-11",
+    "lon": 71.444963,
+    "lat": 51.165333,
+    "weight": 55
+   }
+  ],
+  "candidates": [
+   {
+    "id": "жоба-00",
+    "lon": 71.445639,
+    "lat": 51.172698,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 463437
+   },
+   {
+    "id": "жоба-01",
+    "lon": 71.436024,
+    "lat": 51.166213,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 366341
+   },
+   {
+    "id": "жоба-02",
+    "lon": 71.443283,
+    "lat": 51.172968,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 266943
+   },
+   {
+    "id": "жоба-03",
+    "lon": 71.441362,
+    "lat": 51.170301,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 220592
+   },
+   {
+    "id": "жоба-04",
+    "lon": 71.437307,
+    "lat": 51.171492,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 320446
+   },
+   {
+    "id": "жоба-05",
+    "lon": 71.429514,
+    "lat": 51.163918,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 381804
+   },
+   {
+    "id": "жоба-06",
+    "lon": 71.421216,
+    "lat": 51.166702,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 413774
+   },
+   {
+    "id": "жоба-07",
+    "lon": 71.437182,
+    "lat": 51.169539,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 191383
+   }
+  ],
+  "budget": 900000,
+  "max_selected": 5,
+  "coverage_radius_m": 300,
+  "required_ids": [],
+  "excluded_ids": [],
+  "selected_ids": []
+ }
+}

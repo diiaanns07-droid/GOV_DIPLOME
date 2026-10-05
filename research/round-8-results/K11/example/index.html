@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Планирование: оркестратор поиска</title>
+<style>
+:root { color-scheme: light; --page:#f9f9f7; --surface:#ffffff; --ink:#0b0b0b; --ink-2:#52514e; --line:#e1e0d9; --accent:#2a78d6; --warn:#a15c00; --bad:#c03030; --ok:#0b7a32; }
+@media (prefers-color-scheme: dark) { :root { color-scheme: dark; --page:#0d0d0d; --surface:#1a1a19; --ink:#f4f4f2; --ink-2:#c3c2b7; --line:#2c2c2a; --accent:#5aa0ee; --warn:#f0a840; --bad:#f07070; --ok:#5cc87e; } }
+* { box-sizing: border-box; }
+body { margin: 0; padding: 16px; background: var(--page); color: var(--ink); font: 15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+main { max-width: 980px; margin: 0 auto; }
+h1 { font-size: 20px; margin: 0 0 4px; }
+.note { color: var(--ink-2); font-size: 13px; margin: 0 0 12px; }
+section { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 12px; margin-bottom: 12px; }
+.row { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; }
+label { white-space: nowrap; }
+button { font: inherit; padding: 6px 12px; border-radius: 6px; border: 1px solid var(--line); background: var(--page); color: var(--ink); cursor: pointer; }
+button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+button:disabled { opacity: .5; cursor: default; }
+progress { width: 100%; height: 10px; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; padding: 4px 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
+td.num { text-align: right; font-variant-numeric: tabular-nums; }
+.status-optimal { color: var(--ok); } .status-cancelled, .status-superseded { color: var(--warn); } .status-error, .status-infeasible { color: var(--bad); }
+code { font-size: 12px; overflow-wrap: anywhere; }
+.scroll { overflow-x: auto; }
+</style>
+</head>
+<body>
+<main>
+<h1>Поиск планов размещения: Worker, прогресс, отмена</h1>
+<p class="note">Пример K11 (раунд 8), не основной сайт. Расстояния только по прямой в сохранённом срезе. Точки, кандидаты, веса и стоимости — синтетические условные данные; исходные записи в «real_*» — из среза Overture в демо. Результат поиска — предложение: применяется только по кнопке.</p>
+
+<section>
+  <div class="row">
+    <label>Набор <select id="fixture"></select></label>
+    <label><input type="radio" name="mode" value="auto" checked> auto</label>
+    <label><input type="radio" name="mode" value="worker"> worker</label>
+    <label><input type="radio" name="mode" value="chunks"> чанки в главном потоке</label>
+    <label><input type="checkbox" id="sens"> чувствительность к бюджету</label>
+  </div>
+  <div class="row" style="margin-top:8px">
+    <button class="primary" id="run">Запустить поиск</button>
+    <button id="cancel" disabled>Отмена</button>
+    <button id="apply" disabled>Применить предложение</button>
+    <span id="status" role="status" aria-live="polite">Готово к запуску.</span>
+  </div>
+  <div style="margin-top:8px"><progress id="prog" max="1" value="0"></progress></div>
+  <p class="note" id="probe">Отзывчивость: —</p>
+</section>
+
+<section>
+  <h2 style="font-size:16px;margin:0 0 6px">Три цели (только среди введённых кандидатов)</h2>
+  <div class="scroll"><table id="objectives"><thead><tr><th>Цель</th><th>Кандидаты</th><th>Стоимость, усл. ед.</th><th>Средн. взвеш., м</th><th>Худшая точка, м</th><th>Охват весов</th></tr></thead><tbody></tbody></table></div>
+  <p class="note" id="meta"></p>
+  <p class="note" id="applied">Применённый ручной набор: —</p>
+</section>
+</main>
+<script src="../src/plan_core.js"></script>
+<script src="../src/plan_runner.js"></script>
+<script src="worker_bundle.js"></script>
+<script src="fixture_data.js"></script>
+<script>
+(function () {
+  "use strict";
+  const $ = (id) => document.getElementById(id);
+  const CORE = window.CITY_PLAN_CORE, RUN = window.CITY_PLAN_RUNNER;
+  const fileMode = location.protocol === "file:";
+  // file:// pages cannot start new Worker("file:///...") in Chromium: use a Blob worker built from inlined sources.
+  const factory = fileMode ? RUN.blobWorkerFactory(window.CITY_PLAN_WORKER_SOURCES) : RUN.urlWorkerFactory("../src/plan_worker.js");
+  let runner = null, runnerMode = null, last = null, progressCount = 0;
+  const probe = { frames: 0, maxGapMs: 0, running: false, lastT: 0 };
+  function frame(t) {
+    if (probe.running) { if (probe.lastT) probe.maxGapMs = Math.max(probe.maxGapMs, t - probe.lastT); probe.frames++; }
+    probe.lastT = t; requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  for (const [name, fx] of Object.entries(window.K11_EXAMPLE)) {
+    const o = document.createElement("option");
+    o.value = name; o.textContent = name + (fx.provenance.kind === "synthetic" ? " (synthetic)" : " (срез + synthetic входы)");
+    $("fixture").appendChild(o);
+  }
+  const mode = () => document.querySelector('input[name="mode"]:checked').value;
+  function getRunner() {
+    if (!runner || runnerMode !== mode()) {
+      if (runner) runner.dispose();
+      runnerMode = mode();
+      runner = RUN.createPlanRunner({ engine: CORE, mode: runnerMode, workerFactory: factory, chunkMasks: 2048, sliceMs: 8,
+        onProgress: (e) => { progressCount++; $("prog").value = e.fraction; } });
+    }
+    return runner;
+  }
+  const km = (mm) => (mm === null ? "нет данных" : (mm / 1000).toFixed(1));
+  function render(env) {
+    const tb = $("objectives").tBodies[0];
+    tb.textContent = "";
+    if (!env.result || !env.result.objectives) return;
+    const names = { mean: "среднее", minimax: "худшая точка", coverage: "охват" };
+    for (const k of ["mean", "minimax", "coverage"]) {
+      const o = env.result.objectives[k], m = o.metrics, tr = tb.insertRow();
+      const cells = [names[k] + (o.same_as.length ? " (= " + o.same_as.map((x) => names[x]).join(", ") + ")" : ""),
+        o.selected_ids.join(", ") || "пустой набор", String(m.cost), km(m.weighted_mean_mm), km(m.max_mm),
+        (100 * m.coverage_fraction).toFixed(0) + "%"];
+      cells.forEach((v, i) => { const td = tr.insertCell(); td.textContent = v; if (i >= 2) td.className = "num"; });
+    }
+  }
+  async function run() {
+    const fx = window.K11_EXAMPLE[$("fixture").value];
+    const r = getRunner();
+    $("cancel").disabled = false; $("apply").disabled = true; $("prog").value = 0; progressCount = 0;
+    probe.frames = 0; probe.maxGapMs = 0; probe.lastT = 0; probe.running = true;
+    $("status").textContent = "Поиск…"; $("status").className = "";
+    const job = r.run(fx.context, fx.scenario, { sensitivity: $("sens").checked });
+    const env = await job.promise;
+    probe.running = false;
+    last = env;
+    $("cancel").disabled = true;
+    $("status").textContent = "Статус: " + env.status + (env.reasons ? " (" + env.reasons.join(", ") + ")" : "") +
+      (env.code ? " (" + env.code + ")" : "") + (env.fallback ? " — запасной режим: " + env.fallback : "");
+    $("status").className = "status-" + env.status;
+    if (env.status === "infeasible" && env.result) $("status").textContent += " — " + (env.result.reasons || []).join(", ");
+    $("probe").textContent = `Отзывчивость: режим ${env.mode}, кадров ${probe.frames}, наибольший интервал между кадрами ${probe.maxGapMs.toFixed(0)} мс, событий прогресса ${progressCount}, время ${env.elapsed_ms} мс (измерение этого браузера, не норматив).`;
+    $("meta").textContent = env.result ? `problem_digest ${env.problem_digest}; metric ${env.result.metric_version}; перебрано ${env.result.evaluated} из ${env.result.total}; допустимых ${env.result.feasible_count}.` : "";
+    render(env);
+    $("apply").disabled = !(env.result && env.result.objectives && r.isCurrent(env));
+    return env;
+  }
+  $("run").addEventListener("click", run);
+  $("cancel").addEventListener("click", () => runner && runner.cancel());
+  $("apply").addEventListener("click", () => {
+    if (!last || !runner.isCurrent(last)) { $("applied").textContent = "Предложение устарело: параметры изменились."; return; }
+    $("applied").textContent = "Применённый ручной набор (среднее): " + (last.result.objectives.mean.selected_ids.join(", ") || "пустой");
+  });
+  // test hook (Playwright): no extra behaviour, just exposes the same calls
+  window.K11_DEMO = { run: async (name, m, sens) => { $("fixture").value = name; document.querySelector(`input[name="mode"][value="${m}"]`).checked = true; $("sens").checked = !!sens; return run(); },
+    cancel: () => runner && runner.cancel(), probe: () => Object.assign({}, probe), state: () => runner && runner.state(), fileMode };
+})();
+</script>
+</body>
+</html>

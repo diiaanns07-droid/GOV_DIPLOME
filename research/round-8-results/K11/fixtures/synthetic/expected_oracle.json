@@ -1,0 +1,1924 @@
+{
+ "syn_bench_16x25.json": {
+  "main": {
+   "status": "optimal",
+   "feasible_count": 3995,
+   "budget": 1000000,
+   "objectives": {
+    "mean": {
+     "selected_ids": [
+      "C01",
+      "C04",
+      "C05",
+      "C11",
+      "C12"
+     ],
+     "cost": 943643,
+     "unknown_count": 0,
+     "weighted_sum_mm": 374114446,
+     "max_mm": 692747,
+     "covered_weight": 1183,
+     "weighted_mean_mm": 316242.135249366
+    },
+    "minimax": {
+     "selected_ids": [
+      "C04",
+      "C05",
+      "C07",
+      "C11",
+      "C12"
+     ],
+     "cost": 959071,
+     "unknown_count": 0,
+     "weighted_sum_mm": 388148589,
+     "max_mm": 479027,
+     "covered_weight": 1183,
+     "weighted_mean_mm": 328105.31614539307
+    },
+    "coverage": {
+     "selected_ids": [
+      "C01",
+      "C04",
+      "C05",
+      "C11",
+      "C12"
+     ],
+     "cost": 943643,
+     "unknown_count": 0,
+     "weighted_sum_mm": 374114446,
+     "max_mm": 692747,
+     "covered_weight": 1183,
+     "weighted_mean_mm": 316242.135249366
+    }
+   },
+   "pareto": [
+    {
+     "selected_ids": [],
+     "cost": 0,
+     "weighted_sum_mm": 795498235
+    },
+    {
+     "selected_ids": [
+      "C08"
+     ],
+     "cost": 1541,
+     "weighted_sum_mm": 766252110
+    },
+    {
+     "selected_ids": [
+      "C12"
+     ],
+     "cost": 38856,
+     "weighted_sum_mm": 640117812
+    },
+    {
+     "selected_ids": [
+      "C08",
+      "C12"
+     ],
+     "cost": 40397,
+     "weighted_sum_mm": 610871687
+    },
+    {
+     "selected_ids": [
+      "C12",
+      "C13"
+     ],
+     "cost": 106298,
+     "weighted_sum_mm": 604009133
+    },
+    {
+     "selected_ids": [
+      "C08",
+      "C12",
+      "C13"
+     ],
+     "cost": 107839,
+     "weighted_sum_mm": 574763008
+    },
+    {
+     "selected_ids": [
+      "C05",
+      "C08",
+      "C12"
+     ],
+     "cost": 205123,
+     "weighted_sum_mm": 555279708
+    },
+    {
+     "selected_ids": [
+      "C04",
+      "C12"
+     ],
+     "cost": 261195,
+     "weighted_sum_mm": 505405309
+    },
+    {
+     "selected_ids": [
+      "C04",
+      "C08",
+      "C12"
+     ],
+     "cost": 262736,
+     "weighted_sum_mm": 476159184
+    },
+    {
+     "selected_ids": [
+      "C04",
+      "C12",
+      "C13"
+     ],
+     "cost": 328637,
+     "weighted_sum_mm": 469296630
+    },
+    {
+     "selected_ids": [
+      "C04",
+      "C08",
+      "C12",
+      "C13"
+     ],
+     "cost": 330178,
+     "weighted_sum_mm": 440050505
+    },
+    {
+     "selected_ids": [
+      "C04",
+      "C05",
+      "C08",
+      "C12"
+     ],
+     "cost": 427462,
+     "weighted_sum_mm": 420567205
+    },
+    {
+     "selected_ids": [
+      "C04",
+      "C05",
+      "C08",
+      "C12",
+      "C13"
+     ],
+     "cost": 494904,
+     "weighted_sum_mm": 417625938
+    },
+    {
+     "selected_ids": [
+      "C04",
+      "C05",
+      "C08",
+      "C12",
+      "C14"
+     ],
+     "cost": 529339,
+     "weighted_sum_mm": 412305194
+    },
+    {
+     "selected_ids": [
+      "C04",
+      "C05",
+      "C08",
+      "C09",
+      "C12"
+     ],
+     "cost": 586588,
+     "weighted_sum_mm": 403513465
+    },
+    {
+     "selected_ids": [
+      "C04",
+      "C05",
+      "C08",
+      "C11",
+      "C12"
+     ],
+     "cost": 630539,
+     "weighted_sum_mm": 400176804
+    },
+    {
+     "selected_ids": [
+      "C04",
+      "C05",
+      "C09",
+      "C12",
+      "C14"
+     ],
+     "cost": 686924,
+     "weighted_sum_mm": 395251454
+    },
+    {
+     "selected_ids": [
+      "C04",
+      "C05",
+      "C06",
+      "C08",
+      "C12"
+     ],
+     "cost": 715728,
+     "weighted_sum_mm": 392724196
+    },
+    {
+     "selected_ids": [
+      "C04",
+      "C05",
+      "C09",
+      "C11",
+      "C12"
+     ],
+     "cost": 788124,
+     "weighted_sum_mm": 383123064
+    },
+    {
+     "selected_ids": [
+      "C04",
+      "C05",
+      "C06",
+      "C09",
+      "C12"
+     ],
+     "cost": 873313,
+     "weighted_sum_mm": 376495401
+    },
+    {
+     "selected_ids": [
+      "C01",
+      "C04",
+      "C05",
+      "C11",
+      "C12"
+     ],
+     "cost": 943643,
+     "weighted_sum_mm": 374114446
+    }
+   ]
+  },
+  "sensitivity": {
+   "0": {
+    "status": "optimal",
+    "feasible_count": 1,
+    "budget": 0,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "cost": 0,
+      "unknown_count": 0,
+      "weighted_sum_mm": 795498235,
+      "max_mm": 939358,
+      "covered_weight": 709,
+      "weighted_mean_mm": 672441.449704142
+     },
+     "minimax": {
+      "selected_ids": [],
+      "cost": 0,
+      "unknown_count": 0,
+      "weighted_sum_mm": 795498235,
+      "max_mm": 939358,
+      "covered_weight": 709,
+      "weighted_mean_mm": 672441.449704142
+     },
+     "coverage": {
+      "selected_ids": [],
+      "cost": 0,
+      "unknown_count": 0,
+      "weighted_sum_mm": 795498235,
+      "max_mm": 939358,
+      "covered_weight": 709,
+      "weighted_mean_mm": 672441.449704142
+     }
+    },
+    "pareto": [
+     {
+      "selected_ids": [],
+      "cost": 0,
+      "weighted_sum_mm": 795498235
+     }
+    ]
+   },
+   "500000": {
+    "status": "optimal",
+    "feasible_count": 357,
+    "budget": 500000,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "C04",
+       "C05",
+       "C08",
+       "C12",
+       "C13"
+      ],
+      "cost": 494904,
+      "unknown_count": 0,
+      "weighted_sum_mm": 417625938,
+      "max_mm": 666375,
+      "covered_weight": 1183,
+      "weighted_mean_mm": 353022.7709213863
+     },
+     "minimax": {
+      "selected_ids": [
+       "C04",
+       "C08",
+       "C09",
+       "C12",
+       "C13"
+      ],
+      "cost": 489304,
+      "unknown_count": 0,
+      "weighted_sum_mm": 422996765,
+      "max_mm": 547170,
+      "covered_weight": 1183,
+      "weighted_mean_mm": 357562.7768385461
+     },
+     "coverage": {
+      "selected_ids": [
+       "C04",
+       "C05",
+       "C08",
+       "C12",
+       "C13"
+      ],
+      "cost": 494904,
+      "unknown_count": 0,
+      "weighted_sum_mm": 417625938,
+      "max_mm": 666375,
+      "covered_weight": 1183,
+      "weighted_mean_mm": 353022.7709213863
+     }
+    },
+    "pareto": [
+     {
+      "selected_ids": [],
+      "cost": 0,
+      "weighted_sum_mm": 795498235
+     },
+     {
+      "selected_ids": [
+       "C08"
+      ],
+      "cost": 1541,
+      "weighted_sum_mm": 766252110
+     },
+     {
+      "selected_ids": [
+       "C12"
+      ],
+      "cost": 38856,
+      "weighted_sum_mm": 640117812
+     },
+     {
+      "selected_ids": [
+       "C08",
+       "C12"
+      ],
+      "cost": 40397,
+      "weighted_sum_mm": 610871687
+     },
+     {
+      "selected_ids": [
+       "C12",
+       "C13"
+      ],
+      "cost": 106298,
+      "weighted_sum_mm": 604009133
+     },
+     {
+      "selected_ids": [
+       "C08",
+       "C12",
+       "C13"
+      ],
+      "cost": 107839,
+      "weighted_sum_mm": 574763008
+     },
+     {
+      "selected_ids": [
+       "C05",
+       "C08",
+       "C12"
+      ],
+      "cost": 205123,
+      "weighted_sum_mm": 555279708
+     },
+     {
+      "selected_ids": [
+       "C04",
+       "C12"
+      ],
+      "cost": 261195,
+      "weighted_sum_mm": 505405309
+     },
+     {
+      "selected_ids": [
+       "C04",
+       "C08",
+       "C12"
+      ],
+      "cost": 262736,
+      "weighted_sum_mm": 476159184
+     },
+     {
+      "selected_ids": [
+       "C04",
+       "C12",
+       "C13"
+      ],
+      "cost": 328637,
+      "weighted_sum_mm": 469296630
+     },
+     {
+      "selected_ids": [
+       "C04",
+       "C08",
+       "C12",
+       "C13"
+      ],
+      "cost": 330178,
+      "weighted_sum_mm": 440050505
+     },
+     {
+      "selected_ids": [
+       "C04",
+       "C05",
+       "C08",
+       "C12"
+      ],
+      "cost": 427462,
+      "weighted_sum_mm": 420567205
+     },
+     {
+      "selected_ids": [
+       "C04",
+       "C05",
+       "C08",
+       "C12",
+       "C13"
+      ],
+      "cost": 494904,
+      "weighted_sum_mm": 417625938
+     }
+    ]
+   },
+   "1000000": {
+    "status": "optimal",
+    "feasible_count": 3995,
+    "budget": 1000000,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "C01",
+       "C04",
+       "C05",
+       "C11",
+       "C12"
+      ],
+      "cost": 943643,
+      "unknown_count": 0,
+      "weighted_sum_mm": 374114446,
+      "max_mm": 692747,
+      "covered_weight": 1183,
+      "weighted_mean_mm": 316242.135249366
+     },
+     "minimax": {
+      "selected_ids": [
+       "C04",
+       "C05",
+       "C07",
+       "C11",
+       "C12"
+      ],
+      "cost": 959071,
+      "unknown_count": 0,
+      "weighted_sum_mm": 388148589,
+      "max_mm": 479027,
+      "covered_weight": 1183,
+      "weighted_mean_mm": 328105.31614539307
+     },
+     "coverage": {
+      "selected_ids": [
+       "C01",
+       "C04",
+       "C05",
+       "C11",
+       "C12"
+      ],
+      "cost": 943643,
+      "unknown_count": 0,
+      "weighted_sum_mm": 374114446,
+      "max_mm": 692747,
+      "covered_weight": 1183,
+      "weighted_mean_mm": 316242.135249366
+     }
+    },
+    "pareto": [
+     {
+      "selected_ids": [],
+      "cost": 0,
+      "weighted_sum_mm": 795498235
+     },
+     {
+      "selected_ids": [
+       "C08"
+      ],
+      "cost": 1541,
+      "weighted_sum_mm": 766252110
+     },
+     {
+      "selected_ids": [
+       "C12"
+      ],
+      "cost": 38856,
+      "weighted_sum_mm": 640117812
+     },
+     {
+      "selected_ids": [
+       "C08",
+       "C12"
+      ],
+      "cost": 40397,
+      "weighted_sum_mm": 610871687
+     },
+     {
+      "selected_ids": [
+       "C12",
+       "C13"
+      ],
+      "cost": 106298,
+      "weighted_sum_mm": 604009133
+     },
+     {
+      "selected_ids": [
+       "C08",
+       "C12",
+       "C13"
+      ],
+      "cost": 107839,
+      "weighted_sum_mm": 574763008
+     },
+     {
+      "selected_ids": [
+       "C05",
+       "C08",
+       "C12"
+      ],
+      "cost": 205123,
+      "weighted_sum_mm": 555279708
+     },
+     {
+      "selected_ids": [
+       "C04",
+       "C12"
+      ],
+      "cost": 261195,
+      "weighted_sum_mm": 505405309
+     },
+     {
+      "selected_ids": [
+       "C04",
+       "C08",
+       "C12"
+      ],
+      "cost": 262736,
+      "weighted_sum_mm": 476159184
+     },
+     {
+      "selected_ids": [
+       "C04",
+       "C12",
+       "C13"
+      ],
+      "cost": 328637,
+      "weighted_sum_mm": 469296630
+     },
+     {
+      "selected_ids": [
+       "C04",
+       "C08",
+       "C12",
+       "C13"
+      ],
+      "cost": 330178,
+      "weighted_sum_mm": 440050505
+     },
+     {
+      "selected_ids": [
+       "C04",
+       "C05",
+       "C08",
+       "C12"
+      ],
+      "cost": 427462,
+      "weighted_sum_mm": 420567205
+     },
+     {
+      "selected_ids": [
+       "C04",
+       "C05",
+       "C08",
+       "C12",
+       "C13"
+      ],
+      "cost": 494904,
+      "weighted_sum_mm": 417625938
+     },
+     {
+      "selected_ids": [
+       "C04",
+       "C05",
+       "C08",
+       "C12",
+       "C14"
+      ],
+      "cost": 529339,
+      "weighted_sum_mm": 412305194
+     },
+     {
+      "selected_ids": [
+       "C04",
+       "C05",
+       "C08",
+       "C09",
+       "C12"
+      ],
+      "cost": 586588,
+      "weighted_sum_mm": 403513465
+     },
+     {
+      "selected_ids": [
+       "C04",
+       "C05",
+       "C08",
+       "C11",
+       "C12"
+      ],
+      "cost": 630539,
+      "weighted_sum_mm": 400176804
+     },
+     {
+      "selected_ids": [
+       "C04",
+       "C05",
+       "C09",
+       "C12",
+       "C14"
+      ],
+      "cost": 686924,
+      "weighted_sum_mm": 395251454
+     },
+     {
+      "selected_ids": [
+       "C04",
+       "C05",
+       "C06",
+       "C08",
+       "C12"
+      ],
+      "cost": 715728,
+      "weighted_sum_mm": 392724196
+     },
+     {
+      "selected_ids": [
+       "C04",
+       "C05",
+       "C09",
+       "C11",
+       "C12"
+      ],
+      "cost": 788124,
+      "weighted_sum_mm": 383123064
+     },
+     {
+      "selected_ids": [
+       "C04",
+       "C05",
+       "C06",
+       "C09",
+       "C12"
+      ],
+      "cost": 873313,
+      "weighted_sum_mm": 376495401
+     },
+     {
+      "selected_ids": [
+       "C01",
+       "C04",
+       "C05",
+       "C11",
+       "C12"
+      ],
+      "cost": 943643,
+      "weighted_sum_mm": 374114446
+     }
+    ]
+   }
+  }
+ },
+ "syn_empty_baseline.json": {
+  "main": {
+   "status": "optimal",
+   "feasible_count": 10,
+   "budget": 60,
+   "objectives": {
+    "mean": {
+     "selected_ids": [
+      "c1",
+      "c3"
+     ],
+     "cost": 60,
+     "unknown_count": 0,
+     "weighted_sum_mm": 5376864,
+     "max_mm": 703259,
+     "covered_weight": 10,
+     "weighted_mean_mm": 358457.6
+    },
+    "minimax": {
+     "selected_ids": [
+      "c0",
+      "c2"
+     ],
+     "cost": 40,
+     "unknown_count": 0,
+     "weighted_sum_mm": 6241820,
+     "max_mm": 598804,
+     "covered_weight": 5,
+     "weighted_mean_mm": 416121.3333333333
+    },
+    "coverage": {
+     "selected_ids": [
+      "c1",
+      "c3"
+     ],
+     "cost": 60,
+     "unknown_count": 0,
+     "weighted_sum_mm": 5376864,
+     "max_mm": 703259,
+     "covered_weight": 10,
+     "weighted_mean_mm": 358457.6
+    }
+   },
+   "pareto": [
+    {
+     "selected_ids": [
+      "c0"
+     ],
+     "cost": 10,
+     "weighted_sum_mm": 16865247
+    },
+    {
+     "selected_ids": [
+      "c1"
+     ],
+     "cost": 20,
+     "weighted_sum_mm": 10758690
+    },
+    {
+     "selected_ids": [
+      "c2"
+     ],
+     "cost": 30,
+     "weighted_sum_mm": 8053563
+    },
+    {
+     "selected_ids": [
+      "c0",
+      "c2"
+     ],
+     "cost": 40,
+     "weighted_sum_mm": 6241820
+    },
+    {
+     "selected_ids": [
+      "c1",
+      "c3"
+     ],
+     "cost": 60,
+     "weighted_sum_mm": 5376864
+    }
+   ]
+  },
+  "sensitivity": {
+   "0": {
+    "status": "optimal",
+    "feasible_count": 1,
+    "budget": 0,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "cost": 0,
+      "unknown_count": 5,
+      "weighted_sum_mm": 0,
+      "max_mm": null,
+      "covered_weight": 0,
+      "weighted_mean_mm": null
+     },
+     "minimax": {
+      "selected_ids": [],
+      "cost": 0,
+      "unknown_count": 5,
+      "weighted_sum_mm": 0,
+      "max_mm": null,
+      "covered_weight": 0,
+      "weighted_mean_mm": null
+     },
+     "coverage": {
+      "selected_ids": [],
+      "cost": 0,
+      "unknown_count": 5,
+      "weighted_sum_mm": 0,
+      "max_mm": null,
+      "covered_weight": 0,
+      "weighted_mean_mm": null
+     }
+    },
+    "pareto": []
+   },
+   "30": {
+    "status": "optimal",
+    "feasible_count": 5,
+    "budget": 30,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "c2"
+      ],
+      "cost": 30,
+      "unknown_count": 0,
+      "weighted_sum_mm": 8053563,
+      "max_mm": 1243199,
+      "covered_weight": 4,
+      "weighted_mean_mm": 536904.2
+     },
+     "minimax": {
+      "selected_ids": [
+       "c0",
+       "c1"
+      ],
+      "cost": 30,
+      "unknown_count": 0,
+      "weighted_sum_mm": 10304071,
+      "max_mm": 1133972,
+      "covered_weight": 6,
+      "weighted_mean_mm": 686938.0666666667
+     },
+     "coverage": {
+      "selected_ids": [
+       "c0",
+       "c1"
+      ],
+      "cost": 30,
+      "unknown_count": 0,
+      "weighted_sum_mm": 10304071,
+      "max_mm": 1133972,
+      "covered_weight": 6,
+      "weighted_mean_mm": 686938.0666666667
+     }
+    },
+    "pareto": [
+     {
+      "selected_ids": [
+       "c0"
+      ],
+      "cost": 10,
+      "weighted_sum_mm": 16865247
+     },
+     {
+      "selected_ids": [
+       "c1"
+      ],
+      "cost": 20,
+      "weighted_sum_mm": 10758690
+     },
+     {
+      "selected_ids": [
+       "c2"
+      ],
+      "cost": 30,
+      "weighted_sum_mm": 8053563
+     }
+    ]
+   },
+   "60": {
+    "status": "optimal",
+    "feasible_count": 10,
+    "budget": 60,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "c1",
+       "c3"
+      ],
+      "cost": 60,
+      "unknown_count": 0,
+      "weighted_sum_mm": 5376864,
+      "max_mm": 703259,
+      "covered_weight": 10,
+      "weighted_mean_mm": 358457.6
+     },
+     "minimax": {
+      "selected_ids": [
+       "c0",
+       "c2"
+      ],
+      "cost": 40,
+      "unknown_count": 0,
+      "weighted_sum_mm": 6241820,
+      "max_mm": 598804,
+      "covered_weight": 5,
+      "weighted_mean_mm": 416121.3333333333
+     },
+     "coverage": {
+      "selected_ids": [
+       "c1",
+       "c3"
+      ],
+      "cost": 60,
+      "unknown_count": 0,
+      "weighted_sum_mm": 5376864,
+      "max_mm": 703259,
+      "covered_weight": 10,
+      "weighted_mean_mm": 358457.6
+     }
+    },
+    "pareto": [
+     {
+      "selected_ids": [
+       "c0"
+      ],
+      "cost": 10,
+      "weighted_sum_mm": 16865247
+     },
+     {
+      "selected_ids": [
+       "c1"
+      ],
+      "cost": 20,
+      "weighted_sum_mm": 10758690
+     },
+     {
+      "selected_ids": [
+       "c2"
+      ],
+      "cost": 30,
+      "weighted_sum_mm": 8053563
+     },
+     {
+      "selected_ids": [
+       "c0",
+       "c2"
+      ],
+      "cost": 40,
+      "weighted_sum_mm": 6241820
+     },
+     {
+      "selected_ids": [
+       "c1",
+       "c3"
+      ],
+      "cost": 60,
+      "weighted_sum_mm": 5376864
+     }
+    ]
+   }
+  }
+ },
+ "syn_equal_pareto.json": {
+  "main": {
+   "status": "optimal",
+   "feasible_count": 15,
+   "budget": 1000,
+   "objectives": {
+    "mean": {
+     "selected_ids": [
+      "e1",
+      "e3"
+     ],
+     "cost": 100,
+     "unknown_count": 0,
+     "weighted_sum_mm": 1794926,
+     "max_mm": 786268,
+     "covered_weight": 2,
+     "weighted_mean_mm": 448731.5
+    },
+    "minimax": {
+     "selected_ids": [
+      "e1",
+      "e3"
+     ],
+     "cost": 100,
+     "unknown_count": 0,
+     "weighted_sum_mm": 1794926,
+     "max_mm": 786268,
+     "covered_weight": 2,
+     "weighted_mean_mm": 448731.5
+    },
+    "coverage": {
+     "selected_ids": [
+      "e1",
+      "e3"
+     ],
+     "cost": 100,
+     "unknown_count": 0,
+     "weighted_sum_mm": 1794926,
+     "max_mm": 786268,
+     "covered_weight": 2,
+     "weighted_mean_mm": 448731.5
+    }
+   },
+   "pareto": [
+    {
+     "selected_ids": [],
+     "cost": 0,
+     "weighted_sum_mm": 3145072
+    },
+    {
+     "selected_ids": [
+      "e1"
+     ],
+     "cost": 50,
+     "weighted_sum_mm": 2469999
+    },
+    {
+     "selected_ids": [
+      "e1",
+      "e3"
+     ],
+     "cost": 100,
+     "weighted_sum_mm": 1794926
+    }
+   ]
+  },
+  "sensitivity": {
+   "0": {
+    "status": "optimal",
+    "feasible_count": 1,
+    "budget": 0,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "cost": 0,
+      "unknown_count": 0,
+      "weighted_sum_mm": 3145072,
+      "max_mm": 786268,
+      "covered_weight": 0,
+      "weighted_mean_mm": 786268.0
+     },
+     "minimax": {
+      "selected_ids": [],
+      "cost": 0,
+      "unknown_count": 0,
+      "weighted_sum_mm": 3145072,
+      "max_mm": 786268,
+      "covered_weight": 0,
+      "weighted_mean_mm": 786268.0
+     },
+     "coverage": {
+      "selected_ids": [],
+      "cost": 0,
+      "unknown_count": 0,
+      "weighted_sum_mm": 3145072,
+      "max_mm": 786268,
+      "covered_weight": 0,
+      "weighted_mean_mm": 786268.0
+     }
+    },
+    "pareto": [
+     {
+      "selected_ids": [],
+      "cost": 0,
+      "weighted_sum_mm": 3145072
+     }
+    ]
+   },
+   "500": {
+    "status": "optimal",
+    "feasible_count": 15,
+    "budget": 500,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "e1",
+       "e3"
+      ],
+      "cost": 100,
+      "unknown_count": 0,
+      "weighted_sum_mm": 1794926,
+      "max_mm": 786268,
+      "covered_weight": 2,
+      "weighted_mean_mm": 448731.5
+     },
+     "minimax": {
+      "selected_ids": [
+       "e1",
+       "e3"
+      ],
+      "cost": 100,
+      "unknown_count": 0,
+      "weighted_sum_mm": 1794926,
+      "max_mm": 786268,
+      "covered_weight": 2,
+      "weighted_mean_mm": 448731.5
+     },
+     "coverage": {
+      "selected_ids": [
+       "e1",
+       "e3"
+      ],
+      "cost": 100,
+      "unknown_count": 0,
+      "weighted_sum_mm": 1794926,
+      "max_mm": 786268,
+      "covered_weight": 2,
+      "weighted_mean_mm": 448731.5
+     }
+    },
+    "pareto": [
+     {
+      "selected_ids": [],
+      "cost": 0,
+      "weighted_sum_mm": 3145072
+     },
+     {
+      "selected_ids": [
+       "e1"
+      ],
+      "cost": 50,
+      "weighted_sum_mm": 2469999
+     },
+     {
+      "selected_ids": [
+       "e1",
+       "e3"
+      ],
+      "cost": 100,
+      "weighted_sum_mm": 1794926
+     }
+    ]
+   },
+   "1000": {
+    "status": "optimal",
+    "feasible_count": 15,
+    "budget": 1000,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "e1",
+       "e3"
+      ],
+      "cost": 100,
+      "unknown_count": 0,
+      "weighted_sum_mm": 1794926,
+      "max_mm": 786268,
+      "covered_weight": 2,
+      "weighted_mean_mm": 448731.5
+     },
+     "minimax": {
+      "selected_ids": [
+       "e1",
+       "e3"
+      ],
+      "cost": 100,
+      "unknown_count": 0,
+      "weighted_sum_mm": 1794926,
+      "max_mm": 786268,
+      "covered_weight": 2,
+      "weighted_mean_mm": 448731.5
+     },
+     "coverage": {
+      "selected_ids": [
+       "e1",
+       "e3"
+      ],
+      "cost": 100,
+      "unknown_count": 0,
+      "weighted_sum_mm": 1794926,
+      "max_mm": 786268,
+      "covered_weight": 2,
+      "weighted_mean_mm": 448731.5
+     }
+    },
+    "pareto": [
+     {
+      "selected_ids": [],
+      "cost": 0,
+      "weighted_sum_mm": 3145072
+     },
+     {
+      "selected_ids": [
+       "e1"
+      ],
+      "cost": 50,
+      "weighted_sum_mm": 2469999
+     },
+     {
+      "selected_ids": [
+       "e1",
+       "e3"
+      ],
+      "cost": 100,
+      "weighted_sum_mm": 1794926
+     }
+    ]
+   }
+  }
+ },
+ "syn_infeasible_budget.json": {
+  "main": {
+   "status": "infeasible",
+   "reasons": [
+    "required_exceeds_budget"
+   ],
+   "feasible_count": 0,
+   "budget": 50
+  },
+  "sensitivity": {
+   "0": {
+    "status": "infeasible",
+    "reasons": [
+     "required_exceeds_budget"
+    ],
+    "feasible_count": 0,
+    "budget": 0
+   },
+   "25": {
+    "status": "infeasible",
+    "reasons": [
+     "required_exceeds_budget"
+    ],
+    "feasible_count": 0,
+    "budget": 25
+   },
+   "50": {
+    "status": "infeasible",
+    "reasons": [
+     "required_exceeds_budget"
+    ],
+    "feasible_count": 0,
+    "budget": 50
+   }
+  }
+ },
+ "syn_infeasible_count.json": {
+  "main": {
+   "status": "infeasible",
+   "reasons": [
+    "required_exceeds_max_selected"
+   ],
+   "feasible_count": 0,
+   "budget": 1000
+  },
+  "sensitivity": {
+   "0": {
+    "status": "infeasible",
+    "reasons": [
+     "required_exceeds_max_selected",
+     "required_exceeds_budget"
+    ],
+    "feasible_count": 0,
+    "budget": 0
+   },
+   "500": {
+    "status": "infeasible",
+    "reasons": [
+     "required_exceeds_max_selected"
+    ],
+    "feasible_count": 0,
+    "budget": 500
+   },
+   "1000": {
+    "status": "infeasible",
+    "reasons": [
+     "required_exceeds_max_selected"
+    ],
+    "feasible_count": 0,
+    "budget": 1000
+   }
+  }
+ },
+ "syn_required_excluded.json": {
+  "main": {
+   "status": "optimal",
+   "feasible_count": 4,
+   "budget": 400,
+   "objectives": {
+    "mean": {
+     "selected_ids": [
+      "b",
+      "d"
+     ],
+     "cost": 200,
+     "unknown_count": 0,
+     "weighted_sum_mm": 1887044,
+     "max_mm": 786268,
+     "covered_weight": 2,
+     "weighted_mean_mm": 471761.0
+    },
+    "minimax": {
+     "selected_ids": [
+      "b",
+      "d"
+     ],
+     "cost": 200,
+     "unknown_count": 0,
+     "weighted_sum_mm": 1887044,
+     "max_mm": 786268,
+     "covered_weight": 2,
+     "weighted_mean_mm": 471761.0
+    },
+    "coverage": {
+     "selected_ids": [
+      "b",
+      "d"
+     ],
+     "cost": 200,
+     "unknown_count": 0,
+     "weighted_sum_mm": 1887044,
+     "max_mm": 786268,
+     "covered_weight": 2,
+     "weighted_mean_mm": 471761.0
+    }
+   },
+   "pareto": [
+    {
+     "selected_ids": [
+      "d"
+     ],
+     "cost": 100,
+     "weighted_sum_mm": 2516058
+    },
+    {
+     "selected_ids": [
+      "b",
+      "d"
+     ],
+     "cost": 200,
+     "weighted_sum_mm": 1887044
+    }
+   ]
+  },
+  "sensitivity": {
+   "0": {
+    "status": "infeasible",
+    "reasons": [
+     "required_exceeds_budget"
+    ],
+    "feasible_count": 0,
+    "budget": 0
+   },
+   "200": {
+    "status": "optimal",
+    "feasible_count": 3,
+    "budget": 200,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "b",
+       "d"
+      ],
+      "cost": 200,
+      "unknown_count": 0,
+      "weighted_sum_mm": 1887044,
+      "max_mm": 786268,
+      "covered_weight": 2,
+      "weighted_mean_mm": 471761.0
+     },
+     "minimax": {
+      "selected_ids": [
+       "b",
+       "d"
+      ],
+      "cost": 200,
+      "unknown_count": 0,
+      "weighted_sum_mm": 1887044,
+      "max_mm": 786268,
+      "covered_weight": 2,
+      "weighted_mean_mm": 471761.0
+     },
+     "coverage": {
+      "selected_ids": [
+       "b",
+       "d"
+      ],
+      "cost": 200,
+      "unknown_count": 0,
+      "weighted_sum_mm": 1887044,
+      "max_mm": 786268,
+      "covered_weight": 2,
+      "weighted_mean_mm": 471761.0
+     }
+    },
+    "pareto": [
+     {
+      "selected_ids": [
+       "d"
+      ],
+      "cost": 100,
+      "weighted_sum_mm": 2516058
+     },
+     {
+      "selected_ids": [
+       "b",
+       "d"
+      ],
+      "cost": 200,
+      "weighted_sum_mm": 1887044
+     }
+    ]
+   },
+   "400": {
+    "status": "optimal",
+    "feasible_count": 4,
+    "budget": 400,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "b",
+       "d"
+      ],
+      "cost": 200,
+      "unknown_count": 0,
+      "weighted_sum_mm": 1887044,
+      "max_mm": 786268,
+      "covered_weight": 2,
+      "weighted_mean_mm": 471761.0
+     },
+     "minimax": {
+      "selected_ids": [
+       "b",
+       "d"
+      ],
+      "cost": 200,
+      "unknown_count": 0,
+      "weighted_sum_mm": 1887044,
+      "max_mm": 786268,
+      "covered_weight": 2,
+      "weighted_mean_mm": 471761.0
+     },
+     "coverage": {
+      "selected_ids": [
+       "b",
+       "d"
+      ],
+      "cost": 200,
+      "unknown_count": 0,
+      "weighted_sum_mm": 1887044,
+      "max_mm": 786268,
+      "covered_weight": 2,
+      "weighted_mean_mm": 471761.0
+     }
+    },
+    "pareto": [
+     {
+      "selected_ids": [
+       "d"
+      ],
+      "cost": 100,
+      "weighted_sum_mm": 2516058
+     },
+     {
+      "selected_ids": [
+       "b",
+       "d"
+      ],
+      "cost": 200,
+      "weighted_sum_mm": 1887044
+     }
+    ]
+   }
+  }
+ },
+ "syn_ties.json": {
+  "main": {
+   "status": "optimal",
+   "feasible_count": 11,
+   "budget": 300,
+   "objectives": {
+    "mean": {
+     "selected_ids": [
+      "a",
+      "c"
+     ],
+     "cost": 200,
+     "unknown_count": 0,
+     "weighted_sum_mm": 1887044,
+     "max_mm": 786268,
+     "covered_weight": 2,
+     "weighted_mean_mm": 471761.0
+    },
+    "minimax": {
+     "selected_ids": [
+      "a",
+      "c"
+     ],
+     "cost": 200,
+     "unknown_count": 0,
+     "weighted_sum_mm": 1887044,
+     "max_mm": 786268,
+     "covered_weight": 2,
+     "weighted_mean_mm": 471761.0
+    },
+    "coverage": {
+     "selected_ids": [
+      "a",
+      "c"
+     ],
+     "cost": 200,
+     "unknown_count": 0,
+     "weighted_sum_mm": 1887044,
+     "max_mm": 786268,
+     "covered_weight": 2,
+     "weighted_mean_mm": 471761.0
+    }
+   },
+   "pareto": [
+    {
+     "selected_ids": [],
+     "cost": 0,
+     "weighted_sum_mm": 3145072
+    },
+    {
+     "selected_ids": [
+      "a"
+     ],
+     "cost": 100,
+     "weighted_sum_mm": 2516058
+    },
+    {
+     "selected_ids": [
+      "a",
+      "c"
+     ],
+     "cost": 200,
+     "weighted_sum_mm": 1887044
+    }
+   ]
+  },
+  "sensitivity": {
+   "0": {
+    "status": "optimal",
+    "feasible_count": 1,
+    "budget": 0,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "cost": 0,
+      "unknown_count": 0,
+      "weighted_sum_mm": 3145072,
+      "max_mm": 786268,
+      "covered_weight": 0,
+      "weighted_mean_mm": 786268.0
+     },
+     "minimax": {
+      "selected_ids": [],
+      "cost": 0,
+      "unknown_count": 0,
+      "weighted_sum_mm": 3145072,
+      "max_mm": 786268,
+      "covered_weight": 0,
+      "weighted_mean_mm": 786268.0
+     },
+     "coverage": {
+      "selected_ids": [],
+      "cost": 0,
+      "unknown_count": 0,
+      "weighted_sum_mm": 3145072,
+      "max_mm": 786268,
+      "covered_weight": 0,
+      "weighted_mean_mm": 786268.0
+     }
+    },
+    "pareto": [
+     {
+      "selected_ids": [],
+      "cost": 0,
+      "weighted_sum_mm": 3145072
+     }
+    ]
+   },
+   "150": {
+    "status": "optimal",
+    "feasible_count": 5,
+    "budget": 150,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "a"
+      ],
+      "cost": 100,
+      "unknown_count": 0,
+      "weighted_sum_mm": 2516058,
+      "max_mm": 786268,
+      "covered_weight": 1,
+      "weighted_mean_mm": 629014.5
+     },
+     "minimax": {
+      "selected_ids": [
+       "a"
+      ],
+      "cost": 100,
+      "unknown_count": 0,
+      "weighted_sum_mm": 2516058,
+      "max_mm": 786268,
+      "covered_weight": 1,
+      "weighted_mean_mm": 629014.5
+     },
+     "coverage": {
+      "selected_ids": [
+       "a"
+      ],
+      "cost": 100,
+      "unknown_count": 0,
+      "weighted_sum_mm": 2516058,
+      "max_mm": 786268,
+      "covered_weight": 1,
+      "weighted_mean_mm": 629014.5
+     }
+    },
+    "pareto": [
+     {
+      "selected_ids": [],
+      "cost": 0,
+      "weighted_sum_mm": 3145072
+     },
+     {
+      "selected_ids": [
+       "a"
+      ],
+      "cost": 100,
+      "weighted_sum_mm": 2516058
+     }
+    ]
+   },
+   "300": {
+    "status": "optimal",
+    "feasible_count": 11,
+    "budget": 300,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "a",
+       "c"
+      ],
+      "cost": 200,
+      "unknown_count": 0,
+      "weighted_sum_mm": 1887044,
+      "max_mm": 786268,
+      "covered_weight": 2,
+      "weighted_mean_mm": 471761.0
+     },
+     "minimax": {
+      "selected_ids": [
+       "a",
+       "c"
+      ],
+      "cost": 200,
+      "unknown_count": 0,
+      "weighted_sum_mm": 1887044,
+      "max_mm": 786268,
+      "covered_weight": 2,
+      "weighted_mean_mm": 471761.0
+     },
+     "coverage": {
+      "selected_ids": [
+       "a",
+       "c"
+      ],
+      "cost": 200,
+      "unknown_count": 0,
+      "weighted_sum_mm": 1887044,
+      "max_mm": 786268,
+      "covered_weight": 2,
+      "weighted_mean_mm": 471761.0
+     }
+    },
+    "pareto": [
+     {
+      "selected_ids": [],
+      "cost": 0,
+      "weighted_sum_mm": 3145072
+     },
+     {
+      "selected_ids": [
+       "a"
+      ],
+      "cost": 100,
+      "weighted_sum_mm": 2516058
+     },
+     {
+      "selected_ids": [
+       "a",
+       "c"
+      ],
+      "cost": 200,
+      "weighted_sum_mm": 1887044
+     }
+    ]
+   }
+  }
+ },
+ "syn_unicode_ids.json": {
+  "main": {
+   "status": "optimal",
+   "feasible_count": 42,
+   "budget": 300,
+   "objectives": {
+    "mean": {
+     "selected_ids": [
+      "мектеп-а"
+     ],
+     "cost": 100,
+     "unknown_count": 0,
+     "weighted_sum_mm": 4782826,
+     "max_mm": 896483,
+     "covered_weight": 12,
+     "weighted_mean_mm": 318855.06666666665
+    },
+    "minimax": {
+     "selected_ids": [
+      "мектеп-а"
+     ],
+     "cost": 100,
+     "unknown_count": 0,
+     "weighted_sum_mm": 4782826,
+     "max_mm": 896483,
+     "covered_weight": 12,
+     "weighted_mean_mm": 318855.06666666665
+    },
+    "coverage": {
+     "selected_ids": [
+      "мектеп-а"
+     ],
+     "cost": 100,
+     "unknown_count": 0,
+     "weighted_sum_mm": 4782826,
+     "max_mm": 896483,
+     "covered_weight": 12,
+     "weighted_mean_mm": 318855.06666666665
+    }
+   },
+   "pareto": [
+    {
+     "selected_ids": [],
+     "cost": 0,
+     "weighted_sum_mm": 5339900
+    },
+    {
+     "selected_ids": [
+      "мектеп-а"
+     ],
+     "cost": 100,
+     "weighted_sum_mm": 4782826
+    }
+   ]
+  },
+  "sensitivity": {
+   "0": {
+    "status": "optimal",
+    "feasible_count": 1,
+    "budget": 0,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "cost": 0,
+      "unknown_count": 0,
+      "weighted_sum_mm": 5339900,
+      "max_mm": 1025168,
+      "covered_weight": 12,
+      "weighted_mean_mm": 355993.3333333333
+     },
+     "minimax": {
+      "selected_ids": [],
+      "cost": 0,
+      "unknown_count": 0,
+      "weighted_sum_mm": 5339900,
+      "max_mm": 1025168,
+      "covered_weight": 12,
+      "weighted_mean_mm": 355993.3333333333
+     },
+     "coverage": {
+      "selected_ids": [],
+      "cost": 0,
+      "unknown_count": 0,
+      "weighted_sum_mm": 5339900,
+      "max_mm": 1025168,
+      "covered_weight": 12,
+      "weighted_mean_mm": 355993.3333333333
+     }
+    },
+    "pareto": [
+     {
+      "selected_ids": [],
+      "cost": 0,
+      "weighted_sum_mm": 5339900
+     }
+    ]
+   },
+   "150": {
+    "status": "optimal",
+    "feasible_count": 7,
+    "budget": 150,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "мектеп-а"
+      ],
+      "cost": 100,
+      "unknown_count": 0,
+      "weighted_sum_mm": 4782826,
+      "max_mm": 896483,
+      "covered_weight": 12,
+      "weighted_mean_mm": 318855.06666666665
+     },
+     "minimax": {
+      "selected_ids": [
+       "мектеп-а"
+      ],
+      "cost": 100,
+      "unknown_count": 0,
+      "weighted_sum_mm": 4782826,
+      "max_mm": 896483,
+      "covered_weight": 12,
+      "weighted_mean_mm": 318855.06666666665
+     },
+     "coverage": {
+      "selected_ids": [
+       "мектеп-а"
+      ],
+      "cost": 100,
+      "unknown_count": 0,
+      "weighted_sum_mm": 4782826,
+      "max_mm": 896483,
+      "covered_weight": 12,
+      "weighted_mean_mm": 318855.06666666665
+     }
+    },
+    "pareto": [
+     {
+      "selected_ids": [],
+      "cost": 0,
+      "weighted_sum_mm": 5339900
+     },
+     {
+      "selected_ids": [
+       "мектеп-а"
+      ],
+      "cost": 100,
+      "weighted_sum_mm": 4782826
+     }
+    ]
+   },
+   "300": {
+    "status": "optimal",
+    "feasible_count": 42,
+    "budget": 300,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "мектеп-а"
+      ],
+      "cost": 100,
+      "unknown_count": 0,
+      "weighted_sum_mm": 4782826,
+      "max_mm": 896483,
+      "covered_weight": 12,
+      "weighted_mean_mm": 318855.06666666665
+     },
+     "minimax": {
+      "selected_ids": [
+       "мектеп-а"
+      ],
+      "cost": 100,
+      "unknown_count": 0,
+      "weighted_sum_mm": 4782826,
+      "max_mm": 896483,
+      "covered_weight": 12,
+      "weighted_mean_mm": 318855.06666666665
+     },
+     "coverage": {
+      "selected_ids": [
+       "мектеп-а"
+      ],
+      "cost": 100,
+      "unknown_count": 0,
+      "weighted_sum_mm": 4782826,
+      "max_mm": 896483,
+      "covered_weight": 12,
+      "weighted_mean_mm": 318855.06666666665
+     }
+    },
+    "pareto": [
+     {
+      "selected_ids": [],
+      "cost": 0,
+      "weighted_sum_mm": 5339900
+     },
+     {
+      "selected_ids": [
+       "мектеп-а"
+      ],
+      "cost": 100,
+      "weighted_sum_mm": 4782826
+     }
+    ]
+   }
+  }
+ }
+}

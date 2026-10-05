@@ -1,0 +1,120 @@
+{
+ "provenance": {
+  "kind": "synthetic",
+  "generator": "fixtures/make_fixtures.py",
+  "note": "explicit synthetic geometry; not city statistics"
+ },
+ "context": {
+  "city_id": "synthetic",
+  "bbox": [
+   0.0,
+   0.0,
+   0.02,
+   0.02
+  ],
+  "source_snapshot": "synthetic:k11-r8",
+  "records": [
+   {
+    "id": "src-центр",
+    "lon": 0.01,
+    "lat": 0.01,
+    "group": "school"
+   }
+  ],
+  "kind": "SYNTHETIC — not a city"
+ },
+ "scenario": {
+  "schema_version": "city-plan-v2",
+  "city_id": "synthetic",
+  "source_snapshot": "synthetic:k11-r8",
+  "category": "school",
+  "control_points": [
+   {
+    "id": "нүкте-1",
+    "lon": 0.003,
+    "lat": 0.004,
+    "weight": 1
+   },
+   {
+    "id": "Ә-2",
+    "lon": 0.005,
+    "lat": 0.006,
+    "weight": 2
+   },
+   {
+    "id": "z-3",
+    "lon": 0.007,
+    "lat": 0.008,
+    "weight": 3
+   },
+   {
+    "id": "-4",
+    "lon": 0.009,
+    "lat": 0.01,
+    "weight": 4
+   },
+   {
+    "id": "😀-5",
+    "lon": 0.011,
+    "lat": 0.012,
+    "weight": 5
+   }
+  ],
+  "candidates": [
+   {
+    "id": "мектеп-ә",
+    "lon": 0.004,
+    "lat": 0.012,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 100
+   },
+   {
+    "id": "мектеп-а",
+    "lon": 0.007,
+    "lat": 0.011,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 100
+   },
+   {
+    "id": "Z",
+    "lon": 0.01,
+    "lat": 0.01,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 100
+   },
+   {
+    "id": "",
+    "lon": 0.013,
+    "lat": 0.009,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 100
+   },
+   {
+    "id": "😀",
+    "lon": 0.016,
+    "lat": 0.008,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 100
+   },
+   {
+    "id": "école",
+    "lon": 0.019,
+    "lat": 0.007,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 100
+   }
+  ],
+  "budget": 300,
+  "max_selected": 3,
+  "coverage_radius_m": 500,
+  "required_ids": [],
+  "excluded_ids": [],
+  "selected_ids": []
+ }
+}

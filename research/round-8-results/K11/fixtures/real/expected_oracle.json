@@ -1,0 +1,1808 @@
+{
+ "real_astana_outpatient_clinic_8x12.json": {
+  "main": {
+   "status": "optimal",
+   "feasible_count": 52,
+   "budget": 900000,
+   "objectives": {
+    "mean": {
+     "selected_ids": [
+      "жоба-02"
+     ],
+     "cost": 266943,
+     "unknown_count": 0,
+     "weighted_sum_mm": 201056700,
+     "max_mm": 511275,
+     "covered_weight": 222,
+     "weighted_mean_mm": 311715.81395348837
+    },
+    "minimax": {
+     "selected_ids": [
+      "жоба-02"
+     ],
+     "cost": 266943,
+     "unknown_count": 0,
+     "weighted_sum_mm": 201056700,
+     "max_mm": 511275,
+     "covered_weight": 222,
+     "weighted_mean_mm": 311715.81395348837
+    },
+    "coverage": {
+     "selected_ids": [
+      "жоба-02"
+     ],
+     "cost": 266943,
+     "unknown_count": 0,
+     "weighted_sum_mm": 201056700,
+     "max_mm": 511275,
+     "covered_weight": 222,
+     "weighted_mean_mm": 311715.81395348837
+    }
+   },
+   "pareto": [
+    {
+     "selected_ids": [],
+     "cost": 0,
+     "weighted_sum_mm": 207899370
+    },
+    {
+     "selected_ids": [
+      "жоба-02"
+     ],
+     "cost": 266943,
+     "weighted_sum_mm": 201056700
+    }
+   ]
+  },
+  "sensitivity": {
+   "0": {
+    "status": "optimal",
+    "feasible_count": 1,
+    "budget": 0,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "cost": 0,
+      "unknown_count": 0,
+      "weighted_sum_mm": 207899370,
+      "max_mm": 591777,
+      "covered_weight": 222,
+      "weighted_mean_mm": 322324.6046511628
+     },
+     "minimax": {
+      "selected_ids": [],
+      "cost": 0,
+      "unknown_count": 0,
+      "weighted_sum_mm": 207899370,
+      "max_mm": 591777,
+      "covered_weight": 222,
+      "weighted_mean_mm": 322324.6046511628
+     },
+     "coverage": {
+      "selected_ids": [],
+      "cost": 0,
+      "unknown_count": 0,
+      "weighted_sum_mm": 207899370,
+      "max_mm": 591777,
+      "covered_weight": 222,
+      "weighted_mean_mm": 322324.6046511628
+     }
+    },
+    "pareto": [
+     {
+      "selected_ids": [],
+      "cost": 0,
+      "weighted_sum_mm": 207899370
+     }
+    ]
+   },
+   "450000": {
+    "status": "optimal",
+    "feasible_count": 9,
+    "budget": 450000,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "жоба-02"
+      ],
+      "cost": 266943,
+      "unknown_count": 0,
+      "weighted_sum_mm": 201056700,
+      "max_mm": 511275,
+      "covered_weight": 222,
+      "weighted_mean_mm": 311715.81395348837
+     },
+     "minimax": {
+      "selected_ids": [
+       "жоба-02"
+      ],
+      "cost": 266943,
+      "unknown_count": 0,
+      "weighted_sum_mm": 201056700,
+      "max_mm": 511275,
+      "covered_weight": 222,
+      "weighted_mean_mm": 311715.81395348837
+     },
+     "coverage": {
+      "selected_ids": [
+       "жоба-02"
+      ],
+      "cost": 266943,
+      "unknown_count": 0,
+      "weighted_sum_mm": 201056700,
+      "max_mm": 511275,
+      "covered_weight": 222,
+      "weighted_mean_mm": 311715.81395348837
+     }
+    },
+    "pareto": [
+     {
+      "selected_ids": [],
+      "cost": 0,
+      "weighted_sum_mm": 207899370
+     },
+     {
+      "selected_ids": [
+       "жоба-02"
+      ],
+      "cost": 266943,
+      "weighted_sum_mm": 201056700
+     }
+    ]
+   },
+   "900000": {
+    "status": "optimal",
+    "feasible_count": 52,
+    "budget": 900000,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "жоба-02"
+      ],
+      "cost": 266943,
+      "unknown_count": 0,
+      "weighted_sum_mm": 201056700,
+      "max_mm": 511275,
+      "covered_weight": 222,
+      "weighted_mean_mm": 311715.81395348837
+     },
+     "minimax": {
+      "selected_ids": [
+       "жоба-02"
+      ],
+      "cost": 266943,
+      "unknown_count": 0,
+      "weighted_sum_mm": 201056700,
+      "max_mm": 511275,
+      "covered_weight": 222,
+      "weighted_mean_mm": 311715.81395348837
+     },
+     "coverage": {
+      "selected_ids": [
+       "жоба-02"
+      ],
+      "cost": 266943,
+      "unknown_count": 0,
+      "weighted_sum_mm": 201056700,
+      "max_mm": 511275,
+      "covered_weight": 222,
+      "weighted_mean_mm": 311715.81395348837
+     }
+    },
+    "pareto": [
+     {
+      "selected_ids": [],
+      "cost": 0,
+      "weighted_sum_mm": 207899370
+     },
+     {
+      "selected_ids": [
+       "жоба-02"
+      ],
+      "cost": 266943,
+      "weighted_sum_mm": 201056700
+     }
+    ]
+   }
+  }
+ },
+ "real_astana_school_16x25.json": {
+  "main": {
+   "status": "optimal",
+   "feasible_count": 2671,
+   "budget": 900000,
+   "objectives": {
+    "mean": {
+     "selected_ids": [
+      "жоба-00",
+      "жоба-02",
+      "жоба-05",
+      "жоба-09",
+      "жоба-11"
+     ],
+     "cost": 649927,
+     "unknown_count": 0,
+     "weighted_sum_mm": 307170371,
+     "max_mm": 476146,
+     "covered_weight": 895,
+     "weighted_mean_mm": 240729.13087774295
+    },
+    "minimax": {
+     "selected_ids": [
+      "жоба-00",
+      "жоба-02",
+      "жоба-05",
+      "жоба-09",
+      "жоба-11"
+     ],
+     "cost": 649927,
+     "unknown_count": 0,
+     "weighted_sum_mm": 307170371,
+     "max_mm": 476146,
+     "covered_weight": 895,
+     "weighted_mean_mm": 240729.13087774295
+    },
+    "coverage": {
+     "selected_ids": [
+      "жоба-00",
+      "жоба-02",
+      "жоба-05",
+      "жоба-09",
+      "жоба-11"
+     ],
+     "cost": 649927,
+     "unknown_count": 0,
+     "weighted_sum_mm": 307170371,
+     "max_mm": 476146,
+     "covered_weight": 895,
+     "weighted_mean_mm": 240729.13087774295
+    }
+   },
+   "pareto": [
+    {
+     "selected_ids": [],
+     "cost": 0,
+     "weighted_sum_mm": 636487889
+    },
+    {
+     "selected_ids": [
+      "жоба-13"
+     ],
+     "cost": 2559,
+     "weighted_sum_mm": 635146055
+    },
+    {
+     "selected_ids": [
+      "жоба-09"
+     ],
+     "cost": 59856,
+     "weighted_sum_mm": 612280673
+    },
+    {
+     "selected_ids": [
+      "жоба-09",
+      "жоба-13"
+     ],
+     "cost": 62415,
+     "weighted_sum_mm": 610938839
+    },
+    {
+     "selected_ids": [
+      "жоба-00"
+     ],
+     "cost": 84758,
+     "weighted_sum_mm": 436081722
+    },
+    {
+     "selected_ids": [
+      "жоба-00",
+      "жоба-13"
+     ],
+     "cost": 87317,
+     "weighted_sum_mm": 434739888
+    },
+    {
+     "selected_ids": [
+      "жоба-01"
+     ],
+     "cost": 132741,
+     "weighted_sum_mm": 431671097
+    },
+    {
+     "selected_ids": [
+      "жоба-01",
+      "жоба-13"
+     ],
+     "cost": 135300,
+     "weighted_sum_mm": 430329263
+    },
+    {
+     "selected_ids": [
+      "жоба-00",
+      "жоба-09"
+     ],
+     "cost": 144614,
+     "weighted_sum_mm": 411874506
+    },
+    {
+     "selected_ids": [
+      "жоба-00",
+      "жоба-09",
+      "жоба-13"
+     ],
+     "cost": 147173,
+     "weighted_sum_mm": 410532672
+    },
+    {
+     "selected_ids": [
+      "жоба-00",
+      "жоба-02"
+     ],
+     "cost": 192219,
+     "weighted_sum_mm": 399476808
+    },
+    {
+     "selected_ids": [
+      "жоба-00",
+      "жоба-02",
+      "жоба-13"
+     ],
+     "cost": 194778,
+     "weighted_sum_mm": 398134974
+    },
+    {
+     "selected_ids": [
+      "жоба-00",
+      "жоба-05"
+     ],
+     "cost": 196757,
+     "weighted_sum_mm": 382175613
+    },
+    {
+     "selected_ids": [
+      "жоба-00",
+      "жоба-05",
+      "жоба-13"
+     ],
+     "cost": 199316,
+     "weighted_sum_mm": 380833779
+    },
+    {
+     "selected_ids": [
+      "жоба-02",
+      "жоба-05"
+     ],
+     "cost": 219460,
+     "weighted_sum_mm": 379961828
+    },
+    {
+     "selected_ids": [
+      "жоба-02",
+      "жоба-05",
+      "жоба-13"
+     ],
+     "cost": 222019,
+     "weighted_sum_mm": 378619994
+    },
+    {
+     "selected_ids": [
+      "жоба-00",
+      "жоба-02",
+      "жоба-09"
+     ],
+     "cost": 252075,
+     "weighted_sum_mm": 375269592
+    },
+    {
+     "selected_ids": [
+      "жоба-00",
+      "жоба-02",
+      "жоба-09",
+      "жоба-13"
+     ],
+     "cost": 254634,
+     "weighted_sum_mm": 373927758
+    },
+    {
+     "selected_ids": [
+      "жоба-00",
+      "жоба-05",
+      "жоба-09"
+     ],
+     "cost": 256613,
+     "weighted_sum_mm": 357968397
+    },
+    {
+     "selected_ids": [
+      "жоба-00",
+      "жоба-05",
+      "жоба-09",
+      "жоба-13"
+     ],
+     "cost": 259172,
+     "weighted_sum_mm": 356626563
+    },
+    {
+     "selected_ids": [
+      "жоба-02",
+      "жоба-05",
+      "жоба-09"
+     ],
+     "cost": 279316,
+     "weighted_sum_mm": 355754612
+    },
+    {
+     "selected_ids": [
+      "жоба-02",
+      "жоба-05",
+      "жоба-09",
+      "жоба-13"
+     ],
+     "cost": 281875,
+     "weighted_sum_mm": 354412778
+    },
+    {
+     "selected_ids": [
+      "жоба-00",
+      "жоба-02",
+      "жоба-05"
+     ],
+     "cost": 304218,
+     "weighted_sum_mm": 353915699
+    },
+    {
+     "selected_ids": [
+      "жоба-00",
+      "жоба-02",
+      "жоба-05",
+      "жоба-13"
+     ],
+     "cost": 306777,
+     "weighted_sum_mm": 352573865
+    },
+    {
+     "selected_ids": [
+      "жоба-00",
+      "жоба-05",
+      "жоба-08",
+      "жоба-09"
+     ],
+     "cost": 358734,
+     "weighted_sum_mm": 347620917
+    },
+    {
+     "selected_ids": [
+      "жоба-00",
+      "жоба-02",
+      "жоба-05",
+      "жоба-09"
+     ],
+     "cost": 364074,
+     "weighted_sum_mm": 329708483
+    },
+    {
+     "selected_ids": [
+      "жоба-00",
+      "жоба-02",
+      "жоба-05",
+      "жоба-09",
+      "жоба-13"
+     ],
+     "cost": 366633,
+     "weighted_sum_mm": 328366649
+    },
+    {
+     "selected_ids": [
+      "жоба-00",
+      "жоба-02",
+      "жоба-05",
+      "жоба-08",
+      "жоба-09"
+     ],
+     "cost": 466195,
+     "weighted_sum_mm": 319361003
+    },
+    {
+     "selected_ids": [
+      "жоба-00",
+      "жоба-02",
+      "жоба-03",
+      "жоба-05",
+      "жоба-09"
+     ],
+     "cost": 637888,
+     "weighted_sum_mm": 312311777
+    },
+    {
+     "selected_ids": [
+      "жоба-00",
+      "жоба-02",
+      "жоба-05",
+      "жоба-09",
+      "жоба-11"
+     ],
+     "cost": 649927,
+     "weighted_sum_mm": 307170371
+    }
+   ]
+  },
+  "sensitivity": {
+   "0": {
+    "status": "optimal",
+    "feasible_count": 1,
+    "budget": 0,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "cost": 0,
+      "unknown_count": 0,
+      "weighted_sum_mm": 636487889,
+      "max_mm": 1058600,
+      "covered_weight": 330,
+      "weighted_mean_mm": 498814.960031348
+     },
+     "minimax": {
+      "selected_ids": [],
+      "cost": 0,
+      "unknown_count": 0,
+      "weighted_sum_mm": 636487889,
+      "max_mm": 1058600,
+      "covered_weight": 330,
+      "weighted_mean_mm": 498814.960031348
+     },
+     "coverage": {
+      "selected_ids": [],
+      "cost": 0,
+      "unknown_count": 0,
+      "weighted_sum_mm": 636487889,
+      "max_mm": 1058600,
+      "covered_weight": 330,
+      "weighted_mean_mm": 498814.960031348
+     }
+    },
+    "pareto": [
+     {
+      "selected_ids": [],
+      "cost": 0,
+      "weighted_sum_mm": 636487889
+     }
+    ]
+   },
+   "450000": {
+    "status": "optimal",
+    "feasible_count": 258,
+    "budget": 450000,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "жоба-00",
+       "жоба-02",
+       "жоба-05",
+       "жоба-09",
+       "жоба-13"
+      ],
+      "cost": 366633,
+      "unknown_count": 0,
+      "weighted_sum_mm": 328366649,
+      "max_mm": 476146,
+      "covered_weight": 825,
+      "weighted_mean_mm": 257340.63401253917
+     },
+     "minimax": {
+      "selected_ids": [
+       "жоба-00",
+       "жоба-02",
+       "жоба-05",
+       "жоба-09",
+       "жоба-13"
+      ],
+      "cost": 366633,
+      "unknown_count": 0,
+      "weighted_sum_mm": 328366649,
+      "max_mm": 476146,
+      "covered_weight": 825,
+      "weighted_mean_mm": 257340.63401253917
+     },
+     "coverage": {
+      "selected_ids": [
+       "жоба-00",
+       "жоба-02",
+       "жоба-05",
+       "жоба-09",
+       "жоба-13"
+      ],
+      "cost": 366633,
+      "unknown_count": 0,
+      "weighted_sum_mm": 328366649,
+      "max_mm": 476146,
+      "covered_weight": 825,
+      "weighted_mean_mm": 257340.63401253917
+     }
+    },
+    "pareto": [
+     {
+      "selected_ids": [],
+      "cost": 0,
+      "weighted_sum_mm": 636487889
+     },
+     {
+      "selected_ids": [
+       "жоба-13"
+      ],
+      "cost": 2559,
+      "weighted_sum_mm": 635146055
+     },
+     {
+      "selected_ids": [
+       "жоба-09"
+      ],
+      "cost": 59856,
+      "weighted_sum_mm": 612280673
+     },
+     {
+      "selected_ids": [
+       "жоба-09",
+       "жоба-13"
+      ],
+      "cost": 62415,
+      "weighted_sum_mm": 610938839
+     },
+     {
+      "selected_ids": [
+       "жоба-00"
+      ],
+      "cost": 84758,
+      "weighted_sum_mm": 436081722
+     },
+     {
+      "selected_ids": [
+       "жоба-00",
+       "жоба-13"
+      ],
+      "cost": 87317,
+      "weighted_sum_mm": 434739888
+     },
+     {
+      "selected_ids": [
+       "жоба-01"
+      ],
+      "cost": 132741,
+      "weighted_sum_mm": 431671097
+     },
+     {
+      "selected_ids": [
+       "жоба-01",
+       "жоба-13"
+      ],
+      "cost": 135300,
+      "weighted_sum_mm": 430329263
+     },
+     {
+      "selected_ids": [
+       "жоба-00",
+       "жоба-09"
+      ],
+      "cost": 144614,
+      "weighted_sum_mm": 411874506
+     },
+     {
+      "selected_ids": [
+       "жоба-00",
+       "жоба-09",
+       "жоба-13"
+      ],
+      "cost": 147173,
+      "weighted_sum_mm": 410532672
+     },
+     {
+      "selected_ids": [
+       "жоба-00",
+       "жоба-02"
+      ],
+      "cost": 192219,
+      "weighted_sum_mm": 399476808
+     },
+     {
+      "selected_ids": [
+       "жоба-00",
+       "жоба-02",
+       "жоба-13"
+      ],
+      "cost": 194778,
+      "weighted_sum_mm": 398134974
+     },
+     {
+      "selected_ids": [
+       "жоба-00",
+       "жоба-05"
+      ],
+      "cost": 196757,
+      "weighted_sum_mm": 382175613
+     },
+     {
+      "selected_ids": [
+       "жоба-00",
+       "жоба-05",
+       "жоба-13"
+      ],
+      "cost": 199316,
+      "weighted_sum_mm": 380833779
+     },
+     {
+      "selected_ids": [
+       "жоба-02",
+       "жоба-05"
+      ],
+      "cost": 219460,
+      "weighted_sum_mm": 379961828
+     },
+     {
+      "selected_ids": [
+       "жоба-02",
+       "жоба-05",
+       "жоба-13"
+      ],
+      "cost": 222019,
+      "weighted_sum_mm": 378619994
+     },
+     {
+      "selected_ids": [
+       "жоба-00",
+       "жоба-02",
+       "жоба-09"
+      ],
+      "cost": 252075,
+      "weighted_sum_mm": 375269592
+     },
+     {
+      "selected_ids": [
+       "жоба-00",
+       "жоба-02",
+       "жоба-09",
+       "жоба-13"
+      ],
+      "cost": 254634,
+      "weighted_sum_mm": 373927758
+     },
+     {
+      "selected_ids": [
+       "жоба-00",
+       "жоба-05",
+       "жоба-09"
+      ],
+      "cost": 256613,
+      "weighted_sum_mm": 357968397
+     },
+     {
+      "selected_ids": [
+       "жоба-00",
+       "жоба-05",
+       "жоба-09",
+       "жоба-13"
+      ],
+      "cost": 259172,
+      "weighted_sum_mm": 356626563
+     },
+     {
+      "selected_ids": [
+       "жоба-02",
+       "жоба-05",
+       "жоба-09"
+      ],
+      "cost": 279316,
+      "weighted_sum_mm": 355754612
+     },
+     {
+      "selected_ids": [
+       "жоба-02",
+       "жоба-05",
+       "жоба-09",
+       "жоба-13"
+      ],
+      "cost": 281875,
+      "weighted_sum_mm": 354412778
+     },
+     {
+      "selected_ids": [
+       "жоба-00",
+       "жоба-02",
+       "жоба-05"
+      ],
+      "cost": 304218,
+      "weighted_sum_mm": 353915699
+     },
+     {
+      "selected_ids": [
+       "жоба-00",
+       "жоба-02",
+       "жоба-05",
+       "жоба-13"
+      ],
+      "cost": 306777,
+      "weighted_sum_mm": 352573865
+     },
+     {
+      "selected_ids": [
+       "жоба-00",
+       "жоба-05",
+       "жоба-08",
+       "жоба-09"
+      ],
+      "cost": 358734,
+      "weighted_sum_mm": 347620917
+     },
+     {
+      "selected_ids": [
+       "жоба-00",
+       "жоба-02",
+       "жоба-05",
+       "жоба-09"
+      ],
+      "cost": 364074,
+      "weighted_sum_mm": 329708483
+     },
+     {
+      "selected_ids": [
+       "жоба-00",
+       "жоба-02",
+       "жоба-05",
+       "жоба-09",
+       "жоба-13"
+      ],
+      "cost": 366633,
+      "weighted_sum_mm": 328366649
+     }
+    ]
+   },
+   "900000": {
+    "status": "optimal",
+    "feasible_count": 2671,
+    "budget": 900000,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "жоба-00",
+       "жоба-02",
+       "жоба-05",
+       "жоба-09",
+       "жоба-11"
+      ],
+      "cost": 649927,
+      "unknown_count": 0,
+      "weighted_sum_mm": 307170371,
+      "max_mm": 476146,
+      "covered_weight": 895,
+      "weighted_mean_mm": 240729.13087774295
+     },
+     "minimax": {
+      "selected_ids": [
+       "жоба-00",
+       "жоба-02",
+       "жоба-05",
+       "жоба-09",
+       "жоба-11"
+      ],
+      "cost": 649927,
+      "unknown_count": 0,
+      "weighted_sum_mm": 307170371,
+      "max_mm": 476146,
+      "covered_weight": 895,
+      "weighted_mean_mm": 240729.13087774295
+     },
+     "coverage": {
+      "selected_ids": [
+       "жоба-00",
+       "жоба-02",
+       "жоба-05",
+       "жоба-09",
+       "жоба-11"
+      ],
+      "cost": 649927,
+      "unknown_count": 0,
+      "weighted_sum_mm": 307170371,
+      "max_mm": 476146,
+      "covered_weight": 895,
+      "weighted_mean_mm": 240729.13087774295
+     }
+    },
+    "pareto": [
+     {
+      "selected_ids": [],
+      "cost": 0,
+      "weighted_sum_mm": 636487889
+     },
+     {
+      "selected_ids": [
+       "жоба-13"
+      ],
+      "cost": 2559,
+      "weighted_sum_mm": 635146055
+     },
+     {
+      "selected_ids": [
+       "жоба-09"
+      ],
+      "cost": 59856,
+      "weighted_sum_mm": 612280673
+     },
+     {
+      "selected_ids": [
+       "жоба-09",
+       "жоба-13"
+      ],
+      "cost": 62415,
+      "weighted_sum_mm": 610938839
+     },
+     {
+      "selected_ids": [
+       "жоба-00"
+      ],
+      "cost": 84758,
+      "weighted_sum_mm": 436081722
+     },
+     {
+      "selected_ids": [
+       "жоба-00",
+       "жоба-13"
+      ],
+      "cost": 87317,
+      "weighted_sum_mm": 434739888
+     },
+     {
+      "selected_ids": [
+       "жоба-01"
+      ],
+      "cost": 132741,
+      "weighted_sum_mm": 431671097
+     },
+     {
+      "selected_ids": [
+       "жоба-01",
+       "жоба-13"
+      ],
+      "cost": 135300,
+      "weighted_sum_mm": 430329263
+     },
+     {
+      "selected_ids": [
+       "жоба-00",
+       "жоба-09"
+      ],
+      "cost": 144614,
+      "weighted_sum_mm": 411874506
+     },
+     {
+      "selected_ids": [
+       "жоба-00",
+       "жоба-09",
+       "жоба-13"
+      ],
+      "cost": 147173,
+      "weighted_sum_mm": 410532672
+     },
+     {
+      "selected_ids": [
+       "жоба-00",
+       "жоба-02"
+      ],
+      "cost": 192219,
+      "weighted_sum_mm": 399476808
+     },
+     {
+      "selected_ids": [
+       "жоба-00",
+       "жоба-02",
+       "жоба-13"
+      ],
+      "cost": 194778,
+      "weighted_sum_mm": 398134974
+     },
+     {
+      "selected_ids": [
+       "жоба-00",
+       "жоба-05"
+      ],
+      "cost": 196757,
+      "weighted_sum_mm": 382175613
+     },
+     {
+      "selected_ids": [
+       "жоба-00",
+       "жоба-05",
+       "жоба-13"
+      ],
+      "cost": 199316,
+      "weighted_sum_mm": 380833779
+     },
+     {
+      "selected_ids": [
+       "жоба-02",
+       "жоба-05"
+      ],
+      "cost": 219460,
+      "weighted_sum_mm": 379961828
+     },
+     {
+      "selected_ids": [
+       "жоба-02",
+       "жоба-05",
+       "жоба-13"
+      ],
+      "cost": 222019,
+      "weighted_sum_mm": 378619994
+     },
+     {
+      "selected_ids": [
+       "жоба-00",
+       "жоба-02",
+       "жоба-09"
+      ],
+      "cost": 252075,
+      "weighted_sum_mm": 375269592
+     },
+     {
+      "selected_ids": [
+       "жоба-00",
+       "жоба-02",
+       "жоба-09",
+       "жоба-13"
+      ],
+      "cost": 254634,
+      "weighted_sum_mm": 373927758
+     },
+     {
+      "selected_ids": [
+       "жоба-00",
+       "жоба-05",
+       "жоба-09"
+      ],
+      "cost": 256613,
+      "weighted_sum_mm": 357968397
+     },
+     {
+      "selected_ids": [
+       "жоба-00",
+       "жоба-05",
+       "жоба-09",
+       "жоба-13"
+      ],
+      "cost": 259172,
+      "weighted_sum_mm": 356626563
+     },
+     {
+      "selected_ids": [
+       "жоба-02",
+       "жоба-05",
+       "жоба-09"
+      ],
+      "cost": 279316,
+      "weighted_sum_mm": 355754612
+     },
+     {
+      "selected_ids": [
+       "жоба-02",
+       "жоба-05",
+       "жоба-09",
+       "жоба-13"
+      ],
+      "cost": 281875,
+      "weighted_sum_mm": 354412778
+     },
+     {
+      "selected_ids": [
+       "жоба-00",
+       "жоба-02",
+       "жоба-05"
+      ],
+      "cost": 304218,
+      "weighted_sum_mm": 353915699
+     },
+     {
+      "selected_ids": [
+       "жоба-00",
+       "жоба-02",
+       "жоба-05",
+       "жоба-13"
+      ],
+      "cost": 306777,
+      "weighted_sum_mm": 352573865
+     },
+     {
+      "selected_ids": [
+       "жоба-00",
+       "жоба-05",
+       "жоба-08",
+       "жоба-09"
+      ],
+      "cost": 358734,
+      "weighted_sum_mm": 347620917
+     },
+     {
+      "selected_ids": [
+       "жоба-00",
+       "жоба-02",
+       "жоба-05",
+       "жоба-09"
+      ],
+      "cost": 364074,
+      "weighted_sum_mm": 329708483
+     },
+     {
+      "selected_ids": [
+       "жоба-00",
+       "жоба-02",
+       "жоба-05",
+       "жоба-09",
+       "жоба-13"
+      ],
+      "cost": 366633,
+      "weighted_sum_mm": 328366649
+     },
+     {
+      "selected_ids": [
+       "жоба-00",
+       "жоба-02",
+       "жоба-05",
+       "жоба-08",
+       "жоба-09"
+      ],
+      "cost": 466195,
+      "weighted_sum_mm": 319361003
+     },
+     {
+      "selected_ids": [
+       "жоба-00",
+       "жоба-02",
+       "жоба-03",
+       "жоба-05",
+       "жоба-09"
+      ],
+      "cost": 637888,
+      "weighted_sum_mm": 312311777
+     },
+     {
+      "selected_ids": [
+       "жоба-00",
+       "жоба-02",
+       "жоба-05",
+       "жоба-09",
+       "жоба-11"
+      ],
+      "cost": 649927,
+      "weighted_sum_mm": 307170371
+     }
+    ]
+   }
+  }
+ },
+ "real_shymkent_school_16x25.json": {
+  "main": {
+   "status": "optimal",
+   "feasible_count": 2657,
+   "budget": 900000,
+   "objectives": {
+    "mean": {
+     "selected_ids": [
+      "жоба-01",
+      "жоба-03",
+      "жоба-08",
+      "жоба-11",
+      "жоба-13"
+     ],
+     "cost": 806361,
+     "unknown_count": 0,
+     "weighted_sum_mm": 194783458,
+     "max_mm": 621888,
+     "covered_weight": 831,
+     "weighted_mean_mm": 192664.15232443126
+    },
+    "minimax": {
+     "selected_ids": [
+      "жоба-01",
+      "жоба-03",
+      "жоба-04",
+      "жоба-11",
+      "жоба-13"
+     ],
+     "cost": 895887,
+     "unknown_count": 0,
+     "weighted_sum_mm": 196131956,
+     "max_mm": 461799,
+     "covered_weight": 810,
+     "weighted_mean_mm": 193997.97823936696
+    },
+    "coverage": {
+     "selected_ids": [
+      "жоба-01",
+      "жоба-03",
+      "жоба-08",
+      "жоба-11",
+      "жоба-13"
+     ],
+     "cost": 806361,
+     "unknown_count": 0,
+     "weighted_sum_mm": 194783458,
+     "max_mm": 621888,
+     "covered_weight": 831,
+     "weighted_mean_mm": 192664.15232443126
+    }
+   },
+   "pareto": [
+    {
+     "selected_ids": [],
+     "cost": 0,
+     "weighted_sum_mm": 367131199
+    },
+    {
+     "selected_ids": [
+      "жоба-08"
+     ],
+     "cost": 23076,
+     "weighted_sum_mm": 344542338
+    },
+    {
+     "selected_ids": [
+      "жоба-11"
+     ],
+     "cost": 48247,
+     "weighted_sum_mm": 262669279
+    },
+    {
+     "selected_ids": [
+      "жоба-08",
+      "жоба-11"
+     ],
+     "cost": 71323,
+     "weighted_sum_mm": 240080418
+    },
+    {
+     "selected_ids": [
+      "жоба-08",
+      "жоба-11",
+      "жоба-15"
+     ],
+     "cost": 168177,
+     "weighted_sum_mm": 237299046
+    },
+    {
+     "selected_ids": [
+      "жоба-03",
+      "жоба-11"
+     ],
+     "cost": 250443,
+     "weighted_sum_mm": 228591421
+    },
+    {
+     "selected_ids": [
+      "жоба-03",
+      "жоба-08",
+      "жоба-11"
+     ],
+     "cost": 273519,
+     "weighted_sum_mm": 224542726
+    },
+    {
+     "selected_ids": [
+      "жоба-11",
+      "жоба-13"
+     ],
+     "cost": 286858,
+     "weighted_sum_mm": 220694911
+    },
+    {
+     "selected_ids": [
+      "жоба-08",
+      "жоба-11",
+      "жоба-13"
+     ],
+     "cost": 309934,
+     "weighted_sum_mm": 216646216
+    },
+    {
+     "selected_ids": [
+      "жоба-08",
+      "жоба-11",
+      "жоба-13",
+      "жоба-15"
+     ],
+     "cost": 406788,
+     "weighted_sum_mm": 213864844
+    },
+    {
+     "selected_ids": [
+      "жоба-03",
+      "жоба-11",
+      "жоба-13"
+     ],
+     "cost": 489054,
+     "weighted_sum_mm": 211256889
+    },
+    {
+     "selected_ids": [
+      "жоба-03",
+      "жоба-08",
+      "жоба-11",
+      "жоба-13"
+     ],
+     "cost": 512130,
+     "weighted_sum_mm": 207208194
+    },
+    {
+     "selected_ids": [
+      "жоба-00",
+      "жоба-08",
+      "жоба-11",
+      "жоба-13"
+     ],
+     "cost": 554696,
+     "weighted_sum_mm": 204479833
+    },
+    {
+     "selected_ids": [
+      "жоба-01",
+      "жоба-08",
+      "жоба-11",
+      "жоба-13"
+     ],
+     "cost": 604165,
+     "weighted_sum_mm": 204221480
+    },
+    {
+     "selected_ids": [
+      "жоба-00",
+      "жоба-08",
+      "жоба-11",
+      "жоба-13",
+      "жоба-15"
+     ],
+     "cost": 651550,
+     "weighted_sum_mm": 201698461
+    },
+    {
+     "selected_ids": [
+      "жоба-01",
+      "жоба-08",
+      "жоба-11",
+      "жоба-13",
+      "жоба-15"
+     ],
+     "cost": 701019,
+     "weighted_sum_mm": 201440108
+    },
+    {
+     "selected_ids": [
+      "жоба-00",
+      "жоба-03",
+      "жоба-11",
+      "жоба-13"
+     ],
+     "cost": 733816,
+     "weighted_sum_mm": 199090506
+    },
+    {
+     "selected_ids": [
+      "жоба-00",
+      "жоба-03",
+      "жоба-08",
+      "жоба-11",
+      "жоба-13"
+     ],
+     "cost": 756892,
+     "weighted_sum_mm": 195041811
+    },
+    {
+     "selected_ids": [
+      "жоба-01",
+      "жоба-03",
+      "жоба-08",
+      "жоба-11",
+      "жоба-13"
+     ],
+     "cost": 806361,
+     "weighted_sum_mm": 194783458
+    }
+   ]
+  },
+  "sensitivity": {
+   "0": {
+    "status": "optimal",
+    "feasible_count": 1,
+    "budget": 0,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "cost": 0,
+      "unknown_count": 0,
+      "weighted_sum_mm": 367131199,
+      "max_mm": 942636,
+      "covered_weight": 601,
+      "weighted_mean_mm": 363136.6953511375
+     },
+     "minimax": {
+      "selected_ids": [],
+      "cost": 0,
+      "unknown_count": 0,
+      "weighted_sum_mm": 367131199,
+      "max_mm": 942636,
+      "covered_weight": 601,
+      "weighted_mean_mm": 363136.6953511375
+     },
+     "coverage": {
+      "selected_ids": [],
+      "cost": 0,
+      "unknown_count": 0,
+      "weighted_sum_mm": 367131199,
+      "max_mm": 942636,
+      "covered_weight": 601,
+      "weighted_mean_mm": 363136.6953511375
+     }
+    },
+    "pareto": [
+     {
+      "selected_ids": [],
+      "cost": 0,
+      "weighted_sum_mm": 367131199
+     }
+    ]
+   },
+   "450000": {
+    "status": "optimal",
+    "feasible_count": 371,
+    "budget": 450000,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "жоба-08",
+       "жоба-11",
+       "жоба-13",
+       "жоба-15"
+      ],
+      "cost": 406788,
+      "unknown_count": 0,
+      "weighted_sum_mm": 213864844,
+      "max_mm": 621888,
+      "covered_weight": 799,
+      "weighted_mean_mm": 211537.92680514342
+     },
+     "minimax": {
+      "selected_ids": [
+       "жоба-00",
+       "жоба-04",
+       "жоба-08",
+       "жоба-11"
+      ],
+      "cost": 428687,
+      "unknown_count": 0,
+      "weighted_sum_mm": 225213838,
+      "max_mm": 461799,
+      "covered_weight": 743,
+      "weighted_mean_mm": 222763.44015825915
+     },
+     "coverage": {
+      "selected_ids": [
+       "жоба-08",
+       "жоба-11",
+       "жоба-13",
+       "жоба-15"
+      ],
+      "cost": 406788,
+      "unknown_count": 0,
+      "weighted_sum_mm": 213864844,
+      "max_mm": 621888,
+      "covered_weight": 799,
+      "weighted_mean_mm": 211537.92680514342
+     }
+    },
+    "pareto": [
+     {
+      "selected_ids": [],
+      "cost": 0,
+      "weighted_sum_mm": 367131199
+     },
+     {
+      "selected_ids": [
+       "жоба-08"
+      ],
+      "cost": 23076,
+      "weighted_sum_mm": 344542338
+     },
+     {
+      "selected_ids": [
+       "жоба-11"
+      ],
+      "cost": 48247,
+      "weighted_sum_mm": 262669279
+     },
+     {
+      "selected_ids": [
+       "жоба-08",
+       "жоба-11"
+      ],
+      "cost": 71323,
+      "weighted_sum_mm": 240080418
+     },
+     {
+      "selected_ids": [
+       "жоба-08",
+       "жоба-11",
+       "жоба-15"
+      ],
+      "cost": 168177,
+      "weighted_sum_mm": 237299046
+     },
+     {
+      "selected_ids": [
+       "жоба-03",
+       "жоба-11"
+      ],
+      "cost": 250443,
+      "weighted_sum_mm": 228591421
+     },
+     {
+      "selected_ids": [
+       "жоба-03",
+       "жоба-08",
+       "жоба-11"
+      ],
+      "cost": 273519,
+      "weighted_sum_mm": 224542726
+     },
+     {
+      "selected_ids": [
+       "жоба-11",
+       "жоба-13"
+      ],
+      "cost": 286858,
+      "weighted_sum_mm": 220694911
+     },
+     {
+      "selected_ids": [
+       "жоба-08",
+       "жоба-11",
+       "жоба-13"
+      ],
+      "cost": 309934,
+      "weighted_sum_mm": 216646216
+     },
+     {
+      "selected_ids": [
+       "жоба-08",
+       "жоба-11",
+       "жоба-13",
+       "жоба-15"
+      ],
+      "cost": 406788,
+      "weighted_sum_mm": 213864844
+     }
+    ]
+   },
+   "900000": {
+    "status": "optimal",
+    "feasible_count": 2657,
+    "budget": 900000,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "жоба-01",
+       "жоба-03",
+       "жоба-08",
+       "жоба-11",
+       "жоба-13"
+      ],
+      "cost": 806361,
+      "unknown_count": 0,
+      "weighted_sum_mm": 194783458,
+      "max_mm": 621888,
+      "covered_weight": 831,
+      "weighted_mean_mm": 192664.15232443126
+     },
+     "minimax": {
+      "selected_ids": [
+       "жоба-01",
+       "жоба-03",
+       "жоба-04",
+       "жоба-11",
+       "жоба-13"
+      ],
+      "cost": 895887,
+      "unknown_count": 0,
+      "weighted_sum_mm": 196131956,
+      "max_mm": 461799,
+      "covered_weight": 810,
+      "weighted_mean_mm": 193997.97823936696
+     },
+     "coverage": {
+      "selected_ids": [
+       "жоба-01",
+       "жоба-03",
+       "жоба-08",
+       "жоба-11",
+       "жоба-13"
+      ],
+      "cost": 806361,
+      "unknown_count": 0,
+      "weighted_sum_mm": 194783458,
+      "max_mm": 621888,
+      "covered_weight": 831,
+      "weighted_mean_mm": 192664.15232443126
+     }
+    },
+    "pareto": [
+     {
+      "selected_ids": [],
+      "cost": 0,
+      "weighted_sum_mm": 367131199
+     },
+     {
+      "selected_ids": [
+       "жоба-08"
+      ],
+      "cost": 23076,
+      "weighted_sum_mm": 344542338
+     },
+     {
+      "selected_ids": [
+       "жоба-11"
+      ],
+      "cost": 48247,
+      "weighted_sum_mm": 262669279
+     },
+     {
+      "selected_ids": [
+       "жоба-08",
+       "жоба-11"
+      ],
+      "cost": 71323,
+      "weighted_sum_mm": 240080418
+     },
+     {
+      "selected_ids": [
+       "жоба-08",
+       "жоба-11",
+       "жоба-15"
+      ],
+      "cost": 168177,
+      "weighted_sum_mm": 237299046
+     },
+     {
+      "selected_ids": [
+       "жоба-03",
+       "жоба-11"
+      ],
+      "cost": 250443,
+      "weighted_sum_mm": 228591421
+     },
+     {
+      "selected_ids": [
+       "жоба-03",
+       "жоба-08",
+       "жоба-11"
+      ],
+      "cost": 273519,
+      "weighted_sum_mm": 224542726
+     },
+     {
+      "selected_ids": [
+       "жоба-11",
+       "жоба-13"
+      ],
+      "cost": 286858,
+      "weighted_sum_mm": 220694911
+     },
+     {
+      "selected_ids": [
+       "жоба-08",
+       "жоба-11",
+       "жоба-13"
+      ],
+      "cost": 309934,
+      "weighted_sum_mm": 216646216
+     },
+     {
+      "selected_ids": [
+       "жоба-08",
+       "жоба-11",
+       "жоба-13",
+       "жоба-15"
+      ],
+      "cost": 406788,
+      "weighted_sum_mm": 213864844
+     },
+     {
+      "selected_ids": [
+       "жоба-03",
+       "жоба-11",
+       "жоба-13"
+      ],
+      "cost": 489054,
+      "weighted_sum_mm": 211256889
+     },
+     {
+      "selected_ids": [
+       "жоба-03",
+       "жоба-08",
+       "жоба-11",
+       "жоба-13"
+      ],
+      "cost": 512130,
+      "weighted_sum_mm": 207208194
+     },
+     {
+      "selected_ids": [
+       "жоба-00",
+       "жоба-08",
+       "жоба-11",
+       "жоба-13"
+      ],
+      "cost": 554696,
+      "weighted_sum_mm": 204479833
+     },
+     {
+      "selected_ids": [
+       "жоба-01",
+       "жоба-08",
+       "жоба-11",
+       "жоба-13"
+      ],
+      "cost": 604165,
+      "weighted_sum_mm": 204221480
+     },
+     {
+      "selected_ids": [
+       "жоба-00",
+       "жоба-08",
+       "жоба-11",
+       "жоба-13",
+       "жоба-15"
+      ],
+      "cost": 651550,
+      "weighted_sum_mm": 201698461
+     },
+     {
+      "selected_ids": [
+       "жоба-01",
+       "жоба-08",
+       "жоба-11",
+       "жоба-13",
+       "жоба-15"
+      ],
+      "cost": 701019,
+      "weighted_sum_mm": 201440108
+     },
+     {
+      "selected_ids": [
+       "жоба-00",
+       "жоба-03",
+       "жоба-11",
+       "жоба-13"
+      ],
+      "cost": 733816,
+      "weighted_sum_mm": 199090506
+     },
+     {
+      "selected_ids": [
+       "жоба-00",
+       "жоба-03",
+       "жоба-08",
+       "жоба-11",
+       "жоба-13"
+      ],
+      "cost": 756892,
+      "weighted_sum_mm": 195041811
+     },
+     {
+      "selected_ids": [
+       "жоба-01",
+       "жоба-03",
+       "жоба-08",
+       "жоба-11",
+       "жоба-13"
+      ],
+      "cost": 806361,
+      "weighted_sum_mm": 194783458
+     }
+    ]
+   }
+  }
+ }
+}
