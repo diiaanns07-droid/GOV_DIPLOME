@@ -26,25 +26,185 @@
  "start_command_verified_on_linux": "cd prototypes/city-evidence && python3 serve.py   # also: python3 serve.py 8765 --open",
  "start_command_windows_documented_not_run": "prototypes\\city-evidence\\run-demo.bat  (or: py -3 serve.py 8765 --open)",
  "invariants": [
-  {"id": "I1", "what": "start page, serve.py, README, web/*.js present", "checks": ["S1"], "verdict": "PASS", "evidence": "run"},
-  {"id": "I2", "what": "UTF-8: own text files strict UTF-8; start page <meta charset=utf-8>; served scripts strict UTF-8 and byte-identical to disk", "checks": ["S2", "H2", "H6"], "verdict": "PASS", "evidence": "run"},
-  {"id": "I3", "what": "no hidden absolute paths in code, docs, generated web files", "checks": ["S3"], "verdict": "PASS", "evidence": "run"},
-  {"id": "I4", "what": "Node tests build file:// URLs with url.pathToFileURL", "checks": ["S4", "M3"], "verdict": "PASS", "evidence": "run (static) + modeled (path.win32: valid file:///C:/... URL)", "detail": "tests/smoke.cjs L6 require('url').pathToFileURL, L10 pageUrl(); no string concatenation left; BUILD's own smoke.cjs run in a clean worktree: exit 0, 23 PASS, 0 FAIL"},
-  {"id": "I5", "what": "Windows launcher run-demo.bat next to serve.py", "checks": ["S5", "X1"], "verdict": "PASS (static + Linux run of the same serve.py arguments)", "evidence": "run on Linux for serve.py '8765 --open' semantics; .bat itself only read", "detail": "427 bytes, 13 CRLF, ASCII only; chcp 65001, PYTHONIOENCODING=utf-8, cd /d \"%~dp0\", py -3 / python fallback, 'if errorlevel 1 pause'. git status clean after checkout (eol=crlf attribute, no phantom modification)"},
-  {"id": "I6", "what": "README gives a Windows start command and states it was not run on Windows", "checks": ["S6"], "verdict": "PASS", "evidence": "run (static)", "detail": "'py -3 serve.py 8765 --open' and run-demo.bat; README: 'Проверено только на Linux. run-demo.bat и команды Windows автором не запускались.'"},
-  {"id": "I7", "what": "serve.py starts on the given port, loopback only, 404, no path traversal, no external/file:// resources, no module scripts", "checks": ["L1", "H1", "H4", "H5", "H7", "H8", "H9"], "verdict": "PASS", "evidence": "run"},
-  {"id": "I8", "what": "reviewer's own server stopped explicitly, port released, clean exit", "checks": ["L2", "L3"], "verdict": "PASS", "evidence": "run", "detail": "SIGINT -> returncode 0, no traceback (baseline 0bf27de printed a KeyboardInterrupt traceback)"},
-  {"id": "I9", "what": "serve.py survives a redirected stdout in a Windows ANSI code page", "checks": ["M1", "M2"], "verdict": "MODELED_PASS", "evidence": "modeled (PYTHONIOENCODING=cp1251/cp1252 on Linux), not a Windows run", "detail": "serve.py L12-15 sys.stdout.reconfigure(errors='replace'); cp1252 no longer crashes"},
-  {"id": "I10", "what": "headless browser opens the demo over http and over file:// (pathToFileURL): both cities, no console errors, no external requests", "checks": ["B1"], "verdict": "PASS", "evidence": "run (Chromium, Linux)"},
-  {"id": "I11", "what": "--url mode against an already running server", "checks": ["H1-H8", "B1 (http)"], "verdict": "PASS", "evidence": "run", "detail": "8 pass, 1 info; server started and stopped by the reviewer, returncode 0, port released"},
-  {"id": "I12", "what": "error paths of the launcher: busy port, missing web files", "checks": ["X2", "X3"], "verdict": "PASS", "evidence": "run (Linux)", "detail": "busy port: exit 1 with OSError traceback (run-demo.bat would pause; message not friendly, informational); missing data.js: exit 1 with own Russian message, no traceback"},
-  {"id": "I13", "what": "browser smoke writes its default output inside the app copy", "checks": ["S8"], "verdict": "FAIL (minor, not a launch blocker)", "evidence": "run + minimal repro",
+  {
+   "id": "I1",
+   "what": "start page, serve.py, README, web/*.js present",
+   "checks": [
+    "S1"
+   ],
+   "verdict": "PASS",
+   "evidence": "run"
+  },
+  {
+   "id": "I2",
+   "what": "UTF-8: own text files strict UTF-8; start page <meta charset=utf-8>; served scripts strict UTF-8 and byte-identical to disk",
+   "checks": [
+    "S2",
+    "H2",
+    "H6"
+   ],
+   "verdict": "PASS",
+   "evidence": "run"
+  },
+  {
+   "id": "I3",
+   "what": "no hidden absolute paths in code, docs, generated web files",
+   "checks": [
+    "S3"
+   ],
+   "verdict": "PASS",
+   "evidence": "run"
+  },
+  {
+   "id": "I4",
+   "what": "Node tests build file:// URLs with url.pathToFileURL",
+   "checks": [
+    "S4",
+    "M3"
+   ],
+   "verdict": "PASS",
+   "evidence": "run (static) + modeled (path.win32: valid file:///C:/... URL)",
+   "detail": "tests/smoke.cjs L6 require('url').pathToFileURL, L10 pageUrl(); no string concatenation left; BUILD's own smoke.cjs run in a clean worktree: exit 0, 23 PASS, 0 FAIL"
+  },
+  {
+   "id": "I5",
+   "what": "Windows launcher run-demo.bat next to serve.py",
+   "checks": [
+    "S5",
+    "X1"
+   ],
+   "verdict": "PASS (static + Linux run of the same serve.py arguments)",
+   "evidence": "run on Linux for serve.py '8765 --open' semantics; .bat itself only read",
+   "detail": "427 bytes, 13 CRLF, ASCII only; chcp 65001, PYTHONIOENCODING=utf-8, cd /d \"%~dp0\", py -3 / python fallback, 'if errorlevel 1 pause'. git status clean after checkout (eol=crlf attribute, no phantom modification)"
+  },
+  {
+   "id": "I6",
+   "what": "README gives a Windows start command and states it was not run on Windows",
+   "checks": [
+    "S6"
+   ],
+   "verdict": "PASS",
+   "evidence": "run (static)",
+   "detail": "'py -3 serve.py 8765 --open' and run-demo.bat; README: 'Проверено только на Linux. run-demo.bat и команды Windows автором не запускались.'"
+  },
+  {
+   "id": "I7",
+   "what": "serve.py starts on the given port, loopback only, 404, no path traversal, no external/file:// resources, no module scripts",
+   "checks": [
+    "L1",
+    "H1",
+    "H4",
+    "H5",
+    "H7",
+    "H8",
+    "H9"
+   ],
+   "verdict": "PASS",
+   "evidence": "run"
+  },
+  {
+   "id": "I8",
+   "what": "reviewer's own server stopped explicitly, port released, clean exit",
+   "checks": [
+    "L2",
+    "L3"
+   ],
+   "verdict": "PASS",
+   "evidence": "run",
+   "detail": "SIGINT -> returncode 0, no traceback (baseline 0bf27de printed a KeyboardInterrupt traceback)"
+  },
+  {
+   "id": "I9",
+   "what": "serve.py survives a redirected stdout in a Windows ANSI code page",
+   "checks": [
+    "M1",
+    "M2"
+   ],
+   "verdict": "MODELED_PASS",
+   "evidence": "modeled (PYTHONIOENCODING=cp1251/cp1252 on Linux), not a Windows run",
+   "detail": "serve.py L12-15 sys.stdout.reconfigure(errors='replace'); cp1252 no longer crashes"
+  },
+  {
+   "id": "I10",
+   "what": "headless browser opens the demo over http and over file:// (pathToFileURL): both cities, no console errors, no external requests",
+   "checks": [
+    "B1"
+   ],
+   "verdict": "PASS",
+   "evidence": "run (Chromium, Linux)"
+  },
+  {
+   "id": "I11",
+   "what": "--url mode against an already running server",
+   "checks": [
+    "H1-H8",
+    "B1 (http)"
+   ],
+   "verdict": "PASS",
+   "evidence": "run",
+   "detail": "8 pass, 1 info; server started and stopped by the reviewer, returncode 0, port released"
+  },
+  {
+   "id": "I12",
+   "what": "error paths of the launcher: busy port, missing web files",
+   "checks": [
+    "X2",
+    "X3"
+   ],
+   "verdict": "PASS",
+   "evidence": "run (Linux)",
+   "detail": "busy port: exit 1 with OSError traceback (run-demo.bat would pause; message not friendly, informational); missing data.js: exit 1 with own Russian message, no traceback"
+  },
+  {
+   "id": "I13",
+   "what": "browser smoke writes its default output inside the app copy",
+   "checks": [
+    "S8"
+   ],
+   "verdict": "FAIL (minor, not a launch blocker)",
+   "evidence": "run + minimal repro",
    "detail": "tests/smoke.cjs L8: default out = path.join(APP, '..', '..', 'research', 'round-5-results', 'BUILD', 'smoke'). In a full checkout this is the BUILD evidence folder and is documented (L2); a clean-worktree run left git status clean. In a standalone copy of only prototypes/city-evidence (<X>/demo/city-evidence) the documented command `node tests/smoke.cjs` created 6 files in <X>/research/round-5-results/BUILD/smoke, i.e. outside the copy. Criterion kept as in round 5 (not weakened); see proposed patch.",
-   "repro": "cp -a prototypes/city-evidence <X>/demo/city-evidence && cd <X>/demo/city-evidence && NODE_PATH=$(npm root -g) node tests/smoke.cjs && ls <X>/research/round-5-results/BUILD/smoke"},
-  {"id": "I14", "what": "real Windows run of run-demo.bat, serve.py and browser", "checks": ["W1"], "verdict": "NOT_RUN", "evidence": "no Windows host; not equivalent to PASS"}
+   "repro": "cp -a prototypes/city-evidence <X>/demo/city-evidence && cd <X>/demo/city-evidence && NODE_PATH=$(npm root -g) node tests/smoke.cjs && ls <X>/research/round-5-results/BUILD/smoke"
+  },
+  {
+   "id": "I14",
+   "what": "real Windows run of run-demo.bat, serve.py and browser",
+   "checks": [
+    "W1"
+   ],
+   "verdict": "NOT_RUN",
+   "evidence": "no Windows host; not equivalent to PASS"
+  }
  ],
- "repeat": {"smoke_app_root_runs": 2, "identical_per_check_statuses": true, "summary_each": {"pass": 18, "fail": 1, "info": 2, "modeled_pass": 3, "not_run": 1}},
+ "repeat": {
+  "smoke_app_root_runs": 2,
+  "identical_per_check_statuses": true,
+  "summary_each": {
+   "pass": 18,
+   "fail": 1,
+   "info": 2,
+   "modeled_pass": 3,
+   "not_run": 1
+  }
+ },
  "test_incompatibilities": "none: the round-5 smoke ran unchanged on 064ed25; no hard-coded old path or hash affected the result",
  "verdict_overall": "READY_TO_LAUNCH_ON_LINUX; WINDOWS_MODELED_ONLY; one minor test-hygiene defect (I13)",
- "not_claimed": ["any Windows execution", "browser behaviour on Windows", "FIXED status for I13 (only a patch is proposed)"]
+ "not_claimed": [
+  "any Windows execution",
+  "browser behaviour on Windows",
+  "FIXED status for I13 (only a patch is proposed)"
+ ],
+ "proposed_patch": {
+  "file": "research/round-6-results/K11/proposed_smoke_outdir.patch",
+  "status": "PROPOSED, not FIXED (BUILD unchanged)",
+  "addresses": "I13",
+  "change": "tests/smoke.cjs L2 usage + L8 default outdir -> path.join(APP, 'tests', '_smoke_out'); new prototypes/city-evidence/.gitignore ignoring tests/_smoke_out/",
+  "verified_on_linux": {
+   "git_apply_check_on_064ed25_worktree": "OK",
+   "build_own_smoke_on_patched_worktree": "exit 0, 23 PASS, 6 output files in tests/_smoke_out, git status shows only the patch (M smoke.cjs, ?? .gitignore)",
+   "build_own_smoke_on_patched_standalone_copy": "exit 0, 0 files written outside the copy",
+   "k11_demo_smoke_on_patched_copy": "exit 0; 19 pass, 0 fail, 3 modeled_pass, 2 info, 1 not_run"
+  },
+  "note": "the BUILD can still write evidence into research/round-5-results/BUILD/smoke by passing it as the outdir argument"
+ }
 }

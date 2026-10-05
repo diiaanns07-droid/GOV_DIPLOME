@@ -1,0 +1,26 @@
+diff --git a/prototypes/city-evidence/.gitignore b/prototypes/city-evidence/.gitignore
+new file mode 100644
+index 0000000..134a9a6
+--- /dev/null
++++ b/prototypes/city-evidence/.gitignore
+@@ -0,0 +1,2 @@
++# browser smoke default output (tests/smoke.cjs without an outdir argument)
++tests/_smoke_out/
+diff --git a/prototypes/city-evidence/tests/smoke.cjs b/prototypes/city-evidence/tests/smoke.cjs
+index 6312ebc..77c9474 100644
+--- a/prototypes/city-evidence/tests/smoke.cjs
++++ b/prototypes/city-evidence/tests/smoke.cjs
+@@ -1,11 +1,11 @@
+ // Headless browser smoke test of web/index.html via file:// (Playwright + Chromium).
+-// Usage:  NODE_PATH="$(npm root -g)" node tests/smoke.cjs [outdir]      (outdir default: research/round-5-results/BUILD/smoke)
++// Usage:  NODE_PATH="$(npm root -g)" node tests/smoke.cjs [outdir]      (outdir default: tests/_smoke_out inside this copy; pass research/round-5-results/BUILD/smoke explicitly for evidence)
+ // The page URL is built with url.pathToFileURL (works for Windows paths too — not run on Windows here).
+ const { chromium } = require("playwright");
+ const path = require("path"), fs = require("fs"), os = require("os");
+ const { pathToFileURL } = require("url");
+ const APP = path.resolve(__dirname, "..");
+-const out = path.resolve(process.argv[2] || path.join(APP, "..", "..", "research", "round-5-results", "BUILD", "smoke"));
++const out = path.resolve(process.argv[2] || path.join(APP, "tests", "_smoke_out"));
+ fs.mkdirSync(out, { recursive: true });
+ const pageUrl = (dir) => pathToFileURL(path.join(dir, "index.html")).href;
+ const results = [];

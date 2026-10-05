@@ -49,6 +49,20 @@ Linux, Python 3.11.15, Node 22.22.0, Playwright 1.56.1:
 - `--open` проверен с `BROWSER=true`: браузер не открывался.
 - Сообщение при занятом порте — трассировка `OSError`. Отмечено как информация, не как fail.
 
+## Патч-предложение к I13 (PROPOSED, не FIXED)
+
+`proposed_smoke_outdir.patch`:
+- `tests/smoke.cjs` L2/L8: вывод по умолчанию в `tests/_smoke_out` внутри копии;
+- новый `prototypes/city-evidence/.gitignore` с `tests/_smoke_out/`.
+
+Проверено на Linux:
+- `git apply --check` на `064ed25`: OK;
+- smoke сборщика на worktree с патчем: 23 PASS, `git status` показывает только сам патч;
+- на отдельной копии: 0 файлов за её пределами;
+- `k11_demo_smoke.py` на копии с патчем: 19 pass, 0 fail.
+
+Сборщик может по-прежнему писать доказательства в `research/round-5-results/BUILD/smoke`, передав путь аргументом.
+
 ## Следующий шаг
 
-1. Минимальный `proposed_smoke_outdir.patch` к I13 в этой папке. Затем сессия с настоящим Windows выполняет `run-demo.bat` и `k11_demo_smoke.py --url http://127.0.0.1:8765/` и закрывает I14.
+1. Сборщик решает, принимать ли патч I13, и повторяет `k11_demo_smoke.py --app-root <копия нового SHA> --browser` на своём новом SHA. Сессия с настоящим Windows выполняет `run-demo.bat` и `k11_demo_smoke.py --url http://127.0.0.1:8765/` и закрывает I14.
