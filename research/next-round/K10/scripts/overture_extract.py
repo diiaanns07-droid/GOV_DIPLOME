@@ -6,6 +6,7 @@ No credentials are used: the bucket is public (anonymous S3 over HTTPS).
 Usage:
   python overture_extract.py schema <theme> <type>
   python overture_extract.py extract <theme> <type> <city> <out.jsonl> [--cols a,b,c]
+  python overture_extract.py extract-multi <theme> <type> <out_dir> [--cols a,b,c]
 
 Writes one JSON object per row (geometry as WKT) plus a sidecar
 <out>.provenance.json with release, file keys, row groups, bytes, timestamps.
@@ -178,12 +179,61 @@ def cmd_extract(theme, typ, city, out, cols=None):
     print(json.dumps({k: prov[k] for k in ("rows_out", "http_requests", "bytes_downloaded")}))
 
 
+def cmd_extract_multi(theme, typ, out_dir, cols=None):
+    """One pass over all files for every city in CITY_BBOX (footers read once)."""
+    started = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    keys = list_keys(theme, typ)
+    fhs = {c: open(f"{out_dir}/{c}_{typ}.jsonl", "w", encoding="utf-8") for c in CITY_BBOX}
+    prov = {c: {"source": "Overture Maps Foundation", "bucket": BUCKET, "release": RELEASE, "theme": theme,
+                "type": typ, "city": c, "query_bbox": bb, "started_utc": started, "files": [], "rows_out": 0}
+            for c, bb in CITY_BBOX.items()}
+    for key, size in keys:
+        pf = open_pf(key, size)
+        hit = {}
+        for rg in range(pf.metadata.num_row_groups):
+            s = bbox_stats(pf, rg)
+            if s is None:
+                continue
+            cs = [c for c, bb in CITY_BBOX.items() if intersects(s, bb)]
+            if cs:
+                hit[rg] = cs
+        for c in CITY_BBOX:
+            rgs = [rg for rg, cs in hit.items() if c in cs]
+            if rgs:
+                prov[c]["files"].append({"key": key, "size": size, "row_groups_total": pf.metadata.num_row_groups,
+                                         "row_groups_read": rgs, "rows_kept": 0})
+        if hit:
+            names = pf.schema_arrow.names
+            use = [x for x in (cols or names) if x in names]
+            for rg, cs in hit.items():
+                for row in pf.read_row_group(rg, columns=use).to_pylist():
+                    b = row.get("bbox")
+                    for c in cs:
+                        if b and not intersects((b["xmin"], b["ymin"], b["xmax"], b["ymax"]), CITY_BBOX[c]):
+                            continue
+                        r2 = dict(row)
+                        if r2.get("geometry") is not None:
+                            r2["geometry"] = shapely.from_wkb(r2["geometry"]).wkt
+                        fhs[c].write(json.dumps(to_jsonable(r2), ensure_ascii=False) + "\n")
+                        prov[c]["files"][-1]["rows_kept"] += 1
+                        prov[c]["rows_out"] += 1
+        print(f"{key.split('/')[-1]}: hit {len(hit)} rg, bytes so far {STATS['bytes']}", file=sys.stderr)
+    fin = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    for c in CITY_BBOX:
+        fhs[c].close()
+        prov[c].update({"finished_utc": fin, "http_requests_all_cities": STATS["requests"],
+                        "bytes_downloaded_all_cities": STATS["bytes"]})
+        with open(f"{out_dir}/{c}_{typ}.jsonl.provenance.json", "w", encoding="utf-8") as fh:
+            json.dump(prov[c], fh, ensure_ascii=False, indent=1)
+    print(json.dumps({c: prov[c]["rows_out"] for c in CITY_BBOX} | {"bytes": STATS["bytes"]}))
+
+
 if __name__ == "__main__":
     a = sys.argv[1:]
+    cols = a[a.index("--cols") + 1].split(",") if "--cols" in a else None
     if a[0] == "schema":
         cmd_schema(a[1], a[2])
     elif a[0] == "extract":
-        cols = None
-        if "--cols" in a:
-            cols = a[a.index("--cols") + 1].split(",")
         cmd_extract(a[1], a[2], a[3], a[4], cols)
+    elif a[0] == "extract-multi":
+        cmd_extract_multi(a[1], a[2], a[3], cols)

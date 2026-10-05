@@ -4,6 +4,7 @@
   (full precision) with Overture/OSM ids, versions and source licenses.
 - samples/<city>_places_social_sample.jsonl: up to 15 places per social group,
   highest confidence first; no phones/emails/socials (not extracted at all).
+- samples/<city>_road_segments_sample.geojson: up to 8 road segments per class.
 
 Usage: python make_samples.py <raw_dir> <out_samples_dir>
 """
@@ -82,9 +83,44 @@ def places_sample(raw, city):
     return out
 
 
+def segments_sample(raw, city, per_class=8):
+    """First `per_class` road segments per class fully inside the city polygon (file order)."""
+    from pyproj import Geod
+    geod = Geod(ellps="WGS84")
+    region, *_ = load(raw, city)
+    city_g = shapely.from_wkt(region[0]["geometry"])
+    taken = {}
+    feats = []
+    for line in open(f"{raw}/{city}_segment.jsonl", encoding="utf-8"):
+        s = json.loads(line)
+        if s.get("subtype") != "road":
+            continue
+        cls = s.get("class") or "(none)"
+        if taken.get(cls, 0) >= per_class:
+            continue
+        g = shapely.from_wkt(s["geometry"])
+        if not city_g.contains(g):
+            continue
+        taken[cls] = taken.get(cls, 0) + 1
+        feats.append({"type": "Feature", "properties": {
+            "city": city, "overture_id": s["id"], "overture_version": s.get("version"),
+            "subtype": s.get("subtype"), "class": cls, "subclass": s.get("subclass"),
+            "name_primary": (s.get("names") or {}).get("primary"),
+            "road_surface": s.get("road_surface"), "connectors": len(s.get("connectors") or []),
+            "length_m_geodesic": round(geod.geometry_length(g), 1),
+            "sources": [{k: x.get(k) for k in ("dataset", "license", "record_id", "update_time")}
+                        for x in s.get("sources") or []]},
+            "geometry": shapely.geometry.mapping(g)})
+    return {"type": "FeatureCollection", "name": f"{city}_road_segments_sample_overture_2026-09-23.1",
+            "license_note": "Overture transportation; derived from OpenStreetMap (ODbL-1.0).",
+            "features": feats}
+
+
 if __name__ == "__main__":
     raw, outdir = sys.argv[1], sys.argv[2]
     for city in ("shymkent", "astana"):
+        with open(f"{outdir}/{city}_road_segments_sample.geojson", "w", encoding="utf-8") as fh:
+            json.dump(segments_sample(raw, city), fh, ensure_ascii=False)
         with open(f"{outdir}/{city}_districts_overture.geojson", "w", encoding="utf-8") as fh:
             json.dump(districts_geojson(raw, city), fh, ensure_ascii=False)
         rows = places_sample(raw, city)

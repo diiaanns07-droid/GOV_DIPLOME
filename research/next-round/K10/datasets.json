@@ -268,6 +268,145 @@
     "Год границ 2017: Шымкент (город респ. значения с 2018) отдельной ADM1-единицей быть не должен — геометрия не скачивалась, вывод по admUnitCount=16 требует проверки списка имён."
    ],
    "usable_for": "только отрицательный контроль, как Natural Earth"
+  },
+  {
+   "id": "K10-D04",
+   "name": "Overture Maps transportation / segment (дорожная и пешеходная сеть)",
+   "publisher": "Overture Maps Foundation (геометрия и классы из OpenStreetMap)",
+   "status": "SV",
+   "cities": [
+    "shymkent",
+    "astana"
+   ],
+   "release": "2026-09-23.1",
+   "access": "как K10-D01; один проход по 128 файлам (footer ~2 МБ каждый)",
+   "listing_url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/?list-type=2&prefix=release/2026-09-23.1/theme=transportation/type=segment/",
+   "direct_urls": [
+    {
+     "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=transportation/type=segment/part-00093-3890aff8-6851-5d36-bf50-ee70780d0973-c000.zstd.parquet",
+     "bytes_total": 459817294,
+     "row_groups_read": [
+      109,
+      120,
+      121,
+      122,
+      123
+     ],
+     "for": "shymkent"
+    },
+    {
+     "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=transportation/type=segment/part-00093-3890aff8-6851-5d36-bf50-ee70780d0973-c000.zstd.parquet",
+     "bytes_total": 459817294,
+     "row_groups_read": [
+      122,
+      123,
+      126,
+      127
+     ],
+     "for": "astana"
+    },
+    {
+     "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=transportation/type=segment/part-00095-e13c85de-84e6-5430-8366-26da3dbd5d94-c000.zstd.parquet",
+     "bytes_total": 562518777,
+     "row_groups_read": [
+      84
+     ],
+     "for": "astana"
+    }
+   ],
+   "retrieval": {
+    "shymkent": {
+     "started_utc": "2026-10-05T05:30:36+00:00",
+     "finished_utc": "2026-10-05T05:31:45+00:00",
+     "rows_out": 48070
+    },
+    "astana": {
+     "started_utc": "2026-10-05T05:30:36+00:00",
+     "finished_utc": "2026-10-05T05:31:45+00:00",
+     "rows_out": 42872
+    },
+    "bytes_downloaded_both_cities": 296662578
+   },
+   "fields_extracted": [
+    "id",
+    "names",
+    "subtype (road/rail/water)",
+    "class",
+    "subclass",
+    "connectors[] {connector_id,at}",
+    "road_surface[]",
+    "road_flags[]",
+    "sources[]",
+    "geometry (LineString)",
+    "version",
+    "bbox"
+   ],
+   "fields_not_extracted": [
+    "speed_limits",
+    "access_restrictions",
+    "prohibited_transitions",
+    "routes",
+    "destinations",
+    "width_rules",
+    "level_rules",
+    "subclass_rules",
+    "rail_flags"
+   ],
+   "units": {
+    "length": "производное: геодезическая длина WGS84, км/м",
+    "at": "доля длины сегмента 0..1"
+   },
+   "geography": {
+    "shymkent": "{'road': 47513, 'rail': 557} в bbox; 33761 road-сегментов пересекают полигон города; 5719.14 км дорог внутри города; крупнейшая связная компонента 0.9965 длины",
+    "astana": "{'road': 42326, 'rail': 546} в bbox; 37464 road-сегментов пересекают полигон города; 5901.25 км дорог внутри города; крупнейшая связная компонента 0.9792 длины"
+   },
+   "license_observed": "sources.license в строках: ODbL-1.0 (OpenStreetMap)",
+   "attribution_required": "© OpenStreetMap contributors; Overture Maps Foundation",
+   "sample_files": [
+    "samples/shymkent_road_segments_sample.geojson",
+    "samples/astana_road_segments_sample.geojson"
+   ],
+   "checks": [
+    "results/E03_road_network_by_district.json"
+   ],
+   "limitations": [
+    "Полнота пешеходной разметки различается: footway в Шымкенте 25–71 км на район, в Астане 73–371 км — межгородское сравнение доступности будет смещено.",
+    "Права прохода (access_restrictions) не извлекались; 'walkable_class_km' — список классов K10, не проверка доступа пешехода.",
+    "Не официальный реестр дорог (D020 акимата заблокирован)."
+   ],
+   "usable_for": "сетевой baseline доступности для K07 вместо радиуса; связность графа проверена через connectors"
+  },
+  {
+   "id": "K10-D05",
+   "name": "ISO 3166-2:KZ — коды регионов и городов республиканского значения",
+   "publisher": "ISO 3166-2 в редакции Debian iso-codes, поставляется пакетом pycountry 26.2.16",
+   "status": "SV",
+   "cities": [
+    "shymkent",
+    "astana"
+   ],
+   "direct_urls": [
+    "https://pypi.org/simple/pycountry/ (файл pycountry-26.2.16-py3-none-any.whl, sha256 115c4baf7cceaa30f59a4694d79483c9167dbce7a9de4d3d571c5f3ea77c305a)"
+   ],
+   "retrieved_utc": "2026-10-05T05:30Z",
+   "fields": [
+    "code",
+    "name",
+    "type"
+   ],
+   "units": {},
+   "geography": "Казахстан: 20 единиц (17 областей и 3 города: KZ-71 Astana, KZ-75 Almaty, KZ-79 Shymkent)",
+   "license_observed": "LGPL (в METADATA пакета 'LGPL-2.1-only', в COPYRIGHT.txt '2.1 or any later version')",
+   "sample_files": [
+    "samples/iso3166_2_KZ.json"
+   ],
+   "checks": [
+    "region в Overture division_area совпадает: Шымкент KZ-79, Астана KZ-71; соседние области KZ-61 (Türkistan), KZ-11 (Aqmola)"
+   ],
+   "limitations": [
+    "Не КАТО: районы городов в ISO 3166-2 отсутствуют; КАТО (taldau/stat.gov.kz) заблокирован."
+   ],
+   "usable_for": "стабильный city_id/region_code для обоих городов"
   }
  ],
  "not_obtained": [
