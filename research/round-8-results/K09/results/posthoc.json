@@ -1,0 +1,248 @@
+{
+ "nontrivial": {
+  "G1/coverage": {
+   "hit_rate": 0.922348,
+   "hits": 1948,
+   "n": 2112,
+   "primary_equal_rate": 0.978693,
+   "small_exact_all_hit": 318,
+   "wilson95": [
+    0.910153,
+    0.933011
+   ]
+  },
+  "G1/mean": {
+   "hit_rate": 0.817021,
+   "hits": 1728,
+   "n": 2115,
+   "primary_equal_rate": 0.817021,
+   "small_exact_all_hit": 315,
+   "wilson95": [
+    0.799973,
+    0.83292
+   ]
+  },
+  "G1/minimax": {
+   "hit_rate": 0.681345,
+   "hits": 1439,
+   "n": 2112,
+   "primary_equal_rate": 0.745739,
+   "small_exact_all_hit": 318,
+   "wilson95": [
+    0.661159,
+    0.700872
+   ]
+  },
+  "G2/coverage": {
+   "hit_rate": 0.231534,
+   "hits": 489,
+   "n": 2112,
+   "primary_equal_rate": 0.782197,
+   "small_exact_all_hit": 318,
+   "wilson95": [
+    0.214042,
+    0.250001
+   ]
+  },
+  "G2/mean": {
+   "hit_rate": 0.443026,
+   "hits": 937,
+   "n": 2115,
+   "primary_equal_rate": 0.459574,
+   "small_exact_all_hit": 315,
+   "wilson95": [
+    0.421978,
+    0.464281
+   ]
+  },
+  "G2/minimax": {
+   "hit_rate": 0.152462,
+   "hits": 322,
+   "n": 2112,
+   "primary_equal_rate": 0.693182,
+   "small_exact_all_hit": 318,
+   "wilson95": [
+    0.137763,
+    0.168423
+   ]
+  }
+ },
+ "nontrivial_by_slice": {
+  "G1/coverage": {
+   "astana_clinic": {
+    "hit_rate": 0.973886,
+    "n": 651,
+    "wilson95": [
+     0.95858,
+     0.983633
+    ]
+   },
+   "astana_clinic_nobase": {
+    "hit_rate": 0.851523,
+    "n": 788,
+    "wilson95": [
+     0.824993,
+     0.874642
+    ]
+   },
+   "shymkent_school": {
+    "hit_rate": 0.955423,
+    "n": 673,
+    "wilson95": [
+     0.937078,
+     0.968599
+    ]
+   }
+  },
+  "G1/mean": {
+   "astana_clinic": {
+    "hit_rate": 0.983103,
+    "n": 651,
+    "wilson95": [
+     0.969999,
+     0.990539
+    ]
+   },
+   "astana_clinic_nobase": {
+    "hit_rate": 0.568528,
+    "n": 788,
+    "wilson95": [
+     0.533697,
+     0.602694
+    ]
+   },
+   "shymkent_school": {
+    "hit_rate": 0.946746,
+    "n": 676,
+    "wilson95": [
+     0.927155,
+     0.961288
+    ]
+   }
+  },
+  "G1/minimax": {
+   "astana_clinic": {
+    "hit_rate": 0.960061,
+    "n": 651,
+    "wilson95": [
+     0.942124,
+     0.972601
+    ]
+   },
+   "astana_clinic_nobase": {
+    "hit_rate": 0.309645,
+    "n": 788,
+    "wilson95": [
+     0.278352,
+     0.342784
+    ]
+   },
+   "shymkent_school": {
+    "hit_rate": 0.846954,
+    "n": 673,
+    "wilson95": [
+     0.81779,
+     0.87218
+    ]
+   }
+  },
+  "G2/coverage": {
+   "astana_clinic": {
+    "hit_rate": 0.233487,
+    "n": 651,
+    "wilson95": [
+     0.202611,
+     0.26749
+    ]
+   },
+   "astana_clinic_nobase": {
+    "hit_rate": 0.224619,
+    "n": 788,
+    "wilson95": [
+     0.196857,
+     0.255054
+    ]
+   },
+   "shymkent_school": {
+    "hit_rate": 0.237741,
+    "n": 673,
+    "wilson95": [
+     0.207125,
+     0.271335
+    ]
+   }
+  },
+  "G2/mean": {
+   "astana_clinic": {
+    "hit_rate": 0.626728,
+    "n": 651,
+    "wilson95": [
+     0.588932,
+     0.663037
+    ]
+   },
+   "astana_clinic_nobase": {
+    "hit_rate": 0.205584,
+    "n": 788,
+    "wilson95": [
+     0.178828,
+     0.235196
+    ]
+   },
+   "shymkent_school": {
+    "hit_rate": 0.542899,
+    "n": 676,
+    "wilson95": [
+     0.50521,
+     0.580104
+    ]
+   }
+  },
+  "G2/minimax": {
+   "astana_clinic": {
+    "hit_rate": 0.152074,
+    "n": 651,
+    "wilson95": [
+     0.126536,
+     0.181694
+    ]
+   },
+   "astana_clinic_nobase": {
+    "hit_rate": 0.147208,
+    "n": 788,
+    "wilson95": [
+     0.124182,
+     0.173657
+    ]
+   },
+   "shymkent_school": {
+    "hit_rate": 0.15899,
+    "n": 673,
+    "wilson95": [
+     0.133309,
+     0.188541
+    ]
+   }
+  }
+ },
+ "size_distribution": {
+  "coverage": {
+   "0": 46,
+   "1": 272,
+   "2": 447,
+   "3": 1665
+  },
+  "mean": {
+   "0": 46,
+   "1": 269,
+   "2": 441,
+   "3": 1674
+  },
+  "minimax": {
+   "0": 46,
+   "1": 272,
+   "2": 434,
+   "3": 1678
+  }
+ }
+}

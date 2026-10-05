@@ -100,13 +100,22 @@ def wilson(k, n, z=1.959963984540054):
 
 
 def mcnemar_exact(b, c):
-    """Двусторонний точный биномиальный тест для несогласных пар (b, c)."""
+    """Двусторонний точный биномиальный тест для несогласных пар (b, c): p = min(1, 2·P(X ≤ min(b,c))), X ~ Bin(b+c, 1/2)."""
     n = b + c
     if n == 0:
         return 1.0
     k = min(b, c)
     p = sum(math.comb(n, i) for i in range(k + 1)) / 2 ** n
     return round(min(1.0, 2 * p), 12)
+
+
+def mcnemar_log10(b, c):
+    """log10 того же p точно на целых (p может быть меньше наименьшего float)."""
+    n = b + c
+    if n == 0:
+        return 0.0
+    tail = sum(math.comb(n, i) for i in range(min(b, c) + 1))
+    return round(min(0.0, math.log10(2 * tail) - n * math.log10(2)), 3)
 
 
 def _q(xs, q):
@@ -151,7 +160,8 @@ def summarize(runs, scen):
         b = sum(1 for k in g1 if g1[k] and not g2[k])
         c = sum(1 for k in g1 if g2[k] and not g1[k])
         out["g1_vs_g2_mcnemar"][o] = {"G1_only_hit": b, "G2_only_hit": c, "both_hit": sum(1 for k in g1 if g1[k] and g2[k]),
-                                      "both_miss": sum(1 for k in g1 if not g1[k] and not g2[k]), "p_exact_two_sided": mcnemar_exact(b, c)}
+                                      "both_miss": sum(1 for k in g1 if not g1[k] and not g2[k]), "p_exact_two_sided": mcnemar_exact(b, c),
+                                      "log10_p": mcnemar_log10(b, c)}
     ms = [s for s in scen if s["analysis"] == "main"]
     out["exact_plans"] = {"scenarios": len(ms),
                           "distinct_plans_across_objectives": {str(k): sum(1 for s in ms if s["distinct_exact_plans"] == k) for k in (1, 2, 3)},

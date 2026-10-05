@@ -1,0 +1,11 @@
+{
+ "cpu_count": 4,
+ "implementation": "CPython",
+ "limit": 0,
+ "machine": "x86_64",
+ "platform": "Linux-6.18.44-fc-v70-x86_64-with-glibc2.39",
+ "python": "3.11.15",
+ "repeats": 3,
+ "timer": "time.perf_counter, минимум из repeats, один процесс",
+ "wall_s": 53.728
+}

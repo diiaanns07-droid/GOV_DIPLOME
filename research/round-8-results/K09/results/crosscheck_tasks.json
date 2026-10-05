@@ -1,0 +1,1964 @@
+{
+ "config_version": "k09-r8-exp-v1",
+ "metric_version": "haversine-mm-v1",
+ "note": "Сверка: контекст включает исходные записи среза (real Overture), точки/кандидаты/стоимости synthetic.",
+ "tasks": [
+  {
+   "context": {
+    "baseline": "real_slice_records",
+    "bbox": [
+     69.593365,
+     42.306645,
+     69.617658,
+     42.324611
+    ],
+    "category": "school",
+    "city_id": "shymkent",
+    "metric_version": "haversine-mm-v1",
+    "source_snapshot": "k09r8-slice:0a7508473d7c18966b15cccd7c3a083f",
+    "sources": [
+     {
+      "id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+      "lat": 42.32027,
+      "lon": 69.61052
+     },
+     {
+      "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+      "lat": 42.31672,
+      "lon": 69.60294
+     },
+     {
+      "id": "176c5993-4b62-4e90-849f-88addc0153bb",
+      "lat": 42.323129,
+      "lon": 69.605699
+     },
+     {
+      "id": "18df815b-170a-437c-977f-0769690315d4",
+      "lat": 42.31276,
+      "lon": 69.61482
+     },
+     {
+      "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+      "lat": 42.3167,
+      "lon": 69.5958
+     },
+     {
+      "id": "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+      "lat": 42.321741,
+      "lon": 69.605231
+     },
+     {
+      "id": "68c8f007-75bc-42f6-8da8-baa72042bde4",
+      "lat": 42.3167,
+      "lon": 69.5958
+     },
+     {
+      "id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+      "lat": 42.314563,
+      "lon": 69.599229
+     },
+     {
+      "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+      "lat": 42.32353,
+      "lon": 69.59496
+     },
+     {
+      "id": "9d31b953-ccc4-42bd-a3a3-3e4e21f44051",
+      "lat": 42.3167,
+      "lon": 69.5958
+     },
+     {
+      "id": "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6",
+      "lat": 42.32353,
+      "lon": 69.59496
+     },
+     {
+      "id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+      "lat": 42.31906,
+      "lon": 69.59895
+     },
+     {
+      "id": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+      "lat": 42.32304,
+      "lon": 69.61557
+     },
+     {
+      "id": "bcd265d0-0799-4dbf-8b15-23bae752a4d2",
+      "lat": 42.32304,
+      "lon": 69.61557
+     },
+     {
+      "id": "fd50a858-462d-477f-8bc6-a8d3e03a9576",
+      "lat": 42.31728,
+      "lon": 69.60322
+     }
+    ]
+   },
+   "expected": {
+    "budget_sensitivity": [
+     {
+      "budget": 0,
+      "objectives": {
+       "coverage": {
+        "cost": 0,
+        "covered_weight": 582,
+        "max_mm": 736475,
+        "selected_ids": [],
+        "unknown_count": 0,
+        "weighted_sum_mm": 328155133
+       },
+       "mean": {
+        "cost": 0,
+        "covered_weight": 582,
+        "max_mm": 736475,
+        "selected_ids": [],
+        "unknown_count": 0,
+        "weighted_sum_mm": 328155133
+       },
+       "minimax": {
+        "cost": 0,
+        "covered_weight": 582,
+        "max_mm": 736475,
+        "selected_ids": [],
+        "unknown_count": 0,
+        "weighted_sum_mm": 328155133
+       }
+      },
+      "reason": null,
+      "status": "optimal"
+     },
+     {
+      "budget": 1925,
+      "objectives": {
+       "coverage": {
+        "cost": 1438,
+        "covered_weight": 899,
+        "max_mm": 736475,
+        "selected_ids": [
+         "c07",
+         "c09",
+         "c15"
+        ],
+        "unknown_count": 0,
+        "weighted_sum_mm": 239483700
+       },
+       "mean": {
+        "cost": 1438,
+        "covered_weight": 899,
+        "max_mm": 736475,
+        "selected_ids": [
+         "c07",
+         "c09",
+         "c15"
+        ],
+        "unknown_count": 0,
+        "weighted_sum_mm": 239483700
+       },
+       "minimax": {
+        "cost": 1566,
+        "covered_weight": 824,
+        "max_mm": 472037,
+        "selected_ids": [
+         "c07",
+         "c08",
+         "c09"
+        ],
+        "unknown_count": 0,
+        "weighted_sum_mm": 246820417
+       }
+      },
+      "reason": null,
+      "status": "optimal"
+     },
+     {
+      "budget": 3850,
+      "objectives": {
+       "coverage": {
+        "cost": 1438,
+        "covered_weight": 899,
+        "max_mm": 736475,
+        "selected_ids": [
+         "c07",
+         "c09",
+         "c15"
+        ],
+        "unknown_count": 0,
+        "weighted_sum_mm": 239483700
+       },
+       "mean": {
+        "cost": 1438,
+        "covered_weight": 899,
+        "max_mm": 736475,
+        "selected_ids": [
+         "c07",
+         "c09",
+         "c15"
+        ],
+        "unknown_count": 0,
+        "weighted_sum_mm": 239483700
+       },
+       "minimax": {
+        "cost": 1566,
+        "covered_weight": 824,
+        "max_mm": 472037,
+        "selected_ids": [
+         "c07",
+         "c08",
+         "c09"
+        ],
+        "unknown_count": 0,
+        "weighted_sum_mm": 246820417
+       }
+      },
+      "reason": null,
+      "status": "optimal"
+     }
+    ],
+    "feasible_count": 697,
+    "objectives": {
+     "coverage": {
+      "cost": 1438,
+      "coverage_fraction": 0.8702807357212003,
+      "covered_weight": 899,
+      "max_mm": 736475,
+      "selected_ids": [
+       "c07",
+       "c09",
+       "c15"
+      ],
+      "unknown_count": 0,
+      "weighted_mean_mm": 231833.20425943853,
+      "weighted_sum_mm": 239483700
+     },
+     "mean": {
+      "cost": 1438,
+      "coverage_fraction": 0.8702807357212003,
+      "covered_weight": 899,
+      "max_mm": 736475,
+      "selected_ids": [
+       "c07",
+       "c09",
+       "c15"
+      ],
+      "unknown_count": 0,
+      "weighted_mean_mm": 231833.20425943853,
+      "weighted_sum_mm": 239483700
+     },
+     "minimax": {
+      "cost": 1566,
+      "coverage_fraction": 0.797676669893514,
+      "covered_weight": 824,
+      "max_mm": 472037,
+      "selected_ids": [
+       "c07",
+       "c08",
+       "c09"
+      ],
+      "unknown_count": 0,
+      "weighted_mean_mm": 238935.5440464666,
+      "weighted_sum_mm": 246820417
+     }
+    },
+    "pareto": [
+     {
+      "cost": 0,
+      "selected_ids": [],
+      "weighted_sum_mm": 328155133
+     },
+     {
+      "cost": 134,
+      "selected_ids": [
+       "c07"
+      ],
+      "weighted_sum_mm": 300621003
+     },
+     {
+      "cost": 325,
+      "selected_ids": [
+       "c03",
+       "c07"
+      ],
+      "weighted_sum_mm": 300018664
+     },
+     {
+      "cost": 328,
+      "selected_ids": [
+       "c07",
+       "c14"
+      ],
+      "weighted_sum_mm": 293281935
+     },
+     {
+      "cost": 519,
+      "selected_ids": [
+       "c03",
+       "c07",
+       "c14"
+      ],
+      "weighted_sum_mm": 292679596
+     },
+     {
+      "cost": 549,
+      "selected_ids": [
+       "c07",
+       "c15"
+      ],
+      "weighted_sum_mm": 281748770
+     },
+     {
+      "cost": 740,
+      "selected_ids": [
+       "c03",
+       "c07",
+       "c15"
+      ],
+      "weighted_sum_mm": 281146431
+     },
+     {
+      "cost": 743,
+      "selected_ids": [
+       "c07",
+       "c14",
+       "c15"
+      ],
+      "weighted_sum_mm": 274409702
+     },
+     {
+      "cost": 1023,
+      "selected_ids": [
+       "c07",
+       "c09"
+      ],
+      "weighted_sum_mm": 258355933
+     },
+     {
+      "cost": 1214,
+      "selected_ids": [
+       "c03",
+       "c07",
+       "c09"
+      ],
+      "weighted_sum_mm": 257753594
+     },
+     {
+      "cost": 1217,
+      "selected_ids": [
+       "c07",
+       "c09",
+       "c14"
+      ],
+      "weighted_sum_mm": 251016865
+     },
+     {
+      "cost": 1438,
+      "selected_ids": [
+       "c07",
+       "c09",
+       "c15"
+      ],
+      "weighted_sum_mm": 239483700
+     }
+    ],
+    "problem_digest": "sha256:fa879c9c32c3022199551e30acbbc69aba618b3d57529125e1fcc1018905ac6a"
+   },
+   "kind": "synthetic_points_and_candidates",
+   "scenario": {
+    "budget": 3850,
+    "candidates": [
+     {
+      "category": "school",
+      "cost": 543,
+      "id": "c00",
+      "kind": "hypothetical",
+      "lat": 42.315574,
+      "lon": 69.601916
+     },
+     {
+      "category": "school",
+      "cost": 187,
+      "id": "c01",
+      "kind": "hypothetical",
+      "lat": 42.311551,
+      "lon": 69.615622
+     },
+     {
+      "category": "school",
+      "cost": 847,
+      "id": "c02",
+      "kind": "hypothetical",
+      "lat": 42.314678,
+      "lon": 69.617623
+     },
+     {
+      "category": "school",
+      "cost": 191,
+      "id": "c03",
+      "kind": "hypothetical",
+      "lat": 42.311634,
+      "lon": 69.613972
+     },
+     {
+      "category": "school",
+      "cost": 601,
+      "id": "c04",
+      "kind": "hypothetical",
+      "lat": 42.314171,
+      "lon": 69.595012
+     },
+     {
+      "category": "school",
+      "cost": 265,
+      "id": "c05",
+      "kind": "hypothetical",
+      "lat": 42.314953,
+      "lon": 69.594949
+     },
+     {
+      "category": "school",
+      "cost": 500,
+      "id": "c06",
+      "kind": "hypothetical",
+      "lat": 42.319796,
+      "lon": 69.59789
+     },
+     {
+      "category": "school",
+      "cost": 134,
+      "id": "c07",
+      "kind": "hypothetical",
+      "lat": 42.307577,
+      "lon": 69.606758
+     },
+     {
+      "category": "school",
+      "cost": 543,
+      "id": "c08",
+      "kind": "hypothetical",
+      "lat": 42.308672,
+      "lon": 69.5934
+     },
+     {
+      "category": "school",
+      "cost": 889,
+      "id": "c09",
+      "kind": "hypothetical",
+      "lat": 42.319544,
+      "lon": 69.616299
+     },
+     {
+      "category": "school",
+      "cost": 984,
+      "id": "c10",
+      "kind": "hypothetical",
+      "lat": 42.321622,
+      "lon": 69.605198
+     },
+     {
+      "category": "school",
+      "cost": 645,
+      "id": "c11",
+      "kind": "hypothetical",
+      "lat": 42.322853,
+      "lon": 69.606082
+     },
+     {
+      "category": "school",
+      "cost": 229,
+      "id": "c12",
+      "kind": "hypothetical",
+      "lat": 42.318874,
+      "lon": 69.596656
+     },
+     {
+      "category": "school",
+      "cost": 533,
+      "id": "c13",
+      "kind": "hypothetical",
+      "lat": 42.316692,
+      "lon": 69.596895
+     },
+     {
+      "category": "school",
+      "cost": 194,
+      "id": "c14",
+      "kind": "hypothetical",
+      "lat": 42.308456,
+      "lon": 69.598452
+     },
+     {
+      "category": "school",
+      "cost": 415,
+      "id": "c15",
+      "kind": "hypothetical",
+      "lat": 42.323528,
+      "lon": 69.603194
+     }
+    ],
+    "category": "school",
+    "city_id": "shymkent",
+    "control_points": [
+     {
+      "id": "p00",
+      "lat": 42.317584,
+      "lon": 69.615216,
+      "weight": 75
+     },
+     {
+      "id": "p01",
+      "lat": 42.31902,
+      "lon": 69.615015,
+      "weight": 85
+     },
+     {
+      "id": "p02",
+      "lat": 42.308935,
+      "lon": 69.594507,
+      "weight": 18
+     },
+     {
+      "id": "p03",
+      "lat": 42.322107,
+      "lon": 69.601967,
+      "weight": 14
+     },
+     {
+      "id": "p04",
+      "lat": 42.309956,
+      "lon": 69.605232,
+      "weight": 30
+     },
+     {
+      "id": "p05",
+      "lat": 42.307863,
+      "lon": 69.609729,
+      "weight": 34
+     },
+     {
+      "id": "p06",
+      "lat": 42.323905,
+      "lon": 69.593762,
+      "weight": 56
+     },
+     {
+      "id": "p07",
+      "lat": 42.316302,
+      "lon": 69.597828,
+      "weight": 31
+     },
+     {
+      "id": "p08",
+      "lat": 42.313639,
+      "lon": 69.617124,
+      "weight": 81
+     },
+     {
+      "id": "p09",
+      "lat": 42.317671,
+      "lon": 69.610438,
+      "weight": 51
+     },
+     {
+      "id": "p10",
+      "lat": 42.320001,
+      "lon": 69.595484,
+      "weight": 11
+     },
+     {
+      "id": "p11",
+      "lat": 42.322823,
+      "lon": 69.609254,
+      "weight": 25
+     },
+     {
+      "id": "p12",
+      "lat": 42.317915,
+      "lon": 69.6088,
+      "weight": 59
+     },
+     {
+      "id": "p13",
+      "lat": 42.320196,
+      "lon": 69.603466,
+      "weight": 23
+     },
+     {
+      "id": "p14",
+      "lat": 42.321896,
+      "lon": 69.603324,
+      "weight": 27
+     },
+     {
+      "id": "p15",
+      "lat": 42.313607,
+      "lon": 69.604792,
+      "weight": 21
+     },
+     {
+      "id": "p16",
+      "lat": 42.323097,
+      "lon": 69.600429,
+      "weight": 93
+     },
+     {
+      "id": "p17",
+      "lat": 42.313874,
+      "lon": 69.609599,
+      "weight": 63
+     },
+     {
+      "id": "p18",
+      "lat": 42.313448,
+      "lon": 69.594885,
+      "weight": 5
+     },
+     {
+      "id": "p19",
+      "lat": 42.313276,
+      "lon": 69.611242,
+      "weight": 1
+     },
+     {
+      "id": "p20",
+      "lat": 42.31443,
+      "lon": 69.607774,
+      "weight": 16
+     },
+     {
+      "id": "p21",
+      "lat": 42.32063,
+      "lon": 69.609846,
+      "weight": 83
+     },
+     {
+      "id": "p22",
+      "lat": 42.32241,
+      "lon": 69.611926,
+      "weight": 58
+     },
+     {
+      "id": "p23",
+      "lat": 42.31658,
+      "lon": 69.594049,
+      "weight": 54
+     },
+     {
+      "id": "p24",
+      "lat": 42.312209,
+      "lon": 69.614476,
+      "weight": 19
+     }
+    ],
+    "coverage_radius_m": 300,
+    "excluded_ids": [],
+    "max_selected": 3,
+    "required_ids": [],
+    "schema_version": "city-plan-v2",
+    "selected_ids": [],
+    "source_snapshot": "k09r8-slice:0a7508473d7c18966b15cccd7c3a083f"
+   },
+   "slice": "shymkent_school"
+  },
+  {
+   "context": {
+    "baseline": "real_slice_records",
+    "bbox": [
+     71.418372,
+     51.163033,
+     71.447,
+     51.181
+    ],
+    "category": "outpatient_clinic",
+    "city_id": "astana",
+    "metric_version": "haversine-mm-v1",
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "sources": [
+     {
+      "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+      "lat": 51.169953,
+      "lon": 71.422483
+     },
+     {
+      "id": "1116880a-cbb6-4271-9a59-a277083b792c",
+      "lat": 51.176756,
+      "lon": 71.424931
+     },
+     {
+      "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08",
+      "lat": 51.1699,
+      "lon": 71.44229
+     },
+     {
+      "id": "166c939f-9131-4fbb-bf75-4ab543916f20",
+      "lat": 51.17117,
+      "lon": 71.41939
+     },
+     {
+      "id": "1d137305-49cd-450b-9626-9762db14d080",
+      "lat": 51.1748,
+      "lon": 71.436912
+     },
+     {
+      "id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f",
+      "lat": 51.16873,
+      "lon": 71.44025
+     },
+     {
+      "id": "3fba1026-8464-41ab-88f8-633e3df0de30",
+      "lat": 51.166785,
+      "lon": 71.441358
+     },
+     {
+      "id": "410f0193-f0bc-4553-bee5-660aab0287a5",
+      "lat": 51.167329,
+      "lon": 71.429936
+     },
+     {
+      "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371",
+      "lat": 51.177044,
+      "lon": 71.422047
+     },
+     {
+      "id": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2",
+      "lat": 51.16305,
+      "lon": 71.42513
+     },
+     {
+      "id": "5f76d9b9-bdd1-4cea-9157-fef68ac60270",
+      "lat": 51.166964,
+      "lon": 71.434725
+     },
+     {
+      "id": "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8",
+      "lat": 51.16756,
+      "lon": 71.44127
+     },
+     {
+      "id": "771c278a-af10-4c57-b9fc-52755437345d",
+      "lat": 51.164151,
+      "lon": 71.438397
+     },
+     {
+      "id": "aca68551-4a03-47c2-813f-d13dceb85c62",
+      "lat": 51.16817,
+      "lon": 71.44606
+     },
+     {
+      "id": "b1fc81c5-7f00-4a0a-969d-2da872515916",
+      "lat": 51.17692,
+      "lon": 71.42629
+     },
+     {
+      "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050",
+      "lat": 51.179776,
+      "lon": 71.435461
+     }
+    ]
+   },
+   "expected": {
+    "budget_sensitivity": [
+     {
+      "budget": 0,
+      "objectives": {
+       "coverage": {
+        "cost": 0,
+        "covered_weight": 782,
+        "max_mm": 731068,
+        "selected_ids": [],
+        "unknown_count": 0,
+        "weighted_sum_mm": 389041805
+       },
+       "mean": {
+        "cost": 0,
+        "covered_weight": 782,
+        "max_mm": 731068,
+        "selected_ids": [],
+        "unknown_count": 0,
+        "weighted_sum_mm": 389041805
+       },
+       "minimax": {
+        "cost": 0,
+        "covered_weight": 782,
+        "max_mm": 731068,
+        "selected_ids": [],
+        "unknown_count": 0,
+        "weighted_sum_mm": 389041805
+       }
+      },
+      "reason": null,
+      "status": "optimal"
+     },
+     {
+      "budget": 2394,
+      "objectives": {
+       "coverage": {
+        "cost": 1689,
+        "covered_weight": 1150,
+        "max_mm": 414066,
+        "selected_ids": [
+         "c04",
+         "c07",
+         "c08"
+        ],
+        "unknown_count": 0,
+        "weighted_sum_mm": 261753275
+       },
+       "mean": {
+        "cost": 1689,
+        "covered_weight": 1150,
+        "max_mm": 414066,
+        "selected_ids": [
+         "c04",
+         "c07",
+         "c08"
+        ],
+        "unknown_count": 0,
+        "weighted_sum_mm": 261753275
+       },
+       "minimax": {
+        "cost": 1853,
+        "covered_weight": 1115,
+        "max_mm": 397528,
+        "selected_ids": [
+         "c07",
+         "c08",
+         "c15"
+        ],
+        "unknown_count": 0,
+        "weighted_sum_mm": 281565987
+       }
+      },
+      "reason": null,
+      "status": "optimal"
+     },
+     {
+      "budget": 4788,
+      "objectives": {
+       "coverage": {
+        "cost": 1689,
+        "covered_weight": 1150,
+        "max_mm": 414066,
+        "selected_ids": [
+         "c04",
+         "c07",
+         "c08"
+        ],
+        "unknown_count": 0,
+        "weighted_sum_mm": 261753275
+       },
+       "mean": {
+        "cost": 1689,
+        "covered_weight": 1150,
+        "max_mm": 414066,
+        "selected_ids": [
+         "c04",
+         "c07",
+         "c08"
+        ],
+        "unknown_count": 0,
+        "weighted_sum_mm": 261753275
+       },
+       "minimax": {
+        "cost": 1853,
+        "covered_weight": 1115,
+        "max_mm": 397528,
+        "selected_ids": [
+         "c07",
+         "c08",
+         "c15"
+        ],
+        "unknown_count": 0,
+        "weighted_sum_mm": 281565987
+       }
+      },
+      "reason": null,
+      "status": "optimal"
+     }
+    ],
+    "feasible_count": 697,
+    "objectives": {
+     "coverage": {
+      "cost": 1689,
+      "coverage_fraction": 0.8765243902439024,
+      "covered_weight": 1150,
+      "max_mm": 414066,
+      "selected_ids": [
+       "c04",
+       "c07",
+       "c08"
+      ],
+      "unknown_count": 0,
+      "weighted_mean_mm": 199507.0693597561,
+      "weighted_sum_mm": 261753275
+     },
+     "mean": {
+      "cost": 1689,
+      "coverage_fraction": 0.8765243902439024,
+      "covered_weight": 1150,
+      "max_mm": 414066,
+      "selected_ids": [
+       "c04",
+       "c07",
+       "c08"
+      ],
+      "unknown_count": 0,
+      "weighted_mean_mm": 199507.0693597561,
+      "weighted_sum_mm": 261753275
+     },
+     "minimax": {
+      "cost": 1853,
+      "coverage_fraction": 0.8498475609756098,
+      "covered_weight": 1115,
+      "max_mm": 397528,
+      "selected_ids": [
+       "c07",
+       "c08",
+       "c15"
+      ],
+      "unknown_count": 0,
+      "weighted_mean_mm": 214608.2217987805,
+      "weighted_sum_mm": 281565987
+     }
+    },
+    "pareto": [
+     {
+      "cost": 0,
+      "selected_ids": [],
+      "weighted_sum_mm": 389041805
+     },
+     {
+      "cost": 253,
+      "selected_ids": [
+       "c12"
+      ],
+      "weighted_sum_mm": 388947333
+     },
+     {
+      "cost": 311,
+      "selected_ids": [
+       "c08"
+      ],
+      "weighted_sum_mm": 325630668
+     },
+     {
+      "cost": 564,
+      "selected_ids": [
+       "c08",
+       "c12"
+      ],
+      "weighted_sum_mm": 325536196
+     },
+     {
+      "cost": 670,
+      "selected_ids": [
+       "c05",
+       "c08"
+      ],
+      "weighted_sum_mm": 318300573
+     },
+     {
+      "cost": 714,
+      "selected_ids": [
+       "c08",
+       "c11"
+      ],
+      "weighted_sum_mm": 309619615
+     },
+     {
+      "cost": 859,
+      "selected_ids": [
+       "c04",
+       "c08"
+      ],
+      "weighted_sum_mm": 303078066
+     },
+     {
+      "cost": 1073,
+      "selected_ids": [
+       "c05",
+       "c08",
+       "c11"
+      ],
+      "weighted_sum_mm": 302289520
+     },
+     {
+      "cost": 1141,
+      "selected_ids": [
+       "c07",
+       "c08"
+      ],
+      "weighted_sum_mm": 284305877
+     },
+     {
+      "cost": 1394,
+      "selected_ids": [
+       "c07",
+       "c08",
+       "c12"
+      ],
+      "weighted_sum_mm": 284211405
+     },
+     {
+      "cost": 1500,
+      "selected_ids": [
+       "c05",
+       "c07",
+       "c08"
+      ],
+      "weighted_sum_mm": 276975782
+     },
+     {
+      "cost": 1689,
+      "selected_ids": [
+       "c04",
+       "c07",
+       "c08"
+      ],
+      "weighted_sum_mm": 261753275
+     }
+    ],
+    "problem_digest": "sha256:f09611c97351fbc9a62ac4cfba46342a60b8b7c09c95e7f45922b2510b6406c7"
+   },
+   "kind": "synthetic_points_and_candidates",
+   "scenario": {
+    "budget": 4788,
+    "candidates": [
+     {
+      "category": "outpatient_clinic",
+      "cost": 241,
+      "id": "c00",
+      "kind": "hypothetical",
+      "lat": 51.175385,
+      "lon": 71.418669
+     },
+     {
+      "category": "outpatient_clinic",
+      "cost": 781,
+      "id": "c01",
+      "kind": "hypothetical",
+      "lat": 51.172054,
+      "lon": 71.429817
+     },
+     {
+      "category": "outpatient_clinic",
+      "cost": 830,
+      "id": "c02",
+      "kind": "hypothetical",
+      "lat": 51.169732,
+      "lon": 71.433246
+     },
+     {
+      "category": "outpatient_clinic",
+      "cost": 684,
+      "id": "c03",
+      "kind": "hypothetical",
+      "lat": 51.179788,
+      "lon": 71.426187
+     },
+     {
+      "category": "outpatient_clinic",
+      "cost": 548,
+      "id": "c04",
+      "kind": "hypothetical",
+      "lat": 51.171647,
+      "lon": 71.42661
+     },
+     {
+      "category": "outpatient_clinic",
+      "cost": 359,
+      "id": "c05",
+      "kind": "hypothetical",
+      "lat": 51.176615,
+      "lon": 71.427652
+     },
+     {
+      "category": "outpatient_clinic",
+      "cost": 900,
+      "id": "c06",
+      "kind": "hypothetical",
+      "lat": 51.16938,
+      "lon": 71.445909
+     },
+     {
+      "category": "outpatient_clinic",
+      "cost": 830,
+      "id": "c07",
+      "kind": "hypothetical",
+      "lat": 51.176228,
+      "lon": 71.441563
+     },
+     {
+      "category": "outpatient_clinic",
+      "cost": 311,
+      "id": "c08",
+      "kind": "hypothetical",
+      "lat": 51.171579,
+      "lon": 71.43013
+     },
+     {
+      "category": "outpatient_clinic",
+      "cost": 694,
+      "id": "c09",
+      "kind": "hypothetical",
+      "lat": 51.178558,
+      "lon": 71.435692
+     },
+     {
+      "category": "outpatient_clinic",
+      "cost": 655,
+      "id": "c10",
+      "kind": "hypothetical",
+      "lat": 51.180992,
+      "lon": 71.435631
+     },
+     {
+      "category": "outpatient_clinic",
+      "cost": 403,
+      "id": "c11",
+      "kind": "hypothetical",
+      "lat": 51.175491,
+      "lon": 71.439022
+     },
+     {
+      "category": "outpatient_clinic",
+      "cost": 253,
+      "id": "c12",
+      "kind": "hypothetical",
+      "lat": 51.167156,
+      "lon": 71.434932
+     },
+     {
+      "category": "outpatient_clinic",
+      "cost": 738,
+      "id": "c13",
+      "kind": "hypothetical",
+      "lat": 51.172441,
+      "lon": 71.439403
+     },
+     {
+      "category": "outpatient_clinic",
+      "cost": 638,
+      "id": "c14",
+      "kind": "hypothetical",
+      "lat": 51.178722,
+      "lon": 71.435345
+     },
+     {
+      "category": "outpatient_clinic",
+      "cost": 712,
+      "id": "c15",
+      "kind": "hypothetical",
+      "lat": 51.171415,
+      "lon": 71.443616
+     }
+    ],
+    "category": "outpatient_clinic",
+    "city_id": "astana",
+    "control_points": [
+     {
+      "id": "p00",
+      "lat": 51.168247,
+      "lon": 71.421874,
+      "weight": 96
+     },
+     {
+      "id": "p01",
+      "lat": 51.174927,
+      "lon": 71.432047,
+      "weight": 13
+     },
+     {
+      "id": "p02",
+      "lat": 51.170458,
+      "lon": 71.42758,
+      "weight": 74
+     },
+     {
+      "id": "p03",
+      "lat": 51.166533,
+      "lon": 71.42671,
+      "weight": 12
+     },
+     {
+      "id": "p04",
+      "lat": 51.164816,
+      "lon": 71.430412,
+      "weight": 35
+     },
+     {
+      "id": "p05",
+      "lat": 51.171143,
+      "lon": 71.426119,
+      "weight": 49
+     },
+     {
+      "id": "p06",
+      "lat": 51.170755,
+      "lon": 71.429549,
+      "weight": 90
+     },
+     {
+      "id": "p07",
+      "lat": 51.165046,
+      "lon": 71.442455,
+      "weight": 40
+     },
+     {
+      "id": "p08",
+      "lat": 51.166206,
+      "lon": 71.437557,
+      "weight": 28
+     },
+     {
+      "id": "p09",
+      "lat": 51.164478,
+      "lon": 71.426257,
+      "weight": 31
+     },
+     {
+      "id": "p10",
+      "lat": 51.172848,
+      "lon": 71.431872,
+      "weight": 84
+     },
+     {
+      "id": "p11",
+      "lat": 51.178688,
+      "lon": 71.431557,
+      "weight": 91
+     },
+     {
+      "id": "p12",
+      "lat": 51.164934,
+      "lon": 71.435429,
+      "weight": 90
+     },
+     {
+      "id": "p13",
+      "lat": 51.176088,
+      "lon": 71.441378,
+      "weight": 57
+     },
+     {
+      "id": "p14",
+      "lat": 51.178119,
+      "lon": 71.422272,
+      "weight": 53
+     },
+     {
+      "id": "p15",
+      "lat": 51.17778,
+      "lon": 71.44626,
+      "weight": 26
+     },
+     {
+      "id": "p16",
+      "lat": 51.163218,
+      "lon": 71.433558,
+      "weight": 19
+     },
+     {
+      "id": "p17",
+      "lat": 51.17602,
+      "lon": 71.428216,
+      "weight": 81
+     },
+     {
+      "id": "p18",
+      "lat": 51.171494,
+      "lon": 71.428192,
+      "weight": 28
+     },
+     {
+      "id": "p19",
+      "lat": 51.174238,
+      "lon": 71.433862,
+      "weight": 36
+     },
+     {
+      "id": "p20",
+      "lat": 51.165121,
+      "lon": 71.420483,
+      "weight": 19
+     },
+     {
+      "id": "p21",
+      "lat": 51.164046,
+      "lon": 71.426648,
+      "weight": 100
+     },
+     {
+      "id": "p22",
+      "lat": 51.173149,
+      "lon": 71.424712,
+      "weight": 35
+     },
+     {
+      "id": "p23",
+      "lat": 51.174283,
+      "lon": 71.446628,
+      "weight": 85
+     },
+     {
+      "id": "p24",
+      "lat": 51.16933,
+      "lon": 71.445055,
+      "weight": 40
+     }
+    ],
+    "coverage_radius_m": 300,
+    "excluded_ids": [],
+    "max_selected": 3,
+    "required_ids": [],
+    "schema_version": "city-plan-v2",
+    "selected_ids": [],
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7"
+   },
+   "slice": "astana_clinic"
+  },
+  {
+   "context": {
+    "baseline": "empty_synthetic_condition",
+    "bbox": [
+     71.418372,
+     51.163033,
+     71.447,
+     51.181
+    ],
+    "category": "outpatient_clinic",
+    "city_id": "astana",
+    "metric_version": "haversine-mm-v1",
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7",
+    "sources": []
+   },
+   "expected": {
+    "budget_sensitivity": [
+     {
+      "budget": 0,
+      "objectives": {
+       "coverage": {
+        "cost": 0,
+        "covered_weight": 0,
+        "max_mm": null,
+        "selected_ids": [],
+        "unknown_count": 25,
+        "weighted_sum_mm": 0
+       },
+       "mean": {
+        "cost": 0,
+        "covered_weight": 0,
+        "max_mm": null,
+        "selected_ids": [],
+        "unknown_count": 25,
+        "weighted_sum_mm": 0
+       },
+       "minimax": {
+        "cost": 0,
+        "covered_weight": 0,
+        "max_mm": null,
+        "selected_ids": [],
+        "unknown_count": 25,
+        "weighted_sum_mm": 0
+       }
+      },
+      "reason": null,
+      "status": "optimal"
+     },
+     {
+      "budget": 2278,
+      "objectives": {
+       "coverage": {
+        "cost": 1263,
+        "covered_weight": 380,
+        "max_mm": 1084204,
+        "selected_ids": [
+         "c02",
+         "c09",
+         "c10"
+        ],
+        "unknown_count": 0,
+        "weighted_sum_mm": 690271635
+       },
+       "mean": {
+        "cost": 2221,
+        "covered_weight": 156,
+        "max_mm": 813716,
+        "selected_ids": [
+         "c03",
+         "c06",
+         "c12"
+        ],
+        "unknown_count": 0,
+        "weighted_sum_mm": 564633090
+       },
+       "minimax": {
+        "cost": 2221,
+        "covered_weight": 156,
+        "max_mm": 813716,
+        "selected_ids": [
+         "c03",
+         "c06",
+         "c12"
+        ],
+        "unknown_count": 0,
+        "weighted_sum_mm": 564633090
+       }
+      },
+      "reason": null,
+      "status": "optimal"
+     },
+     {
+      "budget": 4557,
+      "objectives": {
+       "coverage": {
+        "cost": 1263,
+        "covered_weight": 380,
+        "max_mm": 1084204,
+        "selected_ids": [
+         "c02",
+         "c09",
+         "c10"
+        ],
+        "unknown_count": 0,
+        "weighted_sum_mm": 690271635
+       },
+       "mean": {
+        "cost": 2221,
+        "covered_weight": 156,
+        "max_mm": 813716,
+        "selected_ids": [
+         "c03",
+         "c06",
+         "c12"
+        ],
+        "unknown_count": 0,
+        "weighted_sum_mm": 564633090
+       },
+       "minimax": {
+        "cost": 2221,
+        "covered_weight": 156,
+        "max_mm": 813716,
+        "selected_ids": [
+         "c03",
+         "c06",
+         "c12"
+        ],
+        "unknown_count": 0,
+        "weighted_sum_mm": 564633090
+       }
+      },
+      "reason": null,
+      "status": "optimal"
+     }
+    ],
+    "feasible_count": 697,
+    "objectives": {
+     "coverage": {
+      "cost": 1263,
+      "coverage_fraction": 0.2992125984251969,
+      "covered_weight": 380,
+      "max_mm": 1084204,
+      "selected_ids": [
+       "c02",
+       "c09",
+       "c10"
+      ],
+      "unknown_count": 0,
+      "weighted_mean_mm": 543520.9724409449,
+      "weighted_sum_mm": 690271635
+     },
+     "mean": {
+      "cost": 2221,
+      "coverage_fraction": 0.12283464566929134,
+      "covered_weight": 156,
+      "max_mm": 813716,
+      "selected_ids": [
+       "c03",
+       "c06",
+       "c12"
+      ],
+      "unknown_count": 0,
+      "weighted_mean_mm": 444592.9842519685,
+      "weighted_sum_mm": 564633090
+     },
+     "minimax": {
+      "cost": 2221,
+      "coverage_fraction": 0.12283464566929134,
+      "covered_weight": 156,
+      "max_mm": 813716,
+      "selected_ids": [
+       "c03",
+       "c06",
+       "c12"
+      ],
+      "unknown_count": 0,
+      "weighted_mean_mm": 444592.9842519685,
+      "weighted_sum_mm": 564633090
+     }
+    },
+    "pareto": [
+     {
+      "cost": 284,
+      "selected_ids": [
+       "c04"
+      ],
+      "weighted_sum_mm": 1340626461
+     },
+     {
+      "cost": 334,
+      "selected_ids": [
+       "c07"
+      ],
+      "weighted_sum_mm": 1312773300
+     },
+     {
+      "cost": 503,
+      "selected_ids": [
+       "c02"
+      ],
+      "weighted_sum_mm": 1288265400
+     },
+     {
+      "cost": 580,
+      "selected_ids": [
+       "c06"
+      ],
+      "weighted_sum_mm": 1159165082
+     },
+     {
+      "cost": 618,
+      "selected_ids": [
+       "c04",
+       "c07"
+      ],
+      "weighted_sum_mm": 900744043
+     },
+     {
+      "cost": 755,
+      "selected_ids": [
+       "c07",
+       "c09"
+      ],
+      "weighted_sum_mm": 886960835
+     },
+     {
+      "cost": 787,
+      "selected_ids": [
+       "c02",
+       "c04"
+      ],
+      "weighted_sum_mm": 857992890
+     },
+     {
+      "cost": 890,
+      "selected_ids": [
+       "c02",
+       "c15"
+      ],
+      "weighted_sum_mm": 818271953
+     },
+     {
+      "cost": 924,
+      "selected_ids": [
+       "c02",
+       "c09"
+      ],
+      "weighted_sum_mm": 791318683
+     },
+     {
+      "cost": 957,
+      "selected_ids": [
+       "c04",
+       "c07",
+       "c10"
+      ],
+      "weighted_sum_mm": 781368455
+     },
+     {
+      "cost": 1039,
+      "selected_ids": [
+       "c04",
+       "c07",
+       "c09"
+      ],
+      "weighted_sum_mm": 770745721
+     },
+     {
+      "cost": 1061,
+      "selected_ids": [
+       "c03",
+       "c04"
+      ],
+      "weighted_sum_mm": 727163796
+     },
+     {
+      "cost": 1126,
+      "selected_ids": [
+       "c02",
+       "c04",
+       "c10"
+      ],
+      "weighted_sum_mm": 692096998
+     },
+     {
+      "cost": 1198,
+      "selected_ids": [
+       "c03",
+       "c09"
+      ],
+      "weighted_sum_mm": 678382905
+     },
+     {
+      "cost": 1357,
+      "selected_ids": [
+       "c03",
+       "c06"
+      ],
+      "weighted_sum_mm": 678145239
+     },
+     {
+      "cost": 1400,
+      "selected_ids": [
+       "c03",
+       "c04",
+       "c10"
+      ],
+      "weighted_sum_mm": 599949740
+     },
+     {
+      "cost": 1482,
+      "selected_ids": [
+       "c03",
+       "c04",
+       "c09"
+      ],
+      "weighted_sum_mm": 590123020
+     },
+     {
+      "cost": 1537,
+      "selected_ids": [
+       "c03",
+       "c09",
+       "c10"
+      ],
+      "weighted_sum_mm": 581604627
+     },
+     {
+      "cost": 1696,
+      "selected_ids": [
+       "c03",
+       "c06",
+       "c10"
+      ],
+      "weighted_sum_mm": 568015377
+     },
+     {
+      "cost": 2221,
+      "selected_ids": [
+       "c03",
+       "c06",
+       "c12"
+      ],
+      "weighted_sum_mm": 564633090
+     }
+    ],
+    "problem_digest": "sha256:07ef02cc5316438cd1107da6334c0aec84d3efda5a9d6bb83779a3bdbe7b5135"
+   },
+   "kind": "synthetic_points_and_candidates",
+   "scenario": {
+    "budget": 4557,
+    "candidates": [
+     {
+      "category": "outpatient_clinic",
+      "cost": 789,
+      "id": "c00",
+      "kind": "hypothetical",
+      "lat": 51.168847,
+      "lon": 71.425709
+     },
+     {
+      "category": "outpatient_clinic",
+      "cost": 846,
+      "id": "c01",
+      "kind": "hypothetical",
+      "lat": 51.172426,
+      "lon": 71.437155
+     },
+     {
+      "category": "outpatient_clinic",
+      "cost": 503,
+      "id": "c02",
+      "kind": "hypothetical",
+      "lat": 51.16679,
+      "lon": 71.444354
+     },
+     {
+      "category": "outpatient_clinic",
+      "cost": 777,
+      "id": "c03",
+      "kind": "hypothetical",
+      "lat": 51.169478,
+      "lon": 71.439524
+     },
+     {
+      "category": "outpatient_clinic",
+      "cost": 284,
+      "id": "c04",
+      "kind": "hypothetical",
+      "lat": 51.172056,
+      "lon": 71.422622
+     },
+     {
+      "category": "outpatient_clinic",
+      "cost": 478,
+      "id": "c05",
+      "kind": "hypothetical",
+      "lat": 51.180011,
+      "lon": 71.4328
+     },
+     {
+      "category": "outpatient_clinic",
+      "cost": 580,
+      "id": "c06",
+      "kind": "hypothetical",
+      "lat": 51.175561,
+      "lon": 71.429236
+     },
+     {
+      "category": "outpatient_clinic",
+      "cost": 334,
+      "id": "c07",
+      "kind": "hypothetical",
+      "lat": 51.169897,
+      "lon": 71.446214
+     },
+     {
+      "category": "outpatient_clinic",
+      "cost": 535,
+      "id": "c08",
+      "kind": "hypothetical",
+      "lat": 51.178539,
+      "lon": 71.435971
+     },
+     {
+      "category": "outpatient_clinic",
+      "cost": 421,
+      "id": "c09",
+      "kind": "hypothetical",
+      "lat": 51.179017,
+      "lon": 71.430011
+     },
+     {
+      "category": "outpatient_clinic",
+      "cost": 339,
+      "id": "c10",
+      "kind": "hypothetical",
+      "lat": 51.179878,
+      "lon": 71.443013
+     },
+     {
+      "category": "outpatient_clinic",
+      "cost": 609,
+      "id": "c11",
+      "kind": "hypothetical",
+      "lat": 51.180337,
+      "lon": 71.443604
+     },
+     {
+      "category": "outpatient_clinic",
+      "cost": 864,
+      "id": "c12",
+      "kind": "hypothetical",
+      "lat": 51.176557,
+      "lon": 71.444924
+     },
+     {
+      "category": "outpatient_clinic",
+      "cost": 739,
+      "id": "c13",
+      "kind": "hypothetical",
+      "lat": 51.175376,
+      "lon": 71.431182
+     },
+     {
+      "category": "outpatient_clinic",
+      "cost": 630,
+      "id": "c14",
+      "kind": "hypothetical",
+      "lat": 51.174354,
+      "lon": 71.431064
+     },
+     {
+      "category": "outpatient_clinic",
+      "cost": 387,
+      "id": "c15",
+      "kind": "hypothetical",
+      "lat": 51.18,
+      "lon": 71.428938
+     }
+    ],
+    "category": "outpatient_clinic",
+    "city_id": "astana",
+    "control_points": [
+     {
+      "id": "p00",
+      "lat": 51.180241,
+      "lon": 71.424121,
+      "weight": 83
+     },
+     {
+      "id": "p01",
+      "lat": 51.167358,
+      "lon": 71.433701,
+      "weight": 78
+     },
+     {
+      "id": "p02",
+      "lat": 51.166529,
+      "lon": 71.428843,
+      "weight": 39
+     },
+     {
+      "id": "p03",
+      "lat": 51.166961,
+      "lon": 71.445118,
+      "weight": 26
+     },
+     {
+      "id": "p04",
+      "lat": 51.168211,
+      "lon": 71.433611,
+      "weight": 87
+     },
+     {
+      "id": "p05",
+      "lat": 51.17946,
+      "lon": 71.444515,
+      "weight": 72
+     },
+     {
+      "id": "p06",
+      "lat": 51.163898,
+      "lon": 71.437525,
+      "weight": 20
+     },
+     {
+      "id": "p07",
+      "lat": 51.166948,
+      "lon": 71.436281,
+      "weight": 90
+     },
+     {
+      "id": "p08",
+      "lat": 51.170287,
+      "lon": 71.437371,
+      "weight": 65
+     },
+     {
+      "id": "p09",
+      "lat": 51.170843,
+      "lon": 71.427799,
+      "weight": 67
+     },
+     {
+      "id": "p10",
+      "lat": 51.173719,
+      "lon": 71.445041,
+      "weight": 47
+     },
+     {
+      "id": "p11",
+      "lat": 51.178765,
+      "lon": 71.434244,
+      "weight": 10
+     },
+     {
+      "id": "p12",
+      "lat": 51.168103,
+      "lon": 71.433333,
+      "weight": 44
+     },
+     {
+      "id": "p13",
+      "lat": 51.163188,
+      "lon": 71.444015,
+      "weight": 1
+     },
+     {
+      "id": "p14",
+      "lat": 51.178112,
+      "lon": 71.431752,
+      "weight": 97
+     },
+     {
+      "id": "p15",
+      "lat": 51.174721,
+      "lon": 71.44629,
+      "weight": 6
+     },
+     {
+      "id": "p16",
+      "lat": 51.164933,
+      "lon": 71.442637,
+      "weight": 17
+     },
+     {
+      "id": "p17",
+      "lat": 51.175996,
+      "lon": 71.422938,
+      "weight": 87
+     },
+     {
+      "id": "p18",
+      "lat": 51.169679,
+      "lon": 71.439134,
+      "weight": 29
+     },
+     {
+      "id": "p19",
+      "lat": 51.170376,
+      "lon": 71.422806,
+      "weight": 9
+     },
+     {
+      "id": "p20",
+      "lat": 51.165703,
+      "lon": 71.445441,
+      "weight": 46
+     },
+     {
+      "id": "p21",
+      "lat": 51.177465,
+      "lon": 71.441816,
+      "weight": 56
+     },
+     {
+      "id": "p22",
+      "lat": 51.164083,
+      "lon": 71.435268,
+      "weight": 94
+     },
+     {
+      "id": "p23",
+      "lat": 51.172925,
+      "lon": 71.421396,
+      "weight": 44
+     },
+     {
+      "id": "p24",
+      "lat": 51.169309,
+      "lon": 71.443964,
+      "weight": 56
+     }
+    ],
+    "coverage_radius_m": 300,
+    "excluded_ids": [],
+    "max_selected": 3,
+    "required_ids": [],
+    "schema_version": "city-plan-v2",
+    "selected_ids": [],
+    "source_snapshot": "k09r8-slice:a886e697cf583e6947d4c40c68e656b7"
+   },
+   "slice": "astana_clinic_nobase"
+  }
+ ]
+}

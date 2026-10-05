@@ -1,5 +1,5 @@
 """Этап 3: план сетки, статистика (Wilson, точный McNemar, квантиль), один сценарий раннера."""
-import json, sys, unittest
+import json, math, sys, unittest
 from pathlib import Path
 
 K = Path(__file__).resolve().parents[1]
@@ -24,6 +24,9 @@ class TestStats(unittest.TestCase):
         self.assertAlmostEqual(X.mcnemar_exact(5, 0), 0.0625)
         self.assertAlmostEqual(X.mcnemar_exact(3, 3), 1.0)
         self.assertAlmostEqual(X.mcnemar_exact(1, 9), 2 * 11 / 1024)
+        for b, c in [(5, 0), (1, 9), (40, 3), (3, 3)]:
+            self.assertAlmostEqual(X.mcnemar_log10(b, c), math.log10(X.mcnemar_exact(b, c)), places=3)
+        self.assertLess(X.mcnemar_log10(1493, 34), -300)                    # p ниже наименьшего float, log10 конечен
 
     def test_nearest_rank(self):
         self.assertEqual(X._q([3, 1, 2, 4], 0.5), 2)
