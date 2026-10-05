@@ -1,0 +1,8 @@
+# K09-T1: заморозка B2 до прогона held-out (2026-10-05T09:02Z)
+# B2 настраивался только на dev (20/20 на dev после правок: стеммер коротких названий, удаление 'й' из усекаемых букв).
+dbd53d4450e31b18175e683c5cb9be4fae9683da83f956a294c6f87da08ac186  scripts/b2_parser.py
+838115116a4482919d389c70803d2ddb744d68727fc61e68518ee8ea5dabd3af  scripts/b1_a13.py
+cc0aa575fd06a0a56b38963fcb67973d3683dbbbabefd30e61ff2fa1568ff25f  scripts/t1_eval.py
+4ee6da79afb86b78d5b528071451deba88835aaa7dd1fb86f04f3d421878b5e2  dataset/t1_dataset.jsonl
+69326eb52c438cb624103cabdde0886d533fb2271c015cd137ac0e858d577d18  dataset/gazetteer.json
+efa981c0bb3455c2886a93716cf5b48becda189c4de86b96803cd5314e7db129  dataset/measure_catalog.json
