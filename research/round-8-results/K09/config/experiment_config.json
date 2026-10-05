@@ -1,0 +1,49 @@
+{
+ "_note": "Предрегистрация K09 round-8: фиксируется ДО любого прогона этапа 3. Seeds не подбираются под результат. Изменение после прогона — только новой версией файла с причиной.",
+ "config_version": "k09-r8-exp-v1",
+ "metric_version": "haversine-mm-v1",
+ "base_sha": "a5b5e2ddbe087c4eab8e947748cdf69dbae84a0d",
+ "baselines": {
+  "slices": [
+   {"id": "shymkent_school", "city": "shymkent", "category": "school", "baseline": "real_slice_records"},
+   {"id": "astana_clinic", "city": "astana", "category": "outpatient_clinic", "baseline": "real_slice_records"},
+   {"id": "astana_clinic_nobase", "city": "astana", "category": "outpatient_clinic", "baseline": "empty_synthetic_condition"}
+  ]
+ },
+ "factors": {
+  "n_candidates": [6, 10, 16],
+  "n_points": [5, 15, 25],
+  "budget_ratio": [0.25, 0.5, 1.0],
+  "weights": ["uniform", "random_1_100", "one_heavy"],
+  "max_selected": 3,
+  "coverage_radius_m": 300
+ },
+ "secondary": {
+  "_note": "Чувствительность метода, не города: max_selected и радиус на подвыборке (n_candidates=16, n_points=25, budget_ratio=0.5, weights=random_1_100).",
+  "max_selected": [1, 2, 5],
+  "coverage_radius_m": [100, 300, 800]
+ },
+ "seeds": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+ "synthetic_generation": {
+  "points": "uniform в bbox среза, округление координат до 6 знаков",
+  "candidates": "uniform в bbox среза, kind=hypothetical",
+  "cost": "целое uniform [100, 1000] условных единиц (synthetic, не тенге)",
+  "budget": "floor(budget_ratio * сумма стоимостей всех кандидатов)",
+  "required_excluded": "в основной сетке пусто; отдельные тесты ограничений"
+ },
+ "algorithms": {
+  "exact": "полный перебор всех допустимых подмножеств (≤16 кандидатов), три победителя по ключам CORE_SPEC",
+  "greedy_key": "G1: начиная с required, добавлять кандидата с наименьшим ключом цели среди допустимых; остановка, если ключ не улучшается; ничьи — меньший id",
+  "greedy_ratio": "G2: добавлять кандидата с наибольшим приращением основной метрики на единицу стоимости (unknown_count уменьшается — приоритет), затем сравнить с лучшим одиночным допустимым кандидатом; ничьи — меньший id"
+ },
+ "gap_definitions": {
+  "hit": "ключ greedy == ключ exact (по своей цели)",
+  "mean_abs_mm": "greedy.weighted_sum_mm - exact.weighted_sum_mm, только если unknown_count равны",
+  "mean_rel": "mean_abs_mm / exact.weighted_sum_mm, только если exact.weighted_sum_mm > 0, иначе null",
+  "minimax_abs_mm": "greedy.max_mm - exact.max_mm, только если оба определены",
+  "minimax_rel": "minimax_abs_mm / exact.max_mm, только если exact.max_mm > 0, иначе null",
+  "coverage_abs_weight": "exact.covered_weight - greedy.covered_weight",
+  "coverage_rel": "coverage_abs_weight / exact.covered_weight, только если > 0, иначе null",
+  "unknown_worse": "greedy.unknown_count > exact.unknown_count — числовой разрыв не вычисляется"
+ }
+}

@@ -1,0 +1,90 @@
+{
+ "_note": "synthetic: точки на одном меридиане lon=69.6; ожидаемые мм вычислены независимо формулой R*|Δφ| (не модулем k09plan).",
+ "kind": "synthetic_hand",
+ "radius_m": 100,
+ "points": [
+  {
+   "id": "p1",
+   "lon": 69.6,
+   "lat": 42.31,
+   "weight": 3
+  },
+  {
+   "id": "p2",
+   "lon": 69.6,
+   "lat": 42.312,
+   "weight": 1
+  }
+ ],
+ "sources": [
+  {
+   "id": "s1",
+   "lon": 69.6,
+   "lat": 42.3106
+  }
+ ],
+ "candidates": [
+  {
+   "id": "c1",
+   "lon": 69.6,
+   "lat": 42.3122,
+   "cost": 300
+  },
+  {
+   "id": "c2",
+   "lon": 69.6,
+   "lat": 42.31,
+   "cost": 500
+  }
+ ],
+ "pair_mm": {
+  "p1-s1": 66717,
+  "p2-s1": 155673,
+  "p1-c1": 244629,
+  "p2-c1": 22239,
+  "p1-c2": 0,
+  "p2-c2": 222390
+ },
+ "expected": {
+  "empty": {
+   "after_mm": {
+    "p1": 66717,
+    "p2": 155673
+   },
+   "weighted_sum_mm": 355824,
+   "max_mm": 155673,
+   "covered_weight": 3,
+   "cost": 0
+  },
+  "c1": {
+   "after_mm": {
+    "p1": 66717,
+    "p2": 22239
+   },
+   "weighted_sum_mm": 222390,
+   "max_mm": 66717,
+   "covered_weight": 4,
+   "cost": 300
+  },
+  "c2": {
+   "after_mm": {
+    "p1": 0,
+    "p2": 155673
+   },
+   "weighted_sum_mm": 155673,
+   "max_mm": 155673,
+   "covered_weight": 3,
+   "cost": 500
+  },
+  "c1+c2": {
+   "after_mm": {
+    "p1": 0,
+    "p2": 22239
+   },
+   "weighted_sum_mm": 22239,
+   "max_mm": 22239,
+   "covered_weight": 4,
+   "cost": 800
+  }
+ }
+}
