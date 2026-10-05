@@ -32,9 +32,13 @@
   ],
   "next_step": "Coordinator: send this session its assignment (NN_role, sphere, cities, task_id) or a link/ZIP with prior results",
   "push": {
-    "status": "refused",
-    "http_status": 403,
-    "gate": "repo_not_connected",
-    "note": "local commit only; delivered to user as a patch"
+    "status": "pushed",
+    "first_attempt": {
+      "status": "refused",
+      "http_status": 403,
+      "gate": "repo_not_connected"
+    },
+    "pushed_commit": "5b70d5b27b8b061ca47e856f3f4b003c3844b62c",
+    "note": "status update itself is in the follow-up commit"
   }
 }
