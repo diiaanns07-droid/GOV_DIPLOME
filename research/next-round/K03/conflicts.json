@@ -1,0 +1,246 @@
+{
+ "generated_by": "research/next-round/K03/k03_geo_verify.py",
+ "conflicts": [
+  {
+   "id": "K03-C01",
+   "city": "astana",
+   "type": "city_vs_region_overlap",
+   "units": [
+    "kz.astana.district.baikonur (rel 8593081)",
+    "Целиноградский район (rel 3403760, Акмолинская обл.)"
+   ],
+   "measured": {
+    "overlap_km2": 9.021,
+    "rep_point": [
+     71.66574,
+     51.33028
+    ],
+    "exclave_ring_ways": [
+     372797931
+    ],
+    "exclave_ways_in_tselinograd": {},
+    "relations_with_exclave_way": [
+     "8593081"
+    ]
+   },
+   "osm_status": "confirmed in saved OSM snapshot by way membership (not an assembly artifact)",
+   "legal_status": "unknown: no official act/map opened",
+   "source_claim": "AST-A12-F012 (medium); AST-A12 возражение 3",
+   "boundary_version": "osm:2026-09-22T08:45:51Z",
+   "handling": "topology_conflict; не относить объекты эксклава к Астане без ручного решения"
+  },
+  {
+   "id": "K03-C02",
+   "city": "astana",
+   "type": "admin_level_inconsistency",
+   "units": [
+    "kz.astana.district.saraishyk (rel 19733918)"
+   ],
+   "measured": {
+    "saraishyk_admin_level": "8",
+    "others": "6",
+    "osm_version": 17,
+    "last_edit": "2026-09-21T13:44:01Z"
+   },
+   "osm_status": "confirmed in saved OSM snapshot and OSM API copy",
+   "legal_status": "n/a (OSM tagging)",
+   "source_claim": "A12-F003, AST-A12-F009, AST-A12-F010",
+   "boundary_version": "osm:2026-09-22T08:45:51Z",
+   "handling": "выбирать районы по явному списку relation id, не по admin_level"
+  },
+  {
+   "id": "K03-C03",
+   "city": "astana",
+   "type": "bbox_selection_leak",
+   "units": [
+    "3403760 Целиноград ауданы (admin_level 6)",
+    "3403782 Аршалы ауданы (admin_level 6)",
+    "3404061 Шортанды ауданы (admin_level 6)",
+    "15594335 Қосшы қалалық әкімдігі (admin_level 6)",
+    "17952313 Тайтөбе ауылдық әкімдігі (admin_level 8)"
+   ],
+   "measured": {
+    "relations_in_response": 11,
+    "astana": 6
+   },
+   "osm_status": "confirmed",
+   "legal_status": "n/a",
+   "source_claim": "A12-F004 (называет Косшы и 3 района; Тайтөбе не упомянута)",
+   "boundary_version": "osm:2026-09-22T08:45:51Z",
+   "handling": "не агрегировать по bbox; Тайтөбе (admin_level 8) целиком внутри Косшы — вложенность, не конфликт"
+  },
+  {
+   "id": "K03-C04",
+   "city": "shymkent",
+   "type": "missing_geometry_and_stale_global_layer",
+   "units": [
+    "kz.shymkent"
+   ],
+   "measured": {
+    "real_geometry_in_repo": false,
+    "natural_earth_files_in_repo": false
+   },
+   "osm_status": "missing: Overpass blocked (A12, K03)",
+   "legal_status": "unknown",
+   "source_claim": "A12-F010…F012 (Natural Earth относит Шымкент к Туркестанской обл.) — входные файлы NE не сохранены, K03 не воспроизвёл",
+   "boundary_version": null,
+   "handling": "не создавать полигоны; не использовать глобальные admin-1 для привязки к городу"
+  },
+  {
+   "id": "K03-C05",
+   "city": "astana",
+   "type": "identifier_ambiguity",
+   "units": [
+    "kz.astana",
+    "kz.astana.district.esil",
+    "kz.astana.district.almaty",
+    "kz.astana.district.saryarka",
+    "kz.astana.district.baikonur",
+    "kz.astana.district.saraishyk",
+    "kz.astana.district.nura"
+   ],
+   "measured": {
+    "nominatim_iso_lvl4": "KZ-71",
+    "nominatim_iso_lvl15": "KZ-AST",
+    "osm_kato_tags": {
+     "esil": "711210000",
+     "almaty": "711110000",
+     "saryarka": "711310000",
+     "baikonur": "711410000",
+     "saraishyk": null,
+     "nura": null
+    }
+   },
+   "osm_status": "observed in saved Nominatim/OSM files",
+   "legal_status": "not_verified: ISO OBP and stat.gov.kz KATO not opened",
+   "source_claim": "A12-F005 указывает только KZ-71; A12/AST-A12 считают KATO неизвестным, хотя в снимке есть теги kato у 4 районов",
+   "boundary_version": "osm:2026-09-22T08:45:51Z",
+   "handling": "хранить kato_code с kato_source=osm; заменить официальным после сверки; у Нуры и Сарайшыка kato нет"
+  },
+  {
+   "id": "K03-C06",
+   "city": "astana",
+   "type": "district_list_mismatch_in_product",
+   "units": [
+    "city_data.json",
+    "real_context.json",
+    "astana_districts.geojson"
+   ],
+   "measured": {
+    "city_data_districts": [
+     "esil",
+     "almaty",
+     "saryarka",
+     "baikonur",
+     "nura"
+    ],
+    "real_context_districts": [
+     "almaty",
+     "baikonur",
+     "esil",
+     "nura",
+     "saryarka"
+    ],
+    "real_context_nonzero": 0,
+    "real_context_meta": {
+     "status": "unavailable",
+     "generated_at": "2026-09-23T09:25:25+00:00",
+     "districts_source": "fallback_approx"
+    },
+    "geojson_districts": [
+     "almaty",
+     "baikonur",
+     "esil",
+     "nura",
+     "saraishyk",
+     "saryarka"
+    ]
+   },
+   "osm_status": "observed in repo files",
+   "legal_status": "n/a",
+   "source_claim": "A12-F006, A12-F008, AST-A12-F003, AST-A12-F006",
+   "boundary_version": null,
+   "handling": "учебные 5 районов (synthetic) не смешивать с 6 районами OSM; real_context — нули-заглушки"
+  },
+  {
+   "id": "K03-C07",
+   "city": "astana",
+   "type": "boundary_tie_points",
+   "units": [
+    "baikonur, esil, nura, saryarka",
+    "almaty, baikonur, esil",
+    "almaty, esil, saraishyk"
+   ],
+   "measured": {
+    "points": [
+     {
+      "point": [
+       71.428229,
+       51.1518972
+      ],
+      "districts": [
+       "baikonur",
+       "esil",
+       "nura",
+       "saryarka"
+      ]
+     },
+     {
+      "point": [
+       71.438473,
+       51.1475427
+      ],
+      "districts": [
+       "almaty",
+       "baikonur",
+       "esil"
+      ]
+     },
+     {
+      "point": [
+       71.447389,
+       51.1311552
+      ],
+      "districts": [
+       "almaty",
+       "esil",
+       "saraishyk"
+      ]
+     }
+    ],
+    "ast_a12_point": {
+     "point": [
+      71.447389,
+      51.1311552
+     ],
+     "shared_vertex_districts": [
+      "almaty",
+      "esil",
+      "saraishyk"
+     ],
+     "contains": {
+      "esil": false,
+      "almaty": false,
+      "saryarka": false,
+      "baikonur": false,
+      "nura": false,
+      "saraishyk": false
+     },
+     "covers": {
+      "esil": true,
+      "almaty": true,
+      "saryarka": false,
+      "baikonur": false,
+      "nura": false,
+      "saraishyk": true
+     }
+    }
+   },
+   "osm_status": "confirmed: contains() False для всех, covers() True для сходящихся районов",
+   "legal_status": "n/a",
+   "source_claim": "AST-A12-F014 (называет одну точку; найдено 3, одна — на 4 района)",
+   "boundary_version": "osm:2026-09-22T08:45:51Z",
+   "handling": "правило разрешения ничьих (boundary_tie) при привязке точек"
+  }
+ ]
+}

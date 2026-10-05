@@ -1,0 +1,877 @@
+{
+ "meta": {
+  "task": "K03 geography verification",
+  "network_used": false,
+  "python": "3.11.15",
+  "shapely": "2.1.2",
+  "pyproj": "3.7.2",
+  "inputs": {
+   "data/astana_districts.geojson": "9092aebb997086d4fbf30963dd84dfae6aab483a585ba6f536944fb03a4eb95e",
+   "data/geo_sources/astana_districts_overpass.json": "ebd6019b0ea32cef4d3f27c79bc0a979284fe35476551742eea8ba4839f01392",
+   "data/geo_sources/overpass.json": "b302a482279afd727c82f8f919f1dabd98e218bb7f563ccecd354ecf3c220b36",
+   "data/geo_sources/sara_osm.json": "c3ef515903b405d4f05b4f512e239653df267962a8bde06824ed4e5005f62a32",
+   "data/geo_sources/sara_nominatim.json": "43401251df6f3034d3fe17ce645bca97adf1ccd5e6a2bc4c2a754588fbf367e9",
+   "data/real_context.json": "7f630d689e2877248361bef0186fedc97e8bf6aa8066f2e969bd382c3553c80a",
+   "data/real_context_meta.json": "3eefd513b2f0a43f0c18f3c5cc4e75a725e05674fd1cb08f3d2ef2239a406ab6",
+   "data/city_data.json": "403478c12fbe8cf64b9953f4d0ff0e713415be923bf1f241a2c60994b51b66e8",
+   "research/astana-results/03_logistics/extracted_files__25_/AST_A03_input_astana_districts_osm.geojson": "9092aebb997086d4fbf30963dd84dfae6aab483a585ba6f536944fb03a4eb95e",
+   "research/govtech-results/03_logistics/extracted_files__22_/A03_synthetic_instance.geojson": "5897d628e9829ede93da2ddd691a61f5e8e31be49789395bc9a0ca23bb62875a"
+  }
+ },
+ "V1_raw_overpass_copies": {
+  "same_osm_base": true,
+  "same_elements": true,
+  "only_difference_is_provenance_key": true
+ },
+ "V2_bbox_relations": {
+  "query": "https://overpass-api.de/api/interpreter?data=%5Bout%3Ajson%5D%5Btimeout%3A25%5D%3Brel%5B%22boundary%22%3D%22administrative%22%5D%5B%22admin_level%22~%22%5E%285%7C6%7C7%7C8%7C9%29%24%22%5D%2850.90%2C71.0%2C51.5%2C72.0%29%3Bout+geom%3B",
+  "osm_base": "2026-09-22T08:45:51Z",
+  "retrieved_at": "2026-09-23T11:28:06+00:00",
+  "count": 11,
+  "astana_districts": 6,
+  "not_astana": [
+   {
+    "relation": 3403760,
+    "name": "Целиноград ауданы",
+    "admin_level": "6",
+    "addr_region": "Ақмола облысы"
+   },
+   {
+    "relation": 3403782,
+    "name": "Аршалы ауданы",
+    "admin_level": "6",
+    "addr_region": "Ақмола облысы"
+   },
+   {
+    "relation": 3404061,
+    "name": "Шортанды ауданы",
+    "admin_level": "6",
+    "addr_region": "Ақмола облысы"
+   },
+   {
+    "relation": 15594335,
+    "name": "Қосшы қалалық әкімдігі",
+    "admin_level": "6",
+    "addr_region": "Ақмола облысы"
+   },
+   {
+    "relation": 17952313,
+    "name": "Тайтөбе ауылдық әкімдігі",
+    "admin_level": "8",
+    "addr_region": null
+   }
+  ],
+  "relations": [
+   {
+    "relation": 3403760,
+    "in_product": false,
+    "legacy_id": null,
+    "admin_level": "6",
+    "name": "Целиноград ауданы",
+    "name_ru": "Целиноградский район",
+    "name_kk": "Целиноград ауданы",
+    "name_en": "Celïnograd District",
+    "addr_region": "Ақмола облысы",
+    "wikidata": "Q2224859",
+    "id_like_tags": {}
+   },
+   {
+    "relation": 3403782,
+    "in_product": false,
+    "legacy_id": null,
+    "admin_level": "6",
+    "name": "Аршалы ауданы",
+    "name_ru": "Аршалынский район",
+    "name_kk": "Аршалы ауданы",
+    "name_en": "Arşalı district",
+    "addr_region": "Ақмола облысы",
+    "wikidata": "Q2321988",
+    "id_like_tags": {}
+   },
+   {
+    "relation": 3404061,
+    "in_product": false,
+    "legacy_id": null,
+    "admin_level": "6",
+    "name": "Шортанды ауданы",
+    "name_ru": "Шортандинский район",
+    "name_kk": "Шортанды ауданы",
+    "name_en": "Şortandı district",
+    "addr_region": "Ақмола облысы",
+    "wikidata": "Q2556281",
+    "id_like_tags": {}
+   },
+   {
+    "relation": 3479876,
+    "in_product": true,
+    "legacy_id": "esil",
+    "admin_level": "6",
+    "name": "Есіл ауданы",
+    "name_ru": "район Есиль",
+    "name_kk": null,
+    "name_en": "Esil district",
+    "addr_region": null,
+    "wikidata": "Q16648877",
+    "id_like_tags": {
+     "kato": "711210000"
+    }
+   },
+   {
+    "relation": 3482819,
+    "in_product": true,
+    "legacy_id": "almaty",
+    "admin_level": "6",
+    "name": "Алматы ауданы",
+    "name_ru": "район Алматы",
+    "name_kk": null,
+    "name_en": "Almaty District",
+    "addr_region": null,
+    "wikidata": "Q12528524",
+    "id_like_tags": {
+     "kato": "711110000"
+    }
+   },
+   {
+    "relation": 3486954,
+    "in_product": true,
+    "legacy_id": "saryarka",
+    "admin_level": "6",
+    "name": "Сарыарқа ауданы",
+    "name_ru": "район Сарыарка",
+    "name_kk": "Сарыарқа ауданы",
+    "name_en": "Sarıarqa district",
+    "addr_region": null,
+    "wikidata": "Q16694762",
+    "id_like_tags": {
+     "kato": "711310000"
+    }
+   },
+   {
+    "relation": 8593081,
+    "in_product": true,
+    "legacy_id": "baikonur",
+    "admin_level": "6",
+    "name": "Байқоңыр ауданы",
+    "name_ru": "район Байконур",
+    "name_kk": "Байқоңыр ауданы",
+    "name_en": "Bayqoñır district",
+    "addr_region": null,
+    "wikidata": "Q57782659",
+    "id_like_tags": {
+     "kato": "711410000"
+    }
+   },
+   {
+    "relation": 15594335,
+    "in_product": false,
+    "legacy_id": null,
+    "admin_level": "6",
+    "name": "Қосшы қалалық әкімдігі",
+    "name_ru": "городская администрация Косшы",
+    "name_kk": "Қосшы қалалық әкімдігі",
+    "name_en": "Kosshy C.A.",
+    "addr_region": "Ақмола облысы",
+    "wikidata": null,
+    "id_like_tags": {}
+   },
+   {
+    "relation": 17952313,
+    "in_product": false,
+    "legacy_id": null,
+    "admin_level": "8",
+    "name": "Тайтөбе ауылдық әкімдігі",
+    "name_ru": "Тайтобинская сельская администрация",
+    "name_kk": "Тайтөбе ауылдық әкімдігі",
+    "name_en": null,
+    "addr_region": null,
+    "wikidata": "Q56367432",
+    "id_like_tags": {}
+   },
+   {
+    "relation": 19733918,
+    "in_product": true,
+    "legacy_id": "saraishyk",
+    "admin_level": "8",
+    "name": "Сарайшық ауданы",
+    "name_ru": "район Сарайшык",
+    "name_kk": "Сарайшық ауданы",
+    "name_en": "Saraişyq audany",
+    "addr_region": null,
+    "wikidata": null,
+    "id_like_tags": {}
+   },
+   {
+    "relation": 20593940,
+    "in_product": true,
+    "legacy_id": "nura",
+    "admin_level": "6",
+    "name": "Нұра ауданы",
+    "name_ru": "район Нура",
+    "name_kk": "Нұра ауданы",
+    "name_en": "Nura district",
+    "addr_region": null,
+    "wikidata": null,
+    "id_like_tags": {}
+   }
+  ]
+ },
+ "V3_assembly": {
+  "3403760": {
+   "name": "Целиноград ауданы",
+   "roles": {
+    "outer": 54,
+    "inner": 1
+   },
+   "outer_rings": 2,
+   "inner_rings": 1,
+   "open_chains": 0,
+   "rings_valid": true,
+   "geom_valid": true,
+   "area_km2": 7666.728,
+   "parts_km2": [
+    6049.245,
+    1617.483
+   ]
+  },
+  "3403782": {
+   "name": "Аршалы ауданы",
+   "roles": {
+    "outer": 28
+   },
+   "outer_rings": 1,
+   "inner_rings": 0,
+   "open_chains": 0,
+   "rings_valid": true,
+   "geom_valid": true,
+   "area_km2": 5846.904,
+   "parts_km2": [
+    5846.904
+   ]
+  },
+  "3404061": {
+   "name": "Шортанды ауданы",
+   "roles": {
+    "outer": 25
+   },
+   "outer_rings": 1,
+   "inner_rings": 0,
+   "open_chains": 0,
+   "rings_valid": true,
+   "geom_valid": true,
+   "area_km2": 4681.659,
+   "parts_km2": [
+    4681.659
+   ]
+  },
+  "3479876": {
+   "name": "Есіл ауданы",
+   "roles": {
+    "outer": 10
+   },
+   "outer_rings": 1,
+   "inner_rings": 0,
+   "open_chains": 0,
+   "rings_valid": true,
+   "geom_valid": true,
+   "area_km2": 194.556,
+   "parts_km2": [
+    194.556
+   ]
+  },
+  "3482819": {
+   "name": "Алматы ауданы",
+   "roles": {
+    "outer": 81
+   },
+   "outer_rings": 2,
+   "inner_rings": 0,
+   "open_chains": 0,
+   "rings_valid": true,
+   "geom_valid": true,
+   "area_km2": 93.379,
+   "parts_km2": [
+    88.586,
+    4.794
+   ]
+  },
+  "3486954": {
+   "name": "Сарыарқа ауданы",
+   "roles": {
+    "outer": 23
+   },
+   "outer_rings": 1,
+   "inner_rings": 0,
+   "open_chains": 0,
+   "rings_valid": true,
+   "geom_valid": true,
+   "area_km2": 67.823,
+   "parts_km2": [
+    67.823
+   ]
+  },
+  "8593081": {
+   "name": "Байқоңыр ауданы",
+   "roles": {
+    "outer": 18
+   },
+   "outer_rings": 3,
+   "inner_rings": 0,
+   "open_chains": 0,
+   "rings_valid": true,
+   "geom_valid": true,
+   "area_km2": 183.501,
+   "parts_km2": [
+    169.448,
+    9.021,
+    5.033
+   ]
+  },
+  "15594335": {
+   "name": "Қосшы қалалық әкімдігі",
+   "roles": {
+    "outer": 8
+   },
+   "outer_rings": 1,
+   "inner_rings": 0,
+   "open_chains": 0,
+   "rings_valid": true,
+   "geom_valid": true,
+   "area_km2": 141.201,
+   "parts_km2": [
+    141.201
+   ]
+  },
+  "17952313": {
+   "name": "Тайтөбе ауылдық әкімдігі",
+   "roles": {
+    "outer": 6
+   },
+   "outer_rings": 1,
+   "inner_rings": 0,
+   "open_chains": 0,
+   "rings_valid": true,
+   "geom_valid": true,
+   "area_km2": 89.314,
+   "parts_km2": [
+    89.314
+   ]
+  },
+  "19733918": {
+   "name": "Сарайшық ауданы",
+   "roles": {
+    "outer": 86
+   },
+   "outer_rings": 1,
+   "inner_rings": 0,
+   "open_chains": 0,
+   "rings_valid": true,
+   "geom_valid": true,
+   "area_km2": 61.425,
+   "parts_km2": [
+    61.425
+   ]
+  },
+  "20593940": {
+   "name": "Нұра ауданы",
+   "roles": {
+    "outer": 23
+   },
+   "outer_rings": 1,
+   "inner_rings": 0,
+   "open_chains": 0,
+   "rings_valid": true,
+   "geom_valid": true,
+   "area_km2": 188.574,
+   "parts_km2": [
+    188.574
+   ]
+  }
+ },
+ "V4_product_geojson": {
+  "metadata": {
+   "source": "osm",
+   "generated_at": "2026-09-23T11:32:42+00:00",
+   "attribution": "© OpenStreetMap contributors (ODbL)",
+   "license_url": "https://www.openstreetmap.org/copyright",
+   "note": "Реальные полигоны административных отношений OpenStreetMap. Общественный источник, не официальное юридическое описание границ. Сарайшык показан географически, но отсутствует в расчётном наборе ТЗ.",
+   "source_url": "https://overpass-api.de/api/interpreter?data=%5Bout%3Ajson%5D%5Btimeout%3A25%5D%3Brel%5B%22boundary%22%3D%22administrative%22%5D%5B%22admin_level%22~%22%5E%285%7C6%7C7%7C8%7C9%29%24%22%5D%2850.90%2C71.0%2C51.5%2C72.0%29%3Bout+geom%3B",
+   "retrieved_at": "2026-09-23T11:28:06+00:00",
+   "osm_base_timestamp": "2026-09-22T08:45:51Z",
+   "validation": {
+    "rings_closed": true,
+    "coordinates_checked": true,
+    "topology_checked": true,
+    "all_geometries_valid": true,
+    "overlapping_pairs": 0,
+    "checked_pairs": 15
+   }
+  },
+  "districts": {
+   "esil": {
+    "relation": 3479876,
+    "osm_admin_level_in_geojson": "6",
+    "valid": true,
+    "parts": 1,
+    "parts_km2": [
+     194.556
+    ],
+    "area_km2_repo_field": 193.0,
+    "area_km2_geodesic": 194.56,
+    "repo_field_minus_geodesic_pct": -0.8,
+    "symdiff_vs_independent_build_km2": 0.0,
+    "coords_lon_lat_in_kz_range": true,
+    "symdiff_vs_AST_A03_copy_km2": 0.0
+   },
+   "almaty": {
+    "relation": 3482819,
+    "osm_admin_level_in_geojson": "6",
+    "valid": true,
+    "parts": 2,
+    "parts_km2": [
+     88.586,
+     4.794
+    ],
+    "area_km2_repo_field": 92.6,
+    "area_km2_geodesic": 93.38,
+    "repo_field_minus_geodesic_pct": -0.83,
+    "symdiff_vs_independent_build_km2": 0.0,
+    "coords_lon_lat_in_kz_range": true,
+    "symdiff_vs_AST_A03_copy_km2": 0.0
+   },
+   "saryarka": {
+    "relation": 3486954,
+    "osm_admin_level_in_geojson": "6",
+    "valid": true,
+    "parts": 1,
+    "parts_km2": [
+     67.823
+    ],
+    "area_km2_repo_field": 67.3,
+    "area_km2_geodesic": 67.82,
+    "repo_field_minus_geodesic_pct": -0.77,
+    "symdiff_vs_independent_build_km2": 0.0,
+    "coords_lon_lat_in_kz_range": true,
+    "symdiff_vs_AST_A03_copy_km2": 0.0
+   },
+   "baikonur": {
+    "relation": 8593081,
+    "osm_admin_level_in_geojson": "6",
+    "valid": true,
+    "parts": 3,
+    "parts_km2": [
+     169.448,
+     9.021,
+     5.033
+    ],
+    "area_km2_repo_field": 182.0,
+    "area_km2_geodesic": 183.5,
+    "repo_field_minus_geodesic_pct": -0.82,
+    "symdiff_vs_independent_build_km2": 0.0,
+    "coords_lon_lat_in_kz_range": true,
+    "symdiff_vs_AST_A03_copy_km2": 0.0
+   },
+   "nura": {
+    "relation": 20593940,
+    "osm_admin_level_in_geojson": "6",
+    "valid": true,
+    "parts": 1,
+    "parts_km2": [
+     188.574
+    ],
+    "area_km2_repo_field": 187.0,
+    "area_km2_geodesic": 188.57,
+    "repo_field_minus_geodesic_pct": -0.83,
+    "symdiff_vs_independent_build_km2": 0.0,
+    "coords_lon_lat_in_kz_range": true,
+    "symdiff_vs_AST_A03_copy_km2": 0.0
+   },
+   "saraishyk": {
+    "relation": 19733918,
+    "osm_admin_level_in_geojson": "8",
+    "valid": true,
+    "parts": 1,
+    "parts_km2": [
+     61.425
+    ],
+    "area_km2_repo_field": 60.9,
+    "area_km2_geodesic": 61.43,
+    "repo_field_minus_geodesic_pct": -0.86,
+    "symdiff_vs_independent_build_km2": 0.0,
+    "coords_lon_lat_in_kz_range": true,
+    "symdiff_vs_AST_A03_copy_km2": 0.0
+   }
+  },
+  "a03_copy": {
+   "file": "research/astana-results/03_logistics/extracted_files__25_/AST_A03_input_astana_districts_osm.geojson",
+   "feature_ids": [
+    "almaty",
+    "baikonur",
+    "esil",
+    "nura",
+    "saraishyk",
+    "saryarka"
+   ],
+   "byte_identical_to_product": true
+  }
+ },
+ "V5_astana_union": {
+  "union_km2": 789.26,
+  "sum_of_districts_km2": 789.26,
+  "parts": [
+   {
+    "area_km2": 770.41,
+    "rep_point_in_district": [
+     "saraishyk"
+    ],
+    "rep_point": [
+     71.46771,
+     51.11599
+    ]
+   },
+   {
+    "area_km2": 9.021,
+    "rep_point_in_district": [
+     "baikonur"
+    ],
+    "rep_point": [
+     71.66574,
+     51.33028
+    ]
+   },
+   {
+    "area_km2": 5.033,
+    "rep_point_in_district": [
+     "baikonur"
+    ],
+    "rep_point": [
+     71.31734,
+     51.28433
+    ]
+   },
+   {
+    "area_km2": 4.794,
+    "rep_point_in_district": [
+     "almaty"
+    ],
+    "rep_point": [
+     71.76886,
+     51.15388
+    ]
+   }
+  ],
+  "interior_gaps": 0,
+  "interior_gaps_km2": [],
+  "overlapping_district_pairs_over_100m2": {}
+ },
+ "V6_neighbour_overlaps": {
+  "3403760": {
+   "name": "Целиноград ауданы",
+   "admin_level": "6",
+   "area_km2": 7666.73,
+   "overlap_with_astana_districts_km2": {
+    "baikonur": 9.0206
+   },
+   "shares_boundary_with_astana_union": true
+  },
+  "3403782": {
+   "name": "Аршалы ауданы",
+   "admin_level": "6",
+   "area_km2": 5846.9,
+   "overlap_with_astana_districts_km2": {},
+   "shares_boundary_with_astana_union": true
+  },
+  "3404061": {
+   "name": "Шортанды ауданы",
+   "admin_level": "6",
+   "area_km2": 4681.66,
+   "overlap_with_astana_districts_km2": {},
+   "shares_boundary_with_astana_union": true
+  },
+  "15594335": {
+   "name": "Қосшы қалалық әкімдігі",
+   "admin_level": "6",
+   "area_km2": 141.2,
+   "overlap_with_astana_districts_km2": {},
+   "shares_boundary_with_astana_union": true
+  },
+  "17952313": {
+   "name": "Тайтөбе ауылдық әкімдігі",
+   "admin_level": "8",
+   "area_km2": 89.31,
+   "overlap_with_astana_districts_km2": {},
+   "shares_boundary_with_astana_union": true
+  }
+ },
+ "V6b_all_relation_overlaps": {
+  "3403760|8593081": {
+   "names": [
+    "Целиноград ауданы",
+    "Байқоңыр ауданы"
+   ],
+   "admin_levels": [
+    "6",
+    "6"
+   ],
+   "overlap_km2": 9.021,
+   "smaller_fully_inside": false
+  },
+  "15594335|17952313": {
+   "names": [
+    "Қосшы қалалық әкімдігі",
+    "Тайтөбе ауылдық әкімдігі"
+   ],
+   "admin_levels": [
+    "6",
+    "8"
+   ],
+   "overlap_km2": 89.314,
+   "smaller_fully_inside": true
+  }
+ },
+ "V7_baikonur_exclave_vs_tselinograd": {
+  "tselinograd_roles": {
+   "outer": 54,
+   "inner": 1
+  },
+  "tselinograd_inner_rings": 1,
+  "tselinograd_inner_detail": [
+   {
+    "ways": [
+     1074166103
+    ],
+    "area_km2": 11.034,
+    "rep_point": [
+     71.40464,
+     50.87199
+    ],
+    "covered_by_saved_relations": []
+   }
+  ],
+  "relations_with_way_372797931": [
+   "8593081"
+  ],
+  "baikonur_pieces": [
+   {
+    "area_km2": 169.448,
+    "rep_point": [
+     71.4581,
+     51.22647
+    ],
+    "ring_way_ids": [
+     664377246,
+     426120349,
+     664377231,
+     664377228,
+     1172899756,
+     1172899757,
+     480463180,
+     664377217,
+     664377224,
+     664377220,
+     664377235,
+     254047558,
+     254026560,
+     664377242,
+     664377244
+    ],
+    "ways_also_in_tselinograd": {
+     "664377235": "outer",
+     "254047558": "outer",
+     "664377242": "outer"
+    },
+    "covered_by_tselinograd_build": false,
+    "covered_by_other_neighbours": []
+   },
+   {
+    "area_km2": 9.021,
+    "rep_point": [
+     71.66574,
+     51.33028
+    ],
+    "ring_way_ids": [
+     372797931
+    ],
+    "ways_also_in_tselinograd": {},
+    "covered_by_tselinograd_build": true,
+    "covered_by_other_neighbours": []
+   },
+   {
+    "area_km2": 5.033,
+    "rep_point": [
+     71.31734,
+     51.28433
+    ],
+    "ring_way_ids": [
+     664377239,
+     664377241
+    ],
+    "ways_also_in_tselinograd": {
+     "664377239": "outer"
+    },
+    "covered_by_tselinograd_build": false,
+    "covered_by_other_neighbours": []
+   }
+  ],
+  "ways_shared_baikonur_tselinograd": {
+   "664377242": {
+    "baikonur_role": "outer",
+    "tselinograd_role": "outer"
+   },
+   "254047558": {
+    "baikonur_role": "outer",
+    "tselinograd_role": "outer"
+   },
+   "664377235": {
+    "baikonur_role": "outer",
+    "tselinograd_role": "outer"
+   },
+   "664377239": {
+    "baikonur_role": "outer",
+    "tselinograd_role": "outer"
+   }
+  },
+  "ast_a12_point": {
+   "point": [
+    71.66574,
+    51.33028
+   ],
+   "in_baikonur": true,
+   "in_tselinograd": true
+  }
+ },
+ "V8_boundary_points": {
+  "vertices_shared_by_3plus_districts": [
+   {
+    "point": [
+     71.428229,
+     51.1518972
+    ],
+    "districts": [
+     "baikonur",
+     "esil",
+     "nura",
+     "saryarka"
+    ]
+   },
+   {
+    "point": [
+     71.438473,
+     51.1475427
+    ],
+    "districts": [
+     "almaty",
+     "baikonur",
+     "esil"
+    ]
+   },
+   {
+    "point": [
+     71.447389,
+     51.1311552
+    ],
+    "districts": [
+     "almaty",
+     "esil",
+     "saraishyk"
+    ]
+   }
+  ],
+  "ast_a12_point": {
+   "point": [
+    71.447389,
+    51.1311552
+   ],
+   "shared_vertex_districts": [
+    "almaty",
+    "esil",
+    "saraishyk"
+   ],
+   "contains": {
+    "esil": false,
+    "almaty": false,
+    "saryarka": false,
+    "baikonur": false,
+    "nura": false,
+    "saraishyk": false
+   },
+   "covers": {
+    "esil": true,
+    "almaty": true,
+    "saryarka": false,
+    "baikonur": false,
+    "nura": false,
+    "saraishyk": true
+   }
+  }
+ },
+ "V9_saraishyk": {
+  "osm_api": {
+   "version": 17,
+   "timestamp": "2026-09-21T13:44:01Z",
+   "changeset": 189349743,
+   "admin_level": "8",
+   "members": 86
+  },
+  "overpass_osm_base": "2026-09-22T08:45:51Z",
+  "edit_before_snapshot": true,
+  "same_way_members_as_overpass": true,
+  "symdiff_api_vs_product_km2": 0.0,
+  "nominatim": {
+   "addresstype": "city_district",
+   "place_rank": 16,
+   "address": {
+    "city_district": "Сарайшық ауданы",
+    "city": "Астана",
+    "ISO3166-2-lvl15": "KZ-AST",
+    "state": "Астана",
+    "ISO3166-2-lvl4": "KZ-71",
+    "postcode": "010000",
+    "country": "Қазақстан",
+    "country_code": "kz"
+   }
+  }
+ },
+ "V10_product_district_lists": {
+  "city_data_districts": [
+   "esil",
+   "almaty",
+   "saryarka",
+   "baikonur",
+   "nura"
+  ],
+  "real_context_districts": [
+   "almaty",
+   "baikonur",
+   "esil",
+   "nura",
+   "saryarka"
+  ],
+  "real_context_nonzero": 0,
+  "real_context_meta": {
+   "status": "unavailable",
+   "generated_at": "2026-09-23T09:25:25+00:00",
+   "districts_source": "fallback_approx"
+  },
+  "geojson_districts": [
+   "almaty",
+   "baikonur",
+   "esil",
+   "nura",
+   "saraishyk",
+   "saryarka"
+  ]
+ },
+ "V11_shymkent": {
+  "real_geometry_in_repo": false,
+  "searched": [
+   "data/",
+   "research/**/*.geojson"
+  ],
+  "only_shymkent_geojson": "research/govtech-results/03_logistics/extracted_files__22_/A03_synthetic_instance.geojson",
+  "a03_synthetic_metadata": {
+   "type": "FeatureCollection",
+   "name": "A03 synthetic instance (NOT real data)"
+  },
+  "a03_synthetic_feature_count": 49
+ }
+}
