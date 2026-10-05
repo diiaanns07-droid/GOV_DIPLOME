@@ -1,0 +1,44 @@
+{
+ "tool": "research/round-6-results/K11/k11r6_launch_extra.py",
+ "target": "app-root",
+ "host": {
+  "os": "Linux",
+  "python": "3.11.15"
+ },
+ "checks": [
+  {
+   "id": "X1",
+   "status": "pass",
+   "title": "serve.py <port> --open starts, keeps serving after the opener fired, stops on Ctrl+C",
+   "detail": {
+    "listening": true,
+    "alive_after_open": true,
+    "returncode": 0,
+    "traceback": false,
+    "stdout": [
+     "Городские данные: http://127.0.0.1:36893/  (Ctrl+C — остановить)"
+    ]
+   }
+  },
+  {
+   "id": "X2",
+   "status": "pass",
+   "title": "port already in use: serve.py exits non-zero (run-demo.bat then pauses on errorlevel 1)",
+   "detail": {
+    "returncode": 1,
+    "stderr_last_line": "OSError: [Errno 98] Address already in use",
+    "traceback": true,
+    "note": "message clarity is informational; errno text differs on Windows"
+   }
+  },
+  {
+   "id": "X3",
+   "status": "pass",
+   "title": "copy without web/data.js: serve.py exits non-zero with its own message, no traceback",
+   "detail": {
+    "returncode": 1,
+    "stderr": "Не найдены файлы демо в <tempdir>/city-evidence/web (index.html, data.js). Проверьте checkout."
+   }
+  }
+ ]
+}
