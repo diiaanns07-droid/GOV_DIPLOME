@@ -1,0 +1,184 @@
+{
+ "card_schema": "k08-r7-whatif-card/v1 (выводимое представление city-whatif-v1; при импорте не принимается)",
+ "scenario": {
+  "schema_version": "city-whatif-v1",
+  "city_id": "astana",
+  "category": "outpatient_clinic",
+  "status": "Гипотетический сценарий. Не решение акимата и не доказательство пользы строительства",
+  "proposed_object": {
+   "id": "proj1",
+   "lon": 71.441,
+   "lat": 51.1775,
+   "category": "outpatient_clinic",
+   "kind": "hypothetical"
+  }
+ },
+ "source": {
+  "snapshot": "sha256:1d4570de29dee043347b4db20d5afd608eea7f510e7e1074001bafb2290cf6de",
+  "release": "2026-09-23.1",
+  "retrieved_utc": "2026-10-05T06:20:01+00:00",
+  "package": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909",
+  "places_file": "data/astana/places_social.geojson",
+  "places_file_sha256": "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343"
+ },
+ "scope": {
+  "bbox": [
+   71.418372,
+   51.163033,
+   71.447,
+   51.181
+  ],
+  "records_in_slice": 16,
+  "statement": "Срез — не полный реестр города"
+ },
+ "rows": [
+  {
+   "control_point": {
+    "id": "cp1",
+    "lon": 71.425,
+    "lat": 51.17
+   },
+   "before_m": 175.56470756240196,
+   "after_m": 175.56470756240196,
+   "delta_m": 0.0,
+   "nearest_before": {
+    "kind": "source_record",
+    "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+    "name": "Family Clinic",
+    "category": "outpatient_care_facility",
+    "lon": 71.422483,
+    "lat": 51.169953,
+    "confidence": 0.961,
+    "overture_version": 9,
+    "sources": [
+     {
+      "dataset": "meta",
+      "license": "CDLA-Permissive-2.0",
+      "record_id": "257332574462444",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ],
+    "qa": {
+     "available": true,
+     "flags": [],
+     "note": "нет флагов ≠ проверено"
+    }
+   },
+   "nearest": {
+    "kind": "source_record",
+    "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+    "name": "Family Clinic",
+    "category": "outpatient_care_facility",
+    "lon": 71.422483,
+    "lat": 51.169953,
+    "confidence": 0.961,
+    "overture_version": 9,
+    "sources": [
+     {
+      "dataset": "meta",
+      "license": "CDLA-Permissive-2.0",
+      "record_id": "257332574462444",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ],
+    "qa": {
+     "available": true,
+     "flags": [],
+     "note": "нет флагов ≠ проверено"
+    }
+   },
+   "note": null
+  },
+  {
+   "control_point": {
+    "id": "cp2",
+    "lon": 71.442,
+    "lat": 51.178
+   },
+   "before_m": 496.75639018178566,
+   "after_m": 89.16511864009483,
+   "delta_m": 407.59127154169084,
+   "nearest_before": {
+    "kind": "source_record",
+    "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050",
+    "name": "Visa Dent",
+    "category": "dental_clinic",
+    "lon": 71.435461,
+    "lat": 51.179776,
+    "confidence": 0.584,
+    "overture_version": 12,
+    "sources": [
+     {
+      "dataset": "meta",
+      "license": "CDLA-Permissive-2.0",
+      "record_id": "103873835494337",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ],
+    "qa": {
+     "available": true,
+     "flags": [],
+     "note": "нет флагов ≠ проверено"
+    }
+   },
+   "nearest": {
+    "kind": "proposed_object",
+    "id": "proj1",
+    "lon": 71.441,
+    "lat": 51.1775
+   },
+   "note": null
+  }
+ ],
+ "attribution": [
+  {
+   "dataset": "OpenStreetMap",
+   "layer": "connectors",
+   "license": "ODbL-1.0"
+  },
+  {
+   "dataset": "Overture",
+   "layer": "places_social",
+   "license": "CDLA-Permissive-2.0"
+  },
+  {
+   "dataset": "meta",
+   "layer": "places_social",
+   "license": "CDLA-Permissive-2.0"
+  },
+  {
+   "dataset": "Foursquare",
+   "layer": "places_social",
+   "license": "Apache-2.0"
+  },
+  {
+   "dataset": "OpenStreetMap",
+   "layer": "segments",
+   "license": "ODbL-1.0"
+  },
+  {
+   "dataset": "TomTom",
+   "layer": "segments",
+   "license": "ODbL-1.0"
+  }
+ ],
+ "calc": {
+  "method": "haversine",
+  "earth_radius_m": 6371008.8,
+  "input_order": "[longitude,latitude]",
+  "clamp": [
+   0,
+   1
+  ],
+  "rounding": "только при выводе"
+ },
+ "limitations": [
+  "Расстояние по прямой (гаверсинус), не путь по улицам и не время в пути.",
+  "База — записи Overture внутри сохранённого квадрата; ближайшая запись в срезе не обязательно ближайшее учреждение в городе.",
+  "Срез неполон: отсутствие записи не означает отсутствие учреждения; ошибки координат могут менять результат.",
+  "QA-флаги — правила сборки; запись с флагом не удаляется, запись без флага не считается проверенной.",
+  "Контрольная точка — выбранное место, не дом с известным населением; население и мощность учреждений не учитываются.",
+  "Условный объект — гипотеза пользователя; сценарий не доказывает пользу строительства и не является решением акимата."
+ ],
+ "field_classes": "provenance_fields.json"
+}

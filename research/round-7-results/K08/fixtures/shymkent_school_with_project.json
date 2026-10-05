@@ -1,0 +1,25 @@
+{
+ "schema_version": "city-whatif-v1",
+ "city_id": "shymkent",
+ "source_snapshot": "sha256:c768bfc35c5e5ced7c71ef597c12cf478ce9b1d0d4850cdd701e67c78bb2dff6",
+ "category": "school",
+ "control_points": [
+  {
+   "id": "cp1",
+   "lon": 69.6101,
+   "lat": 42.3201
+  },
+  {
+   "id": "cp2",
+   "lon": 69.5995,
+   "lat": 42.3125
+  }
+ ],
+ "proposed_object": {
+  "id": "proj1",
+  "lon": 69.599,
+  "lat": 42.312,
+  "category": "school",
+  "kind": "hypothetical"
+ }
+}

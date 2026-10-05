@@ -1,0 +1,189 @@
+{
+ "card_schema": "k08-r7-whatif-card/v1 (выводимое представление city-whatif-v1; при импорте не принимается)",
+ "scenario": {
+  "schema_version": "city-whatif-v1",
+  "city_id": "shymkent",
+  "category": "school",
+  "status": "Гипотетический сценарий. Не решение акимата и не доказательство пользы строительства",
+  "proposed_object": {
+   "id": "proj1",
+   "lon": 69.599,
+   "lat": 42.312,
+   "category": "school",
+   "kind": "hypothetical"
+  }
+ },
+ "source": {
+  "snapshot": "sha256:c768bfc35c5e5ced7c71ef597c12cf478ce9b1d0d4850cdd701e67c78bb2dff6",
+  "release": "2026-09-23.1",
+  "retrieved_utc": "2026-10-05T06:19:53+00:00",
+  "package": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909",
+  "places_file": "data/shymkent/places_social.geojson",
+  "places_file_sha256": "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7"
+ },
+ "scope": {
+  "bbox": [
+   69.593365,
+   42.306645,
+   69.617658,
+   42.324611
+  ],
+  "records_in_slice": 15,
+  "statement": "Срез — не полный реестр города"
+ },
+ "rows": [
+  {
+   "control_point": {
+    "id": "cp1",
+    "lon": 69.6101,
+    "lat": 42.3201
+   },
+   "before_m": 39.36658918848114,
+   "after_m": 39.36658918848114,
+   "delta_m": 0.0,
+   "nearest_before": {
+    "kind": "source_record",
+    "id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+    "name": "Реклама 42",
+    "category": "middle_school",
+    "lon": 69.61052,
+    "lat": 42.32027,
+    "confidence": 0.786,
+    "overture_version": 5,
+    "sources": [
+     {
+      "dataset": "meta",
+      "license": "CDLA-Permissive-2.0",
+      "record_id": "135783212958156",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ],
+    "qa": {
+     "available": true,
+     "flags": [
+      {
+       "rule": "ad_or_business_page",
+       "reason": "название похоже на рекламу или страницу бизнеса, а не на учреждение категории"
+      }
+     ],
+     "note": "запись не удалена и не переклассифицирована"
+    }
+   },
+   "nearest": {
+    "kind": "source_record",
+    "id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+    "name": "Реклама 42",
+    "category": "middle_school",
+    "lon": 69.61052,
+    "lat": 42.32027,
+    "confidence": 0.786,
+    "overture_version": 5,
+    "sources": [
+     {
+      "dataset": "meta",
+      "license": "CDLA-Permissive-2.0",
+      "record_id": "135783212958156",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ],
+    "qa": {
+     "available": true,
+     "flags": [
+      {
+       "rule": "ad_or_business_page",
+       "reason": "название похоже на рекламу или страницу бизнеса, а не на учреждение категории"
+      }
+     ],
+     "note": "запись не удалена и не переклассифицирована"
+    }
+   },
+   "note": null
+  },
+  {
+   "control_point": {
+    "id": "cp2",
+    "lon": 69.5995,
+    "lat": 42.3125
+   },
+   "before_m": 230.47518673192292,
+   "after_m": 69.14781416773079,
+   "delta_m": 161.32737256419213,
+   "nearest_before": {
+    "kind": "source_record",
+    "id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+    "name": "Учебный центр Меруерт",
+    "category": "place_of_learning",
+    "lon": 69.599229,
+    "lat": 42.314563,
+    "confidence": 0.68,
+    "overture_version": 8,
+    "sources": [
+     {
+      "dataset": "meta",
+      "license": "CDLA-Permissive-2.0",
+      "record_id": "101309298709568",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ],
+    "qa": {
+     "available": true,
+     "flags": [],
+     "note": "нет флагов ≠ проверено"
+    }
+   },
+   "nearest": {
+    "kind": "proposed_object",
+    "id": "proj1",
+    "lon": 69.599,
+    "lat": 42.312
+   },
+   "note": null
+  }
+ ],
+ "attribution": [
+  {
+   "dataset": "OpenStreetMap",
+   "layer": "connectors",
+   "license": "ODbL-1.0"
+  },
+  {
+   "dataset": "Overture",
+   "layer": "places_social",
+   "license": "CDLA-Permissive-2.0"
+  },
+  {
+   "dataset": "meta",
+   "layer": "places_social",
+   "license": "CDLA-Permissive-2.0"
+  },
+  {
+   "dataset": "OpenStreetMap",
+   "layer": "segments",
+   "license": "ODbL-1.0"
+  },
+  {
+   "dataset": "TomTom",
+   "layer": "segments",
+   "license": "ODbL-1.0"
+  }
+ ],
+ "calc": {
+  "method": "haversine",
+  "earth_radius_m": 6371008.8,
+  "input_order": "[longitude,latitude]",
+  "clamp": [
+   0,
+   1
+  ],
+  "rounding": "только при выводе"
+ },
+ "limitations": [
+  "Расстояние по прямой (гаверсинус), не путь по улицам и не время в пути.",
+  "База — записи Overture внутри сохранённого квадрата; ближайшая запись в срезе не обязательно ближайшее учреждение в городе.",
+  "Срез неполон: отсутствие записи не означает отсутствие учреждения; ошибки координат могут менять результат.",
+  "QA-флаги — правила сборки; запись с флагом не удаляется, запись без флага не считается проверенной.",
+  "Контрольная точка — выбранное место, не дом с известным населением; население и мощность учреждений не учитываются.",
+  "Условный объект — гипотеза пользователя; сценарий не доказывает пользу строительства и не является решением акимата."
+ ],
+ "field_classes": "provenance_fields.json"
+}

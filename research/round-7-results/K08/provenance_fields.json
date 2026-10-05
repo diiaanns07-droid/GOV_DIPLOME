@@ -1,0 +1,49 @@
+{
+ "schema": "k08-r7-whatif-provenance-fields/v1",
+ "applies_to": "city-whatif-v1 (FEATURE_SPEC.txt, research/round-7 @ codex/research-import-2026-10-05)",
+ "note": "Реестр полей, а не новый формат. Сценарий хранит только поля контракта city-whatif-v1. Карточка результата и поле report в экспорте — выводимые значения; при импорте они не принимаются и пересчитываются.",
+ "classes": {
+  "user_input": "ввёл пользователь; не является наблюдением о городе",
+  "observed_secondary": "скопировано из записи Overture/K10 как есть (вторичные открытые данные, не официальный реестр)",
+  "derived": "вычислено приложением из user_input и observed_secondary по правилу FEATURE_SPEC; при импорте пересчитывается",
+  "config": "фиксированный параметр расчёта или текст ограничения, одинаковый для всех сценариев"
+ },
+ "scenario_fields": [
+  {"path": "schema_version", "class": "config", "required": true, "value": "city-whatif-v1"},
+  {"path": "city_id", "class": "user_input", "required": true, "allowed": ["shymkent", "astana"]},
+  {"path": "source_snapshot", "class": "derived", "required": true, "rule": "sha256 канонического JSON: city_id, release, bbox, sha256 и bytes файла places_social из manifest пакета, формула и параметры. Имя файла версией не считается"},
+  {"path": "category", "class": "user_input", "required": true, "allowed": ["school", "outpatient_clinic"]},
+  {"path": "control_points[].id", "class": "user_input", "required": true, "rule": "уникальный, ограниченной длины"},
+  {"path": "control_points[].lon", "class": "user_input", "required": true, "rule": "конечное число внутри bbox"},
+  {"path": "control_points[].lat", "class": "user_input", "required": true, "rule": "конечное число внутри bbox"},
+  {"path": "proposed_object", "class": "user_input", "required": true, "rule": "null или один объект"},
+  {"path": "proposed_object.kind", "class": "config", "required": true, "value": "hypothetical", "display": "условный объект (гипотеза пользователя)"},
+  {"path": "proposed_object.category", "class": "user_input", "required": true, "rule": "= category"},
+  {"path": "proposed_object.id|lon|lat", "class": "user_input", "required": true}
+ ],
+ "card_fields": [
+  {"path": "scenario.status", "class": "config", "display": "Гипотетический сценарий. Не решение акимата и не доказательство пользы строительства"},
+  {"path": "source.snapshot", "class": "derived", "display": "Отпечаток среза"},
+  {"path": "source.release", "class": "observed_secondary", "display": "Выпуск Overture"},
+  {"path": "source.retrieved_utc", "class": "observed_secondary", "display": "Дата выгрузки пакета K10"},
+  {"path": "source.package", "class": "observed_secondary", "display": "Пакет K10 (ветка@SHA)"},
+  {"path": "source.places_file_sha256", "class": "observed_secondary", "display": "SHA256 файла мест"},
+  {"path": "scope.bbox", "class": "observed_secondary", "display": "Квадрат среза (lon/lat)", "note": "выбран K10 при сборке пакета; не граница города"},
+  {"path": "scope.records_in_slice", "class": "derived", "display": "Записей категории в срезе"},
+  {"path": "scope.statement", "class": "config", "display": "Срез — не полный реестр города"},
+  {"path": "rows[].control_point", "class": "user_input"},
+  {"path": "rows[].before_m", "class": "derived", "display": "До, м (по прямой)"},
+  {"path": "rows[].after_m", "class": "derived", "display": "После, м (по прямой)"},
+  {"path": "rows[].delta_m", "class": "derived", "display": "Разница, м", "note": "только геометрия; не время, не доступность, не качество услуги"},
+  {"path": "rows[].nearest.id", "class": "derived", "note": "выбор ближайшей записи (ничья — по ID)"},
+  {"path": "rows[].nearest.kind", "class": "derived", "allowed": ["source_record", "proposed_object", "none"]},
+  {"path": "rows[].nearest.name|category|lon|lat|confidence|overture_version", "class": "observed_secondary"},
+  {"path": "rows[].nearest.sources[].dataset|license|record_id|update_time|property", "class": "observed_secondary", "display": "Источник / лицензия / дата"},
+  {"path": "rows[].nearest.qa", "class": "derived", "display": "QA-флаги записи", "note": "правила сборки поверх наблюдения; отсутствие флага ≠ проверено"},
+  {"path": "rows[].nearest_before", "class": "derived", "note": "ближайшая исходная запись без проекта, тоже с источником и QA"},
+  {"path": "attribution", "class": "observed_secondary", "display": "Атрибуция поставщиков"},
+  {"path": "limitations[]", "class": "config"},
+  {"path": "calc", "class": "config", "value": {"method": "haversine", "earth_radius_m": 6371008.8, "input_order": "[longitude,latitude]", "clamp": [0, 1], "rounding": "только при выводе"}}
+ ],
+ "forbidden_claims": ["время пешком", "минут", "изохрон", "обеспеченност", "населени", "эконом", "пробк", "улучшит здоровье", "улучшит образование", "доказывает", "эффективност строительств"]
+}
