@@ -1,0 +1,333 @@
+{
+ "schema": "k08-r4-attribution-matrix/v1",
+ "role": "REVIEW K08",
+ "branch": "claude/dazzling-mayer-drhsxk",
+ "input": {
+  "slot": "K10",
+  "branch": "claude/save-work-handoff-j7pc05",
+  "sha": "ea703f1ddd3a411430a981164a78a7dda64ec909",
+  "path": "research/round-3-results/K10/"
+ },
+ "primary_texts": {
+  "source": "https://github.com/spdx/license-list-data @31ba1a50e5397e00a304dbadc76531740e89ee48, text/*.txt (скачаны в раунде 3, повторно не запрашивались; sha256 сверены с research/round-3-results/K08/logs/spdx_license_texts.sha256)",
+  "note": "Это нормализованные тексты SPDX, а не файлы с сайтов стюардов (opendatacommons.org, cdla.dev, apache.org): эти хосты не открывались."
+ },
+ "data_files": [
+  {
+   "file": "research/round-3-results/K10/data/astana/connectors.geojson",
+   "city": "astana",
+   "sha256": "74a77d2ed250d6a55ee478054a6e89a4de15fc96f65063176a1194345994e801",
+   "features": 2309,
+   "header_attribution_as_saved": [
+    "Overture Maps Foundation",
+    "© OpenStreetMap contributors (ODbL-1.0)"
+   ],
+   "sources_saved": [
+    {
+     "dataset": "OpenStreetMap",
+     "provider": "osm",
+     "resource": "planet",
+     "license": "ODbL-1.0",
+     "property": "(вся запись)",
+     "version": "2026-09-09",
+     "entries": 2309
+    }
+   ],
+   "features_by_whole_record_dataset": {
+    "OpenStreetMap": 2309
+   },
+   "licenses_in_records": [
+    "ODbL-1.0"
+   ],
+   "conditions_by_primary_text": [
+    "ODbL-1.0: 4.2 — уведомление при публичной передаче базы/производной; 4.3 — уведомление на публично используемой Produced Work; 4.4 — share-alike для публично используемой производной базы; 4.6 — предложить машиночитаемую копию производной базы"
+   ],
+   "source_fields_saved": "все 10 полей sources[]: property, dataset, license, record_id, update_time, confidence, between, provider, resource, version"
+  },
+  {
+   "file": "research/round-3-results/K10/data/astana/places_social.geojson",
+   "city": "astana",
+   "sha256": "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343",
+   "features": 65,
+   "header_attribution_as_saved": [
+    "Overture Maps Foundation",
+    "© OpenStreetMap contributors (ODbL-1.0)"
+   ],
+   "sources_saved": [
+    {
+     "dataset": "Overture",
+     "provider": "overture",
+     "resource": "confidence_calculation",
+     "license": "CDLA-Permissive-2.0",
+     "property": "/properties/confidence",
+     "version": "2026-09-17",
+     "entries": 65
+    },
+    {
+     "dataset": "meta",
+     "provider": "meta",
+     "resource": "meta",
+     "license": "CDLA-Permissive-2.0",
+     "property": "(вся запись)",
+     "version": "2026-09-14",
+     "entries": 62
+    },
+    {
+     "dataset": "meta",
+     "provider": "meta",
+     "resource": "meta",
+     "license": "CDLA-Permissive-2.0",
+     "property": "(вся запись)",
+     "version": "2026-08-24",
+     "entries": 2
+    },
+    {
+     "dataset": "Foursquare",
+     "provider": "foursquare",
+     "resource": "foursquare",
+     "license": "Apache-2.0",
+     "property": "(вся запись)",
+     "version": "2026-04-14",
+     "entries": 1
+    }
+   ],
+   "features_by_whole_record_dataset": {
+    "meta": 64,
+    "Foursquare": 1
+   },
+   "licenses_in_records": [
+    "Apache-2.0",
+    "CDLA-Permissive-2.0"
+   ],
+   "conditions_by_primary_text": [
+    "Apache-2.0: 4(a) — копия лицензии; 4(b) — пометить изменённые файлы; 4(c) — сохранить copyright/attribution notices; 4(d) — включить NOTICE, если он есть у Work",
+    "CDLA-Permissive-2.0: 2.1 — при передаче данных сделать доступным текст соглашения; 3.1 — на Results ограничений нет; 4.1 — без гарантий"
+   ],
+   "source_fields_saved": "все 10 полей sources[]: property, dataset, license, record_id, update_time, confidence, between, provider, resource, version"
+  },
+  {
+   "file": "research/round-3-results/K10/data/astana/segments.geojson",
+   "city": "astana",
+   "sha256": "5fc1b3b5f6cabad6e2edfd042bb3727aa8fd0c7bcba9962175025e37eb08dbb9",
+   "features": 1326,
+   "header_attribution_as_saved": [
+    "Overture Maps Foundation",
+    "© OpenStreetMap contributors (ODbL-1.0)"
+   ],
+   "sources_saved": [
+    {
+     "dataset": "OpenStreetMap",
+     "provider": "osm",
+     "resource": "planet",
+     "license": "ODbL-1.0",
+     "property": "(вся запись)",
+     "version": "2026-09-09",
+     "entries": 1542
+    },
+    {
+     "dataset": "OpenStreetMap",
+     "provider": "osm",
+     "resource": "planet",
+     "license": "ODbL-1.0",
+     "property": "/routes",
+     "version": "2026-09-09",
+     "entries": 26
+    },
+    {
+     "dataset": "TomTom",
+     "provider": "tomtom",
+     "resource": "orbis",
+     "license": "ODbL-1.0",
+     "property": "(вся запись)",
+     "version": "2637",
+     "entries": 8
+    }
+   ],
+   "features_by_whole_record_dataset": {
+    "OpenStreetMap": 1318,
+    "TomTom": 8
+   },
+   "licenses_in_records": [
+    "ODbL-1.0"
+   ],
+   "conditions_by_primary_text": [
+    "ODbL-1.0: 4.2 — уведомление при публичной передаче базы/производной; 4.3 — уведомление на публично используемой Produced Work; 4.4 — share-alike для публично используемой производной базы; 4.6 — предложить машиночитаемую копию производной базы"
+   ],
+   "source_fields_saved": "все 10 полей sources[]: property, dataset, license, record_id, update_time, confidence, between, provider, resource, version"
+  },
+  {
+   "file": "research/round-3-results/K10/data/shymkent/connectors.geojson",
+   "city": "shymkent",
+   "sha256": "8bbd25959eef559abeccb39d99884d96caf920d219f5a71f11298ade5e27bca0",
+   "features": 1729,
+   "header_attribution_as_saved": [
+    "Overture Maps Foundation",
+    "© OpenStreetMap contributors (ODbL-1.0)"
+   ],
+   "sources_saved": [
+    {
+     "dataset": "OpenStreetMap",
+     "provider": "osm",
+     "resource": "planet",
+     "license": "ODbL-1.0",
+     "property": "(вся запись)",
+     "version": "2026-09-09",
+     "entries": 1729
+    }
+   ],
+   "features_by_whole_record_dataset": {
+    "OpenStreetMap": 1729
+   },
+   "licenses_in_records": [
+    "ODbL-1.0"
+   ],
+   "conditions_by_primary_text": [
+    "ODbL-1.0: 4.2 — уведомление при публичной передаче базы/производной; 4.3 — уведомление на публично используемой Produced Work; 4.4 — share-alike для публично используемой производной базы; 4.6 — предложить машиночитаемую копию производной базы"
+   ],
+   "source_fields_saved": "все 10 полей sources[]: property, dataset, license, record_id, update_time, confidence, between, provider, resource, version"
+  },
+  {
+   "file": "research/round-3-results/K10/data/shymkent/places_social.geojson",
+   "city": "shymkent",
+   "sha256": "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7",
+   "features": 55,
+   "header_attribution_as_saved": [
+    "Overture Maps Foundation",
+    "© OpenStreetMap contributors (ODbL-1.0)"
+   ],
+   "sources_saved": [
+    {
+     "dataset": "Overture",
+     "provider": "overture",
+     "resource": "confidence_calculation",
+     "license": "CDLA-Permissive-2.0",
+     "property": "/properties/confidence",
+     "version": "2026-09-17",
+     "entries": 55
+    },
+    {
+     "dataset": "meta",
+     "provider": "meta",
+     "resource": "meta",
+     "license": "CDLA-Permissive-2.0",
+     "property": "(вся запись)",
+     "version": "2026-09-14",
+     "entries": 54
+    },
+    {
+     "dataset": "meta",
+     "provider": "meta",
+     "resource": "meta",
+     "license": "CDLA-Permissive-2.0",
+     "property": "(вся запись)",
+     "version": "2026-08-24",
+     "entries": 1
+    }
+   ],
+   "features_by_whole_record_dataset": {
+    "meta": 55
+   },
+   "licenses_in_records": [
+    "CDLA-Permissive-2.0"
+   ],
+   "conditions_by_primary_text": [
+    "CDLA-Permissive-2.0: 2.1 — при передаче данных сделать доступным текст соглашения; 3.1 — на Results ограничений нет; 4.1 — без гарантий"
+   ],
+   "source_fields_saved": "все 10 полей sources[]: property, dataset, license, record_id, update_time, confidence, between, provider, resource, version"
+  },
+  {
+   "file": "research/round-3-results/K10/data/shymkent/segments.geojson",
+   "city": "shymkent",
+   "sha256": "055b0e7aaef8d5b42fdbb6663f46ef245156b33a0f92b8f94cc73ab7a9c77648",
+   "features": 1084,
+   "header_attribution_as_saved": [
+    "Overture Maps Foundation",
+    "© OpenStreetMap contributors (ODbL-1.0)"
+   ],
+   "sources_saved": [
+    {
+     "dataset": "OpenStreetMap",
+     "provider": "osm",
+     "resource": "planet",
+     "license": "ODbL-1.0",
+     "property": "(вся запись)",
+     "version": "2026-09-09",
+     "entries": 1175
+    },
+    {
+     "dataset": "TomTom",
+     "provider": "tomtom",
+     "resource": "orbis",
+     "license": "ODbL-1.0",
+     "property": "(вся запись)",
+     "version": "2637",
+     "entries": 1
+    }
+   ],
+   "features_by_whole_record_dataset": {
+    "OpenStreetMap": 1083,
+    "TomTom": 1
+   },
+   "licenses_in_records": [
+    "ODbL-1.0"
+   ],
+   "conditions_by_primary_text": [
+    "ODbL-1.0: 4.2 — уведомление при публичной передаче базы/производной; 4.3 — уведомление на публично используемой Produced Work; 4.4 — share-alike для публично используемой производной базы; 4.6 — предложить машиночитаемую копию производной базы"
+   ],
+   "source_fields_saved": "все 10 полей sources[]: property, dataset, license, record_id, update_time, confidence, between, provider, resource, version"
+  }
+ ],
+ "non_data_files": [
+  {
+   "file": "research/round-3-results/K10/scripts/*.py, selection/*.py, tests/*.py",
+   "kind": "код K10",
+   "conditions": "лицензия кода не указана ни в файлах, ни в репозитории (в корне GOV_DIPLOME нет LICENSE)",
+   "evidence": "git ls-tree ea703f1; заголовки файлов",
+   "unknown": "условия повторного использования кода"
+  },
+  {
+   "file": "research/round-3-results/K10/package_manifest.json, selection/*_bbox_selection.json, results/*",
+   "kind": "метаданные и отчёты K10 (derived)",
+   "conditions": "содержат S3-ключи, sha256 и счётчики, но не данные записей; лицензионных полей нет",
+   "evidence": "чтение файлов",
+   "unknown": "—"
+  }
+ ],
+ "findings": [
+  {
+   "id": "F1",
+   "type": "исправлено K10 по сравнению с раундом 2",
+   "text": "sources[] сохранены полностью, со всеми 10 полями, включая property и record_id. Проблема K08-C5 раунда 3 (отброшенный property) в этом пакете устранена: например, CDLA-P-2.0 Overture относится к /properties/confidence, а OSM /routes — к маршрутам."
+  },
+  {
+   "id": "F2",
+   "type": "ошибка",
+   "text": "Поле attribution в шапке всех 6 файлов задано константой (scripts/download.py:177) и равно ['Overture Maps Foundation', '© OpenStreetMap contributors (ODbL-1.0)']. В places_social.geojson обоих городов нет ни одной записи из OpenStreetMap, все записи — meta (CDLA-P-2.0) и Foursquare (Apache-2.0, 1 запись в Астане). Шапка мест указывает неверный источник и лицензию и не называет фактические."
+  },
+  {
+   "id": "F3",
+   "type": "пробел",
+   "text": "9 сегментов имеют источник всей записи TomTom (Orbis 2637, license ODbL-1.0, record_id null): 1 в Шымкенте (class unknown), 8 в Астане (7 unknown, 1 primary). Атрибуция «© OpenStreetMap contributors» и README K10 («Сегменты… © OpenStreetMap contributors») эти записи не описывают."
+  },
+  {
+   "id": "F4",
+   "type": "пробел",
+   "text": "В пакете нет текстов лицензий. По буквальному тексту CDLA-P-2.0 2.1 и Apache-2.0 4(a) при передаче данных нужен текст соглашения или лицензии. ODbL 4.2 требует уведомления. Пакет лежит в публичном репозитории."
+  },
+  {
+   "id": "F5",
+   "type": "потеря связи",
+   "text": "В Астане 26 записей sources ссылаются на property /routes (OSM r6610296@277), но колонка routes не извлечена (not_extracted_columns.segments). Происхождение указывает на свойство, которого в пакете нет. Ошибкой данных это не является, но для атрибуции такая запись лишняя."
+  },
+  {
+   "id": "F6",
+   "type": "неизвестно",
+   "text": "Общие условия и рекомендуемая строка атрибуции Overture, требования Meta, Foursquare и TomTom к атрибуции, наличие NOTICE у Foursquare OS Places, точная формулировка OSM с openstreetmap.org/copyright — не проверены: хосты заблокированы или не открывались. sources.license — поле записи, а не полная юридическая проверка."
+  },
+  {
+   "id": "F7",
+   "type": "проверка K10",
+   "text": "Встроенные проверки K10 (offline_check.py, 8 тестов) проходят, но лицензию и атрибуцию не проверяют."
+  }
+ ]
+}
