@@ -1,0 +1,22 @@
+{
+ "mode": "url",
+ "url": "http://127.0.0.1:18765/",
+ "sha256": {
+  "data.js": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00",
+  "evidence.js": "7e905a3a423ee35c4802248f1a0402fea3744986f24b471fdd7eba0d9af68f37"
+ },
+ "results": [
+  {
+   "id": "U01",
+   "kind": "artifact",
+   "title": "доставленные data.js/evidence.js",
+   "problems": [],
+   "requirement_met": true
+  }
+ ],
+ "summary": {
+  "requirement_met": 1,
+  "total": 1,
+  "failed": []
+ }
+}

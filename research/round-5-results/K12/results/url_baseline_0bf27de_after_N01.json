@@ -1,0 +1,27 @@
+{
+ "mode": "url",
+ "url": "http://127.0.0.1:18766/",
+ "sha256": {
+  "data.js": "39155fbe712d21354b9a0276ebed5aa10c47fc3a6639f6adfefb751f30c4db01",
+  "evidence.js": "10d56f0ac84500c1e85143b62c2e2302bbb94021e05cebc700885c56144461f1"
+ },
+ "results": [
+  {
+   "id": "U01",
+   "kind": "artifact",
+   "title": "доставленные data.js/evidence.js",
+   "problems": [
+    "data.js: JSON_NONFINITE: token NaN",
+    "shymkent: NONFINITE_CONFIDENCE 1"
+   ],
+   "requirement_met": false
+  }
+ ],
+ "summary": {
+  "requirement_met": 0,
+  "total": 1,
+  "failed": [
+   "U01"
+  ]
+ }
+}

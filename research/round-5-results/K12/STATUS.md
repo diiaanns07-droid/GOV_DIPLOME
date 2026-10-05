@@ -2,63 +2,62 @@
 
 - **Роль:** REVIEW (не BUILD). Слот K12. Ветка `claude/save-work-handoff-xuav3q`.
 - **Задание:** `research/round-5/review/K12.txt` @ `codex/research-import-2026-10-05` `2883aeb`.
-- **Статус: `partial`.** Этап 1 готов: тест и baseline. Проверка `--url` и patch-предложение — следующий этап.
+- **Статус: `done`** для объёма задания: тест `--app-root`/`--url`, baseline, ожидаемые падения,
+  patch-предложение с проверкой. Исправление **только предложено**, BUILD не менялся, FIXED не заявляется.
 - **Проверяемый BUILD:** `claude/beautiful-clarke-sbzomj` @ `0bf27deb8549b325b34a9610402613d745544edb`,
-  `prototypes/city-evidence/`. Извлечён `extract_build.py` (`git show` → `write_bytes`, git blob каждого
-  из 57 файлов сверен; список — `results/extract_0bf27de.json`) во временный каталог, а не в
-  репозиторий. `prototypes/city-evidence/` и реальные данные не менялись.
+  `prototypes/city-evidence/`.
+  - Извлечён `extract_build.py` (`git show` → `write_bytes`, git blob 57 файлов сверен,
+    `results/extract_0bf27de.json`) во временный каталог.
+  - Patch проверялся во временном detached worktree на том же SHA; worktree удалён.
+  - `prototypes/city-evidence/`, реальные данные и чужие отчёты не менялись.
 
-## Этап 1 — сделано
+## Сделано
 
-- Прочитан путь сборки: `tools/build_data.py`, `tools/build_evidence.py`, `tools/copy_inputs.py`,
-  `serve.py`, `tests/test_inputs.py`, `inputs/k10/scripts/offline_check.py`, README/STATUS/HANDOFF.
-- `k12r5_negative_build.py` — тест с режимами `--app-root DIR` и `--url URL`.
-  - Каждый случай идёт во временной копии: мутация одного входа, затем реальные
-    `tools/build_data.py` и `tools/build_evidence.py` через subprocess.
-  - Семантические случаи **корректны по hash**: пересчитаны `package_manifest.json` и `source_manifest.json`.
-  - Требование: отказ обоих шагов с диагностикой; `web/data.js` и `web/evidence.js` побайтно не меняются.
-- `BASELINE_0bf27de_EXPECTED.json` — ожидаемые исходы baseline; с `--expect-file` они помечаются XFAIL.
+- `k12r5_negative_build.py`: 12 случаев на реальном пути `build_data.py` → `build_evidence.py` во
+  временных копиях.
+  - Семантические мутации корректны по hash: пересчитаны `package_manifest` и `source_manifest`.
+  - Различаются отказ целостности, отказ семантики и падение.
+  - Требование — отказ обоих шагов и побайтно неизменные `web/data.js` и `web/evidence.js`.
+  - Режим `--url` проверяет доставленные артефакты.
+- `extract_build.py` — извлечение любого SHA для повторного запуска.
+- `BASELINE_0bf27de_EXPECTED.json` — исходы baseline; с `--expect-file` они помечаются XFAIL.
+- `patches/build_path_strict_inputs.patch` и `patched/tools/` — предложение исправления.
+- `tests/test_harness.py` — самопроверка инструмента (синтетика).
+- `REPORT.md` — таблица, выводы, команды повтора.
 
-## Результат на baseline `0bf27de` (`results/baseline_0bf27de.json`)
+## Проверки, которые реально выполнены (Linux, Python 3.11.15, shapely 2.1.2, pyproj 3.7.2, Node 22.22)
 
-| Случай | build_data / build_evidence | Выходы | Видно в артефактах | offline_check |
-|---|---|---|---|---|
-| C01 чистая копия | принят / принят | побайтно равны закоммиченным | чисто | ok |
-| C02 байт без пересчёта hash | отказ целостности / отказ целостности | без изменений | — | ловит |
-| I01 данные + package_manifest изменены, source_manifest нет | **принят / принят** | перезаписаны | нет | не ловит |
-| N01 NaN в confidence | **принят / принят** | перезаписаны (`NaN` в data.js) | да | **не ловит** |
-| N02 NaN в координате | **принят / принят** | перезаписаны | да | ловит (вне bbox) |
-| N03 Infinity в длине | **принят / принят** | перезаписаны (`Infinity`) | да | ловит |
-| N04 `1e999` в длине | **принят / принят** | перезаписаны (`Infinity`) | да | ловит |
-| N05 повтор ключа `k10_group` | **принят / принят** | перезаписаны (школа стала аптекой) | **нет** | **не ловит** |
-| N06 конфликт id | **принят / принят** | перезаписаны (`places.total` 56 при 55 id) | да | ловит |
-| N07 точка Шымкента в квадрате Астаны | **принят / принят** | перезаписаны (`city_mismatch`) | да | ловит |
-| N08 bbox заголовка ≠ манифест | **принят / принят** | перезаписаны | **нет** | ловит |
-| N09 выпуск слоя 2026-08-20.0 ≠ 2026-09-23.1 | **принят / принят** | перезаписаны | **нет** | ловит |
+- Baseline `0bf27de` (извлечённая копия):
+  - unittest BUILD — 7 OK; `conformance.cjs` — all passed;
+  - чистая пересборка — `data.js` и `evidence.js` побайтно равны закоммиченным;
+  - `k12r5_negative_build.py`: OK — C01, C02; не выполнено требование — I01, N01–N09. Оба выхода
+    перезаписываются. С `--expect-file`: exit 0, unexpected = [].
+- `--url` на `serve.py` (127.0.0.1): чистая копия — clean, exit 0. Копия после принятия N01 —
+  `JSON_NONFINITE` и `NONFINITE_CONFIDENCE`, exit 1.
+- Patch-предложение на `0bf27de`:
+  - `git apply --check` — ok;
+  - `k12r5_negative_build.py` — 12 из 12 OK;
+  - unittest BUILD — 7 OK; `conformance.cjs` — all passed;
+  - worktree после прогонов изменён только в двух файлах patch.
+- `python -m unittest discover -s tests` (самопроверка) — 6 OK, в том числе с `-W error::ResourceWarning`.
 
-Это **ожидаемые падения baseline**, а не дефекты новой версии: новая версия не проверялась.
-`offline_check` K10 стоит в README отдельным шагом, но сборка его не вызывает и от него не зависит.
+**Не выполнялось:** `smoke.cjs` (Playwright) с patch; обрыв записи посреди `write_atomic`; Windows.
 
-## Проверки, которые реально выполнены (Linux, Python 3.11.15, shapely 2.1.2, pyproj 3.7.2, Node 22)
+## Ограничения
 
-- Извлечённая копия `0bf27de`:
-  - `python -m unittest discover -s tests` — 7 OK;
-  - `node tests/conformance.cjs` — all passed;
-  - чистая пересборка `build_data` + `build_evidence` — `data.js` и `evidence.js` побайтно равны закоммиченным.
-- `k12r5_negative_build.py --app-root <копия> --python <venv>`: таблица выше; 12 случаев, около 17 с.
-- То же с `--expect-file BASELINE_0bf27de_EXPECTED.json`: exit 0, unexpected = [].
+- `--url` не видит N05, N08, N09 и I01: следа в артефактах нет. Для них нужен `--app-root`.
+- Классификация отказа опирается на текст сообщения: `INTEGRITY`/`sha256`/«размер не совпад…»/«нет
+  файла» — целостность, `SEMANTIC` — семантика. Исправленной сборке лучше явно ставить эти префиксы.
+- Случаи взяты по одному на тип: это минимальный набор, а не полный перечень атак.
 
 ## Следующий шаг
 
-Режим `--url` на `serve.py` (чистая и заражённая копия). Затем patch-предложение для `build_data.py`
-в своей папке и его проверка тем же тестом. Это предложение, а не FIXED.
+1. BUILD решает, принимать ли patch или своё исправление, и сообщает новый SHA.
+2. Затем на этом SHA:
 
-## Повтор на исправленной версии
+   ```
+   extract_build.py <SHA> <dir>
+   k12r5_negative_build.py --app-root <dir> --python <venv>
+   ```
 
-```
-git fetch origin claude/beautiful-clarke-sbzomj
-python research/round-5-results/K12/extract_build.py <НОВЫЙ_SHA> /tmp/ce_new
-python research/round-5-results/K12/k12r5_negative_build.py --app-root /tmp/ce_new --python <python с shapely+pyproj>
-```
-
-Для исправленной версии `--expect-file` не нужен: требование — все 12 случаев «OK».
+   Требование — 12/12 OK. Только после этого можно говорить об исправлении.
