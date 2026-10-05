@@ -1,0 +1,680 @@
+{
+  "generated_by": "research/round-3-results/K11/k11_conflicts.py",
+  "base": "b87e5af6eeb6a5bdc33037a9f16d4e3377166ee5",
+  "snapshots_source": "origin/codex/research-import-2026-10-05@6602bb86f152d24edcb66f8b45122844323116bc:research/round-3/snapshots.json",
+  "method": "git diff --name-status --no-renames <base> <snapshot sha>; byte identity by git blob id",
+  "product_definition": "any path outside research/",
+  "branches": [
+    {
+      "slot": "K01",
+      "branch": "claude/loving-thompson-nmajdo",
+      "snapshot_sha": "8e37ca849f6fd586e61d91de9b76973b683f7384",
+      "tip_at_check": "50df8ebc8fb4cb9f2f95ed53ad10c7fe04b2f522",
+      "tip_moved_after_snapshot": true,
+      "base_is_ancestor": true,
+      "changed_files": 3,
+      "status_counts": {
+        "A": 3
+      },
+      "top_dirs": {
+        "research/handoffs/unassigned": 1,
+        "research/next-round/K01": 2
+      },
+      "product_files_changed": [],
+      "coordinator_files_changed": [],
+      "foreign_folders": []
+    },
+    {
+      "slot": "K02",
+      "branch": "claude/clever-mccarthy-pywscu",
+      "snapshot_sha": "c534321b45a6ceac5c9a71b378e05f8165ace2c4",
+      "tip_at_check": "c534321b45a6ceac5c9a71b378e05f8165ace2c4",
+      "tip_moved_after_snapshot": false,
+      "base_is_ancestor": true,
+      "changed_files": 19,
+      "status_counts": {
+        "A": 19
+      },
+      "top_dirs": {
+        "research/handoffs/shared": 2,
+        "research/handoffs/unassigned": 1,
+        "research/next-round/K02": 9,
+        "research/next-round/K03": 7
+      },
+      "product_files_changed": [],
+      "coordinator_files_changed": [],
+      "foreign_folders": [
+        "research/handoffs/shared",
+        "research/next-round/K03"
+      ]
+    },
+    {
+      "slot": "K03",
+      "branch": "claude/epic-curie-iitc43",
+      "snapshot_sha": "a8f1e17823468020932de65bc19bada57fda07ca",
+      "tip_at_check": "a8f1e17823468020932de65bc19bada57fda07ca",
+      "tip_moved_after_snapshot": false,
+      "base_is_ancestor": true,
+      "changed_files": 8,
+      "status_counts": {
+        "A": 8
+      },
+      "top_dirs": {
+        "research/handoffs/shared": 1,
+        "research/handoffs/unassigned": 1,
+        "research/next-round/K03": 6
+      },
+      "product_files_changed": [],
+      "coordinator_files_changed": [],
+      "foreign_folders": []
+    },
+    {
+      "slot": "K04",
+      "branch": "claude/beautiful-clarke-sbzomj",
+      "snapshot_sha": "b556df0c341f6bd5530cfbe2955e2e115093cd13",
+      "tip_at_check": "b556df0c341f6bd5530cfbe2955e2e115093cd13",
+      "tip_moved_after_snapshot": false,
+      "base_is_ancestor": true,
+      "changed_files": 7,
+      "status_counts": {
+        "A": 7
+      },
+      "top_dirs": {
+        "research/handoffs/shared": 1,
+        "research/handoffs/unassigned": 1,
+        "research/next-round/K04": 5
+      },
+      "product_files_changed": [],
+      "coordinator_files_changed": [],
+      "foreign_folders": []
+    },
+    {
+      "slot": "K05",
+      "branch": "claude/optimistic-davinci-1oiqs9",
+      "snapshot_sha": "6d39cc5b0e3379068794b7ef11512844516ddcb3",
+      "tip_at_check": "6d39cc5b0e3379068794b7ef11512844516ddcb3",
+      "tip_moved_after_snapshot": false,
+      "base_is_ancestor": true,
+      "changed_files": 15,
+      "status_counts": {
+        "A": 15
+      },
+      "top_dirs": {
+        "research/handoffs/shared": 1,
+        "research/handoffs/unassigned": 1,
+        "research/next-round/K05": 13
+      },
+      "product_files_changed": [],
+      "coordinator_files_changed": [],
+      "foreign_folders": []
+    },
+    {
+      "slot": "K06",
+      "branch": "claude/ecstatic-curie-hzfzn0",
+      "snapshot_sha": "bf30f7f2c04d2059d99941fd00aba143bf7843cd",
+      "tip_at_check": "bf30f7f2c04d2059d99941fd00aba143bf7843cd",
+      "tip_moved_after_snapshot": false,
+      "base_is_ancestor": true,
+      "changed_files": 29,
+      "status_counts": {
+        "A": 29
+      },
+      "top_dirs": {
+        "research/handoffs/astana": 1,
+        "research/handoffs/unassigned": 1,
+        "research/next-round/K06": 27
+      },
+      "product_files_changed": [],
+      "coordinator_files_changed": [],
+      "foreign_folders": []
+    },
+    {
+      "slot": "K07",
+      "branch": "claude/save-work-handoff-ku3ej3",
+      "snapshot_sha": "3df2bce1d14aba6600431c85b2ab2cc4fa78d359",
+      "tip_at_check": "3df2bce1d14aba6600431c85b2ab2cc4fa78d359",
+      "tip_moved_after_snapshot": false,
+      "base_is_ancestor": true,
+      "changed_files": 16,
+      "status_counts": {
+        "A": 16
+      },
+      "top_dirs": {
+        "research/handoffs/shared": 1,
+        "research/handoffs/unassigned": 1,
+        "research/next-round/K07": 14
+      },
+      "product_files_changed": [],
+      "coordinator_files_changed": [],
+      "foreign_folders": []
+    },
+    {
+      "slot": "K08",
+      "branch": "claude/dazzling-mayer-drhsxk",
+      "snapshot_sha": "15cd5f2db28c91ee4ead180babd13a93e3167419",
+      "tip_at_check": "15cd5f2db28c91ee4ead180babd13a93e3167419",
+      "tip_moved_after_snapshot": false,
+      "base_is_ancestor": true,
+      "changed_files": 9,
+      "status_counts": {
+        "A": 9
+      },
+      "top_dirs": {
+        "research/handoffs/shared": 1,
+        "research/handoffs/unassigned": 2,
+        "research/next-round/K08": 6
+      },
+      "product_files_changed": [],
+      "coordinator_files_changed": [],
+      "foreign_folders": []
+    },
+    {
+      "slot": "K09",
+      "branch": "claude/save-work-handoff-qho6eq",
+      "snapshot_sha": "9cc36c3485045a533ba60136c0c9561e4b8acf46",
+      "tip_at_check": "9cc36c3485045a533ba60136c0c9561e4b8acf46",
+      "tip_moved_after_snapshot": false,
+      "base_is_ancestor": true,
+      "changed_files": 23,
+      "status_counts": {
+        "A": 23
+      },
+      "top_dirs": {
+        "research/handoffs/shared": 1,
+        "research/handoffs/unassigned": 1,
+        "research/next-round/K09": 21
+      },
+      "product_files_changed": [],
+      "coordinator_files_changed": [],
+      "foreign_folders": []
+    },
+    {
+      "slot": "K10",
+      "branch": "claude/save-work-handoff-j7pc05",
+      "snapshot_sha": "e91898d596164bcf6e853b921a49f82126074a35",
+      "tip_at_check": "e91898d596164bcf6e853b921a49f82126074a35",
+      "tip_moved_after_snapshot": false,
+      "base_is_ancestor": true,
+      "changed_files": 30,
+      "status_counts": {
+        "A": 30
+      },
+      "top_dirs": {
+        "research/handoffs/shared": 1,
+        "research/handoffs/unassigned": 2,
+        "research/next-round/K10": 27
+      },
+      "product_files_changed": [],
+      "coordinator_files_changed": [],
+      "foreign_folders": []
+    },
+    {
+      "slot": "K11",
+      "branch": "claude/save-work-handoff-fmjw6r",
+      "snapshot_sha": "677b305ed53b04cbc6b928b64dcee73e1f01a2bb",
+      "tip_at_check": "677b305ed53b04cbc6b928b64dcee73e1f01a2bb",
+      "tip_moved_after_snapshot": false,
+      "base_is_ancestor": true,
+      "changed_files": 7,
+      "status_counts": {
+        "A": 7
+      },
+      "top_dirs": {
+        "research/handoffs/unassigned": 1,
+        "research/next-round/K11": 6
+      },
+      "product_files_changed": [],
+      "coordinator_files_changed": [],
+      "foreign_folders": []
+    },
+    {
+      "slot": "K12",
+      "branch": "claude/save-work-handoff-xuav3q",
+      "snapshot_sha": "1aec7572e3934300a1da8d3f2b6351b3aea88a74",
+      "tip_at_check": "1aec7572e3934300a1da8d3f2b6351b3aea88a74",
+      "tip_moved_after_snapshot": false,
+      "base_is_ancestor": true,
+      "changed_files": 13,
+      "status_counts": {
+        "A": 13
+      },
+      "top_dirs": {
+        "research/handoffs/shared": 1,
+        "research/handoffs/unassigned": 1,
+        "research/next-round/K12": 11
+      },
+      "product_files_changed": [],
+      "coordinator_files_changed": [],
+      "foreign_folders": []
+    }
+  ],
+  "path_conflicts": [
+    {
+      "path": "research/next-round/K03/territory_registry.csv",
+      "versions": [
+        {
+          "slot": "K02",
+          "branch": "claude/clever-mccarthy-pywscu",
+          "sha": "c534321b45a6ceac5c9a71b378e05f8165ace2c4",
+          "status": "A",
+          "blob": "7092e3929f60ef205c03cfe9ce43b2ba23e71af4",
+          "bytes": 10757
+        },
+        {
+          "slot": "K03",
+          "branch": "claude/epic-curie-iitc43",
+          "sha": "a8f1e17823468020932de65bc19bada57fda07ca",
+          "status": "A",
+          "blob": "ab2ab2a39ec8fdaa2ee197c0e4bc2d8c102cb3b4",
+          "bytes": 10084
+        }
+      ],
+      "bytes_identical": false,
+      "owner_next_round": {
+        "slot": "K03",
+        "branch": "claude/epic-curie-iitc43"
+      },
+      "decision": "none: not chosen automatically, no merge performed"
+    },
+    {
+      "path": "research/next-round/K03/territory_registry.json",
+      "versions": [
+        {
+          "slot": "K02",
+          "branch": "claude/clever-mccarthy-pywscu",
+          "sha": "c534321b45a6ceac5c9a71b378e05f8165ace2c4",
+          "status": "A",
+          "blob": "b6da53a56d2b8fa3dc4bae1d23dab4f941be76d1",
+          "bytes": 18471
+        },
+        {
+          "slot": "K03",
+          "branch": "claude/epic-curie-iitc43",
+          "sha": "a8f1e17823468020932de65bc19bada57fda07ca",
+          "status": "A",
+          "blob": "89f13c1ebfd6d7817f10b7d255217bb1cbfb5e51",
+          "bytes": 21094
+        }
+      ],
+      "bytes_identical": false,
+      "owner_next_round": {
+        "slot": "K03",
+        "branch": "claude/epic-curie-iitc43"
+      },
+      "decision": "none: not chosen automatically, no merge performed"
+    }
+  ],
+  "folder_intrusions": [
+    {
+      "path": "research/handoffs/shared/K03/A12-geography-registry/STATUS.md",
+      "folder_slot": "K03",
+      "written_by_slot": "K02",
+      "branch": "claude/clever-mccarthy-pywscu",
+      "sha": "c534321b45a6ceac5c9a71b378e05f8165ace2c4",
+      "blob": "134d68af674f07a7255255a6037c11fffb5b229e",
+      "bytes": 4357,
+      "also_written_by_owner": false,
+      "owner_next_round": "claude/epic-curie-iitc43"
+    },
+    {
+      "path": "research/next-round/K03/REPORT.md",
+      "folder_slot": "K03",
+      "written_by_slot": "K02",
+      "branch": "claude/clever-mccarthy-pywscu",
+      "sha": "c534321b45a6ceac5c9a71b378e05f8165ace2c4",
+      "blob": "2e6bf89e4828d2cdd0c0faa047977ac7882de58c",
+      "bytes": 8719,
+      "also_written_by_owner": false,
+      "owner_next_round": "claude/epic-curie-iitc43"
+    },
+    {
+      "path": "research/next-round/K03/build_registry.py",
+      "folder_slot": "K03",
+      "written_by_slot": "K02",
+      "branch": "claude/clever-mccarthy-pywscu",
+      "sha": "c534321b45a6ceac5c9a71b378e05f8165ace2c4",
+      "blob": "bb075b715eab8153fe5671498dc217ffbbbbc058",
+      "bytes": 7844,
+      "also_written_by_owner": false,
+      "owner_next_round": "claude/epic-curie-iitc43"
+    },
+    {
+      "path": "research/next-round/K03/geometry_result.json",
+      "folder_slot": "K03",
+      "written_by_slot": "K02",
+      "branch": "claude/clever-mccarthy-pywscu",
+      "sha": "c534321b45a6ceac5c9a71b378e05f8165ace2c4",
+      "blob": "f88d8a14dc7d4eb70b0d60053546d555b3cdf08f",
+      "bytes": 6372,
+      "also_written_by_owner": false,
+      "owner_next_round": "claude/epic-curie-iitc43"
+    },
+    {
+      "path": "research/next-round/K03/k03_geometry.py",
+      "folder_slot": "K03",
+      "written_by_slot": "K02",
+      "branch": "claude/clever-mccarthy-pywscu",
+      "sha": "c534321b45a6ceac5c9a71b378e05f8165ace2c4",
+      "blob": "e9123f3d9246022cc879e6c8770bb9c5ab930451",
+      "bytes": 6898,
+      "also_written_by_owner": false,
+      "owner_next_round": "claude/epic-curie-iitc43"
+    },
+    {
+      "path": "research/next-round/K03/network_check.txt",
+      "folder_slot": "K03",
+      "written_by_slot": "K02",
+      "branch": "claude/clever-mccarthy-pywscu",
+      "sha": "c534321b45a6ceac5c9a71b378e05f8165ace2c4",
+      "blob": "a983f73c1bf21e6d55bd70ea2b755ed873b75df0",
+      "bytes": 1127,
+      "also_written_by_owner": false,
+      "owner_next_round": "claude/epic-curie-iitc43"
+    },
+    {
+      "path": "research/next-round/K03/territory_registry.csv",
+      "folder_slot": "K03",
+      "written_by_slot": "K02",
+      "branch": "claude/clever-mccarthy-pywscu",
+      "sha": "c534321b45a6ceac5c9a71b378e05f8165ace2c4",
+      "blob": "7092e3929f60ef205c03cfe9ce43b2ba23e71af4",
+      "bytes": 10757,
+      "also_written_by_owner": true,
+      "owner_next_round": "claude/epic-curie-iitc43"
+    },
+    {
+      "path": "research/next-round/K03/territory_registry.json",
+      "folder_slot": "K03",
+      "written_by_slot": "K02",
+      "branch": "claude/clever-mccarthy-pywscu",
+      "sha": "c534321b45a6ceac5c9a71b378e05f8165ace2c4",
+      "blob": "b6da53a56d2b8fa3dc4bae1d23dab4f941be76d1",
+      "bytes": 18471,
+      "also_written_by_owner": true,
+      "owner_next_round": "claude/epic-curie-iitc43"
+    }
+  ],
+  "k03_registry_comparison": {
+    "columns": {
+      "K02": [
+        "city",
+        "unit_type",
+        "stable_id_proposed",
+        "legacy_id",
+        "name_ru",
+        "name_kk_or_osm_name",
+        "osm_relation",
+        "admin_level",
+        "kato",
+        "kato_origin",
+        "wikidata",
+        "kpssu_code",
+        "date",
+        "date_kind",
+        "geometry",
+        "area_km2_geodesic",
+        "provenance",
+        "geometry_check",
+        "official_status",
+        "status",
+        "notes"
+      ],
+      "K03": [
+        "territory_id",
+        "id_status",
+        "city",
+        "level",
+        "name_ru",
+        "name_kk",
+        "name_source",
+        "legacy_id",
+        "osm_relation_id",
+        "osm_admin_level",
+        "kato_code",
+        "kato_source",
+        "wikidata",
+        "iso_3166_2",
+        "boundary_version",
+        "snapshot_date",
+        "retrieved_at",
+        "geometry_in_repo",
+        "geometry_source",
+        "area_km2_geodesic",
+        "parts",
+        "provenance",
+        "osm_geometry_check",
+        "official_status_check",
+        "use_in_city_aggregates",
+        "conflicts",
+        "notes"
+      ]
+    },
+    "row_count": {
+      "K02": 18,
+      "K03": 18
+    },
+    "rows_by_city": {
+      "K02": {
+        "astana": 7,
+        "akmola_region_neighbour": 5,
+        "shymkent": 6
+      },
+      "K03": {
+        "astana": 7,
+        "outside: Ақмола облысы": 4,
+        "outside: region tag absent": 1,
+        "shymkent": 6
+      }
+    },
+    "assigned_ids": {
+      "K02_only": [
+        "osm:relation/15594335",
+        "osm:relation/17952313",
+        "osm:relation/3403760",
+        "osm:relation/3403782",
+        "osm:relation/3404061"
+      ],
+      "K03_only": [],
+      "common": [
+        "kz.astana",
+        "kz.astana.district.almaty",
+        "kz.astana.district.baikonur",
+        "kz.astana.district.esil",
+        "kz.astana.district.nura",
+        "kz.astana.district.saraishyk",
+        "kz.astana.district.saryarka",
+        "kz.shymkent"
+      ]
+    },
+    "osm_relations": {
+      "K02": 11,
+      "K03": 11,
+      "common": 11
+    },
+    "osm_rows_with_field_differences": [
+      {
+        "osm_relation": "15594335",
+        "name_ru": "городская администрация Косшы",
+        "differences": {
+          "stable_id_proposed|territory_id": [
+            "osm:relation/15594335",
+            ""
+          ],
+          "city|city": [
+            "akmola_region_neighbour",
+            "outside: Ақмола облысы"
+          ]
+        }
+      },
+      {
+        "osm_relation": "17952313",
+        "name_ru": "Тайтобинская сельская администрация",
+        "differences": {
+          "stable_id_proposed|territory_id": [
+            "osm:relation/17952313",
+            ""
+          ],
+          "city|city": [
+            "akmola_region_neighbour",
+            "outside: region tag absent"
+          ]
+        }
+      },
+      {
+        "osm_relation": "3403760",
+        "name_ru": "Целиноградский район",
+        "differences": {
+          "stable_id_proposed|territory_id": [
+            "osm:relation/3403760",
+            ""
+          ],
+          "city|city": [
+            "akmola_region_neighbour",
+            "outside: Ақмола облысы"
+          ]
+        }
+      },
+      {
+        "osm_relation": "3403782",
+        "name_ru": "Аршалынский район",
+        "differences": {
+          "stable_id_proposed|territory_id": [
+            "osm:relation/3403782",
+            ""
+          ],
+          "city|city": [
+            "akmola_region_neighbour",
+            "outside: Ақмола облысы"
+          ]
+        }
+      },
+      {
+        "osm_relation": "3404061",
+        "name_ru": "Шортандинский район",
+        "differences": {
+          "stable_id_proposed|territory_id": [
+            "osm:relation/3404061",
+            ""
+          ],
+          "city|city": [
+            "akmola_region_neighbour",
+            "outside: Ақмола облысы"
+          ]
+        }
+      }
+    ],
+    "rows_without_osm_relation": {
+      "K02": [
+        {
+          "city": "astana",
+          "stable_id_proposed": "kz.astana",
+          "unit_type": "city",
+          "name_ru": "Астана",
+          "kpssu_code": ""
+        },
+        {
+          "city": "shymkent",
+          "stable_id_proposed": "kz.shymkent",
+          "unit_type": "city",
+          "name_ru": "Шымкент",
+          "kpssu_code": "1979"
+        },
+        {
+          "city": "shymkent",
+          "stable_id_proposed": "",
+          "unit_type": "district_code",
+          "name_ru": "",
+          "kpssu_code": "197910"
+        },
+        {
+          "city": "shymkent",
+          "stable_id_proposed": "",
+          "unit_type": "district_code",
+          "name_ru": "",
+          "kpssu_code": "197911"
+        },
+        {
+          "city": "shymkent",
+          "stable_id_proposed": "",
+          "unit_type": "district_code",
+          "name_ru": "",
+          "kpssu_code": "197912"
+        },
+        {
+          "city": "shymkent",
+          "stable_id_proposed": "",
+          "unit_type": "district_code",
+          "name_ru": "",
+          "kpssu_code": "197913"
+        },
+        {
+          "city": "shymkent",
+          "stable_id_proposed": "",
+          "unit_type": "district_code",
+          "name_ru": "",
+          "kpssu_code": "197914"
+        }
+      ],
+      "K03": [
+        {
+          "city": "astana",
+          "territory_id": "kz.astana",
+          "id_status": "proposed (A12 rule)",
+          "level": "city",
+          "name_ru": "Астана"
+        },
+        {
+          "city": "shymkent",
+          "territory_id": "kz.shymkent",
+          "id_status": "proposed (A12 rule)",
+          "level": "city",
+          "name_ru": "Шымкент"
+        },
+        {
+          "city": "shymkent",
+          "territory_id": "",
+          "id_status": "not assigned: name is hypothesis",
+          "level": "district",
+          "name_ru": "Абайский район"
+        },
+        {
+          "city": "shymkent",
+          "territory_id": "",
+          "id_status": "not assigned: name is hypothesis",
+          "level": "district",
+          "name_ru": "Аль-Фарабийский район"
+        },
+        {
+          "city": "shymkent",
+          "territory_id": "",
+          "id_status": "not assigned: name is hypothesis",
+          "level": "district",
+          "name_ru": "Енбекшинский район"
+        },
+        {
+          "city": "shymkent",
+          "territory_id": "",
+          "id_status": "not assigned: name is hypothesis",
+          "level": "district",
+          "name_ru": "Каратауский район"
+        },
+        {
+          "city": "shymkent",
+          "territory_id": "",
+          "id_status": "not assigned: name is hypothesis",
+          "level": "district",
+          "name_ru": "Туранский район"
+        }
+      ]
+    },
+    "note": "Field comparison covers rows matched by OSM relation; area tolerance 0.05 km2. Rows without OSM relation (Shymkent districts) are listed, not matched: no code-name link exists in either file."
+  },
+  "summary": {
+    "branches_checked": 12,
+    "path_conflicts": 2,
+    "folder_intrusions": 8,
+    "branches_with_product_changes": [],
+    "branches_with_coordinator_file_changes": [],
+    "non_add_changes": {}
+  }
+}

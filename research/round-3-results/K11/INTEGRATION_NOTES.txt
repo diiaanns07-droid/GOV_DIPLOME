@@ -1,0 +1,87 @@
+K11, раунд 3. Заметки по интеграции зафиксированных веток
+==========================================================
+
+Дата проверки: 2026-10-05 (UTC).
+База: b87e5af6eeb6a5bdc33037a9f16d4e3377166ee5.
+Источник назначений: origin/codex/research-import-2026-10-05 @ 6602bb86f152d24edcb66f8b45122844323116bc,
+файл research/round-3/snapshots.json.
+Метод: git diff --name-status --no-renames <base> <SHA снимка>. Байты сравнивались по id git-blob.
+Чужие ветки не сливались, не выгружались в рабочее дерево, их скрипты не запускались.
+Машиночитаемо: CONFLICTS.json (генератор k11_conflicts.py).
+
+1. ВСЕ 12 СНИМКОВ
+-----------------
+- Все SHA из snapshots.json доступны, у каждого база b87e5af является предком.
+- Во всех ветках только добавления (статус A): 179 файлов. Изменений (M) и удалений (D) файлов базы нет.
+- Файлы продукта (всё вне research/: engine/, agent/, ui/, web/, data/, tests/, app.py, README.md,
+  PROJECT_CONTEXT.md, CLAUDE.md и т. д.) не менялись ни в одной ветке.
+- Общие файлы координатора и импорта (research/coordination/, research/round-3/, research/README.md,
+  research/govtech-results/, research/astana-results/, *-14/prompts) не менялись ни в одной ветке.
+- K01: ветка ушла вперёд снимка (8e37ca8 -> 50df8eb). Новый коммит добавляет только
+  research/round-3-results/K01/{MANIFEST.json,STATUS.md,check_snapshots.py}. Для аудита взят снимок 8e37ca8.
+
+2. КОНФЛИКТЫ ПУТЕЙ: один и тот же путь в двух ветках
+-----------------------------------------------------
+Путь                                              Ветка / SHA снимка                                 blob          байт   Совпадают
+research/next-round/K03/territory_registry.csv    K02 claude/clever-mccarthy-pywscu c534321b45a6     7092e3929f60  10757  НЕТ
+                                                  K03 claude/epic-curie-iitc43      a8f1e1782346     ab2ab2a39ec8  10084
+research/next-round/K03/territory_registry.json   K02 claude/clever-mccarthy-pywscu c534321b45a6     b6da53a56d2b  18471  НЕТ
+                                                  K03 claude/epic-curie-iitc43      a8f1e1782346     89f13c1ebfd6  21094
+
+Владелец в следующем раунде: K03, claude/epic-curie-iitc43. clever-mccarthy теперь занимается только K02.
+Решение K11: не принято. Содержимое автоматически не выбиралось, merge не выполнялся.
+При простом слиянии двух веток Git даст конфликт add/add по обоим файлам.
+
+3. ЧЕМ РАЗЛИЧАЮТСЯ ДВЕ ВЕРСИИ РЕЕСТРА (сравнение структуры, без выбора)
+------------------------------------------------------------------------
+- Строк: по 18 в обеих (Астана 7, Шымкент 6, соседние территории Акмолинской области 5).
+- Схема разная: у K02 21 столбец (stable_id_proposed, unit_type, kpssu_code, date_kind, geometry_check,
+  official_status, ...), у K03 27 столбцов (territory_id, id_status, level, boundary_version,
+  iso_3166_2, parts, use_in_city_aggregates, conflicts, ...). Колонки взаимно не переименовываются.
+- Совпадает: 8 назначенных ID одинаковы (kz.astana, kz.shymkent и 6 районов Астаны:
+  almaty, baikonur, esil, nura, saraishyk, saryarka). Для 6 районов Астаны, сопоставленных по OSM relation,
+  совпали legacy_id, name_ru, admin_level, КАТО, wikidata, city и площадь (допуск 0.05 км²).
+- Расходится, соседние территории (5 OSM relation: 15594335 Косшы, 17952313 Тайтобинская с.а.,
+  3403760 Целиноградский, 3403782 Аршалынский, 3404061 Шортандинский):
+  K02 присваивает ID вида osm:relation/N и city=akmola_region_neighbour;
+  K03 оставляет territory_id пустым (id_status: not assigned (outside Astana)), city = outside: Ақмола облысы,
+  для Тайтобинской — outside: region tag absent.
+- Расходится, районы Шымкента (5 строк без OSM relation):
+  K02 — безымянные строки с кодами КПСиСУ 197910–197914 (unit_type=district_code);
+  K03 — названия Абайский, Аль-Фарабийский, Енбекшинский, Каратауский, Туранский без кодов
+  (id_status: not assigned: name is hypothesis).
+  Связи «код↔название» нет ни в одной версии. Сопоставлять их по порядку строк нельзя.
+- Обе версии не проверены K11 по первоисточникам. Это сравнение файлов, не подтверждение фактов.
+
+4. ЗАПИСЬ В ЧУЖУЮ НАЗНАЧЕННУЮ ПАПКУ
+------------------------------------
+Ветка K02 (clever-mccarthy, c534321) кроме своей папки K02 записала в папки K03 8 файлов:
+  research/next-round/K03/REPORT.md
+  research/next-round/K03/build_registry.py
+  research/next-round/K03/geometry_result.json
+  research/next-round/K03/k03_geometry.py
+  research/next-round/K03/network_check.txt
+  research/next-round/K03/territory_registry.csv    (есть и у K03, см. п. 2)
+  research/next-round/K03/territory_registry.json   (есть и у K03, см. п. 2)
+  research/handoffs/shared/K03/A12-geography-registry/STATUS.md
+Ветка K03 (epic-curie, a8f1e17) пишет в ту же папку свои файлы с другими именами: K03_report.md,
+conflicts.json, k03_geo_verify.py, k03_geo_verify_output.json. Handoff лежит в
+research/handoffs/shared/claude-epic-curie-iitc43/K03-geo/STATUS.md.
+Итог: по K03 есть два отчёта и два handoff по разным путям, без конфликта Git, но с дублированием смысла.
+Владелец интеграции: K03, epic-curie.
+
+5. ОСТАЛЬНЫЕ ВЕТКИ
+------------------
+K01, K04–K12 пишут только в свои research/next-round/KXX/, свои handoffs и handoffs/unassigned/<сессия>/.
+Пересечений путей между ними нет. Handoffs в research/handoffs/unassigned/ у всех лежат в разных подпапках сессий.
+
+6. РЕКОМЕНДАЦИЯ КООРДИНАТОРУ (не выполнено K11)
+------------------------------------------------
+- Не сливать K02 и K03 ветки целиком в одну интеграционную ветку без решения по п. 2.
+  Безопасный вариант: K03 (epic-curie) сам переносит нужное из c534321 в свою ветку
+  (git show c534321:<путь>) под новыми именами, например с суффиксом _from_K02, и решает,
+  какой реестр становится основным. После этого папку next-round/K03 из ветки K02 при интеграции не брать.
+- Для районов Шымкента нужен источник, связывающий коды КПСиСУ 1979xx с названиями районов.
+  Без него обе версии остаются частичными.
+- Перед объединением повторить: python3 research/round-3-results/K11/k11_conflicts.py
+  (после git fetch назначенных веток), если snapshots.json обновится.
