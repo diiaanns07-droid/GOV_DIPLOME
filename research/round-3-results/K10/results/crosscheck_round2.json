@@ -1,0 +1,53 @@
+{
+ "check": "package ids vs round-2 raw extracts, same query",
+ "cities": {
+  "shymkent": {
+   "places_social": {
+    "package": 55,
+    "round2_raw": 55,
+    "only_package": [],
+    "only_round2": [],
+    "n_only_package": 0,
+    "n_only_round2": 0,
+    "version_mismatch": 0
+   },
+   "segments": {
+    "package": 1084,
+    "round2_raw": 1084,
+    "only_package": [],
+    "only_round2": [],
+    "n_only_package": 0,
+    "n_only_round2": 0,
+    "version_mismatch": 0
+   },
+   "raw_inputs": {
+    "shymkent_places.jsonl": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+    "shymkent_segment.jsonl": "2d19bc7d9b85830f0b4654b3f3bb7263b9308be981e7cfba0793ecc9043db1dd"
+   }
+  },
+  "astana": {
+   "places_social": {
+    "package": 65,
+    "round2_raw": 65,
+    "only_package": [],
+    "only_round2": [],
+    "n_only_package": 0,
+    "n_only_round2": 0,
+    "version_mismatch": 0
+   },
+   "segments": {
+    "package": 1326,
+    "round2_raw": 1326,
+    "only_package": [],
+    "only_round2": [],
+    "n_only_package": 0,
+    "n_only_round2": 0,
+    "version_mismatch": 0
+   },
+   "raw_inputs": {
+    "astana_places.jsonl": "13ffb95dbf8ec06f3ee057452a42937023a3483817692ff0ee28a243a3ff66e2",
+    "astana_segment.jsonl": "dd0ea0c8915888a27fd5323c2125ab11ee41ff48fb8bf0c89395bfd554c960f9"
+   }
+  }
+ }
+}

@@ -1,0 +1,91 @@
+{
+ "city": "shymkent",
+ "rule": "max social places in CELL_KM square fully inside city polygon; tie -> min(row,col)",
+ "cell_km": 2.0,
+ "grid": {
+  "origin_lon": 69.30185,
+  "origin_lat": 42.109017,
+  "dlon": 0.0242929,
+  "dlat": 0.0179662,
+  "rows": 21,
+  "cols": 27,
+  "lat_for_dlon": 42.30557
+ },
+ "inputs": {
+  "districts_geojson": "research/next-round/K10/samples/shymkent_districts_overture.geojson",
+  "districts_sha256": "e19bbd7572a7a4f46dbb793df74c5d1cfab11d4e7a217fed7e525b4cece117c3",
+  "places_jsonl": "shymkent_places.jsonl",
+  "places_sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b"
+ },
+ "social_places_in_input": 248,
+ "cells_fully_inside_city": 243,
+ "cells_with_zero": 207,
+ "selected": {
+  "row": 11,
+  "col": 12,
+  "bbox": [
+   69.593365,
+   42.306645,
+   69.617658,
+   42.324611
+  ],
+  "social_places": 55
+ },
+ "top5": [
+  {
+   "row": 11,
+   "col": 12,
+   "bbox": [
+    69.593365,
+    42.306645,
+    69.617658,
+    42.324611
+   ],
+   "social_places": 55
+  },
+  {
+   "row": 11,
+   "col": 11,
+   "bbox": [
+    69.569072,
+    42.306645,
+    69.593365,
+    42.324611
+   ],
+   "social_places": 34
+  },
+  {
+   "row": 12,
+   "col": 12,
+   "bbox": [
+    69.593365,
+    42.324611,
+    69.617658,
+    42.342578
+   ],
+   "social_places": 23
+  },
+  {
+   "row": 11,
+   "col": 13,
+   "bbox": [
+    69.617658,
+    42.306645,
+    69.641951,
+    42.324611
+   ],
+   "social_places": 16
+  },
+  {
+   "row": 14,
+   "col": 13,
+   "bbox": [
+    69.617658,
+    42.360544,
+    69.641951,
+    42.37851
+   ],
+   "social_places": 14
+  }
+ ]
+}
