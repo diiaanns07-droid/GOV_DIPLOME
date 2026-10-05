@@ -145,5 +145,57 @@ check("problem_digest in the result binds it to the input", PL.optimizePlans(bct
 const t0 = Date.now(); PL.optimizePlans(bctx, bsc, { F }); const tBig = Date.now() - t0;
 check(`16×25 full search under 2 s in Node (${tBig} ms)`, tBig < 2000);
 
+// 5. files: export / import city-plan-v2 (strict, atomic, derived_results verified)
+const ctxFor = (city) => PL.makeContext(D, city, F);
+const txt = PL.exportPlanScenario(bctx, bsc, F), ej = JSON.parse(txt);
+const imp = PL.importPlanScenario(txt, ctxFor, F);
+check("export -> import round trip (scenario and evaluation equal)", J(imp.scenario) === J(bsc) && J(imp.evaluation.metrics) === J(PL.evaluatePlan(bctx, bsc, bsc.selected_ids).metrics));
+check("export contains labelled derived block, digests, no local paths", ej.derived_results.note.includes("пересчитываются") && ej.derived_results.problem_digest === PL.problemDigest(bsc, F) && !/\/home\/|\/tmp\/|[A-Z]:\\/.test(txt));
+const irej = (name, t, want) => check(`import rejects ${name} (${want})`, code(() => PL.importPlanScenario(t, ctxFor, F)) === want);
+const forged = JSON.parse(txt); forged.derived_results.manual.metrics.weighted_sum_mm = 1;
+irej("forged derived_results (metric changed)", J(forged), "forged_derived");
+const forged2 = JSON.parse(txt); forged2.derived_results.manual.rows[0].after_mm = 0;
+irej("forged derived_results (row changed)", J(forged2), "forged_derived");
+const forged3 = JSON.parse(txt); forged3.derived_results.extra = 1;
+irej("derived_results with an extra field", J(forged3), "forged_derived");
+const noDerived = JSON.parse(txt); delete noDerived.derived_results;
+check("import without derived_results accepted (recomputed)", code(() => PL.importPlanScenario(J(noDerived), ctxFor, F)) === "accepted");
+irej("v1 scenario (separate mode, no silent migration)", X.exportScenario({ schema_version: X.SCHEMA, city_id: "shymkent", source_snapshot: X.sourceSnapshot(D, "shymkent", F), category: "school",
+  control_points: [{ id: "P1", lon: bsc.control_points[0].lon, lat: bsc.control_points[0].lat }], proposed_object: null }, D, F), "wrong_version");
+irej("unknown version", txt.replace('"city-plan-v2"', '"city-plan-v9"'), "bad_version");
+irej("unknown source snapshot", txt.replace(bsc.source_snapshot, "sha256:" + "a".repeat(64)), "foreign_snapshot");
+irej("Shymkent file claiming Astana", txt.replace('"city_id": "shymkent"', '"city_id": "astana"'), "foreign_snapshot");
+irej("unknown city", txt.replace('"city_id": "shymkent"', '"city_id": "almaty"'), "bad_city");
+irej("NaN", txt.replace(/"budget": \d+/, '"budget": NaN'), "bad_json");
+irej("Infinity", txt.replace(/"budget": \d+/, '"budget": Infinity'), "bad_json");
+irej("1e999", txt.replace(/"budget": \d+/, '"budget": 1e999'), "bad_json");
+irej("duplicate key", txt.replace('"max_selected"', '"budget": 1, "max_selected"'), "bad_json");
+irej("oversize > 256 KiB", " ".repeat(262145) + txt, "too_large");
+irej("unknown top-level field", txt.replace('"budget"', '"href": "https://x", "budget"'), "unknown_field");
+check("Astana file imported with the Astana context", (() => { const at = PL.exportPlanScenario(ast, caseScenario(exp.cases.find((c) => c.name === "astana_school_16x25"), ast), F);
+  return PL.importPlanScenario(at, ctxFor, F).ctx.city_id === "astana"; })());
+
+// 6. explanation (template, digest, stale) and report
+const bres = PL.optimizePlans(bctx, bsc, { F }), bsens = PL.sensitivity(bctx, bsc, { F }), bman = PL.evaluatePlan(bctx, bsc, bsc.selected_ids);
+const dg = PL.explanationDigest(bsc, bman, bres, bsens, F);
+const exT = PL.explainPlans(bsc, bman, bres, bsens, dg, F).text;
+check("explanation: template, units, trade-off, capacity disclaimer, conditional units", exT.startsWith("Шаблонное объяснение") && exT.includes("усл. ед.") && exT.includes("жертвует") && exT.includes("Нельзя сделать вывод о вместимости") && !/мин\b|минут/.test(exT), exT.slice(0, 300));
+check("explanation digest changes with budget / selection / result", new Set([dg, PL.explanationDigest({ ...bsc, budget: 1 }, bman, bres, bsens, F), PL.explanationDigest({ ...bsc, selected_ids: [] }, bman, bres, bsens, F),
+  PL.explanationDigest(bsc, bman, null, bsens, F)]).size === 4);
+check("stale explanation rejected", code(() => PL.explainPlans({ ...bsc, budget: bsc.budget - 1 }, bman, bres, bsens, dg, F)) === "stale_explanation");
+const sres = PL.optimizePlans(caseCtx(same), caseScenario(same, caseCtx(same)), { F }), ssc = caseScenario(same, caseCtx(same)), sman = PL.evaluatePlan(caseCtx(same), ssc, ssc.selected_ids);
+const sT = PL.explainPlans(ssc, sman, sres, null, PL.explanationDigest(ssc, sman, sres, null, F), F).text;
+check("identical winners explained as one plan, not three decisions", sT.includes("нет трёх разных решений"));
+const ires = PL.optimizePlans(rctx, rsc, { F }), iT = PL.explainPlans(rsc, null, ires, null, PL.explanationDigest(rsc, null, ires, null, F), F).text;
+check("infeasible explained with reason; constraints not dropped", iT.includes("Допустимых планов нет") && iT.includes("не снимались"));
+const nb = exp.cases.find((c) => c.name === "no_baseline"), nbsc = caseScenario(nb, caseCtx(nb)), nbm = PL.evaluatePlan(caseCtx(nb), nbsc, []);
+check("unknown distance explained as unknown, not zero", PL.explainPlans(nbsc, nbm, null, null, PL.explanationDigest(nbsc, nbm, null, null, F), F).text.includes("неизвестно, а не равно нулю"));
+const evil = "<script>alert(1)</script>\"'&";
+const html = PL.reportHtml({ scenario: bsc, city_label: evil, release: "2026-09-23.1", problem_digest: "p", scenario_digest: "s", generated: "t", manual: bman, result: bres, sens: bsens,
+  explanation: exT + evil, names: Object.fromEntries(sh.places.map((p) => [p.id, evil])), attribution: evil, demo: true });
+check("HTML report: no script tag, strings escaped, CSP default-src none, no external URL",
+  !/<script/i.test(html) && html.includes("&lt;script&gt;") && html.includes("default-src 'none'") && !/https?:\/\//.test(html) && html.includes("синтетический"));
+check("HTML report contains plan tables and limitations", html.includes("Точный перебор") && html.includes("Парето") && html.includes("Изменение бюджета") && html.includes("не тенге"));
+
 console.log(fails ? `${fails} FAILED` : "all plan checks passed");
 process.exit(fails ? 1 : 0);

@@ -289,8 +289,131 @@
     return bs.map((b) => { const r = optimizePlans(ctx, { ...sc, budget: b }, opts); return { budget: b, status: r.status, reasons: r.reasons, objectives: r.objectives, feasible_count: r.feasible_count }; });
   }
 
+
+  // ---------- files: strict export / import (city-plan-v2); derived_results are checked against a recomputation ----------
+  function derivedOf(ctx, sc, F) {
+    const ev = evaluatePlan(ctx, sc, sc.selected_ids);
+    return { note: "производные значения; при импорте пересчитываются и сверяются, из файла не принимаются", metric_version: METRIC,
+      problem_digest: problemDigest(sc, F), scenario_digest: scenarioDigest(sc, F),
+      manual: { selected_ids: ev.selected_ids, feasible: ev.feasibility.feasible,
+        metrics: { unknown_count: ev.metrics.unknown_count, weighted_sum_mm: ev.metrics.weighted_sum_mm, max_mm: ev.metrics.max_mm, covered_weight: ev.metrics.covered_weight, cost: ev.metrics.cost },
+        rows: ev.rows.map((r) => ({ id: r.id, before_mm: r.before_mm, after_mm: r.after_mm, delta_mm: r.delta_mm, nearest_before: r.nearest_before, nearest_after: r.nearest_after })) } };
+  }
+  function exportPlanScenario(ctx, sc, F) {
+    const clean = validatePlanScenario(sc, ctx);
+    return JSON.stringify({ ...clean, derived_results: derivedOf(ctx, clean, F) }, null, 1) + "\n";
+  }
+  // Canonical JSON for comparison (keys sorted; the strict parser returns null-prototype objects)
+  const canon = (v) => (Array.isArray(v) ? "[" + v.map(canon).join(",") + "]" : v && typeof v === "object"
+    ? "{" + Object.keys(v).sort().map((k) => JSON.stringify(k) + ":" + canon(v[k])).join(",") + "}" : JSON.stringify(v));
+  /* importPlanScenario(text, ctxFor(city) -> context, F) -> { scenario, evaluation, ctx }. Nothing is applied here;
+   * the caller applies the returned scenario only on success (atomic). derived_results, if present, must equal a recomputation. */
+  function importPlanScenario(text, ctxFor, F) {
+    let obj;
+    try { obj = X.parseStrict(text); } catch (e) { throw new PlanError(e.code === "too_large" ? "too_large" : "bad_json", e.detail || e.message); }
+    if (!obj || typeof obj !== "object" || Array.isArray(obj)) fail("bad_shape", "ожидается объект");
+    if (obj.schema_version === X.SCHEMA) fail("wrong_version", "это сценарий city-whatif-v1 (один объект) — загрузите его в режиме «Один объект (v1)»; перенос в v2 без ваших стоимостей и бюджета не делается");
+    if (obj.schema_version !== SCHEMA) fail("bad_version", `версия ${String(obj.schema_version).slice(0, 40)} не поддерживается`);
+    if (obj.city_id !== "shymkent" && obj.city_id !== "astana") fail("bad_city", String(obj.city_id).slice(0, 40));
+    const ctx = ctxFor(obj.city_id);
+    const sc = validatePlanScenario(obj, ctx);
+    if ("derived_results" in obj) {
+      const want = canon(derivedOf(ctx, sc, F)), got = canon(obj.derived_results);
+      if (want !== got) fail("forged_derived", "derived_results в файле не совпадают с пересчётом — файл изменён вручную или сделан другой версией; не принят");
+    }
+    return { scenario: sc, evaluation: evaluatePlan(ctx, sc, sc.selected_ids), ctx };
+  }
+
+  // ---------- template explanation over computed facts (not an LLM); digest covers problem, scenario and values ----------
+  const mText = (mm) => (mm === null || mm === undefined ? "нет данных" : mm >= 1e6 ? (mm / 1e6).toFixed(2).replace(".", ",") + " км" : Math.round(mm / 1000) + " м");
+  const idsText = (ids) => (ids.length ? ids.join(", ") : "без новых объектов");
+  const OBJ_LABEL = { mean: "Среднее", minimax: "Худшая точка", coverage: "Охват" };
+  function explanationDigest(sc, manual, result, sens, F) {
+    const facts = [problemDigest(sc, F), scenarioDigest(sc, F), manual ? [manual.selected_ids, manual.metrics] : null,
+      result ? [result.status, result.objectives, result.pareto, result.feasible_count] : null,
+      sens ? sens.map((x) => [x.budget, x.status, x.objectives && Object.values(x.objectives).map((o) => [o.ids, o.cost])]) : null];
+    return F.sha256hex(JSON.stringify(facts)).slice(0, 16);
+  }
+  function explainPlans(sc, manual, result, sens, digestAtRequest, F) {
+    const cur = explanationDigest(sc, manual, result, sens, F);
+    if (digestAtRequest !== cur) fail("stale_explanation", "сценарий или результаты изменились после запроса — объяснение отклонено");
+    const tw = sc.control_points.reduce((t, p) => t + p.weight, 0);
+    const mean = (o) => (o.unknown_count ? null : o.weighted_sum_mm / tw);
+    const L = [`Шаблонное объяснение по вычисленным фактам (не LLM). Категория: ${CATEGORIES[sc.category]}; ${sc.control_points.length} контрольных точек (сумма весов ${tw}), ${sc.candidates.length} кандидатных мест, бюджет ${sc.budget} усл. ед., не больше ${sc.max_selected} объектов, радиус охвата ${sc.coverage_radius_m} м по прямой. Отпечаток ${cur}.`];
+    if (manual) {
+      const m = manual.metrics;
+      L.push(`Ручной план (${idsText(manual.selected_ids)}): ${manual.feasibility.feasible ? "допустим" : "недопустим — " + manual.feasibility.reasons.map((r) => r.text).join("; ")}; стоимость ${m.cost} усл. ед.; взвешенное среднее ${mText(m.weighted_mean_mm)}, худшая точка ${mText(m.max_mm)}, охват ${m.covered_weight} из ${m.total_weight} по весу.`);
+      if (m.unknown_count) L.push(`У ${m.unknown_count} точек нет ни одной записи категории в срезе и ни одного выбранного кандидата — расстояние неизвестно, а не равно нулю.`);
+    }
+    if (result && result.status === "infeasible") L.push("Допустимых планов нет: " + result.reasons.map((r) => r.text).join("; ") + ". Ограничения не снимались автоматически.");
+    if (result && result.status === "optimal") {
+      const O = result.objectives;
+      L.push(`Точный перебор: просмотрено ${result.evaluated} наборов, допустимых ${result.feasible_count}. Оптимум — только среди введённых мест и условий.`);
+      for (const k of ["mean", "minimax", "coverage"]) L.push(`«${OBJ_LABEL[k]}»: ${idsText(O[k].ids)} — стоимость ${O[k].cost}, среднее ${mText(mean(O[k]))}, худшая точка ${mText(O[k].max_mm)}, охват ${O[k].covered_weight} из ${tw}.`);
+      const same = (a, b) => O[a].ids.join() === O[b].ids.join();
+      if (same("mean", "minimax") && same("mean", "coverage")) L.push("Все три цели выбрали один и тот же план: здесь нет трёх разных решений, критерии не конфликтуют.");
+      else {
+        if (!same("mean", "minimax")) {
+          const a = O.mean, b = O.minimax;
+          L.push(`Почему планы разные: «Худшая точка» уменьшает самое большое расстояние (${mText(a.max_mm)} → ${mText(b.max_mm)}), но жертвует средним (${mText(mean(a))} → ${mText(mean(b))}).`);
+        } else L.push("«Среднее» и «Худшая точка» совпали.");
+        if (!same("mean", "coverage")) {
+          const a = O.mean, c = O.coverage;
+          L.push(`«Охват» максимизирует вес точек в радиусе ${sc.coverage_radius_m} м (${a.covered_weight} → ${c.covered_weight}); среднее при этом ${mText(mean(a))} → ${mText(mean(c))}.`);
+        } else L.push("«Охват» совпал со «Средним».");
+      }
+      if (result.pareto.length) L.push(`Граница стоимость → сумма расстояний: ${result.pareto.length} недоминируемых планов, от ${result.pareto[0].cost} до ${result.pareto[result.pareto.length - 1].cost} усл. ед.`);
+      if (result.pareto_excluded_unknown) L.push(`${result.pareto_excluded_unknown} допустимых планов оставляют точки без расстояния и в границу не входят.`);
+    }
+    if (sens && sens.length) L.push("Изменение бюджета: " + sens.map((x) => `${x.budget} усл. ед. — ${x.status === "optimal" ? "«Среднее»: " + idsText(x.objectives.mean.ids) + ", среднее " + mText(mean(x.objectives.mean)) : x.status === "infeasible" ? "нет допустимых планов" : x.status}`).join("; ") + ". Это перебор параметров, а не прогноз экономии реальных расходов.");
+    L.push("Нельзя сделать вывод о вместимости, нагрузке, населении, пешем пути или пользе для здоровья/образования: считаются только расстояния по прямой до выбранных точек в квадрате среза. Стоимости — условные единицы, не тенге и не смета. Ближайшая запись в срезе — не обязательно ближайшее учреждение в городе.");
+    return { text: L.join("\n"), digest: cur };
+  }
+
+  // ---------- self-contained HTML report: data inlined as escaped text, no scripts, no external resources ----------
+  const esc = (v) => String(v === null || v === undefined ? "нет данных" : v).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+  function reportHtml(m) {
+    const tr = (cells, th) => "<tr>" + cells.map((c) => (th ? "<th>" : "<td>") + esc(c) + (th ? "</th>" : "</td>")).join("") + "</tr>";
+    const table = (head, rows) => "<table>" + tr(head, true) + rows.map((r) => tr(r)).join("") + "</table>";
+    const sc = m.scenario, tw = sc.control_points.reduce((t, p) => t + p.weight, 0);
+    const parts = [`<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">`,
+      `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'">`,
+      `<title>Отчёт: план объектов (${esc(m.city_label)})</title><style>body{font:14px/1.45 system-ui,sans-serif;margin:16px;max-width:980px;color:#111;background:#fff}`,
+      `table{border-collapse:collapse;margin:8px 0;font-size:12.5px}td,th{border:1px solid #ccc;padding:3px 6px;text-align:left;vertical-align:top}th{background:#f3f2ee}`,
+      `.warn{border-left:3px solid #fab219;padding-left:8px}.muted{color:#666}pre{white-space:pre-wrap;background:#f6f6f4;padding:8px}</style></head><body>`,
+      `<h1>Условный план объектов: ${esc(CATEGORIES[sc.category])}, ${esc(m.city_label)}</h1>`,
+      `<p class="warn">Гипотеза для обсуждения, не решение акимата и не рекомендация строить. Расстояния — по прямой в квадрате среза ~2×2 км. Стоимости и бюджет — условные единицы, не тенге и не смета. Нет населения, вместимости, пеших маршрутов и трафика.${m.demo ? " Места, стоимости и веса — синтетический демо-набор." : ""}</p>`,
+      `<h2>Параметры</h2>` + table(["Параметр", "Значение"], [["Схема", sc.schema_version], ["Город", m.city_label], ["Срез", m.release], ["source_snapshot", sc.source_snapshot], ["Метрика", METRIC],
+        ["Бюджет, усл. ед.", sc.budget], ["Максимум объектов", sc.max_selected], ["Радиус охвата, м (не норматив)", sc.coverage_radius_m], ["Обязательные", idsText(sc.required_ids)], ["Исключённые", idsText(sc.excluded_ids)],
+        ["problem_digest", m.problem_digest], ["scenario_digest", m.scenario_digest], ["Сформирован", m.generated]]),
+      `<h2>Кандидатные места (гипотеза)</h2>` + table(["ID", "Широта", "Долгота", "Стоимость, усл. ед."], sc.candidates.map((c) => [c.id, c.lat.toFixed(6), c.lon.toFixed(6), c.cost])),
+      `<h2>Контрольные точки</h2><p class="muted">Вес — приоритет пользователя, не число жителей.</p>` + table(["ID", "Широта", "Долгота", "Вес"], sc.control_points.map((p) => [p.id, p.lat.toFixed(6), p.lon.toFixed(6), p.weight]))];
+    if (m.manual) {
+      const mm = m.manual.metrics;
+      parts.push(`<h2>Ручной план: ${esc(idsText(m.manual.selected_ids))} (${m.manual.feasibility.feasible ? "допустим" : "недопустим"})</h2>`,
+        table(["Показатель", "До (только срез)", "После"], [["Взвешенное среднее", mText(m.manual.baseline.weighted_mean_mm), mText(mm.weighted_mean_mm)], ["Худшая точка", mText(m.manual.baseline.max_mm), mText(mm.max_mm)],
+          ["Охват (вес)", `${m.manual.baseline.covered_weight} из ${tw}`, `${mm.covered_weight} из ${tw}`], ["Точек без расстояния", m.manual.baseline.unknown_count, mm.unknown_count], ["Стоимость, усл. ед.", 0, mm.cost]]),
+        table(["Точка", "Вес", "До", "После", "Ближайший после", "Разница"], m.manual.rows.map((r) => [r.id, r.weight, mText(r.before_mm), mText(r.after_mm),
+          r.nearest_after ? `${r.nearest_after.kind === "source" ? "запись среза " + (m.names[r.nearest_after.id] || r.nearest_after.id) : "кандидат " + r.nearest_after.id}` : "нет", r.delta_mm === null ? "не вычисляется" : mText(r.delta_mm)])));
+    }
+    if (m.result && m.result.status === "optimal") {
+      const O = m.result.objectives;
+      parts.push(`<h2>Точный перебор (${esc(m.result.evaluated)} наборов, допустимых ${esc(m.result.feasible_count)})</h2>`,
+        table(["Цель", "Объекты", "Стоимость", "Среднее", "Худшая точка", "Охват (вес)"], ["mean", "minimax", "coverage"].map((k) => [OBJ_LABEL[k], idsText(O[k].ids), O[k].cost,
+          mText(O[k].unknown_count ? null : O[k].weighted_sum_mm / tw), mText(O[k].max_mm), `${O[k].covered_weight} из ${tw}`])),
+        `<h3>Парето: стоимость → сумма взвешенных расстояний</h3>` + table(["Объекты", "Стоимость", "Среднее"], m.result.pareto.map((p) => [idsText(p.ids), p.cost, mText(p.weighted_sum_mm / tw)])));
+    } else if (m.result && m.result.status === "infeasible") parts.push(`<h2>Точный перебор</h2><p>Допустимых планов нет: ${esc(m.result.reasons.map((r) => r.text).join("; "))}</p>`);
+    else parts.push(`<h2>Точный перебор</h2><p class="muted">Не запускался для текущих параметров.</p>`);
+    if (m.sens && m.sens.length) parts.push(`<h3>Изменение бюджета</h3>` + table(["Бюджет", "Статус", "«Среднее»", "«Худшая точка»", "«Охват»"], m.sens.map((x) => [x.budget, x.status,
+      ...["mean", "minimax", "coverage"].map((k) => (x.objectives ? idsText(x.objectives[k].ids) : "—"))])));
+    if (m.explanation) parts.push(`<h2>Объяснение (шаблон, не LLM)</h2><pre>${esc(m.explanation)}</pre>`);
+    parts.push(`<h2>Источники и ограничения</h2><p>${esc(m.attribution)}</p><p class="muted">Записи Overture/OSM — вторичные данные, не официальный реестр; QA-метки показывают совпадающие координаты, возможные дубли и сомнения в категории. Ближайшая запись в срезе — не обязательно ближайшее учреждение в городе. Отчёт создан локально прототипом city-evidence; в нём нет скриптов и внешних ссылок.</p></body></html>`);
+    return parts.join("\n") + "\n";
+  }
+
   const api = { SCHEMA, METRIC, CATEGORIES, LIMITS, PlanError, mmOf, sourceSnapshot, makeContext, validatePlanScenario, problemDigest, scenarioDigest,
-    precompute, feasibility, metricsOf, evaluatePlan, createSearch, optimizePlans, sensitivity };
+    precompute, feasibility, metricsOf, evaluatePlan, createSearch, optimizePlans, sensitivity, derivedOf, exportPlanScenario, importPlanScenario,
+    explanationDigest, explainPlans, reportHtml, esc };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else root.CITY_PLAN = api;
 })(typeof window !== "undefined" ? window : globalThis);

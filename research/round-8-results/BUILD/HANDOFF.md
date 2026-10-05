@@ -16,4 +16,4 @@ NODE_PATH="$(npm root -g)" node tests/plan_smoke.cjs
 NODE_PATH="$(npm root -g)" node tests/smoke.cjs ; NODE_PATH="$(npm root -g)" node tests/whatif_smoke.cjs
 python3 tools/plan_oracle.py      # пересоздать expected_plans.json после смены оракула/фикстур
 ```
-Продолжение: этап 3 — объяснение по фактам, таблица/график Парето, чувствительность (OS.sens уже считается), экспорт/импорт city-plan-v2, HTML-отчёт; хук OPT.renderResult в plan-ui.js.
+Продолжение: этап 4 — бенчмарк (`tools/bench_plan.cjs`), прогон на чистом worktree, COMPLETION_MATRIX.json, ISSUE_LOG, DEMO_GUIDE.

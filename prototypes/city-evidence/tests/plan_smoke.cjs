@@ -172,7 +172,54 @@ const check = (name, ok, detail) => { results.push({ name, ok: !!ok, detail: ok 
     && (await S()).ps.required.includes("K7"), inf.msg);
   await page.selectOption("#plS_K7", "free");
   await page.fill("#plBudget", "600"); await page.press("#plBudget", "Enter");
-  /*__STAGE3__*/
+  // ---------- stage 3: Pareto, sensitivity, explanation, files, report ----------
+  await page.focus("#plRun"); await page.keyboard.press("Enter");  // keyboard start
+  await page.waitForFunction(() => CITY_PLAN_UI.opt.status === "done");
+  const p3 = await page.evaluate(() => ({ pareto: document.querySelectorAll("#plPareto tbody tr").length, chart: !!document.getElementById("plParetoChart"),
+    sens: [...document.querySelectorAll("#plSens tbody tr")].map((t) => t.dataset.budget), n: CITY_PLAN_UI.opt.result.pareto.length }));
+  check("keyboard Enter on 'Найти' runs the search; Pareto table + chart shown", p3.pareto === p3.n && p3.n > 0 && p3.chart, JSON.stringify(p3));
+  check("budget sensitivity rows for 0 / B/2 / B", JSON.stringify(p3.sens) === JSON.stringify(["0", "300", "600"]), JSON.stringify(p3.sens));
+  await page.click("#plExplain");
+  const ex1 = await page.textContent("#plExplainText");
+  check("explanation: template over computed facts, conditional units, capacity disclaimer", ex1.includes("не LLM") && ex1.includes("усл. ед.") && ex1.includes("вместимости") && ex1.includes("Точный перебор"), ex1.slice(0, 200));
+  await page.evaluate(() => CITY_PLAN_UI.toggleSelected("K3", true));
+  check("selection change drops the old explanation", !(await page.$("#plExplainText")));
+  await page.evaluate(() => CITY_PLAN_UI.toggleSelected("K3", false));
+  // export
+  const [dl] = await Promise.all([page.waitForEvent("download"), page.click("#plExport")]);
+  const fexp = path.join(out, "city_plan_export.json"); await dl.saveAs(fexp);
+  const exported = fs.readFileSync(fexp, "utf8"), ej = JSON.parse(exported);
+  check("export: city-plan-v2, 25 points, 16 candidates, derived block, file name", ej.schema_version === "city-plan-v2" && ej.control_points.length === 25 && ej.candidates.length === 16
+    && ej.derived_results && dl.suggestedFilename() === "city-plan-astana-outpatient_clinic.json");
+  // invalid imports leave the state unchanged
+  const stateBefore = await page.evaluate(() => JSON.stringify(CITY_PLAN_UI.rawScenario()));
+  const forged = JSON.parse(exported); forged.derived_results.manual.metrics.cost = 1;
+  const v1txt = await page.evaluate(() => { const b = CITY_EVIDENCE.cities.astana.bbox; return CITY_WHATIF.exportScenario({ schema_version: "city-whatif-v1", city_id: "astana",
+    source_snapshot: CITY_WHATIF.sourceSnapshot(CITY_EVIDENCE, "astana", CITY_FACTS), category: "school", control_points: [{ id: "P1", lon: (b[0] + b[2]) / 2, lat: (b[1] + b[3]) / 2 }], proposed_object: null }, CITY_EVIDENCE, CITY_FACTS); });
+  const bad = { "forged.json": JSON.stringify(forged), "v1.json": v1txt, "nan.json": exported.replace(/"budget": \d+/, '"budget": NaN'),
+    "foreign.json": exported.replace(ej.source_snapshot, "sha256:" + "b".repeat(64)), "big.json": " ".repeat(270000) + exported };
+  for (const [name, text] of Object.entries(bad)) {
+    await page.evaluate(() => { CITY_PLAN_UI.state.msg = ""; });
+    await page.setInputFiles("#plFile", { name, mimeType: "application/json", buffer: Buffer.from(text) });
+    await page.waitForFunction(() => (document.getElementById("plMsg").textContent || "").includes("не принят"));
+    const m = await page.textContent("#plMsg");
+    check(`import ${name} rejected, plan unchanged`, (await page.evaluate(() => JSON.stringify(CITY_PLAN_UI.rawScenario()))) === stateBefore, m);
+  }
+  check("v1 file rejected with the hint to use the v1 mode", (await page.evaluate((t) => { CITY_PLAN_UI.importText(t); return document.getElementById("plMsg").textContent; }, v1txt)).includes("Один объект (v1)"));
+  // report
+  const [dr] = await Promise.all([page.waitForEvent("download"), page.click("#plReport")]);
+  const frep = path.join(out, "city_plan_report.html"); await dr.saveAs(frep);
+  const rep = fs.readFileSync(frep, "utf8");
+  check("HTML report: self-contained, no scripts, plan + Pareto + limitations + attribution", !/<script/i.test(rep) && rep.includes("Точный перебор") && rep.includes("Парето") && rep.includes("не тенге") && rep.includes("ATTRIBUTION") && !/src=|href=/.test(rep));
+  // round trip into the other city: switching to Shymkent resets, importing the Astana file switches back
+  await page.click('#citySeg button[data-city="shymkent"]');
+  check("switch to Shymkent: v2 reset, optimizer result dropped", (await S()).ps.cands.length === 0 && (await page.evaluate(() => CITY_PLAN_UI.opt.status)) === "idle");
+  await page.setInputFiles("#plFile", { name: "astana.json", mimeType: "application/json", buffer: Buffer.from(exported) });
+  await page.waitForFunction(() => CITY_APP.state.city === "astana" && CITY_PLAN_UI.state.cands.length === 16);
+  const rt = await page.evaluate(() => ({ raw: CITY_PLAN_UI.rawScenario(), cat: document.getElementById("plCat").value }));
+  const strip = (o) => { const c = { ...o }; delete c.derived_results; return c; };
+  check("import round trip: same scenario, city switched, category select updated", JSON.stringify(rt.raw) === JSON.stringify(strip(ej)) && rt.cat === "outpatient_clinic");
+  await page.screenshot({ path: path.join(out, "p4_astana_pareto.png"), fullPage: true });
 
   await page.setViewportSize({ width: 390, height: 844 });
   const sw = await page.evaluate(() => ({ sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth }));
