@@ -40,6 +40,7 @@ DEFAULT_K05R4 = HERE / "inputs" / "k05r4" / "k05r4_contract.py"
 VARIANTS = {
     "8dc4a177f47edcdfa6753ed41b78a31e5afb652df4d79f02c73aeb5686d2f397": "baseline_v1.1@d913554",
     "b6856121d01c2046cfa2c0e8248ac4c0f107ecf60fdfa601bc04117fbf3e26a2": "v1.1+K12@3e84039",
+    "7f5f76a840bfec303b3ed0d1eed5c4335c5b890fc5ede84167904b5e3b061447": "v1.1+K12+K05r5_count_units",
 }
 K05R4_VARIANTS = {}  # заполняется ниже по фактическим файлам (исходный @42051600 и предложенный)
 
@@ -51,6 +52,8 @@ EXPECTED_FAIL = {
     ("v1.1+K12@3e84039", "orig"): {
         "M09_disjoint_bboxes_v12", "M10_expected_units_v12", "M12_count_domain_records"},
     ("v1.1+K12@3e84039", "compat"): {"M12_count_domain_records"},
+    ("v1.1+K12+K05r5_count_units", "orig"): {"M09_disjoint_bboxes_v12", "M10_expected_units_v12"},
+    ("v1.1+K12+K05r5_count_units", "compat"): set(),
     ("baseline_v1.1@d913554", "compat"): {
         "M01_nan_v11", "M02_nan_v12", "M03_nan_aggregate", "M06_zero_partial_aggregate",
         "M08_duplicate_obs_id", "M10_expected_units_v12", "M12_count_domain_records", "D07_validate_dataset"},

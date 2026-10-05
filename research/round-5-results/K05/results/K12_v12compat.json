@@ -1,0 +1,179 @@
+{
+ "contract_variant": "v1.1+K12@3e84039",
+ "k05r4": {
+  "path": "/home/user/GOV_DIPLOME/research/round-5-results/K05/proposed/k05r4_contract.py",
+  "sha256": "acd75a17b1e13bed4646d8c1412e46324704c3628a83de5cd1e613ca27131c1a",
+  "variant": "compat"
+ },
+ "app_root": "/tmp/claude-0/-home-user-GOV-DIPLOME/58b57e28-2f87-51c8-8e87-47271ca72a4c/scratchpad/r5/patched/prototypes/city-evidence",
+ "url": null,
+ "results": [
+  {
+   "id": "D01_strict_json",
+   "title": "evidence.js — строгий JSON (нет NaN/Infinity/повтора ключей)",
+   "ok": true,
+   "detail": "73745 символов",
+   "expected_fail": false,
+   "status": "PASS"
+  },
+  {
+   "id": "D02_unique_obs_id",
+   "title": "obs_id уникальны во всей сборке",
+   "ok": true,
+   "detail": "38 obs_id, повторов 0 []",
+   "expected_fail": false,
+   "status": "PASS"
+  },
+  {
+   "id": "D03_null_iff_missing",
+   "title": "value=null ⇔ статус отсутствия",
+   "ok": true,
+   "detail": "нарушений null⇔missing: []",
+   "expected_fail": false,
+   "status": "PASS"
+  },
+  {
+   "id": "D04_honest_zero",
+   "title": "reported_zero только при coverage.complete=true",
+   "ok": true,
+   "detail": "0 при неполном охвате: []; честно переведены в missing: 0",
+   "expected_fail": false,
+   "status": "PASS"
+  },
+  {
+   "id": "D05_finite_counts",
+   "title": "числа конечны; records/segments — целые ≥ 0",
+   "ok": true,
+   "detail": "нарушений: []",
+   "expected_fail": false,
+   "status": "PASS"
+  },
+  {
+   "id": "D06_city_consistency",
+   "title": "city_id/geo_unit_id совпадают с городом раздела",
+   "ok": true,
+   "detail": "чужой город: []",
+   "expected_fail": false,
+   "status": "PASS"
+  },
+  {
+   "id": "D07_validate_dataset",
+   "title": "validate_dataset() сборки: нет ошибок набора",
+   "ok": true,
+   "detail": "ошибок набора: []",
+   "expected_fail": false,
+   "status": "PASS"
+  },
+  {
+   "id": "D08_validate_all",
+   "title": "validate() сборки на всех наблюдениях: 0 ошибок",
+   "ok": true,
+   "detail": "ошибок validate: []",
+   "expected_fail": false,
+   "status": "PASS"
+  },
+  {
+   "id": "M01_nan_v11",
+   "title": "v1.1: NaN при reported отклоняется",
+   "ok": true,
+   "detail": [
+    "VALUE_NOT_FINITE"
+   ],
+   "expected_fail": false,
+   "status": "PASS"
+  },
+  {
+   "id": "M02_nan_v12",
+   "title": "v1.2 поверх сборки: Infinity отклоняется",
+   "ok": true,
+   "detail": [
+    "VALUE_NOT_FINITE"
+   ],
+   "expected_fail": false,
+   "status": "PASS"
+  },
+  {
+   "id": "M03_nan_aggregate",
+   "title": "v1.1 aggregate_sum: NaN отклоняется",
+   "ok": true,
+   "detail": "VALUE_NOT_FINITE: ['a']",
+   "expected_fail": false,
+   "status": "PASS"
+  },
+  {
+   "id": "M04_bbox_vs_district",
+   "title": "v1.2: квадрат и район не складываются",
+   "ok": true,
+   "detail": "SPATIAL_MIX: ['bbox', 'district_polygon']",
+   "expected_fail": false,
+   "status": "PASS"
+  },
+  {
+   "id": "M05_legacy_district",
+   "title": "v1.2: запись без spatial_unit (E02/BUILD v1.1) не смешивается",
+   "ok": true,
+   "detail": "LEGACY_UNIT: запись без spatial_unit (например, v1.1/E02) не смешивается с v1.2",
+   "expected_fail": false,
+   "status": "PASS"
+  },
+  {
+   "id": "M06_zero_partial_aggregate",
+   "title": "сумма 0 при неполном охвате → missing, не reported_zero",
+   "ok": true,
+   "detail": "{'value': None, 'value_status': 'missing', 'missing_reason': 'zero_in_partial_coverage', 'coverage_complete': False, 'n': '2/2', 'known_partial_sum': 0, 'geography_checked': False}",
+   "expected_fail": false,
+   "status": "PASS"
+  },
+  {
+   "id": "M07_zero_vs_missing",
+   "title": "честный 0 принят; 0 при missing и 0 при partial отклонены",
+   "ok": true,
+   "detail": "honest0=True, missing+0 отклонён=True, 0 при partial отклонён=True",
+   "expected_fail": false,
+   "status": "PASS"
+  },
+  {
+   "id": "M08_duplicate_obs_id",
+   "title": "повтор obs_id с разным значением → DUPLICATE_OBS_ID (и для v1.2)",
+   "ok": true,
+   "detail": [
+    "DUPLICATE_OBS_ID"
+   ],
+   "expected_fail": false,
+   "status": "PASS"
+  },
+  {
+   "id": "M09_disjoint_bboxes_v12",
+   "title": "v1.2: две непересекающиеся bbox одного города складываются",
+   "ok": true,
+   "detail": "{'value': 5, 'value_status': 'reported', 'coverage_complete': True, 'n': '2/2', 'geography_checked': False}",
+   "expected_fail": false,
+   "status": "PASS"
+  },
+  {
+   "id": "M10_expected_units_v12",
+   "title": "v1.2 передаёт expected_units в v1.1 (неполная география → missing)",
+   "ok": true,
+   "detail": "{'value': None, 'value_status': 'missing', 'coverage_complete': False, 'n': '1/1', 'known_partial_sum': 2, 'geography_checked': True, 'units': '1/2', 'missing_units': ['kz.shymkent.sq_b']}",
+   "expected_fail": false,
+   "status": "PASS"
+  },
+  {
+   "id": "M11_overlap_v12",
+   "title": "v1.2: пересекающиеся bbox отклоняются",
+   "ok": true,
+   "detail": "OVERLAP: bbox [69.59, 42.3, 69.61, 42.32] и [69.6, 42.31, 69.63, 42.33] пересека",
+   "expected_fail": false,
+   "status": "PASS"
+  },
+  {
+   "id": "M12_count_domain_records",
+   "title": "домен счётчика для unit=records (единица сборки и K05 r4)",
+   "ok": false,
+   "detail": "records=-3 отклонён=False, records=2.5 отклонён=False",
+   "expected_fail": true,
+   "status": "EXPECTED_FAIL"
+  }
+ ],
+ "unexpected": []
+}
