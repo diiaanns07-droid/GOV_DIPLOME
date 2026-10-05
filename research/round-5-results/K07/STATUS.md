@@ -6,7 +6,7 @@
 | Ветка | `claude/save-work-handoff-ku3ej3` (своя; предыдущий результат `62cf535`) |
 | Проверяемая сборка (baseline) | BUILD K04 `claude/beautiful-clarke-sbzomj` @ `0bf27deb8549b325b34a9610402613d745544edb`, `prototypes/city-evidence/web/` (по `research/round-5/snapshots.json`) |
 | Обновлено | 2026-10-05 UTC |
-| Статус | **partial**: этап 1 (тест и результат baseline) готов, patch-предложение — этап 2 |
+| Статус | **done** для объёма задания: тест (`--app-root`/`--url`), результат baseline и patch-предложение с проверкой на копии. Исправления **не применены** сборщиком: статуса FIXED нет |
 | Пути | только `research/round-5-results/K07/`; `prototypes/city-evidence/` и чужие отчёты не менялись |
 
 ## Сделано (этап 1)
@@ -40,6 +40,17 @@
 
 Неожиданных провалов нет. Это результат только для `0bf27de`: исправленную версию нужно проверить отдельным запуском с её SHA.
 
+## Сделано (этап 2)
+
+- `patch/city_evidence_web.patch` (239 строк; `web/index.html`, `web/app.js`, `web/facts.js`) — предложение исправлений R1, R2, R4, R6, R8–R13; описание в `REVIEW.md`.
+- Проверка на копии `0bf27de` + patch вне репозитория:
+  - `k07r5_regressions.cjs` — **19/19** (`results/baseline+patch/result.json`);
+  - тесты сборщика из `0bf27de` на той же копии: `smoke.cjs` 16/16, `conformance.cjs` — всё пройдено (`results/baseline+patch/build_tests_on_patched.txt`);
+  - на чистом baseline те же тесты сборщика: 16/16 и всё пройдено.
+- `git apply --check -p1` на чистом извлечении `0bf27de` прошёл; SHA-256 изменённых файлов совпали с проверенной копией.
+- Снимок 390 px копии с патчем просмотрен вручную. Найдено и исправлено в патче: строка статуса перекрывалась двухстрочной атрибуцией.
+- `scripts/run_review.sh` — полный цикл одной командой (baseline → baseline+patch → тесты сборщика на копии), exit 0.
+
 ## Изменения теста после первых прогонов (для честности сравнения)
 
 1. **R11.** Первая версия перед касанием прокручивала карту к верху экрана, и тогда карточка видна под картой. Естественный путь другой: нажать кнопку на панели и коснуться видимой части карты без прокрутки. Критерий изменён на него. Ожидание «fail» записано до первого запуска и не менялось.
@@ -49,7 +60,8 @@
 
 - `python3 scripts/extract_build.py <dir>` — 5 файлов `web/`, SHA-256 совпадают.
 - `node tests/k07r5_regressions.cjs --app-root <dir> --label baseline --sha 0bf27de…` — 3 прогона после последней правки теста, все 9/19 с одинаковым списком провалов. Результат: `results/baseline/result.json`, снимки — `results/baseline/screenshots/`.
-- Режим `--url` в этом этапе не запускался.
+- `bash scripts/run_review.sh` — exit 0: baseline 9/19, baseline+patch 19/19, тесты сборщика на копии с патчем: 16 PASS, 0 FAIL, conformance — всё пройдено.
+- Режим `--url` не запускался: реализован, но на работающем `serve.py` не проверен.
 
 ## Ограничения
 
@@ -58,7 +70,7 @@
 
 ## Следующий шаг
 
-1. Этап 2: `patch/city_evidence_web.patch` — предложение исправлений для `web/app.js`, `web/index.html`, `web/facts.js` и его проверка тем же тестом (метка `baseline+patch`) и тестом сборщика `tests/smoke.cjs`.
+1. Сборщик решает, какие исправления взять из `patch/city_evidence_web.patch`. После его коммита запустить `bash research/round-5-results/K07/scripts/run_review.sh <NEW_SHA>`: только этот прогон может подтвердить исправление в BUILD.
 
 ## Команда продолжения
 

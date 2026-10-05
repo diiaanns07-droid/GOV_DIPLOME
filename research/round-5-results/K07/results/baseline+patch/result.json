@@ -1,27 +1,19 @@
 {
  "kind": "K07 round-5 browser regressions of prototypes/city-evidence",
- "label": "baseline",
- "sha": "0bf27deb8549b325b34a9610402613d745544edb",
+ "label": "baseline+patch",
+ "sha": "0bf27deb8549b325b34a9610402613d745544edb+patch",
  "target": {
-  "app_root": "app"
+  "app_root": "city-evidence"
  },
  "baseline_sha": "0bf27deb8549b325b34a9610402613d745544edb",
  "total": 19,
- "passed": 9,
- "failed": [
-  "R1",
-  "R2",
-  "R4",
-  "R6",
-  "R8",
-  "R9",
-  "R10",
-  "R11",
-  "R12",
-  "R13"
- ],
+ "passed": 19,
+ "failed": [],
  "vs_baseline_expectation": {
-  "failed_as_expected": [
+  "failed_as_expected": [],
+  "failed_unexpected": [],
+  "failed_unknown_expectation": [],
+  "passed_although_expected_fail": [
    "R1",
    "R2",
    "R4",
@@ -31,12 +23,7 @@
    "R10",
    "R11",
    "R13"
-  ],
-  "failed_unexpected": [],
-  "failed_unknown_expectation": [
-   "R12"
-  ],
-  "passed_although_expected_fail": []
+  ]
  },
  "note": "baseline_expectation describes K04 @ 0bf27de only. For another version a FAIL is a finding of that version only if this run used it (see sha).",
  "checks": [
@@ -44,11 +31,11 @@
    "id": "R1",
    "scenario": "S1 stale tooltip",
    "expect": "a filter change hides the hovered object's group -> its tooltip is hidden in the same re-render (precondition: tooltip was visible)",
-   "ok": false,
+   "ok": true,
    "observed": {
     "before": "Техникалық лицейШкола · conf. 0.776",
-    "after_same_task": "Техникалық лицейШкола · conf. 0.776",
-    "after_300ms": "Техникалық лицейШкола · conf. 0.776",
+    "after_same_task": null,
+    "after_300ms": null,
     "group": "school"
    },
    "baseline_expectation": "fail"
@@ -57,11 +44,11 @@
    "id": "R2",
    "scenario": "S1 stale tooltip",
    "expect": "zoom re-renders the map (the hovered marker moves) -> its tooltip is hidden in the same re-render",
-   "ok": false,
+   "ok": true,
    "observed": {
     "before": "Техникалық лицейШкола · conf. 0.776",
-    "after_same_task": "Техникалық лицейШкола · conf. 0.776",
-    "after_300ms": "Техникалық лицейШкола · conf. 0.776"
+    "after_same_task": null,
+    "after_300ms": null
    },
    "baseline_expectation": "fail"
   },
@@ -89,15 +76,12 @@
    "id": "R4",
    "scenario": "S2 clear point",
    "expect": "a set point can be cleared (button or Escape): no crosshair, empty card",
-   "ok": false,
+   "ok": true,
    "observed": {
     "pointWasSet": true,
-    "hasClearButton": false,
-    "point": [
-     69.6055115,
-     42.31515317556445
-    ],
-    "crosshair": 1
+    "hasClearButton": true,
+    "point": null,
+    "crosshair": 0
    },
    "baseline_expectation": "fail"
   },
@@ -129,14 +113,11 @@
    "id": "R6",
    "scenario": "S4 filters/layers",
    "expect": "roads layer switched off while a road card is open -> no orphan road card",
-   "ok": false,
+   "ok": true,
    "observed": {
     "hadSegment": true,
-    "selected": {
-     "type": "segment",
-     "id": "6c0c508c-d72f-41e1-80d3-08406cfee4ca"
-    },
-    "card": "Дорога (OSM через Overture)Классcycleway"
+    "selected": null,
+    "card": ""
    },
    "baseline_expectation": "fail"
   },
@@ -166,12 +147,12 @@
    "id": "R8",
    "scenario": "S5 keyboard",
    "expect": "the table and zoom are reachable without tabbing through every map feature (skip link or < 40 stops)",
-   "ok": false,
+   "ok": true,
    "observed": {
-    "toZoom": 1152,
-    "toTable": 1158,
-    "mapStops": 1139,
-    "skipLink": false
+    "toZoom": 14,
+    "toTable": 76,
+    "mapStops": 56,
+    "skipLink": true
    },
    "baseline_expectation": "fail"
   },
@@ -179,10 +160,13 @@
    "id": "R9",
    "scenario": "S5 keyboard",
    "expect": "a point can be set without a mouse (focusable map + Enter)",
-   "ok": false,
+   "ok": true,
    "observed": {
-    "mapFocusable": false,
-    "point": null
+    "mapFocusable": true,
+    "point": [
+     69.6055115,
+     42.315628
+    ]
    },
    "baseline_expectation": "fail"
   },
@@ -190,9 +174,9 @@
    "id": "R10",
    "scenario": "S5 keyboard",
    "expect": "interactive markers are not hidden from assistive tech (map svg role is not 'img')",
-   "ok": false,
+   "ok": true,
    "observed": {
-    "role": "img"
+    "role": "group"
    },
    "baseline_expectation": "fail"
   },
@@ -200,14 +184,14 @@
    "id": "R11",
    "scenario": "S6 390px",
    "expect": "on 390 px, after tapping the map without scrolling, the point result is visible or announced next to the map",
-   "ok": false,
+   "ok": true,
    "observed": {
     "pointSet": true,
     "scrollY": 0,
-    "resultHeadingTop": 1010,
+    "resultHeadingTop": 1030,
     "viewportHeight": 844,
     "resultVisible": false,
-    "hintNextToMap": false
+    "hintNextToMap": true
    },
    "baseline_expectation": "fail"
   },
@@ -215,24 +199,17 @@
    "id": "R12",
    "scenario": "S6 390px",
    "expect": "cards and tables fit 390 px without hidden columns (no inner horizontal scroll)",
-   "ok": false,
-   "observed": [
-    {
-     "box": "tablewrap",
-     "card": "Таблица объектов (55 из 55 записей среза)",
-     "scrollWidth": 420,
-     "clientWidth": 328
-    }
-   ],
+   "ok": true,
+   "observed": [],
    "baseline_expectation": "unknown"
   },
   {
    "id": "R13",
    "scenario": "S7 data/evidence",
    "expect": "evidence.js built from another data version (SHA256/data_version differ from data.js) -> the viewer warns instead of using it silently",
-   "ok": false,
+   "ok": true,
    "observed": {
-    "warningShown": false,
+    "warningShown": true,
     "errors": []
    },
    "baseline_expectation": "fail"

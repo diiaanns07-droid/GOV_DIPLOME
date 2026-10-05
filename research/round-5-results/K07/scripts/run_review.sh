@@ -20,4 +20,12 @@ if [ "$LABEL" = baseline ] && [ -f "$PATCH" ]; then
   mkdir -p "$W/patched/prototypes/city-evidence" && cp -r "$W/app/web" "$W/patched/prototypes/city-evidence/"
   (cd "$W/patched" && git apply --check -p1 "$PATCH" && git apply -p1 "$PATCH")
   node "$R5/tests/k07r5_regressions.cjs" --app-root "$W/patched/prototypes/city-evidence" --label "baseline+patch" --sha "$SHA+patch" | tail -1
+  # the BUILD's own tests of the same commit, run on the patched copy (regression check of the proposal)
+  mkdir -p "$W/patched/prototypes/city-evidence/tests"
+  for f in smoke.cjs conformance.cjs expected_explanations.json; do
+    python3 -c "import subprocess,pathlib,sys; pathlib.Path(sys.argv[1]).write_bytes(subprocess.check_output(['git','cat-file','blob',sys.argv[2]]))" \
+      "$W/patched/prototypes/city-evidence/tests/$f" "$SHA:prototypes/city-evidence/tests/$f"
+  done
+  ( cd "$W/patched/prototypes/city-evidence" && { node tests/conformance.cjs | tail -1; node tests/smoke.cjs "$W/smoke" | grep -E "^(PASS|FAIL)"; } ) > "$R5/results/baseline+patch/build_tests_on_patched.txt"
+  echo "BUILD tests on patched copy: $(grep -c '^PASS' "$R5/results/baseline+patch/build_tests_on_patched.txt") PASS, $(grep -c '^FAIL' "$R5/results/baseline+patch/build_tests_on_patched.txt") FAIL; conformance: $(head -1 "$R5/results/baseline+patch/build_tests_on_patched.txt")"
 fi

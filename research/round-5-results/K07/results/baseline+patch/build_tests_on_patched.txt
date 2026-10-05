@@ -1,0 +1,17 @@
+all passed
+PASS shymkent loads with table and markers — {"city":"shymkent","rows":55,"count":"(55 из 55 записей среза)","markers":55}
+PASS object card opens from table — Высший педагогический колледж ShymkentКатегорияКолледж / вуз (образование)правил
+PASS astana resets selection and shows its own slice — {"city":"astana","sel":null,"rows":65,"hasOld":false}
+PASS category filter (Astana schools = 8 records) — 8
+PASS empty state is explicit — Не выбрана ни одна категория — включите категории в панели фильтров.
+PASS segment card shows foot-access status and no walking time — Дорога (OSM через Overture)КлассresidentialнаблюдениеНазваниеМихаил Лермонтов көшесіДлина78 мгеодези
+PASS narrow viewport has no horizontal scroll — {"sw":380,"cw":380}
+PASS district column shows K03 names (ru / kk) — Аль-Фарабийский район / Әл-Фараби ауданы | Аль-Фарабийский район / Әл-Фараби ауданы | Аль-Фарабийский район / Әл-Фараби ауданы
+PASS template explanation is labelled and built from facts — шаблонное объяснение (детерминированная заглушка, не LLM). Модель не вызывалась; текст собран кодом из фактов.Проверяемая часть (значения из каталога фактов сре
+PASS stale explanation discarded after city switch — {"hidden":true,"text":""}
+PASS catalog after switch is Astana's own (scenario k10r3_g127, 65 records) — Каталог фактов (15) · срез k10r3_g127Записей выбранных категорий в квадрате65расчётШкола: записей в квадрате8наблюдениеД
+PASS source card shows SHA, K03 rule, K05 contract and K08 note — ПакетK10 раунд 3 · claude/save-work-handoff-j7pc05 @ ea703f1dddsource_manifest.jsonКоммит данных602f
+PASS clear state when data.js is missing — Данные не найденыФайл web/data.js отсутствует или повреждён. Соберите его из сохранённых входов:python3 tools/build_data 
+PASS clear state when evidence.js is missing — 
+PASS no console/page errors
+PASS no network requests (file:// only)
