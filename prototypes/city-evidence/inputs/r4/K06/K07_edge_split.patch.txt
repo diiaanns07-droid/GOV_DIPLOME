@@ -1,0 +1,21 @@
+Предложение (НЕ применено; K07 и сборка не мои). Файл: research/round-3-results/K07/scripts/graph_check.py
+@ 6778deda6d3f3a7f27698f651c1b0046d2a9aae9, строки ~150 и ~157.
+
+Проблема: substring(g, at_a, at_b, normalized=True) и g.interpolate(at, normalized=True) на геометрии EPSG:4326
+делят линию по доле ПЛОСКОЙ длины в градусах. Overture `at` — доля геодезической длины (K06 C3: соединители лежат
+в точке геодезической доли с точностью < 1 мм; в плоской доле — до 61 м в стороне). Итог сегмента не меняется,
+но длина отдельных рёбер графа смещается до 22,6 м (Шымкент) и 58,3 м (Астана).
+
+Замена (по смыслу; без shapely/pyproj — см. research/round-4-results/K06/review_k10.py: sub_polyline):
+
+-            piece = substring(g, a["at"], b["at"], normalized=True)
+-            d = GEOD.geometry_length(piece)
++            # `at` is a fraction of geodesic length: split by cumulative geodesic distance
++            d = (b["at"] - a["at"]) * L        # L = GEOD.geometry_length(g), already computed above
+...
+-            G.nodes[c["connector_id"]].setdefault("xy", g.interpolate(c["at"], normalized=True).coords[0])
++            G.nodes[c["connector_id"]].setdefault("xy", tuple(connector_xy[c["connector_id"]]))  # from connectors.geojson
+
+Простая формула (at_b − at_a)·L совпадает с геодезическим делением до 0,9 м (Шымкент) / 2,6 м (Астана) при длинах K10
+(сфера; K06 C5), и до 0,00001 м при геодезической L (проверено K06 на всех рёбрах обоих квадратов). Если нужна сама геометрия ребра — резать по накопленной
+геодезической длине, а не по normalized=True.

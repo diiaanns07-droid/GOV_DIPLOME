@@ -1,0 +1,60 @@
+{
+ "versions": {
+  "shapely": "2.1.2",
+  "pyproj": "3.7.2"
+ },
+ "cities": {
+  "shymkent": {
+   "oracle_vs_pyproj_rel_max": 2.5400802818804242e-06,
+   "planar_emulation_vs_shapely_m_max": 0.0,
+   "k07_edge_vs_geodesic_split_top3": [
+    {
+     "segment": "d2800af4-ca33-4b7e-a7f1-180bce00a581",
+     "k07_m": 131.35,
+     "geodesic_split_m": 153.97,
+     "abs_diff_m": 22.62
+    },
+    {
+     "segment": "b3b275c5-ef8a-4f4e-9e85-90c47e2f09a1",
+     "k07_m": 401.0,
+     "geodesic_split_m": 419.23,
+     "abs_diff_m": 18.23
+    },
+    {
+     "segment": "d80cb9d8-b6af-4d6a-a40c-f96e14caf847",
+     "k07_m": 182.65,
+     "geodesic_split_m": 164.6,
+     "abs_diff_m": 18.05
+    }
+   ],
+   "k07_edges_diff_gt_5m": 82,
+   "edges": 2260
+  },
+  "astana": {
+   "oracle_vs_pyproj_rel_max": 1.661759575104756e-06,
+   "planar_emulation_vs_shapely_m_max": 0.0,
+   "k07_edge_vs_geodesic_split_top3": [
+    {
+     "segment": "ba983be6-c533-47b5-9f51-b785c27e5c33",
+     "k07_m": 180.36,
+     "geodesic_split_m": 238.63,
+     "abs_diff_m": 58.27
+    },
+    {
+     "segment": "0e48d74a-de52-4694-a8d8-da4a40900831",
+     "k07_m": 233.33,
+     "geodesic_split_m": 281.32,
+     "abs_diff_m": 48.0
+    },
+    {
+     "segment": "c0790201-be7d-4eb2-ae11-51995f132005",
+     "k07_m": 252.44,
+     "geodesic_split_m": 300.38,
+     "abs_diff_m": 47.94
+    }
+   ],
+   "k07_edges_diff_gt_5m": 317,
+   "edges": 3269
+  }
+ }
+}

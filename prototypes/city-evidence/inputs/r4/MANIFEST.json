@@ -1,0 +1,743 @@
+{
+ "snapshots": "research/round-5/snapshots.json @ 2883aeb6eb68babc9b346b0aa927d4c633f5163d",
+ "files": [
+  {
+   "slot": "K01",
+   "branch": "claude/loving-thompson-nmajdo",
+   "sha": "e2c704f4048fe74c90832cc1c0bc9e689a61640f",
+   "path": "research/round-4-results/K01/REPRO.md",
+   "copied_to": "inputs/r4/K01/REPRO.md",
+   "bytes": 8104,
+   "sha256": "a7e8fdfba4a79127a18378462d804757bf4f35419024bbd2462a0a0a142f6e28"
+  },
+  {
+   "slot": "K01",
+   "branch": "claude/loving-thompson-nmajdo",
+   "sha": "e2c704f4048fe74c90832cc1c0bc9e689a61640f",
+   "path": "research/round-4-results/K01/STATUS.md",
+   "copied_to": "inputs/r4/K01/STATUS.md",
+   "bytes": 2826,
+   "sha256": "8ea7b60fb9086bd529157a2e39eee539700388adf0218f15024ddba8f623c153"
+  },
+  {
+   "slot": "K01",
+   "branch": "claude/loving-thompson-nmajdo",
+   "sha": "e2c704f4048fe74c90832cc1c0bc9e689a61640f",
+   "path": "research/round-4-results/K01/copy_k10.py",
+   "copied_to": "inputs/r4/K01/copy_k10.py",
+   "bytes": 1605,
+   "sha256": "f43a0e7f299c7588112de8a35c1a4b89883acb0167c32c2dd36ed00809011aab"
+  },
+  {
+   "slot": "K01",
+   "branch": "claude/loving-thompson-nmajdo",
+   "sha": "e2c704f4048fe74c90832cc1c0bc9e689a61640f",
+   "path": "research/round-4-results/K01/run/oc_run1.json",
+   "copied_to": "inputs/r4/K01/run/oc_run1.json",
+   "bytes": 4410,
+   "sha256": "f263fb107672ad06374ba7dbc1c182ca98c3e81459bf2be7685a26054795d662"
+  },
+  {
+   "slot": "K01",
+   "branch": "claude/loving-thompson-nmajdo",
+   "sha": "e2c704f4048fe74c90832cc1c0bc9e689a61640f",
+   "path": "research/round-4-results/K01/run/oc_run1.stderr",
+   "copied_to": "inputs/r4/K01/run/oc_run1.stderr",
+   "bytes": 0,
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+   "slot": "K02",
+   "branch": "claude/clever-mccarthy-pywscu",
+   "sha": "7020637b16446da68ddab2f2025cf2b4f8e9f478",
+   "path": "research/round-4-results/K02/REPORT.md",
+   "copied_to": "inputs/r4/K02/REPORT.md",
+   "bytes": 10881,
+   "sha256": "c1937cbfb3d43dd6217d4bf969c39ec0a6b77c7ef4be497b1361c62817b553fb"
+  },
+  {
+   "slot": "K02",
+   "branch": "claude/clever-mccarthy-pywscu",
+   "sha": "7020637b16446da68ddab2f2025cf2b4f8e9f478",
+   "path": "research/round-4-results/K02/STATUS.md",
+   "copied_to": "inputs/r4/K02/STATUS.md",
+   "bytes": 1997,
+   "sha256": "20989d792f88e1129b5c4594c5e5ac0bd3f95f0dd1ccdbb4893da4ec7e32e1cd"
+  },
+  {
+   "slot": "K02",
+   "branch": "claude/clever-mccarthy-pywscu",
+   "sha": "7020637b16446da68ddab2f2025cf2b4f8e9f478",
+   "path": "research/round-4-results/K02/attack_cases.py",
+   "copied_to": "inputs/r4/K02/attack_cases.py",
+   "bytes": 12434,
+   "sha256": "dbacb71c1e2b74abc5fb7eef0c2662102e95ec44ada8f32e4fccfdb86403b5a4"
+  },
+  {
+   "slot": "K02",
+   "branch": "claude/clever-mccarthy-pywscu",
+   "sha": "7020637b16446da68ddab2f2025cf2b4f8e9f478",
+   "path": "research/round-4-results/K02/attack_result_fixed.json",
+   "copied_to": "inputs/r4/K02/attack_result_fixed.json",
+   "bytes": 2154,
+   "sha256": "2076e0a9c07455ef24b50d289843c2d7420e1465804fa13796a3831313d87a37"
+  },
+  {
+   "slot": "K02",
+   "branch": "claude/clever-mccarthy-pywscu",
+   "sha": "7020637b16446da68ddab2f2025cf2b4f8e9f478",
+   "path": "research/round-4-results/K02/attack_result_r3.json",
+   "copied_to": "inputs/r4/K02/attack_result_r3.json",
+   "bytes": 1705,
+   "sha256": "eb23ef0e9f0f2bf7deac00bab2dff742586e5ef196554c88e0d894afc2acac98"
+  },
+  {
+   "slot": "K02",
+   "branch": "claude/clever-mccarthy-pywscu",
+   "sha": "7020637b16446da68ddab2f2025cf2b4f8e9f478",
+   "path": "research/round-4-results/K02/fix.patch",
+   "copied_to": "inputs/r4/K02/fix.patch",
+   "bytes": 16446,
+   "sha256": "d8664943f111c957a21cfeb6ddd52ff8391db59d9ef20b35357ae0238f819c6c"
+  },
+  {
+   "slot": "K02",
+   "branch": "claude/clever-mccarthy-pywscu",
+   "sha": "7020637b16446da68ddab2f2025cf2b4f8e9f478",
+   "path": "research/round-4-results/K02/fixed/verified_explainer.py",
+   "copied_to": "inputs/r4/K02/fixed/verified_explainer.py",
+   "bytes": 24422,
+   "sha256": "2993aebb2817a0d1d2912b211308405034f30db6bc7ef227f4a1e146a76e9129"
+  },
+  {
+   "slot": "K02",
+   "branch": "claude/clever-mccarthy-pywscu",
+   "sha": "7020637b16446da68ddab2f2025cf2b4f8e9f478",
+   "path": "research/round-4-results/K02/test_fix.py",
+   "copied_to": "inputs/r4/K02/test_fix.py",
+   "bytes": 6955,
+   "sha256": "60cdadb3331bb7b875d3fa6440befc65501e4af14e1bca496410a0f8af27655d"
+  },
+  {
+   "slot": "K03",
+   "branch": "claude/epic-curie-iitc43",
+   "sha": "3660527f2784445f9fc8b51d68124c0b0d73a5dd",
+   "path": "research/round-4-results/K03/REVIEW.md",
+   "copied_to": "inputs/r4/K03/REVIEW.md",
+   "bytes": 11945,
+   "sha256": "d7b9d61e826842e4c361277f98ced857eca1aadaf20fb134824407365868ebbe"
+  },
+  {
+   "slot": "K03",
+   "branch": "claude/epic-curie-iitc43",
+   "sha": "3660527f2784445f9fc8b51d68124c0b0d73a5dd",
+   "path": "research/round-4-results/K03/STATUS.md",
+   "copied_to": "inputs/r4/K03/STATUS.md",
+   "bytes": 7017,
+   "sha256": "580befe5b1fe7dd884845637127e0494bdb068403a36636f0baaab87f1062f46"
+  },
+  {
+   "slot": "K03",
+   "branch": "claude/epic-curie-iitc43",
+   "sha": "3660527f2784445f9fc8b51d68124c0b0d73a5dd",
+   "path": "research/round-4-results/K03/fix_spec.json",
+   "copied_to": "inputs/r4/K03/fix_spec.json",
+   "bytes": 6099,
+   "sha256": "cf9db620cf9254af016ff99d2efdf7da0f9cc37a5a46df1b8e38928081b934d0"
+  },
+  {
+   "slot": "K03",
+   "branch": "claude/epic-curie-iitc43",
+   "sha": "3660527f2784445f9fc8b51d68124c0b0d73a5dd",
+   "path": "research/round-4-results/K03/fixtures.json",
+   "copied_to": "inputs/r4/K03/fixtures.json",
+   "bytes": 31880,
+   "sha256": "33ed694300b6b33452110406fa1a55ddfa609e6d374442e3e9b5cf0cc7fcb890"
+  },
+  {
+   "slot": "K03",
+   "branch": "claude/epic-curie-iitc43",
+   "sha": "3660527f2784445f9fc8b51d68124c0b0d73a5dd",
+   "path": "research/round-4-results/K03/k03_review_lib.py",
+   "copied_to": "inputs/r4/K03/k03_review_lib.py",
+   "bytes": 6293,
+   "sha256": "bb85e4709c7b8ec90d991a419bb87a84453fd1c443375e60495524cdfc1d2ca8"
+  },
+  {
+   "slot": "K03",
+   "branch": "claude/epic-curie-iitc43",
+   "sha": "3660527f2784445f9fc8b51d68124c0b0d73a5dd",
+   "path": "research/round-4-results/K03/patches/k03_assign_v2.patch",
+   "copied_to": "inputs/r4/K03/patches/k03_assign_v2.patch",
+   "bytes": 9936,
+   "sha256": "caa62f7530ff3db80428b850a3af07a58c25c95f66cd873fb8baa85dcba388f5"
+  },
+  {
+   "slot": "K03",
+   "branch": "claude/epic-curie-iitc43",
+   "sha": "3660527f2784445f9fc8b51d68124c0b0d73a5dd",
+   "path": "research/round-4-results/K03/review_results.json",
+   "copied_to": "inputs/r4/K03/review_results.json",
+   "bytes": 23764,
+   "sha256": "e37e940145c1f03a42638d6752800cf59843cc6ae84ced0f87510f18092a6355"
+  },
+  {
+   "slot": "K03",
+   "branch": "claude/epic-curie-iitc43",
+   "sha": "3660527f2784445f9fc8b51d68124c0b0d73a5dd",
+   "path": "research/round-4-results/K03/review_validator.py",
+   "copied_to": "inputs/r4/K03/review_validator.py",
+   "bytes": 20957,
+   "sha256": "7b728b3632eb01d15386211928f9e8fca5ec73f25828869aace6eac9a528b870"
+  },
+  {
+   "slot": "K03",
+   "branch": "claude/epic-curie-iitc43",
+   "sha": "3660527f2784445f9fc8b51d68124c0b0d73a5dd",
+   "path": "research/round-4-results/K03/test_regression.py",
+   "copied_to": "inputs/r4/K03/test_regression.py",
+   "bytes": 2993,
+   "sha256": "cedbb13ded1dc1f14dec4ffa7b8a7e4c922ae8c06e8d0373728ec31e4a7195bf"
+  },
+  {
+   "slot": "K04",
+   "branch": "claude/beautiful-clarke-sbzomj",
+   "sha": "0bf27deb8549b325b34a9610402613d745544edb",
+   "path": "research/round-4-results/BUILD/HANDOFF.md",
+   "copied_to": "inputs/r4/BUILD/HANDOFF.md",
+   "bytes": 1340,
+   "sha256": "b3ee2886601da60b454d693190ab7f157ceb96c056a802ea6997444f5d130225"
+  },
+  {
+   "slot": "K04",
+   "branch": "claude/beautiful-clarke-sbzomj",
+   "sha": "0bf27deb8549b325b34a9610402613d745544edb",
+   "path": "research/round-4-results/BUILD/STATUS.md",
+   "copied_to": "inputs/r4/BUILD/STATUS.md",
+   "bytes": 5256,
+   "sha256": "dcf805b85c53f0a6f858ceb98d0aaf955bd3cafd8c87efb37b63281e6150723f"
+  },
+  {
+   "slot": "K05",
+   "branch": "claude/optimistic-davinci-1oiqs9",
+   "sha": "42051600fd2a7486be3d0e27a29e802a7bfad7aa",
+   "path": "research/round-4-results/K05/FIELD_MAPPING.md",
+   "copied_to": "inputs/r4/K05/FIELD_MAPPING.md",
+   "bytes": 5591,
+   "sha256": "4c26db836f234d2afaf3580a5e3724d90525540a1c8ce65e6e5680c28e9c69bb"
+  },
+  {
+   "slot": "K05",
+   "branch": "claude/optimistic-davinci-1oiqs9",
+   "sha": "42051600fd2a7486be3d0e27a29e802a7bfad7aa",
+   "path": "research/round-4-results/K05/REPORT.md",
+   "copied_to": "inputs/r4/K05/REPORT.md",
+   "bytes": 10139,
+   "sha256": "51c3192c9214b667bfab15c35c6b9f5b7eda751907222c0a5b00e351651bb89a"
+  },
+  {
+   "slot": "K05",
+   "branch": "claude/optimistic-davinci-1oiqs9",
+   "sha": "42051600fd2a7486be3d0e27a29e802a7bfad7aa",
+   "path": "research/round-4-results/K05/STATUS.md",
+   "copied_to": "inputs/r4/K05/STATUS.md",
+   "bytes": 3849,
+   "sha256": "e04607f10808538ff47bb966d8cbcfc3c0de6af9fe40bb230fefb3aeba3e6850"
+  },
+  {
+   "slot": "K05",
+   "branch": "claude/optimistic-davinci-1oiqs9",
+   "sha": "42051600fd2a7486be3d0e27a29e802a7bfad7aa",
+   "path": "research/round-4-results/K05/adapter_summary.json",
+   "copied_to": "inputs/r4/K05/adapter_summary.json",
+   "bytes": 1854,
+   "sha256": "3b2a514f6cea1002f3c7e11f31035520914f57a073f01fba8e3bcdc3b3094bb5"
+  },
+  {
+   "slot": "K05",
+   "branch": "claude/optimistic-davinci-1oiqs9",
+   "sha": "42051600fd2a7486be3d0e27a29e802a7bfad7aa",
+   "path": "research/round-4-results/K05/cases/cases.json",
+   "copied_to": "inputs/r4/K05/cases/cases.json",
+   "bytes": 53085,
+   "sha256": "77fb796f231150ada572106182c2fb6f7d0c6852f113694e6c2cf194a8c3244a"
+  },
+  {
+   "slot": "K05",
+   "branch": "claude/optimistic-davinci-1oiqs9",
+   "sha": "42051600fd2a7486be3d0e27a29e802a7bfad7aa",
+   "path": "research/round-4-results/K05/examples/astana/square_not_collected_missing.json",
+   "copied_to": "inputs/r4/K05/examples/astana/square_not_collected_missing.json",
+   "bytes": 2602,
+   "sha256": "2251794e80a2152079c2ba9a8b6e6384d881428ad8d36bae20c1de927cd0c778"
+  },
+  {
+   "slot": "K05",
+   "branch": "claude/optimistic-davinci-1oiqs9",
+   "sha": "42051600fd2a7486be3d0e27a29e802a7bfad7aa",
+   "path": "research/round-4-results/K05/examples/astana/square_object_qa.json",
+   "copied_to": "inputs/r4/K05/examples/astana/square_object_qa.json",
+   "bytes": 2416,
+   "sha256": "acc39f671490d0d543eaaff79462318f845e5df5ae979707fa8d7d3888993785"
+  },
+  {
+   "slot": "K05",
+   "branch": "claude/optimistic-davinci-1oiqs9",
+   "sha": "42051600fd2a7486be3d0e27a29e802a7bfad7aa",
+   "path": "research/round-4-results/K05/examples/astana/square_place_record_counts.json",
+   "copied_to": "inputs/r4/K05/examples/astana/square_place_record_counts.json",
+   "bytes": 43273,
+   "sha256": "4d80dc091193416e3b3a211d61e47ef4b994bcdb85515eb462d955686426c17c"
+  },
+  {
+   "slot": "K05",
+   "branch": "claude/optimistic-davinci-1oiqs9",
+   "sha": "42051600fd2a7486be3d0e27a29e802a7bfad7aa",
+   "path": "research/round-4-results/K05/examples/shymkent/square_not_collected_missing.json",
+   "copied_to": "inputs/r4/K05/examples/shymkent/square_not_collected_missing.json",
+   "bytes": 2619,
+   "sha256": "b2d0be1399df2a3516fa4bc944eaf54aa8fc8d03634f69e6b852ad886ebedb55"
+  },
+  {
+   "slot": "K05",
+   "branch": "claude/optimistic-davinci-1oiqs9",
+   "sha": "42051600fd2a7486be3d0e27a29e802a7bfad7aa",
+   "path": "research/round-4-results/K05/examples/shymkent/square_object_qa.json",
+   "copied_to": "inputs/r4/K05/examples/shymkent/square_object_qa.json",
+   "bytes": 1903,
+   "sha256": "49f79848eace5d4fe8c5afd39c3222ac71c95cbba1c7346eac0db22d96fb9f27"
+  },
+  {
+   "slot": "K05",
+   "branch": "claude/optimistic-davinci-1oiqs9",
+   "sha": "42051600fd2a7486be3d0e27a29e802a7bfad7aa",
+   "path": "research/round-4-results/K05/examples/shymkent/square_place_record_counts.json",
+   "copied_to": "inputs/r4/K05/examples/shymkent/square_place_record_counts.json",
+   "bytes": 43626,
+   "sha256": "3b97750bc724be31c8b38c3604ee76d3f2fb378b986962fad114441dfc84157b"
+  },
+  {
+   "slot": "K05",
+   "branch": "claude/optimistic-davinci-1oiqs9",
+   "sha": "42051600fd2a7486be3d0e27a29e802a7bfad7aa",
+   "path": "research/round-4-results/K05/k05r4_adapter.py",
+   "copied_to": "inputs/r4/K05/k05r4_adapter.py",
+   "bytes": 13742,
+   "sha256": "7dcc6d679125e927921fb92b3f76ff7c93215a400cfa30d8f13914c91376df17"
+  },
+  {
+   "slot": "K05",
+   "branch": "claude/optimistic-davinci-1oiqs9",
+   "sha": "42051600fd2a7486be3d0e27a29e802a7bfad7aa",
+   "path": "research/round-4-results/K05/k05r4_contract.py",
+   "copied_to": "inputs/r4/K05/k05r4_contract.py",
+   "bytes": 7181,
+   "sha256": "423cdfeeb13ce4ca7f9b8d7938157dd79ba8b21e41162cf6f7c8bb8d51307957"
+  },
+  {
+   "slot": "K05",
+   "branch": "claude/optimistic-davinci-1oiqs9",
+   "sha": "42051600fd2a7486be3d0e27a29e802a7bfad7aa",
+   "path": "research/round-4-results/K05/schema/k05-obs-v1.2.schema.json",
+   "copied_to": "inputs/r4/K05/schema/k05-obs-v1.2.schema.json",
+   "bytes": 6756,
+   "sha256": "a8a848aa7fa58a585da563bfd72821baa2e26ce4692f789ca468cd3d1713617f"
+  },
+  {
+   "slot": "K05",
+   "branch": "claude/optimistic-davinci-1oiqs9",
+   "sha": "42051600fd2a7486be3d0e27a29e802a7bfad7aa",
+   "path": "research/round-4-results/K05/tests/test_k05r4.py",
+   "copied_to": "inputs/r4/K05/tests/test_k05r4.py",
+   "bytes": 5967,
+   "sha256": "f25d3bd5941ac27ff5b1a0cb5f365cf95922386139a4e09b0fc3e1f0a63d93fa"
+  },
+  {
+   "slot": "K06",
+   "branch": "claude/ecstatic-curie-hzfzn0",
+   "sha": "33684f94607cb11faf25b408ac71289ded699629",
+   "path": "research/round-4-results/K06/K07_edge_split.patch.txt",
+   "copied_to": "inputs/r4/K06/K07_edge_split.patch.txt",
+   "bytes": 2062,
+   "sha256": "c9f53b27624caabe4a555325b52b703c469a0530745618de074e6b54096ac45a"
+  },
+  {
+   "slot": "K06",
+   "branch": "claude/ecstatic-curie-hzfzn0",
+   "sha": "33684f94607cb11faf25b408ac71289ded699629",
+   "path": "research/round-4-results/K06/REPORT.md",
+   "copied_to": "inputs/r4/K06/REPORT.md",
+   "bytes": 8604,
+   "sha256": "cb706c9bcd7c33ec7dd64a0dc1c2c6625cd7b906b002de305eb77b473b2b8af4"
+  },
+  {
+   "slot": "K06",
+   "branch": "claude/ecstatic-curie-hzfzn0",
+   "sha": "33684f94607cb11faf25b408ac71289ded699629",
+   "path": "research/round-4-results/K06/STATUS.md",
+   "copied_to": "inputs/r4/K06/STATUS.md",
+   "bytes": 2534,
+   "sha256": "1641ab139399e7b612d9675f0a6aa092732e8f72e0e35d08b09735a5982a3a07"
+  },
+  {
+   "slot": "K06",
+   "branch": "claude/ecstatic-curie-hzfzn0",
+   "sha": "33684f94607cb11faf25b408ac71289ded699629",
+   "path": "research/round-4-results/K06/crosscheck_shapely_k07.py",
+   "copied_to": "inputs/r4/K06/crosscheck_shapely_k07.py",
+   "bytes": 2591,
+   "sha256": "8d9caa0115d86b88ac0380c498790f5c7faf6362a9926701983f667e438c88af"
+  },
+  {
+   "slot": "K06",
+   "branch": "claude/ecstatic-curie-hzfzn0",
+   "sha": "33684f94607cb11faf25b408ac71289ded699629",
+   "path": "research/round-4-results/K06/extract_k10.py",
+   "copied_to": "inputs/r4/K06/extract_k10.py",
+   "bytes": 1058,
+   "sha256": "556e898e945c84551129526327c5462fdb345ea016e4002b99373e9ea68ab21e"
+  },
+  {
+   "slot": "K06",
+   "branch": "claude/ecstatic-curie-hzfzn0",
+   "sha": "33684f94607cb11faf25b408ac71289ded699629",
+   "path": "research/round-4-results/K06/geo_oracle.py",
+   "copied_to": "inputs/r4/K06/geo_oracle.py",
+   "bytes": 5159,
+   "sha256": "94fa2654308c182e19f423737b7ce7d04cc3abca68abb12ceb7ebd5d983e115a"
+  },
+  {
+   "slot": "K06",
+   "branch": "claude/ecstatic-curie-hzfzn0",
+   "sha": "33684f94607cb11faf25b408ac71289ded699629",
+   "path": "research/round-4-results/K06/out/crosscheck_shapely_k07.json",
+   "copied_to": "inputs/r4/K06/out/crosscheck_shapely_k07.json",
+   "bytes": 1396,
+   "sha256": "d8a5f6c4b6974f84d1c7ee8d60d1b40ee7e522883d1dc10c793349aa92923989"
+  },
+  {
+   "slot": "K06",
+   "branch": "claude/ecstatic-curie-hzfzn0",
+   "sha": "33684f94607cb11faf25b408ac71289ded699629",
+   "path": "research/round-4-results/K06/out/review_k10.json",
+   "copied_to": "inputs/r4/K06/out/review_k10.json",
+   "bytes": 7021,
+   "sha256": "c1741a9ded629e140d2d442dc680af428b0931fb6453e42c72ac3e82737a3b7e"
+  },
+  {
+   "slot": "K06",
+   "branch": "claude/ecstatic-curie-hzfzn0",
+   "sha": "33684f94607cb11faf25b408ac71289ded699629",
+   "path": "research/round-4-results/K06/review_k10.py",
+   "copied_to": "inputs/r4/K06/review_k10.py",
+   "bytes": 14044,
+   "sha256": "50dd544218916d58a4b86a3e6f4891bc8611567de680573d1c22f5b10c255168"
+  },
+  {
+   "slot": "K06",
+   "branch": "claude/ecstatic-curie-hzfzn0",
+   "sha": "33684f94607cb11faf25b408ac71289ded699629",
+   "path": "research/round-4-results/K06/test_geo_oracle.py",
+   "copied_to": "inputs/r4/K06/test_geo_oracle.py",
+   "bytes": 3299,
+   "sha256": "daf76c6999a9cd590cfc111490c2d3d6c21726af450ebcf0f4a02b6a7e159947"
+  },
+  {
+   "slot": "K07",
+   "branch": "claude/save-work-handoff-ku3ej3",
+   "sha": "62cf5359ac0a8a8b6118d1ff21ff86e956f82f9a",
+   "path": "research/round-4-results/K07/REVIEW.md",
+   "copied_to": "inputs/r4/K07/REVIEW.md",
+   "bytes": 9749,
+   "sha256": "06143e3d04689671066c0dfde27d8bb24407ed1b90b91511d63f87d10934a5b0"
+  },
+  {
+   "slot": "K07",
+   "branch": "claude/save-work-handoff-ku3ej3",
+   "sha": "62cf5359ac0a8a8b6118d1ff21ff86e956f82f9a",
+   "path": "research/round-4-results/K07/STATUS.md",
+   "copied_to": "inputs/r4/K07/STATUS.md",
+   "bytes": 5151,
+   "sha256": "4546a27176fdfd02337a90dca4fe616a8e4122fc947d7280b49d11cd00795a12"
+  },
+  {
+   "slot": "K07",
+   "branch": "claude/save-work-handoff-ku3ej3",
+   "sha": "62cf5359ac0a8a8b6118d1ff21ff86e956f82f9a",
+   "path": "research/round-4-results/K07/patch/k07_round3_prototype.patch",
+   "copied_to": "inputs/r4/K07/patch/k07_round3_prototype.patch",
+   "bytes": 14918,
+   "sha256": "0b86aabaa920d32159798a486be1e61be2b840380d8e3be484777f35a0893c8a"
+  },
+  {
+   "slot": "K07",
+   "branch": "claude/save-work-handoff-ku3ej3",
+   "sha": "62cf5359ac0a8a8b6118d1ff21ff86e956f82f9a",
+   "path": "research/round-4-results/K07/scripts/extract_snapshot.py",
+   "copied_to": "inputs/r4/K07/scripts/extract_snapshot.py",
+   "bytes": 1887,
+   "sha256": "f800f63e17f8841fe7e20c0e4298e48cb66cc0b654c8a0157804b09f8882071f"
+  },
+  {
+   "slot": "K07",
+   "branch": "claude/save-work-handoff-ku3ej3",
+   "sha": "62cf5359ac0a8a8b6118d1ff21ff86e956f82f9a",
+   "path": "research/round-4-results/K07/scripts/run_review.sh",
+   "copied_to": "inputs/r4/K07/scripts/run_review.sh",
+   "bytes": 1584,
+   "sha256": "f1009a44f3d4c390d300ae266a18c2ad9bc0e3dc667f990cbbdbdea30062bf1c"
+  },
+  {
+   "slot": "K07",
+   "branch": "claude/save-work-handoff-ku3ej3",
+   "sha": "62cf5359ac0a8a8b6118d1ff21ff86e956f82f9a",
+   "path": "research/round-4-results/K07/tests/review_user_path.cjs",
+   "copied_to": "inputs/r4/K07/tests/review_user_path.cjs",
+   "bytes": 16178,
+   "sha256": "f2a0f3568d751a485856658b6edf7ef4e617a0d31c561fd442093b4d1ffbed21"
+  },
+  {
+   "slot": "K08",
+   "branch": "claude/dazzling-mayer-drhsxk",
+   "sha": "182cb1b52233baafecc1970fdfd4cb53bc8b8fad",
+   "path": "research/round-4-results/K08/MATRIX.md",
+   "copied_to": "inputs/r4/K08/MATRIX.md",
+   "bytes": 9072,
+   "sha256": "8e827f0c7e4f6edcb1c6fd9de4a6fdfec17dab112746733279b59793b0a804c5"
+  },
+  {
+   "slot": "K08",
+   "branch": "claude/dazzling-mayer-drhsxk",
+   "sha": "182cb1b52233baafecc1970fdfd4cb53bc8b8fad",
+   "path": "research/round-4-results/K08/STATUS.md",
+   "copied_to": "inputs/r4/K08/STATUS.md",
+   "bytes": 6372,
+   "sha256": "440788c1a51630fdf1e82ba90d823fd5297acc95f02f061ac211c7ec11f7ac84"
+  },
+  {
+   "slot": "K08",
+   "branch": "claude/dazzling-mayer-drhsxk",
+   "sha": "182cb1b52233baafecc1970fdfd4cb53bc8b8fad",
+   "path": "research/round-4-results/K08/attribution/ATTRIBUTION.md",
+   "copied_to": "inputs/r4/K08/attribution/ATTRIBUTION.md",
+   "bytes": 7708,
+   "sha256": "4de942304f8657f1747a8f8976887255fad4a76d4c35129aa871ed1cbb9615c6"
+  },
+  {
+   "slot": "K08",
+   "branch": "claude/dazzling-mayer-drhsxk",
+   "sha": "182cb1b52233baafecc1970fdfd4cb53bc8b8fad",
+   "path": "research/round-4-results/K08/attribution/LICENSES/Apache-2.0.txt",
+   "copied_to": "inputs/r4/K08/attribution/LICENSES/Apache-2.0.txt",
+   "bytes": 10280,
+   "sha256": "074e6e32c86a4c0ef8b3ed25b721ca23aca83df277cd88106ef7177c354615ff"
+  },
+  {
+   "slot": "K08",
+   "branch": "claude/dazzling-mayer-drhsxk",
+   "sha": "182cb1b52233baafecc1970fdfd4cb53bc8b8fad",
+   "path": "research/round-4-results/K08/attribution/LICENSES/CDLA-Permissive-2.0.txt",
+   "copied_to": "inputs/r4/K08/attribution/LICENSES/CDLA-Permissive-2.0.txt",
+   "bytes": 2354,
+   "sha256": "4531a67d443284d93ffed0803df5b10634aff21c3d77e381f2d48af01d875868"
+  },
+  {
+   "slot": "K08",
+   "branch": "claude/dazzling-mayer-drhsxk",
+   "sha": "182cb1b52233baafecc1970fdfd4cb53bc8b8fad",
+   "path": "research/round-4-results/K08/attribution/LICENSES/ODbL-1.0.txt",
+   "copied_to": "inputs/r4/K08/attribution/LICENSES/ODbL-1.0.txt",
+   "bytes": 25289,
+   "sha256": "77d2692c3d64efdd4db18dce2407699baf62930e2b50d6e5ed90b48acf16b7c1"
+  },
+  {
+   "slot": "K08",
+   "branch": "claude/dazzling-mayer-drhsxk",
+   "sha": "182cb1b52233baafecc1970fdfd4cb53bc8b8fad",
+   "path": "research/round-4-results/K08/attribution/attribution.json",
+   "copied_to": "inputs/r4/K08/attribution/attribution.json",
+   "bytes": 32634,
+   "sha256": "313c9b0eaaa695aa4a0221077bc5487fed91ff443d1b204bafb80b0cc4bf8588"
+  },
+  {
+   "slot": "K08",
+   "branch": "claude/dazzling-mayer-drhsxk",
+   "sha": "182cb1b52233baafecc1970fdfd4cb53bc8b8fad",
+   "path": "research/round-4-results/K08/download_py_attribution.patch",
+   "copied_to": "inputs/r4/K08/download_py_attribution.patch",
+   "bytes": 3124,
+   "sha256": "7f74d22d8d1ca9d4159edc5616cfad26598f586b463e5dc52784682186022409"
+  },
+  {
+   "slot": "K08",
+   "branch": "claude/dazzling-mayer-drhsxk",
+   "sha": "182cb1b52233baafecc1970fdfd4cb53bc8b8fad",
+   "path": "research/round-4-results/K08/matrix.json",
+   "copied_to": "inputs/r4/K08/matrix.json",
+   "bytes": 14555,
+   "sha256": "1c44d5eda3c87c64219ce82d16cd57d270bebc6ea63b2ea84bc0756847085246"
+  },
+  {
+   "slot": "K08",
+   "branch": "claude/dazzling-mayer-drhsxk",
+   "sha": "182cb1b52233baafecc1970fdfd4cb53bc8b8fad",
+   "path": "research/round-4-results/K08/scripts/build_attribution.py",
+   "copied_to": "inputs/r4/K08/scripts/build_attribution.py",
+   "bytes": 11872,
+   "sha256": "747b8ee7621604404820a66cf6546dabec7ad838c7e1ec3ac0d94d207b953b4e"
+  },
+  {
+   "slot": "K10",
+   "branch": "claude/save-work-handoff-j7pc05",
+   "sha": "a75cdfec51c2c8300ee632a42755ac09d37f3cd1",
+   "path": "research/round-4-results/K10/REVIEW.md",
+   "copied_to": "inputs/r4/K10/REVIEW.md",
+   "bytes": 11869,
+   "sha256": "ff6f4a265f249b5823596ca57aa987ccd22f7bb140a40890628f87cd2e8a4bf4"
+  },
+  {
+   "slot": "K10",
+   "branch": "claude/save-work-handoff-j7pc05",
+   "sha": "a75cdfec51c2c8300ee632a42755ac09d37f3cd1",
+   "path": "research/round-4-results/K10/STATUS.md",
+   "copied_to": "inputs/r4/K10/STATUS.md",
+   "bytes": 5544,
+   "sha256": "bde4837d99f79ff4b961e6f51d8fd543f639984519063e48d875fd063eefc53a"
+  },
+  {
+   "slot": "K10",
+   "branch": "claude/save-work-handoff-j7pc05",
+   "sha": "a75cdfec51c2c8300ee632a42755ac09d37f3cd1",
+   "path": "research/round-4-results/K10/scripts/copy_inputs.py",
+   "copied_to": "inputs/r4/K10/scripts/copy_inputs.py",
+   "bytes": 2749,
+   "sha256": "f43d1a1092deaa004180492242103997522ea94e0df5af359a9b505e8a9899c7"
+  },
+  {
+   "slot": "K10",
+   "branch": "claude/save-work-handoff-j7pc05",
+   "sha": "a75cdfec51c2c8300ee632a42755ac09d37f3cd1",
+   "path": "research/round-4-results/K10/scripts/k10_k07_adapter.py",
+   "copied_to": "inputs/r4/K10/scripts/k10_k07_adapter.py",
+   "bytes": 8858,
+   "sha256": "af409bf3fa8e906d538a6bf9440d3fa4c181c6c51f27d31eb715e002c7e4ff4d"
+  },
+  {
+   "slot": "K10",
+   "branch": "claude/save-work-handoff-j7pc05",
+   "sha": "a75cdfec51c2c8300ee632a42755ac09d37f3cd1",
+   "path": "research/round-4-results/K10/scripts/run_review.py",
+   "copied_to": "inputs/r4/K10/scripts/run_review.py",
+   "bytes": 6981,
+   "sha256": "80a38b150c2f4b5bd39a4fce1e54300db8c7debb575f525ccbe91e244e7b46db"
+  },
+  {
+   "slot": "K10",
+   "branch": "claude/save-work-handoff-j7pc05",
+   "sha": "a75cdfec51c2c8300ee632a42755ac09d37f3cd1",
+   "path": "research/round-4-results/K10/tests/test_k07_compat.py",
+   "copied_to": "inputs/r4/K10/tests/test_k07_compat.py",
+   "bytes": 13224,
+   "sha256": "a9f8e33d83a9c718555095524e7891c1e0471a797196d95aaae795e56ac81380"
+  },
+  {
+   "slot": "K11",
+   "branch": "claude/save-work-handoff-fmjw6r",
+   "sha": "03fa7fa9cfa27188156cbab8fb161db141d586c2",
+   "path": "research/round-4-results/K11/CHECK_LOG.md",
+   "copied_to": "inputs/r4/K11/CHECK_LOG.md",
+   "bytes": 4571,
+   "sha256": "7a1d3a0401b4d1bfe5a5aef6728ca4616c2e77638024efc13c92586affc66678"
+  },
+  {
+   "slot": "K11",
+   "branch": "claude/save-work-handoff-fmjw6r",
+   "sha": "03fa7fa9cfa27188156cbab8fb161db141d586c2",
+   "path": "research/round-4-results/K11/FINDINGS.md",
+   "copied_to": "inputs/r4/K11/FINDINGS.md",
+   "bytes": 10878,
+   "sha256": "68d9f330a66b1d8773f40f07495cc1b812f9142b60001f6a5f5a3a2f9f0b99d0"
+  },
+  {
+   "slot": "K11",
+   "branch": "claude/save-work-handoff-fmjw6r",
+   "sha": "03fa7fa9cfa27188156cbab8fb161db141d586c2",
+   "path": "research/round-4-results/K11/RUN_RECIPE.md",
+   "copied_to": "inputs/r4/K11/RUN_RECIPE.md",
+   "bytes": 7198,
+   "sha256": "6f8927acd046d0cf38a7598603c9da612cdaa39cc514901efec4062fc60d26e1"
+  },
+  {
+   "slot": "K11",
+   "branch": "claude/save-work-handoff-fmjw6r",
+   "sha": "03fa7fa9cfa27188156cbab8fb161db141d586c2",
+   "path": "research/round-4-results/K11/STATUS.md",
+   "copied_to": "inputs/r4/K11/STATUS.md",
+   "bytes": 5178,
+   "sha256": "6e5a845ca3221751c7a7e3b0ebdceadfad3f3e0d6ff790a001f663c4fff43875"
+  },
+  {
+   "slot": "K12",
+   "branch": "claude/save-work-handoff-xuav3q",
+   "sha": "3e8403931f823eb6b688462fb46e91d520628c11",
+   "path": "research/round-4-results/K12/FIXTURES.json",
+   "copied_to": "inputs/r4/K12/FIXTURES.json",
+   "bytes": 27634,
+   "sha256": "3d66f544c78bbea1c7de34b5370e003f2bdeed3d8c04b2b2ea998f95ecefe53b"
+  },
+  {
+   "slot": "K12",
+   "branch": "claude/save-work-handoff-xuav3q",
+   "sha": "3e8403931f823eb6b688462fb46e91d520628c11",
+   "path": "research/round-4-results/K12/REPORT.md",
+   "copied_to": "inputs/r4/K12/REPORT.md",
+   "bytes": 11761,
+   "sha256": "d2da386ff9005a9ca99d6b593201127d7098928c3461ea53f23db60b8a4acd6f"
+  },
+  {
+   "slot": "K12",
+   "branch": "claude/save-work-handoff-xuav3q",
+   "sha": "3e8403931f823eb6b688462fb46e91d520628c11",
+   "path": "research/round-4-results/K12/STATUS.md",
+   "copied_to": "inputs/r4/K12/STATUS.md",
+   "bytes": 4856,
+   "sha256": "d1b241f0d4aff6bcfbb69f4338c6c2189798233f8005f89269e49789375c7bd5"
+  },
+  {
+   "slot": "K12",
+   "branch": "claude/save-work-handoff-xuav3q",
+   "sha": "3e8403931f823eb6b688462fb46e91d520628c11",
+   "path": "research/round-4-results/K12/make_fixtures.py",
+   "copied_to": "inputs/r4/K12/make_fixtures.py",
+   "bytes": 17781,
+   "sha256": "d37f7b27c965e2bb3fd6b3548c016e48f396e313146daa1d6ffb028cee0c22a8"
+  },
+  {
+   "slot": "K12",
+   "branch": "claude/save-work-handoff-xuav3q",
+   "sha": "3e8403931f823eb6b688462fb46e91d520628c11",
+   "path": "research/round-4-results/K12/patches/k05r3_contract_stress_fixes.patch",
+   "copied_to": "inputs/r4/K12/patches/k05r3_contract_stress_fixes.patch",
+   "bytes": 12203,
+   "sha256": "f97600353dbdd2a5d526016f05e03543cc8a15253b5b98488e947b899d2a67b0"
+  },
+  {
+   "slot": "K12",
+   "branch": "claude/save-work-handoff-xuav3q",
+   "sha": "3e8403931f823eb6b688462fb46e91d520628c11",
+   "path": "research/round-4-results/K12/stress_runner.py",
+   "copied_to": "inputs/r4/K12/stress_runner.py",
+   "bytes": 7835,
+   "sha256": "4181a30943e7cae09c304ab5f33ba98bda8ad729053cc940d721f15624a8f1eb"
+  },
+  {
+   "slot": "K12",
+   "branch": "claude/save-work-handoff-xuav3q",
+   "sha": "3e8403931f823eb6b688462fb46e91d520628c11",
+   "path": "research/round-4-results/K12/tests/test_k05_stress.py",
+   "copied_to": "inputs/r4/K12/tests/test_k05_stress.py",
+   "bytes": 4290,
+   "sha256": "d48bd59bd9c1b24896a213394254dee5f2863ceb967e8e411913e773379b28b2"
+  }
+ ]
+}

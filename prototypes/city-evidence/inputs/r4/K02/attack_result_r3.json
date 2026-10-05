@@ -1,0 +1,55 @@
+{
+ "target": "r3",
+ "results": [
+  {
+   "attack": "A1 real K05 records ingest",
+   "outcome": "defect",
+   "detail": "ValueError: fact_id kz.shymkent/2026-09-23/abai.overture_place_records.school.conf_ge_0_5 does not match city/scenario"
+  },
+  {
+   "attack": "A2 incomplete coverage marked",
+   "outcome": "defect",
+   "detail": "coverage.complete=false потерян: - k10_sample_rows.school: 15 (расчёт)"
+  },
+  {
+   "attack": "A3 unknown unit",
+   "outcome": "defect",
+   "detail": "KeyError при рендере уже принятого плана: 'records'"
+  },
+  {
+   "attack": "A4 duplicate fact id across snapshots",
+   "outcome": "defect",
+   "detail": "2 записи → 1 факт; осталось значение 126"
+  },
+  {
+   "attack": "A5 digits in label",
+   "outcome": "defect",
+   "detail": "- Школы: 999: 5 (наблюдение)"
+  },
+  {
+   "attack": "A6 model result relabelled as real city",
+   "outcome": "defect",
+   "detail": "returned: - Итоговый Score плана: 57,24 (учебная модель)"
+  },
+  {
+   "attack": "A7 stale plan reused on new result",
+   "outcome": "defect",
+   "detail": "ID совпадают: True; Score 57.24 → 56.88; returned"
+  },
+  {
+   "attack": "A8 same id in two sections",
+   "outcome": "defect",
+   "detail": "returned"
+  },
+  {
+   "attack": "A9 NaN in engine result",
+   "outcome": "defect",
+   "detail": "EvidenceError: Движок вернул неконечное число."
+  },
+  {
+   "attack": "A10 zero vs missing from K05",
+   "outcome": "defect",
+   "detail": "нельзя проверить: записи K05 не принимаются (A1); missing_reason не хранится"
+  }
+ ]
+}

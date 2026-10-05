@@ -1,0 +1,40 @@
+{
+ "contract_id": "k05-obs-v1.2+k12r4",
+ "composition": "K05 r4 k05r4_contract.validate (v1.2 spatial_unit) -> k05r3_contract.validate WITH K12 r4 patch -> k05_validator v1",
+ "patch": {
+  "path": "inputs/r4/K12/patches/k05r3_contract_stress_fixes.patch",
+  "sha256": "f97600353dbdd2a5d526016f05e03543cc8a15253b5b98488e947b899d2a67b0",
+  "applied_to": "research/round-3-results/K05/k05r3_contract.py"
+ },
+ "files": [
+  {
+   "path": "research/next-round/K05/k05_validator.py",
+   "from": "inputs/k05_root/next-round/K05/k05_validator.py",
+   "original_sha256": "90086a105a0a0108dcc4a35fd5312fb29becc0787b3eef5bc880ae987dfe64ab",
+   "used_sha256": "90086a105a0a0108dcc4a35fd5312fb29becc0787b3eef5bc880ae987dfe64ab",
+   "modified": false
+  },
+  {
+   "path": "research/round-3-results/K05/k05r3_contract.py",
+   "from": "inputs/k05_root/round-3-results/K05/k05r3_contract.py",
+   "original_sha256": "8dc4a177f47edcdfa6753ed41b78a31e5afb652df4d79f02c73aeb5686d2f397",
+   "used_sha256": "b6856121d01c2046cfa2c0e8248ac4c0f107ecf60fdfa601bc04117fbf3e26a2",
+   "modified": true
+  },
+  {
+   "path": "research/round-4-results/K05/k05r4_contract.py",
+   "from": "inputs/r4/K05/k05r4_contract.py",
+   "original_sha256": "423cdfeeb13ce4ca7f9b8d7938157dd79ba8b21e41162cf6f7c8bb8d51307957",
+   "used_sha256": "423cdfeeb13ce4ca7f9b8d7938157dd79ba8b21e41162cf6f7c8bb8d51307957",
+   "modified": false
+  },
+  {
+   "path": "research/round-4-results/K05/schema/k05-obs-v1.2.schema.json",
+   "from": "inputs/r4/K05/schema/k05-obs-v1.2.schema.json",
+   "original_sha256": "a8a848aa7fa58a585da563bfd72821baa2e26ce4692f789ca468cd3d1713617f",
+   "used_sha256": "a8a848aa7fa58a585da563bfd72821baa2e26ce4692f789ca468cd3d1713617f",
+   "modified": false
+  }
+ ],
+ "note": "modified=true files are local patched copies, not upstream files"
+}

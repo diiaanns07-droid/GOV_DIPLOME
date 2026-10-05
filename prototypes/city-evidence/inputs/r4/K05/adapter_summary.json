@@ -1,0 +1,90 @@
+{
+ "k10_ref": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909",
+ "release": "2026-09-23.1",
+ "cities": {
+  "shymkent": {
+   "geo_unit_id": "kz.shymkent.k10sq_r11_c12",
+   "bbox": [
+    69.593365,
+    42.306645,
+    69.617658,
+    42.324611
+   ],
+   "records": 55,
+   "counts_conf_ge_0_0": {
+    "school": 15,
+    "preschool": 1,
+    "college_university": 9,
+    "hospital": 6,
+    "outpatient_clinic": 16,
+    "pharmacy": 3,
+    "government_office": 5
+   },
+   "matches_k10_expected_counts": true,
+   "counts_conf_ge_0_5": {
+    "school": 9,
+    "preschool": 1,
+    "college_university": 6,
+    "hospital": 5,
+    "outpatient_clinic": 6,
+    "pharmacy": 3,
+    "government_office": 0
+   },
+   "real_zeros": [
+    "kz.shymkent.k10sq_r11_c12.overture_place_records.government_office.conf_ge_0_5@2026-09-23.1"
+   ],
+   "validator_codes": {
+    "CROSSES_DISTRICTS": 15
+   },
+   "object_qa": {
+    "errors": 0,
+    "warnings": {
+     "POSSIBLE_DUPLICATE": 3,
+     "COLOCATED": 2,
+     "CONFIDENCE_UNKNOWN": 0
+    }
+   }
+  },
+  "astana": {
+   "geo_unit_id": "kz.astana.k10sq_r17_c7",
+   "bbox": [
+    71.418372,
+    51.163033,
+    71.447,
+    51.181
+   ],
+   "records": 65,
+   "counts_conf_ge_0_0": {
+    "school": 8,
+    "preschool": 3,
+    "college_university": 10,
+    "hospital": 9,
+    "outpatient_clinic": 16,
+    "pharmacy": 3,
+    "government_office": 16
+   },
+   "matches_k10_expected_counts": true,
+   "counts_conf_ge_0_5": {
+    "school": 5,
+    "preschool": 1,
+    "college_university": 9,
+    "hospital": 7,
+    "outpatient_clinic": 9,
+    "pharmacy": 3,
+    "government_office": 13
+   },
+   "real_zeros": [],
+   "validator_codes": {
+    "CROSSES_DISTRICTS": 15
+   },
+   "object_qa": {
+    "errors": 0,
+    "warnings": {
+     "POSSIBLE_DUPLICATE": 5,
+     "COLOCATED": 0,
+     "CONFIDENCE_UNKNOWN": 0
+    }
+   }
+  }
+ }
+}

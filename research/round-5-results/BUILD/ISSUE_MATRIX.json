@@ -1,0 +1,4 @@
+{"status": "draft", "issues": [
+ {"id": "K12-1", "finding": "NaN/±Infinity проходят валидатор", "change": "contract k05-obs-v1.2+k12r4 (K12 patch)", "test": "tests/test_contract.py::RecordRules.test_nan_and_infinity_values_rejected", "status": "fixed_in_contract"},
+ {"id": "K12-2", "finding": "json.loads принимает NaN/1e999/повтор ключа", "change": "tools/contract.py loads_strict", "test": "tests/test_contract.py::StrictJson", "status": "fixed_in_contract"}
+]}

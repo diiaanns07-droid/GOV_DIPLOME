@@ -1,0 +1,1010 @@
+[
+ {
+  "schema_version": "k05-obs-v1.2",
+  "city_id": "kz.astana",
+  "geo_unit_id": "kz.astana.k10sq_r17_c7",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "unit": "records",
+  "kind": "derived",
+  "missing_reason": null,
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/part-00014-1d36203b-4312-5a97-b9e0-5c110ae7a274-c000.zstd.parquet",
+   "path": "research/round-4-results/K05/inputs/k10_r3/data/astana/places_social.geojson",
+   "sha256": "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343",
+   "retrieved_at": "2026-10-05T06:19:53+00:00",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0",
+   "query": "point within bbox AND K10 social rule (k10_rules.social_group)",
+   "evidence": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909; row_groups [91]",
+   "locator": "research/round-4-results/K05/inputs/k10_r3/data/astana/places_social.geojson#features[k10_group=school][confidence>=0.0]"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "k10_r3_square:r17_c7@3643892ff81e",
+  "spatial_unit": {
+   "type": "bbox",
+   "crs": "EPSG:4326",
+   "bbox": [
+    71.418372,
+    51.163033,
+    71.447,
+    51.181
+   ],
+   "edges_inclusive": true,
+   "area_km2": null,
+   "geometry_source": "research/round-4-results/K05/inputs/k10_r3/selection/astana_bbox_selection.json",
+   "geometry_sha256": "3643892ff81e4db65a18a1a8fc397db2c47e3e8d0d23fd32c07c8243aac979a8",
+   "overlaps_districts": {
+    "Байқоңыр ауданы": 0.6513,
+    "Сарыарқа ауданы": 0.3487
+   }
+  },
+  "coverage": {
+   "complete": true,
+   "scope": "все записи выпуска с точкой в квадрате (полный ответ запроса), не реестр района/города",
+   "selection": "без лимита; правило группы K10 social_group",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "max_age_days": 45,
+  "note": "квадрат делит районы {'Байқоңыр ауданы': 0.6513, 'Сарыарқа ауданы': 0.3487}; записей ближе 100 м к краю: 8",
+  "obs_id": "kz.astana.k10sq_r17_c7.overture_place_records.school.conf_ge_0_0@2026-09-23.1",
+  "indicator_id": "overture_place_records.school.conf_ge_0_0",
+  "value": 8,
+  "value_status": "reported",
+  "derivation": "count(features: k10_group=school, confidence>=0.0) в квадрате",
+  "method": {
+   "id": "k10r3_package+k05r4_adapter",
+   "steps": [
+    "K10 download.py: точка в bbox И правило social_group, выпуск 2026-09-23.1",
+    "K05: счёт записей группы с confidence >= 0.0; confidence=null не считается"
+   ],
+   "parameters": {
+    "confidence_min": 0.0,
+    "bbox": [
+     71.418372,
+     51.163033,
+     71.447,
+     51.181
+    ],
+    "k10_ref": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909"
+   }
+  }
+ },
+ {
+  "schema_version": "k05-obs-v1.2",
+  "city_id": "kz.astana",
+  "geo_unit_id": "kz.astana.k10sq_r17_c7",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "unit": "records",
+  "kind": "derived",
+  "missing_reason": null,
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/part-00014-1d36203b-4312-5a97-b9e0-5c110ae7a274-c000.zstd.parquet",
+   "path": "research/round-4-results/K05/inputs/k10_r3/data/astana/places_social.geojson",
+   "sha256": "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343",
+   "retrieved_at": "2026-10-05T06:19:53+00:00",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0",
+   "query": "point within bbox AND K10 social rule (k10_rules.social_group)",
+   "evidence": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909; row_groups [91]",
+   "locator": "research/round-4-results/K05/inputs/k10_r3/data/astana/places_social.geojson#features[k10_group=preschool][confidence>=0.0]"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "k10_r3_square:r17_c7@3643892ff81e",
+  "spatial_unit": {
+   "type": "bbox",
+   "crs": "EPSG:4326",
+   "bbox": [
+    71.418372,
+    51.163033,
+    71.447,
+    51.181
+   ],
+   "edges_inclusive": true,
+   "area_km2": null,
+   "geometry_source": "research/round-4-results/K05/inputs/k10_r3/selection/astana_bbox_selection.json",
+   "geometry_sha256": "3643892ff81e4db65a18a1a8fc397db2c47e3e8d0d23fd32c07c8243aac979a8",
+   "overlaps_districts": {
+    "Байқоңыр ауданы": 0.6513,
+    "Сарыарқа ауданы": 0.3487
+   }
+  },
+  "coverage": {
+   "complete": true,
+   "scope": "все записи выпуска с точкой в квадрате (полный ответ запроса), не реестр района/города",
+   "selection": "без лимита; правило группы K10 social_group",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "max_age_days": 45,
+  "note": "квадрат делит районы {'Байқоңыр ауданы': 0.6513, 'Сарыарқа ауданы': 0.3487}; записей ближе 100 м к краю: 8",
+  "obs_id": "kz.astana.k10sq_r17_c7.overture_place_records.preschool.conf_ge_0_0@2026-09-23.1",
+  "indicator_id": "overture_place_records.preschool.conf_ge_0_0",
+  "value": 3,
+  "value_status": "reported",
+  "derivation": "count(features: k10_group=preschool, confidence>=0.0) в квадрате",
+  "method": {
+   "id": "k10r3_package+k05r4_adapter",
+   "steps": [
+    "K10 download.py: точка в bbox И правило social_group, выпуск 2026-09-23.1",
+    "K05: счёт записей группы с confidence >= 0.0; confidence=null не считается"
+   ],
+   "parameters": {
+    "confidence_min": 0.0,
+    "bbox": [
+     71.418372,
+     51.163033,
+     71.447,
+     51.181
+    ],
+    "k10_ref": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909"
+   }
+  }
+ },
+ {
+  "schema_version": "k05-obs-v1.2",
+  "city_id": "kz.astana",
+  "geo_unit_id": "kz.astana.k10sq_r17_c7",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "unit": "records",
+  "kind": "derived",
+  "missing_reason": null,
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/part-00014-1d36203b-4312-5a97-b9e0-5c110ae7a274-c000.zstd.parquet",
+   "path": "research/round-4-results/K05/inputs/k10_r3/data/astana/places_social.geojson",
+   "sha256": "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343",
+   "retrieved_at": "2026-10-05T06:19:53+00:00",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0",
+   "query": "point within bbox AND K10 social rule (k10_rules.social_group)",
+   "evidence": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909; row_groups [91]",
+   "locator": "research/round-4-results/K05/inputs/k10_r3/data/astana/places_social.geojson#features[k10_group=college_university][confidence>=0.0]"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "k10_r3_square:r17_c7@3643892ff81e",
+  "spatial_unit": {
+   "type": "bbox",
+   "crs": "EPSG:4326",
+   "bbox": [
+    71.418372,
+    51.163033,
+    71.447,
+    51.181
+   ],
+   "edges_inclusive": true,
+   "area_km2": null,
+   "geometry_source": "research/round-4-results/K05/inputs/k10_r3/selection/astana_bbox_selection.json",
+   "geometry_sha256": "3643892ff81e4db65a18a1a8fc397db2c47e3e8d0d23fd32c07c8243aac979a8",
+   "overlaps_districts": {
+    "Байқоңыр ауданы": 0.6513,
+    "Сарыарқа ауданы": 0.3487
+   }
+  },
+  "coverage": {
+   "complete": true,
+   "scope": "все записи выпуска с точкой в квадрате (полный ответ запроса), не реестр района/города",
+   "selection": "без лимита; правило группы K10 social_group",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "max_age_days": 45,
+  "note": "квадрат делит районы {'Байқоңыр ауданы': 0.6513, 'Сарыарқа ауданы': 0.3487}; записей ближе 100 м к краю: 8",
+  "obs_id": "kz.astana.k10sq_r17_c7.overture_place_records.college_university.conf_ge_0_0@2026-09-23.1",
+  "indicator_id": "overture_place_records.college_university.conf_ge_0_0",
+  "value": 10,
+  "value_status": "reported",
+  "derivation": "count(features: k10_group=college_university, confidence>=0.0) в квадрате",
+  "method": {
+   "id": "k10r3_package+k05r4_adapter",
+   "steps": [
+    "K10 download.py: точка в bbox И правило social_group, выпуск 2026-09-23.1",
+    "K05: счёт записей группы с confidence >= 0.0; confidence=null не считается"
+   ],
+   "parameters": {
+    "confidence_min": 0.0,
+    "bbox": [
+     71.418372,
+     51.163033,
+     71.447,
+     51.181
+    ],
+    "k10_ref": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909"
+   }
+  }
+ },
+ {
+  "schema_version": "k05-obs-v1.2",
+  "city_id": "kz.astana",
+  "geo_unit_id": "kz.astana.k10sq_r17_c7",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "unit": "records",
+  "kind": "derived",
+  "missing_reason": null,
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/part-00014-1d36203b-4312-5a97-b9e0-5c110ae7a274-c000.zstd.parquet",
+   "path": "research/round-4-results/K05/inputs/k10_r3/data/astana/places_social.geojson",
+   "sha256": "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343",
+   "retrieved_at": "2026-10-05T06:19:53+00:00",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0",
+   "query": "point within bbox AND K10 social rule (k10_rules.social_group)",
+   "evidence": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909; row_groups [91]",
+   "locator": "research/round-4-results/K05/inputs/k10_r3/data/astana/places_social.geojson#features[k10_group=hospital][confidence>=0.0]"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "k10_r3_square:r17_c7@3643892ff81e",
+  "spatial_unit": {
+   "type": "bbox",
+   "crs": "EPSG:4326",
+   "bbox": [
+    71.418372,
+    51.163033,
+    71.447,
+    51.181
+   ],
+   "edges_inclusive": true,
+   "area_km2": null,
+   "geometry_source": "research/round-4-results/K05/inputs/k10_r3/selection/astana_bbox_selection.json",
+   "geometry_sha256": "3643892ff81e4db65a18a1a8fc397db2c47e3e8d0d23fd32c07c8243aac979a8",
+   "overlaps_districts": {
+    "Байқоңыр ауданы": 0.6513,
+    "Сарыарқа ауданы": 0.3487
+   }
+  },
+  "coverage": {
+   "complete": true,
+   "scope": "все записи выпуска с точкой в квадрате (полный ответ запроса), не реестр района/города",
+   "selection": "без лимита; правило группы K10 social_group",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "max_age_days": 45,
+  "note": "квадрат делит районы {'Байқоңыр ауданы': 0.6513, 'Сарыарқа ауданы': 0.3487}; записей ближе 100 м к краю: 8",
+  "obs_id": "kz.astana.k10sq_r17_c7.overture_place_records.hospital.conf_ge_0_0@2026-09-23.1",
+  "indicator_id": "overture_place_records.hospital.conf_ge_0_0",
+  "value": 9,
+  "value_status": "reported",
+  "derivation": "count(features: k10_group=hospital, confidence>=0.0) в квадрате",
+  "method": {
+   "id": "k10r3_package+k05r4_adapter",
+   "steps": [
+    "K10 download.py: точка в bbox И правило social_group, выпуск 2026-09-23.1",
+    "K05: счёт записей группы с confidence >= 0.0; confidence=null не считается"
+   ],
+   "parameters": {
+    "confidence_min": 0.0,
+    "bbox": [
+     71.418372,
+     51.163033,
+     71.447,
+     51.181
+    ],
+    "k10_ref": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909"
+   }
+  }
+ },
+ {
+  "schema_version": "k05-obs-v1.2",
+  "city_id": "kz.astana",
+  "geo_unit_id": "kz.astana.k10sq_r17_c7",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "unit": "records",
+  "kind": "derived",
+  "missing_reason": null,
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/part-00014-1d36203b-4312-5a97-b9e0-5c110ae7a274-c000.zstd.parquet",
+   "path": "research/round-4-results/K05/inputs/k10_r3/data/astana/places_social.geojson",
+   "sha256": "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343",
+   "retrieved_at": "2026-10-05T06:19:53+00:00",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0",
+   "query": "point within bbox AND K10 social rule (k10_rules.social_group)",
+   "evidence": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909; row_groups [91]",
+   "locator": "research/round-4-results/K05/inputs/k10_r3/data/astana/places_social.geojson#features[k10_group=outpatient_clinic][confidence>=0.0]"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "k10_r3_square:r17_c7@3643892ff81e",
+  "spatial_unit": {
+   "type": "bbox",
+   "crs": "EPSG:4326",
+   "bbox": [
+    71.418372,
+    51.163033,
+    71.447,
+    51.181
+   ],
+   "edges_inclusive": true,
+   "area_km2": null,
+   "geometry_source": "research/round-4-results/K05/inputs/k10_r3/selection/astana_bbox_selection.json",
+   "geometry_sha256": "3643892ff81e4db65a18a1a8fc397db2c47e3e8d0d23fd32c07c8243aac979a8",
+   "overlaps_districts": {
+    "Байқоңыр ауданы": 0.6513,
+    "Сарыарқа ауданы": 0.3487
+   }
+  },
+  "coverage": {
+   "complete": true,
+   "scope": "все записи выпуска с точкой в квадрате (полный ответ запроса), не реестр района/города",
+   "selection": "без лимита; правило группы K10 social_group",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "max_age_days": 45,
+  "note": "квадрат делит районы {'Байқоңыр ауданы': 0.6513, 'Сарыарқа ауданы': 0.3487}; записей ближе 100 м к краю: 8",
+  "obs_id": "kz.astana.k10sq_r17_c7.overture_place_records.outpatient_clinic.conf_ge_0_0@2026-09-23.1",
+  "indicator_id": "overture_place_records.outpatient_clinic.conf_ge_0_0",
+  "value": 16,
+  "value_status": "reported",
+  "derivation": "count(features: k10_group=outpatient_clinic, confidence>=0.0) в квадрате",
+  "method": {
+   "id": "k10r3_package+k05r4_adapter",
+   "steps": [
+    "K10 download.py: точка в bbox И правило social_group, выпуск 2026-09-23.1",
+    "K05: счёт записей группы с confidence >= 0.0; confidence=null не считается"
+   ],
+   "parameters": {
+    "confidence_min": 0.0,
+    "bbox": [
+     71.418372,
+     51.163033,
+     71.447,
+     51.181
+    ],
+    "k10_ref": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909"
+   }
+  }
+ },
+ {
+  "schema_version": "k05-obs-v1.2",
+  "city_id": "kz.astana",
+  "geo_unit_id": "kz.astana.k10sq_r17_c7",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "unit": "records",
+  "kind": "derived",
+  "missing_reason": null,
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/part-00014-1d36203b-4312-5a97-b9e0-5c110ae7a274-c000.zstd.parquet",
+   "path": "research/round-4-results/K05/inputs/k10_r3/data/astana/places_social.geojson",
+   "sha256": "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343",
+   "retrieved_at": "2026-10-05T06:19:53+00:00",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0",
+   "query": "point within bbox AND K10 social rule (k10_rules.social_group)",
+   "evidence": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909; row_groups [91]",
+   "locator": "research/round-4-results/K05/inputs/k10_r3/data/astana/places_social.geojson#features[k10_group=pharmacy][confidence>=0.0]"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "k10_r3_square:r17_c7@3643892ff81e",
+  "spatial_unit": {
+   "type": "bbox",
+   "crs": "EPSG:4326",
+   "bbox": [
+    71.418372,
+    51.163033,
+    71.447,
+    51.181
+   ],
+   "edges_inclusive": true,
+   "area_km2": null,
+   "geometry_source": "research/round-4-results/K05/inputs/k10_r3/selection/astana_bbox_selection.json",
+   "geometry_sha256": "3643892ff81e4db65a18a1a8fc397db2c47e3e8d0d23fd32c07c8243aac979a8",
+   "overlaps_districts": {
+    "Байқоңыр ауданы": 0.6513,
+    "Сарыарқа ауданы": 0.3487
+   }
+  },
+  "coverage": {
+   "complete": true,
+   "scope": "все записи выпуска с точкой в квадрате (полный ответ запроса), не реестр района/города",
+   "selection": "без лимита; правило группы K10 social_group",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "max_age_days": 45,
+  "note": "квадрат делит районы {'Байқоңыр ауданы': 0.6513, 'Сарыарқа ауданы': 0.3487}; записей ближе 100 м к краю: 8",
+  "obs_id": "kz.astana.k10sq_r17_c7.overture_place_records.pharmacy.conf_ge_0_0@2026-09-23.1",
+  "indicator_id": "overture_place_records.pharmacy.conf_ge_0_0",
+  "value": 3,
+  "value_status": "reported",
+  "derivation": "count(features: k10_group=pharmacy, confidence>=0.0) в квадрате",
+  "method": {
+   "id": "k10r3_package+k05r4_adapter",
+   "steps": [
+    "K10 download.py: точка в bbox И правило social_group, выпуск 2026-09-23.1",
+    "K05: счёт записей группы с confidence >= 0.0; confidence=null не считается"
+   ],
+   "parameters": {
+    "confidence_min": 0.0,
+    "bbox": [
+     71.418372,
+     51.163033,
+     71.447,
+     51.181
+    ],
+    "k10_ref": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909"
+   }
+  }
+ },
+ {
+  "schema_version": "k05-obs-v1.2",
+  "city_id": "kz.astana",
+  "geo_unit_id": "kz.astana.k10sq_r17_c7",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "unit": "records",
+  "kind": "derived",
+  "missing_reason": null,
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/part-00014-1d36203b-4312-5a97-b9e0-5c110ae7a274-c000.zstd.parquet",
+   "path": "research/round-4-results/K05/inputs/k10_r3/data/astana/places_social.geojson",
+   "sha256": "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343",
+   "retrieved_at": "2026-10-05T06:19:53+00:00",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0",
+   "query": "point within bbox AND K10 social rule (k10_rules.social_group)",
+   "evidence": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909; row_groups [91]",
+   "locator": "research/round-4-results/K05/inputs/k10_r3/data/astana/places_social.geojson#features[k10_group=government_office][confidence>=0.0]"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "k10_r3_square:r17_c7@3643892ff81e",
+  "spatial_unit": {
+   "type": "bbox",
+   "crs": "EPSG:4326",
+   "bbox": [
+    71.418372,
+    51.163033,
+    71.447,
+    51.181
+   ],
+   "edges_inclusive": true,
+   "area_km2": null,
+   "geometry_source": "research/round-4-results/K05/inputs/k10_r3/selection/astana_bbox_selection.json",
+   "geometry_sha256": "3643892ff81e4db65a18a1a8fc397db2c47e3e8d0d23fd32c07c8243aac979a8",
+   "overlaps_districts": {
+    "Байқоңыр ауданы": 0.6513,
+    "Сарыарқа ауданы": 0.3487
+   }
+  },
+  "coverage": {
+   "complete": true,
+   "scope": "все записи выпуска с точкой в квадрате (полный ответ запроса), не реестр района/города",
+   "selection": "без лимита; правило группы K10 social_group",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "max_age_days": 45,
+  "note": "квадрат делит районы {'Байқоңыр ауданы': 0.6513, 'Сарыарқа ауданы': 0.3487}; записей ближе 100 м к краю: 8",
+  "obs_id": "kz.astana.k10sq_r17_c7.overture_place_records.government_office.conf_ge_0_0@2026-09-23.1",
+  "indicator_id": "overture_place_records.government_office.conf_ge_0_0",
+  "value": 16,
+  "value_status": "reported",
+  "derivation": "count(features: k10_group=government_office, confidence>=0.0) в квадрате",
+  "method": {
+   "id": "k10r3_package+k05r4_adapter",
+   "steps": [
+    "K10 download.py: точка в bbox И правило social_group, выпуск 2026-09-23.1",
+    "K05: счёт записей группы с confidence >= 0.0; confidence=null не считается"
+   ],
+   "parameters": {
+    "confidence_min": 0.0,
+    "bbox": [
+     71.418372,
+     51.163033,
+     71.447,
+     51.181
+    ],
+    "k10_ref": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909"
+   }
+  }
+ },
+ {
+  "schema_version": "k05-obs-v1.2",
+  "city_id": "kz.astana",
+  "geo_unit_id": "kz.astana.k10sq_r17_c7",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "unit": "records",
+  "kind": "derived",
+  "missing_reason": null,
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/part-00014-1d36203b-4312-5a97-b9e0-5c110ae7a274-c000.zstd.parquet",
+   "path": "research/round-4-results/K05/inputs/k10_r3/data/astana/places_social.geojson",
+   "sha256": "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343",
+   "retrieved_at": "2026-10-05T06:19:53+00:00",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0",
+   "query": "point within bbox AND K10 social rule (k10_rules.social_group)",
+   "evidence": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909; row_groups [91]",
+   "locator": "research/round-4-results/K05/inputs/k10_r3/data/astana/places_social.geojson#features[k10_group=school][confidence>=0.5]"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "k10_r3_square:r17_c7@3643892ff81e",
+  "spatial_unit": {
+   "type": "bbox",
+   "crs": "EPSG:4326",
+   "bbox": [
+    71.418372,
+    51.163033,
+    71.447,
+    51.181
+   ],
+   "edges_inclusive": true,
+   "area_km2": null,
+   "geometry_source": "research/round-4-results/K05/inputs/k10_r3/selection/astana_bbox_selection.json",
+   "geometry_sha256": "3643892ff81e4db65a18a1a8fc397db2c47e3e8d0d23fd32c07c8243aac979a8",
+   "overlaps_districts": {
+    "Байқоңыр ауданы": 0.6513,
+    "Сарыарқа ауданы": 0.3487
+   }
+  },
+  "coverage": {
+   "complete": true,
+   "scope": "все записи выпуска с точкой в квадрате (полный ответ запроса), не реестр района/города",
+   "selection": "без лимита; правило группы K10 social_group",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "max_age_days": 45,
+  "note": "квадрат делит районы {'Байқоңыр ауданы': 0.6513, 'Сарыарқа ауданы': 0.3487}; записей ближе 100 м к краю: 8",
+  "obs_id": "kz.astana.k10sq_r17_c7.overture_place_records.school.conf_ge_0_5@2026-09-23.1",
+  "indicator_id": "overture_place_records.school.conf_ge_0_5",
+  "value": 5,
+  "value_status": "reported",
+  "derivation": "count(features: k10_group=school, confidence>=0.5) в квадрате",
+  "method": {
+   "id": "k10r3_package+k05r4_adapter",
+   "steps": [
+    "K10 download.py: точка в bbox И правило social_group, выпуск 2026-09-23.1",
+    "K05: счёт записей группы с confidence >= 0.5; confidence=null не считается"
+   ],
+   "parameters": {
+    "confidence_min": 0.5,
+    "bbox": [
+     71.418372,
+     51.163033,
+     71.447,
+     51.181
+    ],
+    "k10_ref": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909"
+   }
+  }
+ },
+ {
+  "schema_version": "k05-obs-v1.2",
+  "city_id": "kz.astana",
+  "geo_unit_id": "kz.astana.k10sq_r17_c7",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "unit": "records",
+  "kind": "derived",
+  "missing_reason": null,
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/part-00014-1d36203b-4312-5a97-b9e0-5c110ae7a274-c000.zstd.parquet",
+   "path": "research/round-4-results/K05/inputs/k10_r3/data/astana/places_social.geojson",
+   "sha256": "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343",
+   "retrieved_at": "2026-10-05T06:19:53+00:00",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0",
+   "query": "point within bbox AND K10 social rule (k10_rules.social_group)",
+   "evidence": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909; row_groups [91]",
+   "locator": "research/round-4-results/K05/inputs/k10_r3/data/astana/places_social.geojson#features[k10_group=preschool][confidence>=0.5]"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "k10_r3_square:r17_c7@3643892ff81e",
+  "spatial_unit": {
+   "type": "bbox",
+   "crs": "EPSG:4326",
+   "bbox": [
+    71.418372,
+    51.163033,
+    71.447,
+    51.181
+   ],
+   "edges_inclusive": true,
+   "area_km2": null,
+   "geometry_source": "research/round-4-results/K05/inputs/k10_r3/selection/astana_bbox_selection.json",
+   "geometry_sha256": "3643892ff81e4db65a18a1a8fc397db2c47e3e8d0d23fd32c07c8243aac979a8",
+   "overlaps_districts": {
+    "Байқоңыр ауданы": 0.6513,
+    "Сарыарқа ауданы": 0.3487
+   }
+  },
+  "coverage": {
+   "complete": true,
+   "scope": "все записи выпуска с точкой в квадрате (полный ответ запроса), не реестр района/города",
+   "selection": "без лимита; правило группы K10 social_group",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "max_age_days": 45,
+  "note": "квадрат делит районы {'Байқоңыр ауданы': 0.6513, 'Сарыарқа ауданы': 0.3487}; записей ближе 100 м к краю: 8",
+  "obs_id": "kz.astana.k10sq_r17_c7.overture_place_records.preschool.conf_ge_0_5@2026-09-23.1",
+  "indicator_id": "overture_place_records.preschool.conf_ge_0_5",
+  "value": 1,
+  "value_status": "reported",
+  "derivation": "count(features: k10_group=preschool, confidence>=0.5) в квадрате",
+  "method": {
+   "id": "k10r3_package+k05r4_adapter",
+   "steps": [
+    "K10 download.py: точка в bbox И правило social_group, выпуск 2026-09-23.1",
+    "K05: счёт записей группы с confidence >= 0.5; confidence=null не считается"
+   ],
+   "parameters": {
+    "confidence_min": 0.5,
+    "bbox": [
+     71.418372,
+     51.163033,
+     71.447,
+     51.181
+    ],
+    "k10_ref": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909"
+   }
+  }
+ },
+ {
+  "schema_version": "k05-obs-v1.2",
+  "city_id": "kz.astana",
+  "geo_unit_id": "kz.astana.k10sq_r17_c7",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "unit": "records",
+  "kind": "derived",
+  "missing_reason": null,
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/part-00014-1d36203b-4312-5a97-b9e0-5c110ae7a274-c000.zstd.parquet",
+   "path": "research/round-4-results/K05/inputs/k10_r3/data/astana/places_social.geojson",
+   "sha256": "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343",
+   "retrieved_at": "2026-10-05T06:19:53+00:00",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0",
+   "query": "point within bbox AND K10 social rule (k10_rules.social_group)",
+   "evidence": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909; row_groups [91]",
+   "locator": "research/round-4-results/K05/inputs/k10_r3/data/astana/places_social.geojson#features[k10_group=college_university][confidence>=0.5]"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "k10_r3_square:r17_c7@3643892ff81e",
+  "spatial_unit": {
+   "type": "bbox",
+   "crs": "EPSG:4326",
+   "bbox": [
+    71.418372,
+    51.163033,
+    71.447,
+    51.181
+   ],
+   "edges_inclusive": true,
+   "area_km2": null,
+   "geometry_source": "research/round-4-results/K05/inputs/k10_r3/selection/astana_bbox_selection.json",
+   "geometry_sha256": "3643892ff81e4db65a18a1a8fc397db2c47e3e8d0d23fd32c07c8243aac979a8",
+   "overlaps_districts": {
+    "Байқоңыр ауданы": 0.6513,
+    "Сарыарқа ауданы": 0.3487
+   }
+  },
+  "coverage": {
+   "complete": true,
+   "scope": "все записи выпуска с точкой в квадрате (полный ответ запроса), не реестр района/города",
+   "selection": "без лимита; правило группы K10 social_group",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "max_age_days": 45,
+  "note": "квадрат делит районы {'Байқоңыр ауданы': 0.6513, 'Сарыарқа ауданы': 0.3487}; записей ближе 100 м к краю: 8",
+  "obs_id": "kz.astana.k10sq_r17_c7.overture_place_records.college_university.conf_ge_0_5@2026-09-23.1",
+  "indicator_id": "overture_place_records.college_university.conf_ge_0_5",
+  "value": 9,
+  "value_status": "reported",
+  "derivation": "count(features: k10_group=college_university, confidence>=0.5) в квадрате",
+  "method": {
+   "id": "k10r3_package+k05r4_adapter",
+   "steps": [
+    "K10 download.py: точка в bbox И правило social_group, выпуск 2026-09-23.1",
+    "K05: счёт записей группы с confidence >= 0.5; confidence=null не считается"
+   ],
+   "parameters": {
+    "confidence_min": 0.5,
+    "bbox": [
+     71.418372,
+     51.163033,
+     71.447,
+     51.181
+    ],
+    "k10_ref": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909"
+   }
+  }
+ },
+ {
+  "schema_version": "k05-obs-v1.2",
+  "city_id": "kz.astana",
+  "geo_unit_id": "kz.astana.k10sq_r17_c7",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "unit": "records",
+  "kind": "derived",
+  "missing_reason": null,
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/part-00014-1d36203b-4312-5a97-b9e0-5c110ae7a274-c000.zstd.parquet",
+   "path": "research/round-4-results/K05/inputs/k10_r3/data/astana/places_social.geojson",
+   "sha256": "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343",
+   "retrieved_at": "2026-10-05T06:19:53+00:00",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0",
+   "query": "point within bbox AND K10 social rule (k10_rules.social_group)",
+   "evidence": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909; row_groups [91]",
+   "locator": "research/round-4-results/K05/inputs/k10_r3/data/astana/places_social.geojson#features[k10_group=hospital][confidence>=0.5]"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "k10_r3_square:r17_c7@3643892ff81e",
+  "spatial_unit": {
+   "type": "bbox",
+   "crs": "EPSG:4326",
+   "bbox": [
+    71.418372,
+    51.163033,
+    71.447,
+    51.181
+   ],
+   "edges_inclusive": true,
+   "area_km2": null,
+   "geometry_source": "research/round-4-results/K05/inputs/k10_r3/selection/astana_bbox_selection.json",
+   "geometry_sha256": "3643892ff81e4db65a18a1a8fc397db2c47e3e8d0d23fd32c07c8243aac979a8",
+   "overlaps_districts": {
+    "Байқоңыр ауданы": 0.6513,
+    "Сарыарқа ауданы": 0.3487
+   }
+  },
+  "coverage": {
+   "complete": true,
+   "scope": "все записи выпуска с точкой в квадрате (полный ответ запроса), не реестр района/города",
+   "selection": "без лимита; правило группы K10 social_group",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "max_age_days": 45,
+  "note": "квадрат делит районы {'Байқоңыр ауданы': 0.6513, 'Сарыарқа ауданы': 0.3487}; записей ближе 100 м к краю: 8",
+  "obs_id": "kz.astana.k10sq_r17_c7.overture_place_records.hospital.conf_ge_0_5@2026-09-23.1",
+  "indicator_id": "overture_place_records.hospital.conf_ge_0_5",
+  "value": 7,
+  "value_status": "reported",
+  "derivation": "count(features: k10_group=hospital, confidence>=0.5) в квадрате",
+  "method": {
+   "id": "k10r3_package+k05r4_adapter",
+   "steps": [
+    "K10 download.py: точка в bbox И правило social_group, выпуск 2026-09-23.1",
+    "K05: счёт записей группы с confidence >= 0.5; confidence=null не считается"
+   ],
+   "parameters": {
+    "confidence_min": 0.5,
+    "bbox": [
+     71.418372,
+     51.163033,
+     71.447,
+     51.181
+    ],
+    "k10_ref": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909"
+   }
+  }
+ },
+ {
+  "schema_version": "k05-obs-v1.2",
+  "city_id": "kz.astana",
+  "geo_unit_id": "kz.astana.k10sq_r17_c7",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "unit": "records",
+  "kind": "derived",
+  "missing_reason": null,
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/part-00014-1d36203b-4312-5a97-b9e0-5c110ae7a274-c000.zstd.parquet",
+   "path": "research/round-4-results/K05/inputs/k10_r3/data/astana/places_social.geojson",
+   "sha256": "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343",
+   "retrieved_at": "2026-10-05T06:19:53+00:00",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0",
+   "query": "point within bbox AND K10 social rule (k10_rules.social_group)",
+   "evidence": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909; row_groups [91]",
+   "locator": "research/round-4-results/K05/inputs/k10_r3/data/astana/places_social.geojson#features[k10_group=outpatient_clinic][confidence>=0.5]"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "k10_r3_square:r17_c7@3643892ff81e",
+  "spatial_unit": {
+   "type": "bbox",
+   "crs": "EPSG:4326",
+   "bbox": [
+    71.418372,
+    51.163033,
+    71.447,
+    51.181
+   ],
+   "edges_inclusive": true,
+   "area_km2": null,
+   "geometry_source": "research/round-4-results/K05/inputs/k10_r3/selection/astana_bbox_selection.json",
+   "geometry_sha256": "3643892ff81e4db65a18a1a8fc397db2c47e3e8d0d23fd32c07c8243aac979a8",
+   "overlaps_districts": {
+    "Байқоңыр ауданы": 0.6513,
+    "Сарыарқа ауданы": 0.3487
+   }
+  },
+  "coverage": {
+   "complete": true,
+   "scope": "все записи выпуска с точкой в квадрате (полный ответ запроса), не реестр района/города",
+   "selection": "без лимита; правило группы K10 social_group",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "max_age_days": 45,
+  "note": "квадрат делит районы {'Байқоңыр ауданы': 0.6513, 'Сарыарқа ауданы': 0.3487}; записей ближе 100 м к краю: 8",
+  "obs_id": "kz.astana.k10sq_r17_c7.overture_place_records.outpatient_clinic.conf_ge_0_5@2026-09-23.1",
+  "indicator_id": "overture_place_records.outpatient_clinic.conf_ge_0_5",
+  "value": 9,
+  "value_status": "reported",
+  "derivation": "count(features: k10_group=outpatient_clinic, confidence>=0.5) в квадрате",
+  "method": {
+   "id": "k10r3_package+k05r4_adapter",
+   "steps": [
+    "K10 download.py: точка в bbox И правило social_group, выпуск 2026-09-23.1",
+    "K05: счёт записей группы с confidence >= 0.5; confidence=null не считается"
+   ],
+   "parameters": {
+    "confidence_min": 0.5,
+    "bbox": [
+     71.418372,
+     51.163033,
+     71.447,
+     51.181
+    ],
+    "k10_ref": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909"
+   }
+  }
+ },
+ {
+  "schema_version": "k05-obs-v1.2",
+  "city_id": "kz.astana",
+  "geo_unit_id": "kz.astana.k10sq_r17_c7",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "unit": "records",
+  "kind": "derived",
+  "missing_reason": null,
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/part-00014-1d36203b-4312-5a97-b9e0-5c110ae7a274-c000.zstd.parquet",
+   "path": "research/round-4-results/K05/inputs/k10_r3/data/astana/places_social.geojson",
+   "sha256": "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343",
+   "retrieved_at": "2026-10-05T06:19:53+00:00",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0",
+   "query": "point within bbox AND K10 social rule (k10_rules.social_group)",
+   "evidence": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909; row_groups [91]",
+   "locator": "research/round-4-results/K05/inputs/k10_r3/data/astana/places_social.geojson#features[k10_group=pharmacy][confidence>=0.5]"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "k10_r3_square:r17_c7@3643892ff81e",
+  "spatial_unit": {
+   "type": "bbox",
+   "crs": "EPSG:4326",
+   "bbox": [
+    71.418372,
+    51.163033,
+    71.447,
+    51.181
+   ],
+   "edges_inclusive": true,
+   "area_km2": null,
+   "geometry_source": "research/round-4-results/K05/inputs/k10_r3/selection/astana_bbox_selection.json",
+   "geometry_sha256": "3643892ff81e4db65a18a1a8fc397db2c47e3e8d0d23fd32c07c8243aac979a8",
+   "overlaps_districts": {
+    "Байқоңыр ауданы": 0.6513,
+    "Сарыарқа ауданы": 0.3487
+   }
+  },
+  "coverage": {
+   "complete": true,
+   "scope": "все записи выпуска с точкой в квадрате (полный ответ запроса), не реестр района/города",
+   "selection": "без лимита; правило группы K10 social_group",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "max_age_days": 45,
+  "note": "квадрат делит районы {'Байқоңыр ауданы': 0.6513, 'Сарыарқа ауданы': 0.3487}; записей ближе 100 м к краю: 8",
+  "obs_id": "kz.astana.k10sq_r17_c7.overture_place_records.pharmacy.conf_ge_0_5@2026-09-23.1",
+  "indicator_id": "overture_place_records.pharmacy.conf_ge_0_5",
+  "value": 3,
+  "value_status": "reported",
+  "derivation": "count(features: k10_group=pharmacy, confidence>=0.5) в квадрате",
+  "method": {
+   "id": "k10r3_package+k05r4_adapter",
+   "steps": [
+    "K10 download.py: точка в bbox И правило social_group, выпуск 2026-09-23.1",
+    "K05: счёт записей группы с confidence >= 0.5; confidence=null не считается"
+   ],
+   "parameters": {
+    "confidence_min": 0.5,
+    "bbox": [
+     71.418372,
+     51.163033,
+     71.447,
+     51.181
+    ],
+    "k10_ref": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909"
+   }
+  }
+ },
+ {
+  "schema_version": "k05-obs-v1.2",
+  "city_id": "kz.astana",
+  "geo_unit_id": "kz.astana.k10sq_r17_c7",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "unit": "records",
+  "kind": "derived",
+  "missing_reason": null,
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/part-00014-1d36203b-4312-5a97-b9e0-5c110ae7a274-c000.zstd.parquet",
+   "path": "research/round-4-results/K05/inputs/k10_r3/data/astana/places_social.geojson",
+   "sha256": "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343",
+   "retrieved_at": "2026-10-05T06:19:53+00:00",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0",
+   "query": "point within bbox AND K10 social rule (k10_rules.social_group)",
+   "evidence": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909; row_groups [91]",
+   "locator": "research/round-4-results/K05/inputs/k10_r3/data/astana/places_social.geojson#features[k10_group=government_office][confidence>=0.5]"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "k10_r3_square:r17_c7@3643892ff81e",
+  "spatial_unit": {
+   "type": "bbox",
+   "crs": "EPSG:4326",
+   "bbox": [
+    71.418372,
+    51.163033,
+    71.447,
+    51.181
+   ],
+   "edges_inclusive": true,
+   "area_km2": null,
+   "geometry_source": "research/round-4-results/K05/inputs/k10_r3/selection/astana_bbox_selection.json",
+   "geometry_sha256": "3643892ff81e4db65a18a1a8fc397db2c47e3e8d0d23fd32c07c8243aac979a8",
+   "overlaps_districts": {
+    "Байқоңыр ауданы": 0.6513,
+    "Сарыарқа ауданы": 0.3487
+   }
+  },
+  "coverage": {
+   "complete": true,
+   "scope": "все записи выпуска с точкой в квадрате (полный ответ запроса), не реестр района/города",
+   "selection": "без лимита; правило группы K10 social_group",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "max_age_days": 45,
+  "note": "квадрат делит районы {'Байқоңыр ауданы': 0.6513, 'Сарыарқа ауданы': 0.3487}; записей ближе 100 м к краю: 8",
+  "obs_id": "kz.astana.k10sq_r17_c7.overture_place_records.government_office.conf_ge_0_5@2026-09-23.1",
+  "indicator_id": "overture_place_records.government_office.conf_ge_0_5",
+  "value": 13,
+  "value_status": "reported",
+  "derivation": "count(features: k10_group=government_office, confidence>=0.5) в квадрате",
+  "method": {
+   "id": "k10r3_package+k05r4_adapter",
+   "steps": [
+    "K10 download.py: точка в bbox И правило social_group, выпуск 2026-09-23.1",
+    "K05: счёт записей группы с confidence >= 0.5; confidence=null не считается"
+   ],
+   "parameters": {
+    "confidence_min": 0.5,
+    "bbox": [
+     71.418372,
+     51.163033,
+     71.447,
+     51.181
+    ],
+    "k10_ref": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909"
+   }
+  }
+ }
+]

@@ -1,0 +1,60 @@
+{
+ "target": "fixed",
+ "results": [
+  {
+   "attack": "A1 real K05 records ingest",
+   "outcome": "ok",
+   "detail": "returned: 4"
+  },
+  {
+   "attack": "A2 incomplete coverage marked",
+   "outcome": "ok",
+   "detail": "- Строк в выборке-образце: школы (весь город): 15 записей (расчёт, неполный охват)"
+  },
+  {
+   "attack": "A3 unknown unit",
+   "outcome": "ok",
+   "detail": "ValueError: unknown unit 'parsecs': добавьте подписи ru/kk в _UNITS"
+  },
+  {
+   "attack": "A4 duplicate fact id across snapshots",
+   "outcome": "ok",
+   "detail": "ValueError: kz.astana/2026-09-23/nura.overture_place_records.school.conf_ge_0_5: два наблюдения на один ID; выберите снимок до построения каталога"
+  },
+  {
+   "attack": "A5 digits in label",
+   "outcome": "ok",
+   "detail": "ValueError: astana_real/base/x.y: подпись ru отсутствует или содержит цифры"
+  },
+  {
+   "attack": "A6 model result relabelled as real city",
+   "outcome": "ok",
+   "detail": "ValueError: build_catalog: ответ движка относится к astana_hackathon, не к shymkent_real"
+  },
+  {
+   "attack": "A7 stale plan reused on new result",
+   "outcome": "ok",
+   "detail": "ID совпадают: True; Score 57.24 → 56.88; PlanError"
+  },
+  {
+   "attack": "A7b stale plan after city switch",
+   "outcome": "ok",
+   "detail": "PlanError: stale_catalog: план построен по другому каталогу (смена результата, города или сценария)"
+  },
+  {
+   "attack": "A8 same id in two sections",
+   "outcome": "ok",
+   "detail": "PlanError"
+  },
+  {
+   "attack": "A9 NaN in engine result",
+   "outcome": "ok",
+   "detail": "ValueError: astana_hackathon/base/plan.score: неконечное значение nan"
+  },
+  {
+   "attack": "A10 zero vs missing from K05",
+   "outcome": "ok",
+   "detail": "zero=kz.shymkent/2026-09-23/enbekshi.overture_place_records.government_office.conf_ge_0_5 kind=derived; missing kind=unknown reason=source_access_denied"
+  }
+ ]
+}

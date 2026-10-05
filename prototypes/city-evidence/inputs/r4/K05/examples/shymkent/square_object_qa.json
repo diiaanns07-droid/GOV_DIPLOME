@@ -1,0 +1,80 @@
+{
+ "errors": [],
+ "warnings": [
+  {
+   "code": "POSSIBLE_DUPLICATE",
+   "rule": "same_address",
+   "distance_m": 0.0,
+   "a": {
+    "id": "1b81c33b-d088-46b1-a390-8d6d81102c21",
+    "name": "Эко центр доктора Тарарака",
+    "group": "hospital"
+   },
+   "b": {
+    "id": "fd50a858-462d-477f-8bc6-a8d3e03a9576",
+    "name": "Техникалық лицей",
+    "group": "school"
+   }
+  },
+  {
+   "code": "POSSIBLE_DUPLICATE",
+   "rule": "same_address",
+   "distance_m": 0.0,
+   "a": {
+    "id": "50802484-b7f9-492e-8a4c-f75312fc7751",
+    "name": "Kosmetolog Жазира",
+    "group": "outpatient_clinic"
+   },
+   "b": {
+    "id": "622b4786-89fa-4853-b109-18054e3ebe0d",
+    "name": "Aza Бизнес Страница Шымкент",
+    "group": "outpatient_clinic"
+   }
+  },
+  {
+   "code": "POSSIBLE_DUPLICATE",
+   "rule": "same_address",
+   "distance_m": 0.0,
+   "a": {
+    "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+    "name": "Express toefl",
+    "group": "school"
+   },
+   "b": {
+    "id": "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6",
+    "name": "Kasipkoy.kurs",
+    "group": "school"
+   }
+  },
+  {
+   "code": "COLOCATED",
+   "lon": 69.5958,
+   "lat": 42.3167,
+   "n": 10,
+   "names": [
+    "Dr.Sattarkulovich",
+    "Сункар",
+    "Reklama 8888",
+    "Baiterek School",
+    "КИПУДН - Казахстанский инженерно-педагогический университет Дружбы народов",
+    "Казахстан",
+    "Реклама 3131",
+    "Фитофарм",
+    "Джафар Стоматология",
+    "Стоматологическое оборудование"
+   ]
+  },
+  {
+   "code": "COLOCATED",
+   "lon": 69.60702,
+   "lat": 42.31757,
+   "n": 4,
+   "names": [
+    "South kazakh medical university",
+    "Kosmetolog Жазира",
+    "Aza Бизнес Страница Шымкент",
+    "АССОР"
+   ]
+  }
+ ]
+}

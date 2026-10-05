@@ -1,0 +1,1346 @@
+{
+ "reviewed": {
+  "path": "research/round-3-results/K03/boundary_validator.py",
+  "snapshot": "44585de31be01dd131ecb7677c462fc85b4d4cc4",
+  "git_blob": "23b9fe45b0b447f080ee63bb3a7792ffe7d79497"
+ },
+ "tol_m": 1.0,
+ "fixtures": 45,
+ "fixture_summary": {
+  "v1_pass": 42,
+  "v2_pass": 45,
+  "oracle_agrees_with_expected": 45
+ },
+ "fixture_results": [
+  {
+   "id": "AST-SB-0",
+   "expected": [
+    "ambiguous",
+    null
+   ],
+   "oracle": [
+    "ambiguous",
+    null
+   ],
+   "oracle_agrees": true,
+   "v1": {
+    "status": "ambiguous",
+    "district": null,
+    "reason": "near_district_boundary"
+   },
+   "v1_pass": true,
+   "v2": {
+    "status": "ambiguous",
+    "district": null,
+    "reason": "near_district_boundary"
+   },
+   "v2_pass": true
+  },
+  {
+   "id": "AST-SB-a0.5",
+   "expected": [
+    "ambiguous",
+    null
+   ],
+   "oracle": [
+    "ambiguous",
+    null
+   ],
+   "oracle_agrees": true,
+   "v1": {
+    "status": "ambiguous",
+    "district": null,
+    "reason": "near_district_boundary"
+   },
+   "v1_pass": true,
+   "v2": {
+    "status": "ambiguous",
+    "district": null,
+    "reason": "near_district_boundary"
+   },
+   "v2_pass": true
+  },
+  {
+   "id": "AST-SB-a0.99",
+   "expected": [
+    "ambiguous",
+    null
+   ],
+   "oracle": [
+    "ambiguous",
+    null
+   ],
+   "oracle_agrees": true,
+   "v1": {
+    "status": "ambiguous",
+    "district": null,
+    "reason": "near_district_boundary"
+   },
+   "v1_pass": true,
+   "v2": {
+    "status": "ambiguous",
+    "district": null,
+    "reason": "near_district_boundary"
+   },
+   "v2_pass": true
+  },
+  {
+   "id": "AST-SB-a1.01",
+   "expected": [
+    "matched",
+    "kz.astana.district.esil"
+   ],
+   "oracle": [
+    "matched",
+    "kz.astana.district.esil"
+   ],
+   "oracle_agrees": true,
+   "v1": {
+    "status": "matched",
+    "district": "kz.astana.district.esil",
+    "reason": "single_district_interior"
+   },
+   "v1_pass": true,
+   "v2": {
+    "status": "matched",
+    "district": "kz.astana.district.esil",
+    "reason": "single_district_interior"
+   },
+   "v2_pass": true
+  },
+  {
+   "id": "AST-SB-a3.0",
+   "expected": [
+    "matched",
+    "kz.astana.district.esil"
+   ],
+   "oracle": [
+    "matched",
+    "kz.astana.district.esil"
+   ],
+   "oracle_agrees": true,
+   "v1": {
+    "status": "matched",
+    "district": "kz.astana.district.esil",
+    "reason": "single_district_interior"
+   },
+   "v1_pass": true,
+   "v2": {
+    "status": "matched",
+    "district": "kz.astana.district.esil",
+    "reason": "single_district_interior"
+   },
+   "v2_pass": true
+  },
+  {
+   "id": "AST-SB-b3",
+   "expected": [
+    "matched",
+    "kz.astana.district.nura"
+   ],
+   "oracle": [
+    "matched",
+    "kz.astana.district.nura"
+   ],
+   "oracle_agrees": true,
+   "v1": {
+    "status": "matched",
+    "district": "kz.astana.district.nura",
+    "reason": "single_district_interior"
+   },
+   "v1_pass": true,
+   "v2": {
+    "status": "matched",
+    "district": "kz.astana.district.nura",
+    "reason": "single_district_interior"
+   },
+   "v2_pass": true
+  },
+  {
+   "id": "SHY-SB-0",
+   "expected": [
+    "ambiguous",
+    null
+   ],
+   "oracle": [
+    "ambiguous",
+    null
+   ],
+   "oracle_agrees": true,
+   "v1": {
+    "status": "ambiguous",
+    "district": null,
+    "reason": "near_district_boundary"
+   },
+   "v1_pass": true,
+   "v2": {
+    "status": "ambiguous",
+    "district": null,
+    "reason": "near_district_boundary"
+   },
+   "v2_pass": true
+  },
+  {
+   "id": "SHY-SB-a0.5",
+   "expected": [
+    "ambiguous",
+    null
+   ],
+   "oracle": [
+    "ambiguous",
+    null
+   ],
+   "oracle_agrees": true,
+   "v1": {
+    "status": "ambiguous",
+    "district": null,
+    "reason": "near_district_boundary"
+   },
+   "v1_pass": true,
+   "v2": {
+    "status": "ambiguous",
+    "district": null,
+    "reason": "near_district_boundary"
+   },
+   "v2_pass": true
+  },
+  {
+   "id": "SHY-SB-a0.99",
+   "expected": [
+    "ambiguous",
+    null
+   ],
+   "oracle": [
+    "ambiguous",
+    null
+   ],
+   "oracle_agrees": true,
+   "v1": {
+    "status": "ambiguous",
+    "district": null,
+    "reason": "near_district_boundary"
+   },
+   "v1_pass": true,
+   "v2": {
+    "status": "ambiguous",
+    "district": null,
+    "reason": "near_district_boundary"
+   },
+   "v2_pass": true
+  },
+  {
+   "id": "SHY-SB-a1.01",
+   "expected": [
+    "matched",
+    "kz.shymkent.district.abay"
+   ],
+   "oracle": [
+    "matched",
+    "kz.shymkent.district.abay"
+   ],
+   "oracle_agrees": true,
+   "v1": {
+    "status": "matched",
+    "district": "kz.shymkent.district.abay",
+    "reason": "single_district_interior"
+   },
+   "v1_pass": true,
+   "v2": {
+    "status": "matched",
+    "district": "kz.shymkent.district.abay",
+    "reason": "single_district_interior"
+   },
+   "v2_pass": true
+  },
+  {
+   "id": "SHY-SB-a3.0",
+   "expected": [
+    "matched",
+    "kz.shymkent.district.abay"
+   ],
+   "oracle": [
+    "matched",
+    "kz.shymkent.district.abay"
+   ],
+   "oracle_agrees": true,
+   "v1": {
+    "status": "matched",
+    "district": "kz.shymkent.district.abay",
+    "reason": "single_district_interior"
+   },
+   "v1_pass": true,
+   "v2": {
+    "status": "matched",
+    "district": "kz.shymkent.district.abay",
+    "reason": "single_district_interior"
+   },
+   "v2_pass": true
+  },
+  {
+   "id": "SHY-SB-b3",
+   "expected": [
+    "matched",
+    "kz.shymkent.district.karatau"
+   ],
+   "oracle": [
+    "matched",
+    "kz.shymkent.district.karatau"
+   ],
+   "oracle_agrees": true,
+   "v1": {
+    "status": "matched",
+    "district": "kz.shymkent.district.karatau",
+    "reason": "single_district_interior"
+   },
+   "v1_pass": true,
+   "v2": {
+    "status": "matched",
+    "district": "kz.shymkent.district.karatau",
+    "reason": "single_district_interior"
+   },
+   "v2_pass": true
+  },
+  {
+   "id": "SHY-TRI-0",
+   "expected": [
+    "ambiguous",
+    null
+   ],
+   "oracle": [
+    "ambiguous",
+    null
+   ],
+   "oracle_agrees": true,
+   "v1": {
+    "status": "ambiguous",
+    "district": null,
+    "reason": "boundary_tie"
+   },
+   "v1_pass": true,
+   "v2": {
+    "status": "ambiguous",
+    "district": null,
+    "reason": "boundary_tie"
+   },
+   "v2_pass": true
+  },
+  {
+   "id": "SHY-TRI-1",
+   "expected": [
+    "ambiguous",
+    null
+   ],
+   "oracle": [
+    "ambiguous",
+    null
+   ],
+   "oracle_agrees": true,
+   "v1": {
+    "status": "ambiguous",
+    "district": null,
+    "reason": "boundary_tie"
+   },
+   "v1_pass": true,
+   "v2": {
+    "status": "ambiguous",
+    "district": null,
+    "reason": "boundary_tie"
+   },
+   "v2_pass": true
+  },
+  {
+   "id": "AST-EX-in",
+   "expected": [
+    "ambiguous",
+    null
+   ],
+   "oracle": [
+    "ambiguous",
+    null
+   ],
+   "oracle_agrees": true,
+   "v1": {
+    "status": "ambiguous",
+    "district": null,
+    "reason": "city_vs_region_overlap"
+   },
+   "v1_pass": true,
+   "v2": {
+    "status": "ambiguous",
+    "district": null,
+    "reason": "city_vs_region_overlap"
+   },
+   "v2_pass": true
+  },
+  {
+   "id": "AST-EX-out0.5",
+   "expected": [
+    "ambiguous",
+    null
+   ],
+   "oracle": [
+    "ambiguous",
+    null
+   ],
+   "oracle_agrees": true,
+   "v1": {
+    "status": "ambiguous",
+    "district": null,
+    "reason": "city_vs_region_overlap"
+   },
+   "v1_pass": true,
+   "v2": {
+    "status": "ambiguous",
+    "district": null,
+    "reason": "city_vs_region_overlap"
+   },
+   "v2_pass": true
+  },
+  {
+   "id": "AST-EX-out5.0",
+   "expected": [
+    "outside",
+    null
+   ],
+   "oracle": [
+    "outside",
+    null
+   ],
+   "oracle_agrees": true,
+   "v1": {
+    "status": "outside",
+    "district": null,
+    "reason": "outside_known_city_polygons"
+   },
+   "v1_pass": true,
+   "v2": {
+    "status": "outside",
+    "district": null,
+    "reason": "outside_known_city_polygons"
+   },
+   "v2_pass": true
+  },
+  {
+   "id": "AST-EX-ok5.032",
+   "expected": [
+    "matched",
+    "kz.astana.district.baikonur"
+   ],
+   "oracle": [
+    "matched",
+    "kz.astana.district.baikonur"
+   ],
+   "oracle_agrees": true,
+   "v1": {
+    "status": "matched",
+    "district": "kz.astana.district.baikonur",
+    "reason": "single_district_interior"
+   },
+   "v1_pass": true,
+   "v2": {
+    "status": "matched",
+    "district": "kz.astana.district.baikonur",
+    "reason": "single_district_interior"
+   },
+   "v2_pass": true
+  },
+  {
+   "id": "AST-EX-almaty",
+   "expected": [
+    "matched",
+    "kz.astana.district.almaty"
+   ],
+   "oracle": [
+    "matched",
+    "kz.astana.district.almaty"
+   ],
+   "oracle_agrees": true,
+   "v1": {
+    "status": "matched",
+    "district": "kz.astana.district.almaty",
+    "reason": "single_district_interior"
+   },
+   "v1_pass": true,
+   "v2": {
+    "status": "matched",
+    "district": "kz.astana.district.almaty",
+    "reason": "single_district_interior"
+   },
+   "v2_pass": true
+  },
+  {
+   "id": "AST-HOLE-in",
+   "expected": [
+    "unmatched",
+    null
+   ],
+   "oracle": [
+    "unmatched",
+    null
+   ],
+   "oracle_agrees": true,
+   "v1": {
+    "status": "unmatched",
+    "district": null,
+    "reason": "inside_city_no_district"
+   },
+   "v1_pass": true,
+   "v2": {
+    "status": "unmatched",
+    "district": null,
+    "reason": "inside_city_no_district"
+   },
+   "v2_pass": true
+  },
+  {
+   "id": "AST-HOLE-in0.5",
+   "expected": [
+    "ambiguous",
+    null
+   ],
+   "oracle": [
+    "ambiguous",
+    null
+   ],
+   "oracle_agrees": true,
+   "v1": {
+    "status": "unmatched",
+    "district": null,
+    "reason": "inside_city_no_district"
+   },
+   "v1_pass": false,
+   "v2": {
+    "status": "ambiguous",
+    "district": null,
+    "reason": "city_edge"
+   },
+   "v2_pass": true
+  },
+  {
+   "id": "AST-HOLE-out0.5",
+   "expected": [
+    "ambiguous",
+    null
+   ],
+   "oracle": [
+    "ambiguous",
+    null
+   ],
+   "oracle_agrees": true,
+   "v1": {
+    "status": "unmatched",
+    "district": null,
+    "reason": "inside_city_no_district"
+   },
+   "v1_pass": false,
+   "v2": {
+    "status": "ambiguous",
+    "district": null,
+    "reason": "city_edge"
+   },
+   "v2_pass": true
+  },
+  {
+   "id": "AST-HOLE-in5.0",
+   "expected": [
+    "unmatched",
+    null
+   ],
+   "oracle": [
+    "unmatched",
+    null
+   ],
+   "oracle_agrees": true,
+   "v1": {
+    "status": "unmatched",
+    "district": null,
+    "reason": "inside_city_no_district"
+   },
+   "v1_pass": true,
+   "v2": {
+    "status": "unmatched",
+    "district": null,
+    "reason": "inside_city_no_district"
+   },
+   "v2_pass": true
+  },
+  {
+   "id": "AST-HOLE-out5.0",
+   "expected": [
+    "outside",
+    null
+   ],
+   "oracle": [
+    "outside",
+    null
+   ],
+   "oracle_agrees": true,
+   "v1": {
+    "status": "outside",
+    "district": null,
+    "reason": "outside_known_city_polygons"
+   },
+   "v1_pass": true,
+   "v2": {
+    "status": "outside",
+    "district": null,
+    "reason": "outside_known_city_polygons"
+   },
+   "v2_pass": true
+  },
+  {
+   "id": "AST-VER-in",
+   "expected": [
+    "ambiguous",
+    null
+   ],
+   "oracle": [
+    "ambiguous",
+    null
+   ],
+   "oracle_agrees": true,
+   "v1": {
+    "status": "ambiguous",
+    "district": null,
+    "reason": "version_disagreement"
+   },
+   "v1_pass": true,
+   "v2": {
+    "status": "ambiguous",
+    "district": null,
+    "reason": "version_disagreement"
+   },
+   "v2_pass": true
+  },
+  {
+   "id": "AST-VER-almaty0.0",
+   "expected": [
+    "ambiguous",
+    null
+   ],
+   "oracle": [
+    "ambiguous",
+    null
+   ],
+   "oracle_agrees": true,
+   "v1": {
+    "status": "ambiguous",
+    "district": null,
+    "reason": "version_disagreement"
+   },
+   "v1_pass": true,
+   "v2": {
+    "status": "ambiguous",
+    "district": null,
+    "reason": "version_disagreement"
+   },
+   "v2_pass": true
+  },
+  {
+   "id": "AST-VER-almaty2.0",
+   "expected": [
+    "matched",
+    "kz.astana.district.almaty"
+   ],
+   "oracle": [
+    "matched",
+    "kz.astana.district.almaty"
+   ],
+   "oracle_agrees": true,
+   "v1": {
+    "status": "matched",
+    "district": "kz.astana.district.almaty",
+    "reason": "single_district_interior"
+   },
+   "v1_pass": true,
+   "v2": {
+    "status": "matched",
+    "district": "kz.astana.district.almaty",
+    "reason": "single_district_interior"
+   },
+   "v2_pass": true
+  },
+  {
+   "id": "AST-VER-saraishyk2.0",
+   "expected": [
+    "matched",
+    "kz.astana.district.saraishyk"
+   ],
+   "oracle": [
+    "matched",
+    "kz.astana.district.saraishyk"
+   ],
+   "oracle_agrees": true,
+   "v1": {
+    "status": "matched",
+    "district": "kz.astana.district.saraishyk",
+    "reason": "single_district_interior"
+   },
+   "v1_pass": true,
+   "v2": {
+    "status": "matched",
+    "district": "kz.astana.district.saraishyk",
+    "reason": "single_district_interior"
+   },
+   "v2_pass": true
+  },
+  {
+   "id": "AST-VER-D2",
+   "expected": [
+    "ambiguous",
+    null
+   ],
+   "oracle": [
+    "ambiguous",
+    null
+   ],
+   "oracle_agrees": true,
+   "v1": {
+    "status": "matched",
+    "district": "kz.astana.district.saraishyk",
+    "reason": "single_district_interior"
+   },
+   "v1_pass": false,
+   "v2": {
+    "status": "ambiguous",
+    "district": null,
+    "reason": "near_district_boundary"
+   },
+   "v2_pass": true
+  },
+  {
+   "id": "OUT-15594335",
+   "expected": [
+    "outside",
+    null
+   ],
+   "oracle": [
+    "outside",
+    null
+   ],
+   "oracle_agrees": true,
+   "v1": {
+    "status": "outside",
+    "district": null,
+    "reason": "outside_known_city_polygons"
+   },
+   "v1_pass": true,
+   "v2": {
+    "status": "outside",
+    "district": null,
+    "reason": "outside_known_city_polygons"
+   },
+   "v2_pass": true
+  },
+  {
+   "id": "OUT-3403760",
+   "expected": [
+    "outside",
+    null
+   ],
+   "oracle": [
+    "outside",
+    null
+   ],
+   "oracle_agrees": true,
+   "v1": {
+    "status": "outside",
+    "district": null,
+    "reason": "outside_known_city_polygons"
+   },
+   "v1_pass": true,
+   "v2": {
+    "status": "outside",
+    "district": null,
+    "reason": "outside_known_city_polygons"
+   },
+   "v2_pass": true
+  },
+  {
+   "id": "AST-EDGE-5.0",
+   "expected": [
+    "outside",
+    null
+   ],
+   "oracle": [
+    "outside",
+    null
+   ],
+   "oracle_agrees": true,
+   "v1": {
+    "status": "outside",
+    "district": null,
+    "reason": "outside_known_city_polygons"
+   },
+   "v1_pass": true,
+   "v2": {
+    "status": "outside",
+    "district": null,
+    "reason": "outside_known_city_polygons"
+   },
+   "v2_pass": true
+  },
+  {
+   "id": "AST-EDGE-0.5",
+   "expected": [
+    "ambiguous",
+    null
+   ],
+   "oracle": [
+    "ambiguous",
+    null
+   ],
+   "oracle_agrees": true,
+   "v1": {
+    "status": "ambiguous",
+    "district": null,
+    "reason": "near_district_boundary"
+   },
+   "v1_pass": true,
+   "v2": {
+    "status": "ambiguous",
+    "district": null,
+    "reason": "near_district_boundary"
+   },
+   "v2_pass": true
+  },
+  {
+   "id": "AST-EDGE0.5",
+   "expected": [
+    "ambiguous",
+    null
+   ],
+   "oracle": [
+    "ambiguous",
+    null
+   ],
+   "oracle_agrees": true,
+   "v1": {
+    "status": "ambiguous",
+    "district": null,
+    "reason": "near_district_boundary"
+   },
+   "v1_pass": true,
+   "v2": {
+    "status": "ambiguous",
+    "district": null,
+    "reason": "near_district_boundary"
+   },
+   "v2_pass": true
+  },
+  {
+   "id": "AST-EDGE3.0",
+   "expected": [
+    "matched",
+    "kz.astana.district.baikonur"
+   ],
+   "oracle": [
+    "matched",
+    "kz.astana.district.baikonur"
+   ],
+   "oracle_agrees": true,
+   "v1": {
+    "status": "matched",
+    "district": "kz.astana.district.baikonur",
+    "reason": "single_district_interior"
+   },
+   "v1_pass": true,
+   "v2": {
+    "status": "matched",
+    "district": "kz.astana.district.baikonur",
+    "reason": "single_district_interior"
+   },
+   "v2_pass": true
+  },
+  {
+   "id": "SHY-EDGE-5.0",
+   "expected": [
+    "outside",
+    null
+   ],
+   "oracle": [
+    "outside",
+    null
+   ],
+   "oracle_agrees": true,
+   "v1": {
+    "status": "outside",
+    "district": null,
+    "reason": "outside_known_city_polygons"
+   },
+   "v1_pass": true,
+   "v2": {
+    "status": "outside",
+    "district": null,
+    "reason": "outside_known_city_polygons"
+   },
+   "v2_pass": true
+  },
+  {
+   "id": "SHY-EDGE-0.5",
+   "expected": [
+    "ambiguous",
+    null
+   ],
+   "oracle": [
+    "ambiguous",
+    null
+   ],
+   "oracle_agrees": true,
+   "v1": {
+    "status": "ambiguous",
+    "district": null,
+    "reason": "near_district_boundary"
+   },
+   "v1_pass": true,
+   "v2": {
+    "status": "ambiguous",
+    "district": null,
+    "reason": "near_district_boundary"
+   },
+   "v2_pass": true
+  },
+  {
+   "id": "SHY-EDGE0.5",
+   "expected": [
+    "ambiguous",
+    null
+   ],
+   "oracle": [
+    "ambiguous",
+    null
+   ],
+   "oracle_agrees": true,
+   "v1": {
+    "status": "ambiguous",
+    "district": null,
+    "reason": "near_district_boundary"
+   },
+   "v1_pass": true,
+   "v2": {
+    "status": "ambiguous",
+    "district": null,
+    "reason": "near_district_boundary"
+   },
+   "v2_pass": true
+  },
+  {
+   "id": "SHY-EDGE3.0",
+   "expected": [
+    "matched",
+    "kz.shymkent.district.abay"
+   ],
+   "oracle": [
+    "matched",
+    "kz.shymkent.district.abay"
+   ],
+   "oracle_agrees": true,
+   "v1": {
+    "status": "matched",
+    "district": "kz.shymkent.district.abay",
+    "reason": "single_district_interior"
+   },
+   "v1_pass": true,
+   "v2": {
+    "status": "matched",
+    "district": "kz.shymkent.district.abay",
+    "reason": "single_district_interior"
+   },
+   "v2_pass": true
+  },
+  {
+   "id": "OUT-desert",
+   "expected": [
+    "outside",
+    null
+   ],
+   "oracle": [
+    "outside",
+    null
+   ],
+   "oracle_agrees": true,
+   "v1": {
+    "status": "outside",
+    "district": null,
+    "reason": "outside_known_city_polygons"
+   },
+   "v1_pass": true,
+   "v2": {
+    "status": "outside",
+    "district": null,
+    "reason": "outside_known_city_polygons"
+   },
+   "v2_pass": true
+  },
+  {
+   "id": "SWAP-astana",
+   "expected": [
+    "invalid",
+    null
+   ],
+   "oracle": [
+    "invalid",
+    null
+   ],
+   "oracle_agrees": true,
+   "v1": {
+    "status": "invalid",
+    "district": null,
+    "reason": "lon_lat_swapped"
+   },
+   "v1_pass": true,
+   "v2": {
+    "status": "invalid",
+    "district": null,
+    "reason": "lon_lat_swapped"
+   },
+   "v2_pass": true
+  },
+  {
+   "id": "SWAP-shymkent",
+   "expected": [
+    "invalid",
+    null
+   ],
+   "oracle": [
+    "invalid",
+    null
+   ],
+   "oracle_agrees": true,
+   "v1": {
+    "status": "invalid",
+    "district": null,
+    "reason": "lon_lat_swapped"
+   },
+   "v1_pass": true,
+   "v2": {
+    "status": "invalid",
+    "district": null,
+    "reason": "lon_lat_swapped"
+   },
+   "v2_pass": true
+  },
+  {
+   "id": "SWAP-undetectable",
+   "expected": [
+    "outside",
+    null
+   ],
+   "oracle": [
+    "outside",
+    null
+   ],
+   "oracle_agrees": true,
+   "v1": {
+    "status": "outside",
+    "district": null,
+    "reason": "outside_known_city_polygons"
+   },
+   "v1_pass": true,
+   "v2": {
+    "status": "outside",
+    "district": null,
+    "reason": "outside_known_city_polygons"
+   },
+   "v2_pass": true
+  },
+  {
+   "id": "BAD-nan",
+   "expected": [
+    "invalid",
+    null
+   ],
+   "oracle": [
+    "invalid",
+    null
+   ],
+   "oracle_agrees": true,
+   "v1": {
+    "status": "invalid",
+    "district": null,
+    "reason": "outside_kazakhstan_range"
+   },
+   "v1_pass": true,
+   "v2": {
+    "status": "invalid",
+    "district": null,
+    "reason": "outside_kazakhstan_range"
+   },
+   "v2_pass": true
+  },
+  {
+   "id": "BAD-range",
+   "expected": [
+    "invalid",
+    null
+   ],
+   "oracle": [
+    "invalid",
+    null
+   ],
+   "oracle_agrees": true,
+   "v1": {
+    "status": "invalid",
+    "district": null,
+    "reason": "outside_kazakhstan_range"
+   },
+   "v1_pass": true,
+   "v2": {
+    "status": "invalid",
+    "district": null,
+    "reason": "outside_kazakhstan_range"
+   },
+   "v2_pass": true
+  }
+ ],
+ "sweep": {
+  "points": 7920,
+  "rings": 30,
+  "offsets_m": [
+   -3,
+   -1.5,
+   -1.01,
+   -0.99,
+   -0.5,
+   0,
+   0.5,
+   0.99,
+   1.01,
+   1.5,
+   3
+  ],
+  "steps_per_ring": 24,
+  "v1_agree": 7678,
+  "v1_disagree": 242,
+  "v2_agree": 7920,
+  "v2_disagree": 0,
+  "disagreement_kinds": [
+   {
+    "version": "v1",
+    "ring": "city:astana",
+    "oracle": "ambiguous",
+    "got": "unmatched",
+    "reason": "inside_city_no_district",
+    "count": 120
+   },
+   {
+    "version": "v1",
+    "ring": "zone:Z2",
+    "oracle": "ambiguous",
+    "got": "unmatched",
+    "reason": "inside_city_no_district",
+    "count": 120
+   },
+   {
+    "version": "v1",
+    "ring": "ast_prod:almaty",
+    "oracle": "ambiguous",
+    "got": "matched",
+    "reason": "single_district_interior",
+    "count": 1
+   },
+   {
+    "version": "v1",
+    "ring": "ast_ov:almaty",
+    "oracle": "ambiguous",
+    "got": "matched",
+    "reason": "single_district_interior",
+    "count": 1
+   }
+  ],
+  "examples": [
+   {
+    "version": "v1",
+    "ring": "ast_prod:kz.astana.district.almaty",
+    "offset_m": 1.01,
+    "lon": 71.462178849,
+    "lat": 51.1287616,
+    "oracle": [
+     "ambiguous",
+     null
+    ],
+    "got": [
+     "matched",
+     "kz.astana.district.almaty",
+     "single_district_interior"
+    ]
+   },
+   {
+    "version": "v1",
+    "ring": "ast_ov:kz.astana.district.almaty",
+    "offset_m": -0.99,
+    "lon": 71.460750753,
+    "lat": 51.128969768,
+    "oracle": [
+     "ambiguous",
+     null
+    ],
+    "got": [
+     "matched",
+     "kz.astana.district.saraishyk",
+     "single_district_interior"
+    ]
+   },
+   {
+    "version": "v1",
+    "ring": "city:astana",
+    "offset_m": -0.99,
+    "lon": 71.437100489,
+    "lat": 50.86024919,
+    "oracle": [
+     "ambiguous",
+     null
+    ],
+    "got": [
+     "unmatched",
+     null,
+     "inside_city_no_district"
+    ]
+   },
+   {
+    "version": "v1",
+    "ring": "city:astana",
+    "offset_m": -0.5,
+    "lon": 71.43709367,
+    "lat": 50.86025007,
+    "oracle": [
+     "ambiguous",
+     null
+    ],
+    "got": [
+     "unmatched",
+     null,
+     "inside_city_no_district"
+    ]
+   },
+   {
+    "version": "v1",
+    "ring": "city:astana",
+    "offset_m": 0,
+    "lon": 71.437086711,
+    "lat": 50.860250967,
+    "oracle": [
+     "ambiguous",
+     null
+    ],
+    "got": [
+     "unmatched",
+     null,
+     "inside_city_no_district"
+    ]
+   },
+   {
+    "version": "v1",
+    "ring": "city:astana",
+    "offset_m": 0.5,
+    "lon": 71.437079752,
+    "lat": 50.860251865,
+    "oracle": [
+     "ambiguous",
+     null
+    ],
+    "got": [
+     "unmatched",
+     null,
+     "inside_city_no_district"
+    ]
+   },
+   {
+    "version": "v1",
+    "ring": "city:astana",
+    "offset_m": 0.99,
+    "lon": 71.437072933,
+    "lat": 50.860252745,
+    "oracle": [
+     "ambiguous",
+     null
+    ],
+    "got": [
+     "unmatched",
+     null,
+     "inside_city_no_district"
+    ]
+   },
+   {
+    "version": "v1",
+    "ring": "city:astana",
+    "offset_m": -0.99,
+    "lon": 71.438803016,
+    "lat": 50.865535899,
+    "oracle": [
+     "ambiguous",
+     null
+    ],
+    "got": [
+     "unmatched",
+     null,
+     "inside_city_no_district"
+    ]
+   },
+   {
+    "version": "v1",
+    "ring": "city:astana",
+    "offset_m": -0.5,
+    "lon": 71.438796196,
+    "lat": 50.865536779,
+    "oracle": [
+     "ambiguous",
+     null
+    ],
+    "got": [
+     "unmatched",
+     null,
+     "inside_city_no_district"
+    ]
+   },
+   {
+    "version": "v1",
+    "ring": "city:astana",
+    "offset_m": 0,
+    "lon": 71.438789236,
+    "lat": 50.865537676,
+    "oracle": [
+     "ambiguous",
+     null
+    ],
+    "got": [
+     "unmatched",
+     null,
+     "inside_city_no_district"
+    ]
+   },
+   {
+    "version": "v1",
+    "ring": "city:astana",
+    "offset_m": 0.5,
+    "lon": 71.438782277,
+    "lat": 50.865538574,
+    "oracle": [
+     "ambiguous",
+     null
+    ],
+    "got": [
+     "unmatched",
+     null,
+     "inside_city_no_district"
+    ]
+   },
+   {
+    "version": "v1",
+    "ring": "city:astana",
+    "offset_m": 0.99,
+    "lon": 71.438775457,
+    "lat": 50.865539454,
+    "oracle": [
+     "ambiguous",
+     null
+    ],
+    "got": [
+     "unmatched",
+     null,
+     "inside_city_no_district"
+    ]
+   }
+  ]
+ }
+}

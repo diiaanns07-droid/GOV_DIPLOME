@@ -1,0 +1,39 @@
+{
+ "build": "0bf27de (round 4)",
+ "contract": "k05-obs-v1.1 unpatched",
+ "cases": [
+  {
+   "case": "value=NaN",
+   "old_errors": [],
+   "accepted_by_old": true
+  },
+  {
+   "case": "value=+Infinity",
+   "old_errors": [],
+   "accepted_by_old": true
+  },
+  {
+   "case": "value=-Infinity",
+   "old_errors": [],
+   "accepted_by_old": true
+  },
+  {
+   "case": "json.loads('NaN')",
+   "old_result": "nan"
+  },
+  {
+   "case": "json.loads('1e999')",
+   "old_result": "inf"
+  },
+  {
+   "case": "duplicate key",
+   "old_result": {
+    "value_status": "missing"
+   }
+  },
+  {
+   "case": "json.dumps(NaN) default",
+   "old_result": "{\"v\": NaN}"
+  }
+ ]
+}

@@ -1,0 +1,60 @@
+--- a/research/round-3-results/K10/scripts/download.py	2026-10-05 07:12:54.218267735 +0000
++++ b/research/round-3-results/K10/scripts/download.py	2026-10-05 07:12:54.248213898 +0000
+@@ -167,6 +167,24 @@
+             "bytes": len(data), "features": len(feats)}
+ 
+ 
++ATTR_NAMES = {"OpenStreetMap": "© OpenStreetMap contributors", "meta": "Meta", "Foursquare": "Foursquare",
++              "TomTom": "TomTom", "Overture": "Overture Maps Foundation", "Microsoft": "Microsoft",
++              "AllThePlaces": "AllThePlaces", "PinMeTo": "PinMeTo"}
++
++
++def attribution_from(feats):
++    """Sorted '<provider> (<license>)' lines from sources[] of the given features, plus the Overture release."""
++    lines = {"Overture Maps Foundation (release %s)" % RELEASE}
++    for f in feats:
++        for s in f["properties"].get("sources") or []:
++            lines.add("%s (%s)" % (ATTR_NAMES.get(s.get("dataset"), s.get("dataset")), s.get("license")))
++    return sorted(lines)
++
++
++def licenses_from(feats):
++    return sorted({s.get("license") for f in feats for s in f["properties"].get("sources") or [] if s.get("license")})
++
++
+ def build_city(city, out_dir):
+     sel_path = os.path.join(PKG, "selection", f"{city}_bbox_selection.json")
+     sel_bytes = open(sel_path, "rb").read()
+@@ -174,7 +192,6 @@
+     sq = box(*bb)
+     started = datetime.now(timezone.utc).isoformat(timespec="seconds")
+     os.makedirs(os.path.join(out_dir, city), exist_ok=True)
+-    lic = {"© OpenStreetMap contributors (ODbL-1.0)", "Overture Maps Foundation"}
+ 
+     # places: point inside the square and K10 social rule
+     pq_info, places = scan("places", "place", bb, PLACE_COLS,
+@@ -225,14 +242,20 @@
+             "sources": jsonable(r.get("sources")), "k10_inside_bbox": point_in_bbox(g.x, g.y, bb)}})
+ 
+     common = {"release": RELEASE, "city": city, "bbox": list(bb),
+-              "attribution": sorted(lic), "kind": "observed_secondary (Overture/OSM), not an official registry"}
++              "kind": "observed_secondary (Overture/OSM), not an official registry"}
++
++    def with_attr(feats):
++        # K08 R4: attribution from the actual sources[] of this file, not a package-wide constant
++        return dict(common, attribution=attribution_from(feats),
++                    license_texts=[f"LICENSES/{l}.txt" for l in licenses_from(feats)])
++
+     files = {
+         "places_social": write_fc(os.path.join(out_dir, city, "places_social.geojson"),
+-                                  f"{city}_places_social", pfeats, common),
++                                  f"{city}_places_social", pfeats, with_attr(pfeats)),
+         "segments": write_fc(os.path.join(out_dir, city, "segments.geojson"),
+-                             f"{city}_segments", sfeats, common),
++                             f"{city}_segments", sfeats, with_attr(sfeats)),
+         "connectors": write_fc(os.path.join(out_dir, city, "connectors.geojson"),
+-                               f"{city}_connectors", cfeats, common),
++                               f"{city}_connectors", cfeats, with_attr(cfeats)),
+     }
+     return {
+         "city": city, "bbox": list(bb),

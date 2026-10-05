@@ -1,0 +1,80 @@
+{
+ "errors": [],
+ "warnings": [
+  {
+   "code": "POSSIBLE_DUPLICATE",
+   "rule": "same_address",
+   "distance_m": 9.0,
+   "a": {
+    "id": "0bbf2bc3-d703-431f-bf9a-69dbd7f6bf10",
+    "name": "Центр Профи Казахстан",
+    "group": "college_university"
+   },
+   "b": {
+    "id": "cd7f0098-c77b-4401-a428-831bf1e1685b",
+    "name": "Академия Образования Дарын",
+    "group": "college_university"
+   }
+  },
+  {
+   "code": "POSSIBLE_DUPLICATE",
+   "rule": "same_group_same_house_number",
+   "distance_m": 5.2,
+   "a": {
+    "id": "1be5a31a-4a8c-48f4-af6c-449035e7c80b",
+    "name": "Управление общественного здравоохранения г.Астаны",
+    "group": "government_office"
+   },
+   "b": {
+    "id": "5a868d86-f4eb-4c9f-bdf3-27832486db39",
+    "name": "Тілдерді дамыту басқармасы",
+    "group": "government_office"
+   }
+  },
+  {
+   "code": "POSSIBLE_DUPLICATE",
+   "rule": "same_address",
+   "distance_m": 0.0,
+   "a": {
+    "id": "1be5a31a-4a8c-48f4-af6c-449035e7c80b",
+    "name": "Управление общественного здравоохранения г.Астаны",
+    "group": "government_office"
+   },
+   "b": {
+    "id": "f8748e3f-294d-4ce4-bad0-cc6a55ee86fd",
+    "name": "Астана қаласының әкімдігі/ Акимат города Астаны",
+    "group": "government_office"
+   }
+  },
+  {
+   "code": "POSSIBLE_DUPLICATE",
+   "rule": "same_group_same_house_number",
+   "distance_m": 5.2,
+   "a": {
+    "id": "5a868d86-f4eb-4c9f-bdf3-27832486db39",
+    "name": "Тілдерді дамыту басқармасы",
+    "group": "government_office"
+   },
+   "b": {
+    "id": "f8748e3f-294d-4ce4-bad0-cc6a55ee86fd",
+    "name": "Астана қаласының әкімдігі/ Акимат города Астаны",
+    "group": "government_office"
+   }
+  },
+  {
+   "code": "POSSIBLE_DUPLICATE",
+   "rule": "same_address",
+   "distance_m": 84.2,
+   "a": {
+    "id": "79e43678-fa73-4611-93d3-c64dc30f3102",
+    "name": "Academy of Public Administration under the President of Kazakhstan",
+    "group": "college_university"
+   },
+   "b": {
+    "id": "dc334d42-5a1f-4a9d-a85b-d8dc3cfb7f59",
+    "name": "Министерство по делам государственной службы Республики Казахстан",
+    "group": "government_office"
+   }
+  }
+ ]
+}

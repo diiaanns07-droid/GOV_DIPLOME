@@ -1,0 +1,202 @@
+{
+ "package": "K10 round-3 compact geo-package (Shymkent + Astana)",
+ "release": "2026-09-23.1",
+ "cities": {
+  "shymkent": {
+   "bbox": [
+    69.593365,
+    42.306645,
+    69.617658,
+    42.324611
+   ],
+   "places": {
+    "count": 55,
+    "by_group": {
+     "college_university": 9,
+     "government_office": 5,
+     "hospital": 6,
+     "outpatient_clinic": 16,
+     "pharmacy": 3,
+     "preschool": 1,
+     "school": 15
+    },
+    "within_100m_of_bbox_edge": 6,
+    "same_name_same_point_repeats": 0,
+    "confidence_lt_0_5": 25
+   },
+   "segments": {
+    "conditional_breakdown": {
+     "oneway_heading_only_no_mode": 110,
+     "other_conditions": 5
+    },
+    "count": 1084,
+    "by_subtype": {
+     "road": 1084
+    },
+    "road_by_class": {
+     "service": 353,
+     "footway": 234,
+     "residential": 232,
+     "secondary": 118,
+     "tertiary": 54,
+     "primary": 49,
+     "cycleway": 19,
+     "steps": 18,
+     "unclassified": 3,
+     "living_street": 2,
+     "pedestrian": 1,
+     "unknown": 1
+    },
+    "crossing_bbox_edge": 136,
+    "road_length_km_full_geometry": 125.541,
+    "foot_access": {
+     "unknown": 954,
+     "conditional": 115,
+     "denied": 8,
+     "allowed": 7
+    },
+    "with_access_restrictions": 130,
+    "flags": {
+     "is_bridge": 15,
+     "is_link": 27,
+     "is_covered": 1,
+     "is_tunnel": 3
+    },
+    "nonzero_level": 13,
+    "subclass": {
+     "crosswalk": 14,
+     "driveway": 12,
+     "link": 27,
+     "cycle_crossing": 5,
+     "sidewalk": 1,
+     "parking_aisle": 2
+    },
+    "with_road_surface": 321,
+    "with_width": 8
+   },
+   "connectors": {
+    "count": 1729,
+    "outside_bbox": 276,
+    "shared_by_2plus_segments": 1196,
+    "missing_referenced": 0
+   },
+   "graph_all_roads": {
+    "segments": 1084,
+    "components": 7,
+    "largest_component_share_of_length": 0.9813,
+    "largest_component_segments": 1069,
+    "singleton_components": 4
+   },
+   "graph_roads_foot_not_denied": {
+    "segments": 1076,
+    "components": 7,
+    "largest_component_share_of_length": 0.9811,
+    "largest_component_segments": 1061,
+    "singleton_components": 4
+   }
+  },
+  "astana": {
+   "bbox": [
+    71.418372,
+    51.163033,
+    71.447,
+    51.181
+   ],
+   "places": {
+    "count": 65,
+    "by_group": {
+     "college_university": 10,
+     "government_office": 16,
+     "hospital": 9,
+     "outpatient_clinic": 16,
+     "pharmacy": 3,
+     "preschool": 3,
+     "school": 8
+    },
+    "within_100m_of_bbox_edge": 8,
+    "same_name_same_point_repeats": 0,
+    "confidence_lt_0_5": 18
+   },
+   "segments": {
+    "conditional_breakdown": {
+     "oneway_heading_only_no_mode": 159,
+     "other_conditions": 7
+    },
+    "count": 1326,
+    "by_subtype": {
+     "road": 1326
+    },
+    "road_by_class": {
+     "service": 504,
+     "footway": 358,
+     "residential": 193,
+     "secondary": 106,
+     "tertiary": 83,
+     "primary": 51,
+     "steps": 13,
+     "unknown": 8,
+     "cycleway": 7,
+     "unclassified": 2,
+     "path": 1
+    },
+    "crossing_bbox_edge": 143,
+    "road_length_km_full_geometry": 156.182,
+    "foot_access": {
+     "unknown": 1138,
+     "conditional": 166,
+     "denied": 22
+    },
+    "with_access_restrictions": 188,
+    "flags": {
+     "is_link": 25,
+     "is_covered": 11,
+     "is_tunnel": 8,
+     "is_bridge": 2
+    },
+    "nonzero_level": 12,
+    "subclass": {
+     "link": 25,
+     "crosswalk": 87,
+     "sidewalk": 122,
+     "parking_aisle": 30,
+     "alley": 5,
+     "driveway": 33
+    },
+    "with_road_surface": 512,
+    "with_width": 4
+   },
+   "connectors": {
+    "count": 2309,
+    "outside_bbox": 260,
+    "shared_by_2plus_segments": 1798,
+    "missing_referenced": 0
+   },
+   "graph_all_roads": {
+    "segments": 1326,
+    "components": 8,
+    "largest_component_share_of_length": 0.9916,
+    "largest_component_segments": 1317,
+    "singleton_components": 5
+   },
+   "graph_roads_foot_not_denied": {
+    "segments": 1304,
+    "components": 9,
+    "largest_component_share_of_length": 0.9905,
+    "largest_component_segments": 1294,
+    "singleton_components": 6
+   }
+  }
+ },
+ "files_opened": [
+  "data/astana/connectors.geojson",
+  "data/astana/places_social.geojson",
+  "data/astana/segments.geojson",
+  "data/shymkent/connectors.geojson",
+  "data/shymkent/places_social.geojson",
+  "data/shymkent/segments.geojson",
+  "package_manifest.json"
+ ],
+ "network": "socket connect blocked during check",
+ "errors": [],
+ "ok": true
+}

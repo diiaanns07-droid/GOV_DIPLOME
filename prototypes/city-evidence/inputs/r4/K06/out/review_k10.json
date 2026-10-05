@@ -1,0 +1,308 @@
+{
+ "input": "K10 round 3 package, commit ea703f1ddd3a411430a981164a78a7dda64ec909, release 2026-09-23.1",
+ "data_kind": "observed_secondary (Overture/OSM), 2x2 km slice per city, not a city registry",
+ "note": "lengths are geometric metres along OSM geometry, not walking time",
+ "cities": {
+  "shymkent": {
+   "bbox": [
+    69.593365,
+    42.306645,
+    69.617658,
+    42.324611
+   ],
+   "segments": 1084,
+   "connectors": 1729,
+   "places": 55,
+   "C1_coord_order": {
+    "segments": {
+     "lonlat": 1084
+    },
+    "connectors": {
+     "lonlat": 1729
+    },
+    "places": {
+     "lonlat": 55
+    },
+    "bbox_order_ok": true
+   },
+   "C2_length_vs_oracle": {
+    "labels": {
+     "ok": 1084
+    },
+    "rel_diff_min": -0.00641,
+    "rel_diff_median": -0.00073,
+    "rel_diff_max": 0.00142,
+    "abs_diff_m_max": 1.984,
+    "total_k10_km": 125.541,
+    "total_oracle_km": 125.657
+   },
+   "C3_connectors": {
+    "connectors_per_segment": {
+     "2": 623,
+     "3": 203,
+     "4": 103,
+     "5": 54,
+     "6": 35,
+     "7": 18,
+     "8": 15,
+     "9": 12,
+     "10": 13,
+     "11": 4,
+     "12": 2,
+     "13": 1,
+     "32": 1
+    },
+    "segments_with_3plus_connectors": 461,
+    "at_not_sorted": 0,
+    "at_outside_0_1": 0,
+    "segments_without_both_ends": 0,
+    "connector_vs_at_point_m": {
+     "p50": 0.0,
+     "p99": 0.0,
+     "max": 0.0,
+     "gt_1m": 0
+    }
+   },
+   "C4_duplicates": {
+    "duplicate_segment_ids": 0,
+    "identical_geometry_repeats": 0,
+    "identical_geometry_repeats_either_direction": 0,
+    "parallel_edges_same_connector_pair": 21,
+    "segments_repeating_a_connector": 0
+   },
+   "C5_edges": {
+    "edges": 2260,
+    "naive_at_times_length_vs_oracle_m": {
+     "p50": 0.036,
+     "p99": 0.447,
+     "max": 0.892
+    },
+    "sum_of_edges_vs_segment_m_max": 0.0,
+    "overcount_km_if_whole_segment_length_per_edge": 356.834
+   },
+   "C6_components": {
+    "all_roads": {
+     "components": 7,
+     "largest_share": 0.9813
+    },
+    "foot_not_denied": {
+     "components": 7,
+     "largest_share": 0.9811
+    },
+    "k10_stated": {
+     "components": 7,
+     "largest_share": 0.9813,
+     "nd_components": 7,
+     "nd_largest_share": 0.9811
+    },
+    "match": true
+   },
+   "C7_place_to_bbox_edge": {
+    "k10_minus_oracle_m_min": -1.23,
+    "max": 1.69,
+    "within_100m_k10": 6,
+    "within_100m_oracle": 6
+   },
+   "C8_injected_unit_errors": {
+    "km_not_m": {
+     "segment": "6c0c508c-d72f-41e1-80d3-08406cfee4ca",
+     "injected_value": 2.82964,
+     "detected_as": "km_not_m",
+     "ok": true
+    },
+    "degrees_not_m": {
+     "segment": "3a6d24ca-b4ee-4d6d-ad72-df8865e1d3c9",
+     "injected_value": 0.011606,
+     "detected_as": "degrees_not_m",
+     "ok": true
+    },
+    "latlon_swapped": {
+     "segment": "cdb736e6-7500-479b-9eb2-dbb4eadc36fd",
+     "injected_value": 860.8573,
+     "detected_as": "latlon_swapped",
+     "ok": true
+    }
+   },
+   "C9_planar_at_split_vs_geodesic": {
+    "edges": 2260,
+    "abs_diff_m": {
+     "p50": 0.017,
+     "p90": 2.328,
+     "p99": 8.535,
+     "max": 22.62
+    },
+    "edges_diff_gt_1m": 410,
+    "edges_diff_gt_5m": 82,
+    "edges_rel_diff_gt_1pct_of_ge1m": 627,
+    "node_position_vs_connector_m": {
+     "p99": 9.66,
+     "max": 28.3,
+     "gt_1m": 330
+    },
+    "worst_edge": {
+     "segment": "d2800af4-ca33-4b7e-a7f1-180bce00a581",
+     "edge": [
+      "61b042b8-0e96-4365-8645-cd7268c1b480",
+      "f914959d-8669-4cfd-96b2-1a23af75f6e0"
+     ],
+     "geodesic_m": 153.97,
+     "planar_split_m": 131.35,
+     "diff_m": -22.62
+    },
+    "note": "segment totals are unaffected; only the split between edges of one segment shifts"
+   }
+  },
+  "astana": {
+   "bbox": [
+    71.418372,
+    51.163033,
+    71.447,
+    51.181
+   ],
+   "segments": 1326,
+   "connectors": 2309,
+   "places": 65,
+   "C1_coord_order": {
+    "segments": {
+     "lonlat": 1326
+    },
+    "connectors": {
+     "lonlat": 2309
+    },
+    "places": {
+     "lonlat": 65
+    },
+    "bbox_order_ok": true
+   },
+   "C2_length_vs_oracle": {
+    "labels": {
+     "ok": 1326
+    },
+    "rel_diff_min": -0.0042,
+    "rel_diff_median": -0.00183,
+    "rel_diff_max": 0.00063,
+    "abs_diff_m_max": 2.57,
+    "total_k10_km": 156.182,
+    "total_oracle_km": 156.478
+   },
+   "C3_connectors": {
+    "connectors_per_segment": {
+     "2": 538,
+     "3": 354,
+     "4": 184,
+     "5": 90,
+     "6": 56,
+     "7": 36,
+     "8": 24,
+     "9": 10,
+     "10": 15,
+     "11": 5,
+     "12": 2,
+     "13": 5,
+     "14": 3,
+     "15": 1,
+     "16": 1,
+     "17": 2
+    },
+    "segments_with_3plus_connectors": 788,
+    "at_not_sorted": 0,
+    "at_outside_0_1": 0,
+    "segments_without_both_ends": 0,
+    "connector_vs_at_point_m": {
+     "p50": 0.0,
+     "p99": 0.0,
+     "max": 0.0,
+     "gt_1m": 0
+    }
+   },
+   "C4_duplicates": {
+    "duplicate_segment_ids": 0,
+    "identical_geometry_repeats": 0,
+    "identical_geometry_repeats_either_direction": 0,
+    "parallel_edges_same_connector_pair": 20,
+    "segments_repeating_a_connector": 0
+   },
+   "C5_edges": {
+    "edges": 3269,
+    "naive_at_times_length_vs_oracle_m": {
+     "p50": 0.042,
+     "p99": 0.517,
+     "max": 2.57
+    },
+    "sum_of_edges_vs_segment_m_max": 0.0,
+    "overcount_km_if_whole_segment_length_per_edge": 431.918
+   },
+   "C6_components": {
+    "all_roads": {
+     "components": 8,
+     "largest_share": 0.9916
+    },
+    "foot_not_denied": {
+     "components": 9,
+     "largest_share": 0.9905
+    },
+    "k10_stated": {
+     "components": 8,
+     "largest_share": 0.9916,
+     "nd_components": 9,
+     "nd_largest_share": 0.9905
+    },
+    "match": true
+   },
+   "C7_place_to_bbox_edge": {
+    "k10_minus_oracle_m_min": -1.56,
+    "max": 0.51,
+    "within_100m_k10": 8,
+    "within_100m_oracle": 8
+   },
+   "C8_injected_unit_errors": {
+    "km_not_m": {
+     "segment": "dbe369b5-2481-41f0-88e1-56e0d6d8007e",
+     "injected_value": 1.41741,
+     "detected_as": "km_not_m",
+     "ok": true
+    },
+    "degrees_not_m": {
+     "segment": "5f07938a-22ff-44d0-a71a-30e8a42c2f98",
+     "injected_value": 0.010385,
+     "detected_as": "degrees_not_m",
+     "ok": true
+    },
+    "latlon_swapped": {
+     "segment": "f968b910-16eb-4d81-b74b-1950324bb81e",
+     "injected_value": 1087.373722,
+     "detected_as": "latlon_swapped",
+     "ok": true
+    }
+   },
+   "C9_planar_at_split_vs_geodesic": {
+    "edges": 3269,
+    "abs_diff_m": {
+     "p50": 0.064,
+     "p90": 4.909,
+     "p99": 21.301,
+     "max": 58.27
+    },
+    "edges_diff_gt_1m": 934,
+    "edges_diff_gt_5m": 317,
+    "edges_rel_diff_gt_1pct_of_ge1m": 1218,
+    "node_position_vs_connector_m": {
+     "p99": 28.0,
+     "max": 61.16,
+     "gt_1m": 767
+    },
+    "worst_edge": {
+     "segment": "ba983be6-c533-47b5-9f51-b785c27e5c33",
+     "edge": [
+      "f6843643-e308-4de0-96e4-954db3870639",
+      "8c8ce60a-ef26-484c-81ee-162054d0f08e"
+     ],
+     "geodesic_m": 238.63,
+     "planar_split_m": 180.36,
+     "diff_m": -58.27
+    },
+    "note": "segment totals are unaffected; only the split between edges of one segment shifts"
+   }
+  }
+ }
+}
