@@ -103,7 +103,10 @@
   {
    "id": "A7",
    "status": "FAIL",
-   "text": "Карточка дороги всегда подписана «OSM через Overture»"
+   "text": "Карточка дороги всегда подписана «OSM через Overture», хотя среди сегментов есть ['TomTom']",
+   "non_osm_segment_providers": [
+    "TomTom"
+   ]
   },
   {
    "id": "A8",

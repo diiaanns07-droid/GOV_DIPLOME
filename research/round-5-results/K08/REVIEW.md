@@ -21,7 +21,7 @@
 | A10 (INFO) | В `source_manifest.json` нет поля для изменённых файлов. Сейчас изменённых нет, но схема не позволяет отдельно указать hash изменённого файла | `tools/copy_inputs.py` | — |
 | (не в checker) | Подпись места «Confidence — оценка Overture» верна, но источник Overture CDLA-P-2.0 для `/properties/confidence` отброшен: `build_data.py` берёт только sources с пустым property | `tools/build_data.py:89` | R4 F1: property сохранено во входе, теряется в сборке |
 
-Статус каждого пункта — **не исправлено** в `0bf27de`. Исправление ещё не предложено. Patch-предложение будет отдельным этапом в этой папке.
+Статус каждого пункта в `0bf27de` — **не исправлено**. Исправление только **предложено** (`proposal/attribution_demo.patch`) и проверено на копии в scratch. В ветку BUILD оно не вносилось, поэтому не FIXED.
 
 ## Checker
 `check_demo_attribution.py` — только stdlib.
@@ -33,3 +33,35 @@ Baseline на `0bf27de`:
 - `baseline/url_0bf27de.json` — PASS 0, WARN 3, FAIL 6, INFO 1.
 
 Код выхода 1 — это ожидаемые FAIL baseline, а не дефект новой версии.
+
+## Patch-предложение (`proposal/attribution_demo.patch`)
+Изменения только в исходниках сборки. Сгенерированные файлы получаются повторным запуском инструментов.
+- `tools/copy_inputs.py`: новый слот `k08_attr` — K08 R4 @ 182cb1b, `attribution/LICENSES/{ODbL-1.0,CDLA-Permissive-2.0,Apache-2.0}.txt`, `ATTRIBUTION.md`, `attribution.json`. Копирование побайтное, через `git show`, с записью в `source_manifest.json`.
+- `tools/build_data.py`:
+  - у сегментов сохраняется `dataset`, у мест — источники уровня property (Overture `/properties/confidence`);
+  - `cities.*.attribution` считается по `sources[]` всех трёх слоёв, а не берётся из константной шапки K10; добавлены `licenses`, `source_counts`, `attribution_file`;
+  - тексты лицензий копируются в `web/LICENSES/` с проверкой sha256 SPDX @31ba1a50, генерируется `web/ATTRIBUTION.md`.
+- `web/app.js`:
+  - подвал выводит атрибуцию города из данных и ссылку «атрибуция и лицензии» → `ATTRIBUTION.md`;
+  - карточка дороги показывает фактический `dataset` (TomTom/OSM) вместо жёсткого «OSM»;
+  - в карточке места показывается property.
+- `tests/smoke.cjs:89`: копирование `web/` рекурсивное (`fs.cpSync`). Без этого тест «отсутствующий файл» падал с EISDIR на `web/LICENSES/`.
+
+### Положительный контроль (на копии 0bf27de с применённым предложением; не FIXED в BUILD)
+- `copy_inputs.py`: 45 файлов. `build_data.py`: 55/65 объектов, 1084/1326 сегментов, как и в baseline.
+- checker `--app-root --repo`: PASS 14, FAIL 0 (`positive_control/app_root_patched_on_0bf27de.json`). Inputs 45/45 совпадают с upstream.
+- checker `--url` (serve.py): PASS 12, FAIL 0 (`positive_control/url_patched_on_0bf27de.json`).
+- `test_checker.py --app-root <patched>`: 6/6 мутаций обнаружены (`positive_control/test_checker_mutations.txt`).
+- Тесты сборки на исправленной копии: `unittest` 7 OK, `node tests/conformance.cjs` all passed, `node tests/smoke.cjs` 16/16 PASS (baseline тоже 16/16). Подвал в Chromium: «Meta (CDLA-Permissive-2.0); Overture Maps Foundation (CDLA-Permissive-2.0); TomTom (ODbL-1.0); © OpenStreetMap contributors (ODbL-1.0) · Overture 2026-09-23.1 · атрибуция и лицензии» со ссылкой `ATTRIBUTION.md`.
+- sha256 выходов web: `positive_control/web_outputs.sha256`.
+
+### Повтор для сборщика на исправленной версии
+```bash
+git apply research/round-5-results/K08/proposal/attribution_demo.patch      # или собственное исправление
+git fetch origin claude/dazzling-mayer-drhsxk                                # объекты для k08_attr и --repo
+python3 prototypes/city-evidence/tools/copy_inputs.py && python3 prototypes/city-evidence/tools/build_data.py
+python3 research/round-5-results/K08/check_demo_attribution.py --app-root prototypes/city-evidence --repo .
+python3 research/round-5-results/K08/test_checker.py --app-root prototypes/city-evidence
+python3 prototypes/city-evidence/serve.py 8765 &  python3 research/round-5-results/K08/check_demo_attribution.py --url http://127.0.0.1:8765/
+```
+Ожидаемо на исправленной версии: 0 FAIL. На baseline 0bf27de — 8 FAIL (app-root) и 6 FAIL (url), это зафиксированные ожидаемые падения.

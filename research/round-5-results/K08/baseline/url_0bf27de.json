@@ -1,6 +1,6 @@
 {
  "checker": "K08 R5 check_demo_attribution",
- "target": "--url http://127.0.0.1:8791/",
+ "target": "--url http://127.0.0.1:8793/",
  "disclaimer": "Проверка наличия текстов, уведомлений и ссылок; не юридическое заключение. sources.license — поле записи, а не полная проверка условий поставщика.",
  "results": [
   {
@@ -88,7 +88,8 @@
   {
    "id": "A7",
    "status": "WARN",
-   "text": "Карточка дороги всегда подписана «OSM через Overture»"
+   "text": "Карточка дороги всегда подписана «OSM через Overture» (не-OSM поставщики сегментов не видны в этом режиме)",
+   "non_osm_segment_providers": []
   }
  ],
  "summary": {

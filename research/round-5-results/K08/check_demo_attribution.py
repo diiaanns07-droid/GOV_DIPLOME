@@ -174,8 +174,12 @@ def check(src, inputs_root=None, repo=None):
 
     # A7: подпись карточки дороги не утверждает OSM для всех сегментов, если есть не-OSM поставщики
     hard_osm = re.search(r"Дорога \(OSM через Overture\)", ui)
-    add("A7", "FAIL" if (hard_osm and hidden) else ("WARN" if hard_osm else "PASS"),
-        "Карточка дороги всегда подписана «OSM через Overture»" if hard_osm else "Жёсткой подписи OSM у карточки дороги нет")
+    seg_prov = {g.get("dataset") for c in data["cities"].values() for g in c.get("segments", []) if g.get("dataset")}
+    non_osm = sorted((seg_prov | (hidden - {"meta", "Foursquare", "Overture", "Microsoft", "AllThePlaces", "PinMeTo"})) - {"OpenStreetMap"})
+    add("A7", "FAIL" if (hard_osm and non_osm) else ("WARN" if hard_osm else "PASS"),
+        ("Карточка дороги всегда подписана «OSM через Overture»" + (f", хотя среди сегментов есть {non_osm}" if non_osm else
+         " (не-OSM поставщики сегментов не видны в этом режиме)")) if hard_osm else "Жёсткой подписи OSM у карточки дороги нет",
+        non_osm_segment_providers=non_osm)
 
     # A8: неизменность upstream-входов
     if inputs_root:
