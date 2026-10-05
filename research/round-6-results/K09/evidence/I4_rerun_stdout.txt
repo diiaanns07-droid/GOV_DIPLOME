@@ -1,0 +1,12 @@
+B1 dev correct 5 / 20 city 0.9 cons_exact 0.5 abst 0.0 conf_err 0.75 regret 8 2 [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+B1 heldout correct 2 / 34 city 0.765 cons_exact 0.167 abst 0.0 conf_err 0.941 regret 9 6 [0.0, 0.0, 0.0]
+B2 dev correct 20 / 20 city 1.0 cons_exact 1.0 abst 1.0 conf_err 0.0 regret 8 0 [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+B1 heldout correct 2 / 34 city 0.765 cons_exact 0.167 abst 0.0 conf_err 0.941 regret 9 6 [0.0, 0.0, 0.0]
+B2 heldout correct 34 / 34 city 1.0 cons_exact 1.0 abst 1.0 conf_err 0.0 regret 12 0 [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+B1 all n 32 correct 1 [0.006, 0.157] city 0.688 cons 1 / 16 abst 0 / 16 reason 0 false_abst 0 conf_err 31 regret 4 viol 2
+B1 ru n 16 correct 1 [0.011, 0.283] city 0.688 cons 1 / 8 abst 0 / 8 reason 0 false_abst 0 conf_err 15 regret 2 viol 0
+B1 kk n 16 correct 0 [0.0, 0.194] city 0.688 cons 0 / 8 abst 0 / 8 reason 0 false_abst 0 conf_err 16 regret 2 viol 2
+B2 all n 32 correct 24 [0.579, 0.867] city 1.0 cons 8 / 16 abst 16 / 16 reason 16 false_abst 0 conf_err 8 regret 6 viol 2
+B2 ru n 16 correct 12 [0.505, 0.898] city 1.0 cons 4 / 8 abst 8 / 8 reason 8 false_abst 0 conf_err 4 regret 3 viol 1
+B2 kk n 16 correct 12 [0.505, 0.898] city 1.0 cons 4 / 8 abst 8 / 8 reason 8 false_abst 0 conf_err 4 regret 3 viol 1
+{'b_only_correct': 23, 'a_only_correct': 0, 'p_two_sided': 0.0}

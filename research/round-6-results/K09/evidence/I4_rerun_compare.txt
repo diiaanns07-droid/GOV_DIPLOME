@@ -1,0 +1,16 @@
+## I4 frozen inference rerun on TARGET tree vs saved outputs of SOURCE
+IDENTICAL results/B1_dev_predictions.jsonl
+IDENTICAL results/B1_external_predictions.jsonl
+IDENTICAL results/B1_heldout_predictions.jsonl
+IDENTICAL results/B2_dev_predictions.jsonl
+IDENTICAL results/B2_external_error_taxonomy.json
+IDENTICAL results/B2_external_predictions.jsonl
+IDENTICAL results/B2_heldout_predictions.jsonl
+IDENTICAL results/FREEZE_B2_before_heldout.txt
+IDENTICAL results/metrics_B1_dev_heldout.json
+IDENTICAL results/metrics_B1_vs_B2_external.json
+IDENTICAL results/metrics_B1_vs_B2_heldout.json
+IDENTICAL results/metrics_B2_dev_frozen.json
+IDENTICAL external_v1/t1_external.jsonl
+IDENTICAL external_v1/agreement.json
+IDENTICAL external_v1/disagreements.json

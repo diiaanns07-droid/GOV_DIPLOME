@@ -1,0 +1,201 @@
+{
+ "counts": {
+  "B1/dev": {
+   "n": 20,
+   "correct": 5,
+   "confident_error": 15,
+   "abstain_on_non_ok": 0,
+   "non_ok": 10,
+   "ids_wrong": [
+    "d-ru-05",
+    "d-ru-06",
+    "d-ru-07",
+    "d-ru-08",
+    "d-ru-09",
+    "d-ru-10",
+    "d-kk-01",
+    "d-kk-02",
+    "d-kk-04",
+    "d-kk-05",
+    "d-kk-06",
+    "d-kk-07",
+    "d-kk-08",
+    "d-kk-09",
+    "d-kk-10"
+   ]
+  },
+  "B1/external": {
+   "n": 32,
+   "correct": 1,
+   "confident_error": 31,
+   "abstain_on_non_ok": 0,
+   "non_ok": 16,
+   "ids_wrong": [
+    "x-ru-02",
+    "x-ru-03",
+    "x-ru-04",
+    "x-ru-05",
+    "x-ru-06",
+    "x-ru-07",
+    "x-ru-08",
+    "x-ru-09",
+    "x-ru-10",
+    "x-ru-11",
+    "x-ru-12",
+    "x-ru-13",
+    "x-ru-14",
+    "x-ru-15",
+    "x-ru-16",
+    "x-kk-01",
+    "x-kk-02",
+    "x-kk-03",
+    "x-kk-04",
+    "x-kk-05",
+    "x-kk-06",
+    "x-kk-07",
+    "x-kk-08",
+    "x-kk-09",
+    "x-kk-10",
+    "x-kk-11",
+    "x-kk-12",
+    "x-kk-13",
+    "x-kk-14",
+    "x-kk-15",
+    "x-kk-16"
+   ]
+  },
+  "B1/heldout": {
+   "n": 34,
+   "correct": 2,
+   "confident_error": 32,
+   "abstain_on_non_ok": 0,
+   "non_ok": 16,
+   "ids_wrong": [
+    "h-ru-01",
+    "h-ru-03",
+    "h-ru-04",
+    "h-ru-06",
+    "h-ru-07",
+    "h-ru-08",
+    "h-ru-09",
+    "h-ru-10",
+    "h-ru-11",
+    "h-ru-12",
+    "h-ru-13",
+    "h-ru-14",
+    "h-ru-15",
+    "h-ru-16",
+    "h-ru-17",
+    "h-kk-01",
+    "h-kk-02",
+    "h-kk-03",
+    "h-kk-04",
+    "h-kk-05",
+    "h-kk-06",
+    "h-kk-07",
+    "h-kk-08",
+    "h-kk-09",
+    "h-kk-10",
+    "h-kk-11",
+    "h-kk-12",
+    "h-kk-13",
+    "h-kk-14",
+    "h-kk-15",
+    "h-kk-16",
+    "h-kk-17"
+   ]
+  },
+  "B2/dev": {
+   "n": 20,
+   "correct": 20,
+   "confident_error": 0,
+   "abstain_on_non_ok": 10,
+   "non_ok": 10,
+   "ids_wrong": []
+  },
+  "B2/external": {
+   "n": 32,
+   "correct": 24,
+   "confident_error": 8,
+   "abstain_on_non_ok": 16,
+   "non_ok": 16,
+   "ids_wrong": [
+    "x-ru-03",
+    "x-ru-05",
+    "x-ru-11",
+    "x-ru-15",
+    "x-kk-04",
+    "x-kk-05",
+    "x-kk-07",
+    "x-kk-08"
+   ]
+  },
+  "B2/heldout": {
+   "n": 34,
+   "correct": 34,
+   "confident_error": 0,
+   "abstain_on_non_ok": 16,
+   "non_ok": 16,
+   "ids_wrong": []
+  }
+ },
+ "row_mismatch_vs_saved_j_correct": [],
+ "metrics_check": [
+  {
+   "file": "metrics_B1_dev_heldout.json",
+   "system": "B1",
+   "split": "dev",
+   "saved_k": 5,
+   "recomputed_k": 5,
+   "match": true
+  },
+  {
+   "file": "metrics_B1_dev_heldout.json",
+   "system": "B1",
+   "split": "heldout",
+   "saved_k": 2,
+   "recomputed_k": 2,
+   "match": true
+  },
+  {
+   "file": "metrics_B1_vs_B2_external.json",
+   "system": "B1",
+   "split": "external",
+   "saved_k": 1,
+   "recomputed_k": 1,
+   "match": true
+  },
+  {
+   "file": "metrics_B1_vs_B2_external.json",
+   "system": "B2",
+   "split": "external",
+   "saved_k": 24,
+   "recomputed_k": 24,
+   "match": true
+  },
+  {
+   "file": "metrics_B1_vs_B2_heldout.json",
+   "system": "B1",
+   "split": "heldout",
+   "saved_k": 2,
+   "recomputed_k": 2,
+   "match": true
+  },
+  {
+   "file": "metrics_B1_vs_B2_heldout.json",
+   "system": "B2",
+   "split": "heldout",
+   "saved_k": 34,
+   "recomputed_k": 34,
+   "match": true
+  },
+  {
+   "file": "metrics_B2_dev_frozen.json",
+   "system": "B2",
+   "split": "dev",
+   "saved_k": 20,
+   "recomputed_k": 20,
+   "match": true
+  }
+ ]
+}

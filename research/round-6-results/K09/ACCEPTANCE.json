@@ -1,0 +1,160 @@
+{
+ "slot": "K09",
+ "role": "REVIEW",
+ "round": 6,
+ "checked_on": "2026-10-05",
+ "target_sha": "064ed25368341edaa50289bc29e21dda7bdd9440",
+ "target_branch": "claude/beautiful-clarke-sbzomj",
+ "target_path": "prototypes/city-evidence/",
+ "test_source_sha": "e4ac24fcdca2701f6fd674e59cbd485f0de42ece",
+ "test_source_branch": "claude/save-work-handoff-qho6eq",
+ "test_source_path": "research/round-3-results/K09/",
+ "assignment": "origin/codex/research-import-2026-10-05:research/round-6/review/K09.txt @ edee718",
+ "environment": {
+  "python": "3.12.3",
+  "numpy": "2.4.4",
+  "jsonschema": "4.26.0",
+  "os": "Linux x86_64",
+  "network": "не нужна",
+  "llm": "не запускалась (ключа нет)"
+ },
+ "commands": [
+  "git fetch origin claude/beautiful-clarke-sbzomj",
+  "PY=<venv py3.12>/bin/python bash research/round-6-results/K09/scripts/run_acceptance.sh <work_dir> research/round-6-results/K09/evidence",
+  "(внутри: git archive TARGET | tar -x; git archive SOURCE research/round-3-results/K09 | tar -x; sha256sum -c FREEZE/DATASET; recompute_metrics.py; t1_eval.py ×3; ingest_external.py; t1_eval_external.py; cmp; git grep)"
+ ],
+ "invariants": [
+  {
+   "id": "I1",
+   "check": "Код, от которого зависит inference (engine, agent, data, ui, web, tests, app.py, check.py), в TARGET идентичен SOURCE",
+   "verdict": "PASS",
+   "evidence": "evidence/I1_I2_hashes.txt (git diff --stat пуст)"
+  },
+  {
+   "id": "I2",
+   "check": "Хэши замороженных B2/B1/evaluator, dev/held-out набора, справочника, каталога, правил, external_v1 и сырого вывода workflow",
+   "verdict": "PASS",
+   "evidence": "evidence/I1_I2_hashes.txt: FREEZE 6/6 OK, DATASET_SHA256 4/4 OK, external 2/2 OK"
+  },
+  {
+   "id": "I3",
+   "check": "Независимый пересчёт метрик по сохранённым predictions (без импорта t1_eval.py)",
+   "verdict": "PASS",
+   "evidence": "evidence/I3_recompute_from_saved.json: held-out B2 34/34, B1 2/34; external B2 24/32, B1 1/32; dev B2 20/20, B1 5/20; 0 расхождений с j.correct; 7/7 совпадений с metrics_*.json"
+  },
+  {
+   "id": "I4",
+   "check": "Повтор замороженного inference в дереве TARGET",
+   "verdict": "PASS",
+   "evidence": "evidence/I4_rerun_compare.txt: 15/15 файлов побайтно идентичны (predictions, metrics, taxonomy, external_v1)"
+  },
+  {
+   "id": "I5",
+   "check": "8 внешних ошибок: ошибка разметки или парсера",
+   "verdict": "PASS_WITH_CORRECTION",
+   "evidence": "evidence/errors_8_attribution.json + собственная трассировка K09: 8/8 parser_error, 8/8 gold_correct (два независимых агента и K09 согласны)",
+   "correction": "В results/B2_external_error_taxonomy.json (round-3) x-ru-03 отнесён к F1 (постпозитивное отрицание). Первичная причина — F3: «легкорельсовую линию» нет в алиасах M3 (b2_parser.py:25). F1 — вторичная скрытая причина. Старый файл не изменялся."
+  },
+  {
+   "id": "I6",
+   "check": "Парсер не подключён к реальным действиям сайта в TARGET",
+   "verdict": "PASS",
+   "evidence": "evidence/I6_wiring.txt: в TARGET нет кода K09 (b2_parser/t1_eval/baseline_parse); в prototypes/city-evidence вне inputs/ нет ввода поручений, optimize или сетевых вызовов (в web только 2 checkbox слоёв; serve.py — статика)",
+   "scope": "статическая проверка git grep; приложение не запускалось"
+  },
+  {
+   "id": "I7",
+   "check": "Регрет",
+   "verdict": "SKIP_BY_DESIGN",
+   "evidence": "Вычислим только для Астаны с эталоном ok, принимаемым движком (R9). Для x-ru-15 и x-kk-02 эталон с budget=60 недопустим в учебной модели («Допустимых наборов… нет»). Во всех вычисленных случаях без нарушения регрет = 0.0 — неинформативен."
+  },
+  {
+   "id": "I8",
+   "check": "LLM-разбор",
+   "verdict": "SKIP",
+   "evidence": "Ключа нет; качество не имитировалось. SKIP ≠ PASS."
+  }
+ ],
+ "rerun_result": {
+  "heldout": {
+   "B2": "34/34",
+   "B1": "2/34"
+  },
+  "external": {
+   "B2": "24/32 (95% Wilson 0.579–0.867)",
+   "B1": "1/32",
+   "B2_confident_errors": "8/32",
+   "B2_abstention_correct": "16/16",
+   "B2_constraints_exact_on_gold_ok": "8/16"
+  },
+  "mcnemar_external": "23:0"
+ },
+ "external_errors": [
+  {
+   "id": "x-ru-03",
+   "cause": "F3 первично (нет алиаса «легкорельсовая линия» для M3, b2_parser.py:25); F1 скрыто (ru-отрицание только перед мерой, :161)",
+   "gold": "correct"
+  },
+  {
+   "id": "x-ru-05",
+   "cause": "F3: «тепловые и водопроводные сети» вне алиасов M13 (:35); «и» внутри именной группы режет клаузу (:70)",
+   "gold": "correct"
+  },
+  {
+   "id": "x-ru-11",
+   "cause": "F1: «не включать» после меры; ru-отрицание проверяется только слева (:161, :164 только kk)",
+   "gold": "correct"
+  },
+  {
+   "id": "x-ru-15",
+   "cause": "F2: точка не граница клаузы (токенизатор :64 делит по [,;:] и «и/және»)",
+   "gold": "correct (движок отклоняет эталон: budget 60 недопустим — не ошибка разметки)"
+  },
+  {
+   "id": "x-kk-04",
+   "cause": "F5: декартово соединение мер и районов (:238–239)",
+   "gold": "correct"
+  },
+  {
+   "id": "x-kk-05",
+   "cause": "F3: «спорт алаңдары» вне алиасов M9 (:31)",
+   "gold": "correct; kk требует проверки носителем"
+  },
+  {
+   "id": "x-kk-07",
+   "cause": "F3: «жеке үйлер … газға көшіру» вне алиасов M5 (:27)",
+   "gold": "correct"
+  },
+  {
+   "id": "x-kk-08",
+   "cause": "F4: общий алиас «мектеп» → ложная M7; SUPPRESS только для («мектеп», «аймак») (:29, :39)",
+   "gold": "correct"
+  }
+ ],
+ "new_findings_frozen_parser": [
+  {
+   "id": "N1",
+   "severity": "high (инверсия смысла)",
+   "where": "research/round-3-results/K09/scripts/b2_parser.py:161 (@e4ac24f)",
+   "repro": "B2().predict('ЛРТ из плана уберите', 'shymkent') -> include ['M3']",
+   "expected": "exclude ['M3']",
+   "note": "Это свойство исследовательского парсера, а не сборки; в продукт он не подключён. B2 не исправлялся по заданию."
+  },
+  {
+   "id": "N2",
+   "severity": "medium (уверенный пустой ответ)",
+   "where": "b2_parser.py:212, :245",
+   "repro": "B2().predict('Модернизировать тепловые и водопроводные сети в Каратауском районе.', None) -> status ok, constraints {}",
+   "expected": "clarify (мера не распознана)"
+  }
+ ],
+ "test_incompatibility": "нет: скрипты K09 используют пути относительно своего расположения и выполнились в дереве TARGET без адаптера",
+ "thesis_result": "На независимом синтетическом внешнем наборе (32 фразы ru/kk, авторы и разметчики — модельные агенты) замороженный детерминированный разборщик B2 даёт 24/32 полностью верных ответов против 1/32 у исходного baseline A13. Город определяется во всех случаях (32/32), отказ с верной причиной — 16/16. Но точные ограничения только в 8/16, и все 8 ошибок уверенные. Held-out 34/34 — артефакт совпадения автора набора и парсера.",
+ "limitations": [
+  "все фразы синтетические; казахская часть не проверена носителем",
+  "независимость модельных агентов не равна человеческой проверке; κ=1.0 получено моделями одного семейства",
+  "8/32 уверенных ошибок (25 %) исключают применение B2 для автоматических действий без подтверждения человеком",
+  "n мал (32), ДИ широкие; названия районов официально не подтверждены; каталог мер учебный, для Шымкента регрет невычислим"
+ ],
+ "verdict_overall": "PASS: результат K09 T1 воспроизводится на TARGET побайтно. Ограничения и 2 новые находки по исследовательскому парсеру записаны. Дефектов сборки в зоне K09 не найдено."
+}

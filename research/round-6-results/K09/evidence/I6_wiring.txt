@@ -1,0 +1,3 @@
+## I6 parser wiring in TARGET (prototype, non-input files): K09 code / NL instructions / optimize / network
+no K09 code references
+no NL-instruction/optimize/network hooks in prototype

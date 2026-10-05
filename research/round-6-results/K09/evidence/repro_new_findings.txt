@@ -1,0 +1,2 @@
+'ЛРТ из плана уберите' shymkent -> {"status": "ok", "reason": null, "city": "shymkent", "constraints": {"include": ["M3"]}}
+'Модернизировать тепловые и водопроводные сети в Каратауском районе.' None -> {"status": "ok", "reason": null, "city": "shymkent", "constraints": {}}

@@ -1,0 +1,15 @@
+## I1 target tree: product code vs SOURCE (engine/agent/data/ui/web/tests/app.py/check.py)
+(пусто = идентично)
+## I2 frozen hashes
+scripts/b2_parser.py: OK
+scripts/b1_a13.py: OK
+scripts/t1_eval.py: OK
+dataset/t1_dataset.jsonl: OK
+dataset/gazetteer.json: OK
+dataset/measure_catalog.json: OK
+t1_dataset.jsonl: OK
+measure_catalog.json: OK
+gazetteer.json: OK
+ANNOTATION_RULES.md: OK
+dataset/external_v1/t1_external.jsonl: OK
+dataset/external_v1/raw_workflow_output.json: OK
