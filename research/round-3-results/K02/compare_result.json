@@ -1,0 +1,124 @@
+{
+ "rows": [
+  {
+   "id": "bir_article",
+   "text": "Бұл бір маңызды қадам.",
+   "has_numeric_claim": false,
+   "note": "«бір» как артикль",
+   "A_current_filter": {
+    "alone": "kept",
+    "with_ru_sentence": "kept"
+   },
+   "B_k02_r2_dictionary": {
+    "alone": "EvidenceError",
+    "with_ru_sentence": "removed"
+   },
+   "C_as_fact_id": "not_an_id",
+   "C_as_comment": "dropped (default) / shown as unverified (separate)"
+  },
+  {
+   "id": "kk_letters_only",
+   "text": "Іс әлі ұзақ.",
+   "has_numeric_claim": false,
+   "note": "нет трёх подряд русских/латинских букв",
+   "A_current_filter": {
+    "alone": "EvidenceError",
+    "with_ru_sentence": "kept"
+   },
+   "B_k02_r2_dictionary": {
+    "alone": "kept",
+    "with_ru_sentence": "kept"
+   },
+   "C_as_fact_id": "not_an_id",
+   "C_as_comment": "dropped (default) / shown as unverified (separate)"
+  },
+  {
+   "id": "kk_cardinal",
+   "text": "Үш аудан ғана жақсарады.",
+   "has_numeric_claim": true,
+   "note": "казахское числительное",
+   "A_current_filter": {
+    "alone": "kept",
+    "with_ru_sentence": "kept"
+   },
+   "B_k02_r2_dictionary": {
+    "alone": "EvidenceError",
+    "with_ru_sentence": "removed"
+   },
+   "C_as_fact_id": "not_an_id",
+   "C_as_comment": "dropped (default) / shown as unverified (separate)"
+  },
+  {
+   "id": "kk_ordinal",
+   "text": "Есіл ауданы үшінші орынға түседі.",
+   "has_numeric_claim": true,
+   "note": "порядковое, вне словаря",
+   "A_current_filter": {
+    "alone": "kept",
+    "with_ru_sentence": "kept"
+   },
+   "B_k02_r2_dictionary": {
+    "alone": "kept",
+    "with_ru_sentence": "kept"
+   },
+   "C_as_fact_id": "not_an_id",
+   "C_as_comment": "dropped (default) / shown as unverified (separate)"
+  },
+  {
+   "id": "kk_latin",
+   "text": "Bul josparda bes mektep bar.",
+   "has_numeric_claim": true,
+   "note": "латиница",
+   "A_current_filter": {
+    "alone": "kept",
+    "with_ru_sentence": "kept"
+   },
+   "B_k02_r2_dictionary": {
+    "alone": "kept",
+    "with_ru_sentence": "kept"
+   },
+   "C_as_fact_id": "not_an_id",
+   "C_as_comment": "dropped (default) / shown as unverified (separate)"
+  },
+  {
+   "id": "ru_digit",
+   "text": "Score вырос на 99 баллов.",
+   "has_numeric_claim": true,
+   "note": "неверное число цифрами",
+   "A_current_filter": {
+    "alone": "EvidenceError",
+    "with_ru_sentence": "removed"
+   },
+   "B_k02_r2_dictionary": {
+    "alone": "EvidenceError",
+    "with_ru_sentence": "removed"
+   },
+   "C_as_fact_id": "not_an_id",
+   "C_as_comment": "dropped (default) / shown as unverified (separate)"
+  }
+ ],
+ "verified_part_number_check": {
+  "ru": {
+   "numbers_in_text": [
+    "57,24",
+    "4,68",
+    "98",
+    "54,09",
+    "0"
+   ],
+   "all_from_catalog": true,
+   "current_filter_on_verified_text": "removed"
+  },
+  "kk": {
+   "numbers_in_text": [
+    "57,24",
+    "4,68",
+    "98",
+    "54,09",
+    "0"
+   ],
+   "all_from_catalog": true,
+   "current_filter_on_verified_text": "removed"
+  }
+ }
+}

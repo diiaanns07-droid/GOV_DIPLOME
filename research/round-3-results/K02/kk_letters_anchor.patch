@@ -1,0 +1,11 @@
+--- a/agent/evidence.py	2026-10-05 06:17:53.781559171 +0000
++++ b/agent/evidence.py	2026-10-05 06:17:53.786334278 +0000
+@@ -109,7 +109,7 @@
+             continue
+         kept.append(part.strip())
+     comment = "\n".join(kept).strip()
+-    if not comment or not re.search(r"[А-Яа-яA-Za-z]{3}", comment):
++    if not comment or not re.search(r"[^\W\d_]{3}", comment):
+         raise EvidenceError("Числовые утверждения показывает готовый отчёт движка. "
+                             "Напиши только краткий качественный комментарий без цифр, числительных, "
+                             "кодов мер, ref и оценок районов без данных.")
