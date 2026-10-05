@@ -1,0 +1,86 @@
+{
+ "python": "3.11.15",
+ "machine": "x86_64",
+ "results": {
+  "moderate_10c_10p_k3": {
+   "seconds_min": 0.0007,
+   "seconds_max": 0.001,
+   "evaluated": 1024,
+   "feasible_count": 5,
+   "status": "optimal",
+   "winners": {
+    "mean": [
+     "c07"
+    ],
+    "minimax": [
+     "c07"
+    ],
+    "coverage": [
+     "c07"
+    ]
+   },
+   "pareto_points": 3,
+   "problem_digest": "sha256:d5f3d42bd11d9287b234756c90e3e9ecf1ca5bbcff849f03aed0b9d97925d40d"
+  },
+  "max_16c_25p_k5": {
+   "seconds_min": 0.0505,
+   "seconds_max": 0.0509,
+   "evaluated": 65536,
+   "feasible_count": 913,
+   "status": "optimal",
+   "winners": {
+    "mean": [
+     "c00",
+     "c02",
+     "c07",
+     "c09",
+     "c13"
+    ],
+    "minimax": [
+     "c00",
+     "c02",
+     "c07",
+     "c09",
+     "c13"
+    ],
+    "coverage": [
+     "c15"
+    ]
+   },
+   "pareto_points": 12,
+   "problem_digest": "sha256:8b3710ee8b591c78454a77e469725477e78cc943c0dfe3ca2d1b947a6bbf7770"
+  },
+  "max_16c_25p_k5_all_feasible": {
+   "seconds_min": 0.279,
+   "seconds_max": 0.3228,
+   "evaluated": 65536,
+   "feasible_count": 6885,
+   "status": "optimal",
+   "winners": {
+    "mean": [
+     "c00",
+     "c01",
+     "c06",
+     "c08",
+     "c10"
+    ],
+    "minimax": [
+     "c00",
+     "c01",
+     "c06",
+     "c08",
+     "c10"
+    ],
+    "coverage": [
+     "c00",
+     "c01",
+     "c08",
+     "c10",
+     "c15"
+    ]
+   },
+   "pareto_points": 14,
+   "problem_digest": "sha256:8d57473dd5e8e490a7e1ccf06d2440691ca95a1a380e306d4770ecc4f5bb9504"
+  }
+ }
+}

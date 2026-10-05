@@ -1,0 +1,860 @@
+{
+ "moderate_10c_10p_k3": {
+  "context": {
+   "city_id": "synthetic-grid",
+   "bbox": [
+    50.0,
+    40.0,
+    50.03,
+    40.03
+   ],
+   "source_snapshot": "synthetic-grid-v1",
+   "records": [
+    {
+     "lon": 50.01975121038319,
+     "lat": 40.00586404150869,
+     "id": "s0",
+     "group": "school"
+    },
+    {
+     "lon": 50.01274206596168,
+     "lat": 40.00237884171553,
+     "id": "s1",
+     "group": "school"
+    },
+    {
+     "lon": 50.024943842647794,
+     "lat": 40.00254433812905,
+     "id": "s2",
+     "group": "school"
+    },
+    {
+     "lon": 50.00143650726801,
+     "lat": 40.027778285687184,
+     "id": "s3",
+     "group": "school"
+    }
+   ]
+  },
+  "scenario": {
+   "schema_version": "city-plan-v2",
+   "city_id": "synthetic-grid",
+   "source_snapshot": "synthetic-grid-v1",
+   "category": "school",
+   "control_points": [
+    {
+     "lon": 50.01645606542539,
+     "lat": 40.02058751490235,
+     "id": "p00",
+     "weight": 36
+    },
+    {
+     "lon": 50.02973158919896,
+     "lat": 40.020639491345,
+     "id": "p01",
+     "weight": 45
+    },
+    {
+     "lon": 50.001297139376184,
+     "lat": 40.00808132207864,
+     "id": "p02",
+     "weight": 52
+    },
+    {
+     "lon": 50.02240204370629,
+     "lat": 40.02651600021285,
+     "id": "p03",
+     "weight": 65
+    },
+    {
+     "lon": 50.01290538072939,
+     "lat": 40.00583368067209,
+     "id": "p04",
+     "weight": 48
+    },
+    {
+     "lon": 50.024679843395916,
+     "lat": 40.02943865541674,
+     "id": "p05",
+     "weight": 32
+    },
+    {
+     "lon": 50.00307147648561,
+     "lat": 40.004166301072694,
+     "id": "p06",
+     "weight": 50
+    },
+    {
+     "lon": 50.01343120274384,
+     "lat": 40.00847976272605,
+     "id": "p07",
+     "weight": 42
+    },
+    {
+     "lon": 50.01583316032777,
+     "lat": 40.01083084833132,
+     "id": "p08",
+     "weight": 92
+    },
+    {
+     "lon": 50.00774444563692,
+     "lat": 40.01506808661764,
+     "id": "p09",
+     "weight": 69
+    }
+   ],
+   "candidates": [
+    {
+     "lon": 50.01424633162185,
+     "lat": 40.00372125842112,
+     "id": "c00",
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 734000
+    },
+    {
+     "lon": 50.01875478865017,
+     "lat": 40.01810472569516,
+     "id": "c01",
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 787000
+    },
+    {
+     "lon": 50.0055287817472,
+     "lat": 40.026853131134494,
+     "id": "c02",
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 930000
+    },
+    {
+     "lon": 50.00224966570698,
+     "lat": 40.02976328207563,
+     "id": "c03",
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 887000
+    },
+    {
+     "lon": 50.02133878339142,
+     "lat": 40.026984322126914,
+     "id": "c04",
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 937000
+    },
+    {
+     "lon": 50.01013937756134,
+     "lat": 40.0154069109075,
+     "id": "c05",
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 309000
+    },
+    {
+     "lon": 50.00043813514451,
+     "lat": 40.01919526086477,
+     "id": "c06",
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 872000
+    },
+    {
+     "lon": 50.017890024600966,
+     "lat": 40.023806761203595,
+     "id": "c07",
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 456000
+    },
+    {
+     "lon": 50.02695179369199,
+     "lat": 40.01928851105811,
+     "id": "c08",
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 488000
+    },
+    {
+     "lon": 50.00042073476721,
+     "lat": 40.0054861892311,
+     "id": "c09",
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 963000
+    }
+   ],
+   "budget": 750000,
+   "max_selected": 3,
+   "coverage_radius_m": 500,
+   "required_ids": [],
+   "excluded_ids": [],
+   "selected_ids": []
+  }
+ },
+ "max_16c_25p_k5": {
+  "context": {
+   "city_id": "synthetic-grid",
+   "bbox": [
+    50.0,
+    40.0,
+    50.03,
+    40.03
+   ],
+   "source_snapshot": "synthetic-grid-v1",
+   "records": [
+    {
+     "lon": 50.00719380102095,
+     "lat": 40.01861366843957,
+     "id": "s0",
+     "group": "school"
+    },
+    {
+     "lon": 50.00903573049808,
+     "lat": 40.02975883715448,
+     "id": "s1",
+     "group": "school"
+    },
+    {
+     "lon": 50.008297402606395,
+     "lat": 40.00149367384955,
+     "id": "s2",
+     "group": "school"
+    },
+    {
+     "lon": 50.009891241035255,
+     "lat": 40.0154668373721,
+     "id": "s3",
+     "group": "school"
+    }
+   ]
+  },
+  "scenario": {
+   "schema_version": "city-plan-v2",
+   "city_id": "synthetic-grid",
+   "source_snapshot": "synthetic-grid-v1",
+   "category": "school",
+   "control_points": [
+    {
+     "lon": 50.0298442299111,
+     "lat": 40.000222802358586,
+     "id": "p00",
+     "weight": 77
+    },
+    {
+     "lon": 50.02008383107981,
+     "lat": 40.00321816471405,
+     "id": "p01",
+     "weight": 25
+    },
+    {
+     "lon": 50.01672912487811,
+     "lat": 40.0209303012192,
+     "id": "p02",
+     "weight": 52
+    },
+    {
+     "lon": 50.00844164442785,
+     "lat": 40.02282663379543,
+     "id": "p03",
+     "weight": 2
+    },
+    {
+     "lon": 50.01740437906,
+     "lat": 40.00572805603236,
+     "id": "p04",
+     "weight": 85
+    },
+    {
+     "lon": 50.00669661427885,
+     "lat": 40.015552468920916,
+     "id": "p05",
+     "weight": 23
+    },
+    {
+     "lon": 50.01652801082036,
+     "lat": 40.0119833998106,
+     "id": "p06",
+     "weight": 81
+    },
+    {
+     "lon": 50.02070769432664,
+     "lat": 40.00147040832721,
+     "id": "p07",
+     "weight": 93
+    },
+    {
+     "lon": 50.01983439975544,
+     "lat": 40.00413901674536,
+     "id": "p08",
+     "weight": 53
+    },
+    {
+     "lon": 50.013098127982985,
+     "lat": 40.01220954595229,
+     "id": "p09",
+     "weight": 74
+    },
+    {
+     "lon": 50.00946485514661,
+     "lat": 40.021400079961836,
+     "id": "p10",
+     "weight": 52
+    },
+    {
+     "lon": 50.02207559718205,
+     "lat": 40.02526509666185,
+     "id": "p11",
+     "weight": 82
+    },
+    {
+     "lon": 50.0132740783789,
+     "lat": 40.025846425463804,
+     "id": "p12",
+     "weight": 13
+    },
+    {
+     "lon": 50.02495173731555,
+     "lat": 40.004875450919805,
+     "id": "p13",
+     "weight": 59
+    },
+    {
+     "lon": 50.00984826503129,
+     "lat": 40.025033470941885,
+     "id": "p14",
+     "weight": 32
+    },
+    {
+     "lon": 50.00505827347772,
+     "lat": 40.029030739322025,
+     "id": "p15",
+     "weight": 60
+    },
+    {
+     "lon": 50.01001093439971,
+     "lat": 40.02171319094513,
+     "id": "p16",
+     "weight": 54
+    },
+    {
+     "lon": 50.003841544021434,
+     "lat": 40.020338116053026,
+     "id": "p17",
+     "weight": 38
+    },
+    {
+     "lon": 50.024417127030354,
+     "lat": 40.001523509847196,
+     "id": "p18",
+     "weight": 71
+    },
+    {
+     "lon": 50.02437688066299,
+     "lat": 40.02188720614939,
+     "id": "p19",
+     "weight": 71
+    },
+    {
+     "lon": 50.02099168250739,
+     "lat": 40.00233320686632,
+     "id": "p20",
+     "weight": 93
+    },
+    {
+     "lon": 50.00305749727932,
+     "lat": 40.021622327251364,
+     "id": "p21",
+     "weight": 51
+    },
+    {
+     "lon": 50.010217052005466,
+     "lat": 40.018168767678176,
+     "id": "p22",
+     "weight": 13
+    },
+    {
+     "lon": 50.02217716894843,
+     "lat": 40.003406167683785,
+     "id": "p23",
+     "weight": 78
+    },
+    {
+     "lon": 50.01483731737615,
+     "lat": 40.00635515964747,
+     "id": "p24",
+     "weight": 42
+    }
+   ],
+   "candidates": [
+    {
+     "lon": 50.0235712323805,
+     "lat": 40.00855008682439,
+     "id": "c00",
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 413000
+    },
+    {
+     "lon": 50.00827917208762,
+     "lat": 40.024527602820974,
+     "id": "c01",
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 717000
+    },
+    {
+     "lon": 50.02653502538879,
+     "lat": 40.02666870070587,
+     "id": "c02",
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 91000
+    },
+    {
+     "lon": 50.01166540433012,
+     "lat": 40.00576454554044,
+     "id": "c03",
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 822000
+    },
+    {
+     "lon": 50.01866292040898,
+     "lat": 40.0179814760029,
+     "id": "c04",
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 155000
+    },
+    {
+     "lon": 50.02631362649513,
+     "lat": 40.02325819008944,
+     "id": "c05",
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 989000
+    },
+    {
+     "lon": 50.00731822526292,
+     "lat": 40.00155118641162,
+     "id": "c06",
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 248000
+    },
+    {
+     "lon": 50.01391282348396,
+     "lat": 40.00131503756484,
+     "id": "c07",
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 57000
+    },
+    {
+     "lon": 50.0010477626564,
+     "lat": 40.005321181920664,
+     "id": "c08",
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 90000
+    },
+    {
+     "lon": 50.01553688076428,
+     "lat": 40.01908418791709,
+     "id": "c09",
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 115000
+    },
+    {
+     "lon": 50.00624368799575,
+     "lat": 40.00649249605479,
+     "id": "c10",
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 821000
+    },
+    {
+     "lon": 50.0013342359664,
+     "lat": 40.028918146919196,
+     "id": "c11",
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 170000
+    },
+    {
+     "lon": 50.02891335086907,
+     "lat": 40.01733829536575,
+     "id": "c12",
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 391000
+    },
+    {
+     "lon": 50.01494247577582,
+     "lat": 40.01339988579984,
+     "id": "c13",
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 242000
+    },
+    {
+     "lon": 50.01848333892831,
+     "lat": 40.013848206803225,
+     "id": "c14",
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 32000
+    },
+    {
+     "lon": 50.0158893187656,
+     "lat": 40.0014225688645,
+     "id": "c15",
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 998000
+    }
+   ],
+   "budget": 1000000,
+   "max_selected": 5,
+   "coverage_radius_m": 500,
+   "required_ids": [],
+   "excluded_ids": [],
+   "selected_ids": []
+  }
+ },
+ "max_16c_25p_k5_all_feasible": {
+  "context": {
+   "city_id": "synthetic-grid",
+   "bbox": [
+    50.0,
+    40.0,
+    50.03,
+    40.03
+   ],
+   "source_snapshot": "synthetic-grid-v1",
+   "records": [
+    {
+     "lon": 50.02080305564104,
+     "lat": 40.01150954710601,
+     "id": "s0",
+     "group": "school"
+    },
+    {
+     "lon": 50.01768876102155,
+     "lat": 40.02086836042228,
+     "id": "s1",
+     "group": "school"
+    },
+    {
+     "lon": 50.008637140556345,
+     "lat": 40.0265796715719,
+     "id": "s2",
+     "group": "school"
+    },
+    {
+     "lon": 50.01859346882749,
+     "lat": 40.010646163187275,
+     "id": "s3",
+     "group": "school"
+    }
+   ]
+  },
+  "scenario": {
+   "schema_version": "city-plan-v2",
+   "city_id": "synthetic-grid",
+   "source_snapshot": "synthetic-grid-v1",
+   "category": "school",
+   "control_points": [
+    {
+     "lon": 50.0232761377381,
+     "lat": 40.01729235590955,
+     "id": "p00",
+     "weight": 62
+    },
+    {
+     "lon": 50.02420289756065,
+     "lat": 40.02318422438488,
+     "id": "p01",
+     "weight": 60
+    },
+    {
+     "lon": 50.029315283312144,
+     "lat": 40.01031182938999,
+     "id": "p02",
+     "weight": 50
+    },
+    {
+     "lon": 50.01710173290722,
+     "lat": 40.009837966071785,
+     "id": "p03",
+     "weight": 80
+    },
+    {
+     "lon": 50.017930855613955,
+     "lat": 40.02161530255579,
+     "id": "p04",
+     "weight": 33
+    },
+    {
+     "lon": 50.007661725670005,
+     "lat": 40.01276237862612,
+     "id": "p05",
+     "weight": 35
+    },
+    {
+     "lon": 50.0226953641623,
+     "lat": 40.00257769960571,
+     "id": "p06",
+     "weight": 48
+    },
+    {
+     "lon": 50.02628626769456,
+     "lat": 40.00939491592756,
+     "id": "p07",
+     "weight": 16
+    },
+    {
+     "lon": 50.01026630006309,
+     "lat": 40.01745862015583,
+     "id": "p08",
+     "weight": 68
+    },
+    {
+     "lon": 50.00311433201847,
+     "lat": 40.007213245959846,
+     "id": "p09",
+     "weight": 43
+    },
+    {
+     "lon": 50.0191306787792,
+     "lat": 40.011544181764876,
+     "id": "p10",
+     "weight": 96
+    },
+    {
+     "lon": 50.02706137861727,
+     "lat": 40.00315781833743,
+     "id": "p11",
+     "weight": 87
+    },
+    {
+     "lon": 50.02293099830128,
+     "lat": 40.02365741000926,
+     "id": "p12",
+     "weight": 55
+    },
+    {
+     "lon": 50.0237895719916,
+     "lat": 40.01592574398274,
+     "id": "p13",
+     "weight": 74
+    },
+    {
+     "lon": 50.01993641697298,
+     "lat": 40.001262489212856,
+     "id": "p14",
+     "weight": 37
+    },
+    {
+     "lon": 50.01101027415437,
+     "lat": 40.02834196195766,
+     "id": "p15",
+     "weight": 81
+    },
+    {
+     "lon": 50.012083204335376,
+     "lat": 40.01976463648474,
+     "id": "p16",
+     "weight": 71
+    },
+    {
+     "lon": 50.01680378236215,
+     "lat": 40.01968846877001,
+     "id": "p17",
+     "weight": 39
+    },
+    {
+     "lon": 50.029787596382114,
+     "lat": 40.026257698373854,
+     "id": "p18",
+     "weight": 59
+    },
+    {
+     "lon": 50.02364806244574,
+     "lat": 40.00667868593132,
+     "id": "p19",
+     "weight": 92
+    },
+    {
+     "lon": 50.020199336103865,
+     "lat": 40.01988258945064,
+     "id": "p20",
+     "weight": 84
+    },
+    {
+     "lon": 50.00063044183009,
+     "lat": 40.02986661383019,
+     "id": "p21",
+     "weight": 90
+    },
+    {
+     "lon": 50.028889071609214,
+     "lat": 40.0091004979985,
+     "id": "p22",
+     "weight": 24
+    },
+    {
+     "lon": 50.013760392848035,
+     "lat": 40.01919783477977,
+     "id": "p23",
+     "weight": 67
+    },
+    {
+     "lon": 50.015861476388295,
+     "lat": 40.02449633160493,
+     "id": "p24",
+     "weight": 10
+    }
+   ],
+   "candidates": [
+    {
+     "lon": 50.027531347005734,
+     "lat": 40.012777858085826,
+     "id": "c00",
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 761
+    },
+    {
+     "lon": 50.02584574706318,
+     "lat": 40.029325818963876,
+     "id": "c01",
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 57
+    },
+    {
+     "lon": 50.007638360124766,
+     "lat": 40.0227904334478,
+     "id": "c02",
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 970
+    },
+    {
+     "lon": 50.00068808772695,
+     "lat": 40.01376617250704,
+     "id": "c03",
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 551
+    },
+    {
+     "lon": 50.01728305884209,
+     "lat": 40.02947612402093,
+     "id": "c04",
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 455
+    },
+    {
+     "lon": 50.00092661948199,
+     "lat": 40.0214894505581,
+     "id": "c05",
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 789
+    },
+    {
+     "lon": 50.00235955952889,
+     "lat": 40.012572866876845,
+     "id": "c06",
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 127
+    },
+    {
+     "lon": 50.00823062222188,
+     "lat": 40.02488234250552,
+     "id": "c07",
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 566
+    },
+    {
+     "lon": 50.00002916158928,
+     "lat": 40.02876991346851,
+     "id": "c08",
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 630
+    },
+    {
+     "lon": 50.01508938276624,
+     "lat": 40.023252728958425,
+     "id": "c09",
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 430
+    },
+    {
+     "lon": 50.019823312926555,
+     "lat": 40.001280042857154,
+     "id": "c10",
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 547
+    },
+    {
+     "lon": 50.007396710724834,
+     "lat": 40.02851719112744,
+     "id": "c11",
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 858
+    },
+    {
+     "lon": 50.01887817490282,
+     "lat": 40.012605981079034,
+     "id": "c12",
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 175
+    },
+    {
+     "lon": 50.010654376239884,
+     "lat": 40.00643686096846,
+     "id": "c13",
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 521
+    },
+    {
+     "lon": 50.01069822427035,
+     "lat": 40.01064292863521,
+     "id": "c14",
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 812
+    },
+    {
+     "lon": 50.0007147459152,
+     "lat": 40.01115035497308,
+     "id": "c15",
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 784
+    }
+   ],
+   "budget": 1000000,
+   "max_selected": 5,
+   "coverage_radius_m": 500,
+   "required_ids": [],
+   "excluded_ids": [],
+   "selected_ids": []
+  }
+ }
+}
