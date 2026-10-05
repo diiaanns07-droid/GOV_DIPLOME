@@ -1,0 +1,61 @@
+== Part 1a: Astana consistency (records per year from 3 groupings)
+2011: district=7 type_dtp=7 code=7
+2012: district=483 type_dtp=483 code=483
+2013: district=657 type_dtp=657 code=657
+2014: district=768 type_dtp=768 code=768
+2015: district=678 type_dtp=678 code=678
+2016: district=710 type_dtp=710 code=710
+2017: district=586 type_dtp=586 code=586
+2018: district=538 type_dtp=538 code=538
+2019: district=548 type_dtp=548 code=548
+2020: district=463 type_dtp=463 code=463
+2021: district=557 type_dtp=557 code=557
+2022: district=683 type_dtp=683 code=683
+2023: district=819 type_dtp=819 code=819
+2024: district=1887 type_dtp=1887 code=1887
+2025: district=2018 type_dtp=2018 code=2018
+2026: district=1519 type_dtp=1519 code=1519
+ALL CONSISTENT: True | total: 12921 (area_code 1971 count = 12921)
+
+== Part 1b: code '05' share and deaths, Astana vs Shymkent
+2021: AST 05=262/557=47.0% deaths05=16/35=45.7% | SHY 05=192/435=44.1%
+2022: AST 05=321/683=47.0% deaths05=13/28=46.4% | SHY 05=192/415=46.3%
+2023: AST 05=329/819=40.2% deaths05=14/31=45.2% | SHY 05=303/695=43.6%
+2024: AST 05=760/1887=40.3% deaths05=20/36=55.6% | SHY 05=811/1662=48.8%
+2025: AST 05=834/2018=41.3% deaths05=15/36=41.7% | SHY 05=855/1844=46.4%
+2026: AST 05=574/1519=37.8% deaths05=10/16=62.5% | SHY 05=548/1190=46.1%
+Records growth 2024/2023: AST 2.30x (deaths 31->36); SHY 2.39x
+
+== Part 1c: dark-time and outdoor lighting (code 05)
+2024: AST dark=278 (36.6%) off/absent=2 (0.7%) null==day:True | SHY dark=212 (26.1%) off/absent=13 (6.1%) null==day:True
+2025: AST dark=211 (25.3%) off/absent=3 (1.4%) null==day:True | SHY dark=302 (35.3%) off/absent=104 (34.4%) null==day:True
+2026: AST dark=217 (37.8%) off/absent=0 (0.0%) null==day:True | SHY dark=184 (33.6%) off/absent=65 (35.3%) null==day:True
+Astana years where lighting-null != (day + light-null): []
+
+== Part 1d: seasonality (code 05 by month)
+2024: AST Sep-Dec share=50.0% max/min month=116/34=3.41 | SHY Sep-Dec share=33.9% max/min=97/41=2.37 | uniform=33.3%
+2025: AST Sep-Dec share=41.0% max/min month=93/45=2.07 | SHY Sep-Dec share=32.7% max/min=94/58=1.62 | uniform=33.3%
+2024 regime check: AST mean Jan-Jul=41.0 vs Aug-Dec=94.6 (2023 monthly mean=27.4); SHY mean Jan-Jul=68.6 vs Aug-Dec=66.2 (2023 monthly mean=25.2)
+2026 Aug/Sep: AST 53/1 vs 2025 Aug/Sep 66/93; SHY 45/37 -> load lag check
+
+== Part 1e: winter road surface and deficiency field (code 05, all years)
+AST winter surface=1007/5773=17.4%; SHY winter surface=68/3375=2.0%
+AST deficiency: total=5773; 'отсутствуют'=49.5%; 'иные условия'=44.0%; 'скользкое покрытие' only=6.0%; infrastructure=28 (0.5%)
+
+== Part 2a: Shymkent regression (shared engine must reproduce v0)
+T01 49.6 (v0 49.6), T02 53.5 (v0 53.5) -> regression OK: True
+
+== Part 2b: Astana test situations
+{"origin": "observed-derived (AST-A10-F007: осенний пик 05)", "id": "AT01", "status": "RANKED", "score": 41.5, "band": "средний", "components": {"data_quality": 0.8, "history": {"obs": 3, "stratum_mean": 0.6, "eb": 1.15, "points": 11.5}, "systemic_points": 30}, "flags": ["Освещение неизвестно: нужен ночной осмотр.", "ДТП в тёмный сезон (сен–фев) без подтверждённого освещения: ночной осмотр в приоритете."], "next_step": "Выезд специалиста (день + ночь в тёмный сезон); отметить подтверждено/не подтверждено."}
+{"origin": "observed-derived (AST-A10-F009: ДТП на льду/снегу)", "id": "AT02", "status": "RANKED", "score": 29.2, "band": "низкий", "components": {"data_quality": 1.0, "history": {"obs": 2, "stratum_mean": 0.6, "eb": 0.92, "points": 9.2}, "systemic_points": 20}, "flags": ["ДТП на снегу/льду: проверить зимнее содержание подходов и видимость (снежные валы)."], "next_step": "Выезд специалиста (день + ночь в тёмный сезон); отметить подтверждено/не подтверждено."}
+{"origin": "observed-derived (AST-A10-F004: код района 197124 с 2025)", "id": "AT03", "status": "RANKED_SYSTEMIC_ONLY", "score": 40, "band": "средний", "components": {"data_quality": 1.0, "systemic_points": 40}, "flags": ["Нет покрытия данных ДТП за окно: история = неизвестно (не ноль).", "Новый район (Сарайшык) и уточнение границ 2026: окно истории короткое, районная привязка — по геометрии, не по коду."], "next_step": "Выезд специалиста (день + ночь в тёмный сезон); отметить подтверждено/не подтверждено."}
+{"origin": "observed-derived (AST-A10-F008: лаг загрузки сентября 2026)", "id": "AT04", "status": "RANKED", "score": 31.9, "band": "средний", "components": {"data_quality": 1.0, "history": {"obs": 1, "stratum_mean": 0.6, "eb": 0.69, "points": 6.9}, "systemic_points": 25}, "flags": ["Свежие месяцы загружены не полностью (лаг 45 дн.): не считать их 'спокойными'."], "next_step": "Выезд специалиста (день + ночь в тёмный сезон); отметить подтверждено/не подтверждено."}
+{"origin": "observed (AST-A10-F012/F013: Уркер, нет регулируемых переходов; новые школы)", "id": "AT05", "status": "RANKED", "score": 44.6, "band": "средний", "components": {"data_quality": 0.6, "history": {"obs": 0, "stratum_mean": 0.6, "eb": 0.46, "points": 4.6}, "systemic_points": 40}, "flags": ["0 зарегистрированных ДТП не означает безопасность.", "Освещение неизвестно: нужен ночной осмотр.", "Высокий прирост населения/школ: история ДТП отстаёт от экспозиции."], "next_step": "Выезд специалиста (день + ночь в тёмный сезон); отметить подтверждено/не подтверждено."}
+{"origin": "observed (AST-A10-F015: Сарыарка — 17 неосвещённых улиц из 330)", "id": "AT06", "status": "RANKED", "score": 21.9, "band": "низкий", "components": {"data_quality": 1.0, "history": {"obs": 1, "stratum_mean": 0.6, "eb": 0.69, "points": 6.9}, "systemic_points": 15}, "flags": ["Статус освещения взят на уровне улицы; привязку к переходу проверить."], "next_step": "Выезд специалиста (день + ночь в тёмный сезон); отметить подтверждено/не подтверждено."}
+{"origin": "observed (AST-A10-F017: ливень 23.07.2026)", "id": "AT07", "status": "REFUSE_EMERGENCY", "score": null, "band": null, "components": {}, "flags": [], "next_step": "Не очередь обследования: сообщить в 112/109 по регламенту города; после события — отдельная задача осмотра."}
+{"origin": "synthetic", "id": "AT08", "status": "RANKED", "score": 44.6, "band": "средний", "components": {"data_quality": 1.0, "history": {"obs": 0, "stratum_mean": 0.6, "eb": 0.46, "points": 4.6}, "systemic_points": 40}, "flags": ["0 зарегистрированных ДТП не означает безопасность."], "next_step": "Выезд специалиста (день + ночь в тёмный сезон); отметить подтверждено/не подтверждено."}
+{"origin": "synthetic", "id": "AT09", "status": "REFUSE_LOCATION", "score": null, "band": null, "components": {}, "flags": [], "next_step": "Ручная привязка: координат нет или расхождение источников > 25 м."}
+{"origin": "synthetic", "id": "AT10", "status": "REFUSE_GUARANTEE", "score": null, "band": null, "components": {}, "flags": [], "next_step": "Сайт не подтверждает безопасность маршрута; показать известные проблемы и пробелы данных."}
+
+Sensitivity (Astana): base order ['AT05', 'AT08', 'AT01', 'AT03', 'AT04', 'AT02', 'AT06']; scores {'AT01': 41.5, 'AT02': 29.2, 'AT03': 40, 'AT04': 31.9, 'AT05': 44.6, 'AT06': 21.9, 'AT08': 44.6}
+top-1 unchanged in 87/200; top-3 set unchanged in 122/200 perturbations (+-50%). Note: AT05 and AT08 tie at base weights -> top-1 is not meaningful; tie-break rule needed.

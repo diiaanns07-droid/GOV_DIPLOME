@@ -1,0 +1,1127 @@
+{
+ "meta": {
+  "agent_id": "A04",
+  "topic": "Инфраструктура и пространственная доступность",
+  "city": "Шымкент (город республиканского значения; не Туркестанская область)",
+  "searched_at": "2026-10-04T17:17:05Z/2026-10-04T17:45:00Z",
+  "access_limitations": "Нет веб-поиска и браузера; прокси песочницы блокирует все целевые домены (403 host_not_allowed); GitHub API исчерпал лимит IP. Факты о Шымкенте — только гипотезы (память модели до середины 2026 г.). Проверены: архив STUPITS и синтетический эксперимент."
+ },
+ "sources": [
+  {
+   "source_id": "A04-S001",
+   "title": "ПРОМПТ 04. Инфраструктура и пространственная доступность (задание A04)",
+   "publisher": "Координатор проекта (передан в чате)",
+   "url": null,
+   "published_at": "2026-10-04",
+   "accessed_at": "2026-10-04T17:17:05Z",
+   "source_type": "task_document",
+   "access_status": "read",
+   "notes": "Задание и стартовые указатели; не является источником фактов о Шымкенте."
+  },
+  {
+   "source_id": "A04-S002",
+   "title": "БНС: динамические таблицы по Шымкенту",
+   "publisher": "Бюро национальной статистики АСПиР РК",
+   "url": "https://stat.gov.kz/ru/region/shymkent/dynamic-tables/38/",
+   "published_at": null,
+   "accessed_at": "2026-10-04T17:17:05Z",
+   "source_type": "official_statistics",
+   "access_status": "blocked_in_sandbox",
+   "notes": "HTTP 403, x-deny-reason: host_not_allowed (прокси песочницы A04, не свойство сайта)"
+  },
+  {
+   "source_id": "A04-S003",
+   "title": "Портал открытых данных data.egov.kz",
+   "publisher": "Портал электронного правительства РК",
+   "url": "https://data.egov.kz/",
+   "published_at": null,
+   "accessed_at": "2026-10-04T17:17:05Z",
+   "source_type": "open_data_portal",
+   "access_status": "blocked_in_sandbox",
+   "notes": "HTTP 403, x-deny-reason: host_not_allowed (прокси песочницы A04, не свойство сайта). У координатора прямое открытие тоже завершилось ошибкой."
+  },
+  {
+   "source_id": "A04-S004",
+   "title": "Управление цифровизации г. Шымкент (страница на gov.kz)",
+   "publisher": "gov.kz",
+   "url": "https://www.gov.kz/memleket/entities/shymkent-sandyk?lang=ru",
+   "published_at": null,
+   "accessed_at": "2026-10-04T17:17:05Z",
+   "source_type": "official_page",
+   "access_status": "blocked_in_sandbox",
+   "notes": "HTTP 403, x-deny-reason: host_not_allowed (прокси песочницы A04, не свойство сайта)"
+  },
+  {
+   "source_id": "A04-S005",
+   "title": "Adilet — ИПС нормативных правовых актов",
+   "publisher": "Министерство юстиции РК",
+   "url": "https://adilet.zan.kz/rus",
+   "published_at": null,
+   "accessed_at": "2026-10-04T17:17:05Z",
+   "source_type": "legal_database",
+   "access_status": "blocked_in_sandbox",
+   "notes": "HTTP 403, x-deny-reason: host_not_allowed (прокси песочницы A04, не свойство сайта)"
+  },
+  {
+   "source_id": "A04-S006",
+   "title": "Overpass API (статус)",
+   "publisher": "OpenStreetMap community / overpass-api.de",
+   "url": "https://overpass-api.de/api/status",
+   "published_at": null,
+   "accessed_at": "2026-10-04T17:17:05Z",
+   "source_type": "api",
+   "access_status": "blocked_in_sandbox",
+   "notes": "HTTP 403, x-deny-reason: host_not_allowed (прокси песочницы A04, не свойство сайта)"
+  },
+  {
+   "source_id": "A04-S007",
+   "title": "Geofabrik: экстракт OSM Kazakhstan",
+   "publisher": "Geofabrik GmbH",
+   "url": "https://download.geofabrik.de/asia/kazakhstan.html",
+   "published_at": null,
+   "accessed_at": "2026-10-04T17:17:05Z",
+   "source_type": "data_download",
+   "access_status": "blocked_in_sandbox",
+   "notes": "HTTP 403, x-deny-reason: host_not_allowed (прокси песочницы A04, не свойство сайта)"
+  },
+  {
+   "source_id": "A04-S008",
+   "title": "OpenStreetMap",
+   "publisher": "OpenStreetMap Foundation",
+   "url": "https://www.openstreetmap.org",
+   "published_at": null,
+   "accessed_at": "2026-10-04T17:17:05Z",
+   "source_type": "map_platform",
+   "access_status": "blocked_in_sandbox",
+   "notes": "HTTP 403, x-deny-reason: host_not_allowed (прокси песочницы A04, не свойство сайта)"
+  },
+  {
+   "source_id": "A04-S009",
+   "title": "WorldPop Hub",
+   "publisher": "WorldPop, University of Southampton",
+   "url": "https://hub.worldpop.org",
+   "published_at": null,
+   "accessed_at": "2026-10-04T17:17:05Z",
+   "source_type": "population_grid",
+   "access_status": "blocked_in_sandbox",
+   "notes": "HTTP 403, x-deny-reason: host_not_allowed (прокси песочницы A04, не свойство сайта)"
+  },
+  {
+   "source_id": "A04-S010",
+   "title": "Global Human Settlement Layer",
+   "publisher": "European Commission JRC",
+   "url": "https://ghsl.jrc.ec.europa.eu",
+   "published_at": null,
+   "accessed_at": "2026-10-04T17:17:05Z",
+   "source_type": "population_grid",
+   "access_status": "blocked_in_sandbox",
+   "notes": "HTTP 403, x-deny-reason: host_not_allowed (прокси песочницы A04, не свойство сайта)"
+  },
+  {
+   "source_id": "A04-S011",
+   "title": "Humanitarian Data Exchange",
+   "publisher": "UN OCHA",
+   "url": "https://data.humdata.org",
+   "published_at": null,
+   "accessed_at": "2026-10-04T17:17:05Z",
+   "source_type": "data_portal",
+   "access_status": "blocked_in_sandbox",
+   "notes": "HTTP 403, x-deny-reason: host_not_allowed (прокси песочницы A04, не свойство сайта). Кандидат для Kontur Population и HOTOSM-экспортов."
+  },
+  {
+   "source_id": "A04-S012",
+   "title": "2GIS Казахстан",
+   "publisher": "2GIS",
+   "url": "https://2gis.kz",
+   "published_at": null,
+   "accessed_at": "2026-10-04T17:17:05Z",
+   "source_type": "commercial_map",
+   "access_status": "blocked_in_sandbox",
+   "notes": "HTTP 403, x-deny-reason: host_not_allowed (прокси песочницы A04, не свойство сайта). Коммерческий; массовое копирование, вероятно, запрещено условиями (проверить)."
+  },
+  {
+   "source_id": "A04-S013",
+   "title": "STUPITS «Аким на 5 часов», архив ветки main",
+   "publisher": "BAITC-Hacks / GitHub",
+   "url": "https://codeload.github.com/BAITC-Hacks/hack-d3b2c613-stupits/zip/refs/heads/main",
+   "published_at": null,
+   "accessed_at": "2026-10-04T17:17:05Z",
+   "source_type": "code_repository",
+   "access_status": "accessed",
+   "notes": "Коммит 834a25fb860dd5514d02c9274b70d7bf8a53a79c; 128 файлов; только чтение, проект не изменялся. GitHub API отказал по лимиту IP."
+  },
+  {
+   "source_id": "A04-S014",
+   "title": "Поиск репозиториев GitHub: shymkent; shymkent map; kazakhstan osm; kazakhstan population raster",
+   "publisher": "GitHub",
+   "url": "https://github.com/search?q=shymkent&type=repositories",
+   "published_at": null,
+   "accessed_at": "2026-10-04T17:17:05Z",
+   "source_type": "search_results",
+   "access_status": "accessed",
+   "notes": "116/0/0/0 результатов без авторизации; верхние результаты — личные репозитории без геоданных. Источником данных не является."
+  },
+  {
+   "source_id": "A04-S015",
+   "title": "Синтетический эксперимент A04 (радиус vs сеть, агрегат vs микрорайон, сравнение участков)",
+   "publisher": "A04 (собственный расчёт)",
+   "url": null,
+   "published_at": "2026-10-04",
+   "accessed_at": "2026-10-04T17:17:05Z",
+   "source_type": "synthetic_experiment",
+   "access_status": "executed",
+   "notes": "Файлы A04_synthetic_experiment.py и A04_synthetic_results.json; seed=42; networkx 3.6.1, numpy 2.4.4, Python 3.12.3."
+  },
+  {
+   "source_id": "A04-S016",
+   "title": "Luo W., Wang F. (2003) Measures of spatial accessibility to health care in a GIS environment (2SFCA). Environment and Planning B",
+   "publisher": "по памяти модели",
+   "url": null,
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "scientific_paper",
+   "access_status": "not_accessed",
+   "notes": "Не открыт; выходные данные по памяти, возможна ошибка. Проверить перед цитированием."
+  },
+  {
+   "source_id": "A04-S017",
+   "title": "Luo W., Qi Y. (2009) An enhanced two-step floating catchment area (E2SFCA) method. Health & Place",
+   "publisher": "по памяти модели",
+   "url": null,
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "scientific_paper",
+   "access_status": "not_accessed",
+   "notes": "Не открыт; выходные данные по памяти, возможна ошибка."
+  },
+  {
+   "source_id": "A04-S018",
+   "title": "Church R., ReVelle C. (1974) The maximal covering location problem",
+   "publisher": "по памяти модели",
+   "url": null,
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "scientific_paper",
+   "access_status": "not_accessed",
+   "notes": "Не открыт; выходные данные по памяти, возможна ошибка."
+  },
+  {
+   "source_id": "A04-S019",
+   "title": "Boeing G. (2017) OSMnx: New methods for acquiring, constructing, analyzing, and visualizing complex street networks. CEUS",
+   "publisher": "по памяти модели",
+   "url": null,
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "scientific_paper",
+   "access_status": "not_accessed",
+   "notes": "Не открыт; выходные данные по памяти, возможна ошибка."
+  },
+  {
+   "source_id": "A04-S020",
+   "title": "Barrington-Leigh C., Millard-Ball A. (2017) The world's user-generated road map is more than 80% complete. PLoS ONE",
+   "publisher": "по памяти модели",
+   "url": null,
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "scientific_paper",
+   "access_status": "not_accessed",
+   "notes": "Не открыт; полнота дорог не равна полноте тротуаров/POI."
+  },
+  {
+   "source_id": "A04-S021",
+   "title": "Метаданные ЦУР 11.2.1 и 11.7.1 (UN-Habitat / UN Stats)",
+   "publisher": "по памяти модели",
+   "url": null,
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "methodology",
+   "access_status": "not_accessed",
+   "notes": "Не открыт; пороги 500 м/1 км и 400 м по сети — по памяти, проверить."
+  },
+  {
+   "source_id": "A04-S022",
+   "title": "СП РК 3.01-101-2013 «Градостроительство. Планировка и застройка городских и сельских населенных пунктов»",
+   "publisher": "по памяти модели",
+   "url": null,
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "building_norm",
+   "access_status": "not_accessed",
+   "notes": "Не открыт; действующая редакция, таблица радиусов обслуживания и способ измерения неизвестны."
+  }
+ ],
+ "facts": [
+  {
+   "fact_id": "A04-F001",
+   "statement": "Из среды A04 все 12 целевых доменов (stat.gov.kz, data.egov.kz, gov.kz, adilet, Overpass, Geofabrik, OSM, WorldPop, GHSL, HDX, 2GIS, geoBoundaries) недоступны: HTTP 403 host_not_allowed.",
+   "kind": "observed",
+   "value": 12,
+   "unit": "доменов",
+   "geography": "среда A04",
+   "period": "2026-10-04 17:17 UTC",
+   "source_refs": [
+    {
+     "source_id": "A04-S002",
+     "locator": "curl -D заголовки ответа"
+    },
+    {
+     "source_id": "A04-S003",
+     "locator": "curl -D заголовки ответа"
+    },
+    {
+     "source_id": "A04-S004",
+     "locator": "curl -D заголовки ответа"
+    },
+    {
+     "source_id": "A04-S005",
+     "locator": "curl -D заголовки ответа"
+    },
+    {
+     "source_id": "A04-S006",
+     "locator": "curl -D заголовки ответа"
+    },
+    {
+     "source_id": "A04-S007",
+     "locator": "curl -D заголовки ответа"
+    },
+    {
+     "source_id": "A04-S008",
+     "locator": "curl -D заголовки ответа"
+    },
+    {
+     "source_id": "A04-S009",
+     "locator": "curl -D заголовки ответа"
+    },
+    {
+     "source_id": "A04-S010",
+     "locator": "curl -D заголовки ответа"
+    },
+    {
+     "source_id": "A04-S011",
+     "locator": "curl -D заголовки ответа"
+    },
+    {
+     "source_id": "A04-S012",
+     "locator": "curl -D заголовки ответа"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Ограничение песочницы, а не сайтов; geoBoundaries проверен, но в sources не вынесен."
+  },
+  {
+   "fact_id": "A04-F002",
+   "statement": "В STUPITS есть fetch_real_context.py: один запрос Overpass по рамке города, 5 категорий объектов OSM, раскладка по районам точкой в полигоне.",
+   "kind": "observed",
+   "value": 5,
+   "unit": "категорий",
+   "geography": "Астана (код)",
+   "period": "коммит 834a25f",
+   "source_refs": [
+    {
+     "source_id": "A04-S013",
+     "locator": "fetch_real_context.py, строки 1–25; data/real_context_meta.json → category_tags"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Код для Астаны; Шымкент не упоминается."
+  },
+  {
+   "fact_id": "A04-F003",
+   "statement": "Последний прогон fetch_real_context.py завершился статусом unavailable (ReadTimeout к overpass-api.de); real_context.json содержит нули по всем районам и категориям, которые по комментарию означают «нет данных».",
+   "kind": "observed",
+   "value": "status=unavailable; все значения 0",
+   "unit": null,
+   "geography": "Астана (данные репо)",
+   "period": "generated_at 2026-09-23T09:25:25Z",
+   "source_refs": [
+    {
+     "source_id": "A04-S013",
+     "locator": "data/real_context_meta.json; data/real_context.json; fetch_real_context.py:346, 364–372"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Для нового слоя использовать null, а не 0."
+  },
+  {
+   "fact_id": "A04-F004",
+   "statement": "Потребителей real_context в файлах .py/.js, кроме самого загрузчика, нет — нулевая заглушка не попадает в UI.",
+   "kind": "observed",
+   "value": 0,
+   "unit": "потребителей",
+   "geography": "репозиторий",
+   "period": "коммит 834a25f",
+   "source_refs": [
+    {
+     "source_id": "A04-S013",
+     "locator": "grep -rn real_context --include=*.py --include=*.js"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Проверены только .py и .js."
+  },
+  {
+   "fact_id": "A04-F005",
+   "statement": "README STUPITS в «Планах развития» предусматривает использование справочного слоя OSM в экспериментальном индексе доступности.",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": "репозиторий",
+   "period": "коммит 834a25f",
+   "source_refs": [
+    {
+     "source_id": "A04-S013",
+     "locator": "README.md, раздел «Планы развития»"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": null
+  },
+  {
+   "fact_id": "A04-F006",
+   "statement": "Слой районов Астаны в репозитории: 6 полигонов OSM с provenance (retrieved_at 2026-09-23T11:28:06Z, ODbL), Сарайшык с admin_level=8 и scoring_enabled=false.",
+   "kind": "observed",
+   "value": 6,
+   "unit": "полигонов",
+   "geography": "Астана",
+   "period": "2026-09-23",
+   "source_refs": [
+    {
+     "source_id": "A04-S013",
+     "locator": "data/astana_districts.geojson; docs/GEO_SOURCES.md"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Не юридические границы (так указано в GEO_SOURCES.md)."
+  },
+  {
+   "fact_id": "A04-F007",
+   "statement": "Меры M1–M14 в city_data.json имеют фиксированные стоимости и эффекты в условных единицах (например, M1: cost 18, effects T1 +6, T2 +9); README называет данные синтетическими.",
+   "kind": "observed",
+   "value": "M1 cost=18; T1 +6; T2 +9",
+   "unit": "у.е./баллы",
+   "geography": "Астана (учебный датасет)",
+   "period": "ТЗ хакатона",
+   "source_refs": [
+    {
+     "source_id": "A04-S013",
+     "locator": "data/city_data.json → measures[0]; README.md, раздел «Ограничения»"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Не переносить на реальный Шымкент."
+  },
+  {
+   "fact_id": "A04-F008",
+   "statement": "Синтетика, порог 500 м: покрытие населения по прямому радиусу 67,4 %, по сети 44,9 %; «ложно покрытых» 22,5 %.",
+   "kind": "synthetic",
+   "value": {
+    "euclid": 0.6741,
+    "network": 0.4493,
+    "false_covered": 0.2248
+   },
+   "unit": "доля населения",
+   "geography": "игрушечный город 2×2 км",
+   "period": "—",
+   "source_refs": [
+    {
+     "source_id": "A04-S015",
+     "locator": "A04_synthetic_results.json → coverage[0]"
+    }
+   ],
+   "derivation": "Многоисточниковый Дейкстра по решётке 50 м с барьером и промзоной; seed=42",
+   "confidence": "high",
+   "caveats": "Высокая уверенность в расчёте, не в масштабе для Шымкента: решётка завышает обход."
+  },
+  {
+   "fact_id": "A04-F009",
+   "statement": "Синтетика, порог 800 м: район покрыт по сети на 83,3 %, микрорайон SE — на 26,2 % (по радиусу SE 52,6 %).",
+   "kind": "synthetic",
+   "value": {
+    "district_network": 0.833,
+    "SE_network": 0.2619,
+    "SE_euclid": 0.5264
+   },
+   "unit": "доля населения",
+   "geography": "игрушечный город",
+   "period": "—",
+   "source_refs": [
+    {
+     "source_id": "A04-S015",
+     "locator": "A04_synthetic_results.json → coverage[1].by_microdistrict.SE"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Иллюстрация механизма маскирования, не данные Шымкента."
+  },
+  {
+   "fact_id": "A04-F010",
+   "statement": "Синтетика: лучший участок меняется при смене порога (500 м: A>C>B; 800 м: C>B>A); при фиксированном пороге порядок по радиусу и по сети совпал, но величины прироста различались (A при 800 м: 3 229 против 4 937).",
+   "kind": "synthetic",
+   "value": {
+    "rank_500": [
+     "A",
+     "C",
+     "B"
+    ],
+    "rank_800": [
+     "C",
+     "B",
+     "A"
+    ]
+   },
+   "unit": null,
+   "geography": "игрушечный город",
+   "period": "—",
+   "source_refs": [
+    {
+     "source_id": "A04-S015",
+     "locator": "A04_synthetic_results.json → site_comparison"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "H3 подтверждена частично; на реальной сети порядок может разойтись и по метрике."
+  },
+  {
+   "fact_id": "A04-F011",
+   "statement": "Синтетика: средневзвешенное сетевое расстояние после добавления любого из трёх участков почти одинаково (533–537 м) — малочувствительная метрика для приоритета.",
+   "kind": "synthetic",
+   "value": [
+    537,
+    536,
+    533
+   ],
+   "unit": "м",
+   "geography": "игрушечный город",
+   "period": "—",
+   "source_refs": [
+    {
+     "source_id": "A04-S015",
+     "locator": "site_comparison[*].sites.*.pop_weighted_mean_net_dist_after_m"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": null
+  },
+  {
+   "fact_id": "A04-F012",
+   "statement": "Непокрытое население SE при 800 м ≈ 9 443 чел.",
+   "kind": "derived",
+   "value": 9443,
+   "unit": "чел.",
+   "geography": "игрушечный город",
+   "period": "—",
+   "source_refs": [
+    {
+     "source_id": "A04-S015",
+     "locator": "coverage[1].by_microdistrict.SE"
+    }
+   ],
+   "derivation": "12 793 × (1 − 0,2619)",
+   "confidence": "high",
+   "caveats": "Синтетические входы."
+  },
+  {
+   "fact_id": "A04-F013",
+   "statement": "Шымкент — город республиканского значения с июня 2018 г.; Туркестанская область — отдельная единица.",
+   "kind": "hypothesis",
+   "value": null,
+   "unit": null,
+   "geography": "Шымкент",
+   "period": "2018",
+   "source_refs": [],
+   "derivation": "Память модели",
+   "confidence": "low",
+   "caveats": "Проверить акт на adilet.zan.kz; ряды БНС до 2018 г. могут иметь разрыв."
+  },
+  {
+   "fact_id": "A04-F014",
+   "statement": "В Шымкенте 5 районов: Абайский, Аль-Фарабийский, Енбекшинский, Каратауский, Туран (Туран образован около 2021 г.).",
+   "kind": "hypothesis",
+   "value": 5,
+   "unit": "районов",
+   "geography": "Шымкент",
+   "period": null,
+   "source_refs": [],
+   "derivation": "Память модели",
+   "confidence": "low",
+   "caveats": "Проверить акт и дату; OSM-границы могут быть устаревшими."
+  },
+  {
+   "fact_id": "A04-F015",
+   "statement": "Население Шымкента — порядка 1,2–1,3 млн человек (2024–2025).",
+   "kind": "hypothesis",
+   "value": null,
+   "unit": "чел.",
+   "geography": "Шымкент",
+   "period": "2024–2025",
+   "source_refs": [],
+   "derivation": "Память модели",
+   "confidence": "low",
+   "caveats": "Не использовать без БНС (A04-S002)."
+  },
+  {
+   "fact_id": "A04-F016",
+   "statement": "Нормы радиусов обслуживания советского происхождения обычно задают для детсадов, школ и поликлиник порядка 300 / 500 / 1000 м; значения и способ измерения в СП РК не проверены.",
+   "kind": "hypothesis",
+   "value": null,
+   "unit": "м",
+   "geography": "РК",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A04-S022",
+     "locator": "таблица радиусов обслуживания — не открыта"
+    }
+   ],
+   "derivation": "Память модели",
+   "confidence": "low",
+   "caveats": "До проверки использовать пороги только как параметры сценария."
+  },
+  {
+   "fact_id": "A04-F017",
+   "statement": "В Шымкенте повторяются подтопления улиц после ливней; проблема связана с ливневой канализацией и арыками.",
+   "kind": "hypothesis",
+   "value": null,
+   "unit": null,
+   "geography": "Шымкент",
+   "period": null,
+   "source_refs": [],
+   "derivation": "Память модели о публикациях СМИ",
+   "confidence": "low",
+   "caveats": "Нужно ≥10 датированных сообщений с адресами и официальные заявления."
+  },
+  {
+   "fact_id": "A04-F018",
+   "statement": "Периферийные и новые массивы, включая ИЖС, хуже обеспечены тротуарами, освещением и соцобъектами в пешей доступности.",
+   "kind": "hypothesis",
+   "value": null,
+   "unit": null,
+   "geography": "Шымкент, микрорайоны",
+   "period": null,
+   "source_refs": [],
+   "derivation": "Память модели",
+   "confidence": "low",
+   "caveats": "Требует сеточного расчёта и полевой проверки."
+  },
+  {
+   "fact_id": "A04-F019",
+   "statement": "Сеточные модели населения (GHS-POP, WorldPop) занижают население массивов, застроенных после эпохи входных данных.",
+   "kind": "hypothesis",
+   "value": null,
+   "unit": null,
+   "geography": "новые массивы",
+   "period": null,
+   "source_refs": [],
+   "derivation": "Общий механизм дисагрегации; не проверено для Шымкента",
+   "confidence": "medium",
+   "caveats": "Проверить сравнением с контурами зданий и вводом жилья."
+  },
+  {
+   "fact_id": "A04-F020",
+   "statement": "Методология ЦУР 11.2.1 считает доступ к остановкам по пешеходной сети (500 м / 1 км), а не по радиусу.",
+   "kind": "hypothesis",
+   "value": null,
+   "unit": "м",
+   "geography": "глобально",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A04-S021",
+     "locator": "метаданные — не открыты"
+    }
+   ],
+   "derivation": "Память модели",
+   "confidence": "low",
+   "caveats": "Проверить по unstats.un.org."
+  },
+  {
+   "fact_id": "A04-F021",
+   "statement": "Открытых геоданных по Шымкенту среди публичных репозиториев GitHub не найдено.",
+   "kind": "observed",
+   "value": 0,
+   "unit": "пригодных репозиториев",
+   "geography": "GitHub",
+   "period": "2026-10-04",
+   "source_refs": [
+    {
+     "source_id": "A04-S014",
+     "locator": "результаты поиска; верхние 10 репозиториев"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Поиск без авторизации, только репозитории; код не искался."
+  }
+ ],
+ "datasets": [
+  {
+   "dataset_id": "A04-D001",
+   "title": "OSM: пешеходная сеть и объекты (экстракт Kazakhstan)",
+   "publisher": "OpenStreetMap contributors / Geofabrik",
+   "source_ids": [
+    "A04-S007",
+    "A04-S006",
+    "A04-S008"
+   ],
+   "landing_url": "https://download.geofabrik.de/asia/kazakhstan.html",
+   "download_or_api_url": null,
+   "access_status": "unavailable",
+   "tested_at": "2026-10-04T17:17:05Z",
+   "geography": "Казахстан → рамка Шымкента",
+   "granularity": "объект/ребро",
+   "period": "снимок базы на дату загрузки",
+   "format": "osm.pbf / JSON Overpass",
+   "fields": [
+    "highway",
+    "footway",
+    "sidewalk",
+    "crossing",
+    "lit",
+    "amenity",
+    "healthcare",
+    "leisure",
+    "building",
+    "place"
+   ],
+   "units": null,
+   "update_frequency": "ежедневно (экстракт), по памяти",
+   "license": "ODbL (по памяти)",
+   "auth_requirement": "нет",
+   "limitations": "Недоступен из песочницы 2026-10-04 (host_not_allowed); полнота тротуаров и POI неизвестна.",
+   "next_retrieval_step": "Скачать экстракт, обрезать по границе Шымкента, сохранить osm_base timestamp и provenance как в GEO_SOURCES.md."
+  },
+  {
+   "dataset_id": "A04-D002",
+   "title": "Население по районам Шымкента (динамические ряды)",
+   "publisher": "БНС АСПиР РК",
+   "source_ids": [
+    "A04-S002"
+   ],
+   "landing_url": "https://stat.gov.kz/ru/region/shymkent/dynamic-tables/38/",
+   "download_or_api_url": null,
+   "access_status": "unavailable",
+   "tested_at": "2026-10-04T17:17:05Z",
+   "geography": "Шымкент",
+   "granularity": "город/район (предположительно)",
+   "period": null,
+   "format": null,
+   "fields": [
+    "район",
+    "год",
+    "численность"
+   ],
+   "units": "чел.",
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "Недоступен из песочницы; детализация ниже района неизвестна.",
+   "next_retrieval_step": "Открыть страницу, записать имя файла, таблицу и период; проверить разрыв ряда 2018 г."
+  },
+  {
+   "dataset_id": "A04-D003",
+   "title": "Реестры соцобъектов (ПМСП, детсады) на портале открытых данных",
+   "publisher": "владелец неизвестен (управления акимата / министерства)",
+   "source_ids": [
+    "A04-S003"
+   ],
+   "landing_url": "https://data.egov.kz/",
+   "download_or_api_url": null,
+   "access_status": "unavailable",
+   "tested_at": "2026-10-04T17:17:05Z",
+   "geography": "Шымкент",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [
+    "наименование",
+    "адрес",
+    "тип",
+    "мощность",
+    "координаты (если есть)"
+   ],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "Наличие наборов не проверено; у координатора портал тоже не открылся.",
+   "next_retrieval_step": "Поиск по порталу и сайтам управлений здравоохранения и образования; если нет — запрос владельцу."
+  },
+  {
+   "dataset_id": "A04-D004",
+   "title": "GHS-POP (население по сетке)",
+   "publisher": "EC JRC",
+   "source_ids": [
+    "A04-S010"
+   ],
+   "landing_url": "https://ghsl.jrc.ec.europa.eu",
+   "download_or_api_url": null,
+   "access_status": "unavailable",
+   "tested_at": "2026-10-04T17:17:05Z",
+   "geography": "глобально",
+   "granularity": "100 м (по памяти)",
+   "period": "эпохи с шагом 5 лет (по памяти)",
+   "format": "GeoTIFF",
+   "fields": [
+    "population"
+   ],
+   "units": "чел./ячейку",
+   "update_frequency": null,
+   "license": "CC BY 4.0 (по памяти, проверить)",
+   "auth_requirement": "нет",
+   "limitations": "Модель; новые массивы могут отсутствовать.",
+   "next_retrieval_step": "Скачать тайл, сравнить сумму по городу и районам с БНС."
+  },
+  {
+   "dataset_id": "A04-D005",
+   "title": "WorldPop (население по сетке)",
+   "publisher": "WorldPop",
+   "source_ids": [
+    "A04-S009"
+   ],
+   "landing_url": "https://hub.worldpop.org",
+   "download_or_api_url": null,
+   "access_status": "unavailable",
+   "tested_at": "2026-10-04T17:17:05Z",
+   "geography": "Казахстан",
+   "granularity": "100 м (по памяти)",
+   "period": null,
+   "format": "GeoTIFF",
+   "fields": [
+    "population"
+   ],
+   "units": "чел./ячейку",
+   "update_frequency": null,
+   "license": "CC BY 4.0 (по памяти, проверить)",
+   "auth_requirement": "нет",
+   "limitations": "Год входных данных проверить.",
+   "next_retrieval_step": "Сравнить с GHS-POP на тех же районах."
+  },
+  {
+   "dataset_id": "A04-D006",
+   "title": "Kontur Population (H3)",
+   "publisher": "Kontur / через HDX",
+   "source_ids": [
+    "A04-S011"
+   ],
+   "landing_url": "https://data.humdata.org",
+   "download_or_api_url": null,
+   "access_status": "unavailable",
+   "tested_at": "2026-10-04T17:17:05Z",
+   "geography": "Казахстан",
+   "granularity": "H3 (по памяти ~400 м)",
+   "period": null,
+   "format": "GeoPackage",
+   "fields": [
+    "h3",
+    "population"
+   ],
+   "units": "чел./ячейку",
+   "update_frequency": null,
+   "license": "CC BY 4.0 (по памяти, проверить)",
+   "auth_requirement": "нет",
+   "limitations": "Производный продукт; методику проверить.",
+   "next_retrieval_step": "Скачать, сравнить с GHS-POP."
+  },
+  {
+   "dataset_id": "A04-D007",
+   "title": "Ограничения размещения (зонирование генплана, кадастр, СЗЗ, водоохранные и охранные зоны)",
+   "publisher": "акимат Шымкента / уполномоченные органы",
+   "source_ids": [],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": "unavailable",
+   "tested_at": null,
+   "geography": "Шымкент",
+   "granularity": "участок/полигон",
+   "period": null,
+   "format": null,
+   "fields": [
+    "функциональная зона",
+    "категория земли",
+    "статус участка",
+    "тип ограничения"
+   ],
+   "units": null,
+   "update_frequency": null,
+   "license": "неизвестна",
+   "auth_requirement": "вероятно, ограниченный доступ",
+   "limitations": "Массовая выгрузка кадастра, вероятно, ограничена; не проверено.",
+   "next_retrieval_step": "Найти публичные графические материалы генплана и ПДП; уточнить условия публичной кадастровой карты."
+  },
+  {
+   "dataset_id": "A04-D008",
+   "title": "Районы Астаны (OSM) из STUPITS",
+   "publisher": "STUPITS / OpenStreetMap contributors",
+   "source_ids": [
+    "A04-S013"
+   ],
+   "landing_url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits",
+   "download_or_api_url": "https://codeload.github.com/BAITC-Hacks/hack-d3b2c613-stupits/zip/refs/heads/main",
+   "access_status": "sample_verified",
+   "tested_at": "2026-10-04T17:17:05Z",
+   "geography": "Астана",
+   "granularity": "район",
+   "period": "2026-09-23",
+   "format": "GeoJSON",
+   "fields": [
+    "id",
+    "name",
+    "osm_id",
+    "osm_admin_level",
+    "scoring_enabled",
+    "area_km2",
+    "retrieved_at"
+   ],
+   "units": "км² (area_km2 — приблизительно)",
+   "update_frequency": "по запуску fetch_districts.py",
+   "license": "ODbL",
+   "auth_requirement": "нет",
+   "limitations": "Не юридические границы; только для переноса на Астану.",
+   "next_retrieval_step": "Использовать как шаблон provenance для слоя Шымкента."
+  }
+ ],
+ "opportunities": [
+  {
+   "idea_id": "A04-O001",
+   "title": "Прототип: сетевая пешеходная доступность одного вида соцобъекта + сравнение 2–3 участков + what-if «добавить переход»",
+   "problem": "Районные средние и прямые радиусы могут скрывать микрорайоны без пешей доступности ПМСП или детсадов (гипотеза P1; механизм показан синтетически).",
+   "evidence_fact_ids": [
+    "A04-F008",
+    "A04-F009",
+    "A04-F010",
+    "A04-F018",
+    "A04-F002"
+   ],
+   "primary_user": "аналитик управления здравоохранения/образования/архитектуры акимата; депутат маслихата или НКО как проверяющий",
+   "user_task": "Найти микрорайоны с наибольшим непокрытым населением и выбрать из 2–3 участков тот, что даёт наибольший и устойчивый прирост покрытия",
+   "existing_solution": "неизвестно (вероятно, ГИС-специалисты или ручные радиусы; проверить)",
+   "proposed_addition": "Модуль access/: OSM-граф + сеточное население + реестр объектов → C(T), U(T), Gap, ΔU, Rank1 по сценариям; маркировка качества данных",
+   "required_dataset_ids": [
+    "A04-D001",
+    "A04-D002",
+    "A04-D003",
+    "A04-D004"
+   ],
+   "ai_role": "Не нужен для расчёта. Опционально — извлечение реестра из PDF/HTML с ручной сверкой выборки и объяснение результатов (числа от кода).",
+   "non_ai_baseline": "osmnx/networkx + многоисточниковый Дейкстра + жадное максимальное покрытие",
+   "success_metrics": [
+    "полнота и точность слоя объектов против реестра (в пределах 100 м)",
+    "доля населения с плохой привязкой > 200 м",
+    "расхождение сетевого расстояния с замером на 20 маршрутах",
+    "время и согласие решения у 3–5 пользователей против исходного приоритета"
+   ],
+   "feasibility_10_days": "высокая для технического конвейера на открытых слоях; средняя для достоверности (нужен официальный реестр и проверенный норматив)",
+   "blockers": [
+    "нет веб-доступа у A04 в этом проходе",
+    "реестр объектов не найден",
+    "норматив не проверен",
+    "нет границ микрорайонов (запасной вариант — H3)"
+   ],
+   "transfer_to_astana": "Высокая: тот же конвейер с границами из data/astana_districts.geojson; данные Астаны отдельно",
+   "next_action": "Второй проход: OSM-экстракт + подсчёт объектов вида X + сверка с официальным списком"
+  },
+  {
+   "idea_id": "A04-O002",
+   "title": "Продукт 1–3 мес.: аудит новых территорий — покрытие 4–5 видов объектов, статус запланированных, вычисляемые эффекты вместо M1–M14",
+   "problem": "Неясно, закрывают ли запланированные объекты разрывы доступности в новых массивах (гипотеза).",
+   "evidence_fact_ids": [
+    "A04-F007",
+    "A04-F009",
+    "A04-F018",
+    "A04-F019"
+   ],
+   "primary_user": "управление архитектуры и градостроительства; отдел планирования акимата",
+   "user_task": "Сравнить «было / станет, если план выполнят» по микрорайонам и выбрать K объектов из N запланированных",
+   "existing_solution": "генплан, ПДП и программы в документах (статус не проверен)",
+   "proposed_addition": "Матрица статусов объектов + пересчёт покрытия по сценариям + оптимизатор в стиле STUPITS, где эффект меры — вычисленный ΔU",
+   "required_dataset_ids": [
+    "A04-D001",
+    "A04-D003",
+    "A04-D004",
+    "A04-D007"
+   ],
+   "ai_role": "Извлечение перечней объектов из документов; классификация публичных агрегированных сообщений (для подтоплений); числа — только от кода",
+   "non_ai_baseline": "ручной ввод перечня + тот же движок покрытия",
+   "success_metrics": [
+    "доля запланированных объектов с подтверждённым статусом и источником",
+    "доля микрорайонов, где план закрывает разрыв, с диапазоном по сценариям",
+    "принятие метода хотя бы одним пользователем-специалистом"
+   ],
+   "feasibility_10_days": "низкая (рамка 1–3 месяца)",
+   "blockers": [
+    "доступ к генплану и ПДП",
+    "стоимость объектов неизвестна",
+    "зависимость от A05 и A06"
+   ],
+   "transfer_to_astana": "Средняя: метод переносим, документы и данные другие",
+   "next_action": "Собрать перечень запланированных соцобъектов одного района со статусами"
+  },
+  {
+   "idea_id": "A04-O003",
+   "title": "Исследование: наукаст населения новых массивов по снимкам и вводу жилья (альтернатива — модель горячих точек подтоплений)",
+   "problem": "Сеточное население может систематически занижать новые массивы (гипотеза A04-F019), что искажает дефицит объектов там, где он острее всего.",
+   "evidence_fact_ids": [
+    "A04-F019",
+    "A04-F017"
+   ],
+   "primary_user": "исследователь / дипломник; затем планировщик",
+   "user_task": "Получить свежую оценку населения новых массивов для расчёта спроса",
+   "existing_solution": "GHS-POP/WorldPop, итоги БНС по районам",
+   "proposed_addition": "Детекция и подсчёт новых зданий + калибровка по вводу жилья",
+   "required_dataset_ids": [
+    "A04-D004",
+    "A04-D002"
+   ],
+   "ai_role": "Реальная: компьютерное зрение для детекции зданий",
+   "non_ai_baseline": "контуры зданий из OSM или открытых наборов (наличие для РК проверить) × коэффициенты заселённости",
+   "success_metrics": [
+    "ошибка оценки населения массива против независимого источника",
+    "изменение ранга микрорайонов по дефициту после коррекции"
+   ],
+   "feasibility_10_days": "низкая",
+   "blockers": [
+    "нет разметки и снимков",
+    "нет эталонного населения по массивам"
+   ],
+   "transfer_to_astana": "Высокая (Астана тоже быстро застраивается)",
+   "next_action": "Сравнить GHS-POP с контурами зданий на 2–3 новых массивах"
+  }
+ ],
+ "open_questions": [
+  {
+   "question": "Какие реквизиты и горизонт у действующего генплана Шымкента, и какие корректировки внесены после 2018 г.?",
+   "why_important": "Без них нельзя отличить планируемый объект от обсуждаемого.",
+   "how_to_check": "adilet.zan.kz, сайт акимата и управления архитектуры; записать акт, дату и горизонт."
+  },
+  {
+   "question": "Есть ли официальный открытый реестр ПМСП и детсадов Шымкента с адресами и мощностью?",
+   "why_important": "Основной слой объектов; OSM не доказывает отсутствие.",
+   "how_to_check": "data.egov.kz, сайты управлений; при отсутствии — зафиксировать владельца и нужные поля."
+  },
+  {
+   "question": "Какие значения и способ измерения радиусов обслуживания в действующем СП РК?",
+   "why_important": "В синтетике выбор порога меняет лучший участок.",
+   "how_to_check": "Официальный текст СП РК 3.01-101-2013 или его замены."
+  },
+  {
+   "question": "Насколько полон OSM по пешеходной сети и объектам в частном секторе Шымкента?",
+   "why_important": "Определяет надёжность сетевых расстояний.",
+   "how_to_check": "Подсчёт тегов по районам + полевая проверка 20–30 маршрутов."
+  },
+  {
+   "question": "Откуда взять границы микрорайонов?",
+   "why_important": "Нужны для показа маскирования агрегатом.",
+   "how_to_check": "OSM place=*, материалы акимата; иначе H3 с подписями."
+  },
+  {
+   "question": "Занижают ли GHS-POP и WorldPop население новых массивов Шымкента?",
+   "why_important": "Главный источник систематической ошибки MVP.",
+   "how_to_check": "Сравнить суммы по сетке с БНС по районам и с контурами зданий."
+  },
+  {
+   "question": "Доступны ли агрегированные (без персональных данных) обращения в службу 109 по категориям и адресам?",
+   "why_important": "Независимая локализация P2, P3 и P5.",
+   "how_to_check": "Страница управления цифровизации (A04-S004), координация с агентом по цифровизации."
+  }
+ ],
+ "deliverables": {
+  "mvp_spec_section": "A04_report.md, раздел 6",
+  "mandatory_layers": [
+   "пешеходный граф",
+   "объекты вида X (официальный реестр + OSM)",
+   "население по сетке",
+   "районные итоги БНС",
+   "границы районов и микрорайонов (или H3)",
+   "ограничения размещения",
+   "запланированные объекты со статусом"
+  ],
+  "coverage_metrics": {
+   "C(T)": "Σ p_i·[d_i≤T] / Σ p_i",
+   "U(T)": "Σ p_i·[d_i>T]",
+   "Gap": "C_район − C_микрорайон",
+   "ΔU_s(T)": "прирост покрытия ранее непокрытых участком s",
+   "Rank1_s": "доля сценариев, где s лучший",
+   "Detour": "медиана d_сеть/d_прямая",
+   "Snap_flag_share": "доля населения с привязкой > 200 м"
+  },
+  "api_contract_proposal_not_implemented": {
+   "endpoint": "POST /api/access/coverage",
+   "request": {
+    "facility_type": "string",
+    "threshold_m": [
+     500,
+     800,
+     1000
+    ],
+    "speed_kmh": [
+     3.6,
+     4.5,
+     5.0
+    ],
+    "population_source": "ghs_pop|worldpop|kontur",
+    "extra_sites": [
+     {
+      "id": "A",
+      "lon": null,
+      "lat": null
+     }
+    ],
+    "added_links": [
+     {
+      "from_node": null,
+      "to_node": null,
+      "length_m": null
+     }
+    ]
+   },
+   "response": {
+    "by_unit": [
+     {
+      "unit_id": null,
+      "level": "district|microdistrict|h3",
+      "pop": null,
+      "C": null,
+      "U": null
+     }
+    ],
+    "sites": [
+     {
+      "id": null,
+      "dU": null,
+      "rank1_share": null
+     }
+    ],
+    "data_quality": {
+     "facility_layer": null,
+     "facility_completeness": null,
+     "snap_flag_share": null,
+     "layers": [
+      {
+       "name": null,
+       "source": null,
+       "retrieved_at": null,
+       "license": null,
+       "status": "ok|unavailable"
+      }
+     ]
+    }
+   },
+   "rule": "неизвестное значение = null со status, не 0"
+  },
+  "synthetic_files": [
+   "A04_synthetic_experiment.py",
+   "A04_synthetic_results.json"
+  ],
+  "second_pass_task": "A04_report.md, раздел 15"
+ }
+}

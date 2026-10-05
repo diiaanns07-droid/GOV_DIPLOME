@@ -1,0 +1,15 @@
+Инвентаризация сохранённых результатов
+
+Проверены наличие файлов и синтаксис JSON. Факты по ссылкам и присланные эксперименты ещё не перепроверены.
+
+shymkent: отчёты 13/14; evidence 13/14
+  10_safety: групп одинаковых файлов: 5; оригиналы сохранены
+  14_synthesis_product_audit: missing; report=False, evidence=False
+astana: отчёты 13/14; evidence 12/14
+  10_safety: partial; report=True, evidence=False
+  14_synthesis_product_audit: missing; report=False, evidence=False
+
+Ошибки распаковки: 0
+
+Архивы сохранены. Распакованные файлы находятся в extracted_* рядом с архивами.
+*.zip исключены корневым .gitignore; для совместной работы нужны распакованные файлы.
