@@ -20,6 +20,7 @@
 1. Проверены `origin`, текущая ветка и рабочее дерево.
 2. Поискал в репозитории и файловой системе контейнера ранее полученные результаты: каталог `research/`, файлы `evidence.json`, `STATUS.md`, ZIP-архивы с результатами.
 3. Создан этот файл. Других файлов не добавлял и не менял.
+4. Ветка отправлена на origin (см. «Сохранение в GitHub»).
 
 ## Выполненные проверки и результат
 | Команда | Результат |
@@ -41,10 +42,10 @@
 Внешние источники не запрашивались, поэтому `host_not_allowed` и другие сетевые блокировки не наблюдались. Отсутствие результатов — это отсутствие работы, а не отсутствие доступа к данным.
 
 ## Сохранение в GitHub
-- Локальный commit с этим файлом создан в ветке `claude/save-work-handoff-qho6eq` (родитель `834a25f`).
-- `git push -u origin claude/save-work-handoff-qho6eq` **не прошёл**: HTTP 403, «Claude doesn't have GitHub access to diiaanns07-droid/GOV_DIPLOME for your organization». Это отказ в правах (Claude GitHub App не установлен или не привязан), а не сбой сети, поэтому push не повторялся.
-- Итог: **только локальный commit**. Patch и git bundle переданы владельцу в чате.
-- Чтобы push сработал, нужно установить Claude GitHub App на репозиторий или переподключить GitHub на claude.ai.
+- Commit `a1eca419d2373f33e1a0d32c743d2109b4e755b3` с этим файлом создан в ветке `claude/save-work-handoff-qho6eq` (родитель `834a25f`).
+- Первые две попытки `git push -u origin claude/save-work-handoff-qho6eq` не прошли: HTTP 403, «Claude doesn't have GitHub access to diiaanns07-droid/GOV_DIPLOME for your organization». Это был отказ в правах, а не сбой сети. Владельцу передали patch и git bundle.
+- После того как владелец исправил доступ, третья попытка прошла: `* [new branch] claude/save-work-handoff-qho6eq`, код выхода 0. `git ls-remote` подтвердил `a1eca41…` на origin.
+- Этот раздел обновлён следующим коммитом в той же ветке (без amend и force push).
 
 ## Нерешённые вопросы
 1. Какой номер/роль (`NN_роль`) и какой город (govtech / astana) назначены этой сессии?
@@ -57,7 +58,7 @@
 ```bash
 git clone https://github.com/diiaanns07-droid/GOV_DIPLOME && cd GOV_DIPLOME
 git checkout claude/save-work-handoff-qho6eq
-git log --oneline -3          # базовый коммит 834a25f + коммит с этим STATUS.md
+git log --oneline -3          # базовый коммит 834a25f + коммиты с этим STATUS.md
 git diff 834a25f --stat       # единственное изменение — этот файл
 ls research                   # только research/handoffs/...
 ```
