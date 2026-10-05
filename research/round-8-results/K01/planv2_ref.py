@@ -253,7 +253,22 @@ def batch(fx_dir):
     return out
 
 
+def batch_dir(d, ctx_path):
+    """Verdict + digests for every *.json in a directory under one context file."""
+    ctx = json.loads(Path(ctx_path).read_text(encoding="utf-8"))
+    out = {}
+    for f in sorted(Path(d).glob("*.json")):
+        try:
+            sc, notes = import_plan(f.read_bytes(), ctx)
+            out[f.name] = {"valid": True, "problem_digest": problem_digest(sc), "scenario_digest": scenario_digest(sc)}
+        except PlanError as err:
+            out[f.name] = {"valid": False, "code": err.code}
+    return out
+
+
 def main(argv):
+    if argv[:1] == ["batch-dir"]:
+        print(json.dumps(batch_dir(argv[1], argv[2]), indent=1)); return 0
     if argv[:1] == ["batch"]:
         print(json.dumps(batch(argv[1] if len(argv) > 1 else HERE / "fixtures"), indent=1)); return 0
     if len(argv) < 4 or argv[0] != "--app-root":

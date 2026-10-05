@@ -1,0 +1,107 @@
+== node test_planv2.cjs --app-root <TMP>/city-evidence
+PASS fixtures MANIFEST sha256
+PASS real contexts == contextFromData(app data.js, facts.js)
+PASS fixture shy_valid_basic.json
+PASS fixture shy_valid_clinic_constraints.json
+PASS fixture shy_valid_forged_derived.json
+PASS fixture shy_valid_limits.json
+PASS fixture shy_valid_empty_candidates.json
+PASS fixture shy_invalid_foreign_snapshot.json
+PASS fixture shy_invalid_foreign_city.json
+PASS fixture shy_invalid_outside_bbox.json
+PASS fixture shy_invalid_weight_fraction.json
+PASS fixture shy_invalid_cost_zero.json
+PASS fixture shy_invalid_conflict.json
+PASS fixture shy_invalid_unknown_ref.json
+PASS fixture shy_invalid_17_candidates.json
+PASS fixture ast_valid_basic.json
+PASS fixture ast_valid_clinic_constraints.json
+PASS fixture ast_valid_forged_derived.json
+PASS fixture ast_valid_limits.json
+PASS fixture ast_valid_empty_candidates.json
+PASS fixture ast_invalid_foreign_snapshot.json
+PASS fixture ast_invalid_foreign_city.json
+PASS fixture ast_invalid_outside_bbox.json
+PASS fixture ast_invalid_weight_fraction.json
+PASS fixture ast_invalid_cost_zero.json
+PASS fixture ast_invalid_conflict.json
+PASS fixture ast_invalid_unknown_ref.json
+PASS fixture ast_invalid_17_candidates.json
+PASS fixture shy_invalid_26_points.json
+PASS fixture shy_invalid_dup_candidate_id.json
+PASS fixture shy_invalid_kind.json
+PASS fixture shy_invalid_candidate_category.json
+PASS fixture shy_invalid_extra_field.json
+PASS fixture shy_invalid_missing_field.json
+PASS fixture shy_invalid_url_id.json
+PASS fixture shy_invalid_long_id.json
+PASS fixture shy_invalid_bool_weight.json
+PASS fixture ast_invalid_budget.json
+PASS fixture ast_invalid_max_selected.json
+PASS fixture ast_invalid_radius.json
+PASS fixture ast_invalid_v1_schema.json
+PASS fixture shy_valid_unicode_escaped_keys.json
+PASS fixture shy_invalid_dup_key_via_escape.json
+PASS fixture shy_invalid_nan.json
+PASS fixture shy_invalid_1e999.json
+PASS fixture shy_invalid_bad_utf8.json
+PASS fixture shy_invalid_too_large.json
+PASS fixture shy_valid_exactly_256k.json
+
+48 passed, 0 failed, 0 skipped
+== node test_state.cjs --app-root <TMP>/city-evidence
+PASS roundtrip shy_valid_basic.json: export → import gives the same scenario and digests
+PASS roundtrip ast_valid_limits.json: export → import gives the same scenario and digests
+PASS roundtrip ast_valid_empty_candidates.json: export → import gives the same scenario and digests
+PASS export without derive has no derived_results; JS export → Python oracle import is identical
+PASS export refuses an invalid scenario object (no partial file)
+PASS validated copy is detached from the parsed input
+PASS PlanStore: every invalid fixture is rejected without changing the active scenario
+PASS PlanStore.edit: invalid edit rolls back, valid edit applies
+PASS PlanStore: stale worker answer ignored, city/category switch resets and invalidates pending answer
+PASS v1 city-whatif-v1 still works in the BUILD's whatif.js; v2 import rejects it (separate modes)
+PASS migrateV1: refuses without explicit budget/cost, keeps user cost exactly, weights=1, validates against v2 context
+
+11 passed, 0 failed, 0 skipped
+== node test_digest.cjs
+PASS digest base (same) 
+PASS digest perm_points (same) 
+PASS digest perm_candidates (same) 
+PASS digest perm_selected (same) 
+PASS digest perm_all_keys (same) 
+PASS digest compact_whitespace (same) 
+PASS digest bom_prefix (same) 
+PASS digest escaped_keys (same) 
+PASS digest escaped_id_chars (same) 
+PASS digest number_forms (same) 
+PASS digest coord_forms (same) 
+PASS digest forged_derived (same) 
+PASS digest selected_changed (selected) 
+PASS digest selected_empty (selected) 
+PASS digest budget_changed (problem) 
+PASS digest weight_changed (problem) 
+PASS digest cost_changed (problem) 
+PASS digest radius_changed (problem) 
+PASS digest max_selected_changed (problem) 
+PASS digest required_changed (problem) 
+PASS digest excluded_changed (problem) 
+PASS digest coord_1e7_changed (problem) 
+PASS digest point_id_renamed (problem) 
+PASS digest point_added (problem) 
+PASS digest cyrillic_id (bad_id) 
+PASS digest lone_surrogate_id (bad_id) 
+PASS digest zero_width_id (bad_id) 
+PASS digest dup_key_escaped (duplicate_key) 
+PASS digest proto_key (unknown_field) 
+PASS digest covers source_snapshot, city_id, category
+PASS digest format pd1:/sd1: + sha256 hex
+
+31 passed, 0 failed, 0 skipped
+== env PYTHONDONTWRITEBYTECODE=1 python3 -m unittest test_planv2_ref
+.....
+----------------------------------------------------------------------
+Ran 5 tests in 0.012s
+
+OK
+== CLI smoke
+target BUILD a5b5e2ddbe087c4eab8e947748cdf69dbae84a0d -> ALL PASS
