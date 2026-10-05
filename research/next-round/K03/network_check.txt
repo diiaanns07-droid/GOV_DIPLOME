@@ -1,0 +1,9 @@
+K03: проверка доступа к источникам, 2026-10-05 (UTC), облачная сессия Claude Code.
+Команда: curl -sS -o /dev/null -m 15 -w "%{http_code}" <URL>
+https://adilet.zan.kz/rus                                  -> 000, curl: (56) CONNECT tunnel failed, response 403
+https://stat.gov.kz/                                       -> 000, curl: (56) CONNECT tunnel failed, response 403
+https://overpass-api.de/api/status                         -> 000, curl: (56) CONNECT tunnel failed, response 403
+https://www.openstreetmap.org/api/0.6/relation/19733918    -> 000 (тот же отказ прокси)
+https://github.com                                         -> ответ получен (контроль: прокси работает)
+Повторные запросы не выполнялись. Вывод: официальная актуальность границ и свежесть OSM в этой сессии не проверяемы.
+pypi.org доступен: shapely 2.1.2 и pyproj 3.7.2 установлены во временный venv вне репозитория.
