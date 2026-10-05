@@ -1,0 +1,32 @@
+PASS card shown with category, explicit modes and 'по прямой' wording
+PASS 4 control points by click (one on a marker), object not selected
+PASS without project: after = before, 'без изменений'
+PASS click outside the square rejected with a clear message
+PASS keyboard: Enter on map adds a point (P5)
+PASS keyboard: point removed from the list
+PASS project placed: P2 nearer to project, delta > 0 shown as 'ближе на'
+PASS other rows: after ≤ before, delta = before − after
+PASS hypothetical not in observed counters (55 markers / 55 table rows / slice 55)
+PASS project drawn in separate hypothetical layer, labelled 'Проектный объект'
+PASS source of the nearest record shown (with QA mark when flagged)
+PASS move: project moved, recomputed (P3 now nearer to project)
+PASS template explanation over computed facts (not LLM), with digest
+PASS delete project: baseline restored exactly; old explanation dropped
+PASS project mode stays on after delete (next click puts it back)
+PASS project returned: same numbers as first placement
+PASS export: city-whatif-v1, snapshot, 4 points, hypothetical project, derived block labelled
+PASS export file name and no local paths
+PASS import nan.json rejected, scenario unchanged
+PASS import dup.json rejected, scenario unchanged
+PASS import foreign.json rejected, scenario unchanged
+PASS import two.json rejected, scenario unchanged
+PASS import big.json rejected, scenario unchanged
+PASS category change resets scenario with a reason
+PASS valid import restores scenario, category and recomputed numbers (file values ignored)
+PASS city switch: scenario reset with a reason, nothing carried over
+PASS Astana: clinic scenario computed (P1 nearer to project), 65 records untouched
+PASS Shymkent file in Astana: city switched, same scenario and numbers
+PASS Shymkent scenario with the Astana snapshot rejected
+PASS narrow viewport (380 px): no horizontal scroll with the what-if card
+PASS no console/page errors
+PASS no network requests

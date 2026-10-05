@@ -1,0 +1,218 @@
+{
+ "build_web": "prototypes/city-evidence/web (whatif.js)",
+ "adaptation": "snapshot strings replaced by value with the build's real v1 snapshot",
+ "agree": 25,
+ "total": 27,
+ "rows": [
+  {
+   "slot": "K01",
+   "file": "valid_shymkent_school_project.json",
+   "expected": "accept",
+   "got": "accept",
+   "agree": true
+  },
+  {
+   "slot": "K01",
+   "file": "valid_astana_clinic_no_project_untrusted_computed.json",
+   "expected": "accept",
+   "got": "unknown_field",
+   "agree": false
+  },
+  {
+   "slot": "K01",
+   "file": "invalid_foreign_snapshot.json",
+   "expected": "reject:snapshot",
+   "got": "foreign_snapshot",
+   "agree": true
+  },
+  {
+   "slot": "K01",
+   "file": "invalid_project_outside_bbox.json",
+   "expected": "reject:outside_bbox",
+   "got": "outside_bbox",
+   "agree": true
+  },
+  {
+   "slot": "K01",
+   "file": "invalid_category_mismatch_url_id.json",
+   "expected": "reject:id",
+   "got": "bad_id",
+   "agree": true
+  },
+  {
+   "slot": "K01",
+   "file": "invalid_nonfinite_duplicate_key.json",
+   "expected": "reject:non_finite|duplicate_key",
+   "got": "bad_json",
+   "agree": true
+  },
+  {
+   "slot": "K11",
+   "file": "Шымкент_мектеп_жоба.json",
+   "expected": "accept",
+   "got": "accept",
+   "agree": true,
+   "note": "Kazakh ids, school, 3 points + project"
+  },
+  {
+   "slot": "K11",
+   "file": "Астана емхана ұсынысы.json",
+   "expected": "accept",
+   "got": "accept",
+   "agree": true,
+   "note": "spaces + Kazakh in file name"
+  },
+  {
+   "slot": "K11",
+   "file": "Шымкент_без_проекта_10_точек.json",
+   "expected": "accept",
+   "got": "accept",
+   "agree": true,
+   "note": "max 10 points, proposed_object null"
+  },
+  {
+   "slot": "K11",
+   "file": "с_BOM_блокнот.json",
+   "expected": "accept",
+   "got": "accept",
+   "agree": true,
+   "note": "UTF-8 BOM + CRLF as saved by Windows Notepad -> note utf8_bom_stripped"
+  },
+  {
+   "slot": "K11",
+   "file": "с_результатами.json",
+   "expected": "accept",
+   "got": "unknown_field",
+   "agree": false,
+   "note": "imported results are dropped, never trusted"
+  },
+  {
+   "slot": "K11",
+   "file": "nan.json",
+   "expected": "reject:E_NONFINITE",
+   "got": "bad_json",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "slot": "K11",
+   "file": "infinity.json",
+   "expected": "reject:E_NONFINITE",
+   "got": "bad_json",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "slot": "K11",
+   "file": "1e999.json",
+   "expected": "reject:E_NONFINITE",
+   "got": "bad_json",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "slot": "K11",
+   "file": "дубль_ключа.json",
+   "expected": "reject:E_DUPLICATE_KEY",
+   "got": "bad_json",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "slot": "K11",
+   "file": "дубль_id.json",
+   "expected": "reject:E_DUPLICATE_ID",
+   "got": "duplicate_id",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "slot": "K11",
+   "file": "чужой_срез.json",
+   "expected": "reject:E_SNAPSHOT",
+   "got": "foreign_snapshot",
+   "agree": true,
+   "note": "snapshot of the other city"
+  },
+  {
+   "slot": "K11",
+   "file": "чужой_город.json",
+   "expected": "reject:E_CITY",
+   "got": "bad_city",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "slot": "K11",
+   "file": "вне_квадрата_Астана.json",
+   "expected": "reject:E_OUTSIDE_BBOX",
+   "got": "outside_bbox",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "slot": "K11",
+   "file": "11_точек.json",
+   "expected": "reject:E_POINTS",
+   "got": "bad_points",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "slot": "K11",
+   "file": "два_проекта.json",
+   "expected": "reject:E_MULTIPLE_PROJECTS",
+   "got": "too_many_proposed",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "slot": "K11",
+   "file": "url_в_id.json",
+   "expected": "reject:E_ID_FORBIDDEN",
+   "got": "bad_id",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "slot": "K11",
+   "file": "nfd_id.json",
+   "expected": "reject:E_ID_NOT_NFC",
+   "got": "bad_id",
+   "agree": true,
+   "note": "visually equal to NFC 'дом-й' but different code points"
+  },
+  {
+   "slot": "K11",
+   "file": "cp1251.json",
+   "expected": "reject:E_NOT_UTF8",
+   "got": "bad_encoding",
+   "agree": true,
+   "note": "Russian-only scenario saved in the Windows ANSI code page (Kazakh text cannot be encoded in cp1251)"
+  },
+  {
+   "slot": "K11",
+   "file": "версия_2.json",
+   "expected": "reject:E_VERSION",
+   "got": "bad_version",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "slot": "K11",
+   "file": "категория_проекта.json",
+   "expected": "reject:E_CATEGORY",
+   "got": "bad_category",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "slot": "K11",
+   "file": "лишнее_поле.json",
+   "expected": "reject:E_UNKNOWN_FIELD",
+   "got": "unknown_field",
+   "agree": true,
+   "note": ""
+  }
+ ]
+}

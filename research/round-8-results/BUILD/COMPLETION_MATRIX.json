@@ -1,0 +1,189 @@
+{
+ "build": "round 8",
+ "candidate_code_sha": "3e1302aa583594b0bf674090ac9c2d49ac424dae",
+ "branch": "claude/beautiful-clarke-sbzomj",
+ "spec": "codex/research-import-2026-10-05 @ c3f6c00:research/round-8/CORE_SPEC.txt, BUILD.txt",
+ "status_rule": "pass = test run on the clean worktree of the candidate SHA; not_run / not_implemented are named, never counted as pass",
+ "requirements": [
+  {
+   "requirement": "S1.1 baseline check_all + whatif тесты до v2",
+   "code": "—",
+   "tests": "check_all 16/16, whatif 66, whatif_smoke 32, smoke 24 на a5b5e2d",
+   "status": "pass"
+  },
+  {
+   "requirement": "S1.1 дефекты импорта v1 исправить до v2",
+   "code": "prototypes/city-evidence/web/whatif.js (ID: буквы любого алфавита + NFC; bad_encoding)",
+   "tests": "adapters/r7_independent_fixtures.cjs (K01/K11 r7): 25/27; tests/whatif.cjs",
+   "status": "pass (2 намеренных расхождения в ISSUE_LOG)"
+  },
+  {
+   "requirement": "S1.2 city-plan-v2 отдельный режим, v1 не сломан",
+   "code": "prototypes/city-evidence/web/app.js setTool/EXT, prototypes/city-evidence/web/plan-ui.js",
+   "tests": "prototypes/city-evidence/tests/plan_smoke.cjs: tool switch; v1 scenario intact; whatif_smoke 32/32",
+   "status": "pass"
+  },
+  {
+   "requirement": "S1.2 ≤16 кандидатов с cost, ≤25 точек с weight, budget/max_selected, required/excluded, radius",
+   "code": "prototypes/city-evidence/web/plan.js validatePlanScenario; prototypes/city-evidence/web/plan-ui.js editor",
+   "tests": "prototypes/city-evidence/tests/plan.cjs: rejects 26 points/17 candidates/weight/cost/budget/max/radius/overlap; prototypes/city-evidence/tests/plan_smoke.cjs: editor",
+   "status": "pass"
+  },
+  {
+   "requirement": "S1.2 ручной набор: feasibility и таблица before/after",
+   "code": "prototypes/city-evidence/web/plan.js evaluatePlan/feasibility; prototypes/city-evidence/web/plan-ui.js renderManual",
+   "tests": "prototypes/city-evidence/tests/plan.cjs: evaluatePlan = oracle ×15; prototypes/city-evidence/tests/plan_smoke.cjs: over budget / constraints",
+   "status": "pass"
+  },
+  {
+   "requirement": "S1.3 source_snapshot / metric / version digest привязаны к inputs; данные immutable",
+   "code": "prototypes/city-evidence/web/plan.js sourceSnapshot, makeContext (deepFreeze), problemDigest/scenarioDigest",
+   "tests": "prototypes/city-evidence/tests/plan.cjs: frozen, snapshot v1≠v2, digest order-independent, sensitive to every input",
+   "status": "pass"
+  },
+  {
+   "requirement": "S1.4 UI + evaluatePlan в обоих городах",
+   "code": "prototypes/city-evidence/web/plan-ui.js",
+   "tests": "prototypes/city-evidence/tests/plan_smoke.cjs: Shymkent manual, Astana demo",
+   "status": "pass"
+  },
+  {
+   "requirement": "S2.1 матрица расстояний, перебор ≤65536, три цели, Парето, ties, infeasible/cancel",
+   "code": "prototypes/city-evidence/web/plan.js precompute/createSearch",
+   "tests": "prototypes/city-evidence/tests/plan.cjs: optimizePlans = oracle ×15 (incl. 2×16×25), order-independence, cancel, incomplete≠optimal",
+   "status": "pass"
+  },
+  {
+   "requirement": "S2.2 Worker или чанки, прогресс, request_id/digest, изменение параметров обесценивает",
+   "code": "prototypes/city-evidence/web/plan-ui.js startSearch/tick (чанки 2048; Worker невозможен на file://)",
+   "tests": "prototypes/city-evidence/tests/plan_smoke.cjs: progress, cancel, budget change → stale, change during run → discarded",
+   "status": "pass"
+  },
+  {
+   "requirement": "S2.2 найденный план не применяется сам",
+   "code": "prototypes/city-evidence/web/plan-ui.js applyPlan",
+   "tests": "prototypes/city-evidence/tests/plan_smoke.cjs: search does not auto-apply; apply; restore",
+   "status": "pass"
+  },
+  {
+   "requirement": "S2.3 сверка с независимым Python-оракулом; required>B, zero budget, no candidates, ties, no baseline, dominated",
+   "code": "prototypes/city-evidence/tools/plan_oracle.py, tests/expected_plans.json",
+   "tests": "prototypes/city-evidence/tests/plan.cjs + tests/test_plan_oracle.py (ручная арифметика)",
+   "status": "pass"
+  },
+  {
+   "requirement": "S2.3 не требовать трёх разных победителей",
+   "code": "prototypes/city-evidence/web/plan-ui.js карточки «тот же план, что …»",
+   "tests": "prototypes/city-evidence/tests/plan.cjs: identical winners allowed; explanation 'нет трёх разных решений'",
+   "status": "pass"
+  },
+  {
+   "requirement": "S2.4 экран сравнения и кнопка apply",
+   "code": "prototypes/city-evidence/web/plan-ui.js #plCompare",
+   "tests": "prototypes/city-evidence/tests/plan_smoke.cjs: comparison cards with 3 Apply buttons",
+   "status": "pass"
+  },
+  {
+   "requirement": "S3.1 карточки сравнения + объяснение по фактам без LLM, digest problem/scenario",
+   "code": "prototypes/city-evidence/web/plan.js explainPlans/explanationDigest; prototypes/city-evidence/web/plan-ui.js",
+   "tests": "prototypes/city-evidence/tests/plan.cjs: template, trade-off, stale rejected; prototypes/city-evidence/tests/plan_smoke.cjs: explanation dropped on change",
+   "status": "pass"
+  },
+  {
+   "requirement": "S3.2 Парето: таблица обязательна, график желателен",
+   "code": "prototypes/city-evidence/web/plan-ui.js #plPareto, paretoChart",
+   "tests": "prototypes/city-evidence/tests/plan_smoke.cjs: table rows = pareto, chart present",
+   "status": "pass"
+  },
+  {
+   "requirement": "S3.2 чувствительность 3 бюджета, подписи усл. ед.",
+   "code": "prototypes/city-evidence/web/plan.js sensitivity; prototypes/city-evidence/web/plan-ui.js #plSens",
+   "tests": "prototypes/city-evidence/tests/plan.cjs: sensitivity = oracle ×15; prototypes/city-evidence/tests/plan_smoke.cjs: rows 0/300/600",
+   "status": "pass"
+  },
+  {
+   "requirement": "S3.3 strict JSON v1/v2, reject unknown source и forged derived_results, атомарно",
+   "code": "prototypes/city-evidence/web/plan.js exportPlanScenario/importPlanScenario",
+   "tests": "prototypes/city-evidence/tests/plan.cjs: forged ×3, foreign snapshot, NaN/Inf/1e999/dup/oversize; prototypes/city-evidence/tests/plan_smoke.cjs: 5 bad files, state unchanged",
+   "status": "pass"
+  },
+  {
+   "requirement": "S3.3 миграция v1→v2 без молчаливой подстановки cost",
+   "code": "prototypes/city-evidence/web/plan.js wrong_version",
+   "tests": "prototypes/city-evidence/tests/plan.cjs/prototypes/city-evidence/tests/plan_smoke.cjs: v1 file rejected with hint",
+   "status": "pass (миграция не реализована — режимы раздельные, допускается спекой)"
+  },
+  {
+   "requirement": "S3.4 самодостаточный HTML-отчёт",
+   "code": "prototypes/city-evidence/web/plan.js reportHtml",
+   "tests": "prototypes/city-evidence/tests/plan.cjs: no script, escaped, CSP; prototypes/city-evidence/tests/plan_smoke.cjs: downloaded report",
+   "status": "pass"
+  },
+  {
+   "requirement": "S4.1 UI оба города, перенос/удаление кандидата, бюджет, infeasible, cancel/stale, apply, export/import, 390px/клавиатура",
+   "code": "prototypes/city-evidence/web/plan-ui.js",
+   "tests": "prototypes/city-evidence/tests/plan_smoke.cjs 52 проверки",
+   "status": "pass (клавиатура: Enter на карте/кнопках, ввод чисел; экранный диктор не проверялся)"
+  },
+  {
+   "requirement": "S4.2 максимум 16×25: время/память/отзывчивость, ОС/Node/браузер",
+   "code": "prototypes/city-evidence/tools/bench_plan.cjs",
+   "tests": "BENCHMARK.json",
+   "status": "pass (только эта машина)"
+  },
+  {
+   "requirement": "S4.2 ограничения проверяются до дорогой работы",
+   "code": "prototypes/city-evidence/web/plan.js validatePlanScenario до createSearch; required-проверки до перебора",
+   "tests": "BENCHMARK.json validation_before_work; prototypes/city-evidence/tests/plan.cjs: infeasible 0 subsets",
+   "status": "pass"
+  },
+  {
+   "requirement": "S4.3 v1, источники и QA не регрессируют; smoke/check_all; independent тесты",
+   "code": "—",
+   "tests": "smoke 24/24, whatif_smoke 32/32, check_all 18/18; r7 fixtures K01/K11 25/27",
+   "status": "pass (K02,K03,K05–K10,K12 r7 пакеты не запускались — см. ISSUE_LOG)"
+  },
+  {
+   "requirement": "S4.4 чистое извлечение точного SHA, импорты, README/DEMO_GUIDE",
+   "code": "worktree 3e1302a",
+   "tests": "results/*.txt, check_all.json; index.html 7 scripts present",
+   "status": "pass"
+  },
+  {
+   "requirement": "S4.5 COMPLETION_MATRIX, benchmark, ISSUE_LOG, HANDOFF",
+   "code": "research/round-8-results/BUILD/",
+   "tests": "—",
+   "status": "pass"
+  },
+  {
+   "requirement": "CORE: weighted_mean null при unknown, max null при unknown, covered/coverage_fraction, cost",
+   "code": "prototypes/city-evidence/web/plan.js metricsOf",
+   "tests": "prototypes/city-evidence/tests/plan.cjs: no baseline cases; oracle compare",
+   "status": "pass"
+  },
+  {
+   "requirement": "CORE: unknown ранжируется раньше partial sum; max=∞ внутри, null наружу",
+   "code": "prototypes/city-evidence/web/plan.js KEYS",
+   "tests": "tests/test_plan_oracle.py test_unknown_ranks_before_partial_sum; oracle compare",
+   "status": "pass"
+  },
+  {
+   "requirement": "CORE: равные пары Парето свёрнуты к одному представителю",
+   "code": "prototypes/city-evidence/web/plan.js result()",
+   "tests": "test_plan_oracle test_equal_pairs_collapse_in_pareto; ties_equal_costs",
+   "status": "pass"
+  },
+  {
+   "requirement": "CORE: смена города/категории сбрасывает сценарий, старый ответ не применяется",
+   "code": "prototypes/city-evidence/web/plan-ui.js onCity/setCategory/reset",
+   "tests": "prototypes/city-evidence/tests/plan_smoke.cjs: category/city reset; switch to Shymkent drops result",
+   "status": "pass"
+  },
+  {
+   "requirement": "CORE: дополнительная проверка весов/радиуса (исследование параметров)",
+   "code": "—",
+   "tests": "—",
+   "status": "not_implemented (необязательно)"
+  }
+ ]
+}

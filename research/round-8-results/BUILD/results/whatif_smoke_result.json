@@ -1,0 +1,133 @@
+{
+ "url": "web/index.html (file://)",
+ "results": [
+  {
+   "name": "card shown with category, explicit modes and 'по прямой' wording",
+   "ok": true
+  },
+  {
+   "name": "4 control points by click (one on a marker), object not selected",
+   "ok": true
+  },
+  {
+   "name": "without project: after = before, 'без изменений'",
+   "ok": true
+  },
+  {
+   "name": "click outside the square rejected with a clear message",
+   "ok": true
+  },
+  {
+   "name": "keyboard: Enter on map adds a point (P5)",
+   "ok": true
+  },
+  {
+   "name": "keyboard: point removed from the list",
+   "ok": true
+  },
+  {
+   "name": "project placed: P2 nearer to project, delta > 0 shown as 'ближе на'",
+   "ok": true
+  },
+  {
+   "name": "other rows: after ≤ before, delta = before − after",
+   "ok": true
+  },
+  {
+   "name": "hypothetical not in observed counters (55 markers / 55 table rows / slice 55)",
+   "ok": true
+  },
+  {
+   "name": "project drawn in separate hypothetical layer, labelled 'Проектный объект'",
+   "ok": true
+  },
+  {
+   "name": "source of the nearest record shown (with QA mark when flagged)",
+   "ok": true
+  },
+  {
+   "name": "move: project moved, recomputed (P3 now nearer to project)",
+   "ok": true
+  },
+  {
+   "name": "template explanation over computed facts (not LLM), with digest",
+   "ok": true
+  },
+  {
+   "name": "delete project: baseline restored exactly; old explanation dropped",
+   "ok": true
+  },
+  {
+   "name": "project mode stays on after delete (next click puts it back)",
+   "ok": true
+  },
+  {
+   "name": "project returned: same numbers as first placement",
+   "ok": true
+  },
+  {
+   "name": "export: city-whatif-v1, snapshot, 4 points, hypothetical project, derived block labelled",
+   "ok": true
+  },
+  {
+   "name": "export file name and no local paths",
+   "ok": true
+  },
+  {
+   "name": "import nan.json rejected, scenario unchanged",
+   "ok": true
+  },
+  {
+   "name": "import dup.json rejected, scenario unchanged",
+   "ok": true
+  },
+  {
+   "name": "import foreign.json rejected, scenario unchanged",
+   "ok": true
+  },
+  {
+   "name": "import two.json rejected, scenario unchanged",
+   "ok": true
+  },
+  {
+   "name": "import big.json rejected, scenario unchanged",
+   "ok": true
+  },
+  {
+   "name": "category change resets scenario with a reason",
+   "ok": true
+  },
+  {
+   "name": "valid import restores scenario, category and recomputed numbers (file values ignored)",
+   "ok": true
+  },
+  {
+   "name": "city switch: scenario reset with a reason, nothing carried over",
+   "ok": true
+  },
+  {
+   "name": "Astana: clinic scenario computed (P1 nearer to project), 65 records untouched",
+   "ok": true
+  },
+  {
+   "name": "Shymkent file in Astana: city switched, same scenario and numbers",
+   "ok": true
+  },
+  {
+   "name": "Shymkent scenario with the Astana snapshot rejected",
+   "ok": true
+  },
+  {
+   "name": "narrow viewport (380 px): no horizontal scroll with the what-if card",
+   "ok": true
+  },
+  {
+   "name": "no console/page errors",
+   "ok": true
+  },
+  {
+   "name": "no network requests",
+   "ok": true
+  }
+ ]
+}

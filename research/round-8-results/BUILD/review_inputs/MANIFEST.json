@@ -1,0 +1,237 @@
+{
+ "note": "byte copies via git show <sha>:<path>; read as data only, no code from these packages is executed",
+ "files": [
+  {
+   "slot": "K01",
+   "sha": "42e68ef3e6c7ea8ddf31c25a62b75f7c0d26bdad",
+   "path": "research/round-7-results/K01/fixtures/EXPECTED.json",
+   "copy": "research/round-8-results/BUILD/review_inputs/K01/EXPECTED.json",
+   "sha256": "e875e9d9d5f411b56d6d3216b14e81ad860338c258ae089788b82167c14f3680",
+   "bytes": 700
+  },
+  {
+   "slot": "K01",
+   "sha": "42e68ef3e6c7ea8ddf31c25a62b75f7c0d26bdad",
+   "path": "research/round-7-results/K01/fixtures/invalid_category_mismatch_url_id.json",
+   "copy": "research/round-8-results/BUILD/review_inputs/K01/invalid_category_mismatch_url_id.json",
+   "sha256": "85367ceecda14dbe14d1f85ddcb6c7844f20bf5775911b5df4bacb838cac245a",
+   "bytes": 387
+  },
+  {
+   "slot": "K01",
+   "sha": "42e68ef3e6c7ea8ddf31c25a62b75f7c0d26bdad",
+   "path": "research/round-7-results/K01/fixtures/invalid_foreign_snapshot.json",
+   "copy": "research/round-8-results/BUILD/review_inputs/K01/invalid_foreign_snapshot.json",
+   "sha256": "5e173fc7cc2fad787d4d4bae2c29b05b61239eb0adee4bb45e82199f61f7e422",
+   "bytes": 254
+  },
+  {
+   "slot": "K01",
+   "sha": "42e68ef3e6c7ea8ddf31c25a62b75f7c0d26bdad",
+   "path": "research/round-7-results/K01/fixtures/invalid_nonfinite_duplicate_key.json",
+   "copy": "research/round-8-results/BUILD/review_inputs/K01/invalid_nonfinite_duplicate_key.json",
+   "sha256": "5924fb191e841b61ae072793f186acf26ef66ed4d3f91ce86415ab76fcb9b8cb",
+   "bytes": 239
+  },
+  {
+   "slot": "K01",
+   "sha": "42e68ef3e6c7ea8ddf31c25a62b75f7c0d26bdad",
+   "path": "research/round-7-results/K01/fixtures/invalid_project_outside_bbox.json",
+   "copy": "research/round-8-results/BUILD/review_inputs/K01/invalid_project_outside_bbox.json",
+   "sha256": "4f4c0c29ac371011e16bbe46049d88a694aacec7b74b7ffbc59f6419cbc3c55d",
+   "bytes": 353
+  },
+  {
+   "slot": "K01",
+   "sha": "42e68ef3e6c7ea8ddf31c25a62b75f7c0d26bdad",
+   "path": "research/round-7-results/K01/fixtures/valid_astana_clinic_no_project_untrusted_computed.json",
+   "copy": "research/round-8-results/BUILD/review_inputs/K01/valid_astana_clinic_no_project_untrusted_computed.json",
+   "sha256": "e4fbb3e01aadc9acf1db34dda40dbbcbde0a35cc050eebaa5edfd7de31904ceb",
+   "bytes": 401
+  },
+  {
+   "slot": "K01",
+   "sha": "42e68ef3e6c7ea8ddf31c25a62b75f7c0d26bdad",
+   "path": "research/round-7-results/K01/fixtures/valid_shymkent_school_project.json",
+   "copy": "research/round-8-results/BUILD/review_inputs/K01/valid_shymkent_school_project.json",
+   "sha256": "6c0f89155efb394ea97ff870d7b79625259d99bea9bad1f84417aec394855c33",
+   "bytes": 486
+  },
+  {
+   "slot": "K11",
+   "sha": "aa9ce4f7f90101b86342654a867ad619fd43d04e",
+   "path": "research/round-7-results/K11/fixtures/11_точек.json",
+   "copy": "research/round-8-results/BUILD/review_inputs/K11/11_точек.json",
+   "sha256": "2a078d0ca93fbb82ec0d06aa801fcf14a790e4cd74cb0ad33f127649dcfedb20",
+   "bytes": 984
+  },
+  {
+   "slot": "K11",
+   "sha": "aa9ce4f7f90101b86342654a867ad619fd43d04e",
+   "path": "research/round-7-results/K11/fixtures/1e999.json",
+   "copy": "research/round-8-results/BUILD/review_inputs/K11/1e999.json",
+   "sha256": "70c19a7c3aea770f827881f642531085589c967f3d49603dab138a2cd1e4003f",
+   "bytes": 585
+  },
+  {
+   "slot": "K11",
+   "sha": "aa9ce4f7f90101b86342654a867ad619fd43d04e",
+   "path": "research/round-7-results/K11/fixtures/MANIFEST.json",
+   "copy": "research/round-8-results/BUILD/review_inputs/K11/MANIFEST.json",
+   "sha256": "bce70988629ab3e45efab394534f0643505221108931639d390a303d705bb4c9",
+   "bytes": 5619
+  },
+  {
+   "slot": "K11",
+   "sha": "aa9ce4f7f90101b86342654a867ad619fd43d04e",
+   "path": "research/round-7-results/K11/fixtures/cp1251.json",
+   "copy": "research/round-8-results/BUILD/review_inputs/K11/cp1251.json",
+   "sha256": "1722a562c85b02d5947292524c158e7fc0cbf03660e8bc231c5a6785ec0b693d",
+   "bytes": 566
+  },
+  {
+   "slot": "K11",
+   "sha": "aa9ce4f7f90101b86342654a867ad619fd43d04e",
+   "path": "research/round-7-results/K11/fixtures/infinity.json",
+   "copy": "research/round-8-results/BUILD/review_inputs/K11/infinity.json",
+   "sha256": "353e15b3beb9334aa84abdcb166428b701c80b9b0c0ee1ffe1eb7e085b5399f6",
+   "bytes": 588
+  },
+  {
+   "slot": "K11",
+   "sha": "aa9ce4f7f90101b86342654a867ad619fd43d04e",
+   "path": "research/round-7-results/K11/fixtures/nan.json",
+   "copy": "research/round-8-results/BUILD/review_inputs/K11/nan.json",
+   "sha256": "925e757f33fd3942b4040935fa5a6e51bd91cedc1eafa427ba01b25d92d0306d",
+   "bytes": 583
+  },
+  {
+   "slot": "K11",
+   "sha": "aa9ce4f7f90101b86342654a867ad619fd43d04e",
+   "path": "research/round-7-results/K11/fixtures/nfd_id.json",
+   "copy": "research/round-8-results/BUILD/review_inputs/K11/nfd_id.json",
+   "sha256": "06db61de8abab523f56128d65d498801b7930ddbea19381fd177b992f3557cd6",
+   "bytes": 588
+  },
+  {
+   "slot": "K11",
+   "sha": "aa9ce4f7f90101b86342654a867ad619fd43d04e",
+   "path": "research/round-7-results/K11/fixtures/url_в_id.json",
+   "copy": "research/round-8-results/BUILD/review_inputs/K11/url_в_id.json",
+   "sha256": "4dbd423a5fc123b436b908b059dfab83cf05f2d0d81c3f2b865ab8a408efb701",
+   "bytes": 598
+  },
+  {
+   "slot": "K11",
+   "sha": "aa9ce4f7f90101b86342654a867ad619fd43d04e",
+   "path": "research/round-7-results/K11/fixtures/Астана емхана ұсынысы.json",
+   "copy": "research/round-8-results/BUILD/review_inputs/K11/Астана емхана ұсынысы.json",
+   "sha256": "d470b6cde85e4c5c37a86ccd767fd07bd6f914c5b1a48be5edf080c1e4b9caa6",
+   "bytes": 472
+  },
+  {
+   "slot": "K11",
+   "sha": "aa9ce4f7f90101b86342654a867ad619fd43d04e",
+   "path": "research/round-7-results/K11/fixtures/Шымкент_без_проекта_10_точек.json",
+   "copy": "research/round-8-results/BUILD/review_inputs/K11/Шымкент_без_проекта_10_точек.json",
+   "sha256": "52009268db7a384d514f1b6a5a3ff6850ab2db1aa1b91d60b91fd1586ab7cf33",
+   "bytes": 916
+  },
+  {
+   "slot": "K11",
+   "sha": "aa9ce4f7f90101b86342654a867ad619fd43d04e",
+   "path": "research/round-7-results/K11/fixtures/Шымкент_мектеп_жоба.json",
+   "copy": "research/round-8-results/BUILD/review_inputs/K11/Шымкент_мектеп_жоба.json",
+   "sha256": "8a6a88c0777f194d87588583296e4d23fdb27d69b476f17d41a231aed4f38d4f",
+   "bytes": 589
+  },
+  {
+   "slot": "K11",
+   "sha": "aa9ce4f7f90101b86342654a867ad619fd43d04e",
+   "path": "research/round-7-results/K11/fixtures/версия_2.json",
+   "copy": "research/round-8-results/BUILD/review_inputs/K11/версия_2.json",
+   "sha256": "e8c18da305b493b726ffb458515965c6dd95c8b95c15dab5efeefc2892b80ead",
+   "bytes": 589
+  },
+  {
+   "slot": "K11",
+   "sha": "aa9ce4f7f90101b86342654a867ad619fd43d04e",
+   "path": "research/round-7-results/K11/fixtures/вне_квадрата_Астана.json",
+   "copy": "research/round-8-results/BUILD/review_inputs/K11/вне_квадрата_Астана.json",
+   "sha256": "3ad286c14ebfd31b1e5feed3563d4d6f406470502fdef6823bc7431722103470",
+   "bytes": 480
+  },
+  {
+   "slot": "K11",
+   "sha": "aa9ce4f7f90101b86342654a867ad619fd43d04e",
+   "path": "research/round-7-results/K11/fixtures/два_проекта.json",
+   "copy": "research/round-8-results/BUILD/review_inputs/K11/два_проекта.json",
+   "sha256": "123f6bd916b5f42db47ff2e5cef673a2b81c116f2d418b7707a53661126b19e0",
+   "bytes": 729
+  },
+  {
+   "slot": "K11",
+   "sha": "aa9ce4f7f90101b86342654a867ad619fd43d04e",
+   "path": "research/round-7-results/K11/fixtures/дубль_id.json",
+   "copy": "research/round-8-results/BUILD/review_inputs/K11/дубль_id.json",
+   "sha256": "387c76b3b090b1cc863435a1464ed08efa97af1b9f3942212e71122d00f52c2b",
+   "bytes": 589
+  },
+  {
+   "slot": "K11",
+   "sha": "aa9ce4f7f90101b86342654a867ad619fd43d04e",
+   "path": "research/round-7-results/K11/fixtures/дубль_ключа.json",
+   "copy": "research/round-8-results/BUILD/review_inputs/K11/дубль_ключа.json",
+   "sha256": "1b5383528607c8340997717aeee2b18678e5c958edc0a728f26ca82ce0d7068e",
+   "bytes": 611
+  },
+  {
+   "slot": "K11",
+   "sha": "aa9ce4f7f90101b86342654a867ad619fd43d04e",
+   "path": "research/round-7-results/K11/fixtures/категория_проекта.json",
+   "copy": "research/round-8-results/BUILD/review_inputs/K11/категория_проекта.json",
+   "sha256": "c2714a9fb31eb5de0445be8c3d17ba8422aa086ca5bb0d1b01b2c3f1c87a5d7e",
+   "bytes": 600
+  },
+  {
+   "slot": "K11",
+   "sha": "aa9ce4f7f90101b86342654a867ad619fd43d04e",
+   "path": "research/round-7-results/K11/fixtures/лишнее_поле.json",
+   "copy": "research/round-8-results/BUILD/review_inputs/K11/лишнее_поле.json",
+   "sha256": "8d835ba3a391983b9e377f41dfa4dd1801c56773a5884e197203bc219491563c",
+   "bytes": 629
+  },
+  {
+   "slot": "K11",
+   "sha": "aa9ce4f7f90101b86342654a867ad619fd43d04e",
+   "path": "research/round-7-results/K11/fixtures/с_BOM_блокнот.json",
+   "copy": "research/round-8-results/BUILD/review_inputs/K11/с_BOM_блокнот.json",
+   "sha256": "d17b7d8d9f06a6d4eec1a4bd9d7d2aa08195e9b1df64f61ce172e90040c403d8",
+   "bytes": 622
+  },
+  {
+   "slot": "K11",
+   "sha": "aa9ce4f7f90101b86342654a867ad619fd43d04e",
+   "path": "research/round-7-results/K11/fixtures/с_результатами.json",
+   "copy": "research/round-8-results/BUILD/review_inputs/K11/с_результатами.json",
+   "sha256": "1db51e1fc10c839d30fc47e184ad56545e5f2340557ff8a2f887d065e9581cea",
+   "bytes": 716
+  },
+  {
+   "slot": "K11",
+   "sha": "aa9ce4f7f90101b86342654a867ad619fd43d04e",
+   "path": "research/round-7-results/K11/fixtures/чужой_город.json",
+   "copy": "research/round-8-results/BUILD/review_inputs/K11/чужой_город.json",
+   "sha256": "738e1b212658f5475e1006e562bd3e6634e6f6015806de5dd4597c0b9b77400b",
+   "bytes": 587
+  },
+  {
+   "slot": "K11",
+   "sha": "aa9ce4f7f90101b86342654a867ad619fd43d04e",
+   "path": "research/round-7-results/K11/fixtures/чужой_срез.json",
+   "copy": "research/round-8-results/BUILD/review_inputs/K11/чужой_срез.json",
+   "sha256": "e066489f5e78dab2564c6c894b2e17d7e78583ada79ca06fc5eb8e1ab5c7e268",
+   "bytes": 589
+  }
+ ]
+}

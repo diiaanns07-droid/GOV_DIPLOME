@@ -1,0 +1,52 @@
+PASS v1 card shown by default, v2 hidden
+PASS tool switch: v2 card shown, v1 card hidden, v1 layer not drawn
+PASS 4 control points by click (one on a marker; object not selected)
+PASS click outside the square rejected with a message
+PASS 3 candidates by click (default cost 100, hypothetical)
+PASS keyboard: Enter on map adds a candidate at the centre
+PASS Escape leaves the placement mode
+PASS weight and cost edited by keyboard
+PASS weight 101 rejected, previous value kept
+PASS cost 0 rejected
+PASS manual plan over budget: infeasible with reason, not altered
+PASS manual plan K2 feasible; rows use the candidate where nearer
+PASS after ≤ before and delta = before − after in mm
+PASS hypothetical candidates not in observed counters (55/55/55)
+PASS candidates and points drawn in the separate hypothetical layer
+PASS constraints: required K3, excluded K2 reported for the manual plan
+PASS move candidate: position changed, recomputed, mode closed
+PASS delete candidate: removed from list, constraints and manual plan
+PASS v1 scenario intact after working in v2
+PASS category change resets the v2 scenario with a reason
+PASS synthetic demo set labelled as invented
+PASS city switch resets v2 with a reason
+PASS Astana: demo plan evaluated (clinics), 65 records untouched
+PASS editor at the maximum: 16 candidates × 25 points
+PASS search 16×25 in the browser finished (639 ms incl. sensitivity), progress shown
+PASS UI result = direct optimizePlans (same winners, Pareto, digest)
+PASS comparison table: manual + three objectives with 'Применить'
+PASS search does not auto-apply (manual plan unchanged)
+PASS apply: manual plan := minimax winner; result stays valid
+PASS restore: manual plan back
+PASS budget change: old optimum marked stale, apply buttons gone
+PASS cancel: status cancelled, no partial result shown later
+PASS parameter change during the search: answer discarded (stale)
+PASS long lists collapse (16 candidates): section closed by default, opens by click
+PASS infeasible: required cost > budget reported with reason, constraint kept
+PASS keyboard Enter on 'Найти' runs the search; Pareto table + chart shown
+PASS budget sensitivity rows for 0 / B/2 / B
+PASS explanation: template over computed facts, conditional units, capacity disclaimer
+PASS selection change drops the old explanation
+PASS export: city-plan-v2, 25 points, 16 candidates, derived block, file name
+PASS import forged.json rejected, plan unchanged
+PASS import v1.json rejected, plan unchanged
+PASS import nan.json rejected, plan unchanged
+PASS import foreign.json rejected, plan unchanged
+PASS import big.json rejected, plan unchanged
+PASS v1 file rejected with the hint to use the v1 mode
+PASS HTML report: self-contained, no scripts, plan + Pareto + limitations + attribution
+PASS switch to Shymkent: v2 reset, optimizer result dropped
+PASS import round trip: same scenario, city switched, category select updated
+PASS 390 px: no horizontal scroll with the v2 card
+PASS no console/page errors
+PASS no network requests

@@ -1,0 +1,213 @@
+{
+ "url": "web/index.html (file://)",
+ "results": [
+  {
+   "name": "v1 card shown by default, v2 hidden",
+   "ok": true
+  },
+  {
+   "name": "tool switch: v2 card shown, v1 card hidden, v1 layer not drawn",
+   "ok": true
+  },
+  {
+   "name": "4 control points by click (one on a marker; object not selected)",
+   "ok": true
+  },
+  {
+   "name": "click outside the square rejected with a message",
+   "ok": true
+  },
+  {
+   "name": "3 candidates by click (default cost 100, hypothetical)",
+   "ok": true
+  },
+  {
+   "name": "keyboard: Enter on map adds a candidate at the centre",
+   "ok": true
+  },
+  {
+   "name": "Escape leaves the placement mode",
+   "ok": true
+  },
+  {
+   "name": "weight and cost edited by keyboard",
+   "ok": true
+  },
+  {
+   "name": "weight 101 rejected, previous value kept",
+   "ok": true
+  },
+  {
+   "name": "cost 0 rejected",
+   "ok": true
+  },
+  {
+   "name": "manual plan over budget: infeasible with reason, not altered",
+   "ok": true
+  },
+  {
+   "name": "manual plan K2 feasible; rows use the candidate where nearer",
+   "ok": true
+  },
+  {
+   "name": "after ≤ before and delta = before − after in mm",
+   "ok": true
+  },
+  {
+   "name": "hypothetical candidates not in observed counters (55/55/55)",
+   "ok": true
+  },
+  {
+   "name": "candidates and points drawn in the separate hypothetical layer",
+   "ok": true
+  },
+  {
+   "name": "constraints: required K3, excluded K2 reported for the manual plan",
+   "ok": true
+  },
+  {
+   "name": "move candidate: position changed, recomputed, mode closed",
+   "ok": true
+  },
+  {
+   "name": "delete candidate: removed from list, constraints and manual plan",
+   "ok": true
+  },
+  {
+   "name": "v1 scenario intact after working in v2",
+   "ok": true
+  },
+  {
+   "name": "category change resets the v2 scenario with a reason",
+   "ok": true
+  },
+  {
+   "name": "synthetic demo set labelled as invented",
+   "ok": true
+  },
+  {
+   "name": "city switch resets v2 with a reason",
+   "ok": true
+  },
+  {
+   "name": "Astana: demo plan evaluated (clinics), 65 records untouched",
+   "ok": true
+  },
+  {
+   "name": "editor at the maximum: 16 candidates × 25 points",
+   "ok": true
+  },
+  {
+   "name": "search 16×25 in the browser finished (639 ms incl. sensitivity), progress shown",
+   "ok": true
+  },
+  {
+   "name": "UI result = direct optimizePlans (same winners, Pareto, digest)",
+   "ok": true
+  },
+  {
+   "name": "comparison table: manual + three objectives with 'Применить'",
+   "ok": true
+  },
+  {
+   "name": "search does not auto-apply (manual plan unchanged)",
+   "ok": true
+  },
+  {
+   "name": "apply: manual plan := minimax winner; result stays valid",
+   "ok": true
+  },
+  {
+   "name": "restore: manual plan back",
+   "ok": true
+  },
+  {
+   "name": "budget change: old optimum marked stale, apply buttons gone",
+   "ok": true
+  },
+  {
+   "name": "cancel: status cancelled, no partial result shown later",
+   "ok": true
+  },
+  {
+   "name": "parameter change during the search: answer discarded (stale)",
+   "ok": true
+  },
+  {
+   "name": "long lists collapse (16 candidates): section closed by default, opens by click",
+   "ok": true
+  },
+  {
+   "name": "infeasible: required cost > budget reported with reason, constraint kept",
+   "ok": true
+  },
+  {
+   "name": "keyboard Enter on 'Найти' runs the search; Pareto table + chart shown",
+   "ok": true
+  },
+  {
+   "name": "budget sensitivity rows for 0 / B/2 / B",
+   "ok": true
+  },
+  {
+   "name": "explanation: template over computed facts, conditional units, capacity disclaimer",
+   "ok": true
+  },
+  {
+   "name": "selection change drops the old explanation",
+   "ok": true
+  },
+  {
+   "name": "export: city-plan-v2, 25 points, 16 candidates, derived block, file name",
+   "ok": true
+  },
+  {
+   "name": "import forged.json rejected, plan unchanged",
+   "ok": true
+  },
+  {
+   "name": "import v1.json rejected, plan unchanged",
+   "ok": true
+  },
+  {
+   "name": "import nan.json rejected, plan unchanged",
+   "ok": true
+  },
+  {
+   "name": "import foreign.json rejected, plan unchanged",
+   "ok": true
+  },
+  {
+   "name": "import big.json rejected, plan unchanged",
+   "ok": true
+  },
+  {
+   "name": "v1 file rejected with the hint to use the v1 mode",
+   "ok": true
+  },
+  {
+   "name": "HTML report: self-contained, no scripts, plan + Pareto + limitations + attribution",
+   "ok": true
+  },
+  {
+   "name": "switch to Shymkent: v2 reset, optimizer result dropped",
+   "ok": true
+  },
+  {
+   "name": "import round trip: same scenario, city switched, category select updated",
+   "ok": true
+  },
+  {
+   "name": "390 px: no horizontal scroll with the v2 card",
+   "ok": true
+  },
+  {
+   "name": "no console/page errors",
+   "ok": true
+  },
+  {
+   "name": "no network requests",
+   "ok": true
+  }
+ ]
+}

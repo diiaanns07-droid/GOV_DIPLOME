@@ -1,0 +1,20 @@
+{
+ "schema_version": "city-whatif-v1",
+ "city_id": "astana",
+ "source_snapshot": "cw1-94f62073b48178da3d5dedfbe8e944c4",
+ "category": "school",
+ "control_points": [
+  {
+   "id": "https://evil.example/x.js",
+   "lon": 71.43,
+   "lat": 51.17
+  }
+ ],
+ "proposed_object": {
+  "id": "proj-1",
+  "lon": 71.431,
+  "lat": 51.171,
+  "category": "outpatient_clinic",
+  "kind": "hypothetical"
+ }
+}

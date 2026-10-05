@@ -1,0 +1,31 @@
+{
+ "commit": "3e1302aa583594b0bf674090ac9c2d49ac424dae",
+ "base": "a5b5e2ddbe087c4eab8e947748cdf69dbae84a0d (code = 4e93f30)",
+ "note": "sha256 at the candidate commit; data.js / evidence.js / facts.js / inputs/ byte-equal to the base",
+ "inputs": {
+  "codex/research-import-2026-10-05@c3f6c00:research/round-8/CORE_SPEC.txt": "5bc3ba904aa80a4da6bfe8f13b9be401821d54db53deb66846dcadb73837acdd",
+  "codex/research-import-2026-10-05@c3f6c00:research/round-8/BUILD.txt": "4cfc92136a0590a741496f17bfab149859a83e2de0c112d35181ebeb13bd518b",
+  "codex/research-import-2026-10-05@c3f6c00:research/round-8/snapshots.json": "183f93bf9181e4dd6a2c630c6707d9b6b0cc53445c272654fda6bc390560c677"
+ },
+ "files": {
+  "prototypes/city-evidence/web/index.html": "fe834b921ddc237a64f01b65e2d35cbcd95a5ebbb94b65cb2feef49a5c0f1365",
+  "prototypes/city-evidence/web/app.js": "873eda35849f13d632e116a8e2e963d4a5e1707febbaeb0180bf7e7f63b0c8b9",
+  "prototypes/city-evidence/web/plan.js": "b2029640f00c10f6018f469ba4e157705d405e1de65178bca824769d50b9a3c7",
+  "prototypes/city-evidence/web/plan-ui.js": "a9e066a196b0bf31ce80b42d9118659e380c68662baef0118056f03ba548cb71",
+  "prototypes/city-evidence/web/whatif.js": "e8f7c18d9b839983af4fed6e2a82532531d2ff26545b524fdcedb42373c64deb",
+  "prototypes/city-evidence/web/facts.js": "3994a275ddb8c0cb857478365d94810a945752a96fff10d53d37bc8dc9808c64",
+  "prototypes/city-evidence/web/data.js": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "prototypes/city-evidence/web/evidence.js": "df736e986145da33dee60f692e020486720b72db5b6116af31640cc8693b11b9",
+  "prototypes/city-evidence/tools/plan_oracle.py": "3bdbae1d3a42471ca2864a6b34286a6a60042549429af7187f5bfb0e2d7b0d6c",
+  "prototypes/city-evidence/tools/bench_plan.cjs": "6a3ddc24edbe604c217935f98c4bf13ab2ab44b16a0b8b34732bd067062be83e",
+  "prototypes/city-evidence/tools/check_all.py": "57af2ba90f6e2d7ee5e8f202caf15bb0f0029aaec1d9d7c0dd02fa49d1802681",
+  "prototypes/city-evidence/tests/expected_plans.json": "e0e3bd0913dc6c636a934a2f7be9e8257f3ef626ce1dd6886a48e37e31178f19",
+  "prototypes/city-evidence/tests/plan.cjs": "915a8d727637117299ce7442074308506702b662dae14ad1f991589a6243c310",
+  "prototypes/city-evidence/tests/plan_smoke.cjs": "a5ebb9fb0deb14f26094eff6cbc7c52fee5902464a024c42c7d01d5ac71b3df5",
+  "prototypes/city-evidence/tests/test_plan_oracle.py": "8b0d16e442a0ee7ec9fecf631760d7df87b398886c137fe2a39297fb4d410475",
+  "prototypes/city-evidence/tests/whatif.cjs": "881cc0406490b51d57efb473b9af5ba06420e75c391f858411aeb757f35ad3e0",
+  "prototypes/city-evidence/tests/whatif_smoke.cjs": "2fa30cead34f6e27d115aebafb0dba26a90bbce746bd8f28c33bba16068e68cb",
+  "prototypes/city-evidence/tests/smoke.cjs": "db947b46a5feaf91b28626442d99a28cdcc642ca6e9041599dc666deb2c970b2",
+  "prototypes/city-evidence/README.md": "b61618a1ebfc4bcd1b6b66575af629f9edc645e1bb4afc63e462fcf4a8b49ee9"
+ }
+}

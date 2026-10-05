@@ -1,0 +1,20 @@
+{
+ "schema_version": "city-whatif-v1",
+ "city_id": "astana",
+ "source_snapshot": "k11fx-sha256:c189897ff81055362a0d1b5a0efa9db6faa9618ddbbe2a4a0df09ee1cb8d734e",
+ "category": "outpatient_clinic",
+ "control_points": [
+  {
+   "id": "точка-1",
+   "lon": 71.45700000000001,
+   "lat": 51.166626
+  }
+ ],
+ "proposed_object": {
+  "id": "проект-поликлиника-ә",
+  "lon": 71.438412,
+  "lat": 51.168423,
+  "category": "outpatient_clinic",
+  "kind": "hypothetical"
+ }
+}

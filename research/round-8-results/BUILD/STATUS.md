@@ -1,5 +1,8 @@
 # BUILD раунд 8 — STATUS
 
+**Итог: все четыре этапа выполнены. Проверенный кандидат (код): `3e1302aa583594b0bf674090ac9c2d49ac424dae`.**
+Коммиты раунда: 97405ef (этап 1), 60f44d9 (этап 2), 54c30c2 (этап 3), 3e1302a (этап 4: код), затем документальный коммит этапа 4.
+
 Ветка `claude/beautiful-clarke-sbzomj`; база a5b5e2d (код = проверенный 4e93f30 раунда 7).
 Входы: `codex/research-import-2026-10-05 @ c3f6c00` — `research/round-8/CORE_SPEC.txt`, `BUILD.txt`, `snapshots.json`.
 Модули других агентов не интегрировались (CORE_SPEC достаточна; работа на собственных synthetic fixtures и существующих срезах).
@@ -49,5 +52,31 @@ check_all 18/18; smoke 24/24; whatif_smoke 32/32.
 Проверки этапа 3: `tests/plan.cjs` 154/154; `plan_smoke.cjs` 52/52 (Парето/график, чувствительность, объяснение и его сброс,
 экспорт, 5 неверных импортов без изменения состояния, отчёт, перенос между городами); check_all 18/18; smoke 24/24; whatif_smoke 32/32.
 
-## Дальше
-Этап 4 — интеграционная регрессия, бенчмарк 16×25, чистое извлечение, COMPLETION_MATRIX, ISSUE_LOG, DEMO_GUIDE.
+## Этап 4 — регрессия и проверяемый результат: ГОТОВ
+- Независимые фикстуры v1 раунда 7 (K01 @ 42e68ef, K11 @ aa9ce4f; байтовые копии в `review_inputs/` с MANIFEST, свой адаптер
+  `adapters/r7_independent_fixtures.cjs`, их код не исполнялся): до исправления 21/27, после 25/27. Исправлено в v1 и v2: ID с буквами
+  любого алфавита (NFC), отказ `bad_encoding` для не-UTF-8. 2 оставшихся расхождения намеренные (поля `computed`/`results` → unknown_field), см. ISSUE_LOG.
+- Бенчмарк `tools/bench_plan.cjs` → `BENCHMARK.json` (Linux x64, 4 × Xeon 2.1 GHz, Node v22.22.0, Chromium 141 headless):
+  16×25, max 5 — Node ≈ 8 мс (65 536 наборов, 6 885 допустимых); браузер с чанками + 3 бюджета + отрисовка ≈ 0,6 с,
+  самый длинный разрыв главного потока 18 мс, задач > 50 мс нет. Только эта машина.
+- Чистый worktree точного 3e1302a (Linux, Chromium headless, file://):
+
+| команда | результат |
+|---|---|
+| `python3 tools/check_all.py` (venv shapely/pyproj) | 18 passed, 0 skipped, 0 failed (`results/check_all.json`) |
+| то же системным python3 без shapely | 17 passed, 1 skipped, 0 failed |
+| `node tests/plan.cjs` | 156/156 PASS |
+| `node tests/whatif.cjs` | 71/71 PASS |
+| `node tests/plan_smoke.cjs` | 52/52 PASS |
+| `node tests/whatif_smoke.cjs` | 32/32 PASS |
+| `node tests/smoke.cjs` | 24/24 PASS |
+| `node tools/bench_plan.cjs` | выполнен (`BENCHMARK.json`) |
+
+  Все 7 скриптов index.html присутствуют; data.js / evidence.js / facts.js / inputs/ байтово равны базе a5b5e2d; изменения только в двух назначенных путях.
+- COMPLETION_MATRIX.json (требование → код → тест → статус), ISSUE_LOG.md, DEMO_GUIDE.txt (5 минут), SOURCE_HASHES.json, results/.
+
+## Не выполнено / не проверено
+- Windows, экранный диктор, реальные телефоны (390 px — эмуляция Chromium).
+- r7-пакеты K02, K03, K05–K10, K12 не исполнялись (чужой код без отдельного просмотра).
+- Миграция v1→v2 (режимы раздельные, допускается CORE_SPEC); дополнительный перебор весов/радиуса (необязателен).
+- Merge в main и deploy не выполнялись (по BUILD.txt).
