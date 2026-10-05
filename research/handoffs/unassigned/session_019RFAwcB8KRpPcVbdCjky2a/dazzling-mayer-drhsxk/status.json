@@ -1,0 +1,35 @@
+{
+  "schema": "handoff-status/v1",
+  "status": "partial",
+  "research_started": false,
+  "session_id": "session_019RFAwcB8KRpPcVbdCjky2a",
+  "task_id": "dazzling-mayer-drhsxk",
+  "agent_number": null,
+  "role": null,
+  "sphere": null,
+  "cities": [],
+  "checkpoint_utc": "2026-10-05",
+  "repository": "diiaanns07-droid/GOV_DIPLOME",
+  "branch": "claude/dazzling-mayer-drhsxk",
+  "base_commit": "834a25fb860dd5514d02c9274b70d7bf8a53a79c",
+  "originally_connected_repository": "diiaanns07-droid/ADMIT_STUTU",
+  "results": {
+    "reports": [],
+    "evidence_files": [],
+    "samples_real": [],
+    "samples_synthetic": [],
+    "experiment_code": [],
+    "zip_archives": []
+  },
+  "network": {
+    "external_sources_requested": false,
+    "host_not_allowed_observed": false,
+    "blocked_sources": []
+  },
+  "product_code_changed": false,
+  "open_questions": [
+    "Agent number/role (NN_role), sphere and cities are not assigned in this chat",
+    "If earlier research exists, it was done in a different session; it is not present in this one"
+  ],
+  "next_step": "Coordinator: send this session its assignment (NN_role, sphere, cities, task_id) or a link/ZIP with prior results"
+}
