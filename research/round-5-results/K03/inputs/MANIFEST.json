@@ -1,0 +1,19 @@
+{
+ "purpose": "Byte copies of inputs used by K03 round-5 review",
+ "files": [
+  {
+   "local_path": "research/round-5-results/K03/inputs/k03_assign_v2.patch",
+   "source_branch": "claude/epic-curie-iitc43",
+   "source_commit": "3660527f2784445f9fc8b51d68124c0b0d73a5dd",
+   "source_path": "research/round-4-results/K03/patches/k03_assign_v2.patch",
+   "git_blob": "3d71d9343922e6e6ff8f08572755fd1d72acb0d6",
+   "sha256": "caa62f7530ff3db80428b850a3af07a58c25c95f66cd873fb8baa85dcba388f5"
+  }
+ ],
+ "build_under_test": {
+  "branch": "claude/beautiful-clarke-sbzomj",
+  "sha": "0bf27deb8549b325b34a9610402613d745544edb",
+  "path": "prototypes/city-evidence/",
+  "extraction": "research/round-5-results/K03/extract_build.py (blob-checked, not committed here)"
+ }
+}

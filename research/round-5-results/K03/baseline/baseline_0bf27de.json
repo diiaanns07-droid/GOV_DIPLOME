@@ -1,0 +1,281 @@
+{
+ "test": "research/round-5-results/K03/test_boundaries_demo.py",
+ "app_root": "<extract of claude/beautiful-clarke-sbzomj@0bf27deb8549b325b34a9610402613d745544edb:prototypes/city-evidence/>",
+ "url": null,
+ "data_js": "<app-root>/web/data.js",
+ "evidence_js": "<app-root>/web/evidence.js",
+ "summary": {
+  "PASS": 7,
+  "FAIL": 0,
+  "XFAIL": 6,
+  "XPASS": 0,
+  "SKIP": 0
+ },
+ "results": [
+  {
+   "check": "C1-k03-inputs",
+   "outcome": "PASS",
+   "summary": "11 файлов K03 из source_manifest.json; несовпадений sha256: 0; источник K03 SHA ['44585de31be01dd131ecb7677c462fc85b4d4cc4']",
+   "details": {
+    "mismatched": [],
+    "k03_source_sha": [
+     "44585de31be01dd131ecb7677c462fc85b4d4cc4"
+    ],
+    "validator_sha256": "61e354b2cf68b202e2a1a0a8aace38dd8e844c5909288eba55cf67474956e82e"
+   }
+  },
+  {
+   "check": "C2-module-is-what-label-says",
+   "outcome": "PASS",
+   "summary": "поведение=v1, assign()[rule]=k03_assign_v1, evidence.assign_rule=k03_assign_v1, method.id=['k03_assign_v1']",
+   "details": {
+    "versions": {
+     "behaviour": "v1",
+     "assign_result_rule": "v1",
+     "evidence_assign_rule": "v1",
+     "obs_method:k03_assign_v1": "v1"
+    },
+    "fingerprint_results": {
+     "R1": [
+      "unmatched",
+      null
+     ],
+     "R2": [
+      "matched",
+      "kz.astana.district.saraishyk"
+     ]
+    },
+    "evidence": "<app-root>/web/evidence.js"
+   }
+  },
+  {
+   "check": "C3-R1-AST-HOLE-out0.5",
+   "outcome": "XFAIL",
+   "summary": "0,5 м за контуром города у зоны AST-Z2: принадлежность городу не доказана → ambiguous, не unmatched; получено unmatched/None (известный дефект D1 правила v1)",
+   "details": {
+    "point": [
+     71.409286747,
+     50.881525736
+    ],
+    "expected": [
+     "ambiguous",
+     null
+    ],
+    "got": [
+     "unmatched",
+     null
+    ],
+    "reason": "inside_city_no_district",
+    "baseline_v1": [
+     "unmatched",
+     null
+    ],
+    "defect": "D1",
+    "source_fixture": "round-4 K03 fixtures.json:AST-HOLE-out0.5"
+   }
+  },
+  {
+   "check": "C3-R2-AST-VER-D2",
+   "outcome": "XFAIL",
+   "summary": "1,01 м от границы снимка OSM, 0,58 м от границы Overture той же пары районов → ambiguous; получено matched/kz.astana.district.saraishyk (известный дефект D2 правила v1)",
+   "details": {
+    "point": [
+     71.460469423,
+     51.129017713
+    ],
+    "expected": [
+     "ambiguous",
+     null
+    ],
+    "got": [
+     "matched",
+     "kz.astana.district.saraishyk"
+    ],
+    "reason": "single_district_interior",
+    "baseline_v1": [
+     "matched",
+     "kz.astana.district.saraishyk"
+    ],
+    "defect": "D2",
+    "source_fixture": "round-4 K03 fixtures.json:AST-VER-D2"
+   }
+  },
+  {
+   "check": "C3-R3-AST-EX-in",
+   "outcome": "PASS",
+   "summary": "эксклав Байконура ∩ Целиноградский район (AST-Z1) → ambiguous, без района; получено ambiguous/None",
+   "details": {
+    "point": [
+     71.665106386,
+     51.330255048
+    ],
+    "expected": [
+     "ambiguous",
+     null
+    ],
+    "got": [
+     "ambiguous",
+     null
+    ],
+    "reason": "city_vs_region_overlap",
+    "baseline_v1": [
+     "ambiguous",
+     null
+    ],
+    "defect": null,
+    "source_fixture": "round-4 K03 fixtures.json:AST-EX-in"
+   }
+  },
+  {
+   "check": "C3-R4-AST-SB-a0.99",
+   "outcome": "PASS",
+   "summary": "крайний случай допуска: 0,99 м от общей границы Есиль/Нура → ambiguous; получено ambiguous/None",
+   "details": {
+    "point": [
+     71.400479487,
+     51.083375685
+    ],
+    "expected": [
+     "ambiguous",
+     null
+    ],
+    "got": [
+     "ambiguous",
+     null
+    ],
+    "reason": "near_district_boundary",
+    "baseline_v1": [
+     "ambiguous",
+     null
+    ],
+    "defect": null,
+    "source_fixture": "round-4 K03 fixtures.json:AST-SB-a0.99"
+   }
+  },
+  {
+   "check": "C3-R5-AST-SB-a1.01",
+   "outcome": "PASS",
+   "summary": "крайний случай допуска: 1,01 м → matched Есиль (защита от чрезмерного исправления); получено matched/kz.astana.district.esil",
+   "details": {
+    "point": [
+     71.400479766,
+     51.083375646
+    ],
+    "expected": [
+     "matched",
+     "kz.astana.district.esil"
+    ],
+    "got": [
+     "matched",
+     "kz.astana.district.esil"
+    ],
+    "reason": "single_district_interior",
+    "baseline_v1": [
+     "matched",
+     "kz.astana.district.esil"
+    ],
+    "defect": null,
+    "source_fixture": "round-4 K03 fixtures.json:AST-SB-a1.01"
+   }
+  },
+  {
+   "check": "C4-build-path",
+   "outcome": "PASS",
+   "summary": "tools/build_evidence.py в копии app-root воспроизводит web/evidence.js побайтно",
+   "details": {
+    "returncode": 0,
+    "stdout": "shymkent: {'matched': 55}; 19 наблюдений, ошибок K05 0, предупреждений 8\nastana: {'matched': 65}; 19 наблюдений, ошибок K05 0, предупреждений 8\nwrote web/evidence.js (78281 bytes)\n",
+    "stderr": ""
+   }
+  },
+  {
+   "check": "C5-place-district-consistent",
+   "outcome": "PASS",
+   "summary": "120 мест data.js: у каждого есть запись, форма статуса верна, совпадает с assign() модуля app-root",
+   "details": {
+    "problems": [],
+    "places": 120,
+    "recomputed": true
+   }
+  },
+  {
+   "check": "C6-binding",
+   "outcome": "XFAIL",
+   "summary": "evidence.js не содержит boundary_binding: place_district не связан с кодом/слоями/версией — устаревшая привязка не обнаруживается без пересборки (известно для BUILD 0bf27de, предложение P1)",
+   "details": {
+    "evidence": "<app-root>/web/evidence.js",
+    "top_level_keys": [
+     "as_of",
+     "assign_rule",
+     "cities",
+     "district_names",
+     "group_kk",
+     "slice_id"
+    ]
+   }
+  },
+  {
+   "check": "C7-S1-layer-sync-real",
+   "outcome": "XFAIL",
+   "summary": "снимок OSM ← геометрия Алматы и Сарайшыка из Overture 2026-09-23.1 (реальные данные пакета; так будет, если слои синхронизируются). До пересборки: тесты приложения — FAILED (errors=2); binding — нет; check_evidence_fresh — нет. Пересборка: код 1, исключение. K03 assign() падает с исключением (дефект D3: пустая зона неоднозначности) — пересборка невозможна; устаревание evidence.js не обнаруживается до пересборки (нет привязки к версии, предложение P1)",
+   "details": {
+    "app_tests": "FAILED (errors=2)",
+    "app_tests_crashed": true,
+    "app_tests_failed": false,
+    "binding_detects": null,
+    "fresh_tool_detects": null,
+    "rebuild_returncode": 1,
+    "rebuild_crashed": true,
+    "rebuild_stderr_tail": "ndary_validator.py\", line 113, in assign\n    if z.startswith('AST') and city == 'astana' and (zg.covers(pp) or zg.boundary.distance(pp) <= TOL_M):\n                                                                      ^^^^^^^^^^^^^^^^^^^^\nAttributeError: 'NoneType' object has no attribute 'distance'\n",
+    "place_district_changed": null,
+    "label_after_rebuild": null,
+    "known_baseline_issues": [
+     "K03 assign() падает с исключением (дефект D3: пустая зона неоднозначности) — пересборка невозможна",
+     "устаревание evidence.js не обнаруживается до пересборки (нет привязки к версии, предложение P1)"
+    ]
+   }
+  },
+  {
+   "check": "C7-S2-k10-place-moved-synthetic",
+   "outcome": "XFAIL",
+   "summary": "синтетика: место 0233b91f… (Сарыарка) перенесено к месту Байконура; K10-манифест и data.js обновлены, evidence.js не пересобран. До пересборки: тесты приложения — OK; binding — нет; check_evidence_fresh — нет. Пересборка: ok, place_district изменился у 1 мест, метка k03_assign_v1. устаревание evidence.js не обнаруживается до пересборки (нет привязки к версии, предложение P1)",
+   "details": {
+    "app_tests": "OK",
+    "app_tests_crashed": false,
+    "app_tests_failed": false,
+    "binding_detects": null,
+    "fresh_tool_detects": null,
+    "rebuild_returncode": 0,
+    "rebuild_crashed": false,
+    "rebuild_stderr_tail": "",
+    "place_district_changed": 1,
+    "label_after_rebuild": "k03_assign_v1",
+    "known_baseline_issues": [
+     "устаревание evidence.js не обнаруживается до пересборки (нет привязки к версии, предложение P1)"
+    ]
+   }
+  },
+  {
+   "check": "C7-S3-rule-update-v2",
+   "outcome": "XFAIL",
+   "summary": "к копии применён patch k03_assign_v2 (round-4 K03); evidence.js не пересобран. До пересборки: тесты приложения — OK; binding — нет; check_evidence_fresh — нет. Пересборка: ok, place_district изменился у 0 мест, метка k03_assign_v1. устаревание evidence.js не обнаруживается до пересборки (нет привязки к версии, предложение P1); после пересборки код ведёт себя как v2, но метка в evidence.js k03_assign_v1: метка берётся из реестра, а не из кода (P1)",
+   "details": {
+    "app_tests": "OK",
+    "app_tests_crashed": false,
+    "app_tests_failed": false,
+    "binding_detects": null,
+    "fresh_tool_detects": null,
+    "rebuild_returncode": 0,
+    "rebuild_crashed": false,
+    "rebuild_stderr_tail": "",
+    "place_district_changed": 0,
+    "label_after_rebuild": "k03_assign_v1",
+    "known_baseline_issues": [
+     "устаревание evidence.js не обнаруживается до пересборки (нет привязки к версии, предложение P1)",
+     "после пересборки код ведёт себя как v2, но метка в evidence.js k03_assign_v1: метка берётся из реестра, а не из кода (P1)"
+    ]
+   }
+  }
+ ],
+ "python": "3.11.15"
+}
