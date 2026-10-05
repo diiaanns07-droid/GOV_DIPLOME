@@ -1,0 +1,37 @@
+{
+ "copied_with": "subprocess.check_output(git show)+write_bytes; git blob verified",
+ "files": [
+  {
+   "local": "research/round-5-results/K05/inputs/k12/k05r3_contract_stress_fixes.patch",
+   "source_branch": "claude/save-work-handoff-xuav3q",
+   "source_sha": "3e8403931f823eb6b688462fb46e91d520628c11",
+   "source_path": "research/round-4-results/K12/patches/k05r3_contract_stress_fixes.patch",
+   "git_blob": "2edb340e2d7315c30969efd31da6e4ef04c6c299",
+   "sha256": "f97600353dbdd2a5d526016f05e03543cc8a15253b5b98488e947b899d2a67b0"
+  },
+  {
+   "local": "research/round-5-results/K05/inputs/k12/REPORT.md",
+   "source_branch": "claude/save-work-handoff-xuav3q",
+   "source_sha": "3e8403931f823eb6b688462fb46e91d520628c11",
+   "source_path": "research/round-4-results/K12/REPORT.md",
+   "git_blob": "456e6474bf574f1d57e83c73d10f5d7f866f783e",
+   "sha256": "d2da386ff9005a9ca99d6b593201127d7098928c3461ea53f23db60b8a4acd6f"
+  },
+  {
+   "local": "research/round-5-results/K05/inputs/build/build_evidence.py",
+   "source_branch": "claude/beautiful-clarke-sbzomj",
+   "source_sha": "0bf27deb8549b325b34a9610402613d745544edb",
+   "source_path": "prototypes/city-evidence/tools/build_evidence.py",
+   "git_blob": "9e8193b7273ed4297d10617d9ca0cab8913ead17",
+   "sha256": "1dff4cf7394302d738c49110883d92b637766b80148d654840a1f6a8a6f04fdd"
+  },
+  {
+   "local": "research/round-5-results/K05/inputs/k05r4/k05r4_contract.py",
+   "source_branch": "claude/optimistic-davinci-1oiqs9",
+   "source_sha": "42051600fd2a7486be3d0e27a29e802a7bfad7aa",
+   "source_path": "research/round-4-results/K05/k05r4_contract.py",
+   "git_blob": "608223490b419468fbd3fadb5b284b1b216654e2",
+   "sha256": "423cdfeeb13ce4ca7f9b8d7938157dd79ba8b21e41162cf6f7c8bb8d51307957"
+  }
+ ]
+}

@@ -1,0 +1,220 @@
+diff --git a/research/round-3-results/K05/k05r3_contract.py b/research/round-3-results/K05/k05r3_contract.py
+index 5ad8882..85000c2 100644
+--- a/research/round-3-results/K05/k05r3_contract.py
++++ b/research/round-3-results/K05/k05r3_contract.py
+@@ -8,6 +8,9 @@ K05 round 3: семантический валидатор k05-obs-v1.1, агр
+ Здесь добавлены: охват (coverage), метод, период unknown, причина отсутствия,
+ давность снимка, вытесненный выпуск, версия границы по территории, смешение
+ периодов/границ в агрегате и дубликаты объектов в выборке.
++K12 round 4 (patch): конечность чисел, существующие даты периода, домен счётчика,
++retrieved_at, вложенные территории и полнота географии в агрегате, проверка
++набора (повтор obs_id) и строгая загрузка JSON.
+ 
+ Только стандартная библиотека. Структуру отдельно проверяет jsonschema
+ (schema/k05-obs-v1.1.schema.json) — см. tests/test_k05r3.py.
+@@ -16,6 +19,7 @@ K05 round 3: семантический валидатор k05-obs-v1.1, агр
+ from __future__ import annotations
+ 
+ import calendar
++import json
+ import math
+ import re
+ import sys
+@@ -31,25 +35,48 @@ MISSING_REASONS = {None, "source_access_denied", "not_collected", "not_in_source
+                    "zero_in_partial_coverage", "suppressed_by_publisher"}
+ 
+ 
+-def period_end(period: str):
+-    """Последний день периода или None для unknown/неразбираемого."""
++def _finite(v) -> bool:
++    """Конечное число: int (любой величины) или конечный float; bool и прочее — нет."""
++    if isinstance(v, bool):
++        return False
++    if isinstance(v, int):
++        return True
++    return isinstance(v, float) and math.isfinite(v)
++
++
++def _part_bounds(part: str):
++    """(первый, последний день) одной части периода; ValueError для несуществующей даты."""
++    if re.fullmatch(r"\d{4}-\d{2}-\d{2}", part):
++        d = date.fromisoformat(part)
++        return d, d
++    if re.fullmatch(r"\d{4}-\d{2}", part):
++        y, m = map(int, part.split("-"))
++        return date(y, m, 1), date(y, m, calendar.monthrange(y, m)[1])
++    if re.fullmatch(r"\d{4}-Q[1-4]", part):
++        y, q = int(part[:4]), int(part[-1])
++        return date(y, q * 3 - 2, 1), date(y, q * 3, calendar.monthrange(y, q * 3)[1])
++    if re.fullmatch(r"\d{4}", part):
++        return date(int(part), 1, 1), date(int(part), 12, 31)
++    raise ValueError(part)
++
++
++def period_bounds(period: str):
++    """(начало, конец) периода; None для unknown; ValueError для несуществующей даты/формы."""
+     if not period or period == "unknown":
+         return None
+-    last = period.split("/")[-1]
++    parts = period.split("/")
++    if len(parts) > 2:
++        raise ValueError(period)
++    return _part_bounds(parts[0])[0], _part_bounds(parts[-1])[1]
++
++
++def period_end(period: str):
++    """Последний день периода или None для unknown/неразбираемого."""
+     try:
+-        if re.fullmatch(r"\d{4}-\d{2}-\d{2}", last):
+-            return date.fromisoformat(last)
+-        if re.fullmatch(r"\d{4}-\d{2}", last):
+-            y, m = map(int, last.split("-"))
+-            return date(y, m, calendar.monthrange(y, m)[1])
+-        if re.fullmatch(r"\d{4}-Q[1-4]", last):
+-            y, q = int(last[:4]), int(last[-1])
+-            return period_end(f"{y}-{q * 3:02d}")
+-        if re.fullmatch(r"\d{4}", last):
+-            return date(int(last), 12, 31)
++        bounds = period_bounds(period)
+     except ValueError:
+         return None
+-    return None
++    return bounds[1] if bounds else None
+ 
+ 
+ def validate(obs: dict, as_of: str | None = None, boundary_ref: dict | None = None,
+@@ -83,6 +110,21 @@ def validate(obs: dict, as_of: str | None = None, boundary_ref: dict | None = No
+     numeric = status in V1.NUMERIC_STATUSES
+     src, cov, method = obs["source"], obs["coverage"], obs["method"]
+ 
++    if numeric and not _finite(value):
++        errors.append("VALUE_NOT_FINITE: NaN/Infinity не является значением наблюдения")
++    elif numeric and obs["unit"].strip() == "count" and (value < 0 or value != int(value)):
++        errors.append(f"COUNT_DOMAIN: счётчик должен быть целым ≥ 0, получено {value!r}")
++    if period != "unknown":
++        try:
++            start, finish = period_bounds(period)
++            if start > finish:
++                errors.append(f"PERIOD_REVERSED: начало {start} позже конца {finish}")
++        except ValueError:
++            errors.append(f"PERIOD_INVALID_DATE: {period!r} — несуществующая дата")
++    retrieved = src.get("retrieved_at")
++    if retrieved is not None and V1._parse_ts(retrieved) is None:
++        errors.append(f"RETRIEVED_AT_INVALID: {retrieved!r} не дата/время ISO 8601")
++
+     if period == "unknown":
+         (warnings if not numeric else errors).append(
+             "PERIOD_UNKNOWN: период неизвестен" + ("" if not numeric else "; число без периода не допускается"))
+@@ -144,13 +186,16 @@ def _relation(bv):
+     return m.group(1), (None if m.group(2) == "unknown" else m.group(2))
+ 
+ 
+-def aggregate_sum(observations: list[dict]) -> dict:
++def aggregate_sum(observations: list[dict], expected_units: list[str] | None = None) -> dict:
+     """Сумма одного показателя по территориям одного города, периода и версии данных.
+ 
+     null не превращается в 0; неполный охват любого слагаемого делает итог неполным.
++    expected_units — полный список территорий, которые должна покрыть сумма (например,
++    все районы города). Без него итог помечается geography_checked=false.
+     """
++    geo = {"geography_checked": expected_units is not None}
+     if not observations:
+-        return {"value": None, "value_status": "missing", "coverage_complete": False, "n": "0/0"}
++        return {"value": None, "value_status": "missing", "coverage_complete": False, "n": "0/0", **geo}
+     for key, code in (("city_id", "CITY_MIX"), ("period", "PERIOD_MIX"), ("unit", "UNIT_MIX"),
+                       ("indicator_id", "INDICATOR_MIX"), ("data_version", "DATA_VERSION_MIX")):
+         vals = {o[key] for o in observations}
+@@ -161,18 +206,90 @@ def aggregate_sum(observations: list[dict]) -> dict:
+     kinds = {o["kind"] for o in observations}
+     if kinds & V1.MEASUREMENT_KINDS and kinds - V1.MEASUREMENT_KINDS:
+         raise ValueError(f"KIND_MIX: {sorted(kinds)}")
++    # boundary_version у каждой территории своя (…/osm:r<id>@<версия>); смешение — это разные
++    # слои/выпуски границ, т.е. различие части до r<id>@<версия>.
++    layers = {re.sub(r"r\d+@\w+$", "", o.get("boundary_version") or "") for o in observations}
++    if len(layers) > 1:
++        raise ValueError(f"BOUNDARY_MIX: слои границ {sorted(layers)}")
+     units = [o["geo_unit_id"] for o in observations]
+     if len(set(units)) != len(units):
+         raise ValueError("DUPLICATE_UNIT: территория встречается дважды")
++    for outer in set(units):
++        nested = sorted(u for u in units if u.startswith(outer + "."))
++        if nested:
++            raise ValueError(f"NESTED_UNIT: {outer} вместе с вложенными {nested} — двойной счёт")
++    if expected_units is not None:
++        extra = sorted(set(units) - set(expected_units))
++        if extra:
++            raise ValueError(f"UNEXPECTED_UNIT: {extra} нет в expected_units")
++        geo["units"] = f"{len(units)}/{len(set(expected_units))}"
++        absent = sorted(set(expected_units) - set(units))
++        if absent:
++            geo["missing_units"] = absent
+     known = [o for o in observations if o["value_status"] in V1.NUMERIC_STATUSES]
++    not_finite = [o.get("obs_id") for o in known if not _finite(o["value"])]
++    if not_finite:
++        raise ValueError(f"VALUE_NOT_FINITE: {not_finite}")
+     complete = len(known) == len(observations) and all(o["coverage"]["complete"] for o in observations)
+     n = f"{len(known)}/{len(observations)}"
+-    if len(known) < len(observations):
++    if len(known) < len(observations) or "missing_units" in geo:
+         return {"value": None, "value_status": "missing", "coverage_complete": False, "n": n,
+-                "known_partial_sum": sum(o["value"] for o in known) if known else None}
++                "known_partial_sum": sum(o["value"] for o in known) if known else None, **geo}
+     total = sum(o["value"] for o in known)
++    if total == 0 and not complete:
++        # как у записи: ноль при неполном охвате не доказывает отсутствие
++        return {"value": None, "value_status": "missing", "missing_reason": "zero_in_partial_coverage",
++                "coverage_complete": False, "n": n, "known_partial_sum": 0, **geo}
+     return {"value": total, "value_status": "reported_zero" if total == 0 else "reported",
+-            "coverage_complete": complete, "n": n}
++            "coverage_complete": complete, "n": n, **geo}
++
++
++def validate_dataset(observations: list[dict]):
++    """(errors, warnings) по набору записей: то, чего не видит validate() одной записи.
++
++    DUPLICATE_OBS_ID (ошибка): один obs_id с разным содержимым.
++    DUPLICATE_RECORD (предупреждение): точный повтор записи.
++    CONFLICTING_OBSERVATION (ошибка): разные obs_id для одной ячейки
++      (город, территория, показатель, период, версия данных) с разными значениями.
++    """
++    errors, warnings = [], []
++    by_id, by_cell = {}, {}
++    for i, o in enumerate(observations):
++        oid = o.get("obs_id")
++        if oid in by_id:
++            if by_id[oid] == o:
++                warnings.append(f"DUPLICATE_RECORD: {oid!r} повторён без изменений (позиция {i})")
++            else:
++                errors.append(f"DUPLICATE_OBS_ID: {oid!r} с разным содержимым (позиция {i})")
++            continue
++        by_id[oid] = o
++        cell = tuple(o.get(k) for k in ("city_id", "geo_unit_id", "indicator_id", "period", "data_version"))
++        prev = by_cell.setdefault(cell, o)
++        if prev is not o and (prev.get("value"), prev.get("value_status")) != (o.get("value"), o.get("value_status")):
++            errors.append(f"CONFLICTING_OBSERVATION: {prev.get('obs_id')!r} и {oid!r} расходятся для {cell}")
++    return errors, warnings
++
++
++def loads_strict(text: str):
++    """json.loads без NaN/Infinity, без переполнения до inf (1e999) и без повтора ключей."""
++    def no_constant(name):
++        raise ValueError(f"JSON_NONFINITE: токен {name}")
++
++    def finite_float(token):
++        v = float(token)
++        if not math.isfinite(v):
++            raise ValueError(f"JSON_NONFINITE: {token} переполняется до {v}")
++        return v
++
++    def unique_keys(pairs):
++        out = {}
++        for k, v in pairs:
++            if k in out:
++                raise ValueError(f"JSON_DUPLICATE_KEY: {k!r}")
++            out[k] = v
++        return out
++
++    return json.loads(text, parse_constant=no_constant, parse_float=finite_float, object_pairs_hook=unique_keys)
+ 
+ 
+ def _norm(s):
