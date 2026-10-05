@@ -1,0 +1,13 @@
+test_compute_rules (test_whatif_v1.Fixtures.test_compute_rules) ... ok
+test_coordinates_ids_category_shape (test_whatif_v1.Fixtures.test_coordinates_ids_category_shape) ... ok
+test_export_roundtrip_portable (test_whatif_v1.Fixtures.test_export_roundtrip_portable) ... ok
+test_fixtures_match_expected (test_whatif_v1.Fixtures.test_fixtures_match_expected) ... ok
+test_haversine_reference (test_whatif_v1.Fixtures.test_haversine_reference) ... ok
+test_rejected_import_keeps_state (test_whatif_v1.Fixtures.test_rejected_import_keeps_state) ... ok
+test_size_limit (test_whatif_v1.Fixtures.test_size_limit) ... ok
+test_snapshot_is_content_bound (test_whatif_v1.Fixtures.test_snapshot_is_content_bound) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.179s
+
+OK

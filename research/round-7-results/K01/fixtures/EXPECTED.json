@@ -1,0 +1,9 @@
+{
+ "note": "hypothetical scenarios (round-7 K01) for prototype c58a3b2 slice; source_snapshot = cw1 fingerprint of web/data.js",
+ "valid_shymkent_school_project.json": {"valid": true, "points": 3, "has_project": true},
+ "valid_astana_clinic_no_project_untrusted_computed.json": {"valid": true, "points": 1, "has_project": false, "untrusted_computed_ignored": true},
+ "invalid_foreign_snapshot.json": {"valid": false, "code": "snapshot"},
+ "invalid_project_outside_bbox.json": {"valid": false, "code": "outside_bbox"},
+ "invalid_category_mismatch_url_id.json": {"valid": false, "code": "id"},
+ "invalid_nonfinite_duplicate_key.json": {"valid": false, "code_one_of": ["non_finite", "duplicate_key"]}
+}

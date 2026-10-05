@@ -1,0 +1,90 @@
+{
+ "category": "school",
+ "city_id": "shymkent",
+ "computed": {
+  "distance": {
+   "clamp": [
+    0,
+    1
+   ],
+   "formula": "haversine",
+   "input": "[lon,lat]",
+   "radius_m": 6371008.8
+  },
+  "kind": "derived",
+  "rows": [
+   {
+    "after_m": 166.06829581626633,
+    "before_m": 673.1543192300448,
+    "control_point_id": "cp-1",
+    "delta_m": 507.08602341377855,
+    "nearest_after": "proposed",
+    "nearest_before": {
+     "confidence": 0.68,
+     "id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+     "name": "Учебный центр Меруерт",
+     "sources": [
+      "meta"
+     ]
+    }
+   },
+   {
+    "after_m": 52.24143658415796,
+    "before_m": 52.24143658415796,
+    "control_point_id": "cp-2",
+    "delta_m": 0.0,
+    "nearest_after": "source",
+    "nearest_before": {
+     "confidence": 0.786,
+     "id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+     "name": "Реклама 42",
+     "sources": [
+      "meta"
+     ]
+    }
+   },
+   {
+    "after_m": 116.58023916719067,
+    "before_m": 116.58023916719067,
+    "control_point_id": "cp-3",
+    "delta_m": 0.0,
+    "nearest_after": "source",
+    "nearest_before": {
+     "confidence": 0.438,
+     "id": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+     "name": "ALEM мектебі",
+     "sources": [
+      "meta"
+     ]
+    }
+   }
+  ],
+  "source_records_considered": 15
+ },
+ "control_points": [
+  {
+   "id": "cp-1",
+   "lat": 42.309,
+   "lon": 69.596
+  },
+  {
+   "id": "cp-2",
+   "lat": 42.32,
+   "lon": 69.61
+  },
+  {
+   "id": "cp-3",
+   "lat": 42.324,
+   "lon": 69.615
+  }
+ ],
+ "proposed_object": {
+  "category": "school",
+  "id": "proj-school-1",
+  "kind": "hypothetical",
+  "lat": 42.31,
+  "lon": 69.5975
+ },
+ "schema_version": "city-whatif-v1",
+ "source_snapshot": "cw1-63d46116f7293e67b2b0ca63e217b9ec"
+}

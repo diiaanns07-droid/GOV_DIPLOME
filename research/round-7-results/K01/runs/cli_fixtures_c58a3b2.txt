@@ -1,0 +1,16 @@
+## invalid_category_mismatch_url_id.json exit=1
+{"valid": false, "code": "id", "error": "id: control_points[0]: id должен соответствовать ^[A-Za-z0-9][A-Za-z0-9_.-]{0,63}$"}
+## invalid_foreign_snapshot.json exit=1
+{"valid": false, "code": "snapshot", "error": "snapshot: source_snapshot не совпадает с текущим срезом города (чужой или устаревший срез)"}
+## invalid_nonfinite_duplicate_key.json exit=1
+{"valid": false, "code": "non_finite", "error": "non_finite: число 1e999 вне диапазона"}
+## invalid_project_outside_bbox.json exit=1
+{"valid": false, "code": "outside_bbox", "error": "outside_bbox: proposed_object (69.7, 42.31) вне сохранённого квадрата города [69.593365, 42.306645, 69.617658, 42.324611]"}
+## valid_astana_clinic_no_project_untrusted_computed.json exit=0
+{"valid": true, "notes": ["imported 'computed' ignored: recomputed from the slice"], "digest": "51b3d8894c0a1cc0"}
+  cp-a 297.0 297.0 0.0 source 410f0193
+## valid_shymkent_school_project.json exit=0
+{"valid": true, "notes": [], "digest": "c78c36e92b942ce0"}
+  cp-1 673.2 166.1 507.1 proposed 931d6da5
+  cp-2 52.2 52.2 0.0 source 01961e84
+  cp-3 116.6 116.6 0.0 source baeda67d
