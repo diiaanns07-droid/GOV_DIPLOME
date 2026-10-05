@@ -1,0 +1,186 @@
+{
+ "note": "Реальные небольшие образцы (без геометрии) из открытых файлов; связаны с dataset_id и source_id A12_evidence.json. Не массовая выгрузка.",
+ "samples": [
+  {
+   "dataset_id": "A12-D001",
+   "source_id": "A12-S003",
+   "locator": "features[0..3].properties (выбранные поля)",
+   "rows": [
+    {
+     "id": "esil",
+     "name": "Есиль",
+     "osm_id": 3479876,
+     "osm_admin_level": "6",
+     "osm_names": {
+      "name": "Есіл ауданы",
+      "name:ru": "район Есиль",
+      "name:en": "Esil district",
+      "int_name": "Esil awdanı"
+     },
+     "area_km2": 193.0,
+     "center_lon": 71.48292,
+     "center_lat": 51.03757,
+     "scoring_enabled": true
+    },
+    {
+     "id": "almaty",
+     "name": "Алматы",
+     "osm_id": 3482819,
+     "osm_admin_level": "6",
+     "osm_names": {
+      "name": "Алматы ауданы",
+      "name:ru": "район Алматы",
+      "name:en": "Almaty District",
+      "int_name": "Almatı awdanı"
+     },
+     "area_km2": 92.6,
+     "center_lon": 71.57139,
+     "center_lat": 51.15321,
+     "scoring_enabled": true
+    },
+    {
+     "id": "saryarka",
+     "name": "Сарыарка",
+     "osm_id": 3486954,
+     "osm_admin_level": "6",
+     "osm_names": {
+      "name": "Сарыарқа ауданы",
+      "name:ru": "район Сарыарка",
+      "name:kk": "Сарыарқа ауданы",
+      "name:en": "Sarıarqa district",
+      "int_name": "Sarıarqa awdanı"
+     },
+     "area_km2": 67.3,
+     "center_lon": 71.33251,
+     "center_lat": 51.19892,
+     "scoring_enabled": true
+    },
+    {
+     "id": "saraishyk",
+     "name": "Сарайшык",
+     "osm_id": 19733918,
+     "osm_admin_level": "8",
+     "osm_names": {
+      "name": "Сарайшық ауданы",
+      "name:ru": "район Сарайшык",
+      "name:kk": "Сарайшық ауданы",
+      "name:en": "Saraişyq audany"
+     },
+     "area_km2": 60.9,
+     "center_lon": 71.58221,
+     "center_lat": 51.11258,
+     "scoring_enabled": false
+    }
+   ]
+  },
+  {
+   "dataset_id": "A12-D002",
+   "source_id": "A12-S005",
+   "locator": "elements[*] relation tags (name, name:ru, admin_level)",
+   "rows": [
+    {
+     "osm_type": "relation",
+     "osm_id": 3403760,
+     "name": "Целиноград ауданы",
+     "name:ru": "Целиноградский район",
+     "admin_level": "6"
+    },
+    {
+     "osm_type": "relation",
+     "osm_id": 15594335,
+     "name": "Қосшы қалалық әкімдігі",
+     "name:ru": "городская администрация Косшы",
+     "admin_level": "6"
+    },
+    {
+     "osm_type": "relation",
+     "osm_id": 19733918,
+     "name": "Сарайшық ауданы",
+     "name:ru": "район Сарайшык",
+     "admin_level": "8"
+    },
+    {
+     "osm_type": "relation",
+     "osm_id": 20593940,
+     "name": "Нұра ауданы",
+     "name:ru": "район Нура",
+     "admin_level": "6"
+    }
+   ]
+  },
+  {
+   "dataset_id": "A12-D004",
+   "source_id": "A12-S010",
+   "locator": "features where adm0_a3='KAZ' (4 из 16)",
+   "rows": [
+    {
+     "name": "Zhambyl",
+     "name_ru": "Жамбылская область",
+     "iso_3166_2": "KZ-ZHA",
+     "type_en": "Region",
+     "code_hasc": "KZ.ZM"
+    },
+    {
+     "name": "South Kazakhstan",
+     "name_ru": "Туркестанская область",
+     "iso_3166_2": "KZ-YUZ",
+     "type_en": "Region",
+     "code_hasc": "KZ.SK"
+    },
+    {
+     "name": "Almaty City",
+     "name_ru": "Алма-Ата",
+     "iso_3166_2": "KZ-ALA",
+     "type_en": "City",
+     "code_hasc": "KZ.AC"
+    },
+    {
+     "name": "Astana",
+     "name_ru": "Нур-Султан",
+     "iso_3166_2": "KZ-AST",
+     "type_en": "City",
+     "code_hasc": "KZ.AS"
+    }
+   ]
+  },
+  {
+   "dataset_id": "A12-D005",
+   "source_id": "A12-S011",
+   "locator": "features where name in (Shymkent, Turkistan), adm0_a3='KAZ'",
+   "rows": [
+    {
+     "name": "Turkistan",
+     "lon": 68.254893,
+     "lat": 43.301555,
+     "pop_max": 97360,
+     "adm1name": "South Kazakhstan"
+    },
+    {
+     "name": "Shymkent",
+     "lon": 69.595018,
+     "lat": 42.320012,
+     "pop_max": 465392,
+     "adm1name": "South Kazakhstan"
+    }
+   ]
+  },
+  {
+   "dataset_id": null,
+   "source_id": "A12-S007",
+   "locator": "real_context.json $.esil; real_context_meta.json $.status,$.error",
+   "rows": [
+    {
+     "esil": {
+      "schools": 0,
+      "kindergartens": 0,
+      "clinics": 0,
+      "bus_stops": 0,
+      "parks": 0
+     },
+     "meta_status": "unavailable"
+    }
+   ],
+   "comment": "Пример ложных нулей при недоступном источнике"
+  }
+ ]
+}

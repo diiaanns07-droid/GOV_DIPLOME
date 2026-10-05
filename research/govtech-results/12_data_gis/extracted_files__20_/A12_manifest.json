@@ -1,0 +1,113 @@
+{
+ "manifest_version": "0.1",
+ "created_by": "A12",
+ "created_at": "2026-10-04",
+ "tools": {
+  "curl": "8.5.0",
+  "python": "3.12.3",
+  "sqlite": "3.45.1",
+  "shapely": "2.1.2",
+  "pyproj": "3.8.0"
+ },
+ "imports": [
+  {
+   "import_id": "A12-I001",
+   "dataset_id": "A12-D001/D002/D003",
+   "url": "https://codeload.github.com/BAITC-Hacks/hack-d3b2c613-stupits/zip/refs/heads/main",
+   "retrieved_at": "2026-10-04T17:20Z",
+   "http_status": 200,
+   "bytes": 9404339,
+   "sha256": "497921e48e58af5ccbedaa6ee3fc12f7bf6b214e95ec09e5ad5a23b8d77d0357",
+   "commit": "834a25fb860dd5514d02c9274b70d7bf8a53a79c",
+   "command": "curl -s -o stupits_main.zip https://codeload.github.com/BAITC-Hacks/hack-d3b2c613-stupits/zip/refs/heads/main",
+   "license": "репозиторий без явной лицензии в метаданных не проверен; данные OSM — ODbL",
+   "notes": "только чтение"
+  },
+  {
+   "import_id": "A12-I002",
+   "dataset_id": "A12-D004",
+   "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_admin_1_states_provinces.geojson",
+   "retrieved_at": "2026-10-04T17:2xZ",
+   "http_status": 200,
+   "bytes": 40726851,
+   "sha256": "22d0e3ad85eb3e27f17cabf8ba2d50e554fbc27a87796ff891d958185da62fb5",
+   "version": "5.2.0-pre (файл VERSION ветки master)",
+   "command": "curl -s -o ne_adm1.geojson <url>",
+   "license": "Public domain"
+  },
+  {
+   "import_id": "A12-I003",
+   "dataset_id": "A12-D005",
+   "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_populated_places_simple.geojson",
+   "retrieved_at": "2026-10-04T17:2xZ",
+   "http_status": 200,
+   "bytes": 4932147,
+   "sha256": "fd3fa867a320cbd5c5b6bb5bc550afeec2939fb2cef688e508007282a55ac42f",
+   "command": "curl -s -o ne_pp.geojson <url>",
+   "license": "Public domain"
+  },
+  {
+   "import_id": "A12-I004",
+   "dataset_id": "A12-D006",
+   "url": "https://raw.githubusercontent.com/wmgeolab/geoBoundaries/main/releaseData/gbOpen/KAZ/ADM1/geoBoundaries-KAZ-ADM1-metaData.json",
+   "retrieved_at": "2026-10-04T17:2xZ",
+   "http_status": 200,
+   "bytes": 128,
+   "sha256": null,
+   "notes": "Git LFS pointer, oid sha256:84a67cf7fb1911952e4d6968a65fc7f2a1be65bd338f4dc30d356f147975dda3, size 852; содержимое — 403 (github-cloud.githubusercontent.com не в allowlist)"
+  }
+ ],
+ "blocked_attempts": {
+  "at": "2026-10-04T17:20:46Z",
+  "result": "HTTP 403, x-deny-reason: host_not_allowed",
+  "urls": [
+   "https://stat.gov.kz/ru/region/shymkent/dynamic-tables/38/",
+   "https://data.egov.kz/",
+   "https://www.gov.kz/memleket/entities/shymkent-sandyk?lang=ru",
+   "https://taldau.stat.gov.kz/",
+   "https://adilet.zan.kz/",
+   "https://www.kazhydromet.kz/",
+   "https://goszakup.gov.kz/",
+   "https://budget.egov.kz/",
+   "https://overpass-api.de/api/status",
+   "https://nominatim.openstreetmap.org/",
+   "https://download.geofabrik.de/asia/kazakhstan.html",
+   "https://www.openstreetmap.org/",
+   "https://data.humdata.org/",
+   "https://www.geoboundaries.org/",
+   "https://sumo.dlr.de/docs/Simulation/Rerouter.html",
+   "https://www.google.com/"
+  ]
+ },
+ "experiments": [
+  {
+   "experiment_id": "A12-E001",
+   "goal": "Проверить контракт геометрии на реальном файле",
+   "inputs": [
+    "A12-I001: data/astana_districts.geojson sha256 9092aebb…"
+   ],
+   "command": "python3 (pyproj.Geod WGS84 geometry_area_perimeter; shapely is_valid; проверка диапазона lon/lat)",
+   "result": "6/6 геометрий валидны, порядок [lon,lat] верный; area_km2 репозитория на 0,6–0,9% меньше геодезической"
+  },
+  {
+   "experiment_id": "A12-E002",
+   "goal": "Схема загружается; legacy id сохраняются; QC ловит ложные нули; устаревший слой даёт неверную привязку",
+   "inputs": [
+    "A12_schema.sql",
+    "a12_experiment.py",
+    "A12-I001",
+    "A12-I002",
+    "A12-I003"
+   ],
+   "command": "python3 a12_experiment.py",
+   "result_stdout": "geo_units: 8\n   ('kz.astana.district.esil', 'esil', 'Есіл ауданы', 3479876)\n   ('kz.astana.district.almaty', 'almaty', 'Алматы ауданы', 3482819)\n   ('kz.astana.district.saryarka', 'saryarka', 'Сарыарқа ауданы', 3486954)\n   ('kz.astana.district.baikonur', 'baikonur', 'Байқоңыр ауданы', 8593081)\n   ('kz.astana.district.nura', 'nura', 'Нұра ауданы', 20593940)\n   ('kz.astana.district.saraishyk', 'saraishyk', 'Сарайшық ауданы', 19733918)\nreal_context: 25 cells, naive zeros=25, meta.status='unavailable', stored as missing: 25\nconstraint test: value=0 with status=missing rejected -> CHECK constraint failed: NOT (value_status='missing' AND value IS NOT NULL)\nnaive join Shymkent point -> [('South Kazakhstan', 'Туркестанская область', 'KZ-YUZ')] | NE has Shymkent unit: False\nversions: python 3.12.3 sqlite 3.45.1 shapely 2.1.2\n"
+  }
+ ],
+ "planned_not_executed": [
+  {
+   "id": "A12-P001",
+   "what": "Overpass: найти отношение г. Шымкент и районы",
+   "note": "запрос в A12_report.md §4.3; НЕ выполнялся"
+  }
+ ]
+}

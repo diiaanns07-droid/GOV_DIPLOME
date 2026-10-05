@@ -1,0 +1,93 @@
+{
+ "kind": "synthetic",
+ "warning": "Все записи ниже — синтетические/учебные. Не являются данными о Шымкенте или Астане.",
+ "from_tz_dataset": {
+  "dataset_id": "A12-D003",
+  "source_id": "A12-S008",
+  "locator": "city_data.json $.districts[0], $.measures[0]",
+  "rows": [
+   {
+    "id": "esil",
+    "name": "Есиль",
+    "population_share": 0.27,
+    "indicators": {
+     "T1": 45,
+     "T2": 62,
+     "E1": 68,
+     "E2": 72,
+     "S1": 48,
+     "S2": 55,
+     "B1": 78,
+     "B2": 60,
+     "C1": 75,
+     "C2": 70
+    }
+   },
+   {
+    "id": "M1",
+    "direction": "transport",
+    "name": "Выделенные полосы для автобусов",
+    "scope": "district",
+    "cost": 18,
+    "lag": 2,
+    "effects": {
+     "T1": 6,
+     "T2": 9
+    }
+   }
+  ]
+ },
+ "schema_examples_invented_by_A12": {
+  "observation_reported": {
+   "obs_id": "SYN-OBS-001",
+   "indicator_id": "ECO.pm25_monthly_mean",
+   "unit_id": "kz.shymkent",
+   "boundary_version": "none:pending_official_or_osm",
+   "period_start": "2026-08-01",
+   "period_end": "2026-08-31",
+   "period_type": "month",
+   "value": 12.0,
+   "value_status": "reported",
+   "native_value": "0.012",
+   "native_unit": "мг/м³ (пример)",
+   "unit": "ug/m3",
+   "kind": "synthetic",
+   "source_id": "SYN-SRC",
+   "locator": "стр. N, табл. M, строка «пост №X»",
+   "quality_flags": "unit_converted"
+  },
+  "observation_missing": {
+   "obs_id": "SYN-OBS-002",
+   "indicator_id": "EDU.schools_count",
+   "unit_id": "kz.shymkent.district.<slug>",
+   "boundary_version": "official:<акт>:<дата>",
+   "period_start": "2025-01-01",
+   "period_end": "2025-12-31",
+   "period_type": "year",
+   "value": null,
+   "value_status": "missing",
+   "unit": "count",
+   "kind": "synthetic",
+   "source_id": "SYN-SRC",
+   "locator": "таблица БНС: район отсутствует"
+  },
+  "doc_chunk": {
+   "chunk_id": "SYN-CH-001",
+   "source_id": "SYN-SRC",
+   "locator": "бюллетень, стр. N, раздел «г. Шымкент»",
+   "lang": "ru",
+   "chunk_kind": "text",
+   "text": "<дословный фрагмент источника>",
+   "char_start": 0,
+   "char_end": 0,
+   "geography": "kz.shymkent",
+   "period": "2026-08",
+   "source_sha256": "<sha256 файла>",
+   "extractor": "pdfplumber x.y",
+   "extracted_at": "<ISO>",
+   "linked_obs_ids": [
+    "SYN-OBS-001"
+   ]
+  }
+ }
+}

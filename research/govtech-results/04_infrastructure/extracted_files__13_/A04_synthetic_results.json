@@ -1,0 +1,235 @@
+{
+ "kind": "synthetic",
+ "seed": 42,
+ "versions": {
+  "networkx": "3.6.1",
+  "numpy": "2.4.4"
+ },
+ "graph": {
+  "nodes": 1600,
+  "edges": 3061,
+  "step_m": 50,
+  "barrier": "y=1000..1050, crossings x=400,1600",
+  "industrial_block": "x1300-1700,y200-600, no passage"
+ },
+ "facilities": [
+  [
+   500,
+   1500
+  ],
+  [
+   1500,
+   1500
+  ],
+  [
+   600,
+   700
+  ]
+ ],
+ "candidates": {
+  "A": [
+   1500,
+   950
+  ],
+  "B": [
+   1200,
+   150
+  ],
+  "C": [
+   1850,
+   750
+  ]
+ },
+ "coverage": [
+  {
+   "threshold_m": 500,
+   "total_pop": 116145,
+   "covered_share_euclid": 0.6741,
+   "covered_share_network": 0.4493,
+   "false_covered_share": 0.2248,
+   "by_microdistrict": {
+    "NW": {
+     "pop": 47129,
+     "covered_share_network": 0.4906,
+     "covered_share_euclid": 0.7782
+    },
+    "NE": {
+     "pop": 35796,
+     "covered_share_network": 0.5415,
+     "covered_share_euclid": 0.7997
+    },
+    "SW": {
+     "pop": 20427,
+     "covered_share_network": 0.4661,
+     "covered_share_euclid": 0.6168
+    },
+    "SE": {
+     "pop": 12793,
+     "covered_share_network": 0.0129,
+     "covered_share_euclid": 0.0308
+    }
+   },
+   "detour_ratio_p50_p90_max": [
+    1.342,
+    1.412,
+    1.861
+   ]
+  },
+  {
+   "threshold_m": 800,
+   "total_pop": 116145,
+   "covered_share_euclid": 0.9426,
+   "covered_share_network": 0.833,
+   "false_covered_share": 0.1096,
+   "by_microdistrict": {
+    "NW": {
+     "pop": 47129,
+     "covered_share_network": 0.9179,
+     "covered_share_euclid": 1.0
+    },
+    "NE": {
+     "pop": 35796,
+     "covered_share_network": 0.9374,
+     "covered_share_euclid": 1.0
+    },
+    "SW": {
+     "pop": 20427,
+     "covered_share_network": 0.8117,
+     "covered_share_euclid": 0.97
+    },
+    "SE": {
+     "pop": 12793,
+     "covered_share_network": 0.2619,
+     "covered_share_euclid": 0.5264
+    }
+   },
+   "detour_ratio_p50_p90_max": [
+    1.342,
+    1.412,
+    1.861
+   ]
+  },
+  {
+   "threshold_m": 1000,
+   "total_pop": 116145,
+   "covered_share_euclid": 0.9665,
+   "covered_share_network": 0.9381,
+   "false_covered_share": 0.0284,
+   "by_microdistrict": {
+    "NW": {
+     "pop": 47129,
+     "covered_share_network": 1.0,
+     "covered_share_euclid": 1.0
+    },
+    "NE": {
+     "pop": 35796,
+     "covered_share_network": 1.0,
+     "covered_share_euclid": 1.0
+    },
+    "SW": {
+     "pop": 20427,
+     "covered_share_network": 0.9409,
+     "covered_share_euclid": 1.0
+    },
+    "SE": {
+     "pop": 12793,
+     "covered_share_network": 0.5322,
+     "covered_share_euclid": 0.6958
+    }
+   },
+   "detour_ratio_p50_p90_max": [
+    1.342,
+    1.412,
+    1.861
+   ]
+  }
+ ],
+ "site_comparison": [
+  {
+   "threshold_m": 500,
+   "sites": {
+    "A": {
+     "site": [
+      1500,
+      950
+     ],
+     "new_covered_pop_network": 6852,
+     "new_covered_pop_euclid": 7766,
+     "pop_weighted_mean_net_dist_after_m": 537
+    },
+    "B": {
+     "site": [
+      1200,
+      150
+     ],
+     "new_covered_pop_network": 5157,
+     "new_covered_pop_euclid": 5153,
+     "pop_weighted_mean_net_dist_after_m": 536
+    },
+    "C": {
+     "site": [
+      1850,
+      750
+     ],
+     "new_covered_pop_network": 5579,
+     "new_covered_pop_euclid": 7323,
+     "pop_weighted_mean_net_dist_after_m": 533
+    }
+   },
+   "rank_by_network": [
+    "A",
+    "C",
+    "B"
+   ],
+   "rank_by_euclid": [
+    "A",
+    "C",
+    "B"
+   ],
+   "ranking_differs": false
+  },
+  {
+   "threshold_m": 800,
+   "sites": {
+    "A": {
+     "site": [
+      1500,
+      950
+     ],
+     "new_covered_pop_network": 4937,
+     "new_covered_pop_euclid": 3229,
+     "pop_weighted_mean_net_dist_after_m": 537
+    },
+    "B": {
+     "site": [
+      1200,
+      150
+     ],
+     "new_covered_pop_network": 5662,
+     "new_covered_pop_euclid": 5030,
+     "pop_weighted_mean_net_dist_after_m": 536
+    },
+    "C": {
+     "site": [
+      1850,
+      750
+     ],
+     "new_covered_pop_network": 6584,
+     "new_covered_pop_euclid": 5101,
+     "pop_weighted_mean_net_dist_after_m": 533
+    }
+   },
+   "rank_by_network": [
+    "C",
+    "B",
+    "A"
+   ],
+   "rank_by_euclid": [
+    "C",
+    "B",
+    "A"
+   ],
+   "ranking_differs": false
+  }
+ ]
+}

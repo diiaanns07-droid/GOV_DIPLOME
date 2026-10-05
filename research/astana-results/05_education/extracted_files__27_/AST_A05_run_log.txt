@@ -1,0 +1,25 @@
+# AST-A05 network probe, executed 2026-10-05T04:07:51Z from sandbox
+https://www.gov.kz/memleket/entities/astana?lang=ru -> HTTP 403  x-deny-reason: host_not_allowed
+https://stat.gov.kz/ru/region/astana/dynamic-tables/38/ -> HTTP 403  x-deny-reason: host_not_allowed
+https://data.egov.kz/ -> HTTP 403  x-deny-reason: host_not_allowed
+https://astana.gov.kz/ -> HTTP 000  
+https://ikomek109.kz/ -> HTTP 000  
+https://adilet.zan.kz/rus -> HTTP 403  x-deny-reason: host_not_allowed
+https://iac.kz/ -> HTTP 403  x-deny-reason: host_not_allowed
+https://egov.kz/ -> HTTP 403  x-deny-reason: host_not_allowed
+https://overpass-api.de/api/status -> HTTP 403  x-deny-reason: host_not_allowed
+https://download.geofabrik.de/asia/kazakhstan.html -> HTTP 403  x-deny-reason: host_not_allowed
+https://open-meteo.com/ -> HTTP 403  x-deny-reason: host_not_allowed
+https://archive-api.open-meteo.com/v1/archive -> HTTP 403  x-deny-reason: host_not_allowed
+https://codeload.github.com/ -> HTTP 301  
+astana.gov.kz, ikomek109.kz, www.ikomek109.kz -> curl: Could not resolve host (DNS в песочнице; существование домена не установлено)
+
+# STUPITS archive reused from 2026-10-04 download (codeload, ветка main, 9404339 байт); входы: data/astana_districts.geojson, data/geo_sources/astana_districts_overpass.json
+
+# commands
+pip install shapely pyproj --break-system-packages   # shapely 2.1.2, pyproj 3.8.0
+python3 AST_A05_experiment.py repo/hack-d3b2c613-stupits-main   # Python 3.12.3, numpy 2.4.4
+d895896e39b0d7eced0d8b975b80744e40092a45461855ba5c9c637de4c8e02e  AST_A05_experiment.py
+654c864af92ca6e0de9eed18efda31390c1b81ef389b84ab7862039994853f3e  AST_A05_results.json
+9092aebb997086d4fbf30963dd84dfae6aab483a585ba6f536944fb03a4eb95e  repo/hack-d3b2c613-stupits-main/data/astana_districts.geojson
+ebd6019b0ea32cef4d3f27c79bc0a979284fe35476551742eea8ba4839f01392  repo/hack-d3b2c613-stupits-main/data/geo_sources/astana_districts_overpass.json
