@@ -1,0 +1,1138 @@
+{
+  "meta": {
+    "agent_id": "AST-A02",
+    "topic": "ЖКХ: вода, канализация, тепло и обслуживание",
+    "city": "astana",
+    "round": "astana-2026-10-05",
+    "searched_at": "2026-10-05T04:07:33Z",
+    "access_limitations": "Нет инструмента веб-поиска. Прокси песочницы блокирует gov.kz, stat.gov.kz, data.egov.kz, openstreetmap.org, overpass-api.de (HTTP 403, host_not_allowed). Доступны github.com (репозиторий STUPITS со снимками OSM от 2026-09-22) и Google Places. Отопительный период, аварии, износ, бюджеты и программы Астаны НЕ проверены."
+  },
+  "sources": [
+    {
+      "source_id": "AST-A02-S001",
+      "title": "АСТАНА. Второй исследовательский проход. Агент AST-A02",
+      "publisher": "Владелец проекта / координатор",
+      "url": null,
+      "published_at": "2026-10-05",
+      "accessed_at": "2026-10-05",
+      "source_type": "task_brief",
+      "access_status": "opened",
+      "notes": "Рамки задания, не доказательство о городе."
+    },
+    {
+      "source_id": "AST-A02-S002",
+      "title": "BAITC-Hacks/hack-d3b2c613-stupits («Аким на 5 часов»)",
+      "publisher": "GitHub, BAITC-Hacks",
+      "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits",
+      "published_at": "2026-09-23",
+      "accessed_at": "2026-10-05",
+      "source_type": "code_repository",
+      "access_status": "opened",
+      "notes": "Коммит 834a25fb860dd5514d02c9274b70d7bf8a53a79c. Прочитаны README.md, data/city_data.json, data/events.json, data/astana_districts.geojson (metadata, properties)."
+    },
+    {
+      "source_id": "AST-A02-S003",
+      "title": "Снимок Overpass API: административные отношения Астаны и окрестностей",
+      "publisher": "OpenStreetMap contributors (через Overpass API 0.7.62.11), сохранён в STUPITS",
+      "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/blob/main/data/geo_sources/astana_districts_overpass.json",
+      "published_at": "2026-09-22",
+      "accessed_at": "2026-10-05",
+      "source_type": "osm_snapshot",
+      "access_status": "opened",
+      "notes": "osm3s.timestamp_osm_base=2026-09-22T08:45:51Z; 11 relations; ODbL. Общественный источник, не официальные границы. Ссылка на ветку main — путь в репозитории; проверен клон коммита 834a25fb."
+    },
+    {
+      "source_id": "AST-A02-S004",
+      "title": "Снимок Nominatim для «Сарайшық ауданы»",
+      "publisher": "OpenStreetMap Nominatim, сохранён в STUPITS",
+      "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/blob/main/data/geo_sources/sara_nominatim.json",
+      "published_at": null,
+      "accessed_at": "2026-10-05",
+      "source_type": "osm_geocoder_snapshot",
+      "access_status": "opened",
+      "notes": "Дата запроса в файле не указана; ODbL."
+    },
+    {
+      "source_id": "AST-A02-S005",
+      "title": "Журнал проверки сетевого доступа AST-A02",
+      "publisher": "AST-A02 (собственный эксперимент)",
+      "url": null,
+      "published_at": "2026-10-05",
+      "accessed_at": "2026-10-05",
+      "source_type": "own_experiment_log",
+      "access_status": "opened",
+      "notes": "curl -D -: gov.kz/memleket/entities/astana, stat.gov.kz/ru/region/astana/dynamic-tables/38/, data.egov.kz, openstreetmap.org, overpass-api.de/api/status → 403 host_not_allowed (04:07 UTC)."
+    },
+    {
+      "source_id": "AST-A02-S006",
+      "title": "Google Places: 8 запросов по операторам ЖКХ Астаны",
+      "publisher": "Google Maps Platform (Places)",
+      "url": null,
+      "published_at": null,
+      "accessed_at": "2026-10-05",
+      "source_type": "commercial_poi_listing",
+      "access_status": "opened",
+      "notes": "Запросы: «Астана Су Арнасы», «Астана-Теплотранзит», «ТЭЦ Астана-Энергия», «очистные сооружения канализации Астана», «iKOMEK 109», «ТЭЦ-2», «ТЭЦ-1», «водоочистные сооружения Астана Су Арнасы». Только для обнаружения; хранятся place_id: Astana Su Arnasy ChIJS1WTxxaBRUIR1i_Kji7GhPE; Теплотранзит ChIJYcTvTACHRUIRFt2BMTu8YMY, ChIJSX7jeyuBRUIR1k7SmtZNFJQ, ChIJVVUVmS2BRUIRk2vcs4-6LyU; Очистные сооружения ChIJkb5xL7-GRUIR1KXDNE3wlZk, ChIJL12CAtKFRUIR_ObXoHx7HHs; QalaQyzmet ChIJgWRZEVGDRUIRsr2bo0YgCKE."
+    },
+    {
+      "source_id": "AST-A02-S007",
+      "title": "Проверка геометрии районов OSM (перекрытия, площади)",
+      "publisher": "AST-A02 (собственный расчёт)",
+      "url": null,
+      "published_at": "2026-10-05",
+      "accessed_at": "2026-10-05",
+      "source_type": "own_experiment_derived",
+      "access_status": "opened",
+      "notes": "shapely 2.1.2, pyproj 3.8.0, EPSG:4326→EPSG:32642, buffer(0); вход data/astana_districts.geojson (6 полигонов из S003)."
+    },
+    {
+      "source_id": "AST-A02-S008",
+      "title": "Синтетические сценарии RA1–RA3 (AST_A02_astana_scenarios.py)",
+      "publisher": "AST-A02 (собственный эксперимент)",
+      "url": null,
+      "published_at": "2026-10-05",
+      "accessed_at": "2026-10-05",
+      "source_type": "own_experiment_synthetic",
+      "access_status": "opened",
+      "notes": "python3 AST_A02_astana_scenarios.py --reps 200; Python 3.12.3, numpy 2.4.4, seed 20261005; общий код A02_priority_experiment.py без изменений (sha256 c953a0357d186b7dd21b62ced9efe0ed0d2bfaae7ca1dc90d186143e103472e9)."
+    },
+    {
+      "source_id": "AST-A02-S009",
+      "title": "Официальный сайт акимата Астаны",
+      "publisher": "gov.kz",
+      "url": "https://www.gov.kz/memleket/entities/astana?lang=ru",
+      "published_at": null,
+      "accessed_at": "2026-10-05",
+      "source_type": "official_page",
+      "access_status": "blocked_in_sandbox",
+      "notes": "Указатель координатора; не открыт."
+    },
+    {
+      "source_id": "AST-A02-S010",
+      "title": "БНС: динамические ряды по Астане",
+      "publisher": "stat.gov.kz",
+      "url": "https://stat.gov.kz/ru/region/astana/dynamic-tables/38/",
+      "published_at": null,
+      "accessed_at": "2026-10-05",
+      "source_type": "official_statistics",
+      "access_status": "blocked_in_sandbox",
+      "notes": "Указатель координатора; не открыт."
+    },
+    {
+      "source_id": "AST-A02-S011",
+      "title": "Портал открытых данных",
+      "publisher": "data.egov.kz",
+      "url": "https://data.egov.kz/",
+      "published_at": null,
+      "accessed_at": "2026-10-05",
+      "source_type": "open_data_portal",
+      "access_status": "blocked_in_sandbox",
+      "notes": "Указатель координатора; не открыт."
+    },
+    {
+      "source_id": "AST-A02-S012",
+      "title": "Результаты первого прохода A02 по Шымкенту (A02_report.md, A02_evidence.json и др.)",
+      "publisher": "A02 (этот чат)",
+      "url": null,
+      "published_at": "2026-10-04",
+      "accessed_at": "2026-10-05",
+      "source_type": "prior_round_outputs",
+      "access_status": "opened",
+      "notes": "Используются для сравнения с исходными ID A02-*; файлы не изменялись."
+    }
+  ],
+  "facts": [
+    {
+      "fact_id": "AST-A02-F001",
+      "statement": "Снимок OSM содержит 11 административных отношений: районы Есиль, Алматы, Сарыарка, Байконур, Нура, Сарайшык; Целиноградский, Аршалынский, Шортандинский районы; городская администрация Косшы; Тайтобинская сельская администрация",
+      "kind": "observed",
+      "value": 11,
+      "unit": "отношений",
+      "geography": "Астана и окрестности",
+      "period": "OSM base 2026-09-22T08:45:51Z",
+      "source_refs": [
+        {
+          "source_id": "AST-A02-S003",
+          "locator": "elements[*].tags.name / name:ru"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "Состав OSM, не официальный перечень."
+    },
+    {
+      "fact_id": "AST-A02-F002",
+      "statement": "Разметка OSM неоднородна: у Сарайшыка admin_level=8, у пяти других районов 6; у Нуры и Сарайшыка нет wikidata",
+      "kind": "observed",
+      "value": {
+        "saraishyk_admin_level": "8",
+        "others_admin_level": "6"
+      },
+      "unit": null,
+      "geography": "Астана",
+      "period": "OSM base 2026-09-22",
+      "source_refs": [
+        {
+          "source_id": "AST-A02-S003",
+          "locator": "relations 19733918, 20593940 и др., tags.admin_level, tags.wikidata"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "Запрос по admin_level=6 потеряет Сарайшык."
+    },
+    {
+      "fact_id": "AST-A02-F003",
+      "statement": "Nominatim относит «Сарайшық ауданы» к городу Астана (addresstype city_district, ISO3166-2-lvl4 KZ-71)",
+      "kind": "observed",
+      "value": "city_district",
+      "unit": null,
+      "geography": "Астана",
+      "period": null,
+      "source_refs": [
+        {
+          "source_id": "AST-A02-S004",
+          "locator": "[0].address, [0].addresstype"
+        }
+      ],
+      "derivation": null,
+      "confidence": "medium",
+      "caveats": "Геокодер OSM, не официальный акт."
+    },
+    {
+      "fact_id": "AST-A02-F004",
+      "statement": "Шесть полигонов районов OSM не имеют попарных перекрытий >0.01 км²; площади (UTM 42N): Есиль 194.5, Нура 188.5, Байконур 183.5, Алматы 93.4, Сарыарка 67.8, Сарайшык 61.4; объединение 789.2 км²",
+      "kind": "derived",
+      "value": {
+        "esil": 194.5,
+        "nura": 188.5,
+        "baikonur": 183.5,
+        "almaty": 93.4,
+        "saryarka": 67.8,
+        "saraishyk": 61.4,
+        "union": 789.2
+      },
+      "unit": "км²",
+      "geography": "Астана",
+      "period": "OSM base 2026-09-22",
+      "source_refs": [
+        {
+          "source_id": "AST-A02-S007",
+          "locator": "вывод скрипта проверки"
+        }
+      ],
+      "derivation": "shapely intersection/union в EPSG:32642 по data/astana_districts.geojson",
+      "confidence": "high",
+      "caveats": "Площади полигонов OSM, не официальная площадь города."
+    },
+    {
+      "fact_id": "AST-A02-F005",
+      "statement": "Целиноградский, Аршалынский, Шортандинский районы и Косшы — единицы Акмолинской области, а не Астаны",
+      "kind": "hypothesis",
+      "value": null,
+      "unit": null,
+      "geography": "Акмолинская область",
+      "period": null,
+      "source_refs": [
+        {
+          "source_id": "AST-A02-S003",
+          "locator": "tags.name:ru"
+        }
+      ],
+      "derivation": "Вывод по названиям и знанию модели; в снимке нет тега принадлежности",
+      "confidence": "medium",
+      "caveats": "Подтвердить официально; важно для запрета смешивать город и область."
+    },
+    {
+      "fact_id": "AST-A02-F006",
+      "statement": "Учебный датасет STUPITS содержит 5 районов; Сарайшык показан на карте серым без оценки, так как в датасете ТЗ для него нет показателей",
+      "kind": "observed",
+      "value": 5,
+      "unit": "районов в датасете",
+      "geography": "Астана (учебный датасет)",
+      "period": "коммит 2026-09-23",
+      "source_refs": [
+        {
+          "source_id": "AST-A02-S002",
+          "locator": "README.md «Ключевые возможности»; data/astana_districts.geojson properties.scoring_enabled=false для saraishyk"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "Игровой режим не является моделью города из 6 районов."
+    },
+    {
+      "fact_id": "AST-A02-F007",
+      "statement": "Учебные ЖКХ-элементы STUPITS (C1, M13, M14, события E1 «−38 °C» и E4) — сценарные значения, не измерения Астаны",
+      "kind": "observed",
+      "value": null,
+      "unit": null,
+      "geography": "Астана (учебный датасет)",
+      "period": "датасет ТЗ",
+      "source_refs": [
+        {
+          "source_id": "AST-A02-S002",
+          "locator": "data/city_data.json → indicators.C1, measures M13/M14; data/events.json → E1, E4"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "См. также A02-F001–F003."
+    },
+    {
+      "fact_id": "AST-A02-F008",
+      "statement": "Официальные домены и OSM-сервисы недоступны из песочницы (HTTP 403, host_not_allowed)",
+      "kind": "observed",
+      "value": "403",
+      "unit": null,
+      "geography": null,
+      "period": "2026-10-05T04:07Z",
+      "source_refs": [
+        {
+          "source_id": "AST-A02-S005",
+          "locator": "вывод curl"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "Ограничение среды."
+    },
+    {
+      "fact_id": "AST-A02-F009",
+      "statement": "Google Maps: карточка «Astana Su Arnasy», пр. Абая 103, тип government_office; отзывы жалуются на передачу показаний по телефону и неработающие онлайн-функции",
+      "kind": "observed",
+      "value": null,
+      "unit": null,
+      "geography": "Астана",
+      "period": "на 2026-10-05",
+      "source_refs": [
+        {
+          "source_id": "AST-A02-S006",
+          "locator": "запрос «Астана Су Арнасы», результат 1"
+        }
+      ],
+      "derivation": null,
+      "confidence": "medium",
+      "caveats": "Существование офиса — medium; отзывы — единичные мнения (low)."
+    },
+    {
+      "fact_id": "AST-A02-F010",
+      "statement": "Google Maps: три карточки «Теплотранзит»/«Астана теплотранзит» (пр. Туран 12, ул. Отырар 5, ул. Иманова 11)",
+      "kind": "observed",
+      "value": 3,
+      "unit": "карточки",
+      "geography": "Астана",
+      "period": "на 2026-10-05",
+      "source_refs": [
+        {
+          "source_id": "AST-A02-S006",
+          "locator": "запрос «Астана-Теплотранзит»"
+        }
+      ],
+      "derivation": null,
+      "confidence": "medium",
+      "caveats": "Роль оператора теплосетей не подтверждена."
+    },
+    {
+      "fact_id": "AST-A02-F011",
+      "statement": "Google Maps: две карточки «Очистные сооружения» (Кургальджинское шоссе; «Очистные сооружения управления ТЭК»)",
+      "kind": "observed",
+      "value": 2,
+      "unit": "карточки",
+      "geography": "Астана",
+      "period": "на 2026-10-05",
+      "source_refs": [
+        {
+          "source_id": "AST-A02-S006",
+          "locator": "запрос «очистные сооружения канализации Астана»"
+        }
+      ],
+      "derivation": null,
+      "confidence": "low",
+      "caveats": "Владелец и назначение неизвестны."
+    },
+    {
+      "fact_id": "AST-A02-F012",
+      "statement": "Google Maps: QalaQyzmet; в отзывах — единый центр договоров по воде, электричеству, теплу, вывозу отходов",
+      "kind": "observed",
+      "value": null,
+      "unit": null,
+      "geography": "Астана",
+      "period": "на 2026-10-05",
+      "source_refs": [
+        {
+          "source_id": "AST-A02-S006",
+          "locator": "запрос «Астана-Теплотранзит», результат QalaQyzmet, reviews"
+        }
+      ],
+      "derivation": null,
+      "confidence": "low",
+      "caveats": "Статус и функции подтвердить официально."
+    },
+    {
+      "fact_id": "AST-A02-F013",
+      "statement": "Запросы «ТЭЦ-1/ТЭЦ-2 Астана», «ТЭЦ Астана-Энергия», «iKOMEK 109» не дали релевантных карточек",
+      "kind": "observed",
+      "value": 0,
+      "unit": "релевантных карточек",
+      "geography": "Астана",
+      "period": "на 2026-10-05",
+      "source_refs": [
+        {
+          "source_id": "AST-A02-S006",
+          "locator": "запросы 3, 5, 6, 7, 8"
+        }
+      ],
+      "derivation": null,
+      "confidence": "medium",
+      "caveats": "Отсутствие в Google ≠ отсутствие объекта."
+    },
+    {
+      "fact_id": "AST-A02-F014",
+      "statement": "Воду и канализацию обслуживает ГКП «Астана Су Арнасы», теплосети — АО «Астана-Теплотранзит», ТЭЦ — АО «Астана-Энергия»",
+      "kind": "hypothesis",
+      "value": null,
+      "unit": null,
+      "geography": "Астана",
+      "period": null,
+      "source_refs": [],
+      "derivation": "Знание модели; частично согласуется с F009–F010",
+      "confidence": "low",
+      "caveats": "Проверить организационно-правовые формы и зоны обслуживания."
+    },
+    {
+      "fact_id": "AST-A02-F015",
+      "statement": "Отопительный период в Астане — примерно октябрь–апрель, даты задаются решением акимата",
+      "kind": "hypothesis",
+      "value": null,
+      "unit": null,
+      "geography": "Астана",
+      "period": null,
+      "source_refs": [],
+      "derivation": "Знание модели",
+      "confidence": "low",
+      "caveats": "Найти решения акимата за 2024–2026."
+    },
+    {
+      "fact_id": "AST-A02-F016",
+      "statement": "Летом теплосети проходят гидравлические испытания с публикацией графиков отключения горячей воды; ремонт теплосети в основном вне отопительного периода",
+      "kind": "hypothesis",
+      "value": null,
+      "unit": null,
+      "geography": "Астана",
+      "period": null,
+      "source_refs": [],
+      "derivation": "Типовая практика, не проверена локально",
+      "confidence": "medium",
+      "caveats": "Найти графики оператора."
+    },
+    {
+      "fact_id": "AST-A02-F017",
+      "statement": "В зонах новой застройки жалобы чаще отражают дефицит мощности/подключения, чем износ сетей",
+      "kind": "hypothesis",
+      "value": null,
+      "unit": null,
+      "geography": "Астана",
+      "period": null,
+      "source_refs": [],
+      "derivation": "Предположение для проверки",
+      "confidence": "low",
+      "caveats": "Проверить по объявлениям и техусловиям."
+    },
+    {
+      "fact_id": "AST-A02-F018",
+      "statement": "RA1, только открытые сигналы: при смешении классов 48.1% верхних 10% — новые территории (их 15.1% всех участков), захват риска 0.527; классификатор 70% — 0.649 и 23.9%; идеальное разделение — 0.744 и 3.8%",
+      "kind": "synthetic",
+      "value": {
+        "mixed_risk": 0.527,
+        "mixed_share_new": 0.481,
+        "clf70_risk": 0.649,
+        "clf70_share_new": 0.239,
+        "perfect_risk": 0.744,
+        "perfect_share_new": 0.038,
+        "share_new_all": 0.151
+      },
+      "unit": "доля",
+      "geography": "synthetic",
+      "period": "synthetic",
+      "source_refs": [
+        {
+          "source_id": "AST-A02-S008",
+          "locator": "AST_A02_experiment_results.json → results"
+        }
+      ],
+      "derivation": "top-10%, 200 повторов",
+      "confidence": "high",
+      "caveats": "Сила «дефицитного» сигнала задана (Пуассон 8); реальная точность классификатора неизвестна."
+    },
+    {
+      "fact_id": "AST-A02-F019",
+      "statement": "RA1, данные оператора: смешение классов почти не вредит (0.882 и 0.9% против 0.885 и 0.1%); «самый старый первым» иммунно к путанице (0.0%), но захватывает 0.488 риска",
+      "kind": "synthetic",
+      "value": {
+        "op_mixed_risk": 0.882,
+        "op_mixed_share_new": 0.009,
+        "op_perfect_risk": 0.885,
+        "oldest_risk": 0.488
+      },
+      "unit": "доля",
+      "geography": "synthetic",
+      "period": "synthetic",
+      "source_refs": [
+        {
+          "source_id": "AST-A02-S008",
+          "locator": "AST_A02_experiment_results.json → results"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "Исходная гипотеза в режиме оператора не подтвердилась."
+    },
+    {
+      "fact_id": "AST-A02-F020",
+      "statement": "RA2: совместная очередь вода+тепло насыщается: при принятом k≥3 доля тепла в верхних 10% = 1.0; истинный k=1 при принятом 3 → 0.606 риска (против 0.869); истинный 6 при принятом 1 → 0.753 (против 0.895)",
+      "kind": "synthetic",
+      "value": {
+        "t1_a1": 0.869,
+        "t1_a3": 0.606,
+        "t6_a1": 0.753,
+        "t6_a6": 0.895,
+        "heat_share_a3": 1.0
+      },
+      "unit": "доля",
+      "geography": "synthetic",
+      "period": "synthetic",
+      "source_refs": [
+        {
+          "source_id": "AST-A02-S008",
+          "locator": "AST_A02_experiment_results.json → results"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "Насыщение зависит от масштаба оценки; k — параметр, не факт."
+    },
+    {
+      "fact_id": "AST-A02-F021",
+      "statement": "RA3: «пропуск = 0» снижает долю района без истории в верхних 10% до 0.072 (оракул 0.159); исключение критерия с перенормировкой — 0.157 и захват риска 0.888",
+      "kind": "synthetic",
+      "value": {
+        "oracle_share": 0.159,
+        "zero_share": 0.072,
+        "zero_risk": 0.871,
+        "median_share": 0.118,
+        "drop_share": 0.157,
+        "drop_risk": 0.888
+      },
+      "unit": "доля",
+      "geography": "synthetic",
+      "period": "synthetic",
+      "source_refs": [
+        {
+          "source_id": "AST-A02-S008",
+          "locator": "AST_A02_experiment_results.json → results"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "Аналог ситуации с Сарайшыком, не данные о нём."
+    },
+    {
+      "fact_id": "AST-A02-F022",
+      "statement": "Общий код оценки (A02_priority_experiment.py) использован для Астаны без изменений",
+      "kind": "derived",
+      "value": "c953a0357d186b7dd21b62ced9efe0ed0d2bfaae7ca1dc90d186143e103472e9",
+      "unit": "sha256",
+      "geography": null,
+      "period": "2026-10-05",
+      "source_refs": [
+        {
+          "source_id": "AST-A02-S008",
+          "locator": "sha256sum до и после прогона"
+        }
+      ],
+      "derivation": "Совпадение хеша файла до и после",
+      "confidence": "high",
+      "caveats": null
+    },
+    {
+      "fact_id": "AST-A02-F023",
+      "statement": "Существуют анонсированные проекты новых источников тепла/воды для Астаны (класс announced_project)",
+      "kind": "hypothesis",
+      "value": null,
+      "unit": null,
+      "geography": "Астана",
+      "period": null,
+      "source_refs": [],
+      "derivation": "Знание модели, без деталей",
+      "confidence": "low",
+      "caveats": "Нужна стадия по первичным документам: объявлено ≠ введено."
+    }
+  ],
+  "datasets": [
+    {
+      "dataset_id": "AST-A02-D001",
+      "title": "STUPITS: учебный датасет Астаны",
+      "publisher": "BAITC-Hacks",
+      "source_ids": [
+        "AST-A02-S002"
+      ],
+      "landing_url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits",
+      "download_or_api_url": null,
+      "access_status": "sample_verified",
+      "tested_at": "2026-10-05",
+      "geography": "Астана (учебный)",
+      "granularity": "5 районов",
+      "period": "датасет ТЗ",
+      "format": "JSON",
+      "fields": [
+        "indicators",
+        "districts",
+        "measures",
+        "events"
+      ],
+      "units": "у.е., пункты",
+      "update_frequency": null,
+      "license": null,
+      "auth_requirement": "нет",
+      "limitations": "Учебные значения; Сарайшык отсутствует",
+      "next_retrieval_step": "Только игровой режим."
+    },
+    {
+      "dataset_id": "AST-A02-D002",
+      "title": "OSM: административные границы Астаны и соседних единиц (снимок)",
+      "publisher": "OpenStreetMap contributors",
+      "source_ids": [
+        "AST-A02-S003",
+        "AST-A02-S004",
+        "AST-A02-S007"
+      ],
+      "landing_url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/tree/main/data/geo_sources",
+      "download_or_api_url": null,
+      "access_status": "sample_verified",
+      "tested_at": "2026-10-05",
+      "geography": "Астана и окрестности",
+      "granularity": "район / сельский округ",
+      "period": "2026-09-22",
+      "format": "Overpass JSON, GeoJSON",
+      "fields": [
+        "osm_relation_id",
+        "name",
+        "name_ru",
+        "name_kk",
+        "admin_level",
+        "wikidata",
+        "geometry"
+      ],
+      "units": "км² (derived)",
+      "update_frequency": "непрерывно в OSM; снимок разовый",
+      "license": "ODbL 1.0",
+      "auth_requirement": "нет",
+      "limitations": "Не официальные границы; разметка неоднородна (F002); свежий запрос к Overpass из песочницы невозможен",
+      "next_retrieval_step": "Сверить с официальным составом районов; образец — AST_A02_osm_districts_sample.csv."
+    },
+    {
+      "dataset_id": "AST-A02-D003",
+      "title": "БНС: показатели ЖКХ по Астане (ожидаемо)",
+      "publisher": "БНС АСПиР РК",
+      "source_ids": [
+        "AST-A02-S010"
+      ],
+      "landing_url": "https://stat.gov.kz/ru/region/astana/dynamic-tables/38/",
+      "download_or_api_url": null,
+      "access_status": "unavailable",
+      "tested_at": null,
+      "geography": "Астана",
+      "granularity": "город",
+      "period": null,
+      "format": null,
+      "fields": [],
+      "units": null,
+      "update_frequency": null,
+      "license": null,
+      "auth_requirement": null,
+      "limitations": "Заблокировано; по указателю координатора страница о населении/миграции, ряды ЖКХ — гипотеза",
+      "next_retrieval_step": "Найти раздел ЖКХ, записать год и единицы."
+    },
+    {
+      "dataset_id": "AST-A02-D004",
+      "title": "data.egov.kz: наборы по ЖКХ Астаны",
+      "publisher": "data.egov.kz",
+      "source_ids": [
+        "AST-A02-S011"
+      ],
+      "landing_url": "https://data.egov.kz/",
+      "download_or_api_url": null,
+      "access_status": "unavailable",
+      "tested_at": null,
+      "geography": "Астана",
+      "granularity": null,
+      "period": null,
+      "format": null,
+      "fields": [],
+      "units": null,
+      "update_frequency": null,
+      "license": null,
+      "auth_requirement": null,
+      "limitations": "Заблокировано",
+      "next_retrieval_step": "Поиск по каталогу, реальный запрос к API с фиксацией ответа."
+    },
+    {
+      "dataset_id": "AST-A02-D005",
+      "title": "Объявления об авариях и плановых отключениях воды и тепла",
+      "publisher": "операторы / акимат (подтвердить)",
+      "source_ids": [],
+      "landing_url": null,
+      "download_or_api_url": null,
+      "access_status": "unavailable",
+      "tested_at": null,
+      "geography": "Астана",
+      "granularity": "улица/дом",
+      "period": null,
+      "format": "HTML/посты",
+      "fields": [
+        "дата",
+        "адрес/диапазон",
+        "сектор",
+        "тип",
+        "срок восстановления"
+      ],
+      "units": null,
+      "update_frequency": null,
+      "license": null,
+      "auth_requirement": null,
+      "limitations": "Не найдено в этом проходе",
+      "next_retrieval_step": "Ручной сбор 15.09–15.10.2026 по схеме v0.2."
+    },
+    {
+      "dataset_id": "AST-A02-D006",
+      "title": "Графики гидравлических испытаний и отключения горячей воды",
+      "publisher": "оператор теплосетей (подтвердить)",
+      "source_ids": [],
+      "landing_url": null,
+      "download_or_api_url": null,
+      "access_status": "unavailable",
+      "tested_at": null,
+      "geography": "Астана",
+      "granularity": "зона/дом",
+      "period": null,
+      "format": null,
+      "fields": [
+        "зона",
+        "даты",
+        "тип работ"
+      ],
+      "units": null,
+      "update_frequency": "ежегодно (гипотеза)",
+      "license": null,
+      "auth_requirement": null,
+      "limitations": "Существование — гипотеза F016",
+      "next_retrieval_step": "Найти на сайте оператора/акимата."
+    },
+    {
+      "dataset_id": "AST-A02-D007",
+      "title": "Данные оператора: паспорт сетей, порывы, испытания, тепловые пункты, техусловия",
+      "publisher": "операторы воды/канализации/тепла",
+      "source_ids": [],
+      "landing_url": null,
+      "download_or_api_url": null,
+      "access_status": "restricted",
+      "tested_at": null,
+      "geography": "Астана",
+      "granularity": "участок/объект/зона",
+      "period": null,
+      "format": "CSV/GeoJSON (запрашиваемо)",
+      "fields": [
+        "segment_id",
+        "network_type",
+        "material",
+        "diameter_mm",
+        "install_year",
+        "incident_id",
+        "start_at",
+        "end_at",
+        "incident_type",
+        "test_date",
+        "test_result",
+        "substation_id",
+        "connected_buildings",
+        "tech_conditions_load"
+      ],
+      "units": "мм, годы, шт., Гкал/ч",
+      "update_frequency": null,
+      "license": null,
+      "auth_requirement": "соглашение",
+      "limitations": "Критическая инфраструктура",
+      "next_retrieval_step": "Заявка (отчёт §8), решение владельца."
+    },
+    {
+      "dataset_id": "AST-A02-D008",
+      "title": "Агрегаты обращений iKOMEK109 по ЖКХ",
+      "publisher": "акимат / оператор 109 (подтвердить)",
+      "source_ids": [
+        "AST-A02-S009"
+      ],
+      "landing_url": "https://www.gov.kz/memleket/entities/astana?lang=ru",
+      "download_or_api_url": null,
+      "access_status": "unavailable",
+      "tested_at": null,
+      "geography": "Астана",
+      "granularity": "район/категория/месяц",
+      "period": null,
+      "format": null,
+      "fields": [
+        "категория",
+        "район",
+        "месяц",
+        "число"
+      ],
+      "units": "обращений",
+      "update_frequency": null,
+      "license": null,
+      "auth_requirement": null,
+      "limitations": "Неизвестно, публикуются ли",
+      "next_retrieval_step": "Проверить во втором проходе."
+    },
+    {
+      "dataset_id": "AST-A02-D009",
+      "title": "Синтетические сценарии Астаны",
+      "publisher": "AST-A02",
+      "source_ids": [
+        "AST-A02-S008"
+      ],
+      "landing_url": null,
+      "download_or_api_url": "AST_A02_experiment_results.json",
+      "access_status": "sample_verified",
+      "tested_at": "2026-10-05",
+      "geography": "synthetic",
+      "granularity": "участок",
+      "period": "synthetic",
+      "format": "JSON",
+      "fields": [
+        "results.*.mean",
+        "results.*.sd"
+      ],
+      "units": "доля",
+      "update_frequency": null,
+      "license": "по выбору владельца",
+      "auth_requirement": "нет",
+      "limitations": "SYNTHETIC",
+      "next_retrieval_step": "Только для тестов кода."
+    },
+    {
+      "dataset_id": "AST-A02-D010",
+      "title": "Google Places: карточки организаций Астаны",
+      "publisher": "Google",
+      "source_ids": [
+        "AST-A02-S006"
+      ],
+      "landing_url": null,
+      "download_or_api_url": null,
+      "access_status": "restricted",
+      "tested_at": "2026-10-05",
+      "geography": "Астана",
+      "granularity": "точка",
+      "period": "на 2026-10-05",
+      "format": null,
+      "fields": [
+        "name",
+        "address",
+        "place_id"
+      ],
+      "units": null,
+      "update_frequency": null,
+      "license": "Условия Google Maps Platform",
+      "auth_requirement": "API-ключ",
+      "limitations": "Не для хранения/переиспользования",
+      "next_retrieval_step": "Заменить официальными реестрами/OSM."
+    }
+  ],
+  "opportunities": [
+    {
+      "idea_id": "AST-A02-O001",
+      "title": "Общий модуль приоритизации с конфигурацией Астаны: раздельные очереди по секторам, класс события до ранжирования, политика пропусков",
+      "problem": "P1/P3/P4: что обследовать и менять; новые территории и сезон искажают наивную очередь",
+      "evidence_fact_ids": [
+        "AST-A02-F018",
+        "AST-A02-F019",
+        "AST-A02-F020",
+        "AST-A02-F021",
+        "AST-A02-F022",
+        "AST-A02-F006",
+        "AST-A02-F002"
+      ],
+      "primary_user": "Планировщик эксплуатации/ремонта оператора воды или теплосети; специалист ЖКХ акимата",
+      "user_task": "Выбрать участки/зоны для обследования и ремонта в рамках бюджета сектора и окна работ",
+      "existing_solution": "Неизвестно; вероятно экспертное решение и инвестпрограмма",
+      "proposed_addition": "Очереди по секторам, явный зимний множитель с чувствительностью, обязательный event_class, флаги пропусков, сравнение с «самый старый первым»",
+      "required_dataset_ids": [
+        "AST-A02-D007",
+        "AST-A02-D005",
+        "AST-A02-D002"
+      ],
+      "ai_role": "Не нужен для расчёта; LLM классифицирует тексты сигналов в event_class (вклад измерим, F018)",
+      "non_ai_baseline": "Сортировка по возрасту; ручная классификация",
+      "success_metrics": [
+        "Доля аварий сезона T+1 в верхних k% против базового правила (при наличии истории)",
+        "Точность/полнота классификации event_class на размеченной выборке",
+        "Доля верхнего списка в зонах новой застройки до/после разделения классов"
+      ],
+      "feasibility_10_days": "Код и интерфейс на синтетике + конфиги двух городов — реально; валидация — только с данными оператора",
+      "blockers": [
+        "Нет данных оператора",
+        "Официальный состав районов не подтверждён",
+        "k не откалиброван"
+      ],
+      "transfer_to_shymkent": "Код общий (F022); параметры отдельные: сезонный профиль (вода/лето — A02-F012), районы, веса",
+      "next_action": "Вынести конфиги городов и закрепить правила RA1–RA3 тестами"
+    },
+    {
+      "idea_id": "AST-A02-O002",
+      "title": "Реестр сезонных и аварийных отключений Астаны с разделением классов",
+      "problem": "P1/P2: в отопительный период и летом жителям и диспетчеру нужно различать плановое, аварийное и хроническое",
+      "evidence_fact_ids": [
+        "AST-A02-F015",
+        "AST-A02-F016",
+        "AST-A02-F012",
+        "AST-A02-F009"
+      ],
+      "primary_user": "Диспетчер оператора/109; житель как читатель",
+      "user_task": "Понять, сколько инцидентов за потоком сообщений, что плановое и когда восстановят",
+      "existing_solution": "Неизвестно; возможно объявления операторов и городские приложения — проверить",
+      "proposed_addition": "Карточки v0.2 с season_context; кластеризация по месту и времени; проверка «обещано — выполнено» для графиков испытаний",
+      "required_dataset_ids": [
+        "AST-A02-D005",
+        "AST-A02-D006",
+        "AST-A02-D008"
+      ],
+      "ai_role": "LLM извлекает поля из текста (рус./каз.); код кластеризует",
+      "non_ai_baseline": "Ключевые слова и ручной ввод",
+      "success_metrics": [
+        "Доля объявлений с адресом, временем, типом, длительностью",
+        "Точность извлечения на 50 размеченных объявлениях",
+        "Число сообщений на инцидент"
+      ],
+      "feasibility_10_days": "Да, если объявления публикуются",
+      "blockers": [
+        "Наличие и формат объявлений не проверены",
+        "Возможное дублирование существующих сервисов"
+      ],
+      "transfer_to_shymkent": "Схема общая; сезон и операторы свои",
+      "next_action": "Ручной сбор 15.09–15.10.2026"
+    },
+    {
+      "idea_id": "AST-A02-O003",
+      "title": "Исследование: последствия отказа тепла в градусо-часах для калибровки зимнего множителя",
+      "problem": "k в RA2 решает распределение очереди, но не откалиброван",
+      "evidence_fact_ids": [
+        "AST-A02-F020",
+        "AST-A02-F015"
+      ],
+      "primary_user": "Исследователь (диплом), затем планировщик",
+      "user_task": "Оценить тяжесть отказа тепла через длительность × температурный перепад × уязвимость",
+      "existing_solution": "Экспертная оценка",
+      "proposed_addition": "Модель градусо-часов на объявлениях с длительностями и суточной температуре; связь с агентом 09 (тепловые свойства зданий)",
+      "required_dataset_ids": [
+        "AST-A02-D005",
+        "AST-A02-D007"
+      ],
+      "ai_role": "Не LLM; физико-статистическая модель",
+      "non_ai_baseline": "k = 1 и анализ чувствительности",
+      "success_metrics": [
+        "Распределение градусо-часов за сезон",
+        "Устойчивость выбора k к допущениям"
+      ],
+      "feasibility_10_days": "Только постановка и синтетика",
+      "blockers": [
+        "Нужны длительности отключений и метеоданные"
+      ],
+      "transfer_to_shymkent": "Слабо: в Шымкенте предполагаемый стресс летний (A02-F012)",
+      "next_action": "Включить длительность и температуру в ручной сбор"
+    }
+  ],
+  "open_questions": [
+    {
+      "question": "Каков официальный состав районов Астаны и дата образования Сарайшыка?",
+      "why_important": "Учебный датасет знает 5 районов; OSM — 6 с неоднородной разметкой",
+      "how_to_check": "Нормативный акт / сайт акимата"
+    },
+    {
+      "question": "Обслуживают ли городские операторы территории Акмолинской области (Косшы, Целиноградский район)?",
+      "why_important": "Риск смешать город и область в агрегатах",
+      "how_to_check": "Сайты операторов, тарифные решения, зоны обслуживания"
+    },
+    {
+      "question": "Каковы фактические даты отопительного сезона 2024–2026?",
+      "why_important": "season_context, окно ремонта, выбор первого пользователя",
+      "how_to_check": "Решения акимата"
+    },
+    {
+      "question": "Публикуются ли графики испытаний теплосетей и объявления об авариях, в каком формате?",
+      "why_important": "Основа O002 и уровня открытых данных",
+      "how_to_check": "Ручной сбор за 30 дней"
+    },
+    {
+      "question": "Публикует ли iKOMEK109 агрегаты обращений по ЖКХ по районам?",
+      "why_important": "Сигналы для LoF и проверки классификации",
+      "how_to_check": "Сайт акимата/109, data.egov.kz"
+    },
+    {
+      "question": "Есть ли у операторов и города уже работающий публичный реестр отключений?",
+      "why_important": "Может обесценить O002 (возражение 1)",
+      "how_to_check": "Сайты операторов, городские приложения"
+    },
+    {
+      "question": "Какова реальная точность разделения «дефицит/износ» по текстам?",
+      "why_important": "F018: качество очереди в открытом режиме зависит от неё",
+      "how_to_check": "Разметить 50–100 объявлений из ручного сбора и измерить"
+    },
+    {
+      "question": "Какие ряды ЖКХ есть у БНС по Астане и сопоставимы ли они с Шымкентом по методике?",
+      "why_important": "Совпадение названия показателя ≠ сопоставимость",
+      "how_to_check": "stat.gov.kz, метаданные рядов"
+    }
+  ],
+  "city_comparison": [
+    {
+      "topic": "Карточка проблемы и классы событий",
+      "astana_fact_ids": [
+        "AST-A02-F017",
+        "AST-A02-F018"
+      ],
+      "shymkent_fact_ids": [],
+      "comparison_status": "shared_schema_pending_city_data",
+      "shared_component": "AST_A02_problem_card.schema.json v0.2 (надмножество A02 v0.1)",
+      "city_specific_inputs": [
+        "список районов",
+        "boundary_version",
+        "сезонный профиль",
+        "операторы"
+      ],
+      "caveats": "Для Шымкента схема — файл A02_problem_card.schema.json без fact_id; реальных карточек нет ни по одному городу."
+    },
+    {
+      "topic": "Очередь обследований LoF × CoF и сравнение с «самый старый первым»",
+      "astana_fact_ids": [
+        "AST-A02-F018",
+        "AST-A02-F019",
+        "AST-A02-F020",
+        "AST-A02-F021",
+        "AST-A02-F022"
+      ],
+      "shymkent_fact_ids": [
+        "A02-F015",
+        "A02-F016",
+        "A02-F017",
+        "A02-F018",
+        "A02-F019",
+        "A02-F020"
+      ],
+      "comparison_status": "both_synthetic",
+      "shared_component": "A02_priority_experiment.py: pct/score/top/evaluate (sha256 c953a035…)",
+      "city_specific_inputs": [
+        "веса",
+        "зимний множитель k",
+        "полнота паспортных данных",
+        "доля новых территорий"
+      ],
+      "caveats": "Сравниваются свойства метода, не города."
+    },
+    {
+      "topic": "Сезонный профиль стресса",
+      "astana_fact_ids": [
+        "AST-A02-F015",
+        "AST-A02-F016"
+      ],
+      "shymkent_fact_ids": [
+        "A02-F012"
+      ],
+      "comparison_status": "hypothesis_both",
+      "shared_component": "параметр season_profile в конфиге города",
+      "city_specific_inputs": [
+        "даты отопительного сезона",
+        "температуры",
+        "летний пик воды"
+      ],
+      "caveats": "Ни в одном городе даты и пики не проверены."
+    },
+    {
+      "topic": "Границы и агломерация",
+      "astana_fact_ids": [
+        "AST-A02-F001",
+        "AST-A02-F002",
+        "AST-A02-F003",
+        "AST-A02-F004",
+        "AST-A02-F005"
+      ],
+      "shymkent_fact_ids": [
+        "A02-F008",
+        "A02-F011"
+      ],
+      "comparison_status": "astana_osm_observed_shymkent_hypothesis",
+      "shared_component": "проверка геометрии и обязательная boundary_version",
+      "city_specific_inputs": [
+        "полигоны районов",
+        "соседняя область"
+      ],
+      "caveats": "OSM не официальный источник."
+    },
+    {
+      "topic": "Операторы и каналы",
+      "astana_fact_ids": [
+        "AST-A02-F009",
+        "AST-A02-F010",
+        "AST-A02-F011",
+        "AST-A02-F012",
+        "AST-A02-F013",
+        "AST-A02-F014"
+      ],
+      "shymkent_fact_ids": [
+        "A02-F007",
+        "A02-F009"
+      ],
+      "comparison_status": "weak_listings_both",
+      "shared_component": null,
+      "city_specific_inputs": [
+        "адаптеры источников по каждому оператору"
+      ],
+      "caveats": "Только карточки Google; роли не подтверждены."
+    },
+    {
+      "topic": "Старый игровой режим",
+      "astana_fact_ids": [
+        "AST-A02-F006",
+        "AST-A02-F007"
+      ],
+      "shymkent_fact_ids": [
+        "A02-F001",
+        "A02-F002",
+        "A02-F003"
+      ],
+      "comparison_status": "not_transferable",
+      "shared_component": "игровой режим как отдельная воспроизводимая модель",
+      "city_specific_inputs": [],
+      "caveats": "Учебные эффекты не являются измерениями ни для одного города."
+    }
+  ],
+  "deliverables": {
+    "problem_card_schema_v0_2": "AST_A02_problem_card.schema.json",
+    "experiment": {
+      "script": "AST_A02_astana_scenarios.py",
+      "depends_on": "A02_priority_experiment.py (unchanged)",
+      "results": "AST_A02_experiment_results.json",
+      "command": "python3 AST_A02_astana_scenarios.py --reps 200",
+      "python": "3.12.3",
+      "numpy": "2.4.4",
+      "kind": "synthetic"
+    },
+    "real_sample": {
+      "file": "AST_A02_osm_districts_sample.csv",
+      "dataset_id": "AST-A02-D002",
+      "source_ids": [
+        "AST-A02-S003",
+        "AST-A02-S007"
+      ],
+      "license": "ODbL 1.0"
+    }
+  }
+}

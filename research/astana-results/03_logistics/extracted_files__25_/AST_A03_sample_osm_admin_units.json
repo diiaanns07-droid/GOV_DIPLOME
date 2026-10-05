@@ -1,0 +1,163 @@
+{
+ "dataset_id": "AST-A03-D001",
+ "kind": "real_sample",
+ "source_ids": [
+  "AST-A03-S002"
+ ],
+ "description": "Атрибуты административных отношений OSM в рамке 50.90,71.0,51.5,72.0: шесть районов Астаны (набор STUPITS) и соседние единицы, попавшие в тот же ответ Overpass. Полигоны не копировались: они в data/astana_districts.geojson репозитория STUPITS.",
+ "provenance": {
+  "repo": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits",
+  "commit": "834a25fb860dd5514d02c9274b70d7bf8a53a79c",
+  "files": [
+   "data/astana_districts.geojson",
+   "data/geo_sources/astana_districts_overpass.json"
+  ],
+  "overpass_query_url": "https://overpass-api.de/api/interpreter?data=%5Bout%3Ajson%5D%5Btimeout%3A25%5D%3Brel%5B%22boundary%22%3D%22administrative%22%5D%5B%22admin_level%22~%22%5E%285%7C6%7C7%7C8%7C9%29%24%22%5D%2850.90%2C71.0%2C51.5%2C72.0%29%3Bout+geom%3B",
+  "retrieved_at": "2026-09-23T11:28:06+00:00",
+  "osm_base_timestamp": "2026-09-22T08:45:51Z",
+  "geojson_sha256": "9092aebb997086d4fbf30963dd84dfae6aab483a585ba6f536944fb03a4eb95e",
+  "extracted_by": "AST-A03",
+  "extracted_at": "2026-10-05"
+ },
+ "license": "ODbL 1.0, © OpenStreetMap contributors",
+ "caveats": [
+  "Общественный источник, не официальные юридические границы.",
+  "area_km2_approx_stupits — приближённый расчёт STUPITS, не официальная статистика.",
+  "Уровни admin_level заданы участниками OSM; у Сарайшыка 8, у остальных районов 6.",
+  "Соседние единицы (in_astana_district_set=false) — территории вне шести районов по данным OSM; их официальный статус не проверен."
+ ],
+ "rows": [
+  {
+   "app_id": "esil",
+   "name_ru": "район Есиль",
+   "name_kk": "Есіл ауданы",
+   "osm_relation": 3479876,
+   "osm_admin_level": "6",
+   "wikidata": "Q16648877",
+   "area_km2_approx_stupits": 193.0,
+   "label_center_lon": 71.48292,
+   "label_center_lat": 51.03757,
+   "in_astana_district_set": true
+  },
+  {
+   "app_id": "almaty",
+   "name_ru": "район Алматы",
+   "name_kk": "Алматы ауданы",
+   "osm_relation": 3482819,
+   "osm_admin_level": "6",
+   "wikidata": "Q12528524",
+   "area_km2_approx_stupits": 92.6,
+   "label_center_lon": 71.57139,
+   "label_center_lat": 51.15321,
+   "in_astana_district_set": true
+  },
+  {
+   "app_id": "saryarka",
+   "name_ru": "район Сарыарка",
+   "name_kk": "Сарыарқа ауданы",
+   "osm_relation": 3486954,
+   "osm_admin_level": "6",
+   "wikidata": "Q16694762",
+   "area_km2_approx_stupits": 67.3,
+   "label_center_lon": 71.33251,
+   "label_center_lat": 51.19892,
+   "in_astana_district_set": true
+  },
+  {
+   "app_id": "baikonur",
+   "name_ru": "район Байконур",
+   "name_kk": "Байқоңыр ауданы",
+   "osm_relation": 8593081,
+   "osm_admin_level": "6",
+   "wikidata": "Q57782659",
+   "area_km2_approx_stupits": 182.0,
+   "label_center_lon": 71.45838,
+   "label_center_lat": 51.22889,
+   "in_astana_district_set": true
+  },
+  {
+   "app_id": "nura",
+   "name_ru": "район Нура",
+   "name_kk": "Нұра ауданы",
+   "osm_relation": 20593940,
+   "osm_admin_level": "6",
+   "wikidata": null,
+   "area_km2_approx_stupits": 187.0,
+   "label_center_lon": 71.32182,
+   "label_center_lat": 51.10278,
+   "in_astana_district_set": true
+  },
+  {
+   "app_id": "saraishyk",
+   "name_ru": "район Сарайшык",
+   "name_kk": "Сарайшық ауданы",
+   "osm_relation": 19733918,
+   "osm_admin_level": "8",
+   "wikidata": null,
+   "area_km2_approx_stupits": 60.9,
+   "label_center_lon": 71.58221,
+   "label_center_lat": 51.11258,
+   "in_astana_district_set": true
+  },
+  {
+   "app_id": null,
+   "name_ru": "Целиноградский район",
+   "name_kk": "Целиноград ауданы",
+   "osm_relation": 3403760,
+   "osm_admin_level": "6",
+   "wikidata": "Q2224859",
+   "area_km2_approx_stupits": null,
+   "label_center_lon": null,
+   "label_center_lat": null,
+   "in_astana_district_set": false
+  },
+  {
+   "app_id": null,
+   "name_ru": "Аршалынский район",
+   "name_kk": "Аршалы ауданы",
+   "osm_relation": 3403782,
+   "osm_admin_level": "6",
+   "wikidata": "Q2321988",
+   "area_km2_approx_stupits": null,
+   "label_center_lon": null,
+   "label_center_lat": null,
+   "in_astana_district_set": false
+  },
+  {
+   "app_id": null,
+   "name_ru": "Шортандинский район",
+   "name_kk": "Шортанды ауданы",
+   "osm_relation": 3404061,
+   "osm_admin_level": "6",
+   "wikidata": "Q2556281",
+   "area_km2_approx_stupits": null,
+   "label_center_lon": null,
+   "label_center_lat": null,
+   "in_astana_district_set": false
+  },
+  {
+   "app_id": null,
+   "name_ru": "городская администрация Косшы",
+   "name_kk": "Қосшы қалалық әкімдігі",
+   "osm_relation": 15594335,
+   "osm_admin_level": "6",
+   "wikidata": null,
+   "area_km2_approx_stupits": null,
+   "label_center_lon": null,
+   "label_center_lat": null,
+   "in_astana_district_set": false
+  },
+  {
+   "app_id": null,
+   "name_ru": "Тайтобинская сельская администрация",
+   "name_kk": "Тайтөбе ауылдық әкімдігі",
+   "osm_relation": 17952313,
+   "osm_admin_level": "8",
+   "wikidata": "Q56367432",
+   "area_km2_approx_stupits": null,
+   "label_center_lon": null,
+   "label_center_lat": null,
+   "in_astana_district_set": false
+  }
+ ]
+}

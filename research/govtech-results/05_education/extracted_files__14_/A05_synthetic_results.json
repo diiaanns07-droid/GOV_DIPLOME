@@ -1,0 +1,492 @@
+{
+ "meta": {
+  "kind": "synthetic",
+  "seed": 20261004,
+  "python": "3.12.3",
+  "numpy": "2.4.4",
+  "scipy": "1.17.1",
+  "networkx": "3.6.1",
+  "platform": "Linux-6.18.44-fc-v64-x86_64-with-glibc2.39",
+  "note": "Все входы синтетические; выводы — только о методе.",
+  "runtime_s": 8.71
+ },
+ "inputs": {
+  "total_demand": 6269.2,
+  "total_capacity": 5500.0,
+  "demand_by_territory": {
+   "А": 1209.0,
+   "Б": 1259.7,
+   "В": 1276.6,
+   "Г": 2523.9
+  },
+  "grid": "30x30 nodes, 100 m",
+  "barrier": "между x=14 и x=15, переходы y=5 и y=24",
+  "schools": [
+   {
+    "id": "S1",
+    "node": [
+     4,
+     4
+    ],
+    "cap": 900
+   },
+   {
+    "id": "S2",
+    "node": [
+     11,
+     11
+    ],
+    "cap": 1200
+   },
+   {
+    "id": "S3",
+    "node": [
+     22,
+     6
+    ],
+    "cap": 900
+   },
+   {
+    "id": "S4",
+    "node": [
+     5,
+     22
+    ],
+    "cap": 1000
+   },
+   {
+    "id": "S5",
+    "node": [
+     12,
+     26
+    ],
+    "cap": 700
+   },
+   {
+    "id": "S6",
+    "node": [
+     17,
+     17
+    ],
+    "cap": 800
+   }
+  ],
+  "candidates": [
+   {
+    "id": "C1",
+    "node": [
+     20,
+     20
+    ]
+   },
+   {
+    "id": "C2",
+    "node": [
+     24,
+     24
+    ]
+   },
+   {
+    "id": "C3",
+    "node": [
+     27,
+     27
+    ]
+   },
+   {
+    "id": "C4",
+    "node": [
+     16,
+     26
+    ]
+   },
+   {
+    "id": "C5",
+    "node": [
+     26,
+     18
+    ]
+   },
+   {
+    "id": "C6",
+    "node": [
+     8,
+     16
+    ]
+   },
+   {
+    "id": "C7",
+    "node": [
+     13,
+     4
+    ]
+   },
+   {
+    "id": "C8",
+    "node": [
+     28,
+     4
+    ]
+   }
+  ],
+  "new_cap": 1000
+ },
+ "H1_euclid_vs_network": {
+  "500": {
+   "cov_euclid": 0.4101,
+   "cov_network": 0.3106,
+   "demand_wrongly_covered_by_euclid": 624.1,
+   "by_territory_network": {
+    "А": 0.4939,
+    "Б": 0.3787,
+    "В": 0.4899,
+    "Г": 0.0981
+   },
+   "by_territory_euclid": {
+    "А": 0.6775,
+    "Б": 0.4777,
+    "В": 0.6426,
+    "Г": 0.1308
+   }
+  },
+  "1000": {
+   "cov_euclid": 0.8336,
+   "cov_network": 0.7492,
+   "demand_wrongly_covered_by_euclid": 529.2,
+   "by_territory_network": {
+    "А": 0.9365,
+    "Б": 0.9004,
+    "В": 1.0,
+    "Г": 0.4572
+   },
+   "by_territory_euclid": {
+    "А": 1.0,
+    "Б": 1.0,
+    "В": 1.0,
+    "Г": 0.5868
+   }
+  },
+  "1500": {
+   "cov_euclid": 0.9753,
+   "cov_network": 0.8559,
+   "demand_wrongly_covered_by_euclid": 748.6,
+   "by_territory_network": {
+    "А": 1.0,
+    "Б": 1.0,
+    "В": 1.0,
+    "Г": 0.6421
+   },
+   "by_territory_euclid": {
+    "А": 1.0,
+    "Б": 1.0,
+    "В": 1.0,
+    "Г": 0.9387
+   }
+  }
+ },
+ "H2_capacity": {
+  "nearest_rule_load_vs_cap": {
+   "S1": {
+    "load": 735.9,
+    "cap": 900,
+    "overflow": 0.0
+   },
+   "S2": {
+    "load": 578.2,
+    "cap": 1200,
+    "overflow": 0.0
+   },
+   "S3": {
+    "load": 1133.6,
+    "cap": 900,
+    "overflow": 233.6
+   },
+   "S4": {
+    "load": 837.9,
+    "cap": 1000,
+    "overflow": 0.0
+   },
+   "S5": {
+    "load": 1498.9,
+    "cap": 700,
+    "overflow": 798.9
+   },
+   "S6": {
+    "load": 1484.7,
+    "cap": 800,
+    "overflow": 684.7
+   }
+  },
+  "nearest_rule_total_overflow": 1717.2,
+  "lp_unmet_seats": 769.2,
+  "lp_mean_dist_served_m": 873.8418,
+  "lp_max_dist_served_m": 2800.0,
+  "lp_utilization": {
+   "S1": 1.0,
+   "S2": 1.0,
+   "S3": 1.0,
+   "S4": 1.0,
+   "S5": 1.0,
+   "S6": 1.0
+  },
+  "lp_dmax_unmet_seats": 1092.6,
+  "lp_dmax_unmet_by_territory": {
+   "А": 0.0,
+   "Б": 52.1,
+   "В": 0.0,
+   "Г": 1040.5
+  },
+  "lp_dmax_mean_dist_served_m": 774.9585,
+  "dmax_m": 1500,
+  "global_deficit_demand_minus_capacity": 769.2,
+  "rezoning_blocks_changed": 25,
+  "rezoning_demand_changed": 1911.5,
+  "note": "LP распределяет спрос с учётом мест; блоки с изменённой основной школой = сценарий изменения зон."
+ },
+ "H3_placement": {
+  "spearman_geo_coverage_vs_minus_unmet": 0.8,
+  "baseline_no_build": {
+   "unmet_lp": 1092.6,
+   "mean_dist_lp": 774.9585,
+   "unmet_by_territory": {
+    "А": 0.0,
+    "Б": 52.1,
+    "В": 0.0,
+    "Г": 1040.5
+   },
+   "cov_net_T": 0.7492,
+   "terr_min_over_max_2sfca": 0.287,
+   "gini_2sfca": 0.3801,
+   "terr_2sfca": {
+    "А": 1.4528,
+    "Б": 0.7618,
+    "В": 1.3563,
+    "Г": 0.417
+   }
+  },
+  "candidates": [
+   {
+    "candidate": "C1",
+    "unmet_lp": 154.8,
+    "unmet_by_territory": {
+     "А": 0.0,
+     "Б": 0.0,
+     "В": 0.0,
+     "Г": 154.8
+    },
+    "mean_dist_lp": 788.4976,
+    "cov_net_1000": 0.8954,
+    "terr_min_over_max_2sfca": 0.4996,
+    "gini_2sfca": 0.2879
+   },
+   {
+    "candidate": "C2",
+    "unmet_lp": 92.6,
+    "unmet_by_territory": {
+     "А": 0.0,
+     "Б": 22.1,
+     "В": 0.0,
+     "Г": 70.5
+    },
+    "mean_dist_lp": 725.9868,
+    "cov_net_1000": 0.9617,
+    "terr_min_over_max_2sfca": 0.5282,
+    "gini_2sfca": 0.2796
+   },
+   {
+    "candidate": "C3",
+    "unmet_lp": 92.6,
+    "unmet_by_territory": {
+     "А": 0.0,
+     "Б": 52.1,
+     "В": 0.0,
+     "Г": 40.5
+    },
+    "mean_dist_lp": 717.8691,
+    "cov_net_1000": 0.9617,
+    "terr_min_over_max_2sfca": 0.5298,
+    "gini_2sfca": 0.261
+   },
+   {
+    "candidate": "C4",
+    "unmet_lp": 141.2,
+    "unmet_by_territory": {
+     "А": 0.0,
+     "Б": 0.0,
+     "В": 0.0,
+     "Г": 141.2
+    },
+    "mean_dist_lp": 817.7823,
+    "cov_net_1000": 0.8385,
+    "terr_min_over_max_2sfca": 0.4591,
+    "gini_2sfca": 0.3071
+   },
+   {
+    "candidate": "C5",
+    "unmet_lp": 92.6,
+    "unmet_by_territory": {
+     "А": 0.0,
+     "Б": 0.0,
+     "В": 0.0,
+     "Г": 92.6
+    },
+    "mean_dist_lp": 783.3808,
+    "cov_net_1000": 0.8718,
+    "terr_min_over_max_2sfca": 0.5009,
+    "gini_2sfca": 0.268
+   },
+   {
+    "candidate": "C6",
+    "unmet_lp": 1092.6,
+    "unmet_by_territory": {
+     "А": 0.0,
+     "Б": 22.1,
+     "В": 0.0,
+     "Г": 1070.5
+    },
+    "mean_dist_lp": 729.5715,
+    "cov_net_1000": 0.7538,
+    "terr_min_over_max_2sfca": 0.2282,
+    "gini_2sfca": 0.4196
+   },
+   {
+    "candidate": "C7",
+    "unmet_lp": 903.4,
+    "unmet_by_territory": {
+     "А": 0.0,
+     "Б": 0.0,
+     "В": 0.0,
+     "Г": 903.4
+    },
+    "mean_dist_lp": 747.5623,
+    "cov_net_1000": 0.7669,
+    "terr_min_over_max_2sfca": 0.2266,
+    "gini_2sfca": 0.3907
+   },
+   {
+    "candidate": "C8",
+    "unmet_lp": 903.4,
+    "unmet_by_territory": {
+     "А": 0.0,
+     "Б": 0.0,
+     "В": 0.0,
+     "Г": 903.4
+    },
+    "mean_dist_lp": 689.2504,
+    "cov_net_1000": 0.7593,
+    "terr_min_over_max_2sfca": 0.3248,
+    "gini_2sfca": 0.3401
+   }
+  ],
+  "pick_min_unmet_then_distance": "C3",
+  "pick_max_geographic_coverage_1000m": "C2",
+  "pick_max_territorial_equity_2sfca": "C3",
+  "pick_naive_worst_territory_centroid": "C2",
+  "naive_rule": "территория Г (мест на ребёнка 0.317), центроид спроса (22.8,22.9)"
+ },
+ "H4_sensitivity": {
+  "scenarios": 200,
+  "dmax_m": 1500,
+  "scenarios_with_tie_on_unmet": 200,
+  "tie_break": "при равном числе непокрытых мест — меньшее среднее расстояние",
+  "demand_noise": "lognormal(0,0.25) по кварталам x общий рост U(0.9,1.3)",
+  "best_candidate_frequency": {
+   "C2": 0.42,
+   "C3": 0.58
+  },
+  "in_best_tied_set_frequency": {
+   "C1": 0.78,
+   "C2": 1.0,
+   "C3": 1.0,
+   "C4": 0.77,
+   "C5": 1.0,
+   "C6": 0.0,
+   "C7": 0.305,
+   "C8": 0.315
+  },
+  "regret_unmet_seats_if_C1": {
+   "median": 0.0,
+   "p90": 122.43
+  },
+  "regret_unmet_seats_if_geo_pick": {
+   "median": 0.0,
+   "p90": 0.0
+  },
+  "regret_unmet_seats_if_naive_pick": {
+   "median": 0.0,
+   "p90": 0.0
+  }
+ },
+ "H5_name_matching": {
+  "results": [
+   {
+    "reg": "R1",
+    "osm": "O1",
+    "rule": "auto",
+    "truth": "O1"
+   },
+   {
+    "reg": "R2",
+    "osm": "O2",
+    "rule": "auto",
+    "truth": "O2"
+   },
+   {
+    "reg": "R3",
+    "osm": "O3",
+    "rule": "auto",
+    "truth": "O3"
+   },
+   {
+    "reg": "R4",
+    "osm": "O4",
+    "rule": "auto",
+    "truth": "O4"
+   },
+   {
+    "reg": "R5",
+    "osm": "O5",
+    "rule": "auto",
+    "truth": "O5"
+   },
+   {
+    "reg": "R6",
+    "osm": "REVIEW",
+    "rule": "O6@22м",
+    "truth": "O6"
+   },
+   {
+    "reg": "R7",
+    "osm": "REVIEW",
+    "rule": "O7@566м",
+    "truth": "O7"
+   },
+   {
+    "reg": "R8",
+    "osm": "REVIEW",
+    "rule": "O8@14м;O8b@112м",
+    "truth": "O8"
+   },
+   {
+    "reg": "R9",
+    "osm": null,
+    "rule": "нет кандидата",
+    "truth": null
+   },
+   {
+    "reg": "R10",
+    "osm": "REVIEW",
+    "rule": "O10@10м",
+    "truth": "O10"
+   }
+  ],
+  "auto_matches": 5,
+  "auto_correct": 5,
+  "precision_auto": 1.0,
+  "recall_auto_vs_truth": 0.5556,
+  "sent_to_review": 4,
+  "review_contains_truth": 4,
+  "false_auto": 0,
+  "note": "Синтетический тест из 10 записей; показывает поведение правил, не точность на реальных данных."
+ }
+}

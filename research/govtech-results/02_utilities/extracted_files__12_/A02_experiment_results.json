@@ -1,0 +1,284 @@
+{
+  "meta": {
+    "kind": "synthetic",
+    "python": "3.12.3",
+    "numpy": "2.4.4",
+    "platform": "Linux-6.18.44-fc-v64-x86_64-with-glibc2.39",
+    "N_segments": 400,
+    "reps": 200,
+    "seed": 20261004,
+    "k": "top 10% (40 of 400); R2 uses 20",
+    "metrics": {
+      "risk": "доля ожидаемого риска (аварии x последствия) в выбранных, нормированная на оракула",
+      "failures": "доля ожидаемого числа аварий в выбранных, нормированная на оракула"
+    },
+    "warning": "Генеративная модель выдумана. Цифры не являются оценкой эффекта в Шымкенте."
+  },
+  "results": {
+    "W1_age_dominated": {
+      "base|random|risk": {
+        "mean": 0.145,
+        "sd": 0.06
+      },
+      "base|random|failures": {
+        "mean": 0.176,
+        "sd": 0.048
+      },
+      "base|oldest_first|risk": {
+        "mean": 0.729,
+        "sd": 0.08
+      },
+      "base|oldest_first|failures": {
+        "mean": 0.879,
+        "sd": 0.031
+      },
+      "base|score_operator_data|risk": {
+        "mean": 0.827,
+        "sd": 0.044
+      },
+      "base|score_operator_data|failures": {
+        "mean": 0.492,
+        "sd": 0.055
+      },
+      "base|score_open_proxies_only|risk": {
+        "mean": 0.779,
+        "sd": 0.058
+      },
+      "base|score_open_proxies_only|failures": {
+        "mean": 0.473,
+        "sd": 0.062
+      },
+      "R2_capacity_half|oldest_first|risk": {
+        "mean": 0.576,
+        "sd": 0.115
+      },
+      "R2_capacity_half|oldest_first|failures": {
+        "mean": 0.8,
+        "sd": 0.059
+      },
+      "R2_capacity_half|score_operator_data|risk": {
+        "mean": 0.736,
+        "sd": 0.091
+      },
+      "R2_capacity_half|score_operator_data|failures": {
+        "mean": 0.408,
+        "sd": 0.076
+      },
+      "R1_false_complaint_surge|score_operator_data|risk": {
+        "mean": 0.821,
+        "sd": 0.048
+      },
+      "R1_false_complaint_surge|score_operator_data|failures": {
+        "mean": 0.486,
+        "sd": 0.056
+      },
+      "R1_false_complaint_surge|top_overlap_with_base": {
+        "mean": 0.965,
+        "sd": 0.021
+      },
+      "R1_false_complaint_surge|share_top_from_district4": {
+        "mean": 0.243,
+        "sd": 0.062
+      },
+      "R3_age_40pct_unknown|oldest_first_median_imputed|risk": {
+        "mean": 0.602,
+        "sd": 0.09
+      },
+      "R3_age_40pct_unknown|oldest_first_median_imputed|failures": {
+        "mean": 0.716,
+        "sd": 0.061
+      },
+      "R3_age_40pct_unknown|score_median_imputed|risk": {
+        "mean": 0.743,
+        "sd": 0.071
+      },
+      "R3_age_40pct_unknown|score_median_imputed|failures": {
+        "mean": 0.434,
+        "sd": 0.059
+      },
+      "R3_age_40pct_unknown|score_inspect_bonus|risk": {
+        "mean": 0.751,
+        "sd": 0.063
+      },
+      "R3_age_40pct_unknown|score_inspect_bonus|failures": {
+        "mean": 0.41,
+        "sd": 0.054
+      },
+      "weight_perturbation|mean_top10pct_overlap": {
+        "mean": 0.884,
+        "sd": 0.025
+      }
+    },
+    "W2_mixed_drivers": {
+      "base|random|risk": {
+        "mean": 0.177,
+        "sd": 0.063
+      },
+      "base|random|failures": {
+        "mean": 0.241,
+        "sd": 0.049
+      },
+      "base|oldest_first|risk": {
+        "mean": 0.449,
+        "sd": 0.089
+      },
+      "base|oldest_first|failures": {
+        "mean": 0.616,
+        "sd": 0.056
+      },
+      "base|score_operator_data|risk": {
+        "mean": 0.875,
+        "sd": 0.039
+      },
+      "base|score_operator_data|failures": {
+        "mean": 0.597,
+        "sd": 0.058
+      },
+      "base|score_open_proxies_only|risk": {
+        "mean": 0.7,
+        "sd": 0.071
+      },
+      "base|score_open_proxies_only|failures": {
+        "mean": 0.456,
+        "sd": 0.061
+      },
+      "R2_capacity_half|oldest_first|risk": {
+        "mean": 0.333,
+        "sd": 0.106
+      },
+      "R2_capacity_half|oldest_first|failures": {
+        "mean": 0.514,
+        "sd": 0.077
+      },
+      "R2_capacity_half|score_operator_data|risk": {
+        "mean": 0.831,
+        "sd": 0.064
+      },
+      "R2_capacity_half|score_operator_data|failures": {
+        "mean": 0.526,
+        "sd": 0.075
+      },
+      "R1_false_complaint_surge|score_operator_data|risk": {
+        "mean": 0.875,
+        "sd": 0.038
+      },
+      "R1_false_complaint_surge|score_operator_data|failures": {
+        "mean": 0.594,
+        "sd": 0.059
+      },
+      "R1_false_complaint_surge|top_overlap_with_base": {
+        "mean": 0.951,
+        "sd": 0.028
+      },
+      "R1_false_complaint_surge|share_top_from_district4": {
+        "mean": 0.267,
+        "sd": 0.067
+      },
+      "R3_age_40pct_unknown|oldest_first_median_imputed|risk": {
+        "mean": 0.418,
+        "sd": 0.085
+      },
+      "R3_age_40pct_unknown|oldest_first_median_imputed|failures": {
+        "mean": 0.578,
+        "sd": 0.058
+      },
+      "R3_age_40pct_unknown|score_median_imputed|risk": {
+        "mean": 0.843,
+        "sd": 0.041
+      },
+      "R3_age_40pct_unknown|score_median_imputed|failures": {
+        "mean": 0.57,
+        "sd": 0.058
+      },
+      "R3_age_40pct_unknown|score_inspect_bonus|risk": {
+        "mean": 0.843,
+        "sd": 0.041
+      },
+      "R3_age_40pct_unknown|score_inspect_bonus|failures": {
+        "mean": 0.552,
+        "sd": 0.061
+      },
+      "weight_perturbation|mean_top10pct_overlap": {
+        "mean": 0.883,
+        "sd": 0.024
+      }
+    }
+  },
+  "explanation_example": [
+    {
+      "segment": "SYN-0035",
+      "score": 0.804,
+      "lof_contrib": {
+        "age": 0.343,
+        "material": 0.25,
+        "complaints": 0.211,
+        "pressure": 0.0
+      },
+      "cof": 1.0,
+      "age_years": 57.6,
+      "material": "steel_or_cast_iron",
+      "critical_in_zone": true,
+      "main_driver": "age"
+    },
+    {
+      "segment": "SYN-0398",
+      "score": 0.795,
+      "lof_contrib": {
+        "age": 0.322,
+        "material": 0.175,
+        "complaints": 0.249,
+        "pressure": 0.15
+      },
+      "cof": 0.887,
+      "age_years": 51.8,
+      "material": "asbestos_cement",
+      "critical_in_zone": true,
+      "main_driver": "age"
+    },
+    {
+      "segment": "SYN-0254",
+      "score": 0.784,
+      "lof_contrib": {
+        "age": 0.205,
+        "material": 0.25,
+        "complaints": 0.221,
+        "pressure": 0.15
+      },
+      "cof": 0.948,
+      "age_years": 23.1,
+      "material": "steel_or_cast_iron",
+      "critical_in_zone": true,
+      "main_driver": "material"
+    },
+    {
+      "segment": "SYN-0225",
+      "score": 0.754,
+      "lof_contrib": {
+        "age": 0.161,
+        "material": 0.25,
+        "complaints": 0.24,
+        "pressure": 0.15
+      },
+      "cof": 0.941,
+      "age_years": 18.4,
+      "material": "steel_or_cast_iron",
+      "critical_in_zone": true,
+      "main_driver": "material"
+    },
+    {
+      "segment": "SYN-0274",
+      "score": 0.669,
+      "lof_contrib": {
+        "age": 0.169,
+        "material": 0.175,
+        "complaints": 0.178,
+        "pressure": 0.15
+      },
+      "cof": 0.995,
+      "age_years": 19.1,
+      "material": "asbestos_cement",
+      "critical_in_zone": true,
+      "main_driver": "complaints"
+    }
+  ]
+}

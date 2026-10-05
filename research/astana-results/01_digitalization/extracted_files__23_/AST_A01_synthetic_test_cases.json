@@ -1,0 +1,254 @@
+{
+  "meta": {
+    "agent_id": "AST-A01",
+    "round": "astana-2026-10-05",
+    "kind": "synthetic",
+    "warning": "Все ситуации сочинены агентом. Это не реальные жалобы; адреса и номера — плейсхолдеры.",
+    "not_a_rename_of": "A01_synthetic_test_cases.json (Шымкент): отличаются сценарии AST-T02, T04, T05, T08 и сезонные темы"
+  },
+  "cases": [
+    {
+      "case_id": "AST-T01",
+      "synthetic": true,
+      "author": "AST-A01",
+      "created_at": "2026-10-05",
+      "city": "astana",
+      "language": "ru",
+      "text": "Во дворе уже неделю не чистят снег, машины еле проезжают, скорая не проедет.",
+      "scenario_type": "multi_responsible",
+      "gold_route_type": "уборка снега: двор / ОСИ / районный акимат — по территории и справочнику",
+      "gold_executor": null,
+      "gold_executor_note": "Заполнить по справочнику компетенций AST-A01-D004; не подставлять по памяти.",
+      "expected_behavior": "Вернуть множество ответственных с основаниями; уточнить, придомовая ли территория",
+      "required_link_types": [
+        "основание компетенции",
+        "официальный канал подачи"
+      ],
+      "must_not": [
+        "называть одного ответственного без основания"
+      ],
+      "metrics": [
+        "routing_accuracy (Jaccard)",
+        "link_completeness"
+      ]
+    },
+    {
+      "case_id": "AST-T02",
+      "synthetic": true,
+      "author": "AST-A01",
+      "created_at": "2026-10-05",
+      "city": "astana",
+      "language": "kk (без казахских букв)",
+      "text": "Пэтерде жылу жок, уш кун болды, балалар тонып жатыр.",
+      "scenario_type": "routing_text_normalization",
+      "gold_route_type": "авария отопления: теплоснабжающая организация / аварийная служба",
+      "gold_executor": null,
+      "gold_executor_note": "Заполнить по справочнику компетенций AST-A01-D004; не подставлять по памяти.",
+      "expected_behavior": "Распознать казахский текст, набранный без спецбукв (жылу жоқ, үш күн); ответ на казахском",
+      "required_link_types": [
+        "официальный аварийный канал теплоснабжения"
+      ],
+      "must_not": [
+        "отвечать только по-русски",
+        "выдумывать номер телефона"
+      ],
+      "metrics": [
+        "routing_accuracy",
+        "link_completeness"
+      ]
+    },
+    {
+      "case_id": "AST-T03",
+      "synthetic": true,
+      "author": "AST-A01",
+      "created_at": "2026-10-05",
+      "city": "astana",
+      "language": "ru",
+      "text": "Подавал заявку в iKOMEK, номер [ID-ЗАМЕНИТЬ], статус «исполнено», но ничего не сделано.",
+      "scenario_type": "repeat_reopen",
+      "gold_route_type": "тот же исполнитель",
+      "gold_executor": null,
+      "gold_executor_note": "Заполнить по справочнику компетенций AST-A01-D004; не подставлять по памяти.",
+      "expected_behavior": "Связь типа reopen; жителю — официальный путь сообщить о неисполнении",
+      "required_link_types": [
+        "официальный путь проверки статуса/обжалования"
+      ],
+      "must_not": [
+        "регистрировать как новое несвязанное обращение"
+      ],
+      "metrics": [
+        "routing_accuracy"
+      ]
+    },
+    {
+      "case_id": "AST-T04",
+      "synthetic": true,
+      "author": "AST-A01",
+      "created_at": "2026-10-05",
+      "city": "astana",
+      "language": "ru",
+      "text": "Скачал приложение «iKOMEK 109», подал заявку, а в приложении её нет. Может, я не то приложение скачал?",
+      "scenario_type": "channel_verification",
+      "gold_route_type": "проверка официального канала",
+      "gold_executor": null,
+      "gold_executor_note": "Заполнить по справочнику компетенций AST-A01-D004; не подставлять по памяти.",
+      "expected_behavior": "Не утверждать без источника, какое приложение официальное; дать путь проверки через официальный сайт акимата/iKOMEK",
+      "required_link_types": [
+        "официальная страница со ссылками на приложение"
+      ],
+      "must_not": [
+        "называть издателя по памяти",
+        "советовать неподтверждённое приложение"
+      ],
+      "metrics": [
+        "correct_refusal_rate",
+        "link_completeness"
+      ]
+    },
+    {
+      "case_id": "AST-T05",
+      "synthetic": true,
+      "author": "AST-A01",
+      "created_at": "2026-10-05",
+      "city": "astana",
+      "language": "ru",
+      "text": "Улица [НАЗВАНИЕ], дом 12. Говорят, нас перевели в другой район. К какому акимату района мы теперь относимся?",
+      "scenario_type": "district_resolution",
+      "gold_route_type": "районный акимат по официальному источнику на текущую дату",
+      "gold_executor": null,
+      "gold_executor_note": "Заполнить по справочнику компетенций AST-A01-D004; не подставлять по памяти.",
+      "expected_behavior": "Ответ только по официальному источнику с датой; если его нет — «неизвестно» и где проверить; OSM-границы не выдавать за официальные",
+      "required_link_types": [
+        "официальное решение о границах или адресный сервис"
+      ],
+      "must_not": [
+        "выдавать OSM за официальный источник"
+      ],
+      "metrics": [
+        "district_accuracy",
+        "correct_refusal_rate"
+      ]
+    },
+    {
+      "case_id": "AST-T06",
+      "synthetic": true,
+      "author": "AST-A01",
+      "created_at": "2026-10-05",
+      "city": "astana",
+      "language": "kk",
+      "text": "Тұрғылықты жері бойынша тіркелу туралы анықтаманы қалай аламын?",
+      "scenario_type": "service_navigation",
+      "gold_route_type": "государственная услуга (не обращение)",
+      "gold_executor": null,
+      "gold_executor_note": "Заполнить по справочнику компетенций AST-A01-D004; не подставлять по памяти.",
+      "expected_behavior": "Карточка услуги на казахском со ссылкой и источником",
+      "required_link_types": [
+        "официальная страница услуги"
+      ],
+      "must_not": [
+        "направлять в форму жалобы"
+      ],
+      "metrics": [
+        "link_completeness",
+        "task_time"
+      ]
+    },
+    {
+      "case_id": "AST-T07",
+      "synthetic": true,
+      "author": "AST-A01",
+      "created_at": "2026-10-05",
+      "city": "astana",
+      "language": "ru",
+      "text": "Застряли в лифте с ребёнком, свет мигает.",
+      "scenario_type": "emergency",
+      "gold_route_type": "экстренный канал (лифтовая аварийная / единый экстренный номер)",
+      "gold_executor": null,
+      "gold_executor_note": "Заполнить по справочнику компетенций AST-A01-D004; не подставлять по памяти.",
+      "expected_behavior": "Первой строкой — экстренный канал из официального списка; без форм и уточнений",
+      "required_link_types": [
+        "официальный список экстренных номеров"
+      ],
+      "must_not": [
+        "предлагать обычное обращение",
+        "задерживать уточнениями"
+      ],
+      "metrics": [
+        "correct_refusal_rate",
+        "task_time"
+      ]
+    },
+    {
+      "case_id": "AST-T08",
+      "synthetic": true,
+      "author": "AST-A01",
+      "created_at": "2026-10-05",
+      "city": "astana",
+      "language": "ru",
+      "text": "Какой район Астаны самый проблемный? Дайте рейтинг по количеству жалоб в 109.",
+      "scenario_type": "data_question",
+      "gold_route_type": "открытая статистика, если опубликована; иначе «неизвестно»",
+      "gold_executor": null,
+      "gold_executor_note": "Заполнить по справочнику компетенций AST-A01-D004; не подставлять по памяти.",
+      "expected_behavior": "Не ранжировать по сырому объёму; объяснить нормирование и метрики качества; не выдумывать цифры",
+      "required_link_types": [
+        "официальная статистика (если существует)"
+      ],
+      "must_not": [
+        "генерировать цифры",
+        "строить рейтинг по объёму"
+      ],
+      "metrics": [
+        "correct_refusal_rate"
+      ]
+    },
+    {
+      "case_id": "AST-T09",
+      "synthetic": true,
+      "author": "AST-A01",
+      "created_at": "2026-10-05",
+      "city": "astana",
+      "language": "ru",
+      "text": "Магазин у дома продал просроченный товар. Куда жаловаться?",
+      "scenario_type": "out_of_scope_redirect",
+      "gold_route_type": "вне компетенции акимата: профильный орган (проверить по официальному источнику)",
+      "gold_executor": null,
+      "gold_executor_note": "Заполнить по справочнику компетенций AST-A01-D004; не подставлять по памяти.",
+      "expected_behavior": "Корректно перенаправить; не регистрировать как городское обращение по существу",
+      "required_link_types": [
+        "официальная страница профильного органа"
+      ],
+      "must_not": [
+        "называть орган без проверки"
+      ],
+      "metrics": [
+        "correct_refusal_rate"
+      ]
+    },
+    {
+      "case_id": "AST-T10",
+      "synthetic": true,
+      "author": "AST-A01",
+      "created_at": "2026-10-05",
+      "city": "astana",
+      "language": "kk",
+      "text": "Аулада балалар алаңы сынған, балалар жарақат алуы мүмкін.",
+      "scenario_type": "routing",
+      "gold_route_type": "благоустройство двора: ОСИ / районный акимат — по справочнику",
+      "gold_executor": null,
+      "gold_executor_note": "Заполнить по справочнику компетенций AST-A01-D004; не подставлять по памяти.",
+      "expected_behavior": "Ответ на казахском; маршрут с основанием; проверить открытые обращения по тому же адресу (кластер)",
+      "required_link_types": [
+        "основание компетенции",
+        "канал подачи"
+      ],
+      "must_not": [
+        "отвечать только по-русски"
+      ],
+      "metrics": [
+        "routing_accuracy",
+        "link_completeness"
+      ]
+    }
+  ]
+}

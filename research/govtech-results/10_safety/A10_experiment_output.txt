@@ -1,0 +1,44 @@
+== Part 1: consistency of three independent groupings (records per year)
+2018: district=157 type_dtp=157 code=157 consistent=True
+2019: district=324 type_dtp=324 code=324 consistent=True
+2020: district=342 type_dtp=342 code=342 consistent=True
+2021: district=435 type_dtp=435 code=435 consistent=True
+2022: district=415 type_dtp=415 code=415 consistent=True
+2023: district=695 type_dtp=695 code=695 consistent=True
+2024: district=1662 type_dtp=1662 code=1662 consistent=True
+2025: district=1844 type_dtp=1844 code=1844 consistent=True
+2026: district=1190 type_dtp=1190 code=1190 consistent=True
+total 2018-2026: 7064 (area_code 1979 count = 7064)
+ALL CONSISTENT: True
+
+== Derived: share of code '05' among all records, deaths in code-05 crashes
+2018: code05=104/157 = 66.2%; deaths code05=16/31 = 51.6%
+2019: code05=202/324 = 62.3%; deaths code05=41/77 = 53.2%
+2020: code05=168/342 = 49.1%; deaths code05=30/78 = 38.5%
+2021: code05=192/435 = 44.1%; deaths code05=34/77 = 44.2%
+2022: code05=192/415 = 46.3%; deaths code05=21/57 = 36.8%
+2023: code05=303/695 = 43.6%; deaths code05=35/66 = 53.0%
+2024: code05=811/1662 = 48.8%; deaths code05=35/82 = 42.7%
+2025: code05=855/1844 = 46.4%; deaths code05=35/68 = 51.5%
+2026: code05=548/1190 = 46.1%; deaths code05=18/37 = 48.6%
+2024: code05 in twilight/night=212 (26.1%); lighting on=199, off/absent=13 -> off/absent share of dark-time = 6.1%
+2025: code05 in twilight/night=302 (35.3%); lighting on=198, off/absent=104 -> off/absent share of dark-time = 34.4%
+2026: code05 in twilight/night=184 (33.6%); lighting on=119, off/absent=65 -> off/absent share of dark-time = 35.3%
+
+Deficiency field, code05 all years: total=3375; 'отсутствуют'=2692 (79.8%); infrastructure deficiencies (lighting, sidewalks, markings, signs, surface defects, ped paths)=41 (1.2%)
+Contrast: records with outdoor lighting 'не включено'/'отсутствует' (all years) = 265; 'недостаточное освещение' in deficiency field = 4
+2022 code05 share 46.3% vs minister's 47% (Oct 2022)
+
+== Part 2: priority cards (weights are hypotheses)
+{"origin": "synthetic", "id": "T01", "status": "RANKED", "score": 49.6, "band": "средний", "components": {"data_quality": 0.8, "history": {"obs": 0, "stratum_mean": 0.6, "eb": 0.46, "points": 4.6}, "systemic_points": 45}, "flags": ["0 зарегистрированных ДТП не означает безопасность (неполная регистрация, низкая экспозиция).", "Освещение неизвестно: требуется ночной осмотр."], "next_step": "Выездная проверка специалистом; результат осмотра вносится в карточку (подтверждено/не подтверждено)."}
+{"origin": "synthetic (поля как в слое КПСиСУ)", "id": "T02", "status": "RANKED", "score": 53.5, "band": "высокий", "components": {"data_quality": 1.0, "history": {"obs": 6, "stratum_mean": 0.6, "eb": 1.85, "points": 28.5}, "systemic_points": 25}, "flags": [], "next_step": "Выездная проверка специалистом; результат осмотра вносится в карточку (подтверждено/не подтверждено)."}
+{"origin": "observed-derived (код района 197914 есть только с 2023)", "id": "T03", "status": "RANKED_SYSTEMIC_ONLY", "score": 15, "band": "низкий", "components": {"data_quality": 1.0, "systemic_points": 15}, "flags": ["Нет покрытия данных ДТП за период: история = неизвестно (не ноль).", "Район с изменёнными границами: окно истории только с 2023."], "next_step": "Выездная проверка специалистом; результат осмотра вносится в карточку (подтверждено/не подтверждено)."}
+{"origin": "observed-derived (fd1r07p3=null у дневных ДТП)", "id": "T04", "status": "RANKED", "score": 16.5, "band": "низкий", "components": {"data_quality": 0.8, "history": {"obs": 3, "stratum_mean": 0.6, "eb": 1.15, "points": 11.5}, "systemic_points": 5}, "flags": ["Освещение неизвестно: требуется ночной осмотр.", "null в поле 'Наружное освещение' у дневных ДТП не означает 'освещено'."], "next_step": "Выездная проверка специалистом; результат осмотра вносится в карточку (подтверждено/не подтверждено)."}
+{"origin": "observed-derived (ночные ДТП с 'не включено')", "id": "T05", "status": "RANKED", "score": 34.2, "band": "средний", "components": {"data_quality": 1.0, "history": {"obs": 2, "stratum_mean": 0.6, "eb": 0.92, "points": 9.2}, "systemic_points": 25}, "flags": ["Ночные ДТП при выключенном освещении: проверить работу линии/диспетчеризацию (оператор освещения)."], "next_step": "Выездная проверка специалистом; результат осмотра вносится в карточку (подтверждено/не подтверждено)."}
+{"origin": "synthetic (контекст: случай ул. Ушкыштар, янв. 2026)", "id": "T06", "status": "RANKED", "score": 21.9, "band": "низкий", "components": {"data_quality": 1.0, "history": {"obs": 1, "stratum_mean": 0.6, "eb": 0.69, "points": 6.9}, "systemic_points": 15}, "flags": ["Акимат: освещено; жалоба: не горит -> противоречие источников, нужна ночная проверка."], "next_step": "Выездная проверка специалистом; результат осмотра вносится в карточку (подтверждено/не подтверждено)."}
+{"origin": "observed (школа №13, Забадам, дек. 2025)", "id": "T07", "status": "INSUFFICIENT_DATA", "score": null, "band": null, "components": {"data_quality": 0.2, "history": {"obs": 0, "stratum_mean": 0.4, "eb": 0.33, "points": 3.3}, "systemic_points": 20}, "flags": ["0 зарегистрированных ДТП не означает безопасность (неполная регистрация, низкая экспозиция).", "Освещение неизвестно: требуется ночной осмотр.", "Временное перекрытие пешеходного пути стройкой: проверить обход и ВОДД."], "next_step": "Поставить в очередь первичного осмотра (не в 'низкий приоритет')."}
+{"origin": "observed (подтопление Елтай, июль 2026)", "id": "T08", "status": "REFUSE_EMERGENCY", "score": null, "band": null, "components": {}, "flags": [], "next_step": "Не очередь обследования: немедленно сообщить в 112/109 по регламенту города."}
+{"origin": "synthetic", "id": "T09", "status": "REFUSE_LOCATION", "score": null, "band": null, "components": {}, "flags": [], "next_step": "Ручное сопоставление объекта: координаты отсутствуют или расхождение источников > 25 м."}
+{"origin": "synthetic", "id": "T10", "status": "REFUSE_GUARANTEE", "score": null, "band": null, "components": {}, "flags": [], "next_step": "Сайт не подтверждает безопасность маршрута; показать известные проблемы и пробелы данных на маршруте."}
+
+Sensitivity: base order ['T02', 'T01', 'T05', 'T06', 'T04', 'T03']; top-1 unchanged in 152/200 random weight perturbations (+-50%).
