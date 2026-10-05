@@ -1,0 +1,79 @@
+{
+ "fixture": {
+  "group_id": "shymkent:exact:69.5958000,42.3167000",
+  "ids": 10
+ },
+ "info_not_verdicts": {
+  "exact_pairs_also_possible_duplicate": 3,
+  "exact_pairs_round5": 7,
+  "exact_pairs_without_new_flag": [
+   "astana:exact:71.4412700,51.1675600",
+   "astana:exact:71.4422900,51.1699000",
+   "shymkent:exact:69.6070200,42.3175800",
+   "shymkent:exact:69.6155700,42.3230400"
+  ],
+  "near_groups_round5": [
+   [
+    "shymkent:near:69.6070200,42.3175700",
+    6,
+    1.11
+   ]
+  ]
+ },
+ "must_failures": [],
+ "results": [
+  {
+   "detail": {
+    "of": 10,
+    "present": 10
+   },
+   "invariant": "I1_group_records_present_unmoved",
+   "level": "MUST",
+   "verdict": "PASS"
+  },
+  {
+   "detail": {
+    "groups_touching_fixture": 1,
+    "members": 10
+   },
+   "invariant": "I2_group_exposed_to_ui_exact_members",
+   "level": "MUST",
+   "verdict": "PASS"
+  },
+  {
+   "detail": {
+    "unknown_or_foreign": []
+   },
+   "invariant": "I5_qa_ids_are_source_ids_same_city",
+   "level": "MUST",
+   "verdict": "PASS"
+  },
+  {
+   "detail": {
+    "colocated": 2,
+    "exact_ge3": 2,
+    "extra": [],
+    "missing": []
+   },
+   "invariant": "I5b_exact_groups_ge3_match_colocated",
+   "level": "MUST",
+   "verdict": "PASS"
+  },
+  {
+   "detail": {
+    "statuses": [
+     "matched"
+    ]
+   },
+   "invariant": "I6_district_status_kept_separate_from_coordinate_doubt",
+   "level": "MUST",
+   "verdict": "PASS"
+  }
+ ],
+ "target": {
+  "data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "evidence_js_sha256": "abb81f8ddaded4c2e9601ec1ef36e9b52fc482c851cae920628dd1bcfbfe4baa",
+  "mode": "url",
+  "url": "http://127.0.0.1:8773/"
+ }
+}

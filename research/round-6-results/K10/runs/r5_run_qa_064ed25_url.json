@@ -1,0 +1,105 @@
+{
+ "must_failures": [],
+ "results": [
+  {
+   "check": "MUST_fixture_ids_present",
+   "detail": {
+    "expected": 10,
+    "missing": []
+   },
+   "expected_fail_at_baseline_0bf27de": false,
+   "level": "MUST",
+   "status": "PASS"
+  },
+  {
+   "check": "MUST_fixture_group_coordinate_unchanged",
+   "detail": {
+    "ids_at_fixture_point": 10,
+    "note": "a fix may flag or annotate the group, not move/delete it"
+   },
+   "expected_fail_at_baseline_0bf27de": false,
+   "level": "MUST",
+   "status": "PASS"
+  },
+  {
+   "check": "MUST_fixture_group_inside_bbox",
+   "detail": {
+    "bbox": [
+     69.593365,
+     42.306645,
+     69.617658,
+     42.324611
+    ]
+   },
+   "expected_fail_at_baseline_0bf27de": false,
+   "level": "MUST",
+   "status": "PASS"
+  },
+  {
+   "check": "INFO_id_preservation_vs_source",
+   "detail": {
+    "skipped": "--url mode has no source files"
+   },
+   "expected_fail_at_baseline_0bf27de": false,
+   "level": "INFO",
+   "status": "PASS"
+  },
+  {
+   "check": "MUST_qa_flags_deterministic",
+   "detail": {
+    "sha256": "d1f5b2ed3f020570690fd08ec58e9d0209bc366f1f86765df436e2c57b0b3169"
+   },
+   "expected_fail_at_baseline_0bf27de": false,
+   "level": "MUST",
+   "status": "PASS"
+  },
+  {
+   "check": "MUST_qa_flags_ids_known",
+   "detail": {
+    "flags": 70
+   },
+   "expected_fail_at_baseline_0bf27de": false,
+   "level": "MUST",
+   "status": "PASS"
+  },
+  {
+   "check": "MUST_qa_flags_no_email_value",
+   "detail": {},
+   "expected_fail_at_baseline_0bf27de": false,
+   "level": "MUST",
+   "status": "PASS"
+  },
+  {
+   "check": "MUST_no_error_flags",
+   "detail": {
+    "error_flags": []
+   },
+   "expected_fail_at_baseline_0bf27de": false,
+   "level": "MUST",
+   "status": "PASS"
+  },
+  {
+   "check": "SHOULD_data_exposes_coord_group_flag",
+   "detail": {
+    "looked_for_keys": [
+     "qa_flags",
+     "coord_group",
+     "qa"
+    ],
+    "marked": 0,
+    "of": 10
+   },
+   "expected_fail_at_baseline_0bf27de": true,
+   "level": "SHOULD",
+   "status": "FAIL"
+  }
+ ],
+ "should_failures": [
+  "SHOULD_data_exposes_coord_group_flag"
+ ],
+ "target": {
+  "app_root_given": false,
+  "data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "url": "http://127.0.0.1:8773/"
+ }
+}

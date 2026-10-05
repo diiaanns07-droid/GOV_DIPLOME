@@ -1,0 +1,331 @@
+{
+ "schema": "k10-acceptance-v1",
+ "slot": "K10",
+ "round": 6,
+ "role": "REVIEW",
+ "target": {
+  "branch": "claude/beautiful-clarke-sbzomj",
+  "sha": "064ed25368341edaa50289bc29e21dda7bdd9440",
+  "path": "prototypes/city-evidence/",
+  "extracted_files": 174,
+  "extraction": "git show <sha>:<path> + write_bytes, git blob id verified per file",
+  "web_data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "web_evidence_js_sha256": "abb81f8ddaded4c2e9601ec1ef36e9b52fc482c851cae920628dd1bcfbfe4baa"
+ },
+ "assignment": {
+  "branch": "codex/research-import-2026-10-05",
+  "sha": "edee718366ee4f085ea540c4e53a8dabf3c93fce",
+  "file": "research/round-6/review/K10.txt"
+ },
+ "test_source": {
+  "round5_tools": {
+   "branch": "claude/save-work-handoff-j7pc05",
+   "sha": "79fb961254f6118344302e888d4868495c4f0cf1",
+   "files_sha256": {
+    "tests/run_qa.py": "58185ceda3122ac8223ec30237c2de6198613339b4bbc5d77ae607914a0e57e7",
+    "tests/ui_coord_group.cjs": "cfef7e0f4a968f195a4348d8f1dc4da110c7ea41228f8796a444577148e3fae4",
+    "tools/qa_flags.py": "c884b0b078fb35a3e25860376b480c5869b5e3fb76e48c0098b1188d0f55d186",
+    "tools/extract_build.py": "e91e52d3c4648cfccc2ccfb0ab1c3dbd57e02d50c68cbce2d39026a35e82b5c7",
+    "fixtures/ui_coord_group_shymkent.json": "07158bf78e57af2fc755815abcd5eb70c22c34fb4a7340f5b217a3fb8cd0e6de"
+   }
+  },
+  "round6_adapters": {
+   "note": "committed with this file in the same commit",
+   "files_sha256": {
+    "tests/k10r6_data.py": "b55ed3a393615faab20372a22ea843792dba45e7fde78ea284dce281aeb41a29",
+    "tests/k10r6_ui.cjs": "28a2b474c19249a9274900df971e66568269c3509f527e2c937d15b968c924c5"
+   }
+  }
+ },
+ "environment": {
+  "python": "3.11.15",
+  "node": "22.22.0",
+  "playwright": "1.56.1 (Chromium build 1194)",
+  "os": "Linux container"
+ },
+ "commands": [
+  "python3 research/round-5-results/K10/tools/extract_build.py --sha 064ed25368341edaa50289bc29e21dda7bdd9440 --out $W",
+  "APP=$W/prototypes/city-evidence",
+  "python3 research/round-6-results/K10/tests/k10r6_data.py --app-root $APP --json runs/k10r6_data_064ed25_app_root.json",
+  "NODE_PATH=$(npm root -g) node research/round-6-results/K10/tests/k10r6_ui.cjs --app-root $APP --json runs/k10r6_ui_064ed25_app_root.json",
+  "(cd $APP && python3 serve.py 8773 &)  # then the same two commands with --url http://127.0.0.1:8773/",
+  "python3 research/round-5-results/K10/tests/run_qa.py --app-root $APP | --url ...   # round-5 test as-is",
+  "NODE_PATH=$(npm root -g) node research/round-5-results/K10/tests/ui_coord_group.cjs --app-root $APP | --url ...   # round-5 test as-is"
+ ],
+ "invariants": [
+  {
+   "id": "I1_group_records_present_unmoved",
+   "what": "10 записей группы Шымкента есть в web/data.js, координата (69.5958, 42.3167) не изменена",
+   "level": "MUST",
+   "verdict": "PASS",
+   "app_root": "PASS",
+   "url": "PASS"
+  },
+  {
+   "id": "I2_group_exposed_to_ui_exact_members",
+   "what": "evidence.js qa.colocated содержит ровно эти 10 ID и эту координату",
+   "level": "MUST",
+   "verdict": "PASS",
+   "app_root": "PASS",
+   "url": "PASS"
+  },
+  {
+   "id": "I5_qa_ids_are_source_ids_same_city",
+   "what": "все ID в qa.colocated / possible_duplicates / category_doubt — исходные записи того же города",
+   "level": "MUST",
+   "verdict": "PASS",
+   "app_root": "PASS",
+   "url": "PASS"
+  },
+  {
+   "id": "I5b_exact_groups_ge3_match_colocated",
+   "what": "группы с одинаковой координатой ≥3 по правилу K10 r5 совпадают с qa.colocated 1:1 (2 из 2)",
+   "level": "MUST",
+   "verdict": "PASS",
+   "app_root": "PASS",
+   "url": "PASS"
+  },
+  {
+   "id": "I6_district_status_kept_separate_from_coordinate_doubt",
+   "what": "у записей группы сохранён статус привязки K03 (matched), он не заменён флагом координаты",
+   "level": "MUST",
+   "verdict": "PASS",
+   "app_root": "PASS",
+   "url": "PASS"
+  },
+  {
+   "id": "U1_group_label_visible_at_group",
+   "what": "на карте метка «×10 в одной точке» и пунктирное кольцо в точке группы",
+   "level": "MUST",
+   "verdict": "PASS",
+   "app_root": "PASS",
+   "url": "PASS"
+  },
+  {
+   "id": "U2_each_group_record_opens_from_map",
+   "what": "клик по карте открывает верхнюю запись, кнопки «Проверка качества записи» открывают остальные 9 (10/10)",
+   "level": "MUST",
+   "verdict": "PASS",
+   "app_root": "PASS",
+   "url": "PASS"
+  },
+  {
+   "id": "U3_each_group_record_opens_from_table",
+   "what": "все 10 записей открываются из таблицы",
+   "level": "MUST",
+   "verdict": "PASS",
+   "app_root": "PASS",
+   "url": "PASS"
+  },
+  {
+   "id": "U4_wording_flags_check_not_proven_error",
+   "what": "метка/подсказка/карточка: «точное место не проверено», «Метки не означают, что запись неверна»; слов ошибк|неверн|ошибочн|некоррект|неправильн нет",
+   "level": "MUST",
+   "verdict": "PASS",
+   "app_root": "PASS",
+   "url": "PASS"
+  },
+  {
+   "id": "U5_district_matched_shown_with_coordinate_doubt",
+   "what": "район показан (Аль-Фарабийский / Әл-Фараби) с бейджем «координата под вопросом»; у обычной matched-записи бейдж «K03 v2 · OSM, не официально»",
+   "level": "MUST",
+   "verdict": "PASS",
+   "app_root": "PASS",
+   "url": "PASS"
+  },
+  {
+   "id": "U6_no_page_errors",
+   "what": "нет ошибок страницы/консоли",
+   "level": "MUST",
+   "verdict": "PASS",
+   "app_root": "PASS",
+   "url": "PASS"
+  }
+ ],
+ "round5_tests_as_is_on_new_build": [
+  {
+   "test": "run_qa.py",
+   "check": "MUST_fixture_ids_present",
+   "level": "MUST",
+   "app_root": "PASS",
+   "url": "PASS"
+  },
+  {
+   "test": "run_qa.py",
+   "check": "MUST_fixture_group_coordinate_unchanged",
+   "level": "MUST",
+   "app_root": "PASS",
+   "url": "PASS"
+  },
+  {
+   "test": "run_qa.py",
+   "check": "MUST_fixture_group_inside_bbox",
+   "level": "MUST",
+   "app_root": "PASS",
+   "url": "PASS"
+  },
+  {
+   "test": "run_qa.py",
+   "check": "MUST_astana_places_social_ids_preserved",
+   "level": "MUST",
+   "app_root": "PASS",
+   "url": "SKIP"
+  },
+  {
+   "test": "run_qa.py",
+   "check": "MUST_astana_segments_ids_preserved",
+   "level": "MUST",
+   "app_root": "PASS",
+   "url": "SKIP"
+  },
+  {
+   "test": "run_qa.py",
+   "check": "MUST_shymkent_places_social_ids_preserved",
+   "level": "MUST",
+   "app_root": "PASS",
+   "url": "SKIP"
+  },
+  {
+   "test": "run_qa.py",
+   "check": "MUST_shymkent_segments_ids_preserved",
+   "level": "MUST",
+   "app_root": "PASS",
+   "url": "SKIP"
+  },
+  {
+   "test": "run_qa.py",
+   "check": "MUST_qa_flags_deterministic",
+   "level": "MUST",
+   "app_root": "PASS",
+   "url": "PASS"
+  },
+  {
+   "test": "run_qa.py",
+   "check": "MUST_qa_flags_ids_known",
+   "level": "MUST",
+   "app_root": "PASS",
+   "url": "PASS"
+  },
+  {
+   "test": "run_qa.py",
+   "check": "MUST_qa_flags_no_email_value",
+   "level": "MUST",
+   "app_root": "PASS",
+   "url": "PASS"
+  },
+  {
+   "test": "run_qa.py",
+   "check": "MUST_no_error_flags",
+   "level": "MUST",
+   "app_root": "PASS",
+   "url": "PASS"
+  },
+  {
+   "test": "run_qa.py",
+   "check": "SHOULD_data_exposes_coord_group_flag",
+   "level": "SHOULD",
+   "app_root": "FAIL",
+   "url": "FAIL",
+   "classification": "TEST_INCOMPATIBLE",
+   "reason": "ищет поле группы в записях web/data.js; новая сборка отдаёт группы через web/evidence.js (CITY_OBS.cities[city].qa.colocated). Критерий проверен адаптером: I2 PASS"
+  },
+  {
+   "test": "ui_coord_group.cjs",
+   "check": "MUST_all_group_records_rendered_as_markers",
+   "level": "MUST",
+   "app_root": "PASS",
+   "url": "PASS"
+  },
+  {
+   "test": "ui_coord_group.cjs",
+   "check": "MUST_table_rows_equal_visible_records",
+   "level": "MUST",
+   "app_root": "PASS",
+   "url": "PASS"
+  },
+  {
+   "test": "ui_coord_group.cjs",
+   "check": "INFO_group_markers_share_one_screen_position",
+   "level": "INFO",
+   "app_root": "PASS",
+   "url": "PASS"
+  },
+  {
+   "test": "ui_coord_group.cjs",
+   "check": "MUST_each_group_record_selectable_from_table",
+   "level": "MUST",
+   "app_root": "PASS",
+   "url": "PASS"
+  },
+  {
+   "test": "ui_coord_group.cjs",
+   "check": "SHOULD_each_group_record_selectable_from_map",
+   "level": "SHOULD",
+   "app_root": "FAIL",
+   "url": "FAIL",
+   "classification": "TEST_INCOMPATIBLE",
+   "reason": "ждёт хук [data-coord-group-item]; новая сборка открывает записи группы кнопками в карточке выбора. Критерий проверен адаптером: U2 PASS (10/10)"
+  },
+  {
+   "test": "ui_coord_group.cjs",
+   "check": "SHOULD_group_indicated_in_ui",
+   "level": "SHOULD",
+   "app_root": "PASS",
+   "url": "PASS"
+  },
+  {
+   "test": "ui_coord_group.cjs",
+   "check": "MUST_no_page_errors",
+   "level": "MUST",
+   "app_root": "PASS",
+   "url": "PASS"
+  }
+ ],
+ "repeat": {
+  "k10r6_data --app-root, 2 runs": "byte-identical JSON",
+  "k10r6_ui --app-root, 2 runs": "byte-identical JSON",
+  "app-root vs url": "same verdicts; same data.js/evidence.js sha256"
+ },
+ "adapter_control_on_previous_build_0bf27de": {
+  "purpose": "adapters must fail where the feature is absent; not an acceptance of 0bf27de",
+  "k10r6_data": {
+   "I1_group_records_present_unmoved": "PASS",
+   "I2_group_exposed_to_ui_exact_members": "FAIL",
+   "I5_qa_ids_are_source_ids_same_city": "PASS",
+   "I5b_exact_groups_ge3_match_colocated": "FAIL",
+   "I6_district_status_kept_separate_from_coordinate_doubt": "PASS"
+  },
+  "k10r6_ui": {
+   "U1_group_label_visible_at_group": "FAIL",
+   "U2_each_group_record_opens_from_map": "FAIL",
+   "U3_each_group_record_opens_from_table": "PASS",
+   "U4_wording_flags_check_not_proven_error": "FAIL",
+   "U5_district_matched_shown_with_coordinate_doubt": "FAIL",
+   "U6_no_page_errors": "PASS"
+  }
+ },
+ "info_not_verdicts": {
+  "exact_pairs_also_possible_duplicate": 3,
+  "exact_pairs_round5": 7,
+  "exact_pairs_without_new_flag": [
+   "astana:exact:71.4412700,51.1675600",
+   "astana:exact:71.4422900,51.1699000",
+   "shymkent:exact:69.6070200,42.3175800",
+   "shymkent:exact:69.6155700,42.3230400"
+  ],
+  "near_groups_round5": [
+   [
+    "shymkent:near:69.6070200,42.3175700",
+    6,
+    1.11
+   ]
+  ]
+ },
+ "new_defects": [],
+ "verdict": "ACCEPTED for the K10 coordinate-group invariants on 064ed25 (11/11 MUST PASS in --app-root and --url); no new defect found",
+ "not_checked": [
+  "Windows/macOS browsers",
+  "other slots' invariants",
+  "completeness of the city or correctness of categories (out of scope)"
+ ]
+}

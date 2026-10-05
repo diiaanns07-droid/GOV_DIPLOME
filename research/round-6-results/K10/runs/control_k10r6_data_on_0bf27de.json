@@ -1,0 +1,88 @@
+{
+ "fixture": {
+  "group_id": "shymkent:exact:69.5958000,42.3167000",
+  "ids": 10
+ },
+ "info_not_verdicts": {
+  "exact_pairs_also_possible_duplicate": 0,
+  "exact_pairs_round5": 7,
+  "exact_pairs_without_new_flag": [
+   "astana:exact:71.4199900,51.1668300",
+   "astana:exact:71.4412700,51.1675600",
+   "astana:exact:71.4422900,51.1699000",
+   "shymkent:exact:69.5949600,42.3235300",
+   "shymkent:exact:69.6032200,42.3172800",
+   "shymkent:exact:69.6070200,42.3175800",
+   "shymkent:exact:69.6155700,42.3230400"
+  ],
+  "near_groups_round5": [
+   [
+    "shymkent:near:69.6070200,42.3175700",
+    6,
+    1.11
+   ]
+  ]
+ },
+ "must_failures": [
+  "I2_group_exposed_to_ui_exact_members",
+  "I5b_exact_groups_ge3_match_colocated"
+ ],
+ "results": [
+  {
+   "detail": {
+    "of": 10,
+    "present": 10
+   },
+   "invariant": "I1_group_records_present_unmoved",
+   "level": "MUST",
+   "verdict": "PASS"
+  },
+  {
+   "detail": {
+    "groups_touching_fixture": 0,
+    "members": 0
+   },
+   "invariant": "I2_group_exposed_to_ui_exact_members",
+   "level": "MUST",
+   "verdict": "FAIL"
+  },
+  {
+   "detail": {
+    "unknown_or_foreign": []
+   },
+   "invariant": "I5_qa_ids_are_source_ids_same_city",
+   "level": "MUST",
+   "verdict": "PASS"
+  },
+  {
+   "detail": {
+    "colocated": 0,
+    "exact_ge3": 2,
+    "extra": [],
+    "missing": [
+     "shymkent:exact:69.5958000,42.3167000",
+     "shymkent:exact:69.6070200,42.3175700"
+    ]
+   },
+   "invariant": "I5b_exact_groups_ge3_match_colocated",
+   "level": "MUST",
+   "verdict": "FAIL"
+  },
+  {
+   "detail": {
+    "statuses": [
+     "matched"
+    ]
+   },
+   "invariant": "I6_district_status_kept_separate_from_coordinate_doubt",
+   "level": "MUST",
+   "verdict": "PASS"
+  }
+ ],
+ "target": {
+  "data_js_sha256": "0d160e684d1bd527998ba78f64d444217d57ed760a487560038e94bbb10a7c00",
+  "evidence_js_sha256": "7e905a3a423ee35c4802248f1a0402fea3744986f24b471fdd7eba0d9af68f37",
+  "mode": "app-root",
+  "url": null
+ }
+}

@@ -1,0 +1,71 @@
+{
+ "target": {
+  "mode": "url",
+  "url": "http://127.0.0.1:8773/"
+ },
+ "fixture": "shymkent:exact:69.5958000,42.3167000",
+ "results": [
+  {
+   "invariant": "U1_group_label_visible_at_group",
+   "level": "MUST",
+   "verdict": "PASS",
+   "detail": {
+    "label": "×10 в одной точке10 записей с одинаковыми координатами — точное место не проверено",
+    "ring_within_2px": true
+   }
+  },
+  {
+   "invariant": "U2_each_group_record_opens_from_map",
+   "level": "MUST",
+   "verdict": "PASS",
+   "detail": {
+    "opened": 10,
+    "of": 10,
+    "first_by_map_click": "f4d6818b-1a99-43ca-8533-4c556f448919",
+    "problems": []
+   }
+  },
+  {
+   "invariant": "U3_each_group_record_opens_from_table",
+   "level": "MUST",
+   "verdict": "PASS",
+   "detail": {
+    "opened": 10,
+    "of": 10
+   }
+  },
+  {
+   "invariant": "U4_wording_flags_check_not_proven_error",
+   "level": "MUST",
+   "verdict": "PASS",
+   "detail": {
+    "claims": [],
+    "every_card_hedged_and_noted": true,
+    "label_title": "10 записей с одинаковыми координатами — точное место не проверено"
+   }
+  },
+  {
+   "invariant": "U5_district_matched_shown_with_coordinate_doubt",
+   "level": "MUST",
+   "verdict": "PASS",
+   "detail": {
+    "group_district_texts": [
+     "Аль-Фарабийский район / Әл-Фараби ауданы"
+    ],
+    "group_badges": [
+     "координата под вопросом"
+    ],
+    "non_group_matched_badge": "K03 v2 · OSM, не официально"
+   }
+  },
+  {
+   "invariant": "U6_no_page_errors",
+   "level": "MUST",
+   "verdict": "PASS",
+   "detail": {
+    "errors": []
+   }
+  }
+ ],
+ "must_failures": []
+}
