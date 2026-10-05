@@ -1,8 +1,8 @@
 {
  "build": {
-  "app_root": "<scratchpad>/build_60f44d9/prototypes/city-evidence",
-  "plan_js_sha256": "d3d09243bc1a48dda88f9ec09743df72c0d510551ab4ee1d5087315efa58bb33",
-  "whatif_js_sha256": "944adfa63500d9bc13b3da859cf4a56a3d3e3f92fa0f565ed655bedfb81d8f2f",
+  "app_root": "<app-parent>/city-evidence",
+  "plan_js_sha256": "b2029640f00c10f6018f469ba4e157705d405e1de65178bca824769d50b9a3c7",
+  "whatif_js_sha256": "e8f7c18d9b839983af4fed6e2a82532531d2ff26545b524fdcedb42373c64deb",
   "data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72"
  },
  "packs": 37,
@@ -22,6 +22,7 @@
     "FEASIBLE_COUNT": "PASS",
     "SENSITIVITY": "PASS",
     "EVALUATE": "PASS",
+    "EXPORT_ROUNDTRIP": "PASS",
     "ORDER": "PASS",
     "DIGEST_SELECTED": "PASS",
     "PARTIAL_NOT_OPTIMAL": "PASS"
@@ -45,6 +46,7 @@
     "FEASIBLE_COUNT": "PASS",
     "SENSITIVITY": "PASS",
     "EVALUATE": "PASS",
+    "EXPORT_ROUNDTRIP": "PASS",
     "ORDER": "PASS",
     "DIGEST_SELECTED": "PASS"
    },
@@ -67,6 +69,7 @@
     "FEASIBLE_COUNT": "PASS",
     "SENSITIVITY": "PASS",
     "EVALUATE": "PASS",
+    "EXPORT_ROUNDTRIP": "PASS",
     "ORDER": "PASS",
     "DIGEST_SELECTED": "PASS"
    },
@@ -92,6 +95,7 @@
     "FEASIBLE_COUNT": "PASS",
     "SENSITIVITY": "PASS",
     "EVALUATE": "PASS",
+    "EXPORT_ROUNDTRIP": "PASS",
     "ORDER": "PASS",
     "DIGEST_SELECTED": "PASS",
     "PARTIAL_NOT_OPTIMAL": "PASS"
@@ -118,6 +122,7 @@
     "FEASIBLE_COUNT": "PASS",
     "SENSITIVITY": "PASS",
     "EVALUATE": "PASS",
+    "EXPORT_ROUNDTRIP": "PASS",
     "ORDER": "PASS",
     "DIGEST_SELECTED": "PASS",
     "PARTIAL_NOT_OPTIMAL": "PASS"
@@ -144,6 +149,7 @@
     "FEASIBLE_COUNT": "PASS",
     "SENSITIVITY": "PASS",
     "EVALUATE": "PASS",
+    "EXPORT_ROUNDTRIP": "PASS",
     "ORDER": "PASS",
     "DIGEST_SELECTED": "PASS",
     "PARTIAL_NOT_OPTIMAL": "PASS"
@@ -170,6 +176,7 @@
     "FEASIBLE_COUNT": "PASS",
     "SENSITIVITY": "PASS",
     "EVALUATE": "PASS",
+    "EXPORT_ROUNDTRIP": "PASS",
     "ORDER": "PASS",
     "DIGEST_SELECTED": "PASS",
     "PARTIAL_NOT_OPTIMAL": "PASS"
@@ -196,6 +203,7 @@
     "FEASIBLE_COUNT": "PASS",
     "SENSITIVITY": "PASS",
     "EVALUATE": "PASS",
+    "EXPORT_ROUNDTRIP": "PASS",
     "ORDER": "PASS",
     "DIGEST_SELECTED": "PASS",
     "PARTIAL_NOT_OPTIMAL": "PASS"
@@ -219,6 +227,7 @@
     "FEASIBLE_COUNT": "PASS",
     "SENSITIVITY": "PASS",
     "EVALUATE": "PASS",
+    "EXPORT_ROUNDTRIP": "PASS",
     "ORDER": "PASS",
     "DIGEST_SELECTED": "PASS"
    },
@@ -241,6 +250,7 @@
     "FEASIBLE_COUNT": "PASS",
     "SENSITIVITY": "PASS",
     "EVALUATE": "PASS",
+    "EXPORT_ROUNDTRIP": "PASS",
     "ORDER": "PASS",
     "DIGEST_SELECTED": "PASS"
    },
@@ -261,8 +271,56 @@
    },
    "problems": [],
    "notes": [
-    "html_in_ids: BUILD refuses ids outside [A-Za-z0-9_.-] (stricter than the length-only rule; acceptable, documented)"
-   ]
+    "derived_results_forged: BUILD refuses derived_results that differ from its recomputation (stricter than ignoring them; acceptable)",
+    "html_in_ids: BUILD refuses ids with < > = \" and spaces (stricter id charset than the length-only rule; acceptable)"
+   ],
+   "case_codes": {
+    "duplicate_key": "bad_json",
+    "nan": "bad_json",
+    "infinity": "bad_json",
+    "float_overflow_1e999": "bad_json",
+    "integer_overflow": "bad_json",
+    "trailing_garbage": "bad_json",
+    "too_large": "too_large",
+    "schema_v1": "wrong_version",
+    "missing_budget": "missing_field",
+    "unexpected_top_field": "unknown_field",
+    "url_field": "unknown_field",
+    "other_city": "outside_bbox",
+    "foreign_snapshot": "foreign_snapshot",
+    "bad_category": "bad_category",
+    "point_out_of_bbox": "outside_bbox",
+    "candidate_out_of_bbox": "outside_bbox",
+    "lat_as_string": "bad_coord",
+    "point_extra_field": "bad_shape",
+    "zero_points": "bad_points",
+    "26_points": "bad_points",
+    "17_candidates": "too_many_candidates",
+    "duplicate_point_id": "duplicate_id",
+    "duplicate_candidate_id": "duplicate_id",
+    "id_65_chars": "bad_id",
+    "id_empty": "bad_id",
+    "id_number": "bad_id",
+    "weight_0": "bad_weight",
+    "weight_101": "bad_weight",
+    "weight_fraction": "bad_weight",
+    "weight_bool": "bad_weight",
+    "cost_0": "bad_cost",
+    "cost_over_max": "bad_cost",
+    "budget_negative": "bad_budget",
+    "budget_over_max": "bad_budget",
+    "max_selected_6": "bad_max_selected",
+    "radius_99": "bad_radius",
+    "radius_5001": "bad_radius",
+    "candidate_wrong_category": "bad_category",
+    "candidate_kind_source": "bad_kind",
+    "required_excluded_overlap": "required_excluded_overlap",
+    "required_unknown": "unknown_ref",
+    "selected_source_record_id": "unknown_ref",
+    "selected_duplicate": "duplicate_id",
+    "derived_results_forged": "forged_derived",
+    "html_in_ids": "bad_id"
+   }
   },
   {
    "pack_id": "astana-school-required-excluded",
@@ -278,6 +336,7 @@
     "FEASIBLE_COUNT": "PASS",
     "SENSITIVITY": "PASS",
     "EVALUATE": "PASS",
+    "EXPORT_ROUNDTRIP": "PASS",
     "ORDER": "PASS",
     "DIGEST_SELECTED": "PASS",
     "PARTIAL_NOT_OPTIMAL": "PASS"
@@ -304,6 +363,7 @@
     "FEASIBLE_COUNT": "PASS",
     "SENSITIVITY": "PASS",
     "EVALUATE": "PASS",
+    "EXPORT_ROUNDTRIP": "PASS",
     "ORDER": "PASS",
     "DIGEST_SELECTED": "PASS",
     "PARTIAL_NOT_OPTIMAL": "PASS"
@@ -330,6 +390,7 @@
     "FEASIBLE_COUNT": "PASS",
     "SENSITIVITY": "PASS",
     "EVALUATE": "PASS",
+    "EXPORT_ROUNDTRIP": "PASS",
     "ORDER": "PASS",
     "DIGEST_SELECTED": "PASS",
     "PARTIAL_NOT_OPTIMAL": "PASS"
@@ -356,6 +417,7 @@
     "FEASIBLE_COUNT": "PASS",
     "SENSITIVITY": "PASS",
     "EVALUATE": "PASS",
+    "EXPORT_ROUNDTRIP": "PASS",
     "ORDER": "PASS",
     "DIGEST_SELECTED": "PASS",
     "PARTIAL_NOT_OPTIMAL": "PASS"
@@ -382,6 +444,7 @@
     "FEASIBLE_COUNT": "PASS",
     "SENSITIVITY": "PASS",
     "EVALUATE": "PASS",
+    "EXPORT_ROUNDTRIP": "PASS",
     "ORDER": "PASS",
     "DIGEST_SELECTED": "PASS",
     "PARTIAL_NOT_OPTIMAL": "PASS"
@@ -405,6 +468,7 @@
     "FEASIBLE_COUNT": "PASS",
     "SENSITIVITY": "PASS",
     "EVALUATE": "PASS",
+    "EXPORT_ROUNDTRIP": "PASS",
     "ORDER": "PASS",
     "DIGEST_SELECTED": "PASS"
    },
@@ -427,6 +491,7 @@
     "FEASIBLE_COUNT": "PASS",
     "SENSITIVITY": "PASS",
     "EVALUATE": "PASS",
+    "EXPORT_ROUNDTRIP": "PASS",
     "ORDER": "PASS",
     "DIGEST_SELECTED": "PASS"
    },
@@ -452,6 +517,7 @@
     "FEASIBLE_COUNT": "PASS",
     "SENSITIVITY": "PASS",
     "EVALUATE": "PASS",
+    "EXPORT_ROUNDTRIP": "PASS",
     "ORDER": "PASS",
     "DIGEST_SELECTED": "PASS",
     "PARTIAL_NOT_OPTIMAL": "PASS"
@@ -478,6 +544,7 @@
     "FEASIBLE_COUNT": "PASS",
     "SENSITIVITY": "PASS",
     "EVALUATE": "PASS",
+    "EXPORT_ROUNDTRIP": "PASS",
     "ORDER": "PASS",
     "DIGEST_SELECTED": "PASS",
     "PARTIAL_NOT_OPTIMAL": "PASS"
@@ -504,6 +571,7 @@
     "FEASIBLE_COUNT": "PASS",
     "SENSITIVITY": "PASS",
     "EVALUATE": "PASS",
+    "EXPORT_ROUNDTRIP": "PASS",
     "ORDER": "PASS",
     "DIGEST_SELECTED": "PASS",
     "PARTIAL_NOT_OPTIMAL": "PASS"
@@ -530,6 +598,7 @@
     "FEASIBLE_COUNT": "PASS",
     "SENSITIVITY": "PASS",
     "EVALUATE": "PASS",
+    "EXPORT_ROUNDTRIP": "PASS",
     "ORDER": "PASS",
     "DIGEST_SELECTED": "PASS",
     "PARTIAL_NOT_OPTIMAL": "PASS"
@@ -556,6 +625,7 @@
     "FEASIBLE_COUNT": "PASS",
     "SENSITIVITY": "PASS",
     "EVALUATE": "PASS",
+    "EXPORT_ROUNDTRIP": "PASS",
     "ORDER": "PASS",
     "DIGEST_SELECTED": "PASS",
     "PARTIAL_NOT_OPTIMAL": "PASS"
@@ -582,6 +652,7 @@
     "FEASIBLE_COUNT": "PASS",
     "SENSITIVITY": "PASS",
     "EVALUATE": "PASS",
+    "EXPORT_ROUNDTRIP": "PASS",
     "ORDER": "PASS",
     "DIGEST_SELECTED": "PASS",
     "PARTIAL_NOT_OPTIMAL": "PASS"
@@ -605,6 +676,7 @@
     "FEASIBLE_COUNT": "PASS",
     "SENSITIVITY": "PASS",
     "EVALUATE": "PASS",
+    "EXPORT_ROUNDTRIP": "PASS",
     "ORDER": "PASS",
     "DIGEST_SELECTED": "PASS"
    },
@@ -627,6 +699,7 @@
     "FEASIBLE_COUNT": "PASS",
     "SENSITIVITY": "PASS",
     "EVALUATE": "PASS",
+    "EXPORT_ROUNDTRIP": "PASS",
     "ORDER": "PASS",
     "DIGEST_SELECTED": "PASS"
    },
@@ -647,8 +720,56 @@
    },
    "problems": [],
    "notes": [
-    "html_in_ids: BUILD refuses ids outside [A-Za-z0-9_.-] (stricter than the length-only rule; acceptable, documented)"
-   ]
+    "derived_results_forged: BUILD refuses derived_results that differ from its recomputation (stricter than ignoring them; acceptable)",
+    "html_in_ids: BUILD refuses ids with < > = \" and spaces (stricter id charset than the length-only rule; acceptable)"
+   ],
+   "case_codes": {
+    "duplicate_key": "bad_json",
+    "nan": "bad_json",
+    "infinity": "bad_json",
+    "float_overflow_1e999": "bad_json",
+    "integer_overflow": "bad_json",
+    "trailing_garbage": "bad_json",
+    "too_large": "too_large",
+    "schema_v1": "wrong_version",
+    "missing_budget": "missing_field",
+    "unexpected_top_field": "unknown_field",
+    "url_field": "unknown_field",
+    "other_city": "outside_bbox",
+    "foreign_snapshot": "foreign_snapshot",
+    "bad_category": "bad_category",
+    "point_out_of_bbox": "outside_bbox",
+    "candidate_out_of_bbox": "outside_bbox",
+    "lat_as_string": "bad_coord",
+    "point_extra_field": "bad_shape",
+    "zero_points": "bad_points",
+    "26_points": "bad_points",
+    "17_candidates": "too_many_candidates",
+    "duplicate_point_id": "duplicate_id",
+    "duplicate_candidate_id": "duplicate_id",
+    "id_65_chars": "bad_id",
+    "id_empty": "bad_id",
+    "id_number": "bad_id",
+    "weight_0": "bad_weight",
+    "weight_101": "bad_weight",
+    "weight_fraction": "bad_weight",
+    "weight_bool": "bad_weight",
+    "cost_0": "bad_cost",
+    "cost_over_max": "bad_cost",
+    "budget_negative": "bad_budget",
+    "budget_over_max": "bad_budget",
+    "max_selected_6": "bad_max_selected",
+    "radius_99": "bad_radius",
+    "radius_5001": "bad_radius",
+    "candidate_wrong_category": "bad_category",
+    "candidate_kind_source": "bad_kind",
+    "required_excluded_overlap": "required_excluded_overlap",
+    "required_unknown": "unknown_ref",
+    "selected_source_record_id": "unknown_ref",
+    "selected_duplicate": "duplicate_id",
+    "derived_results_forged": "forged_derived",
+    "html_in_ids": "bad_id"
+   }
   },
   {
    "pack_id": "shymkent-school-qa-nearest",
@@ -664,6 +785,7 @@
     "FEASIBLE_COUNT": "PASS",
     "SENSITIVITY": "PASS",
     "EVALUATE": "PASS",
+    "EXPORT_ROUNDTRIP": "PASS",
     "ORDER": "PASS",
     "DIGEST_SELECTED": "PASS",
     "PARTIAL_NOT_OPTIMAL": "PASS"
@@ -690,6 +812,7 @@
     "FEASIBLE_COUNT": "PASS",
     "SENSITIVITY": "PASS",
     "EVALUATE": "PASS",
+    "EXPORT_ROUNDTRIP": "PASS",
     "ORDER": "PASS",
     "DIGEST_SELECTED": "PASS",
     "PARTIAL_NOT_OPTIMAL": "PASS"
@@ -716,6 +839,7 @@
     "FEASIBLE_COUNT": "PASS",
     "SENSITIVITY": "PASS",
     "EVALUATE": "PASS",
+    "EXPORT_ROUNDTRIP": "PASS",
     "ORDER": "PASS",
     "DIGEST_SELECTED": "PASS",
     "PARTIAL_NOT_OPTIMAL": "PASS"
@@ -742,6 +866,7 @@
     "FEASIBLE_COUNT": "PASS",
     "SENSITIVITY": "PASS",
     "EVALUATE": "PASS",
+    "EXPORT_ROUNDTRIP": "PASS",
     "ORDER": "PASS",
     "DIGEST_SELECTED": "PASS",
     "PARTIAL_NOT_OPTIMAL": "PASS"
@@ -768,6 +893,7 @@
     "FEASIBLE_COUNT": "PASS",
     "SENSITIVITY": "PASS",
     "EVALUATE": "PASS",
+    "EXPORT_ROUNDTRIP": "PASS",
     "ORDER": "PASS",
     "DIGEST_SELECTED": "PASS",
     "PARTIAL_NOT_OPTIMAL": "PASS"

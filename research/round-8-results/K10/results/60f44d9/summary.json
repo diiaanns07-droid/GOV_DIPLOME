@@ -1,0 +1,17 @@
+{
+ "commit": "60f44d93c691c2feaa2a67e6660c55ea9677b5b2",
+ "steps": {
+  "check_packs": "PASS",
+  "unit_tests": "PASS",
+  "verify_inputs": "PASS",
+  "build_v2": "PASS",
+  "build_exports": "SKIP(no exportPlanScenario)",
+  "build_mutants": "PASS"
+ },
+ "build_mutants": {
+  "mutants": 15,
+  "killed": 15,
+  "survived": [],
+  "not_applicable": []
+ }
+}

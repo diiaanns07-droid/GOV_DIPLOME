@@ -1,5 +1,5 @@
 {
- "app_root": "<scratchpad>/build_60f44d9/prototypes/city-evidence",
+ "app_root": "<app-parent>/city-evidence",
  "data_files": {
   "web/data.js": {
    "sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
@@ -47,7 +47,7 @@
   }
  },
  "ok": true,
- "git_sha": "60f44d9",
- "k10_package": "../../round-3-results/K10",
+ "git_sha": "60f44d93c691c2feaa2a67e6660c55ea9677b5b2",
+ "k10_package": "/home/user/GOV_DIPLOME/research/round-3-results/K10",
  "unchanged_while_checking": true
 }

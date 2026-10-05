@@ -1,5 +1,5 @@
 {
- "app_root": "<scratchpad>/build_60f44d9/prototypes/city-evidence",
+ "app_root": "<app-parent>/city-evidence",
  "unmutated_exit": 0,
  "mutants": 15,
  "killed": 15,

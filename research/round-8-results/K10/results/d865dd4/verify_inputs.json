@@ -1,5 +1,5 @@
 {
- "app_root": "<scratchpad>/build_a5b5e2d/prototypes/city-evidence",
+ "app_root": "<app-parent>/city-evidence",
  "data_files": {
   "web/data.js": {
    "sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
@@ -31,8 +31,8 @@
  },
  "code_files": {
   "web/whatif.js": {
-   "sha256": "944adfa63500d9bc13b3da859cf4a56a3d3e3f92fa0f565ed655bedfb81d8f2f",
-   "same_as_index": true,
+   "sha256": "e8f7c18d9b839983af4fed6e2a82532531d2ff26545b524fdcedb42373c64deb",
+   "same_as_index": false,
    "note": "code may differ between builds; informational"
   },
   "web/facts.js": {
@@ -41,13 +41,13 @@
    "note": "code may differ between builds; informational"
   },
   "web/plan.js": {
-   "sha256": null,
-   "same_as_index": true,
+   "sha256": "b2029640f00c10f6018f469ba4e157705d405e1de65178bca824769d50b9a3c7",
+   "same_as_index": false,
    "note": "code may differ between builds; informational"
   }
  },
  "ok": true,
- "git_sha": "a5b5e2ddbe087c4eab8e947748cdf69dbae84a0d",
- "k10_package": "../../round-3-results/K10",
+ "git_sha": "d865dd4a124291e10dd0b7bb1d9eada20d34c268",
+ "k10_package": "/home/user/GOV_DIPLOME/research/round-3-results/K10",
  "unchanged_while_checking": true
 }

@@ -33,6 +33,6 @@ test_id_lists_sorted (test_oracle.Validation.test_id_lists_sorted) ... ok
 test_rejections (test_oracle.Validation.test_rejections) ... ok
 
 ----------------------------------------------------------------------
-Ran 33 tests in 3.161s
+Ran 33 tests in 2.956s
 
 OK

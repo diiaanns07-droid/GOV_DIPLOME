@@ -28,6 +28,8 @@ function buildCtx(p) {
   const data = { cities: { [p.city_id]: { bbox: s.bbox, release: "synthetic", files: {}, places: s.records } } };
   return PL.makeContext(data, p.city_id, F);
 }
+const ctxCache = {};
+function ctxFor(city) { if (!(city in ctxCache)) ctxCache[city] = PL.makeContext(D, city, F); return ctxCache[city]; }
 function caseText(c) { return c.pad_to_bytes ? c.raw + " ".repeat(c.pad_to_bytes - Buffer.byteLength(c.raw, "utf8")) : c.raw; }
 function objView(o) { return o && { ids: o.ids, cost: o.cost, unknown_count: o.unknown_count, weighted_sum_mm: o.weighted_sum_mm, max_mm: o.max_mm, covered_weight: o.covered_weight }; }
 function expView(o) { return o && { ids: o.selected_ids, cost: o.cost, unknown_count: o.unknown_count, weighted_sum_mm: o.weighted_sum_mm, max_mm: o.max_mm, covered_weight: o.covered_weight }; }
@@ -45,12 +47,19 @@ function runPack(p) {
     for (const c of p.invalid_cases) {
       let text = caseText(c), got;
       if (p.kind === "real_slice") text = text.split(p.scenario.source_snapshot).join(ctx.source_snapshot);
-      try { PL.validatePlanScenario(X.parseStrict(text), ctx); got = { rejected: false }; } catch (e) { got = { rejected: true, code: e.code || e.message }; }
+      try {
+        if (PL.importPlanScenario) PL.importPlanScenario(text, ctxFor, F);  // the BUILD's own file-import path (from 3e1302a)
+        else PL.validatePlanScenario(X.parseStrict(text), ctx);           // older builds: strict parser + validation
+        got = { rejected: false };
+      } catch (e) { got = { rejected: true, code: e.code || e.message }; }
       const want = c.expected.rejected;
       if (got.rejected !== want) {
-        if (c.case_id === "html_in_ids" && got.code === "bad_id") r.notes.push("html_in_ids: BUILD refuses ids outside [A-Za-z0-9_.-] (stricter than the length-only rule; acceptable, documented)");
+        if (c.case_id === "html_in_ids" && got.code === "bad_id") r.notes.push("html_in_ids: BUILD refuses ids with < > = \" and spaces (stricter id charset than the length-only rule; acceptable)");
+        else if (c.case_id === "derived_results_forged" && got.code === "forged_derived") r.notes.push("derived_results_forged: BUILD refuses derived_results that differ from its recomputation (stricter than ignoring them; acceptable)");
         else { bad++; r.problems.push(`case ${c.case_id}: BUILD ${J(got)} vs oracle ${J(c.expected)}`); }
       }
+      r.case_codes = r.case_codes || {};
+      r.case_codes[c.case_id] = got.rejected ? got.code : "accepted";
     }
     put("INVALID_CASES", bad === 0, `${bad} case(s) differ`);
     return r;
@@ -97,6 +106,13 @@ function runPack(p) {
   }
   put("EVALUATE", evalBad === 0, `${evalBad} plan(s) differ`);
 
+  // the BUILD's own export must import again unchanged (builds with exportPlanScenario/importPlanScenario only)
+  if (PL.exportPlanScenario && PL.importPlanScenario && p.kind === "real_slice") {
+    const text = PL.exportPlanScenario(ctx, sc, F);
+    const back = PL.importPlanScenario(text, ctxFor, F);
+    put("EXPORT_ROUNDTRIP", PL.scenarioDigest(back.scenario, F) === PL.scenarioDigest(sc, F), "re-imported scenario differs");
+    if (process.env.K10_EXPORT_DIR) fs.writeFileSync(path.join(process.env.K10_EXPORT_DIR, p.pack_id + ".json"), text);
+  }
   // order of input arrays must not change the plan or the problem digest
   const rev = clone(input);
   for (const k of ["control_points", "candidates", "required_ids", "excluded_ids", "selected_ids"]) rev[k] = rev[k].slice().reverse();

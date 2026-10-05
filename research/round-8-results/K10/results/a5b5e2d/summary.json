@@ -1,0 +1,11 @@
+{
+ "commit": "a5b5e2ddbe087c4eab8e947748cdf69dbae84a0d",
+ "steps": {
+  "check_packs": "PASS",
+  "unit_tests": "PASS",
+  "verify_inputs": "PASS",
+  "build_v2": "SKIP(no web/plan.js)",
+  "build_exports": "SKIP(no exportPlanScenario)",
+  "build_mutants": "SKIP(no web/plan.js)"
+ }
+}
