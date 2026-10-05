@@ -1,0 +1,48 @@
+{
+ "schema_version": "city-whatif-v1",
+ "city_id": "astana",
+ "source_snapshot": "sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d",
+ "category": "school",
+ "control_points": [
+  {
+   "id": "p0",
+   "lon": 71.4269604,
+   "lat": 51.1720165
+  },
+  {
+   "id": "p1",
+   "lon": 71.432686,
+   "lat": 51.1720165
+  }
+ ],
+ "proposed_object": {
+  "id": "proj1",
+  "lon": 71.43841160000001,
+  "lat": 51.1720165,
+  "category": "school",
+  "kind": "hypothetical"
+ },
+ "derived_results": {
+  "note": "производные значения; при импорте пересчитываются и не принимаются из файла",
+  "formula": "haversine:R=6371008.8",
+  "unit": "m",
+  "rows": [
+   {
+    "id": "p0",
+    "before_m": 186.39397607515983,
+    "after_m": 186.39397607515983,
+    "delta_m": 0,
+    "nearest_before": "7b39e048-341b-454a-a63c-4b7e1ae73e9f",
+    "nearest_after": "source"
+   },
+   {
+    "id": "p1",
+    "before_m": 384.49288307630604,
+    "after_m": 384.49288307630604,
+    "delta_m": 0,
+    "nearest_before": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+    "nearest_after": "source"
+   }
+  ]
+ }
+}

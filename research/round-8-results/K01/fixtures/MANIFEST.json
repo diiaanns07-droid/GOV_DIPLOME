@@ -245,6 +245,16 @@
    "path": "synthetic/shy_valid_unicode_escaped_keys.json",
    "bytes": 1350,
    "sha256": "dddc7627a0d29e312d37d8b81f722b6d12c7e9b8b93595c5d73fa778ed3c3416"
+  },
+  {
+   "path": "v1/astana_v1_from_build_whatif.json",
+   "bytes": 1142,
+   "sha256": "05b3e32392e11b6c66d5ffce45e13d01c264a3ddc7f790c34e81a3264778a863"
+  },
+  {
+   "path": "v1/shymkent_v1_from_build_whatif.json",
+   "bytes": 1169,
+   "sha256": "b3475a1eb7d717763d0334dae9d3e1b5bb3f7deefb34224d6596e69c69cbb30e"
   }
  ]
 }

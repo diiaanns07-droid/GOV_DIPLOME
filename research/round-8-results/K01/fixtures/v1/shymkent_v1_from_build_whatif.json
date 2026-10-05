@@ -1,0 +1,48 @@
+{
+ "schema_version": "city-whatif-v1",
+ "city_id": "shymkent",
+ "source_snapshot": "sha256:282cf187523d8b990ac9bfde69ba43763248aa9b49007149a094ccc81bd36ec2",
+ "category": "school",
+ "control_points": [
+  {
+   "id": "p0",
+   "lon": 69.6006529,
+   "lat": 42.315628000000004
+  },
+  {
+   "id": "p1",
+   "lon": 69.6055115,
+   "lat": 42.315628000000004
+  }
+ ],
+ "proposed_object": {
+  "id": "proj1",
+  "lon": 69.61037010000001,
+  "lat": 42.315628000000004,
+  "category": "school",
+  "kind": "hypothetical"
+ },
+ "derived_results": {
+  "note": "производные значения; при импорте пересчитываются и не принимаются из файла",
+  "formula": "haversine:R=6371008.8",
+  "unit": "m",
+  "rows": [
+   {
+    "id": "p0",
+    "before_m": 166.52704838960304,
+    "after_m": 166.52704838960304,
+    "delta_m": 0,
+    "nearest_before": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+    "nearest_after": "source"
+   },
+   {
+    "id": "p1",
+    "before_m": 243.82073066480157,
+    "after_m": 243.82073066480157,
+    "delta_m": 0,
+    "nearest_before": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+    "nearest_after": "source"
+   }
+  ]
+ }
+}

@@ -1,0 +1,13 @@
+PASS roundtrip shy_valid_basic.json: export → import gives the same scenario and digests
+PASS roundtrip ast_valid_limits.json: export → import gives the same scenario and digests
+PASS roundtrip ast_valid_empty_candidates.json: export → import gives the same scenario and digests
+PASS export without derive has no derived_results; JS export → Python oracle import is identical
+PASS export refuses an invalid scenario object (no partial file)
+PASS validated copy is detached from the parsed input
+PASS PlanStore: every invalid fixture is rejected without changing the active scenario
+PASS PlanStore.edit: invalid edit rolls back, valid edit applies
+PASS PlanStore: stale worker answer ignored, city/category switch resets and invalidates pending answer
+PASS v1 city-whatif-v1 still works in the BUILD's whatif.js; v2 import rejects it (separate modes)
+PASS migrateV1: refuses without explicit budget/cost, keeps user cost exactly, weights=1, validates against v2 context
+
+11 passed, 0 failed, 0 skipped
