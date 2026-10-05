@@ -1,0 +1,51 @@
+{
+ "fixtures_target": {
+  "branch": "claude/beautiful-clarke-sbzomj",
+  "sha": "c58a3b2b175cf978ad785fef7f88d8fd9b1338f2",
+  "path": "prototypes/city-evidence/",
+  "web_data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "web_evidence_js_sha256": "df736e986145da33dee60f692e020486720b72db5b6116af31640cc8693b11b9",
+  "k03_root": "inputs/k03v21_root",
+  "k03_validator_sha256": "d5e297411d78085dafece85b25b10050672b03b2f22c46651f631d886d80760b"
+ },
+ "summary": {
+  "PASS": 4,
+  "FAIL": 0,
+  "SKIP": 0,
+  "TEST_INCOMPATIBLE": 0
+ },
+ "results": [
+  {
+   "check": "slices-match-app",
+   "verdict": "PASS",
+   "summary": "bbox и edges_inclusive обоих городов в web/evidence.js и web/data.js совпадают с fixtures",
+   "details": {
+    "diff": []
+   }
+  },
+  {
+   "check": "python-point_check",
+   "verdict": "PASS",
+   "summary": "41 fixtures: несовпадений 0",
+   "details": {
+    "mismatches": []
+   }
+  },
+  {
+   "check": "js-point_check (point_check.js)",
+   "verdict": "PASS",
+   "summary": "41 fixtures: несовпадений 0",
+   "details": {
+    "mismatches": []
+   }
+  },
+  {
+   "check": "python-js-parity",
+   "verdict": "PASS",
+   "summary": "Python и JS дают одинаковые ok/code/point/on_edge/other_city_id: расхождений 0",
+   "details": {
+    "ids": []
+   }
+  }
+ ]
+}

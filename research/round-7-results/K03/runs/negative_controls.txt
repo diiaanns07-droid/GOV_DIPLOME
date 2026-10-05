@@ -1,0 +1,21 @@
+# Отрицательный контроль: испорченные копии point_check.js должны падать на тех же fixtures
+## mut_nofinite: удалена проверка Number.isFinite
+$ python3 research/round-7-results/K03/test_point_check.py --js <mut_nofinite.js>
+[SKIP] slices-match-app: без --app-root соответствие fixtures текущей сборке не проверено
+[PASS] python-point_check: 41 fixtures: несовпадений 0
+[FAIL] js-point_check (mut_nofinite.js): 41 fixtures: несовпадений 4
+[FAIL] python-js-parity: Python и JS дают одинаковые ok/code/point/on_edge/other_city_id: расхождений 4
+SUMMARY {"PASS": 1, "FAIL": 2, "SKIP": 1, "TEST_INCOMPATIBLE": 0}
+## mut_exclusive: edges_inclusive игнорируется (всегда строго)
+$ python3 research/round-7-results/K03/test_point_check.py --js <mut_exclusive.js>
+[SKIP] slices-match-app: без --app-root соответствие fixtures текущей сборке не проверено
+[PASS] python-point_check: 41 fixtures: несовпадений 0
+[FAIL] js-point_check (mut_exclusive.js): 41 fixtures: несовпадений 6
+[FAIL] python-js-parity: Python и JS дают одинаковые ok/code/point/on_edge/other_city_id: расхождений 6
+SUMMARY {"PASS": 1, "FAIL": 2, "SKIP": 1, "TEST_INCOMPATIBLE": 0}
+
+# Встроенная проверка web/app.js:416 (c58a3b2) в node: (lon < w || lon > e || lat < so || lat > n)
+NaN,51.17 -> считается внутри квадрата
+71.43,NaN -> считается внутри квадрата
+Infinity,51.17 -> предупреждение «вне квадрата»
+71.4,51.17 -> предупреждение «вне квадрата»
