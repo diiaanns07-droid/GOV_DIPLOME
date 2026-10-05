@@ -11,7 +11,7 @@
   "error": [],
   "code_mismatch": [],
   "network_attempts": 0,
-  "max_import_ms": 13.37
+  "max_import_ms": 8.03
  },
  "results": [
   {
@@ -33,7 +33,7 @@
    "bytes": 1516,
    "outcome": "accepted",
    "code": null,
-   "import_ms": 1.14,
+   "import_ms": 0.56,
    "summary": {
     "status": "optimal",
     "feasible": 24,
@@ -65,7 +65,7 @@
    "bytes": 504,
    "outcome": "accepted",
    "code": null,
-   "import_ms": 0.46,
+   "import_ms": 0.18,
    "summary": {
     "status": "optimal",
     "feasible": 1,
@@ -95,7 +95,7 @@
    "bytes": 1853,
    "outcome": "accepted",
    "code": null,
-   "import_ms": 0.59,
+   "import_ms": 0.47,
    "summary": {
     "status": "optimal",
     "feasible": 24,
@@ -127,7 +127,7 @@
    "bytes": 4659,
    "outcome": "accepted",
    "code": null,
-   "import_ms": 2.39,
+   "import_ms": 1.73,
    "summary": {
     "status": "optimal",
     "feasible": 6885,
@@ -161,7 +161,7 @@
    "bytes": 419,
    "outcome": "accepted",
    "code": null,
-   "import_ms": 0.26,
+   "import_ms": 0.39,
    "summary": {
     "status": "optimal",
     "feasible": 1,
@@ -189,7 +189,7 @@
    "bytes": 1518,
    "outcome": "accepted",
    "code": null,
-   "import_ms": 0.39,
+   "import_ms": 0.37,
    "summary": {
     "status": "optimal",
     "feasible": 27,
@@ -222,7 +222,7 @@
    "bytes": 1525,
    "outcome": "accepted",
    "code": null,
-   "import_ms": 0.24,
+   "import_ms": 0.22,
    "summary": {
     "status": "infeasible",
     "feasible": 0,
@@ -251,7 +251,7 @@
    "bytes": 1532,
    "outcome": "accepted",
    "code": null,
-   "import_ms": 0.28,
+   "import_ms": 1.33,
    "summary": {
     "status": "infeasible",
     "feasible": 0,
@@ -279,7 +279,7 @@
    "bytes": 1511,
    "outcome": "accepted",
    "code": null,
-   "import_ms": 0.19,
+   "import_ms": 0.18,
    "summary": {
     "status": "optimal",
     "feasible": 24,
@@ -313,7 +313,7 @@
    "bytes": 1516,
    "outcome": "accepted",
    "code": null,
-   "import_ms": 0.18,
+   "import_ms": 0.13,
    "summary": {
     "status": "optimal",
     "feasible": 24,
@@ -346,7 +346,7 @@
    "bytes": 1550,
    "outcome": "accepted",
    "code": null,
-   "import_ms": 0.27,
+   "import_ms": 0.18,
    "summary": {
     "status": "optimal",
     "feasible": 5,
@@ -374,7 +374,7 @@
    "bytes": 262144,
    "outcome": "accepted",
    "code": null,
-   "import_ms": 4.01,
+   "import_ms": 3.47,
    "failed_checks": [],
    "status": "PASS"
   },
@@ -397,7 +397,7 @@
    "bytes": 1137,
    "outcome": "rejected",
    "code": "bad_count",
-   "import_ms": 0.42,
+   "import_ms": 0.25,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -421,7 +421,7 @@
    "bytes": 3287,
    "outcome": "rejected",
    "code": "bad_count",
-   "import_ms": 0.5,
+   "import_ms": 0.3,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -445,7 +445,7 @@
    "bytes": 3015,
    "outcome": "rejected",
    "code": "bad_count",
-   "import_ms": 0.19,
+   "import_ms": 0.22,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -469,7 +469,7 @@
    "bytes": 1516,
    "outcome": "rejected",
    "code": "bad_max_selected",
-   "import_ms": 0.13,
+   "import_ms": 0.12,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -493,7 +493,7 @@
    "bytes": 1517,
    "outcome": "rejected",
    "code": "bad_max_selected",
-   "import_ms": 0.12,
+   "import_ms": 0.11,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -517,7 +517,7 @@
    "bytes": 1518,
    "outcome": "rejected",
    "code": "bad_max_selected",
-   "import_ms": 0.11,
+   "import_ms": 0.13,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -541,7 +541,7 @@
    "bytes": 1518,
    "outcome": "rejected",
    "code": "bad_max_selected",
-   "import_ms": 0.15,
+   "import_ms": 0.12,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -589,7 +589,7 @@
    "bytes": 1516,
    "outcome": "rejected",
    "code": "bad_weight",
-   "import_ms": 0.18,
+   "import_ms": 0.16,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -613,7 +613,7 @@
    "bytes": 1518,
    "outcome": "rejected",
    "code": "bad_weight",
-   "import_ms": 0.1,
+   "import_ms": 0.11,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -661,7 +661,7 @@
    "bytes": 1517,
    "outcome": "rejected",
    "code": "bad_weight",
-   "import_ms": 0.1,
+   "import_ms": 0.09,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -685,7 +685,7 @@
    "bytes": 1500,
    "outcome": "rejected",
    "code": "missing_field",
-   "import_ms": 0.1,
+   "import_ms": 0.13,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -733,7 +733,7 @@
    "bytes": 1517,
    "outcome": "rejected",
    "code": "bad_cost",
-   "import_ms": 0.1,
+   "import_ms": 0.09,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -757,7 +757,7 @@
    "bytes": 1513,
    "outcome": "rejected",
    "code": "bad_cost",
-   "import_ms": 0.1,
+   "import_ms": 0.09,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -781,7 +781,7 @@
    "bytes": 1512,
    "outcome": "rejected",
    "code": "bad_cost",
-   "import_ms": 0.1,
+   "import_ms": 0.09,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -805,7 +805,7 @@
    "bytes": 1518,
    "outcome": "rejected",
    "code": "bad_cost",
-   "import_ms": 0.09,
+   "import_ms": 3.39,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -829,7 +829,7 @@
    "bytes": 1512,
    "outcome": "rejected",
    "code": "bad_budget",
-   "import_ms": 0.11,
+   "import_ms": 0.32,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -853,7 +853,7 @@
    "bytes": 1517,
    "outcome": "rejected",
    "code": "bad_budget",
-   "import_ms": 0.15,
+   "import_ms": 0.12,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -877,7 +877,7 @@
    "bytes": 1513,
    "outcome": "rejected",
    "code": "bad_budget",
-   "import_ms": 0.18,
+   "import_ms": 0.19,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -901,7 +901,7 @@
    "bytes": 1515,
    "outcome": "rejected",
    "code": "bad_radius",
-   "import_ms": 0.12,
+   "import_ms": 0.11,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -925,7 +925,7 @@
    "bytes": 1517,
    "outcome": "rejected",
    "code": "bad_radius",
-   "import_ms": 0.14,
+   "import_ms": 0.11,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -949,7 +949,7 @@
    "bytes": 1518,
    "outcome": "rejected",
    "code": "bad_radius",
-   "import_ms": 0.11,
+   "import_ms": 0.12,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -973,7 +973,7 @@
    "bytes": 1526,
    "outcome": "rejected",
    "code": "unknown_id",
-   "import_ms": 0.11,
+   "import_ms": 0.19,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1021,7 +1021,7 @@
    "bytes": 1527,
    "outcome": "rejected",
    "code": "unknown_id",
-   "import_ms": 0.18,
+   "import_ms": 0.12,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1045,7 +1045,7 @@
    "bytes": 1542,
    "outcome": "rejected",
    "code": "conflicting_constraints",
-   "import_ms": 0.16,
+   "import_ms": 0.11,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1069,7 +1069,7 @@
    "bytes": 1533,
    "outcome": "rejected",
    "code": "duplicate_id",
-   "import_ms": 0.15,
+   "import_ms": 0.68,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1117,7 +1117,7 @@
    "bytes": 1592,
    "outcome": "rejected",
    "code": "duplicate_id",
-   "import_ms": 0.12,
+   "import_ms": 0.13,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1141,7 +1141,7 @@
    "bytes": 1570,
    "outcome": "rejected",
    "code": "bad_id",
-   "import_ms": 0.13,
+   "import_ms": 0.12,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1165,7 +1165,7 @@
    "bytes": 1541,
    "outcome": "rejected",
    "code": "bad_id",
-   "import_ms": 0.1,
+   "import_ms": 0.09,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1189,7 +1189,7 @@
    "bytes": 1512,
    "outcome": "rejected",
    "code": "bad_kind",
-   "import_ms": 0.2,
+   "import_ms": 0.13,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1213,7 +1213,7 @@
    "bytes": 1527,
    "outcome": "rejected",
    "code": "bad_category",
-   "import_ms": 0.12,
+   "import_ms": 0.15,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1237,7 +1237,7 @@
    "bytes": 1514,
    "outcome": "rejected",
    "code": "outside_bbox",
-   "import_ms": 0.12,
+   "import_ms": 0.11,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1261,7 +1261,7 @@
    "bytes": 1514,
    "outcome": "rejected",
    "code": "outside_bbox",
-   "import_ms": 0.11,
+   "import_ms": 0.08,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1286,7 +1286,7 @@
    "bytes": 1516,
    "outcome": "rejected",
    "code": "outside_bbox",
-   "import_ms": 0.1,
+   "import_ms": 0.13,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1310,7 +1310,7 @@
    "bytes": 1518,
    "outcome": "rejected",
    "code": "bad_coord",
-   "import_ms": 0.11,
+   "import_ms": 0.09,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1358,7 +1358,7 @@
    "bytes": 1536,
    "outcome": "rejected",
    "code": "unknown_field",
-   "import_ms": 0.13,
+   "import_ms": 0.12,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1382,7 +1382,7 @@
    "bytes": 1489,
    "outcome": "rejected",
    "code": "missing_field",
-   "import_ms": 0.1,
+   "import_ms": 0.08,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1406,7 +1406,7 @@
    "bytes": 1518,
    "outcome": "rejected",
    "code": "bad_version",
-   "import_ms": 0.1,
+   "import_ms": 0.08,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1430,7 +1430,7 @@
    "bytes": 1516,
    "outcome": "rejected",
    "code": "foreign_snapshot",
-   "import_ms": 0.09,
+   "import_ms": 0.22,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1454,7 +1454,7 @@
    "bytes": 1456,
    "outcome": "rejected",
    "code": "foreign_snapshot",
-   "import_ms": 0.1,
+   "import_ms": 0.09,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1478,7 +1478,7 @@
    "bytes": 1514,
    "outcome": "rejected",
    "code": "bad_city",
-   "import_ms": 0.1,
+   "import_ms": 0.09,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1526,7 +1526,7 @@
    "bytes": 1616,
    "outcome": "rejected",
    "code": "bad_shape",
-   "import_ms": 0.09,
+   "import_ms": 0.08,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1550,7 +1550,7 @@
    "bytes": 1512,
    "outcome": "rejected",
    "code": "bad_shape",
-   "import_ms": 0.21,
+   "import_ms": 0.11,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1574,7 +1574,7 @@
    "bytes": 1530,
    "outcome": "rejected",
    "code": "duplicate_key",
-   "import_ms": 0.19,
+   "import_ms": 0.21,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1622,7 +1622,7 @@
    "bytes": 1540,
    "outcome": "rejected",
    "code": "duplicate_key",
-   "import_ms": 0.12,
+   "import_ms": 0.07,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1647,7 +1647,7 @@
    "bytes": 1513,
    "outcome": "rejected",
    "code": "bad_json",
-   "import_ms": 0.09,
+   "import_ms": 0.05,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1696,7 +1696,7 @@
    "bytes": 1515,
    "outcome": "rejected",
    "code": "nonfinite_number",
-   "import_ms": 0.1,
+   "import_ms": 0.08,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1721,7 +1721,7 @@
    "bytes": 1519,
    "outcome": "rejected",
    "code": "bad_json",
-   "import_ms": 0.07,
+   "import_ms": 0.05,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1745,7 +1745,7 @@
    "bytes": 1554,
    "outcome": "rejected",
    "code": "unknown_field",
-   "import_ms": 0.15,
+   "import_ms": 0.08,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1769,7 +1769,7 @@
    "bytes": 1570,
    "outcome": "rejected",
    "code": "unknown_field",
-   "import_ms": 0.14,
+   "import_ms": 0.1,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1793,7 +1793,7 @@
    "bytes": 1486,
    "outcome": "rejected",
    "code": "bad_json",
-   "import_ms": 0.1,
+   "import_ms": 0.09,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1817,7 +1817,7 @@
    "bytes": 262145,
    "outcome": "rejected",
    "code": "too_large",
-   "import_ms": 2.43,
+   "import_ms": 2.1,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1841,7 +1841,7 @@
    "bytes": 281550,
    "outcome": "rejected",
    "code": "too_large",
-   "import_ms": 13.37,
+   "import_ms": 8.03,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1866,7 +1866,7 @@
    "bytes": 41538,
    "outcome": "rejected",
    "code": "too_deep",
-   "import_ms": 3.21,
+   "import_ms": 1.26,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"
@@ -1890,7 +1890,7 @@
    "bytes": 1604,
    "outcome": "rejected",
    "code": "too_deep",
-   "import_ms": 0.21,
+   "import_ms": 0.17,
    "code_match": true,
    "failed_checks": [],
    "status": "PASS"

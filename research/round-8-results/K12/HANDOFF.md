@@ -12,6 +12,9 @@ cd research/round-8-results/K12
 python make_fixtures_v2.py                                   # fixtures_v2/, индекс, oracle_problems.json
 python oracle/plan_v2_oracle.py --app-root /tmp/ce --problems oracle_problems.json --out expected/oracle_mine.json
 node plan_stress.cjs --app-root /tmp/ce --expected expected/oracle_mine.json      # этап 1
+node stage2_runtime.cjs --app-root /tmp/ce                                        # этап 2 (v2-адаптер + v1 BUILD)
+node ../../round-7-results/K12/whatif_import_stress.cjs --app-root /tmp/ce \
+     --adapter adapters/build_v1_whatif_adapter.cjs --index ../../round-7-results/K12/FIXTURES_INDEX.json   # v1 BUILD
 ```
 
 ## Как подключить реализацию BUILD
@@ -27,6 +30,11 @@ node plan_stress.cjs --app-root /tmp/ce --expected expected/oracle_mine.json    
 | `optimize(state)` | желательно | результат `optimizePlans`: `{status, reasons, objectives{mean, minimax, coverage}, pareto, evaluated, feasible_count, problem_digest, sensitivity}` |
 | `problemDigest(state)` | желательно | для проверки независимости от порядка массивов |
 | `currentState()` | если активный сценарий хранится внутри модуля | |
+| `optimizeAsync(state, {requestId, signal, chunk, yieldFn})` | для этапа 2 D | отменяемый поиск; при отмене `status: "cancelled"`, `complete: false` |
+| `gate()` | для этапа 2 D | объект с `begin(problemDigest) → requestId`, `accept(result) → {accepted, reason}`, `reset()` |
+| `sources()` | для этапа 2 B | пути исходников модуля для статического просмотра |
+
+Без необязательных хуков соответствующие проверки помечаются SKIP, а не PASS.
 
 Пример — `adapters/reference_v2_adapter.cjs`.
 

@@ -152,6 +152,8 @@ function makeRegistry(D, { sha256hex, placesDigest } = {}) {
 function validatePlanScenario(input, reg) {
   const obj = typeof input === "string" ? parseStrict(input) : input;
   if (!obj || typeof obj !== "object" || Array.isArray(obj)) fail("bad_shape", "сценарий — JSON-объект");
+  // version first: a v1 scenario gets "другая версия", not "неизвестное поле proposed_object"
+  if (has(obj, "schema_version") && obj.schema_version !== SCHEMA) fail("bad_version", `версия ${String(obj.schema_version).slice(0, 40)} ≠ ${SCHEMA}`);
   for (const k of Object.keys(obj)) if (!ALLOWED_KEYS.has(k)) fail("unknown_field", `поле ${JSON.stringify(k).slice(0, 40)} не допускается`);
   for (const k of REQUIRED_KEYS) if (!has(obj, k)) fail("missing_field", k);
   if (obj.schema_version !== SCHEMA) fail("bad_version", `версия ${String(obj.schema_version).slice(0, 40)} ≠ ${SCHEMA}`);

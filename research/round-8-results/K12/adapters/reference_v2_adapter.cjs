@@ -13,7 +13,9 @@ module.exports = function ({ D, requireWeb }) {
     evaluate: (state) => state.evaluation,
     optimize: (state) => P.optimizePlans(reg, state.scenario),
     problemDigest: (state) => P.problemDigest(reg, state.scenario),
-    // stage 2 hooks
-    module: P, registry: reg,
+    // stage 2 hooks (optional for other implementations; missing hooks are reported as SKIP)
+    optimizeAsync: (state, opts) => P.optimizePlansAsync(reg, state.scenario, opts),
+    gate: () => new P.ResultGate(),
+    sources: () => [path.join(__dirname, "..", "reference", "plan_v2_ref.cjs")],
   };
 };
