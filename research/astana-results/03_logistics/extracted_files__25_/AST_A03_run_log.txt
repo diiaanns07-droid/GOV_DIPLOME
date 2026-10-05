@@ -1,0 +1,27 @@
+{"python": "3.12.3", "platform": "Linux-6.18.44-fc-v70-x86_64-with-glibc2.39", "ortools": "9.15.6755", "numpy": "2.4.4", "seed": 20261005, "districts_sha256": "9092aebb997086d4fbf30963dd84dfae6aab483a585ba6f536944fb03a4eb95e"}
+cap_ratio	method	unserved_m3	overflow_m3	shift_m3	truck_h_per_1000m3	km_per_m3	makespan_h	max_dump_demand/cap
+5.0	nearest	med 0 [0..0]	med 0	med 0	med 107.6 [84.8..111.1]	med 1.960	6.72	max 0.53
+5.0	greedy_cap	med 0 [0..0]	med 0	med 0	med 107.6 [84.8..111.1]	med 1.960	6.72	max 0.53
+5.0	min_cost_flow	med 0 [0..0]	med 0	med 0	med 107.6 [85.3..113.7]	med 1.961	6.72	max 0.51
+2.0	nearest	med 290 [0..440]	med 290	med 0	med 107.6 [93.3..119.8]	med 1.960	5.71	max 1.33
+2.0	greedy_cap	med 0 [0..20]	med 0	med 0	med 107.6 [91.9..118.3]	med 1.960	6.91	max 1.00
+2.0	min_cost_flow	med 0 [0..0]	med 0	med 0	med 107.6 [92.1..114.5]	med 1.961	6.72	max 1.00
+1.3	nearest	med 746 [226..909]	med 746	med 0	med 116.1 [98.9..135.4]	med 2.122	5.37	max 2.04
+1.3	greedy_cap	med 0 [0..40]	med 0	med 0	med 112.9 [102.9..128.6]	med 2.069	7.71	max 1.00
+1.3	min_cost_flow	med 0 [0..0]	med 0	med 0	med 109.8 [96.7..120.9]	med 2.007	6.74	max 1.00
+1.1	nearest	med 866 [382..1043]	med 866	med 0	med 124.5 [103.1..143.4]	med 2.293	5.37	max 2.42
+1.1	greedy_cap	med 40 [0..399]	med 0	med 40	med 118.8 [107.7..134.4]	med 2.189	7.58	max 1.00
+1.1	min_cost_flow	med 0 [0..0]	med 0	med 0	med 110.4 [98.7..123.3]	med 2.023	6.76	max 1.00
+1.0	nearest	med 925 [460..1110]	med 925	med 0	med 128.9 [108.2..147.1]	med 2.382	5.29	max 2.66
+1.0	greedy_cap	med 20 [0..520]	med 0	med 20	med 121.5 [110.4..138.7]	med 2.244	7.52	max 1.00
+1.0	min_cost_flow	med 0 [0..0]	med 0	med 0	med 110.6 [100.2..125.3]	med 2.028	6.81	max 1.00
+speed sensitivity (cap 1.1):
+  15.0 {'nearest': (866, 4063.2, 6.65), 'greedy_cap': (256, 5175.6, 7.51), 'min_cost_flow': (60, 5291.2, 7.92)}
+  20.0 {'nearest': (866, 4045.5, 5.09), 'greedy_cap': (0, 5952.1, 7.4), 'min_cost_flow': (0, 5420.0, 6.36)}
+  30.0 {'nearest': (866, 4045.5, 3.53), 'greedy_cap': (0, 5952.1, 5.12), 'min_cost_flow': (0, 5452.4, 4.29)}
+fleet sensitivity (cap 1.1, 20 km/h):
+  20 {'nearest': (926, 60, 2444.4, 7.86), 'greedy_cap': (790, 790, 2657.7, 7.98), 'min_cost_flow': (690, 690, 2625.8, 7.98)}
+  30 {'nearest': (866, 0, 2855.2, 6.89), 'greedy_cap': (356, 356, 3874.8, 7.69), 'min_cost_flow': (170, 170, 3810.3, 7.84)}
+  40 {'nearest': (866, 0, 3197.1, 5.6), 'greedy_cap': (120, 120, 4832.4, 7.77), 'min_cost_flow': (0, 0, 4620.6, 7.54)}
+  60 {'nearest': (866, 0, 4045.5, 5.09), 'greedy_cap': (0, 0, 5952.1, 7.4), 'min_cost_flow': (0, 0, 5420.0, 6.36)}
+instance seed 20261005 total m3 2380 districts {'esil': 7, 'baikonur': 8, 'almaty': 4, 'saryarka': 2, 'nura': 7, 'saraishyk': 2} dump caps [1047, 916, 654]

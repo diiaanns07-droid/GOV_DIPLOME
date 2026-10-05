@@ -1,0 +1,99 @@
+{
+ "kind": "synthetic",
+ "seed": 42,
+ "grid": "100x100 cells, 100 m",
+ "populated_cells": 9320,
+ "top_k": 466,
+ "weights_base": {
+  "heat": 0.35,
+  "veg_deficit": 0.2,
+  "access_deficit": 0.15,
+  "population": 0.2,
+  "receptors": 0.1
+ },
+ "access_indicator": {
+  "share_pop_within_300m": 0.1043,
+  "share_pop_within_500m": 0.2224,
+  "parks_total": 25,
+  "parks_counted_public_ge_0_5ha": 21
+ },
+ "baselines": {
+  "heat_only_vs_index": 0.44,
+  "equal_weights_vs_index": 0.792,
+  "random_expected_jaccard": 0.0256
+ },
+ "sensitivity_weights": {
+  "moderate_perturbation_alpha=20*w": {
+   "median_jaccard": 0.803,
+   "p10_jaccard": 0.641,
+   "core_share_of_base_topk_in_80pct_draws": 0.738
+  },
+  "uninformed_any_weights_alpha=1": {
+   "median_jaccard": 0.607,
+   "p10_jaccard": 0.383,
+   "core_share_of_base_topk_in_80pct_draws": 0.47
+  }
+ },
+ "sensitivity_missing_lst": {
+  "random_10pct": {
+   "median": 0.817,
+   "neighbors": 0.97,
+   "renormalize": 0.869
+  },
+  "random_20pct": {
+   "median": 0.67,
+   "neighbors": 0.925,
+   "renormalize": 0.762
+  },
+  "random_30pct": {
+   "median": 0.526,
+   "neighbors": 0.901,
+   "renormalize": 0.725
+  },
+  "clustered_10pct": {
+   "median": 0.846,
+   "neighbors": 0.958,
+   "renormalize": 0.799
+  },
+  "clustered_20pct": {
+   "median": 0.564,
+   "neighbors": 0.929,
+   "renormalize": 0.818
+  },
+  "clustered_30pct": {
+   "median": 0.768,
+   "neighbors": 0.851,
+   "renormalize": 0.776
+  }
+ },
+ "scenarios": {
+  "S1": {
+   "label": "S1 посадки/затенение в топ-5% ячеек индекса (охват, НЕ эффект)",
+   "pop_in_treated_cells_share": 0.1189,
+   "hot_decile_pop_covered_share": 0.5091,
+   "cooling_effect": "НЕ МОДЕЛИРУЕТСЯ: ΔT воздуха задаётся только как параметр-гипотеза {0; 0.5; 1.0} °C и требует замеров до/после",
+   "person_degree_hypothetical_dT_0.0": 0.0,
+   "person_degree_hypothetical_dT_0.5": 10672.5,
+   "person_degree_hypothetical_dT_1.0": 21345.0
+  },
+  "S2": {
+   "label": "S2 5 микропарков >=0.5 га на свободных участках (геометрия, при условии что парк построен и публичен)",
+   "baseline_share_within_300m": 0.1043,
+   "greedy_max_cover": 0.1597,
+   "hottest_candidates": 0.1438,
+   "random_mean_of_200": 0.1269
+  },
+  "S3": {
+   "label": "S3 обследовать 8 из 30 подозрительных мест (экспозиция, НЕ подтверждение загрязнения)",
+   "by_exposure_pop_rec": [
+    17134.0,
+    15.0
+   ],
+   "by_complaints_pop_rec": [
+    15366.0,
+    11.0
+   ],
+   "overlap_sites": 4
+  }
+ }
+}

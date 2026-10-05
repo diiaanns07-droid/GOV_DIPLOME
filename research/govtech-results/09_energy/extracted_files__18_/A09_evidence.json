@@ -1,0 +1,1144 @@
+{
+  "meta": {
+    "agent_id": "A09",
+    "topic": "Энергетика: муниципальные здания и ресурсы",
+    "city": "Шымкент (город республиканского значения)",
+    "searched_at": "2026-10-04T17:18Z",
+    "access_limitations": "Нет веб-поиска и браузера. Сеть среды разрешает только GitHub, PyPI, npm, crates, Ubuntu и api.anthropic.com. Все казахстанские официальные домены и погодно-солнечные API вернули 403 host_not_allowed. GitHub REST API — rate limit. Ни один местный источник не открыт; все утверждения о Шымкенте помечены hypothesis. Библиографические ссылки, не открытые в сессии, взяты из памяти модели и могут быть неточными."
+  },
+  "sources": [
+    {
+      "source_id": "A09-S001",
+      "title": "Управление цифровизации г. Шымкент (стартовый указатель)",
+      "publisher": "gov.kz / акимат г. Шымкент",
+      "url": "https://www.gov.kz/memleket/entities/shymkent-sandyk?lang=ru",
+      "published_at": null,
+      "accessed_at": "2026-10-04",
+      "source_type": "official_page",
+      "access_status": "blocked_in_environment",
+      "notes": "host_not_allowed (HTTP 403 от egress-прокси среды, проверено 2026-10-04 17:18 UTC); содержание не открыто"
+    },
+    {
+      "source_id": "A09-S002",
+      "title": "БНС: динамические ряды по г. Шымкент, раздел 38",
+      "publisher": "Бюро национальной статистики АСПиР РК",
+      "url": "https://stat.gov.kz/ru/region/shymkent/dynamic-tables/38/",
+      "published_at": null,
+      "accessed_at": "2026-10-04",
+      "source_type": "official_statistics",
+      "access_status": "blocked_in_environment",
+      "notes": "host_not_allowed (HTTP 403 от egress-прокси среды, проверено 2026-10-04 17:18 UTC); содержание не открыто; номер раздела 38 не сопоставлен с темой"
+    },
+    {
+      "source_id": "A09-S003",
+      "title": "Портал открытых данных data.egov.kz",
+      "publisher": "Электронное правительство РК",
+      "url": "https://data.egov.kz/",
+      "published_at": null,
+      "accessed_at": "2026-10-04",
+      "source_type": "open_data_portal",
+      "access_status": "blocked_in_environment",
+      "notes": "host_not_allowed (HTTP 403 от egress-прокси среды, проверено 2026-10-04 17:18 UTC); содержание не открыто; координатор также получил ошибку"
+    },
+    {
+      "source_id": "A09-S004",
+      "title": "Закон РК «Об энергосбережении и повышении энергоэффективности» (кандидат: от 13.01.2012 № 541-IV)",
+      "publisher": "ИПС «Әділет»",
+      "url": "https://adilet.zan.kz/rus/docs/Z1200000541",
+      "published_at": null,
+      "accessed_at": "2026-10-04",
+      "source_type": "law",
+      "access_status": "blocked_in_environment",
+      "notes": "host_not_allowed (HTTP 403 от egress-прокси среды, проверено 2026-10-04 17:18 UTC); содержание не открыто; реквизиты по памяти модели, действующая редакция не проверена"
+    },
+    {
+      "source_id": "A09-S005",
+      "title": "Open-Meteo Historical Weather API (запрос по координатам Шымкента)",
+      "publisher": "Open-Meteo",
+      "url": "https://archive-api.open-meteo.com/v1/archive?latitude=42.32&longitude=69.59&start_date=2025-01-01&end_date=2025-01-02&daily=temperature_2m_mean",
+      "published_at": null,
+      "accessed_at": "2026-10-04",
+      "source_type": "api",
+      "access_status": "blocked_in_environment",
+      "notes": "host_not_allowed (HTTP 403 от egress-прокси среды, проверено 2026-10-04 17:18 UTC); содержание не открыто; документация и лицензия не прочитаны"
+    },
+    {
+      "source_id": "A09-S006",
+      "title": "PVGIS API v5.2 PVcalc (запрос по координатам Шымкента)",
+      "publisher": "European Commission JRC",
+      "url": "https://re.jrc.ec.europa.eu/api/v5_2/PVcalc?lat=42.32&lon=69.59&peakpower=1&loss=14&outputformat=json",
+      "published_at": null,
+      "accessed_at": "2026-10-04",
+      "source_type": "api",
+      "access_status": "blocked_in_environment",
+      "notes": "host_not_allowed (HTTP 403 от egress-прокси среды, проверено 2026-10-04 17:18 UTC); содержание не открыто; покрытие спутниковой базы для 69.6° в.д. не проверено"
+    },
+    {
+      "source_id": "A09-S007",
+      "title": "NASA POWER daily point API (запрос по координатам Шымкента)",
+      "publisher": "NASA LaRC",
+      "url": "https://power.larc.nasa.gov/api/temporal/daily/point?parameters=T2M&community=RE&longitude=69.59&latitude=42.32&start=20250101&end=20250102&format=JSON",
+      "published_at": null,
+      "accessed_at": "2026-10-04",
+      "source_type": "api",
+      "access_status": "blocked_in_environment",
+      "notes": "host_not_allowed (HTTP 403 от egress-прокси среды, проверено 2026-10-04 17:18 UTC); содержание не открыто"
+    },
+    {
+      "source_id": "A09-S008",
+      "title": "Overpass API (OpenStreetMap)",
+      "publisher": "overpass-api.de",
+      "url": "https://overpass-api.de/api/status",
+      "published_at": null,
+      "accessed_at": "2026-10-04",
+      "source_type": "api",
+      "access_status": "blocked_in_environment",
+      "notes": "host_not_allowed (HTTP 403 от egress-прокси среды, проверено 2026-10-04 17:18 UTC); содержание не открыто"
+    },
+    {
+      "source_id": "A09-S009",
+      "title": "KEGOC (системный оператор ЕЭС РК), главная страница",
+      "publisher": "АО «KEGOC»",
+      "url": "https://www.kegoc.kz/",
+      "published_at": null,
+      "accessed_at": "2026-10-04",
+      "source_type": "operator_page",
+      "access_status": "blocked_in_environment",
+      "notes": "host_not_allowed (HTTP 403 от egress-прокси среды, проверено 2026-10-04 17:18 UTC); содержание не открыто"
+    },
+    {
+      "source_id": "A09-S010",
+      "title": "Репозиторий STUPITS «Аким на 5 часов» (архив ветки main через codeload)",
+      "publisher": "BAITC-Hacks / GitHub",
+      "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits",
+      "published_at": null,
+      "accessed_at": "2026-10-04",
+      "source_type": "code_repository",
+      "access_status": "opened",
+      "notes": "Скачан zip ветки main (9.4 МБ); прочитаны README.md, data/city_data.json, data/real_context_meta.json, выполнен grep. GitHub REST API вернул rate limit, метаданные репозитория (дата push, лицензия) не получены."
+    },
+    {
+      "source_id": "A09-S011",
+      "title": "The Building Data Genome Project (BDG1): README, LICENSE, data/",
+      "publisher": "Clayton Miller, BUDS Lab / GitHub",
+      "url": "https://github.com/buds-lab/the-building-data-genome-project",
+      "published_at": "2017 (статья); последний коммит архива 2021-03-30 по дате файлов в zip",
+      "accessed_at": "2026-10-04",
+      "source_type": "dataset_repository",
+      "access_status": "opened",
+      "notes": "Архив master скачан через codeload (132.7 МБ). LICENSE: MIT (Copyright 2016 Clayton Miller). Использованы raw/meta_open.csv, raw/temp_open_utc.csv, external/weather/*.csv."
+    },
+    {
+      "source_id": "A09-S012",
+      "title": "The Building Data Genome 2 (BDG2): README и LICENSE",
+      "publisher": "BUDS Lab / GitHub",
+      "url": "https://github.com/buds-lab/building-data-genome-project-2",
+      "published_at": "2020 (статья)",
+      "accessed_at": "2026-10-04",
+      "source_type": "dataset_repository",
+      "access_status": "opened_partial",
+      "notes": "README и LICENSE прочитаны через raw.githubusercontent.com; LICENSE начинается словами 'Attribution-ShareAlike 4.0 Unported'. CSV хранятся в Git LFS (.gitattributes: *.csv filter=lfs), media.githubusercontent.com заблокирован средой — ряды не получены."
+    },
+    {
+      "source_id": "A09-S013",
+      "title": "Miller C., Meggers F. The Building Data Genome Project... Energy Procedia 122 (2017) 439–444, doi:10.1016/j.egypro.2017.07.400",
+      "publisher": "Elsevier",
+      "url": "https://doi.org/10.1016/j.egypro.2017.07.400",
+      "published_at": "2017-09",
+      "accessed_at": "2026-10-04",
+      "source_type": "peer_reviewed_paper",
+      "access_status": "cited_not_opened",
+      "notes": "Ссылка и аннотация взяты из README BDG1 (A09-S011); сама статья не открыта."
+    },
+    {
+      "source_id": "A09-S014",
+      "title": "Miller C. et al. The Building Data Genome Project 2... Sci Data 7, 368 (2020), doi:10.1038/s41597-020-00712-x",
+      "publisher": "Nature Scientific Data",
+      "url": "https://doi.org/10.1038/s41597-020-00712-x",
+      "published_at": "2020",
+      "accessed_at": "2026-10-04",
+      "source_type": "peer_reviewed_paper",
+      "access_status": "cited_not_opened",
+      "notes": "Ссылка из README BDG2 (A09-S012); статья не открыта."
+    },
+    {
+      "source_id": "A09-S015",
+      "title": "ASHRAE Guideline 14-2014 Measurement of Energy, Demand, and Water Savings",
+      "publisher": "ASHRAE",
+      "url": null,
+      "published_at": "2014",
+      "accessed_at": "2026-10-04",
+      "source_type": "standard",
+      "access_status": "not_accessed",
+      "notes": "Упомянут по памяти модели как стандарт метрик CV(RMSE)/NMBE; пороги не проверены; платный документ."
+    },
+    {
+      "source_id": "A09-S016",
+      "title": "Mathieu J.L. et al. Quantifying changes in building electricity use... IEEE Trans. Smart Grid 2(3), 2011 (модель time-of-week-and-temperature)",
+      "publisher": "IEEE",
+      "url": null,
+      "published_at": "2011",
+      "accessed_at": "2026-10-04",
+      "source_type": "peer_reviewed_paper",
+      "access_status": "not_accessed",
+      "notes": "По памяти модели; библиографические данные требуют проверки."
+    },
+    {
+      "source_id": "A09-S017",
+      "title": "IPMVP (International Performance Measurement and Verification Protocol), Option C whole facility",
+      "publisher": "Efficiency Valuation Organization",
+      "url": null,
+      "published_at": null,
+      "accessed_at": "2026-10-04",
+      "source_type": "protocol",
+      "access_status": "not_accessed",
+      "notes": "По памяти модели; актуальная редакция не проверена."
+    },
+    {
+      "source_id": "A09-S018",
+      "title": "База часовых поясов IANA tzdata в среде (pandas/zoneinfo), зона Asia/Almaty",
+      "publisher": "IANA tz database",
+      "url": null,
+      "published_at": null,
+      "accessed_at": "2026-10-04",
+      "source_type": "software_reference_data",
+      "access_status": "opened",
+      "notes": "Смещение Asia/Almaty на 2027-01-01 = UTC+5 по tzdata среды; юридическое основание не открыто."
+    },
+    {
+      "source_id": "A09-S019",
+      "title": "pvlib-python 0.16.1, solarposition (алгоритм NREL SPA, numpy)",
+      "publisher": "pvlib / PyPI",
+      "url": "https://pypi.org/project/pvlib/",
+      "published_at": null,
+      "accessed_at": "2026-10-04",
+      "source_type": "software",
+      "access_status": "opened",
+      "notes": "Установлен из PyPI, использован для расчёта высоты Солнца."
+    }
+  ],
+  "facts": [
+    {
+      "fact_id": "A09-F001",
+      "statement": "Из исследовательской среды недоступны все стартовые казахстанские домены (gov.kz, stat.gov.kz, data.egov.kz, adilet.zan.kz, kegoc.kz) и погодно-солнечные API (Open-Meteo, PVGIS, NASA POWER, Overpass): HTTP 403, x-deny-reason: host_not_allowed.",
+      "kind": "observed",
+      "value": null,
+      "unit": null,
+      "geography": "среда исследования",
+      "period": "2026-10-04 17:18 UTC",
+      "source_refs": [
+        {
+          "source_id": "A09-S001",
+          "locator": "curl -D -"
+        },
+        {
+          "source_id": "A09-S002",
+          "locator": "curl -D -"
+        },
+        {
+          "source_id": "A09-S003",
+          "locator": "curl -D -"
+        },
+        {
+          "source_id": "A09-S004",
+          "locator": "curl -D -"
+        },
+        {
+          "source_id": "A09-S005",
+          "locator": "curl -D -"
+        },
+        {
+          "source_id": "A09-S006",
+          "locator": "curl -D -"
+        },
+        {
+          "source_id": "A09-S007",
+          "locator": "curl -D -"
+        },
+        {
+          "source_id": "A09-S008",
+          "locator": "curl -D -"
+        },
+        {
+          "source_id": "A09-S009",
+          "locator": "curl -D -"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "Ограничение среды, а не доказательство недоступности источников в интернете."
+    },
+    {
+      "fact_id": "A09-F002",
+      "statement": "В учебном датасете STUPITS 14 мер; ни одна не выражена в кВт·ч, тенге или физических единицах энергии. Освещение входит только в M10 «Освещение и камеры (расширение Safe City)» (направление safety, стоимость 12 у.е., лаг 1, эффекты B1 +12, B2 +2).",
+      "kind": "observed",
+      "value": 14,
+      "unit": "мер",
+      "geography": "Астана (учебный датасет)",
+      "period": null,
+      "source_refs": [
+        {
+          "source_id": "A09-S010",
+          "locator": "data/city_data.json → measures[]"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "Учебные условные единицы; переносить на Шымкент нельзя."
+    },
+    {
+      "fact_id": "A09-F003",
+      "statement": "M13 «Модернизация тепло- и водосетей»: district, стоимость 28 у.е., лаг 4, эффекты C1 +18, E2 +2; показатель C1 = «Надёжность ЖКХ», вес 0.1.",
+      "kind": "observed",
+      "value": 28,
+      "unit": "у.е.",
+      "geography": "Астана (учебный датасет)",
+      "period": null,
+      "source_refs": [
+        {
+          "source_id": "A09-S010",
+          "locator": "data/city_data.json → measures[M13], indicators.C1"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "Учебные значения."
+    },
+    {
+      "fact_id": "A09-F004",
+      "statement": "Формула Score STUPITS: 0.7·D_avg + 0.3·min(D_d) − 1.0·N_crit; бюджет 100 у.е.; 5 решений.",
+      "kind": "observed",
+      "value": null,
+      "unit": null,
+      "geography": "Астана (учебный датасет)",
+      "period": null,
+      "source_refs": [
+        {
+          "source_id": "A09-S010",
+          "locator": "data/city_data.json → score_formula, budget, num_decisions"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": null
+    },
+    {
+      "fact_id": "A09-F005",
+      "statement": "В .py/.md/.js/.json STUPITS (без vendor) нет вхождений «энерг», «Шымкент», «kWh», «кВт»; «освещ» встречается только в data/events.json и двух файлах презентации.",
+      "kind": "observed",
+      "value": 0,
+      "unit": "вхождений",
+      "geography": "репозиторий",
+      "period": null,
+      "source_refs": [
+        {
+          "source_id": "A09-S010",
+          "locator": "grep по дереву main"
+        }
+      ],
+      "derivation": "Подсчёт str.count по файлам",
+      "confidence": "high",
+      "caveats": "Регистрозависимый поиск; английские формы кроме Shymkent/kWh не проверялись."
+    },
+    {
+      "fact_id": "A09-F006",
+      "statement": "Справочный слой OSM в STUPITS имеет статус unavailable: Overpass завершился ReadTimeout 2026-09-23; слой помечен как не влияющий на расчёт.",
+      "kind": "observed",
+      "value": null,
+      "unit": null,
+      "geography": "Астана",
+      "period": null,
+      "source_refs": [
+        {
+          "source_id": "A09-S010",
+          "locator": "data/real_context_meta.json → status, error, usage"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": null
+    },
+    {
+      "fact_id": "A09-F007",
+      "statement": "BDG1: 507 нежилых зданий, часовые данные общего электросчётчика за один год, большинство — университетские кампусы; лицензия MIT.",
+      "kind": "observed",
+      "value": 507,
+      "unit": "зданий",
+      "geography": "США, Великобритания, Швейцария, Сингапур",
+      "period": "2010–2015 (по зданиям)",
+      "source_refs": [
+        {
+          "source_id": "A09-S011",
+          "locator": "README.md 'Introducing the Building Data Genome Project'; LICENSE"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "Не Казахстан."
+    },
+    {
+      "fact_id": "A09-F008",
+      "statement": "В BDG1 105 зданий с primaryspaceusage='Primary/Secondary Classroom': 74 Europe/London (данные 01.12.2014–30.11.2015), остальные США и Сингапур.",
+      "kind": "observed",
+      "value": 105,
+      "unit": "зданий",
+      "geography": "см. tz",
+      "period": null,
+      "source_refs": [
+        {
+          "source_id": "A09-S011",
+          "locator": "data/raw/meta_open.csv: primaryspaceusage, timezone, datastart, dataend"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": null
+    },
+    {
+      "fact_id": "A09-F009",
+      "statement": "BDG2: 3 053 счётчика, 1 636 зданий, часовые данные 2016–2017; CSV в Git LFS, из среды не скачиваются.",
+      "kind": "observed",
+      "value": 3053,
+      "unit": "счётчиков",
+      "geography": "мир",
+      "period": "2016–2017",
+      "source_refs": [
+        {
+          "source_id": "A09-S012",
+          "locator": "README.md 'Data-set description'; .gitattributes"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": null
+    },
+    {
+      "fact_id": "A09-F010",
+      "statement": "Прямой временной holdout (обучение 6 мес., валидация 2, тест 4) на 105 школах BDG1: модель «среднее по часу недели» (M1) даёт медианный дневной CV(RMSE) на тесте 43.6% (IQR 31.1–51.0), медианный NMBE −10.0%.",
+      "kind": "derived",
+      "value": 43.6,
+      "unit": "%",
+      "geography": "BDG1 schools (не Шымкент)",
+      "period": "год данных каждого здания",
+      "source_refs": [
+        {
+          "source_id": "A09-S011",
+          "locator": "raw/temp_open_utc.csv, meta_open.csv"
+        }
+      ],
+      "derivation": "A09_attachments/a09_bdg1_experiment.py → A09_bdg1_experiment_summary.json: E1_holdout_metrics.M1_hour_of_week_test_daily_cvrmse",
+      "confidence": "high",
+      "caveats": "Высокая уверенность в расчёте, не в переносе на Шымкент."
+    },
+    {
+      "fact_id": "A09-F011",
+      "statement": "Добавление температуры (кусочно-линейные признаки) при обучении только на зиме–весне ухудшает прогноз на лето: медианный NMBE на валидации +54.6% против −15.3% без температуры — экстраполяция за пределы обучающего диапазона температур.",
+      "kind": "derived",
+      "value": 54.6,
+      "unit": "%",
+      "geography": "BDG1 schools",
+      "period": "см. F010",
+      "source_refs": [
+        {
+          "source_id": "A09-S011",
+          "locator": "raw + external/weather"
+        }
+      ],
+      "derivation": "A09_attachments/a09_bdg1_experiment.py → A09_bdg1_experiment_summary.json: E1_holdout_metrics.M2_how_plus_temp_val_nmbe",
+      "confidence": "high",
+      "caveats": "Вывод: базовый период должен покрывать полный годовой цикл температур (≥12 мес.)."
+    },
+    {
+      "fact_id": "A09-F012",
+      "statement": "Без календаря каникул прогноз M1 в 9-м месяце теста (август для британских школ) завышает потребление: медианный NMBE −107.6% (все школы), −137.4% (Великобритания); в остальные месяцы теста −7.3…+8.9%.",
+      "kind": "derived",
+      "value": -107.6,
+      "unit": "%",
+      "geography": "BDG1 schools",
+      "period": "относительный месяц 8",
+      "source_refs": [
+        {
+          "source_id": "A09-S011",
+          "locator": "raw"
+        }
+      ],
+      "derivation": "A09_attachments/a09_bdg1_experiment_part2.py → A09_bdg1_experiment_part2_summary.json: M1_forward_test_nmbe_by_month_median_all/_UK",
+      "confidence": "high",
+      "caveats": "Режим работы (каникулы) — главный источник ошибки для школ."
+    },
+    {
+      "fact_id": "A09-F013",
+      "statement": "Блочная CV «оставь месяц» на 74 британских школах: медианная |NMBE| месяца 16.0% (M1), 13.2% (M1+температура), 6.8% (M1+температура+календарь каникул); медианный дневной CV(RMSE) 38.4 / 35.1 / 23.1%. Доля зданий с медианным дневным CV(RMSE) ≤20%: 0 / 0 / 25.7%.",
+      "kind": "derived",
+      "value": 6.8,
+      "unit": "%",
+      "geography": "BDG1 UK schools",
+      "period": "12.2014–11.2015",
+      "source_refs": [
+        {
+          "source_id": "A09-S011",
+          "locator": "raw + weather"
+        }
+      ],
+      "derivation": "A09_attachments/a09_bdg1_experiment_part2.py → A09_bdg1_experiment_part2_summary.json: LOMO_UK_median, LOMO_UK_share_buildings_median_daily_cvrmse_le_20",
+      "confidence": "medium",
+      "caveats": "Календарь каникул Англии 2014/15 задан приближённо (предположение); блочная CV оптимистичнее прямого прогноза во времени."
+    },
+    {
+      "fact_id": "A09-F014",
+      "statement": "Правило без модели (ночное потребление за 7 дней > порог × медиана предыдущих 28 дней) на синтетически внесённом ночном сбое длиной 14 дней: при пороге 1.3 обнаружено 53.7% сбоев +25% и 93.9% сбоев +50% от медианной ночной нагрузки; тревога в том же окне на чистом ряду — 14.5% и 12.6%. При пороге 1.5: 18.9% / 67.6%, ложные 5.1%.",
+      "kind": "derived",
+      "value": 0.537,
+      "unit": "доля",
+      "geography": "BDG1 schools (реальные ряды + synthetic injection)",
+      "period": "тестовые месяцы 8–11",
+      "source_refs": [
+        {
+          "source_id": "A09-S011",
+          "locator": "raw"
+        }
+      ],
+      "derivation": "A09_attachments/a09_bdg1_experiment_part2.py → A09_bdg1_experiment_part2_summary.json: rule_sweep",
+      "confidence": "medium",
+      "caveats": "Сбои синтетические; реальные неисправности могут иметь другую форму."
+    },
+    {
+      "fact_id": "A09-F015",
+      "statement": "Детектор по остаткам модели, обученной на 6 месяцах, практически не отличает сбои от фона: обнаружение 8–20% при фоновых тревогах 6–7% в тех же окнах.",
+      "kind": "derived",
+      "value": 0.204,
+      "unit": "доля (f=1.0)",
+      "geography": "BDG1 schools",
+      "period": "тест",
+      "source_refs": [
+        {
+          "source_id": "A09-S011",
+          "locator": "raw"
+        }
+      ],
+      "derivation": "A09_attachments/a09_bdg1_experiment.py → A09_bdg1_experiment_summary.json: E2_detection",
+      "confidence": "medium",
+      "caveats": "Следствие плохого baseline (F011), а не приговор модельным детекторам вообще."
+    },
+    {
+      "fact_id": "A09-F016",
+      "statement": "Ошибка площади меняет топ-20% по EUI: при логнормальном шуме σ=0.1/0.2/0.3/0.5 среднее совпадение списка (k=21 из 105) 0.879/0.763/0.675/0.56.",
+      "kind": "derived",
+      "value": 0.763,
+      "unit": "доля совпадения при σ=0.2",
+      "geography": "BDG1 schools",
+      "period": null,
+      "source_refs": [
+        {
+          "source_id": "A09-S011",
+          "locator": "meta_open.csv sqm + raw"
+        }
+      ],
+      "derivation": "A09_attachments/a09_bdg1_experiment.py → A09_bdg1_experiment_summary.json: E3_area_error_top20_overlap (2000 симуляций)",
+      "confidence": "high",
+      "caveats": "Величина реальной ошибки площади в Шымкенте неизвестна."
+    },
+    {
+      "fact_id": "A09-F017",
+      "statement": "Наивная годовая экстраполяция при пропуске 1/2/3 месяцев: медианная абсолютная ошибка 1.3/2.0/2.7%, 90-й перцентиль 3.5/5.4/6.7%, максимум 7.9/13.6/17.9%.",
+      "kind": "derived",
+      "value": 2.7,
+      "unit": "% (3 месяца, медиана)",
+      "geography": "BDG1 schools",
+      "period": null,
+      "source_refs": [
+        {
+          "source_id": "A09-S011",
+          "locator": "raw"
+        }
+      ],
+      "derivation": "A09_attachments/a09_bdg1_experiment.py → A09_bdg1_experiment_summary.json: E4_missing_months_abs_err_pct (50 случайных выборок пропусков на здание)",
+      "confidence": "medium",
+      "caveats": "Британские школы со слабой сезонностью электричества; при летнем охлаждении/каникулах ошибка может быть больше."
+    },
+    {
+      "fact_id": "A09-F018",
+      "statement": "Отношение ночной (23–04) к дневной будней (9–14) медианной нагрузке в школах BDG1: медиана 0.21, P10–P90 0.135–0.39; ранговая корреляция с EUI −0.14 — индикатор несёт информацию, независимую от удельного потребления, и не требует площади.",
+      "kind": "derived",
+      "value": 0.21,
+      "unit": "отношение",
+      "geography": "BDG1 schools",
+      "period": null,
+      "source_refs": [
+        {
+          "source_id": "A09-S011",
+          "locator": "raw"
+        }
+      ],
+      "derivation": "A09_attachments/a09_bdg1_experiment.py → A09_bdg1_experiment_summary.json: night_to_day_ratio_quantiles, corr_spearman_eui_vs_night_ratio",
+      "confidence": "high",
+      "caveats": "Требует почасовых или хотя бы день/ночь (двухзонных) данных."
+    },
+    {
+      "fact_id": "A09-F019",
+      "statement": "EUI электроэнергии школ BDG1 по площади из метаданных: P10 6.8, медиана 31.5, P90 54.9 кВт·ч/м²·год; нижний хвост указывает на вероятное несоответствие зоны учёта счётчика и площади.",
+      "kind": "derived",
+      "value": 31.5,
+      "unit": "кВт·ч/м²·год",
+      "geography": "BDG1 schools",
+      "period": null,
+      "source_refs": [
+        {
+          "source_id": "A09-S011",
+          "locator": "meta_open.csv sqm + raw"
+        }
+      ],
+      "derivation": "Σ кВт·ч/(1−доля пропусков)/sqm",
+      "confidence": "medium",
+      "caveats": "Интерпретация нижнего хвоста — гипотеза."
+    },
+    {
+      "fact_id": "A09-F020",
+      "statement": "Число часов от захода до восхода Солнца (высота −0.833°) для точки 42.32° с.ш., 69.60° в.д. в 2027 г.: 4301.9 ч; при включении по гражданским сумеркам (−6°) 3930.6 ч; при раннем включении/позднем выключении (+3°) 4560.2 ч; длительность тёмного времени суток 8.72–14.93 ч.",
+      "kind": "derived",
+      "value": 4301.9,
+      "unit": "ч/год",
+      "geography": "г. Шымкент (приблизительные координаты центра)",
+      "period": "2027",
+      "source_refs": [
+        {
+          "source_id": "A09-S019",
+          "locator": "solarposition nrel_numpy, шаг 1 мин"
+        },
+        {
+          "source_id": "A09-S018",
+          "locator": "Asia/Almaty"
+        }
+      ],
+      "derivation": "Сумма минут с apparent_elevation < порога / 60; файл A09_lighting_hours.txt",
+      "confidence": "high",
+      "caveats": "Координаты центра по памяти модели; фактический график включения сетей освещения неизвестен."
+    },
+    {
+      "fact_id": "A09-F021",
+      "statement": "По tzdata среды Asia/Almaty в 2027 г. имеет смещение UTC+5.",
+      "kind": "observed",
+      "value": "+05:00",
+      "unit": "UTC offset",
+      "geography": "Казахстан",
+      "period": "2027",
+      "source_refs": [
+        {
+          "source_id": "A09-S018",
+          "locator": "pd.date_range(..., tz='Asia/Almaty')[0].utcoffset()"
+        }
+      ],
+      "derivation": null,
+      "confidence": "medium",
+      "caveats": "Правовое основание (единый часовой пояс) не открыто."
+    },
+    {
+      "fact_id": "A09-F022",
+      "statement": "Шымкент — город республиканского значения, выделенный из прежней Южно-Казахстанской (ныне Туркестанской) области в 2018 г.; ряды до/после 2018 г. и областные агрегаты нельзя смешивать с городскими.",
+      "kind": "hypothesis",
+      "value": null,
+      "unit": null,
+      "geography": "г. Шымкент",
+      "period": "2018",
+      "source_refs": [],
+      "derivation": "Знание модели, источник не открыт",
+      "confidence": "low",
+      "caveats": "Проверить по adilet.zan.kz и методологии БНС."
+    },
+    {
+      "fact_id": "A09-F023",
+      "statement": "Закон РК об энергосбережении (кандидат: № 541-IV от 13.01.2012) устанавливает Государственный энергетический реестр и энергоаудит; государственные учреждения, вероятно, относятся к субъектам реестра.",
+      "kind": "hypothesis",
+      "value": null,
+      "unit": null,
+      "geography": "РК",
+      "period": null,
+      "source_refs": [
+        {
+          "source_id": "A09-S004",
+          "locator": "не открыт"
+        }
+      ],
+      "derivation": "Знание модели",
+      "confidence": "low",
+      "caveats": "Действующая редакция и пороги не проверены; нормы могли меняться в 2023–2026."
+    },
+    {
+      "fact_id": "A09-F024",
+      "statement": "Помесячные коммерческие данные по муниципальным зданиям Шымкента, вероятнее всего, существуют у энергоснабжающих организаций и у самих учреждений (счета), но не опубликованы как открытый набор с идентификатором здания.",
+      "kind": "hypothesis",
+      "value": null,
+      "unit": null,
+      "geography": "г. Шымкент",
+      "period": null,
+      "source_refs": [],
+      "derivation": "Вывод из отсутствия доступа и типовой практики",
+      "confidence": "low",
+      "caveats": "Проверить на data.egov.kz, goszakup.gov.kz (договоры на электроэнергию) и запросом в управление энергетики."
+    },
+    {
+      "fact_id": "A09-F025",
+      "statement": "Летние каникулы школ совпадают с максимумом солнечной генерации; без продажи излишков в сеть доля собственного потребления школьной СЭС летом будет низкой.",
+      "kind": "hypothesis",
+      "value": null,
+      "unit": null,
+      "geography": "г. Шымкент",
+      "period": null,
+      "source_refs": [],
+      "derivation": "Логический вывод из календаря и солнечной геометрии",
+      "confidence": "medium",
+      "caveats": "Режим использования зданий летом (лагеря, ремонт) и правила для потребителей-производителей не проверены."
+    }
+  ],
+  "datasets": [
+    {
+      "dataset_id": "A09-D001",
+      "title": "Building Data Genome Project 1 — часовое потребление электроэнергии 507 нежилых зданий",
+      "publisher": "BUDS Lab (C. Miller)",
+      "source_ids": [
+        "A09-S011",
+        "A09-S013"
+      ],
+      "landing_url": "https://github.com/buds-lab/the-building-data-genome-project",
+      "download_or_api_url": "https://codeload.github.com/buds-lab/the-building-data-genome-project/zip/refs/heads/master",
+      "access_status": "sample_verified",
+      "tested_at": "2026-10-04",
+      "geography": "США, Великобритания, Швейцария, Сингапур (не Казахстан)",
+      "granularity": "здание × час",
+      "period": "один год на здание, 2010–2015",
+      "format": "CSV",
+      "fields": [
+        "timestamp (UTC)",
+        "<uid> кВт·ч",
+        "meta: uid, primaryspaceusage, sqm, timezone, datastart, dataend, newweatherfilename",
+        "weather: DateUTC, TemperatureC (−9999 = пропуск)"
+      ],
+      "units": "кВт·ч за час (по описанию набора; единицы проверить по статье)",
+      "update_frequency": "не обновляется",
+      "license": "MIT",
+      "auth_requirement": "нет",
+      "limitations": "Иностранные здания и климат; электричество без тепла; площадь из метаданных может не совпадать с зоной учёта.",
+      "next_retrieval_step": "Использовать как стенд для метода; не как оценку Шымкента."
+    },
+    {
+      "dataset_id": "A09-D002",
+      "title": "Building Data Genome 2 — 3 053 счётчика (электричество, тепло, холод, пар, вода), 2016–2017",
+      "publisher": "BUDS Lab",
+      "source_ids": [
+        "A09-S012",
+        "A09-S014"
+      ],
+      "landing_url": "https://github.com/buds-lab/building-data-genome-project-2",
+      "download_or_api_url": null,
+      "access_status": "page_only",
+      "tested_at": "2026-10-04",
+      "geography": "мир (не Казахстан)",
+      "granularity": "счётчик × час",
+      "period": "2016–2017",
+      "format": "CSV в Git LFS",
+      "fields": [],
+      "units": null,
+      "update_frequency": "не обновляется",
+      "license": "CC BY-SA 4.0 по файлу LICENSE (формулировка '4.0 Unported' — уточнить)",
+      "auth_requirement": "нет",
+      "limitations": "LFS-хост заблокирован в среде",
+      "next_retrieval_step": "Скачать вне среды (git lfs pull или Kaggle/Zenodo), чтобы проверить метод на тепловых счётчиках."
+    },
+    {
+      "dataset_id": "A09-D003",
+      "title": "STUPITS city_data.json — учебный датасет Астаны",
+      "publisher": "BAITC-Hacks / автор проекта",
+      "source_ids": [
+        "A09-S010"
+      ],
+      "landing_url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits",
+      "download_or_api_url": "https://codeload.github.com/BAITC-Hacks/hack-d3b2c613-stupits/zip/refs/heads/main",
+      "access_status": "sample_verified",
+      "tested_at": "2026-10-04",
+      "geography": "Астана (учебные районы)",
+      "granularity": "район × показатель",
+      "period": null,
+      "format": "JSON",
+      "fields": [
+        "measures[id,direction,scope,cost,lag,effects]",
+        "indicators",
+        "districts",
+        "score_formula"
+      ],
+      "units": "условные единицы и баллы 0–100",
+      "update_frequency": null,
+      "license": "не проверена (GitHub API rate limit)",
+      "auth_requirement": "нет",
+      "limitations": "Синтетические учебные значения; энергии нет.",
+      "next_retrieval_step": "Не расширять Score энергией без реальных данных."
+    },
+    {
+      "dataset_id": "A09-D004",
+      "title": "Помесячные счета/показания муниципальных зданий Шымкента (электричество, тепло, газ, вода)",
+      "publisher": "энергоснабжающие организации; учреждения; управление энергетики/ЖКХ акимата (кандидаты)",
+      "source_ids": [],
+      "landing_url": null,
+      "download_or_api_url": null,
+      "access_status": "restricted",
+      "tested_at": null,
+      "geography": "г. Шымкент, здание",
+      "granularity": "здание × месяц (гипотеза)",
+      "period": null,
+      "format": null,
+      "fields": [
+        "см. схему в отчёте, раздел 4"
+      ],
+      "units": null,
+      "update_frequency": null,
+      "license": null,
+      "auth_requirement": null,
+      "limitations": "Открытый набор не найден (поиск в среде невозможен); существование и формат — гипотеза",
+      "next_retrieval_step": "Второй проход: поиск на data.egov.kz, goszakup.gov.kz, budget.egov.kz; затем официальный запрос владельцем проекта, а не исследователем."
+    },
+    {
+      "dataset_id": "A09-D005",
+      "title": "Реестр организаций образования/медицины г. Шымкент с адресами",
+      "publisher": "data.egov.kz / управления акимата (кандидат)",
+      "source_ids": [
+        "A09-S003"
+      ],
+      "landing_url": "https://data.egov.kz/",
+      "download_or_api_url": null,
+      "access_status": "unavailable",
+      "tested_at": "2026-10-04",
+      "geography": "г. Шымкент",
+      "granularity": "объект",
+      "period": null,
+      "format": null,
+      "fields": [],
+      "units": null,
+      "update_frequency": null,
+      "license": null,
+      "auth_requirement": null,
+      "limitations": "Домен заблокирован в среде; наличие набора не проверено",
+      "next_retrieval_step": "Открыть каталог вручную, искать «организации образования Шымкент», проверить поля площади и года постройки."
+    },
+    {
+      "dataset_id": "A09-D006",
+      "title": "Динамические ряды БНС по г. Шымкент (энергетика/ЖКХ)",
+      "publisher": "БНС АСПиР РК",
+      "source_ids": [
+        "A09-S002"
+      ],
+      "landing_url": "https://stat.gov.kz/ru/region/shymkent/dynamic-tables/38/",
+      "download_or_api_url": null,
+      "access_status": "unavailable",
+      "tested_at": "2026-10-04",
+      "geography": "город",
+      "granularity": "город × год (ожидаемо)",
+      "period": null,
+      "format": null,
+      "fields": [],
+      "units": null,
+      "update_frequency": null,
+      "license": null,
+      "auth_requirement": null,
+      "limitations": "Общегородской агрегат не является измерением здания",
+      "next_retrieval_step": "Открыть вручную, зафиксировать коды показателей, единицы и границы до/после 2018."
+    },
+    {
+      "dataset_id": "A09-D007",
+      "title": "Историческая погода (температура) по Шымкенту",
+      "publisher": "Open-Meteo / NASA POWER / Казгидромет (кандидаты)",
+      "source_ids": [
+        "A09-S005",
+        "A09-S007"
+      ],
+      "landing_url": null,
+      "download_or_api_url": "https://archive-api.open-meteo.com/v1/archive",
+      "access_status": "unavailable",
+      "tested_at": "2026-10-04",
+      "geography": "точка 42.32N 69.59E (приблизительно)",
+      "granularity": "час/сутки",
+      "period": null,
+      "format": null,
+      "fields": [],
+      "units": null,
+      "update_frequency": null,
+      "license": null,
+      "auth_requirement": null,
+      "limitations": "Модельный реанализ ≠ станция; лицензии не проверены",
+      "next_retrieval_step": "Выполнить тот же запрос вне среды, сохранить ответ, проверить условия использования; сравнить со станцией Казгидромета."
+    },
+    {
+      "dataset_id": "A09-D008",
+      "title": "Солнечный ресурс и удельная выработка ФЭП",
+      "publisher": "PVGIS (EC JRC) / Global Solar Atlas (кандидаты)",
+      "source_ids": [
+        "A09-S006"
+      ],
+      "landing_url": null,
+      "download_or_api_url": "https://re.jrc.ec.europa.eu/api/v5_2/PVcalc",
+      "access_status": "unavailable",
+      "tested_at": "2026-10-04",
+      "geography": "точка",
+      "granularity": "год/месяц/час",
+      "period": null,
+      "format": null,
+      "fields": [],
+      "units": null,
+      "update_frequency": null,
+      "license": null,
+      "auth_requirement": null,
+      "limitations": "Покрытие базы радиации для 69.6° в.д. не проверено",
+      "next_retrieval_step": "Запрос PVcalc для 3–5 точек города, фиксация базы радиации в ответе."
+    },
+    {
+      "dataset_id": "A09-D009",
+      "title": "Здания и крыши из OpenStreetMap для Шымкента",
+      "publisher": "OpenStreetMap contributors",
+      "source_ids": [
+        "A09-S008",
+        "A09-S010"
+      ],
+      "landing_url": null,
+      "download_or_api_url": "https://overpass-api.de/api/interpreter",
+      "access_status": "unavailable",
+      "tested_at": "2026-10-04",
+      "geography": "г. Шымкент",
+      "granularity": "полигон здания",
+      "period": null,
+      "format": null,
+      "fields": [],
+      "units": null,
+      "update_frequency": null,
+      "license": "ODbL (по метаданным STUPITS)",
+      "auth_requirement": null,
+      "limitations": "Площадь контура × этажность ≠ отапливаемая площадь (см. F016)",
+      "next_retrieval_step": "Переиспользовать fetch_real_context.py STUPITS с bbox Шымкента вне среды; измерить полноту building=school."
+    }
+  ],
+  "opportunities": [
+    {
+      "idea_id": "A09-I001",
+      "title": "Приоритизатор энергоаудита муниципальных зданий + паспорт данных (L1, прототип)",
+      "problem": "Нет проверенных открытых данных по зданиям; решение «кого аудировать первым» принимается без прозрачного сравнения (гипотеза, P1/P4).",
+      "evidence_fact_ids": [
+        "A09-F010",
+        "A09-F012",
+        "A09-F013",
+        "A09-F016",
+        "A09-F017",
+        "A09-F018",
+        "A09-F024"
+      ],
+      "primary_user": "специалист управления энергетики/ЖКХ или образования акимата; энергоменеджер сети школ",
+      "user_task": "Выбрать N зданий для энергоаудита/обследования в бюджетном цикле и обосновать выбор",
+      "existing_solution": "Таблица Excel с сортировкой по потреблению или экспертный выбор (не проверено)",
+      "proposed_addition": "Загрузка CSV по шаблону → проверки качества → индикаторы (EUI по типу, ночная доля при интервальных данных, отклонение от прошлого года с погодной поправкой) → ранжирование с интервалом неопределённости площади → паспорт недостающих данных",
+      "required_dataset_ids": [
+        "A09-D004",
+        "A09-D005",
+        "A09-D007",
+        "A09-D001"
+      ],
+      "ai_role": "Не нужен для расчёта. LLM может объяснять ранжирование и пробелы данных через инструменты, как советник STUPITS; числа формирует код.",
+      "non_ai_baseline": "Сортировка по EUI в электронной таблице",
+      "success_metrics": [
+        "доля зданий с полным паспортом данных",
+        "стабильность топ-N при ±20% ошибке площади (Monte Carlo)",
+        "на пилоте: доля зданий из топ-N, где аудит нашёл меры с окупаемостью ниже порога заказчика, против случайной/экспертной выборки"
+      ],
+      "feasibility_10_days": "high — на BDG1 и синтетических данных; без реальных данных Шымкента это демонстрация метода",
+      "blockers": [
+        "нет данных Шымкента",
+        "неизвестна площадь и зона учёта",
+        "неизвестны действующие тарифы"
+      ],
+      "transfer_to_astana": "Метод переносим; параметры (отопительный сезон, тип теплоснабжения) отличаются",
+      "next_action": "Сделать изолированный модуль (вне Score) с check.py-тестами на BDG1"
+    },
+    {
+      "idea_id": "A09-I002",
+      "title": "Сценарный калькулятор наружного освещения по астрономическим часам",
+      "problem": "Стоимость и режим наружного освещения не видны в открытых данных (гипотеза P2); число часов горения можно рассчитать без оператора.",
+      "evidence_fact_ids": [
+        "A09-F020",
+        "A09-F002"
+      ],
+      "primary_user": "сотрудник акимата, планирующий замену светильников; студент/жюри для сравнения сценариев",
+      "user_task": "Сравнить годовые кВт·ч и затраты при разных мощностях, графиках и диммировании",
+      "existing_solution": "Ручной расчёт мощность × часы",
+      "proposed_addition": "кВт·ч = Σ P_i·(1+k_пот)·H_вкл·(1−доля диммирования)/1000; H_вкл из астрономии (4302 ч при закат–восход) с выбором порога; тариф — ввод с датой и источником",
+      "required_dataset_ids": [],
+      "ai_role": "Не нужен",
+      "non_ai_baseline": "Тот же расчёт в таблице",
+      "success_metrics": [
+        "совпадение расчётных часов с журналом шкафов управления на пилоте",
+        "ошибка оценки годовых кВт·ч против счётчиков шкафов"
+      ],
+      "feasibility_10_days": "high для калькулятора; low для проверки на реальных данных",
+      "blockers": [
+        "реестр светильников и показания шкафов у оператора",
+        "тариф для наружного освещения не проверен"
+      ],
+      "transfer_to_astana": "Да, с координатами Астаны",
+      "next_action": "Включить как вкладку прототипа с явной пометкой «сценарий»"
+    },
+    {
+      "idea_id": "A09-I003",
+      "title": "Пилот мониторинга 20–50 зданий: baseline с календарём, оповещения о ночной нагрузке, M&V (L2, 1–3 мес.)",
+      "problem": "Без baseline нельзя отличить экономию от погоды и каникул (F011–F013).",
+      "evidence_fact_ids": [
+        "A09-F011",
+        "A09-F012",
+        "A09-F013",
+        "A09-F014",
+        "A09-F015"
+      ],
+      "primary_user": "управление образования/энергетики + директора школ",
+      "user_task": "Получать короткий список зданий с подтверждённым аномальным ростом и проверять результат модернизации",
+      "existing_solution": "неизвестно",
+      "proposed_addition": "Ежемесячный/почасовой приём данных, модель «час недели + температура + календарь», правила ночной нагрузки, отчёт IPMVP Option C",
+      "required_dataset_ids": [
+        "A09-D004",
+        "A09-D007"
+      ],
+      "ai_role": "Опционально: классификация причин по комментариям обслуживающего персонала; ядро — статистика",
+      "non_ai_baseline": "Сравнение с тем же месяцем прошлого года",
+      "success_metrics": [
+        "precision оповещений по журналу проверок",
+        "число оповещений на здание в месяц",
+        "NMBE и CV(RMSE) baseline на отложенном году"
+      ],
+      "feasibility_10_days": "low (нужен оператор и данные)",
+      "blockers": [
+        "соглашение о данных",
+        "интервальные счётчики могут отсутствовать"
+      ],
+      "transfer_to_astana": "Да; в Астане важнее тепловая нагрузка",
+      "next_action": "Подготовить одностраничное предложение пилота и паспорт данных"
+    },
+    {
+      "idea_id": "A09-I004",
+      "title": "Причинная оценка программ модернизации и солнечный скрининг крыш с учётом профиля нагрузки (L3, исследование/диплом)",
+      "problem": "Сценарные «проценты экономии» не доказывают эффект; СЭС на школах может плохо совпадать с нагрузкой (F025).",
+      "evidence_fact_ids": [
+        "A09-F025"
+      ],
+      "primary_user": "исследователь/дипломник, аналитик программы энергоэффективности",
+      "user_task": "Оценить фактический эффект прошлых модернизаций и реалистичную долю самопотребления СЭС",
+      "existing_solution": "неизвестно",
+      "proposed_addition": "Панель счетов здания × месяц, staggered difference-in-differences с контрольными зданиями; PVGIS-профиль × часовая нагрузка",
+      "required_dataset_ids": [
+        "A09-D004",
+        "A09-D008",
+        "A09-D009"
+      ],
+      "ai_role": "Не нужен для оценки; возможно — извлечение дат модернизаций из закупочных документов",
+      "non_ai_baseline": "До/после без контроля",
+      "success_metrics": [
+        "доверительный интервал эффекта",
+        "проверка параллельных трендов до вмешательства"
+      ],
+      "feasibility_10_days": "low",
+      "blockers": [
+        "нужна история ≥2 лет и даты работ",
+        "правила для потребителей-производителей не проверены"
+      ],
+      "transfer_to_astana": "Да",
+      "next_action": "Найти на goszakup.gov.kz закупки модернизации школ Шымкента с датами (второй проход)"
+    }
+  ],
+  "open_questions": [
+    {
+      "question_id": "A09-Q001",
+      "question": "Существует ли открытый набор с потреблением/расходами на энергию по зданиям государственных учреждений Шымкента?",
+      "why_important": "Без него MVP остаётся демонстрацией метода",
+      "how_to_check": "data.egov.kz, budget.egov.kz, goszakup.gov.kz (договоры на электроэнергию/теплоэнергию с объёмами), сайт управления энергетики акимата"
+    },
+    {
+      "question_id": "A09-Q002",
+      "question": "Какие требования к госучреждениям по энергоаудиту, ГЭР и снижению потребления действуют в 2026 г.?",
+      "why_important": "Определяет пользователя и обязательность данных",
+      "how_to_check": "Действующая редакция закона на adilet.zan.kz + приказ о правилах ведения ГЭР"
+    },
+    {
+      "question_id": "A09-Q003",
+      "question": "Какие ЭСО/РЭК обслуживают Шымкент и какие тарифы действуют для бюджетных организаций и наружного освещения?",
+      "why_important": "Нужно для денежной оценки",
+      "how_to_check": "Сайты ЭСО/РЭК, приказы ДКРЕМ по г. Шымкент; фиксировать дату действия и НДС"
+    },
+    {
+      "question_id": "A09-Q004",
+      "question": "Кто владеет реестром светильников и данными шкафов управления наружным освещением, есть ли ГЧП-проект модернизации?",
+      "why_important": "Определяет реализуемость I002 сверх калькулятора",
+      "how_to_check": "Реестр проектов ГЧП (Казахстанский центр ГЧП), закупки акимата, обращения 109 по освещению (агрегаты)"
+    },
+    {
+      "question_id": "A09-Q005",
+      "question": "Какой школьный календарь и сменность действуют в Шымкенте 2025/26?",
+      "why_important": "F012–F013: календарь — главный фактор ошибки baseline",
+      "how_to_check": "Приказ Минпросвещения о каникулах; данные управления образования о сменности"
+    },
+    {
+      "question_id": "A09-Q006",
+      "question": "Какое покрытие и качество погодных данных (станция Казгидромета vs реанализ) для Шымкента?",
+      "why_important": "Погодная нормализация отопления и охлаждения",
+      "how_to_check": "Сравнить суточные температуры Open-Meteo/NASA POWER с данными станции за 1 год"
+    }
+  ],
+  "deliverables": {
+    "data_schema": "См. A09_report.md, раздел 4; шаблоны A09_attachments/A09_template_SYNTHETIC_*.csv",
+    "experiments": [
+      {
+        "id": "A09-X001",
+        "what": "Baseline, временной holdout, синтетические сбои, ошибка площади, пропуски — BDG1 schools",
+        "inputs": "BDG1 master zip (codeload), 105 школ",
+        "versions": {
+          "python": "3.12.3",
+          "numpy": "2.4.4",
+          "pandas": "3.0.2"
+        },
+        "commands": [
+          "python3 a09_bdg1_experiment.py",
+          "python3 a09_bdg1_experiment_part2.py"
+        ],
+        "outputs": [
+          "A09_bdg1_experiment_summary.json",
+          "A09_bdg1_experiment_part2_summary.json",
+          "A09_bdg1_per_building_results.csv"
+        ],
+        "seed": 20261004
+      },
+      {
+        "id": "A09-X002",
+        "what": "Астрономические часы темноты для Шымкента",
+        "inputs": "lat 42.32, lon 69.60, alt 500 m, 2027, шаг 1 мин",
+        "versions": {
+          "pvlib": "0.16.1",
+          "pandas": "3.0.2"
+        },
+        "commands": [
+          "inline python, см. A09_lighting_hours.txt"
+        ],
+        "outputs": [
+          "A09_lighting_hours.txt"
+        ]
+      }
+    ],
+    "samples": [
+      {
+        "file": "A09_attachments/A09_sample_real_BDG1_school_hourly.csv",
+        "dataset_id": "A09-D001",
+        "kind": "real (не Шымкент)",
+        "license": "MIT"
+      },
+      {
+        "file": "A09_attachments/A09_template_SYNTHETIC_buildings.csv",
+        "dataset_id": null,
+        "kind": "synthetic"
+      },
+      {
+        "file": "A09_attachments/A09_template_SYNTHETIC_readings.csv",
+        "dataset_id": null,
+        "kind": "synthetic"
+      }
+    ]
+  }
+}

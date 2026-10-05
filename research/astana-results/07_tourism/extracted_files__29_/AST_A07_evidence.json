@@ -1,0 +1,1582 @@
+{
+ "meta": {
+  "agent_id": "AST-A07",
+  "topic": "Туризм: полезные маршруты и городская навигация",
+  "city": "astana",
+  "round": "astana-2026-10-05",
+  "searched_at": "2026-10-05",
+  "access_limitations": [
+   "gov.kz и большинство СМИ — только сниппеты",
+   "stat.gov.kz не открывался в этом проходе (в первом проходе — robots)",
+   "data.egov.kz не открывался в этом проходе",
+   "сеть песочницы отключена: OSM/Overpass/API не вызывались",
+   "страница расписаний CTS вернула «информация временно отсутствует»"
+  ]
+ },
+ "sources": [
+  {
+   "source_id": "AST-A07-S001",
+   "title": "Visit Astana — Information for tourists",
+   "publisher": "Visit Astana (городской туристический портал)",
+   "url": "https://visitastana.kz/en/information/",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "official_city_portal",
+   "access_status": "opened",
+   "notes": "Открыт. robots: index, follow. Языки kz/ru/en/zh; smart-бот; меню: интерактивная карта, события, 24/48 часов, CityPass, киоски. Футер «All rights reserved © 2026»; единая служба такси 15800."
+  },
+  {
+   "source_id": "AST-A07-S002",
+   "title": "Visit Astana — Transport",
+   "publisher": "Visit Astana",
+   "url": "https://visitastana.kz/en/information/transport/",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "official_city_portal",
+   "access_status": "opened",
+   "notes": "Открыт. >100 автобусных маршрутов; оплата Astra Plat или бесконтактная карта; расписания в Transcard, Yandex Go, 2GIS; Avtobys; блок о Tarlan Astana."
+  },
+  {
+   "source_id": "AST-A07-S003",
+   "title": "Visit Astana — Tourist kiosks",
+   "publisher": "Visit Astana",
+   "url": "https://visitastana.kz/en/information/tourist/",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "official_city_portal",
+   "access_status": "opened",
+   "notes": "Открыт. 2 киоска: международный терминал аэропорта (пр. Кабанбай батыра), Байтерек (бульвар Нуржол, 14). Часы работы не указаны."
+  },
+  {
+   "source_id": "AST-A07-S004",
+   "title": "Visit Astana — Calendar of events (upcoming, start=2026-10-05)",
+   "publisher": "Visit Astana",
+   "url": "https://visitastana.kz/en/about-city/where-to-go/?start=2026-10-05",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "official_city_portal",
+   "access_status": "opened",
+   "notes": "Открыт 05.10.2026; показано 6 предстоящих событий (01.10–22.12.2026)."
+  },
+  {
+   "source_id": "AST-A07-S005",
+   "title": "Visit Astana — Weather",
+   "publisher": "Visit Astana",
+   "url": "https://visitastana.kz/en/information/weather-condition/",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "official_city_portal",
+   "access_status": "opened",
+   "notes": "Открыт; прогноз обновлён 05.10.2026 09:05; сезонные описания."
+  },
+  {
+   "source_id": "AST-A07-S006",
+   "title": "В Астане объявлена дата запуска LRT",
+   "publisher": "inbusiness.kz",
+   "url": "https://inbusiness.kz/ru/news/v-astane-obyavlena-data-zapuska-lrt",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "media_national",
+   "access_status": "snippet_only",
+   "notes": "Анонс до запуска (май 2026): 06:00–23:00, 200 ₸, способы оплаты, лифты и эскалаторы. Подтверждающие перепечатки по сути: 24.kz/ru/news/polezno-znat/767902 (≈40 мин в пути, интервал 5–6 мин), rus.azattyq-ruhy.kz/news/108509, tengrinews.kz/...599306 (18 станций)."
+  },
+  {
+   "source_id": "AST-A07-S007",
+   "title": "Astana Light Metro",
+   "publisher": "Wikipedia",
+   "url": "https://en.wikipedia.org/wiki/Astana_Light_Metro",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "encyclopedia",
+   "access_status": "snippet_only",
+   "notes": "Низкий уровень доверия: открыта 16.05.2026, переименована 02.07.2026; 65–75 тыс. пассажиров в сутки — не проверено."
+  },
+  {
+   "source_id": "AST-A07-S008",
+   "title": "Astana LRT официально переименовали: что изменилось на станциях",
+   "publisher": "Tengrinews.kz",
+   "url": "https://tengrinews.kz/kazakhstan_news/astana-lrt-ofitsialno-pereimenovali-izmenilos-stantsiyah-603053/amp/",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "media_national",
+   "access_status": "snippet_only",
+   "notes": "Постановление акима о наименовании Tarlan Astana; дисплеи обновлены, указатели у станций — прежнее название."
+  },
+  {
+   "source_id": "AST-A07-S009",
+   "title": "В Астане вводят новые тарифы на LRT: сколько будет стоить проезд",
+   "publisher": "inastana.kz",
+   "url": "https://www.inastana.kz/news/4136404/v-astane-vvodat-novye-tarify-na-lrt-skolko-budet-stoit-proezd",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "media_city",
+   "access_status": "snippet_only",
+   "notes": "Со ссылкой на CTS: тарифы с 1 августа (2026) только на Tarlan Astana; интеграция с автобусами ведётся (nur.kz 2406071 — то же сообщение)."
+  },
+  {
+   "source_id": "AST-A07-S010",
+   "title": "The National Museum of the Republic of Kazakhstan",
+   "publisher": "Kazakhstan.travel (национальная цифровая экосистема туризма)",
+   "url": "https://kazakhstan.travel/en/attractions/424",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "official_national_portal",
+   "access_status": "opened",
+   "notes": "Открыт. Часы и цены записаны в поле адреса; район «р-н Алматы»; координаты 51.11840, 71.46700; даты проверки нет; на сайте раздел AI-планировщика и «Portal rules» (не прочитаны)."
+  },
+  {
+   "source_id": "AST-A07-S011",
+   "title": "Список музеев Астаны",
+   "publisher": "sxodim.com",
+   "url": "https://sxodim.com/astana/article/spisok-muzeev-astany",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "aggregator",
+   "access_status": "snippet_only",
+   "notes": "Национальный музей: Вт–Вс 10–18, последний вторник — санитарный день; Nur Alem: «Вт-Сб 10:00-20:00, Сб/Вс 10:00-21:00»."
+  },
+  {
+   "source_id": "AST-A07-S012",
+   "title": "Национальный музей Республики Казахстан",
+   "publisher": "tonkosti.ru",
+   "url": "https://tonkosti.ru/%D0%9D%D0%B0%D1%86%D0%B8%D0%BE%D0%BD%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B9_%D0%BC%D1%83%D0%B7%D0%B5%D0%B9_%D0%A0%D0%B5%D1%81%D0%BF%D1%83%D0%B1%D0%BB%D0%B8%D0%BA%D0%B8_%D0%9A%D0%B0%D0%B7%D0%B0%D1%85%D1%81%D1%82%D0%B0%D0%BD",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "aggregator_undated",
+   "access_status": "snippet_only",
+   "notes": "Взрослый билет 700 ₸ (вероятно, устаревшее)."
+  },
+  {
+   "source_id": "AST-A07-S013",
+   "title": "Visit Astana, туристский информационный центр",
+   "publisher": "2ГИС",
+   "url": "https://2gis.kz/astana/firm/70000001045881471",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "aggregator",
+   "access_status": "snippet_only",
+   "notes": "Площадь Байтерек, бульвар Нуржол 14; «Ежедневно с 10:00 до 21:00»; пандус."
+  },
+  {
+   "source_id": "AST-A07-S014",
+   "title": "Официальный сайт ТОО «City Transportation Systems»",
+   "publisher": "ТОО «City Transportation Systems» (учредитель — управление транспорта акимата Астаны)",
+   "url": "https://cts.gov.kz/",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "operator",
+   "access_status": "opened",
+   "notes": "Открыт. Оператор транспортного комплекса, создан в 2011; Transcard; велопрокат; контакт-центр 109; новости 02.07 (Tarlan Astana қозғалысы қалпына келтірілді), 17.07 (изменение остановок)."
+  },
+  {
+   "source_id": "AST-A07-S015",
+   "title": "Маршруттар — CTS",
+   "publisher": "ТОО «City Transportation Systems»",
+   "url": "https://cts.gov.kz/for-passengers/transport/",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "operator",
+   "access_status": "opened",
+   "notes": "Открыт 05.10.2026: «Кешіріңіз! Ақпарат уақытша жоқ» — данные о маршрутах не отображаются."
+  },
+  {
+   "source_id": "AST-A07-S016",
+   "title": "Интерес к Астане растет на мировом уровне: как в столице развивают туризм",
+   "publisher": "Акимат г. Астаны (gov.kz)",
+   "url": "https://www.gov.kz/memleket/entities/astana/press/news/details/1210993?lang=ru",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "government_news",
+   "access_status": "snippet_only",
+   "notes": "В тексте «в 2026 году» — вероятная опечатка (полные данные за 2026 на дату поиска невозможны)."
+  },
+  {
+   "source_id": "AST-A07-S017",
+   "title": "Астана – современный туристический центр: результаты и перспективы развития",
+   "publisher": "gov.kz (astana-uir)",
+   "url": "https://www.gov.kz/memleket/entities/astana-uir/press/news/details/1094409?lang=ru",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "government_news",
+   "access_status": "snippet_only",
+   "notes": "Первое полугодие 2025."
+  },
+  {
+   "source_id": "AST-A07-S018",
+   "title": "Дайджест по основным показателям туризма (6 мес. 2025)",
+   "publisher": "qaztourism.kz (Центр развития туризма)",
+   "url": "https://qaztourism.kz/upload/iblock/3da/pruv3ws9ctql73a700w16omjrb1zc6xz.pdf",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "official_digest",
+   "access_status": "snippet_only",
+   "notes": "«г. Астана 558 651» — внутренние туристы, обслуженные местами размещения за 6 мес. 2025."
+  },
+  {
+   "source_id": "AST-A07-S019",
+   "title": "Новые пространства и точки роста: как развивается самый молодой район столицы Сарайшык",
+   "publisher": "Акимат г. Астаны (gov.kz)",
+   "url": "https://www.gov.kz/memleket/entities/astana/press/news/details/1251104?lang=ru",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "government_news",
+   "access_status": "snippet_only",
+   "notes": "Сарайшык образован в августе 2024. Детали раздела — bes.media (южная часть Алматинского района, 6 953 га)."
+  },
+  {
+   "source_id": "AST-A07-S020",
+   "title": "В столице запускают модернизированную информационную систему iKOMEK 2.0",
+   "publisher": "Акимат г. Астаны (gov.kz)",
+   "url": "https://www.gov.kz/memleket/entities/astana/press/news/details/1007387?lang=ru",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "government_news",
+   "access_status": "snippet_only",
+   "notes": "Под 109 объединены 23 управления акимата, 6 районных акиматов, коммунальные службы; интерфейс аналитики и выгрузки — внутренний."
+  },
+  {
+   "source_id": "AST-A07-S021",
+   "title": "Как развивают цифровую инфраструктуру Астаны",
+   "publisher": "Kapital.kz",
+   "url": "https://kapital.kz/tehnology/139356/kak-razvivayut-cifrovuyu-infrastrukturu-astany.html",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "media_national",
+   "access_status": "snippet_only",
+   "notes": "iKOMEK109: >1 млн обращений и 220 тыс. инцидентов за 6 мес. 2025; >82% решены с первого обращения."
+  },
+  {
+   "source_id": "AST-A07-S022",
+   "title": "Более 27 тыс. объектов адаптировано для лиц с инвалидностью в Казахстане",
+   "publisher": "МТСЗН РК (gov.kz/enbek)",
+   "url": "https://www.gov.kz/memleket/entities/enbek/press/news/details/1143137?lang=ru",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "government_news",
+   "access_status": "snippet_only",
+   "notes": "Итоги 2025: г. Астана — 809 объектов. Тот же источник использован в A07-S013 для Шымкента."
+  },
+  {
+   "source_id": "AST-A07-S023",
+   "title": "Более 29,5 тыс. объектов адаптировано для лиц с инвалидностью в Казахстане",
+   "publisher": "МТСЗН РК",
+   "url": "https://www.gov.kz/memleket/entities/enbek/press/news/details/1205415?lang=ru",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "government_news",
+   "access_status": "snippet_only",
+   "notes": "г. Астана — 1 420 объектов; дата не установлена. Тот же источник — A07-S014."
+  },
+  {
+   "source_id": "AST-A07-S024",
+   "title": "«Чувствую себя частью сообщества»: женщина на коляске проехалась на ЛРТ",
+   "publisher": "newtimes.kz",
+   "url": "https://newtimes.kz/obshchestvo/219655-chuvstvuiu-sebia-chastiu-soobshchestva-zhenshchina-na-koliaske-proekhalas-na-lrt",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "media_user_report",
+   "access_status": "snippet_only",
+   "notes": "Лифты работают; на станции «Астана Арена» нет зеркала в туалете для колясочников."
+  },
+  {
+   "source_id": "AST-A07-S025",
+   "title": "В Астане изменили движение сразу 12 автобусных маршрутов",
+   "publisher": "finratings.kz",
+   "url": "https://finratings.kz/news/15247-v-astane-izmenili-dvizhenie-srazu-12-avtobusnykh-marshrutov/",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "media",
+   "access_status": "snippet_only",
+   "notes": "Со ссылкой на iKOMEK109; причины и сроки не уточняются."
+  },
+  {
+   "source_id": "AST-A07-S026",
+   "title": "Пять автобусных маршрутов изменили движение в Астане",
+   "publisher": "finratings.kz",
+   "url": "https://finratings.kz/news/16410-piat-avtobusnykh-marshrutov-izmenili-dvizhenie-v-astane/",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "media",
+   "access_status": "snippet_only",
+   "notes": "Со ссылкой на CTS: дорожные работы, посадка/высадка не на всех остановках."
+  },
+  {
+   "source_id": "AST-A07-S027",
+   "title": "Специальные наклейки с QR-кодом появились на остановках Астаны",
+   "publisher": "Kazpravda.kz",
+   "url": "https://kazpravda.kz/n/spetsialnye-nakleyki-s-qr-kodom-poyavilis-na-ostanovkah-astany/",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "media_national",
+   "access_status": "snippet_only",
+   "notes": "Со ссылкой на CTS: QR → прогноз прибытия в Avtobys; размещение продолжается."
+  },
+  {
+   "source_id": "AST-A07-S028",
+   "title": "После жалоб на переполненные маршруты в Астане выпустят 118 новых автобусов",
+   "publisher": "BES.media",
+   "url": "https://bes.media/news/posle-zhalob-na-perepolnennie-marshruti-v-astane-vipustyat-118-novih-avtobusov/",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "media",
+   "access_status": "snippet_only",
+   "notes": "CTS признаёт перегрузку в часы пик."
+  },
+  {
+   "source_id": "AST-A07-S029",
+   "title": "О Программе партнерства «Visit Astana»",
+   "publisher": "Astana Invest",
+   "url": "https://investastana.kz/astana-invest/press-center/news/o_programme_partnerstva_visit_astana/",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "city_development_company",
+   "access_status": "snippet_only",
+   "notes": "Сертификации Comfort/Taste/Support; добровольно и безвозмездно."
+  },
+  {
+   "source_id": "AST-A07-S031",
+   "title": "Национальный музей Республики Казахстан — гид",
+   "publisher": "kupibilet.ru",
+   "url": "https://www.kupibilet.ru/gid/kazakhstan/astana/natsionalnyi-muzei-respubliki-kazakhstan",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "aggregator",
+   "access_status": "snippet_only",
+   "notes": "Понедельник — выходной; сайт nmrk.kz (не проверен)."
+  },
+  {
+   "source_id": "AST-A07-S032",
+   "title": "A survey on algorithmic approaches for solving tourist trip design problems",
+   "publisher": "Journal of Heuristics 20(3):291–328",
+   "url": "https://doi.org/10.1007/s10732-014-9242-5",
+   "published_at": "2014-03-20",
+   "accessed_at": "2026-10-05",
+   "source_type": "peer_reviewed",
+   "access_status": "abstract_only",
+   "notes": "Дубликат A07-S018 (первый проход)."
+  },
+  {
+   "source_id": "AST-A07-S033",
+   "title": "A systematic literature review for the tourist trip design problem",
+   "publisher": "Operations Research Perspectives 9:100228",
+   "url": "https://doi.org/10.1016/j.orp.2022.100228",
+   "published_at": "2022",
+   "accessed_at": "2026-10-05",
+   "source_type": "peer_reviewed",
+   "access_status": "abstract_only",
+   "notes": "Дубликат A07-S019."
+  },
+  {
+   "source_id": "AST-A07-S034",
+   "title": "Динамические ряды — г. Астана",
+   "publisher": "Бюро национальной статистики",
+   "url": "https://stat.gov.kz/ru/region/astana/dynamic-tables/38/",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "official_statistics",
+   "access_status": "not_opened",
+   "notes": "В этом проходе не открывался; в первом проходе домен отклонил автоматический доступ (robots). По указанию координатора — ряды населения/миграции."
+  },
+  {
+   "source_id": "AST-A07-S035",
+   "title": "На портале «Открытые данные» опубликован новый набор данных",
+   "publisher": "АО «НИТ» (nitec.kz)",
+   "url": "https://www.nitec.kz/ru/news/na-portale-otkrytye-dannye-opublikovan-novyy-nabor-dannykh",
+   "published_at": "2018-09-12",
+   "accessed_at": "2026-10-05",
+   "source_type": "government_news",
+   "access_status": "snippet_only",
+   "notes": "Набор avtobustardyn_osy_uakyttagy_ko (движение автобусов Астаны, ТОО «Астана LRT»); актуальность не проверена."
+  }
+ ],
+ "facts": [
+  {
+   "fact_id": "AST-A07-F001",
+   "statement": "Visit Astana — городской туристический портал на kz/ru/en/zh со smart-ботом, интерактивной картой, календарём событий, маршрутами 24/48 ч и CityPass",
+   "kind": "observed",
+   "value": "4 языка",
+   "unit": null,
+   "geography": "г. Астана",
+   "period": "на 05.10.2026",
+   "source_refs": [
+    {
+     "source_id": "AST-A07-S001",
+     "locator": "меню и блок бота"
+    },
+    {
+     "source_id": "AST-A07-S002",
+     "locator": "переключатель языков"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Функциональность бота не тестировалась."
+  },
+  {
+   "fact_id": "AST-A07-F002",
+   "statement": "Программу партнёрства Visit Astana (сертификация Comfort/Taste/Support) ведёт Astana Invest",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": "г. Астана",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "AST-A07-S029",
+     "locator": "абзац о программе"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Юридический оператор портала по реквизитам не проверен."
+  },
+  {
+   "fact_id": "AST-A07-F003",
+   "statement": "Visit Astana: >100 автобусных маршрутов; оплата Astra Plat или бесконтактной картой; расписания в Transcard, Yandex Go, 2GIS; Avtobys для маршрутов",
+   "kind": "observed",
+   "value": 100,
+   "unit": "маршрутов (>)",
+   "geography": "г. Астана",
+   "period": "на 05.10.2026",
+   "source_refs": [
+    {
+     "source_id": "AST-A07-S002",
+     "locator": "раздел Public transport in Astana"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Название «Astra Plat» другими источниками этого прохода не подтверждено; оператор CTS использует бренд Transcard (S014)."
+  },
+  {
+   "fact_id": "AST-A07-F004",
+   "statement": "Страница маршрутов CTS 05.10.2026 сообщает «Ақпарат уақытша жоқ» (информация временно отсутствует)",
+   "kind": "observed",
+   "value": "unavailable",
+   "unit": null,
+   "geography": "г. Астана",
+   "period": "2026-10-05",
+   "source_refs": [
+    {
+     "source_id": "AST-A07-S015",
+     "locator": "основной блок страницы"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Временный статус; повторить проверку."
+  },
+  {
+   "fact_id": "AST-A07-F005",
+   "statement": "CTS — оператор транспортного комплекса Астаны (создан в 2011 по постановлению акимата), система оплаты Transcard, велопрокат, контакт-центр 109",
+   "kind": "observed",
+   "value": 2011,
+   "unit": "год",
+   "geography": "г. Астана",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "AST-A07-S014",
+     "locator": "блок «Компания туралы»"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": null
+  },
+  {
+   "fact_id": "AST-A07-F006",
+   "statement": "Tarlan Astana (LRT): 18 станций, 22,4 км, аэропорт ↔ «Нұрлы жол», 06:00–23:00, 200 ₸, закрытая оплата (FacePay Halyk, карта LRT 1 000 ₸, Visa/MC NFC, QR Halyk/Kaspi, разовые билеты), ≈40 мин от конца до конца, интервал 5–6 мин",
+   "kind": "observed",
+   "value": 200,
+   "unit": "KZT/поездка",
+   "geography": "г. Астана",
+   "period": "анонс май 2026",
+   "source_refs": [
+    {
+     "source_id": "AST-A07-S006",
+     "locator": "разделы «График работы и оплата», «Маршрут и станции»"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Анонсные данные до запуска; фактический интервал и часы не проверены."
+  },
+  {
+   "fact_id": "AST-A07-F007",
+   "statement": "Линия запущена в мае 2026 (по Wikipedia — 16.05.2026)",
+   "kind": "observed",
+   "value": "2026-05",
+   "unit": null,
+   "geography": "г. Астана",
+   "period": "2026",
+   "source_refs": [
+    {
+     "source_id": "AST-A07-S007",
+     "locator": "инфобокс"
+    },
+    {
+     "source_id": "AST-A07-S006",
+     "locator": "анонс 16–17 мая"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Точная дата по первичному источнику не подтверждена."
+  },
+  {
+   "fact_id": "AST-A07-F008",
+   "statement": "После переименования в Tarlan Astana дисплеи на станциях обновлены, а указатели у станций показывают прежнее «Astana LRT»",
+   "kind": "observed",
+   "value": "naming_mismatch",
+   "unit": null,
+   "geography": "г. Астана",
+   "period": "2026 (после переименования)",
+   "source_refs": [
+    {
+     "source_id": "AST-A07-S008",
+     "locator": "последние абзацы"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Текущее состояние указателей на 05.10.2026 неизвестно."
+  },
+  {
+   "fact_id": "AST-A07-F009",
+   "statement": "С 1 августа (2026) на Tarlan Astana действуют проездные (1 день — 500 ₸, 3 дня — 1 500 ₸ … 3 мес. — 20 000 ₸) и пакеты поездок; тарифы действуют только на LRT, интеграция с автобусами ведётся",
+   "kind": "observed",
+   "value": 500,
+   "unit": "KZT/день",
+   "geography": "г. Астана",
+   "period": "с 2026-08-01",
+   "source_refs": [
+    {
+     "source_id": "AST-A07-S009",
+     "locator": "перечень проездных и оговорка CTS"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": null
+  },
+  {
+   "fact_id": "AST-A07-F010",
+   "statement": "Карточка Национального музея РК на kazakhstan.travel: Вт–Вс 10:00–18:00, взрослый 1 000 ₸, студ. 700, детский 500, пенсионный 500; координаты 51.11840, 71.46700; район «р-н Алматы»; часы и цены записаны в поле адреса; даты проверки нет",
+   "kind": "observed",
+   "value": 1000,
+   "unit": "KZT (взрослый)",
+   "geography": "г. Астана, пр. Тауелсиздик 54",
+   "period": "на 05.10.2026",
+   "source_refs": [
+    {
+     "source_id": "AST-A07-S010",
+     "locator": "Address, Details"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Высокая уверенность в том, что так написано в источнике, а не в истинности значений."
+  },
+  {
+   "fact_id": "AST-A07-F011",
+   "statement": "Агрегатор sxodim: у Национального музея последний вторник месяца — санитарный день; у Nur Alem «Вт-Сб 10:00-20:00, Сб/Вс 10:00-21:00» (суббота в двух интервалах)",
+   "kind": "observed",
+   "value": "conflict",
+   "unit": null,
+   "geography": "г. Астана",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "AST-A07-S011",
+     "locator": "разделы музеев"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Дата публикации списка неизвестна."
+  },
+  {
+   "fact_id": "AST-A07-F012",
+   "statement": "tonkosti.ru указывает взрослый билет в Национальный музей 700 ₸ (без даты) — расходится с 1 000 ₸ на kazakhstan.travel",
+   "kind": "observed",
+   "value": 700,
+   "unit": "KZT",
+   "geography": "г. Астана",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "AST-A07-S012",
+     "locator": "абзац о стоимости"
+    }
+   ],
+   "derivation": null,
+   "confidence": "low",
+   "caveats": "Вероятно, устаревшее."
+  },
+  {
+   "fact_id": "AST-A07-F013",
+   "statement": "kazakhstan.travel позиционируется как единая цифровая экосистема туризма с AI-планировщиком поездок",
+   "kind": "observed",
+   "value": "AI planner",
+   "unit": null,
+   "geography": "Казахстан, вкл. Астану",
+   "period": "на 05.10.2026",
+   "source_refs": [
+    {
+     "source_id": "AST-A07-S010",
+     "locator": "meta description; меню AI"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Качество планировщика не проверялось."
+  },
+  {
+   "fact_id": "AST-A07-F014",
+   "statement": "Официальная страница называет 2 туристических киоска (международный терминал аэропорта; Байтерек, Нуржол 14) без часов работы; 2ГИС указывает «ежедневно 10:00–21:00»",
+   "kind": "observed",
+   "value": "2 киоска",
+   "unit": null,
+   "geography": "г. Астана",
+   "period": "на 05.10.2026",
+   "source_refs": [
+    {
+     "source_id": "AST-A07-S003",
+     "locator": "раздел Tourist kiosks"
+    },
+    {
+     "source_id": "AST-A07-S013",
+     "locator": "карточка"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Часы — только агрегатор."
+  },
+  {
+   "fact_id": "AST-A07-F015",
+   "statement": "Календарь событий Visit Astana на 05.10.2026: 6 предстоящих событий; явный адрес у 1/6; «Адрес не найден» у 2/6; пустая ссылка «Buy ticket» у 2/6",
+   "kind": "derived",
+   "value": 0.33,
+   "unit": "доля «Адрес не найден»",
+   "geography": "г. Астана",
+   "period": "2026-10-05",
+   "source_refs": [
+    {
+     "source_id": "AST-A07-S004",
+     "locator": "список Upcoming"
+    }
+   ],
+   "derivation": "Подсчёт вручную по странице: 2/6 = 0,33; 1/6 = 0,17; 2/6 = 0,33",
+   "confidence": "high",
+   "caveats": "Малая выборка; неполнота календаря как каталога — гипотеза."
+  },
+  {
+   "fact_id": "AST-A07-F016",
+   "statement": "Зима — декабрь–февраль, бывает −30 °C и ниже; летом в среднем +25 °C, до +35 °C, много фестивалей; в сентябре около +15 °C",
+   "kind": "observed",
+   "value": -30,
+   "unit": "°C (нижний ориентир)",
+   "geography": "г. Астана",
+   "period": "климатическое описание",
+   "source_refs": [
+    {
+     "source_id": "AST-A07-S005",
+     "locator": "разделы Winter/Summer/Autumn"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Описательный текст портала, не климатическая норма Казгидромета."
+  },
+  {
+   "fact_id": "AST-A07-F017",
+   "statement": "2025: более 1,6 млн туристов: 380 301 иностранный и 1 224 524 внутренних; 69% — отдых/мероприятия/шопинг, 31% — деловые; объём услуг размещения 74 млрд ₸ (+14%); рост из Китая +28%, из России +15%",
+   "kind": "observed",
+   "value": 1604825,
+   "unit": "чел. (сумма)",
+   "geography": "г. Астана",
+   "period": "2025",
+   "source_refs": [
+    {
+     "source_id": "AST-A07-S016",
+     "locator": "первые абзацы"
+    }
+   ],
+   "derivation": "380 301 + 1 224 524 = 1 604 825",
+   "confidence": "medium",
+   "caveats": "В тексте «в 2026 году» — вероятная опечатка; определение «турист» (места размещения?) не раскрыто."
+  },
+  {
+   "fact_id": "AST-A07-F018",
+   "statement": "1 пол. 2025: 735,7 тыс. туристов (+9%), 177,1 тыс. иностранных, 558,6 тыс. внутренних; дайджест qaztourism: внутренние Астаны за 6 мес. 2025 — 558 651",
+   "kind": "observed",
+   "value": 735700,
+   "unit": "чел.",
+   "geography": "г. Астана",
+   "period": "I пол. 2025",
+   "source_refs": [
+    {
+     "source_id": "AST-A07-S017",
+     "locator": "первый абзац"
+    },
+    {
+     "source_id": "AST-A07-S018",
+     "locator": "строка «г.Астана 558 651»"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Совпадение 558,6 тыс. ≈ 558 651 — перекрёстное подтверждение."
+  },
+  {
+   "fact_id": "AST-A07-F019",
+   "statement": "Второе полугодие 2025 ≈ 869 125 чел. (54,2% года)",
+   "kind": "derived",
+   "value": 869125,
+   "unit": "чел.",
+   "geography": "г. Астана",
+   "period": "II пол. 2025",
+   "source_refs": [
+    {
+     "source_id": "AST-A07-S016",
+     "locator": "F017"
+    },
+    {
+     "source_id": "AST-A07-S017",
+     "locator": "F018"
+    }
+   ],
+   "derivation": "1 604 825 − 735 700 = 869 125; 869 125 / 1 604 825 = 54,2%",
+   "confidence": "medium",
+   "caveats": "Корректно только при одинаковом определении показателя в обоих релизах."
+  },
+  {
+   "fact_id": "AST-A07-F020",
+   "statement": "В Астане 6 районов: Алматы, Байқоңыр, Есиль, Нұра, Сарыарка, Сарайшық; Сарайшык образован в августе 2024 из южной части Алматинского района",
+   "kind": "observed",
+   "value": 6,
+   "unit": "районов",
+   "geography": "г. Астана",
+   "period": "с 08.2024",
+   "source_refs": [
+    {
+     "source_id": "AST-A07-S019",
+     "locator": "первый абзац"
+    },
+    {
+     "source_id": "AST-A07-S020",
+     "locator": "«6 районных акиматов»"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Площадь 6 953 га — по СМИ (bes.media), не по официальному акту; указ не открывался."
+  },
+  {
+   "fact_id": "AST-A07-F021",
+   "statement": "Районные атрибуты POI в каталогах могут не учитывать раздел 2024 г. (пример: Нац. музей — «р-н Алматы»)",
+   "kind": "hypothesis",
+   "value": null,
+   "unit": null,
+   "geography": "г. Астана",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "AST-A07-S010",
+     "locator": "Details → District"
+    }
+   ],
+   "derivation": "Сопоставить координаты с актуальными границами районов",
+   "confidence": "low",
+   "caveats": "Музей может действительно находиться в районе Алматы; это не утверждение об ошибке."
+  },
+  {
+   "fact_id": "AST-A07-F022",
+   "statement": "iKOMEK109 работает 24/7; объединяет 23 управления, 6 районных акиматов и коммунальные службы; >1 млн обращений за 6 мес. 2025; аналитика и выгрузка — во внутреннем интерфейсе",
+   "kind": "observed",
+   "value": 1000000,
+   "unit": "обращений (>), I пол. 2025",
+   "geography": "г. Астана",
+   "period": "2025",
+   "source_refs": [
+    {
+     "source_id": "AST-A07-S020",
+     "locator": "описание iKOMEK 2.0"
+    },
+    {
+     "source_id": "AST-A07-S021",
+     "locator": "абзац об iKOMEK109"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Открытого доступа к данным нет."
+  },
+  {
+   "fact_id": "AST-A07-F023",
+   "statement": "Адаптировано объектов для лиц с инвалидностью: 809 (итоги 2025), позже 1 420",
+   "kind": "observed",
+   "value": 1420,
+   "unit": "объектов",
+   "geography": "г. Астана",
+   "period": "2025–2026",
+   "source_refs": [
+    {
+     "source_id": "AST-A07-S022",
+     "locator": "перечень регионов"
+    },
+    {
+     "source_id": "AST-A07-S023",
+     "locator": "перечень регионов"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Знаменатель и доля туристических объектов неизвестны."
+  },
+  {
+   "fact_id": "AST-A07-F024",
+   "statement": "Станции Tarlan Astana оборудованы лифтами и эскалаторами (заявление оператора); пассажир на коляске оценил доступность положительно, отметив мелкие недочёты",
+   "kind": "observed",
+   "value": "elevators",
+   "unit": null,
+   "geography": "г. Астана",
+   "period": "2026",
+   "source_refs": [
+    {
+     "source_id": "AST-A07-S006",
+     "locator": "«Все станции оборудованы…»"
+    },
+    {
+     "source_id": "AST-A07-S024",
+     "locator": "цитаты"
+    }
+   ],
+   "derivation": null,
+   "confidence": "low",
+   "caveats": "Отзыв одного человека; системного аудита нет."
+  },
+  {
+   "fact_id": "AST-A07-F025",
+   "statement": "Временные изменения схем: 12 маршрутов (сообщение iKOMEK109, сроки не указаны); 5 маршрутов из-за дорожных работ с пропуском части остановок (CTS)",
+   "kind": "observed",
+   "value": 17,
+   "unit": "маршрутов (в двух сообщениях)",
+   "geography": "г. Астана",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "AST-A07-S025",
+     "locator": "перечень маршрутов"
+    },
+    {
+     "source_id": "AST-A07-S026",
+     "locator": "перечень маршрутов"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Даты сообщений неизвестны; в сумме могут быть пересечения."
+  },
+  {
+   "fact_id": "AST-A07-F026",
+   "statement": "На остановках размещены QR-наклейки, показывающие прогноз прибытия в приложении Avtobys",
+   "kind": "observed",
+   "value": "QR→Avtobys",
+   "unit": null,
+   "geography": "г. Астана",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "AST-A07-S027",
+     "locator": "цитата CTS"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Покрытие остановок неизвестно."
+  },
+  {
+   "fact_id": "AST-A07-F027",
+   "statement": "CTS признаёт перегрузку автобусов в утренние и вечерние часы пик",
+   "kind": "observed",
+   "value": "peak overcrowding",
+   "unit": null,
+   "geography": "г. Астана",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "AST-A07-S028",
+     "locator": "абзац с цитатой CTS"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": null
+  },
+  {
+   "fact_id": "AST-A07-F028",
+   "statement": "kupibilet: Нац. музей — понедельник выходной; официальный сайт nmrk.kz",
+   "kind": "observed",
+   "value": "nmrk.kz",
+   "unit": null,
+   "geography": "г. Астана",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "AST-A07-S031",
+     "locator": "разделы «Часы работы», «Сайт»"
+    }
+   ],
+   "derivation": null,
+   "confidence": "low",
+   "caveats": "Адрес официального сайта требует проверки."
+  },
+  {
+   "fact_id": "AST-A07-F029",
+   "statement": "Эксперимент на реальном образце (3 POI + линия LRT): Пн 05.10 Нац. музей → NOT_EXECUTABLE; последний вторник 27.10 → конфликт (UNVERIFIED); ср 07.10 → LIKELY_OPEN (нет verified_at); киоск у Байтерека вс 20:00 → UNVERIFIED (только 2ГИС); Nur Alem сб 20:30 → внутреннее противоречие; ценовой конфликт 1 000 vs 700 ₸; LRT 23:30 вне окна",
+   "kind": "derived",
+   "value": "5 случаев",
+   "unit": null,
+   "geography": "г. Астана",
+   "period": "2026-10",
+   "source_refs": [
+    {
+     "source_id": "AST-A07-S010",
+     "locator": "Address"
+    },
+    {
+     "source_id": "AST-A07-S011",
+     "locator": "списки"
+    },
+    {
+     "source_id": "AST-A07-S012",
+     "locator": "цена"
+    },
+    {
+     "source_id": "AST-A07-S013",
+     "locator": "часы"
+    },
+    {
+     "source_id": "AST-A07-S003",
+     "locator": "киоски"
+    },
+    {
+     "source_id": "AST-A07-S006",
+     "locator": "часы LRT"
+    }
+   ],
+   "derivation": "AST_A07_validator_real_sample.py, Python 3.12.3; значения вручную выписаны из источников",
+   "confidence": "high",
+   "caveats": "Высокая уверенность в работе логики; заявления источников не являются проверенной истиной."
+  },
+  {
+   "fact_id": "AST-A07-F030",
+   "statement": "Методическая база: TTDP и Orienteering Problem с временными окнами",
+   "kind": "observed",
+   "value": "method",
+   "unit": null,
+   "geography": null,
+   "period": "2014–2022",
+   "source_refs": [
+    {
+     "source_id": "AST-A07-S032",
+     "locator": "abstract"
+    },
+    {
+     "source_id": "AST-A07-S033",
+     "locator": "abstract"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Методы предполагают известные часы; новизна — в работе с конфликтующими и сезонными данными."
+  }
+ ],
+ "datasets": [
+  {
+   "dataset_id": "AST-A07-D001",
+   "title": "Карточки, события и киоски Visit Astana",
+   "publisher": "Visit Astana",
+   "source_ids": [
+    "AST-A07-S001",
+    "AST-A07-S003",
+    "AST-A07-S004"
+   ],
+   "landing_url": "https://visitastana.kz/en/",
+   "download_or_api_url": null,
+   "access_status": "page_only",
+   "tested_at": "2026-10-05",
+   "geography": "г. Астана",
+   "granularity": "объект/событие",
+   "period": "текущий",
+   "format": "HTML",
+   "fields": [
+    "title",
+    "dates",
+    "address (часто «Адрес не найден»)",
+    "ticket link"
+   ],
+   "units": null,
+   "update_frequency": null,
+   "license": "«All rights reserved © 2026» — повторное использование без разрешения не подтверждено",
+   "auth_requirement": null,
+   "limitations": "Нет API; нет даты проверки; часы киосков отсутствуют",
+   "next_retrieval_step": "Ручная выписка 30 карточек; запрос условий использования — решение владельца"
+  },
+  {
+   "dataset_id": "AST-A07-D002",
+   "title": "Каталог достопримечательностей kazakhstan.travel (region=astana)",
+   "publisher": "Kazakhstan.travel / Kazakh Tourism",
+   "source_ids": [
+    "AST-A07-S010"
+   ],
+   "landing_url": "https://kazakhstan.travel/en/explore?region=astana",
+   "download_or_api_url": null,
+   "access_status": "page_only",
+   "tested_at": "2026-10-05",
+   "geography": "г. Астана",
+   "granularity": "объект",
+   "period": "текущий",
+   "format": "HTML",
+   "fields": [
+    "name",
+    "category",
+    "district",
+    "address (+часы и цены в строке)",
+    "contacts",
+    "coordinates"
+   ],
+   "units": "KZT, WGS84 (предположительно)",
+   "update_frequency": null,
+   "license": "Portal rules не прочитаны",
+   "auth_requirement": null,
+   "limitations": "Часы и цены не структурированы; нет verified_at",
+   "next_retrieval_step": "Прочитать Portal rules; выписать 30 карточек; посчитать долю «часы в адресе»"
+  },
+  {
+   "dataset_id": "AST-A07-D003",
+   "title": "Маршруты и расписания автобусов (CTS)",
+   "publisher": "ТОО CTS",
+   "source_ids": [
+    "AST-A07-S014",
+    "AST-A07-S015"
+   ],
+   "landing_url": "https://cts.gov.kz/for-passengers/transport/",
+   "download_or_api_url": null,
+   "access_status": "unavailable",
+   "tested_at": "2026-10-05",
+   "geography": "г. Астана",
+   "granularity": "маршрут",
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "Страница сообщает о временном отсутствии информации",
+   "next_retrieval_step": "Повторить проверку; уточнить у транспортной роли наличие GTFS/API"
+  },
+  {
+   "dataset_id": "AST-A07-D004",
+   "title": "Прогноз прибытия по QR на остановках (Avtobys)",
+   "publisher": "Avtobys / CTS",
+   "source_ids": [
+    "AST-A07-S027"
+   ],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": "documented_only",
+   "tested_at": "2026-10-05",
+   "geography": "г. Астана",
+   "granularity": "остановка",
+   "period": "реальное время",
+   "format": null,
+   "fields": [
+    "маршрут",
+    "прогноз прибытия (по описанию)"
+   ],
+   "units": "мин",
+   "update_frequency": "реальное время",
+   "license": null,
+   "auth_requirement": "приложение",
+   "limitations": "Публичный API не найден",
+   "next_retrieval_step": "Зависимость: транспортная роль"
+  },
+  {
+   "dataset_id": "AST-A07-D005",
+   "title": "Tarlan Astana: станции, часы, тарифы",
+   "publisher": "ТОО CTS",
+   "source_ids": [
+    "AST-A07-S006",
+    "AST-A07-S009",
+    "AST-A07-S014"
+   ],
+   "landing_url": "https://cts.gov.kz/",
+   "download_or_api_url": null,
+   "access_status": "documented_only",
+   "tested_at": "2026-10-05",
+   "geography": "г. Астана",
+   "granularity": "линия/станция",
+   "period": "с 05.2026",
+   "format": null,
+   "fields": [
+    "часы 06:00–23:00",
+    "тарифы",
+    "число станций 18"
+   ],
+   "units": "KZT",
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "Координаты станций не получены",
+   "next_retrieval_step": "Официальная схема CTS или OSM (проверить ODbL)"
+  },
+  {
+   "dataset_id": "AST-A07-D006",
+   "title": "Интерактивная карта доступности (Астана)",
+   "publisher": "МТСЗН РК / inva.gov.kz",
+   "source_ids": [
+    "AST-A07-S022",
+    "AST-A07-S023"
+   ],
+   "landing_url": "https://inva.gov.kz",
+   "download_or_api_url": null,
+   "access_status": "documented_only",
+   "tested_at": "2026-10-05",
+   "geography": "г. Астана",
+   "granularity": "объект",
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "Сайт не открывался; соцобъекты ≠ туробъекты",
+   "next_retrieval_step": "Открыть в браузере, проверить фильтр и экспорт"
+  },
+  {
+   "dataset_id": "AST-A07-D007",
+   "title": "Обращения и оперативные сообщения iKOMEK109",
+   "publisher": "Акимат г. Астаны",
+   "source_ids": [
+    "AST-A07-S020",
+    "AST-A07-S021",
+    "AST-A07-S025"
+   ],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": "restricted",
+   "tested_at": "2026-10-05",
+   "geography": "г. Астана",
+   "granularity": "обращение/сообщение",
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": "внутренняя система",
+   "limitations": "Персональные данные жителей не собирать; публичны только сообщения об изменениях",
+   "next_retrieval_step": "Найти официальный канал публикации изменений маршрутов"
+  },
+  {
+   "dataset_id": "AST-A07-D008",
+   "title": "Набор «движение автобусов Астаны» на data.egov.kz",
+   "publisher": "ТОО «Астана LRT» / data.egov.kz",
+   "source_ids": [
+    "AST-A07-S035"
+   ],
+   "landing_url": "https://data.egov.kz/datasets/view?index=avtobustardyn_osy_uakyttagy_ko",
+   "download_or_api_url": null,
+   "access_status": "documented_only",
+   "tested_at": "2026-10-05",
+   "geography": "г. Астана",
+   "granularity": "ТС",
+   "period": "2018 (анонс)",
+   "format": "JSON/XML (по описанию портала)",
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": "API-ключ (по описанию портала)",
+   "limitations": "Актуальность не проверена",
+   "next_retrieval_step": "Открыть в браузере; задокументировать реальный запрос"
+  }
+ ],
+ "opportunities": [
+  {
+   "idea_id": "AST-A07-O1",
+   "level": "MVP (первый прототип, планирование)",
+   "title": "Аудит согласованности источников и пробелов навигации у станций Tarlan Astana",
+   "problem": "Факты о часах и ценах расходятся между официальными и агрегаторскими каналами; официальные каналы молчат; переименование LRT не отражено в указателях",
+   "evidence_fact_ids": [
+    "AST-A07-F004",
+    "AST-A07-F008",
+    "AST-A07-F010",
+    "AST-A07-F011",
+    "AST-A07-F012",
+    "AST-A07-F014",
+    "AST-A07-F015",
+    "AST-A07-F029"
+   ],
+   "primary_user": "Аналитик Управления туризма / Visit Astana; вторично CTS",
+   "user_task": "Определить, какие карточки исправить, где поставить указатели от станций к объектам, какие объекты плохо связаны",
+   "existing_solution": "Visit Astana, kazakhstan.travel, 2ГИС — без сверки и дат проверки",
+   "proposed_addition": "Слой согласованности и свежести на MapLibre, таблица конфликтов, расстояние до ближайшей станции (unknown до получения координат)",
+   "required_dataset_ids": [
+    "AST-A07-D001",
+    "AST-A07-D002",
+    "AST-A07-D005",
+    "AST-A07-D006"
+   ],
+   "ai_role": "Не нужен для ядра; опционально LLM разбирает строку адреса kazakhstan.travel на поля с проверкой человеком (мерить точность)",
+   "non_ai_baseline": "Ручная таблица + правила resolve()",
+   "success_metrics": [
+    "K — доля конфликтов",
+    "S — молчание официального канала",
+    "C — покрытие источниками",
+    "доля POI с координатами"
+   ],
+   "feasibility_10_days": "высокая для 30 карточек вручную",
+   "blockers": [
+    "условия использования порталов",
+    "координаты станций не получены"
+   ],
+   "transfer_to_shymkent": "Код общий; в Шымкенте нет рельсовой линии — слой «станции» заменить остановками, если появятся данные",
+   "next_action": "Выписать 30 карточек и посчитать K/S/C"
+  },
+  {
+   "idea_id": "AST-A07-O2",
+   "level": "MVP (демонстратор поверх O1)",
+   "title": "Проверяемый маршрут на день с окнами транспорта и сезона",
+   "problem": "Посетитель не знает, успеет ли он к открытым объектам с учётом окна LRT, выходных дней и зимних пеших отрезков",
+   "evidence_fact_ids": [
+    "AST-A07-F006",
+    "AST-A07-F010",
+    "AST-A07-F016",
+    "AST-A07-F017",
+    "AST-A07-F029"
+   ],
+   "primary_user": "Деловой гость с окном 3–5 ч; семья на коротком отдыхе",
+   "user_task": "Выбрать точки, которые реально открыты и достижимы",
+   "existing_solution": "AI-планировщик kazakhstan.travel; бот Visit Astana; маршруты 24/48 ч",
+   "proposed_addition": "Вердикты NOT_EXECUTABLE/UNVERIFIED/LIKELY_OPEN/VERIFIED_OPEN с источником по каждой точке",
+   "required_dataset_ids": [
+    "AST-A07-D001",
+    "AST-A07-D002",
+    "AST-A07-D005"
+   ],
+   "ai_role": "Разбор запроса и объяснение на kz/ru/en/zh; отбор и вердикты — код",
+   "non_ai_baseline": "Форма + та же эвристика",
+   "success_metrics": [
+    "E",
+    "F (цель 0)",
+    "U",
+    "T — доля шагов вне окна транспорта"
+   ],
+   "feasibility_10_days": "средняя",
+   "blockers": [
+    "нет расписаний ОТ",
+    "дублирование с существующими планировщиками"
+   ],
+   "transfer_to_shymkent": "Код общий; окно LRT и зимний параметр только для Астаны",
+   "next_action": "После O1 — 10 маршрутов с проверкой E и F"
+  },
+  {
+   "idea_id": "AST-A07-O3",
+   "level": "Продукт на 1–3 месяца",
+   "title": "Слой перебоев: временные изменения маршрутов и события → какие визиты ломаются",
+   "problem": "Изменения маршрутов публикуются без сроков; события меняют доступность",
+   "evidence_fact_ids": [
+    "AST-A07-F025",
+    "AST-A07-F015",
+    "AST-A07-F027",
+    "AST-A07-F022"
+   ],
+   "primary_user": "Visit Astana, CTS, Управление туризма",
+   "user_task": "Оценить влияние перебоя на типовые визиты и предупредить гостей",
+   "existing_solution": "Текстовые сообщения iKOMEK109/CTS",
+   "proposed_addition": "Структурированные события перебоев + перерасчёт связности топ-POI; аналог «устойчивости к событиям» на реальных данных",
+   "required_dataset_ids": [
+    "AST-A07-D003",
+    "AST-A07-D004",
+    "AST-A07-D007"
+   ],
+   "ai_role": "Возможно — извлечение маршрутов и дат из текста объявлений с проверкой человеком",
+   "non_ai_baseline": "Ручная оцифровка",
+   "success_metrics": [
+    "доля объявлений, которые удаётся однозначно структурировать",
+    "задержка между объявлением и обновлением слоя"
+   ],
+   "feasibility_10_days": "низкая",
+   "blockers": [
+    "нет машиночитаемых объявлений",
+    "нет расписаний"
+   ],
+   "transfer_to_shymkent": "Схема перебоев общая; источники объявлений — свои",
+   "next_action": "Оцифровать 3–5 объявлений вручную"
+  },
+  {
+   "idea_id": "AST-A07-O4",
+   "level": "Исследовательская идея",
+   "title": "Робастное планирование при конфликтующих и сезонных данных; измерение устаревания каналов",
+   "problem": "Методы TTDP предполагают известные часы; в Астане каналы расходятся и зависят от сезона",
+   "evidence_fact_ids": [
+    "AST-A07-F029",
+    "AST-A07-F030",
+    "AST-A07-F008",
+    "AST-A07-F016"
+   ],
+   "primary_user": "Дипломник / исследователь",
+   "user_task": "Оценить, как доверие к источникам и сезон влияют на исполнимость",
+   "existing_solution": "Литература TTDP",
+   "proposed_addition": "Вероятности закрытия по уровню источника; зимний вес пеших отрезков; повторные снимки карточек",
+   "required_dataset_ids": [
+    "AST-A07-D001",
+    "AST-A07-D002"
+   ],
+   "ai_role": "Не обязателен",
+   "non_ai_baseline": "Детерминированный TTDP",
+   "success_metrics": [
+    "кривая исполнимости в зависимости от доли конфликтов",
+    "скорость отражения изменений по каналам"
+   ],
+   "feasibility_10_days": "низкая для реальной части",
+   "blockers": [
+    "условия повторного сбора",
+    "нет полевых замеров"
+   ],
+   "transfer_to_shymkent": "Да, с собственными параметрами",
+   "next_action": "Два снимка 30 карточек с интервалом 7 дней"
+  }
+ ],
+ "open_questions": [
+  {
+   "вопрос": "Какие часы и цены Национального музея на официальном сайте музея, и какой адрес сайта действителен?",
+   "почему_важно": "Разрешает конфликт F010/F011/F012/F028",
+   "как_проверить": "Открыть сайт музея в браузере; при необходимости звонок (решение владельца)"
+  },
+  {
+   "вопрос": "Есть ли у CTS/Avtobys открытый GTFS/API, и когда вернётся страница маршрутов?",
+   "почему_важно": "Без этого время в пути на ОТ остаётся unknown (F004)",
+   "как_проверить": "Транспортная роль; повторная проверка cts.gov.kz"
+  },
+  {
+   "вопрос": "Интегрирована ли оплата Tarlan Astana с автобусами и принимаются ли иностранные карты?",
+   "почему_важно": "Ключевое трение для иностранного гостя (F009)",
+   "как_проверить": "Официальные сообщения CTS; полевая проверка"
+  },
+  {
+   "вопрос": "Где и как публикуются временные изменения маршрутов с датами?",
+   "почему_важно": "Основа слоя перебоев (O3)",
+   "как_проверить": "Каналы iKOMEK109/CTS; оцифровка 3–5 объявлений"
+  },
+  {
+   "вопрос": "Какие из 30 топ-объектов есть на карте inva.gov.kz и с каким статусом?",
+   "почему_важно": "Слой доступности для маломобильных гостей",
+   "как_проверить": "inva.gov.kz в браузере"
+  },
+  {
+   "вопрос": "Совпадают ли районные атрибуты POI с границами после августа 2024?",
+   "почему_важно": "Нельзя приписывать районам неверные объекты (F021)",
+   "как_проверить": "Официальные границы районов + координаты POI"
+  }
+ ],
+ "city_comparison": [
+  {
+   "topic": "Официальный туристический портал",
+   "astana_fact_ids": [
+    "AST-A07-F001",
+    "AST-A07-F002"
+   ],
+   "shymkent_fact_ids": [
+    "A07-F010",
+    "A07-F011"
+   ],
+   "comparison_status": "both_exist_different_access",
+   "shared_component": "коннектор «карточка → claims» с уровнями источника",
+   "city_specific_inputs": [
+    "URL и структура страниц",
+    "условия использования"
+   ],
+   "caveats": "visitastana.kz открывается автоматически, visit-shymkent.com закрыт robots — доступность сбора несопоставима"
+  },
+  {
+   "topic": "ИИ-гид / планировщик для туриста",
+   "astana_fact_ids": [
+    "AST-A07-F001",
+    "AST-A07-F013"
+   ],
+   "shymkent_fact_ids": [
+    "A07-F007"
+   ],
+   "comparison_status": "astana_exists_shymkent_announced",
+   "shared_component": "нет (рекомендация не строить бот)",
+   "city_specific_inputs": [],
+   "caveats": "Качество существующих ботов не проверялось"
+  },
+  {
+   "topic": "Актуальность расписаний ОТ",
+   "astana_fact_ids": [
+    "AST-A07-F004",
+    "AST-A07-F025",
+    "AST-A07-F026"
+   ],
+   "shymkent_fact_ids": [
+    "A07-F024",
+    "A07-F012"
+   ],
+   "comparison_status": "both_unavailable_as_open_data",
+   "shared_component": "валидатор: transit=unknown без источника",
+   "city_specific_inputs": [
+    "окно Tarlan Astana 06:00–23:00 (только Астана)",
+    "операторы и приложения"
+   ],
+   "caveats": "Avtobys есть в обоих городах, но функции различаются"
+  },
+  {
+   "topic": "Оплата проезда для гостя",
+   "astana_fact_ids": [
+    "AST-A07-F006",
+    "AST-A07-F009",
+    "AST-A07-F003"
+   ],
+   "shymkent_fact_ids": [
+    "A07-F013",
+    "A07-F014",
+    "A07-F015",
+    "A07-F016"
+   ],
+   "comparison_status": "different_problems",
+   "shared_component": "поле payment_methods с источником и датой",
+   "city_specific_inputs": [
+    "тарифы",
+    "системы оплаты"
+   ],
+   "caveats": "Тарифы и правила не переносить"
+  },
+  {
+   "topic": "Конфликты источников о фактах POI",
+   "astana_fact_ids": [
+    "AST-A07-F010",
+    "AST-A07-F011",
+    "AST-A07-F012",
+    "AST-A07-F029"
+   ],
+   "shymkent_fact_ids": [
+    "A07-F003",
+    "A07-F025"
+   ],
+   "comparison_status": "astana_real_sample_shymkent_synthetic",
+   "shared_component": "resolve() с уровнями доверия; вердикты",
+   "city_specific_inputs": [
+    "веса уровней источников"
+   ],
+   "caveats": "Веса — гипотеза, требуют калибровки полевой проверкой"
+  },
+  {
+   "topic": "Турпоток (контекст)",
+   "astana_fact_ids": [
+    "AST-A07-F017",
+    "AST-A07-F018",
+    "AST-A07-F019"
+   ],
+   "shymkent_fact_ids": [
+    "A07-F001",
+    "A07-F003"
+   ],
+   "comparison_status": "not_comparable_without_BNS",
+   "shared_component": "нет",
+   "city_specific_inputs": [
+    "ряды БНС по городу"
+   ],
+   "caveats": "Определения «туриста» в релизах не раскрыты; у Шымкента внутреннее противоречие"
+  },
+  {
+   "topic": "Доступность объектов",
+   "astana_fact_ids": [
+    "AST-A07-F023",
+    "AST-A07-F024"
+   ],
+   "shymkent_fact_ids": [
+    "A07-F019",
+    "A07-F020"
+   ],
+   "comparison_status": "same_source_not_comparable_as_rates",
+   "shared_component": "слой inva.gov.kz (если выгрузка возможна)",
+   "city_specific_inputs": [
+    "знаменатели по городу"
+   ],
+   "caveats": "Абсолютные числа адаптированных объектов без знаменателя не сравнивать"
+  },
+  {
+   "topic": "Сезонность",
+   "astana_fact_ids": [
+    "AST-A07-F016",
+    "AST-A07-F019"
+   ],
+   "shymkent_fact_ids": [],
+   "comparison_status": "pending",
+   "shared_component": "параметр сезона в конфиге города",
+   "city_specific_inputs": [
+    "климат",
+    "события"
+   ],
+   "caveats": "В первом проходе A07 сезонность Шымкента не исследовалась"
+  },
+  {
+   "topic": "Районы и границы",
+   "astana_fact_ids": [
+    "AST-A07-F020",
+    "AST-A07-F021"
+   ],
+   "shymkent_fact_ids": [],
+   "comparison_status": "pending",
+   "shared_component": "поле district_boundary_version",
+   "city_specific_inputs": [
+    "границы районов"
+   ],
+   "caveats": "Районы Шымкента в A07 не исследовались"
+  },
+  {
+   "topic": "Валидатор маршрута",
+   "astana_fact_ids": [
+    "AST-A07-F029"
+   ],
+   "shymkent_fact_ids": [
+    "A07-F025"
+   ],
+   "comparison_status": "shared_code_ready",
+   "shared_component": "одна библиотека, конфиги astana/shymkent",
+   "city_specific_inputs": [
+    "окна транспорта",
+    "уровни источников",
+    "сезон"
+   ],
+   "caveats": "Эксперименты проверяют логику, не полезность"
+  }
+ ],
+ "deliverables": {
+  "real_sample_files": [
+   "AST_A07_validator_real_sample.py",
+   "AST_A07_validator_output.real_sample.json"
+  ],
+  "real_sample_note": "Значения вручную выписаны из AST-A07-S003/S006/S010/S011/S012/S013; это заявления источников, а не проверенная истина",
+  "poi_schema": "AST_A07_report.md §5 (расширение A07 §4)",
+  "metrics": [
+   "E",
+   "U",
+   "A",
+   "F",
+   "C",
+   "K",
+   "S",
+   "T"
+  ]
+ }
+}

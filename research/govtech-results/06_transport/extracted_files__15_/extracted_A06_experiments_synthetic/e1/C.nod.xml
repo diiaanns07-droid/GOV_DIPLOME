@@ -1,0 +1,7 @@
+<nodes>
+  <node id="W" x="-600" y="0" type="priority"/>  <node id="E" x="600" y="0" type="priority"/>
+  <node id="N" x="0" y="600" type="priority"/>   <node id="S" x="0" y="-600" type="priority"/>
+  <node id="Wd" x="-200" y="0" type="priority"/> <node id="Ed" x="200" y="0" type="priority"/>
+  <node id="rn" x="0" y="45" type="priority"/> <node id="rw" x="-45" y="0" type="priority"/>
+  <node id="rs" x="0" y="-45" type="priority"/> <node id="re" x="45" y="0" type="priority"/>
+</nodes>

@@ -1,0 +1,1484 @@
+{
+ "type": "FeatureCollection",
+ "name": "A03 synthetic instance (NOT real data)",
+ "features": [
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     69.586871,
+     42.282165
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "container_site",
+    "id": "SYN-001",
+    "containers": 1,
+    "fill": 0.92,
+    "demand": 9,
+    "service_s": 210,
+    "tw": [
+     0,
+     7200
+    ],
+    "tw_reason": "synthetic: до 08:00 (например, рядом детское учреждение)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     69.664764,
+     42.309495
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "container_site",
+    "id": "SYN-002",
+    "containers": 1,
+    "fill": 0.95,
+    "demand": 9,
+    "service_s": 210,
+    "tw": [
+     14400,
+     23400
+    ],
+    "tw_reason": "synthetic: 10:00–12:30 (например, двор рынка после разгрузки)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     69.686062,
+     42.327201
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "container_site",
+    "id": "SYN-003",
+    "containers": 3,
+    "fill": 0.71,
+    "demand": 21,
+    "service_s": 390,
+    "tw": [
+     0,
+     25200
+    ],
+    "tw_reason": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     69.679069,
+     42.362296
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "container_site",
+    "id": "SYN-004",
+    "containers": 4,
+    "fill": 0.9,
+    "demand": 36,
+    "service_s": 480,
+    "tw": [
+     0,
+     25200
+    ],
+    "tw_reason": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     69.529176,
+     42.276085
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "container_site",
+    "id": "SYN-005",
+    "containers": 5,
+    "fill": 0.6,
+    "demand": 30,
+    "service_s": 570,
+    "tw": [
+     0,
+     25200
+    ],
+    "tw_reason": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     69.551043,
+     42.369357
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "container_site",
+    "id": "SYN-006",
+    "containers": 1,
+    "fill": 0.91,
+    "demand": 9,
+    "service_s": 210,
+    "tw": [
+     0,
+     25200
+    ],
+    "tw_reason": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     69.58996,
+     42.290519
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "container_site",
+    "id": "SYN-007",
+    "containers": 4,
+    "fill": 0.59,
+    "demand": 24,
+    "service_s": 480,
+    "tw": [
+     0,
+     25200
+    ],
+    "tw_reason": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     69.680527,
+     42.311938
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "container_site",
+    "id": "SYN-008",
+    "containers": 2,
+    "fill": 0.54,
+    "demand": 11,
+    "service_s": 300,
+    "tw": [
+     0,
+     25200
+    ],
+    "tw_reason": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     69.680789,
+     42.340285
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "container_site",
+    "id": "SYN-009",
+    "containers": 5,
+    "fill": 0.94,
+    "demand": 47,
+    "service_s": 570,
+    "tw": [
+     0,
+     25200
+    ],
+    "tw_reason": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     69.680444,
+     42.364855
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "container_site",
+    "id": "SYN-010",
+    "containers": 5,
+    "fill": 0.68,
+    "demand": 34,
+    "service_s": 570,
+    "tw": [
+     0,
+     25200
+    ],
+    "tw_reason": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     69.522787,
+     42.281314
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "container_site",
+    "id": "SYN-011",
+    "containers": 4,
+    "fill": 0.51,
+    "demand": 21,
+    "service_s": 480,
+    "tw": [
+     0,
+     25200
+    ],
+    "tw_reason": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     69.551343,
+     42.36526
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "container_site",
+    "id": "SYN-012",
+    "containers": 2,
+    "fill": 0.99,
+    "demand": 20,
+    "service_s": 300,
+    "tw": [
+     0,
+     25200
+    ],
+    "tw_reason": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     69.569005,
+     42.275305
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "container_site",
+    "id": "SYN-013",
+    "containers": 3,
+    "fill": 0.79,
+    "demand": 24,
+    "service_s": 390,
+    "tw": [
+     0,
+     25200
+    ],
+    "tw_reason": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     69.686848,
+     42.317525
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "container_site",
+    "id": "SYN-014",
+    "containers": 2,
+    "fill": 0.81,
+    "demand": 16,
+    "service_s": 300,
+    "tw": [
+     0,
+     25200
+    ],
+    "tw_reason": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     69.682859,
+     42.327862
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "container_site",
+    "id": "SYN-015",
+    "containers": 2,
+    "fill": 0.63,
+    "demand": 13,
+    "service_s": 300,
+    "tw": [
+     0,
+     25200
+    ],
+    "tw_reason": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     69.690663,
+     42.36939
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "container_site",
+    "id": "SYN-016",
+    "containers": 3,
+    "fill": 0.7,
+    "demand": 21,
+    "service_s": 390,
+    "tw": [
+     0,
+     7200
+    ],
+    "tw_reason": "synthetic: до 08:00 (например, рядом детское учреждение)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     69.52,
+     42.282282
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "container_site",
+    "id": "SYN-017",
+    "containers": 2,
+    "fill": 0.96,
+    "demand": 19,
+    "service_s": 300,
+    "tw": [
+     0,
+     7200
+    ],
+    "tw_reason": "synthetic: до 08:00 (например, рядом детское учреждение)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     69.552776,
+     42.375744
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "container_site",
+    "id": "SYN-018",
+    "containers": 1,
+    "fill": 0.68,
+    "demand": 7,
+    "service_s": 210,
+    "tw": [
+     0,
+     25200
+    ],
+    "tw_reason": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     69.56947,
+     42.279702
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "container_site",
+    "id": "SYN-019",
+    "containers": 2,
+    "fill": 0.83,
+    "demand": 17,
+    "service_s": 300,
+    "tw": [
+     0,
+     25200
+    ],
+    "tw_reason": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     69.684947,
+     42.321844
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "container_site",
+    "id": "SYN-020",
+    "containers": 4,
+    "fill": 0.61,
+    "demand": 25,
+    "service_s": 480,
+    "tw": [
+     0,
+     25200
+    ],
+    "tw_reason": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     69.694123,
+     42.345769
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "container_site",
+    "id": "SYN-021",
+    "containers": 2,
+    "fill": 0.72,
+    "demand": 14,
+    "service_s": 300,
+    "tw": [
+     14400,
+     23400
+    ],
+    "tw_reason": "synthetic: 10:00–12:30 (например, двор рынка после разгрузки)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     69.679131,
+     42.357594
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "container_site",
+    "id": "SYN-022",
+    "containers": 2,
+    "fill": 0.58,
+    "demand": 12,
+    "service_s": 300,
+    "tw": [
+     0,
+     25200
+    ],
+    "tw_reason": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     69.542847,
+     42.270303
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "container_site",
+    "id": "SYN-023",
+    "containers": 3,
+    "fill": 0.62,
+    "demand": 19,
+    "service_s": 390,
+    "tw": [
+     0,
+     25200
+    ],
+    "tw_reason": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     69.550644,
+     42.364858
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "container_site",
+    "id": "SYN-024",
+    "containers": 2,
+    "fill": 0.7,
+    "demand": 14,
+    "service_s": 300,
+    "tw": [
+     0,
+     25200
+    ],
+    "tw_reason": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     69.569415,
+     42.283873
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "container_site",
+    "id": "SYN-025",
+    "containers": 3,
+    "fill": 0.78,
+    "demand": 24,
+    "service_s": 390,
+    "tw": [
+     0,
+     25200
+    ],
+    "tw_reason": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     69.683116,
+     42.308023
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "container_site",
+    "id": "SYN-026",
+    "containers": 1,
+    "fill": 0.57,
+    "demand": 6,
+    "service_s": 210,
+    "tw": [
+     0,
+     25200
+    ],
+    "tw_reason": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     69.675493,
+     42.328727
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "container_site",
+    "id": "SYN-027",
+    "containers": 4,
+    "fill": 0.57,
+    "demand": 23,
+    "service_s": 480,
+    "tw": [
+     0,
+     7200
+    ],
+    "tw_reason": "synthetic: до 08:00 (например, рядом детское учреждение)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     69.679088,
+     42.366444
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "container_site",
+    "id": "SYN-028",
+    "containers": 4,
+    "fill": 1.0,
+    "demand": 40,
+    "service_s": 480,
+    "tw": [
+     0,
+     7200
+    ],
+    "tw_reason": "synthetic: до 08:00 (например, рядом детское учреждение)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     69.521426,
+     42.283914
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "container_site",
+    "id": "SYN-029",
+    "containers": 2,
+    "fill": 0.98,
+    "demand": 20,
+    "service_s": 300,
+    "tw": [
+     0,
+     25200
+    ],
+    "tw_reason": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     69.535046,
+     42.361194
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "container_site",
+    "id": "SYN-030",
+    "containers": 1,
+    "fill": 0.96,
+    "demand": 10,
+    "service_s": 210,
+    "tw": [
+     0,
+     25200
+    ],
+    "tw_reason": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     69.564957,
+     42.273145
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "container_site",
+    "id": "SYN-031",
+    "containers": 2,
+    "fill": 0.58,
+    "demand": 12,
+    "service_s": 300,
+    "tw": [
+     0,
+     25200
+    ],
+    "tw_reason": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     69.687465,
+     42.326189
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "container_site",
+    "id": "SYN-032",
+    "containers": 3,
+    "fill": 0.96,
+    "demand": 29,
+    "service_s": 390,
+    "tw": [
+     14400,
+     23400
+    ],
+    "tw_reason": "synthetic: 10:00–12:30 (например, двор рынка после разгрузки)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     69.690739,
+     42.332617
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "container_site",
+    "id": "SYN-033",
+    "containers": 2,
+    "fill": 0.89,
+    "demand": 18,
+    "service_s": 300,
+    "tw": [
+     0,
+     7200
+    ],
+    "tw_reason": "synthetic: до 08:00 (например, рядом детское учреждение)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     69.680783,
+     42.365042
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "container_site",
+    "id": "SYN-034",
+    "containers": 2,
+    "fill": 0.6,
+    "demand": 12,
+    "service_s": 300,
+    "tw": [
+     0,
+     25200
+    ],
+    "tw_reason": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     69.526782,
+     42.288878
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "container_site",
+    "id": "SYN-035",
+    "containers": 1,
+    "fill": 0.71,
+    "demand": 7,
+    "service_s": 210,
+    "tw": [
+     0,
+     25200
+    ],
+    "tw_reason": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     69.550672,
+     42.354601
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "container_site",
+    "id": "SYN-036",
+    "containers": 4,
+    "fill": 0.97,
+    "demand": 39,
+    "service_s": 480,
+    "tw": [
+     0,
+     25200
+    ],
+    "tw_reason": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     69.566123,
+     42.276372
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "container_site",
+    "id": "SYN-037",
+    "containers": 1,
+    "fill": 0.54,
+    "demand": 5,
+    "service_s": 210,
+    "tw": [
+     0,
+     25200
+    ],
+    "tw_reason": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     69.683925,
+     42.31215
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "container_site",
+    "id": "SYN-038",
+    "containers": 4,
+    "fill": 0.64,
+    "demand": 25,
+    "service_s": 480,
+    "tw": [
+     14400,
+     23400
+    ],
+    "tw_reason": "synthetic: 10:00–12:30 (например, двор рынка после разгрузки)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     69.677677,
+     42.330722
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "container_site",
+    "id": "SYN-039",
+    "containers": 4,
+    "fill": 0.83,
+    "demand": 33,
+    "service_s": 480,
+    "tw": [
+     0,
+     25200
+    ],
+    "tw_reason": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     69.677069,
+     42.374656
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "container_site",
+    "id": "SYN-040",
+    "containers": 4,
+    "fill": 0.55,
+    "demand": 22,
+    "service_s": 480,
+    "tw": [
+     0,
+     25200
+    ],
+    "tw_reason": null
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     69.56,
+     42.3
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "depot",
+    "id": "SYN-DEPOT"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     69.665,
+     42.25
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "landfill",
+    "id": "SYN-LANDFILL"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      69.515,
+      42.365
+     ],
+     [
+      69.705,
+      42.265
+     ]
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "barrier",
+    "crossings": [
+     [
+      69.572,
+      42.335
+     ],
+     [
+      69.6632,
+      42.287
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      69.56,
+      42.3
+     ],
+     [
+      69.569415,
+      42.283873
+     ],
+     [
+      69.56947,
+      42.279702
+     ],
+     [
+      69.566123,
+      42.276372
+     ],
+     [
+      69.569005,
+      42.275305
+     ],
+     [
+      69.564957,
+      42.273145
+     ],
+     [
+      69.542847,
+      42.270303
+     ],
+     [
+      69.529176,
+      42.276085
+     ],
+     [
+      69.522787,
+      42.281314
+     ],
+     [
+      69.52,
+      42.282282
+     ],
+     [
+      69.521426,
+      42.283914
+     ],
+     [
+      69.526782,
+      42.288878
+     ],
+     [
+      69.586871,
+      42.282165
+     ],
+     [
+      69.58996,
+      42.290519
+     ],
+     [
+      69.550672,
+      42.354601
+     ],
+     [
+      69.535046,
+      42.361194
+     ],
+     [
+      69.665,
+      42.25
+     ]
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "route",
+    "run": "B2_nearest_neighbor_tw",
+    "vehicle": 1,
+    "note": "straight segments between stops, not road geometry"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      69.56,
+      42.3
+     ],
+     [
+      69.550644,
+      42.364858
+     ],
+     [
+      69.551343,
+      42.36526
+     ],
+     [
+      69.551043,
+      42.369357
+     ],
+     [
+      69.552776,
+      42.375744
+     ],
+     [
+      69.677069,
+      42.374656
+     ],
+     [
+      69.679088,
+      42.366444
+     ],
+     [
+      69.680444,
+      42.364855
+     ],
+     [
+      69.680783,
+      42.365042
+     ],
+     [
+      69.679069,
+      42.362296
+     ],
+     [
+      69.679131,
+      42.357594
+     ],
+     [
+      69.680789,
+      42.340285
+     ],
+     [
+      69.682859,
+      42.327862
+     ],
+     [
+      69.680527,
+      42.311938
+     ],
+     [
+      69.665,
+      42.25
+     ]
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "route",
+    "run": "B2_nearest_neighbor_tw",
+    "vehicle": 2,
+    "note": "straight segments between stops, not road geometry"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      69.56,
+      42.3
+     ],
+     [
+      69.683116,
+      42.308023
+     ],
+     [
+      69.686848,
+      42.317525
+     ],
+     [
+      69.684947,
+      42.321844
+     ],
+     [
+      69.686062,
+      42.327201
+     ],
+     [
+      69.690739,
+      42.332617
+     ],
+     [
+      69.677677,
+      42.330722
+     ],
+     [
+      69.675493,
+      42.328727
+     ],
+     [
+      69.690663,
+      42.36939
+     ],
+     [
+      69.664764,
+      42.309495
+     ],
+     [
+      69.683925,
+      42.31215
+     ],
+     [
+      69.687465,
+      42.326189
+     ],
+     [
+      69.694123,
+      42.345769
+     ],
+     [
+      69.665,
+      42.25
+     ]
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "route",
+    "run": "B2_nearest_neighbor_tw",
+    "vehicle": 3,
+    "note": "straight segments between stops, not road geometry"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      69.56,
+      42.3
+     ],
+     [
+      69.569415,
+      42.283873
+     ],
+     [
+      69.56947,
+      42.279702
+     ],
+     [
+      69.586871,
+      42.282165
+     ],
+     [
+      69.58996,
+      42.290519
+     ],
+     [
+      69.680527,
+      42.311938
+     ],
+     [
+      69.675493,
+      42.328727
+     ],
+     [
+      69.682859,
+      42.327862
+     ],
+     [
+      69.690739,
+      42.332617
+     ],
+     [
+      69.686062,
+      42.327201
+     ],
+     [
+      69.687465,
+      42.326189
+     ],
+     [
+      69.684947,
+      42.321844
+     ],
+     [
+      69.686848,
+      42.317525
+     ],
+     [
+      69.683925,
+      42.31215
+     ],
+     [
+      69.683116,
+      42.308023
+     ],
+     [
+      69.665,
+      42.25
+     ]
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "route",
+    "run": "OR_gls_5s",
+    "vehicle": 1,
+    "note": "straight segments between stops, not road geometry"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      69.56,
+      42.3
+     ],
+     [
+      69.677069,
+      42.374656
+     ],
+     [
+      69.690663,
+      42.36939
+     ],
+     [
+      69.679088,
+      42.366444
+     ],
+     [
+      69.680783,
+      42.365042
+     ],
+     [
+      69.680444,
+      42.364855
+     ],
+     [
+      69.679069,
+      42.362296
+     ],
+     [
+      69.679131,
+      42.357594
+     ],
+     [
+      69.694123,
+      42.345769
+     ],
+     [
+      69.680789,
+      42.340285
+     ],
+     [
+      69.677677,
+      42.330722
+     ],
+     [
+      69.664764,
+      42.309495
+     ],
+     [
+      69.665,
+      42.25
+     ]
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "route",
+    "run": "OR_gls_5s",
+    "vehicle": 3,
+    "note": "straight segments between stops, not road geometry"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      69.56,
+      42.3
+     ],
+     [
+      69.550672,
+      42.354601
+     ],
+     [
+      69.535046,
+      42.361194
+     ],
+     [
+      69.552776,
+      42.375744
+     ],
+     [
+      69.551043,
+      42.369357
+     ],
+     [
+      69.551343,
+      42.36526
+     ],
+     [
+      69.550644,
+      42.364858
+     ],
+     [
+      69.526782,
+      42.288878
+     ],
+     [
+      69.521426,
+      42.283914
+     ],
+     [
+      69.52,
+      42.282282
+     ],
+     [
+      69.522787,
+      42.281314
+     ],
+     [
+      69.529176,
+      42.276085
+     ],
+     [
+      69.542847,
+      42.270303
+     ],
+     [
+      69.564957,
+      42.273145
+     ],
+     [
+      69.566123,
+      42.276372
+     ],
+     [
+      69.569005,
+      42.275305
+     ],
+     [
+      69.665,
+      42.25
+     ]
+    ]
+   },
+   "properties": {
+    "kind": "synthetic",
+    "role": "route",
+    "run": "OR_gls_5s",
+    "vehicle": 4,
+    "note": "straight segments between stops, not road geometry"
+   }
+  }
+ ]
+}

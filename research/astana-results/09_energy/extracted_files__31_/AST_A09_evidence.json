@@ -1,0 +1,1405 @@
+{
+  "meta": {
+    "agent_id": "AST-A09",
+    "topic": "Энергетика: муниципальные здания и ресурсы",
+    "city": "astana",
+    "round": "astana-2026-10-05",
+    "searched_at": "2026-10-05T04:10Z",
+    "access_limitations": "Нет веб-поиска и браузера. Сеть среды пропускает только GitHub, PyPI и служебные домены. Все официальные домены РК и Астаны, Open-Meteo, PVGIS, Global Solar Atlas и Казгидромет вернули 403; адреса операторов, предложенные моделью, не ответили. GitHub core API исчерпан, работал только search API. Метаданные data.egov.kz получены из сторонней выгрузки каталога от 2026-02-01, а не с портала. Чужой API-ключ из стороннего репозитория не использовался. Ссылки на стандарты и статьи, не открытые в сессии, — из памяти модели."
+  },
+  "sources": [
+    {
+      "source_id": "AST-A09-S001",
+      "title": "Официальный сайт акимата г. Астаны (стартовый указатель)",
+      "publisher": "gov.kz / акимат г. Астаны",
+      "url": "https://www.gov.kz/memleket/entities/astana?lang=ru",
+      "published_at": null,
+      "accessed_at": "2026-10-05",
+      "source_type": "official_page",
+      "access_status": "blocked_in_environment",
+      "notes": "403 host_not_allowed от egress-прокси среды (проверено 2026-10-05 04:10 UTC); содержание не открыто"
+    },
+    {
+      "source_id": "AST-A09-S002",
+      "title": "БНС: динамические ряды по г. Астане, раздел 38",
+      "publisher": "БНС АСПиР РК",
+      "url": "https://stat.gov.kz/ru/region/astana/dynamic-tables/38/",
+      "published_at": null,
+      "accessed_at": "2026-10-05",
+      "source_type": "official_statistics",
+      "access_status": "blocked_in_environment",
+      "notes": "403 host_not_allowed от egress-прокси среды (проверено 2026-10-05 04:10 UTC); содержание не открыто"
+    },
+    {
+      "source_id": "AST-A09-S003",
+      "title": "Портал открытых данных data.egov.kz",
+      "publisher": "Электронное правительство РК",
+      "url": "https://data.egov.kz/",
+      "published_at": null,
+      "accessed_at": "2026-10-05",
+      "source_type": "open_data_portal",
+      "access_status": "blocked_in_environment",
+      "notes": "403 host_not_allowed от egress-прокси среды (проверено 2026-10-05 04:10 UTC); содержание не открыто; метаданные части наборов получены косвенно через S019"
+    },
+    {
+      "source_id": "AST-A09-S004",
+      "title": "Закон РК об энергосбережении (кандидат № 541-IV)",
+      "publisher": "ИПС «Әділет»",
+      "url": "https://adilet.zan.kz/rus/docs/Z1200000541",
+      "published_at": null,
+      "accessed_at": "2026-10-05",
+      "source_type": "law",
+      "access_status": "blocked_in_environment",
+      "notes": "403 host_not_allowed от egress-прокси среды (проверено 2026-10-05 04:10 UTC); содержание не открыто"
+    },
+    {
+      "source_id": "AST-A09-S005",
+      "title": "iKOMEK109 (адрес-догадка)",
+      "publisher": null,
+      "url": "https://ikomek109.kz/",
+      "published_at": null,
+      "accessed_at": "2026-10-05",
+      "source_type": "operator_page",
+      "access_status": "no_response",
+      "notes": "нет ответа за 12 с (возможно, домен не существует: адрес — догадка модели, не из источника); содержание не открыто"
+    },
+    {
+      "source_id": "AST-A09-S006",
+      "title": "109.kz (адрес-догадка)",
+      "publisher": null,
+      "url": "https://109.kz/",
+      "published_at": null,
+      "accessed_at": "2026-10-05",
+      "source_type": "operator_page",
+      "access_status": "no_response",
+      "notes": "нет ответа за 12 с (возможно, домен не существует: адрес — догадка модели, не из источника); содержание не открыто"
+    },
+    {
+      "source_id": "AST-A09-S007",
+      "title": "Астана-Энергия (адрес-догадка)",
+      "publisher": null,
+      "url": "https://astanaenergy.kz/",
+      "published_at": null,
+      "accessed_at": "2026-10-05",
+      "source_type": "operator_page",
+      "access_status": "no_response",
+      "notes": "нет ответа за 12 с (возможно, домен не существует: адрес — догадка модели, не из источника); содержание не открыто"
+    },
+    {
+      "source_id": "AST-A09-S008",
+      "title": "Астана-РЭК (адрес-догадка)",
+      "publisher": null,
+      "url": "https://www.astana-rek.kz/",
+      "published_at": null,
+      "accessed_at": "2026-10-05",
+      "source_type": "operator_page",
+      "access_status": "no_response",
+      "notes": "нет ответа за 12 с (возможно, домен не существует: адрес — догадка модели, не из источника); содержание не открыто"
+    },
+    {
+      "source_id": "AST-A09-S009",
+      "title": "Астанаэнергосбыт (адрес-догадка)",
+      "publisher": null,
+      "url": "https://astanaenergosbyt.kz/",
+      "published_at": null,
+      "accessed_at": "2026-10-05",
+      "source_type": "operator_page",
+      "access_status": "blocked_in_environment",
+      "notes": "403 host_not_allowed от egress-прокси среды (проверено 2026-10-05 04:10 UTC); содержание не открыто; существование домена не проверено"
+    },
+    {
+      "source_id": "AST-A09-S010",
+      "title": "Астана-Теплотранзит (адрес-догадка)",
+      "publisher": null,
+      "url": "https://www.teplotranzit.kz/",
+      "published_at": null,
+      "accessed_at": "2026-10-05",
+      "source_type": "operator_page",
+      "access_status": "blocked_in_environment",
+      "notes": "403 host_not_allowed от egress-прокси среды (проверено 2026-10-05 04:10 UTC); содержание не открыто; существование домена не проверено"
+    },
+    {
+      "source_id": "AST-A09-S011",
+      "title": "Astana Innovations (адрес-догадка)",
+      "publisher": null,
+      "url": "https://astanainnovations.kz/",
+      "published_at": null,
+      "accessed_at": "2026-10-05",
+      "source_type": "operator_page",
+      "access_status": "no_response",
+      "notes": "нет ответа за 12 с (возможно, домен не существует: адрес — догадка модели, не из источника); содержание не открыто"
+    },
+    {
+      "source_id": "AST-A09-S012",
+      "title": "Открытые бюджеты",
+      "publisher": "budget.egov.kz",
+      "url": "https://budget.egov.kz/",
+      "published_at": null,
+      "accessed_at": "2026-10-05",
+      "source_type": "open_data_portal",
+      "access_status": "blocked_in_environment",
+      "notes": "403 host_not_allowed от egress-прокси среды (проверено 2026-10-05 04:10 UTC); содержание не открыто"
+    },
+    {
+      "source_id": "AST-A09-S013",
+      "title": "Портал госзакупок",
+      "publisher": "goszakup.gov.kz",
+      "url": "https://goszakup.gov.kz/",
+      "published_at": null,
+      "accessed_at": "2026-10-05",
+      "source_type": "procurement_portal",
+      "access_status": "blocked_in_environment",
+      "notes": "403 host_not_allowed от egress-прокси среды (проверено 2026-10-05 04:10 UTC); содержание не открыто"
+    },
+    {
+      "source_id": "AST-A09-S014",
+      "title": "Open-Meteo archive, запрос по 51.13N 71.43E",
+      "publisher": "Open-Meteo",
+      "url": "https://archive-api.open-meteo.com/v1/archive?latitude=51.13&longitude=71.43&start_date=2025-01-01&end_date=2025-01-02&daily=temperature_2m_mean",
+      "published_at": null,
+      "accessed_at": "2026-10-05",
+      "source_type": "api",
+      "access_status": "blocked_in_environment",
+      "notes": "403 host_not_allowed от egress-прокси среды (проверено 2026-10-05 04:10 UTC); содержание не открыто"
+    },
+    {
+      "source_id": "AST-A09-S015",
+      "title": "PVGIS PVcalc, запрос по 51.13N 71.43E",
+      "publisher": "EC JRC",
+      "url": "https://re.jrc.ec.europa.eu/api/v5_2/PVcalc?lat=51.13&lon=71.43&peakpower=1&loss=14&outputformat=json",
+      "published_at": null,
+      "accessed_at": "2026-10-05",
+      "source_type": "api",
+      "access_status": "blocked_in_environment",
+      "notes": "403 host_not_allowed от egress-прокси среды (проверено 2026-10-05 04:10 UTC); содержание не открыто"
+    },
+    {
+      "source_id": "AST-A09-S016",
+      "title": "Global Solar Atlas",
+      "publisher": "World Bank / Solargis",
+      "url": "https://globalsolaratlas.info/",
+      "published_at": null,
+      "accessed_at": "2026-10-05",
+      "source_type": "data_portal",
+      "access_status": "blocked_in_environment",
+      "notes": "403 host_not_allowed от egress-прокси среды (проверено 2026-10-05 04:10 UTC); содержание не открыто"
+    },
+    {
+      "source_id": "AST-A09-S017",
+      "title": "Казгидромет",
+      "publisher": "РГП «Казгидромет»",
+      "url": "https://www.kazhydromet.kz/",
+      "published_at": null,
+      "accessed_at": "2026-10-05",
+      "source_type": "official_page",
+      "access_status": "blocked_in_environment",
+      "notes": "403 host_not_allowed от egress-прокси среды (проверено 2026-10-05 04:10 UTC); содержание не открыто"
+    },
+    {
+      "source_id": "AST-A09-S018",
+      "title": "Репозиторий STUPITS (zip main, скачан 2026-10-04, повторно прочитан)",
+      "publisher": "BAITC-Hacks / GitHub",
+      "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits",
+      "published_at": null,
+      "accessed_at": "2026-10-05",
+      "source_type": "code_repository",
+      "access_status": "opened",
+      "notes": "Прочитаны docs/GEO_SOURCES.md, data/astana_districts.geojson, data/events.json. Тот же архив, что A09-S010."
+    },
+    {
+      "source_id": "AST-A09-S019",
+      "title": "egov-web-crawler: datasets_export.csv — выгрузка каталога data.egov.kz",
+      "publisher": "Yerassyl20036 (сторонний автор) / GitHub",
+      "url": "https://github.com/Yerassyl20036/egov-web-crawler",
+      "published_at": "crawled_at 2026-02-01 (по полю crawled_at); последний push 2026-02-01 по GitHub search",
+      "accessed_at": "2026-10-05",
+      "source_type": "third_party_catalog_snapshot",
+      "access_status": "opened",
+      "notes": "3 882 записи с паспортными полями. В репозитории нет файла LICENSE: используем только для поиска и цитирования метаданных, массово не распространяем. Полнота выгрузки не гарантирована."
+    },
+    {
+      "source_id": "AST-A09-S020",
+      "title": "opengov-kz/data-egov-kz — парсеры data.egov.kz",
+      "publisher": "opengov.kz / GitHub",
+      "url": "https://github.com/opengov-kz/data-egov-kz",
+      "published_at": "последний push 2025-04-30 (GitHub search)",
+      "accessed_at": "2026-10-05",
+      "source_type": "third_party_code",
+      "access_status": "opened",
+      "notes": "MIT. README: данные требуют API-ключа; data/byMIO.csv содержит шаблон ссылок api/v4/<index>/v<N>?apiKey=. В config.py опубликован чужой ключ — НЕ использовался."
+    },
+    {
+      "source_id": "AST-A09-S021",
+      "title": "Aizhan-05/open-data-backend — пример запроса к API data.egov.kz",
+      "publisher": "Aizhan-05 / GitHub",
+      "url": "https://github.com/Aizhan-05/open-data-backend",
+      "published_at": "последний push 2025-09-26",
+      "accessed_at": "2026-10-05",
+      "source_type": "third_party_code",
+      "access_status": "opened",
+      "notes": "index.js: GET https://data.egov.kz/api/v4/onirler_oblystar_kalalar_boi4/v7?apiKey=...&size=100000, фильтр по полю nate1. Лицензии нет."
+    },
+    {
+      "source_id": "AST-A09-S022",
+      "title": "GitHub Search API: запросы 'data.egov.kz', 'astana energy data', 'astana heating', 'nur-sultan open data'",
+      "publisher": "GitHub",
+      "url": "https://api.github.com/search/repositories",
+      "published_at": null,
+      "accessed_at": "2026-10-05",
+      "source_type": "search_api",
+      "access_status": "opened",
+      "notes": "Выполнено 2026-10-05; найдено 6 / 0 / 0 / 1 репозиториев. Core API исчерпан (remaining 0)."
+    },
+    {
+      "source_id": "AST-A09-S023",
+      "title": "Building Data Genome 1, погодный файл external/weather/weather3.csv",
+      "publisher": "BUDS Lab / GitHub (MIT)",
+      "url": "https://github.com/buds-lab/the-building-data-genome-project",
+      "published_at": "2017",
+      "accessed_at": "2026-10-05",
+      "source_type": "dataset_repository",
+      "access_status": "opened",
+      "notes": "Тот же архив, что A09-S011. Ряд 2014-05-01…2015-05-01, tz America/Chicago, январь −7.1 °C, HDD18 = 4139 — холодный прокси, не Астана."
+    },
+    {
+      "source_id": "AST-A09-S024",
+      "title": "pvlib 0.16.1, shapely 2.1.2 (PyPI)",
+      "publisher": "pvlib / shapely",
+      "url": "https://pypi.org/project/pvlib/",
+      "published_at": null,
+      "accessed_at": "2026-10-05",
+      "source_type": "software",
+      "access_status": "opened",
+      "notes": "Положение Солнца NREL SPA (numpy), внеатмосферная радиация, центроид полигонов."
+    },
+    {
+      "source_id": "AST-A09-S025",
+      "title": "IANA tzdata в среде: Asia/Almaty",
+      "publisher": "IANA tz database",
+      "url": null,
+      "published_at": null,
+      "accessed_at": "2026-10-05",
+      "source_type": "software_reference_data",
+      "access_status": "opened",
+      "notes": "Смещение 2027-01-01 = UTC+5."
+    },
+    {
+      "source_id": "AST-A09-S026",
+      "title": "Первый проход по Шымкенту: A09_report.md, A09_evidence.json",
+      "publisher": "A09 (этот же исследователь, 2026-10-04)",
+      "url": "/mnt/user-data/outputs/A09_evidence.json",
+      "published_at": "2026-10-04",
+      "accessed_at": "2026-10-05",
+      "source_type": "internal_previous_round",
+      "access_status": "opened",
+      "notes": "Оригинальные ID A09-* сохранены и используются в city_comparison."
+    }
+  ],
+  "facts": [
+    {
+      "fact_id": "AST-A09-F001",
+      "statement": "Из среды недоступны официальные домены Астаны и РК (gov.kz/astana, stat.gov.kz, data.egov.kz, adilet.zan.kz, budget.egov.kz, goszakup.gov.kz, kazhydromet.kz) и погодно-солнечные сервисы (Open-Meteo, PVGIS, Global Solar Atlas): 403 host_not_allowed. Адреса операторов и iKOMEK109, предложенные моделью, не ответили или заблокированы.",
+      "kind": "observed",
+      "value": null,
+      "unit": null,
+      "geography": "среда исследования",
+      "period": "2026-10-05 04:10 UTC",
+      "source_refs": [
+        {
+          "source_id": "AST-A09-S001",
+          "locator": "curl -D -"
+        },
+        {
+          "source_id": "AST-A09-S002",
+          "locator": "curl -D -"
+        },
+        {
+          "source_id": "AST-A09-S003",
+          "locator": "curl -D -"
+        },
+        {
+          "source_id": "AST-A09-S005",
+          "locator": "curl"
+        },
+        {
+          "source_id": "AST-A09-S007",
+          "locator": "curl"
+        },
+        {
+          "source_id": "AST-A09-S009",
+          "locator": "curl"
+        },
+        {
+          "source_id": "AST-A09-S014",
+          "locator": "curl"
+        },
+        {
+          "source_id": "AST-A09-S015",
+          "locator": "curl"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "Ограничение среды; ничего не говорит о реальной доступности."
+    },
+    {
+      "fact_id": "AST-A09-F002",
+      "statement": "Сторонняя выгрузка каталога data.egov.kz содержит 3 882 записи, снятые 2026-02-01 14:16–15:04 UTC; даты публикации наборов — с декабря 2014 по январь 2026.",
+      "kind": "observed",
+      "value": 3882,
+      "unit": "записей",
+      "geography": "РК",
+      "period": "снимок 2026-02-01",
+      "source_refs": [
+        {
+          "source_id": "AST-A09-S019",
+          "locator": "datasets_export.csv: crawled_at, date"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "Снимок может быть неполным; после февраля 2026 каталог мог измениться."
+    },
+    {
+      "fact_id": "AST-A09-F003",
+      "statement": "В снимке у владельца ГУ «Управление энергетики города Астаны» есть набор №654 «Сведения о качестве предоставления тепла в отопительный период в разрезе регионов». Категория ЖКХ, актуализация ежегодно, статус актуальности «Да», создан 02.12.2021, обновлён 02.12.2025; 569 просмотров, 10 скачиваний.",
+      "kind": "observed",
+      "value": "02.12.2025",
+      "unit": "дата обновления",
+      "geography": "г. Астана",
+      "period": null,
+      "source_refs": [
+        {
+          "source_id": "AST-A09-S019",
+          "locator": "datasets_export.csv: api_uri=435_the_number_of_cattle_by_r"
+        }
+      ],
+      "derivation": null,
+      "confidence": "medium",
+      "caveats": "Поля и содержание набора не открыты; индекс набора выглядит технически случайным."
+    },
+    {
+      "fact_id": "AST-A09-F004",
+      "statement": "В снимке у ГУ «Управление энергетики города Астаны» есть набор №668 «Сведения об объектах энергоснабжения в разрезе регионов» с описанием «Крупная энергетическая компания по транспортировке и распределению электрической энергии населению и юридическим лицам, находящимся на территории города Астана». Обновлён 04.12.2025.",
+      "kind": "observed",
+      "value": "04.12.2025",
+      "unit": "дата обновления",
+      "geography": "г. Астана",
+      "period": null,
+      "source_refs": [
+        {
+          "source_id": "AST-A09-S019",
+          "locator": "datasets_export.csv: api_uri=694_energiyamen_zhabdyktau_ob"
+        }
+      ],
+      "derivation": null,
+      "confidence": "medium",
+      "caveats": "Это справочник объектов/компаний, а не ряд потребления."
+    },
+    {
+      "fact_id": "AST-A09-F005",
+      "statement": "№669 «Сведения об объектах газоснабжения» (тот же владелец, обновлён 09.12.2025) и №677 «Данные о строительстве инженерно-коммуникационной инфраструктуры», описание «Сети теплоснабжения», владелец ГУ «Управление топливно-энергетического комплекса и коммунального хозяйства города Астаны», создан 19.11.2019, обновлён 08.12.2025.",
+      "kind": "observed",
+      "value": null,
+      "unit": null,
+      "geography": "г. Астана",
+      "period": null,
+      "source_refs": [
+        {
+          "source_id": "AST-A09-S019",
+          "locator": "datasets_export.csv: api_uri=695_gazben_zhabdyktau_obekti; nur-sultan_kalasynda_inzhenerl"
+        }
+      ],
+      "derivation": null,
+      "confidence": "medium",
+      "caveats": "Разные названия владельца (2019 и 2021) указывают на реорганизацию; дата не установлена."
+    },
+    {
+      "fact_id": "AST-A09-F006",
+      "statement": "В снимке нет наборов Астаны по ключам «освещ», «уличн», «энергосбереж», «энергоаудит», «энергопаспорт», «109», «iKOMEK», «солнечн»; нет и наборов с потреблением энергии по зданиям.",
+      "kind": "observed",
+      "value": 0,
+      "unit": "наборов",
+      "geography": "г. Астана",
+      "period": "снимок 2026-02-01",
+      "source_refs": [
+        {
+          "source_id": "AST-A09-S019",
+          "locator": "datasets_export.csv: поиск по title+description+keywords+owner"
+        }
+      ],
+      "derivation": "Поиск подстрок без учёта регистра",
+      "confidence": "medium",
+      "caveats": "Отсутствие в неполном снимке не доказывает отсутствия на портале."
+    },
+    {
+      "fact_id": "AST-A09-F007",
+      "statement": "Национальный набор «Государственный энергетический реестр» (описание «Количестве субъектов ГЭР по регионам», ведомство АО «Институт развития электроэнергетики и энергосбережения (Казахэнергоэкспертиза)») имеет статус актуальности «Нет», последнее обновление 19.09.2022.",
+      "kind": "observed",
+      "value": "19.09.2022",
+      "unit": "дата обновления",
+      "geography": "РК",
+      "period": null,
+      "source_refs": [
+        {
+          "source_id": "AST-A09-S019",
+          "locator": "datasets_export.csv: api_uri=memlekettik_energetikalyk_tizi"
+        }
+      ],
+      "derivation": null,
+      "confidence": "medium",
+      "caveats": "Агрегат по регионам, не по зданиям."
+    },
+    {
+      "fact_id": "AST-A09-F008",
+      "statement": "Национальный набор «Анализ заключений по энергоаудиту и оценка планов мероприятий по энергосбережению…» (Казахэнергоэкспертиза) — статус «Нет», обновлён 16.09.2022.",
+      "kind": "observed",
+      "value": "16.09.2022",
+      "unit": "дата обновления",
+      "geography": "РК",
+      "period": null,
+      "source_refs": [
+        {
+          "source_id": "AST-A09-S019",
+          "locator": "datasets_export.csv: api_uri=energiya_auditi_boiynsha_koryt"
+        }
+      ],
+      "derivation": null,
+      "confidence": "medium",
+      "caveats": null
+    },
+    {
+      "fact_id": "AST-A09-F009",
+      "statement": "Аналоги стандартных наборов есть и у Шымкента. №654 (Акимат г. Шымкент, обновлён 04.08.2025). Наборы об объектах энергоснабжения и газоснабжения (ГУ «Управление энергетики и развития инфраструктуры города Шымкент», обновлены 27.01.2026 и 26.01.2026). Набор об инженерно-коммуникационной инфраструктуре (ГУ «Управление строительства города Шымкент», 11.05.2025).",
+      "kind": "observed",
+      "value": null,
+      "unit": null,
+      "geography": "г. Шымкент",
+      "period": null,
+      "source_refs": [
+        {
+          "source_id": "AST-A09-S019",
+          "locator": "datasets_export.csv: api_uri=cvedeniya_o_kachestve_predosta; energiyamen_zhabdyktau_obekti2; shymkent_kalasynyn_gazben_zhab; inzhenerlik-kommunikaciyalyk_i3"
+        }
+      ],
+      "derivation": null,
+      "confidence": "medium",
+      "caveats": "Новый факт о Шымкенте, получен в этом проходе; в первом проходе отсутствовал."
+    },
+    {
+      "fact_id": "AST-A09-F010",
+      "statement": "Сторонний код описывает API data.egov.kz как https://data.egov.kz/api/v4/<index>/v<версия>?apiKey=<ключ> (с параметром size); по README opengov-kz данные требуют API-ключа.",
+      "kind": "observed",
+      "value": null,
+      "unit": null,
+      "geography": "РК",
+      "period": null,
+      "source_refs": [
+        {
+          "source_id": "AST-A09-S020",
+          "locator": "README.md; data/byMIO.csv колонка 'Data Link'"
+        },
+        {
+          "source_id": "AST-A09-S021",
+          "locator": "index.js"
+        }
+      ],
+      "derivation": null,
+      "confidence": "medium",
+      "caveats": "Это документация третьих лиц, а не официальная. Запрос не выполнялся: нет доступа и нет права регистрироваться."
+    },
+    {
+      "fact_id": "AST-A09-F011",
+      "statement": "В STUPITS 6 районов Астаны взяты из отношений OSM: Есиль 3479876, Алматы 3482819, Сарыарка 3486954, Байконур 8593081, Нура 20593940, Сарайшык 19733918; загружено 2026-09-23. У Сарайшыка admin_level=8, у остальных 6. Документация прямо указывает, что это не юридически заверенные границы.",
+      "kind": "observed",
+      "value": 6,
+      "unit": "районов",
+      "geography": "г. Астана (OSM)",
+      "period": "2026-09-22 (база Overpass)",
+      "source_refs": [
+        {
+          "source_id": "AST-A09-S018",
+          "locator": "docs/GEO_SOURCES.md, таблица; data/astana_districts.geojson metadata"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "Официальный состав районов по акту акимата не проверен (S001 недоступен)."
+    },
+    {
+      "fact_id": "AST-A09-F012",
+      "statement": "Игровое событие STUPITS E1 «Авария на магистральной теплосети» (−38 °C, район Алматы) — учебный сценарий, а не данные об инциденте.",
+      "kind": "observed",
+      "value": null,
+      "unit": null,
+      "geography": "Астана (игра)",
+      "period": null,
+      "source_refs": [
+        {
+          "source_id": "AST-A09-S018",
+          "locator": "data/events.json → id E1"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "Не использовать как доказательство проблемы."
+    },
+    {
+      "fact_id": "AST-A09-F013",
+      "statement": "Площадно-взвешенный центроид 6 OSM-полигонов районов Астаны: 51.1327° с.ш., 71.4468° в.д.",
+      "kind": "derived",
+      "value": [
+        51.1327,
+        71.4468
+      ],
+      "unit": "градусы",
+      "geography": "г. Астана",
+      "period": "OSM 2026-09-22",
+      "source_refs": [
+        {
+          "source_id": "AST-A09-S018",
+          "locator": "data/astana_districts.geojson"
+        },
+        {
+          "source_id": "AST-A09-S024",
+          "locator": "shapely unary_union.centroid"
+        }
+      ],
+      "derivation": "Центроид объединения полигонов",
+      "confidence": "high",
+      "caveats": "Центр территории, а не исторический центр города."
+    },
+    {
+      "fact_id": "AST-A09-F014",
+      "statement": "Часы темноты в год для центроида Астаны (2027): 4281.1 ч от заката до восхода, 3822.4 ч по гражданским сумеркам, 4598.1 ч при пороге +3°. Длительность тёмного времени суток 7.42–16.12 ч (у Шымкента 8.72–14.93 ч).",
+      "kind": "derived",
+      "value": 4281.1,
+      "unit": "ч/год",
+      "geography": "г. Астана",
+      "period": "2027",
+      "source_refs": [
+        {
+          "source_id": "AST-A09-S024",
+          "locator": "pvlib nrel_numpy, шаг 1 мин"
+        },
+        {
+          "source_id": "AST-A09-S025",
+          "locator": "Asia/Almaty"
+        }
+      ],
+      "derivation": "AST_A09_attachments/ast_a09_astro.py → AST_A09_astro_result.json",
+      "confidence": "high",
+      "caveats": "Фактический график включения освещения неизвестен."
+    },
+    {
+      "fact_id": "AST-A09-F015",
+      "statement": "Помесячно темнота Астаны: декабрь 496 ч (Шымкент 460), июнь 226 ч (Шымкент 263). Доля тёмного времени в интервале 17:00–21:00: в Астане 1.0 в ноябре–январе и 0.13 в июне, в Шымкенте 0.98–1.0 и 0.25.",
+      "kind": "derived",
+      "value": 496,
+      "unit": "ч (декабрь)",
+      "geography": "Астана vs Шымкент",
+      "period": "2027",
+      "source_refs": [
+        {
+          "source_id": "AST-A09-S024",
+          "locator": "pvlib"
+        }
+      ],
+      "derivation": "AST_A09_attachments/ast_a09_astro.py → AST_A09_astro_result.json: dark_h_by_month, share_dark_17_21_by_month",
+      "confidence": "high",
+      "caveats": "Годовые суммы почти равны, сезонное распределение различается."
+    },
+    {
+      "fact_id": "AST-A09-F016",
+      "statement": "21.12.2027 по UTC+5: восход/закат в Астане 08:16/16:08, в Шымкенте 07:48/16:51; 21.06.2027 в Астане 03:59/20:33.",
+      "kind": "derived",
+      "value": "16:08",
+      "unit": "время заката 21.12, UTC+5",
+      "geography": "Астана vs Шымкент",
+      "period": "2027",
+      "source_refs": [
+        {
+          "source_id": "AST-A09-S024",
+          "locator": "pvlib"
+        },
+        {
+          "source_id": "AST-A09-S025",
+          "locator": "tzdata"
+        }
+      ],
+      "derivation": "AST_A09_attachments/ast_a09_astro.py → AST_A09_astro_result.json",
+      "confidence": "high",
+      "caveats": "Высота над уровнем моря задана приблизительно; влияние на время — минуты."
+    },
+    {
+      "fact_id": "AST-A09-F017",
+      "statement": "Внеатмосферная радиация на горизонтальную площадку (верхняя граница, без атмосферы, облаков и снега): Астана 2451, Шымкент 2802 кВт·ч/м²·год. Отношение декабрь/июнь 0.176 против 0.307.",
+      "kind": "derived",
+      "value": 0.176,
+      "unit": "доля декабрь/июнь",
+      "geography": "Астана vs Шымкент",
+      "period": "2027",
+      "source_refs": [
+        {
+          "source_id": "AST-A09-S024",
+          "locator": "pvlib.irradiance.get_extra_radiation × cos(zenith)"
+        }
+      ],
+      "derivation": "AST_A09_attachments/ast_a09_astro.py → AST_A09_astro_result.json",
+      "confidence": "high",
+      "caveats": "Это не выработка СЭС и не прогноз; нужен PVGIS/GSA."
+    },
+    {
+      "fact_id": "AST-A09-F018",
+      "statement": "Повторный расчёт для Шымкента дал те же 4301.9 / 3930.6 / 4560.2 ч, что A09-F020: расчёт воспроизводим.",
+      "kind": "derived",
+      "value": 4301.9,
+      "unit": "ч/год",
+      "geography": "г. Шымкент",
+      "period": "2027",
+      "source_refs": [
+        {
+          "source_id": "AST-A09-S026",
+          "locator": "A09_evidence.json → A09-F020"
+        }
+      ],
+      "derivation": "AST_A09_attachments/ast_a09_astro.py → AST_A09_astro_result.json",
+      "confidence": "high",
+      "caveats": null
+    },
+    {
+      "fact_id": "AST-A09-F019",
+      "statement": "Синтетическая школа на реальном холодном ряде температур, отчётный год теплее на 1.5 °C, ничего не менялось: наивное сравнение год к году даёт «экономию» 11.0%; регрессия по HDD18 −3.2%; по переменной базе −1.8%.",
+      "kind": "derived",
+      "value": 11.0,
+      "unit": "% ложной экономии (наивно)",
+      "geography": "синтетика / прокси-климат",
+      "period": null,
+      "source_refs": [
+        {
+          "source_id": "AST-A09-S023",
+          "locator": "weather3.csv"
+        }
+      ],
+      "derivation": "AST_A09_attachments/ast_a09_heating_experiment.py → AST_A09_heating_experiment_result.json: A_no_change_warmer_year",
+      "confidence": "high",
+      "caveats": "Синтетическое здание; параметры — предположения."
+    },
+    {
+      "fact_id": "AST-A09-F020",
+      "statement": "Утепление (H −20%): истинная экономия 22.4%; наивно 33.4%; HDD18 19.2%; переменная база 20.6%; модель с фактическим графиком 22.4% (совпадение по построению).",
+      "kind": "derived",
+      "value": 22.4,
+      "unit": "%",
+      "geography": "синтетика",
+      "period": null,
+      "source_refs": [
+        {
+          "source_id": "AST-A09-S023",
+          "locator": "weather3.csv"
+        }
+      ],
+      "derivation": "AST_A09_attachments/ast_a09_heating_experiment.py → AST_A09_heating_experiment_result.json: B_envelope_retrofit",
+      "confidence": "medium",
+      "caveats": "Модель с графиком совпадает с симулятором по структуре — её точность здесь завышена."
+    },
+    {
+      "fact_id": "AST-A09-F021",
+      "statement": "Только эксплуатационная мера (введено ночное и каникулярное снижение температуры), без модернизации: методы по одной наружной температуре показывают 14.8% (HDD18) и 16.1% (переменная база) «экономии». Модель с графиком относит её к режиму (0% от ограждающих конструкций).",
+      "kind": "derived",
+      "value": 14.8,
+      "unit": "%",
+      "geography": "синтетика",
+      "period": null,
+      "source_refs": [
+        {
+          "source_id": "AST-A09-S023",
+          "locator": "weather3.csv"
+        }
+      ],
+      "derivation": "AST_A09_attachments/ast_a09_heating_experiment.py → AST_A09_heating_experiment_result.json: E_setback_introduced_only",
+      "confidence": "high",
+      "caveats": "Экономия реальна, но причина другая. Без данных о режиме её нельзя приписать модернизации."
+    },
+    {
+      "fact_id": "AST-A09-F022",
+      "statement": "Утепление без регулирования на вводе (подача по графику сети): инженерный потенциал 15.6%, но изменение учтённого тепла −2…−3% (экономии нет). В упрощённой модели внутренняя температура выросла бы в среднем до ~27 °C. R² месячной регрессии по HDD18: 0.982 против 0.986 у здания с регулированием.",
+      "kind": "derived",
+      "value": 15.6,
+      "unit": "% потенциала, не появившегося в учёте",
+      "geography": "синтетика",
+      "period": null,
+      "source_refs": [
+        {
+          "source_id": "AST-A09-S023",
+          "locator": "weather3.csv"
+        }
+      ],
+      "derivation": "AST_A09_attachments/ast_a09_heating_experiment.py → AST_A09_heating_experiment_result.json: F_retrofit_without_substation_network_driven, diagnostics",
+      "confidence": "medium",
+      "caveats": "Высокая корреляция с температурой не доказывает, что здание само регулирует потребление. Перегрев в реальности уходит через форточки."
+    },
+    {
+      "fact_id": "AST-A09-F023",
+      "statement": "Начисление по нормативу: дисперсия по отопительным месяцам нулевая, все оценки экономии = 0, R² не определён. Это служит диагностическим признаком «не измерение».",
+      "kind": "derived",
+      "value": null,
+      "unit": null,
+      "geography": "синтетика",
+      "period": null,
+      "source_refs": [
+        {
+          "source_id": "AST-A09-S023",
+          "locator": "weather3.csv"
+        }
+      ],
+      "derivation": "AST_A09_attachments/ast_a09_heating_experiment.py → AST_A09_heating_experiment_result.json: G_norm_based_billing",
+      "confidence": "high",
+      "caveats": "Форма нормативного начисления в Астане не проверена."
+    },
+    {
+      "fact_id": "AST-A09-F024",
+      "statement": "Добавление второй смены без модернизации: наивно 12.5% (в основном погода); после нормализации от −1.9% до −0.4%. Знак эффекта режима зависит от соотношения внутренних теплопоступлений и вентиляции — в модели вентиляция от занятости не учтена.",
+      "kind": "derived",
+      "value": 12.5,
+      "unit": "%",
+      "geography": "синтетика",
+      "period": null,
+      "source_refs": [
+        {
+          "source_id": "AST-A09-S023",
+          "locator": "weather3.csv"
+        }
+      ],
+      "derivation": "AST_A09_attachments/ast_a09_heating_experiment.py → AST_A09_heating_experiment_result.json: C_second_shift_only",
+      "confidence": "medium",
+      "caveats": null
+    },
+    {
+      "fact_id": "AST-A09-F025",
+      "statement": "В Астане тепловая нагрузка зданий, вероятно, доминирует и покрывается в основном централизованным теплоснабжением. Доля муниципальных зданий с теплосчётчиком, ИТП и погодным регулированием неизвестна.",
+      "kind": "hypothesis",
+      "value": null,
+      "unit": null,
+      "geography": "г. Астана",
+      "period": null,
+      "source_refs": [],
+      "derivation": "Знание модели о климате и структуре теплоснабжения",
+      "confidence": "low",
+      "caveats": "Проверить у теплоснабжающей организации и в управлении энергетики."
+    },
+    {
+      "fact_id": "AST-A09-F026",
+      "statement": "Зимние вечерние часы (17–21) в Астане с ноября по январь полностью тёмные (F015). Наружное освещение совпадает с вечерним зимним максимумом нагрузки.",
+      "kind": "hypothesis",
+      "value": null,
+      "unit": null,
+      "geography": "г. Астана",
+      "period": null,
+      "source_refs": [],
+      "derivation": "Вывод из F015; системный пик не проверен",
+      "confidence": "low",
+      "caveats": "Нужны данные РЭК/KEGOC о суточном графике."
+    },
+    {
+      "fact_id": "AST-A09-F027",
+      "statement": "Астана — город республиканского значения, отдельный от Акмолинской области. Областные ряды и ряды агломерации нельзя приписывать городу.",
+      "kind": "hypothesis",
+      "value": null,
+      "unit": null,
+      "geography": "г. Астана",
+      "period": null,
+      "source_refs": [],
+      "derivation": "Знание модели",
+      "confidence": "low",
+      "caveats": "Проверить по методологии БНС и официальному сайту."
+    },
+    {
+      "fact_id": "AST-A09-F028",
+      "statement": "Школьный календарь каникул в РК устанавливается централизованно и, вероятно, одинаков для Астаны и Шымкента.",
+      "kind": "hypothesis",
+      "value": null,
+      "unit": null,
+      "geography": "РК",
+      "period": null,
+      "source_refs": [],
+      "derivation": "Знание модели",
+      "confidence": "low",
+      "caveats": "Проверить приказ Минпросвещения на 2025/26 и 2026/27."
+    }
+  ],
+  "datasets": [
+    {
+      "dataset_id": "AST-A09-D001",
+      "title": "№654 Сведения о качестве предоставления тепла в отопительный период (Астана)",
+      "publisher": "ГУ «Управление энергетики города Астаны»",
+      "source_ids": [
+        "AST-A09-S019",
+        "AST-A09-S003"
+      ],
+      "landing_url": "https://data.egov.kz/datasets/view?index=435_the_number_of_cattle_by_r",
+      "download_or_api_url": null,
+      "access_status": "documented_only",
+      "tested_at": "2026-10-05",
+      "geography": "г. Астана",
+      "granularity": "неизвестно",
+      "period": "обновлён 02.12.2025",
+      "format": null,
+      "fields": [],
+      "units": null,
+      "update_frequency": "ежегодно",
+      "license": null,
+      "auth_requirement": "apiKey по сторонней документации (AST-A09-F010); веб-выгрузка без ключа не проверена",
+      "limitations": "Метаданные из сторонней выгрузки; поля неизвестны",
+      "next_retrieval_step": "Открыть страницу набора, записать поля и единицы, проверить, есть ли разрез по районам/объектам"
+    },
+    {
+      "dataset_id": "AST-A09-D002",
+      "title": "№668 Сведения об объектах энергоснабжения (Астана)",
+      "publisher": "ГУ «Управление энергетики города Астаны»",
+      "source_ids": [
+        "AST-A09-S019"
+      ],
+      "landing_url": "https://data.egov.kz/datasets/view?index=694_energiyamen_zhabdyktau_ob",
+      "download_or_api_url": null,
+      "access_status": "documented_only",
+      "tested_at": "2026-10-05",
+      "geography": "г. Астана",
+      "granularity": "организация/объект (по описанию)",
+      "period": "обновлён 04.12.2025",
+      "format": null,
+      "fields": [],
+      "units": null,
+      "update_frequency": "ежегодно",
+      "license": null,
+      "auth_requirement": "apiKey по сторонней документации (AST-A09-F010); веб-выгрузка без ключа не проверена",
+      "limitations": "Справочник, не потребление",
+      "next_retrieval_step": "Скачать, сопоставить с наименованиями РЭК/ЭСО"
+    },
+    {
+      "dataset_id": "AST-A09-D003",
+      "title": "№669 Сведения об объектах газоснабжения (Астана)",
+      "publisher": "ГУ «Управление энергетики города Астаны»",
+      "source_ids": [
+        "AST-A09-S019"
+      ],
+      "landing_url": "https://data.egov.kz/datasets/view?index=695_gazben_zhabdyktau_obekti",
+      "download_or_api_url": null,
+      "access_status": "documented_only",
+      "tested_at": "2026-10-05",
+      "geography": "г. Астана",
+      "granularity": null,
+      "period": "обновлён 09.12.2025",
+      "format": null,
+      "fields": [],
+      "units": null,
+      "update_frequency": "ежегодно",
+      "license": null,
+      "auth_requirement": "apiKey по сторонней документации (AST-A09-F010); веб-выгрузка без ключа не проверена",
+      "limitations": "Справочник",
+      "next_retrieval_step": "Низкий приоритет"
+    },
+    {
+      "dataset_id": "AST-A09-D004",
+      "title": "№677 Строительство инженерно-коммуникационной инфраструктуры — сети теплоснабжения (Астана)",
+      "publisher": "ГУ «Управление ТЭК и коммунального хозяйства г. Астаны» (прежнее название)",
+      "source_ids": [
+        "AST-A09-S019"
+      ],
+      "landing_url": "https://data.egov.kz/datasets/view?index=nur-sultan_kalasynda_inzhenerl",
+      "download_or_api_url": null,
+      "access_status": "documented_only",
+      "tested_at": "2026-10-05",
+      "geography": "г. Астана",
+      "granularity": null,
+      "period": "создан 19.11.2019, обновлён 08.12.2025",
+      "format": null,
+      "fields": [],
+      "units": null,
+      "update_frequency": "ежегодно",
+      "license": null,
+      "auth_requirement": "apiKey по сторонней документации (AST-A09-F010); веб-выгрузка без ключа не проверена",
+      "limitations": "Проекты сетей, не здания",
+      "next_retrieval_step": "Проверить наличие адресов и годов — кандидат для слоя модернизаций (связь с ролью 02)"
+    },
+    {
+      "dataset_id": "AST-A09-D005",
+      "title": "Государственный энергетический реестр — количество субъектов по регионам (РК)",
+      "publisher": "АО «Казахэнергоэкспертиза» (по паспорту)",
+      "source_ids": [
+        "AST-A09-S019"
+      ],
+      "landing_url": "https://data.egov.kz/datasets/view?index=memlekettik_energetikalyk_tizi",
+      "download_or_api_url": null,
+      "access_status": "documented_only",
+      "tested_at": "2026-10-05",
+      "geography": "РК, регионы",
+      "granularity": "регион",
+      "period": "обновлён 19.09.2022; статус актуальности «Нет»",
+      "format": null,
+      "fields": null,
+      "units": null,
+      "update_frequency": "ежегодно (заявлено)",
+      "license": null,
+      "auth_requirement": "apiKey по сторонней документации (AST-A09-F010); веб-выгрузка без ключа не проверена",
+      "limitations": "Устарел; не по зданиям",
+      "next_retrieval_step": "Искать актуальный реестр у оператора ГЭР"
+    },
+    {
+      "dataset_id": "AST-A09-D006",
+      "title": "Потребление тепла и электроэнергии муниципальными зданиями Астаны (счета/показания)",
+      "publisher": "теплоснабжающая и энергоснабжающая организации; учреждения (кандидаты)",
+      "source_ids": [],
+      "landing_url": null,
+      "download_or_api_url": null,
+      "access_status": "restricted",
+      "tested_at": null,
+      "geography": "г. Астана, здание",
+      "granularity": "здание × месяц или сутки (гипотеза)",
+      "period": null,
+      "format": null,
+      "fields": [
+        "см. схему, раздел 5"
+      ],
+      "units": null,
+      "update_frequency": null,
+      "license": null,
+      "auth_requirement": null,
+      "limitations": "Открытого набора в снимке нет (AST-A09-F006)",
+      "next_retrieval_step": "Владельцу проекта — официальный запрос в управление энергетики/образования о выгрузке без персональных данных"
+    },
+    {
+      "dataset_id": "AST-A09-D007",
+      "title": "Историческая температура Астаны (станция / реанализ)",
+      "publisher": "Казгидромет / Open-Meteo (кандидаты)",
+      "source_ids": [
+        "AST-A09-S014",
+        "AST-A09-S017"
+      ],
+      "landing_url": null,
+      "download_or_api_url": "https://archive-api.open-meteo.com/v1/archive",
+      "access_status": "unavailable",
+      "tested_at": "2026-10-05",
+      "geography": "точка",
+      "granularity": "час/сутки",
+      "period": null,
+      "format": null,
+      "fields": null,
+      "units": null,
+      "update_frequency": null,
+      "license": null,
+      "auth_requirement": null,
+      "limitations": "Заблокировано в среде; лицензии не проверены",
+      "next_retrieval_step": "Выполнить запрос вне среды; сравнить реанализ со станцией за отопительный сезон"
+    },
+    {
+      "dataset_id": "AST-A09-D008",
+      "title": "Районы Астаны (OSM, кэш STUPITS)",
+      "publisher": "OpenStreetMap contributors",
+      "source_ids": [
+        "AST-A09-S018"
+      ],
+      "landing_url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits",
+      "download_or_api_url": null,
+      "access_status": "sample_verified",
+      "tested_at": "2026-10-05",
+      "geography": "г. Астана",
+      "granularity": "район",
+      "period": "OSM 2026-09-22",
+      "format": "GeoJSON",
+      "fields": [
+        "id",
+        "name",
+        "osm_id",
+        "area_km2",
+        "geometry_status",
+        "scoring_enabled"
+      ],
+      "units": null,
+      "update_frequency": null,
+      "license": "ODbL",
+      "auth_requirement": "нет",
+      "limitations": "Не юридические границы",
+      "next_retrieval_step": "Сверить с официальным актом о районах"
+    },
+    {
+      "dataset_id": "AST-A09-D009",
+      "title": "Выгрузка каталога data.egov.kz (сторонний снимок)",
+      "publisher": "Yerassyl20036 / GitHub",
+      "source_ids": [
+        "AST-A09-S019"
+      ],
+      "landing_url": "https://github.com/Yerassyl20036/egov-web-crawler",
+      "download_or_api_url": "https://codeload.github.com/Yerassyl20036/egov-web-crawler/zip/refs/heads/main",
+      "access_status": "sample_verified",
+      "tested_at": "2026-10-05",
+      "geography": "РК",
+      "granularity": "набор данных (паспорт)",
+      "period": "снимок 2026-02-01",
+      "format": "CSV",
+      "fields": [
+        "url",
+        "title",
+        "description",
+        "passport_owner",
+        "passport_gov_agency",
+        "passport_category",
+        "passport_actualization_type",
+        "passport_actuality_status",
+        "passport_creation_date",
+        "passport_renewal_date",
+        "api_uri",
+        "crawled_at"
+      ],
+      "units": null,
+      "update_frequency": null,
+      "license": "не указана",
+      "auth_requirement": "нет",
+      "limitations": "Неофициальный и, возможно, неполный; нет лицензии",
+      "next_retrieval_step": "Использовать только как указатель; выписка в AST_A09_attachments/AST_A09_egov_catalog_extract_energy.csv"
+    },
+    {
+      "dataset_id": "AST-A09-D010",
+      "title": "Холодный прокси-ряд температуры (BDG1 weather3.csv)",
+      "publisher": "BUDS Lab (MIT)",
+      "source_ids": [
+        "AST-A09-S023"
+      ],
+      "landing_url": "https://github.com/buds-lab/the-building-data-genome-project",
+      "download_or_api_url": null,
+      "access_status": "sample_verified",
+      "tested_at": "2026-10-05",
+      "geography": "США (не Астана)",
+      "granularity": "час → сутки",
+      "period": "2014-05-01…2015-05-01",
+      "format": "CSV",
+      "fields": [
+        "DateUTC",
+        "TemperatureC"
+      ],
+      "units": "°C",
+      "update_frequency": null,
+      "license": "MIT",
+      "auth_requirement": "нет",
+      "limitations": "Не Астана; климат мягче",
+      "next_retrieval_step": "Заменить на реальный ряд Астаны"
+    }
+  ],
+  "opportunities": [
+    {
+      "idea_id": "AST-A09-I001",
+      "title": "Общий модуль «приоритизатор энергоаудита + паспорт данных» с тепловыми проверками для Астаны (L1)",
+      "problem": "Открытых рядов потребления зданий Астаны в снимке каталога нет; национальные наборы по ГЭР и энергоаудиту не обновлялись с 2022 г.",
+      "evidence_fact_ids": [
+        "AST-A09-F006",
+        "AST-A09-F007",
+        "AST-A09-F008",
+        "AST-A09-F021",
+        "AST-A09-F022",
+        "AST-A09-F023"
+      ],
+      "primary_user": "специалист управления энергетики или образования акимата Астаны (роль не подтверждена)",
+      "user_task": "Выбрать здания для обследования или установки регулирования и обосновать выбор",
+      "existing_solution": "неизвестно",
+      "proposed_addition": "Тот же конвейер, что для Шымкента. Плюс тепловые проверки: признак нормативного начисления (нулевая дисперсия), чувствительность к HDD, флаги «нет ИТП / нет погодного регулирования», удельный расход Гкал/(м²·HDD) только для измеренных рядов, обязательные поля графика и сменности",
+      "required_dataset_ids": [
+        "AST-A09-D006",
+        "AST-A09-D007"
+      ],
+      "ai_role": "Не нужен для расчёта; LLM — объяснение и формулировка недостающих данных",
+      "non_ai_baseline": "Сортировка по Гкал/м² в таблице",
+      "success_metrics": [
+        "доля зданий, где тип начисления (измерение/норматив) определён",
+        "стабильность топ-N при ±20% ошибке площади",
+        "на пилоте: доля рекомендаций, подтверждённых обследованием"
+      ],
+      "feasibility_10_days": "high на синтетике и BDG1; без реальных рядов это демонстрация",
+      "blockers": [
+        "нет рядов Астаны",
+        "нет сведений об ИТП/учёте",
+        "тарифы не проверены"
+      ],
+      "transfer_to_shymkent": "Код общий; в Шымкенте вероятно выше доля электричества и охлаждения — параметры и проверки различаются",
+      "next_action": "Добавить в контракт поля billing_basis, has_substation_ITP, weather_compensation"
+    },
+    {
+      "idea_id": "AST-A09-I002",
+      "title": "Калькулятор наружного освещения с помесячными астрономическими часами (общий для двух городов)",
+      "problem": "Нет открытых данных об освещении Астаны (F006). Часы горения рассчитываются без оператора, и их сезонность сильно отличается от Шымкента.",
+      "evidence_fact_ids": [
+        "AST-A09-F014",
+        "AST-A09-F015",
+        "AST-A09-F016"
+      ],
+      "primary_user": "сотрудник акимата или жюри, сравнивающие сценарии замены и графиков",
+      "user_task": "Оценить годовые и помесячные кВт·ч и затраты при разных мощностях и порогах включения",
+      "existing_solution": "ручной расчёт мощность × годовые часы",
+      "proposed_addition": "Помесячные часы по координатам города + ввод реестра мощностей, порога включения, диммирования и тарифа с датой",
+      "required_dataset_ids": [],
+      "ai_role": "Не нужен",
+      "non_ai_baseline": "Тот же расчёт в таблице",
+      "success_metrics": [
+        "расхождение с показаниями шкафов на пилоте",
+        "помесячная ошибка против годовой равномерной разбивки"
+      ],
+      "feasibility_10_days": "high",
+      "blockers": [
+        "реестр светильников и шкафов у оператора, оператор не установлен"
+      ],
+      "transfer_to_shymkent": "Тот же код, другие координаты (A09-F020)",
+      "next_action": "Включить вкладку с пометкой «сценарий»"
+    },
+    {
+      "idea_id": "AST-A09-I003",
+      "title": "Пилот суточного теплоучёта 20–30 школ: отопление пустых зданий и эффект регулирования (L2)",
+      "problem": "Без суточных данных и графика нельзя отличить эффект утепления от режима и от неуправляемой подачи (F021–F022).",
+      "evidence_fact_ids": [
+        "AST-A09-F021",
+        "AST-A09-F022",
+        "AST-A09-F024"
+      ],
+      "primary_user": "управление образования и теплоснабжающая организация",
+      "user_task": "Найти здания, где тепло потребляется в каникулы и выходные без снижения, и выбрать здания для установки ИТП",
+      "existing_solution": "неизвестно",
+      "proposed_addition": "Суточный теплоучёт + календарь → признаки: отношение каникулы/учебные дни при равной температуре, реакция на выходные, перегрев в межсезонье",
+      "required_dataset_ids": [
+        "AST-A09-D006",
+        "AST-A09-D007"
+      ],
+      "ai_role": "Не нужен для ядра",
+      "non_ai_baseline": "Сравнение месяц к месяцу",
+      "success_metrics": [
+        "precision флагов по проверке на месте",
+        "доля зданий без реакции на каникулы"
+      ],
+      "feasibility_10_days": "low",
+      "blockers": [
+        "соглашение о данных",
+        "наличие суточного учёта"
+      ],
+      "transfer_to_shymkent": "Ниже приоритет: короче отопительный сезон; проверка нужна",
+      "next_action": "Подготовить одностраничный паспорт данных для запроса"
+    },
+    {
+      "idea_id": "AST-A09-I004",
+      "title": "Исследование: где теряется экономия от модернизации — утепление против регулирования (L3)",
+      "problem": "Утепление без регулирования на вводе может не снизить учтённое тепло (F022, синтетика).",
+      "evidence_fact_ids": [
+        "AST-A09-F022",
+        "AST-A09-F020"
+      ],
+      "primary_user": "исследователь, аналитик программ модернизации",
+      "user_task": "Оценить фактический эффект прошлых модернизаций и очерёдность установки ИТП",
+      "existing_solution": "неизвестно",
+      "proposed_addition": "Панель здание × сутки/месяц, даты работ, наличие ИТП; разность разностей с контрольной группой; обратное моделирование перегрева по датчикам температуры воздуха на пилоте",
+      "required_dataset_ids": [
+        "AST-A09-D006",
+        "AST-A09-D004"
+      ],
+      "ai_role": "Не нужен; возможно — извлечение дат работ из закупочных документов",
+      "non_ai_baseline": "До/после без контроля",
+      "success_metrics": [
+        "доверительный интервал эффекта",
+        "проверка параллельных трендов до вмешательства"
+      ],
+      "feasibility_10_days": "low",
+      "blockers": [
+        "нужны ≥2 года данных и даты работ"
+      ],
+      "transfer_to_shymkent": "Метод общий; актуальность зависит от доли централизованного тепла",
+      "next_action": "Найти даты модернизаций школ Астаны в закупках (второй проход)"
+    }
+  ],
+  "open_questions": [
+    {
+      "question_id": "AST-A09-Q001",
+      "question": "Какие поля у астанинского №654 и есть ли разрез по районам или объектам?",
+      "why_important": "Единственный городской открытый набор о качестве теплоснабжения",
+      "how_to_check": "Открыть страницу набора и скачать, если выгрузка без ключа возможна"
+    },
+    {
+      "question_id": "AST-A09-Q002",
+      "question": "Какая доля школ, детсадов и поликлиник Астаны имеет теплосчётчик, ИТП и погодное регулирование, и как им начисляют тепло?",
+      "why_important": "От этого зависит, измеряет ли счёт что-либо (F022, F023)",
+      "how_to_check": "Запрос владельца проекта в управление энергетики или теплоснабжающую организацию; отчёты о модернизации"
+    },
+    {
+      "question_id": "AST-A09-Q003",
+      "question": "Кто оператор наружного освещения Астаны, и есть ли реестр светильников и шкафов?",
+      "why_important": "Определяет реализуемость I002 сверх калькулятора",
+      "how_to_check": "Сайт акимата, бюджетная программа освещения, закупки"
+    },
+    {
+      "question_id": "AST-A09-Q004",
+      "question": "Публикует ли iKOMEK109 агрегаты обращений по отоплению и освещению по районам и месяцам?",
+      "why_important": "Независимый от операторов сигнал проблем",
+      "how_to_check": "Официальный сайт и data.egov.kz (поиск «109», «iKOMEK», «обращения»); в снимке таких наборов нет"
+    },
+    {
+      "question_id": "AST-A09-Q005",
+      "question": "Действующие тарифы на тепло и электроэнергию для бюджетных организаций Астаны с датой приказа",
+      "why_important": "Денежная оценка",
+      "how_to_check": "Сайты ЭСО и теплоснабжающей организации, приказы ДКРЕМ по г. Астане"
+    },
+    {
+      "question_id": "AST-A09-Q006",
+      "question": "Официальный состав и границы районов Астаны на 2026 г.",
+      "why_important": "Карта в продукте сейчас на OSM (F011)",
+      "how_to_check": "Официальный акт и сайт акимата; сверка с OSM"
+    }
+  ],
+  "city_comparison": [
+    {
+      "topic": "Наличие рядов потребления зданий в открытых данных",
+      "astana_fact_ids": [
+        "AST-A09-F006",
+        "AST-A09-F003",
+        "AST-A09-F004"
+      ],
+      "shymkent_fact_ids": [
+        "A09-F024",
+        "AST-A09-F009"
+      ],
+      "comparison_status": "both_metadata_only",
+      "shared_component": "Паспорт потребности в данных, CSV-контракт, проверки качества",
+      "city_specific_inputs": "Владельцы данных, наименования управлений, ЭСО/РЭК/теплоснабжение",
+      "caveats": "A09-F024 — гипотеза; AST-A09-F009 — новое наблюдение о Шымкенте по снимку каталога"
+    },
+    {
+      "topic": "Стандартные наборы №654/668/669/677 на data.egov.kz",
+      "astana_fact_ids": [
+        "AST-A09-F003",
+        "AST-A09-F004",
+        "AST-A09-F005"
+      ],
+      "shymkent_fact_ids": [
+        "AST-A09-F009"
+      ],
+      "comparison_status": "both_observed_metadata",
+      "shared_component": "Один загрузчик и нормализатор шаблонных наборов",
+      "city_specific_inputs": "Индексы наборов, версии, фактические поля",
+      "caveats": "Совпадение номера шаблона не гарантирует одинаковых полей и единиц"
+    },
+    {
+      "topic": "Наружное освещение: часы горения",
+      "astana_fact_ids": [
+        "AST-A09-F014",
+        "AST-A09-F015",
+        "AST-A09-F016"
+      ],
+      "shymkent_fact_ids": [
+        "A09-F020",
+        "AST-A09-F018"
+      ],
+      "comparison_status": "both_derived",
+      "shared_component": "Астрономический калькулятор (pvlib)",
+      "city_specific_inputs": "Координаты, реестр светильников, график, тариф",
+      "caveats": "Годовые суммы почти равны; помесячные — нет. Нельзя делить годовые часы на 12"
+    },
+    {
+      "topic": "Солнечная генерация",
+      "astana_fact_ids": [
+        "AST-A09-F017"
+      ],
+      "shymkent_fact_ids": [
+        "A09-F025",
+        "AST-A09-F017"
+      ],
+      "comparison_status": "astro_upper_bound_only",
+      "shared_component": "Формула скрининга, загрузчик PVGIS/GSA",
+      "city_specific_inputs": "Удельная выработка, снег, профиль нагрузки, правила для потребителей-производителей",
+      "caveats": "Внеатмосферная радиация — не выработка"
+    },
+    {
+      "topic": "Погодная нормализация отопления",
+      "astana_fact_ids": [
+        "AST-A09-F019",
+        "AST-A09-F021",
+        "AST-A09-F022",
+        "AST-A09-F023",
+        "AST-A09-F025"
+      ],
+      "shymkent_fact_ids": [],
+      "comparison_status": "pending",
+      "shared_component": "Модели HDD с переменной базой, модель с графиком, диагностика начисления",
+      "city_specific_inputs": "Отопительный сезон, доля централизованного тепла, наличие ИТП",
+      "caveats": "В первом проходе тепло Шымкента не исследовалось; синтетика не калибрована ни для одного города"
+    },
+    {
+      "topic": "Baseline электроэнергии школ: календарь, площадь, пропуски",
+      "astana_fact_ids": [],
+      "shymkent_fact_ids": [
+        "A09-F012",
+        "A09-F013",
+        "A09-F016",
+        "A09-F017"
+      ],
+      "comparison_status": "method_shared_not_city_evidence",
+      "shared_component": "Конвейер эксперимента BDG1, тесты",
+      "city_specific_inputs": "Календарь (вероятно общий, AST-A09-F028), сменность, режим летом",
+      "caveats": "BDG1 — не Казахстан ни для одного из городов"
+    },
+    {
+      "topic": "Районы и границы",
+      "astana_fact_ids": [
+        "AST-A09-F011"
+      ],
+      "shymkent_fact_ids": [],
+      "comparison_status": "pending",
+      "shared_component": "Слой районов MapLibre с метаданными источника",
+      "city_specific_inputs": "Полигоны и официальный состав",
+      "caveats": "OSM — не юридические границы"
+    }
+  ],
+  "deliverables": {
+    "experiments": [
+      {
+        "id": "AST-A09-X001",
+        "what": "Отопление: нормализация только по температуре против учёта графика, регулирования и нормативного начисления",
+        "inputs": "BDG1 weather3.csv (реальный ряд, не Астана) + синтетическая школа",
+        "versions": {
+          "numpy": "2.4.4",
+          "pandas": "3.0.2"
+        },
+        "commands": [
+          "python3 ast_a09_heating_experiment.py"
+        ],
+        "outputs": [
+          "AST_A09_heating_experiment_result.json"
+        ]
+      },
+      {
+        "id": "AST-A09-X002",
+        "what": "Астрономия: часы темноты, закат, внеатмосферная радиация Астана vs Шымкент",
+        "inputs": "центроид OSM-районов STUPITS; точка Шымкента A09",
+        "versions": {
+          "pvlib": "0.16.1",
+          "shapely": "2.1.2",
+          "pandas": "3.0.2"
+        },
+        "commands": [
+          "python3 ast_a09_astro.py"
+        ],
+        "outputs": [
+          "AST_A09_astro_result.json"
+        ]
+      }
+    ],
+    "samples": [
+      {
+        "file": "AST_A09_attachments/AST_A09_egov_catalog_extract_energy.csv",
+        "dataset_id": "AST-A09-D009",
+        "kind": "real metadata (третья сторона)"
+      },
+      {
+        "file": "AST_A09_attachments/AST_A09_template_SYNTHETIC_heat_meta.csv",
+        "dataset_id": null,
+        "kind": "synthetic"
+      }
+    ],
+    "reused_from_shymkent_round": [
+      "A09_attachments/a09_bdg1_experiment*.py",
+      "A09_template_SYNTHETIC_*.csv"
+    ]
+  }
+}

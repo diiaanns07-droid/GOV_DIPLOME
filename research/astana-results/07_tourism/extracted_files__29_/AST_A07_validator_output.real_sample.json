@@ -1,0 +1,138 @@
+{
+ "cases": [
+  {
+   "poi": "AST-POI-001",
+   "name": "Национальный музей РК",
+   "when": "2026-10-05 Mon 11:00",
+   "claims": [
+    [
+     "AST-A07-S010",
+     "official_national_portal",
+     "closed"
+    ],
+    [
+     "AST-A07-S011",
+     "aggregator",
+     "closed"
+    ]
+   ],
+   "status": "closed",
+   "flags": [],
+   "verdict": "NOT_EXECUTABLE"
+  },
+  {
+   "poi": "AST-POI-001",
+   "name": "Национальный музей РК",
+   "when": "2026-10-27 Tue 11:00",
+   "claims": [
+    [
+     "AST-A07-S010",
+     "official_national_portal",
+     "open"
+    ],
+    [
+     "AST-A07-S011",
+     "aggregator",
+     "closed"
+    ]
+   ],
+   "status": "conflict",
+   "flags": [
+    "SOURCE_CONFLICT"
+   ],
+   "verdict": "UNVERIFIED"
+  },
+  {
+   "poi": "AST-POI-001",
+   "name": "Национальный музей РК",
+   "when": "2026-10-07 Wed 11:00",
+   "claims": [
+    [
+     "AST-A07-S010",
+     "official_national_portal",
+     "open"
+    ],
+    [
+     "AST-A07-S011",
+     "aggregator",
+     "open"
+    ]
+   ],
+   "status": "open",
+   "flags": [
+    "NO_VERIFIED_AT"
+   ],
+   "verdict": "LIKELY_OPEN"
+  },
+  {
+   "poi": "AST-POI-002",
+   "name": "Visit Astana, киоск у Байтерека",
+   "when": "2026-10-11 Sun 20:00",
+   "claims": [
+    [
+     "AST-A07-S003",
+     "official_city_portal",
+     "unknown"
+    ],
+    [
+     "AST-A07-S013",
+     "aggregator",
+     "open"
+    ]
+   ],
+   "status": "open",
+   "flags": [
+    "NO_OFFICIAL_CONFIRMATION",
+    "OFFICIAL_SILENT",
+    "NO_VERIFIED_AT"
+   ],
+   "verdict": "UNVERIFIED"
+  },
+  {
+   "poi": "AST-POI-003",
+   "name": "Музей энергии будущего Nur Alem",
+   "when": "2026-10-10 Sat 20:30",
+   "claims": [
+    [
+     "AST-A07-S011",
+     "aggregator",
+     "internally_inconsistent"
+    ]
+   ],
+   "status": "unknown",
+   "flags": [
+    "INTERNAL_INCONSISTENCY"
+   ],
+   "verdict": "UNVERIFIED"
+  }
+ ],
+ "transit": [
+  {
+   "line": "Tarlan Astana LRT",
+   "at": "23:30",
+   "in_service": false,
+   "src": "AST-A07-S006"
+  },
+  {
+   "line": "Tarlan Astana LRT",
+   "at": "09:00",
+   "in_service": true,
+   "src": "AST-A07-S006"
+  }
+ ],
+ "summary": {
+  "last_tuesday_oct_2026": "2026-10-27",
+  "hours_claims_total": 5,
+  "hours_claims_official_with_value": 1,
+  "hours_claims_official_silent": 1,
+  "pois_with_coordinates": 1,
+  "price_conflict_AST-POI-001": true,
+  "verdicts": {
+   "2026-10-05 Mon 11:00 AST-POI-001": "NOT_EXECUTABLE",
+   "2026-10-27 Tue 11:00 AST-POI-001": "UNVERIFIED",
+   "2026-10-07 Wed 11:00 AST-POI-001": "LIKELY_OPEN",
+   "2026-10-11 Sun 20:00 AST-POI-002": "UNVERIFIED",
+   "2026-10-10 Sat 20:30 AST-POI-003": "UNVERIFIED"
+  }
+ }
+}

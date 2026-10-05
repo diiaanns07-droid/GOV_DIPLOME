@@ -1,0 +1,184 @@
+{
+  "meta": {
+    "kind": "synthetic",
+    "python": "3.12.3",
+    "numpy": "2.4.4",
+    "platform": "Linux-6.18.44-fc-v70-x86_64-with-glibc2.39",
+    "N_segments": 400,
+    "k": 40,
+    "reps": 200,
+    "seed": 20261005,
+    "shared_code": "A02_priority_experiment.py: pct, score, top, evaluate (без изменений)",
+    "warning": "Синтетический мир. Параметры (доля новых территорий 15%, k зимы, 6 районов) — допущения, не факты об Астане."
+  },
+  "results": {
+    "RA1|operator_data|mixed_signals|risk": {
+      "mean": 0.882,
+      "sd": 0.036
+    },
+    "RA1|operator_data|mixed_signals|share_top_new_territory": {
+      "mean": 0.009,
+      "sd": 0.014
+    },
+    "RA1|open_only|mixed_signals|risk": {
+      "mean": 0.527,
+      "sd": 0.089
+    },
+    "RA1|open_only|mixed_signals|share_top_new_territory": {
+      "mean": 0.481,
+      "sd": 0.074
+    },
+    "RA1|operator_data|separated_perfect|risk": {
+      "mean": 0.885,
+      "sd": 0.034
+    },
+    "RA1|operator_data|separated_perfect|share_top_new_territory": {
+      "mean": 0.001,
+      "sd": 0.004
+    },
+    "RA1|open_only|separated_perfect|risk": {
+      "mean": 0.744,
+      "sd": 0.065
+    },
+    "RA1|open_only|separated_perfect|share_top_new_territory": {
+      "mean": 0.038,
+      "sd": 0.03
+    },
+    "RA1|operator_data|separated_70pct|risk": {
+      "mean": 0.882,
+      "sd": 0.035
+    },
+    "RA1|operator_data|separated_70pct|share_top_new_territory": {
+      "mean": 0.003,
+      "sd": 0.009
+    },
+    "RA1|open_only|separated_70pct|risk": {
+      "mean": 0.649,
+      "sd": 0.078
+    },
+    "RA1|open_only|separated_70pct|share_top_new_territory": {
+      "mean": 0.239,
+      "sd": 0.063
+    },
+    "RA1|oldest_first|risk": {
+      "mean": 0.488,
+      "sd": 0.084
+    },
+    "RA1|oldest_first|share_top_new_territory": {
+      "mean": 0.0,
+      "sd": 0.0
+    },
+    "RA1|share_of_segments_new_territory": {
+      "mean": 0.151,
+      "sd": 0.017
+    },
+    "RA2|true_k=1|assumed_k=1|risk": {
+      "mean": 0.869,
+      "sd": 0.038
+    },
+    "RA2|true_k=1|assumed_k=1|share_heat_in_top": {
+      "mean": 0.499,
+      "sd": 0.075
+    },
+    "RA2|true_k=1|assumed_k=3|risk": {
+      "mean": 0.606,
+      "sd": 0.086
+    },
+    "RA2|true_k=1|assumed_k=3|share_heat_in_top": {
+      "mean": 1.0,
+      "sd": 0.0
+    },
+    "RA2|true_k=1|assumed_k=6|risk": {
+      "mean": 0.606,
+      "sd": 0.086
+    },
+    "RA2|true_k=1|assumed_k=6|share_heat_in_top": {
+      "mean": 1.0,
+      "sd": 0.0
+    },
+    "RA2|true_k=3|assumed_k=1|risk": {
+      "mean": 0.81,
+      "sd": 0.05
+    },
+    "RA2|true_k=3|assumed_k=1|share_heat_in_top": {
+      "mean": 0.499,
+      "sd": 0.075
+    },
+    "RA2|true_k=3|assumed_k=3|risk": {
+      "mean": 0.841,
+      "sd": 0.054
+    },
+    "RA2|true_k=3|assumed_k=3|share_heat_in_top": {
+      "mean": 1.0,
+      "sd": 0.0
+    },
+    "RA2|true_k=3|assumed_k=6|risk": {
+      "mean": 0.841,
+      "sd": 0.054
+    },
+    "RA2|true_k=3|assumed_k=6|share_heat_in_top": {
+      "mean": 1.0,
+      "sd": 0.0
+    },
+    "RA2|true_k=6|assumed_k=1|risk": {
+      "mean": 0.753,
+      "sd": 0.06
+    },
+    "RA2|true_k=6|assumed_k=1|share_heat_in_top": {
+      "mean": 0.499,
+      "sd": 0.075
+    },
+    "RA2|true_k=6|assumed_k=3|risk": {
+      "mean": 0.895,
+      "sd": 0.036
+    },
+    "RA2|true_k=6|assumed_k=3|share_heat_in_top": {
+      "mean": 1.0,
+      "sd": 0.0
+    },
+    "RA2|true_k=6|assumed_k=6|risk": {
+      "mean": 0.895,
+      "sd": 0.036
+    },
+    "RA2|true_k=6|assumed_k=6|share_heat_in_top": {
+      "mean": 1.0,
+      "sd": 0.0
+    },
+    "RA3|oracle|share_top_new_district": {
+      "mean": 0.159,
+      "sd": 0.063
+    },
+    "RA3|missing_as_zero|risk": {
+      "mean": 0.871,
+      "sd": 0.042
+    },
+    "RA3|missing_as_zero|share_top_new_district": {
+      "mean": 0.072,
+      "sd": 0.04
+    },
+    "RA3|median_imputed|risk": {
+      "mean": 0.881,
+      "sd": 0.035
+    },
+    "RA3|median_imputed|share_top_new_district": {
+      "mean": 0.118,
+      "sd": 0.054
+    },
+    "RA3|criterion_dropped_renormalized|risk": {
+      "mean": 0.888,
+      "sd": 0.032
+    },
+    "RA3|criterion_dropped_renormalized|share_top_new_district": {
+      "mean": 0.157,
+      "sd": 0.061
+    },
+    "RA3|true_history_available|risk": {
+      "mean": 0.884,
+      "sd": 0.033
+    },
+    "RA3|true_history_available|share_top_new_district": {
+      "mean": 0.164,
+      "sd": 0.062
+    }
+  }
+}

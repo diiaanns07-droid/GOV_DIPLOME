@@ -1,0 +1,1205 @@
+{
+ "meta": {
+  "agent_id": "A08",
+  "topic": "Экология: воздух, жара, зелень и отходы",
+  "city": "Шымкент (город республиканского значения)",
+  "searched_at": "2026-10-04T17:18Z–17:45Z",
+  "access_limitations": "Нет браузера и веб-поиска. Исходящая сеть разрешена только к GitHub, PyPI, npm и др.; все гос-, спутниковые и популяционные хосты — 403 host_not_allowed (см. A08-S001). Утверждения о Шымкенте вне образца A08-S003 имеют статус hypothesis. GitHub core API исчерпал лимит после 1 запроса; использованы search API и git clone."
+ },
+ "sources": [
+  {
+   "source_id": "A08-S001",
+   "title": "Журнал сетевой проверки доступа A08",
+   "publisher": "A08 (собственный эксперимент)",
+   "url": null,
+   "published_at": "2026-10-04",
+   "accessed_at": "2026-10-04",
+   "source_type": "experiment_log",
+   "access_status": "executed",
+   "notes": "curl с таймаутом 15 с, 2026-10-04T17:18:44Z и 17:24:36Z UTC. 403 host_not_allowed: stat.gov.kz, www.gov.kz, data.egov.kz, www.kazhydromet.kz, ecogosfond.kz, adilet.zan.kz, shymkent.kz, airkaz.org, api.openaq.org, www.iqair.com, overpass-api.de, www.openstreetmap.org, planetarycomputer.microsoft.com, www.geoboundaries.org, earthexplorer.usgs.gov, dataspace.copernicus.eu, human-settlement.emergency.copernicus.eu, hub.worldpop.org. ecodata.kz:3838 — код 000 (соединение не установлено)."
+  },
+  {
+   "source_id": "A08-S002",
+   "title": "BAITC-Hacks/hack-d3b2c613-stupits (STUPITS «Аким на 5 часов»)",
+   "publisher": "BAITC-Hacks / GitHub",
+   "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits",
+   "published_at": "2026-09-23",
+   "accessed_at": "2026-10-04",
+   "source_type": "code_repository",
+   "access_status": "sample_verified",
+   "notes": "git clone --depth 1, коммит 834a25fb860dd5514d02c9274b70d7bf8a53a79c (2026-09-23T18:36:48+06:00). GitHub API: public, language Python, license null. Только чтение, код не изменялся."
+  },
+  {
+   "source_id": "A08-S003",
+   "title": "DinaAssylbekova/AirData_Shymkent",
+   "publisher": "Dina Assylbekova / GitHub (проект AirData.kz)",
+   "url": "https://github.com/DinaAssylbekova/AirData_Shymkent",
+   "published_at": "2022-04-03",
+   "accessed_at": "2026-10-04",
+   "source_type": "third_party_dataset",
+   "access_status": "sample_verified",
+   "notes": "Коммит cacb98c19046bc441c4bfce29d74122ba525cfe2. Файлы sensors.xlsx (128 датчиков) и layer_03_data_prepared_25.03.22.csv (2 229 363 строк, 104 МБ). Лицензии нет; единицы не указаны; исходный владелец данных — Казгидромет (по полю source). Сырые строки не перераспространяются."
+  },
+  {
+   "source_id": "A08-S004",
+   "title": "SaniyaAbushakimova/Kazhydromet-Web-Scraping",
+   "publisher": "Saniya Abushakimova / GitHub",
+   "url": "https://github.com/SaniyaAbushakimova/Kazhydromet-Web-Scraping",
+   "published_at": "2024-07-13",
+   "accessed_at": "2026-10-04",
+   "source_type": "third_party_code_and_documentation",
+   "access_status": "sample_verified",
+   "notes": "README: «Project completed on August 24, 2023»; скрейпинг метеоБД Казгидромета через http://ecodata.kz:3838/dm_climat_ru/ (download_data.py, строка 324); 227 станций, 17 регионов, период 2000-01-01..2023-04-30. station_geocode/final_coordinates.csv строка 201: станция «Шымкент» отнесена к Туркестанской области KZ-YUZ. Лицензии нет."
+  },
+  {
+   "source_id": "A08-S005",
+   "title": "Beibut/KazHydroMet2324 (описание репозитория)",
+   "publisher": "Beibut / GitHub",
+   "url": "https://github.com/Beibut/KazHydroMet2324",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "repository_description",
+   "access_status": "page_only",
+   "notes": "Найден через GitHub search API 2026-10-04; описание: «Air pollutant data were provided by KazHydroMet following an official data request…» (обрезано в выдаче); pushed_at 2026-03-12. Клонирование дало пустой репозиторий (нет коммитов на main). Используется только как указатель на канал доступа."
+  },
+  {
+   "source_id": "A08-S006",
+   "title": "Информационные бюллетени о состоянии окружающей среды (г. Шымкент / РК)",
+   "publisher": "РГП «Казгидромет»",
+   "url": "https://www.kazhydromet.kz/",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "official_bulletin",
+   "access_status": "not_accessed_host_blocked",
+   "notes": "Кандидат. Не открыт: 403 host_not_allowed. Период, формат, перечень постов — unknown."
+  },
+  {
+   "source_id": "A08-S007",
+   "title": "Динамические таблицы БНС по Шымкенту (раздел 38)",
+   "publisher": "Бюро национальной статистики АСПиР РК",
+   "url": "https://stat.gov.kz/ru/region/shymkent/dynamic-tables/38/",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "official_statistics",
+   "access_status": "not_accessed_host_blocked",
+   "notes": "Указатель координатора. Не открыт: 403."
+  },
+  {
+   "source_id": "A08-S008",
+   "title": "Страница управления цифровизации г. Шымкент (служба 109)",
+   "publisher": "Акимат г. Шымкент / gov.kz",
+   "url": "https://www.gov.kz/memleket/entities/shymkent-sandyk?lang=ru",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "official_page",
+   "access_status": "not_accessed_host_blocked",
+   "notes": "Указатель координатора. Не открыт: 403."
+  },
+  {
+   "source_id": "A08-S009",
+   "title": "Портал открытых данных",
+   "publisher": "data.egov.kz",
+   "url": "https://data.egov.kz/",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "open_data_portal",
+   "access_status": "not_accessed_host_blocked",
+   "notes": "Не открыт: 403. Наборы и API не проверены."
+  },
+  {
+   "source_id": "A08-S010",
+   "title": "Экологический кодекс Республики Казахстан от 2 января 2021 года № 400-VI ЗРК",
+   "publisher": "Парламент РК / ИПС «Әділет»",
+   "url": "https://adilet.zan.kz/",
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "law",
+   "access_status": "not_opened_model_memory",
+   "notes": "Наличие кодекса — память модели; статьи о компетенции МИО по ТБО и об исторических загрязнениях не открыты (adilet: 403)."
+  },
+  {
+   "source_id": "A08-S011",
+   "title": "Гигиенические нормативы к атмосферному воздуху (приказ МЗ РК, по памяти № ҚР ДСМ-70 от 02.08.2022)",
+   "publisher": "Министерство здравоохранения РК",
+   "url": null,
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "regulation",
+   "access_status": "not_opened_model_memory",
+   "notes": "Реквизиты и значение ПДК с.с. PM2.5 (по памяти 0,035 мг/м³) не проверены."
+  },
+  {
+   "source_id": "A08-S012",
+   "title": "WHO global air quality guidelines (2021)",
+   "publisher": "World Health Organization",
+   "url": null,
+   "published_at": "2021",
+   "accessed_at": null,
+   "source_type": "guideline",
+   "access_status": "not_opened_model_memory",
+   "notes": "По памяти: PM2.5 24 ч 15 мкг/м³, год 5 мкг/м³. Не открыто."
+  },
+  {
+   "source_id": "A08-S013",
+   "title": "Urban green spaces and health: a review of evidence (2016)",
+   "publisher": "WHO Regional Office for Europe",
+   "url": null,
+   "published_at": "2016",
+   "accessed_at": null,
+   "source_type": "guideline_review",
+   "access_status": "not_opened_model_memory",
+   "notes": "По памяти: ориентир 300 м до зелени ≥0,5–1 га. Не открыто."
+  },
+  {
+   "source_id": "A08-S014",
+   "title": "Bowler D.E., Buyung-Ali L., Knight T.M., Pullin A.S. Urban greening to cool towns and cities: a systematic review of the empirical evidence. Landscape and Urban Planning 97(3):147–155",
+   "publisher": "Elsevier",
+   "url": null,
+   "published_at": "2010",
+   "accessed_at": null,
+   "source_type": "peer_reviewed",
+   "access_status": "not_opened_model_memory",
+   "notes": "По памяти: средняя дневная разница парк–окружение около 0,94 °C. Не открыто; требуется проверка."
+  },
+  {
+   "source_id": "A08-S015",
+   "title": "Landsat 8–9 Collection 2 Level-2 Surface Temperature (документация)",
+   "publisher": "USGS",
+   "url": null,
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "technical_documentation",
+   "access_status": "not_opened_model_memory",
+   "notes": "По памяти: ST_B10 30 м (TIRS 100 м), масштаб 0,00341802, смещение 149,0 K, повтор 16 сут на спутник. Хосты USGS: 403."
+  },
+  {
+   "source_id": "A08-S016",
+   "title": "Sentinel-2 MSI Level-2A",
+   "publisher": "ESA / Copernicus",
+   "url": null,
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "technical_documentation",
+   "access_status": "not_opened_model_memory",
+   "notes": "По памяти: 10 м видимые/БИК, повтор ~5 сут; нет теплового канала. dataspace.copernicus.eu: 403."
+  },
+  {
+   "source_id": "A08-S017",
+   "title": "Sentinel-5P TROPOMI NO2",
+   "publisher": "ESA / Copernicus",
+   "url": null,
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "technical_documentation",
+   "access_status": "not_opened_model_memory",
+   "notes": "По памяти: ~5,5×3,5 км с 08.2019, ежедневно, тропосферный столб (не приземная концентрация)."
+  },
+  {
+   "source_id": "A08-S018",
+   "title": "GHSL GHS-POP / WorldPop 100 m",
+   "publisher": "EC JRC / WorldPop",
+   "url": null,
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "dataset_documentation",
+   "access_status": "not_opened_model_memory",
+   "notes": "По памяти: сетки населения 100 м, модельные (дасиметрия). Хосты: 403."
+  },
+  {
+   "source_id": "A08-S019",
+   "title": "ESA WorldCover 10 m (2020, 2021)",
+   "publisher": "ESA",
+   "url": null,
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "dataset_documentation",
+   "access_status": "not_opened_model_memory",
+   "notes": "По памяти: CC BY 4.0, 11 классов, включая Tree cover."
+  },
+  {
+   "source_id": "A08-S020",
+   "title": "OpenStreetMap (Overpass API)",
+   "publisher": "OpenStreetMap contributors",
+   "url": "https://www.openstreetmap.org/copyright",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "crowdsourced_map",
+   "access_status": "not_accessed_host_blocked",
+   "notes": "ODbL (подтверждено косвенно: STUPITS docs/GEO_SOURCES.md цитирует ODbL и Overpass). Overpass из среды A08: 403."
+  },
+  {
+   "source_id": "A08-S021",
+   "title": "ERA5-Land hourly",
+   "publisher": "ECMWF / Copernicus C3S",
+   "url": null,
+   "published_at": null,
+   "accessed_at": null,
+   "source_type": "reanalysis_documentation",
+   "access_status": "not_opened_model_memory",
+   "notes": "По памяти: 0,1° (~9 км), почасово, температура воздуха 2 м. Не открыто."
+  }
+ ],
+ "facts": [
+  {
+   "fact_id": "A08-F001",
+   "statement": "Все проверенные государственные, спутниковые и популяционные хосты недоступны из среды A08 (403 host_not_allowed); ecodata.kz:3838 не соединился.",
+   "kind": "observed",
+   "value": 19,
+   "unit": "hosts_tested_blocked_or_failed",
+   "geography": null,
+   "period": "2026-10-04",
+   "source_refs": [
+    {
+     "source_id": "A08-S001",
+     "locator": "лог curl 17:18:44Z и 17:24:36Z"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Ограничение среды исполнения, а не недоступность источников для людей: 18 хостов — 403, 1 — нет соединения."
+  },
+  {
+   "fact_id": "A08-F002",
+   "statement": "Репозиторий STUPITS публичный, последний коммит 834a25f от 2026-09-23, язык Python, лицензия не указана.",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": null,
+   "period": "2026-09-23",
+   "source_refs": [
+    {
+     "source_id": "A08-S002",
+     "locator": "GitHub API /repos; git log -1"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Отсутствие лицензии ограничивает чужое переиспользование, не владельца."
+  },
+  {
+   "fact_id": "A08-F003",
+   "statement": "В учебной модели STUPITS есть эко-показатели E1 «Озеленение» (вес 0,09) и E2 «Качество воздуха» (0,11); мера M4 «Парк/сквер»: стоимость 15, лаг 2, эффекты E1 +12, E2 +3, B1 +2; M5 «Перевод частного сектора на чистое топливо» E2 +14, C1 +4; M6 E1 +5, E2 +3; событие E5 «Вспышка смога» (Сарыарка, E2 −12, S2 −3).",
+   "kind": "observed",
+   "value": null,
+   "unit": "условные единицы учебной модели",
+   "geography": "Астана (учебный датасет)",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A08-S002",
+     "locator": "data/city_data.json: indicators, measures; engine/README.md таблица событий"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Учебные значения ТЗ хакатона; НЕ переносить на Шымкент."
+  },
+  {
+   "fact_id": "A08-F004",
+   "statement": "Слой реального контекста STUPITS помечен «Справочный слой. НЕ влияет на официальный расчёт индекса»; последняя загрузка Overpass завершилась ReadTimeout (status unavailable).",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": "Астана",
+   "period": "2026-09-23",
+   "source_refs": [
+    {
+     "source_id": "A08-S002",
+     "locator": "data/real_context_meta.json: usage, status, error"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Готовый паттерн для эко-слоя Шымкента."
+  },
+  {
+   "fact_id": "A08-F005",
+   "statement": "В образце AirData перечислены два поста Казгидромета в Шымкенте: ПНЗ №6 мкр «Нурсат» (42.3627, 69.6309) и ПНЗ №5 мкр «Самал-3» (42.3623, 69.5936), статус ok.",
+   "kind": "observed",
+   "value": 2,
+   "unit": "posts",
+   "geography": "г. Шымкент, точки",
+   "period": "состояние списка на ~2022-03",
+   "source_refs": [
+    {
+     "source_id": "A08-S003",
+     "locator": "sensors.xlsx, строки sId=k15 и k49"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Это список, агрегированный проектом AirData, а не реестр Казгидромета; число постов в 2026 — unknown."
+  },
+  {
+   "fact_id": "A08-F006",
+   "statement": "Образец содержит почасовые ряды 2020-06-21..2022-03-24 UTC по PM2.5, SO2, CO, NO2, PM10, H2S, NO, PMtot, PM1.0 для 127 станций РК; единицы измерения не указаны.",
+   "kind": "observed",
+   "value": 2229363,
+   "unit": "rows",
+   "geography": "Казахстан (127 станций)",
+   "period": "2020-06-21..2022-03-24",
+   "source_refs": [
+    {
+     "source_id": "A08-S003",
+     "locator": "layer_03_data_prepared_25.03.22.csv"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Данные 2021–2022, устарели для 2026; лицензии нет."
+  },
+  {
+   "fact_id": "A08-F007",
+   "statement": "Полнота часовых рядов в окне 21.12.2021–24.03.2022: ПНЗ №5 PM2.5 80,4%, NO2 83,5%, CO 0,9%; ПНЗ №6 PM2.5 4,0%, NO2 3,9%, CO 89,5%.",
+   "kind": "derived",
+   "value": {
+    "k49_PM2.5": 80.4,
+    "k49_NO2": 83.5,
+    "k49_CO": 0.9,
+    "k15_PM2.5": 4.0,
+    "k15_NO2": 3.9,
+    "k15_CO": 89.5
+   },
+   "unit": "%",
+   "geography": "г. Шымкент, 2 поста",
+   "period": "2021-12-21..2022-03-24",
+   "source_refs": [
+    {
+     "source_id": "A08-S003",
+     "locator": "layer_03_data_prepared_25.03.22.csv; sensors.xlsx"
+    }
+   ],
+   "derivation": "полнота = число уникальных часов с значением / 2256 × 100; A08_airdata_sample_check.py",
+   "confidence": "high",
+   "caveats": "Пропуски могут быть артефактом сбора AirData, а не работы постов."
+  },
+  {
+   "fact_id": "A08-F008",
+   "statement": "Расстояние между постами ПНЗ №5 и ПНЗ №6 — 3,07 км.",
+   "kind": "derived",
+   "value": 3.07,
+   "unit": "km",
+   "geography": "г. Шымкент",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A08-S003",
+     "locator": "sensors.xlsx координаты"
+    }
+   ],
+   "derivation": "гаверсинус, R = 6371 км",
+   "confidence": "high",
+   "caveats": "Два поста в 3 км друг от друга не описывают город площадью в сотни км²."
+  },
+  {
+   "fact_id": "A08-F009",
+   "statement": "ПНЗ №5: 229 валидных суток PM2.5 (≥18 ч) с 2021-03-26 по 2022-03-24; медиана суточных средних 19,6; суток > 15 — 146; суток > 35 — 64 (если единицы мкг/м³).",
+   "kind": "derived",
+   "value": {
+    "valid_days": 229,
+    "median_daily_mean": 19.6,
+    "days_gt_15": 146,
+    "days_gt_35": 64
+   },
+   "unit": "мкг/м³ (не подтверждено)",
+   "geography": "г. Шымкент, точка ПНЗ №5",
+   "period": "2021-03-26..2022-03-24",
+   "source_refs": [
+    {
+     "source_id": "A08-S003",
+     "locator": "layer_03_data_prepared_25.03.22.csv"
+    }
+   ],
+   "derivation": "суточное среднее по локальным суткам Asia/Almaty, сутки с ≥18 часовыми значениями; пороги 15 (ВОЗ 2021, A08-F018) и 35 (A08-F019)",
+   "confidence": "medium",
+   "caveats": "Единицы не указаны; 37% суток года без валидных данных; один пост ≠ город."
+  },
+  {
+   "fact_id": "A08-F010",
+   "statement": "Общих суток с валидным PM2.5 у двух постов нет, поэтому пространственную разницу по образцу оценить нельзя.",
+   "kind": "derived",
+   "value": 0,
+   "unit": "days",
+   "geography": "г. Шымкент",
+   "period": "2021-03..2022-03",
+   "source_refs": [
+    {
+     "source_id": "A08-S003",
+     "locator": "layer_03_data_prepared_25.03.22.csv"
+    }
+   ],
+   "derivation": "пересечение множеств валидных суток",
+   "confidence": "high",
+   "caveats": "Аргумент против интерполяции по постам."
+  },
+  {
+   "fact_id": "A08-F011",
+   "statement": "В метеоБД Казгидромета (по описанию стороннего скрейпера) 227 станций в 17 регионах; станция «Шымкент» отнесена к Туркестанской области (KZ-YUZ), а её геокод Nominatim указывает на «Көлкент, Сайрам ауданы».",
+   "kind": "observed",
+   "value": 227,
+   "unit": "stations",
+   "geography": "РК; станция «Шымкент»",
+   "period": "состояние на 2023",
+   "source_refs": [
+    {
+     "source_id": "A08-S004",
+     "locator": "README.md; station_geocode/final_coordinates.csv строка 201"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Сторонний источник; координаты получены геокодированием названия и ненадёжны; классификация региона могла измениться."
+  },
+  {
+   "fact_id": "A08-F012",
+   "statement": "Как минимум один исследователь получил ряды загрязнения от Казгидромета по официальному запросу.",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": "РК",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A08-S005",
+     "locator": "описание репозитория в GitHub search API"
+    }
+   ],
+   "derivation": null,
+   "confidence": "low",
+   "caveats": "Только описание, содержимое пустое; детали запроса неизвестны."
+  },
+  {
+   "fact_id": "A08-F013",
+   "statement": "Зимние эпизоды загрязнения воздуха Шымкента связаны с отоплением частного сектора твёрдым топливом, промышленными источниками и транспортом.",
+   "kind": "hypothesis",
+   "value": null,
+   "unit": null,
+   "geography": "г. Шымкент",
+   "period": null,
+   "source_refs": [],
+   "derivation": null,
+   "confidence": "low",
+   "caveats": "Не проверено: нужны бюллетени Казгидромета 2024–2026 и инвентаризация выбросов."
+  },
+  {
+   "fact_id": "A08-F014",
+   "statement": "Летом в Шымкенте формируются горячие пятна температуры поверхности в плотной застройке, промзонах и новых микрорайонах с низкой долей кроны.",
+   "kind": "hypothesis",
+   "value": null,
+   "unit": null,
+   "geography": "г. Шымкент, ячейки 30–100 м",
+   "period": null,
+   "source_refs": [],
+   "derivation": null,
+   "confidence": "low",
+   "caveats": "LST ≠ температура воздуха; проверить по Landsat ST 2023–2025 и метеостанции."
+  },
+  {
+   "fact_id": "A08-F015",
+   "statement": "Доступ жителей к публичной зелени ≥0,5 га в пределах 300 м распределён неравномерно между центром и окраинами.",
+   "kind": "hypothesis",
+   "value": null,
+   "unit": null,
+   "geography": "г. Шымкент",
+   "period": null,
+   "source_refs": [],
+   "derivation": null,
+   "confidence": "low",
+   "caveats": "Проверяется индикатором A300 на OSM и GHSL (метод готов)."
+  },
+  {
+   "fact_id": "A08-F016",
+   "statement": "Вокруг бывшего свинцового завода в Шымкенте сохраняются отвалы и загрязнение почв свинцом.",
+   "kind": "hypothesis",
+   "value": null,
+   "unit": null,
+   "geography": "г. Шымкент, промышленный ареал (координаты не установлены)",
+   "period": null,
+   "source_refs": [],
+   "derivation": null,
+   "confidence": "low",
+   "caveats": "Только память модели; первоисточник не открыт. Не публиковать без подтверждения."
+  },
+  {
+   "fact_id": "A08-F017",
+   "statement": "На окраинах Шымкента существуют стихийные свалки рядом с жилой застройкой.",
+   "kind": "hypothesis",
+   "value": null,
+   "unit": null,
+   "geography": "г. Шымкент, окраины",
+   "period": null,
+   "source_refs": [],
+   "derivation": null,
+   "confidence": "low",
+   "caveats": "Нужны реестр акимата или агрегаты обращений; логистика — у A03."
+  },
+  {
+   "fact_id": "A08-F018",
+   "statement": "Рекомендуемый ВОЗ (2021) уровень PM2.5: 15 мкг/м³ за 24 ч, 5 мкг/м³ за год.",
+   "kind": "hypothesis",
+   "value": {
+    "24h": 15,
+    "annual": 5
+   },
+   "unit": "мкг/м³",
+   "geography": "глобально",
+   "period": "2021",
+   "source_refs": [
+    {
+     "source_id": "A08-S012",
+     "locator": "не открыто"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Значения по памяти модели; открыть документ ВОЗ."
+  },
+  {
+   "fact_id": "A08-F019",
+   "statement": "ПДК среднесуточная PM2.5 в Казахстане — 0,035 мг/м³ (35 мкг/м³).",
+   "kind": "hypothesis",
+   "value": 35,
+   "unit": "мкг/м³",
+   "geography": "Казахстан",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A08-S011",
+     "locator": "не открыто"
+    }
+   ],
+   "derivation": null,
+   "confidence": "low",
+   "caveats": "Реквизиты приказа и значение не проверены."
+  },
+  {
+   "fact_id": "A08-F020",
+   "statement": "Ориентир ВОЗ-Европа: жители в пределах 300 м по прямой от публичной зелени площадью ≥0,5–1 га.",
+   "kind": "hypothesis",
+   "value": 300,
+   "unit": "m",
+   "geography": "глобально",
+   "period": "2016",
+   "source_refs": [
+    {
+     "source_id": "A08-S013",
+     "locator": "не открыто"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Норматив доступа, а не качества; проверить формулировку."
+  },
+  {
+   "fact_id": "A08-F021",
+   "statement": "Мета-анализ: средняя дневная температура воздуха в парках ниже окружения примерно на 0,94 °C.",
+   "kind": "hypothesis",
+   "value": 0.94,
+   "unit": "°C",
+   "geography": "обзор, преимущественно умеренный климат",
+   "period": "2010",
+   "source_refs": [
+    {
+     "source_id": "A08-S014",
+     "locator": "не открыто"
+    }
+   ],
+   "derivation": null,
+   "confidence": "low",
+   "caveats": "Число по памяти; эффект парков ≠ уличные деревья; перенос на Шымкент не обоснован."
+  },
+  {
+   "fact_id": "A08-F022",
+   "statement": "Landsat 8/9 C2 L2 ST_B10: 30 м, коэффициенты 0,00341802 и 149,0 K, повтор 16 суток на спутник.",
+   "kind": "hypothesis",
+   "value": {
+    "res_m": 30,
+    "scale": 0.00341802,
+    "offset_K": 149.0,
+    "revisit_days": 16
+   },
+   "unit": null,
+   "geography": "глобально",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A08-S015",
+     "locator": "не открыто"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Сверить с USGS Collection 2 Level-2 Science Product Guide."
+  },
+  {
+   "fact_id": "A08-F023",
+   "statement": "Синтетика: базовый индекс отличается от правила «только жара» (Jaccard 0,44); при умеренном возмущении весов ядро составляет 74% топ-K, при произвольных весах — 47%; заполнение пропусков медианой даёт худшую устойчивость.",
+   "kind": "synthetic",
+   "value": {
+    "heat_only_jaccard": 0.44,
+    "core_moderate": 0.738,
+    "core_uninformed": 0.47
+   },
+   "unit": "Jaccard / доля",
+   "geography": "синтетическая сетка 10×10 км",
+   "period": "n/a",
+   "source_refs": [
+    {
+     "source_id": "A08-S001",
+     "locator": "A08_mvp_priority_synthetic.py, seed 42; A08_mvp_results_synthetic.json"
+    }
+   ],
+   "derivation": "см. скрипт",
+   "confidence": "high",
+   "caveats": "Высокая уверенность только в воспроизводимости вычисления, не в переносе на Шымкент."
+  },
+  {
+   "fact_id": "A08-F024",
+   "statement": "Синтетика: 5 микропарков при жадном покрытии повышают A300 с 0,104 до 0,160 (выбор самых горячих — 0,144, случайный — 0,127); ранжирование мест обследования по экспозиции охватывает больше жителей, чем по жалобам (17 134 против 15 366).",
+   "kind": "synthetic",
+   "value": {
+    "a300_base": 0.1043,
+    "greedy": 0.1597,
+    "hottest": 0.1438,
+    "random": 0.1269
+   },
+   "unit": "доля населения",
+   "geography": "синтетическая сетка",
+   "period": "n/a",
+   "source_refs": [
+    {
+     "source_id": "A08-S001",
+     "locator": "A08_mvp_results_synthetic.json: scenarios"
+    }
+   ],
+   "derivation": "см. скрипт",
+   "confidence": "high",
+   "caveats": "Методическая демонстрация, не прогноз."
+  }
+ ],
+ "datasets": [
+  {
+   "dataset_id": "A08-D001",
+   "title": "AirData_Shymkent: почасовые ряды постов Казгидромета (образец)",
+   "publisher": "Dina Assylbekova (GitHub), источник — Казгидромет",
+   "source_ids": [
+    "A08-S003"
+   ],
+   "landing_url": "https://github.com/DinaAssylbekova/AirData_Shymkent",
+   "download_or_api_url": "git clone --depth 1 https://github.com/DinaAssylbekova/AirData_Shymkent.git",
+   "access_status": "sample_verified",
+   "tested_at": "2026-10-04T17:20Z",
+   "geography": "РК, в т.ч. 2 поста г. Шымкент",
+   "granularity": "точка поста, час",
+   "period": "2020-06-21..2022-03-24",
+   "format": "CSV + XLSX",
+   "fields": [
+    "datetime",
+    "stationId",
+    "code",
+    "value",
+    "sId",
+    "source",
+    "city",
+    "pnz",
+    "address",
+    "lat",
+    "lng",
+    "sea_level",
+    "status"
+   ],
+   "units": "не указаны",
+   "update_frequency": "не обновляется (последний коммит 2022-04-03)",
+   "license": "не указана",
+   "auth_requirement": "нет",
+   "limitations": "Устарел; лицензии нет; единицы неизвестны; сильные пропуски.",
+   "next_retrieval_step": "Использовать только для отладки парсера; получить актуальные ряды у Казгидромета официально."
+  },
+  {
+   "dataset_id": "A08-D002",
+   "title": "Метеорологическая БД Казгидромета (dm_climat_ru)",
+   "publisher": "РГП «Казгидромет» / ecodata.kz",
+   "source_ids": [
+    "A08-S004"
+   ],
+   "landing_url": "http://ecodata.kz:3838/dm_climat_ru/",
+   "download_or_api_url": null,
+   "access_status": "documented_only",
+   "tested_at": "2026-10-04T17:24Z",
+   "geography": "РК, 227 станций (по описанию на 2023)",
+   "granularity": "станция; шаг по описанию — сутки/срок (уточнить)",
+   "period": "2000–2023 по описанию",
+   "format": "Shiny-приложение (HTML-таблицы)",
+   "fields": [
+    "температура",
+    "парциальное давление",
+    "относительная влажность",
+    "ещё 8 показателей (по README)"
+   ],
+   "units": null,
+   "update_frequency": null,
+   "license": "unknown",
+   "auth_requirement": "unknown",
+   "limitations": "Соединение из среды A08 не установлено; массовый скрейпинг может нарушать условия.",
+   "next_retrieval_step": "Открыть вручную, проверить условия, найти станцию «Шымкент» и её паспорт с координатами."
+  },
+  {
+   "dataset_id": "A08-D003",
+   "title": "Бюллетени о состоянии окружающей среды (г. Шымкент)",
+   "publisher": "РГП «Казгидромет»",
+   "source_ids": [
+    "A08-S006"
+   ],
+   "landing_url": "https://www.kazhydromet.kz/",
+   "download_or_api_url": null,
+   "access_status": "unavailable",
+   "tested_at": "2026-10-04T17:18Z",
+   "geography": "г. Шымкент (ожидается)",
+   "granularity": null,
+   "period": null,
+   "format": "PDF (ожидается)",
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "403 из среды A08.",
+   "next_retrieval_step": "Второй проход: скачать бюллетени 2024–2026, выписать посты, вещества, СИ/НП, уровень."
+  },
+  {
+   "dataset_id": "A08-D004",
+   "title": "Динамические ряды БНС по Шымкенту",
+   "publisher": "БНС АСПиР РК",
+   "source_ids": [
+    "A08-S007"
+   ],
+   "landing_url": "https://stat.gov.kz/ru/region/shymkent/dynamic-tables/38/",
+   "download_or_api_url": null,
+   "access_status": "unavailable",
+   "tested_at": "2026-10-04T17:18Z",
+   "geography": "г. Шымкент / районы",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "403.",
+   "next_retrieval_step": "Найти выбросы от стационарных источников, население и возраст по районам."
+  },
+  {
+   "dataset_id": "A08-D005",
+   "title": "OSM: публичная зелень, школы, сады, поликлиники, граница города",
+   "publisher": "OpenStreetMap contributors",
+   "source_ids": [
+    "A08-S020",
+    "A08-S002"
+   ],
+   "landing_url": "https://www.openstreetmap.org/",
+   "download_or_api_url": "https://overpass-api.de/api/interpreter (запрос в отчёте, раздел 4.2)",
+   "access_status": "documented_only",
+   "tested_at": "2026-10-04T17:18Z",
+   "geography": "г. Шымкент",
+   "granularity": "объект/полигон",
+   "period": null,
+   "format": "JSON/GeoJSON",
+   "fields": [
+    "leisure",
+    "landuse",
+    "access",
+    "amenity",
+    "healthcare",
+    "geometry"
+   ],
+   "units": null,
+   "update_frequency": null,
+   "license": "ODbL 1.0",
+   "auth_requirement": "нет",
+   "limitations": "Полнота и публичность объектов неизвестны; Overpass таймаутит (опыт STUPITS).",
+   "next_retrieval_step": "Выполнить запрос с кэшем и provenance; вручную проверить 20 объектов."
+  },
+  {
+   "dataset_id": "A08-D006",
+   "title": "Landsat 8/9 C2 L2 Surface Temperature",
+   "publisher": "USGS",
+   "source_ids": [
+    "A08-S015"
+   ],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": "documented_only",
+   "tested_at": null,
+   "geography": "сцена, покрывающая Шымкент",
+   "granularity": "30 м; ~10:30 местного солнечного времени; 16 сут/спутник",
+   "period": null,
+   "format": "COG GeoTIFF",
+   "fields": [
+    "ST_B10",
+    "QA_PIXEL"
+   ],
+   "units": "K после масштабирования",
+   "update_frequency": null,
+   "license": "public domain (по памяти)",
+   "auth_requirement": null,
+   "limitations": "LST ≠ температура воздуха; один момент суток.",
+   "next_retrieval_step": "Летние сцены июнь–август 2023–2025 с облачностью <10%; медиана; аномалия к медиане города."
+  },
+  {
+   "dataset_id": "A08-D007",
+   "title": "Sentinel-2 L2A (NDVI) / ESA WorldCover",
+   "publisher": "ESA Copernicus",
+   "source_ids": [
+    "A08-S016",
+    "A08-S019"
+   ],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": "documented_only",
+   "tested_at": null,
+   "geography": null,
+   "granularity": "10 м",
+   "period": null,
+   "format": "COG",
+   "fields": [
+    "B04",
+    "B08",
+    "SCL"
+   ],
+   "units": null,
+   "update_frequency": null,
+   "license": "Copernicus free / CC BY 4.0 (по памяти)",
+   "auth_requirement": null,
+   "limitations": "NDVI ≠ качество или доступность парка; полив искажает сезонность.",
+   "next_retrieval_step": "Летняя медиана NDVI; доля Tree cover из WorldCover по ячейкам 100 м."
+  },
+  {
+   "dataset_id": "A08-D008",
+   "title": "GHSL GHS-POP / WorldPop 100 м",
+   "publisher": "EC JRC / WorldPop",
+   "source_ids": [
+    "A08-S018"
+   ],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": "documented_only",
+   "tested_at": null,
+   "geography": null,
+   "granularity": "100 м",
+   "period": null,
+   "format": "GeoTIFF",
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": "открытая (уточнить)",
+   "auth_requirement": null,
+   "limitations": "Модельное распределение; новые микрорайоны могут быть недоучтены.",
+   "next_retrieval_step": "Скачать тайл, сверить сумму с численностью БНС по городу."
+  },
+  {
+   "dataset_id": "A08-D009",
+   "title": "Sentinel-5P TROPOMI NO2 (контекст)",
+   "publisher": "ESA Copernicus",
+   "source_ids": [
+    "A08-S017"
+   ],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": "documented_only",
+   "tested_at": null,
+   "geography": null,
+   "granularity": "~5,5×3,5 км, сутки",
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": "Copernicus free",
+   "auth_requirement": null,
+   "limitations": "Столб, не приземная концентрация; слишком грубо для квартала.",
+   "next_retrieval_step": "Только сезонный фон и сравнение лет; в индекс не включать."
+  },
+  {
+   "dataset_id": "A08-D010",
+   "title": "ERA5-Land (температура воздуха 2 м)",
+   "publisher": "ECMWF / C3S",
+   "source_ids": [
+    "A08-S021"
+   ],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": "documented_only",
+   "tested_at": null,
+   "geography": null,
+   "granularity": "0,1°, час",
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": "Copernicus licence (по памяти)",
+   "auth_requirement": null,
+   "limitations": "Не внутригородская; город представлен 1–4 узлами.",
+   "next_retrieval_step": "Использовать для дней жары и сопоставления с метеостанцией."
+  },
+  {
+   "dataset_id": "A08-D011",
+   "title": "Свободные муниципальные участки / земельный кадастр",
+   "publisher": "акимат г. Шымкент / уполномоченный орган по земельным отношениям",
+   "source_ids": [],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": "restricted",
+   "tested_at": null,
+   "geography": null,
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "Не проверено; вероятны ограничения доступа.",
+   "next_retrieval_step": "Зависимость от исследователя «земельные отношения»."
+  },
+  {
+   "dataset_id": "A08-D012",
+   "title": "Агрегаты обращений 109 / eOtinish по экологии",
+   "publisher": "акимат г. Шымкент",
+   "source_ids": [
+    "A08-S008"
+   ],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": "restricted",
+   "tested_at": null,
+   "geography": null,
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "Персональные данные недопустимы; нужны только агрегаты по категориям и территориям.",
+   "next_retrieval_step": "Уточнить у исследователя «цифровизация», публикуются ли агрегаты."
+  }
+ ],
+ "opportunities": [
+  {
+   "idea_id": "A08-O001",
+   "title": "Эко-приоритет: карта нужды в озеленении и доступ к зелени (справочный слой STUPITS)",
+   "problem": "Нет прозрачного способа показать, где сочетаются жара, дефицит зелени и много жителей (P2, P3).",
+   "evidence_fact_ids": [
+    "A08-F014",
+    "A08-F015",
+    "A08-F020",
+    "A08-F023",
+    "A08-F004"
+   ],
+   "primary_user": "специалист акимата по благоустройству и озеленению; дипломник",
+   "user_task": "Выбрать кварталы и улицы для годового объёма посадок и обосновать выбор",
+   "existing_solution": "unknown (процесс планирования посадок в Шымкенте не установлен)",
+   "proposed_addition": "Детерминированный индекс на перцентильных рангах + A300 + ядро/периферия при возмущении весов + флаги пропусков; MapLibre-слой, не влияющий на Score",
+   "required_dataset_ids": [
+    "A08-D005",
+    "A08-D006",
+    "A08-D007",
+    "A08-D008"
+   ],
+   "ai_role": "Не требуется для расчёта; LLM только объясняет готовые компоненты",
+   "non_ai_baseline": "ГИС/таблица: сортировка по LST или по NDVI",
+   "success_metrics": [
+    "ядро топ-K ≥60% при Dirichlet(20·w)",
+    "Jaccard с правилом «только жара» <0,7 (иначе индекс лишний)",
+    "экспертная оценка: доля топ-20, признанных осмысленными",
+    "время подготовки обоснования по сравнению с ручным"
+   ],
+   "feasibility_10_days": "high, если доступны OSM, Landsat, GHSL; medium при ручной загрузке",
+   "blockers": [
+    "нет доступа к хостам в среде A08",
+    "полнота OSM",
+    "LST ≠ воздух"
+   ],
+   "transfer_to_astana": "Высокая: тот же код и слои; для Астаны нужен ещё зимний слой (ветер, снег)",
+   "next_action": "Второй проход: собрать 6 слоёв и прогнать A08_mvp_priority_synthetic.py на реальных растрах"
+  },
+  {
+   "idea_id": "A08-O002",
+   "title": "Очередь обследования подозрительных и исторически загрязнённых участков",
+   "problem": "Сигналы о свалках и исторических загрязнениях неравноценны; ресурсы проверки ограничены (P4, P5).",
+   "evidence_fact_ids": [
+    "A08-F016",
+    "A08-F017",
+    "A08-F024"
+   ],
+   "primary_user": "инспектор или аналитик территориального департамента экологии; районный акимат",
+   "user_task": "Решить, какие участки проверить в этом месяце",
+   "existing_solution": "unknown (вероятно, реакция на жалобы — гипотеза)",
+   "proposed_addition": "Ранг по экспозиции (жители и чувствительные объекты в 500 м) + флаг давности и надёжности сигнала; не утверждает факт загрязнения",
+   "required_dataset_ids": [
+    "A08-D005",
+    "A08-D008",
+    "A08-D012"
+   ],
+   "ai_role": "Опционально: классификация текстов обращений по категориям при наличии агрегатов; иначе не нужен",
+   "non_ai_baseline": "Сортировка по числу жалоб",
+   "success_metrics": [
+    "доля подтверждённых нарушений среди проверенных (precision) против очереди по жалобам",
+    "охват жителей у проверенных мест"
+   ],
+   "feasibility_10_days": "low–medium: нет реестра точек",
+   "blockers": [
+    "нет открытого реестра свалок и исторических загрязнений",
+    "согласование с A03"
+   ],
+   "transfer_to_astana": "Средняя",
+   "next_action": "Найти официальный реестр (Экокодекс, МЭПР) и агрегаты 109; синхронизироваться с A03"
+  },
+  {
+   "idea_id": "A08-O003",
+   "title": "Исследование: оценка эффекта озеленения и размещение недорогих датчиков",
+   "problem": "Эффект посадок для Шымкента не измерен; посты редкие и неполные (A08-F007, A08-F010).",
+   "evidence_fact_ids": [
+    "A08-F007",
+    "A08-F010",
+    "A08-F021"
+   ],
+   "primary_user": "исследователь (диплом), акимат как заказчик пилота",
+   "user_task": "Понять, даёт ли конкретная программа посадок измеримое охлаждение, и где ставить датчики",
+   "existing_solution": "нет данных",
+   "proposed_addition": "Разность разностей по LST (архив Landsat) и логгерам воздуха; оптимальное размещение датчиков по стратам землепользования и населения",
+   "required_dataset_ids": [
+    "A08-D006",
+    "A08-D001",
+    "A08-D010"
+   ],
+   "ai_role": "Не обязателен; статистика и оптимизация",
+   "non_ai_baseline": "сравнение «до/после» без контроля (слабое)",
+   "success_metrics": [
+    "минимально обнаружимый эффект по расчёту мощности",
+    "доля посадок с известными координатами и датой"
+   ],
+   "feasibility_10_days": "только расчёт мощности по архиву",
+   "blockers": [
+    "координаты и даты посадок",
+    "полевые логгеры"
+   ],
+   "transfer_to_astana": "Высокая",
+   "next_action": "Расчёт межгодовой дисперсии LST в сопоставленных ячейках"
+  }
+ ],
+ "open_questions": [
+  {
+   "question": "Сколько постов Казгидромета работает в г. Шымкент в 2026 году, где они и какие вещества меряют?",
+   "why_important": "Определяет, можно ли говорить о районах или только о точках",
+   "how_to_check": "Бюллетени Казгидромета 2025–2026, раздел по г. Шымкент"
+  },
+  {
+   "question": "Какой уровень загрязнения и какие превышения указаны для Шымкента в 2024–2026?",
+   "why_important": "Подтверждает или снимает P1",
+   "how_to_check": "Годовые и месячные бюллетени; национальный доклад о состоянии ОС"
+  },
+  {
+   "question": "Кто и по какой процедуре утверждает план озеленения и выбирает места посадок?",
+   "why_important": "Без реального решения продукт не имеет пользователя",
+   "how_to_check": "gov.kz: положения об управлениях акимата; правила благоустройства, утверждённые маслихатом"
+  },
+  {
+   "question": "Есть ли официальный учёт исторических загрязнений и полигонов по Шымкенту?",
+   "why_important": "P4/P5 сейчас — только гипотезы",
+   "how_to_check": "Экокодекс на adilet.zan.kz; сайты МЭПР и акимата"
+  },
+  {
+   "question": "Где фактические координаты метеостанции «Шымкент» и почему в БД она в Туркестанской области?",
+   "why_important": "Ловушка границ; калибровка LST по воздуху",
+   "how_to_check": "Паспорт станции Казгидромета; сверка с картой"
+  },
+  {
+   "question": "Насколько полна OSM-разметка парков Шымкента?",
+   "why_important": "A300 зависит от полноты",
+   "how_to_check": "Сверка с перечнем парков и скверов акимата; выборочная проверка снимков"
+  },
+  {
+   "question": "Достаточно ли свободных муниципальных участков в зонах нужды?",
+   "why_important": "Решает судьбу сценария S2",
+   "how_to_check": "Данные исследователя «земельные отношения»"
+  },
+  {
+   "question": "Публикуются ли агрегаты обращений 109/eOtinish по эко-категориям?",
+   "why_important": "Источник сигналов для O002",
+   "how_to_check": "Исследователь «цифровизация»; data.egov.kz"
+  }
+ ],
+ "deliverables": {
+  "scripts": [
+   {
+    "file": "A08_airdata_sample_check.py",
+    "kind": "real_sample_check",
+    "executed": true,
+    "env": "Python 3.12.3, pandas 3.0.2",
+    "command": "python3 A08_airdata_sample_check.py AirData_Shymkent",
+    "output": "A08_airdata_sample_aggregates.json"
+   },
+   {
+    "file": "A08_mvp_priority_synthetic.py",
+    "kind": "synthetic_method_test",
+    "executed": true,
+    "env": "Python 3.12.3, numpy 2.4.4, scipy 1.17.1",
+    "command": "python3 A08_mvp_priority_synthetic.py",
+    "seed": 42,
+    "runtime_s": 7,
+    "output": "A08_mvp_results_synthetic.json"
+   }
+  ],
+  "unexecuted": [
+   {
+    "what": "Overpass-запрос парков Шымкента (отчёт, раздел 4.2)",
+    "reason": "overpass-api.de: 403"
+   }
+  ],
+  "indicator_definitions": [
+   {
+    "id": "A300",
+    "formula": "Σ pop_i·[d_i ≤ 300] / Σ pop_i; d_i = max(0, ‖c_i − c_p‖ − √(A_p/π)), p — публичные участки ≥0,5 га",
+    "inputs": [
+     "A08-D005",
+     "A08-D008"
+    ]
+   },
+   {
+    "id": "post_completeness",
+    "formula": "уникальные часы с значением / часы окна × 100",
+    "inputs": [
+     "A08-D001"
+    ]
+   },
+   {
+    "id": "G_priority",
+    "formula": "Σ w_k r_ik / Σ w_k[r_ik ≠ NaN], r — перцентильный ранг среди жилых ячеек; веса 0,35/0,20/0,15/0,20/0,10",
+    "inputs": [
+     "A08-D005",
+     "A08-D006",
+     "A08-D007",
+     "A08-D008"
+    ]
+   }
+  ],
+  "api_contract_draft": {
+   "GET /api/eco/layers": "[{layer_id, source_id, period, resolution_m, license, missing_share}]",
+   "GET /api/eco/priority?k=&w=": "[{cell_id, score, components{}, core_freq, flags[]}]",
+   "POST /api/eco/scenario": "{type, n, candidates} -> {a300_before, a300_after, selected[], assumptions[]}"
+  },
+  "dependencies": [
+   "A03 — реестр свалок/полигонов",
+   "земельные отношения — свободные участки",
+   "энергетика/ЖКХ — газификация частного сектора",
+   "транспорт — интенсивность магистралей",
+   "цифровизация — data.egov.kz, 109",
+   "A14 — единый реестр источников"
+  ]
+ }
+}
