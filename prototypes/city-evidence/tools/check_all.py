@@ -9,8 +9,9 @@ Steps (no network; each external script runs in its own process):
   3. build    — web/data.js and web/evidence.js are byte-equal to a fresh in-memory rebuild
                 (evidence rebuild needs shapely+pyproj; without them the committed file is validated by the contract)
   4. facts    — tools/explain_ref.py output equals tests/expected_explanations.json; node tests/conformance.cjs
-  5. tests    — python -m unittest discover -s tests
-Browser smoke test is separate: NODE_PATH="$(npm root -g)" node tests/smoke.cjs
+  5. whatif   — tools/whatif_ref.py --check (expected cases fresh); node tests/whatif.cjs (JS = Python, contract rules)
+  6. tests    — python -m unittest discover -s tests
+Browser tests are separate: NODE_PATH="$(npm root -g)" node tests/smoke.cjs ; node tests/whatif_smoke.cjs
 Exit code 0 only if every executed step passed; skipped steps are reported, never counted as passed.
 """
 import hashlib
@@ -117,6 +118,19 @@ def step_facts():
     record("facts", f"JS facts.js conformance ({n} checks)", r.returncode == 0, r.stdout[-400:] if r.returncode else "")
 
 
+def step_whatif():
+    r = subprocess.run([sys.executable, str(APP / "tools/whatif_ref.py"), "--check"], capture_output=True, text=True, encoding="utf-8")
+    record("whatif", "Python reference reproduces tests/expected_whatif.json", r.returncode == 0, r.stdout.strip()[-200:])
+    node = shutil.which("node")
+    if not node:
+        record("whatif", "node tests/whatif.cjs", None, "node not installed")
+        return
+    r = subprocess.run([node, str(APP / "tests/whatif.cjs")], capture_output=True, text=True, encoding="utf-8")
+    n = r.stdout.count("PASS ")
+    record("whatif", f"JS whatif.js = Python reference + city-whatif-v1 rules ({n} checks)", r.returncode == 0,
+           r.stdout[-400:] if r.returncode else "")
+
+
 def step_tests():
     r = subprocess.run([sys.executable, "-m", "unittest", "discover", "-s", "tests"], cwd=APP, capture_output=True, text=True,
                        encoding="utf-8")
@@ -126,7 +140,7 @@ def step_tests():
 
 
 def main():
-    for step in (step_inputs, step_package, step_build, step_fresh, step_facts, step_tests):
+    for step in (step_inputs, step_package, step_build, step_fresh, step_facts, step_whatif, step_tests):
         try:
             step()
         except Exception as e:  # a crashing step is a failure, never a skip

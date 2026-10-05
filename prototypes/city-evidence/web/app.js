@@ -11,6 +11,7 @@
   const $ = (id) => document.getElementById(id);
   const D = window.CITY_EVIDENCE;
   const F = window.CITY_FACTS || null;  // optional stage-2 module (facts.js)
+  const X = window.CITY_WHATIF || null;  // round-7 «Если добавить объект» (whatif.js), needs facts.js for the snapshot
 
   function el(tag, attrs, text) {
     const e = document.createElement(tag);
@@ -53,7 +54,9 @@
   const FOOT_COLOR = { unknown: "var(--muted)", conditional: "var(--warning)", denied: "var(--critical)", allowed: "var(--good)" };
   const ORDER = (D.city_order || Object.keys(D.cities)).filter((k) => D.cities[k]);
   const STATE = { city: ORDER[0], groups: new Set(Object.keys(D.groups)), places: true, roads: true,
-    roadStyle: "plain", pointMode: false, point: null, selected: null, view: null, epoch: 0 };
+    roadStyle: "plain", pointMode: false, point: null, selected: null, view: null, epoch: 0,
+    // what-if scenario: hypothetical layer, never mixed into places / counters / QA of the observed slice
+    wi: { category: "school", points: [], proposed: null, mode: null, seq: 1, msg: "", explain: null } };
 
   // ---------- projection: local equirectangular metres around the square centre ----------
   let P = null;
@@ -124,10 +127,11 @@
       renderMap(); renderSelection(); updateStatus();
     });
     $("clearBtn").addEventListener("click", clearSelection);
-    document.addEventListener("keydown", (e) => { if (e.key === "Escape") clearSelection(); });
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") { if (STATE.wi.mode) setWiMode(null); clearSelection(); } });
     $("roadStyle").addEventListener("change", (e) => { STATE.roadStyle = e.target.value; renderRoadLegend(); renderMap(); });
     $("pointBtn").addEventListener("click", () => {
       STATE.pointMode = !STATE.pointMode;
+      if (STATE.pointMode) setWiMode(null, true);
       $("pointBtn").setAttribute("aria-pressed", String(STATE.pointMode));
       $("map").classList.toggle("pointmode", STATE.pointMode);
       updateStatus(); renderMap();
@@ -146,6 +150,7 @@
   function updateStatus() {
     const s = STATE.selected, st = $("mapStatus");
     $("clearBtn").disabled = !STATE.point && !s;
+    if (STATE.wi.mode) { st.textContent = wiModeText(); return; }
     if (!s) { st.textContent = STATE.pointMode ? "Режим точки: нажмите на карту (или Enter — точка в центре)." : ""; return; }
     if (s.type === "point") {
       const [lon, lat] = STATE.point;
@@ -169,7 +174,9 @@
   // City switch: drop every per-city state (selection, point, tooltip, pending explanation) before rendering.
   function switchCity(key) {
     if (!D.cities[key]) return;
+    const hadScenario = STATE.city !== key && (STATE.wi.points.length || STATE.wi.proposed);
     STATE.city = key; STATE.point = null; STATE.selected = null; STATE.epoch += 1;
+    resetScenario(hadScenario ? "Город изменён — сценарий сброшен: точки и проектный объект между городами не переносятся." : "");
     hideTip();
     document.querySelectorAll("#citySeg button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.city === key)));
     setupProjection(key); fitView(); renderAll(); updateStatus();
@@ -198,8 +205,8 @@
     const c = D.cities[STATE.city], svg = $("map");
     hideTip();  // K07 CS2: a tooltip of a removed element must not survive a re-render / city switch
     svg.replaceChildren();
-    const gBox = sv("g"), gRoad = sv("g"), gPoint = sv("g"), gMark = sv("g"), gLabel = sv("g");
-    svg.append(gBox, gRoad, gPoint, gMark, gLabel);
+    const gBox = sv("g"), gRoad = sv("g"), gPoint = sv("g"), gMark = sv("g"), gWi = sv("g", { "data-layer": "hypothetical" }), gLabel = sv("g");
+    svg.append(gBox, gRoad, gPoint, gMark, gWi, gLabel);
     const [w, s, e, n] = c.bbox, [x0, y0] = toScreen(w, n), [x1, y1] = toScreen(e, s);
     gBox.append(sv("rect", { x: x0, y: y0, width: x1 - x0, height: y1 - y0, fill: "var(--surface-2)", stroke: "var(--ink)", "stroke-width": 1.5, "stroke-dasharray": "6 4" }));
     const t = sv("text", { x: x0 + 4, y: y0 - 6, "font-size": 11, fill: "var(--ink)" });
@@ -214,7 +221,7 @@
       hit.addEventListener("pointermove", (ev) => showTip(ev, [`${sg.class}${sg.name ? " · " + sg.name : ""}`, `${fmtM(sg.length_m)} · проход пешком: ${sg.foot_access}`]));
       hit.addEventListener("pointerleave", hideTip);
       // In point mode a click on a road sets the point (roads cover most of the map); markers keep priority.
-      const pick = (ev) => { if (STATE.pointMode && ev.type === "click") return; ev.stopPropagation(); STATE.selected = { type: "segment", id: sg.id }; renderSelection(); renderExplain(); updateStatus(); };
+      const pick = (ev) => { if ((STATE.pointMode || STATE.wi.mode) && ev.type === "click") return; ev.stopPropagation(); STATE.selected = { type: "segment", id: sg.id }; renderSelection(); renderExplain(); updateStatus(); };
       hit.addEventListener("click", pick);
       hit.addEventListener("keydown", (ev) => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); pick(ev); } });
       gRoad.append(hit);
@@ -249,11 +256,12 @@
       if (qa.length) g.append(sv("circle", { cx: 6, cy: -6, r: 3.5, fill: "var(--warning)", stroke: "var(--surface)", "stroke-width": 1 }));
       g.addEventListener("pointermove", (ev) => showTip(ev, [p.name || "Без названия", `${p.group_label} · conf. ${p.confidence ?? "—"}`, ...qa.map((q) => "⚠ " + q.code)]));
       g.addEventListener("pointerleave", hideTip);
-      const pick = (ev) => { ev.stopPropagation(); selectPlace(p.id); };
+      const pick = (ev) => { if (STATE.wi.mode && ev.type === "click") return; ev.stopPropagation(); selectPlace(p.id); };
       g.addEventListener("click", pick);
       g.addEventListener("keydown", (ev) => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); pick(ev); } });
       gMark.append(g);
     }
+    renderWiLayer(gWi, gLabel);
     const msg = $("mapMsg");
     if (!STATE.places) { msg.hidden = false; msg.textContent = "Слой объектов выключен."; }
     else if (!STATE.groups.size) { msg.hidden = false; msg.textContent = "Не выбрана ни одна категория — включите категории в панели фильтров."; }
@@ -299,6 +307,7 @@
     });
     svg.addEventListener("pointerup", (e) => {
       const d = drag; drag = null;
+      if (d && !d.moved && STATE.wi.mode) { const r = svg.getBoundingClientRect(); wiPlace(toLonLat(e.clientX - r.left, e.clientY - r.top)); return; }
       if (!d || d.moved || !STATE.pointMode) return;
       if (e.target.closest && e.target.closest("g[data-id]")) return;  // a click on an object marker selects the object
       const r = svg.getBoundingClientRect();
@@ -313,6 +322,7 @@
       if (mv) { e.preventDefault(); STATE.view.cx += mv[0]; STATE.view.cy += mv[1]; renderMap(); }
       else if (e.key === "+" || e.key === "=") { e.preventDefault(); zoomBy(1.5); }
       else if (e.key === "-") { e.preventDefault(); zoomBy(1 / 1.5); }
+      else if ((e.key === "Enter" || e.key === " ") && STATE.wi.mode) { e.preventDefault(); wiPlace(toLonLat(svg.clientWidth / 2, svg.clientHeight / 2)); }
       else if ((e.key === "Enter" || e.key === " ") && STATE.pointMode) {
         e.preventDefault();
         STATE.point = toLonLat(svg.clientWidth / 2, svg.clientHeight / 2);
@@ -509,7 +519,215 @@
     const epoch = STATE.epoch, city = STATE.city;
     F.renderExplanation($("explainBody"), { state: STATE, data: D, isCurrent: () => STATE.epoch === epoch && STATE.city === city, el });
   }
-  function renderAll() { renderMap(); renderSelection(); renderSlice(); renderExplain(); renderTable(); renderProvenance(); }
+  function renderAll() { renderMap(); renderSelection(); renderWhatIf(); renderSlice(); renderExplain(); renderTable(); renderProvenance(); }
+  // ---------- «Если добавить объект» (round 7, FEATURE_SPEC city-whatif-v1) ----------
+  // The hypothetical object and control points live only in STATE.wi and the separate map layer; they never enter
+  // places, counters, QA, the facts catalog or the objects table. Numbers come from whatif.js (pure, tested vs Python).
+  const WI = STATE.wi, snapCache = {};
+  const wiOn = () => !!(X && F && F.sha256hex && F.placesDigest);
+  function snapshotOf(city) { return snapCache[city] || (snapCache[city] = X.sourceSnapshot(D, city, F)); }
+  function wiScenario() {
+    return { schema_version: X.SCHEMA, city_id: STATE.city, source_snapshot: snapshotOf(STATE.city), category: WI.category,
+      control_points: WI.points.map((p) => ({ id: p.id, lon: p.lon, lat: p.lat })),
+      proposed_object: WI.proposed ? { id: WI.proposed.id, lon: WI.proposed.lon, lat: WI.proposed.lat, category: WI.category, kind: "hypothetical" } : null };
+  }
+  function wiResult() { return X.compute(D.cities[STATE.city].places, WI.category, WI.points, wiScenario().proposed_object); }
+  function wiRefresh() { renderMap(); renderWhatIf(); updateStatus(); }
+  function resetScenario(reason) {
+    WI.points = []; WI.proposed = null; WI.seq = 1; WI.explain = null; WI.mode = null; WI.msg = reason || "";
+    $("map").classList.remove("wimode");
+  }
+  function setWiMode(mode, silent) {
+    WI.mode = WI.mode === mode ? null : mode;
+    if (WI.mode && STATE.pointMode) {  // the two placement modes are exclusive
+      STATE.pointMode = false; $("pointBtn").setAttribute("aria-pressed", "false"); $("map").classList.remove("pointmode");
+    }
+    $("map").classList.toggle("wimode", !!WI.mode);
+    if (!silent) wiRefresh(); else renderWhatIf();
+  }
+  function setWiCategory(cat) {
+    if (!X.CATEGORIES[cat] || cat === WI.category) return;
+    const had = WI.points.length || WI.proposed;
+    WI.category = cat;
+    resetScenario(had ? `Категория изменена на «${X.CATEGORIES[cat]}» — сценарий и объяснение сброшены.` : "");
+    wiRefresh();
+  }
+  function wiModeText() {
+    return WI.mode === "points"
+      ? `Режим «контрольные точки»: нажмите на карту (Enter — точка в центре карты). Точек ${WI.points.length} из ${X.MAX_POINTS}. Escape — выйти из режима.`
+      : `Режим «проектный объект» (${X.CATEGORIES[WI.category]}): нажмите на карту, чтобы поставить или передвинуть его (Enter — в центр). Escape — выйти.`;
+  }
+  function nextId() { let id; do { id = "P" + WI.seq++; } while (WI.points.some((p) => p.id === id)); return id; }
+  function wiPlace([lon, lat]) {
+    if (!WI.mode) return false;
+    const bb = D.cities[STATE.city].bbox;
+    if (!X.inBbox(bb, lon, lat)) { WI.msg = "Место вне квадрата среза: там нет исходных записей, поэтому точку или проект туда поставить нельзя."; wiRefresh(); return false; }
+    WI.explain = null;
+    if (WI.mode === "points") {
+      if (WI.points.length >= X.MAX_POINTS) { WI.msg = `Не больше ${X.MAX_POINTS} контрольных точек — удалите одну из списка.`; wiRefresh(); return false; }
+      const id = nextId();
+      WI.points.push({ id, lon, lat });
+      WI.msg = `Контрольная точка ${id} поставлена.`;
+    } else {
+      WI.msg = WI.proposed ? "Проектный объект передвинут — расстояния пересчитаны." : "Проектный объект поставлен.";
+      WI.proposed = { id: "X1", lon, lat };
+    }
+    wiRefresh();
+    return true;
+  }
+  function wiRemovePoint(id) { WI.points = WI.points.filter((p) => p.id !== id); WI.explain = null; WI.msg = `Точка ${id} удалена.`; wiRefresh(); }
+  function wiRemoveProposed() { WI.proposed = null; WI.explain = null; WI.msg = "Проектный объект удалён — показан исходный срез («после» = «до»)."; wiRefresh(); }
+
+  function renderWiLayer(g, gLabel) {
+    if (!wiOn() || (!WI.points.length && !WI.proposed)) return;
+    const res = wiResult(), byId = Object.fromEntries(D.cities[STATE.city].places.map((p) => [p.id, p]));
+    for (const r of res.rows) {  // dashed line to the nearest object after the change (source record or the project)
+      const tgt = r.nearest_after === "proposed" ? WI.proposed : byId[r.nearest_before];
+      if (!tgt) continue;
+      const [a, b] = toScreen(r.lon, r.lat), [c, d] = toScreen(tgt.lon, tgt.lat);
+      g.append(sv("line", { x1: a, y1: b, x2: c, y2: d, stroke: r.nearest_after === "proposed" ? "var(--critical)" : "var(--ink-2)", "stroke-width": 1.2, "stroke-dasharray": "4 3" }));
+    }
+    for (const p of WI.points) {
+      const [x, y] = toScreen(p.lon, p.lat);
+      const m = sv("g", { transform: `translate(${x.toFixed(1)} ${y.toFixed(1)})`, "data-wi-point": p.id, role: "img", "aria-label": `Контрольная точка ${p.id}` });
+      m.append(sv("rect", { x: -5, y: -5, width: 10, height: 10, fill: "var(--surface)", stroke: "var(--ink)", "stroke-width": 2 }));
+      g.append(m);
+      const t = sv("text", { x: x + 8, y: y + 4, "font-size": 11, fill: "var(--ink)" }); t.textContent = p.id; gLabel.append(t);
+    }
+    if (WI.proposed) {
+      const [x, y] = toScreen(WI.proposed.lon, WI.proposed.lat);
+      const m = sv("g", { transform: `translate(${x.toFixed(1)} ${y.toFixed(1)})`, "data-wi-proposed": "X1", role: "img", "aria-label": `Проектный объект (гипотеза): ${X.CATEGORIES[WI.category]}` });
+      m.append(sv("circle", { r: 11, fill: "none", stroke: "var(--critical)", "stroke-width": 2, "stroke-dasharray": "3 2" }));
+      m.append(sv("path", { d: "M0 -7L2 -2L7 -2L3 1.5L4.5 7L0 3.8L-4.5 7L-3 1.5L-7 -2L-2 -2Z", fill: "var(--critical)" }));
+      g.append(m);
+      const t = sv("text", { x: x + 13, y: y - 8, "font-size": 11, fill: "var(--critical)" });
+      t.textContent = `Проектный объект: ${X.CATEGORIES[WI.category].toLowerCase()} (гипотеза)`; gLabel.append(t);
+    }
+  }
+
+  const fmtD = (v) => (v === null ? "нет данных" : fmtM(v));
+  function renderWhatIf() {
+    const card = $("whatifCard"), b = $("whatifBody");
+    if (!wiOn()) { card.hidden = true; return; }
+    card.hidden = false;
+    b.replaceChildren();
+    b.append(el("p", { class: "muted" }, "Условный сценарий, не решение акимата. Расстояние по прямой в пределах среза от ваших контрольных точек до ближайшей записи категории: до и после одного проектного объекта."));
+    const row1 = el("div", { class: "wi-ctl" });
+    const lab = el("label", { for: "wiCat" }, "Категория ");
+    const sel = el("select", { id: "wiCat" });
+    for (const [k, v] of Object.entries(X.CATEGORIES)) { const o = el("option", { value: k }, v); if (k === WI.category) o.selected = true; sel.append(o); }
+    sel.addEventListener("change", () => setWiCategory(sel.value));
+    row1.append(lab, sel);
+    const row2 = el("div", { class: "wi-ctl" });
+    const btn = (id, text, onClick, extra) => { const x = el("button", { type: "button", class: "tool", id, ...(extra || {}) }, text); x.addEventListener("click", onClick); return x; };
+    row2.append(
+      btn("wiModePoints", "Ставить контрольные точки", () => setWiMode("points"), { "aria-pressed": String(WI.mode === "points") }),
+      btn("wiModeProject", WI.proposed ? "Передвинуть проектный объект" : "Поставить проектный объект", () => setWiMode("project"), { "aria-pressed": String(WI.mode === "project") }));
+    const row3 = el("div", { class: "wi-ctl" });
+    const del = btn("wiDelProject", "Удалить проектный объект", wiRemoveProposed); del.disabled = !WI.proposed;
+    const clr = btn("wiClear", "Сбросить сценарий", () => { resetScenario("Сценарий сброшен."); wiRefresh(); }); clr.disabled = !WI.points.length && !WI.proposed;
+    row3.append(del, clr);
+    b.append(row1, row2, row3, el("p", { class: "wi-msg warn", id: "wiMsg", role: "status", "aria-live": "polite" }, WI.msg));
+
+    const res = wiResult();
+    if (WI.proposed) b.append(el("p", null, `Проектный объект X1 (${X.CATEGORIES[WI.category].toLowerCase()}, гипотеза): ${WI.proposed.lat.toFixed(5)}, ${WI.proposed.lon.toFixed(5)}`));
+    if (!WI.points.length) b.append(el("p", { class: "muted", id: "wiEmpty" }, "Контрольных точек нет. Включите «Ставить контрольные точки» и нажмите на карту (1–10 точек)."));
+    else {
+      const ul = el("ul", { class: "wi-pts", "aria-label": "Контрольные точки" });
+      for (const p of WI.points) {
+        const li = el("li", { "data-wi-item": p.id }, `${p.id}: ${p.lat.toFixed(5)}, ${p.lon.toFixed(5)}`);
+        const rm = btn(null, "Удалить", () => wiRemovePoint(p.id), { "aria-label": `Удалить контрольную точку ${p.id}` });
+        li.append(rm); ul.append(li);
+      }
+      b.append(ul);
+      if (res.candidates === 0) b.append(el("p", { class: "warn" }, "В срезе нет исходных записей; улучшение не вычисляется. Это не значит, что таких учреждений нет на местности."));
+      const tbl = el("table", { id: "wiTable", "aria-label": "Расстояние по прямой в пределах среза: до и после" });
+      const cap = el("caption", { class: "muted" }, "по прямой в пределах среза, метры округлены только при выводе");
+      const hr = el("tr");
+      for (const [h, cls] of [["Точка", null], ["До", "num"], ["После", "num"], ["Разница", "num"]]) hr.append(el("th", { class: cls }, h));
+      const th = el("thead"); th.append(hr); tbl.append(cap, th);
+      const tb = el("tbody"), byId = Object.fromEntries(D.cities[STATE.city].places.map((p) => [p.id, p]));
+      for (const r of res.rows) {
+        const tr = el("tr", { "data-wi-row": r.id });
+        const src = r.nearest_before ? byId[r.nearest_before] : null;
+        const tdP = el("td", null, r.id), tdB = el("td", { class: "num" }, fmtD(r.before));
+        let srcRow = null;
+        if (src) {  // source of the nearest record (before), with its QA marks; opens the record card
+          const qa = qaOf(src), td = el("td", { colspan: 4, class: "muted" }, `${r.id} — ближайшая запись в срезе: `);
+          const sbtn = el("button", { type: "button", class: "tool wi-src", "data-wi-source": src.id, title: "Открыть исходную запись" }, `${qa.length ? "⚠ " : ""}${src.name || "Без названия"}`);
+          sbtn.addEventListener("click", () => selectPlace(src.id));
+          td.append(sbtn, document.createTextNode(` · ${src.group_label} · ${(src.sources[0] || {}).dataset || "источник не указан"}${qa.length ? " · QA: " + qa.map((q) => q.code).join(", ") : ""}`));
+          srcRow = el("tr", { class: "wi-srcrow" }); srcRow.append(td);
+        }
+        const tdA = el("td", { class: "num" }, fmtD(r.after));
+        if (r.nearest_after === "proposed") tdA.append(el("div", { class: "muted" }, "проектный объект"));
+        const dtxt = r.delta === null ? "не вычисляется" : r.delta > 0 ? `ближе на ${fmtM(r.delta)}` : "без изменений";
+        tr.append(tdP, tdB, tdA, el("td", { class: "num" + (r.delta > 0 ? " better" : "") }, dtxt));
+        tb.append(tr);
+        if (srcRow) tb.append(srcRow);
+      }
+      tbl.append(tb); b.append(tbl);
+    }
+    b.append(el("p", { class: "muted" }, "Ограничения: ближайшая запись в срезе — не обязательно ближайшее учреждение в городе (квадрат ~2×2 км, Overture неполон). QA-метки сохраняются; запись без метки не считается проверенной. Не время пешком, не изохроны, не обеспеченность местами, не население и не бюджет. «Ближе» — только меньшее геометрическое расстояние."));
+
+    // export / import / explanation (stage 4)
+    const row4 = el("div", { class: "wi-ctl" });
+    const ex = btn("wiExport", "Сохранить сценарий (JSON)", wiExport); ex.disabled = !WI.points.length;
+    const file = el("input", { type: "file", id: "wiFile", accept: ".json,application/json", hidden: "" });
+    file.addEventListener("change", () => { const f = file.files && file.files[0]; file.value = ""; if (f) wiImportFile(f); });
+    const im = btn("wiImport", "Загрузить сценарий", () => file.click());
+    const exb = btn("wiExplainBtn", "Объяснить сценарий", wiExplain); exb.disabled = !WI.points.length;
+    row4.append(ex, im, exb, file);
+    b.append(row4);
+    if (WI.explain) {
+      const cur = WI.points.length ? X.scenarioDigest(wiScenario(), res, F) : null;
+      if (cur !== WI.explain.digest) WI.explain = null;  // scenario changed after the request: old text is never shown
+      else {
+        const box = el("div", { class: "explain", id: "wiExplainText" });
+        box.append(el("div", { class: "who" }, `шаблонное объяснение по вычисленным фактам (не LLM) · отпечаток ${WI.explain.digest}`));
+        for (const line of WI.explain.text.split("\n")) box.append(el("p", null, line));
+        b.append(box);
+      }
+    }
+  }
+  function wiExportText() { return X.exportScenario(wiScenario(), D, F); }
+  function wiExport() {
+    let text;
+    try { text = wiExportText(); } catch (e) { WI.msg = "Сохранить нельзя: " + (e.detail || e.message); renderWhatIf(); return; }
+    const url = URL.createObjectURL(new Blob([text], { type: "application/json" }));
+    const a = el("a", { href: url, download: `whatif-${STATE.city}-${WI.category}.json` });
+    document.body.append(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    WI.msg = `Сценарий сохранён: whatif-${STATE.city}-${WI.category}.json (входные поля и пометка, что результаты пересчитываются).`;
+    renderWhatIf();
+  }
+  // Import: nothing in STATE changes unless the whole file passes strict validation; results are recomputed.
+  function wiImportText(text) {
+    let sc;
+    try { sc = X.importScenario(text, D, F).scenario; } catch (e) {
+      WI.msg = "Файл не принят, текущий сценарий не изменён: " + String(e.detail || e.message).slice(0, 200);
+      renderWhatIf(); return false;
+    }
+    if (sc.city_id !== STATE.city) switchCity(sc.city_id);
+    WI.category = sc.category; WI.points = sc.control_points.map((p) => ({ ...p }));
+    WI.proposed = sc.proposed_object ? { id: sc.proposed_object.id, lon: sc.proposed_object.lon, lat: sc.proposed_object.lat } : null;
+    WI.seq = WI.points.length + 1; WI.explain = null; WI.mode = null; $("map").classList.remove("wimode");
+    WI.msg = `Сценарий загружен (${D.cities[sc.city_id].label}, ${X.CATEGORIES[sc.category]}): расстояния пересчитаны заново, числа из файла не используются.`;
+    wiRefresh();
+    return true;
+  }
+  function wiImportFile(f) {
+    if (f.size > X.MAX_BYTES) { WI.msg = `Файл не принят: ${f.size} байт больше ${X.MAX_BYTES}. Текущий сценарий не изменён.`; renderWhatIf(); return; }
+    f.text().then(wiImportText, () => { WI.msg = "Файл не прочитан; текущий сценарий не изменён."; renderWhatIf(); });
+  }
+  function wiExplain() {
+    if (!WI.points.length) return;
+    const sc = wiScenario(), res = wiResult(), digest = X.scenarioDigest(sc, res, F);
+    const names = Object.fromEntries(D.cities[STATE.city].places.map((p) => [p.id, p.name || "Без названия"]));
+    try { WI.explain = { digest, text: X.explain(sc, res, names, digest, F).text }; }
+    catch (e) { WI.explain = null; WI.msg = "Объяснение отклонено: " + (e.detail || e.message); }
+    renderWhatIf();
+  }
 
   buildToolbar();
   setupInteraction();
@@ -518,5 +736,6 @@
   renderAll();
   updateStatus();
   function selectSegment(id) { STATE.selected = { type: "segment", id }; renderSelection(); renderExplain(); updateStatus(); }
-  window.CITY_APP = { state: STATE, switchCity, selectPlace, selectSegment, visiblePlaces, clearSelection };  // for the headless smoke test
+  window.CITY_APP = { state: STATE, switchCity, selectPlace, selectSegment, visiblePlaces, clearSelection,
+    wiPlace, setWiMode, setWiCategory, wiScenario, wiResult, wiImportText, wiExportText };  // for the headless smoke test
 })();
