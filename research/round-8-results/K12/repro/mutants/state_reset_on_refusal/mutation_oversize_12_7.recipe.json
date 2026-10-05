@@ -1,0 +1,6 @@
+{
+ "mutation": "oversize",
+ "bytes": 262145,
+ "replay": "--seed 12 --replay 12:7",
+ "head": "{\"schema_version\":\"city-plan-v2\",\"city_id\":\"astana\",\"source_snapshot\":\"sha256:67a40b96d29873118780969eb11c32deba49a0c64fda1f185efe634882f04c6d\",\"category\":\"outpatient_clinic\",\"control_points\":[{\"id\":\""
+}

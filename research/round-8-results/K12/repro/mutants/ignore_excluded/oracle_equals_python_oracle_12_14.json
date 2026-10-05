@@ -1,0 +1,39 @@
+{
+ "kind": "oracle",
+ "property": "equals_python_oracle",
+ "replay": "--seed 12 --replay 12:14",
+ "message": "evaluated 16 ≠ 4",
+ "note": "SYNTHETIC minimal repro produced by plan_fuzz.cjs",
+ "scenario": {
+  "schema_version": "city-plan-v2",
+  "city_id": "astana",
+  "source_snapshot": "sha256:67a40b96d29873118780969eb11c32deba49a0c64fda1f185efe634882f04c6d",
+  "category": "school",
+  "control_points": [
+   {
+    "id": "p24",
+    "lon": 71.436131,
+    "lat": 51.165338,
+    "weight": 1
+   }
+  ],
+  "candidates": [
+   {
+    "id": "c3",
+    "lon": 71.443673,
+    "lat": 51.177493,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 284015
+   }
+  ],
+  "budget": 0,
+  "max_selected": 0,
+  "coverage_radius_m": 100,
+  "required_ids": [],
+  "excluded_ids": [
+   "c3"
+  ],
+  "selected_ids": []
+ }
+}

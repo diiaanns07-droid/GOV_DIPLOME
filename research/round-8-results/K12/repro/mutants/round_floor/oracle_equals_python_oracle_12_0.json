@@ -1,0 +1,28 @@
+{
+ "kind": "oracle",
+ "property": "equals_python_oracle",
+ "replay": "--seed 12 --replay 12:0",
+ "message": "mean [\"c0\",\"c5\"]: weighted_sum_mm 66312928 vs oracle 66313073",
+ "note": "SYNTHETIC minimal repro produced by plan_fuzz.cjs",
+ "scenario": {
+  "schema_version": "city-plan-v2",
+  "city_id": "shymkent",
+  "source_snapshot": "sha256:a9326b5633c513c0bfeccbb2248b26cf3b706c902f77745073a2959ad8d7ff3e",
+  "category": "outpatient_clinic",
+  "control_points": [
+   {
+    "id": "p7",
+    "lon": 69.601853,
+    "lat": 42.31379,
+    "weight": 1
+   }
+  ],
+  "candidates": [],
+  "budget": 1000000,
+  "max_selected": 0,
+  "coverage_radius_m": 636,
+  "required_ids": [],
+  "excluded_ids": [],
+  "selected_ids": []
+ }
+}

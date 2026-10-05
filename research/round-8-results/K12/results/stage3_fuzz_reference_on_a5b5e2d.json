@@ -1,0 +1,109 @@
+{
+ "summary": {
+  "adapter": "reference_v2_adapter.cjs",
+  "app_root": "build_a5b5e2d",
+  "seed": 12,
+  "cases_requested": 500,
+  "cases_run": 500,
+  "truncated_by_time_budget": false,
+  "property_checks": 4500,
+  "invalid_mutations": 500,
+  "mutation_kinds": {
+   "budget_out_of_range": 19,
+   "coord_string": 28,
+   "cost_out_of_range": 13,
+   "deep_derived": 33,
+   "duplicate_candidate_id": 23,
+   "duplicate_key": 28,
+   "duplicate_point_id": 22,
+   "extra_field": 20,
+   "foreign_snapshot": 24,
+   "kind_observed": 26,
+   "max_selected_out_of_range": 19,
+   "nan_token": 26,
+   "outside_bbox": 16,
+   "overflow_1e999": 32,
+   "oversize": 35,
+   "radius_out_of_range": 21,
+   "required_excluded_conflict": 21,
+   "too_many_points": 17,
+   "truncated": 32,
+   "unknown_id": 21,
+   "weight_out_of_range": 24
+  },
+  "oracle": "compared 500 scenarios with oracle/plan_v2_oracle.py",
+  "limits": "PASS",
+  "generator_coverage": {
+   "candidates:0": 36,
+   "candidates:1-5": 183,
+   "candidates:11-15": 57,
+   "candidates:16": 36,
+   "candidates:6-10": 188,
+   "city:astana/outpatient_clinic": 132,
+   "city:astana/school": 127,
+   "city:shymkent/outpatient_clinic": 125,
+   "city:shymkent/school": 116,
+   "has_excluded": 90,
+   "has_required": 95,
+   "pareto_len>1": 144,
+   "status:infeasible": 64,
+   "status:optimal": 436
+  },
+  "failures": 0,
+  "elapsed_ms": 14827,
+  "verdict": "PASS",
+  "failures_by_property": {}
+ },
+ "limits": {
+  "ok": true,
+  "import": {
+   "16": {
+    "ok": true,
+    "code": null,
+    "ms": 3.837849
+   },
+   "17": {
+    "ok": false,
+    "code": "bad_count",
+    "ms": 1.599364
+   },
+   "24": {
+    "ok": false,
+    "code": "bad_count",
+    "ms": 1.139203
+   },
+   "40": {
+    "ok": false,
+    "code": "bad_count",
+    "ms": 1.483609
+   }
+  },
+  "unchecked": {
+   "20": {
+    "status": "too_large",
+    "evaluated": 0,
+    "ms": 1.479753
+   },
+   "30": {
+    "status": "too_large",
+    "evaluated": 0,
+    "ms": 1.996572
+   }
+  }
+ },
+ "bench": {
+  "scenario": "25 points × 16 candidates × max_selected 5, budget 1000000 (synthetic)",
+  "evaluated": 65536,
+  "feasible": 6885,
+  "sync_ms_median_incl_sensitivity": 49.1,
+  "sync_ms_max": 59.6,
+  "python_oracle_ms_incl_startup": 1727,
+  "async_ms_total_no_sensitivity": 32.9,
+  "async_slices": 16,
+  "async_max_slice_ms": 6.1,
+  "async_status": "optimal",
+  "async_equals_sync": true
+ },
+ "failures": [],
+ "failures_omitted": 0
+}

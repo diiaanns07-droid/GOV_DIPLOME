@@ -17,5 +17,7 @@ module.exports = function ({ D, requireWeb }) {
     optimizeAsync: (state, opts) => P.optimizePlansAsync(reg, state.scenario, opts),
     gate: () => new P.ResultGate(),
     sources: () => [path.join(__dirname, "..", "reference", "plan_v2_ref.cjs")],
+    // stage 3: optimisation on an UNVALIDATED object, to show over-limit plans are refused before enumeration
+    optimizeUnchecked: (obj) => P.optimizePlans(reg, obj),
   };
 };

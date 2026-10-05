@@ -1,0 +1,232 @@
+{
+ "summary": {
+  "seed": 12,
+  "cases": 200,
+  "control": "PASS",
+  "mutants": 12,
+  "killed": 12,
+  "survived": [],
+  "errors": [],
+  "verdict": "PASS"
+ },
+ "control": {
+  "verdict": "PASS",
+  "failures": 0,
+  "ms": 4948
+ },
+ "mutants": [
+  {
+   "mutant": "round_floor",
+   "bug": "мм округляются вниз (floor) вместо Math.round",
+   "verdict": "KILLED",
+   "ms": 6146,
+   "failures": 188,
+   "caught_by": {
+    "oracle/equals_python_oracle": 188
+   },
+   "first": "oracle/equals_python_oracle 12:0: mean [\"c0\",\"c5\"]: weighted_sum_mm 66312928 vs oracle 66313073",
+   "smallest_repro": {
+    "file": "repro/mutants/round_floor/oracle_equals_python_oracle_12_0.json",
+    "points": 1,
+    "candidates": 0,
+    "shrink_steps": 21
+   },
+   "limits": "PASS"
+  },
+  {
+   "mutant": "ignore_excluded",
+   "bug": "перебор не исключает excluded_ids",
+   "verdict": "KILLED",
+   "ms": 8894,
+   "failures": 42,
+   "caught_by": {
+    "property/winners_feasible_and_consistent": 6,
+    "oracle/equals_python_oracle": 36
+   },
+   "first": "property/winners_feasible_and_consistent 12:46: mean includes excluded",
+   "smallest_repro": {
+    "file": "repro/mutants/ignore_excluded/property_winners_feasible_and_consistent_12_46.json",
+    "points": 1,
+    "candidates": 1,
+    "shrink_steps": 23
+   },
+   "limits": "PASS"
+  },
+  {
+   "mutant": "budget_strict",
+   "bug": "план стоимостью ровно budget считается неподходящим (>= вместо >)",
+   "verdict": "KILLED",
+   "ms": 6452,
+   "failures": 160,
+   "caught_by": {
+    "oracle/equals_python_oracle": 160
+   },
+   "first": "oracle/equals_python_oracle 12:0: sensitivity differs: [[0,\"infeasible\",0,null],[500000,\"optimal\",10,[\"c0\"]],[1000000,\"optimal\",45,[\"c0\",\"c5\"]]] vs [[0,\"optimal\",1,[]],[500000,\"optimal\",10,[\"c0\"]],[10",
+   "smallest_repro": {
+    "file": "repro/mutants/budget_strict/oracle_equals_python_oracle_12_0.json",
+    "points": 1,
+    "candidates": 0,
+    "shrink_steps": 21
+   },
+   "limits": "PASS"
+  },
+  {
+   "mutant": "pareto_nonstrict",
+   "bug": "Парето сохраняет точки с равной суммой и большей стоимостью",
+   "verdict": "KILLED",
+   "ms": 6629,
+   "failures": 150,
+   "caught_by": {
+    "property/pareto_valid": 75,
+    "oracle/equals_python_oracle": 75
+   },
+   "first": "property/pareto_valid 12:0: pareto member dominated or duplicated",
+   "smallest_repro": {
+    "file": "repro/mutants/pareto_nonstrict/property_pareto_valid_12_0.json",
+    "points": 1,
+    "candidates": 1,
+    "shrink_steps": 25
+   },
+   "limits": "PASS"
+  },
+  {
+   "mutant": "minimax_key",
+   "bug": "в цели minimax перепутан порядок max и weighted_sum",
+   "verdict": "KILLED",
+   "ms": 9640,
+   "failures": 2,
+   "caught_by": {
+    "oracle/equals_python_oracle": 2
+   },
+   "first": "oracle/equals_python_oracle 12:63: minimax plan differs: [\"c10\",\"c6\"] vs oracle [\"c14\",\"c4\"]",
+   "smallest_repro": {
+    "file": "repro/mutants/minimax_key/oracle_equals_python_oracle_12_63.json",
+    "points": 2,
+    "candidates": 3,
+    "shrink_steps": 60
+   },
+   "limits": "PASS"
+  },
+  {
+   "mutant": "sensitivity_ceil",
+   "bug": "средний бюджет чувствительности ceil(B/2) вместо floor(B/2)",
+   "verdict": "KILLED",
+   "ms": 5355,
+   "failures": 35,
+   "caught_by": {
+    "oracle/equals_python_oracle": 35
+   },
+   "first": "oracle/equals_python_oracle 12:4: sensitivity differs: [[0,\"optimal\",1,[]],[45438,\"optimal\",1,[]],[90875,\"optimal\",2,[]]] vs [[0,\"optimal\",1,[]],[45437,\"optimal\",1,[]],[90875,\"optimal\",2,[]]]",
+   "smallest_repro": {
+    "file": "repro/mutants/sensitivity_ceil/oracle_equals_python_oracle_12_4.json",
+    "points": 1,
+    "candidates": 0,
+    "shrink_steps": 9
+   },
+   "limits": "PASS"
+  },
+  {
+   "mutant": "digest_order",
+   "bug": "problem_digest зависит от порядка control_points",
+   "verdict": "KILLED",
+   "ms": 4557,
+   "failures": 161,
+   "caught_by": {
+    "property/permutation_invariant": 161
+   },
+   "first": "property/permutation_invariant 12:0: problem_digest depends on array order",
+   "smallest_repro": {
+    "file": "repro/mutants/digest_order/property_permutation_invariant_12_0.json",
+    "points": 2,
+    "candidates": 0,
+    "shrink_steps": 50
+   },
+   "limits": "PASS"
+  },
+  {
+   "mutant": "state_reset_on_refusal",
+   "bug": "при отказе импорта состояние сбрасывается",
+   "verdict": "KILLED",
+   "ms": 4688,
+   "failures": 200,
+   "caught_by": {
+    "mutation/coord_string": 12,
+    "mutation/duplicate_point_id": 13,
+    "mutation/nan_token": 8,
+    "mutation/outside_bbox": 9,
+    "mutation/unknown_id": 12,
+    "mutation/oversize": 11,
+    "mutation/weight_out_of_range": 10,
+    "mutation/overflow_1e999": 14,
+    "mutation/radius_out_of_range": 7,
+    "mutation/too_many_points": 9,
+    "mutation/duplicate_key": 8,
+    "mutation/foreign_snapshot": 6,
+    "mutation/cost_out_of_range": 5,
+    "mutation/truncated": 16,
+    "mutation/duplicate_candidate_id": 8,
+    "mutation/budget_out_of_range": 9,
+    "mutation/kind_observed": 9,
+    "mutation/max_selected_out_of_range": 5,
+    "mutation/extra_field": 8,
+    "mutation/deep_derived": 11,
+    "mutation/required_excluded_conflict": 10
+   },
+   "first": "mutation/coord_string 12:0: state changed on refusal",
+   "smallest_repro": null,
+   "limits": "PASS"
+  },
+  {
+   "mutant": "extra_fields_ignored",
+   "bug": "лишние поля точек и кандидатов молча игнорируются",
+   "verdict": "KILLED",
+   "ms": 4711,
+   "failures": 6,
+   "caught_by": {
+    "mutation/extra_field": 6
+   },
+   "first": "mutation/extra_field 12:36: invalid scenario accepted",
+   "smallest_repro": null,
+   "limits": "PASS"
+  },
+  {
+   "mutant": "weight_loose",
+   "bug": "вес проверяется сравнением без проверки целого (1.5, \"5\", true проходят)",
+   "verdict": "KILLED",
+   "ms": 4996,
+   "failures": 4,
+   "caught_by": {
+    "mutation/weight_out_of_range": 4
+   },
+   "first": "mutation/weight_out_of_range 12:40: invalid scenario accepted",
+   "smallest_repro": null,
+   "limits": "PASS"
+  },
+  {
+   "mutant": "import_limit_off",
+   "bug": "импорт пропускает больше 16 кандидатов",
+   "verdict": "KILLED",
+   "ms": 4723,
+   "failures": 1,
+   "caught_by": {
+    "limits/refuse_before_enumeration": 1
+   },
+   "first": "limits/refuse_before_enumeration -: {\"import\":{\"16\":{\"ok\":true,\"code\":null,\"ms\":6.974216},\"17\":{\"ok\":true,\"code\":null,\"ms\":1.042377},\"24\":{\"ok\":true,\"code\":null,\"ms\":1.366301},\"40\":{\"ok\":true,\"code\":n",
+   "smallest_repro": null,
+   "limits": "FAIL"
+  },
+  {
+   "mutant": "no_size_guard",
+   "bug": "нет отказа до перебора: 2^n подмножеств перебираются при любом n (зависание)",
+   "verdict": "KILLED",
+   "ms": 24623,
+   "failures": 1,
+   "caught_by": {
+    "limits/refuse_before_enumeration": 1
+   },
+   "first": "limits/refuse_before_enumeration -: timeout/kill: ETIMEDOUT",
+   "smallest_repro": null,
+   "limits": "FAIL"
+  }
+ ]
+}

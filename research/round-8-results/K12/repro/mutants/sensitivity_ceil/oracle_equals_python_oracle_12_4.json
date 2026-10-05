@@ -1,0 +1,28 @@
+{
+ "kind": "oracle",
+ "property": "equals_python_oracle",
+ "replay": "--seed 12 --replay 12:4",
+ "message": "sensitivity differs: [[0,\"optimal\",1,[]],[45438,\"optimal\",1,[]],[90875,\"optimal\",2,[]]] vs [[0,\"optimal\",1,[]],[45437,\"optimal\",1,[]],[90875,\"optimal\",2,[]]]",
+ "note": "SYNTHETIC minimal repro produced by plan_fuzz.cjs",
+ "scenario": {
+  "schema_version": "city-plan-v2",
+  "city_id": "astana",
+  "source_snapshot": "sha256:67a40b96d29873118780969eb11c32deba49a0c64fda1f185efe634882f04c6d",
+  "category": "outpatient_clinic",
+  "control_points": [
+   {
+    "id": "p2",
+    "lon": 71.426434,
+    "lat": 51.163972,
+    "weight": 1
+   }
+  ],
+  "candidates": [],
+  "budget": 90875,
+  "max_selected": 0,
+  "coverage_radius_m": 5000,
+  "required_ids": [],
+  "excluded_ids": [],
+  "selected_ids": []
+ }
+}

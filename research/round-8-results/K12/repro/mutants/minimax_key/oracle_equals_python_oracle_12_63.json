@@ -1,0 +1,59 @@
+{
+ "kind": "oracle",
+ "property": "equals_python_oracle",
+ "replay": "--seed 12 --replay 12:63",
+ "message": "minimax plan differs: [\"c10\",\"c6\"] vs oracle [\"c14\",\"c4\"]",
+ "note": "SYNTHETIC minimal repro produced by plan_fuzz.cjs",
+ "scenario": {
+  "schema_version": "city-plan-v2",
+  "city_id": "shymkent",
+  "source_snapshot": "sha256:a9326b5633c513c0bfeccbb2248b26cf3b706c902f77745073a2959ad8d7ff3e",
+  "category": "school",
+  "control_points": [
+   {
+    "id": "p2",
+    "lon": 69.595226,
+    "lat": 42.319743,
+    "weight": 57
+   },
+   {
+    "id": "p4",
+    "lon": 69.59392,
+    "lat": 42.311169,
+    "weight": 1
+   }
+  ],
+  "candidates": [
+   {
+    "id": "c4",
+    "lon": 69.596372,
+    "lat": 42.309303,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 312198
+   },
+   {
+    "id": "c11",
+    "lon": 69.59679,
+    "lat": 42.318474,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 951527
+   },
+   {
+    "id": "c14",
+    "lon": 69.615372,
+    "lat": 42.316698,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 100000
+   }
+  ],
+  "budget": 1000000,
+  "max_selected": 2,
+  "coverage_radius_m": 100,
+  "required_ids": [],
+  "excluded_ids": [],
+  "selected_ids": []
+ }
+}

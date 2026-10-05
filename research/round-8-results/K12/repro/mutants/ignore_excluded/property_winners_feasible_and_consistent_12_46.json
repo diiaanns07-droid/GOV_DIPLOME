@@ -1,0 +1,39 @@
+{
+ "kind": "property",
+ "property": "winners_feasible_and_consistent",
+ "replay": "--seed 12 --replay 12:46",
+ "message": "mean includes excluded",
+ "note": "SYNTHETIC minimal repro produced by plan_fuzz.cjs",
+ "scenario": {
+  "schema_version": "city-plan-v2",
+  "city_id": "astana",
+  "source_snapshot": "sha256:67a40b96d29873118780969eb11c32deba49a0c64fda1f185efe634882f04c6d",
+  "category": "outpatient_clinic",
+  "control_points": [
+   {
+    "id": "p0",
+    "lon": 71.440011,
+    "lat": 51.173815,
+    "weight": 1
+   }
+  ],
+  "candidates": [
+   {
+    "id": "c0",
+    "lon": 71.440011,
+    "lat": 51.173815,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 599029
+   }
+  ],
+  "budget": 1000000,
+  "max_selected": 1,
+  "coverage_radius_m": 100,
+  "required_ids": [],
+  "excluded_ids": [
+   "c0"
+  ],
+  "selected_ids": []
+ }
+}

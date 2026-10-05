@@ -1,0 +1,37 @@
+{
+ "kind": "property",
+ "property": "pareto_valid",
+ "replay": "--seed 12 --replay 12:0",
+ "message": "pareto member dominated or duplicated",
+ "note": "SYNTHETIC minimal repro produced by plan_fuzz.cjs",
+ "scenario": {
+  "schema_version": "city-plan-v2",
+  "city_id": "shymkent",
+  "source_snapshot": "sha256:a9326b5633c513c0bfeccbb2248b26cf3b706c902f77745073a2959ad8d7ff3e",
+  "category": "outpatient_clinic",
+  "control_points": [
+   {
+    "id": "p7",
+    "lon": 69.601853,
+    "lat": 42.31379,
+    "weight": 1
+   }
+  ],
+  "candidates": [
+   {
+    "id": "c8",
+    "lon": 69.593443,
+    "lat": 42.312776,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 764551
+   }
+  ],
+  "budget": 1000000,
+  "max_selected": 1,
+  "coverage_radius_m": 636,
+  "required_ids": [],
+  "excluded_ids": [],
+  "selected_ids": []
+ }
+}
