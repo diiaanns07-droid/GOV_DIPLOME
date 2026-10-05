@@ -1,0 +1,17 @@
+{
+ "cases": 8,
+ "rows": 80,
+ "max_abs_diff_m": 1.1368683772161603e-13,
+ "problems": [],
+ "snapshots": {
+  "shymkent": {
+   "school": "wif1-sha256:5dc3255eb1ed72ef1a050e0fe12bd0d8cad710467d662b1c77e295948e835454",
+   "outpatient_clinic": "wif1-sha256:fefec30ff78af31a994e700d61f24cb0291fe307971c131c6d00e1dce78f9438"
+  },
+  "astana": {
+   "school": "wif1-sha256:25aeca19200e7ab9f9a2b22877efafa9515264d38f3a64c75518209a02dd5d15",
+   "outpatient_clinic": "wif1-sha256:a3563f9144d7498ffa13ff07fc994f25c86a5f9a73afea53383b332b5bc515d5"
+  }
+ },
+ "ok": true
+}
