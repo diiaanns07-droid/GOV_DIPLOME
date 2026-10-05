@@ -36,8 +36,8 @@ Node: `const W = require("./whatif.js")`.
 
 | город | school | outpatient_clinic |
 |---|---|---|
-| shymkent | см. `runs/crosscheck_c58a3b2.json` → `snapshots` | |
-| astana | | |
+| shymkent | `wif1-sha256:5dc3255eb1ed72ef1a050e0fe12bd0d8cad710467d662b1c77e295948e835454` | `wif1-sha256:fefec30ff78af31a994e700d61f24cb0291fe307971c131c6d00e1dce78f9438` |
+| astana | `wif1-sha256:25aeca19200e7ab9f9a2b22877efafa9515264d38f3a64c75518209a02dd5d15` | `wif1-sha256:a3563f9144d7498ffa13ff07fc994f25c86a5f9a73afea53383b332b5bc515d5` |
 
 ## Результат `city-whatif-result-v1`
 ```json
