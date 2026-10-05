@@ -1,0 +1,1432 @@
+{
+ "meta": {
+  "agent_id": "AST-A06",
+  "topic": "Транспорт: автобусы, остановки, регулярность и доступность",
+  "city": "astana",
+  "round": "astana-2026-10-05",
+  "searched_at": "2026-10-05T04:08:00Z/2026-10-05T04:45:00Z",
+  "access_limitations": "Нет браузера и веб-поиска. Прокси блокирует gov.kz, stat.gov.kz, data.egov.kz, cts.gov.kz, citybus.tha.kz, astanalrt.com, lrt.kz, ru.wikipedia.org, zenodo.org, openstreetmap.org, overpass-api.de, sumo.dlr.de и LFS-хосты GitHub; astana.gov.kz и ikomek109.kz не отвечают. Статус ЛРТ, приложения и ITS не проверены. Реальные данные — только открытый набор AVL (3 маршрута, 2024) через зеркало и OSM-снимок из репозитория проекта."
+ },
+ "sources": [
+  {
+   "source_id": "AST-A06-S001",
+   "title": "Egress network check (session 2026-10-05)",
+   "publisher": "AST-A06 (own)",
+   "url": null,
+   "published_at": "2026-10-05",
+   "accessed_at": "2026-10-05",
+   "source_type": "session_observation",
+   "access_status": "executed",
+   "notes": "403 host_not_allowed: gov.kz, stat.gov.kz, data.egov.kz, cts.gov.kz, citybus.tha.kz, astanalrt.com, lrt.kz, ru.wikipedia.org, zenodo.org, openstreetmap.org, overpass-api.de, download.geofabrik.de, sumo.dlr.de, media/github-cloud/objects.githubusercontent.com. No response (000): astana.gov.kz, ikomek109.kz, www.ikomek109.kz, api.citytransport.kz. github.com 200."
+  },
+  {
+   "source_id": "AST-A06-S002",
+   "title": "STUPITS «Аким на 5 часов» (repo)",
+   "publisher": "BAITC-Hacks / команда STUPITS",
+   "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits",
+   "published_at": "2026-09-23",
+   "accessed_at": "2026-10-05",
+   "source_type": "code_repository",
+   "access_status": "opened",
+   "notes": "Commit 834a25f unchanged since pass A06 (A06-S001). Files: data/astana_districts.geojson, data/geo_sources/astana_districts_overpass.json (osm3s timestamp 2026-09-22T08:45:51Z), data/real_context_meta.json, fetch_districts.py."
+  },
+  {
+   "source_id": "AST-A06-S003",
+   "title": "Astana bus dataset mirror (datasets/astana)",
+   "publisher": "GitHub user Mrithula742 (third party mirror)",
+   "url": "https://github.com/Mrithula742/Bussure/tree/main/datasets/astana",
+   "published_at": "2026-09-30",
+   "accessed_at": "2026-10-05",
+   "source_type": "dataset_mirror",
+   "access_status": "opened",
+   "notes": "Commit 0356bb5b37ef. Same mirror as A06-S006. trips/stops/routes/calendar_dates read; stop_times.txt and segment_level_data.csv are Git LFS pointers; LFS host blocked."
+  },
+  {
+   "source_id": "AST-A06-S004",
+   "title": "Astana bus dataset (Zenodo record 15769359)",
+   "publisher": "Zenodo / Mansurova, Mussina, Aubakirov, Nugumanova, Yedilkhan",
+   "url": "https://zenodo.org/records/15769359",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "dataset",
+   "access_status": "blocked",
+   "notes": "403 host_not_allowed. Licence and method not verified at source."
+  },
+  {
+   "source_id": "AST-A06-S005",
+   "title": "Data paper for the Astana bus dataset",
+   "publisher": "MDPI Data (by DOI prefix; unverified)",
+   "url": "https://doi.org/10.3390/data10080119",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "scientific_paper",
+   "access_status": "blocked",
+   "notes": "doi.org 403 (pass A06); not opened."
+  },
+  {
+   "source_id": "AST-A06-S006",
+   "title": "mobility-database-catalogs",
+   "publisher": "MobilityData",
+   "url": "https://github.com/MobilityData/mobility-database-catalogs",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "open_data_catalog",
+   "access_status": "opened",
+   "notes": "git pull: commit 1884964 (2026-10-01), unchanged since A06-S002. Re-parsed for KZ and grepped Astana spellings."
+  },
+  {
+   "source_id": "AST-A06-S007",
+   "title": "transitland-atlas",
+   "publisher": "Interline / Transitland",
+   "url": "https://github.com/transitland/transitland-atlas",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "open_data_catalog",
+   "access_status": "opened",
+   "notes": "git pull: commit 55d6eae (2026-10-04). 811 feed files grepped for astana/nur-sultan/nursultan/астана/нур-султан/.kz/."
+  },
+  {
+   "source_id": "AST-A06-S008",
+   "title": "bus-traffic-astana (collector + bus_traffic_dataset.csv)",
+   "publisher": "GitHub user iilenza (third party)",
+   "url": "https://github.com/iilenza/bus-traffic-astana",
+   "published_at": "2026-10-05",
+   "accessed_at": "2026-10-05",
+   "source_type": "third_party_code_and_data",
+   "access_status": "opened",
+   "notes": "Commit 4937462 (2026-10-05 01:03:58 UTC). collect_bus_data.py, .github/workflows/collect.yml, points_astana_top100.csv, bus_traffic_dataset.csv (28 185 062 bytes)."
+  },
+  {
+   "source_id": "AST-A06-S009",
+   "title": "astana_traffic (2GIS Routing API collector)",
+   "publisher": "GitHub user grets11 (third party)",
+   "url": "https://github.com/grets11/astana_traffic",
+   "published_at": "2026-09-29",
+   "accessed_at": "2026-10-05",
+   "source_type": "third_party_code_and_data",
+   "access_status": "opened",
+   "notes": "Commit e06adab. collector.py and traffic_data.db (SQLite) profiled; no README."
+  },
+  {
+   "source_id": "AST-A06-S010",
+   "title": "PTAL-analysis-Astana-Kazakhstan- (UCL BSc Geography dissertation 2025)",
+   "publisher": "GitHub user Nademaa (author)",
+   "url": "https://github.com/Nademaa/PTAL-analysis-Astana-Kazakhstan-",
+   "published_at": "2025-04-16",
+   "accessed_at": "2026-10-05",
+   "source_type": "third_party_research_code",
+   "access_status": "opened",
+   "notes": "Commit a53b8c1. README.md and 'Code in R' (652 lines). Dissertation text itself not in repo; input CSVs absent."
+  },
+  {
+   "source_id": "AST-A06-S011",
+   "title": "Predicting bus arrival times using ML models (Astana) README",
+   "publisher": "GitHub user sutegi (third party)",
+   "url": "https://github.com/sutegi/predicting_bus_arrival_times_using_machine_learning_models",
+   "published_at": "2025-04-18",
+   "accessed_at": "2026-10-05",
+   "source_type": "third_party_readme",
+   "access_status": "opened",
+   "notes": "Abstract only; data source not stated in the part read."
+  },
+  {
+   "source_id": "AST-A06-S012",
+   "title": "Smart traffic light management system (traffic-volume-prediction) README",
+   "publisher": "GitHub user assylkzh (third party)",
+   "url": "https://github.com/assylkzh/traffic-volume-prediction",
+   "published_at": "2026-03-30",
+   "accessed_at": "2026-10-05",
+   "source_type": "third_party_readme",
+   "access_status": "opened",
+   "notes": "States data collected in Astana via TomTom Traffic Flow/Junction APIs and Open-Meteo; licence of collected data not stated."
+  },
+  {
+   "source_id": "AST-A06-S013",
+   "title": "GitHub repository search API (10 queries on Astana transport)",
+   "publisher": "GitHub",
+   "url": "https://api.github.com/search/repositories",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "search_api",
+   "access_status": "opened",
+   "notes": "Queries: astana+bus, astana+transport, astana+lrt, nur-sultan+bus, astana+routes, astana+public+transport, astana+traffic, nursultan+transport, astana+gps+bus, 15769359. Names/descriptions only."
+  },
+  {
+   "source_id": "AST-A06-S014",
+   "title": "UXsim README and LICENSE",
+   "publisher": "Toru Seo (official repo)",
+   "url": "https://github.com/toruseo/UXsim",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "official_documentation",
+   "access_status": "opened",
+   "notes": "Repo HEAD 08b9ae23c7d4."
+  },
+  {
+   "source_id": "AST-A06-S015",
+   "title": "MATSim (matsim-libs) README",
+   "publisher": "MATSim community (official repo)",
+   "url": "https://github.com/matsim-org/matsim-libs",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "official_documentation",
+   "access_status": "opened",
+   "notes": "Repo HEAD bc02fbacd661; licence not checked."
+  },
+  {
+   "source_id": "AST-A06-S016",
+   "title": "r5py README and LICENSE",
+   "publisher": "r5py developers (official repo)",
+   "url": "https://github.com/r5py/r5py",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "official_documentation",
+   "access_status": "opened",
+   "notes": "Repo HEAD 59c97d0a65f9."
+  },
+  {
+   "source_id": "AST-A06-S017",
+   "title": "SUMO documentation sources (Rerouter, DUA, OSM import, teleporting, statistic output)",
+   "publisher": "Eclipse SUMO (DLR)",
+   "url": "https://github.com/eclipse-sumo/sumo/tree/main/docs/web/docs",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "official_documentation",
+   "access_status": "opened",
+   "notes": "Not re-read: main still at 1b33dffbd8dd, identical to commit read in pass A06 (A06-S011…S016)."
+  },
+  {
+   "source_id": "AST-A06-S018",
+   "title": "Акимат города Астаны (gov.kz)",
+   "publisher": "gov.kz",
+   "url": "https://www.gov.kz/memleket/entities/astana?lang=ru",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "government_page",
+   "access_status": "blocked",
+   "notes": "403 host_not_allowed."
+  },
+  {
+   "source_id": "AST-A06-S019",
+   "title": "GTFS Schedule Reference",
+   "publisher": "google/transit",
+   "url": "https://github.com/google/transit/blob/master/gtfs/spec/en/reference.md",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "specification",
+   "access_status": "opened",
+   "notes": "Local copy fetched 2026-10-04 at commit 3c9e7b9 (A06-S009); re-read 2026-10-05 for direction_id (line 265) and delimiter (line 155)."
+  },
+  {
+   "source_id": "AST-A06-S020",
+   "title": "БНС: динамические ряды по Астане",
+   "publisher": "stat.gov.kz",
+   "url": "https://stat.gov.kz/ru/region/astana/dynamic-tables/38/",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "official_statistics",
+   "access_status": "blocked",
+   "notes": "403 host_not_allowed."
+  },
+  {
+   "source_id": "AST-A06-S021",
+   "title": "Портал открытых данных",
+   "publisher": "data.egov.kz",
+   "url": "https://data.egov.kz/",
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "open_data_portal",
+   "access_status": "blocked",
+   "notes": "403 host_not_allowed."
+  },
+  {
+   "source_id": "AST-A06-S022",
+   "title": "astana.gov.kz; ikomek109.kz",
+   "publisher": "акимат Астаны / iKOMEK109",
+   "url": null,
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "government_page",
+   "access_status": "unavailable",
+   "notes": "Connection failed (curl code 000) from this environment; content unknown."
+  },
+  {
+   "source_id": "AST-A06-S023",
+   "title": "AST-A06 real-data analysis R1/R1b/R2",
+   "publisher": "AST-A06 (own)",
+   "url": "AST_A06_real_aggregates.zip",
+   "published_at": "2026-10-05",
+   "accessed_at": "2026-10-05",
+   "source_type": "own_analysis",
+   "access_status": "executed",
+   "notes": "Python 3.12.3 stdlib; pandas 3.0.2 for third-party CSV profile. Inputs S003 and S002."
+  },
+  {
+   "source_id": "AST-A06-S024",
+   "title": "Operator and LRT sites: cts.gov.kz, citybus.tha.kz, astanalrt.com, lrt.kz",
+   "publisher": "CTS / CityBus / Astana LRT (candidates)",
+   "url": null,
+   "published_at": null,
+   "accessed_at": "2026-10-05",
+   "source_type": "operator_page",
+   "access_status": "blocked",
+   "notes": "403 host_not_allowed; whether these are the right official sites is itself unverified."
+  }
+ ],
+ "facts": [
+  {
+   "fact_id": "AST-A06-F001",
+   "statement": "Официальные, операторские и OSM-домены недоступны из среды; доступен только GitHub",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": null,
+   "period": "2026-10-05",
+   "source_refs": [
+    {
+     "source_id": "AST-A06-S001",
+     "locator": "curl output, x-deny-reason"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Ограничение среды агента."
+  },
+  {
+   "fact_id": "AST-A06-F002",
+   "statement": "В снимке OSM (2026-09-22) у Астаны шесть районов: Есиль, Алматы, Сарыарка, Байконур, Нура, Сарайшык; у Сарайшыка admin_level=8, у остальных 6",
+   "kind": "observed",
+   "value": 6,
+   "unit": "districts",
+   "geography": "Астана (город)",
+   "period": "OSM snapshot 2026-09-22T08:45:51Z",
+   "source_refs": [
+    {
+     "source_id": "AST-A06-S002",
+     "locator": "data/geo_sources/astana_districts_overpass.json: relations 3479876, 3482819, 3486954, 8593081, 20593940, 19733918"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "OSM, не официальный перечень; подтвердить по сайту акимата/БНС."
+  },
+  {
+   "fact_id": "AST-A06-F003",
+   "statement": "Ответ Overpass включает единицы Акмолинской области (Целиноградский, Аршалынский, Шортандинский районы, г.а. Косшы, Тайтобинская с.а.) — это агломерация, не город",
+   "kind": "observed",
+   "value": 5,
+   "unit": "units",
+   "geography": "Акмолинская область",
+   "period": "OSM snapshot 2026-09-22",
+   "source_refs": [
+    {
+     "source_id": "AST-A06-S002",
+     "locator": "astana_districts_overpass.json: relations 3403760, 3403782, 3404061, 15594335, 17952313"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Исключать из городских агрегатов или помечать."
+  },
+  {
+   "fact_id": "AST-A06-F004",
+   "statement": "Слой реальных POI в STUPITS отсутствует: real_context_meta.status=unavailable из-за таймаута Overpass",
+   "kind": "observed",
+   "value": "unavailable",
+   "unit": null,
+   "geography": "Астана",
+   "period": "generated_at 2026-09-23T09:25:25Z",
+   "source_refs": [
+    {
+     "source_id": "AST-A06-S002",
+     "locator": "data/real_context_meta.json: status, error"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": null
+  },
+  {
+   "fact_id": "AST-A06-F005",
+   "statement": "В MobilityData нет фидов KZ (0 из 3515; контроль RU/TR/GE = 2/24/1) и нет текстовых совпадений astana/nur-sultan/астана/нур-султан",
+   "kind": "observed",
+   "value": 0,
+   "unit": "feeds",
+   "geography": "Астана / Казахстан",
+   "period": "catalog 2026-10-01",
+   "source_refs": [
+    {
+     "source_id": "AST-A06-S006",
+     "locator": "catalogs/sources/**/*.json, location.country_code; grep"
+    }
+   ],
+   "derivation": "Подсчёт и grep",
+   "confidence": "high",
+   "caveats": "Отсутствие в каталоге ≠ отсутствие у оператора."
+  },
+  {
+   "fact_id": "AST-A06-F006",
+   "statement": "В transitland-atlas 0 совпадений по написаниям Астаны и .kz в 811 файлах",
+   "kind": "observed",
+   "value": 0,
+   "unit": "matches",
+   "geography": "Астана",
+   "period": "atlas 2026-10-04",
+   "source_refs": [
+    {
+     "source_id": "AST-A06-S007",
+     "locator": "feeds/*.json grep -ril"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": null
+  },
+  {
+   "fact_id": "AST-A06-F007",
+   "statement": "Набор AVL Астаны: агентство CTS, 3 маршрута (10, 12, 46), 201 остановка, 19 769 рейсов, 55 дней 2024-07-29…2024-09-21; средн. рейсов/день: 10 — 60,6/58,2; 12 — 53,1/41,3; 46 — 71,8/77,6 (по направлениям)",
+   "kind": "observed",
+   "value": {
+    "routes": 3,
+    "stops": 201,
+    "trips": 19769,
+    "days": 55
+   },
+   "unit": "count",
+   "geography": "Астана, 3 маршрута",
+   "period": "2024-07-29/2024-09-21",
+   "source_refs": [
+    {
+     "source_id": "AST-A06-S003",
+     "locator": "gtfs_data/*.txt"
+    },
+    {
+     "source_id": "AST-A06-S023",
+     "locator": "r1/results.json summary"
+    }
+   ],
+   "derivation": "Подсчёт скриптом R1",
+   "confidence": "high",
+   "caveats": "Зеркало; не вся сеть."
+  },
+  {
+   "fact_id": "AST-A06-F008",
+   "statement": "Набор не соответствует GTFS: табуляция вместо запятой; direction_id = 1/2 вместо 0/1",
+   "kind": "derived",
+   "value": {
+    "direction_id_values": [
+     "1",
+     "2"
+    ]
+   },
+   "unit": null,
+   "geography": "Астана",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "AST-A06-S003",
+     "locator": "заголовки trips.txt; Counter direction_id: 1=10206, 2=9563"
+    },
+    {
+     "source_id": "AST-A06-S019",
+     "locator": "reference.md строки 155, 265"
+    }
+   ],
+   "derivation": "Сравнение с требованиями спецификации",
+   "confidence": "high",
+   "caveats": "Нужна конвертация."
+  },
+  {
+   "fact_id": "AST-A06-F009",
+   "statement": "stop_times.txt (49 841 502 байт) и segment_level_data.csv (167 675 554 байт) доступны только как LFS-указатели; LFS-хост заблокирован",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": null,
+   "period": "2026-10-05",
+   "source_refs": [
+    {
+     "source_id": "AST-A06-S003",
+     "locator": "LFS pointer files"
+    },
+    {
+     "source_id": "AST-A06-S001",
+     "locator": "github-cloud.githubusercontent.com 403"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Нет привязки остановок к маршрутам."
+  },
+  {
+   "fact_id": "AST-A06-F010",
+   "statement": "Качество: 546 точных дубликатов старта; 36 рейсов длиннее 4 ч; доля интервалов <60 с — 3,4% (м.10), 3,8% (м.12), 5,0% (м.46); есть дни с 1 рейсом",
+   "kind": "derived",
+   "value": {
+    "duplicate_starts": 546,
+    "trips_gt_4h": 36
+   },
+   "unit": null,
+   "geography": "Астана, 3 маршрута",
+   "period": "2024-07-29/2024-09-21",
+   "source_refs": [
+    {
+     "source_id": "AST-A06-S023",
+     "locator": "r1/results.json quality; сессионный вывод проверки качества"
+    }
+   ],
+   "derivation": "Подсчёт по trips.txt",
+   "confidence": "high",
+   "caveats": null
+  },
+  {
+   "fact_id": "AST-A06-F011",
+   "statement": "CV интервалов между стартами рейсов (маршрут×направление×период 06–09/09–16/16–19): сырые 0,64–1,23 (медиана 0,89); очищенные 0,56–1,05 (0,815); очищенные будни 0,57–1,08 (0,82)",
+   "kind": "derived",
+   "value": {
+    "raw": [
+     0.64,
+     0.89,
+     1.23
+    ],
+    "clean": [
+     0.56,
+     0.815,
+     1.05
+    ],
+    "clean_weekday": [
+     0.57,
+     0.82,
+     1.08
+    ]
+   },
+   "unit": "CV",
+   "geography": "Астана, маршруты 10, 12, 46",
+   "period": "2024-07-29/2024-09-21",
+   "source_refs": [
+    {
+     "source_id": "AST-A06-S023",
+     "locator": "r1/cv_sensitivity.json"
+    }
+   ],
+   "derivation": "CV=σ/μ интервалов; очистка: без дубликатов, без интервалов <60 с, без дней с числом рейсов <50% медианы",
+   "confidence": "medium",
+   "caveats": "start_time реконструирован из GPS; интервал на старте, не на остановках; лето 2024."
+  },
+  {
+   "fact_id": "AST-A06-F012",
+   "statement": "Средний интервал (очищенные будни) 11,0–24,8 мин в зависимости от маршрута/направления/периода",
+   "kind": "derived",
+   "value": [
+    11.0,
+    24.8
+   ],
+   "unit": "min",
+   "geography": "Астана, 3 маршрута",
+   "period": "2024-07-29/2024-09-21",
+   "source_refs": [
+    {
+     "source_id": "AST-A06-S023",
+     "locator": "r1/cv_sensitivity.json clean_weekday"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": null
+  },
+  {
+   "fact_id": "AST-A06-F013",
+   "statement": "Отношение p90/p50 длительности рейса: 09–16 ч 1,085–1,15; 06–09 ч 1,258–1,598; 16–19 ч 1,162–1,316; 19–23 ч 1,257–1,668",
+   "kind": "derived",
+   "value": {
+    "09-16": [
+     1.085,
+     1.15
+    ],
+    "06-09": [
+     1.258,
+     1.598
+    ],
+    "16-19": [
+     1.162,
+     1.316
+    ],
+    "19-23": [
+     1.257,
+     1.668
+    ]
+   },
+   "unit": "ratio",
+   "geography": "Астана, 3 маршрута",
+   "period": "2024-07-29/2024-09-21",
+   "source_refs": [
+    {
+     "source_id": "AST-A06-S023",
+     "locator": "r1/trip_duration.csv"
+    }
+   ],
+   "derivation": "квантили end_time−start_time",
+   "confidence": "medium",
+   "caveats": "Включает возможные стоянки/ошибки сегментации рейсов; трафик не отделён."
+  },
+  {
+   "fact_id": "AST-A06-F014",
+   "statement": "Остановки набора по районам OSM: Есиль 88, Сарыарка 80, Нура 24, Байконур 7, Алматы 2, Сарайшык 0",
+   "kind": "derived",
+   "value": {
+    "Есиль": 88,
+    "Сарыарка": 80,
+    "Нура": 24,
+    "Байконур": 7,
+    "Алматы": 2
+   },
+   "unit": "stops",
+   "geography": "Астана",
+   "period": "OSM 2026-09-22; stops 2024",
+   "source_refs": [
+    {
+     "source_id": "AST-A06-S023",
+     "locator": "r1/results.json stops_by_osm_district"
+    },
+    {
+     "source_id": "AST-A06-S002",
+     "locator": "astana_districts.geojson"
+    }
+   ],
+   "derivation": "point-in-polygon (ray casting)",
+   "confidence": "high",
+   "caveats": "Описывает охват набора, не сети."
+  },
+  {
+   "fact_id": "AST-A06-F015",
+   "statement": "PTAL для Астаны (UCL 2025): SWT=0,5×интервал; AWT=SWT+2 мин; ходьба 3,6 км/ч, предел 15 мин; EDF=30/TAT; r5r + OSM pbf",
+   "kind": "observed",
+   "value": {
+    "reliability_add_min": 2,
+    "walk_kmh": 3.6,
+    "max_walk_min": 15
+   },
+   "unit": null,
+   "geography": "Астана",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "AST-A06-S010",
+     "locator": "Code in R, строки 172–181, 212–238"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Параметры из кода; текст работы не открыт."
+  },
+  {
+   "fact_id": "AST-A06-F016",
+   "statement": "Входные данные PTAL-работы (bus_info.csv, routes_and_frequency.csv) в репозитории отсутствуют",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": "Астана",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "AST-A06-S010",
+     "locator": "git ls-tree: только README.md и 'Code in R'; строки 74, 168"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Расчёт невоспроизводим без запроса к автору."
+  },
+  {
+   "fact_id": "AST-A06-F017",
+   "statement": "Автор PTAL-работы сообщает о худшей связности периферии Левого берега и называет ЛРТ «будущей» системой",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": "Астана",
+   "period": "README commit 2025-04-16",
+   "source_refs": [
+    {
+     "source_id": "AST-A06-S010",
+     "locator": "README, Key Findings"
+    }
+   ],
+   "derivation": null,
+   "confidence": "low",
+   "caveats": "Утверждение автора; не статус ЛРТ на 2026 год."
+  },
+  {
+   "fact_id": "AST-A06-F018",
+   "statement": "Избыточное ожидание H/2·CV² по очищенным будням: 1,8–9,3 мин (медиана 5,6); больше фиксированных +2 мин PTAL в 17 из 18 комбинаций",
+   "kind": "derived",
+   "value": {
+    "min": 1.8,
+    "median": 5.6,
+    "max": 9.3,
+    "combos_gt_2": 17,
+    "combos": 18
+   },
+   "unit": "min",
+   "geography": "Астана, 3 маршрута",
+   "period": "2024-07-29/2024-09-21",
+   "source_refs": [
+    {
+     "source_id": "AST-A06-S023",
+     "locator": "r1/ptal_vs_observed.json"
+    },
+    {
+     "source_id": "AST-A06-S010",
+     "locator": "Code in R строка 181"
+    }
+   ],
+   "derivation": "excess=E[H]/2·CV², входы из AST-A06-F011/F012",
+   "confidence": "medium",
+   "caveats": "Формула — допущение случайного прихода (A06-F025); при табло ожидание меньше."
+  },
+  {
+   "fact_id": "AST-A06-F019",
+   "statement": "Сторонний сборщик опрашивает недокументированный адрес api.citytransport.kz/api/v1/vehicles каждые 15 мин и при любой ошибке возвращает пустой список",
+   "kind": "observed",
+   "value": "https://api.citytransport.kz/api/v1/vehicles",
+   "unit": null,
+   "geography": "Астана (по точкам)",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "AST-A06-S008",
+     "locator": "collect_bus_data.py, функция get_bus_positions; .github/workflows/collect.yml cron */15"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Адрес найден в чужом коде, не в документации; официальность и условия неизвестны; не использовать."
+  },
+  {
+   "fact_id": "AST-A06-F020",
+   "statement": "Собранный этим сборщиком CSV содержит 324 300 строк (3243 снимка × 100 точек, 2026-03-15…2026-10-05) и только нули",
+   "kind": "derived",
+   "value": {
+    "rows": 324300,
+    "snapshots": 3243,
+    "max_bus_count": 0
+   },
+   "unit": null,
+   "geography": "Астана",
+   "period": "2026-03-15/2026-10-05",
+   "source_refs": [
+    {
+     "source_id": "AST-A06-S008",
+     "locator": "bus_traffic_dataset.csv"
+    },
+    {
+     "source_id": "AST-A06-S023",
+     "locator": "r1/third_party_zero_profile.json"
+    }
+   ],
+   "derivation": "Профиль pandas",
+   "confidence": "high",
+   "caveats": "Данные отсутствуют; это артефакт ошибки."
+  },
+  {
+   "fact_id": "AST-A06-F021",
+   "statement": "Сторонний проект собирал время проезда сегментов через 2GIS Routing API с ключом: 894 замера 2026-07-21…2026-08-07",
+   "kind": "observed",
+   "value": 894,
+   "unit": "readings",
+   "geography": "Астана (сегменты)",
+   "period": "2026-07-21/2026-08-07",
+   "source_refs": [
+    {
+     "source_id": "AST-A06-S009",
+     "locator": "collector.py строки 5, 39–44, 80–95; traffic_data.db table traffic_readings"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Условия 2GIS не проверены; не использовать как основание."
+  },
+  {
+   "fact_id": "AST-A06-F022",
+   "statement": "UXsim — макро/мезоскопический симулятор с динамическим назначением при заданной OD, Python, MIT",
+   "kind": "observed",
+   "value": "MIT",
+   "unit": null,
+   "geography": null,
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "AST-A06-S014",
+     "locator": "README строки 14–29; LICENSE строка 1"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Не тестировался в этой сессии."
+  },
+  {
+   "fact_id": "AST-A06-F023",
+   "statement": "MATSim — инструментарий крупномасштабного агентного моделирования спроса и движения",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": null,
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "AST-A06-S015",
+     "locator": "README строки 9–13"
+    }
+   ],
+   "derivation": null,
+   "confidence": "medium",
+   "caveats": "Лицензия не проверена."
+  },
+  {
+   "fact_id": "AST-A06-F024",
+   "statement": "r5py считает матрицы времени и доступность на R5 (Conveyal); лицензия GPL-3.0-or-later или MIT",
+   "kind": "observed",
+   "value": "GPL-3.0-or-later or MIT",
+   "unit": null,
+   "geography": null,
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "AST-A06-S016",
+     "locator": "README строки 3–30; LICENSE строки 1–3"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Нужен GTFS и OSM pbf; не запускался."
+  },
+  {
+   "fact_id": "AST-A06-F025",
+   "statement": "Документация SUMO на ветке main не изменилась с проверки первого прохода (коммит 1b33dffbd8dd)",
+   "kind": "observed",
+   "value": "1b33dffbd8dd",
+   "unit": null,
+   "geography": null,
+   "period": "2026-10-05",
+   "source_refs": [
+    {
+     "source_id": "AST-A06-S017",
+     "locator": "git ls-remote refs/heads/main"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": null
+  },
+  {
+   "fact_id": "AST-A06-F026",
+   "statement": "На GitHub есть сторонние исследования по Астане: прогноз прибытия автобусов (2025) и прогноз трафика по TomTom (2026)",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": "Астана",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "AST-A06-S011",
+     "locator": "README abstract"
+    },
+    {
+     "source_id": "AST-A06-S012",
+     "locator": "README, About Data"
+    }
+   ],
+   "derivation": null,
+   "confidence": "low",
+   "caveats": "Данные и воспроизводимость не проверены."
+  },
+  {
+   "fact_id": "AST-A06-F027",
+   "statement": "GTFS: direction_id допускает только 0 и 1; файлы — comma-delimited",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": null,
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "AST-A06-S019",
+     "locator": "reference.md строки 155, 265"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": null
+  },
+  {
+   "fact_id": "AST-A06-F028",
+   "statement": "STUPITS хранит OSM-границы шести районов Астаны с полями osm_id, osm_timestamp, scoring_enabled; Сарайшык не участвует в учебном расчёте",
+   "kind": "observed",
+   "value": 6,
+   "unit": "features",
+   "geography": "Астана",
+   "period": "commit 834a25f",
+   "source_refs": [
+    {
+     "source_id": "AST-A06-S002",
+     "locator": "data/astana_districts.geojson properties; fetch_districts.py строки 6–17, 472"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": "Учебный счёт и реальную аналитику не смешивать."
+  }
+ ],
+ "datasets": [
+  {
+   "dataset_id": "AST-A06-D001",
+   "title": "Astana bus AVL-derived dataset (Mansurova et al.)",
+   "publisher": "Zenodo / авторы",
+   "source_ids": [
+    "AST-A06-S003",
+    "AST-A06-S004",
+    "AST-A06-S005"
+   ],
+   "landing_url": "https://zenodo.org/records/15769359",
+   "download_or_api_url": "https://github.com/Mrithula742/Bussure/tree/main/datasets/astana",
+   "access_status": "sample_verified",
+   "tested_at": "2026-10-05",
+   "geography": "Астана, маршруты 10, 12, 46",
+   "granularity": "рейс; остановка",
+   "period": "2024-07-29/2024-09-21",
+   "format": "TSV в стиле GTFS",
+   "fields": [
+    "route_id",
+    "route_short_name",
+    "route_long_name",
+    "stop_id",
+    "stop_name",
+    "stop_lat",
+    "stop_lon",
+    "trip_id",
+    "direction_id",
+    "start_time",
+    "end_time",
+    "vehicle_id",
+    "service_id",
+    "date"
+   ],
+   "units": "время hh:mm:ss",
+   "update_frequency": "разовая публикация",
+   "license": "CC BY 4.0 (по README зеркала, не проверено)",
+   "auth_requirement": "нет",
+   "limitations": "Не GTFS-совместим; stop_times и сегменты недоступны (LFS); 3 маршрута; лето 2024.",
+   "next_retrieval_step": "Скачать с Zenodo stop_times и segment_level_data без GPS-архива, проверить MD5 и лицензию."
+  },
+  {
+   "dataset_id": "AST-A06-D002",
+   "title": "OSM-границы районов Астаны (снимок в STUPITS)",
+   "publisher": "OpenStreetMap contributors via STUPITS",
+   "source_ids": [
+    "AST-A06-S002"
+   ],
+   "landing_url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/tree/main/data",
+   "download_or_api_url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/blob/main/data/astana_districts.geojson",
+   "access_status": "sample_verified",
+   "tested_at": "2026-10-05",
+   "geography": "Астана + соседние единицы Акмолинской обл. в сыром ответе",
+   "granularity": "район",
+   "period": "OSM 2026-09-22",
+   "format": "GeoJSON / Overpass JSON",
+   "fields": [
+    "id",
+    "name",
+    "osm_id",
+    "osm_timestamp",
+    "osm_admin_level",
+    "area_km2",
+    "scoring_enabled"
+   ],
+   "units": null,
+   "update_frequency": "по запуску скрипта",
+   "license": "ODbL (атрибуция указана в meta проекта)",
+   "auth_requirement": "нет",
+   "limitations": "Не официальные границы; admin_level несогласован.",
+   "next_retrieval_step": "Сверить с официальным перечнем районов."
+  },
+  {
+   "dataset_id": "AST-A06-D003",
+   "title": "OSM: пешеходная сеть, переходы, остановки, соцобъекты Астаны",
+   "publisher": "OpenStreetMap contributors",
+   "source_ids": [
+    "AST-A06-S001"
+   ],
+   "landing_url": "https://www.openstreetmap.org",
+   "download_or_api_url": "https://overpass-api.de/api/interpreter",
+   "access_status": "unavailable",
+   "tested_at": "2026-10-05",
+   "geography": "Астана",
+   "granularity": "объект",
+   "period": null,
+   "format": "OSM JSON/PBF",
+   "fields": [
+    "highway",
+    "footway",
+    "crossing",
+    "steps",
+    "public_transport",
+    "amenity"
+   ],
+   "units": null,
+   "update_frequency": "непрерывно",
+   "license": "ODbL",
+   "auth_requirement": "нет",
+   "limitations": "Домен заблокирован; в STUPITS попытка завершилась таймаутом.",
+   "next_retrieval_step": "Overpass-запрос из A06 §6.6 с заменой area на Астану и исключением Акмолинской обл."
+  },
+  {
+   "dataset_id": "AST-A06-D004",
+   "title": "Официальный GTFS/GTFS-RT Астаны",
+   "publisher": "неизвестно (кандидат: оператор CTS — гипотеза)",
+   "source_ids": [
+    "AST-A06-S006",
+    "AST-A06-S007",
+    "AST-A06-S024"
+   ],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": "unavailable",
+   "tested_at": "2026-10-05",
+   "geography": "Астана",
+   "granularity": null,
+   "period": null,
+   "format": "GTFS",
+   "fields": [
+    "stops",
+    "routes",
+    "trips",
+    "stop_times",
+    "frequencies"
+   ],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "Не найден в каталогах; сайты операторов закрыты.",
+   "next_retrieval_step": "Проверить сайт оператора и data.egov.kz."
+  },
+  {
+   "dataset_id": "AST-A06-D005",
+   "title": "bus_traffic_dataset.csv (сторонний сборщик)",
+   "publisher": "GitHub user iilenza",
+   "source_ids": [
+    "AST-A06-S008"
+   ],
+   "landing_url": "https://github.com/iilenza/bus-traffic-astana",
+   "download_or_api_url": "https://github.com/iilenza/bus-traffic-astana/blob/main/bus_traffic_dataset.csv",
+   "access_status": "sample_verified",
+   "tested_at": "2026-10-05",
+   "geography": "Астана, 100 точек",
+   "granularity": "снимок 15 мин × точка",
+   "period": "2026-03-15/2026-10-05",
+   "format": "CSV",
+   "fields": [
+    "timestamp",
+    "point_id",
+    "lat",
+    "lon",
+    "bus_count",
+    "hour",
+    "day_of_week",
+    "time_of_day"
+   ],
+   "units": "шт.",
+   "update_frequency": "каждые 15 мин",
+   "license": "не указана",
+   "auth_requirement": "нет",
+   "limitations": "Все значения bus_count = 0: данных нет.",
+   "next_retrieval_step": "Не использовать; учитывать как пример тихого сбоя."
+  },
+  {
+   "dataset_id": "AST-A06-D006",
+   "title": "Пассажиропотоки / валидации Астаны",
+   "publisher": "неизвестно",
+   "source_ids": [],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": "unavailable",
+   "tested_at": "2026-10-05",
+   "geography": "Астана",
+   "granularity": null,
+   "period": null,
+   "format": null,
+   "fields": [
+    "route",
+    "stop или зона",
+    "time_band",
+    "boardings"
+   ],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "Не найдено.",
+   "next_retrieval_step": "Запрос агрегатов через официальный канал владельцем проекта."
+  },
+  {
+   "dataset_id": "AST-A06-D007",
+   "title": "Реестр маршрутов, остановок и интервалов (акимат/оператор)",
+   "publisher": "неизвестно",
+   "source_ids": [
+    "AST-A06-S018",
+    "AST-A06-S021",
+    "AST-A06-S024"
+   ],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": "unavailable",
+   "tested_at": "2026-10-05",
+   "geography": "Астана",
+   "granularity": "маршрут/остановка",
+   "period": null,
+   "format": null,
+   "fields": [
+    "route_no",
+    "stops_ordered",
+    "headway_by_band",
+    "operator"
+   ],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "Домены заблокированы.",
+   "next_retrieval_step": "Второй проход с браузером."
+  },
+  {
+   "dataset_id": "AST-A06-D008",
+   "title": "Онлайн-позиции автобусов (api.citytransport.kz, CityBus)",
+   "publisher": "неизвестно / CityBus",
+   "source_ids": [
+    "AST-A06-S008",
+    "AST-A06-S001"
+   ],
+   "landing_url": null,
+   "download_or_api_url": "https://api.citytransport.kz/api/v1/vehicles (недокументированный, из чужого кода)",
+   "access_status": "restricted",
+   "tested_at": "2026-10-05",
+   "geography": "Астана",
+   "granularity": "борт",
+   "period": null,
+   "format": "JSON (по чужому коду)",
+   "fields": [
+    "lat",
+    "lon"
+   ],
+   "units": null,
+   "update_frequency": null,
+   "license": "неизвестна",
+   "auth_requirement": null,
+   "limitations": "Нет документации и условий; из среды не отвечает; использование не допускается до проверки статуса.",
+   "next_retrieval_step": "Найти официальную документацию или запросить агрегаты."
+  },
+  {
+   "dataset_id": "AST-A06-D009",
+   "title": "Население по районам Астаны",
+   "publisher": "БНС",
+   "source_ids": [
+    "AST-A06-S020"
+   ],
+   "landing_url": "https://stat.gov.kz/ru/region/astana/dynamic-tables/38/",
+   "download_or_api_url": null,
+   "access_status": "unavailable",
+   "tested_at": "2026-10-05",
+   "geography": "Астана, районы",
+   "granularity": "район",
+   "period": null,
+   "format": null,
+   "fields": [
+    "district",
+    "population",
+    "year"
+   ],
+   "units": "чел.",
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "Не открыт.",
+   "next_retrieval_step": "Зависимость от агента по статистике."
+  },
+  {
+   "dataset_id": "AST-A06-D010",
+   "title": "Время проезда сегментов (2GIS Routing API, сторонний сбор)",
+   "publisher": "GitHub user grets11 / 2GIS",
+   "source_ids": [
+    "AST-A06-S009"
+   ],
+   "landing_url": "https://github.com/grets11/astana_traffic",
+   "download_or_api_url": "https://github.com/grets11/astana_traffic/blob/main/traffic_data.db",
+   "access_status": "restricted",
+   "tested_at": "2026-10-05",
+   "geography": "Астана, набор сегментов",
+   "granularity": "замер × сегмент",
+   "period": "2026-07-21/2026-08-07",
+   "format": "SQLite",
+   "fields": [
+    "segment_id",
+    "segment_name",
+    "timestamp_utc",
+    "duration_sec",
+    "distance_m",
+    "avg_speed_kmh",
+    "raw_response"
+   ],
+   "units": "с, м, км/ч",
+   "update_frequency": "разово",
+   "license": "условия 2GIS не проверены",
+   "auth_requirement": "ключ API",
+   "limitations": "Права на повторное использование неизвестны.",
+   "next_retrieval_step": "Не использовать без проверки условий."
+  }
+ ],
+ "opportunities": [
+  {
+   "idea_id": "AST-A06-O001",
+   "title": "Доступность остановок и объектов с поправкой на наблюдаемую надёжность",
+   "problem": "Ожидание в оценках доступности берётся из расписания/константы, а наблюдаемая нерегулярность высока",
+   "evidence_fact_ids": [
+    "AST-A06-F011",
+    "AST-A06-F012",
+    "AST-A06-F013",
+    "AST-A06-F015",
+    "AST-A06-F018"
+   ],
+   "primary_user": "Аналитик транспортного блока акимата/оператора; исследователь (диплом)",
+   "user_task": "Найти зоны и объекты с худшим реальным доступом и оценить локальное изменение",
+   "existing_solution": "PTAL-работа UCL 2025 (константа +2 мин, невоспроизводима); пассажирские приложения (не проверены)",
+   "proposed_addition": "Слой карты с двумя вариантами ожидания (PTAL / H/2·(1+CV²)), сетевым охватом и сравнением «было/стало»",
+   "required_dataset_ids": [
+    "AST-A06-D001",
+    "AST-A06-D002",
+    "AST-A06-D003",
+    "AST-A06-D007"
+   ],
+   "ai_role": "Не нужен для расчёта; NL→вызов расчёта и объяснение разницы",
+   "non_ai_baseline": "PTAL с константой; буферы",
+   "success_metrics": [
+    "доля зон, меняющих класс доступности при поправке",
+    "ранговая корреляция PTAL vs поправка",
+    "Δ охвата 300/500 м и времени до объектов с диапазоном"
+   ],
+   "feasibility_10_days": "medium: расчёт ожидания готов; нужен OSM и stop_times",
+   "blockers": "Нет OSM; нет привязки остановок к маршрутам; данные 2024",
+   "transfer_to_shymkent": "Общий код wait(H,CV); для Шымкента нет AVL — только диапазон CV",
+   "next_action": "Скачать stop_times с Zenodo; выполнить Overpass для коридора"
+  },
+  {
+   "idea_id": "AST-A06-O002",
+   "title": "Мониторинг регулярности и надёжности маршрутов по AVL",
+   "problem": "Нет открытых метрик регулярности; сторонние попытки дают артефакты",
+   "evidence_fact_ids": [
+    "AST-A06-F010",
+    "AST-A06-F011",
+    "AST-A06-F013",
+    "AST-A06-F019",
+    "AST-A06-F020"
+   ],
+   "primary_user": "Оператор / транспортный блок акимата; исследователь",
+   "user_task": "Увидеть, где и когда интервалы и время рейса нестабильны",
+   "existing_solution": "Неизвестно (ITS не проверена)",
+   "proposed_addition": "Отчёт CV, избыточного ожидания, сцепления автобусов по остановкам и периодам + проверка источников «не пусто/не константа»",
+   "required_dataset_ids": [
+    "AST-A06-D001",
+    "AST-A06-D008"
+   ],
+   "ai_role": "Не нужен",
+   "non_ai_baseline": "Ручная выборка из диспетчерских данных",
+   "success_metrics": [
+    "CV по остановке и периоду",
+    "избыточное ожидание",
+    "доля интервалов >2×среднего"
+   ],
+   "feasibility_10_days": "high на открытом наборе Астаны; low для свежих данных",
+   "blockers": "Нет свежего AVL; LFS заблокирован",
+   "transfer_to_shymkent": "Метод переносится, данные нет",
+   "next_action": "Пересчитать R1 по stop_times"
+  },
+  {
+   "idea_id": "AST-A06-O003",
+   "title": "Сценарии перекрытия коридора (UXsim/SUMO), идея владельца",
+   "problem": "Нужно видеть последствия перекрытий/развязок",
+   "evidence_fact_ids": [
+    "AST-A06-F022",
+    "AST-A06-F023",
+    "AST-A06-F025"
+   ],
+   "primary_user": "Транспортный аналитик",
+   "user_task": "Сравнить варианты при заданном спросе",
+   "existing_solution": "Неизвестно",
+   "proposed_addition": "Коридорная мезомодель UXsim; SUMO только для геометрии узла; метрики завершения поездок",
+   "required_dataset_ids": [
+    "AST-A06-D003"
+   ],
+   "ai_role": "Не нужен для расчёта",
+   "non_ai_baseline": "Графовый объезд",
+   "success_metrics": [
+    "доля завершённых поездок",
+    "очередь за границей",
+    "Δ задержки по сценариям спроса"
+   ],
+   "feasibility_10_days": "low без OD/счётов",
+   "blockers": "Нет счётов, OD, планов светофоров; статус ЛРТ неизвестен",
+   "transfer_to_shymkent": "Синтетика A06 общая; данные — местные",
+   "next_action": "После MVP и при наличии счётов хотя бы на одном узле"
+  }
+ ],
+ "open_questions": [
+  {
+   "question": "Каков статус ЛРТ Астаны на 2026-10-05: стройка, испытания или пассажирская эксплуатация; какие станции и с какой даты?",
+   "why_important": "Меняет сеть, коридоры и сценарии; старый статус наследовать нельзя",
+   "how_to_check": "Официальные сайты акимата и оператора ЛРТ, постановления, пресс-релизы с датами"
+  },
+  {
+   "question": "Кто оператор автобусной сети и публикует ли он маршруты, остановки, интервалы, GTFS или API с условиями?",
+   "why_important": "Определяет источник baseline сети",
+   "how_to_check": "Сайт оператора (кандидат CTS), data.egov.kz"
+  },
+  {
+   "question": "Является ли api.citytransport.kz официальным каналом и разрешено ли его использование?",
+   "why_important": "Сторонний код использует его, но данных не получил",
+   "how_to_check": "Найти документацию/условия на официальных страницах; без них не использовать"
+  },
+  {
+   "question": "Официальный состав районов Астаны, включая Сарайшык, и дата его создания",
+   "why_important": "Корректная агрегация по районам",
+   "how_to_check": "Сайт акимата, БНС, нормативный акт"
+  },
+  {
+   "question": "Как авторы набора Zenodo 15769359 реконструировали рейсы и start_time; подтверждение лицензии",
+   "why_important": "От этого зависит, реален ли высокий CV",
+   "how_to_check": "Страница Zenodo и статья doi:10.3390/data10080119"
+  },
+  {
+   "question": "Откуда константа +2 мин в PTAL и применима ли она к Астане",
+   "why_important": "Сравнение baseline с поправкой",
+   "how_to_check": "Официальное руководство TfL по PTAL"
+  },
+  {
+   "question": "Какие транспортные обращения и агрегаты публикует iKOMEK109",
+   "why_important": "Возможный источник проблем у остановок",
+   "how_to_check": "Сайт iKOMEK109 и акимата"
+  },
+  {
+   "question": "Параметры зимней пешеходной доступности (скорость, неубираемые связи) для Астаны",
+   "why_important": "Сезонность нельзя переносить из Шымкента",
+   "how_to_check": "Нормативы/исследования, наблюдения; до этого — чувствительность"
+  }
+ ],
+ "city_comparison": [
+  {
+   "topic": "Наличие открытого GTFS/GTFS-RT",
+   "astana_fact_ids": [
+    "AST-A06-F005",
+    "AST-A06-F006"
+   ],
+   "shymkent_fact_ids": [
+    "A06-F002",
+    "A06-F003",
+    "A06-F004"
+   ],
+   "comparison_status": "both_observed",
+   "shared_component": "проверка каталогов MobilityData/Transitland",
+   "city_specific_inputs": "написания названий города",
+   "caveats": "Отсутствие в каталоге ≠ отсутствие у оператора."
+  },
+  {
+   "topic": "Регулярность интервалов",
+   "astana_fact_ids": [
+    "AST-A06-F010",
+    "AST-A06-F011",
+    "AST-A06-F012"
+   ],
+   "shymkent_fact_ids": [],
+   "comparison_status": "pending_shymkent_data",
+   "shared_component": "R1/R1b: CV, очистка, квантили",
+   "city_specific_inputs": "AVL каждого города (для Шымкента A06-D008 restricted)",
+   "caveats": "CV Астаны 2024 не переносится."
+  },
+  {
+   "topic": "Модель ожидания",
+   "astana_fact_ids": [
+    "AST-A06-F018"
+   ],
+   "shymkent_fact_ids": [
+    "A06-F025"
+   ],
+   "comparison_status": "astana_derived_shymkent_hypothesis",
+   "shared_component": "wait(H, CV) с двумя краями",
+   "city_specific_inputs": "H и CV по периодам",
+   "caveats": "Формула не проверена по первоисточнику."
+  },
+  {
+   "topic": "Сетевой охват против буфера",
+   "astana_fact_ids": [],
+   "shymkent_fact_ids": [
+    "A06-F023",
+    "A06-F024"
+   ],
+   "comparison_status": "pending_astana_osm",
+   "shared_component": "многоисточниковая Дейкстра, статусы связей",
+   "city_specific_inputs": "OSM города, зимний сценарий для Астаны",
+   "caveats": "Величина разрыва местная."
+  },
+  {
+   "topic": "PTAL-baseline",
+   "astana_fact_ids": [
+    "AST-A06-F015",
+    "AST-A06-F016"
+   ],
+   "shymkent_fact_ids": [],
+   "comparison_status": "pending_shymkent",
+   "shared_component": "расчёт AI/EDF по TfL-подобной схеме",
+   "city_specific_inputs": "интервалы, скорость ходьбы",
+   "caveats": "Константа +2 мин — внешняя норма."
+  },
+  {
+   "topic": "Перекрытие/развязка",
+   "astana_fact_ids": [
+    "AST-A06-F022",
+    "AST-A06-F025"
+   ],
+   "shymkent_fact_ids": [
+    "A06-F019",
+    "A06-F020",
+    "A06-F021",
+    "A06-F022"
+   ],
+   "comparison_status": "method_shared_no_local_data",
+   "shared_component": "SUMO/UXsim-сценарии, метрики завершения",
+   "city_specific_inputs": "OD, счёты, светофоры, геометрия",
+   "caveats": "Синтетические результаты не являются эффектами."
+  },
+  {
+   "topic": "Интеграция в карту STUPITS",
+   "astana_fact_ids": [
+    "AST-A06-F028",
+    "AST-A06-F002"
+   ],
+   "shymkent_fact_ids": [
+    "A06-F016",
+    "A06-F017",
+    "A06-F026"
+   ],
+   "comparison_status": "astana_ready_shymkent_pending",
+   "shared_component": "GeoJSON-слои, GET-эндпоинты, режим «реальная аналитика»",
+   "city_specific_inputs": "границы районов, объекты",
+   "caveats": "Учебный QoL Score не смешивать."
+  }
+ ],
+ "deliverables": {
+  "report": "AST_A06_report.md",
+  "real_aggregates": "AST_A06_real_aggregates.zip (dataset AST-A06-D001, source AST-A06-S023)",
+  "shymkent_pass_files": [
+   "A06_report.md",
+   "A06_evidence.json",
+   "A06_experiments_synthetic.zip"
+  ]
+ }
+}

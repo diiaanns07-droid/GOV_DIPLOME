@@ -1,0 +1,20 @@
+<edges>
+  <edge id="WWd" from="W" to="Wd" numLanes="2" speed="16.67"/>
+  <edge id="WWd_r" from="Wd" to="W" numLanes="2" speed="16.67"/>
+  <edge id="EdE" from="Ed" to="E" numLanes="2" speed="16.67"/>
+  <edge id="EdE_r" from="E" to="Ed" numLanes="2" speed="16.67"/>
+  <edge id="UP_E" from="Wd" to="Ed" numLanes="2" speed="16.67" shape="-200,8 200,8"/>
+  <edge id="UP_W" from="Ed" to="Wd" numLanes="2" speed="16.67" shape="200,14 -200,14"/>
+  <edge id="offE" from="Wd" to="rw" numLanes="1" speed="11.1" shape="-200,-6 -45,-6"/>
+  <edge id="onE" from="re" to="Ed" numLanes="1" speed="11.1" shape="45,-6 200,-6"/>
+  <edge id="offW" from="Ed" to="re" numLanes="1" speed="11.1" shape="200,-12 45,-12"/>
+  <edge id="onW" from="rw" to="Wd" numLanes="1" speed="11.1" shape="-45,-12 -200,-12"/>
+  <edge id="Nrn" from="N" to="rn" numLanes="2" speed="16.67"/>
+  <edge id="Nrn_r" from="rn" to="N" numLanes="2" speed="16.67"/>
+  <edge id="rsS" from="rs" to="S" numLanes="2" speed="16.67"/>
+  <edge id="rsS_r" from="S" to="rs" numLanes="2" speed="16.67"/>
+  <edge id="ring_rnrw" from="rn" to="rw" numLanes="1" speed="8.33"/>
+  <edge id="ring_rwrs" from="rw" to="rs" numLanes="1" speed="8.33"/>
+  <edge id="ring_rsre" from="rs" to="re" numLanes="1" speed="8.33"/>
+  <edge id="ring_rern" from="re" to="rn" numLanes="1" speed="8.33"/>
+</edges>

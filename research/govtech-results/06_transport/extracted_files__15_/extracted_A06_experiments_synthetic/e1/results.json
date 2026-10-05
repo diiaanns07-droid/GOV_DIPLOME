@@ -1,0 +1,173 @@
+{
+ "connectivity": {
+  "A": {
+   "nodes": 5,
+   "W_to_S_route_exists": true,
+   "W_to_S_edges": [
+    "WC",
+    "CS"
+   ]
+  },
+  "B": {
+   "nodes": 4,
+   "W_to_S_route_exists": false,
+   "W_to_S_edges": null
+  },
+  "C": {
+   "nodes": 10,
+   "W_to_S_route_exists": true,
+   "W_to_S_edges": [
+    "WWd",
+    "offE",
+    "ring_rwrs",
+    "rsS"
+   ]
+  }
+ },
+ "runs": [
+  {
+   "variant": "A",
+   "mix": "through_heavy",
+   "demand_vph": 1200,
+   "inserted": 1202,
+   "running_at_end": 0,
+   "waiting_insert_at_end": 0,
+   "teleports": 0,
+   "mean_duration_s": 93.8,
+   "mean_timeLoss_s": 20.8,
+   "mean_routeLength_m": 1194.1
+  },
+  {
+   "variant": "A",
+   "mix": "through_heavy",
+   "demand_vph": 2400,
+   "inserted": 2408,
+   "running_at_end": 0,
+   "waiting_insert_at_end": 0,
+   "teleports": 0,
+   "mean_duration_s": 131.8,
+   "mean_timeLoss_s": 58.7,
+   "mean_routeLength_m": 1194.1
+  },
+  {
+   "variant": "A",
+   "mix": "through_heavy",
+   "demand_vph": 3600,
+   "inserted": 3606,
+   "running_at_end": 151,
+   "waiting_insert_at_end": 0,
+   "teleports": 0,
+   "mean_duration_s": 286.8,
+   "mean_timeLoss_s": 213.8,
+   "mean_routeLength_m": 1194.1
+  },
+  {
+   "variant": "A",
+   "mix": "turn_heavy",
+   "demand_vph": 1200,
+   "inserted": 1200,
+   "running_at_end": 0,
+   "waiting_insert_at_end": 0,
+   "teleports": 0,
+   "mean_duration_s": 94.0,
+   "mean_timeLoss_s": 20.9,
+   "mean_routeLength_m": 1191.4
+  },
+  {
+   "variant": "A",
+   "mix": "turn_heavy",
+   "demand_vph": 2400,
+   "inserted": 2400,
+   "running_at_end": 0,
+   "waiting_insert_at_end": 0,
+   "teleports": 0,
+   "mean_duration_s": 99.4,
+   "mean_timeLoss_s": 26.1,
+   "mean_routeLength_m": 1191.4
+  },
+  {
+   "variant": "A",
+   "mix": "turn_heavy",
+   "demand_vph": 3600,
+   "inserted": 3608,
+   "running_at_end": 55,
+   "waiting_insert_at_end": 0,
+   "teleports": 0,
+   "mean_duration_s": 418.0,
+   "mean_timeLoss_s": 344.8,
+   "mean_routeLength_m": 1191.4
+  },
+  {
+   "variant": "C",
+   "mix": "through_heavy",
+   "demand_vph": 1200,
+   "inserted": 1202,
+   "running_at_end": 0,
+   "waiting_insert_at_end": 0,
+   "teleports": 0,
+   "mean_duration_s": 87.5,
+   "mean_timeLoss_s": 8.1,
+   "mean_routeLength_m": 1222.5
+  },
+  {
+   "variant": "C",
+   "mix": "through_heavy",
+   "demand_vph": 2400,
+   "inserted": 2408,
+   "running_at_end": 0,
+   "waiting_insert_at_end": 0,
+   "teleports": 0,
+   "mean_duration_s": 109.5,
+   "mean_timeLoss_s": 28.9,
+   "mean_routeLength_m": 1243.0
+  },
+  {
+   "variant": "C",
+   "mix": "through_heavy",
+   "demand_vph": 3600,
+   "inserted": 2560,
+   "running_at_end": 407,
+   "waiting_insert_at_end": 1046,
+   "teleports": 71,
+   "mean_duration_s": 259.4,
+   "mean_timeLoss_s": 180.4,
+   "mean_routeLength_m": 1223.4
+  },
+  {
+   "variant": "C",
+   "mix": "turn_heavy",
+   "demand_vph": 1200,
+   "inserted": 1200,
+   "running_at_end": 0,
+   "waiting_insert_at_end": 0,
+   "teleports": 0,
+   "mean_duration_s": 104.6,
+   "mean_timeLoss_s": 19.6,
+   "mean_routeLength_m": 1246.9
+  },
+  {
+   "variant": "C",
+   "mix": "turn_heavy",
+   "demand_vph": 2400,
+   "inserted": 1388,
+   "running_at_end": 398,
+   "waiting_insert_at_end": 1012,
+   "teleports": 67,
+   "mean_duration_s": 1015.6,
+   "mean_timeLoss_s": 926.7,
+   "mean_routeLength_m": 1275.3
+  },
+  {
+   "variant": "C",
+   "mix": "turn_heavy",
+   "demand_vph": 3600,
+   "inserted": 1352,
+   "running_at_end": 430,
+   "waiting_insert_at_end": 2256,
+   "teleports": 72,
+   "mean_duration_s": 613.5,
+   "mean_timeLoss_s": 528.8,
+   "mean_routeLength_m": 1226.0
+  }
+ ]
+}

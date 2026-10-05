@@ -1,0 +1,76 @@
+{
+ "kind": "synthetic",
+ "warning": "Всё ниже — синтетика. События и показатели STUPITS вымышлены по условию ТЗ; примеры схемы придуманы AST-A12.",
+ "from_repo": {
+  "dataset_ids": [
+   "AST-A12-D004",
+   "AST-A12-D005"
+  ],
+  "rows": [
+   {
+    "id": "nura",
+    "name": "Нура",
+    "population_share": 0.16,
+    "indicators": {
+     "T1": 55,
+     "T2": 40,
+     "E1": 45,
+     "E2": 65,
+     "S1": 38,
+     "S2": 35,
+     "B1": 55,
+     "B2": 50,
+     "C1": 60,
+     "C2": 50
+    }
+   },
+   {
+    "id": "E4",
+    "name": "Прорыв водопровода",
+    "description": "Порыв магистрального водовода в Байконуре: несколько кварталов без воды, улицы подтоплены, часть дорог перекрыта на время ремонта.",
+    "district": "baikonur",
+    "effects": {
+     "C1": -18,
+     "C2": -4,
+     "T1": -3
+    },
+    "budget_change": 0,
+    "hint": "M13 (модернизация тепло- и водосетей) в Байконуре, M14 (аварийные бригады ЖКХ), M12 (единая платформа обращений)."
+   },
+   {
+    "id": "E8",
+    "name": "Наплыв новосёлов",
+    "description": "В Нуре сдали несколько крупных жилых комплексов: школы переходят на третью смену, поликлиники перегружены, автобусы переполнены.",
+    "district": "nura",
+    "effects": {
+     "S1": -6,
+     "S2": -5,
+     "T2": -4
+    },
+    "budget_change": 0,
+    "hint": "M7 (школа + детсад) и M8 (поликлиника) в Нуре, M9 (дворовые спорт-хабы), M1 или M3 для транспорта."
+   }
+  ]
+ },
+ "schema_examples": {
+  "pip_assignment": {
+   "object_id": "egov:<index>:v<N>:<row_id>",
+   "boundary_version": "osm:2026-09-22T08:45:51Z",
+   "unit_id": "kz.astana.district.almaty",
+   "rule": "covers_lowest_stable_id_v1",
+   "flag": "boundary_tie",
+   "candidates": "almaty,esil,saraishyk",
+   "kind": "synthetic"
+  },
+  "boundary_crosswalk": {
+   "from_unit": "kz.astana.district.esil",
+   "from_version": "official:<акт до выделения Сарайшыка>",
+   "to_unit": "kz.astana.district.saraishyk",
+   "to_version": "official:<акт>",
+   "weight": 0.0,
+   "method": "dasymetric_population",
+   "uncertainty": "<интервал>",
+   "kind": "synthetic — вес не вычислялся"
+  }
+ }
+}

@@ -1,0 +1,112 @@
+{
+ "summary": {
+  "ru": {
+   "numeric_cases": 4,
+   "leaked": 1,
+   "false_removals": 0
+  },
+  "kk": {
+   "numeric_cases": 6,
+   "leaked": 4,
+   "false_removals": 0
+  }
+ },
+ "rows": [
+  {
+   "lang": "ru",
+   "sentence": "Этот план поднимает индекс на пять баллов.",
+   "numeric_claim": true,
+   "kept_by_filter": false,
+   "leak": false,
+   "false_removal": false
+  },
+  {
+   "lang": "ru",
+   "sentence": "Этот план поднимает индекс на 5 баллов.",
+   "numeric_claim": true,
+   "kept_by_filter": false,
+   "leak": false,
+   "false_removal": false
+  },
+  {
+   "lang": "ru",
+   "sentence": "План усиливает социальную сферу Нуры.",
+   "numeric_claim": false,
+   "kept_by_filter": true,
+   "leak": false,
+   "false_removal": false
+  },
+  {
+   "lang": "kk",
+   "sentence": "Бұл жоспар индексті бес балға көтереді.",
+   "numeric_claim": true,
+   "kept_by_filter": true,
+   "leak": true,
+   "false_removal": false
+  },
+  {
+   "lang": "kk",
+   "sentence": "Бұл жоспар индексті 5 балға көтереді.",
+   "numeric_claim": true,
+   "kept_by_filter": false,
+   "leak": false,
+   "false_removal": false
+  },
+  {
+   "lang": "kk",
+   "sentence": "Жоспар бюджеттің жартысын Нұраға жұмсайды.",
+   "numeric_claim": true,
+   "kept_by_filter": true,
+   "leak": true,
+   "false_removal": false
+  },
+  {
+   "lang": "kk",
+   "sentence": "Он екі мектеп салынады.",
+   "numeric_claim": true,
+   "kept_by_filter": true,
+   "leak": true,
+   "false_removal": false
+  },
+  {
+   "lang": "kk",
+   "sentence": "Жүз миллион теңге үнемделеді.",
+   "numeric_claim": true,
+   "kept_by_filter": false,
+   "leak": false,
+   "false_removal": false
+  },
+  {
+   "lang": "kk",
+   "sentence": "Үш аудан ғана жақсарады.",
+   "numeric_claim": true,
+   "kept_by_filter": true,
+   "leak": true,
+   "false_removal": false
+  },
+  {
+   "lang": "kk",
+   "sentence": "Жоспар Нұра ауданының әлеуметтік саласын күшейтеді.",
+   "numeric_claim": false,
+   "kept_by_filter": true,
+   "leak": false,
+   "false_removal": false
+  },
+  {
+   "lang": "ru",
+   "sentence": "Экономия составит десятки процентов.",
+   "numeric_claim": true,
+   "kept_by_filter": true,
+   "leak": true,
+   "false_removal": false
+  },
+  {
+   "lang": "ru",
+   "sentence": "Затраты вырастут вдвое.",
+   "numeric_claim": true,
+   "kept_by_filter": false,
+   "leak": false,
+   "false_removal": false
+  }
+ ]
+}

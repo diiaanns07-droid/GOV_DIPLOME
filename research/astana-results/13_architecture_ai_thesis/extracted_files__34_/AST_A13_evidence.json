@@ -1,0 +1,802 @@
+{
+  "meta": {
+    "agent_id": "AST-A13",
+    "topic": "Техническая и научная основа: две городские конфигурации на общем коде",
+    "city": "astana",
+    "round": "astana-2026-10-05",
+    "searched_at": "2026-10-05T04:09:25Z",
+    "access_limitations": "Веб-поиска нет. Прокси блокирует gov.kz, stat.gov.kz, data.egov.kz, arxiv.org, doi.org, overpass-api.de, openstreetmap.org (403 host_not_allowed); 109.kz, ikomek109.kz, astana.gov.kz не ответили. Доступны github.com и raw.githubusercontent.com: репозиторий STUPITS и CITATION.cff/README авторов научного ПО."
+  },
+  "sources": [
+    {
+      "source_id": "AST-A13-S001",
+      "title": "STUPITS «Аким на 5 часов» (коммит 834a25f)",
+      "publisher": "BAITC-Hacks / STUPITS",
+      "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits",
+      "published_at": "2026-09-23",
+      "accessed_at": "2026-10-05",
+      "source_type": "code_repository",
+      "access_status": "verified_cloned_and_run",
+      "notes": "git fetch 2026-10-05: HEAD не изменился; git status чистый"
+    },
+    {
+      "source_id": "AST-A13-S002",
+      "title": "web/map.js",
+      "publisher": "BAITC-Hacks / STUPITS",
+      "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/blob/main/web/map.js",
+      "published_at": "2026-09-23",
+      "accessed_at": "2026-10-05",
+      "source_type": "code",
+      "access_status": "verified_read",
+      "notes": "ratingExpression стр.2–14: интерполяция 0/50/100; modeled=false → серый; тайлы OpenFreeMap стр.204,324"
+    },
+    {
+      "source_id": "AST-A13-S003",
+      "title": "agent/evidence.py",
+      "publisher": "BAITC-Hacks / STUPITS",
+      "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/blob/main/agent/evidence.py",
+      "published_at": "2026-09-23",
+      "accessed_at": "2026-10-05",
+      "source_type": "code",
+      "access_status": "verified_read_and_run",
+      "notes": "_NUMERAL_FORMS (русские), qualitative_comment стр.91"
+    },
+    {
+      "source_id": "AST-A13-S004",
+      "title": "Официальный сайт акимата Астаны",
+      "publisher": "gov.kz",
+      "url": "https://www.gov.kz/memleket/entities/astana?lang=ru",
+      "published_at": null,
+      "accessed_at": "2026-10-05",
+      "source_type": "official_page",
+      "access_status": "blocked_by_sandbox",
+      "notes": "403 host_not_allowed, 2026-10-05 04:09 UTC"
+    },
+    {
+      "source_id": "AST-A13-S005",
+      "title": "Динамические таблицы БНС: Астана",
+      "publisher": "Бюро национальной статистики АСПиР РК",
+      "url": "https://stat.gov.kz/ru/region/astana/dynamic-tables/38/",
+      "published_at": null,
+      "accessed_at": "2026-10-05",
+      "source_type": "official_statistics",
+      "access_status": "blocked_by_sandbox",
+      "notes": "403 host_not_allowed"
+    },
+    {
+      "source_id": "AST-A13-S006",
+      "title": "Портал открытых данных",
+      "publisher": "data.egov.kz",
+      "url": "https://data.egov.kz/",
+      "published_at": null,
+      "accessed_at": "2026-10-05",
+      "source_type": "open_data_portal",
+      "access_status": "blocked_by_sandbox",
+      "notes": "403 host_not_allowed"
+    },
+    {
+      "source_id": "AST-A13-S007",
+      "title": "iKOMEK109 / 109.kz / astana.gov.kz",
+      "publisher": "неизвестно (кандидаты)",
+      "url": "https://109.kz/",
+      "published_at": null,
+      "accessed_at": "2026-10-05",
+      "source_type": "official_operator_candidate",
+      "access_status": "no_response",
+      "notes": "Нет ответа за 12 с для 109.kz, www.ikomek109.kz, astana.gov.kz; наличие и адреса не подтверждены"
+    },
+    {
+      "source_id": "AST-A13-S008",
+      "title": "data/astana_districts.geojson (OSM)",
+      "publisher": "OpenStreetMap contributors через STUPITS",
+      "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/blob/main/data/astana_districts.geojson",
+      "published_at": "2026-09-23",
+      "accessed_at": "2026-10-05",
+      "source_type": "geodata",
+      "access_status": "verified_read",
+      "notes": "osm_base_timestamp 2026-09-22T08:45:51Z; ODbL; не официальное юридическое описание"
+    },
+    {
+      "source_id": "AST-A13-S009",
+      "title": "arxiv.org, doi.org, overpass-api.de, openstreetmap.org",
+      "publisher": "—",
+      "url": "https://arxiv.org/",
+      "published_at": null,
+      "accessed_at": "2026-10-05",
+      "source_type": "access_test",
+      "access_status": "blocked_by_sandbox",
+      "notes": "403 host_not_allowed"
+    },
+    {
+      "source_id": "AST-A13-L01",
+      "title": "Kwakkel J. (2017) The Exploratory Modeling Workbench… EMS 96:239–250",
+      "publisher": "см. запись",
+      "url": "https://doi.org/10.1016/j.envsoft.2017.06.054",
+      "published_at": "2017",
+      "accessed_at": "2026-10-05",
+      "source_type": "scientific_publication",
+      "access_status": "metadata_verified_author_repo_fulltext_not_read",
+      "notes": "Подтверждено: CITATION.cff quaquel/EMAworkbench (master). Полный текст не открыт (arXiv/doi.org заблокированы)."
+    },
+    {
+      "source_id": "AST-A13-L02",
+      "title": "Hadka D., Herman J., Reed P.M., Keller K. (2015) An Open Source Framework for Many-Objective Robust Decision Making. EMS 74:114–129",
+      "publisher": "см. запись",
+      "url": "https://doi.org/10.1016/j.envsoft.2015.07.014",
+      "published_at": "2015",
+      "accessed_at": "2026-10-05",
+      "source_type": "scientific_publication",
+      "access_status": "metadata_verified_author_repo_fulltext_not_read",
+      "notes": "Подтверждено: README Project-Platypus/Rhodium, ref.4. Полный текст не открыт (arXiv/doi.org заблокированы)."
+    },
+    {
+      "source_id": "AST-A13-L03",
+      "title": "Hadjimichael A. et al. (2020) Rhodium… JORS 8:12",
+      "publisher": "см. запись",
+      "url": "https://doi.org/10.5334/jors.293",
+      "published_at": "2020",
+      "accessed_at": "2026-10-05",
+      "source_type": "scientific_publication",
+      "access_status": "metadata_verified_author_repo_fulltext_not_read",
+      "notes": "Подтверждено: README Project-Platypus/Rhodium, Citation. Полный текст не открыт (arXiv/doi.org заблокированы)."
+    },
+    {
+      "source_id": "AST-A13-L04",
+      "title": "Iwanaga T., Usher W., Herman J. (2022) Toward SALib 2.0… SESMO 4",
+      "publisher": "см. запись",
+      "url": "https://doi.org/10.18174/sesmo.18155",
+      "published_at": "2022",
+      "accessed_at": "2026-10-05",
+      "source_type": "scientific_publication",
+      "access_status": "metadata_verified_author_repo_fulltext_not_read",
+      "notes": "Подтверждено: CITATION.cff SALib preferred-citation. Полный текст не открыт (arXiv/doi.org заблокированы)."
+    },
+    {
+      "source_id": "AST-A13-L05",
+      "title": "Herman J., Usher W. (2017) SALib: An open-source Python library for sensitivity analysis. JOSS",
+      "publisher": "см. запись",
+      "url": "https://doi.org/10.21105/joss.00097",
+      "published_at": "2017",
+      "accessed_at": "2026-10-05",
+      "source_type": "scientific_publication",
+      "access_status": "metadata_verified_author_repo_fulltext_not_read",
+      "notes": "Подтверждено: CITATION.cff SALib. Полный текст не открыт (arXiv/doi.org заблокированы)."
+    },
+    {
+      "source_id": "AST-A13-L06",
+      "title": "Boeing G. (2025) Modeling and Analyzing Urban Networks and Amenities with OSMnx. Geographical Analysis 57(4):567–577",
+      "publisher": "см. запись",
+      "url": "https://doi.org/10.1111/gean.70009",
+      "published_at": "2025",
+      "accessed_at": "2026-10-05",
+      "source_type": "scientific_publication",
+      "access_status": "metadata_verified_author_repo_fulltext_not_read",
+      "notes": "Подтверждено: CITATION.cff и README gboeing/osmnx. Полный текст не открыт (arXiv/doi.org заблокированы)."
+    },
+    {
+      "source_id": "AST-A13-L07",
+      "title": "Gao T., Yen H., Yu J., Chen D. (2023) Enabling Large Language Models to Generate Text with Citations. EMNLP",
+      "publisher": "см. запись",
+      "url": "https://arxiv.org/abs/2305.14627",
+      "published_at": "2023",
+      "accessed_at": "2026-10-05",
+      "source_type": "scientific_publication",
+      "access_status": "metadata_verified_author_repo_fulltext_not_read",
+      "notes": "Подтверждено: README princeton-nlp/ALCE, BibTeX. Полный текст не открыт (arXiv/doi.org заблокированы)."
+    },
+    {
+      "source_id": "AST-A13-L08",
+      "title": "Greshake K., Abdelnabi S., Mishra S., Endres C., Holz T., Fritz M. (2023) Not what you've signed up for… indirect prompt injection",
+      "publisher": "см. запись",
+      "url": "https://doi.org/10.48550/arXiv.2302.12173",
+      "published_at": "2023",
+      "accessed_at": "2026-10-05",
+      "source_type": "scientific_publication",
+      "access_status": "metadata_verified_author_repo_fulltext_not_read",
+      "notes": "Подтверждено: README greshake/llm-security, BibTeX. Полный текст не открыт (arXiv/doi.org заблокированы)."
+    },
+    {
+      "source_id": "AST-A13-L09",
+      "title": "Ramamonjison R. et al. (2022) NL4Opt Competition… Proc. NeurIPS 2022 Competitions Track, PMLR 220:189–203",
+      "publisher": "см. запись",
+      "url": "https://proceedings.mlr.press/v220/ramamonjison23a.html",
+      "published_at": "2022",
+      "accessed_at": "2026-10-05",
+      "source_type": "scientific_publication",
+      "access_status": "metadata_verified_author_repo_fulltext_not_read",
+      "notes": "Подтверждено: README nl4opt/nl4opt-competition, BibTeX. Полный текст не открыт (arXiv/doi.org заблокированы)."
+    },
+    {
+      "source_id": "AST-A13-L10",
+      "title": "AhmadiTeshnizi A., Gao W., Udell M. (2024) OptiMUS: Scalable Optimization Modeling with (MI)LP Solvers and LLMs",
+      "publisher": "см. запись",
+      "url": "https://arxiv.org/abs/2402.10172",
+      "published_at": "2024",
+      "accessed_at": "2026-10-05",
+      "source_type": "scientific_publication",
+      "access_status": "metadata_verified_author_repo_fulltext_not_read",
+      "notes": "Подтверждено: README teshnizi/OptiMUS (v0.2; v0.1 2310.06116; v0.3 2407.19633). Полный текст не открыт (arXiv/doi.org заблокированы)."
+    },
+    {
+      "source_id": "AST-A13-L11",
+      "title": "Gao L. et al. (2022) PAL: Program-aided Language Models",
+      "publisher": "см. запись",
+      "url": "https://arxiv.org/abs/2211.10435",
+      "published_at": "2022",
+      "accessed_at": "2026-10-05",
+      "source_type": "scientific_publication",
+      "access_status": "metadata_verified_author_repo_fulltext_not_read",
+      "notes": "Подтверждено: CITATION.cff reasoning-machines/pal. Полный текст не открыт (arXiv/doi.org заблокированы)."
+    },
+    {
+      "source_id": "AST-A13-L12",
+      "title": "r5py (software)",
+      "publisher": "см. запись",
+      "url": "https://doi.org/10.5281/zenodo.7060437",
+      "published_at": null,
+      "accessed_at": "2026-10-05",
+      "source_type": "scientific_publication",
+      "access_status": "metadata_verified_author_repo_fulltext_not_read",
+      "notes": "Подтверждено: README r5py/r5py. Полный текст не открыт (arXiv/doi.org заблокированы)."
+    }
+  ],
+  "facts": [
+    {
+      "fact_id": "AST-A13-F001",
+      "statement": "Репозиторий не изменился после первого прохода (HEAD 834a25f)",
+      "kind": "observed",
+      "value": "834a25fb860dd5514d02c9274b70d7bf8a53a79c",
+      "unit": null,
+      "geography": "n/a",
+      "period": "2026-10-05",
+      "source_refs": [
+        {
+          "source_id": "AST-A13-S001",
+          "locator": "git fetch; git log origin/HEAD -1"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": ""
+    },
+    {
+      "fact_id": "AST-A13-F002",
+      "statement": "Фильтр чисел советника пропускает 4 из 6 казахских числовых утверждений (бес, он екі, үш, жартысын)",
+      "kind": "observed",
+      "value": {
+        "kk_numeric": 6,
+        "kk_leaked": 4,
+        "kk_false_removals": 0
+      },
+      "unit": "предложений",
+      "geography": "n/a",
+      "period": "2026-10-05",
+      "source_refs": [
+        {
+          "source_id": "AST-A13-S003",
+          "locator": "qualitative_comment; E5 kk_numeral_filter_result.json"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "12 синтетических предложений; не исчерпывающая проверка"
+    },
+    {
+      "fact_id": "AST-A13-F003",
+      "statement": "Фильтр пропускает 1 из 4 русских числовых утверждений («десятки процентов»)",
+      "kind": "observed",
+      "value": {
+        "ru_numeric": 4,
+        "ru_leaked": 1
+      },
+      "unit": "предложений",
+      "geography": "n/a",
+      "period": "2026-10-05",
+      "source_refs": [
+        {
+          "source_id": "AST-A13-S003",
+          "locator": "E5"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "Синтетические примеры"
+    },
+    {
+      "fact_id": "AST-A13-F004",
+      "statement": "При возмущении весов и эффектов ±10% базовый топ-1 учебной модели остаётся топ-1 в 43% из 60 выборок; 6 разных победителей",
+      "kind": "observed",
+      "value": {
+        "share_top1": 0.433,
+        "distinct_top1": 6,
+        "n": 60
+      },
+      "unit": "доля",
+      "geography": "Астана (учебная)",
+      "period": "2026-10-05",
+      "source_refs": [
+        {
+          "source_id": "AST-A13-S001",
+          "locator": "E6 rank_sensitivity_result.json runs[0]"
+        }
+      ],
+      "derivation": null,
+      "confidence": "medium",
+      "caveats": "Возмущения синтетические; n=60, ±≈12 п.п."
+    },
+    {
+      "fact_id": "AST-A13-F005",
+      "statement": "При ±20%: 28% топ-1, 16 разных победителей, медиана регрета 0.065, p95 0.30",
+      "kind": "observed",
+      "value": {
+        "share_top1": 0.283,
+        "distinct_top1": 16,
+        "regret_median": 0.065,
+        "regret_p95": 0.3005
+      },
+      "unit": "доля; баллы учебного индекса",
+      "geography": "Астана (учебная)",
+      "period": "2026-10-05",
+      "source_refs": [
+        {
+          "source_id": "AST-A13-S001",
+          "locator": "E6 runs[1]"
+        }
+      ],
+      "derivation": null,
+      "confidence": "medium",
+      "caveats": "То же"
+    },
+    {
+      "fact_id": "AST-A13-F006",
+      "statement": "При ±30%: 20% топ-1, 23 победителя, p95 регрета 1.00",
+      "kind": "observed",
+      "value": {
+        "share_top1": 0.2,
+        "distinct_top1": 23,
+        "regret_p95": 1.003
+      },
+      "unit": "",
+      "geography": "Астана (учебная)",
+      "period": "2026-10-05",
+      "source_refs": [
+        {
+          "source_id": "AST-A13-S001",
+          "locator": "E6 runs[2]"
+        }
+      ],
+      "derivation": null,
+      "confidence": "medium",
+      "caveats": "То же"
+    },
+    {
+      "fact_id": "AST-A13-F007",
+      "statement": "В учебной модели оптимум — хрупкая точка внутри плато почти равных планов",
+      "kind": "derived",
+      "value": null,
+      "unit": null,
+      "geography": "Астана (учебная)",
+      "period": "2026-10-05",
+      "source_refs": [
+        {
+          "source_id": "AST-A13-S001",
+          "locator": "E6"
+        }
+      ],
+      "derivation": "низкая доля сохранения топ-1 при малом регрете (F004–F006)",
+      "confidence": "medium",
+      "caveats": "Свойство синтетической формулы; для реальной модели не доказано"
+    },
+    {
+      "fact_id": "AST-A13-F008",
+      "statement": "Конфигурационная обёртка вне репозитория воспроизводит 52.56/56.54/57.24 и даёт побайтно тот же JSON simulate, что прямой вызов движка",
+      "kind": "observed",
+      "value": {
+        "references_ok": true,
+        "legacy_byte_identical": true
+      },
+      "unit": null,
+      "geography": "Астана (учебная)",
+      "period": "2026-10-05",
+      "source_refs": [
+        {
+          "source_id": "AST-A13-S001",
+          "locator": "E7 cityconf_proto_result.json"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "Сравнение с прямым вызовом engine, не с HTTP-ответом сервера"
+    },
+    {
+      "fact_id": "AST-A13-F009",
+      "statement": "Цветовая шкала карты жёстко задана 0–100, «больше = лучше»; неизмеренные районы серые",
+      "kind": "observed",
+      "value": null,
+      "unit": null,
+      "geography": "n/a",
+      "period": "commit 834a25f",
+      "source_refs": [
+        {
+          "source_id": "AST-A13-S002",
+          "locator": "стр.2–14"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "Для реальных единиц (мкг/м³, чел.) нужна шкала из определения показателя"
+    },
+    {
+      "fact_id": "AST-A13-F010",
+      "statement": "В OSM-слое репозитория 6 районов Астаны: Есиль, Алматы, Сарыарка, Байконур, Нура, Сарайшык",
+      "kind": "observed",
+      "value": 6,
+      "unit": "полигонов",
+      "geography": "г. Астана",
+      "period": "osm_base 2026-09-22",
+      "source_refs": [
+        {
+          "source_id": "AST-A13-S008",
+          "locator": "features[].properties.id"
+        }
+      ],
+      "derivation": null,
+      "confidence": "medium",
+      "caveats": "OSM, не официальный НПА; официальный состав не проверен"
+    },
+    {
+      "fact_id": "AST-A13-F011",
+      "statement": "Официальные показатели Астаны в этом проходе не получены",
+      "kind": "observed",
+      "value": null,
+      "unit": null,
+      "geography": "г. Астана",
+      "period": null,
+      "source_refs": [
+        {
+          "source_id": "AST-A13-S004",
+          "locator": "403"
+        },
+        {
+          "source_id": "AST-A13-S005",
+          "locator": "403"
+        },
+        {
+          "source_id": "AST-A13-S006",
+          "locator": "403"
+        }
+      ],
+      "derivation": null,
+      "confidence": "high",
+      "caveats": "Ограничение среды, не отсутствие данных"
+    },
+    {
+      "fact_id": "AST-A13-F012",
+      "statement": "Показ множества планов в пределах ε с частотой побед снизит регрет пользователя по сравнению с показом одного топ-1",
+      "kind": "hypothesis",
+      "value": null,
+      "unit": null,
+      "geography": "n/a",
+      "period": null,
+      "source_refs": [],
+      "derivation": "опирается на F004–F007",
+      "confidence": "low",
+      "caveats": "Требует пользовательского эксперимента"
+    }
+  ],
+  "datasets": [
+    {
+      "dataset_id": "AST-A13-D001",
+      "title": "OSM-границы районов Астаны (в репозитории)",
+      "publisher": "OpenStreetMap contributors",
+      "source_ids": [
+        "AST-A13-S008"
+      ],
+      "landing_url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/blob/main/data/astana_districts.geojson",
+      "download_or_api_url": "https://raw.githubusercontent.com/BAITC-Hacks/hack-d3b2c613-stupits/main/data/astana_districts.geojson",
+      "access_status": "sample_verified",
+      "tested_at": "2026-10-05",
+      "geography": "г. Астана",
+      "granularity": "район",
+      "period": "2026-09-22",
+      "format": "GeoJSON",
+      "fields": [
+        "id",
+        "name",
+        "source",
+        "center_lon",
+        "center_lat"
+      ],
+      "units": "WGS84",
+      "update_frequency": "по запросу",
+      "license": "ODbL",
+      "auth_requirement": "none",
+      "limitations": "Не юридические границы",
+      "next_retrieval_step": "Сверить с официальным составом районов"
+    },
+    {
+      "dataset_id": "AST-A13-D002",
+      "title": "Динамические ряды БНС: Астана (население, миграция)",
+      "publisher": "БНС АСПиР РК",
+      "source_ids": [
+        "AST-A13-S005"
+      ],
+      "landing_url": "https://stat.gov.kz/ru/region/astana/dynamic-tables/38/",
+      "download_or_api_url": null,
+      "access_status": "unavailable",
+      "tested_at": "2026-10-05",
+      "geography": "г. Астана",
+      "granularity": null,
+      "period": null,
+      "format": null,
+      "fields": [],
+      "units": null,
+      "update_frequency": null,
+      "license": null,
+      "auth_requirement": null,
+      "limitations": "Заблокировано в среде",
+      "next_retrieval_step": "Скачать 1 файл, проверить районную детализацию и условия"
+    },
+    {
+      "dataset_id": "AST-A13-D003",
+      "title": "Наборы data.egov.kz по Астане",
+      "publisher": "data.egov.kz",
+      "source_ids": [
+        "AST-A13-S006"
+      ],
+      "landing_url": "https://data.egov.kz/",
+      "download_or_api_url": null,
+      "access_status": "unavailable",
+      "tested_at": "2026-10-05",
+      "geography": "г. Астана",
+      "granularity": null,
+      "period": null,
+      "format": null,
+      "fields": [],
+      "units": null,
+      "update_frequency": null,
+      "license": null,
+      "auth_requirement": null,
+      "limitations": "Заблокировано; API не проверено",
+      "next_retrieval_step": "Поиск 'Астана'/'Astana'/'Нур-Султан' и тестовый API-запрос"
+    },
+    {
+      "dataset_id": "AST-A13-D004",
+      "title": "Обращения iKOMEK109 (агрегаты)",
+      "publisher": "неизвестно",
+      "source_ids": [
+        "AST-A13-S007"
+      ],
+      "landing_url": null,
+      "download_or_api_url": null,
+      "access_status": "unavailable",
+      "tested_at": "2026-10-05",
+      "geography": "г. Астана",
+      "granularity": null,
+      "period": null,
+      "format": null,
+      "fields": [],
+      "units": null,
+      "update_frequency": null,
+      "license": null,
+      "auth_requirement": null,
+      "limitations": "Сайт не ответил; открытый доступ к агрегатам не установлен; персональные данные не собирать",
+      "next_retrieval_step": "Найти официальную публикацию агрегатов (A01–A12)"
+    }
+  ],
+  "opportunities": [
+    {
+      "idea_id": "AST-A13-I001",
+      "title": "Двуязычный фильтр чисел для советника",
+      "problem": "kk-числительные проходят в «качественный» комментарий",
+      "evidence_fact_ids": [
+        "AST-A13-F002",
+        "AST-A13-F003"
+      ],
+      "primary_user": "Житель или сотрудник, читающий ответ на казахском",
+      "user_task": "Доверять тому, что числа в ответе пришли из расчёта",
+      "existing_solution": "Русский словарь числительных",
+      "proposed_addition": "Казахский словарь числительных и долей; регрессионный тест E5",
+      "required_dataset_ids": [],
+      "ai_role": "Нет: это правило кода вокруг LLM",
+      "non_ai_baseline": "Это и есть решение",
+      "success_metrics": [
+        "0 утечек на регрессионном наборе ru/kk",
+        "0 ложных удалений на качественных предложениях"
+      ],
+      "feasibility_10_days": "high",
+      "blockers": [
+        "Набор kk-примеров от носителя языка"
+      ],
+      "transfer_to_shymkent": "Прямо",
+      "next_action": "Собрать 50+ kk-предложений от носителя и расширить словарь"
+    },
+    {
+      "idea_id": "AST-A13-I002",
+      "title": "Множество почти-оптимальных планов вместо одного топ-1",
+      "problem": "Топ-1 меняется при малой неопределённости параметров",
+      "evidence_fact_ids": [
+        "AST-A13-F004",
+        "AST-A13-F005",
+        "AST-A13-F006",
+        "AST-A13-F007"
+      ],
+      "primary_user": "Лицо, сравнивающее варианты программ мер",
+      "user_task": "Выбрать план, не переоценивая точность модели",
+      "existing_solution": "Топ-10 и robust-режим по событиям",
+      "proposed_addition": "Множество в пределах ε, частота побед при выборке параметров, регрет",
+      "required_dataset_ids": [],
+      "ai_role": "Не нужен; LLM может лишь объяснять",
+      "non_ai_baseline": "Показ топ-1",
+      "success_metrics": [
+        "регрет выбора в пользовательском тесте",
+        "понимание неопределённости (опрос)"
+      ],
+      "feasibility_10_days": "medium",
+      "blockers": [
+        "Диапазоны параметров для реальных моделей"
+      ],
+      "transfer_to_shymkent": "Метод общий, диапазоны city-specific",
+      "next_action": "E6 на 500 выборок + Sobol (SALib)"
+    }
+  ],
+  "open_questions": [
+    {
+      "question": "Официальный актуальный состав районов Астаны и дата изменения (включая Сарайшык)?",
+      "why_important": "Иначе районные данные приписываются не той территории",
+      "how_to_check": "Официальный НПА / сайт акимата; сверка с OSM D001"
+    },
+    {
+      "question": "Какая районная детализация доступна в БНС по Астане и с какими условиями использования?",
+      "why_important": "Определяет, возможна ли районная аналитика astana_real",
+      "how_to_check": "Скачать 1 файл из S005, записать поля и лицензию"
+    },
+    {
+      "question": "Публикуются ли открытые агрегаты обращений iKOMEK109 по Астане?",
+      "why_important": "Кандидат живого сигнала проблем",
+      "how_to_check": "Найти официальный оператор и раздел отчётности"
+    },
+    {
+      "question": "Сохраняется ли хрупкость топ-1 при реальной модели, а не учебной?",
+      "why_important": "Основание идеи I002 и темы Т2",
+      "how_to_check": "Повторить E6 на первой реальной предметной модели"
+    },
+    {
+      "question": "Где проходит граница Астана / Акмолинская область / агломерация в используемых источниках?",
+      "why_important": "Правило 3; риск смешения территорий",
+      "how_to_check": "Метаданные каждой таблицы: территория и период"
+    }
+  ],
+  "city_comparison": [
+    {
+      "topic": "Состав районов",
+      "astana_fact_ids": [
+        "AST-A13-F010"
+      ],
+      "shymkent_fact_ids": [
+        "A13-F015"
+      ],
+      "comparison_status": "incompatible_sources",
+      "shared_component": "GeographyVersion, слой карты",
+      "city_specific_inputs": [
+        "границы",
+        "дата действия",
+        "НПА"
+      ],
+      "caveats": "Астана: OSM-наблюдение; Шымкент: гипотеза по памяти. Официальные источники не открыты."
+    },
+    {
+      "topic": "Перенос движка на N районов",
+      "astana_fact_ids": [
+        "AST-A13-F008"
+      ],
+      "shymkent_fact_ids": [
+        "A13-F006",
+        "A13-F007"
+      ],
+      "comparison_status": "consistent",
+      "shared_component": "engine, optimizer, конфигурационная обёртка",
+      "city_specific_inputs": [
+        "предметная модель",
+        "параметры"
+      ],
+      "caveats": "Подтверждено только для синтетики"
+    },
+    {
+      "topic": "null вместо 0",
+      "astana_fact_ids": [],
+      "shymkent_fact_ids": [
+        "A13-F011"
+      ],
+      "comparison_status": "pending",
+      "shared_component": "валидатор данных",
+      "city_specific_inputs": [],
+      "caveats": "Дефект найден в учебных данных Астаны в первом проходе"
+    },
+    {
+      "topic": "Фильтр чисел ru/kk",
+      "astana_fact_ids": [
+        "AST-A13-F002",
+        "AST-A13-F003"
+      ],
+      "shymkent_fact_ids": [],
+      "comparison_status": "pending",
+      "shared_component": "agent/evidence",
+      "city_specific_inputs": [],
+      "caveats": "Касается обоих городов одинаково"
+    },
+    {
+      "topic": "Устойчивость рекомендаций",
+      "astana_fact_ids": [
+        "AST-A13-F004",
+        "AST-A13-F005",
+        "AST-A13-F006"
+      ],
+      "shymkent_fact_ids": [],
+      "comparison_status": "pending",
+      "shared_component": "robustness-анализ",
+      "city_specific_inputs": [
+        "диапазоны параметров"
+      ],
+      "caveats": "Только учебная модель"
+    },
+    {
+      "topic": "Реальные показатели",
+      "astana_fact_ids": [
+        "AST-A13-F011"
+      ],
+      "shymkent_fact_ids": [],
+      "comparison_status": "pending",
+      "shared_component": "IndicatorDefinition, Observation",
+      "city_specific_inputs": [
+        "определения",
+        "периоды",
+        "единицы"
+      ],
+      "caveats": "Сравнение только при совпадении определения/метода, уровня географии и периода"
+    }
+  ],
+  "deliverables": {
+    "experiments": [
+      {
+        "id": "AST-A13-E5",
+        "what": "kk/ru числительные и фильтр советника",
+        "inputs": "12 синтетических предложений",
+        "versions": {
+          "python": "3.12.3"
+        },
+        "commands": [
+          "python3 kk_numeral_filter.py"
+        ],
+        "result": "см. F002, F003"
+      },
+      {
+        "id": "AST-A13-E6",
+        "what": "Устойчивость ранжирования к возмущению параметров",
+        "inputs": "city_data.json @834a25f; seeds 1,2,3; n=60 на уровень",
+        "versions": {
+          "python": "3.12.3",
+          "numpy": "2.4.4"
+        },
+        "commands": [
+          "python3 rank_sensitivity.py"
+        ],
+        "result": "см. F004–F006; 94.7 с"
+      },
+      {
+        "id": "AST-A13-E7",
+        "what": "Прототип конфигураций astana_hackathon/astana_real/shymkent_real",
+        "inputs": "репозиторий без изменений",
+        "versions": {
+          "python": "3.12.3"
+        },
+        "commands": [
+          "python3 cityconf_proto.py"
+        ],
+        "result": "см. F008; data_version astana_hackathon@0cda24ae15a0"
+      }
+    ],
+    "literature_correction": "A13-L012 (OptiMUS) — v0.2 arXiv:2402.10172; есть v0.1 2310.06116 и v0.3 2407.19633. A13-L001–L006 (Malczewski, Geertman, Vonk, Lempert) по-прежнему не подтверждены.",
+    "proposed_names_note": "astana_hackathon, astana_real, shymkent_real — предложенные имена, не существующий код."
+  }
+}

@@ -1,0 +1,1076 @@
+{
+ "meta": {
+  "agent_id": "A05",
+  "topic": "Образование: доступность и нагрузка школ и детсадов",
+  "city": "Шымкент",
+  "searched_at": "2026-10-04T17:17:01Z",
+  "access_limitations": "Нет браузера и веб-поиска. Прокси песочницы блокирует stat.gov.kz, gov.kz, data.egov.kz, iac.kz, overpass-api.de, nominatim, geofabrik (403 host_not_allowed). Доступны только GitHub, PyPI, npm. Ни одна проблема Шымкента не подтверждена первоисточником; ссылки на научные работы — по памяти модели, не открывались."
+ },
+ "sources": [
+  {
+   "source_id": "A05-S001",
+   "title": "STUPITS «Аким на 5 часов» — репозиторий (ветка main, архив)",
+   "publisher": "BAITC-Hacks / команда STUPITS",
+   "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "code_repository",
+   "access_status": "opened",
+   "notes": "Скачан архив codeload.github.com/.../zip/refs/heads/main (HTTP 200, 9404339 байт). Дата последнего коммита не получена: api.github.com вернул rate limit."
+  },
+  {
+   "source_id": "A05-S002",
+   "title": "data/city_data.json (учебный датасет ТЗ)",
+   "publisher": "BAITC-Hacks / команда STUPITS",
+   "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/blob/main/data/city_data.json",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "dataset_file_synthetic_training",
+   "access_status": "opened",
+   "notes": "Учебные (хакатонные) значения для Астаны, не наблюдения."
+  },
+  {
+   "source_id": "A05-S003",
+   "title": "data/real_context_meta.json, data/real_context.json, fetch_real_context.py",
+   "publisher": "BAITC-Hacks / команда STUPITS",
+   "url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits/blob/main/fetch_real_context.py",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "code_and_metadata",
+   "access_status": "opened",
+   "notes": "Мета-файл сгенерирован 2026-09-23T09:25:25+00:00 со статусом unavailable."
+  },
+  {
+   "source_id": "A05-S004",
+   "title": "Лог сетевой проверки доступа из среды A05",
+   "publisher": "A05 (собственный эксперимент)",
+   "url": null,
+   "published_at": "2026-10-04",
+   "accessed_at": "2026-10-04",
+   "source_type": "experiment_log",
+   "access_status": "opened",
+   "notes": "Файл A05_run_log.txt; первый запуск 2026-10-04T17:17:01Z."
+  },
+  {
+   "source_id": "A05-S005",
+   "title": "БНС АСПиР РК — динамические таблицы, г. Шымкент",
+   "publisher": "Бюро национальной статистики АСПиР РК",
+   "url": "https://stat.gov.kz/ru/region/shymkent/dynamic-tables/38/",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "official_statistics_portal",
+   "access_status": "blocked_in_environment",
+   "notes": "Недоступно из среды исследователя: HTTP 403, x-deny-reason: host_not_allowed (лог A05_run_log.txt). Это ограничение среды, не свойство источника."
+  },
+  {
+   "source_id": "A05-S006",
+   "title": "Страница управления цифровизации г. Шымкент на gov.kz",
+   "publisher": "gov.kz",
+   "url": "https://www.gov.kz/memleket/entities/shymkent-sandyk?lang=ru",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "official_portal",
+   "access_status": "blocked_in_environment",
+   "notes": "Недоступно из среды исследователя: HTTP 403, x-deny-reason: host_not_allowed (лог A05_run_log.txt). Это ограничение среды, не свойство источника."
+  },
+  {
+   "source_id": "A05-S007",
+   "title": "Портал открытых данных data.egov.kz",
+   "publisher": "Электронное правительство РК",
+   "url": "https://data.egov.kz/",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "open_data_portal",
+   "access_status": "blocked_in_environment",
+   "notes": "Недоступно из среды исследователя: HTTP 403, x-deny-reason: host_not_allowed (лог A05_run_log.txt). Это ограничение среды, не свойство источника. Координатор также сообщал об ошибке прямого открытия."
+  },
+  {
+   "source_id": "A05-S008",
+   "title": "Информационно-аналитический центр (кандидат: национальный сборник статистики образования)",
+   "publisher": "ИАЦ (iac.kz)",
+   "url": "https://iac.kz/",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "official_statistics_candidate",
+   "access_status": "blocked_in_environment",
+   "notes": "Недоступно из среды исследователя: HTTP 403, x-deny-reason: host_not_allowed (лог A05_run_log.txt). Это ограничение среды, не свойство источника. Наличие таблиц по Шымкенту — гипотеза."
+  },
+  {
+   "source_id": "A05-S009",
+   "title": "yaskhan/nobdsoap — README: скрипты для работы с ИС «Национальная образовательная база данных»",
+   "publisher": "GitHub, пользователь yaskhan",
+   "url": "https://github.com/yaskhan/nobdsoap",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "third_party_code_repository",
+   "access_status": "opened",
+   "notes": "pushed_at 2020-06-17 (по ответу GitHub Search API). Слабый сторонний источник; ссылается на документ «Правила интеграции.pdf» и legalacts.egov.kz/npa/view?id=1873816 (не открывался)."
+  },
+  {
+   "source_id": "A05-S010",
+   "title": "GitHub Search API: поиск наборов о школах Шымкента",
+   "publisher": "GitHub",
+   "url": "https://api.github.com/search/repositories",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "search_log",
+   "access_status": "opened",
+   "notes": "Запросы: shymkent+school (0), shymkent+schools (0), kazakhstan+schools+dataset (0), nobd+kazakhstan (1), «шымкент» (20, без наборов по школам)."
+  },
+  {
+   "source_id": "A05-S011",
+   "title": "OpenStreetMap: Overpass API, Nominatim, Geofabrik",
+   "publisher": "OpenStreetMap contributors (ODbL)",
+   "url": "https://overpass-api.de/api/status",
+   "published_at": null,
+   "accessed_at": "2026-10-04",
+   "source_type": "open_geodata",
+   "access_status": "blocked_in_environment",
+   "notes": "Недоступно из среды исследователя: HTTP 403, x-deny-reason: host_not_allowed (лог A05_run_log.txt). Это ограничение среды, не свойство источника. Лицензия ODbL зафиксирована в docs/presentation/source_docs/GEO_SOURCES.md репозитория STUPITS."
+  },
+  {
+   "source_id": "A05-S012",
+   "title": "A05 синтетический эксперимент: A05_experiment.py → A05_synthetic_results.json",
+   "publisher": "A05 (собственный эксперимент)",
+   "url": null,
+   "published_at": "2026-10-04",
+   "accessed_at": "2026-10-04",
+   "source_type": "synthetic_experiment",
+   "access_status": "opened",
+   "notes": "seed 20261004; Python 3.12.3, numpy 2.4.4, scipy 1.17.1, networkx 3.6.1. Все входы синтетические."
+  },
+  {
+   "source_id": "A05-S013",
+   "title": "Luo W., Wang F. (2003) Measures of spatial accessibility to health care in a GIS environment. Environment and Planning B 30(6)",
+   "publisher": "Environment and Planning B",
+   "url": null,
+   "published_at": "2003",
+   "accessed_at": null,
+   "source_type": "scientific_paper_from_model_memory",
+   "access_status": "not_opened",
+   "notes": "Реквизиты по памяти модели; не открывался. Проверить DOI и страницы."
+  },
+  {
+   "source_id": "A05-S014",
+   "title": "Church R., ReVelle C. (1974) The maximal covering location problem; Hakimi S. (1964) p-median, Operations Research 12(3)",
+   "publisher": "Papers of the Regional Science Association; Operations Research",
+   "url": null,
+   "published_at": "1974; 1964",
+   "accessed_at": null,
+   "source_type": "scientific_paper_from_model_memory",
+   "access_status": "not_opened",
+   "notes": "Реквизиты по памяти модели; не открывались."
+  }
+ ],
+ "facts": [
+  {
+   "fact_id": "A05-F001",
+   "statement": "Из среды A05 недоступны stat.gov.kz, gov.kz, data.egov.kz, iac.kz, overpass-api.de, nominatim.openstreetmap.org, download.geofabrik.de",
+   "kind": "observed",
+   "value": 403,
+   "unit": "HTTP status",
+   "geography": null,
+   "period": "2026-10-04",
+   "source_refs": [
+    {
+     "source_id": "A05-S004",
+     "locator": "строки 2–8 лога"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": [
+    "Ограничение среды, не доступность порталов для людей."
+   ]
+  },
+  {
+   "fact_id": "A05-F002",
+   "statement": "В учебной модели STUPITS образование представлено индикатором S1 «Школы и детсады» с весом 0.11",
+   "kind": "observed",
+   "value": 0.11,
+   "unit": "вес индикатора",
+   "geography": "Астана (учебный датасет)",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A05-S002",
+     "locator": "indicators.S1"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": [
+    "Учебное значение ТЗ, не реальный показатель."
+   ]
+  },
+  {
+   "fact_id": "A05-F003",
+   "statement": "Мера M7 «Школа + детсад (модульное строительство)»: scope district, cost 24, lag 3, эффект S1 +16",
+   "kind": "observed",
+   "value": {
+    "cost": 24,
+    "lag": 3,
+    "S1": 16
+   },
+   "unit": "условные единицы модели",
+   "geography": "Астана (учебный датасет)",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A05-S002",
+     "locator": "measures[id=M7]"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": [
+    "Не переносить на Шымкент: эффект и стоимость не откалиброваны."
+   ]
+  },
+  {
+   "fact_id": "A05-F004",
+   "statement": "Мера M11 «Безопасные переходы и школьные зоны»: cost 10, lag 1, B2 +12, T1 −2",
+   "kind": "observed",
+   "value": {
+    "cost": 10,
+    "lag": 1,
+    "B2": 12,
+    "T1": -2
+   },
+   "unit": "условные единицы модели",
+   "geography": "Астана (учебный датасет)",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A05-S002",
+     "locator": "measures[id=M11]"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": [
+    "Учебный эффект."
+   ]
+  },
+  {
+   "fact_id": "A05-F005",
+   "statement": "Справочный OSM-слой STUPITS имеет статус unavailable (ReadTimeout Overpass), а real_context.json содержит нули по школам и детсадам во всех районах; нули по соглашению означают «нет данных»",
+   "kind": "observed",
+   "value": 0,
+   "unit": "число объектов (фактически unknown)",
+   "geography": "Астана (5 районов модели)",
+   "period": "2026-09-23",
+   "source_refs": [
+    {
+     "source_id": "A05-S003",
+     "locator": "real_context_meta.json: status, error, generated_at; real_context.json; fetch_real_context.py стр. 346"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": [
+    "Нарушает правило «нет данных ≠ 0»; при переносе использовать null."
+   ]
+  },
+  {
+   "fact_id": "A05-F006",
+   "statement": "Сборщик STUPITS использует теги amenity=school и amenity=kindergarten и удаляет дубли по нормализованному имени в радиусе 150 м (школы) и 100 м (детсады)",
+   "kind": "observed",
+   "value": {
+    "schools_m": 150,
+    "kindergartens_m": 100
+   },
+   "unit": "м",
+   "geography": null,
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A05-S003",
+     "locator": "real_context_meta.json: category_tags, dedup_radius_m; fetch_real_context.py collect_points()"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": [
+    "Дедуп по имени может склеить корпуса одной школы."
+   ]
+  },
+  {
+   "fact_id": "A05-F007",
+   "statement": "В репозитории STUPITS нет упоминаний Шымкента",
+   "kind": "observed",
+   "value": 0,
+   "unit": "совпадений grep",
+   "geography": null,
+   "period": "ветка main на 2026-10-04",
+   "source_refs": [
+    {
+     "source_id": "A05-S001",
+     "locator": "grep -ri 'шымкент|shymkent' по всему архиву"
+    }
+   ],
+   "derivation": null,
+   "confidence": "high",
+   "caveats": []
+  },
+  {
+   "fact_id": "A05-F008",
+   "statement": "GitHub Search не нашёл открытых репозиториев с наборами данных о школах Шымкента",
+   "kind": "observed",
+   "value": 0,
+   "unit": "релевантных репозиториев",
+   "geography": "Шымкент",
+   "period": "2026-10-04",
+   "source_refs": [
+    {
+     "source_id": "A05-S010",
+     "locator": "результаты 5 запросов"
+    }
+   ],
+   "derivation": null,
+   "confidence": "low",
+   "caveats": [
+    "Отсутствие на GitHub ничего не говорит об официальных порталах."
+   ]
+  },
+  {
+   "fact_id": "A05-F009",
+   "statement": "По стороннему README, НОБД — информационная система с SOAP-интеграцией по документу «Правила интеграции», т.е. закрытая ИС, а не открытый набор",
+   "kind": "observed",
+   "value": null,
+   "unit": null,
+   "geography": "Казахстан",
+   "period": "2020",
+   "source_refs": [
+    {
+     "source_id": "A05-S009",
+     "locator": "README.md"
+    }
+   ],
+   "derivation": null,
+   "confidence": "low",
+   "caveats": [
+    "Сторонний неофициальный источник 2020 года; статус НОБД на 2026 не проверен."
+   ]
+  },
+  {
+   "fact_id": "A05-F010",
+   "statement": "Прямое расстояние завышает покрытие по сравнению с сетевым при наличии барьера: в территории «Г» при пороге 1500 м 93.9% против 64.2%",
+   "kind": "derived",
+   "value": {
+    "euclid": 0.9387,
+    "network": 0.6421
+   },
+   "unit": "доля спроса",
+   "geography": "synthetic",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A05-S012",
+     "locator": "H1_euclid_vs_network.1500.by_territory_*.Г"
+    }
+   ],
+   "derivation": "Coverage(T)=ΣD_i[d_min,i≤T]/ΣD_i; d по Дейкстре на графе 30×30, шаг 100 м, барьер с 2 переходами",
+   "confidence": "high",
+   "caveats": [
+    "Синтетические данные; демонстрирует свойство метода, не характеристику Шымкента."
+   ]
+  },
+  {
+   "fact_id": "A05-F011",
+   "statement": "Из одних данных получаются три разных «дефицита мест»: арифметический, в пределах dmax=1500 м и по правилу ближайшей школы",
+   "kind": "derived",
+   "value": {
+    "arithmetic": 769.2,
+    "lp_within_dmax": 1092.6,
+    "nearest_rule_overflow": 1717.2
+   },
+   "unit": "ед. синтетического спроса",
+   "geography": "synthetic",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A05-S012",
+     "locator": "H2_capacity"
+    }
+   ],
+   "derivation": "ΣD−ΣC; LP min Σd·x+M·Σu с x_ij=0 при d_ij>dmax; Σ_j max(0,L_j−C_j)",
+   "confidence": "high",
+   "caveats": [
+    "Синтетические данные; демонстрирует свойство метода, не характеристику Шымкента."
+   ]
+  },
+  {
+   "fact_id": "A05-F012",
+   "statement": "Без ограничения допустимой дальности транспортная задача даёт одинаковое число непокрытых мест для любого участка новой школы — модель не различает участки",
+   "kind": "derived",
+   "value": 0.0,
+   "unit": "непокрытых мест у всех 8 кандидатов (первый прогон, вместимость 1000)",
+   "geography": "synthetic",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A05-S012",
+     "locator": "первый прогон до добавления dmax (зафиксирован в отчёте, раздел 7)"
+    }
+   ],
+   "derivation": "При штрафе M больше любого расстояния непокрытые = max(0, ΣD−ΣC) независимо от места",
+   "confidence": "high",
+   "caveats": [
+    "Синтетические данные; демонстрирует свойство метода, не характеристику Шымкента.",
+    "Итоговый JSON содержит версию с dmax; первый прогон описан в отчёте."
+   ]
+  },
+  {
+   "fact_id": "A05-F013",
+   "statement": "С dmax=1500 м участки различаются: группа лучших C2/C3/C5 (92.6 непокрытых), C1 — 154.8, C6 — без улучшения (1092.6); ранговая корреляция географического покрытия и −непокрытых ρ=0.80",
+   "kind": "derived",
+   "value": {
+    "spearman": 0.8,
+    "unmet": {
+     "C1": 154.8,
+     "C2": 92.6,
+     "C3": 92.6,
+     "C4": 141.2,
+     "C5": 92.6,
+     "C6": 1092.6,
+     "C7": 903.4,
+     "C8": 903.4
+    }
+   },
+   "unit": "ед. синтетического спроса",
+   "geography": "synthetic",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A05-S012",
+     "locator": "H3_placement.candidates; spearman_geo_coverage_vs_minus_unmet"
+    }
+   ],
+   "derivation": "Перебор 8 участков, вместимость 1000, LP с dmax",
+   "confidence": "high",
+   "caveats": [
+    "Синтетические данные; демонстрирует свойство метода, не характеристику Шымкента."
+   ]
+  },
+  {
+   "fact_id": "A05-F014",
+   "statement": "При неопределённости спроса (200 сценариев) во всех сценариях несколько участков равны по непокрытым местам; C2, C3, C5 в группе лучших в 100% сценариев, C1 — 78%, C6 — 0%",
+   "kind": "derived",
+   "value": {
+    "C1": 0.78,
+    "C2": 1.0,
+    "C3": 1.0,
+    "C4": 0.77,
+    "C5": 1.0,
+    "C6": 0.0,
+    "C7": 0.305,
+    "C8": 0.315
+   },
+   "unit": "доля сценариев",
+   "geography": "synthetic",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A05-S012",
+     "locator": "H4_sensitivity"
+    }
+   ],
+   "derivation": "D_i·lognormal(0,0.25)·U(0.9,1.3); победитель по Σu, затем по среднему пути",
+   "confidence": "high",
+   "caveats": [
+    "Синтетические данные; демонстрирует свойство метода, не характеристику Шымкента.",
+    "Вывод: показывать группу равноценных вариантов, а не одного победителя."
+   ]
+  },
+  {
+   "fact_id": "A05-F015",
+   "statement": "2SFCA-справедливость между территориями: min/max средней доступности 0.287 без строительства и 0.530 при участке C3; взвешенный Gini 0.380 → 0.261",
+   "kind": "derived",
+   "value": {
+    "base_ratio": 0.287,
+    "C3_ratio": 0.5298
+   },
+   "unit": "безразмерно",
+   "geography": "synthetic",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A05-S012",
+     "locator": "H3_placement.baseline_no_build; candidates[C3]"
+    }
+   ],
+   "derivation": "R_j=C_j/Σ_{d≤1500}D; A_i=Σ_{d≤1500}R_j; среднее по территории, взвешенное спросом",
+   "confidence": "high",
+   "caveats": [
+    "Синтетические данные; демонстрирует свойство метода, не характеристику Шымкента."
+   ]
+  },
+  {
+   "fact_id": "A05-F016",
+   "statement": "Правило сопоставления (тип + номер + расстояние) на 10 синтетических записях: 5 авто, все верны; 4 на проверку, во всех есть верный кандидат; 0 ложных авто; школа №12 и ясли-сад №12 не склеены",
+   "kind": "derived",
+   "value": {
+    "auto": 5,
+    "auto_correct": 5,
+    "review": 4,
+    "false_auto": 0
+   },
+   "unit": "записей",
+   "geography": "synthetic",
+   "period": null,
+   "source_refs": [
+    {
+     "source_id": "A05-S012",
+     "locator": "H5_name_matching"
+    }
+   ],
+   "derivation": "Авто ≤300 м при одном кандидате; на проверку ≤1000 м или номер у одной стороны ≤100 м",
+   "confidence": "medium",
+   "caveats": [
+    "Синтетические данные; демонстрирует свойство метода, не характеристику Шымкента.",
+    "Выборка мала и построена автором; на реальных данных нужна ручная разметка 50+ пар."
+   ]
+  },
+  {
+   "fact_id": "A05-F017",
+   "statement": "Шымкент выделен в город республиканского значения в 2018 году; до этого данные по городу могли входить в Южно-Казахстанскую (затем Туркестанскую) область",
+   "kind": "hypothesis",
+   "value": null,
+   "unit": null,
+   "geography": "Шымкент / Туркестанская область",
+   "period": "2018",
+   "source_refs": [],
+   "derivation": null,
+   "confidence": "low",
+   "caveats": [
+    "Из памяти модели, источник не открыт. Проверить указ на adilet.zan.kz; важно для разрывов временных рядов."
+   ]
+  },
+  {
+   "fact_id": "A05-F018",
+   "statement": "Состав районов Шымкента менялся после 2018 года (в т.ч. создание нового района), что ломает районные ряды",
+   "kind": "hypothesis",
+   "value": null,
+   "unit": null,
+   "geography": "Шымкент",
+   "period": "2018–2026",
+   "source_refs": [],
+   "derivation": null,
+   "confidence": "low",
+   "caveats": [
+    "Из памяти модели; конкретные даты и названия не утверждаются до проверки."
+   ]
+  },
+  {
+   "fact_id": "A05-F019",
+   "statement": "Дефицит ученических мест и обучение в три смены — актуальная для Шымкента проблема",
+   "kind": "hypothesis",
+   "value": null,
+   "unit": null,
+   "geography": "Шымкент",
+   "period": "2024–2026",
+   "source_refs": [],
+   "derivation": null,
+   "confidence": "low",
+   "caveats": [
+    "Тема известна по РК в целом; для Шымкента в этом проходе нет открытого источника. Чисел не приводится."
+   ]
+  },
+  {
+   "fact_id": "A05-F020",
+   "statement": "Существует государственная программа строительства школ («Комфортная школа»), которая влияет на выбор участков и сроки",
+   "kind": "hypothesis",
+   "value": null,
+   "unit": null,
+   "geography": "Казахстан",
+   "period": "2023–2026",
+   "source_refs": [],
+   "derivation": null,
+   "confidence": "low",
+   "caveats": [
+    "Из памяти модели; объём и объекты в Шымкенте не проверены."
+   ]
+  }
+ ],
+ "datasets": [
+  {
+   "dataset_id": "A05-D001",
+   "title": "Реестр организаций образования г. Шымкент (школы, детсады)",
+   "publisher": "кандидат: управление образования г. Шымкент / data.egov.kz",
+   "source_ids": [
+    "A05-S007"
+   ],
+   "landing_url": "https://data.egov.kz/",
+   "download_or_api_url": null,
+   "access_status": "unavailable",
+   "tested_at": "2026-10-04",
+   "geography": "Шымкент",
+   "granularity": "объект",
+   "period": null,
+   "format": null,
+   "fields": [
+    "name_ru",
+    "name_kk",
+    "bin",
+    "address",
+    "ownership",
+    "kind",
+    "district",
+    "lon",
+    "lat"
+   ],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "Не открыт из среды (403). Существование набора не подтверждено.",
+   "next_retrieval_step": "Поиск на data.egov.kz: «школы Шымкент», «мектептер Шымкент», «дошкольные организации»; реальный API-запрос, 5 строк образца, лицензия."
+  },
+  {
+   "dataset_id": "A05-D002",
+   "title": "Динамические ряды БНС по Шымкенту: образование, население по возрастам, ввод жилья",
+   "publisher": "Бюро национальной статистики АСПиР РК",
+   "source_ids": [
+    "A05-S005"
+   ],
+   "landing_url": "https://stat.gov.kz/ru/region/shymkent/dynamic-tables/38/",
+   "download_or_api_url": null,
+   "access_status": "unavailable",
+   "tested_at": "2026-10-04",
+   "geography": "Шымкент",
+   "granularity": "город (район — неизвестно)",
+   "period": null,
+   "format": null,
+   "fields": [
+    "year",
+    "indicator",
+    "value",
+    "territory"
+   ],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "Не открыт из среды (403). Районная детализация неизвестна.",
+   "next_retrieval_step": "Открыть страницу, найти разделы «Образование», «Население», «Строительство»; записать URL файлов, период, гранулярность."
+  },
+  {
+   "dataset_id": "A05-D003",
+   "title": "Национальный сборник статистики системы образования РК (региональные таблицы)",
+   "publisher": "ИАЦ (кандидат)",
+   "source_ids": [
+    "A05-S008"
+   ],
+   "landing_url": "https://iac.kz/",
+   "download_or_api_url": null,
+   "access_status": "unavailable",
+   "tested_at": "2026-10-04",
+   "geography": "Казахстан, регионы (Шымкент — ожидается отдельной строкой)",
+   "granularity": "регион",
+   "period": null,
+   "format": null,
+   "fields": [
+    "region",
+    "schools",
+    "students",
+    "students_by_shift",
+    "preschool_orgs",
+    "coverage"
+   ],
+   "units": null,
+   "update_frequency": "ежегодно (ожидание)",
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "Не открыт; наличие таблиц по сменам — гипотеза.",
+   "next_retrieval_step": "Найти последний сборник, страницы с таблицами по Шымкенту, учебный год."
+  },
+  {
+   "dataset_id": "A05-D004",
+   "title": "OSM: amenity=school/kindergarten, пешеходный граф, жилые здания, границы",
+   "publisher": "OpenStreetMap contributors",
+   "source_ids": [
+    "A05-S011",
+    "A05-S003"
+   ],
+   "landing_url": "https://www.openstreetmap.org/",
+   "download_or_api_url": "https://download.geofabrik.de/asia/kazakhstan.html",
+   "access_status": "unavailable",
+   "tested_at": "2026-10-04",
+   "geography": "Шымкент",
+   "granularity": "объект / ребро графа",
+   "period": "снимок на дату выгрузки",
+   "format": "PBF / Overpass JSON",
+   "fields": [
+    "osm_id",
+    "tags.name",
+    "tags.name:kk",
+    "tags.name:ru",
+    "amenity",
+    "geometry"
+   ],
+   "units": "WGS84",
+   "update_frequency": "непрерывно",
+   "license": "ODbL (по GEO_SOURCES.md STUPITS)",
+   "auth_requirement": "нет",
+   "limitations": "Полнота по Шымкенту неизвестна; координаты не официальные.",
+   "next_retrieval_step": "Скачать PBF вне песочницы; Overpass-count по relation Шымкента; сверка с официальным списком."
+  },
+  {
+   "dataset_id": "A05-D005",
+   "title": "НОБД — Национальная образовательная база данных",
+   "publisher": "Министерство (ответственный орган — проверить)",
+   "source_ids": [
+    "A05-S009"
+   ],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": "restricted",
+   "tested_at": "2026-10-04",
+   "geography": "Казахстан",
+   "granularity": "объект / ученик",
+   "period": null,
+   "format": "SOAP (по стороннему README)",
+   "fields": [],
+   "units": null,
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": "интеграция по правилам; доступ для участников",
+   "limitations": "Закрытая ИС; содержит персональные данные; для проекта — только официальные агрегаты.",
+   "next_retrieval_step": "Выяснить, публикуются ли агрегаты по школам (мощность, контингент, смены) и через какой канал."
+  },
+  {
+   "dataset_id": "A05-D006",
+   "title": "Агрегированная статистика очереди в детские сады г. Шымкент",
+   "publisher": "кандидат: управление образования / egov-услуга",
+   "source_ids": [],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": "unavailable",
+   "tested_at": "2026-10-04",
+   "geography": "Шымкент",
+   "granularity": "город/район (ожидание)",
+   "period": null,
+   "format": null,
+   "fields": [
+    "age_group",
+    "queue_size",
+    "date",
+    "district"
+   ],
+   "units": "детей",
+   "update_frequency": null,
+   "license": null,
+   "auth_requirement": null,
+   "limitations": "Источник не найден; персональные записи очереди не собирать.",
+   "next_retrieval_step": "Поиск публичной агрегированной статистики очереди; если нет — указать как поле для официального запроса."
+  },
+  {
+   "dataset_id": "A05-D007",
+   "title": "STUPITS city_data.json (учебный датасет)",
+   "publisher": "BAITC-Hacks / STUPITS",
+   "source_ids": [
+    "A05-S002"
+   ],
+   "landing_url": "https://github.com/BAITC-Hacks/hack-d3b2c613-stupits",
+   "download_or_api_url": "https://codeload.github.com/BAITC-Hacks/hack-d3b2c613-stupits/zip/refs/heads/main",
+   "access_status": "sample_verified",
+   "tested_at": "2026-10-04",
+   "geography": "Астана (учебная)",
+   "granularity": "район",
+   "period": null,
+   "format": "JSON",
+   "fields": [
+    "indicators",
+    "districts",
+    "measures",
+    "synergies",
+    "incompatibilities"
+   ],
+   "units": "условные",
+   "update_frequency": "нет",
+   "license": null,
+   "auth_requirement": "нет",
+   "limitations": "Учебные значения; не являются наблюдениями и не переносятся на Шымкент.",
+   "next_retrieval_step": "Использовать только как контракт структуры мер/индикаторов."
+  },
+  {
+   "dataset_id": "A05-D008",
+   "title": "A05 синтетический набор для проверки метода",
+   "publisher": "A05",
+   "source_ids": [
+    "A05-S012"
+   ],
+   "landing_url": null,
+   "download_or_api_url": null,
+   "access_status": "sample_verified",
+   "tested_at": "2026-10-04",
+   "geography": "synthetic",
+   "granularity": "квартал 300×300 м",
+   "period": "n/a",
+   "format": "JSON",
+   "fields": [
+    "inputs",
+    "H1..H5"
+   ],
+   "units": "ед. синтетического спроса, м",
+   "update_frequency": null,
+   "license": "synthetic, для внутреннего использования",
+   "auth_requirement": null,
+   "limitations": "SYNTHETIC — не данные Шымкента.",
+   "next_retrieval_step": "Заменить на реальные OSM-точки и сеть во втором проходе."
+  }
+ ],
+ "opportunities": [
+  {
+   "idea_id": "A05-I01",
+   "title": "Уровень 1: карта географической доступности школ и детсадов по пешеходной сети со слоем статусов данных",
+   "problem": "Нет проверенной открытой связки реестр–координаты–вместимость (гипотеза П5); прямые расстояния завышают покрытие (F010)",
+   "evidence_fact_ids": [
+    "A05-F005",
+    "A05-F006",
+    "A05-F010"
+   ],
+   "primary_user": "специалист управления образования / градостроительного отдела; аналитик проекта",
+   "user_task": "увидеть кварталы, где ближайшая школа или детсад дальше порога X по сети, и барьеры",
+   "existing_solution": "коммерческие карты с поиском по POI; расчёт по прямой",
+   "proposed_addition": "сетевые изохроны, отношение «сеть/прямая», бейдж полноты данных, null вместо 0",
+   "required_dataset_ids": [
+    "A05-D004"
+   ],
+   "ai_role": "LLM объясняет ограничения и источники; расчёт без AI",
+   "non_ai_baseline": "буферы по прямой вокруг точек школ",
+   "success_metrics": [
+    "полнота OSM-точек против официального списка, %",
+    "доля жилых зданий вне X м по сети",
+    "время ответа на вопрос «где нет школы рядом» на 3 кейсах"
+   ],
+   "feasibility_10_days": "высокая при наличии OSM-выгрузки вне песочницы",
+   "blockers": [
+    "полнота OSM в Шымкенте неизвестна",
+    "нормативный радиус не проверен"
+   ],
+   "transfer_to_astana": "прямой: тот же код, другие границы; для Астаны уже есть границы районов в STUPITS",
+   "next_action": "Overpass-count и сверка с любым официальным списком на 30 школах"
+  },
+  {
+   "idea_id": "A05-I02",
+   "title": "Уровень 2: сценарный стол размещения школы и изменения зон обслуживания",
+   "problem": "Неочевидно, где новый объект сильнее всего снижает непокрытый спрос в пределах допустимой дальности (гипотезы П1, П2)",
+   "evidence_fact_ids": [
+    "A05-F011",
+    "A05-F012",
+    "A05-F013",
+    "A05-F014",
+    "A05-F015"
+   ],
+   "primary_user": "отдел сети организаций образования управления образования",
+   "user_task": "сравнить 3–8 допустимых участков и вариант перезакрепления кварталов",
+   "existing_solution": "неизвестно (вероятно, экспертная оценка и таблицы)",
+   "proposed_addition": "LP с dmax, группа равноценных вариантов, 2SFCA-справедливость, три определения дефицита",
+   "required_dataset_ids": [
+    "A05-D001",
+    "A05-D002",
+    "A05-D003",
+    "A05-D004",
+    "A05-D005"
+   ],
+   "ai_role": "объяснение сравнения со ссылками на source_id; без генерации численности и мощностей",
+   "non_ai_baseline": "правило ближайшей школы; участок у центроида худшей территории",
+   "success_metrics": [
+    "совпадение ранжирования с экспертом (слепая проверка)",
+    "время подготовки сравнения",
+    "доля школ с подтверждёнными мощностью/контингентом/сменами"
+   ],
+   "feasibility_10_days": "низкая: зависит от получения мощности и контингента по школам",
+   "blockers": [
+    "мощность и контингент по школам, вероятно, не публикуются открыто",
+    "кандидатные участки — зависимость от роли «земельные отношения»"
+   ],
+   "transfer_to_astana": "да, при тех же полях данных",
+   "next_action": "Проверить публикацию мощности/контингента для 5 школ; при отсутствии — решение владельца об официальном запросе"
+  },
+  {
+   "idea_id": "A05-I03",
+   "title": "Уровень 3 (исследовательская): прогноз набора первоклассников по кварталам на 3–6 лет с бэктестом",
+   "problem": "Рост спроса в новых массивах может опережать строительство (гипотеза П2)",
+   "evidence_fact_ids": [
+    "A05-F019"
+   ],
+   "primary_user": "управление образования, градостроители",
+   "user_task": "заранее увидеть, где через 3–6 лет не хватит мест",
+   "existing_solution": "неизвестно",
+   "proposed_addition": "модель «ввод жилья + рождаемость + когорты» с ретро-проверкой",
+   "required_dataset_ids": [
+    "A05-D002",
+    "A05-D003"
+   ],
+   "ai_role": "не обязателен; статистическая модель",
+   "non_ai_baseline": "«как в прошлом году» и линейный тренд",
+   "success_metrics": [
+    "MAE прогноза против наивного baseline на ретро-данных"
+   ],
+   "feasibility_10_days": "очень низкая; это исследование на 1–3+ месяца",
+   "blockers": [
+    "ряды по районам с учётом смены границ",
+    "контингент 1-х классов за 5+ лет"
+   ],
+   "transfer_to_astana": "да, Астана — сильный кейс роста",
+   "next_action": "Проверить, есть ли у БНС ряды ввода жилья и рождений по районам Шымкента"
+  }
+ ],
+ "open_questions": [
+  {
+   "question": "Публикуются ли открыто проектная мощность и фактический контингент по каждой школе Шымкента?",
+   "why_important": "Без них невозможен уровень 2 и любые утверждения о переполненности",
+   "how_to_check": "data.egov.kz, сайт управления образования, паспорта объектов; при отсутствии — официальный запрос (решение владельца)"
+  },
+  {
+   "question": "Есть ли в открытой статистике (ИАЦ/БНС) число обучающихся по сменам для Шымкента и за какие годы?",
+   "why_important": "Подтверждение или опровержение гипотезы П1",
+   "how_to_check": "национальный сборник ИАЦ, dynamic-tables БНС; записать таблицу и учебный год"
+  },
+  {
+   "question": "Насколько полны OSM-точки школ и детсадов Шымкента по сравнению с официальным списком?",
+   "why_important": "От этого зависит уровень 1",
+   "how_to_check": "Overpass-count по relation города; сопоставление по номеру и типу; доля auto/review/none"
+  },
+  {
+   "question": "Какой нормативный радиус обслуживания школ и детсадов действует в РК и в какой редакции?",
+   "why_important": "Иначе порог X — только параметр",
+   "how_to_check": "adilet.zan.kz: действующий СП РК по планировке и застройке населённых пунктов"
+  },
+  {
+   "question": "Как закрепляются территории обслуживания школ и публикуются ли карты закрепления?",
+   "why_important": "Сценарий «изменение зоны» должен соответствовать правилам приёма",
+   "how_to_check": "adilet: типовые правила приёма; сайт управления образования Шымкента"
+  },
+  {
+   "question": "Какие районы и границы действуют на 2026 год и когда они менялись?",
+   "why_important": "Разрывы рядов, ошибочное приписывание показателей",
+   "how_to_check": "указы/решения на adilet; сравнить с OSM-relation"
+  },
+  {
+   "question": "Публикуется ли агрегированная статистика очереди в детские сады Шымкента?",
+   "why_important": "Гипотеза П3",
+   "how_to_check": "поиск по egov и сайту управления образования; только агрегаты"
+  },
+  {
+   "question": "Есть ли открытые данные о ДТП с участием детей рядом со школами?",
+   "why_important": "Гипотеза П4 и связь с мерой M11",
+   "how_to_check": "зависимость от роли «безопасность»"
+  }
+ ],
+ "experiments": [
+  {
+   "experiment_id": "A05-E001",
+   "purpose": "Проверить методические предположения H1–H5 на синтетике",
+   "inputs": "генерируются в A05_experiment.py (seed 20261004)",
+   "versions": {
+    "kind": "synthetic",
+    "seed": 20261004,
+    "python": "3.12.3",
+    "numpy": "2.4.4",
+    "scipy": "1.17.1",
+    "networkx": "3.6.1",
+    "platform": "Linux-6.18.44-fc-v64-x86_64-with-glibc2.39",
+    "note": "Все входы синтетические; выводы — только о методе.",
+    "runtime_s": 8.71
+   },
+   "command": "python3 A05_experiment.py",
+   "outputs": "A05_synthetic_results.json",
+   "sha256": {
+    "A05_experiment.py": "7214a0b300f5c8b3a094ac2792ba7679c8c705feb03b853f58d06a016b69b447",
+    "A05_synthetic_results.json": "0bd3548eeef0ac71f354c708f1cb3ef891acecb9d4d9e3dde07973e24335fe2c"
+   },
+   "kind": "synthetic",
+   "status": "executed",
+   "history": "Первый прогон без dmax: все кандидаты дали 0 непокрытых, частота «победителя» C1=44% оказалась артефактом ничьих. Исправлено: dmax=1500 м, явный учёт ничьих, частота попадания в группу лучших."
+  },
+  {
+   "experiment_id": "A05-E002",
+   "purpose": "Проверить доступ к источникам",
+   "command": "curl -s -o /dev/null -w '%{http_code}' <url>",
+   "outputs": "A05_run_log.txt",
+   "kind": "observed",
+   "status": "executed"
+  }
+ ],
+ "deliverables": {
+  "school_card_contract": {
+   "kind": "synthetic",
+   "example": {
+    "school_id": "shym-edu-demo-045",
+    "kind": "school",
+    "names": {
+     "official_ru": null,
+     "official_kk": null,
+     "osm": "Школа №45"
+    },
+    "location": {
+     "lon": null,
+     "lat": null,
+     "source": "osm",
+     "match_status": "auto",
+     "match_distance_m": 89
+    },
+    "district": {
+     "name": null,
+     "assigned_by": "point_in_polygon",
+     "boundary_source": null,
+     "boundary_date": null
+    },
+    "design_capacity": {
+     "value": null,
+     "unit": "ученических мест",
+     "source_id": null,
+     "period": null,
+     "status": "unknown"
+    },
+    "enrolled": {
+     "value": null,
+     "period": null,
+     "status": "unknown"
+    },
+    "shifts": {
+     "value": null,
+     "status": "unknown"
+    },
+    "utilization": {
+     "value": null,
+     "formula": "enrolled/(design_capacity*shifts_allowed)",
+     "status": "not_computable"
+    },
+    "access": {
+     "residential_buildings_within_1000m_network": null,
+     "status": "derived_pending_osm"
+    }
+   }
+  },
+  "model": {
+   "lp": "min Σ d_ij x_ij + M Σ u_i; Σ_j x_ij + u_i = D_i; Σ_i x_ij ≤ C_j; x_ij = 0 if d_ij > dmax; x,u ≥ 0",
+   "baselines": [
+    "nearest school (no capacity)",
+    "candidate nearest to demand centroid of worst territory",
+    "max geographic coverage(T)"
+   ],
+   "metrics": [
+    "Coverage(T) network",
+    "mean/p90 network distance",
+    "Σu within dmax",
+    "utilization with shifts",
+    "2SFCA A_i",
+    "territory min/max",
+    "weighted Gini",
+    "data completeness"
+   ]
+  },
+  "interpretation_errors": [
+   "мощность против контингента при сменности",
+   "один «дефицит» вместо трёх определений",
+   "прямое расстояние вместо сетевого",
+   "0 вместо null",
+   "смешение географий/периодов (город, область, старые границы)"
+  ]
+ }
+}
