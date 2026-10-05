@@ -72,50 +72,131 @@ class Slice:
         return out
 
     def fingerprint(self, city, category):
-        """Отпечаток K09 (не обязательно совпадает со схемой BUILD): кандидаты среза + параметры формулы."""
-        payload = {"city": city, "category": category, "bbox": self.bbox(city),
+        """Отпечаток K09 (не обязательно совпадает со схемой BUILD): хэши data.js/evidence.js, город, категория,
+        кандидаты среза и правила расчёта. Любое изменение данных/QA или правил меняет отпечаток."""
+        payload = {"data_js_sha256": self.data_sha256, "evidence_js_sha256": self.evid_sha256,
+                   "city": city, "category": category, "bbox": self.bbox(city),
                    "records": [[p["id"], p["lon"], p["lat"]] for p in self.candidates(city, category)],
-                   "formula": "haversine/R=6371008.8/clamp[0,1]/no-rounding"}
+                   "rules": "haversine/R=6371008.8/clamp[0,1]/no-rounding; ties: smallest id; bbox closed; group field"}
         return "k09ref-sha256:" + hashlib.sha256(json.dumps(payload, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
 
 
-ID_RE = re.compile(r"^[A-Za-z0-9_.:-]{1,64}$")
+ID_RE = re.compile(r"[\w.:-]{1,64}")          # fullmatch; \w включает кириллицу; длина ≤ 64
+MAX_IMPORT_BYTES = 256 * 1024
+SCEN_KEYS = {"schema_version", "city_id", "source_snapshot", "category", "control_points", "proposed_object"}
+EXPORT_EXTRA_KEYS = {"results", "rows", "comparison", "explanation"}   # выводимые значения при импорте игнорируются и пересчитываются
+CP_KEYS = {"id", "lon", "lat"}
+PO_KEYS = {"id", "lon", "lat", "category", "kind"}
 
 
-def validate(sl: Slice, sc: dict):
-    """Строгая проверка контракта city-whatif-v1 (минимум из FEATURE_SPEC). Возвращает список ошибок."""
+class ImportRejected(ValueError):
+    pass
+
+
+def _no_dup_keys(pairs):
+    keys = [k for k, _ in pairs]
+    if len(keys) != len(set(keys)):
+        raise ImportRejected("duplicate_json_key")
+    return dict(pairs)
+
+
+def _reject_constant(name):
+    raise ImportRejected(f"non_finite_literal:{name}")
+
+
+def _finite_float(text):
+    v = float(text)
+    if not math.isfinite(v):
+        raise ImportRejected("non_finite_number")
+    return v
+
+
+def parse_import(raw):
+    """Слой импорта: ≤ 256 KiB, строгий JSON без NaN/Infinity/1e999 и без дублирующихся ключей, корень — объект."""
+    b = raw.encode("utf-8") if isinstance(raw, str) else raw
+    if len(b) > MAX_IMPORT_BYTES:
+        raise ImportRejected("import_too_large")
+    try:
+        obj = json.loads(b.decode("utf-8"), parse_constant=_reject_constant, parse_float=_finite_float,
+                         object_pairs_hook=_no_dup_keys)
+    except ImportRejected:
+        raise
+    except (ValueError, UnicodeDecodeError) as e:
+        raise ImportRejected("invalid_json") from e
+    if not isinstance(obj, dict):
+        raise ImportRejected("root_not_object")
+    return obj
+
+
+def _num(v):
+    return isinstance(v, (int, float)) and not isinstance(v, bool) and (not isinstance(v, int) or abs(v) < 1e300) \
+        and math.isfinite(float(v))
+
+
+def validate(sl: Slice, sc, expected_snapshot="k09"):
+    """Строгая проверка city-whatif-v1. expected_snapshot: "k09" — сверять с отпечатком K09; строка — с ней; None — не сверять.
+    Возвращает список кодов ошибок (пустой = допустимо). Не бросает исключений на неверных типах."""
+    if not isinstance(sc, dict):
+        return ["scenario_not_object"]
     errs = []
+    unknown = set(sc) - SCEN_KEYS - EXPORT_EXTRA_KEYS
+    if unknown: errs.append("unknown_fields:" + ",".join(sorted(map(str, unknown))))
+    missing = SCEN_KEYS - set(sc)
+    if missing: errs.append("missing_fields:" + ",".join(sorted(missing)))
     if sc.get("schema_version") != "city-whatif-v1": errs.append("unknown_schema_version")
     city, cat = sc.get("city_id"), sc.get("category")
     if city not in CITIES: errs.append("unknown_city"); return errs
-    if cat not in CATEGORIES: errs.append("unknown_category")
+    if cat not in CATEGORIES: errs.append("unknown_category"); return errs
+    if expected_snapshot is not None and "source_snapshot" in sc:
+        want = sl.fingerprint(city, cat) if expected_snapshot == "k09" else expected_snapshot
+        if sc.get("source_snapshot") != want: errs.append("foreign_or_stale_snapshot")
     cps = sc.get("control_points")
-    if not isinstance(cps, list) or not (1 <= len(cps) <= 10): errs.append("control_points_count_not_1_10")
     ids = []
-    for cp in cps or []:
+    if not isinstance(cps, list) or not (1 <= len(cps) <= 10):
+        errs.append("control_points_count_not_1_10")
+        cps = cps if isinstance(cps, list) else []
+    for k, cp in enumerate(cps):
+        if not isinstance(cp, dict): errs.append(f"control_point_not_object:{k}"); continue
+        if set(cp) != CP_KEYS: errs.append(f"control_point_fields:{k}")
         ids.append(cp.get("id"))
         lon, lat = cp.get("lon"), cp.get("lat")
-        if not (isinstance(lon, (int, float)) and isinstance(lat, (int, float)) and math.isfinite(lon) and math.isfinite(lat)):
-            errs.append(f"non_finite_coord:{cp.get('id')}"); continue
-        if not sl.in_bbox(city, lon, lat): errs.append(f"control_point_outside_bbox:{cp.get('id')}")
+        if not (_num(lon) and _num(lat)): errs.append(f"non_finite_or_non_numeric_coord:{k}"); continue
+        if not sl.in_bbox(city, lon, lat): errs.append(f"control_point_outside_bbox:{k}")
     po = sc.get("proposed_object")
-    if isinstance(po, list): errs.append("more_than_one_proposed")
+    if isinstance(po, list):
+        errs.append("more_than_one_proposed")
     elif po is not None:
-        ids.append(po.get("id"))
-        if po.get("kind") != "hypothetical": errs.append("proposed_kind_not_hypothetical")
-        if po.get("category") != cat: errs.append("proposed_category_mismatch")
-        lon, lat = po.get("lon"), po.get("lat")
-        if not (isinstance(lon, (int, float)) and isinstance(lat, (int, float)) and math.isfinite(lon) and math.isfinite(lat)):
-            errs.append("proposed_non_finite_coord")
-        elif not sl.in_bbox(city, lon, lat): errs.append("proposed_outside_bbox")
-    if any(not isinstance(i, str) or not ID_RE.match(i) for i in ids): errs.append("bad_id")
-    if len(ids) != len(set(ids)): errs.append("duplicate_id")
+        if not isinstance(po, dict):
+            errs.append("proposed_not_object")
+        else:
+            if set(po) != PO_KEYS: errs.append("proposed_fields")
+            ids.append(po.get("id"))
+            if po.get("kind") != "hypothetical": errs.append("proposed_kind_not_hypothetical")
+            if po.get("category") != cat: errs.append("proposed_category_mismatch")
+            lon, lat = po.get("lon"), po.get("lat")
+            if not (_num(lon) and _num(lat)): errs.append("proposed_non_finite_or_non_numeric_coord")
+            elif not sl.in_bbox(city, lon, lat): errs.append("proposed_outside_bbox")
+            if isinstance(po.get("id"), str) and po["id"] in {p["id"] for p in sl.data["cities"][city]["places"]}:
+                errs.append("proposed_id_collides_with_record")
+    if any(not isinstance(i, str) or not ID_RE.fullmatch(i) for i in ids): errs.append("bad_id")
+    elif len(ids) != len(set(ids)): errs.append("duplicate_id")
     return errs
 
 
-def compute(sl: Slice, sc: dict):
+def _source(sl, city, pid):
+    if pid is None: return None
+    p = next(x for x in sl.data["cities"][city]["places"] if x["id"] == pid)
+    return {"id": pid, "name": p.get("name"), "raw_category": p.get("category"), "confidence": p.get("confidence"),
+            "sources": [{"dataset": s.get("dataset"), "record_id": s.get("record_id")} for s in p.get("sources") or []],
+            "qa": sl.qa_codes(city, pid)}
+
+
+STRICT_RAW = {"school": {"elementary_school", "middle_school", "high_school"}, "outpatient_clinic": {"outpatient_care_facility"}}
+
+
+def compute(sl: Slice, sc, expected_snapshot="k09"):
     """before/after/delta по FEATURE_SPEC; ничьи — стабильно по ID; QA-записи участвуют и помечаются."""
-    errs = validate(sl, sc)
+    errs = validate(sl, sc, expected_snapshot)
     if errs:
         return {"status": "rejected", "errors": errs}
     city, cat, po = sc["city_id"], sc["category"], sc.get("proposed_object")
@@ -147,6 +228,11 @@ def compute(sl: Slice, sc: dict):
                      "nearest_before_id": nb, "nearest_before_qa": sl.qa_codes(city, nb) if nb else [],
                      "ties_before_ids": ties_before if len(ties_before) > 1 else [],
                      "nearest_after_id": na, "nearest_after_is_hypothetical": bool(po) and na == po["id"],
+                     "nearest_before_source": _source(sl, city, nb),
+                     "nearest_after_source": None if (po and na == po["id"]) else _source(sl, city, na),
+                     "ties_before_qa": {pid: sl.qa_codes(city, pid) for pid in ties_before} if len(ties_before) > 1 else {},
+                     "diagnostic_before_strict_raw_category_m": min((haversine_m(lon, lat, p["lon"], p["lat"]) for p in cands
+                                                                     if p.get("category") in STRICT_RAW[cat]), default=None),
                      "distance_to_slice_edge_m": edge,
                      "edge_confound": (before is None) or (edge < before),
                      "label_if_no_records": "В срезе нет исходных записей; улучшение не вычисляется" if before is None else None})

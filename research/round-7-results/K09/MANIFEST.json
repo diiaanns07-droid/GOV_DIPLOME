@@ -54,5 +54,9 @@
    "sha256": "483a7dea1792d18361496f587e6a345e8dfc7585c8595285424c2cd49edd6467"
   }
  ],
- "t1_frozen": "research/round-3-results/K09 не изменялся (B2 sha256 dbd53d44…)"
+ "t1_frozen": "research/round-3-results/K09 не изменялся (B2 sha256 dbd53d44…)",
+ "outputs": {
+  "tasks/whatif_tasks.json_sha256": "e0198cad95ebb31c491e48e0564c02b1203e0f523c69e8afceca1b0ac37a2f81",
+  "reference_version": "whatif_ref.py v1.1"
+ }
 }

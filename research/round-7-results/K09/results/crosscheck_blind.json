@@ -1,0 +1,22 @@
+{
+ "blind_implementation": "независимый агент (workflow wf_1ffcb6f5-2c9): входы FEATURE_SPEC + data.js/evidence.js + сценарии без ожидаемых значений; аудит доступа: файлы K09 не открывались",
+ "compared_against": "tasks/whatif_tasks.json (reference v1.1)",
+ "cases_compared": 17,
+ "max_abs_diff_m": 0.0,
+ "mismatches": [],
+ "note": "слепая реализация строилась на 17 исходных случаях (до добавления 8 новых случаев W8); новые случаи W8 ею не проверялись",
+ "blind_spec_ambiguities": [
+  "The spec does not say how to finish the haversine calculation. I used 2*R*asin(sqrt(h)) with math.radians, clamping h to [0,1]. The equivalent atan2 form with deg*pi/180 differs by at most 4.5e-13 m in every ok case. So an unrounded comparison against another implementation needs a tolerance of about 1e-9 m, not bit-for-bit equality.",
+  "'Stable choice by ID' does not name the ordering. I used plain code-point string order and picked the smallest ID. Ties only happen where records have identical coordinates: W2 cp1 (baeda67d < bcd265d0, distance 0), W4 cp1 (four clinics at 69.5958,42.3167, so 059c59dd wins), and W4 cp2 (50802484 / 622b4786 / e1b19ead, so 50802484 wins). The IDs of another implementation can only differ in these three rows.",
+  "The spec does not cover a tie where the proposed object is exactly as far as the nearest existing record. after=min(before,d_prop) is the same either way. For nearest_after_id I take the smallest ID among the tied records. Another reading keeps the existing record whenever there is no strict improvement. No case contains such a tie, and every UUID here sorts before 'proj1', so both readings give the same result.",
+  "With no project, or when the project is farther away, I set after equal to before (the same float), so delta=0.0 exactly and nearest_after_id equals nearest_before_id. The case of no candidates (before=null, after=d_prop, delta=null) is implemented but no case reaches it.",
+  "Bbox containment is treated as inclusive on all edges, both for selecting candidates and for rejecting points. No point lies on an edge. All school and outpatient_clinic places in data.js are inside their city bbox, so the bbox filter removes nothing: candidate counts are Shymkent 15 schools / 16 clinics and Astana 8 schools / 16 clinics.",
+  "Candidates are chosen by the place's 'group' field, not its Overture 'category'. So the 'outpatient_clinic' group includes dental_clinic, diagnostics_imaging_or_lab_service, behavioral_or_mental_health_clinic and complementary_and_alternative_medicine, and the 'school' group includes place_of_learning. These are data-semantics caveats that do not change the arithmetic. Duplicate-coordinate QA records are kept, as the spec requires.",
+  "The spec does not give the source_snapshot fingerprint algorithm (the values look like 'k09ref-sha256:<64 hex>'). I tried simple sha256 guesses over the canonical candidate JSON, with and without city/category/bbox/R, and the file sha256s; none reproduced the values. My resolution is a format check plus a consistency registry built from the 17 cases: one snapshot per (city, category), and a snapshot that belongs to another slice is rejected. This cannot prove that a snapshot matches the current data, and no case is rejected because of it.",
+  "The spec says IDs are 'length-limited' but gives no number. I assumed at most 64 characters and the token charset [A-Za-z0-9_.:-]. ID uniqueness is checked across the control points and the proposed object together.",
+  "For 'strict validation' I reject unknown extra fields at top level, in control points and in the proposed object. This is an assumption; no case contains extra fields.",
+  "A proposed_object given as an array is rejected as more than one project. An array of length 1 would also be rejected, because the contract says null or an object.",
+  "I collect all rejection reasons instead of stopping at the first. For an unknown city the bbox check is skipped because there is no bbox. For an unknown schema_version the remaining fields are still validated; in that case only the version check fails.",
+  "The original raw import text of each case was not available, so the strict JSON checks (256 KiB limit, NaN/Infinity/1e999 overflow, duplicate keys) run on the re-serialized scenario. None of the 17 cases contains such values."
+ ]
+}

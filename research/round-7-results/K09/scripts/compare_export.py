@@ -27,7 +27,7 @@ def pick(row, names):
 
 def compare(sl, export, tol):
     scen = {k: export.get(k) for k in ("schema_version", "city_id", "source_snapshot", "category", "control_points", "proposed_object")}
-    ref = compute(sl, scen)
+    ref = compute(sl, scen, expected_snapshot=None)   # отпечаток сборки не обязан совпадать с K09; данные — закреплённый срез K09
     if ref["status"] != "ok":
         return {"verdict": "REJECT_EXPECTED", "reference": ref}
     rows = export.get("results") or export.get("rows") or export.get("comparison")

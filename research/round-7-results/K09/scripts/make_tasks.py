@@ -7,7 +7,7 @@
 import json, math, sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
-from whatif_ref import BASE_SHA, Slice, compute, haversine_m
+from whatif_ref import BASE_SHA, ImportRejected, Slice, compute, haversine_m, parse_import, validate
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[3]
@@ -94,7 +94,8 @@ s = scen(city, cat, [cp(1, *p), cp(2, *at(city, 0.8, 0.2))], p)
 r = compute(sl, s)
 assert r["rows"][0]["after_m"] == 0.0 and r["rows"][0]["delta_m"] == r["rows"][0]["before_m"] and r["rows"][0]["nearest_after_is_hypothetical"]
 tasks.append({"id": "K09-W5", "title": "Проект в точке контроля: после = 0, разница = до",
-              "steps": [s], "confounds": ["0 м до гипотетического объекта не означает реального учреждения"],
+              "steps": [s], "confounds": ["0 м до гипотетического объекта не означает реального учреждения",
+                                          "в Астане из 16 записей группы outpatient_clinic лишь 3 имеют сырую категорию outpatient_care_facility (7 — dental_clinic)"],
               "ui_must_show": ["после = 0 м, источник — проект (hypothetical)", "вторая точка не изменилась или изменилась по формуле"]})
 
 # W6 — переместить и удалить проект (Астана, школа): три состояния
@@ -133,17 +134,48 @@ bad = {
                                                                          {"id": "p2", "lon": at(city, 0.6, 0.6)[0], "lat": at(city, 0.6, 0.6)[1], "category": cat, "kind": "hypothetical"}]},
  "unknown_city": {**scen(city, cat, good_cp), "city_id": "almaty"},
  "unknown_schema_version": {**scen(city, cat, good_cp), "schema_version": "city-whatif-v0"},
+ "foreign_snapshot": {**scen(city, cat, good_cp), "source_snapshot": sl.fingerprint("astana", cat)},
+ "missing_source_snapshot": {k: v for k, v in scen(city, cat, good_cp).items() if k != "source_snapshot"},
+ "missing_proposed_object_key": {k: v for k, v in scen(city, cat, good_cp).items() if k != "proposed_object"},
+ "unknown_field_with_url": {**scen(city, cat, good_cp), "evil": "https://evil.example/x.js"},
+ "bool_coordinate": scen(city, cat, [{"id": "cp1", "lon": True, "lat": at(city, 0.5, 0.5)[1]}]),
+ "id_trailing_newline": scen(city, cat, [{"id": "cp1\n", "lon": at(city, 0.5, 0.5)[0], "lat": at(city, 0.5, 0.5)[1]}]),
+ "proposed_id_collides_with_record": {**scen(city, cat, good_cp, at(city, 0.5, 0.6)),
+                                      "proposed_object": {"id": rec(city, "01961e84")["id"], "lon": at(city, 0.5, 0.6)[0], "lat": at(city, 0.5, 0.6)[1], "category": cat, "kind": "hypothetical"}},
+ "scenario_not_object": [1, 2, 3],
 }
 w8 = {k: {"scenario": v, "expected": compute(sl, v)} for k, v in bad.items()}
 assert all(x["expected"]["status"] == "rejected" for x in w8.values())
-raw_json_cases = {"nan_literal": '{"lon": NaN}', "infinity_literal": '{"lon": Infinity}', "overflow_1e999": '{"lon": 1e999}',
-                  "oversize": "> 262144 байт (256 KiB) — генерировать при тесте"}
+import json as _json
+_base = _json.dumps(scen(city, cat, good_cp), ensure_ascii=False)
+_lon = _json.dumps(good_cp[0]["lon"])
+assert _base.count(_lon) == 1
+raw_texts = {"nan_literal": _base.replace(_lon, "NaN"),
+             "infinity_literal": _base.replace(_lon, "Infinity"),
+             "overflow_1e999": _base.replace(_lon, "1e999"),
+             "duplicate_city_key": _base.replace('"city_id": "shymkent"', '"city_id": "shymkent", "city_id": "astana"'),
+             "root_is_list": "[" + _base + "]",
+             "oversize": _base[:-1] + ', "pad": "' + "x" * (256 * 1024) + '"}',
+             "valid_roundtrip": _base}
+raw_json_cases = {}
+for k, txt in raw_texts.items():
+    try:
+        obj = parse_import(txt)
+        errs = validate(sl, obj)
+        raw_json_cases[k] = {"bytes": len(txt.encode()), "expected": "accepted" if not errs else "rejected", "errors": errs}
+    except ImportRejected as e:
+        raw_json_cases[k] = {"bytes": len(txt.encode()), "expected": "rejected", "errors": [str(e)]}
+    if k != "oversize":
+        raw_json_cases[k]["text"] = txt
+assert all(v["expected"] == "rejected" for k, v in raw_json_cases.items() if k != "valid_roundtrip")
+assert raw_json_cases["valid_roundtrip"]["expected"] == "accepted"
 tasks.append({"id": "K09-W8", "title": "Недопустимые сценарии отклоняются до расчёта",
               "steps": [], "invalid_cases": w8, "raw_json_import_cases": raw_json_cases,
               "synthetic_unit_case_no_records": {"note": "synthetic: категория без записей в срезе (в реальных данных обе категории есть в обоих городах)",
                                                  "expected": {"before_m": None, "after_m": "distance_to_proposed", "delta_m": None,
                                                               "label": "В срезе нет исходных записей; улучшение не вычисляется"}},
-              "confounds": ["строгий JSON-парсер Python принимает NaN/Infinity по умолчанию — импорт должен отклонять явно"],
+              "confounds": ["json.loads в Python по умолчанию принимает NaN/Infinity и дубли ключей — импорт должен отклонять явно",
+                            "ID проекта, совпадающий с ID записи Overture, делает источник «после» неоднозначным"],
               "ui_must_show": ["понятное сообщение об отклонении", "активный сценарий не меняется частично"]})
 
 for t in tasks:
