@@ -1,0 +1,1132 @@
+{
+  "task": "K01 round-3: контроль сохранности git-объектов прошлого раунда",
+  "checked_at_utc": "2026-10-05T06:14:41Z",
+  "snapshots_source": "origin/codex/research-import-2026-10-05:research/round-3/snapshots.json",
+  "snapshots_source_commit": "6602bb86f152d24edcb66f8b45122844323116bc",
+  "snapshots_base": "b87e5af6eeb6a5bdc33037a9f16d4e3377166ee5",
+  "scope": "Только наличие коммитов и файлов; содержание и научные выводы не проверялись.",
+  "summary": {
+    "ok": 13
+  },
+  "entries": [
+    {
+      "slot": "K01",
+      "role": "primary",
+      "branch": "claude/loving-thompson-nmajdo",
+      "sha": "8e37ca849f6fd586e61d91de9b76973b683f7384",
+      "folder": "research/next-round/K01/",
+      "fetch": "ok",
+      "branch_tip": "8e37ca849f6fd586e61d91de9b76973b683f7384",
+      "commit_present": true,
+      "sha_in_branch_history": true,
+      "tip_equals_sha": true,
+      "files": [
+        {
+          "path": "research/next-round/K01/START_CHECK.txt",
+          "blob": "2bb7e36f2f750970fbbd99d6a2dfd816860363a5",
+          "size": 5190,
+          "sha256": "316de0e8ae7f0becd755ef367ead65da0cc84c149a8ce2fe72deaa5bac9c46c9"
+        },
+        {
+          "path": "research/next-round/K01/STATUS.md",
+          "blob": "12ca7b0f87fd89663e932aef2c6a04df24d4dbdf",
+          "size": 2341,
+          "sha256": "1a48fe4334b9bfd38657dac991aae8f354a9298ff7e1023113926aba36e19320"
+        }
+      ],
+      "status": "ok"
+    },
+    {
+      "slot": "K02",
+      "role": "primary",
+      "branch": "claude/clever-mccarthy-pywscu",
+      "sha": "c534321b45a6ceac5c9a71b378e05f8165ace2c4",
+      "folder": "research/next-round/K02/",
+      "fetch": "ok",
+      "branch_tip": "c534321b45a6ceac5c9a71b378e05f8165ace2c4",
+      "commit_present": true,
+      "sha_in_branch_history": true,
+      "tip_equals_sha": true,
+      "files": [
+        {
+          "path": "research/next-round/K02/REPORT.md",
+          "blob": "8ccaf771a00f30edd7b8729abb8a6a8f595aa270",
+          "size": 9550,
+          "sha256": "17d3cd45cc662d126aeaab361e850b7620af645fad3a4c7503ddfe4183963c50"
+        },
+        {
+          "path": "research/next-round/K02/cases.json",
+          "blob": "89a65f7ecec5a5015dc8e30edca3964a82e183ba",
+          "size": 5744,
+          "sha256": "321354f1041423c1358520531649e1c87ca2c905fb87d4a6bb8692a543a336a8"
+        },
+        {
+          "path": "research/next-round/K02/kk_numeral_guard.py",
+          "blob": "162f975a7dd01ff50272e3432ca809de3b1f7be6",
+          "size": 6627,
+          "sha256": "56e5c21329033ad1647289e4a2e462164c57c065c266bff94d5da4af0fa4706d"
+        },
+        {
+          "path": "research/next-round/K02/limits_probe.py",
+          "blob": "09a402857434532bceb6bfb446c5a5b59be4f32f",
+          "size": 2308,
+          "sha256": "31282c87136cd10ca5c0916dff58b4863efeaaed5218996615e45f78596fdb60"
+        },
+        {
+          "path": "research/next-round/K02/limits_probe_result.json",
+          "blob": "bb45fc954d9ec11db53eb259774e3a4f0736e359",
+          "size": 2043,
+          "sha256": "cdd324c7db85f5e9210a9ba4fcafd2817b3cb06421d521727544467982086173"
+        },
+        {
+          "path": "research/next-round/K02/replication_ast_a13_e5.json",
+          "blob": "4509dc3c9ed2ba052c5a4aedad6a2ae80bd45969",
+          "size": 2675,
+          "sha256": "81617cd0fa2eedeec551a3f23eae9f4344de609584f5c0cba987c773152b78fa"
+        },
+        {
+          "path": "research/next-round/K02/results.json",
+          "blob": "39fc4a3328586a22bc3eb41c837ce61effce701d",
+          "size": 8185,
+          "sha256": "1b67cf2a981d3008c2279a1c4467d9102fb580ffa5480a72e491cdbe2f8364e6"
+        },
+        {
+          "path": "research/next-round/K02/run_k02.py",
+          "blob": "489d940844d1a6782afec027c7d2d515bb612ab4",
+          "size": 3026,
+          "sha256": "544ab952457e03e1c7a3fcda21977624d06b16e4226a7b8c252b72627bc91ea6"
+        },
+        {
+          "path": "research/next-round/K02/test_k02.py",
+          "blob": "a7c2c45e15cdaf4442a3cc0618a11fd7cf6e1b39",
+          "size": 1365,
+          "sha256": "247f65c6fcda83a2de0111be60dc4221673d1d3faccfc710ea82c6a83c1134a1"
+        }
+      ],
+      "status": "ok"
+    },
+    {
+      "slot": "K03",
+      "role": "primary",
+      "branch": "claude/epic-curie-iitc43",
+      "sha": "a8f1e17823468020932de65bc19bada57fda07ca",
+      "folder": "research/next-round/K03/",
+      "fetch": "ok",
+      "branch_tip": "a8f1e17823468020932de65bc19bada57fda07ca",
+      "commit_present": true,
+      "sha_in_branch_history": true,
+      "tip_equals_sha": true,
+      "files": [
+        {
+          "path": "research/next-round/K03/K03_report.md",
+          "blob": "1bd0679370fbdb3e966030080a571e8d1c15ab03",
+          "size": 10837,
+          "sha256": "4bdee675937592880fe5dffd6fd54702963dcd35aa959d4d8ab7deab2c41e110"
+        },
+        {
+          "path": "research/next-round/K03/conflicts.json",
+          "blob": "af4c5231ceacc5768b2434f3c147a0cdb1988355",
+          "size": 7192,
+          "sha256": "50e7cc218c86353a7b801d23a946df7dbbe32be40b7d4c957ce19b243b74ebe0"
+        },
+        {
+          "path": "research/next-round/K03/k03_geo_verify.py",
+          "blob": "e2a9d5acc6c1ad264bb8e1297dd462fb209f8f24",
+          "size": 32325,
+          "sha256": "cd95be185b0dc326d7cd481919ee998133bee47c61a8b2d854263a744f3fb79c"
+        },
+        {
+          "path": "research/next-round/K03/k03_geo_verify_output.json",
+          "blob": "40655316290c170f5c207f68fb9e1c7fe4d27ca0",
+          "size": 20737,
+          "sha256": "4c04daf290095ffc0e8dc2eb967b4487e0d8818cc55db028663b85a243cb0457"
+        },
+        {
+          "path": "research/next-round/K03/territory_registry.csv",
+          "blob": "ab2ab2a39ec8fdaa2ee197c0e4bc2d8c102cb3b4",
+          "size": 10084,
+          "sha256": "5fab74285d5ae10c1481dee62f8e2a7119c7967ba19ce4ebd2b0af39b0953823"
+        },
+        {
+          "path": "research/next-round/K03/territory_registry.json",
+          "blob": "89f13c1ebfd6d7817f10b7d255217bb1cbfb5e51",
+          "size": 21094,
+          "sha256": "46cb664a35350e6c8a29e5b8eaf331ae4405afb5fd447cfa66b11e331cc8ca09"
+        }
+      ],
+      "status": "ok"
+    },
+    {
+      "slot": "K03",
+      "role": "secondary (clever-mccarthy; по заданию K01)",
+      "branch": "claude/clever-mccarthy-pywscu",
+      "sha": "c534321b45a6ceac5c9a71b378e05f8165ace2c4",
+      "folder": "research/next-round/K03/",
+      "fetch": "ok",
+      "branch_tip": "c534321b45a6ceac5c9a71b378e05f8165ace2c4",
+      "commit_present": true,
+      "sha_in_branch_history": true,
+      "tip_equals_sha": true,
+      "files": [
+        {
+          "path": "research/next-round/K03/REPORT.md",
+          "blob": "2e6bf89e4828d2cdd0c0faa047977ac7882de58c",
+          "size": 8719,
+          "sha256": "9c702b9e1cfed5c7a41833be8803977fe14e6bfcefbb2e7a268fa6da92c2dd31"
+        },
+        {
+          "path": "research/next-round/K03/build_registry.py",
+          "blob": "bb075b715eab8153fe5671498dc217ffbbbbc058",
+          "size": 7844,
+          "sha256": "003f450550532e2a55a2c04cc8a2e568e5ee031ce01027911b6aef560b3435e2"
+        },
+        {
+          "path": "research/next-round/K03/geometry_result.json",
+          "blob": "f88d8a14dc7d4eb70b0d60053546d555b3cdf08f",
+          "size": 6372,
+          "sha256": "1a47b7c39b6124119d618e37119bbccede1f95d6be7dde20abf261e55ac0381a"
+        },
+        {
+          "path": "research/next-round/K03/k03_geometry.py",
+          "blob": "e9123f3d9246022cc879e6c8770bb9c5ab930451",
+          "size": 6898,
+          "sha256": "df36162f2226d3b03ab8dda6686c2ef55c4c85449b153f12d70846790887dffc"
+        },
+        {
+          "path": "research/next-round/K03/network_check.txt",
+          "blob": "a983f73c1bf21e6d55bd70ea2b755ed873b75df0",
+          "size": 1127,
+          "sha256": "cf144727df1ad342956195d29cc4ebf9ff239809cc67e424bc5c3378162fda81"
+        },
+        {
+          "path": "research/next-round/K03/territory_registry.csv",
+          "blob": "7092e3929f60ef205c03cfe9ce43b2ba23e71af4",
+          "size": 10757,
+          "sha256": "d04573a5003cd9c7906b043a1b8bc0f81d2959e74f43ec920167e5dd3a3c26de"
+        },
+        {
+          "path": "research/next-round/K03/territory_registry.json",
+          "blob": "b6da53a56d2b8fa3dc4bae1d23dab4f941be76d1",
+          "size": 18471,
+          "sha256": "10c1d0b4a5049547c943df697a9531239a440860354e8acb95235e99efbc4f4b"
+        }
+      ],
+      "status": "ok"
+    },
+    {
+      "slot": "K04",
+      "role": "primary",
+      "branch": "claude/beautiful-clarke-sbzomj",
+      "sha": "b556df0c341f6bd5530cfbe2955e2e115093cd13",
+      "folder": "research/next-round/K04/",
+      "fetch": "ok",
+      "branch_tip": "b556df0c341f6bd5530cfbe2955e2e115093cd13",
+      "commit_present": true,
+      "sha_in_branch_history": true,
+      "tip_equals_sha": true,
+      "files": [
+        {
+          "path": "research/next-round/K04/SYNTHESIS.md",
+          "blob": "19681a5213f6ea3b17df7ee0ce6cc3c0407320b7",
+          "size": 23756,
+          "sha256": "8f86d3b66fd22c26ae3ac6ef7996b3b53ad70ff2dd377c5d1cdc1e93e5932914"
+        },
+        {
+          "path": "research/next-round/K04/check_kpssu_aggregates.py",
+          "blob": "d2629678f7ee6569ddb610147c4361b2838e1885",
+          "size": 6497,
+          "sha256": "85ccd04bba936e583c3322d28a748f0f4febdc37bfe2baf3408970b01e3982d2"
+        },
+        {
+          "path": "research/next-round/K04/evidence_summary.json",
+          "blob": "3fe64bdc1d8cd1f3793e5582b57d20e8232754ec",
+          "size": 154952,
+          "sha256": "bac8dfff60601c9ae7e93858a68c226a8d612905854b85db8d6f2444a3cbffb9"
+        },
+        {
+          "path": "research/next-round/K04/kpssu_consistency.json",
+          "blob": "d4a24cab375180148eb2526982e7abf9be5a8add",
+          "size": 3413,
+          "sha256": "5975214632681dee3548edd24afe6b39e9de12bb47c71e7428bf5cd76fd53dbe"
+        },
+        {
+          "path": "research/next-round/K04/summarize_evidence.py",
+          "blob": "1d77255854e7b2db8742ce059758cb30332802a3",
+          "size": 3626,
+          "sha256": "a4f2d63436e27aedf8469b3545505524720257abbcd59ca8824b1d06834a1f73"
+        }
+      ],
+      "status": "ok"
+    },
+    {
+      "slot": "K05",
+      "role": "primary",
+      "branch": "claude/optimistic-davinci-1oiqs9",
+      "sha": "6d39cc5b0e3379068794b7ef11512844516ddcb3",
+      "folder": "research/next-round/K05/",
+      "fetch": "ok",
+      "branch_tip": "6d39cc5b0e3379068794b7ef11512844516ddcb3",
+      "commit_present": true,
+      "sha_in_branch_history": true,
+      "tip_equals_sha": true,
+      "files": [
+        {
+          "path": "research/next-round/K05/REPORT.md",
+          "blob": "26acf8686eded6278553412eba4f584396579638",
+          "size": 13496,
+          "sha256": "d9445a2a15b601ea5a8a2037fb48603cbc655938d7924a1a4398136199188e11"
+        },
+        {
+          "path": "research/next-round/K05/STATUS.md",
+          "blob": "c8fb98050066246031f546541707cf0e98d127e7",
+          "size": 6619,
+          "sha256": "7d71fda486a0f4597eef0b90d67800ef1f15c5b3cd4e5b9eaff9ec278d5158ac"
+        },
+        {
+          "path": "research/next-round/K05/examples/invalid/invalid_cases.json",
+          "blob": "62177317ad69e324b18e40a5da653f3f1bbe9a9a",
+          "size": 3692,
+          "sha256": "d45956232ac835dea421b5203ed1cf84e858929bdca25e1b90b91d489f05117e"
+        },
+        {
+          "path": "research/next-round/K05/examples/missing_real_context_astana.json",
+          "blob": "ce39d6462b0f490e4d3de6289c51af36b4bcfb0b",
+          "size": 24418,
+          "sha256": "2b68468415ab0e1a48548e8d2ea78c3ca2d3848da43589b294a3fff2cee6763f"
+        },
+        {
+          "path": "research/next-round/K05/examples/real_count_osm_admin_level6.json",
+          "blob": "28ca101eda77857cfa4d8bb7cd33cc47ab33abaa",
+          "size": 1222,
+          "sha256": "66c43bd671754b0006759a78f0b6487d6012dfea5651f79f16bfd5b4cd506735"
+        },
+        {
+          "path": "research/next-round/K05/examples/real_zero_osm_admin_level9.json",
+          "blob": "87fbb8504f2f899e7251ff89fb99ef90dc1eaef3",
+          "size": 1415,
+          "sha256": "57ef034296738c290654414a6e594244bb8db7a936637f150cacd8badc3058f5"
+        },
+        {
+          "path": "research/next-round/K05/examples/stale_osm_admin_level6.json",
+          "blob": "0a01519a0cc4ec7b83ba9576575d680b4376a4c5",
+          "size": 1419,
+          "sha256": "9220479bbdd8e7f0d42e033b4a45333439407191dd15e34f279f0b2321e050fe"
+        },
+        {
+          "path": "research/next-round/K05/examples/synthetic_city_data_esil_T1.json",
+          "blob": "d1fa0a0e01f4b11627fc50236072393a04669472",
+          "size": 768,
+          "sha256": "a834f3ff2e024120f848f1d5761bbdb955d8a6d548153afaae7388a95df6b8a4"
+        },
+        {
+          "path": "research/next-round/K05/experiment_output.json",
+          "blob": "11d7a1b6ac0cc44d9e09f029a7949f1ee79f94e4",
+          "size": 3571,
+          "sha256": "1f96f4708911340a4302763f72fc510b97bd97a8bfab83eb1c0187f12d373125"
+        },
+        {
+          "path": "research/next-round/K05/k05_experiment.py",
+          "blob": "f4ce148164971b5dfb3b0d243d93b2f6e81db8fd",
+          "size": 13693,
+          "sha256": "13d4b397374997c166eb12e7a192adb87230fc0893cc93f0bb9ca88b1d498b4c"
+        },
+        {
+          "path": "research/next-round/K05/k05_validator.py",
+          "blob": "d9d0d9dc689661110c03b673801ed03b76ffb86d",
+          "size": 12617,
+          "sha256": "90086a105a0a0108dcc4a35fd5312fb29becc0787b3eef5bc880ae987dfe64ab"
+        },
+        {
+          "path": "research/next-round/K05/observation.schema.json",
+          "blob": "cd28345cdb846aa8e5725ae7d648e5ac1dfb82f2",
+          "size": 2215,
+          "sha256": "9a637ccc52d8e4e0950f09c874ed5371eb29ec8fe26cc44e32ab619b8cfda790"
+        },
+        {
+          "path": "research/next-round/K05/test_k05_validator.py",
+          "blob": "8a133beed9d18c6bfd0ef112b0d1fa3aca8053c4",
+          "size": 3506,
+          "sha256": "d8b528bbebef4530327807bbc7d8bcb3bb3a36eea800e89e5af88f1f0dbd167e"
+        }
+      ],
+      "status": "ok"
+    },
+    {
+      "slot": "K06",
+      "role": "primary",
+      "branch": "claude/ecstatic-curie-hzfzn0",
+      "sha": "bf30f7f2c04d2059d99941fd00aba143bf7843cd",
+      "folder": "research/next-round/K06/",
+      "fetch": "ok",
+      "branch_tip": "bf30f7f2c04d2059d99941fd00aba143bf7843cd",
+      "commit_present": true,
+      "sha_in_branch_history": true,
+      "tip_equals_sha": true,
+      "files": [
+        {
+          "path": "research/next-round/K06/REPORT.md",
+          "blob": "9032a133a5f264a7ed2991ddf17c830374bcf89e",
+          "size": 19086,
+          "sha256": "6b390185650900a34e37a72801f94036d695dcdfe9cee8948327b196544e680c"
+        },
+        {
+          "path": "research/next-round/K06/k06_evidence.json",
+          "blob": "ca7fb7cb44ac0a42594ec42c5352c10fbab89c2c",
+          "size": 4203,
+          "sha256": "03a08e083f399f6041c84338174478ff036b638d735191e562abdf88509b1e85"
+        },
+        {
+          "path": "research/next-round/K06/repro/out/k06_checks.json",
+          "blob": "351fefa07e523ab89bca03ca2004cfb8692951d4",
+          "size": 2466,
+          "sha256": "fddff3d030239c8df992a138d39b311e7cf659d6903577da1b4d5d183da1300d"
+        },
+        {
+          "path": "research/next-round/K06/repro/out/k06_excess_within_day.txt",
+          "blob": "230811c18cff827f7088aac87386eb44bc35d9dc",
+          "size": 1594,
+          "sha256": "cb961c3f2a3757b95ffc42fc95e8fd265e7786b8f1d3c2a7701488601e63e3af"
+        },
+        {
+          "path": "research/next-round/K06/repro/out/k06_gap_check.json",
+          "blob": "ad463148e7c2403240b06e59d98a243a20e69b40",
+          "size": 143,
+          "sha256": "1a3babae9a7cff371c2d38c339ac83879590c7a758ca9cd0af40d914126cab3d"
+        },
+        {
+          "path": "research/next-round/K06/repro/out/k06_stdout.txt",
+          "blob": "9ac15b2fb96137b72dfcb5bd2ea9d58f1cd4ee4a",
+          "size": 2089,
+          "sha256": "a41a3a95c04b91db790bf9b620b62b6961376040a6fc9f7d1fc9fa06d38b7905"
+        },
+        {
+          "path": "research/next-round/K06/repro/out/r1/cv_sensitivity.json",
+          "blob": "4ce2cb9f5225ab7e76172ed80dd1f8461195b4a8",
+          "size": 2710,
+          "sha256": "1e8ae7bf00a2231c9864e081eb42ee7b7953faeaf294bc6e5142788bec30081b"
+        },
+        {
+          "path": "research/next-round/K06/repro/out/r1/ptal_vs_observed.json",
+          "blob": "f513d8374dc4d50ed176da490684aefc08a9ec4a",
+          "size": 3035,
+          "sha256": "900599e226a558d0aded3a12d47b97f6e14eef7fa5ecfb06b25d4880fc986c6b"
+        },
+        {
+          "path": "research/next-round/K06/repro/out/r1/regularity.csv",
+          "blob": "18e94b7df6f6c06c87a37e49a120af29e73a22c3",
+          "size": 1518,
+          "sha256": "ec8c8a9e135e220ee2781d04d8d4de69cbee716872b7579c0bd274886c303f62"
+        },
+        {
+          "path": "research/next-round/K06/repro/out/r1/results.json",
+          "blob": "5dd544c2e435280174d54c263c4f1c4c6a2e473f",
+          "size": 12209,
+          "sha256": "bd67bf851efac2f3e86c57b8e8408851677e78b2ebb898bcbd3f1fb760f8ddaf"
+        },
+        {
+          "path": "research/next-round/K06/repro/out/r1/trip_duration.csv",
+          "blob": "5b0ce922338b7b2c13e41524cf798789e8e59e46",
+          "size": 984,
+          "sha256": "c1c6b53fd8cd10e6eb14437b27102217ad13c54120cfb2dc75ac852685351bcc"
+        },
+        {
+          "path": "research/next-round/K06/repro/out/r1_stdout.txt",
+          "blob": "549930a63916e3ac3391ea7b87830e00cb490fde",
+          "size": 2606,
+          "sha256": "b8ebf42a0c659717d88f9d36be6f2fafb90cd9786f652831a7bdad2356bf98cc"
+        },
+        {
+          "path": "research/next-round/K06/repro/out/r1b_stdout.txt",
+          "blob": "76df143ea3ff37440bafc7c0327d9941fa19fb97",
+          "size": 1369,
+          "sha256": "a98718936f18d743e88c57b8506e77014037af2d87db84d191c465ec3c43bebf"
+        },
+        {
+          "path": "research/next-round/K06/repro/out/r2_stdout.txt",
+          "blob": "6357ee5a0d1ddc66b1f260b248148c7312a1badf",
+          "size": 2769,
+          "sha256": "3e5ff2107b4c1bcc86293d1b8b302c084cc5a327427c769ea84e304f65b9c166"
+        },
+        {
+          "path": "research/next-round/K06/repro/scripts/k06_gap_check.py",
+          "blob": "005968503cfb09520a67da2476f4be41b0a3631c",
+          "size": 1250,
+          "sha256": "bcbeebc59634d284d600c8a85dc672ec0c25ea25c5fc5d15b5ee26dc15202d5d"
+        },
+        {
+          "path": "research/next-round/K06/repro/scripts/k06_independent_checks.py",
+          "blob": "db43eb4bb1f394f440644066ab996d7ed62f4a60",
+          "size": 3916,
+          "sha256": "cd7eb8de11e91af4f255790fb23e72d8c61786c5e6d48c8f64ce8c6eb9b5482d"
+        },
+        {
+          "path": "research/next-round/K06/repro/scripts/r1_astana_regularity.py",
+          "blob": "eaab6071f61c1a06c8c5c9b0f69e7e13a2aa8245",
+          "size": 6222,
+          "sha256": "9f790c92d1dd9607a77d6ea5aac8c41ad8169b439337d45f8f1dc319b5bc30c3"
+        },
+        {
+          "path": "research/next-round/K06/repro/scripts/r1b_sensitivity.py",
+          "blob": "e5f881ccb0f2e47d8fa643cfdab78a94315dcd75",
+          "size": 1986,
+          "sha256": "5e9c942853541b2b27ba0fe758fbf8da341a0f39c02510ee37b5906f13aad4ca"
+        },
+        {
+          "path": "research/next-round/K06/repro/scripts/r2_ptal_vs_observed.py",
+          "blob": "faea15da28f89e047dad18c2b42f46cefb35f5be",
+          "size": 947,
+          "sha256": "81b69378df5ee9424459cf70263ff5c0643443a4236f3946bc9b6487520e3370"
+        },
+        {
+          "path": "research/next-round/K06/source_snapshot/DOWNLOAD-CHECKS.json",
+          "blob": "32e7504075d501472aaf9b2d6754bd21191b6552",
+          "size": 333,
+          "sha256": "9c29cb5077a43242d3e788a299f66dc8f2ce994eeb0ff1bfc605aa7c4cd3bfd8"
+        },
+        {
+          "path": "research/next-round/K06/source_snapshot/READ-ME.txt",
+          "blob": "65d726a68df70658e0b7e5eb6d2484366ff893b0",
+          "size": 697,
+          "sha256": "8fd36dd2322bccd42cd15f5d286d30c81de7a798e296be08b994597bc4093bd0"
+        },
+        {
+          "path": "research/next-round/K06/source_snapshot/SHA256SUMS_gtfs_data.txt",
+          "blob": "12cba0370394b75f53f11c6bb7d5cb3b65ebb1ac",
+          "size": 472,
+          "sha256": "368260b2f8bea24cfaf8c525251ad6037e6c182a9c569fba8d81e05ba36122b1"
+        },
+        {
+          "path": "research/next-round/K06/source_snapshot/agency.txt",
+          "blob": "a250c620cf40cfdc2ab2026d8d8a82b4e4194c55",
+          "size": 116,
+          "sha256": "e4a61430ed971ee580eb51881e24a167508f5b4b260711f145dfb4c042056707"
+        },
+        {
+          "path": "research/next-round/K06/source_snapshot/routes.txt",
+          "blob": "1dda47b0b847c4530c35d7bcb0a2dc1a18bf396c",
+          "size": 390,
+          "sha256": "211d42b4875af9dc3e9c6b79e975755f0f8aa84b115ad1bf49b857cdd1f3dad1"
+        },
+        {
+          "path": "research/next-round/K06/source_snapshot/segment_level_data_LFS_pointer.txt",
+          "blob": "d87a95ae48bd122087cbbfea87647be52b663f5a",
+          "size": 134,
+          "sha256": "61b63ce55931ea56922e045fd5e0e95e4d91165bea54a6c7c0e448d6413c3812"
+        },
+        {
+          "path": "research/next-round/K06/source_snapshot/stop_times_LFS_pointer.txt",
+          "blob": "8a6ddeeb09db241682c5fe291f0e45d7210342ea",
+          "size": 133,
+          "sha256": "078315fe9b1591d6b9dfb89fceef27f09f2ff15e28006575eb025643c0bbfcbd"
+        },
+        {
+          "path": "research/next-round/K06/source_snapshot/trips_head5_no_vehicle_id.txt",
+          "blob": "f26f37f0ffec87fb48967f0246f5332dc7dd780a",
+          "size": 471,
+          "sha256": "52ec25d4cf39a7118ca8470d392f6b17a031526818963fb6bc88683155fccf1c"
+        }
+      ],
+      "status": "ok"
+    },
+    {
+      "slot": "K07",
+      "role": "primary",
+      "branch": "claude/save-work-handoff-ku3ej3",
+      "sha": "3df2bce1d14aba6600431c85b2ab2cc4fa78d359",
+      "folder": "research/next-round/K07/",
+      "fetch": "ok",
+      "branch_tip": "3df2bce1d14aba6600431c85b2ab2cc4fa78d359",
+      "commit_present": true,
+      "sha_in_branch_history": true,
+      "tip_equals_sha": true,
+      "files": [
+        {
+          "path": "research/next-round/K07/01_verify_a04_a05.md",
+          "blob": "e0560c2d87ddf47102fd9703eb59d8fa420bf364",
+          "size": 6294,
+          "sha256": "159668685efac076963d87cf4f71984719b8e28614f36d47618b5f3ebe9266f9"
+        },
+        {
+          "path": "research/next-round/K07/02_registry_check.md",
+          "blob": "bbf2d0442bf4c1697d8c24e8f7c6fd654d749c6a",
+          "size": 7630,
+          "sha256": "ac31b7b4b1bb3e8c1ed1970369018bd996efdd24ebb8d2bf227697b4260b8ed6"
+        },
+        {
+          "path": "research/next-round/K07/03_scenario_baseline_example.md",
+          "blob": "b4fad9664b3409a541660993c6d0930f9d9d8a81",
+          "size": 10321,
+          "sha256": "d2e3707052fa5fdb9d80f9abfd5c54c765c10d3547b454057ef63e8d3fc8d6de"
+        },
+        {
+          "path": "research/next-round/K07/README.md",
+          "blob": "c1f7ff9d9a5def979d35bbaf78748c8b7cad7e94",
+          "size": 6772,
+          "sha256": "c5595bf6bac4c640912aed78d3cdb27e32965dc5e441bbb3b61b54bfde6cc4de"
+        },
+        {
+          "path": "research/next-round/K07/access_check.json",
+          "blob": "e5150ea7a30955088def5574cd41448c0854eb98",
+          "size": 2367,
+          "sha256": "9de114df975cc17fe245b5ff73ff5eecaef1b530d4a22f02ffc5dab8c6f7b547"
+        },
+        {
+          "path": "research/next-round/K07/results/03_access_vs_provision_results.json",
+          "blob": "64b823705acf28b6851cb700f955fccdd2061731",
+          "size": 8187,
+          "sha256": "31f50713d709b617aafb0ffbea4cf8b8d7785e293a84119bd148455d3ae13cca"
+        },
+        {
+          "path": "research/next-round/K07/results/03_access_vs_provision_tables.md",
+          "blob": "02f155a3f7e308200d111d6a602b32a22f02004a",
+          "size": 3424,
+          "sha256": "53f3305b223addc117737ad7744a40dd38ef487797ea3b141c68736f517f12c6"
+        },
+        {
+          "path": "research/next-round/K07/results/registry_check_results.json",
+          "blob": "1c3b538b8d85a81f4891a5d6a938bff327b078b2",
+          "size": 12520,
+          "sha256": "b32dde9310305d73ec9ac931a2e48d2d560e0ec152f3df5ac8477f79ae95aaae"
+        },
+        {
+          "path": "research/next-round/K07/results/verify_a04_a05_results.json",
+          "blob": "2c2b53b7d0fd2aa7e44fdbc732d4fbc257f47873",
+          "size": 13397,
+          "sha256": "374f1a417b88fc7bd102ceddd28f028ccb24c38fcfad2c54b495f309b8176f9a"
+        },
+        {
+          "path": "research/next-round/K07/scripts/02_registry_check.py",
+          "blob": "d23976068219995d54e522e4053d248dc5f5eb94",
+          "size": 16148,
+          "sha256": "ee80051314e5c7b9ab58cd9003348d0909e35a49915f6a05c2b4bbd4598a874d"
+        },
+        {
+          "path": "research/next-round/K07/scripts/03_access_vs_provision.py",
+          "blob": "04eafa3adb1925452c830ee7f8a1a34e75541162",
+          "size": 13004,
+          "sha256": "42111990c50afa9b9741c956c09b3113af3a441d41f08aa5b0e64247b6a7b83a"
+        },
+        {
+          "path": "research/next-round/K07/scripts/requirements.txt",
+          "blob": "df037e41c1e58ac03fa829744fa0bb56a8fb085a",
+          "size": 145,
+          "sha256": "b4a169389e5bfb915f37e309c224111b572ee2d002de2685df46fb576ceb2881"
+        },
+        {
+          "path": "research/next-round/K07/scripts/run_all.sh",
+          "blob": "2ba9bef731179297f3979ba364a3b12aa02089b8",
+          "size": 800,
+          "sha256": "2b7740656b0ce762548db7d7a14f240f770d2efac361936a0aa1677a2aa78fa9"
+        },
+        {
+          "path": "research/next-round/K07/scripts/verify_a04_a05.py",
+          "blob": "7d56426a6fe6b3110be6cb086146e09ee439ce75",
+          "size": 16923,
+          "sha256": "ea46336c4b2867c7e5086ffd2c8df6e7ec2c629b195f917723a89814f0ea17e0"
+        }
+      ],
+      "status": "ok"
+    },
+    {
+      "slot": "K08",
+      "role": "primary",
+      "branch": "claude/dazzling-mayer-drhsxk",
+      "sha": "15cd5f2db28c91ee4ead180babd13a93e3167419",
+      "folder": "research/next-round/K08/",
+      "fetch": "ok",
+      "branch_tip": "15cd5f2db28c91ee4ead180babd13a93e3167419",
+      "commit_present": true,
+      "sha_in_branch_history": true,
+      "tip_equals_sha": true,
+      "files": [
+        {
+          "path": "research/next-round/K08/ACCESS_LOG.md",
+          "blob": "c50a8e5512a16419fc7825f37c126c0fb91a07ca",
+          "size": 1417,
+          "sha256": "5e6a0e7fc247b8b90d92dd1b1ec35898377b599d6fa2e38dc905c162061184a5"
+        },
+        {
+          "path": "research/next-round/K08/REGISTRY.md",
+          "blob": "6f256bb348c2c21a832756eb551cb7e56f976077",
+          "size": 21153,
+          "sha256": "8029bfb7cb1731067d54cff4db12793ff19350225b15c387ed4e7014170707f9"
+        },
+        {
+          "path": "research/next-round/K08/registry.json",
+          "blob": "0a0e2d0273dea22708a6cf2e2d34891148de27eb",
+          "size": 23565,
+          "sha256": "648df07d0202fc39b131deff33ac587539b697caaad22cf8c4f0acd0ab8f6e73"
+        },
+        {
+          "path": "research/next-round/K08/render_registry.py",
+          "blob": "630a38a054e5a9c0101cb61d10fe425ca2f3f34f",
+          "size": 2164,
+          "sha256": "f11de16ac7e4e2ae8046e82c9956288da45cf51a1b27e06112416e71c7a61f91"
+        },
+        {
+          "path": "research/next-round/K08/run_log.txt",
+          "blob": "02724af7eb57aff6803af9f626eeae58e5d0646e",
+          "size": 4998,
+          "sha256": "96c4f88d987d26136202fbb479e639b9426d9064ce2f2cae085eac1b659413b8"
+        },
+        {
+          "path": "research/next-round/K08/verify_claims.sh",
+          "blob": "5f4ad7cacec230033aa27c6745160c2319f6b215",
+          "size": 7149,
+          "sha256": "ac4d37f555fb1e114e726f76c2a1ef2f1798501159a9c31aef4a7b4961aa0319"
+        }
+      ],
+      "status": "ok"
+    },
+    {
+      "slot": "K09",
+      "role": "primary",
+      "branch": "claude/save-work-handoff-qho6eq",
+      "sha": "9cc36c3485045a533ba60136c0c9561e4b8acf46",
+      "folder": "research/next-round/K09/",
+      "fetch": "ok",
+      "branch_tip": "9cc36c3485045a533ba60136c0c9561e4b8acf46",
+      "commit_present": true,
+      "sha_in_branch_history": true,
+      "tip_equals_sha": true,
+      "files": [
+        {
+          "path": "research/next-round/K09/01_bibliography_verification.md",
+          "blob": "4433b0fb2a46bff01c283cbda097b8a50d015eb0",
+          "size": 23111,
+          "sha256": "210188c236f0d763bd758d103675f73149410e5e013cd57ccb71211243e6681b"
+        },
+        {
+          "path": "research/next-round/K09/02_pilot_reproduction.md",
+          "blob": "b4e714f0e53e857931930521888289b9aae8f730",
+          "size": 11386,
+          "sha256": "06b6bbcdac71ecf51a7962c28aaf9fbb9571604b2e243416971f006403de584b"
+        },
+        {
+          "path": "research/next-round/K09/03_thesis_topics.md",
+          "blob": "56d9a86b4e08024b5980eac0be85c75427822581",
+          "size": 29920,
+          "sha256": "d1c501508a7591d91bc2a0f1ba04f21e8a37831a3ddaf12d06b0c72885cfd99d"
+        },
+        {
+          "path": "research/next-round/K09/K09_evidence.json",
+          "blob": "80843544a565e75a3ddbecbffb7ee63cbf54a7ec",
+          "size": 40489,
+          "sha256": "1abbb4640d3aff3af49186bd08f4c277b2f0d12f52e13754b0378f4d11f91a8b"
+        },
+        {
+          "path": "research/next-round/K09/STATUS.md",
+          "blob": "fcea07b2df05a70d482c50743aa5f6df159568f2",
+          "size": 8932,
+          "sha256": "77a6868f3ce787a86e6e8356ef116a7deed2f9affa366090152971dcd6ee53ee"
+        },
+        {
+          "path": "research/next-round/K09/repro/E4_run_meta.json",
+          "blob": "9bf47ff219d796e305edb5d34347856c231a568a",
+          "size": 783,
+          "sha256": "57214077e3f58338228f173a3800a2b69ee331a3dcf48038cc46a4ea4b63fb58"
+        },
+        {
+          "path": "research/next-round/K09/repro/E4_stdout.json",
+          "blob": "27261c3ed73cbc3c481cb60b635e345bff048dc8",
+          "size": 859,
+          "sha256": "9e2a5e0f2dedeb1b53ee39eb78287e514cf1bc59004bada7deced7958adb9e8c"
+        },
+        {
+          "path": "research/next-round/K09/repro/E5_run_meta.json",
+          "blob": "4c446e22911c6bf2969f3ad5529340b27fa67229",
+          "size": 783,
+          "sha256": "61eeb05ef78ec038a65201fb051390707783321740777360d031770fa2d7bf3f"
+        },
+        {
+          "path": "research/next-round/K09/repro/E5_stdout.json",
+          "blob": "4509dc3c9ed2ba052c5a4aedad6a2ae80bd45969",
+          "size": 2675,
+          "sha256": "81617cd0fa2eedeec551a3f23eae9f4344de609584f5c0cba987c773152b78fa"
+        },
+        {
+          "path": "research/next-round/K09/repro/E6_run_meta.json",
+          "blob": "9b710fa46d193195709cfbdfa6b8c88d237294e6",
+          "size": 783,
+          "sha256": "5eae7181aafd9fcaa3c2ed0d4717250a750a08d8e6c80a050f86f44b1a084cf1"
+        },
+        {
+          "path": "research/next-round/K09/repro/E6_stdout.json",
+          "blob": "f60bb4d267fe1f89a089803aa1c4928cd435f351",
+          "size": 1180,
+          "sha256": "69763350f5535809f70fc7fa5e706d3a2b941f9f84cd0f90079db45ddc053a22"
+        },
+        {
+          "path": "research/next-round/K09/repro/E6b_n300_seeds101-103.json",
+          "blob": "cd96aea10aa0cf2b884e1cc3032cf5f1ba8455dd",
+          "size": 148494,
+          "sha256": "221fbe5e88451669c3b1e930abe02209cb3a5406ce25a00d3b4d1e32dacc35f8"
+        },
+        {
+          "path": "research/next-round/K09/repro/E6b_n60_seeds1-3_equivalence.json",
+          "blob": "69a3fdf9fa63e3051c4efa61b7c1026b17167dd9",
+          "size": 31266,
+          "sha256": "fad985518039b3515d5a163a0c507c6b53cfcad3c6b4e1c59de089a0377e6fa1"
+        },
+        {
+          "path": "research/next-round/K09/repro/E8_toponym_stems.json",
+          "blob": "a452da9c9e1b93e8f01649ee305abae4eb6ede59",
+          "size": 3305,
+          "sha256": "4573ebf23fcf3b1a9e06eb070b14e5940b8b001e03a014df436f35d874c04cab"
+        },
+        {
+          "path": "research/next-round/K09/scripts/build_evidence.py",
+          "blob": "f28037f7fba47361adf6c68bbed2776a342454c0",
+          "size": 29801,
+          "sha256": "51a26e0f4438be32385909e4bef3222628edbcb996a7e26d44fece9ce3345495"
+        },
+        {
+          "path": "research/next-round/K09/scripts/compare_with_ast_a13.py",
+          "blob": "24439ec4edcc1dfb1e16e18199671c39ce629303",
+          "size": 1362,
+          "sha256": "c69dd873fdcb32c821e7be1cf31a6f80d94e3dbc879a2eccfbadb5d5abc831ae"
+        },
+        {
+          "path": "research/next-round/K09/scripts/e6b_rank_sensitivity.py",
+          "blob": "804a4ff3de980772f2e59d83b0bfa0a1df85d300",
+          "size": 5041,
+          "sha256": "d7a2441905ee73a3e939a6a4b6756c36f7ff0d6dcbfb2730497b96798c3fa993"
+        },
+        {
+          "path": "research/next-round/K09/scripts/e8_toponym_stems.py",
+          "blob": "f6fe1dcc6cf3401174f0657e520535b7f8d74e23",
+          "size": 2520,
+          "sha256": "8220211821a1db86b8f5c66520bae36776ac3daee9d500bdda1926c31ca9c8f7"
+        },
+        {
+          "path": "research/next-round/K09/scripts/fetch_bib_sources.sh",
+          "blob": "ba04d981bbf5294b73425ef3a1557cee24669814",
+          "size": 2194,
+          "sha256": "3d81ba89ef758cbd3f5a8694c9a9859d88dca3bf1af6a75ca9398bf475b4873b"
+        },
+        {
+          "path": "research/next-round/K09/scripts/run_pilots.py",
+          "blob": "886353206040f0f9dd7af2a66a652d28be8ae569",
+          "size": 3264,
+          "sha256": "2fb1f32b50071c51b0ea04c73d71dc15b0c2e6d36b3739d5b04e7b9cd9d51722"
+        },
+        {
+          "path": "research/next-round/K09/sources/SHA256SUMS.txt",
+          "blob": "de7966d6c7e3ef2bede6129b5310b67a1e5df60d",
+          "size": 1838,
+          "sha256": "d1bd92f0a4337b5c7bd717ae924d78c62a7f8908e7ea9477c73f22ccc859c560"
+        }
+      ],
+      "status": "ok"
+    },
+    {
+      "slot": "K10",
+      "role": "primary",
+      "branch": "claude/save-work-handoff-j7pc05",
+      "sha": "e91898d596164bcf6e853b921a49f82126074a35",
+      "folder": "research/next-round/K10/",
+      "fetch": "ok",
+      "branch_tip": "e91898d596164bcf6e853b921a49f82126074a35",
+      "commit_present": true,
+      "sha_in_branch_history": true,
+      "tip_equals_sha": true,
+      "files": [
+        {
+          "path": "research/next-round/K10/STATUS.md",
+          "blob": "20afa712b520876b29484c1ec2f979a4a30f5ef3",
+          "size": 16041,
+          "sha256": "10d10a9595728b5172c74d2773029821c06eba39703e9b302430d3095d5880bc"
+        },
+        {
+          "path": "research/next-round/K10/access_log.json",
+          "blob": "9ab33c33164a6d04eff2d84044f52237e7d4d596",
+          "size": 7282,
+          "sha256": "e58b3488a2f83e03dea683d619a56b3db3c157841b1ef77791f74a2e9571d3ad"
+        },
+        {
+          "path": "research/next-round/K10/datasets.json",
+          "blob": "ff75b7a131a4212d127b0e5117480d3637fd8cc5",
+          "size": 17909,
+          "sha256": "cb2f1bb09e4e88c1f7b4b1f0580de1f878435a1015fab643c23ebaee8dfdef22"
+        },
+        {
+          "path": "research/next-round/K10/provenance/astana_division_area.provenance.json",
+          "blob": "bd95436b0760f18905333fd73803866a03e55964",
+          "size": 2379,
+          "sha256": "1a7ffbbb74dac015c0be99e99392b2db269a53e52e413db351b72540dbe27eab"
+        },
+        {
+          "path": "research/next-round/K10/provenance/astana_places.provenance.json",
+          "blob": "18b077560fb73b0906122ffe38828b7101a54ab9",
+          "size": 4077,
+          "sha256": "830c00b06a6f43d2c451dc71e0dcc655ca7e815b0b5828de63bcc3d4961b631e"
+        },
+        {
+          "path": "research/next-round/K10/provenance/astana_segment.provenance.json",
+          "blob": "e31717fc1b96c22c2dadb31200a1424bbcbda8a4",
+          "size": 994,
+          "sha256": "f1d23ba16a73f8829af4d4109c7c2f114be32cc9a77f71a68f6c7b769485670e"
+        },
+        {
+          "path": "research/next-round/K10/provenance/raw_extracts.sha256",
+          "blob": "483011d335276e8d02ea719a54fd767d289eb7d5",
+          "size": 538,
+          "sha256": "64826e3addff21153b9fd7cde1a624cbb0a0985b5cc5b03f6f62981b02ee4a77"
+        },
+        {
+          "path": "research/next-round/K10/provenance/shymkent_division_area.provenance.json",
+          "blob": "7752ed8f06f7d35968c62c31ef6d5f2950ecfffc",
+          "size": 2399,
+          "sha256": "581be8219eadc01c447b7a852fadb5ed2f95680770775ceffaf314e5175d4519"
+        },
+        {
+          "path": "research/next-round/K10/provenance/shymkent_places.provenance.json",
+          "blob": "605d72392909ff755f4ef0258eac7ad521a48de4",
+          "size": 4079,
+          "sha256": "7a75d6c366d9d531240f1964f04e01e77d79dd66cf6f1a4afbefda15ad9c8fd1"
+        },
+        {
+          "path": "research/next-round/K10/provenance/shymkent_segment.provenance.json",
+          "blob": "396c3c1cdbfd04cb55bff94901b487d348a7b6a5",
+          "size": 757,
+          "sha256": "e0255a6560e6762efc6e2e179bc73595458ff2dcf8d162f39d8f45d88133a877"
+        },
+        {
+          "path": "research/next-round/K10/results/E01_district_coverage.json",
+          "blob": "956e8323636b2978afa834dc98f89867d58e2291",
+          "size": 7147,
+          "sha256": "f1b8991e1753dbb6e5f17d4d5dc57dcfb0a361018335236fb13d6808ace6680b"
+        },
+        {
+          "path": "research/next-round/K10/results/E02_social_poi_by_district.json",
+          "blob": "78eb319afa5d0aea1345e50980fa45f1a196141d",
+          "size": 5167,
+          "sha256": "ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad"
+        },
+        {
+          "path": "research/next-round/K10/results/E03_road_network_by_district.json",
+          "blob": "5828cde6e05acc39416e4fc309deb4c0180cc16f",
+          "size": 6752,
+          "sha256": "51af4b61255db22e2aa79c2bd9f5af68c086bbac207cdddb78f3351ede0985ff"
+        },
+        {
+          "path": "research/next-round/K10/samples/astana_districts_overture.geojson",
+          "blob": "de42bd24c0fd1b9bcced2aeff169e3d335bc648e",
+          "size": 99459,
+          "sha256": "ab3a7f9852ecdd0d80b68c22ed73f1e10673c20c5091cf47c6454a030f1421ca"
+        },
+        {
+          "path": "research/next-round/K10/samples/astana_places_social_sample.jsonl",
+          "blob": "8bb22de492a467332d9da71a6146ae36c44fc370",
+          "size": 69137,
+          "sha256": "1c8eda287392644c06fcde0c00a63c0e8a69f765fab98b888c7edd98d4fe90fe"
+        },
+        {
+          "path": "research/next-round/K10/samples/astana_road_segments_sample.geojson",
+          "blob": "c4180ded62a53c1171c9f7df694ed6168e4ed12d",
+          "size": 82542,
+          "sha256": "883a36537ac7493b5dd5b2d4e0471d7cde7f565443ab8ba5988bfd90aa9b080e"
+        },
+        {
+          "path": "research/next-round/K10/samples/geoboundaries_KAZ_ADM1_metaData.json",
+          "blob": "5e262f7f46c10f2eb4dcd233b9c661cbd2f4fe79",
+          "size": 852,
+          "sha256": "84a67cf7fb1911952e4d6968a65fc7f2a1be65bd338f4dc30d356f147975dda3"
+        },
+        {
+          "path": "research/next-round/K10/samples/geoboundaries_KAZ_ADM2_metaData.json",
+          "blob": "772f85a1b743e8f043b85e003c92930169fa99d9",
+          "size": 859,
+          "sha256": "a088398833d004537b752fd547b04b490d7b38d3d53ad372a8927b69a1012026"
+        },
+        {
+          "path": "research/next-round/K10/samples/iso3166_2_KZ.json",
+          "blob": "2dbc433af17dd95b938c13cda2372c895087536c",
+          "size": 2346,
+          "sha256": "19306eb1107e07eff06709ba5d6f10a74cf4ce5717117c05975ee324641b1c38"
+        },
+        {
+          "path": "research/next-round/K10/samples/shymkent_districts_overture.geojson",
+          "blob": "1c4701fb5022ba97ef08a1c9727e552d0d357cbd",
+          "size": 159823,
+          "sha256": "e19bbd7572a7a4f46dbb793df74c5d1cfab11d4e7a217fed7e525b4cece117c3"
+        },
+        {
+          "path": "research/next-round/K10/samples/shymkent_places_social_sample.jsonl",
+          "blob": "dbb7358b7572d8efc02e251d889224d23afdb3ee",
+          "size": 62577,
+          "sha256": "a1b04aa4b1032286dc14105c71cb9578db15092e80d7cde1af5722026823e024"
+        },
+        {
+          "path": "research/next-round/K10/samples/shymkent_road_segments_sample.geojson",
+          "blob": "0cec9ed6000cf12ceea039364a2ccdbc0211a016",
+          "size": 89745,
+          "sha256": "d6152f35ca13da5e60fc23e9ad38273333f14b51baad1845e3cced23d2c67828"
+        },
+        {
+          "path": "research/next-round/K10/scripts/check_districts.py",
+          "blob": "85061d8bea0a173eef05de51fb03b0b40c701ac4",
+          "size": 4472,
+          "sha256": "efb47c2fccc1568d8c0d4f7aa7b95c8c52238b5e5aaf9e12bdf5e8cbdda68bbb"
+        },
+        {
+          "path": "research/next-round/K10/scripts/make_samples.py",
+          "blob": "0cffa92f2aaa920468461510eecb4c0766e6a86b",
+          "size": 6109,
+          "sha256": "cd3c6416d9dae3491850d5db7216042c39b4cd35cf66903fa93c987e3d1da12b"
+        },
+        {
+          "path": "research/next-round/K10/scripts/network_by_district.py",
+          "blob": "b6d06ea96f3c06a56f24a91b1f9d5c700ede9167",
+          "size": 4539,
+          "sha256": "6b1cc35d907a5008e7963958d02503f6a2a9734266f92d66488e1a5c582ecf94"
+        },
+        {
+          "path": "research/next-round/K10/scripts/overture_extract.py",
+          "blob": "4e78bce2f9c2d2dbc36052366c63ce2eecdee92a",
+          "size": 9694,
+          "sha256": "13d9ce33d099a6c0f0bdd407f0a6a1a5c121de5ff52100a7486b0bd0236bca0a"
+        },
+        {
+          "path": "research/next-round/K10/scripts/places_by_district.py",
+          "blob": "5dac4f45ef9774afea75431a18fdeebb35825698",
+          "size": 3479,
+          "sha256": "a57840db12dbd9a8d0712969f6876e76fa78e97ebda5da43e6bca6a5a24cbd12"
+        }
+      ],
+      "status": "ok"
+    },
+    {
+      "slot": "K11",
+      "role": "primary",
+      "branch": "claude/save-work-handoff-fmjw6r",
+      "sha": "677b305ed53b04cbc6b928b64dcee73e1f01a2bb",
+      "folder": "research/next-round/K11/",
+      "fetch": "ok",
+      "branch_tip": "677b305ed53b04cbc6b928b64dcee73e1f01a2bb",
+      "commit_present": true,
+      "sha_in_branch_history": true,
+      "tip_equals_sha": true,
+      "files": [
+        {
+          "path": "research/next-round/K11/K11_missing_files.csv",
+          "blob": "17dc6821aefb2aa44bfffc18031c2751f69d3f15",
+          "size": 8527,
+          "sha256": "23d02304c9ebaf96238fc995de39bda25eebf34126c29de98a8e1ddab52dafbd"
+        },
+        {
+          "path": "research/next-round/K11/K11_wrong_local_links.csv",
+          "blob": "524327aa3ca981cac0b6339ede4ff6d1e923a1c0",
+          "size": 23295,
+          "sha256": "cadb4450d3e697124063f6e9443ce0be90a7d867068975aaa0c5374388009eb7"
+        },
+        {
+          "path": "research/next-round/K11/REPORT.md",
+          "blob": "20b67c1efd9a815238131ad0ff4419e4fdbc2be1",
+          "size": 16650,
+          "sha256": "f5f39937284a499d8b0e0adcf1c5f68198445c81f92abb19e5988a0d135f16b9"
+        },
+        {
+          "path": "research/next-round/K11/STATUS.md",
+          "blob": "fc70160d3f1a46abc9af5576b12e27558c84be7d",
+          "size": 8689,
+          "sha256": "15cd3a0715e198f2855250d0f5a2a537559ae0dbc79a87769532a03b4dcb55a6"
+        },
+        {
+          "path": "research/next-round/K11/k11_ref_audit.json",
+          "blob": "1235411b757c5847963a4f8f36940e974a0d2ce7",
+          "size": 572399,
+          "sha256": "cf47bdc1c70576325186f2f3267764450c946260864f9c343ccc48436db8fb91"
+        },
+        {
+          "path": "research/next-round/K11/k11_ref_audit.py",
+          "blob": "4e108c3c077ee141031f5335f6b3670a3799cf06",
+          "size": 15979,
+          "sha256": "0f8d9136bb3ba2c951ab55e8c351884392b08a89186c55bfafad58c7b22ccc88"
+        }
+      ],
+      "status": "ok"
+    },
+    {
+      "slot": "K12",
+      "role": "primary",
+      "branch": "claude/save-work-handoff-xuav3q",
+      "sha": "1aec7572e3934300a1da8d3f2b6351b3aea88a74",
+      "folder": "research/next-round/K12/",
+      "fetch": "ok",
+      "branch_tip": "1aec7572e3934300a1da8d3f2b6351b3aea88a74",
+      "commit_present": true,
+      "sha_in_branch_history": true,
+      "tip_equals_sha": true,
+      "files": [
+        {
+          "path": "research/next-round/K12/K12_evidence.json",
+          "blob": "24f96a6c303f609692e8ac70d0d9e84304733712",
+          "size": 10748,
+          "sha256": "e0990f78f7aa1c8d9af1aae3a9f02b86ca7b5ed91a2fff2cbae79998178ae7b7"
+        },
+        {
+          "path": "research/next-round/K12/K12_report.md",
+          "blob": "df1ab7d8e38e3ac912d72a91193e111b4166f5aa",
+          "size": 20626,
+          "sha256": "2566f6013e0bae94a9cc19641a1948ad4c58f17888f9125aaf0c9f1bb4ad6912"
+        },
+        {
+          "path": "research/next-round/K12/data/BDG1_LICENSE.txt",
+          "blob": "b52bced2e55feedaa71c8b612ac4d142525d80e7",
+          "size": 1083,
+          "sha256": "a7ed134d435c25cf554d3ba87b4dc5ca2bd17cfe35aa8b8f6ad424175a085e6f"
+        },
+        {
+          "path": "research/next-round/K12/data/K12_bdg1_schools_meta.csv",
+          "blob": "3191e24da8060f9d3821bf5bdf130045cfb0bdd0",
+          "size": 19000,
+          "sha256": "dad27828b77d4eba87deb1e06d8c202c95e914a51d054e614a35a2b71305558f"
+        },
+        {
+          "path": "research/next-round/K12/data/K12_bdg1_schools_monthly.csv",
+          "blob": "4f913a9c0406ee1026861adecb3e1e347e5fc508",
+          "size": 64193,
+          "sha256": "8f9ad721c7de4e7506d4ddff61a21bda4b2f5eeb7f8221249fda7b64aeb44ac5"
+        },
+        {
+          "path": "research/next-round/K12/data/K12_bdg1_schools_qc.csv",
+          "blob": "4ff3f8a3df574622450109117aaf68f5af9951eb",
+          "size": 5296,
+          "sha256": "1b074da18efbead189dafb32dd3fc23fb1ad63f85f402aa48bbefd1763784ab4"
+        },
+        {
+          "path": "research/next-round/K12/data/K12_provenance.json",
+          "blob": "70f4a43a9bfc577f0e1866c6c770cc9096d22d75",
+          "size": 1139,
+          "sha256": "9a56a7a0f1c6d4173aa00b71fac2d78645cd18235ebd9672b8457cbae5a0b1d8"
+        },
+        {
+          "path": "research/next-round/K12/results/K12_baseline_results.json",
+          "blob": "a18986daf80da516ba6aa0518413822ce64ff806",
+          "size": 3406,
+          "sha256": "74c59f53fc7b92932aade41fdd0a584ac07b9a6b3f859d952dbf33bc5d47fcb3"
+        },
+        {
+          "path": "research/next-round/K12/results/K12_uk_schools_eui_ranking.csv",
+          "blob": "25a2e5ba4bcd4ce856862b6eeef7bd8cdd5f4091",
+          "size": 11269,
+          "sha256": "502ca11b6b4c255a4cb00804234c1ab92bfa1ef3746671533782d29ef87ab8cc"
+        },
+        {
+          "path": "research/next-round/K12/scripts/k12_build_extract.py",
+          "blob": "8a9e72e57e231c61a9bf58af504f4d40b1f3f50f",
+          "size": 6272,
+          "sha256": "0e539f9b40641522f3be469dd712dd6de5337f15651697629139c34ae8870883"
+        },
+        {
+          "path": "research/next-round/K12/scripts/k12_eui_baseline.py",
+          "blob": "db7d35d9a2a4fb3c0e291f4143ceb01aaca720c7",
+          "size": 8131,
+          "sha256": "64e4833df83caa3d0e847bf1d405f0767f251de3ed6fed64b9eccce730ac78fa"
+        }
+      ],
+      "status": "ok"
+    }
+  ]
+}
