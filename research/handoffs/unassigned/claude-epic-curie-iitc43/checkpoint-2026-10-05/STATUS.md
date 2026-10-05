@@ -27,14 +27,19 @@
 - Базовый коммит: `834a25fb860dd5514d02c9274b70d7bf8a53a79c`
   («Add presentation and README link»), совпадает с `origin/main` на момент
   проверки.
-- На удалённом репозитории на момент проверки была только ветка `main`.
+- На удалённом репозитории на момент первой проверки была только ветка
+  `main`. К моменту успешного push там появились ещё
+  `claude/clever-mccarthy-pywscu` и `claude/loving-thompson-nmajdo` (другие
+  агенты); эти ветки не читались и не изменялись.
 - `main` не изменялся.
-- **Push не удался: только локальный commit.** `git push -u origin
-  claude/epic-curie-iitc43` → `403`: «Claude doesn't have GitHub access to
-  diiaanns07-droid/GOV_DIPLOME for your organization» (gate
-  `repo_not_connected`, на уровне учётной записи). Нужно установить Claude
-  GitHub App на репозиторий или заново подключить GitHub в настройках
-  claude.ai. Файл передан пользователю как patch.
+- **Push.** Первые две попытки `git push -u origin claude/epic-curie-iitc43`
+  вернули `403` («Claude doesn't have GitHub access to
+  diiaanns07-droid/GOV_DIPLOME for your organization», gate
+  `repo_not_connected`, на уровне учётной записи); тогда коммит был передан
+  пользователю как patch. После того как владелец исправил доступ, третья
+  попытка прошла: создана удалённая ветка `claude/epic-curie-iitc43` на
+  `f80514d89239cbe5eabfcbfd59b15688922b5185`. Эта правка STATUS.md отправлена
+  следующим коммитом.
 
 ## Что сделано (фактически)
 
@@ -63,7 +68,8 @@
 | `git status` до изменений | чистое дерево |
 | поиск research-файлов / evidence.json / ZIP | ничего не найдено (кроме старых geo-данных Астаны в `data/`, см. выше) |
 | `git diff --cached --stat` перед commit | только этот STATUS.md |
-| `git push -u origin claude/epic-curie-iitc43` | **403, отказ** — только локальный commit |
+| `git push -u origin claude/epic-curie-iitc43` (попытки 1–2) | **403, отказ** |
+| `git push -u origin claude/epic-curie-iitc43` (попытка 3, после исправления доступа) | успех, `* [new branch]`, удалённый SHA `f80514d…` подтверждён `git ls-remote` |
 | поиск токенов/секретов в добавленном файле | не найдено |
 | синтаксис новых JSON | новых JSON нет |
 | тесты продукта | не запускались: исполнимый код не менялся |
