@@ -1,0 +1,77 @@
+{
+ "copied_with": "python subprocess.check_output(git show) + Path.write_bytes; git blob verified",
+ "files": [
+  {
+   "local": "research/round-4-results/K05/inputs/k10_r3/data/shymkent/places_social.geojson",
+   "source_branch": "claude/save-work-handoff-j7pc05",
+   "source_sha": "ea703f1ddd3a411430a981164a78a7dda64ec909",
+   "source_path": "research/round-3-results/K10/data/shymkent/places_social.geojson",
+   "git_blob": "08954a89355a067aba96b4ea677b99449708042d",
+   "sha256": "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7",
+   "bytes": 66574
+  },
+  {
+   "local": "research/round-4-results/K05/inputs/k10_r3/data/astana/places_social.geojson",
+   "source_branch": "claude/save-work-handoff-j7pc05",
+   "source_sha": "ea703f1ddd3a411430a981164a78a7dda64ec909",
+   "source_path": "research/round-3-results/K10/data/astana/places_social.geojson",
+   "git_blob": "b7d2338085f65dfd3935e83e7641e8db7b64c7ed",
+   "sha256": "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343",
+   "bytes": 78960
+  },
+  {
+   "local": "research/round-4-results/K05/inputs/k10_r3/package_manifest.json",
+   "source_branch": "claude/save-work-handoff-j7pc05",
+   "source_sha": "ea703f1ddd3a411430a981164a78a7dda64ec909",
+   "source_path": "research/round-3-results/K10/package_manifest.json",
+   "git_blob": "09020f3b71a304efacdf5a4ced59a0c94b252011",
+   "sha256": "0616c08b65285ed4a5324c9e0238a31bec004857705cdb22c6b26e032fa4551d",
+   "bytes": 7764
+  },
+  {
+   "local": "research/round-4-results/K05/inputs/k10_r3/selection/shymkent_bbox_selection.json",
+   "source_branch": "claude/save-work-handoff-j7pc05",
+   "source_sha": "ea703f1ddd3a411430a981164a78a7dda64ec909",
+   "source_path": "research/round-3-results/K10/selection/shymkent_bbox_selection.json",
+   "git_blob": "96df8a342f7b70dc1af9d7137598feaefef33d97",
+   "sha256": "5d76ee95e214e52390ad6b933b8e0374b088aa97df9b10a03c82e42a0e76e862",
+   "bytes": 1563
+  },
+  {
+   "local": "research/round-4-results/K05/inputs/k10_r3/selection/astana_bbox_selection.json",
+   "source_branch": "claude/save-work-handoff-j7pc05",
+   "source_sha": "ea703f1ddd3a411430a981164a78a7dda64ec909",
+   "source_path": "research/round-3-results/K10/selection/astana_bbox_selection.json",
+   "git_blob": "b1943e25101b46e4ba85ab99a03e5bc8f2fa08e7",
+   "sha256": "3643892ff81e4db65a18a1a8fc397db2c47e3e8d0d23fd32c07c8243aac979a8",
+   "bytes": 1531
+  },
+  {
+   "local": "research/round-4-results/K05/inputs/k10_r3/tests/expected_counts.json",
+   "source_branch": "claude/save-work-handoff-j7pc05",
+   "source_sha": "ea703f1ddd3a411430a981164a78a7dda64ec909",
+   "source_path": "research/round-3-results/K10/tests/expected_counts.json",
+   "git_blob": "7794cb0cfff9962e51b5dac9c241a156610e7ca7",
+   "sha256": "9aa1937f72b8309b51bc6dbb63214afea0d2cfcc929fd25ca68430ee36e3f3f3",
+   "bytes": 1148
+  },
+  {
+   "local": "research/round-4-results/K05/inputs/k10_r3/scripts/k10_rules.py",
+   "source_branch": "claude/save-work-handoff-j7pc05",
+   "source_sha": "ea703f1ddd3a411430a981164a78a7dda64ec909",
+   "source_path": "research/round-3-results/K10/scripts/k10_rules.py",
+   "git_blob": "14350487185e28c4652b5cc2483e69cab5d335ec",
+   "sha256": "28f4c1eff7a5a98ee2b84b376bc7448303db75bf6edecda77e4d9c178a838591",
+   "bytes": 3142
+  },
+  {
+   "local": "research/round-4-results/K05/inputs/k10_r3/README.md",
+   "source_branch": "claude/save-work-handoff-j7pc05",
+   "source_sha": "ea703f1ddd3a411430a981164a78a7dda64ec909",
+   "source_path": "research/round-3-results/K10/README.md",
+   "git_blob": "5e9cbde24fd630f51a5003ac8920270557c14a55",
+   "sha256": "4c00694f213eea98261f80ebb3b1183700d2c201c2424fc1343f52559f91f5ea",
+   "bytes": 6706
+  }
+ ]
+}

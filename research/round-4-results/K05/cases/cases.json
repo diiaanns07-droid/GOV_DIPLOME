@@ -1,0 +1,1380 @@
+{
+ "real_zero": {
+  "schema_version": "k05-obs-v1.2",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.k10sq_r11_c12",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "unit": "records",
+  "kind": "derived",
+  "missing_reason": null,
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/part-00014-1d36203b-4312-5a97-b9e0-5c110ae7a274-c000.zstd.parquet",
+   "path": "research/round-4-results/K05/inputs/k10_r3/data/shymkent/places_social.geojson",
+   "sha256": "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7",
+   "retrieved_at": "2026-10-05T06:18:23+00:00",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0",
+   "query": "point within bbox AND K10 social rule (k10_rules.social_group)",
+   "evidence": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909; row_groups [90]",
+   "locator": "research/round-4-results/K05/inputs/k10_r3/data/shymkent/places_social.geojson#features[k10_group=government_office][confidence>=0.5]"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "k10_r3_square:r11_c12@5d76ee95e214",
+  "spatial_unit": {
+   "type": "bbox",
+   "crs": "EPSG:4326",
+   "bbox": [
+    69.593365,
+    42.306645,
+    69.617658,
+    42.324611
+   ],
+   "edges_inclusive": true,
+   "area_km2": null,
+   "geometry_source": "research/round-4-results/K05/inputs/k10_r3/selection/shymkent_bbox_selection.json",
+   "geometry_sha256": "5d76ee95e214e52390ad6b933b8e0374b088aa97df9b10a03c82e42a0e76e862",
+   "overlaps_districts": {
+    "Еңбекші ауданы": 0.4639,
+    "Әл-Фараби ауданы": 0.5361
+   }
+  },
+  "coverage": {
+   "complete": true,
+   "scope": "все записи выпуска с точкой в квадрате (полный ответ запроса), не реестр района/города",
+   "selection": "без лимита; правило группы K10 social_group",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "max_age_days": 45,
+  "note": "квадрат делит районы {'Еңбекші ауданы': 0.4639, 'Әл-Фараби ауданы': 0.5361}; записей ближе 100 м к краю: 6",
+  "obs_id": "kz.shymkent.k10sq_r11_c12.overture_place_records.government_office.conf_ge_0_5@2026-09-23.1",
+  "indicator_id": "overture_place_records.government_office.conf_ge_0_5",
+  "value": 0,
+  "value_status": "reported_zero",
+  "derivation": "count(features: k10_group=government_office, confidence>=0.5) в квадрате",
+  "method": {
+   "id": "k10r3_package+k05r4_adapter",
+   "steps": [
+    "K10 download.py: точка в bbox И правило social_group, выпуск 2026-09-23.1",
+    "K05: счёт записей группы с confidence >= 0.5; confidence=null не считается"
+   ],
+   "parameters": {
+    "confidence_min": 0.5,
+    "bbox": [
+     69.593365,
+     42.306645,
+     69.617658,
+     42.324611
+    ],
+    "k10_ref": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909"
+   }
+  }
+ },
+ "missing_not_zero": [
+  {
+   "schema_version": "k05-obs-v1.2",
+   "city_id": "kz.shymkent",
+   "geo_unit_id": "kz.shymkent.k10sq_r11_c12",
+   "period": "2026-09-23",
+   "release": "2026-09-23.1",
+   "unit": "records",
+   "kind": "derived",
+   "missing_reason": "not_collected",
+   "source": {
+    "source_id": "overture-places-2026-09-23.1",
+    "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/part-00014-1d36203b-4312-5a97-b9e0-5c110ae7a274-c000.zstd.parquet",
+    "path": "research/round-4-results/K05/inputs/k10_r3/data/shymkent/places_social.geojson",
+    "sha256": "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7",
+    "retrieved_at": "2026-10-05T06:18:23+00:00",
+    "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0",
+    "query": "point within bbox AND K10 social rule (k10_rules.social_group)",
+    "evidence": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909; row_groups [90]",
+    "locator": "нет: категория не извлекалась"
+   },
+   "data_version": "overture@2026-09-23.1",
+   "boundary_version": "k10_r3_square:r11_c12@5d76ee95e214",
+   "spatial_unit": {
+    "type": "bbox",
+    "crs": "EPSG:4326",
+    "bbox": [
+     69.593365,
+     42.306645,
+     69.617658,
+     42.324611
+    ],
+    "edges_inclusive": true,
+    "area_km2": null,
+    "geometry_source": "research/round-4-results/K05/inputs/k10_r3/selection/shymkent_bbox_selection.json",
+    "geometry_sha256": "5d76ee95e214e52390ad6b933b8e0374b088aa97df9b10a03c82e42a0e76e862",
+    "overlaps_districts": {
+     "Еңбекші ауданы": 0.4639,
+     "Әл-Фараби ауданы": 0.5361
+    }
+   },
+   "coverage": {
+    "complete": false,
+    "scope": "все записи выпуска с точкой в квадрате (полный ответ запроса), не реестр района/города",
+    "selection": "категория не извлекалась",
+    "area_fraction": 1.0,
+    "cap_per_group": null
+   },
+   "max_age_days": 45,
+   "note": "квадрат делит районы {'Еңбекші ауданы': 0.4639, 'Әл-Фараби ауданы': 0.5361}; записей ближе 100 м к краю: 6",
+   "obs_id": "kz.shymkent.k10sq_r11_c12.overture_place_records.park.conf_ge_0_0@2026-09-23.1",
+   "indicator_id": "overture_place_records.park.conf_ge_0_0",
+   "value": null,
+   "value_status": "missing",
+   "derivation": "не вычислялось: категория park не извлекалась",
+   "method": {
+    "id": "not_collected",
+    "steps": [
+     "группа park не входит в K10 social_group; выгрузка её не содержит"
+    ]
+   }
+  },
+  {
+   "schema_version": "k05-obs-v1.2",
+   "city_id": "kz.astana",
+   "geo_unit_id": "kz.astana.k10sq_r17_c7",
+   "period": "2026-09-23",
+   "release": "2026-09-23.1",
+   "unit": "records",
+   "kind": "derived",
+   "missing_reason": "not_collected",
+   "source": {
+    "source_id": "overture-places-2026-09-23.1",
+    "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/part-00014-1d36203b-4312-5a97-b9e0-5c110ae7a274-c000.zstd.parquet",
+    "path": "research/round-4-results/K05/inputs/k10_r3/data/astana/places_social.geojson",
+    "sha256": "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343",
+    "retrieved_at": "2026-10-05T06:19:53+00:00",
+    "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0",
+    "query": "point within bbox AND K10 social rule (k10_rules.social_group)",
+    "evidence": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909; row_groups [91]",
+    "locator": "нет: категория не извлекалась"
+   },
+   "data_version": "overture@2026-09-23.1",
+   "boundary_version": "k10_r3_square:r17_c7@3643892ff81e",
+   "spatial_unit": {
+    "type": "bbox",
+    "crs": "EPSG:4326",
+    "bbox": [
+     71.418372,
+     51.163033,
+     71.447,
+     51.181
+    ],
+    "edges_inclusive": true,
+    "area_km2": null,
+    "geometry_source": "research/round-4-results/K05/inputs/k10_r3/selection/astana_bbox_selection.json",
+    "geometry_sha256": "3643892ff81e4db65a18a1a8fc397db2c47e3e8d0d23fd32c07c8243aac979a8",
+    "overlaps_districts": {
+     "Байқоңыр ауданы": 0.6513,
+     "Сарыарқа ауданы": 0.3487
+    }
+   },
+   "coverage": {
+    "complete": false,
+    "scope": "все записи выпуска с точкой в квадрате (полный ответ запроса), не реестр района/города",
+    "selection": "категория не извлекалась",
+    "area_fraction": 1.0,
+    "cap_per_group": null
+   },
+   "max_age_days": 45,
+   "note": "квадрат делит районы {'Байқоңыр ауданы': 0.6513, 'Сарыарқа ауданы': 0.3487}; записей ближе 100 м к краю: 8",
+   "obs_id": "kz.astana.k10sq_r17_c7.overture_place_records.park.conf_ge_0_0@2026-09-23.1",
+   "indicator_id": "overture_place_records.park.conf_ge_0_0",
+   "value": null,
+   "value_status": "missing",
+   "derivation": "не вычислялось: категория park не извлекалась",
+   "method": {
+    "id": "not_collected",
+    "steps": [
+     "группа park не входит в K10 social_group; выгрузка её не содержит"
+    ]
+   }
+  }
+ ],
+ "period_mix": [
+  {
+   "schema_version": "k05-obs-v1.2",
+   "city_id": "kz.shymkent",
+   "geo_unit_id": "kz.shymkent.k10sq_r11_c12",
+   "period": "2026-09-23",
+   "release": "2026-09-23.1",
+   "unit": "records",
+   "kind": "derived",
+   "missing_reason": null,
+   "source": {
+    "source_id": "overture-places-2026-09-23.1",
+    "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/part-00014-1d36203b-4312-5a97-b9e0-5c110ae7a274-c000.zstd.parquet",
+    "path": "research/round-4-results/K05/inputs/k10_r3/data/shymkent/places_social.geojson",
+    "sha256": "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7",
+    "retrieved_at": "2026-10-05T06:18:23+00:00",
+    "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0",
+    "query": "point within bbox AND K10 social rule (k10_rules.social_group)",
+    "evidence": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909; row_groups [90]",
+    "locator": "research/round-4-results/K05/inputs/k10_r3/data/shymkent/places_social.geojson#features[k10_group=school][confidence>=0.5]"
+   },
+   "data_version": "overture@2026-09-23.1",
+   "boundary_version": "k10_r3_square:r11_c12@5d76ee95e214",
+   "spatial_unit": {
+    "type": "bbox",
+    "crs": "EPSG:4326",
+    "bbox": [
+     69.593365,
+     42.306645,
+     69.617658,
+     42.324611
+    ],
+    "edges_inclusive": true,
+    "area_km2": null,
+    "geometry_source": "research/round-4-results/K05/inputs/k10_r3/selection/shymkent_bbox_selection.json",
+    "geometry_sha256": "5d76ee95e214e52390ad6b933b8e0374b088aa97df9b10a03c82e42a0e76e862",
+    "overlaps_districts": {
+     "Еңбекші ауданы": 0.4639,
+     "Әл-Фараби ауданы": 0.5361
+    }
+   },
+   "coverage": {
+    "complete": true,
+    "scope": "все записи выпуска с точкой в квадрате (полный ответ запроса), не реестр района/города",
+    "selection": "без лимита; правило группы K10 social_group",
+    "area_fraction": 1.0,
+    "cap_per_group": null
+   },
+   "max_age_days": 45,
+   "note": "квадрат делит районы {'Еңбекші ауданы': 0.4639, 'Әл-Фараби ауданы': 0.5361}; записей ближе 100 м к краю: 6",
+   "obs_id": "kz.shymkent.k10sq_r11_c12.overture_place_records.school.conf_ge_0_5@2026-09-23.1",
+   "indicator_id": "overture_place_records.school.conf_ge_0_5",
+   "value": 9,
+   "value_status": "reported",
+   "derivation": "count(features: k10_group=school, confidence>=0.5) в квадрате",
+   "method": {
+    "id": "k10r3_package+k05r4_adapter",
+    "steps": [
+     "K10 download.py: точка в bbox И правило social_group, выпуск 2026-09-23.1",
+     "K05: счёт записей группы с confidence >= 0.5; confidence=null не считается"
+    ],
+    "parameters": {
+     "confidence_min": 0.5,
+     "bbox": [
+      69.593365,
+      42.306645,
+      69.617658,
+      42.324611
+     ],
+     "k10_ref": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909"
+    }
+   }
+  },
+  {
+   "schema_version": "k05-obs-v1.2",
+   "city_id": "kz.shymkent",
+   "geo_unit_id": "kz.shymkent.k10sq_r11_c12",
+   "period": "2026-08-19",
+   "release": "2026-08-19.0",
+   "unit": "records",
+   "kind": "synthetic",
+   "missing_reason": null,
+   "source": {
+    "source_id": "overture-places-2026-09-23.1",
+    "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/part-00014-1d36203b-4312-5a97-b9e0-5c110ae7a274-c000.zstd.parquet",
+    "path": "research/round-4-results/K05/inputs/k10_r3/data/shymkent/places_social.geojson",
+    "sha256": "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7",
+    "retrieved_at": "2026-10-05T06:18:23+00:00",
+    "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0",
+    "query": "point within bbox AND K10 social rule (k10_rules.social_group)",
+    "evidence": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909; row_groups [90]",
+    "locator": "research/round-4-results/K05/inputs/k10_r3/data/shymkent/places_social.geojson#features[k10_group=school][confidence>=0.5]"
+   },
+   "data_version": "synthetic:k05r4-fixture",
+   "boundary_version": "k10_r3_square:r11_c12@5d76ee95e214",
+   "spatial_unit": {
+    "type": "bbox",
+    "crs": "EPSG:4326",
+    "bbox": [
+     69.62,
+     42.33,
+     69.64,
+     42.35
+    ],
+    "edges_inclusive": true,
+    "area_km2": null,
+    "geometry_source": "research/round-4-results/K05/inputs/k10_r3/selection/shymkent_bbox_selection.json",
+    "geometry_sha256": "5d76ee95e214e52390ad6b933b8e0374b088aa97df9b10a03c82e42a0e76e862",
+    "overlaps_districts": {
+     "Еңбекші ауданы": 0.4639,
+     "Әл-Фараби ауданы": 0.5361
+    }
+   },
+   "coverage": {
+    "complete": true,
+    "scope": "все записи выпуска с точкой в квадрате (полный ответ запроса), не реестр района/города",
+    "selection": "без лимита; правило группы K10 social_group",
+    "area_fraction": 1.0,
+    "cap_per_group": null
+   },
+   "max_age_days": 45,
+   "note": "ФИКСТУРА: другой период; значение из 2026-08-19.0 не наблюдалось",
+   "obs_id": "FIXTURE.period_shift",
+   "indicator_id": "overture_place_records.school.conf_ge_0_5",
+   "value": 9,
+   "value_status": "reported",
+   "derivation": "count(features: k10_group=school, confidence>=0.5) в квадрате",
+   "method": {
+    "id": "k10r3_package+k05r4_adapter",
+    "steps": [
+     "K10 download.py: точка в bbox И правило social_group, выпуск 2026-09-23.1",
+     "K05: счёт записей группы с confidence >= 0.5; confidence=null не считается"
+    ],
+    "parameters": {
+     "confidence_min": 0.5,
+     "bbox": [
+      69.593365,
+      42.306645,
+      69.617658,
+      42.324611
+     ],
+     "k10_ref": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909"
+    }
+   }
+  }
+ ],
+ "geometry_mix_legacy_district": [
+  {
+   "schema_version": "k05-obs-v1.2",
+   "city_id": "kz.shymkent",
+   "geo_unit_id": "kz.shymkent.k10sq_r11_c12",
+   "period": "2026-09-23",
+   "release": "2026-09-23.1",
+   "unit": "records",
+   "kind": "derived",
+   "missing_reason": null,
+   "source": {
+    "source_id": "overture-places-2026-09-23.1",
+    "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/part-00014-1d36203b-4312-5a97-b9e0-5c110ae7a274-c000.zstd.parquet",
+    "path": "research/round-4-results/K05/inputs/k10_r3/data/shymkent/places_social.geojson",
+    "sha256": "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7",
+    "retrieved_at": "2026-10-05T06:18:23+00:00",
+    "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0",
+    "query": "point within bbox AND K10 social rule (k10_rules.social_group)",
+    "evidence": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909; row_groups [90]",
+    "locator": "research/round-4-results/K05/inputs/k10_r3/data/shymkent/places_social.geojson#features[k10_group=school][confidence>=0.5]"
+   },
+   "data_version": "overture@2026-09-23.1",
+   "boundary_version": "k10_r3_square:r11_c12@5d76ee95e214",
+   "spatial_unit": {
+    "type": "bbox",
+    "crs": "EPSG:4326",
+    "bbox": [
+     69.593365,
+     42.306645,
+     69.617658,
+     42.324611
+    ],
+    "edges_inclusive": true,
+    "area_km2": null,
+    "geometry_source": "research/round-4-results/K05/inputs/k10_r3/selection/shymkent_bbox_selection.json",
+    "geometry_sha256": "5d76ee95e214e52390ad6b933b8e0374b088aa97df9b10a03c82e42a0e76e862",
+    "overlaps_districts": {
+     "Еңбекші ауданы": 0.4639,
+     "Әл-Фараби ауданы": 0.5361
+    }
+   },
+   "coverage": {
+    "complete": true,
+    "scope": "все записи выпуска с точкой в квадрате (полный ответ запроса), не реестр района/города",
+    "selection": "без лимита; правило группы K10 social_group",
+    "area_fraction": 1.0,
+    "cap_per_group": null
+   },
+   "max_age_days": 45,
+   "note": "квадрат делит районы {'Еңбекші ауданы': 0.4639, 'Әл-Фараби ауданы': 0.5361}; записей ближе 100 м к краю: 6",
+   "obs_id": "kz.shymkent.k10sq_r11_c12.overture_place_records.school.conf_ge_0_5@2026-09-23.1",
+   "indicator_id": "overture_place_records.school.conf_ge_0_5",
+   "value": 9,
+   "value_status": "reported",
+   "derivation": "count(features: k10_group=school, confidence>=0.5) в квадрате",
+   "method": {
+    "id": "k10r3_package+k05r4_adapter",
+    "steps": [
+     "K10 download.py: точка в bbox И правило social_group, выпуск 2026-09-23.1",
+     "K05: счёт записей группы с confidence >= 0.5; confidence=null не считается"
+    ],
+    "parameters": {
+     "confidence_min": 0.5,
+     "bbox": [
+      69.593365,
+      42.306645,
+      69.617658,
+      42.324611
+     ],
+     "k10_ref": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909"
+    }
+   }
+  },
+  {
+   "schema_version": "k05-obs-v1.1",
+   "obs_id": "kz.shymkent.enbekshi.overture_place_records.school.conf_ge_0_5@2026-09-23.1",
+   "city_id": "kz.shymkent",
+   "geo_unit_id": "kz.shymkent.enbekshi",
+   "indicator_id": "overture_place_records.school.conf_ge_0_5",
+   "period": "2026-09-23",
+   "release": "2026-09-23.1",
+   "value": 14,
+   "unit": "records",
+   "value_status": "reported",
+   "missing_reason": null,
+   "kind": "derived",
+   "source": {
+    "source_id": "overture-places-2026-09-23.1",
+    "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+    "sha256": "39a17dcd8c600d60e00cecccb093c598563b04b88d6a40bb236184b059c9aa1b",
+    "retrieved_at": "2026-10-05T05:24:23+00:00",
+    "locator": "K10 E02 results[city=shymkent].counts_by_threshold['confidence>=0.5']['Еңбекші ауданы']['school']",
+    "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0 (см. K10 datasets.json)",
+    "evidence": "research/round-3-results/K05/inputs/k10/results/E02_social_poi_by_district.json sha256=ee7d8d36d4bb10b01a4b450da159fe77c455385bf2275b9a75571a60c3627cad; raw extract не в git"
+   },
+   "data_version": "overture@2026-09-23.1",
+   "boundary_version": "overture:2026-09-23.1/osm:r5551117@29",
+   "coverage": {
+    "complete": true,
+    "scope": "записи Overture 2026-09-23.1 с точкой в полигоне района; не реестр и не все объекты",
+    "selection": "все записи выгрузки K10 в рамке, без лимита",
+    "area_fraction": 1.0,
+    "cap_per_group": null
+   },
+   "method": {
+    "id": "k10_e02_places_by_district+k05r3_adapter",
+    "steps": [
+     "K10 overture_extract.py: строки places выпуска 2026-09-23.1, bbox [69.35, 42.1, 69.95, 42.55]",
+     "K10 places_by_district.py: точка в полигоне города и района того же выпуска, группа по K10 group()",
+     "фильтр confidence >= 0.5; счёт записей без дедупликации",
+     "K05 adapter: отсутствующая в E02 группа = 0 записей; охват = доля площади района в bbox"
+    ],
+    "parameters": {
+     "confidence_min": 0.5,
+     "query_bbox": [
+      69.35,
+      42.1,
+      69.95,
+      42.55
+     ],
+     "release": "2026-09-23.1",
+     "k10_ref": "claude/save-work-handoff-j7pc05@e91898d596164bcf6e853b921a49f82126074a35",
+     "group_rule": "places_by_district.group()"
+    }
+   },
+   "max_age_days": 45,
+   "derivation": "count(records: group=g, confidence>=t, point in district polygon)",
+   "note": null
+  }
+ ],
+ "geometry_overlap": [
+  {
+   "schema_version": "k05-obs-v1.2",
+   "city_id": "kz.shymkent",
+   "geo_unit_id": "kz.shymkent.k10sq_r11_c12",
+   "period": "2026-09-23",
+   "release": "2026-09-23.1",
+   "unit": "records",
+   "kind": "derived",
+   "missing_reason": null,
+   "source": {
+    "source_id": "overture-places-2026-09-23.1",
+    "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/part-00014-1d36203b-4312-5a97-b9e0-5c110ae7a274-c000.zstd.parquet",
+    "path": "research/round-4-results/K05/inputs/k10_r3/data/shymkent/places_social.geojson",
+    "sha256": "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7",
+    "retrieved_at": "2026-10-05T06:18:23+00:00",
+    "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0",
+    "query": "point within bbox AND K10 social rule (k10_rules.social_group)",
+    "evidence": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909; row_groups [90]",
+    "locator": "research/round-4-results/K05/inputs/k10_r3/data/shymkent/places_social.geojson#features[k10_group=pharmacy][confidence>=0.5]"
+   },
+   "data_version": "overture@2026-09-23.1",
+   "boundary_version": "k10_r3_square:r11_c12@5d76ee95e214",
+   "spatial_unit": {
+    "type": "bbox",
+    "crs": "EPSG:4326",
+    "bbox": [
+     69.593365,
+     42.306645,
+     69.617658,
+     42.324611
+    ],
+    "edges_inclusive": true,
+    "area_km2": null,
+    "geometry_source": "research/round-4-results/K05/inputs/k10_r3/selection/shymkent_bbox_selection.json",
+    "geometry_sha256": "5d76ee95e214e52390ad6b933b8e0374b088aa97df9b10a03c82e42a0e76e862",
+    "overlaps_districts": {
+     "Еңбекші ауданы": 0.4639,
+     "Әл-Фараби ауданы": 0.5361
+    }
+   },
+   "coverage": {
+    "complete": true,
+    "scope": "все записи выпуска с точкой в квадрате (полный ответ запроса), не реестр района/города",
+    "selection": "без лимита; правило группы K10 social_group",
+    "area_fraction": 1.0,
+    "cap_per_group": null
+   },
+   "max_age_days": 45,
+   "note": "квадрат делит районы {'Еңбекші ауданы': 0.4639, 'Әл-Фараби ауданы': 0.5361}; записей ближе 100 м к краю: 6",
+   "obs_id": "kz.shymkent.k10sq_r11_c12.overture_place_records.pharmacy.conf_ge_0_5@2026-09-23.1",
+   "indicator_id": "overture_place_records.pharmacy.conf_ge_0_5",
+   "value": 3,
+   "value_status": "reported",
+   "derivation": "count(features: k10_group=pharmacy, confidence>=0.5) в квадрате",
+   "method": {
+    "id": "k10r3_package+k05r4_adapter",
+    "steps": [
+     "K10 download.py: точка в bbox И правило social_group, выпуск 2026-09-23.1",
+     "K05: счёт записей группы с confidence >= 0.5; confidence=null не считается"
+    ],
+    "parameters": {
+     "confidence_min": 0.5,
+     "bbox": [
+      69.593365,
+      42.306645,
+      69.617658,
+      42.324611
+     ],
+     "k10_ref": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909"
+    }
+   }
+  },
+  {
+   "schema_version": "k05-obs-v1.2",
+   "city_id": "kz.shymkent",
+   "geo_unit_id": "kz.shymkent.fixture_box",
+   "period": "2026-09-23",
+   "release": "2026-09-23.1",
+   "unit": "records",
+   "kind": "derived",
+   "missing_reason": null,
+   "source": {
+    "source_id": "overture-places-2026-09-23.1",
+    "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/part-00014-1d36203b-4312-5a97-b9e0-5c110ae7a274-c000.zstd.parquet",
+    "path": "research/round-4-results/K05/inputs/k10_r3/data/shymkent/places_social.geojson",
+    "sha256": "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7",
+    "retrieved_at": "2026-10-05T06:18:23+00:00",
+    "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0",
+    "query": "point within bbox AND K10 social rule (k10_rules.social_group)",
+    "evidence": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909; row_groups [90]",
+    "locator": "research/round-4-results/K05/inputs/k10_r3/data/shymkent/places_social.geojson#features[k10_group=pharmacy][confidence>=0.5]"
+   },
+   "data_version": "overture@2026-09-23.1",
+   "boundary_version": "k10_r3_square:r11_c12@5d76ee95e214",
+   "spatial_unit": {
+    "type": "bbox",
+    "crs": "EPSG:4326",
+    "bbox": [
+     69.6,
+     42.31,
+     69.63,
+     42.33
+    ],
+    "edges_inclusive": true,
+    "area_km2": null,
+    "geometry_source": "research/round-4-results/K05/inputs/k10_r3/selection/shymkent_bbox_selection.json",
+    "geometry_sha256": "5d76ee95e214e52390ad6b933b8e0374b088aa97df9b10a03c82e42a0e76e862",
+    "overlaps_districts": {
+     "Еңбекші ауданы": 0.4639,
+     "Әл-Фараби ауданы": 0.5361
+    }
+   },
+   "coverage": {
+    "complete": true,
+    "scope": "все записи выпуска с точкой в квадрате (полный ответ запроса), не реестр района/города",
+    "selection": "без лимита; правило группы K10 social_group",
+    "area_fraction": 1.0,
+    "cap_per_group": null
+   },
+   "max_age_days": 45,
+   "note": "квадрат делит районы {'Еңбекші ауданы': 0.4639, 'Әл-Фараби ауданы': 0.5361}; записей ближе 100 м к краю: 6",
+   "obs_id": "FIXTURE.overlap",
+   "indicator_id": "overture_place_records.pharmacy.conf_ge_0_5",
+   "value": 3,
+   "value_status": "reported",
+   "derivation": "count(features: k10_group=pharmacy, confidence>=0.5) в квадрате",
+   "method": {
+    "id": "k10r3_package+k05r4_adapter",
+    "steps": [
+     "K10 download.py: точка в bbox И правило social_group, выпуск 2026-09-23.1",
+     "K05: счёт записей группы с confidence >= 0.5; confidence=null не считается"
+    ],
+    "parameters": {
+     "confidence_min": 0.5,
+     "bbox": [
+      69.593365,
+      42.306645,
+      69.617658,
+      42.324611
+     ],
+     "k10_ref": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909"
+    }
+   }
+  }
+ ],
+ "unknown_period_numeric": {
+  "schema_version": "k05-obs-v1.2",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.k10sq_r11_c12",
+  "period": "unknown",
+  "release": "2026-09-23.1",
+  "unit": "records",
+  "kind": "derived",
+  "missing_reason": null,
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/part-00014-1d36203b-4312-5a97-b9e0-5c110ae7a274-c000.zstd.parquet",
+   "path": "research/round-4-results/K05/inputs/k10_r3/data/shymkent/places_social.geojson",
+   "sha256": "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7",
+   "retrieved_at": "2026-10-05T06:18:23+00:00",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0",
+   "query": "point within bbox AND K10 social rule (k10_rules.social_group)",
+   "evidence": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909; row_groups [90]",
+   "locator": "research/round-4-results/K05/inputs/k10_r3/data/shymkent/places_social.geojson#features[k10_group=school][confidence>=0.5]"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "k10_r3_square:r11_c12@5d76ee95e214",
+  "spatial_unit": {
+   "type": "bbox",
+   "crs": "EPSG:4326",
+   "bbox": [
+    69.593365,
+    42.306645,
+    69.617658,
+    42.324611
+   ],
+   "edges_inclusive": true,
+   "area_km2": null,
+   "geometry_source": "research/round-4-results/K05/inputs/k10_r3/selection/shymkent_bbox_selection.json",
+   "geometry_sha256": "5d76ee95e214e52390ad6b933b8e0374b088aa97df9b10a03c82e42a0e76e862",
+   "overlaps_districts": {
+    "Еңбекші ауданы": 0.4639,
+    "Әл-Фараби ауданы": 0.5361
+   }
+  },
+  "coverage": {
+   "complete": true,
+   "scope": "все записи выпуска с точкой в квадрате (полный ответ запроса), не реестр района/города",
+   "selection": "без лимита; правило группы K10 social_group",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "max_age_days": 45,
+  "note": "квадрат делит районы {'Еңбекші ауданы': 0.4639, 'Әл-Фараби ауданы': 0.5361}; записей ближе 100 м к краю: 6",
+  "obs_id": "kz.shymkent.k10sq_r11_c12.overture_place_records.school.conf_ge_0_5@2026-09-23.1",
+  "indicator_id": "overture_place_records.school.conf_ge_0_5",
+  "value": 9,
+  "value_status": "reported",
+  "derivation": "count(features: k10_group=school, confidence>=0.5) в квадрате",
+  "method": {
+   "id": "k10r3_package+k05r4_adapter",
+   "steps": [
+    "K10 download.py: точка в bbox И правило social_group, выпуск 2026-09-23.1",
+    "K05: счёт записей группы с confidence >= 0.5; confidence=null не считается"
+   ],
+   "parameters": {
+    "confidence_min": 0.5,
+    "bbox": [
+     69.593365,
+     42.306645,
+     69.617658,
+     42.324611
+    ],
+    "k10_ref": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909"
+   }
+  }
+ },
+ "unknown_spatial_numeric": {
+  "schema_version": "k05-obs-v1.2",
+  "city_id": "kz.shymkent",
+  "geo_unit_id": "kz.shymkent.k10sq_r11_c12",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "unit": "records",
+  "kind": "derived",
+  "missing_reason": null,
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/part-00014-1d36203b-4312-5a97-b9e0-5c110ae7a274-c000.zstd.parquet",
+   "path": "research/round-4-results/K05/inputs/k10_r3/data/shymkent/places_social.geojson",
+   "sha256": "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7",
+   "retrieved_at": "2026-10-05T06:18:23+00:00",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0",
+   "query": "point within bbox AND K10 social rule (k10_rules.social_group)",
+   "evidence": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909; row_groups [90]",
+   "locator": "research/round-4-results/K05/inputs/k10_r3/data/shymkent/places_social.geojson#features[k10_group=school][confidence>=0.5]"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "k10_r3_square:r11_c12@5d76ee95e214",
+  "spatial_unit": {
+   "type": "unknown",
+   "crs": "EPSG:4326"
+  },
+  "coverage": {
+   "complete": true,
+   "scope": "все записи выпуска с точкой в квадрате (полный ответ запроса), не реестр района/города",
+   "selection": "без лимита; правило группы K10 social_group",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "max_age_days": 45,
+  "note": "квадрат делит районы {'Еңбекші ауданы': 0.4639, 'Әл-Фараби ауданы': 0.5361}; записей ближе 100 м к краю: 6",
+  "obs_id": "kz.shymkent.k10sq_r11_c12.overture_place_records.school.conf_ge_0_5@2026-09-23.1",
+  "indicator_id": "overture_place_records.school.conf_ge_0_5",
+  "value": 9,
+  "value_status": "reported",
+  "derivation": "count(features: k10_group=school, confidence>=0.5) в квадрате",
+  "method": {
+   "id": "k10r3_package+k05r4_adapter",
+   "steps": [
+    "K10 download.py: точка в bbox И правило social_group, выпуск 2026-09-23.1",
+    "K05: счёт записей группы с confidence >= 0.5; confidence=null не считается"
+   ],
+   "parameters": {
+    "confidence_min": 0.5,
+    "bbox": [
+     69.593365,
+     42.306645,
+     69.617658,
+     42.324611
+    ],
+    "k10_ref": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909"
+   }
+  }
+ },
+ "unknown_confidence_qa": {
+  "errors": [],
+  "warnings": [
+   {
+    "code": "CONFIDENCE_UNKNOWN",
+    "id": "01961e84-815f-4bd1-85c3-6bf1734256ec"
+   },
+   {
+    "code": "POSSIBLE_DUPLICATE",
+    "rule": "same_address",
+    "distance_m": 0.0,
+    "a": {
+     "id": "1b81c33b-d088-46b1-a390-8d6d81102c21",
+     "name": "Эко центр доктора Тарарака",
+     "group": "hospital"
+    },
+    "b": {
+     "id": "fd50a858-462d-477f-8bc6-a8d3e03a9576",
+     "name": "Техникалық лицей",
+     "group": "school"
+    }
+   },
+   {
+    "code": "POSSIBLE_DUPLICATE",
+    "rule": "same_address",
+    "distance_m": 0.0,
+    "a": {
+     "id": "50802484-b7f9-492e-8a4c-f75312fc7751",
+     "name": "Kosmetolog Жазира",
+     "group": "outpatient_clinic"
+    },
+    "b": {
+     "id": "622b4786-89fa-4853-b109-18054e3ebe0d",
+     "name": "Aza Бизнес Страница Шымкент",
+     "group": "outpatient_clinic"
+    }
+   },
+   {
+    "code": "POSSIBLE_DUPLICATE",
+    "rule": "same_address",
+    "distance_m": 0.0,
+    "a": {
+     "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+     "name": "Express toefl",
+     "group": "school"
+    },
+    "b": {
+     "id": "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6",
+     "name": "Kasipkoy.kurs",
+     "group": "school"
+    }
+   },
+   {
+    "code": "COLOCATED",
+    "lon": 69.5958,
+    "lat": 42.3167,
+    "n": 10,
+    "names": [
+     "Dr.Sattarkulovich",
+     "Сункар",
+     "Reklama 8888",
+     "Baiterek School",
+     "КИПУДН - Казахстанский инженерно-педагогический университет Дружбы народов",
+     "Казахстан",
+     "Реклама 3131",
+     "Фитофарм",
+     "Джафар Стоматология",
+     "Стоматологическое оборудование"
+    ]
+   },
+   {
+    "code": "COLOCATED",
+    "lon": 69.60702,
+    "lat": 42.31757,
+    "n": 4,
+    "names": [
+     "South kazakh medical university",
+     "Kosmetolog Жазира",
+     "Aza Бизнес Страница Шымкент",
+     "АССОР"
+    ]
+   }
+  ]
+ },
+ "repeated_object_qa": {
+  "errors": [
+   {
+    "code": "DUPLICATE_ID",
+    "id": "01961e84-815f-4bd1-85c3-6bf1734256ec"
+   }
+  ],
+  "warnings": [
+   {
+    "code": "POSSIBLE_DUPLICATE",
+    "rule": "same_address",
+    "distance_m": 0.0,
+    "a": {
+     "id": "1b81c33b-d088-46b1-a390-8d6d81102c21",
+     "name": "Эко центр доктора Тарарака",
+     "group": "hospital"
+    },
+    "b": {
+     "id": "fd50a858-462d-477f-8bc6-a8d3e03a9576",
+     "name": "Техникалық лицей",
+     "group": "school"
+    }
+   },
+   {
+    "code": "POSSIBLE_DUPLICATE",
+    "rule": "same_address",
+    "distance_m": 0.0,
+    "a": {
+     "id": "50802484-b7f9-492e-8a4c-f75312fc7751",
+     "name": "Kosmetolog Жазира",
+     "group": "outpatient_clinic"
+    },
+    "b": {
+     "id": "622b4786-89fa-4853-b109-18054e3ebe0d",
+     "name": "Aza Бизнес Страница Шымкент",
+     "group": "outpatient_clinic"
+    }
+   },
+   {
+    "code": "POSSIBLE_DUPLICATE",
+    "rule": "same_address",
+    "distance_m": 0.0,
+    "a": {
+     "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+     "name": "Express toefl",
+     "group": "school"
+    },
+    "b": {
+     "id": "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6",
+     "name": "Kasipkoy.kurs",
+     "group": "school"
+    }
+   },
+   {
+    "code": "COLOCATED",
+    "lon": 69.5958,
+    "lat": 42.3167,
+    "n": 10,
+    "names": [
+     "Dr.Sattarkulovich",
+     "Сункар",
+     "Reklama 8888",
+     "Baiterek School",
+     "КИПУДН - Казахстанский инженерно-педагогический университет Дружбы народов",
+     "Казахстан",
+     "Реклама 3131",
+     "Фитофарм",
+     "Джафар Стоматология",
+     "Стоматологическое оборудование"
+    ]
+   },
+   {
+    "code": "COLOCATED",
+    "lon": 69.60702,
+    "lat": 42.31757,
+    "n": 4,
+    "names": [
+     "South kazakh medical university",
+     "Kosmetolog Жазира",
+     "Aza Бизнес Страница Шымкент",
+     "АССОР"
+    ]
+   }
+  ]
+ },
+ "real_possible_duplicates": {
+  "shymkent": [
+   {
+    "code": "POSSIBLE_DUPLICATE",
+    "rule": "same_address",
+    "distance_m": 0.0,
+    "a": {
+     "id": "1b81c33b-d088-46b1-a390-8d6d81102c21",
+     "name": "Эко центр доктора Тарарака",
+     "group": "hospital"
+    },
+    "b": {
+     "id": "fd50a858-462d-477f-8bc6-a8d3e03a9576",
+     "name": "Техникалық лицей",
+     "group": "school"
+    }
+   },
+   {
+    "code": "POSSIBLE_DUPLICATE",
+    "rule": "same_address",
+    "distance_m": 0.0,
+    "a": {
+     "id": "50802484-b7f9-492e-8a4c-f75312fc7751",
+     "name": "Kosmetolog Жазира",
+     "group": "outpatient_clinic"
+    },
+    "b": {
+     "id": "622b4786-89fa-4853-b109-18054e3ebe0d",
+     "name": "Aza Бизнес Страница Шымкент",
+     "group": "outpatient_clinic"
+    }
+   },
+   {
+    "code": "POSSIBLE_DUPLICATE",
+    "rule": "same_address",
+    "distance_m": 0.0,
+    "a": {
+     "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+     "name": "Express toefl",
+     "group": "school"
+    },
+    "b": {
+     "id": "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6",
+     "name": "Kasipkoy.kurs",
+     "group": "school"
+    }
+   },
+   {
+    "code": "COLOCATED",
+    "lon": 69.5958,
+    "lat": 42.3167,
+    "n": 10,
+    "names": [
+     "Dr.Sattarkulovich",
+     "Сункар",
+     "Reklama 8888",
+     "Baiterek School",
+     "КИПУДН - Казахстанский инженерно-педагогический университет Дружбы народов",
+     "Казахстан",
+     "Реклама 3131",
+     "Фитофарм",
+     "Джафар Стоматология",
+     "Стоматологическое оборудование"
+    ]
+   },
+   {
+    "code": "COLOCATED",
+    "lon": 69.60702,
+    "lat": 42.31757,
+    "n": 4,
+    "names": [
+     "South kazakh medical university",
+     "Kosmetolog Жазира",
+     "Aza Бизнес Страница Шымкент",
+     "АССОР"
+    ]
+   }
+  ],
+  "astana": [
+   {
+    "code": "POSSIBLE_DUPLICATE",
+    "rule": "same_address",
+    "distance_m": 9.0,
+    "a": {
+     "id": "0bbf2bc3-d703-431f-bf9a-69dbd7f6bf10",
+     "name": "Центр Профи Казахстан",
+     "group": "college_university"
+    },
+    "b": {
+     "id": "cd7f0098-c77b-4401-a428-831bf1e1685b",
+     "name": "Академия Образования Дарын",
+     "group": "college_university"
+    }
+   },
+   {
+    "code": "POSSIBLE_DUPLICATE",
+    "rule": "same_group_same_house_number",
+    "distance_m": 5.2,
+    "a": {
+     "id": "1be5a31a-4a8c-48f4-af6c-449035e7c80b",
+     "name": "Управление общественного здравоохранения г.Астаны",
+     "group": "government_office"
+    },
+    "b": {
+     "id": "5a868d86-f4eb-4c9f-bdf3-27832486db39",
+     "name": "Тілдерді дамыту басқармасы",
+     "group": "government_office"
+    }
+   },
+   {
+    "code": "POSSIBLE_DUPLICATE",
+    "rule": "same_address",
+    "distance_m": 0.0,
+    "a": {
+     "id": "1be5a31a-4a8c-48f4-af6c-449035e7c80b",
+     "name": "Управление общественного здравоохранения г.Астаны",
+     "group": "government_office"
+    },
+    "b": {
+     "id": "f8748e3f-294d-4ce4-bad0-cc6a55ee86fd",
+     "name": "Астана қаласының әкімдігі/ Акимат города Астаны",
+     "group": "government_office"
+    }
+   },
+   {
+    "code": "POSSIBLE_DUPLICATE",
+    "rule": "same_group_same_house_number",
+    "distance_m": 5.2,
+    "a": {
+     "id": "5a868d86-f4eb-4c9f-bdf3-27832486db39",
+     "name": "Тілдерді дамыту басқармасы",
+     "group": "government_office"
+    },
+    "b": {
+     "id": "f8748e3f-294d-4ce4-bad0-cc6a55ee86fd",
+     "name": "Астана қаласының әкімдігі/ Акимат города Астаны",
+     "group": "government_office"
+    }
+   },
+   {
+    "code": "POSSIBLE_DUPLICATE",
+    "rule": "same_address",
+    "distance_m": 84.2,
+    "a": {
+     "id": "79e43678-fa73-4611-93d3-c64dc30f3102",
+     "name": "Academy of Public Administration under the President of Kazakhstan",
+     "group": "college_university"
+    },
+    "b": {
+     "id": "dc334d42-5a1f-4a9d-a85b-d8dc3cfb7f59",
+     "name": "Министерство по делам государственной службы Республики Казахстан",
+     "group": "government_office"
+    }
+   }
+  ]
+ },
+ "city_mismatch_feature_qa": {
+  "errors": [
+   {
+    "code": "CITY_MISMATCH",
+    "where": "feature",
+    "id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+    "got": "astana"
+   }
+  ],
+  "warnings": [
+   {
+    "code": "POSSIBLE_DUPLICATE",
+    "rule": "same_address",
+    "distance_m": 0.0,
+    "a": {
+     "id": "1b81c33b-d088-46b1-a390-8d6d81102c21",
+     "name": "Эко центр доктора Тарарака",
+     "group": "hospital"
+    },
+    "b": {
+     "id": "fd50a858-462d-477f-8bc6-a8d3e03a9576",
+     "name": "Техникалық лицей",
+     "group": "school"
+    }
+   },
+   {
+    "code": "POSSIBLE_DUPLICATE",
+    "rule": "same_address",
+    "distance_m": 0.0,
+    "a": {
+     "id": "50802484-b7f9-492e-8a4c-f75312fc7751",
+     "name": "Kosmetolog Жазира",
+     "group": "outpatient_clinic"
+    },
+    "b": {
+     "id": "622b4786-89fa-4853-b109-18054e3ebe0d",
+     "name": "Aza Бизнес Страница Шымкент",
+     "group": "outpatient_clinic"
+    }
+   },
+   {
+    "code": "POSSIBLE_DUPLICATE",
+    "rule": "same_address",
+    "distance_m": 0.0,
+    "a": {
+     "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+     "name": "Express toefl",
+     "group": "school"
+    },
+    "b": {
+     "id": "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6",
+     "name": "Kasipkoy.kurs",
+     "group": "school"
+    }
+   },
+   {
+    "code": "COLOCATED",
+    "lon": 69.5958,
+    "lat": 42.3167,
+    "n": 10,
+    "names": [
+     "Dr.Sattarkulovich",
+     "Сункар",
+     "Reklama 8888",
+     "Baiterek School",
+     "КИПУДН - Казахстанский инженерно-педагогический университет Дружбы народов",
+     "Казахстан",
+     "Реклама 3131",
+     "Фитофарм",
+     "Джафар Стоматология",
+     "Стоматологическое оборудование"
+    ]
+   },
+   {
+    "code": "COLOCATED",
+    "lon": 69.60702,
+    "lat": 42.31757,
+    "n": 4,
+    "names": [
+     "South kazakh medical university",
+     "Kosmetolog Жазира",
+     "Aza Бизнес Страница Шымкент",
+     "АССОР"
+    ]
+   }
+  ]
+ },
+ "city_mismatch_obs": {
+  "schema_version": "k05-obs-v1.2",
+  "city_id": "kz.astana",
+  "geo_unit_id": "kz.astana.k10sq_r11_c12",
+  "period": "2026-09-23",
+  "release": "2026-09-23.1",
+  "unit": "records",
+  "kind": "derived",
+  "missing_reason": null,
+  "source": {
+   "source_id": "overture-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/part-00014-1d36203b-4312-5a97-b9e0-5c110ae7a274-c000.zstd.parquet",
+   "path": "research/round-4-results/K05/inputs/k10_r3/data/shymkent/places_social.geojson",
+   "sha256": "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7",
+   "retrieved_at": "2026-10-05T06:18:23+00:00",
+   "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0",
+   "query": "point within bbox AND K10 social rule (k10_rules.social_group)",
+   "evidence": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909; row_groups [90]",
+   "locator": "research/round-4-results/K05/inputs/k10_r3/data/shymkent/places_social.geojson#features[k10_group=school][confidence>=0.5]"
+  },
+  "data_version": "overture@2026-09-23.1",
+  "boundary_version": "k10_r3_square:r11_c12@5d76ee95e214",
+  "spatial_unit": {
+   "type": "bbox",
+   "crs": "EPSG:4326",
+   "bbox": [
+    69.593365,
+    42.306645,
+    69.617658,
+    42.324611
+   ],
+   "edges_inclusive": true,
+   "area_km2": null,
+   "geometry_source": "research/round-4-results/K05/inputs/k10_r3/selection/shymkent_bbox_selection.json",
+   "geometry_sha256": "5d76ee95e214e52390ad6b933b8e0374b088aa97df9b10a03c82e42a0e76e862",
+   "overlaps_districts": {
+    "Еңбекші ауданы": 0.4639,
+    "Әл-Фараби ауданы": 0.5361
+   }
+  },
+  "coverage": {
+   "complete": true,
+   "scope": "все записи выпуска с точкой в квадрате (полный ответ запроса), не реестр района/города",
+   "selection": "без лимита; правило группы K10 social_group",
+   "area_fraction": 1.0,
+   "cap_per_group": null
+  },
+  "max_age_days": 45,
+  "note": "квадрат делит районы {'Еңбекші ауданы': 0.4639, 'Әл-Фараби ауданы': 0.5361}; записей ближе 100 м к краю: 6",
+  "obs_id": "kz.shymkent.k10sq_r11_c12.overture_place_records.school.conf_ge_0_5@2026-09-23.1",
+  "indicator_id": "overture_place_records.school.conf_ge_0_5",
+  "value": 9,
+  "value_status": "reported",
+  "derivation": "count(features: k10_group=school, confidence>=0.5) в квадрате",
+  "method": {
+   "id": "k10r3_package+k05r4_adapter",
+   "steps": [
+    "K10 download.py: точка в bbox И правило social_group, выпуск 2026-09-23.1",
+    "K05: счёт записей группы с confidence >= 0.5; confidence=null не считается"
+   ],
+   "parameters": {
+    "confidence_min": 0.5,
+    "bbox": [
+     69.593365,
+     42.306645,
+     69.617658,
+     42.324611
+    ],
+    "k10_ref": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909"
+   }
+  }
+ },
+ "city_mix_aggregate": [
+  {
+   "schema_version": "k05-obs-v1.2",
+   "city_id": "kz.shymkent",
+   "geo_unit_id": "kz.shymkent.k10sq_r11_c12",
+   "period": "2026-09-23",
+   "release": "2026-09-23.1",
+   "unit": "records",
+   "kind": "derived",
+   "missing_reason": null,
+   "source": {
+    "source_id": "overture-places-2026-09-23.1",
+    "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/part-00014-1d36203b-4312-5a97-b9e0-5c110ae7a274-c000.zstd.parquet",
+    "path": "research/round-4-results/K05/inputs/k10_r3/data/shymkent/places_social.geojson",
+    "sha256": "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7",
+    "retrieved_at": "2026-10-05T06:18:23+00:00",
+    "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0",
+    "query": "point within bbox AND K10 social rule (k10_rules.social_group)",
+    "evidence": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909; row_groups [90]",
+    "locator": "research/round-4-results/K05/inputs/k10_r3/data/shymkent/places_social.geojson#features[k10_group=school][confidence>=0.5]"
+   },
+   "data_version": "overture@2026-09-23.1",
+   "boundary_version": "k10_r3_square:r11_c12@5d76ee95e214",
+   "spatial_unit": {
+    "type": "bbox",
+    "crs": "EPSG:4326",
+    "bbox": [
+     69.593365,
+     42.306645,
+     69.617658,
+     42.324611
+    ],
+    "edges_inclusive": true,
+    "area_km2": null,
+    "geometry_source": "research/round-4-results/K05/inputs/k10_r3/selection/shymkent_bbox_selection.json",
+    "geometry_sha256": "5d76ee95e214e52390ad6b933b8e0374b088aa97df9b10a03c82e42a0e76e862",
+    "overlaps_districts": {
+     "Еңбекші ауданы": 0.4639,
+     "Әл-Фараби ауданы": 0.5361
+    }
+   },
+   "coverage": {
+    "complete": true,
+    "scope": "все записи выпуска с точкой в квадрате (полный ответ запроса), не реестр района/города",
+    "selection": "без лимита; правило группы K10 social_group",
+    "area_fraction": 1.0,
+    "cap_per_group": null
+   },
+   "max_age_days": 45,
+   "note": "квадрат делит районы {'Еңбекші ауданы': 0.4639, 'Әл-Фараби ауданы': 0.5361}; записей ближе 100 м к краю: 6",
+   "obs_id": "kz.shymkent.k10sq_r11_c12.overture_place_records.school.conf_ge_0_5@2026-09-23.1",
+   "indicator_id": "overture_place_records.school.conf_ge_0_5",
+   "value": 9,
+   "value_status": "reported",
+   "derivation": "count(features: k10_group=school, confidence>=0.5) в квадрате",
+   "method": {
+    "id": "k10r3_package+k05r4_adapter",
+    "steps": [
+     "K10 download.py: точка в bbox И правило social_group, выпуск 2026-09-23.1",
+     "K05: счёт записей группы с confidence >= 0.5; confidence=null не считается"
+    ],
+    "parameters": {
+     "confidence_min": 0.5,
+     "bbox": [
+      69.593365,
+      42.306645,
+      69.617658,
+      42.324611
+     ],
+     "k10_ref": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909"
+    }
+   }
+  },
+  {
+   "schema_version": "k05-obs-v1.2",
+   "city_id": "kz.astana",
+   "geo_unit_id": "kz.astana.k10sq_r17_c7",
+   "period": "2026-09-23",
+   "release": "2026-09-23.1",
+   "unit": "records",
+   "kind": "derived",
+   "missing_reason": null,
+   "source": {
+    "source_id": "overture-places-2026-09-23.1",
+    "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/part-00014-1d36203b-4312-5a97-b9e0-5c110ae7a274-c000.zstd.parquet",
+    "path": "research/round-4-results/K05/inputs/k10_r3/data/astana/places_social.geojson",
+    "sha256": "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343",
+    "retrieved_at": "2026-10-05T06:19:53+00:00",
+    "license": "по записям: CDLA-Permissive-2.0 / CC0-1.0 / Apache-2.0",
+    "query": "point within bbox AND K10 social rule (k10_rules.social_group)",
+    "evidence": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909; row_groups [91]",
+    "locator": "research/round-4-results/K05/inputs/k10_r3/data/astana/places_social.geojson#features[k10_group=school][confidence>=0.5]"
+   },
+   "data_version": "overture@2026-09-23.1",
+   "boundary_version": "k10_r3_square:r17_c7@3643892ff81e",
+   "spatial_unit": {
+    "type": "bbox",
+    "crs": "EPSG:4326",
+    "bbox": [
+     71.418372,
+     51.163033,
+     71.447,
+     51.181
+    ],
+    "edges_inclusive": true,
+    "area_km2": null,
+    "geometry_source": "research/round-4-results/K05/inputs/k10_r3/selection/astana_bbox_selection.json",
+    "geometry_sha256": "3643892ff81e4db65a18a1a8fc397db2c47e3e8d0d23fd32c07c8243aac979a8",
+    "overlaps_districts": {
+     "Байқоңыр ауданы": 0.6513,
+     "Сарыарқа ауданы": 0.3487
+    }
+   },
+   "coverage": {
+    "complete": true,
+    "scope": "все записи выпуска с точкой в квадрате (полный ответ запроса), не реестр района/города",
+    "selection": "без лимита; правило группы K10 social_group",
+    "area_fraction": 1.0,
+    "cap_per_group": null
+   },
+   "max_age_days": 45,
+   "note": "квадрат делит районы {'Байқоңыр ауданы': 0.6513, 'Сарыарқа ауданы': 0.3487}; записей ближе 100 м к краю: 8",
+   "obs_id": "kz.astana.k10sq_r17_c7.overture_place_records.school.conf_ge_0_5@2026-09-23.1",
+   "indicator_id": "overture_place_records.school.conf_ge_0_5",
+   "value": 5,
+   "value_status": "reported",
+   "derivation": "count(features: k10_group=school, confidence>=0.5) в квадрате",
+   "method": {
+    "id": "k10r3_package+k05r4_adapter",
+    "steps": [
+     "K10 download.py: точка в bbox И правило social_group, выпуск 2026-09-23.1",
+     "K05: счёт записей группы с confidence >= 0.5; confidence=null не считается"
+    ],
+    "parameters": {
+     "confidence_min": 0.5,
+     "bbox": [
+      71.418372,
+      51.163033,
+      71.447,
+      51.181
+     ],
+     "k10_ref": "claude/save-work-handoff-j7pc05@ea703f1ddd3a411430a981164a78a7dda64ec909"
+    }
+   }
+  }
+ ]
+}
