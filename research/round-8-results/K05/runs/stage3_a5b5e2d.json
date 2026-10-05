@@ -1,0 +1,67 @@
+{
+ "pass": 15,
+ "fail": 0,
+ "skip": 0,
+ "results": [
+  {
+   "name": "0 кандидатов: total=1, единственный план — пустой, Парето из одного пустого",
+   "status": "PASS"
+  },
+  {
+   "name": "max_selected=0 при непустом required → infeasible",
+   "status": "PASS"
+  },
+  {
+   "name": "все кандидаты excluded → только пустой план",
+   "status": "PASS"
+  },
+  {
+   "name": "id кандидата совпадает с id исходной записи: пространства source/candidate различаются",
+   "status": "PASS"
+  },
+  {
+   "name": "точки и кандидаты на границе bbox принимаются (включительно)",
+   "status": "PASS"
+  },
+  {
+   "name": "покрытие: covered ⇔ after_mm ≤ radius·1000 для всех строк (свойство на реальном срезе)",
+   "status": "PASS"
+  },
+  {
+   "name": "mean и minimax различаются на ручном примере; same_plan_as пуст для них",
+   "status": "PASS"
+  },
+  {
+   "name": "coverage предпочитает больший покрытый вес даже при большей сумме расстояний",
+   "status": "PASS"
+  },
+  {
+   "name": "пределы: 25 точек ×100, стоимость/бюджет 1e6 — целые, строгий JSON",
+   "status": "PASS"
+  },
+  {
+   "name": "ручной план с нарушениями: feasibility.reasons перечисляет все",
+   "status": "PASS"
+  },
+  {
+   "name": "weighted_mean = sum / сумма всех весов; null при unknown",
+   "status": "PASS"
+  },
+  {
+   "name": "валидация не меняет вход (замороженный объект), derived_results не попадает в результат",
+   "status": "PASS"
+  },
+  {
+   "name": "selected_ids не влияет на оптимизацию и problem_digest",
+   "status": "PASS"
+  },
+  {
+   "name": "категория outpatient_clinic: база только из записей своей категории",
+   "status": "PASS"
+  },
+  {
+   "name": "JSON-раундтрип: сценарий → текст → parsePlanJSON → тот же результат",
+   "status": "PASS"
+  }
+ ]
+}
