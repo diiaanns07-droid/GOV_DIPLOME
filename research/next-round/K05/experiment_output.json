@@ -1,0 +1,128 @@
+{
+  "as_of": "2026-10-05",
+  "python": "3.11.15",
+  "E1_inventory": {
+    "sha256": {
+      "data/real_context.json": "7f630d689e2877248361bef0186fedc97e8bf6aa8066f2e969bd382c3553c80a",
+      "data/real_context_meta.json": "3eefd513b2f0a43f0c18f3c5cc4e75a725e05674fd1cb08f3d2ef2239a406ab6",
+      "data/city_data.json": "403478c12fbe8cf64b9953f4d0ff0e713415be923bf1f241a2c60994b51b66e8",
+      "data/astana_districts.geojson": "9092aebb997086d4fbf30963dd84dfae6aab483a585ba6f536944fb03a4eb95e",
+      "data/geo_sources/astana_districts_overpass.json": "ebd6019b0ea32cef4d3f27c79bc0a979284fe35476551742eea8ba4839f01392"
+    },
+    "code_files_mentioning_real_context": [
+      "fetch_real_context.py"
+    ],
+    "real_context_cells": 25,
+    "real_context_zero_cells": 25,
+    "real_context_null_cells": 0,
+    "meta_status": "unavailable",
+    "meta_districts_source": "fallback_approx",
+    "meta_generated_at": "2026-09-23T09:25:25+00:00",
+    "districts_geojson_retrieved_at": "2026-09-23T11:28:06+00:00"
+  },
+  "E2_failure_path": {
+    "first_failure_return_code": 1,
+    "cells_written": 25,
+    "zero_cells_written": 25,
+    "null_cells_written": 0,
+    "meta_status_written": "unavailable",
+    "second_failure_return_code": 1,
+    "second_failure_meta_unchanged": true
+  },
+  "E3_legacy_conversion": {
+    "observations": 25,
+    "value_status_counts": {
+      "missing": 25
+    },
+    "numeric_values": 0,
+    "rejected_by_validator": 0,
+    "naive_sum_schools_all_districts": 0,
+    "contract_sum_schools_all_districts": {
+      "value": null,
+      "value_status": "missing",
+      "coverage": "0/5",
+      "known_partial_sum": null
+    }
+  },
+  "E4_examples": {
+    "admin_level_relations_in_snapshot": {
+      "6": 9,
+      "8": 2
+    },
+    "inside_astana": {
+      "6": [
+        "Есіл ауданы",
+        "Алматы ауданы",
+        "Сарыарқа ауданы",
+        "Байқоңыр ауданы",
+        "Нұра ауданы"
+      ],
+      "8": [
+        "Сарайшық ауданы"
+      ]
+    },
+    "level9_inside": 0,
+    "level6_inside": 5,
+    "boundary_version": "osm@2026-09-22T08:45:51Z"
+  },
+  "E5_validation": {
+    "per_file": {
+      "examples/invalid/invalid_cases.json": {
+        "REJECT": 6,
+        "WARN": 0,
+        "OK": 0,
+        "codes": {
+          "FALSE_VALUE": 1,
+          "NULL_REPORTED": 1,
+          "SOURCE": 1,
+          "IMPLICIT_ZERO": 1,
+          "CITY_MIX": 1,
+          "SYNTHETIC_NS": 1,
+          "PERIOD": 1,
+          "UNIT": 1
+        }
+      },
+      "examples/missing_real_context_astana.json": {
+        "REJECT": 0,
+        "WARN": 25,
+        "OK": 0,
+        "codes": {
+          "BOUNDARY_MISMATCH": 25
+        }
+      },
+      "examples/real_count_osm_admin_level6.json": {
+        "REJECT": 0,
+        "WARN": 0,
+        "OK": 1,
+        "codes": {}
+      },
+      "examples/real_zero_osm_admin_level9.json": {
+        "REJECT": 0,
+        "WARN": 0,
+        "OK": 1,
+        "codes": {}
+      },
+      "examples/stale_osm_admin_level6.json": {
+        "REJECT": 0,
+        "WARN": 1,
+        "OK": 0,
+        "codes": {
+          "STALE": 1
+        }
+      },
+      "examples/synthetic_city_data_esil_T1.json": {
+        "REJECT": 0,
+        "WARN": 1,
+        "OK": 0,
+        "codes": {
+          "NOT_MEASUREMENT": 1
+        }
+      }
+    },
+    "aggregate_real_plus_synthetic": "rejected: KIND_MIX: измерения смешаны с ['synthetic']",
+    "current_boundary": {
+      "kz.astana": "osm@2026-09-22T08:45:51Z"
+    }
+  },
+  "data_unchanged": true
+}

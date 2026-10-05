@@ -1,0 +1,116 @@
+[
+  {
+    "schema_version": "k05-obs-v1",
+    "city_id": "kz.astana",
+    "geo_unit_id": "kz.astana.esil",
+    "indicator_id": "osm_poi_count.schools",
+    "period": "2026-09-23",
+    "value": 0,
+    "unit": "count",
+    "value_status": "missing",
+    "kind": "observed",
+    "source": {
+      "source_id": "osm-overpass",
+      "retrieved_at": null,
+      "locator": "data/real_context.json#/esil/schools"
+    },
+    "data_version": "astana_real_context@2026-09-23T09:25:25+00:00",
+    "note": "Ошибка текущего файла: 0 при отсутствии данных → FALSE_VALUE",
+    "obs_id": "invalid.false_zero"
+  },
+  {
+    "schema_version": "k05-obs-v1",
+    "city_id": "kz.astana",
+    "geo_unit_id": "kz.astana.esil",
+    "indicator_id": "osm_poi_count.schools",
+    "period": "2026-09-23",
+    "value": null,
+    "unit": "count",
+    "value_status": "reported",
+    "kind": "observed",
+    "source": {
+      "source_id": "osm-overpass",
+      "retrieved_at": null,
+      "locator": "data/real_context.json#/esil/schools"
+    },
+    "data_version": "astana_real_context@2026-09-23T09:25:25+00:00",
+    "note": "число заявлено, но его нет → NULL_REPORTED",
+    "obs_id": "invalid.null_reported"
+  },
+  {
+    "schema_version": "k05-obs-v1",
+    "city_id": "kz.astana",
+    "geo_unit_id": "kz.astana.esil",
+    "indicator_id": "osm_poi_count.schools",
+    "period": "2026-09-23",
+    "value": 0,
+    "unit": "count",
+    "value_status": "reported",
+    "kind": "observed",
+    "source": {
+      "source_id": "osm-overpass",
+      "retrieved_at": "2026-09-23T09:25:25+00:00",
+      "locator": "data/real_context.json#/esil/schools"
+    },
+    "data_version": "astana_real_context@2026-09-23T09:25:25+00:00",
+    "note": "ноль без явного reported_zero → IMPLICIT_ZERO",
+    "obs_id": "invalid.implicit_zero"
+  },
+  {
+    "schema_version": "k05-obs-v1",
+    "city_id": "kz.shymkent",
+    "geo_unit_id": "kz.astana.esil",
+    "indicator_id": "osm_poi_count.schools",
+    "period": "2026-09-23",
+    "value": null,
+    "unit": "count",
+    "value_status": "missing",
+    "kind": "observed",
+    "source": {
+      "source_id": "osm-overpass",
+      "retrieved_at": null,
+      "locator": "data/real_context.json#/esil/schools"
+    },
+    "data_version": "astana_real_context@2026-09-23T09:25:25+00:00",
+    "note": "район Астаны под city_id Шымкента → CITY_MIX",
+    "obs_id": "invalid.city_mix"
+  },
+  {
+    "schema_version": "k05-obs-v1",
+    "city_id": "kz.astana",
+    "geo_unit_id": "kz.astana.esil",
+    "indicator_id": "osm_poi_count.schools",
+    "period": "2026-09-23",
+    "value": 45,
+    "unit": "count",
+    "value_status": "reported",
+    "kind": "observed",
+    "source": {
+      "source_id": "osm-overpass",
+      "retrieved_at": "2026-09-23",
+      "locator": "data/real_context.json#/esil/schools"
+    },
+    "data_version": "astana_hackathon@sha256:403478c12fbe",
+    "note": "учебное число с kind=observed → SYNTHETIC_NS",
+    "obs_id": "invalid.synthetic_as_observed"
+  },
+  {
+    "schema_version": "k05-obs-v1",
+    "city_id": "kz.astana",
+    "geo_unit_id": "kz.astana.esil",
+    "indicator_id": "osm_poi_count.schools",
+    "period": "осень 2026",
+    "value": null,
+    "unit": "",
+    "value_status": "missing",
+    "kind": "observed",
+    "source": {
+      "source_id": "osm-overpass",
+      "retrieved_at": null,
+      "locator": "data/real_context.json#/esil/schools"
+    },
+    "data_version": "astana_real_context@2026-09-23T09:25:25+00:00",
+    "note": "нет единицы и периода → UNIT, PERIOD",
+    "obs_id": "invalid.no_unit_bad_period"
+  }
+]

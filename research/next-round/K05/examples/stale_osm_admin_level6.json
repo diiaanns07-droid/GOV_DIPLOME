@@ -1,0 +1,26 @@
+{
+  "schema_version": "k05-obs-v1",
+  "city_id": "kz.astana",
+  "geo_unit_id": "kz.astana",
+  "period": "2026-09-22",
+  "unit": "count",
+  "kind": "derived",
+  "source": {
+    "source_id": "osm-overpass-admin-2026-09-23",
+    "url": "https://overpass-api.de/api/interpreter",
+    "path": "data/geo_sources/astana_districts_overpass.json",
+    "retrieved_at": "2026-09-23T11:28:06+00:00",
+    "sha256": "ebd6019b0ea32cef4d3f27c79bc0a979284fe35476551742eea8ba4839f01392",
+    "license": "ODbL",
+    "locator": "elements[?tags.admin_level=='6']"
+  },
+  "data_version": "astana_osm_admin@2026-09-22T08:45:51Z",
+  "boundary_version": "osm@2026-09-22T08:45:51Z",
+  "derivation": "отношения снимка Overpass, чей id совпадает с osm_id одного из 6 районов data/astana_districts.geojson; запрос покрывает admin_level 5–9 в рамке 50.90,71.0,51.5,72.0, которая целиком содержит город",
+  "obs_id": "astana.osm_admin_relations.level6@2026-09-22#stale-demo",
+  "indicator_id": "osm_admin_relations.admin_level_6",
+  "value": 5,
+  "value_status": "reported",
+  "note": "То же настоящее значение с демонстрационной политикой max_age_days=7: при проверке на 2026-10-05 оно устарело. Политика 7 дней — параметр примера.",
+  "max_age_days": 7
+}

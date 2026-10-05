@@ -1,0 +1,23 @@
+{
+  "schema_version": "k05-obs-v1",
+  "obs_id": "astana_hackathon.esil.T1",
+  "city_id": "kz.astana",
+  "geo_unit_id": "kz.astana.esil",
+  "indicator_id": "hackathon.T1",
+  "period": "2026",
+  "value": 45,
+  "unit": "score_0_100",
+  "value_status": "reported",
+  "kind": "synthetic",
+  "source": {
+    "source_id": "tz-city-data",
+    "path": "data/city_data.json",
+    "sha256": "403478c12fbe8cf64b9953f4d0ff0e713415be923bf1f241a2c60994b51b66e8",
+    "locator": "districts[id=esil].indicators.T1",
+    "retrieved_at": null,
+    "license": null
+  },
+  "data_version": "astana_hackathon@sha256:403478c12fbe",
+  "boundary_version": null,
+  "note": "Учебный показатель датасета ТЗ (шкала 0–100). Не измерение Астаны."
+}
