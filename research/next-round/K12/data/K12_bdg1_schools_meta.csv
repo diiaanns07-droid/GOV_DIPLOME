@@ -1,0 +1,106 @@
+uid,industry,subindustry,primaryspaceusage,timezone,newweatherfilename,datastart,dataend,sqm,sqft,heatingtype,mainheatingtype,numberoffloors,occupants,yearbuilt,rating
+PrimClass_Everett,Education,Primary/Secondary School,Primary/Secondary Classroom,America/New_York,weather12.csv,01/01/12 00:00,31/12/12 23:00,9804.05359,105530.0,,,,,,
+PrimClass_Elisabeth,Education,Primary/Secondary School,Primary/Secondary Classroom,America/New_York,weather23.csv,01/01/12 00:00,31/12/12 23:00,21652.15899,233062.0,,,,,,
+PrimClass_Jolie,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,2927.0,31505.9353,Gas,Gas,2.0,212.0,pre 1919,C
+PrimClass_Jaylin,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,4373.0,47070.5347,Gas,Gas,2.0,219.0,1919-1945,C
+PrimClass_Esmeralda,Education,Primary/Secondary School,Primary/Secondary Classroom,America/New_York,weather17.csv,01/01/12 00:00,31/12/12 23:00,25682.38403,276443.0,,,,,,
+PrimClass_Eoghan,Education,Primary/Secondary School,Primary/Secondary Classroom,America/New_York,weather14.csv,01/01/12 00:00,31/12/12 23:00,29301.97781,315404.0,,,,,,
+PrimClass_Edwin,Education,Primary/Secondary School,Primary/Secondary Classroom,America/Denver,weather35.csv,01/01/12 00:00,31/12/12 23:00,7176.478041,77247.0,,,,,,
+PrimClass_Eli,Education,Primary/Secondary School,Primary/Secondary Classroom,America/New_York,weather12.csv,01/01/12 00:00,31/12/12 23:00,10071.14972,108405.0,,,,,,
+PrimClass_Ethel,Education,Primary/Secondary School,Primary/Secondary Classroom,America/Denver,weather18.csv,01/01/12 00:00,31/12/12 23:00,8550.048896,92032.0,,,,,,
+PrimClass_Ernesto,Education,Primary/Secondary School,Primary/Secondary Classroom,America/Denver,weather18.csv,01/01/12 00:00,31/12/12 23:00,6719.952699,72333.0,,,,,,
+PrimClass_Emanuela,Education,Primary/Secondary School,Primary/Secondary Classroom,America/Chicago,weather26.csv,01/01/12 00:00,31/12/12 23:00,8838.048196,95132.0,,,,,,
+PrimClass_Emilio,Education,Primary/Secondary School,Primary/Secondary Classroom,America/New_York,weather12.csv,01/01/12 00:00,31/12/12 23:00,9774.789145,105215.0,,,,,,
+PrimClass_Eleanor,Education,Primary/Secondary School,Primary/Secondary Classroom,America/New_York,weather24.csv,01/01/12 00:00,31/12/12 23:00,7588.409943,81681.0,,,,,,
+PrimClass_Ezekiel,Education,Primary/Secondary School,Primary/Secondary Classroom,America/New_York,weather29.csv,01/01/12 00:00,31/12/12 23:00,14279.0982,153699.0,,,,,,
+PrimClass_Elliott,Education,Primary/Secondary School,Primary/Secondary Classroom,America/New_York,weather15.csv,01/01/12 00:00,31/12/12 23:00,20182.34062,217241.0,,,,,,
+PrimClass_Ellen,Education,Primary/Secondary School,Primary/Secondary Classroom,America/Chicago,weather19.csv,01/01/12 00:00,31/12/12 23:00,7386.067209,79503.0,,,,,,
+PrimClass_Evie,Education,Primary/Secondary School,Primary/Secondary Classroom,America/Chicago,weather11.csv,01/01/12 00:00,31/12/12 23:00,18326.6032,197266.0,,,,,,
+PrimClass_Elijah,Education,Primary/Secondary School,Primary/Secondary Classroom,America/New_York,weather14.csv,01/01/12 00:00,31/12/12 23:00,8746.81745,94150.0,,,,,,
+PrimClass_Ezra,Education,Primary/Secondary School,Primary/Secondary Classroom,America/New_York,weather17.csv,01/01/12 00:00,31/12/12 23:00,8563.705637,92179.0,,,,,,
+PrimClass_Edmund,Education,Primary/Secondary School,Primary/Secondary Classroom,America/New_York,weather15.csv,01/01/12 00:00,31/12/12 23:00,8070.204901,86867.0,,,,,,
+PrimClass_Eva,Education,Primary/Secondary School,Primary/Secondary Classroom,America/New_York,weather15.csv,01/01/12 00:00,31/12/12 23:00,12331.66551,132737.0,,,,,,
+PrimClass_Ebony,Education,Primary/Secondary School,Primary/Secondary Classroom,America/Chicago,weather11.csv,01/01/12 00:00,31/12/12 23:00,16307.91391,175537.0,,,,,,
+PrimClass_Ethan,Education,Primary/Secondary School,Primary/Secondary Classroom,America/New_York,weather38.csv,01/01/12 00:00,31/12/12 23:00,7453.050272,80224.0,,,,,,
+PrimClass_Elmer,Education,Primary/Secondary School,Primary/Secondary Classroom,America/Chicago,weather11.csv,01/01/12 00:00,31/12/12 23:00,9095.296603,97901.0,,,,,,
+PrimClass_Ervin,Education,Primary/Secondary School,Primary/Secondary Classroom,America/New_York,weather16.csv,01/01/12 00:00,31/12/12 23:00,10876.52582,117074.0,,,,,,
+PrimClass_Uma,Education,Primary/Secondary School,Primary/Secondary Classroom,Asia/Singapore,weather10.csv,02/02/12 00:00,31/01/13 23:00,10000.0,107639.0,,,,,,
+PrimClass_Ernest,Education,Primary/Secondary School,Primary/Secondary Classroom,America/Chicago,weather21.csv,01/01/12 00:00,31/12/12 23:00,12046.08169,129663.0,,,,,,
+PrimClass_Emily,Education,Primary/Secondary School,Primary/Secondary Classroom,America/Chicago,weather32.csv,01/01/12 00:00,31/12/12 23:00,25494.25545,274418.0,,,,,,
+PrimClass_Jayla,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,2132.0,22948.6348,Gas,Gas,1.0,269.0,1967-1976,D
+PrimClass_Janiya,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,2937.0,31613.5743,Gas,Gas,2.0,293.0,1967-1976,C
+PrimClass_Umar,Education,Primary/Secondary School,Primary/Secondary Classroom,Asia/Singapore,weather10.csv,02/02/12 00:00,31/01/13 23:00,12000.0,129166.8,,,,,,
+PrimClass_Janice,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,2152.0,23163.9128,Gas,Gas,1.0,,1967-1976,
+PrimClass_Uriah,Education,Primary/Secondary School,Primary/Secondary Classroom,Asia/Singapore,weather10.csv,02/02/12 00:00,31/01/13 23:00,12000.0,129166.8,,,,,,
+PrimClass_Ulysses,Education,Primary/Secondary School,Primary/Secondary Classroom,Asia/Singapore,weather10.csv,02/02/12 00:00,31/01/13 23:00,12000.0,129166.8,,,,,,
+PrimClass_Jaden,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,2572.0,27684.7508,Gas,Gas,2.0,414.0,pre 1919,D
+PrimClass_Jermaine,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,2154.0,23185.4406,Gas,Gas,2.0,230.0,1945-1966,C
+PrimClass_Josephine,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,3984.0,42883.3776,Gas,Gas,2.0,64.0,1967-1976,B
+PrimClass_Javier,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,1877.0,20203.8403,Gas,Gas,1.0,396.0,post 1976,C
+PrimClass_Jeanette,Government,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,2182.0,23486.8298,Gas,Gas,2.0,,1945-1966,C
+PrimClass_Julius,Government,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,8866.0,95432.7374,Gas,Gas,4.0,1173.0,1945-1966,D
+PrimClass_Jaylinn,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,2939.0,31635.1021,Gas,Gas,3.0,517.0,1945-1966,C
+PrimClass_Johanna,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,2619.0,28190.6541,Gas,Gas,1.0,515.0,pre 1919,C
+PrimClass_Jodie,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,2570.0,27663.223,Gas,Gas,2.0,348.0,1945-1966,C
+PrimClass_Johnathan,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,2815.0,30300.3785,Gas,Gas,2.0,304.0,1945-1966,D
+PrimClass_Janis,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,736.0,7922.2304,Gas,Gas,1.0,101.0,1945-1966,
+PrimClass_Jamal,Government,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,2335.0,25133.7065,Gas,Gas,2.0,441.0,1945-1966,C
+PrimClass_Jose,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,1123.0,12087.8597,Gas,Gas,4.0,29.0,pre 1919,E
+PrimClass_Julianna,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,3211.0,34562.8829,Gas,Gas,1.0,317.0,1945-1966,D
+PrimClass_Jasmine,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,2555.0,27501.7645,Gas,Gas,2.0,315.0,post 1976,E
+PrimClass_Jazmine,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,2061.0,22184.3979,Gas,Gas,2.0,387.0,pre 1919,D
+PrimClass_Justin,Government,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,1303.0,14025.3617,Gas,Gas,1.0,171.0,1945-1966,F
+PrimClass_Jody,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,2418.0,26027.1102,Gas,Gas,3.0,241.0,pre 1919,D
+PrimClass_Julianne,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,2403.0,25865.6517,Gas,Gas,2.0,427.0,pre 1919,C
+PrimClass_Justice,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,11710.0,126045.269,Gas,Gas,4.0,1164.0,1945-1966,E
+PrimClass_Jean,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,2678.0,28825.7242,Gas,Gas,2.0,284.0,post 1976,C
+PrimClass_Jenna,Government,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,1078.0,11603.4842,Gas,Gas,2.0,235.0,1919-1945,C
+PrimClass_Judith,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,1205.0,12970.4995,Gas,Gas,1.0,40.0,1967-1976,E
+PrimClass_Jessie,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,3157.0,33981.6323,Gas,Gas,3.0,353.0,1967-1976,C
+PrimClass_Joselyn,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,2961.0,31871.9079,Gas,Gas,2.0,383.0,pre 1919,D
+PrimClass_Judy,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,1065.0,11463.5535,Gas,Gas,1.0,235.0,post 1976,D
+PrimClass_Jarrett,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,2708.0,29148.6412,Gas,Gas,2.0,359.0,pre 1919,D
+PrimClass_Jeannine,Government,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,12732.0,137045.9748,Gas,Gas,2.0,1104.0,1945-1966,C
+PrimClass_Jeff,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,1086.0,11689.5954,Gas,Gas,1.0,201.0,1967-1976,D
+PrimClass_Julian,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,1737.0,18696.8943,Gas,Gas,2.0,300.0,pre 1919,E
+PrimClass_Jeanine,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,2991.0,32194.8249,Gas,Gas,2.0,583.0,pre 1919,D
+PrimClass_Jerome,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,8255.0,88855.9945,Gas,Gas,2.0,1071.0,post 1976,D
+PrimClass_Jacqueline,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,2777.0,29891.3503,Gas,Gas,3.0,489.0,1945-1966,C
+PrimClass_Jill,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,2238.0,24089.6082,Gas,Gas,1.0,313.0,post 1976,C
+PrimClass_Jim,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,1014.0,10914.5946,Gas,Gas,1.0,197.0,1967-1976,D
+PrimClass_Janet,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,8711.0,93764.3329,Gas,Gas,3.0,956.0,1919-1945,C
+PrimClass_Janie,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,1691.0,18201.7549,Gas,Gas,2.0,333.0,pre 1919,D
+PrimClass_Jensen,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,3323.0,35768.4397,Gas,Gas,1.0,456.0,1945-1966,D
+PrimClass_Jeffrey,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,1281.0,13788.5559,Gas,Gas,1.0,193.0,pre 1919,
+PrimClass_Jennifer,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,2164.0,23293.0796,Gas,Gas,1.0,402.0,post 1976,D
+PrimClass_Jesse,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,1468.0,15801.4052,Gas,Gas,2.0,287.0,1967-1976,D
+PrimClass_Jaxson,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,11955.0,128682.4245,Gas,Gas,4.0,1500.0,1945-1966,C
+PrimClass_Jimmie,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,3462.0,37264.6218,Gas,Gas,3.0,362.0,pre 1919,D
+PrimClass_Jayda,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,2215.0,23842.0385,Gas,Gas,1.0,464.0,1919-1945,D
+PrimClass_Jocelyn,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,1391.0,14972.5849,Gas,Gas,2.0,197.0,1967-1976,E
+PrimClass_Jeffery,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,11201.0,120566.4439,Gas,Gas,2.0,875.0,1919-1945,D
+PrimClass_Jayson,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,12924.0,139112.6436,Gas,Gas,3.0,1695.0,1967-1976,C
+PrimClass_Jennie,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,2692.0,28976.4188,Gas,Gas,3.0,524.0,pre 1919,D
+PrimClass_Jonathon,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,11285.0,121470.6115,Gas,Gas,3.0,1140.0,1945-1966,D
+PrimClass_Jaqueline,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,2193.0,23605.2327,Gas,Gas,1.0,392.0,1967-1976,D
+PrimClass_Jeremy,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,2151.0,23153.1489,Gas,Gas,2.0,403.0,1967-1976,C
+PrimClass_Josue,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,1584.0,17050.0176,Gas,Gas,1.0,389.0,1945-1966,D
+PrimClass_Julio,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,8794.0,94657.7366,Gas,Gas,3.0,856.0,1967-1976,G
+PrimClass_Jacquelyn,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,1597.0,17189.9483,Gas,Gas,2.0,219.0,pre 1919,E
+PrimClass_Juanita,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,2844.0,30612.5316,Gas,Gas,4.0,,Post 1976,G
+PrimClass_Joel,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,1295.0,13939.2505,Gas,Gas,1.0,149.0,1967-1976,D
+PrimClass_Joey,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,14475.0,155807.4525,Biomass,Biomass,2.0,1400.0,2013,
+PrimClass_Joanna,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,9516.0,102429.2724,Gas,Gas,4.0,1598.0,1919-1945,E
+PrimClass_Jediah,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,6382.0,68695.2098,Gas,Gas,2.0,909.0,1945-1966,D
+PrimClass_Janelle,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,1201.0,12927.4439,Gas,Gas,1.0,230.0,1967-1976,E
+PrimClass_Jane,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,11247.0,121061.5833,Gas,Gas,3.0,1395.0,1967-1976,C
+PrimClass_Jon,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,1589.0,17103.8371,Gas,Gas,2.0,124.0,1945-1966,E
+PrimClass_Jake,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,1432.0,15413.9048,Gas,Gas,1.0,214.0,post 1976,D
+PrimClass_Johnnie,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,1769.0,19041.3391,Gas,Gas,2.0,262.0,post 1976,C
+PrimClass_Johnathon,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,2253.0,24251.0667,Gas,Gas,2.0,322.0,1945-1966,C
+PrimClass_Jamie,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,14868.0,160037.6652,Gas,Gas,4.0,1598.0,1945-1966,D
+PrimClass_Jacob,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,6149.0,66187.2211,Gas,Gas,1.0,270.0,post 1976,D
+PrimClass_Angela,Education,College/University,Primary/Secondary Classroom,America/Phoenix,weather0.csv,01/01/15 00:00,31/12/15 23:00,1555.567832,16744.0,,,,,,
+PrimClass_Jazmin,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,1047.0,11269.8033,Gas,Gas,1.0,71.0,1967-1976,C
+PrimClass_Jaiden,Education,Primary/Secondary School,Primary/Secondary Classroom,Europe/London,weather1.csv,01/12/14 00:00,30/11/15 23:00,811.0,8729.5229,Electricity,Electricity,1.0,192.0,1967-1976,F
+PrimClass_Angel,Education,College/University,Primary/Secondary Classroom,America/Phoenix,weather0.csv,01/01/15 00:00,31/12/15 23:00,960.059602,10334.0,,,,,,

@@ -1,0 +1,150 @@
+{
+  "kind": "derived from real international open data (BDG1); NOT Shymkent/Astana",
+  "seed": 12,
+  "n_sim": 2000,
+  "top_share": 0.2,
+  "uk": {
+    "n_buildings": 74,
+    "k_top": 15,
+    "subindustry": {
+      "Primary/Secondary School": 74
+    },
+    "heatingtype": {
+      "Gas": 72,
+      "Electricity": 1,
+      "Biomass": 1
+    },
+    "coverage_median": 0.9535,
+    "peak_missing_ratio_median": 1.48,
+    "eui_imputed_quantiles": {
+      "0.1": 22.9,
+      "0.25": 30.8,
+      "0.5": 38.3,
+      "0.75": 46.8,
+      "0.9": 58.3
+    },
+    "annual_bias_uniform_vs_imputed_pct": {
+      "median": -1.08,
+      "min": -5.93,
+      "max": 3.61
+    },
+    "qc_flag_counts": {
+      "flag_low_coverage": 27,
+      "flag_month_below_80pct": 62,
+      "flag_peak_missing_ge_1_5x": 37,
+      "flag_eui_below_p10_check_meter_zone_or_area": 8,
+      "flag_eui_above_p90": 8
+    },
+    "C2_top_overlap_vs_imputed": {
+      "uniform": 0.933,
+      "month_scaled": 0.933
+    },
+    "C2_changed_members_uniform_vs_imputed": [
+      "PrimClass_Josue",
+      "PrimClass_Julio"
+    ],
+    "C3_area_error_top_overlap": {
+      "sigma_log_0.1": {
+        "mean_overlap": 0.849,
+        "p10_overlap": 0.8
+      },
+      "sigma_log_0.2": {
+        "mean_overlap": 0.71,
+        "p10_overlap": 0.6
+      },
+      "sigma_log_0.3": {
+        "mean_overlap": 0.608,
+        "p10_overlap": 0.467
+      },
+      "sigma_log_0.5": {
+        "mean_overlap": 0.489,
+        "p10_overlap": 0.333
+      }
+    },
+    "C3_sigma_0_2_p_top_bands": {
+      "certain_ge_0_9": 2,
+      "uncertain_0_1_to_0_9": 28,
+      "outside_le_0_1": 44
+    }
+  },
+  "a09_crosscheck_all105": {
+    "n_matched": 105,
+    "annual_kwh_uniform_vs_a09_rel_diff_pct": {
+      "median_abs": 0.0,
+      "max_abs": 0.083
+    },
+    "eui_uniform_quantiles_k12": {
+      "0.1": 6.8,
+      "0.25": 11.4,
+      "0.5": 31.5,
+      "0.75": 42.3,
+      "0.9": 54.9
+    },
+    "eui_quantiles_a09_reported": {
+      "0.1": 6.8,
+      "0.25": 11.3,
+      "0.5": 31.5,
+      "0.75": 42.3,
+      "0.9": 54.9
+    },
+    "E3_k12": {
+      "k": 21,
+      "sigma_log_0.1": {
+        "mean_overlap": 0.879,
+        "p10_overlap": 0.81
+      },
+      "sigma_log_0.2": {
+        "mean_overlap": 0.76,
+        "p10_overlap": 0.667
+      },
+      "sigma_log_0.3": {
+        "mean_overlap": 0.674,
+        "p10_overlap": 0.571
+      },
+      "sigma_log_0.5": {
+        "mean_overlap": 0.561,
+        "p10_overlap": 0.476
+      }
+    },
+    "E3_a09_reported": {
+      "k": 21,
+      "sigma_log_0.1": {
+        "mean_overlap_top20pct": 0.879,
+        "p10": 0.81
+      },
+      "sigma_log_0.2": {
+        "mean_overlap_top20pct": 0.763,
+        "p10": 0.667
+      },
+      "sigma_log_0.3": {
+        "mean_overlap_top20pct": 0.675,
+        "p10": 0.571
+      },
+      "sigma_log_0.5": {
+        "mean_overlap_top20pct": 0.56,
+        "p10": 0.476
+      }
+    },
+    "subindustry_all105": {
+      "Primary/Secondary School": 103,
+      "College/University": 2
+    },
+    "industry_all105": {
+      "Education": 99,
+      "Government": 6
+    },
+    "lowest_eui_buildings": {
+      "PrimClass_Everett": 2.17,
+      "PrimClass_Elisabeth": 3.1,
+      "PrimClass_Jolie": 3.71,
+      "PrimClass_Jaylin": 4.26,
+      "PrimClass_Esmeralda": 4.42
+    },
+    "peak_missing_ratio_median_non_uk": 2.4
+  },
+  "versions": {
+    "python": "3.11.15",
+    "numpy": "2.4.6",
+    "pandas": "3.0.6"
+  }
+}
