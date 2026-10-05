@@ -11,7 +11,7 @@
 | Дата | 2026-10-05 |
 | Репозиторий (origin) | `https://github.com/diiaanns07-droid/GOV_DIPLOME` |
 | Исходная ветка / коммит | `main` @ `834a25fb860dd5514d02c9274b70d7bf8a53a79c` ("Add presentation and README link") |
-| Рабочая ветка | `claude/optimistic-davinci-1oiqs9` (на origin не существует; push отклонён, см. проверки) |
+| Рабочая ветка | `claude/optimistic-davinci-1oiqs9` (опубликована на origin повторным push после восстановления доступа) |
 
 ## Задача
 
@@ -42,7 +42,8 @@
 | Статус агентского прокси (`$HTTPS_PROXY/__agentproxy/status`) | `enabled: true`, `recentRelayFailures: []` |
 | `git diff --cached` перед коммитом | только этот файл; токенов и `.env` нет |
 | Тесты продукта | не запускались: код продукта не менялся |
-| `git push -u origin claude/optimistic-davinci-1oiqs9` | **отклонён, HTTP 403**: у Claude нет доступа GitHub к репозиторию для этой организации (gate `repo_not_connected`). Коммит есть **только локально** |
+| `git push -u origin claude/optimistic-davinci-1oiqs9` | **отклонён, HTTP 403**: у Claude нет доступа GitHub к репозиторию для этой организации (gate `repo_not_connected`). Коммит тогда был только локальным |
+| Повторный `git push -u origin claude/optimistic-davinci-1oiqs9` после восстановления доступа | **успешно**: `* [new branch]`, exit 0; опубликован `f50295c`. Перед push `git ls-remote` показал, что этой ветки на origin не было; ветки других агентов (`claude/beautiful-clarke-sbzomj`, `claude/clever-mccarthy-pywscu`, `claude/epic-curie-iitc43`, `claude/loving-thompson-nmajdo`) не трогались |
 
 ## Гипотезы и синтетика
 
@@ -50,7 +51,7 @@
 
 ## Ограничения сети
 
-Внешние источники для исследования **не запрашивались**, поэтому их доступность не проверена. Ответов `host_not_allowed` в этой сессии не было. Чтение GitHub через git (`fetch`, `ls-remote`) работает. Запись (push) запрещена правами доступа, а не сетью. Исправление: подключить или переподключить GitHub на claude.ai или установить Claude GitHub App на репозиторий (это делает владелец).
+Внешние источники для исследования **не запрашивались**, поэтому их доступность не проверена. Ответов `host_not_allowed` в этой сессии не было. Чтение GitHub через git (`fetch`, `ls-remote`) работает. Первый push запретили права доступа, а не сеть; после восстановления доступа владельцем push работает.
 
 ## Нерешённые вопросы (для координатора)
 
