@@ -1,0 +1,54 @@
+--- review_inputs/K03/test_boundaries_demo.py	2026-10-05 11:13:30.602517134 +0000
++++ adapters/K03/test_boundaries_demo.py	2026-10-05 11:24:43.256064405 +0000
+@@ -25,8 +25,10 @@
+ from pathlib import Path
+ 
+ HERE = Path(__file__).resolve().parent
+-K03_REL = Path('inputs/k03_root/research/round-3-results/K03')
+-K03_ROOT_REL = Path('inputs/k03_root')
++# ADAPTER (BUILD r6): the build keeps inputs/k03_root as the immutable original (K03 @ 44585de) and runs a separate
++# patched copy inputs/k03v21_root (v2.1). All checks must look at the copy the build actually uses.
++K03_REL = Path('inputs/k03v21_root/research/round-3-results/K03')
++K03_ROOT_REL = Path('inputs/k03v21_root')
+ # Файлы, которые читает K03 Layers()/assign() (geo_common.P_* и сам код), относительно inputs/k03_root
+ K03_CODE = ['research/round-3-results/K03/boundary_validator.py', 'research/round-3-results/K03/geo_common.py']
+ K03_LAYERS = ['data/astana_districts.geojson', 'data/geo_sources/astana_districts_overpass.json',
+@@ -163,7 +165,7 @@
+ 
+ def c1_inputs(app_root):
+     man = json.loads((app_root / 'source_manifest.json').read_text(encoding='utf-8'))
+-    k3 = [f for f in man['files'] if f['copied_to'].startswith('inputs/k03_root/')]
++    k3 = [f for f in man['files'] if f['copied_to'].startswith('inputs/k03_root/')]  # originals (immutable)
+     bad = [f['copied_to'] for f in k3 if sha256_bytes((app_root / f['copied_to']).read_bytes()) != f['sha256']]
+     shas = {f['sha'] for f in k3}
+     rec('C1-k03-inputs', 'FAIL' if bad else 'PASS',
+@@ -285,6 +287,16 @@
+     fm = m['cities']['astana']['files']['places_social']
+     fm['sha256'], fm['bytes'] = sha256_bytes(raw), len(raw)
+     mp.write_text(json.dumps(m, ensure_ascii=False, indent=1), encoding='utf-8')
++    _sync_k03_manifest(app, {'inputs/k10/data/astana/places_social.geojson', 'inputs/k10/package_manifest.json'})  # ADAPTER
++    # ADAPTER: the build ties K08 attribution to the exact data file (sha256). A real K10 update regenerates it
++    # (K08 build_attribution.py); only a coordinate moved here, so providers are unchanged and only the hash is refreshed.
++    ap_ = app / 'web/attribution/attribution.json'
++    if ap_.exists():
++        att = json.loads(ap_.read_text(encoding='utf-8'))
++        for f_ in att['files']:
++            if f_['file'] == 'data/astana/places_social.geojson':
++                f_['sha256'] = sha256_bytes(raw)
++        ap_.write_text(json.dumps(att, ensure_ascii=False, indent=1) + '\n', encoding='utf-8')
+     r = subprocess.run([sys.executable, 'tools/build_data.py'], cwd=app, capture_output=True, text=True, timeout=300)
+     if r.returncode != 0:
+         raise RuntimeError('build_data.py: ' + r.stderr[-300:])
+@@ -304,10 +316,10 @@
+ 
+ def _mutate_s3(app, v2_patch):
+     bv = app / K03_REL / 'boundary_validator.py'
+-    chk = subprocess.run(['git', 'apply', '--check', '--directory=inputs/k03_root', str(Path(v2_patch).resolve())],
++    chk = subprocess.run(['git', 'apply', '--check', f'--directory={K03_ROOT_REL}', str(Path(v2_patch).resolve())],
+                          cwd=app, capture_output=True)
+     if chk.returncode == 0:
+-        subprocess.run(['git', 'apply', '--directory=inputs/k03_root', str(Path(v2_patch).resolve())],
++        subprocess.run(['git', 'apply', f'--directory={K03_ROOT_REL}', str(Path(v2_patch).resolve())],
+                        cwd=app, check=True, capture_output=True)
+         desc = 'к копии применён patch k03_assign_v2 (round-4 K03)'
+     else:

@@ -1,4 +1,4 @@
-"""Contract used by the demo build: k05-obs-v1.2+k12r4 (see inputs/contract/CONTRACT_MANIFEST.json).
+"""Contract used by the demo build: k05-obs-v1.2+k12r4+k05r5 (see inputs/contract/CONTRACT_MANIFEST.json).
 
 Thin wrapper only: strict JSON in/out + per-record validate + dataset validate. All rules live in the
 K05/K12 modules under inputs/contract/ (built by tools/setup_contract.py).
@@ -15,7 +15,7 @@ sys.path.insert(0, str(CDIR / "round-4-results" / "K05"))
 import k05r4_contract as C4  # noqa: E402  (imports the K12-patched k05r3_contract as C4.C3)
 
 C3 = C4.C3
-CONTRACT_ID = "k05-obs-v1.2+k12r4"
+CONTRACT_ID = "k05-obs-v1.2+k12r4+k05r5"
 SCHEMA_VERSION = C4.SCHEMA_VERSION
 assert hasattr(C3, "loads_strict") and hasattr(C3, "validate_dataset"), "K12 patch is not applied"
 

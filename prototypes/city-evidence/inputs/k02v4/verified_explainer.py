@@ -26,7 +26,9 @@ from dataclasses import dataclass
 from pathlib import Path
 
 # Корень репозитория — ближайший родитель с пакетом agent/ (файл может лежать на разной глубине).
-REPO = next(p for p in Path(__file__).resolve().parents if (p / "agent" / "evidence.py").exists())
+# BUILD r6: vendored byte copy of the product agent/evidence.py (inputs/product_agent), so an extracted
+# prototypes/city-evidence does not depend on the rest of the repository.
+REPO = Path(__file__).resolve().parents[1] / "product_agent"
 if str(REPO) not in sys.path:
     sys.path.insert(0, str(REPO))
 

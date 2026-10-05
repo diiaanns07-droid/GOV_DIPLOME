@@ -1,0 +1,38 @@
+--- a/research/round-4-results/K05/k05r4_contract.py
++++ b/research/round-4-results/K05/k05r4_contract.py
+@@ -33,6 +33,12 @@
+ 
+ def _to_v11(obs: dict) -> dict:
+     o = {k: v for k, v in obs.items() if k != "spatial_unit"}
++    su = obs.get("spatial_unit") or {}
++    if su.get("type") == "bbox":
++        # K12 BOUNDARY_MIX сравнивает слой границ (часть до r<id>@<версия>). У bbox такой части нет,
++        # и у каждого квадрата своя boundary_version — без этой замены любые два квадрата были бы
++        # «разными слоями». Идентичность и пересечение bbox проверяет v1.2 (OVERLAP), слой — data_version.
++        o["boundary_version"] = f"bbox-layer:{obs.get('data_version')}"
+     src = dict(o.get("source") or {})
+     src.pop("query", None)
+     o["source"] = src
+@@ -86,8 +92,11 @@
+     return a[0] < b[2] and b[0] < a[2] and a[1] < b[3] and b[1] < a[3]
+ 
+ 
+-def aggregate_sum(observations: list[dict]) -> dict:
+-    """Сумма v1.2: одинаковый тип территории, непересекающиеся bbox, затем правила v1.1."""
++def aggregate_sum(observations: list[dict], **kwargs) -> dict:
++    """Сумма v1.2: одинаковый тип территории, непересекающиеся bbox, затем правила v1.1.
++
++    kwargs передаются в v1.1 (например, expected_units из K12 patch).
++    """
+     if any("spatial_unit" not in o for o in observations):
+         raise ValueError("LEGACY_UNIT: запись без spatial_unit (например, v1.1/E02) не смешивается с v1.2")
+     types = {o["spatial_unit"]["type"] for o in observations}
+@@ -101,7 +110,7 @@
+             for b in boxes[i + 1:]:
+                 if _boxes_overlap(a, b):
+                     raise ValueError(f"OVERLAP: bbox {a} и {b} пересекаются")
+-    return C3.aggregate_sum([_to_v11(o) for o in observations])
++    return C3.aggregate_sum([_to_v11(o) for o in observations], **kwargs)
+ 
+ 
+ def check_features(fc: dict, expected_city: str, bbox: list, groups) -> dict:

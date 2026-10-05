@@ -49,10 +49,10 @@ class InputIntegrity(unittest.TestCase):
 
 
 @unittest.skipUnless(HAS_GEO, "shapely/pyproj not installed (pip install -r requirements-build.txt)")
-class K03AssignV2(unittest.TestCase):
+class K03AssignV21(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        sys.path.insert(0, str(APP / "inputs" / "k03v2_root" / "research" / "round-3-results" / "K03"))
+        sys.path.insert(0, str(APP / "inputs" / "k03v21_root" / "research" / "round-3-results" / "K03"))
         import boundary_validator as BV
         cls.BV, cls.L = BV, BV.Layers()
 
@@ -76,7 +76,7 @@ class K03AssignV2(unittest.TestCase):
         self.assertEqual(bad, [])
 
     def test_patched_copy_is_marked(self):
-        m = json.loads((APP / "inputs/k03v2_root/MANIFEST_K03V2.json").read_text(encoding="utf-8"))
+        m = json.loads((APP / "inputs/k03v21_root/MANIFEST_K03.json").read_text(encoding="utf-8"))
         self.assertNotEqual(m["modified"][0]["original_sha256"], m["modified"][0]["patched_sha256"])
 
 
@@ -183,6 +183,54 @@ class GeometryPassThrough(unittest.TestCase):
         code = re.sub(r"/\*.*?\*/|//[^\n]*", "", (APP / "web" / "app.js").read_text(encoding="utf-8"), flags=re.S).lower()
         for bad in ("dijkstra", "isochrone", "мин пешком", "минут пешком", "недостижим"):
             self.assertNotIn(bad, code)
+
+
+class EvidenceFresh(unittest.TestCase):
+    """K03 r5 C6/C7: a moved place or changed K03 code/layer makes evidence.js stale and this is detected without shapely."""
+
+    def _copy(self):
+        tmp = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, tmp)
+        app = tmp / "app"
+        shutil.copytree(APP, app, ignore=shutil.ignore_patterns("__pycache__", "tests"))
+        return app
+
+    def _run(self, app):
+        import subprocess
+        return subprocess.run([sys.executable, str(app / "tools/check_evidence_fresh.py")], capture_output=True,
+                              text=True, encoding="utf-8")
+
+    def test_current_build_is_fresh(self):
+        r = self._run(APP)
+        self.assertEqual(r.returncode, 0, r.stdout)
+
+    def test_moved_place_is_detected(self):
+        app = self._copy()
+        p = app / "web/data.js"
+        t = p.read_text(encoding="utf-8")
+        data = json.loads(t[t.index("{"):t.rstrip().rindex(";")])
+        data["cities"]["astana"]["places"][0]["lon"] += 0.001
+        p.write_text("window.CITY_EVIDENCE = " + json.dumps(data, ensure_ascii=False) + ";\n", encoding="utf-8")
+        r = self._run(app)
+        self.assertEqual(r.returncode, 1)
+        self.assertIn("места data.js", r.stdout)
+
+    def test_changed_k03_layer_is_detected(self):
+        app = self._copy()
+        f = app / "inputs/k03v21_root/data/astana_districts.geojson"
+        f.write_bytes(f.read_bytes() + b"\n")
+        r = self._run(app)
+        self.assertEqual(r.returncode, 1)
+        self.assertIn("слой K03", r.stdout)
+
+    def test_place_records_keep_lonlat_and_rule_from_code(self):
+        t = (APP / "web/evidence.js").read_text(encoding="utf-8")
+        ev = json.loads(t[t.index("{"):t.rstrip().rindex(";")])
+        self.assertEqual(ev["assign_rule"], ev["boundary_binding"]["rule"])
+        for c in ev["cities"].values():
+            self.assertTrue(all("lonlat" in r for r in c["place_district"].values()))
+            self.assertEqual({o["method"]["id"] for o in c["observations"] if o["indicator_id"].startswith("k03_district_status.")},
+                             {ev["assign_rule"]})
 
 
 if __name__ == "__main__":

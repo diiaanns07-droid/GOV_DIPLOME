@@ -1,0 +1,29 @@
+{
+ "rule_patch": "k03_assign_v2_1 (K03 r5 @ 5715a7f: v2 + empty-zone guard D3)",
+ "base": "inputs/k03_root (K03 @ 44585de, byte-exact)",
+ "patch": {
+  "path": "inputs/r5/K03/patches/k03_assign_v2_1.patch",
+  "sha256": "428394b2b749f2da05fa78a48c4e2a32dad35ab6c3f5e115cf78aff80e6d6515"
+ },
+ "modified": [
+  {
+   "path": "research/round-3-results/K03/boundary_validator.py",
+   "original_sha256": "61e354b2cf68b202e2a1a0a8aace38dd8e844c5909288eba55cf67474956e82e",
+   "patched_sha256": "d5e297411d78085dafece85b25b10050672b03b2f22c46651f631d886d80760b"
+  }
+ ],
+ "files": {
+  "data/astana_districts.geojson": "9092aebb997086d4fbf30963dd84dfae6aab483a585ba6f536944fb03a4eb95e",
+  "data/geo_sources/astana_districts_overpass.json": "ebd6019b0ea32cef4d3f27c79bc0a979284fe35476551742eea8ba4839f01392",
+  "data/geo_sources/sara_osm.json": "c3ef515903b405d4f05b4f512e239653df267962a8bde06824ed4e5005f62a32",
+  "research/round-3-results/K03/STATUS.md": "de90232c68e6eb973d0ed23e43b01c4bc7083c806b48bf62ed00c227b181dc4c",
+  "research/round-3-results/K03/ambiguity_zones.geojson": "225dcc9fe04062a02a4d15f81fb6fc023a7d4c8ea7e8771edec475c65c630778",
+  "research/round-3-results/K03/boundary_registry.json": "f6577555a3d701923dfb7cb7fc1f9396bc529485877d495aca78cac1417fedf5",
+  "research/round-3-results/K03/boundary_validator.py": "d5e297411d78085dafece85b25b10050672b03b2f22c46651f631d886d80760b",
+  "research/round-3-results/K03/geo_common.py": "729061e923517ff870af44a9a6a7f07851b23dd7ad72524b1d3d6a1ed136200f",
+  "research/round-3-results/K03/inputs/K10/astana_districts_overture.geojson": "ab3a7f9852ecdd0d80b68c22ed73f1e10673c20c5091cf47c6454a030f1421ca",
+  "research/round-3-results/K03/inputs/K10/shymkent_districts_overture.geojson": "e19bbd7572a7a4f46dbb793df74c5d1cfab11d4e7a217fed7e525b4cece117c3",
+  "research/round-3-results/K03/validator_selftest.json": "884b0e63e98ef2840fbcb70cd7bab8f900bc8bc536b55e6b60aba98f4964a5c8"
+ },
+ "note": "patched local copy; all other files identical to inputs/k03_root"
+}

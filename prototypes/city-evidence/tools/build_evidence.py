@@ -1,10 +1,12 @@
-"""Build web/evidence.js (format city-evidence/2) — contract k05-obs-v1.2+k12r4, K03 k03_assign_v2, QA labels.
+"""Build web/evidence.js (format city-evidence/2) — contract k05-obs-v1.2+k12r4+k05r5, K03 assign (v2.1 copy), QA labels.
 
 Inputs (all committed, see source_manifest.json and inputs/r4/MANIFEST.json):
   * K10 r3 package (inputs/k10)              — places, segments, bbox, sha256-checked by build_data.load_layer
   * K05 r4 square observations (inputs/r4/K05/examples/<city>/square_place_record_counts.json)
       — read with loads_strict; every value is re-counted here from the K10 file; mismatch aborts
-  * K03 v2 (inputs/k03v2_root, patched copy) — district status per record (needs shapely + pyproj)
+  * K03 v2.1 (inputs/k03v21_root, patched copy, checked against MANIFEST_K03.json) — district status per record
+      (needs shapely + pyproj); the rule label comes from assign() itself; boundary_binding (k03-binding-v1) ties
+      place_district to the K03 code/layers and to the data.js places (check: tools/check_evidence_fresh.py)
   * contract (tools/contract.py)             — validate_all over every observation; any error aborts
 
 Semantics (same in contract, catalog and UI):
@@ -24,14 +26,17 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 APP = HERE.parent
-K03_DIR = APP / "inputs" / "k03v2_root" / "research" / "round-3-results" / "K03"
+K03_ROOT = APP / "inputs" / "k03v21_root"
+K03_DIR = K03_ROOT / "research" / "round-3-results" / "K03"
 K05_EX = APP / "inputs" / "r4" / "K05" / "examples"
 OUT = APP / "web" / "evidence.js"
 AS_OF = "2026-10-05"
 FORMAT = "city-evidence/2"
 
 sys.path.insert(0, str(HERE))
-from build_data import GROUPS, InputError, load_layer, load_manifest  # noqa: E402
+import build_data  # noqa: E402
+from build_data import GROUPS, InputError, load_layer, load_manifest, r6  # noqa: E402
+from check_evidence_fresh import binding as k03_binding  # noqa: E402
 import contract as K  # noqa: E402
 
 GROUP_KK = {  # черновик казахских подписей, требует проверки носителем
@@ -53,8 +58,18 @@ def sha256(p):
 
 
 def load_k03():
+    """K03 copy must equal MANIFEST_K03.json (written by tools/setup_k03.py) before its code is imported."""
+    mp = K03_ROOT / "MANIFEST_K03.json"
+    if not mp.exists():
+        raise InputError(f"INTEGRITY: нет {mp.relative_to(APP)} — запустите tools/setup_k03.py")
+    want = K.loads_strict(mp.read_text(encoding="utf-8"))["files"]
+    have = {str(p.relative_to(K03_ROOT)): sha256(p) for p in sorted(K03_ROOT.rglob("*"))
+            if p.is_file() and "__pycache__" not in p.parts and p.name != "MANIFEST_K03.json"}
+    if have != want:
+        diff = sorted(set(have.items()) ^ set(want.items()))
+        raise InputError(f"INTEGRITY: копия K03 не совпадает с MANIFEST_K03.json: {[d[0] for d in diff][:5]}")
     sys.path.insert(0, str(K03_DIR))
-    import boundary_validator as BV  # noqa: E402  (K03 v2 patched copy, read-only, no network)
+    import boundary_validator as BV  # noqa: E402  (K03 v2.1 patched copy, read-only, no network)
     return BV, BV.Layers()
 
 
@@ -70,13 +85,13 @@ def k05_square_obs(city, places_path, features):
     want_sha = sha256(places_path)
     for o in obs:
         if o["source"]["sha256"] != want_sha:
-            raise InputError(f"{o['obs_id']}: source.sha256 K05 != файл K10 пакета")
+            raise InputError(f"INTEGRITY: {o['obs_id']}: source.sha256 K05 != файл K10 пакета")
         g = o["indicator_id"].split(".")[1]
         t = o["method"]["parameters"]["confidence_min"]
         n = sum(1 for f in features if f["properties"]["k10_group"] == g
                 and f["properties"]["confidence"] is not None and f["properties"]["confidence"] >= t)
         if o["value"] != n:
-            raise InputError(f"{o['obs_id']}: значение K05 {o['value']} != пересчёт {n}")
+            raise InputError(f"SEMANTIC: {o['obs_id']}: значение K05 {o['value']} != пересчёт {n}")
     return obs
 
 
@@ -121,7 +136,7 @@ def qa_labels(city, features):
     colocated = [{"lon": xy[0], "lat": xy[1], "ids": ids} for xy, ids in by_xy.items() if len(ids) >= 3]
     n_reported = sum(1 for w in qa["warnings"] if w["code"] == "COLOCATED")
     if n_reported != len(colocated):
-        raise InputError(f"{city}: COLOCATED {n_reported} у контракта != {len(colocated)} групп")
+        raise InputError(f"SEMANTIC: {city}: COLOCATED {n_reported} у контракта != {len(colocated)} групп")
     dups = [{"rule": w["rule"], "distance_m": w["distance_m"], "a": w["a"]["id"], "b": w["b"]["id"]}
             for w in qa["warnings"] if w["code"] == "POSSIBLE_DUPLICATE"]
     doubts = {}
@@ -141,10 +156,14 @@ def build():
     man = load_manifest()
     BV, L = load_k03()
     names = district_names()
-    out = {"format": FORMAT, "as_of": AS_OF, "contract": K.CONTRACT_ID, "assign_rule": "k03_assign_v2",
+    rule = BV.assign(L, 71.43, 51.128)["rule"]  # label from the code itself, not from a registry
+    data = build_data.build()                   # the places data.js is built from (same rounding)
+    binding = k03_binding(APP, rule, data)
+    binding["root"] = str(K03_ROOT.relative_to(APP))
+    out = {"format": FORMAT, "as_of": AS_OF, "contract": K.CONTRACT_ID, "assign_rule": rule, "boundary_binding": binding,
            "group_kk": GROUP_KK, "district_names": names, "cities": {}}
     for city, cm in man["cities"].items():
-        layers = {n: load_layer(city, n, fm) for n, fm in cm["files"].items()}
+        layers = {n: load_layer(city, n, fm, man, cm) for n, fm in cm["files"].items()}
         places = layers["places_social"]["features"]
         segs = [f for f in layers["segments"]["features"] if f["properties"]["subtype"] == "road"]
         k05 = k05_square_obs(city, APP / "inputs" / "k10" / cm["files"]["places_social"]["path"], places)
@@ -152,23 +171,26 @@ def build():
         assigned, counts = {}, Counter()
         for f in places:
             lon, lat = f["geometry"]["coordinates"][:2]
+            lon, lat = r6(lon), r6(lat)              # exactly the coordinates shown in data.js
             r = BV.assign(L, lon, lat)
+            if r.get("rule") != rule:
+                raise InputError(f"SEMANTIC: правило K03 {r.get('rule')} ≠ {rule}")
             if r.get("city") not in (city, None):
-                raise InputError(f"{city}: {f['id']} привязан к городу {r.get('city')}")
+                raise InputError(f"SEMANTIC: {city}: {f['id']} привязан к городу {r.get('city')}")
             counts[r["status"]] += 1
             assigned[f["id"]] = {"status": r["status"], "reason": r.get("reason"), "district": r.get("district"),
-                                 "candidates": r.get("candidates") or []}
-        k03_src = {"source_id": "K03-k03_assign_v2", "url": None,
-                   "path": "inputs/k03v2_root/research/round-3-results/K03/boundary_validator.py",
+                                 "candidates": r.get("candidates") or [], "lonlat": [lon, lat]}
+        k03_src = {"source_id": f"K03-{rule}", "url": None,
+                   "path": "inputs/k03v21_root/research/round-3-results/K03/boundary_validator.py",
                    "sha256": sha256(K03_DIR / "boundary_validator.py"), "retrieved_at": "2026-10-05T00:00:00Z",
                    "license": None, "locator": "assign(L, lon, lat)['status'] (patched copy, not upstream)",
-                   "evidence": "K03 @ 44585de + k03_assign_v2.patch @ 3660527", "query": None}
+                   "evidence": "K03 @ 44585de + k03_assign_v2_1.patch @ 5715a7f", "query": None}
         rows = list(k05)
         for st in ("matched", "ambiguous", "unmatched", "outside"):
             rows.append(derived_obs(tmpl, f"k03_district_status.{st}", counts.get(st, 0), "records",
                                     scope=f"{len(places)} записей объектов этого квадрата",
-                                    derivation=f"число записей квадрата со статусом {st} по k03_assign_v2",
-                                    method_id="k03_assign_v2", steps=["K03 assign() для каждой записи", "счёт по статусу"],
+                                    derivation=f"число записей квадрата со статусом {st} по {rule}",
+                                    method_id=rule, steps=["K03 assign() для каждой записи", "счёт по статусу"],
                                     source=k03_src))
         seg_src = dict(tmpl["source"], source_id="K10-r3-segments", path="inputs/k10/" + cm["files"]["segments"]["path"],
                        sha256=cm["files"]["segments"]["sha256"], url=man["cities"][city]["queries"]["segments"]["files"][0]["url"],
@@ -190,7 +212,7 @@ def build():
                                      "численность детей не собиралась"))
         errors, warnings = K.validate_all(rows, AS_OF)
         if errors:
-            raise InputError(f"{city}: контракт {K.CONTRACT_ID}: {errors[:5]}")
+            raise InputError(f"SEMANTIC: {city}: контракт {K.CONTRACT_ID}: {errors[:5]}")
         out["cities"][city] = {"geo_unit_id": tmpl["geo_unit_id"], "spatial_unit": tmpl["spatial_unit"],
                                "release": tmpl["release"], "place_district": assigned,
                                "district_status_counts": dict(counts), "observations": rows,
@@ -206,7 +228,7 @@ def build():
 def render_text(out):
     txt = K.dumps_strict(out, separators=(",", ":"), sort_keys=True)
     K.loads_strict(txt)  # round-trip: strict JSON only
-    return ("// GENERATED by tools/build_evidence.py (contract k05-obs-v1.2+k12r4, K03 v2, QA) — do not edit.\n"
+    return ("// GENERATED by tools/build_evidence.py (contract k05-obs-v1.2+k12r4+k05r5, K03, QA) — do not edit.\n"
             f"window.CITY_OBS = {txt};\n")
 
 

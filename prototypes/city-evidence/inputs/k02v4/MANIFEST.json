@@ -6,12 +6,13 @@
  },
  "adapted": {
   "path": "inputs/k02v4/verified_explainer.py",
-  "sha256": "86e46e57d737eb6bb06bd0ef2b50a9356c8c184e87ba181791c7051c778e64d0"
+  "sha256": "eca698653c6e2313a36bf1a1c25dfaf6ffc174580ef7265930fa2529abb12d2f"
  },
  "changes": [
   "catalog_digest + unit + missing_reason",
   "missing_reason shown in text",
-  "units segments/places/persons"
+  "units segments/places/persons",
+  "agent.evidence from vendored inputs/product_agent (r6)"
  ],
  "note": "local adaptation for the demo, not upstream K02"
 }

@@ -15,6 +15,10 @@ APP = Path(__file__).resolve().parents[1]
 SRC = APP / "inputs" / "r4" / "K02" / "fixed" / "verified_explainer.py"
 OUT = APP / "inputs" / "k02v4" / "verified_explainer.py"
 REPL = [
+    ('REPO = next(p for p in Path(__file__).resolve().parents if (p / "agent" / "evidence.py").exists())',
+     '# BUILD r6: vendored byte copy of the product agent/evidence.py (inputs/product_agent), so an extracted\n'
+     '# prototypes/city-evidence does not depend on the rest of the repository.\n'
+     'REPO = Path(__file__).resolve().parents[1] / "product_agent"'),
     ('    payload = sorted((f.fact_id, repr(f.value), f.kind, f.coverage_complete) for f in catalog.values())',
      '    payload = sorted((f.fact_id, repr(f.value), f.kind, f.coverage_complete, f.unit, f.missing_reason)\n'
      '                     for f in catalog.values())  # BUILD r5: + unit, missing_reason'),
@@ -54,7 +58,8 @@ def main():
     (OUT.parent / "MANIFEST.json").write_text(json.dumps({
         "original": {"path": str(SRC.relative_to(APP)), "sha256": h(SRC.read_bytes()), "source": "K02 @ 7020637 fixed/"},
         "adapted": {"path": str(OUT.relative_to(APP)), "sha256": h(OUT.read_bytes())},
-        "changes": ["catalog_digest + unit + missing_reason", "missing_reason shown in text", "units segments/places/persons"],
+        "changes": ["catalog_digest + unit + missing_reason", "missing_reason shown in text", "units segments/places/persons",
+                    "agent.evidence from vendored inputs/product_agent (r6)"],
         "note": "local adaptation for the demo, not upstream K02",
     }, ensure_ascii=False, indent=1) + "\n", encoding="utf-8", newline="\n")
     print("k02v4 written", h(OUT.read_bytes())[:16])

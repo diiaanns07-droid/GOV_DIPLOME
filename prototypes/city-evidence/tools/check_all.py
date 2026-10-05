@@ -54,11 +54,12 @@ def step_inputs():
             or h(APP / "inputs/contract" / r["path"]) != r["used_sha256"]]
     record("inputs", f"contract {cm['contract_id']}: originals and patched copy match manifest "
            f"({sum(r['modified'] for r in cm['files'])} modified)", not cbad, ", ".join(cbad))
-    k3 = json.loads((APP / "inputs/k03v2_root/MANIFEST_K03V2.json").read_text(encoding="utf-8"))
+    k3 = json.loads((APP / "inputs/k03v21_root/MANIFEST_K03.json").read_text(encoding="utf-8"))
     m = k3["modified"][0]
     ok3 = (h(APP / "inputs/k03_root" / m["path"]) == m["original_sha256"]
-           and h(APP / "inputs/k03v2_root" / m["path"]) == m["patched_sha256"])
-    record("inputs", "K03 v2: original byte-exact, patched copy matches manifest", ok3)
+           and h(APP / "inputs/k03v21_root" / m["path"]) == m["patched_sha256"])
+    files_ok = all(h(APP / "inputs/k03v21_root" / f) == v for f, v in k3["files"].items())
+    record("inputs", "K03 v2.1: original byte-exact, patched copy and all its files match MANIFEST_K03.json", ok3 and files_ok)
     k2 = json.loads((APP / "inputs/k02v4/MANIFEST.json").read_text(encoding="utf-8"))
     ok2 = h(APP / k2["original"]["path"]) == k2["original"]["sha256"] and h(APP / k2["adapted"]["path"]) == k2["adapted"]["sha256"]
     record("inputs", "K02 v4: original byte-exact, adapted copy matches manifest", ok2)
@@ -93,6 +94,12 @@ def step_build():
         record("build", "web/evidence.js rebuild", None, "shapely/pyproj not installed: pip install -r requirements-build.txt")
 
 
+def step_fresh():
+    r = subprocess.run([sys.executable, str(APP / "tools/check_evidence_fresh.py")], capture_output=True, text=True, encoding="utf-8")
+    record("fresh", "evidence.js boundary_binding matches K03 code/layers and data.js places", r.returncode == 0,
+           r.stdout.strip()[-300:] if r.returncode else "")
+
+
 def step_facts():
     import explain_ref
     exp = json.loads((APP / "tests/expected_explanations.json").read_text(encoding="utf-8"))
@@ -119,7 +126,7 @@ def step_tests():
 
 
 def main():
-    for step in (step_inputs, step_package, step_build, step_facts, step_tests):
+    for step in (step_inputs, step_package, step_build, step_fresh, step_facts, step_tests):
         try:
             step()
         except Exception as e:  # a crashing step is a failure, never a skip

@@ -1,0 +1,28 @@
+--- review_inputs/K05/k05r5_compat.py	2026-10-05 11:13:30.620383502 +0000
++++ adapters/K05/k05r5_compat.py	2026-10-05 11:21:01.567098582 +0000
+@@ -227,7 +227,12 @@
+         check("D07_validate_dataset", "validate_dataset() сборки: нет ошибок набора", d07)
+ 
+         def d08():
+-            errs = [(o["obs_id"], e) for _, o in allobs for e in C.validate(o, as_of=data.get("as_of"))[0]]
++            # ADAPTER (BUILD r6): a v1.2 record is validated by the v1.2 contract (which itself runs the v1.1+K12 rules);
++            # the original applied v1.1 validate to every record and failed on SCHEMA_VERSION for any v1.2 build.
++            def val(o):
++                m = V12 if (V12 is not None and o.get("schema_version") == getattr(V12, "SCHEMA_VERSION", None)) else C
++                return m.validate(o, as_of=data.get("as_of"))[0]
++            errs = [(o["obs_id"], e) for _, o in allobs for e in val(o)]
+             return not errs, f"ошибок validate: {errs[:3]}"
+         check("D08_validate_all", "validate() сборки на всех наблюдениях: 0 ошибок", d08)
+ 
+@@ -349,6 +354,11 @@
+     prop = HERE / "proposed" / "k05r4_contract.py"
+     K05R4_VARIANTS["orig"] = {sha256_bytes(orig.read_bytes())} if orig.exists() else set()
+     K05R4_VARIANTS["compat"] = {sha256_bytes(prop.read_bytes())} if prop.exists() else set()
++    # ADAPTER (BUILD r6): the snapshot does not contain K05's inputs/ folder, so the variant table above stays empty.
++    # Register known hashes: orig = K05 @42051600 k05r4_contract.py (90086a10…, recorded in the build CONTRACT_MANIFEST),
++    # compat = K05 r5 proposed/k05r4_contract.py (acd75a17…, REPORT §3).
++    K05R4_VARIANTS["orig"] |= {"90086a105a0a0108dcc4a35fd5312fb29becc0787b3eef5bc880ae987dfe64ab"}
++    K05R4_VARIANTS["compat"] |= {"acd75a17b1e13bed4646d8c1412e46324704c3628a83de5cd1e613ca27131c1a"}
+ 
+ 
+ def main(argv=None):

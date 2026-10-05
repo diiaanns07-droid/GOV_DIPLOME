@@ -1,0 +1,50 @@
+{
+ "snapshots": "research/round-6/snapshots.json @ edee718366ee4f085ea540c4e53a8dabf3c93fce",
+ "files": [
+  {
+   "slot": "K05",
+   "branch": "claude/optimistic-davinci-1oiqs9",
+   "sha": "fb2dea60a5e42e745e6914dc063355d6db67aebe",
+   "path": "research/round-5-results/K05/patches/k05r3_count_units_after_k12.patch",
+   "copied_to": "inputs/r5/K05/patches/k05r3_count_units_after_k12.patch",
+   "bytes": 1089,
+   "sha256": "62bb04c1ab59cdc550a226fa984056f041c3f8c626530fd8d9017a4c95ead53e"
+  },
+  {
+   "slot": "K05",
+   "branch": "claude/optimistic-davinci-1oiqs9",
+   "sha": "fb2dea60a5e42e745e6914dc063355d6db67aebe",
+   "path": "research/round-5-results/K05/patches/k05r4_contract_k12_compat.patch",
+   "copied_to": "inputs/r5/K05/patches/k05r4_contract_k12_compat.patch",
+   "bytes": 2216,
+   "sha256": "91efe85c41ebb4f8741b9627755f2ca1841d8e9a88847f1834dbb37530739046"
+  },
+  {
+   "slot": "K05",
+   "branch": "claude/optimistic-davinci-1oiqs9",
+   "sha": "fb2dea60a5e42e745e6914dc063355d6db67aebe",
+   "path": "research/round-5-results/K05/proposed/k05r4_contract.py",
+   "copied_to": "inputs/r5/K05/proposed/k05r4_contract.py",
+   "bytes": 7907,
+   "sha256": "acd75a17b1e13bed4646d8c1412e46324704c3628a83de5cd1e613ca27131c1a"
+  },
+  {
+   "slot": "K03",
+   "branch": "claude/epic-curie-iitc43",
+   "sha": "5715a7f19ffc11926a5e4836e931cadf2c8c12e0",
+   "path": "research/round-5-results/K03/patches/k03_assign_v2_1.patch",
+   "copied_to": "inputs/r5/K03/patches/k03_assign_v2_1.patch",
+   "bytes": 12609,
+   "sha256": "428394b2b749f2da05fa78a48c4e2a32dad35ab6c3f5e115cf78aff80e6d6515"
+  },
+  {
+   "slot": "K03",
+   "branch": "claude/epic-curie-iitc43",
+   "sha": "5715a7f19ffc11926a5e4836e931cadf2c8c12e0",
+   "path": "research/round-5-results/K03/patches/build_p1_binding.patch",
+   "copied_to": "inputs/r5/K03/patches/build_p1_binding.patch",
+   "bytes": 14867,
+   "sha256": "f3028a0ef71e4d57ff3a4b990ab6a07531753debe7ed885146bd9373702a16f6"
+  }
+ ]
+}

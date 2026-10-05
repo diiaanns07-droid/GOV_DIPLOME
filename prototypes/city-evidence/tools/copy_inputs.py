@@ -51,6 +51,9 @@ EXTRA = {
     "k08": ("claude/dazzling-mayer-drhsxk", "e1e3c7170f827550948afc0448695ecb8e9bc464", "research/round-3-results/K08/", [
         "AUDIT.md", "verdicts.json",
     ]),
+    # agent/evidence.py of the product (stdlib only): K02 imports format_value from it. Vendored so that an
+    # extracted prototypes/city-evidence works without the rest of the repository (round 6 acceptance).
+    "product_agent": ("main", "834a25fb860dd5514d02c9274b70d7bf8a53a79c", "", ["agent/evidence.py", "agent/__init__.py"]),
     "k04": ("claude/beautiful-clarke-sbzomj", "7fb8bb897dc80150c85fef9e68ac7183d323e6c3", "research/round-3-results/K04/", [
         "acceptance.json", "PRODUCT_DECISION.md",
     ]),

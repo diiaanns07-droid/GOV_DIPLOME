@@ -110,6 +110,8 @@ def assign(L, lon, lat):
     if L.Pcity[city].boundary.distance(pp) <= TOL_M:
         res['city_edge'] = True
     for z, zg in L.Pzones.items():
+        if zg.is_empty:
+            continue  # v2.1 (D3): зона может исчезнуть в новой версии слоёв (например, AST-Z3 при их синхронизации)
         if z.startswith('AST') and city == 'astana' and (zg.covers(pp) or zg.boundary.distance(pp) <= TOL_M):
             meta = L.zones[z]
             if meta['reason'] == 'version_disagreement' and not zg.covers(pp):
@@ -153,26 +155,31 @@ def selftest(L):
     cases += [
         ('AST-A12 tri-point Almaty/Esil/Saraishyk', 71.447389, 51.1311552, 'ambiguous', None),
         ('4-district vertex Baikonur/Esil/Nura/Saryarka', 71.428229, 51.1518972, 'ambiguous', None),
-        ('Baikonur exclave ∩ Tselinograd (AST-A12-F012)', 71.66574, 51.33028, 'ambiguous', None),
-        ('uncovered city area (K10 E01)', *L.zones['AST-Z2']['geom'].representative_point().coords[0], 'unmatched', None),
-        ('Almaty/Saraishyk version-difference sliver', *L.zones['AST-Z3']['geom'].representative_point().coords[0], 'ambiguous', None),
+        # v2.1 (D3): случаи, зависящие от зон, — только если зона есть в текущих слоях
+        *([('Baikonur exclave ∩ Tselinograd (AST-A12-F012)', 71.66574, 51.33028, 'ambiguous', None)]
+          if not L.zones['AST-Z1']['geom'].is_empty else []),
+        *([('uncovered city area (K10 E01)', *L.zones['AST-Z2']['geom'].representative_point().coords[0], 'unmatched', None)]
+          if not L.zones['AST-Z2']['geom'].is_empty else []),
+        *([('Almaty/Saraishyk version-difference sliver', *L.zones['AST-Z3']['geom'].representative_point().coords[0], 'ambiguous', None)]
+          if not L.zones['AST-Z3']['geom'].is_empty else []),
         ('outside both cities', 70.0, 45.0, 'outside', None),
         ('swapped lon/lat', 51.1311552, 71.447389, 'invalid', None),
     ]
-    # v2 регрессия: край города у AST-Z2, 0,5 м снаружи и внутри → ambiguous, а не unmatched
-    z2 = L.Pzones['AST-Z2']
-    ring = (z2.geoms[0] if hasattr(z2, 'geoms') else z2).exterior
-    s = ring.length / 3
-    mid, a_, b_ = ring.interpolate(s), ring.interpolate(s - 0.5), ring.interpolate(s + 0.5)
-    nx, ny = -(b_.y - a_.y), b_.x - a_.x
-    nn = (nx * nx + ny * ny) ** 0.5
-    nx, ny = nx / nn, ny / nn
-    if z2.contains(Point(mid.x + nx * 0.5, mid.y + ny * 0.5)):
-        nx, ny = -nx, -ny  # нормаль наружу
-    to_ll = Transformer.from_crs('EPSG:32642', 'EPSG:4326', always_xy=True).transform
-    for d, label in ((0.5, 'outside'), (-0.5, 'inside')):
-        lon_, lat_ = to_ll(mid.x + nx * d, mid.y + ny * d)
-        cases.append((f'AST-Z2 city edge, 0.5 m {label} (v2 regression)', lon_, lat_, 'ambiguous', None))
+    if not L.Pzones['AST-Z2'].is_empty:  # v2.1 (D3): зоны может не быть в новой версии слоёв
+        # v2 регрессия: край города у AST-Z2, 0,5 м снаружи и внутри → ambiguous, а не unmatched
+        z2 = L.Pzones['AST-Z2']
+        ring = (z2.geoms[0] if hasattr(z2, 'geoms') else z2).exterior
+        s = ring.length / 3
+        mid, a_, b_ = ring.interpolate(s), ring.interpolate(s - 0.5), ring.interpolate(s + 0.5)
+        nx, ny = -(b_.y - a_.y), b_.x - a_.x
+        nn = (nx * nx + ny * ny) ** 0.5
+        nx, ny = nx / nn, ny / nn
+        if z2.contains(Point(mid.x + nx * 0.5, mid.y + ny * 0.5)):
+            nx, ny = -nx, -ny  # нормаль наружу
+        to_ll = Transformer.from_crs('EPSG:32642', 'EPSG:4326', always_xy=True).transform
+        for d, label in ((0.5, 'outside'), (-0.5, 'inside')):
+            lon_, lat_ = to_ll(mid.x + nx * d, mid.y + ny * d)
+            cases.append((f'AST-Z2 city edge, 0.5 m {label} (v2 regression)', lon_, lat_, 'ambiguous', None))
     # Шымкент: общая вершина двух районов и точка в 5 м от неё внутри района
     a, b = 'kz.shymkent.district.abay', 'kz.shymkent.district.al-farabi'
     shared = L.shy[a].boundary.intersection(L.shy[b].boundary)
@@ -272,7 +279,8 @@ def build_registry(L, tests_ok, tests):
     zones = [dict(zone_id=z, city='kz.astana', type=v['reason'], assign_status=v['status'],
                   area_km2=round(km2(v['geom']), 3) if v['reason'] != 'version_disagreement' else None,
                   area_m2=round(km2(v['geom']) * 1e6, 2) if v['reason'] == 'version_disagreement' else None,
-                  rep_point=[round(c, 6) for c in v['geom'].representative_point().coords[0]],
+                  rep_point=([round(c, 6) for c in v['geom'].representative_point().coords[0]]
+                             if not v['geom'].is_empty else None),
                   geom_sha256=ghash(v['geom']), candidates=v['candidates'], kind='derived', legal_status='not_verified')
              for z, v in L.zones.items()]
     unresolved = [

@@ -33,6 +33,8 @@ import k05_validator as V1  # noqa: E402
 SCHEMA_VERSION = "k05-obs-v1.1"
 MISSING_REASONS = {None, "source_access_denied", "not_collected", "not_in_source",
                    "zero_in_partial_coverage", "suppressed_by_publisher"}
+# Единицы-счётчики (целое ≥ 0): «count» из K12 и единицы, фактически используемые K05 r3/r4 и BUILD.
+COUNT_UNITS = {"count", "records", "segments"}
 
 
 def _finite(v) -> bool:
@@ -112,7 +114,7 @@ def validate(obs: dict, as_of: str | None = None, boundary_ref: dict | None = No
 
     if numeric and not _finite(value):
         errors.append("VALUE_NOT_FINITE: NaN/Infinity не является значением наблюдения")
-    elif numeric and obs["unit"].strip() == "count" and (value < 0 or value != int(value)):
+    elif numeric and obs["unit"].strip() in COUNT_UNITS and (value < 0 or value != int(value)):
         errors.append(f"COUNT_DOMAIN: счётчик должен быть целым ≥ 0, получено {value!r}")
     if period != "unknown":
         try:

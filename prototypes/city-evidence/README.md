@@ -41,7 +41,7 @@ NODE_PATH="$(npm root -g)" node tests/smoke.cjs   # браузер (Playwright +
 | viewer | K07 r3 + исправления K07 r4 | `web/app.js`, `web/index.html` |
 | данные | K10 r3 @ ea703f1 | `inputs/k10/` побайтно → `tools/build_data.py` → `web/data.js` |
 | контракт | K05 r4 v1.2 + K12 r4 патч | `inputs/contract/` (пропатчен только `k05r3_contract.py`, хэши в манифесте) |
-| районы | K03 r3 + `k03_assign_v2.patch` (K03 r4) | `inputs/k03v2_root/` (отдельная копия) |
+| районы | K03 r3 + `k03_assign_v2.patch` (K03 r4) | `inputs/k03v21_root/` (отдельная копия) |
 | объяснение | K02 r4 fixed + адаптация BUILD | `inputs/k02v4/` (эталон), `web/facts.js` (порт) |
 | атрибуция | K08 r4 | `web/attribution/` |
 

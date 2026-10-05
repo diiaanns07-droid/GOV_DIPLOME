@@ -13,7 +13,6 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 APP = HERE.parent
-sys.path.insert(0, str(APP.parents[1]))  # repository root: K02 imports agent.evidence.format_value (read-only)
 sys.path.insert(0, str(APP / "inputs" / "k02v4"))
 sys.path.insert(0, str(HERE))
 import verified_explainer as K02  # noqa: E402

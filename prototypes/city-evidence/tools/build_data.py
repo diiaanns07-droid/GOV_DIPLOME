@@ -7,6 +7,7 @@ Output: web/data.js  (window.CITY_EVIDENCE = {...}) — works both via file:// a
 """
 import hashlib
 import json
+import math
 import sys
 from collections import Counter
 from pathlib import Path
@@ -49,25 +50,103 @@ def sha256(p):
     return hashlib.sha256(p.read_bytes()).hexdigest()
 
 
+SOURCE_MANIFEST = APP / "source_manifest.json"
+FOOT_CLASSES = {"unknown", "conditional", "denied", "allowed"}
+
+
+def loads_strict(text, where):
+    """json.loads without NaN/Infinity tokens, without overflow to inf (1e999) and without duplicate keys."""
+    def no_constant(tok):
+        raise ValueError(f"токен {tok}")
+
+    def finite_float(tok):
+        v = float(tok)
+        if not math.isfinite(v):
+            raise ValueError(f"{tok} переполняется до {v}")
+        return v
+
+    def unique(pairs):
+        out = {}
+        for k, v in pairs:
+            if k in out:
+                raise ValueError(f"повтор ключа {k!r}")
+            out[k] = v
+        return out
+    try:
+        return json.loads(text, parse_constant=no_constant, parse_float=finite_float, object_pairs_hook=unique)
+    except ValueError as e:
+        raise InputError(f"SEMANTIC: {where}: недопустимый JSON ({e})") from None
+
+
+def anchored_sha(rel_path):
+    """sha256 recorded for a copied input in source_manifest.json (the trust anchor written by copy_inputs.py)."""
+    if not SOURCE_MANIFEST.exists():
+        raise InputError("INTEGRITY: нет файла source_manifest.json (якорь входов)")
+    sm = loads_strict(SOURCE_MANIFEST.read_text(encoding="utf-8"), "source_manifest.json")
+    want = [f["sha256"] for f in sm["files"] if f["copied_to"] == rel_path]
+    if len(want) != 1:
+        raise InputError(f"INTEGRITY: {rel_path} не записан в source_manifest.json")
+    return want[0]
+
+
 def load_manifest():
     mp = K10 / "package_manifest.json"
     if not mp.exists():
-        raise InputError(f"нет файла {rel(mp)} — запустите tools/copy_inputs.py")
-    return json.loads(mp.read_text(encoding="utf-8"))
+        raise InputError(f"INTEGRITY: нет файла {rel(mp)} — запустите tools/copy_inputs.py")
+    if K10 == APP / "inputs" / "k10" and sha256(mp) != anchored_sha("inputs/k10/package_manifest.json"):
+        raise InputError("INTEGRITY: package_manifest.json не совпадает с sha256 в source_manifest.json")
+    return loads_strict(mp.read_text(encoding="utf-8"), "package_manifest.json")
 
 
-def load_layer(city, name, fmeta):
+def _finite(*vals):
+    return all(isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v) for v in vals)
+
+
+def check_layer(city, name, fc, man, cm):
+    """Semantic checks of one K10 layer; raises InputError('SEMANTIC: ...') before anything is written."""
+    w = f"{city}/{name}"
+    if fc.get("city") != city or fc.get("release") != man.get("release") or fc.get("bbox") != cm["bbox"]:
+        raise InputError(f"SEMANTIC: {w}: заголовок (city/release/bbox) {fc.get('city')}/{fc.get('release')}/{fc.get('bbox')} "
+                         f"≠ манифесту {city}/{man.get('release')}/{cm['bbox']}")
+    bb = cm["bbox"]
+    seen = set()
+    for f in fc["features"]:
+        fid, p, g = f.get("id"), f.get("properties") or {}, f.get("geometry") or {}
+        if fid in seen:
+            raise InputError(f"SEMANTIC: {w}: повтор id {fid}")
+        seen.add(fid)
+        if fid != p.get("overture_id"):
+            raise InputError(f"SEMANTIC: {w}: id {fid} ≠ overture_id")
+        coords = g.get("coordinates")
+        pts = [coords] if g.get("type") == "Point" else (coords or [])
+        if not pts or not all(isinstance(c, list) and len(c) >= 2 and _finite(c[0], c[1]) for c in pts):
+            raise InputError(f"SEMANTIC: {w}: {fid}: координаты отсутствуют или не конечны")
+        if name == "places_social":
+            x, y = coords[:2]
+            if p.get("city") != city or not (bb[0] <= x <= bb[2] and bb[1] <= y <= bb[3]):
+                raise InputError(f"SEMANTIC: {w}: {fid}: объект другого города или вне квадрата ({x}, {y})")
+            if p.get("k10_group") not in GROUPS:
+                raise InputError(f"SEMANTIC: {w}: {fid}: неизвестная группа {p.get('k10_group')!r}")
+            c = p.get("confidence")
+            if c is not None and not (_finite(c) and 0 <= c <= 1):
+                raise InputError(f"SEMANTIC: {w}: {fid}: confidence {c!r} вне [0, 1]")
+        elif name == "segments":
+            if not (_finite(p.get("k10_length_m")) and p["k10_length_m"] >= 0):
+                raise InputError(f"SEMANTIC: {w}: {fid}: k10_length_m {p.get('k10_length_m')!r} не конечно или < 0")
+            if p.get("subtype") == "road" and p.get("k10_foot_access") not in FOOT_CLASSES:
+                raise InputError(f"SEMANTIC: {w}: {fid}: k10_foot_access {p.get('k10_foot_access')!r}")
+
+
+def load_layer(city, name, fmeta, man, cm):
     path = K10 / fmeta["path"]
     if not path.exists():
-        raise InputError(f"{city}/{name}: нет файла {rel(path)}")
+        raise InputError(f"INTEGRITY: {city}/{name}: нет файла {rel(path)}")
     if path.stat().st_size != fmeta["bytes"] or sha256(path) != fmeta["sha256"]:
-        raise InputError(f"{city}/{name}: sha256/размер не совпадают с package_manifest.json")
-    try:
-        fc = json.loads(path.read_text(encoding="utf-8"))
-    except json.JSONDecodeError as e:
-        raise InputError(f"{city}/{name}: повреждённый JSON ({e})")
+        raise InputError(f"INTEGRITY: {city}/{name}: sha256/размер не совпадают с package_manifest.json")
+    fc = loads_strict(path.read_text(encoding="utf-8"), f"{city}/{name}")
     if len(fc.get("features", [])) != fmeta["features"]:
-        raise InputError(f"{city}/{name}: число объектов не совпадает с манифестом")
+        raise InputError(f"INTEGRITY: {city}/{name}: число объектов не совпадает с манифестом")
+    check_layer(city, name, fc, man, cm)
     return fc
 
 
@@ -80,14 +159,14 @@ def load_attribution(man):
     The file header `attribution` of K10 files names OSM/Overture only and does not match the records
     (K08 F1/F2); the UI must use this list. Each K08 entry must refer to the exact K10 file (sha256)."""
     if not ATTR.exists():
-        raise InputError(f"нет файла {rel(ATTR)} (K08 атрибуция)")
-    att = json.loads(ATTR.read_text(encoding="utf-8"))
+        raise InputError(f"INTEGRITY: нет файла {rel(ATTR)} (K08 атрибуция)")
+    att = loads_strict(ATTR.read_text(encoding="utf-8"), "attribution.json")
     want = {f"data/{c}/{n}.geojson": fm["sha256"] for c, cm in man["cities"].items()
             for n, fm in ((k, v) for k, v in cm["files"].items())}
     out = {c: [] for c in man["cities"]}
     for f in att["files"]:
         if want.get(f["file"]) != f["sha256"]:
-            raise InputError(f"атрибуция K08 относится к другому файлу: {f['file']}")
+            raise InputError(f"INTEGRITY: атрибуция K08 относится к другому файлу: {f['file']}")
         for pv in f["providers"]:
             item = {"dataset": pv["dataset"], "license": pv["license"], "layer": f["file"].split("/")[-1].split(".")[0]}
             if item not in out[f["city"]]:
@@ -135,7 +214,7 @@ def build():
     k10_sha = next(x["sha"] for x in src_manifest["files"] if x["slot"] == "K10")
     cities = {}
     for city, cm in man["cities"].items():
-        layers = {name: load_layer(city, name, fm) for name, fm in cm["files"].items()}
+        layers = {name: load_layer(city, name, fm, man, cm) for name, fm in cm["files"].items()}
         places = [place_rec(f) for f in layers["places_social"]["features"]]
         segs = [seg_rec(f) for f in layers["segments"]["features"] if f["properties"]["subtype"] == "road"]
         label, iso = CITY_LABEL[city]
