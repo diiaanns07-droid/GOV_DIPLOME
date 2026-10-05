@@ -11,7 +11,7 @@
 | Дата | 2026-10-05 |
 | Репозиторий (origin) | `https://github.com/diiaanns07-droid/GOV_DIPLOME` |
 | Исходная ветка / коммит | `main` @ `834a25fb860dd5514d02c9274b70d7bf8a53a79c` ("Add presentation and README link") |
-| Рабочая ветка | `claude/optimistic-davinci-1oiqs9` (до этого коммита на origin не существовала) |
+| Рабочая ветка | `claude/optimistic-davinci-1oiqs9` (на origin не существует; push отклонён, см. проверки) |
 
 ## Задача
 
@@ -42,6 +42,7 @@
 | Статус агентского прокси (`$HTTPS_PROXY/__agentproxy/status`) | `enabled: true`, `recentRelayFailures: []` |
 | `git diff --cached` перед коммитом | только этот файл; токенов и `.env` нет |
 | Тесты продукта | не запускались: код продукта не менялся |
+| `git push -u origin claude/optimistic-davinci-1oiqs9` | **отклонён, HTTP 403**: у Claude нет доступа GitHub к репозиторию для этой организации (gate `repo_not_connected`). Коммит есть **только локально** |
 
 ## Гипотезы и синтетика
 
@@ -49,7 +50,7 @@
 
 ## Ограничения сети
 
-Внешние источники для исследования **не запрашивались**, поэтому их доступность не проверена. Ответов `host_not_allowed` в этой сессии не было. Доступ к GitHub через git (`fetch`, `ls-remote`) работает.
+Внешние источники для исследования **не запрашивались**, поэтому их доступность не проверена. Ответов `host_not_allowed` в этой сессии не было. Чтение GitHub через git (`fetch`, `ls-remote`) работает. Запись (push) запрещена правами доступа, а не сетью. Исправление: подключить или переподключить GitHub на claude.ai или установить Claude GitHub App на репозиторий (это делает владелец).
 
 ## Нерешённые вопросы (для координатора)
 
@@ -67,7 +68,10 @@
 ```bash
 git clone https://github.com/diiaanns07-droid/GOV_DIPLOME
 cd GOV_DIPLOME
+# если ветка запушена:
 git checkout claude/optimistic-davinci-1oiqs9
+# если push не удался — применить переданный patch поверх main:
+#   git checkout -b claude/optimistic-davinci-1oiqs9 834a25f && git am checkpoint.patch
 git log --oneline -2                 # checkpoint поверх 834a25f
 git diff --stat 834a25f HEAD         # ровно один файл: этот STATUS.md
 git ls-remote origin                 # состояние веток на origin
