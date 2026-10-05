@@ -1,0 +1,591 @@
+{
+ "dataset_sha256": "4ee6da79afb86b78d5b528071451deba88835aaa7dd1fb86f04f3d421878b5e2",
+ "splits": [
+  "heldout"
+ ],
+ "systems": {
+  "B1": {
+   "impl": "B1_A13_baseline_parse",
+   "heldout": {
+    "all": {
+     "n": 34,
+     "gold_ok": 18,
+     "gold_non_ok": 16,
+     "fully_correct": {
+      "k": 2,
+      "n": 34,
+      "rate": 0.059,
+      "wilson95": [
+       0.016,
+       0.191
+      ]
+     },
+     "city_accuracy": {
+      "k": 26,
+      "n": 34,
+      "rate": 0.765,
+      "wilson95": [
+       0.6,
+       0.876
+      ]
+     },
+     "entity_exact_on_gold_ok_with_district": {
+      "k": 2,
+      "n": 14,
+      "rate": 0.143,
+      "wilson95": [
+       0.04,
+       0.399
+      ]
+     },
+     "constraints_exact_on_gold_ok": {
+      "k": 3,
+      "n": 18,
+      "rate": 0.167,
+      "wilson95": [
+       0.058,
+       0.392
+      ]
+     },
+     "slot_precision": 0.5,
+     "slot_recall": 0.308,
+     "slot_f1": 0.381,
+     "abstention_on_gold_non_ok": {
+      "k": 0,
+      "n": 16,
+      "rate": 0.0,
+      "wilson95": [
+       0.0,
+       0.194
+      ]
+     },
+     "abstention_reason_correct": {
+      "k": 0,
+      "n": 16,
+      "rate": 0.0,
+      "wilson95": [
+       0.0,
+       0.194
+      ]
+     },
+     "false_abstention_on_gold_ok": {
+      "k": 0,
+      "n": 18,
+      "rate": 0.0,
+      "wilson95": [
+       -0.0,
+       0.176
+      ]
+     },
+     "confident_error_rate": {
+      "k": 32,
+      "n": 34,
+      "rate": 0.941,
+      "wilson95": [
+       0.809,
+       0.984
+      ]
+     },
+     "regret": {
+      "computed_for": 9,
+      "violations": 6,
+      "values": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "not_computed_reasons": [
+       "not astana-ok gold (no optimisation model)",
+       "predicted constraints rejected by engine",
+       "prediction not ok/astana"
+      ]
+     }
+    },
+    "ru": {
+     "n": 17,
+     "gold_ok": 9,
+     "gold_non_ok": 8,
+     "fully_correct": {
+      "k": 2,
+      "n": 17,
+      "rate": 0.118,
+      "wilson95": [
+       0.033,
+       0.343
+      ]
+     },
+     "city_accuracy": {
+      "k": 13,
+      "n": 17,
+      "rate": 0.765,
+      "wilson95": [
+       0.527,
+       0.904
+      ]
+     },
+     "entity_exact_on_gold_ok_with_district": {
+      "k": 2,
+      "n": 7,
+      "rate": 0.286,
+      "wilson95": [
+       0.082,
+       0.641
+      ]
+     },
+     "constraints_exact_on_gold_ok": {
+      "k": 3,
+      "n": 9,
+      "rate": 0.333,
+      "wilson95": [
+       0.121,
+       0.646
+      ]
+     },
+     "slot_precision": 0.583,
+     "slot_recall": 0.538,
+     "slot_f1": 0.56,
+     "abstention_on_gold_non_ok": {
+      "k": 0,
+      "n": 8,
+      "rate": 0.0,
+      "wilson95": [
+       0.0,
+       0.324
+      ]
+     },
+     "abstention_reason_correct": {
+      "k": 0,
+      "n": 8,
+      "rate": 0.0,
+      "wilson95": [
+       0.0,
+       0.324
+      ]
+     },
+     "false_abstention_on_gold_ok": {
+      "k": 0,
+      "n": 9,
+      "rate": 0.0,
+      "wilson95": [
+       -0.0,
+       0.299
+      ]
+     },
+     "confident_error_rate": {
+      "k": 15,
+      "n": 17,
+      "rate": 0.882,
+      "wilson95": [
+       0.657,
+       0.967
+      ]
+     },
+     "regret": {
+      "computed_for": 4,
+      "violations": 1,
+      "values": [
+       0.0,
+       0.0,
+       0.0
+      ],
+      "not_computed_reasons": [
+       "not astana-ok gold (no optimisation model)",
+       "predicted constraints rejected by engine",
+       "prediction not ok/astana"
+      ]
+     }
+    },
+    "kk": {
+     "n": 17,
+     "gold_ok": 9,
+     "gold_non_ok": 8,
+     "fully_correct": {
+      "k": 0,
+      "n": 17,
+      "rate": 0.0,
+      "wilson95": [
+       -0.0,
+       0.184
+      ]
+     },
+     "city_accuracy": {
+      "k": 13,
+      "n": 17,
+      "rate": 0.765,
+      "wilson95": [
+       0.527,
+       0.904
+      ]
+     },
+     "entity_exact_on_gold_ok_with_district": {
+      "k": 0,
+      "n": 7,
+      "rate": 0.0,
+      "wilson95": [
+       -0.0,
+       0.354
+      ]
+     },
+     "constraints_exact_on_gold_ok": {
+      "k": 0,
+      "n": 9,
+      "rate": 0.0,
+      "wilson95": [
+       -0.0,
+       0.299
+      ]
+     },
+     "slot_precision": 0.25,
+     "slot_recall": 0.077,
+     "slot_f1": 0.118,
+     "abstention_on_gold_non_ok": {
+      "k": 0,
+      "n": 8,
+      "rate": 0.0,
+      "wilson95": [
+       0.0,
+       0.324
+      ]
+     },
+     "abstention_reason_correct": {
+      "k": 0,
+      "n": 8,
+      "rate": 0.0,
+      "wilson95": [
+       0.0,
+       0.324
+      ]
+     },
+     "false_abstention_on_gold_ok": {
+      "k": 0,
+      "n": 9,
+      "rate": 0.0,
+      "wilson95": [
+       -0.0,
+       0.299
+      ]
+     },
+     "confident_error_rate": {
+      "k": 17,
+      "n": 17,
+      "rate": 1.0,
+      "wilson95": [
+       0.816,
+       1.0
+      ]
+     },
+     "regret": {
+      "computed_for": 5,
+      "violations": 5,
+      "values": [],
+      "not_computed_reasons": [
+       "not astana-ok gold (no optimisation model)",
+       "prediction not ok/astana"
+      ]
+     }
+    }
+   }
+  },
+  "B2": {
+   "impl": "B2_normalized_alias_parser",
+   "heldout": {
+    "all": {
+     "n": 34,
+     "gold_ok": 18,
+     "gold_non_ok": 16,
+     "fully_correct": {
+      "k": 34,
+      "n": 34,
+      "rate": 1.0,
+      "wilson95": [
+       0.898,
+       1.0
+      ]
+     },
+     "city_accuracy": {
+      "k": 34,
+      "n": 34,
+      "rate": 1.0,
+      "wilson95": [
+       0.898,
+       1.0
+      ]
+     },
+     "entity_exact_on_gold_ok_with_district": {
+      "k": 14,
+      "n": 14,
+      "rate": 1.0,
+      "wilson95": [
+       0.785,
+       1.0
+      ]
+     },
+     "constraints_exact_on_gold_ok": {
+      "k": 18,
+      "n": 18,
+      "rate": 1.0,
+      "wilson95": [
+       0.824,
+       1.0
+      ]
+     },
+     "slot_precision": 1.0,
+     "slot_recall": 1.0,
+     "slot_f1": 1.0,
+     "abstention_on_gold_non_ok": {
+      "k": 16,
+      "n": 16,
+      "rate": 1.0,
+      "wilson95": [
+       0.806,
+       1.0
+      ]
+     },
+     "abstention_reason_correct": {
+      "k": 16,
+      "n": 16,
+      "rate": 1.0,
+      "wilson95": [
+       0.806,
+       1.0
+      ]
+     },
+     "false_abstention_on_gold_ok": {
+      "k": 0,
+      "n": 18,
+      "rate": 0.0,
+      "wilson95": [
+       -0.0,
+       0.176
+      ]
+     },
+     "confident_error_rate": {
+      "k": 0,
+      "n": 34,
+      "rate": 0.0,
+      "wilson95": [
+       0.0,
+       0.102
+      ]
+     },
+     "regret": {
+      "computed_for": 12,
+      "violations": 0,
+      "values": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ],
+      "not_computed_reasons": [
+       "not astana-ok gold (no optimisation model)"
+      ]
+     }
+    },
+    "ru": {
+     "n": 17,
+     "gold_ok": 9,
+     "gold_non_ok": 8,
+     "fully_correct": {
+      "k": 17,
+      "n": 17,
+      "rate": 1.0,
+      "wilson95": [
+       0.816,
+       1.0
+      ]
+     },
+     "city_accuracy": {
+      "k": 17,
+      "n": 17,
+      "rate": 1.0,
+      "wilson95": [
+       0.816,
+       1.0
+      ]
+     },
+     "entity_exact_on_gold_ok_with_district": {
+      "k": 7,
+      "n": 7,
+      "rate": 1.0,
+      "wilson95": [
+       0.646,
+       1.0
+      ]
+     },
+     "constraints_exact_on_gold_ok": {
+      "k": 9,
+      "n": 9,
+      "rate": 1.0,
+      "wilson95": [
+       0.701,
+       1.0
+      ]
+     },
+     "slot_precision": 1.0,
+     "slot_recall": 1.0,
+     "slot_f1": 1.0,
+     "abstention_on_gold_non_ok": {
+      "k": 8,
+      "n": 8,
+      "rate": 1.0,
+      "wilson95": [
+       0.676,
+       1.0
+      ]
+     },
+     "abstention_reason_correct": {
+      "k": 8,
+      "n": 8,
+      "rate": 1.0,
+      "wilson95": [
+       0.676,
+       1.0
+      ]
+     },
+     "false_abstention_on_gold_ok": {
+      "k": 0,
+      "n": 9,
+      "rate": 0.0,
+      "wilson95": [
+       -0.0,
+       0.299
+      ]
+     },
+     "confident_error_rate": {
+      "k": 0,
+      "n": 17,
+      "rate": 0.0,
+      "wilson95": [
+       -0.0,
+       0.184
+      ]
+     },
+     "regret": {
+      "computed_for": 6,
+      "violations": 0,
+      "values": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ],
+      "not_computed_reasons": [
+       "not astana-ok gold (no optimisation model)"
+      ]
+     }
+    },
+    "kk": {
+     "n": 17,
+     "gold_ok": 9,
+     "gold_non_ok": 8,
+     "fully_correct": {
+      "k": 17,
+      "n": 17,
+      "rate": 1.0,
+      "wilson95": [
+       0.816,
+       1.0
+      ]
+     },
+     "city_accuracy": {
+      "k": 17,
+      "n": 17,
+      "rate": 1.0,
+      "wilson95": [
+       0.816,
+       1.0
+      ]
+     },
+     "entity_exact_on_gold_ok_with_district": {
+      "k": 7,
+      "n": 7,
+      "rate": 1.0,
+      "wilson95": [
+       0.646,
+       1.0
+      ]
+     },
+     "constraints_exact_on_gold_ok": {
+      "k": 9,
+      "n": 9,
+      "rate": 1.0,
+      "wilson95": [
+       0.701,
+       1.0
+      ]
+     },
+     "slot_precision": 1.0,
+     "slot_recall": 1.0,
+     "slot_f1": 1.0,
+     "abstention_on_gold_non_ok": {
+      "k": 8,
+      "n": 8,
+      "rate": 1.0,
+      "wilson95": [
+       0.676,
+       1.0
+      ]
+     },
+     "abstention_reason_correct": {
+      "k": 8,
+      "n": 8,
+      "rate": 1.0,
+      "wilson95": [
+       0.676,
+       1.0
+      ]
+     },
+     "false_abstention_on_gold_ok": {
+      "k": 0,
+      "n": 9,
+      "rate": 0.0,
+      "wilson95": [
+       -0.0,
+       0.299
+      ]
+     },
+     "confident_error_rate": {
+      "k": 0,
+      "n": 17,
+      "rate": 0.0,
+      "wilson95": [
+       -0.0,
+       0.184
+      ]
+     },
+     "regret": {
+      "computed_for": 6,
+      "violations": 0,
+      "values": [
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0
+      ],
+      "not_computed_reasons": [
+       "not astana-ok gold (no optimisation model)"
+      ]
+     }
+    }
+   }
+  }
+ },
+ "mcnemar_heldout_B1_vs_B2": {
+  "b_only_correct": 32,
+  "a_only_correct": 0,
+  "p_two_sided": 0.0
+ }
+}
