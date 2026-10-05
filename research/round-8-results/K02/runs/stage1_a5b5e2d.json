@@ -101,10 +101,10 @@
    "title": "digest каталога меняется при смене ручного набора, бюджета, радиуса; стабилен при перестановке массивов",
    "pass": true,
    "observed": {
-    "sel": "e4d7f2be60ea8b84",
-    "budget": "b811baf46d6ca0ba",
-    "radius": "843f0319efa153b3",
-    "reordered": "8459ac5a573c1e75"
+    "sel": "085182135a9ac8e9",
+    "budget": "99784e72c0b0d7b4",
+    "radius": "0c93e0afa413a335",
+    "reordered": "0fa553dd05f7646e"
    }
   }
  ]

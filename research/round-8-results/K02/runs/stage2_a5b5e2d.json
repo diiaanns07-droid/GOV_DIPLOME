@@ -1,0 +1,93 @@
+{
+ "suite": "stage2_render",
+ "app_root": "<city-evidence>",
+ "node": "v22.22.0",
+ "results": [
+  {
+   "id": "R1_stale_problem_digest",
+   "title": "объяснение для старой задачи отклоняется (stale_problem), в т.ч. результат worker от другой задачи",
+   "pass": true,
+   "observed": [
+    "stale_problem",
+    "stale_problem"
+   ]
+  },
+  {
+   "id": "R2_stale_catalog_plan",
+   "title": "план селектора по старому каталогу (смена весов/required/ручного набора) отклоняется stale_catalog",
+   "pass": true,
+   "observed": [
+    "stale_catalog",
+    "stale_catalog",
+    "stale_catalog"
+   ]
+  },
+  {
+   "id": "R3_duplicate_ids",
+   "title": "дубликаты: точки, кандидаты, selected/required и факт в двух секциях — отказ duplicate_id",
+   "pass": true,
+   "observed": [
+    "duplicate_id",
+    "duplicate_id",
+    "duplicate_id",
+    "duplicate_id",
+    "duplicate_id"
+   ]
+  },
+  {
+   "id": "R4_coincident_winners",
+   "title": "совпавшие победители названы одним набором (не три разных решения); различающиеся — компромисс с разностями",
+   "pass": true,
+   "observed": [
+    "Совпадают по набору объектов: Оптимум по среднему расстоянию = Оптимум по охвату радиуса (c-sev, c-yug).",
+    "- План по худшей точке сокращает расстояние для худшей точки на 3,1 м, но увеличивает взвешенное среднее на 46,1 м."
+   ]
+  },
+  {
+   "id": "R5_infeasible_explained",
+   "title": "infeasible: причины задачи и ручного плана, ограничения не сняты молча; нет строк оптимумов",
+   "pass": true,
+   "observed": [
+    "План | среднее | худшая точка | вес в радиусе | условная стоимость | объекты",
+    "Без новых объектов | 936,4 м | 936,4 м | 0 / 2 | 0 усл. ед. | нет",
+    "Ручной план (недопустим) | 468,2 м | 936,4 м | 1 / 2 | 10 усл. ед. | small",
+    ""
+   ]
+  },
+  {
+   "id": "R6_no_social_claims",
+   "title": "нет утверждений о жителях/времени/экономии/улучшении услуг вне блока ограничений (ru и kk)",
+   "pass": true,
+   "observed": []
+  },
+  {
+   "id": "R7_numbers_from_catalog",
+   "title": "каждое число в тексте (кроме id сценария) — запись значения факта каталога; ru и kk содержат одинаковые числа",
+   "pass": true,
+   "observed": {
+    "real_shymkent_school": {
+     "ru": [],
+     "kk": []
+    },
+    "real_astana_clinic": {
+     "ru": [],
+     "kk": []
+    },
+    "synthetic_empty_sources": {
+     "ru": [],
+     "kk": []
+    },
+    "synthetic_infeasible_required": {
+     "ru": [],
+     "kk": []
+    }
+   }
+  },
+  {
+   "id": "R8_selector_is_stub_not_llm",
+   "title": "селектор — детерминированная заглушка, помечен «не LLM»; повторный вызов даёт тот же текст",
+   "pass": true,
+   "observed": "шаблонное объяснение плана (детерминированная заглушка, не LLM)"
+  }
+ ]
+}

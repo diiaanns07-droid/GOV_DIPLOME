@@ -84,6 +84,41 @@
       base("selection", p.selected_ids.join(", "), "text");
       if (role === "manual") base("feasible", p.feasible ? 1 : 0, "flag", { reasons: p.infeasible_reasons || [] });
     }
+    // Разности между планами — факты каталога (рендерер их не вычисляет). Только для разных наборов и известных значений.
+    const pm = (r) => plans[r] && plans[r].metrics, same = (a, b) => plans[a] && plans[b] && plans[a].selected_ids.join() === plans[b].selected_ids.join();
+    const cmpAdd = (path, a, b, value, unit, label) => add(`compare.${path}`, value, unit, "derived", "selected_control_points", label,
+      { hypothetical: true, missing_reason: value === null ? "unknown_points" : null, pair: [a, b] });
+    if (pm("mean") && pm("minimax") && !same("mean", "minimax")) {
+      const d1 = pm("mean").max_mm === null || pm("minimax").max_mm === null ? null : pm("mean").max_mm - pm("minimax").max_mm;
+      const d2 = pm("mean").weighted_mean_mm === null || pm("minimax").weighted_mean_mm === null ? null : pm("minimax").weighted_mean_mm - pm("mean").weighted_mean_mm;
+      cmpAdd("minimax_vs_mean.max_reduction", "minimax", "mean", d1, "mm", ["План по худшей точке: сокращение худшей точки", "Ең нашар нүкте жоспары: ең нашар нүктенің қысқаруы"]);
+      cmpAdd("minimax_vs_mean.mean_increase", "minimax", "mean", d2, "mm", ["План по худшей точке: рост взвешенного среднего", "Ең нашар нүкте жоспары: өлшенген орташаның өсуі"]);
+    }
+    if (pm("mean") && pm("coverage") && !same("mean", "coverage")) {
+      cmpAdd("coverage_vs_mean.weight_gain", "coverage", "mean", pm("coverage").covered_weight - pm("mean").covered_weight, "weight", ["План по охвату: прирост веса в радиусе", "Қамту жоспары: радиустағы салмақ өсімі"]);
+      const d = pm("mean").weighted_mean_mm === null || pm("coverage").weighted_mean_mm === null ? null : pm("coverage").weighted_mean_mm - pm("mean").weighted_mean_mm;
+      cmpAdd("coverage_vs_mean.mean_increase", "coverage", "mean", d, "mm", ["План по охвату: рост взвешенного среднего", "Қамту жоспары: өлшенген орташаның өсуі"]);
+    }
+    if (pm("manual") && pm("mean") && pm("manual").cost !== pm("mean").cost)
+      cmpAdd("manual_vs_mean.cost_difference", "manual", "mean", pm("manual").cost - pm("mean").cost, "conditional_units", ["Ручной план минус оптимум по среднему: стоимость", "Қолмен жоспар минус орташа оңтайлы: құны"]);
+
+    // Чувствительность к бюджету [0, ⌊B/2⌋, B] и Парето (стоимость → взвешенное среднее): только из результата optimizePlans.
+    const tw = sc.control_points.reduce((s, p) => s + p.weight, 0);
+    (opt.sensitivity || []).forEach((r, i) => {
+      const lab = (a, b) => [a, b];
+      add(`sensitivity.s${i + 1}.budget`, r.budget, "conditional_units", "user_input", "user_input", lab("Вариант бюджета", "Бюджет нұсқасы"));
+      add(`sensitivity.s${i + 1}.status`, r.status, "text", "derived", "search_space", lab("Статус поиска", "Іздеу мәртебесі"));
+      const m = r.objectives && r.objectives.mean ? r.objectives.mean.metrics : null;
+      add(`sensitivity.s${i + 1}.mean_weighted_mean`, m ? m.weighted_mean_mm : null, "mm", "derived", "selected_control_points",
+        lab("Оптимум по среднему: взвешенное среднее", "Орташа бойынша оңтайлы: өлшенген орташа"), { hypothetical: !!(m && m.count), missing_reason: m ? (m.weighted_mean_mm === null ? "unknown_points" : null) : "infeasible" });
+      add(`sensitivity.s${i + 1}.mean_cost`, m ? m.cost : null, "conditional_units", "derived", "selected_control_points",
+        lab("Оптимум по среднему: условная стоимость", "Орташа бойынша оңтайлы: шартты құны"), { missing_reason: m ? null : "infeasible" });
+    });
+    (opt.pareto || []).forEach((q, i) => {
+      add(`pareto.p${i + 1}.cost`, q.cost, "conditional_units", "derived", "selected_control_points", ["Парето: условная стоимость", "Парето: шартты құны"], { hypothetical: q.selected_ids.length > 0 });
+      add(`pareto.p${i + 1}.weighted_mean`, q.weighted_sum_mm / tw, "mm", "derived", "selected_control_points", ["Парето: взвешенное среднее", "Парето: өлшенген орташа"], { hypothetical: q.selected_ids.length > 0 });
+      add(`pareto.p${i + 1}.selection`, q.selected_ids.join(", "), "text", "derived", "selected_control_points", ["Парето: кандидаты", "Парето: үміткерлер"], { hypothetical: q.selected_ids.length > 0 });
+    });
     const meta = { problem_digest: opt.problem_digest, status: opt.status, infeasible_reasons: opt.infeasible_reasons || [],
       manual_reasons: evalManual.infeasible_reasons || [], sensitivity: opt.sensitivity || [], pareto: opt.pareto || [], exact: opt.exact === true,
       sources_empty: ctx.sources.length === 0, city_id: sc.city_id, category: sc.category, source_snapshot: sc.source_snapshot };
@@ -154,32 +189,29 @@
     for (const r of present) {
       const cell = (k) => fmtVal(get(`plan.${r}.${k}`), lang, F);
       const tw = get("constraint.total_weight").value;
-      out.push(`${lx(RL[r], lang)} | ${cell("weighted_mean")} | ${cell("max")} | ${cell("covered_weight")} / ${F.formatValue(tw)} | ${cell("cost")} | ${cell("selection")}`);
+      const flag = r === "manual" && get("plan.manual.feasible").value === 0 ? lx([" (недопустим)", " (рұқсат етілмеген)"], lang) : "";
+      out.push(`${lx(RL[r], lang)}${flag} | ${cell("weighted_mean")} | ${cell("max")} | ${cell("covered_weight")} / ${F.formatValue(tw)} | ${cell("cost")} | ${cell("selection")}`);
     }
     // Совпадающие победители: один набор — одно решение, а не три разных.
     const sel = (r) => (get(`plan.${r}.selection`) || {}).value;
     const groups = [];
     for (const r of OBJECTIVES.filter((x) => present.includes(x))) { const g = groups.find((x) => sel(x[0]) === sel(r)); g ? g.push(r) : groups.push([r]); }
     for (const g of groups) if (g.length > 1) out.push(`\n${lx(T.same, lang)}: ${g.map((r) => lx(RL[r], lang)).join(" = ")} (${fmtVal(get(`plan.${g[0]}.selection`), lang, F)}).`);
-    // Компромиссы: только разности вычисленных метрик между разными наборами.
+    // Компромиссы: значения — факты compare.* каталога, текст — шаблон.
     const trade = [];
-    const diff = (a, b, key) => { const x = get(`plan.${a}.${key}`).value, y = get(`plan.${b}.${key}`).value; return x === null || y === null ? null : x - y; };
-    const meter = (v) => F.formatValue(Math.round(Math.abs(v) / 100) / 10) + lx(T.m, lang);
-    if (present.includes("mean") && present.includes("minimax") && sel("mean") !== sel("minimax")) {
-      const dMean = diff("minimax", "mean", "weighted_mean"), dMax = diff("mean", "minimax", "max");
-      if (dMean !== null && dMax !== null) trade.push(lang === "kk"
-        ? `Ең нашар нүкте бойынша жоспар ең нашар нүктені ${meter(dMax)} жақсартады, бірақ орташа қашықтықты ${meter(dMean)} ұлғайтады.`
-        : `План по худшей точке сокращает расстояние для худшей точки на ${meter(dMax)}, но увеличивает взвешенное среднее на ${meter(dMean)}.`);
-    }
-    if (present.includes("mean") && present.includes("coverage") && sel("mean") !== sel("coverage")) {
-      const dW = get("plan.coverage.covered_weight").value - get("plan.mean.covered_weight").value, dMean = diff("coverage", "mean", "weighted_mean");
-      trade.push(lang === "kk"
-        ? `Қамту бойынша жоспар радиустағы салмақты ${F.formatValue(dW)} арттырады` + (dMean !== null ? `, орташа қашықтық ${meter(dMean)} өзгереді.` : ".")
-        : `План по охвату добавляет ${F.formatValue(dW)} веса точек в радиусе` + (dMean !== null ? `, взвешенное среднее хуже на ${meter(dMean)}.` : "."));
-    }
-    const costDiff = present.includes("manual") && present.includes("mean") ? diff("manual", "mean", "cost") : null;
-    if (costDiff) trade.push(lang === "kk" ? `Қолмен жасалған жоспар орташа бойынша оңтайлыдан ${F.formatValue(Math.abs(costDiff))} шартты бірлікке ${costDiff > 0 ? "қымбат" : "арзан"}.`
-      : `Ручной план ${costDiff > 0 ? "дороже" : "дешевле"} оптимума по среднему на ${F.formatValue(Math.abs(costDiff))} усл. ед.`);
+    const cv = (p) => get("compare." + p);
+    const meter = (f) => F.formatValue(Math.round(Math.abs(f.value) / 100) / 10) + lx(T.m, lang);
+    const mr = cv("minimax_vs_mean.max_reduction"), mi = cv("minimax_vs_mean.mean_increase");
+    if (mr && mi && mr.value !== null && mi.value !== null) trade.push(lang === "kk"
+      ? `Ең нашар нүкте бойынша жоспар ең нашар нүктені ${meter(mr)} жақсартады, бірақ орташа қашықтықты ${meter(mi)} ұлғайтады.`
+      : `План по худшей точке сокращает расстояние для худшей точки на ${meter(mr)}, но увеличивает взвешенное среднее на ${meter(mi)}.`);
+    const wg = cv("coverage_vs_mean.weight_gain"), ci = cv("coverage_vs_mean.mean_increase");
+    if (wg) trade.push(lang === "kk"
+      ? `Қамту бойынша жоспар радиустағы салмақты ${F.formatValue(wg.value)} арттырады` + (ci && ci.value !== null ? `, орташа қашықтық ${meter(ci)} өзгереді.` : ".")
+      : `План по охвату добавляет ${F.formatValue(wg.value)} веса точек в радиусе` + (ci && ci.value !== null ? `, взвешенное среднее хуже на ${meter(ci)}.` : "."));
+    const cd = cv("manual_vs_mean.cost_difference");
+    if (cd) trade.push(lang === "kk" ? `Қолмен жасалған жоспар орташа бойынша оңтайлыдан ${F.formatValue(Math.abs(cd.value))} шартты бірлікке ${cd.value > 0 ? "қымбат" : "арзан"}.`
+      : `Ручной план ${cd.value > 0 ? "дороже" : "дешевле"} оптимума по среднему на ${F.formatValue(Math.abs(cd.value))} усл. ед.`);
     if (trade.length) out.push(`\n**${lx(T.trade, lang)}**`, ...trade.map((t) => "- " + t));
     // Невыполнимость: ручной план и задача целиком.
     const inf = [];
@@ -188,6 +220,21 @@
     if (built.meta.status === "infeasible") inf.push((lang === "kk" ? "Есеп: " : "Задача: ") + built.meta.infeasible_reasons.map((r) => REASON[r.code](r, lang)).join("; ")
       + (lang === "kk" ? ". Шектеулер үнсіз алынбайды." : ". Ограничения не снимаются молча."));
     if (inf.length) out.push(`\n**${lx(T.infeasible, lang)}**`, ...inf.map((t) => "- " + t));
+    // Изменение бюджета (те же кандидаты, веса и ограничения).
+    const sens = [...built.catalog.values()].filter((f) => /^sensitivity\.s\d+\.budget$/.test(f.path));
+    if (sens.length) {
+      out.push(`\n**${lx(["Изменение условного бюджета (те же кандидаты и веса)", "Шартты бюджетті өзгерту (сол үміткерлер мен салмақтар)"], lang)}**`);
+      for (const b of sens) {
+        const k = b.path.replace(/\.budget$/, ""), st = get(k + ".status").value;
+        out.push(`- ${fmtVal(b, lang, F)}: ` + (st === "infeasible" ? lx(["нет допустимого плана", "рұқсат етілген жоспар жоқ"], lang)
+          : `${lx(["оптимум по среднему", "орташа бойынша оңтайлы"], lang)} ${fmtVal(get(k + ".mean_weighted_mean"), lang, F)}, ${fmtVal(get(k + ".mean_cost"), lang, F)}`));
+      }
+    }
+    const par = [...built.catalog.values()].filter((f) => /^pareto\.p\d+\.cost$/.test(f.path));
+    if (par.length) {
+      out.push(`\n**${lx(["Парето: стоимость → взвешенное среднее (только планы без неизвестных точек)", "Парето: құны → өлшенген орташа"], lang)}**`);
+      for (const c of par) { const k = c.path.replace(/\.cost$/, ""); out.push(`- ${fmtVal(c, lang, F)} → ${fmtVal(get(k + ".weighted_mean"), lang, F)} (${fmtVal(get(k + ".selection"), lang, F)})`); }
+    }
     if (built.meta.sources_empty) out.push("\n- " + (lang === "kk" ? "Кесіндіде бастапқы жазбалар жоқ: бұл қалада қызмет жоқ дегенді білдірмейді." : "В срезе нет исходных записей категории: это не доказывает отсутствие услуги в городе."));
     // Отмеченные факты по принятому плану селектора (проверен facts.validatePlan).
     out.push(`\n**${lx(T.highlight, lang)}**`);
