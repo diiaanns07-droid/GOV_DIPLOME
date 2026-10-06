@@ -66,4 +66,10 @@ web/govtech/shell.{js,css}, web/civic/shell/, requirements*.txt, run.{bat,sh},
   /staff/assistant/extract — только с сессией+CSRF (require_staff R02 в шлюзе).
 - DONE: браузер P0 + помощник — 44 PASS / 0 FAIL / 2 NOT_RUN (runs/cp8_p0_integrated_with_r09/).
 
-Следующий шаг: R05 (реальные/синтетические наборы), обновления R02 (632c5b2) и R04, R08 (нет ветки).
+## Checkpoint 9 — R05 данные Астаны (раздельно real/synthetic)
+- DONE: импорт R05 @e477e5d (data/civic/astana, tests/civic/R05: 84 PASS, срез воспроизводим).
+  Реальных подтверждённых записей 0 (официальные источники недоступны у R05) — импорт только черновики.
+  Демо: synthetic-срез R05 через `seed-demo --package data/civic/astana/demo_synthetic.json`.
+- DONE: браузер P0 на демо-срезе R05 — 45 PASS / 0 FAIL / 2 NOT_RUN (runs/cp9_p0_integrated_r05_demo/).
+
+Следующий шаг: RUN.txt/DEMO.txt, обновления R02 (632c5b2) и R04, R08 (нет ветки), замечания R10.

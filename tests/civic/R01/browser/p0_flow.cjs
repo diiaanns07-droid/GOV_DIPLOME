@@ -2,9 +2,9 @@
 // editor creates -> publishes -> resident sees the card on the light map -> deadline moves with history
 // -> resident sends a message -> moderation -> public reply; plus security, F5, modes and mobile.
 // Usage: node tests/civic/R01/browser/p0_flow.cjs <out_dir>
-// Starts `python3 -B app.py` on a free port with a temporary SQLite file (R02), seeds R02's synthetic
-// demo package and creates an editor through R02's CLI (password via stdin, never argv). Nothing is
-// written into the repository.
+// Starts `python3 -B app.py` on a free port with a temporary SQLite file (R02), seeds R05's synthetic
+// Astana slice, imports R05's real slice as drafts, and creates an editor through R02's CLI (password
+// via stdin, never argv). Nothing is written into the repository.
 "use strict";
 const { chromium } = require("playwright");
 const { spawn, execSync } = require("child_process");
@@ -24,7 +24,10 @@ const freePort = () => new Promise((ok, no) => { const s = net.createServer().on
 
 async function startServer(port, db) {
   const env = { ...process.env, CIVIC_DB_PATH: db, PYTHONDONTWRITEBYTECODE: "1" };
-  execSync(`python3 -B -m ui.civic_store --db "${db}" seed-demo`, { cwd: REPO, env, stdio: ["ignore", "ignore", "inherit"] });
+  // R05 synthetic Astana slice (demo=true) through R02's seed-demo; the real slice (0 records in this
+  // environment) goes through `import`, which only ever creates drafts.
+  execSync(`python3 -B -m ui.civic_store --db "${db}" seed-demo --package data/civic/astana/demo_synthetic.json`, { cwd: REPO, env, stdio: ["ignore", "ignore", "inherit"] });
+  execSync(`python3 -B -m ui.civic_store --db "${db}" import data/civic/astana/objects.json`, { cwd: REPO, env, stdio: ["ignore", "ignore", "inherit"] });
   execSync(`python3 -B -m ui.civic_store --db "${db}" create-editor ${USER} --password-stdin --display-name "Редактор смоука"`,
     { cwd: REPO, env, input: PASSWORD + "\n", stdio: ["pipe", "ignore", "inherit"] });
   const srv = spawn("python3", ["-B", "app.py", "--host", "127.0.0.1", "--port", String(port)], { cwd: REPO, env, stdio: ["ignore", "pipe", "pipe"] });
@@ -77,6 +80,10 @@ const okNotice = (page, text) => page.waitForSelector(`#civic-editor-root .civic
     check("one map canvas, no iframe; R03 layers on it", start.canvases === 1 && start.iframes === 0 && start.r03layers > 0, start);
     check("training district layer hidden in civic mode", start.district === "none", start.district);
     check("synthetic demo records visibly labelled", start.demoLabel);
+    const pubList = await apiFetch(page, "GET", "/objects");
+    const pubItems = pubList.body?.data?.items || [];
+    check("R05 demo slice published only as synthetic; drafts/archived hidden", pubItems.length >= 6 && pubItems.every((i) => i.evidence_type === "synthetic")
+      && !pubItems.some((i) => /draft-hidden|archived/.test(i.id)), pubItems.map((i) => i.id));
     if (start.offline) notRun("basemap + 3D buildings", "OpenFreeMap host not reachable in this environment (offline background)");
     await page.screenshot({ path: path.join(OUT, "01_civic_start_1440.png") });
 

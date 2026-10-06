@@ -1,0 +1,26 @@
+{
+  "by_district": {},
+  "graph": {
+    "at_commit": "b2cb2e02c602c166ba6d47c02d8e902e5478c791",
+    "declared_bbox": [
+      71.418372,
+      51.163033,
+      71.447,
+      51.181
+    ],
+    "graph_sha256": "799d26e5155248cceb31eb67f76f92d453491770a73c387bf0371289ddcf0ae4",
+    "node_extent": [
+      71.4138133,
+      51.158798,
+      71.4504406,
+      51.189521
+    ],
+    "path": "web/govtech/k03/astana.graph.json",
+    "policy_family": "pedestrian-v1"
+  },
+  "items": 0,
+  "pilot_by_confirmed_concentration": "not_possible: no confirmed real objects in this slice",
+  "placement_counts": {},
+  "real_items": 0,
+  "rows": []
+}

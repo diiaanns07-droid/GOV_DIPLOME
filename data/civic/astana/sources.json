@@ -1,0 +1,875 @@
+{
+  "schema": "r05-sources-v1",
+  "city": "astana",
+  "registry_as_of": "2026-10-06",
+  "network_audit": {
+    "environment": "Claude Code cloud container, round 11 R05 session; outbound HTTPS through an organisation egress proxy",
+    "window_utc": [
+      "2026-10-06T15:28:13Z",
+      "2026-10-06T15:34:38Z"
+    ],
+    "result": "Все проверенные казахстанские официальные, новостные и справочные хосты, а также openstreetmap.org, osmfoundation.org, openfreemap.org, overpass-api.de, docs.overturemaps.org: proxy 403 (политика egress). Доступен только raw.githubusercontent.com: получены официальные тексты условий OpenMapTiles, OpenFreeMap, Overture, MapLibre.",
+    "retry_policy": "Не более 2 попыток на URL; отказ политики не повторялся и не обходился через другие каналы.",
+    "audit_files": [
+      "research/round-11-results/R05/fetch_audit_2026-10-06_a.json",
+      "research/round-11-results/R05/fetch_audit_2026-10-06_b.json"
+    ],
+    "consequence": "Ни одно объявление о работах/событиях Астаны в этом раунде не получено, поэтому objects.json не содержит подтверждённых реальных записей."
+  },
+  "sources": [
+    {
+      "id": "src-astana-gov-kz",
+      "url": "https://astana.gov.kz/",
+      "role": "portal_candidate",
+      "publisher": null,
+      "publisher_basis": "unknown",
+      "title": null,
+      "published_on": null,
+      "retrieved_at": null,
+      "access_status": "not_fetched",
+      "access_attempts": [
+        {
+          "at": "2026-10-06T15:28:13Z",
+          "method": "curl GET via environment proxy",
+          "outcome": "egress_denied",
+          "http_status": null,
+          "sha256": null,
+          "detail": "CONNECT tunnel failed, response 403 (proxy status: connect_rejected)",
+          "audit_file": null
+        },
+        {
+          "at": "2026-10-06T15:34:16Z",
+          "method": "python-urllib GET via environment proxy",
+          "outcome": "egress_denied",
+          "http_status": null,
+          "sha256": null,
+          "detail": "Tunnel connection failed: 403 Forbidden",
+          "audit_file": "research/round-11-results/R05/fetch_audit_2026-10-06_a.json"
+        }
+      ],
+      "sha256": null,
+      "license": null,
+      "license_status": "unknown",
+      "supports": [],
+      "notes": "Не получено: исходящий HTTPS из облачного контейнера запрещён политикой egress (proxy 403 на CONNECT). Это ограничение среды R05, а не доказательство недоступности сайта или отсутствия данных. Обход не выполнялся."
+    },
+    {
+      "id": "src-astanatimes",
+      "url": "https://astanatimes.com/",
+      "role": "news_candidate",
+      "publisher": null,
+      "publisher_basis": "unknown",
+      "title": null,
+      "published_on": null,
+      "retrieved_at": null,
+      "access_status": "not_fetched",
+      "access_attempts": [
+        {
+          "at": "2026-10-06T15:34:21Z",
+          "method": "python-urllib GET via environment proxy",
+          "outcome": "egress_denied",
+          "http_status": null,
+          "sha256": null,
+          "detail": "Tunnel connection failed: 403 Forbidden",
+          "audit_file": "research/round-11-results/R05/fetch_audit_2026-10-06_a.json"
+        }
+      ],
+      "sha256": null,
+      "license": null,
+      "license_status": "unknown",
+      "supports": [],
+      "notes": "Не получено: исходящий HTTPS из облачного контейнера запрещён политикой egress (proxy 403 на CONNECT). Это ограничение среды R05, а не доказательство недоступности сайта или отсутствия данных. Обход не выполнялся."
+    },
+    {
+      "id": "src-data-egov-kz",
+      "url": "https://data.egov.kz/",
+      "role": "open_data_portal_candidate",
+      "publisher": null,
+      "publisher_basis": "unknown",
+      "title": null,
+      "published_on": null,
+      "retrieved_at": null,
+      "access_status": "not_fetched",
+      "access_attempts": [
+        {
+          "at": "2026-10-06T15:28:13Z",
+          "method": "curl GET via environment proxy",
+          "outcome": "egress_denied",
+          "http_status": null,
+          "sha256": null,
+          "detail": "CONNECT tunnel failed, response 403 (proxy status: connect_rejected)",
+          "audit_file": null
+        },
+        {
+          "at": "2026-10-06T15:34:16Z",
+          "method": "python-urllib GET via environment proxy",
+          "outcome": "egress_denied",
+          "http_status": null,
+          "sha256": null,
+          "detail": "Tunnel connection failed: 403 Forbidden",
+          "audit_file": "research/round-11-results/R05/fetch_audit_2026-10-06_a.json"
+        }
+      ],
+      "sha256": null,
+      "license": null,
+      "license_status": "unknown",
+      "supports": [],
+      "notes": "Не получено: исходящий HTTPS из облачного контейнера запрещён политикой egress (proxy 403 на CONNECT). Это ограничение среды R05, а не доказательство недоступности сайта или отсутствия данных. Обход не выполнялся. Условия использования наборов портала не проверены."
+    },
+    {
+      "id": "src-egov-kz",
+      "url": "https://egov.kz/",
+      "role": "portal_candidate",
+      "publisher": null,
+      "publisher_basis": "unknown",
+      "title": null,
+      "published_on": null,
+      "retrieved_at": null,
+      "access_status": "not_fetched",
+      "access_attempts": [
+        {
+          "at": "2026-10-06T15:34:17Z",
+          "method": "python-urllib GET via environment proxy",
+          "outcome": "egress_denied",
+          "http_status": null,
+          "sha256": null,
+          "detail": "Tunnel connection failed: 403 Forbidden",
+          "audit_file": "research/round-11-results/R05/fetch_audit_2026-10-06_a.json"
+        }
+      ],
+      "sha256": null,
+      "license": null,
+      "license_status": "unknown",
+      "supports": [],
+      "notes": "Не получено: исходящий HTTPS из облачного контейнера запрещён политикой egress (proxy 403 на CONNECT). Это ограничение среды R05, а не доказательство недоступности сайта или отсутствия данных. Обход не выполнялся."
+    },
+    {
+      "id": "src-govkz-astana-article-99399",
+      "url": "https://www.gov.kz/memleket/entities/astana/press/article/details/99399?lang=ru",
+      "role": "official_announcement_candidate",
+      "publisher": "gov.kz — раздел ведомства с идентификатором 'astana'",
+      "publisher_basis": "inferred_from_url",
+      "title": null,
+      "published_on": null,
+      "retrieved_at": null,
+      "access_status": "not_fetched",
+      "access_attempts": [
+        {
+          "at": "2026-10-06T15:28:13Z",
+          "method": "curl GET via environment proxy",
+          "outcome": "egress_denied",
+          "http_status": null,
+          "sha256": null,
+          "detail": "CONNECT tunnel failed, response 403 (proxy status: connect_rejected)",
+          "audit_file": null
+        },
+        {
+          "at": "2026-10-06T15:34:15Z",
+          "method": "python-urllib GET via environment proxy",
+          "outcome": "egress_denied",
+          "http_status": null,
+          "sha256": null,
+          "detail": "Tunnel connection failed: 403 Forbidden",
+          "audit_file": "research/round-11-results/R05/fetch_audit_2026-10-06_a.json"
+        }
+      ],
+      "sha256": null,
+      "license": null,
+      "license_status": "unknown",
+      "supports": [],
+      "notes": "Не получено: исходящий HTTPS из облачного контейнера запрещён политикой egress (proxy 403 на CONNECT). Это ограничение среды R05, а не доказательство недоступности сайта или отсутствия данных. Обход не выполнялся. URL дан координатором в BRIEF.txt; содержание неизвестно."
+    },
+    {
+      "id": "src-govkz-astana-news-1193903",
+      "url": "https://www.gov.kz/memleket/entities/astana/press/news/details/1193903?lang=ru",
+      "role": "official_announcement_candidate",
+      "publisher": "gov.kz — раздел ведомства с идентификатором 'astana'",
+      "publisher_basis": "inferred_from_url",
+      "title": null,
+      "published_on": null,
+      "retrieved_at": null,
+      "access_status": "not_fetched",
+      "access_attempts": [
+        {
+          "at": "2026-10-06T15:28:13Z",
+          "method": "curl GET via environment proxy",
+          "outcome": "egress_denied",
+          "http_status": null,
+          "sha256": null,
+          "detail": "CONNECT tunnel failed, response 403 (proxy status: connect_rejected)",
+          "audit_file": null
+        },
+        {
+          "at": "2026-10-06T15:34:15Z",
+          "method": "python-urllib GET via environment proxy",
+          "outcome": "egress_denied",
+          "http_status": null,
+          "sha256": null,
+          "detail": "Tunnel connection failed: 403 Forbidden",
+          "audit_file": "research/round-11-results/R05/fetch_audit_2026-10-06_a.json"
+        }
+      ],
+      "sha256": null,
+      "license": null,
+      "license_status": "unknown",
+      "supports": [],
+      "notes": "Не получено: исходящий HTTPS из облачного контейнера запрещён политикой egress (proxy 403 на CONNECT). Это ограничение среды R05, а не доказательство недоступности сайта или отсутствия данных. Обход не выполнялся. URL дан координатором в BRIEF.txt как официальная отправная точка; содержание, дата и тема неизвестны."
+    },
+    {
+      "id": "src-inform-kz",
+      "url": "https://www.inform.kz/",
+      "role": "news_candidate",
+      "publisher": null,
+      "publisher_basis": "unknown",
+      "title": null,
+      "published_on": null,
+      "retrieved_at": null,
+      "access_status": "not_fetched",
+      "access_attempts": [
+        {
+          "at": "2026-10-06T15:34:21Z",
+          "method": "python-urllib GET via environment proxy",
+          "outcome": "egress_denied",
+          "http_status": null,
+          "sha256": null,
+          "detail": "Tunnel connection failed: 403 Forbidden",
+          "audit_file": "research/round-11-results/R05/fetch_audit_2026-10-06_a.json"
+        }
+      ],
+      "sha256": null,
+      "license": null,
+      "license_status": "unknown",
+      "supports": [],
+      "notes": "Не получено: исходящий HTTPS из облачного контейнера запрещён политикой egress (proxy 403 на CONNECT). Это ограничение среды R05, а не доказательство недоступности сайта или отсутствия данных. Обход не выполнялся."
+    },
+    {
+      "id": "src-maplibre-license",
+      "url": "https://raw.githubusercontent.com/maplibre/maplibre-gl-js/main/LICENSE.txt",
+      "role": "license_text",
+      "publisher": "MapLibre (GitHub maplibre/maplibre-gl-js)",
+      "publisher_basis": "repository_owner",
+      "title": "MapLibre GL JS LICENSE.txt",
+      "published_on": null,
+      "retrieved_at": "2026-10-06T15:34:38Z",
+      "access_status": "fetched",
+      "access_attempts": [
+        {
+          "at": "2026-10-06T15:34:38Z",
+          "method": "python-urllib GET via environment proxy",
+          "outcome": "fetched",
+          "http_status": 200,
+          "sha256": "ee5fc05a0677eaf69601d2c7db0d9ecd6cc27c3abc1d0733bc9ed34707cf8ef2",
+          "detail": null,
+          "audit_file": "research/round-11-results/R05/fetch_audit_2026-10-06_b.json"
+        }
+      ],
+      "sha256": "ee5fc05a0677eaf69601d2c7db0d9ecd6cc27c3abc1d0733bc9ed34707cf8ef2",
+      "license": "BSD-3-Clause",
+      "license_status": "fetched_official_text",
+      "supports": [],
+      "notes": "Лицензия клиентской библиотеки карты."
+    },
+    {
+      "id": "src-odc-odbl-1-0",
+      "url": "https://opendatacommons.org/licenses/odbl/1-0/",
+      "role": "license_text",
+      "publisher": "Open Data Commons",
+      "publisher_basis": "inferred_from_url",
+      "title": null,
+      "published_on": null,
+      "retrieved_at": null,
+      "access_status": "not_fetched",
+      "access_attempts": [
+        {
+          "at": "2026-10-06T15:34:19Z",
+          "method": "python-urllib GET via environment proxy",
+          "outcome": "egress_denied",
+          "http_status": null,
+          "sha256": null,
+          "detail": "Tunnel connection failed: 403 Forbidden",
+          "audit_file": "research/round-11-results/R05/fetch_audit_2026-10-06_a.json"
+        }
+      ],
+      "sha256": null,
+      "license": null,
+      "license_status": "unknown",
+      "supports": [],
+      "notes": "Не получено: исходящий HTTPS из облачного контейнера запрещён политикой egress (proxy 403 на CONNECT). Это ограничение среды R05, а не доказательство недоступности сайта или отсутствия данных. Обход не выполнялся. Локальная копия ODbL-1.0 есть в ветке приложения (см. LICENSE_REGISTER)."
+    },
+    {
+      "id": "src-openfreemap-license",
+      "url": "https://raw.githubusercontent.com/hyperknot/openfreemap/main/LICENSE.md",
+      "role": "license_text",
+      "publisher": "OpenFreeMap project (GitHub hyperknot/openfreemap, branch main)",
+      "publisher_basis": "repository_owner",
+      "title": "OpenFreeMap LICENSE.md",
+      "published_on": null,
+      "retrieved_at": "2026-10-06T15:34:37Z",
+      "access_status": "fetched",
+      "access_attempts": [
+        {
+          "at": "2026-10-06T15:34:37Z",
+          "method": "python-urllib GET via environment proxy",
+          "outcome": "fetched",
+          "http_status": 200,
+          "sha256": "d1754e5d291e4e8b9b0047ddba0a6ec75e1046ccd61a02c2cea3dac58f3fe355",
+          "detail": null,
+          "audit_file": "research/round-11-results/R05/fetch_audit_2026-10-06_b.json"
+        }
+      ],
+      "sha256": "d1754e5d291e4e8b9b0047ddba0a6ec75e1046ccd61a02c2cea3dac58f3fe355",
+      "license": "MIT + listed third-party licenses",
+      "license_status": "fetched_official_text",
+      "supports": [
+        "LICENSE_REGISTER:openfreemap"
+      ],
+      "notes": "Лицензии проекта и включённых стилей (Bright/Liberty/Positron: код BSD-3-Clause, дизайн CC-BY 4.0)."
+    },
+    {
+      "id": "src-openfreemap-readme",
+      "url": "https://raw.githubusercontent.com/hyperknot/openfreemap/main/README.md",
+      "role": "service_terms",
+      "publisher": "OpenFreeMap project (GitHub hyperknot/openfreemap, branch main)",
+      "publisher_basis": "repository_owner",
+      "title": "OpenFreeMap README.md",
+      "published_on": null,
+      "retrieved_at": "2026-10-06T15:34:20Z",
+      "access_status": "fetched",
+      "access_attempts": [
+        {
+          "at": "2026-10-06T15:34:20Z",
+          "method": "python-urllib GET via environment proxy",
+          "outcome": "fetched",
+          "http_status": 200,
+          "sha256": "d53a9172a251017bafc2cca1d2646939514809e01653a0b855f240e65ae9fdac",
+          "detail": null,
+          "audit_file": "research/round-11-results/R05/fetch_audit_2026-10-06_a.json"
+        },
+        {
+          "at": "2026-10-06T15:34:37Z",
+          "method": "python-urllib GET via environment proxy",
+          "outcome": "fetched",
+          "http_status": 200,
+          "sha256": "d53a9172a251017bafc2cca1d2646939514809e01653a0b855f240e65ae9fdac",
+          "detail": null,
+          "audit_file": "research/round-11-results/R05/fetch_audit_2026-10-06_b.json"
+        }
+      ],
+      "sha256": "d53a9172a251017bafc2cca1d2646939514809e01653a0b855f240e65ae9fdac",
+      "license": "MIT (project code); map data OpenStreetMap",
+      "license_status": "fetched_official_text",
+      "supports": [
+        "LICENSE_REGISTER:openfreemap"
+      ],
+      "notes": "Раздел Attribution: атрибуция обязательна; в MapLibre добавляется автоматически; для других клиентов/печати/видео нужна строка OpenFreeMap © OpenMapTiles Data from OpenStreetMap. Публичный инстанс без ключей/регистрации/лимитов по словам проекта."
+    },
+    {
+      "id": "src-openfreemap-site",
+      "url": "https://openfreemap.org/",
+      "role": "service_terms",
+      "publisher": "OpenFreeMap",
+      "publisher_basis": "inferred_from_url",
+      "title": null,
+      "published_on": null,
+      "retrieved_at": null,
+      "access_status": "not_fetched",
+      "access_attempts": [
+        {
+          "at": "2026-10-06T15:28:13Z",
+          "method": "curl GET via environment proxy",
+          "outcome": "egress_denied",
+          "http_status": null,
+          "sha256": null,
+          "detail": "CONNECT tunnel failed, response 403 (proxy status: connect_rejected)",
+          "audit_file": null
+        },
+        {
+          "at": "2026-10-06T15:34:18Z",
+          "method": "python-urllib GET via environment proxy",
+          "outcome": "egress_denied",
+          "http_status": null,
+          "sha256": null,
+          "detail": "Tunnel connection failed: 403 Forbidden",
+          "audit_file": "research/round-11-results/R05/fetch_audit_2026-10-06_a.json"
+        }
+      ],
+      "sha256": null,
+      "license": null,
+      "license_status": "unknown",
+      "supports": [],
+      "notes": "Не получено: исходящий HTTPS из облачного контейнера запрещён политикой egress (proxy 403 на CONNECT). Это ограничение среды R05, а не доказательство недоступности сайта или отсутствия данных. Обход не выполнялся. Условия взяты из официального репозитория проекта (src-openfreemap-readme)."
+    },
+    {
+      "id": "src-openfreemap-style-liberty",
+      "url": "https://tiles.openfreemap.org/styles/liberty",
+      "role": "basemap_service",
+      "publisher": "OpenFreeMap",
+      "publisher_basis": "inferred_from_url",
+      "title": null,
+      "published_on": null,
+      "retrieved_at": null,
+      "access_status": "not_fetched",
+      "access_attempts": [
+        {
+          "at": "2026-10-06T15:34:22Z",
+          "method": "python-urllib GET via environment proxy",
+          "outcome": "egress_denied",
+          "http_status": null,
+          "sha256": null,
+          "detail": "Tunnel connection failed: 403 Forbidden",
+          "audit_file": "research/round-11-results/R05/fetch_audit_2026-10-06_a.json"
+        }
+      ],
+      "sha256": null,
+      "license": null,
+      "license_status": "unknown",
+      "supports": [],
+      "notes": "Не получено: исходящий HTTPS из облачного контейнера запрещён политикой egress (proxy 403 на CONNECT). Это ограничение среды R05, а не доказательство недоступности сайта или отсутствия данных. Обход не выполнялся. Поэтому работа подложки/3D в этой среде не проверялась."
+    },
+    {
+      "id": "src-openmaptiles-license",
+      "url": "https://raw.githubusercontent.com/openmaptiles/openmaptiles/master/LICENSE.md",
+      "role": "license_text",
+      "publisher": "OpenMapTiles project (GitHub openmaptiles/openmaptiles, branch master)",
+      "publisher_basis": "repository_owner",
+      "title": "OpenMapTiles LICENSE.md",
+      "published_on": null,
+      "retrieved_at": "2026-10-06T15:34:20Z",
+      "access_status": "fetched",
+      "access_attempts": [
+        {
+          "at": "2026-10-06T15:34:20Z",
+          "method": "python-urllib GET via environment proxy",
+          "outcome": "fetched",
+          "http_status": 200,
+          "sha256": "6b7862d9537cd3160f10034b8bb0b8d68165da134ea2001080166aa0b624e15c",
+          "detail": null,
+          "audit_file": "research/round-11-results/R05/fetch_audit_2026-10-06_a.json"
+        },
+        {
+          "at": "2026-10-06T15:34:36Z",
+          "method": "python-urllib GET via environment proxy",
+          "outcome": "fetched",
+          "http_status": 200,
+          "sha256": "6b7862d9537cd3160f10034b8bb0b8d68165da134ea2001080166aa0b624e15c",
+          "detail": null,
+          "audit_file": "research/round-11-results/R05/fetch_audit_2026-10-06_b.json"
+        }
+      ],
+      "sha256": "6b7862d9537cd3160f10034b8bb0b8d68165da134ea2001080166aa0b624e15c",
+      "license": "BSD-3-Clause (code), CC-BY-4.0 (design)",
+      "license_status": "fetched_official_text",
+      "supports": [
+        "LICENSE_REGISTER:openmaptiles"
+      ],
+      "notes": "Получен текст лицензии схемы OpenMapTiles: код BSD-3-Clause, дизайн CC-BY 4.0, требование видимой ссылки на OpenMapTiles и OpenStreetMap в углу карты. Ветка не закреплена коммитом — при перепроверке сравнить sha256."
+    },
+    {
+      "id": "src-openmaptiles-readme",
+      "url": "https://raw.githubusercontent.com/openmaptiles/openmaptiles/master/README.md",
+      "role": "documentation",
+      "publisher": "OpenMapTiles project (GitHub)",
+      "publisher_basis": "repository_owner",
+      "title": "OpenMapTiles README.md",
+      "published_on": null,
+      "retrieved_at": "2026-10-06T15:34:37Z",
+      "access_status": "fetched",
+      "access_attempts": [
+        {
+          "at": "2026-10-06T15:34:37Z",
+          "method": "python-urllib GET via environment proxy",
+          "outcome": "fetched",
+          "http_status": 200,
+          "sha256": "de27e88a11880a268965d22c7681c2b01a1d964a9ecbbecf768f3bca4d2e6976",
+          "detail": null,
+          "audit_file": "research/round-11-results/R05/fetch_audit_2026-10-06_b.json"
+        }
+      ],
+      "sha256": "de27e88a11880a268965d22c7681c2b01a1d964a9ecbbecf768f3bca4d2e6976",
+      "license": null,
+      "license_status": "fetched_official_text",
+      "supports": [],
+      "notes": "Получен; используется только как контекст к LICENSE.md."
+    },
+    {
+      "id": "src-openmaptiles-site",
+      "url": "https://openmaptiles.org/",
+      "role": "license_terms",
+      "publisher": "OpenMapTiles",
+      "publisher_basis": "inferred_from_url",
+      "title": null,
+      "published_on": null,
+      "retrieved_at": null,
+      "access_status": "not_fetched",
+      "access_attempts": [
+        {
+          "at": "2026-10-06T15:34:19Z",
+          "method": "python-urllib GET via environment proxy",
+          "outcome": "egress_denied",
+          "http_status": null,
+          "sha256": null,
+          "detail": "Tunnel connection failed: 403 Forbidden",
+          "audit_file": "research/round-11-results/R05/fetch_audit_2026-10-06_a.json"
+        }
+      ],
+      "sha256": null,
+      "license": null,
+      "license_status": "unknown",
+      "supports": [],
+      "notes": "Не получено: исходящий HTTPS из облачного контейнера запрещён политикой egress (proxy 403 на CONNECT). Это ограничение среды R05, а не доказательство недоступности сайта или отсутствия данных. Обход не выполнялся."
+    },
+    {
+      "id": "src-osm-copyright",
+      "url": "https://www.openstreetmap.org/copyright/en",
+      "role": "license_terms",
+      "publisher": "OpenStreetMap Foundation",
+      "publisher_basis": "inferred_from_url",
+      "title": null,
+      "published_on": null,
+      "retrieved_at": null,
+      "access_status": "not_fetched",
+      "access_attempts": [
+        {
+          "at": "2026-10-06T15:28:13Z",
+          "method": "curl GET via environment proxy",
+          "outcome": "egress_denied",
+          "http_status": null,
+          "sha256": null,
+          "detail": "CONNECT tunnel failed, response 403 (proxy status: connect_rejected)",
+          "audit_file": null
+        },
+        {
+          "at": "2026-10-06T15:34:18Z",
+          "method": "python-urllib GET via environment proxy",
+          "outcome": "egress_denied",
+          "http_status": null,
+          "sha256": null,
+          "detail": "Tunnel connection failed: 403 Forbidden",
+          "audit_file": "research/round-11-results/R05/fetch_audit_2026-10-06_a.json"
+        }
+      ],
+      "sha256": null,
+      "license": "ODbL-1.0 (данные OpenStreetMap)",
+      "license_status": "from_saved_copy_and_secondary_official_texts",
+      "supports": [],
+      "notes": "Не получено: исходящий HTTPS из облачного контейнера запрещён политикой egress (proxy 403 на CONNECT). Это ограничение среды R05, а не доказательство недоступности сайта или отсутствия данных. Обход не выполнялся. Обязанности OSM в LICENSE_REGISTER взяты из сохранённого в репозитории текста ODbL-1.0 и из полученных текстов OpenMapTiles/OpenFreeMap, которые ссылаются на эту страницу; актуальную редакцию страницы перепроверить."
+    },
+    {
+      "id": "src-osmf-attribution-guidelines",
+      "url": "https://osmfoundation.org/wiki/Licence/Attribution_Guidelines",
+      "role": "license_terms",
+      "publisher": "OpenStreetMap Foundation",
+      "publisher_basis": "inferred_from_url",
+      "title": null,
+      "published_on": null,
+      "retrieved_at": null,
+      "access_status": "not_fetched",
+      "access_attempts": [
+        {
+          "at": "2026-10-06T15:34:18Z",
+          "method": "python-urllib GET via environment proxy",
+          "outcome": "egress_denied",
+          "http_status": null,
+          "sha256": null,
+          "detail": "Tunnel connection failed: 403 Forbidden",
+          "audit_file": "research/round-11-results/R05/fetch_audit_2026-10-06_a.json"
+        }
+      ],
+      "sha256": null,
+      "license": null,
+      "license_status": "unknown",
+      "supports": [],
+      "notes": "Не получено: исходящий HTTPS из облачного контейнера запрещён политикой egress (proxy 403 на CONNECT). Это ограничение среды R05, а не доказательство недоступности сайта или отсутствия данных. Обход не выполнялся."
+    },
+    {
+      "id": "src-osmf-tile-policy",
+      "url": "https://operations.osmfoundation.org/policies/tiles/",
+      "role": "service_terms",
+      "publisher": "OpenStreetMap Foundation Operations",
+      "publisher_basis": "inferred_from_url",
+      "title": null,
+      "published_on": null,
+      "retrieved_at": null,
+      "access_status": "not_fetched",
+      "access_attempts": [
+        {
+          "at": "2026-10-06T15:28:13Z",
+          "method": "curl GET via environment proxy",
+          "outcome": "egress_denied",
+          "http_status": null,
+          "sha256": null,
+          "detail": "CONNECT tunnel failed, response 403 (proxy status: connect_rejected)",
+          "audit_file": null
+        },
+        {
+          "at": "2026-10-06T15:34:18Z",
+          "method": "python-urllib GET via environment proxy",
+          "outcome": "egress_denied",
+          "http_status": null,
+          "sha256": null,
+          "detail": "Tunnel connection failed: 403 Forbidden",
+          "audit_file": "research/round-11-results/R05/fetch_audit_2026-10-06_a.json"
+        }
+      ],
+      "sha256": null,
+      "license": null,
+      "license_status": "unknown",
+      "supports": [],
+      "notes": "Не получено: исходящий HTTPS из облачного контейнера запрещён политикой egress (proxy 403 на CONNECT). Это ограничение среды R05, а не доказательство недоступности сайта или отсутствия данных. Обход не выполнялся. Текст политики не получен; R05 только фиксирует собственное правило: не обращаться к tile.openstreetmap.org массово (в проекте подложка — OpenFreeMap)."
+    },
+    {
+      "id": "src-overpass-api",
+      "url": "https://overpass-api.de/api/status",
+      "role": "data_api",
+      "publisher": "Overpass API (overpass-api.de)",
+      "publisher_basis": "inferred_from_url",
+      "title": null,
+      "published_on": null,
+      "retrieved_at": null,
+      "access_status": "not_fetched",
+      "access_attempts": [
+        {
+          "at": "2026-10-06T15:28:13Z",
+          "method": "curl GET via environment proxy",
+          "outcome": "egress_denied",
+          "http_status": null,
+          "sha256": null,
+          "detail": "CONNECT tunnel failed, response 403 (proxy status: connect_rejected)",
+          "audit_file": null
+        },
+        {
+          "at": "2026-10-06T15:34:19Z",
+          "method": "python-urllib GET via environment proxy",
+          "outcome": "egress_denied",
+          "http_status": null,
+          "sha256": null,
+          "detail": "Tunnel connection failed: 403 Forbidden",
+          "audit_file": "research/round-11-results/R05/fetch_audit_2026-10-06_a.json"
+        }
+      ],
+      "sha256": null,
+      "license": null,
+      "license_status": "unknown",
+      "supports": [],
+      "notes": "Не получено: исходящий HTTPS из облачного контейнера запрещён политикой egress (proxy 403 на CONNECT). Это ограничение среды R05, а не доказательство недоступности сайта или отсутствия данных. Обход не выполнялся. Новые выгрузки OSM в этом раунде не делались; используются сохранённые в репозитории."
+    },
+    {
+      "id": "src-overture-attribution-mdx",
+      "url": "https://raw.githubusercontent.com/OvertureMaps/docs/main/docs/attribution.mdx",
+      "role": "license_terms",
+      "publisher": "Overture Maps Foundation (GitHub OvertureMaps/docs, branch main)",
+      "publisher_basis": "repository_owner",
+      "title": "Overture docs: Attribution and Licensing",
+      "published_on": null,
+      "retrieved_at": "2026-10-06T15:34:37Z",
+      "access_status": "fetched",
+      "access_attempts": [
+        {
+          "at": "2026-10-06T15:34:37Z",
+          "method": "python-urllib GET via environment proxy",
+          "outcome": "fetched",
+          "http_status": 200,
+          "sha256": "1572e735c167d0bbbd6611cbda42dc3897431a8100a0330808e1c193ebedda1b",
+          "detail": null,
+          "audit_file": "research/round-11-results/R05/fetch_audit_2026-10-06_b.json"
+        }
+      ],
+      "sha256": "1572e735c167d0bbbd6611cbda42dc3897431a8100a0330808e1c193ebedda1b",
+      "license": null,
+      "license_status": "fetched_official_text",
+      "supports": [
+        "LICENSE_REGISTER:overture"
+      ],
+      "notes": "Исходник страницы Attribution and Licensing: для наборов, полностью или частично сделанных из OSM, Overture использует строку '© OpenStreetMap contributors, Overture Maps Foundation'. Сгенерированная таблица лицензий по темам (_generated_attribution.mdx) не получена."
+    },
+    {
+      "id": "src-overture-attribution-site",
+      "url": "https://docs.overturemaps.org/attribution/",
+      "role": "license_terms",
+      "publisher": "Overture Maps Foundation",
+      "publisher_basis": "inferred_from_url",
+      "title": null,
+      "published_on": null,
+      "retrieved_at": null,
+      "access_status": "not_fetched",
+      "access_attempts": [
+        {
+          "at": "2026-10-06T15:34:19Z",
+          "method": "python-urllib GET via environment proxy",
+          "outcome": "egress_denied",
+          "http_status": null,
+          "sha256": null,
+          "detail": "Tunnel connection failed: 403 Forbidden",
+          "audit_file": "research/round-11-results/R05/fetch_audit_2026-10-06_a.json"
+        }
+      ],
+      "sha256": null,
+      "license": null,
+      "license_status": "unknown",
+      "supports": [],
+      "notes": "Не получено: исходящий HTTPS из облачного контейнера запрещён политикой egress (proxy 403 на CONNECT). Это ограничение среды R05, а не доказательство недоступности сайта или отсутствия данных. Обход не выполнялся. Получен исходник той же страницы из официального репозитория (src-overture-attribution-mdx)."
+    },
+    {
+      "id": "src-overture-data-readme",
+      "url": "https://raw.githubusercontent.com/OvertureMaps/data/main/README.md",
+      "role": "documentation",
+      "publisher": "Overture Maps Foundation (GitHub OvertureMaps/data)",
+      "publisher_basis": "repository_owner",
+      "title": "Overture data README",
+      "published_on": null,
+      "retrieved_at": "2026-10-06T15:34:38Z",
+      "access_status": "fetched",
+      "access_attempts": [
+        {
+          "at": "2026-10-06T15:34:38Z",
+          "method": "python-urllib GET via environment proxy",
+          "outcome": "fetched",
+          "http_status": 200,
+          "sha256": "b036992b8b707fbc09ebb7c994cf3d22115046bcf6141545d51b5a8e3944412b",
+          "detail": null,
+          "audit_file": "research/round-11-results/R05/fetch_audit_2026-10-06_b.json"
+        }
+      ],
+      "sha256": "b036992b8b707fbc09ebb7c994cf3d22115046bcf6141545d51b5a8e3944412b",
+      "license": null,
+      "license_status": "fetched_official_text",
+      "supports": [],
+      "notes": "Описание выпусков; для обнаружения выпусков рекомендован STAC-каталог."
+    },
+    {
+      "id": "src-primeminister-kz",
+      "url": "https://primeminister.kz/",
+      "role": "news_candidate",
+      "publisher": null,
+      "publisher_basis": "unknown",
+      "title": null,
+      "published_on": null,
+      "retrieved_at": null,
+      "access_status": "not_fetched",
+      "access_attempts": [
+        {
+          "at": "2026-10-06T15:34:22Z",
+          "method": "python-urllib GET via environment proxy",
+          "outcome": "egress_denied",
+          "http_status": null,
+          "sha256": null,
+          "detail": "Tunnel connection failed: 403 Forbidden",
+          "audit_file": "research/round-11-results/R05/fetch_audit_2026-10-06_a.json"
+        }
+      ],
+      "sha256": null,
+      "license": null,
+      "license_status": "unknown",
+      "supports": [],
+      "notes": "Не получено: исходящий HTTPS из облачного контейнера запрещён политикой egress (proxy 403 на CONNECT). Это ограничение среды R05, а не доказательство недоступности сайта или отсутствия данных. Обход не выполнялся."
+    },
+    {
+      "id": "src-stat-gov-kz",
+      "url": "https://stat.gov.kz/",
+      "role": "statistics_candidate",
+      "publisher": null,
+      "publisher_basis": "unknown",
+      "title": null,
+      "published_on": null,
+      "retrieved_at": null,
+      "access_status": "not_fetched",
+      "access_attempts": [
+        {
+          "at": "2026-10-06T15:34:22Z",
+          "method": "python-urllib GET via environment proxy",
+          "outcome": "egress_denied",
+          "http_status": null,
+          "sha256": null,
+          "detail": "Tunnel connection failed: 403 Forbidden",
+          "audit_file": "research/round-11-results/R05/fetch_audit_2026-10-06_a.json"
+        }
+      ],
+      "sha256": null,
+      "license": null,
+      "license_status": "unknown",
+      "supports": [],
+      "notes": "Не получено: исходящий HTTPS из облачного контейнера запрещён политикой egress (proxy 403 на CONNECT). Это ограничение среды R05, а не доказательство недоступности сайта или отсутствия данных. Обход не выполнялся."
+    },
+    {
+      "id": "src-tengrinews",
+      "url": "https://tengrinews.kz/",
+      "role": "news_candidate",
+      "publisher": null,
+      "publisher_basis": "unknown",
+      "title": null,
+      "published_on": null,
+      "retrieved_at": null,
+      "access_status": "not_fetched",
+      "access_attempts": [
+        {
+          "at": "2026-10-06T15:34:21Z",
+          "method": "python-urllib GET via environment proxy",
+          "outcome": "egress_denied",
+          "http_status": null,
+          "sha256": null,
+          "detail": "Tunnel connection failed: 403 Forbidden",
+          "audit_file": "research/round-11-results/R05/fetch_audit_2026-10-06_a.json"
+        }
+      ],
+      "sha256": null,
+      "license": null,
+      "license_status": "unknown",
+      "supports": [],
+      "notes": "Не получено: исходящий HTTPS из облачного контейнера запрещён политикой egress (proxy 403 на CONNECT). Это ограничение среды R05, а не доказательство недоступности сайта или отсутствия данных. Обход не выполнялся."
+    },
+    {
+      "id": "src-wikidata-q1520",
+      "url": "https://www.wikidata.org/wiki/Q1520",
+      "role": "reference_candidate",
+      "publisher": "Wikidata",
+      "publisher_basis": "inferred_from_url",
+      "title": null,
+      "published_on": null,
+      "retrieved_at": null,
+      "access_status": "not_fetched",
+      "access_attempts": [
+        {
+          "at": "2026-10-06T15:34:21Z",
+          "method": "python-urllib GET via environment proxy",
+          "outcome": "egress_denied",
+          "http_status": null,
+          "sha256": null,
+          "detail": "Tunnel connection failed: 403 Forbidden",
+          "audit_file": "research/round-11-results/R05/fetch_audit_2026-10-06_a.json"
+        }
+      ],
+      "sha256": null,
+      "license": null,
+      "license_status": "unknown",
+      "supports": [],
+      "notes": "Не получено: исходящий HTTPS из облачного контейнера запрещён политикой egress (proxy 403 на CONNECT). Это ограничение среды R05, а не доказательство недоступности сайта или отсутствия данных. Обход не выполнялся."
+    },
+    {
+      "id": "src-wikipedia-ru-astana",
+      "url": "https://ru.wikipedia.org/wiki/Астана",
+      "role": "reference_candidate",
+      "publisher": "Wikipedia",
+      "publisher_basis": "inferred_from_url",
+      "title": null,
+      "published_on": null,
+      "retrieved_at": null,
+      "access_status": "not_fetched",
+      "access_attempts": [
+        {
+          "at": "2026-10-06T15:34:21Z",
+          "method": "python-urllib GET via environment proxy",
+          "outcome": "egress_denied",
+          "http_status": null,
+          "sha256": null,
+          "detail": "Tunnel connection failed: 403 Forbidden",
+          "audit_file": "research/round-11-results/R05/fetch_audit_2026-10-06_a.json"
+        }
+      ],
+      "sha256": null,
+      "license": null,
+      "license_status": "unknown",
+      "supports": [],
+      "notes": "Не получено: исходящий HTTPS из облачного контейнера запрещён политикой egress (proxy 403 на CONNECT). Это ограничение среды R05, а не доказательство недоступности сайта или отсутствия данных. Обход не выполнялся."
+    }
+  ]
+}

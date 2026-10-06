@@ -1,0 +1,24 @@
+{
+  "round": 11,
+  "role": "R05",
+  "branch": "claude/intelligent-sagan-7shpeh",
+  "base_sha": "834a25fb860dd5514d02c9274b70d7bf8a53a79c",
+  "pack_sha": "9c2f5c0dae14b46c0697a9dfc7f854351bfd570d",
+  "status": "partial",
+  "owned_paths": [
+    "data/civic/astana/",
+    "tests/civic/R05/",
+    "research/round-11-results/R05/",
+    "research/handoffs/astana/R05/round-11/STATUS.md"
+  ],
+  "integration_notes": "research/round-11-results/R05/INTEGRATION.txt (to be written)",
+  "code_commit": null,
+  "checks": [
+    {"name": "r05-validator-unit-tests", "status": "PASS", "command": "python3 -m pytest tests/civic/R05 -q", "input": "inline fixtures + PACK_SHA civic_object.json", "reason": "32 passed on checkpoint-1 working tree"},
+    {"name": "official-source-fetch", "status": "FAIL", "command": "python3 -I data/civic/astana/tools/probe_sources.py --from-file <list>", "input": "BRIEF.txt URLs + Kazakh official/news portals", "reason": "egress proxy 403 (policy) for all non-GitHub hosts; see fetch_audit_2026-10-06_*.json"}
+  ],
+  "limitations": [
+    "No real Astana work/event announcement could be fetched in this environment; no confirmed real objects yet."
+  ],
+  "next_step": "Slice builder + license register + synthetic demo slice + R02 import helper."
+}

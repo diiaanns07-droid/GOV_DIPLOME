@@ -1,0 +1,18 @@
+{
+  "schema": "r05-pilot-reference-v1",
+  "city": "astana",
+  "graph": {
+    "path": "web/govtech/k03/astana.graph.json",
+    "at_commit": "b2cb2e02c602c166ba6d47c02d8e902e5478c791",
+    "file_sha256": "a6f823292331713dc5eb314aff53fc3de0836bf9fdc95f310c21053d0c28aace",
+    "graph_sha256": "799d26e5155248cceb31eb67f76f92d453491770a73c387bf0371289ddcf0ae4",
+    "schema": "k03-pedestrian-graph-v1",
+    "policy_family": "pedestrian-v1",
+    "release": "2026-09-23.1",
+    "license": "ODbL-1.0 (OSM via Overture)",
+    "declared_bbox": [71.418372, 51.163033, 71.447, 51.181],
+    "node_extent": [71.4138133, 51.158798, 71.4504406, 51.189521],
+    "stats": {"nodes": 2309, "edges": 3269, "km_all": 156.182, "km_strict_ok_any_direction": 45.863},
+    "notes": "Пешеходный граф K03 (раунд 10) на сегментах Overture/OSM K10. Не автомобильная сеть и не проверенный driving-граф. Участок ~2x2 км на границе районов Сарыарка/Байконур (по точкам узлов). Значения скопированы из заголовка файла по указанному commit; сам граф в пакет R05 не копируется."
+  }
+}
