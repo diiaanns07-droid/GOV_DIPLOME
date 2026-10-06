@@ -1,0 +1,248 @@
+{
+ "schema_version": "city-plan-v2",
+ "city_id": "astana",
+ "source_snapshot": "sha256:67a40b96d29873118780969eb11c32deba49a0c64fda1f185efe634882f04c6d",
+ "category": "school",
+ "control_points": [
+  {
+   "id": "s01",
+   "lon": 71.439851,
+   "lat": 51.174739,
+   "weight": 79
+  },
+  {
+   "id": "s02",
+   "lon": 71.429344,
+   "lat": 51.166164,
+   "weight": 90
+  },
+  {
+   "id": "s03",
+   "lon": 71.444657,
+   "lat": 51.177038,
+   "weight": 49
+  },
+  {
+   "id": "s04",
+   "lon": 71.431848,
+   "lat": 51.169349,
+   "weight": 4
+  },
+  {
+   "id": "s05",
+   "lon": 71.43383,
+   "lat": 51.175303,
+   "weight": 39
+  },
+  {
+   "id": "s06",
+   "lon": 71.427043,
+   "lat": 51.179972,
+   "weight": 58
+  },
+  {
+   "id": "s07",
+   "lon": 71.444605,
+   "lat": 51.178487,
+   "weight": 73
+  },
+  {
+   "id": "s08",
+   "lon": 71.431317,
+   "lat": 51.174148,
+   "weight": 84
+  },
+  {
+   "id": "s09",
+   "lon": 71.444729,
+   "lat": 51.176534,
+   "weight": 39
+  },
+  {
+   "id": "s10",
+   "lon": 71.421005,
+   "lat": 51.164996,
+   "weight": 38
+  },
+  {
+   "id": "s11",
+   "lon": 71.433258,
+   "lat": 51.166688,
+   "weight": 1
+  },
+  {
+   "id": "s12",
+   "lon": 71.420443,
+   "lat": 51.17305,
+   "weight": 68
+  },
+  {
+   "id": "s13",
+   "lon": 71.438518,
+   "lat": 51.166818,
+   "weight": 51
+  },
+  {
+   "id": "s14",
+   "lon": 71.430482,
+   "lat": 51.177571,
+   "weight": 50
+  },
+  {
+   "id": "s15",
+   "lon": 71.425863,
+   "lat": 51.179086,
+   "weight": 41
+  },
+  {
+   "id": "s16",
+   "lon": 71.438357,
+   "lat": 51.178283,
+   "weight": 8
+  },
+  {
+   "id": "s17",
+   "lon": 71.426288,
+   "lat": 51.174841,
+   "weight": 59
+  },
+  {
+   "id": "s18",
+   "lon": 71.432936,
+   "lat": 51.164357,
+   "weight": 34
+  },
+  {
+   "id": "s19",
+   "lon": 71.421757,
+   "lat": 51.178465,
+   "weight": 61
+  },
+  {
+   "id": "s20",
+   "lon": 71.429024,
+   "lat": 51.175704,
+   "weight": 100
+  }
+ ],
+ "candidates": [
+  {
+   "id": "r01",
+   "lon": 71.44075,
+   "lat": 51.173066,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 310
+  },
+  {
+   "id": "r02",
+   "lon": 71.43632,
+   "lat": 51.171981,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 140
+  },
+  {
+   "id": "r03",
+   "lon": 71.433575,
+   "lat": 51.174772,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 170
+  },
+  {
+   "id": "r04",
+   "lon": 71.424508,
+   "lat": 51.173229,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 160
+  },
+  {
+   "id": "r05",
+   "lon": 71.428352,
+   "lat": 51.174967,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 170
+  },
+  {
+   "id": "r06",
+   "lon": 71.426507,
+   "lat": 51.165666,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 420
+  },
+  {
+   "id": "r07",
+   "lon": 71.437311,
+   "lat": 51.171059,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 370
+  },
+  {
+   "id": "r08",
+   "lon": 71.44276,
+   "lat": 51.172809,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 140
+  },
+  {
+   "id": "r09",
+   "lon": 71.437835,
+   "lat": 51.172812,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 390
+  },
+  {
+   "id": "r10",
+   "lon": 71.43222,
+   "lat": 51.172867,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 260
+  },
+  {
+   "id": "r11",
+   "lon": 71.437267,
+   "lat": 51.174578,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 170
+  },
+  {
+   "id": "r12",
+   "lon": 71.438888,
+   "lat": 51.179635,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 360
+  },
+  {
+   "id": "r13",
+   "lon": 71.4426,
+   "lat": 51.169139,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 490
+  },
+  {
+   "id": "r14",
+   "lon": 71.421638,
+   "lat": 51.166259,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 280
+  }
+ ],
+ "budget": 900,
+ "max_selected": 4,
+ "coverage_radius_m": 300,
+ "required_ids": [],
+ "excluded_ids": [],
+ "selected_ids": []
+}

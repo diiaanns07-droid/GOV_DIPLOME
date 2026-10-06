@@ -1,0 +1,2304 @@
+{
+ "pack_format": "k10-plan-pack-v1",
+ "pack_id": "shymkent-outpatient_clinic-qa-nearest",
+ "kind": "real_slice",
+ "stage": 2,
+ "purpose": "QA nearest: control points on colocated groups; ties and QA flags must stay visible",
+ "city_id": "shymkent",
+ "category": "outpatient_clinic",
+ "synthetic_parts": [
+  "control_points (positions by rule, weights)",
+  "candidates (positions by rule, costs)",
+  "budget",
+  "max_selected",
+  "coverage_radius_m",
+  "required_ids",
+  "excluded_ids",
+  "selected_ids"
+ ],
+ "rules": {
+  "fixed_before_computing": true,
+  "coordinates": "bbox fractions (x = share of lon span, y = share of lat span), rounded to 6 decimals",
+  "control_points": "cp01..cp16: 4x4 grid, x=(i+0.5)/4, y=(j+0.5)/4, row j outer (south to north), i inner (west to east)",
+  "weights": "SYNTHETIC: cp k (1-based) weight = 1 + ((3*k) mod 5); a user priority, not residents",
+  "candidates": "c01..c12: x in (1/8,3/8,5/8,7/8) inner, y in (1/6,1/2,5/6) outer; kind=hypothetical",
+  "costs": "SYNTHETIC conditional units: candidate k cost = 100 + 50*((5*k) mod 7); not tenge, not an estimate",
+  "base": "budget 700, max_selected 3, coverage_radius_m 400 (analysis parameter, not a walking norm), required [], excluded [], selected_ids [c06, c07] (the two candidates nearest the bbox centre)",
+  "qa_nearest": "base + one control point at each qa.colocated group of web/evidence.js holding records of the category (largest group first, ids cp_qa1..), weight continues the weight rule; not built when no such group"
+ },
+ "provenance": {
+  "build_branch": "claude/beautiful-clarke-sbzomj",
+  "build_commit": "a5b5e2ddbe087c4eab8e947748cdf69dbae84a0d",
+  "app_path": "prototypes/city-evidence",
+  "data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "evidence_js_sha256": "df736e986145da33dee60f692e020486720b72db5b6116af31640cc8693b11b9",
+  "places_social_file": "inputs/k10/data/shymkent/places_social.geojson",
+  "places_social_sha256": "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7",
+  "release": "2026-09-23.1",
+  "bbox": [
+   69.593365,
+   42.306645,
+   69.617658,
+   42.324611
+  ],
+  "source_snapshot": "sha256:a9326b5633c513c0bfeccbb2248b26cf3b706c902f77745073a2959ad8d7ff3e",
+  "snapshot_components": [
+   "city-plan-v2",
+   "shymkent",
+   "2026-09-23.1",
+   "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7",
+   "30b0b9678bd5d903232e1c820f2c65a5faad7ffc9020fff3f2ed8c591f591e0f",
+   "haversine-mm-v1"
+  ],
+  "snapshot_format": "plan-v2: web/plan.js sourceSnapshot (BUILD 60f44d9)",
+  "whatif_v1_snapshot_same_slice": "sha256:282cf187523d8b990ac9bfde69ba43763248aa9b49007149a094ccc81bd36ec2",
+  "upstream": "Overture Maps places 2026-09-23.1 via K10 package (round-3 results); not re-downloaded"
+ },
+ "source_copy": {
+  "category_records": [
+   {
+    "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+    "lon": 69.5958,
+    "lat": 42.3167,
+    "group": "outpatient_clinic",
+    "name": "Dr.Sattarkulovich",
+    "qa_flags": [
+     "COLOCATED"
+    ]
+   },
+   {
+    "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f",
+    "lon": 69.607757,
+    "lat": 42.306934,
+    "group": "outpatient_clinic",
+    "name": "Пространство Где Всё Возможно",
+    "qa_flags": []
+   },
+   {
+    "id": "2264dcf0-549d-451a-b846-3f207d411e0c",
+    "lon": 69.5958,
+    "lat": 42.3167,
+    "group": "outpatient_clinic",
+    "name": "Сункар",
+    "qa_flags": [
+     "COLOCATED"
+    ]
+   },
+   {
+    "id": "50802484-b7f9-492e-8a4c-f75312fc7751",
+    "lon": 69.60702,
+    "lat": 42.31757,
+    "group": "outpatient_clinic",
+    "name": "Kosmetolog Жазира",
+    "qa_flags": [
+     "COLOCATED",
+     "POSSIBLE_DUPLICATE"
+    ]
+   },
+   {
+    "id": "621acb4b-a1bd-45ce-891f-c0a4634a6103",
+    "lon": 69.601822,
+    "lat": 42.317791,
+    "group": "outpatient_clinic",
+    "name": "MasterDent",
+    "qa_flags": []
+   },
+   {
+    "id": "622b4786-89fa-4853-b109-18054e3ebe0d",
+    "lon": 69.60702,
+    "lat": 42.31757,
+    "group": "outpatient_clinic",
+    "name": "Aza Бизнес Страница Шымкент",
+    "qa_flags": [
+     "CATEGORY_DOUBT",
+     "COLOCATED",
+     "POSSIBLE_DUPLICATE"
+    ]
+   },
+   {
+    "id": "6e92676a-1297-446d-9956-731023da6339",
+    "lon": 69.59527,
+    "lat": 42.32423,
+    "group": "outpatient_clinic",
+    "name": "Стомотология",
+    "qa_flags": []
+   },
+   {
+    "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60",
+    "lon": 69.609396,
+    "lat": 42.31437,
+    "group": "outpatient_clinic",
+    "name": "Easy Health Shymkent",
+    "qa_flags": []
+   },
+   {
+    "id": "833280f2-ff82-4dd6-a174-d2a9203420fa",
+    "lon": 69.60702,
+    "lat": 42.31758,
+    "group": "outpatient_clinic",
+    "name": "ИП Ауелбекова Р.И.",
+    "qa_flags": []
+   },
+   {
+    "id": "99c68068-aa6e-4ff2-af5f-455675f93313",
+    "lon": 69.59586,
+    "lat": 42.32122,
+    "group": "outpatient_clinic",
+    "name": "MicoOne Orthodontics Kazakhstan",
+    "qa_flags": []
+   },
+   {
+    "id": "a10bb8cf-c446-4066-9cda-a5befa189a60",
+    "lon": 69.61684,
+    "lat": 42.313453,
+    "group": "outpatient_clinic",
+    "name": "ProfMedService",
+    "qa_flags": []
+   },
+   {
+    "id": "b845d434-7da3-4755-9ae9-bb6d40fc7520",
+    "lon": 69.602416,
+    "lat": 42.323312,
+    "group": "outpatient_clinic",
+    "name": "Стоматологическая клиника Диастом",
+    "qa_flags": []
+   },
+   {
+    "id": "c2990416-dca7-4e3a-b539-30e69cadf724",
+    "lon": 69.5958,
+    "lat": 42.3167,
+    "group": "outpatient_clinic",
+    "name": "Джафар Стоматология",
+    "qa_flags": [
+     "COLOCATED"
+    ]
+   },
+   {
+    "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354",
+    "lon": 69.615192,
+    "lat": 42.31673,
+    "group": "outpatient_clinic",
+    "name": "Atlant Clinic",
+    "qa_flags": []
+   },
+   {
+    "id": "e1b19ead-4505-4acd-8aed-9c561ceec4c0",
+    "lon": 69.60702,
+    "lat": 42.31757,
+    "group": "outpatient_clinic",
+    "name": "АССОР",
+    "qa_flags": [
+     "COLOCATED"
+    ]
+   },
+   {
+    "id": "f4d6818b-1a99-43ca-8533-4c556f448919",
+    "lon": 69.5958,
+    "lat": 42.3167,
+    "group": "outpatient_clinic",
+    "name": "Стоматологическое оборудование",
+    "qa_flags": [
+     "COLOCATED"
+    ]
+   }
+  ],
+  "note": "read-only copy of web/data.js records of this category; the source records are never modified"
+ },
+ "scenario": {
+  "schema_version": "city-plan-v2",
+  "city_id": "shymkent",
+  "source_snapshot": "sha256:a9326b5633c513c0bfeccbb2248b26cf3b706c902f77745073a2959ad8d7ff3e",
+  "category": "outpatient_clinic",
+  "control_points": [
+   {
+    "id": "cp01",
+    "lon": 69.596402,
+    "lat": 42.308891,
+    "weight": 4
+   },
+   {
+    "id": "cp02",
+    "lon": 69.602475,
+    "lat": 42.308891,
+    "weight": 2
+   },
+   {
+    "id": "cp03",
+    "lon": 69.608548,
+    "lat": 42.308891,
+    "weight": 5
+   },
+   {
+    "id": "cp04",
+    "lon": 69.614621,
+    "lat": 42.308891,
+    "weight": 3
+   },
+   {
+    "id": "cp05",
+    "lon": 69.596402,
+    "lat": 42.313382,
+    "weight": 1
+   },
+   {
+    "id": "cp06",
+    "lon": 69.602475,
+    "lat": 42.313382,
+    "weight": 4
+   },
+   {
+    "id": "cp07",
+    "lon": 69.608548,
+    "lat": 42.313382,
+    "weight": 2
+   },
+   {
+    "id": "cp08",
+    "lon": 69.614621,
+    "lat": 42.313382,
+    "weight": 5
+   },
+   {
+    "id": "cp09",
+    "lon": 69.596402,
+    "lat": 42.317874,
+    "weight": 3
+   },
+   {
+    "id": "cp10",
+    "lon": 69.602475,
+    "lat": 42.317874,
+    "weight": 1
+   },
+   {
+    "id": "cp11",
+    "lon": 69.608548,
+    "lat": 42.317874,
+    "weight": 4
+   },
+   {
+    "id": "cp12",
+    "lon": 69.614621,
+    "lat": 42.317874,
+    "weight": 2
+   },
+   {
+    "id": "cp13",
+    "lon": 69.596402,
+    "lat": 42.322365,
+    "weight": 5
+   },
+   {
+    "id": "cp14",
+    "lon": 69.602475,
+    "lat": 42.322365,
+    "weight": 3
+   },
+   {
+    "id": "cp15",
+    "lon": 69.608548,
+    "lat": 42.322365,
+    "weight": 1
+   },
+   {
+    "id": "cp16",
+    "lon": 69.614621,
+    "lat": 42.322365,
+    "weight": 4
+   },
+   {
+    "id": "cp_qa1",
+    "lon": 69.5958,
+    "lat": 42.3167,
+    "weight": 2
+   },
+   {
+    "id": "cp_qa2",
+    "lon": 69.60702,
+    "lat": 42.31757,
+    "weight": 5
+   }
+  ],
+  "candidates": [
+   {
+    "id": "c01",
+    "lon": 69.596402,
+    "lat": 42.309639,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 350
+   },
+   {
+    "id": "c02",
+    "lon": 69.602475,
+    "lat": 42.309639,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 250
+   },
+   {
+    "id": "c03",
+    "lon": 69.608548,
+    "lat": 42.309639,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 150
+   },
+   {
+    "id": "c04",
+    "lon": 69.614621,
+    "lat": 42.309639,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 400
+   },
+   {
+    "id": "c05",
+    "lon": 69.596402,
+    "lat": 42.315628,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 300
+   },
+   {
+    "id": "c06",
+    "lon": 69.602475,
+    "lat": 42.315628,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 200
+   },
+   {
+    "id": "c07",
+    "lon": 69.608548,
+    "lat": 42.315628,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 100
+   },
+   {
+    "id": "c08",
+    "lon": 69.614621,
+    "lat": 42.315628,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 350
+   },
+   {
+    "id": "c09",
+    "lon": 69.596402,
+    "lat": 42.321617,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 250
+   },
+   {
+    "id": "c10",
+    "lon": 69.602475,
+    "lat": 42.321617,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 150
+   },
+   {
+    "id": "c11",
+    "lon": 69.608548,
+    "lat": 42.321617,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 400
+   },
+   {
+    "id": "c12",
+    "lon": 69.614621,
+    "lat": 42.321617,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 300
+   }
+  ],
+  "budget": 700,
+  "max_selected": 3,
+  "coverage_radius_m": 400,
+  "required_ids": [],
+  "excluded_ids": [],
+  "selected_ids": [
+   "c06",
+   "c07"
+  ]
+ },
+ "expected": {
+  "generated_by": "k10plan.oracle",
+  "metric_version": "haversine-mm-v1",
+  "validation": "accepted",
+  "problem_digest": "sha256:62dbcfd0e56661aea0e70e46cf0c909cfaba7e12f3627e0934e5ce70cfb25ca9",
+  "scenario_digest": "sha256:68a9a20217e45b80042a6b50bd8f104c515f938f670492c983b31d1147f5a8b2",
+  "optimize": {
+   "status": "optimal",
+   "metric_version": "haversine-mm-v1",
+   "problem_digest": "sha256:62dbcfd0e56661aea0e70e46cf0c909cfaba7e12f3627e0934e5ce70cfb25ca9",
+   "evaluated": 299,
+   "feasible_count": 143,
+   "candidate_count": 12,
+   "objectives": {
+    "mean": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 10429879,
+     "weighted_mean_mm": 186247.8392857143,
+     "max_mm": 506269,
+     "covered_weight": 44,
+     "coverage_fraction": 0.7857142857142857,
+     "cost": 700,
+     "selected_ids": [
+      "c02",
+      "c03",
+      "c12"
+     ]
+    },
+    "minimax": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 10429879,
+     "weighted_mean_mm": 186247.8392857143,
+     "max_mm": 506269,
+     "covered_weight": 44,
+     "coverage_fraction": 0.7857142857142857,
+     "cost": 700,
+     "selected_ids": [
+      "c02",
+      "c03",
+      "c12"
+     ]
+    },
+    "coverage": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 10668934,
+     "weighted_mean_mm": 190516.67857142858,
+     "max_mm": 539090,
+     "covered_weight": 46,
+     "coverage_fraction": 0.8214285714285714,
+     "cost": 650,
+     "selected_ids": [
+      "c01",
+      "c12"
+     ]
+    }
+   },
+   "pareto": [
+    {
+     "cost": 0,
+     "weighted_sum_mm": 16004677,
+     "selected_ids": []
+    },
+    {
+     "cost": 150,
+     "weighted_sum_mm": 15186474,
+     "selected_ids": [
+      "c03"
+     ]
+    },
+    {
+     "cost": 200,
+     "weighted_sum_mm": 15030893,
+     "selected_ids": [
+      "c06"
+     ]
+    },
+    {
+     "cost": 250,
+     "weighted_sum_mm": 13437593,
+     "selected_ids": [
+      "c02"
+     ]
+    },
+    {
+     "cost": 350,
+     "weighted_sum_mm": 12858445,
+     "selected_ids": [
+      "c01"
+     ]
+    },
+    {
+     "cost": 400,
+     "weighted_sum_mm": 12619390,
+     "selected_ids": [
+      "c02",
+      "c03"
+     ]
+    },
+    {
+     "cost": 500,
+     "weighted_sum_mm": 12040242,
+     "selected_ids": [
+      "c01",
+      "c03"
+     ]
+    },
+    {
+     "cost": 550,
+     "weighted_sum_mm": 11248082,
+     "selected_ids": [
+      "c02",
+      "c12"
+     ]
+    },
+    {
+     "cost": 650,
+     "weighted_sum_mm": 10668934,
+     "selected_ids": [
+      "c01",
+      "c12"
+     ]
+    },
+    {
+     "cost": 700,
+     "weighted_sum_mm": 10429879,
+     "selected_ids": [
+      "c02",
+      "c03",
+      "c12"
+     ]
+    }
+   ],
+   "pareto_note": null,
+   "sensitivity": [
+    {
+     "budget": 0,
+     "status": "optimal",
+     "objectives": {
+      "mean": {
+       "selected_ids": [],
+       "cost": 0,
+       "weighted_sum_mm": 16004677,
+       "max_mm": 869732,
+       "covered_weight": 38,
+       "unknown_count": 0
+      },
+      "minimax": {
+       "selected_ids": [],
+       "cost": 0,
+       "weighted_sum_mm": 16004677,
+       "max_mm": 869732,
+       "covered_weight": 38,
+       "unknown_count": 0
+      },
+      "coverage": {
+       "selected_ids": [],
+       "cost": 0,
+       "weighted_sum_mm": 16004677,
+       "max_mm": 869732,
+       "covered_weight": 38,
+       "unknown_count": 0
+      }
+     },
+     "infeasible_reasons": null
+    },
+    {
+     "budget": 350,
+     "status": "optimal",
+     "objectives": {
+      "mean": {
+       "selected_ids": [
+        "c01"
+       ],
+       "cost": 350,
+       "weighted_sum_mm": 12858445,
+       "max_mm": 628341,
+       "covered_weight": 42,
+       "unknown_count": 0
+      },
+      "minimax": {
+       "selected_ids": [
+        "c01"
+       ],
+       "cost": 350,
+       "weighted_sum_mm": 12858445,
+       "max_mm": 628341,
+       "covered_weight": 42,
+       "unknown_count": 0
+      },
+      "coverage": {
+       "selected_ids": [
+        "c01"
+       ],
+       "cost": 350,
+       "weighted_sum_mm": 12858445,
+       "max_mm": 628341,
+       "covered_weight": 42,
+       "unknown_count": 0
+      }
+     },
+     "infeasible_reasons": null
+    },
+    {
+     "budget": 700,
+     "status": "optimal",
+     "objectives": {
+      "mean": {
+       "selected_ids": [
+        "c02",
+        "c03",
+        "c12"
+       ],
+       "cost": 700,
+       "weighted_sum_mm": 10429879,
+       "max_mm": 506269,
+       "covered_weight": 44,
+       "unknown_count": 0
+      },
+      "minimax": {
+       "selected_ids": [
+        "c02",
+        "c03",
+        "c12"
+       ],
+       "cost": 700,
+       "weighted_sum_mm": 10429879,
+       "max_mm": 506269,
+       "covered_weight": 44,
+       "unknown_count": 0
+      },
+      "coverage": {
+       "selected_ids": [
+        "c01",
+        "c12"
+       ],
+       "cost": 650,
+       "weighted_sum_mm": 10668934,
+       "max_mm": 539090,
+       "covered_weight": 46,
+       "unknown_count": 0
+      }
+     },
+     "infeasible_reasons": null
+    }
+   ]
+  },
+  "plan_refs": {
+   "manual": "c06+c07",
+   "baseline": "(empty)",
+   "mean": "c02+c03+c12",
+   "minimax": "c02+c03+c12",
+   "coverage": "c01+c12"
+  },
+  "plans": {
+   "c06+c07": {
+    "rows": [
+     {
+      "control_point_id": "cp01",
+      "weight": 4,
+      "before_mm": 869732,
+      "nearest_before": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "after_mm": 869732,
+      "nearest_after": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "2264dcf0-549d-451a-b846-3f207d411e0c",
+       "c2990416-dca7-4e3a-b539-30e69cadf724",
+       "f4d6818b-1a99-43ca-8533-4c556f448919"
+      ],
+      "nearest_before_qa_flags": [
+       "COLOCATED"
+      ]
+     },
+     {
+      "control_point_id": "cp02",
+      "weight": 2,
+      "before_mm": 485816,
+      "nearest_before": {
+       "kind": "source",
+       "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      },
+      "after_mm": 485816,
+      "nearest_after": {
+       "kind": "source",
+       "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp03",
+      "weight": 5,
+      "before_mm": 227122,
+      "nearest_before": {
+       "kind": "source",
+       "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      },
+      "after_mm": 227122,
+      "nearest_after": {
+       "kind": "source",
+       "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp04",
+      "weight": 3,
+      "before_mm": 539090,
+      "nearest_before": {
+       "kind": "source",
+       "id": "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      },
+      "after_mm": 539090,
+      "nearest_after": {
+       "kind": "source",
+       "id": "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp05",
+      "weight": 1,
+      "before_mm": 372251,
+      "nearest_before": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "after_mm": 372251,
+      "nearest_after": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "2264dcf0-549d-451a-b846-3f207d411e0c",
+       "c2990416-dca7-4e3a-b539-30e69cadf724",
+       "f4d6818b-1a99-43ca-8533-4c556f448919"
+      ],
+      "nearest_before_qa_flags": [
+       "COLOCATED"
+      ]
+     },
+     {
+      "control_point_id": "cp06",
+      "weight": 4,
+      "before_mm": 493190,
+      "nearest_before": {
+       "kind": "source",
+       "id": "621acb4b-a1bd-45ce-891f-c0a4634a6103"
+      },
+      "after_mm": 249744,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "c06"
+      },
+      "delta_mm": 243446,
+      "tied_before_ids": [
+       "621acb4b-a1bd-45ce-891f-c0a4634a6103"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp07",
+      "weight": 2,
+      "before_mm": 130120,
+      "nearest_before": {
+       "kind": "source",
+       "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+      },
+      "after_mm": 130120,
+      "nearest_after": {
+       "kind": "source",
+       "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp08",
+      "weight": 5,
+      "before_mm": 182630,
+      "nearest_before": {
+       "kind": "source",
+       "id": "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      },
+      "after_mm": 182630,
+      "nearest_after": {
+       "kind": "source",
+       "id": "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp09",
+      "weight": 3,
+      "before_mm": 139612,
+      "nearest_before": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "after_mm": 139612,
+      "nearest_after": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "2264dcf0-549d-451a-b846-3f207d411e0c",
+       "c2990416-dca7-4e3a-b539-30e69cadf724",
+       "f4d6818b-1a99-43ca-8533-4c556f448919"
+      ],
+      "nearest_before_qa_flags": [
+       "COLOCATED"
+      ]
+     },
+     {
+      "control_point_id": "cp10",
+      "weight": 1,
+      "before_mm": 54477,
+      "nearest_before": {
+       "kind": "source",
+       "id": "621acb4b-a1bd-45ce-891f-c0a4634a6103"
+      },
+      "after_mm": 54477,
+      "nearest_after": {
+       "kind": "source",
+       "id": "621acb4b-a1bd-45ce-891f-c0a4634a6103"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "621acb4b-a1bd-45ce-891f-c0a4634a6103"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp11",
+      "weight": 4,
+      "before_mm": 129816,
+      "nearest_before": {
+       "kind": "source",
+       "id": "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      },
+      "after_mm": 129816,
+      "nearest_after": {
+       "kind": "source",
+       "id": "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp12",
+      "weight": 2,
+      "before_mm": 135594,
+      "nearest_before": {
+       "kind": "source",
+       "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      },
+      "after_mm": 135594,
+      "nearest_after": {
+       "kind": "source",
+       "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp13",
+      "weight": 5,
+      "before_mm": 134891,
+      "nearest_before": {
+       "kind": "source",
+       "id": "99c68068-aa6e-4ff2-af5f-455675f93313"
+      },
+      "after_mm": 134891,
+      "nearest_after": {
+       "kind": "source",
+       "id": "99c68068-aa6e-4ff2-af5f-455675f93313"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "99c68068-aa6e-4ff2-af5f-455675f93313"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp14",
+      "weight": 3,
+      "before_mm": 105413,
+      "nearest_before": {
+       "kind": "source",
+       "id": "b845d434-7da3-4755-9ae9-bb6d40fc7520"
+      },
+      "after_mm": 105413,
+      "nearest_after": {
+       "kind": "source",
+       "id": "b845d434-7da3-4755-9ae9-bb6d40fc7520"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "b845d434-7da3-4755-9ae9-bb6d40fc7520"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp15",
+      "weight": 1,
+      "before_mm": 515013,
+      "nearest_before": {
+       "kind": "source",
+       "id": "b845d434-7da3-4755-9ae9-bb6d40fc7520"
+      },
+      "after_mm": 515013,
+      "nearest_after": {
+       "kind": "source",
+       "id": "b845d434-7da3-4755-9ae9-bb6d40fc7520"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "b845d434-7da3-4755-9ae9-bb6d40fc7520"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp16",
+      "weight": 4,
+      "before_mm": 628341,
+      "nearest_before": {
+       "kind": "source",
+       "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      },
+      "after_mm": 628341,
+      "nearest_after": {
+       "kind": "source",
+       "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp_qa1",
+      "weight": 2,
+      "before_mm": 0,
+      "nearest_before": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "after_mm": 0,
+      "nearest_after": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "2264dcf0-549d-451a-b846-3f207d411e0c",
+       "c2990416-dca7-4e3a-b539-30e69cadf724",
+       "f4d6818b-1a99-43ca-8533-4c556f448919"
+      ],
+      "nearest_before_qa_flags": [
+       "COLOCATED"
+      ]
+     },
+     {
+      "control_point_id": "cp_qa2",
+      "weight": 5,
+      "before_mm": 0,
+      "nearest_before": {
+       "kind": "source",
+       "id": "50802484-b7f9-492e-8a4c-f75312fc7751"
+      },
+      "after_mm": 0,
+      "nearest_after": {
+       "kind": "source",
+       "id": "50802484-b7f9-492e-8a4c-f75312fc7751"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "50802484-b7f9-492e-8a4c-f75312fc7751",
+       "622b4786-89fa-4853-b109-18054e3ebe0d",
+       "e1b19ead-4505-4acd-8aed-9c561ceec4c0"
+      ],
+      "nearest_before_qa_flags": [
+       "COLOCATED",
+       "POSSIBLE_DUPLICATE"
+      ]
+     }
+    ],
+    "metrics": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 15030893,
+     "weighted_mean_mm": 268408.8035714286,
+     "max_mm": 869732,
+     "covered_weight": 42,
+     "coverage_fraction": 0.75,
+     "cost": 300,
+     "selected_ids": [
+      "c06",
+      "c07"
+     ]
+    },
+    "feasibility": {
+     "feasible": true,
+     "reasons": []
+    },
+    "baseline_records_in_category": 16
+   },
+   "(empty)": {
+    "rows": [
+     {
+      "control_point_id": "cp01",
+      "weight": 4,
+      "before_mm": 869732,
+      "nearest_before": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "after_mm": 869732,
+      "nearest_after": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "2264dcf0-549d-451a-b846-3f207d411e0c",
+       "c2990416-dca7-4e3a-b539-30e69cadf724",
+       "f4d6818b-1a99-43ca-8533-4c556f448919"
+      ],
+      "nearest_before_qa_flags": [
+       "COLOCATED"
+      ]
+     },
+     {
+      "control_point_id": "cp02",
+      "weight": 2,
+      "before_mm": 485816,
+      "nearest_before": {
+       "kind": "source",
+       "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      },
+      "after_mm": 485816,
+      "nearest_after": {
+       "kind": "source",
+       "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp03",
+      "weight": 5,
+      "before_mm": 227122,
+      "nearest_before": {
+       "kind": "source",
+       "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      },
+      "after_mm": 227122,
+      "nearest_after": {
+       "kind": "source",
+       "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp04",
+      "weight": 3,
+      "before_mm": 539090,
+      "nearest_before": {
+       "kind": "source",
+       "id": "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      },
+      "after_mm": 539090,
+      "nearest_after": {
+       "kind": "source",
+       "id": "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp05",
+      "weight": 1,
+      "before_mm": 372251,
+      "nearest_before": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "after_mm": 372251,
+      "nearest_after": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "2264dcf0-549d-451a-b846-3f207d411e0c",
+       "c2990416-dca7-4e3a-b539-30e69cadf724",
+       "f4d6818b-1a99-43ca-8533-4c556f448919"
+      ],
+      "nearest_before_qa_flags": [
+       "COLOCATED"
+      ]
+     },
+     {
+      "control_point_id": "cp06",
+      "weight": 4,
+      "before_mm": 493190,
+      "nearest_before": {
+       "kind": "source",
+       "id": "621acb4b-a1bd-45ce-891f-c0a4634a6103"
+      },
+      "after_mm": 493190,
+      "nearest_after": {
+       "kind": "source",
+       "id": "621acb4b-a1bd-45ce-891f-c0a4634a6103"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "621acb4b-a1bd-45ce-891f-c0a4634a6103"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp07",
+      "weight": 2,
+      "before_mm": 130120,
+      "nearest_before": {
+       "kind": "source",
+       "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+      },
+      "after_mm": 130120,
+      "nearest_after": {
+       "kind": "source",
+       "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp08",
+      "weight": 5,
+      "before_mm": 182630,
+      "nearest_before": {
+       "kind": "source",
+       "id": "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      },
+      "after_mm": 182630,
+      "nearest_after": {
+       "kind": "source",
+       "id": "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp09",
+      "weight": 3,
+      "before_mm": 139612,
+      "nearest_before": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "after_mm": 139612,
+      "nearest_after": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "2264dcf0-549d-451a-b846-3f207d411e0c",
+       "c2990416-dca7-4e3a-b539-30e69cadf724",
+       "f4d6818b-1a99-43ca-8533-4c556f448919"
+      ],
+      "nearest_before_qa_flags": [
+       "COLOCATED"
+      ]
+     },
+     {
+      "control_point_id": "cp10",
+      "weight": 1,
+      "before_mm": 54477,
+      "nearest_before": {
+       "kind": "source",
+       "id": "621acb4b-a1bd-45ce-891f-c0a4634a6103"
+      },
+      "after_mm": 54477,
+      "nearest_after": {
+       "kind": "source",
+       "id": "621acb4b-a1bd-45ce-891f-c0a4634a6103"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "621acb4b-a1bd-45ce-891f-c0a4634a6103"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp11",
+      "weight": 4,
+      "before_mm": 129816,
+      "nearest_before": {
+       "kind": "source",
+       "id": "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      },
+      "after_mm": 129816,
+      "nearest_after": {
+       "kind": "source",
+       "id": "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp12",
+      "weight": 2,
+      "before_mm": 135594,
+      "nearest_before": {
+       "kind": "source",
+       "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      },
+      "after_mm": 135594,
+      "nearest_after": {
+       "kind": "source",
+       "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp13",
+      "weight": 5,
+      "before_mm": 134891,
+      "nearest_before": {
+       "kind": "source",
+       "id": "99c68068-aa6e-4ff2-af5f-455675f93313"
+      },
+      "after_mm": 134891,
+      "nearest_after": {
+       "kind": "source",
+       "id": "99c68068-aa6e-4ff2-af5f-455675f93313"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "99c68068-aa6e-4ff2-af5f-455675f93313"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp14",
+      "weight": 3,
+      "before_mm": 105413,
+      "nearest_before": {
+       "kind": "source",
+       "id": "b845d434-7da3-4755-9ae9-bb6d40fc7520"
+      },
+      "after_mm": 105413,
+      "nearest_after": {
+       "kind": "source",
+       "id": "b845d434-7da3-4755-9ae9-bb6d40fc7520"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "b845d434-7da3-4755-9ae9-bb6d40fc7520"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp15",
+      "weight": 1,
+      "before_mm": 515013,
+      "nearest_before": {
+       "kind": "source",
+       "id": "b845d434-7da3-4755-9ae9-bb6d40fc7520"
+      },
+      "after_mm": 515013,
+      "nearest_after": {
+       "kind": "source",
+       "id": "b845d434-7da3-4755-9ae9-bb6d40fc7520"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "b845d434-7da3-4755-9ae9-bb6d40fc7520"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp16",
+      "weight": 4,
+      "before_mm": 628341,
+      "nearest_before": {
+       "kind": "source",
+       "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      },
+      "after_mm": 628341,
+      "nearest_after": {
+       "kind": "source",
+       "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp_qa1",
+      "weight": 2,
+      "before_mm": 0,
+      "nearest_before": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "after_mm": 0,
+      "nearest_after": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "2264dcf0-549d-451a-b846-3f207d411e0c",
+       "c2990416-dca7-4e3a-b539-30e69cadf724",
+       "f4d6818b-1a99-43ca-8533-4c556f448919"
+      ],
+      "nearest_before_qa_flags": [
+       "COLOCATED"
+      ]
+     },
+     {
+      "control_point_id": "cp_qa2",
+      "weight": 5,
+      "before_mm": 0,
+      "nearest_before": {
+       "kind": "source",
+       "id": "50802484-b7f9-492e-8a4c-f75312fc7751"
+      },
+      "after_mm": 0,
+      "nearest_after": {
+       "kind": "source",
+       "id": "50802484-b7f9-492e-8a4c-f75312fc7751"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "50802484-b7f9-492e-8a4c-f75312fc7751",
+       "622b4786-89fa-4853-b109-18054e3ebe0d",
+       "e1b19ead-4505-4acd-8aed-9c561ceec4c0"
+      ],
+      "nearest_before_qa_flags": [
+       "COLOCATED",
+       "POSSIBLE_DUPLICATE"
+      ]
+     }
+    ],
+    "metrics": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 16004677,
+     "weighted_mean_mm": 285797.8035714286,
+     "max_mm": 869732,
+     "covered_weight": 38,
+     "coverage_fraction": 0.6785714285714286,
+     "cost": 0,
+     "selected_ids": []
+    },
+    "feasibility": {
+     "feasible": true,
+     "reasons": []
+    },
+    "baseline_records_in_category": 16
+   },
+   "c02+c03+c12": {
+    "rows": [
+     {
+      "control_point_id": "cp01",
+      "weight": 4,
+      "before_mm": 869732,
+      "nearest_before": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "after_mm": 506269,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "c02"
+      },
+      "delta_mm": 363463,
+      "tied_before_ids": [
+       "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "2264dcf0-549d-451a-b846-3f207d411e0c",
+       "c2990416-dca7-4e3a-b539-30e69cadf724",
+       "f4d6818b-1a99-43ca-8533-4c556f448919"
+      ],
+      "nearest_before_qa_flags": [
+       "COLOCATED"
+      ]
+     },
+     {
+      "control_point_id": "cp02",
+      "weight": 2,
+      "before_mm": 485816,
+      "nearest_before": {
+       "kind": "source",
+       "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      },
+      "after_mm": 83174,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "c02"
+      },
+      "delta_mm": 402642,
+      "tied_before_ids": [
+       "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp03",
+      "weight": 5,
+      "before_mm": 227122,
+      "nearest_before": {
+       "kind": "source",
+       "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      },
+      "after_mm": 83174,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "c03"
+      },
+      "delta_mm": 143948,
+      "tied_before_ids": [
+       "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp04",
+      "weight": 3,
+      "before_mm": 539090,
+      "nearest_before": {
+       "kind": "source",
+       "id": "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      },
+      "after_mm": 506269,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "c03"
+      },
+      "delta_mm": 32821,
+      "tied_before_ids": [
+       "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp05",
+      "weight": 1,
+      "before_mm": 372251,
+      "nearest_before": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "after_mm": 372251,
+      "nearest_after": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "2264dcf0-549d-451a-b846-3f207d411e0c",
+       "c2990416-dca7-4e3a-b539-30e69cadf724",
+       "f4d6818b-1a99-43ca-8533-4c556f448919"
+      ],
+      "nearest_before_qa_flags": [
+       "COLOCATED"
+      ]
+     },
+     {
+      "control_point_id": "cp06",
+      "weight": 4,
+      "before_mm": 493190,
+      "nearest_before": {
+       "kind": "source",
+       "id": "621acb4b-a1bd-45ce-891f-c0a4634a6103"
+      },
+      "after_mm": 416203,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "c02"
+      },
+      "delta_mm": 76987,
+      "tied_before_ids": [
+       "621acb4b-a1bd-45ce-891f-c0a4634a6103"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp07",
+      "weight": 2,
+      "before_mm": 130120,
+      "nearest_before": {
+       "kind": "source",
+       "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+      },
+      "after_mm": 130120,
+      "nearest_after": {
+       "kind": "source",
+       "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp08",
+      "weight": 5,
+      "before_mm": 182630,
+      "nearest_before": {
+       "kind": "source",
+       "id": "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      },
+      "after_mm": 182630,
+      "nearest_after": {
+       "kind": "source",
+       "id": "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp09",
+      "weight": 3,
+      "before_mm": 139612,
+      "nearest_before": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "after_mm": 139612,
+      "nearest_after": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "2264dcf0-549d-451a-b846-3f207d411e0c",
+       "c2990416-dca7-4e3a-b539-30e69cadf724",
+       "f4d6818b-1a99-43ca-8533-4c556f448919"
+      ],
+      "nearest_before_qa_flags": [
+       "COLOCATED"
+      ]
+     },
+     {
+      "control_point_id": "cp10",
+      "weight": 1,
+      "before_mm": 54477,
+      "nearest_before": {
+       "kind": "source",
+       "id": "621acb4b-a1bd-45ce-891f-c0a4634a6103"
+      },
+      "after_mm": 54477,
+      "nearest_after": {
+       "kind": "source",
+       "id": "621acb4b-a1bd-45ce-891f-c0a4634a6103"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "621acb4b-a1bd-45ce-891f-c0a4634a6103"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp11",
+      "weight": 4,
+      "before_mm": 129816,
+      "nearest_before": {
+       "kind": "source",
+       "id": "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      },
+      "after_mm": 129816,
+      "nearest_after": {
+       "kind": "source",
+       "id": "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp12",
+      "weight": 2,
+      "before_mm": 135594,
+      "nearest_before": {
+       "kind": "source",
+       "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      },
+      "after_mm": 135594,
+      "nearest_after": {
+       "kind": "source",
+       "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp13",
+      "weight": 5,
+      "before_mm": 134891,
+      "nearest_before": {
+       "kind": "source",
+       "id": "99c68068-aa6e-4ff2-af5f-455675f93313"
+      },
+      "after_mm": 134891,
+      "nearest_after": {
+       "kind": "source",
+       "id": "99c68068-aa6e-4ff2-af5f-455675f93313"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "99c68068-aa6e-4ff2-af5f-455675f93313"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp14",
+      "weight": 3,
+      "before_mm": 105413,
+      "nearest_before": {
+       "kind": "source",
+       "id": "b845d434-7da3-4755-9ae9-bb6d40fc7520"
+      },
+      "after_mm": 105413,
+      "nearest_after": {
+       "kind": "source",
+       "id": "b845d434-7da3-4755-9ae9-bb6d40fc7520"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "b845d434-7da3-4755-9ae9-bb6d40fc7520"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp15",
+      "weight": 1,
+      "before_mm": 515013,
+      "nearest_before": {
+       "kind": "source",
+       "id": "b845d434-7da3-4755-9ae9-bb6d40fc7520"
+      },
+      "after_mm": 506170,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "c12"
+      },
+      "delta_mm": 8843,
+      "tied_before_ids": [
+       "b845d434-7da3-4755-9ae9-bb6d40fc7520"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp16",
+      "weight": 4,
+      "before_mm": 628341,
+      "nearest_before": {
+       "kind": "source",
+       "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      },
+      "after_mm": 83174,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "c12"
+      },
+      "delta_mm": 545167,
+      "tied_before_ids": [
+       "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp_qa1",
+      "weight": 2,
+      "before_mm": 0,
+      "nearest_before": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "after_mm": 0,
+      "nearest_after": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "2264dcf0-549d-451a-b846-3f207d411e0c",
+       "c2990416-dca7-4e3a-b539-30e69cadf724",
+       "f4d6818b-1a99-43ca-8533-4c556f448919"
+      ],
+      "nearest_before_qa_flags": [
+       "COLOCATED"
+      ]
+     },
+     {
+      "control_point_id": "cp_qa2",
+      "weight": 5,
+      "before_mm": 0,
+      "nearest_before": {
+       "kind": "source",
+       "id": "50802484-b7f9-492e-8a4c-f75312fc7751"
+      },
+      "after_mm": 0,
+      "nearest_after": {
+       "kind": "source",
+       "id": "50802484-b7f9-492e-8a4c-f75312fc7751"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "50802484-b7f9-492e-8a4c-f75312fc7751",
+       "622b4786-89fa-4853-b109-18054e3ebe0d",
+       "e1b19ead-4505-4acd-8aed-9c561ceec4c0"
+      ],
+      "nearest_before_qa_flags": [
+       "COLOCATED",
+       "POSSIBLE_DUPLICATE"
+      ]
+     }
+    ],
+    "metrics": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 10429879,
+     "weighted_mean_mm": 186247.8392857143,
+     "max_mm": 506269,
+     "covered_weight": 44,
+     "coverage_fraction": 0.7857142857142857,
+     "cost": 700,
+     "selected_ids": [
+      "c02",
+      "c03",
+      "c12"
+     ]
+    },
+    "feasibility": {
+     "feasible": true,
+     "reasons": []
+    },
+    "baseline_records_in_category": 16
+   },
+   "c01+c12": {
+    "rows": [
+     {
+      "control_point_id": "cp01",
+      "weight": 4,
+      "before_mm": 869732,
+      "nearest_before": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "after_mm": 83174,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "c01"
+      },
+      "delta_mm": 786558,
+      "tied_before_ids": [
+       "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "2264dcf0-549d-451a-b846-3f207d411e0c",
+       "c2990416-dca7-4e3a-b539-30e69cadf724",
+       "f4d6818b-1a99-43ca-8533-4c556f448919"
+      ],
+      "nearest_before_qa_flags": [
+       "COLOCATED"
+      ]
+     },
+     {
+      "control_point_id": "cp02",
+      "weight": 2,
+      "before_mm": 485816,
+      "nearest_before": {
+       "kind": "source",
+       "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      },
+      "after_mm": 485816,
+      "nearest_after": {
+       "kind": "source",
+       "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp03",
+      "weight": 5,
+      "before_mm": 227122,
+      "nearest_before": {
+       "kind": "source",
+       "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      },
+      "after_mm": 227122,
+      "nearest_after": {
+       "kind": "source",
+       "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp04",
+      "weight": 3,
+      "before_mm": 539090,
+      "nearest_before": {
+       "kind": "source",
+       "id": "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      },
+      "after_mm": 539090,
+      "nearest_after": {
+       "kind": "source",
+       "id": "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp05",
+      "weight": 1,
+      "before_mm": 372251,
+      "nearest_before": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "after_mm": 372251,
+      "nearest_after": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "2264dcf0-549d-451a-b846-3f207d411e0c",
+       "c2990416-dca7-4e3a-b539-30e69cadf724",
+       "f4d6818b-1a99-43ca-8533-4c556f448919"
+      ],
+      "nearest_before_qa_flags": [
+       "COLOCATED"
+      ]
+     },
+     {
+      "control_point_id": "cp06",
+      "weight": 4,
+      "before_mm": 493190,
+      "nearest_before": {
+       "kind": "source",
+       "id": "621acb4b-a1bd-45ce-891f-c0a4634a6103"
+      },
+      "after_mm": 493190,
+      "nearest_after": {
+       "kind": "source",
+       "id": "621acb4b-a1bd-45ce-891f-c0a4634a6103"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "621acb4b-a1bd-45ce-891f-c0a4634a6103"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp07",
+      "weight": 2,
+      "before_mm": 130120,
+      "nearest_before": {
+       "kind": "source",
+       "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+      },
+      "after_mm": 130120,
+      "nearest_after": {
+       "kind": "source",
+       "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp08",
+      "weight": 5,
+      "before_mm": 182630,
+      "nearest_before": {
+       "kind": "source",
+       "id": "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      },
+      "after_mm": 182630,
+      "nearest_after": {
+       "kind": "source",
+       "id": "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp09",
+      "weight": 3,
+      "before_mm": 139612,
+      "nearest_before": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "after_mm": 139612,
+      "nearest_after": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "2264dcf0-549d-451a-b846-3f207d411e0c",
+       "c2990416-dca7-4e3a-b539-30e69cadf724",
+       "f4d6818b-1a99-43ca-8533-4c556f448919"
+      ],
+      "nearest_before_qa_flags": [
+       "COLOCATED"
+      ]
+     },
+     {
+      "control_point_id": "cp10",
+      "weight": 1,
+      "before_mm": 54477,
+      "nearest_before": {
+       "kind": "source",
+       "id": "621acb4b-a1bd-45ce-891f-c0a4634a6103"
+      },
+      "after_mm": 54477,
+      "nearest_after": {
+       "kind": "source",
+       "id": "621acb4b-a1bd-45ce-891f-c0a4634a6103"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "621acb4b-a1bd-45ce-891f-c0a4634a6103"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp11",
+      "weight": 4,
+      "before_mm": 129816,
+      "nearest_before": {
+       "kind": "source",
+       "id": "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      },
+      "after_mm": 129816,
+      "nearest_after": {
+       "kind": "source",
+       "id": "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp12",
+      "weight": 2,
+      "before_mm": 135594,
+      "nearest_before": {
+       "kind": "source",
+       "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      },
+      "after_mm": 135594,
+      "nearest_after": {
+       "kind": "source",
+       "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp13",
+      "weight": 5,
+      "before_mm": 134891,
+      "nearest_before": {
+       "kind": "source",
+       "id": "99c68068-aa6e-4ff2-af5f-455675f93313"
+      },
+      "after_mm": 134891,
+      "nearest_after": {
+       "kind": "source",
+       "id": "99c68068-aa6e-4ff2-af5f-455675f93313"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "99c68068-aa6e-4ff2-af5f-455675f93313"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp14",
+      "weight": 3,
+      "before_mm": 105413,
+      "nearest_before": {
+       "kind": "source",
+       "id": "b845d434-7da3-4755-9ae9-bb6d40fc7520"
+      },
+      "after_mm": 105413,
+      "nearest_after": {
+       "kind": "source",
+       "id": "b845d434-7da3-4755-9ae9-bb6d40fc7520"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "b845d434-7da3-4755-9ae9-bb6d40fc7520"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp15",
+      "weight": 1,
+      "before_mm": 515013,
+      "nearest_before": {
+       "kind": "source",
+       "id": "b845d434-7da3-4755-9ae9-bb6d40fc7520"
+      },
+      "after_mm": 506170,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "c12"
+      },
+      "delta_mm": 8843,
+      "tied_before_ids": [
+       "b845d434-7da3-4755-9ae9-bb6d40fc7520"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp16",
+      "weight": 4,
+      "before_mm": 628341,
+      "nearest_before": {
+       "kind": "source",
+       "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      },
+      "after_mm": 83174,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "c12"
+      },
+      "delta_mm": 545167,
+      "tied_before_ids": [
+       "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp_qa1",
+      "weight": 2,
+      "before_mm": 0,
+      "nearest_before": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "after_mm": 0,
+      "nearest_after": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "2264dcf0-549d-451a-b846-3f207d411e0c",
+       "c2990416-dca7-4e3a-b539-30e69cadf724",
+       "f4d6818b-1a99-43ca-8533-4c556f448919"
+      ],
+      "nearest_before_qa_flags": [
+       "COLOCATED"
+      ]
+     },
+     {
+      "control_point_id": "cp_qa2",
+      "weight": 5,
+      "before_mm": 0,
+      "nearest_before": {
+       "kind": "source",
+       "id": "50802484-b7f9-492e-8a4c-f75312fc7751"
+      },
+      "after_mm": 0,
+      "nearest_after": {
+       "kind": "source",
+       "id": "50802484-b7f9-492e-8a4c-f75312fc7751"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "50802484-b7f9-492e-8a4c-f75312fc7751",
+       "622b4786-89fa-4853-b109-18054e3ebe0d",
+       "e1b19ead-4505-4acd-8aed-9c561ceec4c0"
+      ],
+      "nearest_before_qa_flags": [
+       "COLOCATED",
+       "POSSIBLE_DUPLICATE"
+      ]
+     }
+    ],
+    "metrics": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 10668934,
+     "weighted_mean_mm": 190516.67857142858,
+     "max_mm": 539090,
+     "covered_weight": 46,
+     "coverage_fraction": 0.8214285714285714,
+     "cost": 650,
+     "selected_ids": [
+      "c01",
+      "c12"
+     ]
+    },
+    "feasibility": {
+     "feasible": true,
+     "reasons": []
+    },
+    "baseline_records_in_category": 16
+   }
+  }
+ },
+ "observations": {
+  "status": "optimal",
+  "evaluated": 299,
+  "feasible_count": 143,
+  "pareto_points": 10,
+  "winners": {
+   "mean": "c02+c03+c12",
+   "minimax": "c02+c03+c12",
+   "coverage": "c01+c12"
+  },
+  "objectives_agree": false,
+  "distinct_winner_sets": 2,
+  "differing_pairs": [
+   "coverage/mean",
+   "coverage/minimax"
+  ],
+  "sensitivity": [
+   {
+    "budget": 0,
+    "status": "optimal",
+    "mean": "(empty)"
+   },
+   {
+    "budget": 350,
+    "status": "optimal",
+    "mean": "c01"
+   },
+   {
+    "budget": 700,
+    "status": "optimal",
+    "mean": "c02+c03+c12"
+   }
+  ]
+ },
+ "does_not_claim": [
+  "costs are not real prices or an estimate",
+  "weights are not population",
+  "the optimum is only among the entered candidates, not the best plan for the city",
+  "straight-line distance in this slice only; no walking time, capacity or social benefit"
+ ],
+ "qa_note": "a QA flag is a reason to check a record, not proof of an error; the record stays in the slice",
+ "qa_groups": [
+  {
+   "lon": 69.5958,
+   "lat": 42.3167,
+   "size": 10,
+   "of_category": [
+    "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+    "2264dcf0-549d-451a-b846-3f207d411e0c",
+    "c2990416-dca7-4e3a-b539-30e69cadf724",
+    "f4d6818b-1a99-43ca-8533-4c556f448919"
+   ]
+  },
+  {
+   "lon": 69.60702,
+   "lat": 42.31757,
+   "size": 4,
+   "of_category": [
+    "50802484-b7f9-492e-8a4c-f75312fc7751",
+    "622b4786-89fa-4853-b109-18054e3ebe0d",
+    "e1b19ead-4505-4acd-8aed-9c561ceec4c0"
+   ]
+  }
+ ]
+}

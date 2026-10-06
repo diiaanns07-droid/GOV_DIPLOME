@@ -1,0 +1,1196 @@
+{
+ "pack_format": "k10-plan-pack-v1",
+ "pack_id": "shymkent-outpatient_clinic-conflict-count",
+ "kind": "real_slice",
+ "stage": 2,
+ "purpose": "conflict: 4 required candidates, max_selected 3",
+ "city_id": "shymkent",
+ "category": "outpatient_clinic",
+ "synthetic_parts": [
+  "control_points (positions by rule, weights)",
+  "candidates (positions by rule, costs)",
+  "budget",
+  "max_selected",
+  "coverage_radius_m",
+  "required_ids",
+  "excluded_ids",
+  "selected_ids"
+ ],
+ "rules": {
+  "fixed_before_computing": true,
+  "coordinates": "bbox fractions (x = share of lon span, y = share of lat span), rounded to 6 decimals",
+  "control_points": "cp01..cp16: 4x4 grid, x=(i+0.5)/4, y=(j+0.5)/4, row j outer (south to north), i inner (west to east)",
+  "weights": "SYNTHETIC: cp k (1-based) weight = 1 + ((3*k) mod 5); a user priority, not residents",
+  "candidates": "c01..c12: x in (1/8,3/8,5/8,7/8) inner, y in (1/6,1/2,5/6) outer; kind=hypothetical",
+  "costs": "SYNTHETIC conditional units: candidate k cost = 100 + 50*((5*k) mod 7); not tenge, not an estimate",
+  "base": "budget 700, max_selected 3, coverage_radius_m 400 (analysis parameter, not a walking norm), required [], excluded [], selected_ids [c06, c07] (the two candidates nearest the bbox centre)",
+  "conflict_count": "base, required [c01,c02,c03,c04], max_selected 3, budget 1000000 (only the count conflicts)"
+ },
+ "provenance": {
+  "build_branch": "claude/beautiful-clarke-sbzomj",
+  "build_commit": "a5b5e2ddbe087c4eab8e947748cdf69dbae84a0d",
+  "app_path": "prototypes/city-evidence",
+  "data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "evidence_js_sha256": "df736e986145da33dee60f692e020486720b72db5b6116af31640cc8693b11b9",
+  "places_social_file": "inputs/k10/data/shymkent/places_social.geojson",
+  "places_social_sha256": "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7",
+  "release": "2026-09-23.1",
+  "bbox": [
+   69.593365,
+   42.306645,
+   69.617658,
+   42.324611
+  ],
+  "source_snapshot": "sha256:a9326b5633c513c0bfeccbb2248b26cf3b706c902f77745073a2959ad8d7ff3e",
+  "snapshot_components": [
+   "city-plan-v2",
+   "shymkent",
+   "2026-09-23.1",
+   "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7",
+   "30b0b9678bd5d903232e1c820f2c65a5faad7ffc9020fff3f2ed8c591f591e0f",
+   "haversine-mm-v1"
+  ],
+  "snapshot_format": "plan-v2: web/plan.js sourceSnapshot (BUILD 60f44d9)",
+  "whatif_v1_snapshot_same_slice": "sha256:282cf187523d8b990ac9bfde69ba43763248aa9b49007149a094ccc81bd36ec2",
+  "upstream": "Overture Maps places 2026-09-23.1 via K10 package (round-3 results); not re-downloaded"
+ },
+ "source_copy": {
+  "category_records": [
+   {
+    "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+    "lon": 69.5958,
+    "lat": 42.3167,
+    "group": "outpatient_clinic",
+    "name": "Dr.Sattarkulovich",
+    "qa_flags": [
+     "COLOCATED"
+    ]
+   },
+   {
+    "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f",
+    "lon": 69.607757,
+    "lat": 42.306934,
+    "group": "outpatient_clinic",
+    "name": "Пространство Где Всё Возможно",
+    "qa_flags": []
+   },
+   {
+    "id": "2264dcf0-549d-451a-b846-3f207d411e0c",
+    "lon": 69.5958,
+    "lat": 42.3167,
+    "group": "outpatient_clinic",
+    "name": "Сункар",
+    "qa_flags": [
+     "COLOCATED"
+    ]
+   },
+   {
+    "id": "50802484-b7f9-492e-8a4c-f75312fc7751",
+    "lon": 69.60702,
+    "lat": 42.31757,
+    "group": "outpatient_clinic",
+    "name": "Kosmetolog Жазира",
+    "qa_flags": [
+     "COLOCATED",
+     "POSSIBLE_DUPLICATE"
+    ]
+   },
+   {
+    "id": "621acb4b-a1bd-45ce-891f-c0a4634a6103",
+    "lon": 69.601822,
+    "lat": 42.317791,
+    "group": "outpatient_clinic",
+    "name": "MasterDent",
+    "qa_flags": []
+   },
+   {
+    "id": "622b4786-89fa-4853-b109-18054e3ebe0d",
+    "lon": 69.60702,
+    "lat": 42.31757,
+    "group": "outpatient_clinic",
+    "name": "Aza Бизнес Страница Шымкент",
+    "qa_flags": [
+     "CATEGORY_DOUBT",
+     "COLOCATED",
+     "POSSIBLE_DUPLICATE"
+    ]
+   },
+   {
+    "id": "6e92676a-1297-446d-9956-731023da6339",
+    "lon": 69.59527,
+    "lat": 42.32423,
+    "group": "outpatient_clinic",
+    "name": "Стомотология",
+    "qa_flags": []
+   },
+   {
+    "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60",
+    "lon": 69.609396,
+    "lat": 42.31437,
+    "group": "outpatient_clinic",
+    "name": "Easy Health Shymkent",
+    "qa_flags": []
+   },
+   {
+    "id": "833280f2-ff82-4dd6-a174-d2a9203420fa",
+    "lon": 69.60702,
+    "lat": 42.31758,
+    "group": "outpatient_clinic",
+    "name": "ИП Ауелбекова Р.И.",
+    "qa_flags": []
+   },
+   {
+    "id": "99c68068-aa6e-4ff2-af5f-455675f93313",
+    "lon": 69.59586,
+    "lat": 42.32122,
+    "group": "outpatient_clinic",
+    "name": "MicoOne Orthodontics Kazakhstan",
+    "qa_flags": []
+   },
+   {
+    "id": "a10bb8cf-c446-4066-9cda-a5befa189a60",
+    "lon": 69.61684,
+    "lat": 42.313453,
+    "group": "outpatient_clinic",
+    "name": "ProfMedService",
+    "qa_flags": []
+   },
+   {
+    "id": "b845d434-7da3-4755-9ae9-bb6d40fc7520",
+    "lon": 69.602416,
+    "lat": 42.323312,
+    "group": "outpatient_clinic",
+    "name": "Стоматологическая клиника Диастом",
+    "qa_flags": []
+   },
+   {
+    "id": "c2990416-dca7-4e3a-b539-30e69cadf724",
+    "lon": 69.5958,
+    "lat": 42.3167,
+    "group": "outpatient_clinic",
+    "name": "Джафар Стоматология",
+    "qa_flags": [
+     "COLOCATED"
+    ]
+   },
+   {
+    "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354",
+    "lon": 69.615192,
+    "lat": 42.31673,
+    "group": "outpatient_clinic",
+    "name": "Atlant Clinic",
+    "qa_flags": []
+   },
+   {
+    "id": "e1b19ead-4505-4acd-8aed-9c561ceec4c0",
+    "lon": 69.60702,
+    "lat": 42.31757,
+    "group": "outpatient_clinic",
+    "name": "АССОР",
+    "qa_flags": [
+     "COLOCATED"
+    ]
+   },
+   {
+    "id": "f4d6818b-1a99-43ca-8533-4c556f448919",
+    "lon": 69.5958,
+    "lat": 42.3167,
+    "group": "outpatient_clinic",
+    "name": "Стоматологическое оборудование",
+    "qa_flags": [
+     "COLOCATED"
+    ]
+   }
+  ],
+  "note": "read-only copy of web/data.js records of this category; the source records are never modified"
+ },
+ "scenario": {
+  "schema_version": "city-plan-v2",
+  "city_id": "shymkent",
+  "source_snapshot": "sha256:a9326b5633c513c0bfeccbb2248b26cf3b706c902f77745073a2959ad8d7ff3e",
+  "category": "outpatient_clinic",
+  "control_points": [
+   {
+    "id": "cp01",
+    "lon": 69.596402,
+    "lat": 42.308891,
+    "weight": 4
+   },
+   {
+    "id": "cp02",
+    "lon": 69.602475,
+    "lat": 42.308891,
+    "weight": 2
+   },
+   {
+    "id": "cp03",
+    "lon": 69.608548,
+    "lat": 42.308891,
+    "weight": 5
+   },
+   {
+    "id": "cp04",
+    "lon": 69.614621,
+    "lat": 42.308891,
+    "weight": 3
+   },
+   {
+    "id": "cp05",
+    "lon": 69.596402,
+    "lat": 42.313382,
+    "weight": 1
+   },
+   {
+    "id": "cp06",
+    "lon": 69.602475,
+    "lat": 42.313382,
+    "weight": 4
+   },
+   {
+    "id": "cp07",
+    "lon": 69.608548,
+    "lat": 42.313382,
+    "weight": 2
+   },
+   {
+    "id": "cp08",
+    "lon": 69.614621,
+    "lat": 42.313382,
+    "weight": 5
+   },
+   {
+    "id": "cp09",
+    "lon": 69.596402,
+    "lat": 42.317874,
+    "weight": 3
+   },
+   {
+    "id": "cp10",
+    "lon": 69.602475,
+    "lat": 42.317874,
+    "weight": 1
+   },
+   {
+    "id": "cp11",
+    "lon": 69.608548,
+    "lat": 42.317874,
+    "weight": 4
+   },
+   {
+    "id": "cp12",
+    "lon": 69.614621,
+    "lat": 42.317874,
+    "weight": 2
+   },
+   {
+    "id": "cp13",
+    "lon": 69.596402,
+    "lat": 42.322365,
+    "weight": 5
+   },
+   {
+    "id": "cp14",
+    "lon": 69.602475,
+    "lat": 42.322365,
+    "weight": 3
+   },
+   {
+    "id": "cp15",
+    "lon": 69.608548,
+    "lat": 42.322365,
+    "weight": 1
+   },
+   {
+    "id": "cp16",
+    "lon": 69.614621,
+    "lat": 42.322365,
+    "weight": 4
+   }
+  ],
+  "candidates": [
+   {
+    "id": "c01",
+    "lon": 69.596402,
+    "lat": 42.309639,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 350
+   },
+   {
+    "id": "c02",
+    "lon": 69.602475,
+    "lat": 42.309639,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 250
+   },
+   {
+    "id": "c03",
+    "lon": 69.608548,
+    "lat": 42.309639,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 150
+   },
+   {
+    "id": "c04",
+    "lon": 69.614621,
+    "lat": 42.309639,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 400
+   },
+   {
+    "id": "c05",
+    "lon": 69.596402,
+    "lat": 42.315628,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 300
+   },
+   {
+    "id": "c06",
+    "lon": 69.602475,
+    "lat": 42.315628,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 200
+   },
+   {
+    "id": "c07",
+    "lon": 69.608548,
+    "lat": 42.315628,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 100
+   },
+   {
+    "id": "c08",
+    "lon": 69.614621,
+    "lat": 42.315628,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 350
+   },
+   {
+    "id": "c09",
+    "lon": 69.596402,
+    "lat": 42.321617,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 250
+   },
+   {
+    "id": "c10",
+    "lon": 69.602475,
+    "lat": 42.321617,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 150
+   },
+   {
+    "id": "c11",
+    "lon": 69.608548,
+    "lat": 42.321617,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 400
+   },
+   {
+    "id": "c12",
+    "lon": 69.614621,
+    "lat": 42.321617,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 300
+   }
+  ],
+  "budget": 1000000,
+  "max_selected": 3,
+  "coverage_radius_m": 400,
+  "required_ids": [
+   "c01",
+   "c02",
+   "c03",
+   "c04"
+  ],
+  "excluded_ids": [],
+  "selected_ids": [
+   "c01",
+   "c02",
+   "c03",
+   "c04"
+  ]
+ },
+ "expected": {
+  "generated_by": "k10plan.oracle",
+  "metric_version": "haversine-mm-v1",
+  "validation": "accepted",
+  "problem_digest": "sha256:3673932a097cf73b963431d0689335b6c000367d224ca3bc56973b05b30d404b",
+  "scenario_digest": "sha256:8f884049b6a2af80fd7bc666a06db2bae880e2325f741841308aee44fa59b82d",
+  "optimize": {
+   "status": "infeasible",
+   "metric_version": "haversine-mm-v1",
+   "problem_digest": "sha256:3673932a097cf73b963431d0689335b6c000367d224ca3bc56973b05b30d404b",
+   "evaluated": 0,
+   "feasible_count": 0,
+   "candidate_count": 12,
+   "objectives": null,
+   "pareto": [],
+   "pareto_note": null,
+   "infeasible_reasons": [
+    "required_count_exceeds_max_selected"
+   ],
+   "sensitivity": [
+    {
+     "budget": 0,
+     "status": "infeasible",
+     "objectives": {},
+     "infeasible_reasons": [
+      "required_count_exceeds_max_selected",
+      "required_cost_exceeds_budget"
+     ]
+    },
+    {
+     "budget": 500000,
+     "status": "infeasible",
+     "objectives": {},
+     "infeasible_reasons": [
+      "required_count_exceeds_max_selected"
+     ]
+    },
+    {
+     "budget": 1000000,
+     "status": "infeasible",
+     "objectives": {},
+     "infeasible_reasons": [
+      "required_count_exceeds_max_selected"
+     ]
+    }
+   ]
+  },
+  "plan_refs": {
+   "manual": "c01+c02+c03+c04",
+   "baseline": "(empty)"
+  },
+  "plans": {
+   "c01+c02+c03+c04": {
+    "rows": [
+     {
+      "control_point_id": "cp01",
+      "weight": 4,
+      "before_mm": 869732,
+      "nearest_before": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "after_mm": 83174,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "c01"
+      },
+      "delta_mm": 786558,
+      "tied_before_ids": [
+       "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "2264dcf0-549d-451a-b846-3f207d411e0c",
+       "c2990416-dca7-4e3a-b539-30e69cadf724",
+       "f4d6818b-1a99-43ca-8533-4c556f448919"
+      ],
+      "nearest_before_qa_flags": [
+       "COLOCATED"
+      ]
+     },
+     {
+      "control_point_id": "cp02",
+      "weight": 2,
+      "before_mm": 485816,
+      "nearest_before": {
+       "kind": "source",
+       "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      },
+      "after_mm": 83174,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "c02"
+      },
+      "delta_mm": 402642,
+      "tied_before_ids": [
+       "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp03",
+      "weight": 5,
+      "before_mm": 227122,
+      "nearest_before": {
+       "kind": "source",
+       "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      },
+      "after_mm": 83174,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "c03"
+      },
+      "delta_mm": 143948,
+      "tied_before_ids": [
+       "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp04",
+      "weight": 3,
+      "before_mm": 539090,
+      "nearest_before": {
+       "kind": "source",
+       "id": "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      },
+      "after_mm": 83174,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "c04"
+      },
+      "delta_mm": 455916,
+      "tied_before_ids": [
+       "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp05",
+      "weight": 1,
+      "before_mm": 372251,
+      "nearest_before": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "after_mm": 372251,
+      "nearest_after": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "2264dcf0-549d-451a-b846-3f207d411e0c",
+       "c2990416-dca7-4e3a-b539-30e69cadf724",
+       "f4d6818b-1a99-43ca-8533-4c556f448919"
+      ],
+      "nearest_before_qa_flags": [
+       "COLOCATED"
+      ]
+     },
+     {
+      "control_point_id": "cp06",
+      "weight": 4,
+      "before_mm": 493190,
+      "nearest_before": {
+       "kind": "source",
+       "id": "621acb4b-a1bd-45ce-891f-c0a4634a6103"
+      },
+      "after_mm": 416203,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "c02"
+      },
+      "delta_mm": 76987,
+      "tied_before_ids": [
+       "621acb4b-a1bd-45ce-891f-c0a4634a6103"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp07",
+      "weight": 2,
+      "before_mm": 130120,
+      "nearest_before": {
+       "kind": "source",
+       "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+      },
+      "after_mm": 130120,
+      "nearest_after": {
+       "kind": "source",
+       "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp08",
+      "weight": 5,
+      "before_mm": 182630,
+      "nearest_before": {
+       "kind": "source",
+       "id": "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      },
+      "after_mm": 182630,
+      "nearest_after": {
+       "kind": "source",
+       "id": "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp09",
+      "weight": 3,
+      "before_mm": 139612,
+      "nearest_before": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "after_mm": 139612,
+      "nearest_after": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "2264dcf0-549d-451a-b846-3f207d411e0c",
+       "c2990416-dca7-4e3a-b539-30e69cadf724",
+       "f4d6818b-1a99-43ca-8533-4c556f448919"
+      ],
+      "nearest_before_qa_flags": [
+       "COLOCATED"
+      ]
+     },
+     {
+      "control_point_id": "cp10",
+      "weight": 1,
+      "before_mm": 54477,
+      "nearest_before": {
+       "kind": "source",
+       "id": "621acb4b-a1bd-45ce-891f-c0a4634a6103"
+      },
+      "after_mm": 54477,
+      "nearest_after": {
+       "kind": "source",
+       "id": "621acb4b-a1bd-45ce-891f-c0a4634a6103"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "621acb4b-a1bd-45ce-891f-c0a4634a6103"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp11",
+      "weight": 4,
+      "before_mm": 129816,
+      "nearest_before": {
+       "kind": "source",
+       "id": "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      },
+      "after_mm": 129816,
+      "nearest_after": {
+       "kind": "source",
+       "id": "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp12",
+      "weight": 2,
+      "before_mm": 135594,
+      "nearest_before": {
+       "kind": "source",
+       "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      },
+      "after_mm": 135594,
+      "nearest_after": {
+       "kind": "source",
+       "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp13",
+      "weight": 5,
+      "before_mm": 134891,
+      "nearest_before": {
+       "kind": "source",
+       "id": "99c68068-aa6e-4ff2-af5f-455675f93313"
+      },
+      "after_mm": 134891,
+      "nearest_after": {
+       "kind": "source",
+       "id": "99c68068-aa6e-4ff2-af5f-455675f93313"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "99c68068-aa6e-4ff2-af5f-455675f93313"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp14",
+      "weight": 3,
+      "before_mm": 105413,
+      "nearest_before": {
+       "kind": "source",
+       "id": "b845d434-7da3-4755-9ae9-bb6d40fc7520"
+      },
+      "after_mm": 105413,
+      "nearest_after": {
+       "kind": "source",
+       "id": "b845d434-7da3-4755-9ae9-bb6d40fc7520"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "b845d434-7da3-4755-9ae9-bb6d40fc7520"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp15",
+      "weight": 1,
+      "before_mm": 515013,
+      "nearest_before": {
+       "kind": "source",
+       "id": "b845d434-7da3-4755-9ae9-bb6d40fc7520"
+      },
+      "after_mm": 515013,
+      "nearest_after": {
+       "kind": "source",
+       "id": "b845d434-7da3-4755-9ae9-bb6d40fc7520"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "b845d434-7da3-4755-9ae9-bb6d40fc7520"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp16",
+      "weight": 4,
+      "before_mm": 628341,
+      "nearest_before": {
+       "kind": "source",
+       "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      },
+      "after_mm": 628341,
+      "nearest_after": {
+       "kind": "source",
+       "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      ],
+      "nearest_before_qa_flags": []
+     }
+    ],
+    "metrics": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 9657725,
+     "weighted_mean_mm": 197096.42857142858,
+     "max_mm": 628341,
+     "covered_weight": 40,
+     "coverage_fraction": 0.8163265306122449,
+     "cost": 1150,
+     "selected_ids": [
+      "c01",
+      "c02",
+      "c03",
+      "c04"
+     ]
+    },
+    "feasibility": {
+     "feasible": false,
+     "reasons": [
+      "count_exceeds_max_selected"
+     ]
+    },
+    "baseline_records_in_category": 16
+   },
+   "(empty)": {
+    "rows": [
+     {
+      "control_point_id": "cp01",
+      "weight": 4,
+      "before_mm": 869732,
+      "nearest_before": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "after_mm": 869732,
+      "nearest_after": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "2264dcf0-549d-451a-b846-3f207d411e0c",
+       "c2990416-dca7-4e3a-b539-30e69cadf724",
+       "f4d6818b-1a99-43ca-8533-4c556f448919"
+      ],
+      "nearest_before_qa_flags": [
+       "COLOCATED"
+      ]
+     },
+     {
+      "control_point_id": "cp02",
+      "weight": 2,
+      "before_mm": 485816,
+      "nearest_before": {
+       "kind": "source",
+       "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      },
+      "after_mm": 485816,
+      "nearest_after": {
+       "kind": "source",
+       "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp03",
+      "weight": 5,
+      "before_mm": 227122,
+      "nearest_before": {
+       "kind": "source",
+       "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      },
+      "after_mm": 227122,
+      "nearest_after": {
+       "kind": "source",
+       "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp04",
+      "weight": 3,
+      "before_mm": 539090,
+      "nearest_before": {
+       "kind": "source",
+       "id": "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      },
+      "after_mm": 539090,
+      "nearest_after": {
+       "kind": "source",
+       "id": "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp05",
+      "weight": 1,
+      "before_mm": 372251,
+      "nearest_before": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "after_mm": 372251,
+      "nearest_after": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "2264dcf0-549d-451a-b846-3f207d411e0c",
+       "c2990416-dca7-4e3a-b539-30e69cadf724",
+       "f4d6818b-1a99-43ca-8533-4c556f448919"
+      ],
+      "nearest_before_qa_flags": [
+       "COLOCATED"
+      ]
+     },
+     {
+      "control_point_id": "cp06",
+      "weight": 4,
+      "before_mm": 493190,
+      "nearest_before": {
+       "kind": "source",
+       "id": "621acb4b-a1bd-45ce-891f-c0a4634a6103"
+      },
+      "after_mm": 493190,
+      "nearest_after": {
+       "kind": "source",
+       "id": "621acb4b-a1bd-45ce-891f-c0a4634a6103"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "621acb4b-a1bd-45ce-891f-c0a4634a6103"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp07",
+      "weight": 2,
+      "before_mm": 130120,
+      "nearest_before": {
+       "kind": "source",
+       "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+      },
+      "after_mm": 130120,
+      "nearest_after": {
+       "kind": "source",
+       "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp08",
+      "weight": 5,
+      "before_mm": 182630,
+      "nearest_before": {
+       "kind": "source",
+       "id": "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      },
+      "after_mm": 182630,
+      "nearest_after": {
+       "kind": "source",
+       "id": "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp09",
+      "weight": 3,
+      "before_mm": 139612,
+      "nearest_before": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "after_mm": 139612,
+      "nearest_after": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "2264dcf0-549d-451a-b846-3f207d411e0c",
+       "c2990416-dca7-4e3a-b539-30e69cadf724",
+       "f4d6818b-1a99-43ca-8533-4c556f448919"
+      ],
+      "nearest_before_qa_flags": [
+       "COLOCATED"
+      ]
+     },
+     {
+      "control_point_id": "cp10",
+      "weight": 1,
+      "before_mm": 54477,
+      "nearest_before": {
+       "kind": "source",
+       "id": "621acb4b-a1bd-45ce-891f-c0a4634a6103"
+      },
+      "after_mm": 54477,
+      "nearest_after": {
+       "kind": "source",
+       "id": "621acb4b-a1bd-45ce-891f-c0a4634a6103"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "621acb4b-a1bd-45ce-891f-c0a4634a6103"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp11",
+      "weight": 4,
+      "before_mm": 129816,
+      "nearest_before": {
+       "kind": "source",
+       "id": "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      },
+      "after_mm": 129816,
+      "nearest_after": {
+       "kind": "source",
+       "id": "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp12",
+      "weight": 2,
+      "before_mm": 135594,
+      "nearest_before": {
+       "kind": "source",
+       "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      },
+      "after_mm": 135594,
+      "nearest_after": {
+       "kind": "source",
+       "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp13",
+      "weight": 5,
+      "before_mm": 134891,
+      "nearest_before": {
+       "kind": "source",
+       "id": "99c68068-aa6e-4ff2-af5f-455675f93313"
+      },
+      "after_mm": 134891,
+      "nearest_after": {
+       "kind": "source",
+       "id": "99c68068-aa6e-4ff2-af5f-455675f93313"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "99c68068-aa6e-4ff2-af5f-455675f93313"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp14",
+      "weight": 3,
+      "before_mm": 105413,
+      "nearest_before": {
+       "kind": "source",
+       "id": "b845d434-7da3-4755-9ae9-bb6d40fc7520"
+      },
+      "after_mm": 105413,
+      "nearest_after": {
+       "kind": "source",
+       "id": "b845d434-7da3-4755-9ae9-bb6d40fc7520"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "b845d434-7da3-4755-9ae9-bb6d40fc7520"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp15",
+      "weight": 1,
+      "before_mm": 515013,
+      "nearest_before": {
+       "kind": "source",
+       "id": "b845d434-7da3-4755-9ae9-bb6d40fc7520"
+      },
+      "after_mm": 515013,
+      "nearest_after": {
+       "kind": "source",
+       "id": "b845d434-7da3-4755-9ae9-bb6d40fc7520"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "b845d434-7da3-4755-9ae9-bb6d40fc7520"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "cp16",
+      "weight": 4,
+      "before_mm": 628341,
+      "nearest_before": {
+       "kind": "source",
+       "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      },
+      "after_mm": 628341,
+      "nearest_after": {
+       "kind": "source",
+       "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      ],
+      "nearest_before_qa_flags": []
+     }
+    ],
+    "metrics": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 16004677,
+     "weighted_mean_mm": 326626.0612244898,
+     "max_mm": 869732,
+     "covered_weight": 31,
+     "coverage_fraction": 0.6326530612244898,
+     "cost": 0,
+     "selected_ids": []
+    },
+    "feasibility": {
+     "feasible": false,
+     "reasons": [
+      "required_missing"
+     ]
+    },
+    "baseline_records_in_category": 16
+   }
+  }
+ },
+ "observations": {
+  "status": "infeasible",
+  "evaluated": 0,
+  "feasible_count": 0,
+  "pareto_points": 0,
+  "infeasible_reasons": [
+   "required_count_exceeds_max_selected"
+  ],
+  "sensitivity": [
+   {
+    "budget": 0,
+    "status": "infeasible",
+    "mean": null
+   },
+   {
+    "budget": 500000,
+    "status": "infeasible",
+    "mean": null
+   },
+   {
+    "budget": 1000000,
+    "status": "infeasible",
+    "mean": null
+   }
+  ]
+ },
+ "does_not_claim": [
+  "costs are not real prices or an estimate",
+  "weights are not population",
+  "the optimum is only among the entered candidates, not the best plan for the city",
+  "straight-line distance in this slice only; no walking time, capacity or social benefit"
+ ]
+}

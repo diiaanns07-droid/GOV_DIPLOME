@@ -1,0 +1,13 @@
+FAIL K2 placement mode: map → v2 card in 81 Tab presses (≤ 30) — presses 81, reached false
+FAIL K2 no road / record Tab stops while placing (1139) — 1139
+PASS K2 outside placement mode roads and records stay keyboard-reachable
+FAIL K3 budget + Tab: value applied, focus on «Максимум объектов» — {"id":"","tag":"BODY","inPlan":false}
+FAIL K3 invalid value + Tab: rejected, focus still moves on — {"id":"","tag":"BODY","inPlan":false}
+FAIL K4 delete point by keyboard: focus on the neighbouring «Удалить» — {"id":"","tag":"BODY","inPlan":false}
+FAIL K4 delete last candidate by keyboard: focus on the previous candidate's «Удалить» — {"id":"","tag":"BODY","inPlan":false}
+PASS K5 during the search the focus is on «Отменить поиск»
+FAIL K5 after the search the focus is on «Найти точные оптимумы» — {"id":"","tag":"BODY","inPlan":false}
+PASS apply by keyboard keeps the focus in the card
+FAIL N2 390 px: Pareto and sensitivity tables fit (no hidden columns) — [{"id":"plPareto","sw":392,"cw":328,"tw":328},{"id":"plSens","sw":375,"cw":328,"tw":328}]
+PASS 390 px: no page-level horizontal scroll
+PASS no page errors

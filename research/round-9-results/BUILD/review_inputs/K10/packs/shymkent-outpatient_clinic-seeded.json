@@ -1,0 +1,1602 @@
+{
+ "pack_format": "k10-plan-pack-v1",
+ "pack_id": "shymkent-outpatient_clinic-seeded",
+ "kind": "real_slice",
+ "stage": 2,
+ "purpose": "seeded random geometry: 20 points, 14 candidates, budget 900, max 4",
+ "city_id": "shymkent",
+ "category": "outpatient_clinic",
+ "synthetic_parts": [
+  "control_points (positions by rule, weights)",
+  "candidates (positions by rule, costs)",
+  "budget",
+  "max_selected",
+  "coverage_radius_m",
+  "required_ids",
+  "excluded_ids",
+  "selected_ids"
+ ],
+ "rules": {
+  "fixed_before_computing": true,
+  "coordinates": "bbox fractions (x = share of lon span, y = share of lat span), rounded to 6 decimals",
+  "seeded": "LCG x=(1103515245*x+12345) mod 2^31, seed = 20261005 + index in [shymkent/school, shymkent/outpatient_clinic, astana/school, astana/outpatient_clinic]; 20 control points s01..s20 at x,y = 0.05+0.9*u, weight 1+(x mod 100); 14 candidates r01..r14 at x,y = 0.05+0.9*u, cost 10*(5+(x mod 46)); budget 900, max_selected 4, radius 300; selected_ids []; draw order per point: x, y, weight; per candidate: x, y, cost"
+ },
+ "provenance": {
+  "build_branch": "claude/beautiful-clarke-sbzomj",
+  "build_commit": "a5b5e2ddbe087c4eab8e947748cdf69dbae84a0d",
+  "app_path": "prototypes/city-evidence",
+  "data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "evidence_js_sha256": "df736e986145da33dee60f692e020486720b72db5b6116af31640cc8693b11b9",
+  "places_social_file": "inputs/k10/data/shymkent/places_social.geojson",
+  "places_social_sha256": "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7",
+  "release": "2026-09-23.1",
+  "bbox": [
+   69.593365,
+   42.306645,
+   69.617658,
+   42.324611
+  ],
+  "source_snapshot": "sha256:a9326b5633c513c0bfeccbb2248b26cf3b706c902f77745073a2959ad8d7ff3e",
+  "snapshot_components": [
+   "city-plan-v2",
+   "shymkent",
+   "2026-09-23.1",
+   "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7",
+   "30b0b9678bd5d903232e1c820f2c65a5faad7ffc9020fff3f2ed8c591f591e0f",
+   "haversine-mm-v1"
+  ],
+  "snapshot_format": "plan-v2: web/plan.js sourceSnapshot (BUILD 60f44d9)",
+  "whatif_v1_snapshot_same_slice": "sha256:282cf187523d8b990ac9bfde69ba43763248aa9b49007149a094ccc81bd36ec2",
+  "upstream": "Overture Maps places 2026-09-23.1 via K10 package (round-3 results); not re-downloaded"
+ },
+ "source_copy": {
+  "category_records": [
+   {
+    "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+    "lon": 69.5958,
+    "lat": 42.3167,
+    "group": "outpatient_clinic",
+    "name": "Dr.Sattarkulovich",
+    "qa_flags": [
+     "COLOCATED"
+    ]
+   },
+   {
+    "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f",
+    "lon": 69.607757,
+    "lat": 42.306934,
+    "group": "outpatient_clinic",
+    "name": "Пространство Где Всё Возможно",
+    "qa_flags": []
+   },
+   {
+    "id": "2264dcf0-549d-451a-b846-3f207d411e0c",
+    "lon": 69.5958,
+    "lat": 42.3167,
+    "group": "outpatient_clinic",
+    "name": "Сункар",
+    "qa_flags": [
+     "COLOCATED"
+    ]
+   },
+   {
+    "id": "50802484-b7f9-492e-8a4c-f75312fc7751",
+    "lon": 69.60702,
+    "lat": 42.31757,
+    "group": "outpatient_clinic",
+    "name": "Kosmetolog Жазира",
+    "qa_flags": [
+     "COLOCATED",
+     "POSSIBLE_DUPLICATE"
+    ]
+   },
+   {
+    "id": "621acb4b-a1bd-45ce-891f-c0a4634a6103",
+    "lon": 69.601822,
+    "lat": 42.317791,
+    "group": "outpatient_clinic",
+    "name": "MasterDent",
+    "qa_flags": []
+   },
+   {
+    "id": "622b4786-89fa-4853-b109-18054e3ebe0d",
+    "lon": 69.60702,
+    "lat": 42.31757,
+    "group": "outpatient_clinic",
+    "name": "Aza Бизнес Страница Шымкент",
+    "qa_flags": [
+     "CATEGORY_DOUBT",
+     "COLOCATED",
+     "POSSIBLE_DUPLICATE"
+    ]
+   },
+   {
+    "id": "6e92676a-1297-446d-9956-731023da6339",
+    "lon": 69.59527,
+    "lat": 42.32423,
+    "group": "outpatient_clinic",
+    "name": "Стомотология",
+    "qa_flags": []
+   },
+   {
+    "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60",
+    "lon": 69.609396,
+    "lat": 42.31437,
+    "group": "outpatient_clinic",
+    "name": "Easy Health Shymkent",
+    "qa_flags": []
+   },
+   {
+    "id": "833280f2-ff82-4dd6-a174-d2a9203420fa",
+    "lon": 69.60702,
+    "lat": 42.31758,
+    "group": "outpatient_clinic",
+    "name": "ИП Ауелбекова Р.И.",
+    "qa_flags": []
+   },
+   {
+    "id": "99c68068-aa6e-4ff2-af5f-455675f93313",
+    "lon": 69.59586,
+    "lat": 42.32122,
+    "group": "outpatient_clinic",
+    "name": "MicoOne Orthodontics Kazakhstan",
+    "qa_flags": []
+   },
+   {
+    "id": "a10bb8cf-c446-4066-9cda-a5befa189a60",
+    "lon": 69.61684,
+    "lat": 42.313453,
+    "group": "outpatient_clinic",
+    "name": "ProfMedService",
+    "qa_flags": []
+   },
+   {
+    "id": "b845d434-7da3-4755-9ae9-bb6d40fc7520",
+    "lon": 69.602416,
+    "lat": 42.323312,
+    "group": "outpatient_clinic",
+    "name": "Стоматологическая клиника Диастом",
+    "qa_flags": []
+   },
+   {
+    "id": "c2990416-dca7-4e3a-b539-30e69cadf724",
+    "lon": 69.5958,
+    "lat": 42.3167,
+    "group": "outpatient_clinic",
+    "name": "Джафар Стоматология",
+    "qa_flags": [
+     "COLOCATED"
+    ]
+   },
+   {
+    "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354",
+    "lon": 69.615192,
+    "lat": 42.31673,
+    "group": "outpatient_clinic",
+    "name": "Atlant Clinic",
+    "qa_flags": []
+   },
+   {
+    "id": "e1b19ead-4505-4acd-8aed-9c561ceec4c0",
+    "lon": 69.60702,
+    "lat": 42.31757,
+    "group": "outpatient_clinic",
+    "name": "АССОР",
+    "qa_flags": [
+     "COLOCATED"
+    ]
+   },
+   {
+    "id": "f4d6818b-1a99-43ca-8533-4c556f448919",
+    "lon": 69.5958,
+    "lat": 42.3167,
+    "group": "outpatient_clinic",
+    "name": "Стоматологическое оборудование",
+    "qa_flags": [
+     "COLOCATED"
+    ]
+   }
+  ],
+  "note": "read-only copy of web/data.js records of this category; the source records are never modified"
+ },
+ "scenario": {
+  "schema_version": "city-plan-v2",
+  "city_id": "shymkent",
+  "source_snapshot": "sha256:a9326b5633c513c0bfeccbb2248b26cf3b706c902f77745073a2959ad8d7ff3e",
+  "category": "outpatient_clinic",
+  "control_points": [
+   {
+    "id": "s01",
+    "lon": 69.600356,
+    "lat": 42.309933,
+    "weight": 70
+   },
+   {
+    "id": "s02",
+    "lon": 69.605746,
+    "lat": 42.312349,
+    "weight": 69
+   },
+   {
+    "id": "s03",
+    "lon": 69.611022,
+    "lat": 42.31056,
+    "weight": 56
+   },
+   {
+    "id": "s04",
+    "lon": 69.607685,
+    "lat": 42.317654,
+    "weight": 79
+   },
+   {
+    "id": "s05",
+    "lon": 69.604198,
+    "lat": 42.317778,
+    "weight": 70
+   },
+   {
+    "id": "s06",
+    "lon": 69.606282,
+    "lat": 42.311005,
+    "weight": 37
+   },
+   {
+    "id": "s07",
+    "lon": 69.609004,
+    "lat": 42.318197,
+    "weight": 92
+   },
+   {
+    "id": "s08",
+    "lon": 69.606494,
+    "lat": 42.319027,
+    "weight": 67
+   },
+   {
+    "id": "s09",
+    "lon": 69.607699,
+    "lat": 42.310635,
+    "weight": 82
+   },
+   {
+    "id": "s10",
+    "lon": 69.602317,
+    "lat": 42.310761,
+    "weight": 77
+   },
+   {
+    "id": "s11",
+    "lon": 69.607837,
+    "lat": 42.308887,
+    "weight": 32
+   },
+   {
+    "id": "s12",
+    "lon": 69.615301,
+    "lat": 42.308371,
+    "weight": 39
+   },
+   {
+    "id": "s13",
+    "lon": 69.613215,
+    "lat": 42.311106,
+    "weight": 54
+   },
+   {
+    "id": "s14",
+    "lon": 69.599685,
+    "lat": 42.309874,
+    "weight": 13
+   },
+   {
+    "id": "s15",
+    "lon": 69.599554,
+    "lat": 42.317977,
+    "weight": 16
+   },
+   {
+    "id": "s16",
+    "lon": 69.604779,
+    "lat": 42.311999,
+    "weight": 55
+   },
+   {
+    "id": "s17",
+    "lon": 69.595031,
+    "lat": 42.317515,
+    "weight": 22
+   },
+   {
+    "id": "s18",
+    "lon": 69.613786,
+    "lat": 42.316273,
+    "weight": 89
+   },
+   {
+    "id": "s19",
+    "lon": 69.613142,
+    "lat": 42.318606,
+    "weight": 4
+   },
+   {
+    "id": "s20",
+    "lon": 69.615615,
+    "lat": 42.320141,
+    "weight": 83
+   }
+  ],
+  "candidates": [
+   {
+    "id": "r01",
+    "lon": 69.598402,
+    "lat": 42.319218,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 360
+   },
+   {
+    "id": "r02",
+    "lon": 69.610303,
+    "lat": 42.320906,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 430
+   },
+   {
+    "id": "r03",
+    "lon": 69.606113,
+    "lat": 42.320639,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 260
+   },
+   {
+    "id": "r04",
+    "lon": 69.599607,
+    "lat": 42.307713,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 70
+   },
+   {
+    "id": "r05",
+    "lon": 69.596684,
+    "lat": 42.311519,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 60
+   },
+   {
+    "id": "r06",
+    "lon": 69.606252,
+    "lat": 42.309974,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 70
+   },
+   {
+    "id": "r07",
+    "lon": 69.606445,
+    "lat": 42.31077,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 440
+   },
+   {
+    "id": "r08",
+    "lon": 69.603212,
+    "lat": 42.322521,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 450
+   },
+   {
+    "id": "r09",
+    "lon": 69.607371,
+    "lat": 42.322794,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 280
+   },
+   {
+    "id": "r10",
+    "lon": 69.604123,
+    "lat": 42.322612,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 110
+   },
+   {
+    "id": "r11",
+    "lon": 69.616356,
+    "lat": 42.317285,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 60
+   },
+   {
+    "id": "r12",
+    "lon": 69.610953,
+    "lat": 42.320024,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 370
+   },
+   {
+    "id": "r13",
+    "lon": 69.594913,
+    "lat": 42.31287,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 180
+   },
+   {
+    "id": "r14",
+    "lon": 69.611199,
+    "lat": 42.309946,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 470
+   }
+  ],
+  "budget": 900,
+  "max_selected": 4,
+  "coverage_radius_m": 300,
+  "required_ids": [],
+  "excluded_ids": [],
+  "selected_ids": []
+ },
+ "expected": {
+  "generated_by": "k10plan.oracle",
+  "metric_version": "haversine-mm-v1",
+  "validation": "accepted",
+  "problem_digest": "sha256:3cdfc6e0b30859c944d9b0fa1c3dca88d63c48c92e490b742a7443205c64a26a",
+  "scenario_digest": "sha256:d143a50cf06aa8409999a68e39f20d0884d45f5bee679e809679cdfb592880ea",
+  "optimize": {
+   "status": "optimal",
+   "metric_version": "haversine-mm-v1",
+   "problem_digest": "sha256:3cdfc6e0b30859c944d9b0fa1c3dca88d63c48c92e490b742a7443205c64a26a",
+   "evaluated": 1471,
+   "feasible_count": 682,
+   "candidate_count": 14,
+   "objectives": {
+    "mean": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 220798206,
+     "weighted_mean_mm": 199636.7142857143,
+     "max_mm": 380068,
+     "covered_weight": 907,
+     "coverage_fraction": 0.8200723327305606,
+     "cost": 670,
+     "selected_ids": [
+      "r04",
+      "r06",
+      "r11",
+      "r14"
+     ]
+    },
+    "minimax": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 220798206,
+     "weighted_mean_mm": 199636.7142857143,
+     "max_mm": 380068,
+     "covered_weight": 907,
+     "coverage_fraction": 0.8200723327305606,
+     "cost": 670,
+     "selected_ids": [
+      "r04",
+      "r06",
+      "r11",
+      "r14"
+     ]
+    },
+    "coverage": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 220798206,
+     "weighted_mean_mm": 199636.7142857143,
+     "max_mm": 380068,
+     "covered_weight": 907,
+     "coverage_fraction": 0.8200723327305606,
+     "cost": 670,
+     "selected_ids": [
+      "r04",
+      "r06",
+      "r11",
+      "r14"
+     ]
+    }
+   },
+   "pareto": [
+    {
+     "cost": 0,
+     "weighted_sum_mm": 378206388,
+     "selected_ids": []
+    },
+    {
+     "cost": 60,
+     "weighted_sum_mm": 337190425,
+     "selected_ids": [
+      "r05"
+     ]
+    },
+    {
+     "cost": 70,
+     "weighted_sum_mm": 281768707,
+     "selected_ids": [
+      "r06"
+     ]
+    },
+    {
+     "cost": 130,
+     "weighted_sum_mm": 269277967,
+     "selected_ids": [
+      "r05",
+      "r06"
+     ]
+    },
+    {
+     "cost": 140,
+     "weighted_sum_mm": 261741878,
+     "selected_ids": [
+      "r04",
+      "r06"
+     ]
+    },
+    {
+     "cost": 200,
+     "weighted_sum_mm": 256968216,
+     "selected_ids": [
+      "r04",
+      "r06",
+      "r11"
+     ]
+    },
+    {
+     "cost": 500,
+     "weighted_sum_mm": 254520766,
+     "selected_ids": [
+      "r05",
+      "r07"
+     ]
+    },
+    {
+     "cost": 510,
+     "weighted_sum_mm": 246984677,
+     "selected_ids": [
+      "r04",
+      "r07"
+     ]
+    },
+    {
+     "cost": 540,
+     "weighted_sum_mm": 245598697,
+     "selected_ids": [
+      "r06",
+      "r14"
+     ]
+    },
+    {
+     "cost": 570,
+     "weighted_sum_mm": 242211015,
+     "selected_ids": [
+      "r04",
+      "r07",
+      "r11"
+     ]
+    },
+    {
+     "cost": 600,
+     "weighted_sum_mm": 233107957,
+     "selected_ids": [
+      "r05",
+      "r06",
+      "r14"
+     ]
+    },
+    {
+     "cost": 610,
+     "weighted_sum_mm": 225571868,
+     "selected_ids": [
+      "r04",
+      "r06",
+      "r14"
+     ]
+    },
+    {
+     "cost": 670,
+     "weighted_sum_mm": 220798206,
+     "selected_ids": [
+      "r04",
+      "r06",
+      "r11",
+      "r14"
+     ]
+    }
+   ],
+   "pareto_note": null,
+   "sensitivity": [
+    {
+     "budget": 0,
+     "status": "optimal",
+     "objectives": {
+      "mean": {
+       "selected_ids": [],
+       "cost": 0,
+       "weighted_sum_mm": 378206388,
+       "max_mm": 739916,
+       "covered_weight": 471,
+       "unknown_count": 0
+      },
+      "minimax": {
+       "selected_ids": [],
+       "cost": 0,
+       "weighted_sum_mm": 378206388,
+       "max_mm": 739916,
+       "covered_weight": 471,
+       "unknown_count": 0
+      },
+      "coverage": {
+       "selected_ids": [],
+       "cost": 0,
+       "weighted_sum_mm": 378206388,
+       "max_mm": 739916,
+       "covered_weight": 471,
+       "unknown_count": 0
+      }
+     },
+     "infeasible_reasons": null
+    },
+    {
+     "budget": 450,
+     "status": "optimal",
+     "objectives": {
+      "mean": {
+       "selected_ids": [
+        "r04",
+        "r06",
+        "r11"
+       ],
+       "cost": 200,
+       "weighted_sum_mm": 256968216,
+       "max_mm": 579090,
+       "covered_weight": 797,
+       "unknown_count": 0
+      },
+      "minimax": {
+       "selected_ids": [
+        "r04",
+        "r06",
+        "r11"
+       ],
+       "cost": 200,
+       "weighted_sum_mm": 256968216,
+       "max_mm": 579090,
+       "covered_weight": 797,
+       "unknown_count": 0
+      },
+      "coverage": {
+       "selected_ids": [
+        "r04",
+        "r06",
+        "r11"
+       ],
+       "cost": 200,
+       "weighted_sum_mm": 256968216,
+       "max_mm": 579090,
+       "covered_weight": 797,
+       "unknown_count": 0
+      }
+     },
+     "infeasible_reasons": null
+    },
+    {
+     "budget": 900,
+     "status": "optimal",
+     "objectives": {
+      "mean": {
+       "selected_ids": [
+        "r04",
+        "r06",
+        "r11",
+        "r14"
+       ],
+       "cost": 670,
+       "weighted_sum_mm": 220798206,
+       "max_mm": 380068,
+       "covered_weight": 907,
+       "unknown_count": 0
+      },
+      "minimax": {
+       "selected_ids": [
+        "r04",
+        "r06",
+        "r11",
+        "r14"
+       ],
+       "cost": 670,
+       "weighted_sum_mm": 220798206,
+       "max_mm": 380068,
+       "covered_weight": 907,
+       "unknown_count": 0
+      },
+      "coverage": {
+       "selected_ids": [
+        "r04",
+        "r06",
+        "r11",
+        "r14"
+       ],
+       "cost": 670,
+       "weighted_sum_mm": 220798206,
+       "max_mm": 380068,
+       "covered_weight": 907,
+       "unknown_count": 0
+      }
+     },
+     "infeasible_reasons": null
+    }
+   ]
+  },
+  "plan_refs": {
+   "manual": "(empty)",
+   "baseline": "(empty)",
+   "mean": "r04+r06+r11+r14",
+   "minimax": "r04+r06+r11+r14",
+   "coverage": "r04+r06+r11+r14"
+  },
+  "plans": {
+   "(empty)": {
+    "rows": [
+     {
+      "control_point_id": "s01",
+      "weight": 70,
+      "before_mm": 693975,
+      "nearest_before": {
+       "kind": "source",
+       "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      },
+      "after_mm": 693975,
+      "nearest_after": {
+       "kind": "source",
+       "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "s02",
+      "weight": 69,
+      "before_mm": 374935,
+      "nearest_before": {
+       "kind": "source",
+       "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+      },
+      "after_mm": 374935,
+      "nearest_after": {
+       "kind": "source",
+       "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "s03",
+      "weight": 56,
+      "before_mm": 444250,
+      "nearest_before": {
+       "kind": "source",
+       "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+      },
+      "after_mm": 444250,
+      "nearest_after": {
+       "kind": "source",
+       "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "s04",
+      "weight": 79,
+      "before_mm": 55292,
+      "nearest_before": {
+       "kind": "source",
+       "id": "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      },
+      "after_mm": 55292,
+      "nearest_after": {
+       "kind": "source",
+       "id": "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "s05",
+      "weight": 70,
+      "before_mm": 195360,
+      "nearest_before": {
+       "kind": "source",
+       "id": "621acb4b-a1bd-45ce-891f-c0a4634a6103"
+      },
+      "after_mm": 195360,
+      "nearest_after": {
+       "kind": "source",
+       "id": "621acb4b-a1bd-45ce-891f-c0a4634a6103"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "621acb4b-a1bd-45ce-891f-c0a4634a6103"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "s06",
+      "weight": 37,
+      "before_mm": 453396,
+      "nearest_before": {
+       "kind": "source",
+       "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+      },
+      "after_mm": 453396,
+      "nearest_after": {
+       "kind": "source",
+       "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "s07",
+      "weight": 92,
+      "before_mm": 176965,
+      "nearest_before": {
+       "kind": "source",
+       "id": "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      },
+      "after_mm": 176965,
+      "nearest_after": {
+       "kind": "source",
+       "id": "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "s08",
+      "weight": 67,
+      "before_mm": 166610,
+      "nearest_before": {
+       "kind": "source",
+       "id": "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      },
+      "after_mm": 166610,
+      "nearest_after": {
+       "kind": "source",
+       "id": "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "s09",
+      "weight": 82,
+      "before_mm": 411561,
+      "nearest_before": {
+       "kind": "source",
+       "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      },
+      "after_mm": 411561,
+      "nearest_after": {
+       "kind": "source",
+       "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "s10",
+      "weight": 77,
+      "before_mm": 617415,
+      "nearest_before": {
+       "kind": "source",
+       "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      },
+      "after_mm": 617415,
+      "nearest_after": {
+       "kind": "source",
+       "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "s11",
+      "weight": 32,
+      "before_mm": 217264,
+      "nearest_before": {
+       "kind": "source",
+       "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      },
+      "after_mm": 217264,
+      "nearest_after": {
+       "kind": "source",
+       "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "s12",
+      "weight": 39,
+      "before_mm": 579090,
+      "nearest_before": {
+       "kind": "source",
+       "id": "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      },
+      "after_mm": 579090,
+      "nearest_after": {
+       "kind": "source",
+       "id": "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "s13",
+      "weight": 54,
+      "before_mm": 396177,
+      "nearest_before": {
+       "kind": "source",
+       "id": "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      },
+      "after_mm": 396177,
+      "nearest_after": {
+       "kind": "source",
+       "id": "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "s14",
+      "weight": 13,
+      "before_mm": 739916,
+      "nearest_before": {
+       "kind": "source",
+       "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      },
+      "after_mm": 739916,
+      "nearest_after": {
+       "kind": "source",
+       "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "s15",
+      "weight": 16,
+      "before_mm": 187618,
+      "nearest_before": {
+       "kind": "source",
+       "id": "621acb4b-a1bd-45ce-891f-c0a4634a6103"
+      },
+      "after_mm": 187618,
+      "nearest_after": {
+       "kind": "source",
+       "id": "621acb4b-a1bd-45ce-891f-c0a4634a6103"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "621acb4b-a1bd-45ce-891f-c0a4634a6103"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "s16",
+      "weight": 55,
+      "before_mm": 462204,
+      "nearest_before": {
+       "kind": "source",
+       "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+      },
+      "after_mm": 462204,
+      "nearest_after": {
+       "kind": "source",
+       "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "s17",
+      "weight": 22,
+      "before_mm": 110501,
+      "nearest_before": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "after_mm": 110501,
+      "nearest_after": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "2264dcf0-549d-451a-b846-3f207d411e0c",
+       "c2990416-dca7-4e3a-b539-30e69cadf724",
+       "f4d6818b-1a99-43ca-8533-4c556f448919"
+      ],
+      "nearest_before_qa_flags": [
+       "COLOCATED"
+      ]
+     },
+     {
+      "control_point_id": "s18",
+      "weight": 89,
+      "before_mm": 126280,
+      "nearest_before": {
+       "kind": "source",
+       "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      },
+      "after_mm": 126280,
+      "nearest_after": {
+       "kind": "source",
+       "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "s19",
+      "weight": 4,
+      "before_mm": 268187,
+      "nearest_before": {
+       "kind": "source",
+       "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      },
+      "after_mm": 268187,
+      "nearest_after": {
+       "kind": "source",
+       "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "s20",
+      "weight": 83,
+      "before_mm": 380878,
+      "nearest_before": {
+       "kind": "source",
+       "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      },
+      "after_mm": 380878,
+      "nearest_after": {
+       "kind": "source",
+       "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      ],
+      "nearest_before_qa_flags": []
+     }
+    ],
+    "metrics": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 378206388,
+     "weighted_mean_mm": 341958.7594936709,
+     "max_mm": 739916,
+     "covered_weight": 471,
+     "coverage_fraction": 0.4258589511754069,
+     "cost": 0,
+     "selected_ids": []
+    },
+    "feasibility": {
+     "feasible": true,
+     "reasons": []
+    },
+    "baseline_records_in_category": 16
+   },
+   "r04+r06+r11+r14": {
+    "rows": [
+     {
+      "control_point_id": "s01",
+      "weight": 70,
+      "before_mm": 693975,
+      "nearest_before": {
+       "kind": "source",
+       "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      },
+      "after_mm": 254421,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "r04"
+      },
+      "delta_mm": 439554,
+      "tied_before_ids": [
+       "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "s02",
+      "weight": 69,
+      "before_mm": 374935,
+      "nearest_before": {
+       "kind": "source",
+       "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+      },
+      "after_mm": 267346,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "r06"
+      },
+      "delta_mm": 107589,
+      "tied_before_ids": [
+       "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "s03",
+      "weight": 56,
+      "before_mm": 444250,
+      "nearest_before": {
+       "kind": "source",
+       "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+      },
+      "after_mm": 69808,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "r14"
+      },
+      "delta_mm": 374442,
+      "tied_before_ids": [
+       "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "s04",
+      "weight": 79,
+      "before_mm": 55292,
+      "nearest_before": {
+       "kind": "source",
+       "id": "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      },
+      "after_mm": 55292,
+      "nearest_after": {
+       "kind": "source",
+       "id": "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "s05",
+      "weight": 70,
+      "before_mm": 195360,
+      "nearest_before": {
+       "kind": "source",
+       "id": "621acb4b-a1bd-45ce-891f-c0a4634a6103"
+      },
+      "after_mm": 195360,
+      "nearest_after": {
+       "kind": "source",
+       "id": "621acb4b-a1bd-45ce-891f-c0a4634a6103"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "621acb4b-a1bd-45ce-891f-c0a4634a6103"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "s06",
+      "weight": 37,
+      "before_mm": 453396,
+      "nearest_before": {
+       "kind": "source",
+       "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+      },
+      "after_mm": 114669,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "r06"
+      },
+      "delta_mm": 338727,
+      "tied_before_ids": [
+       "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "s07",
+      "weight": 92,
+      "before_mm": 176965,
+      "nearest_before": {
+       "kind": "source",
+       "id": "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      },
+      "after_mm": 176965,
+      "nearest_after": {
+       "kind": "source",
+       "id": "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "s08",
+      "weight": 67,
+      "before_mm": 166610,
+      "nearest_before": {
+       "kind": "source",
+       "id": "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      },
+      "after_mm": 166610,
+      "nearest_after": {
+       "kind": "source",
+       "id": "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "s09",
+      "weight": 82,
+      "before_mm": 411561,
+      "nearest_before": {
+       "kind": "source",
+       "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      },
+      "after_mm": 139857,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "r06"
+      },
+      "delta_mm": 271704,
+      "tied_before_ids": [
+       "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "s10",
+      "weight": 77,
+      "before_mm": 617415,
+      "nearest_before": {
+       "kind": "source",
+       "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      },
+      "after_mm": 335199,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "r06"
+      },
+      "delta_mm": 282216,
+      "tied_before_ids": [
+       "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "s11",
+      "weight": 32,
+      "before_mm": 217264,
+      "nearest_before": {
+       "kind": "source",
+       "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      },
+      "after_mm": 177755,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "r06"
+      },
+      "delta_mm": 39509,
+      "tied_before_ids": [
+       "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "s12",
+      "weight": 39,
+      "before_mm": 579090,
+      "nearest_before": {
+       "kind": "source",
+       "id": "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      },
+      "after_mm": 380068,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "r14"
+      },
+      "delta_mm": 199022,
+      "tied_before_ids": [
+       "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "s13",
+      "weight": 54,
+      "before_mm": 396177,
+      "nearest_before": {
+       "kind": "source",
+       "id": "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      },
+      "after_mm": 210045,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "r14"
+      },
+      "delta_mm": 186132,
+      "tied_before_ids": [
+       "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "s14",
+      "weight": 13,
+      "before_mm": 739916,
+      "nearest_before": {
+       "kind": "source",
+       "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      },
+      "after_mm": 240378,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "r04"
+      },
+      "delta_mm": 499538,
+      "tied_before_ids": [
+       "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "s15",
+      "weight": 16,
+      "before_mm": 187618,
+      "nearest_before": {
+       "kind": "source",
+       "id": "621acb4b-a1bd-45ce-891f-c0a4634a6103"
+      },
+      "after_mm": 187618,
+      "nearest_after": {
+       "kind": "source",
+       "id": "621acb4b-a1bd-45ce-891f-c0a4634a6103"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "621acb4b-a1bd-45ce-891f-c0a4634a6103"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "s16",
+      "weight": 55,
+      "before_mm": 462204,
+      "nearest_before": {
+       "kind": "source",
+       "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+      },
+      "after_mm": 255680,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "r06"
+      },
+      "delta_mm": 206524,
+      "tied_before_ids": [
+       "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "s17",
+      "weight": 22,
+      "before_mm": 110501,
+      "nearest_before": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "after_mm": 110501,
+      "nearest_after": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "2264dcf0-549d-451a-b846-3f207d411e0c",
+       "c2990416-dca7-4e3a-b539-30e69cadf724",
+       "f4d6818b-1a99-43ca-8533-4c556f448919"
+      ],
+      "nearest_before_qa_flags": [
+       "COLOCATED"
+      ]
+     },
+     {
+      "control_point_id": "s18",
+      "weight": 89,
+      "before_mm": 126280,
+      "nearest_before": {
+       "kind": "source",
+       "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      },
+      "after_mm": 126280,
+      "nearest_after": {
+       "kind": "source",
+       "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "s19",
+      "weight": 4,
+      "before_mm": 268187,
+      "nearest_before": {
+       "kind": "source",
+       "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      },
+      "after_mm": 268187,
+      "nearest_after": {
+       "kind": "source",
+       "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "s20",
+      "weight": 83,
+      "before_mm": 380878,
+      "nearest_before": {
+       "kind": "source",
+       "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      },
+      "after_mm": 323364,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "r11"
+      },
+      "delta_mm": 57514,
+      "tied_before_ids": [
+       "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      ],
+      "nearest_before_qa_flags": []
+     }
+    ],
+    "metrics": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 220798206,
+     "weighted_mean_mm": 199636.7142857143,
+     "max_mm": 380068,
+     "covered_weight": 907,
+     "coverage_fraction": 0.8200723327305606,
+     "cost": 670,
+     "selected_ids": [
+      "r04",
+      "r06",
+      "r11",
+      "r14"
+     ]
+    },
+    "feasibility": {
+     "feasible": true,
+     "reasons": []
+    },
+    "baseline_records_in_category": 16
+   }
+  }
+ },
+ "observations": {
+  "status": "optimal",
+  "evaluated": 1471,
+  "feasible_count": 682,
+  "pareto_points": 13,
+  "winners": {
+   "mean": "r04+r06+r11+r14",
+   "minimax": "r04+r06+r11+r14",
+   "coverage": "r04+r06+r11+r14"
+  },
+  "objectives_agree": true,
+  "distinct_winner_sets": 1,
+  "differing_pairs": [],
+  "sensitivity": [
+   {
+    "budget": 0,
+    "status": "optimal",
+    "mean": "(empty)"
+   },
+   {
+    "budget": 450,
+    "status": "optimal",
+    "mean": "r04+r06+r11"
+   },
+   {
+    "budget": 900,
+    "status": "optimal",
+    "mean": "r04+r06+r11+r14"
+   }
+  ]
+ },
+ "does_not_claim": [
+  "costs are not real prices or an estimate",
+  "weights are not population",
+  "the optimum is only among the entered candidates, not the best plan for the city",
+  "straight-line distance in this slice only; no walking time, capacity or social benefit"
+ ],
+ "seed": 20261006
+}

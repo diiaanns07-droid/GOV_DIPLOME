@@ -1,0 +1,2052 @@
+{
+ "app_root": "prototypes/city-evidence",
+ "plan_js": "web/plan.js",
+ "summary": {
+  "K06": {
+   "pass": 96,
+   "fail": 0,
+   "info": 0
+  },
+  "K10": {
+   "pass": 288,
+   "fail": 0,
+   "info": 4
+  }
+ },
+ "rows": [
+  {
+   "src": "K06",
+   "name": "budget_zero",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "budget_full_max3",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "tie_identical_candidates",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "tie_candidate_on_source",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "required_over_budget",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "required_over_count",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "required_and_excluded_ok",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "no_baseline",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "no_baseline_budget_zero",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "no_candidates",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "pareto_duplicates",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "other_category_ignored",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "budget_zero__perm",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "budget_zero__perm_renamed",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "budget_full_max3__perm",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "budget_full_max3__perm_renamed",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "tie_identical_candidates__perm",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "tie_identical_candidates__perm_renamed",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "tie_candidate_on_source__perm",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "tie_candidate_on_source__perm_renamed",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "required_over_budget__perm",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "required_over_budget__perm_renamed",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "required_over_count__perm",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "required_over_count__perm_renamed",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "required_and_excluded_ok__perm",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "required_and_excluded_ok__perm_renamed",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "no_baseline__perm",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "no_baseline__perm_renamed",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "no_baseline_budget_zero__perm",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "no_baseline_budget_zero__perm_renamed",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "no_candidates__perm",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "no_candidates__perm_renamed",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "pareto_duplicates__perm",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "pareto_duplicates__perm_renamed",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "other_category_ignored__perm",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "other_category_ignored__perm_renamed",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "syn_random_00",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "syn_random_01",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "syn_random_02",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "syn_random_03",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "syn_random_04",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "syn_random_05",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "syn_random_06",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "syn_random_07",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "syn_random_08",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "syn_random_09",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "syn_random_10",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "syn_random_11",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "syn_random_12",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "syn_random_13",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "syn_random_14",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "syn_random_15",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "syn_random_16",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "syn_random_17",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "syn_random_18",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "syn_random_19",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "syn_random_20",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "syn_random_21",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "syn_random_22",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "syn_random_23",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "syn_divergent_00",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "syn_divergent_01",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "syn_divergent_02",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "syn_divergent_03",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "syn_divergent_04",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "syn_divergent_05",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "syn_divergent_06",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "syn_divergent_07",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "syn_divergent_08",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "syn_divergent_09",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "syn_divergent_10",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "syn_divergent_11",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "real_shymkent_school_00",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "real_shymkent_school_01",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "real_shymkent_school_02",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "real_shymkent_school_03",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "real_shymkent_school_04",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "real_shymkent_school_05",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "real_shymkent_outpatient_clinic_00",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "real_shymkent_outpatient_clinic_01",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "real_shymkent_outpatient_clinic_02",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "real_shymkent_outpatient_clinic_03",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "real_shymkent_outpatient_clinic_04",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "real_shymkent_outpatient_clinic_05",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "real_astana_school_00",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "real_astana_school_01",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "real_astana_school_02",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "real_astana_school_03",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "real_astana_school_04",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "real_astana_school_05",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "real_astana_outpatient_clinic_00",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "real_astana_outpatient_clinic_01",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "real_astana_outpatient_clinic_02",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "real_astana_outpatient_clinic_03",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "real_astana_outpatient_clinic_04",
+   "status": "PASS"
+  },
+  {
+   "src": "K06",
+   "name": "real_astana_outpatient_clinic_05",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-outpatient_clinic-base: source_snapshot convention = BUILD",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-outpatient_clinic-base: optimize",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-outpatient_clinic-base: sensitivity",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-outpatient_clinic-base: plan c06+c07",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-outpatient_clinic-base: plan (empty)",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-outpatient_clinic-base: plan c03+c10+c12",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-outpatient_clinic-base: plan c08+c12",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-outpatient_clinic-conflict-budget: source_snapshot convention = BUILD",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-outpatient_clinic-conflict-budget: optimize",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-outpatient_clinic-conflict-budget: sensitivity",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-outpatient_clinic-conflict-budget: plan c04+c11",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-outpatient_clinic-conflict-budget: plan (empty)",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-outpatient_clinic-conflict-count: source_snapshot convention = BUILD",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-outpatient_clinic-conflict-count: optimize",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-outpatient_clinic-conflict-count: sensitivity",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-outpatient_clinic-conflict-count: plan c01+c02+c03+c04",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-outpatient_clinic-conflict-count: plan (empty)",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-outpatient_clinic-required-excluded: source_snapshot convention = BUILD",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-outpatient_clinic-required-excluded: optimize",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-outpatient_clinic-required-excluded: sensitivity",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-outpatient_clinic-required-excluded: plan c06+c07",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-outpatient_clinic-required-excluded: plan (empty)",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-outpatient_clinic-required-excluded: plan c01+c12",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-outpatient_clinic-required-excluded: plan c08+c12",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-outpatient_clinic-seeded: source_snapshot convention = BUILD",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-outpatient_clinic-seeded: optimize",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-outpatient_clinic-seeded: sensitivity",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-outpatient_clinic-seeded: plan (empty)",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-outpatient_clinic-seeded: plan r03+r04+r08+r11",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-outpatient_clinic-seeded: plan r01+r04+r11",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-outpatient_clinic-tight-budget: source_snapshot convention = BUILD",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-outpatient_clinic-tight-budget: optimize",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-outpatient_clinic-tight-budget: sensitivity",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-outpatient_clinic-tight-budget: plan c06+c07",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-outpatient_clinic-tight-budget: plan (empty)",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-outpatient_clinic-tight-budget: plan c07",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-outpatient_clinic-zero-budget: source_snapshot convention = BUILD",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-outpatient_clinic-zero-budget: optimize",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-outpatient_clinic-zero-budget: sensitivity",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-outpatient_clinic-zero-budget: plan c06+c07",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-outpatient_clinic-zero-budget: plan (empty)",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-base: source_snapshot convention = BUILD",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-base: optimize",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-base: sensitivity",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-base: plan c06+c07",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-base: plan (empty)",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-base: plan c03+c07+c12",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-base: plan c11+c12",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-base: plan c02+c07+c12",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-conflict-budget: source_snapshot convention = BUILD",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-conflict-budget: optimize",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-conflict-budget: sensitivity",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-conflict-budget: plan c04+c11",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-conflict-budget: plan (empty)",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-conflict-count: source_snapshot convention = BUILD",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-conflict-count: optimize",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-conflict-count: sensitivity",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-conflict-count: plan c01+c02+c03+c04",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-conflict-count: plan (empty)",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-invalid-inputs: source_snapshot convention = BUILD",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-invalid-inputs/duplicate_key",
+   "status": "PASS",
+   "note": "build code bad_json"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-invalid-inputs/nan",
+   "status": "PASS",
+   "note": "build code bad_json"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-invalid-inputs/infinity",
+   "status": "PASS",
+   "note": "build code bad_json"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-invalid-inputs/float_overflow_1e999",
+   "status": "PASS",
+   "note": "build code bad_json"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-invalid-inputs/integer_overflow",
+   "status": "PASS",
+   "note": "build code bad_json"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-invalid-inputs/trailing_garbage",
+   "status": "PASS",
+   "note": "build code bad_json"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-invalid-inputs/too_large",
+   "status": "PASS",
+   "note": "build code too_large"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-invalid-inputs/schema_v1",
+   "status": "PASS",
+   "note": "build code wrong_version"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-invalid-inputs/missing_budget",
+   "status": "PASS",
+   "note": "build code missing_field"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-invalid-inputs/unexpected_top_field",
+   "status": "PASS",
+   "note": "build code unknown_field"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-invalid-inputs/url_field",
+   "status": "PASS",
+   "note": "build code unknown_field"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-invalid-inputs/other_city",
+   "status": "PASS",
+   "note": "build code outside_bbox"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-invalid-inputs/foreign_snapshot",
+   "status": "PASS",
+   "note": "build code foreign_snapshot"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-invalid-inputs/bad_category",
+   "status": "PASS",
+   "note": "build code bad_category"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-invalid-inputs/point_out_of_bbox",
+   "status": "PASS",
+   "note": "build code outside_bbox"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-invalid-inputs/candidate_out_of_bbox",
+   "status": "PASS",
+   "note": "build code outside_bbox"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-invalid-inputs/lat_as_string",
+   "status": "PASS",
+   "note": "build code bad_coord"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-invalid-inputs/point_extra_field",
+   "status": "PASS",
+   "note": "build code bad_shape"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-invalid-inputs/zero_points",
+   "status": "PASS",
+   "note": "build code bad_points"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-invalid-inputs/26_points",
+   "status": "PASS",
+   "note": "build code bad_points"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-invalid-inputs/17_candidates",
+   "status": "PASS",
+   "note": "build code too_many_candidates"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-invalid-inputs/duplicate_point_id",
+   "status": "PASS",
+   "note": "build code duplicate_id"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-invalid-inputs/duplicate_candidate_id",
+   "status": "PASS",
+   "note": "build code duplicate_id"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-invalid-inputs/id_65_chars",
+   "status": "PASS",
+   "note": "build code bad_id"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-invalid-inputs/id_empty",
+   "status": "PASS",
+   "note": "build code bad_id"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-invalid-inputs/id_number",
+   "status": "PASS",
+   "note": "build code bad_id"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-invalid-inputs/weight_0",
+   "status": "PASS",
+   "note": "build code bad_weight"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-invalid-inputs/weight_101",
+   "status": "PASS",
+   "note": "build code bad_weight"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-invalid-inputs/weight_fraction",
+   "status": "PASS",
+   "note": "build code bad_weight"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-invalid-inputs/weight_bool",
+   "status": "PASS",
+   "note": "build code bad_weight"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-invalid-inputs/cost_0",
+   "status": "PASS",
+   "note": "build code bad_cost"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-invalid-inputs/cost_over_max",
+   "status": "PASS",
+   "note": "build code bad_cost"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-invalid-inputs/budget_negative",
+   "status": "PASS",
+   "note": "build code bad_budget"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-invalid-inputs/budget_over_max",
+   "status": "PASS",
+   "note": "build code bad_budget"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-invalid-inputs/max_selected_6",
+   "status": "PASS",
+   "note": "build code bad_max_selected"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-invalid-inputs/radius_99",
+   "status": "PASS",
+   "note": "build code bad_radius"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-invalid-inputs/radius_5001",
+   "status": "PASS",
+   "note": "build code bad_radius"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-invalid-inputs/candidate_wrong_category",
+   "status": "PASS",
+   "note": "build code bad_category"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-invalid-inputs/candidate_kind_source",
+   "status": "PASS",
+   "note": "build code bad_kind"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-invalid-inputs/required_excluded_overlap",
+   "status": "PASS",
+   "note": "build code required_excluded_overlap"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-invalid-inputs/required_unknown",
+   "status": "PASS",
+   "note": "build code unknown_ref"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-invalid-inputs/selected_source_record_id",
+   "status": "PASS",
+   "note": "build code unknown_ref"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-invalid-inputs/selected_duplicate",
+   "status": "PASS",
+   "note": "build code duplicate_id"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-invalid-inputs/derived_results_forged",
+   "status": "INFO",
+   "detail": "expected rejected=false (-), build forged_derived",
+   "note": "intentional policy difference: BUILD rejects derived_results that differ from recomputation (K12 r8 P1; CORE_SPEC allows both)"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-invalid-inputs/html_in_ids",
+   "status": "INFO",
+   "detail": "expected rejected=false (-), build bad_id",
+   "note": "intentional policy difference: BUILD IDs are letters/digits of any script + _ . - in NFC (r7/r8 rule kept in r9 CORE_SPEC); markup in IDs is refused, other strings are shown as text"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-required-excluded: source_snapshot convention = BUILD",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-required-excluded: optimize",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-required-excluded: sensitivity",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-required-excluded: plan c06+c07",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-required-excluded: plan (empty)",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-required-excluded: plan c11+c12",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-required-excluded: plan c08+c12",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-seeded: source_snapshot convention = BUILD",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-seeded: optimize",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-seeded: sensitivity",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-seeded: plan (empty)",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-seeded: plan r03+r05+r11+r12",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-seeded: plan r03+r05+r08+r12",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-seeded: plan r04+r05+r06+r08",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-tight-budget: source_snapshot convention = BUILD",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-tight-budget: optimize",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-tight-budget: sensitivity",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-tight-budget: plan c06+c07",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-tight-budget: plan (empty)",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-tight-budget: plan c07",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-zero-budget: source_snapshot convention = BUILD",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-zero-budget: optimize",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-zero-budget: sensitivity",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-zero-budget: plan c06+c07",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "astana-school-zero-budget: plan (empty)",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-outpatient_clinic-base: source_snapshot convention = BUILD",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-outpatient_clinic-base: optimize",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-outpatient_clinic-base: sensitivity",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-outpatient_clinic-base: plan c06+c07",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-outpatient_clinic-base: plan (empty)",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-outpatient_clinic-base: plan c02+c03+c12",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-outpatient_clinic-base: plan c01+c12",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-outpatient_clinic-conflict-budget: source_snapshot convention = BUILD",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-outpatient_clinic-conflict-budget: optimize",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-outpatient_clinic-conflict-budget: sensitivity",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-outpatient_clinic-conflict-budget: plan c04+c11",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-outpatient_clinic-conflict-budget: plan (empty)",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-outpatient_clinic-conflict-count: source_snapshot convention = BUILD",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-outpatient_clinic-conflict-count: optimize",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-outpatient_clinic-conflict-count: sensitivity",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-outpatient_clinic-conflict-count: plan c01+c02+c03+c04",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-outpatient_clinic-conflict-count: plan (empty)",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-outpatient_clinic-qa-nearest: source_snapshot convention = BUILD",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-outpatient_clinic-qa-nearest: optimize",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-outpatient_clinic-qa-nearest: sensitivity",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-outpatient_clinic-qa-nearest: plan c06+c07",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-outpatient_clinic-qa-nearest: plan (empty)",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-outpatient_clinic-qa-nearest: plan c02+c03+c12",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-outpatient_clinic-qa-nearest: plan c01+c12",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-outpatient_clinic-required-excluded: source_snapshot convention = BUILD",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-outpatient_clinic-required-excluded: optimize",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-outpatient_clinic-required-excluded: sensitivity",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-outpatient_clinic-required-excluded: plan c06+c07",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-outpatient_clinic-required-excluded: plan (empty)",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-outpatient_clinic-required-excluded: plan c01+c12",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-outpatient_clinic-seeded: source_snapshot convention = BUILD",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-outpatient_clinic-seeded: optimize",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-outpatient_clinic-seeded: sensitivity",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-outpatient_clinic-seeded: plan (empty)",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-outpatient_clinic-seeded: plan r04+r06+r11+r14",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-outpatient_clinic-tight-budget: source_snapshot convention = BUILD",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-outpatient_clinic-tight-budget: optimize",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-outpatient_clinic-tight-budget: sensitivity",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-outpatient_clinic-tight-budget: plan c06+c07",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-outpatient_clinic-tight-budget: plan (empty)",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-outpatient_clinic-zero-budget: source_snapshot convention = BUILD",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-outpatient_clinic-zero-budget: optimize",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-outpatient_clinic-zero-budget: sensitivity",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-outpatient_clinic-zero-budget: plan c06+c07",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-outpatient_clinic-zero-budget: plan (empty)",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-base: source_snapshot convention = BUILD",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-base: optimize",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-base: sensitivity",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-base: plan c06+c07",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-base: plan (empty)",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-base: plan c01+c03+c07",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-conflict-budget: source_snapshot convention = BUILD",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-conflict-budget: optimize",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-conflict-budget: sensitivity",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-conflict-budget: plan c04+c11",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-conflict-budget: plan (empty)",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-conflict-count: source_snapshot convention = BUILD",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-conflict-count: optimize",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-conflict-count: sensitivity",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-conflict-count: plan c01+c02+c03+c04",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-conflict-count: plan (empty)",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-invalid-inputs: source_snapshot convention = BUILD",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-invalid-inputs/duplicate_key",
+   "status": "PASS",
+   "note": "build code bad_json"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-invalid-inputs/nan",
+   "status": "PASS",
+   "note": "build code bad_json"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-invalid-inputs/infinity",
+   "status": "PASS",
+   "note": "build code bad_json"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-invalid-inputs/float_overflow_1e999",
+   "status": "PASS",
+   "note": "build code bad_json"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-invalid-inputs/integer_overflow",
+   "status": "PASS",
+   "note": "build code bad_json"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-invalid-inputs/trailing_garbage",
+   "status": "PASS",
+   "note": "build code bad_json"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-invalid-inputs/too_large",
+   "status": "PASS",
+   "note": "build code too_large"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-invalid-inputs/schema_v1",
+   "status": "PASS",
+   "note": "build code wrong_version"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-invalid-inputs/missing_budget",
+   "status": "PASS",
+   "note": "build code missing_field"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-invalid-inputs/unexpected_top_field",
+   "status": "PASS",
+   "note": "build code unknown_field"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-invalid-inputs/url_field",
+   "status": "PASS",
+   "note": "build code unknown_field"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-invalid-inputs/other_city",
+   "status": "PASS",
+   "note": "build code outside_bbox"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-invalid-inputs/foreign_snapshot",
+   "status": "PASS",
+   "note": "build code foreign_snapshot"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-invalid-inputs/bad_category",
+   "status": "PASS",
+   "note": "build code bad_category"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-invalid-inputs/point_out_of_bbox",
+   "status": "PASS",
+   "note": "build code outside_bbox"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-invalid-inputs/candidate_out_of_bbox",
+   "status": "PASS",
+   "note": "build code outside_bbox"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-invalid-inputs/lat_as_string",
+   "status": "PASS",
+   "note": "build code bad_coord"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-invalid-inputs/point_extra_field",
+   "status": "PASS",
+   "note": "build code bad_shape"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-invalid-inputs/zero_points",
+   "status": "PASS",
+   "note": "build code bad_points"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-invalid-inputs/26_points",
+   "status": "PASS",
+   "note": "build code bad_points"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-invalid-inputs/17_candidates",
+   "status": "PASS",
+   "note": "build code too_many_candidates"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-invalid-inputs/duplicate_point_id",
+   "status": "PASS",
+   "note": "build code duplicate_id"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-invalid-inputs/duplicate_candidate_id",
+   "status": "PASS",
+   "note": "build code duplicate_id"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-invalid-inputs/id_65_chars",
+   "status": "PASS",
+   "note": "build code bad_id"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-invalid-inputs/id_empty",
+   "status": "PASS",
+   "note": "build code bad_id"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-invalid-inputs/id_number",
+   "status": "PASS",
+   "note": "build code bad_id"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-invalid-inputs/weight_0",
+   "status": "PASS",
+   "note": "build code bad_weight"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-invalid-inputs/weight_101",
+   "status": "PASS",
+   "note": "build code bad_weight"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-invalid-inputs/weight_fraction",
+   "status": "PASS",
+   "note": "build code bad_weight"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-invalid-inputs/weight_bool",
+   "status": "PASS",
+   "note": "build code bad_weight"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-invalid-inputs/cost_0",
+   "status": "PASS",
+   "note": "build code bad_cost"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-invalid-inputs/cost_over_max",
+   "status": "PASS",
+   "note": "build code bad_cost"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-invalid-inputs/budget_negative",
+   "status": "PASS",
+   "note": "build code bad_budget"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-invalid-inputs/budget_over_max",
+   "status": "PASS",
+   "note": "build code bad_budget"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-invalid-inputs/max_selected_6",
+   "status": "PASS",
+   "note": "build code bad_max_selected"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-invalid-inputs/radius_99",
+   "status": "PASS",
+   "note": "build code bad_radius"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-invalid-inputs/radius_5001",
+   "status": "PASS",
+   "note": "build code bad_radius"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-invalid-inputs/candidate_wrong_category",
+   "status": "PASS",
+   "note": "build code bad_category"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-invalid-inputs/candidate_kind_source",
+   "status": "PASS",
+   "note": "build code bad_kind"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-invalid-inputs/required_excluded_overlap",
+   "status": "PASS",
+   "note": "build code required_excluded_overlap"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-invalid-inputs/required_unknown",
+   "status": "PASS",
+   "note": "build code unknown_ref"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-invalid-inputs/selected_source_record_id",
+   "status": "PASS",
+   "note": "build code unknown_ref"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-invalid-inputs/selected_duplicate",
+   "status": "PASS",
+   "note": "build code duplicate_id"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-invalid-inputs/derived_results_forged",
+   "status": "INFO",
+   "detail": "expected rejected=false (-), build forged_derived",
+   "note": "intentional policy difference: BUILD rejects derived_results that differ from recomputation (K12 r8 P1; CORE_SPEC allows both)"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-invalid-inputs/html_in_ids",
+   "status": "INFO",
+   "detail": "expected rejected=false (-), build bad_id",
+   "note": "intentional policy difference: BUILD IDs are letters/digits of any script + _ . - in NFC (r7/r8 rule kept in r9 CORE_SPEC); markup in IDs is refused, other strings are shown as text"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-qa-nearest: source_snapshot convention = BUILD",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-qa-nearest: optimize",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-qa-nearest: sensitivity",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-qa-nearest: plan c06+c07",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-qa-nearest: plan (empty)",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-qa-nearest: plan c01+c03+c07",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-required-excluded: source_snapshot convention = BUILD",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-required-excluded: optimize",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-required-excluded: sensitivity",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-required-excluded: plan c06+c07",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-required-excluded: plan (empty)",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-required-excluded: plan c02+c10+c12",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-required-excluded: plan c04+c12",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-seeded: source_snapshot convention = BUILD",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-seeded: optimize",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-seeded: sensitivity",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-seeded: plan (empty)",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-seeded: plan r09+r12+r14",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-tight-budget: source_snapshot convention = BUILD",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-tight-budget: optimize",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-tight-budget: sensitivity",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-tight-budget: plan c06+c07",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-tight-budget: plan (empty)",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-tight-budget: plan c07",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-zero-budget: source_snapshot convention = BUILD",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-zero-budget: optimize",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-zero-budget: sensitivity",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-zero-budget: plan c06+c07",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "shymkent-school-zero-budget: plan (empty)",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "synthetic-empty-baseline: optimize",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "synthetic-empty-baseline: sensitivity",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "synthetic-empty-baseline: plan (empty)",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "synthetic-empty-baseline: plan k1+k4",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "synthetic-empty-baseline: plan k1+k5",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "synthetic-mean-tiebreak: optimize",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "synthetic-mean-tiebreak: sensitivity",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "synthetic-mean-tiebreak: plan (empty)",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "synthetic-mean-tiebreak: plan B",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "synthetic-mean-tiebreak: plan A",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "synthetic-minimax-tiebreak: optimize",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "synthetic-minimax-tiebreak: sensitivity",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "synthetic-minimax-tiebreak: plan (empty)",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "synthetic-minimax-tiebreak: plan X+Y",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "synthetic-objectives-differ: optimize",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "synthetic-objectives-differ: sensitivity",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "synthetic-objectives-differ: plan a",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "synthetic-objectives-differ: plan (empty)",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "synthetic-objectives-differ: plan e",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "synthetic-objectives-differ: plan c",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "synthetic-objectives-differ: plan b",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "synthetic-ties: optimize",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "synthetic-ties: sensitivity",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "synthetic-ties: plan a0",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "synthetic-ties: plan (empty)",
+   "status": "PASS"
+  },
+  {
+   "src": "K10",
+   "name": "synthetic-ties: plan t1",
+   "status": "PASS"
+  }
+ ]
+}

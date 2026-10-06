@@ -1,0 +1,833 @@
+{
+ "pack_format": "k10-plan-pack-v1",
+ "pack_id": "synthetic-objectives-differ",
+ "kind": "synthetic",
+ "stage": 2,
+ "purpose": "designed so that mean, minimax and coverage pick different single candidates",
+ "city_id": "synthetic-equator",
+ "category": "school",
+ "design": {
+  "hand_expectation": {
+   "mean": [
+    "e"
+   ],
+   "minimax": [
+    "c"
+   ],
+   "coverage": [
+    "b"
+   ]
+  },
+  "why": "e: smallest weighted sum (11000 m); c: smallest worst point (2500 m); b: covers P2+P3 (weight 8) within 300 m"
+ },
+ "synthetic_slice": {
+  "bbox": [
+   -0.01,
+   -0.01,
+   0.2,
+   0.01
+  ],
+  "source_snapshot": "synthetic:8e04c3da2d82d2e8c7521fa7f5cf1f31efed12c786fa65f4f7aff74a472c6f3c",
+  "records": [
+   {
+    "id": "src1",
+    "lon": 0.1798641,
+    "lat": 0.0,
+    "group": "school",
+    "name": "S",
+    "qa_flags": []
+   }
+  ],
+  "note": "SYNTHETIC geometry on the equator near 0°E; not Shymkent or Astana data"
+ },
+ "scenario": {
+  "schema_version": "city-plan-v2",
+  "city_id": "synthetic-equator",
+  "source_snapshot": "synthetic:8e04c3da2d82d2e8c7521fa7f5cf1f31efed12c786fa65f4f7aff74a472c6f3c",
+  "category": "school",
+  "control_points": [
+   {
+    "id": "P1",
+    "lon": 0.0,
+    "lat": 0.0,
+    "weight": 5
+   },
+   {
+    "id": "P2",
+    "lon": 0.0089932,
+    "lat": 0.0,
+    "weight": 4
+   },
+   {
+    "id": "P3",
+    "lon": 0.0134898,
+    "lat": 0.0,
+    "weight": 4
+   },
+   {
+    "id": "P4",
+    "lon": 0.044966,
+    "lat": 0.0,
+    "weight": 1
+   }
+  ],
+  "candidates": [
+   {
+    "id": "a",
+    "lon": 0.0,
+    "lat": 0.0,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 1
+   },
+   {
+    "id": "b",
+    "lon": 0.0112415,
+    "lat": 0.0,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 2
+   },
+   {
+    "id": "c",
+    "lon": 0.022483,
+    "lat": 0.0,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 3
+   },
+   {
+    "id": "e",
+    "lon": 0.0089932,
+    "lat": 0.0,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 4
+   }
+  ],
+  "budget": 10,
+  "max_selected": 1,
+  "coverage_radius_m": 300,
+  "required_ids": [],
+  "excluded_ids": [],
+  "selected_ids": [
+   "a"
+  ]
+ },
+ "expected": {
+  "generated_by": "k10plan.oracle",
+  "metric_version": "haversine-mm-v1",
+  "validation": "accepted",
+  "problem_digest": "sha256:cb6d707e0b0d64970ea2f64285b5ba3490565c857157adb5d6e04ad126371b43",
+  "scenario_digest": "sha256:ad4f979df36c28815bbbef557939a622fcd54330dfc5dc157987106c5a2a160c",
+  "optimize": {
+   "status": "optimal",
+   "metric_version": "haversine-mm-v1",
+   "problem_digest": "sha256:cb6d707e0b0d64970ea2f64285b5ba3490565c857157adb5d6e04ad126371b43",
+   "evaluated": 5,
+   "feasible_count": 5,
+   "candidate_count": 4,
+   "objectives": {
+    "mean": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 10999998,
+     "weighted_mean_mm": 785714.1428571428,
+     "max_mm": 3999998,
+     "covered_weight": 4,
+     "coverage_fraction": 0.2857142857142857,
+     "cost": 4,
+     "selected_ids": [
+      "e"
+     ]
+    },
+    "minimax": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 24999990,
+     "weighted_mean_mm": 1785713.5714285714,
+     "max_mm": 2499999,
+     "covered_weight": 0,
+     "coverage_fraction": 0.0,
+     "cost": 3,
+     "selected_ids": [
+      "c"
+     ]
+    },
+    "coverage": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 11999993,
+     "weighted_mean_mm": 857142.3571428572,
+     "max_mm": 3749998,
+     "covered_weight": 8,
+     "coverage_fraction": 0.5714285714285714,
+     "cost": 2,
+     "selected_ids": [
+      "b"
+     ]
+    }
+   },
+   "pareto": [
+    {
+     "cost": 0,
+     "weighted_sum_mm": 265000048,
+     "selected_ids": []
+    },
+    {
+     "cost": 1,
+     "weighted_sum_mm": 14999994,
+     "selected_ids": [
+      "a"
+     ]
+    },
+    {
+     "cost": 2,
+     "weighted_sum_mm": 11999993,
+     "selected_ids": [
+      "b"
+     ]
+    },
+    {
+     "cost": 4,
+     "weighted_sum_mm": 10999998,
+     "selected_ids": [
+      "e"
+     ]
+    }
+   ],
+   "pareto_note": null,
+   "sensitivity": [
+    {
+     "budget": 0,
+     "status": "optimal",
+     "objectives": {
+      "mean": {
+       "selected_ids": [],
+       "cost": 0,
+       "weighted_sum_mm": 265000048,
+       "max_mm": 20000003,
+       "covered_weight": 0,
+       "unknown_count": 0
+      },
+      "minimax": {
+       "selected_ids": [],
+       "cost": 0,
+       "weighted_sum_mm": 265000048,
+       "max_mm": 20000003,
+       "covered_weight": 0,
+       "unknown_count": 0
+      },
+      "coverage": {
+       "selected_ids": [],
+       "cost": 0,
+       "weighted_sum_mm": 265000048,
+       "max_mm": 20000003,
+       "covered_weight": 0,
+       "unknown_count": 0
+      }
+     },
+     "infeasible_reasons": null
+    },
+    {
+     "budget": 5,
+     "status": "optimal",
+     "objectives": {
+      "mean": {
+       "selected_ids": [
+        "e"
+       ],
+       "cost": 4,
+       "weighted_sum_mm": 10999998,
+       "max_mm": 3999998,
+       "covered_weight": 4,
+       "unknown_count": 0
+      },
+      "minimax": {
+       "selected_ids": [
+        "c"
+       ],
+       "cost": 3,
+       "weighted_sum_mm": 24999990,
+       "max_mm": 2499999,
+       "covered_weight": 0,
+       "unknown_count": 0
+      },
+      "coverage": {
+       "selected_ids": [
+        "b"
+       ],
+       "cost": 2,
+       "weighted_sum_mm": 11999993,
+       "max_mm": 3749998,
+       "covered_weight": 8,
+       "unknown_count": 0
+      }
+     },
+     "infeasible_reasons": null
+    },
+    {
+     "budget": 10,
+     "status": "optimal",
+     "objectives": {
+      "mean": {
+       "selected_ids": [
+        "e"
+       ],
+       "cost": 4,
+       "weighted_sum_mm": 10999998,
+       "max_mm": 3999998,
+       "covered_weight": 4,
+       "unknown_count": 0
+      },
+      "minimax": {
+       "selected_ids": [
+        "c"
+       ],
+       "cost": 3,
+       "weighted_sum_mm": 24999990,
+       "max_mm": 2499999,
+       "covered_weight": 0,
+       "unknown_count": 0
+      },
+      "coverage": {
+       "selected_ids": [
+        "b"
+       ],
+       "cost": 2,
+       "weighted_sum_mm": 11999993,
+       "max_mm": 3749998,
+       "covered_weight": 8,
+       "unknown_count": 0
+      }
+     },
+     "infeasible_reasons": null
+    }
+   ]
+  },
+  "plan_refs": {
+   "manual": "a",
+   "baseline": "(empty)",
+   "mean": "e",
+   "minimax": "c",
+   "coverage": "b"
+  },
+  "plans": {
+   "a": {
+    "rows": [
+     {
+      "control_point_id": "P1",
+      "weight": 5,
+      "before_mm": 20000003,
+      "nearest_before": {
+       "kind": "source",
+       "id": "src1"
+      },
+      "after_mm": 0,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "a"
+      },
+      "delta_mm": 20000003,
+      "tied_before_ids": [
+       "src1"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "P2",
+      "weight": 4,
+      "before_mm": 19000003,
+      "nearest_before": {
+       "kind": "source",
+       "id": "src1"
+      },
+      "after_mm": 1000000,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "a"
+      },
+      "delta_mm": 18000003,
+      "tied_before_ids": [
+       "src1"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "P3",
+      "weight": 4,
+      "before_mm": 18500004,
+      "nearest_before": {
+       "kind": "source",
+       "id": "src1"
+      },
+      "after_mm": 1499999,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "a"
+      },
+      "delta_mm": 17000005,
+      "tied_before_ids": [
+       "src1"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "P4",
+      "weight": 1,
+      "before_mm": 15000005,
+      "nearest_before": {
+       "kind": "source",
+       "id": "src1"
+      },
+      "after_mm": 4999998,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "a"
+      },
+      "delta_mm": 10000007,
+      "tied_before_ids": [
+       "src1"
+      ],
+      "nearest_before_qa_flags": []
+     }
+    ],
+    "metrics": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 14999994,
+     "weighted_mean_mm": 1071428.142857143,
+     "max_mm": 4999998,
+     "covered_weight": 5,
+     "coverage_fraction": 0.35714285714285715,
+     "cost": 1,
+     "selected_ids": [
+      "a"
+     ]
+    },
+    "feasibility": {
+     "feasible": true,
+     "reasons": []
+    },
+    "baseline_records_in_category": 1
+   },
+   "(empty)": {
+    "rows": [
+     {
+      "control_point_id": "P1",
+      "weight": 5,
+      "before_mm": 20000003,
+      "nearest_before": {
+       "kind": "source",
+       "id": "src1"
+      },
+      "after_mm": 20000003,
+      "nearest_after": {
+       "kind": "source",
+       "id": "src1"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "src1"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "P2",
+      "weight": 4,
+      "before_mm": 19000003,
+      "nearest_before": {
+       "kind": "source",
+       "id": "src1"
+      },
+      "after_mm": 19000003,
+      "nearest_after": {
+       "kind": "source",
+       "id": "src1"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "src1"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "P3",
+      "weight": 4,
+      "before_mm": 18500004,
+      "nearest_before": {
+       "kind": "source",
+       "id": "src1"
+      },
+      "after_mm": 18500004,
+      "nearest_after": {
+       "kind": "source",
+       "id": "src1"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "src1"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "P4",
+      "weight": 1,
+      "before_mm": 15000005,
+      "nearest_before": {
+       "kind": "source",
+       "id": "src1"
+      },
+      "after_mm": 15000005,
+      "nearest_after": {
+       "kind": "source",
+       "id": "src1"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "src1"
+      ],
+      "nearest_before_qa_flags": []
+     }
+    ],
+    "metrics": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 265000048,
+     "weighted_mean_mm": 18928574.85714286,
+     "max_mm": 20000003,
+     "covered_weight": 0,
+     "coverage_fraction": 0.0,
+     "cost": 0,
+     "selected_ids": []
+    },
+    "feasibility": {
+     "feasible": true,
+     "reasons": []
+    },
+    "baseline_records_in_category": 1
+   },
+   "e": {
+    "rows": [
+     {
+      "control_point_id": "P1",
+      "weight": 5,
+      "before_mm": 20000003,
+      "nearest_before": {
+       "kind": "source",
+       "id": "src1"
+      },
+      "after_mm": 1000000,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "e"
+      },
+      "delta_mm": 19000003,
+      "tied_before_ids": [
+       "src1"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "P2",
+      "weight": 4,
+      "before_mm": 19000003,
+      "nearest_before": {
+       "kind": "source",
+       "id": "src1"
+      },
+      "after_mm": 0,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "e"
+      },
+      "delta_mm": 19000003,
+      "tied_before_ids": [
+       "src1"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "P3",
+      "weight": 4,
+      "before_mm": 18500004,
+      "nearest_before": {
+       "kind": "source",
+       "id": "src1"
+      },
+      "after_mm": 500000,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "e"
+      },
+      "delta_mm": 18000004,
+      "tied_before_ids": [
+       "src1"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "P4",
+      "weight": 1,
+      "before_mm": 15000005,
+      "nearest_before": {
+       "kind": "source",
+       "id": "src1"
+      },
+      "after_mm": 3999998,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "e"
+      },
+      "delta_mm": 11000007,
+      "tied_before_ids": [
+       "src1"
+      ],
+      "nearest_before_qa_flags": []
+     }
+    ],
+    "metrics": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 10999998,
+     "weighted_mean_mm": 785714.1428571428,
+     "max_mm": 3999998,
+     "covered_weight": 4,
+     "coverage_fraction": 0.2857142857142857,
+     "cost": 4,
+     "selected_ids": [
+      "e"
+     ]
+    },
+    "feasibility": {
+     "feasible": true,
+     "reasons": []
+    },
+    "baseline_records_in_category": 1
+   },
+   "c": {
+    "rows": [
+     {
+      "control_point_id": "P1",
+      "weight": 5,
+      "before_mm": 20000003,
+      "nearest_before": {
+       "kind": "source",
+       "id": "src1"
+      },
+      "after_mm": 2499999,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "c"
+      },
+      "delta_mm": 17500004,
+      "tied_before_ids": [
+       "src1"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "P2",
+      "weight": 4,
+      "before_mm": 19000003,
+      "nearest_before": {
+       "kind": "source",
+       "id": "src1"
+      },
+      "after_mm": 1499999,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "c"
+      },
+      "delta_mm": 17500004,
+      "tied_before_ids": [
+       "src1"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "P3",
+      "weight": 4,
+      "before_mm": 18500004,
+      "nearest_before": {
+       "kind": "source",
+       "id": "src1"
+      },
+      "after_mm": 1000000,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "c"
+      },
+      "delta_mm": 17500004,
+      "tied_before_ids": [
+       "src1"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "P4",
+      "weight": 1,
+      "before_mm": 15000005,
+      "nearest_before": {
+       "kind": "source",
+       "id": "src1"
+      },
+      "after_mm": 2499999,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "c"
+      },
+      "delta_mm": 12500006,
+      "tied_before_ids": [
+       "src1"
+      ],
+      "nearest_before_qa_flags": []
+     }
+    ],
+    "metrics": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 24999990,
+     "weighted_mean_mm": 1785713.5714285714,
+     "max_mm": 2499999,
+     "covered_weight": 0,
+     "coverage_fraction": 0.0,
+     "cost": 3,
+     "selected_ids": [
+      "c"
+     ]
+    },
+    "feasibility": {
+     "feasible": true,
+     "reasons": []
+    },
+    "baseline_records_in_category": 1
+   },
+   "b": {
+    "rows": [
+     {
+      "control_point_id": "P1",
+      "weight": 5,
+      "before_mm": 20000003,
+      "nearest_before": {
+       "kind": "source",
+       "id": "src1"
+      },
+      "after_mm": 1249999,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "b"
+      },
+      "delta_mm": 18750004,
+      "tied_before_ids": [
+       "src1"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "P2",
+      "weight": 4,
+      "before_mm": 19000003,
+      "nearest_before": {
+       "kind": "source",
+       "id": "src1"
+      },
+      "after_mm": 250000,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "b"
+      },
+      "delta_mm": 18750003,
+      "tied_before_ids": [
+       "src1"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "P3",
+      "weight": 4,
+      "before_mm": 18500004,
+      "nearest_before": {
+       "kind": "source",
+       "id": "src1"
+      },
+      "after_mm": 250000,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "b"
+      },
+      "delta_mm": 18250004,
+      "tied_before_ids": [
+       "src1"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "P4",
+      "weight": 1,
+      "before_mm": 15000005,
+      "nearest_before": {
+       "kind": "source",
+       "id": "src1"
+      },
+      "after_mm": 3749998,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "b"
+      },
+      "delta_mm": 11250007,
+      "tied_before_ids": [
+       "src1"
+      ],
+      "nearest_before_qa_flags": []
+     }
+    ],
+    "metrics": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 11999993,
+     "weighted_mean_mm": 857142.3571428572,
+     "max_mm": 3749998,
+     "covered_weight": 8,
+     "coverage_fraction": 0.5714285714285714,
+     "cost": 2,
+     "selected_ids": [
+      "b"
+     ]
+    },
+    "feasibility": {
+     "feasible": true,
+     "reasons": []
+    },
+    "baseline_records_in_category": 1
+   }
+  }
+ },
+ "observations": {
+  "status": "optimal",
+  "evaluated": 5,
+  "feasible_count": 5,
+  "pareto_points": 4,
+  "winners": {
+   "mean": "e",
+   "minimax": "c",
+   "coverage": "b"
+  },
+  "objectives_agree": false,
+  "distinct_winner_sets": 3,
+  "differing_pairs": [
+   "coverage/mean",
+   "coverage/minimax",
+   "mean/minimax"
+  ],
+  "sensitivity": [
+   {
+    "budget": 0,
+    "status": "optimal",
+    "mean": "(empty)"
+   },
+   {
+    "budget": 5,
+    "status": "optimal",
+    "mean": "e"
+   },
+   {
+    "budget": 10,
+    "status": "optimal",
+    "mean": "e"
+   }
+  ]
+ }
+}

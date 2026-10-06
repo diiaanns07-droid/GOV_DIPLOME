@@ -1,0 +1,140 @@
+{
+ "schema_version": "city-plan-v2",
+ "city_id": "synthetic-equator",
+ "source_snapshot": "synthetic:8d4a8753cc1766f22c7d1a8c7bf4ca65871780e403a5ac669944fd0fd5c01148",
+ "category": "school",
+ "control_points": [
+  {
+   "id": "P0",
+   "lon": 0.0,
+   "lat": 0.0,
+   "weight": 1
+  },
+  {
+   "id": "P1",
+   "lon": 0.0089932,
+   "lat": 0.0,
+   "weight": 2
+  },
+  {
+   "id": "P2",
+   "lon": 0.0179864,
+   "lat": 0.0,
+   "weight": 3
+  },
+  {
+   "id": "P3",
+   "lon": 0.0269796,
+   "lat": 0.0,
+   "weight": 1
+  },
+  {
+   "id": "P4",
+   "lon": 0.0359728,
+   "lat": 0.0,
+   "weight": 2
+  },
+  {
+   "id": "P5",
+   "lon": 0.044966,
+   "lat": 0.0,
+   "weight": 3
+  },
+  {
+   "id": "P6",
+   "lon": 0.0539592,
+   "lat": 0.0,
+   "weight": 1
+  },
+  {
+   "id": "P7",
+   "lon": 0.0629524,
+   "lat": 0.0,
+   "weight": 2
+  },
+  {
+   "id": "P8",
+   "lon": 0.0719456,
+   "lat": 0.0,
+   "weight": 3
+  },
+  {
+   "id": "P9",
+   "lon": 0.0809388,
+   "lat": 0.0,
+   "weight": 1
+  }
+ ],
+ "candidates": [
+  {
+   "id": "k0",
+   "lon": 0.0022483,
+   "lat": 0.0,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 100
+  },
+  {
+   "id": "k1",
+   "lon": 0.0157381,
+   "lat": 0.0,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 125
+  },
+  {
+   "id": "k2",
+   "lon": 0.0292279,
+   "lat": 0.0,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 150
+  },
+  {
+   "id": "k3",
+   "lon": 0.0427177,
+   "lat": 0.0,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 175
+  },
+  {
+   "id": "k4",
+   "lon": 0.0562075,
+   "lat": 0.0,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 200
+  },
+  {
+   "id": "k5",
+   "lon": 0.0696973,
+   "lat": 0.0,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 225
+  },
+  {
+   "id": "k6",
+   "lon": 0.0831871,
+   "lat": 0.0,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 250
+  },
+  {
+   "id": "k7",
+   "lon": 0.0966769,
+   "lat": 0.0,
+   "category": "school",
+   "kind": "hypothetical",
+   "cost": 275
+  }
+ ],
+ "budget": 500,
+ "max_selected": 2,
+ "coverage_radius_m": 1000,
+ "required_ids": [],
+ "excluded_ids": [],
+ "selected_ids": []
+}

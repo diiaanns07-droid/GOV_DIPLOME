@@ -1,0 +1,646 @@
+{
+ "pack_format": "k10-plan-pack-v1",
+ "pack_id": "synthetic-ties",
+ "kind": "synthetic",
+ "stage": 2,
+ "purpose": "equal distances and equal plans: source beats hypothetical on ties even when the candidate id sorts first, smaller id beats larger, equal (cost, sum) collapse to one Pareto point, a point exactly at the radius is covered",
+ "city_id": "synthetic-equator",
+ "category": "school",
+ "design": {
+  "hand_expectation": {
+   "P1_nearest_before": "s0",
+   "manual_P1_nearest_after": {
+    "kind": "source",
+    "id": "s0"
+   },
+   "mean": [
+    "t1"
+   ],
+   "pareto": [
+    [
+     0,
+     []
+    ],
+    [
+     50,
+     [
+      "t1"
+     ]
+    ]
+   ],
+   "mean_P4_after_mm": 500000,
+   "coverage_covered_weight": 3
+  },
+  "why": "a0 sits on the sources ('a0' < 's0', yet the source wins the tie) and changes nothing; t1 and t2 are identical, t1 < t2; with t1, P1, P2 (0 m) and P4 (500 m = radius) are covered"
+ },
+ "synthetic_slice": {
+  "bbox": [
+   -0.01,
+   -0.01,
+   0.2,
+   0.01
+  ],
+  "source_snapshot": "synthetic:35c20ba1542173ffd4f93b2326df1b4f0cb902b8e04ba4b2dc6b7c459e33859b",
+  "records": [
+   {
+    "id": "s1",
+    "lon": 0.0,
+    "lat": 0.0,
+    "group": "school",
+    "name": "S1",
+    "qa_flags": []
+   },
+   {
+    "id": "s0",
+    "lon": 0.0,
+    "lat": 0.0,
+    "group": "school",
+    "name": "S0",
+    "qa_flags": []
+   }
+  ],
+  "note": "SYNTHETIC geometry on the equator near 0°E; not Shymkent or Astana data"
+ },
+ "scenario": {
+  "schema_version": "city-plan-v2",
+  "city_id": "synthetic-equator",
+  "source_snapshot": "synthetic:35c20ba1542173ffd4f93b2326df1b4f0cb902b8e04ba4b2dc6b7c459e33859b",
+  "category": "school",
+  "control_points": [
+   {
+    "id": "P1",
+    "lon": 0.0,
+    "lat": 0.0,
+    "weight": 1
+   },
+   {
+    "id": "P2",
+    "lon": 0.0179864,
+    "lat": 0.0,
+    "weight": 1
+   },
+   {
+    "id": "P3",
+    "lon": 0.0269796,
+    "lat": 0.0,
+    "weight": 2
+   },
+   {
+    "id": "P4",
+    "lon": 0.02248300181862269,
+    "lat": 0.0,
+    "weight": 1
+   }
+  ],
+  "candidates": [
+   {
+    "id": "t2",
+    "lon": 0.0179864,
+    "lat": 0.0,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 50
+   },
+   {
+    "id": "t1",
+    "lon": 0.0179864,
+    "lat": 0.0,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 50
+   },
+   {
+    "id": "a0",
+    "lon": 0.0,
+    "lat": 0.0,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 10
+   }
+  ],
+  "budget": 100,
+  "max_selected": 1,
+  "coverage_radius_m": 500,
+  "required_ids": [],
+  "excluded_ids": [],
+  "selected_ids": [
+   "a0"
+  ]
+ },
+ "expected": {
+  "generated_by": "k10plan.oracle",
+  "metric_version": "haversine-mm-v1",
+  "validation": "accepted",
+  "problem_digest": "sha256:43d06ccb2817d4de65417af78193be29abe7b07b7adad2c377d3620325286051",
+  "scenario_digest": "sha256:249f0b08752611c52d04058dcae8de6afdbbcb4265426277a137faafe54498c1",
+  "optimize": {
+   "status": "optimal",
+   "metric_version": "haversine-mm-v1",
+   "problem_digest": "sha256:43d06ccb2817d4de65417af78193be29abe7b07b7adad2c377d3620325286051",
+   "evaluated": 4,
+   "feasible_count": 4,
+   "candidate_count": 3,
+   "objectives": {
+    "mean": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 2500000,
+     "weighted_mean_mm": 500000.0,
+     "max_mm": 1000000,
+     "covered_weight": 3,
+     "coverage_fraction": 0.6,
+     "cost": 50,
+     "selected_ids": [
+      "t1"
+     ]
+    },
+    "minimax": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 2500000,
+     "weighted_mean_mm": 500000.0,
+     "max_mm": 1000000,
+     "covered_weight": 3,
+     "coverage_fraction": 0.6,
+     "cost": 50,
+     "selected_ids": [
+      "t1"
+     ]
+    },
+    "coverage": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 2500000,
+     "weighted_mean_mm": 500000.0,
+     "max_mm": 1000000,
+     "covered_weight": 3,
+     "coverage_fraction": 0.6,
+     "cost": 50,
+     "selected_ids": [
+      "t1"
+     ]
+    }
+   },
+   "pareto": [
+    {
+     "cost": 0,
+     "weighted_sum_mm": 10499996,
+     "selected_ids": []
+    },
+    {
+     "cost": 50,
+     "weighted_sum_mm": 2500000,
+     "selected_ids": [
+      "t1"
+     ]
+    }
+   ],
+   "pareto_note": null,
+   "sensitivity": [
+    {
+     "budget": 0,
+     "status": "optimal",
+     "objectives": {
+      "mean": {
+       "selected_ids": [],
+       "cost": 0,
+       "weighted_sum_mm": 10499996,
+       "max_mm": 2999999,
+       "covered_weight": 1,
+       "unknown_count": 0
+      },
+      "minimax": {
+       "selected_ids": [],
+       "cost": 0,
+       "weighted_sum_mm": 10499996,
+       "max_mm": 2999999,
+       "covered_weight": 1,
+       "unknown_count": 0
+      },
+      "coverage": {
+       "selected_ids": [],
+       "cost": 0,
+       "weighted_sum_mm": 10499996,
+       "max_mm": 2999999,
+       "covered_weight": 1,
+       "unknown_count": 0
+      }
+     },
+     "infeasible_reasons": null
+    },
+    {
+     "budget": 50,
+     "status": "optimal",
+     "objectives": {
+      "mean": {
+       "selected_ids": [
+        "t1"
+       ],
+       "cost": 50,
+       "weighted_sum_mm": 2500000,
+       "max_mm": 1000000,
+       "covered_weight": 3,
+       "unknown_count": 0
+      },
+      "minimax": {
+       "selected_ids": [
+        "t1"
+       ],
+       "cost": 50,
+       "weighted_sum_mm": 2500000,
+       "max_mm": 1000000,
+       "covered_weight": 3,
+       "unknown_count": 0
+      },
+      "coverage": {
+       "selected_ids": [
+        "t1"
+       ],
+       "cost": 50,
+       "weighted_sum_mm": 2500000,
+       "max_mm": 1000000,
+       "covered_weight": 3,
+       "unknown_count": 0
+      }
+     },
+     "infeasible_reasons": null
+    },
+    {
+     "budget": 100,
+     "status": "optimal",
+     "objectives": {
+      "mean": {
+       "selected_ids": [
+        "t1"
+       ],
+       "cost": 50,
+       "weighted_sum_mm": 2500000,
+       "max_mm": 1000000,
+       "covered_weight": 3,
+       "unknown_count": 0
+      },
+      "minimax": {
+       "selected_ids": [
+        "t1"
+       ],
+       "cost": 50,
+       "weighted_sum_mm": 2500000,
+       "max_mm": 1000000,
+       "covered_weight": 3,
+       "unknown_count": 0
+      },
+      "coverage": {
+       "selected_ids": [
+        "t1"
+       ],
+       "cost": 50,
+       "weighted_sum_mm": 2500000,
+       "max_mm": 1000000,
+       "covered_weight": 3,
+       "unknown_count": 0
+      }
+     },
+     "infeasible_reasons": null
+    }
+   ]
+  },
+  "plan_refs": {
+   "manual": "a0",
+   "baseline": "(empty)",
+   "mean": "t1",
+   "minimax": "t1",
+   "coverage": "t1"
+  },
+  "plans": {
+   "a0": {
+    "rows": [
+     {
+      "control_point_id": "P1",
+      "weight": 1,
+      "before_mm": 0,
+      "nearest_before": {
+       "kind": "source",
+       "id": "s0"
+      },
+      "after_mm": 0,
+      "nearest_after": {
+       "kind": "source",
+       "id": "s0"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "s0",
+       "s1"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "P2",
+      "weight": 1,
+      "before_mm": 1999999,
+      "nearest_before": {
+       "kind": "source",
+       "id": "s0"
+      },
+      "after_mm": 1999999,
+      "nearest_after": {
+       "kind": "source",
+       "id": "s0"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "s0",
+       "s1"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "P3",
+      "weight": 2,
+      "before_mm": 2999999,
+      "nearest_before": {
+       "kind": "source",
+       "id": "s0"
+      },
+      "after_mm": 2999999,
+      "nearest_after": {
+       "kind": "source",
+       "id": "s0"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "s0",
+       "s1"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "P4",
+      "weight": 1,
+      "before_mm": 2499999,
+      "nearest_before": {
+       "kind": "source",
+       "id": "s0"
+      },
+      "after_mm": 2499999,
+      "nearest_after": {
+       "kind": "source",
+       "id": "s0"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "s0",
+       "s1"
+      ],
+      "nearest_before_qa_flags": []
+     }
+    ],
+    "metrics": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 10499996,
+     "weighted_mean_mm": 2099999.2,
+     "max_mm": 2999999,
+     "covered_weight": 1,
+     "coverage_fraction": 0.2,
+     "cost": 10,
+     "selected_ids": [
+      "a0"
+     ]
+    },
+    "feasibility": {
+     "feasible": true,
+     "reasons": []
+    },
+    "baseline_records_in_category": 2
+   },
+   "(empty)": {
+    "rows": [
+     {
+      "control_point_id": "P1",
+      "weight": 1,
+      "before_mm": 0,
+      "nearest_before": {
+       "kind": "source",
+       "id": "s0"
+      },
+      "after_mm": 0,
+      "nearest_after": {
+       "kind": "source",
+       "id": "s0"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "s0",
+       "s1"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "P2",
+      "weight": 1,
+      "before_mm": 1999999,
+      "nearest_before": {
+       "kind": "source",
+       "id": "s0"
+      },
+      "after_mm": 1999999,
+      "nearest_after": {
+       "kind": "source",
+       "id": "s0"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "s0",
+       "s1"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "P3",
+      "weight": 2,
+      "before_mm": 2999999,
+      "nearest_before": {
+       "kind": "source",
+       "id": "s0"
+      },
+      "after_mm": 2999999,
+      "nearest_after": {
+       "kind": "source",
+       "id": "s0"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "s0",
+       "s1"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "P4",
+      "weight": 1,
+      "before_mm": 2499999,
+      "nearest_before": {
+       "kind": "source",
+       "id": "s0"
+      },
+      "after_mm": 2499999,
+      "nearest_after": {
+       "kind": "source",
+       "id": "s0"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "s0",
+       "s1"
+      ],
+      "nearest_before_qa_flags": []
+     }
+    ],
+    "metrics": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 10499996,
+     "weighted_mean_mm": 2099999.2,
+     "max_mm": 2999999,
+     "covered_weight": 1,
+     "coverage_fraction": 0.2,
+     "cost": 0,
+     "selected_ids": []
+    },
+    "feasibility": {
+     "feasible": true,
+     "reasons": []
+    },
+    "baseline_records_in_category": 2
+   },
+   "t1": {
+    "rows": [
+     {
+      "control_point_id": "P1",
+      "weight": 1,
+      "before_mm": 0,
+      "nearest_before": {
+       "kind": "source",
+       "id": "s0"
+      },
+      "after_mm": 0,
+      "nearest_after": {
+       "kind": "source",
+       "id": "s0"
+      },
+      "delta_mm": 0,
+      "tied_before_ids": [
+       "s0",
+       "s1"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "P2",
+      "weight": 1,
+      "before_mm": 1999999,
+      "nearest_before": {
+       "kind": "source",
+       "id": "s0"
+      },
+      "after_mm": 0,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "t1"
+      },
+      "delta_mm": 1999999,
+      "tied_before_ids": [
+       "s0",
+       "s1"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "P3",
+      "weight": 2,
+      "before_mm": 2999999,
+      "nearest_before": {
+       "kind": "source",
+       "id": "s0"
+      },
+      "after_mm": 1000000,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "t1"
+      },
+      "delta_mm": 1999999,
+      "tied_before_ids": [
+       "s0",
+       "s1"
+      ],
+      "nearest_before_qa_flags": []
+     },
+     {
+      "control_point_id": "P4",
+      "weight": 1,
+      "before_mm": 2499999,
+      "nearest_before": {
+       "kind": "source",
+       "id": "s0"
+      },
+      "after_mm": 500000,
+      "nearest_after": {
+       "kind": "hypothetical",
+       "id": "t1"
+      },
+      "delta_mm": 1999999,
+      "tied_before_ids": [
+       "s0",
+       "s1"
+      ],
+      "nearest_before_qa_flags": []
+     }
+    ],
+    "metrics": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 2500000,
+     "weighted_mean_mm": 500000.0,
+     "max_mm": 1000000,
+     "covered_weight": 3,
+     "coverage_fraction": 0.6,
+     "cost": 50,
+     "selected_ids": [
+      "t1"
+     ]
+    },
+    "feasibility": {
+     "feasible": true,
+     "reasons": []
+    },
+    "baseline_records_in_category": 2
+   }
+  }
+ },
+ "observations": {
+  "status": "optimal",
+  "evaluated": 4,
+  "feasible_count": 4,
+  "pareto_points": 2,
+  "winners": {
+   "mean": "t1",
+   "minimax": "t1",
+   "coverage": "t1"
+  },
+  "objectives_agree": true,
+  "distinct_winner_sets": 1,
+  "differing_pairs": [],
+  "sensitivity": [
+   {
+    "budget": 0,
+    "status": "optimal",
+    "mean": "(empty)"
+   },
+   {
+    "budget": 50,
+    "status": "optimal",
+    "mean": "t1"
+   },
+   {
+    "budget": 100,
+    "status": "optimal",
+    "mean": "t1"
+   }
+  ]
+ }
+}
