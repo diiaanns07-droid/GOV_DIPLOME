@@ -7,7 +7,7 @@
 - Исходники приложения для сравнения: `6de3f253d8ec0743450259f9f13722c16cd36099` (CODE_SHA сборщика), читались через `git show`
 - Собственные пути: `web/civic/editor/`, `tests/civic/R04/`, `research/round-11-results/R04/`, этот файл
 
-## Состояние: PARTIAL (checkpoint 1)
+## Состояние: PARTIAL (checkpoint 2)
 
 Сделано:
 - `web/civic/editor/editor-core.js` — чистая логика без DOM/сети: модель формы ↔ объект civic-v1,
@@ -17,9 +17,15 @@
 - `tests/civic/R04/core.test.cjs` — 17 контрактных проверок (node:test).
 - `tests/civic/R04/fixtures/civic_object.json` — байтовая копия fixture из PACK_SHA.
 
+- `web/civic/editor/editor.js` + `editor.css` — `window.CivicEditor.mount({root,map,api,onPublished}) -> {openObject,destroy}`:
+  вход/выход, список, форма из 5 разделов, точка/линия на общей карте, источники, предпросмотр карточки жителя,
+  публикация/архив с причиной, история, 409/401/сеть/двойное нажатие, память несохранённых правок (только RAM).
+- `tests/civic/R04/contract_mock.cjs` (+ тест) — контрактный mock civic-v1 (НЕ R02), `stand.cjs`, `harness/`.
+
 Проверено:
-- `node --test tests/civic/R04/core.test.cjs` → 17 pass, 0 fail (Node v22.22.0).
+- `node --test tests/civic/R04/*.test.cjs` → 26 pass, 0 fail (Node v22.22.0).
+- Ручной smoke в headless Chromium (Playwright 1.56.1): вход → список → новый объект рендерится, карта MapLibre 5.6.2 загружена (software WebGL, без подложки).
 
-Не запускалось: браузерный UI (ещё не написан), R02 (не опубликован на момент старта).
+Не запускалось: полный браузерный walkthrough (следующий шаг), R02 (не опубликован).
 
-Следующий шаг: `web/civic/editor/editor.js` + `editor.css` (mount по контракту), контрактный mock и браузерный прогон.
+Следующий шаг: `tests/civic/R04/e2e.test.cjs` — сценарии приёмки в браузере + screenshots 390/1280.
