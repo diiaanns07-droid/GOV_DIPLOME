@@ -1,0 +1,292 @@
+{
+ "backend": "double",
+ "base": "http://127.0.0.1:41121/",
+ "started_at": "2026-10-06T15:49:33.150Z",
+ "checks": [
+  {
+   "name": "default mode is civic (Astana city)",
+   "status": "PASS",
+   "detail": {
+    "canvases": 1,
+    "iframes": 0,
+    "district": "none",
+    "offline": true,
+    "title": "Астана · городские работы и события",
+    "synthetic": true,
+    "mapModule": "R01 fallback"
+   }
+  },
+  {
+   "name": "one map canvas, no iframe",
+   "status": "PASS",
+   "detail": {
+    "canvases": 1,
+    "iframes": 0,
+    "district": "none",
+    "offline": true,
+    "title": "Астана · городские работы и события",
+    "synthetic": true,
+    "mapModule": "R01 fallback"
+   }
+  },
+  {
+   "name": "training district layer hidden in civic mode",
+   "status": "PASS",
+   "detail": "none"
+  },
+  {
+   "name": "synthetic fixture visibly labelled",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "basemap + 3D buildings",
+   "status": "NOT_RUN",
+   "detail": "OpenFreeMap host not reachable in this environment (offline background)"
+  },
+  {
+   "name": "wrong password rejected, form stays",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "editor login via session API",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "no session/CSRF token in web storage",
+   "status": "PASS",
+   "detail": "{\"govtech.school-case.v1\":\"{\\\"shymkent\\\":{\\\"snapshot_id\\\":\\\"shymkent-2026-09-23.1-ed0d46bbe5fa1f8e\\\",\\\"case_id\\\":\\\"shymkent-k10r3-schools-v1\\\",\\\"variants\\\":{\\\"A\\\":null,\\\"B\\\":null},\\\"method\\\":{\\\"distan"
+  },
+  {
+   "name": "draft created with server id",
+   "status": "PASS",
+   "detail": "astana-obj-0001"
+  },
+  {
+   "name": "draft not visible by direct public ID",
+   "status": "PASS",
+   "detail": 404
+  },
+  {
+   "name": "draft not in public list",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "publish without CSRF header rejected",
+   "status": "PASS",
+   "detail": 403
+  },
+  {
+   "name": "publish with wrong CSRF rejected",
+   "status": "PASS",
+   "detail": 403
+  },
+  {
+   "name": "published object readable publicly",
+   "status": "PASS",
+   "detail": 200
+  },
+  {
+   "name": "public DTO has no internal fields",
+   "status": "PASS",
+   "detail": [
+    "schema_version",
+    "id",
+    "city",
+    "kind",
+    "title",
+    "description",
+    "status",
+    "publication",
+    "geometry",
+    "geometry_precision",
+    "schedule",
+    "budget",
+    "responsible",
+    "evidence_type",
+    "source_refs",
+    "evidence_notes",
+    "updated_at",
+    "revision"
+   ]
+  },
+  {
+   "name": "stale revision -> 409",
+   "status": "PASS",
+   "detail": 409
+  },
+  {
+   "name": "deadline moved, original kept",
+   "status": "PASS",
+   "detail": {
+    "planned_start": "2026-10-14",
+    "original_planned_end": "2026-10-30",
+    "current_planned_end": "2026-11-15",
+    "actual_end": null
+   }
+  },
+  {
+   "name": "public history has the reason",
+   "status": "PASS",
+   "detail": [
+    "Первая публикация",
+    "Перенос срока: проверка истории (смоук R01)"
+   ]
+  },
+  {
+   "name": "card shows original and current deadline",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "card shows history reason",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "card shows synthetic label",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "selected object permalink in URL",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "resident gets a receipt",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "pending message not public",
+   "status": "PASS",
+   "detail": {
+    "items": []
+   }
+  },
+  {
+   "name": "approved message public",
+   "status": "PASS",
+   "detail": 1
+  },
+  {
+   "name": "public feedback has no private fields",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "untrusted text rendered as text (no XSS)",
+   "status": "PASS",
+   "detail": {
+    "fired": false,
+    "injected": false
+   }
+  },
+  {
+   "name": "after logout staff create is refused",
+   "status": "PASS",
+   "detail": 401
+  },
+  {
+   "name": "anonymous staff list refused",
+   "status": "PASS",
+   "detail": 401
+  },
+  {
+   "name": "F5 restores civic mode and selected card",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "training mode restores district layers, score 52,56, removes civic layers",
+   "status": "PASS",
+   "detail": {
+    "district": "visible",
+    "score": "52,56",
+    "civicLayers": 0,
+    "canvases": 1
+   }
+  },
+  {
+   "name": "school mode reachable, mode switch stays visible",
+   "status": "PASS",
+   "detail": {
+    "active": true,
+    "school": true,
+    "modes": "flex"
+   }
+  },
+  {
+   "name": "back to civic: GOVTECH off, districts hidden, civic layers back",
+   "status": "PASS",
+   "detail": {
+    "gov": false,
+    "district": "none",
+    "civicLayers": 5
+   }
+  },
+  {
+   "name": "no page errors (desktop)",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "mobile: one canvas, no horizontal scroll",
+   "status": "PASS",
+   "detail": {
+    "canvases": 1,
+    "scrollW": 390,
+    "attribVisible": null,
+    "panel": 455.765625,
+    "small": []
+   }
+  },
+  {
+   "name": "mobile attribution not covered",
+   "status": "NOT_RUN",
+   "detail": "no attribution element rendered (offline basemap has no attributed source)"
+  },
+  {
+   "name": "mobile: bottom sheet below the map",
+   "status": "PASS",
+   "detail": 455.765625
+  },
+  {
+   "name": "mobile: tap targets ≥36px",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "no page errors (mobile)",
+   "status": "PASS",
+   "detail": []
+  }
+ ],
+ "server_tail": [
+  "127.0.0.1 - - [06/Oct/2026 15:49:46] \"GET /govtech/school/school-ui.js HTTP/1.1\" 200 -",
+  "127.0.0.1 - - [06/Oct/2026 15:49:46] \"GET /civic/shell/shell.js HTTP/1.1\" 200 -",
+  "127.0.0.1 - - [06/Oct/2026 15:49:46] \"GET /civic/shell/fallback.js HTTP/1.1\" 200 -",
+  "127.0.0.1 - - [06/Oct/2026 15:49:46] \"GET /govtech/school/SCHOOL_MANIFEST.json HTTP/1.1\" 200 -",
+  "127.0.0.1 - - [06/Oct/2026 15:49:46] \"GET /api/civic/v1/modules HTTP/1.1\" 200 -",
+  "127.0.0.1 - - [06/Oct/2026 15:49:46] \"GET /api/bootstrap HTTP/1.1\" 200 -",
+  "127.0.0.1 - - [06/Oct/2026 15:49:46] \"GET /govtech/school/cases/shymkent.case.json HTTP/1.1\" 200 -",
+  "127.0.0.1 - - [06/Oct/2026 15:49:46] \"POST /api/plan-status HTTP/1.1\" 200 -",
+  "127.0.0.1 - - [06/Oct/2026 15:49:46] \"GET /govtech/school/cases/shymkent.case.meta.json HTTP/1.1\" 200 -",
+  "127.0.0.1 - - [06/Oct/2026 15:49:46] \"GET /vendor/maplibre-gl.js HTTP/1.1\" 200 -",
+  "127.0.0.1 - - [06/Oct/2026 15:49:46] \"GET /govtech/school/cases/astana.case.json HTTP/1.1\" 200 -",
+  "127.0.0.1 - - [06/Oct/2026 15:49:46] \"GET /govtech/school/cases/astana.match-review.json HTTP/1.1\" 200 -",
+  "127.0.0.1 - - [06/Oct/2026 15:49:47] \"GET /api/civic/v1/objects HTTP/1.1\" 200 -",
+  "127.0.0.1 - - [06/Oct/2026 15:49:48] \"GET /api/civic/v1/objects/astana-obj-0001 HTTP/1.1\" 200 -",
+  ""
+ ],
+ "created_id": "astana-obj-0001",
+ "summary": {
+  "pass": 37,
+  "fail": 0,
+  "not_run": 2
+ }
+}

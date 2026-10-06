@@ -53,7 +53,7 @@
 .civic-badge.block { display: block; width: auto; margin: 6px 0 0; }
 .civic-card { margin-top: 12px; padding: 14px; border-radius: 14px; border: 1px solid var(--line); background: #fff; }
 .civic-card h2 { margin: 2px 0 4px; font-size: 18px; line-height: 1.25; overflow-wrap: anywhere; }
-.civic-card h3, .civic-box h3 { font-size: 13px; margin: 14px 0 6px; }
+.civic-card h3, .civic-box h3, .civic-drawer h3 { font-size: 13px; margin: 14px 0 6px; }
 .civic-desc { font-size: 13px; overflow-wrap: anywhere; }
 .civic-facts { display: grid; grid-template-columns: minmax(110px, 40%) 1fr; gap: 4px 10px; margin: 10px 0; font-size: 12px; }
 .civic-facts dt { color: var(--muted); }
@@ -109,7 +109,7 @@
     box-shadow: 0 -8px 30px #19362818; padding-bottom: env(safe-area-inset-bottom); transition: height .25s var(--ease); }
   .civic-panel[data-sheet="peek"] { height: 24%; }
   .civic-panel[data-sheet="full"] { height: calc(100% - 132px); }
-  .civic-sheet-handle { display: grid; place-items: center; width: 100%; height: 22px; flex-shrink: 0; }
+  .civic-sheet-handle { display: grid; place-items: center; width: 100%; height: 36px; flex-shrink: 0; margin-bottom: -10px; }
   .civic-sheet-handle i { width: 44px; height: 5px; border-radius: 3px; background: #c9d3c4; }
   .civic-head { padding: 0 16px 8px; background: #fff; }
   .civic-head h1 { font-size: 18px; }

@@ -27,4 +27,13 @@ web/govtech/shell.{js,css}, web/civic/shell/, requirements*.txt, run.{bat,sh},
 - DONE: tests/civic/R01/contract_double.py — ТЕСТОВЫЙ ДУБЛЁР (не backend) для e2e-смоука.
 - Браузер (дублёр, офлайн-подложка): civic по умолчанию, 1 canvas, 390 без гориз. скролла.
 
-Следующий шаг: ревью и импорт поставок R02/R03/R04 (первые checkpoint появились 15:38–15:45Z).
+## Checkpoint 3 — первый end-to-end смоук (PARTIAL)
+- DONE: tests/civic/R01/browser/p0_flow.cjs — настоящая страница, Chromium 1440x900 и 390x844:
+  вход редактора -> черновик -> 404 по прямому ID -> публикация -> 403 без/с поддельным CSRF ->
+  409 при устаревшей версии -> перенос срока с причиной -> карточка жителя (исходный/текущий срок,
+  история, метка synthetic) -> сообщение -> pending не публичен -> модерация -> публичный ответ,
+  XSS-текст как текст -> logout закрывает staff -> F5 (permalink) -> режимы Учебная/Школы/Город.
+- Итог на ТЕСТОВОМ ДУБЛЁРЕ: 37 PASS / 0 FAIL / 2 NOT_RUN (подложка/attribution: хост недоступен).
+  research/round-11-results/R01/runs/cp3_p0_flow_test_double/. Это не рабочий backend.
+
+Следующий шаг: ревью и импорт поставок R02/R03/R04 (первые checkpoint 15:38–15:45Z), R07 (ready).

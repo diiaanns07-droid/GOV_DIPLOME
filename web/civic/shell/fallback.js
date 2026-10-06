@@ -194,6 +194,7 @@
       }
       if (seq !== S.detailSeq || S.destroyed) return;
       renderCard(data?.item, Array.isArray(data?.history) ? data.history : []);
+      if (fly) card.scrollIntoView({ block: "start", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
       if (fly && map && data?.item?.geometry) flyTo(data.item.geometry);
       onSelect?.(data?.item || { id });
     }
