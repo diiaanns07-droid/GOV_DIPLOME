@@ -8,7 +8,7 @@
 - Собственные пути: `ui/civic_feedback/`, `web/civic/feedback/`, `tests/civic/R06/`,
   `research/round-11-results/R06/`, `research/handoffs/astana/R06/round-11/STATUS.md`
 
-## Статус: PARTIAL — checkpoint 4 (интеграция с R01/R02 проверена в scratch)
+## Статус: DONE (обязательная часть) — checkpoint 5; дальше stretch
 
 Сделано:
 - `ui/civic_feedback/service.py` — `FeedbackService(db_path, object_lookup, clock=None)`,
@@ -33,15 +33,19 @@
 - Совместимость с реальным Principal R02: `expires_at` — epoch-число (исправлено до коммита).
 - Найдены 3 расхождения R01@341c554 <-> R02@6a28de2 (не код R06), описаны в INTEGRATION.txt §5:
   нет экспорта CivicService, путь без префикса, нет host_allowed в context.
+- С 36a0604 R06 (как R02) обслуживает только полный путь `/api/civic/v1/...`.
 
 Проверки:
-- `python3 -m pytest tests/civic/R06 -q` → 118 passed, 2 skipped (PASS; skip = нет R01/R02 в ветке)
-- `python3 -m pytest -q` → 230 passed, 2 skipped (PASS, весь репозиторий ветки)
+- `python3 -m pytest tests/civic/R06 -q` → 128 passed, 2 skipped (PASS; skip = нет R01/R02 в ветке)
+- `python3 -m pytest -q` → 240 passed, 2 skipped (PASS, весь репозиторий ветки)
 - `node tests/civic/R06/browser_r06.cjs --screenshots research/round-11-results/R06/screenshots` → 27/27 PASS
+- Независимая приёмка R10 (`tests/civic/R10/standalone/standalone_r06.py` из ветки R10) на 36a0604 → 23/23 OK.
+  На 417cc23 она нашла 2 дефекта (суррогат `\ud800` → исключение; перехват путей без префикса) —
+  исправлены в 36a0604. Лог: `research/round-11-results/R06/checks/r10_standalone_r06.txt`.
 - scratch: R06 + R02@6a28de2 → test_r06_r02_compat.py 2 passed; R01@341c554 + R02 + R06 с тремя
   scratch-обходами стыка R01/R02 → test_r06_gateway_smoke.py 1 passed
 - `python3 -m pytest -q` → 115 passed (PASS, весь репозиторий)
 
 Не запускалось: сборка R01 с картой R03 и кабинетом R04 (не объединены); R08 нет в GitHub.
 
-Следующий шаг: DELIVERY.json, затем stretch (фильтры/счётчик уже есть; доработка UX модерации).
+Следующий шаг: stretch — CLI обслуживания, сверка с R03/R04 точками монтирования.

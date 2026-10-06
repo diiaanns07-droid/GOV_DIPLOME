@@ -1,0 +1,26 @@
+R10 standalone_r06.py from origin/claude/fervent-dijkstra-1cqrg5 @9123af0 against R06 @36a0604 (detached worktree, python3 -I -B)
+[META] product imported from the pinned worktree, -I -B, sys.path[0]=root. ... ok
+[A06][A08] close + reopen on same DB: approved still public, pending still hidden and still moderatable. ... ok
+[A07] classifier raising / hanging / returning garbage: 201, message stored, category unchanged, not public. ... ok
+[A07] repeated identical submit does not silently create many identical rows. ... ok
+[A07][S09] receipt = {receipt_id, moderation:"pending"} without text/contact/ip echo. ... ok
+[A08][S09] approve + consent -> text and public_reply visible; no staff/private fields leak. ... ok
+[A08] approve without consent_public -> text (and reply) absent from raw public JSON. ... ok
+[A08] withdrawn consent -> no public card (R06 extension; NOT_RUN if absent). ... ok
+[A08] a pending message is absent from GET /objects/{id}/feedback. ... ok
+[A08] reject -> invisible publicly, still in staff queue; approved-then-rejected disappears. ... ok
+[C01][S13] every error is {ok:false,error:{code,message}} JSON without traceback/paths/exception names. ... ok
+[C01] handle() returns None for paths outside /api/civic/v1 (e.g. '/feedback' static route). ... ok
+[C04][A08] stale expected_revision -> 409; decision, reply and revision unchanged. ... ok
+[C06] no object & no geometry, outside Astana, swapped lon/lat, object far from point -> 4xx; valid -> 201. ... ok
+[C06][C01][S13] JSON with lone \ud800 escape -> 400/422 envelope, never an exception out of handle(). ... ok
+[C06][C01] raw bytes accepted; NaN/Infinity/malformed/non-object/invalid UTF-8/empty -> 400/422. ... ok
+[C07] 120 KB body (bytes and dict) -> 413; 2500-char text -> 400/413/422, not stored; alive after. ... ok
+[R06-ACC-RATE][C01] same client_ip -> 429 within 10 submits (no row created); other client_ip not blocked. ... ok
+[S07][C02] submit with role/actor/moderation/revision/public_text -> rejected or ignored, never published. ... ok
+[S09] approve of a consented text containing e-mail/phone never publishes the contact. ... ok
+[S10] HTML/script text stored and returned literally in JSON (not executed, not mangled). ... ok
+[S12][S07][S04] anon->401, logged-out->401, fake/resident role->403, no/bad CSRF or cross-origin->403; no state change. ... ok
+[S14] feedback to draft/archived vs nonexistent id: identical error; no title leak; nothing stored. ... ok
+Ran 23 tests in 1.144s
+OK

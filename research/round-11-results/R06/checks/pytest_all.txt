@@ -1,1 +1,1 @@
-230 passed, 2 skipped in 20.10s
+240 passed, 2 skipped in 20.95s
