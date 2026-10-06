@@ -1,0 +1,6 @@
+{
+ "_note": "MOCK seam for testing ui_import_smoke.cjs itself (not BUILD code): accepts every file without validation, so all refusal checks must FAIL.",
+ "open": "window.SCHOOL_ACCESS_UI = window.SCHOOL_ACCESS_UI || (() => { let S = { city_id: null, case_id: null, case_digest: null, school_ids: [], origin_ids: [], candidate_ids: [], result_digest: null, ai_digest: null, labels_text: '' }; return { importText(t) { let c; try { c = JSON.parse(t); } catch (e) { S = Object.assign({}, S, { case_id: 'broken' }); return { ok: true }; } S = { city_id: c.city_id, case_id: c.case_id, case_digest: String(t.length), school_ids: (c.schools || []).map((r) => r.id), origin_ids: (c.origins || []).map((r) => r.id), candidate_ids: (c.candidates || []).map((r) => r.id), result_digest: null, ai_digest: null, labels_text: 'вторичные данные; гипотеза' }; return { ok: true }; }, state() { return S; } }; })()",
+ "import": "window.SCHOOL_ACCESS_UI.importText(text)",
+ "state": "window.SCHOOL_ACCESS_UI.state()"
+}

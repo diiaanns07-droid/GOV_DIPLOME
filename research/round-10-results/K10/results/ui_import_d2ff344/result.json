@@ -1,0 +1,29 @@
+{
+ "kind": "K10 round-10 UI-import smoke (school-access-case-v1, Astana)",
+ "url": "http://127.0.0.1:8501/",
+ "build_sha": "d2ff344c5ec9b9a729ea59df50ec81f981e619de",
+ "case": "astana.case.json",
+ "adapter": {
+  "open": "window.GOVTECH && GOVTECH.setActive && GOVTECH.setActive(true)",
+  "import": "window.SCHOOL_ACCESS_UI.importText(text)",
+  "fileInput": null,
+  "state": "window.SCHOOL_ACCESS_UI.state()"
+ },
+ "total": 1,
+ "pass": [],
+ "fail": [],
+ "not_run": [],
+ "test_incompatible": [
+  "U0"
+ ],
+ "checks": [
+  {
+   "id": "U0",
+   "expect": "the build exposes a school-access-case-v1 import seam (adapter: import/fileInput + state)",
+   "verdict": "TEST_INCOMPATIBLE",
+   "observed": {
+    "error": "Cannot read properties of undefined (reading 'state')"
+   }
+  }
+ ]
+}

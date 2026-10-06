@@ -1,0 +1,6 @@
+{
+ "_note": "MOCK seam for testing ui_import_smoke.cjs itself (not BUILD code): refuses every file, so the import check U1 must FAIL and refusals PASS.",
+ "open": "window.SCHOOL_ACCESS_UI = window.SCHOOL_ACCESS_UI || (() => { const S = { city_id: null, case_id: null, case_digest: null, school_ids: [], origin_ids: [], candidate_ids: [], result_digest: null, ai_digest: null, labels_text: '' }; return { importText() { return { ok: false, code: 'mock_refuse' }; }, state() { return S; } }; })()",
+ "import": "window.SCHOOL_ACCESS_UI.importText(text)",
+ "state": "window.SCHOOL_ACCESS_UI.state()"
+}
