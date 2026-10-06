@@ -1,0 +1,37 @@
+{
+  "round": 11,
+  "role": "R02",
+  "branch": "claude/trusting-ptolemy-6ms354",
+  "base_sha": "b2cb2e02c602c166ba6d47c02d8e902e5478c791",
+  "pack_sha": "9c2f5c0dae14b46c0697a9dfc7f854351bfd570d",
+  "status": "partial",
+  "owned_paths": [
+    "ui/civic_store/",
+    "tests/civic/R02/",
+    "research/round-11-results/R02/",
+    "research/handoffs/astana/R02/round-11/STATUS.md"
+  ],
+  "integration_notes": "research/round-11-results/R02/INTEGRATION.txt (появится в следующих checkpoint; сейчас только схема)",
+  "code_commit": null,
+  "checks": [
+    {
+      "name": "schema-and-empty-db",
+      "status": "PASS",
+      "command": "python -m pytest -q -p no:cacheprovider tests/civic/R02",
+      "input": "temporary SQLite files in pytest tmp_path",
+      "reason": "13 passed: migrations, idempotency, append-only history, path policy, rollback"
+    },
+    {
+      "name": "civic-service-http",
+      "status": "NOT_RUN",
+      "command": null,
+      "input": null,
+      "reason": "CivicService.handle ещё не реализован (checkpoint 1 = схема)."
+    }
+  ],
+  "limitations": [
+    "Checkpoint 1: только схема/миграции, без API.",
+    "Локальный пилот на SQLite; не production IAM/SSO и не сервис для открытого интернета."
+  ],
+  "next_step": "Валидация civic-v1 и CRUD с публичной проекцией по allowlist."
+}
