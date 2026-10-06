@@ -154,13 +154,40 @@
     "R07": {
       "title": "Симулятор ограничений",
       "expected_paths": "engine/civic_scenarios/ + web/civic/scenarios/",
-      "source_branch": null,
-      "source_sha": null,
-      "imported_paths": [],
-      "integrated": false,
-      "checks": [],
-      "status": "not_delivered",
-      "reason": "No research/round-11-results/R07/DELIVERY.json in any origin branch at 2026-10-06T15:29Z."
+      "source_branch": "claude/brave-hopper-bkc58b",
+      "source_sha": "22fa413",
+      "imported_paths": [
+        "engine/civic_scenarios/ (runtime, graphs, cases, adapters, build_graphs.py, README.md)",
+        "web/civic/scenarios/scenarios.js",
+        "web/civic/scenarios/scenarios.css",
+        "tests/civic/R07/"
+      ],
+      "integrated": true,
+      "checks": [
+        {
+          "name": "R07 tests in integrated tree",
+          "status": "PASS",
+          "command": "python -m pytest -q tests/civic/R07",
+          "result": "51 passed (K03 reproducibility runs: b2cb2e0 present)"
+        },
+        {
+          "name": "Independent review workflow (http-security, correctness, data-licence-ui)",
+          "status": "PASS",
+          "result": "no blockers; adapter fixes applied: GET routes, graph_id type guard 422, OverflowError 422, 2-slot semaphore, apiPrefix '', visible ODbL attribution and limits"
+        },
+        {
+          "name": "Browser: scenario drawer on the same map 1440/390",
+          "status": "PASS",
+          "command": "node tests/civic/R01/browser/scenarios_smoke.cjs <out>",
+          "result": "16 PASS / 0 FAIL"
+        }
+      ],
+      "status": "integrated",
+      "reason": "DELIVERY ready (code d77ec45, head 22fa413). Walking graph K03 only; driving NOT_READY shown disabled. Open R07 items: legend says 'доступ подтверждён' (should be 'разрешён по данным OSM'), addSource attribution, graph bytes caching, nested fields in payload errors.",
+      "not_imported": [
+        "web/civic/scenarios/demo.html (global styles, external tiles)",
+        "engine/civic_scenarios/devserver.py (serves whole web/, no Host check)"
+      ]
     },
     "R08": {
       "title": "Обучаемая модель обращений",
@@ -216,6 +243,14 @@
     {
       "id": "D-05",
       "decision": "Mode switch Город (default) / Школы / Учебная модель on the same MapLibre instance; training and school modes unchanged."
+    },
+    {
+      "id": "D-06",
+      "decision": "R07 read-only GET /scenarios/graphs, /scenarios/graphs/{id}, /scenarios/cases accepted; graph files never served as static assets; compare limited to 2 concurrent runs."
+    },
+    {
+      "id": "D-07",
+      "decision": "Login requests are serialised in the gateway until R02 makes the rate-limit check atomic (R02 review M1); DB file chmod 0600, .runtime 0700."
     }
   ]
 }

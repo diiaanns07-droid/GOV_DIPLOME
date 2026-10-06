@@ -175,7 +175,9 @@
     </section>
     <section id="civic-scenarios" class="civic-drawer" hidden aria-label="Сравнение ограничений">
       <div class="civic-box-head"><h2>Сравнение ограничений</h2><button type="button" class="civic-close" data-close="scenarios" aria-label="Закрыть сравнение">×</button></div>
+      <p class="civic-note civic-scenario-limits">Модель для гипотез, не официальное перекрытие. Только пешеходный граф (участок центра), только длина пути в метрах: без времени в пути, пробок и выбросов. Автомобильный граф не подтверждён. Рёбра с неизвестным доступом не считаются открытыми.</p>
       <div id="civic-scenarios-root" class="civic-slot civic-drawer-body"></div>
+      <p class="civic-attribution">Граф: © участники OpenStreetMap (ODbL-1.0); Overture Maps Foundation, выпуск 2026-09-23.1. Синтетический граф помечен «СИНТЕТИКА».</p>
     </section>`;
   document.body.append(root);
 
@@ -361,7 +363,8 @@
   }
   function openScenarios() {
     $c("civic-scenarios").hidden = false;
-    mount("scenarios", $c("civic-scenarios-root"), { map: currentMap() });
+    // R07 review: the shell's api.request already adds /api/civic/v1 -> empty apiPrefix.
+    mount("scenarios", $c("civic-scenarios-root"), { map: currentMap(), apiPrefix: "" });
   }
   function closeScenarios() {
     destroyMounted("scenarios");

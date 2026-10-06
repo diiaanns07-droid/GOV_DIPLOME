@@ -1,0 +1,103 @@
+{
+ "base": "http://127.0.0.1:39561/",
+ "checks": [
+  {
+   "name": "[1440] scenarios module ready on server",
+   "status": "PASS",
+   "detail": "ready"
+  },
+  {
+   "name": "[1440] driving graph shown as NOT_READY, synthetic labelled",
+   "status": "PASS",
+   "detail": [
+    "[СИНТЕТИКА] СИНТЕТИЧЕСКИЙ эталонный граф (10 узлов) — не реальная улица Астаны",
+    "Пешеходный граф K03 (центр Астаны, ~2×2 км), Overture/OSM — не проверен на месте",
+    "[NOT_READY] автомобиль: нет проверенного графа"
+   ]
+  },
+  {
+   "name": "[1440] comparison drawn on the same map",
+   "status": "PASS",
+   "detail": {
+    "layers": 11,
+    "canvases": 1
+   }
+  },
+  {
+   "name": "[1440] limits and ODbL attribution visible",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "[1440] no traffic/CO2/travel-time claims (disclaimers only)",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "[1440] no horizontal scroll",
+   "status": "PASS",
+   "detail": 1440
+  },
+  {
+   "name": "[1440] closing the drawer removes R07 layers/sources",
+   "status": "PASS",
+   "detail": 0
+  },
+  {
+   "name": "[1440] no page errors",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "[390] scenarios module ready on server",
+   "status": "PASS",
+   "detail": "ready"
+  },
+  {
+   "name": "[390] driving graph shown as NOT_READY, synthetic labelled",
+   "status": "PASS",
+   "detail": [
+    "[СИНТЕТИКА] СИНТЕТИЧЕСКИЙ эталонный граф (10 узлов) — не реальная улица Астаны",
+    "Пешеходный граф K03 (центр Астаны, ~2×2 км), Overture/OSM — не проверен на месте",
+    "[NOT_READY] автомобиль: нет проверенного графа"
+   ]
+  },
+  {
+   "name": "[390] comparison drawn on the same map",
+   "status": "PASS",
+   "detail": {
+    "layers": 11,
+    "canvases": 1
+   }
+  },
+  {
+   "name": "[390] limits and ODbL attribution visible",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "[390] no traffic/CO2/travel-time claims (disclaimers only)",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "[390] no horizontal scroll",
+   "status": "PASS",
+   "detail": 390
+  },
+  {
+   "name": "[390] closing the drawer removes R07 layers/sources",
+   "status": "PASS",
+   "detail": 0
+  },
+  {
+   "name": "[390] no page errors",
+   "status": "PASS",
+   "detail": []
+  }
+ ],
+ "summary": {
+  "pass": 16,
+  "fail": 0
+ }
+}

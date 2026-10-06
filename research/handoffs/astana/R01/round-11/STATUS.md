@@ -45,5 +45,12 @@ web/govtech/shell.{js,css}, web/civic/shell/, requirements*.txt, run.{bat,sh},
 - Полный pytest 440 passed, 2 skipped, 1 deselected (патч-тест R02 к исходному web_server —
   неприменим после интеграции, см. MATRIX R02); web_check 14 OK; node plan/resilience/whatif PASS.
 
-Следующий шаг: блокировка параллельного входа (ревью R02 M1), импорт R07 по рецепту ревью,
-затем R03/R04 вместо резервных модулей R01.
+## Checkpoint 6 — R07 сравнение ограничений встроено
+- DONE: импорт R07 @22fa413 (engine/civic_scenarios, web/civic/scenarios без demo.html/devserver,
+  tests/civic/R07: 51 PASS). Ревью workflow: блокеров нет; в шлюзе — GET-маршруты, guard graph_id,
+  OverflowError->422, семафор 2. Кнопка «Сравнить ограничения» -> ящик с пределами данных и ODbL.
+- DONE: браузер scenarios_smoke 16 PASS (1440/390): NOT_READY для автомобиля, метка СИНТЕТИКА,
+  слои civic-r07-* снимаются при закрытии. runs/cp6_scenarios_r07/.
+- DONE: блокировка параллельного входа (R02 M1), права 0600 на БД.
+
+Следующий шаг: R03/R04 вместо резервных модулей R01, затем R05 (данные) и R09.

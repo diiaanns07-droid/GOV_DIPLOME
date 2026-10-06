@@ -62,7 +62,8 @@ for _asset in ("shell.js", "shell.css", "core/data.js", "core/evidence.js",
 # Round 11 civic-v1 frontend: explicit files only (R01 shell; role modules are added
 # here by R01 when their reviewed delivery is imported). No directory serving.
 CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/fallback.js",
-                "feedback/feedback.js", "feedback/feedback.css")  # R06 @eaa113d
+                "feedback/feedback.js", "feedback/feedback.css",      # R06 @eaa113d
+                "scenarios/scenarios.js", "scenarios/scenarios.css")  # R07 @22fa413 (graphs only via API)
 for _asset in CIVIC_ASSETS:
     _mime = {".js": "text/javascript", ".css": "text/css", ".json": "application/json"}.get(Path(_asset).suffix, "text/plain")
     ASSETS["/civic/" + _asset] = ("civic/" + _asset, _mime + "; charset=utf-8")
@@ -101,6 +102,10 @@ CIVIC_ROUTES = (
     ("GET", ("staff", "feedback", "{id}"), "feedback"),
     ("POST", ("feedback", "receipt"), "feedback"),
     ("POST", ("feedback", "withdraw-consent"), "feedback"),
+    # R07 contract_delta (accepted): graph list / graph geometry / prepared cases, read-only.
+    ("GET", ("scenarios", "graphs"), "scenarios"),
+    ("GET", ("scenarios", "graphs", "{id}"), "scenarios"),
+    ("GET", ("scenarios", "cases"), "scenarios"),
     ("POST", ("scenarios", "compare"), "scenarios"),
     ("POST", ("assistant",), "assistant"),
 )
@@ -110,8 +115,23 @@ CIVIC_MODULE_LABELS = {
     "scenarios": "Сравнение ограничений (R07)",
     "assistant": "Помощник по фактам (R09)",
 }
+# R07 compare can return megabytes for a small request: at most two run at once.
+SCENARIO_SLOTS = threading.BoundedSemaphore(2)
+# R02 review M1: the login rate-limit check and failure record are not atomic in R02 @92f7aba,
+# so parallel wrong passwords could all get 401. Logins are serialised here until R02 fixes it.
+LOGIN_LOCK = threading.Lock()
 # Headers a role service may set on its response; everything else is dropped.
 CIVIC_SERVICE_HEADERS = {"set-cookie", "retry-after", "vary"}
+
+
+def _restrict_db_files(db_path: Path):
+    """R02 review: runtime DB holds password hashes and sessions — owner-only where supported."""
+    for path in (db_path.parent, db_path, Path(str(db_path) + "-wal"), Path(str(db_path) + "-shm")):
+        try:
+            if path.exists():
+                os.chmod(path, 0o700 if path.is_dir() else 0o600)
+        except OSError:
+            pass
 
 
 def civic_error(status, code, message, fields=None):
@@ -165,7 +185,9 @@ class CivicGateway:
             service_class = getattr(module, "CivicService", None) or \
                 importlib.import_module("ui.civic_store.service").CivicService
             db_path.parent.mkdir(parents=True, exist_ok=True)
-            return service_class(str(db_path))
+            service = service_class(str(db_path))
+            _restrict_db_files(db_path)
+            return service
 
         def feedback():
             # R06 on the same SQLite file (own feedback_* tables). Object lookup via R02's staff
@@ -178,7 +200,16 @@ class CivicGateway:
             # classifier=None: the R08 model is not integrated/verified in this build.
             return integration.build_feedback_service(str(db_path), store_service, classifier=None)
 
-        gateway = cls({"store": store, "feedback": feedback})
+        def scenarios():
+            # R07 @22fa413: graphs only by id from its MANIFEST; every graph is hashed at start so a
+            # corrupted file makes the module init_failed instead of a false "ready".
+            module = importlib.import_module("engine.civic_scenarios.http")
+            registry = importlib.import_module("engine.civic_scenarios.registry")
+            for item in registry.manifest()["graphs"]:
+                registry.load_graph(item["id"])
+            return module
+
+        gateway = cls({"store": store, "feedback": feedback, "scenarios": scenarios})
         return gateway
 
     def service(self, name):
@@ -226,6 +257,25 @@ class CivicGateway:
         data = (reply.get("body") or {}).get("data") or {}
         return data.get("item")
 
+    @staticmethod
+    def _scenarios(service, method, full_path, query, body):
+        """R07 handle(method, path, query, body): stateless, no session; guarded per R01 review."""
+        if method == "POST" and not isinstance(body.get("graph_id"), str):
+            return civic_error(422, "invalid_payload", "graph_id должен быть строкой.",
+                               {"graph_id": "строковый идентификатор графа из списка"})
+        if method == "POST" and not SCENARIO_SLOTS.acquire(blocking=False):
+            reply = civic_error(503, "busy", "Сравнение уже выполняется. Повторите через пару секунд.")
+            reply["headers"]["Retry-After"] = "2"
+            return reply
+        try:
+            return service.handle(method, full_path, query, body)
+        except OverflowError:
+            return civic_error(422, "invalid_payload", "Недопустимая дата или время.",
+                               {"analysis_at": "дата вне допустимого диапазона"})
+        finally:
+            if method == "POST":
+                SCENARIO_SLOTS.release()
+
     def handle(self, method, rel_path, query, body, context):
         segments = rel_path.strip("/").split("/") if rel_path.strip("/") else []
         if rel_path != "/" + "/".join(segments) or any(not s for s in segments):
@@ -247,7 +297,12 @@ class CivicGateway:
         # Services receive the full path (R02 convention: "/api/civic/v1/objects/...").
         full_path = CIVIC_PREFIX + rel_path
         if owner == "store":
+            if rel_path == "/session/login":
+                with LOGIN_LOCK:
+                    return service.handle(method, full_path, query, body, context)
             return service.handle(method, full_path, query, body, context)
+        if owner == "scenarios":
+            return self._scenarios(service, method, full_path, query, body)
         if owner == "feedback":
             store = self.service("store")
             principal = store.resolve_principal(context) if store is not None else None
