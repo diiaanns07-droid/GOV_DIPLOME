@@ -1,0 +1,120 @@
+R10 — МАТРИЦА ПРИЁМКИ РАУНДА 11 (АСТАНА, civic-v1)
+
+Источник требований: PACK_SHA 9c2f5c0dae14b46c0697a9dfc7f854351bfd570d
+  research/round-11/CONTRACT.txt (sha256 2a055a56…), BRIEF.txt, REVIEW.txt, prompts/R10.txt.
+Проверяемый объект: только exact CODE_SHA R01 (research/round-11-results/R01/DELIVERY.json,
+MATRIX.json, RUN.txt). Модули R02/R06/R07 — отдельно по их pushed SHA, на временной БД.
+Статусы: PASS / FAIL / NOT_RUN(причина). NOT_RUN никогда не превращается в PASS.
+Тесты: tests/civic/R10/ (stdlib unittest, без зависимостей). Тег теста = ID ниже.
+
+Как запускать (одинаковый набор для любого сервера):
+  oracle   R10_TARGET=oracle (по умолчанию) — эталон R10 только для самопроверки набора;
+  command  R10_TARGET=command R10_CODE_ROOT=<изолированная копия CODE_SHA>
+           R10_START_CMD='{python} -B app.py --port {port} ...'
+           R10_CREATE_EDITOR_CMD='<CLI R01/R02 create-editor ... {username}>'  (пароль через pty/getpass);
+  external R10_TARGET=external R10_BASE_URL=... R10_EDITOR_USER/R10_EDITOR_PASSWORD.
+  python3 -I -B -m unittest discover -s tests/civic/R10 -p 'test_*.py' -v
+
+────────────────────────────────────────────────────────────────────────────
+P0 — ОСНОВНОЙ ПУТЬ (BRIEF: сотрудник создаёт → публикует → житель видит → срок с историей → сообщение; restart)
+ID   Требование                                                          Метод                    Приоритет
+A01  Редактор создаёт черновик: серверный id, revision>=1, draft,        HTTP test_api_objects    P0
+     updated_at ставит сервер
+A02  Черновик не виден публично: нет в списке, detail=404 как у          HTTP                     P0/SEC
+     несуществующего, поля не утекают
+A03  Публикация → объект в публичном списке/карточке; публичный DTO      HTTP + contract.py       P0
+     строго по allowlist civic-v1
+A04  Изменение current_planned_end с причиной: новая дата публично,      HTTP                     P0
+     original_planned_end сохранён, history{reason,changed_fields,at}
+A05  Публичная история: только опубликованные изменения и публичные      HTTP                     P0/PRIV
+     поля; нет логина редактора/internal
+A06  Данные (объект, публикация, история, исходный срок) переживают      HTTP + restart процесса  P0
+     перезапуск сервера; черновик после restart всё ещё скрыт
+A07  Сообщение жителя → {receipt_id, moderation:"pending"}, без эха      HTTP test_api_feedback   P0
+     персональных данных
+A08  pending не публичен; approve+consent → текст и ответ видны;         HTTP                     P0/PRIV
+     без согласия текст не публикуется; reject → не виден
+A09  Архив скрывает объект публично, редактор видит                      HTTP                     P0
+A10  Фильтры kind/status/from/to (включительно), cursor без потерь/дублей HTTP                     P1
+
+КОНТРАКТНЫЕ ИНВАРИАНТЫ
+C01  Конверт {ok,data}|{ok:false,error:{code,message}} и JSON на всех    HTTP                     P0
+     ответах API, включая ошибки; неизвестный путь → 404 JSON
+C02  Сервер игнорирует id/publication/revision/updated_at/actor из body   HTTP                     SEC
+     (тело с id существующего объекта не перезаписывает его)
+C03  Неизвестное остаётся null: бюджет не 0, пустые даты не = сегодня,    HTTP                     FACTS
+     actual_end не появляется сам
+C04  Устаревшая expected_revision → 409 без изменений; две одновременные HTTP (2 потока)          DATA-LOSS
+     правки одной ревизии → ровно одна успешна
+C05  Изменение публичного срока без причины → 400/422                     HTTP                     P0
+C06  Невалидные даты/NaN/Infinity/отриц. бюджет/геометрия/enum/пустой     HTTP                     ROBUST
+     заголовок → 400/422, никогда 500
+C07  Слишком большое тело → 413; сверхдлинный текст → 413/400/422;        HTTP                     ROBUST
+     сервер жив после
+C08  Неверный Content-Type → 415/400; битый JSON/не объект → 400          HTTP                     ROBUST
+C09  Нет физического DELETE                                               HTTP                     DATA-LOSS
+
+БЕЗОПАСНОСТЬ
+S01  Аноним на staff чтение/запись → 401                                  HTTP test_api_security   SEC
+S02  Нет/неверный X-CSRF-Token → 403, состояние не изменилось             HTTP                     SEC
+S03  Чужой Origin → 403; неверный Host на запись → отказ                  HTTP                     SEC
+S04  Logout закрывает серверную сессию: повтор cookie+token → 401         HTTP                     SEC
+S05  Неверный пароль → 401 без cookie; повторы ограничены (малое N)       HTTP                     SEC
+S06  Cookie сессии HttpOnly + SameSite; id сессии не в JSON/localStorage  HTTP (+браузер)          SEC
+S07  Роль не берётся из body/заголовков/localStorage                      HTTP (+браузер)          SEC
+S08  .sqlite/.wal/.shm/.env/исходники не раздаются HTTP (вкл. traversal)  HTTP                     SEC
+S09  Нет чувствительных ключей/значений в публичных ответах               HTTP                     PRIV
+S10  HTML/script сохраняется и отдаётся как текст; в UI не исполняется    HTTP + браузер           SEC
+S11  Нет SSRF: URL из source_refs/текста сообщения сервер не запрашивает  HTTP + локальная канарейка SEC
+S12  Модерация только редактором с CSRF                                   HTTP                     SEC
+S13  Ошибки без traceback/SQL/путей                                       HTTP                     SEC
+S14  Сообщение к черновику/несуществующему объекту — одинаковая ошибка    HTTP                     PRIV
+
+UI / БРАУЗЕР (только на CODE_SHA R01; 1440x900 и 390x844; Playwright + /opt/pw-browsers/chromium)
+U01  Один canvas MapLibre, светлая тема, городской режим Астаны по         браузер                  P0
+     умолчанию; учебная модель отдельно и помечена
+U02  Карточка: срок, ответственный, источник; synthetic/unknown видны     браузер                  P0/FACTS
+U03  Мобильный bottom sheet 390x844; desktop 1440x900                      браузер + скриншоты      P0
+U04  Редактор без raw JSON; форма не теряется при ошибке (409/сеть)        браузер                  P0
+U05  F5 и restart сервера — данные/выбор сохраняются                       браузер                  P0
+U06  Attribution не перекрыт; 3D/подложка: NOT_RUN если OpenFreeMap        браузер                  P1
+     заблокирован (в этой среде CONNECT 403), отдельно проверка fallback
+U07  Клавиатура: доступ к карточке/форме, Escape                           браузер                  P1
+U08  Ошибка сети показана, ввод не потерян                                  браузер (route abort)    P1
+U09  Публичная карта не вызывает /staff/* (журнал сети)                    браузер                  SEC
+U10  XSS-текст в карточке/истории/ответе показан как текст                 браузер                  SEC
+
+P1-МОДУЛИ (по pushed DELIVERY, изолированно, python -I, exact SHA)
+M01  R07 compare: собственные tiny graph R10, ожидания вручную +           test_scenarios_tinygraph P1
+     перебор простых путей; [start,end), offset, перестановка, unknown,
+     unreachable только внутри модели, нет traffic/CO2
+M02  R08 classifier: labels, score_kind, needs_review, нет автопубликации; review splits/лицензий  P1
+     заявления об обучении только с разметкой/splits/метриками
+M03  R09 assistant: source llm|template|unavailable честно, числа/даты    module/HTTP              P1/FACTS
+     совпадают с фактами, нет URL-fetch/SQL/shell по тексту источника
+M04  R05 данные: provenance/лицензии, observed≠synthetic, импорт создаёт  review + import test     FACTS
+     draft, повторный импорт не дублирует и не публикует
+
+ПРОЦЕСС
+D01  DELIVERY.json каждой роли валиден (round/role/pack_sha), code_commit  check_delivery + git     PROCESS
+     существует в origin
+D02  R01: MATRIX.json, CODE_SHA, RUN.txt; проверяется именно этот SHA      git + запуск             PROCESS
+
+────────────────────────────────────────────────────────────────────────────
+НЕЗАВИСИМЫЕ ОЖИДАНИЯ P0 (написаны R10 до появления продукта)
+1. Аноним: GET /objects → ok:true, items без draft/archived.
+2. Редактор: POST /staff/objects (synthetic, сроки 2026-10-14..2026-10-20) → draft, revision r1.
+3. Аноним: GET /objects/{id} → 404; id нет в списке; заголовок черновика нет ни в одном публичном ответе.
+4. publish(expected_revision=r1, reason) → published; публичная карточка проходит allowlist.
+5. update(changes.schedule.current_planned_end=2026-10-27, reason="Перенос: R10") →
+   публично 2026-10-27; original_planned_end=2026-10-20; history содержит reason и changed_fields
+   с current_planned_end; budget.amount_kzt остаётся null.
+6. update с той же старой revision → 409, состояние не изменилось.
+7. restart процесса → пункты 3–6 читаются так же.
+8. POST /feedback {object_id, category:"roads", consent_public:true} → pending; публично 0 сообщений;
+   approve + public_reply → 1 сообщение с ответом; второе без согласия → его текст нигде публично.
+Нарушение любого пункта = FAIL P0. Уровни вердикта: incomplete (P0 не пройден или NOT_RUN) /
+local-demo (P0 PASS локально, есть открытые SEC/FACTS дефекты не критичные) / pilot-candidate
+(P0+SEC+FACTS PASS, restart и браузер проверены, нет critical/high). Не production-ready.
+
+Неоднозначности контракта, найденные при написании тестов: tests/civic/R10/CONTRACT_AMBIGUITIES.md.
