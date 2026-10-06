@@ -1,0 +1,22 @@
+Задача / идентификатор: round-10 / K04 BUILD — один понятный продукт в исходном дизайне
+Агент / город / сфера: BUILD (K04) / Шымкент + Астана / школы, доступность
+Обновлено: 2026-10-06, UTC
+Статус: partial (этап 1 из 4 сделан)
+Рабочая ветка: claude/beautiful-clarke-sbzomj
+Исходный коммит: d18847f (прежний BUILD) + cherry-pick d2ff344 → 5f81e4d
+Назначенные пути: web/govtech/, web/index.html, web/map.js (точки интеграции), ui/web_server.py, tests/govtech/, tests/test_govtech_integration.py, research/round-10-results/BUILD/
+
+Цель: сквозной кейс «Доступность школ» на app.py/8501: Сейчас/A/B на одной карте, происхождение данных, честный fallback, сохранение учебной модели.
+
+Что реально сделано (этап 1):
+- Основа d2ff344 перенесена; D1 воспроизведён и исправлен; D2 не воспроизведён (4 варианта).
+- Новый главный путь web/govtech/school/{case.js, school-ui.js, school.css}; прежний v2-планировщик — «Расширенный режим».
+- Офлайн-фон карты при недоступном OpenFreeMap (подписан, без 3D).
+Подробно: research/round-10-results/BUILD/STATUS.md.
+
+Проверки: pytest 114 passed; ui.web_check 14 OK; node plan/resilience/whatif PASS; school_case 2311 PASS; браузер 1440/390 (Playwright, офлайн-фон).
+Не запускалось: реальные 3D-здания (OpenFreeMap: host_not_allowed в облаке); проверка людьми; живой AI.
+
+Доказательства и ограничения: данные — вторичный срез Overture 2026-09-23.1 (≈2×2 км на город), не реестр; расстояния по прямой; точки — сетка, не жители; места A/B — гипотезы; стоимость/вместимость/допуск = нет данных.
+
+Незавершённое: этапы 2–4 BUILD.txt (данные коллег и адаптеры, AI-шов и записка, приёмка на точном SHA, DEMO_GUIDE, INTEGRATION.json, COMPLETION_MATRIX.json).

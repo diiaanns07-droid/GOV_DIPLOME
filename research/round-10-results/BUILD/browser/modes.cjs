@@ -1,0 +1,23 @@
+const { chromium } = require("playwright");
+(async () => {
+  const b = await chromium.launch({ args: ["--use-gl=swiftshader", "--enable-unsafe-swiftshader"] });
+  const p = await (await b.newContext({ viewport: { width: 1440, height: 900 } })).newPage();
+  const errs = []; p.on("pageerror", (e) => errs.push(e.message));
+  await p.goto("http://127.0.0.1:8501/"); await p.waitForTimeout(5000); await p.evaluate(() => localStorage.clear());
+  const score0 = await p.textContent("#city-score");
+  await p.click("#govtech-toggle"); await p.waitForTimeout(800);
+  await p.click("#sc-pick-A"); await p.locator("#sc-overlay .sc-cand").nth(2).click({ force: true }); await p.waitForTimeout(300);
+  const shy = await p.evaluate(() => ({ A: SCHOOL_UI.caseOf("shymkent").variants.A, d: SCHOOL_UI.state.digest }));
+  await p.click('#sc-strip [data-city="astana"]'); await p.waitForTimeout(800);
+  const ast = await p.evaluate(() => ({ city: SCHOOL_UI.state.city, A: SCHOOL_UI.caseOf("astana").variants.A, view: SCHOOL_UI.state.view, title: document.querySelector("#sc-card h2").textContent, schools: SCHOOL_UI.caseOf("astana").schools.length, d: SCHOOL_UI.state.digest }));
+  await p.click("#sc-strip .sc-adv"); await p.waitForTimeout(500);
+  const adv = await p.evaluate(() => ({ panel: !document.getElementById("gov-panel").hidden && getComputedStyle(document.getElementById("gov-panel")).display !== "none", strip: document.getElementById("sc-strip").hidden }));
+  await p.click("#gov-back-school"); await p.waitForTimeout(400);
+  await p.click("#govtech-toggle"); await p.waitForTimeout(800);
+  const back = await p.evaluate(() => ({ score: document.getElementById("city-score").textContent, strip: document.getElementById("sc-strip").hidden, overlay: getComputedStyle(document.getElementById("sc-overlay")).display, links: map.getLayoutProperty("sc-links-school", "visibility"), district: map.getLayoutProperty("district-fill", "visibility") }));
+  await p.reload(); await p.waitForTimeout(5000);
+  await p.click("#govtech-toggle"); await p.waitForTimeout(800);
+  const f5 = await p.evaluate(() => ({ city: SCHOOL_UI.state.city, A: SCHOOL_UI.caseOf("shymkent").variants.A, d: SCHOOL_UI.state.digest }));
+  console.log(JSON.stringify({ score0, shy, ast, adv, back, f5, errs }, null, 1));
+  await b.close();
+})();

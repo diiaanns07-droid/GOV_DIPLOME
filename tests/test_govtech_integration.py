@@ -14,3 +14,18 @@ def test_integrated_govtech_assets_match_provenance():
         assert digest == item["integrated_sha256"], item["file"]
         if item["file"] not in adapted:
             assert digest == item["sha256"], "Undocumented change to pinned core: " + item["file"]
+
+
+def test_school_case_assets_are_served_and_linked():
+    """The school-access main path is part of the one page on 8501, served by explicit whitelist only."""
+    from ui.web_server import ASSETS
+
+    web = Path(__file__).resolve().parents[1] / "web"
+    page = (web / "index.html").read_text(encoding="utf-8")
+    for name in ("school/case.js", "school/school-ui.js", "school/school.css"):
+        assert "/govtech/" + name in ASSETS
+        assert (web / "govtech" / name).is_file()
+        assert "/govtech/" + name in page
+    # school-ui.js needs the shell and the pinned core loaded before it
+    assert page.index("/govtech/shell.js") < page.index("/govtech/school/case.js") < page.index("/govtech/school/school-ui.js")
+    assert page.count("<canvas") == 0 and "<iframe" not in page

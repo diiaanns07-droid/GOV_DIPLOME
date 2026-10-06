@@ -17,9 +17,10 @@
     for (const [k, v] of Object.entries(attrs || {})) if (v !== null && v !== undefined) e.setAttribute(k, v);
     return e;
   };
-  const EXT = { layers: [], tools: [], onCity: [], onTool: [], cards: [] };
+  const EXT = { layers: [], tools: [], onCity: [], onTool: [], cards: [], onMap: [], onActive: [], onMode: [] };
   const S = { city: "shymkent", tool: "inactive" };
-  const G = { active: false, page: "plan", camera: null, boundMap: null, dataKey: null, pending: false };
+  // school: the short school-access case is the main view; the older v2 planner/resilience panel is the advanced mode.
+  const G = { active: false, page: "plan", camera: null, boundMap: null, dataKey: null, pending: false, school: true };
   const PLUI = () => window.CITY_PLAN_UI;
   const RSUI = () => window.CITY_RESILIENCE_UI;
   const qaOf = (p) => F.qaOf ? F.qaOf(S.city, p) : [];
@@ -109,14 +110,18 @@
   function fitSlice() {
     if (!G.active || !mapReady) return;
     const b = D.cities[S.city].bbox, mobile = innerWidth < 761;
-    map.fitBounds([[b[0], b[1]], [b[2], b[3]]], { padding: mobile ? { top: 95, left: 20, right: 65, bottom: innerHeight * .5 } : { top: 130, left: 495, right: 95, bottom: 65 }, maxZoom: 15.8, pitch: state.threeD ? 52 : 0, bearing: state.threeD ? -16 : 0, duration: 650 * motion() });
+    const pad = mobile ? (G.school ? { top: 250, left: 14, right: 54, bottom: Math.round(104 + innerHeight * .3) + 8 } : { top: 95, left: 20, right: 65, bottom: innerHeight * .5 })
+      : G.school ? { top: 200, left: 270, right: 480, bottom: 110 } : { top: 130, left: 495, right: 95, bottom: 65 };
+    map.fitBounds([[b[0], b[1]], [b[2], b[3]]], { padding: pad, maxZoom: 15.8, pitch: state.threeD ? 52 : 0, bearing: state.threeD ? -16 : 0, duration: 650 * motion() });
   }
   function modeLayers() {
     if (!mapReady) return;
     for (const id of ["district-fill", "district-outline", "district-selected"]) if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", G.active ? "none" : "visible");
     for (const { el: marker } of markers) marker.style.display = G.active ? "none" : "";
-    for (const id of ["gov-area", "gov-boundary", "gov-sources"]) if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", G.active ? "visible" : "none");
-    overlay.style.display = G.active ? "block" : "none";
+    for (const id of ["gov-area", "gov-boundary"]) if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", G.active ? "visible" : "none");
+    if (map.getLayer("gov-sources")) map.setLayoutProperty("gov-sources", "visibility", G.active && !G.school ? "visible" : "none");
+    overlay.style.display = G.active && !G.school ? "block" : "none";
+    for (const f of EXT.onMode) f(G.active, G.school);
     if (G.active) popup?.remove();
   }
   function scheduleMap() {
@@ -148,14 +153,14 @@
       map.on("move", scheduleMap);
       map.on("resize", () => { scheduleMap(); if (G.active) fitSlice(); });
       map.on("click", (event) => {
-        if (!G.active) return;
+        if (!G.active || G.school) return;
         const tool = EXT.tools.find((t) => t.placing());
         if (tool) { tool.place([event.lngLat.lng, event.lngLat.lat]); return; }
         const hit = map.queryRenderedFeatures(event.point, { layers: ["gov-sources"] })[0];
         if (hit) selectPlace(hit.properties.id);
       });
       map.getCanvas().addEventListener("keydown", (event) => {
-        if (!G.active) return;
+        if (!G.active || G.school) return;
         if (event.key === "Escape") { for (const t of EXT.tools) t.stop(); updateStatus(); }
         if (event.key === "Enter") {
           const tool = EXT.tools.find((t) => t.placing());
@@ -169,6 +174,7 @@
         }
       });
     }
+    for (const f of EXT.onMap) f(map);
     modeLayers(); if (G.active) { fitSlice(); renderMap(); }
   }
   function setActive(active) {
@@ -191,10 +197,22 @@
     document.querySelector(".brand-sub").textContent = active ? D.cities[S.city].label + " · городское планирование" : originalSub;
     document.title = active ? D.cities[S.city].label + " · Городская лаборатория" : originalTitle;
     for (const f of EXT.onTool) f(S.tool);
+    document.body.classList.toggle("sc-advanced", active && !G.school);
+    for (const f of EXT.onActive) f(active);
     modeLayers();
     if (active) { closeDrawer(); state.tour = -1; renderTour(); dataPanel(); fitSlice(); renderMap(); updateStatus(); }
     else if (mapReady && G.camera) { map.jumpTo(G.camera); state.threeD = G.camera.pitch > 0; $g("toggle-3d").classList.toggle("active", state.threeD); $g("toggle-3d").setAttribute("aria-pressed", String(state.threeD)); }
-    if (active) panel.querySelector('[data-city="' + S.city + '"]').focus();
+    if (active && !G.school) panel.querySelector('[data-city="' + S.city + '"]').focus();
+  }
+  // Switch between the main school-access case and the advanced v2 planner (same map, same city, separate state).
+  function setSchool(on) {
+    if (G.school === !!on) return;
+    PLUI()?.flush(); PLUI()?.cancelSearch(); RSUI()?.cancel();
+    for (const t of EXT.tools) t.stop();
+    G.school = !!on;
+    document.body.classList.toggle("sc-advanced", G.active && !G.school);
+    G.dataKey = null; modeLayers(); fitSlice(); renderMap(); updateStatus();
+    if (G.active && !G.school) panel.querySelector('[data-city="' + S.city + '"]').focus();
   }
   $g("govtech-toggle").addEventListener("click", () => setActive(!G.active));
   $g("overview-map").addEventListener("click", (e) => { if (G.active) { e.stopImmediatePropagation(); fitSlice(); } }, true);
@@ -213,6 +231,10 @@
   // Preserve the original map and its 3D/zoom controls; expose only the UI seam expected by pinned modules.
   window.CITY_APP = { state: S, switchCity, setTool: () => setActive(true), ui: { el, sv, $: $g, D, F, EXT,
     toScreen: (lon, lat) => { const p = map.project([lon, lat]); return [p.x, p.y]; }, renderMap: scheduleMap, updateStatus, qaOf, selectPlace, fmtM, stopV1: () => {} } };
-  window.GOVTECH = { get active() { return G.active; }, setActive, setPage, switchCity, onMapReady };
+  const back = el("button", { type: "button", class: "gov-back", id: "gov-back-school" }, "← Доступность школ");
+  back.addEventListener("click", () => setSchool(true));
+  panel.querySelector(".gov-heading").prepend(back);
+  window.GOVTECH = { get active() { return G.active; }, get school() { return G.school; }, setActive, setPage, switchCity, setSchool, fitSlice, onMapReady,
+    get map() { return mapReady ? map : null; }, EXT, state: S };
   if (mapReady) onMapReady();
 })();

@@ -45,7 +45,8 @@ for _asset in ("shell.js", "shell.css", "core/data.js", "core/evidence.js",
                "core/facts.js", "core/whatif.js", "core/plan.js", "core/resilience.js",
                "core/plan-ui.js", "core/resilience-ui.js", "core/attribution/ATTRIBUTION.md",
                "core/attribution/attribution.json", "core/attribution/LICENSES/Apache-2.0.txt",
-               "core/attribution/LICENSES/CDLA-Permissive-2.0.txt", "core/attribution/LICENSES/ODbL-1.0.txt"):
+               "core/attribution/LICENSES/CDLA-Permissive-2.0.txt", "core/attribution/LICENSES/ODbL-1.0.txt",
+               "school/case.js", "school/school-ui.js", "school/school.css"):
     _mime = {".js": "text/javascript", ".css": "text/css", ".json": "application/json"}.get(Path(_asset).suffix, "text/plain")
     ASSETS["/govtech/" + _asset] = ("govtech/" + _asset, _mime + "; charset=utf-8")
 

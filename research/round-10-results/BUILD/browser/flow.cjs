@@ -1,0 +1,23 @@
+const { chromium } = require("playwright");
+(async () => {
+  const out = process.argv[2], w = +(process.argv[3] || 1440), h = +(process.argv[4] || 900);
+  const b = await chromium.launch({ args: ["--use-gl=swiftshader", "--enable-unsafe-swiftshader"] });
+  const ctx = await b.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 1 });
+  const p = await ctx.newPage();
+  const logs = []; p.on("console", (m) => { if (m.type() === "error" || m.type() === "warning") logs.push(m.type() + ": " + m.text()); }); p.on("pageerror", (e) => logs.push("PAGEERROR " + e.message));
+  await p.goto("http://127.0.0.1:8501/"); await p.waitForTimeout(5000);
+  await p.evaluate(() => localStorage.clear());
+  await p.click("#govtech-toggle"); await p.waitForTimeout(1500);
+  await p.screenshot({ path: out + "-1-start.png" });
+  await p.evaluate(() => { const c = SCHOOL_UI.caseOf("shymkent"); const s = c.schools.find((x) => SCHOOL_CASE.targetStatus(c, x).eligible); SCHOOL_UI.select("school", s.id); });
+  await p.waitForTimeout(400); await p.screenshot({ path: out + "-2-school.png" });
+  await p.click("#sc-pick-A"); await p.waitForTimeout(300);
+  await p.locator("#sc-overlay .sc-cand").nth(5).click({ force: true }); await p.waitForTimeout(400);
+  await p.click("#sc-suggest"); await p.waitForTimeout(400);
+  await p.click("#sc-compare"); await p.waitForTimeout(800);
+  await p.screenshot({ path: out + "-3-compare.png" });
+  console.log(JSON.stringify(await p.evaluate(() => ({ v: SCHOOL_UI.caseOf("shymkent").variants, view: SCHOOL_UI.state.view, title: document.querySelector("#sc-card h2")?.textContent, canv: document.querySelectorAll("canvas").length }))));
+  await p.click("#sc-view-current"); await p.waitForTimeout(400); await p.screenshot({ path: out + "-4-current.png" });
+  console.log(logs.filter((l) => !/openfreemap|Failed to load resource|GL Driver|style diff/.test(l)).slice(0, 15).join("\n"));
+  await b.close();
+})();
