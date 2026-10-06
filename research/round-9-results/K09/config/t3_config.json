@@ -1,0 +1,58 @@
+{
+ "_note": "Предрегистрация протокола T3 (K09 r9): зафиксирована и запушена ДО любого прогона эксперимента. Seeds не подбираются; изменение после прогона — только новой версией файла с причиной.",
+ "config_version": "k09-r9-t3-v1",
+ "objective_version": "worst-lex-v1",
+ "metric_version": "haversine-mm-v1",
+ "data_build_sha": "d865dd4a124291e10dd0b7bb1d9eada20d34c268",
+ "r8_k09_sha": "e953ddc0bbee6589ca461407c3689064a45e99a1",
+ "provenance": {
+  "sources": "observed_secondary — реальные записи Overture places_social среза BUILD (data.js @ d865dd4), не официальный реестр",
+  "points_candidates_costs_weights": "synthetic/hypothetical",
+  "exclusions": "hypothetical — условное исключение записей из расчёта; НЕ закрытие объекта, НЕ вероятность, НЕ риск"
+ },
+ "slices": [
+  {"id": "shymkent_school", "city": "shymkent", "category": "school", "n_sources": 15},
+  {"id": "astana_clinic", "city": "astana", "category": "outpatient_clinic", "n_sources": 16}
+ ],
+ "sizes": {"S": {"n_candidates": 4, "n_points": 5}, "M": {"n_candidates": 8, "n_points": 15}, "L": {"n_candidates": 12, "n_points": 25}},
+ "max_selected": 3,
+ "coverage_radius_m": 300,
+ "budget_ratio": [0.5, 1.0],
+ "budget_rule": "floor(budget_ratio × сумма max_selected самых дорогих кандидатов задачи); 1.0 — бюджет не ограничивает",
+ "weights": "random_1_100",
+ "geometry_rule": "Для (city, category, seed) один раз: 25 точек и 12 кандидатов uniform в bbox (6 знаков), стоимость целое uniform [100, 1000], веса 1..100 — отдельные random.Random по строкам; задача берёт первые n_points/n_candidates (вложено). Геометрия одинакова для всех семейств, k, бюджетов → парные сравнения.",
+ "families": {
+  "single": {"k_cases": [1, 3, 7], "rule": "k случаев, каждый исключает 1 запись; записи выбираются без возвращения (разные случаи — разные записи)"},
+  "pair": {"k_cases": [1, 3, 7], "rule": "k случаев, каждый исключает 2 разные случайные записи (независимо между случаями)"},
+  "cluster": {"k_cases": [1, 3, 7], "rule": "k случаев, каждый исключает 3 записи, ближайшие (haversine-mm-v1, ничьи — меньший id) к случайной якорной точке uniform в bbox — пространственно связанное исключение"},
+  "attribute": {"k_cases": "по данным", "rule": "детерминированные случаи из config/t3_attribute_sets.json: low_confidence (Overture confidence < 0.5), qa_flagged (QA BUILD), low_or_qa; пустые/совпадающие не включаются (shymkent 3 случая, astana 1)"},
+  "all_disabled": {"k_cases": [1], "rule": "один случай исключает все записи категории в срезе (крайний случай: baseline пуст, проверка unknown)"}
+ },
+ "exclusion_rng": "random.Random(f\"{config_version}|{city}|{category}|excl|{family}|{k}|{seed}\") — не зависит от размера задачи и бюджета (парность по размеру и бюджету)",
+ "seeds": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+ "stress": {"size": "L", "max_selected": 5, "budget_ratio": 1.0, "family": "cluster", "k_cases": 7, "rule": "максимальная задача 12×25×8 случаев, 4096 подмножеств, обе выборки, seeds 0–9 (20 задач); только время и корректность"},
+ "task_counts": {"random_families": 1080, "attribute": 120, "all_disabled": 120, "stress": 20, "total": 1340},
+ "algorithms": {
+  "nominal": "mean-оптимум city-plan-v2 на base: min (L_base, cost, sorted ids)",
+  "robust": "min (W, L_base, cost, sorted ids), W = lex-max L по base и пользовательским случаям",
+  "L": "(unknown_count, weighted_sum_mm, max_mm), max=null → +inf только внутри сравнения",
+  "oracle": "k09res/resilience.py (независимый Python, полный перебор ≤ 4096 подмножеств)",
+  "build": "web/resilience.js BUILD r9 — если опубликован с явным SHA; иначе integration NOT_RUN"
+ },
+ "metrics": {
+  "same_plan": "доля задач, где robust.selected_ids == nominal.selected_ids (Wilson 95%)",
+  "base_price_m": "(mean_base(robust) − mean_base(nominal))/1000 м; только если оба optimal и base unknown=0; иначе null с причиной; распределение: доля нулей, p50/p90/max (nearest-rank)",
+  "worst_vector": "W(nominal) против W(robust): класс улучшения — none / unknown (меньше unknown) / wsum (unknown равны, меньше wsum) / max (только max); выигрыш в худшем случае по среднему (W.wsum разница / сумма весов /1000 м) и по max, только при unknown=0 у обоих",
+  "unknown": "отдельно: доля задач с W.unknown>0 у nominal и у robust; robust снижает unknown — счёт",
+  "worst_case_ids": "доля задач, где base входит в худшие случаи; число худших случаев (ничьи)",
+  "runtime": "time.perf_counter оракула (предвычисление+перебор), минимум из 3 повторов; окружение фиксируется; BUILD — отдельно при наличии",
+  "factors": "по семейству, k, размеру, бюджету, срезу; парные контрасты (одинаковая геометрия): k=1 против k=7 и бюджет 0.5 против 1.0 — точный McNemar для same_plan"
+ },
+ "interpretation_limits": [
+  "частоты по synthetic задачам — не вероятности городских кризисов, закрытий или рисков",
+  "исключение записи — условное допущение о данных, не подтверждение закрытия",
+  "веса — приоритет пользователя, не население; расстояния по прямой, не пешее время",
+  "QA-метка не доказывает ошибку записи; low_confidence — свойство Overture, не проверка на месте",
+  "оптимум только среди введённых кандидатов"
+ ]
+}
