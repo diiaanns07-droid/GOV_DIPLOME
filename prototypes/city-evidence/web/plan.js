@@ -418,7 +418,7 @@
   }
 
   const api = { SCHEMA, METRIC, CATEGORIES, LIMITS, PlanError, mmOf, sourceSnapshot, makeContext, validatePlanScenario, problemDigest, scenarioDigest,
-    precompute, feasibility, metricsOf, evaluatePlan, createSearch, optimizePlans, sensitivity, KEYS, cmpIds,
+    precompute, feasibility, metricsOf, evaluatePlan, createSearch, optimizePlans, sensitivity, KEYS, cmpIds, isId: (v) => ID_RE.test(v), popcount,
     internal: { evaluate: evaluateInternal, createSearch: createSearchInternal }, derivedOf: (ctx, sc, F) => derivedOf(ctx, validatePlanScenario(sc, ctx), F), exportPlanScenario, importPlanScenario,
     explanationDigest, explainPlans, reportHtml, esc };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
