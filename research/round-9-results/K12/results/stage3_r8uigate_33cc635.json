@@ -1,0 +1,132 @@
+{
+ "summary": {
+  "app_root": "r9_33cc635",
+  "total": 9,
+  "pass": 9,
+  "fail": [],
+  "external_requests": 0,
+  "verdict": "PASS"
+ },
+ "results": [
+  {
+   "id": "U1",
+   "title": "UI-импорт: 17 кандидатов и поддельные derived_results отклонены, состояние редактора прежнее",
+   "status": "PASS",
+   "detail": {
+    "imp1": true,
+    "r17": false,
+    "r03": false,
+    "msg17": "Файл не принят, текущий план не изменён: кандидатов не больше 16, получено 17",
+    "msg03": "Файл не принят, текущий план не изменён: derived_results в файле не совпадают с пересчётом — файл изменён вручную или сд"
+   }
+  },
+  {
+   "id": "U2a",
+   "title": "полный поиск в UI: done, все 65 536 наборов, «Среднее» = синхронному optimizePlans",
+   "status": "PASS",
+   "detail": {
+    "done": {
+     "st": "done",
+     "r": {
+      "status": "optimal",
+      "evaluated": 65536,
+      "mean": [
+       "c1",
+       "c2",
+       "c3",
+       "c5",
+       "c9"
+      ]
+     }
+    },
+    "node": {
+     "evaluated": 65536,
+     "mean": [
+      "c1",
+      "c2",
+      "c3",
+      "c5",
+      "c9"
+     ]
+    }
+   }
+  },
+  {
+   "id": "U2b",
+   "title": "после смены бюджета прежний оптимум устарел (stale), применить нельзя",
+   "status": "PASS",
+   "detail": {
+    "status": "stale",
+    "applied": false
+   }
+  },
+  {
+   "id": "U3",
+   "title": "отмена посреди поиска: cancelled, результат не появился и позже",
+   "status": "PASS",
+   "detail": {
+    "c": {
+     "running": true,
+     "st": "cancelled"
+    },
+    "c2": {
+     "status": "cancelled",
+     "hasResult": false
+    }
+   }
+  },
+  {
+   "id": "U4",
+   "title": "изменение бюджета во время поиска: ответ старого запроса отброшен (stale, без результата)",
+   "status": "PASS",
+   "detail": {
+    "mid": "running",
+    "examined": 20480,
+    "after": "stale",
+    "hasResult": false
+   }
+  },
+  {
+   "id": "U5",
+   "title": "импорт другого сценария во время поиска: старый поиск снят, его ответ не применён",
+   "status": "PASS",
+   "detail": {
+    "imp5": true,
+    "status": "idle",
+    "hasResult": false
+   }
+  },
+  {
+   "id": "U6",
+   "title": "смена города во время поиска: сценарий сброшен, старый ответ не применён",
+   "status": "PASS",
+   "detail": {
+    "status": "idle",
+    "hasResult": false,
+    "pts": 0,
+    "cands": 0,
+    "city": "astana"
+   }
+  },
+  {
+   "id": "U7",
+   "title": "страница отвечает во время полного поиска (самый длинный разрыв таймера < 200 мс)",
+   "status": "PASS",
+   "detail": {
+    "maxGap": 24,
+    "ticks": 59,
+    "total_ms": 605,
+    "status": "done"
+   }
+  },
+  {
+   "id": "U8",
+   "title": "нет внешних запросов и ошибок страницы",
+   "status": "PASS",
+   "detail": {
+    "external": [],
+    "errors": []
+   }
+  }
+ ]
+}

@@ -1,0 +1,139 @@
+{
+ "summary": {
+  "app_root": "r9_33cc635",
+  "groups": [
+   "B",
+   "L"
+  ],
+  "total": 11,
+  "pass": 10,
+  "fail": [],
+  "not_run": 1,
+  "external_requests": 0,
+  "verdict": "PASS"
+ },
+ "results": [
+  {
+   "group": "B",
+   "id": "B1",
+   "title": "v2-импорт в UI отклоняет 56 конвертов city-resilience-v1, план v2 и город не меняются, есть сообщение",
+   "status": "PASS",
+   "detail": {
+    "bad": [],
+    "msg": "Файл не принят, текущий план не изменён: версия city-resilience-v1 не поддерживается"
+   }
+  },
+  {
+   "group": "B",
+   "id": "B2",
+   "title": "v1-импорт в UI отклоняет те же 56 конвертов, сценарий v1 не меняется",
+   "status": "PASS",
+   "detail": {
+    "bad": []
+   }
+  },
+  {
+   "group": "B",
+   "id": "B3",
+   "title": "данные среза на странице (CITY_EVIDENCE) не изменились",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "group": "B",
+   "id": "B4",
+   "title": "панель «Устойчивость к допущениям»: отображение label только текстом, отмена, смена города",
+   "status": "NOT_RUN",
+   "detail": "в этой сборке нет UI устойчивости"
+  },
+  {
+   "group": "L",
+   "id": "L1",
+   "title": "смена ручного выбора во время поиска: задача та же — результат допустим только для текущего problem_digest",
+   "status": "PASS",
+   "detail": {
+    "status": "done",
+    "rid": 3,
+    "ridNow": 3,
+    "changedSel": true,
+    "resultDigest": "sha256:ce5a820491db5c1b5ece908cf676822148b43bef709df28cd17317cf46ac6e9c",
+    "curDigest": "sha256:ce5a820491db5c1b5ece908cf676822148b43bef709df28cd17317cf46ac6e9c"
+   }
+  },
+  {
+   "group": "L",
+   "id": "L2",
+   "title": "объяснение после смены ручного выбора не показывается (старый текст отброшен)",
+   "status": "PASS",
+   "detail": {
+    "shown_before": true,
+    "shown_after": false
+   }
+  },
+  {
+   "group": "L",
+   "id": "L3",
+   "title": "смена города после завершённого поиска: результат сброшен, применить нельзя",
+   "status": "PASS",
+   "detail": {
+    "doneBefore": "done",
+    "status": "idle",
+    "hasResult": false,
+    "applied": false,
+    "selected": [],
+    "city": "astana"
+   }
+  },
+  {
+   "group": "L",
+   "id": "L4",
+   "title": "после смены ручного выбора оптимум той же задачи применяется только кнопкой и ставит ровно свои ID",
+   "status": "PASS",
+   "detail": {
+    "ok": true,
+    "selected": [
+     "c1",
+     "c16",
+     "c3",
+     "c5",
+     "c9"
+    ],
+    "want": [
+     "c1",
+     "c16",
+     "c3",
+     "c5",
+     "c9"
+    ],
+    "status": "done"
+   }
+  },
+  {
+   "group": "L",
+   "id": "L5",
+   "title": "смена бюджета после поиска: результат устарел, применить нельзя",
+   "status": "PASS",
+   "detail": {
+    "status": "stale",
+    "applied": false
+   }
+  },
+  {
+   "group": "Z",
+   "id": "Z1",
+   "title": "нет внешних запросов и ошибок страницы",
+   "status": "PASS",
+   "detail": {
+    "external": [],
+    "errors": []
+   }
+  },
+  {
+   "group": "Z",
+   "id": "Z2",
+   "title": "данные среза на странице не изменились за весь прогон",
+   "status": "PASS",
+   "detail": null
+  }
+ ]
+}
