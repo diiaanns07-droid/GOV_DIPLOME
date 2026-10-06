@@ -1,0 +1,38 @@
+{
+  "round": 11,
+  "role": "R09",
+  "branch": "claude/wizardly-ptolemy-qy8ltw",
+  "base_sha": "834a25fb860dd5514d02c9274b70d7bf8a53a79c",
+  "pack_sha": "9c2f5c0dae14b46c0697a9dfc7f854351bfd570d",
+  "status": "partial",
+  "owned_paths": [
+    "agent/civic_assistant/",
+    "web/civic/assistant/",
+    "tests/civic/R09/",
+    "research/round-11-results/R09/",
+    "research/handoffs/astana/R09/round-11/STATUS.md"
+  ],
+  "integration_notes": "research/round-11-results/R09/INTEGRATION.txt (будет на этапе CP6)",
+  "code_commit": null,
+  "checks": [
+    {
+      "name": "r09-cp1-facts-template",
+      "status": "PASS",
+      "command": "python3 -m pytest tests/civic/R09 -q",
+      "input": "tests/civic/R09/fixtures/*.json (synthetic)",
+      "reason": "16 passed"
+    },
+    {
+      "name": "live-llm",
+      "status": "NOT_RUN",
+      "command": null,
+      "input": null,
+      "reason": "Оплачиваемые живые вызовы вне задания R09"
+    }
+  ],
+  "limitations": [
+    "Только шаблонный режим проверен на CP1",
+    "KK-формулировки требуют проверки носителем языка"
+  ],
+  "next_step": "CP2: тесты валидации провайдера и adapter contract"
+}
