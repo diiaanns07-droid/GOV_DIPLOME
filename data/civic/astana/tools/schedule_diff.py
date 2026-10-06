@@ -29,8 +29,12 @@ import argparse
 import datetime as dt
 import hashlib
 import json
+import os
 import re
 import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import civic_v1 as cv  # noqa: E402  (PII detection shared with the validator)
 
 MONTHS = {
     "январ": 1, "феврал": 2, "март": 3, "апрел": 4, "ма": 5, "июн": 6,
@@ -48,11 +52,27 @@ NUMERIC_RE = re.compile(r"\b(\d{1,2})\.(\d{1,2})\.(20\d{2})\b")
 ISO_RE = re.compile(r"\b(20\d{2})-(\d{2})-(\d{2})\b")
 MONTH_ONLY_RE = re.compile(rf"\b(?:в|до|к)\s+(?:конц[еу]\s+|начал[еу]\s+|середин[еу]\s+)?{MONTH_RE}(?:\s+{YEAR_RE})?", re.I)
 
-ACTUAL_RE = re.compile(r"(заверш[её]н[аоы]?\b|завершили|завершила|завершил\b|сдан[аоы]?\b|открыт[аоы]?\b|"
-                       r"введ[её]н[аоы]?\s+в\s+эксплуатаци|работы\s+выполнены|закончили)", re.I)
-END_RE = re.compile(r"(заверш\w*|оконч\w*|сдач\w*|сдать|продл\w*|перенес\w*|продолж\w*\s+до|до\b|по\b|к\b|срок\w*)", re.I)
-START_RE = re.compile(r"(начн\w*|начал\w*|старт\w*|приступ\w*|откро\w*\s+движени\w*|перекро\w*|\bс\b)", re.I)
-SENTENCE_RE = re.compile(r"[^.!?\n]*?(?:\d|январ|феврал|март|апрел|ма[йяе]|июн|июл|август|сентябр|октябр|ноябр|декабр)[^.!?\n]*[.!?]?", re.I)
+# Role cues are read only inside the clause that holds the date (text after the last , ; or ().
+CLAUSE_CUT_RE = re.compile(r"[,;(]")
+ACTUAL_RE = re.compile(r"(заверш[её]н[аоы]?\b|заверш[её]нн\w+|завершили|завершила|завершил\b|оконч[её]н\w*|окончили|"
+                       r"сдан[аоы]?\b|сдали|открыт[аоы]?\b|открыли|введ[её]н[аоы]?\s+в\s+эксплуатаци|"
+                       r"выполнен[аоы]?\b|закончили|законч[её]н\w*)", re.I)
+NEG_ACTUAL_RE = re.compile(r"\bне\s+(?:был\w*\s+)?(?:заверш|оконч|сдан|сдал|открыт|выполн|законч)", re.I)
+MODAL_RE = re.compile(r"\b(?:будет|будут|должн\w*|планир\w*|запланир\w*|ожида\w*|намеч\w*|предполага\w*)", re.I)
+PERCENT_RE = re.compile(r"\d\s*%|процент", re.I)
+MOVE_RE = re.compile(r"(?:перенес|перенёс|продл|сдвин|отлож)\w*", re.I)
+START_VERB_RE = re.compile(r"(?:начн|начал|начат|старт|приступ|закро|закры|перекро|перекры)\w*", re.I)
+END_VERB_RE = re.compile(r"(?:заверш|оконч|сдач|сдать|сдадут|продл|перенес|выполн|законч|открыт|откро)\w*", re.I)
+_TIME = r"(?:\d{1,2}[:.]\d{2}\s*)?"
+END_ANCHOR_RE = re.compile(rf"\b(?:до|к|по)\s*{_TIME}$", re.I)
+START_ANCHOR_RE = re.compile(rf"\bс\s*{_TIME}$", re.I)
+ON_ANCHOR_RE = re.compile(r"\bна\s*$", re.I)
+# Sentence end: . ! ? followed by space and a capital/quote, or a line break. Not inside 30.11.2026
+# and not after common abbreviations (г. ул. пр. мкр. ...).
+SENTENCE_SPLIT_RE = re.compile(
+    r"(?<=[.!?])(?<!\bг\.)(?<!\bгг\.)(?<!\bул\.)(?<!\bпр\.)(?<!\bмкр\.)(?<!\bим\.)(?<!\bд\.)(?<!\bт\.)"
+    r"\s+(?=[А-ЯЁA-Z«\"„(])|\n+")
+MAX_SNAPSHOT_CHARS = 1500
 
 MAX_EXCERPT = 300
 
@@ -72,15 +92,42 @@ def _mk(y, m, d):
         return None
 
 
+def _last(rx, text):
+    pos = -1
+    for m in rx.finditer(text):
+        pos = m.start()
+    return pos
+
+
 def _role(before: str, after: str) -> str:
-    window = before[-70:]
-    if ACTUAL_RE.search(window) or ACTUAL_RE.search(after[:25]):
+    """Guess what a date means from its own clause. Unsure -> 'unclassified' (the editor decides)."""
+    clause = CLAUSE_CUT_RE.split(before[-120:])[-1]
+    tail = CLAUSE_CUT_RE.split(after[:30])[0]
+    if NEG_ACTUAL_RE.search(clause):
+        return "unclassified"  # "не завершили к ..." - a missed date, not a completion
+    if ACTUAL_RE.search(clause):
+        if MODAL_RE.search(clause):
+            return "expected_end"  # "будет сдан", "должны были быть завершены"
+        if PERCENT_RE.search(clause) or PERCENT_RE.search(tail):
+            return "unclassified"  # "завершены на 60%"
         return "reported_actual_end"
-    if END_RE.search(window[-35:]):
+    if MOVE_RE.search(clause):
+        if ON_ANCHOR_RE.search(clause):
+            return "expected_end"  # "перенесён ... на <date>"
+        if START_ANCHOR_RE.search(clause):
+            return "previous_end"  # "перенесён с <date> ..."
+    if ON_ANCHOR_RE.search(clause):
+        if MODAL_RE.search(clause):
+            return "start" if _last(START_VERB_RE, clause) > _last(END_VERB_RE, clause) else "expected_end"
+        return "unclassified"  # "по состоянию на <date>"
+    if END_ANCHOR_RE.search(clause):
         return "expected_end"
-    if START_RE.search(window[-35:]):
+    if START_ANCHOR_RE.search(clause):
         return "start"
-    return "unclassified"
+    s_pos, e_pos = _last(START_VERB_RE, clause), _last(END_VERB_RE, clause)
+    if s_pos < 0 and e_pos < 0:
+        return "unclassified"
+    return "start" if s_pos > e_pos else "expected_end"  # the verb nearest to the date wins
 
 
 def extract_dates(text: str) -> list[dict]:
@@ -99,40 +146,66 @@ def extract_dates(text: str) -> list[dict]:
         year = y2 or y1
         m2 = _month(mon2)
         m1 = _month(mon1) if mon1 else m2
-        y_first = y1 or year
-        prec = "day" if year else "day_without_year"
-        add(m.start(), m.end(), role="range", precision=prec,
-            start=_mk(y_first, m1, d1) if year else None, end=_mk(year, m2, d2) if year else None,
+        if y1:
+            y_first = y1
+        elif year and (m1, int(d1)) > (m2, int(d2)):
+            y_first = str(int(year) - 1)  # "с 25 декабря по 15 января 2027 года"
+        else:
+            y_first = year
+        start, end = (_mk(y_first, m1, d1), _mk(year, m2, d2)) if year else (None, None)
+        if not year:
+            prec = "day_without_year"
+        elif start is None or end is None or start > end:
+            prec = "invalid_date"
+        else:
+            prec = "day"
+        add(m.start(), m.end(), role="range", precision=prec, start=start, end=end,
             context=text[max(0, m.start() - 70):m.start()])
     for rx, kind in ((ISO_RE, "iso"), (NUMERIC_RE, "numeric"), (DAY_RE, "day")):
         for m in rx.finditer(text):
             if kind == "iso":
-                value, prec = _mk(*m.groups()), "day"
+                value = _mk(*m.groups())
+                prec = "day" if value else "invalid_date"
             elif kind == "numeric":
                 d, mo, y = m.groups()
-                value, prec = _mk(y, mo, d), "day"
+                value = _mk(y, mo, d)
+                prec = "day" if value else "invalid_date"
             else:
                 d, mon, y = m.groups()
                 value = _mk(y, _month(mon), d) if y else None
-                prec = "day" if y else "day_without_year"
-            if kind != "day" and value is None:
-                continue
+                prec = ("day" if value else "invalid_date") if y else "day_without_year"
             add(m.start(), m.end(), role=_role(text[:m.start()], text[m.end():]), precision=prec,
                 value=value, context=text[max(0, m.start() - 70):m.start()])
     for m in MONTH_ONLY_RE.finditer(text):
         mon, y = m.groups()
-        add(m.start(), m.end(), role=_role(text[:m.start() + 3], text[m.end():]), precision="month" if y else "month_without_year",
+        add(m.start(), m.end(), role=_role(text[:m.start()], text[m.end():]), precision="month" if y else "month_without_year",
             value=None, month=f"{y}-{_month(mon):02d}" if y else None, context=text[max(0, m.start() - 70):m.start()])
     found.sort(key=lambda r: r["span"][0])
     return found
 
 
+def split_sentences(text: str) -> list[str]:
+    return [" ".join(part.split()) for part in SENTENCE_SPLIT_RE.split(text) if part and part.strip()]
+
+
+def _redact(sentence: str) -> str:
+    for hit in sorted(set(cv.find_pii(sentence)), key=len, reverse=True):
+        sentence = sentence.replace(hit, "[контакт удалён]")
+    return sentence
+
+
 def make_snapshot(text: str, *, source_id: str, url: str, retrieved_at: str, published_on: str | None) -> dict:
-    sentences = []
-    for m in SENTENCE_RE.finditer(text):
-        s = " ".join(m.group(0).split())
-        if s and extract_dates(s):
-            sentences.append(s[:MAX_EXCERPT])
+    budget = max(MAX_EXCERPT, min(MAX_SNAPSHOT_CHARS, len(text) // 2))
+    sentences, used, truncated = [], 0, False
+    for s in split_sentences(text):
+        if not extract_dates(s):
+            continue
+        s = _redact(s)[:MAX_EXCERPT]
+        if used + len(s) > budget:
+            truncated = True
+            break
+        sentences.append(s)
+        used += len(s)
     return {
         "schema": "r05-source-snapshot-v1",
         "source_id": source_id,
@@ -141,13 +214,16 @@ def make_snapshot(text: str, *, source_id: str, url: str, retrieved_at: str, pub
         "published_on": published_on,
         "text_sha256": hashlib.sha256(text.encode("utf-8")).hexdigest(),
         "excerpts": sentences,
-        "note": "Только предложения с датами (<=300 символов каждое) и хэш полного текста; статья целиком не хранится.",
+        "truncated": truncated,
+        "note": ("Только предложения с датами (<=300 символов каждое, всего не больше половины текста и "
+                 f"<= {MAX_SNAPSHOT_CHARS}), контакты удалены, плюс хэш полного текста; статья целиком не хранится."),
     }
 
 
 def schedule_signals(snapshot: dict) -> dict:
     """Collapse a snapshot's dates into candidate schedule values with their excerpts."""
-    sig = {"start": [], "expected_end": [], "reported_actual_end": [], "period": [], "imprecise": [], "unclassified": []}
+    sig = {"start": [], "expected_end": [], "reported_actual_end": [], "previous_end": [], "period": [],
+           "imprecise": [], "unclassified": []}
     for ex in snapshot.get("excerpts", []):
         for d in extract_dates(ex):
             entry = {"excerpt": ex, "raw": d["raw"], "precision": d["precision"]}
@@ -203,9 +279,9 @@ def diff(old: dict, new: dict, record: dict | None = None) -> dict:
             propose("differs_from_record", field, sched.get(field.split(".")[1]), nv[0],
                     [e["excerpt"] for e in sn[role]], "значение в записи отличается от новой версии источника")
 
-    pub = new.get("published_on")
+    pub = new.get("published_on") or (new.get("retrieved_at") or "")[:10] or None
     for e in sn["reported_actual_end"]:
-        if e["value"] in _values(so["reported_actual_end"]):
+        if not e.get("value") or e["value"] in _values(so["reported_actual_end"]):
             continue
         if pub and e["value"] > pub:
             propose("rejected_actual", "schedule.actual_end", None, e["value"], [e["excerpt"]],
@@ -213,7 +289,7 @@ def diff(old: dict, new: dict, record: dict | None = None) -> dict:
         else:
             propose("candidate_actual", "schedule.actual_end", sched.get("actual_end"), e["value"], [e["excerpt"]],
                     "источник сообщает о завершении; status=completed и actual_end только после подтверждения редактором"
-                    + ("" if pub else "; у версии нет published_on — проверить дату вручную"))
+                    + ("" if new.get("published_on") else "; у версии нет published_on — сравнено с датой получения"))
     for e in sn["imprecise"]:
         if e["excerpt"] not in [x["excerpt"] for x in so["imprecise"]]:
             propose("imprecise_date", None, None, None, [e["excerpt"]],

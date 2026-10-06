@@ -25,6 +25,7 @@ import glob
 import hashlib
 import json
 import os
+import re
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -38,6 +39,9 @@ BUILDER = "data/civic/astana/tools/build_slice.py"
 INTAKE_VERSION = "r05-intake-v1"
 CLAIM_TYPES = ("stated", "expected", "reported_actual")
 CLAIMABLE = tuple(sorted(cv.FIELD_PATHS - {"title", "description", "geometry_precision"}))
+# Registry roles that describe terms of use or software, not city works: they cannot back a civic fact.
+NON_FACT_ROLES = frozenset({"license_text", "license_terms", "service_terms", "documentation", "basemap_service",
+                            "data_api"})
 
 
 class IntakeError(ValueError):
@@ -62,8 +66,11 @@ def rel(path: str) -> str:
 
 
 def load_json(path: str):
-    with open(path, encoding="utf-8") as fh:
-        return json.load(fh)
+    try:
+        with open(path, encoding="utf-8-sig") as fh:
+            return json.load(fh)
+    except ValueError as exc:
+        raise IntakeError(f"{rel(path)}: invalid JSON: {exc}") from None
 
 
 def write_json(path: str, data) -> None:
@@ -129,8 +136,12 @@ def normalise_intake(rec: dict, registry: dict, path: str = "<intake>") -> tuple
         obj["geometry_precision"] = rec.get("geometry_precision", "unknown")
         if obj["geometry_precision"] not in cv.PRECISIONS:
             fail("geometry_precision invalid")
-        if obj["geometry_precision"] == "approximate" and not (rec.get("geometry_basis") or "").strip():
+        basis = rec.get("geometry_basis")
+        basis = basis.strip() if isinstance(basis, str) else ""
+        if obj["geometry_precision"] == "approximate" and not basis:
             fail("approximate geometry needs geometry_basis (how the point/line was placed)")
+        if basis:  # keep the explanation in the published record, not only in the intake file
+            obj["evidence_notes"] = (obj["evidence_notes"] + "\n" if obj["evidence_notes"] else "") + "Геометрия: " + basis
 
     evidence = []
     fields_by_source: dict[str, set] = {}
@@ -147,6 +158,8 @@ def normalise_intake(rec: dict, registry: dict, path: str = "<intake>") -> tuple
             fail(f"{cpath}.source_id {sid!r} is not in sources.json")
         if src.get("access_status") != "fetched":
             fail(f"{cpath}: source {sid!r} was not fetched; it cannot support a value")
+        if src.get("role") in NON_FACT_ROLES:
+            fail(f"{cpath}: source {sid!r} is a {src.get('role')} entry, not a publication about city works")
         quote = claim.get("quote")
         if not isinstance(quote, str) or not quote.strip() or len(quote) > 300:
             fail(f"{cpath}.quote must be a short (<=300 chars) verbatim excerpt")
@@ -154,6 +167,9 @@ def normalise_intake(rec: dict, registry: dict, path: str = "<intake>") -> tuple
             fail(f"{cpath}: actual_end needs a reported_actual claim; an expected date stays in current_planned_end")
         if field == "status" and claim.get("value") == "completed" and ctype != "reported_actual":
             fail(f"{cpath}: status=completed needs a reported_actual claim")
+        if field == "status" and claim.get("value") in ("in_progress", "cancelled") and ctype == "expected":
+            fail(f"{cpath}: status={claim.get('value')} is an actual state; an expected claim supports only "
+                 "'planned' (otherwise leave status unknown)")
         if field in seen_fields and seen_fields[field] != repr(claim.get("value")):
             fail(f"{cpath}: conflicting values for {field}; resolve before import")
         seen_fields[field] = repr(claim.get("value"))
@@ -161,6 +177,8 @@ def normalise_intake(rec: dict, registry: dict, path: str = "<intake>") -> tuple
         if field == "geometry":
             if obj["geometry"] is None:
                 fail(f"{cpath}: geometry claim without geometry")
+            if rec.get("geometry_precision") == "approximate":
+                fail(f"{cpath}: geometry claim contradicts geometry_precision=approximate")
             obj["geometry_precision"] = "source"
         elif field.startswith("schedule."):
             obj["schedule"][field.split(".", 1)[1]] = value
@@ -181,6 +199,9 @@ def normalise_intake(rec: dict, registry: dict, path: str = "<intake>") -> tuple
             "object_id": oid, "field": field, "value": value, "claim_type": ctype,
             "source_id": sid, "quote": quote.strip(), "locator": claim.get("locator"),
         })
+    claimed = {e["field"] for e in evidence}
+    if "budget.amount_kzt" in claimed and "budget.basis" not in claimed:
+        fail("budget.amount_kzt needs a budget.basis claim (planned/contract/spent) from the source")
     for sid in rec.get("related_sources") or []:
         if sid not in registry:
             fail(f"related source {sid!r} is not in sources.json")
@@ -263,7 +284,7 @@ def qa_summary(items: list[dict]) -> dict:
     }
 
 
-def public_readiness(obj: dict, registry: dict, as_of: dt.date) -> dict:
+def public_readiness(obj: dict, registry: dict, as_of: dt.date, max_age: int = cv.STATUS_MAX_AGE_DAYS) -> dict:
     """Advisory: can the record be shown publicly once an editor publishes it?"""
     reasons = []
     if obj["evidence_type"] == "synthetic":
@@ -275,8 +296,10 @@ def public_readiness(obj: dict, registry: dict, as_of: dt.date) -> dict:
         if ref["fields"] and src.get("license_status") in (None, "unknown"):
             reasons.append(f"{ref['id']}: reuse terms of the source are unknown; cite facts with a link, do not copy text/images")
         pub = cv.parse_date(ref.get("published_on"))
-        if ref["fields"] and pub and (as_of - pub).days > cv.STATUS_MAX_AGE_DAYS:
-            reasons.append(f"{ref['id']}: source older than {cv.STATUS_MAX_AGE_DAYS} days; re-check before showing as current")
+        if ref["fields"] and pub and (as_of - pub).days > max_age:
+            reasons.append(f"{ref['id']}: source older than {max_age} days; re-check before showing as current")
+        if ref["fields"] and pub is None:
+            reasons.append(f"{ref['id']}: source has no publication date; re-check before showing as current")
     if obj["status"] == "unknown":
         reasons.append("current state unknown: card must say 'статус не подтверждён'")
     blocking = any(r.startswith(("hypothesis", "synthetic")) for r in reasons)
@@ -293,9 +316,11 @@ def registry_checks(reg: dict) -> list[dict]:
         ids.add(sid)
         if s.get("access_status") not in cv.ACCESS_STATUSES:
             issues.append({"code": "source_access_status", "severity": "error", "path": sid, "message": "bad access_status"})
-        if s.get("access_status") == "fetched" and not (s.get("retrieved_at") and s.get("sha256")):
+        if s.get("access_status") == "fetched" and not (
+                cv.parse_ts(s.get("retrieved_at")) and re.fullmatch(r"[0-9a-f]{64}", str(s.get("sha256")))
+                and any(isinstance(a, dict) and a.get("outcome") == "fetched" for a in s.get("access_attempts") or [])):
             issues.append({"code": "fetched_without_proof", "severity": "error", "path": sid,
-                           "message": "fetched source needs retrieved_at and sha256"})
+                           "message": "fetched source needs retrieved_at, a sha256 and a successful attempt"})
         if s.get("access_status") != "fetched" and s.get("supports"):
             issues.append({"code": "unfetched_supports", "severity": "error", "path": sid,
                            "message": "a source that was not fetched cannot support anything"})
@@ -315,7 +340,7 @@ def build(pkg: str = PKG) -> dict:
     if as_of_d is None:
         raise IntakeError("slice_config.as_of must be YYYY-MM-DD")
     cutoff = int(config.get("historical_cutoff_days", 365))
-    cv.STATUS_MAX_AGE_DAYS = int(config.get("status_max_age_days", cv.STATUS_MAX_AGE_DAYS))
+    max_age = int(config.get("status_max_age_days", cv.STATUS_MAX_AGE_DAYS))
     sources_path = os.path.join(pkg, "sources.json")
     reg = load_json(sources_path)
     registry = {s["id"]: s for s in reg["sources"]}
@@ -353,6 +378,7 @@ def build(pkg: str = PKG) -> dict:
                 "as_of": as_of,
                 "demo": is_demo,
                 "count": len(items),
+                "status_max_age_days": max_age,
                 "builder": BUILDER,
                 "inputs": ins,
                 "content_sha256": digest,
@@ -375,12 +401,13 @@ def build(pkg: str = PKG) -> dict:
             "rows": evidence,
         },
     }
+    kw = {"as_of": as_of, "fence": fence, "max_status_age_days": max_age}
     reports = {
-        "objects.json": cv.validate_collection(current, profile="real", as_of=as_of, fence=fence),
-        "historical.json": cv.validate_collection(historical, profile="real", as_of=as_of, fence=fence),
-        "demo_synthetic.json": cv.validate_collection(demo, profile="demo", as_of=as_of, fence=fence),
+        "objects.json": cv.validate_collection(current, profile="real", **kw),
+        "historical.json": cv.validate_collection(historical, profile="real", **kw),
+        "demo_synthetic.json": cv.validate_collection(demo, profile="demo", **kw),
     }
-    contract_reports = {name: cv.validate_collection(out[name]["items"], profile="contract", as_of=as_of, fence=fence)
+    contract_reports = {name: cv.validate_collection(out[name]["items"], profile="contract", **kw)
                         for name in reports}
     cross_ids = sorted({o["id"] for o in current + historical} & {o["id"] for o in demo})
     reg_issues = registry_checks(reg)
@@ -414,7 +441,7 @@ def build(pkg: str = PKG) -> dict:
             "used_by_objects": sorted({r["id"] for o in current + historical for r in o["source_refs"]}),
             "registry_issues": reg_issues,
         },
-        "public_readiness": [public_readiness(o, registry, as_of_d) for o in current + historical],
+        "public_readiness": [public_readiness(o, registry, as_of_d, max_age) for o in current + historical],
         "evidence_rows": len(evidence),
     }
     return out

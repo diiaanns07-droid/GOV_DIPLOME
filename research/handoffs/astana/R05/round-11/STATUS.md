@@ -70,3 +70,15 @@ LICENSE_REGISTER/ATTRIBUTION, synthetic demo slice, импорт-хелпер д
 - Пример на синтетических текстах: `research/round-11-results/R05/schedule_diff_example.json`.
 - Проверки: `python3 -m pytest tests/civic/R05 -q` → 84 passed.
 Следующий шаг: независимая adversarial-проверка пакета, исправления, финальный DELIVERY.
+
+## Checkpoint 5 — adversarial review и исправления
+
+- Workflow: 5 искателей + 5 скептиков по дереву e4ab1ff. 40 находок: 33 подтверждены и исправлены, 7 опровергнуты.
+  Подробно: `research/round-11-results/R05/REVIEW.md`. Главное: валидатор больше не падает на неверных типах;
+  правила текста/лимиты/сроков/бюджета выровнены с R02 validate.py; `expected` не даёт in_progress/cancelled;
+  approximate не превращается в source; schedule_diff не теряет 30.11.2026 и «г.», различает отрицание/модальность/
+  проценты, «перенесён с X на Y»; снимок источника ограничен и без контактов.
+- Перекрёстная проверка с импортёром R02 597ff2c: демо create 9 → повтор skip_unchanged 9 (`r02_import_check.json`).
+- Отчёты: `QA.md`, `REVIEW.md`, обновлённые `INTEGRATION.txt`, `schedule_diff_example.json`, README пакета.
+- Проверки: `python3 -m pytest tests/civic/R05 -q` → 120 passed; `python3 -m unittest discover -s tests/civic/R05` → 120 OK;
+  `build_slice.py --check` → valid, без изменений.

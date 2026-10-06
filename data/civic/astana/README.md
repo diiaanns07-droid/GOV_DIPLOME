@@ -25,6 +25,7 @@ data.egov.kz, новостные сайты, OSM, OpenFreeMap, Overture docs и 
 | `sources.json` | реестр источников с реальными попытками доступа, sha256 полученных | все |
 | `LICENSE_REGISTER.json` | обязанности OSM/ODbL, OpenFreeMap, OpenMapTiles, Overture, MapLibre; степень проверки | R01, R10 |
 | `ATTRIBUTION.txt` | строки атрибуции для карты/карточек/демо | R01, R03 |
+| `pilot_reference.json` | bbox и хэши графа K03 для `tools/pilot_check.py` | пилот |
 | `geofence.json` | полигоны районов OSM для проверки координат (ODbL) | валидатор |
 | `slice_config.json` | дата среза `as_of`, пороги | сборка |
 | `intake/real/*.json` | исходные записи R05 с claims (шаблон в `templates/`) | сборка |
@@ -45,20 +46,32 @@ python3 -I data/civic/astana/tools/civic_v1.py data/civic/astana/demo_synthetic.
 python3 -I data/civic/astana/tools/import_helper.py                  # только реальные
 python3 -I data/civic/astana/tools/import_helper.py --include-demo   # + синтетика, явным флагом
 
+# смена опубликованного срока между двумя сохранёнными версиями источника (только предложения редактору)
+python3 -I data/civic/astana/tools/schedule_diff.py snapshot --text page.txt --source-id src-x --url URL --retrieved-at 2026-10-06T10:00:00Z --published-on 2026-10-05 > v2.json
+python3 -I data/civic/astana/tools/schedule_diff.py diff v1.json v2.json [--record objects.json --object-id ast-r05-x]
+
 # тесты
 python3 -m pytest tests/civic/R05 -q
 ```
 
 ## Правила, которые проверяет код
 
-- Профиль `contract` — форма civic-v1 из CONTRACT.txt (allowlist полей, enum, даты, WGS84 [lon,lat],
-  бюджет конечный неотрицательный или null, revision ≥ 1, ISO8601 с offset, без HTML).
+- Профиль `contract` — форма civic-v1 из CONTRACT.txt (allowlist полей, enum, даты 1990–2100, WGS84 [lon,lat],
+  бюджет конечный неотрицательный или null, revision ≥ 1, ISO8601 с offset, без HTML-тегов/сущностей,
+  без управляющих/zero-width/bidi-символов, URL http(s) с хостом и без логина). Правила R05 сверх формы
+  (персональные данные, проприетарные карты, лимиты длины R02, end < start, сумма без basis) в этом
+  профиле — предупреждения, в `real`/`demo` — ошибки. Валидатор не падает ни на каком JSON: ошибка
+  типа — это issue, а не исключение.
 - Профиль `real` — каждое ненулевое существенное значение (статус, сроки, бюджет и basis, организация,
   контакт, геометрия с precision=source) указано в `fields` **полученного** источника; бюджет ссылается на
   источник, где назван; `actual_end` только при `completed`, не в будущем и не позже даты публикации
   источника («завершим в июне» ≠ завершено); planned/in_progress на источнике старше 45 дней — ошибка
-  `stale_status`; 0 ₸ вместо неизвестного — ошибка; геометрия Google/2GIS/Yandex — ошибка;
-  телефоны/e-mail в тексте — ошибка; синтетика в реальном срезе — ошибка.
+  `stale_status` (порог из среза `status_max_age_days`); без `as_of` профиль `real` не проходит;
+  0 ₸ вместо неизвестного — ошибка; сумма без basis — ошибка; геометрия Google/2GIS/Yandex — ошибка;
+  телефоны (в т.ч. 8 (7172) …), ИИН и e-mail в тексте — ошибка; синтетика в реальном срезе — ошибка.
+- Сборка intake: `expected` подтверждает только `planned`; in_progress/cancelled/completed требуют
+  фактического сообщения; claim на геометрию не превращает `approximate` в `source`; `geometry_basis`
+  сохраняется в `evidence_notes` («Геометрия: …»).
 - Профиль `demo` — `evidence_type=synthetic`, id `demo-`, видимая пометка «Демо/синтетическая» в тексте,
   без бюджета в тенге, без организаций и без ссылок-«доказательств».
 - Геозабор: точка вне Астаны или перепутанные lon/lat — ошибка; рядом с городом, но вне полигонов OSM —

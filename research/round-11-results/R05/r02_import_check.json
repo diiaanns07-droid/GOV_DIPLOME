@@ -1,0 +1,47 @@
+{
+  "check": "R02 importer accepts the R05 package",
+  "r02_branch": "claude/trusting-ptolemy-6ms354",
+  "r02_sha": "597ff2c6ad9e6a11d8f8fbfed6928e390ac48ace",
+  "method": "git archive of ui/civic_store at r02_sha into a scratch dir; python3 -B -m ui.civic_store --db <scratch>/.runtime/t.sqlite3 init; import <file> [--dry-run]; R02 code read before running",
+  "r05_tree": "working tree after review fixes (see commit containing this file)",
+  "results": {
+    "dry_run:demo_synthetic.json": {
+      "status": "dry_run",
+      "counts": {
+        "create": 9,
+        "report_missing": 0
+      },
+      "demo": true,
+      "slice_version": "r05-astana-demo-2026-10-06-9881e8fb84e1"
+    },
+    "dry_run:objects.json": {
+      "status": "dry_run",
+      "counts": {
+        "report_missing": 0
+      },
+      "demo": false,
+      "slice_version": "r05-astana-current-2026-10-06-7c0fa34d5e67"
+    },
+    "dry_run:historical.json": {
+      "status": "dry_run",
+      "counts": {
+        "report_missing": 0
+      },
+      "demo": false,
+      "slice_version": "r05-astana-historical-2026-10-06-7c0fa34d5e67"
+    },
+    "import_demo_real1": {
+      "counts": {
+        "create": 9,
+        "report_missing": 0
+      }
+    },
+    "import_demo_real2": {
+      "counts": {
+        "skip_unchanged": 9,
+        "report_missing": 0
+      }
+    }
+  },
+  "conclusion": "PASS: 9 synthetic records created as drafts; second import skip_unchanged 9; real slices are empty (0 records)."
+}

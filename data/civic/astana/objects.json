@@ -20,6 +20,7 @@
     ],
     "name": "current",
     "notice": "Реальные записи только с подтверждением полученным источником; publication=draft до проверки редактором.",
+    "status_max_age_days": 45,
     "version": "r05-astana-current-2026-10-06-7c0fa34d5e67"
   }
 }
