@@ -638,7 +638,12 @@
           el("span", { className: P + "-excerpt", text: item.text }),
           el("span", { className: P + "-muted", text: (item.object_id ? "Объект " + item.object_id : "Место на карте") + (flags.length ? " · " + flags.join(" · ") : "") }),
         ]);
-        on(button, "click", function () { select(item.id); });
+        on(button, "click", function () {
+          select(item.id);
+          // В одной колонке карточка ниже списка — показать её.
+          if (detail.scrollIntoView && detail.getBoundingClientRect().top > list.getBoundingClientRect().bottom - 1)
+            detail.scrollIntoView({ block: "start", behavior: "smooth" });
+        });
         list.appendChild(el("li", {}, [button]));
       });
     }

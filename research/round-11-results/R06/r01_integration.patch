@@ -1,0 +1,134 @@
+diff --git a/ui/web_server.py b/ui/web_server.py
+index f836af6..e43789b 100644
+--- a/ui/web_server.py
++++ b/ui/web_server.py
+@@ -61,7 +61,9 @@ for _asset in ("shell.js", "shell.css", "core/data.js", "core/evidence.js",
+ 
+ # Round 11 civic-v1 frontend: explicit files only (R01 shell; role modules are added
+ # here by R01 when their reviewed delivery is imported). No directory serving.
+-CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/fallback.js")
++CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/fallback.js",
++                # R06 (claude/focused-hypatia-z8h0no): resident feedback and moderation.
++                "feedback/feedback.js", "feedback/feedback.css")
+ for _asset in CIVIC_ASSETS:
+     _mime = {".js": "text/javascript", ".css": "text/css", ".json": "application/json"}.get(Path(_asset).suffix, "text/plain")
+     ASSETS["/civic/" + _asset] = ("civic/" + _asset, _mime + "; charset=utf-8")
+@@ -93,7 +95,10 @@ CIVIC_ROUTES = (
+     ("POST", ("staff", "objects", "{id}", "publish"), "store"),
+     ("POST", ("staff", "objects", "{id}", "archive"), "store"),
+     ("POST", ("feedback",), "feedback"),
++    ("POST", ("feedback", "receipt"), "feedback"),
++    ("POST", ("feedback", "withdraw-consent"), "feedback"),
+     ("GET", ("staff", "feedback"), "feedback"),
++    ("GET", ("staff", "feedback", "{id}"), "feedback"),
+     ("POST", ("staff", "feedback", "{id}", "moderate"), "feedback"),
+     ("POST", ("scenarios", "compare"), "scenarios"),
+     ("POST", ("assistant",), "assistant"),
+diff --git a/web/civic/shell/shell.js b/web/civic/shell/shell.js
+index 0b688cd..e2081a0 100644
+--- a/web/civic/shell/shell.js
++++ b/web/civic/shell/shell.js
+@@ -163,12 +163,17 @@
+       <footer class="civic-foot">
+         <button type="button" id="civic-staff-button" class="btn">Для сотрудников</button>
+         <button type="button" id="civic-scenarios-button" class="btn">Сравнить ограничения</button>
++        <button type="button" id="civic-moderation-button" class="btn" hidden>Сообщения жителей</button>
+       </footer>
+     </div>
+     <section id="civic-editor" class="civic-drawer" hidden aria-label="Кабинет сотрудника">
+       <div class="civic-box-head"><h2>Кабинет сотрудника</h2><button type="button" class="civic-close" data-close="editor" aria-label="Закрыть кабинет">×</button></div>
+       <div id="civic-editor-root" class="civic-slot civic-drawer-body"></div>
+     </section>
++    <section id="civic-moderation" class="civic-drawer" hidden aria-label="Сообщения жителей">
++      <div class="civic-box-head"><h2>Сообщения жителей</h2><button type="button" class="civic-close" data-close="moderation" aria-label="Закрыть модерацию">×</button></div>
++      <div id="civic-moderation-root" class="civic-slot civic-drawer-body"></div>
++    </section>
+     <section id="civic-scenarios" class="civic-drawer" hidden aria-label="Сравнение ограничений">
+       <div class="civic-box-head"><h2>Сравнение ограничений</h2><button type="button" class="civic-close" data-close="scenarios" aria-label="Закрыть сравнение">×</button></div>
+       <div id="civic-scenarios-root" class="civic-slot civic-drawer-body"></div>
+@@ -243,6 +248,32 @@
+     $c("civic-staff-button").hidden = store !== "ready";
+     const scenarios = S.modules?.scenarios?.status === "ready" && !!moduleFor("scenarios");
+     $c("civic-scenarios-button").hidden = !scenarios;
++    syncModerationButton();
++  }
++  // R06 moderation queue: staff only, shown when the feedback module is ready and a session exists.
++  function syncModerationButton() {
++    const ready = S.modules?.feedback?.status === "ready" && typeof window.CivicFeedback?.mountModeration === "function";
++    $c("civic-moderation-button").hidden = !(ready && api.session.authenticated);
++    if ($c("civic-moderation-button").hidden && !$c("civic-moderation").hidden) closeModeration();
++  }
++  function openModeration() {
++    $c("civic-moderation").hidden = false;
++    destroyMounted("moderation");
++    try {
++      S.mounted.moderation = window.CivicFeedback.mountModeration({
++        root: $c("civic-moderation-root"), api, map: currentMap(),
++        onOpenObject: (objectId) => { S.selected = objectId; S.mounted.map?.selectObject?.(objectId); },
++      }) || {};
++    } catch (error) {
++      console.error("civic mount moderation", error);
++      $c("civic-moderation-root").replaceChildren(el("p", { class: "civic-error" }, "Модуль не запустился. Обновите страницу или вернитесь позже."));
++    }
++    $c("civic-moderation").querySelector(".civic-close")?.focus();
++  }
++  function closeModeration() {
++    destroyMounted("moderation");
++    $c("civic-moderation-root").replaceChildren();
++    $c("civic-moderation").hidden = true;
+   }
+ 
+   function mountPublic() {
+@@ -336,8 +367,10 @@
+   root.addEventListener("click", (event) => {
+     const close = event.target.closest("[data-close]");
+     if (!close) return;
+-    ({ feedback: closeFeedback, editor: closeEditor, scenarios: closeScenarios })[close.dataset.close]?.();
++    ({ feedback: closeFeedback, editor: closeEditor, scenarios: closeScenarios, moderation: closeModeration })[close.dataset.close]?.();
+   });
++  $c("civic-moderation-button").addEventListener("click", openModeration);
++  api.onSession(() => syncModerationButton());
+   $c("civic-staff-button").addEventListener("click", () => openEditor());
+   $c("civic-scenarios-button").addEventListener("click", openScenarios);
+   $c("civic-sheet-handle").addEventListener("click", () => setSheet(S.sheet === "full" ? "half" : "full"));
+@@ -389,10 +422,10 @@
+   }
+   function deactivateCivic() {
+     for (const name of Object.keys(S.mounted)) destroyMounted(name);
+-    for (const id of ["civic-map-root", "civic-feedback-root", "civic-assistant-root", "civic-editor-root", "civic-scenarios-root"])
++    for (const id of ["civic-map-root", "civic-feedback-root", "civic-assistant-root", "civic-editor-root", "civic-scenarios-root", "civic-moderation-root"])
+       $c(id).replaceChildren();
+     $c("civic-feedback-box").hidden = $c("civic-assistant-box").hidden = true;
+-    $c("civic-editor").hidden = $c("civic-scenarios").hidden = true;
++    $c("civic-editor").hidden = $c("civic-scenarios").hidden = $c("civic-moderation").hidden = true;
+     document.body.classList.remove("civic-mode", "civic-editor-open");
+     delete document.body.dataset.civicSheet;
+     root.hidden = true;
+@@ -435,6 +468,7 @@
+     if (event.key !== "Escape" || S.mode !== "civic") return;
+     if (!$c("civic-editor").hidden) closeEditor();
+     else if (!$c("civic-scenarios").hidden) closeScenarios();
++    else if (!$c("civic-moderation").hidden) closeModeration();
+     else if (!$c("civic-feedback-box").hidden) closeFeedback();
+   });
+ 
+diff --git a/web/index.html b/web/index.html
+index 6eb96d1..fa5c094 100644
+--- a/web/index.html
++++ b/web/index.html
+@@ -11,6 +11,7 @@
+     <link rel="stylesheet" href="/govtech/shell.css" />
+     <link rel="stylesheet" href="/govtech/school/school.css" />
+     <link rel="stylesheet" href="/civic/shell/shell.css" />
++    <link rel="stylesheet" href="/civic/feedback/feedback.css" />
+   </head>
+   <body class="civic-mode">
+     <div id="map" aria-label="Интерактивная карта районов Астаны"></div>
+@@ -199,6 +200,7 @@
+     <script defer src="/govtech/school/note.js"></script>
+     <script defer src="/govtech/school/school-ui.js"></script>
+     <!-- Round 11 civic-v1: role modules (when delivered) load before the R01 shell. -->
++    <script defer src="/civic/feedback/feedback.js"></script>
+     <script defer src="/civic/shell/fallback.js"></script>
+     <script defer src="/civic/shell/shell.js"></script>
+   </body>

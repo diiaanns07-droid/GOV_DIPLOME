@@ -68,9 +68,29 @@ R06 — ИНТЕГРАЦИЯ СООБЩЕНИЙ ЖИТЕЛЕЙ (civic-v1), дл�
        CSRF, модерация, публичный список, logout -> 401).
   Новый шлюз отдаёт is_same_origin=None, если клиент не прислал ни Origin, ни Sec-Fetch-Site:
   POST R06 в этом случае -> 403 (браузерный fetch POST всегда присылает Origin; это осознанно строже).
-  Осталось за R01: 3 дополнительных маршрута из §2 и монтирование mountModeration (§6).
+  Осталось за R01: применить r01_integration.patch (§6) или эквивалент.
 
-6. FRONTEND
+6. ГОТОВЫЙ PATCH ДЛЯ R01 (r01_integration.patch, против R01 @eef5a7b; git apply --check OK)
+  ui/web_server.py   CIVIC_ASSETS += feedback/feedback.js, feedback/feedback.css;
+                     CIVIC_ROUTES += POST /feedback/receipt, POST /feedback/withdraw-consent,
+                     GET /staff/feedback/{id}
+  web/index.html     <link> feedback.css и <script defer> feedback.js перед shell.js
+  web/civic/shell/shell.js  кнопка «Сообщения жителей» (видна при feedback=ready и активной сессии,
+                     скрывается при выходе), выдвижная панель civic-moderation с mountModeration
+                     {root, api, map, onOpenObject -> CivicMap.selectObject}, закрытие ×/Escape,
+                     очистка при смене режима.
+  Проверено (scratch: R01 @eef5a7b + patch + R02 @92f7aba + R06):
+    python3 -m pytest tests/civic/R01 tests/civic/R06 -> 161 passed, 1 skipped; python3 -m ui.web_check -> 14 OK
+    tests/civic/R06/app_e2e_r06.cjs (настоящее приложение R01 в Chromium) -> 9/9 PASS:
+    модуль feedback ready, форма из CivicShell.openFeedback, квитанция, кнопка модерации скрыта
+    для анонима, вход редактора, карточка из GET /staff/feedback/{id}, одобрение, публичная карточка
+    с XSS как текстом, выход -> кнопка скрыта и /staff/feedback 401. Подложка карты в песочнице
+    недоступна (прокси), карта этим тестом не проверяется. Результат: checks/app_e2e_r06.json,
+    снимки screenshots/r06_app_*.png.
+  Запуск e2e на любом стенде: R06_BASE=… R06_USER=… R06_PASS=… R06_OBJECT_ID=… node tests/civic/R06/app_e2e_r06.cjs
+  (пароль только из окружения; создаёт одно синтетическое сообщение — запускать на тестовой БД).
+
+7. FRONTEND
   Подключение статики (allowlist R01 ASSETS): /civic/feedback/feedback.js, /civic/feedback/feedback.css
   (или путь, принятый для web/civic/*). Нет inline-скриптов/стилей, совместимо со строгим CSP.
   Житель: shell R01 уже вызывает window.CivicFeedback.mount({root, api, objectId, geometry}) из
@@ -88,7 +108,7 @@ R06 — ИНТЕГРАЦИЯ СООБЩЕНИЙ ЖИТЕЛЕЙ (civic-v1), дл�
   Компонент не трогает document.body, localStorage/sessionStorage, не грузит /staff из публичной формы,
   не использует innerHTML; черновик текста хранится в памяти страницы.
 
-7. ХРАНИЛИЩЕ
+8. ХРАНИЛИЩЕ
   Таблицы feedback_meta, feedback_messages, feedback_events; можно в том же файле .runtime/civic.sqlite3,
   что и R02 (проверено: миграции R02 не мешают). Соль хэша отправителя — в feedback_meta runtime-БД.
   Runtime-БД не коммитить (.runtime/ — ответственность R01/R02 .gitignore).
@@ -97,12 +117,12 @@ R06 — ИНТЕГРАЦИЯ СООБЩЕНИЙ ЖИТЕЛЕЙ (civic-v1), дл�
        python -m ui.civic_feedback purge-antispam --db .runtime/civic.sqlite3 --days 30
   Счётчик для бейджа модератора: GET /staff/feedback?limit=1 -> data.counts.pending.
 
-8. R08
+9. R08
   build_feedback_service(..., classifier="auto") подключит ml.civic_classifier.classify(text, language),
   если модуль есть. Ошибка/мусор/зависание (>2 c) не теряют сообщение: статус подсказки error|invalid|timeout.
   Категорию жителя модель не меняет; ничего не публикует и не отклоняет.
 
-9. ПРОВЕРКА
+10. ПРОВЕРКА
   python3 -m pytest tests/civic/R06 -q
   node tests/civic/R06/browser_r06.cjs --screenshots <dir>          (реальный Chromium, FIXTURE-стенд)
   python3 tests/civic/R06/harness/serve_r06.py --port 8766            ручной просмотр: /harness/

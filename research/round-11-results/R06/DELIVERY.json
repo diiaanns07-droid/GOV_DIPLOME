@@ -34,7 +34,7 @@
       "status": "PASS",
       "command": "node tests/civic/R06/browser_r06.cjs --screenshots research/round-11-results/R06/screenshots",
       "input": "code_commit eaa113d; harness tests/civic/R06/harness/serve_r06.py on 127.0.0.1, temp DB",
-      "reason": "29/29 (incl. R03-style onFeedback geometry): receipt, no official-registration claim, text kept on network/server error, double click -> one message, duplicate warning, draft object hidden, anonymous 401, resident 403, XSS shown as text and not executed, logout/expired session blocked, degraded detail, destroy, 375px no overflow. Log: checks/browser_r06.json"
+      "reason": "29/29 (incl. R03-style onFeedback geometry; container-width layout): receipt, no official-registration claim, text kept on network/server error, double click -> one message, duplicate warning, draft object hidden, anonymous 401, resident 403, XSS shown as text and not executed, logout/expired session blocked, degraded detail, destroy, 375px no overflow. Log: checks/browser_r06.json"
     },
     {
       "name": "independent R10 standalone acceptance of R06",
@@ -51,6 +51,13 @@
       "reason": "2 passed; R02+R06 civic suites together 200 passed"
     },
     {
+      "name": "full R01 app in Chromium with R02 + R06 + r01_integration.patch",
+      "status": "PASS",
+      "command": "R06_BASE=… R06_USER=… R06_PASS=… R06_OBJECT_ID=… node tests/civic/R06/app_e2e_r06.cjs --screenshots …",
+      "input": "scratch: R01 eef5a7b + research/round-11-results/R06/r01_integration.patch, R02 92f7aba, R06 working tree; temp DB, editor created at runtime, synthetic object",
+      "reason": "9/9: feedback ready, form via CivicShell.openFeedback, receipt, moderation button hidden for anonymous, login, detail via GET /staff/feedback/{id}, approve, public card XSS as text, logout hides button and /staff 401. Also pytest R01+R06 161 passed/1 skipped, web_check 14 OK. Basemap tiles blocked by sandbox proxy: map itself NOT verified. Log: checks/app_e2e_r06.json"
+    },
+    {
       "name": "end-to-end through R01 HTTP gateway + R02 + R06",
       "status": "PASS",
       "command": "scratch copy of R01 341c554 + R02 6a28de2 + R06; python3 -m pytest tests/civic/R06/test_r06_gateway_smoke.py",
@@ -58,18 +65,18 @@
       "reason": "3 passed (gateway smoke + 2 compat). Earlier on R01 341c554 + R02 6a28de2 it passed only with three glue workarounds; those mismatches were fixed by R01/R02. See INTEGRATION.txt §5"
     },
     {
-      "name": "integrated R01 build with R03 map and R04 editor",
-      "status": "NOT_RUN",
-      "command": null,
-      "input": null,
-      "reason": "R01 has not imported R02/R03/R04/R06 yet; R06 gives mount points in INTEGRATION.txt §6"
-    },
-    {
       "name": "R08 classifier",
       "status": "NOT_RUN",
       "command": null,
       "input": null,
       "reason": "ml/civic_classifier not in GitHub at check time; adapter tested with fixture classifiers (ok/error/invalid/timeout)"
+    },
+    {
+      "name": "integrated R01 build with R03 map and R04 editor",
+      "status": "NOT_RUN",
+      "command": null,
+      "input": null,
+      "reason": "R01 has not imported R03/R04/R06 yet; basemap unavailable in sandbox"
     }
   ],
   "limitations": [
@@ -81,5 +88,5 @@
     "Публичная проекция не показывает сообщения о точках без объекта (нет публичного маршрута по месту).",
     "Классификатор вызывается синхронно с таймаутом 2 с; зависший поток-демон не прерывается."
   ],
-  "next_step": "R01: импортировать пути R06 (ui/civic_feedback, web/civic/feedback, tests/civic/R06), добавить 3 маршрута из INTEGRATION.txt §2 и смонтировать mountModeration (§6)."
+  "next_step": "R01: импортировать пути R06 и применить research/round-11-results/R06/r01_integration.patch (INTEGRATION.txt §6), затем прогнать tests/civic/R06/app_e2e_r06.cjs на CODE_SHA."
 }

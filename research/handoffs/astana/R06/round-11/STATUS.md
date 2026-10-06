@@ -8,7 +8,7 @@
 - Собственные пути: `ui/civic_feedback/`, `web/civic/feedback/`, `tests/civic/R06/`,
   `research/round-11-results/R06/`, `research/handoffs/astana/R06/round-11/STATUS.md`
 
-## Статус: DONE (обязательная часть) — checkpoint 7
+## Статус: DONE (обязательная часть) — checkpoint 8
 
 Сделано:
 - `ui/civic_feedback/service.py` — `FeedbackService(db_path, object_lookup, clock=None)`,
@@ -37,6 +37,10 @@
 - С 36a0604 R06 (как R02) обслуживает только полный путь `/api/civic/v1/...`.
 - Stretch: CLI `python -m ui.civic_feedback stats|purge-antispam`; совместимость с onFeedback R03
   (геометрия объекта не путается с местом); фильтры очереди и счётчик pending уже были.
+- `research/round-11-results/R06/r01_integration.patch` (против R01@eef5a7b, 3 файла R01): статика,
+  3 маршрута, панель «Сообщения жителей» с mountModeration. Проверено в настоящем приложении R01
+  (`tests/civic/R06/app_e2e_r06.cjs`, Chromium) → 9/9 PASS; снимки `screenshots/r06_app_*.png`.
+  Снимок выявил сжатие очереди в узкой панели → сетка теперь по ширине контейнера (auto-fit).
 
 Проверки:
 - `python3 -m pytest tests/civic/R06 -q` → 129 passed, 2 skipped (PASS; skip = нет R01/R02 в ветке)
@@ -52,4 +56,4 @@
 
 Не запускалось: сборка R01 с картой R03 и кабинетом R04 (не объединены); R08 нет в GitHub.
 
-Следующий шаг (R01): импорт путей R06, 3 маршрута из INTEGRATION §2, mountModeration в кабинете. R06: при появлении R08 — прогон с настоящим classify.
+Следующий шаг (R01): импорт путей R06 + `git apply research/round-11-results/R06/r01_integration.patch`, затем app_e2e_r06.cjs на CODE_SHA. R06: при появлении R08 — прогон с настоящим classify.
