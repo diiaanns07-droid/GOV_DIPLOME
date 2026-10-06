@@ -1,0 +1,489 @@
+{
+ "summary": {
+  "PASS": 10,
+  "FAIL": 0,
+  "SKIP": 0,
+  "NOT_RUN": 0,
+  "TEST_INCOMPATIBLE": 0,
+  "INFO": 0
+ },
+ "results": [
+  {
+   "check": "S1-build",
+   "verdict": "PASS",
+   "summary": "сборка d865dd4a1242: data.js/evidence.js = данным fixtures r8 и scan",
+   "details": {
+    "target_sha": "d865dd4a124291e10dd0b7bb1d9eada20d34c268",
+    "web_sha256": {
+     "plan.js": "b2029640f00c10f6018f469ba4e157705d405e1de65178bca824769d50b9a3c7",
+     "whatif.js": "e8f7c18d9b839983af4fed6e2a82532531d2ff26545b524fdcedb42373c64deb",
+     "facts.js": "3994a275ddb8c0cb857478365d94810a945752a96fff10d53d37bc8dc9808c64",
+     "plan-ui.js": "a9e066a196b0bf31ce80b42d9118659e380c68662baef0118056f03ba548cb71",
+     "app.js": "873eda35849f13d632e116a8e2e963d4a5e1707febbaeb0180bf7e7f63b0c8b9",
+     "index.html": "fe834b921ddc237a64f01b65e2d35cbcd95a5ebbb94b65cb2feef49a5c0f1365",
+     "data.js": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+     "evidence.js": "df736e986145da33dee60f692e020486720b72db5b6116af31640cc8693b11b9"
+    },
+    "fixtures_r8_target": "a5b5e2ddbe087c4eab8e947748cdf69dbae84a0d"
+   }
+  },
+  {
+   "check": "S1-validate",
+   "verdict": "PASS",
+   "summary": "104 validate-случаев r8 (этапы 1–2) на plan.validatePlanScenario: совпало решение принять/отклонить у всех, тот же код 86, код по таблице политики 18, несоответствий 0",
+   "details": {
+    "mismatches": [],
+    "policy_differences": {
+     "too_many_points": {
+      "cases": [
+       "AST-26-points",
+       "AST-0-points",
+       "SHY-26-points",
+       "SHY-0-points"
+      ],
+      "why": "другое имя кода: bad_points",
+      "plan_code": "bad_points"
+     },
+     "lon_lat_swapped": {
+      "cases": [
+       "AST-swap",
+       "SHY-swap",
+       "ASTS-swap-cp",
+       "ASTC-swap-cp",
+       "SHYS-swap-cp",
+       "SHYC-swap-cp"
+      ],
+      "why": "plan.js не распознаёт перестановку lon/lat у точки: отказ outside_bbox (верный отказ, менее точная подсказка)",
+      "plan_code": "outside_bbox"
+     },
+     "other_city": {
+      "cases": [
+       "AST-other-city",
+       "SHY-other-city"
+      ],
+      "why": "plan.js не называет город точки: отказ outside_bbox; other_city — только для city_id сценария",
+      "plan_code": "outside_bbox"
+     },
+     "not_finite": {
+      "cases": [
+       "AST-nan",
+       "SHY-nan"
+      ],
+      "why": "plan.js объединяет нечисло, NaN/Infinity и диапазон в bad_coord",
+      "plan_code": "bad_coord"
+     },
+     "not_number": {
+      "cases": [
+       "AST-lon-string",
+       "SHY-lon-string"
+      ],
+      "why": "plan.js объединяет нечисло, NaN/Infinity и диапазон в bad_coord",
+      "plan_code": "bad_coord"
+     },
+     "out_of_range": {
+      "cases": [
+       "AST-lat-range",
+       "SHY-lat-range"
+      ],
+      "why": "plan.js объединяет нечисло, NaN/Infinity и диапазон в bad_coord",
+      "plan_code": "bad_coord"
+     }
+    },
+    "not_compared": "путь ошибки: plan.js отдаёт только текст detail, поля path нет"
+   }
+  },
+  {
+   "check": "S1-context",
+   "verdict": "PASS",
+   "summary": "контексты обоих городов: bbox, записи категорий и source_snapshot (независимый пересчёт формулы plan.js); ошибок 0",
+   "details": {
+    "errors": [],
+    "records": {
+     "astana/school": 8,
+     "astana/outpatient_clinic": 16,
+     "astana snapshot plan.js": "sha256:67a40b96d29873118780969eb11c32deba49a0c64fda1f185efe634882f04c6d",
+     "astana snapshot geo_v2 r8 (другая формула, с bbox — не сравнивается побайтно)": "sha256:ce74bffab7a985e5eb1580714297c21e47b80bab84c7c73c1adc8eedb31ff666",
+     "shymkent/school": 15,
+     "shymkent/outpatient_clinic": 16,
+     "shymkent snapshot plan.js": "sha256:a9326b5633c513c0bfeccbb2248b26cf3b706c902f77745073a2959ad8d7ff3e",
+     "shymkent snapshot geo_v2 r8 (другая формула, с bbox — не сравнивается побайтно)": "sha256:898bf33ca2ac7ad6c1ec7adf216eafbddede1b7ec7524c8361cdb69f2520b05b"
+    }
+   }
+  },
+  {
+   "check": "S1-nearest-fixtures",
+   "verdict": "PASS",
+   "summary": "table/after/bind/cand-случаи r8 (этапы 1–3) на plan.precompute/evaluatePlan: 132 точек, ближайшая запись, мм до кандидатов, after и delta = оракул r8; расхождений 0",
+   "details": {
+    "mismatches": []
+   }
+  },
+  {
+   "check": "S1-real-sources",
+   "verdict": "PASS",
+   "summary": "точка в координатах каждой из 55 настоящих записей школ/поликлиник обоих городов: до = 0 мм, ближайшая — меньший ID среди записей в тех же координатах, кандидат поверх записи не вытесняет source; = построению и оракулу; расхождений 0",
+   "details": {
+    "mismatches": []
+   }
+  },
+  {
+   "check": "S1-random",
+   "verdict": "PASS",
+   "summary": "32 seeded synthetic сценариев, 800 строк evaluatePlan (before/after/delta, мм до 16 кандидатов) = оракул; расхождений 0",
+   "details": {
+    "mismatches": []
+   }
+  },
+  {
+   "check": "S1-ties",
+   "verdict": "PASS",
+   "summary": "ничьих в сверке: 74 (на настоящих записях 14, различных наборов 5); plan.js всегда выбирает меньший ID. Строка evaluatePlan содержит один nearest_before без числа ничьих: остальные записи в тех же координатах пользователю не видны",
+   "details": {
+    "tie_sets": [
+     [
+      "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "2264dcf0-549d-451a-b846-3f207d411e0c",
+      "c2990416-dca7-4e3a-b539-30e69cadf724",
+      "f4d6818b-1a99-43ca-8533-4c556f448919"
+     ],
+     [
+      "50802484-b7f9-492e-8a4c-f75312fc7751",
+      "622b4786-89fa-4853-b109-18054e3ebe0d",
+      "e1b19ead-4505-4acd-8aed-9c561ceec4c0"
+     ],
+     [
+      "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+      "68c8f007-75bc-42f6-8da8-baa72042bde4",
+      "9d31b953-ccc4-42bd-a3a3-3e4e21f44051"
+     ],
+     [
+      "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+      "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6"
+     ],
+     [
+      "baeda67d-e701-4c2a-bba6-10a13466e76d",
+      "bcd265d0-0799-4dbf-8b15-23bae752a4d2"
+     ]
+    ],
+    "examples": [
+     {
+      "case": "SHY-max-table",
+      "point": "p16",
+      "plan_id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+      "tied_ids": [
+       "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+       "68c8f007-75bc-42f6-8da8-baa72042bde4",
+       "9d31b953-ccc4-42bd-a3a3-3e4e21f44051"
+      ],
+      "mm": 154432,
+      "group": "r8"
+     },
+     {
+      "case": "SHY-after-sel",
+      "point": "p16",
+      "plan_id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+      "tied_ids": [
+       "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+       "68c8f007-75bc-42f6-8da8-baa72042bde4",
+       "9d31b953-ccc4-42bd-a3a3-3e4e21f44051"
+      ],
+      "mm": 154432,
+      "group": "r8"
+     },
+     {
+      "case": "SHYS-cp-on-shared-2",
+      "point": "on",
+      "plan_id": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+      "tied_ids": [
+       "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+       "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6"
+      ],
+      "mm": 0,
+      "group": "r8"
+     },
+     {
+      "case": "SHYC-cp-on-shared-4",
+      "point": "on",
+      "plan_id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "tied_ids": [
+       "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "2264dcf0-549d-451a-b846-3f207d411e0c",
+       "c2990416-dca7-4e3a-b539-30e69cadf724",
+       "f4d6818b-1a99-43ca-8533-4c556f448919"
+      ],
+      "mm": 0,
+      "group": "r8"
+     },
+     {
+      "case": "SHYC-two-cands-same-xy",
+      "point": "p",
+      "plan_id": "50802484-b7f9-492e-8a4c-f75312fc7751",
+      "tied_ids": [
+       "50802484-b7f9-492e-8a4c-f75312fc7751",
+       "622b4786-89fa-4853-b109-18054e3ebe0d",
+       "e1b19ead-4505-4acd-8aed-9c561ceec4c0"
+      ],
+      "mm": 249027,
+      "group": "r8"
+     },
+     {
+      "case": "SHYC-submm-tie",
+      "point": "p",
+      "plan_id": "50802484-b7f9-492e-8a4c-f75312fc7751",
+      "tied_ids": [
+       "50802484-b7f9-492e-8a4c-f75312fc7751",
+       "622b4786-89fa-4853-b109-18054e3ebe0d",
+       "e1b19ead-4505-4acd-8aed-9c561ceec4c0"
+      ],
+      "mm": 249027,
+      "group": "r8"
+     }
+    ]
+   }
+  },
+  {
+   "check": "S1-qa",
+   "verdict": "PASS",
+   "summary": "QA у каждой записи категории (facts.qaOf, как в таблице плана) = флагам оракула r8: COLOCATED/размер, POSSIBLE_DUPLICATE/пары, CATEGORY_DOUBT; ошибок 0. Записей с общими координатами без метки COLOCATED (порог ≥3): 8",
+   "details": {
+    "errors": [],
+    "shared_without_colocated": [
+     {
+      "city": "astana",
+      "category": "outpatient_clinic",
+      "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08",
+      "name": "Стоматология МерейДент",
+      "same_coordinates_with": 1,
+      "ui_qa": []
+     },
+     {
+      "city": "astana",
+      "category": "outpatient_clinic",
+      "id": "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8",
+      "name": "Gulsezim Aitugan",
+      "same_coordinates_with": 1,
+      "ui_qa": []
+     },
+     {
+      "city": "shymkent",
+      "category": "school",
+      "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+      "name": "Express toefl",
+      "same_coordinates_with": 1,
+      "ui_qa": [
+       "POSSIBLE_DUPLICATE"
+      ]
+     },
+     {
+      "city": "shymkent",
+      "category": "school",
+      "id": "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6",
+      "name": "Kasipkoy.kurs",
+      "same_coordinates_with": 1,
+      "ui_qa": [
+       "POSSIBLE_DUPLICATE"
+      ]
+     },
+     {
+      "city": "shymkent",
+      "category": "school",
+      "id": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+      "name": "ALEM мектебі",
+      "same_coordinates_with": 1,
+      "ui_qa": []
+     },
+     {
+      "city": "shymkent",
+      "category": "school",
+      "id": "bcd265d0-0799-4dbf-8b15-23bae752a4d2",
+      "name": "Алем мектеп",
+      "same_coordinates_with": 1,
+      "ui_qa": []
+     },
+     {
+      "city": "shymkent",
+      "category": "school",
+      "id": "fd50a858-462d-477f-8bc6-a8d3e03a9576",
+      "name": "Техникалық лицей",
+      "same_coordinates_with": 1,
+      "ui_qa": [
+       "POSSIBLE_DUPLICATE"
+      ]
+     },
+     {
+      "city": "shymkent",
+      "category": "outpatient_clinic",
+      "id": "833280f2-ff82-4dd6-a174-d2a9203420fa",
+      "name": "ИП Ауелбекова Р.И.",
+      "same_coordinates_with": 1,
+      "ui_qa": []
+     }
+    ]
+   }
+  },
+  {
+   "check": "S1-coincident-not-duplicate",
+   "verdict": "PASS",
+   "summary": "совпадение координат ≠ дубликат: plan.js хранит каждую запись в общих координатах отдельно (source_candidates = всем записям), POSSIBLE_DUPLICATE строится по адресу/имени (same_address, same_group_same_house_number), из 58 пар записей в одних координатах помечены возможным дублем 4; тексты UI: COLOCATED — «точное место не проверено», POSSIBLE_DUPLICATE — «возможный»; ошибок 0",
+   "details": {
+    "errors": [],
+    "facts": {
+     "astana": {
+      "pairs_same_coordinates": 3,
+      "of_them_possible_duplicate": 1,
+      "possible_duplicate_rules": [
+       "same_address",
+       "same_group_same_house_number"
+      ],
+      "possible_duplicate_at_distance_0": 1,
+      "same_category_groups": []
+     },
+     "shymkent": {
+      "pairs_same_coordinates": 55,
+      "of_them_possible_duplicate": 3,
+      "possible_duplicate_rules": [
+       "same_address"
+      ],
+      "possible_duplicate_at_distance_0": 3,
+      "same_category_groups": [
+       {
+        "category": "outpatient_clinic",
+        "lon": 69.5958,
+        "lat": 42.3167,
+        "records": [
+         [
+          "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+          "Dr.Sattarkulovich",
+          "Dr.Sattarkulovich clinic"
+         ],
+         [
+          "2264dcf0-549d-451a-b846-3f207d411e0c",
+          "Сункар",
+          "Дулат, проспект Тауке Хана 45"
+         ],
+         [
+          "c2990416-dca7-4e3a-b539-30e69cadf724",
+          "Джафар Стоматология",
+          "Әйбергенов өтпесі 1а"
+         ],
+         [
+          "f4d6818b-1a99-43ca-8533-4c556f448919",
+          "Стоматологическое оборудование",
+          null
+         ]
+        ]
+       },
+       {
+        "category": "outpatient_clinic",
+        "lon": 69.60702,
+        "lat": 42.31757,
+        "records": [
+         [
+          "50802484-b7f9-492e-8a4c-f75312fc7751",
+          "Kosmetolog Жазира",
+          "Казахстан"
+         ],
+         [
+          "622b4786-89fa-4853-b109-18054e3ebe0d",
+          "Aza Бизнес Страница Шымкент",
+          "Казахстан"
+         ],
+         [
+          "e1b19ead-4505-4acd-8aed-9c561ceec4c0",
+          "АССОР",
+          "gulnara901@icloiud.com"
+         ]
+        ]
+       },
+       {
+        "category": "school",
+        "lon": 69.59496,
+        "lat": 42.32353,
+        "records": [
+         [
+          "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+          "Express toefl",
+          "Ахмет Байтұрсынов көшесі 18"
+         ],
+         [
+          "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6",
+          "Kasipkoy.kurs",
+          "Ахмет Байтұрсынов көшесі 18"
+         ]
+        ]
+       },
+       {
+        "category": "school",
+        "lon": 69.5958,
+        "lat": 42.3167,
+        "records": [
+         [
+          "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+          "Reklama 8888",
+          null
+         ],
+         [
+          "68c8f007-75bc-42f6-8da8-baa72042bde4",
+          "Baiterek School",
+          "Рыскулова 141"
+         ],
+         [
+          "9d31b953-ccc4-42bd-a3a3-3e4e21f44051",
+          "Реклама 3131",
+          "шәуілдір"
+         ]
+        ]
+       },
+       {
+        "category": "school",
+        "lon": 69.61557,
+        "lat": 42.32304,
+        "records": [
+         [
+          "baeda67d-e701-4c2a-bba6-10a13466e76d",
+          "ALEM мектебі",
+          "Ж. Адырбеков көшесі 87б"
+         ],
+         [
+          "bcd265d0-0799-4dbf-8b15-23bae752a4d2",
+          "Алем мектеп",
+          "Ж. Адырбеков көшесі 87"
+         ]
+        ]
+       }
+      ]
+     }
+    },
+    "colocated_text_example": [
+     "координата совпадает ещё с 9 записями (69.5958, 42.3167); точное место не проверено"
+    ],
+    "duplicate_text_example": [
+     "возможный дубликат (same_address, 9 м)"
+    ]
+   }
+  },
+  {
+   "check": "S1-integrity",
+   "verdict": "PASS",
+   "summary": "после всех вызовов plan.js data.js/evidence.js и загруженный объект не изменились, source_snapshot контекста = пересчёту",
+   "details": {
+    "integrity": {
+     "data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+     "evidence_js_sha256": "df736e986145da33dee60f692e020486720b72db5b6116af31640cc8693b11b9",
+     "file_unchanged": true,
+     "loaded_data_unchanged": true,
+     "snapshots": {
+      "astana": {
+       "ctx": "sha256:67a40b96d29873118780969eb11c32deba49a0c64fda1f185efe634882f04c6d",
+       "recomputed": "sha256:67a40b96d29873118780969eb11c32deba49a0c64fda1f185efe634882f04c6d"
+      },
+      "shymkent": {
+       "ctx": "sha256:a9326b5633c513c0bfeccbb2248b26cf3b706c902f77745073a2959ad8d7ff3e",
+       "recomputed": "sha256:a9326b5633c513c0bfeccbb2248b26cf3b706c902f77745073a2959ad8d7ff3e"
+      }
+     }
+    }
+   }
+  }
+ ]
+}

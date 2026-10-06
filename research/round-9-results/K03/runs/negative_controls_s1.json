@@ -1,0 +1,116 @@
+{
+ "stage": 1,
+ "base": "d865dd4a124291e10dd0b7bb1d9eada20d34c268",
+ "controls": [
+  {
+   "mutant": "tie-larger-id",
+   "file": "web/plan.js",
+   "why": "в ничьей исходных записей выбирается больший ID",
+   "expected_fail": [
+    "S1-real-sources",
+    "S1-nearest-fixtures"
+   ],
+   "failed": [
+    "S1-nearest-fixtures",
+    "S1-random",
+    "S1-real-sources",
+    "S1-ties"
+   ],
+   "summary": {
+    "PASS": 6,
+    "FAIL": 4,
+    "SKIP": 0,
+    "NOT_RUN": 0,
+    "TEST_INCOMPATIBLE": 0,
+    "INFO": 0
+   },
+   "verdict": "PASS"
+  },
+  {
+   "mutant": "dedup-same-coords",
+   "file": "web/plan.js",
+   "why": "записи категории в одних координатах сливаются в одну («совпадение = дубликат»)",
+   "expected_fail": [
+    "S1-context",
+    "S1-coincident-not-duplicate"
+   ],
+   "failed": [
+    "S1-coincident-not-duplicate",
+    "S1-context"
+   ],
+   "summary": {
+    "PASS": 8,
+    "FAIL": 2,
+    "SKIP": 0,
+    "NOT_RUN": 0,
+    "TEST_INCOMPATIBLE": 0,
+    "INFO": 0
+   },
+   "verdict": "PASS"
+  },
+  {
+   "mutant": "hypothetical-wins-tie",
+   "file": "web/plan.js",
+   "why": "кандидат поверх записи вытесняет исходную запись в ничьей",
+   "expected_fail": [
+    "S1-real-sources",
+    "S1-nearest-fixtures"
+   ],
+   "failed": [
+    "S1-nearest-fixtures",
+    "S1-random",
+    "S1-real-sources",
+    "S1-ties"
+   ],
+   "summary": {
+    "PASS": 6,
+    "FAIL": 4,
+    "SKIP": 0,
+    "NOT_RUN": 0,
+    "TEST_INCOMPATIBLE": 0,
+    "INFO": 0
+   },
+   "verdict": "PASS"
+  },
+  {
+   "mutant": "colocated-text-duplicate",
+   "file": "web/facts.js",
+   "why": "текст QA называет совпадение координат дубликатом",
+   "expected_fail": [
+    "S1-coincident-not-duplicate"
+   ],
+   "failed": [
+    "S1-coincident-not-duplicate"
+   ],
+   "summary": {
+    "PASS": 9,
+    "FAIL": 1,
+    "SKIP": 0,
+    "NOT_RUN": 0,
+    "TEST_INCOMPATIBLE": 0,
+    "INFO": 0
+   },
+   "verdict": "PASS"
+  },
+  {
+   "mutant": "bbox-exclusive",
+   "file": "web/whatif.js",
+   "why": "границы bbox исключены",
+   "expected_fail": [
+    "S1-validate"
+   ],
+   "failed": [
+    "S1-validate"
+   ],
+   "summary": {
+    "PASS": 9,
+    "FAIL": 1,
+    "SKIP": 0,
+    "NOT_RUN": 0,
+    "TEST_INCOMPATIBLE": 0,
+    "INFO": 0
+   },
+   "verdict": "PASS"
+  }
+ ]
+}
