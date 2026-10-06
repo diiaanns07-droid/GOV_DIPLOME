@@ -1,0 +1,76 @@
+{
+ "what": "КОПИЯ BUILD c0b276e8a2d8d97a369252470f60e97bf1858f1d + patches/build_c0b276e_k03_pedestrian.patch + install_for_build.py; не общий сайт и не интеграция BUILD",
+ "environment": "Linux, node v22.22.0, Python 3.11.15, Chromium 141 (Playwright); pytest не установлен — Python-тесты вызваны функциями напрямую",
+ "unpatched_c0b276e": {
+  "tests/govtech/school_case.cjs": "PASS 2311",
+  "tests/govtech/plan.cjs": "PASS",
+  "tests/govtech/resilience.cjs": "PASS",
+  "tests/govtech/whatif.cjs": "PASS",
+  "python -B -m ui.web_check (env -i, без ключей)": "OK",
+  "tests/test_govtech_integration.py (2 функции)": "OK"
+ },
+ "patched_c0b276e": {
+  "tests/govtech/school_case.cjs": "PASS 2312 (устаревшая проверка «pedestrian не подключён» заменена: без политики → policy; + неизвестный метод → method)",
+  "tests/govtech/school_pedestrian.cjs (новый)": "PASS 622",
+  "tests/govtech/plan.cjs": "PASS",
+  "tests/govtech/resilience.cjs": "PASS",
+  "tests/govtech/whatif.cjs": "PASS",
+  "python -B -m ui.web_check (env -i, без ключей)": "OK",
+  "tests/test_govtech_integration.py (2 функции)": "OK",
+  "tests/test_k03_routing_assets.py": "OK",
+  "site_copy_check.cjs (Chromium, главная страница, сравнение с копией без патча)": "PASS 9/9 — runs/site_copy_check_c0b276e.json"
+ },
+ "note_web_check": "первый прогон web_check упал одинаково на обеих копиях из-за моей распаковки без agent/; после добавления agent/ — OK на обеих",
+ "school_pedestrian_summary_25_points_x_schools_and_12_places": {
+  "shymkent": {
+   "pedestrian-v1-strict": {
+    "matrix_statuses": {
+     "access_unknown": 567,
+     "ok": 108
+    },
+    "current_unknown_origins": 16,
+    "current_mean_m": 1072.375,
+    "origins_with_unknown_targets": 25,
+    "auto": [
+     "m3a"
+    ]
+   },
+   "pedestrian-v1-exploratory": {
+    "matrix_statuses": {
+     "ok": 675
+    },
+    "current_unknown_origins": 0,
+    "current_mean_m": 669.644,
+    "origins_with_unknown_targets": 0,
+    "auto": [
+     "m3b"
+    ]
+   }
+  },
+  "astana": {
+   "pedestrian-v1-strict": {
+    "matrix_statuses": {
+     "ok": 234,
+     "access_unknown": 266
+    },
+    "current_unknown_origins": 7,
+    "current_mean_m": 966.018,
+    "origins_with_unknown_targets": 25,
+    "auto": [
+     "m3c"
+    ]
+   },
+   "pedestrian-v1-exploratory": {
+    "matrix_statuses": {
+     "ok": 500
+    },
+    "current_unknown_origins": 0,
+    "current_mean_m": 783.446,
+    "origins_with_unknown_targets": 0,
+    "auto": [
+     "m1c"
+    ]
+   }
+  }
+ }
+}

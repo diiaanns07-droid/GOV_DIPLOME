@@ -1,12 +1,12 @@
 // K03 r10: проверка патча на КОПИИ основного сайта d2ff344 (не общий сайт и не интеграция BUILD).
-//   NODE_PATH="$(npm root -g)" node site_copy_check.cjs <url_patched> <url_unpatched> <out.json>
+//   NODE_PATH="$(npm root -g)" node site_copy_check.cjs <url_patched> <url_unpatched> <out.json> [<дерево копии для Node-сверки school/case.js>]
 // Открывает главную страницу копии, ждёт загрузки, проверяет window.K03_ROUTING / K03_SCHOOL_ROUTING, загружает граф с сервера копии,
 // проверяет graph_sha256 функцией CITY_FACTS.sha256hex страницы, считает матрицу и сравнивает с Node. Ошибки страницы сравниваются с копией без патча.
 "use strict";
 const fs = require("fs"), path = require("path");
 const { chromium } = require("playwright");
 const R = require("./routing.js"), A = require("./school-access-routing.js");
-const [urlP, urlB, outFile] = process.argv.slice(2);
+const [urlP, urlB, outFile, tree] = process.argv.slice(2);
 (async () => {
   const browser = await chromium.launch();
   const visit = async (url, run) => {
@@ -29,6 +29,14 @@ const [urlP, urlB, outFile] = process.argv.slice(2);
       const G = K03_ROUTING.prepare(g, { sha256hex: CITY_FACTS.sha256hex });
       const m = K03_SCHOOL_ROUTING.distanceMatrix({ ...cases[city], parameters: { ...cases[city].parameters, distance_method: "pedestrian-v1", routing_policy_id: "pedestrian-v1-exploratory" } }, G);
       out.cities[city] = { graph_sha256: G.g.graph_sha256, rows: m.rows };
+      if (window.SCHOOL_CASE && SCHOOL_CASE.PEDESTRIAN) {  // compareCase сборки на матрице K03 прямо в странице
+        const c = SCHOOL_CASE.buildCase(CITY_EVIDENCE, city, CITY_FACTS.qaOf);
+        Object.assign(c.parameters, { distance_method: "pedestrian-v1", routing_policy_id: "pedestrian-v1-exploratory",
+          routing_snapshot: { graph_sha256: g.graph_sha256, policy_sha256: g.policy_sha256, max_snap_m: g.max_snap_m } });
+        c.variants = { A: c.candidates[0].id, B: c.candidates[5].id };
+        const cmp = SCHOOL_CASE.compareCase(c, K03_SCHOOL_ROUTING.distanceMatrix(c, G));
+        out.cities[city].compare = { case_digest: cmp.case_digest, plans: cmp.plans.map((p) => ({ id: p.id, sel: p.selected_candidate_ids, metrics: p.metrics })), limitations: cmp.limitations };
+      }
     }
     return out;
   } });
@@ -41,6 +49,19 @@ const [urlP, urlB, outFile] = process.argv.slice(2);
     const node = A.distanceMatrix({ ...cases[city], parameters: { ...cases[city].parameters, distance_method: "pedestrian-v1", routing_policy_id: "pedestrian-v1-exploratory" } }, R.prepare(g)).rows;
     check(`${city}: граф с сервера копии прошёл проверку graph_sha256 (CITY_FACTS.sha256hex)`, P.res.cities[city].graph_sha256 === g.graph_sha256);
     check(`${city}: ${node.length} строк матрицы в странице сайта = Node`, JSON.stringify(P.res.cities[city].rows) === JSON.stringify(node));
+    if (tree && P.res.cities[city].compare) {
+      globalThis.window = globalThis;
+      require(path.resolve(tree, "web/govtech/core/data.js")); require(path.resolve(tree, "web/govtech/core/evidence.js"));
+      const F = require(path.resolve(tree, "web/govtech/core/facts.js")), SC = require(path.resolve(tree, "web/govtech/school/case.js"));
+      const c = SC.buildCase(globalThis.CITY_EVIDENCE, city, F.qaOf);
+      Object.assign(c.parameters, { distance_method: "pedestrian-v1", routing_policy_id: "pedestrian-v1-exploratory",
+        routing_snapshot: { graph_sha256: g.graph_sha256, policy_sha256: g.policy_sha256, max_snap_m: g.max_snap_m } });
+      c.variants = { A: c.candidates[0].id, B: c.candidates[5].id };
+      const cmp = SC.compareCase(c, A.distanceMatrix(c, R.prepare(g)));
+      const want = { case_digest: cmp.case_digest, plans: cmp.plans.map((p) => ({ id: p.id, sel: p.selected_candidate_ids, metrics: p.metrics })), limitations: cmp.limitations };
+      check(`${city}: compareCase сборки с pedestrian-v1 в странице = Node (digest, планы Сейчас/A/B/авто, метрики, ограничения)`,
+        JSON.stringify(P.res.cities[city].compare) === JSON.stringify(want));
+    }
   }
   const newErr = P.errors.filter((e) => !B.errors.includes(e));
   check("патч не добавляет ошибок страницы относительно копии без патча", newErr.length === 0, newErr.join(" | "));

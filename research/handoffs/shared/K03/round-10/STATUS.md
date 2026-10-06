@@ -10,5 +10,9 @@
   - Отрицательный контроль: 6/6.
   - Браузер: 12/12.
   - Копия сайта d2ff344 + патч: 7/7.
+- Этап 4 (BUILD `c0b276e`): патч `patches/build_c0b276e_k03_pedestrian.patch` (`case.js` + pedestrian-v1, отпечаток графа в `case_digest`, `unknown_targets`, тесты). На копии:
+  - `school_case` 2312, `school_pedestrian` 622, plan/resilience/whatif PASS;
+  - `web_check` OK;
+  - Chromium 9/9.
 - Не интегрировано в общий сайт; подложка и 3D здесь NOT_FETCHED (OpenFreeMap заблокирован).
-- NEXT_STEP: BUILD применяет `install_for_build.py` + `patches/build_d2ff344_k03_routing_assets.patch` и встраивает режим в UI по `INTEGRATION.md`. Затем K03/K12 перепроверяют на точном новом SHA (`run_tests.py --js`, `site_copy_check.cjs`).
+- NEXT_STEP: BUILD применяет `install_for_build.py` + `patches/build_c0b276e_k03_pedestrian.patch` (`INTEGRATION.md`, раздел 0), добавляет переключатель метода и слой маршрутов в `school-ui.js`. Затем K03/K12 перепроверяют на точном новом SHA (`run_tests.py --js`, `school_pedestrian.cjs`, `site_copy_check.cjs`).

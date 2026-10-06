@@ -1,0 +1,248 @@
+--- a/ui/web_server.py
++++ b/ui/web_server.py
+@@ -46,7 +46,10 @@
+                "core/plan-ui.js", "core/resilience-ui.js", "core/attribution/ATTRIBUTION.md",
+                "core/attribution/attribution.json", "core/attribution/LICENSES/Apache-2.0.txt",
+                "core/attribution/LICENSES/CDLA-Permissive-2.0.txt", "core/attribution/LICENSES/ODbL-1.0.txt",
+-               "school/case.js", "school/school-ui.js", "school/school.css"):
++               "school/case.js", "school/school-ui.js", "school/school.css",
++               # K03 r10: пешеходные расстояния pedestrian-v1 (модуль, граф ODbL, манифест хэшей)
++               "k03/routing.js", "k03/school-access-routing.js", "k03/shymkent.graph.json", "k03/astana.graph.json",
++               "k03/K03_MANIFEST.json"):
+     _mime = {".js": "text/javascript", ".css": "text/css", ".json": "application/json"}.get(Path(_asset).suffix, "text/plain")
+     ASSETS["/govtech/" + _asset] = ("govtech/" + _asset, _mime + "; charset=utf-8")
+ 
+--- a/web/index.html
++++ b/web/index.html
+@@ -189,6 +189,8 @@
+     <script defer src="/govtech/shell.js"></script>
+     <script defer src="/govtech/core/plan-ui.js"></script>
+     <script defer src="/govtech/core/resilience-ui.js"></script>
++    <script defer src="/govtech/k03/routing.js"></script>
++    <script defer src="/govtech/k03/school-access-routing.js"></script>
+     <script defer src="/govtech/school/case.js"></script>
+     <script defer src="/govtech/school/school-ui.js"></script>
+   </body>
+--- a/web/govtech/school/case.js
++++ b/web/govtech/school/case.js
+@@ -13,6 +13,8 @@
+   const COMPARE_SCHEMA = "school-access-compare-v1";
+   const CANON = "sac-canon-v1";
+   const GEODESIC = "geodesic";
++  const PEDESTRIAN = "pedestrian-v1";  // K03 r10: web/govtech/k03/routing.js
++  const ROUTING_POLICIES = ["pedestrian-v1-strict", "pedestrian-v1-exploratory"];
+   const METRIC = "haversine-mm-v1";
+   const LIMITS = { origins: 25, candidates: 16, schools: 200, bytes: 256 * 1024 };
+   const CITIES = ["shymkent", "astana"];
+@@ -147,8 +149,16 @@
+     for (const v of ["A", "B"]) if (c.variants[v] !== null && !cand.has(c.variants[v])) fail("variants", `вариант ${v} ссылается на неизвестное место`);
+     for (const k of Object.keys(c.variants)) if (k !== "A" && k !== "B") fail("variants", "допустимы только A и B");
+     const p = c.parameters || fail("parameters", "нет parameters");
+-    if (p.distance_method !== GEODESIC) fail("method", "в этой сборке доступен только geodesic (по прямой); pedestrian-v1 не подключён");
+-    if (p.routing_policy_id !== null) fail("policy", "для прямой routing_policy_id = null");
++    // pedestrian-v1 — только с отпечатком графа и политики K03; он входит в case_digest через parameters
++    if (p.distance_method === GEODESIC) {
++      if (p.routing_policy_id !== null) fail("policy", "для прямой routing_policy_id = null");
++      if ("routing_snapshot" in p) fail("policy", "для прямой routing_snapshot не задаётся");
++    } else if (p.distance_method === PEDESTRIAN) {
++      if (!ROUTING_POLICIES.includes(p.routing_policy_id)) fail("policy", "routing_policy_id: " + ROUTING_POLICIES.join(" | "));
++      const rs = p.routing_snapshot;
++      if (!rs || typeof rs !== "object" || !/^[0-9a-f]{64}$/.test(rs.graph_sha256 || "") || !/^[0-9a-f]{64}$/.test(rs.policy_sha256 || "") || !isInt(rs.max_snap_m))
++        fail("routing_snapshot", "pedestrian-v1 требует routing_snapshot {graph_sha256, policy_sha256, max_snap_m} графа K03");
++    } else fail("method", "distance_method: geodesic | pedestrian-v1");
+     if (!isInt(p.threshold_m) || p.threshold_m < 50 || p.threshold_m > 5000) fail("threshold", "threshold_m — целое 50…5000");
+     if (p.max_new_objects !== 1) fail("max_new_objects", "в основном кейсе max_new_objects = 1");
+     const tp = p.target_policy;
+@@ -208,6 +218,11 @@
+   function checkMatrix(c, mx) {
+     if (!mx || !Array.isArray(mx.rows)) fail("matrix", "нет строк матрицы");
+     if (mx.method !== c.parameters.distance_method) fail("matrix_method", "метод матрицы не совпадает с кейсом");
++    if (mx.method === PEDESTRIAN) {
++      const rs = c.parameters.routing_snapshot;
++      if (mx.policy_id !== c.parameters.routing_policy_id || mx.graph_sha256 !== rs.graph_sha256 || mx.policy_sha256 !== rs.policy_sha256)
++        fail("matrix_snapshot", "матрица построена на другом графе или политике, чем кейс");
++    }
+     for (const r of mx.rows) {
+       if (!STATUSES.includes(r.status)) fail("matrix_status", r.status);
+       if (r.status === "ok" ? !(isInt(r.distance_mm) && r.distance_mm >= 0) : r.distance_mm !== null) fail("matrix_distance", `${r.origin_id}→${r.target_id}: distance_mm при status=${r.status}`);
+@@ -229,8 +244,10 @@
+     const thr = c.parameters.threshold_m * 1000;
+     const rows = c.origins.slice().sort(byId).map((o) => {
+       const b = nearestOf(index, o.id, eligible), a = nearestOf(index, o.id, [...eligible, ...extra]);
++      // цели без известного расстояния (маршрут не найден/не подтверждён): минимум — только по известным, неполнота видна
++      const unknownTargets = [...eligible, ...extra].filter((t) => { const r = index.get(o.id + "\u0000" + t.id); return !r || r.status !== "ok"; }).length;
+       return { origin_id: o.id, before_mm: b ? b.mm : null, after_mm: a ? a.mm : null, delta_mm: a && b ? a.mm - b.mm : null,
+-        status: a ? "ok" : "unknown", nearest_target_id: a ? a.t.id : null, source_ids: a ? a.t.source_ids.slice() : [] };
++        status: a ? "ok" : "unknown", nearest_target_id: a ? a.t.id : null, source_ids: a ? a.t.source_ids.slice() : [], unknown_targets: unknownTargets };
+     });
+     const known = rows.filter((r) => r.after_mm !== null);
+     const sum = known.reduce((s, r) => s + r.after_mm, 0);
+@@ -243,6 +260,7 @@
+     const limitations = [];
+     if (!eligible.length) limitations.push("no_eligible_school");
+     if (metrics.unknown_count) limitations.push("unknown_distances");
++    if (rows.some((r) => r.unknown_targets)) limitations.push("targets_with_unknown_distance");
+     return { id, label, selected_candidate_ids: selected.slice().sort(), rows, metrics, closer_count: closer, limitations };
+   }
+   const rankKey = (m) => [m.unknown_count, m.sum_distance_mm === null ? Infinity : m.sum_distance_mm, m.max_distance_mm === null ? Infinity : m.max_distance_mm];
+@@ -263,16 +281,18 @@
+     const options = [plans[0], ...c.candidates.map((k) => planOf(c, index, eligible, "auto", [k.id], ""))].sort(cmpPlans);
+     const best = options[0];
+     plans.push({ ...best, id: "auto", label: "Лучшее по правилу", rule: "lexicographic_min[unknown_count,sum_distance_mm,max_distance_mm]; затем ID; пустой набор при равенстве" });
++    const methodNote = mx.method === GEODESIC ? "straight_line_not_route"
++      : mx.policy_id === "pedestrian-v1-strict" ? "pedestrian_route_osm_not_field_checked" : "pedestrian_route_incomplete_data";
+     const facts = [];
+     const fact = (plan, metric, value, unit, origin, extraAssumptions) => facts.push({ id: `${plan.id}/${origin ? origin + "/" : ""}${metric}`, metric, value, unit,
+       plan_id: plan.id, origin_id: origin || null, kind: "derived", source_ids: origin ? (plan.rows.find((r) => r.origin_id === origin) || { source_ids: [] }).source_ids : c.sources.map((s) => s.id),
+-      assumptions: ["straight_line_not_route", ...(extraAssumptions || [])] });
++      assumptions: [methodNote, ...(extraAssumptions || [])] });
+     for (const p of plans) {
+       for (const [k, v] of Object.entries(p.metrics)) fact(p, k, v, k.endsWith("_mm") ? "mm" : k.endsWith("share_of_all_points") ? "share" : "points");
+       fact(p, "closer_count", p.closer_count, "points");
+       if (p.id !== "current") for (const r of p.rows) fact(p, "delta_mm", r.delta_mm, "mm", r.origin_id);
+     }
+-    const limitations = ["straight_line_not_route", "schools_outside_slice_not_loaded", "access_eligibility_unknown", "capacity_unknown",
++    const limitations = [methodNote, ...(mx.method === PEDESTRIAN ? ["routing_slice_boundary_unverified", "snap_model_connection"] : []), "schools_outside_slice_not_loaded", "access_eligibility_unknown", "capacity_unknown",
+       "secondary_source_not_registry", "grid_points_not_population", "candidates_hypothetical_land_unknown", "no_cost_data"];
+     return { schema_version: COMPARE_SCHEMA, case_digest: caseDigest(c), method: mx.method, metric: METRIC, policy_id: mx.policy_id,
+       threshold_m: c.parameters.threshold_m, eligible_school_ids: eligible.map((s) => s.id).sort(), plans, facts, limitations };
+@@ -310,7 +330,7 @@
+     return c;
+   }
+ 
+-  const api = { SCHEMA, COMPARE_SCHEMA, CANON, METRIC, LIMITS, TARGET_POLICY, SCHOOL_CATEGORIES, CaseError, buildCase, validateCase, targetStatus,
++  const api = { SCHEMA, COMPARE_SCHEMA, CANON, METRIC, LIMITS, TARGET_POLICY, SCHOOL_CATEGORIES, PEDESTRIAN, ROUTING_POLICIES, CaseError, buildCase, validateCase, targetStatus,
+     canon, caseDigest, geodesicMatrix, compareCase, verdict, cmpPlans, exportCase, importCase };
+   if (NODE) module.exports = api;
+   else root.SCHOOL_CASE = api;
+--- a/tests/govtech/school_case.cjs
++++ b/tests/govtech/school_case.cjs
+@@ -147,7 +147,8 @@
+   bad((c) => { c.origins.push(...c.origins.slice(0, 1).map((o) => ({ ...o, id: "extra" }))); }, "limit_origins", "26 origins");
+   bad((c) => { c.candidates[1].id = c.candidates[0].id; }, "duplicate_id", "duplicate id");
+   bad((c) => { c.parameters.threshold_m = 0; }, "threshold", "threshold 0");
+-  bad((c) => { c.parameters.distance_method = "pedestrian-v1"; }, "method", "pedestrian not connected");
++  bad((c) => { c.parameters.distance_method = "pedestrian-v1"; }, "policy", "pedestrian-v1 without routing policy/snapshot");
++  bad((c) => { c.parameters.distance_method = "walking"; }, "method", "unknown distance method");
+   bad((c) => { c.parameters.max_new_objects = 2; }, "max_new_objects", "max 1 object");
+   bad((c) => { c.candidates[0].cost = 0; }, "cost", "cost must be null or object");
+   bad((c) => { c.candidates[0].kind = "observed"; }, "bad_kind", "candidate cannot be observed");
+--- a/tests/govtech/school_pedestrian.cjs
++++ b/tests/govtech/school_pedestrian.cjs
+@@ -0,0 +1,97 @@
++/* K03 r10: school-access-case-v1 с distance_method = pedestrian-v1 (web/govtech/k03) через compareCase сборки.
++ * Проверка против независимого перебора по строкам матрицы: до/после, неизвестные ≠ 0, unknown_targets, метрики, автовыбор;
++ * case_digest зависит от политики и графа; матрица другого графа/политики отклоняется; допущения — не «прямая».
++ * Run: node tests/govtech/school_pedestrian.cjs   (нужны файлы web/govtech/k03 — install_for_build.py)
++ */
++"use strict";
++const path = require("path"), fs = require("fs"), assert = require("assert");
++const root = path.resolve(__dirname, "../../web/govtech");
++globalThis.window = globalThis;
++require(path.join(root, "core/data.js"));
++require(path.join(root, "core/evidence.js"));
++const F = require(path.join(root, "core/facts.js"));
++const SC = require(path.join(root, "school/case.js"));
++const R = require(path.join(root, "k03/routing.js"));
++const A = require(path.join(root, "k03/school-access-routing.js"));
++const D = globalThis.CITY_EVIDENCE;
++let n = 0;
++const ok = (c, m) => { assert.ok(c, m); n++; };
++const eq = (a, b, m) => { assert.deepStrictEqual(a, b, m); n++; };
++const throwsCode = (f, code, m) => { try { f(); } catch (e) { eq(e.code, code, m + " → " + e.message); return; } assert.fail(m + ": no error"); };
++const clone = (x) => JSON.parse(JSON.stringify(x));
++const summary = {};
++
++// независимый перебор по строкам матрицы (без nearestOf сборки): минимум только по строкам ok, ничья — меньший ID
++function brute(c, mx, selected) {
++  const tp = c.parameters.target_policy;
++  const elig = c.schools.filter((s) => !tp.exclude_ids.includes(s.id) && (tp.include_ids.includes(s.id) || (tp.categories.includes(s.category) && !(s.qa || []).some((q) => tp.exclude_qa.includes(q)))));
++  const extra = c.candidates.filter((k) => selected.includes(k.id));
++  const row = new Map(mx.rows.map((r) => [r.origin_id + "|" + r.target_id, r]));
++  const near = (o, ts) => { let best = null; for (const t of ts) { const r = row.get(o.id + "|" + t.id); if (r && r.status === "ok" && (best === null || r.distance_mm < best.d || (r.distance_mm === best.d && t.id < best.id))) best = { d: r.distance_mm, id: t.id }; } return best; };
++  const rows = c.origins.map((o) => { const b = near(o, elig), a = near(o, [...elig, ...extra]);
++    const unk = [...elig, ...extra].filter((t) => { const r = row.get(o.id + "|" + t.id); return !r || r.status !== "ok"; }).length;
++    return { id: o.id, before: b ? b.d : null, after: a ? a.d : null, unk }; });
++  const known = rows.filter((r) => r.after !== null), thr = c.parameters.threshold_m * 1000;
++  const sum = known.reduce((s, r) => s + r.after, 0);
++  return { rows, unknown: rows.length - known.length, sum: known.length ? sum : null, max: known.length ? Math.max(...known.map((r) => r.after)) : null,
++    mean: known.length ? Math.round(sum / known.length) : null, within: known.filter((r) => r.after <= thr).length };
++}
++
++for (const city of ["shymkent", "astana"]) {
++  const g = JSON.parse(fs.readFileSync(path.join(root, `k03/${city}.graph.json`), "utf8"));
++  const G = R.prepare(g, { sha256hex: F.sha256hex });
++  const base = SC.buildCase(D, city, F.qaOf);
++  const geoDigest = SC.caseDigest(base);
++  summary[city] = {};
++  for (const pol of SC.ROUTING_POLICIES) {
++    const c = clone(base);
++    c.parameters.distance_method = SC.PEDESTRIAN;
++    c.parameters.routing_policy_id = pol;
++    c.parameters.routing_snapshot = { graph_sha256: g.graph_sha256, policy_sha256: g.policy_sha256, max_snap_m: g.max_snap_m };
++    c.variants = { A: c.candidates[0].id, B: c.candidates[5].id };
++    SC.validateCase(c);
++    const mx = A.distanceMatrix(c, G);
++    const cmp = SC.compareCase(c, mx);
++    eq(cmp.method, "pedestrian-v1", `${city} ${pol}: method`);
++    eq(cmp.policy_id, pol, `${city} ${pol}: policy`);
++    ok(!cmp.limitations.includes("straight_line_not_route") && cmp.facts.every((f) => !f.assumptions.includes("straight_line_not_route")), `${city} ${pol}: не подписано как прямая`);
++    for (const p of cmp.plans) {
++      const sel = p.selected_candidate_ids, b = brute(c, mx, sel);
++      eq(p.metrics.unknown_count, b.unknown, `${city} ${pol} ${p.id} unknown`);
++      eq(p.metrics.sum_distance_mm, b.sum, `${city} ${pol} ${p.id} sum`);
++      eq(p.metrics.max_distance_mm, b.max, `${city} ${pol} ${p.id} max`);
++      eq(p.metrics.mean_distance_mm, b.mean, `${city} ${pol} ${p.id} mean`);
++      eq(p.metrics.within_threshold_count, b.within, `${city} ${pol} ${p.id} within`);
++      for (const r of p.rows) {
++        const br = b.rows.find((x) => x.id === r.origin_id);
++        eq([r.before_mm, r.after_mm, r.unknown_targets], [br.before, br.after, br.unk], `${city} ${pol} ${p.id} row ${r.origin_id}`);
++        if (r.after_mm === null) eq(r.status, "unknown", `${city} ${pol} unknown ≠ 0`);
++      }
++      if (b.rows.some((r) => r.unk)) ok(p.limitations.includes("targets_with_unknown_distance"), `${city} ${pol} ${p.id}: неполнота показана`);
++    }
++    // автовыбор = минимум по правилу среди пустого набора и каждого места
++    const opts = [[], ...c.candidates.map((k) => [k.id])].map((sel) => { const b = brute(c, mx, sel); return { sel, k: [b.unknown, b.sum === null ? Infinity : b.sum, b.max === null ? Infinity : b.max] }; })
++      .sort((x, y) => { for (let i = 0; i < 3; i++) if (x.k[i] !== y.k[i]) return x.k[i] - y.k[i]; return x.sel.length - y.sel.length || (x.sel.join() < y.sel.join() ? -1 : x.sel.join() > y.sel.join() ? 1 : 0); });
++    eq(cmp.plans.find((p) => p.id === "auto").selected_candidate_ids, opts[0].sel, `${city} ${pol}: автовыбор`);
++    // отпечаток графа/политики в digest; несовпадающая матрица отклоняется
++    ok(cmp.case_digest !== geoDigest, `${city} ${pol}: digest отличается от прямой`);
++    const c2 = clone(c); c2.parameters.routing_snapshot.graph_sha256 = "0".repeat(64);
++    ok(SC.caseDigest(c2) !== cmp.case_digest, `${city} ${pol}: digest зависит от graph_sha256`);
++    throwsCode(() => SC.compareCase(c2, mx), "matrix_snapshot", `${city} ${pol}: матрица другого графа`);
++    const other = SC.ROUTING_POLICIES.find((x) => x !== pol), c3 = clone(c); c3.parameters.routing_policy_id = other;
++    throwsCode(() => SC.compareCase(c3, mx), "matrix_snapshot", `${city} ${pol}: матрица другой политики`);
++    const c4 = clone(c); delete c4.parameters.routing_snapshot;
++    throwsCode(() => SC.validateCase(c4), "routing_snapshot", `${city} ${pol}: без отпечатка графа`);
++    const c5 = clone(c); c5.parameters.routing_policy_id = null;
++    throwsCode(() => SC.validateCase(c5), "policy", `${city} ${pol}: без политики`);
++    const st = {}; for (const r of mx.rows) st[r.status] = (st[r.status] || 0) + 1;
++    const cur = cmp.plans[0];
++    summary[city][pol] = { matrix_statuses: st, current_unknown_origins: cur.metrics.unknown_count, current_mean_m: cur.metrics.mean_distance_mm === null ? null : cur.metrics.mean_distance_mm / 1000,
++      origins_with_unknown_targets: cur.rows.filter((r) => r.unknown_targets).length, auto: cmp.plans.find((p) => p.id === "auto").selected_candidate_ids };
++  }
++  // прямая не изменилась: прежняя матрица и digest
++  const cg = SC.compareCase(base, SC.geodesicMatrix(base));
++  ok(cg.limitations[0] === "straight_line_not_route" && cg.plans[0].rows.every((r) => r.unknown_targets === 0), `${city}: прямая без изменений`);
++}
++console.log(JSON.stringify(summary));
++console.log(`school_pedestrian: ${n} checks PASS`);
+--- a/tests/test_k03_routing_assets.py
++++ b/tests/test_k03_routing_assets.py
+@@ -0,0 +1,16 @@
++"""K03 r10: модуль pedestrian-v1 и графы в web/govtech/k03 совпадают с K03_MANIFEST.json (без незадокументированных правок)."""
++import hashlib
++import json
++from pathlib import Path
++
++
++def test_k03_routing_assets_match_manifest():
++    root = Path(__file__).resolve().parents[1] / "web" / "govtech" / "k03"
++    manifest = json.loads((root / "K03_MANIFEST.json").read_text(encoding="utf-8"))
++    names = {item["file"] for item in manifest["files"]}
++    assert names == {"routing.js", "school-access-routing.js", "shymkent.graph.json", "astana.graph.json"}
++    for item in manifest["files"]:
++        assert hashlib.sha256((root / item["file"]).read_bytes()).hexdigest() == item["sha256"], item["file"]
++    for city, meta in manifest["graphs"].items():
++        graph = json.loads((root / f"{city}.graph.json").read_text(encoding="utf-8"))
++        assert graph["graph_sha256"] == meta["graph_sha256"] and graph["license"]["id"] == "ODbL-1.0"

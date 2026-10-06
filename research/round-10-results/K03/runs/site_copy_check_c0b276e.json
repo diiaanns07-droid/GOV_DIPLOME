@@ -1,0 +1,62 @@
+{
+ "what": "копия основного сайта d2ff344 + patches/build_d2ff344_k03_routing_assets.patch + install_for_build.py; не общий сайт",
+ "browser": "Chromium 141.0.7390.37",
+ "results": [
+  {
+   "name": "главная страница копии загружает window.K03_ROUTING и K03_SCHOOL_ROUTING рядом с CITY_PLAN",
+   "ok": true
+  },
+  {
+   "name": "shymkent: граф с сервера копии прошёл проверку graph_sha256 (CITY_FACTS.sha256hex)",
+   "ok": true
+  },
+  {
+   "name": "shymkent: 102 строк матрицы в странице сайта = Node",
+   "ok": true
+  },
+  {
+   "name": "shymkent: compareCase сборки с pedestrian-v1 в странице = Node (digest, планы Сейчас/A/B/авто, метрики, ограничения)",
+   "ok": true
+  },
+  {
+   "name": "astana: граф с сервера копии прошёл проверку graph_sha256 (CITY_FACTS.sha256hex)",
+   "ok": true
+  },
+  {
+   "name": "astana: 60 строк матрицы в странице сайта = Node",
+   "ok": true
+  },
+  {
+   "name": "astana: compareCase сборки с pedestrian-v1 в странице = Node (digest, планы Сейчас/A/B/авто, метрики, ограничения)",
+   "ok": true
+  },
+  {
+   "name": "патч не добавляет ошибок страницы относительно копии без патча",
+   "ok": true
+  },
+  {
+   "name": "патч не добавляет внешних запросов",
+   "ok": true
+  }
+ ],
+ "patched_page": {
+  "errors": [
+   "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED",
+   "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+  ],
+  "external_hosts": [
+   "",
+   "tiles.openfreemap.org"
+  ]
+ },
+ "unpatched_page": {
+  "errors": [
+   "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED",
+   "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+  ],
+  "external_hosts": [
+   "",
+   "tiles.openfreemap.org"
+  ]
+ }
+}
