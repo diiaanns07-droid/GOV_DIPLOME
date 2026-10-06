@@ -224,7 +224,38 @@
     return L.join("\n");
   }
 
+
+  // ---------- self-contained HTML report (recomputed by the caller; escaped text, no scripts, no external resources) ----------
+  function reportHtml(m) {
+    const esc = PL.esc, env = m.envelope, plan = env.plan, tw = plan.control_points.reduce((t, p) => t + p.weight, 0);
+    const tr = (cells, th) => "<tr>" + cells.map((c) => (th ? "<th>" : "<td>") + esc(c) + (th ? "</th>" : "</td>")).join("") + "</tr>";
+    const table = (head, rows) => "<table>" + tr(head, true) + rows.map((r) => tr(r)).join("") + "</table>";
+    const mean = (x) => mText(x.metrics.weighted_mean_mm);
+    const cell = (pl, cid) => { const x = pl.per_case.find((y) => y.case_id === cid); return `${mean(x)} · худшая ${mText(x.metrics.max_mm)} · охват ${x.metrics.covered_weight}/${tw}${x.metrics.unknown_count ? ` · без расстояния ${x.metrics.unknown_count}` : ""}${pl.worst_case_ids.includes(cid) ? " · ХУДШИЙ" : ""}`; };
+    const cases = allCases(env);
+    const parts = [`<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">`,
+      `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'">`,
+      `<title>Отчёт: устойчивость к допущениям (${esc(m.city_label)})</title><style>body{font:14px/1.45 system-ui,sans-serif;margin:16px;max-width:1000px;color:#111;background:#fff}`,
+      `table{border-collapse:collapse;margin:8px 0;font-size:12.5px}td,th{border:1px solid #ccc;padding:3px 6px;text-align:left;vertical-align:top}th{background:#f3f2ee}.warn{border-left:3px solid #fab219;padding-left:8px}pre{white-space:pre-wrap;background:#f6f6f4;padding:8px}</style></head><body>`,
+      `<h1>Устойчивость к допущениям о данных: ${esc(PL.CATEGORIES[plan.category])}, ${esc(m.city_label)}</h1>`,
+      `<p class="warn">Выбранные записи УСЛОВНО не учитываются в расчёте — это не подтверждение закрытия, не прогноз и не оценка риска. Пустые исходные данные не означают отсутствие услуги. Расстояния — по прямой в квадрате среза; стоимости — условные единицы; веса — приоритеты, не население.${m.demo ? " Точки, места, стоимости и веса — синтетический демо-набор." : ""}</p>`,
+      `<h2>Происхождение и версии</h2>` + table(["Поле", "Значение"], [["Схема", SCHEMA], ["План", plan.schema_version], ["Город", m.city_label], ["Срез", m.release], ["source_snapshot (не меняется исключениями)", plan.source_snapshot],
+        ["Метрика", PL.METRIC], ["Цель", OBJECTIVE], ["resilience_problem_digest", m.problem_digest], ["exclusions_digest", m.exclusions_digest], ["Сформирован", m.generated]]),
+      `<h2>Случаи и условные исключения</h2>` + table(["Случай", "Название", "Исключено записей", "Исключённые записи (ID — название — QA)"], cases.map((c) => [c.id, c.label, c.disabled_source_ids.length,
+        c.disabled_source_ids.map((id) => `${id} — ${(m.names[id] || "без названия")}${(m.qa[id] || []).length ? " — QA: " + m.qa[id].join(", ") : ""}`).join("; ") || "—"]))];
+    const plans = [["Ручной", m.manual], ...(m.result && m.result.status === "optimal" ? [["Обычный (лучшее среднее в базовом)", m.result.nominal], ["Устойчивый (лучший худший исход)", m.result.robust]] : [])];
+    parts.push(`<h2>Планы</h2>` + table(["План", "Объекты", "Стоимость, усл. ед.", "Допустим", "Худший исход (неизв. · сумма · худшая точка)", "Худшие случаи"], plans.map(([n, p]) => [n, idsText(p.selected_ids), p.cost,
+      p.feasibility.feasible ? "да" : "НЕТ: " + p.feasibility.reasons.map((r) => r.text).join("; "), `${p.worst_vector.unknown_count} · ${mText(p.worst_vector.weighted_sum_mm)}·вес · ${mText(p.worst_vector.max_mm)}`, p.worst_case_ids.join(", ")])));
+    parts.push(`<h2>Исходы по случаям</h2>` + table(["Случай", ...plans.map(([n]) => n)], cases.map((c) => [`${c.id}: ${c.label}`, ...plans.map(([, p]) => cell(p, c.id))])));
+    if (m.result && m.result.status === "optimal") parts.push(`<p>Цена устойчивости (базовый случай, взвешенное среднее по прямой): ${esc(m.result.price_of_robustness_m === null ? "не вычисляется — " + m.result.price_reason : (m.result.price_of_robustness_m >= 0 ? "+" : "") + m.result.price_of_robustness_m.toFixed(1) + " м")}. Просмотрено ${esc(m.result.evaluated)} наборов, допустимых ${esc(m.result.feasible_count)}.</p>`);
+    else if (m.result && m.result.status === "infeasible") parts.push(`<p>Допустимых планов нет: ${esc(m.result.reasons.map((r) => r.text).join("; "))}</p>`);
+    else parts.push(`<p>Точный перебор устойчивости для текущих входов не запускался.</p>`);
+    if (m.explanation) parts.push(`<h2>Объяснение (шаблон, не LLM)</h2><pre>${esc(m.explanation)}</pre>`);
+    parts.push(`<h2>Источники и ограничения</h2><p>${esc(m.attribution)}</p><p>Записи Overture/OSM — вторичные данные; QA-метка не доказывает ошибку и не исключает запись автоматически. Нет вероятностей, «риска», населения, вместимости, пешего времени и реальных смет. Отчёт создан локально и не содержит скриптов и внешних ссылок.</p></body></html>`);
+    return parts.join("\n") + "\n";
+  }
+
   const api = { SCHEMA, OBJECTIVE, LIMITS, validateResilience, evaluateResilience, createResilienceSearch, optimizeResilience, exportResilience, importResilience,
-    resilienceProblemDigest, resilienceScenarioDigest, exclusionsDigest, duplicateCaseGroups, allCases, explainResilience, caseContext };
+    resilienceProblemDigest, resilienceScenarioDigest, exclusionsDigest, duplicateCaseGroups, allCases, explainResilience, caseContext, reportHtml };
   if (node) module.exports = api; else root.CITY_RESILIENCE = api;
 })(typeof window !== "undefined" ? window : globalThis);

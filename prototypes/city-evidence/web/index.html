@@ -141,7 +141,14 @@ figure.pl-chart { margin: 6px 0; }
 .pl-cmp dt { color: var(--ink-2); font-size: 11px; margin-top: 3px; }
 .pl-cmp dd { margin: 0; font-weight: 600; }
 #plPareto td, #plSens td { font-size: 12px; }
-#planCard th { white-space: normal; }  /* round 9: long headers wrap instead of widening the card at 390 px */
+#planCard th { white-space: normal; }
+#resCard th { white-space: normal; }
+table.rs-recs td { font-size: 12px; }
+table.rs-recs td:first-child { width: 2.5em; }
+td.rs-worst { font-weight: 600; }
+input.rs-label { width: 14em; max-width: 100%; font: inherit; padding: 3px 5px; border-radius: 6px; border: 1px solid var(--base); background: var(--surface); color: var(--ink); }
+#rsTable td { font-size: 12px; }
+@media (max-width: 480px) { #rsTable { width: 100%; table-layout: fixed; } }  /* round 9: long headers wrap instead of widening the card at 390 px */
 @media (max-width: 480px) { #plMetrics, #plRows { width: 100%; table-layout: fixed; } #plMetrics td.num, #plRows td.num { white-space: normal; } }
 @media (max-width: 480px) { #plPareto, #plSens { width: 100%; table-layout: fixed; } #plPareto th, #plSens th { white-space: normal; font-size: 12px; }
   #plPareto td.num, #plSens td.num { white-space: normal; } }  /* K07 r8 N2: no inner horizontal scroll at 390 px */
@@ -194,6 +201,7 @@ button.wi-src { white-space: normal; text-align: left; font-size: 12px; padding:
     <section class="card" id="toolCard"><h2>Сценарии «если построить» <span class="pill">гипотеза</span></h2>
       <div class="seg" role="group" aria-label="Вид сценария" id="toolSeg"><button type="button" data-tool="v1" aria-pressed="true">Один объект (v1)</button><button type="button" data-tool="v2" aria-pressed="false">Несколько объектов (v2)</button></div></section>
     <section class="card" id="planCard" hidden><h2>План нескольких объектов <span class="pill">условные единицы</span></h2><div id="planBody"></div></section>
+    <section class="card" id="resCard" hidden><h2>Устойчивость к допущениям <span class="pill">условные исключения</span></h2><div id="resBody"></div></section>
     <section class="card" id="whatifCard" hidden><h2>Если добавить объект <span class="pill">гипотеза</span></h2><div id="whatifBody"></div></section>
     <section class="card" id="sliceCard"><h2>Срез данных</h2><div id="sliceBody"></div></section>
     <section class="card" id="explainCard" hidden><h2>Объяснение по фактам</h2><div id="explainBody"></div></section>
@@ -209,7 +217,9 @@ button.wi-src { white-space: normal; text-align: left; font-size: 12px; padding:
 <script src="facts.js"></script>
 <script src="whatif.js"></script>
 <script src="plan.js"></script>
+<script src="resilience.js"></script>
 <script src="app.js"></script>
 <script src="plan-ui.js"></script>
+<script src="resilience-ui.js"></script>
 </body>
 </html>

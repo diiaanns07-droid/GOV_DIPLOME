@@ -158,5 +158,13 @@ const ex = RS.explainResilience(v, RS.evaluateResilience(sh, senv, senv.plan.sel
 check("explanation: template, 'не подтверждение закрытия', no probability/risk claims", ex.startsWith("Шаблонное объяснение") && ex.includes("не подтверждение закрытия") && !/вероятност[ьи] \d|риск \d|%/.test(ex));
 check("explanation names duplicate cases", ex.includes("first3 = first3dup") || ex.includes("first3dup = first3"));
 
+// 9. HTML report: escaped, no scripts
+const evil = "<script>alert(1)</script>\"'&";
+const venv = RS.validateResilience({ ...base(), cases: base().cases.map((c, k) => (k ? c : { ...c, label: evil })) }, sh);
+const html = RS.reportHtml({ envelope: venv, city_label: evil, release: "x", problem_digest: "p", exclusions_digest: "e", generated: "t", manual: RS.evaluateResilience(sh, venv, venv.plan.selected_ids),
+  result: RS.optimizeResilience(sh, venv, { F }), names: Object.fromEntries(sh.places.map((p) => [p.id, evil])), qa: {}, explanation: evil, attribution: evil, demo: true });
+check("report: no script tag, labels/names escaped, CSP, no external URLs", !/<script/i.test(html) && html.includes("&lt;script&gt;") && html.includes("default-src 'none'") && !/https?:\/\//.test(html)
+  && html.includes("worst-lex-v1") && html.includes("не подтверждение закрытия"));
+
 console.log(fails ? `${fails} FAILED` : "all resilience checks passed");
 process.exit(fails ? 1 : 0);

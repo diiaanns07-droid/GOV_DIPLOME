@@ -485,14 +485,17 @@
   function importText(text) {
     let r;
     try { r = PL.importPlanScenario(text, ctxOf, F); } catch (e) { PS.msg = "Файл не принят, текущий план не изменён: " + String(e.detail || e.message).slice(0, 240); render(); return false; }
-    const sc = r.scenario;
+    loadScenario(r.scenario, `План загружен (${D.cities[r.scenario.city_id].label}, ${PL.CATEGORIES[r.scenario.category]}): значения пересчитаны и совпали с файлом. Поиск оптимумов не переносится — запустите заново.`);
+    return true;
+  }
+  // replace the editor state with an already VALIDATED scenario at once (v2 import, resilience import)
+  function loadScenario(sc, msg) {
     if (sc.city_id !== STATE.city) APP.switchCity(sc.city_id);
     reset("");
     Object.assign(PS, { category: sc.category, points: sc.control_points.map((p) => ({ ...p })), cands: sc.candidates.map((c) => ({ id: c.id, lon: c.lon, lat: c.lat, cost: c.cost })),
       budget: sc.budget, max_selected: sc.max_selected, radius: sc.coverage_radius_m, required: sc.required_ids.slice(), excluded: sc.excluded_ids.slice(), selected: sc.selected_ids.slice(),
       seqP: sc.control_points.length + 1, seqK: sc.candidates.length + 1, demo: false, expl: null });
-    changed(`План загружен (${D.cities[sc.city_id].label}, ${PL.CATEGORIES[sc.category]}): значения пересчитаны и совпали с файлом. Поиск оптимумов не переносится — запустите заново.`);
-    return true;
+    changed(msg);
   }
   function importFile(f) {
     if (f.size > 262144) { PS.msg = `Файл не принят: ${f.size} байт больше 262144. Текущий план не изменён.`; render(); return; }
@@ -553,6 +556,6 @@
   EXT.cards.push(() => render());
   window.CITY_PLAN_UI = { state: PS, place, setMode, setCategory, setStatus, toggleSelected, removePoint, removeCand, demoSet, scenario, evaluate, render,
     rawScenario, setNumber, OPT, changed, reset, ctxOf, el, btn, mmText, opt: OS, startSearch, cancelSearch, applyPlan, restoreManual,
-    explainNow, exportText, importText, reportText };
+    explainNow, exportText, importText, reportText, loadScenario, onProblemChange: (f) => OPT.onProblemChange.push(f), afterRender: (f) => OPT.render.push(f) };
   render();
 })();
