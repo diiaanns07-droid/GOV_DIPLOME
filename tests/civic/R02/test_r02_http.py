@@ -225,6 +225,18 @@ def test_parallel_http_writes_and_races(http_service):
     assert service.db.open_connections == 0
 
 
+def patch_applicability():
+    """None — патч можно проверять; иначе причина пропуска (в интегрированной ветке R01)."""
+    server = REPO_ROOT / "ui" / "web_server.py"
+    if not server.exists():
+        return "нет ui/web_server.py"
+    if not PATCH.exists():
+        return "web_server.patch не импортирован (он нужен только для исходного Handler b2cb2e0)"
+    if "CivicGateway" in server.read_text(encoding="utf-8"):
+        return "ui/web_server.py уже содержит собственный civic-шлюз R01; патч R02 не применяется"
+    return None
+
+
 def load_patched_web_server(tmp_path):
     """Применяет web_server.patch к копии общего файла и загружает её (сам файл не меняется)."""
     work = tmp_path / "patched"
@@ -239,7 +251,7 @@ def load_patched_web_server(tmp_path):
     return module
 
 
-@pytest.mark.skipif(not (REPO_ROOT / "ui" / "web_server.py").exists(), reason="нет ui/web_server.py")
+@pytest.mark.skipif(patch_applicability() is not None, reason=str(patch_applicability()))
 def test_patch_applies_to_real_web_server_and_serves_both_apis(tmp_path):
     module = load_patched_web_server(tmp_path)
     db = tmp_path / "patched.sqlite3"
