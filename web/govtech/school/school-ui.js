@@ -154,7 +154,8 @@
       all[S.city] = { snapshot_id: c.snapshot_id, case_id: c.case_id, variants: c.variants, method: { distance_method: c.parameters.distance_method, routing_policy_id: c.parameters.routing_policy_id, routing: c.parameters.routing || null }, threshold_m: c.parameters.threshold_m,
         include_ids: c.parameters.target_policy.include_ids, exclude_ids: c.parameters.target_policy.exclude_ids, unknown_eligibility: c.parameters.target_policy.unknown_eligibility,
         user: c.candidates.filter((k) => isUser(k.id)), compared: S.compared };
-      all.__city = S.city;  // last city of the city mode; restored when the mode is opened again (F5)
+      // last city of the city mode; restored when the mode is opened again (F5). Saves made before the mode is opened keep it.
+      if (active()) all.__city = S.city;
       localStorage.setItem(STORE, JSON.stringify(all));
     } catch (e) { /* storage unavailable: the case still works for this tab */ }
   }
@@ -796,13 +797,14 @@
 
   // ---------- hooks ----------
   GOV.EXT.onMap.push((map) => { S.map = map; ensureLayers(map); render(); });
+  // read before the first save of this page load overwrites it
+  let lastCity = null;
+  try { lastCity = JSON.parse(localStorage.getItem(STORE) || "{}").__city || null; } catch (e) { lastCity = null; }
   let cityRestored = false;
   GOV.EXT.onActive.push((on) => {
     if (on && !cityRestored && !S.loading) {
       cityRestored = true;  // once per page load: the city the user last worked with (switched while active, so labels stay right)
-      let last = null;
-      try { last = JSON.parse(localStorage.getItem(STORE) || "{}").__city; } catch (e) { last = null; }
-      if (last && last !== S.city && D.cities[last]) { GOV.switchCity(last); return; }
+      if (lastCity && lastCity !== S.city && D.cities[lastCity]) { GOV.switchCity(lastCity); return; }
     }
     if (on && !S.loading && !S.cases[S.city]) { restore(S.city); recompute(); }
     setPick(null); render();
