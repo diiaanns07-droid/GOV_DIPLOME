@@ -8,7 +8,7 @@
 - Собственные пути: `agent/civic_assistant/`, `web/civic/assistant/`, `tests/civic/R09/`,
   `research/round-11-results/R09/`, `research/handoffs/astana/R09/round-11/STATUS.md`
 
-## Статус: PARTIAL — checkpoint 2
+## Статус: PARTIAL — checkpoint 3
 
 ### Сделано
 - `agent/civic_assistant/facts.py`: серверный каталог фактов из публичного DTO civic-v1 (allowlist),
@@ -25,12 +25,20 @@
 - CP2 `agent/civic_assistant/audit.py`: runtime-аудит каждой фразы: цифра без факта, цитата не дословно,
   «официально одобрено/утверждено», «завершено» без status=completed -> фраза удаляется, код в warnings.
 - Причина переноса берётся только из публичной истории и не из первой (исходной) записи.
+- CP3 `agent/civic_assistant/scenario.py`: факты из civic-scenario-result-v1 R07 (baseline/A/B/a_vs_b,
+  покрытие графа); A/B объясняются только метриками engine, без «лучше». Fixture
+  `tests/civic/R09/fixtures/r07_synthetic_result.json` — реальный вывод compare() R07
+  (ветка claude/brave-hopper-bkc58b, SHA 18f8ac8, кейс synthetic-tiny-v1-demo; граф синтетический).
+- CP3 `agent/civic_assistant/api.py`: AssistantEndpoint.handle(method,path,query,body,context) для
+  POST /api/civic/v1/assistant; тело — ровно {question,object_id,scenario_id}; facts/context/role -> 400;
+  draft и несуществующий объект неразличимы (unavailable); 413/422/429/405; r02_public_loader
+  (публичный GET /objects/{id} без cookie), r07_case_loader (scenario_id = case_id, payload с сервера).
 
 ### Проверки
-- `python3 -m pytest tests/civic/R09 -q` -> 49 passed (CP2; CP1 было 16).
+- `python3 -m pytest tests/civic/R09 -q` -> 79 passed (CP3; CP2 49; CP1 16).
 
 ### Не запускалось
 - Живой LLM (вне задания). Интеграция в app (делает R01).
 
 ### Следующий шаг
-CP3: факты сценария R07 (A/B по метрикам engine) + пример POST /assistant handler для R01 (только public DTO).
+CP4: черновик извлечения из переданного текста публикации (quote/span/source_id/confidence_kind), staff-only.
