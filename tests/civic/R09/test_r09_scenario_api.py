@@ -227,3 +227,12 @@ def test_malformed_loader_result_is_unavailable(bad):
     ep = AssistantEndpoint(lambda oid: bad, rate_limiter=RateLimiter(100, 60))
     d = post(ep, {"question": "Когда?", "object_id": "x1"})["body"]["data"]
     assert d["source"] == "unavailable"
+
+
+def test_raw_bytes_body_like_r02_convention(endpoint):
+    ok = endpoint.handle("POST", ASSISTANT_PATH, {}, json.dumps({"question": "Когда?", "object_id": "r09-synth-full"}).encode(),
+                         {"client_ip": "1.1.1.1", "headers": {}})
+    assert ok["status"] == 200 and ok["body"]["data"]["object_id"] == "r09-synth-full"
+    for raw in (b"{not json", b'{"question": NaN, "object_id": "x"}', b"\xff\xfe"):
+        bad = endpoint.handle("POST", ASSISTANT_PATH, {}, raw, {"client_ip": "1.1.1.1", "headers": {}})
+        assert bad["status"] == 400 and bad["body"]["error"]["code"] == "invalid_json"

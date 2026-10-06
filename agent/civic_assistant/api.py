@@ -19,6 +19,7 @@ POST /api/civic/v1/staff/assistant/extract  — см. extract.py (только �
 
 from __future__ import annotations
 
+import json
 import threading
 import time
 from urllib.parse import quote
@@ -35,6 +36,10 @@ _EXTRACT_PATHS = (EXTRACT_PATH, "/staff/assistant/extract")
 HEADERS = {"Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store"}
 ALLOWED_KEYS = {"question", "object_id", "scenario_id"}
 RATE_LIMIT = (20, 60.0)  # запросов на IP за окно, секунд
+
+
+def _reject_constant(value):
+    raise ValueError("non-finite number " + value)
 
 
 def _ok(data, status=200):
@@ -128,6 +133,12 @@ class AssistantEndpoint:
         if method != "POST":
             return _err(405, "method_not_allowed", "только POST")
         context = context if isinstance(context, dict) else {}
+        if isinstance(body, (bytes, bytearray)):
+            # Соглашение R02: сервис может получить сырое тело; разбираем строго (без NaN/Infinity).
+            try:
+                body = json.loads(body.decode("utf-8"), parse_constant=_reject_constant)
+            except (ValueError, UnicodeDecodeError):
+                return _err(400, "invalid_json", "тело запроса — корректный JSON")
         if not self.rate_limiter.allow(str(context.get("client_ip") or "unknown")):
             return _err(429, "rate_limited", "Слишком много вопросов подряд. Повторите через минуту.")
         if path in _EXTRACT_PATHS:
