@@ -25,5 +25,14 @@
 - Миграция 2: `civic_create_requests` (Idempotency-Key для повторной отправки формы).
 - Проверка: `python -m pytest -q -p no:cacheprovider tests/civic/R02` → 80 passed.
 
+## Checkpoint 3 — публикация, история, 409, доступ редактора (DONE)
+- Два редактора с revision=2: один 200, второй 409 `stale_revision` (+ потоковая гонка ×5); откат публикации при
+  сбое записи истории не оставляет ни проекции, ни половины истории; original_planned_end фиксируется первой
+  публикацией; изменение опубликованной записи требует reason; служебная причина update не видна публично.
+- Вход: неверный пароль/неизвестный логин одинаково 401; cookie HttpOnly+SameSite=Strict(+Secure по HTTPS);
+  простой 60 мин и абсолютный 8 ч; logout отзывает сессию; CSRF, cross-origin, чужой Host → 403; 5 неудач → 429;
+  actor/role/publication из body игнорируются; токены/пароли не в логах и не в БД (только хэши).
+- Проверка: `python -m pytest -q -p no:cacheprovider tests/civic/R02` → 124 passed.
+
 ## Следующий шаг
-Тесты update/publish/409/истории/original_planned_end и auth (неверный пароль, истечение, logout, CSRF).
+CLI init/create-editor(getpass)/import, идемпотентный импорт пакета R05 с dry-run, многопоточные тесты.
