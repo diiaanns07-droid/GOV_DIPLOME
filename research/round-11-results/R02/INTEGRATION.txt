@@ -24,15 +24,17 @@ requirements*.txt менять не нужно.
      (сейчас BaseHTTPRequestHandler отвечает HTML 501, что нарушает «ошибки — JSON»).
      object_lookup для R06 можно заменить на civic.lookup_public_object (тот же публичный DTO).
      ui/civic_store/__init__.py экспортирует CivicService с коммита 92f7aba (запасной импорт R01 больше не нужен).
-   - R04 claude/fervent-ritchie-1zih1y @2ff117c (editor-core.js, contract_mock.cjs) РАСХОДИТСЯ в двух местах:
-     a) матрица действий: для published publish=false, а mock делает правку опубликованной записи сразу
-        публичной. В R02 (и в двойнике R01) правка опубликованного объекта меняет рабочую копию;
-        житель увидит её после POST .../publish. Нужно: показывать «Опубликовать изменения», когда
-        item.staff.has_unpublished_changes === true (publication=published), причина — публичный текст;
-        staff.public_item — то, что видит житель сейчас (готовое «было/станет»).
-     b) коды 403: R02 отдаёт "csrf_failed" и "cross_origin" (R04 ждёт "csrf"/"origin" и иначе покажет
-        «Недостаточно прав»). Также: update без изменений → 200 с тем же item (не 422 no_changes);
-        publish без изменений → 200 без новой ревизии; 409 бывает только stale_revision.
+   - R04 claude/fervent-ritchie-1zih1y: в @2ff117c считал правку опубликованной записи сразу публичной;
+     в @da46e1c («verified against the real R02 service; pending-changes model») уже показывает
+     «Опубликовать» при staff.has_unpublished_changes и использует staff.public_item — СОВМЕСТИМО.
+     Остаётся мелочь: normalizeError R04 (строка ~475) распознаёт 403 только как "csrf"/"origin",
+     а R02 отдаёт "csrf_failed"/"cross_origin" — редактор увидит «Недостаточно прав» вместо подсказки
+     обновить сессию (shell R01 перед этим сам один раз повторяет запрос после csrf_failed).
+     Также: update без изменений → 200 с тем же item (не 422 no_changes); publish без изменений → 200
+     без новой ревизии; 409 бывает только stale_revision.
+   - Комбинированная проверка: ветка R01 @beb0d87 + ui/civic_store и tests/civic/R02 из HEAD R02 →
+     python -m pytest -q tests → 512 passed, 3 skipped (вкл. приёмку P0 R01 против настоящего R02 и
+     тесты совместимости R06). R01 импортировал R02 @92f7aba; более новые исправления R02 — см. DELIVERY.json.
    - R03 claude/zen-mendel-e79iiv @9cb1a2e: читает GET /objects[?cursor] и /objects/{id}, history.changed_fields
      как список путей и причину переноса по schedule.current_planned_end — совместимо.
    - R06 claude/focused-hypatia-z8h0no @eaa113d: Principal R02 (role, username, csrf_token, expires_at epoch)
