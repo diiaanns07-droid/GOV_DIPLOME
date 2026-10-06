@@ -418,12 +418,12 @@
       }
     }
     async function openObject(id) {
-      say("Открываем запись…");
+      // Keeps the last status line (e.g. "Опубликовано") visible after the reload.
       try {
         const data = await api.request("GET", "/staff/objects/" + encodeURIComponent(id));
         if (S.destroyed) return;
         S.current = { item: data.item, history: Array.isArray(data.history) ? data.history : [] };
-        S.view = "object"; say(""); render();
+        S.view = "object"; render();
       } catch (error) { say(errorText(error)); }
     }
     function input(name, value, attrs) { return el("input", { name, value: value ?? "", ...(attrs || {}) }); }
@@ -460,6 +460,7 @@
         reason: input("reason", "", { maxlength: "500" }),
       };
       f.description.value = item?.description || "";
+      if (S.keepReason) { f.reason.value = S.keepReason; S.keepReason = ""; }
       f.notes.value = item?.evidence_notes || "";
       const published = item && item.publication === "published";
       if (published) f.original_planned_end.disabled = true;
@@ -477,6 +478,8 @@
       const head = el("header");
       head.append(el("h3", null, isNew ? "Новая запись (черновик)" : (item.title || "Запись")));
       if (!isNew) head.append(el("p", { class: "muted" }, `${label("publication", item.publication)} · версия ${item.revision} · id ${item.id}`));
+      if (!isNew && item.publication === "published" && item.staff?.has_unpublished_changes)
+        head.append(el("p", { class: "civic-note" }, "Есть неопубликованные изменения: жители видят прежнюю версию, пока вы не нажмёте «Опубликовать изменения»."));
       form.append(head,
         lab("Название", f.title), lab("Вид", f.kind), lab("Статус работ", f.status, "Без подтверждения состояния — «Статус не подтверждён»."),
         lab("Описание", f.description),
@@ -493,8 +496,9 @@
       const save = el("button", { type: "submit", class: "btn primary" }, isNew ? "Сохранить черновик" : "Сохранить изменения");
       actions.append(save);
       let publish = null, archive = null;
-      if (!isNew && item.publication === "draft") {
-        publish = el("button", { type: "button", class: "btn" }, "Опубликовать");
+      const unpublished = !!item?.staff?.has_unpublished_changes;
+      if (!isNew && (item.publication === "draft" || (item.publication === "published" && unpublished))) {
+        publish = el("button", { type: "button", class: "btn" }, item.publication === "draft" ? "Опубликовать" : "Опубликовать изменения");
         actions.append(publish);
       }
       if (!isNew && item.publication !== "archived") {
@@ -574,14 +578,16 @@
             const reason = f.reason.value.trim();
             if (published && !reason) { say("Укажите причину изменения опубликованной записи."); f.reason.focus(); return; }
             const data = await api.request("POST", `/staff/objects/${encodeURIComponent(item.id)}/update`, { expected_revision: item.revision, changes, reason: reason || null });
-            say("Изменения сохранены.");
-            if (data?.item?.publication === "published") onPublished?.(data.item);
+            say(published ? "Изменения сохранены. Нажмите «Опубликовать изменения», чтобы их увидели жители." : "Изменения сохранены.");
+            S.keepReason = reason;
             await openObject(item.id);
           }
         });
       });
       publish?.addEventListener("click", () => void guarded(async () => {
-        const reason = f.reason.value.trim() || "Первая публикация";
+        const first = item.publication === "draft" && !item.staff?.first_published_at;
+        const reason = f.reason.value.trim() || (first ? "Первая публикация" : "");
+        if (!reason) { say("Укажите причину изменения — её увидят жители в истории."); f.reason.focus(); return; }
         const data = await api.request("POST", `/staff/objects/${encodeURIComponent(item.id)}/publish`, { expected_revision: item.revision, reason });
         say("Опубликовано. Запись видна на карте.");
         onPublished?.(data?.item || item);

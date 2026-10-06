@@ -27,6 +27,7 @@ class RecordingStore:
 
     def handle(self, method, path, query, body, context):
         self.calls.append((method, path, query, body, context))
+        path = path[len("/api/civic/v1"):]
         if path.startswith("/objects/bad-shape"):
             return {"status": 200, "body": "not an envelope"}
         if path == "/session/login":
@@ -41,7 +42,7 @@ class RecordingFeedback:
         self.calls = []
 
     def handle(self, method, path, query, body, principal, context):
-        self.calls.append((method, path, principal))
+        self.calls.append((method, path[len("/api/civic/v1"):], principal))
         return {"status": 200, "headers": {}, "body": {"ok": True, "data": {"items": [], "owner": "feedback"}}}
 
 
@@ -178,21 +179,24 @@ def test_context_carries_server_side_facts_not_body_claims(served):
     call(port, "POST", "/api/civic/v1/staff/objects", {"title": "t", "actor": "admin", "role": "editor"},
          headers={"Cookie": "civic_session=s1; other=2", "X-CSRF-Token": "tok"})
     method, path, query, body, context = store.calls[-1]
-    assert (method, path) == ("POST", "/staff/objects")
-    assert context["is_same_origin"] is True
+    assert (method, path) == ("POST", "/api/civic/v1/staff/objects")
+    assert context["is_same_origin"] is True and context["host_allowed"] is True
     assert context["cookies"] == {"civic_session": "s1", "other": "2"}
     assert context["headers"]["x-csrf-token"] == "tok"
     assert context["client_ip"] == "127.0.0.1"
     # The gateway forwards the body untouched; R02 must ignore actor/role in it (tested in R02/R10).
     assert body["role"] == "editor"
     call(port, "POST", "/api/civic/v1/staff/objects", {"title": "t"}, origin=False)
-    assert store.calls[-1][4]["is_same_origin"] is False
+    assert store.calls[-1][4]["is_same_origin"] is None  # unknown: R02 then relies on CSRF
+    call(port, "POST", "/api/civic/v1/staff/objects", {"title": "t"}, origin=False,
+         headers={"Sec-Fetch-Site": "same-origin"})
+    assert store.calls[-1][4]["is_same_origin"] is True
 
 
-def test_query_is_flattened_and_bounded(served):
+def test_query_is_passed_raw_and_bounded(served):
     port, store, _ = served
     status, _, body = call(port, "GET", "/api/civic/v1/objects?kind=roadworks&kind=event&from=2026-10-01")
-    assert status == 200 and body["data"]["query"] == {"kind": "event", "from": "2026-10-01"}
+    assert status == 200 and body["data"]["query"] == "kind=roadworks&kind=event&from=2026-10-01"
     status, _, body = call(port, "GET", "/api/civic/v1/objects?x=" + "a" * 3000)
     assert status == 400 and body["error"]["code"] == "query_too_long"
 

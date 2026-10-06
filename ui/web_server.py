@@ -105,7 +105,7 @@ CIVIC_MODULE_LABELS = {
     "assistant": "Помощник по фактам (R09)",
 }
 # Headers a role service may set on its response; everything else is dropped.
-CIVIC_SERVICE_HEADERS = {"set-cookie", "retry-after"}
+CIVIC_SERVICE_HEADERS = {"set-cookie", "retry-after", "vary"}
 
 
 def civic_error(status, code, message, fields=None):
@@ -155,8 +155,11 @@ class CivicGateway:
 
         def store():
             module = importlib.import_module("ui.civic_store")
+            # R02 exports CivicService from ui.civic_store.service (package __init__ may not re-export).
+            service_class = getattr(module, "CivicService", None) or \
+                importlib.import_module("ui.civic_store.service").CivicService
             db_path.parent.mkdir(parents=True, exist_ok=True)
-            return module.CivicService(str(db_path))
+            return service_class(str(db_path))
 
         def feedback():
             module = importlib.import_module("ui.civic_feedback")
@@ -206,9 +209,9 @@ class CivicGateway:
         store = self.service("store")
         if store is None or not isinstance(object_id, str) or not CIVIC_ID.match(object_id):
             return None
-        reply = store.handle("GET", "/objects/" + object_id, {}, None,
-                             {"headers": {}, "client_ip": None, "is_same_origin": False,
-                              "internal_lookup": True})
+        reply = store.handle("GET", CIVIC_PREFIX + "/objects/" + object_id, "", None,
+                             {"headers": {}, "client_ip": None, "host_allowed": True,
+                              "is_same_origin": None, "is_https": False})
         if not reply or reply.get("status") != 200:
             return None
         data = (reply.get("body") or {}).get("data") or {}
@@ -232,12 +235,14 @@ class CivicGateway:
         if service is None:
             return civic_error(503, "module_unavailable",
                                f"Модуль «{CIVIC_MODULE_LABELS[owner]}» не подключён в этой сборке.")
+        # Services receive the full path (R02 convention: "/api/civic/v1/objects/...").
+        full_path = CIVIC_PREFIX + rel_path
         if owner == "store":
-            return service.handle(method, rel_path, query, body, context)
+            return service.handle(method, full_path, query, body, context)
         if owner == "feedback":
             store = self.service("store")
             principal = store.resolve_principal(context) if store is not None else None
-            return service.handle(method, rel_path, query, body, principal, context)
+            return service.handle(method, full_path, query, body, principal, context)
         return civic_error(503, "module_unavailable",
                            f"Модуль «{CIVIC_MODULE_LABELS[owner]}» не подключён в этой сборке.")
 
@@ -446,6 +451,18 @@ class Handler(BaseHTTPRequestHandler):
         parsed = urlsplit(origin)
         return parsed.scheme in ("http", "https") and parsed.netloc == self.headers.get("Host")
 
+    def origin_state(self):
+        """False on any cross-origin signal; True when Origin/Sec-Fetch-Site confirm same origin;
+        None when the client sent neither (services then rely on the CSRF token)."""
+        site = self.headers.get("Sec-Fetch-Site")
+        if site in ("same-site", "cross-site"):
+            return False
+        if self.headers.get("Origin"):
+            return self.same_origin()
+        if site in ("same-origin", "none"):
+            return True
+        return None
+
     def civic_send(self, reply):
         status = reply.get("status") if isinstance(reply, dict) else None
         body = reply.get("body") if isinstance(reply, dict) else None
@@ -492,8 +509,7 @@ class Handler(BaseHTTPRequestHandler):
             self.civic_send(civic_error(403, "forbidden_host", "Откройте интерфейс через адрес этого сервера."))
             return
         if method == "POST":
-            origin = self.headers.get("Origin")
-            if (origin and not self.same_origin()) or self.headers.get("Sec-Fetch-Site") == "cross-site":
+            if self.origin_state() is False:
                 self.discard_body()
                 self.civic_send(civic_error(403, "cross_origin", "Запрос с другого сайта отклонён."))
                 return
@@ -502,14 +518,7 @@ class Handler(BaseHTTPRequestHandler):
                 self.discard_body()
             self.civic_send(civic_error(400, "query_too_long", "Слишком длинная строка запроса."))
             return
-        try:
-            query = {key: values[-1] for key, values in
-                     parse_qs(parsed.query, keep_blank_values=True, strict_parsing=False).items()}
-        except ValueError:
-            query = None
-        if query is None:
-            self.civic_send(civic_error(400, "invalid_query", "Некорректная строка запроса."))
-            return
+        query = parsed.query  # raw; each service parses and bounds it (R02 parse_query)
         body = None
         if method == "POST":
             try:
@@ -549,8 +558,9 @@ class Handler(BaseHTTPRequestHandler):
             "method": method, "path": rel_path,
             "headers": {key.lower(): value for key, value in self.headers.items()},
             "cookies": cookies, "client_ip": self.client_address[0] if self.client_address else None,
-            "is_same_origin": self.same_origin(), "host": self.headers.get("Host"),
-            "scheme": "http", "secure": False,
+            # host_allowed is always True here: other hosts were rejected above.
+            "host_allowed": True, "is_same_origin": self.origin_state(), "is_https": False,
+            "host": self.headers.get("Host"),
         }
         try:
             reply = self.server.civic.handle(method, rel_path, query, body, context)

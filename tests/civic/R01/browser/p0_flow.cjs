@@ -131,7 +131,11 @@ const apiFetch = (page, method, p, body, headers) => page.evaluate(async ([metho
     await page.fill(ed + "input[name=current_planned_end]", "2026-11-15");
     await page.fill(ed + "input[name=reason]", "Перенос срока: проверка истории (смоук R01)");
     await page.click(ed + "button[type=submit]");
-    await page.waitForFunction(() => /Изменения сохранены/.test(document.querySelector("#civic-editor .civic-form-status")?.textContent || "") || /версия 3/.test(document.querySelector("#civic-editor header p")?.textContent || ""), null, { timeout: 10000 });
+    await page.waitForSelector("#civic-editor .civic-actions button:has-text('Опубликовать изменения')", { timeout: 10000 });
+    const beforeRepublish = await apiFetch(page, "GET", "/objects/" + encodeURIComponent(createdId));
+    check("saved change not public until published", beforeRepublish.body?.data?.item?.schedule?.current_planned_end === "2026-10-30", beforeRepublish.body?.data?.item?.schedule);
+    await page.click("#civic-editor .civic-actions button:has-text('Опубликовать изменения')");
+    await page.waitForFunction(() => /Опубликовано/.test(document.querySelector("#civic-editor .civic-form-status")?.textContent || ""), null, { timeout: 10000 });
     const moved = await apiFetch(page, "GET", "/objects/" + encodeURIComponent(createdId));
     const sch = moved.body?.data?.item?.schedule || {};
     check("deadline moved, original kept", sch.original_planned_end === "2026-10-30" && sch.current_planned_end === "2026-11-15", sch);

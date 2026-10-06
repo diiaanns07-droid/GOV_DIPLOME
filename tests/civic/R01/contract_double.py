@@ -44,6 +44,23 @@ def reply(status, data=None, *, code=None, message=None, fields=None, headers=No
     return {"status": status, "headers": headers or {}, "body": body}
 
 
+PREFIX = "/api/civic/v1"
+
+
+def _parts(path):
+    """Gateway passes the full path (R02 convention)."""
+    if not isinstance(path, str) or not path.startswith(PREFIX + "/"):
+        return None
+    return path[len(PREFIX) + 1:].split("/")
+
+
+def _query(query):
+    from urllib.parse import parse_qs
+    if isinstance(query, dict):
+        return query
+    return {k: v[-1] for k, v in parse_qs(query or "", keep_blank_values=True).items()}
+
+
 class Invalid(Exception):
     def __init__(self, fields):
         super().__init__("invalid")
@@ -186,14 +203,31 @@ class CivicStoreDouble:
             return None, reply(401, code="unauthenticated", message="Нужен вход сотрудника.")
         if mutate:
             token = (context.get("headers") or {}).get("x-csrf-token", "")
-            if not context.get("is_same_origin") or not hmac.compare_digest(token, session["csrf"]):
+            # Same rule as R02: reject an explicit cross-origin; absent Origin falls to CSRF.
+            if context.get("is_same_origin") is False or not hmac.compare_digest(token, session["csrf"]):
                 return None, reply(403, code="csrf_invalid", message="Проверка CSRF не пройдена.")
         return session, None
 
     # --- DTO ------------------------------------------------------------------
+    # Mirrors R02's model (ui/civic_store @6a28de2): the editor works on a staff copy;
+    # residents see the public projection captured at the last publish. Editing a
+    # published object needs a reason and becomes public only after "publish" again.
     @staticmethod
     def public(item):
         return {key: copy.deepcopy(item[key]) for key in PUBLIC_FIELDS}
+
+    @staticmethod
+    def _content(item):
+        return {key: item[key] for key in EDITABLE}
+
+    def _staff_item(self, item):
+        out = {k: copy.deepcopy(v) for k, v in item.items() if not k.startswith("_")}
+        published = item.get("_public")
+        out["staff"] = {"has_unpublished_changes": published is None or
+                        self._content(published) != self._content(item),
+                        "public_item": copy.deepcopy(published),
+                        "original_planned_end_locked": bool(item.get("_first_published"))}
+        return out
 
     def _public_history(self, object_id):
         return [{key: entry[key] for key in ("id", "object_id", "revision", "at", "changed_fields", "reason",
@@ -205,6 +239,8 @@ class CivicStoreDouble:
         with self.lock:
             clean = copy.deepcopy(item)
             clean.setdefault("internal_notes", "")
+            clean["_first_published"] = clean["publication"] == "published"
+            clean["_public"] = self.public(clean) if clean["publication"] == "published" else None
             self.objects[clean["id"]] = clean
             self.history.append({"id": f"h{len(self.history) + 1}", "object_id": clean["id"], "revision": clean["revision"],
                                  "at": clean["updated_at"], "changed_fields": ["seed"], "reason": "Загрузка fixture",
@@ -212,10 +248,12 @@ class CivicStoreDouble:
 
     # --- routing ----------------------------------------------------------------
     def handle(self, method, path, query, body, context):
-        parts = path.strip("/").split("/")
+        parts = _parts(path)
+        if parts is None:
+            return None
         with self.lock:
             try:
-                return self._route(method, parts, query or {}, body, context)
+                return self._route(method, parts, _query(query), body, context)
             except Invalid as exc:
                 return reply(422, code="validation", message="Проверьте поля.", fields=exc.fields)
 
@@ -234,9 +272,9 @@ class CivicStoreDouble:
             return self._list(query, public=True)
         if len(parts) == 2 and parts[0] == "objects" and method == "GET":
             item = self.objects.get(parts[1])
-            if not item or item["publication"] != "published":
+            if not item or not item.get("_public"):
                 return reply(404, code="not_found", message="Запись не найдена.")
-            return reply(200, {"item": self.public(item), "history": self._public_history(item["id"])})
+            return reply(200, {"item": copy.deepcopy(item["_public"]), "history": self._public_history(item["id"])})
         if parts[0] != "staff" or len(parts) < 2 or parts[1] != "objects":
             return None
         session, error = self._staff(context, method == "POST")
@@ -248,7 +286,7 @@ class CivicStoreDouble:
         if not item:
             return reply(404, code="not_found", message="Запись не найдена.")
         if len(parts) == 3 and method == "GET":
-            return reply(200, {"item": copy.deepcopy(item),
+            return reply(200, {"item": self._staff_item(item),
                                "history": [copy.deepcopy(h) for h in self.history if h["object_id"] == item["id"]]})
         if len(parts) == 4 and method == "POST":
             return self._change(item, parts[3], body or {}, session)
@@ -272,7 +310,10 @@ class CivicStoreDouble:
                      headers={"Set-Cookie": f"{COOKIE}={token}; Path=/; HttpOnly; SameSite=Strict"})
 
     def _list(self, query, public):
-        items = [i for i in self.objects.values() if not public or i["publication"] == "published"]
+        if public:
+            items = [copy.deepcopy(i["_public"]) for i in self.objects.values() if i.get("_public")]
+        else:
+            items = [self._staff_item(i) for i in self.objects.values()]
         for key in ("kind", "status"):
             if query.get(key):
                 items = [i for i in items if i[key] == query[key]]
@@ -289,8 +330,7 @@ class CivicStoreDouble:
         offset = int(query.get("cursor") or 0) if str(query.get("cursor") or "0").isdigit() else 0
         page = items[offset:offset + 50]
         next_cursor = str(offset + 50) if offset + 50 < len(items) else None
-        project = self.public if public else copy.deepcopy
-        return reply(200, {"items": [project(i) for i in page], "next_cursor": next_cursor})
+        return reply(200, {"items": page, "next_cursor": next_cursor})
 
     def _create(self, body, session):
         clean = validate_object(body)
@@ -298,12 +338,13 @@ class CivicStoreDouble:
         object_id = f"astana-obj-{next(self.ids):04d}"
         now = self._now()
         item = {"schema_version": "civic-v1", "id": object_id, "city": "astana", "publication": "draft",
-                **clean, "updated_at": now, "revision": 1, "internal_notes": "", "_first_published": False}
+                **clean, "updated_at": now, "revision": 1, "internal_notes": "", "_first_published": False,
+                "_public": None}
         self.objects[object_id] = item
         self.history.append({"id": f"h{len(self.history) + 1}", "object_id": object_id, "revision": 1, "at": now,
                              "changed_fields": sorted(clean), "reason": "Создан черновик", "public_actor_label": "Редакция",
                              "actor": session["user"], "public": False})
-        return reply(201, {"item": copy.deepcopy(item)})
+        return reply(201, {"item": self._staff_item(item)})
 
     def _change(self, item, action, body, session):
         expected = body.get("expected_revision")
@@ -315,7 +356,7 @@ class CivicStoreDouble:
         reason = reason.strip() if isinstance(reason, str) else ""
         if len(reason) > 500:
             raise Invalid({"reason": "до 500 символов"})
-        changed = []
+        public_entry = False
         if action == "update":
             changes = body.get("changes")
             if not isinstance(changes, dict) or not changes:
@@ -331,35 +372,43 @@ class CivicStoreDouble:
                 clean["schedule"] = merged
             changed = sorted(k for k, v in clean.items() if item.get(k) != v)
             if not changed:
-                return reply(200, {"item": copy.deepcopy(item)})
-            if item["publication"] == "published" and not reason:
+                return reply(200, {"item": self._staff_item(item)})
+            if item.get("_first_published") and not reason:
                 raise Invalid({"reason": "обязательна для опубликованной записи"})
             item.update(copy.deepcopy(clean))
         elif action == "publish":
-            if item["publication"] != "draft":
-                return reply(409, code="invalid_state", message="Публикуется только черновик.")
-            item["publication"] = "published"
+            if not reason:
+                raise Invalid({"reason": "обязательна"})
+            published = item.get("_public")
+            if item["publication"] == "published" and published and self._content(published) == self._content(item):
+                return reply(200, {"item": self._staff_item(item)})
             if not item.get("_first_published"):
                 item["_first_published"] = True
                 if item["schedule"]["original_planned_end"] is None:
                     item["schedule"]["original_planned_end"] = item["schedule"]["current_planned_end"]
-            changed = ["publication"]
+            changed = sorted(k for k in EDITABLE if not published or published.get(k) != item.get(k))
+            if item["publication"] != "published":
+                changed = sorted(set(changed) | {"publication"})
+            item["publication"] = "published"
+            public_entry = True
         elif action == "archive":
             if item["publication"] == "archived":
-                return reply(409, code="invalid_state", message="Уже в архиве.")
+                return reply(200, {"item": self._staff_item(item)})
             if not reason:
                 raise Invalid({"reason": "обязательна"})
             item["publication"] = "archived"
+            item["_public"] = None
             changed = ["publication"]
         else:
             return None
         item["revision"] += 1
         item["updated_at"] = self._now()
+        if public_entry:
+            item["_public"] = self.public(item)
         self.history.append({"id": f"h{len(self.history) + 1}", "object_id": item["id"], "revision": item["revision"],
                              "at": item["updated_at"], "changed_fields": changed, "reason": reason or None,
-                             "public_actor_label": "Редакция", "actor": session["user"],
-                             "public": item["publication"] == "published"})
-        return reply(200, {"item": copy.deepcopy(item)})
+                             "public_actor_label": "Редакция", "actor": session["user"], "public": public_entry})
+        return reply(200, {"item": self._staff_item(item)})
 
 
 class FeedbackDouble:
@@ -369,7 +418,9 @@ class FeedbackDouble:
         self.items, self.lock, self.ids = {}, threading.RLock(), itertools.count(1)
 
     def handle(self, method, path, query, body, principal, context):
-        parts = path.strip("/").split("/")
+        parts = _parts(path)
+        if parts is None:
+            return None
         with self.lock:
             if parts == ["feedback"] and method == "POST":
                 return self._submit(body or {})
@@ -386,7 +437,7 @@ class FeedbackDouble:
                     return reply(401, code="unauthenticated", message="Нужен вход сотрудника.")
                 if method == "POST":
                     token = (context.get("headers") or {}).get("x-csrf-token", "")
-                    if not context.get("is_same_origin") or not hmac.compare_digest(token, principal.get("csrf") or "-"):
+                    if context.get("is_same_origin") is False or not hmac.compare_digest(token, principal.get("csrf") or "-"):
                         return reply(403, code="csrf_invalid", message="Проверка CSRF не пройдена.")
                 if parts == ["staff", "feedback"] and method == "GET":
                     return reply(200, {"items": [copy.deepcopy(f) for f in self.items.values()], "next_cursor": None})
