@@ -29,8 +29,8 @@ import sys
 import time
 
 from .auth import PasswordPolicyError, ROLES, check_password_policy, normalize_username
-from .db import (DEFAULT_DB_PATH, SCHEMA_VERSION, Database, StorageError, resolve_db_path,
-                 restrict_permissions)
+from .db import (DEFAULT_DB_PATH, SCHEMA_VERSION, Database, StorageError, create_private_file,
+                 resolve_db_path, restrict_permissions)
 from .importer import ImportRejected, describe_package, import_package, load_package
 from .objects import Actor, BadRequest, Conflict, NotFound
 from .service import CivicService
@@ -172,6 +172,7 @@ def cmd_seed_demo(args, service):
 
 
 def _backup(src: Path, dest: Path) -> None:
+    create_private_file(dest)
     source, target = sqlite3.connect(src), sqlite3.connect(dest)
     try:
         source.backup(target)
@@ -215,6 +216,7 @@ def cmd_restore(args, _service_unused=None):
     if not versions or max(versions) > SCHEMA_VERSION:
         raise SystemExit("Версия схемы копии не поддерживается этим кодом.")
     target_path = resolve_db_path(target)
+    current_users = _security_state(target_path) if target_path.exists() else {}
     if target_path.exists():
         safety = target_path.with_name(f"{target_path.stem}.pre-restore-{time.strftime('%Y%m%dT%H%M%S')}.sqlite3")
         _backup(target_path, safety)
@@ -226,11 +228,71 @@ def cmd_restore(args, _service_unused=None):
         src.close()
         dst.close()
     Database(target_path).migrate()
+    for line in _carry_security_state(target_path, current_users):
+        print(line)
     print(f"Восстановлено из {source}")
 
 
+def _security_state(path: Path) -> dict:
+    conn = sqlite3.connect(path)
+    conn.row_factory = sqlite3.Row
+    try:
+        return {row["username"]: dict(row) for row in conn.execute(
+            "SELECT username, password_hash, password_changed_at, disabled_at FROM civic_users")}
+    except sqlite3.DatabaseError:
+        return {}
+    finally:
+        conn.close()
+
+
+def _carry_security_state(path: Path, current: dict) -> list[str]:
+    """После восстановления данные откатываются, а меры безопасности — нет.
+
+    Все сессии отзываются (украденный токен из копии не оживает); отключение редактора и
+    более новая смена пароля из текущей базы переносятся в восстановленную.
+    """
+    notes = []
+    conn = sqlite3.connect(path, isolation_level=None)
+    conn.row_factory = sqlite3.Row
+    try:
+        conn.execute("BEGIN IMMEDIATE")
+        revoked = conn.execute("UPDATE civic_sessions SET revoked_at = ? WHERE revoked_at IS NULL",
+                               (time.time(),)).rowcount
+        notes.append(f"Отозвано сессий из копии: {revoked}")
+        restored = {row["username"]: row for row in conn.execute("SELECT * FROM civic_users")}
+        for username, now_state in current.items():
+            old = restored.get(username)
+            if old is None:
+                notes.append(f"Внимание: редактора {username} нет в копии — создайте заново при необходимости.")
+                continue
+            if now_state["disabled_at"] and not old["disabled_at"]:
+                conn.execute("UPDATE civic_users SET disabled_at = ? WHERE username = ?",
+                             (now_state["disabled_at"], username))
+                notes.append(f"{username}: отключение сохранено.")
+            if now_state["password_changed_at"] > old["password_changed_at"]:
+                conn.execute("UPDATE civic_users SET password_hash = ?, password_changed_at = ? WHERE username = ?",
+                             (now_state["password_hash"], now_state["password_changed_at"], username))
+                notes.append(f"{username}: новый пароль сохранён.")
+        conn.execute("COMMIT")
+    except BaseException:
+        if conn.in_transaction:
+            conn.execute("ROLLBACK")
+        raise
+    finally:
+        conn.close()
+    return notes
+
+
 def cmd_export_audit(args, service):
-    out = open(args.out, "w", encoding="utf-8") if args.out else sys.stdout
+    if args.out:
+        # Служебные данные (diff, internal_notes, логины): файл сразу 0600 и только новый.
+        try:
+            fd = os.open(args.out, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        except FileExistsError:
+            raise SystemExit("Файл уже существует — выберите новое имя.")
+        out = os.fdopen(fd, "w", encoding="utf-8")
+    else:
+        out = sys.stdout
     try:
         with service.db.read() as conn:
             rows = conn.execute(

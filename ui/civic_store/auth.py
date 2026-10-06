@@ -195,6 +195,9 @@ class Accounts:
         self.clock = clock
         self.idle_seconds = idle_seconds
         self.absolute_seconds = absolute_seconds
+        # Заранее: иначе первый вход несуществующего пользователя считал бы два scrypt
+        # и по времени отличался бы от неверного пароля существующего.
+        _dummy_hash()
 
     def _now(self) -> float:
         return utc_now(self.clock).timestamp()

@@ -202,6 +202,20 @@ def resolve_db_path(db_path) -> Path:
     return path
 
 
+def create_private_file(path: Path) -> None:
+    """Создаёт пустой файл с 0600 ДО того, как SQLite его откроет (без окна 0644).
+
+    Пустой файл — корректная пустая база SQLite; -wal/-shm SQLite создаёт с правами основного файла.
+    """
+    if os.name != "posix":
+        return
+    try:
+        fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    except FileExistsError:
+        return
+    os.close(fd)
+
+
 def restrict_permissions(path: Path) -> None:
     """0600 для файла базы/копии на POSIX: внутри хэши паролей и служебные заметки."""
     if os.name == "posix" and path.exists():
@@ -310,6 +324,7 @@ class Database:
     def migrate(self, *, now_iso: str | None = None) -> list[int]:
         """Применяет недостающие миграции; повторный вызов ничего не меняет."""
         _prepare_parent(self.path)
+        create_private_file(self.path)
         applied_now = []
         with self.connect() as conn:
             mode = conn.execute("PRAGMA journal_mode = WAL").fetchone()[0]
