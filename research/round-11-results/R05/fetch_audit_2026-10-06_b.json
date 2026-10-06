@@ -1,0 +1,156 @@
+[
+  {
+    "url": "https://raw.githubusercontent.com/openmaptiles/openmaptiles/master/LICENSE.md",
+    "attempts": [
+      {
+        "at": "2026-10-06T15:34:36Z",
+        "method": "python-urllib GET via environment proxy",
+        "outcome": "fetched",
+        "http_status": 200,
+        "bytes": 3054,
+        "sha256": "6b7862d9537cd3160f10034b8bb0b8d68165da134ea2001080166aa0b624e15c",
+        "detail": null,
+        "final_url": "https://raw.githubusercontent.com/openmaptiles/openmaptiles/master/LICENSE.md",
+        "content_type": "text/plain; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "url": "https://raw.githubusercontent.com/hyperknot/openfreemap/main/README.md",
+    "attempts": [
+      {
+        "at": "2026-10-06T15:34:37Z",
+        "method": "python-urllib GET via environment proxy",
+        "outcome": "fetched",
+        "http_status": 200,
+        "bytes": 12049,
+        "sha256": "d53a9172a251017bafc2cca1d2646939514809e01653a0b855f240e65ae9fdac",
+        "detail": null,
+        "final_url": "https://raw.githubusercontent.com/hyperknot/openfreemap/main/README.md",
+        "content_type": "text/plain; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "url": "https://raw.githubusercontent.com/hyperknot/openfreemap/main/LICENSE.md",
+    "attempts": [
+      {
+        "at": "2026-10-06T15:34:37Z",
+        "method": "python-urllib GET via environment proxy",
+        "outcome": "fetched",
+        "http_status": 200,
+        "bytes": 4118,
+        "sha256": "d1754e5d291e4e8b9b0047ddba0a6ec75e1046ccd61a02c2cea3dac58f3fe355",
+        "detail": null,
+        "final_url": "https://raw.githubusercontent.com/hyperknot/openfreemap/main/LICENSE.md",
+        "content_type": "text/plain; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "url": "https://raw.githubusercontent.com/openmaptiles/openmaptiles/master/README.md",
+    "attempts": [
+      {
+        "at": "2026-10-06T15:34:37Z",
+        "method": "python-urllib GET via environment proxy",
+        "outcome": "fetched",
+        "http_status": 200,
+        "bytes": 9783,
+        "sha256": "de27e88a11880a268965d22c7681c2b01a1d964a9ecbbecf768f3bca4d2e6976",
+        "detail": null,
+        "final_url": "https://raw.githubusercontent.com/openmaptiles/openmaptiles/master/README.md",
+        "content_type": "text/plain; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "url": "https://raw.githubusercontent.com/OvertureMaps/docs/main/docs/attribution.mdx",
+    "attempts": [
+      {
+        "at": "2026-10-06T15:34:37Z",
+        "method": "python-urllib GET via environment proxy",
+        "outcome": "fetched",
+        "http_status": 200,
+        "bytes": 1031,
+        "sha256": "1572e735c167d0bbbd6611cbda42dc3897431a8100a0330808e1c193ebedda1b",
+        "detail": null,
+        "final_url": "https://raw.githubusercontent.com/OvertureMaps/docs/main/docs/attribution.mdx",
+        "content_type": "text/plain; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "url": "https://raw.githubusercontent.com/OvertureMaps/data/main/README.md",
+    "attempts": [
+      {
+        "at": "2026-10-06T15:34:38Z",
+        "method": "python-urllib GET via environment proxy",
+        "outcome": "fetched",
+        "http_status": 200,
+        "bytes": 2837,
+        "sha256": "b036992b8b707fbc09ebb7c994cf3d22115046bcf6141545d51b5a8e3944412b",
+        "detail": null,
+        "final_url": "https://raw.githubusercontent.com/OvertureMaps/data/main/README.md",
+        "content_type": "text/plain; charset=utf-8"
+      }
+    ]
+  },
+  {
+    "url": "https://raw.githubusercontent.com/openstreetmap/operations/master/_policies/tiles.md",
+    "attempts": [
+      {
+        "at": "2026-10-06T15:34:38Z",
+        "method": "python-urllib GET via environment proxy",
+        "outcome": "http_error",
+        "http_status": 404,
+        "bytes": null,
+        "sha256": null,
+        "detail": "Not Found"
+      }
+    ]
+  },
+  {
+    "url": "https://raw.githubusercontent.com/openstreetmap/operations/master/policies/tiles.md",
+    "attempts": [
+      {
+        "at": "2026-10-06T15:34:38Z",
+        "method": "python-urllib GET via environment proxy",
+        "outcome": "http_error",
+        "http_status": 404,
+        "bytes": null,
+        "sha256": null,
+        "detail": "Not Found"
+      }
+    ]
+  },
+  {
+    "url": "https://api.github.com/repos/openstreetmap/operations/contents/",
+    "attempts": [
+      {
+        "at": "2026-10-06T15:34:38Z",
+        "method": "python-urllib GET via environment proxy",
+        "outcome": "http_error",
+        "http_status": 400,
+        "bytes": null,
+        "sha256": null,
+        "detail": "Bad Request"
+      }
+    ]
+  },
+  {
+    "url": "https://raw.githubusercontent.com/maplibre/maplibre-gl-js/main/LICENSE.txt",
+    "attempts": [
+      {
+        "at": "2026-10-06T15:34:38Z",
+        "method": "python-urllib GET via environment proxy",
+        "outcome": "fetched",
+        "http_status": 200,
+        "bytes": 5984,
+        "sha256": "ee5fc05a0677eaf69601d2c7db0d9ecd6cc27c3abc1d0733bc9ed34707cf8ef2",
+        "detail": null,
+        "final_url": "https://raw.githubusercontent.com/maplibre/maplibre-gl-js/main/LICENSE.txt",
+        "content_type": "text/plain; charset=utf-8"
+      }
+    ]
+  }
+]
