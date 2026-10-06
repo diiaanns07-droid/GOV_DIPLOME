@@ -48,9 +48,20 @@ test("dates: strict YYYY-MM-DD, no timezone drift, Russian long form", () => {
   assert.equal(C.formatDay(null), "нет данных");
   assert.equal(C.dayDiff("2026-10-20", "2026-11-05"), 16);
   assert.equal(C.addDays("2026-12-31", 1), "2027-01-01");
-  assert.equal(C.formatTimestamp("2026-10-06T12:00:00+06:00"), "6 октября 2026, 12:00 (UTC+6)");
-  assert.equal(C.formatTimestamp("2026-10-06T07:05:00Z"), "6 октября 2026, 07:05 (UTC)");
   assert.equal(C.formatTimestamp("yesterday"), "нет данных");
+});
+
+test("timestamps are shown in Astana time from the instant (UTC+5 since 2024-03-01, UTC+6 before)", () => {
+  // R02 stores UTC: 21:30Z on 6 Oct is 02:30 on 7 Oct in Astana.
+  assert.equal(C.formatTimestamp("2026-10-06T21:30:00+00:00"), "7 октября 2026, 02:30 (время Астаны)");
+  assert.equal(C.formatTimestamp("2026-10-06T07:05:00Z"), "6 октября 2026, 12:05 (время Астаны)");
+  assert.equal(C.formatTimestamp("2026-10-06T12:00:00+06:00"), "6 октября 2026, 11:00 (время Астаны)");
+  assert.equal(C.formatTimestamp("2026-10-06T16:40:00+05:00"), "6 октября 2026, 16:40 (время Астаны)");
+  assert.equal(C.formatTimestamp("2023-05-01T10:00:00Z"), "1 мая 2023, 16:00 (время Астаны)");
+  assert.equal(C.formatTimestamp("2024-02-29T17:59:00Z"), "29 февраля 2024, 23:59 (время Астаны)");
+  assert.equal(C.formatTimestamp("2024-02-29T18:00:00Z"), "29 февраля 2024, 23:00 (время Астаны)");
+  assert.equal(C.formatTimestamp("2026-10-06T12:00"), "6 октября 2026, 12:00", "no offset: written wall time, no zone claim");
+  assert.equal(C.timestampDay("2026-10-06T21:30:00+00:00"), "2026-10-07");
 });
 
 test("safeUrl allows only http(s) without credentials", () => {
@@ -66,7 +77,13 @@ test("geometry: valid shapes kept; invalid, out-of-contract or swapped coords be
   assert.ok(C.normalizeGeometry({ type: "Point", coordinates: [71.43, 51.13] }, C.ASTANA_BBOX).geometry);
   const swapped = C.normalizeGeometry({ type: "Point", coordinates: [51.13, 71.43] }, C.ASTANA_BBOX);
   assert.equal(swapped.geometry, null);
-  assert.match(swapped.issue, /вне Астаны/);
+  assert.equal(swapped.kind, "out_of_region");
+  assert.match(swapped.issue, /вне области карты Астаны — похоже, перепутаны долгота и широта/);
+  // the same envelope as R02 validate.py: approach roads accepted by the server stay on the map
+  assert.ok(C.normalizeGeometry({ type: "Point", coordinates: [71.45, 51.5] }, C.ASTANA_BBOX).geometry);
+  assert.ok(C.normalizeGeometry({ type: "LineString", coordinates: [[71.43, 51.1], [71.55, 50.8]] }, C.ASTANA_BBOX).geometry);
+  const far = C.normalizeGeometry({ type: "Point", coordinates: [76.9, 43.2] }, C.ASTANA_BBOX);
+  assert.equal(far.issue, "координаты вне области карты Астаны", "no swap hint when swapping does not help");
   assert.match(C.normalizeGeometry({ type: "MultiPoint", coordinates: [[71.4, 51.1]] }).issue, /не входит в civic-v1/);
   assert.match(C.normalizeGeometry({ type: "LineString", coordinates: [[71.4, 51.1]] }).issue, /некорректны/);
   const open = { type: "Polygon", coordinates: [[[71.4, 51.1], [71.41, 51.1], [71.41, 51.11], [71.4, 51.11]]] };
@@ -111,11 +128,26 @@ test("period filter uses known planned intervals only; undated and partial are r
   assert.ok(!ids.includes("r03-demo-nodata"));
   assert.equal(r.counts.undated, 2);
   assert.equal(r.counts.total, items.length);
-  // partial interval: only the start is known
-  const partial = C.matchPeriod({ schedule: { planned_start: "2019-01-01" } }, "2026-10-01", "2026-10-31");
-  assert.equal(partial.match, false, "an old start with unknown end is not 'active now'");
-  const partialIn = C.matchPeriod({ schedule: { planned_start: "2026-10-03" } }, "2026-10-01", "2026-10-31");
-  assert.deepEqual([partialIn.match, partialIn.partial], [true, true]);
+});
+
+test("period rule matches contract §2 / R02: unknown bound is open and flagged, original end is history only", () => {
+  // only the start is known: open end, shown with a flag (R02 returns it as incomplete too)
+  const a = C.matchPeriod({ schedule: { planned_start: "2026-03-01" } }, "2026-10-01", "2026-10-31");
+  assert.deepEqual([a.match, a.partial, a.missing], [true, true, "end"]);
+  const later = C.matchPeriod({ schedule: { planned_start: "2026-11-15" } }, "2026-10-01", "2026-10-31");
+  assert.equal(later.match, false);
+  const endOnly = C.matchPeriod({ schedule: { current_planned_end: "2026-09-01" } }, "2026-10-01", "2026-10-31");
+  assert.equal(endOnly.match, false);
+  // current end cleared after publication: the old original end is not used as the active end
+  const cleared = { schedule: { planned_start: "2024-03-01", original_planned_end: "2024-11-30", current_planned_end: null, actual_end: null }, status: "in_progress" };
+  assert.deepEqual(C.plannedInterval(cleared), { start: "2024-03-01", end: null, complete: false });
+  assert.equal(C.staleness(cleared, "2026-10-06"), null);
+  assert.equal(C.matchPeriod(cleared, "2026-01-01", "2026-12-31").match, true);
+  // one-sided custom period must not throw (regression: lo "0000-01-01" made parseDay null)
+  assert.equal(C.matchPeriod({ schedule: { planned_start: "2026-03-01", current_planned_end: "2026-04-01" } }, null, "2026-10-31").match, true);
+  assert.equal(C.matchPeriod({ schedule: { planned_start: "2026-03-01", current_planned_end: "2026-04-01" } }, "2026-05-01", null).match, false);
+  const range = C.periodRange("custom", "2026-10-06", { to: "2026-10-31" });
+  assert.deepEqual(range, { from: null, to: "2026-10-31" });
 });
 
 test("kind/status filters and facet counts", () => {
@@ -199,4 +231,43 @@ test("kind colours meet 4.5:1 on white (they double as legend text colours)", ()
   for (const k of Object.values(C.KINDS).concat(C.OTHER_KIND)) {
     assert.ok(C.contrast(k.color, "#ffffff") >= 4.5, k.label + " " + C.contrast(k.color, "#ffffff"));
   }
+});
+
+test("counters only count what the other filters let through (search, kind, area)", () => {
+  const mk = (id, kind, dates, title) => ({ id, kind, status: "planned", title, publication: "published", geometry: null, schedule: dates });
+  const { items } = C.normalizeList([
+    mk("r1", "roadworks", { planned_start: "2026-10-01", current_planned_end: "2026-10-20" }, "мост"),
+    mk("e1", "event", {}, "событие"), mk("e2", "event", {}, "событие"), mk("c1", "construction", {}, "школа"),
+  ]);
+  const r = C.applyFilters(items, { kinds: ["roadworks"], period: "month" }, { today: "2026-10-06" });
+  assert.equal(r.shown.length, 1);
+  assert.equal(r.counts.undated, 0, "undated records of other kinds are not promised");
+  const q = C.applyFilters(items, {}, { today: "2026-10-06", match: (it) => it.title.includes("мост") });
+  assert.deepEqual(q.counts.byKind, { roadworks: 1 }, "chip counts follow the search");
+});
+
+test("malformed records are dropped one by one, never the whole list", () => {
+  const raw = JSON.parse('[{"id":"a","title":"ok"},{"id":"b","status":{"toString":1}},{"id":"c","schema_version":{"toString":1}},{"id":"d","kind":{"valueOf":1},"evidence_type":{"toString":1},"budget":{"basis":{"toString":1}},"source_refs":[{"access_status":{"toString":1}}]}]');
+  const { items, excluded } = C.normalizeList(raw);
+  assert.equal(items.length, 4);
+  assert.deepEqual(excluded, []);
+  assert.equal(items[1].status, "unknown");
+  const rings = Array.from({ length: 130000 }, () => [[71.4, 51.1], [71.41, 51.1], [71.41, 51.11], [71.4, 51.1]]);
+  assert.doesNotThrow(() => C.normalizeList([{ id: "big", title: "x", geometry: { type: "Polygon", coordinates: rings } }]));
+  assert.notEqual(C.errorInfo(new TypeError("Cannot convert object to primitive value")).text, "Нет связи с сервером. Проверьте подключение и повторите.");
+  assert.equal(C.errorInfo({ status: 0, code: "network" }).text, "Нет связи с сервером. Проверьте подключение и повторите.");
+  assert.match(C.errorInfo({ status: 404, code: "not_found" }, "list").text, /адрес списка/);
+});
+
+test("synthetic records never show an amount in tenge (same rule as R02 validation)", () => {
+  const b = C.budgetInfo({ amount_kzt: 48500000, basis: "contract", source_id: "s" }, "synthetic");
+  assert.equal(b.state, "suppressed");
+  assert.doesNotMatch(b.text, /₸/);
+  assert.equal(C.budgetInfo({ amount_kzt: 48500000, basis: "contract", source_id: "s" }, "derived").text, "48\u202f500\u202f000 ₸");
+});
+
+test("feature collection draws small polygons above large ones", () => {
+  const poly = (id, w, s, e, n) => ({ id, title: id, publication: "published", geometry: { type: "Polygon", coordinates: [[[w, s], [e, s], [e, n], [w, n], [w, s]]] } });
+  const { items } = C.normalizeList([poly("small", 71.44, 51.14, 71.444, 51.142), poly("big", 71.43, 51.13, 71.46, 51.15)]);
+  assert.deepEqual(C.featureCollection(items).features.map((f) => f.properties.cid), ["big", "small"]);
 });

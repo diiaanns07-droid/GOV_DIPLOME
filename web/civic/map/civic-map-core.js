@@ -89,13 +89,15 @@
   const MONTHS_GEN = ["января", "февраля", "марта", "апреля", "мая", "июня", "июля",
     "августа", "сентября", "октября", "ноября", "декабря"];
 
-  // Generous Astana envelope. Coordinates outside are kept off the map (list only):
-  // a swapped [lat, lon] pair would otherwise land hundreds of km away.
-  const ASTANA_BBOX = [70.9, 50.85, 72.0, 51.45];
+  // Same envelope as R02 validate.py ASTANA_BBOX. Coordinates outside are kept off the
+  // map (list only): a swapped [lat, lon] pair would otherwise land hundreds of km away.
+  const ASTANA_BBOX = [70.8, 50.75, 72.1, 51.6];
 
   const isObj = (v) => v !== null && typeof v === "object" && !Array.isArray(v);
   const str = (v) => (typeof v === "string" && v.trim() !== "" ? v : null);
   const own = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
+  // Enum lookup that never coerces untrusted values ({"toString":1} would throw in hasOwnProperty).
+  const enumOf = (m, v, d) => (typeof v === "string" && own(m, v) ? v : d);
 
   // ---------- dates ----------
   function parseDay(value) {
@@ -132,26 +134,45 @@
     if (style === "long") return p.d + " " + MONTHS_GEN[p.m - 1] + " " + p.y;
     return String(p.d).padStart(2, "0") + "." + String(p.m).padStart(2, "0") + "." + p.y;
   }
-  // Timestamps are shown in the wall time and offset they carry. No timezone
-  // conversion, so the label never depends on the viewer's tz database.
+  // Timestamps with an offset are shown in Astana local time, computed from the
+  // instant itself (no dependency on the viewer's tz database): Kazakhstan moved from
+  // UTC+6 to a single UTC+5 zone at 2024-03-01 00:00 local = 2024-02-29T18:00Z.
+  // R02 stores UTC (+00:00), so without this a 02:30 change in Astana read as the previous day.
+  const ASTANA_UTC5_FROM = Date.UTC(2024, 1, 29, 18, 0, 0);
   function parseTimestamp(value) {
     if (typeof value !== "string") return null;
     const m = /^(\d{4}-\d{2}-\d{2})[T ](\d{2}):(\d{2})(?::(\d{2})(?:\.\d+)?)?(Z|[+-]\d{2}:?\d{2})?$/.exec(value);
-    if (!m || !parseDay(m[1]) || +m[2] > 23 || +m[3] > 59) return null;
-    return { day: m[1], hh: m[2], mm: m[3], offset: m[5] || null };
+    if (!m || !parseDay(m[1]) || +m[2] > 23 || +m[3] > 59 || (m[4] && +m[4] > 59)) return null;
+    let ms = null;
+    if (m[5]) {
+      const d = parseDay(m[1]);
+      let offMin = 0;
+      if (m[5] !== "Z") {
+        const o = /^([+-])(\d{2}):?(\d{2})$/.exec(m[5]);
+        offMin = (o[1] === "-" ? -1 : 1) * (+o[2] * 60 + +o[3]);
+      }
+      ms = Date.UTC(d.y, d.m - 1, d.d, +m[2], +m[3], +(m[4] || 0)) - offMin * 60000;
+    }
+    return { day: m[1], hh: m[2], mm: m[3], offset: m[5] || null, ms };
   }
-  function formatOffset(off) {
-    if (!off) return "";
-    if (off === "Z") return "UTC";
-    const m = /^([+-])(\d{2}):?(\d{2})$/.exec(off);
-    if (!m) return "";
-    return "UTC" + m[1] + String(+m[2]) + (m[3] !== "00" ? ":" + m[3] : "");
+  function astanaWall(ms) {
+    const off = ms >= ASTANA_UTC5_FROM ? 5 : 6;
+    const t = new Date(ms + off * 3600000);
+    const p = (n) => String(n).padStart(2, "0");
+    return { day: t.getUTCFullYear() + "-" + p(t.getUTCMonth() + 1) + "-" + p(t.getUTCDate()), hh: p(t.getUTCHours()), mm: p(t.getUTCMinutes()), off };
+  }
+  // Calendar day (YYYY-MM-DD) of a timestamp in Astana, or the written day if no offset.
+  function timestampDay(value) {
+    const t = parseTimestamp(value);
+    if (!t) return null;
+    return t.ms === null ? t.day : astanaWall(t.ms).day;
   }
   function formatTimestamp(value) {
     const t = parseTimestamp(value);
     if (!t) return NO_DATA;
-    const off = formatOffset(t.offset);
-    return formatDay(t.day, "long") + ", " + t.hh + ":" + t.mm + (off ? " (" + off + ")" : "");
+    if (t.ms === null) return formatDay(t.day, "long") + ", " + t.hh + ":" + t.mm;
+    const w = astanaWall(t.ms);
+    return formatDay(w.day, "long") + ", " + w.hh + ":" + w.mm + " (время Астаны)";
   }
 
   // ---------- numbers ----------
@@ -166,13 +187,17 @@
     const [i, f] = fixed.split(".");
     return (n < 0 ? "−" : "") + groupDigits(i) + (f && /[1-9]/.test(f) ? "," + f.replace(/0+$/, "") : "");
   }
-  function budgetInfo(budget) {
+  function budgetInfo(budget, evidence) {
     const b = isObj(budget) ? budget : {};
-    const basis = own(BASIS, b.basis) ? b.basis : "unknown";
+    const basis = enumOf(BASIS, b.basis, "unknown");
     const raw = b.amount_kzt;
     let state = "missing", amount = null;
     if (typeof raw === "number" && Number.isFinite(raw) && raw >= 0) { state = "ok"; amount = raw; }
     else if (raw !== null && raw !== undefined) state = "invalid";
+    // Same rule as R02 validation: a synthetic record never carries an amount in tenge.
+    if (state === "ok" && evidence === "synthetic") {
+      return { state: "suppressed", amount: null, text: NO_DATA + " (у демо-записи сумма в тенге не показывается)", approx: null, basis, basisLabel: BASIS[basis], sourceId: str(b.source_id) };
+    }
     let text = NO_DATA, approx = null;
     if (state === "ok") {
       text = formatNumber(Math.round(raw)) + " ₸";
@@ -208,7 +233,11 @@
   function positionsOf(g) {
     if (g.type === "Point") return [g.coordinates];
     if (g.type === "LineString") return g.coordinates;
-    if (g.type === "Polygon") return [].concat(...g.coordinates);
+    if (g.type === "Polygon") {
+      const out = [];
+      for (const ring of g.coordinates) for (const p of ring) out.push(p);
+      return out;
+    }
     return [];
   }
   function bboxOf(g) {
@@ -225,11 +254,11 @@
   function bboxInside(inner, outer) {
     return !!inner && !!outer && inner[0] >= outer[0] && inner[2] <= outer[2] && inner[1] >= outer[1] && inner[3] <= outer[3];
   }
-  // Returns {geometry, issue}. An invalid shape becomes null with a visible reason;
-  // nothing is repaired or guessed.
+  // Returns {geometry, issue, kind}. An invalid shape becomes null with a visible reason;
+  // nothing is repaired or guessed. kind: null | "invalid" | "unsupported" | "out_of_region".
   function normalizeGeometry(g, region) {
-    if (g === null || g === undefined) return { geometry: null, issue: null };
-    if (!isObj(g) || typeof g.type !== "string") return { geometry: null, issue: "геометрия в записи повреждена" };
+    if (g === null || g === undefined) return { geometry: null, issue: null, kind: null };
+    if (!isObj(g) || typeof g.type !== "string") return { geometry: null, issue: "геометрия в записи повреждена", kind: "invalid" };
     let ok = false;
     if (g.type === "Point") ok = isPos(g.coordinates);
     else if (g.type === "LineString") ok = Array.isArray(g.coordinates) && g.coordinates.length >= 2 && g.coordinates.every(isPos);
@@ -237,14 +266,16 @@
       ok = Array.isArray(g.coordinates) && g.coordinates.length >= 1 && g.coordinates.every((ring) =>
         Array.isArray(ring) && ring.length >= 4 && ring.every(isPos) &&
         ring[0][0] === ring[ring.length - 1][0] && ring[0][1] === ring[ring.length - 1][1]);
-    } else return { geometry: null, issue: "тип геометрии «" + String(g.type).slice(0, 40) + "» не входит в civic-v1" };
-    if (!ok) return { geometry: null, issue: "координаты в записи некорректны" };
+    } else return { geometry: null, issue: "тип геометрии «" + g.type.slice(0, 40) + "» не входит в civic-v1", kind: "unsupported" };
+    if (!ok) return { geometry: null, issue: "координаты в записи некорректны", kind: "invalid" };
     const clean = { type: g.type, coordinates: g.coordinates };
     const box = bboxOf(clean);
     if (region && !bboxInside(box, region)) {
-      return { geometry: null, issue: "координаты вне Астаны — возможно, перепутаны долгота и широта" };
+      // Suggest a lon/lat swap only when the swapped shape really lands in the area.
+      const swapped = box && bboxInside([box[1], box[0], box[3], box[2]], region);
+      return { geometry: null, kind: "out_of_region", issue: "координаты вне области карты Астаны" + (swapped ? " — похоже, перепутаны долгота и широта" : "") };
     }
-    return { geometry: clean, issue: null };
+    return { geometry: clean, issue: null, kind: null };
   }
 
   // ---------- objects ----------
@@ -259,7 +290,7 @@
     if (raw.publication !== undefined && raw.publication !== "published") return { item: null, excluded: "не опубликовано" };
     if (raw.city !== undefined && raw.city !== "astana") return { item: null, excluded: "другой город" };
     const issues = [];
-    if (raw.schema_version !== undefined && raw.schema_version !== SCHEMA) issues.push("версия схемы «" + String(raw.schema_version).slice(0, 20) + "» не civic-v1");
+    if (raw.schema_version !== undefined && raw.schema_version !== SCHEMA) issues.push("версия схемы «" + (typeof raw.schema_version === "string" ? raw.schema_version : typeof raw.schema_version).slice(0, 20) + "» не civic-v1");
     const geo = normalizeGeometry(raw.geometry, opt.region === undefined ? ASTANA_BBOX : opt.region);
     if (geo.issue) issues.push(geo.issue);
     const sch = isObj(raw.schedule) ? raw.schedule : {};
@@ -279,7 +310,7 @@
       publisher: str(r.publisher),
       published_on: parseDay(r.published_on) ? r.published_on : null,
       retrieved_at: str(r.retrieved_at),
-      access_status: own(ACCESS, r.access_status) ? r.access_status : null,
+      access_status: enumOf(ACCESS, r.access_status, null),
       license: str(r.license),
       fields: Array.isArray(r.fields) ? r.fields.filter((f) => typeof f === "string").slice(0, 40) : [],
     })) : [];
@@ -288,19 +319,20 @@
       excluded: null,
       item: {
         id,
-        kind: own(KINDS, raw.kind) ? raw.kind : "other",
+        kind: enumOf(KINDS, raw.kind, "other"),
         rawKind: typeof raw.kind === "string" ? raw.kind : null,
         title: str(raw.title) || "Без названия",
         hasTitle: !!str(raw.title),
         description: str(raw.description),
-        status: own(STATUSES, raw.status) ? raw.status : "unknown",
+        status: enumOf(STATUSES, raw.status, "unknown"),
         geometry: geo.geometry,
         bbox: bboxOf(geo.geometry),
-        precision: own(PRECISION, raw.geometry_precision) ? raw.geometry_precision : "unknown",
+        geoIssue: geo.kind,
+        precision: enumOf(PRECISION, raw.geometry_precision, "unknown"),
         schedule,
-        budget: budgetInfo(raw.budget),
+        budget: budgetInfo(raw.budget, enumOf(EVIDENCE, raw.evidence_type, null)),
         responsible: { organization: str(resp.organization), public_contact: str(resp.public_contact) },
-        evidence: own(EVIDENCE, raw.evidence_type) ? raw.evidence_type : null,
+        evidence: enumOf(EVIDENCE, raw.evidence_type, null),
         sourceRefs: refs,
         evidenceNotes: str(raw.evidence_notes),
         updatedAt: str(raw.updated_at),
@@ -313,7 +345,9 @@
   function normalizeList(rawItems, options) {
     const items = [], excluded = [], seen = new Set();
     for (const raw of Array.isArray(rawItems) ? rawItems : []) {
-      const r = normalizeObject(raw, options);
+      let r;
+      // One broken record must never take the whole list down.
+      try { r = normalizeObject(raw, options); } catch (e) { r = { item: null, excluded: "запись повреждена" }; }
       if (!r.item) { excluded.push(r.excluded); continue; }
       if (seen.has(r.item.id)) { excluded.push("повтор id"); continue; }
       seen.add(r.item.id);
@@ -324,26 +358,27 @@
 
   // ---------- schedule semantics ----------
   // Planned interval only: [planned_start, current_planned_end ?? original_planned_end].
+  // Planned interval exactly as civic-v1 §2 and R02 define it: [planned_start, current_planned_end].
+  // original_planned_end is history (the first promise), never the active end.
   function plannedInterval(item) {
     const s = item.schedule || {};
     const start = s.planned_start || null;
-    const end = s.current_planned_end || s.original_planned_end || null;
+    const end = s.current_planned_end || null;
     return { start, end, complete: !!(start && end) };
   }
-  // A partial interval matches only when its known date is inside the period: an
-  // old start with unknown end is not presented as "идёт сейчас".
+  // Same rule as R02 _filter_sql: an unknown bound is open, the record is flagged as an
+  // incomplete interval and shown with that badge; nothing is concluded about the work
+  // being active. Records with no planned dates at all do not match a period.
   function matchPeriod(item, from, to) {
-    if (!from && !to) return { match: true, partial: false, undated: false };
+    const pf = parseDay(from), pt = parseDay(to);
+    if (!pf && !pt) return { match: true, partial: false, undated: false, missing: null };
     const iv = plannedInterval(item);
-    const lo = from || "0000-01-01", hi = to || "9999-12-31";
-    if (!iv.start && !iv.end) return { match: false, partial: false, undated: true };
-    if (iv.complete) {
-      const sOrd = parseDay(iv.start).ord, eOrd = parseDay(iv.end).ord;
-      const a = Math.min(sOrd, eOrd), b = Math.max(sOrd, eOrd);
-      return { match: a <= parseDay(hi).ord && b >= parseDay(lo).ord, partial: false, undated: false, inverted: sOrd > eOrd };
-    }
-    const known = iv.start || iv.end;
-    return { match: known >= lo && known <= hi, partial: true, undated: false };
+    if (!iv.start && !iv.end) return { match: false, partial: false, undated: true, missing: "both" };
+    const lo = pf ? pf.ord : -Infinity, hi = pt ? pt.ord : Infinity;
+    const s = iv.start ? parseDay(iv.start).ord : -Infinity;
+    const e = iv.end ? parseDay(iv.end).ord : Infinity;
+    const a = iv.complete ? Math.min(s, e) : s, b = iv.complete ? Math.max(s, e) : e;
+    return { match: a <= hi && b >= lo, partial: !iv.complete, undated: false, missing: !iv.start ? "start" : !iv.end ? "end" : null };
   }
 
   function scheduleShift(item) {
@@ -471,12 +506,12 @@
   function sanitizeFilters(f) {
     const d = defaultFilters();
     if (!isObj(f)) return d;
-    const kinds = Array.isArray(f.kinds) ? f.kinds.filter((k) => own(KINDS, k) || k === "other") : [];
-    const statuses = Array.isArray(f.statuses) ? f.statuses.filter((s) => own(STATUSES, s)) : [];
+    const kinds = Array.isArray(f.kinds) ? f.kinds.filter((k) => typeof k === "string" && (own(KINDS, k) || k === "other")) : [];
+    const statuses = Array.isArray(f.statuses) ? f.statuses.filter((v) => typeof v === "string" && own(STATUSES, v)) : [];
     return {
-      kinds: [...new Set(kinds)],
-      statuses: [...new Set(statuses)],
-      period: own(PERIODS, f.period) ? f.period : "all",
+      kinds: [...new Set(kinds)].slice(0, 10),
+      statuses: [...new Set(statuses)].slice(0, 10),
+      period: enumOf(PERIODS, f.period, "all"),
       from: parseDay(f.from) ? f.from : null,
       to: parseDay(f.to) ? f.to : null,
       area: f.area === true,
@@ -486,28 +521,31 @@
     const s = sanitizeFilters(f);
     return !s.kinds.length && !s.statuses.length && s.period === "all" && !s.area;
   }
-  // Returns visible items plus honest counters for what was left out and why.
+  // Returns visible items plus honest counters for what was left out and why. Every
+  // counter only counts records that pass all the other active filters (ctx.match is the
+  // text search), so "show them" really yields that many. Input order is preserved.
   function applyFilters(items, filters, ctx) {
     const f = sanitizeFilters(filters);
     const c = ctx || {};
+    const match = typeof c.match === "function" ? c.match : null;
     const range = periodRange(f.period, c.today, { from: f.from, to: f.to });
     const shown = [];
-    const counts = { total: items.length, shown: 0, undated: 0, partial: 0, outsideArea: 0, noGeometry: 0, byKind: {}, byStatus: {} };
+    const counts = { total: items.length, shown: 0, undated: 0, partial: 0, outsideArea: 0, noGeometry: 0, mappedOut: 0, byKind: {} };
     for (const it of items) {
       if (f.statuses.length && !f.statuses.includes(it.status)) continue;
+      if (match && !match(it)) continue;
+      let areaOut = null;
+      if (f.area && c.viewBox) areaOut = !it.bbox ? "noGeometry" : !bboxIntersects(it.bbox, c.viewBox) ? "outsideArea" : null;
       const pm = matchPeriod(it, range.from, range.to);
-      if (!pm.match) { if (pm.undated) counts.undated++; continue; }
-      // facet counts ignore the kind filter so chips show what selecting them would give
-      counts.byKind[it.kind] = (counts.byKind[it.kind] || 0) + 1;
+      // Facet counts: everything except the kind filter, so a chip shows what choosing it gives.
+      if (pm.match && !areaOut) counts.byKind[it.kind] = (counts.byKind[it.kind] || 0) + 1;
       if (f.kinds.length && !f.kinds.includes(it.kind)) continue;
-      if (f.area && c.viewBox) {
-        if (!it.bbox) { counts.noGeometry++; continue; }
-        if (!bboxIntersects(it.bbox, c.viewBox)) { counts.outsideArea++; continue; }
-      }
+      if (areaOut) { counts[areaOut]++; continue; }
+      if (!pm.match) { if (pm.undated) counts.undated++; continue; }
       if (pm.partial) counts.partial++;
-      shown.push({ item: it, partial: pm.partial });
+      if (!it.bbox) counts.mappedOut++;
+      shown.push({ item: it, partial: pm.partial, missing: pm.missing });
     }
-    for (const it of items) counts.byStatus[it.status] = (counts.byStatus[it.status] || 0) + 1;
     counts.shown = shown.length;
     return { shown, counts, range };
   }
@@ -524,9 +562,13 @@
   }
 
   // ---------- map data ----------
+  // Polygons go largest first so a small area inside a big one is drawn (and picked) on top.
   function featureCollection(items) {
     const features = [];
-    for (const it of items) {
+    const area = (it) => (it.bbox ? (it.bbox[2] - it.bbox[0]) * (it.bbox[3] - it.bbox[1]) : 0);
+    const ordered = items.filter((it) => it.geometry).sort((a, b) =>
+      (a.geometry.type === "Polygon" && b.geometry.type === "Polygon") ? area(b) - area(a) : 0);
+    for (const it of ordered) {
       if (!it.geometry) continue;
       features.push({
         type: "Feature",
@@ -565,7 +607,9 @@
     const status = [e.status, e.httpStatus, e.statusCode, e.response && e.response.status]
       .find((v) => Number.isInteger(v)) || null;
     const code = typeof e.code === "string" ? e.code : (isObj(e.error) && typeof e.error.code === "string" ? e.error.code : null);
-    const offline = (typeof navigator !== "undefined" && navigator && navigator.onLine === false) || e.name === "TypeError";
+    // Only a failed fetch is "offline"; a TypeError from bad data is not a network problem.
+    const offline = (typeof navigator !== "undefined" && navigator && navigator.onLine === false) ||
+      (e.name === "TypeError" && /fetch|network|load failed/i.test(String(e.message || "")));
     let text;
     if (code === "aborted") text = "Запрос отменён.";
     else if (code === "timeout") text = "Сервер не ответил вовремя. Повторите попытку.";
@@ -602,7 +646,7 @@
     PRECISION, BASIS, ACCESS, FIELD_LABELS, PERIODS, ASTANA_BBOX,
     kindInfo: (k) => KINDS[k] || OTHER_KIND,
     evidenceInfo: (e) => EVIDENCE[e] || EVIDENCE_UNKNOWN,
-    parseDay, addDays, dayDiff, localDay, formatDay, parseTimestamp, formatTimestamp, formatNumber,
+    parseDay, addDays, dayDiff, localDay, formatDay, parseTimestamp, formatTimestamp, timestampDay, formatNumber,
     budgetInfo, safeUrl, urlHost, normalizeGeometry, bboxOf, bboxIntersects, normalizeObject, normalizeList,
     plannedInterval, matchPeriod, scheduleShift, staleness, plural, daysText, normalizeHistory, fieldLabel,
     shiftReason, compareRevisions, periodRange, defaultFilters, sanitizeFilters, isDefaultFilters,

@@ -19,14 +19,14 @@
       "status": "PASS",
       "command": "node --test tests/civic/R03/core.test.mjs",
       "input": "tests/civic/R03/fixtures/{objects,history,hostile,pack_civic_object}.json",
-      "reason": "17/17 pass"
+      "reason": "23/23 pass (incl. regressions for review findings)"
     },
     {
       "name": "browser-suite-stand",
       "status": "PASS",
       "command": "node --test --test-concurrency=1 tests/civic/R03/browser.test.mjs",
       "input": "research/round-11-results/R03/stand/ (mock api.request, MapLibre 5.6.2 from web/vendor, Chromium 1194 headless/SwiftShader, external hosts blocked)",
-      "reason": "20/20 pass: 1440x900 + 390x844, card data/no-data, long ru/kk titles, historical plan, hostile/XSS, 500 list/card + retry, empty server/filter, period filter, stale card/list responses, single map click, mount/destroy x2 (layers, sources, popup, root attrs, map+window+matchMedia listeners), keyboard focus, onFeedback, bottom sheet keeps 3D toggle + attribution reachable, offline basemap, reduced motion, permalink, filter persistence, area filter"
+      "reason": "32/32 pass: 21 functional checks (1440x900, 390x844, card data/no-data, long ru/kk, historical, hostile/XSS, 500 list/card + retry, empty server/filter, period filter, stale responses, single map click, mount/destroy x2 leak check, keyboard, onFeedback, bottom sheet keeps 3D toggle + attribution, offline basemap, reduced motion, permalink, persistence, area filter, embedded R01-like host) + 11 regressions for confirmed review findings (same-root remount, search->map, unpublished card on refresh, nested polygon pick, focus retention, no re-announced error, 667x375 landscape tools, mobile tap visibility, reselect, one-sided period, dashed demo ring)"
     },
     {
       "name": "openfreemap-basemap",
@@ -55,6 +55,13 @@
       "command": null,
       "input": "origin/claude/affectionate-ride-bol5v8 @ f639a4b (read only)",
       "reason": "NOT_INTEGRATED: R01 has not imported web/civic/map yet; compatibility reviewed from its shell.js and an R01-like host panel test in the stand"
+    },
+    {
+      "name": "adversarial-review",
+      "status": "PASS",
+      "command": "Workflow wf_a5038205-b19 (4 reviewers + 4 verifiers)",
+      "input": "web/civic/map @ 9cb1a2e",
+      "reason": "25 findings confirmed by verifiers, 25 fixed with regression checks; see research/round-11-results/R03/REVIEW_FINDINGS.json"
     }
   ],
   "limitations": [
@@ -62,5 +69,5 @@
     "OpenFreeMap blocked in sandbox: basemap streets and 3D buildings NOT_RUN",
     "Client-side filtering over all published objects (cursor pages up to 20); very large datasets would need server-side filters"
   ],
-  "next_step": "Apply verified review findings; then final DELIVERY (ready)."
+  "next_step": "Final INTEGRATION/DELIVERY update; R01 imports web/civic/map (3 files) per INTEGRATION.txt."
 }

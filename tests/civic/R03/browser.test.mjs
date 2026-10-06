@@ -60,7 +60,7 @@ async function open(params, o = {}) {
   return { ctx, page, errors };
 }
 const state = (page) => page.evaluate(() => window.__stand.instance.getState());
-const settle = (page) => page.waitForFunction(() => !window.__stand.map || !window.__stand.map.isMoving(), null, { timeout: 5000 });
+const settle = (page) => page.waitForFunction(() => (!window.__stand.instance || !window.__stand.instance.getState().cameraPending) && (!window.__stand.map || !window.__stand.map.isMoving()), null, { timeout: 5000 });
 async function shot(page, name) { if (SHOTS) await page.screenshot({ path: path.join(SHOTS, name + ".png") }); }
 async function select(page, id) {
   await page.evaluate((x) => window.__stand.instance.selectObject(x), id);
@@ -131,30 +131,39 @@ test("desktop 1440x900: list, layers, legend, no staff calls, no overflow", { sk
 });
 
 test("card with data: shift + reason, money with basis, safe source link, history", { skip: SKIP }, async () => {
-  const { ctx, page, errors } = await open();
+  const { ctx, page, errors } = await open({ extra: "format" });
   await select(page, "r03-demo-shifted");
+  const demo = await page.locator(".civic-r03-card").innerText();
+  assert.match(demo, /Стоимость\s+нет данных/);
+  assert.doesNotMatch(demo, /₸/, "no tenge on a synthetic record");
+  assert.match(demo, /Демо\. Синтетическая демо-запись/);
+  assert.match(demo, /запись обновлена 5 октября 2026, 16:40 \(время Астаны\)/);
+  assert.doesNotMatch(demo, /по данным на/);
+  await select(page, "r03-format-derived");
   const card = await page.evaluate(() => {
     const c = document.querySelector(".civic-r03-card");
     const a = c.querySelector("a.civic-r03-src-link");
     return { text: c.innerText, href: a && a.href, target: a && a.target, rel: a && a.rel, history: c.querySelectorAll(".civic-r03-history li").length };
   });
-  assert.match(card.text, /Демо: ремонт пешеходного прохода у остановки/);
+  assert.match(card.text, /Тест форматирования карточки \(fixture R03/);
   assert.match(card.text, /Срок перенесён на 16 дней позже/);
   assert.match(card.text, /20\.10\.2026 → 05\.11\.2026/);
   assert.match(card.text, /Причина: «Демо: перенос из-за поставки материалов/);
-  assert.match(card.text, /48 500 000 ₸/);
+  assert.match(card.text, /48\u202f500\u202f000 ₸/);
   assert.match(card.text, /сумма договора · источник: Тестовый источник/);
-  assert.match(card.text, /Демо-подрядчик/);
-  assert.match(card.text, /Синтетическая демо-запись/);
-  assert.match(card.text, /5 октября 2026, 16:40 \(UTC\+5\)/);
-  assert.match(card.text, /подтверждает: текущий срок, стоимость, основание стоимости/);
-  assert.equal(card.href, "https://example.org/civic-demo/notice-1");
+  assert.match(card.text, /Тестовая организация \(fixture\)/);
+  assert.match(card.text, /Выведено из источников/);
+  assert.match(card.text, /статус по источнику от 15\.09\.2026 · запись обновлена 5 октября 2026, 16:40 \(время Астаны\)/);
+  assert.match(card.text, /подтверждает: статус, текущий срок, стоимость, основание стоимости/);
+  assert.equal(card.href, "https://example.org/civic-fixture/notice-1");
   assert.equal(card.target, "_blank");
   assert.match(card.rel, /noopener/);
   assert.equal(card.history, 3);
-  const pos = await objectClearOfPanel(page, [71.4304, 51.1282]);
+  const pos = await objectClearOfPanel(page, [71.4188, 51.1475]);
   assert.ok(pos.inView && pos.clear, JSON.stringify(pos));
   assert.deepEqual(await noHorizontalOverflow(page), []);
+  await shot(page, "desktop-1440-card-format-fixture");
+  await select(page, "r03-demo-shifted");
   await shot(page, "desktop-1440-card-data");
   await page.locator(".civic-r03-scroll").evaluate((el) => { el.scrollTop = el.scrollHeight; });
   await shot(page, "desktop-1440-card-history");
@@ -225,7 +234,7 @@ test("hostile data: no HTML execution, unsafe links hidden, drafts/other cities 
   assert.ok(!r.rendered.includes("r03-hostile-swapped"));
   assert.match(await page.locator(".civic-r03-list-notes").innerText(), /Пропущено некорректных или неопубликованных записей: 2/);
   await select(page, "r03-hostile-swapped");
-  assert.match(await page.locator(".civic-r03-card").innerText(), /вне Астаны — возможно, перепутаны долгота и широта/);
+  assert.match(await page.locator(".civic-r03-card").innerText(), /вне области карты Астаны — похоже, перепутаны долгота и широта/);
   await select(page, "r03-hostile-negative");
   assert.match(await page.locator(".civic-r03-card").innerText(), /нет данных \(некорректное значение в записи\)/);
   assert.deepEqual(errors, []);
@@ -263,7 +272,7 @@ test("empty server and empty filter result: clear messages and reset", { skip: S
   await a.ctx.close();
   const { ctx, page } = await open({ persist: "0" });
   await page.click('[data-kind="event"]');
-  await page.selectOption("#civic-r03-status", "completed");
+  await page.selectOption('[data-r03-filter="status"]', "completed");
   assert.match(await page.locator(".civic-r03-empty").innerText(), /По выбранным условиям ничего не найдено/);
   assert.equal(await page.locator(".civic-r03-item").count(), 0);
   await shot(page, "desktop-1440-empty-filter");
@@ -275,7 +284,7 @@ test("empty server and empty filter result: clear messages and reset", { skip: S
 
 test("period filter shows known planned intervals only and reports undated records", { skip: SKIP }, async () => {
   const { ctx, page } = await open({ persist: "0" });
-  await page.selectOption("#civic-r03-period", "month");
+  await page.selectOption('[data-r03-filter="period"]', "month");
   const ids = await page.evaluate(() => [...document.querySelectorAll(".civic-r03-item")].map((b) => b.dataset.id));
   assert.ok(!ids.includes("r03-demo-historical"));
   assert.ok(ids.includes("r03-demo-area"));
@@ -353,6 +362,7 @@ test("mount/destroy twice: layers, sources, popup, root, map and window listener
       rootClass: root.className,
       rootAttrs: root.getAttributeNames().filter((a) => a !== "id"),
       popups: document.querySelectorAll(".civic-r03-tip").length,
+      demoImage: m.hasImage("civic-r03-demo-ring"),
     };
   });
   // hover to create the popup, then destroy
@@ -368,6 +378,7 @@ test("mount/destroy twice: layers, sources, popup, root, map and window listener
   assert.equal(s1.rootClass, "");
   assert.deepEqual(s1.rootAttrs, []);
   assert.equal(s1.popups, 0);
+  assert.equal(s1.demoImage, false);
   for (let i = 0; i < 2; i++) {
     await page.evaluate(() => window.__stand.mount());
     await page.waitForFunction(() => window.__stand.instance.getState().list === "ready");
@@ -479,7 +490,7 @@ test("permalink: hash opens the card, unknown id is an honest not-found, back cl
 test("filters persist across reload without private data", { skip: SKIP }, async () => {
   const { ctx, page } = await open();
   await page.click('[data-kind="roadworks"]');
-  await page.selectOption("#civic-r03-period", "year");
+  await page.selectOption('[data-r03-filter="period"]', "year");
   await page.reload();
   await page.waitForFunction(() => window.__stand && window.__stand.instance && window.__stand.instance.getState().list === "ready");
   assert.equal(await page.getAttribute('[data-kind="roadworks"]', "aria-pressed"), "true");
@@ -492,7 +503,7 @@ test("filters persist across reload without private data", { skip: SKIP }, async
 test("area filter counts objects in the visible part and reports records without a place", { skip: SKIP }, async () => {
   const { ctx, page } = await open({ persist: "0" });
   await page.evaluate(() => window.__stand.map.jumpTo({ center: [71.4304, 51.1282], zoom: 15.5 }));
-  await page.check("#civic-r03-area");
+  await page.check('[data-r03-filter="area"]');
   await page.waitForTimeout(300);
   const t = await page.locator(".civic-r03-count").innerText();
   assert.match(t, /^Показано \d+ из 12$/);
@@ -523,4 +534,173 @@ test("embedded in an R01-like host panel: no own positioning, camera avoids the 
     assert.deepEqual(errors, []);
     await ctx.close();
   }
+});
+
+// ---------- regressions for the adversarial review (wf_a5038205-b19) ----------
+const srcIds = (page) => page.evaluate(async () => (await window.__stand.map.getSource("civic-r03-objects").getData()).features.map((f) => f.properties.cid));
+
+test("review: a second mount on the same root/map replaces the first cleanly", { skip: SKIP }, async () => {
+  const { ctx, page, errors } = await open({ persist: "0" });
+  const r = await page.evaluate(async () => {
+    const first = window.__stand.instance;
+    const second = window.CivicMap.mount({ root: document.getElementById("civic-public"), map: window.__stand.map, api: window.__stand.api });
+    await new Promise((res) => setTimeout(res, 400));
+    const root = document.getElementById("civic-public");
+    const mid = { children: root.childNodes.length, items: root.querySelectorAll(".civic-r03-item").length, layers: window.__stand.map.getStyle().layers.filter((l) => l.id.startsWith("civic-r03")).length };
+    first.destroy(); // already destroyed by the second mount: must be a no-op
+    const still = root.querySelectorAll(".civic-r03-item").length;
+    second.destroy();
+    return { mid, still, after: { children: root.childNodes.length, cls: root.getAttribute("class"), layers: window.__stand.map.getStyle().layers.filter((l) => l.id.startsWith("civic-r03")).length } };
+  });
+  assert.equal(r.mid.items, 12);
+  assert.equal(r.mid.layers, 12);
+  assert.equal(r.still, 12, "destroying the stale handle does not wipe the live UI");
+  assert.deepEqual(r.after, { children: 0, cls: null, layers: 0 });
+  assert.deepEqual(errors, []);
+  await ctx.close();
+});
+
+test("review: search filters the map too, counts it as an active filter, and reset restores it", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0" });
+  assert.equal((await srcIds(page)).length, 11);
+  await page.fill('[data-r03-filter="q"]', "сквер");
+  await page.waitForFunction(() => window.__stand.instance.getState().q === "сквер");
+  assert.deepEqual(await srcIds(page), ["r03-demo-nodata"]);
+  assert.equal(await page.locator(".civic-r03-item").count(), 1);
+  assert.match(await page.locator(".civic-r03-filters-active").innerText(), /активно: 1/);
+  await page.click('.civic-r03-filters-body [data-r03-action="reset-filters"]');
+  assert.equal((await srcIds(page)).length, 11);
+  await ctx.close();
+});
+
+test("review: refresh after an object left the public list turns its open card into 'не найден'", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0" });
+  await select(page, "r03-demo-shifted");
+  await page.evaluate(async () => {
+    const o = window.__stand.api.options;
+    o.items = o.items.filter((x) => x.id !== "r03-demo-shifted");
+    await window.__stand.instance.refresh();
+  });
+  await page.waitForFunction(() => window.__stand.instance.getState().detail === "notfound");
+  assert.match(await page.locator(".civic-r03-card").innerText(), /Объект не найден/);
+  assert.equal(await page.locator('[data-r03-action="feedback"]').count(), 0);
+  await ctx.close();
+});
+
+test("review: a small polygon inside a big one is selectable on the map", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0" });
+  await page.evaluate(async () => {
+    const poly = (id, w, s, e, n) => ({ schema_version: "civic-v1", id, city: "astana", kind: "construction", title: id, status: "planned", publication: "published",
+      geometry: { type: "Polygon", coordinates: [[[w, s], [e, s], [e, n], [w, n], [w, s]]] }, geometry_precision: "source", schedule: {}, budget: {}, responsible: {}, evidence_type: "synthetic", source_refs: [], revision: 1 });
+    // the big one comes later in API order (drawn later = on top before the fix)
+    window.__stand.api.options.items.push(poly("small", 71.370, 51.170, 71.374, 51.172), poly("big", 71.360, 51.165, 71.390, 51.180));
+    await window.__stand.instance.refresh();
+    window.__stand.map.jumpTo({ center: [71.372, 51.171], zoom: 15 });
+  });
+  await page.waitForTimeout(400);
+  const pt = await page.evaluate(() => { const m = window.__stand.map, c = m.getCanvas().getBoundingClientRect(), p = m.project([71.372, 51.171]); return { x: c.left + p.x, y: c.top + p.y }; });
+  await page.mouse.click(pt.x, pt.y);
+  await page.waitForFunction(() => window.__stand.instance.getState().selectedId !== null);
+  assert.equal((await state(page)).selectedId, "small");
+  await ctx.close();
+});
+
+test("review: keyboard focus survives reset, show-undated and retry", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0" });
+  const active = () => page.evaluate(() => { const a = document.activeElement; return a === document.body ? "BODY" : (a.getAttribute("data-r03-filter") || a.className); });
+  await page.fill('[data-r03-filter="q"]', "zzzzqqq");
+  await page.waitForFunction(() => window.__stand.instance.getState().q === "zzzzqqq");
+  await page.focus('.civic-r03-empty [data-r03-action="reset-filters"]');
+  await page.keyboard.press("Enter");
+  assert.notEqual(await active(), "BODY");
+  await page.selectOption('[data-r03-filter="period"]', "next30");
+  await page.focus('[data-r03-action="show-undated"]');
+  await page.keyboard.press("Enter");
+  assert.notEqual(await active(), "BODY");
+  await page.evaluate(async () => { window.__stand.api.options.failList = 1; await window.__stand.instance.refresh(); });
+  await page.focus('[data-r03-action="retry-list"]');
+  await page.keyboard.press("Enter");
+  await page.waitForFunction(() => window.__stand.instance.getState().list === "ready");
+  assert.notEqual(await active(), "BODY");
+  await ctx.close();
+});
+
+test("review: the error message is not re-inserted on every keystroke", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0" });
+  await page.evaluate(async () => { window.__stand.api.options.failList = 1; await window.__stand.instance.refresh(); });
+  await page.evaluate(() => {
+    window.__ins = 0;
+    new MutationObserver((ms) => { for (const m of ms) window.__ins += m.addedNodes.length; }).observe(document.querySelector(".civic-r03-state"), { childList: true, subtree: true });
+  });
+  await page.type('[data-r03-filter="q"]', "ремонт", { delay: 40 });
+  await page.waitForTimeout(300);
+  assert.equal(await page.evaluate(() => window.__ins), 0);
+  assert.equal(await page.locator("#civic-public [role=alert]").count(), 0, "no assertive alert inside the polite region");
+  await ctx.close();
+});
+
+test("review: landscape phone 667x375 keeps 3D toggle and attribution reachable in every sheet state", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0" }, { viewport: { width: 667, height: 375 }, touch: true });
+  for (let i = 0; i < 3; i++) {
+    assert.equal(await reachable(page, "#toggle-3d"), true, (await state(page)).sheet);
+    assert.equal(await reachable(page, "#zoom-in"), true);
+    assert.equal(await reachable(page, ".maplibregl-ctrl-attrib"), true);
+    await page.click(".civic-r03-handle");
+    await page.waitForTimeout(320);
+  }
+  await shot(page, "mobile-667x375-landscape");
+  await ctx.close();
+});
+
+test("review: on a phone, an object tapped low on the map ends up above the opened sheet", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0", fit: "0" }, { viewport: MOBILE, touch: true });
+  await page.evaluate(() => window.__stand.map.jumpTo({ center: [71.4511, 51.1255], zoom: 13 }));
+  await page.waitForTimeout(300);
+  const pt = await page.evaluate(() => { const m = window.__stand.map, c = m.getCanvas().getBoundingClientRect(), p = m.project([71.4511, 51.1209]); return { x: c.left + p.x, y: c.top + p.y }; });
+  assert.ok(pt.y > 418 && pt.y < 640, "object starts where the half sheet will cover it: " + JSON.stringify(pt));
+  await page.touchscreen.tap(pt.x, pt.y);
+  await page.waitForFunction(() => window.__stand.instance.getState().selectedId === "r03-demo-completed");
+  await settle(page);
+  const pos = await objectClearOfPanel(page, [71.4511, 51.1209], true);
+  assert.ok(pos.inView && pos.clear, JSON.stringify(pos));
+  await ctx.close();
+});
+
+test("review: tapping the open object again does not re-fire onSelect or refetch", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0" });
+  await settle(page);
+  const pt = await page.evaluate(() => { const m = window.__stand.map, c = m.getCanvas().getBoundingClientRect(), p = m.project([71.4304, 51.1282]); return { x: c.left + p.x, y: c.top + p.y }; });
+  await page.mouse.click(pt.x, pt.y);
+  await page.waitForFunction(() => window.__stand.instance.getState().detail === "ready");
+  await page.mouse.click(pt.x, pt.y);
+  await page.waitForTimeout(300);
+  const r = await page.evaluate(() => ({ calls: window.__stand.api.calls.filter((c) => c.path === "/objects/r03-demo-shifted").length, selects: window.__stand.selects.length }));
+  assert.deepEqual(r, { calls: 1, selects: 1 });
+  await ctx.close();
+});
+
+test("review: a custom period with only an end date works and survives reload", { skip: SKIP }, async () => {
+  const { ctx, page, errors } = await open();
+  await page.selectOption('[data-r03-filter="period"]', "custom");
+  await page.fill('[data-r03-filter="to"]', "2026-10-31");
+  await page.dispatchEvent('[data-r03-filter="to"]', "change");
+  await page.waitForTimeout(200);
+  const n = await page.locator(".civic-r03-item").count();
+  assert.ok(n > 0 && n < 12, String(n));
+  await page.reload();
+  await page.waitForFunction(() => window.__stand && window.__stand.instance && window.__stand.instance.getState().list === "ready", null, { timeout: 15000 });
+  assert.equal(await page.locator(".civic-r03-item").count(), n);
+  assert.deepEqual(errors, []);
+  await ctx.close();
+});
+
+test("review: synthetic points carry a dashed ring symbol that the legend describes", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0" });
+  const r = await page.evaluate(() => {
+    const m = window.__stand.map, l = m.getStyle().layers.find((x) => x.id === "civic-r03-point-synthetic");
+    return { type: l && l.type, icon: l && l.layout && l.layout["icon-image"], image: m.hasImage("civic-r03-demo-ring"), legend: document.querySelector(".civic-r03-legend").textContent };
+  });
+  assert.deepEqual([r.type, r.icon, r.image], ["symbol", "civic-r03-demo-ring", true]);
+  assert.match(r.legend, /Серое пунктирное кольцо/);
+  await ctx.close();
 });

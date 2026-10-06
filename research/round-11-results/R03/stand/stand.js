@@ -23,6 +23,8 @@
     get("/tests/civic/R03/fixtures/history.json"),
     q.get("hostile") ? get("/tests/civic/R03/fixtures/hostile.json") : Promise.resolve({ items: [] }),
   ]);
+  // extra=format: test-only fixture for money/basis/source formatting (labelled as a fixture).
+  if (!real0 && q.get("extra") === "format") hostile.items = hostile.items.concat((await get("/tests/civic/R03/fixtures/format.json")).items);
   const fail = q.get("fail") || "";
   // api=real: same-origin /api/civic/v1 (R02 read-only harness); otherwise the contract mock.
   const real = q.get("api") === "real";
