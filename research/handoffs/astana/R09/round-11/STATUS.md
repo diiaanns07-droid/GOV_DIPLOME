@@ -8,7 +8,7 @@
 - Собственные пути: `agent/civic_assistant/`, `web/civic/assistant/`, `tests/civic/R09/`,
   `research/round-11-results/R09/`, `research/handoffs/astana/R09/round-11/STATUS.md`
 
-## Статус: PARTIAL — checkpoint 1
+## Статус: PARTIAL — checkpoint 2
 
 ### Сделано
 - `agent/civic_assistant/facts.py`: серверный каталог фактов из публичного DTO civic-v1 (allowlist),
@@ -19,12 +19,18 @@
 - `agent/civic_assistant/answer.py`: `build_answer(question, verified_context, provider=None)`,
   шаблонный классификатор RU/KK, строгая валидация выбора провайдера (код написан, тесты — CP2).
 - `research/round-11-results/R09/QUESTIONS.txt`: 12 вопросов -> intent -> факты.
+- CP2 `agent/civic_assistant/providers.py`: контракт civic-assistant-provider-v1, MockProvider,
+  OpenAICompatibleProvider (проверен на поддельном клиенте, без платного вызова), provider_from_settings.
+  Провайдер получает только {id,label,known} — без значений, цитат и служебных полей.
+- CP2 `agent/civic_assistant/audit.py`: runtime-аудит каждой фразы: цифра без факта, цитата не дословно,
+  «официально одобрено/утверждено», «завершено» без status=completed -> фраза удаляется, код в warnings.
+- Причина переноса берётся только из публичной истории и не из первой (исходной) записи.
 
 ### Проверки
-- `python3 -m pytest tests/civic/R09 -q` -> 16 passed (CP1).
+- `python3 -m pytest tests/civic/R09 -q` -> 49 passed (CP2; CP1 было 16).
 
 ### Не запускалось
 - Живой LLM (вне задания). Интеграция в app (делает R01).
 
 ### Следующий шаг
-CP2: тесты провайдера (неизвестный ID, свободный текст, тайм-аут, лишние ключи), provider adapter contract.
+CP3: факты сценария R07 (A/B по метрикам engine) + пример POST /assistant handler для R01 (только public DTO).

@@ -102,7 +102,7 @@ T = {
         "history_entry": "Ревизия {r} ({at}): изменено — {fields}.",
         "history_reason": "Причина, указанная в публичной истории: «{text}»",
         "history_none": "Публичной истории изменений нет.",
-        "history_more": "Показаны последние {n} записей истории.",
+        "history_more": "Показаны только последние записи истории.",
         "location": "Положение на карте: {geom}, точность — {precision}.",
         "location_none": "Достоверной геометрии нет; объект показан списком.",
         "access_none": "Расчёт доступности для этого объекта не подключён — нет данных. "
@@ -154,7 +154,7 @@ T = {
         "history_entry": "{r}-нұсқа ({at}): өзгертілді — {fields}.",
         "history_reason": "Жария тарихта көрсетілген себеп: «{text}»",
         "history_none": "Жария өзгерістер тарихы жоқ.",
-        "history_more": "Тарихтың соңғы {n} жазбасы көрсетілді.",
+        "history_more": "Тарихтың тек соңғы жазбалары көрсетілді.",
         "location": "Картадағы орны: {geom}, дәлдігі — {precision}.",
         "location_none": "Сенімді геометрия жоқ; нысан тізіммен көрсетіледі.",
         "access_none": "Бұл нысан үшін қолжетімділік есебі қосылмаған — деректер жоқ. "
@@ -174,6 +174,16 @@ def fmt_date(value: str | None, lang: str) -> str:
         return NO_DATA[lang]
     d = date.fromisoformat(value)
     return f"{d.day:02d}.{d.month:02d}.{d.year:04d}"
+
+
+def fmt_at(value: str | None, lang: str) -> str:
+    """Отметка времени истории -> дата DD.MM.YYYY; нераспознанная -> «нет данных»."""
+    if isinstance(value, str) and len(value) >= 10:
+        try:
+            return fmt_date(date.fromisoformat(value[:10]).isoformat(), lang)
+        except ValueError:
+            pass
+    return NO_DATA[lang]
 
 
 def fmt_money(value) -> str:
@@ -304,13 +314,17 @@ def r_delay_reason(facts, lang):
         val = _v(facts, fid)
         out.append(_st(t[key].format(d=fmt_date(val, lang)), [fid], "fact" if val else "missing", facts))
     out += _shift(facts, lang)
-    reasons = [h for h in _history(facts) if h.get("meta", {}).get("schedule_change") and h["value"]["reason"]]
+    hist = _history(facts)
+    # Первая запись истории — исходная публикация сроков, а не их перенос.
+    first = min((h["value"]["revision"] for h in hist), default=None)
+    reasons = [h for h in hist if h.get("meta", {}).get("schedule_change") and h["value"]["reason"]
+               and h["value"]["revision"] != first]
     for h in reasons[-3:]:
         e = h["value"]
-        out.append(_st(t["reason_quote"].format(r=e["revision"], at=e["at"] or NO_DATA[lang], text=e["reason"]),
+        out.append(_st(t["reason_quote"].format(r=e["revision"], at=fmt_at(e["at"], lang), text=e["reason"]),
                        [h["id"]], kind="quote"))
     if not reasons:
-        out.append(_st(t["reason_missing"], [h["id"] for h in _history(facts)][-3:], kind="missing"))
+        out.append(_st(t["reason_missing"], [h["id"] for h in hist][-3:], kind="missing"))
     return out
 
 
@@ -376,14 +390,14 @@ def r_history(facts, lang, limit=5):
     for h in hist[-limit:]:
         e = h["value"]
         labels = [FIELD_LABELS[lang].get(c, c) for c in e["changed_fields"]] or [NO_DATA[lang]]
-        out.append(_st(t["history_entry"].format(r=e["revision"], at=e["at"] or NO_DATA[lang],
+        out.append(_st(t["history_entry"].format(r=e["revision"], at=fmt_at(e["at"], lang),
                                                  fields=", ".join(dict.fromkeys(labels))), [h["id"]]))
         if e["reason"]:
             out.append(_st(t["history_reason"].format(text=e["reason"]), [h["id"]], kind="quote"))
     if not hist:
         out.append(_st(t["history_none"], [], kind="missing"))
     elif len(hist) > limit:
-        out.append(_st(t["history_more"].format(n=limit), [], kind="notice"))
+        out.append(_st(t["history_more"], [], kind="notice"))
     return out
 
 

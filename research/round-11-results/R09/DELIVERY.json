@@ -13,14 +13,14 @@
     "research/handoffs/astana/R09/round-11/STATUS.md"
   ],
   "integration_notes": "research/round-11-results/R09/INTEGRATION.txt (будет на этапе CP6)",
-  "code_commit": null,
+  "code_commit": "dea3874",
   "checks": [
     {
-      "name": "r09-cp1-facts-template",
+      "name": "r09-cp2-facts-template-provider",
       "status": "PASS",
       "command": "python3 -m pytest tests/civic/R09 -q",
-      "input": "tests/civic/R09/fixtures/*.json (synthetic)",
-      "reason": "16 passed"
+      "input": "tests/civic/R09/fixtures/*.json (synthetic), MockProvider, fake chat client",
+      "reason": "49 passed"
     },
     {
       "name": "live-llm",
@@ -34,5 +34,5 @@
     "Только шаблонный режим проверен на CP1",
     "KK-формулировки требуют проверки носителем языка"
   ],
-  "next_step": "CP2: тесты валидации провайдера и adapter contract"
+  "next_step": "CP3: scenario facts + safe API handler example"
 }

@@ -17,6 +17,7 @@ import json
 import logging
 import re
 
+from agent.civic_assistant.audit import audit_statements
 from agent.civic_assistant.facts import FACTS_VERSION, ContextError, check_context, clean_text
 from agent.civic_assistant.render import INTENT_FACT_PREFIXES, INTENTS, T, render
 
@@ -170,7 +171,10 @@ def _call_provider(provider, request: dict, timeout_s: float):
         raise ProviderRejected("provider_timeout") from exc
 
 
-def _result(source, intent, lang, statements, ctx, warnings, mode, model=None):
+def _result(source, intent, lang, statements, ctx, warnings, mode, model=None, facts=None):
+    if facts is not None:
+        statements, dropped = audit_statements(statements, facts)
+        warnings = list(warnings) + dropped
     fact_ids = list(dict.fromkeys(fid for s in statements for fid in s["fact_ids"]))
     return {
         "schema": ANSWER_SCHEMA,
@@ -207,7 +211,8 @@ def build_answer(question, verified_context, provider=None, *, timeout_s: float 
     template_intent, cw = classify(q, facts)
     if provider is None:
         st = render(template_intent, facts, lang)
-        return _result("template", template_intent, lang, st, verified_context, warnings + cw, mode="template")
+        return _result("template", template_intent, lang, st, verified_context, warnings + cw, mode="template",
+                       facts=facts)
     name = getattr(provider, "name", "provider")
     try:
         raw = _call_provider(provider, choice_request(q, lang, facts), timeout_s)
@@ -216,15 +221,15 @@ def build_answer(question, verified_context, provider=None, *, timeout_s: float 
         LOGGER.warning("civic assistant: provider output rejected (%s)", exc.code)
         st = render(template_intent, facts, lang)
         return _result("template", template_intent, lang, st, verified_context,
-                       warnings + cw + [exc.code], mode="template-fallback")
+                       warnings + cw + [exc.code], mode="template-fallback", facts=facts)
     except Exception as exc:  # noqa: BLE001 — сетевые/API ошибки; текст исключения может содержать настройки
         LOGGER.warning("civic assistant: provider error (%s)", type(exc).__name__)
         st = render(template_intent, facts, lang)
         return _result("template", template_intent, lang, st, verified_context,
-                       warnings + cw + ["provider_error"], mode="template-fallback")
+                       warnings + cw + ["provider_error"], mode="template-fallback", facts=facts)
     # Модель не может заставить ответить на «покажи пароли»: правило безопасности шаблона сильнее.
     intent = "unsupported" if template_intent == "unsupported" else choice["intent"]
     extra = ["provider_overridden_unsupported"] if intent != choice["intent"] else []
     st = render(intent, facts, lang, choice["fact_ids"])
     return _result("llm", intent, lang, st, verified_context, warnings + extra, mode="llm:" + str(name),
-                   model=getattr(provider, "model", None))
+                   model=getattr(provider, "model", None), facts=facts)
