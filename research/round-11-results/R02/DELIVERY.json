@@ -11,58 +11,73 @@
     "research/round-11-results/R02/",
     "research/handoffs/astana/R02/round-11/STATUS.md"
   ],
-  "integration_notes": "research/round-11-results/R02/INTEGRATION.txt; patch research/round-11-results/R02/web_server.patch; migration policy research/round-11-results/R02/MIGRATIONS.txt",
-  "code_commit": "92f7aba",
+  "integration_notes": "research/round-11-results/R02/INTEGRATION.txt (§0a — состояние стыковки с R01/R03/R04/R05/R06); MIGRATIONS.txt (feedback_* R06 в том же файле); PERF.txt; web_server.patch только для исходного Handler b2cb2e0 (у R01 свой CivicGateway, совместим)",
+  "code_commit": "3d2b8b9",
   "checks": [
     {
       "name": "r02-unit-and-integration",
       "status": "PASS",
       "command": "python -m pytest -q -p no:cacheprovider tests/civic/R02",
-      "input": "temporary SQLite files in pytest tmp_path; real HTTP to 127.0.0.1:0 servers",
-      "reason": "150 passed, 1 skipped (skip: import of data/civic/astana/demo_synthetic.json, present only after R01 integrates R05)"
+      "input": "temporary SQLite files in pytest tmp_path; real HTTP to 127.0.0.1:0 servers; code 3d2b8b9",
+      "reason": "168 passed, 1 skipped (skip: data/civic/astana/demo_synthetic.json is present only after R01 integrates R05)"
     },
     {
       "name": "repository-suite-regression",
       "status": "PASS",
       "command": "python -m pytest -q -p no:cacheprovider",
-      "input": "whole repository at checkpoint 4 (92f7aba)",
-      "reason": "279 passed, 1 skipped; existing tests unaffected (create_server without civic_db behaves as before)"
+      "input": "whole R02 branch at 3d2b8b9 (base b2cb2e0 + R02 paths)",
+      "reason": "301 passed, 1 skipped; existing tests unaffected"
     },
     {
-      "name": "web_server-patch-on-real-handler",
+      "name": "combined-tree-with-R01-gateway",
+      "status": "PASS",
+      "command": "git worktree add <tmp> origin/claude/affectionate-ride-bol5v8 (beb0d87); copy ui/civic_store and tests/civic/R02 from R02 HEAD; python -m pytest -q -p no:cacheprovider tests",
+      "input": "R01 beb0d87 (CivicGateway, R06 eaa113d, R07 22fa413) + R02 HEAD",
+      "reason": "512 passed, 3 skipped: R01 P0 acceptance against the real R02, R06 compatibility tests, R02 suite (patch test skips: R01 has its own gateway)"
+    },
+    {
+      "name": "web_server-patch-on-original-handler",
       "status": "PASS",
       "command": "python -m pytest -q -p no:cacheprovider tests/civic/R02/test_r02_http.py -k patch",
       "input": "git apply research/round-11-results/R02/web_server.patch to a temp copy of ui/web_server.py (b2cb2e0)",
-      "reason": "legacy /api/health and /api/validate still work; civic login/create/publish/public list work"
+      "reason": "legacy /api/health and /api/validate work; civic login/create/publish/public list work; OPTIONS/TRACE give JSON 405"
+    },
+    {
+      "name": "http-stress-16-threads",
+      "status": "PASS",
+      "command": "python tests/civic/R02/stress_http.py 20",
+      "input": "8 editor threads (create/publish/update), 6 public readers, 2 login threads; temp DB",
+      "reason": "5028 requests, 0x 5xx, p99 520 ms; revision/history and publication/projection invariants hold; 0 open connections"
     },
     {
       "name": "r05-demo-slice-compatibility",
       "status": "PASS",
-      "command": "python -m ui.civic_store --db /tmp/.../c.sqlite3 import r05_demo.json --dry-run",
+      "command": "python -m ui.civic_store --db <tmp>/c.sqlite3 import r05_demo.json --dry-run",
       "input": "git show origin/claude/intelligent-sagan-7shpeh:data/civic/astana/demo_synthetic.json (9 synthetic items)",
       "reason": "9/9 pass R02 validation; dry-run plan create 9; nothing written"
     },
     {
       "name": "independent-adversarial-review",
-      "status": "NOT_RUN",
-      "command": null,
-      "input": null,
-      "reason": "workflow running at this checkpoint; results and fixes go into the next checkpoint"
+      "status": "PASS",
+      "command": "Workflow r02-civic-store-review (security, exposure/contract, integrity/concurrency, fuzz, interop)",
+      "input": "R02 code during checkpoints 92f7aba..d78f7bf",
+      "reason": "partial at this checkpoint: security (4 low) and exposure/contract (1 medium, 6 low) findings fixed with regression tests; integrity and fuzz reviews still running"
     },
     {
       "name": "browser-walkthrough",
       "status": "NOT_RUN",
       "command": null,
       "input": null,
-      "reason": "R02 has no UI; browser checks belong to R03/R04 after R01 integration"
+      "reason": "R02 has no UI; browser checks belong to R03/R04/R01 after integration"
     }
   ],
   "limitations": [
     "Local pilot auth (SQLite accounts, scrypt, cookie sessions); not production IAM/SSO, no MFA or e-mail recovery.",
     "Default HTTP on loopback; network exposure needs a TLS proxy and explicit allowed_hosts.",
     "Login rate limit is strict but keyed by client IP: behind NAT/proxy one client can lock others out for 15 minutes.",
-    "SQLite single writer: suited for tens of editors, not thousands of concurrent writes.",
-    "Real Astana data: R05 reports 0 confirmed records (egress blocked); demo data is synthetic and labelled."
+    "SQLite single writer with synchronous=FULL: about 27 write transactions/s in the test container; fine for tens of editors.",
+    "Real Astana data: R05 reports 0 confirmed records (egress blocked); demo data is synthetic and labelled.",
+    "R01 imported R02 at 92f7aba; later fixes (validation, review fixes, writer queue, restore security) need a re-import at code_commit."
   ],
-  "next_step": "Apply review findings, then R01 imports ui/civic_store/ and applies web_server.patch."
+  "next_step": "R01 re-imports ui/civic_store/ and tests/civic/R02/ at code_commit; R02 finishes the remaining review findings (integrity, fuzz)."
 }
