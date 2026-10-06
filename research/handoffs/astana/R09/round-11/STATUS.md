@@ -7,7 +7,7 @@
 - Снимок приложения для сравнения: `b2cb2e02c602c166ba6d47c02d8e902e5478c791` (agent/school_ai.py, evidence.py, tools.py прочитаны через git show; подход «модель выбирает ID, код пишет текст» перенят)
 - Собственные пути: `agent/civic_assistant/`, `web/civic/assistant/`, `tests/civic/R09/`,
   `research/round-11-results/R09/`, `research/handoffs/astana/R09/round-11/STATUS.md`
-- Проверенный код: `789a954f76457853a9c961b55c4837ab75e2ca47`
+- Проверенный код: `97c01b1561213e83bf4db655f8ae392b8634fe3e`
 
 ## Статус: READY (модуль готов к интеграции R01) — checkpoint 6
 
@@ -32,14 +32,19 @@
   номер запроса; ручной перенос полей редактором.
 - `evaluate.py` — adversarial-оценка (37 кейсов + 17 браузерных).
 
-### Проверки (выполнены на 789a954)
-- `python3 -m pytest tests/civic/R09 -q` -> 106 passed (включая реальный Chromium).
+### Проверки (выполнены на 97c01b1)
+- `python3 -m pytest tests/civic/R09 -q` -> 108 passed (включая реальный Chromium).
 - `python3 -m agent.civic_assistant.evaluate --ui` -> PASS 54 / FAIL 0 / NOT_RUN 1 (EVAL_REPORT.txt).
 - `check_r02_r07_integration.py` на коде R02 92f7aba и R07 18f8ac8 -> 15/15 (integration_r02_r07.json).
+- Совместимость с записями R05 (e477e5d, demo_synthetic.json — 9 СИНТЕТИЧЕСКИХ записей) -> 9/9
+  (compat_r05_demo.json). Прогон нашёл и исправил: для отменённого объекта сроки показывались без
+  пометки отмены; «Откуда эти данные?» уходило в overview.
 - Реальные скриншоты: `ui_assistant_desktop.png`, `ui_assistant_mobile.png`.
 
 ### Не запускалось
 - Живой LLM (платно, вне задания) — NOT_RUN. Встраивание в общий app — делает R01.
+- Официальные страницы gov.kz из BRIEF (news 1193903, article 99399): CONNECT 403 от сетевой политики
+  среды; не обходилось. Извлечение проверено только на синтетических текстах. Реальных записей у R05 — 0.
 
 ### Найдено по ходу (для R01/R02/R04)
 - Шлюз R01 передаёт сервисам относительный путь, R02 (92f7aba) ждёт полный `/api/civic/v1/...`.

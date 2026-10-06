@@ -13,7 +13,7 @@
     "research/handoffs/astana/R09/round-11/STATUS.md"
   ],
   "integration_notes": "research/round-11-results/R09/INTEGRATION.txt",
-  "code_commit": "789a954f76457853a9c961b55c4837ab75e2ca47",
+  "code_commit": "97c01b1561213e83bf4db655f8ae392b8634fe3e",
   "exports": {
     "python": [
       "agent.civic_assistant.build_answer(question, verified_context, provider=None)",
@@ -39,14 +39,14 @@
       "status": "PASS",
       "command": "python3 -m pytest tests/civic/R09 -q",
       "input": "synthetic fixtures (objects, publications, R07 compare() output 18f8ac8), MockProvider, fake chat client, fake R02 service, demo_server + Chromium",
-      "reason": "106 passed at 789a954"
+      "reason": "108 passed at 97c01b1"
     },
     {
       "name": "r09-adversarial-eval",
       "status": "PASS",
       "command": "python3 -m agent.civic_assistant.evaluate --ui",
       "input": "tests/civic/R09/fixtures/eval_cases.json (37 cases) + 17 browser checks",
-      "reason": "54 PASS / 0 FAIL / 1 NOT_RUN (live LLM); EVAL_REPORT.txt, code_sha 789a954"
+      "reason": "54 PASS / 0 FAIL / 1 NOT_RUN (live LLM); EVAL_REPORT.txt, code_sha 97c01b1"
     },
     {
       "name": "r09-ui-chromium",
@@ -60,7 +60,14 @@
       "status": "PASS",
       "command": "python3 research/round-11-results/R09/check_r02_r07_integration.py --r02 <R02 92f7aba checkout> --r07 <R07 18f8ac8 checkout>",
       "input": "temporary SQLite, one-time random editor password (not stored), pack civic_object fixture",
-      "reason": "15/15 (draft invisible, publish, unpublished edit invisible, delay reason from publish reason, staff update reason not public, real compare()); integration_r02_r07.json"
+      "reason": "15/15 at 97c01b1 (draft invisible, publish, unpublished edit invisible, delay reason from publish reason, staff update reason not public, real compare()); integration_r02_r07.json"
+    },
+    {
+      "name": "r09-compat-r05-demo-slice",
+      "status": "PASS",
+      "command": "python3 research/round-11-results/R09/check_r05_compat.py <git show R05:data/civic/astana/demo_synthetic.json> <R05 sha>",
+      "input": "R05 e477e5d demo_synthetic.json (9 SYNTHETIC records; R05 has 0 real records on 2026-10-06)",
+      "reason": "9/9: draft/archived rejected, 7 published x 25 answers without audit drops or false completion; found and fixed cancelled-object wording + sources intent"
     },
     {
       "name": "live-llm",
@@ -75,6 +82,13 @@
       "command": null,
       "input": null,
       "reason": "Встраивание в общий app выполняет R01 по INTEGRATION.txt"
+    },
+    {
+      "name": "official-gov-kz-publication-fetch",
+      "status": "NOT_RUN",
+      "command": "curl https://www.gov.kz/memleket/entities/astana/press/news/details/1193903?lang=ru",
+      "input": null,
+      "reason": "CONNECT 403 from the environment network policy (same for article 99399); not bypassed; extraction tested on synthetic texts only"
     }
   ],
   "limitations": [
@@ -83,7 +97,7 @@
     "Извлечение из текста — регулярные шаблоны для типовых форм дат/сумм/организаций; всё помечено needs_review",
     "Rate limit in-memory на процесс; провайдер, зависший дольше тайм-аута, продолжает занимать поток пула (ответ при этом уже отдан шаблоном)",
     "Шлюз R01 и R02 используют разные формы пути (относительный/полный); r02_public_loader поддерживает обе",
-    "Все проверки на синтетических записях; реальные объекты Астаны (R05) не проверялись этим модулем"
+    "Все проверки на синтетических записях: реальных записей Астаны в R05 нет, gov.kz недоступен из среды (403)"
   ],
-  "next_step": "R01: подключить AssistantEndpoint и assets по INTEGRATION.txt; R09 далее — прогон на пакете реальных объектов R05"
+  "next_step": "R01: подключить AssistantEndpoint и assets по INTEGRATION.txt; при доступе к gov.kz — прогон extract_draft на реальном тексте публикации"
 }
