@@ -1,0 +1,54 @@
+{
+ "url": "http://127.0.0.1:8502/",
+ "results": [
+  {
+   "id": "stub_mapReady",
+   "ok": true
+  },
+  {
+   "id": "stub_path_page_records_layer",
+   "ok": true,
+   "info": {
+    "page": "path",
+    "offline": false,
+    "feats": 15,
+    "vis": "visible"
+   }
+  },
+  {
+   "id": "stub_lines_projected",
+   "ok": true,
+   "info": {
+    "lines": 9,
+    "changed": 2,
+    "inside": true
+   }
+  },
+  {
+   "id": "stub_click_school_record",
+   "ok": true
+  },
+  {
+   "id": "stub_3d_toggle_tilts_camera",
+   "ok": true,
+   "info": {
+    "pitch": 51.99999999999999,
+    "note": "здания не проверены: тайлов нет (NOT_RUN)"
+   }
+  },
+  {
+   "id": "stub_return_restores_simulator_layers",
+   "ok": true,
+   "info": {
+    "markers": 6,
+    "overlay": "none",
+    "vis": "none"
+   }
+  },
+  {
+   "id": "stub_no_page_errors",
+   "ok": true,
+   "info": []
+  }
+ ]
+}

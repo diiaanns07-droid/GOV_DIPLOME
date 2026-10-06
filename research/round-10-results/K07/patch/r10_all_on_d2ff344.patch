@@ -1,0 +1,633 @@
+diff --git a/ui/web_server.py b/ui/web_server.py
+index d6967b3..c5bdd2f 100644
+--- a/ui/web_server.py
++++ b/ui/web_server.py
+@@ -41,7 +41,7 @@ POST_ROUTES = {
+ }
+ 
+ # Explicit public assets only: no directory serving, source code, or local settings.
+-for _asset in ("shell.js", "shell.css", "core/data.js", "core/evidence.js",
++for _asset in ("shell.js", "shell.css", "school-path.js", "core/data.js", "core/evidence.js",
+                "core/facts.js", "core/whatif.js", "core/plan.js", "core/resilience.js",
+                "core/plan-ui.js", "core/resilience-ui.js", "core/attribution/ATTRIBUTION.md",
+                "core/attribution/attribution.json", "core/attribution/LICENSES/Apache-2.0.txt",
+diff --git a/web/govtech/SOURCE_MANIFEST.json b/web/govtech/SOURCE_MANIFEST.json
+index d8c67f9..8ead9c1 100644
+--- a/web/govtech/SOURCE_MANIFEST.json
++++ b/web/govtech/SOURCE_MANIFEST.json
+@@ -36,7 +36,7 @@
+     {
+       "file": "plan-ui.js",
+       "sha256": "74d49451639367c3caceb1283032b3b9937338d6b0ec3c7a94d255f88993f64f",
+-      "integrated_sha256": "eb34eb6cd3e0e95ea801ed4b292d6691b4bb69c925c802247c399073f2f1223c"
++      "integrated_sha256": "6217f784e625bd37c19cf2f3f1753a2a64754827d109a76212bc9f11760c0320"
+     },
+     {
+       "file": "resilience-ui.js",
+@@ -70,7 +70,7 @@
+     }
+   ],
+   "adaptations": {
+-    "plan-ui.js": "Collapsible calculation assumptions and keyboard hint for slice centre; math unchanged.",
++    "plan-ui.js": "Collapsible calculation assumptions and keyboard hint for slice centre Pending edits wait for pointerup so a pressed button is not replaced before its click (K07 r10 D1); math unchanged.",
+     "resilience-ui.js": "Readable fallback for invalid import instead of literal undefined; math unchanged."
+   }
+ }
+diff --git a/web/govtech/core/plan-ui.js b/web/govtech/core/plan-ui.js
+index e819605..c39cebe 100644
+--- a/web/govtech/core/plan-ui.js
++++ b/web/govtech/core/plan-ui.js
+@@ -19,7 +19,12 @@
+   // right after typing must see the typed value, so every action first flushes the pending edits (round 9 race fix).
+   const PENDING = [];
+   function flush() { while (PENDING.length) PENDING.shift()(); }
+-  function defer(f) { PENDING.push(f); setTimeout(flush, 0); }
++  // K07 r10 D1: blur (change) fires on mousedown of a button; flushing before mouseup re-renders the panel and the
++  // pressed button is replaced, so its click is lost. While a pointer is down the flush waits for pointerup.
++  let pressed = false;
++  function defer(f) { PENDING.push(f); if (!pressed) setTimeout(flush, 0); }
++  document.addEventListener("pointerdown", () => { pressed = true; }, true);
++  for (const t of ["pointerup", "pointercancel"]) document.addEventListener(t, () => { pressed = false; if (PENDING.length) setTimeout(flush, 0); }, true);
+   // collapsible sections; open state survives re-render (long lists of 25 points / 16 candidates)
+   const OPEN = {};
+   function section(parent, id, title, openByDefault) {
+diff --git a/web/govtech/school-path.js b/web/govtech/school-path.js
+new file mode 100644
+index 0000000..2000540
+--- /dev/null
++++ b/web/govtech/school-path.js
+@@ -0,0 +1,274 @@
++/* K07 r10: простой путь «Выбрать участок → Проверить школы и точки → Сравнить два места → Посмотреть результат».
++ * Только интерфейс поверх закреплённого city-plan-v2 (core/plan.js): расстояния, метрики и неизвестные считает он.
++ * Стоимость и бюджет здесь не используются и не показываются (внутри: cost 1, бюджет 2 — только чтобы вызвать evaluatePlan).
++ * Учебная модель «Аким на 5 часов» (Score) не читается и не меняется.
++ */
++(function () {
++  "use strict";
++  const APP = window.CITY_APP, PL = window.CITY_PLAN;
++  if (!APP || !PL) return;
++  const { el, sv, $, D, F, EXT, toScreen, renderMap, updateStatus, qaOf, selectPlace, fmtM } = APP.ui;
++  const STATE = APP.state;
++  const STEPS = ["Выбрать участок", "Проверить школы и точки", "Сравнить два места", "Посмотреть результат"];
++  const MAX_POINTS = 12;
++  const SP = { step: 1, points: [], A: null, B: null, threshold: 500, view: "now", placing: null, seq: 1, msg: "", example: false };
++  const ctxCache = {};
++  const ctxOf = (city) => ctxCache[city] || (ctxCache[city] = PL.makeContext(D, city, F));
++  const city = () => D.cities[STATE.city];
++  const schools = () => city().places.filter((p) => p.group === "school");
++  const inBbox = (lon, lat) => { const [w, s, e, n] = city().bbox; return lon >= w && lon <= e && lat >= s && lat <= n; };
++  const km = (mm) => (mm == null ? "нет данных" : fmtM(mm / 1000));
++  const nameOf = (id) => { const p = city().places.find((p) => p.id === id); return p ? p.name || "Без названия" : id; };
++
++  // ---------- расчёт: одна функция, три состояния (Сейчас / A / B) ----------
++  function compute() {
++    const out = { now: null, A: null, B: null, reasons: [] };
++    if (!SP.points.length) { out.reasons.push("Нет точек проверки — поставьте хотя бы одну точку на шаге 2."); return out; }
++    if (!schools().length) out.reasons.push("В срезе нет записей школ — «Сейчас» не с чем сравнить (это не значит, что школ нет в городе).");
++    const cands = [];
++    if (SP.A) cands.push({ id: "A", lon: SP.A.lon, lat: SP.A.lat, category: "school", kind: "hypothetical", cost: 1 });
++    if (SP.B) cands.push({ id: "B", lon: SP.B.lon, lat: SP.B.lat, category: "school", kind: "hypothetical", cost: 1 });
++    try {
++      const ctx = ctxOf(STATE.city);
++      const sc = PL.validatePlanScenario({ schema_version: PL.SCHEMA, city_id: STATE.city, source_snapshot: ctx.source_snapshot, category: "school",
++        control_points: SP.points.map((p) => ({ id: p.id, lon: p.lon, lat: p.lat, weight: 1 })), candidates: cands,
++        budget: 2, max_selected: 2, coverage_radius_m: SP.threshold, required_ids: [], excluded_ids: [], selected_ids: [] }, ctx);
++      out.now = PL.evaluatePlan(ctx, sc, []);
++      if (SP.A) out.A = PL.evaluatePlan(ctx, sc, ["A"]);
++      if (SP.B) out.B = PL.evaluatePlan(ctx, sc, ["B"]);
++    } catch (e) { out.reasons.push("Расчёт не выполнен: " + (e.detail || e.message)); out.now = out.A = out.B = null; }
++    if (!SP.A && !SP.B) out.reasons.push("Места A и B не поставлены — пока видно только «Сейчас».");
++    else if (!SP.A || !SP.B) out.reasons.push(`Место ${SP.A ? "B" : "A"} не поставлено — сравнение двух мест невозможно, показано одно.`);
++    return out;
++  }
++  const changedRows = (r) => (r ? r.rows.filter((x) => x.nearest_after && x.nearest_after.kind === "hypothetical") : []);
++  function metricsOf(r) {
++    if (!r) return null;
++    const m = r.metrics;
++    return { mean: m.weighted_mean_mm, max: m.max_mm, within: m.covered_weight, total: m.total_weight, unknown: m.unknown_count, sum: m.weighted_sum_mm };
++  }
++  // объяснение компромисса — только из чисел, без обещаний
++  function tradeoff(res) {
++    const a = metricsOf(res.A), b = metricsOf(res.B);
++    if (!a || !b) return null;
++    const ca = changedRows(res.A).length, cb = changedRows(res.B).length;
++    if (!ca && !cb) return "Ни A, ни B не ближе существующих школ ни для одной точки — по этим точкам разницы с «Сейчас» нет.";
++    const better = [], worse = [];
++    const cmp = (x, y, label, lowerBetter) => {
++      if (x == null || y == null || x === y) return;
++      ((lowerBetter ? x < y : x > y) ? better : worse).push(label);
++    };
++    cmp(a.mean, b.mean, "среднему расстоянию", true); cmp(a.max, b.max, "худшей точке", true); cmp(a.within, b.within, `числу точек в пределах ${SP.threshold} м`, false);
++    const lex = lexFirst(a, b);
++    const tail = ` По правилу сравнения (меньше неизвестных → меньше суммарное расстояние → ближе худшая точка) первым идёт ${lex}.`;
++    if (better.length && worse.length) return `Компромисс: A лучше по ${better.join(" и ")}, B — по ${worse.join(" и ")}. Что важнее — решает человек.` + tail;
++    if (better.length) return `A не хуже B ни по одному показателю и лучше по ${better.join(", ")}.` + tail;
++    if (worse.length) return `B не хуже A ни по одному показателю и лучше по ${worse.join(", ")}.` + tail;
++    return "По трём показателям A и B равны." + tail;
++  }
++  function lexFirst(a, b) {
++    const ka = [a.unknown, a.sum, a.max ?? Infinity], kb = [b.unknown, b.sum, b.max ?? Infinity];
++    for (let i = 0; i < 3; i++) if (ka[i] !== kb[i]) return ka[i] < kb[i] ? "A" : "B";
++    return "A (равенство, порядок по имени)";
++  }
++
++  // ---------- действия ----------
++  function go(step) {
++    SP.step = Math.max(1, Math.min(4, step)); SP.placing = null;
++    if (SP.step === 4) SP.view = SP.A ? "A" : SP.B ? "B" : "now";
++    render(); renderMap(); updateStatus();
++    const h = $("pathStepTitle"); if (h) h.focus();
++  }
++  function setPlacing(what) { SP.placing = SP.placing === what ? null : what; $("map").classList.toggle("planmode", !!SP.placing); render(); updateStatus(); }
++  function place([lon, lat]) {
++    if (!SP.placing) return false;
++    if (!inBbox(lon, lat)) { SP.msg = "Место вне рамки участка — там нет данных, поставить нельзя."; render(); return false; }
++    if (SP.placing === "points") {
++      if (SP.points.length >= MAX_POINTS) { SP.msg = `Не больше ${MAX_POINTS} точек в простом режиме.`; render(); return false; }
++      SP.points.push({ id: "T" + SP.seq++, lon, lat }); SP.msg = `Точка T${SP.seq - 1} добавлена.`;
++    } else {
++      SP[SP.placing] = { lon, lat }; SP.msg = `Место ${SP.placing} поставлено (гипотеза, не план строительства).`; SP.placing = null;
++      $("map").classList.remove("planmode");
++    }
++    render(); renderMap(); updateStatus(); return true;
++  }
++  function keyPoint([w, s, e, n]) {  // Enter без мыши: точки по сетке 3×3, A и B — в разных местах
++    if (SP.placing === "A") return [w + (e - w) * .35, s + (n - s) * .4];
++    if (SP.placing === "B") return [w + (e - w) * .7, s + (n - s) * .65];
++    const i = SP.points.length % 9;
++    return [w + (e - w) * (.2 + .3 * (i % 3)), s + (n - s) * (.2 + .3 * Math.floor(i / 3))];
++  }
++  function example() {  // примерные точки: синтетика, явная метка
++    const [w, s, e, n] = city().bbox;
++    SP.points = [[.18, .22], [.42, .15], [.8, .2], [.25, .55], [.62, .5], [.88, .62], [.15, .85], [.5, .82], [.78, .9]]
++      .map(([x, y], i) => ({ id: "T" + (i + 1), lon: w + (e - w) * x, lat: s + (n - s) * y }));
++    SP.seq = SP.points.length + 1; SP.example = true;
++    SP.msg = "Добавлены 9 ПРИМЕРНЫХ точек (сетка по участку) — это не адреса жителей и не данные города.";
++    render(); renderMap(); updateStatus();
++  }
++  function removePoint(id) { SP.points = SP.points.filter((p) => p.id !== id); if (!SP.points.length) SP.example = false; SP.msg = `Точка ${id} удалена.`; render(); renderMap(); updateStatus(); }
++  function setView(v) { SP.view = v; renderKpi(); renderMap(); }
++  function reset(msg) { Object.assign(SP, { step: 1, points: [], A: null, B: null, view: "now", placing: null, seq: 1, example: false, msg: msg || "" }); $("map").classList.remove("planmode"); }
++  function openFull() {  // перенос в полный планировщик (бюджет и перебор там), стоимости — условные 1
++    const UI = window.CITY_PLAN_UI; if (!UI) return;
++    UI.reset(""); UI.state.category = "school";
++    for (const p of SP.points) UI.state.points.push({ id: p.id, lon: p.lon, lat: p.lat, weight: 1 });
++    for (const k of ["A", "B"]) if (SP[k]) UI.state.cands.push({ id: k, lon: SP[k].lon, lat: SP[k].lat, cost: 1 });
++    UI.state.radius = SP.threshold; UI.state.budget = 1; UI.state.max_selected = 1;
++    UI.changed("Перенесено из «Проверки школ»: стоимости A и B условно равны 1 — задайте свои.");
++    APP.ui.setPage("plan");
++  }
++
++  // ---------- карточка шага ----------
++  const btn = (id, text, onClick, extra) => { const b = el("button", { type: "button", class: "tool", id, ...(extra || {}) }, text); b.addEventListener("click", onClick); return b; };
++  function render() {
++    const body = $("pathBody"); if (!body) return;
++    const focusId = document.activeElement && body.contains(document.activeElement) ? document.activeElement.id : null;
++    body.replaceChildren();
++    const c = city(), res = compute();
++    const steps = el("ol", { class: "sp-steps", "aria-label": "Шаги" });
++    STEPS.forEach((t, i) => {
++      const li = el("li", { class: i + 1 === SP.step ? "on" : i + 1 < SP.step ? "done" : "" });
++      const b = btn(`spStep${i + 1}`, `${i + 1}. ${t}`, () => go(i + 1), { "aria-current": i + 1 === SP.step ? "step" : null });
++      li.append(b); steps.append(li);
++    });
++    body.append(steps);
++    body.append(el("h2", { id: "pathStepTitle", tabindex: "-1" }, `Шаг ${SP.step}. ${STEPS[SP.step - 1]}`));
++    if (SP.step === 1) {
++      body.append(el("p", null, `Участок ≈2×2 км: ${c.label}. В срезе ${schools().length} записей школ (Overture Maps ${c.release}).`));
++      body.append(el("p", { class: "sp-real" }, "Это реальный срез открытых данных. Учебная Астана симулятора «Аким на 5 часов» — отдельная модель; её Score здесь не используется и не меняется."));
++      body.append(el("p", { class: "muted" }, "Город переключается кнопками выше. Рамка на карте — граница данных."));
++    }
++    if (SP.step === 2) {
++      body.append(el("p", null, "Зелёные круги — записи школ из источника, коричневые — записи с сомнением в данных (QA). Поставьте точки, для которых важна дорога до школы (дом, остановка)."));
++      const row = el("div", { class: "wi-ctl" });
++      row.append(btn("spPlacePoints", SP.placing === "points" ? "Готово, хватит точек" : "Ставить точки на карте", () => setPlacing("points"), { "aria-pressed": String(SP.placing === "points") }),
++        btn("spExample", "Примерные точки", example));
++      body.append(row);
++      if (SP.example) body.append(el("p", { class: "sp-hyp" }, "Примерные точки — сетка для показа, не данные о жителях."));
++      const ul = el("ul", { class: "sp-points", "aria-label": "Точки проверки" });
++      for (const p of SP.points) {
++        const row = res.now && res.now.rows.find((r) => r.id === p.id);
++        const li = el("li"); li.append(el("strong", null, p.id), el("span", null, row ? `ближайшая школа ${km(row.before_mm)}` : "нет данных"),
++          btn(`spDel_${p.id}`, "Удалить", () => removePoint(p.id), { "aria-label": `Удалить точку ${p.id}` }));
++        ul.append(li);
++      }
++      if (SP.points.length) body.append(ul); else body.append(el("p", { class: "muted" }, "Точек пока нет."));
++    }
++    if (SP.step === 3) {
++      body.append(el("p", null, "Поставьте два гипотетических места для школы — A и B. Это вопрос «что если», а не план строительства."));
++      const row = el("div", { class: "wi-ctl" });
++      for (const k of ["A", "B"]) row.append(btn(`spPlace${k}`, SP.placing === k ? `Щёлкните на карте место ${k}…` : SP[k] ? `Переставить ${k}` : `Поставить ${k}`, () => setPlacing(k), { "aria-pressed": String(SP.placing === k) }));
++      body.append(row);
++      const lab = el("label", { class: "ctl" }, "Порог «близко», м (100–5000)");
++      const inp = el("input", { id: "spThreshold", type: "number", min: "100", max: "5000", step: "50", inputmode: "numeric", value: String(SP.threshold), class: "num-in" });
++      inp.addEventListener("change", () => {
++        const v = Number(inp.value);
++        // K07 r10: no layout change above the buttons here — a shift between mousedown and mouseup loses the click
++        if (Number.isInteger(v) && v >= 100 && v <= 5000) SP.threshold = v; else { SP.msg = "Порог — целое число от 100 до 5000 м; оставлен прежний."; inp.value = String(SP.threshold); }
++        renderKpi(); const m = $("spMsg"); if (m) m.textContent = SP.msg;
++      });
++      lab.append(inp); body.append(lab);
++    }
++    if (SP.step === 4) renderResult(body, res);
++    const nav = el("div", { class: "sp-nav" });
++    if (SP.step > 1) nav.append(btn("spBack", "Назад", () => go(SP.step - 1)));
++    const can = SP.step === 1 || (SP.step === 2 && SP.points.length) || SP.step === 3;
++    if (SP.step < 4) {
++      const next = btn("spNext", SP.step === 3 ? "Посмотреть результат" : `Дальше: ${STEPS[SP.step].toLowerCase()}`, () => go(SP.step + 1), { class: "tool sp-primary" });
++      next.disabled = !can; nav.append(next);
++      if (!can) nav.append(el("span", { class: "muted" }, "Нужна хотя бы одна точка."));
++    }
++    body.append(nav);
++    // status line below the buttons: its text can change on blur without moving the button being pressed
++    body.append(el("p", { id: "spMsg", class: "warn", role: "status", "aria-live": "polite" }, SP.msg));
++    renderKpi(res);
++    if (focusId) { const f = document.getElementById(focusId); if (f && !f.disabled) f.focus(); }
++  }
++  function renderResult(body, res) {
++    for (const r of res.reasons) body.append(el("p", { class: "sp-reason" }, r));
++    if (!res.now) return;
++    const cols = [["now", "Сейчас"], ["A", "С местом A"], ["B", "С местом B"]].filter(([k]) => k === "now" || res[k]);
++    const t = el("table", { class: "sp-table" }), head = el("tr");
++    head.append(el("th", null, "Показатель")); for (const [, l] of cols) head.append(el("th", null, l)); t.append(head);
++    const row = (label, f) => { const tr = el("tr"); tr.append(el("th", null, label)); for (const [k] of cols) tr.append(el("td", null, f(metricsOf(res[k]), k))); t.append(tr); };
++    const d = (x, k, key) => { if (k === "now" || !x) return ""; const b = metricsOf(res.now)[key]; const v = x[key]; if (v == null || b == null || v === b) return ""; return ` (${v < b ? "−" : "+"}${km(Math.abs(v - b))})`; };
++    row("Среднее до ближайшей школы", (x, k) => (x ? km(x.mean) + d(x, k, "mean") : "—"));
++    row("Худшая точка", (x, k) => (x ? km(x.max) + d(x, k, "max") : "—"));
++    row(`Точек в пределах ${SP.threshold} м`, (x) => (x ? `${x.within} из ${x.total}` : "—"));
++    if (cols.some(([k]) => metricsOf(res[k]).unknown)) row("Без данных (нет школы в срезе)", (x) => String(x.unknown));
++    body.append(el("div", { class: "tablewrap" }, null)); body.lastChild.append(t);
++    const tr = tradeoff(res); if (tr) body.append(el("p", { class: "sp-trade" }, tr));
++    for (const k of ["A", "B"]) if (res[k]) body.append(el("p", { class: "muted" }, `${k}: ближайшая школа меняется для ${changedRows(res[k]).length} из ${SP.points.length} точек — эти пути выделены на карте (вид «${k}»).`));
++    // источник рядом с числом: школа, ближайшая к худшей точке «Сейчас»
++    const worst = res.now.rows.filter((r) => r.before_mm != null).sort((a, b) => b.before_mm - a.before_mm)[0];
++    const src = el("div", { class: "sp-src" });
++    src.append(el("b", null, "Откуда числа. "), el("span", null, `Школы — записи Overture Maps ${city().release} (вторичные данные, не реестр). Расстояние — по прямой (haversine-mm-v1), не по дорогам. `));
++    if (worst && worst.nearest_before && worst.nearest_before.kind === "source") {
++      const id = worst.nearest_before.id, p = city().places.find((x) => x.id === id);
++      src.append(el("span", null, `Худшая точка «Сейчас» — ${worst.id}, ближайшая школа: `),
++        btn("spWorstSrc", `${qaOf(p || {}).length ? "⚠ " : ""}${nameOf(id)}`, () => selectPlace(id), { "aria-label": `Запись источника: ${nameOf(id)}` }));
++    }
++    body.append(src);
++    const more = el("details", { class: "pl-sec", id: "spMethod" });
++    more.append(el("summary", null, "Как считается и чего здесь нет"),
++      el("p", null, "Для каждой точки берётся ближайшая запись школы в срезе (и A/B, если они поставлены). Среднее и худшая точка считаются только когда у всех точек есть ближайшая школа; иначе — «нет данных» и счётчик неизвестных."),
++      el("p", null, "Не учитываются: вместимость школ, дороги и пешие маршруты, границы участков, стоимость строительства, трафик. Это не прогноз и не рекомендация строить."),
++      el("p", null, "Бюджет, полный перебор кандидатов, Парето и устойчивость — во вкладке «Дополнительно»."));
++    body.append(more);
++    const row2 = el("div", { class: "wi-ctl" });
++    row2.append(btn("spOpenFull", "Открыть в полном планировщике", openFull), btn("spRestart", "Начать заново", () => { reset("Сценарий очищен."); render(); renderMap(); updateStatus(); }));
++    body.append(row2);
++  }
++  // ---------- верхняя строка над картой: Сейчас / A / B / Разница + 3 показателя ----------
++  function renderKpi(res) {
++    const box = $("gov-kpi"); if (!box) return;
++    res = res || compute(); box.replaceChildren();
++    const seg = el("div", { class: "sp-seg", role: "group", "aria-label": "Что показать на карте" });
++    for (const [k, l] of [["now", "Сейчас"], ["A", "A"], ["B", "B"]]) {
++      const b = btn(`spView_${k}`, l, () => setView(k), { "aria-pressed": String(SP.view === k) });
++      b.disabled = k !== "now" && !res[k]; seg.append(b);
++    }
++    box.append(seg);
++    const r = res[SP.view] || res.now, m = metricsOf(r);
++    const kv = (label, v) => { const d = el("div", { class: "sp-k" }); d.append(el("span", null, label), el("b", null, v)); return d; };
++    if (!m) box.append(el("div", { class: "sp-k sp-empty" }, res.reasons[0] || "Нет данных для показателей."));
++    else box.append(kv("Среднее", km(m.mean)), kv("Худшая точка", km(m.max)), kv(`≤ ${SP.threshold} м`, `${m.within} из ${m.total}`));
++    box.append(el("small", null, SP.view === "now" ? "Записи источника" : `С гипотетическим местом ${SP.view}`));
++  }
++  // ---------- слой карты ----------
++  function layer(shapes, labels) {
++    if (!window.GOVTECH?.active) return;
++    const res = compute(), r = res[SP.view] || res.now;
++    if (r) for (const row of r.rows) {
++      const n = row.nearest_after; if (!n) continue;
++      const tgt = n.kind === "hypothetical" ? SP[n.id] : city().places.find((p) => p.id === n.id); if (!tgt) continue;
++      const [x1, y1] = toScreen(row.lon, row.lat), [x2, y2] = toScreen(tgt.lon, tgt.lat), ch = n.kind === "hypothetical";
++      shapes.append(sv("line", { x1, y1, x2, y2, stroke: ch ? "#c17238" : "#7d8f86", "stroke-width": ch ? 3.5 : 1.5, "stroke-dasharray": ch ? null : "4 4", "stroke-opacity": ch ? 1 : .8, class: ch ? "sp-changed" : "sp-same" }));
++    }
++    for (const p of SP.points) {
++      const [x, y] = toScreen(p.lon, p.lat), unk = r && r.rows.find((x) => x.id === p.id && x.after_mm == null);
++      shapes.append(sv("circle", { cx: x, cy: y, r: 5.5, fill: unk ? "#fff" : "#678497", stroke: unk ? "#678497" : "#fff", "stroke-width": 2 }));
++      const t = sv("text", { x: x + 8, y: y - 6, "font-size": 11, fill: "#33505e" }); t.textContent = p.id + (unk ? " ?" : ""); labels.append(t);
++    }
++    for (const k of ["A", "B"]) {
++      if (!SP[k]) continue;
++      const [x, y] = toScreen(SP[k].lon, SP[k].lat), on = SP.view === k;
++      shapes.append(sv("circle", { cx: x, cy: y, r: on ? 14 : 11, fill: "#c17238", "fill-opacity": on ? .28 : .12, stroke: "#c17238", "stroke-width": 2.5, "stroke-dasharray": "5 3", class: "sp-hyp-mark" }));
++      const t = sv("text", { x: x + 16, y: y + 4, "font-size": 12, "font-weight": 700, fill: "#8a4a1c" }); t.textContent = `${k} · гипотеза`; labels.append(t);
++    }
++  }
++  EXT.pathLayers.push(layer);
++  EXT.tools.push({ placing: () => !!SP.placing && window.GOVTECH?.page === "path", place, keyPoint,
++    stop: () => { if (SP.placing) { SP.placing = null; $("map").classList.remove("planmode"); render(); } },
++    statusText: () => SP.placing === "points" ? `Точки проверки: щёлкните на карте (Enter — следующая точка сетки). ${SP.points.length}/${MAX_POINTS}. Escape — выйти.`
++      : `Место ${SP.placing}: щёлкните на карте внутри рамки (Enter — место по умолчанию). Escape — отмена.` });
++  EXT.onCity.push((key, changedCity) => {
++    if (!changedCity) return;
++    const had = SP.points.length || SP.A || SP.B;
++    reset(had ? "Город изменён — точки и места A/B сброшены: между городами они не переносятся." : "");
++  });
++  EXT.cards.push(() => render());
++  window.CITY_SCHOOL_PATH = { state: SP, compute, render, go, place, example, setView, reset, tradeoff };
++  render();
++})();
+diff --git a/web/govtech/shell.css b/web/govtech/shell.css
+index 0e7eb59..0def586 100644
+--- a/web/govtech/shell.css
++++ b/web/govtech/shell.css
+@@ -76,7 +76,8 @@
+ #gov-legend span { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+ #gov-legend small { color: var(--muted); margin-top: 10px; }
+ #gov-legend i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+-.gov-source-dot { background: #176b4a; }.gov-point-dot { background: #678497; }.gov-candidate-dot { background: #c17238; }
++.gov-source-dot { background: #176b4a; }.gov-qa-dot { background: #b07823; }
++#gov-legend i.gov-hyp-dot { width: 13px; height: 13px; background: #c172382e; border: 2px dashed #c17238; box-sizing: border-box; }.gov-point-dot { background: #678497; }.gov-candidate-dot { background: #c17238; }
+ #gov-overlay { position: absolute; z-index: 2; inset: 0; width: 100%; height: 100%; pointer-events: none; display: none; stroke: none; fill: none; overflow: hidden; --ink: #152c26; --ink-2: #6d7c76; --surface: #fff; --critical: #c17238; --s-education: #176b4a; }
+ #gov-overlay text { font-family: "Segoe UI", sans-serif; paint-order: stroke; stroke: #fff; stroke-width: 3px; stroke-linejoin: round; }
+ #gov-attribution { position: absolute; z-index: 4; right: 15px; bottom: 28px; max-width: calc(100% - 510px); background: #ffffffdf; padding: 4px 8px; border-radius: 5px; font-size: 10px; }
+@@ -102,3 +103,57 @@
+   .gov-bottom { padding: 8px 16px; font-size: 10px; }
+   .govtech-mode .map-tools { top: 115px; bottom: auto; }
+ }
++/* K07 r10: простой путь «Проверка школ», верхняя строка показателей, схема без подложки */
++.govtech-mode #map-status { display: none !important; }
++#gov-panel[data-page=path] #planCard, #gov-panel[data-page=path] #resCard, #gov-panel[data-page=path] #gov-data, #gov-panel[data-page=path] #moreCard,
++#gov-panel[data-page=more] #planCard, #gov-panel[data-page=more] #resCard, #gov-panel[data-page=more] #gov-data, #gov-panel[data-page=more] #pathCard,
++#gov-panel[data-page=plan] #pathCard, #gov-panel[data-page=plan] #moreCard, #gov-panel[data-page=resilience] #pathCard, #gov-panel[data-page=resilience] #moreCard,
++#gov-panel[data-page=data] #pathCard, #gov-panel[data-page=data] #moreCard { display: none !important; }
++#gov-panel[data-page=path] #planCard, #gov-panel[data-page=path] #resCard { display: none !important; }
++.gov-more { display: grid; gap: 10px; }
++.gov-more .tool { display: grid; gap: 3px; text-align: left; padding: 12px !important; }
++.gov-more .tool span { color: var(--muted); font-size: 11px; }
++.gov-back { margin-bottom: 12px; }
++.sp-steps { list-style: none; padding: 0; margin: 0 0 14px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
++.sp-steps .tool { width: 100%; height: 100%; font-size: 10.5px !important; padding: 6px 5px !important; text-align: left; color: var(--muted); }
++.sp-steps .on .tool { background: #e4efda; border-color: #91b58a; color: var(--ink); font-weight: 600; }
++.sp-steps .done .tool { color: var(--green); }
++#pathStepTitle { font-size: 19px; }
++#pathStepTitle:focus { outline: none; }
++.sp-real { background: #eef4e5; border-radius: 10px; padding: 9px; }
++.sp-hyp { color: #8a4a1c; background: #fbf1e8; border-radius: 9px; padding: 8px; }
++.sp-points { list-style: none; padding: 0; margin: 8px 0; }
++.sp-points li { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-top: 1px solid var(--line); font-size: 12px; }
++.sp-points li span { flex: 1; color: var(--muted); }
++.sp-nav { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); }
++#gov-panel .sp-primary { background: var(--green); color: #fff; border-color: var(--green); font-weight: 600; }
++#gov-panel .sp-primary:disabled { background: #c9d4c6; border-color: #c9d4c6; }
++#gov-panel .sp-reason { background: #faf5e7; color: #7a5218; border-radius: 9px; padding: 9px; }
++#gov-panel .sp-table td:not(:first-child), #gov-panel .sp-table th:not(:first-child) { text-align: right; }
++.sp-trade { background: #f0f5e7; border-left: 3px solid var(--green); padding: 9px 10px; border-radius: 6px; }
++.sp-src { font-size: 11px; line-height: 1.6; color: var(--muted); margin: 10px 0; }
++.sp-src .tool { padding: 2px 7px !important; font-size: 11px !important; }
++#gov-kpi { position: absolute; z-index: 5; top: 100px; left: 488px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; max-width: calc(100% - 590px); background: #fffffff2; border: 1px solid #e4e9e3; border-radius: 16px; box-shadow: var(--shadow); padding: 8px 14px; font-size: 12px; }
++#gov-kpi[hidden] { display: none !important; }
++.sp-seg { display: flex; background: #e8eee3; padding: 3px; border-radius: 10px; gap: 3px; }
++.sp-seg .tool { border: 0; background: transparent; padding: 6px 11px; border-radius: 8px; font-weight: 600; font-size: 12px; }
++.sp-seg .tool[aria-pressed=true] { background: #fff; box-shadow: 0 2px 6px #19362812; }
++.sp-seg .tool:disabled { opacity: .4; }
++.sp-k { display: grid; line-height: 1.25; }
++.sp-k span { color: var(--muted); font-size: 10.5px; }
++.sp-k b { font-size: 15px; }
++.sp-empty { max-width: 260px; color: #7a5218; }
++#gov-kpi small { color: #8a4a1c; font-size: 10.5px; }
++#gov-offline { position: absolute; z-index: 4; left: 488px; bottom: 60px; max-width: 420px; background: #fff8ea; border: 1px solid #ecd7a8; color: #6f4c14; border-radius: 12px; padding: 8px 12px; font-size: 11.5px; box-shadow: var(--shadow); }
++#gov-offline[hidden] { display: none !important; }
++.govtech-mode #map:focus-visible { outline: 3px solid #91b58a; outline-offset: -3px; }
++@media(max-width:1200px) { #gov-kpi { left: 480px; max-width: calc(100% - 500px); } }
++@media(max-width:760px) {
++  #gov-kpi { top: 84px; left: 10px; right: 10px; max-width: none; gap: 8px 12px; padding: 6px 10px; border-radius: 12px; }
++  #gov-kpi small { display: none; }
++  .sp-k b { font-size: 13px; }
++  #gov-offline { left: 10px; right: 10px; bottom: auto; top: calc(46% - 46px); max-width: none; font-size: 10.5px; padding: 6px 10px; }
++  .sp-steps { grid-template-columns: repeat(4, 1fr); }
++  .sp-steps .tool { font-size: 9.5px !important; }
++  #gov-legend { display: none; }
++}
+diff --git a/web/govtech/shell.js b/web/govtech/shell.js
+index d143c52..fec57dc 100644
+--- a/web/govtech/shell.js
++++ b/web/govtech/shell.js
+@@ -17,7 +17,7 @@
+     for (const [k, v] of Object.entries(attrs || {})) if (v !== null && v !== undefined) e.setAttribute(k, v);
+     return e;
+   };
+-  const EXT = { layers: [], tools: [], onCity: [], onTool: [], cards: [] };
++  const EXT = { layers: [], pathLayers: [], tools: [], onCity: [], onTool: [], cards: [] };
+   const S = { city: "shymkent", tool: "inactive" };
+   const G = { active: false, page: "plan", camera: null, boundMap: null, dataKey: null, pending: false };
+   const PLUI = () => window.CITY_PLAN_UI;
+@@ -36,34 +36,54 @@
+       </div><div class="gov-scope">Открытые данные · участок ≈2×2 км</div>
+     </div>
+     <nav class="gov-tabs" aria-label="Разделы планирования">
+-      <button data-page="plan" aria-pressed="true">План</button><button data-page="resilience" aria-pressed="false">Устойчивость</button><button data-page="data" aria-pressed="false">Данные</button>
++      <button data-page="path" aria-pressed="true">Проверка школ</button><button data-page="data" aria-pressed="false">Данные</button><button data-page="more" aria-pressed="false">Дополнительно</button>
+     </nav>
+     <div id="gov-scroll">
+-      <section id="planCard" class="gov-card" hidden><h2>Ваш план развития</h2><div class="gov-quickstart"><b>Начните с примера</b><span>Загрузите демо-набор ниже или добавьте свои точки на карту.</span></div><div id="planBody"></div></section>
+-      <section id="resCard" class="gov-card" hidden><h2>Проверка устойчивости</h2><p>Сравните обычный план с тем, который лучше выдерживает ваши допущения о данных.</p><div id="resBody"></div></section>
++      <section id="pathCard" class="gov-card"><div id="pathBody"></div></section>
++      <section id="moreCard" class="gov-card"><h2>Дополнительные возможности</h2><p class="muted">Для подробного анализа. Основной сценарий — во вкладке «Проверка школ».</p>
++        <div class="gov-more"><button type="button" class="tool" data-goto="plan"><b>План с бюджетом</b><span>Условные стоимости, полный перебор, Парето, импорт и экспорт</span></button>
++        <button type="button" class="tool" data-goto="resilience"><b>Устойчивость</b><span>Как план ведёт себя, если часть записей источника неверна</span></button></div></section>
++      <section id="planCard" class="gov-card" hidden><button type="button" class="tool gov-back" data-goto="more">← Дополнительно</button><h2>Ваш план развития</h2><div class="gov-quickstart"><b>Начните с примера</b><span>Загрузите демо-набор ниже или добавьте свои точки на карту.</span></div><div id="planBody"></div></section>
++      <section id="resCard" class="gov-card" hidden><button type="button" class="tool gov-back" data-goto="more">← Дополнительно</button><h2>Проверка устойчивости</h2><p>Сравните обычный план с тем, который лучше выдерживает ваши допущения о данных.</p><div id="resBody"></div></section>
+       <section id="gov-data" class="gov-card"><h2>Что мы знаем о городе</h2><div id="gov-data-body"></div><div id="gov-selection" role="status"></div></section>
+     </div>
+     <div class="gov-bottom"><span class="gov-dot"></span><span id="gov-status" role="status" aria-live="polite">Выберите категорию и добавьте точки.</span></div>`;
+   document.body.append(panel);
+   const legend = el("div", { id: "gov-legend", hidden: "" });
++  const LEGEND_PATH = `<b>Проверка школ</b><span><i class="gov-source-dot"></i>Школа — запись источника</span><span><i class="gov-qa-dot"></i>Школа, есть сомнение в данных (QA)</span><span><i class="gov-point-dot"></i>Точка проверки</span><span><i class="gov-hyp-dot"></i>A / B — гипотетическое место</span><small>Сплошная линия — ближайшая школа сменилась на A или B; пунктир — без изменений. Рамка — граница данных. Расстояния по прямой.</small>`;
+   legend.innerHTML = `<b>Планирование по открытым данным</b><span><i class="gov-source-dot"></i>Запись источника</span><span><i class="gov-point-dot"></i>Контрольная точка</span><span><i class="gov-candidate-dot"></i>Проектный объект</span><small>Рамка — граница доступного среза. Расстояния по прямой, стоимости условные.</small>`;
++  const LEGEND_PLAN = legend.innerHTML;
+   document.body.append(legend);
+   const attribution = el("div", { id: "gov-attribution", hidden: "" });
+   attribution.append(document.createTextNode("Данные: Overture Maps · OSM · Meta · TomTom · "), el("a", { href: "/govtech/core/attribution/ATTRIBUTION.md", target: "_blank", rel: "noopener" }, "Источники и лицензии"));
+   document.body.append(attribution);
++  // K07 r10: compact top row over the map (view switch + 2–3 metrics), filled by school-path.js
++  const kpi = el("div", { id: "gov-kpi", hidden: "" }); document.body.append(kpi);
++  // K07 r10: honest note when the basemap (OpenFreeMap) did not load — the slice is drawn as a scheme
++  const offline = el("div", { id: "gov-offline", hidden: "", role: "note" },
++    "Подложка карты не загрузилась (нет связи с OpenFreeMap): показана схема участка без улиц и зданий, 3D недоступно. Расчёты работают.");
++  document.body.append(offline);
+   const overlay = sv("svg", { id: "gov-overlay", "aria-hidden": "true" });
+   const shapes = sv("g"), labels = sv("g"); overlay.append(shapes, labels); $g("map").append(overlay);
+   const issues = F.evidenceProblems ? F.evidenceProblems(D, window.CITY_OBS) : [];
+ 
+   function setPage(page) {
+-    if (!["plan", "resilience", "data"].includes(page)) return;
++    if (!["path", "more", "plan", "resilience", "data"].includes(page)) return;
++    if (page !== G.page) { for (const t of EXT.tools) t.stop(); }
+     G.page = page; panel.dataset.page = page;
+-    panel.querySelectorAll("[data-page]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.page === page)));
++    const tab = page === "plan" || page === "resilience" ? "more" : page;
++    panel.querySelectorAll("[data-page]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.page === tab)));
++    kpi.hidden = !G.active || page !== "path";
++    legend.innerHTML = page === "path" ? LEGEND_PATH : LEGEND_PLAN;
+     $g("gov-scroll").scrollTop = 0;
++    scheduleMap();
+   }
+   panel.querySelectorAll("[data-page]").forEach((b) => b.addEventListener("click", () => setPage(b.dataset.page)));
++  panel.querySelectorAll("[data-goto]").forEach((b) => b.addEventListener("click", () => {
++    setPage(b.dataset.goto); const h = panel.querySelector(`#${{ plan: "planCard", resilience: "resCard", more: "moreCard" }[b.dataset.goto]} h2`);
++    if (h) { h.tabIndex = -1; h.focus(); } }));
+   panel.querySelectorAll("[data-city]").forEach((b) => b.addEventListener("click", () => switchCity(b.dataset.city)));
+-  setPage("plan");
++  setPage("path");
+ 
+   function updateStatus() {
+     const t = EXT.tools.find((x) => x.placing());
+@@ -106,7 +126,61 @@
+     for (const f of EXT.cards) f();
+     dataPanel(); fitSlice(); renderMap(); updateStatus();
+   }
++  // K07 r10 F1: without the basemap the camera is not usable; the slice is fitted into the free part of #map
++  // (Web Mercator, north up) so records, points and A/B stay visible and clickable.
++  const merc = (lon, lat) => [lon * Math.PI / 180, Math.log(Math.tan(Math.PI / 4 + lat * Math.PI / 360))];
++  function schema() {
++    const r = $g("map").getBoundingClientRect(), mobile = innerWidth < 761;
++    const pad = mobile ? { top: 150, left: 18, right: 64, bottom: r.height * .56 } : { top: 150, left: 500, right: 350, bottom: 70 };
++    const [w, s, e, n] = D.cities[S.city].bbox, [x0, y0] = merc(w, s), [x1, y1] = merc(e, n);
++    const k = Math.max(1e-9, Math.min((r.width - pad.left - pad.right) / (x1 - x0), (r.height - pad.top - pad.bottom) / (y1 - y0)));
++    const ox = pad.left + ((r.width - pad.left - pad.right) - k * (x1 - x0)) / 2, oy = pad.top + ((r.height - pad.top - pad.bottom) - k * (y1 - y0)) / 2;
++    return { k, ox, oy, x0, y1 };
++  }
++  function toScreen(lon, lat) {
++    if (mapReady) { const p = map.project([lon, lat]); return [p.x, p.y]; }
++    const t = schema(), [x, y] = merc(lon, lat); return [t.ox + (x - t.x0) * t.k, t.oy + (t.y1 - y) * t.k];
++  }
++  function fromScreen(px, py) {
++    if (mapReady) { const l = map.unproject([px, py]); return [l.lng, l.lat]; }
++    const t = schema(), x = t.x0 + (px - t.ox) / t.k, y = t.y1 - (py - t.oy) / t.k;
++    return [x * 180 / Math.PI, (2 * Math.atan(Math.exp(y)) - Math.PI / 2) * 180 / Math.PI];
++  }
++  function schemaLayer() {  // slice frame + source records, drawn only without the basemap
++    const c = D.cities[S.city], [w, s, e, n] = c.bbox, cat = PLUI()?.state.category || "school";
++    const a = toScreen(w, n), b = toScreen(e, s);
++    shapes.append(sv("rect", { x: a[0], y: a[1], width: b[0] - a[0], height: b[1] - a[1], fill: "#176b4a", "fill-opacity": .05, stroke: "#176b4a", "stroke-width": 2, "stroke-dasharray": "6 6", rx: 4 }));
++    const pcat = G.page === "path" ? "school" : cat;
++    for (const p of c.places.filter((p) => p.group === pcat)) {
++      const [x, y] = toScreen(p.lon, p.lat);
++      shapes.append(sv("circle", { cx: x, cy: y, r: 6, fill: qaOf(p).length ? "#b07823" : "#176b4a", stroke: "#fff", "stroke-width": 2 }));
++    }
++  }
++  function recordAt(px, py) {  // nearest record of the shown category within 12 px
++    const cat = G.page === "path" ? "school" : PLUI()?.state.category || "school"; let best = null, bd = 144;
++    for (const p of D.cities[S.city].places.filter((p) => p.group === cat)) {
++      const [x, y] = toScreen(p.lon, p.lat), d = (x - px) ** 2 + (y - py) ** 2; if (d < bd) { bd = d; best = p; }
++    }
++    return best;
++  }
++  function placeCenter(tool) {  // keyboard placement: deterministic spots inside the known slice
++    const [w, s, e, n] = D.cities[S.city].bbox;
++    tool.place(tool.keyPoint ? tool.keyPoint([w, s, e, n]) : [(w + e) / 2, (s + n) / 2]);
++  }
++  $g("map").addEventListener("click", (event) => {
++    if (!G.active || mapReady) return;
++    const r = $g("map").getBoundingClientRect(), px = event.clientX - r.left, py = event.clientY - r.top;
++    const tool = EXT.tools.find((t) => t.placing());
++    if (tool) { tool.place(fromScreen(px, py)); return; }
++    const hit = recordAt(px, py); if (hit) selectPlace(hit.id);
++  });
++  $g("map").addEventListener("keydown", (event) => {
++    if (!G.active || mapReady) return;
++    if (event.key === "Escape") { for (const t of EXT.tools) t.stop(); updateStatus(); }
++    if (event.key === "Enter") { const tool = EXT.tools.find((t) => t.placing()); if (tool) { event.preventDefault(); placeCenter(tool); } }
++  });
+   function fitSlice() {
++    if (G.active && !mapReady) { scheduleMap(); return; }
+     if (!G.active || !mapReady) return;
+     const b = D.cities[S.city].bbox, mobile = innerWidth < 761;
+     map.fitBounds([[b[0], b[1]], [b[2], b[3]]], { padding: mobile ? { top: 95, left: 20, right: 65, bottom: innerHeight * .5 } : { top: 130, left: 495, right: 95, bottom: 65 }, maxZoom: 15.8, pitch: state.threeD ? 52 : 0, bearing: state.threeD ? -16 : 0, duration: 650 * motion() });
+@@ -124,8 +198,16 @@
+     requestAnimationFrame(() => { G.pending = false; renderMap(); });
+   }
+   function renderMap() {
++    offline.hidden = !G.active || mapReady;
++    overlay.style.display = G.active ? "block" : "none";
++    if (G.active && !mapReady) {
++      if (G.dataKey !== S.city + "|offline") { G.dataKey = S.city + "|offline"; dataPanel(); }
++      shapes.replaceChildren(); labels.replaceChildren(); schemaLayer();
++      for (const f of layersFor()) f(shapes, labels);
++      return;
++    }
+     if (!G.active || !mapReady || !map.getSource("gov-records")) return;
+-    const cat = PLUI()?.state.category || "school", key = S.city + "|" + cat;
++    const cat = G.page === "path" ? "school" : PLUI()?.state.category || "school", key = S.city + "|" + cat;  // path page: schools
+     if (G.dataKey !== key) {
+       G.dataKey = key;
+       const c = D.cities[S.city], [w, s, e, n] = c.bbox;
+@@ -134,8 +216,10 @@
+       dataPanel();
+     }
+     shapes.replaceChildren(); labels.replaceChildren();
+-    for (const f of EXT.layers) f(shapes, labels);
++    for (const f of layersFor()) f(shapes, labels);
+   }
++  // the simple path draws only its own layer; plan/resilience layers stay on their pages
++  function layersFor() { return G.page === "path" ? EXT.pathLayers : EXT.layers; }
+   function onMapReady() {
+     if (!mapReady) return;
+     if (G.boundMap !== map) {
+@@ -159,13 +243,9 @@
+         if (event.key === "Escape") { for (const t of EXT.tools) t.stop(); updateStatus(); }
+         if (event.key === "Enter") {
+           const tool = EXT.tools.find((t) => t.placing());
+-          if (tool) {
+-            event.preventDefault();
+-            // A deterministic keyboard placement inside the known slice, independent of
+-            // camera padding/orientation. Pointer placement still uses the clicked coordinates.
+-            const [w, s, e, n] = D.cities[S.city].bbox;
+-            tool.place([(w + e) / 2, (s + n) / 2]);
+-          }
++          // A deterministic keyboard placement inside the known slice, independent of
++          // camera padding/orientation. Pointer placement still uses the clicked coordinates.
++          if (tool) { event.preventDefault(); event.stopPropagation(); placeCenter(tool); }
+         }
+       });
+     }
+@@ -181,6 +261,8 @@
+     G.active = active; S.tool = active ? "v2" : "inactive";
+     document.body.classList.toggle("govtech-mode", active);
+     panel.hidden = legend.hidden = attribution.hidden = !active;
++    kpi.hidden = !active || G.page !== "path"; offline.hidden = !active || mapReady; overlay.style.display = active ? "block" : "none";
++    if (!mapReady && !$g("map").hasAttribute("tabindex")) $g("map").tabIndex = 0;  // keyboard placement without the basemap
+     $g("govtech-toggle").textContent = active ? "Вернуться к симулятору" : "Городское планирование";
+     $g("govtech-toggle").setAttribute("aria-pressed", String(active));
+     $g("map").setAttribute("aria-label", active ? "3D-карта городского планирования" : "Интерактивная карта районов Астаны");
+@@ -204,15 +286,18 @@
+     state.threeD = !state.threeD;
+     $g("toggle-3d").classList.toggle("active", state.threeD);
+     $g("toggle-3d").setAttribute("aria-pressed", String(state.threeD));
+-    if (mapReady) {
+-      const [w, s, east, n] = D.cities[S.city].bbox;
+-      map.easeTo({ center: [(w + east) / 2, (s + n) / 2], pitch: state.threeD ? 52 : 0,
+-        zoom: state.threeD ? Math.max(15.5, map.getZoom()) : map.getZoom(), duration: 650 * motion() });
++    if (!mapReady) {  // K07 r10: say why 3D shows nothing instead of a silent toggle
++      state.threeD = false; $g("toggle-3d").classList.remove("active"); $g("toggle-3d").setAttribute("aria-pressed", "false");
++      toast("3D-здания появятся, когда загрузится подложка карты. Сейчас показана схема участка.");
++    } else {
++      // K07 r10: tilt over the whole slice with the panel padding (was: centre zoom 15.5 — the slice went under the panel)
++      fitSlice();
+     }
+   }, true);
+   // Preserve the original map and its 3D/zoom controls; expose only the UI seam expected by pinned modules.
+   window.CITY_APP = { state: S, switchCity, setTool: () => setActive(true), ui: { el, sv, $: $g, D, F, EXT,
+-    toScreen: (lon, lat) => { const p = map.project([lon, lat]); return [p.x, p.y]; }, renderMap: scheduleMap, updateStatus, qaOf, selectPlace, fmtM, stopV1: () => {} } };
+-  window.GOVTECH = { get active() { return G.active; }, setActive, setPage, switchCity, onMapReady };
++    toScreen, fromScreen, renderMap: scheduleMap, setPage, get page() { return G.page; }, updateStatus, qaOf, selectPlace, fmtM, stopV1: () => {} } };
++  window.GOVTECH = { get active() { return G.active; }, get page() { return G.page; }, setActive, setPage, switchCity, onMapReady };
++  addEventListener("resize", () => { if (G.active && !mapReady) scheduleMap(); });
+   if (mapReady) onMapReady();
+ })();
+diff --git a/web/index.html b/web/index.html
+index 62200c7..bb1f1b7 100644
+--- a/web/index.html
++++ b/web/index.html
+@@ -188,5 +188,6 @@
+     <script defer src="/govtech/shell.js"></script>
+     <script defer src="/govtech/core/plan-ui.js"></script>
+     <script defer src="/govtech/core/resilience-ui.js"></script>
++    <script defer src="/govtech/school-path.js"></script>
+   </body>
+ </html>

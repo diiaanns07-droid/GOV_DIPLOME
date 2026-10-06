@@ -1,0 +1,38 @@
+{
+ "url": "http://127.0.0.1:8501/",
+ "results": [
+  {
+   "id": "cancel_search_by_click",
+   "ok": true,
+   "info": {
+    "seq": [
+     "running",
+     "cancel-enabled",
+     "cancelled",
+     "cancelled",
+     "plDemo"
+    ]
+   }
+  },
+  {
+   "id": "cancel_search_by_keyboard",
+   "ok": true,
+   "info": {
+    "before": {
+     "status": "running",
+     "focus": "plCancel"
+    },
+    "after": {
+     "status": "cancelled",
+     "msg": "Поиск отменён; ручной план не изменён, неполный результат не показывается.",
+     "focus": "plRun"
+    }
+   }
+  },
+  {
+   "id": "cancel_no_page_errors",
+   "ok": true,
+   "info": []
+  }
+ ]
+}

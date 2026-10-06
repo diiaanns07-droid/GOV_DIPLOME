@@ -1,0 +1,415 @@
+{
+ "url": "http://127.0.0.1:8502/",
+ "results": [
+  {
+   "id": "1440_open_path",
+   "ok": true,
+   "info": {
+    "step": 1,
+    "pts": 0,
+    "A": false,
+    "B": false,
+    "view": "now",
+    "msg": "",
+    "reasons": [
+     "Нет точек проверки — поставьте хотя бы одну точку на шаге 2."
+    ],
+    "now": null,
+    "a": null,
+    "b": null,
+    "changedA": null,
+    "active": true,
+    "page": "path",
+    "focus": "BUTTON",
+    "lines": 0,
+    "changedLines": 0,
+    "hyp": [],
+    "offline": true,
+    "mapStatusVisible": false,
+    "kpi": "Сейчас A B Нет точек проверки — поставьте хотя бы одну точку на шаге 2. Записи источника",
+    "mapReady": false
+   }
+  },
+  {
+   "id": "1440_offline_note",
+   "ok": true,
+   "info": {
+    "mapReady": false,
+    "offline": true
+   }
+  },
+  {
+   "id": "1440_schools_visible",
+   "ok": true,
+   "info": {
+    "schoolDots": 15
+   }
+  },
+  {
+   "id": "1440_next_disabled_without_points",
+   "ok": true
+  },
+  {
+   "id": "1440_example_points",
+   "ok": true,
+   "info": {
+    "pts": 9
+   }
+  },
+  {
+   "id": "1440_click_adds_point_first_try",
+   "ok": true,
+   "info": {
+    "pts": 10,
+    "at": [
+     853.9999999998147,
+     490.02105715238736
+    ],
+    "msg": "Точка T10 добавлена."
+   }
+  },
+  {
+   "id": "1440_place_A_click_B_keyboard",
+   "ok": true,
+   "info": {
+    "A": true,
+    "B": true,
+    "mapFocusable": true,
+    "msg": "Место B поставлено (гипотеза, не план строительства)."
+   }
+  },
+  {
+   "id": "1440_threshold_then_result_first_try",
+   "ok": true,
+   "info": {
+    "step": 4,
+    "kpi": "Сейчас A B Среднее 312 м Худшая точка 466 м ≤ 400 м 7 из 10 С гипотетическим местом A"
+   }
+  },
+  {
+   "id": "1440_result_metrics",
+   "ok": true,
+   "info": {
+    "now": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 3584188,
+     "weighted_mean_mm": 358418.8,
+     "max_mm": 681622,
+     "covered_weight": 5,
+     "total_weight": 10,
+     "coverage_fraction": 0.5,
+     "cost": 0,
+     "count": 0
+    },
+    "a": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 3116893,
+     "weighted_mean_mm": 311689.3,
+     "max_mm": 465848,
+     "covered_weight": 7,
+     "total_weight": 10,
+     "coverage_fraction": 0.7,
+     "cost": 1,
+     "count": 1
+    },
+    "b": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 3309980,
+     "weighted_mean_mm": 330998,
+     "max_mm": 681622,
+     "covered_weight": 8,
+     "total_weight": 10,
+     "coverage_fraction": 0.8,
+     "cost": 1,
+     "count": 1
+    },
+    "reasons": []
+   }
+  },
+  {
+   "id": "1440_changed_paths_highlighted",
+   "ok": true,
+   "info": {
+    "lines": 10,
+    "changed": 2,
+    "changedA": 2,
+    "hyp": [
+     "A · гипотеза",
+     "B · гипотеза"
+    ]
+   }
+  },
+  {
+   "id": "1440_tradeoff_sources_collapsed",
+   "ok": true,
+   "info": {
+    "tradeoff": "Компромисс: A лучше по среднему расстоянию и худшей точке, B — по числу точек в пределах 400 м. Что важнее — решает человек. По правилу сравнения (меньше неизвестных → меньше суммарное расстояние → ближе худшая точка) первым идёт A.",
+    "src": "Откуда числа. Школы — записи Overture Maps 2026-09-23.1 (вторичные данные, не реестр). Расстояние — по прямой (haversine"
+   }
+  },
+  {
+   "id": "1440_focus_on_step_title",
+   "ok": true,
+   "info": {
+    "focus": "pathStepTitle"
+   }
+  },
+  {
+   "id": "1440_view_B_switch",
+   "ok": true,
+   "info": {
+    "view": "B",
+    "changed": 3
+   }
+  },
+  {
+   "id": "1440_source_record_opens",
+   "ok": true,
+   "info": {
+    "page": "data",
+    "text": "Учебный центр Меруерт\n\n931d6da5-e9db-4523-a6fd-79c88f235f88\n\nКоординаты: 69.599229, 42.314563. Источник: meta.\n\nЗапись источника, не подтверждённый на месте объ"
+   }
+  },
+  {
+   "id": "1440_advanced_plan_reachable",
+   "ok": true,
+   "info": {
+    "page": "plan",
+    "budgetVisible": true
+   }
+  },
+  {
+   "id": "1440_no_budget_on_main_path",
+   "ok": true
+  },
+  {
+   "id": "1440_city_switch_resets",
+   "ok": true,
+   "info": {
+    "msg": "Город изменён — точки и места A/B сброшены: между городами они не переносятся.",
+    "step": 1
+   }
+  },
+  {
+   "id": "1440_return_to_simulator",
+   "ok": true,
+   "info": {
+    "active": false,
+    "kpiHidden": true,
+    "overlay": "none",
+    "title": "\n            Аким на 5 часов.\n          ",
+    "body": true
+   }
+  },
+  {
+   "id": "1440_no_page_errors",
+   "ok": true,
+   "info": []
+  },
+  {
+   "id": "390_open_path",
+   "ok": true,
+   "info": {
+    "step": 1,
+    "pts": 0,
+    "A": false,
+    "B": false,
+    "view": "now",
+    "msg": "",
+    "reasons": [
+     "Нет точек проверки — поставьте хотя бы одну точку на шаге 2."
+    ],
+    "now": null,
+    "a": null,
+    "b": null,
+    "changedA": null,
+    "active": true,
+    "page": "path",
+    "focus": "BUTTON",
+    "lines": 0,
+    "changedLines": 0,
+    "hyp": [],
+    "offline": true,
+    "mapStatusVisible": false,
+    "kpi": "Сейчас A B Нет точек проверки — поставьте хотя бы одну точку на шаге 2.",
+    "mapReady": false
+   }
+  },
+  {
+   "id": "390_offline_note",
+   "ok": true,
+   "info": {
+    "mapReady": false,
+    "offline": true
+   }
+  },
+  {
+   "id": "390_schools_visible",
+   "ok": true,
+   "info": {
+    "schoolDots": 15
+   }
+  },
+  {
+   "id": "390_next_disabled_without_points",
+   "ok": true
+  },
+  {
+   "id": "390_example_points",
+   "ok": true,
+   "info": {
+    "pts": 9
+   }
+  },
+  {
+   "id": "390_click_adds_point_first_try",
+   "ok": true,
+   "info": {
+    "pts": 10,
+    "at": [
+     194.13279386261945,
+     260.68789921378175
+    ],
+    "msg": "Точка T10 добавлена."
+   }
+  },
+  {
+   "id": "390_place_A_click_B_keyboard",
+   "ok": true,
+   "info": {
+    "A": true,
+    "B": true,
+    "mapFocusable": true,
+    "msg": "Место B поставлено (гипотеза, не план строительства)."
+   }
+  },
+  {
+   "id": "390_threshold_then_result_first_try",
+   "ok": true,
+   "info": {
+    "step": 4,
+    "kpi": "Сейчас A B Среднее 312 м Худшая точка 466 м ≤ 400 м 7 из 10"
+   }
+  },
+  {
+   "id": "390_result_metrics",
+   "ok": true,
+   "info": {
+    "now": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 3583867,
+     "weighted_mean_mm": 358386.7,
+     "max_mm": 681622,
+     "covered_weight": 5,
+     "total_weight": 10,
+     "coverage_fraction": 0.5,
+     "cost": 0,
+     "count": 0
+    },
+    "a": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 3116421,
+     "weighted_mean_mm": 311642.1,
+     "max_mm": 465848,
+     "covered_weight": 7,
+     "total_weight": 10,
+     "coverage_fraction": 0.7,
+     "cost": 1,
+     "count": 1
+    },
+    "b": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 3313048,
+     "weighted_mean_mm": 331304.8,
+     "max_mm": 681622,
+     "covered_weight": 8,
+     "total_weight": 10,
+     "coverage_fraction": 0.8,
+     "cost": 1,
+     "count": 1
+    },
+    "reasons": []
+   }
+  },
+  {
+   "id": "390_changed_paths_highlighted",
+   "ok": true,
+   "info": {
+    "lines": 10,
+    "changed": 2,
+    "changedA": 2,
+    "hyp": [
+     "A · гипотеза",
+     "B · гипотеза"
+    ]
+   }
+  },
+  {
+   "id": "390_tradeoff_sources_collapsed",
+   "ok": true,
+   "info": {
+    "tradeoff": "Компромисс: A лучше по среднему расстоянию и худшей точке, B — по числу точек в пределах 400 м. Что важнее — решает человек. По правилу сравнения (меньше неизвестных → меньше суммарное расстояние → ближе худшая точка) первым идёт A.",
+    "src": "Откуда числа. Школы — записи Overture Maps 2026-09-23.1 (вторичные данные, не реестр). Расстояние — по прямой (haversine"
+   }
+  },
+  {
+   "id": "390_focus_on_step_title",
+   "ok": true,
+   "info": {
+    "focus": "pathStepTitle"
+   }
+  },
+  {
+   "id": "390_view_B_switch",
+   "ok": true,
+   "info": {
+    "view": "B",
+    "changed": 3
+   }
+  },
+  {
+   "id": "390_source_record_opens",
+   "ok": true,
+   "info": {
+    "page": "data",
+    "text": "Учебный центр Меруерт\n\n931d6da5-e9db-4523-a6fd-79c88f235f88\n\nКоординаты: 69.599229, 42.314563. Источник: meta.\n\nЗапись источника, не подтверждённый на месте объ"
+   }
+  },
+  {
+   "id": "390_advanced_plan_reachable",
+   "ok": true,
+   "info": {
+    "page": "plan",
+    "budgetVisible": true
+   }
+  },
+  {
+   "id": "390_no_budget_on_main_path",
+   "ok": true
+  },
+  {
+   "id": "390_city_switch_resets",
+   "ok": true,
+   "info": {
+    "msg": "Город изменён — точки и места A/B сброшены: между городами они не переносятся.",
+    "step": 1
+   }
+  },
+  {
+   "id": "390_return_to_simulator",
+   "ok": true,
+   "info": {
+    "active": false,
+    "kpiHidden": true,
+    "overlay": "none",
+    "title": "\n            Аким на 5 часов.\n          ",
+    "body": true
+   }
+  },
+  {
+   "id": "390_no_page_errors",
+   "ok": true,
+   "info": []
+  }
+ ]
+}
