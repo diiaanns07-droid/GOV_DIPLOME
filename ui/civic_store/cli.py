@@ -47,8 +47,8 @@ def _db_path(args) -> Path:
 
 def _read_password(args, username: str) -> str:
     if args.password_stdin:
-        line = sys.stdin.readline()
-        password = line[:-1] if line.endswith("\n") else line
+        # Только перевод строки (LF или CRLF Windows); прочие пробелы — часть пароля.
+        password = sys.stdin.readline().rstrip("\r\n")
     else:
         if not sys.stdin.isatty():
             raise SystemExit("Нет терминала для скрытого ввода: используйте --password-stdin.")

@@ -231,3 +231,10 @@ def test_export_audit_lists_history_without_secrets(service, editor, db_path, tm
     text = out.read_text(encoding="utf-8")
     assert PASSWORD not in text and "password" not in text and "scrypt" not in text
     assert editor.cookie not in text and editor.csrf not in text
+
+
+def test_password_stdin_accepts_windows_line_endings(tmp_path):
+    db = str(tmp_path / "crlf.sqlite3")
+    secret = "Crlf-Strong-Pass-2026"
+    assert run_cli("--db", db, "create-editor", "crlfuser", "--password-stdin", stdin=secret + "\r\n").returncode == 0
+    assert Editor(CivicService(db), "crlfuser", secret).get("/staff/objects")["status"] == 200

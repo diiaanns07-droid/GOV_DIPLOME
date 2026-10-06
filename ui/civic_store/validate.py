@@ -46,7 +46,7 @@ SERVER_FIELDS = frozenset({
 NESTED_FIELDS = {"schedule": SCHEDULE_KEYS, "budget": BUDGET_KEYS, "responsible": RESPONSIBLE_KEYS}
 
 ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$")
-DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+DATE_RE = re.compile(r"^[0-9]{4}-[0-9]{2}-[0-9]{2}$")
 FIELD_PATH_RE = re.compile(r"^[a-z_]{1,40}(\.[a-z_]{1,40}){0,2}$")
 HTML_RE = re.compile(r"<\s*[A-Za-z/!?]")
 BIDI_CONTROLS = frozenset("‪‫‬‭‮⁦⁧⁨⁩")
@@ -177,10 +177,15 @@ def _is_number(value) -> bool:
     return isinstance(value, (int, float)) and not isinstance(value, bool)
 
 
+def _is_finite_number(value) -> bool:
+    # math.isfinite(10**400) бросает OverflowError: целые всегда конечны, проверяем только float.
+    return _is_number(value) and (isinstance(value, int) or math.isfinite(value))
+
+
 def clean_amount(value, path, errors):
     if value is None:
         return None
-    if not _is_number(value) or not math.isfinite(value):
+    if not _is_finite_number(value):
         errors.add(path, "Сумма — конечное неотрицательное число или null (неизвестно).")
         return None
     if value < 0 or value > MAX_AMOUNT_KZT:
@@ -213,7 +218,7 @@ def clean_url(value, path, errors):
 def _position(value, path, errors, counter):
     counter[0] += 1
     if (not isinstance(value, (list, tuple)) or len(value) != 2
-            or not all(_is_number(v) and math.isfinite(v) for v in value)):
+            or not all(_is_finite_number(v) for v in value)):
         errors.add(path, "Координата — [долгота, широта] из двух конечных чисел.")
         return None
     lon, lat = value

@@ -72,6 +72,14 @@ def _loads(text):
     return json.loads(text) if text is not None else None
 
 
+ASCII_INT_RE = re.compile(r"^[0-9]{1,18}$")
+
+
+def ascii_int(text):
+    """Целое из query только ASCII-цифрами ('²'.isdigit() истинно, но int('²') падает)."""
+    return int(text) if isinstance(text, str) and ASCII_INT_RE.match(text) else None
+
+
 def encode_cursor(updated_at: str, object_id: str) -> str:
     raw = _dumps([updated_at, object_id]).encode("utf-8")
     return base64.urlsafe_b64encode(raw).decode("ascii").rstrip("=")
@@ -120,9 +128,10 @@ def parse_filters(query: dict, *, staff: bool) -> dict:
     if limit is None:
         filters["limit"] = DEFAULT_PAGE
     else:
-        if not limit.isdigit() or not 1 <= int(limit) <= MAX_PAGE:
+        value = ascii_int(limit)
+        if value is None or not 1 <= value <= MAX_PAGE:
             raise BadRequest("Недопустимый limit.", {"limit": f"Целое 1–{MAX_PAGE}."})
-        filters["limit"] = int(limit)
+        filters["limit"] = value
     return filters
 
 
@@ -489,7 +498,7 @@ class ObjectRepository:
         where, params = [], []
         since = single("since")
         if since is not None:
-            if len(since) > 40 or not re.match(r"^\d{4}-\d{2}-\d{2}", since):
+            if len(since) > 40 or not re.match(r"^[0-9]{4}-[0-9]{2}-[0-9]{2}", since):
                 raise BadRequest("Недопустимый since.", {"since": "ISO 8601, например 2026-10-01"})
             where.append("at >= ?")
             params.append(since)
@@ -501,14 +510,13 @@ class ObjectRepository:
             params.append(object_id)
         after = single("after")
         if after is not None:
-            if not after.isdigit() or len(after) > 18:
+            if ascii_int(after) is None:
                 raise BadRequest("Недопустимый after.", {"after": "id записи из next_after"})
             where.append("id > ?")
-            params.append(int(after))
-        limit = single("limit") or "200"
-        if not limit.isdigit() or not 1 <= int(limit) <= 500:
+            params.append(ascii_int(after))
+        limit = ascii_int(single("limit") or "200")
+        if limit is None or not 1 <= limit <= 500:
             raise BadRequest("Недопустимый limit.", {"limit": "Целое 1–500."})
-        limit = int(limit)
         clause = (" WHERE " + " AND ".join(where)) if where else ""
         with self.db.read() as conn:
             rows = conn.execute(

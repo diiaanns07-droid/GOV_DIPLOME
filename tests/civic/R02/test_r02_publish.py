@@ -224,5 +224,5 @@ def test_staff_audit_export_is_paginated_and_editor_only(editor, service):
     assert {entry["object_id"] for entry in only} == {item["id"]}
     for key in ("snapshot", "password_hash", "csrf"):
         assert key not in str(page)
-    for bad in ("limit=0", "limit=501", "after=-1", "since=yesterday", "object_id=..%2F"):
+    for bad in ("limit=0", "limit=501", "after=-1", "after=%C2%B2", "limit=%C2%B2", "since=yesterday", "object_id=..%2F"):
         assert editor.get("/staff/audit", query=bad)["status"] == 400, bad

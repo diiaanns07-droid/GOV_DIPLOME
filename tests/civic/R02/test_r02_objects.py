@@ -279,7 +279,7 @@ def test_public_list_filters_and_cursor_pagination(editor, service, clock):
     assert len(seen) == 5 and len(set(seen)) == 5
 
 
-@pytest.mark.parametrize("query", ["kind=parade", "status=done", "from=2026-13-01", "from=2026-10-10&to=2026-10-01",
+@pytest.mark.parametrize("query", ["kind=parade", "status=done", "from=2026-13-01", "from=2026-10-10&to=2026-10-01", "limit=%C2%B2", "limit=%D9%A1",
                                    "cursor=abc", "limit=0", "limit=1000", "limit=-1", "from=a&from=b"])
 def test_bad_filters_are_400(service, query):
     result = call(service, "GET", "/objects", query=query)
@@ -306,3 +306,14 @@ def test_unknown_civic_paths_are_not_claimed_and_methods_are_checked(service):
     assert result["status"] == 405 and "POST" not in result["headers"]["Allow"]
     result = service.handle("POST", "/api/civic/v1/objects", "", b"{}", context())
     assert result["status"] == 405 and result["headers"]["Allow"] == "GET, HEAD"
+
+
+@pytest.mark.parametrize("field,value", [
+    ("budget", {"amount_kzt": 10 ** 400, "basis": "planned", "source_id": None}),
+    ("geometry", {"type": "Point", "coordinates": [10 ** 400, 51.1]}),
+    ("geometry", {"type": "Point", "coordinates": [71.4, -(10 ** 400)]}),
+])
+def test_huge_integers_are_422_not_500(editor, service, field, value):
+    raw = json.dumps(sample_object(**{field: value})).encode()
+    result = call(service, "POST", "/staff/objects", raw, ctx=editor.ctx())
+    assert result["status"] == 422, result
