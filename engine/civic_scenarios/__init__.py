@@ -10,7 +10,8 @@
 """
 from .canon import canonical_json, graph_digest, sha256_hex
 from .compare import compare
+from .timeline import timeline
 from .errors import ScenarioError
 from .graph import prepare_graph
 
-__all__ = ["compare", "prepare_graph", "ScenarioError", "canonical_json", "graph_digest", "sha256_hex"]
+__all__ = ["compare", "timeline", "prepare_graph", "ScenarioError", "canonical_json", "graph_digest", "sha256_hex"]

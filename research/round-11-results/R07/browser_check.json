@@ -1,0 +1,81 @@
+{
+ "base": "http://127.0.0.1:8517",
+ "checks": [
+  {
+   "name": "graph_loaded_with_evidence_badge",
+   "status": "PASS",
+   "detail": "производные данные"
+  },
+  {
+   "name": "driving_marked_not_ready",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "result_table_rows",
+   "status": "PASS",
+   "detail": 18
+  },
+  {
+   "name": "pair_routes_drawn_base_A_B",
+   "status": "PASS",
+   "detail": 3
+  },
+  {
+   "name": "cards_rendered",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "hypothesis_notice_visible",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "mobile_no_horizontal_overflow",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "synthetic_case_loaded",
+   "status": "PASS",
+   "detail": "План A (2 рёбер)"
+  },
+  {
+   "name": "map_click_closes_graph_edge",
+   "status": "PASS",
+   "detail": "План A (3 рёбер)"
+  },
+  {
+   "name": "click_off_graph_ignored",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "synthetic_unreachable_label",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "synthetic_unknown_label",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "validation_error_shown",
+   "status": "PASS",
+   "detail": "Ошибка: план A, перекрытие #0: start_at должен быть раньше end_at [invalid_payload]"
+  },
+  {
+   "name": "destroy_removes_panel",
+   "status": "PASS",
+   "detail": 0
+  },
+  {
+   "name": "no_page_errors",
+   "status": "PASS",
+   "detail": []
+  }
+ ],
+ "verdict": "PASS"
+}
