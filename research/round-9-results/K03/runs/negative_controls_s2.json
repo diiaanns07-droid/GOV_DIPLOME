@@ -1,0 +1,156 @@
+{
+ "stage": 2,
+ "base": "d865dd4a124291e10dd0b7bb1d9eada20d34c268",
+ "controls": [
+  {
+   "mutant": "ids-unsorted",
+   "file": "module:resilience_cases.js",
+   "why": "ID исключений не канонизируются (зависят от порядка ввода)",
+   "expected_fail": [
+    "S2-js",
+    "S2-js-python-parity"
+   ],
+   "failed": [
+    "S2-js (resilience_cases.js)",
+    "S2-js-python-parity"
+   ],
+   "summary": {
+    "PASS": 6,
+    "FAIL": 2,
+    "SKIP": 0,
+    "NOT_RUN": 0,
+    "TEST_INCOMPATIBLE": 0,
+    "INFO": 0
+   },
+   "verdict": "PASS"
+  },
+  {
+   "mutant": "dedupe-silently",
+   "file": "module:resilience_cases.js",
+   "why": "повтор ID молча принимается",
+   "expected_fail": [
+    "S2-js"
+   ],
+   "failed": [
+    "S2-js (resilience_cases.js)",
+    "S2-js-python-parity"
+   ],
+   "summary": {
+    "PASS": 6,
+    "FAIL": 2,
+    "SKIP": 0,
+    "NOT_RUN": 0,
+    "TEST_INCOMPATIBLE": 0,
+    "INFO": 0
+   },
+   "verdict": "PASS"
+  },
+  {
+   "mutant": "candidate-accepted",
+   "file": "module:resilience_cases.js",
+   "why": "ID кандидата принимается вместо исходной записи",
+   "expected_fail": [
+    "S2-js"
+   ],
+   "failed": [
+    "S2-js (resilience_cases.js)",
+    "S2-js-python-parity"
+   ],
+   "summary": {
+    "PASS": 6,
+    "FAIL": 2,
+    "SKIP": 0,
+    "NOT_RUN": 0,
+    "TEST_INCOMPATIBLE": 0,
+    "INFO": 0
+   },
+   "verdict": "PASS"
+  },
+  {
+   "mutant": "colocated-all-categories",
+   "file": "module:resilience_cases.js",
+   "why": "QA-группа исключает записи других категорий",
+   "expected_fail": [
+    "S2-js"
+   ],
+   "failed": [
+    "S2-js (resilience_cases.js)",
+    "S2-js-python-parity"
+   ],
+   "summary": {
+    "PASS": 6,
+    "FAIL": 2,
+    "SKIP": 0,
+    "NOT_RUN": 0,
+    "TEST_INCOMPATIBLE": 0,
+    "INFO": 0
+   },
+   "verdict": "PASS"
+  },
+  {
+   "mutant": "label-utf16-length",
+   "file": "module:resilience_cases.js",
+   "why": "длина подписи в UTF-16, а не в code points",
+   "expected_fail": [
+    "S2-js"
+   ],
+   "failed": [
+    "S2-js (resilience_cases.js)",
+    "S2-js-python-parity"
+   ],
+   "summary": {
+    "PASS": 6,
+    "FAIL": 2,
+    "SKIP": 0,
+    "NOT_RUN": 0,
+    "TEST_INCOMPATIBLE": 0,
+    "INFO": 0
+   },
+   "verdict": "PASS"
+  },
+  {
+   "mutant": "auto-first-group",
+   "file": "module:resilience_cases.js",
+   "why": "без явного индекса берётся первая QA-группа (автоисключение)",
+   "expected_fail": [
+    "S2-js",
+    "S2-no-auto-exclusion"
+   ],
+   "failed": [
+    "S2-js (resilience_cases.js)",
+    "S2-js-python-parity",
+    "S2-no-auto-exclusion"
+   ],
+   "summary": {
+    "PASS": 5,
+    "FAIL": 3,
+    "SKIP": 0,
+    "NOT_RUN": 0,
+    "TEST_INCOMPATIBLE": 0,
+    "INFO": 0
+   },
+   "verdict": "PASS"
+  },
+  {
+   "mutant": "digest-order",
+   "file": "module:resilience_cases.js",
+   "why": "digest зависит от порядка случаев",
+   "expected_fail": [
+    "S2-digest-invariance"
+   ],
+   "failed": [
+    "S2-digest-invariance",
+    "S2-js-python-parity"
+   ],
+   "summary": {
+    "PASS": 6,
+    "FAIL": 2,
+    "SKIP": 0,
+    "NOT_RUN": 0,
+    "TEST_INCOMPATIBLE": 0,
+    "INFO": 0
+   },
+   "verdict": "PASS"
+  }
+ ]
+}

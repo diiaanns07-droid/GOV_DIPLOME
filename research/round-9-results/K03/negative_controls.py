@@ -30,6 +30,27 @@ MUTANTS = {
         ('bbox-exclusive', 'web/whatif.js', 'bb[0] <= lon && lon <= bb[2]', 'bb[0] < lon && lon < bb[2]',
          'границы bbox исключены', ['S1-validate']),
     ],
+    # этап 2: порча КОПИИ модуля resilience_cases.js (прогон с --js), сборка не меняется
+    2: [
+        ('ids-unsorted', 'module:resilience_cases.js', 'return ids.slice().sort(cmpStr);', 'return ids.slice();',
+         'ID исключений не канонизируются (зависят от порядка ввода)', ['S2-js', 'S2-js-python-parity']),
+        ('dedupe-silently', 'module:resilience_cases.js', 'if (seen.has(id)) fail("duplicate_source_id", `${path}[${k}]`, id);', '',
+         'повтор ID молча принимается', ['S2-js']),
+        ('candidate-accepted', 'module:resilience_cases.js',
+         'if (candidateIds && candidateIds.has(id)) fail("candidate_not_source", path, `${id}: ID кандидата, а не исходной записи`);',
+         'if (candidateIds && candidateIds.has(id)) return id;', 'ID кандидата принимается вместо исходной записи', ['S2-js']),
+        ('colocated-all-categories', 'module:resilience_cases.js', 'make(cat, grp.ids_in_category, "colocated"',
+         'make(cat, grp.ids_in_category.concat(grp.ids_other_categories), "colocated"',
+         'QA-группа исключает записи других категорий', ['S2-js']),
+        ('label-utf16-length', 'module:resilience_cases.js', 'if ([...v].length > LIMITS.label)', 'if (v.length > LIMITS.label)',
+         'длина подписи в UTF-16, а не в code points', ['S2-js']),
+        ('auto-first-group', 'module:resilience_cases.js',
+         'if (!Number.isInteger(groupIndex) || groupIndex < 0',
+         'if (groupIndex === undefined || groupIndex === null) groupIndex = 0;\n    if (!Number.isInteger(groupIndex) || groupIndex < 0',
+         'без явного индекса берётся первая QA-группа (автоисключение)', ['S2-js', 'S2-no-auto-exclusion']),
+        ('digest-order', 'module:resilience_cases.js', '.sort((a, b) => cmpStr(a[0], b[0]));\n    return "sha256:"',
+         ';\n    return "sha256:"', 'digest зависит от порядка случаев', ['S2-digest-invariance']),
+    ],
 }
 
 
@@ -47,8 +68,14 @@ def main():
         dst = a.work / f'neg_{name}'
         if dst.exists():
             shutil.rmtree(dst)
-        shutil.copytree(a.app_root, dst)
-        f = dst / rel
+        module = rel.startswith('module:')
+        if module:
+            dst.mkdir(parents=True)
+            f = dst / rel.split(':', 1)[1]
+            shutil.copy(HERE / f.name, f)
+        else:
+            shutil.copytree(a.app_root, dst)
+            f = dst / rel
         t = f.read_text(encoding='utf-8')
         if t.count(old) != 1:
             out.append(dict(mutant=name, verdict='NOT_RUN', why=f'замена не найдена однозначно в {rel} ({t.count(old)})'))
@@ -56,8 +83,9 @@ def main():
             continue
         f.write_text(t.replace(old, new), encoding='utf-8')
         js = dst / 'r.json'
-        subprocess.run([sys.executable, str(runner), '--app-root', str(dst), '--target-sha', a.target_sha + '+' + name, '--json', str(js)],
-                       capture_output=True, text=True, timeout=900)
+        cmd = [sys.executable, str(runner), '--app-root', str(a.app_root if module else dst), '--json', str(js),
+               '--target-sha', a.target_sha if module else a.target_sha + '+' + name] + (['--js', str(f)] if module else [])
+        subprocess.run(cmd, capture_output=True, text=True, timeout=900)
         res = json.loads(js.read_text(encoding='utf-8'))
         failed = sorted(r['check'] for r in res['results'] if r['verdict'] == 'FAIL')
         caught = all(any(f == m or f.startswith(m) for f in failed) for m in must_fail)

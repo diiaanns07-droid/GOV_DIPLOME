@@ -1,0 +1,93 @@
+{
+ "summary": {
+  "PASS": 8,
+  "FAIL": 0,
+  "SKIP": 0,
+  "NOT_RUN": 0,
+  "TEST_INCOMPATIBLE": 0,
+  "INFO": 0
+ },
+ "results": [
+  {
+   "check": "S2-fixtures-match-build",
+   "verdict": "PASS",
+   "summary": "fixtures этапа 2 построены на данных этой сборки (d865dd4a1242)",
+   "details": {}
+  },
+  {
+   "check": "S2-python-oracle",
+   "verdict": "PASS",
+   "summary": "211 случаев: несоответствий 0",
+   "details": {
+    "mismatches": []
+   }
+  },
+  {
+   "check": "S2-js (resilience_cases.js)",
+   "verdict": "PASS",
+   "summary": "211 случаев: несоответствий 0",
+   "details": {
+    "mismatches": []
+   }
+  },
+  {
+   "check": "S2-js-python-parity",
+   "verdict": "PASS",
+   "summary": "полное совпадение результатов JS и Python (каталог, случаи, ошибки, manifest): расхождений 0",
+   "details": {
+    "ids": []
+   }
+  },
+  {
+   "check": "S2-digest-invariance",
+   "verdict": "PASS",
+   "summary": "digest исключений: перестановка случаев и ID не меняет его, другая подпись или набор меняют; JS = Python; manifest хранит тот же digest вместе с base_source_snapshot; ошибок 0",
+   "details": {
+    "errors": []
+   }
+  },
+  {
+   "check": "S2-no-auto-exclusion",
+   "verdict": "PASS",
+   "summary": "каталог и список QA-групп ничего не исключают; каждая экспортируемая функция без явного выбора не создаёт случай (поведенческая проба JS и Python на 4 срезах); случай из QA-группы — только по явно указанному индексу (2 случаев без индекса → unknown_qa_group); у Астаны групп нет → no_qa_group, группа не придумывается; ошибок 0",
+   "details": {
+    "errors": []
+   }
+  },
+  {
+   "check": "S2-wording",
+   "verdict": "PASS",
+   "summary": "25 подписей по умолчанию начинаются с «Условно» и не содержат «закрытие/кризис/риск/дубликат/прогноз»; примечание = формулировке CORE_SPEC («Условно исключаем из расчёта; это не подтверждение закрытия»)",
+   "details": {
+    "bad": [],
+    "examples": [
+     "Условно без записи: Школа-гимназия 3",
+     "Условно без записи: Школа-гимназия 3",
+     "Условно без записи: Школа-гимназия 3",
+     "Условно без выбранных записей (3): Школа-гимназия 3, \"ГУ \"Средняя школа № 8\" УО г. Астаны\", Учебный ЦЕНТР ФПРК"
+    ]
+   }
+  },
+  {
+   "check": "S2-integrity",
+   "verdict": "PASS",
+   "summary": "после всех построений data.js/evidence.js (файл, объект JS, объект Python) не изменились; source_snapshot plan.js = независимому пересчёту",
+   "details": {
+    "integrity": {
+     "file_unchanged": true,
+     "loaded_unchanged": true,
+     "snapshots": {
+      "astana": {
+       "ctx": "sha256:67a40b96d29873118780969eb11c32deba49a0c64fda1f185efe634882f04c6d",
+       "recomputed": "sha256:67a40b96d29873118780969eb11c32deba49a0c64fda1f185efe634882f04c6d"
+      },
+      "shymkent": {
+       "ctx": "sha256:a9326b5633c513c0bfeccbb2248b26cf3b706c902f77745073a2959ad8d7ff3e",
+       "recomputed": "sha256:a9326b5633c513c0bfeccbb2248b26cf3b706c902f77745073a2959ad8d7ff3e"
+      }
+     }
+    }
+   }
+  }
+ ]
+}

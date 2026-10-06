@@ -5,8 +5,8 @@
 | Слот | K03 (`research/round-9/tasks/K03.txt` @ `0ab1667`, ветка codex/research-import-2026-10-05), не BUILD |
 | Ветка | `claude/epic-curie-iitc43` (вход r9: `9b39f0f`) |
 | Проверенная сборка | `claude/beautiful-clarke-sbzomj` @ **`d865dd4a124291e10dd0b7bb1d9eada20d34c268`**. Дерево `prototypes/city-evidence` = `3e1302a` (проверено, `inputs/BUILD_MANIFEST.json`) |
-| Обновлено | 2026-10-06, этап 1 |
-| Статус | **этап 1 done**; этапы 2–3 — в работе |
+| Обновлено | 2026-10-06, этапы 1–2 |
+| Статус | **этапы 1–2 done**; этап 3 — в работе |
 
 ## Этап 1 — r8 geo-fixtures на настоящем plan.js (done)
 
@@ -71,13 +71,60 @@
    ID: plan.js принимает Unicode NFC `[\p{L}\p{N}_.-]` до 64 символов (CORE_SPEC r9 — принимать как в BUILD). Мои r8 fixtures из этого не выходят.
 4. **Erratum к моему r8 STATUS** (сам отчёт r8 не переписываю). Строка «Астана — пара поликлиник без COLOCATED» неверна: в Астане нет записей школ или поликлиник в общих координатах внутри категории. Там совпадают поликлиника и больница (2 пары) и 2 госучреждения. В r8 fixtures такого случая нет; ошибка была только в тексте STATUS.
 
+## Этап 2 — построитель случаев явного исключения ID (done)
+
+- `resilience_cases.js` (UMD, без DOM) и независимый оракул `resilience_cases_ref.py`. API и правила — в `CASES_API.md`.
+- Три способа создать случай: одна запись, пользовательская группа, QA-группа COLOCATED по явно указанному индексу.
+  - Автоматических исключений нет.
+  - Для Астаны групп COLOCATED нет: статус `no_qa_group`, группа не создаётся.
+  - Если в выбранной QA-группе нет записей категории: `no_records_in_category`.
+- `validateCases` проверяет `cases` envelope city-resilience-v1 по CORE_SPEC r9:
+  - 1..7 случаев + авто-`base`;
+  - ID по правилам BUILD (NFC), `base` зарезервирован;
+  - подпись ≤120 code points без управляющих символов;
+  - ID исключений: только исходные записи этого города и категории; кандидат, другой город или категория отклоняются типизированной ошибкой; без повторов; не больше числа записей;
+  - совпадающие наборы допустимы и показываются (`identical_sets`).
+- Envelope без производных полей (`per_case`, `worst_case_ids`, `verified`, `derived_results` → `derived_not_accepted`).
+- **Manifest исключаемых записей на базовом срезе** (`exclusionManifest`), для каждого ID:
+  - категория, координаты, имя, адрес, provenance (`sources[]`, версия Overture, confidence) и QA;
+  - `record_sha256` исходной записи `data.js`;
+  - `base_source_snapshot` — формула plan.js, пересчитана независимо;
+  - отдельный `exclusion_digest`: от порядка не зависит; объект заморожен.
+- `make_stage2.py` → `fixtures/stage2.json`: 211 случаев, ожидания по построению из `data.js`/`evidence.js`. Кейсы Шымкента и Астаны по обеим категориям плюс 9 проверок envelope.
+
+### Проверки (`runs/stage2_d865dd4.json`): PASS 8, FAIL 0, SKIP 0, NOT_RUN 0
+
+JS выполнялся на контексте **настоящего** `plan.js` d865dd4 (`cases_runner.cjs`).
+
+| Проверка | Результат |
+|---|---|
+| S2-python-oracle | 211/211 |
+| S2-js | 211/211 |
+| S2-js-python-parity | 0 расхождений |
+| S2-digest-invariance | Перестановка случаев и ID digest не меняет; другая подпись или набор меняют; JS = Python |
+| S2-no-auto-exclusion | Поведенческая проба: каждая функция без явного выбора не создаёт случай (JS и Python, 4 среза) |
+| S2-wording | 25 подписей по умолчанию «Условно…», без «закрытие/кризис/риск/дубликат/прогноз»; примечание = формулировке CORE_SPEC |
+| S2-integrity | Файл и объекты `data.js`/`evidence.js` не изменились; `source_snapshot` = пересчёту |
+
+Первый прогон дал FAIL в S2-no-auto-exclusion. Причина была в самом тесте: статический поиск строки `qa.colocated.map` сработал на законном списке групп для показа. Я заменил его поведенческой пробой и повторил прогон. Модуль не менялся.
+
+### Отрицательный контроль (`runs/negative_controls_s2.json`): 7/7 испорченных копий модуля дают FAIL
+
+- ID не сортируются;
+- повтор ID молча принимается;
+- принимается ID кандидата;
+- QA-группа захватывает другие категории;
+- длина подписи считается в UTF-16;
+- без индекса берётся первая QA-группа (автоисключение);
+- digest зависит от порядка.
+
 ## Также выполнено
 
 - `research/round-8-results/K03/run_tests.py --app-root <копия d865dd4> --stages 1,2,3` → PASS 21, FAIL 0 (`runs/r8_module_on_d865dd4.json`). Это тест **моего модуля** geo_v2 на данных d865dd4, а не тест продукта.
 
 ## Ограничения
 
-- Устойчивости (`resilience.js`, envelope city-resilience-v1) в d865dd4 нет. Её интеграцию на этом этапе я не проверял.
+- Устойчивости (`resilience.js`, envelope city-resilience-v1) в d865dd4 нет. Её интеграцию я не проверял. Коды ошибок моего модуля — предложение; у BUILD они могут отличаться.
 - Контрольные точки, веса, стоимости и кандидаты — synthetic. Записи — Overture из сборки: вторичные данные, на месте не проверены.
 - Браузерный UI не запускался: QA проверен через `facts.qaOf`, которую вызывает `plan-ui.js`.
 - Окружение: Linux, Python 3.11.15, node v22.22.0.
@@ -92,6 +139,21 @@ python3 research/round-9-results/K03/make_stage1_scan.py --app-root /tmp/app9 --
 python3 research/round-9-results/K03/run_stage1.py --app-root /tmp/app9 --target-sha d865dd4a124291e10dd0b7bb1d9eada20d34c268 --json /tmp/s1.json
 python3 research/round-9-results/K03/negative_controls.py --app-root /tmp/app9 --work /tmp/k03neg --stage 1
 ```
+
+## Воспроизведение этапа 2
+
+```bash
+python3 research/round-9-results/K03/make_stage2.py --app-root /tmp/app9 --target-sha d865dd4a124291e10dd0b7bb1d9eada20d34c268  # уже в fixtures/
+python3 research/round-9-results/K03/run_stage2.py --app-root /tmp/app9 --target-sha d865dd4a124291e10dd0b7bb1d9eada20d34c268 --json /tmp/s2.json
+python3 research/round-9-results/K03/negative_controls.py --app-root /tmp/app9 --work /tmp/k03neg --stage 2
+```
+
+## Файлы этапа 2
+
+- `resilience_cases.js`, `resilience_cases_ref.py`, `CASES_API.md`.
+- `cases_runner.cjs`, `run_stage2.py`.
+- `make_stage2.py` → `fixtures/stage2.json`.
+- `runs/stage2_d865dd4.json`, `runs/negative_controls_s2.json`.
 
 ## Файлы этапа 1
 
