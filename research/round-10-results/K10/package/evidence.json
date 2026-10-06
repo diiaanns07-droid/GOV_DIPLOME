@@ -1,0 +1,1736 @@
+{
+ "schema": "k10-evidence-v1",
+ "city_id": "astana",
+ "statements": [
+  {
+   "id": "ev-ast-sch-meta-2b731251-eligibility",
+   "subject_id": "ast-sch-meta-2b731251",
+   "field": "access_eligibility",
+   "value": "unknown",
+   "source_id": null,
+   "record": null,
+   "kind": "derived",
+   "method": "manual_review"
+  },
+  {
+   "id": "ev-ast-sch-meta-2b731251-geom",
+   "subject_id": "ast-sch-meta-2b731251",
+   "field": "coordinates",
+   "value": [
+    71.4482,
+    51.17445
+   ],
+   "source_id": "ov-places-2026-09-23.1",
+   "record": "2b731251-aa57-4256-8130-d1739368fe39",
+   "kind": "observed_secondary",
+   "method": "Overture/Meta POI point"
+  },
+  {
+   "id": "ev-ast-sch-meta-2b731251-name",
+   "subject_id": "ast-sch-meta-2b731251",
+   "field": "label",
+   "value": "Казахско-турецкий лицей / Kazakh-Turkish High School",
+   "source_id": "ov-places-2026-09-23.1",
+   "record": "2b731251-aa57-4256-8130-d1739368fe39",
+   "kind": "observed_secondary",
+   "method": "names.primary (meta)"
+  },
+  {
+   "id": "ev-ast-sch-meta-47e1ffcd-eligibility",
+   "subject_id": "ast-sch-meta-47e1ffcd",
+   "field": "access_eligibility",
+   "value": "unknown",
+   "source_id": null,
+   "record": null,
+   "kind": "derived",
+   "method": "R-meta-only-general-numbered"
+  },
+  {
+   "id": "ev-ast-sch-meta-47e1ffcd-geom",
+   "subject_id": "ast-sch-meta-47e1ffcd",
+   "field": "coordinates",
+   "value": [
+    71.4245201,
+    51.198154
+   ],
+   "source_id": "ov-places-2026-09-23.1",
+   "record": "47e1ffcd-2c25-4b45-bbfc-3ef4a7c911a4",
+   "kind": "observed_secondary",
+   "method": "Overture/Meta POI point"
+  },
+  {
+   "id": "ev-ast-sch-meta-47e1ffcd-name",
+   "subject_id": "ast-sch-meta-47e1ffcd",
+   "field": "label",
+   "value": "Жиырма Үшінші Орта Мектеп",
+   "source_id": "ov-places-2026-09-23.1",
+   "record": "47e1ffcd-2c25-4b45-bbfc-3ef4a7c911a4",
+   "kind": "observed_secondary",
+   "method": "names.primary (meta)"
+  },
+  {
+   "id": "ev-ast-sch-meta-491687bb-conflict-e18f1fd3",
+   "subject_id": "ast-sch-meta-491687bb",
+   "field": "location",
+   "value": 265.9,
+   "source_id": "ov-places-2026-09-23.1",
+   "record": "e18f1fd3-7e5e-4d8c-a2f8-f4d869e82568",
+   "kind": "observed_secondary",
+   "method": "conflicting POI: «Зерде Дарынды Балаларға Арналған Мектеп» (kk) is most likely the same school as the Meta POI «Зерде № 9» 266 m away; the location difference is kept as a QA conflict."
+  },
+  {
+   "id": "ev-ast-sch-meta-491687bb-eligibility",
+   "subject_id": "ast-sch-meta-491687bb",
+   "field": "access_eligibility",
+   "value": "known_restricted",
+   "source_id": null,
+   "record": null,
+   "kind": "derived",
+   "method": "manual_review"
+  },
+  {
+   "id": "ev-ast-sch-meta-491687bb-geom",
+   "subject_id": "ast-sch-meta-491687bb",
+   "field": "coordinates",
+   "value": [
+    71.4086396,
+    51.1680544
+   ],
+   "source_id": "ov-places-2026-09-23.1",
+   "record": "491687bb-69b7-4bf0-8122-01e16165937e",
+   "kind": "observed_secondary",
+   "method": "Overture/Meta POI point"
+  },
+  {
+   "id": "ev-ast-sch-meta-491687bb-name",
+   "subject_id": "ast-sch-meta-491687bb",
+   "field": "label",
+   "value": "ГУ \"Школа для одарённых детей Зерде № 9\" УО г. Астаны",
+   "source_id": "ov-places-2026-09-23.1",
+   "record": "491687bb-69b7-4bf0-8122-01e16165937e",
+   "kind": "observed_secondary",
+   "method": "names.primary (meta)"
+  },
+  {
+   "id": "ev-ast-sch-meta-7d548c22-eligibility",
+   "subject_id": "ast-sch-meta-7d548c22",
+   "field": "access_eligibility",
+   "value": "known_restricted",
+   "source_id": null,
+   "record": null,
+   "kind": "derived",
+   "method": "R-meta-only-school_for_gifted"
+  },
+  {
+   "id": "ev-ast-sch-meta-7d548c22-geom",
+   "subject_id": "ast-sch-meta-7d548c22",
+   "field": "coordinates",
+   "value": [
+    71.3885,
+    51.17312
+   ],
+   "source_id": "ov-places-2026-09-23.1",
+   "record": "7d548c22-02db-4e0b-a5e4-8140591dc359",
+   "kind": "observed_secondary",
+   "method": "Overture/Meta POI point"
+  },
+  {
+   "id": "ev-ast-sch-meta-7d548c22-name",
+   "subject_id": "ast-sch-meta-7d548c22",
+   "field": "label",
+   "value": "Дарынды Қыз Балаларға Арналған Астана Бил / Астана Бил Для Одаренных Девочек",
+   "source_id": "ov-places-2026-09-23.1",
+   "record": "7d548c22-02db-4e0b-a5e4-8140591dc359",
+   "kind": "observed_secondary",
+   "method": "names.primary (meta)"
+  },
+  {
+   "id": "ev-ast-sch-meta-a4483f53-eligibility",
+   "subject_id": "ast-sch-meta-a4483f53",
+   "field": "access_eligibility",
+   "value": "known_restricted",
+   "source_id": null,
+   "record": null,
+   "kind": "derived",
+   "method": "manual_review"
+  },
+  {
+   "id": "ev-ast-sch-meta-a4483f53-geom",
+   "subject_id": "ast-sch-meta-a4483f53",
+   "field": "coordinates",
+   "value": [
+    71.42298,
+    51.16765
+   ],
+   "source_id": "ov-places-2026-09-23.1",
+   "record": "a4483f53-7de8-4df1-b61b-b4066b0ad5dd",
+   "kind": "observed_secondary",
+   "method": "Overture/Meta POI point"
+  },
+  {
+   "id": "ev-ast-sch-meta-a4483f53-name",
+   "subject_id": "ast-sch-meta-a4483f53",
+   "field": "label",
+   "value": "Astana Garden International School",
+   "source_id": "ov-places-2026-09-23.1",
+   "record": "a4483f53-7de8-4df1-b61b-b4066b0ad5dd",
+   "kind": "observed_secondary",
+   "method": "names.primary (meta)"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1443249141-corr-c97435da-cd05",
+   "subject_id": "ast-sch-osm-w1443249141",
+   "field": "existence",
+   "value": 0.0,
+   "source_id": "ov-places-2026-09-23.1",
+   "record": "c97435da-cd05-4549-bec1-ff297e858554",
+   "kind": "observed_secondary",
+   "method": "independent layer agrees (distance m or relation)"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1443249141-corr-r3825878@11",
+   "subject_id": "ast-sch-osm-w1443249141",
+   "field": "existence",
+   "value": "building inside grounds",
+   "source_id": "ov-buildings-edu-2026-09-23.1",
+   "record": "r3825878@11",
+   "kind": "observed_secondary",
+   "method": "independent layer agrees (distance m or relation)"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1443249141-eligibility",
+   "subject_id": "ast-sch-osm-w1443249141",
+   "field": "access_eligibility",
+   "value": "known_public",
+   "source_id": null,
+   "record": null,
+   "kind": "derived",
+   "method": "R-general-numbered"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1443249141-geom",
+   "subject_id": "ast-sch-osm-w1443249141",
+   "field": "coordinates",
+   "value": [
+    71.4204101,
+    51.1775188
+   ],
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1443249141@2",
+   "kind": "observed_secondary",
+   "method": "centroid of OSM school grounds polygon"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1443249141-name",
+   "subject_id": "ast-sch-osm-w1443249141",
+   "field": "label",
+   "value": "Гимназия №6",
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1443249141@2",
+   "kind": "observed_secondary",
+   "method": "names.common.ru"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512939111-eligibility",
+   "subject_id": "ast-sch-osm-w1512939111",
+   "field": "access_eligibility",
+   "value": "known_public",
+   "source_id": null,
+   "record": null,
+   "kind": "derived",
+   "method": "R-general-numbered"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512939111-geom",
+   "subject_id": "ast-sch-osm-w1512939111",
+   "field": "coordinates",
+   "value": [
+    71.4066295,
+    51.1611755
+   ],
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1512939111@2",
+   "kind": "observed_secondary",
+   "method": "centroid of OSM school grounds polygon"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512939111-name",
+   "subject_id": "ast-sch-osm-w1512939111",
+   "field": "label",
+   "value": "Школа-лицей №56 имени Шакарима",
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1512939111@2",
+   "kind": "observed_secondary",
+   "method": "names.common.ru"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512939113-corr-w577099478@9",
+   "subject_id": "ast-sch-osm-w1512939113",
+   "field": "existence",
+   "value": "building inside grounds",
+   "source_id": "ov-buildings-edu-2026-09-23.1",
+   "record": "w577099478@9",
+   "kind": "observed_secondary",
+   "method": "independent layer agrees (distance m or relation)"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512939113-eligibility",
+   "subject_id": "ast-sch-osm-w1512939113",
+   "field": "access_eligibility",
+   "value": "known_public",
+   "source_id": null,
+   "record": null,
+   "kind": "derived",
+   "method": "R-general-numbered"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512939113-geom",
+   "subject_id": "ast-sch-osm-w1512939113",
+   "field": "coordinates",
+   "value": [
+    71.4027479,
+    51.1646005
+   ],
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1512939113@1",
+   "kind": "observed_secondary",
+   "method": "centroid of OSM school grounds polygon"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512939113-name",
+   "subject_id": "ast-sch-osm-w1512939113",
+   "field": "label",
+   "value": "Школа-лицей №11 имени Узбекали Жанибекова",
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1512939113@1",
+   "kind": "observed_secondary",
+   "method": "names.common.ru"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512939114-eligibility",
+   "subject_id": "ast-sch-osm-w1512939114",
+   "field": "access_eligibility",
+   "value": "known_public",
+   "source_id": null,
+   "record": null,
+   "kind": "derived",
+   "method": "R-general-numbered"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512939114-geom",
+   "subject_id": "ast-sch-osm-w1512939114",
+   "field": "coordinates",
+   "value": [
+    71.4048992,
+    51.1672318
+   ],
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1512939114@1",
+   "kind": "observed_secondary",
+   "method": "centroid of OSM school grounds polygon"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512939114-name",
+   "subject_id": "ast-sch-osm-w1512939114",
+   "field": "label",
+   "value": "Школа-лицей № 35 имени Назира Торекулова",
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1512939114@1",
+   "kind": "observed_secondary",
+   "method": "names.common.ru"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512939116-corr-09777f23-2725",
+   "subject_id": "ast-sch-osm-w1512939116",
+   "field": "existence",
+   "value": 0.0,
+   "source_id": "ov-places-2026-09-23.1",
+   "record": "09777f23-2725-4527-8e44-333299060aea",
+   "kind": "observed_secondary",
+   "method": "independent layer agrees (distance m or relation)"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512939116-corr-w241053201@10",
+   "subject_id": "ast-sch-osm-w1512939116",
+   "field": "existence",
+   "value": "building inside grounds",
+   "source_id": "ov-buildings-edu-2026-09-23.1",
+   "record": "w241053201@10",
+   "kind": "observed_secondary",
+   "method": "independent layer agrees (distance m or relation)"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512939116-eligibility",
+   "subject_id": "ast-sch-osm-w1512939116",
+   "field": "access_eligibility",
+   "value": "known_public",
+   "source_id": null,
+   "record": null,
+   "kind": "derived",
+   "method": "R-general-numbered"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512939116-geom",
+   "subject_id": "ast-sch-osm-w1512939116",
+   "field": "coordinates",
+   "value": [
+    71.4023067,
+    51.1710574
+   ],
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1512939116@1",
+   "kind": "observed_secondary",
+   "method": "centroid of OSM school grounds polygon"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512939116-name",
+   "subject_id": "ast-sch-osm-w1512939116",
+   "field": "label",
+   "value": "Школа-лицей №60",
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1512939116@1",
+   "kind": "observed_secondary",
+   "method": "names.common.ru"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512939123-corr-w30637529@12",
+   "subject_id": "ast-sch-osm-w1512939123",
+   "field": "existence",
+   "value": "building inside grounds",
+   "source_id": "ov-buildings-edu-2026-09-23.1",
+   "record": "w30637529@12",
+   "kind": "observed_secondary",
+   "method": "independent layer agrees (distance m or relation)"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512939123-eligibility",
+   "subject_id": "ast-sch-osm-w1512939123",
+   "field": "access_eligibility",
+   "value": "known_restricted",
+   "source_id": null,
+   "record": null,
+   "kind": "derived",
+   "method": "R-special_school"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512939123-geom",
+   "subject_id": "ast-sch-osm-w1512939123",
+   "field": "coordinates",
+   "value": [
+    71.4164801,
+    51.1739216
+   ],
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1512939123@1",
+   "kind": "observed_secondary",
+   "method": "centroid of OSM school grounds polygon"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512939123-name",
+   "subject_id": "ast-sch-osm-w1512939123",
+   "field": "label",
+   "value": "Специальная школа №2",
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1512939123@1",
+   "kind": "observed_secondary",
+   "method": "names.common.ru"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512939125-corr-7b39e048-341b",
+   "subject_id": "ast-sch-osm-w1512939125",
+   "field": "existence",
+   "value": 0.0,
+   "source_id": "ov-places-2026-09-23.1",
+   "record": "7b39e048-341b-454a-a63c-4b7e1ae73e9f",
+   "kind": "observed_secondary",
+   "method": "independent layer agrees (distance m or relation)"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512939125-corr-w242223234@9",
+   "subject_id": "ast-sch-osm-w1512939125",
+   "field": "existence",
+   "value": "building inside grounds",
+   "source_id": "ov-buildings-edu-2026-09-23.1",
+   "record": "w242223234@9",
+   "kind": "observed_secondary",
+   "method": "independent layer agrees (distance m or relation)"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512939125-eligibility",
+   "subject_id": "ast-sch-osm-w1512939125",
+   "field": "access_eligibility",
+   "value": "known_public",
+   "source_id": null,
+   "record": null,
+   "kind": "derived",
+   "method": "R-general-numbered"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512939125-geom",
+   "subject_id": "ast-sch-osm-w1512939125",
+   "field": "coordinates",
+   "value": [
+    71.4246691,
+    51.1705259
+   ],
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1512939125@1",
+   "kind": "observed_secondary",
+   "method": "centroid of OSM school grounds polygon"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512939125-name",
+   "subject_id": "ast-sch-osm-w1512939125",
+   "field": "label",
+   "value": "Школа-гимназия №3",
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1512939125@1",
+   "kind": "observed_secondary",
+   "method": "names.common.ru"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512939127-eligibility",
+   "subject_id": "ast-sch-osm-w1512939127",
+   "field": "access_eligibility",
+   "value": "known_public",
+   "source_id": null,
+   "record": null,
+   "kind": "derived",
+   "method": "R-general-numbered"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512939127-geom",
+   "subject_id": "ast-sch-osm-w1512939127",
+   "field": "coordinates",
+   "value": [
+    71.4295586,
+    51.1741308
+   ],
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1512939127@1",
+   "kind": "observed_secondary",
+   "method": "centroid of OSM school grounds polygon"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512939127-name",
+   "subject_id": "ast-sch-osm-w1512939127",
+   "field": "label",
+   "value": "Школа-гимназия №4 имени Жамбыла Жабаева",
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1512939127@1",
+   "kind": "observed_secondary",
+   "method": "names.common.ru"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512939129-corr-fc123f17-00ec",
+   "subject_id": "ast-sch-osm-w1512939129",
+   "field": "existence",
+   "value": 0.0,
+   "source_id": "ov-places-2026-09-23.1",
+   "record": "fc123f17-00ec-408d-8801-267e50c547ea",
+   "kind": "observed_secondary",
+   "method": "independent layer agrees (distance m or relation)"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512939129-corr-w258363083@7",
+   "subject_id": "ast-sch-osm-w1512939129",
+   "field": "existence",
+   "value": "building inside grounds",
+   "source_id": "ov-buildings-edu-2026-09-23.1",
+   "record": "w258363083@7",
+   "kind": "observed_secondary",
+   "method": "independent layer agrees (distance m or relation)"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512939129-eligibility",
+   "subject_id": "ast-sch-osm-w1512939129",
+   "field": "access_eligibility",
+   "value": "known_public",
+   "source_id": null,
+   "record": null,
+   "kind": "derived",
+   "method": "R-general-numbered"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512939129-geom",
+   "subject_id": "ast-sch-osm-w1512939129",
+   "field": "coordinates",
+   "value": [
+    71.4184994,
+    51.1834845
+   ],
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1512939129@1",
+   "kind": "observed_secondary",
+   "method": "centroid of OSM school grounds polygon"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512939129-name",
+   "subject_id": "ast-sch-osm-w1512939129",
+   "field": "label",
+   "value": "Школа-лицей №62",
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1512939129@1",
+   "kind": "observed_secondary",
+   "method": "names.common.ru"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512939134-corr-w236522907@4",
+   "subject_id": "ast-sch-osm-w1512939134",
+   "field": "existence",
+   "value": "building inside grounds",
+   "source_id": "ov-buildings-edu-2026-09-23.1",
+   "record": "w236522907@4",
+   "kind": "observed_secondary",
+   "method": "independent layer agrees (distance m or relation)"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512939134-eligibility",
+   "subject_id": "ast-sch-osm-w1512939134",
+   "field": "access_eligibility",
+   "value": "known_restricted",
+   "source_id": null,
+   "record": null,
+   "kind": "derived",
+   "method": "R-school_for_gifted"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512939134-geom",
+   "subject_id": "ast-sch-osm-w1512939134",
+   "field": "coordinates",
+   "value": [
+    71.4019375,
+    51.1907243
+   ],
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1512939134@1",
+   "kind": "observed_secondary",
+   "method": "centroid of OSM school grounds polygon"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512939134-name",
+   "subject_id": "ast-sch-osm-w1512939134",
+   "field": "label",
+   "value": "Областная специализированная школа-лицей-интернат №2 \"Дарын\"",
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1512939134@1",
+   "kind": "observed_secondary",
+   "method": "names.common.ru"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512939135-corr-w30658962@9",
+   "subject_id": "ast-sch-osm-w1512939135",
+   "field": "existence",
+   "value": "building inside grounds",
+   "source_id": "ov-buildings-edu-2026-09-23.1",
+   "record": "w30658962@9",
+   "kind": "observed_secondary",
+   "method": "independent layer agrees (distance m or relation)"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512939135-eligibility",
+   "subject_id": "ast-sch-osm-w1512939135",
+   "field": "access_eligibility",
+   "value": "known_public",
+   "source_id": null,
+   "record": null,
+   "kind": "derived",
+   "method": "R-general-numbered"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512939135-geom",
+   "subject_id": "ast-sch-osm-w1512939135",
+   "field": "coordinates",
+   "value": [
+    71.4122225,
+    51.1916127
+   ],
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1512939135@1",
+   "kind": "observed_secondary",
+   "method": "centroid of OSM school grounds polygon"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512939135-name",
+   "subject_id": "ast-sch-osm-w1512939135",
+   "field": "label",
+   "value": "Средняя школа №25",
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1512939135@1",
+   "kind": "observed_secondary",
+   "method": "names.common.ru"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512939139-corr-w30659002@13",
+   "subject_id": "ast-sch-osm-w1512939139",
+   "field": "existence",
+   "value": "building inside grounds",
+   "source_id": "ov-buildings-edu-2026-09-23.1",
+   "record": "w30659002@13",
+   "kind": "observed_secondary",
+   "method": "independent layer agrees (distance m or relation)"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512939139-eligibility",
+   "subject_id": "ast-sch-osm-w1512939139",
+   "field": "access_eligibility",
+   "value": "known_public",
+   "source_id": null,
+   "record": null,
+   "kind": "derived",
+   "method": "R-general-numbered"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512939139-geom",
+   "subject_id": "ast-sch-osm-w1512939139",
+   "field": "coordinates",
+   "value": [
+    71.4177588,
+    51.1872014
+   ],
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1512939139@1",
+   "kind": "observed_secondary",
+   "method": "centroid of OSM school grounds polygon"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512939139-name",
+   "subject_id": "ast-sch-osm-w1512939139",
+   "field": "label",
+   "value": "Детский сад-школа-гимназия №46",
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1512939139@1",
+   "kind": "observed_secondary",
+   "method": "names.common.ru"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512942774-corr-r6314560@5",
+   "subject_id": "ast-sch-osm-w1512942774",
+   "field": "existence",
+   "value": "building inside grounds",
+   "source_id": "ov-buildings-edu-2026-09-23.1",
+   "record": "r6314560@5",
+   "kind": "observed_secondary",
+   "method": "independent layer agrees (distance m or relation)"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512942774-corr-w1100946263@3",
+   "subject_id": "ast-sch-osm-w1512942774",
+   "field": "existence",
+   "value": "building inside grounds",
+   "source_id": "ov-buildings-edu-2026-09-23.1",
+   "record": "w1100946263@3",
+   "kind": "observed_secondary",
+   "method": "independent layer agrees (distance m or relation)"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512942774-eligibility",
+   "subject_id": "ast-sch-osm-w1512942774",
+   "field": "access_eligibility",
+   "value": "known_public",
+   "source_id": null,
+   "record": null,
+   "kind": "derived",
+   "method": "R-general-numbered"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512942774-geom",
+   "subject_id": "ast-sch-osm-w1512942774",
+   "field": "coordinates",
+   "value": [
+    71.4326573,
+    51.1668489
+   ],
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1512942774@1",
+   "kind": "observed_secondary",
+   "method": "centroid of OSM school grounds polygon"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512942774-name",
+   "subject_id": "ast-sch-osm-w1512942774",
+   "field": "label",
+   "value": "Школа-гимназия №31",
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1512942774@1",
+   "kind": "observed_secondary",
+   "method": "names.common.ru"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512942775-corr-2176c0b8-d2db",
+   "subject_id": "ast-sch-osm-w1512942775",
+   "field": "existence",
+   "value": 0.0,
+   "source_id": "ov-places-2026-09-23.1",
+   "record": "2176c0b8-d2db-47a8-aaf0-3968c198baac",
+   "kind": "observed_secondary",
+   "method": "independent layer agrees (distance m or relation)"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512942775-eligibility",
+   "subject_id": "ast-sch-osm-w1512942775",
+   "field": "access_eligibility",
+   "value": "known_public",
+   "source_id": null,
+   "record": null,
+   "kind": "derived",
+   "method": "R-general-numbered"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512942775-geom",
+   "subject_id": "ast-sch-osm-w1512942775",
+   "field": "coordinates",
+   "value": [
+    71.4379795,
+    51.1613316
+   ],
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1512942775@1",
+   "kind": "observed_secondary",
+   "method": "centroid of OSM school grounds polygon"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512942775-name",
+   "subject_id": "ast-sch-osm-w1512942775",
+   "field": "label",
+   "value": "Школа-лицей №54 имени Акселеу Сейдимбека",
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1512942775@1",
+   "kind": "observed_secondary",
+   "method": "names.common.ru"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512942776-corr-w425997774@9",
+   "subject_id": "ast-sch-osm-w1512942776",
+   "field": "existence",
+   "value": "building inside grounds",
+   "source_id": "ov-buildings-edu-2026-09-23.1",
+   "record": "w425997774@9",
+   "kind": "observed_secondary",
+   "method": "independent layer agrees (distance m or relation)"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512942776-eligibility",
+   "subject_id": "ast-sch-osm-w1512942776",
+   "field": "access_eligibility",
+   "value": "known_public",
+   "source_id": null,
+   "record": null,
+   "kind": "derived",
+   "method": "R-general-numbered"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512942776-geom",
+   "subject_id": "ast-sch-osm-w1512942776",
+   "field": "coordinates",
+   "value": [
+    71.4316391,
+    51.1596901
+   ],
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1512942776@1",
+   "kind": "observed_secondary",
+   "method": "centroid of OSM school grounds polygon"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1512942776-name",
+   "subject_id": "ast-sch-osm-w1512942776",
+   "field": "label",
+   "value": "Школа-гимназия №10 имени Жумабека Ташенева",
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1512942776@1",
+   "kind": "observed_secondary",
+   "method": "names.common.ru"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1513435673-conflict-68483cf5",
+   "subject_id": "ast-sch-osm-w1513435673",
+   "field": "location",
+   "value": 1901.6,
+   "source_id": "ov-places-2026-09-23.1",
+   "record": "68483cf5-b727-4de8-976e-b8183699be1a",
+   "kind": "observed_secondary",
+   "method": "conflicting POI: Meta POI «Ғали Орманов атындағы 7 мектеп-гимназиясы» has only the locality as address and lies ~1.9 km from OSM grounds of school No. 7 named after G. Ormanov; treated as a poor geocode, not a second "
+  },
+  {
+   "id": "ev-ast-sch-osm-w1513435673-corr-r3258585@9",
+   "subject_id": "ast-sch-osm-w1513435673",
+   "field": "existence",
+   "value": "building inside grounds",
+   "source_id": "ov-buildings-edu-2026-09-23.1",
+   "record": "r3258585@9",
+   "kind": "observed_secondary",
+   "method": "independent layer agrees (distance m or relation)"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1513435673-eligibility",
+   "subject_id": "ast-sch-osm-w1513435673",
+   "field": "access_eligibility",
+   "value": "known_public",
+   "source_id": null,
+   "record": null,
+   "kind": "derived",
+   "method": "R-general-numbered"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1513435673-geom",
+   "subject_id": "ast-sch-osm-w1513435673",
+   "field": "coordinates",
+   "value": [
+    71.4276892,
+    51.1785504
+   ],
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1513435673@1",
+   "kind": "observed_secondary",
+   "method": "centroid of OSM school grounds polygon"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1513435673-name",
+   "subject_id": "ast-sch-osm-w1513435673",
+   "field": "label",
+   "value": "Школа-гимназия №7 им. Г. Орманова",
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1513435673@1",
+   "kind": "observed_secondary",
+   "method": "names.common.ru"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1513435675-conflict-8ca53724",
+   "subject_id": "ast-sch-osm-w1513435675",
+   "field": "location",
+   "value": 624.5,
+   "source_id": "ov-places-2026-09-23.1",
+   "record": "8ca53724-c558-46b7-826b-13e3e8fbb7e6",
+   "kind": "observed_secondary",
+   "method": "conflicting POI: Meta POI «ГУ Средняя школа № 8 УО г. Астаны» (address Асан Қайғы 56) has no OSM school geometry nearby (nearest OSM school grounds are №119 at 255 m); OSM «№8 мектеп-лицей» grounds are ~620 m away. Ne"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1513435675-corr-r9938881@3",
+   "subject_id": "ast-sch-osm-w1513435675",
+   "field": "existence",
+   "value": "building inside grounds",
+   "source_id": "ov-buildings-edu-2026-09-23.1",
+   "record": "r9938881@3",
+   "kind": "observed_secondary",
+   "method": "independent layer agrees (distance m or relation)"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1513435675-eligibility",
+   "subject_id": "ast-sch-osm-w1513435675",
+   "field": "access_eligibility",
+   "value": "unknown",
+   "source_id": null,
+   "record": null,
+   "kind": "derived",
+   "method": "manual_review"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1513435675-geom",
+   "subject_id": "ast-sch-osm-w1513435675",
+   "field": "coordinates",
+   "value": [
+    71.4468988,
+    51.17302
+   ],
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1513435675@1",
+   "kind": "observed_secondary",
+   "method": "centroid of OSM school grounds polygon"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1513435675-name",
+   "subject_id": "ast-sch-osm-w1513435675",
+   "field": "label",
+   "value": "Школа-лицей №8",
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1513435675@1",
+   "kind": "observed_secondary",
+   "method": "names.common.ru"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1513435676-corr-r3242130@8",
+   "subject_id": "ast-sch-osm-w1513435676",
+   "field": "existence",
+   "value": "building inside grounds",
+   "source_id": "ov-buildings-edu-2026-09-23.1",
+   "record": "r3242130@8",
+   "kind": "observed_secondary",
+   "method": "independent layer agrees (distance m or relation)"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1513435676-eligibility",
+   "subject_id": "ast-sch-osm-w1513435676",
+   "field": "access_eligibility",
+   "value": "known_public",
+   "source_id": null,
+   "record": null,
+   "kind": "derived",
+   "method": "R-general-numbered"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1513435676-geom",
+   "subject_id": "ast-sch-osm-w1513435676",
+   "field": "coordinates",
+   "value": [
+    71.4566384,
+    51.1659537
+   ],
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1513435676@1",
+   "kind": "observed_secondary",
+   "method": "centroid of OSM school grounds polygon"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1513435676-name",
+   "subject_id": "ast-sch-osm-w1513435676",
+   "field": "label",
+   "value": "Общеобразовательная школа №16 им. Т. Айбергенова",
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1513435676@1",
+   "kind": "observed_secondary",
+   "method": "names.common.ru"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1513435677-corr-w715268266@5",
+   "subject_id": "ast-sch-osm-w1513435677",
+   "field": "existence",
+   "value": "building inside grounds",
+   "source_id": "ov-buildings-edu-2026-09-23.1",
+   "record": "w715268266@5",
+   "kind": "observed_secondary",
+   "method": "independent layer agrees (distance m or relation)"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1513435677-eligibility",
+   "subject_id": "ast-sch-osm-w1513435677",
+   "field": "access_eligibility",
+   "value": "known_public",
+   "source_id": null,
+   "record": null,
+   "kind": "derived",
+   "method": "R-general-numbered"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1513435677-geom",
+   "subject_id": "ast-sch-osm-w1513435677",
+   "field": "coordinates",
+   "value": [
+    71.4555237,
+    51.1630407
+   ],
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1513435677@1",
+   "kind": "observed_secondary",
+   "method": "centroid of OSM school grounds polygon"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1513435677-name",
+   "subject_id": "ast-sch-osm-w1513435677",
+   "field": "label",
+   "value": "Школа-гимназия №87 им. А. Қунанбайулы",
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1513435677@1",
+   "kind": "observed_secondary",
+   "method": "names.common.ru"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1513435680-eligibility",
+   "subject_id": "ast-sch-osm-w1513435680",
+   "field": "access_eligibility",
+   "value": "known_public",
+   "source_id": null,
+   "record": null,
+   "kind": "derived",
+   "method": "R-general-numbered"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1513435680-geom",
+   "subject_id": "ast-sch-osm-w1513435680",
+   "field": "coordinates",
+   "value": [
+    71.454172,
+    51.1585416
+   ],
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1513435680@1",
+   "kind": "observed_secondary",
+   "method": "centroid of OSM school grounds polygon"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1513435680-name",
+   "subject_id": "ast-sch-osm-w1513435680",
+   "field": "label",
+   "value": "Гимназия №5",
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1513435680@1",
+   "kind": "observed_secondary",
+   "method": "names.common.ru"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1513435683-corr-1a3ab899-f9f6",
+   "subject_id": "ast-sch-osm-w1513435683",
+   "field": "existence",
+   "value": 0.0,
+   "source_id": "ov-places-2026-09-23.1",
+   "record": "1a3ab899-f9f6-483e-989f-8253aadff60a",
+   "kind": "observed_secondary",
+   "method": "independent layer agrees (distance m or relation)"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1513435683-eligibility",
+   "subject_id": "ast-sch-osm-w1513435683",
+   "field": "access_eligibility",
+   "value": "known_public",
+   "source_id": null,
+   "record": null,
+   "kind": "derived",
+   "method": "R-general-numbered"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1513435683-geom",
+   "subject_id": "ast-sch-osm-w1513435683",
+   "field": "coordinates",
+   "value": [
+    71.4415256,
+    51.1552774
+   ],
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1513435683@1",
+   "kind": "observed_secondary",
+   "method": "centroid of OSM school grounds polygon"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1513435683-name",
+   "subject_id": "ast-sch-osm-w1513435683",
+   "field": "label",
+   "value": "Школа-лицей №27 им. К. Кайсенова",
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1513435683@1",
+   "kind": "observed_secondary",
+   "method": "names.common.ru"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1513435686-corr-78fce555-4e3d",
+   "subject_id": "ast-sch-osm-w1513435686",
+   "field": "existence",
+   "value": 0.0,
+   "source_id": "ov-places-2026-09-23.1",
+   "record": "78fce555-4e3d-48ad-b6a6-dfd4fb69a0b6",
+   "kind": "observed_secondary",
+   "method": "independent layer agrees (distance m or relation)"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1513435686-eligibility",
+   "subject_id": "ast-sch-osm-w1513435686",
+   "field": "access_eligibility",
+   "value": "known_public",
+   "source_id": null,
+   "record": null,
+   "kind": "derived",
+   "method": "R-general-numbered"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1513435686-geom",
+   "subject_id": "ast-sch-osm-w1513435686",
+   "field": "coordinates",
+   "value": [
+    71.471113,
+    51.1534759
+   ],
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1513435686@1",
+   "kind": "observed_secondary",
+   "method": "centroid of OSM school grounds polygon"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1513435686-name",
+   "subject_id": "ast-sch-osm-w1513435686",
+   "field": "label",
+   "value": "Школа-лицей №48 им. А. Байтурсынулы",
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1513435686@1",
+   "kind": "observed_secondary",
+   "method": "names.common.ru"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1513435689-corr-59906dca-fbf0",
+   "subject_id": "ast-sch-osm-w1513435689",
+   "field": "existence",
+   "value": 0.0,
+   "source_id": "ov-places-2026-09-23.1",
+   "record": "59906dca-fbf0-4e8b-9dc5-2da0d7d1b250",
+   "kind": "observed_secondary",
+   "method": "independent layer agrees (distance m or relation)"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1513435689-eligibility",
+   "subject_id": "ast-sch-osm-w1513435689",
+   "field": "access_eligibility",
+   "value": "known_public",
+   "source_id": null,
+   "record": null,
+   "kind": "derived",
+   "method": "R-general-numbered"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1513435689-geom",
+   "subject_id": "ast-sch-osm-w1513435689",
+   "field": "coordinates",
+   "value": [
+    71.466479,
+    51.1500825
+   ],
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1513435689@1",
+   "kind": "observed_secondary",
+   "method": "centroid of OSM school grounds polygon"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1513435689-name",
+   "subject_id": "ast-sch-osm-w1513435689",
+   "field": "label",
+   "value": "Школа-гимназия №30",
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1513435689@1",
+   "kind": "observed_secondary",
+   "method": "names.common.ru"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1513435691-corr-821166c9-bbb8",
+   "subject_id": "ast-sch-osm-w1513435691",
+   "field": "existence",
+   "value": 4.1,
+   "source_id": "ov-places-2026-09-23.1",
+   "record": "821166c9-bbb8-48a0-ba5e-dd4d9f5103e3",
+   "kind": "observed_secondary",
+   "method": "independent layer agrees (distance m or relation)"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1513435691-corr-w240485189@10",
+   "subject_id": "ast-sch-osm-w1513435691",
+   "field": "existence",
+   "value": "building inside grounds",
+   "source_id": "ov-buildings-edu-2026-09-23.1",
+   "record": "w240485189@10",
+   "kind": "observed_secondary",
+   "method": "independent layer agrees (distance m or relation)"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1513435691-eligibility",
+   "subject_id": "ast-sch-osm-w1513435691",
+   "field": "access_eligibility",
+   "value": "known_public",
+   "source_id": null,
+   "record": null,
+   "kind": "derived",
+   "method": "R-general-numbered"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1513435691-geom",
+   "subject_id": "ast-sch-osm-w1513435691",
+   "field": "coordinates",
+   "value": [
+    71.4615273,
+    51.1496945
+   ],
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1513435691@1",
+   "kind": "observed_secondary",
+   "method": "centroid of OSM school grounds polygon"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1513435691-name",
+   "subject_id": "ast-sch-osm-w1513435691",
+   "field": "label",
+   "value": "Школа-лицей №28",
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1513435691@1",
+   "kind": "observed_secondary",
+   "method": "names.common.ru"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1519562357-corr-r19737407@4",
+   "subject_id": "ast-sch-osm-w1519562357",
+   "field": "existence",
+   "value": "building inside grounds",
+   "source_id": "ov-buildings-edu-2026-09-23.1",
+   "record": "r19737407@4",
+   "kind": "observed_secondary",
+   "method": "independent layer agrees (distance m or relation)"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1519562357-eligibility",
+   "subject_id": "ast-sch-osm-w1519562357",
+   "field": "access_eligibility",
+   "value": "known_public",
+   "source_id": null,
+   "record": null,
+   "kind": "derived",
+   "method": "R-general-numbered"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1519562357-geom",
+   "subject_id": "ast-sch-osm-w1519562357",
+   "field": "coordinates",
+   "value": [
+    71.4493279,
+    51.1650335
+   ],
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1519562357@1",
+   "kind": "observed_secondary",
+   "method": "centroid of OSM school grounds polygon"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1519562357-name",
+   "subject_id": "ast-sch-osm-w1519562357",
+   "field": "label",
+   "value": "Общеобразовательная школа №119",
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1519562357@1",
+   "kind": "observed_secondary",
+   "method": "names.common.ru"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1530014506-corr-r3253001@9",
+   "subject_id": "ast-sch-osm-w1530014506",
+   "field": "existence",
+   "value": "building inside grounds",
+   "source_id": "ov-buildings-edu-2026-09-23.1",
+   "record": "r3253001@9",
+   "kind": "observed_secondary",
+   "method": "independent layer agrees (distance m or relation)"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1530014506-eligibility",
+   "subject_id": "ast-sch-osm-w1530014506",
+   "field": "access_eligibility",
+   "value": "known_public",
+   "source_id": null,
+   "record": null,
+   "kind": "derived",
+   "method": "R-general-numbered"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1530014506-geom",
+   "subject_id": "ast-sch-osm-w1530014506",
+   "field": "coordinates",
+   "value": [
+    71.399747,
+    51.1762546
+   ],
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1530014506@1",
+   "kind": "observed_secondary",
+   "method": "centroid of OSM school grounds polygon"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1530014506-name",
+   "subject_id": "ast-sch-osm-w1530014506",
+   "field": "label",
+   "value": "Общеобразовательная школа №18",
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1530014506@1",
+   "kind": "observed_secondary",
+   "method": "names.common.ru"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1530014507-corr-w307047274@7",
+   "subject_id": "ast-sch-osm-w1530014507",
+   "field": "existence",
+   "value": "building inside grounds",
+   "source_id": "ov-buildings-edu-2026-09-23.1",
+   "record": "w307047274@7",
+   "kind": "observed_secondary",
+   "method": "independent layer agrees (distance m or relation)"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1530014507-eligibility",
+   "subject_id": "ast-sch-osm-w1530014507",
+   "field": "access_eligibility",
+   "value": "known_public",
+   "source_id": null,
+   "record": null,
+   "kind": "derived",
+   "method": "R-general-numbered"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1530014507-geom",
+   "subject_id": "ast-sch-osm-w1530014507",
+   "field": "coordinates",
+   "value": [
+    71.4024086,
+    51.1813769
+   ],
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1530014507@1",
+   "kind": "observed_secondary",
+   "method": "centroid of OSM school grounds polygon"
+  },
+  {
+   "id": "ev-ast-sch-osm-w1530014507-name",
+   "subject_id": "ast-sch-osm-w1530014507",
+   "field": "label",
+   "value": "Школа-гимназия №14",
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w1530014507@1",
+   "kind": "observed_secondary",
+   "method": "names.common.ru"
+  },
+  {
+   "id": "ev-ast-sch-osm-w260543959-corr-8a0e86d5-58d4",
+   "subject_id": "ast-sch-osm-w260543959",
+   "field": "existence",
+   "value": 0.0,
+   "source_id": "ov-places-2026-09-23.1",
+   "record": "8a0e86d5-58d4-4de5-b31c-f17b85d5c3f2",
+   "kind": "observed_secondary",
+   "method": "independent layer agrees (distance m or relation)"
+  },
+  {
+   "id": "ev-ast-sch-osm-w260543959-corr-w24805437@9",
+   "subject_id": "ast-sch-osm-w260543959",
+   "field": "existence",
+   "value": "building inside grounds",
+   "source_id": "ov-buildings-edu-2026-09-23.1",
+   "record": "w24805437@9",
+   "kind": "observed_secondary",
+   "method": "independent layer agrees (distance m or relation)"
+  },
+  {
+   "id": "ev-ast-sch-osm-w260543959-eligibility",
+   "subject_id": "ast-sch-osm-w260543959",
+   "field": "access_eligibility",
+   "value": "known_public",
+   "source_id": null,
+   "record": null,
+   "kind": "derived",
+   "method": "R-general-numbered"
+  },
+  {
+   "id": "ev-ast-sch-osm-w260543959-geom",
+   "subject_id": "ast-sch-osm-w260543959",
+   "field": "coordinates",
+   "value": [
+    71.3996488,
+    51.1957589
+   ],
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w260543959@7",
+   "kind": "observed_secondary",
+   "method": "centroid of OSM school grounds polygon"
+  },
+  {
+   "id": "ev-ast-sch-osm-w260543959-name",
+   "subject_id": "ast-sch-osm-w260543959",
+   "field": "label",
+   "value": "Средняя школа №36",
+   "source_id": "osm-landuse-via-overture-2026-09-23.1",
+   "record": "w260543959@7",
+   "kind": "observed_secondary",
+   "method": "names.common.ru"
+  },
+  {
+   "id": "ev-ast-sch-osmb-w240110499-eligibility",
+   "subject_id": "ast-sch-osmb-w240110499",
+   "field": "access_eligibility",
+   "value": "unknown",
+   "source_id": null,
+   "record": null,
+   "kind": "derived",
+   "method": "R-unnamed-building"
+  },
+  {
+   "id": "ev-ast-sch-osmb-w240110499-geom",
+   "subject_id": "ast-sch-osmb-w240110499",
+   "field": "coordinates",
+   "value": [
+    71.4540528,
+    51.1754475
+   ],
+   "source_id": "ov-buildings-edu-2026-09-23.1",
+   "record": "w240110499@5",
+   "kind": "observed_secondary",
+   "method": "centroid of OSM building=school footprint"
+  },
+  {
+   "id": "ev-ast-sch-osmb-w240110499-name",
+   "subject_id": "ast-sch-osmb-w240110499",
+   "field": "label",
+   "value": "Здание школы без названия (OSM w240110499)",
+   "source_id": "ov-buildings-edu-2026-09-23.1",
+   "record": "w240110499@5",
+   "kind": "observed_secondary",
+   "method": "names.primary"
+  },
+  {
+   "id": "ev-ast-sch-osmb-w240938582-eligibility",
+   "subject_id": "ast-sch-osmb-w240938582",
+   "field": "access_eligibility",
+   "value": "known_public",
+   "source_id": null,
+   "record": null,
+   "kind": "derived",
+   "method": "R-general-numbered"
+  },
+  {
+   "id": "ev-ast-sch-osmb-w240938582-geom",
+   "subject_id": "ast-sch-osmb-w240938582",
+   "field": "coordinates",
+   "value": [
+    71.4163069,
+    51.1630791
+   ],
+   "source_id": "ov-buildings-edu-2026-09-23.1",
+   "record": "w240938582@10",
+   "kind": "observed_secondary",
+   "method": "centroid of OSM building=school footprint"
+  },
+  {
+   "id": "ev-ast-sch-osmb-w240938582-name",
+   "subject_id": "ast-sch-osmb-w240938582",
+   "field": "label",
+   "value": "Школа-лицей №1 им. Талгата Бигельдинова",
+   "source_id": "ov-buildings-edu-2026-09-23.1",
+   "record": "w240938582@10",
+   "kind": "observed_secondary",
+   "method": "names.primary"
+  },
+  {
+   "id": "ev-ast-sch-osmb-w240949245-eligibility",
+   "subject_id": "ast-sch-osmb-w240949245",
+   "field": "access_eligibility",
+   "value": "known_public",
+   "source_id": null,
+   "record": null,
+   "kind": "derived",
+   "method": "R-general-numbered"
+  },
+  {
+   "id": "ev-ast-sch-osmb-w240949245-geom",
+   "subject_id": "ast-sch-osmb-w240949245",
+   "field": "coordinates",
+   "value": [
+    71.409633,
+    51.1656626
+   ],
+   "source_id": "ov-buildings-edu-2026-09-23.1",
+   "record": "w240949245@9",
+   "kind": "observed_secondary",
+   "method": "centroid of OSM building=school footprint"
+  },
+  {
+   "id": "ev-ast-sch-osmb-w240949245-name",
+   "subject_id": "ast-sch-osmb-w240949245",
+   "field": "label",
+   "value": "Школа-лицей №15",
+   "source_id": "ov-buildings-edu-2026-09-23.1",
+   "record": "w240949245@9",
+   "kind": "observed_secondary",
+   "method": "names.primary"
+  },
+  {
+   "id": "ev-ast-sch-osmb-w241090081-eligibility",
+   "subject_id": "ast-sch-osmb-w241090081",
+   "field": "access_eligibility",
+   "value": "unknown",
+   "source_id": null,
+   "record": null,
+   "kind": "derived",
+   "method": "R-unnamed-building"
+  },
+  {
+   "id": "ev-ast-sch-osmb-w241090081-geom",
+   "subject_id": "ast-sch-osmb-w241090081",
+   "field": "coordinates",
+   "value": [
+    71.3918188,
+    51.1777324
+   ],
+   "source_id": "ov-buildings-edu-2026-09-23.1",
+   "record": "w241090081@9",
+   "kind": "observed_secondary",
+   "method": "centroid of OSM building=school footprint"
+  },
+  {
+   "id": "ev-ast-sch-osmb-w241090081-name",
+   "subject_id": "ast-sch-osmb-w241090081",
+   "field": "label",
+   "value": "Здание школы без названия (OSM w241090081)",
+   "source_id": "ov-buildings-edu-2026-09-23.1",
+   "record": "w241090081@9",
+   "kind": "observed_secondary",
+   "method": "names.primary"
+  },
+  {
+   "id": "ev-ast-sch-osmb-w30012464-corr-1c004136-8f4d",
+   "subject_id": "ast-sch-osmb-w30012464",
+   "field": "existence",
+   "value": 6.8,
+   "source_id": "ov-places-2026-09-23.1",
+   "record": "1c004136-8f4d-463b-88fc-4769e8f8dccd",
+   "kind": "observed_secondary",
+   "method": "independent layer agrees (distance m or relation)"
+  },
+  {
+   "id": "ev-ast-sch-osmb-w30012464-eligibility",
+   "subject_id": "ast-sch-osmb-w30012464",
+   "field": "access_eligibility",
+   "value": "known_public",
+   "source_id": null,
+   "record": null,
+   "kind": "derived",
+   "method": "R-general-numbered"
+  },
+  {
+   "id": "ev-ast-sch-osmb-w30012464-geom",
+   "subject_id": "ast-sch-osmb-w30012464",
+   "field": "coordinates",
+   "value": [
+    71.4158019,
+    51.1706541
+   ],
+   "source_id": "ov-buildings-edu-2026-09-23.1",
+   "record": "w30012464@16",
+   "kind": "observed_secondary",
+   "method": "centroid of OSM building=school footprint"
+  },
+  {
+   "id": "ev-ast-sch-osmb-w30012464-name",
+   "subject_id": "ast-sch-osmb-w30012464",
+   "field": "label",
+   "value": "Школа-гимназия №2 им. Гафу Каирбекова",
+   "source_id": "ov-buildings-edu-2026-09-23.1",
+   "record": "w30012464@16",
+   "kind": "observed_secondary",
+   "method": "names.primary"
+  },
+  {
+   "id": "ev-ast-sch-osmb-w30012477-corr-89d23158-25ff",
+   "subject_id": "ast-sch-osmb-w30012477",
+   "field": "existence",
+   "value": 0.0,
+   "source_id": "ov-places-2026-09-23.1",
+   "record": "89d23158-25ff-4829-ab77-2c83d986eed5",
+   "kind": "observed_secondary",
+   "method": "independent layer agrees (distance m or relation)"
+  },
+  {
+   "id": "ev-ast-sch-osmb-w30012477-eligibility",
+   "subject_id": "ast-sch-osmb-w30012477",
+   "field": "access_eligibility",
+   "value": "known_public",
+   "source_id": null,
+   "record": null,
+   "kind": "derived",
+   "method": "R-general-numbered"
+  },
+  {
+   "id": "ev-ast-sch-osmb-w30012477-geom",
+   "subject_id": "ast-sch-osmb-w30012477",
+   "field": "coordinates",
+   "value": [
+    71.4173377,
+    51.1707715
+   ],
+   "source_id": "ov-buildings-edu-2026-09-23.1",
+   "record": "w30012477@13",
+   "kind": "observed_secondary",
+   "method": "centroid of OSM building=school footprint"
+  },
+  {
+   "id": "ev-ast-sch-osmb-w30012477-name",
+   "subject_id": "ast-sch-osmb-w30012477",
+   "field": "label",
+   "value": "Детский сад - Школа гимназия №47",
+   "source_id": "ov-buildings-edu-2026-09-23.1",
+   "record": "w30012477@13",
+   "kind": "observed_secondary",
+   "method": "names.primary"
+  },
+  {
+   "id": "ev-ast-sch-osmb-w30014478-eligibility",
+   "subject_id": "ast-sch-osmb-w30014478",
+   "field": "access_eligibility",
+   "value": "known_restricted",
+   "source_id": null,
+   "record": null,
+   "kind": "derived",
+   "method": "R-evening_school"
+  },
+  {
+   "id": "ev-ast-sch-osmb-w30014478-geom",
+   "subject_id": "ast-sch-osmb-w30014478",
+   "field": "coordinates",
+   "value": [
+    71.4062215,
+    51.1846762
+   ],
+   "source_id": "ov-buildings-edu-2026-09-23.1",
+   "record": "w30014478@9",
+   "kind": "observed_secondary",
+   "method": "centroid of OSM building=school footprint"
+  },
+  {
+   "id": "ev-ast-sch-osmb-w30014478-name",
+   "subject_id": "ast-sch-osmb-w30014478",
+   "field": "label",
+   "value": "Вечерняя сменная школа №39",
+   "source_id": "ov-buildings-edu-2026-09-23.1",
+   "record": "w30014478@9",
+   "kind": "observed_secondary",
+   "method": "names.primary"
+  },
+  {
+   "id": "ev-buffer-D",
+   "subject_id": null,
+   "field": "buffer",
+   "value": {
+    "D_m": 1373.4,
+    "at": [
+     71.447,
+     51.181
+    ],
+    "B_m": 2100,
+    "detour_assumption": 1.5,
+    "grid_m": 25,
+    "targets_known_public": 45
+   },
+   "source_id": null,
+   "record": null,
+   "kind": "derived",
+   "method": "spherical distance (k10case.haversine_m) from grid points of the bbox to the nearest known_public school"
+  },
+  {
+   "id": "ev-lead-lead-forbes-agis",
+   "subject_id": null,
+   "field": "lead",
+   "value": "Наводка из поиска: Astana Garden International School в рейтинге частных школ",
+   "source_id": "lead-forbes-agis",
+   "record": null,
+   "kind": "lead_not_fetched",
+   "method": "search result title/URL only; page not opened; not used as a fact"
+  },
+  {
+   "id": "ev-lead-lead-informburo-sh8-closed",
+   "subject_id": null,
+   "field": "lead",
+   "value": "Наводка из поиска: «в Астане школу №8 закрыли, а детей отправили по другим учебным заведениям» (по адресу страницы)",
+   "source_id": "lead-informburo-sh8-closed",
+   "record": null,
+   "kind": "lead_not_fetched",
+   "method": "search result title/URL only; page not opened; not used as a fact"
+  },
+  {
+   "id": "ev-lead-lead-informburo-sh8-repair",
+   "subject_id": null,
+   "field": "lead",
+   "value": "Наводка из поиска: «ученики СШ №8 Астаны ходят на занятия в три другие школы, зданию требуется капремонт» (по адресу страницы)",
+   "source_id": "lead-informburo-sh8-repair",
+   "record": null,
+   "kind": "lead_not_fetched",
+   "method": "search result title/URL only; page not opened; not used as a fact"
+  }
+ ]
+}

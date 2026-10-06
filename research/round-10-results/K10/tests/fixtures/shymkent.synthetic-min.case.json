@@ -1,0 +1,25 @@
+{
+ "schema_version": "school-access-case-v1",
+ "case_id": "shymkent-synthetic-min-k10-test",
+ "city_id": "shymkent",
+ "title": "SYNTHETIC test fixture for the K10 transfer check — not Shymkent data, not K01's package",
+ "bbox": [69.58, 42.30, 69.61, 42.32],
+ "snapshot_id": "synthetic-shymkent-min-k10-test",
+ "sources": [
+  {"id": "synthetic-k10-fixture", "url": "repo:research/round-10-results/K10/tests/fixtures/shymkent.synthetic-min.case.json", "publisher": "K10 test fixture", "title": "Invented points for the transfer test (SYNTHETIC)", "published_at": null, "data_period": null, "retrieved_at": null, "verification_status": "secondary_only", "license": "unknown", "content_sha256": null}
+ ],
+ "schools": [
+  {"id": "shy-syn-sch-1", "label": "SYNTHETIC school 1", "lon": 69.585, "lat": 42.305, "kind": "synthetic", "source_ids": ["synthetic-k10-fixture"], "field_provenance": {"coordinates": {"method": "invented for a test"}}, "qa": [{"code": "synthetic", "text": "Invented test point."}], "category": "general_school", "access_eligibility": "known_public", "capacity": null, "capacity_source_ids": []},
+  {"id": "shy-syn-sch-2", "label": "SYNTHETIC school 2", "lon": 69.605, "lat": 42.315, "kind": "synthetic", "source_ids": ["synthetic-k10-fixture"], "field_provenance": {"coordinates": {"method": "invented for a test"}}, "qa": [{"code": "synthetic", "text": "Invented test point."}], "category": "general_school", "access_eligibility": "unknown", "capacity": null, "capacity_source_ids": []}
+ ],
+ "origins": [
+  {"id": "shy-syn-org-1", "label": "SYNTHETIC origin 1", "lon": 69.59, "lat": 42.31, "kind": "synthetic", "source_ids": ["synthetic-k10-fixture"], "field_provenance": {}, "qa": [], "weight": 1, "parent_source_id": null, "method": "invented for a test"},
+  {"id": "shy-syn-org-2", "label": "SYNTHETIC origin 2", "lon": 69.60, "lat": 42.31, "kind": "synthetic", "source_ids": ["synthetic-k10-fixture"], "field_provenance": {}, "qa": [], "weight": 1, "parent_source_id": null, "method": "invented for a test"}
+ ],
+ "candidates": [
+  {"id": "shy-syn-hyp-a", "label": "SYNTHETIC hypothesis A", "lon": 69.595, "lat": 42.312, "kind": "synthetic", "source_ids": [], "field_provenance": {}, "qa": [], "cost": null, "land_status": "unknown"}
+ ],
+ "selected_candidate_ids": [],
+ "parameters": {"distance_method": "geodesic", "routing_policy_id": null, "threshold_m": 800, "max_new_objects": 1},
+ "model_assumptions": [{"id": "A-synthetic", "text": "SYNTHETIC fixture for testing the city switch only."}]
+}

@@ -1,0 +1,76 @@
+{
+ "schema": "k10-package-manifest-v1",
+ "generator": "research/round-10-results/K10/scripts/build_astana_package.py",
+ "code_base_sha": "d2ff344c5ec9b9a729ea59df50ec81f981e619de",
+ "overture_release": "2026-09-23.1",
+ "inputs": {
+  "app_slice_astana.json": {
+   "rows": 11,
+   "sha256": "5fe5185b80351b9f48b2fa1d71a696a9165fd5e26eabb072f8820faf52a4f23d"
+  },
+  "buildings_bbox_all.jsonl": {
+   "rows": 2507,
+   "sha256": "3de986275ee1e7b3711e16cd76831d1400377e6b08de54e098b46db94635131d"
+  },
+  "buildings_bbox_residential.jsonl": {
+   "rows": 248,
+   "sha256": "364c85783df8c5ea1ecb5c52a885a2db9ba9d8ab278adc3970d694d65bd93a11"
+  },
+  "osm_buildings_education.jsonl": {
+   "rows": 98,
+   "sha256": "e1c27eda5cb47970d6b6cffef2d04c1d63fc38dc78c82d83cb8ad1441f2ba189"
+  },
+  "osm_landuse_education.jsonl": {
+   "rows": 95,
+   "sha256": "06d7f12881a5e05423e8ab0fa671e49d31b23407820495e016cc2ab67aa9240f"
+  },
+  "overture_places_education.jsonl": {
+   "rows": 292,
+   "sha256": "d737a18842c2f521d3fe6dfd4174c788ba4cdcab3f340cc1b4caab2cd7914250"
+  }
+ },
+ "review_decisions_sha256": "444360da34f103c8064b453a48da064670e54aebf63752382ff2777a0900e05a",
+ "outputs": {
+  "sources.json": "1f1dff467388d28333baf4568a944523e8345d0014e343b4bc8e62c820b44a79",
+  "schools.json": "821b0c7571b885c54977a463e2699ac54a8940483535c1827736ab9a48081e4d",
+  "evidence.json": "44ee909e3ecf65d05d676f8a01449c4e525f64c4741e534a4409c5bdf698ceef",
+  "match-review.json": "b5ccd2aa0e7a511782b22f69504de9720d2ef39cbcca2c0c1268924837c79782",
+  "astana.case.json": "03485d2e79e9b882f6dda62a2a97c550a093c85d51325750a8b6ed2a05e04d11"
+ },
+ "case_digest_k10": "5d867306fabc4054175f576445ef122900e2e1ecdd123ed817058eee188dc762",
+ "case_digest_note": "k10-canon-v1 proposal; BUILD's canonical case_digest is authoritative",
+ "buffer": {
+  "D_m": 1373.4,
+  "D_at": [
+   71.447,
+   51.181
+  ],
+  "B_m": 2100,
+  "detour_assumption": 1.5,
+  "grid_m": 25
+ },
+ "validation": {
+  "city_id": "astana",
+  "schools": 40,
+  "origins": 23,
+  "candidates": 3,
+  "sources": 12,
+  "eligibility": {
+   "known_public": 29,
+   "known_restricted": 6,
+   "unknown": 5
+  }
+ },
+ "origins": {
+  "count": 23,
+  "empty_grid_cells": [
+   "5-4",
+   "5-5"
+  ]
+ },
+ "candidates": [
+  "ast-hyp-a",
+  "ast-hyp-b",
+  "ast-hyp-c"
+ ]
+}

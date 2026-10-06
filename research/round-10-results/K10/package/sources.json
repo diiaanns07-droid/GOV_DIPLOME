@@ -1,0 +1,151 @@
+{
+ "schema": "k10-sources-v1",
+ "city_id": "astana",
+ "sources": [
+  {
+   "id": "ov-places-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=places/type=place/",
+   "publisher": "Overture Maps Foundation (POI records from Meta and other contributors)",
+   "title": "Overture places, education records around the Astana slice (bbox + ~3 km)",
+   "published_at": null,
+   "data_period": "release 2026-09-23.1; Meta record update_time 2026-08/09",
+   "retrieved_at": "2026-10-06T07:02:52+00:00",
+   "verification_status": "secondary_only",
+   "license": "CDLA-Permissive-2.0 (per record; see inputs)",
+   "content_sha256": "d737a18842c2f521d3fe6dfd4174c788ba4cdcab3f340cc1b4caab2cd7914250"
+  },
+  {
+   "id": "osm-landuse-via-overture-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=base/type=land_use/",
+   "publisher": "OpenStreetMap contributors via Overture Maps Foundation",
+   "title": "OSM education land use (amenity=school/kindergarten/college/university) with source tags",
+   "published_at": null,
+   "data_period": "OSM snapshot used by Overture 2026-09-23.1 (record version 2026-09-06)",
+   "retrieved_at": "2026-10-06T07:03:03+00:00",
+   "verification_status": "secondary_only",
+   "license": "ODbL-1.0",
+   "content_sha256": "06d7f12881a5e05423e8ab0fa671e49d31b23407820495e016cc2ab67aa9240f"
+  },
+  {
+   "id": "ov-buildings-edu-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=buildings/type=building/",
+   "publisher": "OpenStreetMap contributors via Overture Maps Foundation",
+   "title": "OSM buildings with an education class (building=school etc.)",
+   "published_at": null,
+   "data_period": "Overture 2026-09-23.1",
+   "retrieved_at": "2026-10-06T07:03:25+00:00",
+   "verification_status": "secondary_only",
+   "license": "ODbL-1.0",
+   "content_sha256": "e1c27eda5cb47970d6b6cffef2d04c1d63fc38dc78c82d83cb8ad1441f2ba189"
+  },
+  {
+   "id": "ov-buildings-res-bbox-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=buildings/type=building/",
+   "publisher": "OpenStreetMap contributors via Overture Maps Foundation",
+   "title": "Residential building footprints with centroid in the slice bbox (origin pool)",
+   "published_at": null,
+   "data_period": "Overture 2026-09-23.1",
+   "retrieved_at": "2026-10-06T07:03:25+00:00",
+   "verification_status": "secondary_only",
+   "license": "ODbL-1.0",
+   "content_sha256": "364c85783df8c5ea1ecb5c52a885a2db9ba9d8ab278adc3970d694d65bd93a11"
+  },
+  {
+   "id": "ov-buildings-all-bbox-2026-09-23.1",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/release/2026-09-23.1/theme=buildings/type=building/",
+   "publisher": "OpenStreetMap contributors and Microsoft ML Buildings via Overture Maps Foundation",
+   "title": "All building footprints intersecting the slice bbox (used only to flag hypothesis points on existing footprints)",
+   "published_at": null,
+   "data_period": "Overture 2026-09-23.1",
+   "retrieved_at": "2026-10-06T07:03:25+00:00",
+   "verification_status": "secondary_only",
+   "license": "ODbL-1.0 (OSM); Microsoft ML Buildings licence per record",
+   "content_sha256": "3de986275ee1e7b3711e16cd76831d1400377e6b08de54e098b46db94635131d"
+  },
+  {
+   "id": "app-slice-astana-d2ff344",
+   "url": "git:diiaanns07-droid/GOV_DIPLOME@d2ff344c5ec9b9a729ea59df50ec81f981e619de:web/govtech/core/data.js",
+   "publisher": "GOV_DIPLOME (pinned app slice of Overture/OSM)",
+   "title": "Astana slice of the current main site (school group, 8 records)",
+   "published_at": null,
+   "data_period": "Overture 2026-09-23.1, retrieved 2026-10-05T06:20:01+00:00",
+   "retrieved_at": "2026-10-05T06:20:01+00:00",
+   "verification_status": "secondary_only",
+   "license": "CDLA-Permissive-2.0 / ODbL-1.0 (see web/govtech/core/attribution)",
+   "content_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72"
+  },
+  {
+   "id": "egov-school-contacts",
+   "url": "https://egov.kz/cms/ru/articles/2Fspisok_wkol_rk",
+   "publisher": "eGov.kz (по домену; страница не открыта)",
+   "title": "Контакты общеобразовательных школ городов Астана, Алматы, Шымкент и областных центров РК (заголовок из результата поиска)",
+   "published_at": null,
+   "data_period": null,
+   "retrieved_at": null,
+   "verification_status": "not_fetched",
+   "license": "unknown",
+   "content_sha256": null
+  },
+  {
+   "id": "gov-kz-astana-bilim",
+   "url": "https://www.gov.kz/memleket/entities/astana-bilim",
+   "publisher": "gov.kz (по URL — управление образования г. Астаны; страница не открыта)",
+   "title": "Страница управления образования г. Астаны (не открыта)",
+   "published_at": null,
+   "data_period": null,
+   "retrieved_at": null,
+   "verification_status": "not_fetched",
+   "license": "unknown",
+   "content_sha256": null
+  },
+  {
+   "id": "astana-bilim-school-sites",
+   "url": "https://astana-bilim.kz/",
+   "publisher": "astana-bilim.kz (сайты школ, на которые указывают теги website в OSM; не открыт)",
+   "title": "Сайты школ вида N.astana-bilim.kz (не открыты)",
+   "published_at": null,
+   "data_period": null,
+   "retrieved_at": null,
+   "verification_status": "not_fetched",
+   "license": "unknown",
+   "content_sha256": null
+  },
+  {
+   "id": "lead-informburo-sh8-closed",
+   "url": "https://informburo.kz/novosti/v-astane-shkoly-8-zakryli-a-detey-otpravili-po-drugim-uchebnym-zavedeniyam.html",
+   "publisher": "informburo.kz (СМИ; страница не открыта)",
+   "title": "Наводка из поиска: «в Астане школу №8 закрыли, а детей отправили по другим учебным заведениям» (по адресу страницы)",
+   "published_at": null,
+   "data_period": null,
+   "retrieved_at": null,
+   "verification_status": "not_fetched",
+   "license": "unknown",
+   "content_sha256": null
+  },
+  {
+   "id": "lead-informburo-sh8-repair",
+   "url": "https://informburo.kz/novosti/ucheniki-ssh-8-astany-hodyat-na-zanyatiya-v-tri-drugie-shkoly-zdaniyu-trebuetsya-kapremont.html",
+   "publisher": "informburo.kz (СМИ; страница не открыта)",
+   "title": "Наводка из поиска: «ученики СШ №8 Астаны ходят на занятия в три другие школы, зданию требуется капремонт» (по адресу страницы)",
+   "published_at": null,
+   "data_period": null,
+   "retrieved_at": null,
+   "verification_status": "not_fetched",
+   "license": "unknown",
+   "content_sha256": null
+  },
+  {
+   "id": "lead-forbes-agis",
+   "url": "https://forbes.kz/ranking/object/1146",
+   "publisher": "forbes.kz (рейтинг; страница не открыта)",
+   "title": "Наводка из поиска: Astana Garden International School в рейтинге частных школ",
+   "published_at": null,
+   "data_period": null,
+   "retrieved_at": null,
+   "verification_status": "not_fetched",
+   "license": "unknown",
+   "content_sha256": null
+  }
+ ],
+ "access_log": "sources/access_log.json"
+}

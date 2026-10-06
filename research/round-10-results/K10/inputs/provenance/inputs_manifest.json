@@ -27,6 +27,10 @@
    "rows": 11,
    "sha256": "5fe5185b80351b9f48b2fa1d71a696a9165fd5e26eabb072f8820faf52a4f23d"
   },
+  "buildings_bbox_all.jsonl": {
+   "rows": 2507,
+   "sha256": "3de986275ee1e7b3711e16cd76831d1400377e6b08de54e098b46db94635131d"
+  },
   "buildings_bbox_residential.jsonl": {
    "rows": 248,
    "sha256": "364c85783df8c5ea1ecb5c52a885a2db9ba9d8ab278adc3970d694d65bd93a11"

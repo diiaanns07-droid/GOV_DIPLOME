@@ -1,0 +1,22 @@
+{
+ "schema": "k10-review-decisions-v1",
+ "reviewer": "K10 (agent), 2026-10-06; desk review of pinned secondary layers only — no official registry could be opened (sources/access_log.json)",
+ "note": "Manual decisions override the automatic rules of build_astana_package.py. Every school-group record of the app slice must be listed here. Reasons cite only what the pinned layers and NOT_FETCHED leads show.",
+ "slice_records": {
+  "7b39e048-341b-454a-a63c-4b7e1ae73e9f": {"decision": "attach", "entity": "osm:w1512939125", "reason": "Meta POI «Школа-гимназия 3» lies inside OSM school grounds «№3 мектеп-гимназия» (ru: Школа-гимназия №3), which also contain an OSM building=school; same number."},
+  "8ca53724-c558-46b7-826b-13e3e8fbb7e6": {"decision": "conflict_not_target", "entity": "osm:w1513435675", "reason": "Meta POI «ГУ Средняя школа № 8 УО г. Астаны» (address Асан Қайғы 56) has no OSM school geometry nearby (nearest OSM school grounds are №119 at 255 m); OSM «№8 мектеп-лицей» grounds are ~620 m away. News leads about a 2017 pre-emergency closure of school No. 8 (informburo.kz, NOT_FETCHED) are unverified. Not used as a separate target; the OSM №8 entity is kept with eligibility unknown and the conflict shown."},
+  "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2": {"decision": "not_school", "reason": "Name «Учебный ЦЕНТР ФПРК» indicates a training centre, not a general school; no OSM school geometry within 140 m."},
+  "a4483f53-7de8-4df1-b61b-b4066b0ad5dd": {"decision": "include_meta_only", "category": "school_private_international", "access_eligibility": "known_restricted", "reason": "Name «Astana Garden International School» indicates a private international school (search lead forbes.kz ranking page, NOT_FETCHED). No OSM school geometry within 250 m. Kept as a restricted existing school, not counted as a public target."},
+  "b5dd5f1a-9d55-48b1-9d68-7172ea84da3f": {"decision": "not_school", "reason": "Name «Образовательный центр АЗиЯ» indicates a tutoring/education centre; Meta confidence 0.30; no OSM school geometry within 320 m."},
+  "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a": {"decision": "not_school", "reason": "Name «Учебный Центр Expert-A» indicates a training centre; confidence 0.33; no OSM school geometry within 240 m."},
+  "c97435da-cd05-4549-bec1-ff297e858554": {"decision": "attach", "entity": "osm:w1443249141", "reason": "Meta POI «Гимназия №6» lies inside OSM school grounds «№6 гимназия» with an OSM building=school; same number."},
+  "de04f003-bb3d-4ea7-93e1-cd825e5c1783": {"decision": "not_school", "reason": "Meta calls «Школа \"Почемучка\"» a high_school, but at the same place OSM maps amenity=kindergarten «\"Почемучка\" балаларды дамыту мектебінің мекемесі» (child development institution). Category conflict; not counted as a general school."}
+ },
+ "other_records": {
+  "osm:w1513435675": {"decision": "include", "access_eligibility": "unknown", "qa": ["identity_conflict"], "reason": "OSM grounds «№8 мектеп-лицей» with OSM building=school; identity is in conflict: the Meta POI of school No. 8 is ~620 m away and a Meta POI «Казахско-турецкий лицей» is ~100 m away. Eligibility unknown until an official source is opened."},
+  "68483cf5": {"decision": "conflict_not_target", "entity": "osm:w1513435673", "reason": "Meta POI «Ғали Орманов атындағы 7 мектеп-гимназиясы» has only the locality as address and lies ~1.9 km from OSM grounds of school No. 7 named after G. Ormanov; treated as a poor geocode, not a second school."},
+  "2b731251": {"decision": "include_meta_only", "category": "school_lyceum_unverified", "access_eligibility": "unknown", "qa": ["possible_same_site"], "reason": "Meta POI «Казахско-турецкий лицей / Kazakh-Turkish High School» ~100 m from the OSM «№8 мектеп-лицей» grounds; may be the same site. Admission rules not verified."},
+  "491687bb": {"decision": "include_meta_only", "category": "school_for_gifted", "access_eligibility": "known_restricted", "reason": "Meta POI «ГУ Школа для одарённых детей Зерде № 9 УО г. Астаны»: a school for gifted children by its name (admission by selection, not verified)."},
+  "e18f1fd3": {"decision": "duplicate_of", "entity": "meta:491687bb", "reason": "«Зерде Дарынды Балаларға Арналған Мектеп» (kk) is most likely the same school as the Meta POI «Зерде № 9» 266 m away; the location difference is kept as a QA conflict."}
+ }
+}

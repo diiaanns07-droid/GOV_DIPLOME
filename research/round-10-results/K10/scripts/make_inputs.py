@@ -11,6 +11,7 @@ Writes research/round-10-results/K10/inputs/:
   osm_landuse_education.jsonl       OSM education land use via Overture base/land_use (contact tags dropped)
   osm_buildings_education.jsonl     OSM/ML buildings with an education class/subtype
   buildings_bbox_residential.jsonl  residential building footprints whose centroid lies in the slice bbox (origin pool)
+  buildings_bbox_all.jsonl          every building footprint intersecting the slice bbox (id, class, OSM/ML source, polygon)
 """
 import hashlib
 import json
@@ -105,11 +106,14 @@ def main(a):
                    "source_tags": sorted(tags), "sources": src(r.get("sources")), "geometry_wkt": wkt7(shapely.from_wkt(r["geometry"]))})
     res["osm_landuse_education.jsonl"] = write_jsonl(out / "osm_landuse_education.jsonl", lu)
 
-    be, br = [], []
+    be, br, ba = [], [], []
     counts = {}
     for r in rows(raw / "astana_buildings_q3km.jsonl"):
         g = shapely.from_wkt(r["geometry"])
         cls, sub = r.get("class"), r.get("subtype")
+        if g.intersects(box):
+            ba.append({"id": r["id"], "class": cls, "subtype": sub, "sources": [{k: x.get(k) for k in ("dataset", "record_id")} for x in r.get("sources") or []],
+                       "geometry_wkt": wkt7(g)})
         if cls in EDU_B or sub == "education":
             be.append({"id": r["id"], "version": r.get("version"), "class": cls, "subtype": sub, "num_floors": r.get("num_floors"),
                        "height": r.get("height"), "names": {"primary": (r.get("names") or {}).get("primary"), "common": (r.get("names") or {}).get("common")},
@@ -124,6 +128,7 @@ def main(a):
                            "footprint_area_m2": round(gm.area, 1), "sources": src(r.get("sources"))})
     res["osm_buildings_education.jsonl"] = write_jsonl(out / "osm_buildings_education.jsonl", be)
     res["buildings_bbox_residential.jsonl"] = write_jsonl(out / "buildings_bbox_residential.jsonl", br)
+    res["buildings_bbox_all.jsonl"] = write_jsonl(out / "buildings_bbox_all.jsonl", ba)
 
     prov = {"raw_dir_files": {}, "bbox_building_counts_by_class": dict(sorted(counts.items())), "outputs": {}}
     for f in ("astana_places_q3km.jsonl", "astana_land_use_q3km.jsonl", "astana_buildings_q3km.jsonl"):
