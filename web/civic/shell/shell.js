@@ -165,15 +165,16 @@
       <footer class="civic-foot">
         <button type="button" id="civic-staff-button" class="btn">Для сотрудников</button>
         <button type="button" id="civic-scenarios-button" class="btn">Сравнить ограничения</button>
+        <button type="button" id="civic-moderation-button" class="btn" hidden>Сообщения жителей</button>
       </footer>
     </div>
     <section id="civic-editor" class="civic-drawer" hidden aria-label="Кабинет сотрудника">
       <div class="civic-box-head"><h2>Кабинет сотрудника</h2><button type="button" class="civic-close" data-close="editor" aria-label="Закрыть кабинет">×</button></div>
-      <div id="civic-staff-tabs" class="civic-tabs" role="group" aria-label="Разделы кабинета" hidden>
-        <button type="button" data-staff-tab="records" aria-pressed="true">Записи</button><button type="button" data-staff-tab="messages" aria-pressed="false">Сообщения жителей</button>
-      </div>
       <div id="civic-editor-root" class="civic-slot civic-drawer-body"></div>
-      <div id="civic-moderation-root" class="civic-slot civic-drawer-body" hidden></div>
+    </section>
+    <section id="civic-moderation" class="civic-drawer" hidden aria-label="Сообщения жителей">
+      <div class="civic-box-head"><h2>Сообщения жителей</h2><button type="button" class="civic-close" data-close="moderation" aria-label="Закрыть модерацию">×</button></div>
+      <div id="civic-moderation-root" class="civic-slot civic-drawer-body"></div>
     </section>
     <section id="civic-scenarios" class="civic-drawer" hidden aria-label="Сравнение ограничений">
       <div class="civic-box-head"><h2>Сравнение ограничений</h2><button type="button" class="civic-close" data-close="scenarios" aria-label="Закрыть сравнение">×</button></div>
@@ -258,6 +259,7 @@
     $c("civic-staff-button").hidden = store !== "ready";
     const scenarios = S.modules?.scenarios?.status === "ready" && !!moduleFor("scenarios");
     $c("civic-scenarios-button").hidden = !scenarios;
+    syncModerationButton();
   }
 
   function mountPublic() {
@@ -313,6 +315,8 @@
     $c("civic-feedback-box").hidden = true;
   }
   function openEditor(objectId) {
+    if (!$c("civic-moderation").hidden) closeModeration();
+    if (!$c("civic-scenarios").hidden) closeScenarios();
     $c("civic-editor").hidden = false;
     document.body.classList.add("civic-editor-open");
     const handle = S.mounted.editor || mount("editor", $c("civic-editor-root"), {
@@ -323,55 +327,45 @@
       },
     });
     if (objectId && handle?.openObject) handle.openObject(objectId);
-    syncStaffTabs();
-    setStaffTab(S.staffTab || "records");
     $c("civic-editor").querySelector(".civic-close")?.focus();
   }
-  // Resident messages (R06 mountModeration) live next to the records in the staff drawer.
+  // Resident messages (R06 mountModeration): own staff-only drawer, as proposed in R06's
+  // r01_integration.patch. The button exists only for a signed-in editor; the server still decides.
   const moderationReady = () => S.modules?.feedback?.status === "ready" && typeof window.CivicFeedback?.mountModeration === "function";
-  function syncStaffTabs() {
-    const tabs = $c("civic-staff-tabs");
-    tabs.hidden = !(moderationReady() && session.authenticated);
-    if (tabs.hidden && S.staffTab === "messages") setStaffTab("records");
+  function syncModerationButton() {
+    $c("civic-moderation-button").hidden = !(moderationReady() && session.authenticated && S.mode === "civic");
+    if ($c("civic-moderation-button").hidden && !$c("civic-moderation").hidden) closeModeration();
   }
-  function setStaffTab(tab) {
-    S.staffTab = tab === "messages" && moderationReady() ? "messages" : "records";
-    document.querySelectorAll("#civic-staff-tabs [data-staff-tab]").forEach((b) =>
-      b.setAttribute("aria-pressed", String(b.dataset.staffTab === S.staffTab)));
-    $c("civic-editor-root").hidden = S.staffTab !== "records";
-    $c("civic-moderation-root").hidden = S.staffTab !== "messages";
-    if (S.staffTab === "messages") {
-      if (!S.mounted.moderation) {
-        const module = window.CivicFeedback;
-        try {
-          S.mounted.moderation = module.mountModeration({ root: $c("civic-moderation-root"), api, map: currentMap(),
-            onOpenObject: (id) => { setStaffTab("records"); S.mounted.editor?.openObject?.(id); } }) || {};
-        } catch (error) {
-          console.error("civic moderation", error);
-          $c("civic-moderation-root").replaceChildren(el("p", { class: "civic-error" }, "Очередь сообщений не запустилась."));
-        }
-      } else S.mounted.moderation.refresh?.();
+  function openModeration() {
+    if (!$c("civic-editor").hidden) closeEditor();
+    if (!$c("civic-scenarios").hidden) closeScenarios();
+    $c("civic-moderation").hidden = false;
+    destroyMounted("moderation");
+    try {
+      S.mounted.moderation = window.CivicFeedback.mountModeration({ root: $c("civic-moderation-root"), api, map: currentMap(),
+        onOpenObject: (objectId) => { closeModeration(); S.selected = objectId; S.mounted.map?.selectObject?.(objectId); } }) || {};
+    } catch (error) {
+      console.error("civic moderation", error);
+      $c("civic-moderation-root").replaceChildren(el("p", { class: "civic-error" }, "Очередь сообщений не запустилась."));
     }
+    $c("civic-moderation").querySelector(".civic-close")?.focus();
   }
-  document.querySelectorAll("#civic-staff-tabs [data-staff-tab]").forEach((b) =>
-    b.addEventListener("click", () => setStaffTab(b.dataset.staffTab)));
-  sessionListeners.add(() => {
-    syncStaffTabs();
-    if (!session.authenticated && S.mounted.moderation) {
-      destroyMounted("moderation");
-      $c("civic-moderation-root").replaceChildren();
-    }
-  });
-  function closeEditor() {
-    destroyMounted("editor");
+  function closeModeration() {
     destroyMounted("moderation");
     $c("civic-moderation-root").replaceChildren();
-    S.staffTab = "records";
+    $c("civic-moderation").hidden = true;
+  }
+  $c("civic-moderation-button").addEventListener("click", openModeration);
+  sessionListeners.add(() => syncModerationButton());
+  function closeEditor() {
+    destroyMounted("editor");
     $c("civic-editor").hidden = true;
     document.body.classList.remove("civic-editor-open");
     $c("civic-staff-button").focus();
   }
   function openScenarios() {
+    if (!$c("civic-editor").hidden) closeEditor();
+    if (!$c("civic-moderation").hidden) closeModeration();
     $c("civic-scenarios").hidden = false;
     // R07 review: the shell's api.request already adds /api/civic/v1 -> empty apiPrefix.
     mount("scenarios", $c("civic-scenarios-root"), { map: currentMap(), apiPrefix: "" });
@@ -392,7 +386,7 @@
   root.addEventListener("click", (event) => {
     const close = event.target.closest("[data-close]");
     if (!close) return;
-    ({ feedback: closeFeedback, editor: closeEditor, scenarios: closeScenarios })[close.dataset.close]?.();
+    ({ feedback: closeFeedback, editor: closeEditor, scenarios: closeScenarios, moderation: closeModeration })[close.dataset.close]?.();
   });
   $c("civic-staff-button").addEventListener("click", () => openEditor());
   $c("civic-scenarios-button").addEventListener("click", openScenarios);
@@ -448,7 +442,8 @@
     for (const id of ["civic-map-root", "civic-feedback-root", "civic-assistant-root", "civic-editor-root", "civic-moderation-root", "civic-scenarios-root"])
       $c(id).replaceChildren();
     $c("civic-feedback-box").hidden = $c("civic-assistant-box").hidden = true;
-    $c("civic-editor").hidden = $c("civic-scenarios").hidden = true;
+    $c("civic-editor").hidden = $c("civic-scenarios").hidden = $c("civic-moderation").hidden = true;
+    $c("civic-moderation-button").hidden = true;
     document.body.classList.remove("civic-mode", "civic-editor-open");
     delete document.body.dataset.civicSheet;
     root.hidden = true;
@@ -490,6 +485,7 @@
   document.addEventListener("keydown", (event) => {
     if (event.key !== "Escape" || S.mode !== "civic") return;
     if (!$c("civic-editor").hidden) closeEditor();
+    else if (!$c("civic-moderation").hidden) closeModeration();
     else if (!$c("civic-scenarios").hidden) closeScenarios();
     else if (!$c("civic-feedback-box").hidden) closeFeedback();
   });

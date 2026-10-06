@@ -213,8 +213,8 @@ const okNotice = (page, text) => page.waitForSelector(`#civic-editor-root .civic
     await page.screenshot({ path: path.join(OUT, "05_feedback_receipt_1440.png") });
 
     // ---- moderation (R06 in the staff drawer)
-    await page.click("#civic-staff-button");
-    await page.click("#civic-staff-tabs [data-staff-tab=messages]");
+    check("moderation button only for a signed-in editor", await page.isVisible("#civic-moderation-button"));
+    await page.click("#civic-moderation-button");
     await page.waitForSelector("#civic-moderation-root .civic-r06-queue-item", { timeout: 10000 });
     await page.locator("#civic-moderation-root .civic-r06-queue-item").first().click();
     await page.waitForSelector("#civic-moderation-root .civic-r06-decision", { timeout: 10000 });
@@ -228,7 +228,7 @@ const okNotice = (page, text) => page.waitForSelector(`#civic-editor-root .civic
     const items = approved.body?.data?.items || [];
     check("approved message public with reply", items.length === 1 && JSON.stringify(items[0]).includes("<b>тест</b>") && /передано/.test(JSON.stringify(items[0])), items.length);
     check("public feedback has no private fields", items.every((i) => !("ip" in i) && !("client_hash" in i) && !("contact" in i) && !("reason" in i) && !("moderated_by" in i)), items.map((i) => Object.keys(i)));
-    await page.click("#civic-editor [data-close=editor]");
+    await page.click("#civic-moderation [data-close=moderation]");
     await page.click("#civic-map-root [data-r03-action=feedback]");
     await page.waitForSelector("#civic-feedback-root .civic-r06-public-item", { timeout: 10000 });
     const xssState = await page.evaluate(() => ({ fired: !!window.__xss, injected: !!document.querySelector("#civic-feedback-root .civic-r06-public-item b, #civic-feedback-root .civic-r06-public-item img") }));
@@ -237,6 +237,7 @@ const okNotice = (page, text) => page.waitForSelector(`#civic-editor-root .civic
 
     // ---- logout closes staff actions on the server
     await page.evaluate(() => window.CivicShell.api.logout());
+    check("moderation button hidden after logout", await page.locator("#civic-moderation-button").isHidden());
     const afterLogout = await apiFetch(page, "POST", "/staff/objects", { title: "x", kind: "event", evidence_type: "synthetic" }, { "X-CSRF-Token": csrf });
     check("after logout staff create is refused", afterLogout.status === 401 || afterLogout.status === 403, afterLogout.status);
     check("anonymous staff list refused", (await apiFetch(page, "GET", "/staff/objects")).status === 401);

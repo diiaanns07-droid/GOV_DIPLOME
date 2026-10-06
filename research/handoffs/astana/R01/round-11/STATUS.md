@@ -72,4 +72,8 @@ web/govtech/shell.{js,css}, web/civic/shell/, requirements*.txt, run.{bat,sh},
   Демо: synthetic-срез R05 через `seed-demo --package data/civic/astana/demo_synthetic.json`.
 - DONE: браузер P0 на демо-срезе R05 — 45 PASS / 0 FAIL / 2 NOT_RUN (runs/cp9_p0_integrated_r05_demo/).
 
-Следующий шаг: RUN.txt/DEMO.txt, обновления R02 (632c5b2) и R04, R08 (нет ветки), замечания R10.
+## Checkpoint 10 — переимпорт R02 @3d2b8b9 и R06 @91f2508; ящик модерации по схеме R06
+- DONE: pytest 717 passed, 2 skipped; браузер P0 47 PASS / 0 FAIL / 2 NOT_RUN; независимый
+  app-e2e R06 против собранного приложения 9/9 PASS (runs/cp10_*).
+
+Следующий шаг: RUN.txt/DEMO.txt/run-скрипты, R08 (ветки нет), замечания R10, финальные кадры.

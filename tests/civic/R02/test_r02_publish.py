@@ -1,5 +1,6 @@
 """R02: обновление, публикация, архив, история и оптимистичная блокировка."""
 
+import json
 import threading
 
 import pytest
@@ -197,3 +198,88 @@ def test_staff_list_filters_by_publication(editor, service):
     items = editor.get("/staff/objects", query="publication=published")["body"]["data"]["items"]
     assert [entry["id"] for entry in items] == [published["id"]]
     assert items[0]["staff"]["public_item"]["revision"] == published["revision"]
+
+
+def test_lookup_public_object_returns_only_published(editor, service):
+    draft = editor.create()
+    assert service.lookup_public_object(draft["id"]) is None
+    assert service.lookup_public_object("") is None and service.lookup_public_object("../x") is None
+    published = item_of(editor.publish(draft))
+    found = service.lookup_public_object(draft["id"])
+    assert found["revision"] == published["revision"] and "internal_notes" not in found
+    item_of(editor.archive(published, reason="снято"))
+    assert service.lookup_public_object(draft["id"]) is None
+
+
+def test_staff_audit_export_is_paginated_and_editor_only(editor, service):
+    for index in range(3):
+        item = editor.create(title=f"Аудит {index}", internal_notes="заметка")
+        editor.publish(item)
+    assert call(service, "GET", "/staff/audit")["status"] == 401
+    page = editor.get("/staff/audit", query="limit=4")["body"]["data"]
+    assert [entry["action"] for entry in page["entries"]] == ["create", "publish", "create", "publish"]
+    assert page["next_after"] == str(page["entries"][-1]["id"])
+    rest = editor.get("/staff/audit", query=f"after={page['next_after']}&limit=500")["body"]["data"]
+    assert len(rest["entries"]) == 2 and rest["next_after"] is None
+    only = editor.get("/staff/audit", query=f"object_id={item['id']}")["body"]["data"]["entries"]
+    assert {entry["object_id"] for entry in only} == {item["id"]}
+    for key in ("snapshot", "password_hash", "csrf"):
+        assert key not in str(page)
+    for bad in ("limit=0", "limit=501", "after=-1", "after=%C2%B2", "limit=%C2%B2", "since=yesterday", "object_id=..%2F"):
+        assert editor.get("/staff/audit", query=bad)["status"] == 400, bad
+
+
+def test_publish_revalidates_stored_content(editor, service):
+    """Запись, ставшая невалидной в базе (старый код/ручная правка), не публикуется."""
+    item = editor.create()
+    with service.db.write() as conn:
+        row = conn.execute("SELECT data_json FROM civic_objects WHERE id = ?", (item["id"],)).fetchone()
+        data = json.loads(row["data_json"])
+        data["geometry"] = {"type": "Point", "coordinates": [51.17, 71.43]}  # перепутаны lon/lat
+        conn.execute("UPDATE civic_objects SET data_json = ? WHERE id = ?", (json.dumps(data), item["id"]))
+    result = editor.publish(item)
+    assert result["status"] == 422 and "geometry.coordinates" in result["body"]["error"]["fields"]
+    assert public(service, item["id"])["status"] == 404
+
+
+def test_start_can_move_past_locked_original_end(editor, service):
+    """Ревью: зафиксированный исходный срок не должен блокировать перенос начала работ."""
+    item = editor.create(schedule={"planned_start": "2026-10-14", "original_planned_end": None,
+                                   "current_planned_end": "2026-10-22", "actual_end": None})
+    item = item_of(editor.publish(item, reason="Первая публикация"))
+    assert item["schedule"]["original_planned_end"] == "2026-10-22"
+    moved = editor.update(item, {"schedule": {"planned_start": "2026-11-01", "current_planned_end": "2026-12-01"}},
+                          reason="Перенос на ноябрь")
+    assert moved["status"] == 200, moved
+    item = item_of(editor.publish(moved["body"]["data"]["item"], reason="Работы перенесены на ноябрь"))
+    data = public(service, item["id"])["body"]["data"]
+    assert data["item"]["schedule"] == {"planned_start": "2026-11-01", "original_planned_end": "2026-10-22",
+                                        "current_planned_end": "2026-12-01", "actual_end": None}
+    assert data["history"][-1]["changed_fields"] == ["schedule.current_planned_end", "schedule.planned_start"]
+    # Для черновика проверка «окончание не раньше начала» по-прежнему действует.
+    bad = editor.post("/staff/objects", {**sample_object(), "schedule": {
+        "planned_start": "2026-11-01", "original_planned_end": "2026-10-22",
+        "current_planned_end": "2026-12-01", "actual_end": None}})
+    assert bad["status"] == 422 and "schedule.original_planned_end" in bad["body"]["error"]["fields"]
+
+
+def test_archive_reason_stays_internal_after_republish(editor, service):
+    item = item_of(editor.publish(editor.create()))
+    item = item_of(editor.archive(item, reason="СЛУЖЕБНО: подозрение на ошибку подрядчика"))
+    item = item_of(editor.publish(item, reason="Сведения подтверждены"))
+    data = public(service, item["id"])["body"]["data"]
+    assert "СЛУЖЕБНО" not in json.dumps(data, ensure_ascii=False)
+    assert [h["reason"] for h in data["history"]] == ["Публикация проверенной записи", "Снято с публикации",
+                                                      "Сведения подтверждены"]
+    staff = editor.get(f"/staff/objects/{item['id']}")["body"]["data"]["history"]
+    assert staff[-2]["reason"] == "СЛУЖЕБНО: подозрение на ошибку подрядчика"
+
+
+def test_public_history_ids_do_not_reveal_global_activity(editor, service):
+    first = item_of(editor.publish(editor.create()))
+    for _ in range(5):
+        editor.create(title="Скрытый черновик")
+    second = item_of(editor.publish(editor.create()))
+    history = public(service, second["id"])["body"]["data"]["history"]
+    assert [h["id"] for h in history] == [f"{second['id']}@2"]
+    assert public(service, first["id"])["body"]["data"]["history"][0]["id"] == f"{first['id']}@2"

@@ -233,3 +233,22 @@ def test_no_default_accounts_exist(tmp_path):
     assert fresh.accounts.list_users() == []
     for username, password in (("admin", "admin"), ("admin", "admin123"), ("editor", "editor")):
         assert login(fresh, username=username, password=password)["status"] == 401
+
+
+def test_parallel_wrong_passwords_cannot_exceed_limit(service):
+    import threading
+    barrier = threading.Barrier(12)
+    statuses = []
+
+    def attempt():
+        barrier.wait()
+        statuses.append(login(service, password="wrong-password-123", client_ip="10.9.9.9")["status"])
+
+    threads = [threading.Thread(target=attempt) for _ in range(12)]
+    for thread in threads:
+        thread.start()
+    for thread in threads:
+        thread.join(60)
+    assert statuses.count(401) == auth.MAX_FAILS_PER_USER_CLIENT  # ровно 5 проверок пароля
+    assert statuses.count(429) == 12 - auth.MAX_FAILS_PER_USER_CLIENT
+    assert login(service, client_ip="10.9.9.9")["status"] == 429

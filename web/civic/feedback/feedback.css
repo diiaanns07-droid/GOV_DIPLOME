@@ -104,7 +104,13 @@
 .civic-r06-tab[aria-selected="true"] { border-color: var(--r06-green); color: var(--r06-green); font-weight: 600; }
 .civic-r06-filters { display: flex; flex-wrap: wrap; gap: 8px; }
 .civic-r06-filters select { width: auto; flex: 1 1 160px; }
-.civic-r06-mod-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 12px; align-items: start; }
+.civic-r06-mod-body {
+  display: grid;
+  /* Ширина контейнера, а не окна: в узкой панели R01 — одна колонка, на широком экране — две. */
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: 12px;
+  align-items: start;
+}
 .civic-r06-queue-item {
   display: grid;
   gap: 2px;
@@ -129,6 +135,5 @@
 .civic-r06-history li { padding: 4px 0; border-top: 1px solid var(--r06-line); font-size: 12px; }
 .civic-r06-marker { width: 18px; height: 18px; border-radius: 50%; background: var(--r06-amber, #b07823); border: 3px solid #fff; box-shadow: 0 1px 6px #0004; }
 @media (max-width: 720px) {
-  .civic-r06-mod-body { grid-template-columns: 1fr; }
   .civic-r06-primary { width: 100%; justify-self: stretch; }
 }

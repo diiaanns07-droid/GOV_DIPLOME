@@ -168,6 +168,10 @@ MIGRATIONS: list[tuple[int, str, tuple[str, ...]]] = [
             PRIMARY KEY (user_id, request_key)
         )""",
     )),
+    # Измерено (PERF.txt): счётчик кандидатов импорта на каждую staff-карточку шёл полным проходом.
+    (3, "index import candidates by object", (
+        "CREATE INDEX civic_import_candidates_object ON civic_import_candidates(object_id)",
+    )),
 ]
 SCHEMA_VERSION = MIGRATIONS[-1][0]
 
@@ -198,6 +202,29 @@ def resolve_db_path(db_path) -> Path:
     return path
 
 
+def create_private_file(path: Path) -> None:
+    """Создаёт пустой файл с 0600 ДО того, как SQLite его откроет (без окна 0644).
+
+    Пустой файл — корректная пустая база SQLite; -wal/-shm SQLite создаёт с правами основного файла.
+    """
+    if os.name != "posix":
+        return
+    try:
+        fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    except FileExistsError:
+        return
+    os.close(fd)
+
+
+def restrict_permissions(path: Path) -> None:
+    """0600 для файла базы/копии на POSIX: внутри хэши паролей и служебные заметки."""
+    if os.name == "posix" and path.exists():
+        try:
+            os.chmod(path, 0o600)
+        except OSError:
+            pass  # чужой файл или ФС без прав — не мешаем запуску
+
+
 def _prepare_parent(path: Path) -> None:
     parent = path.parent
     parent.mkdir(mode=0o700, parents=True, exist_ok=True)
@@ -217,6 +244,12 @@ class Database:
         self.busy_timeout_ms = int(busy_timeout_ms)
         self._lock = threading.Lock()
         self._open = 0  # число открытых соединений (для проверки корректного закрытия)
+        # Очередь писателей внутри процесса: потоки ждут на блокировке Python, а не опрашивают
+        # SQLite с паузами (под нагрузкой опрос давал «голодание» дольше busy_timeout → 503).
+        # busy_timeout остаётся для других процессов (CLI, второй сервер).
+        self._writer = threading.Lock()
+        self._writer_owner = None
+        self.write_queue_timeout = self.busy_timeout_ms / 1000 * 3
 
     @property
     def open_connections(self) -> int:
@@ -262,14 +295,24 @@ class Database:
         SQLITE_BUSY при повышении блокировки с чтения до записи.
         Любое исключение откатывает всю транзакцию целиком.
         """
-        with self.connect() as conn:
-            conn.execute("BEGIN IMMEDIATE")
-            try:
-                yield conn
-            except BaseException:
-                conn.execute("ROLLBACK")
-                raise
-            conn.execute("COMMIT")
+        me = threading.get_ident()
+        if self._writer_owner == me:
+            raise RuntimeError("Вложенная транзакция записи в том же потоке (передайте conn).")
+        if not self._writer.acquire(timeout=self.write_queue_timeout):
+            raise sqlite3.OperationalError("database is locked (writer queue timeout)")
+        self._writer_owner = me
+        try:
+            with self.connect() as conn:
+                conn.execute("BEGIN IMMEDIATE")
+                try:
+                    yield conn
+                except BaseException:
+                    conn.execute("ROLLBACK")
+                    raise
+                conn.execute("COMMIT")
+        finally:
+            self._writer_owner = None
+            self._writer.release()
 
     @contextmanager
     def read(self):
@@ -297,11 +340,13 @@ class Database:
     def migrate(self, *, now_iso: str | None = None) -> list[int]:
         """Применяет недостающие миграции; повторный вызов ничего не меняет."""
         _prepare_parent(self.path)
+        create_private_file(self.path)
         applied_now = []
         with self.connect() as conn:
             mode = conn.execute("PRAGMA journal_mode = WAL").fetchone()[0]
-            if str(mode).lower() != "wal":
-                raise StorageError("SQLite не включил WAL; сетевые/только-для-чтения диски не поддерживаются.")
+        if str(mode).lower() != "wal":
+            raise StorageError("SQLite не включил WAL; сетевые/только-для-чтения диски не поддерживаются.")
+        restrict_permissions(self.path)
         stamp = now_iso or time.strftime("%Y-%m-%dT%H:%M:%S+00:00", time.gmtime())
         with self.write() as conn:
             conn.execute("""CREATE TABLE IF NOT EXISTS civic_schema_migrations (

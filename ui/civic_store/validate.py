@@ -45,9 +45,9 @@ SERVER_FIELDS = frozenset({
 })
 NESTED_FIELDS = {"schedule": SCHEDULE_KEYS, "budget": BUDGET_KEYS, "responsible": RESPONSIBLE_KEYS}
 
-ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$")
-DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
-FIELD_PATH_RE = re.compile(r"^[a-z_]{1,40}(\.[a-z_]{1,40}){0,2}$")
+ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,63}\Z")
+DATE_RE = re.compile(r"^[0-9]{4}-[0-9]{2}-[0-9]{2}\Z")
+FIELD_PATH_RE = re.compile(r"^[a-z_]{1,40}(\.[a-z_]{1,40}){0,2}\Z")
 HTML_RE = re.compile(r"<\s*[A-Za-z/!?]")
 BIDI_CONTROLS = frozenset("‪‫‬‭‮⁦⁧⁨⁩")
 
@@ -177,10 +177,15 @@ def _is_number(value) -> bool:
     return isinstance(value, (int, float)) and not isinstance(value, bool)
 
 
+def _is_finite_number(value) -> bool:
+    # math.isfinite(10**400) бросает OverflowError: целые всегда конечны, проверяем только float.
+    return _is_number(value) and (isinstance(value, int) or math.isfinite(value))
+
+
 def clean_amount(value, path, errors):
     if value is None:
         return None
-    if not _is_number(value) or not math.isfinite(value):
+    if not _is_finite_number(value):
         errors.add(path, "Сумма — конечное неотрицательное число или null (неизвестно).")
         return None
     if value < 0 or value > MAX_AMOUNT_KZT:
@@ -213,7 +218,7 @@ def clean_url(value, path, errors):
 def _position(value, path, errors, counter):
     counter[0] += 1
     if (not isinstance(value, (list, tuple)) or len(value) != 2
-            or not all(_is_number(v) and math.isfinite(v) for v in value)):
+            or not all(_is_finite_number(v) for v in value)):
         errors.add(path, "Координата — [долгота, широта] из двух конечных чисел.")
         return None
     lon, lat = value
@@ -368,8 +373,12 @@ def merge_content(current: dict, changes: dict) -> dict:
     return merged
 
 
-def validate_content(raw: dict, *, today: date) -> dict:
-    """Полная проверка содержимого; возвращает нормализованную копию либо ValidationError."""
+def validate_content(raw: dict, *, today: date, original_locked: bool = False) -> dict:
+    """Полная проверка содержимого; возвращает нормализованную копию либо ValidationError.
+
+    original_locked=True после первой публикации: исходный срок — исторический факт,
+    и перенос начала работ позже него допустим (сравнение со стартом не выполняется).
+    """
     errors = _Errors()
     data = {**empty_content(), **raw}
     out = {}
@@ -427,6 +436,8 @@ def validate_content(raw: dict, *, today: date) -> dict:
     dates = {key: parse_date(value) for key, value in schedule.items()}
     start = dates["planned_start"]
     for key in ("original_planned_end", "current_planned_end", "actual_end"):
+        if key == "original_planned_end" and original_locked:
+            continue
         if start and dates[key] and dates[key] < start:
             errors.add(f"schedule.{key}", "Дата окончания раньше planned_start.")
     if dates["actual_end"]:

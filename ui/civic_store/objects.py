@@ -11,6 +11,7 @@ import base64
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 import json
+import re
 import secrets
 
 from . import dto
@@ -21,6 +22,7 @@ from .validate import (CONTENT_FIELDS, KINDS, PUBLICATIONS, STATUSES, Validation
 
 
 ASTANA_TZ = timezone(timedelta(hours=5), "Asia/Almaty")
+ARCHIVE_PUBLIC_REASON = "Снято с публикации"
 DEFAULT_PAGE = 50
 MAX_PAGE = 100
 MAX_FILTER_VALUES = 10
@@ -71,6 +73,14 @@ def _loads(text):
     return json.loads(text) if text is not None else None
 
 
+ASCII_INT_RE = re.compile(r"^[0-9]{1,18}\Z")
+
+
+def ascii_int(text):
+    """Целое из query только ASCII-цифрами ('²'.isdigit() истинно, но int('²') падает)."""
+    return int(text) if isinstance(text, str) and ASCII_INT_RE.match(text) else None
+
+
 def encode_cursor(updated_at: str, object_id: str) -> str:
     raw = _dumps([updated_at, object_id]).encode("utf-8")
     return base64.urlsafe_b64encode(raw).decode("ascii").rstrip("=")
@@ -119,9 +129,10 @@ def parse_filters(query: dict, *, staff: bool) -> dict:
     if limit is None:
         filters["limit"] = DEFAULT_PAGE
     else:
-        if not limit.isdigit() or not 1 <= int(limit) <= MAX_PAGE:
+        value = ascii_int(limit)
+        if value is None or not 1 <= value <= MAX_PAGE:
             raise BadRequest("Недопустимый limit.", {"limit": f"Целое 1–{MAX_PAGE}."})
-        filters["limit"] = int(limit)
+        filters["limit"] = value
     return filters
 
 
@@ -287,9 +298,10 @@ class ObjectRepository:
                 ignored, reason, import_meta):
         row = self._locked_row(conn, object_id, expected_revision)
         current = self._content(row)
-        content = validate_content(merge_content(current, content_changes), today=self.today())
-        notes = row["internal_notes"] if internal is ... else clean_internal_notes(internal)
         was_published = row["first_published_at"] is not None
+        content = validate_content(merge_content(current, content_changes), today=self.today(),
+                                   original_locked=was_published)
+        notes = row["internal_notes"] if internal is ... else clean_internal_notes(internal)
         reason_text = clean_reason(reason, required=was_published)
         changes = diff(current, content)
         if was_published and "schedule.original_planned_end" in changes:
@@ -317,7 +329,10 @@ class ObjectRepository:
         with self.db.write() as conn:
             row = self._locked_row(conn, object_id, expected_revision)
             reason_text = clean_reason(reason, required=True)
-            content = self._content(row)
+            # Повторная проверка по текущим правилам: данные могли быть записаны раньше
+            # (импорт, прежняя версия кода) — опубликовать можно только валидный объект.
+            content = validate_content(self._content(row), today=self.today(),
+                                       original_locked=row["first_published_at"] is not None)
             validate_for_publication(content)
             previous = self._last_public_dto(conn, object_id)
             first = row["first_published_at"] is None
@@ -445,14 +460,20 @@ class ObjectRepository:
             if row is None:
                 raise NotFound(object_id)  # черновик/архив неотличимы от отсутствия
             rows = conn.execute(
-                """SELECT id, object_id, revision, at, reason, public_actor_label,
+                """SELECT object_id, revision, at, action, reason, public_actor_label,
                           public_changed_fields_json
                    FROM civic_history WHERE object_id = ? AND is_public = 1 ORDER BY revision""",
                 (object_id,)).fetchall()
             history = [dto.public_history_entry({
-                "id": r["id"], "object_id": r["object_id"], "revision": r["revision"], "at": r["at"],
+                # id по объекту и ревизии, а не глобальный счётчик: он выдавал бы объём
+                # непубличной работы (черновики других объектов, служебные правки).
+                "id": f"{r['object_id']}@{r['revision']}", "object_id": r["object_id"],
+                "revision": r["revision"], "at": r["at"],
                 "changed_fields": _loads(r["public_changed_fields_json"]) or [],
-                "reason": r["reason"], "public_actor_label": r["public_actor_label"]}) for r in rows]
+                # Причина публикации — публичный текст редактора; причина архивации — служебная
+                # (видна в staff history), жителю показывается нейтральная формулировка.
+                "reason": r["reason"] if r["action"] == "publish" else ARCHIVE_PUBLIC_REASON,
+                "public_actor_label": r["public_actor_label"]}) for r in rows]
             return {"item": dto.sanitize_public(_loads(row["dto_json"])), "history": history}
 
     def list_public(self, filters: dict) -> dict:
@@ -473,6 +494,56 @@ class ObjectRepository:
                 (*params, filters["limit"] + 1)).fetchall()
             page = self._page(rows, filters, lambda r: self._staff_item(conn, r["id"]))
         return page
+
+    def audit_page(self, query: dict) -> dict:
+        """Ограниченная служебная выгрузка истории для редактора (без снимков и паролей).
+
+        ?since=ISO-время (включительно) &object_id= &after=<id записи> &limit=1..500 (200).
+        """
+        def single(name):
+            items = query.get(name, [])
+            if len(items) > 1:
+                raise BadRequest("Параметр указан несколько раз.", {name: "Один раз."})
+            return items[0] if items else None
+
+        where, params = [], []
+        since = single("since")
+        if since is not None:
+            if len(since) > 40 or not re.match(r"^[0-9]{4}-[0-9]{2}-[0-9]{2}", since):
+                raise BadRequest("Недопустимый since.", {"since": "ISO 8601, например 2026-10-01"})
+            where.append("at >= ?")
+            params.append(since)
+        object_id = single("object_id")
+        if object_id is not None:
+            if not is_valid_id(object_id):
+                raise BadRequest("Недопустимый ID объекта.", {"object_id": "Недопустимый ID."})
+            where.append("object_id = ?")
+            params.append(object_id)
+        after = single("after")
+        if after is not None:
+            if ascii_int(after) is None:
+                raise BadRequest("Недопустимый after.", {"after": "id записи из next_after"})
+            where.append("id > ?")
+            params.append(ascii_int(after))
+        limit = ascii_int(single("limit") or "200")
+        if limit is None or not 1 <= limit <= 500:
+            raise BadRequest("Недопустимый limit.", {"limit": "Целое 1–500."})
+        clause = (" WHERE " + " AND ".join(where)) if where else ""
+        with self.db.read() as conn:
+            rows = conn.execute(
+                f"""SELECT id, object_id, revision, at, action, publication, changed_fields_json,
+                           diff_json, reason, actor_kind, actor_label, public_actor_label, is_public
+                    FROM civic_history{clause} ORDER BY id LIMIT ?""", (*params, limit + 1)).fetchall()
+        more = len(rows) > limit
+        rows = rows[:limit]
+        entries = [{
+            "id": r["id"], "object_id": r["object_id"], "revision": r["revision"], "at": r["at"],
+            "action": r["action"], "publication": r["publication"],
+            "changed_fields": _loads(r["changed_fields_json"]), "diff": _loads(r["diff_json"]),
+            "reason": r["reason"], "actor_kind": r["actor_kind"], "actor_label": r["actor_label"],
+            "public_actor_label": r["public_actor_label"], "is_public": bool(r["is_public"]),
+        } for r in rows]
+        return {"entries": entries, "next_after": str(rows[-1]["id"]) if more else None}
 
     @staticmethod
     def _page(rows, filters, render) -> dict:

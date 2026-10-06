@@ -231,3 +231,60 @@ def test_export_audit_lists_history_without_secrets(service, editor, db_path, tm
     text = out.read_text(encoding="utf-8")
     assert PASSWORD not in text and "password" not in text and "scrypt" not in text
     assert editor.cookie not in text and editor.csrf not in text
+
+
+def test_password_stdin_accepts_windows_line_endings(tmp_path):
+    db = str(tmp_path / "crlf.sqlite3")
+    secret = "Crlf-Strong-Pass-2026"
+    assert run_cli("--db", db, "create-editor", "crlfuser", "--password-stdin", stdin=secret + "\r\n").returncode == 0
+    assert Editor(CivicService(db), "crlfuser", secret).get("/staff/objects")["status"] == 200
+
+
+def test_reimport_with_trailing_newline_id_does_not_duplicate(service):
+    import_package(service.objects, package([real_item("road-1")]))
+    with pytest.raises(ImportRejected) as rejected:
+        import_package(service.objects, package([real_item("road-1\n")]))
+    assert rejected.value.report["items"][0]["action"] == "invalid"
+    with service.db.read() as conn:
+        assert conn.execute("SELECT COUNT(*) FROM civic_objects").fetchone()[0] == 1
+
+
+def test_restore_keeps_security_measures(tmp_path, service, db_path, clock, capsys):
+    """Ревью: откат данных не должен оживлять украденную сессию, отключённого редактора и старый пароль."""
+    stolen = Editor(service, "editor1", PASSWORD)
+    victim2 = Editor(service, "editor2", PASSWORD + "x")
+    backup = tmp_path / "pre-incident.sqlite3"
+    args = cli.build_parser().parse_args(["--db", str(db_path), "backup", str(backup)])
+    args.func(args, service)
+    clock.advance(minutes=5)
+    service.accounts.disable_user("editor1")
+    service.accounts.set_password("editor2", "Rotated-Strong-Pass-77")
+    args = cli.build_parser().parse_args(["--db", str(db_path), "restore", str(backup), "--yes"])
+    args.func(args)
+    output = capsys.readouterr().out
+    assert "editor1: отключение сохранено." in output and "editor2: новый пароль сохранён." in output
+    restored = CivicService(db_path, clock=clock)
+    assert restored.resolve_principal(stolen.ctx()) is None
+    assert restored.resolve_principal(victim2.ctx()) is None
+    assert call(restored, "POST", "/session/login", {"username": "editor1", "password": PASSWORD})["status"] == 401
+    assert call(restored, "POST", "/session/login", {"username": "editor2", "password": PASSWORD + "x"})["status"] == 401
+    assert Editor(restored, "editor2", "Rotated-Strong-Pass-77").get("/staff/objects")["status"] == 200
+
+
+@pytest.mark.skipif(__import__("os").name != "posix", reason="права POSIX")
+def test_export_audit_file_is_private_and_not_overwritten(service, editor, db_path, tmp_path):
+    import stat
+    editor.create()
+    out = tmp_path / "audit.jsonl"
+    args = cli.build_parser().parse_args(["--db", str(db_path), "export-audit", "--out", str(out)])
+    args.func(args, service)
+    assert stat.S_IMODE(out.stat().st_mode) == 0o600
+    with pytest.raises(SystemExit):
+        args.func(args, service)
+
+
+def test_dummy_hash_is_ready_before_first_login(tmp_path):
+    from ui.civic_store import auth
+    auth._DUMMY_HASH = None
+    CivicService(tmp_path / "eager.sqlite3")
+    assert auth._DUMMY_HASH is not None

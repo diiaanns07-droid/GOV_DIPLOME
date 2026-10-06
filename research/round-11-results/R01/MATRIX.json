@@ -3,7 +3,7 @@
   "role": "R01",
   "branch": "claude/affectionate-ride-bol5v8",
   "pack_sha": "9c2f5c0dae14b46c0697a9dfc7f854351bfd570d",
-  "updated_at": "2026-10-06T16:22:32Z",
+  "updated_at": "2026-10-06T16:27:18Z",
   "application_snapshot": {
     "source_branch": "claude/beautiful-clarke-sbzomj",
     "source_sha": "b2cb2e02c602c166ba6d47c02d8e902e5478c791",
@@ -51,7 +51,7 @@
       "title": "Сервер, база объектов и доступ редактора",
       "expected_paths": "ui/civic_store/",
       "source_branch": "claude/trusting-ptolemy-6ms354",
-      "source_sha": "92f7abae8184516c9bf6bd89367a63692402cc1b",
+      "source_sha": "3d2b8b9",
       "imported_paths": [
         "ui/civic_store/",
         "tests/civic/R02/"
@@ -59,16 +59,16 @@
       "integrated": true,
       "checks": [
         {
+          "name": "R02 tests in integrated tree @3d2b8b9",
+          "status": "PASS",
+          "command": "python -m pytest -q tests/civic/R02",
+          "result": "part of full run 717 passed, 2 skipped (patch test skips itself in the R01 tree)"
+        },
+        {
           "name": "R02 own tests in integrated tree",
           "status": "PASS",
           "command": "python -m pytest -q -p no:cacheprovider tests/civic/R02 --deselect tests/civic/R02/test_r02_http.py::test_patch_applies_to_real_web_server_and_serves_both_apis",
           "result": "145 passed, 1 skipped"
-        },
-        {
-          "name": "R02 web_server.patch test",
-          "status": "NOT_RUN",
-          "command": "tests/civic/R02/test_r02_http.py::test_patch_applies_to_real_web_server_and_serves_both_apis",
-          "reason": "Test applies R02's proposed patch to ui/web_server.py; R01 integrated through its own CivicGateway instead (decision D-02), so the patch does not apply to the integrated file. Not a product defect; deselected, expected unchanged."
         },
         {
           "name": "R01 P0 HTTP acceptance on R02 SQLite (incl. restart)",
@@ -89,7 +89,7 @@
         }
       ],
       "status": "integrated",
-      "reason": "Reviewed and imported by path at pinned SHA. Delta 6a28de2..92f7aba (cli, importer, http_adapter, demo_package) read before import. CivicHttpAdapter imported with the package but NOT used: R01 keeps one transport (CivicGateway) and adopted its checks (411 chunked, strict Origin, X-Frame-Options/CORP)."
+      "reason": "Reviewed and imported by path at pinned SHA. Delta 6a28de2..92f7aba (cli, importer, http_adapter, demo_package) read before import. CivicHttpAdapter imported with the package but NOT used: R01 keeps one transport (CivicGateway) and adopted its checks (411 chunked, strict Origin, X-Frame-Options/CORP). Re-imported at code_commit 3d2b8b9 (atomic login limit, writer queue, 0600 DB/backup, re-validation before publish, restore hardening); delta scanned before import."
     },
     "R03": {
       "title": "Публичная карта и карточки",
@@ -198,7 +198,7 @@
       "title": "Обращения жителей",
       "expected_paths": "ui/civic_feedback/ + web/civic/feedback/",
       "source_branch": "claude/focused-hypatia-z8h0no",
-      "source_sha": "eaa113d146d5ccdd2ef81a7e79228691062040af",
+      "source_sha": "91f2508",
       "imported_paths": [
         "ui/civic_feedback/",
         "web/civic/feedback/",
@@ -216,10 +216,16 @@
           "name": "R01 browser P0 flow: resident message, moderation tab, public reply, XSS as text",
           "status": "PASS",
           "command": "node tests/civic/R01/browser/p0_flow.cjs <out> --backend=real"
+        },
+        {
+          "name": "R06 independent app e2e against the integrated build",
+          "status": "PASS",
+          "command": "R06_BASE=... node tests/civic/R06/app_e2e_r06.cjs",
+          "result": "9/9 PASS"
         }
       ],
       "status": "integrated",
-      "reason": "DELIVERY ready (code 36a0604); imported latest checkpoint eaa113d (maintenance CLI, R03 geometry guard). Wired via ui.civic_feedback.integration.build_feedback_service(db, CivicService, classifier=None) on the same SQLite file; R06 contract_delta routes accepted (GET /staff/feedback/{id}, POST /feedback/receipt, POST /feedback/withdraw-consent). Moderation mounted as a staff-drawer tab."
+      "reason": "DELIVERY ready (code 36a0604); imported latest checkpoint eaa113d (maintenance CLI, R03 geometry guard). Wired via ui.civic_feedback.integration.build_feedback_service(db, CivicService, classifier=None) on the same SQLite file; R06 contract_delta routes accepted (GET /staff/feedback/{id}, POST /feedback/receipt, POST /feedback/withdraw-consent). Moderation mounted as a staff-drawer tab. Re-imported final code 91f2508. Moderation moved to R06-proposed staff-only drawer (#civic-moderation-button)."
     },
     "R07": {
       "title": "Симулятор ограничений",
@@ -350,6 +356,10 @@
     {
       "id": "D-09",
       "decision": "R09 POST /staff/assistant/extract accepted; gateway enforces staff session+CSRF before R09. Assistant facts only from R02 public view and R07 prepared cases; no LLM provider configured."
+    },
+    {
+      "id": "D-10",
+      "decision": "Resident-message moderation is a separate staff-only drawer (button visible only with an editor session), per R06 r01_integration.patch; editor, moderation and scenario drawers are mutually exclusive."
     }
   ]
 }

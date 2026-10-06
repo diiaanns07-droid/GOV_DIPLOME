@@ -225,6 +225,18 @@ def test_parallel_http_writes_and_races(http_service):
     assert service.db.open_connections == 0
 
 
+def patch_applicability():
+    """None — патч можно проверять; иначе причина пропуска (в интегрированной ветке R01)."""
+    server = REPO_ROOT / "ui" / "web_server.py"
+    if not server.exists():
+        return "нет ui/web_server.py"
+    if not PATCH.exists():
+        return "web_server.patch не импортирован (он нужен только для исходного Handler b2cb2e0)"
+    if "CivicGateway" in server.read_text(encoding="utf-8"):
+        return "ui/web_server.py уже содержит собственный civic-шлюз R01; патч R02 не применяется"
+    return None
+
+
 def load_patched_web_server(tmp_path):
     """Применяет web_server.patch к копии общего файла и загружает её (сам файл не меняется)."""
     work = tmp_path / "patched"
@@ -239,7 +251,7 @@ def load_patched_web_server(tmp_path):
     return module
 
 
-@pytest.mark.skipif(not (REPO_ROOT / "ui" / "web_server.py").exists(), reason="нет ui/web_server.py")
+@pytest.mark.skipif(patch_applicability() is not None, reason=str(patch_applicability()))
 def test_patch_applies_to_real_web_server_and_serves_both_apis(tmp_path):
     module = load_patched_web_server(tmp_path)
     db = tmp_path / "patched.sqlite3"
@@ -268,6 +280,9 @@ def test_patch_applies_to_real_web_server_and_serves_both_apis(tmp_path):
         assert status == 405 and body["ok"] is False
         status, _, body = client.request("GET", "/feedback")
         assert status == 404 and body["error"]["code"] == "not_found"
+        for method in ("OPTIONS", "TRACE"):  # ревью: не HTML 501, а JSON 405
+            status, headers, body = client.request(method, "/objects")
+            assert status == 405 and body["ok"] is False and headers["Allow"] == "GET, HEAD"
     # Без civic_db сервер работает как раньше (существующие тесты не создают базу).
     plain = module.create_server(port=0)
     assert plain.civic is None
@@ -286,3 +301,37 @@ def test_runtime_database_files_are_not_in_web_or_git():
     if runtime.exists():
         ignored = subprocess.run(["git", "check-ignore", "-q", str(runtime / "civic.sqlite3")], cwd=REPO_ROOT)
         assert ignored.returncode == 0
+
+
+def test_adapter_guards_staff_routes_of_other_modules(tmp_path):
+    """Обработчик R06 под /staff/ получает запрос только после проверки сессии/CSRF у R02."""
+    service = CivicService(tmp_path / "guard.sqlite3")
+    service.accounts.create_user("editor1", PASSWORD)
+    calls = []
+
+    def fake_feedback(method, path, query, body, context):
+        if not path.startswith("/api/civic/v1/staff/feedback") and path != "/api/civic/v1/feedback":
+            return None
+        principal = service.resolve_principal(context)
+        calls.append((method, path, principal.username if principal else None))
+        return {"status": 200, "headers": {"Content-Type": "application/json; charset=utf-8"},
+                "body": {"ok": True, "data": {"queue": []}}}
+
+    adapter = CivicHttpAdapter(service, extra_handlers=[fake_feedback])
+    server = ThreadingHTTPServer(("127.0.0.1", 0), make_reference_handler(adapter))
+    server.daemon_threads = True
+    with running(server) as port:
+        anonymous = Client(port)
+        assert anonymous.request("GET", "/staff/feedback")[0] == 401
+        # Ревью: закодированные и двойные слэши не обходят защиту staff-маршрутов.
+        assert anonymous.request("GET", "/%73taff/feedback")[0] == 401
+        assert anonymous.request("GET", "//staff/feedback")[0] == 401
+        assert anonymous.request("POST", "/feedback", {"text": "x"})[0] == 200  # публичный маршрут R06
+        editor = Client(port).login()
+        assert editor.request("GET", "/staff/feedback")[0] == 200
+        no_csrf = Client(port)
+        no_csrf.cookie = editor.cookie
+        status, _, body = no_csrf.request("POST", "/staff/feedback/f1/moderate", {"action": "approve"})
+        assert status == 403 and body["error"]["code"] == "csrf_failed"
+        assert editor.request("POST", "/staff/feedback/f1/moderate", {"action": "approve"})[0] == 200
+    assert [c[2] for c in calls] == [None, "editor1", "editor1"]

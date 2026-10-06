@@ -7,7 +7,8 @@
   logout отзывает запись на сервере.
 - CSRF: отдельный токен сессии, отдаётся в GET /session и сверяется с X-CSRF-Token.
 - Неудачные входы: не более 5 за 15 минут на пару логин+клиент и 20 на клиента → 429.
-  Логин и адрес хранятся только как хэши.
+  Попытка резервируется в той же транзакции, что и проверка лимита (параллельные запросы
+  не обходят лимит). Логин и адрес хранятся только как хэши.
 Ни пароль, ни токены не пишутся в логи и не возвращаются в ошибках.
 """
 
@@ -30,8 +31,8 @@ SCRYPT_MAXMEM = 64 * 1024 * 1024
 SALT_BYTES = 16
 MIN_PASSWORD = 12
 MAX_PASSWORD = 1024
-USERNAME_RE = re.compile(r"^[a-z0-9][a-z0-9._-]{2,31}$")
-TOKEN_RE = re.compile(r"^[A-Za-z0-9_-]{43}$")
+USERNAME_RE = re.compile(r"^[a-z0-9][a-z0-9._-]{2,31}\Z")
+TOKEN_RE = re.compile(r"^[A-Za-z0-9_-]{43}\Z")
 COOKIE_NAME = "civic_session"
 COOKIE_PATH = "/api/civic/v1"
 IDLE_SECONDS = 60 * 60
@@ -194,6 +195,9 @@ class Accounts:
         self.clock = clock
         self.idle_seconds = idle_seconds
         self.absolute_seconds = absolute_seconds
+        # Заранее: иначе первый вход несуществующего пользователя считал бы два scrypt
+        # и по времени отличался бы от неверного пароля существующего.
+        _dummy_hash()
 
     def _now(self) -> float:
         return utc_now(self.clock).timestamp()
@@ -265,12 +269,20 @@ class Accounts:
             (client_key, since)).fetchone()
         return pair, client
 
-    def _check_rate(self, user_key, client_key, now):
-        with self.db.read() as conn:
+    def _reserve_attempt(self, user_key, client_key, now) -> int:
+        """Проверка лимита и резерв попытки в ОДНОЙ транзакции записи.
+
+        Попытка сразу считается неудачной; при успешном входе запись снимается.
+        Поэтому параллельные запросы не проходят мимо лимита (нет гонки проверки и записи).
+        """
+        with self.db.write() as conn:
+            conn.execute("DELETE FROM civic_login_failures WHERE at <= ?", (now - FAIL_WINDOW,))
             pair, client = self._fail_counts(conn, user_key, client_key, now)
-        for (count, oldest), limit in ((pair, MAX_FAILS_PER_USER_CLIENT), (client, MAX_FAILS_PER_CLIENT)):
-            if count >= limit:
-                raise RateLimited(oldest + FAIL_WINDOW - now)
+            for (count, oldest), limit in ((pair, MAX_FAILS_PER_USER_CLIENT), (client, MAX_FAILS_PER_CLIENT)):
+                if count >= limit:
+                    raise RateLimited(oldest + FAIL_WINDOW - now)
+            return conn.execute("INSERT INTO civic_login_failures(username_key, client_key, at) VALUES (?, ?, ?)",
+                                (user_key, client_key, now)).lastrowid
 
     def login(self, username, password, *, client_ip: str, previous_token=None):
         """Возвращает (token, Principal). AuthError/RateLimited при отказе."""
@@ -278,33 +290,28 @@ class Accounts:
         name = normalize_username(username) or ""
         user_key = _key("user", (username if isinstance(username, str) else "")[:64].strip().lower())
         client_key = _key("client", str(client_ip or "unknown"))
-        self._check_rate(user_key, client_key, now)
+        self._reserve_attempt(user_key, client_key, now)
         with self.db.read() as conn:
             user = conn.execute("SELECT * FROM civic_users WHERE username = ?", (name,)).fetchone() if name else None
         stored = user["password_hash"] if user is not None and user["disabled_at"] is None else _dummy_hash()
         ok = verify_password(password, stored) and user is not None and user["disabled_at"] is None
-        with self.db.write() as conn:
-            conn.execute("DELETE FROM civic_login_failures WHERE at <= ?", (now - FAIL_WINDOW,))
-            if not ok:
-                conn.execute("INSERT INTO civic_login_failures(username_key, client_key, at) VALUES (?, ?, ?)",
-                             (user_key, client_key, now))
-            else:
-                conn.execute("DELETE FROM civic_login_failures WHERE username_key = ? AND client_key = ?",
-                             (user_key, client_key))
-                if previous_token and TOKEN_RE.match(previous_token):
-                    conn.execute("UPDATE civic_sessions SET revoked_at = ? WHERE token_hash = ? AND revoked_at IS NULL",
-                                 (now, token_hash(previous_token)))
-                # Старые записи сессий не нужны для истории изменений объектов.
-                conn.execute("DELETE FROM civic_sessions WHERE expires_at < ?", (now - 7 * 86400,))
-                token = secrets.token_urlsafe(32)
-                csrf = secrets.token_urlsafe(32)
-                expires = now + self.absolute_seconds
-                conn.execute(
-                    """INSERT INTO civic_sessions(token_hash, user_id, csrf_token, created_at,
-                           last_seen_at, expires_at) VALUES (?, ?, ?, ?, ?, ?)""",
-                    (token_hash(token), user["id"], csrf, now, now, expires))
         if not ok:
-            raise AuthError("Неверный логин или пароль.")
+            raise AuthError("Неверный логин или пароль.")  # резерв остаётся учтённой неудачей
+        with self.db.write() as conn:
+            conn.execute("DELETE FROM civic_login_failures WHERE username_key = ? AND client_key = ?",
+                         (user_key, client_key))
+            if previous_token and TOKEN_RE.match(previous_token):
+                conn.execute("UPDATE civic_sessions SET revoked_at = ? WHERE token_hash = ? AND revoked_at IS NULL",
+                             (now, token_hash(previous_token)))
+            # Старые записи сессий не нужны для истории изменений объектов.
+            conn.execute("DELETE FROM civic_sessions WHERE expires_at < ?", (now - 7 * 86400,))
+            token = secrets.token_urlsafe(32)
+            csrf = secrets.token_urlsafe(32)
+            expires = now + self.absolute_seconds
+            conn.execute(
+                """INSERT INTO civic_sessions(token_hash, user_id, csrf_token, created_at,
+                       last_seen_at, expires_at) VALUES (?, ?, ?, ?, ?, ?)""",
+                (token_hash(token), user["id"], csrf, now, now, expires))
         return token, Principal(user_id=user["id"], username=user["username"],
                                 display_name=user["display_name"], role=user["role"],
                                 public_label=user["public_label"], csrf_token=csrf,
