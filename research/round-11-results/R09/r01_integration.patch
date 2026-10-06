@@ -1,0 +1,77 @@
+diff --git a/ui/web_server.py b/ui/web_server.py
+index ad838a8..4991b74 100644
+--- a/ui/web_server.py
++++ b/ui/web_server.py
+@@ -62,7 +62,8 @@ for _asset in ("shell.js", "shell.css", "core/data.js", "core/evidence.js",
+ # Round 11 civic-v1 frontend: explicit files only (R01 shell; role modules are added
+ # here by R01 when their reviewed delivery is imported). No directory serving.
+ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/fallback.js",
+-                "feedback/feedback.js", "feedback/feedback.css")  # R06 @eaa113d
++                "feedback/feedback.js", "feedback/feedback.css",  # R06 @eaa113d
++                "assistant/assistant.js", "assistant/assistant.css")  # R09
+ for _asset in CIVIC_ASSETS:
+     _mime = {".js": "text/javascript", ".css": "text/css", ".json": "application/json"}.get(Path(_asset).suffix, "text/plain")
+     ASSETS["/civic/" + _asset] = ("civic/" + _asset, _mime + "; charset=utf-8")
+@@ -103,6 +104,7 @@ CIVIC_ROUTES = (
+     ("POST", ("feedback", "withdraw-consent"), "feedback"),
+     ("POST", ("scenarios", "compare"), "scenarios"),
+     ("POST", ("assistant",), "assistant"),
++    ("POST", ("staff", "assistant", "extract"), "assistant"),
+ )
+ CIVIC_MODULE_LABELS = {
+     "store": "Объекты и доступ редактора (R02)",
+@@ -178,7 +180,24 @@ class CivicGateway:
+             # classifier=None: the R08 model is not integrated/verified in this build.
+             return integration.build_feedback_service(str(db_path), store_service, classifier=None)
+ 
+-        gateway = cls({"store": store, "feedback": feedback})
++        def assistant():
++            # R09: answers only from the published public DTO (R02 public route) and R07 cases;
++            # provider=None -> template mode (no key, no paid call). Editor extraction stores nothing.
++            api = importlib.import_module("agent.civic_assistant.api")
++            store_service = gateway.service("store")
++            if store_service is None:
++                raise ImportError("assistant needs the object store")
++            load_scenario = None
++            try:
++                registry = importlib.import_module("engine.civic_scenarios.registry")
++                compare = importlib.import_module("engine.civic_scenarios.compare").compare
++                load_scenario = api.r07_case_loader(registry.list_cases, registry.load_graph, compare)
++            except ImportError:
++                pass  # без R07 вопросы о сценарии честно получают «нет данных»
++            return api.AssistantEndpoint(api.r02_public_loader(store_service), load_scenario, provider=None,
++                                         resolve_principal=store_service.resolve_principal)
++
++        gateway = cls({"store": store, "feedback": feedback, "assistant": assistant})
+         return gateway
+ 
+     def service(self, name):
+@@ -252,6 +271,8 @@ class CivicGateway:
+             store = self.service("store")
+             principal = store.resolve_principal(context) if store is not None else None
+             return service.handle(method, full_path, query, body, principal, context)
++        if owner == "assistant":
++            return service.handle(method, full_path, query, body, context)
+         return civic_error(503, "module_unavailable",
+                            f"Модуль «{CIVIC_MODULE_LABELS[owner]}» не подключён в этой сборке.")
+ 
+diff --git a/web/index.html b/web/index.html
+index 190e9c0..5871169 100644
+--- a/web/index.html
++++ b/web/index.html
+@@ -11,6 +11,7 @@
+     <link rel="stylesheet" href="/govtech/shell.css" />
+     <link rel="stylesheet" href="/govtech/school/school.css" />
+     <link rel="stylesheet" href="/civic/feedback/feedback.css" />
++    <link rel="stylesheet" href="/civic/assistant/assistant.css" />
+     <link rel="stylesheet" href="/civic/shell/shell.css" />
+   </head>
+   <body class="civic-mode">
+@@ -201,6 +202,7 @@
+     <script defer src="/govtech/school/school-ui.js"></script>
+     <!-- Round 11 civic-v1: role modules (when delivered) load before the R01 shell. -->
+     <script defer src="/civic/feedback/feedback.js"></script>
++    <script defer src="/civic/assistant/assistant.js"></script>
+     <script defer src="/civic/shell/fallback.js"></script>
+     <script defer src="/civic/shell/shell.js"></script>
+   </body>

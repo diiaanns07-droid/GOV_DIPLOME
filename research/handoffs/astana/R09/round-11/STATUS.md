@@ -7,7 +7,7 @@
 - Снимок приложения для сравнения: `b2cb2e02c602c166ba6d47c02d8e902e5478c791` (agent/school_ai.py, evidence.py, tools.py прочитаны через git show; подход «модель выбирает ID, код пишет текст» перенят)
 - Собственные пути: `agent/civic_assistant/`, `web/civic/assistant/`, `tests/civic/R09/`,
   `research/round-11-results/R09/`, `research/handoffs/astana/R09/round-11/STATUS.md`
-- Проверенный код: `6490397490843881b6d070ee20ee782bf328100b`
+- Проверенный код: `5d1e251854ad6adce69dcbf7819e35c9386fa740`
 
 ## Статус: READY (модуль готов к интеграции R01) — checkpoint 6
 
@@ -32,11 +32,16 @@
   номер запроса; ручной перенос полей редактором.
 - `evaluate.py` — adversarial-оценка (37 кейсов + 17 браузерных).
 
-### Проверки (выполнены на 6490397)
-- `python3 -m pytest tests/civic/R09 -q` -> 118 passed (включая реальный Chromium).
+### Проверки (выполнены на 5d1e251)
+- `python3 -m pytest tests/civic/R09 -q` -> 119 passed (включая реальный Chromium).
 - `python3 -m agent.civic_assistant.evaluate --ui` -> PASS 54 / FAIL 0 / NOT_RUN 1 (EVAL_REPORT.txt).
 - `check_r02_r07_integration.py` на коде R02 92f7aba и R07 18f8ac8 -> 16/16 (integration_r02_r07.json),
   включая извлечение с настоящим R02 Principal (редактор 200, аноним 401).
+- Предварительная интеграция в R01 (be8cb79) — `r01_integration.patch` (только файлы R01): тесты R01
+  tests/civic 426 passed (1 падение R02 test_patch_applies… — воспроизводится и без патча); настоящий
+  сервер R01: assistant=ready; Chromium: карточка -> помощник -> ответ о переносе из опубликованных
+  фактов (`r01_shell_check.json`, `r01_shell_assistant_1440.png`, `_390.png`). Подложка карты за
+  прокси недоступна — 3D этим не подтверждается. Это проверка R09, не CODE_SHA R01.
 - Враждебные тексты 20 000 символов: извлечение < 1 с, списки усечены до 20 (lists_truncated).
 - Совместимость с записями R05 (e477e5d, demo_synthetic.json — 9 СИНТЕТИЧЕСКИХ записей) -> 9/9
   (compat_r05_demo.json). Прогон нашёл и исправил: для отменённого объекта сроки показывались без
@@ -49,8 +54,7 @@
   среды; не обходилось. Извлечение проверено только на синтетических текстах. Реальных записей у R05 — 0.
 
 ### Найдено по ходу (для R01/R02/R04)
-- Шлюз R01 передаёт сервисам относительный путь, R02 (92f7aba) ждёт полный `/api/civic/v1/...`.
-  R09 поддерживает обе формы; R01/R02 нужно договориться.
+- (Решено R01 в be8cb79) форма пути сервисов: теперь полный `/api/civic/v1/...`; R09 принимает обе.
 - В R02 публичная история содержит только события публикации: публичное объяснение переноса срока
   редактор пишет в reason публикации (R04 стоит подсказать это в форме).
 - В CIVIC_ROUTES R01 нет `/staff/assistant/extract` — добавить по INTEGRATION.txt.
@@ -60,5 +64,5 @@ KK-тексты без носителя языка; шаблонный клас�
 типовых форм; все проверки на синтетике.
 
 ### Следующий шаг
-R01 подключает AssistantEndpoint и assets по `research/round-11-results/R09/INTEGRATION.txt`.
+R01: импортировать пути R09 @5d1e251 и `git apply research/round-11-results/R09/r01_integration.patch`.
 R09 далее (stretch): прогон помощника на пакете реальных объектов R05.

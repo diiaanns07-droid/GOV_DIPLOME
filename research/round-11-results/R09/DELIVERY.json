@@ -12,8 +12,8 @@
     "research/round-11-results/R09/",
     "research/handoffs/astana/R09/round-11/STATUS.md"
   ],
-  "integration_notes": "research/round-11-results/R09/INTEGRATION.txt",
-  "code_commit": "6490397490843881b6d070ee20ee782bf328100b",
+  "integration_notes": "research/round-11-results/R09/INTEGRATION.txt (+ r01_integration.patch for R01 be8cb79)",
+  "code_commit": "5d1e251854ad6adce69dcbf7819e35c9386fa740",
   "exports": {
     "python": [
       "agent.civic_assistant.build_answer(question, verified_context, provider=None)",
@@ -39,14 +39,14 @@
       "status": "PASS",
       "command": "python3 -m pytest tests/civic/R09 -q",
       "input": "synthetic fixtures (objects, publications, R07 compare() output 18f8ac8), MockProvider, fake chat client, fake R02 service, demo_server + Chromium",
-      "reason": "118 passed at 6490397"
+      "reason": "119 passed at 5d1e251"
     },
     {
       "name": "r09-adversarial-eval",
       "status": "PASS",
       "command": "python3 -m agent.civic_assistant.evaluate --ui",
       "input": "tests/civic/R09/fixtures/eval_cases.json (37 cases) + 17 browser checks",
-      "reason": "54 PASS / 0 FAIL / 1 NOT_RUN (live LLM); EVAL_REPORT.txt, code_sha 6490397"
+      "reason": "54 PASS / 0 FAIL / 1 NOT_RUN (live LLM); EVAL_REPORT.txt, code_sha 5d1e251"
     },
     {
       "name": "r09-ui-chromium",
@@ -60,7 +60,7 @@
       "status": "PASS",
       "command": "python3 research/round-11-results/R09/check_r02_r07_integration.py --r02 <R02 92f7aba checkout> --r07 <R07 18f8ac8 checkout>",
       "input": "temporary SQLite, one-time random editor password (not stored), pack civic_object fixture",
-      "reason": "16/16 at 6490397 (draft invisible, publish, unpublished edit invisible, delay reason from publish reason, staff update reason not public, extract with real R02 Principal: editor 200 / anonymous 401, real R07 compare()); integration_r02_r07.json"
+      "reason": "16/16 at 5d1e251 (draft invisible, publish, unpublished edit invisible, delay reason from publish reason, staff update reason not public, extract with real R02 Principal: editor 200 / anonymous 401, real R07 compare()); integration_r02_r07.json"
     },
     {
       "name": "r09-compat-r05-demo-slice",
@@ -78,10 +78,10 @@
     },
     {
       "name": "r01-app-integration",
-      "status": "NOT_RUN",
-      "command": null,
-      "input": null,
-      "reason": "Встраивание в общий app выполняет R01 по INTEGRATION.txt"
+      "status": "PASS",
+      "command": "git apply research/round-11-results/R09/r01_integration.patch (on R01 be8cb79 + R09 paths); python3 -m ui.web_server --civic-db <seeded>; node research/round-11-results/R09/r01_shell_check.cjs",
+      "input": "R01 be8cb79 worktree, synthetic object seeded via R02 by r01_shell_seed.py",
+      "reason": "PRE-INTEGRATION CHECK by R09 (not R01's CODE_SHA): modules assistant=ready; card -> assistant -> delay answer from published facts; 390px ok; no script errors. Basemap blocked by network policy (NOT_RUN, map/3D not claimed). R01 civic tests with patch: 426 passed, 1 pre-existing R02 failure."
     },
     {
       "name": "official-gov-kz-publication-fetch",
@@ -99,5 +99,5 @@
     "Шлюз R01 и R02 используют разные формы пути (относительный/полный); r02_public_loader поддерживает обе",
     "Все проверки на синтетических записях: реальных записей Астаны в R05 нет, gov.kz недоступен из среды (403)"
   ],
-  "next_step": "R01: подключить AssistantEndpoint и assets по INTEGRATION.txt; при доступе к gov.kz — прогон extract_draft на реальном тексте публикации"
+  "next_step": "R01: git apply r01_integration.patch после импорта путей R09 @5d1e251; R10: проверить на CODE_SHA R01"
 }

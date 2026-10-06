@@ -1,0 +1,51 @@
+{
+ "what": "R09 внутри настоящего shell R01: сервер ui.web_server R01 + r01_integration.patch + импортированные пути R09; БД засеяна r01_shell_seed.py (синтетика, одноразовый редактор)",
+ "r01_base_sha": "be8cb7988757deb0240cb133bf5dbb48f0ad3a06",
+ "r02_in_r01": "92f7aba (импортирован R01)",
+ "r09_code_sha": "5d1e251854ad6adce69dcbf7819e35c9386fa740",
+ "server_modules": "store=ready, feedback=ready, scenarios=unavailable, assistant=ready",
+ "r01_civic_tests_with_patch": "pytest tests/civic: 426 passed, 2 skipped, 1 failed (R02 test_patch_applies_to_real_web_server_and_serves_both_apis — падает и на чистом R01 be8cb79 без патча R09)",
+ "checks": [
+  {
+   "name": "modules_assistant_ready",
+   "status": "PASS",
+   "detail": "{\"label\":\"Помощник по фактам (R09)\",\"status\":\"ready\"}"
+  },
+  {
+   "name": "assistant_mounted_in_card",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "name": "delay_answer_from_published_facts",
+   "status": "PASS",
+   "detail": "Ответ собран по данным карточки (шаблон, без модели)Это демонстрационная (синтетическая) запись, а не сведения о реальных работах.пометкаПервоначальный плановый срок окончания: 20.10.2026.Текущий плановый срок окончания: 05.11.2026.Текущий срок сдвинут относительно первоначального на 16 дн. (разница"
+  },
+  {
+   "name": "synthetic_marked",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "name": "unknown_budget_no_data",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "name": "mobile_390_no_horizontal_scroll",
+   "status": "PASS",
+   "detail": "{\"doc\":390,\"vw\":390}"
+  },
+  {
+   "name": "no_page_script_errors",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "name": "external_resources_blocked_info",
+   "status": "NOT_RUN",
+   "detail": "2 resource loads failed (basemap/network policy); map rendering not claimed"
+  }
+ ],
+ "note": "Скопированные в worktree R01 пути R09 побайтно совпадают с коммитом r09_code_sha (diff -r)."
+}

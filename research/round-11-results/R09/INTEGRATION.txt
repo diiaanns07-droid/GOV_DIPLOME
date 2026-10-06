@@ -2,6 +2,16 @@ R09 — ИНСТРУКЦИЯ ДЛЯ R01 (ИНТЕГРАЦИЯ ПОМОЩНИКА
 Раунд 11, civic-v1, Астана. Ветка R09: claude/wizardly-ptolemy-qy8ltw. Изменять общие файлы может только R01.
 Ничего из этого не требует ключа, сети или платного вызова: по умолчанию работает шаблонный режим.
 
+0. ГОТОВЫЙ PATCH (проверен)
+   research/round-11-results/R09/r01_integration.patch — изменения ТОЛЬКО в файлах R01
+   (ui/web_server.py: assets, маршрут /staff/assistant/extract, фабрика assistant, диспетчеризация;
+   web/index.html: css + js). Основа: R01 be8cb79. Применение: git apply r01_integration.patch
+   после импорта путей R09 из п.1. Проверено в отдельном worktree R01 be8cb79 + R09 5d1e251:
+   pytest tests/civic -> 426 passed / 1 failed (R02 test_patch_applies_to_real_web_server..., падает
+   и на чистом be8cb79) / 2 skipped; настоящий сервер `python3 -m ui.web_server` -> modules
+   assistant=ready; Chromium: карточка -> помощник -> ответ о переносе из опубликованных фактов
+   (r01_shell_check.json, r01_shell_assistant_1440.png / _390.png; засев r01_shell_seed.py).
+
 1. ФАЙЛЫ ДЛЯ ИМПОРТА (только эти пути)
    agent/civic_assistant/            Python-модуль (stdlib, без новых зависимостей)
    web/civic/assistant/assistant.js  window.CivicAssistant
@@ -42,9 +52,9 @@ R09 — ИНСТРУКЦИЯ ДЛЯ R01 (ИНТЕГРАЦИЯ ПОМОЩНИКА
    но к хранилищу сессий R02 доступа не имеет.
    /modules: модуль assistant = ready, когда фабрика вернула объект.
 
-   ВНИМАНИЕ (расхождение R01/R02, не R09): шлюз R01 вызывает store.handle с относительным путём
-   (/objects/{id}), а R02 CivicService (92f7aba) ждёт полный /api/civic/v1/... и на относительный
-   отвечает None. r02_public_loader пробует обе формы, поэтому помощник работает при любом решении.
+   Форма пути: шлюз R01 (be8cb79) передаёт сервисам полный путь /api/civic/v1/... (как ждёт R02);
+   AssistantEndpoint и r02_public_loader принимают и полную, и относительную форму. Тело — dict
+   (шлюз R01) или сырые JSON-байты (соглашение R02); NaN/Infinity -> 400 invalid_json.
 
 3. ЧТО ГАРАНТИРУЕТ ENDPOINT
    POST /assistant тело ровно {question, object_id|null, scenario_id|null}; facts/context/role/... -> 400.
