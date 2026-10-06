@@ -317,3 +317,9 @@ def test_huge_integers_are_422_not_500(editor, service, field, value):
     raw = json.dumps(sample_object(**{field: value})).encode()
     result = call(service, "POST", "/staff/objects", raw, ctx=editor.ctx())
     assert result["status"] == 422, result
+
+
+def test_trailing_newline_ids_are_rejected(editor, service):
+    assert call(service, "GET", "/objects/road-1%0A")["status"] == 400
+    from ui.civic_store.validate import is_valid_id
+    assert not is_valid_id("road-1\n") and is_valid_id("road-1")

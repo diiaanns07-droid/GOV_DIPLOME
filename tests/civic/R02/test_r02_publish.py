@@ -240,3 +240,46 @@ def test_publish_revalidates_stored_content(editor, service):
     result = editor.publish(item)
     assert result["status"] == 422 and "geometry.coordinates" in result["body"]["error"]["fields"]
     assert public(service, item["id"])["status"] == 404
+
+
+def test_start_can_move_past_locked_original_end(editor, service):
+    """Ревью: зафиксированный исходный срок не должен блокировать перенос начала работ."""
+    item = editor.create(schedule={"planned_start": "2026-10-14", "original_planned_end": None,
+                                   "current_planned_end": "2026-10-22", "actual_end": None})
+    item = item_of(editor.publish(item, reason="Первая публикация"))
+    assert item["schedule"]["original_planned_end"] == "2026-10-22"
+    moved = editor.update(item, {"schedule": {"planned_start": "2026-11-01", "current_planned_end": "2026-12-01"}},
+                          reason="Перенос на ноябрь")
+    assert moved["status"] == 200, moved
+    item = item_of(editor.publish(moved["body"]["data"]["item"], reason="Работы перенесены на ноябрь"))
+    data = public(service, item["id"])["body"]["data"]
+    assert data["item"]["schedule"] == {"planned_start": "2026-11-01", "original_planned_end": "2026-10-22",
+                                        "current_planned_end": "2026-12-01", "actual_end": None}
+    assert data["history"][-1]["changed_fields"] == ["schedule.current_planned_end", "schedule.planned_start"]
+    # Для черновика проверка «окончание не раньше начала» по-прежнему действует.
+    bad = editor.post("/staff/objects", {**sample_object(), "schedule": {
+        "planned_start": "2026-11-01", "original_planned_end": "2026-10-22",
+        "current_planned_end": "2026-12-01", "actual_end": None}})
+    assert bad["status"] == 422 and "schedule.original_planned_end" in bad["body"]["error"]["fields"]
+
+
+def test_archive_reason_stays_internal_after_republish(editor, service):
+    item = item_of(editor.publish(editor.create()))
+    item = item_of(editor.archive(item, reason="СЛУЖЕБНО: подозрение на ошибку подрядчика"))
+    item = item_of(editor.publish(item, reason="Сведения подтверждены"))
+    data = public(service, item["id"])["body"]["data"]
+    assert "СЛУЖЕБНО" not in json.dumps(data, ensure_ascii=False)
+    assert [h["reason"] for h in data["history"]] == ["Публикация проверенной записи", "Снято с публикации",
+                                                      "Сведения подтверждены"]
+    staff = editor.get(f"/staff/objects/{item['id']}")["body"]["data"]["history"]
+    assert staff[-2]["reason"] == "СЛУЖЕБНО: подозрение на ошибку подрядчика"
+
+
+def test_public_history_ids_do_not_reveal_global_activity(editor, service):
+    first = item_of(editor.publish(editor.create()))
+    for _ in range(5):
+        editor.create(title="Скрытый черновик")
+    second = item_of(editor.publish(editor.create()))
+    history = public(service, second["id"])["body"]["data"]["history"]
+    assert [h["id"] for h in history] == [f"{second['id']}@2"]
+    assert public(service, first["id"])["body"]["data"]["history"][0]["id"] == f"{first['id']}@2"

@@ -23,7 +23,7 @@ import ipaddress
 import json
 import logging
 import ssl
-from urllib.parse import urlsplit
+from urllib.parse import unquote, urlsplit
 
 from .service import MAX_BODY, PREFIX, error, not_found
 
@@ -150,8 +150,11 @@ class CivicHttpAdapter:
             context = self.context(handler)
             result = None
             payload = body if method in BODY_METHODS else None
+            # Декодированные непустые сегменты: /%73taff/ и //staff/ тоже staff-маршруты.
+            segments = [unquote(part) for part in parsed.path[len(PREFIX):].split("/") if part]
+            is_staff = bool(segments) and segments[0] == "staff"
             for index, handle in enumerate(self.handlers):
-                if index > 0 and parsed.path.startswith(PREFIX + "/staff/"):
+                if index > 0 and is_staff:
                     # Защита по умолчанию для staff-маршрутов других модулей (R06...):
                     # сессия редактора обязательна, для записи — ещё CSRF и same-origin.
                     principal, denied = self.civic.require_staff(context, unsafe=method not in ("GET", "HEAD"))

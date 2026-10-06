@@ -22,6 +22,7 @@ from .validate import (CONTENT_FIELDS, KINDS, PUBLICATIONS, STATUSES, Validation
 
 
 ASTANA_TZ = timezone(timedelta(hours=5), "Asia/Almaty")
+ARCHIVE_PUBLIC_REASON = "Снято с публикации"
 DEFAULT_PAGE = 50
 MAX_PAGE = 100
 MAX_FILTER_VALUES = 10
@@ -72,7 +73,7 @@ def _loads(text):
     return json.loads(text) if text is not None else None
 
 
-ASCII_INT_RE = re.compile(r"^[0-9]{1,18}$")
+ASCII_INT_RE = re.compile(r"^[0-9]{1,18}\Z")
 
 
 def ascii_int(text):
@@ -297,9 +298,10 @@ class ObjectRepository:
                 ignored, reason, import_meta):
         row = self._locked_row(conn, object_id, expected_revision)
         current = self._content(row)
-        content = validate_content(merge_content(current, content_changes), today=self.today())
-        notes = row["internal_notes"] if internal is ... else clean_internal_notes(internal)
         was_published = row["first_published_at"] is not None
+        content = validate_content(merge_content(current, content_changes), today=self.today(),
+                                   original_locked=was_published)
+        notes = row["internal_notes"] if internal is ... else clean_internal_notes(internal)
         reason_text = clean_reason(reason, required=was_published)
         changes = diff(current, content)
         if was_published and "schedule.original_planned_end" in changes:
@@ -329,7 +331,8 @@ class ObjectRepository:
             reason_text = clean_reason(reason, required=True)
             # Повторная проверка по текущим правилам: данные могли быть записаны раньше
             # (импорт, прежняя версия кода) — опубликовать можно только валидный объект.
-            content = validate_content(self._content(row), today=self.today())
+            content = validate_content(self._content(row), today=self.today(),
+                                       original_locked=row["first_published_at"] is not None)
             validate_for_publication(content)
             previous = self._last_public_dto(conn, object_id)
             first = row["first_published_at"] is None
@@ -457,14 +460,20 @@ class ObjectRepository:
             if row is None:
                 raise NotFound(object_id)  # черновик/архив неотличимы от отсутствия
             rows = conn.execute(
-                """SELECT id, object_id, revision, at, reason, public_actor_label,
+                """SELECT object_id, revision, at, action, reason, public_actor_label,
                           public_changed_fields_json
                    FROM civic_history WHERE object_id = ? AND is_public = 1 ORDER BY revision""",
                 (object_id,)).fetchall()
             history = [dto.public_history_entry({
-                "id": r["id"], "object_id": r["object_id"], "revision": r["revision"], "at": r["at"],
+                # id по объекту и ревизии, а не глобальный счётчик: он выдавал бы объём
+                # непубличной работы (черновики других объектов, служебные правки).
+                "id": f"{r['object_id']}@{r['revision']}", "object_id": r["object_id"],
+                "revision": r["revision"], "at": r["at"],
                 "changed_fields": _loads(r["public_changed_fields_json"]) or [],
-                "reason": r["reason"], "public_actor_label": r["public_actor_label"]}) for r in rows]
+                # Причина публикации — публичный текст редактора; причина архивации — служебная
+                # (видна в staff history), жителю показывается нейтральная формулировка.
+                "reason": r["reason"] if r["action"] == "publish" else ARCHIVE_PUBLIC_REASON,
+                "public_actor_label": r["public_actor_label"]}) for r in rows]
             return {"item": dto.sanitize_public(_loads(row["dto_json"])), "history": history}
 
     def list_public(self, filters: dict) -> dict:

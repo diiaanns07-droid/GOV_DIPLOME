@@ -238,3 +238,12 @@ def test_password_stdin_accepts_windows_line_endings(tmp_path):
     secret = "Crlf-Strong-Pass-2026"
     assert run_cli("--db", db, "create-editor", "crlfuser", "--password-stdin", stdin=secret + "\r\n").returncode == 0
     assert Editor(CivicService(db), "crlfuser", secret).get("/staff/objects")["status"] == 200
+
+
+def test_reimport_with_trailing_newline_id_does_not_duplicate(service):
+    import_package(service.objects, package([real_item("road-1")]))
+    with pytest.raises(ImportRejected) as rejected:
+        import_package(service.objects, package([real_item("road-1\n")]))
+    assert rejected.value.report["items"][0]["action"] == "invalid"
+    with service.db.read() as conn:
+        assert conn.execute("SELECT COUNT(*) FROM civic_objects").fetchone()[0] == 1

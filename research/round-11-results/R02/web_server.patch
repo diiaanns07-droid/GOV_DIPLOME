@@ -43,12 +43,12 @@
              self.error_reply(500, "Не удалось выполнить запрос. Попробуйте ещё раз.")
  
 +    def do_unsupported(self):
-+        # PUT/PATCH/DELETE: civic API отвечает 405 в своём формате; остальное — 405 как раньше JSON.
++        # PUT/PATCH/DELETE/OPTIONS/TRACE: JSON 405 вместо HTML 501 (civic — в своём конверте с Allow).
 +        if not self.civic_route():
 +            self.discard_body()
 +            self.error_reply(405, "Метод не поддерживается.")
 +
-+    do_PUT = do_PATCH = do_DELETE = do_unsupported
++    do_PUT = do_PATCH = do_DELETE = do_OPTIONS = do_TRACE = do_unsupported
 +
  
  def _invalid_number(value):

@@ -268,6 +268,9 @@ def test_patch_applies_to_real_web_server_and_serves_both_apis(tmp_path):
         assert status == 405 and body["ok"] is False
         status, _, body = client.request("GET", "/feedback")
         assert status == 404 and body["error"]["code"] == "not_found"
+        for method in ("OPTIONS", "TRACE"):  # ревью: не HTML 501, а JSON 405
+            status, headers, body = client.request(method, "/objects")
+            assert status == 405 and body["ok"] is False and headers["Allow"] == "GET, HEAD"
     # Без civic_db сервер работает как раньше (существующие тесты не создают базу).
     plain = module.create_server(port=0)
     assert plain.civic is None
@@ -308,6 +311,9 @@ def test_adapter_guards_staff_routes_of_other_modules(tmp_path):
     with running(server) as port:
         anonymous = Client(port)
         assert anonymous.request("GET", "/staff/feedback")[0] == 401
+        # Ревью: закодированные и двойные слэши не обходят защиту staff-маршрутов.
+        assert anonymous.request("GET", "/%73taff/feedback")[0] == 401
+        assert anonymous.request("GET", "//staff/feedback")[0] == 401
         assert anonymous.request("POST", "/feedback", {"text": "x"})[0] == 200  # публичный маршрут R06
         editor = Client(port).login()
         assert editor.request("GET", "/staff/feedback")[0] == 200

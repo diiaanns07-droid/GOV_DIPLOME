@@ -34,7 +34,7 @@ LOGGER = logging.getLogger("ui.civic_store")
 PREFIX = "/api/civic/v1"
 MAX_BODY = 64 * 1024
 MAX_QUERY = 2048
-IDEMPOTENCY_RE = re.compile(r"^[A-Za-z0-9._:-]{8,64}$")
+IDEMPOTENCY_RE = re.compile(r"^[A-Za-z0-9._:-]{8,64}\Z")
 BASE_HEADERS = {
     "Content-Type": "application/json; charset=utf-8",
     "Cache-Control": "no-store",

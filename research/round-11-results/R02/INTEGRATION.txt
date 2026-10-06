@@ -20,6 +20,8 @@ requirements*.txt менять не нужно.
      и проверен на исходном Handler). Двойник tests/civic/R01/contract_double.py следует модели R02
      (правка опубликованного объекта видна после повторного publish).
      Нужно добавить в CIVIC_ROUTES R01 (необязательно): ("GET", ("staff", "audit"), "store").
+     Рекомендация R01: do_OPTIONS/do_TRACE/do_PUT/do_PATCH/do_DELETE для /api/civic/v1 → JSON 405
+     (сейчас BaseHTTPRequestHandler отвечает HTML 501, что нарушает «ошибки — JSON»).
      object_lookup для R06 можно заменить на civic.lookup_public_object (тот же публичный DTO).
      ui/civic_store/__init__.py экспортирует CivicService с коммита 92f7aba (запасной импорт R01 больше не нужен).
    - R04 claude/fervent-ritchie-1zih1y @2ff117c (editor-core.js, contract_mock.cjs) РАСХОДИТСЯ в двух местах:
@@ -41,8 +43,8 @@ requirements*.txt менять не нужно.
    a) ui/web_server.py — research/round-11-results/R02/web_server.patch (≈40 строк, git apply --check OK
       на b2cb2e0 = версия в ветке R01):
       - Handler.civic_route(): если путь под /api/civic/v1 — отдать CivicHttpAdapter.serve(self);
-        вызывается первой строкой do_GET/do_HEAD/do_POST и в новых do_PUT/do_PATCH/do_DELETE
-        (не-civic PUT/PATCH/DELETE получают прежний JSON 405);
+        вызывается первой строкой do_GET/do_HEAD/do_POST и в новых do_PUT/do_PATCH/do_DELETE/do_OPTIONS/
+        do_TRACE (иначе BaseHTTPRequestHandler отдаёт HTML 501; не-civic получают JSON 405);
       - create_server(..., civic_db=None): при civic_db строит CivicService + CivicHttpAdapter(bind_host=host);
         без civic_db поведение и существующие тесты прежние (база не создаётся);
       - main(): --civic-db (по умолчанию $CIVIC_DB_PATH или .runtime/civic.sqlite3), --no-civic.
@@ -126,7 +128,11 @@ requirements*.txt менять не нужно.
      записывает в него current_planned_end; после первой публикации изменение → 422
      (fields["schedule.original_planned_end"]). Перенос срока — через current_planned_end + reason.
    - Публичная history: только события publish (и archive ранее опубликованного), changed_fields — пути
-     вида "schedule.current_planned_end", "status", "publication". Причина переноса для карточки R03 —
+     вида "schedule.current_planned_end", "status", "publication". id записи — строка "<object_id>@<revision>"
+     (не глобальный счётчик); revision в публичной истории может идти с пропусками (служебные правки
+     между публикациями не показываются). reason архивации служебный: жителю — «Снято с публикации».
+   - После первой публикации original_planned_end — исторический факт: перенос planned_start позже него
+     допустим (проверка «окончание ≥ начала» для исходного срока применяется только до публикации). Причина переноса для карточки R03 —
      reason записи, у которой changed_fields содержит schedule.current_planned_end.
    - Повторный publish без изменений — 200 без новой ревизии; archive скрывает объект публично
      (404), история сохраняется; publish архивного объекта возвращает его.
