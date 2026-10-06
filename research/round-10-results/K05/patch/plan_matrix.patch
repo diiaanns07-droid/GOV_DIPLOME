@@ -1,0 +1,47 @@
+--- a/web/govtech/core/plan.js
++++ b/web/govtech/core/plan.js
+@@ -140,6 +140,27 @@
+     return { pts, cands, src, base, dist, candIndex: new Map(cands.map((c, i) => [c.id, i])) };
+   }
+ 
++  /* precomputeFromMatrix(sc, lookup) -> the same structure as precompute(), but distances come from a precomputed
++   * matrix (school-access-case-v1, geodesic or pedestrian-v1) instead of haversine. sc = {control_points:[{id,weight}],
++   * candidates:[{id}], sources:[{id}]}; lookup(originId, targetId) -> integer mm >= 0, or null when the matrix status is
++   * not "ok" (unknown is never replaced by a straight line or by 0). Ties: mm, then ID — as in precompute(). */
++  function precomputeFromMatrix(sc, lookup) {
++    const pts = sc.control_points.slice().sort((a, b) => cmpStr(a.id, b.id));
++    const cands = sc.candidates.slice().sort((a, b) => cmpStr(a.id, b.id));
++    const src = sc.sources.slice().sort((a, b) => cmpStr(a.id, b.id));
++    const base = pts.map((p) => {
++      let best = null;
++      for (const s of src) {
++        const mm = lookup(p.id, s.id);
++        if (mm === null) continue;
++        if (best === null || mm < best.mm || (mm === best.mm && s.id < best.id)) best = { mm, m: mm / 1000, id: s.id };
++      }
++      return best;
++    });
++    const dist = cands.map((c) => pts.map((p) => { const mm = lookup(p.id, c.id); return { mm, m: mm === null ? null : mm / 1000 }; }));
++    return { pts, cands, src, base, dist, candIndex: new Map(cands.map((c, i) => [c.id, i])) };
++  }
++
+   // Feasibility of one set of candidate IDs; reasons are codes with a Russian text.
+   function feasibility(sc, ids) {
+     const set = new Set(ids), reasons = [];
+@@ -179,6 +200,7 @@
+       let best = b ? { mm: b.mm, m: b.m, kind: "source", id: b.id } : null;
+       for (const i of sel) {
+         const d = P.dist[i][j], c = P.cands[i];
++        if (d.mm === null) continue;  // unknown path in a precomputed matrix: never treated as 0 (null < n is true in JS)
+         if (best === null || d.mm < best.mm || (d.mm === best.mm && best.kind === "hypothetical" && c.id < best.id)) best = { mm: d.mm, m: d.m, kind: "hypothetical", id: c.id };
+       }
+       rowsById.set(p.id, { id: p.id, lon: p.lon, lat: p.lat, weight: p.weight,
+@@ -418,7 +440,7 @@
+   }
+ 
+   const api = { SCHEMA, METRIC, CATEGORIES, LIMITS, PlanError, mmOf, sourceSnapshot, makeContext, validatePlanScenario, problemDigest, scenarioDigest,
+-    precompute, feasibility, metricsOf, evaluatePlan, createSearch, optimizePlans, sensitivity, KEYS, cmpIds, isId: (v) => ID_RE.test(v), popcount,
++    precompute, precomputeFromMatrix, feasibility, metricsOf, evaluatePlan, createSearch, optimizePlans, sensitivity, KEYS, cmpIds, isId: (v) => ID_RE.test(v), popcount,
+     internal: { evaluate: evaluateInternal, createSearch: createSearchInternal }, derivedOf: (ctx, sc, F) => derivedOf(ctx, validatePlanScenario(sc, ctx), F), exportPlanScenario, importPlanScenario,
+     explanationDigest, explainPlans, reportHtml, esc };
+   if (typeof module !== "undefined" && module.exports) module.exports = api;

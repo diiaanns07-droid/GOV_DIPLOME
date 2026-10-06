@@ -1,0 +1,1655 @@
+{
+ "schema": "k05-school-hand-cases-v1",
+ "kind": "synthetic",
+ "metric_fields_order": [
+  "total_origins",
+  "known_count",
+  "unknown_count",
+  "sum_distance_mm",
+  "mean_distance_mm",
+  "max_distance_mm",
+  "within_threshold_count",
+  "within_threshold_share_of_all_points"
+ ],
+ "note": "expected values written by hand in make_hand_cases.py; not produced by any implementation",
+ "cases": [
+  {
+   "case": {
+    "schema_version": "school-access-case-v1",
+    "case_id": "H1_unknowns_restricted",
+    "city_id": "shymkent",
+    "title": "H1_unknowns_restricted",
+    "bbox": [
+     69.59,
+     42.3,
+     69.62,
+     42.33
+    ],
+    "snapshot_id": "synthetic-hand-v1",
+    "sources": [
+     {
+      "id": "src:synthetic",
+      "url": null,
+      "publisher": "K05 test",
+      "title": "synthetic hand fixture",
+      "retrieved_at": null,
+      "verification_status": "not_fetched",
+      "license": "unknown"
+     }
+    ],
+    "schools": [
+     {
+      "id": "S1",
+      "label": "S1",
+      "lon": 69.6,
+      "lat": 42.31,
+      "kind": "synthetic",
+      "source_ids": [
+       "src:synthetic"
+      ],
+      "field_provenance": {},
+      "qa": [],
+      "category": "school",
+      "access_eligibility": "known_public",
+      "capacity": null,
+      "capacity_source_ids": []
+     },
+     {
+      "id": "S2",
+      "label": "S2",
+      "lon": 69.6,
+      "lat": 42.31,
+      "kind": "synthetic",
+      "source_ids": [
+       "src:synthetic"
+      ],
+      "field_provenance": {},
+      "qa": [],
+      "category": "school",
+      "access_eligibility": "unknown",
+      "capacity": null,
+      "capacity_source_ids": []
+     },
+     {
+      "id": "S3",
+      "label": "S3",
+      "lon": 69.6,
+      "lat": 42.31,
+      "kind": "synthetic",
+      "source_ids": [
+       "src:synthetic"
+      ],
+      "field_provenance": {},
+      "qa": [],
+      "category": "school",
+      "access_eligibility": "known_restricted",
+      "capacity": null,
+      "capacity_source_ids": []
+     }
+    ],
+    "origins": [
+     {
+      "id": "O1",
+      "label": "O1",
+      "lon": 69.6,
+      "lat": 42.31,
+      "kind": "synthetic",
+      "source_ids": [
+       "src:synthetic"
+      ],
+      "field_provenance": {},
+      "qa": []
+     },
+     {
+      "id": "O2",
+      "label": "O2",
+      "lon": 69.601,
+      "lat": 42.31,
+      "kind": "synthetic",
+      "source_ids": [
+       "src:synthetic"
+      ],
+      "field_provenance": {},
+      "qa": []
+     },
+     {
+      "id": "O3",
+      "label": "O3",
+      "lon": 69.60199999999999,
+      "lat": 42.31,
+      "kind": "synthetic",
+      "source_ids": [
+       "src:synthetic"
+      ],
+      "field_provenance": {},
+      "qa": []
+     }
+    ],
+    "candidates": [
+     {
+      "id": "A",
+      "label": "A",
+      "lon": 69.605,
+      "lat": 42.315,
+      "kind": "hypothesis",
+      "source_ids": [
+       "src:synthetic"
+      ],
+      "field_provenance": {},
+      "qa": [],
+      "cost": null,
+      "land_status": "unknown"
+     },
+     {
+      "id": "B",
+      "label": "B",
+      "lon": 69.605,
+      "lat": 42.315,
+      "kind": "hypothesis",
+      "source_ids": [
+       "src:synthetic"
+      ],
+      "field_provenance": {},
+      "qa": [],
+      "cost": null,
+      "land_status": "unknown"
+     }
+    ],
+    "selected_candidate_ids": [
+     "A",
+     "B"
+    ],
+    "parameters": {
+     "distance_method": "geodesic",
+     "routing_policy_id": null,
+     "threshold_m": 1.0,
+     "max_new_objects": 1
+    },
+    "model_assumptions": [
+     "SYNTHETIC hand fixture: numbers written by hand, not a city"
+    ]
+   },
+   "matrix": {
+    "method": "geodesic",
+    "policy_id": null,
+    "entries": [
+     {
+      "origin_id": "O1",
+      "target_id": "S1",
+      "distance_mm": 1000,
+      "status": "ok",
+      "method": "geodesic",
+      "policy_id": null,
+      "route_edge_ids": [],
+      "geometry": null,
+      "assumptions": []
+     },
+     {
+      "origin_id": "O1",
+      "target_id": "S2",
+      "distance_mm": 3000,
+      "status": "ok",
+      "method": "geodesic",
+      "policy_id": null,
+      "route_edge_ids": [],
+      "geometry": null,
+      "assumptions": []
+     },
+     {
+      "origin_id": "O1",
+      "target_id": "S3",
+      "distance_mm": 100,
+      "status": "ok",
+      "method": "geodesic",
+      "policy_id": null,
+      "route_edge_ids": [],
+      "geometry": null,
+      "assumptions": []
+     },
+     {
+      "origin_id": "O1",
+      "target_id": "A",
+      "distance_mm": 400,
+      "status": "ok",
+      "method": "geodesic",
+      "policy_id": null,
+      "route_edge_ids": [],
+      "geometry": null,
+      "assumptions": []
+     },
+     {
+      "origin_id": "O1",
+      "target_id": "B",
+      "distance_mm": 2000,
+      "status": "ok",
+      "method": "geodesic",
+      "policy_id": null,
+      "route_edge_ids": [],
+      "geometry": null,
+      "assumptions": []
+     },
+     {
+      "origin_id": "O2",
+      "target_id": "S1",
+      "distance_mm": 2500,
+      "status": "ok",
+      "method": "geodesic",
+      "policy_id": null,
+      "route_edge_ids": [],
+      "geometry": null,
+      "assumptions": []
+     },
+     {
+      "origin_id": "O2",
+      "target_id": "S2",
+      "distance_mm": null,
+      "status": "disconnected",
+      "method": "geodesic",
+      "policy_id": null,
+      "route_edge_ids": [],
+      "geometry": null,
+      "assumptions": []
+     },
+     {
+      "origin_id": "O2",
+      "target_id": "S3",
+      "distance_mm": 50,
+      "status": "ok",
+      "method": "geodesic",
+      "policy_id": null,
+      "route_edge_ids": [],
+      "geometry": null,
+      "assumptions": []
+     },
+     {
+      "origin_id": "O2",
+      "target_id": "A",
+      "distance_mm": 2600,
+      "status": "ok",
+      "method": "geodesic",
+      "policy_id": null,
+      "route_edge_ids": [],
+      "geometry": null,
+      "assumptions": []
+     },
+     {
+      "origin_id": "O2",
+      "target_id": "B",
+      "distance_mm": 500,
+      "status": "ok",
+      "method": "geodesic",
+      "policy_id": null,
+      "route_edge_ids": [],
+      "geometry": null,
+      "assumptions": []
+     },
+     {
+      "origin_id": "O3",
+      "target_id": "S1",
+      "distance_mm": null,
+      "status": "outside_coverage",
+      "method": "geodesic",
+      "policy_id": null,
+      "route_edge_ids": [],
+      "geometry": null,
+      "assumptions": []
+     },
+     {
+      "origin_id": "O3",
+      "target_id": "S2",
+      "distance_mm": null,
+      "status": "unsnappable",
+      "method": "geodesic",
+      "policy_id": null,
+      "route_edge_ids": [],
+      "geometry": null,
+      "assumptions": []
+     },
+     {
+      "origin_id": "O3",
+      "target_id": "S3",
+      "distance_mm": 10,
+      "status": "ok",
+      "method": "geodesic",
+      "policy_id": null,
+      "route_edge_ids": [],
+      "geometry": null,
+      "assumptions": []
+     },
+     {
+      "origin_id": "O3",
+      "target_id": "A",
+      "distance_mm": null,
+      "status": "access_unknown",
+      "method": "geodesic",
+      "policy_id": null,
+      "route_edge_ids": [],
+      "geometry": null,
+      "assumptions": []
+     },
+     {
+      "origin_id": "O3",
+      "target_id": "B",
+      "distance_mm": 900,
+      "status": "ok",
+      "method": "geodesic",
+      "policy_id": null,
+      "route_edge_ids": [],
+      "geometry": null,
+      "assumptions": []
+     }
+    ]
+   },
+   "expected": {
+    "current": {
+     "ids": [],
+     "after": {
+      "O1": 1000,
+      "O2": 2500,
+      "O3": null
+     },
+     "status": {
+      "O1": "ok",
+      "O2": "partial",
+      "O3": "unknown"
+     },
+     "metrics": [
+      3,
+      2,
+      1,
+      3500,
+      1750.0,
+      2500,
+      1,
+      0.3333333333333333
+     ]
+    },
+    "candidate:A": {
+     "ids": [
+      "A"
+     ],
+     "after": {
+      "O1": 400,
+      "O2": 2500,
+      "O3": null
+     },
+     "metrics": [
+      3,
+      2,
+      1,
+      2900,
+      1450.0,
+      2500,
+      1,
+      0.3333333333333333
+     ]
+    },
+    "candidate:B": {
+     "ids": [
+      "B"
+     ],
+     "after": {
+      "O1": 1000,
+      "O2": 500,
+      "O3": 900
+     },
+     "status": {
+      "O3": "partial"
+     },
+     "delta": {
+      "O1": 0,
+      "O2": -2000,
+      "O3": null
+     },
+     "metrics": [
+      3,
+      3,
+      0,
+      2400,
+      800.0,
+      1000,
+      3,
+      1.0
+     ]
+    },
+    "auto:contract-lex": {
+     "ids": [
+      "B"
+     ]
+    },
+    "auto:minimax": {
+     "ids": [
+      "B"
+     ]
+    }
+   }
+  },
+  {
+   "case": {
+    "schema_version": "school-access-case-v1",
+    "case_id": "H2_lex_vs_minimax",
+    "city_id": "shymkent",
+    "title": "H2_lex_vs_minimax",
+    "bbox": [
+     69.59,
+     42.3,
+     69.62,
+     42.33
+    ],
+    "snapshot_id": "synthetic-hand-v1",
+    "sources": [
+     {
+      "id": "src:synthetic",
+      "url": null,
+      "publisher": "K05 test",
+      "title": "synthetic hand fixture",
+      "retrieved_at": null,
+      "verification_status": "not_fetched",
+      "license": "unknown"
+     }
+    ],
+    "schools": [
+     {
+      "id": "S1",
+      "label": "S1",
+      "lon": 69.6,
+      "lat": 42.31,
+      "kind": "synthetic",
+      "source_ids": [
+       "src:synthetic"
+      ],
+      "field_provenance": {},
+      "qa": [],
+      "category": "school",
+      "access_eligibility": "known_public",
+      "capacity": null,
+      "capacity_source_ids": []
+     }
+    ],
+    "origins": [
+     {
+      "id": "O1",
+      "label": "O1",
+      "lon": 69.6,
+      "lat": 42.31,
+      "kind": "synthetic",
+      "source_ids": [
+       "src:synthetic"
+      ],
+      "field_provenance": {},
+      "qa": []
+     },
+     {
+      "id": "O2",
+      "label": "O2",
+      "lon": 69.601,
+      "lat": 42.31,
+      "kind": "synthetic",
+      "source_ids": [
+       "src:synthetic"
+      ],
+      "field_provenance": {},
+      "qa": []
+     },
+     {
+      "id": "O3",
+      "label": "O3",
+      "lon": 69.60199999999999,
+      "lat": 42.31,
+      "kind": "synthetic",
+      "source_ids": [
+       "src:synthetic"
+      ],
+      "field_provenance": {},
+      "qa": []
+     }
+    ],
+    "candidates": [
+     {
+      "id": "A",
+      "label": "A",
+      "lon": 69.605,
+      "lat": 42.315,
+      "kind": "hypothesis",
+      "source_ids": [
+       "src:synthetic"
+      ],
+      "field_provenance": {},
+      "qa": [],
+      "cost": null,
+      "land_status": "unknown"
+     },
+     {
+      "id": "B",
+      "label": "B",
+      "lon": 69.605,
+      "lat": 42.315,
+      "kind": "hypothesis",
+      "source_ids": [
+       "src:synthetic"
+      ],
+      "field_provenance": {},
+      "qa": [],
+      "cost": null,
+      "land_status": "unknown"
+     }
+    ],
+    "selected_candidate_ids": [
+     "A",
+     "B"
+    ],
+    "parameters": {
+     "distance_method": "geodesic",
+     "routing_policy_id": null,
+     "threshold_m": 3.0,
+     "max_new_objects": 1
+    },
+    "model_assumptions": [
+     "SYNTHETIC hand fixture: numbers written by hand, not a city"
+    ]
+   },
+   "matrix": {
+    "method": "geodesic",
+    "policy_id": null,
+    "entries": [
+     {
+      "origin_id": "O1",
+      "target_id": "S1",
+      "distance_mm": 5000,
+      "status": "ok",
+      "method": "geodesic",
+      "policy_id": null,
+      "route_edge_ids": [],
+      "geometry": null,
+      "assumptions": []
+     },
+     {
+      "origin_id": "O1",
+      "target_id": "A",
+      "distance_mm": 100,
+      "status": "ok",
+      "method": "geodesic",
+      "policy_id": null,
+      "route_edge_ids": [],
+      "geometry": null,
+      "assumptions": []
+     },
+     {
+      "origin_id": "O1",
+      "target_id": "B",
+      "distance_mm": 3000,
+      "status": "ok",
+      "method": "geodesic",
+      "policy_id": null,
+      "route_edge_ids": [],
+      "geometry": null,
+      "assumptions": []
+     },
+     {
+      "origin_id": "O2",
+      "target_id": "S1",
+      "distance_mm": 5000,
+      "status": "ok",
+      "method": "geodesic",
+      "policy_id": null,
+      "route_edge_ids": [],
+      "geometry": null,
+      "assumptions": []
+     },
+     {
+      "origin_id": "O2",
+      "target_id": "A",
+      "distance_mm": 4000,
+      "status": "ok",
+      "method": "geodesic",
+      "policy_id": null,
+      "route_edge_ids": [],
+      "geometry": null,
+      "assumptions": []
+     },
+     {
+      "origin_id": "O2",
+      "target_id": "B",
+      "distance_mm": 3000,
+      "status": "ok",
+      "method": "geodesic",
+      "policy_id": null,
+      "route_edge_ids": [],
+      "geometry": null,
+      "assumptions": []
+     },
+     {
+      "origin_id": "O3",
+      "target_id": "S1",
+      "distance_mm": 5000,
+      "status": "ok",
+      "method": "geodesic",
+      "policy_id": null,
+      "route_edge_ids": [],
+      "geometry": null,
+      "assumptions": []
+     },
+     {
+      "origin_id": "O3",
+      "target_id": "A",
+      "distance_mm": 4500,
+      "status": "ok",
+      "method": "geodesic",
+      "policy_id": null,
+      "route_edge_ids": [],
+      "geometry": null,
+      "assumptions": []
+     },
+     {
+      "origin_id": "O3",
+      "target_id": "B",
+      "distance_mm": 3000,
+      "status": "ok",
+      "method": "geodesic",
+      "policy_id": null,
+      "route_edge_ids": [],
+      "geometry": null,
+      "assumptions": []
+     }
+    ]
+   },
+   "expected": {
+    "current": {
+     "ids": [],
+     "metrics": [
+      3,
+      3,
+      0,
+      15000,
+      5000.0,
+      5000,
+      0,
+      0.0
+     ]
+    },
+    "candidate:A": {
+     "ids": [
+      "A"
+     ],
+     "metrics": [
+      3,
+      3,
+      0,
+      8600,
+      2866.6666666666665,
+      4500,
+      1,
+      0.3333333333333333
+     ]
+    },
+    "candidate:B": {
+     "ids": [
+      "B"
+     ],
+     "metrics": [
+      3,
+      3,
+      0,
+      9000,
+      3000.0,
+      3000,
+      3,
+      1.0
+     ]
+    },
+    "auto:contract-lex": {
+     "ids": [
+      "A"
+     ]
+    },
+    "auto:minimax": {
+     "ids": [
+      "B"
+     ]
+    }
+   }
+  },
+  {
+   "case": {
+    "schema_version": "school-access-case-v1",
+    "case_id": "H3_ties",
+    "city_id": "shymkent",
+    "title": "H3_ties",
+    "bbox": [
+     69.59,
+     42.3,
+     69.62,
+     42.33
+    ],
+    "snapshot_id": "synthetic-hand-v1",
+    "sources": [
+     {
+      "id": "src:synthetic",
+      "url": null,
+      "publisher": "K05 test",
+      "title": "synthetic hand fixture",
+      "retrieved_at": null,
+      "verification_status": "not_fetched",
+      "license": "unknown"
+     }
+    ],
+    "schools": [
+     {
+      "id": "S1",
+      "label": "S1",
+      "lon": 69.6,
+      "lat": 42.31,
+      "kind": "synthetic",
+      "source_ids": [
+       "src:synthetic"
+      ],
+      "field_provenance": {},
+      "qa": [],
+      "category": "school",
+      "access_eligibility": "known_public",
+      "capacity": null,
+      "capacity_source_ids": []
+     }
+    ],
+    "origins": [
+     {
+      "id": "O1",
+      "label": "O1",
+      "lon": 69.6,
+      "lat": 42.31,
+      "kind": "synthetic",
+      "source_ids": [
+       "src:synthetic"
+      ],
+      "field_provenance": {},
+      "qa": []
+     },
+     {
+      "id": "O2",
+      "label": "O2",
+      "lon": 69.601,
+      "lat": 42.31,
+      "kind": "synthetic",
+      "source_ids": [
+       "src:synthetic"
+      ],
+      "field_provenance": {},
+      "qa": []
+     }
+    ],
+    "candidates": [
+     {
+      "id": "A2",
+      "label": "A2",
+      "lon": 69.605,
+      "lat": 42.315,
+      "kind": "hypothesis",
+      "source_ids": [
+       "src:synthetic"
+      ],
+      "field_provenance": {},
+      "qa": [],
+      "cost": null,
+      "land_status": "unknown"
+     },
+     {
+      "id": "A1",
+      "label": "A1",
+      "lon": 69.605,
+      "lat": 42.315,
+      "kind": "hypothesis",
+      "source_ids": [
+       "src:synthetic"
+      ],
+      "field_provenance": {},
+      "qa": [],
+      "cost": null,
+      "land_status": "unknown"
+     },
+     {
+      "id": "C",
+      "label": "C",
+      "lon": 69.605,
+      "lat": 42.315,
+      "kind": "hypothesis",
+      "source_ids": [
+       "src:synthetic"
+      ],
+      "field_provenance": {},
+      "qa": [],
+      "cost": null,
+      "land_status": "unknown"
+     }
+    ],
+    "selected_candidate_ids": [
+     "C",
+     "A2"
+    ],
+    "parameters": {
+     "distance_method": "geodesic",
+     "routing_policy_id": null,
+     "threshold_m": 1.0,
+     "max_new_objects": 1
+    },
+    "model_assumptions": [
+     "SYNTHETIC hand fixture: numbers written by hand, not a city"
+    ]
+   },
+   "matrix": {
+    "method": "geodesic",
+    "policy_id": null,
+    "entries": [
+     {
+      "origin_id": "O1",
+      "target_id": "S1",
+      "distance_mm": 2000,
+      "status": "ok",
+      "method": "geodesic",
+      "policy_id": null,
+      "route_edge_ids": [],
+      "geometry": null,
+      "assumptions": []
+     },
+     {
+      "origin_id": "O1",
+      "target_id": "A2",
+      "distance_mm": 1000,
+      "status": "ok",
+      "method": "geodesic",
+      "policy_id": null,
+      "route_edge_ids": [],
+      "geometry": null,
+      "assumptions": []
+     },
+     {
+      "origin_id": "O1",
+      "target_id": "A1",
+      "distance_mm": 1000,
+      "status": "ok",
+      "method": "geodesic",
+      "policy_id": null,
+      "route_edge_ids": [],
+      "geometry": null,
+      "assumptions": []
+     },
+     {
+      "origin_id": "O1",
+      "target_id": "C",
+      "distance_mm": 2000,
+      "status": "ok",
+      "method": "geodesic",
+      "policy_id": null,
+      "route_edge_ids": [],
+      "geometry": null,
+      "assumptions": []
+     },
+     {
+      "origin_id": "O2",
+      "target_id": "S1",
+      "distance_mm": 1500,
+      "status": "ok",
+      "method": "geodesic",
+      "policy_id": null,
+      "route_edge_ids": [],
+      "geometry": null,
+      "assumptions": []
+     },
+     {
+      "origin_id": "O2",
+      "target_id": "A2",
+      "distance_mm": 1500,
+      "status": "ok",
+      "method": "geodesic",
+      "policy_id": null,
+      "route_edge_ids": [],
+      "geometry": null,
+      "assumptions": []
+     },
+     {
+      "origin_id": "O2",
+      "target_id": "A1",
+      "distance_mm": 1500,
+      "status": "ok",
+      "method": "geodesic",
+      "policy_id": null,
+      "route_edge_ids": [],
+      "geometry": null,
+      "assumptions": []
+     },
+     {
+      "origin_id": "O2",
+      "target_id": "C",
+      "distance_mm": 1500,
+      "status": "ok",
+      "method": "geodesic",
+      "policy_id": null,
+      "route_edge_ids": [],
+      "geometry": null,
+      "assumptions": []
+     }
+    ]
+   },
+   "expected": {
+    "current": {
+     "ids": [],
+     "metrics": [
+      2,
+      2,
+      0,
+      3500,
+      1750.0,
+      2000,
+      0,
+      0.0
+     ]
+    },
+    "candidate:C": {
+     "ids": [
+      "C"
+     ],
+     "after": {
+      "O1": 2000,
+      "O2": 1500
+     },
+     "nearest": {
+      "O1": "S1",
+      "O2": "S1"
+     },
+     "metrics": [
+      2,
+      2,
+      0,
+      3500,
+      1750.0,
+      2000,
+      0,
+      0.0
+     ]
+    },
+    "candidate:A2": {
+     "ids": [
+      "A2"
+     ],
+     "nearest": {
+      "O1": "A2",
+      "O2": "S1"
+     },
+     "metrics": [
+      2,
+      2,
+      0,
+      2500,
+      1250.0,
+      1500,
+      1,
+      0.5
+     ]
+    },
+    "auto:contract-lex": {
+     "ids": [
+      "A1"
+     ]
+    },
+    "auto:minimax": {
+     "ids": [
+      "A1"
+     ]
+    }
+   }
+  },
+  {
+   "case": {
+    "schema_version": "school-access-case-v1",
+    "case_id": "H4_no_gain_empty_wins",
+    "city_id": "shymkent",
+    "title": "H4_no_gain_empty_wins",
+    "bbox": [
+     69.59,
+     42.3,
+     69.62,
+     42.33
+    ],
+    "snapshot_id": "synthetic-hand-v1",
+    "sources": [
+     {
+      "id": "src:synthetic",
+      "url": null,
+      "publisher": "K05 test",
+      "title": "synthetic hand fixture",
+      "retrieved_at": null,
+      "verification_status": "not_fetched",
+      "license": "unknown"
+     }
+    ],
+    "schools": [
+     {
+      "id": "S1",
+      "label": "S1",
+      "lon": 69.6,
+      "lat": 42.31,
+      "kind": "synthetic",
+      "source_ids": [
+       "src:synthetic"
+      ],
+      "field_provenance": {},
+      "qa": [],
+      "category": "school",
+      "access_eligibility": "known_public",
+      "capacity": null,
+      "capacity_source_ids": []
+     }
+    ],
+    "origins": [
+     {
+      "id": "O1",
+      "label": "O1",
+      "lon": 69.6,
+      "lat": 42.31,
+      "kind": "synthetic",
+      "source_ids": [
+       "src:synthetic"
+      ],
+      "field_provenance": {},
+      "qa": []
+     }
+    ],
+    "candidates": [
+     {
+      "id": "B",
+      "label": "B",
+      "lon": 69.605,
+      "lat": 42.315,
+      "kind": "hypothesis",
+      "source_ids": [
+       "src:synthetic"
+      ],
+      "field_provenance": {},
+      "qa": [],
+      "cost": null,
+      "land_status": "unknown"
+     }
+    ],
+    "selected_candidate_ids": [
+     "B"
+    ],
+    "parameters": {
+     "distance_method": "geodesic",
+     "routing_policy_id": null,
+     "threshold_m": 1.0,
+     "max_new_objects": 1
+    },
+    "model_assumptions": [
+     "SYNTHETIC hand fixture: numbers written by hand, not a city"
+    ]
+   },
+   "matrix": {
+    "method": "geodesic",
+    "policy_id": null,
+    "entries": [
+     {
+      "origin_id": "O1",
+      "target_id": "S1",
+      "distance_mm": 300,
+      "status": "ok",
+      "method": "geodesic",
+      "policy_id": null,
+      "route_edge_ids": [],
+      "geometry": null,
+      "assumptions": []
+     },
+     {
+      "origin_id": "O1",
+      "target_id": "B",
+      "distance_mm": 900,
+      "status": "ok",
+      "method": "geodesic",
+      "policy_id": null,
+      "route_edge_ids": [],
+      "geometry": null,
+      "assumptions": []
+     }
+    ]
+   },
+   "expected": {
+    "auto:contract-lex": {
+     "ids": []
+    },
+    "auto:minimax": {
+     "ids": []
+    },
+    "candidate:B": {
+     "ids": [
+      "B"
+     ],
+     "metrics": [
+      1,
+      1,
+      0,
+      300,
+      300.0,
+      300,
+      1,
+      1.0
+     ]
+    }
+   }
+  },
+  {
+   "case": {
+    "schema_version": "school-access-case-v1",
+    "case_id": "H5_no_origins",
+    "city_id": "shymkent",
+    "title": "H5_no_origins",
+    "bbox": [
+     69.59,
+     42.3,
+     69.62,
+     42.33
+    ],
+    "snapshot_id": "synthetic-hand-v1",
+    "sources": [
+     {
+      "id": "src:synthetic",
+      "url": null,
+      "publisher": "K05 test",
+      "title": "synthetic hand fixture",
+      "retrieved_at": null,
+      "verification_status": "not_fetched",
+      "license": "unknown"
+     }
+    ],
+    "schools": [
+     {
+      "id": "S1",
+      "label": "S1",
+      "lon": 69.6,
+      "lat": 42.31,
+      "kind": "synthetic",
+      "source_ids": [
+       "src:synthetic"
+      ],
+      "field_provenance": {},
+      "qa": [],
+      "category": "school",
+      "access_eligibility": "known_public",
+      "capacity": null,
+      "capacity_source_ids": []
+     }
+    ],
+    "origins": [],
+    "candidates": [
+     {
+      "id": "A",
+      "label": "A",
+      "lon": 69.605,
+      "lat": 42.315,
+      "kind": "hypothesis",
+      "source_ids": [
+       "src:synthetic"
+      ],
+      "field_provenance": {},
+      "qa": [],
+      "cost": null,
+      "land_status": "unknown"
+     }
+    ],
+    "selected_candidate_ids": [
+     "A"
+    ],
+    "parameters": {
+     "distance_method": "geodesic",
+     "routing_policy_id": null,
+     "threshold_m": 1.0,
+     "max_new_objects": 1
+    },
+    "model_assumptions": [
+     "SYNTHETIC hand fixture: numbers written by hand, not a city"
+    ]
+   },
+   "matrix": {
+    "method": "geodesic",
+    "policy_id": null,
+    "entries": []
+   },
+   "expected": {
+    "current": {
+     "ids": [],
+     "metrics": [
+      0,
+      0,
+      0,
+      0,
+      null,
+      null,
+      0,
+      null
+     ]
+    },
+    "auto:contract-lex": {
+     "ids": []
+    }
+   }
+  },
+  {
+   "case": {
+    "schema_version": "school-access-case-v1",
+    "case_id": "H6_unknown_first",
+    "city_id": "shymkent",
+    "title": "H6_unknown_first",
+    "bbox": [
+     69.59,
+     42.3,
+     69.62,
+     42.33
+    ],
+    "snapshot_id": "synthetic-hand-v1",
+    "sources": [
+     {
+      "id": "src:synthetic",
+      "url": null,
+      "publisher": "K05 test",
+      "title": "synthetic hand fixture",
+      "retrieved_at": null,
+      "verification_status": "not_fetched",
+      "license": "unknown"
+     }
+    ],
+    "schools": [
+     {
+      "id": "S1",
+      "label": "S1",
+      "lon": 69.6,
+      "lat": 42.31,
+      "kind": "synthetic",
+      "source_ids": [
+       "src:synthetic"
+      ],
+      "field_provenance": {},
+      "qa": [],
+      "category": "school",
+      "access_eligibility": "known_public",
+      "capacity": null,
+      "capacity_source_ids": []
+     }
+    ],
+    "origins": [
+     {
+      "id": "O1",
+      "label": "O1",
+      "lon": 69.6,
+      "lat": 42.31,
+      "kind": "synthetic",
+      "source_ids": [
+       "src:synthetic"
+      ],
+      "field_provenance": {},
+      "qa": []
+     },
+     {
+      "id": "O2",
+      "label": "O2",
+      "lon": 69.601,
+      "lat": 42.31,
+      "kind": "synthetic",
+      "source_ids": [
+       "src:synthetic"
+      ],
+      "field_provenance": {},
+      "qa": []
+     }
+    ],
+    "candidates": [
+     {
+      "id": "A",
+      "label": "A",
+      "lon": 69.605,
+      "lat": 42.315,
+      "kind": "hypothesis",
+      "source_ids": [
+       "src:synthetic"
+      ],
+      "field_provenance": {},
+      "qa": [],
+      "cost": null,
+      "land_status": "unknown"
+     },
+     {
+      "id": "B",
+      "label": "B",
+      "lon": 69.605,
+      "lat": 42.315,
+      "kind": "hypothesis",
+      "source_ids": [
+       "src:synthetic"
+      ],
+      "field_provenance": {},
+      "qa": [],
+      "cost": null,
+      "land_status": "unknown"
+     }
+    ],
+    "selected_candidate_ids": [
+     "A",
+     "B"
+    ],
+    "parameters": {
+     "distance_method": "geodesic",
+     "routing_policy_id": null,
+     "threshold_m": 1.0,
+     "max_new_objects": 1
+    },
+    "model_assumptions": [
+     "SYNTHETIC hand fixture: numbers written by hand, not a city"
+    ]
+   },
+   "matrix": {
+    "method": "geodesic",
+    "policy_id": null,
+    "entries": [
+     {
+      "origin_id": "O1",
+      "target_id": "S1",
+      "distance_mm": null,
+      "status": "disconnected",
+      "method": "geodesic",
+      "policy_id": null,
+      "route_edge_ids": [],
+      "geometry": null,
+      "assumptions": []
+     },
+     {
+      "origin_id": "O1",
+      "target_id": "A",
+      "distance_mm": 4000,
+      "status": "ok",
+      "method": "geodesic",
+      "policy_id": null,
+      "route_edge_ids": [],
+      "geometry": null,
+      "assumptions": []
+     },
+     {
+      "origin_id": "O1",
+      "target_id": "B",
+      "distance_mm": null,
+      "status": "disconnected",
+      "method": "geodesic",
+      "policy_id": null,
+      "route_edge_ids": [],
+      "geometry": null,
+      "assumptions": []
+     },
+     {
+      "origin_id": "O2",
+      "target_id": "S1",
+      "distance_mm": 500,
+      "status": "ok",
+      "method": "geodesic",
+      "policy_id": null,
+      "route_edge_ids": [],
+      "geometry": null,
+      "assumptions": []
+     },
+     {
+      "origin_id": "O2",
+      "target_id": "A",
+      "distance_mm": 9000,
+      "status": "ok",
+      "method": "geodesic",
+      "policy_id": null,
+      "route_edge_ids": [],
+      "geometry": null,
+      "assumptions": []
+     },
+     {
+      "origin_id": "O2",
+      "target_id": "B",
+      "distance_mm": 100,
+      "status": "ok",
+      "method": "geodesic",
+      "policy_id": null,
+      "route_edge_ids": [],
+      "geometry": null,
+      "assumptions": []
+     }
+    ]
+   },
+   "expected": {
+    "current": {
+     "ids": [],
+     "metrics": [
+      2,
+      1,
+      1,
+      500,
+      500.0,
+      500,
+      1,
+      0.5
+     ]
+    },
+    "candidate:A": {
+     "ids": [
+      "A"
+     ],
+     "metrics": [
+      2,
+      2,
+      0,
+      4500,
+      2250.0,
+      4000,
+      1,
+      0.5
+     ]
+    },
+    "candidate:B": {
+     "ids": [
+      "B"
+     ],
+     "metrics": [
+      2,
+      1,
+      1,
+      100,
+      100.0,
+      100,
+      1,
+      0.5
+     ]
+    },
+    "auto:contract-lex": {
+     "ids": [
+      "A"
+     ]
+    },
+    "auto:minimax": {
+     "ids": [
+      "A"
+     ]
+    }
+   }
+  },
+  {
+   "case": {
+    "schema_version": "school-access-case-v1",
+    "case_id": "H7_all_unknown_pedestrian",
+    "city_id": "shymkent",
+    "title": "H7_all_unknown_pedestrian",
+    "bbox": [
+     69.59,
+     42.3,
+     69.62,
+     42.33
+    ],
+    "snapshot_id": "synthetic-hand-v1",
+    "sources": [
+     {
+      "id": "src:synthetic",
+      "url": null,
+      "publisher": "K05 test",
+      "title": "synthetic hand fixture",
+      "retrieved_at": null,
+      "verification_status": "not_fetched",
+      "license": "unknown"
+     }
+    ],
+    "schools": [
+     {
+      "id": "S1",
+      "label": "S1",
+      "lon": 69.6,
+      "lat": 42.31,
+      "kind": "synthetic",
+      "source_ids": [
+       "src:synthetic"
+      ],
+      "field_provenance": {},
+      "qa": [],
+      "category": "school",
+      "access_eligibility": "known_public",
+      "capacity": null,
+      "capacity_source_ids": []
+     }
+    ],
+    "origins": [
+     {
+      "id": "O1",
+      "label": "O1",
+      "lon": 69.6,
+      "lat": 42.31,
+      "kind": "synthetic",
+      "source_ids": [
+       "src:synthetic"
+      ],
+      "field_provenance": {},
+      "qa": []
+     },
+     {
+      "id": "O2",
+      "label": "O2",
+      "lon": 69.601,
+      "lat": 42.31,
+      "kind": "synthetic",
+      "source_ids": [
+       "src:synthetic"
+      ],
+      "field_provenance": {},
+      "qa": []
+     }
+    ],
+    "candidates": [
+     {
+      "id": "A",
+      "label": "A",
+      "lon": 69.605,
+      "lat": 42.315,
+      "kind": "hypothesis",
+      "source_ids": [
+       "src:synthetic"
+      ],
+      "field_provenance": {},
+      "qa": [],
+      "cost": null,
+      "land_status": "unknown"
+     }
+    ],
+    "selected_candidate_ids": [
+     "A"
+    ],
+    "parameters": {
+     "distance_method": "pedestrian-v1",
+     "routing_policy_id": "ped-test-v1",
+     "threshold_m": 1.0,
+     "max_new_objects": 1
+    },
+    "model_assumptions": [
+     "SYNTHETIC hand fixture: numbers written by hand, not a city"
+    ]
+   },
+   "matrix": {
+    "method": "pedestrian-v1",
+    "policy_id": "ped-test-v1",
+    "entries": [
+     {
+      "origin_id": "O1",
+      "target_id": "S1",
+      "distance_mm": null,
+      "status": "disconnected",
+      "method": "pedestrian-v1",
+      "policy_id": "ped-test-v1",
+      "route_edge_ids": [],
+      "geometry": null,
+      "assumptions": []
+     },
+     {
+      "origin_id": "O1",
+      "target_id": "A",
+      "distance_mm": null,
+      "status": "unsnappable",
+      "method": "pedestrian-v1",
+      "policy_id": "ped-test-v1",
+      "route_edge_ids": [],
+      "geometry": null,
+      "assumptions": []
+     },
+     {
+      "origin_id": "O2",
+      "target_id": "S1",
+      "distance_mm": null,
+      "status": "outside_coverage",
+      "method": "pedestrian-v1",
+      "policy_id": "ped-test-v1",
+      "route_edge_ids": [],
+      "geometry": null,
+      "assumptions": []
+     },
+     {
+      "origin_id": "O2",
+      "target_id": "A",
+      "distance_mm": null,
+      "status": "access_unknown",
+      "method": "pedestrian-v1",
+      "policy_id": "ped-test-v1",
+      "route_edge_ids": [],
+      "geometry": null,
+      "assumptions": []
+     }
+    ]
+   },
+   "expected": {
+    "current": {
+     "ids": [],
+     "metrics": [
+      2,
+      0,
+      2,
+      0,
+      null,
+      null,
+      0,
+      0.0
+     ]
+    },
+    "candidate:A": {
+     "ids": [
+      "A"
+     ],
+     "metrics": [
+      2,
+      0,
+      2,
+      0,
+      null,
+      null,
+      0,
+      0.0
+     ]
+    },
+    "auto:contract-lex": {
+     "ids": []
+    }
+   }
+  }
+ ]
+}
