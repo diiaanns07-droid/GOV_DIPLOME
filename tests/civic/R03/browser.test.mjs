@@ -70,7 +70,7 @@ async function select(page, id) {
 async function noHorizontalOverflow(page) {
   return page.evaluate(() => {
     const bad = [];
-    const root = document.getElementById("civic-public");
+    const root = document.getElementById("civic-public") || document.getElementById("civic-map-root");
     for (const el of [root, ...root.querySelectorAll(".civic-r03-scroll, .civic-r03-card, .civic-r03-item, .civic-r03-list-view, .civic-r03-sec, .civic-r03-dl")]) {
       if (el.offsetParent !== null && el.scrollWidth > el.clientWidth + 1) bad.push((el.className || el.id) + " " + el.scrollWidth + ">" + el.clientWidth);
     }
@@ -498,4 +498,29 @@ test("area filter counts objects in the visible part and reports records without
   assert.match(t, /^Показано \d+ из 12$/);
   assert.match(await page.locator(".civic-r03-list-notes").innerText(), /Без места на карте \(не входят в «видимую часть»\): 1/);
   await ctx.close();
+});
+
+test("embedded in an R01-like host panel: no own positioning, camera avoids the host panel", { skip: SKIP }, async () => {
+  for (const vp of [DESKTOP, MOBILE]) {
+    const { ctx, page, errors } = await open({ host: "r01", persist: "0" }, { viewport: vp });
+    const info = await page.evaluate(() => {
+      const r = document.getElementById("civic-map-root");
+      return { cls: r.className, pos: getComputedStyle(r).position, handle: getComputedStyle(r.querySelector(".civic-r03-handle")).display, title: getComputedStyle(r.querySelector(".civic-r03-head-row")).display };
+    });
+    assert.match(info.cls, /civic-r03-layout-embedded/);
+    assert.equal(info.pos, "relative");
+    assert.equal(info.handle, "none");
+    assert.equal(info.title, "none", "host shows its own heading");
+    await select(page, "r03-demo-shifted");
+    const pos = await page.evaluate((mob) => {
+      const map = window.__stand.map, c = map.getCanvas().getBoundingClientRect(), p = map.project([71.4304, 51.1282]);
+      const x = c.left + p.x, y = c.top + p.y, r = document.querySelector(".stand-host-panel").getBoundingClientRect();
+      return { ok: mob ? y < r.top - 8 : x > r.right + 8, x, y, r: [r.left, r.top, r.right, r.bottom] };
+    }, vp === MOBILE);
+    assert.ok(pos.ok, JSON.stringify(pos));
+    assert.deepEqual(await noHorizontalOverflow(page), []);
+    if (vp === DESKTOP) await shot(page, "desktop-1440-embedded-r01-like-host");
+    assert.deepEqual(errors, []);
+    await ctx.close();
+  }
 });

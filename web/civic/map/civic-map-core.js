@@ -560,19 +560,24 @@
     if (isObj(resp) && resp.ok === true && own(resp, "data")) return resp.data;
     return resp;
   }
-  function errorInfo(err) {
+  function errorInfo(err, context) {
     const e = err || {};
     const status = [e.status, e.httpStatus, e.statusCode, e.response && e.response.status]
       .find((v) => Number.isInteger(v)) || null;
     const code = typeof e.code === "string" ? e.code : (isObj(e.error) && typeof e.error.code === "string" ? e.error.code : null);
     const offline = (typeof navigator !== "undefined" && navigator && navigator.onLine === false) || e.name === "TypeError";
     let text;
-    if (status === 404 || code === "not_found") text = "Объект не найден или снят с публикации.";
+    if (code === "aborted") text = "Запрос отменён.";
+    else if (code === "timeout") text = "Сервер не ответил вовремя. Повторите попытку.";
+    else if (code === "network") text = "Нет связи с сервером. Проверьте подключение и повторите.";
+    else if ((status === 404 || code === "not_found") && context === "list") text = "Сервер не знает адрес списка объектов (404). Сообщите администратору.";
+    else if (status === 404 || code === "not_found") text = "Объект не найден или снят с публикации.";
     else if (status === 429) text = "Слишком много запросов. Подождите немного и повторите.";
+    else if (status === 503 || code === "module_unavailable") text = "Сервис объектов сейчас недоступен. Повторите позже.";
     else if (status && status >= 500) text = "Сервер не смог ответить (" + status + "). Данные не изменены — повторите позже.";
     else if (offline && !status) text = "Нет связи с сервером. Проверьте подключение и повторите.";
     else text = "Не удалось получить данные" + (status ? " (" + status + ")" : "") + ".";
-    return { status, code, text, notFound: status === 404 || code === "not_found" };
+    return { status: status || null, code, text, notFound: context !== "list" && (status === 404 || code === "not_found"), aborted: code === "aborted" };
   }
 
   // ---------- contrast (WCAG 2.x) ----------

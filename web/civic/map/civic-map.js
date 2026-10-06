@@ -128,7 +128,9 @@
     const onSelect = typeof opt.onSelect === "function" ? opt.onSelect : null;
     const onFeedback = typeof opt.onFeedback === "function" ? opt.onFeedback : null;
     const now = typeof opt.now === "function" ? opt.now : () => new Date();
-    const layout = opt.layout === "embedded" ? "embedded" : "overlay";
+    // overlay: the module positions its own panel over the map (root is a direct child of <body>).
+    // embedded: the host (R01 shell panel / sheet) positions and scrolls; we only fill the root.
+    const layout = opt.layout === "embedded" || opt.layout === "overlay" ? opt.layout : (root.parentElement === document.body ? "overlay" : "embedded");
     const persist = opt.persistFilters !== false;
     const permalink = opt.permalink === true;
     const region = opt.region === null ? null : (Array.isArray(opt.region) ? opt.region : C.ASTANA_BBOX);
@@ -145,6 +147,13 @@
     const cleanups = [];
     const listSeq = C.createSequence();
     const cardSeq = C.createSequence();
+    const aborters = { list: null, card: null };
+    // R01 api.request accepts a 4th {signal} argument; other implementations ignore it.
+    function freshSignal(kind) {
+      if (aborters[kind]) { try { aborters[kind].abort(); } catch (e) { /* ignore */ } }
+      aborters[kind] = typeof AbortController === "function" ? new AbortController() : null;
+      return aborters[kind] ? aborters[kind].signal : undefined;
+    }
     let popup = null, cursorSet = false, hoverRaf = 0, moveTimer = 0, lastHoverPoint = null;
     let addingLayers = false;
 
@@ -490,13 +499,14 @@
     }
 
     // ---------- loading ----------
-    async function request(method, path) {
-      const data = await api.request(method, pathPrefix + path, undefined);
+    async function request(method, path, signal) {
+      const data = signal ? await api.request(method, pathPrefix + path, undefined, { signal }) : await api.request(method, pathPrefix + path, undefined);
       return C.unwrap(data);
     }
     async function refresh() {
       if (destroyed) return;
       const t = listSeq.next();
+      const signal = freshSignal("list");
       st.list = "loading";
       st.listError = null;
       renderList();
@@ -504,7 +514,7 @@
         const raw = [];
         let cursor = null, pages = 0, truncated = false;
         do {
-          const data = await request("GET", "/objects" + (cursor ? "?cursor=" + encodeURIComponent(cursor) : ""));
+          const data = await request("GET", "/objects" + (cursor ? "?cursor=" + encodeURIComponent(cursor) : ""), signal);
           if (destroyed || !listSeq.isCurrent(t)) return;
           const items = data && Array.isArray(data.items) ? data.items : Array.isArray(data) ? data : null;
           if (!items) throw Object.assign(new Error("bad payload"), { code: "bad_payload" });
@@ -529,7 +539,7 @@
       } catch (err) {
         if (destroyed || !listSeq.isCurrent(t)) return;
         st.list = "error";
-        st.listError = C.errorInfo(err);
+        st.listError = C.errorInfo(err, "list");
         if (err && err.code === "bad_payload") st.listError.text = "Сервер вернул данные в неожиданном формате.";
         renderList();
       }
@@ -562,11 +572,12 @@
     }
     async function loadDetail(id, opts) {
       const t = cardSeq.next();
+      const signal = freshSignal("card");
       st.detail.state = "loading";
       st.detail.error = null;
       renderCard();
       try {
-        const data = await request("GET", "/objects/" + encodeURIComponent(id));
+        const data = await request("GET", "/objects/" + encodeURIComponent(id), signal);
         if (destroyed || !cardSeq.isCurrent(t) || st.selectedId !== id) return;
         const raw = data && data.item ? data.item : null;
         const norm = raw ? C.normalizeObject(raw, { region }) : { item: null };
@@ -579,7 +590,6 @@
           st.detail.history = C.normalizeHistory(data.history);
           st.detail.state = "ready";
           if (!hadItem && opts && opts.fly !== false && (!opts.source || opts.source !== "map")) flyTo(norm.item);
-          if (!hadItem && onSelect) safeCall(onSelect, publicCopy(norm.item), { source: (opts && opts.source) || "api" });
         }
       } catch (err) {
         if (destroyed || !cardSeq.isCurrent(t) || st.selectedId !== id) return;
@@ -593,6 +603,7 @@
     }
     function closeCard() {
       cardSeq.cancel();
+      if (aborters.card) { try { aborters.card.abort(); } catch (e) { /* ignore */ } aborters.card = null; }
       const back = st.detail.returnFocus || st.selectedId;
       st.selectedId = null;
       st.view = "list";
@@ -793,6 +804,7 @@
       const t = cardView.querySelector("." + P + "card-title");
       if (t) { try { t.focus({ preventScroll: true }); } catch (e) { t.focus(); } }
       scroller.scrollTop = 0;
+      if (layout === "embedded") { try { cardView.scrollIntoView({ block: "start", behavior: "auto" }); } catch (e) { /* ignore */ } }
     }
 
     // ---------- permalink ----------
@@ -921,11 +933,22 @@
         st.viewBox = [b.getWest(), b.getSouth(), b.getEast(), b.getNorth()];
       } catch (e) { st.viewBox = null; }
     }
+    // The panel that covers the map: our root in overlay mode, or the host's positioned
+    // panel (outermost absolute/fixed ancestor) when embedded in the R01 shell.
+    function obstruction() {
+      let found = null;
+      for (let n = root; n && n !== document.body && n.nodeType === 1; n = n.parentElement) {
+        const pos = window.getComputedStyle(n).position;
+        if (pos === "absolute" || pos === "fixed") found = n;
+      }
+      return found;
+    }
     function freePadding() {
       const pad = Object.assign({}, basePadding);
       const c = map.getContainer().getBoundingClientRect();
-      const r = root.getBoundingClientRect();
-      if (r.width && r.height && layout === "overlay") {
+      const ob = obstruction();
+      const r = ob ? ob.getBoundingClientRect() : { width: 0, height: 0 };
+      if (r.width && r.height && !opt.mapPadding) {
         if (isMobile()) pad.bottom = Math.max(pad.bottom, c.bottom - r.top + 16);
         else if (r.left - c.left < c.width / 2) pad.left = Math.max(pad.left, r.right - c.left + 24);
         else pad.right = Math.max(pad.right, c.right - r.left + 24);
@@ -996,6 +1019,7 @@
       destroyed = true;
       listSeq.cancel();
       cardSeq.cancel();
+      for (const k of ["list", "card"]) if (aborters[k]) { try { aborters[k].abort(); } catch (e) { /* ignore */ } aborters[k] = null; }
       clearTimeout(moveTimer);
       detachMap();
       destroyed = true;

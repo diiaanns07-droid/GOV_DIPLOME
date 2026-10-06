@@ -7,15 +7,15 @@
 - Source app compared: `b2cb2e02c602c166ba6d47c02d8e902e5478c791` (claude/beautiful-clarke-sbzomj) — read via `git show`, not checked out.
 - Owned paths: `web/civic/map/`, `tests/civic/R03/`, `research/round-11-results/R03/`, this file.
 
-## Status: PARTIAL — checkpoint 2
+## Status: PARTIAL — checkpoint 3
 
 Done:
-- Module `web/civic/map/` (core + mount/destroy + CSS), see INTEGRATION.txt.
-- Stand `research/round-11-results/R03/stand/` (contract mock of api.request; NOT the product).
-- Tests: `node --test tests/civic/R03/core.test.mjs` 17/17 PASS; `node --test --test-concurrency=1 tests/civic/R03/browser.test.mjs` 20/20 PASS (Chromium + MapLibre 5.6.2, external hosts blocked).
-- Real screenshots of the stand (mock data, offline basemap): `research/round-11-results/R03/screenshots/`.
-- Defects found by the browser suite and fixed: focus lost on card re-render, `class=""` left on root after destroy, 6px card overflow, 26px mobile handle.
+- Module `web/civic/map/` (core + mount/destroy + CSS). Layout auto: overlay when root is a child of <body> (stand), embedded inside a host panel (R01 shell `#civic-map-root`).
+- R01 compatibility (read from origin/claude/affectionate-ride-bol5v8 @ f639a4b): `{signal}` 4th arg to api.request aborts superseded requests; CivicApiError status/code mapped (network/timeout/503/404); camera padding uses the host panel rect; one onSelect per selection.
+- Stand `research/round-11-results/R03/stand/` (mock api.request; `?host=r01` imitates R01 panel).
+- Tests: core 17/17 PASS; browser 21/21 PASS (`node --test --test-concurrency=1 tests/civic/R03/*.test.mjs`).
+- Screenshots (stand, mock data, offline basemap): `research/round-11-results/R03/screenshots/`.
 
-NOT_RUN: OpenFreeMap basemap and 3D buildings (proxy 403); R01/R02 integration (no deliveries yet).
+NOT_RUN: OpenFreeMap/3D buildings (proxy 403); real R02 backend run (next step).
 
-Next step: adversarial review pass; check origin for R01/R02 round-11 deliveries; final INTEGRATION.txt + DELIVERY.json.
+Next step: adversarial review; read-only run of the stand against R02 CivicService @ 6a28de2.

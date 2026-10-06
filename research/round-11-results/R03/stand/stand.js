@@ -35,9 +35,26 @@
   const stand = { api, instance: null, map: null, mounts: 0, destroys: 0, basemap: "pending", feedback: [], selects: [] };
   window.__stand = stand;
 
+  // host=r01: imitate the R01 shell panel (positioned host + own scroll), module embedded in a slot.
+  let mountRoot = document.getElementById("civic-public");
+  if (q.get("host") === "r01") {
+    const panel = document.createElement("div");
+    panel.className = "stand-host-panel";
+    const head = document.createElement("header");
+    head.className = "stand-host-head";
+    head.textContent = "Что меняется в городе (шапка хоста R01)";
+    const scroll = document.createElement("div");
+    scroll.className = "stand-host-scroll";
+    const slot = document.createElement("div");
+    slot.id = "civic-map-root";
+    scroll.append(slot);
+    panel.append(head, scroll);
+    mountRoot.replaceWith(panel);
+    mountRoot = slot;
+  }
   function mount() {
     stand.instance = window.CivicMap.mount({
-      root: document.getElementById("civic-public"),
+      root: mountRoot,
       map: stand.map,
       api,
       now,
