@@ -1,0 +1,74 @@
+[
+ {
+  "file": "reports/build_patched_on_d865dd4/astana_school_maxsize.reportHtml.html",
+  "width": 1100,
+  "title": "Отчёт: план объектов (Астана)",
+  "scripts": 0,
+  "docW": 1100,
+  "textLen": 11158,
+  "h2": 7,
+  "blocked": [],
+  "console_errors": [],
+  "pdf_bytes": 60208
+ },
+ {
+  "file": "reports/build_patched_on_d865dd4/astana_school_maxsize.reportHtml.html",
+  "width": 380,
+  "title": "Отчёт: план объектов (Астана)",
+  "scripts": 0,
+  "docW": 380,
+  "textLen": 11158,
+  "h2": 7,
+  "blocked": [],
+  "console_errors": [],
+  "pdf_bytes": null
+ },
+ {
+  "file": "reports/build_patched_on_d865dd4/injection_labels.reportHtml.html",
+  "width": 1100,
+  "title": "Отчёт: план объектов (<img src=x onerror=alert(1)>)",
+  "scripts": 0,
+  "docW": 1100,
+  "textLen": 4732,
+  "h2": 8,
+  "blocked": [],
+  "console_errors": [],
+  "pdf_bytes": 59935
+ },
+ {
+  "file": "reports/build_patched_on_d865dd4/injection_labels.reportHtml.html",
+  "width": 380,
+  "title": "Отчёт: план объектов (<img src=x onerror=alert(1)>)",
+  "scripts": 0,
+  "docW": 380,
+  "textLen": 4732,
+  "h2": 8,
+  "blocked": [],
+  "console_errors": [],
+  "pdf_bytes": null
+ },
+ {
+  "file": "reports/build_patched_on_d865dd4/shymkent_school_demo.reportHtml.html",
+  "width": 1100,
+  "title": "Отчёт: план объектов (Шымкент)",
+  "scripts": 0,
+  "docW": 1100,
+  "textLen": 4797,
+  "h2": 7,
+  "blocked": [],
+  "console_errors": [],
+  "pdf_bytes": 53793
+ },
+ {
+  "file": "reports/build_patched_on_d865dd4/shymkent_school_demo.reportHtml.html",
+  "width": 380,
+  "title": "Отчёт: план объектов (Шымкент)",
+  "scripts": 0,
+  "docW": 380,
+  "textLen": 4797,
+  "h2": 7,
+  "blocked": [],
+  "console_errors": [],
+  "pdf_bytes": null
+ }
+]

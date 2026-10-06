@@ -1,0 +1,45 @@
+PASS K02 parity shymkent ru [7]
+PASS K02 parity astana ru [7]
+PASS K02 parity astana kk [7]
+PASS K02 parity shymkent ru [1]
+PASS K02 parity astana ru [2]
+PASS K02 parity shymkent kk [6]
+PASS K02 parity shymkent ru [1]
+PASS sha256 = node:crypto (0 chars)
+PASS sha256 = node:crypto (3 chars)
+PASS sha256 = node:crypto (19 chars)
+PASS sha256 = node:crypto (200 chars)
+PASS unknown fact ID rejected
+PASS foreign city ID rejected
+PASS old plan after filter change rejected (stale_catalog)
+PASS old scenario ID with current digest rejected (stale_scenario)
+PASS free text instead of ID rejected
+PASS null outside data_gaps rejected
+PASS value inside data_gaps rejected
+PASS same ID in two sections rejected
+PASS plan without digest rejected
+PASS digest changes when value changes
+PASS old answer rejected after value update (same city)
+PASS digest changes when unit changes
+PASS old answer rejected after unit update (same city)
+PASS digest changes when coverage changes
+PASS old answer rejected after coverage update (same city)
+PASS digest changes when missing_reason changes
+PASS old answer rejected after missing_reason update (same city)
+PASS digest changes when release changes
+PASS old answer rejected after release update (same city)
+PASS current plan accepted
+PASS capacity is null with reason, not 0
+PASS city total is unknown, separate from the square
+PASS every 0 is reported_zero over a complete query result
+PASS unit kept in text (records / segments)
+PASS facts_used keep unit/coverage/missing_reason
+PASS Shymkent QA facts: 14 colocated, 5 category doubts
+PASS places digest JS = Python (shymkent)
+PASS places digest JS = Python (astana)
+PASS consistent evidence: no problems
+PASS evidence.js of another data version is detected
+PASS moved place makes evidence.js stale
+PASS observations of another city under this key are rejected (K02 r5 T7)
+PASS sha256 in a sandbox without TextEncoder = node:crypto
+all passed

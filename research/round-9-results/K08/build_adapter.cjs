@@ -9,6 +9,7 @@ const arg = (k) => { const i = process.argv.indexOf(k); return i > 0 ? process.a
 const APP = path.resolve(arg("--app-root")), W = path.join(APP, "web");
 const ctx0 = {}; vm.createContext(ctx0); ctx0.window = ctx0;
 for (const f of ["data.js", "evidence.js"]) vm.runInContext(fs.readFileSync(path.join(W, f), "utf8"), ctx0, { filename: f });
+globalThis.CITY_OBS = ctx0.CITY_OBS;  // facts.qaOf читает root.CITY_OBS (как в браузере)
 const F = require(path.join(W, "facts.js"));
 const PL = require(path.join(W, "plan.js"));
 const D = JSON.parse(JSON.stringify(ctx0.CITY_EVIDENCE));
@@ -44,7 +45,14 @@ for (const j of jobs) {
     r.problem_digest = PL.problemDigest(sc, F); r.scenario_digest = PL.scenarioDigest(sc, F);
     const names = j.names || Object.fromEntries(c.places.map((p) => [p.id, p.name || "Без названия"]));
     const att = [...new Set((c.attribution || []).map((a) => a.dataset))].join("; ");
-    r.report_html = PL.reportHtml({ scenario: sc, city_label: j.city_label || c.label, release: j.release || `Overture ${c.release}`,
+    // provenance — как в proposal/report_provenance.patch (plan-ui reportProvenance); исходный BUILD это поле игнорирует
+    const pids = new Set();
+    for (const row of man.rows) for (const n of [row.nearest_before, row.nearest_after]) if (n && n.kind === "source") pids.add(n.id);
+    const byId = Object.fromEntries(c.places.map((p) => [p.id, p]));
+    const provenance = { bbox: c.bbox, places_file: c.files && c.files.places_social, records: [...pids].sort().map((id) => {
+      const p = byId[id] || { id }; return { id, name: p.name || null, category: p.category || null, sources: p.sources || [],
+        qa: p.lon !== undefined ? F.qaOf(j.scenario.city_id, p).map((q) => q.text) : [] }; }) };
+    r.report_html = PL.reportHtml({ provenance, scenario: sc, city_label: j.city_label || c.label, release: j.release || `Overture ${c.release}`,
       problem_digest: r.problem_digest, scenario_digest: r.scenario_digest, generated: "2026-10-06 00:00:00 UTC", manual: man, result: res, sens,
       explanation: j.explanation || null, names,
       attribution: j.attribution || `Источники записей: ${att || "не указаны"} (через Overture Maps ${c.release}); лицензии ODbL-1.0 / CDLA-Permissive-2.0 / Apache-2.0 — см. web/attribution/ATTRIBUTION.md.`,

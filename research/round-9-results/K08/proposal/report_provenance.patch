@@ -1,0 +1,61 @@
+diff --git a/prototypes/city-evidence/web/plan-ui.js b/prototypes/city-evidence/web/plan-ui.js
+index 3883e36..95af28b 100644
+--- a/prototypes/city-evidence/web/plan-ui.js
++++ b/prototypes/city-evidence/web/plan-ui.js
+@@ -486,7 +486,15 @@
+     const att = [...new Set((c.attribution || []).map((a) => a.dataset))].join("; ");
+     return PL.reportHtml({ scenario: sc, city_label: c.label, release: `Overture ${c.release}`, problem_digest: PL.problemDigest(sc, F), scenario_digest: PL.scenarioDigest(sc, F),
+       generated: new Date().toISOString().slice(0, 19).replace("T", " ") + " UTC", manual: PL.evaluatePlan(ctx, sc, sc.selected_ids), result: res, sens: res ? OS.sens : null,
+-      explanation: ex, names, attribution: `Источники записей: ${att || "не указаны"} (через Overture Maps ${c.release}); лицензии ODbL-1.0 / CDLA-Permissive-2.0 / Apache-2.0 — см. web/attribution/ATTRIBUTION.md.`, demo: PS.demo });
++      explanation: ex, names, provenance: reportProvenance(c, PL.evaluatePlan(ctx, sc, sc.selected_ids)), attribution: `Источники записей: ${att || "не указаны"} (через Overture Maps ${c.release}); лицензии ODbL-1.0 / CDLA-Permissive-2.0 / Apache-2.0 — см. web/attribution/ATTRIBUTION.md.`, demo: PS.demo });
++  }
++  function reportProvenance(c, ev) {  // K08 r9: ближайшие исходные записи (до и после) ручного плана
++    const ids = new Set();
++    for (const r of ev.rows) for (const n of [r.nearest_before, r.nearest_after]) if (n && n.kind === "source") ids.add(n.id);
++    const byId = Object.fromEntries(c.places.map((p) => [p.id, p]));
++    return { bbox: c.bbox, places_file: c.files && c.files.places_social,
++      records: [...ids].sort().map((id) => { const p = byId[id] || { id };
++        return { id, name: p.name || null, category: p.category || null, sources: p.sources || [], qa: p.lon !== undefined ? qaOf(p).map((q) => q.text) : [] }; }) };
+   }
+   function reportFile() {
+     let t; try { t = reportText(); } catch (e) { PS.msg = "Отчёт не создан: " + (e.detail || e.message); render(); return; }
+diff --git a/prototypes/city-evidence/web/plan.js b/prototypes/city-evidence/web/plan.js
+index 7f203bc..ca77b3c 100644
+--- a/prototypes/city-evidence/web/plan.js
++++ b/prototypes/city-evidence/web/plan.js
+@@ -375,18 +375,21 @@
+   const esc = (v) => String(v === null || v === undefined ? "нет данных" : v).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+   function reportHtml(m) {
+     const tr = (cells, th) => "<tr>" + cells.map((c) => (th ? "<th>" : "<td>") + esc(c) + (th ? "</th>" : "</td>")).join("") + "</tr>";
+-    const table = (head, rows) => "<table>" + tr(head, true) + rows.map((r) => tr(r)).join("") + "</table>";
++    const table = (head, rows) => '<div class="tw"><table>' + tr(head, true) + rows.map((r) => tr(r)).join("") + "</table></div>";
+     const sc = m.scenario, tw = sc.control_points.reduce((t, p) => t + p.weight, 0);
+     const parts = [`<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">`,
+       `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'">`,
+       `<title>Отчёт: план объектов (${esc(m.city_label)})</title><style>body{font:14px/1.45 system-ui,sans-serif;margin:16px;max-width:980px;color:#111;background:#fff}`,
+-      `table{border-collapse:collapse;margin:8px 0;font-size:12.5px}td,th{border:1px solid #ccc;padding:3px 6px;text-align:left;vertical-align:top}th{background:#f3f2ee}`,
++      `table{border-collapse:collapse;margin:8px 0;font-size:12.5px}td,th{border:1px solid #ccc;padding:3px 6px;text-align:left;vertical-align:top;overflow-wrap:anywhere}th{background:#f3f2ee}`,
++      `.tw{overflow-x:auto;max-width:100%}h1,h2,h3,p{overflow-wrap:anywhere}@media print{.tw{overflow:visible}}`,
+       `.warn{border-left:3px solid #fab219;padding-left:8px}.muted{color:#666}pre{white-space:pre-wrap;background:#f6f6f4;padding:8px}</style></head><body>`,
+       `<h1>Условный план объектов: ${esc(CATEGORIES[sc.category])}, ${esc(m.city_label)}</h1>`,
+       `<p class="warn">Гипотеза для обсуждения, не решение акимата и не рекомендация строить. Расстояния — по прямой в квадрате среза ~2×2 км. Стоимости и бюджет — условные единицы, не тенге и не смета. Нет населения, вместимости, пеших маршрутов и трафика.${m.demo ? " Места, стоимости и веса — синтетический демо-набор." : ""}</p>`,
+       `<h2>Параметры</h2>` + table(["Параметр", "Значение"], [["Схема", sc.schema_version], ["Город", m.city_label], ["Срез", m.release], ["source_snapshot", sc.source_snapshot], ["Метрика", METRIC],
+         ["Бюджет, усл. ед.", sc.budget], ["Максимум объектов", sc.max_selected], ["Радиус охвата, м (не норматив)", sc.coverage_radius_m], ["Обязательные", idsText(sc.required_ids)], ["Исключённые", idsText(sc.excluded_ids)],
+-        ["problem_digest", m.problem_digest], ["scenario_digest", m.scenario_digest], ["Сформирован", m.generated]]),
++        ["problem_digest", m.problem_digest], ["scenario_digest", m.scenario_digest], ["Сформирован", m.generated]]
++        .concat(m.provenance ? [["bbox среза", m.provenance.bbox ? m.provenance.bbox.join(", ") : null],
++          ["Файл мест", m.provenance.places_file ? m.provenance.places_file.path + " sha256 " + m.provenance.places_file.sha256 : null]] : [])),
+       `<h2>Кандидатные места (гипотеза)</h2>` + table(["ID", "Широта", "Долгота", "Стоимость, усл. ед."], sc.candidates.map((c) => [c.id, c.lat.toFixed(6), c.lon.toFixed(6), c.cost])),
+       `<h2>Контрольные точки</h2><p class="muted">Вес — приоритет пользователя, не число жителей.</p>` + table(["ID", "Широта", "Долгота", "Вес"], sc.control_points.map((p) => [p.id, p.lat.toFixed(6), p.lon.toFixed(6), p.weight]))];
+     if (m.manual) {
+@@ -408,6 +411,10 @@
+     if (m.sens && m.sens.length) parts.push(`<h3>Изменение бюджета</h3>` + table(["Бюджет", "Статус", "«Среднее»", "«Худшая точка»", "«Охват»"], m.sens.map((x) => [x.budget, x.status,
+       ...["mean", "minimax", "coverage"].map((k) => (x.objectives ? idsText(x.objectives[k].ids) : "—"))])));
+     if (m.explanation) parts.push(`<h2>Объяснение (шаблон, не LLM)</h2><pre>${esc(m.explanation)}</pre>`);
++    if (m.provenance && m.provenance.records && m.provenance.records.length)  // K08 r9: источник/лицензия/QA ближайших исходных записей
++      parts.push(`<h2>Исходные записи в отчёте</h2><p class="muted">Наблюдение Overture (вторичные данные); QA — правила сборки, отсутствие флага ≠ проверено.</p>` +
++        table(["ID записи", "Название", "Категория Overture", "Источник · лицензия · дата", "QA"], m.provenance.records.map((x) => [x.id, x.name, x.category,
++          (x.sources || []).map((s) => `${s.dataset} · ${s.license} · ${s.update_time || "—"}`).join("; ") || "не указан", (x.qa || []).join("; ") || "нет флагов"])));
+     parts.push(`<h2>Источники и ограничения</h2><p>${esc(m.attribution)}</p><p class="muted">Записи Overture/OSM — вторичные данные, не официальный реестр; QA-метки показывают совпадающие координаты, возможные дубли и сомнения в категории. Ближайшая запись в срезе — не обязательно ближайшее учреждение в городе. Отчёт создан локально прототипом city-evidence; в нём нет скриптов и внешних ссылок.</p></body></html>`);
+     return parts.join("\n") + "\n";
+   }

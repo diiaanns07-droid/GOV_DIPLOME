@@ -1,0 +1,157 @@
+PASS evaluatePlan = oracle: ties_equal_costs
+PASS input order does not change the result: ties_equal_costs
+PASS evaluatePlan = oracle: source_hyp_tie
+PASS input order does not change the result: source_hyp_tie
+PASS evaluatePlan = oracle: required_cost_over_budget
+PASS input order does not change the result: required_cost_over_budget
+PASS evaluatePlan = oracle: required_over_max_selected
+PASS input order does not change the result: required_over_max_selected
+PASS evaluatePlan = oracle: zero_budget
+PASS input order does not change the result: zero_budget
+PASS evaluatePlan = oracle: no_candidates
+PASS input order does not change the result: no_candidates
+PASS evaluatePlan = oracle: no_baseline
+PASS input order does not change the result: no_baseline
+PASS evaluatePlan = oracle: no_baseline_no_source_at_all
+PASS input order does not change the result: no_baseline_no_source_at_all
+PASS evaluatePlan = oracle: dominated_plans
+PASS input order does not change the result: dominated_plans
+PASS evaluatePlan = oracle: excluded_and_required
+PASS input order does not change the result: excluded_and_required
+PASS evaluatePlan = oracle: coverage_vs_mean
+PASS input order does not change the result: coverage_vs_mean
+PASS evaluatePlan = oracle: astana_school_16x25
+PASS input order does not change the result: astana_school_16x25
+PASS evaluatePlan = oracle: astana_outpatient_clinic_8x10
+PASS input order does not change the result: astana_outpatient_clinic_8x10
+PASS evaluatePlan = oracle: shymkent_school_16x25
+PASS input order does not change the result: shymkent_school_16x25
+PASS evaluatePlan = oracle: shymkent_outpatient_clinic_8x10
+PASS input order does not change the result: shymkent_outpatient_clinic_8x10
+PASS no baseline + empty plan: distance null (not 0), delta null, mean/max null
+PASS no baseline + candidate: after known, delta still null
+PASS metric haversine-mm-v1: 1° on the equator = 111195080 mm
+PASS equal mm: source record wins over hypothetical
+PASS manual plan feasibility lists reasons (excluded chosen, required missing)
+PASS manual plan over budget is reported, not silently changed
+PASS valid 16×25 scenario accepted
+PASS context source records frozen (immutable)
+PASS v2 snapshot differs from v1 snapshot and between cities
+PASS rejects v1 scenario (no silent migration) (wrong_version)
+PASS rejects unknown version (bad_version)
+PASS rejects Astana scenario in Shymkent context (other_city)
+PASS rejects unknown city (bad_city)
+PASS rejects foreign snapshot (foreign_snapshot)
+PASS rejects unknown field (unknown_field)
+PASS rejects missing field (missing_field)
+PASS rejects 26 control points (bad_points)
+PASS rejects 0 control points (bad_points)
+PASS rejects 17 candidates (too_many_candidates)
+PASS rejects duplicate point id (duplicate_id)
+PASS rejects duplicate candidate id (duplicate_id)
+PASS rejects id longer than 64 (bad_id)
+PASS rejects id with markup (bad_id)
+PASS Kazakh candidate / point IDs accepted
+PASS rejects NFD id (bad_id)
+PASS rejects weight 0 (bad_weight)
+PASS rejects weight 1.5 (bad_weight)
+PASS rejects weight 101 (bad_weight)
+PASS rejects cost 0 (bad_cost)
+PASS rejects cost 1000001 (bad_cost)
+PASS rejects budget negative (bad_budget)
+PASS rejects budget not integer (bad_budget)
+PASS rejects max_selected 6 (bad_max_selected)
+PASS rejects radius 99 (bad_radius)
+PASS rejects radius 5001 (bad_radius)
+PASS rejects required unknown candidate (unknown_ref)
+PASS rejects selected unknown candidate (unknown_ref)
+PASS rejects required ∩ excluded (required_excluded_overlap)
+PASS rejects duplicate in required (duplicate_id)
+PASS rejects candidate kind observed (bad_kind)
+PASS rejects candidate other category (bad_category)
+PASS rejects candidate outside bbox (outside_bbox)
+PASS rejects point NaN-like string (bad_coord)
+PASS rejects extra field in candidate (bad_shape)
+PASS derived_results field tolerated by validation (ignored)
+PASS problem digest ignores selected_ids; scenario digest includes them
+PASS problem digest changes with budget / weight / cost / radius / required
+PASS optimizePlans = oracle: ties_equal_costs (4 subsets, 1 ms)
+PASS optimizer independent of input order: ties_equal_costs
+PASS sensitivity budgets = oracle: ties_equal_costs
+PASS optimizePlans = oracle: source_hyp_tie (2 subsets, 0 ms)
+PASS optimizer independent of input order: source_hyp_tie
+PASS sensitivity budgets = oracle: source_hyp_tie
+PASS optimizePlans = oracle: required_cost_over_budget (0 subsets, 0 ms)
+PASS optimizer independent of input order: required_cost_over_budget
+PASS sensitivity budgets = oracle: required_cost_over_budget
+PASS optimizePlans = oracle: required_over_max_selected (0 subsets, 1 ms)
+PASS optimizer independent of input order: required_over_max_selected
+PASS sensitivity budgets = oracle: required_over_max_selected
+PASS optimizePlans = oracle: zero_budget (4 subsets, 0 ms)
+PASS optimizer independent of input order: zero_budget
+PASS sensitivity budgets = oracle: zero_budget
+PASS optimizePlans = oracle: no_candidates (1 subsets, 0 ms)
+PASS optimizer independent of input order: no_candidates
+PASS sensitivity budgets = oracle: no_candidates
+PASS optimizePlans = oracle: no_baseline (8 subsets, 0 ms)
+PASS optimizer independent of input order: no_baseline
+PASS sensitivity budgets = oracle: no_baseline
+PASS optimizePlans = oracle: no_baseline_no_source_at_all (4 subsets, 0 ms)
+PASS optimizer independent of input order: no_baseline_no_source_at_all
+PASS sensitivity budgets = oracle: no_baseline_no_source_at_all
+PASS optimizePlans = oracle: dominated_plans (8 subsets, 1 ms)
+PASS optimizer independent of input order: dominated_plans
+PASS sensitivity budgets = oracle: dominated_plans
+PASS optimizePlans = oracle: excluded_and_required (2 subsets, 0 ms)
+PASS optimizer independent of input order: excluded_and_required
+PASS sensitivity budgets = oracle: excluded_and_required
+PASS optimizePlans = oracle: coverage_vs_mean (4 subsets, 0 ms)
+PASS optimizer independent of input order: coverage_vs_mean
+PASS sensitivity budgets = oracle: coverage_vs_mean
+PASS optimizePlans = oracle: astana_school_16x25 (65536 subsets, 37 ms)
+PASS optimizer independent of input order: astana_school_16x25
+PASS sensitivity budgets = oracle: astana_school_16x25
+PASS optimizePlans = oracle: astana_outpatient_clinic_8x10 (256 subsets, 0 ms)
+PASS optimizer independent of input order: astana_outpatient_clinic_8x10
+PASS sensitivity budgets = oracle: astana_outpatient_clinic_8x10
+PASS optimizePlans = oracle: shymkent_school_16x25 (65536 subsets, 2 ms)
+PASS optimizer independent of input order: shymkent_school_16x25
+PASS sensitivity budgets = oracle: shymkent_school_16x25
+PASS optimizePlans = oracle: shymkent_outpatient_clinic_8x10 (256 subsets, 0 ms)
+PASS optimizer independent of input order: shymkent_outpatient_clinic_8x10
+PASS sensitivity budgets = oracle: shymkent_outpatient_clinic_8x10
+PASS identical winners allowed (mean = minimax = coverage)
+PASS Pareto excludes dominated plans (Dear alone not on the front)
+PASS different objectives can pick different plans (coverage ≠ mean)
+PASS chunked search (4096 per step) = one-shot result
+PASS cancelled search: status cancelled, no objectives, progress kept
+PASS unfinished search is never 'optimal'
+PASS problem_digest in the result binds it to the input
+PASS 16×25 full search under 2 s in Node (3 ms)
+PASS export -> import round trip (scenario and evaluation equal)
+PASS export contains labelled derived block, digests, no local paths
+PASS import rejects forged derived_results (metric changed) (forged_derived)
+PASS import rejects forged derived_results (row changed) (forged_derived)
+PASS import rejects derived_results with an extra field (forged_derived)
+PASS import without derived_results accepted (recomputed)
+PASS import rejects v1 scenario (separate mode, no silent migration) (wrong_version)
+PASS import rejects unknown version (bad_version)
+PASS import rejects unknown source snapshot (foreign_snapshot)
+PASS import rejects Shymkent file claiming Astana (foreign_snapshot)
+PASS import rejects unknown city (bad_city)
+PASS import rejects NaN (bad_json)
+PASS import rejects Infinity (bad_json)
+PASS import rejects 1e999 (bad_json)
+PASS import rejects duplicate key (bad_json)
+PASS import rejects oversize > 256 KiB (too_large)
+PASS import rejects unknown top-level field (unknown_field)
+PASS Astana file imported with the Astana context
+PASS explanation: template, units, trade-off, capacity disclaimer, conditional units
+PASS explanation digest changes with budget / selection / result
+PASS stale explanation rejected
+PASS identical winners explained as one plan, not three decisions
+PASS infeasible explained with reason; constraints not dropped
+PASS unknown distance explained as unknown, not zero
+PASS HTML report: no script tag, strings escaped, CSP default-src none, no external URL
+PASS HTML report contains plan tables and limitations
+all plan checks passed

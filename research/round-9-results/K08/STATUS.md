@@ -1,6 +1,6 @@
 # STATUS — K08, раунд 9: экспорт устойчивого плана
 
-**Статус:** этапы 1–2 из 3 выполнены; этап 3 в работе.
+**Статус:** done — этапы 1–3 выполнены на BUILD d865dd4. Новой сборки после d865dd4 нет: прогоны на более новом SHA — NOT_RUN. Модуль устойчивости в BUILD отсутствует: его интеграция — NOT_RUN, отчёт проверен через мой адаптер поверх API BUILD.
 
 - Роль K08 (не BUILD), ветка `claude/dazzling-mayer-drhsxk`. Задание `research/round-9/tasks/K08.txt`, CORE_SPEC r9 @ codex/research-import-2026-10-05.
 - **Проверенный BUILD:** `claude/beautiful-clarke-sbzomj` @ `d865dd4a124291e10dd0b7bb1d9eada20d34c268` (HEAD ветки на 2026-10-06; код = 3e1302a по `git diff`). Извлечён через `git archive`; sha256 файлов web — `run/build_manifest_d865dd4.sha256`. Прототип не менялся.
@@ -66,5 +66,46 @@ Repro: `reportHtml(m)` для `shymkent_school_demo` — этих полей в 
 - R4: дубль набора помечен, результат от него не зависит;
 - R5: экспорт только входа.
 
+## Этап 3 — устойчивость, печать без сети, повторная проверка
+`python3 check_stage3.py --app-root <d865dd4> --json run/stage3_d865dd4.json` → **9 PASS / 0 FAIL**:
+- T1: кириллица и казахские буквы в ID и подписях, HTML в подписях — только текст; точный JSON roundtrip;
+- T2: поддельные производные/результаты во входе → `derived_not_accepted` / `unknown_field`;
+- T3: report.json как вход отклоняется — отчёт всегда пересчитывается;
+- T4: чужой snapshot, ID другого города, кандидат вместо исходной записи, подмена города/категории → типизированные отказы;
+- T5: перестановка случаев, исключений, кандидатов и точек — те же планы, W, худшие случаи, digests, цена;
+- T6: `selected_ids` входит только в scenario digest;
+- T7: строгий JSON (NaN, дубликат ключа, 1e999, >256 KiB) и границы r9 (13 кандидатов → `too_many_candidates` до вычислений, 8 случаев, `base`, подпись 121 / 120 / управляющий символ, пустые и дублирующиеся исключения, дубль id, версия);
+- T8: изменённый срез → `bad_plan:foreign_snapshot`;
+- T9: замороженный контекст BUILD не мутируется; base = `evaluatePlan` v2.
+
+Печать и чтение без сети (`offline_print_check.cjs`, Chromium, `offline: true` + блокировка всех запросов, 1100 и 380 px, `emulateMedia print` + PDF):
+- отчёты устойчивости (адаптер): 0 запросов, 0 ошибок, PDF создаётся, нет горизонтальной прокрутки — **PASS**;
+- `reportHtml` BUILD d865dd4: 0 запросов, 0 ошибок, PDF создаётся, но страница шире экрана — 691 px на 380 px; с 64-символьными ID (допустимы правилами BUILD) 2296 px даже на 1100 px. В PDF содержимое не теряется (23/23 стоимости, 50/50 весов из HTML). **FAIL (макет экрана, без потери данных в печати).** Repro: `reports/build_d865dd4/astana_school_maxsize.reportHtml.html`.
+
+## Предложение для BUILD (не FIXED — в BUILD не внесено)
+`proposal/report_provenance.patch` (`web/plan.js` +13/−3, `web/plan-ui.js` +9/−1); `git apply --check` на d865dd4 проходит:
+- `reportHtml`: таблицы в `.tw` с собственной прокруткой, `overflow-wrap:anywhere`; необязательный `m.provenance` — bbox, файл мест, таблица ближайших исходных записей (ID, название, категория Overture, источник · лицензия · дата, QA-тексты `qaOf`);
+- `plan-ui.reportText` строит `provenance` по ближайшим записям ручного плана.
+
+Проверено на копии d865dd4 с patch:
+- `check_stage1` **11/11** (S10 PASS);
+- тесты сборки: `plan.cjs`, `whatif.cjs`, `conformance.cjs` ok, `plan_smoke.cjs` 52/52, `smoke.cjs` 24/24 (оригинал plan_smoke 52/52);
+- отчёт, скачанный кнопкой `#plReport` в plan_smoke, содержит раздел «Исходные записи в отчёте», bbox, sha256 файла, лицензии и QA-тексты, разметка чистая (`reports/build_patched_on_d865dd4/ui_download_plan_smoke.html`);
+- нет горизонтальной прокрутки на 380 и 1100 px.
+
+## Итог PASS / FAIL / SKIP / NOT_RUN
+- Этап 1 на d865dd4: 10 PASS, 1 FAIL (S10 provenance).
+- Этап 2 (адаптер на d865dd4): 8 PASS.
+- Этап 3 (адаптер на d865dd4): 9 PASS; печать/офлайн отчётов адаптера PASS; макет `reportHtml` BUILD — FAIL.
+- NOT_RUN: модуль устойчивости BUILD (`resilience.js` в d865dd4 нет); прогон на более новом SHA (нет новой сборки).
+
+## Ограничения
+- Адаптер повторяет вызов `reportHtml` из `plan-ui.reportText`; если BUILD изменит этот вызов, адаптер нужно синхронизировать.
+- Python-оракул — мой r8 planlib (независим от JS); для устойчивости — свой перебор с отфильтрованными записями.
+- Фикстуры: план — synthetic demo (места, стоимости, веса, бюджет); исключения — реальные source IDs, выбор пользовательский, не утверждение о закрытии.
+
 ## Следующий шаг
-Этап 3: печать/чтение без сети (Chromium, emulateMedia print, блокировка сети), кириллица, HTML в подписях, поддельные результаты в envelope, перепутанный срез/город, порядок случаев, отказы строгого импорта; standalone examples; patch-предложение для S10 (provenance в reportHtml).
+Сборщику:
+- применить или переписать `proposal/report_provenance.patch`;
+- при появлении `web/resilience.js` сравнить его `optimizeResilience` с `resilience_report.js` и `check_stage2.py` на `fixtures/*_r9.json` (математика, не байты digest);
+- повторить `check_stage1/2/3` на новом SHA.

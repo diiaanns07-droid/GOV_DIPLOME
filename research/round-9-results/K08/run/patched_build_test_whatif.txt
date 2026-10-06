@@ -1,0 +1,72 @@
+PASS JS = Python astana school none
+PASS JS = Python astana school near_P2
+PASS JS = Python astana school far_corner
+PASS JS = Python astana school same_as_P1
+PASS JS = Python astana outpatient_clinic none
+PASS JS = Python astana outpatient_clinic near_P2
+PASS JS = Python astana outpatient_clinic far_corner
+PASS JS = Python astana outpatient_clinic same_as_P1
+PASS JS = Python shymkent school none
+PASS JS = Python shymkent school near_P2
+PASS JS = Python shymkent school far_corner
+PASS JS = Python shymkent school same_as_P1
+PASS JS = Python shymkent outpatient_clinic none
+PASS JS = Python shymkent outpatient_clinic near_P2
+PASS JS = Python shymkent outpatient_clinic far_corner
+PASS JS = Python shymkent outpatient_clinic same_as_P1
+PASS 1° on the equator = 111195.08 m
+PASS antipodes finite (clamp)
+PASS no project: after = before, delta 0, tie -> smaller ID
+PASS nearer project: after = project distance
+PASS farther project: after = before, delta 0
+PASS project at the point: after = 0 (honest zero)
+PASS empty category: before null, delta null, after = project
+PASS empty category without project: all null
+PASS project of another category rejected
+PASS unknown category rejected
+PASS move recomputes, remove restores baseline
+PASS QA-colocated school stays a candidate (distance 0)
+PASS export -> import round trip
+PASS snapshots differ between cities
+PASS derived values in file ignored, recomputed
+PASS import rejects NaN (bad_json)
+PASS import rejects Infinity (bad_json)
+PASS import rejects 1e999 (bad_json)
+PASS import rejects -1e999 (bad_json)
+PASS import rejects duplicate key (bad_json)
+PASS import rejects non-UTF-8 file (replacement characters) (bad_encoding)
+PASS import rejects trailing data (bad_json)
+PASS import rejects oversize (>256 KiB) (too_large)
+PASS import rejects unknown version (bad_version)
+PASS import rejects unknown city (bad_city)
+PASS import rejects foreign snapshot (foreign_snapshot)
+PASS import rejects Astana snapshot with Shymkent city (foreign_snapshot)
+PASS import rejects duplicate point ID (duplicate_id)
+PASS import rejects project ID = point ID (duplicate_id)
+PASS import rejects two projects (array) (too_many_proposed)
+PASS import rejects unknown field (unknown_field)
+PASS import rejects extra field in point (bad_shape)
+PASS import rejects ID with code (bad_id)
+PASS Kazakh / Cyrillic IDs accepted (K11 r7 fixtures)
+PASS import rejects NFD ID (visually equal, different code points) (bad_id)
+PASS import rejects ID with a space (bad_id)
+PASS import rejects ID with a URL (bad_id)
+PASS import rejects long ID (bad_id)
+PASS import rejects point outside bbox (outside_bbox)
+PASS import rejects project outside bbox (outside_bbox)
+PASS import rejects coordinate as string (bad_coord)
+PASS import rejects 0 points (bad_points)
+PASS import rejects 11 points (bad_points)
+PASS import rejects project category ≠ scenario (bad_category)
+PASS import rejects kind ≠ hypothetical (bad_kind)
+PASS import rejects missing proposed_object (missing_field)
+PASS import rejects not an object (bad_shape)
+PASS UTF-8 BOM before JSON accepted
+PASS import rejects BOM in the middle (bad_json)
+PASS proposed_object null accepted
+PASS export has no local paths or tokens
+PASS explanation is a template with units
+PASS digest changes when project moves
+PASS stale explanation rejected
+PASS digest changes with category
+all what-if checks passed

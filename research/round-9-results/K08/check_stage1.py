@@ -22,7 +22,7 @@ import build_compat  # noqa: E402
 
 P = build_compat.use_build_snapshot()
 R8FIX = build_compat.R8 / "fixtures"
-ALLOWED_TAGS = {"html", "head", "meta", "title", "style", "body", "h1", "h2", "h3", "p", "table", "tr", "th", "td", "pre"}
+ALLOWED_TAGS = {"html", "head", "meta", "title", "style", "body", "h1", "h2", "h3", "p", "div", "table", "tr", "th", "td", "pre"}  # div: обёртка таблиц в proposal (только class)
 ALLOWED_ATTRS = {"lang", "charset", "name", "content", "http-equiv", "class"}
 INJ = {"names": "<script>alert(1)</script>", "city_label": "<img src=x onerror=alert(1)>", "attribution": "</p><a href=//evil.example>x</a>",
        "explanation": "<iframe src=//evil.example></iframe>", "release": "\"><svg onload=alert(1)>"}
@@ -187,7 +187,7 @@ def main():
     rec_ids = {r["nearest_before"]["id"] for r in J["shymkent_school_demo"]["manual"]["rows"] if r["nearest_before"]}
     lic_per_record = any(rid in t for rid in rec_ids)
     has_bbox = any(str(x) in t for x in ctx.city("shymkent")["bbox"])
-    has_qa = "ad_or_business_page" in t or "QA-флаг" in t
+    has_qa = "сомнение в категории" in t or "ad_or_business_page" in t
     has_file = (ctx.city("shymkent").get("files") or {}).get("places_social", {}).get("sha256", "-")[:16] in t
     missing = [n for n, v in (("id ближайших исходных записей", lic_per_record), ("bbox среза", has_bbox),
                               ("QA-флаги ближайших записей", has_qa), ("sha256 файла мест", has_file)) if not v]

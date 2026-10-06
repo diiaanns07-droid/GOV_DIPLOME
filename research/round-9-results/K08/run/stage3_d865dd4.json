@@ -1,0 +1,88 @@
+{
+ "checker": "K08 R9 check_stage3",
+ "target_app_root": "/tmp/claude-0/-home-user-ADMIT-STUTU/6cfc5b67-d133-5868-9e23-1581b53a3f54/scratchpad/k04r9/prototypes/city-evidence",
+ "results": [
+  {
+   "id": "T1",
+   "verdict": "PASS",
+   "text": "кириллица/казахские буквы в ID и подписях, HTML в подписях — только текст, точный JSON roundtrip"
+  },
+  {
+   "id": "T2",
+   "verdict": "PASS",
+   "text": "поддельные производные/результаты во входе отклоняются типизированно",
+   "codes": {
+    "derived_in_plan": "derived_not_accepted",
+    "results_top": "unknown_field",
+    "price_top": "unknown_field",
+    "case_result": "unknown_field"
+   }
+  },
+  {
+   "id": "T3",
+   "verdict": "PASS",
+   "text": "report.json не принимается как вход (отчёт всегда пересчитывается)",
+   "code": "unknown_field"
+  },
+  {
+   "id": "T4",
+   "verdict": "PASS",
+   "text": "чужой срез, ID другого города, кандидат вместо исходной записи, подмена города/категории — отклоняются",
+   "codes": {
+    "foreign_snapshot": "bad_plan:foreign_snapshot",
+    "other_city_ids": "unknown_source",
+    "candidate_id": "candidate_not_source",
+    "city_swapped": "bad_plan:foreign_snapshot",
+    "category_swapped": "unknown_source"
+   }
+  },
+  {
+   "id": "T5",
+   "verdict": "PASS",
+   "text": "перестановка случаев, ID исключений, кандидатов и точек: результат и digests те же",
+   "diffs": []
+  },
+  {
+   "id": "T6",
+   "verdict": "PASS",
+   "text": "selected_ids входит только в resilience_scenario_digest"
+  },
+  {
+   "id": "T7",
+   "verdict": "PASS",
+   "text": "строгий JSON (NaN/дубликат/1e999/>256 KiB) и границы r9 — типизированные отказы; 120 символов принимаются",
+   "codes": {
+    "nan": "bad_json",
+    "dup_key": "bad_json",
+    "1e999": "bad_json",
+    "big": "too_large",
+    "13_candidates": "too_many_candidates",
+    "8_user_cases": "bad_cases",
+    "base_reserved": "reserved_id",
+    "label_121": "bad_label",
+    "label_120_ok": null,
+    "label_ctrl": "bad_label",
+    "empty_exclusions": "bad_exclusions",
+    "dup_exclusion": "duplicate_id",
+    "case_dup_id": "duplicate_id",
+    "bad_version": "bad_version"
+   },
+   "diff": {}
+  },
+  {
+   "id": "T8",
+   "verdict": "PASS",
+   "text": "срез изменился после создания envelope → bad_plan:foreign_snapshot",
+   "code": "bad_plan:foreign_snapshot"
+  },
+  {
+   "id": "T9",
+   "verdict": "PASS",
+   "text": "контекст BUILD не мутируется; base = evaluatePlan v2 без исключений"
+  }
+ ],
+ "summary": {
+  "PASS": 9,
+  "FAIL": 0
+ }
+}

@@ -1,0 +1,121 @@
+{
+ "checker": "K08 R9 check_stage1",
+ "target_app_root": "/tmp/claude-0/-home-user-ADMIT-STUTU/6cfc5b67-d133-5868-9e23-1581b53a3f54/scratchpad/wt9/prototypes/city-evidence",
+ "plan_schema": "city-plan-v2",
+ "metric": "haversine-mm-v1",
+ "results": [
+  {
+   "id": "S0",
+   "verdict": "PASS",
+   "text": "адаптер вызвал API BUILD без исключений",
+   "errors": {}
+  },
+  {
+   "id": "S1",
+   "verdict": "PASS",
+   "text": "source_snapshot BUILD = независимый пересчёт r8 (формула BUILD)",
+   "snapshots": {
+    "shymkent": "sha256:a9326b5633c513c0bfeccbb2248b26cf3b706c902f77745073a2959ad8d7ff3e",
+    "astana": "sha256:67a40b96d29873118780969eb11c32deba49a0c64fda1f185efe634882f04c6d"
+   }
+  },
+  {
+   "id": "S2",
+   "verdict": "PASS",
+   "text": "exportPlanScenario → importPlanScenario: сценарий тот же",
+   "roundtrip": {
+    "shymkent_school_demo": true,
+    "astana_clinic_demo": true,
+    "astana_clinic_infeasible": true,
+    "astana_school_maxsize": true,
+    "synthetic_no_sources": true,
+    "synthetic_no_sources_with_c1": true,
+    "injection_labels": true
+   }
+  },
+  {
+   "id": "S3",
+   "verdict": "PASS",
+   "text": "изменённые derived_results отклоняются (forged_derived)",
+   "forged": {
+    "shymkent_school_demo": {
+     "accepted": false,
+     "code": "forged_derived",
+     "detail": "derived_results в файле не совпадают с пересчётом — файл изменён вручную или сделан другой версией; не принят"
+    },
+    "astana_clinic_demo": {
+     "accepted": false,
+     "code": "forged_derived",
+     "detail": "derived_results в файле не совпадают с пересчётом — файл изменён вручную или сделан другой версией; не принят"
+    },
+    "astana_clinic_infeasible": {
+     "accepted": false,
+     "code": "forged_derived",
+     "detail": "derived_results в файле не совпадают с пересчётом — файл изменён вручную или сделан другой версией; не принят"
+    }
+   }
+  },
+  {
+   "id": "S4",
+   "verdict": "PASS",
+   "text": "чужой source_snapshot отклоняется",
+   "foreign": {
+    "shymkent_school_demo": {
+     "accepted": false,
+     "code": "foreign_snapshot",
+     "detail": "сценарий сделан на другом срезе данных или другой метрике (source_snapshot не совпадает)"
+    },
+    "astana_clinic_demo": {
+     "accepted": false,
+     "code": "foreign_snapshot",
+     "detail": "сценарий сделан на другом срезе данных или другой метрике (source_snapshot не совпадает)"
+    },
+    "astana_clinic_infeasible": {
+     "accepted": false,
+     "code": "foreign_snapshot",
+     "detail": "сценарий сделан на другом срезе данных или другой метрике (source_snapshot не совпадает)"
+    }
+   }
+  },
+  {
+   "id": "S5",
+   "verdict": "PASS",
+   "text": "ручной план, строки, три цели и Парето BUILD = независимый r8-оракул (4 фикстуры)",
+   "mismatches": []
+  },
+  {
+   "id": "S6",
+   "verdict": "PASS",
+   "text": "synthetic без исходных записей: before/delta = null (не 0) в API, экспорте и отчёте («не вычисляется», «нет данных»)"
+  },
+  {
+   "id": "S7",
+   "verdict": "PASS",
+   "text": "max-size экспорт 21600 байт ≤ 262144 и импортируется",
+   "export_bytes": 21600,
+   "report_bytes": 24385
+  },
+  {
+   "id": "S8",
+   "verdict": "PASS",
+   "text": "reportHtml: только белый список тегов/атрибутов, CSP default-src 'none', без script/src/href",
+   "audits": {}
+  },
+  {
+   "id": "S9",
+   "verdict": "PASS",
+   "text": "строки с HTML в имени записи/городе/выпуске/атрибуции/объяснении выводятся текстом"
+  },
+  {
+   "id": "S10",
+   "verdict": "PASS",
+   "text": "отчёт несёт source_snapshot и provenance ближайших записей (r8-ожидание)",
+   "missing": [],
+   "repro": "reportHtml(m) для shymkent_school_demo: в тексте нет перечисленных полей; names показывает только имя записи"
+  }
+ ],
+ "summary": {
+  "PASS": 11,
+  "FAIL": 0
+ }
+}

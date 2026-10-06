@@ -1,0 +1,50 @@
+[
+ {
+  "file": "reports/astana_clinic_r9/report.html",
+  "width": 1100,
+  "title": "Устойчивость к допущениям: Астана",
+  "scripts": 0,
+  "docW": 1100,
+  "textLen": 5191,
+  "h2": 5,
+  "blocked": [],
+  "console_errors": [],
+  "pdf_bytes": 53517
+ },
+ {
+  "file": "reports/astana_clinic_r9/report.html",
+  "width": 380,
+  "title": "Устойчивость к допущениям: Астана",
+  "scripts": 0,
+  "docW": 380,
+  "textLen": 5191,
+  "h2": 5,
+  "blocked": [],
+  "console_errors": [],
+  "pdf_bytes": null
+ },
+ {
+  "file": "reports/shymkent_school_r9/report.html",
+  "width": 1100,
+  "title": "Устойчивость к допущениям: Шымкент",
+  "scripts": 0,
+  "docW": 1100,
+  "textLen": 7409,
+  "h2": 5,
+  "blocked": [],
+  "console_errors": [],
+  "pdf_bytes": 58087
+ },
+ {
+  "file": "reports/shymkent_school_r9/report.html",
+  "width": 380,
+  "title": "Устойчивость к допущениям: Шымкент",
+  "scripts": 0,
+  "docW": 380,
+  "textLen": 7409,
+  "h2": 5,
+  "blocked": [],
+  "console_errors": [],
+  "pdf_bytes": null
+ }
+]
