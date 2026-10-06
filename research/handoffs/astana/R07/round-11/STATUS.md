@@ -10,3 +10,11 @@
 DONE: compare(payload, graph) (stdlib), валидатор графа/payload, Дейкстра в мм с tie-break,
 синтетический граф 10 узлов + ручные ожидания. `python3 -m pytest -q tests/civic/R07` → 6 passed.
 NEXT: тесты рисков (время, offset, digest, мутация, перестановка), адаптер K03.
+
+## Checkpoint 2 — PARTIAL
+DONE: 42 теста рисков (время [start,end), offset, digest, мутация, перестановка, лимиты, boundary);
+исправлен дефект: inf в графе давал ValueError -> теперь invalid_graph.
+Адаптер K03 -> civic graph `k03-astana-pedestrian-r10` (walking, derived, 2309 узлов/3269 рёбер),
+проверка sha256 файла и пересчёт graph_sha256 источника; MANIFEST.json; registry; HTTP-адаптер.
+Сверка с routing.js b2cb2e0: research/round-11-results/R07/compare_k03_routing.json — PASS (400 пар).
+NEXT: UI web/civic/scenarios/, timeline (stretch), DELIVERY.json/INTEGRATION.txt.

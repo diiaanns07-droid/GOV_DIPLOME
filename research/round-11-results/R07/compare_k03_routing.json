@@ -1,0 +1,25 @@
+{
+ "source_commit": "b2cb2e02c602c166ba6d47c02d8e902e5478c791",
+ "graph_id": "k03-astana-pedestrian-r10",
+ "graph_digest": "15d85071aa92934082e2c02fe627687729c006d327c2fdc25bf6b3aae75bd357",
+ "seed": 11,
+ "conditions": "node-to-node inside bbox, no closures; K03 snap distance 0",
+ "stats": {
+  "strict": {
+   "pairs": 200,
+   "both_ok_equal": 155,
+   "both_ok_diff": 0,
+   "status_mismatch": 0,
+   "both_no_path": 45
+  },
+  "exploratory": {
+   "pairs": 200,
+   "both_ok_equal": 200,
+   "both_ok_diff": 0,
+   "status_mismatch": 0,
+   "both_no_path": 0
+  }
+ },
+ "mismatches": [],
+ "verdict": "PASS"
+}

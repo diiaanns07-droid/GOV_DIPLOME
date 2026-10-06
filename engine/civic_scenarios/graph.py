@@ -101,11 +101,6 @@ def prepare_graph(graph, check_digest=True):
         raise ScenarioError("too_large", f"граф больше лимита {MAX_NODES} узлов / {MAX_EDGES} рёбер")
     if not isinstance(graph["digest"], str):
         _bad("digest — строка")
-    if check_digest:
-        actual = graph_digest(graph)
-        if actual != graph["digest"]:
-            raise ScenarioError("graph_digest_mismatch", "содержимое графа не совпадает с digest",
-                                {"expected": graph["digest"], "actual": actual})
 
     node_ids = set()
     for i, n in enumerate(nodes):
@@ -144,6 +139,15 @@ def prepare_graph(graph, check_digest=True):
             zero += 1
         total[e["access"]] += mm
         out[eid] = (e["from"], e["to"], mm, e["access"], e["oneway"])
+
+    if check_digest:  # после структурной проверки: NaN/inf уже отклонены как invalid_graph
+        try:
+            actual = graph_digest(graph)
+        except (TypeError, ValueError) as exc:
+            _bad(f"граф не сериализуется в канонический JSON: {exc}")
+        if actual != graph["digest"]:
+            raise ScenarioError("graph_digest_mismatch", "содержимое графа не совпадает с digest",
+                                {"expected": graph["digest"], "actual": actual})
 
     warnings = []
     if zero:
