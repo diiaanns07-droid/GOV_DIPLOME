@@ -1,0 +1,72 @@
+{
+ "app_root": "r9_d18847f",
+ "ids": {
+  "A": "U+FB00",
+  "B": "U+1D538"
+ },
+ "rows": [
+  {
+   "what": "v2 mean",
+   "build_js": [
+    "𝔸"
+   ],
+   "build_python_oracle": [
+    "ﬀ"
+   ],
+   "k12_oracle": [
+    "ﬀ"
+   ],
+   "build_js_eq_build_oracle": false,
+   "build_js_eq_k12_oracle": false
+  },
+  {
+   "what": "resilience nominal",
+   "build_js": [
+    "𝔸"
+   ],
+   "build_python_oracle": [
+    "ﬀ"
+   ],
+   "k12_oracle": [
+    "𝔸"
+   ],
+   "build_js_eq_build_oracle": false,
+   "build_js_eq_k12_oracle": true
+  },
+  {
+   "what": "resilience robust",
+   "build_js": [
+    "𝔸"
+   ],
+   "build_python_oracle": [
+    "ﬀ"
+   ],
+   "k12_oracle": [
+    "𝔸"
+   ],
+   "build_js_eq_build_oracle": false,
+   "build_js_eq_k12_oracle": true
+  },
+  {
+   "what": "resilience worst_case_ids",
+   "build_js": [
+    "base",
+    "𝔸1",
+    "ﬀ1"
+   ],
+   "build_python_oracle": [
+    "base",
+    "ﬀ1",
+    "𝔸1"
+   ],
+   "k12_oracle": [
+    "base",
+    "𝔸1",
+    "ﬀ1"
+   ],
+   "build_js_eq_build_oracle": false,
+   "build_js_eq_k12_oracle": true
+  }
+ ],
+ "note": "exact tie (same place, same cost); differences are ordering conventions, not wrong distances"
+}

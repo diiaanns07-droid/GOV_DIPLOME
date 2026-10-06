@@ -1,0 +1,109 @@
+{
+ "summary": {
+  "adapter": "build_v2_plan_adapter.cjs",
+  "app_root": "r9_d18847f",
+  "seed": 31,
+  "cases_requested": 300,
+  "cases_run": 300,
+  "truncated_by_time_budget": false,
+  "property_checks": 2700,
+  "invalid_mutations": 300,
+  "mutation_kinds": {
+   "budget_out_of_range": 14,
+   "coord_string": 12,
+   "cost_out_of_range": 14,
+   "deep_derived": 27,
+   "duplicate_candidate_id": 8,
+   "duplicate_key": 17,
+   "duplicate_point_id": 8,
+   "extra_field": 7,
+   "foreign_snapshot": 9,
+   "kind_observed": 11,
+   "max_selected_out_of_range": 7,
+   "nan_token": 28,
+   "outside_bbox": 13,
+   "overflow_1e999": 20,
+   "oversize": 25,
+   "radius_out_of_range": 13,
+   "required_excluded_conflict": 15,
+   "too_many_points": 11,
+   "truncated": 15,
+   "unknown_id": 16,
+   "weight_out_of_range": 10
+  },
+  "oracle": "compared 300 scenarios with oracle/plan_v2_oracle.py",
+  "limits": {
+   "import": "PASS",
+   "api": "PASS"
+  },
+  "advisories": 0,
+  "generator_coverage": {
+   "candidates:0": 26,
+   "candidates:1-5": 113,
+   "candidates:11-15": 33,
+   "candidates:16": 21,
+   "candidates:6-10": 107,
+   "city:astana/outpatient_clinic": 74,
+   "city:astana/school": 69,
+   "city:shymkent/outpatient_clinic": 85,
+   "city:shymkent/school": 72,
+   "has_excluded": 53,
+   "has_required": 44,
+   "pareto_len>1": 86,
+   "status:infeasible": 33,
+   "status:optimal": 267
+  },
+  "failures": 0,
+  "elapsed_ms": 6589,
+  "verdict": "PASS",
+  "failures_by_property": {}
+ },
+ "limits": {
+  "child": "exit 0",
+  "import": {
+   "16": {
+    "ok": true,
+    "code": null,
+    "ms": 11.998066
+   },
+   "17": {
+    "ok": false,
+    "code": "too_many_candidates",
+    "ms": 2.592196
+   },
+   "24": {
+    "ok": false,
+    "code": "too_many_candidates",
+    "ms": 2.69503
+   },
+   "40": {
+    "ok": false,
+    "code": "too_many_candidates",
+    "ms": 3.596109
+   }
+  },
+  "unchecked": {
+   "20": {
+    "status": "refused:too_many_candidates",
+    "evaluated": 0,
+    "ms": 4.4
+   },
+   "30": {
+    "status": "refused:too_many_candidates",
+    "evaluated": 0,
+    "ms": 2.3
+   },
+   "40": {
+    "status": "refused:too_many_candidates",
+    "evaluated": 0,
+    "ms": 2.8
+   }
+  },
+  "import_verdict": "PASS",
+  "api_verdict": "PASS"
+ },
+ "advisories": [],
+ "bench": null,
+ "failures": [],
+ "failures_omitted": 0
+}

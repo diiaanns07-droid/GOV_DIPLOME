@@ -1,0 +1,316 @@
+{
+ "summary": {
+  "app_root": "r9c_fix",
+  "groups": [
+   "B",
+   "L",
+   "R"
+  ],
+  "total": 23,
+  "pass": 23,
+  "advisory": [],
+  "fail": [],
+  "not_run": 0,
+  "external_requests": 0,
+  "verdict": "PASS"
+ },
+ "results": [
+  {
+   "group": "B",
+   "id": "B1",
+   "title": "v2-импорт в UI отклоняет 56 конвертов city-resilience-v1, план v2 и город не меняются, есть сообщение",
+   "status": "PASS",
+   "detail": {
+    "bad": [],
+    "msg": "Файл не принят, текущий план не изменён: версия city-resilience-v1 не поддерживается"
+   }
+  },
+  {
+   "group": "B",
+   "id": "B2",
+   "title": "v1-импорт в UI отклоняет те же 56 конвертов, сценарий v1 не меняется",
+   "status": "PASS",
+   "detail": {
+    "bad": []
+   }
+  },
+  {
+   "group": "B",
+   "id": "B3",
+   "title": "данные среза на странице (CITY_EVIDENCE) не изменились",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "group": "L",
+   "id": "L1",
+   "title": "смена ручного выбора во время поиска: задача та же — результат допустим только для текущего problem_digest",
+   "status": "PASS",
+   "detail": {
+    "status": "done",
+    "rid": 3,
+    "ridNow": 3,
+    "changedSel": true,
+    "resultDigest": "sha256:ce5a820491db5c1b5ece908cf676822148b43bef709df28cd17317cf46ac6e9c",
+    "curDigest": "sha256:ce5a820491db5c1b5ece908cf676822148b43bef709df28cd17317cf46ac6e9c"
+   }
+  },
+  {
+   "group": "L",
+   "id": "L2",
+   "title": "объяснение после смены ручного выбора не показывается (старый текст отброшен)",
+   "status": "PASS",
+   "detail": {
+    "shown_before": true,
+    "shown_after": false
+   }
+  },
+  {
+   "group": "L",
+   "id": "L3",
+   "title": "смена города после завершённого поиска: результат сброшен, применить нельзя",
+   "status": "PASS",
+   "detail": {
+    "doneBefore": "done",
+    "status": "idle",
+    "hasResult": false,
+    "applied": false,
+    "selected": [],
+    "city": "astana"
+   }
+  },
+  {
+   "group": "L",
+   "id": "L4",
+   "title": "после смены ручного выбора оптимум той же задачи применяется только кнопкой и ставит ровно свои ID",
+   "status": "PASS",
+   "detail": {
+    "ok": true,
+    "selected": [
+     "c1",
+     "c16",
+     "c3",
+     "c5",
+     "c9"
+    ],
+    "want": [
+     "c1",
+     "c16",
+     "c3",
+     "c5",
+     "c9"
+    ],
+    "status": "done"
+   }
+  },
+  {
+   "group": "L",
+   "id": "L5",
+   "title": "смена бюджета после поиска: результат устарел, применить нельзя",
+   "status": "PASS",
+   "detail": {
+    "status": "stale",
+    "applied": false
+   }
+  },
+  {
+   "group": "R",
+   "id": "R1",
+   "title": "импорт в UI устойчивости: недопустимые конверты отклонены, план, случаи и город прежние, есть сообщение",
+   "status": "PASS",
+   "detail": {
+    "bad": [],
+    "msg": "Файл не принят, текущее состояние не изменено: ожидается объект"
+   }
+  },
+  {
+   "group": "R",
+   "id": "R1p",
+   "title": "policy: label с U+202E / одиночным суррогатом",
+   "status": "PASS",
+   "detail": {
+    "N35": false,
+    "N49": false
+   }
+  },
+  {
+   "group": "R",
+   "id": "R2",
+   "title": "UI: 12×25×7 полностью, результат = оракул K12 (nominal, robust, наборы, цена), страница отвечает (разрыв < 200 мс)",
+   "status": "PASS",
+   "detail": {
+    "maxGap": 28,
+    "ms": 99,
+    "status": "done",
+    "nominal": [
+     "c1",
+     "c2",
+     "c7",
+     "c8",
+     "c9"
+    ],
+    "robust": [
+     "c1",
+     "c10",
+     "c2",
+     "c7",
+     "c8"
+    ],
+    "evaluated": 4096,
+    "price": 1.1212295081967314
+   }
+  },
+  {
+   "group": "R",
+   "id": "R3",
+   "title": "до «Применить» ручной план не меняется; «Применить» ставит ровно устойчивый план",
+   "status": "PASS",
+   "detail": {
+    "before": [
+     "c1"
+    ],
+    "ok": true,
+    "after": [
+     "c1",
+     "c10",
+     "c2",
+     "c7",
+     "c8"
+    ],
+    "want": [
+     "c1",
+     "c10",
+     "c2",
+     "c7",
+     "c8"
+    ]
+   }
+  },
+  {
+   "group": "R",
+   "id": "R4",
+   "title": "изменение исключений случая во время сравнения: ответ отброшен (stale, без результата)",
+   "status": "PASS",
+   "detail": {
+    "running": true,
+    "status": "stale",
+    "hasResult": false,
+    "ridChanged": true
+   }
+  },
+  {
+   "group": "R",
+   "id": "R5",
+   "title": "переименование случая во время сравнения: ответ отброшен (label входит в digest)",
+   "status": "PASS",
+   "detail": {
+    "running": true,
+    "status": "stale",
+    "hasResult": false,
+    "ridChanged": true
+   }
+  },
+  {
+   "group": "R",
+   "id": "R6",
+   "title": "смена города во время сравнения: случаи сброшены, ответ не показан",
+   "status": "PASS",
+   "detail": {
+    "running": true,
+    "status": "idle",
+    "hasResult": false,
+    "ridChanged": true,
+    "cases": 0
+   }
+  },
+  {
+   "group": "R",
+   "id": "R7",
+   "title": "смена бюджета плана v2 во время сравнения: ответ отброшен",
+   "status": "PASS",
+   "detail": {
+    "running": true,
+    "status": "stale",
+    "hasResult": false,
+    "ridChanged": true
+   }
+  },
+  {
+   "group": "R",
+   "id": "R8",
+   "title": "отмена: cancelled, неполный результат не показан и позже",
+   "status": "PASS",
+   "detail": {
+    "running": true,
+    "status": "cancelled",
+    "hasResult": false,
+    "ridChanged": true
+   }
+  },
+  {
+   "group": "R",
+   "id": "R9",
+   "title": "смена ручного выбора: результат той же задачи сохранён, старое объяснение не показывается",
+   "status": "PASS",
+   "detail": {
+    "e1": true,
+    "status": "done",
+    "hasResult": true,
+    "expl": false
+   }
+  },
+  {
+   "group": "R",
+   "id": "R10",
+   "title": "label с HTML/скриптом отображается текстом, элементы не создаются",
+   "status": "PASS",
+   "detail": {
+    "scripts": 0,
+    "text": true
+   }
+  },
+  {
+   "group": "R",
+   "id": "R11",
+   "title": "экспорт только вход (schema_version, plan, cases); круг экспорт→импорт; отчёт без скриптов, label экранирован, CSP, без URL",
+   "status": "PASS",
+   "detail": {
+    "keys": "cases,plan,schema_version",
+    "planKeys": false,
+    "ok": true,
+    "same": true,
+    "script": false,
+    "escaped": true,
+    "csp": true,
+    "url": false
+   }
+  },
+  {
+   "group": "R",
+   "id": "R12",
+   "title": "одинаковые правила названия в поле UI и в модуле (U+2028)",
+   "status": "PASS",
+   "detail": {
+    "uiAccepted": false,
+    "moduleCode": null
+   }
+  },
+  {
+   "group": "Z",
+   "id": "Z1",
+   "title": "нет внешних запросов и ошибок страницы",
+   "status": "PASS",
+   "detail": {
+    "external": [],
+    "errors": []
+   }
+  },
+  {
+   "group": "Z",
+   "id": "Z2",
+   "title": "данные среза на странице не изменились за весь прогон",
+   "status": "PASS",
+   "detail": null
+  }
+ ]
+}

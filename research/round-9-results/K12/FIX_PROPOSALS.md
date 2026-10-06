@@ -5,7 +5,8 @@
 | Патч | База | Состав | Статус |
 |---|---|---|---|
 | `fixes/build_d865dd4_k12_r9.patch` | `d865dd4` (закреплён в snapshots r9) | `evaluatePlan` и `createSearch` валидируют вход и работают с копией; F2 в `whatif.js`; тест `tests/plan_api_guard.cjs` | BUILD уже закрыл это своим исправлением в `e990f01`; патч оставлен как доказательство и альтернатива |
-| `fixes/build_33cc635_k12_r9b.patch` (sha256 `9e474546…`) | `33cc635` (новый BUILD) | G1–G4 ниже; тесты `tests/resilience_k12_guard.cjs` и `tests/test_id_order.py` | предложение для BUILD |
+| `fixes/build_33cc635_k12_r9b.patch` (sha256 `9e474546…`) | `33cc635` (этап 2 BUILD) | G1–G4 ниже; тесты `tests/resilience_k12_guard.cjs` и `tests/test_id_order.py` | заменён r9c |
+| **`fixes/build_e1cbc3f_k12_r9c.patch`** (sha256 `91f0350f…`) | `e1cbc3f`; без изменений применяется к **`d18847f`** (код `e82214e`) | G1–G5; тесты `fixes/r9c/tests/*` | **актуальное предложение для BUILD** |
 
 Как применить: `git apply research/round-9-results/K12/fixes/<patch>` в checkout BUILD.
 
@@ -26,6 +27,22 @@
 - **Собственное ограничение K12 по G4:** мой v2-оракул r8 (`round-8-results/K12/oracle/plan_v2_oracle.py`) тоже
   сортирует кодовыми точками. Fuzz r8 генерировал только ASCII-ID, поэтому это не проявилось. Оракул устойчивости r9
   уже сравнивает в UTF-16.
+
+| G5 | Поле названия случая в UI (`resilience-ui.js` `setLabel`) принимает U+2028/U+2029, а `validateResilience` их отклоняет: название сохраняется, сравнение не запускается, видно только «Пока нельзя запустить» | ADVISORY (UX, два правила вместо одного) | `ui_r9_browser.cjs` → `R/R12` | `RS.isLabel` экспортирован из `resilience.js` и используется и в `validateResilience`, и в `setLabel` (только в r9c) |
+
+## Проверка патча r9c на копиях `e1cbc3f` и `d18847f`
+
+| Проверка | `d18847f` без патча | `d18847f` + r9c | `e1cbc3f` + r9c |
+|---|---|---|---|
+| `api_guard.cjs` | 33 PASS, 1 FAIL, 1 ADVISORY | **35 PASS** | 35 PASS |
+| Корпус `resilience_stress.cjs` | 63 PASS, 2 ADVISORY | **65 PASS** | 65 PASS |
+| `ui_r9_browser.cjs` (B, L, R) | 21 PASS, 2 ADVISORY | **23 PASS** | 23 PASS |
+| `id_order_probe.cjs`: JS = Python BUILD | 0 из 4 | **4 из 4** | 4 из 4 |
+| Новые тесты `resilience_k12_guard.cjs` / `test_id_order.py` | 8 FAIL / 2 FAIL | 12/12 / 2/2 | 12/12 / 2/2 |
+| BUILD `check_all` | exit 0 (resilience 112, unittest 50) | exit 0 (unittest 52 с новыми) | exit 0 |
+| BUILD браузер: smoke / plan_smoke / whatif_smoke / plan_keyboard / resilience_smoke | 24 / 52 / 32 / 16 / 40 | 24 / 52 / 32 / 16 / 40 | 24 / 52 / 32 / 14 / 40 |
+
+На `e1cbc3f` в BUILD `plan_keyboard` было 14 проверок, на `d18847f` их 16: это тесты BUILD, а не следствие патча.
 
 ## Проверка патча r9b на копии `33cc635`
 

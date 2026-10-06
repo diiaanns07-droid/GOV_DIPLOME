@@ -1,0 +1,5 @@
+smoke exit=0 pass=24 fail=0
+plan_smoke exit=0 pass=52 fail=0
+whatif_smoke exit=0 pass=32 fail=0
+plan_keyboard exit=0 pass=14 fail=0
+resilience_smoke exit=0 pass=40 fail=0

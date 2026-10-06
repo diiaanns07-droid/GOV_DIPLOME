@@ -2,22 +2,46 @@
 
 - **Роль:** K12 (не BUILD). Ветка `claude/save-work-handoff-xuav3q`.
 - **Задание:** `research/round-9/tasks/K12.txt`, `TASK.txt`, `CORE_SPEC.txt`, `REVIEW.txt` @ `codex/research-import-2026-10-05` `0ab1667`.
-- **Проверяемая сборка:** BUILD `claude/beautiful-clarke-sbzomj` @ `d865dd4a124291e10dd0b7bb1d9eada20d34c268`
-  (код = `3e1302a`), закреплена в `round-9/snapshots.json`.
-  - Копия извлечена байтами (`research/round-5-results/K12/extract_build.py`), git blob сверен.
-    Manifest: `manifests/d865dd4_extract.json`, 199 файлов.
-- **Новый BUILD раунда 9 не опубликован.** На момент проверки (2026-10-06) последняя запись ветки BUILD — `d865dd4`;
-  `web/resilience.js` нет ни в одной ветке origin.
-  - Поэтому интеграция `city-resilience-v1` — **NOT_RUN**. Пробы и адаптер для неё готовы и запустятся сами,
-    как только появится `web/resilience.js`.
+- **Проверенные SHA BUILD** (`claude/beautiful-clarke-sbzomj`). Все копии извлечены байтами
+  (`research/round-5-results/K12/extract_build.py`, git blob сверен), manifest в `manifests/`:
+
+  | SHA | Что это | Как проверен |
+  |---|---|---|
+  | `d865dd4a124291e10dd0b7bb1d9eada20d34c268` | закреплён в `round-9/snapshots.json` (код `3e1302a`) | этапы 1–2; `resilience.js` нет → R NOT_RUN |
+  | `33cc635ec212e522b3e17fb0b598fad0ad602f71` | BUILD r9 этап 2: `resilience.js` | API, корпус, fuzz, UI v2, патч r9b |
+  | `e1cbc3fa84518a84698c03d014dc153f71338d54` | BUILD r9 этап 3: `resilience-ui.js` | то же + UI устойчивости, патч r9c |
+  | **`d18847f9e7c18fcfae3349c0b223b023d359a838`** | BUILD r9 этап 4, **последний на 2026-10-06** (код = `e82214e`, `git diff` пуст) | **финальный прогон всего набора + r9c** |
+
+  Отдельной ветки или другой копии с `resilience.js` в origin нет.
 
 ## Этапы
 
 | Этап | Статус |
 |---|---|
-| 1. Повторная проверка F1 и границ прямого API, патч и регрессионный тест | **done** |
-| 2. Корпус устойчивости (`city-resilience-v1`), атомарность, сеть, неизменность источников | **done** на `d865dd4`; прогон на новом BUILD `33cc635` — далее |
-| 3. Ограниченный fuzz на BUILD, оракул, поздние результаты в UI, итоговый handoff | **в работе**: новый BUILD `33cc635` проверен (API, корпус, v2 fuzz); fuzz устойчивости, UI и патчи — далее |
+| 1. Повторная проверка F1 и границ прямого API (watchdog, 17/20 кандидатов), патч и регрессионный тест | **done** |
+| 2. Корпус устойчивости `city-resilience-v1`, атомарность, сеть, неизменность источников | **done** (`d865dd4`, `33cc635`, `e1cbc3f`, `d18847f`) |
+| 3. Ограниченный fuzz на BUILD, оракул, поздние результаты в UI, патчи с тестами, итоговый handoff | **done** (финал на `d18847f`) |
+
+## Итог (финальный SHA `d18847f`)
+
+| Проверка K12 | `d18847f` | `d18847f` + патч r9c |
+|---|---|---|
+| `api_guard.cjs`: прямой API v2 и устойчивости, 35 проб | 33 PASS, **1 FAIL** (G1), **1 ADVISORY** (G2) | 35 PASS |
+| `resilience_stress.cjs`: корпус 59 конвертов + 6 X | 63 PASS, **2 ADVISORY** (G3), 0 FAIL | 65 PASS |
+| `resilience_fuzz.cjs` seed 24 × 300 с оракулом K12 | PASS (3000 свойств, 39 случаев robust ≠ nominal) | PASS (e1cbc3f seed 23) |
+| `plan_fuzz.cjs` (r8) seed 31 × 300, `--strict-api-guard` | PASS | — |
+| `ui_r9_browser.cjs` B/L/R, 23 проверки | 21 PASS, **2 ADVISORY** (G3, G5) | 23 PASS |
+| `id_order_probe.cjs`: JS = Python-оракулы BUILD | **0 из 4** (G4) | 4 из 4 |
+| BUILD `check_all` / браузер smoke·plan·whatif·keyboard·resilience | exit 0 / 24·52·32·16·40 | exit 0 / 24·52·32·16·40 |
+
+- r8 F1 закрыт самим BUILD (`e990f01`). На `d865dd4` исходный repro: 20 FAIL; на `33cc635` и далее — PASS.
+- Нерешённые находки (G1–G5) и патч: `FIX_PROPOSALS.md`.
+- Сеть: 0 попыток во всех прогонах Node и в браузере. Окружение: Linux, Node 22.22.0, Python 3.11.15,
+  Playwright 1.56.1 + Chromium. Windows — NOT_RUN.
+- **NOT_RUN / SKIP:**
+  - Windows;
+  - `evidence.js` rebuild в `check_all` (нет shapely/pyproj) — SKIP самого BUILD;
+  - на `d865dd4` — группа R и UI устойчивости (модуля не было).
 
 ## Этап 1 — границы прямого API `plan.js`
 
@@ -196,4 +220,38 @@
   | `check_all` | exit 0 (`expected_*.json` без изменений, unittest 52) |
   | Браузерные тесты BUILD | smoke 24, plan_smoke 52, whatif_smoke 32, plan_keyboard 14 — как на исходном `33cc635` |
 
-- BUILD снова обновился: **`e1cbc3f`** («round 9 stage 3»). Его проверка — следующий шаг.
+
+## Этап 3 — `e1cbc3f` и финальный `d18847f`: UI устойчивости
+
+- `e1cbc3f` добавил `web/resilience-ui.js` и `reportHtml` в `resilience.js`.
+  - Прочитаны до запуска: вставка только через `textContent`, без сети и eval.
+  - Импорт атомарный; страж `request_id` + digest; при смене города случаи сбрасываются.
+- `d18847f` (код `e82214e`): только UI — ввод применяется перед действием (`flush`). `plan.js`, `resilience.js` и
+  `data.js` байт-в-байт как в `e1cbc3f`.
+- **Группа R `ui_r9_browser.cjs`** (на обоих SHA 21 PASS + 2 ADVISORY, 0 FAIL):
+  - R1 — атомарный отказ 40 недопустимых конвертов в UI (без рецептов и policy);
+  - R2 — сравнение 12 × 25 × 7 в UI равно оракулу K12 (nominal, robust, 4096 наборов, цена), разрыв таймера < 200 мс;
+  - R3 — «Применить» ставит ровно устойчивый план;
+  - R4–R8 — поздний ответ отброшен после изменения исключений, названия, города, бюджета v2 и после отмены;
+  - R9 — смена ручного выбора сохраняет результат задачи, старое объяснение не показывается;
+  - R10 — HTML и скрипт в названии — только текст;
+  - R11 — экспорт только входа, круг экспорт → импорт, отчёт без скриптов с CSP;
+  - ADVISORY: R1p (G3), R12 (G5).
+- **Патч `fixes/build_e1cbc3f_k12_r9c.patch`** (G1–G5).
+  - `git apply --cached --check` OK против `e1cbc3f` и `d18847f`; `patch -p3` на свежей копии даёт байт-в-байт
+    проверенные файлы.
+  - Результаты в таблице «Итог» и в `FIX_PROPOSALS.md`.
+
+## Ограничения (итог)
+
+- Fuzz и корпус — синтетические сценарии на реальных ID записей. Это проверка свойств и равенства с оракулом,
+  а не доказательство для всех входов. Время зависит от машины; пороги 200 мс выбрал K12.
+- Оракул устойчивости K12 написан только по CORE_SPEC r9. Внутренние digest BUILD с ним не сравниваются — только
+  математика: ID планов, векторы, счётчики, цена.
+- Оракул v2 K12 из r8 сортирует ID кодовыми точками (как Python-оракулы BUILD). Для ID выше U+FFFF против
+  U+E000–U+FFFF он расходится с JS. Fuzz r8 использовал ASCII-ID; в r9 это показано `id_order_probe.cjs`.
+- Policy-пункты G3 (bidi, одиночный суррогат) и G5 (единое правило названия) — предложения. CORE_SPEC их прямо
+  не называет; BUILD может выбрать иначе.
+- Браузерные проверки опираются на страничный API `CITY_PLAN_UI` / `CITY_RESILIENCE_UI` указанных SHA. Если его
+  переименуют, нужно обновить тест — это ошибка теста, не продукта.
+- Решение о применении патчей за BUILD. K12 не менял `prototypes/city-evidence`, main и чужие ветки.

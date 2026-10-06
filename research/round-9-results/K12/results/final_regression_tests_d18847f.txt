@@ -1,0 +1,16 @@
+FAIL evaluateResilience(ctx, env, null): typed bad_shape, not TypeError
+FAIL evaluateResilience(ctx, env, "c1"): typed refusal
+FAIL PL.internal.createSearch with 20 unvalidated candidates: too_many_candidates before enumeration
+FAIL label with U+202E (bidi override): bad_label
+FAIL label with U+2066 (bidi isolate): bad_label
+FAIL label with a lone high surrogate: bad_label
+FAIL label with a lone low surrogate: bad_label
+PASS label with emoji (valid surrogate pair), Kazakh and HTML text: accepted
+FAIL RS.isLabel exported; same verdicts as validateResilience (U+2028, U+202E, lone surrogate refused; emoji/Kazakh/HTML text accepted)
+PASS v2 mean at an exact tie picks 𝔸 (UTF-16 order, JS string comparison)
+PASS resilience nominal/robust at an exact tie pick 𝔸; worst_case_ids in UTF-16 order
+8 FAILED
+exit=1
+Ran 2 tests in 0.004s
+
+FAILED (failures=2)

@@ -1,0 +1,298 @@
+--- a/prototypes/city-evidence/tools/plan_oracle.py
++++ b/prototypes/city-evidence/tools/plan_oracle.py
+@@ -39,6 +39,14 @@
+     return math.floor(hav_m(a, b) * 1000 + 0.5)
+ 
+ 
++def u16(s):  # K12 r9: JS compares strings by UTF-16 code units; Python by code points (differs above U+FFFF vs U+E000-U+FFFF)
++    return s.encode("utf-16-be")
++
++
++def u16ids(ids):
++    return [u16(i) for i in ids]
++
++
+ def solve(places, sc, budgets=None):
+     pts = {p["id"]: p for p in sc["control_points"]}
+     cands = {c["id"]: c for c in sc["candidates"]}
+@@ -46,7 +54,7 @@
+     base = {}
+     for pid, p in pts.items():
+         opts = [(mm((p["lon"], p["lat"]), (s["lon"], s["lat"])), 0, s["id"]) for s in src]
+-        base[pid] = min(opts) if opts else None
++        base[pid] = min(opts, key=lambda o: (o[0], o[1], u16(o[2]))) if opts else None
+     hyp = {(cid, pid): mm((pts[pid]["lon"], pts[pid]["lat"]), (c["lon"], c["lat"])) for cid, c in cands.items() for pid in pts}
+     radius = sc["coverage_radius_m"] * 1000
+     total_w = sum(p["weight"] for p in pts.values())
+@@ -55,7 +63,7 @@
+         rows, unknown, wsum, mx, cov = {}, 0, 0, 0, 0
+         for pid, p in pts.items():
+             opts = ([base[pid]] if base[pid] else []) + [(hyp[(cid, pid)], 1, cid) for cid in ids]
+-            best = min(opts) if opts else None
++            best = min(opts, key=lambda o: (o[0], o[1], u16(o[2]))) if opts else None
+             b = base[pid]
+             rows[pid] = {"before_mm": b[0] if b else None, "nearest_before": {"kind": "source", "id": b[2]} if b else None,
+                          "after_mm": best[0] if best else None,
+@@ -69,12 +77,12 @@
+                 if best[0] <= radius:
+                     cov += p["weight"]
+         cost = sum(cands[c]["cost"] for c in ids)
+-        return {"ids": sorted(ids), "rows": rows, "unknown_count": unknown, "weighted_sum_mm": wsum,
++        return {"ids": sorted(ids, key=u16), "rows": rows, "unknown_count": unknown, "weighted_sum_mm": wsum,
+                 "max_mm": mx if unknown == 0 else None, "covered_weight": cov, "total_weight": total_w, "cost": cost}
+ 
+     def optimize(budget):
+-        req = sorted(sc["required_ids"])
+-        free = sorted(set(cands) - set(req) - set(sc["excluded_ids"]))
++        req = sorted(sc["required_ids"], key=u16)
++        free = sorted(set(cands) - set(req) - set(sc["excluded_ids"]), key=u16)
+         out = {"budget": budget, "evaluated": 2 ** len(free)}
+         req_cost = sum(cands[c]["cost"] for c in req)
+         reasons = []
+@@ -93,9 +101,9 @@
+                     plans.append(evaluate(ids))
+         keyed = lambda e: (e["max_mm"] if e["max_mm"] is not None else INF)  # noqa: E731
+         keys = {
+-            "mean": lambda e: (e["unknown_count"], e["weighted_sum_mm"], keyed(e), e["cost"], e["ids"]),
+-            "minimax": lambda e: (e["unknown_count"], keyed(e), e["weighted_sum_mm"], e["cost"], e["ids"]),
+-            "coverage": lambda e: (-e["covered_weight"], e["unknown_count"], e["weighted_sum_mm"], keyed(e), e["cost"], e["ids"]),
++            "mean": lambda e: (e["unknown_count"], e["weighted_sum_mm"], keyed(e), e["cost"], u16ids(e["ids"])),
++            "minimax": lambda e: (e["unknown_count"], keyed(e), e["weighted_sum_mm"], e["cost"], u16ids(e["ids"])),
++            "coverage": lambda e: (-e["covered_weight"], e["unknown_count"], e["weighted_sum_mm"], keyed(e), e["cost"], u16ids(e["ids"])),
+         }
+         objectives = {}
+         for name, key in keys.items():
+@@ -111,13 +119,13 @@
+         reps = {}
+         for e in front:
+             k = (e["cost"], e["weighted_sum_mm"])
+-            if k not in reps or e["ids"] < reps[k]["ids"]:
++            if k not in reps or u16ids(e["ids"]) < u16ids(reps[k]["ids"]):
+                 reps[k] = e
+         pareto = [{"ids": e["ids"], "cost": e["cost"], "weighted_sum_mm": e["weighted_sum_mm"]} for e in sorted(reps.values(), key=lambda e: (e["cost"], e["weighted_sum_mm"]))]
+         return {**out, "status": "optimal", "reasons": [], "feasible_count": len(plans), "objectives": objectives, "pareto": pareto,
+                 "pareto_excluded_unknown": len(plans) - len(complete)}
+ 
+-    manual = evaluate(sorted(sc["selected_ids"]))
++    manual = evaluate(sorted(sc["selected_ids"], key=u16))
+     b = sc["budget"]
+     sens = sorted(set([0, b // 2, b]))
+     return {"manual": manual, "optimize": optimize(b),
+--- a/prototypes/city-evidence/tools/resilience_oracle.py
++++ b/prototypes/city-evidence/tools/resilience_oracle.py
+@@ -26,6 +26,14 @@
+ OUT = APP / "tests" / "expected_resilience.json"
+ R = 6371008.8
+ INF = float("inf")
++
++
++def u16(s):  # K12 r9: JS compares strings by UTF-16 code units; Python by code points (differs above U+FFFF vs U+E000-U+FFFF)
++    return s.encode("utf-16-be")
++
++
++def u16ids(ids):
++    return [u16(i) for i in ids]
+ 
+ 
+ def mm(lon1, lat1, lon2, lat2):
+@@ -66,13 +74,13 @@
+                             "weighted_mean_mm": (s / tw) if u == 0 else None}
+         keys = {cid: (v["unknown_count"], v["weighted_sum_mm"], INF if v["max_mm"] is None else v["max_mm"]) for cid, v in per.items()}
+         w = max(keys.values())
+-        return {"ids": sorted(ids), "cost": sum(cands[i]["cost"] for i in ids), "per_case": per,
++        return {"ids": sorted(ids, key=u16), "cost": sum(cands[i]["cost"] for i in ids), "per_case": per,
+                 "worst": {"unknown_count": w[0], "weighted_sum_mm": w[1], "max_mm": None if w[2] == INF else w[2]},
+-                "worst_case_ids": sorted(cid for cid, k in keys.items() if k == w)}
+-
+-    req = sorted(plan["required_ids"])
+-    free = sorted(set(cands) - set(req) - set(plan["excluded_ids"]))
+-    out = {"manual": describe(sorted(plan["selected_ids"]))}
++                "worst_case_ids": sorted((cid for cid, k in keys.items() if k == w), key=u16)}
++
++    req = sorted(plan["required_ids"], key=u16)
++    free = sorted(set(cands) - set(req) - set(plan["excluded_ids"]), key=u16)
++    out = {"manual": describe(sorted(plan["selected_ids"], key=u16))}
+     reasons = []
+     if len(req) > plan["max_selected"]:
+         reasons.append("required_exceeds_max_selected")
+@@ -92,13 +100,14 @@
+             count += 1
+             ls = {c["id"]: loss(c["id"], ids)[0] for c in all_cases}
+             w = max(ls.values())
+-            kn = (ls["base"], cost, sorted(ids))
+-            kr = (w, ls["base"], cost, sorted(ids))
+-            if best_n is None or kn < best_n:
++            sid = sorted(ids, key=u16)
++            kn = (ls["base"], cost, u16ids(sid), sid)
++            kr = (w, ls["base"], cost, u16ids(sid), sid)
++            if best_n is None or kn[:3] < best_n[:3]:
+                 best_n = kn
+-            if best_r is None or kr < best_r:
++            if best_r is None or kr[:4] < best_r[:4]:
+                 best_r = kr
+-    nominal, robust = describe(best_n[2]), describe(best_r[3])
++    nominal, robust = describe(best_n[3]), describe(best_r[4])
+     a, b = robust["per_case"]["base"]["weighted_mean_mm"], nominal["per_case"]["base"]["weighted_mean_mm"]
+     out["optimize"] = {"status": "optimal", "reasons": [], "feasible_count": count, "evaluated": 2 ** len(free),
+                        "nominal": nominal, "robust": robust, "same_plan": nominal["ids"] == robust["ids"],
+--- a/prototypes/city-evidence/web/plan.js
++++ b/prototypes/city-evidence/web/plan.js
+@@ -211,6 +211,9 @@
+   /* createSearch(ctx, validatedScenario, {request_id}) -> { total, examined, step(n) -> done, cancel(), result() }.
+    * Constraints are checked before any enumeration; the result is "optimal" only after every subset was examined. */
+   function createSearchInternal(ctx, sc, opts) {  // sc already validated against ctx
++    // K12 r9: PL.internal is exported (resilience.js uses it); keep the enumeration bound even for an unvalidated caller
++    if (!sc || !Array.isArray(sc.candidates) || sc.candidates.length > LIMITS.candidates)
++      fail("too_many_candidates", `кандидатов не больше ${LIMITS.candidates}: точный перебор не запускается`);
+     const F = (opts && opts.F) || null;
+     const request_id = opts && opts.request_id !== undefined ? opts.request_id : null;
+     const P = precompute(ctx, sc), nP = P.pts.length, nC = P.cands.length;
+--- a/prototypes/city-evidence/web/resilience-ui.js
++++ b/prototypes/city-evidence/web/resilience-ui.js
+@@ -59,7 +59,7 @@
+   function setLabel(id, raw) {
+     const c = RSS.cases.find((x) => x.id === id); if (!c) return;
+     const v = String(raw);
+-    if (!v.trim() || [...v].length > RS.LIMITS.label || /[\u0000-\u001f\u007f-\u009f]/.test(v)) { changed("Название случая: непустой текст до 120 символов; значение не применено."); return; }
++    if (!RS.isLabel(v)) { changed("Название случая: непустой текст до 120 символов; значение не применено."); return; }
+     c.label = v; changed();
+   }
+   function toggleRecord(id, recId, on) { const c = RSS.cases.find((x) => x.id === id); if (!c) return; if (on) c.ids.add(recId); else c.ids.delete(recId); changed(); }
+--- a/prototypes/city-evidence/web/resilience.js
++++ b/prototypes/city-evidence/web/resilience.js
+@@ -21,6 +21,10 @@
+   const fail = (code, d) => { throw new PlanError(code, d); };
+   const cmpStr = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
+   const CTRL = new RegExp("[\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]");  // control characters and line/paragraph separators
++  // K12 r9 (policy): bidi embeddings/overrides/isolates reorder what the user sees; a lone surrogate is not a character
++  const BIDI_OR_LONE = /[\u202a-\u202e\u2066-\u2069]|[\ud800-\udbff](?![\udc00-\udfff])|(?<![\ud800-\udbff])[\udc00-\udfff]/;
++  // one label rule for validation and for the editor (resilience-ui.js uses it too)
++  const isLabel = (v) => typeof v === "string" && !!v.trim() && [...v].length <= LIMITS.label && !CTRL.test(v) && !BIDI_OR_LONE.test(v);
+ 
+   // ---------- validation: full envelope and plan, before any precomputation or UI change ----------
+   function sourcesOf(ctx, category) { return ctx.places.filter((p) => p.group === category); }
+@@ -56,7 +60,7 @@
+       if (c.id === "base") fail("reserved_id", `${what}.id: «base» зарезервирован для автоматического случая без исключений`);
+       if (seen.has(c.id)) fail("duplicate_id", `cases: ${c.id}`);
+       seen.add(c.id);
+-      if (typeof c.label !== "string" || !c.label.trim() || [...c.label].length > LIMITS.label || CTRL.test(c.label))
++      if (!isLabel(c.label))
+         fail("bad_label", `${what}.label: непустой текст до ${LIMITS.label} символов без управляющих символов`);
+       const ids = c.disabled_source_ids;
+       if (!Array.isArray(ids)) fail("bad_shape", `${what}.disabled_source_ids — массив`);
+@@ -117,6 +121,7 @@
+   }
+   function evaluateResilience(ctx, env, selectedIds) {
+     const clean = validateResilience(env, ctx);
++    if (!Array.isArray(selectedIds)) fail("bad_shape", "selectedIds — массив ID кандидатов");  // K12 r9: typed, not a TypeError
+     for (const id of selectedIds) if (!clean.plan.candidates.some((c) => c.id === id)) fail("unknown_ref", `кандидата ${id} нет`);
+     return evaluateInternal(ctx, clean, selectedIds);
+   }
+@@ -256,6 +261,6 @@
+   }
+ 
+   const api = { SCHEMA, OBJECTIVE, LIMITS, validateResilience, evaluateResilience, createResilienceSearch, optimizeResilience, exportResilience, importResilience,
+-    resilienceProblemDigest, resilienceScenarioDigest, exclusionsDigest, duplicateCaseGroups, allCases, explainResilience, caseContext, reportHtml };
++    resilienceProblemDigest, resilienceScenarioDigest, exclusionsDigest, duplicateCaseGroups, allCases, explainResilience, caseContext, reportHtml, isLabel };
+   if (node) module.exports = api; else root.CITY_RESILIENCE = api;
+ })(typeof window !== "undefined" ? window : globalThis);
+diff --git a/prototypes/city-evidence/tests/resilience_k12_guard.cjs b/prototypes/city-evidence/tests/resilience_k12_guard.cjs
+new file mode 100644
+--- /dev/null
++++ b/prototypes/city-evidence/tests/resilience_k12_guard.cjs
+@@ -0,0 +1,47 @@
++// K12 r9 regression checks for web/resilience.js, resilience-ui.js label rule and the exported plan.js internals (findings on 33cc635/e1cbc3f). Headless, no DOM.
++// Usage: node tests/resilience_k12_guard.cjs
++const fs = require("fs"), path = require("path"), vm = require("vm");
++const W = path.join(__dirname, "..", "web");
++const ctx0 = {}; vm.createContext(ctx0); ctx0.window = ctx0;
++for (const f of ["data.js", "evidence.js"]) vm.runInContext(fs.readFileSync(path.join(W, f), "utf8"), ctx0, { filename: f });
++const F = require(path.join(W, "facts.js")), PL = require(path.join(W, "plan.js")), RS = require(path.join(W, "resilience.js"));
++let fails = 0;
++const check = (name, ok, detail) => { if (!ok) fails++; console.log((ok ? "PASS " : "FAIL ") + name + (detail && !ok ? " — " + String(detail).slice(0, 300) : "")); };
++const code = (fn) => { try { fn(); return "accepted"; } catch (e) { return e.code || `untyped ${e.name}`; } };
++const J = JSON.stringify;
++
++// synthetic equator slice (same idea as the hand fixtures of tests/plan.cjs): two school records
++const EQ = [{ id: "A", group: "school", lon: 0.0, lat: 0.0 }, { id: "B", group: "school", lon: 0.02, lat: 0.0 }];
++const ctx = PL.makeContext({ cities: { "synthetic-eq": { bbox: [-0.1, -0.1, 0.1, 0.1], release: "synthetic", files: {}, places: EQ } } }, "synthetic-eq", F);
++const A = "ﬀ", B = "\u{1D538}";   // ﬀ (U+FB00) and 𝔸 (U+1D538): letters, NFC; UTF-16 order puts 𝔸 first
++const plan = (cands, extra = {}) => ({ schema_version: PL.SCHEMA, city_id: "synthetic-eq", source_snapshot: ctx.source_snapshot, category: "school",
++  control_points: [{ id: "P1", lon: 0.0, lat: 0.001, weight: 1 }], candidates: cands, budget: 5, max_selected: 1, coverage_radius_m: 500,
++  required_ids: [], excluded_ids: [], selected_ids: [], ...extra });
++const cand = (id, lon = 0.0005, lat = 0.0005) => ({ id, lon, lat, category: "school", kind: "hypothetical", cost: 5 });
++const env = (p, cases) => ({ schema_version: RS.SCHEMA, plan: p, cases });
++const tie = plan([cand(A), cand(B)]);
++const tieEnv = env(tie, [{ id: `${A}1`, label: "без всех записей ﬀ", disabled_source_ids: ["A", "B"] }, { id: `${B}1`, label: "без всех записей 𝔸", disabled_source_ids: ["A", "B"] }]);
++
++check("evaluateResilience(ctx, env, null): typed bad_shape, not TypeError", code(() => RS.evaluateResilience(ctx, tieEnv, null)) === "bad_shape");
++check("evaluateResilience(ctx, env, \"c1\"): typed refusal", code(() => RS.evaluateResilience(ctx, tieEnv, A)) !== "accepted" && !code(() => RS.evaluateResilience(ctx, tieEnv, A)).startsWith("untyped"));
++const many = plan(Array.from({ length: 20 }, (_, k) => cand(`c${k}`, 0.0001 * k, 0.0005)), { max_selected: 5, budget: 100 });
++check("PL.internal.createSearch with 20 unvalidated candidates: too_many_candidates before enumeration",
++  code(() => PL.internal.createSearch(ctx, many, { F })) === "too_many_candidates");
++const lab = (label) => code(() => RS.validateResilience(env(tie, [{ id: "k1", label, disabled_source_ids: ["A"] }]), ctx));
++check("label with U+202E (bidi override): bad_label", lab("abc‮dcba") === "bad_label");
++check("label with U+2066 (bidi isolate): bad_label", lab("abc⁦x") === "bad_label");
++check("label with a lone high surrogate: bad_label", lab("x\uD800y") === "bad_label");
++check("label with a lone low surrogate: bad_label", lab("x\uDC00y") === "bad_label");
++check("label with emoji (valid surrogate pair), Kazakh and HTML text: accepted", lab("😀 Мектеп «жабық» <b>&</b>") === "accepted");
++// one label rule for the module and the editor (resilience-ui.js setLabel uses RS.isLabel)
++check("RS.isLabel exported; same verdicts as validateResilience (U+2028, U+202E, lone surrogate refused; emoji/Kazakh/HTML text accepted)",
++  typeof RS.isLabel === "function" && ["a\u2028b", "abc\u202Edcba", "x\uD800y", "   ", "Ж".repeat(121)].every((v) => RS.isLabel(v) === false && lab(v) === "bad_label")
++    && ["😀 Мектеп «жабық» <b>&</b>", "Ж".repeat(100) + "😀".repeat(20)].every((v) => RS.isLabel(v) === true && lab(v) === "accepted"));
++// JS order at an exact tie (documents the convention the oracles must follow; see tests/test_id_order.py)
++check("v2 mean at an exact tie picks 𝔸 (UTF-16 order, JS string comparison)", J(PL.optimizePlans(ctx, tie, { F }).objectives.mean.ids) === J([B]));
++const r = RS.optimizeResilience(ctx, tieEnv, { F });
++check("resilience nominal/robust at an exact tie pick 𝔸; worst_case_ids in UTF-16 order",
++  J([r.nominal.selected_ids, r.robust.selected_ids]) === J([[B], [B]]) && J(r.robust.worst_case_ids) === J(["base", `${B}1`, `${A}1`].filter((x) => r.robust.worst_case_ids.includes(x))), J(r.robust.worst_case_ids));
++
++console.log(fails ? `${fails} FAILED` : "all K12 r9 resilience guard checks passed");
++process.exit(fails ? 1 : 0);
+diff --git a/prototypes/city-evidence/tests/test_id_order.py b/prototypes/city-evidence/tests/test_id_order.py
+new file mode 100644
+--- /dev/null
++++ b/prototypes/city-evidence/tests/test_id_order.py
+@@ -0,0 +1,43 @@
++"""The Python oracles order IDs like plan.js / resilience.js (JavaScript strings: UTF-16 code units), so the JS code and
++the oracles agree at exact ties. K12 r9: with IDs U+FB00 (ﬀ) and U+1D538 (𝔸) Python sorted() picks ﬀ, JavaScript picks 𝔸.
++Usage: python3 -m unittest tests.test_id_order"""
++import importlib.util
++import unittest
++from pathlib import Path
++
++APP = Path(__file__).resolve().parent.parent
++
++
++def load(name):
++    spec = importlib.util.spec_from_file_location(f"k12_{name}", APP / "tools" / f"{name}.py")
++    m = importlib.util.module_from_spec(spec)
++    spec.loader.exec_module(m)
++    return m
++
++
++A, B = "ﬀ", "\U0001d538"
++EQ = [{"id": "A", "group": "school", "lon": 0.0, "lat": 0.0}, {"id": "B", "group": "school", "lon": 0.02, "lat": 0.0}]
++
++
++def plan():
++    cand = lambda i: {"id": i, "lon": 0.0005, "lat": 0.0005, "category": "school", "kind": "hypothetical", "cost": 5}  # noqa: E731
++    return {"schema_version": "city-plan-v2", "category": "school", "control_points": [{"id": "P1", "lon": 0.0, "lat": 0.001, "weight": 1}],
++            "candidates": [cand(A), cand(B)], "budget": 5, "max_selected": 1, "coverage_radius_m": 500,
++            "required_ids": [], "excluded_ids": [], "selected_ids": []}
++
++
++class IdOrder(unittest.TestCase):
++    def test_plan_oracle_tie_uses_utf16_order(self):
++        r = load("plan_oracle").solve(EQ, plan())
++        self.assertEqual(r["optimize"]["objectives"]["mean"]["ids"], [B])
++
++    def test_resilience_oracle_tie_uses_utf16_order(self):
++        cases = [{"id": A + "1", "label": "x", "disabled_source_ids": ["A", "B"]}, {"id": B + "1", "label": "y", "disabled_source_ids": ["A", "B"]}]
++        r = load("resilience_oracle").solve(EQ, plan(), cases)["optimize"]
++        self.assertEqual((r["nominal"]["ids"], r["robust"]["ids"]), ([B], [B]))
++        w = r["robust"]["worst_case_ids"]
++        self.assertEqual(w, sorted(w, key=lambda s: s.encode("utf-16-be")))
++
++
++if __name__ == "__main__":
++    unittest.main()

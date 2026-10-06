@@ -1,0 +1,723 @@
+{
+ "summary": {
+  "adapter": "build-resilience-import",
+  "self_test": false,
+  "app_root": "r9c_fix",
+  "data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "oracle": "rs_oracle_d865dd4.json",
+  "total": 65,
+  "pass": 65,
+  "fail": [],
+  "advisory": [],
+  "not_run": 0,
+  "skip": 0,
+  "network_attempts": 0,
+  "verdict": "PASS"
+ },
+ "results": [
+  {
+   "group": "R",
+   "id": "A01",
+   "title": "accept base_shymkent_school",
+   "status": "PASS",
+   "detail": {
+    "status": "optimal",
+    "robust": [
+     "c1",
+     "c2"
+    ]
+   }
+  },
+  {
+   "group": "R",
+   "id": "A02",
+   "title": "accept astana_clinic",
+   "status": "PASS",
+   "detail": {
+    "status": "optimal",
+    "robust": [
+     "c1",
+     "c2",
+     "c4"
+    ]
+   }
+  },
+  {
+   "group": "R",
+   "id": "A03",
+   "title": "accept seven_user_cases",
+   "status": "PASS",
+   "detail": {
+    "status": "optimal",
+    "robust": [
+     "c1",
+     "c2"
+    ]
+   }
+  },
+  {
+   "group": "R",
+   "id": "A04",
+   "title": "accept twelve_candidates_25_points",
+   "status": "PASS",
+   "detail": {
+    "status": "optimal",
+    "robust": [
+     "c1",
+     "c10",
+     "c2",
+     "c7",
+     "c8"
+    ]
+   }
+  },
+  {
+   "group": "R",
+   "id": "A05",
+   "title": "accept duplicate_case_sets",
+   "status": "PASS",
+   "detail": {
+    "status": "optimal",
+    "robust": [
+     "c1",
+     "c2"
+    ]
+   }
+  },
+  {
+   "group": "R",
+   "id": "A06",
+   "title": "accept all_sources_disabled",
+   "status": "PASS",
+   "detail": {
+    "status": "optimal",
+    "robust": [
+     "c1",
+     "c2",
+     "c4"
+    ]
+   }
+  },
+  {
+   "group": "R",
+   "id": "A07",
+   "title": "accept unicode_id_html_label",
+   "status": "PASS",
+   "detail": {
+    "status": "optimal",
+    "robust": [
+     "c1",
+     "c2"
+    ]
+   }
+  },
+  {
+   "group": "R",
+   "id": "A08",
+   "title": "accept label_120_codepoints",
+   "status": "PASS",
+   "detail": {
+    "status": "optimal",
+    "robust": [
+     "c1",
+     "c2"
+    ]
+   }
+  },
+  {
+   "group": "R",
+   "id": "A09",
+   "title": "accept permuted_order",
+   "status": "PASS",
+   "detail": {
+    "status": "optimal",
+    "robust": [
+     "c1",
+     "c2"
+    ]
+   }
+  },
+  {
+   "group": "R",
+   "id": "A10",
+   "title": "accept zero_candidates",
+   "status": "PASS",
+   "detail": {
+    "status": "optimal",
+    "robust": []
+   }
+  },
+  {
+   "group": "R",
+   "id": "A11",
+   "title": "accept required_infeasible",
+   "status": "PASS",
+   "detail": {
+    "status": "infeasible",
+    "robust": null
+   }
+  },
+  {
+   "group": "R",
+   "id": "A12",
+   "title": "accept multi_exclusion",
+   "status": "PASS",
+   "detail": {
+    "status": "optimal",
+    "robust": [
+     "c1",
+     "c2"
+    ]
+   }
+  },
+  {
+   "group": "R",
+   "id": "A13",
+   "title": "accept exactly_256KiB",
+   "status": "PASS",
+   "detail": {
+    "status": "optimal",
+    "robust": [
+     "c1",
+     "c2"
+    ]
+   }
+  },
+  {
+   "group": "R",
+   "id": "N01",
+   "title": "reject candidate_id_as_source",
+   "status": "PASS",
+   "detail": {
+    "code": "candidate_not_source",
+    "rule": "unknown_source"
+   }
+  },
+  {
+   "group": "R",
+   "id": "N02",
+   "title": "reject fake_source_id",
+   "status": "PASS",
+   "detail": {
+    "code": "unknown_source",
+    "rule": "unknown_source"
+   }
+  },
+  {
+   "group": "R",
+   "id": "N03",
+   "title": "reject other_category_source",
+   "status": "PASS",
+   "detail": {
+    "code": "unknown_source",
+    "rule": "unknown_source"
+   }
+  },
+  {
+   "group": "R",
+   "id": "N04",
+   "title": "reject other_city_source",
+   "status": "PASS",
+   "detail": {
+    "code": "unknown_source",
+    "rule": "unknown_source"
+   }
+  },
+  {
+   "group": "R",
+   "id": "N05",
+   "title": "reject reserved_base_id",
+   "status": "PASS",
+   "detail": {
+    "code": "reserved_id",
+    "rule": "reserved_id"
+   }
+  },
+  {
+   "group": "R",
+   "id": "N06",
+   "title": "reject duplicate_case_id",
+   "status": "PASS",
+   "detail": {
+    "code": "duplicate_id",
+    "rule": "duplicate_id"
+   }
+  },
+  {
+   "group": "R",
+   "id": "N07",
+   "title": "reject eight_user_cases",
+   "status": "PASS",
+   "detail": {
+    "code": "bad_cases",
+    "rule": "too_many_cases"
+   }
+  },
+  {
+   "group": "R",
+   "id": "N08",
+   "title": "reject zero_cases",
+   "status": "PASS",
+   "detail": {
+    "code": "bad_cases",
+    "rule": "too_few_cases"
+   }
+  },
+  {
+   "group": "R",
+   "id": "N09",
+   "title": "reject thirteen_candidates",
+   "status": "PASS",
+   "detail": {
+    "code": "too_many_candidates",
+    "rule": "too_many_candidates"
+   }
+  },
+  {
+   "group": "R",
+   "id": "N10",
+   "title": "reject seventeen_candidates",
+   "status": "PASS",
+   "detail": {
+    "code": "too_many_candidates",
+    "rule": "too_many_candidates"
+   }
+  },
+  {
+   "group": "R",
+   "id": "N11",
+   "title": "reject empty_exclusion",
+   "status": "PASS",
+   "detail": {
+    "code": "bad_exclusions",
+    "rule": "bad_exclusion"
+   }
+  },
+  {
+   "group": "R",
+   "id": "N12",
+   "title": "reject duplicate_source_in_case",
+   "status": "PASS",
+   "detail": {
+    "code": "duplicate_id",
+    "rule": "duplicate_id"
+   }
+  },
+  {
+   "group": "R",
+   "id": "N13",
+   "title": "reject empty_label",
+   "status": "PASS",
+   "detail": {
+    "code": "bad_label",
+    "rule": "bad_label"
+   }
+  },
+  {
+   "group": "R",
+   "id": "N14",
+   "title": "reject label_121_codepoints",
+   "status": "PASS",
+   "detail": {
+    "code": "bad_label",
+    "rule": "bad_label"
+   }
+  },
+  {
+   "group": "R",
+   "id": "N15",
+   "title": "reject label_control_char",
+   "status": "PASS",
+   "detail": {
+    "code": "bad_label",
+    "rule": "bad_label"
+   }
+  },
+  {
+   "group": "R",
+   "id": "N16",
+   "title": "reject label_bell_char",
+   "status": "PASS",
+   "detail": {
+    "code": "bad_label",
+    "rule": "bad_label"
+   }
+  },
+  {
+   "group": "R",
+   "id": "N17",
+   "title": "reject label_number",
+   "status": "PASS",
+   "detail": {
+    "code": "bad_label",
+    "rule": "bad_label"
+   }
+  },
+  {
+   "group": "R",
+   "id": "N18",
+   "title": "reject case_extra_field",
+   "status": "PASS",
+   "detail": {
+    "code": "bad_shape",
+    "rule": "unknown_field"
+   }
+  },
+  {
+   "group": "R",
+   "id": "N19",
+   "title": "reject case_missing_label",
+   "status": "PASS",
+   "detail": {
+    "code": "bad_shape",
+    "rule": "missing_field"
+   }
+  },
+  {
+   "group": "R",
+   "id": "N20",
+   "title": "reject envelope_derived_results",
+   "status": "PASS",
+   "detail": {
+    "code": "unknown_field",
+    "rule": "unknown_field"
+   }
+  },
+  {
+   "group": "R",
+   "id": "N21",
+   "title": "reject plan_derived_results",
+   "status": "PASS",
+   "detail": {
+    "code": "derived_not_allowed",
+    "rule": "derived_in_plan"
+   }
+  },
+  {
+   "group": "R",
+   "id": "N22",
+   "title": "reject schema_v2_tag",
+   "status": "PASS",
+   "detail": {
+    "code": "bad_version",
+    "rule": "bad_version"
+   }
+  },
+  {
+   "group": "R",
+   "id": "N23",
+   "title": "reject plan_is_v1",
+   "status": "PASS",
+   "detail": {
+    "code": "unknown_field",
+    "rule": "bad_plan"
+   }
+  },
+  {
+   "group": "R",
+   "id": "N24",
+   "title": "reject foreign_snapshot",
+   "status": "PASS",
+   "detail": {
+    "code": "foreign_snapshot",
+    "rule": "foreign_snapshot"
+   }
+  },
+  {
+   "group": "R",
+   "id": "N25",
+   "title": "reject plan_weight_zero",
+   "status": "PASS",
+   "detail": {
+    "code": "bad_weight",
+    "rule": "bad_plan"
+   }
+  },
+  {
+   "group": "R",
+   "id": "N26",
+   "title": "reject plan_cost_string",
+   "status": "PASS",
+   "detail": {
+    "code": "bad_cost",
+    "rule": "bad_plan"
+   }
+  },
+  {
+   "group": "R",
+   "id": "N27",
+   "title": "reject case_id_html",
+   "status": "PASS",
+   "detail": {
+    "code": "bad_id",
+    "rule": "bad_id"
+   }
+  },
+  {
+   "group": "R",
+   "id": "N28",
+   "title": "reject case_id_65",
+   "status": "PASS",
+   "detail": {
+    "code": "bad_id",
+    "rule": "bad_id"
+   }
+  },
+  {
+   "group": "R",
+   "id": "N29",
+   "title": "reject case_id_not_nfc",
+   "status": "PASS",
+   "detail": {
+    "code": "bad_id",
+    "rule": "bad_id"
+   }
+  },
+  {
+   "group": "R",
+   "id": "N30",
+   "title": "reject exclusion_not_array",
+   "status": "PASS",
+   "detail": {
+    "code": "bad_shape",
+    "rule": "bad_shape"
+   }
+  },
+  {
+   "group": "R",
+   "id": "N31",
+   "title": "reject cases_not_array",
+   "status": "PASS",
+   "detail": {
+    "code": "bad_shape",
+    "rule": "bad_shape"
+   }
+  },
+  {
+   "group": "R",
+   "id": "N32",
+   "title": "reject proto_key_in_case",
+   "status": "PASS",
+   "detail": {
+    "code": "bad_shape",
+    "rule": "unknown_field"
+   }
+  },
+  {
+   "group": "R",
+   "id": "N33",
+   "title": "reject missing_plan",
+   "status": "PASS",
+   "detail": {
+    "code": "bad_city",
+    "rule": "missing_field"
+   }
+  },
+  {
+   "group": "R",
+   "id": "N34",
+   "title": "reject whitespace_label",
+   "status": "PASS",
+   "detail": {
+    "code": "bad_label",
+    "rule": "bad_label"
+   }
+  },
+  {
+   "group": "R",
+   "id": "N35",
+   "title": "reject bidi_override_label",
+   "status": "PASS",
+   "detail": {
+    "code": "bad_label",
+    "rule": "bad_label"
+   }
+  },
+  {
+   "group": "R",
+   "id": "N36",
+   "title": "reject astana_plan_shymkent_sources",
+   "status": "PASS",
+   "detail": {
+    "code": "unknown_source",
+    "rule": "unknown_source"
+   }
+  },
+  {
+   "group": "R",
+   "id": "N40",
+   "title": "reject duplicate_key_cases",
+   "status": "PASS",
+   "detail": {
+    "code": "bad_json",
+    "rule": "bad_json"
+   }
+  },
+  {
+   "group": "R",
+   "id": "N41",
+   "title": "reject nan_budget",
+   "status": "PASS",
+   "detail": {
+    "code": "bad_json",
+    "rule": "bad_json"
+   }
+  },
+  {
+   "group": "R",
+   "id": "N42",
+   "title": "reject infinity_weight",
+   "status": "PASS",
+   "detail": {
+    "code": "bad_json",
+    "rule": "bad_json"
+   }
+  },
+  {
+   "group": "R",
+   "id": "N43",
+   "title": "reject overflow_1e999",
+   "status": "PASS",
+   "detail": {
+    "code": "bad_json",
+    "rule": "bad_json"
+   }
+  },
+  {
+   "group": "R",
+   "id": "N44",
+   "title": "reject deep_in_exclusion",
+   "status": "PASS",
+   "detail": {
+    "code": "bad_json",
+    "rule": "bad_json"
+   }
+  },
+  {
+   "group": "R",
+   "id": "N45",
+   "title": "reject deep_20000",
+   "status": "PASS",
+   "detail": {
+    "code": "bad_json",
+    "rule": "bad_json"
+   }
+  },
+  {
+   "group": "R",
+   "id": "N46",
+   "title": "reject over_256KiB",
+   "status": "PASS",
+   "detail": {
+    "code": "too_large",
+    "rule": "too_large"
+   }
+  },
+  {
+   "group": "R",
+   "id": "N47",
+   "title": "reject truncated",
+   "status": "PASS",
+   "detail": {
+    "code": "bad_json",
+    "rule": "bad_json"
+   }
+  },
+  {
+   "group": "R",
+   "id": "N48",
+   "title": "reject top_level_array",
+   "status": "PASS",
+   "detail": {
+    "code": "bad_shape",
+    "rule": "bad_shape"
+   }
+  },
+  {
+   "group": "R",
+   "id": "N49",
+   "title": "reject lone_surrogate_label",
+   "status": "PASS",
+   "detail": {
+    "code": "bad_label",
+    "rule": "bad_label"
+   }
+  },
+  {
+   "group": "X",
+   "id": "X1",
+   "title": "v2-импорт BUILD отклоняет все 59 текстов city-resilience-v1 типизированным кодом",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "group": "X",
+   "id": "X2",
+   "title": "v1-импорт BUILD отклоняет все 59 текстов city-resilience-v1 типизированным кодом",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "group": "X",
+   "id": "X3",
+   "title": "plan каждого допустимого конверта — валидный v2; mean-оптимум BUILD на base = nominal оракула (12 задач)",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "group": "X",
+   "id": "X4",
+   "title": "plan-уровень негативов в v2: 13 кандидатов v2 принимает (отказ — задача устойчивости), 17/подделка/v1/snapshot/вес/стоимость — отказ",
+   "status": "PASS",
+   "detail": {
+    "N09": {
+     "want": "accepted",
+     "got": "accepted"
+    },
+    "N10": {
+     "want": "too_many_candidates",
+     "got": "too_many_candidates"
+    },
+    "N21": {
+     "want": "forged_derived",
+     "got": "forged_derived"
+    },
+    "N23": {
+     "want": "wrong_version",
+     "got": "wrong_version"
+    },
+    "N24": {
+     "want": "foreign_snapshot",
+     "got": "foreign_snapshot"
+    },
+    "N25": {
+     "want": "bad_weight",
+     "got": "bad_weight"
+    },
+    "N26": {
+     "want": "bad_cost",
+     "got": "bad_cost"
+    }
+   }
+  },
+  {
+   "group": "X",
+   "id": "X5",
+   "title": "исходные записи неизменны: CITY_EVIDENCE и data.js те же, контекст plan.js заморожен, запись в него отклоняется",
+   "status": "PASS",
+   "detail": {
+    "d_same": true,
+    "file_same": true,
+    "frozen": true,
+    "mutationBlocked": true
+   }
+  },
+  {
+   "group": "X",
+   "id": "X6",
+   "title": "нет сетевых попыток",
+   "status": "PASS",
+   "detail": null
+  }
+ ]
+}
