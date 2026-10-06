@@ -64,6 +64,9 @@ const cases = [];
 for (const city of ["shymkent", "astana"]) cases.push([city + " slice grid", SC.buildCase(D, city, F.qaOf)]);
 const pkg = SC.normalizeCase(JSON.parse(fs.readFileSync(path.join(root, "school/cases/shymkent.case.json"), "utf8")));
 cases.push(["shymkent K01 package", pkg]);
+const k10text = fs.readFileSync(path.join(root, "school/cases/astana.case.json"), "utf8");
+const k10 = SC.importCase(k10text, D, [{ snapshot_id: JSON.parse(k10text).snapshot_id, city_id: "astana" }]);
+cases.push(["astana K10 package", k10]);  // K05 policy = include unknown access, flagged; same as the default here
 for (const [label, c] of cases) {
   compare(c, SC.geodesicMatrix(c), label + " geodesic");
   // unknown paths: whole origin unknown, some schools unknown for another origin, one candidate unreachable

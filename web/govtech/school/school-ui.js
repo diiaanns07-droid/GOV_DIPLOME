@@ -32,9 +32,12 @@
   const methodKey = (c) => c.parameters.distance_method === "geodesic" ? "geodesic" : c.parameters.routing_policy_id;
   // Prepared case packages, served byte-identical (see school/SCHOOL_MANIFEST.json). A city without a package, or with a
   // package that fails validation/binding to the loaded slice, uses the reproducible case built from the slice.
-  const PACKAGES = { shymkent: { case: "/govtech/school/cases/shymkent.case.json", meta: "/govtech/school/cases/shymkent.case.meta.json", by: "K01, раунд 10" } };
+  const PACKAGES = { shymkent: { case: "cases/shymkent.case.json", meta: "cases/shymkent.case.meta.json", by: "K01, раунд 10" },
+    astana: { case: "cases/astana.case.json", meta: "cases/astana.match-review.json", by: "K10, раунд 10" } };
+  const known = () => Object.values(S.pkg).filter((p) => p.case).map((p) => ({ snapshot_id: p.case.snapshot_id, city_id: p.case.city_id }));
 
   // ---------- case state ----------
+  const inFrame = (c, x) => c.bbox[0] <= x.lon && x.lon <= c.bbox[2] && c.bbox[1] <= x.lat && x.lat <= c.bbox[3];
   function freshCase(city) {
     const p = S.pkg[city];
     return p && p.case ? JSON.parse(JSON.stringify(p.case)) : SC.buildCase(D, city, F.qaOf);
@@ -44,14 +47,25 @@
     return S.cases[city];
   }
   async function loadPackages() {
+    // every package must match the sha256 recorded in SCHOOL_MANIFEST.json before it is used
+    let manifest = null;
+    try { const r = await fetch("/govtech/school/SCHOOL_MANIFEST.json"); if (r.ok) manifest = await r.json(); } catch (e) { manifest = null; }
+    const shaOf = (file) => { const it = manifest && manifest.cases.find((x) => x.file === file); return it ? it.sha256 : null; };
+    const getChecked = async (file) => {
+      const res = await fetch("/govtech/school/" + file);
+      if (!res.ok) throw new Error(file + ": HTTP " + res.status);
+      const text = await res.text(), want = shaOf(file);
+      if (!want || F.sha256hex(text) !== want) throw new Error(file + ": sha256 не совпадает с SCHOOL_MANIFEST.json");
+      return text;
+    };
     for (const [city, f] of Object.entries(PACKAGES)) {
       try {
-        const res = await fetch(f.case);
-        if (!res.ok) throw new Error("HTTP " + res.status);
-        const c = SC.importCase(await res.text(), D);
+        const text = await getChecked(f.case);
+        const raw = SC.normalizeCase(JSON.parse(text));
+        const c = SC.importCase(text, D, [{ snapshot_id: raw.snapshot_id, city_id: raw.city_id }]);
         let meta = null;
-        try { const r2 = await fetch(f.meta); if (r2.ok) meta = await r2.json(); } catch (e) { meta = null; }
-        S.pkg[city] = { case: c, meta, by: f.by, bind: SC.bindToSlice(c, D) };
+        try { meta = JSON.parse(await getChecked(f.meta)); } catch (e) { meta = null; }
+        S.pkg[city] = { case: c, meta, by: f.by, bind: SC.bindToSlice(c, D, known().concat([{ snapshot_id: c.snapshot_id, city_id: c.city_id }])) };
       } catch (e) { S.pkg[city] = { error: (e.code ? e.code + ": " : "") + (e.detail || e.message) }; }
     }
   }
@@ -123,6 +137,11 @@
   function excludedRecords() {
     const c = caseOf(S.city), meta = S.pkg[S.city] && S.pkg[S.city].case && S.pkg[S.city].meta, inCase = new Set(c.schools.map((s) => s.id.replace(/^overture:/, "")));
     const reasons = new Map(((meta && meta.excluded_school_records) || []).map((e) => [e.id.replace(/^overture:/, ""), e.reason]));
+    // K10 match-review: slice POI records attached to a package school are in the case under the package ID
+    for (const r of (meta && meta.poi_records) || []) if (r.in_app_slice) {
+      if (r.decision === "attach" || r.decision === "include_meta_only") inCase.add(r.record_id);
+      else reasons.set(r.record_id, `${r.decision === "not_school" ? "не школа" : r.decision === "conflict_not_target" ? "конфликт источников, не цель" : r.decision}: ${r.reason || ""}`);
+    }
     return D.cities[S.city].places.filter((p) => p.group === "school" && !inCase.has(p.id)).map((p) => ({ id: p.id, label: p.name || p.id, lon: p.lon, lat: p.lat,
       category: p.category, confidence: p.confidence, reason: reasons.get(p.id) || "запись среза не входит в список школ кейса", place: p }));
   }
@@ -133,7 +152,7 @@
       const c = caseOf(S.city);
       const all = JSON.parse(localStorage.getItem(STORE) || "{}");
       all[S.city] = { snapshot_id: c.snapshot_id, case_id: c.case_id, variants: c.variants, method: { distance_method: c.parameters.distance_method, routing_policy_id: c.parameters.routing_policy_id, routing: c.parameters.routing || null }, threshold_m: c.parameters.threshold_m,
-        include_ids: c.parameters.target_policy.include_ids, exclude_ids: c.parameters.target_policy.exclude_ids,
+        include_ids: c.parameters.target_policy.include_ids, exclude_ids: c.parameters.target_policy.exclude_ids, unknown_eligibility: c.parameters.target_policy.unknown_eligibility,
         user: c.candidates.filter((k) => isUser(k.id)), compared: S.compared };
       localStorage.setItem(STORE, JSON.stringify(all));
     } catch (e) { /* storage unavailable: the case still works for this tab */ }
@@ -148,6 +167,7 @@
       Object.assign(c.parameters, { threshold_m: r.threshold_m });
       if (r.method && r.method.distance_method === "pedestrian-v1" && r.method.routing) Object.assign(c.parameters, { distance_method: "pedestrian-v1", routing_policy_id: r.method.routing_policy_id, routing: r.method.routing });
       Object.assign(c.parameters.target_policy, { include_ids: r.include_ids || [], exclude_ids: r.exclude_ids || [] });
+      if (r.unknown_eligibility && c.parameters.target_policy.id === SC.PACKAGE_POLICY) c.parameters.target_policy.unknown_eligibility = r.unknown_eligibility;
       c.variants = { A: r.variants?.A ?? null, B: r.variants?.B ?? null };
       SC.validateCase(c);
       S.cases[city] = c; S.compared = !!r.compared;
@@ -234,8 +254,10 @@
     const box = el("div", { class: "sc-box" });
     const avail = c.sources.filter((x) => x.verification_status !== "not_fetched"), nf = c.sources.length - avail.length;
     if (pk && pk.case) {
-      box.append(el("p", null, `Кейс: подготовленный пакет ${pk.by}. Школ в расчёте: ${elig}; ещё ${ex.length} записей среза в категории «школа» исключены с причиной (реклама, курсы, детсад, координата-заглушка).`));
+      const outside = c.schools.filter((x) => !inFrame(c, x)).length;
+      box.append(el("p", null, `Кейс: подготовленный пакет ${pk.by}. Школ в кейсе ${c.schools.length}${outside ? ` (из них ${outside} — в буфере за рамкой участка)` : ""}, в расчёте ${elig}; записей среза «школа» вне расчёта с причиной: ${ex.length}.`));
       box.append(el("p", { class: "sc-prov" }, `Источники: ${avail.length} открыты (вторичные), ${nf} не открыты (NOT_FETCHED) — официальный перечень не сверялся. Снимок ${c.snapshot_id}.`));
+      const pol = policyBox(); if (pol) box.append(pol);
     } else {
       box.append(el("p", null, `Кейс собран из среза по правилу «${c.parameters.target_policy.id}»: школ в расчёте ${elig} из ${total} записей категории «школа». Остальные — курсы, центры, записи с сомнением QA; их можно включить вручную.`));
       box.append(el("p", { class: "sc-prov" }, `Источник: ${c.sources[0].title}. Вторичные данные (${c.sources[0].verification_status}), получено ${String(c.sources[0].retrieved_at).slice(0, 10)}. Не официальный реестр.`));
@@ -258,6 +280,32 @@
     const gaps = pk && pk.case && pk.meta && pk.meta.data_gaps;
     if (gaps && gaps.length) { const g = el("details"); g.append(el("summary", null, "Пробелы данных")); for (const x of gaps) g.append(el("p", { class: "sc-note" }, x.text)); box.append(g); }
     return box;
+  }
+  // Package policy for schools with unknown admission: an explicit switch plus the same case under the other policy.
+  function policyBox() {
+    const c = caseOf(S.city), tp = c.parameters.target_policy, unk = c.schools.filter((x) => x.access_eligibility === "unknown").length, pub = c.schools.filter((x) => x.access_eligibility === "known_public").length;
+    if (!(tp.id === SC.PACKAGE_POLICY && unk)) return null;
+    const pol = el("div", { class: "sc-method" });
+    pol.append(el("b", null, `Школы с неизвестным допуском к приёму (${unk})`));
+    const seg = el("div", { class: "sc-seg sc-seg-small" });
+    for (const [k, t] of [["include_flagged", "Учитывать (с пометкой)"], ["exclude", "Не учитывать"]])
+      seg.append(btn(t, () => { tp.unknown_eligibility = k; S.msg = k === "exclude" ? "Школы с неизвестным допуском не учитываются: остаются только известные общедоступные." : "Школы с неизвестным допуском учитываются; строки с ними помечены."; recompute(); render(); }, { "aria-pressed": String(tp.unknown_eligibility === k), id: "sc-unk-" + k, disabled: k === "exclude" && !pub }));
+    pol.append(seg);
+    // sensitivity: the same case under the other policy (computed, not stored)
+    if (!S.alt || S.alt.digest !== S.digest) {  // computed once per case state (a street matrix takes ~0.5 s)
+      S.alt = { digest: S.digest, text: null };
+      try {
+        const alt = JSON.parse(JSON.stringify(c)); alt.parameters.target_policy.unknown_eligibility = tp.unknown_eligibility === "exclude" ? "include_flagged" : "exclude";
+        const mx = matrixOf(alt);
+        if (mx) {
+          const ac = SC.compareCase(alt, mx).plans[0].metrics, cm = plan("current").metrics;
+          S.alt.text = `Сейчас при другой политике: в пределах ${c.parameters.threshold_m} м ${ac.within_threshold_count} из ${ac.total_origins} (здесь ${cm.within_threshold_count}), самая дальняя ${m(ac.max_distance_mm)} (здесь ${m(cm.max_distance_mm)}).`;
+        }
+      } catch (e) { /* the other policy may leave no school at all: nothing to show */ }
+    }
+    if (S.alt.text) pol.append(el("small", null, S.alt.text));
+    if (!pub) pol.append(el("small", null, "Известных общедоступных школ в кейсе нет: без школ с неизвестным допуском расчёт был бы пуст."));
+    return pol;
   }
   function methodBox() {
     const c = caseOf(S.city), cur = methodKey(c), box = el("div", { class: "sc-method", role: "group", "aria-label": "Как считать расстояние" });
@@ -350,7 +398,8 @@
     const thr = caseOf(S.city).parameters.threshold_m.toLocaleString("ru-RU");
     const pts = S.diff && S.view !== "current" ? [["sc-shape-closer", "Точке стало ближе"], ["sc-shape-same", "Без изменений"], ["sc-shape-unk", "Неизвестно (не 0)"]]
       : [["sc-shape-point", `Точка сетки ≤ ${thr} м — не жители`], ["sc-shape-far", `Точка дальше ${thr} м`]];
-    for (const [cls, text] of [["sc-shape-school", "Школа (в расчёте)"], ["sc-shape-excl", "Запись не в расчёте"], ...pts,
+    const c0 = caseOf(S.city), buf = c0.schools.some((x) => !inFrame(c0, x)) ? [["sc-shape-school sc-shape-buffer", "Школа за рамкой (буфер пакета)"]] : [];
+    for (const [cls, text] of [["sc-shape-school", "Школа (в расчёте)"], ...buf, ["sc-shape-excl", "Запись не в расчёте"], ...pts,
       ["sc-shape-cand", "Место-гипотеза для A/B"], ["sc-shape-line", methodKey(caseOf(S.city)) === "geodesic" ? "Связь с ближайшей школой (по прямой)" : "Путь к ближайшей школе (модель сети); пунктир — модельный отрезок до сети"]]) {
       const s = el("span"); s.append(el("i", { class: "sc-shape " + cls }), document.createTextNode(text)); parent.append(s);
     }
@@ -407,13 +456,16 @@
     const dl = el("dl", { class: "sc-dl" });
     const row = (k, v) => dl.append(el("dt", null, k), el("dd", null, v));
     const fp = s.field_provenance || {}, cat = fp.overture_category && fp.overture_category.value ? fp.overture_category : null;
-    row("Категория (Overture)", cat ? cat.value : s.category);
+    row("Категория", cat ? cat.value : fp.category && fp.category.value ? fp.category.value : s.category);
     const conf = typeof s.confidence === "number" ? s.confidence : cat && typeof cat.confidence === "number" ? cat.confidence : null;
     row("Уверенность источника", conf === null ? "нет данных" : conf.toFixed(2));
-    row("Допуск к приёму", "неизвестно"); row("Вместимость", "нет данных"); row("Почему " + (st.eligible ? "в расчёте" : "не в расчёте"), st.reason);
+    const ACC = { known_public: "общедоступная (вывод по вторичным данным, не официально)", known_restricted: "ограниченный приём (вывод по вторичным данным)", unknown: "неизвестно" };
+    row("Допуск к приёму", ACC[s.access_eligibility] || s.access_eligibility); row("Вместимость", s.capacity === null ? "нет данных" : String(s.capacity));
+    if (!inFrame(c, s)) row("Положение", "за рамкой участка, в буфере пакета — нужна для ближайшей школы у границы"); row("Почему " + (st.eligible ? "в расчёте" : "не в расчёте"), st.reason);
     row("Координаты", `${s.lon}, ${s.lat}`); row("Источник", src ? src.title : "не указан"); row("Статус источника", "вторичные данные, не реестр");
     card.append(dl);
     for (const q of F.qaOf(S.city, D.cities[S.city].places.find((p) => p.id === id.replace(/^overture:/, "")) || {})) card.append(el("p", { class: "sc-warn" }, q.text));
+    for (const q of s.qa || []) if (q && typeof q === "object" && q.text) card.append(el("p", { class: "sc-warn" }, q.text));
     if (fp.type_assessment) card.append(el("p", { class: "sc-note" }, `Оценка типа (${fp.type_assessment.source_id || "обзор"}): ${fp.type_assessment.value}; ${fp.type_assessment.method || ""}`));
     if (fp.official_match) card.append(el("p", { class: "sc-note" }, "Сверка с официальным перечнем: " + (fp.official_match.status === "not_fetched" ? "не выполнена — источники не открыты (NOT_FETCHED)" : fp.official_match.status)));
     const tp = c.parameters.target_policy;
@@ -428,7 +480,7 @@
   }
   function originCard(id) {
     const o = caseOf(S.city).origins.find((x) => x.id === id);
-    card.append(head(o.label, "Точка сетки анализа: не дом и не жители"));
+    card.append(head(o.label, o.kind === "derived" && /здан/i.test(o.label) ? "Точка анализа — центр здания: не жители и не дети" : "Точка анализа: не дом и не жители"));
     const t = el("table", { class: "sc-table" });
     const tr = el("tr"); for (const h of ["", "Ближайшая", "Расстояние", "Изменение"]) tr.append(el("th", null, h)); t.append(tr);
     for (const p of S.cmp.plans.filter((p) => p.id !== "auto")) {
@@ -497,6 +549,7 @@
       ["Самая дальняя точка", (p) => m(p.metrics.max_distance_mm)], ["Стало ближе", (p) => (p.id === "current" ? "—" : pts(p.closer_count))], ["Неизвестно", (p) => String(p.metrics.unknown_count)]];
     for (const [name, f] of rows) { const r = el("tr"); r.append(el("th", null, name)); for (const p of plans) r.append(el("td", null, f(p))); t.append(r); }
     card.append(t, methodBox());
+    const pol = policyBox(); if (pol) card.append(pol);
     const ex = el("div", { class: "sc-explain" }); ex.append(el("span", { class: "sc-tag" }, "Объяснение по шаблону из вычисленных чисел (не AI)"));
     for (const line of explain()) ex.append(el("p", null, line));
     if (auto && auto.selected_candidate_ids.length && ![c.variants.A, c.variants.B].includes(auto.selected_candidate_ids[0])) {
@@ -610,7 +663,7 @@
           if (!inner) throw new Error("в HTML-файле нет встроенного кейса");
           text = inner;
         }
-        c = SC.importCase(text, D);
+        c = SC.importCase(text, D, known());
       } catch (e) { S.msg = "Файл не загружен, текущий кейс не изменён: " + (e.detail || e.message); render(); return; }
       S.cases[c.city_id] = c;
       S.userSeq = 1 + Math.max(0, ...c.candidates.filter((k) => isUser(k.id)).map((k) => +k.id.slice(1)));
@@ -638,7 +691,8 @@
     map.addLayer({ id: "sc-schools-excl", type: "circle", source: "sc-schools", filter: ["!", ["get", "eligible"]],
       paint: { "circle-radius": 5, "circle-color": "#ffffff", "circle-stroke-color": "#8f9b95", "circle-stroke-width": 1.6 } });
     map.addLayer({ id: "sc-schools-in", type: "circle", source: "sc-schools", filter: ["get", "eligible"],
-      paint: { "circle-radius": ["case", ["get", "sel"], 12, 9], "circle-color": "#176b4a", "circle-stroke-color": "#ffffff", "circle-stroke-width": 3 } });
+      paint: { "circle-radius": ["case", ["get", "sel"], 12, 9], "circle-color": "#176b4a", "circle-stroke-color": "#ffffff", "circle-stroke-width": 3,
+        "circle-opacity": ["case", ["boolean", ["get", "outside"], false], 0.5, 1], "circle-stroke-opacity": ["case", ["boolean", ["get", "outside"], false], 0.5, 1] } });
     map.on("move", schedule);
     map.on("click", (e) => {
       if (!active()) return;
@@ -672,7 +726,7 @@
     }
     map.getSource("sc-links").setData({ type: "FeatureCollection", features: lines });
     map.getSource("sc-schools").setData({ type: "FeatureCollection", features: [...c.schools.map((s) => ({ type: "Feature",
-      properties: { id: s.id, eligible: SC.targetStatus(c, s).eligible, sel: s.id === selT }, geometry: { type: "Point", coordinates: [s.lon, s.lat] } })),
+      properties: { id: s.id, eligible: SC.targetStatus(c, s).eligible, sel: s.id === selT, outside: !inFrame(c, s) }, geometry: { type: "Point", coordinates: [s.lon, s.lat] } })),
       ...excludedRecords().map((e) => ({ type: "Feature", properties: { id: e.id, eligible: false, sel: e.id === selT }, geometry: { type: "Point", coordinates: [e.lon, e.lat] } }))] });
   }
   function schedule() {
@@ -746,6 +800,18 @@
   });
   document.addEventListener("keydown", (e) => { if (e.key === "Escape" && active() && S.pick) { setPick(null); } });
   addEventListener("resize", schedule);
+  // Page seam for colleague smoke tests (K10 ui_import_smoke.cjs): import through the same strict path as the file input.
+  window.SCHOOL_ACCESS_UI = {
+    importText(text) {
+      try { const c = SC.importCase(String(text), D, known()); S.cases[c.city_id] = c; if (c.city_id !== S.city) GOV.switchCity(c.city_id); S.sel = null; S.pick = null; S.compared = false; S.view = "current"; AI.last = null; recompute(); render(); return { ok: true }; }
+      catch (e) { return { ok: false, code: e.code || "error" }; }
+    },
+    state() {
+      const c = caseOf(S.city);
+      return { city_id: c.city_id, case_id: c.case_id, case_digest: S.digest, school_ids: c.schools.map((x) => x.id), origin_ids: c.origins.map((x) => x.id), candidate_ids: c.candidates.map((x) => x.id),
+        result_digest: S.compared ? S.digest : null, ai_digest: AI.last ? AI.last.case_digest : null, labels_text: (strip.innerText || "") + "\n" + (card.innerText || "") };
+    },
+  };
   window.SCHOOL_UI = { state: S, caseOf, recompute, render, assign, compare, setView, select, suggest, plan, lab, excludedRecords,
     exportCase: () => SC.exportCase(caseOf(S.city)), ready: () => !S.loading };
   if (GOV.map) { S.map = GOV.map; ensureLayers(GOV.map); }

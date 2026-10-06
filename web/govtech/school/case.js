@@ -36,6 +36,9 @@
   const finite = (v) => typeof v === "number" && Number.isFinite(v);
   const isInt = (v) => Number.isInteger(v);
   const inBbox = (bb, lon, lat) => bb[0] <= lon && lon <= bb[2] && bb[1] <= lat && lat <= bb[3];
+  // qa entries are codes ("CATEGORY_DOUBT") or {code, text} objects (K10); the code is what matters for policy and digest
+  const qaCode = (q) => (typeof q === "string" ? q : q && typeof q.code === "string" ? q.code : null);
+  const qaCodes = (r) => (r.qa || []).map(qaCode).filter(Boolean);
   const byId = (a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
   const r6 = (v) => Math.round(v * 1e6) / 1e6;
 
@@ -104,7 +107,7 @@
     if (!finite(r.lon) || !finite(r.lat) || r.lon < -180 || r.lon > 180 || r.lat < -90 || r.lat > 90) fail("bad_coord", `${where} ${r.id}: координаты`);
     if (!kinds.includes(r.kind)) fail("bad_kind", `${where} ${r.id}: kind=${r.kind}`);
     if (!Array.isArray(r.source_ids) || !r.source_ids.every((s) => typeof s === "string")) fail("bad_sources", `${where} ${r.id}: source_ids`);
-    if (r.qa !== undefined && !Array.isArray(r.qa)) fail("bad_qa", `${where} ${r.id}: qa`);
+    if (r.qa !== undefined && (!Array.isArray(r.qa) || r.qa.some((q) => qaCode(q) === null))) fail("bad_qa", `${where} ${r.id}: qa — коды или {code, text}`);
     if (typeof r.label !== "string" || r.label.length > 300) fail("bad_label", `${where} ${r.id}: label`);
   }
   function validateCase(c) {
@@ -167,9 +170,11 @@
     const tp = p.target_policy;
     if (!tp || !POLICIES.includes(tp.id) || !Array.isArray(tp.categories) || !Array.isArray(tp.exclude_qa) || !Array.isArray(tp.include_ids) || !Array.isArray(tp.exclude_ids)) fail("target_policy", "target_policy: " + POLICIES.join(" | "));
     for (const k of Object.keys(p)) if (!["distance_method", "routing_policy_id", "threshold_m", "max_new_objects", "target_policy", "routing"].includes(k)) fail("unknown_field", "parameters." + k);
+    if (tp.id === PACKAGE_POLICY && !["include_flagged", "exclude"].includes(tp.unknown_eligibility)) fail("target_policy", "unknown_eligibility: include_flagged | exclude");
     const sch = new Set(c.schools.map((s) => s.id));
     for (const id of [...tp.include_ids, ...tp.exclude_ids]) if (!sch.has(id)) fail("target_policy", "ручной выбор ссылается на неизвестную школу " + id);
-    if (!Array.isArray(c.model_assumptions) || !c.model_assumptions.every((s) => typeof s === "string")) fail("assumptions", "model_assumptions — строки");
+    if (!Array.isArray(c.model_assumptions) || !c.model_assumptions.every((a) => (typeof a === "string" && a.length <= 2000) || (a && typeof a.id === "string" && typeof a.text === "string" && a.text.length <= 2000)))
+      fail("assumptions", "model_assumptions — строки или {id, text}");
     return c;
   }
 
@@ -179,9 +184,10 @@
     if (tp.exclude_ids.includes(s.id)) return { eligible: false, reason: "исключено пользователем" };
     if (tp.include_ids.includes(s.id)) return { eligible: true, reason: "включено пользователем" };
     if (s.access_eligibility === "known_restricted") return { eligible: false, reason: "приём ограничен (known_restricted)" };
+    if (tp.id === PACKAGE_POLICY && s.access_eligibility === "unknown" && tp.unknown_eligibility === "exclude") return { eligible: false, reason: "допуск к приёму неизвестен; политика: только известные общедоступные" };
     if (tp.id === PACKAGE_POLICY) return { eligible: true, reason: "в списке школ подготовленного пакета; допуск к приёму: " + (s.access_eligibility === "known_public" ? "общедоступная" : "неизвестно") };
     if (!tp.categories.includes(s.category)) return { eligible: false, reason: `категория «${s.category}» — не школа по правилу ${tp.id}` };
-    const q = (s.qa || []).find((x) => tp.exclude_qa.includes(x));
+    const q = qaCodes(s).find((x) => tp.exclude_qa.includes(x));
     if (q) return { eligible: false, reason: "QA: " + q };
     return { eligible: true, reason: "категория школы, QA без сомнений в категории" };
   }
@@ -198,7 +204,7 @@
     return {
       canon: CANON, schema_version: c.schema_version, city_id: c.city_id, snapshot_id: c.snapshot_id, bbox: c.bbox,
       sources: c.sources.map((s) => ({ id: s.id, verification_status: s.verification_status, content_sha256: s.content_sha256 || null })).sort(byId),
-      schools: c.schools.map((s) => ({ id: s.id, lon: s.lon, lat: s.lat, kind: s.kind, source_ids: sortStr(s.source_ids), qa: sortStr(s.qa || []),
+      schools: c.schools.map((s) => ({ id: s.id, lon: s.lon, lat: s.lat, kind: s.kind, source_ids: sortStr(s.source_ids), qa: sortStr(qaCodes(s)),
         category: s.category, access_eligibility: s.access_eligibility, capacity: s.capacity })).sort(byId),
       origins: c.origins.map((o) => ({ id: o.id, lon: o.lon, lat: o.lat, kind: o.kind, weight: o.weight })).sort(byId),
       candidates: c.candidates.map((k) => ({ id: k.id, lon: k.lon, lat: k.lat, kind: k.kind, cost: k.cost, land_status: k.land_status })).sort(byId),
@@ -296,7 +302,9 @@
       fact(p, "closer_count", p.closer_count, "points");
       if (p.id !== "current") for (const r of p.rows) fact(p, "delta_mm", r.delta_mm, "mm", r.origin_id);
     }
-    const limitations = [c.parameters.distance_method === GEODESIC ? "straight_line_not_route" : "model_network_not_verified_on_site", "schools_outside_slice_not_loaded", "access_eligibility_unknown", "capacity_unknown",
+    const buffer = c.schools.some((s) => !inBbox(c.bbox, s.lon, s.lat));
+    const limitations = [c.parameters.distance_method === GEODESIC ? "straight_line_not_route" : "model_network_not_verified_on_site",
+      buffer ? "buffer_schools_included_beyond_may_be_missing" : "schools_outside_slice_not_loaded", "access_eligibility_unknown", "capacity_unknown",
       "secondary_source_not_registry", "grid_points_not_population", "candidates_hypothetical_land_unknown", "no_cost_data"];
     return { schema_version: COMPARE_SCHEMA, case_digest: caseDigest(c), method: mx.method, metric: METRIC, policy_id: mx.policy_id,
       graph_sha256: mx.graph_sha256 || null,
@@ -330,7 +338,7 @@
       c.selected_candidate_ids = [];
     }
     if (c.parameters && typeof c.parameters === "object" && !("target_policy" in c.parameters))
-      c.parameters.target_policy = { id: PACKAGE_POLICY, categories: [], exclude_qa: [], include_ids: [], exclude_ids: [] };
+      c.parameters.target_policy = { id: PACKAGE_POLICY, categories: [], exclude_qa: [], include_ids: [], exclude_ids: [], unknown_eligibility: "include_flagged" };
     return validateCase(c);
   }
   /* toContract(c): the strict contract view (no BUILD extensions): only target schools, A/B as selected_candidate_ids. */
@@ -345,13 +353,16 @@
   /* bindToSlice(c, D): the case must describe the slice actually loaded in this page — same city, same frame, a source
    * with the slice file hash (or the BUILD snapshot id), schools that are slice records keep their slice coordinates.
    * Another snapshot is refused, never silently replaced. */
-  function bindToSlice(c, D) {
+  /* known: snapshots of packages served by this site and checked against their manifest hash (school/SCHOOL_MANIFEST.json),
+   * e.g. the K10 Astana package — a wider snapshot (OSM layers + school buffer) of the same frame. */
+  function bindToSlice(c, D, known) {
     const city = D && D.cities && D.cities[c.city_id];
     if (!city) fail("bind_city", "нет загруженного среза для " + c.city_id);
     const fileSha = city.files && city.files.places_social ? city.files.places_social.sha256 : null;
     const own = c.snapshot_id === `overture-${city.release}-${c.city_id}`;
     const hashed = fileSha && c.sources.some((s) => s.content_sha256 === fileSha) && c.snapshot_id.includes(city.release);
-    if (!own && !hashed) fail("bind_snapshot", `кейс построен на «${c.snapshot_id}», а загружен срез ${city.release} (${String(fileSha).slice(0, 12)}…). Другой снимок не подставляется.`);
+    const vendored = (known || []).some((k) => k.snapshot_id === c.snapshot_id && k.city_id === c.city_id);
+    if (!own && !hashed && !vendored) fail("bind_snapshot", `кейс построен на «${c.snapshot_id}», а загружен срез ${city.release} (${String(fileSha).slice(0, 12)}…). Другой снимок не подставляется.`);
     if (c.bbox.some((v, i) => Math.abs(v - city.bbox[i]) > 1e-9)) fail("bind_bbox", "рамка кейса не совпадает с рамкой загруженного среза");
     const places = new Map(city.places.map((p) => [p.id, p]));
     let matched = 0;
@@ -361,12 +372,12 @@
       if (Math.abs(p.lon - s.lon) > 1e-9 || Math.abs(p.lat - s.lat) > 1e-9) fail("bind_coordinates", `${s.id}: координата отличается от записи среза`);
       matched++;
     }
-    return { matched_slice_records: matched, school_count: c.schools.length, by: own ? "build_snapshot_id" : "source_content_sha256" };
+    return { matched_slice_records: matched, school_count: c.schools.length, by: own ? "build_snapshot_id" : hashed ? "source_content_sha256" : "vendored_package_manifest" };
   }
 
   // ---------- import / export (untrusted input) ----------
   function exportCase(c) { validateCase(c); return JSON.stringify({ ...c, case_digest: caseDigest(c) }, null, 2); }
-  function importCase(text, D) {
+  function importCase(text, D, known) {
     if (typeof text !== "string") fail("import_type", "ожидается текст JSON");
     if (text.length > LIMITS.bytes) fail("import_size", `файл больше ${LIMITS.bytes / 1024} КБ`);
     let raw;
@@ -375,14 +386,14 @@
     const claimed = raw.case_digest;
     const r = { ...raw }; delete r.case_digest;
     const c = normalizeCase(r);
-    bindToSlice(c, D);
+    bindToSlice(c, D, known);
     const digest = caseDigest(c);
     if (claimed !== undefined && claimed !== digest) fail("import_digest", "case_digest файла не совпадает с пересчитанным: файл изменён");
     return c;
   }
 
   const api = { SCHEMA, COMPARE_SCHEMA, CANON, METRIC, LIMITS, GEODESIC, PEDESTRIAN, ROUTING_POLICIES, TARGET_POLICY, PACKAGE_POLICY, SCHOOL_CATEGORIES, CaseError, buildCase, validateCase, normalizeCase,
-    toContract, bindToSlice, targetStatus, canon, caseDigest, geodesicMatrix, compareCase, verdict, cmpPlans, exportCase, importCase };
+    toContract, bindToSlice, targetStatus, qaCodes, canon, caseDigest, geodesicMatrix, compareCase, verdict, cmpPlans, exportCase, importCase };
   if (NODE) module.exports = api;
   else root.SCHOOL_CASE = api;
 })(typeof window !== "undefined" ? window : globalThis);

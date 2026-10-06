@@ -192,7 +192,6 @@ for (const city of ["shymkent", "astana"]) {
   }
   eq(m2, 4, "4 pedestrian cases checked");
 }
-console.log(`all school-case checks passed incl. pedestrian (${n})`);
 
 // decision note: built only from the case/comparison; the embedded case loads back to the same digest; no markup injection
 {
@@ -213,4 +212,39 @@ console.log(`all school-case checks passed incl. pedestrian (${n})`);
   let threw = false; try { N.buildNote(c, { ...cmp, case_digest: "sha256:" + "0".repeat(64) }, { caseText: text, cityLabel: "", label: (k) => k.label }); } catch (e) { threw = true; }
   ok(threw, "note refuses a comparison of other inputs");
 }
-console.log(`all school-case + note checks passed (${n})`);
+
+// K10 Astana package (vendored, hash in SCHOOL_MANIFEST.json): binding, eligibility policy, and the independent K10 reference
+{
+  const text = fs.readFileSync(path.join(root, "school/cases/astana.case.json"), "utf8");
+  const raw = JSON.parse(text);
+  throwsCode(() => SC.importCase(text, D), "bind_snapshot", "K10 snapshot is not the slice snapshot: refused unless registered");
+  const known = [{ snapshot_id: raw.snapshot_id, city_id: "astana" }];
+  const c = SC.importCase(text, D, known);
+  eq(c.parameters.target_policy.unknown_eligibility, "include_flagged", "default policy as K05: unknown access counted, flagged");
+  const elig = (cc) => cc.schools.filter((s) => SC.targetStatus(cc, s).eligible).length;
+  eq(elig(c), 34, "29 known_public + 5 unknown; 6 restricted out");
+  const strict = JSON.parse(JSON.stringify(c)); strict.parameters.target_policy.unknown_eligibility = "exclude";
+  eq(elig(strict), 29, "only known_public");
+  ok(SC.caseDigest(strict) !== SC.caseDigest(c), "policy is part of the digest");
+  // independent K10 reference (spherical, its own code): known_public only; rows may differ by ±1 mm (rounding)
+  const ref = JSON.parse(fs.readFileSync(path.join(__dirname, "k10/reference_compare_k10.json"), "utf8"));
+  const mx = SC.geodesicMatrix(strict);
+  for (const rp of ref.plans) {
+    const sc = JSON.parse(JSON.stringify(strict)); sc.variants = { A: rp.selected_candidate_ids[0] || null, B: null };
+    const p = SC.compareCase(sc, mx).plans.find((x) => x.id === (rp.selected_candidate_ids.length ? "A" : "current"));
+    const label = "K10 ref " + (rp.selected_candidate_ids[0] || "current");
+    for (const k of ["total_origins", "known_count", "unknown_count", "within_threshold_count"]) eq(p.metrics[k], rp.metrics[k], label + " " + k);
+    ok(Math.abs(p.metrics.max_distance_mm - rp.metrics.max_distance_mm) <= 1, label + " max ±1 mm");
+    ok(Math.abs(p.metrics.sum_distance_mm - rp.metrics.sum_distance_mm) <= p.rows.length, label + " sum ±1 mm/row");
+    for (const r of rp.rows) {
+      const q = p.rows.find((x) => x.origin_id === r.origin_id);
+      eq(q.nearest_target_id, r.nearest_target_id, label + " nearest " + r.origin_id);
+      ok(Math.abs(q.after_mm - r.after_mm) <= 1 && Math.abs(q.before_mm - r.before_mm) <= 1, label + " row ±1 mm " + r.origin_id);
+    }
+  }
+  ok(SC.compareCase(c, SC.geodesicMatrix(c)).limitations.includes("buffer_schools_included_beyond_may_be_missing"), "buffer limitation derived from content");
+  // tampered package text: digest/binding still recomputed; a changed school coordinate gives another digest
+  const t2 = JSON.parse(text); t2.schools[0].lon += 0.001;
+  ok(SC.caseDigest(SC.normalizeCase(t2)) !== SC.caseDigest(c), "coordinate change → new digest");
+}
+console.log(`all school-case checks incl. K10 package passed (${n})`);

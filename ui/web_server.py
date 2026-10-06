@@ -48,6 +48,7 @@ for _asset in ("shell.js", "shell.css", "core/data.js", "core/evidence.js",
                "core/attribution/LICENSES/CDLA-Permissive-2.0.txt", "core/attribution/LICENSES/ODbL-1.0.txt",
                "school/case.js", "school/note.js", "school/school-ui.js", "school/school.css",
                "school/cases/shymkent.case.json", "school/cases/shymkent.case.meta.json",
+               "school/cases/astana.case.json", "school/cases/astana.match-review.json", "school/SCHOOL_MANIFEST.json",
                # K03 r10: pedestrian-v1 routing (module, ODbL graphs, hash manifest)
                "k03/routing.js", "k03/school-access-routing.js", "k03/shymkent.graph.json", "k03/astana.graph.json",
                "k03/K03_MANIFEST.json"):

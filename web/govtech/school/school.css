@@ -99,6 +99,7 @@
 /* legend shapes (same shapes as on the map) */
 .sc-shape { display: inline-block; width: 12px; height: 12px; flex-shrink: 0; }
 .sc-shape-school { border-radius: 50%; background: #176b4a; box-shadow: 0 0 0 2px #fff, 0 0 0 3px #176b4a40; }
+.sc-shape-buffer { opacity: .5; }
 .sc-shape-excl { border-radius: 50%; background: #fff; border: 1.6px solid #8f9b95; width: 10px; height: 10px; }
 .sc-shape-point { border-radius: 2px; background: #5d7d8f; }
 .sc-shape-cand { width: 10px; height: 10px; transform: rotate(45deg); border: 1.6px dashed #c06a2b; background: #c06a2b22; }
