@@ -1,0 +1,256 @@
+{
+ "IMMUTABLE": "PASS",
+ "failures": [],
+ "packs": 19,
+ "results": [
+  {
+   "checks": {
+    "CROSS_R8": "PASS",
+    "INDEX": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "kind": "real_slice",
+   "pack_id": "astana-outpatient_clinic-relied",
+   "problems": []
+  },
+  {
+   "checks": {
+    "CROSS_R8": "PASS",
+    "INDEX": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "kind": "real_slice",
+   "pack_id": "astana-outpatient_clinic-seeded",
+   "problems": []
+  },
+  {
+   "checks": {
+    "INDEX": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS"
+   },
+   "kind": "real_slice",
+   "pack_id": "astana-school-invalid-envelopes",
+   "problems": []
+  },
+  {
+   "checks": {
+    "CROSS_R8": "PASS",
+    "INDEX": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "kind": "real_slice",
+   "pack_id": "astana-school-relied",
+   "problems": []
+  },
+  {
+   "checks": {
+    "CROSS_R8": "PASS",
+    "INDEX": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "kind": "real_slice",
+   "pack_id": "astana-school-seeded",
+   "problems": []
+  },
+  {
+   "checks": {
+    "CROSS_R8": "PASS",
+    "INDEX": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "kind": "real_slice",
+   "pack_id": "shymkent-outpatient_clinic-qa",
+   "problems": []
+  },
+  {
+   "checks": {
+    "CROSS_R8": "PASS",
+    "INDEX": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "kind": "real_slice",
+   "pack_id": "shymkent-outpatient_clinic-relied",
+   "problems": []
+  },
+  {
+   "checks": {
+    "CROSS_R8": "PASS",
+    "INDEX": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "kind": "real_slice",
+   "pack_id": "shymkent-outpatient_clinic-seeded",
+   "problems": []
+  },
+  {
+   "checks": {
+    "INDEX": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS"
+   },
+   "kind": "real_slice",
+   "pack_id": "shymkent-school-invalid-envelopes",
+   "problems": []
+  },
+  {
+   "checks": {
+    "CROSS_R8": "PASS",
+    "INDEX": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "kind": "real_slice",
+   "pack_id": "shymkent-school-qa",
+   "problems": []
+  },
+  {
+   "checks": {
+    "CROSS_R8": "PASS",
+    "INDEX": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "kind": "real_slice",
+   "pack_id": "shymkent-school-relied",
+   "problems": []
+  },
+  {
+   "checks": {
+    "CROSS_R8": "PASS",
+    "INDEX": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "kind": "real_slice",
+   "pack_id": "shymkent-school-seeded",
+   "problems": []
+  },
+  {
+   "checks": {
+    "CROSS_R8": "PASS",
+    "HAND": "PASS",
+    "INDEX": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "SYNTHETIC",
+    "VALID": "PASS"
+   },
+   "kind": "synthetic",
+   "pack_id": "synthetic-all-sources-left-out",
+   "problems": []
+  },
+  {
+   "checks": {
+    "CROSS_R8": "PASS",
+    "HAND": "PASS",
+    "INDEX": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "SYNTHETIC",
+    "VALID": "PASS"
+   },
+   "kind": "synthetic",
+   "pack_id": "synthetic-infeasible-budget",
+   "problems": []
+  },
+  {
+   "checks": {
+    "CROSS_R8": "PASS",
+    "HAND": "PASS",
+    "INDEX": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "SYNTHETIC",
+    "VALID": "PASS"
+   },
+   "kind": "synthetic",
+   "pack_id": "synthetic-plans-coincide",
+   "problems": []
+  },
+  {
+   "checks": {
+    "CROSS_R8": "PASS",
+    "HAND": "PASS",
+    "INDEX": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "SYNTHETIC",
+    "VALID": "PASS"
+   },
+   "kind": "synthetic",
+   "pack_id": "synthetic-robust-differs",
+   "problems": []
+  },
+  {
+   "checks": {
+    "CROSS_R8": "PASS",
+    "HAND": "PASS",
+    "INDEX": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "SYNTHETIC",
+    "VALID": "PASS"
+   },
+   "kind": "synthetic",
+   "pack_id": "synthetic-robust-tiebreak",
+   "problems": []
+  },
+  {
+   "checks": {
+    "INDEX": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "SYNTHETIC"
+   },
+   "kind": "synthetic",
+   "pack_id": "synthetic-unknown-base-refused",
+   "problems": []
+  },
+  {
+   "checks": {
+    "CROSS_R8": "PASS",
+    "HAND": "PASS",
+    "INDEX": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "SYNTHETIC",
+    "VALID": "PASS"
+   },
+   "kind": "synthetic",
+   "pack_id": "synthetic-unknown-worst",
+   "problems": []
+  }
+ ],
+ "stale": [],
+ "target": {
+  "app_root": "<workdir>/prototypes/city-evidence",
+  "data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72"
+ }
+}

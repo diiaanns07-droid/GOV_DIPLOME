@@ -1,0 +1,82 @@
+{
+ "app_root": "<workdir>/prototypes/city-evidence",
+ "unmutated_exit": 0,
+ "mutants": 18,
+ "killed": 18,
+ "survived": [],
+ "not_applicable": [],
+ "results": [
+  {
+   "mutant": "robust: best case instead of worst",
+   "result": "killed"
+  },
+  {
+   "mutant": "robust: cost before base loss",
+   "result": "killed"
+  },
+  {
+   "mutant": "nominal: uses the worst case",
+   "result": "killed"
+  },
+  {
+   "mutant": "worst ids: only the first",
+   "result": "killed"
+  },
+  {
+   "mutant": "price sign reversed",
+   "result": "killed"
+  },
+  {
+   "mutant": "exclusions ignored",
+   "result": "killed"
+  },
+  {
+   "mutant": "unknown max counted as 0",
+   "result": "killed"
+  },
+  {
+   "mutant": "unknown not first in search",
+   "result": "killed"
+  },
+  {
+   "mutant": "label limit 121",
+   "result": "killed"
+  },
+  {
+   "mutant": "candidate limit 16",
+   "result": "killed"
+  },
+  {
+   "mutant": "8 user cases allowed",
+   "result": "killed"
+  },
+  {
+   "mutant": "base id not reserved",
+   "result": "killed"
+  },
+  {
+   "mutant": "derived results accepted",
+   "result": "killed"
+  },
+  {
+   "mutant": "candidate id accepted as source",
+   "result": "killed"
+  },
+  {
+   "mutant": "case id rule dropped",
+   "result": "killed"
+  },
+  {
+   "mutant": "duplicate case ids allowed",
+   "result": "killed"
+  },
+  {
+   "mutant": "cancel reported optimal",
+   "result": "killed"
+  },
+  {
+   "mutant": "budget check strict",
+   "result": "killed"
+  }
+ ]
+}

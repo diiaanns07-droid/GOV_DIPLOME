@@ -15,10 +15,11 @@
 
 Проверки (фактически):
 - python3 research/round-9-results/K10/regress.py --sha d865dd4 -> ok, BUILD_RESILIENCE NOT_RUN (модуля нет).
-- python3 research/round-9-results/K10/regress.py --sha 33cc635 -> ok, все 8 шагов PASS: resilience.js 19/19 пакетов, экспорт 10/10, мутанты 18/18.
+- python3 research/round-9-results/K10/regress.py --sha 33cc635 -> ok: resilience.js 19/19 пакетов, экспорт 10/10, мутанты 18/18; UI NOT_RUN (панели нет).
+- python3 research/round-9-results/K10/regress.py --sha e1cbc3f -> ok, все 9 шагов PASS, включая импорт 10 конвертов и 68 файлов ввода в настоящем UI (Playwright, 103/103).
 - unit 18 OK; мутанты оракула 17/17; мутанты предложения 16/16.
-Не запускалось: UI устойчивости в браузере — в 33cc635 нет панели (NOT_RUN).
+Не запускалось: UI на d865dd4 и 33cc635 — панели нет (NOT_RUN).
 
 Ограничения: синтетические точки, веса, кандидаты и стоимости; исключение записей условное, не закрытие; Overture неполон; результат относится к двум SHA.
-Следующий шаг: при появлении UI-панели устойчивости проверить импорт envelopes/inputs/*.json в браузере; новый SHA прогнать regress.py.
+Следующий шаг: каждый новый SHA BUILD прогонять командой regress.py --sha <sha>; ожидания не пересоздавать из BUILD.
 Подробно: research/round-9-results/K10/HANDOFF.md

@@ -1,9 +1,9 @@
 {
- "sha": "33cc635ec212e522b3e17fb0b598fad0ad602f71",
+ "sha": "e1cbc3fa84518a84698c03d014dc153f71338d54",
  "steps": {
   "EXTRACT": {
    "status": "PASS",
-   "files": 206
+   "files": 208
   },
   "FROZEN_PACKS": {
    "status": "PASS",
@@ -106,13 +106,14 @@
     "survived": [],
     "not_applicable": []
    },
-   "resilience_js_sha256": "c16d81aff909e7bbd8b296aa3aa618a94b1e8919273c95caf41a807dbd4667b3"
+   "resilience_js_sha256": "d401ff82f7633191a3ca9d35ceb6dad7a511d6f8a7cb359ae7380f62babb7c2c"
   },
   "BUILD_RESILIENCE_UI": {
-   "status": "NOT_RUN",
-   "note": "this build has no web/resilience-ui.js (no panel)"
+   "status": "PASS",
+   "summary": "{\"checks\":103,\"passed\":103,\"failed\":[]}",
+   "stderr_tail": ""
   }
  },
- "seconds": 23.6,
+ "seconds": 45.5,
  "ok": true
 }

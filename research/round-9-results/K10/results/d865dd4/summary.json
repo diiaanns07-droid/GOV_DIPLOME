@@ -96,6 +96,10 @@
   "BUILD_RESILIENCE": {
    "status": "NOT_RUN",
    "note": "this build has no web/resilience.js"
+  },
+  "BUILD_RESILIENCE_UI": {
+   "status": "NOT_RUN",
+   "note": "this build has no web/resilience-ui.js (no panel)"
   }
  },
  "seconds": 16.7,

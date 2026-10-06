@@ -18,6 +18,9 @@ Steps -> DIR/summary.json (default research/round-9-results/K10/results/<sha7>/)
   BUILD_RESILIENCE  the build's own web/resilience.js against the 19 packs (tests/run_build_resilience.cjs: math, rows per
                   case, order, import/export, refusals), its exports re-checked by the K10 oracle, and the packs' power to
                   catch injected rule errors (tests/run_build_res_mutants.py); NOT_RUN when the build has no resilience.js
+  BUILD_RESILIENCE_UI  tests/ui_import.cjs in Chromium (Playwright): the 10 real demo envelopes imported through the panel's
+                  «Загрузить», «Сравнить три плана» run, page result and display vs the K10 oracle; invalid files refused
+                  with the state unchanged; NOT_RUN when the build has no web/resilience-ui.js
 Exit 0 only if every step is PASS, SKIP or NOT_RUN (NOT_RUN is reported, never counted as PASS).
 """
 import argparse
@@ -180,6 +183,17 @@ def main():
                                               "resilience_js_sha256": sha256((app / "web/resilience.js").read_bytes())}
         else:
             s["steps"]["BUILD_RESILIENCE"] = {"status": "NOT_RUN", "note": "this build has no web/resilience.js"}
+        # the BUILD's resilience panel in a real browser (Playwright, file:// page): import the demo envelopes via «Загрузить»
+        if (app / "web/resilience-ui.js").exists():
+            npm_root = subprocess.run(["npm", "root", "-g"], capture_output=True, text=True).stdout.strip()
+            env_ui = {**os.environ, "NODE_PATH": os.environ.get("NODE_PATH") or npm_root}
+            r = subprocess.run(["node", str(HERE / "tests/ui_import.cjs"), str(app), str(out / "ui_import.json")],
+                               capture_output=True, text=True, env=env_ui)
+            last = (r.stdout.strip().splitlines() or [""])[-1]
+            s["steps"]["BUILD_RESILIENCE_UI"] = {"status": "PASS" if r.returncode == 0 else "FAIL", "summary": last[:400],
+                                                 "stderr_tail": r.stderr[-300:] if r.returncode else ""}
+        else:
+            s["steps"]["BUILD_RESILIENCE_UI"] = {"status": "NOT_RUN", "note": "this build has no web/resilience-ui.js (no panel)"}
     finally:
         if tmp:
             shutil.rmtree(tmp, ignore_errors=True)

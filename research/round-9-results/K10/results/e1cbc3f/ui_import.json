@@ -1,0 +1,420 @@
+{
+ "app_root": "<workdir>/prototypes/city-evidence",
+ "checks": 103,
+ "passed": 103,
+ "failed": [],
+ "results": [
+  {
+   "name": "shymkent-school-relied: imported (city, category, cases, manual plan)",
+   "ok": true
+  },
+  {
+   "name": "shymkent-school-relied: UI result = K10 oracle (nominal, robust, worst vectors, worst cases, price, feasible count)",
+   "ok": true
+  },
+  {
+   "name": "shymkent-school-relied: page shows 3 plans, 4 case rows, 3 worst marks, price +0,0 м, same-plan note true",
+   "ok": true
+  },
+  {
+   "name": "shymkent-school-seeded: imported (city, category, cases, manual plan)",
+   "ok": true
+  },
+  {
+   "name": "shymkent-school-seeded: UI result = K10 oracle (nominal, robust, worst vectors, worst cases, price, feasible count)",
+   "ok": true
+  },
+  {
+   "name": "shymkent-school-seeded: page shows 3 plans, 4 case rows, 3 worst marks, price +0,0 м, same-plan note true",
+   "ok": true
+  },
+  {
+   "name": "shymkent-school-qa: imported (city, category, cases, manual plan)",
+   "ok": true
+  },
+  {
+   "name": "shymkent-school-qa: UI result = K10 oracle (nominal, robust, worst vectors, worst cases, price, feasible count)",
+   "ok": true
+  },
+  {
+   "name": "shymkent-school-qa: page shows 3 plans, 3 case rows, 3 worst marks, price +0,0 м, same-plan note true",
+   "ok": true
+  },
+  {
+   "name": "shymkent-outpatient_clinic-relied: imported (city, category, cases, manual plan)",
+   "ok": true
+  },
+  {
+   "name": "shymkent-outpatient_clinic-relied: UI result = K10 oracle (nominal, robust, worst vectors, worst cases, price, feasible count)",
+   "ok": true
+  },
+  {
+   "name": "shymkent-outpatient_clinic-relied: page shows 3 plans, 4 case rows, 6 worst marks, price +0,0 м, same-plan note true",
+   "ok": true
+  },
+  {
+   "name": "shymkent-outpatient_clinic-seeded: imported (city, category, cases, manual plan)",
+   "ok": true
+  },
+  {
+   "name": "shymkent-outpatient_clinic-seeded: UI result = K10 oracle (nominal, robust, worst vectors, worst cases, price, feasible count)",
+   "ok": true
+  },
+  {
+   "name": "shymkent-outpatient_clinic-seeded: page shows 3 plans, 4 case rows, 6 worst marks, price +0,0 м, same-plan note true",
+   "ok": true
+  },
+  {
+   "name": "shymkent-outpatient_clinic-qa: imported (city, category, cases, manual plan)",
+   "ok": true
+  },
+  {
+   "name": "shymkent-outpatient_clinic-qa: UI result = K10 oracle (nominal, robust, worst vectors, worst cases, price, feasible count)",
+   "ok": true
+  },
+  {
+   "name": "shymkent-outpatient_clinic-qa: page shows 3 plans, 3 case rows, 6 worst marks, price +0,0 м, same-plan note true",
+   "ok": true
+  },
+  {
+   "name": "astana-school-relied: imported (city, category, cases, manual plan)",
+   "ok": true
+  },
+  {
+   "name": "astana-school-relied: UI result = K10 oracle (nominal, robust, worst vectors, worst cases, price, feasible count)",
+   "ok": true
+  },
+  {
+   "name": "astana-school-relied: page shows 3 plans, 4 case rows, 3 worst marks, price +0,0 м, same-plan note true",
+   "ok": true
+  },
+  {
+   "name": "astana-school-seeded: imported (city, category, cases, manual plan)",
+   "ok": true
+  },
+  {
+   "name": "astana-school-seeded: UI result = K10 oracle (nominal, robust, worst vectors, worst cases, price, feasible count)",
+   "ok": true
+  },
+  {
+   "name": "astana-school-seeded: page shows 3 plans, 4 case rows, 3 worst marks, price +0,0 м, same-plan note true",
+   "ok": true
+  },
+  {
+   "name": "astana-outpatient_clinic-relied: imported (city, category, cases, manual plan)",
+   "ok": true
+  },
+  {
+   "name": "astana-outpatient_clinic-relied: UI result = K10 oracle (nominal, robust, worst vectors, worst cases, price, feasible count)",
+   "ok": true
+  },
+  {
+   "name": "astana-outpatient_clinic-relied: page shows 3 plans, 4 case rows, 3 worst marks, price +10,6 м, same-plan note false",
+   "ok": true
+  },
+  {
+   "name": "astana-outpatient_clinic-seeded: imported (city, category, cases, manual plan)",
+   "ok": true
+  },
+  {
+   "name": "astana-outpatient_clinic-seeded: UI result = K10 oracle (nominal, robust, worst vectors, worst cases, price, feasible count)",
+   "ok": true
+  },
+  {
+   "name": "astana-outpatient_clinic-seeded: page shows 3 plans, 4 case rows, 3 worst marks, price +9,3 м, same-plan note false",
+   "ok": true
+  },
+  {
+   "name": "source records unchanged after all imports and runs",
+   "ok": true
+  },
+  {
+   "name": "shymkent-school-invalid-envelopes/duplicate_key: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "shymkent-school-invalid-envelopes/nan_budget: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "shymkent-school-invalid-envelopes/too_large: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "shymkent-school-invalid-envelopes/missing_cases: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "shymkent-school-invalid-envelopes/extra_top_field: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "shymkent-school-invalid-envelopes/v2_schema_in_envelope: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "shymkent-school-invalid-envelopes/plan_derived_results: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "shymkent-school-invalid-envelopes/plan_foreign_snapshot: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "shymkent-school-invalid-envelopes/13_candidates: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "shymkent-school-invalid-envelopes/17_candidates: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "shymkent-school-invalid-envelopes/plan_point_id_html: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "shymkent-school-invalid-envelopes/zero_cases: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "shymkent-school-invalid-envelopes/8_user_cases: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "shymkent-school-invalid-envelopes/case_id_base: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "shymkent-school-invalid-envelopes/case_id_duplicate: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "shymkent-school-invalid-envelopes/case_id_space: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "shymkent-school-invalid-envelopes/case_id_not_nfc: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "shymkent-school-invalid-envelopes/case_id_jamo_not_nfc: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "shymkent-school-invalid-envelopes/case_id_cyrillic: accepted and shown as text",
+   "ok": true
+  },
+  {
+   "name": "shymkent-school-invalid-envelopes/label_empty: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "shymkent-school-invalid-envelopes/label_spaces: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "shymkent-school-invalid-envelopes/label_121: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "shymkent-school-invalid-envelopes/label_120: accepted and shown as text",
+   "ok": true
+  },
+  {
+   "name": "shymkent-school-invalid-envelopes/label_control_char: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "shymkent-school-invalid-envelopes/label_html: accepted and shown as text",
+   "ok": true
+  },
+  {
+   "name": "shymkent-school-invalid-envelopes/label_html: label rendered literally, no element injected",
+   "ok": true
+  },
+  {
+   "name": "shymkent-school-invalid-envelopes/disabled_empty: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "shymkent-school-invalid-envelopes/disabled_candidate_id: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "shymkent-school-invalid-envelopes/disabled_unknown: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "shymkent-school-invalid-envelopes/disabled_other_category: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "shymkent-school-invalid-envelopes/disabled_duplicate: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "shymkent-school-invalid-envelopes/disabled_number: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "shymkent-school-invalid-envelopes/case_extra_field: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "shymkent-school-invalid-envelopes/duplicate_exclusion_sets: accepted and shown as text",
+   "ok": true
+  },
+  {
+   "name": "shymkent-school-invalid-envelopes/all_records_left_out: accepted and shown as text",
+   "ok": true
+  },
+  {
+   "name": "astana-school-invalid-envelopes/duplicate_key: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "astana-school-invalid-envelopes/nan_budget: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "astana-school-invalid-envelopes/too_large: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "astana-school-invalid-envelopes/missing_cases: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "astana-school-invalid-envelopes/extra_top_field: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "astana-school-invalid-envelopes/v2_schema_in_envelope: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "astana-school-invalid-envelopes/plan_derived_results: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "astana-school-invalid-envelopes/plan_foreign_snapshot: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "astana-school-invalid-envelopes/13_candidates: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "astana-school-invalid-envelopes/17_candidates: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "astana-school-invalid-envelopes/plan_point_id_html: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "astana-school-invalid-envelopes/zero_cases: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "astana-school-invalid-envelopes/8_user_cases: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "astana-school-invalid-envelopes/case_id_base: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "astana-school-invalid-envelopes/case_id_duplicate: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "astana-school-invalid-envelopes/case_id_space: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "astana-school-invalid-envelopes/case_id_not_nfc: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "astana-school-invalid-envelopes/case_id_jamo_not_nfc: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "astana-school-invalid-envelopes/case_id_cyrillic: accepted and shown as text",
+   "ok": true
+  },
+  {
+   "name": "astana-school-invalid-envelopes/label_empty: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "astana-school-invalid-envelopes/label_spaces: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "astana-school-invalid-envelopes/label_121: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "astana-school-invalid-envelopes/label_120: accepted and shown as text",
+   "ok": true
+  },
+  {
+   "name": "astana-school-invalid-envelopes/label_control_char: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "astana-school-invalid-envelopes/label_html: accepted and shown as text",
+   "ok": true
+  },
+  {
+   "name": "astana-school-invalid-envelopes/label_html: label rendered literally, no element injected",
+   "ok": true
+  },
+  {
+   "name": "astana-school-invalid-envelopes/disabled_empty: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "astana-school-invalid-envelopes/disabled_candidate_id: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "astana-school-invalid-envelopes/disabled_unknown: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "astana-school-invalid-envelopes/disabled_other_category: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "astana-school-invalid-envelopes/disabled_duplicate: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "astana-school-invalid-envelopes/disabled_number: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "astana-school-invalid-envelopes/case_extra_field: refused, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "astana-school-invalid-envelopes/duplicate_exclusion_sets: accepted and shown as text",
+   "ok": true
+  },
+  {
+   "name": "astana-school-invalid-envelopes/all_records_left_out: accepted and shown as text",
+   "ok": true
+  },
+  {
+   "name": "no page errors",
+   "ok": true
+  },
+  {
+   "name": "no network requests outside file:/blob:/data:",
+   "ok": true
+  }
+ ]
+}
