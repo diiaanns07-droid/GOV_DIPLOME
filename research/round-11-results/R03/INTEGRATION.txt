@@ -1,0 +1,20 @@
+R03 -> R01 INTEGRATION (draft, checkpoint 1; final version replaces this text)
+
+Files (load order, after MapLibre and before the R01 shell code that calls mount):
+  <link rel="stylesheet" href="/civic/map/civic-map.css">        (after /style.css)
+  <script defer src="/civic/map/civic-map-core.js"></script>
+  <script defer src="/civic/map/civic-map.js"></script>
+
+Hook (R01 shell, once GOVTECH.map is non-null, i.e. after the map 'load'):
+  const civicMap = window.CivicMap.mount({
+    root: document.getElementById("civic-public"),   // empty element owned by the shell
+    map: window.GOVTECH.map,                           // the one MapLibre instance
+    api,                                               // R01 api.request(method, path, body) -> Promise<data>
+    onSelect: (obj, meta) => {...},                    // obj = {id,title,kind,status,geometry,...} | null
+    onFeedback: ({objectId, geometry}) => window.CivicFeedback.mount({root, api, objectId, geometry}),
+  });
+  ...
+  civicMap.destroy();   // on leaving the civic mode
+
+Paths requested: GET /objects[?cursor=] and GET /objects/{id} relative to /api/civic/v1
+(pass option pathPrefix if api.request expects full paths). No /staff endpoint is ever called.
