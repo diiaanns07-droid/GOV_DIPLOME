@@ -1,0 +1,105 @@
+{
+  "notice": "ПРИМЕР НА СИНТЕТИЧЕСКИХ ТЕКСТАХ (tests/civic/R05/fixtures). Не реальный источник и не реальные работы.",
+  "commands": [
+    "schedule_diff.py snapshot --text tests/civic/R05/fixtures/synthetic_source_v1.txt ...",
+    "schedule_diff.py snapshot --text .../synthetic_source_v2.txt ...",
+    "schedule_diff.py diff v1.json v2.json --record data/civic/astana/demo_synthetic.json --object-id demo-astana-roadworks-delay"
+  ],
+  "snapshot_v1": {
+    "excerpts": [
+      "Ремонт условной улицы А начнётся 1 октября 2026 года.",
+      "Работы планируется завершить до 30 октября 2026 года.",
+      "На время работ проезд будет ограничен с 5 по 25 октября 2026 года."
+    ],
+    "note": "Только предложения с датами (<=300 символов каждое) и хэш полного текста; статья целиком не хранится.",
+    "published_on": "2026-10-01",
+    "retrieved_at": "2026-10-02T08:00:00Z",
+    "schema": "r05-source-snapshot-v1",
+    "source_id": "src-synthetic-example",
+    "text_sha256": "c4fa80ae1ace0075d6e35d47173e9710f0f70775e5a40a4076813b47184bc282",
+    "url": "https://example.org/synthetic"
+  },
+  "snapshot_v2": {
+    "excerpts": [
+      "Ремонт условной улицы А начался 1 октября 2026 года.",
+      "Срок завершения работ перенесён на 20 ноября 2026 года из-за погодных условий.",
+      "Ограничение проезда продлится с 5 октября по 15 ноября 2026 года."
+    ],
+    "note": "Только предложения с датами (<=300 символов каждое) и хэш полного текста; статья целиком не хранится.",
+    "published_on": "2026-10-20",
+    "retrieved_at": "2026-10-21T08:00:00Z",
+    "schema": "r05-source-snapshot-v1",
+    "source_id": "src-synthetic-example",
+    "text_sha256": "3d41fa0e20fe2f704706cf37bb6cf688d1f79dea3016a61230e618be99621a1b",
+    "url": "https://example.org/synthetic"
+  },
+  "report": {
+    "auto_applied": false,
+    "content_changed": true,
+    "editor_action": "Проверить каждую находку по источнику; изменения сроков вносить через редактор с причиной.",
+    "findings": [
+      {
+        "excerpts_new": [
+          "Ремонт условной улицы А начался 1 октября 2026 года."
+        ],
+        "field": "schedule.planned_start",
+        "kind": "differs_from_record",
+        "new": "2026-10-01",
+        "note": "значение в записи отличается от новой версии источника",
+        "old": "2026-09-20",
+        "requires_editor_confirmation": true
+      },
+      {
+        "excerpts_new": [
+          "Срок завершения работ перенесён на 20 ноября 2026 года из-за погодных условий."
+        ],
+        "field": "schedule.current_planned_end",
+        "kind": "changed",
+        "new": "2026-11-20",
+        "note": "опубликованный срок изменился между версиями источника; original_planned_end не меняется, при публикации нужна причина переноса",
+        "old": "2026-10-30",
+        "requires_editor_confirmation": true
+      },
+      {
+        "excerpts_new": [
+          "Срок завершения работ перенесён на 20 ноября 2026 года из-за погодных условий."
+        ],
+        "field": "schedule.current_planned_end",
+        "kind": "differs_from_record",
+        "new": "2026-11-20",
+        "note": "значение в записи отличается от новой версии источника",
+        "old": "2026-10-25",
+        "requires_editor_confirmation": true
+      },
+      {
+        "excerpts_new": [
+          "Ограничение проезда продлится с 5 октября по 15 ноября 2026 года."
+        ],
+        "field": null,
+        "kind": "period_changed",
+        "new": [
+          "2026-10-05/2026-11-15"
+        ],
+        "note": "изменился период (ограничение движения или мероприятие); соотнести со сроками записи вручную",
+        "old": [
+          "2026-10-05/2026-10-25"
+        ],
+        "requires_editor_confirmation": true
+      }
+    ],
+    "new": {
+      "published_on": "2026-10-20",
+      "retrieved_at": "2026-10-21T08:00:00Z",
+      "text_sha256": "3d41fa0e20fe2f704706cf37bb6cf688d1f79dea3016a61230e618be99621a1b"
+    },
+    "old": {
+      "published_on": "2026-10-01",
+      "retrieved_at": "2026-10-02T08:00:00Z",
+      "text_sha256": "c4fa80ae1ace0075d6e35d47173e9710f0f70775e5a40a4076813b47184bc282"
+    },
+    "record_id": "demo-astana-roadworks-delay",
+    "schema": "r05-schedule-diff-v1",
+    "source_id": "src-synthetic-example",
+    "url": "https://example.org/synthetic"
+  }
+}

@@ -59,3 +59,14 @@ LICENSE_REGISTER/ATTRIBUTION, synthetic demo slice, импорт-хелпер д
 Проверки: `python3 -m pytest tests/civic/R05 -q` → 71 passed; `build_slice.py --check` → без изменений.
 Следующий шаг: stretch — обнаружение смены опубликованного срока между двумя версиями источника; затем
 независимая проверка (adversarial review) и финальный DELIVERY.
+
+## Checkpoint 4 — PARTIAL (stretch)
+
+- `tools/schedule_diff.py`: `snapshot` хранит только предложения с датами (≤300 символов) + sha256 полного текста;
+  `diff` сравнивает две версии источника (и, опционально, запись) и выдаёт находки
+  changed/added/removed/ambiguous/period_changed/differs_from_record/candidate_actual/rejected_actual/imprecise_date,
+  все с `requires_editor_confirmation: true`, `auto_applied: false`. original_planned_end не предлагается к изменению;
+  «завершены <дата позже публикации>» отклоняется; месяц/без года не превращается в день.
+- Пример на синтетических текстах: `research/round-11-results/R05/schedule_diff_example.json`.
+- Проверки: `python3 -m pytest tests/civic/R05 -q` → 84 passed.
+Следующий шаг: независимая adversarial-проверка пакета, исправления, финальный DELIVERY.
