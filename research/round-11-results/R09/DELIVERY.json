@@ -13,14 +13,14 @@
     "research/handoffs/astana/R09/round-11/STATUS.md"
   ],
   "integration_notes": "research/round-11-results/R09/INTEGRATION.txt (будет на этапе CP6)",
-  "code_commit": "cdd2658",
+  "code_commit": "4619315",
   "checks": [
     {
-      "name": "r09-cp4-python-suite",
+      "name": "r09-cp5-python-and-ui-suite",
       "status": "PASS",
-      "command": "python3 -m pytest tests/civic/R09 -q",
-      "input": "tests/civic/R09/fixtures/*.json (synthetic objects, synthetic publications, R07 compare() output), MockProvider, fake chat client, fake R02 service",
-      "reason": "100 passed"
+      "command": "R09_SCREENSHOT_DIR=research/round-11-results/R09 python3 -m pytest tests/civic/R09 -q",
+      "input": "synthetic fixtures; R07 compare() output; MockProvider; fake chat client; fake R02 service; demo_server.py + Chromium (Playwright 1.56.1)",
+      "reason": "104 passed"
     },
     {
       "name": "live-llm",
@@ -34,5 +34,5 @@
     "Только шаблонный режим проверен на CP1",
     "KK-формулировки требуют проверки носителем языка"
   ],
-  "next_step": "CP5: CivicAssistant UI"
+  "next_step": "CP6: adversarial eval + INTEGRATION.txt"
 }

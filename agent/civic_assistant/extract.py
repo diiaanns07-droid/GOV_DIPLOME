@@ -133,8 +133,13 @@ def _sentence_bounds(text: str, start: int, end: int) -> tuple[int, int]:
 def find_instructions(text: str) -> list[dict]:
     out = []
     for m in INSTRUCTION.finditer(text):
-        # Цитируем предложение целиком, чтобы редактор видел контекст, а span — точный.
-        s, e = _sentence_bounds(text, m.start(), m.end())
+        if m[0].lower().startswith("<script"):
+            # Тег — сам себе область: соседнее обычное предложение не теряется.
+            close = text.lower().find("</script>", m.end())
+            s, e = m.start(), (close + len("</script>") if close != -1 else (text.find(">", m.end()) + 1 or len(text)))
+        else:
+            # Цитируем предложение целиком, чтобы редактор видел контекст, а span — точный.
+            s, e = _sentence_bounds(text, m.start(), m.end())
         if out and s < out[-1]["span"][1]:
             continue
         out.append({"quote": text[s:e][:MAX_QUOTE], "span": [s, min(e, s + MAX_QUOTE)], "action": "ignored_as_data"})

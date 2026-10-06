@@ -8,7 +8,7 @@
 - Собственные пути: `agent/civic_assistant/`, `web/civic/assistant/`, `tests/civic/R09/`,
   `research/round-11-results/R09/`, `research/handoffs/astana/R09/round-11/STATUS.md`
 
-## Статус: PARTIAL — checkpoint 4
+## Статус: PARTIAL — checkpoint 5
 
 ### Сделано
 - `agent/civic_assistant/facts.py`: серверный каталог фактов из публичного DTO civic-v1 (allowlist),
@@ -39,12 +39,19 @@
   противоречия -> null. Статус не извлекается. Инструкции в тексте -> ignored_instructions (данные).
   Провайдер возвращает только цитаты; код проверяет вхождение и сам разбирает значение.
   POST /api/civic/v1/staff/assistant/extract: 401/403 (роль, same-origin), 400/413/422; ничего не сохраняет.
+- CP5 `web/civic/assistant/assistant.js|.css`: window.CivicAssistant.mount({root,api,objectId,scenarioId?}) -> {destroy}
+  и mountDraftReview({root,api,onApplyField}) -> {destroy}. Только textContent; AbortController + номер запроса
+  (запоздавший ответ/смена объекта/destroy); проверка object_id ответа; 429/сеть/timeout — понятные сообщения.
+  Редактор отмечает поля вручную, onApplyField переносит их в форму; null-поля не принимаются.
+  `web/civic/assistant/demo.html` + `tests/civic/R09/demo_server.py` (stdlib, 127.0.0.1) + `ui_check.cjs` (Playwright).
+  Реальные скриншоты: research/round-11-results/R09/ui_assistant_desktop.png, ui_assistant_mobile.png.
 
 ### Проверки
-- `python3 -m pytest tests/civic/R09 -q` -> 100 passed (CP4; CP3 79; CP2 49; CP1 16).
+- `R09_SCREENSHOT_DIR=research/round-11-results/R09 python3 -m pytest tests/civic/R09 -q` -> 104 passed
+  (включая 17 проверок UI в Chromium через Playwright 1.56.1; CP4 100; CP3 79; CP2 49; CP1 16).
 
 ### Не запускалось
 - Живой LLM (вне задания). Интеграция в app (делает R01).
 
 ### Следующий шаг
-CP5: web/civic/assistant (CivicAssistant.mount + редакторская панель черновика) и проверка в реальном Chromium.
+CP6: adversarial eval (таблица PASS/FAIL/NOT_RUN), EVAL_REPORT.txt, INTEGRATION.txt, contract_delta при необходимости.
