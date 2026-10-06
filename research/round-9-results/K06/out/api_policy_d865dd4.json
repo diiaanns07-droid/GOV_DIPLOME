@@ -1,0 +1,263 @@
+{
+ "note": "accept/reject policy only; SYNTHETIC probes on case budget_full_max3",
+ "probes": {
+  "valid_base": {
+   "k06_oracle": {
+    "accepted": true
+   },
+   "plan_js": {
+    "accepted": true
+   },
+   "same_decision": true
+  },
+  "id_with_space": {
+   "k06_oracle": {
+    "accepted": true
+   },
+   "plan_js": {
+    "accepted": false,
+    "code": "bad_id"
+   },
+   "same_decision": false
+  },
+  "id_with_colon": {
+   "k06_oracle": {
+    "accepted": true
+   },
+   "plan_js": {
+    "accepted": false,
+    "code": "bad_id"
+   },
+   "same_decision": false
+  },
+  "id_cyrillic_nfc": {
+   "k06_oracle": {
+    "accepted": true
+   },
+   "plan_js": {
+    "accepted": true
+   },
+   "same_decision": true
+  },
+  "id_65_chars": {
+   "k06_oracle": {
+    "accepted": false,
+    "code": "bad_id"
+   },
+   "plan_js": {
+    "accepted": false,
+    "code": "bad_id"
+   },
+   "same_decision": true
+  },
+  "weight_missing_default_1": {
+   "k06_oracle": {
+    "accepted": true
+   },
+   "plan_js": {
+    "accepted": false,
+    "code": "bad_shape"
+   },
+   "same_decision": false
+  },
+  "weight_zero": {
+   "k06_oracle": {
+    "accepted": false,
+    "code": "out_of_range"
+   },
+   "plan_js": {
+    "accepted": false,
+    "code": "bad_weight"
+   },
+   "same_decision": true
+  },
+  "weight_float_integral": {
+   "k06_oracle": {
+    "accepted": true
+   },
+   "plan_js": {
+    "accepted": true
+   },
+   "same_decision": true
+  },
+  "cost_zero": {
+   "k06_oracle": {
+    "accepted": false,
+    "code": "out_of_range"
+   },
+   "plan_js": {
+    "accepted": false,
+    "code": "bad_cost"
+   },
+   "same_decision": true
+  },
+  "budget_negative": {
+   "k06_oracle": {
+    "accepted": false,
+    "code": "out_of_range"
+   },
+   "plan_js": {
+    "accepted": false,
+    "code": "bad_budget"
+   },
+   "same_decision": true
+  },
+  "radius_99": {
+   "k06_oracle": {
+    "accepted": false,
+    "code": "out_of_range"
+   },
+   "plan_js": {
+    "accepted": false,
+    "code": "bad_radius"
+   },
+   "same_decision": true
+  },
+  "radius_5001": {
+   "k06_oracle": {
+    "accepted": false,
+    "code": "out_of_range"
+   },
+   "plan_js": {
+    "accepted": false,
+    "code": "bad_radius"
+   },
+   "same_decision": true
+  },
+  "max_selected_6": {
+   "k06_oracle": {
+    "accepted": false,
+    "code": "out_of_range"
+   },
+   "plan_js": {
+    "accepted": false,
+    "code": "bad_max_selected"
+   },
+   "same_decision": true
+  },
+  "required_excluded_overlap": {
+   "k06_oracle": {
+    "accepted": false,
+    "code": "required_excluded_overlap"
+   },
+   "plan_js": {
+    "accepted": false,
+    "code": "required_excluded_overlap"
+   },
+   "same_decision": true
+  },
+  "required_unknown_id": {
+   "k06_oracle": {
+    "accepted": false,
+    "code": "unknown_candidate"
+   },
+   "plan_js": {
+    "accepted": false,
+    "code": "unknown_ref"
+   },
+   "same_decision": true
+  },
+  "selected_duplicate": {
+   "k06_oracle": {
+    "accepted": false,
+    "code": "duplicate_id"
+   },
+   "plan_js": {
+    "accepted": false,
+    "code": "duplicate_id"
+   },
+   "same_decision": true
+  },
+  "candidate_kind_source": {
+   "k06_oracle": {
+    "accepted": false,
+    "code": "bad_candidate"
+   },
+   "plan_js": {
+    "accepted": false,
+    "code": "bad_kind"
+   },
+   "same_decision": true
+  },
+  "candidate_other_category": {
+   "k06_oracle": {
+    "accepted": false,
+    "code": "bad_candidate"
+   },
+   "plan_js": {
+    "accepted": false,
+    "code": "bad_category"
+   },
+   "same_decision": true
+  },
+  "candidate_outside_bbox": {
+   "k06_oracle": {
+    "accepted": false,
+    "code": "outside_bbox"
+   },
+   "plan_js": {
+    "accepted": false,
+    "code": "outside_bbox"
+   },
+   "same_decision": true
+  },
+  "unknown_top_field": {
+   "k06_oracle": {
+    "accepted": false,
+    "code": "unexpected_field"
+   },
+   "plan_js": {
+    "accepted": false,
+    "code": "unknown_field"
+   },
+   "same_decision": true
+  },
+  "derived_results_present": {
+   "k06_oracle": {
+    "accepted": true
+   },
+   "plan_js": {
+    "accepted": true
+   },
+   "same_decision": true
+  },
+  "candidates_17": {
+   "k06_oracle": {
+    "accepted": false,
+    "code": "bad_candidates"
+   },
+   "plan_js": {
+    "accepted": false,
+    "code": "too_many_candidates"
+   },
+   "same_decision": true
+  },
+  "zero_points": {
+   "k06_oracle": {
+    "accepted": false,
+    "code": "bad_points"
+   },
+   "plan_js": {
+    "accepted": false,
+    "code": "bad_points"
+   },
+   "same_decision": true
+  },
+  "foreign_snapshot": {
+   "k06_oracle": {
+    "accepted": false,
+    "code": "foreign_snapshot"
+   },
+   "plan_js": {
+    "accepted": false,
+    "code": "foreign_snapshot"
+   },
+   "same_decision": true
+  }
+ },
+ "differences": [
+  "id_with_space",
+  "id_with_colon",
+  "weight_missing_default_1"
+ ]
+}

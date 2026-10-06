@@ -1,0 +1,325 @@
+{
+ "tested_implementation": "prototypes/city-evidence/web/plan.js",
+ "tested_commit": "d865dd4a124291e10dd0b7bb1d9eada20d34c268",
+ "expectations": "K06 r8 gold (independent brute force) + K06 r8 oracle; never derived from the app",
+ "cases": {
+  "budget_zero": {
+   "class": "PASS"
+  },
+  "budget_full_max3": {
+   "class": "PASS"
+  },
+  "tie_identical_candidates": {
+   "class": "PASS"
+  },
+  "tie_candidate_on_source": {
+   "class": "PASS"
+  },
+  "required_over_budget": {
+   "class": "PASS",
+   "notes": [
+    "reason codes equal after the documented name mapping"
+   ]
+  },
+  "required_over_count": {
+   "class": "PASS",
+   "notes": [
+    "reason codes equal after the documented name mapping"
+   ]
+  },
+  "required_and_excluded_ok": {
+   "class": "PASS"
+  },
+  "no_baseline": {
+   "class": "PASS"
+  },
+  "no_baseline_budget_zero": {
+   "class": "PASS"
+  },
+  "no_candidates": {
+   "class": "PASS"
+  },
+  "pareto_duplicates": {
+   "class": "PASS"
+  },
+  "other_category_ignored": {
+   "class": "PASS"
+  },
+  "budget_zero__perm": {
+   "class": "PASS"
+  },
+  "budget_zero__perm_renamed": {
+   "class": "PASS"
+  },
+  "budget_full_max3__perm": {
+   "class": "PASS"
+  },
+  "budget_full_max3__perm_renamed": {
+   "class": "PASS"
+  },
+  "tie_identical_candidates__perm": {
+   "class": "PASS"
+  },
+  "tie_identical_candidates__perm_renamed": {
+   "class": "PASS"
+  },
+  "tie_candidate_on_source__perm": {
+   "class": "PASS"
+  },
+  "tie_candidate_on_source__perm_renamed": {
+   "class": "PASS"
+  },
+  "required_over_budget__perm": {
+   "class": "PASS",
+   "notes": [
+    "reason codes equal after the documented name mapping"
+   ]
+  },
+  "required_over_budget__perm_renamed": {
+   "class": "PASS",
+   "notes": [
+    "reason codes equal after the documented name mapping"
+   ]
+  },
+  "required_over_count__perm": {
+   "class": "PASS",
+   "notes": [
+    "reason codes equal after the documented name mapping"
+   ]
+  },
+  "required_over_count__perm_renamed": {
+   "class": "PASS",
+   "notes": [
+    "reason codes equal after the documented name mapping"
+   ]
+  },
+  "required_and_excluded_ok__perm": {
+   "class": "PASS"
+  },
+  "required_and_excluded_ok__perm_renamed": {
+   "class": "PASS"
+  },
+  "no_baseline__perm": {
+   "class": "PASS"
+  },
+  "no_baseline__perm_renamed": {
+   "class": "PASS"
+  },
+  "no_baseline_budget_zero__perm": {
+   "class": "PASS"
+  },
+  "no_baseline_budget_zero__perm_renamed": {
+   "class": "PASS"
+  },
+  "no_candidates__perm": {
+   "class": "PASS"
+  },
+  "no_candidates__perm_renamed": {
+   "class": "PASS"
+  },
+  "pareto_duplicates__perm": {
+   "class": "PASS"
+  },
+  "pareto_duplicates__perm_renamed": {
+   "class": "PASS"
+  },
+  "other_category_ignored__perm": {
+   "class": "PASS"
+  },
+  "other_category_ignored__perm_renamed": {
+   "class": "PASS"
+  },
+  "syn_random_00": {
+   "class": "PASS"
+  },
+  "syn_random_01": {
+   "class": "PASS",
+   "notes": [
+    "reason codes equal after the documented name mapping"
+   ]
+  },
+  "syn_random_02": {
+   "class": "PASS"
+  },
+  "syn_random_03": {
+   "class": "PASS"
+  },
+  "syn_random_04": {
+   "class": "PASS"
+  },
+  "syn_random_05": {
+   "class": "PASS"
+  },
+  "syn_random_06": {
+   "class": "PASS"
+  },
+  "syn_random_07": {
+   "class": "PASS"
+  },
+  "syn_random_08": {
+   "class": "PASS"
+  },
+  "syn_random_09": {
+   "class": "PASS"
+  },
+  "syn_random_10": {
+   "class": "PASS"
+  },
+  "syn_random_11": {
+   "class": "PASS"
+  },
+  "syn_random_12": {
+   "class": "PASS"
+  },
+  "syn_random_13": {
+   "class": "PASS"
+  },
+  "syn_random_14": {
+   "class": "PASS"
+  },
+  "syn_random_15": {
+   "class": "PASS"
+  },
+  "syn_random_16": {
+   "class": "PASS"
+  },
+  "syn_random_17": {
+   "class": "PASS"
+  },
+  "syn_random_18": {
+   "class": "PASS"
+  },
+  "syn_random_19": {
+   "class": "PASS"
+  },
+  "syn_random_20": {
+   "class": "PASS"
+  },
+  "syn_random_21": {
+   "class": "PASS",
+   "notes": [
+    "reason codes equal after the documented name mapping"
+   ]
+  },
+  "syn_random_22": {
+   "class": "PASS",
+   "notes": [
+    "reason codes equal after the documented name mapping"
+   ]
+  },
+  "syn_random_23": {
+   "class": "PASS"
+  },
+  "syn_divergent_00": {
+   "class": "PASS"
+  },
+  "syn_divergent_01": {
+   "class": "PASS"
+  },
+  "syn_divergent_02": {
+   "class": "PASS"
+  },
+  "syn_divergent_03": {
+   "class": "PASS"
+  },
+  "syn_divergent_04": {
+   "class": "PASS"
+  },
+  "syn_divergent_05": {
+   "class": "PASS"
+  },
+  "syn_divergent_06": {
+   "class": "PASS"
+  },
+  "syn_divergent_07": {
+   "class": "PASS"
+  },
+  "syn_divergent_08": {
+   "class": "PASS"
+  },
+  "syn_divergent_09": {
+   "class": "PASS"
+  },
+  "syn_divergent_10": {
+   "class": "PASS"
+  },
+  "syn_divergent_11": {
+   "class": "PASS"
+  },
+  "real_shymkent_school_00": {
+   "class": "PASS"
+  },
+  "real_shymkent_school_01": {
+   "class": "PASS"
+  },
+  "real_shymkent_school_02": {
+   "class": "PASS"
+  },
+  "real_shymkent_school_03": {
+   "class": "PASS"
+  },
+  "real_shymkent_school_04": {
+   "class": "PASS"
+  },
+  "real_shymkent_school_05": {
+   "class": "PASS"
+  },
+  "real_shymkent_outpatient_clinic_00": {
+   "class": "PASS"
+  },
+  "real_shymkent_outpatient_clinic_01": {
+   "class": "PASS"
+  },
+  "real_shymkent_outpatient_clinic_02": {
+   "class": "PASS"
+  },
+  "real_shymkent_outpatient_clinic_03": {
+   "class": "PASS"
+  },
+  "real_shymkent_outpatient_clinic_04": {
+   "class": "PASS"
+  },
+  "real_shymkent_outpatient_clinic_05": {
+   "class": "PASS"
+  },
+  "real_astana_school_00": {
+   "class": "PASS"
+  },
+  "real_astana_school_01": {
+   "class": "PASS"
+  },
+  "real_astana_school_02": {
+   "class": "PASS"
+  },
+  "real_astana_school_03": {
+   "class": "PASS"
+  },
+  "real_astana_school_04": {
+   "class": "PASS"
+  },
+  "real_astana_school_05": {
+   "class": "PASS"
+  },
+  "real_astana_outpatient_clinic_00": {
+   "class": "PASS"
+  },
+  "real_astana_outpatient_clinic_01": {
+   "class": "PASS"
+  },
+  "real_astana_outpatient_clinic_02": {
+   "class": "PASS"
+  },
+  "real_astana_outpatient_clinic_03": {
+   "class": "PASS"
+  },
+  "real_astana_outpatient_clinic_04": {
+   "class": "PASS"
+  },
+  "real_astana_outpatient_clinic_05": {
+   "class": "PASS"
+  }
+ },
+ "summary": {
+  "PASS": 96
+ }
+}

@@ -1,0 +1,9 @@
+{
+ "commit": "58cf89973cf3578620e016329139697becaf860f",
+ "files": {
+  "plan_oracle.py": "56de80f1c16869418cbfba79133150334ae373c78e4abd92ee102d709c657d27",
+  "gold_bruteforce.py": "424530350149c6af8c4448deb0f650ddfbb2107f27fef45e28f45b388c0545b6",
+  "compare_candidate.py": "f42854d10e42377b332eb761ed12f9839fe890b8f0431494796d4b983385bc2f",
+  "fixtures/gold_cases.json": "1105bc4e4baad91ba195b2d387cc22b8b91554869710de781169307d6fdc36fe"
+ }
+}
