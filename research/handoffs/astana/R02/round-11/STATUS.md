@@ -18,6 +18,12 @@
   `web/` и другие папки проекта отклоняются.
 - Проверка: `python -m pytest -q -p no:cacheprovider tests/civic/R02` → 13 passed (2026-10-06T15:36Z).
 
+## Checkpoint 2 — валидация, CRUD, публичная проекция, сервис (PARTIAL → DONE для чтения/создания)
+- `validate.py` (civic-v1: даты, NaN/Infinity, геометрия в рамке Астаны, деньги с источником, plain text без HTML),
+  `dto.py` (allowlist), `objects.py` (draft/publish/archive в одной транзакции с историей и публичной проекцией),
+  `auth.py` (scrypt, сессии, CSRF, лимит входов), `service.py` (CivicService.handle + resolve_principal).
+- Миграция 2: `civic_create_requests` (Idempotency-Key для повторной отправки формы).
+- Проверка: `python -m pytest -q -p no:cacheprovider tests/civic/R02` → 80 passed.
+
 ## Следующий шаг
-Валидация civic-v1 + repository CRUD (draft/published/archived, публичная проекция по allowlist), затем
-update/publish с expected_revision и историей.
+Тесты update/publish/409/истории/original_planned_end и auth (неверный пароль, истечение, logout, CSRF).

@@ -157,6 +157,17 @@ MIGRATIONS: list[tuple[int, str, tuple[str, ...]]] = [
             UNIQUE (source, external_id, digest)
         )""",
     )),
+    # Повторная отправка формы создания (двойной клик, повтор после обрыва сети)
+    # с тем же Idempotency-Key возвращает уже созданный черновик.
+    (2, "idempotent draft creation", (
+        """CREATE TABLE civic_create_requests (
+            user_id INTEGER NOT NULL REFERENCES civic_users(id),
+            request_key TEXT NOT NULL CHECK (length(request_key) BETWEEN 8 AND 64),
+            object_id TEXT NOT NULL REFERENCES civic_objects(id),
+            created_at TEXT NOT NULL,
+            PRIMARY KEY (user_id, request_key)
+        )""",
+    )),
 ]
 SCHEMA_VERSION = MIGRATIONS[-1][0]
 
