@@ -1,0 +1,95 @@
+--- a/ui/web_server.py
++++ b/ui/web_server.py
+@@ -12,6 +12,7 @@
+ import ipaddress
+ import json
+ import logging
++import os
+ from pathlib import Path
+ import threading
+ from urllib.parse import parse_qs, urlsplit
+@@ -237,10 +238,20 @@
+         if 0 < length <= MAX_BODY:
+             self.rfile.read(length)
+ 
++    def civic_route(self):
++        # R02 civic API (/api/civic/v1): свой JSON-конверт, сессии, CSRF и проверка Host.
++        civic = getattr(self.server, "civic", None)
++        if civic is not None and civic.handles(self.path):
++            civic.serve(self)
++            return True
++        return False
++
+     def do_HEAD(self):
+         self.do_GET()
+ 
+     def do_GET(self):
++        if self.civic_route():
++            return
+         parsed = urlsplit(self.path)
+         path = parsed.path
+         if path == "/api/health":
+@@ -270,6 +281,8 @@
+             self.error_reply(500, "Не удалось загрузить данные движка.")
+ 
+     def do_POST(self):
++        if self.civic_route():
++            return
+         path = urlsplit(self.path).path
+         if path not in POST_ROUTES:
+             self.discard_body()
+@@ -319,16 +332,32 @@
+             LOGGER.exception("Ошибка обработчика %s", path)
+             self.error_reply(500, "Не удалось выполнить запрос. Попробуйте ещё раз.")
+ 
++    def do_unsupported(self):
++        # PUT/PATCH/DELETE: civic API отвечает 405 в своём формате; остальное — 405 как раньше JSON.
++        if not self.civic_route():
++            self.discard_body()
++            self.error_reply(405, "Метод не поддерживается.")
++
++    do_PUT = do_PATCH = do_DELETE = do_unsupported
++
+ 
+ def _invalid_number(value):
+     raise ValueError("JSON должен содержать только конечные числа.")
+ 
+ 
+-def create_server(project: Path = ROOT, port: int = 8501, host: str = "127.0.0.1"):
++def create_server(project: Path = ROOT, port: int = 8501, host: str = "127.0.0.1", civic_db=None):
+     backend = Backend(project)
++    civic = None
++    if civic_db is not None:
++        # База civic (R02) вне web/: по умолчанию .runtime/civic.sqlite3, не раздаётся и не в Git.
++        from ui.civic_store import CivicService
++        from ui.civic_store.http_adapter import CivicHttpAdapter
++
++        civic = CivicHttpAdapter(CivicService(civic_db), bind_host=host)
+     server = ThreadingHTTPServer((host, port), Handler)
+     server.daemon_threads = True
+     server.backend = backend
++    server.civic = civic
+     return server
+ 
+ 
+@@ -337,11 +366,19 @@
+     parser.add_argument("--port", type=int, default=8501)
+     parser.add_argument("--host", default="127.0.0.1")
+     parser.add_argument("--open", action="store_true", help="Открыть браузер после запуска")
++    parser.add_argument("--civic-db", default=os.environ.get("CIVIC_DB_PATH"),
++                        help="SQLite civic-объектов (по умолчанию .runtime/civic.sqlite3)")
++    parser.add_argument("--no-civic", action="store_true", help="Запустить без civic API")
+     args = parser.parse_args()
+     if not 1 <= args.port <= 65535:
+         parser.error("Порт должен быть от 1 до 65535.")
+     try:
+-        server = create_server(port=args.port, host=args.host)
++        civic_db = None
++        if not args.no_civic:
++            from ui.civic_store import DEFAULT_DB_PATH
++
++            civic_db = args.civic_db or DEFAULT_DB_PATH
++        server = create_server(port=args.port, host=args.host, civic_db=civic_db)
+     except OSError as exc:
+         if getattr(exc, "winerror", None) == 10048 or getattr(exc, "errno", None) in (48, 98, 10048):
+             parser.exit(1, "Порт занят. Закройте прежнее приложение или задайте другой PORT.\n")

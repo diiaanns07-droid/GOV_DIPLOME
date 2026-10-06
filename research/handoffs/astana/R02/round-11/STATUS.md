@@ -34,5 +34,18 @@
   actor/role/publication из body игнорируются; токены/пароли не в логах и не в БД (только хэши).
 - Проверка: `python -m pytest -q -p no:cacheprovider tests/civic/R02` → 124 passed.
 
+## Checkpoint 4 — импорт R05, CLI, HTTP-адаптер и патч для R01 (DONE)
+- `importer.py`: формат пакета R05 (`{schema_version, city, slice, items}`), действия как в плане R05
+  (create / skip_unchanged / update_import_draft / editor_review / report_missing + id_conflict/invalid), dry-run,
+  атомарный отказ при недопустимой записи, никогда не публикует. Демо-срез R05 (ветка claude/intelligent-sagan-7shpeh)
+  прошёл мою валидацию 9/9 и dry-run импорта (create 9).
+- `cli.py` (`python -m ui.civic_store`): init, status, create-editor/set-password (getpass, --password-stdin без argv),
+  disable-editor, list-editors, revoke-sessions, import, seed-demo, backup, restore --yes, export-audit.
+- `http_adapter.py`: CivicHttpAdapter для BaseHTTPRequestHandler (Host allowlist, Origin/Sec-Fetch-Site, 411/413/415,
+  404/405 в конверте). `research/round-11-results/R02/web_server.patch` — минимальный патч к ui/web_server.py
+  (b2cb2e0 = версия у R01), тест применяет его к копии и гоняет реальные HTTP-запросы к настоящему Handler.
+- Проверка: `python -m pytest -q -p no:cacheprovider` (весь репозиторий) → 279 passed, 1 skipped
+  (skip — тест импорта файла R05, появится после интеграции R01).
+
 ## Следующий шаг
-CLI init/create-editor(getpass)/import, идемпотентный импорт пакета R05 с dry-run, многопоточные тесты.
+INTEGRATION.txt, MIGRATIONS.txt (политика для R06 feedback_*), DELIVERY.json; затем независимое ревью безопасности.
