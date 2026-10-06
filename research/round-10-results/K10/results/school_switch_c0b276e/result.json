@@ -1,0 +1,274 @@
+{
+ "kind": "K10 round-10 city switch in BUILD's school-access path",
+ "url": "http://127.0.0.1:8501/",
+ "label": "c0b276e",
+ "sha": "c0b276e8a2d8d97a369252470f60e97bf1858f1d",
+ "total": 22,
+ "pass": [
+  "1440-SS1",
+  "1440-SS2",
+  "1440-SS3",
+  "1440-SS4",
+  "1440-SS5",
+  "1440-SS7",
+  "1440-SS8",
+  "1440-SS9",
+  "1440-SS10",
+  "1440-SS11",
+  "390-SS1",
+  "390-SS2",
+  "390-SS3",
+  "390-SS4",
+  "390-SS5",
+  "390-SS7",
+  "390-SS8",
+  "390-SS9",
+  "390-SS10",
+  "390-SS11"
+ ],
+ "fail": [],
+ "not_run": [],
+ "info": [
+  "1440-SS6",
+  "390-SS6"
+ ],
+ "test_incompatible": [],
+ "checks": [
+  {
+   "id": "1440-SS1",
+   "expect": "Shymkent state produced: A and B set, compared, a school selected (precondition)",
+   "verdict": "PASS",
+   "observed": {
+    "variants": {
+     "A": "m1a",
+     "B": "m3d"
+    },
+    "compared": true,
+    "sel": {
+     "type": "school",
+     "id": "01961e84-815f-4bd1-85c3-6bf1734256ec"
+    }
+   }
+  },
+  {
+   "id": "1440-SS2",
+   "expect": "the case follows the city: city, case_id, snapshot, bbox and case_digest change",
+   "verdict": "PASS",
+   "observed": {
+    "case_id": [
+     "shymkent-school-access-2026-09-23.1",
+     "astana-school-access-2026-09-23.1"
+    ],
+    "snapshot": [
+     "overture-2026-09-23.1-shymkent",
+     "overture-2026-09-23.1-astana"
+    ],
+    "digest": [
+     "sha256:f592d5c90ca",
+     "sha256:cbbc1c27331"
+    ]
+   }
+  },
+  {
+   "id": "1440-SS3",
+   "expect": "no selection, comparison or A/B view of Shymkent survives the switch",
+   "verdict": "PASS",
+   "observed": {
+    "sel": null,
+    "compared": false,
+    "view": "current",
+    "variants": {
+     "A": null,
+     "B": null
+    }
+   }
+  },
+  {
+   "id": "1440-SS4",
+   "expect": "school records are Astana records only",
+   "verdict": "PASS",
+   "observed": {
+    "n": 8,
+    "foreign": []
+   }
+  },
+  {
+   "id": "1440-SS5",
+   "expect": "analysis points and candidate places lie inside the Astana frame",
+   "verdict": "PASS",
+   "observed": {
+    "originsInside": true,
+    "candsInside": true
+   }
+  },
+  {
+   "id": "1440-SS6",
+   "expect": "info: generated point/place IDs reused across cities (coordinates differ; results are keyed by case_digest)",
+   "verdict": "INFO",
+   "observed": {
+    "shared_generated_ids": 37
+   }
+  },
+  {
+   "id": "1440-SS7",
+   "expect": "map layers: school layer holds only Astana school IDs (= the case); every link vertex is near the Astana frame",
+   "verdict": "PASS",
+   "observed": {
+    "schools": 8,
+    "far": []
+   }
+  },
+  {
+   "id": "1440-SS8",
+   "expect": "no Shymkent school name in the visible planning UI after the switch (strip, card, verdict)",
+   "verdict": "PASS",
+   "observed": []
+  },
+  {
+   "id": "1440-SS9",
+   "expect": "back to Shymkent: only Shymkent records; the digest is Shymkent's again (per-city state is kept by design, nothing of Astana)",
+   "verdict": "PASS",
+   "observed": {
+    "digest": "sha256:f592d5c90ca",
+    "restoredVariants": {
+     "A": "m1a",
+     "B": "m3d"
+    }
+   }
+  },
+  {
+   "id": "1440-SS10",
+   "expect": "simulator: training score unchanged",
+   "verdict": "PASS",
+   "observed": {
+    "score0": "52,56",
+    "active": false,
+    "score": "52,56"
+   }
+  },
+  {
+   "id": "1440-SS11",
+   "expect": "no page errors",
+   "verdict": "PASS",
+   "observed": []
+  },
+  {
+   "id": "390-SS1",
+   "expect": "Shymkent state produced: A and B set, compared, a school selected (precondition)",
+   "verdict": "PASS",
+   "observed": {
+    "variants": {
+     "A": "m1a",
+     "B": "m3d"
+    },
+    "compared": true,
+    "sel": {
+     "type": "school",
+     "id": "01961e84-815f-4bd1-85c3-6bf1734256ec"
+    }
+   }
+  },
+  {
+   "id": "390-SS2",
+   "expect": "the case follows the city: city, case_id, snapshot, bbox and case_digest change",
+   "verdict": "PASS",
+   "observed": {
+    "case_id": [
+     "shymkent-school-access-2026-09-23.1",
+     "astana-school-access-2026-09-23.1"
+    ],
+    "snapshot": [
+     "overture-2026-09-23.1-shymkent",
+     "overture-2026-09-23.1-astana"
+    ],
+    "digest": [
+     "sha256:f592d5c90ca",
+     "sha256:cbbc1c27331"
+    ]
+   }
+  },
+  {
+   "id": "390-SS3",
+   "expect": "no selection, comparison or A/B view of Shymkent survives the switch",
+   "verdict": "PASS",
+   "observed": {
+    "sel": null,
+    "compared": false,
+    "view": "current",
+    "variants": {
+     "A": null,
+     "B": null
+    }
+   }
+  },
+  {
+   "id": "390-SS4",
+   "expect": "school records are Astana records only",
+   "verdict": "PASS",
+   "observed": {
+    "n": 8,
+    "foreign": []
+   }
+  },
+  {
+   "id": "390-SS5",
+   "expect": "analysis points and candidate places lie inside the Astana frame",
+   "verdict": "PASS",
+   "observed": {
+    "originsInside": true,
+    "candsInside": true
+   }
+  },
+  {
+   "id": "390-SS6",
+   "expect": "info: generated point/place IDs reused across cities (coordinates differ; results are keyed by case_digest)",
+   "verdict": "INFO",
+   "observed": {
+    "shared_generated_ids": 37
+   }
+  },
+  {
+   "id": "390-SS7",
+   "expect": "map layers: school layer holds only Astana school IDs (= the case); every link vertex is near the Astana frame",
+   "verdict": "PASS",
+   "observed": {
+    "schools": 8,
+    "far": []
+   }
+  },
+  {
+   "id": "390-SS8",
+   "expect": "no Shymkent school name in the visible planning UI after the switch (strip, card, verdict)",
+   "verdict": "PASS",
+   "observed": []
+  },
+  {
+   "id": "390-SS9",
+   "expect": "back to Shymkent: only Shymkent records; the digest is Shymkent's again (per-city state is kept by design, nothing of Astana)",
+   "verdict": "PASS",
+   "observed": {
+    "digest": "sha256:f592d5c90ca",
+    "restoredVariants": {
+     "A": "m1a",
+     "B": "m3d"
+    }
+   }
+  },
+  {
+   "id": "390-SS10",
+   "expect": "simulator: training score unchanged",
+   "verdict": "PASS",
+   "observed": {
+    "score0": "52,56",
+    "active": false,
+    "score": "52,56"
+   }
+  },
+  {
+   "id": "390-SS11",
+   "expect": "no page errors",
+   "verdict": "PASS",
+   "observed": []
+  }
+ ]
+}

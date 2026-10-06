@@ -4,9 +4,9 @@
 |---|---|
 | Роль | K10 (не BUILD). Задание: `research/round-10/prompts/K10.txt` @ `origin/codex/govtech-main-interface` = `7c6fb75ec66c50627af62b9d0d8e94c1f09bee16` |
 | Ветка | `claude/save-work-handoff-j7pc05` (назначена в `snapshots.json`). Роль принята с SHA `657db5207a2c92d1f64fd94f39ba98f56cc30fa8` — последний коммит прежней сессии K10 (r9). Перед каждым push проверяется, что удалённая ветка не ушла вперёд: второго писателя быть не должно |
-| Кодовая база | `d2ff344c5ec9b9a729ea59df50ec81f981e619de` (корневой `app.py`/`web/` на 8501). BUILD `5f81e4d` — cherry-pick того же коммита: код `web/ ui/ agent/ app.py tests/govtech` идентичен. Нового BUILD с импортом school-access-case-v1 пока нет |
+| Кодовая база и проверенные SHA | `d2ff344c5ec9b9a729ea59df50ec81f981e619de` (корневой `app.py`/`web/` на 8501). Новый BUILD явно закреплён: **`c0b276e8a2d8d97a369252470f60e97bf1858f1d`** — путь «Доступность школ» (`web/govtech/school/`), без UI-импорта пакета. Обе сборки проверены на чистых копиях |
 | Обновлено | 2026-10-06 UTC |
-| Статус | **этапы 0–3 готовы.** Интеграция в новый BUILD — **NOT_RUN**: в BUILD нет импорта school-access-case-v1 (на `d2ff344` smoke = TEST_INCOMPATIBLE) |
+| Статус | **этапы 0–3 готовы.** На `c0b276e` движок BUILD на пакете K10 совпадает со справочным расчётом (7 PASS), смена города проходит (20/20 и 26/26). **UI-импорт пакета — NOT_RUN**: шва импорта в интерфейсе BUILD нет (TEST_INCOMPATIBLE) |
 | Пути | только `research/round-10-results/K10/` и `research/handoffs/shared/K10/round-10/STATUS.md` |
 
 ## Главное
@@ -77,6 +77,18 @@ NOT_RUN: слой точек на карте MapLibre. Подложка OpenFree
 - на `d2ff344` — **TEST_INCOMPATIBLE** (шва импорта нет), интеграция **NOT_RUN** (`results/ui_import_d2ff344/`);
 - проверка самого smoke на двух моках: «принимает всё» → 8 FAIL отказов; «отклоняет всё» → FAIL импорта (U1–U4).
 
+**3г. Новый BUILD `c0b276e` (явно закреплён, чистая копия, 8501, без ключей).** BUILD добавил офлайн-фон, поэтому карта готова и слои карты проверяются.
+- **Движок BUILD × пакет K10** (`tests/crosscheck_build_school_case.cjs`, `results/build_school_case_c0b276e/`).
+  - Пакет «как есть» BUILD отклоняет: `missing_field variants`.
+  - После документированного адаптера (`variants`, `target_policy.include_ids` = known_public, допущения строками) `validateCase` проходит.
+  - `compareCase` BUILD = справочный расчёт K10 для «Сейчас» и A/B/C: строки ±1 мм, ближайшие школы, метрики, автовыбор — **7 PASS**.
+  - `importCase` отклоняет другой снимок (`import_snapshot`) — так задумано у BUILD.
+  - Все 6 отличий шва от CONTRACT — в `INTEGRATION.md`.
+- **Данные Астаны по умолчанию у BUILD спорны.** Цели: «Школа-гимназия 3», «СШ № 8» (конфликт места) и «Почемучка» (по OSM детский сад). «Гимназия №6» исключена; №4, №7, №31 и школ буфера нет. Пакет K10 это исправляет.
+- **Смена города в школьном пути** (`tests/k10_school_switch.cjs`, `results/school_switch_c0b276e/`): **20 PASS · 0 FAIL · 2 INFO** на 1440 и 390 px. Город, `case_id`, snapshot, bbox и digest меняются; выбор, сравнение и вид A/B Шымкента не переживают переход; записи и слой школ на карте — только Астаны; линии у рамки Астаны; названий школ Шымкента нет; счёт 52,56 не меняется. Мутации: `nocityhook` → 12 FAIL, `keepsel` → 2 FAIL. INFO: ID сгенерированных точек и мест совпадают между городами (координаты разные).
+- **v2-планировщик в расширенном режиме** (`tests/k10_city_switch.cjs`, `results/city_switch_c0b276e/`): **26/26 PASS**, включая слой точек на карте.
+- **UI-import smoke** (`results/ui_import_c0b276e/`): **TEST_INCOMPATIBLE** — у `SCHOOL_UI` нет импорта файла кейса.
+
 **Наблюдение для K01** (не замена его проверки): в группе «Школа» среза Шымкента в `d2ff344` тоже есть явные не-школы — «Реклама 42», «Reklama 8888», «Реклама 3131», «Express toefl», «Kasipkoy.kurs», «Учебный центр Меруерт», детский сад Монтессори. Проверено только по названиям в `data.js`.
 
 ## Файлы
@@ -98,7 +110,8 @@ NOT_RUN: слой точек на карте MapLibre. Подложка OpenFree
 | `tests/fixtures/shymkent.synthetic-min.case.json` | **SYNTHETIC** мини-кейс «Шымкента» только для теста переноса — не данные K01 |
 | `tests/k10_city_switch.cjs`, `results/city_switch_d2ff344/` | браузерная проверка смены города на настоящей странице (1440 и 390 px, 2 кадра) |
 | `tests/ui_import_smoke.cjs`, `tests/fixtures/mock_*.adapter.json`, `results/ui_import_d2ff344/` | smoke импорта пакета для нового BUILD; моки только для проверки самого smoke |
-| `INTEGRATION.md` | что и как подключить BUILD, что обязательно показать, шов импорта для smoke |
+| `INTEGRATION.md` | что и как подключить BUILD, что обязательно показать, шов импорта для smoke; 6 отличий шва `c0b276e` от CONTRACT |
+| `tests/crosscheck_build_school_case.cjs`, `tests/k10_school_switch.cjs`, `results/*_c0b276e/` | сверка движка BUILD на пакете K10 и смена города в школьном пути `c0b276e` |
 
 ## Команды (выполнены)
 
@@ -126,5 +139,9 @@ Python 3.11; для извлечения и сборки — pyarrow 21, shapely
 
 ## Следующий шаг
 
-1. BUILD (K04) подключает пакет по `INTEGRATION.md` и выпускает SHA. Затем запуск `tests/ui_import_smoke.cjs --sha <BUILD_SHA> [--adapter …] --other-case <пакет K01>` и `tests/k10_city_switch.cjs`. Критерий: smoke без FAIL/TEST_INCOMPATIBLE.
-2. При доступе к сети (gov.kz, egov.kz, astana-bilim.kz) — сверка 40 школ с официальным перечнем: `verification_status` записей → primary_checked или conflict. Отдельно — снятие конфликтов по №7, №8, «Зерде». Это не делается подгонкой.
+1. BUILD (этап 2):
+   - загрузить пакет K10 как снимок Астаны вместо правила категорий;
+   - устранить 6 отличий шва (`INTEGRATION.md`);
+   - добавить UI-импорт кейса.
+   Затем на новом SHA: `tests/ui_import_smoke.cjs --sha <SHA> [--adapter …] --other-case <пакет K01>`, `tests/k10_school_switch.cjs`, `tests/crosscheck_build_school_case.cjs`. Критерий: без FAIL и TEST_INCOMPATIBLE.
+2. При доступе к сети (gov.kz, egov.kz, astana-bilim.kz) — сверка 40 школ с официальным перечнем: `primary_checked` или `conflict`. Отдельно — конфликты по №7, №8, «Зерде». Без подгонки.

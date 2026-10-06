@@ -2,6 +2,7 @@
 // Usage: node k10_city_switch.cjs [--url http://127.0.0.1:8501/] [--label …] [--sha …] [--out DIR] [--mutate nocityreset|noexplreset]
 // --mutate breaks the page on purpose (test of the test): the checks must then FAIL.
 // Start the site from a clean copy of the pinned commit first (python -B app.py --port 8501; no API keys needed).
+// On BUILD r10+ (window.GOVTECH.setSchool) the v2 planner is the advanced mode: the test opens it first.
 // Checks that a switch replaces city, sources, record IDs and names, coordinates/bbox, the plan problem digest and
 // labels, and leaves no plan/resilience result, explanation or selection of the previous city; the training model
 // score (52,56 in the original mode) is not touched. Map layers are checked only when the MapLibre map is ready
@@ -63,6 +64,8 @@ async function run(browser, vp, tag) {
   if (OPT.mutate === "noexplreset") await p.evaluate(() => { const h = CITY_APP.ui.EXT.onCity; const keep = CITY_PLAN_UI.state; h.push(() => { const e = keep.expl; setTimeout(() => { keep.expl = e; }, 0); }); });
   const score0 = await p.evaluate(() => document.getElementById("city-score").textContent);
   await p.click("#govtech-toggle"); await tick(p, 600);
+  // BUILD r10+: the v2 planner moved to the advanced mode of the school-access path; open it (no-op on older builds)
+  await p.evaluate(() => { if (window.GOVTECH && typeof GOVTECH.setSchool === "function") GOVTECH.setSchool(false); }); await tick(p, 400);
   const shy = await cityRecords(p, "shymkent"), ast = await cityRecords(p, "astana");
   let s0 = await snap(p);
   check(`${tag}-CS1`, "planning mode opens on Shymkent; the training score stays as before", s0.active && s0.city === "shymkent" && s0.h1 === "Шымкент" && s0.score === score0, { city: s0.city, score0, score: s0.score });

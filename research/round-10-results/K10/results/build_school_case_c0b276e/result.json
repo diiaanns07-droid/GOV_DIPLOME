@@ -1,0 +1,201 @@
+{
+ "kind": "K10 round-10 cross-check: Astana package × BUILD school-access engine",
+ "build_sha": "c0b276e8a2d8d97a369252470f60e97bf1858f1d",
+ "app_root": "c0b",
+ "case": "astana.case.json",
+ "adapter": "variants {A,B}=null; target_policy.include_ids = known_public; model_assumptions as strings (in memory only)",
+ "total": 10,
+ "pass": [
+  "X2",
+  "X4",
+  "X5-current",
+  "X5-ast-hyp-a",
+  "X5-ast-hyp-b",
+  "X5-ast-hyp-c",
+  "X6"
+ ],
+ "fail": [],
+ "info": [
+  "X1",
+  "X3",
+  "X7"
+ ],
+ "test_incompatible": [],
+ "checks": [
+  {
+   "id": "X1",
+   "expect": "record BUILD's verdict on the package as delivered (CONTRACT fields only): valid, or the first contract divergence",
+   "verdict": "INFO",
+   "observed": {
+    "validateCase": {
+     "code": "missing_field",
+     "detail": "нет поля variants"
+    },
+    "importCase": {
+     "code": "missing_field",
+     "detail": "нет поля variants"
+    }
+   }
+  },
+  {
+   "id": "X2",
+   "expect": "the adapted package passes BUILD validateCase",
+   "verdict": "PASS",
+   "observed": null
+  },
+  {
+   "id": "X3",
+   "expect": "record BUILD importCase on the adapted package (a snapshot other than the loaded app slice is expected to be refused by BUILD's design)",
+   "verdict": "INFO",
+   "observed": {
+    "code": "import_snapshot",
+    "detail": "кейс построен на astana-ov2026-09-23.1-appd2ff344-bbox-r17c7-buf2100m-k10r10; загружен срез 2026-09-23.1. Другой снимок не подставляется."
+   }
+  },
+  {
+   "id": "X4",
+   "expect": "BUILD eligible schools = the package's known_public schools",
+   "verdict": "PASS",
+   "observed": {
+    "build": 29,
+    "k10": 29
+   }
+  },
+  {
+   "id": "X5-current",
+   "expect": "BUILD compareCase = K10 reference for plan [current]: rows (±1 mm, same nearest target) and metrics",
+   "verdict": "PASS",
+   "observed": {
+    "build": {
+     "total_origins": 23,
+     "known_count": 23,
+     "unknown_count": 0,
+     "sum_distance_mm": 9407270,
+     "mean_distance_mm": 409012,
+     "max_distance_mm": 1261190,
+     "within_threshold_count": 22,
+     "within_threshold_share_of_all_points": 0.9565217391304348
+    },
+    "k10": {
+     "total_origins": 23,
+     "known_count": 23,
+     "unknown_count": 0,
+     "sum_distance_mm": 9407270,
+     "mean_distance_mm": 409011,
+     "max_distance_mm": 1261190,
+     "within_threshold_count": 22,
+     "within_threshold_share_of_all_points": 0.9565
+    }
+   }
+  },
+  {
+   "id": "X5-ast-hyp-a",
+   "expect": "BUILD compareCase = K10 reference for plan [ast-hyp-a]: rows (±1 mm, same nearest target) and metrics",
+   "verdict": "PASS",
+   "observed": {
+    "build": {
+     "total_origins": 23,
+     "known_count": 23,
+     "unknown_count": 0,
+     "sum_distance_mm": 8300606,
+     "mean_distance_mm": 360896,
+     "max_distance_mm": 712879,
+     "within_threshold_count": 23,
+     "within_threshold_share_of_all_points": 1
+    },
+    "k10": {
+     "total_origins": 23,
+     "known_count": 23,
+     "unknown_count": 0,
+     "sum_distance_mm": 8300606,
+     "mean_distance_mm": 360895,
+     "max_distance_mm": 712879,
+     "within_threshold_count": 23,
+     "within_threshold_share_of_all_points": 1
+    }
+   }
+  },
+  {
+   "id": "X5-ast-hyp-b",
+   "expect": "BUILD compareCase = K10 reference for plan [ast-hyp-b]: rows (±1 mm, same nearest target) and metrics",
+   "verdict": "PASS",
+   "observed": {
+    "build": {
+     "total_origins": 23,
+     "known_count": 23,
+     "unknown_count": 0,
+     "sum_distance_mm": 7872855,
+     "mean_distance_mm": 342298,
+     "max_distance_mm": 576923,
+     "within_threshold_count": 23,
+     "within_threshold_share_of_all_points": 1
+    },
+    "k10": {
+     "total_origins": 23,
+     "known_count": 23,
+     "unknown_count": 0,
+     "sum_distance_mm": 7872855,
+     "mean_distance_mm": 342298,
+     "max_distance_mm": 576923,
+     "within_threshold_count": 23,
+     "within_threshold_share_of_all_points": 1
+    }
+   }
+  },
+  {
+   "id": "X5-ast-hyp-c",
+   "expect": "BUILD compareCase = K10 reference for plan [ast-hyp-c]: rows (±1 mm, same nearest target) and metrics",
+   "verdict": "PASS",
+   "observed": {
+    "build": {
+     "total_origins": 23,
+     "known_count": 23,
+     "unknown_count": 0,
+     "sum_distance_mm": 9027687,
+     "mean_distance_mm": 392508,
+     "max_distance_mm": 1261190,
+     "within_threshold_count": 22,
+     "within_threshold_share_of_all_points": 0.9565217391304348
+    },
+    "k10": {
+     "total_origins": 23,
+     "known_count": 23,
+     "unknown_count": 0,
+     "sum_distance_mm": 9027687,
+     "mean_distance_mm": 392508,
+     "max_distance_mm": 1261190,
+     "within_threshold_count": 22,
+     "within_threshold_share_of_all_points": 0.9565
+    }
+   }
+  },
+  {
+   "id": "X6",
+   "expect": "auto choice (lexicographic min [unknown, sum, max], empty set first on ties) is the same",
+   "verdict": "PASS",
+   "observed": {
+    "build": [
+     "ast-hyp-b"
+    ],
+    "k10": [
+     "ast-hyp-b"
+    ]
+   }
+  },
+  {
+   "id": "X7",
+   "expect": "BUILD compare result keeps its limitation list honest for this package (records whether 'schools_outside_slice_not_loaded' is still claimed although the package carries buffer schools)",
+   "verdict": "INFO",
+   "observed": [
+    "straight_line_not_route",
+    "schools_outside_slice_not_loaded",
+    "access_eligibility_unknown",
+    "capacity_unknown",
+    "secondary_source_not_registry",
+    "grid_points_not_population",
+    "candidates_hypothetical_land_unknown",
+    "no_cost_data"
+   ]
+  }
+ ]
+}

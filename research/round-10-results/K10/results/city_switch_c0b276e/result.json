@@ -1,0 +1,334 @@
+{
+ "kind": "K10 round-10 city switch on the real main site",
+ "url": "http://127.0.0.1:8501/",
+ "label": "c0b276e",
+ "sha": "c0b276e8a2d8d97a369252470f60e97bf1858f1d",
+ "total": 26,
+ "pass": [
+  "1440-CS1",
+  "1440-CS2",
+  "1440-CS3",
+  "1440-CS4",
+  "1440-CS5",
+  "1440-CS6",
+  "1440-CS7",
+  "1440-CS8",
+  "1440-CS9",
+  "1440-CS10",
+  "1440-CS11",
+  "1440-CS12",
+  "1440-CS13",
+  "390-CS1",
+  "390-CS2",
+  "390-CS3",
+  "390-CS4",
+  "390-CS5",
+  "390-CS6",
+  "390-CS7",
+  "390-CS8",
+  "390-CS9",
+  "390-CS10",
+  "390-CS11",
+  "390-CS12",
+  "390-CS13"
+ ],
+ "fail": [],
+ "not_run": [],
+ "note": "Plans are the site's SYNTHETIC demo sets on the real slices; this tests transfer between cities, not data quality.",
+ "checks": [
+  {
+   "id": "1440-CS1",
+   "expect": "planning mode opens on Shymkent; the training score stays as before",
+   "verdict": "PASS",
+   "observed": {
+    "city": "shymkent",
+    "score0": "52,56",
+    "score": "52,56"
+   }
+  },
+  {
+   "id": "1440-CS2",
+   "expect": "Shymkent state was really produced (plan result, explanation, resilience result, selection) — precondition of the switch test",
+   "verdict": "PASS",
+   "observed": {
+    "optStatus": "done",
+    "selected": 3,
+    "rsStatus": "done",
+    "expl": true,
+    "rsExpl": true,
+    "selection": "Реклама 4201961e84-815f-4bd1-85c3-6bf1734256ecКоординаты: 69"
+   }
+  },
+  {
+   "id": "1440-CS3",
+   "expect": "labels follow the city: heading, page title, subtitle, pressed button",
+   "verdict": "PASS",
+   "observed": {
+    "h1": "Астана",
+    "title": "Астана · Городская лаборатория",
+    "sub": "Астана · городское планирование",
+    "pressed": [
+     "astana"
+    ]
+   }
+  },
+  {
+   "id": "1440-CS4",
+   "expect": "no plan of the previous city: points, sites, selection, search result and explanation are empty",
+   "verdict": "PASS",
+   "observed": {
+    "points": 0,
+    "cands": 0,
+    "selected": [],
+    "optStatus": "idle",
+    "optResult": false,
+    "expl": false
+   }
+  },
+  {
+   "id": "1440-CS5",
+   "expect": "no resilience cases, result or explanation of the previous city",
+   "verdict": "PASS",
+   "observed": {
+    "rsCases": 0,
+    "rsStatus": "idle",
+    "rsResult": false,
+    "rsExpl": false
+   }
+  },
+  {
+   "id": "1440-CS6",
+   "expect": "the selected record card of the previous city is cleared",
+   "verdict": "PASS",
+   "observed": ""
+  },
+  {
+   "id": "1440-CS7",
+   "expect": "sources and records switch: data panel names the Astana slice; scenario city_id/snapshot and bbox are Astana's; the problem digest differs",
+   "verdict": "PASS",
+   "observed": {
+    "data": "Срез Астана: 65 записей. Overture 2026-09-23.1. Это вторичны",
+    "rawCity": "astana",
+    "snap": [
+     "sha256:a9326b5633c513c0bfeccbb2248b26cf3b706c902f77745073a2959ad8d7ff3e",
+     "sha256:67a40b96d29873118780969eb11c32deba49a0c64fda1f185efe634882f04c6d"
+    ],
+    "digest": [
+     "sha256:cae24",
+     "sha256:d1c15"
+    ]
+   }
+  },
+  {
+   "id": "1440-CS8",
+   "expect": "no Shymkent record ID, name or coordinate pair anywhere in the planning panel after the switch",
+   "verdict": "PASS",
+   "observed": {
+    "leakedIds": [],
+    "leakedNames": [],
+    "coords": []
+   }
+  },
+  {
+   "id": "1440-CS9",
+   "expect": "map layer of source points holds only Astana records",
+   "verdict": "PASS",
+   "observed": {
+    "n": 8
+   }
+  },
+  {
+   "id": "1440-CS10",
+   "expect": "Astana results reference only Astana record IDs",
+   "verdict": "PASS",
+   "observed": {
+    "ids": 0,
+    "foreign": []
+   }
+  },
+  {
+   "id": "1440-CS11",
+   "expect": "back to Shymkent: Astana plan, resilience, explanation and selection are gone and nothing of Astana is shown",
+   "verdict": "PASS",
+   "observed": {
+    "points": 0,
+    "opt": false,
+    "rs": 0,
+    "sel": "",
+    "lk2": {
+     "leakedIds": [],
+     "leakedNames": [],
+     "coords": []
+    }
+   }
+  },
+  {
+   "id": "1440-CS12",
+   "expect": "return to the simulator: training model score unchanged (no planning number mixed in), planning panel hidden",
+   "verdict": "PASS",
+   "observed": {
+    "score0": "52,56",
+    "active": false,
+    "score": "52,56",
+    "title": "Аким на 5 часов · Астана",
+    "panelHidden": true
+   }
+  },
+  {
+   "id": "1440-CS13",
+   "expect": "no page errors (network failures of blocked hosts are recorded separately)",
+   "verdict": "PASS",
+   "observed": {
+    "errors": [],
+    "network_blocked": 2
+   }
+  },
+  {
+   "id": "390-CS1",
+   "expect": "planning mode opens on Shymkent; the training score stays as before",
+   "verdict": "PASS",
+   "observed": {
+    "city": "shymkent",
+    "score0": "52,56",
+    "score": "52,56"
+   }
+  },
+  {
+   "id": "390-CS2",
+   "expect": "Shymkent state was really produced (plan result, explanation, resilience result, selection) — precondition of the switch test",
+   "verdict": "PASS",
+   "observed": {
+    "optStatus": "done",
+    "selected": 3,
+    "rsStatus": "done",
+    "expl": true,
+    "rsExpl": true,
+    "selection": "Реклама 4201961e84-815f-4bd1-85c3-6bf1734256ecКоординаты: 69"
+   }
+  },
+  {
+   "id": "390-CS3",
+   "expect": "labels follow the city: heading, page title, subtitle, pressed button",
+   "verdict": "PASS",
+   "observed": {
+    "h1": "Астана",
+    "title": "Астана · Городская лаборатория",
+    "sub": "Астана · городское планирование",
+    "pressed": [
+     "astana"
+    ]
+   }
+  },
+  {
+   "id": "390-CS4",
+   "expect": "no plan of the previous city: points, sites, selection, search result and explanation are empty",
+   "verdict": "PASS",
+   "observed": {
+    "points": 0,
+    "cands": 0,
+    "selected": [],
+    "optStatus": "idle",
+    "optResult": false,
+    "expl": false
+   }
+  },
+  {
+   "id": "390-CS5",
+   "expect": "no resilience cases, result or explanation of the previous city",
+   "verdict": "PASS",
+   "observed": {
+    "rsCases": 0,
+    "rsStatus": "idle",
+    "rsResult": false,
+    "rsExpl": false
+   }
+  },
+  {
+   "id": "390-CS6",
+   "expect": "the selected record card of the previous city is cleared",
+   "verdict": "PASS",
+   "observed": ""
+  },
+  {
+   "id": "390-CS7",
+   "expect": "sources and records switch: data panel names the Astana slice; scenario city_id/snapshot and bbox are Astana's; the problem digest differs",
+   "verdict": "PASS",
+   "observed": {
+    "data": "Срез Астана: 65 записей. Overture 2026-09-23.1. Это вторичны",
+    "rawCity": "astana",
+    "snap": [
+     "sha256:a9326b5633c513c0bfeccbb2248b26cf3b706c902f77745073a2959ad8d7ff3e",
+     "sha256:67a40b96d29873118780969eb11c32deba49a0c64fda1f185efe634882f04c6d"
+    ],
+    "digest": [
+     "sha256:cae24",
+     "sha256:d1c15"
+    ]
+   }
+  },
+  {
+   "id": "390-CS8",
+   "expect": "no Shymkent record ID, name or coordinate pair anywhere in the planning panel after the switch",
+   "verdict": "PASS",
+   "observed": {
+    "leakedIds": [],
+    "leakedNames": [],
+    "coords": []
+   }
+  },
+  {
+   "id": "390-CS9",
+   "expect": "map layer of source points holds only Astana records",
+   "verdict": "PASS",
+   "observed": {
+    "n": 8
+   }
+  },
+  {
+   "id": "390-CS10",
+   "expect": "Astana results reference only Astana record IDs",
+   "verdict": "PASS",
+   "observed": {
+    "ids": 0,
+    "foreign": []
+   }
+  },
+  {
+   "id": "390-CS11",
+   "expect": "back to Shymkent: Astana plan, resilience, explanation and selection are gone and nothing of Astana is shown",
+   "verdict": "PASS",
+   "observed": {
+    "points": 0,
+    "opt": false,
+    "rs": 0,
+    "sel": "",
+    "lk2": {
+     "leakedIds": [],
+     "leakedNames": [],
+     "coords": []
+    }
+   }
+  },
+  {
+   "id": "390-CS12",
+   "expect": "return to the simulator: training model score unchanged (no planning number mixed in), planning panel hidden",
+   "verdict": "PASS",
+   "observed": {
+    "score0": "52,56",
+    "active": false,
+    "score": "52,56",
+    "title": "Аким на 5 часов · Астана",
+    "panelHidden": true
+   }
+  },
+  {
+   "id": "390-CS13",
+   "expect": "no page errors (network failures of blocked hosts are recorded separately)",
+   "verdict": "PASS",
+   "observed": {
+    "errors": [],
+    "network_blocked": 2
+   }
+  }
+ ]
+}
