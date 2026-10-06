@@ -1,0 +1,38 @@
+test_export_too_large_exact_bytes (test_cli.PackOnly.test_export_too_large_exact_bytes) ... ok
+test_html_escapes_ids_and_names (test_cli.PackOnly.test_html_escapes_ids_and_names) ... ok
+test_identical_plans_named_once (test_cli.PackOnly.test_identical_plans_named_once) ... ok
+test_infeasible_explained (test_cli.PackOnly.test_infeasible_explained) ... ok
+test_json_matches_stored (test_cli.PackOnly.test_json_matches_stored) ... ok
+test_preview_every_pack_recomputes_equal (test_cli.PackOnly.test_preview_every_pack_recomputes_equal) ... ok
+test_tampered_pack_detected (test_cli.PackOnly.test_tampered_pack_detected) ... ok
+test_preview_against_app_root_and_verify (test_cli.WithAppRoot.test_preview_against_app_root_and_verify) ... ok
+test_scenario_files_and_invalid_files (test_cli.WithAppRoot.test_scenario_files_and_invalid_files) ... ok
+test_stale_pack_reported (test_cli.WithAppRoot.test_stale_pack_reported) ... ok
+test_delta_and_hypothetical_ref (test_oracle.Evaluate.test_delta_and_hypothetical_ref) ... ok
+test_empty_baseline_unknown_and_null_delta (test_oracle.Evaluate.test_empty_baseline_unknown_and_null_delta) ... ok
+test_feasibility_reasons (test_oracle.Evaluate.test_feasibility_reasons) ... ok
+test_radius_boundary_inclusive (test_oracle.Evaluate.test_radius_boundary_inclusive) ... ok
+test_ties_source_first_then_smaller_id (test_oracle.Evaluate.test_ties_source_first_then_smaller_id) ... ok
+test_antipodes_clamped_finite (test_oracle.Geometry.test_antipodes_clamped_finite) ... ok
+test_mm_rounding_half_up (test_oracle.Geometry.test_mm_rounding_half_up) ... ok
+test_one_degree_on_equator (test_oracle.Geometry.test_one_degree_on_equator) ... ok
+test_cost_then_ids_break_ties (test_oracle.Search.test_cost_then_ids_break_ties) ... ok
+test_digest_order_independent (test_oracle.Search.test_digest_order_independent) ... ok
+test_empty_plan_and_sensitivity_budgets (test_oracle.Search.test_empty_plan_and_sensitivity_budgets) ... ok
+test_evaluated_counts (test_oracle.Search.test_evaluated_counts) ... ok
+test_infeasible_reasons (test_oracle.Search.test_infeasible_reasons) ... ok
+test_inputs_not_mutated (test_oracle.Search.test_inputs_not_mutated) ... ok
+test_key_order_prefix_first (test_oracle.Search.test_key_order_prefix_first) ... ok
+test_pareto_dominance_and_collapse (test_oracle.Search.test_pareto_dominance_and_collapse) ... ok
+test_pareto_skips_unknown (test_oracle.Search.test_pareto_skips_unknown) ... ok
+test_three_objectives_differ (test_oracle.Search.test_three_objectives_differ) ... ok
+test_unknown_count_compared_before_sum (test_oracle.Search.test_unknown_count_compared_before_sum) ... ok
+test_rejections (test_oracle.StrictJson.test_rejections) ... ok
+test_good_and_derived_results_ignored (test_oracle.Validation.test_good_and_derived_results_ignored) ... ok
+test_id_lists_sorted (test_oracle.Validation.test_id_lists_sorted) ... ok
+test_rejections (test_oracle.Validation.test_rejections) ... ok
+
+----------------------------------------------------------------------
+Ran 33 tests in 2.826s
+
+OK

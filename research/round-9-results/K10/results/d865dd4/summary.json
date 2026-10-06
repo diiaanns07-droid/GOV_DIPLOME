@@ -1,0 +1,91 @@
+{
+ "sha": "d865dd4a124291e10dd0b7bb1d9eada20d34c268",
+ "steps": {
+  "EXTRACT": {
+   "status": "PASS",
+   "files": 199
+  },
+  "FROZEN_PACKS": {
+   "status": "PASS",
+   "files": 161,
+   "frozen_commit": "c8df74b500dd1d1c1ea39496307062e6c2db1ba3",
+   "differences": []
+  },
+  "SOURCE_HASHES": {
+   "status": "PASS",
+   "package_commit": "602f0c0b6d5db741d20909082086982b3c812c07",
+   "files": {
+    "inputs/k10/package_manifest.json": {
+     "sha256": "0616c08b65285ed4a5324c9e0238a31bec004857705cdb22c6b26e032fa4551d",
+     "frozen": "0616c08b65285ed4a5324c9e0238a31bec004857705cdb22c6b26e032fa4551d",
+     "ok": true
+    },
+    "inputs/k10/data/shymkent/places_social.geojson": {
+     "sha256": "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7",
+     "frozen": "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7",
+     "ok": true
+    },
+    "inputs/k10/data/astana/places_social.geojson": {
+     "sha256": "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343",
+     "frozen": "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343",
+     "ok": true
+    },
+    "web/data.js:astana.files.places_social.sha256": {
+     "sha256": "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343",
+     "ok": true
+    },
+    "web/data.js:shymkent.files.places_social.sha256": {
+     "sha256": "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7",
+     "ok": true
+    }
+   }
+  },
+  "SOURCE_IDS": {
+   "status": "PASS",
+   "cities": {
+    "astana": {
+     "records": 65,
+     "frozen": 65,
+     "missing": [],
+     "extra": [],
+     "changed": [],
+     "school": 8,
+     "outpatient_clinic": 16
+    },
+    "shymkent": {
+     "records": 55,
+     "frozen": 55,
+     "missing": [],
+     "extra": [],
+     "changed": [],
+     "school": 15,
+     "outpatient_clinic": 16
+    }
+   }
+  },
+  "R8_SUITE": {
+   "status": "PASS",
+   "steps": {
+    "check_packs": "PASS",
+    "unit_tests": "PASS",
+    "verify_inputs": "PASS",
+    "build_v2": "PASS",
+    "build_exports": "PASS",
+    "build_mutants": "PASS"
+   },
+   "build_exports": {
+    "files": 30,
+    "differ": []
+   },
+   "build_mutants": {
+    "mutants": 15,
+    "killed": 15,
+    "survived": [],
+    "not_applicable": []
+   },
+   "stderr_tail": ""
+  }
+ },
+ "seconds": 15.1,
+ "ok": true
+}

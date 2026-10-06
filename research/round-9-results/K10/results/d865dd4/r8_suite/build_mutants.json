@@ -1,0 +1,70 @@
+{
+ "app_root": "<app-parent>/city-evidence",
+ "unmutated_exit": 0,
+ "mutants": 15,
+ "killed": 15,
+ "survived": [],
+ "not_applicable": [],
+ "results": [
+  {
+   "mutant": "mm rounding floor",
+   "result": "killed"
+  },
+  {
+   "mutant": "tie: hypothetical may beat source",
+   "result": "killed"
+  },
+  {
+   "mutant": "radius boundary exclusive",
+   "result": "killed"
+  },
+  {
+   "mutant": "pareto keeps equal sums",
+   "result": "killed"
+  },
+  {
+   "mutant": "mean: cost before max",
+   "result": "killed"
+  },
+  {
+   "mutant": "minimax: cost before sum",
+   "result": "killed"
+  },
+  {
+   "mutant": "coverage: cost before sum",
+   "result": "killed"
+  },
+  {
+   "mutant": "budget check strict",
+   "result": "killed"
+  },
+  {
+   "mutant": "max_selected off by one",
+   "result": "killed"
+  },
+  {
+   "mutant": "excluded ignored",
+   "result": "killed"
+  },
+  {
+   "mutant": "required count check dropped",
+   "result": "killed"
+  },
+  {
+   "mutant": "weighted mean over known only",
+   "result": "killed"
+  },
+  {
+   "mutant": "delta when before unknown",
+   "result": "killed"
+  },
+  {
+   "mutant": "sensitivity duplicates kept",
+   "result": "killed"
+  },
+  {
+   "mutant": "overlap allowed",
+   "result": "killed"
+  }
+ ]
+}
