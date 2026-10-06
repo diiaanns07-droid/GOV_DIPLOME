@@ -244,6 +244,12 @@ class Database:
         self.busy_timeout_ms = int(busy_timeout_ms)
         self._lock = threading.Lock()
         self._open = 0  # число открытых соединений (для проверки корректного закрытия)
+        # Очередь писателей внутри процесса: потоки ждут на блокировке Python, а не опрашивают
+        # SQLite с паузами (под нагрузкой опрос давал «голодание» дольше busy_timeout → 503).
+        # busy_timeout остаётся для других процессов (CLI, второй сервер).
+        self._writer = threading.Lock()
+        self._writer_owner = None
+        self.write_queue_timeout = self.busy_timeout_ms / 1000 * 3
 
     @property
     def open_connections(self) -> int:
@@ -289,14 +295,24 @@ class Database:
         SQLITE_BUSY при повышении блокировки с чтения до записи.
         Любое исключение откатывает всю транзакцию целиком.
         """
-        with self.connect() as conn:
-            conn.execute("BEGIN IMMEDIATE")
-            try:
-                yield conn
-            except BaseException:
-                conn.execute("ROLLBACK")
-                raise
-            conn.execute("COMMIT")
+        me = threading.get_ident()
+        if self._writer_owner == me:
+            raise RuntimeError("Вложенная транзакция записи в том же потоке (передайте conn).")
+        if not self._writer.acquire(timeout=self.write_queue_timeout):
+            raise sqlite3.OperationalError("database is locked (writer queue timeout)")
+        self._writer_owner = me
+        try:
+            with self.connect() as conn:
+                conn.execute("BEGIN IMMEDIATE")
+                try:
+                    yield conn
+                except BaseException:
+                    conn.execute("ROLLBACK")
+                    raise
+                conn.execute("COMMIT")
+        finally:
+            self._writer_owner = None
+            self._writer.release()
 
     @contextmanager
     def read(self):

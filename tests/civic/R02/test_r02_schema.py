@@ -159,3 +159,33 @@ def test_database_file_is_private(tmp_path):
     copy = tmp_path / "backup with space.sqlite3"
     cli._backup(database.path, copy)
     assert stat.S_IMODE(copy.stat().st_mode) == 0o600
+
+
+def test_nested_write_in_same_thread_is_refused_and_queue_timeout_is_busy(tmp_path):
+    import threading
+    database = Database(tmp_path / "queue.sqlite3")
+    database.migrate()
+    with database.write():
+        with pytest.raises(RuntimeError, match="Вложенная"):
+            with database.write():
+                pass
+    database.write_queue_timeout = 0.2
+    held = threading.Event()
+    release = threading.Event()
+
+    def holder():
+        with database.write():
+            held.set()
+            release.wait(5)
+
+    thread = threading.Thread(target=holder)
+    thread.start()
+    held.wait(5)
+    with pytest.raises(sqlite3.OperationalError, match="locked"):
+        with database.write():
+            pass
+    release.set()
+    thread.join(5)
+    with database.write() as conn:  # после освобождения очередь снова свободна
+        conn.execute("SELECT 1")
+    assert database.open_connections == 0
