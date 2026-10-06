@@ -1,0 +1,98 @@
+{
+ "shymkent": {
+  "pairs": 153,
+  "origins_synthetic": 9,
+  "targets": 17,
+  "schools_observed_secondary": 15,
+  "status": {
+   "pedestrian-v1-strict": {
+    "access_unknown": 121,
+    "ok": 32
+   },
+   "pedestrian-v1-exploratory": {
+    "ok": 153
+   }
+  },
+  "non_ok_reasons": {
+   "pedestrian-v1-strict": {
+    "no_verified_edge_within_snap": 98,
+    "path_only_via_unverified_edges": 23
+   },
+   "pedestrian-v1-exploratory": {}
+  },
+  "assumptions_in_ok_routes": {
+   "pedestrian-v1-strict": {
+    "snap_model_connection": 32,
+    "boundary_unverified": 11,
+    "route_partly_outside_slice": 8
+   },
+   "pedestrian-v1-exploratory": {
+    "foot_access_unknown": 152,
+    "snap_model_connection": 153,
+    "cycleway_foot_unknown": 37,
+    "vehicle_oneway_not_applied_to_foot": 50,
+    "boundary_unverified": 14,
+    "route_partly_outside_slice": 12
+   }
+  },
+  "network_to_geodesic_ratio": {
+   "pedestrian-v1-strict": {
+    "min": 1.116,
+    "median": 1.456,
+    "max": 4.201
+   },
+   "pedestrian-v1-exploratory": {
+    "min": 1.036,
+    "median": 1.378,
+    "max": 2.422
+   }
+  }
+ },
+ "astana": {
+  "pairs": 90,
+  "origins_synthetic": 9,
+  "targets": 10,
+  "schools_observed_secondary": 8,
+  "status": {
+   "pedestrian-v1-strict": {
+    "access_unknown": 36,
+    "ok": 54
+   },
+   "pedestrian-v1-exploratory": {
+    "ok": 90
+   }
+  },
+  "non_ok_reasons": {
+   "pedestrian-v1-strict": {
+    "no_verified_edge_within_snap": 36
+   },
+   "pedestrian-v1-exploratory": {}
+  },
+  "assumptions_in_ok_routes": {
+   "pedestrian-v1-strict": {
+    "snap_model_connection": 54,
+    "route_partly_outside_slice": 2,
+    "boundary_unverified": 1
+   },
+   "pedestrian-v1-exploratory": {
+    "foot_access_unknown": 88,
+    "snap_model_connection": 90,
+    "vehicle_oneway_not_applied_to_foot": 43,
+    "cycleway_foot_unknown": 3,
+    "conditional_foot_rule": 3
+   }
+  },
+  "network_to_geodesic_ratio": {
+   "pedestrian-v1-strict": {
+    "min": 1.093,
+    "median": 1.598,
+    "max": 5.479
+   },
+   "pedestrian-v1-exploratory": {
+    "min": 1.086,
+    "median": 1.385,
+    "max": 2.026
+   }
+  }
+ }
+}

@@ -1,0 +1,6223 @@
+{
+ "schema": "k03-r10-hand-graphs",
+ "kind": "synthetic",
+ "description": "Ручные графы в формате Overture (synthetic, не город); ожидания по построению, без маршрутизатора.",
+ "policy_sha256": "ba8a525a511b4629919e3022b371b4f3d2db1ebf032e1fc1823802e1b772c783",
+ "graphs": [
+  {
+   "name": "h1-bridge",
+   "note": "bridge: CD пересекает AB в (100,0) без соединителя (уровень 1)",
+   "segments": {
+    "type": "FeatureCollection",
+    "features": [
+     {
+      "type": "Feature",
+      "id": "ab",
+      "geometry": {
+       "type": "LineString",
+       "coordinates": [
+        [
+         69.6,
+         42.31
+        ],
+        [
+         69.602432194,
+         42.31
+        ]
+       ]
+      },
+      "properties": {
+       "class": "footway",
+       "subclass": null,
+       "connectors": [
+        {
+         "connector_id": "n0_0",
+         "at": 0.0
+        },
+        {
+         "connector_id": "n200_0",
+         "at": 1.0
+        }
+       ],
+       "access_restrictions": null,
+       "road_flags": null,
+       "level_rules": null,
+       "sources": [
+        {
+         "record_id": "synthetic:ab"
+        }
+       ]
+      }
+     },
+     {
+      "type": "Feature",
+      "id": "cd",
+      "geometry": {
+       "type": "LineString",
+       "coordinates": [
+        [
+         69.601216097,
+         42.30910068
+        ],
+        [
+         69.601216097,
+         42.31089932
+        ]
+       ]
+      },
+      "properties": {
+       "class": "footway",
+       "subclass": null,
+       "connectors": [
+        {
+         "connector_id": "n100_-100",
+         "at": 0.0
+        },
+        {
+         "connector_id": "n100_100",
+         "at": 1.0
+        }
+       ],
+       "access_restrictions": null,
+       "road_flags": [
+        {
+         "values": [
+          "is_bridge"
+         ],
+         "between": null
+        }
+       ],
+       "level_rules": [
+        {
+         "value": 1,
+         "between": null
+        }
+       ],
+       "sources": [
+        {
+         "record_id": "synthetic:cd"
+        }
+       ]
+      }
+     },
+     {
+      "type": "Feature",
+      "id": "bd",
+      "geometry": {
+       "type": "LineString",
+       "coordinates": [
+        [
+         69.602432194,
+         42.31
+        ],
+        [
+         69.601216097,
+         42.31089932
+        ]
+       ]
+      },
+      "properties": {
+       "class": "footway",
+       "subclass": null,
+       "connectors": [
+        {
+         "connector_id": "n200_0",
+         "at": 0.0
+        },
+        {
+         "connector_id": "n100_100",
+         "at": 1.0
+        }
+       ],
+       "access_restrictions": null,
+       "road_flags": null,
+       "level_rules": null,
+       "sources": [
+        {
+         "record_id": "synthetic:bd"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   "connectors": {
+    "type": "FeatureCollection",
+    "features": [
+     {
+      "type": "Feature",
+      "id": "n0_0",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.6,
+        42.31
+       ]
+      },
+      "properties": {}
+     },
+     {
+      "type": "Feature",
+      "id": "n100_-100",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.601216097,
+        42.30910068
+       ]
+      },
+      "properties": {}
+     },
+     {
+      "type": "Feature",
+      "id": "n100_100",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.601216097,
+        42.31089932
+       ]
+      },
+      "properties": {}
+     },
+     {
+      "type": "Feature",
+      "id": "n200_0",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.602432194,
+        42.31
+       ]
+      },
+      "properties": {}
+     }
+    ]
+   },
+   "graph": {
+    "schema": "k03-pedestrian-graph-v1",
+    "city": "synthetic-h1-bridge",
+    "bbox": [
+     69.599391951,
+     42.308651019,
+     69.603040243,
+     42.311348981
+    ],
+    "release": "synthetic",
+    "policy_family": "pedestrian-v1",
+    "policy_sha256": "ba8a525a511b4629919e3022b371b4f3d2db1ebf032e1fc1823802e1b772c783",
+    "max_snap_m": 100,
+    "inputs": {
+     "note": "synthetic hand graph"
+    },
+    "nodes": [
+     {
+      "id": "n0_0",
+      "lon": 69.6,
+      "lat": 42.31,
+      "open": false
+     },
+     {
+      "id": "n100_-100",
+      "lon": 69.601216097,
+      "lat": 42.30910068,
+      "open": false
+     },
+     {
+      "id": "n100_100",
+      "lon": 69.601216097,
+      "lat": 42.31089932,
+      "open": false
+     },
+     {
+      "id": "n200_0",
+      "lon": 69.602432194,
+      "lat": 42.31,
+      "open": false
+     }
+    ],
+    "edges": [
+     {
+      "id": "ab#0",
+      "seg": "ab",
+      "from": "n0_0",
+      "to": "n200_0",
+      "at": [
+       0.0,
+       1.0
+      ],
+      "coords": [
+       [
+        69.6,
+        42.31
+       ],
+       [
+        69.602432194,
+        42.31
+       ]
+      ],
+      "len_mm": 200000,
+      "cls": "footway",
+      "sub": null,
+      "flags": [],
+      "levels": [],
+      "osm": [
+       "synthetic:ab"
+      ],
+      "out": false,
+      "s": [
+       "ok",
+       "ok"
+      ],
+      "x": [
+       "ok",
+       "ok"
+      ],
+      "xa": [
+       [],
+       []
+      ],
+      "ev": "class_semantics"
+     },
+     {
+      "id": "bd#0",
+      "seg": "bd",
+      "from": "n200_0",
+      "to": "n100_100",
+      "at": [
+       0.0,
+       1.0
+      ],
+      "coords": [
+       [
+        69.602432194,
+        42.31
+       ],
+       [
+        69.601216097,
+        42.31089932
+       ]
+      ],
+      "len_mm": 141421,
+      "cls": "footway",
+      "sub": null,
+      "flags": [],
+      "levels": [],
+      "osm": [
+       "synthetic:bd"
+      ],
+      "out": false,
+      "s": [
+       "ok",
+       "ok"
+      ],
+      "x": [
+       "ok",
+       "ok"
+      ],
+      "xa": [
+       [],
+       []
+      ],
+      "ev": "class_semantics"
+     },
+     {
+      "id": "cd#0",
+      "seg": "cd",
+      "from": "n100_-100",
+      "to": "n100_100",
+      "at": [
+       0.0,
+       1.0
+      ],
+      "coords": [
+       [
+        69.601216097,
+        42.30910068
+       ],
+       [
+        69.601216097,
+        42.31089932
+       ]
+      ],
+      "len_mm": 200000,
+      "cls": "footway",
+      "sub": null,
+      "flags": [
+       "is_bridge"
+      ],
+      "levels": [
+       {
+        "value": 1,
+        "between": null
+       }
+      ],
+      "osm": [
+       "synthetic:cd"
+      ],
+      "out": false,
+      "s": [
+       "ok",
+       "ok"
+      ],
+      "x": [
+       "ok",
+       "ok"
+      ],
+      "xa": [
+       [],
+       []
+      ],
+      "ev": "class_semantics"
+     }
+    ],
+    "graph_sha256": "40a51fde1e2c1f73552c8732ca938ea5e30df511ef98803d643e66e4024fa504",
+    "license": {
+     "id": "ODbL-1.0",
+     "attribution": [
+      "© OpenStreetMap contributors (ODbL-1.0)",
+      "Overture Maps Foundation, release 2026-09-23.1"
+     ],
+     "note": "Граф — производная база данных OSM (через Overture): распространяется под ODbL с атрибуцией; юридическая проверка не проводилась."
+    },
+    "build": {
+     "script": "research/round-10-results/K03/build_graph.py",
+     "script_sha256": "85f0cdca63389d16cee6af07b275ffa855db63819627afc29ccfb65bd0fd0d79"
+    },
+    "stats": {
+     "nodes": 4,
+     "open_nodes": 0,
+     "edges": 3,
+     "km_all": 0.541,
+     "km_strict_ok_any_direction": 0.541,
+     "km_exploratory_ok_any_direction": 0.541,
+     "km_denied_both": 0.0,
+     "edges_by_evidence": {
+      "explicit_rule": 0,
+      "class_semantics": 3,
+      "unknown": 0,
+      "denied": 0
+     },
+     "edges_one_direction_strict": 0,
+     "edges_with_assumptions": 0
+    }
+   },
+   "queries": [
+    {
+     "id": "A-to-C",
+     "origin": {
+      "id": "o",
+      "lon": 69.6,
+      "lat": 42.31
+     },
+     "target": {
+      "id": "t",
+      "lon": 69.601216097,
+      "lat": 42.30910068
+     },
+     "expect": {
+      "pedestrian-v1-strict": {
+       "status": "ok",
+       "distance_mm": 541421,
+       "include_edges": [
+        "ab#0",
+        "bd#0",
+        "cd#0"
+       ],
+       "exclude_edges": []
+      },
+      "pedestrian-v1-exploratory": {
+       "status": "ok",
+       "distance_mm": 541421,
+       "include_edges": [
+        "ab#0",
+        "bd#0",
+        "cd#0"
+       ],
+       "exclude_edges": []
+      }
+     },
+     "why": "пересечение не узел: путь A→B→D→C, а не 200 м через точку пересечения"
+    }
+   ]
+  },
+  {
+   "name": "h1-tunnel",
+   "note": "tunnel: CD пересекает AB в (100,0) без соединителя (уровень -1)",
+   "segments": {
+    "type": "FeatureCollection",
+    "features": [
+     {
+      "type": "Feature",
+      "id": "ab",
+      "geometry": {
+       "type": "LineString",
+       "coordinates": [
+        [
+         69.6,
+         42.31
+        ],
+        [
+         69.602432194,
+         42.31
+        ]
+       ]
+      },
+      "properties": {
+       "class": "footway",
+       "subclass": null,
+       "connectors": [
+        {
+         "connector_id": "n0_0",
+         "at": 0.0
+        },
+        {
+         "connector_id": "n200_0",
+         "at": 1.0
+        }
+       ],
+       "access_restrictions": null,
+       "road_flags": null,
+       "level_rules": null,
+       "sources": [
+        {
+         "record_id": "synthetic:ab"
+        }
+       ]
+      }
+     },
+     {
+      "type": "Feature",
+      "id": "cd",
+      "geometry": {
+       "type": "LineString",
+       "coordinates": [
+        [
+         69.601216097,
+         42.30910068
+        ],
+        [
+         69.601216097,
+         42.31089932
+        ]
+       ]
+      },
+      "properties": {
+       "class": "footway",
+       "subclass": null,
+       "connectors": [
+        {
+         "connector_id": "n100_-100",
+         "at": 0.0
+        },
+        {
+         "connector_id": "n100_100",
+         "at": 1.0
+        }
+       ],
+       "access_restrictions": null,
+       "road_flags": [
+        {
+         "values": [
+          "is_tunnel"
+         ],
+         "between": null
+        }
+       ],
+       "level_rules": [
+        {
+         "value": -1,
+         "between": null
+        }
+       ],
+       "sources": [
+        {
+         "record_id": "synthetic:cd"
+        }
+       ]
+      }
+     },
+     {
+      "type": "Feature",
+      "id": "bd",
+      "geometry": {
+       "type": "LineString",
+       "coordinates": [
+        [
+         69.602432194,
+         42.31
+        ],
+        [
+         69.601216097,
+         42.31089932
+        ]
+       ]
+      },
+      "properties": {
+       "class": "footway",
+       "subclass": null,
+       "connectors": [
+        {
+         "connector_id": "n200_0",
+         "at": 0.0
+        },
+        {
+         "connector_id": "n100_100",
+         "at": 1.0
+        }
+       ],
+       "access_restrictions": null,
+       "road_flags": null,
+       "level_rules": null,
+       "sources": [
+        {
+         "record_id": "synthetic:bd"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   "connectors": {
+    "type": "FeatureCollection",
+    "features": [
+     {
+      "type": "Feature",
+      "id": "n0_0",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.6,
+        42.31
+       ]
+      },
+      "properties": {}
+     },
+     {
+      "type": "Feature",
+      "id": "n100_-100",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.601216097,
+        42.30910068
+       ]
+      },
+      "properties": {}
+     },
+     {
+      "type": "Feature",
+      "id": "n100_100",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.601216097,
+        42.31089932
+       ]
+      },
+      "properties": {}
+     },
+     {
+      "type": "Feature",
+      "id": "n200_0",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.602432194,
+        42.31
+       ]
+      },
+      "properties": {}
+     }
+    ]
+   },
+   "graph": {
+    "schema": "k03-pedestrian-graph-v1",
+    "city": "synthetic-h1-tunnel",
+    "bbox": [
+     69.599391951,
+     42.308651019,
+     69.603040243,
+     42.311348981
+    ],
+    "release": "synthetic",
+    "policy_family": "pedestrian-v1",
+    "policy_sha256": "ba8a525a511b4629919e3022b371b4f3d2db1ebf032e1fc1823802e1b772c783",
+    "max_snap_m": 100,
+    "inputs": {
+     "note": "synthetic hand graph"
+    },
+    "nodes": [
+     {
+      "id": "n0_0",
+      "lon": 69.6,
+      "lat": 42.31,
+      "open": false
+     },
+     {
+      "id": "n100_-100",
+      "lon": 69.601216097,
+      "lat": 42.30910068,
+      "open": false
+     },
+     {
+      "id": "n100_100",
+      "lon": 69.601216097,
+      "lat": 42.31089932,
+      "open": false
+     },
+     {
+      "id": "n200_0",
+      "lon": 69.602432194,
+      "lat": 42.31,
+      "open": false
+     }
+    ],
+    "edges": [
+     {
+      "id": "ab#0",
+      "seg": "ab",
+      "from": "n0_0",
+      "to": "n200_0",
+      "at": [
+       0.0,
+       1.0
+      ],
+      "coords": [
+       [
+        69.6,
+        42.31
+       ],
+       [
+        69.602432194,
+        42.31
+       ]
+      ],
+      "len_mm": 200000,
+      "cls": "footway",
+      "sub": null,
+      "flags": [],
+      "levels": [],
+      "osm": [
+       "synthetic:ab"
+      ],
+      "out": false,
+      "s": [
+       "ok",
+       "ok"
+      ],
+      "x": [
+       "ok",
+       "ok"
+      ],
+      "xa": [
+       [],
+       []
+      ],
+      "ev": "class_semantics"
+     },
+     {
+      "id": "bd#0",
+      "seg": "bd",
+      "from": "n200_0",
+      "to": "n100_100",
+      "at": [
+       0.0,
+       1.0
+      ],
+      "coords": [
+       [
+        69.602432194,
+        42.31
+       ],
+       [
+        69.601216097,
+        42.31089932
+       ]
+      ],
+      "len_mm": 141421,
+      "cls": "footway",
+      "sub": null,
+      "flags": [],
+      "levels": [],
+      "osm": [
+       "synthetic:bd"
+      ],
+      "out": false,
+      "s": [
+       "ok",
+       "ok"
+      ],
+      "x": [
+       "ok",
+       "ok"
+      ],
+      "xa": [
+       [],
+       []
+      ],
+      "ev": "class_semantics"
+     },
+     {
+      "id": "cd#0",
+      "seg": "cd",
+      "from": "n100_-100",
+      "to": "n100_100",
+      "at": [
+       0.0,
+       1.0
+      ],
+      "coords": [
+       [
+        69.601216097,
+        42.30910068
+       ],
+       [
+        69.601216097,
+        42.31089932
+       ]
+      ],
+      "len_mm": 200000,
+      "cls": "footway",
+      "sub": null,
+      "flags": [
+       "is_tunnel"
+      ],
+      "levels": [
+       {
+        "value": -1,
+        "between": null
+       }
+      ],
+      "osm": [
+       "synthetic:cd"
+      ],
+      "out": false,
+      "s": [
+       "ok",
+       "ok"
+      ],
+      "x": [
+       "ok",
+       "ok"
+      ],
+      "xa": [
+       [],
+       []
+      ],
+      "ev": "class_semantics"
+     }
+    ],
+    "graph_sha256": "bed838fcebc686c39bb0e58d34f1c27f75ab16450724151b1ca7286c753b0d92",
+    "license": {
+     "id": "ODbL-1.0",
+     "attribution": [
+      "© OpenStreetMap contributors (ODbL-1.0)",
+      "Overture Maps Foundation, release 2026-09-23.1"
+     ],
+     "note": "Граф — производная база данных OSM (через Overture): распространяется под ODbL с атрибуцией; юридическая проверка не проводилась."
+    },
+    "build": {
+     "script": "research/round-10-results/K03/build_graph.py",
+     "script_sha256": "85f0cdca63389d16cee6af07b275ffa855db63819627afc29ccfb65bd0fd0d79"
+    },
+    "stats": {
+     "nodes": 4,
+     "open_nodes": 0,
+     "edges": 3,
+     "km_all": 0.541,
+     "km_strict_ok_any_direction": 0.541,
+     "km_exploratory_ok_any_direction": 0.541,
+     "km_denied_both": 0.0,
+     "edges_by_evidence": {
+      "explicit_rule": 0,
+      "class_semantics": 3,
+      "unknown": 0,
+      "denied": 0
+     },
+     "edges_one_direction_strict": 0,
+     "edges_with_assumptions": 0
+    }
+   },
+   "queries": [
+    {
+     "id": "A-to-C",
+     "origin": {
+      "id": "o",
+      "lon": 69.6,
+      "lat": 42.31
+     },
+     "target": {
+      "id": "t",
+      "lon": 69.601216097,
+      "lat": 42.30910068
+     },
+     "expect": {
+      "pedestrian-v1-strict": {
+       "status": "ok",
+       "distance_mm": 541421,
+       "include_edges": [
+        "ab#0",
+        "bd#0",
+        "cd#0"
+       ],
+       "exclude_edges": []
+      },
+      "pedestrian-v1-exploratory": {
+       "status": "ok",
+       "distance_mm": 541421,
+       "include_edges": [
+        "ab#0",
+        "bd#0",
+        "cd#0"
+       ],
+       "exclude_edges": []
+      }
+     },
+     "why": "пересечение не узел: путь A→B→D→C, а не 200 м через точку пересечения"
+    }
+   ]
+  },
+  {
+   "name": "h2-barrier",
+   "note": "BC запрещён для foot; обход B–E–C",
+   "segments": {
+    "type": "FeatureCollection",
+    "features": [
+     {
+      "type": "Feature",
+      "id": "ab",
+      "geometry": {
+       "type": "LineString",
+       "coordinates": [
+        [
+         69.6,
+         42.31
+        ],
+        [
+         69.601216097,
+         42.31
+        ]
+       ]
+      },
+      "properties": {
+       "class": "footway",
+       "subclass": null,
+       "connectors": [
+        {
+         "connector_id": "n0_0",
+         "at": 0.0
+        },
+        {
+         "connector_id": "n100_0",
+         "at": 1.0
+        }
+       ],
+       "access_restrictions": null,
+       "road_flags": null,
+       "level_rules": null,
+       "sources": [
+        {
+         "record_id": "synthetic:ab"
+        }
+       ]
+      }
+     },
+     {
+      "type": "Feature",
+      "id": "bc",
+      "geometry": {
+       "type": "LineString",
+       "coordinates": [
+        [
+         69.601216097,
+         42.31
+        ],
+        [
+         69.602432194,
+         42.31
+        ]
+       ]
+      },
+      "properties": {
+       "class": "footway",
+       "subclass": null,
+       "connectors": [
+        {
+         "connector_id": "n100_0",
+         "at": 0.0
+        },
+        {
+         "connector_id": "n200_0",
+         "at": 1.0
+        }
+       ],
+       "access_restrictions": [
+        {
+         "access_type": "denied",
+         "when": {
+          "mode": [
+           "foot"
+          ]
+         }
+        }
+       ],
+       "road_flags": null,
+       "level_rules": null,
+       "sources": [
+        {
+         "record_id": "synthetic:bc"
+        }
+       ]
+      }
+     },
+     {
+      "type": "Feature",
+      "id": "be",
+      "geometry": {
+       "type": "LineString",
+       "coordinates": [
+        [
+         69.601216097,
+         42.31
+        ],
+        [
+         69.601824146,
+         42.310719456
+        ]
+       ]
+      },
+      "properties": {
+       "class": "footway",
+       "subclass": null,
+       "connectors": [
+        {
+         "connector_id": "n100_0",
+         "at": 0.0
+        },
+        {
+         "connector_id": "n150_80",
+         "at": 1.0
+        }
+       ],
+       "access_restrictions": null,
+       "road_flags": null,
+       "level_rules": null,
+       "sources": [
+        {
+         "record_id": "synthetic:be"
+        }
+       ]
+      }
+     },
+     {
+      "type": "Feature",
+      "id": "ec",
+      "geometry": {
+       "type": "LineString",
+       "coordinates": [
+        [
+         69.601824146,
+         42.310719456
+        ],
+        [
+         69.602432194,
+         42.31
+        ]
+       ]
+      },
+      "properties": {
+       "class": "footway",
+       "subclass": null,
+       "connectors": [
+        {
+         "connector_id": "n150_80",
+         "at": 0.0
+        },
+        {
+         "connector_id": "n200_0",
+         "at": 1.0
+        }
+       ],
+       "access_restrictions": null,
+       "road_flags": null,
+       "level_rules": null,
+       "sources": [
+        {
+         "record_id": "synthetic:ec"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   "connectors": {
+    "type": "FeatureCollection",
+    "features": [
+     {
+      "type": "Feature",
+      "id": "n0_0",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.6,
+        42.31
+       ]
+      },
+      "properties": {}
+     },
+     {
+      "type": "Feature",
+      "id": "n100_0",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.601216097,
+        42.31
+       ]
+      },
+      "properties": {}
+     },
+     {
+      "type": "Feature",
+      "id": "n150_80",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.601824146,
+        42.310719456
+       ]
+      },
+      "properties": {}
+     },
+     {
+      "type": "Feature",
+      "id": "n200_0",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.602432194,
+        42.31
+       ]
+      },
+      "properties": {}
+     }
+    ]
+   },
+   "graph": {
+    "schema": "k03-pedestrian-graph-v1",
+    "city": "synthetic-h2-barrier",
+    "bbox": [
+     69.599391951,
+     42.30955034,
+     69.60425634,
+     42.311348981
+    ],
+    "release": "synthetic",
+    "policy_family": "pedestrian-v1",
+    "policy_sha256": "ba8a525a511b4629919e3022b371b4f3d2db1ebf032e1fc1823802e1b772c783",
+    "max_snap_m": 100,
+    "inputs": {
+     "note": "synthetic hand graph"
+    },
+    "nodes": [
+     {
+      "id": "n0_0",
+      "lon": 69.6,
+      "lat": 42.31,
+      "open": false
+     },
+     {
+      "id": "n100_0",
+      "lon": 69.601216097,
+      "lat": 42.31,
+      "open": false
+     },
+     {
+      "id": "n150_80",
+      "lon": 69.601824146,
+      "lat": 42.310719456,
+      "open": false
+     },
+     {
+      "id": "n200_0",
+      "lon": 69.602432194,
+      "lat": 42.31,
+      "open": false
+     }
+    ],
+    "edges": [
+     {
+      "id": "ab#0",
+      "seg": "ab",
+      "from": "n0_0",
+      "to": "n100_0",
+      "at": [
+       0.0,
+       1.0
+      ],
+      "coords": [
+       [
+        69.6,
+        42.31
+       ],
+       [
+        69.601216097,
+        42.31
+       ]
+      ],
+      "len_mm": 100000,
+      "cls": "footway",
+      "sub": null,
+      "flags": [],
+      "levels": [],
+      "osm": [
+       "synthetic:ab"
+      ],
+      "out": false,
+      "s": [
+       "ok",
+       "ok"
+      ],
+      "x": [
+       "ok",
+       "ok"
+      ],
+      "xa": [
+       [],
+       []
+      ],
+      "ev": "class_semantics"
+     },
+     {
+      "id": "bc#0",
+      "seg": "bc",
+      "from": "n100_0",
+      "to": "n200_0",
+      "at": [
+       0.0,
+       1.0
+      ],
+      "coords": [
+       [
+        69.601216097,
+        42.31
+       ],
+       [
+        69.602432194,
+        42.31
+       ]
+      ],
+      "len_mm": 100000,
+      "cls": "footway",
+      "sub": null,
+      "flags": [],
+      "levels": [],
+      "osm": [
+       "synthetic:bc"
+      ],
+      "out": false,
+      "s": [
+       "no",
+       "no"
+      ],
+      "x": [
+       "no",
+       "no"
+      ],
+      "xa": [
+       [],
+       []
+      ],
+      "ev": "denied"
+     },
+     {
+      "id": "be#0",
+      "seg": "be",
+      "from": "n100_0",
+      "to": "n150_80",
+      "at": [
+       0.0,
+       1.0
+      ],
+      "coords": [
+       [
+        69.601216097,
+        42.31
+       ],
+       [
+        69.601824146,
+        42.310719456
+       ]
+      ],
+      "len_mm": 94340,
+      "cls": "footway",
+      "sub": null,
+      "flags": [],
+      "levels": [],
+      "osm": [
+       "synthetic:be"
+      ],
+      "out": false,
+      "s": [
+       "ok",
+       "ok"
+      ],
+      "x": [
+       "ok",
+       "ok"
+      ],
+      "xa": [
+       [],
+       []
+      ],
+      "ev": "class_semantics"
+     },
+     {
+      "id": "ec#0",
+      "seg": "ec",
+      "from": "n150_80",
+      "to": "n200_0",
+      "at": [
+       0.0,
+       1.0
+      ],
+      "coords": [
+       [
+        69.601824146,
+        42.310719456
+       ],
+       [
+        69.602432194,
+        42.31
+       ]
+      ],
+      "len_mm": 94340,
+      "cls": "footway",
+      "sub": null,
+      "flags": [],
+      "levels": [],
+      "osm": [
+       "synthetic:ec"
+      ],
+      "out": false,
+      "s": [
+       "ok",
+       "ok"
+      ],
+      "x": [
+       "ok",
+       "ok"
+      ],
+      "xa": [
+       [],
+       []
+      ],
+      "ev": "class_semantics"
+     }
+    ],
+    "graph_sha256": "4438f9765bec4f526486cb3b0c448ef1b02c70868beea098929726319ac5f66d",
+    "license": {
+     "id": "ODbL-1.0",
+     "attribution": [
+      "© OpenStreetMap contributors (ODbL-1.0)",
+      "Overture Maps Foundation, release 2026-09-23.1"
+     ],
+     "note": "Граф — производная база данных OSM (через Overture): распространяется под ODbL с атрибуцией; юридическая проверка не проводилась."
+    },
+    "build": {
+     "script": "research/round-10-results/K03/build_graph.py",
+     "script_sha256": "85f0cdca63389d16cee6af07b275ffa855db63819627afc29ccfb65bd0fd0d79"
+    },
+    "stats": {
+     "nodes": 4,
+     "open_nodes": 0,
+     "edges": 4,
+     "km_all": 0.389,
+     "km_strict_ok_any_direction": 0.289,
+     "km_exploratory_ok_any_direction": 0.289,
+     "km_denied_both": 0.1,
+     "edges_by_evidence": {
+      "explicit_rule": 0,
+      "class_semantics": 3,
+      "unknown": 0,
+      "denied": 1
+     },
+     "edges_one_direction_strict": 0,
+     "edges_with_assumptions": 0
+    }
+   },
+   "queries": [
+    {
+     "id": "A-to-C",
+     "origin": {
+      "id": "o",
+      "lon": 69.6,
+      "lat": 42.31
+     },
+     "target": {
+      "id": "t",
+      "lon": 69.602432194,
+      "lat": 42.31
+     },
+     "expect": {
+      "pedestrian-v1-strict": {
+       "status": "ok",
+       "distance_mm": 288680,
+       "include_edges": [
+        "be#0"
+       ],
+       "exclude_edges": [
+        "bc#0"
+       ]
+      },
+      "pedestrian-v1-exploratory": {
+       "status": "ok",
+       "distance_mm": 288680,
+       "include_edges": [
+        "be#0"
+       ],
+       "exclude_edges": [
+        "bc#0"
+       ]
+      }
+     },
+     "why": "барьер: обход через E"
+    }
+   ]
+  },
+  {
+   "name": "h2-barrier-no-detour",
+   "note": "BC запрещён, обхода нет; C–F отдельная компонента внутри квадрата",
+   "segments": {
+    "type": "FeatureCollection",
+    "features": [
+     {
+      "type": "Feature",
+      "id": "ab",
+      "geometry": {
+       "type": "LineString",
+       "coordinates": [
+        [
+         69.6,
+         42.31
+        ],
+        [
+         69.601216097,
+         42.31
+        ]
+       ]
+      },
+      "properties": {
+       "class": "footway",
+       "subclass": null,
+       "connectors": [
+        {
+         "connector_id": "n0_0",
+         "at": 0.0
+        },
+        {
+         "connector_id": "n100_0",
+         "at": 1.0
+        }
+       ],
+       "access_restrictions": null,
+       "road_flags": null,
+       "level_rules": null,
+       "sources": [
+        {
+         "record_id": "synthetic:ab"
+        }
+       ]
+      }
+     },
+     {
+      "type": "Feature",
+      "id": "bc",
+      "geometry": {
+       "type": "LineString",
+       "coordinates": [
+        [
+         69.601216097,
+         42.31
+        ],
+        [
+         69.602432194,
+         42.31
+        ]
+       ]
+      },
+      "properties": {
+       "class": "footway",
+       "subclass": null,
+       "connectors": [
+        {
+         "connector_id": "n100_0",
+         "at": 0.0
+        },
+        {
+         "connector_id": "n200_0",
+         "at": 1.0
+        }
+       ],
+       "access_restrictions": [
+        {
+         "access_type": "denied",
+         "when": {
+          "mode": [
+           "foot"
+          ]
+         }
+        }
+       ],
+       "road_flags": null,
+       "level_rules": null,
+       "sources": [
+        {
+         "record_id": "synthetic:bc"
+        }
+       ]
+      }
+     },
+     {
+      "type": "Feature",
+      "id": "cf",
+      "geometry": {
+       "type": "LineString",
+       "coordinates": [
+        [
+         69.602432194,
+         42.31
+        ],
+        [
+         69.603648291,
+         42.31
+        ]
+       ]
+      },
+      "properties": {
+       "class": "footway",
+       "subclass": null,
+       "connectors": [
+        {
+         "connector_id": "n200_0",
+         "at": 0.0
+        },
+        {
+         "connector_id": "n300_0",
+         "at": 1.0
+        }
+       ],
+       "access_restrictions": null,
+       "road_flags": null,
+       "level_rules": null,
+       "sources": [
+        {
+         "record_id": "synthetic:cf"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   "connectors": {
+    "type": "FeatureCollection",
+    "features": [
+     {
+      "type": "Feature",
+      "id": "n0_0",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.6,
+        42.31
+       ]
+      },
+      "properties": {}
+     },
+     {
+      "type": "Feature",
+      "id": "n100_0",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.601216097,
+        42.31
+       ]
+      },
+      "properties": {}
+     },
+     {
+      "type": "Feature",
+      "id": "n200_0",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.602432194,
+        42.31
+       ]
+      },
+      "properties": {}
+     },
+     {
+      "type": "Feature",
+      "id": "n300_0",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.603648291,
+        42.31
+       ]
+      },
+      "properties": {}
+     }
+    ]
+   },
+   "graph": {
+    "schema": "k03-pedestrian-graph-v1",
+    "city": "synthetic-h2-barrier-no-detour",
+    "bbox": [
+     69.599391951,
+     42.30955034,
+     69.60425634,
+     42.311348981
+    ],
+    "release": "synthetic",
+    "policy_family": "pedestrian-v1",
+    "policy_sha256": "ba8a525a511b4629919e3022b371b4f3d2db1ebf032e1fc1823802e1b772c783",
+    "max_snap_m": 100,
+    "inputs": {
+     "note": "synthetic hand graph"
+    },
+    "nodes": [
+     {
+      "id": "n0_0",
+      "lon": 69.6,
+      "lat": 42.31,
+      "open": false
+     },
+     {
+      "id": "n100_0",
+      "lon": 69.601216097,
+      "lat": 42.31,
+      "open": false
+     },
+     {
+      "id": "n200_0",
+      "lon": 69.602432194,
+      "lat": 42.31,
+      "open": false
+     },
+     {
+      "id": "n300_0",
+      "lon": 69.603648291,
+      "lat": 42.31,
+      "open": false
+     }
+    ],
+    "edges": [
+     {
+      "id": "ab#0",
+      "seg": "ab",
+      "from": "n0_0",
+      "to": "n100_0",
+      "at": [
+       0.0,
+       1.0
+      ],
+      "coords": [
+       [
+        69.6,
+        42.31
+       ],
+       [
+        69.601216097,
+        42.31
+       ]
+      ],
+      "len_mm": 100000,
+      "cls": "footway",
+      "sub": null,
+      "flags": [],
+      "levels": [],
+      "osm": [
+       "synthetic:ab"
+      ],
+      "out": false,
+      "s": [
+       "ok",
+       "ok"
+      ],
+      "x": [
+       "ok",
+       "ok"
+      ],
+      "xa": [
+       [],
+       []
+      ],
+      "ev": "class_semantics"
+     },
+     {
+      "id": "bc#0",
+      "seg": "bc",
+      "from": "n100_0",
+      "to": "n200_0",
+      "at": [
+       0.0,
+       1.0
+      ],
+      "coords": [
+       [
+        69.601216097,
+        42.31
+       ],
+       [
+        69.602432194,
+        42.31
+       ]
+      ],
+      "len_mm": 100000,
+      "cls": "footway",
+      "sub": null,
+      "flags": [],
+      "levels": [],
+      "osm": [
+       "synthetic:bc"
+      ],
+      "out": false,
+      "s": [
+       "no",
+       "no"
+      ],
+      "x": [
+       "no",
+       "no"
+      ],
+      "xa": [
+       [],
+       []
+      ],
+      "ev": "denied"
+     },
+     {
+      "id": "cf#0",
+      "seg": "cf",
+      "from": "n200_0",
+      "to": "n300_0",
+      "at": [
+       0.0,
+       1.0
+      ],
+      "coords": [
+       [
+        69.602432194,
+        42.31
+       ],
+       [
+        69.603648291,
+        42.31
+       ]
+      ],
+      "len_mm": 100000,
+      "cls": "footway",
+      "sub": null,
+      "flags": [],
+      "levels": [],
+      "osm": [
+       "synthetic:cf"
+      ],
+      "out": false,
+      "s": [
+       "ok",
+       "ok"
+      ],
+      "x": [
+       "ok",
+       "ok"
+      ],
+      "xa": [
+       [],
+       []
+      ],
+      "ev": "class_semantics"
+     }
+    ],
+    "graph_sha256": "2607b1c6683ec7edb4d2246552ddd29e4a190e85e8cb32a4b03150368aa4890e",
+    "license": {
+     "id": "ODbL-1.0",
+     "attribution": [
+      "© OpenStreetMap contributors (ODbL-1.0)",
+      "Overture Maps Foundation, release 2026-09-23.1"
+     ],
+     "note": "Граф — производная база данных OSM (через Overture): распространяется под ODbL с атрибуцией; юридическая проверка не проводилась."
+    },
+    "build": {
+     "script": "research/round-10-results/K03/build_graph.py",
+     "script_sha256": "85f0cdca63389d16cee6af07b275ffa855db63819627afc29ccfb65bd0fd0d79"
+    },
+    "stats": {
+     "nodes": 4,
+     "open_nodes": 0,
+     "edges": 3,
+     "km_all": 0.3,
+     "km_strict_ok_any_direction": 0.2,
+     "km_exploratory_ok_any_direction": 0.2,
+     "km_denied_both": 0.1,
+     "edges_by_evidence": {
+      "explicit_rule": 0,
+      "class_semantics": 2,
+      "unknown": 0,
+      "denied": 1
+     },
+     "edges_one_direction_strict": 0,
+     "edges_with_assumptions": 0
+    }
+   },
+   "queries": [
+    {
+     "id": "A-to-F",
+     "origin": {
+      "id": "o",
+      "lon": 69.6,
+      "lat": 42.31
+     },
+     "target": {
+      "id": "t",
+      "lon": 69.603648291,
+      "lat": 42.31
+     },
+     "expect": {
+      "pedestrian-v1-strict": {
+       "status": "disconnected",
+       "reason": "no_path_in_closed_component"
+      },
+      "pedestrian-v1-exploratory": {
+       "status": "disconnected",
+       "reason": "no_path_in_closed_component"
+      }
+     },
+     "why": "пути нет, обе компоненты внутри квадрата → disconnected (ограничение модельной сети)"
+    }
+   ]
+  },
+  {
+   "name": "h3-oneway-foot",
+   "note": "AB: foot только вперёд; обход B–C–A",
+   "segments": {
+    "type": "FeatureCollection",
+    "features": [
+     {
+      "type": "Feature",
+      "id": "ab",
+      "geometry": {
+       "type": "LineString",
+       "coordinates": [
+        [
+         69.6,
+         42.31
+        ],
+        [
+         69.601216097,
+         42.31
+        ]
+       ]
+      },
+      "properties": {
+       "class": "footway",
+       "subclass": null,
+       "connectors": [
+        {
+         "connector_id": "n0_0",
+         "at": 0.0
+        },
+        {
+         "connector_id": "n100_0",
+         "at": 1.0
+        }
+       ],
+       "access_restrictions": [
+        {
+         "access_type": "denied",
+         "when": {
+          "heading": "backward",
+          "mode": [
+           "foot"
+          ]
+         }
+        }
+       ],
+       "road_flags": null,
+       "level_rules": null,
+       "sources": [
+        {
+         "record_id": "synthetic:ab"
+        }
+       ]
+      }
+     },
+     {
+      "type": "Feature",
+      "id": "bc",
+      "geometry": {
+       "type": "LineString",
+       "coordinates": [
+        [
+         69.601216097,
+         42.31
+        ],
+        [
+         69.600608049,
+         42.310539592
+        ]
+       ]
+      },
+      "properties": {
+       "class": "footway",
+       "subclass": null,
+       "connectors": [
+        {
+         "connector_id": "n100_0",
+         "at": 0.0
+        },
+        {
+         "connector_id": "n50_60",
+         "at": 1.0
+        }
+       ],
+       "access_restrictions": null,
+       "road_flags": null,
+       "level_rules": null,
+       "sources": [
+        {
+         "record_id": "synthetic:bc"
+        }
+       ]
+      }
+     },
+     {
+      "type": "Feature",
+      "id": "ca",
+      "geometry": {
+       "type": "LineString",
+       "coordinates": [
+        [
+         69.600608049,
+         42.310539592
+        ],
+        [
+         69.6,
+         42.31
+        ]
+       ]
+      },
+      "properties": {
+       "class": "footway",
+       "subclass": null,
+       "connectors": [
+        {
+         "connector_id": "n50_60",
+         "at": 0.0
+        },
+        {
+         "connector_id": "n0_0",
+         "at": 1.0
+        }
+       ],
+       "access_restrictions": null,
+       "road_flags": null,
+       "level_rules": null,
+       "sources": [
+        {
+         "record_id": "synthetic:ca"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   "connectors": {
+    "type": "FeatureCollection",
+    "features": [
+     {
+      "type": "Feature",
+      "id": "n0_0",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.6,
+        42.31
+       ]
+      },
+      "properties": {}
+     },
+     {
+      "type": "Feature",
+      "id": "n100_0",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.601216097,
+        42.31
+       ]
+      },
+      "properties": {}
+     },
+     {
+      "type": "Feature",
+      "id": "n50_60",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.600608049,
+        42.310539592
+       ]
+      },
+      "properties": {}
+     }
+    ]
+   },
+   "graph": {
+    "schema": "k03-pedestrian-graph-v1",
+    "city": "synthetic-h3-oneway-foot",
+    "bbox": [
+     69.599391951,
+     42.30955034,
+     69.601824146,
+     42.311079184
+    ],
+    "release": "synthetic",
+    "policy_family": "pedestrian-v1",
+    "policy_sha256": "ba8a525a511b4629919e3022b371b4f3d2db1ebf032e1fc1823802e1b772c783",
+    "max_snap_m": 100,
+    "inputs": {
+     "note": "synthetic hand graph"
+    },
+    "nodes": [
+     {
+      "id": "n0_0",
+      "lon": 69.6,
+      "lat": 42.31,
+      "open": false
+     },
+     {
+      "id": "n100_0",
+      "lon": 69.601216097,
+      "lat": 42.31,
+      "open": false
+     },
+     {
+      "id": "n50_60",
+      "lon": 69.600608049,
+      "lat": 42.310539592,
+      "open": false
+     }
+    ],
+    "edges": [
+     {
+      "id": "ab#0",
+      "seg": "ab",
+      "from": "n0_0",
+      "to": "n100_0",
+      "at": [
+       0.0,
+       1.0
+      ],
+      "coords": [
+       [
+        69.6,
+        42.31
+       ],
+       [
+        69.601216097,
+        42.31
+       ]
+      ],
+      "len_mm": 100000,
+      "cls": "footway",
+      "sub": null,
+      "flags": [],
+      "levels": [],
+      "osm": [
+       "synthetic:ab"
+      ],
+      "out": false,
+      "s": [
+       "ok",
+       "no"
+      ],
+      "x": [
+       "ok",
+       "no"
+      ],
+      "xa": [
+       [],
+       []
+      ],
+      "ev": "class_semantics"
+     },
+     {
+      "id": "bc#0",
+      "seg": "bc",
+      "from": "n100_0",
+      "to": "n50_60",
+      "at": [
+       0.0,
+       1.0
+      ],
+      "coords": [
+       [
+        69.601216097,
+        42.31
+       ],
+       [
+        69.600608049,
+        42.310539592
+       ]
+      ],
+      "len_mm": 78102,
+      "cls": "footway",
+      "sub": null,
+      "flags": [],
+      "levels": [],
+      "osm": [
+       "synthetic:bc"
+      ],
+      "out": false,
+      "s": [
+       "ok",
+       "ok"
+      ],
+      "x": [
+       "ok",
+       "ok"
+      ],
+      "xa": [
+       [],
+       []
+      ],
+      "ev": "class_semantics"
+     },
+     {
+      "id": "ca#0",
+      "seg": "ca",
+      "from": "n50_60",
+      "to": "n0_0",
+      "at": [
+       0.0,
+       1.0
+      ],
+      "coords": [
+       [
+        69.600608049,
+        42.310539592
+       ],
+       [
+        69.6,
+        42.31
+       ]
+      ],
+      "len_mm": 78102,
+      "cls": "footway",
+      "sub": null,
+      "flags": [],
+      "levels": [],
+      "osm": [
+       "synthetic:ca"
+      ],
+      "out": false,
+      "s": [
+       "ok",
+       "ok"
+      ],
+      "x": [
+       "ok",
+       "ok"
+      ],
+      "xa": [
+       [],
+       []
+      ],
+      "ev": "class_semantics"
+     }
+    ],
+    "graph_sha256": "15be35118ee89a5fe466188007cb5590b7209bf18322b4066c60c485fc0c050f",
+    "license": {
+     "id": "ODbL-1.0",
+     "attribution": [
+      "© OpenStreetMap contributors (ODbL-1.0)",
+      "Overture Maps Foundation, release 2026-09-23.1"
+     ],
+     "note": "Граф — производная база данных OSM (через Overture): распространяется под ODbL с атрибуцией; юридическая проверка не проводилась."
+    },
+    "build": {
+     "script": "research/round-10-results/K03/build_graph.py",
+     "script_sha256": "85f0cdca63389d16cee6af07b275ffa855db63819627afc29ccfb65bd0fd0d79"
+    },
+    "stats": {
+     "nodes": 3,
+     "open_nodes": 0,
+     "edges": 3,
+     "km_all": 0.256,
+     "km_strict_ok_any_direction": 0.256,
+     "km_exploratory_ok_any_direction": 0.256,
+     "km_denied_both": 0.0,
+     "edges_by_evidence": {
+      "explicit_rule": 0,
+      "class_semantics": 3,
+      "unknown": 0,
+      "denied": 0
+     },
+     "edges_one_direction_strict": 1,
+     "edges_with_assumptions": 0
+    }
+   },
+   "queries": [
+    {
+     "id": "A-to-B",
+     "origin": {
+      "id": "o",
+      "lon": 69.6,
+      "lat": 42.31
+     },
+     "target": {
+      "id": "t",
+      "lon": 69.601216097,
+      "lat": 42.31
+     },
+     "expect": {
+      "pedestrian-v1-strict": {
+       "status": "ok",
+       "distance_mm": 100000,
+       "include_edges": [
+        "ab#0"
+       ],
+       "exclude_edges": []
+      },
+      "pedestrian-v1-exploratory": {
+       "status": "ok",
+       "distance_mm": 100000,
+       "include_edges": [
+        "ab#0"
+       ],
+       "exclude_edges": []
+      }
+     },
+     "why": "по разрешённому направлению"
+    },
+    {
+     "id": "B-to-A",
+     "origin": {
+      "id": "o",
+      "lon": 69.601216097,
+      "lat": 42.31
+     },
+     "target": {
+      "id": "t",
+      "lon": 69.6,
+      "lat": 42.31
+     },
+     "expect": {
+      "pedestrian-v1-strict": {
+       "status": "ok",
+       "distance_mm": 156204,
+       "include_edges": [
+        "bc#0",
+        "ca#0"
+       ],
+       "exclude_edges": [
+        "ab#0"
+       ]
+      },
+      "pedestrian-v1-exploratory": {
+       "status": "ok",
+       "distance_mm": 156204,
+       "include_edges": [
+        "bc#0",
+        "ca#0"
+       ],
+       "exclude_edges": [
+        "ab#0"
+       ]
+      }
+     },
+     "why": "против запрета: только обход"
+    }
+   ]
+  },
+  {
+   "name": "h3-oneway-footway-nomode",
+   "note": "footway с heading-запретом без mode — относится к пешеходу; обхода нет",
+   "segments": {
+    "type": "FeatureCollection",
+    "features": [
+     {
+      "type": "Feature",
+      "id": "ab",
+      "geometry": {
+       "type": "LineString",
+       "coordinates": [
+        [
+         69.6,
+         42.31
+        ],
+        [
+         69.601216097,
+         42.31
+        ]
+       ]
+      },
+      "properties": {
+       "class": "footway",
+       "subclass": null,
+       "connectors": [
+        {
+         "connector_id": "n0_0",
+         "at": 0.0
+        },
+        {
+         "connector_id": "n100_0",
+         "at": 1.0
+        }
+       ],
+       "access_restrictions": [
+        {
+         "access_type": "denied",
+         "when": {
+          "heading": "backward"
+         }
+        }
+       ],
+       "road_flags": null,
+       "level_rules": null,
+       "sources": [
+        {
+         "record_id": "synthetic:ab"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   "connectors": {
+    "type": "FeatureCollection",
+    "features": [
+     {
+      "type": "Feature",
+      "id": "n0_0",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.6,
+        42.31
+       ]
+      },
+      "properties": {}
+     },
+     {
+      "type": "Feature",
+      "id": "n100_0",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.601216097,
+        42.31
+       ]
+      },
+      "properties": {}
+     }
+    ]
+   },
+   "graph": {
+    "schema": "k03-pedestrian-graph-v1",
+    "city": "synthetic-h3-oneway-footway-nomode",
+    "bbox": [
+     69.599391951,
+     42.30955034,
+     69.601824146,
+     42.31044966
+    ],
+    "release": "synthetic",
+    "policy_family": "pedestrian-v1",
+    "policy_sha256": "ba8a525a511b4629919e3022b371b4f3d2db1ebf032e1fc1823802e1b772c783",
+    "max_snap_m": 100,
+    "inputs": {
+     "note": "synthetic hand graph"
+    },
+    "nodes": [
+     {
+      "id": "n0_0",
+      "lon": 69.6,
+      "lat": 42.31,
+      "open": false
+     },
+     {
+      "id": "n100_0",
+      "lon": 69.601216097,
+      "lat": 42.31,
+      "open": false
+     }
+    ],
+    "edges": [
+     {
+      "id": "ab#0",
+      "seg": "ab",
+      "from": "n0_0",
+      "to": "n100_0",
+      "at": [
+       0.0,
+       1.0
+      ],
+      "coords": [
+       [
+        69.6,
+        42.31
+       ],
+       [
+        69.601216097,
+        42.31
+       ]
+      ],
+      "len_mm": 100000,
+      "cls": "footway",
+      "sub": null,
+      "flags": [],
+      "levels": [],
+      "osm": [
+       "synthetic:ab"
+      ],
+      "out": false,
+      "s": [
+       "ok",
+       "no"
+      ],
+      "x": [
+       "ok",
+       "no"
+      ],
+      "xa": [
+       [],
+       []
+      ],
+      "ev": "class_semantics"
+     }
+    ],
+    "graph_sha256": "d4017db7fb8bc555004c56e69f6b1c72c95ccd85cafc7b6e71c4c12869a73310",
+    "license": {
+     "id": "ODbL-1.0",
+     "attribution": [
+      "© OpenStreetMap contributors (ODbL-1.0)",
+      "Overture Maps Foundation, release 2026-09-23.1"
+     ],
+     "note": "Граф — производная база данных OSM (через Overture): распространяется под ODbL с атрибуцией; юридическая проверка не проводилась."
+    },
+    "build": {
+     "script": "research/round-10-results/K03/build_graph.py",
+     "script_sha256": "85f0cdca63389d16cee6af07b275ffa855db63819627afc29ccfb65bd0fd0d79"
+    },
+    "stats": {
+     "nodes": 2,
+     "open_nodes": 0,
+     "edges": 1,
+     "km_all": 0.1,
+     "km_strict_ok_any_direction": 0.1,
+     "km_exploratory_ok_any_direction": 0.1,
+     "km_denied_both": 0.0,
+     "edges_by_evidence": {
+      "explicit_rule": 0,
+      "class_semantics": 1,
+      "unknown": 0,
+      "denied": 0
+     },
+     "edges_one_direction_strict": 1,
+     "edges_with_assumptions": 0
+    }
+   },
+   "queries": [
+    {
+     "id": "A-to-B",
+     "origin": {
+      "id": "o",
+      "lon": 69.6,
+      "lat": 42.31
+     },
+     "target": {
+      "id": "t",
+      "lon": 69.601216097,
+      "lat": 42.31
+     },
+     "expect": {
+      "pedestrian-v1-strict": {
+       "status": "ok",
+       "distance_mm": 100000,
+       "include_edges": [],
+       "exclude_edges": []
+      },
+      "pedestrian-v1-exploratory": {
+       "status": "ok",
+       "distance_mm": 100000,
+       "include_edges": [],
+       "exclude_edges": []
+      }
+     },
+     "why": "вперёд можно"
+    },
+    {
+     "id": "B-to-A",
+     "origin": {
+      "id": "o",
+      "lon": 69.601216097,
+      "lat": 42.31
+     },
+     "target": {
+      "id": "t",
+      "lon": 69.6,
+      "lat": 42.31
+     },
+     "expect": {
+      "pedestrian-v1-strict": {
+       "status": "disconnected",
+       "reason": "no_path_in_closed_component"
+      },
+      "pedestrian-v1-exploratory": {
+       "status": "disconnected",
+       "reason": "no_path_in_closed_component"
+      }
+     },
+     "why": "назад нельзя в обеих политиках"
+    }
+   ]
+  },
+  {
+   "name": "h3-oneway-road-nomode",
+   "note": "residential с heading-запретом без mode — автомобильный oneway OSM",
+   "segments": {
+    "type": "FeatureCollection",
+    "features": [
+     {
+      "type": "Feature",
+      "id": "ab",
+      "geometry": {
+       "type": "LineString",
+       "coordinates": [
+        [
+         69.6,
+         42.31
+        ],
+        [
+         69.601216097,
+         42.31
+        ]
+       ]
+      },
+      "properties": {
+       "class": "residential",
+       "subclass": null,
+       "connectors": [
+        {
+         "connector_id": "n0_0",
+         "at": 0.0
+        },
+        {
+         "connector_id": "n100_0",
+         "at": 1.0
+        }
+       ],
+       "access_restrictions": [
+        {
+         "access_type": "denied",
+         "when": {
+          "heading": "backward"
+         }
+        }
+       ],
+       "road_flags": null,
+       "level_rules": null,
+       "sources": [
+        {
+         "record_id": "synthetic:ab"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   "connectors": {
+    "type": "FeatureCollection",
+    "features": [
+     {
+      "type": "Feature",
+      "id": "n0_0",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.6,
+        42.31
+       ]
+      },
+      "properties": {}
+     },
+     {
+      "type": "Feature",
+      "id": "n100_0",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.601216097,
+        42.31
+       ]
+      },
+      "properties": {}
+     }
+    ]
+   },
+   "graph": {
+    "schema": "k03-pedestrian-graph-v1",
+    "city": "synthetic-h3-oneway-road-nomode",
+    "bbox": [
+     69.599391951,
+     42.30955034,
+     69.601824146,
+     42.31044966
+    ],
+    "release": "synthetic",
+    "policy_family": "pedestrian-v1",
+    "policy_sha256": "ba8a525a511b4629919e3022b371b4f3d2db1ebf032e1fc1823802e1b772c783",
+    "max_snap_m": 100,
+    "inputs": {
+     "note": "synthetic hand graph"
+    },
+    "nodes": [
+     {
+      "id": "n0_0",
+      "lon": 69.6,
+      "lat": 42.31,
+      "open": false
+     },
+     {
+      "id": "n100_0",
+      "lon": 69.601216097,
+      "lat": 42.31,
+      "open": false
+     }
+    ],
+    "edges": [
+     {
+      "id": "ab#0",
+      "seg": "ab",
+      "from": "n0_0",
+      "to": "n100_0",
+      "at": [
+       0.0,
+       1.0
+      ],
+      "coords": [
+       [
+        69.6,
+        42.31
+       ],
+       [
+        69.601216097,
+        42.31
+       ]
+      ],
+      "len_mm": 100000,
+      "cls": "residential",
+      "sub": null,
+      "flags": [],
+      "levels": [],
+      "osm": [
+       "synthetic:ab"
+      ],
+      "out": false,
+      "s": [
+       "unk",
+       "no"
+      ],
+      "x": [
+       "ok",
+       "ok"
+      ],
+      "xa": [
+       [
+        "foot_access_unknown"
+       ],
+       [
+        "foot_access_unknown",
+        "vehicle_oneway_not_applied_to_foot"
+       ]
+      ],
+      "ev": "unknown"
+     }
+    ],
+    "graph_sha256": "1fac1f7c67f19c95c35540d04a8c0c889bae6dab4d9adf3d01f87534a7f2c7a5",
+    "license": {
+     "id": "ODbL-1.0",
+     "attribution": [
+      "© OpenStreetMap contributors (ODbL-1.0)",
+      "Overture Maps Foundation, release 2026-09-23.1"
+     ],
+     "note": "Граф — производная база данных OSM (через Overture): распространяется под ODbL с атрибуцией; юридическая проверка не проводилась."
+    },
+    "build": {
+     "script": "research/round-10-results/K03/build_graph.py",
+     "script_sha256": "85f0cdca63389d16cee6af07b275ffa855db63819627afc29ccfb65bd0fd0d79"
+    },
+    "stats": {
+     "nodes": 2,
+     "open_nodes": 0,
+     "edges": 1,
+     "km_all": 0.1,
+     "km_strict_ok_any_direction": 0.0,
+     "km_exploratory_ok_any_direction": 0.1,
+     "km_denied_both": 0.0,
+     "edges_by_evidence": {
+      "explicit_rule": 0,
+      "class_semantics": 0,
+      "unknown": 1,
+      "denied": 0
+     },
+     "edges_one_direction_strict": 0,
+     "edges_with_assumptions": 1
+    }
+   },
+   "queries": [
+    {
+     "id": "B-to-A",
+     "origin": {
+      "id": "o",
+      "lon": 69.601216097,
+      "lat": 42.31
+     },
+     "target": {
+      "id": "t",
+      "lon": 69.6,
+      "lat": 42.31
+     },
+     "expect": {
+      "pedestrian-v1-strict": {
+       "status": "access_unknown",
+       "reason": "no_verified_edge_within_snap"
+      },
+      "pedestrian-v1-exploratory": {
+       "status": "ok",
+       "distance_mm": 100000,
+       "include_edges": [
+        "ab#0"
+       ],
+       "exclude_edges": [],
+       "assumptions_superset": [
+        "foot_access_unknown",
+        "vehicle_oneway_not_applied_to_foot"
+       ]
+      }
+     },
+     "why": "strict: доступ не подтверждён; exploratory: пройдено с допущением «oneway автомобильный»"
+    }
+   ]
+  },
+  {
+   "name": "h4-disconnected",
+   "note": "AB и DE не связаны, обе внутри квадрата",
+   "segments": {
+    "type": "FeatureCollection",
+    "features": [
+     {
+      "type": "Feature",
+      "id": "ab",
+      "geometry": {
+       "type": "LineString",
+       "coordinates": [
+        [
+         69.6,
+         42.31
+        ],
+        [
+         69.601216097,
+         42.31
+        ]
+       ]
+      },
+      "properties": {
+       "class": "footway",
+       "subclass": null,
+       "connectors": [
+        {
+         "connector_id": "n0_0",
+         "at": 0.0
+        },
+        {
+         "connector_id": "n100_0",
+         "at": 1.0
+        }
+       ],
+       "access_restrictions": null,
+       "road_flags": null,
+       "level_rules": null,
+       "sources": [
+        {
+         "record_id": "synthetic:ab"
+        }
+       ]
+      }
+     },
+     {
+      "type": "Feature",
+      "id": "de",
+      "geometry": {
+       "type": "LineString",
+       "coordinates": [
+        [
+         69.602432194,
+         42.31044966
+        ],
+        [
+         69.603648291,
+         42.31044966
+        ]
+       ]
+      },
+      "properties": {
+       "class": "footway",
+       "subclass": null,
+       "connectors": [
+        {
+         "connector_id": "n200_50",
+         "at": 0.0
+        },
+        {
+         "connector_id": "n300_50",
+         "at": 1.0
+        }
+       ],
+       "access_restrictions": null,
+       "road_flags": null,
+       "level_rules": null,
+       "sources": [
+        {
+         "record_id": "synthetic:de"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   "connectors": {
+    "type": "FeatureCollection",
+    "features": [
+     {
+      "type": "Feature",
+      "id": "n0_0",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.6,
+        42.31
+       ]
+      },
+      "properties": {}
+     },
+     {
+      "type": "Feature",
+      "id": "n100_0",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.601216097,
+        42.31
+       ]
+      },
+      "properties": {}
+     },
+     {
+      "type": "Feature",
+      "id": "n200_50",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.602432194,
+        42.31044966
+       ]
+      },
+      "properties": {}
+     },
+     {
+      "type": "Feature",
+      "id": "n300_50",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.603648291,
+        42.31044966
+       ]
+      },
+      "properties": {}
+     }
+    ]
+   },
+   "graph": {
+    "schema": "k03-pedestrian-graph-v1",
+    "city": "synthetic-h4-disconnected",
+    "bbox": [
+     69.599391951,
+     42.30955034,
+     69.60425634,
+     42.31089932
+    ],
+    "release": "synthetic",
+    "policy_family": "pedestrian-v1",
+    "policy_sha256": "ba8a525a511b4629919e3022b371b4f3d2db1ebf032e1fc1823802e1b772c783",
+    "max_snap_m": 100,
+    "inputs": {
+     "note": "synthetic hand graph"
+    },
+    "nodes": [
+     {
+      "id": "n0_0",
+      "lon": 69.6,
+      "lat": 42.31,
+      "open": false
+     },
+     {
+      "id": "n100_0",
+      "lon": 69.601216097,
+      "lat": 42.31,
+      "open": false
+     },
+     {
+      "id": "n200_50",
+      "lon": 69.602432194,
+      "lat": 42.31044966,
+      "open": false
+     },
+     {
+      "id": "n300_50",
+      "lon": 69.603648291,
+      "lat": 42.31044966,
+      "open": false
+     }
+    ],
+    "edges": [
+     {
+      "id": "ab#0",
+      "seg": "ab",
+      "from": "n0_0",
+      "to": "n100_0",
+      "at": [
+       0.0,
+       1.0
+      ],
+      "coords": [
+       [
+        69.6,
+        42.31
+       ],
+       [
+        69.601216097,
+        42.31
+       ]
+      ],
+      "len_mm": 100000,
+      "cls": "footway",
+      "sub": null,
+      "flags": [],
+      "levels": [],
+      "osm": [
+       "synthetic:ab"
+      ],
+      "out": false,
+      "s": [
+       "ok",
+       "ok"
+      ],
+      "x": [
+       "ok",
+       "ok"
+      ],
+      "xa": [
+       [],
+       []
+      ],
+      "ev": "class_semantics"
+     },
+     {
+      "id": "de#0",
+      "seg": "de",
+      "from": "n200_50",
+      "to": "n300_50",
+      "at": [
+       0.0,
+       1.0
+      ],
+      "coords": [
+       [
+        69.602432194,
+        42.31044966
+       ],
+       [
+        69.603648291,
+        42.31044966
+       ]
+      ],
+      "len_mm": 99999,
+      "cls": "footway",
+      "sub": null,
+      "flags": [],
+      "levels": [],
+      "osm": [
+       "synthetic:de"
+      ],
+      "out": false,
+      "s": [
+       "ok",
+       "ok"
+      ],
+      "x": [
+       "ok",
+       "ok"
+      ],
+      "xa": [
+       [],
+       []
+      ],
+      "ev": "class_semantics"
+     }
+    ],
+    "graph_sha256": "69599008f75a1a92040c571f8705c1d7a8097d4a9cb22d1677722cf5baef1ea6",
+    "license": {
+     "id": "ODbL-1.0",
+     "attribution": [
+      "© OpenStreetMap contributors (ODbL-1.0)",
+      "Overture Maps Foundation, release 2026-09-23.1"
+     ],
+     "note": "Граф — производная база данных OSM (через Overture): распространяется под ODbL с атрибуцией; юридическая проверка не проводилась."
+    },
+    "build": {
+     "script": "research/round-10-results/K03/build_graph.py",
+     "script_sha256": "85f0cdca63389d16cee6af07b275ffa855db63819627afc29ccfb65bd0fd0d79"
+    },
+    "stats": {
+     "nodes": 4,
+     "open_nodes": 0,
+     "edges": 2,
+     "km_all": 0.2,
+     "km_strict_ok_any_direction": 0.2,
+     "km_exploratory_ok_any_direction": 0.2,
+     "km_denied_both": 0.0,
+     "edges_by_evidence": {
+      "explicit_rule": 0,
+      "class_semantics": 2,
+      "unknown": 0,
+      "denied": 0
+     },
+     "edges_one_direction_strict": 0,
+     "edges_with_assumptions": 0
+    }
+   },
+   "queries": [
+    {
+     "id": "A-to-D",
+     "origin": {
+      "id": "o",
+      "lon": 69.6,
+      "lat": 42.31
+     },
+     "target": {
+      "id": "t",
+      "lon": 69.602432194,
+      "lat": 42.31044966
+     },
+     "expect": {
+      "pedestrian-v1-strict": {
+       "status": "disconnected",
+       "reason": "no_path_in_closed_component"
+      },
+      "pedestrian-v1-exploratory": {
+       "status": "disconnected",
+       "reason": "no_path_in_closed_component"
+      }
+     },
+     "why": "изолированная компонента → disconnected, прямая не подставляется"
+    }
+   ]
+  },
+  {
+   "name": "h5-long-snap",
+   "note": "AB; точки в 99 м и 101 м от линии",
+   "segments": {
+    "type": "FeatureCollection",
+    "features": [
+     {
+      "type": "Feature",
+      "id": "ab",
+      "geometry": {
+       "type": "LineString",
+       "coordinates": [
+        [
+         69.6,
+         42.31
+        ],
+        [
+         69.602432194,
+         42.31
+        ]
+       ]
+      },
+      "properties": {
+       "class": "footway",
+       "subclass": null,
+       "connectors": [
+        {
+         "connector_id": "n0_0",
+         "at": 0.0
+        },
+        {
+         "connector_id": "n200_0",
+         "at": 1.0
+        }
+       ],
+       "access_restrictions": null,
+       "road_flags": null,
+       "level_rules": null,
+       "sources": [
+        {
+         "record_id": "synthetic:ab"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   "connectors": {
+    "type": "FeatureCollection",
+    "features": [
+     {
+      "type": "Feature",
+      "id": "n0_0",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.6,
+        42.31
+       ]
+      },
+      "properties": {}
+     },
+     {
+      "type": "Feature",
+      "id": "n200_0",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.602432194,
+        42.31
+       ]
+      },
+      "properties": {}
+     }
+    ]
+   },
+   "graph": {
+    "schema": "k03-pedestrian-graph-v1",
+    "city": "synthetic-h5-long-snap",
+    "bbox": [
+     69.599391951,
+     42.308651019,
+     69.603040243,
+     42.311348981
+    ],
+    "release": "synthetic",
+    "policy_family": "pedestrian-v1",
+    "policy_sha256": "ba8a525a511b4629919e3022b371b4f3d2db1ebf032e1fc1823802e1b772c783",
+    "max_snap_m": 100,
+    "inputs": {
+     "note": "synthetic hand graph"
+    },
+    "nodes": [
+     {
+      "id": "n0_0",
+      "lon": 69.6,
+      "lat": 42.31,
+      "open": false
+     },
+     {
+      "id": "n200_0",
+      "lon": 69.602432194,
+      "lat": 42.31,
+      "open": false
+     }
+    ],
+    "edges": [
+     {
+      "id": "ab#0",
+      "seg": "ab",
+      "from": "n0_0",
+      "to": "n200_0",
+      "at": [
+       0.0,
+       1.0
+      ],
+      "coords": [
+       [
+        69.6,
+        42.31
+       ],
+       [
+        69.602432194,
+        42.31
+       ]
+      ],
+      "len_mm": 200000,
+      "cls": "footway",
+      "sub": null,
+      "flags": [],
+      "levels": [],
+      "osm": [
+       "synthetic:ab"
+      ],
+      "out": false,
+      "s": [
+       "ok",
+       "ok"
+      ],
+      "x": [
+       "ok",
+       "ok"
+      ],
+      "xa": [
+       [],
+       []
+      ],
+      "ev": "class_semantics"
+     }
+    ],
+    "graph_sha256": "b8c792de03a084e8766cfad7aadf897d7fa6f7f9928f310ebcf595641101626f",
+    "license": {
+     "id": "ODbL-1.0",
+     "attribution": [
+      "© OpenStreetMap contributors (ODbL-1.0)",
+      "Overture Maps Foundation, release 2026-09-23.1"
+     ],
+     "note": "Граф — производная база данных OSM (через Overture): распространяется под ODbL с атрибуцией; юридическая проверка не проводилась."
+    },
+    "build": {
+     "script": "research/round-10-results/K03/build_graph.py",
+     "script_sha256": "85f0cdca63389d16cee6af07b275ffa855db63819627afc29ccfb65bd0fd0d79"
+    },
+    "stats": {
+     "nodes": 2,
+     "open_nodes": 0,
+     "edges": 1,
+     "km_all": 0.2,
+     "km_strict_ok_any_direction": 0.2,
+     "km_exploratory_ok_any_direction": 0.2,
+     "km_denied_both": 0.0,
+     "edges_by_evidence": {
+      "explicit_rule": 0,
+      "class_semantics": 1,
+      "unknown": 0,
+      "denied": 0
+     },
+     "edges_one_direction_strict": 0,
+     "edges_with_assumptions": 0
+    }
+   },
+   "queries": [
+    {
+     "id": "P99-to-B",
+     "origin": {
+      "id": "o",
+      "lon": 69.601216097,
+      "lat": 42.310890327
+     },
+     "target": {
+      "id": "t",
+      "lon": 69.602432194,
+      "lat": 42.31
+     },
+     "expect": {
+      "pedestrian-v1-strict": {
+       "status": "ok",
+       "distance_mm": 199000,
+       "include_edges": [
+        "ab#0"
+       ],
+       "exclude_edges": [],
+       "assumptions_superset": [
+        "snap_model_connection"
+       ]
+      },
+      "pedestrian-v1-exploratory": {
+       "status": "ok",
+       "distance_mm": 199000,
+       "include_edges": [
+        "ab#0"
+       ],
+       "exclude_edges": [],
+       "assumptions_superset": [
+        "snap_model_connection"
+       ]
+      }
+     },
+     "why": "привязка 99 м ≤ 100 м: отрезок привязки — модельное соединение, входит в длину"
+    },
+    {
+     "id": "P101-to-B",
+     "origin": {
+      "id": "o",
+      "lon": 69.601216097,
+      "lat": 42.310908314
+     },
+     "target": {
+      "id": "t",
+      "lon": 69.602432194,
+      "lat": 42.31
+     },
+     "expect": {
+      "pedestrian-v1-strict": {
+       "status": "unsnappable",
+       "reason": "no_edge_within_max_snap"
+      },
+      "pedestrian-v1-exploratory": {
+       "status": "unsnappable",
+       "reason": "no_edge_within_max_snap"
+      }
+     },
+     "why": "101 м > 100 м: unsnappable, а не прямая"
+    }
+   ]
+  },
+  {
+   "name": "h6-unknown",
+   "note": "только residential без правил foot",
+   "segments": {
+    "type": "FeatureCollection",
+    "features": [
+     {
+      "type": "Feature",
+      "id": "ab",
+      "geometry": {
+       "type": "LineString",
+       "coordinates": [
+        [
+         69.6,
+         42.31
+        ],
+        [
+         69.602432194,
+         42.31
+        ]
+       ]
+      },
+      "properties": {
+       "class": "residential",
+       "subclass": null,
+       "connectors": [
+        {
+         "connector_id": "n0_0",
+         "at": 0.0
+        },
+        {
+         "connector_id": "n200_0",
+         "at": 1.0
+        }
+       ],
+       "access_restrictions": null,
+       "road_flags": null,
+       "level_rules": null,
+       "sources": [
+        {
+         "record_id": "synthetic:ab"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   "connectors": {
+    "type": "FeatureCollection",
+    "features": [
+     {
+      "type": "Feature",
+      "id": "n0_0",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.6,
+        42.31
+       ]
+      },
+      "properties": {}
+     },
+     {
+      "type": "Feature",
+      "id": "n200_0",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.602432194,
+        42.31
+       ]
+      },
+      "properties": {}
+     }
+    ]
+   },
+   "graph": {
+    "schema": "k03-pedestrian-graph-v1",
+    "city": "synthetic-h6-unknown",
+    "bbox": [
+     69.599391951,
+     42.30955034,
+     69.603040243,
+     42.31044966
+    ],
+    "release": "synthetic",
+    "policy_family": "pedestrian-v1",
+    "policy_sha256": "ba8a525a511b4629919e3022b371b4f3d2db1ebf032e1fc1823802e1b772c783",
+    "max_snap_m": 100,
+    "inputs": {
+     "note": "synthetic hand graph"
+    },
+    "nodes": [
+     {
+      "id": "n0_0",
+      "lon": 69.6,
+      "lat": 42.31,
+      "open": false
+     },
+     {
+      "id": "n200_0",
+      "lon": 69.602432194,
+      "lat": 42.31,
+      "open": false
+     }
+    ],
+    "edges": [
+     {
+      "id": "ab#0",
+      "seg": "ab",
+      "from": "n0_0",
+      "to": "n200_0",
+      "at": [
+       0.0,
+       1.0
+      ],
+      "coords": [
+       [
+        69.6,
+        42.31
+       ],
+       [
+        69.602432194,
+        42.31
+       ]
+      ],
+      "len_mm": 200000,
+      "cls": "residential",
+      "sub": null,
+      "flags": [],
+      "levels": [],
+      "osm": [
+       "synthetic:ab"
+      ],
+      "out": false,
+      "s": [
+       "unk",
+       "unk"
+      ],
+      "x": [
+       "ok",
+       "ok"
+      ],
+      "xa": [
+       [
+        "foot_access_unknown"
+       ],
+       [
+        "foot_access_unknown"
+       ]
+      ],
+      "ev": "unknown"
+     }
+    ],
+    "graph_sha256": "77ac5c01a5ceb7ac4bbacadf1aaee64e2eac0ba6a7c9a7a68b53d713dd8e50b7",
+    "license": {
+     "id": "ODbL-1.0",
+     "attribution": [
+      "© OpenStreetMap contributors (ODbL-1.0)",
+      "Overture Maps Foundation, release 2026-09-23.1"
+     ],
+     "note": "Граф — производная база данных OSM (через Overture): распространяется под ODbL с атрибуцией; юридическая проверка не проводилась."
+    },
+    "build": {
+     "script": "research/round-10-results/K03/build_graph.py",
+     "script_sha256": "85f0cdca63389d16cee6af07b275ffa855db63819627afc29ccfb65bd0fd0d79"
+    },
+    "stats": {
+     "nodes": 2,
+     "open_nodes": 0,
+     "edges": 1,
+     "km_all": 0.2,
+     "km_strict_ok_any_direction": 0.0,
+     "km_exploratory_ok_any_direction": 0.2,
+     "km_denied_both": 0.0,
+     "edges_by_evidence": {
+      "explicit_rule": 0,
+      "class_semantics": 0,
+      "unknown": 1,
+      "denied": 0
+     },
+     "edges_one_direction_strict": 0,
+     "edges_with_assumptions": 1
+    }
+   },
+   "queries": [
+    {
+     "id": "A-to-B",
+     "origin": {
+      "id": "o",
+      "lon": 69.6,
+      "lat": 42.31
+     },
+     "target": {
+      "id": "t",
+      "lon": 69.602432194,
+      "lat": 42.31
+     },
+     "expect": {
+      "pedestrian-v1-strict": {
+       "status": "access_unknown",
+       "reason": "no_verified_edge_within_snap"
+      },
+      "pedestrian-v1-exploratory": {
+       "status": "ok",
+       "distance_mm": 200000,
+       "include_edges": [],
+       "exclude_edges": [],
+       "assumptions_superset": [
+        "foot_access_unknown"
+       ]
+      }
+     },
+     "why": "strict: access_unknown; exploratory: маршрут по неполным данным"
+    }
+   ]
+  },
+  {
+   "name": "h6-unknown-middle",
+   "note": "footway – residential – footway",
+   "segments": {
+    "type": "FeatureCollection",
+    "features": [
+     {
+      "type": "Feature",
+      "id": "ab",
+      "geometry": {
+       "type": "LineString",
+       "coordinates": [
+        [
+         69.6,
+         42.31
+        ],
+        [
+         69.601216097,
+         42.31
+        ]
+       ]
+      },
+      "properties": {
+       "class": "footway",
+       "subclass": null,
+       "connectors": [
+        {
+         "connector_id": "n0_0",
+         "at": 0.0
+        },
+        {
+         "connector_id": "n100_0",
+         "at": 1.0
+        }
+       ],
+       "access_restrictions": null,
+       "road_flags": null,
+       "level_rules": null,
+       "sources": [
+        {
+         "record_id": "synthetic:ab"
+        }
+       ]
+      }
+     },
+     {
+      "type": "Feature",
+      "id": "bc",
+      "geometry": {
+       "type": "LineString",
+       "coordinates": [
+        [
+         69.601216097,
+         42.31
+        ],
+        [
+         69.602432194,
+         42.31
+        ]
+       ]
+      },
+      "properties": {
+       "class": "residential",
+       "subclass": null,
+       "connectors": [
+        {
+         "connector_id": "n100_0",
+         "at": 0.0
+        },
+        {
+         "connector_id": "n200_0",
+         "at": 1.0
+        }
+       ],
+       "access_restrictions": null,
+       "road_flags": null,
+       "level_rules": null,
+       "sources": [
+        {
+         "record_id": "synthetic:bc"
+        }
+       ]
+      }
+     },
+     {
+      "type": "Feature",
+      "id": "cd",
+      "geometry": {
+       "type": "LineString",
+       "coordinates": [
+        [
+         69.602432194,
+         42.31
+        ],
+        [
+         69.603648291,
+         42.31
+        ]
+       ]
+      },
+      "properties": {
+       "class": "footway",
+       "subclass": null,
+       "connectors": [
+        {
+         "connector_id": "n200_0",
+         "at": 0.0
+        },
+        {
+         "connector_id": "n300_0",
+         "at": 1.0
+        }
+       ],
+       "access_restrictions": null,
+       "road_flags": null,
+       "level_rules": null,
+       "sources": [
+        {
+         "record_id": "synthetic:cd"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   "connectors": {
+    "type": "FeatureCollection",
+    "features": [
+     {
+      "type": "Feature",
+      "id": "n0_0",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.6,
+        42.31
+       ]
+      },
+      "properties": {}
+     },
+     {
+      "type": "Feature",
+      "id": "n100_0",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.601216097,
+        42.31
+       ]
+      },
+      "properties": {}
+     },
+     {
+      "type": "Feature",
+      "id": "n200_0",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.602432194,
+        42.31
+       ]
+      },
+      "properties": {}
+     },
+     {
+      "type": "Feature",
+      "id": "n300_0",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.603648291,
+        42.31
+       ]
+      },
+      "properties": {}
+     }
+    ]
+   },
+   "graph": {
+    "schema": "k03-pedestrian-graph-v1",
+    "city": "synthetic-h6-unknown-middle",
+    "bbox": [
+     69.599391951,
+     42.30955034,
+     69.60425634,
+     42.31044966
+    ],
+    "release": "synthetic",
+    "policy_family": "pedestrian-v1",
+    "policy_sha256": "ba8a525a511b4629919e3022b371b4f3d2db1ebf032e1fc1823802e1b772c783",
+    "max_snap_m": 100,
+    "inputs": {
+     "note": "synthetic hand graph"
+    },
+    "nodes": [
+     {
+      "id": "n0_0",
+      "lon": 69.6,
+      "lat": 42.31,
+      "open": false
+     },
+     {
+      "id": "n100_0",
+      "lon": 69.601216097,
+      "lat": 42.31,
+      "open": false
+     },
+     {
+      "id": "n200_0",
+      "lon": 69.602432194,
+      "lat": 42.31,
+      "open": false
+     },
+     {
+      "id": "n300_0",
+      "lon": 69.603648291,
+      "lat": 42.31,
+      "open": false
+     }
+    ],
+    "edges": [
+     {
+      "id": "ab#0",
+      "seg": "ab",
+      "from": "n0_0",
+      "to": "n100_0",
+      "at": [
+       0.0,
+       1.0
+      ],
+      "coords": [
+       [
+        69.6,
+        42.31
+       ],
+       [
+        69.601216097,
+        42.31
+       ]
+      ],
+      "len_mm": 100000,
+      "cls": "footway",
+      "sub": null,
+      "flags": [],
+      "levels": [],
+      "osm": [
+       "synthetic:ab"
+      ],
+      "out": false,
+      "s": [
+       "ok",
+       "ok"
+      ],
+      "x": [
+       "ok",
+       "ok"
+      ],
+      "xa": [
+       [],
+       []
+      ],
+      "ev": "class_semantics"
+     },
+     {
+      "id": "bc#0",
+      "seg": "bc",
+      "from": "n100_0",
+      "to": "n200_0",
+      "at": [
+       0.0,
+       1.0
+      ],
+      "coords": [
+       [
+        69.601216097,
+        42.31
+       ],
+       [
+        69.602432194,
+        42.31
+       ]
+      ],
+      "len_mm": 100000,
+      "cls": "residential",
+      "sub": null,
+      "flags": [],
+      "levels": [],
+      "osm": [
+       "synthetic:bc"
+      ],
+      "out": false,
+      "s": [
+       "unk",
+       "unk"
+      ],
+      "x": [
+       "ok",
+       "ok"
+      ],
+      "xa": [
+       [
+        "foot_access_unknown"
+       ],
+       [
+        "foot_access_unknown"
+       ]
+      ],
+      "ev": "unknown"
+     },
+     {
+      "id": "cd#0",
+      "seg": "cd",
+      "from": "n200_0",
+      "to": "n300_0",
+      "at": [
+       0.0,
+       1.0
+      ],
+      "coords": [
+       [
+        69.602432194,
+        42.31
+       ],
+       [
+        69.603648291,
+        42.31
+       ]
+      ],
+      "len_mm": 100000,
+      "cls": "footway",
+      "sub": null,
+      "flags": [],
+      "levels": [],
+      "osm": [
+       "synthetic:cd"
+      ],
+      "out": false,
+      "s": [
+       "ok",
+       "ok"
+      ],
+      "x": [
+       "ok",
+       "ok"
+      ],
+      "xa": [
+       [],
+       []
+      ],
+      "ev": "class_semantics"
+     }
+    ],
+    "graph_sha256": "fa822370a45293c2003b9dd746057ea7df617f9b752ab6a759bf9df2c7083dda",
+    "license": {
+     "id": "ODbL-1.0",
+     "attribution": [
+      "© OpenStreetMap contributors (ODbL-1.0)",
+      "Overture Maps Foundation, release 2026-09-23.1"
+     ],
+     "note": "Граф — производная база данных OSM (через Overture): распространяется под ODbL с атрибуцией; юридическая проверка не проводилась."
+    },
+    "build": {
+     "script": "research/round-10-results/K03/build_graph.py",
+     "script_sha256": "85f0cdca63389d16cee6af07b275ffa855db63819627afc29ccfb65bd0fd0d79"
+    },
+    "stats": {
+     "nodes": 4,
+     "open_nodes": 0,
+     "edges": 3,
+     "km_all": 0.3,
+     "km_strict_ok_any_direction": 0.2,
+     "km_exploratory_ok_any_direction": 0.3,
+     "km_denied_both": 0.0,
+     "edges_by_evidence": {
+      "explicit_rule": 0,
+      "class_semantics": 2,
+      "unknown": 1,
+      "denied": 0
+     },
+     "edges_one_direction_strict": 0,
+     "edges_with_assumptions": 1
+    }
+   },
+   "queries": [
+    {
+     "id": "A-to-D",
+     "origin": {
+      "id": "o",
+      "lon": 69.6,
+      "lat": 42.31
+     },
+     "target": {
+      "id": "t",
+      "lon": 69.603648291,
+      "lat": 42.31
+     },
+     "expect": {
+      "pedestrian-v1-strict": {
+       "status": "access_unknown",
+       "reason": "path_only_via_unverified_edges"
+      },
+      "pedestrian-v1-exploratory": {
+       "status": "ok",
+       "distance_mm": 300000,
+       "include_edges": [
+        "bc#0"
+       ],
+       "exclude_edges": [],
+       "assumptions_superset": [
+        "foot_access_unknown"
+       ]
+      }
+     },
+     "why": "путь есть только через ребро с неизвестным доступом"
+    }
+   ]
+  },
+  {
+   "name": "h7-boundary-open",
+   "note": "A–X и T–Y уходят за край, внутри не связаны",
+   "segments": {
+    "type": "FeatureCollection",
+    "features": [
+     {
+      "type": "Feature",
+      "id": "ax",
+      "geometry": {
+       "type": "LineString",
+       "coordinates": [
+        [
+         69.600608049,
+         42.31044966
+        ],
+        [
+         69.599391951,
+         42.31044966
+        ]
+       ]
+      },
+      "properties": {
+       "class": "footway",
+       "subclass": null,
+       "connectors": [
+        {
+         "connector_id": "n50_50",
+         "at": 0.0
+        },
+        {
+         "connector_id": "n-50_50",
+         "at": 1.0
+        }
+       ],
+       "access_restrictions": null,
+       "road_flags": null,
+       "level_rules": null,
+       "sources": [
+        {
+         "record_id": "synthetic:ax"
+        }
+       ]
+      }
+     },
+     {
+      "type": "Feature",
+      "id": "ty",
+      "geometry": {
+       "type": "LineString",
+       "coordinates": [
+        [
+         69.603040243,
+         42.31044966
+        ],
+        [
+         69.60425634,
+         42.31044966
+        ]
+       ]
+      },
+      "properties": {
+       "class": "footway",
+       "subclass": null,
+       "connectors": [
+        {
+         "connector_id": "n250_50",
+         "at": 0.0
+        },
+        {
+         "connector_id": "n350_50",
+         "at": 1.0
+        }
+       ],
+       "access_restrictions": null,
+       "road_flags": null,
+       "level_rules": null,
+       "sources": [
+        {
+         "record_id": "synthetic:ty"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   "connectors": {
+    "type": "FeatureCollection",
+    "features": [
+     {
+      "type": "Feature",
+      "id": "n-50_50",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.599391951,
+        42.31044966
+       ]
+      },
+      "properties": {}
+     },
+     {
+      "type": "Feature",
+      "id": "n250_50",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.603040243,
+        42.31044966
+       ]
+      },
+      "properties": {}
+     },
+     {
+      "type": "Feature",
+      "id": "n350_50",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.60425634,
+        42.31044966
+       ]
+      },
+      "properties": {}
+     },
+     {
+      "type": "Feature",
+      "id": "n50_50",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.600608049,
+        42.31044966
+       ]
+      },
+      "properties": {}
+     }
+    ]
+   },
+   "graph": {
+    "schema": "k03-pedestrian-graph-v1",
+    "city": "synthetic-h7-boundary-open",
+    "bbox": [
+     69.6,
+     42.31,
+     69.603648291,
+     42.312697961
+    ],
+    "release": "synthetic",
+    "policy_family": "pedestrian-v1",
+    "policy_sha256": "ba8a525a511b4629919e3022b371b4f3d2db1ebf032e1fc1823802e1b772c783",
+    "max_snap_m": 100,
+    "inputs": {
+     "note": "synthetic hand graph"
+    },
+    "nodes": [
+     {
+      "id": "n-50_50",
+      "lon": 69.599391951,
+      "lat": 42.31044966,
+      "open": true
+     },
+     {
+      "id": "n250_50",
+      "lon": 69.603040243,
+      "lat": 42.31044966,
+      "open": false
+     },
+     {
+      "id": "n350_50",
+      "lon": 69.60425634,
+      "lat": 42.31044966,
+      "open": true
+     },
+     {
+      "id": "n50_50",
+      "lon": 69.600608049,
+      "lat": 42.31044966,
+      "open": false
+     }
+    ],
+    "edges": [
+     {
+      "id": "ax#0",
+      "seg": "ax",
+      "from": "n50_50",
+      "to": "n-50_50",
+      "at": [
+       0.0,
+       1.0
+      ],
+      "coords": [
+       [
+        69.600608049,
+        42.31044966
+       ],
+       [
+        69.599391951,
+        42.31044966
+       ]
+      ],
+      "len_mm": 99999,
+      "cls": "footway",
+      "sub": null,
+      "flags": [],
+      "levels": [],
+      "osm": [
+       "synthetic:ax"
+      ],
+      "out": true,
+      "s": [
+       "ok",
+       "ok"
+      ],
+      "x": [
+       "ok",
+       "ok"
+      ],
+      "xa": [
+       [],
+       []
+      ],
+      "ev": "class_semantics"
+     },
+     {
+      "id": "ty#0",
+      "seg": "ty",
+      "from": "n250_50",
+      "to": "n350_50",
+      "at": [
+       0.0,
+       1.0
+      ],
+      "coords": [
+       [
+        69.603040243,
+        42.31044966
+       ],
+       [
+        69.60425634,
+        42.31044966
+       ]
+      ],
+      "len_mm": 99999,
+      "cls": "footway",
+      "sub": null,
+      "flags": [],
+      "levels": [],
+      "osm": [
+       "synthetic:ty"
+      ],
+      "out": true,
+      "s": [
+       "ok",
+       "ok"
+      ],
+      "x": [
+       "ok",
+       "ok"
+      ],
+      "xa": [
+       [],
+       []
+      ],
+      "ev": "class_semantics"
+     }
+    ],
+    "graph_sha256": "88cd4debe2831c807825dcbf31c6c2c652526cf1f6f36edb566c795fc33b21cf",
+    "license": {
+     "id": "ODbL-1.0",
+     "attribution": [
+      "© OpenStreetMap contributors (ODbL-1.0)",
+      "Overture Maps Foundation, release 2026-09-23.1"
+     ],
+     "note": "Граф — производная база данных OSM (через Overture): распространяется под ODbL с атрибуцией; юридическая проверка не проводилась."
+    },
+    "build": {
+     "script": "research/round-10-results/K03/build_graph.py",
+     "script_sha256": "85f0cdca63389d16cee6af07b275ffa855db63819627afc29ccfb65bd0fd0d79"
+    },
+    "stats": {
+     "nodes": 4,
+     "open_nodes": 2,
+     "edges": 2,
+     "km_all": 0.2,
+     "km_strict_ok_any_direction": 0.2,
+     "km_exploratory_ok_any_direction": 0.2,
+     "km_denied_both": 0.0,
+     "edges_by_evidence": {
+      "explicit_rule": 0,
+      "class_semantics": 2,
+      "unknown": 0,
+      "denied": 0
+     },
+     "edges_one_direction_strict": 0,
+     "edges_with_assumptions": 0
+    }
+   },
+   "queries": [
+    {
+     "id": "A-to-T",
+     "origin": {
+      "id": "o",
+      "lon": 69.600608049,
+      "lat": 42.31044966
+     },
+     "target": {
+      "id": "t",
+      "lon": 69.603040243,
+      "lat": 42.31044966
+     },
+     "expect": {
+      "pedestrian-v1-strict": {
+       "status": "outside_coverage",
+       "reason": "path_may_exist_outside_slice"
+      },
+      "pedestrian-v1-exploratory": {
+       "status": "outside_coverage",
+       "reason": "path_may_exist_outside_slice"
+      }
+     },
+     "why": "обе стороны достигают открытых узлов: путь через внешнюю сеть не проверен"
+    }
+   ]
+  },
+  {
+   "name": "h7-boundary-shortcut",
+   "note": "внутренний путь A–M–T длиннее нижней границы через X…Y снаружи",
+   "segments": {
+    "type": "FeatureCollection",
+    "features": [
+     {
+      "type": "Feature",
+      "id": "am",
+      "geometry": {
+       "type": "LineString",
+       "coordinates": [
+        [
+         69.600608049,
+         42.31044966
+        ],
+        [
+         69.601824146,
+         42.312608029
+        ]
+       ]
+      },
+      "properties": {
+       "class": "footway",
+       "subclass": null,
+       "connectors": [
+        {
+         "connector_id": "n50_50",
+         "at": 0.0
+        },
+        {
+         "connector_id": "n150_290",
+         "at": 1.0
+        }
+       ],
+       "access_restrictions": null,
+       "road_flags": null,
+       "level_rules": null,
+       "sources": [
+        {
+         "record_id": "synthetic:am"
+        }
+       ]
+      }
+     },
+     {
+      "type": "Feature",
+      "id": "mt",
+      "geometry": {
+       "type": "LineString",
+       "coordinates": [
+        [
+         69.601824146,
+         42.312608029
+        ],
+        [
+         69.603040243,
+         42.31044966
+        ]
+       ]
+      },
+      "properties": {
+       "class": "footway",
+       "subclass": null,
+       "connectors": [
+        {
+         "connector_id": "n150_290",
+         "at": 0.0
+        },
+        {
+         "connector_id": "n250_50",
+         "at": 1.0
+        }
+       ],
+       "access_restrictions": null,
+       "road_flags": null,
+       "level_rules": null,
+       "sources": [
+        {
+         "record_id": "synthetic:mt"
+        }
+       ]
+      }
+     },
+     {
+      "type": "Feature",
+      "id": "ax",
+      "geometry": {
+       "type": "LineString",
+       "coordinates": [
+        [
+         69.600608049,
+         42.31044966
+        ],
+        [
+         69.600608049,
+         42.30955034
+        ]
+       ]
+      },
+      "properties": {
+       "class": "footway",
+       "subclass": null,
+       "connectors": [
+        {
+         "connector_id": "n50_50",
+         "at": 0.0
+        },
+        {
+         "connector_id": "n50_-50",
+         "at": 1.0
+        }
+       ],
+       "access_restrictions": null,
+       "road_flags": null,
+       "level_rules": null,
+       "sources": [
+        {
+         "record_id": "synthetic:ax"
+        }
+       ]
+      }
+     },
+     {
+      "type": "Feature",
+      "id": "ty",
+      "geometry": {
+       "type": "LineString",
+       "coordinates": [
+        [
+         69.603040243,
+         42.31044966
+        ],
+        [
+         69.603040243,
+         42.30955034
+        ]
+       ]
+      },
+      "properties": {
+       "class": "footway",
+       "subclass": null,
+       "connectors": [
+        {
+         "connector_id": "n250_50",
+         "at": 0.0
+        },
+        {
+         "connector_id": "n250_-50",
+         "at": 1.0
+        }
+       ],
+       "access_restrictions": null,
+       "road_flags": null,
+       "level_rules": null,
+       "sources": [
+        {
+         "record_id": "synthetic:ty"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   "connectors": {
+    "type": "FeatureCollection",
+    "features": [
+     {
+      "type": "Feature",
+      "id": "n150_290",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.601824146,
+        42.312608029
+       ]
+      },
+      "properties": {}
+     },
+     {
+      "type": "Feature",
+      "id": "n250_-50",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.603040243,
+        42.30955034
+       ]
+      },
+      "properties": {}
+     },
+     {
+      "type": "Feature",
+      "id": "n250_50",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.603040243,
+        42.31044966
+       ]
+      },
+      "properties": {}
+     },
+     {
+      "type": "Feature",
+      "id": "n50_-50",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.600608049,
+        42.30955034
+       ]
+      },
+      "properties": {}
+     },
+     {
+      "type": "Feature",
+      "id": "n50_50",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.600608049,
+        42.31044966
+       ]
+      },
+      "properties": {}
+     }
+    ]
+   },
+   "graph": {
+    "schema": "k03-pedestrian-graph-v1",
+    "city": "synthetic-h7-boundary-shortcut",
+    "bbox": [
+     69.6,
+     42.31,
+     69.603648291,
+     42.312697961
+    ],
+    "release": "synthetic",
+    "policy_family": "pedestrian-v1",
+    "policy_sha256": "ba8a525a511b4629919e3022b371b4f3d2db1ebf032e1fc1823802e1b772c783",
+    "max_snap_m": 100,
+    "inputs": {
+     "note": "synthetic hand graph"
+    },
+    "nodes": [
+     {
+      "id": "n150_290",
+      "lon": 69.601824146,
+      "lat": 42.312608029,
+      "open": false
+     },
+     {
+      "id": "n250_-50",
+      "lon": 69.603040243,
+      "lat": 42.30955034,
+      "open": true
+     },
+     {
+      "id": "n250_50",
+      "lon": 69.603040243,
+      "lat": 42.31044966,
+      "open": false
+     },
+     {
+      "id": "n50_-50",
+      "lon": 69.600608049,
+      "lat": 42.30955034,
+      "open": true
+     },
+     {
+      "id": "n50_50",
+      "lon": 69.600608049,
+      "lat": 42.31044966,
+      "open": false
+     }
+    ],
+    "edges": [
+     {
+      "id": "am#0",
+      "seg": "am",
+      "from": "n50_50",
+      "to": "n150_290",
+      "at": [
+       0.0,
+       1.0
+      ],
+      "coords": [
+       [
+        69.600608049,
+        42.31044966
+       ],
+       [
+        69.601824146,
+        42.312608029
+       ]
+      ],
+      "len_mm": 259999,
+      "cls": "footway",
+      "sub": null,
+      "flags": [],
+      "levels": [],
+      "osm": [
+       "synthetic:am"
+      ],
+      "out": false,
+      "s": [
+       "ok",
+       "ok"
+      ],
+      "x": [
+       "ok",
+       "ok"
+      ],
+      "xa": [
+       [],
+       []
+      ],
+      "ev": "class_semantics"
+     },
+     {
+      "id": "ax#0",
+      "seg": "ax",
+      "from": "n50_50",
+      "to": "n50_-50",
+      "at": [
+       0.0,
+       1.0
+      ],
+      "coords": [
+       [
+        69.600608049,
+        42.31044966
+       ],
+       [
+        69.600608049,
+        42.30955034
+       ]
+      ],
+      "len_mm": 100000,
+      "cls": "footway",
+      "sub": null,
+      "flags": [],
+      "levels": [],
+      "osm": [
+       "synthetic:ax"
+      ],
+      "out": true,
+      "s": [
+       "ok",
+       "ok"
+      ],
+      "x": [
+       "ok",
+       "ok"
+      ],
+      "xa": [
+       [],
+       []
+      ],
+      "ev": "class_semantics"
+     },
+     {
+      "id": "mt#0",
+      "seg": "mt",
+      "from": "n150_290",
+      "to": "n250_50",
+      "at": [
+       0.0,
+       1.0
+      ],
+      "coords": [
+       [
+        69.601824146,
+        42.312608029
+       ],
+       [
+        69.603040243,
+        42.31044966
+       ]
+      ],
+      "len_mm": 259999,
+      "cls": "footway",
+      "sub": null,
+      "flags": [],
+      "levels": [],
+      "osm": [
+       "synthetic:mt"
+      ],
+      "out": false,
+      "s": [
+       "ok",
+       "ok"
+      ],
+      "x": [
+       "ok",
+       "ok"
+      ],
+      "xa": [
+       [],
+       []
+      ],
+      "ev": "class_semantics"
+     },
+     {
+      "id": "ty#0",
+      "seg": "ty",
+      "from": "n250_50",
+      "to": "n250_-50",
+      "at": [
+       0.0,
+       1.0
+      ],
+      "coords": [
+       [
+        69.603040243,
+        42.31044966
+       ],
+       [
+        69.603040243,
+        42.30955034
+       ]
+      ],
+      "len_mm": 100000,
+      "cls": "footway",
+      "sub": null,
+      "flags": [],
+      "levels": [],
+      "osm": [
+       "synthetic:ty"
+      ],
+      "out": true,
+      "s": [
+       "ok",
+       "ok"
+      ],
+      "x": [
+       "ok",
+       "ok"
+      ],
+      "xa": [
+       [],
+       []
+      ],
+      "ev": "class_semantics"
+     }
+    ],
+    "graph_sha256": "3adb98c28355205272b3826de2a8aa0ddd152ca6436918bf244693e060996fa3",
+    "license": {
+     "id": "ODbL-1.0",
+     "attribution": [
+      "© OpenStreetMap contributors (ODbL-1.0)",
+      "Overture Maps Foundation, release 2026-09-23.1"
+     ],
+     "note": "Граф — производная база данных OSM (через Overture): распространяется под ODbL с атрибуцией; юридическая проверка не проводилась."
+    },
+    "build": {
+     "script": "research/round-10-results/K03/build_graph.py",
+     "script_sha256": "85f0cdca63389d16cee6af07b275ffa855db63819627afc29ccfb65bd0fd0d79"
+    },
+    "stats": {
+     "nodes": 5,
+     "open_nodes": 2,
+     "edges": 4,
+     "km_all": 0.72,
+     "km_strict_ok_any_direction": 0.72,
+     "km_exploratory_ok_any_direction": 0.72,
+     "km_denied_both": 0.0,
+     "edges_by_evidence": {
+      "explicit_rule": 0,
+      "class_semantics": 4,
+      "unknown": 0,
+      "denied": 0
+     },
+     "edges_one_direction_strict": 0,
+     "edges_with_assumptions": 0
+    }
+   },
+   "queries": [
+    {
+     "id": "A-to-T",
+     "origin": {
+      "id": "o",
+      "lon": 69.600608049,
+      "lat": 42.31044966
+     },
+     "target": {
+      "id": "t",
+      "lon": 69.603040243,
+      "lat": 42.31044966
+     },
+     "expect": {
+      "pedestrian-v1-strict": {
+       "status": "ok",
+       "distance_mm": 519998,
+       "include_edges": [
+        "am#0",
+        "mt#0"
+       ],
+       "exclude_edges": [],
+       "assumptions_superset": [
+        "boundary_unverified"
+       ]
+      },
+      "pedestrian-v1-exploratory": {
+       "status": "ok",
+       "distance_mm": 519998,
+       "include_edges": [
+        "am#0",
+        "mt#0"
+       ],
+       "exclude_edges": [],
+       "assumptions_superset": [
+        "boundary_unverified"
+       ]
+      }
+     },
+     "why": "путь найден, но более короткий путь вне среза не исключён (нижняя граница ≈ 400 м < 520 м)"
+    }
+   ]
+  },
+  {
+   "name": "h8-outside",
+   "note": "точка вне bbox",
+   "segments": {
+    "type": "FeatureCollection",
+    "features": [
+     {
+      "type": "Feature",
+      "id": "ab",
+      "geometry": {
+       "type": "LineString",
+       "coordinates": [
+        [
+         69.6,
+         42.31
+        ],
+        [
+         69.603648291,
+         42.31
+        ]
+       ]
+      },
+      "properties": {
+       "class": "footway",
+       "subclass": null,
+       "connectors": [
+        {
+         "connector_id": "n0_0",
+         "at": 0.0
+        },
+        {
+         "connector_id": "n300_0",
+         "at": 1.0
+        }
+       ],
+       "access_restrictions": null,
+       "road_flags": null,
+       "level_rules": null,
+       "sources": [
+        {
+         "record_id": "synthetic:ab"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   "connectors": {
+    "type": "FeatureCollection",
+    "features": [
+     {
+      "type": "Feature",
+      "id": "n0_0",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.6,
+        42.31
+       ]
+      },
+      "properties": {}
+     },
+     {
+      "type": "Feature",
+      "id": "n300_0",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.603648291,
+        42.31
+       ]
+      },
+      "properties": {}
+     }
+    ]
+   },
+   "graph": {
+    "schema": "k03-pedestrian-graph-v1",
+    "city": "synthetic-h8-outside",
+    "bbox": [
+     69.6,
+     42.30955034,
+     69.603648291,
+     42.31044966
+    ],
+    "release": "synthetic",
+    "policy_family": "pedestrian-v1",
+    "policy_sha256": "ba8a525a511b4629919e3022b371b4f3d2db1ebf032e1fc1823802e1b772c783",
+    "max_snap_m": 100,
+    "inputs": {
+     "note": "synthetic hand graph"
+    },
+    "nodes": [
+     {
+      "id": "n0_0",
+      "lon": 69.6,
+      "lat": 42.31,
+      "open": false
+     },
+     {
+      "id": "n300_0",
+      "lon": 69.603648291,
+      "lat": 42.31,
+      "open": false
+     }
+    ],
+    "edges": [
+     {
+      "id": "ab#0",
+      "seg": "ab",
+      "from": "n0_0",
+      "to": "n300_0",
+      "at": [
+       0.0,
+       1.0
+      ],
+      "coords": [
+       [
+        69.6,
+        42.31
+       ],
+       [
+        69.603648291,
+        42.31
+       ]
+      ],
+      "len_mm": 300000,
+      "cls": "footway",
+      "sub": null,
+      "flags": [],
+      "levels": [],
+      "osm": [
+       "synthetic:ab"
+      ],
+      "out": false,
+      "s": [
+       "ok",
+       "ok"
+      ],
+      "x": [
+       "ok",
+       "ok"
+      ],
+      "xa": [
+       [],
+       []
+      ],
+      "ev": "class_semantics"
+     }
+    ],
+    "graph_sha256": "c5f75dd88eedf3a6ac5667ccdc4fb45452b0446387a5a2246a446dac53c1a329",
+    "license": {
+     "id": "ODbL-1.0",
+     "attribution": [
+      "© OpenStreetMap contributors (ODbL-1.0)",
+      "Overture Maps Foundation, release 2026-09-23.1"
+     ],
+     "note": "Граф — производная база данных OSM (через Overture): распространяется под ODbL с атрибуцией; юридическая проверка не проводилась."
+    },
+    "build": {
+     "script": "research/round-10-results/K03/build_graph.py",
+     "script_sha256": "85f0cdca63389d16cee6af07b275ffa855db63819627afc29ccfb65bd0fd0d79"
+    },
+    "stats": {
+     "nodes": 2,
+     "open_nodes": 0,
+     "edges": 1,
+     "km_all": 0.3,
+     "km_strict_ok_any_direction": 0.3,
+     "km_exploratory_ok_any_direction": 0.3,
+     "km_denied_both": 0.0,
+     "edges_by_evidence": {
+      "explicit_rule": 0,
+      "class_semantics": 1,
+      "unknown": 0,
+      "denied": 0
+     },
+     "edges_one_direction_strict": 0,
+     "edges_with_assumptions": 0
+    }
+   },
+   "queries": [
+    {
+     "id": "out-to-B",
+     "origin": {
+      "id": "o",
+      "lon": 69.598783903,
+      "lat": 42.31
+     },
+     "target": {
+      "id": "t",
+      "lon": 69.603648291,
+      "lat": 42.31
+     },
+     "expect": {
+      "pedestrian-v1-strict": {
+       "status": "outside_coverage",
+       "reason": "point_outside_slice"
+      },
+      "pedestrian-v1-exploratory": {
+       "status": "outside_coverage",
+       "reason": "point_outside_slice"
+      }
+     },
+     "why": "вне среза"
+    }
+   ]
+  },
+  {
+   "name": "h9-same-edge",
+   "note": "обе точки на AB; AB foot только вперёд; обход B–C–A",
+   "segments": {
+    "type": "FeatureCollection",
+    "features": [
+     {
+      "type": "Feature",
+      "id": "ab",
+      "geometry": {
+       "type": "LineString",
+       "coordinates": [
+        [
+         69.6,
+         42.31
+        ],
+        [
+         69.601824146,
+         42.31
+        ],
+        [
+         69.603648291,
+         42.31
+        ]
+       ]
+      },
+      "properties": {
+       "class": "footway",
+       "subclass": null,
+       "connectors": [
+        {
+         "connector_id": "n0_0",
+         "at": 0.0
+        },
+        {
+         "connector_id": "n300_0",
+         "at": 1.0
+        }
+       ],
+       "access_restrictions": [
+        {
+         "access_type": "denied",
+         "when": {
+          "heading": "backward",
+          "mode": [
+           "foot"
+          ]
+         }
+        }
+       ],
+       "road_flags": null,
+       "level_rules": null,
+       "sources": [
+        {
+         "record_id": "synthetic:ab"
+        }
+       ]
+      }
+     },
+     {
+      "type": "Feature",
+      "id": "bc",
+      "geometry": {
+       "type": "LineString",
+       "coordinates": [
+        [
+         69.603648291,
+         42.31
+        ],
+        [
+         69.601824146,
+         42.309280544
+        ]
+       ]
+      },
+      "properties": {
+       "class": "footway",
+       "subclass": null,
+       "connectors": [
+        {
+         "connector_id": "n300_0",
+         "at": 0.0
+        },
+        {
+         "connector_id": "n150_-80",
+         "at": 1.0
+        }
+       ],
+       "access_restrictions": null,
+       "road_flags": null,
+       "level_rules": null,
+       "sources": [
+        {
+         "record_id": "synthetic:bc"
+        }
+       ]
+      }
+     },
+     {
+      "type": "Feature",
+      "id": "ca",
+      "geometry": {
+       "type": "LineString",
+       "coordinates": [
+        [
+         69.601824146,
+         42.309280544
+        ],
+        [
+         69.6,
+         42.31
+        ]
+       ]
+      },
+      "properties": {
+       "class": "footway",
+       "subclass": null,
+       "connectors": [
+        {
+         "connector_id": "n150_-80",
+         "at": 0.0
+        },
+        {
+         "connector_id": "n0_0",
+         "at": 1.0
+        }
+       ],
+       "access_restrictions": null,
+       "road_flags": null,
+       "level_rules": null,
+       "sources": [
+        {
+         "record_id": "synthetic:ca"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   "connectors": {
+    "type": "FeatureCollection",
+    "features": [
+     {
+      "type": "Feature",
+      "id": "n0_0",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.6,
+        42.31
+       ]
+      },
+      "properties": {}
+     },
+     {
+      "type": "Feature",
+      "id": "n150_-80",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.601824146,
+        42.309280544
+       ]
+      },
+      "properties": {}
+     },
+     {
+      "type": "Feature",
+      "id": "n300_0",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.603648291,
+        42.31
+       ]
+      },
+      "properties": {}
+     }
+    ]
+   },
+   "graph": {
+    "schema": "k03-pedestrian-graph-v1",
+    "city": "synthetic-h9-same-edge",
+    "bbox": [
+     69.599391951,
+     42.308651019,
+     69.60425634,
+     42.31044966
+    ],
+    "release": "synthetic",
+    "policy_family": "pedestrian-v1",
+    "policy_sha256": "ba8a525a511b4629919e3022b371b4f3d2db1ebf032e1fc1823802e1b772c783",
+    "max_snap_m": 100,
+    "inputs": {
+     "note": "synthetic hand graph"
+    },
+    "nodes": [
+     {
+      "id": "n0_0",
+      "lon": 69.6,
+      "lat": 42.31,
+      "open": false
+     },
+     {
+      "id": "n150_-80",
+      "lon": 69.601824146,
+      "lat": 42.309280544,
+      "open": false
+     },
+     {
+      "id": "n300_0",
+      "lon": 69.603648291,
+      "lat": 42.31,
+      "open": false
+     }
+    ],
+    "edges": [
+     {
+      "id": "ab#0",
+      "seg": "ab",
+      "from": "n0_0",
+      "to": "n300_0",
+      "at": [
+       0.0,
+       1.0
+      ],
+      "coords": [
+       [
+        69.6,
+        42.31
+       ],
+       [
+        69.601824146,
+        42.31
+       ],
+       [
+        69.603648291,
+        42.31
+       ]
+      ],
+      "len_mm": 300000,
+      "cls": "footway",
+      "sub": null,
+      "flags": [],
+      "levels": [],
+      "osm": [
+       "synthetic:ab"
+      ],
+      "out": false,
+      "s": [
+       "ok",
+       "no"
+      ],
+      "x": [
+       "ok",
+       "no"
+      ],
+      "xa": [
+       [],
+       []
+      ],
+      "ev": "class_semantics"
+     },
+     {
+      "id": "bc#0",
+      "seg": "bc",
+      "from": "n300_0",
+      "to": "n150_-80",
+      "at": [
+       0.0,
+       1.0
+      ],
+      "coords": [
+       [
+        69.603648291,
+        42.31
+       ],
+       [
+        69.601824146,
+        42.309280544
+       ]
+      ],
+      "len_mm": 170001,
+      "cls": "footway",
+      "sub": null,
+      "flags": [],
+      "levels": [],
+      "osm": [
+       "synthetic:bc"
+      ],
+      "out": false,
+      "s": [
+       "ok",
+       "ok"
+      ],
+      "x": [
+       "ok",
+       "ok"
+      ],
+      "xa": [
+       [],
+       []
+      ],
+      "ev": "class_semantics"
+     },
+     {
+      "id": "ca#0",
+      "seg": "ca",
+      "from": "n150_-80",
+      "to": "n0_0",
+      "at": [
+       0.0,
+       1.0
+      ],
+      "coords": [
+       [
+        69.601824146,
+        42.309280544
+       ],
+       [
+        69.6,
+        42.31
+       ]
+      ],
+      "len_mm": 170001,
+      "cls": "footway",
+      "sub": null,
+      "flags": [],
+      "levels": [],
+      "osm": [
+       "synthetic:ca"
+      ],
+      "out": false,
+      "s": [
+       "ok",
+       "ok"
+      ],
+      "x": [
+       "ok",
+       "ok"
+      ],
+      "xa": [
+       [],
+       []
+      ],
+      "ev": "class_semantics"
+     }
+    ],
+    "graph_sha256": "856137897845dba9bc791db1804255fccc18fbd51f26c1d7d9aa6aa51c0f60d0",
+    "license": {
+     "id": "ODbL-1.0",
+     "attribution": [
+      "© OpenStreetMap contributors (ODbL-1.0)",
+      "Overture Maps Foundation, release 2026-09-23.1"
+     ],
+     "note": "Граф — производная база данных OSM (через Overture): распространяется под ODbL с атрибуцией; юридическая проверка не проводилась."
+    },
+    "build": {
+     "script": "research/round-10-results/K03/build_graph.py",
+     "script_sha256": "85f0cdca63389d16cee6af07b275ffa855db63819627afc29ccfb65bd0fd0d79"
+    },
+    "stats": {
+     "nodes": 3,
+     "open_nodes": 0,
+     "edges": 3,
+     "km_all": 0.64,
+     "km_strict_ok_any_direction": 0.64,
+     "km_exploratory_ok_any_direction": 0.64,
+     "km_denied_both": 0.0,
+     "edges_by_evidence": {
+      "explicit_rule": 0,
+      "class_semantics": 3,
+      "unknown": 0,
+      "denied": 0
+     },
+     "edges_one_direction_strict": 1,
+     "edges_with_assumptions": 0
+    }
+   },
+   "queries": [
+    {
+     "id": "along",
+     "origin": {
+      "id": "o",
+      "lon": 69.600608049,
+      "lat": 42.310089932
+     },
+     "target": {
+      "id": "t",
+      "lon": 69.603040243,
+      "lat": 42.310089932
+     },
+     "expect": {
+      "pedestrian-v1-strict": {
+       "status": "ok",
+       "distance_mm": 220000,
+       "include_edges": [
+        "ab#0"
+       ],
+       "exclude_edges": [
+        "bc#0"
+       ]
+      },
+      "pedestrian-v1-exploratory": {
+       "status": "ok",
+       "distance_mm": 220000,
+       "include_edges": [
+        "ab#0"
+       ],
+       "exclude_edges": [
+        "bc#0"
+       ]
+      }
+     },
+     "why": "прямо по ребру"
+    },
+    {
+     "id": "against",
+     "origin": {
+      "id": "o",
+      "lon": 69.603040243,
+      "lat": 42.310089932
+     },
+     "target": {
+      "id": "t",
+      "lon": 69.600608049,
+      "lat": 42.310089932
+     },
+     "expect": {
+      "pedestrian-v1-strict": {
+       "status": "ok",
+       "distance_mm": 460002,
+       "include_edges": [
+        "bc#0",
+        "ca#0"
+       ],
+       "exclude_edges": []
+      },
+      "pedestrian-v1-exploratory": {
+       "status": "ok",
+       "distance_mm": 460002,
+       "include_edges": [
+        "bc#0",
+        "ca#0"
+       ],
+       "exclude_edges": []
+      }
+     },
+     "why": "против направления: до B, обход, от A"
+    }
+   ]
+  },
+  {
+   "name": "h10-conditional",
+   "note": "BC: запрет foot по времени (during); A–B и C–D — footway",
+   "segments": {
+    "type": "FeatureCollection",
+    "features": [
+     {
+      "type": "Feature",
+      "id": "ab",
+      "geometry": {
+       "type": "LineString",
+       "coordinates": [
+        [
+         69.6,
+         42.31
+        ],
+        [
+         69.601216097,
+         42.31
+        ]
+       ]
+      },
+      "properties": {
+       "class": "footway",
+       "subclass": null,
+       "connectors": [
+        {
+         "connector_id": "n0_0",
+         "at": 0.0
+        },
+        {
+         "connector_id": "n100_0",
+         "at": 1.0
+        }
+       ],
+       "access_restrictions": null,
+       "road_flags": null,
+       "level_rules": null,
+       "sources": [
+        {
+         "record_id": "synthetic:ab"
+        }
+       ]
+      }
+     },
+     {
+      "type": "Feature",
+      "id": "bc",
+      "geometry": {
+       "type": "LineString",
+       "coordinates": [
+        [
+         69.601216097,
+         42.31
+        ],
+        [
+         69.602432194,
+         42.31
+        ]
+       ]
+      },
+      "properties": {
+       "class": "footway",
+       "subclass": null,
+       "connectors": [
+        {
+         "connector_id": "n100_0",
+         "at": 0.0
+        },
+        {
+         "connector_id": "n200_0",
+         "at": 1.0
+        }
+       ],
+       "access_restrictions": [
+        {
+         "access_type": "denied",
+         "when": {
+          "mode": [
+           "foot"
+          ],
+          "during": "Mo-Fr 07:00-19:00"
+         }
+        }
+       ],
+       "road_flags": null,
+       "level_rules": null,
+       "sources": [
+        {
+         "record_id": "synthetic:bc"
+        }
+       ]
+      }
+     },
+     {
+      "type": "Feature",
+      "id": "cd",
+      "geometry": {
+       "type": "LineString",
+       "coordinates": [
+        [
+         69.602432194,
+         42.31
+        ],
+        [
+         69.603648291,
+         42.31
+        ]
+       ]
+      },
+      "properties": {
+       "class": "footway",
+       "subclass": null,
+       "connectors": [
+        {
+         "connector_id": "n200_0",
+         "at": 0.0
+        },
+        {
+         "connector_id": "n300_0",
+         "at": 1.0
+        }
+       ],
+       "access_restrictions": null,
+       "road_flags": null,
+       "level_rules": null,
+       "sources": [
+        {
+         "record_id": "synthetic:cd"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   "connectors": {
+    "type": "FeatureCollection",
+    "features": [
+     {
+      "type": "Feature",
+      "id": "n0_0",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.6,
+        42.31
+       ]
+      },
+      "properties": {}
+     },
+     {
+      "type": "Feature",
+      "id": "n100_0",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.601216097,
+        42.31
+       ]
+      },
+      "properties": {}
+     },
+     {
+      "type": "Feature",
+      "id": "n200_0",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.602432194,
+        42.31
+       ]
+      },
+      "properties": {}
+     },
+     {
+      "type": "Feature",
+      "id": "n300_0",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.603648291,
+        42.31
+       ]
+      },
+      "properties": {}
+     }
+    ]
+   },
+   "graph": {
+    "schema": "k03-pedestrian-graph-v1",
+    "city": "synthetic-h10-conditional",
+    "bbox": [
+     69.599391951,
+     42.30955034,
+     69.60425634,
+     42.31044966
+    ],
+    "release": "synthetic",
+    "policy_family": "pedestrian-v1",
+    "policy_sha256": "ba8a525a511b4629919e3022b371b4f3d2db1ebf032e1fc1823802e1b772c783",
+    "max_snap_m": 100,
+    "inputs": {
+     "note": "synthetic hand graph"
+    },
+    "nodes": [
+     {
+      "id": "n0_0",
+      "lon": 69.6,
+      "lat": 42.31,
+      "open": false
+     },
+     {
+      "id": "n100_0",
+      "lon": 69.601216097,
+      "lat": 42.31,
+      "open": false
+     },
+     {
+      "id": "n200_0",
+      "lon": 69.602432194,
+      "lat": 42.31,
+      "open": false
+     },
+     {
+      "id": "n300_0",
+      "lon": 69.603648291,
+      "lat": 42.31,
+      "open": false
+     }
+    ],
+    "edges": [
+     {
+      "id": "ab#0",
+      "seg": "ab",
+      "from": "n0_0",
+      "to": "n100_0",
+      "at": [
+       0.0,
+       1.0
+      ],
+      "coords": [
+       [
+        69.6,
+        42.31
+       ],
+       [
+        69.601216097,
+        42.31
+       ]
+      ],
+      "len_mm": 100000,
+      "cls": "footway",
+      "sub": null,
+      "flags": [],
+      "levels": [],
+      "osm": [
+       "synthetic:ab"
+      ],
+      "out": false,
+      "s": [
+       "ok",
+       "ok"
+      ],
+      "x": [
+       "ok",
+       "ok"
+      ],
+      "xa": [
+       [],
+       []
+      ],
+      "ev": "class_semantics"
+     },
+     {
+      "id": "bc#0",
+      "seg": "bc",
+      "from": "n100_0",
+      "to": "n200_0",
+      "at": [
+       0.0,
+       1.0
+      ],
+      "coords": [
+       [
+        69.601216097,
+        42.31
+       ],
+       [
+        69.602432194,
+        42.31
+       ]
+      ],
+      "len_mm": 100000,
+      "cls": "footway",
+      "sub": null,
+      "flags": [],
+      "levels": [],
+      "osm": [
+       "synthetic:bc"
+      ],
+      "out": false,
+      "s": [
+       "unk",
+       "unk"
+      ],
+      "x": [
+       "ok",
+       "ok"
+      ],
+      "xa": [
+       [
+        "conditional_foot_rule"
+       ],
+       [
+        "conditional_foot_rule"
+       ]
+      ],
+      "ev": "class_semantics"
+     },
+     {
+      "id": "cd#0",
+      "seg": "cd",
+      "from": "n200_0",
+      "to": "n300_0",
+      "at": [
+       0.0,
+       1.0
+      ],
+      "coords": [
+       [
+        69.602432194,
+        42.31
+       ],
+       [
+        69.603648291,
+        42.31
+       ]
+      ],
+      "len_mm": 100000,
+      "cls": "footway",
+      "sub": null,
+      "flags": [],
+      "levels": [],
+      "osm": [
+       "synthetic:cd"
+      ],
+      "out": false,
+      "s": [
+       "ok",
+       "ok"
+      ],
+      "x": [
+       "ok",
+       "ok"
+      ],
+      "xa": [
+       [],
+       []
+      ],
+      "ev": "class_semantics"
+     }
+    ],
+    "graph_sha256": "71cf3da1c3f2f40cf56d5f7b341e0ed0d50f1ac3342ca9d8835a3f991e433a10",
+    "license": {
+     "id": "ODbL-1.0",
+     "attribution": [
+      "© OpenStreetMap contributors (ODbL-1.0)",
+      "Overture Maps Foundation, release 2026-09-23.1"
+     ],
+     "note": "Граф — производная база данных OSM (через Overture): распространяется под ODbL с атрибуцией; юридическая проверка не проводилась."
+    },
+    "build": {
+     "script": "research/round-10-results/K03/build_graph.py",
+     "script_sha256": "85f0cdca63389d16cee6af07b275ffa855db63819627afc29ccfb65bd0fd0d79"
+    },
+    "stats": {
+     "nodes": 4,
+     "open_nodes": 0,
+     "edges": 3,
+     "km_all": 0.3,
+     "km_strict_ok_any_direction": 0.2,
+     "km_exploratory_ok_any_direction": 0.3,
+     "km_denied_both": 0.0,
+     "edges_by_evidence": {
+      "explicit_rule": 0,
+      "class_semantics": 3,
+      "unknown": 0,
+      "denied": 0
+     },
+     "edges_one_direction_strict": 0,
+     "edges_with_assumptions": 1
+    }
+   },
+   "queries": [
+    {
+     "id": "A-to-D",
+     "origin": {
+      "id": "o",
+      "lon": 69.6,
+      "lat": 42.31
+     },
+     "target": {
+      "id": "t",
+      "lon": 69.603648291,
+      "lat": 42.31
+     },
+     "expect": {
+      "pedestrian-v1-strict": {
+       "status": "access_unknown",
+       "reason": "path_only_via_unverified_edges"
+      },
+      "pedestrian-v1-exploratory": {
+       "status": "ok",
+       "distance_mm": 300000,
+       "include_edges": [
+        "bc#0"
+       ],
+       "exclude_edges": [],
+       "assumptions_superset": [
+        "conditional_foot_rule"
+       ]
+      }
+     },
+     "why": "strict не использует условное ребро; exploratory — с допущением"
+    }
+   ]
+  },
+  {
+   "name": "h11-between",
+   "note": "сегмент A–M–B с запретом foot на [0.6, 0.9]: AM доступно, MB запрещено",
+   "segments": {
+    "type": "FeatureCollection",
+    "features": [
+     {
+      "type": "Feature",
+      "id": "amb",
+      "geometry": {
+       "type": "LineString",
+       "coordinates": [
+        [
+         69.6,
+         42.31
+        ],
+        [
+         69.601216097,
+         42.31
+        ],
+        [
+         69.602432194,
+         42.31
+        ]
+       ]
+      },
+      "properties": {
+       "class": "footway",
+       "subclass": null,
+       "connectors": [
+        {
+         "connector_id": "n0_0",
+         "at": 0.0
+        },
+        {
+         "connector_id": "n100_0",
+         "at": 0.5
+        },
+        {
+         "connector_id": "n200_0",
+         "at": 1.0
+        }
+       ],
+       "access_restrictions": [
+        {
+         "access_type": "denied",
+         "when": {
+          "mode": [
+           "foot"
+          ]
+         },
+         "between": [
+          0.6,
+          0.9
+         ]
+        }
+       ],
+       "road_flags": null,
+       "level_rules": null,
+       "sources": [
+        {
+         "record_id": "synthetic:amb"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   "connectors": {
+    "type": "FeatureCollection",
+    "features": [
+     {
+      "type": "Feature",
+      "id": "n0_0",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.6,
+        42.31
+       ]
+      },
+      "properties": {}
+     },
+     {
+      "type": "Feature",
+      "id": "n100_0",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.601216097,
+        42.31
+       ]
+      },
+      "properties": {}
+     },
+     {
+      "type": "Feature",
+      "id": "n200_0",
+      "geometry": {
+       "type": "Point",
+       "coordinates": [
+        69.602432194,
+        42.31
+       ]
+      },
+      "properties": {}
+     }
+    ]
+   },
+   "graph": {
+    "schema": "k03-pedestrian-graph-v1",
+    "city": "synthetic-h11-between",
+    "bbox": [
+     69.599391951,
+     42.309460408,
+     69.603040243,
+     42.310539592
+    ],
+    "release": "synthetic",
+    "policy_family": "pedestrian-v1",
+    "policy_sha256": "ba8a525a511b4629919e3022b371b4f3d2db1ebf032e1fc1823802e1b772c783",
+    "max_snap_m": 100,
+    "inputs": {
+     "note": "synthetic hand graph"
+    },
+    "nodes": [
+     {
+      "id": "n0_0",
+      "lon": 69.6,
+      "lat": 42.31,
+      "open": false
+     },
+     {
+      "id": "n100_0",
+      "lon": 69.601216097,
+      "lat": 42.31,
+      "open": false
+     },
+     {
+      "id": "n200_0",
+      "lon": 69.602432194,
+      "lat": 42.31,
+      "open": false
+     }
+    ],
+    "edges": [
+     {
+      "id": "amb#0",
+      "seg": "amb",
+      "from": "n0_0",
+      "to": "n100_0",
+      "at": [
+       0.0,
+       0.5
+      ],
+      "coords": [
+       [
+        69.6,
+        42.31
+       ],
+       [
+        69.601216097,
+        42.31
+       ]
+      ],
+      "len_mm": 100000,
+      "cls": "footway",
+      "sub": null,
+      "flags": [],
+      "levels": [],
+      "osm": [
+       "synthetic:amb"
+      ],
+      "out": false,
+      "s": [
+       "ok",
+       "ok"
+      ],
+      "x": [
+       "ok",
+       "ok"
+      ],
+      "xa": [
+       [],
+       []
+      ],
+      "ev": "class_semantics"
+     },
+     {
+      "id": "amb#1",
+      "seg": "amb",
+      "from": "n100_0",
+      "to": "n200_0",
+      "at": [
+       0.5,
+       1.0
+      ],
+      "coords": [
+       [
+        69.601216097,
+        42.31
+       ],
+       [
+        69.602432194,
+        42.31
+       ]
+      ],
+      "len_mm": 100000,
+      "cls": "footway",
+      "sub": null,
+      "flags": [],
+      "levels": [],
+      "osm": [
+       "synthetic:amb"
+      ],
+      "out": false,
+      "s": [
+       "no",
+       "no"
+      ],
+      "x": [
+       "no",
+       "no"
+      ],
+      "xa": [
+       [],
+       []
+      ],
+      "ev": "denied"
+     }
+    ],
+    "graph_sha256": "1d34f93acbc8773a37c6c73674d75fbe85212a2084f2ccb44dcc516c51b3ffb6",
+    "license": {
+     "id": "ODbL-1.0",
+     "attribution": [
+      "© OpenStreetMap contributors (ODbL-1.0)",
+      "Overture Maps Foundation, release 2026-09-23.1"
+     ],
+     "note": "Граф — производная база данных OSM (через Overture): распространяется под ODbL с атрибуцией; юридическая проверка не проводилась."
+    },
+    "build": {
+     "script": "research/round-10-results/K03/build_graph.py",
+     "script_sha256": "85f0cdca63389d16cee6af07b275ffa855db63819627afc29ccfb65bd0fd0d79"
+    },
+    "stats": {
+     "nodes": 3,
+     "open_nodes": 0,
+     "edges": 2,
+     "km_all": 0.2,
+     "km_strict_ok_any_direction": 0.1,
+     "km_exploratory_ok_any_direction": 0.1,
+     "km_denied_both": 0.1,
+     "edges_by_evidence": {
+      "explicit_rule": 0,
+      "class_semantics": 1,
+      "unknown": 0,
+      "denied": 1
+     },
+     "edges_one_direction_strict": 0,
+     "edges_with_assumptions": 0
+    }
+   },
+   "edge_expect": {
+    "amb#0": {
+     "s": [
+      "ok",
+      "ok"
+     ],
+     "x": [
+      "ok",
+      "ok"
+     ]
+    },
+    "amb#1": {
+     "s": [
+      "no",
+      "no"
+     ],
+     "x": [
+      "no",
+      "no"
+     ]
+    }
+   },
+   "queries": [
+    {
+     "id": "A-to-M",
+     "origin": {
+      "id": "o",
+      "lon": 69.6,
+      "lat": 42.31
+     },
+     "target": {
+      "id": "t",
+      "lon": 69.601216097,
+      "lat": 42.31
+     },
+     "expect": {
+      "pedestrian-v1-strict": {
+       "status": "ok",
+       "distance_mm": 100000,
+       "include_edges": [
+        "amb#0"
+       ],
+       "exclude_edges": [
+        "amb#1"
+       ]
+      },
+      "pedestrian-v1-exploratory": {
+       "status": "ok",
+       "distance_mm": 100000,
+       "include_edges": [
+        "amb#0"
+       ],
+       "exclude_edges": [
+        "amb#1"
+       ]
+      }
+     },
+     "why": "доступная часть"
+    },
+    {
+     "id": "A-to-P150",
+     "origin": {
+      "id": "o",
+      "lon": 69.6,
+      "lat": 42.31
+     },
+     "target": {
+      "id": "t",
+      "lon": 69.601824146,
+      "lat": 42.31
+     },
+     "expect": {
+      "pedestrian-v1-strict": {
+       "status": "ok",
+       "distance_mm": 150000,
+       "include_edges": [
+        "amb#0"
+       ],
+       "exclude_edges": [
+        "amb#1"
+       ],
+       "assumptions_superset": [
+        "snap_model_connection"
+       ]
+      },
+      "pedestrian-v1-exploratory": {
+       "status": "ok",
+       "distance_mm": 150000,
+       "include_edges": [
+        "amb#0"
+       ],
+       "exclude_edges": [
+        "amb#1"
+       ],
+       "assumptions_superset": [
+        "snap_model_connection"
+       ]
+      }
+     },
+     "why": "точка на запрещённом ребре привязывается к доступному в 50 м: модельное соединение не проверяет физический проход (ограничение)"
+    }
+   ]
+  }
+ ]
+}

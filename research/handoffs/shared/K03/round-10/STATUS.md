@@ -5,5 +5,5 @@
 - Результаты: `research/round-10-results/K03/` (`STATUS.md`, `COVERAGE.md`).
 - Этап 1 (аудит покрытия): **done**.
 - Этап 2 (политика pedestrian-v1 и `build_graph.py` → `graph/<city>.graph.json` с hash/ODbL): **done**.
-- Этап 3 (`routing.js`, оракул, fixtures, adapter): в работе.
-- NEXT_STEP: `routing.js` + `routing_ref.py`, ручные графы и пары обоих городов, adapter для BUILD.
+- Этап 3: `routing.js` + оракул `routing_ref.py`, 17 ручных графов, 243 пары двух городов, `run_tests.py` → PASS 11, INFO 1 (промежуточный commit). Осталось: замер, отрицательный контроль, adapter для BUILD, `INTEGRATION.md`.
+- NEXT_STEP: `bench.cjs`, `negative_controls.py`, `adapter_example.js` + demo, `INTEGRATION.md`, финальный STATUS.
