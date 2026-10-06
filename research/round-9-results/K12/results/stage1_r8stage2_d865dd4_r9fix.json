@@ -1,0 +1,325 @@
+{
+ "summary": {
+  "adapter": "build_v2_plan_adapter.cjs",
+  "app_root": "r9_fix",
+  "total": 39,
+  "pass": 33,
+  "fail": [],
+  "skip": [
+   "B5",
+   "D2",
+   "D3",
+   "D4",
+   "D5",
+   "D6"
+  ],
+  "advisory": [],
+  "network_attempts": 0,
+  "string_timers": 0
+ },
+ "results": [
+  {
+   "group": "A",
+   "id": "A0",
+   "title": "V01 принят (стартовое состояние)",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "group": "A",
+   "id": "A1",
+   "title": "цепочка из всех негативных фикстур не меняет состояние",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "group": "A",
+   "id": "A2",
+   "title": "оптимизация после цепочки отказов та же",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "group": "A",
+   "id": "A3",
+   "title": "дефект только в последнем элементе (last_candidate_cost_0): отказ, состояние прежнее",
+   "status": "PASS",
+   "detail": "bad_cost"
+  },
+  {
+   "group": "A",
+   "id": "A3",
+   "title": "дефект только в последнем элементе (last_point_outside_bbox): отказ, состояние прежнее",
+   "status": "PASS",
+   "detail": "outside_bbox"
+  },
+  {
+   "group": "A",
+   "id": "A3",
+   "title": "дефект только в последнем элементе (last_selected_unknown): отказ, состояние прежнее",
+   "status": "PASS",
+   "detail": "unknown_ref"
+  },
+  {
+   "group": "A",
+   "id": "A3",
+   "title": "дефект только в последнем элементе (last_excluded_conflicts): отказ, состояние прежнее",
+   "status": "PASS",
+   "detail": "required_excluded_overlap"
+  },
+  {
+   "group": "A",
+   "id": "A3",
+   "title": "дефект только в последнем элементе (trailing_garbage): отказ, состояние прежнее",
+   "status": "PASS",
+   "detail": "bad_json"
+  },
+  {
+   "group": "A",
+   "id": "A4",
+   "title": "вход null: отказ без исключения",
+   "status": "PASS",
+   "detail": "bad_json"
+  },
+  {
+   "group": "A",
+   "id": "A4",
+   "title": "вход number: отказ без исключения",
+   "status": "PASS",
+   "detail": "bad_json"
+  },
+  {
+   "group": "A",
+   "id": "A4",
+   "title": "вход object: отказ без исключения",
+   "status": "PASS",
+   "detail": "bad_json"
+  },
+  {
+   "group": "A",
+   "id": "A4",
+   "title": "вход array: отказ без исключения",
+   "status": "PASS",
+   "detail": "bad_json"
+  },
+  {
+   "group": "A",
+   "id": "A4",
+   "title": "вход buffer: отказ без исключения",
+   "status": "PASS",
+   "detail": "bad_json"
+  },
+  {
+   "group": "A",
+   "id": "A4",
+   "title": "вход braces_300k: отказ без исключения",
+   "status": "PASS",
+   "detail": "too_large"
+  },
+  {
+   "group": "A",
+   "id": "A4",
+   "title": "вход quotes_200k: отказ без исключения",
+   "status": "PASS",
+   "detail": "bad_json"
+  },
+  {
+   "group": "A",
+   "id": "A4",
+   "title": "вход empty: отказ без исключения",
+   "status": "PASS",
+   "detail": "bad_json"
+  },
+  {
+   "group": "B",
+   "id": "B1",
+   "title": "в plan.js нет eval/new Function/innerHTML/import()/строковых таймеров",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "group": "B",
+   "id": "B1",
+   "title": "в plan-ui.js нет eval/new Function/innerHTML/import()/строковых таймеров",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "group": "B",
+   "id": "B2",
+   "title": "payload-строки в derived_results: приняты как данные или отказ без изменения состояния",
+   "status": "PASS",
+   "detail": "refused: forged_derived"
+  },
+  {
+   "group": "B",
+   "id": "B3",
+   "title": "payload в ID точки отклонён (bad_id)",
+   "status": "PASS",
+   "detail": "bad_id"
+  },
+  {
+   "group": "B",
+   "id": "B4",
+   "title": "после импорта/оптимизации: прототипы, глобалы, сеть, строковые таймеры не изменились",
+   "status": "PASS",
+   "detail": {
+    "net": 0,
+    "timers": 0
+   }
+  },
+  {
+   "group": "B",
+   "id": "B5",
+   "title": "в результатах нет payload-строк (derived_results не попал в вывод)",
+   "status": "SKIP",
+   "detail": null
+  },
+  {
+   "group": "C",
+   "id": "C1",
+   "title": "изолированная копия (moved_record): snapshot меняется, старый сценарий отклонён, новый принят, Астана не затронута",
+   "status": "PASS",
+   "detail": {
+    "changed": true,
+    "old": "foreign_snapshot",
+    "fresh": true,
+    "astanaSame": true
+   }
+  },
+  {
+   "group": "C",
+   "id": "C1",
+   "title": "изолированная копия (other_release): snapshot меняется, старый сценарий отклонён, новый принят, Астана не затронута",
+   "status": "PASS",
+   "detail": {
+    "changed": true,
+    "old": "foreign_snapshot",
+    "fresh": true,
+    "astanaSame": true
+   }
+  },
+  {
+   "group": "C",
+   "id": "C1",
+   "title": "изолированная копия (removed_record): snapshot меняется, старый сценарий отклонён, новый принят, Астана не затронута",
+   "status": "PASS",
+   "detail": {
+    "changed": true,
+    "old": "foreign_snapshot",
+    "fresh": true,
+    "astanaSame": true
+   }
+  },
+  {
+   "group": "C",
+   "id": "C1",
+   "title": "изолированная копия (other_file_hash): snapshot меняется, старый сценарий отклонён, новый принят, Астана не затронута",
+   "status": "PASS",
+   "detail": {
+    "changed": true,
+    "old": "foreign_snapshot",
+    "fresh": true,
+    "astanaSame": true
+   }
+  },
+  {
+   "group": "C",
+   "id": "C2",
+   "title": "исходный data.js не изменён тестом",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "group": "D",
+   "id": "D1",
+   "title": "отмена посреди перебора: status≠optimal, неполный, целей нет",
+   "status": "PASS",
+   "detail": {
+    "status": "cancelled",
+    "evaluated": 3072
+   }
+  },
+  {
+   "group": "D",
+   "id": "D2",
+   "title": "страж поздних результатов",
+   "status": "SKIP",
+   "detail": "adapter.gate() не задан (у реализации нет экспортируемого стража результатов)"
+  },
+  {
+   "group": "D",
+   "id": "D3",
+   "title": "страж поздних результатов",
+   "status": "SKIP",
+   "detail": "adapter.gate() не задан (у реализации нет экспортируемого стража результатов)"
+  },
+  {
+   "group": "D",
+   "id": "D4",
+   "title": "страж поздних результатов",
+   "status": "SKIP",
+   "detail": "adapter.gate() не задан (у реализации нет экспортируемого стража результатов)"
+  },
+  {
+   "group": "D",
+   "id": "D5",
+   "title": "страж поздних результатов",
+   "status": "SKIP",
+   "detail": "adapter.gate() не задан (у реализации нет экспортируемого стража результатов)"
+  },
+  {
+   "group": "D",
+   "id": "D6",
+   "title": "страж поздних результатов",
+   "status": "SKIP",
+   "detail": "adapter.gate() не задан (у реализации нет экспортируемого стража результатов)"
+  },
+  {
+   "group": "D",
+   "id": "D7",
+   "title": "async-поиск не блокирует цикл событий: таймер срабатывал, чанк < 50 мс, итог optimal и равен синхронному",
+   "status": "PASS",
+   "detail": {
+    "ticks": 63,
+    "maxChunkMs": 2.83,
+    "total_ms": 159
+   }
+  },
+  {
+   "group": "E",
+   "id": "E1",
+   "title": "BUILD v1: подделанные derived_results приняты как данные и пересчитаны (999999999 нет в выводе)",
+   "status": "PASS",
+   "detail": true
+  },
+  {
+   "group": "E",
+   "id": "E2",
+   "title": "BUILD v1 отклоняет сценарий city-plan-v2 (режимы раздельны)",
+   "status": "PASS",
+   "detail": "bad_version"
+  },
+  {
+   "group": "E",
+   "id": "E2a",
+   "title": "BUILD v1: код отказа bad_version (понятнее, чем unknown_field)",
+   "status": "PASS",
+   "detail": "bad_version"
+  },
+  {
+   "group": "E",
+   "id": "E3",
+   "title": "v2-импорт отклоняет сценарий city-whatif-v1",
+   "status": "PASS",
+   "detail": "wrong_version"
+  },
+  {
+   "group": "E",
+   "id": "E3a",
+   "title": "v2-импорт: код отказа называет версию (bad_version / wrong_version)",
+   "status": "PASS",
+   "detail": "wrong_version"
+  }
+ ]
+}

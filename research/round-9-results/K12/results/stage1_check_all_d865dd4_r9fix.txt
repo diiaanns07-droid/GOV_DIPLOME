@@ -1,0 +1,18 @@
+[PASS] inputs: 42 + 82 copied inputs match recorded sha256
+[PASS] inputs: contract k05-obs-v1.2+k12r4+k05r5: originals and patched copy match manifest (2 modified)
+[PASS] inputs: K03 v2.1: original byte-exact, patched copy and all its files match MANIFEST_K03.json
+[PASS] inputs: K02 v4: original byte-exact, adapted copy matches manifest
+[PASS] inputs: web/attribution equals K08 r4 originals
+[PASS] inputs: K10 package_manifest.json anchored by source_manifest sha256 (K01 #2)
+[PASS] package: K10 offline_check.py (subprocess) exit 0, ok=true
+[PASS] build: web/data.js == rebuild
+[PASS] build: committed evidence.js passes k05-obs-v1.2+k12r4+k05r5 (strict JSON, records, dataset)
+[SKIP] build: web/evidence.js rebuild — shapely/pyproj not installed: pip install -r requirements-build.txt
+[PASS] fresh: evidence.js boundary_binding matches K03 code/layers and data.js places
+[PASS] facts: Python K02 reference reproduces 7 expected explanations
+[PASS] facts: JS facts.js conformance (44 checks)
+[PASS] whatif: Python reference reproduces tests/expected_whatif.json — OK tests/expected_whatif.json
+[PASS] whatif: JS whatif.js = Python reference + city-whatif-v1 rules (71 checks)
+[PASS] plan: Python oracle reproduces tests/expected_plans.json — OK tests/expected_plans.json
+[PASS] plan: JS plan.js = Python oracle + city-plan-v2 rules (156 checks)
+[PASS] tests: python -m unittest discover -s tests (Ran 44 tests in 2.088s; OK (skipped=3))

@@ -1,0 +1,525 @@
+{
+ "summary": {
+  "app_root": "r9_d865dd4",
+  "timeout_ms": 10000,
+  "fast_ms": 200,
+  "total": 31,
+  "pass": 2,
+  "fail": [
+   "v2/S17_create",
+   "v2/S20_create",
+   "v2/S17_optimize",
+   "v2/S20_optimize",
+   "v2/S17_sensitivity",
+   "v2/S17_evaluate",
+   "v2/M_after_validation",
+   "v2/M_after_validation_eval",
+   "v2/T_weight_string",
+   "v2/T_cost_string",
+   "v2/T_nan_coord",
+   "v2/T_negative_weight",
+   "v2/T_dup_candidate",
+   "v2/T_max_selected_99",
+   "v2/T_city_mismatch",
+   "v2/T_foreign_snapshot",
+   "v2/T_category_unknown",
+   "v2/T_outside_bbox",
+   "v2/T_unknown_required",
+   "v2/C_mid_search_mutation"
+  ],
+  "not_run": 9,
+  "verdict": "FAIL"
+ },
+ "results": [
+  {
+   "group": "v2",
+   "id": "S17_create",
+   "what": "createSearch, 17 кандидатов",
+   "expect": "typed refusal before heavy work",
+   "outcome": "accepted",
+   "ms": 6.84,
+   "code": null,
+   "status": "FAIL",
+   "detail": {
+    "search_object": true,
+    "total": 131072,
+    "examined": 0
+   }
+  },
+  {
+   "group": "v2",
+   "id": "S20_create",
+   "what": "createSearch, 20 кандидатов",
+   "expect": "typed refusal before heavy work",
+   "outcome": "accepted",
+   "ms": 6.03,
+   "code": null,
+   "status": "FAIL",
+   "detail": {
+    "search_object": true,
+    "total": 1048576,
+    "examined": 0
+   }
+  },
+  {
+   "group": "v2",
+   "id": "S17_optimize",
+   "what": "optimizePlans, 17 кандидатов",
+   "expect": "typed refusal before heavy work",
+   "outcome": "accepted",
+   "ms": 54.64,
+   "code": null,
+   "status": "FAIL",
+   "detail": {
+    "status": "optimal",
+    "evaluated": 131072,
+    "mean": [
+     "c0",
+     "c1"
+    ]
+   }
+  },
+  {
+   "group": "v2",
+   "id": "S20_optimize",
+   "what": "optimizePlans, 20 кандидатов",
+   "expect": "typed refusal before heavy work",
+   "outcome": "accepted",
+   "ms": 105.57,
+   "code": null,
+   "status": "FAIL",
+   "detail": {
+    "status": "optimal",
+    "evaluated": 1048576,
+    "mean": [
+     "c0",
+     "c1",
+     "c18",
+     "c19"
+    ]
+   }
+  },
+  {
+   "group": "v2",
+   "id": "S17_sensitivity",
+   "what": "sensitivity, 17 кандидатов",
+   "expect": "typed refusal before heavy work",
+   "outcome": "accepted",
+   "ms": 81.2,
+   "code": null,
+   "status": "FAIL",
+   "detail": [
+    {
+     "budget": 0,
+     "status": "optimal"
+    },
+    {
+     "budget": 500000,
+     "status": "optimal"
+    },
+    {
+     "budget": 1000000,
+     "status": "optimal"
+    }
+   ]
+  },
+  {
+   "group": "v2",
+   "id": "S17_evaluate",
+   "what": "evaluatePlan, 17 кандидатов",
+   "expect": "typed refusal before heavy work",
+   "outcome": "accepted",
+   "ms": 5.37,
+   "code": null,
+   "status": "FAIL",
+   "detail": {
+    "metrics": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 10701423,
+     "weighted_mean_mm": 668838.9375,
+     "max_mm": 867012,
+     "covered_weight": 0,
+     "total_weight": 16,
+     "coverage_fraction": 0,
+     "cost": 1000,
+     "count": 1
+    }
+   }
+  },
+  {
+   "group": "v2",
+   "id": "M_after_validation",
+   "what": "объект прошёл validate, затем дополнен до 17 кандидатов → optimizePlans",
+   "expect": "typed refusal before heavy work",
+   "outcome": "accepted",
+   "ms": 50.64,
+   "code": null,
+   "status": "FAIL",
+   "detail": {
+    "status": "optimal",
+    "evaluated": 131072,
+    "mean": [
+     "c0",
+     "c1"
+    ]
+   }
+  },
+  {
+   "group": "v2",
+   "id": "M_after_validation_eval",
+   "what": "объект прошёл validate, затем вес стал строкой \"5\" → evaluatePlan",
+   "expect": "typed refusal before heavy work",
+   "outcome": "accepted",
+   "ms": 6.74,
+   "code": null,
+   "status": "FAIL",
+   "detail": {
+    "metrics": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 14169471,
+     "weighted_mean_mm": 27.069336002796824,
+     "max_mm": 867012,
+     "covered_weight": 0,
+     "total_weight": "0523451",
+     "coverage_fraction": 0,
+     "cost": 1000,
+     "count": 1
+    }
+   }
+  },
+  {
+   "group": "v2",
+   "id": "T_weight_string",
+   "what": "вес \"5\" (строка) → evaluatePlan",
+   "expect": "typed refusal before heavy work",
+   "outcome": "accepted",
+   "ms": 6.03,
+   "code": null,
+   "status": "FAIL",
+   "detail": {
+    "metrics": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 14490279,
+     "weighted_mean_mm": 27.68220712158349,
+     "max_mm": 867012,
+     "covered_weight": 0,
+     "total_weight": "0523451",
+     "coverage_fraction": 0,
+     "cost": 1037,
+     "count": 1
+    }
+   }
+  },
+  {
+   "group": "v2",
+   "id": "T_cost_string",
+   "what": "стоимость \"100\" (строка) → optimizePlans",
+   "expect": "typed refusal before heavy work",
+   "outcome": "accepted",
+   "ms": 6.44,
+   "code": null,
+   "status": "FAIL",
+   "detail": {
+    "status": "optimal",
+    "evaluated": 8,
+    "mean": [
+     "c0"
+    ]
+   }
+  },
+  {
+   "group": "v2",
+   "id": "T_nan_coord",
+   "what": "lon = NaN → evaluatePlan",
+   "expect": "typed refusal before heavy work",
+   "outcome": "accepted",
+   "ms": 6.11,
+   "code": null,
+   "status": "FAIL",
+   "detail": {
+    "metrics": {
+     "unknown_count": 0,
+     "weighted_sum_mm": null,
+     "weighted_mean_mm": null,
+     "max_mm": 797682,
+     "covered_weight": 0,
+     "total_weight": 16,
+     "coverage_fraction": 0,
+     "cost": 1037,
+     "count": 1
+    }
+   }
+  },
+  {
+   "group": "v2",
+   "id": "T_negative_weight",
+   "what": "вес −50 → optimizePlans",
+   "expect": "typed refusal before heavy work",
+   "outcome": "accepted",
+   "ms": 6.36,
+   "code": null,
+   "status": "FAIL",
+   "detail": {
+    "status": "optimal",
+    "evaluated": 8,
+    "mean": [
+     "c0",
+     "c1"
+    ]
+   }
+  },
+  {
+   "group": "v2",
+   "id": "T_dup_candidate",
+   "what": "повтор ID кандидата → optimizePlans",
+   "expect": "typed refusal before heavy work",
+   "outcome": "accepted",
+   "ms": 7.03,
+   "code": null,
+   "status": "FAIL",
+   "detail": {
+    "status": "optimal",
+    "evaluated": 16,
+    "mean": [
+     "c0",
+     "c1"
+    ]
+   }
+  },
+  {
+   "group": "v2",
+   "id": "T_max_selected_99",
+   "what": "max_selected 99 → optimizePlans",
+   "expect": "typed refusal before heavy work",
+   "outcome": "accepted",
+   "ms": 6.7,
+   "code": null,
+   "status": "FAIL",
+   "detail": {
+    "status": "optimal",
+    "evaluated": 8,
+    "mean": [
+     "c0",
+     "c1"
+    ]
+   }
+  },
+  {
+   "group": "v2",
+   "id": "T_city_mismatch",
+   "what": "city_id astana при контексте Шымкента → evaluatePlan",
+   "expect": "typed refusal before heavy work",
+   "outcome": "accepted",
+   "ms": 5.66,
+   "code": null,
+   "status": "FAIL",
+   "detail": {
+    "metrics": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 11022231,
+     "weighted_mean_mm": 688889.4375,
+     "max_mm": 867012,
+     "covered_weight": 0,
+     "total_weight": 16,
+     "coverage_fraction": 0,
+     "cost": 1037,
+     "count": 1
+    }
+   }
+  },
+  {
+   "group": "v2",
+   "id": "T_foreign_snapshot",
+   "what": "чужой source_snapshot → optimizePlans",
+   "expect": "typed refusal before heavy work",
+   "outcome": "accepted",
+   "ms": 6.52,
+   "code": null,
+   "status": "FAIL",
+   "detail": {
+    "status": "optimal",
+    "evaluated": 8,
+    "mean": [
+     "c0",
+     "c1"
+    ]
+   }
+  },
+  {
+   "group": "v2",
+   "id": "T_category_unknown",
+   "what": "категория hospital → evaluatePlan",
+   "expect": "typed refusal before heavy work",
+   "outcome": "accepted",
+   "ms": 7.99,
+   "code": null,
+   "status": "FAIL",
+   "detail": {
+    "metrics": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 12380538,
+     "weighted_mean_mm": 773783.625,
+     "max_mm": 1357841,
+     "covered_weight": 0,
+     "total_weight": 16,
+     "coverage_fraction": 0,
+     "cost": 1037,
+     "count": 1
+    }
+   }
+  },
+  {
+   "group": "v2",
+   "id": "T_outside_bbox",
+   "what": "кандидат вне bbox среза → optimizePlans",
+   "expect": "typed refusal before heavy work",
+   "outcome": "accepted",
+   "ms": 6.81,
+   "code": null,
+   "status": "FAIL",
+   "detail": {
+    "status": "optimal",
+    "evaluated": 8,
+    "mean": [
+     "c1"
+    ]
+   }
+  },
+  {
+   "group": "v2",
+   "id": "T_unknown_required",
+   "what": "required_ids с неизвестным ID → optimizePlans (ожидается типизированный отказ, не TypeError)",
+   "expect": "typed refusal before heavy work",
+   "outcome": "crash",
+   "ms": 8.37,
+   "code": null,
+   "status": "FAIL",
+   "detail": "TypeError: Cannot read properties of undefined (reading 'cost')"
+  },
+  {
+   "group": "v2",
+   "id": "C_valid16",
+   "what": "контроль: валидные 16 кандидатов через прямой API = optimal, 65 536 наборов, как после validate",
+   "expect": "check",
+   "status": "PASS",
+   "outcome": "check",
+   "ms": 79.24,
+   "detail": {
+    "status": "optimal",
+    "evaluated": 65536
+   }
+  },
+  {
+   "group": "v2",
+   "id": "C_clean_copy",
+   "what": "контроль: validate возвращает независимую копию (изменение входа после validate её не меняет)",
+   "expect": "check",
+   "status": "PASS",
+   "outcome": "check",
+   "ms": 9.68,
+   "detail": {
+    "candidates": 3,
+    "budget": 1000000
+   }
+  },
+  {
+   "group": "v2",
+   "id": "C_mid_search_mutation",
+   "what": "изменение переданного объекта посреди пошагового поиска не меняет ответ (бюджет 0, max_selected 0)",
+   "expect": "check",
+   "status": "FAIL",
+   "outcome": "check",
+   "ms": 12.25,
+   "detail": {
+    "ref": [
+     "optimal",
+     382,
+     [
+      "c0",
+      "c1"
+     ]
+    ],
+    "got": [
+     "optimal",
+     57,
+     [
+      "c0",
+      "c1"
+     ]
+    ]
+   }
+  },
+  {
+   "group": "rs",
+   "id": "R13_create",
+   "what": "createResilienceSearch, 13 кандидатов",
+   "expect": "typed refusal before heavy work",
+   "status": "NOT_RUN",
+   "detail": "web/resilience.js отсутствует в этой сборке"
+  },
+  {
+   "group": "rs",
+   "id": "R13_optimize",
+   "what": "optimizeResilience, 13 кандидатов",
+   "expect": "typed refusal before heavy work",
+   "status": "NOT_RUN",
+   "detail": "web/resilience.js отсутствует в этой сборке"
+  },
+  {
+   "group": "rs",
+   "id": "R13_evaluate",
+   "what": "evaluateResilience, 13 кандидатов",
+   "expect": "typed refusal before heavy work",
+   "status": "NOT_RUN",
+   "detail": "web/resilience.js отсутствует в этой сборке"
+  },
+  {
+   "group": "rs",
+   "id": "R16_optimize",
+   "what": "optimizeResilience, 16 кандидатов (предел v2, не устойчивости)",
+   "expect": "typed refusal before heavy work",
+   "status": "NOT_RUN",
+   "detail": "web/resilience.js отсутствует в этой сборке"
+  },
+  {
+   "group": "rs",
+   "id": "R_cases_8user",
+   "what": "8 пользовательских случаев (+base = 9) → optimizeResilience",
+   "expect": "typed refusal before heavy work",
+   "status": "NOT_RUN",
+   "detail": "web/resilience.js отсутствует в этой сборке"
+  },
+  {
+   "group": "rs",
+   "id": "R_after_validation",
+   "what": "envelope прошёл validate, затем 13-й кандидат → optimizeResilience",
+   "expect": "typed refusal before heavy work",
+   "status": "NOT_RUN",
+   "detail": "web/resilience.js отсутствует в этой сборке"
+  },
+  {
+   "group": "rs",
+   "id": "R_candidate_as_source",
+   "what": "ID кандидата в disabled_source_ids → optimizeResilience",
+   "expect": "typed refusal before heavy work",
+   "status": "NOT_RUN",
+   "detail": "web/resilience.js отсутствует в этой сборке"
+  },
+  {
+   "group": "rs",
+   "id": "R_reserved_base",
+   "what": "case id \"base\" → evaluateResilience",
+   "expect": "typed refusal before heavy work",
+   "status": "NOT_RUN",
+   "detail": "web/resilience.js отсутствует в этой сборке"
+  },
+  {
+   "group": "rs",
+   "id": "RC_valid12",
+   "what": "контроль: 12 кандидатов × 7 случаев → optimal, 4096 наборов",
+   "expect": "check",
+   "status": "NOT_RUN",
+   "detail": "web/resilience.js отсутствует в этой сборке"
+  }
+ ]
+}

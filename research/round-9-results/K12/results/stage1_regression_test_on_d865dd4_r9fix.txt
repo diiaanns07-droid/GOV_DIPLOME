@@ -1,0 +1,19 @@
+PASS createSearch: 17 candidates refused before enumeration (too_many_candidates, < 200 ms)
+PASS optimizePlans: 17 candidates refused before enumeration (too_many_candidates, < 200 ms)
+PASS sensitivity: 17 candidates refused before enumeration (too_many_candidates, < 200 ms)
+PASS evaluatePlan: 17 candidates refused before enumeration (too_many_candidates, < 200 ms)
+PASS validated object grown to 17 candidates afterwards: optimizePlans refuses
+PASS direct API, weight "5" (string): bad_weight
+PASS direct API, cost "100" (string): bad_cost
+PASS direct API, lon NaN: bad_coord
+PASS direct API, weight −50: bad_weight
+PASS direct API, duplicate candidate ID: duplicate_id
+PASS direct API, max_selected 99: bad_max_selected
+PASS direct API, city astana in a Shymkent context: other_city
+PASS direct API, unknown required ID (typed, not TypeError): unknown_ref
+PASS direct API, selectedIds not an array: bad_shape
+PASS object changed between search steps: result equals the unchanged problem
+PASS valid 16 candidates via direct API: optimal, 65536 subsets, same as validated input
+PASS evaluatePlan accepts an editor state without points (requirePoints: false)
+all plan API guard checks passed
+exit=0
