@@ -1,0 +1,48 @@
+{
+ "data_js": {
+  "commit": "d2ff344c5ec9b9a729ea59df50ec81f981e619de",
+  "path": "web/govtech/core/data.js",
+  "git_blob": "e61ff9925a51505dbf2b307d950aab558b4d2a5d",
+  "sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "bytes": 1070322
+ },
+ "cities": {
+  "shymkent": {
+   "segments": {
+    "commit": "d18847f9e7c18fcfae3349c0b223b023d359a838",
+    "path": "prototypes/city-evidence/inputs/k10/data/shymkent/segments.geojson",
+    "git_blob": "a871370310bf4121fe394cbb567e15afa818e358",
+    "sha256": "055b0e7aaef8d5b42fdbb6663f46ef245156b33a0f92b8f94cc73ab7a9c77648",
+    "bytes": 1312363,
+    "sha256_equals_data_js_files": true
+   },
+   "connectors": {
+    "commit": "d18847f9e7c18fcfae3349c0b223b023d359a838",
+    "path": "prototypes/city-evidence/inputs/k10/data/shymkent/connectors.geojson",
+    "git_blob": "dc799d5a26c02eb394ab068f66d18bbb85a7f9fc",
+    "sha256": "8bbd25959eef559abeccb39d99884d96caf920d219f5a71f11298ade5e27bca0",
+    "bytes": 851736,
+    "sha256_equals_data_js_files": true
+   }
+  },
+  "astana": {
+   "segments": {
+    "commit": "d18847f9e7c18fcfae3349c0b223b023d359a838",
+    "path": "prototypes/city-evidence/inputs/k10/data/astana/segments.geojson",
+    "git_blob": "f246dd7ce72cf677318415875dcd74fd5472390a",
+    "sha256": "5fc1b3b5f6cabad6e2edfd042bb3727aa8fd0c7bcba9962175025e37eb08dbb9",
+    "bytes": 1712993,
+    "sha256_equals_data_js_files": true
+   },
+   "connectors": {
+    "commit": "d18847f9e7c18fcfae3349c0b223b023d359a838",
+    "path": "prototypes/city-evidence/inputs/k10/data/astana/connectors.geojson",
+    "git_blob": "ff47fff0e5b81db7d64d6ea4257b92c37b27c8f8",
+    "sha256": "74a77d2ed250d6a55ee478054a6e89a4de15fc96f65063176a1194345994e801",
+    "bytes": 1131848,
+    "sha256_equals_data_js_files": true
+   }
+  }
+ },
+ "note": "Входы читаются git show из закреплённых коммитов; blob сверен, sha256 сегментов/соединителей = data.js.cities[c].files[*].sha256."
+}

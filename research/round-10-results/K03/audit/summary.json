@@ -1,0 +1,30 @@
+{
+ "shymkent": {
+  "segments": 1084,
+  "connectors": 1729,
+  "data_js_sufficient": false,
+  "connector_on_vertex_violations": 0,
+  "crossings_without_connector": 4,
+  "pedestrian_km": 28.834,
+  "all_km": 125.541,
+  "ped_components": 17,
+  "ped_largest_share": 0.8744,
+  "schools_to_any_road_median_m": 14.8,
+  "schools_to_ped_median_m": 43.5,
+  "schools_to_ped_max_m": 939.1
+ },
+ "astana": {
+  "segments": 1326,
+  "connectors": 2309,
+  "data_js_sufficient": false,
+  "connector_on_vertex_violations": 0,
+  "crossings_without_connector": 9,
+  "pedestrian_km": 45.863,
+  "all_km": 156.182,
+  "ped_components": 40,
+  "ped_largest_share": 0.8577,
+  "schools_to_any_road_median_m": 26.25,
+  "schools_to_ped_median_m": 38.55,
+  "schools_to_ped_max_m": 194.8
+ }
+}

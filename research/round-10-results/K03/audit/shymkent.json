@@ -1,0 +1,919 @@
+{
+ "city": "shymkent",
+ "source": {
+  "type": "FeatureCollection",
+  "name": "shymkent_segments",
+  "release": "2026-09-23.1",
+  "city": "shymkent",
+  "bbox": [
+   69.593365,
+   42.306645,
+   69.617658,
+   42.324611
+  ],
+  "attribution": [
+   "Overture Maps Foundation",
+   "© OpenStreetMap contributors (ODbL-1.0)"
+  ],
+  "kind": "observed_secondary (Overture/OSM), not an official registry"
+ },
+ "bbox": [
+  69.593365,
+  42.306645,
+  69.617658,
+  42.324611
+ ],
+ "data_js_vs_raw": {
+  "segments_data_js": 1084,
+  "segments_raw": 1084,
+  "same_id_set": true,
+  "coords_equal_raw_rounded_6dp": true,
+  "coord_mismatch_examples": [],
+  "foot_access_equal_k10": true,
+  "data_js_segment_fields": [
+   "class",
+   "connectors",
+   "coords",
+   "crosses_edge",
+   "dataset",
+   "flags",
+   "foot_access",
+   "id",
+   "length_m",
+   "license",
+   "name",
+   "record_id",
+   "subclass",
+   "update_time"
+  ],
+  "data_js_has_connector_ids": false,
+  "verdict": "data.js недостаточно для графа: у сегмента только число соединителей, без их ID и позиций; связность по пересечению линий запрещена. Граф строится из сырого K10-пакета донора (тот же sha256, что в data.js.files)."
+ },
+ "geometry_checks": {
+  "connectors_missing": 0,
+  "connector_not_on_vertex_gt_1cm": 0,
+  "examples": [],
+  "connector_order_not_monotonic": 0,
+  "first_last_not_0_1": 0,
+  "duplicate_connector_in_segment": 0,
+  "at_vs_haversine_fraction_max": 0.0008439356013963395,
+  "at_vs_haversine_fraction_p99": 0.0004702686940117884,
+  "connectors_total": 1729,
+  "connectors_unused": 0,
+  "connectors_outside_bbox": 276,
+  "k10_inside_flag_matches_bbox": true
+ },
+ "classes_km": {
+  "service": 31.117,
+  "residential": 29.693,
+  "footway": 27.137,
+  "secondary": 14.816,
+  "tertiary": 7.018,
+  "primary": 6.726,
+  "cycleway": 6.615,
+  "pedestrian": 1.086,
+  "unclassified": 0.645,
+  "steps": 0.328,
+  "living_street": 0.284,
+  "unknown": 0.078
+ },
+ "subclass_counts": {
+  "null": 1023,
+  "link": 27,
+  "crosswalk": 14,
+  "driveway": 12,
+  "cycle_crossing": 5,
+  "parking_aisle": 2,
+  "sidewalk": 1
+ },
+ "foot_access_k10": {
+  "segments": {
+   "unknown": 954,
+   "conditional": 115,
+   "denied": 8,
+   "allowed": 7
+  },
+  "km": {
+   "unknown": 103.767,
+   "conditional": 19.059,
+   "denied": 1.407,
+   "allowed": 1.308
+  }
+ },
+ "foot_relevant_rules_independent": {
+  "no_mode_heading_denied (oneway OSM)": 119,
+  "foot_denied": 8,
+  "designated_foot": 6,
+  "designated_foot_cond:between": 3,
+  "allowed_foot_all_modes_cond:using+between": 2,
+  "foot_denied_all_modes_cond:vehicle+between": 1,
+  "allowed_foot": 1,
+  "other_mode_only": 1
+ },
+ "pedestrian_class_km": 28.834,
+ "bridges_tunnels_levels": [
+  {
+   "id": "0fc89000-e361-4070-9a8d-5104663ff792",
+   "class": "footway",
+   "subclass": null,
+   "road_flags": [
+    {
+     "values": [
+      "is_bridge"
+     ],
+     "between": null
+    }
+   ],
+   "level_rules": [
+    {
+     "value": 1,
+     "between": null
+    }
+   ],
+   "osm": [
+    "w1123796584@3",
+    "w1123796585@1"
+   ],
+   "foot": "unknown",
+   "connectors": 2
+  },
+  {
+   "id": "1858bf58-5b62-4adf-bd74-2a38871faaad",
+   "class": "footway",
+   "subclass": null,
+   "road_flags": [
+    {
+     "values": [
+      "is_bridge"
+     ],
+     "between": [
+      0.156511364,
+      0.306752984
+     ]
+    }
+   ],
+   "level_rules": [],
+   "osm": [
+    "w1319949837@1",
+    "w1319949839@1",
+    "w1319949845@1"
+   ],
+   "foot": "unknown",
+   "connectors": 2
+  },
+  {
+   "id": "1eec6a8b-7f94-472e-90a9-17a31c39f0ba",
+   "class": "footway",
+   "subclass": "crosswalk",
+   "road_flags": [
+    {
+     "values": [
+      "is_bridge"
+     ],
+     "between": null
+    }
+   ],
+   "level_rules": [
+    {
+     "value": 1,
+     "between": null
+    }
+   ],
+   "osm": [
+    "w169310234@3"
+   ],
+   "foot": "unknown",
+   "connectors": 2
+  },
+  {
+   "id": "372ef3c6-4b46-4b81-acb9-bae8123917f7",
+   "class": "service",
+   "subclass": null,
+   "road_flags": [
+    {
+     "values": [
+      "is_covered"
+     ],
+     "between": [
+      0.195363136,
+      0.388111468
+     ]
+    }
+   ],
+   "level_rules": [],
+   "osm": [
+    "w436812427@4",
+    "w466877683@4",
+    "w466877684@3"
+   ],
+   "foot": "conditional",
+   "connectors": 3
+  },
+  {
+   "id": "37dca6d0-14a5-48ec-8b40-9c11a7475125",
+   "class": "footway",
+   "subclass": null,
+   "road_flags": [
+    {
+     "values": [
+      "is_bridge"
+     ],
+     "between": null
+    }
+   ],
+   "level_rules": [],
+   "osm": [
+    "w1446554478@1"
+   ],
+   "foot": "unknown",
+   "connectors": 2
+  },
+  {
+   "id": "38da9406-ab9c-445a-b43a-7f88325a8aca",
+   "class": "service",
+   "subclass": null,
+   "road_flags": [],
+   "level_rules": [
+    {
+     "value": -1,
+     "between": null
+    }
+   ],
+   "osm": [
+    "w1227635033@2"
+   ],
+   "foot": "unknown",
+   "connectors": 2
+  },
+  {
+   "id": "3a6d24ca-b4ee-4d6d-ad72-df8865e1d3c9",
+   "class": "pedestrian",
+   "subclass": null,
+   "road_flags": [
+    {
+     "values": [
+      "is_bridge"
+     ],
+     "between": [
+      0.462448906,
+      0.476946169
+     ]
+    }
+   ],
+   "level_rules": [
+    {
+     "value": 1,
+     "between": [
+      0.462448906,
+      0.476946169
+     ]
+    }
+   ],
+   "osm": [
+    "w1451405429@1",
+    "w1451405430@1",
+    "w1110329474@6"
+   ],
+   "foot": "allowed",
+   "connectors": 12
+  },
+  {
+   "id": "3cedff3f-9bda-4f1d-8baf-f7287ee65c99",
+   "class": "residential",
+   "subclass": null,
+   "road_flags": [
+    {
+     "values": [
+      "is_bridge"
+     ],
+     "between": [
+      0.486054281,
+      0.506100421
+     ]
+    }
+   ],
+   "level_rules": [],
+   "osm": [
+    "w130668133@10",
+    "w1446554480@1",
+    "w1446554479@1"
+   ],
+   "foot": "unknown",
+   "connectors": 4
+  },
+  {
+   "id": "5206caa5-5234-4ea0-a55e-7f81e47265bf",
+   "class": "footway",
+   "subclass": null,
+   "road_flags": [
+    {
+     "values": [
+      "is_bridge"
+     ],
+     "between": null
+    }
+   ],
+   "level_rules": [
+    {
+     "value": 1,
+     "between": null
+    }
+   ],
+   "osm": [
+    "w1451405442@1"
+   ],
+   "foot": "unknown",
+   "connectors": 2
+  },
+  {
+   "id": "55c30d46-b98c-49c4-b56c-5bcb8be95379",
+   "class": "footway",
+   "subclass": null,
+   "road_flags": [
+    {
+     "values": [
+      "is_bridge"
+     ],
+     "between": null
+    }
+   ],
+   "level_rules": [
+    {
+     "value": 1,
+     "between": null
+    }
+   ],
+   "osm": [
+    "w1451405448@1"
+   ],
+   "foot": "unknown",
+   "connectors": 2
+  },
+  {
+   "id": "58ed98cd-1ef6-4d57-be35-b56b2906e10c",
+   "class": "footway",
+   "subclass": null,
+   "road_flags": [
+    {
+     "values": [
+      "is_tunnel"
+     ],
+     "between": [
+      0.132669402,
+      0.135373342
+     ]
+    }
+   ],
+   "level_rules": [],
+   "osm": [
+    "w1285255094@1",
+    "w1285255093@1",
+    "w1202578034@2"
+   ],
+   "foot": "unknown",
+   "connectors": 9
+  },
+  {
+   "id": "69fc173b-c80a-46f2-8b07-5a0431be5d1a",
+   "class": "primary",
+   "subclass": null,
+   "road_flags": [
+    {
+     "values": [
+      "is_bridge"
+     ],
+     "between": [
+      0.764482543,
+      0.842820916
+     ]
+    }
+   ],
+   "level_rules": [
+    {
+     "value": 1,
+     "between": [
+      0.764482543,
+      0.842820916
+     ]
+    }
+   ],
+   "osm": [
+    "w877762989@8",
+    "w108072157@16",
+    "w108072156@20"
+   ],
+   "foot": "conditional",
+   "connectors": 6
+  },
+  {
+   "id": "74e90cf8-a758-45e7-833e-1e8a7783cd31",
+   "class": "primary",
+   "subclass": null,
+   "road_flags": [
+    {
+     "values": [
+      "is_bridge"
+     ],
+     "between": [
+      0.161169998,
+      0.239667846
+     ]
+    }
+   ],
+   "level_rules": [
+    {
+     "value": 1,
+     "between": [
+      0.161169998,
+      0.239667846
+     ]
+    }
+   ],
+   "osm": [
+    "w1472688518@2",
+    "w108072154@16",
+    "w108072147@34"
+   ],
+   "foot": "conditional",
+   "connectors": 4
+  },
+  {
+   "id": "84532f1a-d063-4391-abac-ade890e8b037",
+   "class": "service",
+   "subclass": "driveway",
+   "road_flags": [
+    {
+     "values": [
+      "is_tunnel"
+     ],
+     "between": [
+      0.305242445,
+      0.671171072
+     ]
+    }
+   ],
+   "level_rules": [],
+   "osm": [
+    "w1446569092@1",
+    "w1446569091@1",
+    "w1446569090@1"
+   ],
+   "foot": "unknown",
+   "connectors": 3
+  },
+  {
+   "id": "9938abe0-23cf-4b0f-9348-f185201a4568",
+   "class": "footway",
+   "subclass": null,
+   "road_flags": [
+    {
+     "values": [
+      "is_bridge"
+     ],
+     "between": [
+      0.409010064,
+      1.0
+     ]
+    }
+   ],
+   "level_rules": [
+    {
+     "value": 1,
+     "between": [
+      0.370898895,
+      1.0
+     ]
+    }
+   ],
+   "osm": [
+    "w1446554485@1",
+    "w1123797605@2",
+    "w1123797604@1"
+   ],
+   "foot": "unknown",
+   "connectors": 3
+  },
+  {
+   "id": "9be2b33f-3b0d-4045-b2e6-15f34dc377d2",
+   "class": "steps",
+   "subclass": null,
+   "road_flags": [
+    {
+     "values": [
+      "is_bridge"
+     ],
+     "between": null
+    }
+   ],
+   "level_rules": [
+    {
+     "value": 1,
+     "between": null
+    }
+   ],
+   "osm": [
+    "w1451116285@1"
+   ],
+   "foot": "unknown",
+   "connectors": 2
+  },
+  {
+   "id": "a7cd9ff8-3e1b-48a2-bbce-9dc418f3d32f",
+   "class": "footway",
+   "subclass": "sidewalk",
+   "road_flags": [
+    {
+     "values": [
+      "is_bridge"
+     ],
+     "between": [
+      0.849670886,
+      1.0
+     ]
+    }
+   ],
+   "level_rules": [
+    {
+     "value": 1,
+     "between": [
+      0.849670886,
+      1.0
+     ]
+    }
+   ],
+   "osm": [
+    "w1451116296@1",
+    "w1451116297@1"
+   ],
+   "foot": "unknown",
+   "connectors": 2
+  },
+  {
+   "id": "c4bd8e61-e79b-452e-805f-2bcac49668fd",
+   "class": "service",
+   "subclass": null,
+   "road_flags": [
+    {
+     "values": [
+      "is_tunnel"
+     ],
+     "between": [
+      0.709001274,
+      0.73476316
+     ]
+    }
+   ],
+   "level_rules": [],
+   "osm": [
+    "w436812431@6",
+    "w877401263@4",
+    "w1410490986@1",
+    "w436812433@4"
+   ],
+   "foot": "unknown",
+   "connectors": 9
+  },
+  {
+   "id": "d39ba926-fe41-4aca-9457-0214879cb1b1",
+   "class": "secondary",
+   "subclass": null,
+   "road_flags": [
+    {
+     "values": [
+      "is_bridge"
+     ],
+     "between": [
+      0.535849496,
+      0.919070271
+     ]
+    }
+   ],
+   "level_rules": [
+    {
+     "value": 1,
+     "between": [
+      0.535849496,
+      0.919070271
+     ]
+    }
+   ],
+   "osm": [
+    "w135855633@10",
+    "w1451116289@1",
+    "w1451116288@1"
+   ],
+   "foot": "unknown",
+   "connectors": 2
+  },
+  {
+   "id": "dc0d9793-9aab-43e4-90f2-46e2e8bd08b0",
+   "class": "footway",
+   "subclass": null,
+   "road_flags": [
+    {
+     "values": [
+      "is_bridge"
+     ],
+     "between": [
+      0.174202625,
+      0.196085901
+     ]
+    },
+    {
+     "values": [
+      "is_bridge"
+     ],
+     "between": [
+      0.469963655,
+      0.497425699
+     ]
+    }
+   ],
+   "level_rules": [
+    {
+     "value": 1,
+     "between": [
+      0.174202625,
+      0.196085901
+     ]
+    },
+    {
+     "value": 1,
+     "between": [
+      0.469963655,
+      0.497425699
+     ]
+    }
+   ],
+   "osm": [
+    "w1451116290@1",
+    "w1451116291@1",
+    "w1384494695@3",
+    "w1384494696@1",
+    "w1164321925@4"
+   ],
+   "foot": "unknown",
+   "connectors": 8
+  }
+ ],
+ "crossings_without_shared_connector": {
+  "count": 4,
+  "with_bridge_tunnel_or_level": 3,
+  "without_any_level_or_flag": 1,
+  "rule": "не узел: связность только по общему connector_id; в граф не добавляются",
+  "examples_with_flags": [
+   {
+    "a": "1eec6a8b-7f94-472e-90a9-17a31c39f0ba",
+    "b": "cdb736e6-7500-479b-9eb2-dbb4eadc36fd",
+    "lon": 69.59989,
+    "lat": 42.3085966,
+    "a_class": "footway",
+    "b_class": "footway",
+    "a_flags": [
+     "is_bridge"
+    ],
+    "b_flags": [],
+    "a_levels": [
+     1
+    ],
+    "b_levels": [],
+    "a_osm": [
+     "w169310234@3"
+    ],
+    "b_osm": [
+     "w1446554488@2"
+    ]
+   },
+   {
+    "a": "1eec6a8b-7f94-472e-90a9-17a31c39f0ba",
+    "b": "b3b275c5-ef8a-4f4e-9e85-90c47e2f09a1",
+    "lon": 69.5998395,
+    "lat": 42.3084665,
+    "a_class": "footway",
+    "b_class": "tertiary",
+    "a_flags": [
+     "is_bridge"
+    ],
+    "b_flags": [],
+    "a_levels": [
+     1
+    ],
+    "b_levels": [],
+    "a_osm": [
+     "w169310234@3"
+    ],
+    "b_osm": [
+     "w1517486292@1"
+    ]
+   },
+   {
+    "a": "3a6d24ca-b4ee-4d6d-ad72-df8865e1d3c9",
+    "b": "9be2b33f-3b0d-4045-b2e6-15f34dc377d2",
+    "lon": 69.5999525,
+    "lat": 42.3087584,
+    "a_class": "pedestrian",
+    "b_class": "steps",
+    "a_flags": [
+     "is_bridge"
+    ],
+    "b_flags": [
+     "is_bridge"
+    ],
+    "a_levels": [
+     1
+    ],
+    "b_levels": [
+     1
+    ],
+    "a_osm": [
+     "w1451405429@1"
+    ],
+    "b_osm": [
+     "w1451116285@1"
+    ]
+   }
+  ],
+  "examples_without_flags": [
+   {
+    "a": "7cbe7f59-aad3-4964-b5b3-89abf3d50488",
+    "b": "b80e16c8-ea5a-4b31-95c8-3079b89a2f45",
+    "lon": 69.5948548,
+    "lat": 42.3131072,
+    "a_class": "footway",
+    "b_class": "service",
+    "a_flags": [],
+    "b_flags": [],
+    "a_levels": [],
+    "b_levels": [],
+    "a_osm": [
+     "w1420428275@1"
+    ],
+    "b_osm": [
+     "w1319949842@1"
+    ]
+   }
+  ]
+ },
+ "connectivity_all_segments": {
+  "components": 7,
+  "largest_nodes": 1692,
+  "nodes": 1729,
+  "largest_share": 0.9786,
+  "closed_components_inside_bbox": 0,
+  "components_touching_boundary": 7
+ },
+ "connectivity_pedestrian_classes_only": {
+  "classes": [
+   "footway",
+   "pedestrian",
+   "steps",
+   "path",
+   "living_street"
+  ],
+  "components": 17,
+  "nodes": 605,
+  "largest_nodes": 529,
+  "largest_share": 0.8744,
+  "sizes_top10": [
+   529,
+   17,
+   15,
+   11,
+   5,
+   3,
+   3,
+   3,
+   3,
+   2
+  ]
+ },
+ "boundary": {
+  "segments_crossing_bbox_edge": 136,
+  "connectors_outside_bbox_open": 276,
+  "km_of_pieces_touching_outside": 21.812,
+  "buffer_in_data_m": 0,
+  "note": "Выгрузка K10 — сегменты, пересекающие квадрат, целиком; соседние сегменты вне квадрата отсутствуют. Узел внутри bbox полон (все его сегменты в данных), узел вне bbox «открыт»."
+ },
+ "schools_snap": {
+  "count": 15,
+  "to_any_road_m": {
+   "min": 5.9,
+   "median": 14.8,
+   "max": 20.1
+  },
+  "to_pedestrian_class_m": {
+   "min": 5.9,
+   "median": 43.5,
+   "max": 939.1
+  },
+  "within_100m_of_bbox_edge": 0,
+  "rows": [
+   {
+    "id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+    "name": "Реклама 42",
+    "to_any_road_m": 7.7,
+    "to_pedestrian_class_m": 525.7,
+    "to_bbox_edge_m": 482.7
+   },
+   {
+    "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+    "name": "М.Х.Дулати атындағы үш тілде оқытатын N8 мамандандырылған  гимназия\" КММ",
+    "to_any_road_m": 19.3,
+    "to_pedestrian_class_m": 19.3,
+    "to_bbox_edge_m": 787.3
+   },
+   {
+    "id": "176c5993-4b62-4e90-849f-88addc0153bb",
+    "name": "Dostyk Bilim Beru Ortalygy",
+    "to_any_road_m": 14.8,
+    "to_pedestrian_class_m": 649.7,
+    "to_bbox_edge_m": 164.8
+   },
+   {
+    "id": "18df815b-170a-437c-977f-0769690315d4",
+    "name": "Ақпан батыр Атындағы Орта Мектеп",
+    "to_any_road_m": 20.1,
+    "to_pedestrian_class_m": 316.7,
+    "to_bbox_edge_m": 233.4
+   },
+   {
+    "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+    "name": "Reklama 8888",
+    "to_any_road_m": 5.9,
+    "to_pedestrian_class_m": 5.9,
+    "to_bbox_edge_m": 200.2
+   },
+   {
+    "id": "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+    "name": "Жолдасбекова Атындағы 9 Лицей",
+    "to_any_road_m": 10.5,
+    "to_pedestrian_class_m": 524.1,
+    "to_bbox_edge_m": 319.1
+   },
+   {
+    "id": "68c8f007-75bc-42f6-8da8-baa72042bde4",
+    "name": "Baiterek School",
+    "to_any_road_m": 5.9,
+    "to_pedestrian_class_m": 5.9,
+    "to_bbox_edge_m": 200.2
+   },
+   {
+    "id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+    "name": "Учебный центр Меруерт",
+    "to_any_road_m": 16.4,
+    "to_pedestrian_class_m": 43.5,
+    "to_bbox_edge_m": 482.2
+   },
+   {
+    "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+    "name": "Express toefl",
+    "to_any_road_m": 10.6,
+    "to_pedestrian_class_m": 21.9,
+    "to_bbox_edge_m": 120.2
+   },
+   {
+    "id": "9d31b953-ccc4-42bd-a3a3-3e4e21f44051",
+    "name": "Реклама 3131",
+    "to_any_road_m": 5.9,
+    "to_pedestrian_class_m": 5.9,
+    "to_bbox_edge_m": 200.2
+   },
+   {
+    "id": "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6",
+    "name": "Kasipkoy.kurs",
+    "to_any_road_m": 10.6,
+    "to_pedestrian_class_m": 21.9,
+    "to_bbox_edge_m": 120.2
+   },
+   {
+    "id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+    "name": "Монтессори Детский Сад \"Бала Би\"",
+    "to_any_road_m": 20.1,
+    "to_pedestrian_class_m": 61.5,
+    "to_bbox_edge_m": 459.2
+   },
+   {
+    "id": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+    "name": "ALEM мектебі",
+    "to_any_road_m": 16.5,
+    "to_pedestrian_class_m": 939.1,
+    "to_bbox_edge_m": 171.7
+   },
+   {
+    "id": "bcd265d0-0799-4dbf-8b15-23bae752a4d2",
+    "name": "Алем мектеп",
+    "to_any_road_m": 16.5,
+    "to_pedestrian_class_m": 939.1,
+    "to_bbox_edge_m": 171.7
+   },
+   {
+    "id": "fd50a858-462d-477f-8bc6-a8d3e03a9576",
+    "name": "Техникалық лицей",
+    "to_any_road_m": 16.2,
+    "to_pedestrian_class_m": 24.0,
+    "to_bbox_edge_m": 810.3
+   }
+  ],
+  "note": "Расстояние в плоской проекции lon/lat до ближайшей точки линии, затем гаверсинус; для выбора допуска привязки."
+ }
+}
