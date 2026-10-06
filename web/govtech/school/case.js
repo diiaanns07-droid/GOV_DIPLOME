@@ -101,8 +101,17 @@
   // Contract fields + two documented BUILD extensions: variants {A,B} and parameters.target_policy (see normalizeCase).
   const KEYS = ["schema_version", "case_id", "city_id", "title", "bbox", "snapshot_id", "sources", "schools", "origins", "candidates",
     "selected_candidate_ids", "variants", "parameters", "model_assumptions"];
+  // Record fields: CONTRACT fields + documented provenance extras of the packages (K01: verification_status, category;
+  // BUILD: confidence). Anything else (population, demand, pupils, …) is refused: such claims are not part of this case.
+  const BASE_FIELDS = ["id", "label", "lon", "lat", "kind", "source_ids", "field_provenance", "qa"];
+  const RECORD_FIELDS = {
+    school: [...BASE_FIELDS, "category", "access_eligibility", "capacity", "capacity_source_ids", "verification_status", "confidence"],
+    origin: [...BASE_FIELDS, "weight", "parent_source_id", "method"],
+    candidate: [...BASE_FIELDS, "cost", "land_status", "category"],
+  };
   function checkRecord(r, where, kinds) {
     if (!r || typeof r !== "object" || Array.isArray(r)) fail("bad_record", where + ": не объект");
+    for (const k of Object.keys(r)) if (!RECORD_FIELDS[where].includes(k)) fail("unknown_field", `${where} ${String(r.id).slice(0, 60)}: поле «${k}» не входит в кейс`);
     if (typeof r.id !== "string" || !ID.test(r.id)) fail("bad_id", where + ": недопустимый id");
     if (!finite(r.lon) || !finite(r.lat) || r.lon < -180 || r.lon > 180 || r.lat < -90 || r.lat > 90) fail("bad_coord", `${where} ${r.id}: координаты`);
     if (!kinds.includes(r.kind)) fail("bad_kind", `${where} ${r.id}: kind=${r.kind}`);
@@ -137,6 +146,8 @@
       checkRecord(s, "school", KINDS); uniq(s, "school");
       if (!ELIGIBILITY.includes(s.access_eligibility)) fail("eligibility", s.id + ": access_eligibility");
       if (s.capacity !== null && !(isInt(s.capacity) && s.capacity >= 0)) fail("capacity", s.id + ": capacity число или null");
+      if (!Array.isArray(s.capacity_source_ids) || s.capacity_source_ids.some((x) => !srcIds.has(x))) fail("capacity", s.id + ": capacity_source_ids — описанные источники");
+      if (s.capacity !== null && !s.capacity_source_ids.length) fail("capacity_without_source", s.id + ": вместимость без источника не принимается");
       for (const id of s.source_ids) if (!srcIds.has(id)) fail("unknown_source", `${s.id}: источник ${id} не описан`);
     }
     for (const o of c.origins) {

@@ -161,6 +161,10 @@ for (const city of ["shymkent", "astana"]) {
   bad((c) => { c.sources[0].verification_status = "verified"; }, "verification_status", "unknown verification status");
   bad((c) => { c.variants.A = "nope"; }, "variants", "unknown variant");
   bad((c) => { c.origins[0].weight = 3; }, "weight", "equal weights only");
+  bad((c) => { c.schools[0].population = 1000; }, "unknown_field", "no population claims on records (K10 smoke)");
+  bad((c) => { c.origins[0].households = 40; }, "unknown_field", "no household claims on points");
+  bad((c) => { c.schools[0].capacity = 900; }, "capacity_without_source", "capacity needs a source (K10 smoke)");
+  bad((c) => { c.schools[0].capacity = 900; c.schools[0].capacity_source_ids = ["nope"]; }, "capacity", "capacity source must be described");
 }
 
 // pedestrian-v1 matrices from the installed K03 module (web/govtech/k03): unknown statuses stay unknown, policies never mix

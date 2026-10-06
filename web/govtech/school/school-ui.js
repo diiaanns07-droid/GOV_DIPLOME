@@ -410,7 +410,7 @@
     const c = caseOf(S.city);
     card.append(head(D.cities[S.city].label + ": доступность школ", "Участок ≈2×2 км · " + METHOD_TEXT[methodKey(caseOf(S.city))]));
     const steps = el("ol", { class: "sc-howto" });
-    for (const t of ["Посмотрите, какие точки дальше от школ (оранжевые квадраты — дальше порога).", "Выберите место A и место B: пунктирные ромбы на карте или своё место внутри рамки.", "Нажмите «Сравнить»: карта и цифры покажут Сейчас / A / B."]) steps.append(el("li", null, t));
+    for (const t of ["Посмотрите, какие точки дальше от школ (оранжевые квадраты — дальше порога).", "Выберите место A и место B — места-гипотезы для сравнения (не участки): пунктирные ромбы на карте или своё место внутри рамки.", "Нажмите «Сравнить»: карта и цифры покажут Сейчас / A / B."]) steps.append(el("li", null, t));
     card.append(steps, dataBox(), methodBox());
     const thr = el("label", { class: "sc-thr" }, "Порог анализа, м ");
     const inp = el("input", { type: "number", min: 50, max: 5000, step: 50, value: String(c.parameters.threshold_m), id: "sc-threshold" });
