@@ -1,0 +1,168 @@
+{
+ "schema": "k10-access-log-v1",
+ "environment": "Claude Code cloud session, network policy of the environment (proxy CONNECT)",
+ "note": "One request per host. NOT_FETCHED means this environment could not open the page; it says nothing about the site itself.",
+ "rows": [
+  {
+   "checked_utc": "2026-10-06T06:59:48Z",
+   "url": "https://www.gov.kz/memleket/entities/astana-bilim",
+   "tool": "curl via environment proxy",
+   "result": "NOT_FETCHED",
+   "detail": "curl: (56) CONNECT tunnel failed, response 403"
+  },
+  {
+   "checked_utc": "2026-10-06T06:59:49Z",
+   "url": "https://www.gov.kz",
+   "tool": "curl via environment proxy",
+   "result": "NOT_FETCHED",
+   "detail": "curl: (56) CONNECT tunnel failed, response 403"
+  },
+  {
+   "checked_utc": "2026-10-06T06:59:49Z",
+   "url": "https://astana.gov.kz",
+   "tool": "curl via environment proxy",
+   "result": "NOT_FETCHED",
+   "detail": "curl: (56) CONNECT tunnel failed, response 403"
+  },
+  {
+   "checked_utc": "2026-10-06T06:59:49Z",
+   "url": "https://data.egov.kz",
+   "tool": "curl via environment proxy",
+   "result": "NOT_FETCHED",
+   "detail": "curl: (56) CONNECT tunnel failed, response 403"
+  },
+  {
+   "checked_utc": "2026-10-06T06:59:49Z",
+   "url": "https://egov.kz",
+   "tool": "curl via environment proxy",
+   "result": "NOT_FETCHED",
+   "detail": "curl: (56) CONNECT tunnel failed, response 403"
+  },
+  {
+   "checked_utc": "2026-10-06T06:59:50Z",
+   "url": "https://stat.gov.kz",
+   "tool": "curl via environment proxy",
+   "result": "NOT_FETCHED",
+   "detail": "curl: (56) CONNECT tunnel failed, response 403"
+  },
+  {
+   "checked_utc": "2026-10-06T06:59:50Z",
+   "url": "https://taldau.stat.gov.kz",
+   "tool": "curl via environment proxy",
+   "result": "NOT_FETCHED",
+   "detail": "curl: (56) CONNECT tunnel failed, response 403"
+  },
+  {
+   "checked_utc": "2026-10-06T06:59:50Z",
+   "url": "https://www.openstreetmap.org",
+   "tool": "curl via environment proxy",
+   "result": "NOT_FETCHED",
+   "detail": "curl: (56) CONNECT tunnel failed, response 403"
+  },
+  {
+   "checked_utc": "2026-10-06T06:59:51Z",
+   "url": "https://overpass-api.de/api/status",
+   "tool": "curl via environment proxy",
+   "result": "NOT_FETCHED",
+   "detail": "curl: (56) CONNECT tunnel failed, response 403"
+  },
+  {
+   "checked_utc": "2026-10-06T06:59:51Z",
+   "url": "https://nominatim.openstreetmap.org/status",
+   "tool": "curl via environment proxy",
+   "result": "NOT_FETCHED",
+   "detail": "curl: (56) CONNECT tunnel failed, response 403"
+  },
+  {
+   "checked_utc": "2026-10-06T06:59:51Z",
+   "url": "https://www.wikidata.org/w/api.php",
+   "tool": "curl via environment proxy",
+   "result": "NOT_FETCHED",
+   "detail": "curl: (56) CONNECT tunnel failed, response 403"
+  },
+  {
+   "checked_utc": "2026-10-06T06:59:51Z",
+   "url": "https://query.wikidata.org/sparql",
+   "tool": "curl via environment proxy",
+   "result": "NOT_FETCHED",
+   "detail": "curl: (56) CONNECT tunnel failed, response 403"
+  },
+  {
+   "checked_utc": "2026-10-06T06:59:52Z",
+   "url": "https://bilimal.kz",
+   "tool": "curl via environment proxy",
+   "result": "NOT_FETCHED",
+   "detail": "curl: (56) CONNECT tunnel failed, response 403"
+  },
+  {
+   "checked_utc": "2026-10-06T06:59:52Z",
+   "url": "https://edu.gov.kz",
+   "tool": "curl via environment proxy",
+   "result": "NOT_FETCHED",
+   "detail": "curl: (56) CONNECT tunnel failed, response 403"
+  },
+  {
+   "checked_utc": "2026-10-06T06:59:52Z",
+   "url": "https://kundelik.kz",
+   "tool": "curl via environment proxy",
+   "result": "NOT_FETCHED",
+   "detail": "curl: (56) CONNECT tunnel failed, response 403"
+  },
+  {
+   "checked_utc": "2026-10-06T06:59:53Z",
+   "url": "https://2gis.kz",
+   "tool": "curl via environment proxy",
+   "result": "NOT_FETCHED",
+   "detail": "curl: (56) CONNECT tunnel failed, response 403"
+  },
+  {
+   "checked_utc": "2026-10-06T06:59:53Z",
+   "url": "https://ru.wikipedia.org/wiki/Астана",
+   "tool": "curl via environment proxy",
+   "result": "NOT_FETCHED",
+   "detail": "curl: (56) CONNECT tunnel failed, response 403"
+  },
+  {
+   "checked_utc": "2026-10-06T07:03Z",
+   "url": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com/?list-type=2&prefix=release/&delimiter=/",
+   "tool": "curl via environment proxy",
+   "result": "FETCHED",
+   "detail": "HTTP 200 (public Overture Maps bucket, anonymous)"
+  },
+  {
+   "checked_utc": "2026-10-06T07:03Z",
+   "url": "https://tiles.openfreemap.org/planet",
+   "tool": "curl via environment proxy",
+   "result": "NOT_FETCHED",
+   "detail": "CONNECT 403 (basemap and 3D buildings of the site are not reachable from this environment)"
+  },
+  {
+   "checked_utc": "2026-10-06T07:03Z",
+   "url": "https://download.geofabrik.de/asia/kazakhstan.html",
+   "tool": "curl via environment proxy",
+   "result": "NOT_FETCHED",
+   "detail": "CONNECT 403"
+  },
+  {
+   "checked_utc": "2026-10-06T07:01Z",
+   "url": "https://www.gov.kz/memleket/entities/astana-bilim",
+   "tool": "WebFetch",
+   "result": "NOT_FETCHED",
+   "detail": "EGRESS_BLOCKED www.gov.kz"
+  },
+  {
+   "checked_utc": "2026-10-06T07:01Z",
+   "url": "https://informburo.kz/novosti/ucheniki-ssh-8-astany-hodyat-na-zanyatiya-v-tri-drugie-shkoly-zdaniyu-trebuetsya-kapremont.html",
+   "tool": "WebFetch",
+   "result": "NOT_FETCHED",
+   "detail": "EGRESS_BLOCKED informburo.kz"
+  },
+  {
+   "checked_utc": "2026-10-06T07:01Z",
+   "url": "(web search engine)",
+   "tool": "WebSearch",
+   "result": "AVAILABLE_SEARCH_ONLY",
+   "detail": "returns result titles/URLs and a tool-written summary; page content is not fetched, so results are leads, not verification"
+  }
+ ]
+}
