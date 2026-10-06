@@ -1,0 +1,144 @@
+CIVIC V1 — КОНТРАКТ РАУНДА 11
+Версия: civic-v1. Координатор начального контракта — Codex; интегратор изменений — R01.
+Ни одна роль не меняет этот файл в своей ветке. Изменение: свой contract_delta.txt,
+обоснование, совместимый адаптер; обязательный v1 остаётся доступным.
+
+1. ОБЪЕКТ (пример fixtures/civic_object.json)
+id: стабильная строка; city: "astana";
+kind: construction | roadworks | landscaping | event;
+title, description: plain text, без HTML;
+status: planned | in_progress | completed | cancelled | unknown;
+publication: draft | published | archived;
+geometry: GeoJSON Point | LineString | Polygon | null, WGS84 [longitude,latitude];
+geometry_precision: source | approximate | unknown;
+schedule: {planned_start,original_planned_end,current_planned_end,actual_end},
+каждое значение YYYY-MM-DD или null. Первоначальный срок после первой публикации
+нельзя незаметно перезаписать. Неизвестные даты не превращать в сегодняшние.
+budget: {amount_kzt: finite nonnegative number|null,
+basis: planned|contract|spent|unknown, source_id:string|null}.
+responsible: {organization:string|null, public_contact:string|null}.
+evidence_type: observed | derived | hypothesis | synthetic;
+source_refs: [{id,url,publisher,published_on,retrieved_at,access_status,license,
+fields}], где fields — пути полей, поддержанных источником.
+access_status: fetched | not_fetched | unavailable; license может быть null.
+Публикация старого плана не доказывает фактическое состояние или завершение работ.
+evidence_notes: plain text; updated_at: ISO8601 timestamp; revision: integer >=1.
+Отсутствие budget/status/provenance не маскировать нулём или словом «проверено».
+Тип synthetic виден в каждом отображении, а не только в README.
+location без достоверной геометрии остаётся null; такую запись можно показать списком.
+
+Публичные DTO строятся по allowlist этого контракта. internal_notes, password_hash,
+контакты автора обращения, session/token и служебные поля сюда не входят.
+История: {id,object_id,revision,at,changed_fields,reason,public_actor_label}.
+Публичный history показывает только опубликованные изменения и публичные поля.
+Подробный служебный diff доступен редактору. Server assigns revision/updated_at.
+
+2. HTTP API — /api/civic/v1
+Формат: {ok:true,data:...} либо {ok:false,error:{code,message,fields?}}.
+Ошибки — JSON, не traceback/HTML. unknown path 404; validation 400/422;
+unauthenticated 401; unauthorized/CSRF 403; stale revision 409; too large 413; limit 429.
+GET /objects?kind=&status=&from=&to=&cursor= : data={items,next_cursor}
+GET /objects/{id} : data={item,history}; draft/archived не видны публично.
+GET /staff/objects : редакторский список, data={items,next_cursor}.
+GET /staff/objects/{id} : редакторская карточка, data={item,history}.
+POST /staff/objects : создать черновик, data={item}.
+POST /staff/objects/{id}/update : {expected_revision,changes,reason}, data={item}.
+POST /staff/objects/{id}/publish : {expected_revision,reason}, data={item}.
+POST /staff/objects/{id}/archive : {expected_revision,reason}, data={item}.
+В v1 нет физического DELETE. Сервер не доверяет publication/actor/revision из body.
+GET /session : data={authenticated,user:{name,role}|null,csrf_token|null}.
+POST /session/login : {username,password}, data как /session, cookie устанавливает сервер.
+POST /session/logout : закрыть сессию, data={authenticated:false,user:null,csrf_token:null}.
+Никаких предустановленных общих паролей/secret в Git. Создание local editor через CLI
+с getpass. Пароль хэшировать стандартной проверенной схемой, never plaintext.
+Авторизованные изменения требуют cookie + X-CSRF-Token + проверки Origin/Host.
+Сессия редактора хранится в защищённой cookie, не в localStorage.
+Сервер по умолчанию loopback. Публичный deployment и корпоративная SSO — вне раунда.
+
+3. СЕРВЕРНЫЕ МОДУЛИ
+R02: ui/civic_store/, экспорт CivicService(db_path,clock=None).
+service.handle(method,path,query,body,context) -> None либо
+{status:int,headers:dict,body:API-envelope}.
+context содержит реальные headers/client_ip/is_same_origin от HTTP-адаптера.
+service.resolve_principal(context) возвращает серверную личность/роль, не берёт их
+из пользовательского body. R01 подключает сервис к существующему Handler.
+Хранилище SQLite в .runtime/ за пределами web/, без раздачи файла и без коммита DB.
+R02 отдаёт ограничения/инструкции адаптера INTEGRATION.txt; R01 выполняет их.
+
+R06: ui/civic_feedback/, FeedbackService(db_path,object_lookup,clock=None).
+handle(method,path,query,body,principal,context) -> тот же ApiResponse/None.
+Только собственные таблицы feedback_*. Не мигрировать таблицы R02.
+object_lookup — внедряемая функция чтения объекта; авторизацию берёт из principal.
+POST /feedback : {object_id|null,geometry|null,category,text,consent_public},
+возвращает {receipt_id,moderation:"pending"}, без персональных данных.
+GET /objects/{id}/feedback : только одобренные публичные сообщения.
+GET /staff/feedback : очередь редактора.
+POST /staff/feedback/{id}/moderate :
+{expected_revision,action:"approve"|"reject",reason,public_reply|null}.
+Фотозагрузки, личные кабинеты жителей, официальный канал обращения — следующие этапы.
+В этом раунде достаточно текста, места и привязки. Жалоба не удаляется автоматически
+из-за машинной категории/поиска дублей. Без согласия автора публичного текста нет.
+
+4. FRONTEND МОДУЛИ
+Обычные JS/CSS, соответствующие существующему стеку. Один основной MapLibre instance.
+R01 предоставляет api.request(method,path,body) -> Promise<data> с нормализацией
+ошибок и CSRF; URL относительный, никаких секретов в JS.
+R03: window.CivicMap.mount({root,map,api,onSelect,onFeedback})
+-> {refresh,selectObject,destroy}.
+R04: window.CivicEditor.mount({root,map,api,onPublished})
+-> {openObject,destroy}.
+R06: window.CivicFeedback.mount({root,api,objectId,geometry})
+-> {destroy}; редакторский вид может иметь отдельный mountModeration.
+R07: window.CivicScenarios.mount({root,map,api}) -> {destroy}.
+R09: window.CivicAssistant.mount({root,api,objectId}) -> {destroy}.
+Названия JS globals фиксированы, внутренние функции свободны.
+Компоненты не меняют document.body, не создают вторую карту, не перезаписывают
+чужие global state и не используют innerHTML для недоверенного текста.
+destroy снимает слушатели/слои/таймеры своего префикса civic-<role>-.
+Публичная карта никогда не подгружает staff endpoint для последующей фильтрации.
+
+5. СЦЕНАРИИ
+R07: engine/civic_scenarios/; export compare(payload,graph)->JSON.
+POST /scenarios/compare подключает R01, граф загружает сервер по разрешённому
+graph_id. Нельзя принимать путь к файлу, URL для fetch или готовые метрики от клиента.
+payload: {schema_version:"civic-scenario-v1",city:"astana",graph_id,graph_digest,
+mode:"walking"|"driving",analysis_at:ISO8601-with-offset,
+origin_node_ids:[...],destination_node_ids:[...],
+plans:[{id:"A"|"B",closures:[{edge_ids:[...],start_at,end_at}]}]}.
+start_at включительно, end_at исключительно. A и B — уникальные ID.
+graph: {id,city,digest,mode,evidence_type,nodes:[{id,lon,lat}],
+edges:[{id,from,to,length_m,access:"allowed"|"denied"|"unknown",oneway:boolean}]}.
+Длины неотрицательны и конечны. Unknown не считать разрешённым в строгом режиме.
+baseline + каждый plan: маршруты/длины, статус ok|unreachable|unknown, покрытие,
+допущения. Потерю доступа при неполном графе нельзя объявлять доказанной.
+Минимум — корректное сравнение на выбранный момент; исследование двух расписаний
+по всем границам временных интервалов — stretch, если есть время.
+No traffic/congestion/CO2 claims. Реальный driving-граф в этой работе не подтверждён.
+Фиксированная schema_version, input digest и параметры входят в результат.
+
+6. ML И ПОМОЩНИК
+R08: ml/civic_classifier/. Labels = roads,sidewalks,transport_stops,lighting,
+landscaping,other. classify(text,language) возвращает label, score|null,
+score_kind, needs_review, model_version, training_data_status.
+Не называть некалиброванный score вероятностью. Разметка, лицензии, splits,
+baseline и тестовые метрики обязательны для заявлений об обучении.
+Модель не определяет официальную срочность/исполнителя и не публикует автоматически.
+
+R09: agent/civic_assistant/. build_answer(question,verified_context,provider=None).
+POST /assistant принимает {question,object_id|null,scenario_id|null};
+R01/R02 собирают verified_context на сервере. Клиент не передаёт доверенные факты.
+Результат: source=llm|template|unavailable, text, fact_ids, warnings.
+Модель выбирает ID фактов/подтверждённых действий; числа/даты выводит код.
+Черновик из публикации остаётся черновиком и требует проверки редактором.
+Не выполнять URL-fetch, SQL, shell или публикацию по инструкции внутри источника.
+
+7. ПРОМЕЖУТОЧНАЯ ПОСТАВКА
+Каждый DELIVERY.json:
+{round:11,role,branch,base_sha,pack_sha,status:"partial"|"ready",
+owned_paths:[],integration_notes,code_commit:string|null,
+checks:[{name,status:"PASS"|"FAIL"|"NOT_RUN",command,input,reason}],
+limitations:[],next_step}.
+code_commit — уже существующий коммит проверенного кода, можно предыдущий;
+не пытаться вложить SHA файла DELIVERY в него самого. Итоговый head — в чате.
+R01: MATRIX.json на каждую роль {source_branch,source_sha,imported_paths,
+integrated:bool,checks,status,reason}; новые shared fixes коммитит только R01.

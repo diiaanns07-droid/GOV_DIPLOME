@@ -1,0 +1,163 @@
+{
+  "round": 11,
+  "roles": [
+    {
+      "id": "R01",
+      "title": "BUILD — собрать работающий продукт",
+      "paths": [
+        "ui/web_server.py",
+        "app.py",
+        "web/index.html",
+        "web/map.js",
+        "web/interface.js",
+        "web/style.css",
+        "web/app.js",
+        "web/govtech/shell.js",
+        "web/govtech/shell.css",
+        "web/civic/shell/",
+        "requirements*.txt",
+        "run.bat",
+        "run.sh",
+        ".gitignore",
+        ".gitattributes",
+        "tests/civic/R01/"
+      ],
+      "deps": [
+        "R02",
+        "R03",
+        "R04",
+        "R05",
+        "R06",
+        "R07",
+        "R08",
+        "R09",
+        "R10"
+      ],
+      "result_dir": "research/round-11-results/R01/",
+      "handoff": "research/handoffs/astana/R01/round-11/STATUS.md",
+      "full_prompt": "prompts/R01.txt",
+      "duration_target_minutes": 300
+    },
+    {
+      "id": "R02",
+      "title": "Сервер, база объектов и доступ редактора",
+      "paths": [
+        "ui/civic_store/",
+        "tests/civic/R02/"
+      ],
+      "deps": [],
+      "result_dir": "research/round-11-results/R02/",
+      "handoff": "research/handoffs/astana/R02/round-11/STATUS.md",
+      "full_prompt": "prompts/R02.txt",
+      "duration_target_minutes": 300
+    },
+    {
+      "id": "R03",
+      "title": "Публичная карта, карточки и светлый интерфейс",
+      "paths": [
+        "web/civic/map/",
+        "tests/civic/R03/"
+      ],
+      "deps": [],
+      "result_dir": "research/round-11-results/R03/",
+      "handoff": "research/handoffs/astana/R03/round-11/STATUS.md",
+      "full_prompt": "prompts/R03.txt",
+      "duration_target_minutes": 300
+    },
+    {
+      "id": "R04",
+      "title": "Кабинет редактора и публикация изменений",
+      "paths": [
+        "web/civic/editor/",
+        "tests/civic/R04/"
+      ],
+      "deps": [],
+      "result_dir": "research/round-11-results/R04/",
+      "handoff": "research/handoffs/astana/R04/round-11/STATUS.md",
+      "full_prompt": "prompts/R04.txt",
+      "duration_target_minutes": 300
+    },
+    {
+      "id": "R05",
+      "title": "Реальные объекты Астаны, геоданные и права",
+      "paths": [
+        "data/civic/astana/",
+        "tests/civic/R05/"
+      ],
+      "deps": [],
+      "result_dir": "research/round-11-results/R05/",
+      "handoff": "research/handoffs/astana/R05/round-11/STATUS.md",
+      "full_prompt": "prompts/R05.txt",
+      "duration_target_minutes": 300
+    },
+    {
+      "id": "R06",
+      "title": "Обращения жителей и очередь модерации",
+      "paths": [
+        "ui/civic_feedback/",
+        "web/civic/feedback/",
+        "tests/civic/R06/"
+      ],
+      "deps": [],
+      "result_dir": "research/round-11-results/R06/",
+      "handoff": "research/handoffs/astana/R06/round-11/STATUS.md",
+      "full_prompt": "prompts/R06.txt",
+      "duration_target_minutes": 300
+    },
+    {
+      "id": "R07",
+      "title": "Симулятор последствий ограничений",
+      "paths": [
+        "engine/civic_scenarios/",
+        "web/civic/scenarios/",
+        "tests/civic/R07/"
+      ],
+      "deps": [],
+      "result_dir": "research/round-11-results/R07/",
+      "handoff": "research/handoffs/astana/R07/round-11/STATUS.md",
+      "full_prompt": "prompts/R07.txt",
+      "duration_target_minutes": 300
+    },
+    {
+      "id": "R08",
+      "title": "Обучаемая модель обращений и эксперимент диплома",
+      "paths": [
+        "ml/civic_classifier/",
+        "tests/civic/R08/"
+      ],
+      "deps": [],
+      "result_dir": "research/round-11-results/R08/",
+      "handoff": "research/handoffs/astana/R08/round-11/STATUS.md",
+      "full_prompt": "prompts/R08.txt",
+      "duration_target_minutes": 300
+    },
+    {
+      "id": "R09",
+      "title": "AI-помощник с проверенными фактами",
+      "paths": [
+        "agent/civic_assistant/",
+        "web/civic/assistant/",
+        "tests/civic/R09/"
+      ],
+      "deps": [],
+      "result_dir": "research/round-11-results/R09/",
+      "handoff": "research/handoffs/astana/R09/round-11/STATUS.md",
+      "full_prompt": "prompts/R09.txt",
+      "duration_target_minutes": 300
+    },
+    {
+      "id": "R10",
+      "title": "Независимая приёмка, безопасность и дипломные доказательства",
+      "paths": [
+        "tests/civic/R10/"
+      ],
+      "deps": [
+        "R01"
+      ],
+      "result_dir": "research/round-11-results/R10/",
+      "handoff": "research/handoffs/astana/R10/round-11/STATUS.md",
+      "full_prompt": "prompts/R10.txt",
+      "duration_target_minutes": 300
+    }
+  ]
+}
