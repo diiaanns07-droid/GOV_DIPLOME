@@ -1,0 +1,3120 @@
+{
+ "generator": "tools/resilience_oracle.py",
+ "metric_version": "haversine-mm-v1",
+ "objective_version": "worst-lex-v1",
+ "note": "SYNTHETIC inputs; source records on real slices unchanged",
+ "cases": [
+  {
+   "name": "robust_differs_from_nominal",
+   "kind": "synthetic_hand",
+   "bbox": [
+    -0.1,
+    -0.1,
+    0.1,
+    0.1
+   ],
+   "records": [
+    {
+     "id": "A",
+     "group": "school",
+     "lon": 0.0,
+     "lat": 0.0
+    },
+    {
+     "id": "B",
+     "group": "school",
+     "lon": 0.02,
+     "lat": 0.0
+    },
+    {
+     "id": "K",
+     "group": "outpatient_clinic",
+     "lon": 0.05,
+     "lat": 0.05
+    }
+   ],
+   "plan": {
+    "schema_version": "city-plan-v2",
+    "category": "school",
+    "control_points": [
+     {
+      "id": "P1",
+      "lon": 0.0,
+      "lat": 0.001,
+      "weight": 1
+     },
+     {
+      "id": "P2",
+      "lon": 0.02,
+      "lat": 0.001,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "C1",
+      "lon": 0.0,
+      "lat": 0.0009,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 5
+     },
+     {
+      "id": "C2",
+      "lon": 0.02,
+      "lat": 0.0015,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 5
+     }
+    ],
+    "budget": 5,
+    "max_selected": 1,
+    "coverage_radius_m": 500,
+    "required_ids": [],
+    "excluded_ids": [],
+    "selected_ids": [
+     "C1"
+    ]
+   },
+   "cases": [
+    {
+     "id": "noB",
+     "label": "Без записи B",
+     "disabled_source_ids": [
+      "B"
+     ]
+    }
+   ],
+   "expected": {
+    "manual": {
+     "ids": [
+      "C1"
+     ],
+     "cost": 5,
+     "per_case": {
+      "base": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 122315,
+       "max_mm": 111195,
+       "covered_weight": 2,
+       "weighted_mean_mm": 61157.5
+      },
+      "noB": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 2235049,
+       "max_mm": 2223929,
+       "covered_weight": 1,
+       "weighted_mean_mm": 1117524.5
+      }
+     },
+     "worst": {
+      "unknown_count": 0,
+      "weighted_sum_mm": 2235049,
+      "max_mm": 2223929
+     },
+     "worst_case_ids": [
+      "noB"
+     ]
+    },
+    "optimize": {
+     "status": "optimal",
+     "reasons": [],
+     "feasible_count": 3,
+     "evaluated": 4,
+     "nominal": {
+      "ids": [
+       "C1"
+      ],
+      "cost": 5,
+      "per_case": {
+       "base": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 122315,
+        "max_mm": 111195,
+        "covered_weight": 2,
+        "weighted_mean_mm": 61157.5
+       },
+       "noB": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 2235049,
+        "max_mm": 2223929,
+        "covered_weight": 1,
+        "weighted_mean_mm": 1117524.5
+       }
+      },
+      "worst": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 2235049,
+       "max_mm": 2223929
+      },
+      "worst_case_ids": [
+       "noB"
+      ]
+     },
+     "robust": {
+      "ids": [
+       "C2"
+      ],
+      "cost": 5,
+      "per_case": {
+       "base": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 166793,
+        "max_mm": 111195,
+        "covered_weight": 2,
+        "weighted_mean_mm": 83396.5
+       },
+       "noB": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 166793,
+        "max_mm": 111195,
+        "covered_weight": 2,
+        "weighted_mean_mm": 83396.5
+       }
+      },
+      "worst": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 166793,
+       "max_mm": 111195
+      },
+      "worst_case_ids": [
+       "base",
+       "noB"
+      ]
+     },
+     "same_plan": false,
+     "price_of_robustness_m": 22.239
+    }
+   }
+  },
+  {
+   "name": "identical_plans",
+   "kind": "synthetic_hand",
+   "bbox": [
+    -0.1,
+    -0.1,
+    0.1,
+    0.1
+   ],
+   "records": [
+    {
+     "id": "A",
+     "group": "school",
+     "lon": 0.0,
+     "lat": 0.0
+    },
+    {
+     "id": "B",
+     "group": "school",
+     "lon": 0.02,
+     "lat": 0.0
+    },
+    {
+     "id": "K",
+     "group": "outpatient_clinic",
+     "lon": 0.05,
+     "lat": 0.05
+    }
+   ],
+   "plan": {
+    "schema_version": "city-plan-v2",
+    "category": "school",
+    "control_points": [
+     {
+      "id": "P1",
+      "lon": 0.0,
+      "lat": 0.001,
+      "weight": 1
+     },
+     {
+      "id": "P2",
+      "lon": 0.02,
+      "lat": 0.001,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "C1",
+      "lon": 0.0,
+      "lat": 0.0009,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 5
+     },
+     {
+      "id": "C2",
+      "lon": 0.02,
+      "lat": 0.0015,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 5
+     }
+    ],
+    "budget": 10,
+    "max_selected": 2,
+    "coverage_radius_m": 500,
+    "required_ids": [],
+    "excluded_ids": [],
+    "selected_ids": []
+   },
+   "cases": [
+    {
+     "id": "noB",
+     "label": "Без B",
+     "disabled_source_ids": [
+      "B"
+     ]
+    }
+   ],
+   "expected": {
+    "manual": {
+     "ids": [],
+     "cost": 0,
+     "per_case": {
+      "base": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 222390,
+       "max_mm": 111195,
+       "covered_weight": 2,
+       "weighted_mean_mm": 111195.0
+      },
+      "noB": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 2337875,
+       "max_mm": 2226680,
+       "covered_weight": 1,
+       "weighted_mean_mm": 1168937.5
+      }
+     },
+     "worst": {
+      "unknown_count": 0,
+      "weighted_sum_mm": 2337875,
+      "max_mm": 2226680
+     },
+     "worst_case_ids": [
+      "noB"
+     ]
+    },
+    "optimize": {
+     "status": "optimal",
+     "reasons": [],
+     "feasible_count": 4,
+     "evaluated": 4,
+     "nominal": {
+      "ids": [
+       "C1",
+       "C2"
+      ],
+      "cost": 10,
+      "per_case": {
+       "base": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 66718,
+        "max_mm": 55598,
+        "covered_weight": 2,
+        "weighted_mean_mm": 33359.0
+       },
+       "noB": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 66718,
+        "max_mm": 55598,
+        "covered_weight": 2,
+        "weighted_mean_mm": 33359.0
+       }
+      },
+      "worst": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 66718,
+       "max_mm": 55598
+      },
+      "worst_case_ids": [
+       "base",
+       "noB"
+      ]
+     },
+     "robust": {
+      "ids": [
+       "C1",
+       "C2"
+      ],
+      "cost": 10,
+      "per_case": {
+       "base": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 66718,
+        "max_mm": 55598,
+        "covered_weight": 2,
+        "weighted_mean_mm": 33359.0
+       },
+       "noB": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 66718,
+        "max_mm": 55598,
+        "covered_weight": 2,
+        "weighted_mean_mm": 33359.0
+       }
+      },
+      "worst": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 66718,
+       "max_mm": 55598
+      },
+      "worst_case_ids": [
+       "base",
+       "noB"
+      ]
+     },
+     "same_plan": true,
+     "price_of_robustness_m": 0.0
+    }
+   }
+  },
+  {
+   "name": "all_sources_off_unknown",
+   "kind": "synthetic_hand",
+   "bbox": [
+    -0.1,
+    -0.1,
+    0.1,
+    0.1
+   ],
+   "records": [
+    {
+     "id": "A",
+     "group": "school",
+     "lon": 0.0,
+     "lat": 0.0
+    },
+    {
+     "id": "B",
+     "group": "school",
+     "lon": 0.02,
+     "lat": 0.0
+    },
+    {
+     "id": "K",
+     "group": "outpatient_clinic",
+     "lon": 0.05,
+     "lat": 0.05
+    }
+   ],
+   "plan": {
+    "schema_version": "city-plan-v2",
+    "category": "school",
+    "control_points": [
+     {
+      "id": "P1",
+      "lon": 0.0,
+      "lat": 0.001,
+      "weight": 1
+     },
+     {
+      "id": "P2",
+      "lon": 0.02,
+      "lat": 0.001,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "C1",
+      "lon": 0.0,
+      "lat": 0.0009,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 5
+     }
+    ],
+    "budget": 0,
+    "max_selected": 1,
+    "coverage_radius_m": 500,
+    "required_ids": [],
+    "excluded_ids": [],
+    "selected_ids": []
+   },
+   "cases": [
+    {
+     "id": "none",
+     "label": "Без всех школ",
+     "disabled_source_ids": [
+      "A",
+      "B"
+     ]
+    }
+   ],
+   "expected": {
+    "manual": {
+     "ids": [],
+     "cost": 0,
+     "per_case": {
+      "base": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 222390,
+       "max_mm": 111195,
+       "covered_weight": 2,
+       "weighted_mean_mm": 111195.0
+      },
+      "none": {
+       "unknown_count": 2,
+       "weighted_sum_mm": 0,
+       "max_mm": null,
+       "covered_weight": 0,
+       "weighted_mean_mm": null
+      }
+     },
+     "worst": {
+      "unknown_count": 2,
+      "weighted_sum_mm": 0,
+      "max_mm": null
+     },
+     "worst_case_ids": [
+      "none"
+     ]
+    },
+    "optimize": {
+     "status": "optimal",
+     "reasons": [],
+     "feasible_count": 1,
+     "evaluated": 2,
+     "nominal": {
+      "ids": [],
+      "cost": 0,
+      "per_case": {
+       "base": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 222390,
+        "max_mm": 111195,
+        "covered_weight": 2,
+        "weighted_mean_mm": 111195.0
+       },
+       "none": {
+        "unknown_count": 2,
+        "weighted_sum_mm": 0,
+        "max_mm": null,
+        "covered_weight": 0,
+        "weighted_mean_mm": null
+       }
+      },
+      "worst": {
+       "unknown_count": 2,
+       "weighted_sum_mm": 0,
+       "max_mm": null
+      },
+      "worst_case_ids": [
+       "none"
+      ]
+     },
+     "robust": {
+      "ids": [],
+      "cost": 0,
+      "per_case": {
+       "base": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 222390,
+        "max_mm": 111195,
+        "covered_weight": 2,
+        "weighted_mean_mm": 111195.0
+       },
+       "none": {
+        "unknown_count": 2,
+        "weighted_sum_mm": 0,
+        "max_mm": null,
+        "covered_weight": 0,
+        "weighted_mean_mm": null
+       }
+      },
+      "worst": {
+       "unknown_count": 2,
+       "weighted_sum_mm": 0,
+       "max_mm": null
+      },
+      "worst_case_ids": [
+       "none"
+      ]
+     },
+     "same_plan": true,
+     "price_of_robustness_m": 0.0
+    }
+   }
+  },
+  {
+   "name": "unknown_vs_candidate",
+   "kind": "synthetic_hand",
+   "bbox": [
+    -0.1,
+    -0.1,
+    0.1,
+    0.1
+   ],
+   "records": [
+    {
+     "id": "A",
+     "group": "school",
+     "lon": 0.0,
+     "lat": 0.0
+    },
+    {
+     "id": "B",
+     "group": "school",
+     "lon": 0.02,
+     "lat": 0.0
+    },
+    {
+     "id": "K",
+     "group": "outpatient_clinic",
+     "lon": 0.05,
+     "lat": 0.05
+    }
+   ],
+   "plan": {
+    "schema_version": "city-plan-v2",
+    "category": "school",
+    "control_points": [
+     {
+      "id": "P1",
+      "lon": 0.0,
+      "lat": 0.001,
+      "weight": 1
+     },
+     {
+      "id": "P2",
+      "lon": 0.02,
+      "lat": 0.001,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "C1",
+      "lon": 0.0,
+      "lat": 0.0009,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 5
+     },
+     {
+      "id": "C2",
+      "lon": 0.02,
+      "lat": 0.0015,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 5
+     }
+    ],
+    "budget": 5,
+    "max_selected": 1,
+    "coverage_radius_m": 500,
+    "required_ids": [],
+    "excluded_ids": [],
+    "selected_ids": []
+   },
+   "cases": [
+    {
+     "id": "none",
+     "label": "Без всех школ",
+     "disabled_source_ids": [
+      "A",
+      "B"
+     ]
+    }
+   ],
+   "expected": {
+    "manual": {
+     "ids": [],
+     "cost": 0,
+     "per_case": {
+      "base": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 222390,
+       "max_mm": 111195,
+       "covered_weight": 2,
+       "weighted_mean_mm": 111195.0
+      },
+      "none": {
+       "unknown_count": 2,
+       "weighted_sum_mm": 0,
+       "max_mm": null,
+       "covered_weight": 0,
+       "weighted_mean_mm": null
+      }
+     },
+     "worst": {
+      "unknown_count": 2,
+      "weighted_sum_mm": 0,
+      "max_mm": null
+     },
+     "worst_case_ids": [
+      "none"
+     ]
+    },
+    "optimize": {
+     "status": "optimal",
+     "reasons": [],
+     "feasible_count": 3,
+     "evaluated": 4,
+     "nominal": {
+      "ids": [
+       "C1"
+      ],
+      "cost": 5,
+      "per_case": {
+       "base": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 122315,
+        "max_mm": 111195,
+        "covered_weight": 2,
+        "weighted_mean_mm": 61157.5
+       },
+       "none": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 2235049,
+        "max_mm": 2223929,
+        "covered_weight": 1,
+        "weighted_mean_mm": 1117524.5
+       }
+      },
+      "worst": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 2235049,
+       "max_mm": 2223929
+      },
+      "worst_case_ids": [
+       "none"
+      ]
+     },
+     "robust": {
+      "ids": [
+       "C1"
+      ],
+      "cost": 5,
+      "per_case": {
+       "base": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 122315,
+        "max_mm": 111195,
+        "covered_weight": 2,
+        "weighted_mean_mm": 61157.5
+       },
+       "none": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 2235049,
+        "max_mm": 2223929,
+        "covered_weight": 1,
+        "weighted_mean_mm": 1117524.5
+       }
+      },
+      "worst": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 2235049,
+       "max_mm": 2223929
+      },
+      "worst_case_ids": [
+       "none"
+      ]
+     },
+     "same_plan": true,
+     "price_of_robustness_m": 0.0
+    }
+   }
+  },
+  {
+   "name": "duplicate_cases",
+   "kind": "synthetic_hand",
+   "bbox": [
+    -0.1,
+    -0.1,
+    0.1,
+    0.1
+   ],
+   "records": [
+    {
+     "id": "A",
+     "group": "school",
+     "lon": 0.0,
+     "lat": 0.0
+    },
+    {
+     "id": "B",
+     "group": "school",
+     "lon": 0.02,
+     "lat": 0.0
+    },
+    {
+     "id": "K",
+     "group": "outpatient_clinic",
+     "lon": 0.05,
+     "lat": 0.05
+    }
+   ],
+   "plan": {
+    "schema_version": "city-plan-v2",
+    "category": "school",
+    "control_points": [
+     {
+      "id": "P1",
+      "lon": 0.0,
+      "lat": 0.001,
+      "weight": 1
+     },
+     {
+      "id": "P2",
+      "lon": 0.02,
+      "lat": 0.001,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "C1",
+      "lon": 0.0,
+      "lat": 0.0009,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 5
+     },
+     {
+      "id": "C2",
+      "lon": 0.02,
+      "lat": 0.0015,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 5
+     }
+    ],
+    "budget": 5,
+    "max_selected": 1,
+    "coverage_radius_m": 500,
+    "required_ids": [],
+    "excluded_ids": [],
+    "selected_ids": []
+   },
+   "cases": [
+    {
+     "id": "x1",
+     "label": "Без B",
+     "disabled_source_ids": [
+      "B"
+     ]
+    },
+    {
+     "id": "x2",
+     "label": "Без B (повтор)",
+     "disabled_source_ids": [
+      "B"
+     ]
+    }
+   ],
+   "expected": {
+    "manual": {
+     "ids": [],
+     "cost": 0,
+     "per_case": {
+      "base": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 222390,
+       "max_mm": 111195,
+       "covered_weight": 2,
+       "weighted_mean_mm": 111195.0
+      },
+      "x1": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 2337875,
+       "max_mm": 2226680,
+       "covered_weight": 1,
+       "weighted_mean_mm": 1168937.5
+      },
+      "x2": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 2337875,
+       "max_mm": 2226680,
+       "covered_weight": 1,
+       "weighted_mean_mm": 1168937.5
+      }
+     },
+     "worst": {
+      "unknown_count": 0,
+      "weighted_sum_mm": 2337875,
+      "max_mm": 2226680
+     },
+     "worst_case_ids": [
+      "x1",
+      "x2"
+     ]
+    },
+    "optimize": {
+     "status": "optimal",
+     "reasons": [],
+     "feasible_count": 3,
+     "evaluated": 4,
+     "nominal": {
+      "ids": [
+       "C1"
+      ],
+      "cost": 5,
+      "per_case": {
+       "base": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 122315,
+        "max_mm": 111195,
+        "covered_weight": 2,
+        "weighted_mean_mm": 61157.5
+       },
+       "x1": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 2235049,
+        "max_mm": 2223929,
+        "covered_weight": 1,
+        "weighted_mean_mm": 1117524.5
+       },
+       "x2": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 2235049,
+        "max_mm": 2223929,
+        "covered_weight": 1,
+        "weighted_mean_mm": 1117524.5
+       }
+      },
+      "worst": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 2235049,
+       "max_mm": 2223929
+      },
+      "worst_case_ids": [
+       "x1",
+       "x2"
+      ]
+     },
+     "robust": {
+      "ids": [
+       "C2"
+      ],
+      "cost": 5,
+      "per_case": {
+       "base": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 166793,
+        "max_mm": 111195,
+        "covered_weight": 2,
+        "weighted_mean_mm": 83396.5
+       },
+       "x1": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 166793,
+        "max_mm": 111195,
+        "covered_weight": 2,
+        "weighted_mean_mm": 83396.5
+       },
+       "x2": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 166793,
+        "max_mm": 111195,
+        "covered_weight": 2,
+        "weighted_mean_mm": 83396.5
+       }
+      },
+      "worst": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 166793,
+       "max_mm": 111195
+      },
+      "worst_case_ids": [
+       "base",
+       "x1",
+       "x2"
+      ]
+     },
+     "same_plan": false,
+     "price_of_robustness_m": 22.239
+    }
+   }
+  },
+  {
+   "name": "required_excluded",
+   "kind": "synthetic_hand",
+   "bbox": [
+    -0.1,
+    -0.1,
+    0.1,
+    0.1
+   ],
+   "records": [
+    {
+     "id": "A",
+     "group": "school",
+     "lon": 0.0,
+     "lat": 0.0
+    },
+    {
+     "id": "B",
+     "group": "school",
+     "lon": 0.02,
+     "lat": 0.0
+    },
+    {
+     "id": "K",
+     "group": "outpatient_clinic",
+     "lon": 0.05,
+     "lat": 0.05
+    }
+   ],
+   "plan": {
+    "schema_version": "city-plan-v2",
+    "category": "school",
+    "control_points": [
+     {
+      "id": "P1",
+      "lon": 0.0,
+      "lat": 0.001,
+      "weight": 1
+     },
+     {
+      "id": "P2",
+      "lon": 0.02,
+      "lat": 0.001,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "C1",
+      "lon": 0.0,
+      "lat": 0.0009,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 5
+     },
+     {
+      "id": "C2",
+      "lon": 0.02,
+      "lat": 0.0015,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 5
+     },
+     {
+      "id": "C3",
+      "lon": 0.01,
+      "lat": 0.0,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 2
+     }
+    ],
+    "budget": 10,
+    "max_selected": 2,
+    "coverage_radius_m": 500,
+    "required_ids": [
+     "C3"
+    ],
+    "excluded_ids": [
+     "C2"
+    ],
+    "selected_ids": []
+   },
+   "cases": [
+    {
+     "id": "noB",
+     "label": "Без B",
+     "disabled_source_ids": [
+      "B"
+     ]
+    },
+    {
+     "id": "noA",
+     "label": "Без A",
+     "disabled_source_ids": [
+      "A"
+     ]
+    }
+   ],
+   "expected": {
+    "manual": {
+     "ids": [],
+     "cost": 0,
+     "per_case": {
+      "base": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 222390,
+       "max_mm": 111195,
+       "covered_weight": 2,
+       "weighted_mean_mm": 111195.0
+      },
+      "noB": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 2337875,
+       "max_mm": 2226680,
+       "covered_weight": 1,
+       "weighted_mean_mm": 1168937.5
+      },
+      "noA": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 2337875,
+       "max_mm": 2226680,
+       "covered_weight": 1,
+       "weighted_mean_mm": 1168937.5
+      }
+     },
+     "worst": {
+      "unknown_count": 0,
+      "weighted_sum_mm": 2337875,
+      "max_mm": 2226680
+     },
+     "worst_case_ids": [
+      "noA",
+      "noB"
+     ]
+    },
+    "optimize": {
+     "status": "optimal",
+     "reasons": [],
+     "feasible_count": 2,
+     "evaluated": 2,
+     "nominal": {
+      "ids": [
+       "C1",
+       "C3"
+      ],
+      "cost": 7,
+      "per_case": {
+       "base": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 122315,
+        "max_mm": 111195,
+        "covered_weight": 2,
+        "weighted_mean_mm": 61157.5
+       },
+       "noB": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 1128617,
+        "max_mm": 1117497,
+        "covered_weight": 1,
+        "weighted_mean_mm": 564308.5
+       },
+       "noA": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 122315,
+        "max_mm": 111195,
+        "covered_weight": 2,
+        "weighted_mean_mm": 61157.5
+       }
+      },
+      "worst": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 1128617,
+       "max_mm": 1117497
+      },
+      "worst_case_ids": [
+       "noB"
+      ]
+     },
+     "robust": {
+      "ids": [
+       "C1",
+       "C3"
+      ],
+      "cost": 7,
+      "per_case": {
+       "base": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 122315,
+        "max_mm": 111195,
+        "covered_weight": 2,
+        "weighted_mean_mm": 61157.5
+       },
+       "noB": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 1128617,
+        "max_mm": 1117497,
+        "covered_weight": 1,
+        "weighted_mean_mm": 564308.5
+       },
+       "noA": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 122315,
+        "max_mm": 111195,
+        "covered_weight": 2,
+        "weighted_mean_mm": 61157.5
+       }
+      },
+      "worst": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 1128617,
+       "max_mm": 1117497
+      },
+      "worst_case_ids": [
+       "noB"
+      ]
+     },
+     "same_plan": true,
+     "price_of_robustness_m": 0.0
+    }
+   }
+  },
+  {
+   "name": "required_over_budget",
+   "kind": "synthetic_hand",
+   "bbox": [
+    -0.1,
+    -0.1,
+    0.1,
+    0.1
+   ],
+   "records": [
+    {
+     "id": "A",
+     "group": "school",
+     "lon": 0.0,
+     "lat": 0.0
+    },
+    {
+     "id": "B",
+     "group": "school",
+     "lon": 0.02,
+     "lat": 0.0
+    },
+    {
+     "id": "K",
+     "group": "outpatient_clinic",
+     "lon": 0.05,
+     "lat": 0.05
+    }
+   ],
+   "plan": {
+    "schema_version": "city-plan-v2",
+    "category": "school",
+    "control_points": [
+     {
+      "id": "P1",
+      "lon": 0.0,
+      "lat": 0.001,
+      "weight": 1
+     },
+     {
+      "id": "P2",
+      "lon": 0.02,
+      "lat": 0.001,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "C1",
+      "lon": 0.0,
+      "lat": 0.0009,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 5
+     },
+     {
+      "id": "C2",
+      "lon": 0.02,
+      "lat": 0.0015,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 5
+     }
+    ],
+    "budget": 4,
+    "max_selected": 1,
+    "coverage_radius_m": 500,
+    "required_ids": [
+     "C1"
+    ],
+    "excluded_ids": [],
+    "selected_ids": []
+   },
+   "cases": [
+    {
+     "id": "noB",
+     "label": "Без B",
+     "disabled_source_ids": [
+      "B"
+     ]
+    }
+   ],
+   "expected": {
+    "manual": {
+     "ids": [],
+     "cost": 0,
+     "per_case": {
+      "base": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 222390,
+       "max_mm": 111195,
+       "covered_weight": 2,
+       "weighted_mean_mm": 111195.0
+      },
+      "noB": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 2337875,
+       "max_mm": 2226680,
+       "covered_weight": 1,
+       "weighted_mean_mm": 1168937.5
+      }
+     },
+     "worst": {
+      "unknown_count": 0,
+      "weighted_sum_mm": 2337875,
+      "max_mm": 2226680
+     },
+     "worst_case_ids": [
+      "noB"
+     ]
+    },
+    "optimize": {
+     "status": "infeasible",
+     "reasons": [
+      "required_cost_exceeds_budget"
+     ],
+     "feasible_count": 0
+    }
+   }
+  },
+  {
+   "name": "zero_budget",
+   "kind": "synthetic_hand",
+   "bbox": [
+    -0.1,
+    -0.1,
+    0.1,
+    0.1
+   ],
+   "records": [
+    {
+     "id": "A",
+     "group": "school",
+     "lon": 0.0,
+     "lat": 0.0
+    },
+    {
+     "id": "B",
+     "group": "school",
+     "lon": 0.02,
+     "lat": 0.0
+    },
+    {
+     "id": "K",
+     "group": "outpatient_clinic",
+     "lon": 0.05,
+     "lat": 0.05
+    }
+   ],
+   "plan": {
+    "schema_version": "city-plan-v2",
+    "category": "school",
+    "control_points": [
+     {
+      "id": "P1",
+      "lon": 0.0,
+      "lat": 0.001,
+      "weight": 1
+     },
+     {
+      "id": "P2",
+      "lon": 0.02,
+      "lat": 0.001,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "C1",
+      "lon": 0.0,
+      "lat": 0.0009,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 5
+     },
+     {
+      "id": "C2",
+      "lon": 0.02,
+      "lat": 0.0015,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 5
+     }
+    ],
+    "budget": 0,
+    "max_selected": 2,
+    "coverage_radius_m": 500,
+    "required_ids": [],
+    "excluded_ids": [],
+    "selected_ids": [
+     "C2"
+    ]
+   },
+   "cases": [
+    {
+     "id": "noA",
+     "label": "Без A",
+     "disabled_source_ids": [
+      "A"
+     ]
+    }
+   ],
+   "expected": {
+    "manual": {
+     "ids": [
+      "C2"
+     ],
+     "cost": 5,
+     "per_case": {
+      "base": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 166793,
+       "max_mm": 111195,
+       "covered_weight": 2,
+       "weighted_mean_mm": 83396.5
+      },
+      "noA": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 2280194,
+       "max_mm": 2224596,
+       "covered_weight": 1,
+       "weighted_mean_mm": 1140097.0
+      }
+     },
+     "worst": {
+      "unknown_count": 0,
+      "weighted_sum_mm": 2280194,
+      "max_mm": 2224596
+     },
+     "worst_case_ids": [
+      "noA"
+     ]
+    },
+    "optimize": {
+     "status": "optimal",
+     "reasons": [],
+     "feasible_count": 1,
+     "evaluated": 4,
+     "nominal": {
+      "ids": [],
+      "cost": 0,
+      "per_case": {
+       "base": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 222390,
+        "max_mm": 111195,
+        "covered_weight": 2,
+        "weighted_mean_mm": 111195.0
+       },
+       "noA": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 2337875,
+        "max_mm": 2226680,
+        "covered_weight": 1,
+        "weighted_mean_mm": 1168937.5
+       }
+      },
+      "worst": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 2337875,
+       "max_mm": 2226680
+      },
+      "worst_case_ids": [
+       "noA"
+      ]
+     },
+     "robust": {
+      "ids": [],
+      "cost": 0,
+      "per_case": {
+       "base": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 222390,
+        "max_mm": 111195,
+        "covered_weight": 2,
+        "weighted_mean_mm": 111195.0
+       },
+       "noA": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 2337875,
+        "max_mm": 2226680,
+        "covered_weight": 1,
+        "weighted_mean_mm": 1168937.5
+       }
+      },
+      "worst": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 2337875,
+       "max_mm": 2226680
+      },
+      "worst_case_ids": [
+       "noA"
+      ]
+     },
+     "same_plan": true,
+     "price_of_robustness_m": 0.0
+    }
+   }
+  },
+  {
+   "name": "no_candidates",
+   "kind": "synthetic_hand",
+   "bbox": [
+    -0.1,
+    -0.1,
+    0.1,
+    0.1
+   ],
+   "records": [
+    {
+     "id": "A",
+     "group": "school",
+     "lon": 0.0,
+     "lat": 0.0
+    },
+    {
+     "id": "B",
+     "group": "school",
+     "lon": 0.02,
+     "lat": 0.0
+    },
+    {
+     "id": "K",
+     "group": "outpatient_clinic",
+     "lon": 0.05,
+     "lat": 0.05
+    }
+   ],
+   "plan": {
+    "schema_version": "city-plan-v2",
+    "category": "school",
+    "control_points": [
+     {
+      "id": "P1",
+      "lon": 0.0,
+      "lat": 0.001,
+      "weight": 1
+     },
+     {
+      "id": "P2",
+      "lon": 0.02,
+      "lat": 0.001,
+      "weight": 1
+     }
+    ],
+    "candidates": [],
+    "budget": 100,
+    "max_selected": 2,
+    "coverage_radius_m": 500,
+    "required_ids": [],
+    "excluded_ids": [],
+    "selected_ids": []
+   },
+   "cases": [
+    {
+     "id": "noA",
+     "label": "Без A",
+     "disabled_source_ids": [
+      "A"
+     ]
+    }
+   ],
+   "expected": {
+    "manual": {
+     "ids": [],
+     "cost": 0,
+     "per_case": {
+      "base": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 222390,
+       "max_mm": 111195,
+       "covered_weight": 2,
+       "weighted_mean_mm": 111195.0
+      },
+      "noA": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 2337875,
+       "max_mm": 2226680,
+       "covered_weight": 1,
+       "weighted_mean_mm": 1168937.5
+      }
+     },
+     "worst": {
+      "unknown_count": 0,
+      "weighted_sum_mm": 2337875,
+      "max_mm": 2226680
+     },
+     "worst_case_ids": [
+      "noA"
+     ]
+    },
+    "optimize": {
+     "status": "optimal",
+     "reasons": [],
+     "feasible_count": 1,
+     "evaluated": 1,
+     "nominal": {
+      "ids": [],
+      "cost": 0,
+      "per_case": {
+       "base": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 222390,
+        "max_mm": 111195,
+        "covered_weight": 2,
+        "weighted_mean_mm": 111195.0
+       },
+       "noA": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 2337875,
+        "max_mm": 2226680,
+        "covered_weight": 1,
+        "weighted_mean_mm": 1168937.5
+       }
+      },
+      "worst": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 2337875,
+       "max_mm": 2226680
+      },
+      "worst_case_ids": [
+       "noA"
+      ]
+     },
+     "robust": {
+      "ids": [],
+      "cost": 0,
+      "per_case": {
+       "base": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 222390,
+        "max_mm": 111195,
+        "covered_weight": 2,
+        "weighted_mean_mm": 111195.0
+       },
+       "noA": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 2337875,
+        "max_mm": 2226680,
+        "covered_weight": 1,
+        "weighted_mean_mm": 1168937.5
+       }
+      },
+      "worst": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 2337875,
+       "max_mm": 2226680
+      },
+      "worst_case_ids": [
+       "noA"
+      ]
+     },
+     "same_plan": true,
+     "price_of_robustness_m": 0.0
+    }
+   }
+  },
+  {
+   "name": "astana_school_8x12x5",
+   "kind": "synthetic_inputs_on_real_slice",
+   "city": "astana",
+   "plan": {
+    "schema_version": "city-plan-v2",
+    "category": "school",
+    "control_points": [
+     {
+      "id": "P1",
+      "lon": 71.421235,
+      "lat": 51.16483,
+      "weight": 1
+     },
+     {
+      "id": "P2",
+      "lon": 71.428869,
+      "lat": 51.16483,
+      "weight": 8
+     },
+     {
+      "id": "P3",
+      "lon": 71.436503,
+      "lat": 51.16483,
+      "weight": 6
+     },
+     {
+      "id": "P4",
+      "lon": 71.444137,
+      "lat": 51.16483,
+      "weight": 4
+     },
+     {
+      "id": "P5",
+      "lon": 71.421235,
+      "lat": 51.169621,
+      "weight": 2
+     },
+     {
+      "id": "P6",
+      "lon": 71.428869,
+      "lat": 51.169621,
+      "weight": 9
+     },
+     {
+      "id": "P7",
+      "lon": 71.436503,
+      "lat": 51.169621,
+      "weight": 7
+     },
+     {
+      "id": "P8",
+      "lon": 71.444137,
+      "lat": 51.169621,
+      "weight": 5
+     },
+     {
+      "id": "P9",
+      "lon": 71.421235,
+      "lat": 51.174412,
+      "weight": 3
+     },
+     {
+      "id": "P10",
+      "lon": 71.428869,
+      "lat": 51.174412,
+      "weight": 1
+     },
+     {
+      "id": "P11",
+      "lon": 71.436503,
+      "lat": 51.174412,
+      "weight": 8
+     },
+     {
+      "id": "P12",
+      "lon": 71.444137,
+      "lat": 51.174412,
+      "weight": 6
+     }
+    ],
+    "candidates": [
+     {
+      "id": "K01",
+      "lon": 71.422666,
+      "lat": 51.166626,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 100
+     },
+     {
+      "id": "K02",
+      "lon": 71.429346,
+      "lat": 51.166626,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 137
+     },
+     {
+      "id": "K03",
+      "lon": 71.436026,
+      "lat": 51.166626,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 174
+     },
+     {
+      "id": "K04",
+      "lon": 71.442706,
+      "lat": 51.166626,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 211
+     },
+     {
+      "id": "K05",
+      "lon": 71.422666,
+      "lat": 51.172016,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 248
+     },
+     {
+      "id": "K06",
+      "lon": 71.429346,
+      "lat": 51.172016,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 285
+     },
+     {
+      "id": "K07",
+      "lon": 71.436026,
+      "lat": 51.172016,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 322
+     },
+     {
+      "id": "K08",
+      "lon": 71.442706,
+      "lat": 51.172016,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 359
+     }
+    ],
+    "budget": 600,
+    "max_selected": 3,
+    "coverage_radius_m": 400,
+    "required_ids": [],
+    "excluded_ids": [],
+    "selected_ids": [
+     "K01"
+    ]
+   },
+   "cases": [
+    {
+     "id": "every2",
+     "label": "Каждая вторая запись",
+     "disabled_source_ids": [
+      "7b39e048-341b-454a-a63c-4b7e1ae73e9f",
+      "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+      "b5dd5f1a-9d55-48b1-9d68-7172ea84da3f",
+      "c97435da-cd05-4549-bec1-ff297e858554"
+     ]
+    },
+    {
+     "id": "first3",
+     "label": "Первые три записи по ID",
+     "disabled_source_ids": [
+      "7b39e048-341b-454a-a63c-4b7e1ae73e9f",
+      "8ca53724-c558-46b7-826b-13e3e8fbb7e6",
+      "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2"
+     ]
+    },
+    {
+     "id": "all",
+     "label": "Все записи категории",
+     "disabled_source_ids": [
+      "7b39e048-341b-454a-a63c-4b7e1ae73e9f",
+      "8ca53724-c558-46b7-826b-13e3e8fbb7e6",
+      "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+      "a4483f53-7de8-4df1-b61b-b4066b0ad5dd",
+      "b5dd5f1a-9d55-48b1-9d68-7172ea84da3f",
+      "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a",
+      "c97435da-cd05-4549-bec1-ff297e858554",
+      "de04f003-bb3d-4ea7-93e1-cd825e5c1783"
+     ]
+    },
+    {
+     "id": "first3dup",
+     "label": "Повтор первых трёх",
+     "disabled_source_ids": [
+      "7b39e048-341b-454a-a63c-4b7e1ae73e9f",
+      "8ca53724-c558-46b7-826b-13e3e8fbb7e6",
+      "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2"
+     ]
+    }
+   ],
+   "expected": {
+    "manual": {
+     "ids": [
+      "K01"
+     ],
+     "cost": 100,
+     "per_case": {
+      "base": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 25507980,
+       "max_mm": 865601,
+       "covered_weight": 37,
+       "weighted_mean_mm": 425133.0
+      },
+      "every2": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 34570915,
+       "max_mm": 874482,
+       "covered_weight": 12,
+       "weighted_mean_mm": 576181.9166666666
+      },
+      "first3": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 33976689,
+       "max_mm": 1088437,
+       "covered_weight": 16,
+       "weighted_mean_mm": 566278.15
+      },
+      "all": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 60735863,
+       "max_mm": 1729284,
+       "covered_weight": 3,
+       "weighted_mean_mm": 1012264.3833333333
+      },
+      "first3dup": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 33976689,
+       "max_mm": 1088437,
+       "covered_weight": 16,
+       "weighted_mean_mm": 566278.15
+      }
+     },
+     "worst": {
+      "unknown_count": 0,
+      "weighted_sum_mm": 60735863,
+      "max_mm": 1729284
+     },
+     "worst_case_ids": [
+      "all"
+     ]
+    },
+    "optimize": {
+     "status": "optimal",
+     "reasons": [],
+     "feasible_count": 49,
+     "evaluated": 256,
+     "nominal": {
+      "ids": [
+       "K01",
+       "K02",
+       "K08"
+      ],
+      "cost": 596,
+      "per_case": {
+       "base": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 18239308,
+        "max_mm": 507929,
+        "covered_weight": 51,
+        "weighted_mean_mm": 303988.4666666667
+       },
+       "every2": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 22757981,
+        "max_mm": 662348,
+        "covered_weight": 35,
+        "weighted_mean_mm": 379299.68333333335
+       },
+       "first3": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 20603221,
+        "max_mm": 564366,
+        "covered_weight": 44,
+        "weighted_mean_mm": 343387.01666666666
+       },
+       "all": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 26224893,
+        "max_mm": 871495,
+        "covered_weight": 31,
+        "weighted_mean_mm": 437081.55
+       },
+       "first3dup": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 20603221,
+        "max_mm": 564366,
+        "covered_weight": 44,
+        "weighted_mean_mm": 343387.01666666666
+       }
+      },
+      "worst": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 26224893,
+       "max_mm": 871495
+      },
+      "worst_case_ids": [
+       "all"
+      ]
+     },
+     "robust": {
+      "ids": [
+       "K01",
+       "K02",
+       "K08"
+      ],
+      "cost": 596,
+      "per_case": {
+       "base": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 18239308,
+        "max_mm": 507929,
+        "covered_weight": 51,
+        "weighted_mean_mm": 303988.4666666667
+       },
+       "every2": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 22757981,
+        "max_mm": 662348,
+        "covered_weight": 35,
+        "weighted_mean_mm": 379299.68333333335
+       },
+       "first3": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 20603221,
+        "max_mm": 564366,
+        "covered_weight": 44,
+        "weighted_mean_mm": 343387.01666666666
+       },
+       "all": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 26224893,
+        "max_mm": 871495,
+        "covered_weight": 31,
+        "weighted_mean_mm": 437081.55
+       },
+       "first3dup": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 20603221,
+        "max_mm": 564366,
+        "covered_weight": 44,
+        "weighted_mean_mm": 343387.01666666666
+       }
+      },
+      "worst": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 26224893,
+       "max_mm": 871495
+      },
+      "worst_case_ids": [
+       "all"
+      ]
+     },
+     "same_plan": true,
+     "price_of_robustness_m": 0.0
+    }
+   }
+  },
+  {
+   "name": "astana_outpatient_clinic_8x12x5",
+   "kind": "synthetic_inputs_on_real_slice",
+   "city": "astana",
+   "plan": {
+    "schema_version": "city-plan-v2",
+    "category": "outpatient_clinic",
+    "control_points": [
+     {
+      "id": "P1",
+      "lon": 71.421235,
+      "lat": 51.16483,
+      "weight": 1
+     },
+     {
+      "id": "P2",
+      "lon": 71.428869,
+      "lat": 51.16483,
+      "weight": 8
+     },
+     {
+      "id": "P3",
+      "lon": 71.436503,
+      "lat": 51.16483,
+      "weight": 6
+     },
+     {
+      "id": "P4",
+      "lon": 71.444137,
+      "lat": 51.16483,
+      "weight": 4
+     },
+     {
+      "id": "P5",
+      "lon": 71.421235,
+      "lat": 51.169621,
+      "weight": 2
+     },
+     {
+      "id": "P6",
+      "lon": 71.428869,
+      "lat": 51.169621,
+      "weight": 9
+     },
+     {
+      "id": "P7",
+      "lon": 71.436503,
+      "lat": 51.169621,
+      "weight": 7
+     },
+     {
+      "id": "P8",
+      "lon": 71.444137,
+      "lat": 51.169621,
+      "weight": 5
+     },
+     {
+      "id": "P9",
+      "lon": 71.421235,
+      "lat": 51.174412,
+      "weight": 3
+     },
+     {
+      "id": "P10",
+      "lon": 71.428869,
+      "lat": 51.174412,
+      "weight": 1
+     },
+     {
+      "id": "P11",
+      "lon": 71.436503,
+      "lat": 51.174412,
+      "weight": 8
+     },
+     {
+      "id": "P12",
+      "lon": 71.444137,
+      "lat": 51.174412,
+      "weight": 6
+     }
+    ],
+    "candidates": [
+     {
+      "id": "K01",
+      "lon": 71.422666,
+      "lat": 51.166626,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 100
+     },
+     {
+      "id": "K02",
+      "lon": 71.429346,
+      "lat": 51.166626,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 137
+     },
+     {
+      "id": "K03",
+      "lon": 71.436026,
+      "lat": 51.166626,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 174
+     },
+     {
+      "id": "K04",
+      "lon": 71.442706,
+      "lat": 51.166626,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 211
+     },
+     {
+      "id": "K05",
+      "lon": 71.422666,
+      "lat": 51.172016,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 248
+     },
+     {
+      "id": "K06",
+      "lon": 71.429346,
+      "lat": 51.172016,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 285
+     },
+     {
+      "id": "K07",
+      "lon": 71.436026,
+      "lat": 51.172016,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 322
+     },
+     {
+      "id": "K08",
+      "lon": 71.442706,
+      "lat": 51.172016,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 359
+     }
+    ],
+    "budget": 600,
+    "max_selected": 3,
+    "coverage_radius_m": 400,
+    "required_ids": [],
+    "excluded_ids": [],
+    "selected_ids": [
+     "K01"
+    ]
+   },
+   "cases": [
+    {
+     "id": "every2",
+     "label": "Каждая вторая запись",
+     "disabled_source_ids": [
+      "0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+      "140ab4bc-e560-41e3-aeaf-cb7b8b821f08",
+      "1d137305-49cd-450b-9626-9762db14d080",
+      "3fba1026-8464-41ab-88f8-633e3df0de30",
+      "43c64670-1b4c-4d42-bd0f-0049a7b49371",
+      "5f76d9b9-bdd1-4cea-9157-fef68ac60270",
+      "771c278a-af10-4c57-b9fc-52755437345d",
+      "b1fc81c5-7f00-4a0a-969d-2da872515916"
+     ]
+    },
+    {
+     "id": "first3",
+     "label": "Первые три записи по ID",
+     "disabled_source_ids": [
+      "0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+      "1116880a-cbb6-4271-9a59-a277083b792c",
+      "140ab4bc-e560-41e3-aeaf-cb7b8b821f08"
+     ]
+    },
+    {
+     "id": "all",
+     "label": "Все записи категории",
+     "disabled_source_ids": [
+      "0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+      "1116880a-cbb6-4271-9a59-a277083b792c",
+      "140ab4bc-e560-41e3-aeaf-cb7b8b821f08",
+      "166c939f-9131-4fbb-bf75-4ab543916f20",
+      "1d137305-49cd-450b-9626-9762db14d080",
+      "1e587c48-b425-4d8a-ba90-37f1ad41e24f",
+      "3fba1026-8464-41ab-88f8-633e3df0de30",
+      "410f0193-f0bc-4553-bee5-660aab0287a5",
+      "43c64670-1b4c-4d42-bd0f-0049a7b49371",
+      "5c3a8d6d-117d-4cce-9dde-ad820e6967d2",
+      "5f76d9b9-bdd1-4cea-9157-fef68ac60270",
+      "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8",
+      "771c278a-af10-4c57-b9fc-52755437345d",
+      "aca68551-4a03-47c2-813f-d13dceb85c62",
+      "b1fc81c5-7f00-4a0a-969d-2da872515916",
+      "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+     ]
+    },
+    {
+     "id": "first3dup",
+     "label": "Повтор первых трёх",
+     "disabled_source_ids": [
+      "0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+      "1116880a-cbb6-4271-9a59-a277083b792c",
+      "140ab4bc-e560-41e3-aeaf-cb7b8b821f08"
+     ]
+    }
+   ],
+   "expected": {
+    "manual": {
+     "ids": [
+      "K01"
+     ],
+     "cost": 100,
+     "per_case": {
+      "base": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 14471703,
+       "max_mm": 505526,
+       "covered_weight": 54,
+       "weighted_mean_mm": 241195.05
+      },
+      "every2": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 22913201,
+       "max_mm": 687476,
+       "covered_weight": 40,
+       "weighted_mean_mm": 381886.68333333335
+      },
+      "first3": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 15099221,
+       "max_mm": 505526,
+       "covered_weight": 54,
+       "weighted_mean_mm": 251653.68333333332
+      },
+      "all": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 60735863,
+       "max_mm": 1729284,
+       "covered_weight": 3,
+       "weighted_mean_mm": 1012264.3833333333
+      },
+      "first3dup": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 15099221,
+       "max_mm": 505526,
+       "covered_weight": 54,
+       "weighted_mean_mm": 251653.68333333332
+      }
+     },
+     "worst": {
+      "unknown_count": 0,
+      "weighted_sum_mm": 60735863,
+      "max_mm": 1729284
+     },
+     "worst_case_ids": [
+      "all"
+     ]
+    },
+    "optimize": {
+     "status": "optimal",
+     "reasons": [],
+     "feasible_count": 49,
+     "evaluated": 256,
+     "nominal": {
+      "ids": [
+       "K01",
+       "K02",
+       "K08"
+      ],
+      "cost": 596,
+      "per_case": {
+       "base": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 12463825,
+        "max_mm": 331807,
+        "covered_weight": 60,
+        "weighted_mean_mm": 207730.41666666666
+       },
+       "every2": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 19070199,
+        "max_mm": 507929,
+        "covered_weight": 46,
+        "weighted_mean_mm": 317836.65
+       },
+       "first3": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 13091343,
+        "max_mm": 331807,
+        "covered_weight": 60,
+        "weighted_mean_mm": 218189.05
+       },
+       "all": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 26224893,
+        "max_mm": 871495,
+        "covered_weight": 31,
+        "weighted_mean_mm": 437081.55
+       },
+       "first3dup": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 13091343,
+        "max_mm": 331807,
+        "covered_weight": 60,
+        "weighted_mean_mm": 218189.05
+       }
+      },
+      "worst": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 26224893,
+       "max_mm": 871495
+      },
+      "worst_case_ids": [
+       "all"
+      ]
+     },
+     "robust": {
+      "ids": [
+       "K01",
+       "K02",
+       "K08"
+      ],
+      "cost": 596,
+      "per_case": {
+       "base": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 12463825,
+        "max_mm": 331807,
+        "covered_weight": 60,
+        "weighted_mean_mm": 207730.41666666666
+       },
+       "every2": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 19070199,
+        "max_mm": 507929,
+        "covered_weight": 46,
+        "weighted_mean_mm": 317836.65
+       },
+       "first3": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 13091343,
+        "max_mm": 331807,
+        "covered_weight": 60,
+        "weighted_mean_mm": 218189.05
+       },
+       "all": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 26224893,
+        "max_mm": 871495,
+        "covered_weight": 31,
+        "weighted_mean_mm": 437081.55
+       },
+       "first3dup": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 13091343,
+        "max_mm": 331807,
+        "covered_weight": 60,
+        "weighted_mean_mm": 218189.05
+       }
+      },
+      "worst": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 26224893,
+       "max_mm": 871495
+      },
+      "worst_case_ids": [
+       "all"
+      ]
+     },
+     "same_plan": true,
+     "price_of_robustness_m": 0.0
+    }
+   }
+  },
+  {
+   "name": "shymkent_school_8x12x5",
+   "kind": "synthetic_inputs_on_real_slice",
+   "city": "shymkent",
+   "plan": {
+    "schema_version": "city-plan-v2",
+    "category": "school",
+    "control_points": [
+     {
+      "id": "P1",
+      "lon": 69.595794,
+      "lat": 42.308442,
+      "weight": 1
+     },
+     {
+      "id": "P2",
+      "lon": 69.602272,
+      "lat": 42.308442,
+      "weight": 8
+     },
+     {
+      "id": "P3",
+      "lon": 69.608751,
+      "lat": 42.308442,
+      "weight": 6
+     },
+     {
+      "id": "P4",
+      "lon": 69.615229,
+      "lat": 42.308442,
+      "weight": 4
+     },
+     {
+      "id": "P5",
+      "lon": 69.595794,
+      "lat": 42.313233,
+      "weight": 2
+     },
+     {
+      "id": "P6",
+      "lon": 69.602272,
+      "lat": 42.313233,
+      "weight": 9
+     },
+     {
+      "id": "P7",
+      "lon": 69.608751,
+      "lat": 42.313233,
+      "weight": 7
+     },
+     {
+      "id": "P8",
+      "lon": 69.615229,
+      "lat": 42.313233,
+      "weight": 5
+     },
+     {
+      "id": "P9",
+      "lon": 69.595794,
+      "lat": 42.318023,
+      "weight": 3
+     },
+     {
+      "id": "P10",
+      "lon": 69.602272,
+      "lat": 42.318023,
+      "weight": 1
+     },
+     {
+      "id": "P11",
+      "lon": 69.608751,
+      "lat": 42.318023,
+      "weight": 8
+     },
+     {
+      "id": "P12",
+      "lon": 69.615229,
+      "lat": 42.318023,
+      "weight": 6
+     }
+    ],
+    "candidates": [
+     {
+      "id": "K01",
+      "lon": 69.597009,
+      "lat": 42.310238,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 100
+     },
+     {
+      "id": "K02",
+      "lon": 69.602677,
+      "lat": 42.310238,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 137
+     },
+     {
+      "id": "K03",
+      "lon": 69.608346,
+      "lat": 42.310238,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 174
+     },
+     {
+      "id": "K04",
+      "lon": 69.614014,
+      "lat": 42.310238,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 211
+     },
+     {
+      "id": "K05",
+      "lon": 69.597009,
+      "lat": 42.315628,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 248
+     },
+     {
+      "id": "K06",
+      "lon": 69.602677,
+      "lat": 42.315628,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 285
+     },
+     {
+      "id": "K07",
+      "lon": 69.608346,
+      "lat": 42.315628,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 322
+     },
+     {
+      "id": "K08",
+      "lon": 69.614014,
+      "lat": 42.315628,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 359
+     }
+    ],
+    "budget": 600,
+    "max_selected": 3,
+    "coverage_radius_m": 400,
+    "required_ids": [],
+    "excluded_ids": [],
+    "selected_ids": [
+     "K01"
+    ]
+   },
+   "cases": [
+    {
+     "id": "every2",
+     "label": "Каждая вторая запись",
+     "disabled_source_ids": [
+      "01961e84-815f-4bd1-85c3-6bf1734256ec",
+      "176c5993-4b62-4e90-849f-88addc0153bb",
+      "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+      "68c8f007-75bc-42f6-8da8-baa72042bde4",
+      "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+      "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6",
+      "baeda67d-e701-4c2a-bba6-10a13466e76d",
+      "fd50a858-462d-477f-8bc6-a8d3e03a9576"
+     ]
+    },
+    {
+     "id": "first3",
+     "label": "Первые три записи по ID",
+     "disabled_source_ids": [
+      "01961e84-815f-4bd1-85c3-6bf1734256ec",
+      "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+      "176c5993-4b62-4e90-849f-88addc0153bb"
+     ]
+    },
+    {
+     "id": "all",
+     "label": "Все записи категории",
+     "disabled_source_ids": [
+      "01961e84-815f-4bd1-85c3-6bf1734256ec",
+      "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+      "176c5993-4b62-4e90-849f-88addc0153bb",
+      "18df815b-170a-437c-977f-0769690315d4",
+      "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+      "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+      "68c8f007-75bc-42f6-8da8-baa72042bde4",
+      "931d6da5-e9db-4523-a6fd-79c88f235f88",
+      "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+      "9d31b953-ccc4-42bd-a3a3-3e4e21f44051",
+      "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6",
+      "b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+      "baeda67d-e701-4c2a-bba6-10a13466e76d",
+      "bcd265d0-0799-4dbf-8b15-23bae752a4d2",
+      "fd50a858-462d-477f-8bc6-a8d3e03a9576"
+     ]
+    },
+    {
+     "id": "first3dup",
+     "label": "Повтор первых трёх",
+     "disabled_source_ids": [
+      "01961e84-815f-4bd1-85c3-6bf1734256ec",
+      "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+      "176c5993-4b62-4e90-849f-88addc0153bb"
+     ]
+    }
+   ],
+   "expected": {
+    "manual": {
+     "ids": [
+      "K01"
+     ],
+     "cost": 100,
+     "per_case": {
+      "base": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 22827486,
+       "max_mm": 692522,
+       "covered_weight": 29,
+       "weighted_mean_mm": 380458.1
+      },
+      "every2": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 25136855,
+       "max_mm": 692522,
+       "covered_weight": 21,
+       "weighted_mean_mm": 418947.5833333333
+      },
+      "first3": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 24798970,
+       "max_mm": 692522,
+       "covered_weight": 21,
+       "weighted_mean_mm": 413316.1666666667
+      },
+      "all": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 60768985,
+       "max_mm": 1730252,
+       "covered_weight": 3,
+       "weighted_mean_mm": 1012816.4166666666
+      },
+      "first3dup": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 24798970,
+       "max_mm": 692522,
+       "covered_weight": 21,
+       "weighted_mean_mm": 413316.1666666667
+      }
+     },
+     "worst": {
+      "unknown_count": 0,
+      "weighted_sum_mm": 60768985,
+      "max_mm": 1730252
+     },
+     "worst_case_ids": [
+      "all"
+     ]
+    },
+    "optimize": {
+     "status": "optimal",
+     "reasons": [],
+     "feasible_count": 49,
+     "evaluated": 256,
+     "nominal": {
+      "ids": [
+       "K02",
+       "K03",
+       "K04"
+      ],
+      "cost": 522,
+      "per_case": {
+       "base": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 15868844,
+        "max_mm": 600196,
+        "covered_weight": 53,
+        "weighted_mean_mm": 264480.73333333334
+       },
+       "every2": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 18178213,
+        "max_mm": 600196,
+        "covered_weight": 45,
+        "weighted_mean_mm": 302970.2166666667
+       },
+       "first3": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 17840328,
+        "max_mm": 600196,
+        "covered_weight": 45,
+        "weighted_mean_mm": 297338.8
+       },
+       "all": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 28862552,
+        "max_mm": 1034244,
+        "covered_weight": 39,
+        "weighted_mean_mm": 481042.5333333333
+       },
+       "first3dup": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 17840328,
+        "max_mm": 600196,
+        "covered_weight": 45,
+        "weighted_mean_mm": 297338.8
+       }
+      },
+      "worst": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 28862552,
+       "max_mm": 1034244
+      },
+      "worst_case_ids": [
+       "all"
+      ]
+     },
+     "robust": {
+      "ids": [
+       "K01",
+       "K02",
+       "K08"
+      ],
+      "cost": 596,
+      "per_case": {
+       "base": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 18648334,
+        "max_mm": 537917,
+        "covered_weight": 43,
+        "weighted_mean_mm": 310805.56666666665
+       },
+       "every2": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 20371011,
+        "max_mm": 537917,
+        "covered_weight": 35,
+        "weighted_mean_mm": 339516.85
+       },
+       "first3": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 20033126,
+        "max_mm": 537917,
+        "covered_weight": 35,
+        "weighted_mean_mm": 333885.43333333335
+       },
+       "all": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 26230240,
+        "max_mm": 871399,
+        "covered_weight": 31,
+        "weighted_mean_mm": 437170.6666666667
+       },
+       "first3dup": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 20033126,
+        "max_mm": 537917,
+        "covered_weight": 35,
+        "weighted_mean_mm": 333885.43333333335
+       }
+      },
+      "worst": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 26230240,
+       "max_mm": 871399
+      },
+      "worst_case_ids": [
+       "all"
+      ]
+     },
+     "same_plan": false,
+     "price_of_robustness_m": 46.324833333333316
+    }
+   }
+  },
+  {
+   "name": "shymkent_outpatient_clinic_8x12x5",
+   "kind": "synthetic_inputs_on_real_slice",
+   "city": "shymkent",
+   "plan": {
+    "schema_version": "city-plan-v2",
+    "category": "outpatient_clinic",
+    "control_points": [
+     {
+      "id": "P1",
+      "lon": 69.595794,
+      "lat": 42.308442,
+      "weight": 1
+     },
+     {
+      "id": "P2",
+      "lon": 69.602272,
+      "lat": 42.308442,
+      "weight": 8
+     },
+     {
+      "id": "P3",
+      "lon": 69.608751,
+      "lat": 42.308442,
+      "weight": 6
+     },
+     {
+      "id": "P4",
+      "lon": 69.615229,
+      "lat": 42.308442,
+      "weight": 4
+     },
+     {
+      "id": "P5",
+      "lon": 69.595794,
+      "lat": 42.313233,
+      "weight": 2
+     },
+     {
+      "id": "P6",
+      "lon": 69.602272,
+      "lat": 42.313233,
+      "weight": 9
+     },
+     {
+      "id": "P7",
+      "lon": 69.608751,
+      "lat": 42.313233,
+      "weight": 7
+     },
+     {
+      "id": "P8",
+      "lon": 69.615229,
+      "lat": 42.313233,
+      "weight": 5
+     },
+     {
+      "id": "P9",
+      "lon": 69.595794,
+      "lat": 42.318023,
+      "weight": 3
+     },
+     {
+      "id": "P10",
+      "lon": 69.602272,
+      "lat": 42.318023,
+      "weight": 1
+     },
+     {
+      "id": "P11",
+      "lon": 69.608751,
+      "lat": 42.318023,
+      "weight": 8
+     },
+     {
+      "id": "P12",
+      "lon": 69.615229,
+      "lat": 42.318023,
+      "weight": 6
+     }
+    ],
+    "candidates": [
+     {
+      "id": "K01",
+      "lon": 69.597009,
+      "lat": 42.310238,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 100
+     },
+     {
+      "id": "K02",
+      "lon": 69.602677,
+      "lat": 42.310238,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 137
+     },
+     {
+      "id": "K03",
+      "lon": 69.608346,
+      "lat": 42.310238,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 174
+     },
+     {
+      "id": "K04",
+      "lon": 69.614014,
+      "lat": 42.310238,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 211
+     },
+     {
+      "id": "K05",
+      "lon": 69.597009,
+      "lat": 42.315628,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 248
+     },
+     {
+      "id": "K06",
+      "lon": 69.602677,
+      "lat": 42.315628,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 285
+     },
+     {
+      "id": "K07",
+      "lon": 69.608346,
+      "lat": 42.315628,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 322
+     },
+     {
+      "id": "K08",
+      "lon": 69.614014,
+      "lat": 42.315628,
+      "category": "outpatient_clinic",
+      "kind": "hypothetical",
+      "cost": 359
+     }
+    ],
+    "budget": 600,
+    "max_selected": 3,
+    "coverage_radius_m": 400,
+    "required_ids": [],
+    "excluded_ids": [],
+    "selected_ids": [
+     "K01"
+    ]
+   },
+   "cases": [
+    {
+     "id": "every2",
+     "label": "Каждая вторая запись",
+     "disabled_source_ids": [
+      "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "2264dcf0-549d-451a-b846-3f207d411e0c",
+      "621acb4b-a1bd-45ce-891f-c0a4634a6103",
+      "6e92676a-1297-446d-9956-731023da6339",
+      "833280f2-ff82-4dd6-a174-d2a9203420fa",
+      "a10bb8cf-c446-4066-9cda-a5befa189a60",
+      "c2990416-dca7-4e3a-b539-30e69cadf724",
+      "e1b19ead-4505-4acd-8aed-9c561ceec4c0"
+     ]
+    },
+    {
+     "id": "first3",
+     "label": "Первые три записи по ID",
+     "disabled_source_ids": [
+      "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "1cb001b2-d62f-4c28-ba0a-864ffa56808f",
+      "2264dcf0-549d-451a-b846-3f207d411e0c"
+     ]
+    },
+    {
+     "id": "all",
+     "label": "Все записи категории",
+     "disabled_source_ids": [
+      "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "1cb001b2-d62f-4c28-ba0a-864ffa56808f",
+      "2264dcf0-549d-451a-b846-3f207d411e0c",
+      "50802484-b7f9-492e-8a4c-f75312fc7751",
+      "621acb4b-a1bd-45ce-891f-c0a4634a6103",
+      "622b4786-89fa-4853-b109-18054e3ebe0d",
+      "6e92676a-1297-446d-9956-731023da6339",
+      "7cd057e0-fd66-4026-8d41-717b3d1d0c60",
+      "833280f2-ff82-4dd6-a174-d2a9203420fa",
+      "99c68068-aa6e-4ff2-af5f-455675f93313",
+      "a10bb8cf-c446-4066-9cda-a5befa189a60",
+      "b845d434-7da3-4755-9ae9-bb6d40fc7520",
+      "c2990416-dca7-4e3a-b539-30e69cadf724",
+      "da9cd7b1-eefe-40eb-aebe-8ef720de4354",
+      "e1b19ead-4505-4acd-8aed-9c561ceec4c0",
+      "f4d6818b-1a99-43ca-8533-4c556f448919"
+     ]
+    },
+    {
+     "id": "first3dup",
+     "label": "Повтор первых трёх",
+     "disabled_source_ids": [
+      "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "1cb001b2-d62f-4c28-ba0a-864ffa56808f",
+      "2264dcf0-549d-451a-b846-3f207d411e0c"
+     ]
+    }
+   ],
+   "expected": {
+    "manual": {
+     "ids": [
+      "K01"
+     ],
+     "cost": 100,
+     "per_case": {
+      "base": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 16902931,
+       "max_mm": 572729,
+       "covered_weight": 39,
+       "weighted_mean_mm": 281715.51666666666
+      },
+      "every2": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 19122978,
+       "max_mm": 636917,
+       "covered_weight": 39,
+       "weighted_mean_mm": 318716.3
+      },
+      "first3": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 19751437,
+       "max_mm": 661295,
+       "covered_weight": 33,
+       "weighted_mean_mm": 329190.61666666664
+      },
+      "all": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 60768985,
+       "max_mm": 1730252,
+       "covered_weight": 3,
+       "weighted_mean_mm": 1012816.4166666666
+      },
+      "first3dup": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 19751437,
+       "max_mm": 661295,
+       "covered_weight": 33,
+       "weighted_mean_mm": 329190.61666666664
+      }
+     },
+     "worst": {
+      "unknown_count": 0,
+      "weighted_sum_mm": 60768985,
+      "max_mm": 1730252
+     },
+     "worst_case_ids": [
+      "all"
+     ]
+    },
+    "optimize": {
+     "status": "optimal",
+     "reasons": [],
+     "feasible_count": 49,
+     "evaluated": 256,
+     "nominal": {
+      "ids": [
+       "K01",
+       "K02",
+       "K04"
+      ],
+      "cost": 448,
+      "per_case": {
+       "base": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 11750465,
+        "max_mm": 347692,
+        "covered_weight": 60,
+        "weighted_mean_mm": 195841.08333333334
+       },
+       "every2": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 13166851,
+        "max_mm": 393617,
+        "covered_weight": 60,
+        "weighted_mean_mm": 219447.51666666666
+       },
+       "first3": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 13491029,
+        "max_mm": 476638,
+        "covered_weight": 54,
+        "weighted_mean_mm": 224850.48333333334
+       },
+       "all": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 31315871,
+        "max_mm": 967796,
+        "covered_weight": 29,
+        "weighted_mean_mm": 521931.18333333335
+       },
+       "first3dup": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 13491029,
+        "max_mm": 476638,
+        "covered_weight": 54,
+        "weighted_mean_mm": 224850.48333333334
+       }
+      },
+      "worst": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 31315871,
+       "max_mm": 967796
+      },
+      "worst_case_ids": [
+       "all"
+      ]
+     },
+     "robust": {
+      "ids": [
+       "K01",
+       "K02",
+       "K08"
+      ],
+      "cost": 596,
+      "per_case": {
+       "base": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 13148165,
+        "max_mm": 572729,
+        "covered_weight": 56,
+        "weighted_mean_mm": 219136.08333333334
+       },
+       "every2": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 14505013,
+        "max_mm": 636917,
+        "covered_weight": 56,
+        "weighted_mean_mm": 241750.21666666667
+       },
+       "first3": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 15256403,
+        "max_mm": 572729,
+        "covered_weight": 50,
+        "weighted_mean_mm": 254273.38333333333
+       },
+       "all": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 26230240,
+        "max_mm": 871399,
+        "covered_weight": 31,
+        "weighted_mean_mm": 437170.6666666667
+       },
+       "first3dup": {
+        "unknown_count": 0,
+        "weighted_sum_mm": 15256403,
+        "max_mm": 572729,
+        "covered_weight": 50,
+        "weighted_mean_mm": 254273.38333333333
+       }
+      },
+      "worst": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 26230240,
+       "max_mm": 871399
+      },
+      "worst_case_ids": [
+       "all"
+      ]
+     },
+     "same_plan": false,
+     "price_of_robustness_m": 23.295
+    }
+   }
+  }
+ ]
+}

@@ -2,3 +2,6 @@
 *.sh        text eol=lf
 *.bat       text eol=crlf
 Dockerfile  text eol=lf
+# Pinned planner modules, data and golden fixtures are verified by SHA-256.
+web/govtech/core/** -text
+tests/govtech/** -text

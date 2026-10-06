@@ -1,0 +1,1469 @@
+{
+ "schema": "k08-r4-attribution/v1",
+ "package": "K10",
+ "spdx_commit": "31ba1a50e5397e00a304dbadc76531740e89ee48",
+ "license_texts": {
+  "Apache-2.0": "sha256 совпадает",
+  "CDLA-Permissive-2.0": "sha256 совпадает",
+  "ODbL-1.0": "sha256 совпадает"
+ },
+ "files": [
+  {
+   "file": "data/astana/connectors.geojson",
+   "city": "astana",
+   "sha256": "74a77d2ed250d6a55ee478054a6e89a4de15fc96f65063176a1194345994e801",
+   "features": 2309,
+   "header_attribution_in_input": [
+    "Overture Maps Foundation",
+    "© OpenStreetMap contributors (ODbL-1.0)"
+   ],
+   "header_check": {
+    "named_in_header": [
+     "OpenStreetMap",
+     "Overture"
+    ],
+    "datasets_in_records": [
+     "OpenStreetMap"
+    ],
+    "missing_from_header": [],
+    "named_but_absent_in_records": [],
+    "ok": true
+   },
+   "providers": [
+    {
+     "dataset": "OpenStreetMap",
+     "provider": "osm",
+     "resource": "planet",
+     "license": "ODbL-1.0",
+     "version": "2026-09-09",
+     "properties": [
+      "(вся запись)"
+     ],
+     "entries": 2309
+    }
+   ],
+   "features_by_whole_record_dataset": {
+    "OpenStreetMap": 2309
+   },
+   "features_without_osm_whole_record": [],
+   "licenses": [
+    "ODbL-1.0"
+   ],
+   "license_texts_needed": [
+    "LICENSES/ODbL-1.0.txt"
+   ],
+   "clauses": {
+    "ODbL-1.0": [
+     "4.2 уведомление при публичной передаче базы/производной",
+     "4.3 уведомление на публично используемой Produced Work",
+     "4.4 share-alike для публично используемой производной базы",
+     "4.6 машиночитаемая копия производной базы по запросу получателя"
+    ]
+   }
+  },
+  {
+   "file": "data/astana/places_social.geojson",
+   "city": "astana",
+   "sha256": "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343",
+   "features": 65,
+   "header_attribution_in_input": [
+    "Overture Maps Foundation",
+    "© OpenStreetMap contributors (ODbL-1.0)"
+   ],
+   "header_check": {
+    "named_in_header": [
+     "OpenStreetMap",
+     "Overture"
+    ],
+    "datasets_in_records": [
+     "Foursquare",
+     "Overture",
+     "meta"
+    ],
+    "missing_from_header": [
+     "Foursquare",
+     "meta"
+    ],
+    "named_but_absent_in_records": [
+     "OpenStreetMap"
+    ],
+    "ok": false
+   },
+   "providers": [
+    {
+     "dataset": "Overture",
+     "provider": "overture",
+     "resource": "confidence_calculation",
+     "license": "CDLA-Permissive-2.0",
+     "version": "2026-09-17",
+     "properties": [
+      "/properties/confidence"
+     ],
+     "entries": 65
+    },
+    {
+     "dataset": "meta",
+     "provider": "meta",
+     "resource": "meta",
+     "license": "CDLA-Permissive-2.0",
+     "version": "2026-09-14",
+     "properties": [
+      "(вся запись)"
+     ],
+     "entries": 62
+    },
+    {
+     "dataset": "meta",
+     "provider": "meta",
+     "resource": "meta",
+     "license": "CDLA-Permissive-2.0",
+     "version": "2026-08-24",
+     "properties": [
+      "(вся запись)"
+     ],
+     "entries": 2
+    },
+    {
+     "dataset": "Foursquare",
+     "provider": "foursquare",
+     "resource": "foursquare",
+     "license": "Apache-2.0",
+     "version": "2026-04-14",
+     "properties": [
+      "(вся запись)"
+     ],
+     "entries": 1
+    }
+   ],
+   "features_by_whole_record_dataset": {
+    "meta": 64,
+    "Foursquare": 1
+   },
+   "features_without_osm_whole_record": [
+    {
+     "overture_id": "0233b91f-a010-4eac-9087-0b87d3c8756d",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "college_university"
+    },
+    {
+     "overture_id": "0288437e-eea6-4ac4-97eb-c05620ff6dc2",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "government_office"
+    },
+    {
+     "overture_id": "0bbf2bc3-d703-431f-bf9a-69dbd7f6bf10",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "college_university"
+    },
+    {
+     "overture_id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "outpatient_clinic"
+    },
+    {
+     "overture_id": "1116880a-cbb6-4271-9a59-a277083b792c",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "outpatient_clinic"
+    },
+    {
+     "overture_id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "outpatient_clinic"
+    },
+    {
+     "overture_id": "166c939f-9131-4fbb-bf75-4ab543916f20",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "outpatient_clinic"
+    },
+    {
+     "overture_id": "18eb2b6e-b7e9-4227-8471-6bf6e8418c16",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "college_university"
+    },
+    {
+     "overture_id": "1be5a31a-4a8c-48f4-af6c-449035e7c80b",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "government_office"
+    },
+    {
+     "overture_id": "1d137305-49cd-450b-9626-9762db14d080",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "outpatient_clinic"
+    },
+    {
+     "overture_id": "1e4aeace-c4db-422f-a010-a41fcdfb021c",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "hospital"
+    },
+    {
+     "overture_id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "outpatient_clinic"
+    },
+    {
+     "overture_id": "2c90420f-42f3-428d-a6e6-1f4538e3432c",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "hospital"
+    },
+    {
+     "overture_id": "3002c131-bbbb-4d8f-a8c4-710a4ca3ddfd",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "government_office"
+    },
+    {
+     "overture_id": "3486c949-32bb-4c6e-b138-c0e5596fe74c",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "preschool"
+    },
+    {
+     "overture_id": "3fba1026-8464-41ab-88f8-633e3df0de30",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "outpatient_clinic"
+    },
+    {
+     "overture_id": "410f0193-f0bc-4553-bee5-660aab0287a5",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "outpatient_clinic"
+    },
+    {
+     "overture_id": "414aa432-3f6e-49ce-90aa-817a8e8414a9",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "college_university"
+    },
+    {
+     "overture_id": "421e7ca1-b636-4090-90ec-24251c4d0ec0",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "government_office"
+    },
+    {
+     "overture_id": "43c64670-1b4c-4d42-bd0f-0049a7b49371",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "outpatient_clinic"
+    },
+    {
+     "overture_id": "451eb53a-0818-4c16-b4a8-8e7de1c66a52",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "government_office"
+    },
+    {
+     "overture_id": "58a2c43b-2fd2-4c81-acd7-d2d81d718000",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "government_office"
+    },
+    {
+     "overture_id": "5a1e694c-6d56-4c25-b6c4-7e2954caa565",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "college_university"
+    },
+    {
+     "overture_id": "5a868d86-f4eb-4c9f-bdf3-27832486db39",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "government_office"
+    },
+    {
+     "overture_id": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "outpatient_clinic"
+    },
+    {
+     "overture_id": "5f76d9b9-bdd1-4cea-9157-fef68ac60270",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "outpatient_clinic"
+    },
+    {
+     "overture_id": "61543465-6b7e-4943-89ae-502e5a0b212c",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "pharmacy"
+    },
+    {
+     "overture_id": "6309d38a-135b-4435-9599-bf9868c03a9c",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "college_university"
+    },
+    {
+     "overture_id": "646f13c2-ad9e-4430-bbf2-1897b79120c9",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "hospital"
+    },
+    {
+     "overture_id": "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "outpatient_clinic"
+    },
+    {
+     "overture_id": "771c278a-af10-4c57-b9fc-52755437345d",
+     "datasets": [
+      "Foursquare"
+     ],
+     "class": null,
+     "k10_group": "outpatient_clinic"
+    },
+    {
+     "overture_id": "79e43678-fa73-4611-93d3-c64dc30f3102",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "college_university"
+    },
+    {
+     "overture_id": "7b39e048-341b-454a-a63c-4b7e1ae73e9f",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "school"
+    },
+    {
+     "overture_id": "889c0829-209d-45df-bec5-5a32403ada38",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "hospital"
+    },
+    {
+     "overture_id": "8ca53724-c558-46b7-826b-13e3e8fbb7e6",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "school"
+    },
+    {
+     "overture_id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "school"
+    },
+    {
+     "overture_id": "a1ee9e73-d0bd-43da-a0a0-e919f7908471",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "preschool"
+    },
+    {
+     "overture_id": "a4483f53-7de8-4df1-b61b-b4066b0ad5dd",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "school"
+    },
+    {
+     "overture_id": "ac81745d-e285-46c4-961e-4721bd5fcb2d",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "college_university"
+    },
+    {
+     "overture_id": "aca68551-4a03-47c2-813f-d13dceb85c62",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "outpatient_clinic"
+    },
+    {
+     "overture_id": "b1fc81c5-7f00-4a0a-969d-2da872515916",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "outpatient_clinic"
+    },
+    {
+     "overture_id": "b5dd5f1a-9d55-48b1-9d68-7172ea84da3f",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "school"
+    },
+    {
+     "overture_id": "c0bbb4a4-c356-4ff9-a65f-cb554a45d6dd",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "pharmacy"
+    },
+    {
+     "overture_id": "c1ca82ef-8858-401a-8b4a-e0960c59780f",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "hospital"
+    },
+    {
+     "overture_id": "c460238c-7dbc-4ae4-95a3-b501e54e30f3",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "hospital"
+    },
+    {
+     "overture_id": "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "school"
+    },
+    {
+     "overture_id": "c97435da-cd05-4549-bec1-ff297e858554",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "school"
+    },
+    {
+     "overture_id": "c9f64ffd-e537-42b7-8609-a65d384ed8dd",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "government_office"
+    },
+    {
+     "overture_id": "cce9aded-fa5d-4ba3-b254-bf7d7f077360",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "government_office"
+    },
+    {
+     "overture_id": "cd7f0098-c77b-4401-a428-831bf1e1685b",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "college_university"
+    },
+    {
+     "overture_id": "d295d522-aa09-4396-9c2d-2b3cfdc3d07e",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "government_office"
+    },
+    {
+     "overture_id": "d40e30a8-deb4-4359-ab31-189e1bf535f8",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "preschool"
+    },
+    {
+     "overture_id": "d8b91b5f-c463-4042-be3d-5773d85ab2de",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "pharmacy"
+    },
+    {
+     "overture_id": "dc334d42-5a1f-4a9d-a85b-d8dc3cfb7f59",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "government_office"
+    },
+    {
+     "overture_id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "school"
+    },
+    {
+     "overture_id": "dfee2b19-cba4-4ba1-a119-0a5dfd6fa8dd",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "government_office"
+    },
+    {
+     "overture_id": "edcbc6d4-21d8-4e95-9662-1c7650dfd4de",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "government_office"
+    },
+    {
+     "overture_id": "f10578a8-d045-4bed-b532-c21013b1bf31",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "government_office"
+    },
+    {
+     "overture_id": "f14e6f12-c63a-4071-b219-acab33aad9b3",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "government_office"
+    },
+    {
+     "overture_id": "f313843a-b41d-44d3-8086-db329296d309",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "hospital"
+    },
+    {
+     "overture_id": "f8748e3f-294d-4ce4-bad0-cc6a55ee86fd",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "government_office"
+    },
+    {
+     "overture_id": "f92e2a57-8dee-4068-b1bc-a1efb7ce5e2a",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "hospital"
+    },
+    {
+     "overture_id": "f9a12dd1-c316-43c7-aa9a-10243fb98410",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "college_university"
+    },
+    {
+     "overture_id": "fbc355f9-d21d-48d3-8e9a-461926d7ffaf",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "hospital"
+    },
+    {
+     "overture_id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "outpatient_clinic"
+    }
+   ],
+   "licenses": [
+    "Apache-2.0",
+    "CDLA-Permissive-2.0"
+   ],
+   "license_texts_needed": [
+    "LICENSES/Apache-2.0.txt",
+    "LICENSES/CDLA-Permissive-2.0.txt"
+   ],
+   "clauses": {
+    "Apache-2.0": [
+     "4(a) копия лицензии",
+     "4(b) пометка изменённых файлов",
+     "4(c) сохранить copyright/attribution notices",
+     "4(d) NOTICE, если он есть у исходного Work (наличие не проверено)"
+    ],
+    "CDLA-Permissive-2.0": [
+     "2.1 при передаче данных сделать доступным текст соглашения",
+     "3.1 на Results ограничений нет"
+    ]
+   }
+  },
+  {
+   "file": "data/astana/segments.geojson",
+   "city": "astana",
+   "sha256": "5fc1b3b5f6cabad6e2edfd042bb3727aa8fd0c7bcba9962175025e37eb08dbb9",
+   "features": 1326,
+   "header_attribution_in_input": [
+    "Overture Maps Foundation",
+    "© OpenStreetMap contributors (ODbL-1.0)"
+   ],
+   "header_check": {
+    "named_in_header": [
+     "OpenStreetMap",
+     "Overture"
+    ],
+    "datasets_in_records": [
+     "OpenStreetMap",
+     "TomTom"
+    ],
+    "missing_from_header": [
+     "TomTom"
+    ],
+    "named_but_absent_in_records": [],
+    "ok": false
+   },
+   "providers": [
+    {
+     "dataset": "OpenStreetMap",
+     "provider": "osm",
+     "resource": "planet",
+     "license": "ODbL-1.0",
+     "version": "2026-09-09",
+     "properties": [
+      "(вся запись)",
+      "/routes"
+     ],
+     "entries": 1568
+    },
+    {
+     "dataset": "TomTom",
+     "provider": "tomtom",
+     "resource": "orbis",
+     "license": "ODbL-1.0",
+     "version": "2637",
+     "properties": [
+      "(вся запись)"
+     ],
+     "entries": 8
+    }
+   ],
+   "features_by_whole_record_dataset": {
+    "OpenStreetMap": 1318,
+    "TomTom": 8
+   },
+   "features_without_osm_whole_record": [
+    {
+     "overture_id": "03ca83a2-3f87-4ea0-b8c7-a3be4b91f584",
+     "datasets": [
+      "TomTom"
+     ],
+     "class": "primary",
+     "k10_group": null
+    },
+    {
+     "overture_id": "12013833-4a1b-4473-b055-00dcc71d2721",
+     "datasets": [
+      "TomTom"
+     ],
+     "class": "unknown",
+     "k10_group": null
+    },
+    {
+     "overture_id": "1e7e04ca-c303-4f6d-a845-cc9a1bca6bfb",
+     "datasets": [
+      "TomTom"
+     ],
+     "class": "unknown",
+     "k10_group": null
+    },
+    {
+     "overture_id": "1ffb8d5c-48be-4861-a436-07fc66ac2b67",
+     "datasets": [
+      "TomTom"
+     ],
+     "class": "unknown",
+     "k10_group": null
+    },
+    {
+     "overture_id": "61e2965a-c4f2-40ce-8ac5-730a2469a720",
+     "datasets": [
+      "TomTom"
+     ],
+     "class": "unknown",
+     "k10_group": null
+    },
+    {
+     "overture_id": "7f482acf-1887-4be2-b04e-90f7f1ce652c",
+     "datasets": [
+      "TomTom"
+     ],
+     "class": "unknown",
+     "k10_group": null
+    },
+    {
+     "overture_id": "b78652c8-ead8-4f33-a85e-861e7f38ee7f",
+     "datasets": [
+      "TomTom"
+     ],
+     "class": "unknown",
+     "k10_group": null
+    },
+    {
+     "overture_id": "ff34f76e-779c-40aa-886e-7ef12f98fe1a",
+     "datasets": [
+      "TomTom"
+     ],
+     "class": "unknown",
+     "k10_group": null
+    }
+   ],
+   "licenses": [
+    "ODbL-1.0"
+   ],
+   "license_texts_needed": [
+    "LICENSES/ODbL-1.0.txt"
+   ],
+   "clauses": {
+    "ODbL-1.0": [
+     "4.2 уведомление при публичной передаче базы/производной",
+     "4.3 уведомление на публично используемой Produced Work",
+     "4.4 share-alike для публично используемой производной базы",
+     "4.6 машиночитаемая копия производной базы по запросу получателя"
+    ]
+   }
+  },
+  {
+   "file": "data/shymkent/connectors.geojson",
+   "city": "shymkent",
+   "sha256": "8bbd25959eef559abeccb39d99884d96caf920d219f5a71f11298ade5e27bca0",
+   "features": 1729,
+   "header_attribution_in_input": [
+    "Overture Maps Foundation",
+    "© OpenStreetMap contributors (ODbL-1.0)"
+   ],
+   "header_check": {
+    "named_in_header": [
+     "OpenStreetMap",
+     "Overture"
+    ],
+    "datasets_in_records": [
+     "OpenStreetMap"
+    ],
+    "missing_from_header": [],
+    "named_but_absent_in_records": [],
+    "ok": true
+   },
+   "providers": [
+    {
+     "dataset": "OpenStreetMap",
+     "provider": "osm",
+     "resource": "planet",
+     "license": "ODbL-1.0",
+     "version": "2026-09-09",
+     "properties": [
+      "(вся запись)"
+     ],
+     "entries": 1729
+    }
+   ],
+   "features_by_whole_record_dataset": {
+    "OpenStreetMap": 1729
+   },
+   "features_without_osm_whole_record": [],
+   "licenses": [
+    "ODbL-1.0"
+   ],
+   "license_texts_needed": [
+    "LICENSES/ODbL-1.0.txt"
+   ],
+   "clauses": {
+    "ODbL-1.0": [
+     "4.2 уведомление при публичной передаче базы/производной",
+     "4.3 уведомление на публично используемой Produced Work",
+     "4.4 share-alike для публично используемой производной базы",
+     "4.6 машиночитаемая копия производной базы по запросу получателя"
+    ]
+   }
+  },
+  {
+   "file": "data/shymkent/places_social.geojson",
+   "city": "shymkent",
+   "sha256": "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7",
+   "features": 55,
+   "header_attribution_in_input": [
+    "Overture Maps Foundation",
+    "© OpenStreetMap contributors (ODbL-1.0)"
+   ],
+   "header_check": {
+    "named_in_header": [
+     "OpenStreetMap",
+     "Overture"
+    ],
+    "datasets_in_records": [
+     "Overture",
+     "meta"
+    ],
+    "missing_from_header": [
+     "meta"
+    ],
+    "named_but_absent_in_records": [
+     "OpenStreetMap"
+    ],
+    "ok": false
+   },
+   "providers": [
+    {
+     "dataset": "Overture",
+     "provider": "overture",
+     "resource": "confidence_calculation",
+     "license": "CDLA-Permissive-2.0",
+     "version": "2026-09-17",
+     "properties": [
+      "/properties/confidence"
+     ],
+     "entries": 55
+    },
+    {
+     "dataset": "meta",
+     "provider": "meta",
+     "resource": "meta",
+     "license": "CDLA-Permissive-2.0",
+     "version": "2026-09-14",
+     "properties": [
+      "(вся запись)"
+     ],
+     "entries": 54
+    },
+    {
+     "dataset": "meta",
+     "provider": "meta",
+     "resource": "meta",
+     "license": "CDLA-Permissive-2.0",
+     "version": "2026-08-24",
+     "properties": [
+      "(вся запись)"
+     ],
+     "entries": 1
+    }
+   ],
+   "features_by_whole_record_dataset": {
+    "meta": 55
+   },
+   "features_without_osm_whole_record": [
+    {
+     "overture_id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "school"
+    },
+    {
+     "overture_id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "school"
+    },
+    {
+     "overture_id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "outpatient_clinic"
+    },
+    {
+     "overture_id": "06dd25e4-78c5-4412-9949-41714f8c2a64",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "pharmacy"
+    },
+    {
+     "overture_id": "122547d2-f7ca-409e-9dc2-0d4d15288b57",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "college_university"
+    },
+    {
+     "overture_id": "176c5993-4b62-4e90-849f-88addc0153bb",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "school"
+    },
+    {
+     "overture_id": "180ff6d9-ce9b-4994-b717-18f5732c546e",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "college_university"
+    },
+    {
+     "overture_id": "18df815b-170a-437c-977f-0769690315d4",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "school"
+    },
+    {
+     "overture_id": "1b81c33b-d088-46b1-a390-8d6d81102c21",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "hospital"
+    },
+    {
+     "overture_id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "outpatient_clinic"
+    },
+    {
+     "overture_id": "206c4e33-9be6-4347-b44e-f4e01a52a240",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "preschool"
+    },
+    {
+     "overture_id": "2264dcf0-549d-451a-b846-3f207d411e0c",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "outpatient_clinic"
+    },
+    {
+     "overture_id": "33e31486-ad2c-4974-9844-ac7a679e3865",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "pharmacy"
+    },
+    {
+     "overture_id": "477b7659-21b2-4f90-a526-2817bc77fe79",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "college_university"
+    },
+    {
+     "overture_id": "49504010-6983-4673-a9ad-c6aff2179092",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "hospital"
+    },
+    {
+     "overture_id": "50802484-b7f9-492e-8a4c-f75312fc7751",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "outpatient_clinic"
+    },
+    {
+     "overture_id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "school"
+    },
+    {
+     "overture_id": "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "school"
+    },
+    {
+     "overture_id": "5bb60365-3e3a-4b02-b66b-89f49fc55f2d",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "hospital"
+    },
+    {
+     "overture_id": "6092aa47-e39d-4da8-989b-9d5128d3a775",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "college_university"
+    },
+    {
+     "overture_id": "621acb4b-a1bd-45ce-891f-c0a4634a6103",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "outpatient_clinic"
+    },
+    {
+     "overture_id": "622b4786-89fa-4853-b109-18054e3ebe0d",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "outpatient_clinic"
+    },
+    {
+     "overture_id": "65f8fe5f-ad9f-485f-93b3-472605beb57a",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "government_office"
+    },
+    {
+     "overture_id": "68c8f007-75bc-42f6-8da8-baa72042bde4",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "school"
+    },
+    {
+     "overture_id": "6d4636dd-c9f3-4d9b-8c01-b361e86c8659",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "college_university"
+    },
+    {
+     "overture_id": "6e92676a-1297-446d-9956-731023da6339",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "outpatient_clinic"
+    },
+    {
+     "overture_id": "72782e25-fc97-49cf-94f8-fa48a9b25c84",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "college_university"
+    },
+    {
+     "overture_id": "7bc29930-e875-4c3d-b805-97cbcfc81159",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "government_office"
+    },
+    {
+     "overture_id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "outpatient_clinic"
+    },
+    {
+     "overture_id": "833280f2-ff82-4dd6-a174-d2a9203420fa",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "outpatient_clinic"
+    },
+    {
+     "overture_id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "school"
+    },
+    {
+     "overture_id": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "school"
+    },
+    {
+     "overture_id": "99c68068-aa6e-4ff2-af5f-455675f93313",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "outpatient_clinic"
+    },
+    {
+     "overture_id": "9d31b953-ccc4-42bd-a3a3-3e4e21f44051",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "school"
+    },
+    {
+     "overture_id": "a10bb8cf-c446-4066-9cda-a5befa189a60",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "outpatient_clinic"
+    },
+    {
+     "overture_id": "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "school"
+    },
+    {
+     "overture_id": "a718be31-9efe-4018-aa33-da51ab78157c",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "college_university"
+    },
+    {
+     "overture_id": "b08d41c4-c682-4335-94fc-65dac48411ed",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "pharmacy"
+    },
+    {
+     "overture_id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "school"
+    },
+    {
+     "overture_id": "b845d434-7da3-4755-9ae9-bb6d40fc7520",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "outpatient_clinic"
+    },
+    {
+     "overture_id": "b9656404-dad2-4021-b6ef-65a9fbab074a",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "college_university"
+    },
+    {
+     "overture_id": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "school"
+    },
+    {
+     "overture_id": "bcd265d0-0799-4dbf-8b15-23bae752a4d2",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "school"
+    },
+    {
+     "overture_id": "c08c14c0-2911-4945-8417-f8a0bc0a539f",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "government_office"
+    },
+    {
+     "overture_id": "c2990416-dca7-4e3a-b539-30e69cadf724",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "outpatient_clinic"
+    },
+    {
+     "overture_id": "cc3d4ac9-aa00-495d-9e23-e81ff1171c55",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "hospital"
+    },
+    {
+     "overture_id": "d2dc8f45-b060-4810-9e0a-427b79cf1111",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "government_office"
+    },
+    {
+     "overture_id": "d3820e62-878b-40b6-b34b-61c0a85c0fbb",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "government_office"
+    },
+    {
+     "overture_id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "outpatient_clinic"
+    },
+    {
+     "overture_id": "e1b19ead-4505-4acd-8aed-9c561ceec4c0",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "outpatient_clinic"
+    },
+    {
+     "overture_id": "e48858d4-2f1d-41ec-8e38-2a001ad46b55",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "college_university"
+    },
+    {
+     "overture_id": "f4d6818b-1a99-43ca-8533-4c556f448919",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "outpatient_clinic"
+    },
+    {
+     "overture_id": "f6475034-503e-4370-869a-268654640177",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "hospital"
+    },
+    {
+     "overture_id": "fa131774-9ffb-406b-9af8-30b76398e0ad",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "hospital"
+    },
+    {
+     "overture_id": "fd50a858-462d-477f-8bc6-a8d3e03a9576",
+     "datasets": [
+      "meta"
+     ],
+     "class": null,
+     "k10_group": "school"
+    }
+   ],
+   "licenses": [
+    "CDLA-Permissive-2.0"
+   ],
+   "license_texts_needed": [
+    "LICENSES/CDLA-Permissive-2.0.txt"
+   ],
+   "clauses": {
+    "CDLA-Permissive-2.0": [
+     "2.1 при передаче данных сделать доступным текст соглашения",
+     "3.1 на Results ограничений нет"
+    ]
+   }
+  },
+  {
+   "file": "data/shymkent/segments.geojson",
+   "city": "shymkent",
+   "sha256": "055b0e7aaef8d5b42fdbb6663f46ef245156b33a0f92b8f94cc73ab7a9c77648",
+   "features": 1084,
+   "header_attribution_in_input": [
+    "Overture Maps Foundation",
+    "© OpenStreetMap contributors (ODbL-1.0)"
+   ],
+   "header_check": {
+    "named_in_header": [
+     "OpenStreetMap",
+     "Overture"
+    ],
+    "datasets_in_records": [
+     "OpenStreetMap",
+     "TomTom"
+    ],
+    "missing_from_header": [
+     "TomTom"
+    ],
+    "named_but_absent_in_records": [],
+    "ok": false
+   },
+   "providers": [
+    {
+     "dataset": "OpenStreetMap",
+     "provider": "osm",
+     "resource": "planet",
+     "license": "ODbL-1.0",
+     "version": "2026-09-09",
+     "properties": [
+      "(вся запись)"
+     ],
+     "entries": 1175
+    },
+    {
+     "dataset": "TomTom",
+     "provider": "tomtom",
+     "resource": "orbis",
+     "license": "ODbL-1.0",
+     "version": "2637",
+     "properties": [
+      "(вся запись)"
+     ],
+     "entries": 1
+    }
+   ],
+   "features_by_whole_record_dataset": {
+    "OpenStreetMap": 1083,
+    "TomTom": 1
+   },
+   "features_without_osm_whole_record": [
+    {
+     "overture_id": "cc0cfb1e-d3a1-4895-8006-fa717525c56d",
+     "datasets": [
+      "TomTom"
+     ],
+     "class": "unknown",
+     "k10_group": null
+    }
+   ],
+   "licenses": [
+    "ODbL-1.0"
+   ],
+   "license_texts_needed": [
+    "LICENSES/ODbL-1.0.txt"
+   ],
+   "clauses": {
+    "ODbL-1.0": [
+     "4.2 уведомление при публичной передаче базы/производной",
+     "4.3 уведомление на публично используемой Produced Work",
+     "4.4 share-alike для публично используемой производной базы",
+     "4.6 машиночитаемая копия производной базы по запросу получателя"
+    ]
+   }
+  }
+ ]
+}

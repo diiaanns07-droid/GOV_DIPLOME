@@ -406,6 +406,7 @@ async function loadMap() {
           markers.push({ el, id });
         });
         map.on("mousemove", "district-fill", (e) => {
+          if (window.GOVTECH?.active) return;
           map.getCanvas().style.cursor = "pointer";
           const f = e.features[0],
             id = f.properties.id;
@@ -453,7 +454,7 @@ async function loadMap() {
           popup.remove();
         });
         map.on("click", "district-fill", (e) =>
-          selectDistrict(e.features[0].properties.id),
+          !window.GOVTECH?.active && selectDistrict(e.features[0].properties.id),
         );
         map.on("dragstart", () => popup.remove());
         mapReady = true;
@@ -461,6 +462,7 @@ async function loadMap() {
         $("map-status").classList.add("hidden");
         updateMap();
         flyOverview(true);
+        window.GOVTECH?.onMapReady();
       } catch (e) {
         showMapError(
           "Не удалось настроить слои карты. Выбор районов доступен слева.",
