@@ -1,0 +1,786 @@
+{
+ "schema": "k03-exclusion-manifest-v1",
+ "note": "Условно исключаем из расчёта; это не подтверждение закрытия. Пустые исходные данные не означают отсутствие услуги.",
+ "city_id": "shymkent",
+ "category": "school",
+ "base_source_snapshot": "sha256:a9326b5633c513c0bfeccbb2248b26cf3b706c902f77745073a2959ad8d7ff3e",
+ "release": "2026-09-23.1",
+ "qa_available": true,
+ "build": {
+  "branch": "claude/beautiful-clarke-sbzomj",
+  "sha": "d865dd4a124291e10dd0b7bb1d9eada20d34c268"
+ },
+ "exclusion_digest": "sha256:a76a4abbb6dca51f615bb4fe138efec5aa154a20f1fd67f1a0cfb1a54dd2e193",
+ "cases": [
+  {
+   "id": "one-isolated",
+   "label": "Условно без записи: Реклама 42",
+   "disabled_source_ids": [
+    "01961e84-815f-4bd1-85c3-6bf1734256ec"
+   ],
+   "identical_to": []
+  },
+  {
+   "id": "one-of-shared-0",
+   "label": "Условно без записи: Express toefl",
+   "disabled_source_ids": [
+    "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+   ],
+   "identical_to": []
+  },
+  {
+   "id": "one-of-shared-1",
+   "label": "Условно без записи: ALEM мектебі",
+   "disabled_source_ids": [
+    "baeda67d-e701-4c2a-bba6-10a13466e76d"
+   ],
+   "identical_to": []
+  },
+  {
+   "id": "qa-colocated",
+   "label": "Условно без записей QA-группы COLOCATED (69.5958, 42.3167): 3 из 10",
+   "disabled_source_ids": [
+    "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+    "68c8f007-75bc-42f6-8da8-baa72042bde4",
+    "9d31b953-ccc4-42bd-a3a3-3e4e21f44051"
+   ],
+   "identical_to": []
+  },
+  {
+   "id": "near-centre-3",
+   "label": "Условно без выбранных записей (3): М.Х.Дулати атындағы үш тілде оқытатын N8 мамандандырылған  гимназия\" КММ, Учебный це…",
+   "disabled_source_ids": [
+    "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+    "931d6da5-e9db-4523-a6fd-79c88f235f88",
+    "fd50a858-462d-477f-8bc6-a8d3e03a9576"
+   ],
+   "identical_to": [
+    "near-centre-3-again"
+   ]
+  },
+  {
+   "id": "near-centre-3-again",
+   "label": "Те же три записи (повтор набора, другой порядок)",
+   "disabled_source_ids": [
+    "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+    "931d6da5-e9db-4523-a6fd-79c88f235f88",
+    "fd50a858-462d-477f-8bc6-a8d3e03a9576"
+   ],
+   "identical_to": [
+    "near-centre-3"
+   ]
+  },
+  {
+   "id": "all-records",
+   "label": "Условно без выбранных записей (15): Реклама 42, М.Х.Дулати атындағы үш тілде оқытатын N8 мамандандырылған  гимназия\" КМ…",
+   "disabled_source_ids": [
+    "01961e84-815f-4bd1-85c3-6bf1734256ec",
+    "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+    "176c5993-4b62-4e90-849f-88addc0153bb",
+    "18df815b-170a-437c-977f-0769690315d4",
+    "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+    "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+    "68c8f007-75bc-42f6-8da8-baa72042bde4",
+    "931d6da5-e9db-4523-a6fd-79c88f235f88",
+    "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+    "9d31b953-ccc4-42bd-a3a3-3e4e21f44051",
+    "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6",
+    "b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+    "baeda67d-e701-4c2a-bba6-10a13466e76d",
+    "bcd265d0-0799-4dbf-8b15-23bae752a4d2",
+    "fd50a858-462d-477f-8bc6-a8d3e03a9576"
+   ],
+   "identical_to": []
+  }
+ ],
+ "records": {
+  "01961e84-815f-4bd1-85c3-6bf1734256ec": {
+   "id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+   "category": "school",
+   "name": "Реклама 42",
+   "address": "Республика көшесі 5",
+   "lon": 69.61052,
+   "lat": 42.32027,
+   "coord_decimals": {
+    "lon": 5,
+    "lat": 5
+   },
+   "provenance": {
+    "overture_category": "middle_school",
+    "overture_version": 5,
+    "confidence": 0.786,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "135783212958156",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "89aa5bf04ae1a9a1340fb01029a208ef94e6ab23381aa0e6e5f2afa61a9c62b5",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": null,
+    "possible_duplicates": [],
+    "category_doubt": {
+     "rule": "ad_or_business_page",
+     "reason": "название похоже на рекламу или страницу бизнеса, а не на учреждение категории"
+    }
+   },
+   "same_coordinates": {
+    "in_category": [],
+    "other_categories": []
+   }
+  },
+  "01eb7090-bb5f-4e52-b3c9-4ef95707ad67": {
+   "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+   "category": "school",
+   "name": "М.Х.Дулати атындағы үш тілде оқытатын N8 мамандандырылған  гимназия\" КММ",
+   "address": "Қазыбек Би көшесі 29",
+   "lon": 69.60294,
+   "lat": 42.31672,
+   "coord_decimals": {
+    "lon": 5,
+    "lat": 5
+   },
+   "provenance": {
+    "overture_category": "high_school",
+    "overture_version": 9,
+    "confidence": 0.662,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "109733650870275",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "b69a3b70d035d922f2b75dbffe53f16702ec4e985d5e0656c848b31150b39903",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": null,
+    "possible_duplicates": [],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [],
+    "other_categories": []
+   }
+  },
+  "176c5993-4b62-4e90-849f-88addc0153bb": {
+   "id": "176c5993-4b62-4e90-849f-88addc0153bb",
+   "category": "school",
+   "name": "Dostyk Bilim Beru Ortalygy",
+   "address": "Қазыбек Би көшесі 57",
+   "lon": 69.605699,
+   "lat": 42.323129,
+   "coord_decimals": {
+    "lon": 6,
+    "lat": 6
+   },
+   "provenance": {
+    "overture_category": "middle_school",
+    "overture_version": 2,
+    "confidence": 0.385,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "198636846666153",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "17fe4b59f113b70af17ce970d82ac59cfc45f9f27c15a6e62c85e2a649d73137",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": null,
+    "possible_duplicates": [],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [],
+    "other_categories": []
+   }
+  },
+  "18df815b-170a-437c-977f-0769690315d4": {
+   "id": "18df815b-170a-437c-977f-0769690315d4",
+   "category": "school",
+   "name": "Ақпан батыр Атындағы Орта Мектеп",
+   "address": null,
+   "lon": 69.61482,
+   "lat": 42.31276,
+   "coord_decimals": {
+    "lon": 5,
+    "lat": 5
+   },
+   "provenance": {
+    "overture_category": "elementary_school",
+    "overture_version": 9,
+    "confidence": 0.762,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "321415295158302",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "2d56b88297220963c0153b9cf4fd7d0f2dc55c387bb8455626a230bca351e39c",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": null,
+    "possible_duplicates": [],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [],
+    "other_categories": []
+   }
+  },
+  "51ac9e88-456d-4b3a-a657-d3cbc516c708": {
+   "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+   "category": "school",
+   "name": "Reklama 8888",
+   "address": null,
+   "lon": 69.5958,
+   "lat": 42.3167,
+   "coord_decimals": {
+    "lon": 4,
+    "lat": 4
+   },
+   "provenance": {
+    "overture_category": "place_of_learning",
+    "overture_version": 2,
+    "confidence": 0.254,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "457518577441642",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "3ba7d19d503aee0d8aa8eaf396bf8b94107a1c6f9479b10dd9dd3662fd1e19fa",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": {
+     "lon": 69.5958,
+     "lat": 42.3167,
+     "size": 10,
+     "ids": [
+      "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "2264dcf0-549d-451a-b846-3f207d411e0c",
+      "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+      "68c8f007-75bc-42f6-8da8-baa72042bde4",
+      "6d4636dd-c9f3-4d9b-8c01-b361e86c8659",
+      "7bc29930-e875-4c3d-b805-97cbcfc81159",
+      "9d31b953-ccc4-42bd-a3a3-3e4e21f44051",
+      "b08d41c4-c682-4335-94fc-65dac48411ed",
+      "c2990416-dca7-4e3a-b539-30e69cadf724",
+      "f4d6818b-1a99-43ca-8533-4c556f448919"
+     ]
+    },
+    "possible_duplicates": [],
+    "category_doubt": {
+     "rule": "ad_or_business_page",
+     "reason": "название похоже на рекламу или страницу бизнеса, а не на учреждение категории"
+    }
+   },
+   "same_coordinates": {
+    "in_category": [
+     "68c8f007-75bc-42f6-8da8-baa72042bde4",
+     "9d31b953-ccc4-42bd-a3a3-3e4e21f44051"
+    ],
+    "other_categories": [
+     "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+     "2264dcf0-549d-451a-b846-3f207d411e0c",
+     "6d4636dd-c9f3-4d9b-8c01-b361e86c8659",
+     "7bc29930-e875-4c3d-b805-97cbcfc81159",
+     "b08d41c4-c682-4335-94fc-65dac48411ed",
+     "c2990416-dca7-4e3a-b539-30e69cadf724",
+     "f4d6818b-1a99-43ca-8533-4c556f448919"
+    ]
+   }
+  },
+  "537980b9-4d8b-4c25-8e27-a6af60ffac34": {
+   "id": "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+   "category": "school",
+   "name": "Жолдасбекова Атындағы 9 Лицей",
+   "address": "Қазыбек Би көшесі",
+   "lon": 69.605231,
+   "lat": 42.321741,
+   "coord_decimals": {
+    "lon": 6,
+    "lat": 6
+   },
+   "provenance": {
+    "overture_category": "elementary_school",
+    "overture_version": 8,
+    "confidence": 0.583,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "496982004171164",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "de64b2c46d5af4aad8988212c5b66cafe24c53416cb4c3809ffbc06fce9f4fdc",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": null,
+    "possible_duplicates": [],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [],
+    "other_categories": []
+   }
+  },
+  "68c8f007-75bc-42f6-8da8-baa72042bde4": {
+   "id": "68c8f007-75bc-42f6-8da8-baa72042bde4",
+   "category": "school",
+   "name": "Baiterek School",
+   "address": "Рыскулова 141",
+   "lon": 69.5958,
+   "lat": 42.3167,
+   "coord_decimals": {
+    "lon": 4,
+    "lat": 4
+   },
+   "provenance": {
+    "overture_category": "place_of_learning",
+    "overture_version": 9,
+    "confidence": 0.776,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "104043422727734",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "c9a174ae920269a903ca2c7562489e6f908938c6f14b0417aa72229f166b0168",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": {
+     "lon": 69.5958,
+     "lat": 42.3167,
+     "size": 10,
+     "ids": [
+      "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "2264dcf0-549d-451a-b846-3f207d411e0c",
+      "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+      "68c8f007-75bc-42f6-8da8-baa72042bde4",
+      "6d4636dd-c9f3-4d9b-8c01-b361e86c8659",
+      "7bc29930-e875-4c3d-b805-97cbcfc81159",
+      "9d31b953-ccc4-42bd-a3a3-3e4e21f44051",
+      "b08d41c4-c682-4335-94fc-65dac48411ed",
+      "c2990416-dca7-4e3a-b539-30e69cadf724",
+      "f4d6818b-1a99-43ca-8533-4c556f448919"
+     ]
+    },
+    "possible_duplicates": [],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [
+     "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+     "9d31b953-ccc4-42bd-a3a3-3e4e21f44051"
+    ],
+    "other_categories": [
+     "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+     "2264dcf0-549d-451a-b846-3f207d411e0c",
+     "6d4636dd-c9f3-4d9b-8c01-b361e86c8659",
+     "7bc29930-e875-4c3d-b805-97cbcfc81159",
+     "b08d41c4-c682-4335-94fc-65dac48411ed",
+     "c2990416-dca7-4e3a-b539-30e69cadf724",
+     "f4d6818b-1a99-43ca-8533-4c556f448919"
+    ]
+   }
+  },
+  "931d6da5-e9db-4523-a6fd-79c88f235f88": {
+   "id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+   "category": "school",
+   "name": "Учебный центр Меруерт",
+   "address": "Токаева 27",
+   "lon": 69.599229,
+   "lat": 42.314563,
+   "coord_decimals": {
+    "lon": 6,
+    "lat": 6
+   },
+   "provenance": {
+    "overture_category": "place_of_learning",
+    "overture_version": 8,
+    "confidence": 0.68,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "101309298709568",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "a59693a69376baf81a1f625bacdee80b590309ac5365f3675a096b355742dce2",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": null,
+    "possible_duplicates": [],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [],
+    "other_categories": []
+   }
+  },
+  "99759f95-3ddb-4d87-8091-c301f9c23c9b": {
+   "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+   "category": "school",
+   "name": "Express toefl",
+   "address": "Ахмет Байтұрсынов көшесі 18",
+   "lon": 69.59496,
+   "lat": 42.32353,
+   "coord_decimals": {
+    "lon": 5,
+    "lat": 5
+   },
+   "provenance": {
+    "overture_category": "place_of_learning",
+    "overture_version": 8,
+    "confidence": 0.33,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "103951562798946",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "ff401e46c08b15b32360a4335594fda416ed681c4056e788af4ab96e4f2e8efa",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": null,
+    "possible_duplicates": [
+     {
+      "other": "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6",
+      "rule": "same_address",
+      "distance_m": 0.0
+     }
+    ],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [
+     "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6"
+    ],
+    "other_categories": []
+   }
+  },
+  "9d31b953-ccc4-42bd-a3a3-3e4e21f44051": {
+   "id": "9d31b953-ccc4-42bd-a3a3-3e4e21f44051",
+   "category": "school",
+   "name": "Реклама 3131",
+   "address": "шәуілдір",
+   "lon": 69.5958,
+   "lat": 42.3167,
+   "coord_decimals": {
+    "lon": 4,
+    "lat": 4
+   },
+   "provenance": {
+    "overture_category": "middle_school",
+    "overture_version": 1,
+    "confidence": 0.255,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "698764723318625",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "858843d820b404edafa84cc75d15daa41876161ea0171193a24d3a236d78ca13",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": {
+     "lon": 69.5958,
+     "lat": 42.3167,
+     "size": 10,
+     "ids": [
+      "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "2264dcf0-549d-451a-b846-3f207d411e0c",
+      "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+      "68c8f007-75bc-42f6-8da8-baa72042bde4",
+      "6d4636dd-c9f3-4d9b-8c01-b361e86c8659",
+      "7bc29930-e875-4c3d-b805-97cbcfc81159",
+      "9d31b953-ccc4-42bd-a3a3-3e4e21f44051",
+      "b08d41c4-c682-4335-94fc-65dac48411ed",
+      "c2990416-dca7-4e3a-b539-30e69cadf724",
+      "f4d6818b-1a99-43ca-8533-4c556f448919"
+     ]
+    },
+    "possible_duplicates": [],
+    "category_doubt": {
+     "rule": "ad_or_business_page",
+     "reason": "название похоже на рекламу или страницу бизнеса, а не на учреждение категории"
+    }
+   },
+   "same_coordinates": {
+    "in_category": [
+     "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+     "68c8f007-75bc-42f6-8da8-baa72042bde4"
+    ],
+    "other_categories": [
+     "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+     "2264dcf0-549d-451a-b846-3f207d411e0c",
+     "6d4636dd-c9f3-4d9b-8c01-b361e86c8659",
+     "7bc29930-e875-4c3d-b805-97cbcfc81159",
+     "b08d41c4-c682-4335-94fc-65dac48411ed",
+     "c2990416-dca7-4e3a-b539-30e69cadf724",
+     "f4d6818b-1a99-43ca-8533-4c556f448919"
+    ]
+   }
+  },
+  "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6": {
+   "id": "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6",
+   "category": "school",
+   "name": "Kasipkoy.kurs",
+   "address": "Ахмет Байтұрсынов көшесі 18",
+   "lon": 69.59496,
+   "lat": 42.32353,
+   "coord_decimals": {
+    "lon": 5,
+    "lat": 5
+   },
+   "provenance": {
+    "overture_category": "place_of_learning",
+    "overture_version": 6,
+    "confidence": 0.376,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "115444977828089",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "9e240b6e6ef0571acd107cebdefb2c863aa94601f8dee23c836ee5f8bd2733fa",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": null,
+    "possible_duplicates": [
+     {
+      "other": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+      "rule": "same_address",
+      "distance_m": 0.0
+     }
+    ],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [
+     "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+    ],
+    "other_categories": []
+   }
+  },
+  "b428a01b-fb2a-4dc1-b118-2127814b1fe9": {
+   "id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+   "category": "school",
+   "name": "Монтессори Детский Сад \"Бала Би\"",
+   "address": "Шәймерденов көшесі 5",
+   "lon": 69.59895,
+   "lat": 42.31906,
+   "coord_decimals": {
+    "lon": 5,
+    "lat": 5
+   },
+   "provenance": {
+    "overture_category": "place_of_learning",
+    "overture_version": 11,
+    "confidence": 0.949,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "652390848258401",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "d37a4e780dd37f0a3297722a159a5ecd12d983f64ea9943492d25d3bc37924db",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": null,
+    "possible_duplicates": [],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [],
+    "other_categories": []
+   }
+  },
+  "baeda67d-e701-4c2a-bba6-10a13466e76d": {
+   "id": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+   "category": "school",
+   "name": "ALEM мектебі",
+   "address": "Ж. Адырбеков көшесі 87б",
+   "lon": 69.61557,
+   "lat": 42.32304,
+   "coord_decimals": {
+    "lon": 5,
+    "lat": 5
+   },
+   "provenance": {
+    "overture_category": "place_of_learning",
+    "overture_version": 1,
+    "confidence": 0.438,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "100576409602303",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "df92009c40f52b7923a157429e9d0cf6a7ec9edb57c53d3d800c5e66326a28e7",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": null,
+    "possible_duplicates": [],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [
+     "bcd265d0-0799-4dbf-8b15-23bae752a4d2"
+    ],
+    "other_categories": []
+   }
+  },
+  "bcd265d0-0799-4dbf-8b15-23bae752a4d2": {
+   "id": "bcd265d0-0799-4dbf-8b15-23bae752a4d2",
+   "category": "school",
+   "name": "Алем мектеп",
+   "address": "Ж. Адырбеков көшесі 87",
+   "lon": 69.61557,
+   "lat": 42.32304,
+   "coord_decimals": {
+    "lon": 5,
+    "lat": 5
+   },
+   "provenance": {
+    "overture_category": "middle_school",
+    "overture_version": 2,
+    "confidence": 0.525,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "117725867952475",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "3a736ae88cfe7ca76c3079c27c6800e234f2a90ed90895cd8f2515d1d7b46eaa",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": null,
+    "possible_duplicates": [],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [
+     "baeda67d-e701-4c2a-bba6-10a13466e76d"
+    ],
+    "other_categories": []
+   }
+  },
+  "fd50a858-462d-477f-8bc6-a8d3e03a9576": {
+   "id": "fd50a858-462d-477f-8bc6-a8d3e03a9576",
+   "category": "school",
+   "name": "Техникалық лицей",
+   "address": "Қазыбек Би көшесі 33",
+   "lon": 69.60322,
+   "lat": 42.31728,
+   "coord_decimals": {
+    "lon": 5,
+    "lat": 5
+   },
+   "provenance": {
+    "overture_category": "place_of_learning",
+    "overture_version": 2,
+    "confidence": 0.776,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "103027011922854",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "8628c1fd810f55e7d59e6be782f4b163d9004ca152cc8cb9f08501efe3c33fd4",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": null,
+    "possible_duplicates": [
+     {
+      "other": "1b81c33b-d088-46b1-a390-8d6d81102c21",
+      "rule": "same_address",
+      "distance_m": 0.0
+     }
+    ],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [],
+    "other_categories": [
+     "1b81c33b-d088-46b1-a390-8d6d81102c21"
+    ]
+   }
+  }
+ }
+}

@@ -1,0 +1,369 @@
+{
+ "schema": "k03-exclusion-manifest-v1",
+ "note": "Условно исключаем из расчёта; это не подтверждение закрытия. Пустые исходные данные не означают отсутствие услуги.",
+ "city_id": "astana",
+ "category": "school",
+ "base_source_snapshot": "sha256:67a40b96d29873118780969eb11c32deba49a0c64fda1f185efe634882f04c6d",
+ "release": "2026-09-23.1",
+ "qa_available": true,
+ "build": {
+  "branch": "claude/beautiful-clarke-sbzomj",
+  "sha": "d865dd4a124291e10dd0b7bb1d9eada20d34c268"
+ },
+ "exclusion_digest": "sha256:1ab6002044d2fc6cdafe4538347b54b85af34c0bf438daad312f315490dab6f2",
+ "cases": [
+  {
+   "id": "one-isolated",
+   "label": "Условно без записи: Школа-гимназия 3",
+   "disabled_source_ids": [
+    "7b39e048-341b-454a-a63c-4b7e1ae73e9f"
+   ],
+   "identical_to": []
+  },
+  {
+   "id": "near-centre-3",
+   "label": "Условно без выбранных записей (3): Школа-гимназия 3, Учебный ЦЕНТР ФПРК, Учебный Центр Expert-A",
+   "disabled_source_ids": [
+    "7b39e048-341b-454a-a63c-4b7e1ae73e9f",
+    "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+    "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a"
+   ],
+   "identical_to": [
+    "near-centre-3-again"
+   ]
+  },
+  {
+   "id": "near-centre-3-again",
+   "label": "Те же три записи (повтор набора, другой порядок)",
+   "disabled_source_ids": [
+    "7b39e048-341b-454a-a63c-4b7e1ae73e9f",
+    "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+    "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a"
+   ],
+   "identical_to": [
+    "near-centre-3"
+   ]
+  },
+  {
+   "id": "all-records",
+   "label": "Условно без выбранных записей (8): Школа-гимназия 3, \"ГУ \"Средняя школа № 8\" УО г. Астаны\", Учебный ЦЕНТР ФПРК, Astana …",
+   "disabled_source_ids": [
+    "7b39e048-341b-454a-a63c-4b7e1ae73e9f",
+    "8ca53724-c558-46b7-826b-13e3e8fbb7e6",
+    "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+    "a4483f53-7de8-4df1-b61b-b4066b0ad5dd",
+    "b5dd5f1a-9d55-48b1-9d68-7172ea84da3f",
+    "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a",
+    "c97435da-cd05-4549-bec1-ff297e858554",
+    "de04f003-bb3d-4ea7-93e1-cd825e5c1783"
+   ],
+   "identical_to": []
+  }
+ ],
+ "records": {
+  "7b39e048-341b-454a-a63c-4b7e1ae73e9f": {
+   "id": "7b39e048-341b-454a-a63c-4b7e1ae73e9f",
+   "category": "school",
+   "name": "Школа-гимназия 3",
+   "address": "проспект Республики 35",
+   "lon": 71.42501,
+   "lat": 51.17087,
+   "coord_decimals": {
+    "lon": 5,
+    "lat": 5
+   },
+   "provenance": {
+    "overture_category": "high_school",
+    "overture_version": 5,
+    "confidence": 0.894,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "489956668166313",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "177075200877007d8f288b09c08adeb9b38781d30d0665d2375475ea41e28986",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": null,
+    "possible_duplicates": [],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [],
+    "other_categories": []
+   }
+  },
+  "8ca53724-c558-46b7-826b-13e3e8fbb7e6": {
+   "id": "8ca53724-c558-46b7-826b-13e3e8fbb7e6",
+   "category": "school",
+   "name": "\"ГУ \"Средняя школа № 8\" УО г. Астаны\"",
+   "address": "Асан Қайғы көшесі 56",
+   "lon": 71.445305,
+   "lat": 51.166662,
+   "coord_decimals": {
+    "lon": 6,
+    "lat": 6
+   },
+   "provenance": {
+    "overture_category": "middle_school",
+    "overture_version": 9,
+    "confidence": 0.536,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "386757418528326",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "3bcef4a09c6a5de0010ef6b717a1a72a307c2dd449f0d06145f832f2e35eb111",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": null,
+    "possible_duplicates": [],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [],
+    "other_categories": []
+   }
+  },
+  "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2": {
+   "id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+   "category": "school",
+   "name": "Учебный ЦЕНТР ФПРК",
+   "address": "проспект Абая 38",
+   "lon": 71.43372,
+   "lat": 51.16862,
+   "coord_decimals": {
+    "lon": 5,
+    "lat": 5
+   },
+   "provenance": {
+    "overture_category": "place_of_learning",
+    "overture_version": 9,
+    "confidence": 0.594,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "398348000992239",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "79ed917375027812f7e8a92b7e01c948b64526facdce861ed4a01cd6069f4484",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": null,
+    "possible_duplicates": [],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [],
+    "other_categories": []
+   }
+  },
+  "a4483f53-7de8-4df1-b61b-b4066b0ad5dd": {
+   "id": "a4483f53-7de8-4df1-b61b-b4066b0ad5dd",
+   "category": "school",
+   "name": "Astana Garden International School",
+   "address": "улица Алихана Бокейханова 32",
+   "lon": 71.42298,
+   "lat": 51.16765,
+   "coord_decimals": {
+    "lon": 5,
+    "lat": 5
+   },
+   "provenance": {
+    "overture_category": "place_of_learning",
+    "overture_version": 2,
+    "confidence": 0.374,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "476791848859434",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "5d8529daeba51f683484ab3df84126d10ac38e1cfba1349af4d6c92e082b6367",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": null,
+    "possible_duplicates": [],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [],
+    "other_categories": []
+   }
+  },
+  "b5dd5f1a-9d55-48b1-9d68-7172ea84da3f": {
+   "id": "b5dd5f1a-9d55-48b1-9d68-7172ea84da3f",
+   "category": "school",
+   "name": "Образовательный центр АЗиЯ",
+   "address": "Аманкелді Иманов көшесі 26",
+   "lon": 71.44184,
+   "lat": 51.16473,
+   "coord_decimals": {
+    "lon": 5,
+    "lat": 5
+   },
+   "provenance": {
+    "overture_category": "place_of_learning",
+    "overture_version": 8,
+    "confidence": 0.303,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "1603511493043057",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "5b8cc8b055195ba8efd069ba4e8246ba1b7303f6f5c0e0c7e4e489679ee80cda",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": null,
+    "possible_duplicates": [],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [],
+    "other_categories": []
+   }
+  },
+  "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a": {
+   "id": "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a",
+   "category": "school",
+   "name": "Учебный Центр Expert-A",
+   "address": "51, Abay Ave д.24/1",
+   "lon": 71.423338,
+   "lat": 51.1677,
+   "coord_decimals": {
+    "lon": 6,
+    "lat": 4
+   },
+   "provenance": {
+    "overture_category": "place_of_learning",
+    "overture_version": 11,
+    "confidence": 0.332,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "406231823527583",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "5325e11e3f07c3c0851f7d37d7b33a0429b044ddfc98c2a6710c1fe175beea72",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": null,
+    "possible_duplicates": [],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [],
+    "other_categories": []
+   }
+  },
+  "c97435da-cd05-4549-bec1-ff297e858554": {
+   "id": "c97435da-cd05-4549-bec1-ff297e858554",
+   "category": "school",
+   "name": "Гимназия №6",
+   "address": "Mukhtar Auezov St 31",
+   "lon": 71.420262,
+   "lat": 51.177527,
+   "coord_decimals": {
+    "lon": 6,
+    "lat": 6
+   },
+   "provenance": {
+    "overture_category": "place_of_learning",
+    "overture_version": 9,
+    "confidence": 0.527,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "2080224758957423",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "7b889e71186e698b8a63f9ed70de164178df65443fb6840a2727e0613c427eef",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": null,
+    "possible_duplicates": [],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [],
+    "other_categories": []
+   }
+  },
+  "de04f003-bb3d-4ea7-93e1-cd825e5c1783": {
+   "id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783",
+   "category": "school",
+   "name": "\"Школа \"Почемучка\"\"",
+   "address": null,
+   "lon": 71.426672,
+   "lat": 51.179297,
+   "coord_decimals": {
+    "lon": 6,
+    "lat": 6
+   },
+   "provenance": {
+    "overture_category": "high_school",
+    "overture_version": 9,
+    "confidence": 0.534,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "1980413868917585",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "3833de80d11ef929382e26723cd05d8b91891dbe1a680b7a930ba7d0c7bdc715",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": null,
+    "possible_duplicates": [],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [],
+    "other_categories": []
+   }
+  }
+ }
+}

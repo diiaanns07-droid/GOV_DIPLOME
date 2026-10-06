@@ -45,6 +45,7 @@ for (const c of req.cases) {
     if (c.op === "tomm") result = c.values.map((m) => PL.mmOf(m));
     else if (c.op === "dist") result = c.pairs.map(([a, b]) => PL.mmOf(X.haversine(a[0], a[1], b[0], b[1])));
     else if (c.op === "inbbox") result = c.points.map(([lon, lat]) => X.inBbox(ctxOf(c.city).bbox, lon, lat));
+    else if (c.op === "validate_raw") { const sc = PL.validatePlanScenario(c.scenario, ctxOf(c.city)); result = { city_id: sc.city_id, source_snapshot: sc.source_snapshot }; }
     else if (c.op === "qa") result = c.ids.map((id) => ({ id, qa: qaOf(c.city, id) }));
     else if (c.op === "context") {
       const ctx = ctxOf(c.city);

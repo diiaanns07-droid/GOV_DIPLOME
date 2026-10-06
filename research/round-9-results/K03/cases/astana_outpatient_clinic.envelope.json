@@ -1,0 +1,167 @@
+{
+ "schema_version": "city-resilience-v1",
+ "plan": {
+  "schema_version": "city-plan-v2",
+  "city_id": "astana",
+  "source_snapshot": "sha256:67a40b96d29873118780969eb11c32deba49a0c64fda1f185efe634882f04c6d",
+  "category": "outpatient_clinic",
+  "control_points": [
+   {
+    "id": "at-iso",
+    "lon": 71.422483,
+    "lat": 51.169953,
+    "weight": 1
+   },
+   {
+    "id": "grid-00",
+    "lon": 71.423143,
+    "lat": 51.167525,
+    "weight": 2
+   },
+   {
+    "id": "grid-01",
+    "lon": 71.423143,
+    "lat": 51.176508,
+    "weight": 3
+   },
+   {
+    "id": "grid-10",
+    "lon": 71.432686,
+    "lat": 51.167525,
+    "weight": 4
+   },
+   {
+    "id": "grid-11",
+    "lon": 71.432686,
+    "lat": 51.176508,
+    "weight": 5
+   },
+   {
+    "id": "grid-20",
+    "lon": 71.442229,
+    "lat": 51.167525,
+    "weight": 1
+   },
+   {
+    "id": "grid-21",
+    "lon": 71.442229,
+    "lat": 51.176508,
+    "weight": 2
+   },
+   {
+    "id": "center",
+    "lon": 71.432686,
+    "lat": 51.172016,
+    "weight": 3
+   }
+  ],
+  "candidates": [
+   {
+    "id": "cand-1",
+    "lon": 71.424098,
+    "lat": 51.167525,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 30
+   },
+   {
+    "id": "cand-2",
+    "lon": 71.441274,
+    "lat": 51.167525,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 40
+   },
+   {
+    "id": "cand-3",
+    "lon": 71.432686,
+    "lat": 51.177407,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 50
+   },
+   {
+    "id": "cand-4",
+    "lon": 71.424098,
+    "lat": 51.176508,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 20
+   },
+   {
+    "id": "cand-5",
+    "lon": 71.441274,
+    "lat": 51.176508,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 60
+   },
+   {
+    "id": "cand-on-iso",
+    "lon": 71.422483,
+    "lat": 51.169953,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 35
+   }
+  ],
+  "budget": 100,
+  "max_selected": 2,
+  "coverage_radius_m": 500,
+  "required_ids": [],
+  "excluded_ids": [],
+  "selected_ids": [
+   "cand-1",
+   "cand-on-iso"
+  ]
+ },
+ "cases": [
+  {
+   "id": "one-isolated",
+   "label": "Условно без записи: Family Clinic",
+   "disabled_source_ids": [
+    "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+   ]
+  },
+  {
+   "id": "near-centre-3",
+   "label": "Условно без выбранных записей (3): Центр Поддержки Детей с РАС Асыл Мирас, Family Stom, Aura Clinic",
+   "disabled_source_ids": [
+    "1d137305-49cd-450b-9626-9762db14d080",
+    "410f0193-f0bc-4553-bee5-660aab0287a5",
+    "5f76d9b9-bdd1-4cea-9157-fef68ac60270"
+   ]
+  },
+  {
+   "id": "near-centre-3-again",
+   "label": "Те же три записи (повтор набора, другой порядок)",
+   "disabled_source_ids": [
+    "5f76d9b9-bdd1-4cea-9157-fef68ac60270",
+    "410f0193-f0bc-4553-bee5-660aab0287a5",
+    "1d137305-49cd-450b-9626-9762db14d080"
+   ]
+  },
+  {
+   "id": "all-records",
+   "label": "Условно без выбранных записей (16): Family Clinic, Лор центр Сезiм, Стоматология МерейДент, Ирина Кулинич родолог, Цент…",
+   "disabled_source_ids": [
+    "0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+    "1116880a-cbb6-4271-9a59-a277083b792c",
+    "140ab4bc-e560-41e3-aeaf-cb7b8b821f08",
+    "166c939f-9131-4fbb-bf75-4ab543916f20",
+    "1d137305-49cd-450b-9626-9762db14d080",
+    "1e587c48-b425-4d8a-ba90-37f1ad41e24f",
+    "3fba1026-8464-41ab-88f8-633e3df0de30",
+    "410f0193-f0bc-4553-bee5-660aab0287a5",
+    "43c64670-1b4c-4d42-bd0f-0049a7b49371",
+    "5c3a8d6d-117d-4cce-9dde-ad820e6967d2",
+    "5f76d9b9-bdd1-4cea-9157-fef68ac60270",
+    "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8",
+    "771c278a-af10-4c57-b9fc-52755437345d",
+    "aca68551-4a03-47c2-813f-d13dceb85c62",
+    "b1fc81c5-7f00-4a0a-969d-2da872515916",
+    "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+   ]
+  }
+ ]
+}

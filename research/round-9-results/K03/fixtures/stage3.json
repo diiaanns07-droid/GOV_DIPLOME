@@ -1,0 +1,6801 @@
+{
+ "schema": "k03-r9-stage3-fixtures",
+ "stage": 3,
+ "description": "Этап 3: сценарная фильтрация исходных записей по случаям на обоих городах и категориях. Точки, веса, кандидаты, стоимости и подписи — synthetic; записи и их ID — Overture из сборки. Ожидания — независимый оракул K03.",
+ "target": {
+  "branch": "claude/beautiful-clarke-sbzomj",
+  "sha": "d865dd4a124291e10dd0b7bb1d9eada20d34c268",
+  "path": "prototypes/city-evidence/",
+  "data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "evidence_js_sha256": "df736e986145da33dee60f692e020486720b72db5b6116af31640cc8693b11b9"
+ },
+ "slices": [
+  {
+   "city": "shymkent",
+   "category": "school",
+   "envelope": {
+    "schema_version": "city-resilience-v1",
+    "plan": {
+     "schema_version": "city-plan-v2",
+     "city_id": "shymkent",
+     "source_snapshot": "sha256:a9326b5633c513c0bfeccbb2248b26cf3b706c902f77745073a2959ad8d7ff3e",
+     "category": "school",
+     "control_points": [
+      {
+       "id": "at-iso",
+       "lon": 69.61052,
+       "lat": 42.32027,
+       "weight": 1
+      },
+      {
+       "id": "at-shared-0",
+       "lon": 69.59496,
+       "lat": 42.32353,
+       "weight": 2
+      },
+      {
+       "id": "at-shared-1",
+       "lon": 69.61557,
+       "lat": 42.32304,
+       "weight": 3
+      },
+      {
+       "id": "at-colocated",
+       "lon": 69.5958,
+       "lat": 42.3167,
+       "weight": 4
+      },
+      {
+       "id": "grid-00",
+       "lon": 69.597414,
+       "lat": 42.311137,
+       "weight": 5
+      },
+      {
+       "id": "grid-01",
+       "lon": 69.597414,
+       "lat": 42.320119,
+       "weight": 1
+      },
+      {
+       "id": "grid-10",
+       "lon": 69.605512,
+       "lat": 42.311137,
+       "weight": 2
+      },
+      {
+       "id": "grid-11",
+       "lon": 69.605512,
+       "lat": 42.320119,
+       "weight": 3
+      },
+      {
+       "id": "grid-20",
+       "lon": 69.613609,
+       "lat": 42.311137,
+       "weight": 4
+      },
+      {
+       "id": "grid-21",
+       "lon": 69.613609,
+       "lat": 42.320119,
+       "weight": 5
+      },
+      {
+       "id": "center",
+       "lon": 69.605512,
+       "lat": 42.315628,
+       "weight": 1
+      }
+     ],
+     "candidates": [
+      {
+       "id": "cand-1",
+       "lon": 69.598224,
+       "lat": 42.311137,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 30
+      },
+      {
+       "id": "cand-2",
+       "lon": 69.612799,
+       "lat": 42.311137,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 40
+      },
+      {
+       "id": "cand-3",
+       "lon": 69.605512,
+       "lat": 42.321018,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 50
+      },
+      {
+       "id": "cand-4",
+       "lon": 69.598224,
+       "lat": 42.320119,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 20
+      },
+      {
+       "id": "cand-5",
+       "lon": 69.612799,
+       "lat": 42.320119,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 60
+      },
+      {
+       "id": "cand-on-iso",
+       "lon": 69.61052,
+       "lat": 42.32027,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 35
+      }
+     ],
+     "budget": 100,
+     "max_selected": 2,
+     "coverage_radius_m": 500,
+     "required_ids": [],
+     "excluded_ids": [],
+     "selected_ids": [
+      "cand-1",
+      "cand-on-iso"
+     ]
+    },
+    "cases": [
+     {
+      "id": "one-isolated",
+      "label": "Условно без записи: Реклама 42",
+      "disabled_source_ids": [
+       "01961e84-815f-4bd1-85c3-6bf1734256ec"
+      ]
+     },
+     {
+      "id": "one-of-shared-0",
+      "label": "Условно без записи: Express toefl",
+      "disabled_source_ids": [
+       "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+      ]
+     },
+     {
+      "id": "one-of-shared-1",
+      "label": "Условно без записи: ALEM мектебі",
+      "disabled_source_ids": [
+       "baeda67d-e701-4c2a-bba6-10a13466e76d"
+      ]
+     },
+     {
+      "id": "qa-colocated",
+      "label": "Условно без записей QA-группы COLOCATED (69.5958, 42.3167): 3 из 10",
+      "disabled_source_ids": [
+       "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+       "68c8f007-75bc-42f6-8da8-baa72042bde4",
+       "9d31b953-ccc4-42bd-a3a3-3e4e21f44051"
+      ]
+     },
+     {
+      "id": "near-centre-3",
+      "label": "Условно без выбранных записей (3): М.Х.Дулати атындағы үш тілде оқытатын N8 мамандандырылған  гимназия\" КММ, Учебный це…",
+      "disabled_source_ids": [
+       "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+       "931d6da5-e9db-4523-a6fd-79c88f235f88",
+       "fd50a858-462d-477f-8bc6-a8d3e03a9576"
+      ]
+     },
+     {
+      "id": "near-centre-3-again",
+      "label": "Те же три записи (повтор набора, другой порядок)",
+      "disabled_source_ids": [
+       "fd50a858-462d-477f-8bc6-a8d3e03a9576",
+       "931d6da5-e9db-4523-a6fd-79c88f235f88",
+       "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+      ]
+     },
+     {
+      "id": "all-records",
+      "label": "Условно без выбранных записей (15): Реклама 42, М.Х.Дулати атындағы үш тілде оқытатын N8 мамандандырылған  гимназия\" КМ…",
+      "disabled_source_ids": [
+       "01961e84-815f-4bd1-85c3-6bf1734256ec",
+       "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+       "176c5993-4b62-4e90-849f-88addc0153bb",
+       "18df815b-170a-437c-977f-0769690315d4",
+       "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+       "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+       "68c8f007-75bc-42f6-8da8-baa72042bde4",
+       "931d6da5-e9db-4523-a6fd-79c88f235f88",
+       "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+       "9d31b953-ccc4-42bd-a3a3-3e4e21f44051",
+       "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6",
+       "b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+       "baeda67d-e701-4c2a-bba6-10a13466e76d",
+       "bcd265d0-0799-4dbf-8b15-23bae752a4d2",
+       "fd50a858-462d-477f-8bc6-a8d3e03a9576"
+      ]
+     }
+    ]
+   },
+   "n_sources": 15,
+   "colocated_status": "ok",
+   "qa_groups_in_city": 2,
+   "shared_in_category": [
+    [
+     "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+     "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6"
+    ],
+    [
+     "baeda67d-e701-4c2a-bba6-10a13466e76d",
+     "bcd265d0-0799-4dbf-8b15-23bae752a4d2"
+    ],
+    [
+     "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+     "68c8f007-75bc-42f6-8da8-baa72042bde4",
+     "9d31b953-ccc4-42bd-a3a3-3e4e21f44051"
+    ]
+   ],
+   "notes": {
+    "one-of-shared-0": {
+     "point": "at-shared-0",
+     "excluded": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+     "remaining_same_xy": [
+      "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6"
+     ]
+    },
+    "one-of-shared-1": {
+     "point": "at-shared-1",
+     "excluded": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+     "remaining_same_xy": [
+      "bcd265d0-0799-4dbf-8b15-23bae752a4d2"
+     ]
+    },
+    "qa-colocated": {
+     "point": "at-colocated",
+     "group_index": 0,
+     "excluded": [
+      "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+      "68c8f007-75bc-42f6-8da8-baa72042bde4",
+      "9d31b953-ccc4-42bd-a3a3-3e4e21f44051"
+     ],
+     "other_categories_kept": [
+      "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "2264dcf0-549d-451a-b846-3f207d411e0c",
+      "6d4636dd-c9f3-4d9b-8c01-b361e86c8659",
+      "7bc29930-e875-4c3d-b805-97cbcfc81159",
+      "b08d41c4-c682-4335-94fc-65dac48411ed",
+      "c2990416-dca7-4e3a-b539-30e69cadf724",
+      "f4d6818b-1a99-43ca-8533-4c556f448919"
+     ]
+    }
+   },
+   "expected_base": {
+    "base": [
+     {
+      "point": "at-iso",
+      "base": {
+       "id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+       "mm": 0,
+       "tied_ids": [
+        "01961e84-815f-4bd1-85c3-6bf1734256ec"
+       ]
+      }
+     },
+     {
+      "point": "at-shared-0",
+      "base": {
+       "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+       "mm": 0,
+       "tied_ids": [
+        "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+        "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6"
+       ]
+      }
+     },
+     {
+      "point": "at-shared-1",
+      "base": {
+       "id": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+       "mm": 0,
+       "tied_ids": [
+        "baeda67d-e701-4c2a-bba6-10a13466e76d",
+        "bcd265d0-0799-4dbf-8b15-23bae752a4d2"
+       ]
+      }
+     },
+     {
+      "point": "at-colocated",
+      "base": {
+       "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+       "mm": 0,
+       "tied_ids": [
+        "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+        "68c8f007-75bc-42f6-8da8-baa72042bde4",
+        "9d31b953-ccc4-42bd-a3a3-3e4e21f44051"
+       ]
+      }
+     },
+     {
+      "point": "grid-00",
+      "base": {
+       "id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+       "mm": 409144,
+       "tied_ids": [
+        "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       ]
+      }
+     },
+     {
+      "point": "grid-01",
+      "base": {
+       "id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+       "mm": 172669,
+       "tied_ids": [
+        "b428a01b-fb2a-4dc1-b118-2127814b1fe9"
+       ]
+      }
+     },
+     {
+      "point": "grid-10",
+      "base": {
+       "id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+       "mm": 641897,
+       "tied_ids": [
+        "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       ]
+      }
+     },
+     {
+      "point": "grid-11",
+      "base": {
+       "id": "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+       "mm": 181832,
+       "tied_ids": [
+        "537980b9-4d8b-4c25-8e27-a6af60ffac34"
+       ]
+      }
+     },
+     {
+      "point": "grid-20",
+      "base": {
+       "id": "18df815b-170a-437c-977f-0769690315d4",
+       "mm": 206119,
+       "tied_ids": [
+        "18df815b-170a-437c-977f-0769690315d4"
+       ]
+      }
+     },
+     {
+      "point": "grid-21",
+      "base": {
+       "id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+       "mm": 254523,
+       "tied_ids": [
+        "01961e84-815f-4bd1-85c3-6bf1734256ec"
+       ]
+      }
+     },
+     {
+      "point": "center",
+      "base": {
+       "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+       "mm": 243856,
+       "tied_ids": [
+        "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+       ]
+      }
+     }
+    ],
+    "one-isolated": [
+     {
+      "point": "at-iso",
+      "base": {
+       "id": "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+       "mm": 464586,
+       "tied_ids": [
+        "537980b9-4d8b-4c25-8e27-a6af60ffac34"
+       ]
+      }
+     },
+     {
+      "point": "at-shared-0",
+      "base": {
+       "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+       "mm": 0,
+       "tied_ids": [
+        "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+        "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6"
+       ]
+      }
+     },
+     {
+      "point": "at-shared-1",
+      "base": {
+       "id": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+       "mm": 0,
+       "tied_ids": [
+        "baeda67d-e701-4c2a-bba6-10a13466e76d",
+        "bcd265d0-0799-4dbf-8b15-23bae752a4d2"
+       ]
+      }
+     },
+     {
+      "point": "at-colocated",
+      "base": {
+       "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+       "mm": 0,
+       "tied_ids": [
+        "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+        "68c8f007-75bc-42f6-8da8-baa72042bde4",
+        "9d31b953-ccc4-42bd-a3a3-3e4e21f44051"
+       ]
+      }
+     },
+     {
+      "point": "grid-00",
+      "base": {
+       "id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+       "mm": 409144,
+       "tied_ids": [
+        "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       ]
+      }
+     },
+     {
+      "point": "grid-01",
+      "base": {
+       "id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+       "mm": 172669,
+       "tied_ids": [
+        "b428a01b-fb2a-4dc1-b118-2127814b1fe9"
+       ]
+      }
+     },
+     {
+      "point": "grid-10",
+      "base": {
+       "id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+       "mm": 641897,
+       "tied_ids": [
+        "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       ]
+      }
+     },
+     {
+      "point": "grid-11",
+      "base": {
+       "id": "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+       "mm": 181832,
+       "tied_ids": [
+        "537980b9-4d8b-4c25-8e27-a6af60ffac34"
+       ]
+      }
+     },
+     {
+      "point": "grid-20",
+      "base": {
+       "id": "18df815b-170a-437c-977f-0769690315d4",
+       "mm": 206119,
+       "tied_ids": [
+        "18df815b-170a-437c-977f-0769690315d4"
+       ]
+      }
+     },
+     {
+      "point": "grid-21",
+      "base": {
+       "id": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+       "mm": 362614,
+       "tied_ids": [
+        "baeda67d-e701-4c2a-bba6-10a13466e76d",
+        "bcd265d0-0799-4dbf-8b15-23bae752a4d2"
+       ]
+      }
+     },
+     {
+      "point": "center",
+      "base": {
+       "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+       "mm": 243856,
+       "tied_ids": [
+        "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+       ]
+      }
+     }
+    ],
+    "one-of-shared-0": [
+     {
+      "point": "at-iso",
+      "base": {
+       "id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+       "mm": 0,
+       "tied_ids": [
+        "01961e84-815f-4bd1-85c3-6bf1734256ec"
+       ]
+      }
+     },
+     {
+      "point": "at-shared-0",
+      "base": {
+       "id": "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6",
+       "mm": 0,
+       "tied_ids": [
+        "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6"
+       ]
+      }
+     },
+     {
+      "point": "at-shared-1",
+      "base": {
+       "id": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+       "mm": 0,
+       "tied_ids": [
+        "baeda67d-e701-4c2a-bba6-10a13466e76d",
+        "bcd265d0-0799-4dbf-8b15-23bae752a4d2"
+       ]
+      }
+     },
+     {
+      "point": "at-colocated",
+      "base": {
+       "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+       "mm": 0,
+       "tied_ids": [
+        "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+        "68c8f007-75bc-42f6-8da8-baa72042bde4",
+        "9d31b953-ccc4-42bd-a3a3-3e4e21f44051"
+       ]
+      }
+     },
+     {
+      "point": "grid-00",
+      "base": {
+       "id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+       "mm": 409144,
+       "tied_ids": [
+        "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       ]
+      }
+     },
+     {
+      "point": "grid-01",
+      "base": {
+       "id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+       "mm": 172669,
+       "tied_ids": [
+        "b428a01b-fb2a-4dc1-b118-2127814b1fe9"
+       ]
+      }
+     },
+     {
+      "point": "grid-10",
+      "base": {
+       "id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+       "mm": 641897,
+       "tied_ids": [
+        "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       ]
+      }
+     },
+     {
+      "point": "grid-11",
+      "base": {
+       "id": "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+       "mm": 181832,
+       "tied_ids": [
+        "537980b9-4d8b-4c25-8e27-a6af60ffac34"
+       ]
+      }
+     },
+     {
+      "point": "grid-20",
+      "base": {
+       "id": "18df815b-170a-437c-977f-0769690315d4",
+       "mm": 206119,
+       "tied_ids": [
+        "18df815b-170a-437c-977f-0769690315d4"
+       ]
+      }
+     },
+     {
+      "point": "grid-21",
+      "base": {
+       "id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+       "mm": 254523,
+       "tied_ids": [
+        "01961e84-815f-4bd1-85c3-6bf1734256ec"
+       ]
+      }
+     },
+     {
+      "point": "center",
+      "base": {
+       "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+       "mm": 243856,
+       "tied_ids": [
+        "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+       ]
+      }
+     }
+    ],
+    "one-of-shared-1": [
+     {
+      "point": "at-iso",
+      "base": {
+       "id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+       "mm": 0,
+       "tied_ids": [
+        "01961e84-815f-4bd1-85c3-6bf1734256ec"
+       ]
+      }
+     },
+     {
+      "point": "at-shared-0",
+      "base": {
+       "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+       "mm": 0,
+       "tied_ids": [
+        "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+        "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6"
+       ]
+      }
+     },
+     {
+      "point": "at-shared-1",
+      "base": {
+       "id": "bcd265d0-0799-4dbf-8b15-23bae752a4d2",
+       "mm": 0,
+       "tied_ids": [
+        "bcd265d0-0799-4dbf-8b15-23bae752a4d2"
+       ]
+      }
+     },
+     {
+      "point": "at-colocated",
+      "base": {
+       "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+       "mm": 0,
+       "tied_ids": [
+        "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+        "68c8f007-75bc-42f6-8da8-baa72042bde4",
+        "9d31b953-ccc4-42bd-a3a3-3e4e21f44051"
+       ]
+      }
+     },
+     {
+      "point": "grid-00",
+      "base": {
+       "id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+       "mm": 409144,
+       "tied_ids": [
+        "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       ]
+      }
+     },
+     {
+      "point": "grid-01",
+      "base": {
+       "id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+       "mm": 172669,
+       "tied_ids": [
+        "b428a01b-fb2a-4dc1-b118-2127814b1fe9"
+       ]
+      }
+     },
+     {
+      "point": "grid-10",
+      "base": {
+       "id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+       "mm": 641897,
+       "tied_ids": [
+        "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       ]
+      }
+     },
+     {
+      "point": "grid-11",
+      "base": {
+       "id": "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+       "mm": 181832,
+       "tied_ids": [
+        "537980b9-4d8b-4c25-8e27-a6af60ffac34"
+       ]
+      }
+     },
+     {
+      "point": "grid-20",
+      "base": {
+       "id": "18df815b-170a-437c-977f-0769690315d4",
+       "mm": 206119,
+       "tied_ids": [
+        "18df815b-170a-437c-977f-0769690315d4"
+       ]
+      }
+     },
+     {
+      "point": "grid-21",
+      "base": {
+       "id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+       "mm": 254523,
+       "tied_ids": [
+        "01961e84-815f-4bd1-85c3-6bf1734256ec"
+       ]
+      }
+     },
+     {
+      "point": "center",
+      "base": {
+       "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+       "mm": 243856,
+       "tied_ids": [
+        "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+       ]
+      }
+     }
+    ],
+    "qa-colocated": [
+     {
+      "point": "at-iso",
+      "base": {
+       "id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+       "mm": 0,
+       "tied_ids": [
+        "01961e84-815f-4bd1-85c3-6bf1734256ec"
+       ]
+      }
+     },
+     {
+      "point": "at-shared-0",
+      "base": {
+       "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+       "mm": 0,
+       "tied_ids": [
+        "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+        "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6"
+       ]
+      }
+     },
+     {
+      "point": "at-shared-1",
+      "base": {
+       "id": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+       "mm": 0,
+       "tied_ids": [
+        "baeda67d-e701-4c2a-bba6-10a13466e76d",
+        "bcd265d0-0799-4dbf-8b15-23bae752a4d2"
+       ]
+      }
+     },
+     {
+      "point": "at-colocated",
+      "base": {
+       "id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+       "mm": 368703,
+       "tied_ids": [
+        "b428a01b-fb2a-4dc1-b118-2127814b1fe9"
+       ]
+      }
+     },
+     {
+      "point": "grid-00",
+      "base": {
+       "id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+       "mm": 409144,
+       "tied_ids": [
+        "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       ]
+      }
+     },
+     {
+      "point": "grid-01",
+      "base": {
+       "id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+       "mm": 172669,
+       "tied_ids": [
+        "b428a01b-fb2a-4dc1-b118-2127814b1fe9"
+       ]
+      }
+     },
+     {
+      "point": "grid-10",
+      "base": {
+       "id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+       "mm": 641897,
+       "tied_ids": [
+        "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       ]
+      }
+     },
+     {
+      "point": "grid-11",
+      "base": {
+       "id": "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+       "mm": 181832,
+       "tied_ids": [
+        "537980b9-4d8b-4c25-8e27-a6af60ffac34"
+       ]
+      }
+     },
+     {
+      "point": "grid-20",
+      "base": {
+       "id": "18df815b-170a-437c-977f-0769690315d4",
+       "mm": 206119,
+       "tied_ids": [
+        "18df815b-170a-437c-977f-0769690315d4"
+       ]
+      }
+     },
+     {
+      "point": "grid-21",
+      "base": {
+       "id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+       "mm": 254523,
+       "tied_ids": [
+        "01961e84-815f-4bd1-85c3-6bf1734256ec"
+       ]
+      }
+     },
+     {
+      "point": "center",
+      "base": {
+       "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+       "mm": 243856,
+       "tied_ids": [
+        "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+       ]
+      }
+     }
+    ],
+    "near-centre-3": [
+     {
+      "point": "at-iso",
+      "base": {
+       "id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+       "mm": 0,
+       "tied_ids": [
+        "01961e84-815f-4bd1-85c3-6bf1734256ec"
+       ]
+      }
+     },
+     {
+      "point": "at-shared-0",
+      "base": {
+       "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+       "mm": 0,
+       "tied_ids": [
+        "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+        "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6"
+       ]
+      }
+     },
+     {
+      "point": "at-shared-1",
+      "base": {
+       "id": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+       "mm": 0,
+       "tied_ids": [
+        "baeda67d-e701-4c2a-bba6-10a13466e76d",
+        "bcd265d0-0799-4dbf-8b15-23bae752a4d2"
+       ]
+      }
+     },
+     {
+      "point": "at-colocated",
+      "base": {
+       "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+       "mm": 0,
+       "tied_ids": [
+        "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+        "68c8f007-75bc-42f6-8da8-baa72042bde4",
+        "9d31b953-ccc4-42bd-a3a3-3e4e21f44051"
+       ]
+      }
+     },
+     {
+      "point": "grid-00",
+      "base": {
+       "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+       "mm": 632654,
+       "tied_ids": [
+        "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+        "68c8f007-75bc-42f6-8da8-baa72042bde4",
+        "9d31b953-ccc4-42bd-a3a3-3e4e21f44051"
+       ]
+      }
+     },
+     {
+      "point": "grid-01",
+      "base": {
+       "id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+       "mm": 172669,
+       "tied_ids": [
+        "b428a01b-fb2a-4dc1-b118-2127814b1fe9"
+       ]
+      }
+     },
+     {
+      "point": "grid-10",
+      "base": {
+       "id": "18df815b-170a-437c-977f-0769690315d4",
+       "mm": 786365,
+       "tied_ids": [
+        "18df815b-170a-437c-977f-0769690315d4"
+       ]
+      }
+     },
+     {
+      "point": "grid-11",
+      "base": {
+       "id": "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+       "mm": 181832,
+       "tied_ids": [
+        "537980b9-4d8b-4c25-8e27-a6af60ffac34"
+       ]
+      }
+     },
+     {
+      "point": "grid-20",
+      "base": {
+       "id": "18df815b-170a-437c-977f-0769690315d4",
+       "mm": 206119,
+       "tied_ids": [
+        "18df815b-170a-437c-977f-0769690315d4"
+       ]
+      }
+     },
+     {
+      "point": "grid-21",
+      "base": {
+       "id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+       "mm": 254523,
+       "tied_ids": [
+        "01961e84-815f-4bd1-85c3-6bf1734256ec"
+       ]
+      }
+     },
+     {
+      "point": "center",
+      "base": {
+       "id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+       "mm": 660282,
+       "tied_ids": [
+        "01961e84-815f-4bd1-85c3-6bf1734256ec"
+       ]
+      }
+     }
+    ],
+    "near-centre-3-again": [
+     {
+      "point": "at-iso",
+      "base": {
+       "id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+       "mm": 0,
+       "tied_ids": [
+        "01961e84-815f-4bd1-85c3-6bf1734256ec"
+       ]
+      }
+     },
+     {
+      "point": "at-shared-0",
+      "base": {
+       "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+       "mm": 0,
+       "tied_ids": [
+        "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+        "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6"
+       ]
+      }
+     },
+     {
+      "point": "at-shared-1",
+      "base": {
+       "id": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+       "mm": 0,
+       "tied_ids": [
+        "baeda67d-e701-4c2a-bba6-10a13466e76d",
+        "bcd265d0-0799-4dbf-8b15-23bae752a4d2"
+       ]
+      }
+     },
+     {
+      "point": "at-colocated",
+      "base": {
+       "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+       "mm": 0,
+       "tied_ids": [
+        "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+        "68c8f007-75bc-42f6-8da8-baa72042bde4",
+        "9d31b953-ccc4-42bd-a3a3-3e4e21f44051"
+       ]
+      }
+     },
+     {
+      "point": "grid-00",
+      "base": {
+       "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+       "mm": 632654,
+       "tied_ids": [
+        "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+        "68c8f007-75bc-42f6-8da8-baa72042bde4",
+        "9d31b953-ccc4-42bd-a3a3-3e4e21f44051"
+       ]
+      }
+     },
+     {
+      "point": "grid-01",
+      "base": {
+       "id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+       "mm": 172669,
+       "tied_ids": [
+        "b428a01b-fb2a-4dc1-b118-2127814b1fe9"
+       ]
+      }
+     },
+     {
+      "point": "grid-10",
+      "base": {
+       "id": "18df815b-170a-437c-977f-0769690315d4",
+       "mm": 786365,
+       "tied_ids": [
+        "18df815b-170a-437c-977f-0769690315d4"
+       ]
+      }
+     },
+     {
+      "point": "grid-11",
+      "base": {
+       "id": "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+       "mm": 181832,
+       "tied_ids": [
+        "537980b9-4d8b-4c25-8e27-a6af60ffac34"
+       ]
+      }
+     },
+     {
+      "point": "grid-20",
+      "base": {
+       "id": "18df815b-170a-437c-977f-0769690315d4",
+       "mm": 206119,
+       "tied_ids": [
+        "18df815b-170a-437c-977f-0769690315d4"
+       ]
+      }
+     },
+     {
+      "point": "grid-21",
+      "base": {
+       "id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+       "mm": 254523,
+       "tied_ids": [
+        "01961e84-815f-4bd1-85c3-6bf1734256ec"
+       ]
+      }
+     },
+     {
+      "point": "center",
+      "base": {
+       "id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+       "mm": 660282,
+       "tied_ids": [
+        "01961e84-815f-4bd1-85c3-6bf1734256ec"
+       ]
+      }
+     }
+    ],
+    "all-records": [
+     {
+      "point": "at-iso",
+      "base": null
+     },
+     {
+      "point": "at-shared-0",
+      "base": null
+     },
+     {
+      "point": "at-shared-1",
+      "base": null
+     },
+     {
+      "point": "at-colocated",
+      "base": null
+     },
+     {
+      "point": "grid-00",
+      "base": null
+     },
+     {
+      "point": "grid-01",
+      "base": null
+     },
+     {
+      "point": "grid-10",
+      "base": null
+     },
+     {
+      "point": "grid-11",
+      "base": null
+     },
+     {
+      "point": "grid-20",
+      "base": null
+     },
+     {
+      "point": "grid-21",
+      "base": null
+     },
+     {
+      "point": "center",
+      "base": null
+     }
+    ]
+   },
+   "expected_after_manual": {
+    "base": [
+     {
+      "point": "at-iso",
+      "before_mm": 0,
+      "before_id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "01961e84-815f-4bd1-85c3-6bf1734256ec"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "at-shared-0",
+      "before_mm": 0,
+      "before_id": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "at-shared-1",
+      "before_mm": 0,
+      "before_id": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "baeda67d-e701-4c2a-bba6-10a13466e76d"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "at-colocated",
+      "before_mm": 0,
+      "before_id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-00",
+      "before_mm": 409144,
+      "before_id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+      "after_mm": 66605,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-1"
+      },
+      "delta_mm": 342539
+     },
+     {
+      "point": "grid-01",
+      "before_mm": 172669,
+      "before_id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+      "after_mm": 172669,
+      "after": {
+       "kind": "source",
+       "id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-10",
+      "before_mm": 641897,
+      "before_id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+      "after_mm": 599283,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-1"
+      },
+      "delta_mm": 42614
+     },
+     {
+      "point": "grid-11",
+      "before_mm": 181832,
+      "before_id": "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+      "after_mm": 181832,
+      "after": {
+       "kind": "source",
+       "id": "537980b9-4d8b-4c25-8e27-a6af60ffac34"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-20",
+      "before_mm": 206119,
+      "before_id": "18df815b-170a-437c-977f-0769690315d4",
+      "after_mm": 206119,
+      "after": {
+       "kind": "source",
+       "id": "18df815b-170a-437c-977f-0769690315d4"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-21",
+      "before_mm": 254523,
+      "before_id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+      "after_mm": 254523,
+      "after": {
+       "kind": "source",
+       "id": "01961e84-815f-4bd1-85c3-6bf1734256ec"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "center",
+      "before_mm": 243856,
+      "before_id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+      "after_mm": 243856,
+      "after": {
+       "kind": "source",
+       "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+      },
+      "delta_mm": 0
+     }
+    ],
+    "one-isolated": [
+     {
+      "point": "at-iso",
+      "before_mm": 464586,
+      "before_id": "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+      "after_mm": 0,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-on-iso"
+      },
+      "delta_mm": 464586
+     },
+     {
+      "point": "at-shared-0",
+      "before_mm": 0,
+      "before_id": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "at-shared-1",
+      "before_mm": 0,
+      "before_id": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "baeda67d-e701-4c2a-bba6-10a13466e76d"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "at-colocated",
+      "before_mm": 0,
+      "before_id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-00",
+      "before_mm": 409144,
+      "before_id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+      "after_mm": 66605,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-1"
+      },
+      "delta_mm": 342539
+     },
+     {
+      "point": "grid-01",
+      "before_mm": 172669,
+      "before_id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+      "after_mm": 172669,
+      "after": {
+       "kind": "source",
+       "id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-10",
+      "before_mm": 641897,
+      "before_id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+      "after_mm": 599283,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-1"
+      },
+      "delta_mm": 42614
+     },
+     {
+      "point": "grid-11",
+      "before_mm": 181832,
+      "before_id": "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+      "after_mm": 181832,
+      "after": {
+       "kind": "source",
+       "id": "537980b9-4d8b-4c25-8e27-a6af60ffac34"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-20",
+      "before_mm": 206119,
+      "before_id": "18df815b-170a-437c-977f-0769690315d4",
+      "after_mm": 206119,
+      "after": {
+       "kind": "source",
+       "id": "18df815b-170a-437c-977f-0769690315d4"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-21",
+      "before_mm": 362614,
+      "before_id": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+      "after_mm": 254523,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-on-iso"
+      },
+      "delta_mm": 108091
+     },
+     {
+      "point": "center",
+      "before_mm": 243856,
+      "before_id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+      "after_mm": 243856,
+      "after": {
+       "kind": "source",
+       "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+      },
+      "delta_mm": 0
+     }
+    ],
+    "one-of-shared-0": [
+     {
+      "point": "at-iso",
+      "before_mm": 0,
+      "before_id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "01961e84-815f-4bd1-85c3-6bf1734256ec"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "at-shared-0",
+      "before_mm": 0,
+      "before_id": "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "at-shared-1",
+      "before_mm": 0,
+      "before_id": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "baeda67d-e701-4c2a-bba6-10a13466e76d"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "at-colocated",
+      "before_mm": 0,
+      "before_id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-00",
+      "before_mm": 409144,
+      "before_id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+      "after_mm": 66605,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-1"
+      },
+      "delta_mm": 342539
+     },
+     {
+      "point": "grid-01",
+      "before_mm": 172669,
+      "before_id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+      "after_mm": 172669,
+      "after": {
+       "kind": "source",
+       "id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-10",
+      "before_mm": 641897,
+      "before_id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+      "after_mm": 599283,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-1"
+      },
+      "delta_mm": 42614
+     },
+     {
+      "point": "grid-11",
+      "before_mm": 181832,
+      "before_id": "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+      "after_mm": 181832,
+      "after": {
+       "kind": "source",
+       "id": "537980b9-4d8b-4c25-8e27-a6af60ffac34"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-20",
+      "before_mm": 206119,
+      "before_id": "18df815b-170a-437c-977f-0769690315d4",
+      "after_mm": 206119,
+      "after": {
+       "kind": "source",
+       "id": "18df815b-170a-437c-977f-0769690315d4"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-21",
+      "before_mm": 254523,
+      "before_id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+      "after_mm": 254523,
+      "after": {
+       "kind": "source",
+       "id": "01961e84-815f-4bd1-85c3-6bf1734256ec"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "center",
+      "before_mm": 243856,
+      "before_id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+      "after_mm": 243856,
+      "after": {
+       "kind": "source",
+       "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+      },
+      "delta_mm": 0
+     }
+    ],
+    "one-of-shared-1": [
+     {
+      "point": "at-iso",
+      "before_mm": 0,
+      "before_id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "01961e84-815f-4bd1-85c3-6bf1734256ec"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "at-shared-0",
+      "before_mm": 0,
+      "before_id": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "at-shared-1",
+      "before_mm": 0,
+      "before_id": "bcd265d0-0799-4dbf-8b15-23bae752a4d2",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "bcd265d0-0799-4dbf-8b15-23bae752a4d2"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "at-colocated",
+      "before_mm": 0,
+      "before_id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-00",
+      "before_mm": 409144,
+      "before_id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+      "after_mm": 66605,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-1"
+      },
+      "delta_mm": 342539
+     },
+     {
+      "point": "grid-01",
+      "before_mm": 172669,
+      "before_id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+      "after_mm": 172669,
+      "after": {
+       "kind": "source",
+       "id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-10",
+      "before_mm": 641897,
+      "before_id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+      "after_mm": 599283,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-1"
+      },
+      "delta_mm": 42614
+     },
+     {
+      "point": "grid-11",
+      "before_mm": 181832,
+      "before_id": "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+      "after_mm": 181832,
+      "after": {
+       "kind": "source",
+       "id": "537980b9-4d8b-4c25-8e27-a6af60ffac34"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-20",
+      "before_mm": 206119,
+      "before_id": "18df815b-170a-437c-977f-0769690315d4",
+      "after_mm": 206119,
+      "after": {
+       "kind": "source",
+       "id": "18df815b-170a-437c-977f-0769690315d4"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-21",
+      "before_mm": 254523,
+      "before_id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+      "after_mm": 254523,
+      "after": {
+       "kind": "source",
+       "id": "01961e84-815f-4bd1-85c3-6bf1734256ec"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "center",
+      "before_mm": 243856,
+      "before_id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+      "after_mm": 243856,
+      "after": {
+       "kind": "source",
+       "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+      },
+      "delta_mm": 0
+     }
+    ],
+    "qa-colocated": [
+     {
+      "point": "at-iso",
+      "before_mm": 0,
+      "before_id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "01961e84-815f-4bd1-85c3-6bf1734256ec"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "at-shared-0",
+      "before_mm": 0,
+      "before_id": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "at-shared-1",
+      "before_mm": 0,
+      "before_id": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "baeda67d-e701-4c2a-bba6-10a13466e76d"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "at-colocated",
+      "before_mm": 368703,
+      "before_id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+      "after_mm": 368703,
+      "after": {
+       "kind": "source",
+       "id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-00",
+      "before_mm": 409144,
+      "before_id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+      "after_mm": 66605,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-1"
+      },
+      "delta_mm": 342539
+     },
+     {
+      "point": "grid-01",
+      "before_mm": 172669,
+      "before_id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+      "after_mm": 172669,
+      "after": {
+       "kind": "source",
+       "id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-10",
+      "before_mm": 641897,
+      "before_id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+      "after_mm": 599283,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-1"
+      },
+      "delta_mm": 42614
+     },
+     {
+      "point": "grid-11",
+      "before_mm": 181832,
+      "before_id": "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+      "after_mm": 181832,
+      "after": {
+       "kind": "source",
+       "id": "537980b9-4d8b-4c25-8e27-a6af60ffac34"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-20",
+      "before_mm": 206119,
+      "before_id": "18df815b-170a-437c-977f-0769690315d4",
+      "after_mm": 206119,
+      "after": {
+       "kind": "source",
+       "id": "18df815b-170a-437c-977f-0769690315d4"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-21",
+      "before_mm": 254523,
+      "before_id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+      "after_mm": 254523,
+      "after": {
+       "kind": "source",
+       "id": "01961e84-815f-4bd1-85c3-6bf1734256ec"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "center",
+      "before_mm": 243856,
+      "before_id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+      "after_mm": 243856,
+      "after": {
+       "kind": "source",
+       "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+      },
+      "delta_mm": 0
+     }
+    ],
+    "near-centre-3": [
+     {
+      "point": "at-iso",
+      "before_mm": 0,
+      "before_id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "01961e84-815f-4bd1-85c3-6bf1734256ec"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "at-shared-0",
+      "before_mm": 0,
+      "before_id": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "at-shared-1",
+      "before_mm": 0,
+      "before_id": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "baeda67d-e701-4c2a-bba6-10a13466e76d"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "at-colocated",
+      "before_mm": 0,
+      "before_id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-00",
+      "before_mm": 632654,
+      "before_id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+      "after_mm": 66605,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-1"
+      },
+      "delta_mm": 566049
+     },
+     {
+      "point": "grid-01",
+      "before_mm": 172669,
+      "before_id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+      "after_mm": 172669,
+      "after": {
+       "kind": "source",
+       "id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-10",
+      "before_mm": 786365,
+      "before_id": "18df815b-170a-437c-977f-0769690315d4",
+      "after_mm": 599283,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-1"
+      },
+      "delta_mm": 187082
+     },
+     {
+      "point": "grid-11",
+      "before_mm": 181832,
+      "before_id": "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+      "after_mm": 181832,
+      "after": {
+       "kind": "source",
+       "id": "537980b9-4d8b-4c25-8e27-a6af60ffac34"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-20",
+      "before_mm": 206119,
+      "before_id": "18df815b-170a-437c-977f-0769690315d4",
+      "after_mm": 206119,
+      "after": {
+       "kind": "source",
+       "id": "18df815b-170a-437c-977f-0769690315d4"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-21",
+      "before_mm": 254523,
+      "before_id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+      "after_mm": 254523,
+      "after": {
+       "kind": "source",
+       "id": "01961e84-815f-4bd1-85c3-6bf1734256ec"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "center",
+      "before_mm": 660282,
+      "before_id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+      "after_mm": 660282,
+      "after": {
+       "kind": "source",
+       "id": "01961e84-815f-4bd1-85c3-6bf1734256ec"
+      },
+      "delta_mm": 0
+     }
+    ],
+    "near-centre-3-again": [
+     {
+      "point": "at-iso",
+      "before_mm": 0,
+      "before_id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "01961e84-815f-4bd1-85c3-6bf1734256ec"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "at-shared-0",
+      "before_mm": 0,
+      "before_id": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "at-shared-1",
+      "before_mm": 0,
+      "before_id": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "baeda67d-e701-4c2a-bba6-10a13466e76d"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "at-colocated",
+      "before_mm": 0,
+      "before_id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-00",
+      "before_mm": 632654,
+      "before_id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+      "after_mm": 66605,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-1"
+      },
+      "delta_mm": 566049
+     },
+     {
+      "point": "grid-01",
+      "before_mm": 172669,
+      "before_id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+      "after_mm": 172669,
+      "after": {
+       "kind": "source",
+       "id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-10",
+      "before_mm": 786365,
+      "before_id": "18df815b-170a-437c-977f-0769690315d4",
+      "after_mm": 599283,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-1"
+      },
+      "delta_mm": 187082
+     },
+     {
+      "point": "grid-11",
+      "before_mm": 181832,
+      "before_id": "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+      "after_mm": 181832,
+      "after": {
+       "kind": "source",
+       "id": "537980b9-4d8b-4c25-8e27-a6af60ffac34"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-20",
+      "before_mm": 206119,
+      "before_id": "18df815b-170a-437c-977f-0769690315d4",
+      "after_mm": 206119,
+      "after": {
+       "kind": "source",
+       "id": "18df815b-170a-437c-977f-0769690315d4"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-21",
+      "before_mm": 254523,
+      "before_id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+      "after_mm": 254523,
+      "after": {
+       "kind": "source",
+       "id": "01961e84-815f-4bd1-85c3-6bf1734256ec"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "center",
+      "before_mm": 660282,
+      "before_id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+      "after_mm": 660282,
+      "after": {
+       "kind": "source",
+       "id": "01961e84-815f-4bd1-85c3-6bf1734256ec"
+      },
+      "delta_mm": 0
+     }
+    ],
+    "all-records": [
+     {
+      "point": "at-iso",
+      "before_mm": null,
+      "before_id": null,
+      "after_mm": 0,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-on-iso"
+      },
+      "delta_mm": null
+     },
+     {
+      "point": "at-shared-0",
+      "before_mm": null,
+      "before_id": null,
+      "after_mm": 1329629,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-on-iso"
+      },
+      "delta_mm": null
+     },
+     {
+      "point": "at-shared-1",
+      "before_mm": null,
+      "before_id": null,
+      "after_mm": 516962,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-on-iso"
+      },
+      "delta_mm": null
+     },
+     {
+      "point": "at-colocated",
+      "before_mm": null,
+      "before_id": null,
+      "after_mm": 649896,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-1"
+      },
+      "delta_mm": null
+     },
+     {
+      "point": "grid-00",
+      "before_mm": null,
+      "before_id": null,
+      "after_mm": 66605,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-1"
+      },
+      "delta_mm": null
+     },
+     {
+      "point": "grid-01",
+      "before_mm": null,
+      "before_id": null,
+      "after_mm": 1000972,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-1"
+      },
+      "delta_mm": null
+     },
+     {
+      "point": "grid-10",
+      "before_mm": null,
+      "before_id": null,
+      "after_mm": 599283,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-1"
+      },
+      "delta_mm": null
+     },
+     {
+      "point": "grid-11",
+      "before_mm": null,
+      "before_id": null,
+      "after_mm": 412085,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-on-iso"
+      },
+      "delta_mm": null
+     },
+     {
+      "point": "grid-20",
+      "before_mm": null,
+      "before_id": null,
+      "after_mm": 1046824,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-on-iso"
+      },
+      "delta_mm": null
+     },
+     {
+      "point": "grid-21",
+      "before_mm": null,
+      "before_id": null,
+      "after_mm": 254523,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-on-iso"
+      },
+      "delta_mm": null
+     },
+     {
+      "point": "center",
+      "before_mm": null,
+      "before_id": null,
+      "after_mm": 660282,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-on-iso"
+      },
+      "delta_mm": null
+     }
+    ]
+   },
+   "asserts": [
+    {
+     "case": "one-isolated",
+     "point": "at-iso",
+     "rule": "исключена запись в точке: ближайшая — другая запись дальше 0 мм",
+     "ok": true
+    },
+    {
+     "case": "one-of-shared-0",
+     "point": "at-shared-0",
+     "rule": "исключена одна запись из общих координат: соседняя запись в тех же координатах, 0 мм",
+     "ok": true
+    },
+    {
+     "case": "one-of-shared-1",
+     "point": "at-shared-1",
+     "rule": "исключена одна запись из общих координат: соседняя запись в тех же координатах, 0 мм",
+     "ok": true
+    },
+    {
+     "case": "qa-colocated",
+     "point": "at-colocated",
+     "rule": "исключены все записи категории QA-группы: ближайшая дальше 0 мм, записи других категорий не участвуют",
+     "ok": true
+    },
+    {
+     "case": "all-records",
+     "point": "*",
+     "rule": "исключены все записи категории: до = неизвестно (None), а не 0",
+     "ok": true
+    }
+   ],
+   "brute_force": {
+    "status": "optimal",
+    "subsets": 64,
+    "feasible_count": 21,
+    "nominal": {
+     "selected_ids": [
+      "cand-1",
+      "cand-5"
+     ],
+     "worst_vector": {
+      "unknown_count": 0,
+      "weighted_sum_mm": 16232506,
+      "max_mm": 1403929
+     },
+     "worst_case_ids": [
+      "all-records"
+     ],
+     "base_weighted_mean_mm": 117776.3870967742,
+     "loss": {
+      "base": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 3651068,
+       "max_mm": 599283
+      },
+      "one-isolated": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 3839191,
+       "max_mm": 599283
+      },
+      "one-of-shared-0": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 3651068,
+       "max_mm": 599283
+      },
+      "one-of-shared-1": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 3651068,
+       "max_mm": 599283
+      },
+      "qa-colocated": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 5125880,
+       "max_mm": 599283
+      },
+      "near-centre-3": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 4067494,
+       "max_mm": 660282
+      },
+      "near-centre-3-again": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 4067494,
+       "max_mm": 660282
+      },
+      "all-records": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 16232506,
+       "max_mm": 1403929
+      }
+     },
+     "cost": 90
+    },
+    "robust": {
+     "selected_ids": [
+      "cand-1",
+      "cand-5"
+     ],
+     "worst_vector": {
+      "unknown_count": 0,
+      "weighted_sum_mm": 16232506,
+      "max_mm": 1403929
+     },
+     "worst_case_ids": [
+      "all-records"
+     ],
+     "base_weighted_mean_mm": 117776.3870967742,
+     "loss": {
+      "base": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 3651068,
+       "max_mm": 599283
+      },
+      "one-isolated": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 3839191,
+       "max_mm": 599283
+      },
+      "one-of-shared-0": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 3651068,
+       "max_mm": 599283
+      },
+      "one-of-shared-1": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 3651068,
+       "max_mm": 599283
+      },
+      "qa-colocated": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 5125880,
+       "max_mm": 599283
+      },
+      "near-centre-3": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 4067494,
+       "max_mm": 660282
+      },
+      "near-centre-3-again": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 4067494,
+       "max_mm": 660282
+      },
+      "all-records": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 16232506,
+       "max_mm": 1403929
+      }
+     },
+     "cost": 90
+    },
+    "same_plan": true,
+    "price_of_robustness_m": 0.0
+   },
+   "identical_sets": [
+    [
+     "near-centre-3",
+     "near-centre-3-again"
+    ]
+   ]
+  },
+  {
+   "city": "shymkent",
+   "category": "outpatient_clinic",
+   "envelope": {
+    "schema_version": "city-resilience-v1",
+    "plan": {
+     "schema_version": "city-plan-v2",
+     "city_id": "shymkent",
+     "source_snapshot": "sha256:a9326b5633c513c0bfeccbb2248b26cf3b706c902f77745073a2959ad8d7ff3e",
+     "category": "outpatient_clinic",
+     "control_points": [
+      {
+       "id": "at-iso",
+       "lon": 69.607757,
+       "lat": 42.306934,
+       "weight": 1
+      },
+      {
+       "id": "at-shared-0",
+       "lon": 69.60702,
+       "lat": 42.31757,
+       "weight": 2
+      },
+      {
+       "id": "at-shared-1",
+       "lon": 69.5958,
+       "lat": 42.3167,
+       "weight": 3
+      },
+      {
+       "id": "at-colocated",
+       "lon": 69.5958,
+       "lat": 42.3167,
+       "weight": 4
+      },
+      {
+       "id": "grid-00",
+       "lon": 69.597414,
+       "lat": 42.311137,
+       "weight": 5
+      },
+      {
+       "id": "grid-01",
+       "lon": 69.597414,
+       "lat": 42.320119,
+       "weight": 1
+      },
+      {
+       "id": "grid-10",
+       "lon": 69.605512,
+       "lat": 42.311137,
+       "weight": 2
+      },
+      {
+       "id": "grid-11",
+       "lon": 69.605512,
+       "lat": 42.320119,
+       "weight": 3
+      },
+      {
+       "id": "grid-20",
+       "lon": 69.613609,
+       "lat": 42.311137,
+       "weight": 4
+      },
+      {
+       "id": "grid-21",
+       "lon": 69.613609,
+       "lat": 42.320119,
+       "weight": 5
+      },
+      {
+       "id": "center",
+       "lon": 69.605512,
+       "lat": 42.315628,
+       "weight": 1
+      }
+     ],
+     "candidates": [
+      {
+       "id": "cand-1",
+       "lon": 69.598224,
+       "lat": 42.311137,
+       "category": "outpatient_clinic",
+       "kind": "hypothetical",
+       "cost": 30
+      },
+      {
+       "id": "cand-2",
+       "lon": 69.612799,
+       "lat": 42.311137,
+       "category": "outpatient_clinic",
+       "kind": "hypothetical",
+       "cost": 40
+      },
+      {
+       "id": "cand-3",
+       "lon": 69.605512,
+       "lat": 42.321018,
+       "category": "outpatient_clinic",
+       "kind": "hypothetical",
+       "cost": 50
+      },
+      {
+       "id": "cand-4",
+       "lon": 69.598224,
+       "lat": 42.320119,
+       "category": "outpatient_clinic",
+       "kind": "hypothetical",
+       "cost": 20
+      },
+      {
+       "id": "cand-5",
+       "lon": 69.612799,
+       "lat": 42.320119,
+       "category": "outpatient_clinic",
+       "kind": "hypothetical",
+       "cost": 60
+      },
+      {
+       "id": "cand-on-iso",
+       "lon": 69.607757,
+       "lat": 42.306934,
+       "category": "outpatient_clinic",
+       "kind": "hypothetical",
+       "cost": 35
+      }
+     ],
+     "budget": 100,
+     "max_selected": 2,
+     "coverage_radius_m": 500,
+     "required_ids": [],
+     "excluded_ids": [],
+     "selected_ids": [
+      "cand-1",
+      "cand-on-iso"
+     ]
+    },
+    "cases": [
+     {
+      "id": "one-isolated",
+      "label": "Условно без записи: Пространство Где Всё Возможно",
+      "disabled_source_ids": [
+       "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      ]
+     },
+     {
+      "id": "one-of-shared-0",
+      "label": "Условно без записи: Kosmetolog Жазира",
+      "disabled_source_ids": [
+       "50802484-b7f9-492e-8a4c-f75312fc7751"
+      ]
+     },
+     {
+      "id": "one-of-shared-1",
+      "label": "Условно без записи: Dr.Sattarkulovich",
+      "disabled_source_ids": [
+       "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      ]
+     },
+     {
+      "id": "qa-colocated",
+      "label": "Условно без записей QA-группы COLOCATED (69.5958, 42.3167): 4 из 10",
+      "disabled_source_ids": [
+       "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "2264dcf0-549d-451a-b846-3f207d411e0c",
+       "c2990416-dca7-4e3a-b539-30e69cadf724",
+       "f4d6818b-1a99-43ca-8533-4c556f448919"
+      ]
+     },
+     {
+      "id": "near-centre-3",
+      "label": "Условно без выбранных записей (3): Kosmetolog Жазира, Aza Бизнес Страница Шымкент, АССОР",
+      "disabled_source_ids": [
+       "50802484-b7f9-492e-8a4c-f75312fc7751",
+       "622b4786-89fa-4853-b109-18054e3ebe0d",
+       "e1b19ead-4505-4acd-8aed-9c561ceec4c0"
+      ]
+     },
+     {
+      "id": "near-centre-3-again",
+      "label": "Те же три записи (повтор набора, другой порядок)",
+      "disabled_source_ids": [
+       "e1b19ead-4505-4acd-8aed-9c561ceec4c0",
+       "622b4786-89fa-4853-b109-18054e3ebe0d",
+       "50802484-b7f9-492e-8a4c-f75312fc7751"
+      ]
+     },
+     {
+      "id": "all-records",
+      "label": "Условно без выбранных записей (16): Dr.Sattarkulovich, Пространство Где Всё Возможно, Сункар, Kosmetolog Жазира, Master…",
+      "disabled_source_ids": [
+       "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "1cb001b2-d62f-4c28-ba0a-864ffa56808f",
+       "2264dcf0-549d-451a-b846-3f207d411e0c",
+       "50802484-b7f9-492e-8a4c-f75312fc7751",
+       "621acb4b-a1bd-45ce-891f-c0a4634a6103",
+       "622b4786-89fa-4853-b109-18054e3ebe0d",
+       "6e92676a-1297-446d-9956-731023da6339",
+       "7cd057e0-fd66-4026-8d41-717b3d1d0c60",
+       "833280f2-ff82-4dd6-a174-d2a9203420fa",
+       "99c68068-aa6e-4ff2-af5f-455675f93313",
+       "a10bb8cf-c446-4066-9cda-a5befa189a60",
+       "b845d434-7da3-4755-9ae9-bb6d40fc7520",
+       "c2990416-dca7-4e3a-b539-30e69cadf724",
+       "da9cd7b1-eefe-40eb-aebe-8ef720de4354",
+       "e1b19ead-4505-4acd-8aed-9c561ceec4c0",
+       "f4d6818b-1a99-43ca-8533-4c556f448919"
+      ]
+     }
+    ]
+   },
+   "n_sources": 16,
+   "colocated_status": "ok",
+   "qa_groups_in_city": 2,
+   "shared_in_category": [
+    [
+     "50802484-b7f9-492e-8a4c-f75312fc7751",
+     "622b4786-89fa-4853-b109-18054e3ebe0d",
+     "e1b19ead-4505-4acd-8aed-9c561ceec4c0"
+    ],
+    [
+     "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+     "2264dcf0-549d-451a-b846-3f207d411e0c",
+     "c2990416-dca7-4e3a-b539-30e69cadf724",
+     "f4d6818b-1a99-43ca-8533-4c556f448919"
+    ]
+   ],
+   "notes": {
+    "one-of-shared-0": {
+     "point": "at-shared-0",
+     "excluded": "50802484-b7f9-492e-8a4c-f75312fc7751",
+     "remaining_same_xy": [
+      "622b4786-89fa-4853-b109-18054e3ebe0d",
+      "e1b19ead-4505-4acd-8aed-9c561ceec4c0"
+     ]
+    },
+    "one-of-shared-1": {
+     "point": "at-shared-1",
+     "excluded": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+     "remaining_same_xy": [
+      "2264dcf0-549d-451a-b846-3f207d411e0c",
+      "c2990416-dca7-4e3a-b539-30e69cadf724",
+      "f4d6818b-1a99-43ca-8533-4c556f448919"
+     ]
+    },
+    "qa-colocated": {
+     "point": "at-colocated",
+     "group_index": 0,
+     "excluded": [
+      "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "2264dcf0-549d-451a-b846-3f207d411e0c",
+      "c2990416-dca7-4e3a-b539-30e69cadf724",
+      "f4d6818b-1a99-43ca-8533-4c556f448919"
+     ],
+     "other_categories_kept": [
+      "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+      "68c8f007-75bc-42f6-8da8-baa72042bde4",
+      "6d4636dd-c9f3-4d9b-8c01-b361e86c8659",
+      "7bc29930-e875-4c3d-b805-97cbcfc81159",
+      "9d31b953-ccc4-42bd-a3a3-3e4e21f44051",
+      "b08d41c4-c682-4335-94fc-65dac48411ed"
+     ]
+    }
+   },
+   "expected_base": {
+    "base": [
+     {
+      "point": "at-iso",
+      "base": {
+       "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f",
+       "mm": 0,
+       "tied_ids": [
+        "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+       ]
+      }
+     },
+     {
+      "point": "at-shared-0",
+      "base": {
+       "id": "50802484-b7f9-492e-8a4c-f75312fc7751",
+       "mm": 0,
+       "tied_ids": [
+        "50802484-b7f9-492e-8a4c-f75312fc7751",
+        "622b4786-89fa-4853-b109-18054e3ebe0d",
+        "e1b19ead-4505-4acd-8aed-9c561ceec4c0"
+       ]
+      }
+     },
+     {
+      "point": "at-shared-1",
+      "base": {
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "mm": 0,
+       "tied_ids": [
+        "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+        "2264dcf0-549d-451a-b846-3f207d411e0c",
+        "c2990416-dca7-4e3a-b539-30e69cadf724",
+        "f4d6818b-1a99-43ca-8533-4c556f448919"
+       ]
+      }
+     },
+     {
+      "point": "at-colocated",
+      "base": {
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "mm": 0,
+       "tied_ids": [
+        "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+        "2264dcf0-549d-451a-b846-3f207d411e0c",
+        "c2990416-dca7-4e3a-b539-30e69cadf724",
+        "f4d6818b-1a99-43ca-8533-4c556f448919"
+       ]
+      }
+     },
+     {
+      "point": "grid-00",
+      "base": {
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "mm": 632654,
+       "tied_ids": [
+        "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+        "2264dcf0-549d-451a-b846-3f207d411e0c",
+        "c2990416-dca7-4e3a-b539-30e69cadf724",
+        "f4d6818b-1a99-43ca-8533-4c556f448919"
+       ]
+      }
+     },
+     {
+      "point": "grid-01",
+      "base": {
+       "id": "99c68068-aa6e-4ff2-af5f-455675f93313",
+       "mm": 176951,
+       "tied_ids": [
+        "99c68068-aa6e-4ff2-af5f-455675f93313"
+       ]
+      }
+     },
+     {
+      "point": "grid-10",
+      "base": {
+       "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60",
+       "mm": 480866,
+       "tied_ids": [
+        "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+       ]
+      }
+     },
+     {
+      "point": "grid-11",
+      "base": {
+       "id": "833280f2-ff82-4dd6-a174-d2a9203420fa",
+       "mm": 308350,
+       "tied_ids": [
+        "833280f2-ff82-4dd6-a174-d2a9203420fa"
+       ]
+      }
+     },
+     {
+      "point": "grid-20",
+      "base": {
+       "id": "a10bb8cf-c446-4066-9cda-a5befa189a60",
+       "mm": 370006,
+       "tied_ids": [
+        "a10bb8cf-c446-4066-9cda-a5befa189a60"
+       ]
+      }
+     },
+     {
+      "point": "grid-21",
+      "base": {
+       "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354",
+       "mm": 398683,
+       "tied_ids": [
+        "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+       ]
+      }
+     },
+     {
+      "point": "center",
+      "base": {
+       "id": "50802484-b7f9-492e-8a4c-f75312fc7751",
+       "mm": 249006,
+       "tied_ids": [
+        "50802484-b7f9-492e-8a4c-f75312fc7751",
+        "622b4786-89fa-4853-b109-18054e3ebe0d",
+        "e1b19ead-4505-4acd-8aed-9c561ceec4c0"
+       ]
+      }
+     }
+    ],
+    "one-isolated": [
+     {
+      "point": "at-iso",
+      "base": {
+       "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60",
+       "mm": 837759,
+       "tied_ids": [
+        "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+       ]
+      }
+     },
+     {
+      "point": "at-shared-0",
+      "base": {
+       "id": "50802484-b7f9-492e-8a4c-f75312fc7751",
+       "mm": 0,
+       "tied_ids": [
+        "50802484-b7f9-492e-8a4c-f75312fc7751",
+        "622b4786-89fa-4853-b109-18054e3ebe0d",
+        "e1b19ead-4505-4acd-8aed-9c561ceec4c0"
+       ]
+      }
+     },
+     {
+      "point": "at-shared-1",
+      "base": {
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "mm": 0,
+       "tied_ids": [
+        "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+        "2264dcf0-549d-451a-b846-3f207d411e0c",
+        "c2990416-dca7-4e3a-b539-30e69cadf724",
+        "f4d6818b-1a99-43ca-8533-4c556f448919"
+       ]
+      }
+     },
+     {
+      "point": "at-colocated",
+      "base": {
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "mm": 0,
+       "tied_ids": [
+        "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+        "2264dcf0-549d-451a-b846-3f207d411e0c",
+        "c2990416-dca7-4e3a-b539-30e69cadf724",
+        "f4d6818b-1a99-43ca-8533-4c556f448919"
+       ]
+      }
+     },
+     {
+      "point": "grid-00",
+      "base": {
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "mm": 632654,
+       "tied_ids": [
+        "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+        "2264dcf0-549d-451a-b846-3f207d411e0c",
+        "c2990416-dca7-4e3a-b539-30e69cadf724",
+        "f4d6818b-1a99-43ca-8533-4c556f448919"
+       ]
+      }
+     },
+     {
+      "point": "grid-01",
+      "base": {
+       "id": "99c68068-aa6e-4ff2-af5f-455675f93313",
+       "mm": 176951,
+       "tied_ids": [
+        "99c68068-aa6e-4ff2-af5f-455675f93313"
+       ]
+      }
+     },
+     {
+      "point": "grid-10",
+      "base": {
+       "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60",
+       "mm": 480866,
+       "tied_ids": [
+        "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+       ]
+      }
+     },
+     {
+      "point": "grid-11",
+      "base": {
+       "id": "833280f2-ff82-4dd6-a174-d2a9203420fa",
+       "mm": 308350,
+       "tied_ids": [
+        "833280f2-ff82-4dd6-a174-d2a9203420fa"
+       ]
+      }
+     },
+     {
+      "point": "grid-20",
+      "base": {
+       "id": "a10bb8cf-c446-4066-9cda-a5befa189a60",
+       "mm": 370006,
+       "tied_ids": [
+        "a10bb8cf-c446-4066-9cda-a5befa189a60"
+       ]
+      }
+     },
+     {
+      "point": "grid-21",
+      "base": {
+       "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354",
+       "mm": 398683,
+       "tied_ids": [
+        "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+       ]
+      }
+     },
+     {
+      "point": "center",
+      "base": {
+       "id": "50802484-b7f9-492e-8a4c-f75312fc7751",
+       "mm": 249006,
+       "tied_ids": [
+        "50802484-b7f9-492e-8a4c-f75312fc7751",
+        "622b4786-89fa-4853-b109-18054e3ebe0d",
+        "e1b19ead-4505-4acd-8aed-9c561ceec4c0"
+       ]
+      }
+     }
+    ],
+    "one-of-shared-0": [
+     {
+      "point": "at-iso",
+      "base": {
+       "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f",
+       "mm": 0,
+       "tied_ids": [
+        "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+       ]
+      }
+     },
+     {
+      "point": "at-shared-0",
+      "base": {
+       "id": "622b4786-89fa-4853-b109-18054e3ebe0d",
+       "mm": 0,
+       "tied_ids": [
+        "622b4786-89fa-4853-b109-18054e3ebe0d",
+        "e1b19ead-4505-4acd-8aed-9c561ceec4c0"
+       ]
+      }
+     },
+     {
+      "point": "at-shared-1",
+      "base": {
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "mm": 0,
+       "tied_ids": [
+        "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+        "2264dcf0-549d-451a-b846-3f207d411e0c",
+        "c2990416-dca7-4e3a-b539-30e69cadf724",
+        "f4d6818b-1a99-43ca-8533-4c556f448919"
+       ]
+      }
+     },
+     {
+      "point": "at-colocated",
+      "base": {
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "mm": 0,
+       "tied_ids": [
+        "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+        "2264dcf0-549d-451a-b846-3f207d411e0c",
+        "c2990416-dca7-4e3a-b539-30e69cadf724",
+        "f4d6818b-1a99-43ca-8533-4c556f448919"
+       ]
+      }
+     },
+     {
+      "point": "grid-00",
+      "base": {
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "mm": 632654,
+       "tied_ids": [
+        "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+        "2264dcf0-549d-451a-b846-3f207d411e0c",
+        "c2990416-dca7-4e3a-b539-30e69cadf724",
+        "f4d6818b-1a99-43ca-8533-4c556f448919"
+       ]
+      }
+     },
+     {
+      "point": "grid-01",
+      "base": {
+       "id": "99c68068-aa6e-4ff2-af5f-455675f93313",
+       "mm": 176951,
+       "tied_ids": [
+        "99c68068-aa6e-4ff2-af5f-455675f93313"
+       ]
+      }
+     },
+     {
+      "point": "grid-10",
+      "base": {
+       "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60",
+       "mm": 480866,
+       "tied_ids": [
+        "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+       ]
+      }
+     },
+     {
+      "point": "grid-11",
+      "base": {
+       "id": "833280f2-ff82-4dd6-a174-d2a9203420fa",
+       "mm": 308350,
+       "tied_ids": [
+        "833280f2-ff82-4dd6-a174-d2a9203420fa"
+       ]
+      }
+     },
+     {
+      "point": "grid-20",
+      "base": {
+       "id": "a10bb8cf-c446-4066-9cda-a5befa189a60",
+       "mm": 370006,
+       "tied_ids": [
+        "a10bb8cf-c446-4066-9cda-a5befa189a60"
+       ]
+      }
+     },
+     {
+      "point": "grid-21",
+      "base": {
+       "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354",
+       "mm": 398683,
+       "tied_ids": [
+        "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+       ]
+      }
+     },
+     {
+      "point": "center",
+      "base": {
+       "id": "622b4786-89fa-4853-b109-18054e3ebe0d",
+       "mm": 249006,
+       "tied_ids": [
+        "622b4786-89fa-4853-b109-18054e3ebe0d",
+        "e1b19ead-4505-4acd-8aed-9c561ceec4c0"
+       ]
+      }
+     }
+    ],
+    "one-of-shared-1": [
+     {
+      "point": "at-iso",
+      "base": {
+       "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f",
+       "mm": 0,
+       "tied_ids": [
+        "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+       ]
+      }
+     },
+     {
+      "point": "at-shared-0",
+      "base": {
+       "id": "50802484-b7f9-492e-8a4c-f75312fc7751",
+       "mm": 0,
+       "tied_ids": [
+        "50802484-b7f9-492e-8a4c-f75312fc7751",
+        "622b4786-89fa-4853-b109-18054e3ebe0d",
+        "e1b19ead-4505-4acd-8aed-9c561ceec4c0"
+       ]
+      }
+     },
+     {
+      "point": "at-shared-1",
+      "base": {
+       "id": "2264dcf0-549d-451a-b846-3f207d411e0c",
+       "mm": 0,
+       "tied_ids": [
+        "2264dcf0-549d-451a-b846-3f207d411e0c",
+        "c2990416-dca7-4e3a-b539-30e69cadf724",
+        "f4d6818b-1a99-43ca-8533-4c556f448919"
+       ]
+      }
+     },
+     {
+      "point": "at-colocated",
+      "base": {
+       "id": "2264dcf0-549d-451a-b846-3f207d411e0c",
+       "mm": 0,
+       "tied_ids": [
+        "2264dcf0-549d-451a-b846-3f207d411e0c",
+        "c2990416-dca7-4e3a-b539-30e69cadf724",
+        "f4d6818b-1a99-43ca-8533-4c556f448919"
+       ]
+      }
+     },
+     {
+      "point": "grid-00",
+      "base": {
+       "id": "2264dcf0-549d-451a-b846-3f207d411e0c",
+       "mm": 632654,
+       "tied_ids": [
+        "2264dcf0-549d-451a-b846-3f207d411e0c",
+        "c2990416-dca7-4e3a-b539-30e69cadf724",
+        "f4d6818b-1a99-43ca-8533-4c556f448919"
+       ]
+      }
+     },
+     {
+      "point": "grid-01",
+      "base": {
+       "id": "99c68068-aa6e-4ff2-af5f-455675f93313",
+       "mm": 176951,
+       "tied_ids": [
+        "99c68068-aa6e-4ff2-af5f-455675f93313"
+       ]
+      }
+     },
+     {
+      "point": "grid-10",
+      "base": {
+       "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60",
+       "mm": 480866,
+       "tied_ids": [
+        "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+       ]
+      }
+     },
+     {
+      "point": "grid-11",
+      "base": {
+       "id": "833280f2-ff82-4dd6-a174-d2a9203420fa",
+       "mm": 308350,
+       "tied_ids": [
+        "833280f2-ff82-4dd6-a174-d2a9203420fa"
+       ]
+      }
+     },
+     {
+      "point": "grid-20",
+      "base": {
+       "id": "a10bb8cf-c446-4066-9cda-a5befa189a60",
+       "mm": 370006,
+       "tied_ids": [
+        "a10bb8cf-c446-4066-9cda-a5befa189a60"
+       ]
+      }
+     },
+     {
+      "point": "grid-21",
+      "base": {
+       "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354",
+       "mm": 398683,
+       "tied_ids": [
+        "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+       ]
+      }
+     },
+     {
+      "point": "center",
+      "base": {
+       "id": "50802484-b7f9-492e-8a4c-f75312fc7751",
+       "mm": 249006,
+       "tied_ids": [
+        "50802484-b7f9-492e-8a4c-f75312fc7751",
+        "622b4786-89fa-4853-b109-18054e3ebe0d",
+        "e1b19ead-4505-4acd-8aed-9c561ceec4c0"
+       ]
+      }
+     }
+    ],
+    "qa-colocated": [
+     {
+      "point": "at-iso",
+      "base": {
+       "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f",
+       "mm": 0,
+       "tied_ids": [
+        "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+       ]
+      }
+     },
+     {
+      "point": "at-shared-0",
+      "base": {
+       "id": "50802484-b7f9-492e-8a4c-f75312fc7751",
+       "mm": 0,
+       "tied_ids": [
+        "50802484-b7f9-492e-8a4c-f75312fc7751",
+        "622b4786-89fa-4853-b109-18054e3ebe0d",
+        "e1b19ead-4505-4acd-8aed-9c561ceec4c0"
+       ]
+      }
+     },
+     {
+      "point": "at-shared-1",
+      "base": {
+       "id": "99c68068-aa6e-4ff2-af5f-455675f93313",
+       "mm": 502626,
+       "tied_ids": [
+        "99c68068-aa6e-4ff2-af5f-455675f93313"
+       ]
+      }
+     },
+     {
+      "point": "at-colocated",
+      "base": {
+       "id": "99c68068-aa6e-4ff2-af5f-455675f93313",
+       "mm": 502626,
+       "tied_ids": [
+        "99c68068-aa6e-4ff2-af5f-455675f93313"
+       ]
+      }
+     },
+     {
+      "point": "grid-00",
+      "base": {
+       "id": "621acb4b-a1bd-45ce-891f-c0a4634a6103",
+       "mm": 823897,
+       "tied_ids": [
+        "621acb4b-a1bd-45ce-891f-c0a4634a6103"
+       ]
+      }
+     },
+     {
+      "point": "grid-01",
+      "base": {
+       "id": "99c68068-aa6e-4ff2-af5f-455675f93313",
+       "mm": 176951,
+       "tied_ids": [
+        "99c68068-aa6e-4ff2-af5f-455675f93313"
+       ]
+      }
+     },
+     {
+      "point": "grid-10",
+      "base": {
+       "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60",
+       "mm": 480866,
+       "tied_ids": [
+        "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+       ]
+      }
+     },
+     {
+      "point": "grid-11",
+      "base": {
+       "id": "833280f2-ff82-4dd6-a174-d2a9203420fa",
+       "mm": 308350,
+       "tied_ids": [
+        "833280f2-ff82-4dd6-a174-d2a9203420fa"
+       ]
+      }
+     },
+     {
+      "point": "grid-20",
+      "base": {
+       "id": "a10bb8cf-c446-4066-9cda-a5befa189a60",
+       "mm": 370006,
+       "tied_ids": [
+        "a10bb8cf-c446-4066-9cda-a5befa189a60"
+       ]
+      }
+     },
+     {
+      "point": "grid-21",
+      "base": {
+       "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354",
+       "mm": 398683,
+       "tied_ids": [
+        "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+       ]
+      }
+     },
+     {
+      "point": "center",
+      "base": {
+       "id": "50802484-b7f9-492e-8a4c-f75312fc7751",
+       "mm": 249006,
+       "tied_ids": [
+        "50802484-b7f9-492e-8a4c-f75312fc7751",
+        "622b4786-89fa-4853-b109-18054e3ebe0d",
+        "e1b19ead-4505-4acd-8aed-9c561ceec4c0"
+       ]
+      }
+     }
+    ],
+    "near-centre-3": [
+     {
+      "point": "at-iso",
+      "base": {
+       "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f",
+       "mm": 0,
+       "tied_ids": [
+        "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+       ]
+      }
+     },
+     {
+      "point": "at-shared-0",
+      "base": {
+       "id": "833280f2-ff82-4dd6-a174-d2a9203420fa",
+       "mm": 1112,
+       "tied_ids": [
+        "833280f2-ff82-4dd6-a174-d2a9203420fa"
+       ]
+      }
+     },
+     {
+      "point": "at-shared-1",
+      "base": {
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "mm": 0,
+       "tied_ids": [
+        "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+        "2264dcf0-549d-451a-b846-3f207d411e0c",
+        "c2990416-dca7-4e3a-b539-30e69cadf724",
+        "f4d6818b-1a99-43ca-8533-4c556f448919"
+       ]
+      }
+     },
+     {
+      "point": "at-colocated",
+      "base": {
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "mm": 0,
+       "tied_ids": [
+        "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+        "2264dcf0-549d-451a-b846-3f207d411e0c",
+        "c2990416-dca7-4e3a-b539-30e69cadf724",
+        "f4d6818b-1a99-43ca-8533-4c556f448919"
+       ]
+      }
+     },
+     {
+      "point": "grid-00",
+      "base": {
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "mm": 632654,
+       "tied_ids": [
+        "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+        "2264dcf0-549d-451a-b846-3f207d411e0c",
+        "c2990416-dca7-4e3a-b539-30e69cadf724",
+        "f4d6818b-1a99-43ca-8533-4c556f448919"
+       ]
+      }
+     },
+     {
+      "point": "grid-01",
+      "base": {
+       "id": "99c68068-aa6e-4ff2-af5f-455675f93313",
+       "mm": 176951,
+       "tied_ids": [
+        "99c68068-aa6e-4ff2-af5f-455675f93313"
+       ]
+      }
+     },
+     {
+      "point": "grid-10",
+      "base": {
+       "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60",
+       "mm": 480866,
+       "tied_ids": [
+        "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+       ]
+      }
+     },
+     {
+      "point": "grid-11",
+      "base": {
+       "id": "833280f2-ff82-4dd6-a174-d2a9203420fa",
+       "mm": 308350,
+       "tied_ids": [
+        "833280f2-ff82-4dd6-a174-d2a9203420fa"
+       ]
+      }
+     },
+     {
+      "point": "grid-20",
+      "base": {
+       "id": "a10bb8cf-c446-4066-9cda-a5befa189a60",
+       "mm": 370006,
+       "tied_ids": [
+        "a10bb8cf-c446-4066-9cda-a5befa189a60"
+       ]
+      }
+     },
+     {
+      "point": "grid-21",
+      "base": {
+       "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354",
+       "mm": 398683,
+       "tied_ids": [
+        "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+       ]
+      }
+     },
+     {
+      "point": "center",
+      "base": {
+       "id": "833280f2-ff82-4dd6-a174-d2a9203420fa",
+       "mm": 249971,
+       "tied_ids": [
+        "833280f2-ff82-4dd6-a174-d2a9203420fa"
+       ]
+      }
+     }
+    ],
+    "near-centre-3-again": [
+     {
+      "point": "at-iso",
+      "base": {
+       "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f",
+       "mm": 0,
+       "tied_ids": [
+        "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+       ]
+      }
+     },
+     {
+      "point": "at-shared-0",
+      "base": {
+       "id": "833280f2-ff82-4dd6-a174-d2a9203420fa",
+       "mm": 1112,
+       "tied_ids": [
+        "833280f2-ff82-4dd6-a174-d2a9203420fa"
+       ]
+      }
+     },
+     {
+      "point": "at-shared-1",
+      "base": {
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "mm": 0,
+       "tied_ids": [
+        "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+        "2264dcf0-549d-451a-b846-3f207d411e0c",
+        "c2990416-dca7-4e3a-b539-30e69cadf724",
+        "f4d6818b-1a99-43ca-8533-4c556f448919"
+       ]
+      }
+     },
+     {
+      "point": "at-colocated",
+      "base": {
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "mm": 0,
+       "tied_ids": [
+        "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+        "2264dcf0-549d-451a-b846-3f207d411e0c",
+        "c2990416-dca7-4e3a-b539-30e69cadf724",
+        "f4d6818b-1a99-43ca-8533-4c556f448919"
+       ]
+      }
+     },
+     {
+      "point": "grid-00",
+      "base": {
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+       "mm": 632654,
+       "tied_ids": [
+        "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+        "2264dcf0-549d-451a-b846-3f207d411e0c",
+        "c2990416-dca7-4e3a-b539-30e69cadf724",
+        "f4d6818b-1a99-43ca-8533-4c556f448919"
+       ]
+      }
+     },
+     {
+      "point": "grid-01",
+      "base": {
+       "id": "99c68068-aa6e-4ff2-af5f-455675f93313",
+       "mm": 176951,
+       "tied_ids": [
+        "99c68068-aa6e-4ff2-af5f-455675f93313"
+       ]
+      }
+     },
+     {
+      "point": "grid-10",
+      "base": {
+       "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60",
+       "mm": 480866,
+       "tied_ids": [
+        "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+       ]
+      }
+     },
+     {
+      "point": "grid-11",
+      "base": {
+       "id": "833280f2-ff82-4dd6-a174-d2a9203420fa",
+       "mm": 308350,
+       "tied_ids": [
+        "833280f2-ff82-4dd6-a174-d2a9203420fa"
+       ]
+      }
+     },
+     {
+      "point": "grid-20",
+      "base": {
+       "id": "a10bb8cf-c446-4066-9cda-a5befa189a60",
+       "mm": 370006,
+       "tied_ids": [
+        "a10bb8cf-c446-4066-9cda-a5befa189a60"
+       ]
+      }
+     },
+     {
+      "point": "grid-21",
+      "base": {
+       "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354",
+       "mm": 398683,
+       "tied_ids": [
+        "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+       ]
+      }
+     },
+     {
+      "point": "center",
+      "base": {
+       "id": "833280f2-ff82-4dd6-a174-d2a9203420fa",
+       "mm": 249971,
+       "tied_ids": [
+        "833280f2-ff82-4dd6-a174-d2a9203420fa"
+       ]
+      }
+     }
+    ],
+    "all-records": [
+     {
+      "point": "at-iso",
+      "base": null
+     },
+     {
+      "point": "at-shared-0",
+      "base": null
+     },
+     {
+      "point": "at-shared-1",
+      "base": null
+     },
+     {
+      "point": "at-colocated",
+      "base": null
+     },
+     {
+      "point": "grid-00",
+      "base": null
+     },
+     {
+      "point": "grid-01",
+      "base": null
+     },
+     {
+      "point": "grid-10",
+      "base": null
+     },
+     {
+      "point": "grid-11",
+      "base": null
+     },
+     {
+      "point": "grid-20",
+      "base": null
+     },
+     {
+      "point": "grid-21",
+      "base": null
+     },
+     {
+      "point": "center",
+      "base": null
+     }
+    ]
+   },
+   "expected_after_manual": {
+    "base": [
+     {
+      "point": "at-iso",
+      "before_mm": 0,
+      "before_id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "at-shared-0",
+      "before_mm": 0,
+      "before_id": "50802484-b7f9-492e-8a4c-f75312fc7751",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "50802484-b7f9-492e-8a4c-f75312fc7751"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "at-shared-1",
+      "before_mm": 0,
+      "before_id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "at-colocated",
+      "before_mm": 0,
+      "before_id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-00",
+      "before_mm": 632654,
+      "before_id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "after_mm": 66605,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-1"
+      },
+      "delta_mm": 566049
+     },
+     {
+      "point": "grid-01",
+      "before_mm": 176951,
+      "before_id": "99c68068-aa6e-4ff2-af5f-455675f93313",
+      "after_mm": 176951,
+      "after": {
+       "kind": "source",
+       "id": "99c68068-aa6e-4ff2-af5f-455675f93313"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-10",
+      "before_mm": 480866,
+      "before_id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60",
+      "after_mm": 480866,
+      "after": {
+       "kind": "source",
+       "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-11",
+      "before_mm": 308350,
+      "before_id": "833280f2-ff82-4dd6-a174-d2a9203420fa",
+      "after_mm": 308350,
+      "after": {
+       "kind": "source",
+       "id": "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-20",
+      "before_mm": 370006,
+      "before_id": "a10bb8cf-c446-4066-9cda-a5befa189a60",
+      "after_mm": 370006,
+      "after": {
+       "kind": "source",
+       "id": "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-21",
+      "before_mm": 398683,
+      "before_id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354",
+      "after_mm": 398683,
+      "after": {
+       "kind": "source",
+       "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "center",
+      "before_mm": 249006,
+      "before_id": "50802484-b7f9-492e-8a4c-f75312fc7751",
+      "after_mm": 249006,
+      "after": {
+       "kind": "source",
+       "id": "50802484-b7f9-492e-8a4c-f75312fc7751"
+      },
+      "delta_mm": 0
+     }
+    ],
+    "one-isolated": [
+     {
+      "point": "at-iso",
+      "before_mm": 837759,
+      "before_id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60",
+      "after_mm": 0,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-on-iso"
+      },
+      "delta_mm": 837759
+     },
+     {
+      "point": "at-shared-0",
+      "before_mm": 0,
+      "before_id": "50802484-b7f9-492e-8a4c-f75312fc7751",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "50802484-b7f9-492e-8a4c-f75312fc7751"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "at-shared-1",
+      "before_mm": 0,
+      "before_id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "at-colocated",
+      "before_mm": 0,
+      "before_id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-00",
+      "before_mm": 632654,
+      "before_id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "after_mm": 66605,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-1"
+      },
+      "delta_mm": 566049
+     },
+     {
+      "point": "grid-01",
+      "before_mm": 176951,
+      "before_id": "99c68068-aa6e-4ff2-af5f-455675f93313",
+      "after_mm": 176951,
+      "after": {
+       "kind": "source",
+       "id": "99c68068-aa6e-4ff2-af5f-455675f93313"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-10",
+      "before_mm": 480866,
+      "before_id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60",
+      "after_mm": 480866,
+      "after": {
+       "kind": "source",
+       "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-11",
+      "before_mm": 308350,
+      "before_id": "833280f2-ff82-4dd6-a174-d2a9203420fa",
+      "after_mm": 308350,
+      "after": {
+       "kind": "source",
+       "id": "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-20",
+      "before_mm": 370006,
+      "before_id": "a10bb8cf-c446-4066-9cda-a5befa189a60",
+      "after_mm": 370006,
+      "after": {
+       "kind": "source",
+       "id": "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-21",
+      "before_mm": 398683,
+      "before_id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354",
+      "after_mm": 398683,
+      "after": {
+       "kind": "source",
+       "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "center",
+      "before_mm": 249006,
+      "before_id": "50802484-b7f9-492e-8a4c-f75312fc7751",
+      "after_mm": 249006,
+      "after": {
+       "kind": "source",
+       "id": "50802484-b7f9-492e-8a4c-f75312fc7751"
+      },
+      "delta_mm": 0
+     }
+    ],
+    "one-of-shared-0": [
+     {
+      "point": "at-iso",
+      "before_mm": 0,
+      "before_id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "at-shared-0",
+      "before_mm": 0,
+      "before_id": "622b4786-89fa-4853-b109-18054e3ebe0d",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "622b4786-89fa-4853-b109-18054e3ebe0d"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "at-shared-1",
+      "before_mm": 0,
+      "before_id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "at-colocated",
+      "before_mm": 0,
+      "before_id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-00",
+      "before_mm": 632654,
+      "before_id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "after_mm": 66605,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-1"
+      },
+      "delta_mm": 566049
+     },
+     {
+      "point": "grid-01",
+      "before_mm": 176951,
+      "before_id": "99c68068-aa6e-4ff2-af5f-455675f93313",
+      "after_mm": 176951,
+      "after": {
+       "kind": "source",
+       "id": "99c68068-aa6e-4ff2-af5f-455675f93313"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-10",
+      "before_mm": 480866,
+      "before_id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60",
+      "after_mm": 480866,
+      "after": {
+       "kind": "source",
+       "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-11",
+      "before_mm": 308350,
+      "before_id": "833280f2-ff82-4dd6-a174-d2a9203420fa",
+      "after_mm": 308350,
+      "after": {
+       "kind": "source",
+       "id": "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-20",
+      "before_mm": 370006,
+      "before_id": "a10bb8cf-c446-4066-9cda-a5befa189a60",
+      "after_mm": 370006,
+      "after": {
+       "kind": "source",
+       "id": "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-21",
+      "before_mm": 398683,
+      "before_id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354",
+      "after_mm": 398683,
+      "after": {
+       "kind": "source",
+       "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "center",
+      "before_mm": 249006,
+      "before_id": "622b4786-89fa-4853-b109-18054e3ebe0d",
+      "after_mm": 249006,
+      "after": {
+       "kind": "source",
+       "id": "622b4786-89fa-4853-b109-18054e3ebe0d"
+      },
+      "delta_mm": 0
+     }
+    ],
+    "one-of-shared-1": [
+     {
+      "point": "at-iso",
+      "before_mm": 0,
+      "before_id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "at-shared-0",
+      "before_mm": 0,
+      "before_id": "50802484-b7f9-492e-8a4c-f75312fc7751",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "50802484-b7f9-492e-8a4c-f75312fc7751"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "at-shared-1",
+      "before_mm": 0,
+      "before_id": "2264dcf0-549d-451a-b846-3f207d411e0c",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "2264dcf0-549d-451a-b846-3f207d411e0c"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "at-colocated",
+      "before_mm": 0,
+      "before_id": "2264dcf0-549d-451a-b846-3f207d411e0c",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "2264dcf0-549d-451a-b846-3f207d411e0c"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-00",
+      "before_mm": 632654,
+      "before_id": "2264dcf0-549d-451a-b846-3f207d411e0c",
+      "after_mm": 66605,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-1"
+      },
+      "delta_mm": 566049
+     },
+     {
+      "point": "grid-01",
+      "before_mm": 176951,
+      "before_id": "99c68068-aa6e-4ff2-af5f-455675f93313",
+      "after_mm": 176951,
+      "after": {
+       "kind": "source",
+       "id": "99c68068-aa6e-4ff2-af5f-455675f93313"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-10",
+      "before_mm": 480866,
+      "before_id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60",
+      "after_mm": 480866,
+      "after": {
+       "kind": "source",
+       "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-11",
+      "before_mm": 308350,
+      "before_id": "833280f2-ff82-4dd6-a174-d2a9203420fa",
+      "after_mm": 308350,
+      "after": {
+       "kind": "source",
+       "id": "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-20",
+      "before_mm": 370006,
+      "before_id": "a10bb8cf-c446-4066-9cda-a5befa189a60",
+      "after_mm": 370006,
+      "after": {
+       "kind": "source",
+       "id": "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-21",
+      "before_mm": 398683,
+      "before_id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354",
+      "after_mm": 398683,
+      "after": {
+       "kind": "source",
+       "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "center",
+      "before_mm": 249006,
+      "before_id": "50802484-b7f9-492e-8a4c-f75312fc7751",
+      "after_mm": 249006,
+      "after": {
+       "kind": "source",
+       "id": "50802484-b7f9-492e-8a4c-f75312fc7751"
+      },
+      "delta_mm": 0
+     }
+    ],
+    "qa-colocated": [
+     {
+      "point": "at-iso",
+      "before_mm": 0,
+      "before_id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "at-shared-0",
+      "before_mm": 0,
+      "before_id": "50802484-b7f9-492e-8a4c-f75312fc7751",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "50802484-b7f9-492e-8a4c-f75312fc7751"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "at-shared-1",
+      "before_mm": 502626,
+      "before_id": "99c68068-aa6e-4ff2-af5f-455675f93313",
+      "after_mm": 502626,
+      "after": {
+       "kind": "source",
+       "id": "99c68068-aa6e-4ff2-af5f-455675f93313"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "at-colocated",
+      "before_mm": 502626,
+      "before_id": "99c68068-aa6e-4ff2-af5f-455675f93313",
+      "after_mm": 502626,
+      "after": {
+       "kind": "source",
+       "id": "99c68068-aa6e-4ff2-af5f-455675f93313"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-00",
+      "before_mm": 823897,
+      "before_id": "621acb4b-a1bd-45ce-891f-c0a4634a6103",
+      "after_mm": 66605,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-1"
+      },
+      "delta_mm": 757292
+     },
+     {
+      "point": "grid-01",
+      "before_mm": 176951,
+      "before_id": "99c68068-aa6e-4ff2-af5f-455675f93313",
+      "after_mm": 176951,
+      "after": {
+       "kind": "source",
+       "id": "99c68068-aa6e-4ff2-af5f-455675f93313"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-10",
+      "before_mm": 480866,
+      "before_id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60",
+      "after_mm": 480866,
+      "after": {
+       "kind": "source",
+       "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-11",
+      "before_mm": 308350,
+      "before_id": "833280f2-ff82-4dd6-a174-d2a9203420fa",
+      "after_mm": 308350,
+      "after": {
+       "kind": "source",
+       "id": "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-20",
+      "before_mm": 370006,
+      "before_id": "a10bb8cf-c446-4066-9cda-a5befa189a60",
+      "after_mm": 370006,
+      "after": {
+       "kind": "source",
+       "id": "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-21",
+      "before_mm": 398683,
+      "before_id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354",
+      "after_mm": 398683,
+      "after": {
+       "kind": "source",
+       "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "center",
+      "before_mm": 249006,
+      "before_id": "50802484-b7f9-492e-8a4c-f75312fc7751",
+      "after_mm": 249006,
+      "after": {
+       "kind": "source",
+       "id": "50802484-b7f9-492e-8a4c-f75312fc7751"
+      },
+      "delta_mm": 0
+     }
+    ],
+    "near-centre-3": [
+     {
+      "point": "at-iso",
+      "before_mm": 0,
+      "before_id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "at-shared-0",
+      "before_mm": 1112,
+      "before_id": "833280f2-ff82-4dd6-a174-d2a9203420fa",
+      "after_mm": 1112,
+      "after": {
+       "kind": "source",
+       "id": "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "at-shared-1",
+      "before_mm": 0,
+      "before_id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "at-colocated",
+      "before_mm": 0,
+      "before_id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-00",
+      "before_mm": 632654,
+      "before_id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "after_mm": 66605,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-1"
+      },
+      "delta_mm": 566049
+     },
+     {
+      "point": "grid-01",
+      "before_mm": 176951,
+      "before_id": "99c68068-aa6e-4ff2-af5f-455675f93313",
+      "after_mm": 176951,
+      "after": {
+       "kind": "source",
+       "id": "99c68068-aa6e-4ff2-af5f-455675f93313"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-10",
+      "before_mm": 480866,
+      "before_id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60",
+      "after_mm": 480866,
+      "after": {
+       "kind": "source",
+       "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-11",
+      "before_mm": 308350,
+      "before_id": "833280f2-ff82-4dd6-a174-d2a9203420fa",
+      "after_mm": 308350,
+      "after": {
+       "kind": "source",
+       "id": "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-20",
+      "before_mm": 370006,
+      "before_id": "a10bb8cf-c446-4066-9cda-a5befa189a60",
+      "after_mm": 370006,
+      "after": {
+       "kind": "source",
+       "id": "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-21",
+      "before_mm": 398683,
+      "before_id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354",
+      "after_mm": 398683,
+      "after": {
+       "kind": "source",
+       "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "center",
+      "before_mm": 249971,
+      "before_id": "833280f2-ff82-4dd6-a174-d2a9203420fa",
+      "after_mm": 249971,
+      "after": {
+       "kind": "source",
+       "id": "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      },
+      "delta_mm": 0
+     }
+    ],
+    "near-centre-3-again": [
+     {
+      "point": "at-iso",
+      "before_mm": 0,
+      "before_id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "at-shared-0",
+      "before_mm": 1112,
+      "before_id": "833280f2-ff82-4dd6-a174-d2a9203420fa",
+      "after_mm": 1112,
+      "after": {
+       "kind": "source",
+       "id": "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "at-shared-1",
+      "before_mm": 0,
+      "before_id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "at-colocated",
+      "before_mm": 0,
+      "before_id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-00",
+      "before_mm": 632654,
+      "before_id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "after_mm": 66605,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-1"
+      },
+      "delta_mm": 566049
+     },
+     {
+      "point": "grid-01",
+      "before_mm": 176951,
+      "before_id": "99c68068-aa6e-4ff2-af5f-455675f93313",
+      "after_mm": 176951,
+      "after": {
+       "kind": "source",
+       "id": "99c68068-aa6e-4ff2-af5f-455675f93313"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-10",
+      "before_mm": 480866,
+      "before_id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60",
+      "after_mm": 480866,
+      "after": {
+       "kind": "source",
+       "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-11",
+      "before_mm": 308350,
+      "before_id": "833280f2-ff82-4dd6-a174-d2a9203420fa",
+      "after_mm": 308350,
+      "after": {
+       "kind": "source",
+       "id": "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-20",
+      "before_mm": 370006,
+      "before_id": "a10bb8cf-c446-4066-9cda-a5befa189a60",
+      "after_mm": 370006,
+      "after": {
+       "kind": "source",
+       "id": "a10bb8cf-c446-4066-9cda-a5befa189a60"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-21",
+      "before_mm": 398683,
+      "before_id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354",
+      "after_mm": 398683,
+      "after": {
+       "kind": "source",
+       "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "center",
+      "before_mm": 249971,
+      "before_id": "833280f2-ff82-4dd6-a174-d2a9203420fa",
+      "after_mm": 249971,
+      "after": {
+       "kind": "source",
+       "id": "833280f2-ff82-4dd6-a174-d2a9203420fa"
+      },
+      "delta_mm": 0
+     }
+    ],
+    "all-records": [
+     {
+      "point": "at-iso",
+      "before_mm": null,
+      "before_id": null,
+      "after_mm": 0,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-on-iso"
+      },
+      "delta_mm": null
+     },
+     {
+      "point": "at-shared-0",
+      "before_mm": null,
+      "before_id": null,
+      "after_mm": 1017235,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-1"
+      },
+      "delta_mm": null
+     },
+     {
+      "point": "at-shared-1",
+      "before_mm": null,
+      "before_id": null,
+      "after_mm": 649896,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-1"
+      },
+      "delta_mm": null
+     },
+     {
+      "point": "at-colocated",
+      "before_mm": null,
+      "before_id": null,
+      "after_mm": 649896,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-1"
+      },
+      "delta_mm": null
+     },
+     {
+      "point": "grid-00",
+      "before_mm": null,
+      "before_id": null,
+      "after_mm": 66605,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-1"
+      },
+      "delta_mm": null
+     },
+     {
+      "point": "grid-01",
+      "before_mm": null,
+      "before_id": null,
+      "after_mm": 1000972,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-1"
+      },
+      "delta_mm": null
+     },
+     {
+      "point": "grid-10",
+      "before_mm": null,
+      "before_id": null,
+      "after_mm": 502493,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-on-iso"
+      },
+      "delta_mm": null
+     },
+     {
+      "point": "grid-11",
+      "before_mm": null,
+      "before_id": null,
+      "after_mm": 1164731,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-1"
+      },
+      "delta_mm": null
+     },
+     {
+      "point": "grid-20",
+      "before_mm": null,
+      "before_id": null,
+      "after_mm": 670813,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-on-iso"
+      },
+      "delta_mm": null
+     },
+     {
+      "point": "grid-21",
+      "before_mm": null,
+      "before_id": null,
+      "after_mm": 1543052,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-on-iso"
+      },
+      "delta_mm": null
+     },
+     {
+      "point": "center",
+      "before_mm": null,
+      "before_id": null,
+      "after_mm": 780059,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-1"
+      },
+      "delta_mm": null
+     }
+    ]
+   },
+   "asserts": [
+    {
+     "case": "one-isolated",
+     "point": "at-iso",
+     "rule": "исключена запись в точке: ближайшая — другая запись дальше 0 мм",
+     "ok": true
+    },
+    {
+     "case": "one-of-shared-0",
+     "point": "at-shared-0",
+     "rule": "исключена одна запись из общих координат: соседняя запись в тех же координатах, 0 мм",
+     "ok": true
+    },
+    {
+     "case": "one-of-shared-1",
+     "point": "at-shared-1",
+     "rule": "исключена одна запись из общих координат: соседняя запись в тех же координатах, 0 мм",
+     "ok": true
+    },
+    {
+     "case": "qa-colocated",
+     "point": "at-colocated",
+     "rule": "исключены все записи категории QA-группы: ближайшая дальше 0 мм, записи других категорий не участвуют",
+     "ok": true
+    },
+    {
+     "case": "all-records",
+     "point": "*",
+     "rule": "исключены все записи категории: до = неизвестно (None), а не 0",
+     "ok": true
+    }
+   ],
+   "brute_force": {
+    "status": "optimal",
+    "subsets": 64,
+    "feasible_count": 21,
+    "nominal": {
+     "selected_ids": [
+      "cand-1",
+      "cand-5"
+     ],
+     "worst_vector": {
+      "unknown_count": 0,
+      "weighted_sum_mm": 16015187,
+      "max_mm": 1000972
+     },
+     "worst_case_ids": [
+      "all-records"
+     ],
+     "base_weighted_mean_mm": 143831.2258064516,
+     "loss": {
+      "base": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 4458768,
+       "max_mm": 480866
+      },
+      "one-isolated": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 5296527,
+       "max_mm": 837759
+      },
+      "one-of-shared-0": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 4458768,
+       "max_mm": 480866
+      },
+      "one-of-shared-1": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 4458768,
+       "max_mm": 480866
+      },
+      "qa-colocated": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 7977150,
+       "max_mm": 502626
+      },
+      "near-centre-3": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 4461957,
+       "max_mm": 480866
+      },
+      "near-centre-3-again": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 4461957,
+       "max_mm": 480866
+      },
+      "all-records": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 16015187,
+       "max_mm": 1000972
+      }
+     },
+     "cost": 90
+    },
+    "robust": {
+     "selected_ids": [
+      "cand-1",
+      "cand-5"
+     ],
+     "worst_vector": {
+      "unknown_count": 0,
+      "weighted_sum_mm": 16015187,
+      "max_mm": 1000972
+     },
+     "worst_case_ids": [
+      "all-records"
+     ],
+     "base_weighted_mean_mm": 143831.2258064516,
+     "loss": {
+      "base": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 4458768,
+       "max_mm": 480866
+      },
+      "one-isolated": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 5296527,
+       "max_mm": 837759
+      },
+      "one-of-shared-0": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 4458768,
+       "max_mm": 480866
+      },
+      "one-of-shared-1": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 4458768,
+       "max_mm": 480866
+      },
+      "qa-colocated": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 7977150,
+       "max_mm": 502626
+      },
+      "near-centre-3": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 4461957,
+       "max_mm": 480866
+      },
+      "near-centre-3-again": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 4461957,
+       "max_mm": 480866
+      },
+      "all-records": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 16015187,
+       "max_mm": 1000972
+      }
+     },
+     "cost": 90
+    },
+    "same_plan": true,
+    "price_of_robustness_m": 0.0
+   },
+   "identical_sets": [
+    [
+     "near-centre-3",
+     "near-centre-3-again"
+    ]
+   ]
+  },
+  {
+   "city": "astana",
+   "category": "school",
+   "envelope": {
+    "schema_version": "city-resilience-v1",
+    "plan": {
+     "schema_version": "city-plan-v2",
+     "city_id": "astana",
+     "source_snapshot": "sha256:67a40b96d29873118780969eb11c32deba49a0c64fda1f185efe634882f04c6d",
+     "category": "school",
+     "control_points": [
+      {
+       "id": "at-iso",
+       "lon": 71.42501,
+       "lat": 51.17087,
+       "weight": 1
+      },
+      {
+       "id": "grid-00",
+       "lon": 71.423143,
+       "lat": 51.167525,
+       "weight": 2
+      },
+      {
+       "id": "grid-01",
+       "lon": 71.423143,
+       "lat": 51.176508,
+       "weight": 3
+      },
+      {
+       "id": "grid-10",
+       "lon": 71.432686,
+       "lat": 51.167525,
+       "weight": 4
+      },
+      {
+       "id": "grid-11",
+       "lon": 71.432686,
+       "lat": 51.176508,
+       "weight": 5
+      },
+      {
+       "id": "grid-20",
+       "lon": 71.442229,
+       "lat": 51.167525,
+       "weight": 1
+      },
+      {
+       "id": "grid-21",
+       "lon": 71.442229,
+       "lat": 51.176508,
+       "weight": 2
+      },
+      {
+       "id": "center",
+       "lon": 71.432686,
+       "lat": 51.172016,
+       "weight": 3
+      }
+     ],
+     "candidates": [
+      {
+       "id": "cand-1",
+       "lon": 71.424098,
+       "lat": 51.167525,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 30
+      },
+      {
+       "id": "cand-2",
+       "lon": 71.441274,
+       "lat": 51.167525,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 40
+      },
+      {
+       "id": "cand-3",
+       "lon": 71.432686,
+       "lat": 51.177407,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 50
+      },
+      {
+       "id": "cand-4",
+       "lon": 71.424098,
+       "lat": 51.176508,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 20
+      },
+      {
+       "id": "cand-5",
+       "lon": 71.441274,
+       "lat": 51.176508,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 60
+      },
+      {
+       "id": "cand-on-iso",
+       "lon": 71.42501,
+       "lat": 51.17087,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 35
+      }
+     ],
+     "budget": 100,
+     "max_selected": 2,
+     "coverage_radius_m": 500,
+     "required_ids": [],
+     "excluded_ids": [],
+     "selected_ids": [
+      "cand-1",
+      "cand-on-iso"
+     ]
+    },
+    "cases": [
+     {
+      "id": "one-isolated",
+      "label": "Условно без записи: Школа-гимназия 3",
+      "disabled_source_ids": [
+       "7b39e048-341b-454a-a63c-4b7e1ae73e9f"
+      ]
+     },
+     {
+      "id": "near-centre-3",
+      "label": "Условно без выбранных записей (3): Школа-гимназия 3, Учебный ЦЕНТР ФПРК, Учебный Центр Expert-A",
+      "disabled_source_ids": [
+       "7b39e048-341b-454a-a63c-4b7e1ae73e9f",
+       "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+       "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a"
+      ]
+     },
+     {
+      "id": "near-centre-3-again",
+      "label": "Те же три записи (повтор набора, другой порядок)",
+      "disabled_source_ids": [
+       "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a",
+       "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+       "7b39e048-341b-454a-a63c-4b7e1ae73e9f"
+      ]
+     },
+     {
+      "id": "all-records",
+      "label": "Условно без выбранных записей (8): Школа-гимназия 3, \"ГУ \"Средняя школа № 8\" УО г. Астаны\", Учебный ЦЕНТР ФПРК, Astana …",
+      "disabled_source_ids": [
+       "7b39e048-341b-454a-a63c-4b7e1ae73e9f",
+       "8ca53724-c558-46b7-826b-13e3e8fbb7e6",
+       "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+       "a4483f53-7de8-4df1-b61b-b4066b0ad5dd",
+       "b5dd5f1a-9d55-48b1-9d68-7172ea84da3f",
+       "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a",
+       "c97435da-cd05-4549-bec1-ff297e858554",
+       "de04f003-bb3d-4ea7-93e1-cd825e5c1783"
+      ]
+     }
+    ]
+   },
+   "n_sources": 8,
+   "colocated_status": "no_qa_group",
+   "qa_groups_in_city": 0,
+   "shared_in_category": [],
+   "notes": {},
+   "expected_base": {
+    "base": [
+     {
+      "point": "at-iso",
+      "base": {
+       "id": "7b39e048-341b-454a-a63c-4b7e1ae73e9f",
+       "mm": 0,
+       "tied_ids": [
+        "7b39e048-341b-454a-a63c-4b7e1ae73e9f"
+       ]
+      }
+     },
+     {
+      "point": "grid-00",
+      "base": {
+       "id": "a4483f53-7de8-4df1-b61b-b4066b0ad5dd",
+       "mm": 17954,
+       "tied_ids": [
+        "a4483f53-7de8-4df1-b61b-b4066b0ad5dd"
+       ]
+      }
+     },
+     {
+      "point": "grid-01",
+      "base": {
+       "id": "c97435da-cd05-4549-bec1-ff297e858554",
+       "mm": 230593,
+       "tied_ids": [
+        "c97435da-cd05-4549-bec1-ff297e858554"
+       ]
+      }
+     },
+     {
+      "point": "grid-10",
+      "base": {
+       "id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+       "mm": 141502,
+       "tied_ids": [
+        "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2"
+       ]
+      }
+     },
+     {
+      "point": "grid-11",
+      "base": {
+       "id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783",
+       "mm": 521468,
+       "tied_ids": [
+        "de04f003-bb3d-4ea7-93e1-cd825e5c1783"
+       ]
+      }
+     },
+     {
+      "point": "grid-20",
+      "base": {
+       "id": "8ca53724-c558-46b7-826b-13e3e8fbb7e6",
+       "mm": 234963,
+       "tied_ids": [
+        "8ca53724-c558-46b7-826b-13e3e8fbb7e6"
+       ]
+      }
+     },
+     {
+      "point": "grid-21",
+      "base": {
+       "id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+       "mm": 1058880,
+       "tied_ids": [
+        "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2"
+       ]
+      }
+     },
+     {
+      "point": "center",
+      "base": {
+       "id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+       "mm": 384438,
+       "tied_ids": [
+        "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2"
+       ]
+      }
+     }
+    ],
+    "one-isolated": [
+     {
+      "point": "at-iso",
+      "base": {
+       "id": "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a",
+       "mm": 371265,
+       "tied_ids": [
+        "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a"
+       ]
+      }
+     },
+     {
+      "point": "grid-00",
+      "base": {
+       "id": "a4483f53-7de8-4df1-b61b-b4066b0ad5dd",
+       "mm": 17954,
+       "tied_ids": [
+        "a4483f53-7de8-4df1-b61b-b4066b0ad5dd"
+       ]
+      }
+     },
+     {
+      "point": "grid-01",
+      "base": {
+       "id": "c97435da-cd05-4549-bec1-ff297e858554",
+       "mm": 230593,
+       "tied_ids": [
+        "c97435da-cd05-4549-bec1-ff297e858554"
+       ]
+      }
+     },
+     {
+      "point": "grid-10",
+      "base": {
+       "id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+       "mm": 141502,
+       "tied_ids": [
+        "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2"
+       ]
+      }
+     },
+     {
+      "point": "grid-11",
+      "base": {
+       "id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783",
+       "mm": 521468,
+       "tied_ids": [
+        "de04f003-bb3d-4ea7-93e1-cd825e5c1783"
+       ]
+      }
+     },
+     {
+      "point": "grid-20",
+      "base": {
+       "id": "8ca53724-c558-46b7-826b-13e3e8fbb7e6",
+       "mm": 234963,
+       "tied_ids": [
+        "8ca53724-c558-46b7-826b-13e3e8fbb7e6"
+       ]
+      }
+     },
+     {
+      "point": "grid-21",
+      "base": {
+       "id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+       "mm": 1058880,
+       "tied_ids": [
+        "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2"
+       ]
+      }
+     },
+     {
+      "point": "center",
+      "base": {
+       "id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+       "mm": 384438,
+       "tied_ids": [
+        "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2"
+       ]
+      }
+     }
+    ],
+    "near-centre-3": [
+     {
+      "point": "at-iso",
+      "base": {
+       "id": "a4483f53-7de8-4df1-b61b-b4066b0ad5dd",
+       "mm": 385007,
+       "tied_ids": [
+        "a4483f53-7de8-4df1-b61b-b4066b0ad5dd"
+       ]
+      }
+     },
+     {
+      "point": "grid-00",
+      "base": {
+       "id": "a4483f53-7de8-4df1-b61b-b4066b0ad5dd",
+       "mm": 17954,
+       "tied_ids": [
+        "a4483f53-7de8-4df1-b61b-b4066b0ad5dd"
+       ]
+      }
+     },
+     {
+      "point": "grid-01",
+      "base": {
+       "id": "c97435da-cd05-4549-bec1-ff297e858554",
+       "mm": 230593,
+       "tied_ids": [
+        "c97435da-cd05-4549-bec1-ff297e858554"
+       ]
+      }
+     },
+     {
+      "point": "grid-10",
+      "base": {
+       "id": "a4483f53-7de8-4df1-b61b-b4066b0ad5dd",
+       "mm": 676887,
+       "tied_ids": [
+        "a4483f53-7de8-4df1-b61b-b4066b0ad5dd"
+       ]
+      }
+     },
+     {
+      "point": "grid-11",
+      "base": {
+       "id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783",
+       "mm": 521468,
+       "tied_ids": [
+        "de04f003-bb3d-4ea7-93e1-cd825e5c1783"
+       ]
+      }
+     },
+     {
+      "point": "grid-20",
+      "base": {
+       "id": "8ca53724-c558-46b7-826b-13e3e8fbb7e6",
+       "mm": 234963,
+       "tied_ids": [
+        "8ca53724-c558-46b7-826b-13e3e8fbb7e6"
+       ]
+      }
+     },
+     {
+      "point": "grid-21",
+      "base": {
+       "id": "8ca53724-c558-46b7-826b-13e3e8fbb7e6",
+       "mm": 1115632,
+       "tied_ids": [
+        "8ca53724-c558-46b7-826b-13e3e8fbb7e6"
+       ]
+      }
+     },
+     {
+      "point": "center",
+      "base": {
+       "id": "a4483f53-7de8-4df1-b61b-b4066b0ad5dd",
+       "mm": 832842,
+       "tied_ids": [
+        "a4483f53-7de8-4df1-b61b-b4066b0ad5dd"
+       ]
+      }
+     }
+    ],
+    "near-centre-3-again": [
+     {
+      "point": "at-iso",
+      "base": {
+       "id": "a4483f53-7de8-4df1-b61b-b4066b0ad5dd",
+       "mm": 385007,
+       "tied_ids": [
+        "a4483f53-7de8-4df1-b61b-b4066b0ad5dd"
+       ]
+      }
+     },
+     {
+      "point": "grid-00",
+      "base": {
+       "id": "a4483f53-7de8-4df1-b61b-b4066b0ad5dd",
+       "mm": 17954,
+       "tied_ids": [
+        "a4483f53-7de8-4df1-b61b-b4066b0ad5dd"
+       ]
+      }
+     },
+     {
+      "point": "grid-01",
+      "base": {
+       "id": "c97435da-cd05-4549-bec1-ff297e858554",
+       "mm": 230593,
+       "tied_ids": [
+        "c97435da-cd05-4549-bec1-ff297e858554"
+       ]
+      }
+     },
+     {
+      "point": "grid-10",
+      "base": {
+       "id": "a4483f53-7de8-4df1-b61b-b4066b0ad5dd",
+       "mm": 676887,
+       "tied_ids": [
+        "a4483f53-7de8-4df1-b61b-b4066b0ad5dd"
+       ]
+      }
+     },
+     {
+      "point": "grid-11",
+      "base": {
+       "id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783",
+       "mm": 521468,
+       "tied_ids": [
+        "de04f003-bb3d-4ea7-93e1-cd825e5c1783"
+       ]
+      }
+     },
+     {
+      "point": "grid-20",
+      "base": {
+       "id": "8ca53724-c558-46b7-826b-13e3e8fbb7e6",
+       "mm": 234963,
+       "tied_ids": [
+        "8ca53724-c558-46b7-826b-13e3e8fbb7e6"
+       ]
+      }
+     },
+     {
+      "point": "grid-21",
+      "base": {
+       "id": "8ca53724-c558-46b7-826b-13e3e8fbb7e6",
+       "mm": 1115632,
+       "tied_ids": [
+        "8ca53724-c558-46b7-826b-13e3e8fbb7e6"
+       ]
+      }
+     },
+     {
+      "point": "center",
+      "base": {
+       "id": "a4483f53-7de8-4df1-b61b-b4066b0ad5dd",
+       "mm": 832842,
+       "tied_ids": [
+        "a4483f53-7de8-4df1-b61b-b4066b0ad5dd"
+       ]
+      }
+     }
+    ],
+    "all-records": [
+     {
+      "point": "at-iso",
+      "base": null
+     },
+     {
+      "point": "grid-00",
+      "base": null
+     },
+     {
+      "point": "grid-01",
+      "base": null
+     },
+     {
+      "point": "grid-10",
+      "base": null
+     },
+     {
+      "point": "grid-11",
+      "base": null
+     },
+     {
+      "point": "grid-20",
+      "base": null
+     },
+     {
+      "point": "grid-21",
+      "base": null
+     },
+     {
+      "point": "center",
+      "base": null
+     }
+    ]
+   },
+   "expected_after_manual": {
+    "base": [
+     {
+      "point": "at-iso",
+      "before_mm": 0,
+      "before_id": "7b39e048-341b-454a-a63c-4b7e1ae73e9f",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "7b39e048-341b-454a-a63c-4b7e1ae73e9f"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-00",
+      "before_mm": 17954,
+      "before_id": "a4483f53-7de8-4df1-b61b-b4066b0ad5dd",
+      "after_mm": 17954,
+      "after": {
+       "kind": "source",
+       "id": "a4483f53-7de8-4df1-b61b-b4066b0ad5dd"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-01",
+      "before_mm": 230593,
+      "before_id": "c97435da-cd05-4549-bec1-ff297e858554",
+      "after_mm": 230593,
+      "after": {
+       "kind": "source",
+       "id": "c97435da-cd05-4549-bec1-ff297e858554"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-10",
+      "before_mm": 141502,
+      "before_id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+      "after_mm": 141502,
+      "after": {
+       "kind": "source",
+       "id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-11",
+      "before_mm": 521468,
+      "before_id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783",
+      "after_mm": 521468,
+      "after": {
+       "kind": "source",
+       "id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-20",
+      "before_mm": 234963,
+      "before_id": "8ca53724-c558-46b7-826b-13e3e8fbb7e6",
+      "after_mm": 234963,
+      "after": {
+       "kind": "source",
+       "id": "8ca53724-c558-46b7-826b-13e3e8fbb7e6"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-21",
+      "before_mm": 1058880,
+      "before_id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+      "after_mm": 1058880,
+      "after": {
+       "kind": "source",
+       "id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "center",
+      "before_mm": 384438,
+      "before_id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+      "after_mm": 384438,
+      "after": {
+       "kind": "source",
+       "id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2"
+      },
+      "delta_mm": 0
+     }
+    ],
+    "one-isolated": [
+     {
+      "point": "at-iso",
+      "before_mm": 371265,
+      "before_id": "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a",
+      "after_mm": 0,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-on-iso"
+      },
+      "delta_mm": 371265
+     },
+     {
+      "point": "grid-00",
+      "before_mm": 17954,
+      "before_id": "a4483f53-7de8-4df1-b61b-b4066b0ad5dd",
+      "after_mm": 17954,
+      "after": {
+       "kind": "source",
+       "id": "a4483f53-7de8-4df1-b61b-b4066b0ad5dd"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-01",
+      "before_mm": 230593,
+      "before_id": "c97435da-cd05-4549-bec1-ff297e858554",
+      "after_mm": 230593,
+      "after": {
+       "kind": "source",
+       "id": "c97435da-cd05-4549-bec1-ff297e858554"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-10",
+      "before_mm": 141502,
+      "before_id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+      "after_mm": 141502,
+      "after": {
+       "kind": "source",
+       "id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-11",
+      "before_mm": 521468,
+      "before_id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783",
+      "after_mm": 521468,
+      "after": {
+       "kind": "source",
+       "id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-20",
+      "before_mm": 234963,
+      "before_id": "8ca53724-c558-46b7-826b-13e3e8fbb7e6",
+      "after_mm": 234963,
+      "after": {
+       "kind": "source",
+       "id": "8ca53724-c558-46b7-826b-13e3e8fbb7e6"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-21",
+      "before_mm": 1058880,
+      "before_id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+      "after_mm": 1058880,
+      "after": {
+       "kind": "source",
+       "id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "center",
+      "before_mm": 384438,
+      "before_id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+      "after_mm": 384438,
+      "after": {
+       "kind": "source",
+       "id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2"
+      },
+      "delta_mm": 0
+     }
+    ],
+    "near-centre-3": [
+     {
+      "point": "at-iso",
+      "before_mm": 385007,
+      "before_id": "a4483f53-7de8-4df1-b61b-b4066b0ad5dd",
+      "after_mm": 0,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-on-iso"
+      },
+      "delta_mm": 385007
+     },
+     {
+      "point": "grid-00",
+      "before_mm": 17954,
+      "before_id": "a4483f53-7de8-4df1-b61b-b4066b0ad5dd",
+      "after_mm": 17954,
+      "after": {
+       "kind": "source",
+       "id": "a4483f53-7de8-4df1-b61b-b4066b0ad5dd"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-01",
+      "before_mm": 230593,
+      "before_id": "c97435da-cd05-4549-bec1-ff297e858554",
+      "after_mm": 230593,
+      "after": {
+       "kind": "source",
+       "id": "c97435da-cd05-4549-bec1-ff297e858554"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-10",
+      "before_mm": 676887,
+      "before_id": "a4483f53-7de8-4df1-b61b-b4066b0ad5dd",
+      "after_mm": 598793,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-1"
+      },
+      "delta_mm": 78094
+     },
+     {
+      "point": "grid-11",
+      "before_mm": 521468,
+      "before_id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783",
+      "after_mm": 521468,
+      "after": {
+       "kind": "source",
+       "id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-20",
+      "before_mm": 234963,
+      "before_id": "8ca53724-c558-46b7-826b-13e3e8fbb7e6",
+      "after_mm": 234963,
+      "after": {
+       "kind": "source",
+       "id": "8ca53724-c558-46b7-826b-13e3e8fbb7e6"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-21",
+      "before_mm": 1115632,
+      "before_id": "8ca53724-c558-46b7-826b-13e3e8fbb7e6",
+      "after_mm": 1115632,
+      "after": {
+       "kind": "source",
+       "id": "8ca53724-c558-46b7-826b-13e3e8fbb7e6"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "center",
+      "before_mm": 832842,
+      "before_id": "a4483f53-7de8-4df1-b61b-b4066b0ad5dd",
+      "after_mm": 550121,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-on-iso"
+      },
+      "delta_mm": 282721
+     }
+    ],
+    "near-centre-3-again": [
+     {
+      "point": "at-iso",
+      "before_mm": 385007,
+      "before_id": "a4483f53-7de8-4df1-b61b-b4066b0ad5dd",
+      "after_mm": 0,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-on-iso"
+      },
+      "delta_mm": 385007
+     },
+     {
+      "point": "grid-00",
+      "before_mm": 17954,
+      "before_id": "a4483f53-7de8-4df1-b61b-b4066b0ad5dd",
+      "after_mm": 17954,
+      "after": {
+       "kind": "source",
+       "id": "a4483f53-7de8-4df1-b61b-b4066b0ad5dd"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-01",
+      "before_mm": 230593,
+      "before_id": "c97435da-cd05-4549-bec1-ff297e858554",
+      "after_mm": 230593,
+      "after": {
+       "kind": "source",
+       "id": "c97435da-cd05-4549-bec1-ff297e858554"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-10",
+      "before_mm": 676887,
+      "before_id": "a4483f53-7de8-4df1-b61b-b4066b0ad5dd",
+      "after_mm": 598793,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-1"
+      },
+      "delta_mm": 78094
+     },
+     {
+      "point": "grid-11",
+      "before_mm": 521468,
+      "before_id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783",
+      "after_mm": 521468,
+      "after": {
+       "kind": "source",
+       "id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-20",
+      "before_mm": 234963,
+      "before_id": "8ca53724-c558-46b7-826b-13e3e8fbb7e6",
+      "after_mm": 234963,
+      "after": {
+       "kind": "source",
+       "id": "8ca53724-c558-46b7-826b-13e3e8fbb7e6"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-21",
+      "before_mm": 1115632,
+      "before_id": "8ca53724-c558-46b7-826b-13e3e8fbb7e6",
+      "after_mm": 1115632,
+      "after": {
+       "kind": "source",
+       "id": "8ca53724-c558-46b7-826b-13e3e8fbb7e6"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "center",
+      "before_mm": 832842,
+      "before_id": "a4483f53-7de8-4df1-b61b-b4066b0ad5dd",
+      "after_mm": 550121,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-on-iso"
+      },
+      "delta_mm": 282721
+     }
+    ],
+    "all-records": [
+     {
+      "point": "at-iso",
+      "before_mm": null,
+      "before_id": null,
+      "after_mm": 0,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-on-iso"
+      },
+      "delta_mm": null
+     },
+     {
+      "point": "grid-00",
+      "before_mm": null,
+      "before_id": null,
+      "after_mm": 66587,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-1"
+      },
+      "delta_mm": null
+     },
+     {
+      "point": "grid-01",
+      "before_mm": null,
+      "before_id": null,
+      "after_mm": 640287,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-on-iso"
+      },
+      "delta_mm": null
+     },
+     {
+      "point": "grid-10",
+      "before_mm": null,
+      "before_id": null,
+      "after_mm": 598793,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-1"
+      },
+      "delta_mm": null
+     },
+     {
+      "point": "grid-11",
+      "before_mm": null,
+      "before_id": null,
+      "after_mm": 824253,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-on-iso"
+      },
+      "delta_mm": null
+     },
+     {
+      "point": "grid-20",
+      "before_mm": null,
+      "before_id": null,
+      "after_mm": 1256838,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-on-iso"
+      },
+      "delta_mm": null
+     },
+     {
+      "point": "grid-21",
+      "before_mm": null,
+      "before_id": null,
+      "after_mm": 1354268,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-on-iso"
+      },
+      "delta_mm": null
+     },
+     {
+      "point": "center",
+      "before_mm": null,
+      "before_id": null,
+      "after_mm": 550121,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-on-iso"
+      },
+      "delta_mm": null
+     }
+    ]
+   },
+   "asserts": [
+    {
+     "case": "one-isolated",
+     "point": "at-iso",
+     "rule": "исключена запись в точке: ближайшая — другая запись дальше 0 мм",
+     "ok": true
+    },
+    {
+     "case": "all-records",
+     "point": "*",
+     "rule": "исключены все записи категории: до = неизвестно (None), а не 0",
+     "ok": true
+    }
+   ],
+   "brute_force": {
+    "status": "optimal",
+    "subsets": 64,
+    "feasible_count": 21,
+    "nominal": {
+     "selected_ids": [
+      "cand-3",
+      "cand-4"
+     ],
+     "worst_vector": {
+      "unknown_count": 0,
+      "weighted_sum_mm": 12155490,
+      "max_mm": 1284547
+     },
+     "worst_case_ids": [
+      "all-records"
+     ],
+     "base_weighted_mean_mm": 192150.42857142858,
+     "loss": {
+      "base": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 4035159,
+       "max_mm": 672712
+      },
+      "one-isolated": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 4406424,
+       "max_mm": 672712
+      },
+      "near-centre-3": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 7206751,
+       "max_mm": 676887
+      },
+      "near-centre-3-again": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 7206751,
+       "max_mm": 676887
+      },
+      "all-records": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 12155490,
+       "max_mm": 1284547
+      }
+     },
+     "cost": 70
+    },
+    "robust": {
+     "selected_ids": [
+      "cand-1",
+      "cand-3"
+     ],
+     "worst_vector": {
+      "unknown_count": 0,
+      "weighted_sum_mm": 9831602,
+      "max_mm": 1264173
+     },
+     "worst_case_ids": [
+      "all-records"
+     ],
+     "base_weighted_mean_mm": 215581.7142857143,
+     "loss": {
+      "base": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 4527216,
+       "max_mm": 672712
+      },
+      "one-isolated": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 4898481,
+       "max_mm": 672712
+      },
+      "near-centre-3": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 7378769,
+       "max_mm": 672712
+      },
+      "near-centre-3-again": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 7378769,
+       "max_mm": 672712
+      },
+      "all-records": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 9831602,
+       "max_mm": 1264173
+      }
+     },
+     "cost": 80
+    },
+    "same_plan": false,
+    "price_of_robustness_m": 23.43128571428571
+   },
+   "identical_sets": [
+    [
+     "near-centre-3",
+     "near-centre-3-again"
+    ]
+   ]
+  },
+  {
+   "city": "astana",
+   "category": "outpatient_clinic",
+   "envelope": {
+    "schema_version": "city-resilience-v1",
+    "plan": {
+     "schema_version": "city-plan-v2",
+     "city_id": "astana",
+     "source_snapshot": "sha256:67a40b96d29873118780969eb11c32deba49a0c64fda1f185efe634882f04c6d",
+     "category": "outpatient_clinic",
+     "control_points": [
+      {
+       "id": "at-iso",
+       "lon": 71.422483,
+       "lat": 51.169953,
+       "weight": 1
+      },
+      {
+       "id": "grid-00",
+       "lon": 71.423143,
+       "lat": 51.167525,
+       "weight": 2
+      },
+      {
+       "id": "grid-01",
+       "lon": 71.423143,
+       "lat": 51.176508,
+       "weight": 3
+      },
+      {
+       "id": "grid-10",
+       "lon": 71.432686,
+       "lat": 51.167525,
+       "weight": 4
+      },
+      {
+       "id": "grid-11",
+       "lon": 71.432686,
+       "lat": 51.176508,
+       "weight": 5
+      },
+      {
+       "id": "grid-20",
+       "lon": 71.442229,
+       "lat": 51.167525,
+       "weight": 1
+      },
+      {
+       "id": "grid-21",
+       "lon": 71.442229,
+       "lat": 51.176508,
+       "weight": 2
+      },
+      {
+       "id": "center",
+       "lon": 71.432686,
+       "lat": 51.172016,
+       "weight": 3
+      }
+     ],
+     "candidates": [
+      {
+       "id": "cand-1",
+       "lon": 71.424098,
+       "lat": 51.167525,
+       "category": "outpatient_clinic",
+       "kind": "hypothetical",
+       "cost": 30
+      },
+      {
+       "id": "cand-2",
+       "lon": 71.441274,
+       "lat": 51.167525,
+       "category": "outpatient_clinic",
+       "kind": "hypothetical",
+       "cost": 40
+      },
+      {
+       "id": "cand-3",
+       "lon": 71.432686,
+       "lat": 51.177407,
+       "category": "outpatient_clinic",
+       "kind": "hypothetical",
+       "cost": 50
+      },
+      {
+       "id": "cand-4",
+       "lon": 71.424098,
+       "lat": 51.176508,
+       "category": "outpatient_clinic",
+       "kind": "hypothetical",
+       "cost": 20
+      },
+      {
+       "id": "cand-5",
+       "lon": 71.441274,
+       "lat": 51.176508,
+       "category": "outpatient_clinic",
+       "kind": "hypothetical",
+       "cost": 60
+      },
+      {
+       "id": "cand-on-iso",
+       "lon": 71.422483,
+       "lat": 51.169953,
+       "category": "outpatient_clinic",
+       "kind": "hypothetical",
+       "cost": 35
+      }
+     ],
+     "budget": 100,
+     "max_selected": 2,
+     "coverage_radius_m": 500,
+     "required_ids": [],
+     "excluded_ids": [],
+     "selected_ids": [
+      "cand-1",
+      "cand-on-iso"
+     ]
+    },
+    "cases": [
+     {
+      "id": "one-isolated",
+      "label": "Условно без записи: Family Clinic",
+      "disabled_source_ids": [
+       "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+      ]
+     },
+     {
+      "id": "near-centre-3",
+      "label": "Условно без выбранных записей (3): Центр Поддержки Детей с РАС Асыл Мирас, Family Stom, Aura Clinic",
+      "disabled_source_ids": [
+       "1d137305-49cd-450b-9626-9762db14d080",
+       "410f0193-f0bc-4553-bee5-660aab0287a5",
+       "5f76d9b9-bdd1-4cea-9157-fef68ac60270"
+      ]
+     },
+     {
+      "id": "near-centre-3-again",
+      "label": "Те же три записи (повтор набора, другой порядок)",
+      "disabled_source_ids": [
+       "5f76d9b9-bdd1-4cea-9157-fef68ac60270",
+       "410f0193-f0bc-4553-bee5-660aab0287a5",
+       "1d137305-49cd-450b-9626-9762db14d080"
+      ]
+     },
+     {
+      "id": "all-records",
+      "label": "Условно без выбранных записей (16): Family Clinic, Лор центр Сезiм, Стоматология МерейДент, Ирина Кулинич родолог, Цент…",
+      "disabled_source_ids": [
+       "0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+       "1116880a-cbb6-4271-9a59-a277083b792c",
+       "140ab4bc-e560-41e3-aeaf-cb7b8b821f08",
+       "166c939f-9131-4fbb-bf75-4ab543916f20",
+       "1d137305-49cd-450b-9626-9762db14d080",
+       "1e587c48-b425-4d8a-ba90-37f1ad41e24f",
+       "3fba1026-8464-41ab-88f8-633e3df0de30",
+       "410f0193-f0bc-4553-bee5-660aab0287a5",
+       "43c64670-1b4c-4d42-bd0f-0049a7b49371",
+       "5c3a8d6d-117d-4cce-9dde-ad820e6967d2",
+       "5f76d9b9-bdd1-4cea-9157-fef68ac60270",
+       "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8",
+       "771c278a-af10-4c57-b9fc-52755437345d",
+       "aca68551-4a03-47c2-813f-d13dceb85c62",
+       "b1fc81c5-7f00-4a0a-969d-2da872515916",
+       "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+      ]
+     }
+    ]
+   },
+   "n_sources": 16,
+   "colocated_status": "no_qa_group",
+   "qa_groups_in_city": 0,
+   "shared_in_category": [],
+   "notes": {},
+   "expected_base": {
+    "base": [
+     {
+      "point": "at-iso",
+      "base": {
+       "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+       "mm": 0,
+       "tied_ids": [
+        "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+       ]
+      }
+     },
+     {
+      "point": "grid-00",
+      "base": {
+       "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+       "mm": 273875,
+       "tied_ids": [
+        "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+       ]
+      }
+     },
+     {
+      "point": "grid-01",
+      "base": {
+       "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371",
+       "mm": 96900,
+       "tied_ids": [
+        "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+       ]
+      }
+     },
+     {
+      "point": "grid-10",
+      "base": {
+       "id": "5f76d9b9-bdd1-4cea-9157-fef68ac60270",
+       "mm": 155252,
+       "tied_ids": [
+        "5f76d9b9-bdd1-4cea-9157-fef68ac60270"
+       ]
+      }
+     },
+     {
+      "point": "grid-11",
+      "base": {
+       "id": "1d137305-49cd-450b-9626-9762db14d080",
+       "mm": 350516,
+       "tied_ids": [
+        "1d137305-49cd-450b-9626-9762db14d080"
+       ]
+      }
+     },
+     {
+      "point": "grid-20",
+      "base": {
+       "id": "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8",
+       "mm": 66979,
+       "tied_ids": [
+        "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8"
+       ]
+      }
+     },
+     {
+      "point": "grid-21",
+      "base": {
+       "id": "1d137305-49cd-450b-9626-9762db14d080",
+       "mm": 416483,
+       "tied_ids": [
+        "1d137305-49cd-450b-9626-9762db14d080"
+       ]
+      }
+     },
+     {
+      "point": "center",
+      "base": {
+       "id": "1d137305-49cd-450b-9626-9762db14d080",
+       "mm": 427354,
+       "tied_ids": [
+        "1d137305-49cd-450b-9626-9762db14d080"
+       ]
+      }
+     }
+    ],
+    "one-isolated": [
+     {
+      "point": "at-iso",
+      "base": {
+       "id": "166c939f-9131-4fbb-bf75-4ab543916f20",
+       "mm": 254587,
+       "tied_ids": [
+        "166c939f-9131-4fbb-bf75-4ab543916f20"
+       ]
+      }
+     },
+     {
+      "point": "grid-00",
+      "base": {
+       "id": "410f0193-f0bc-4553-bee5-660aab0287a5",
+       "mm": 474140,
+       "tied_ids": [
+        "410f0193-f0bc-4553-bee5-660aab0287a5"
+       ]
+      }
+     },
+     {
+      "point": "grid-01",
+      "base": {
+       "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371",
+       "mm": 96900,
+       "tied_ids": [
+        "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+       ]
+      }
+     },
+     {
+      "point": "grid-10",
+      "base": {
+       "id": "5f76d9b9-bdd1-4cea-9157-fef68ac60270",
+       "mm": 155252,
+       "tied_ids": [
+        "5f76d9b9-bdd1-4cea-9157-fef68ac60270"
+       ]
+      }
+     },
+     {
+      "point": "grid-11",
+      "base": {
+       "id": "1d137305-49cd-450b-9626-9762db14d080",
+       "mm": 350516,
+       "tied_ids": [
+        "1d137305-49cd-450b-9626-9762db14d080"
+       ]
+      }
+     },
+     {
+      "point": "grid-20",
+      "base": {
+       "id": "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8",
+       "mm": 66979,
+       "tied_ids": [
+        "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8"
+       ]
+      }
+     },
+     {
+      "point": "grid-21",
+      "base": {
+       "id": "1d137305-49cd-450b-9626-9762db14d080",
+       "mm": 416483,
+       "tied_ids": [
+        "1d137305-49cd-450b-9626-9762db14d080"
+       ]
+      }
+     },
+     {
+      "point": "center",
+      "base": {
+       "id": "1d137305-49cd-450b-9626-9762db14d080",
+       "mm": 427354,
+       "tied_ids": [
+        "1d137305-49cd-450b-9626-9762db14d080"
+       ]
+      }
+     }
+    ],
+    "near-centre-3": [
+     {
+      "point": "at-iso",
+      "base": {
+       "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+       "mm": 0,
+       "tied_ids": [
+        "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+       ]
+      }
+     },
+     {
+      "point": "grid-00",
+      "base": {
+       "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+       "mm": 273875,
+       "tied_ids": [
+        "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+       ]
+      }
+     },
+     {
+      "point": "grid-01",
+      "base": {
+       "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371",
+       "mm": 96900,
+       "tied_ids": [
+        "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+       ]
+      }
+     },
+     {
+      "point": "grid-10",
+      "base": {
+       "id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f",
+       "mm": 544143,
+       "tied_ids": [
+        "1e587c48-b425-4d8a-ba90-37f1ad41e24f"
+       ]
+      }
+     },
+     {
+      "point": "grid-11",
+      "base": {
+       "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050",
+       "mm": 411665,
+       "tied_ids": [
+        "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+       ]
+      }
+     },
+     {
+      "point": "grid-20",
+      "base": {
+       "id": "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8",
+       "mm": 66979,
+       "tied_ids": [
+        "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8"
+       ]
+      }
+     },
+     {
+      "point": "grid-21",
+      "base": {
+       "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050",
+       "mm": 595509,
+       "tied_ids": [
+        "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+       ]
+      }
+     },
+     {
+      "point": "center",
+      "base": {
+       "id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f",
+       "mm": 641575,
+       "tied_ids": [
+        "1e587c48-b425-4d8a-ba90-37f1ad41e24f"
+       ]
+      }
+     }
+    ],
+    "near-centre-3-again": [
+     {
+      "point": "at-iso",
+      "base": {
+       "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+       "mm": 0,
+       "tied_ids": [
+        "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+       ]
+      }
+     },
+     {
+      "point": "grid-00",
+      "base": {
+       "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+       "mm": 273875,
+       "tied_ids": [
+        "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+       ]
+      }
+     },
+     {
+      "point": "grid-01",
+      "base": {
+       "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371",
+       "mm": 96900,
+       "tied_ids": [
+        "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+       ]
+      }
+     },
+     {
+      "point": "grid-10",
+      "base": {
+       "id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f",
+       "mm": 544143,
+       "tied_ids": [
+        "1e587c48-b425-4d8a-ba90-37f1ad41e24f"
+       ]
+      }
+     },
+     {
+      "point": "grid-11",
+      "base": {
+       "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050",
+       "mm": 411665,
+       "tied_ids": [
+        "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+       ]
+      }
+     },
+     {
+      "point": "grid-20",
+      "base": {
+       "id": "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8",
+       "mm": 66979,
+       "tied_ids": [
+        "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8"
+       ]
+      }
+     },
+     {
+      "point": "grid-21",
+      "base": {
+       "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050",
+       "mm": 595509,
+       "tied_ids": [
+        "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+       ]
+      }
+     },
+     {
+      "point": "center",
+      "base": {
+       "id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f",
+       "mm": 641575,
+       "tied_ids": [
+        "1e587c48-b425-4d8a-ba90-37f1ad41e24f"
+       ]
+      }
+     }
+    ],
+    "all-records": [
+     {
+      "point": "at-iso",
+      "base": null
+     },
+     {
+      "point": "grid-00",
+      "base": null
+     },
+     {
+      "point": "grid-01",
+      "base": null
+     },
+     {
+      "point": "grid-10",
+      "base": null
+     },
+     {
+      "point": "grid-11",
+      "base": null
+     },
+     {
+      "point": "grid-20",
+      "base": null
+     },
+     {
+      "point": "grid-21",
+      "base": null
+     },
+     {
+      "point": "center",
+      "base": null
+     }
+    ]
+   },
+   "expected_after_manual": {
+    "base": [
+     {
+      "point": "at-iso",
+      "before_mm": 0,
+      "before_id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-00",
+      "before_mm": 273875,
+      "before_id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+      "after_mm": 66587,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-1"
+      },
+      "delta_mm": 207288
+     },
+     {
+      "point": "grid-01",
+      "before_mm": 96900,
+      "before_id": "43c64670-1b4c-4d42-bd0f-0049a7b49371",
+      "after_mm": 96900,
+      "after": {
+       "kind": "source",
+       "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-10",
+      "before_mm": 155252,
+      "before_id": "5f76d9b9-bdd1-4cea-9157-fef68ac60270",
+      "after_mm": 155252,
+      "after": {
+       "kind": "source",
+       "id": "5f76d9b9-bdd1-4cea-9157-fef68ac60270"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-11",
+      "before_mm": 350516,
+      "before_id": "1d137305-49cd-450b-9626-9762db14d080",
+      "after_mm": 350516,
+      "after": {
+       "kind": "source",
+       "id": "1d137305-49cd-450b-9626-9762db14d080"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-20",
+      "before_mm": 66979,
+      "before_id": "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8",
+      "after_mm": 66979,
+      "after": {
+       "kind": "source",
+       "id": "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-21",
+      "before_mm": 416483,
+      "before_id": "1d137305-49cd-450b-9626-9762db14d080",
+      "after_mm": 416483,
+      "after": {
+       "kind": "source",
+       "id": "1d137305-49cd-450b-9626-9762db14d080"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "center",
+      "before_mm": 427354,
+      "before_id": "1d137305-49cd-450b-9626-9762db14d080",
+      "after_mm": 427354,
+      "after": {
+       "kind": "source",
+       "id": "1d137305-49cd-450b-9626-9762db14d080"
+      },
+      "delta_mm": 0
+     }
+    ],
+    "one-isolated": [
+     {
+      "point": "at-iso",
+      "before_mm": 254587,
+      "before_id": "166c939f-9131-4fbb-bf75-4ab543916f20",
+      "after_mm": 0,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-on-iso"
+      },
+      "delta_mm": 254587
+     },
+     {
+      "point": "grid-00",
+      "before_mm": 474140,
+      "before_id": "410f0193-f0bc-4553-bee5-660aab0287a5",
+      "after_mm": 66587,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-1"
+      },
+      "delta_mm": 407553
+     },
+     {
+      "point": "grid-01",
+      "before_mm": 96900,
+      "before_id": "43c64670-1b4c-4d42-bd0f-0049a7b49371",
+      "after_mm": 96900,
+      "after": {
+       "kind": "source",
+       "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-10",
+      "before_mm": 155252,
+      "before_id": "5f76d9b9-bdd1-4cea-9157-fef68ac60270",
+      "after_mm": 155252,
+      "after": {
+       "kind": "source",
+       "id": "5f76d9b9-bdd1-4cea-9157-fef68ac60270"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-11",
+      "before_mm": 350516,
+      "before_id": "1d137305-49cd-450b-9626-9762db14d080",
+      "after_mm": 350516,
+      "after": {
+       "kind": "source",
+       "id": "1d137305-49cd-450b-9626-9762db14d080"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-20",
+      "before_mm": 66979,
+      "before_id": "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8",
+      "after_mm": 66979,
+      "after": {
+       "kind": "source",
+       "id": "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-21",
+      "before_mm": 416483,
+      "before_id": "1d137305-49cd-450b-9626-9762db14d080",
+      "after_mm": 416483,
+      "after": {
+       "kind": "source",
+       "id": "1d137305-49cd-450b-9626-9762db14d080"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "center",
+      "before_mm": 427354,
+      "before_id": "1d137305-49cd-450b-9626-9762db14d080",
+      "after_mm": 427354,
+      "after": {
+       "kind": "source",
+       "id": "1d137305-49cd-450b-9626-9762db14d080"
+      },
+      "delta_mm": 0
+     }
+    ],
+    "near-centre-3": [
+     {
+      "point": "at-iso",
+      "before_mm": 0,
+      "before_id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-00",
+      "before_mm": 273875,
+      "before_id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+      "after_mm": 66587,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-1"
+      },
+      "delta_mm": 207288
+     },
+     {
+      "point": "grid-01",
+      "before_mm": 96900,
+      "before_id": "43c64670-1b4c-4d42-bd0f-0049a7b49371",
+      "after_mm": 96900,
+      "after": {
+       "kind": "source",
+       "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-10",
+      "before_mm": 544143,
+      "before_id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f",
+      "after_mm": 544143,
+      "after": {
+       "kind": "source",
+       "id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-11",
+      "before_mm": 411665,
+      "before_id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050",
+      "after_mm": 411665,
+      "after": {
+       "kind": "source",
+       "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-20",
+      "before_mm": 66979,
+      "before_id": "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8",
+      "after_mm": 66979,
+      "after": {
+       "kind": "source",
+       "id": "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-21",
+      "before_mm": 595509,
+      "before_id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050",
+      "after_mm": 595509,
+      "after": {
+       "kind": "source",
+       "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "center",
+      "before_mm": 641575,
+      "before_id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f",
+      "after_mm": 641575,
+      "after": {
+       "kind": "source",
+       "id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f"
+      },
+      "delta_mm": 0
+     }
+    ],
+    "near-centre-3-again": [
+     {
+      "point": "at-iso",
+      "before_mm": 0,
+      "before_id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+      "after_mm": 0,
+      "after": {
+       "kind": "source",
+       "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-00",
+      "before_mm": 273875,
+      "before_id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+      "after_mm": 66587,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-1"
+      },
+      "delta_mm": 207288
+     },
+     {
+      "point": "grid-01",
+      "before_mm": 96900,
+      "before_id": "43c64670-1b4c-4d42-bd0f-0049a7b49371",
+      "after_mm": 96900,
+      "after": {
+       "kind": "source",
+       "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-10",
+      "before_mm": 544143,
+      "before_id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f",
+      "after_mm": 544143,
+      "after": {
+       "kind": "source",
+       "id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-11",
+      "before_mm": 411665,
+      "before_id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050",
+      "after_mm": 411665,
+      "after": {
+       "kind": "source",
+       "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-20",
+      "before_mm": 66979,
+      "before_id": "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8",
+      "after_mm": 66979,
+      "after": {
+       "kind": "source",
+       "id": "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "grid-21",
+      "before_mm": 595509,
+      "before_id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050",
+      "after_mm": 595509,
+      "after": {
+       "kind": "source",
+       "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+      },
+      "delta_mm": 0
+     },
+     {
+      "point": "center",
+      "before_mm": 641575,
+      "before_id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f",
+      "after_mm": 641575,
+      "after": {
+       "kind": "source",
+       "id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f"
+      },
+      "delta_mm": 0
+     }
+    ],
+    "all-records": [
+     {
+      "point": "at-iso",
+      "before_mm": null,
+      "before_id": null,
+      "after_mm": 0,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-on-iso"
+      },
+      "delta_mm": null
+     },
+     {
+      "point": "grid-00",
+      "before_mm": null,
+      "before_id": null,
+      "after_mm": 66587,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-1"
+      },
+      "delta_mm": null
+     },
+     {
+      "point": "grid-01",
+      "before_mm": null,
+      "before_id": null,
+      "after_mm": 730335,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-on-iso"
+      },
+      "delta_mm": null
+     },
+     {
+      "point": "grid-10",
+      "before_mm": null,
+      "before_id": null,
+      "after_mm": 598793,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-1"
+      },
+      "delta_mm": null
+     },
+     {
+      "point": "grid-11",
+      "before_mm": null,
+      "before_id": null,
+      "after_mm": 1018446,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-on-iso"
+      },
+      "delta_mm": null
+     },
+     {
+      "point": "grid-20",
+      "before_mm": null,
+      "before_id": null,
+      "after_mm": 1264173,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-1"
+      },
+      "delta_mm": null
+     },
+     {
+      "point": "grid-21",
+      "before_mm": null,
+      "before_id": null,
+      "after_mm": 1557664,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-on-iso"
+      },
+      "delta_mm": null
+     },
+     {
+      "point": "center",
+      "before_mm": null,
+      "before_id": null,
+      "after_mm": 747418,
+      "after": {
+       "kind": "hypothetical",
+       "id": "cand-on-iso"
+      },
+      "delta_mm": null
+     }
+    ]
+   },
+   "asserts": [
+    {
+     "case": "one-isolated",
+     "point": "at-iso",
+     "rule": "исключена запись в точке: ближайшая — другая запись дальше 0 мм",
+     "ok": true
+    },
+    {
+     "case": "all-records",
+     "point": "*",
+     "rule": "исключены все записи категории: до = неизвестно (None), а не 0",
+     "ok": true
+    }
+   ],
+   "brute_force": {
+    "status": "optimal",
+    "subsets": 64,
+    "feasible_count": 21,
+    "nominal": {
+     "selected_ids": [
+      "cand-1",
+      "cand-3"
+     ],
+     "worst_vector": {
+      "unknown_count": 0,
+      "weighted_sum_mm": 9746780,
+      "max_mm": 1264173
+     },
+     "worst_case_ids": [
+      "all-records"
+     ],
+     "base_weighted_mean_mm": 177462.33333333334,
+     "loss": {
+      "base": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 3726709,
+       "max_mm": 427354
+      },
+      "one-isolated": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 3981296,
+       "max_mm": 427354
+      },
+      "near-centre-3": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 6156622,
+       "max_mm": 599453
+      },
+      "near-centre-3-again": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 6156622,
+       "max_mm": 599453
+      },
+      "all-records": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 9746780,
+       "max_mm": 1264173
+      }
+     },
+     "cost": 80
+    },
+    "robust": {
+     "selected_ids": [
+      "cand-1",
+      "cand-3"
+     ],
+     "worst_vector": {
+      "unknown_count": 0,
+      "weighted_sum_mm": 9746780,
+      "max_mm": 1264173
+     },
+     "worst_case_ids": [
+      "all-records"
+     ],
+     "base_weighted_mean_mm": 177462.33333333334,
+     "loss": {
+      "base": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 3726709,
+       "max_mm": 427354
+      },
+      "one-isolated": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 3981296,
+       "max_mm": 427354
+      },
+      "near-centre-3": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 6156622,
+       "max_mm": 599453
+      },
+      "near-centre-3-again": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 6156622,
+       "max_mm": 599453
+      },
+      "all-records": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 9746780,
+       "max_mm": 1264173
+      }
+     },
+     "cost": 80
+    },
+    "same_plan": true,
+    "price_of_robustness_m": 0.0
+   },
+   "identical_sets": [
+    [
+     "near-centre-3",
+     "near-centre-3-again"
+    ]
+   ]
+  }
+ ]
+}

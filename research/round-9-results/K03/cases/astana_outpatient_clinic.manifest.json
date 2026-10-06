@@ -1,0 +1,685 @@
+{
+ "schema": "k03-exclusion-manifest-v1",
+ "note": "Условно исключаем из расчёта; это не подтверждение закрытия. Пустые исходные данные не означают отсутствие услуги.",
+ "city_id": "astana",
+ "category": "outpatient_clinic",
+ "base_source_snapshot": "sha256:67a40b96d29873118780969eb11c32deba49a0c64fda1f185efe634882f04c6d",
+ "release": "2026-09-23.1",
+ "qa_available": true,
+ "build": {
+  "branch": "claude/beautiful-clarke-sbzomj",
+  "sha": "d865dd4a124291e10dd0b7bb1d9eada20d34c268"
+ },
+ "exclusion_digest": "sha256:735e92c37469ccc57a5ceb6db74c52bc9fefd3a0e4bca7b3c8c902e0f6ec8819",
+ "cases": [
+  {
+   "id": "one-isolated",
+   "label": "Условно без записи: Family Clinic",
+   "disabled_source_ids": [
+    "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+   ],
+   "identical_to": []
+  },
+  {
+   "id": "near-centre-3",
+   "label": "Условно без выбранных записей (3): Центр Поддержки Детей с РАС Асыл Мирас, Family Stom, Aura Clinic",
+   "disabled_source_ids": [
+    "1d137305-49cd-450b-9626-9762db14d080",
+    "410f0193-f0bc-4553-bee5-660aab0287a5",
+    "5f76d9b9-bdd1-4cea-9157-fef68ac60270"
+   ],
+   "identical_to": [
+    "near-centre-3-again"
+   ]
+  },
+  {
+   "id": "near-centre-3-again",
+   "label": "Те же три записи (повтор набора, другой порядок)",
+   "disabled_source_ids": [
+    "1d137305-49cd-450b-9626-9762db14d080",
+    "410f0193-f0bc-4553-bee5-660aab0287a5",
+    "5f76d9b9-bdd1-4cea-9157-fef68ac60270"
+   ],
+   "identical_to": [
+    "near-centre-3"
+   ]
+  },
+  {
+   "id": "all-records",
+   "label": "Условно без выбранных записей (16): Family Clinic, Лор центр Сезiм, Стоматология МерейДент, Ирина Кулинич родолог, Цент…",
+   "disabled_source_ids": [
+    "0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+    "1116880a-cbb6-4271-9a59-a277083b792c",
+    "140ab4bc-e560-41e3-aeaf-cb7b8b821f08",
+    "166c939f-9131-4fbb-bf75-4ab543916f20",
+    "1d137305-49cd-450b-9626-9762db14d080",
+    "1e587c48-b425-4d8a-ba90-37f1ad41e24f",
+    "3fba1026-8464-41ab-88f8-633e3df0de30",
+    "410f0193-f0bc-4553-bee5-660aab0287a5",
+    "43c64670-1b4c-4d42-bd0f-0049a7b49371",
+    "5c3a8d6d-117d-4cce-9dde-ad820e6967d2",
+    "5f76d9b9-bdd1-4cea-9157-fef68ac60270",
+    "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8",
+    "771c278a-af10-4c57-b9fc-52755437345d",
+    "aca68551-4a03-47c2-813f-d13dceb85c62",
+    "b1fc81c5-7f00-4a0a-969d-2da872515916",
+    "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+   ],
+   "identical_to": []
+  }
+ ],
+ "records": {
+  "0dc3b66b-d8c1-4b7b-b769-06988161ac3f": {
+   "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+   "category": "outpatient_clinic",
+   "name": "Family Clinic",
+   "address": "Сәкен Сейфуллин көшесі 34",
+   "lon": 71.422483,
+   "lat": 51.169953,
+   "coord_decimals": {
+    "lon": 6,
+    "lat": 6
+   },
+   "provenance": {
+    "overture_category": "outpatient_care_facility",
+    "overture_version": 9,
+    "confidence": 0.961,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "257332574462444",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "4220169b7bed05fb84306159e7a741de8cc37d98b716956e5ddde9ad0af7ba9c",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": null,
+    "possible_duplicates": [],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [],
+    "other_categories": []
+   }
+  },
+  "1116880a-cbb6-4271-9a59-a277083b792c": {
+   "id": "1116880a-cbb6-4271-9a59-a277083b792c",
+   "category": "outpatient_clinic",
+   "name": "Лор центр Сезiм",
+   "address": "Bogenbay Batyr Ave 54",
+   "lon": 71.424931,
+   "lat": 51.176756,
+   "coord_decimals": {
+    "lon": 6,
+    "lat": 6
+   },
+   "provenance": {
+    "overture_category": "diagnostics_imaging_or_lab_service",
+    "overture_version": 11,
+    "confidence": 0.824,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "1788259608081336",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "49ac6194de4fccc7045726277edc771d3276f4c04f8017237da2662ad5405b21",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": null,
+    "possible_duplicates": [],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [],
+    "other_categories": []
+   }
+  },
+  "140ab4bc-e560-41e3-aeaf-cb7b8b821f08": {
+   "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08",
+   "category": "outpatient_clinic",
+   "name": "Стоматология МерейДент",
+   "address": "проспект Абая 50",
+   "lon": 71.44229,
+   "lat": 51.1699,
+   "coord_decimals": {
+    "lon": 5,
+    "lat": 4
+   },
+   "provenance": {
+    "overture_category": "dental_clinic",
+    "overture_version": 2,
+    "confidence": 0.486,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "203198949550493",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "5405c8c3a62f45a7b189e2a88d9fe11c857ef5943d3afa2fcf952a679a46cb78",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": null,
+    "possible_duplicates": [],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [],
+    "other_categories": [
+     "646f13c2-ad9e-4430-bbf2-1897b79120c9"
+    ]
+   }
+  },
+  "166c939f-9131-4fbb-bf75-4ab543916f20": {
+   "id": "166c939f-9131-4fbb-bf75-4ab543916f20",
+   "category": "outpatient_clinic",
+   "name": "Ирина Кулинич родолог",
+   "address": "Астана,",
+   "lon": 71.41939,
+   "lat": 51.17117,
+   "coord_decimals": {
+    "lon": 5,
+    "lat": 5
+   },
+   "provenance": {
+    "overture_category": "behavioral_or_mental_health_clinic",
+    "overture_version": 10,
+    "confidence": 0.266,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "703012992890836",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-08-24T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "2bd401e8652ccc5440266a085d0bd01c88a5f64ddab185f3ac0a4552a20f7907",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": null,
+    "possible_duplicates": [],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [],
+    "other_categories": []
+   }
+  },
+  "1d137305-49cd-450b-9626-9762db14d080": {
+   "id": "1d137305-49cd-450b-9626-9762db14d080",
+   "category": "outpatient_clinic",
+   "name": "Центр Поддержки Детей с РАС Асыл Мирас",
+   "address": "Валиханова 23/2",
+   "lon": 71.436912,
+   "lat": 51.1748,
+   "coord_decimals": {
+    "lon": 6,
+    "lat": 4
+   },
+   "provenance": {
+    "overture_category": "behavioral_or_mental_health_clinic",
+    "overture_version": 1,
+    "confidence": 0.079,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "103911685372897",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "6d61474c7c72d347aa04d34b8ee3d6a4eb77ed2c221c6c85415321c53974e9ee",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": null,
+    "possible_duplicates": [],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [],
+    "other_categories": []
+   }
+  },
+  "1e587c48-b425-4d8a-ba90-37f1ad41e24f": {
+   "id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f",
+   "category": "outpatient_clinic",
+   "name": "Медицинский центр Жәрдем - Астана",
+   "address": "Шоқан Уәлиханов көшесі 12",
+   "lon": 71.44025,
+   "lat": 51.16873,
+   "coord_decimals": {
+    "lon": 5,
+    "lat": 5
+   },
+   "provenance": {
+    "overture_category": "outpatient_care_facility",
+    "overture_version": 9,
+    "confidence": 0.565,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "1253357464677086",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "9c42521a8972a92b59313896496c80f757a27584deb5cff68322d0f48187009c",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": null,
+    "possible_duplicates": [],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [],
+    "other_categories": []
+   }
+  },
+  "3fba1026-8464-41ab-88f8-633e3df0de30": {
+   "id": "3fba1026-8464-41ab-88f8-633e3df0de30",
+   "category": "outpatient_clinic",
+   "name": "Astana Clinic",
+   "address": "Kenesary St 52",
+   "lon": 71.441358,
+   "lat": 51.166785,
+   "coord_decimals": {
+    "lon": 6,
+    "lat": 6
+   },
+   "provenance": {
+    "overture_category": "diagnostics_imaging_or_lab_service",
+    "overture_version": 11,
+    "confidence": 0.83,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "104721805755565",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "fa34642194d08633b450d91220a8457e97a1245a19a1be8eba9f8c6e885282b4",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": null,
+    "possible_duplicates": [],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [],
+    "other_categories": []
+   }
+  },
+  "410f0193-f0bc-4553-bee5-660aab0287a5": {
+   "id": "410f0193-f0bc-4553-bee5-660aab0287a5",
+   "category": "outpatient_clinic",
+   "name": "Family Stom",
+   "address": null,
+   "lon": 71.429936,
+   "lat": 51.167329,
+   "coord_decimals": {
+    "lon": 6,
+    "lat": 6
+   },
+   "provenance": {
+    "overture_category": "dental_clinic",
+    "overture_version": 9,
+    "confidence": 0.57,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "1741023805912740",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "50fe33418924945fe17d49708b0b76a05360d29733329a9c78b63652ea23d282",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": null,
+    "possible_duplicates": [],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [],
+    "other_categories": []
+   }
+  },
+  "43c64670-1b4c-4d42-bd0f-0049a7b49371": {
+   "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371",
+   "category": "outpatient_clinic",
+   "name": "Stomatologiya Kog'gan Dent",
+   "address": "Bogenbay Batyr Ave дом 50",
+   "lon": 71.422047,
+   "lat": 51.177044,
+   "coord_decimals": {
+    "lon": 6,
+    "lat": 6
+   },
+   "provenance": {
+    "overture_category": "dental_clinic",
+    "overture_version": 9,
+    "confidence": 0.419,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "107986207224422",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "b8ae2a32f6aab953d4910aa27667ebaedf933fdd5711fd3240ea559f72e22ea5",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": null,
+    "possible_duplicates": [],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [],
+    "other_categories": []
+   }
+  },
+  "5c3a8d6d-117d-4cce-9dde-ad820e6967d2": {
+   "id": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2",
+   "category": "outpatient_clinic",
+   "name": "Akademiya Ortopedii",
+   "address": "2-ші шағын аудан 1",
+   "lon": 71.42513,
+   "lat": 51.16305,
+   "coord_decimals": {
+    "lon": 5,
+    "lat": 5
+   },
+   "provenance": {
+    "overture_category": "specialized_health_care",
+    "overture_version": 3,
+    "confidence": 0.283,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "504627759406073",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "ce859529ac0c497f62f217b7bcb5eb5c4c96882324276ec1c90d5535f89af157",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": null,
+    "possible_duplicates": [],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [],
+    "other_categories": []
+   }
+  },
+  "5f76d9b9-bdd1-4cea-9157-fef68ac60270": {
+   "id": "5f76d9b9-bdd1-4cea-9157-fef68ac60270",
+   "category": "outpatient_clinic",
+   "name": "Aura Clinic",
+   "address": "Kenesary St 51",
+   "lon": 71.434725,
+   "lat": 51.166964,
+   "coord_decimals": {
+    "lon": 6,
+    "lat": 6
+   },
+   "provenance": {
+    "overture_category": "outpatient_care_facility",
+    "overture_version": 10,
+    "confidence": 0.386,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "237872013639988",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "1d6c84a7db805db63a9949b8a1afc6bf6de0f095e445559e3e5919f4f4b1ee5f",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": null,
+    "possible_duplicates": [],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [],
+    "other_categories": []
+   }
+  },
+  "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8": {
+   "id": "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8",
+   "category": "outpatient_clinic",
+   "name": "Gulsezim Aitugan",
+   "address": "Кенесары көшесі 65",
+   "lon": 71.44127,
+   "lat": 51.16756,
+   "coord_decimals": {
+    "lon": 5,
+    "lat": 5
+   },
+   "provenance": {
+    "overture_category": "specialized_health_care",
+    "overture_version": 1,
+    "confidence": 0.287,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "865604943303527",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "a6984ae7cdff6e14d435914e0d47b5fa09e7b9b78a4028f6025a05ad9fcd7dd2",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": null,
+    "possible_duplicates": [],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [],
+    "other_categories": [
+     "f313843a-b41d-44d3-8086-db329296d309"
+    ]
+   }
+  },
+  "771c278a-af10-4c57-b9fc-52755437345d": {
+   "id": "771c278a-af10-4c57-b9fc-52755437345d",
+   "category": "outpatient_clinic",
+   "name": "\"ЗарДан\" стоматологическая клиника",
+   "address": "г. Астана, ул. Сабыр Рахимова, 36",
+   "lon": 71.438397,
+   "lat": 51.164151,
+   "coord_decimals": {
+    "lon": 6,
+    "lat": 6
+   },
+   "provenance": {
+    "overture_category": "dental_clinic",
+    "overture_version": 6,
+    "confidence": 0.77,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "Foursquare",
+      "record_id": "560515dc498e86a57013f593",
+      "license": "Apache-2.0",
+      "update_time": "2025-02-21T00:00:00.000"
+     }
+    ]
+   },
+   "record_sha256": "0eb586da1f73ca58f0fe37dd7876816079ca4d15c0041e74aa421e8d555cc5f4",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": null,
+    "possible_duplicates": [],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [],
+    "other_categories": []
+   }
+  },
+  "aca68551-4a03-47c2-813f-d13dceb85c62": {
+   "id": "aca68551-4a03-47c2-813f-d13dceb85c62",
+   "category": "outpatient_clinic",
+   "name": "Sanjar Dental Clinic",
+   "address": "Кенесары көшесі 69А",
+   "lon": 71.44606,
+   "lat": 51.16817,
+   "coord_decimals": {
+    "lon": 5,
+    "lat": 5
+   },
+   "provenance": {
+    "overture_category": "dental_clinic",
+    "overture_version": 9,
+    "confidence": 0.828,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "105111728401845",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "44c4bcef114a2d80e0c8ca9167879ce3774b20e8e9343598bb5a9266f835e5c6",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": null,
+    "possible_duplicates": [],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [],
+    "other_categories": []
+   }
+  },
+  "b1fc81c5-7f00-4a0a-969d-2da872515916": {
+   "id": "b1fc81c5-7f00-4a0a-969d-2da872515916",
+   "category": "outpatient_clinic",
+   "name": "Стоматология Protezist_n",
+   "address": "Бөгенбай батыр даңғылы 54",
+   "lon": 71.42629,
+   "lat": 51.17692,
+   "coord_decimals": {
+    "lon": 5,
+    "lat": 5
+   },
+   "provenance": {
+    "overture_category": "dental_clinic",
+    "overture_version": 9,
+    "confidence": 0.508,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "106214339115286",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "ff844e07f337e5156a7dda8bf35c63b6af665b03d84c5eaa6a2d576aa3ef1857",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": null,
+    "possible_duplicates": [],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [],
+    "other_categories": []
+   }
+  },
+  "fcdc8d2f-41ff-42ea-99fe-726d7d844050": {
+   "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050",
+   "category": "outpatient_clinic",
+   "name": "Visa Dent",
+   "address": "020000, Shokan Valikhanov Street 27",
+   "lon": 71.435461,
+   "lat": 51.179776,
+   "coord_decimals": {
+    "lon": 6,
+    "lat": 6
+   },
+   "provenance": {
+    "overture_category": "dental_clinic",
+    "overture_version": 12,
+    "confidence": 0.584,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "103873835494337",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "31952152133f5812d128be85886fc6c53509313617af124935f8dd06ebab7f6d",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": null,
+    "possible_duplicates": [],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [],
+    "other_categories": []
+   }
+  }
+ }
+}

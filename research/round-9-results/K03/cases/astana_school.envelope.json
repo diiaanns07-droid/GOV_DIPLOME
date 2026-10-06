@@ -1,0 +1,159 @@
+{
+ "schema_version": "city-resilience-v1",
+ "plan": {
+  "schema_version": "city-plan-v2",
+  "city_id": "astana",
+  "source_snapshot": "sha256:67a40b96d29873118780969eb11c32deba49a0c64fda1f185efe634882f04c6d",
+  "category": "school",
+  "control_points": [
+   {
+    "id": "at-iso",
+    "lon": 71.42501,
+    "lat": 51.17087,
+    "weight": 1
+   },
+   {
+    "id": "grid-00",
+    "lon": 71.423143,
+    "lat": 51.167525,
+    "weight": 2
+   },
+   {
+    "id": "grid-01",
+    "lon": 71.423143,
+    "lat": 51.176508,
+    "weight": 3
+   },
+   {
+    "id": "grid-10",
+    "lon": 71.432686,
+    "lat": 51.167525,
+    "weight": 4
+   },
+   {
+    "id": "grid-11",
+    "lon": 71.432686,
+    "lat": 51.176508,
+    "weight": 5
+   },
+   {
+    "id": "grid-20",
+    "lon": 71.442229,
+    "lat": 51.167525,
+    "weight": 1
+   },
+   {
+    "id": "grid-21",
+    "lon": 71.442229,
+    "lat": 51.176508,
+    "weight": 2
+   },
+   {
+    "id": "center",
+    "lon": 71.432686,
+    "lat": 51.172016,
+    "weight": 3
+   }
+  ],
+  "candidates": [
+   {
+    "id": "cand-1",
+    "lon": 71.424098,
+    "lat": 51.167525,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 30
+   },
+   {
+    "id": "cand-2",
+    "lon": 71.441274,
+    "lat": 51.167525,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 40
+   },
+   {
+    "id": "cand-3",
+    "lon": 71.432686,
+    "lat": 51.177407,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 50
+   },
+   {
+    "id": "cand-4",
+    "lon": 71.424098,
+    "lat": 51.176508,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 20
+   },
+   {
+    "id": "cand-5",
+    "lon": 71.441274,
+    "lat": 51.176508,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 60
+   },
+   {
+    "id": "cand-on-iso",
+    "lon": 71.42501,
+    "lat": 51.17087,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 35
+   }
+  ],
+  "budget": 100,
+  "max_selected": 2,
+  "coverage_radius_m": 500,
+  "required_ids": [],
+  "excluded_ids": [],
+  "selected_ids": [
+   "cand-1",
+   "cand-on-iso"
+  ]
+ },
+ "cases": [
+  {
+   "id": "one-isolated",
+   "label": "Условно без записи: Школа-гимназия 3",
+   "disabled_source_ids": [
+    "7b39e048-341b-454a-a63c-4b7e1ae73e9f"
+   ]
+  },
+  {
+   "id": "near-centre-3",
+   "label": "Условно без выбранных записей (3): Школа-гимназия 3, Учебный ЦЕНТР ФПРК, Учебный Центр Expert-A",
+   "disabled_source_ids": [
+    "7b39e048-341b-454a-a63c-4b7e1ae73e9f",
+    "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+    "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a"
+   ]
+  },
+  {
+   "id": "near-centre-3-again",
+   "label": "Те же три записи (повтор набора, другой порядок)",
+   "disabled_source_ids": [
+    "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a",
+    "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+    "7b39e048-341b-454a-a63c-4b7e1ae73e9f"
+   ]
+  },
+  {
+   "id": "all-records",
+   "label": "Условно без выбранных записей (8): Школа-гимназия 3, \"ГУ \"Средняя школа № 8\" УО г. Астаны\", Учебный ЦЕНТР ФПРК, Astana …",
+   "disabled_source_ids": [
+    "7b39e048-341b-454a-a63c-4b7e1ae73e9f",
+    "8ca53724-c558-46b7-826b-13e3e8fbb7e6",
+    "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+    "a4483f53-7de8-4df1-b61b-b4066b0ad5dd",
+    "b5dd5f1a-9d55-48b1-9d68-7172ea84da3f",
+    "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a",
+    "c97435da-cd05-4549-bec1-ff297e858554",
+    "de04f003-bb3d-4ea7-93e1-cd825e5c1783"
+   ]
+  }
+ ]
+}

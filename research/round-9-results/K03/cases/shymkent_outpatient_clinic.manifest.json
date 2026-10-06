@@ -1,0 +1,878 @@
+{
+ "schema": "k03-exclusion-manifest-v1",
+ "note": "Условно исключаем из расчёта; это не подтверждение закрытия. Пустые исходные данные не означают отсутствие услуги.",
+ "city_id": "shymkent",
+ "category": "outpatient_clinic",
+ "base_source_snapshot": "sha256:a9326b5633c513c0bfeccbb2248b26cf3b706c902f77745073a2959ad8d7ff3e",
+ "release": "2026-09-23.1",
+ "qa_available": true,
+ "build": {
+  "branch": "claude/beautiful-clarke-sbzomj",
+  "sha": "d865dd4a124291e10dd0b7bb1d9eada20d34c268"
+ },
+ "exclusion_digest": "sha256:79653ba20f4fee0cf5599b3e461cf7f84b91e8a0368b47a561f5c32edab3a237",
+ "cases": [
+  {
+   "id": "one-isolated",
+   "label": "Условно без записи: Пространство Где Всё Возможно",
+   "disabled_source_ids": [
+    "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+   ],
+   "identical_to": []
+  },
+  {
+   "id": "one-of-shared-0",
+   "label": "Условно без записи: Kosmetolog Жазира",
+   "disabled_source_ids": [
+    "50802484-b7f9-492e-8a4c-f75312fc7751"
+   ],
+   "identical_to": []
+  },
+  {
+   "id": "one-of-shared-1",
+   "label": "Условно без записи: Dr.Sattarkulovich",
+   "disabled_source_ids": [
+    "059c59dd-3c50-4dbe-8fee-c7ad1129a29b"
+   ],
+   "identical_to": []
+  },
+  {
+   "id": "qa-colocated",
+   "label": "Условно без записей QA-группы COLOCATED (69.5958, 42.3167): 4 из 10",
+   "disabled_source_ids": [
+    "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+    "2264dcf0-549d-451a-b846-3f207d411e0c",
+    "c2990416-dca7-4e3a-b539-30e69cadf724",
+    "f4d6818b-1a99-43ca-8533-4c556f448919"
+   ],
+   "identical_to": []
+  },
+  {
+   "id": "near-centre-3",
+   "label": "Условно без выбранных записей (3): Kosmetolog Жазира, Aza Бизнес Страница Шымкент, АССОР",
+   "disabled_source_ids": [
+    "50802484-b7f9-492e-8a4c-f75312fc7751",
+    "622b4786-89fa-4853-b109-18054e3ebe0d",
+    "e1b19ead-4505-4acd-8aed-9c561ceec4c0"
+   ],
+   "identical_to": [
+    "near-centre-3-again"
+   ]
+  },
+  {
+   "id": "near-centre-3-again",
+   "label": "Те же три записи (повтор набора, другой порядок)",
+   "disabled_source_ids": [
+    "50802484-b7f9-492e-8a4c-f75312fc7751",
+    "622b4786-89fa-4853-b109-18054e3ebe0d",
+    "e1b19ead-4505-4acd-8aed-9c561ceec4c0"
+   ],
+   "identical_to": [
+    "near-centre-3"
+   ]
+  },
+  {
+   "id": "all-records",
+   "label": "Условно без выбранных записей (16): Dr.Sattarkulovich, Пространство Где Всё Возможно, Сункар, Kosmetolog Жазира, Master…",
+   "disabled_source_ids": [
+    "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+    "1cb001b2-d62f-4c28-ba0a-864ffa56808f",
+    "2264dcf0-549d-451a-b846-3f207d411e0c",
+    "50802484-b7f9-492e-8a4c-f75312fc7751",
+    "621acb4b-a1bd-45ce-891f-c0a4634a6103",
+    "622b4786-89fa-4853-b109-18054e3ebe0d",
+    "6e92676a-1297-446d-9956-731023da6339",
+    "7cd057e0-fd66-4026-8d41-717b3d1d0c60",
+    "833280f2-ff82-4dd6-a174-d2a9203420fa",
+    "99c68068-aa6e-4ff2-af5f-455675f93313",
+    "a10bb8cf-c446-4066-9cda-a5befa189a60",
+    "b845d434-7da3-4755-9ae9-bb6d40fc7520",
+    "c2990416-dca7-4e3a-b539-30e69cadf724",
+    "da9cd7b1-eefe-40eb-aebe-8ef720de4354",
+    "e1b19ead-4505-4acd-8aed-9c561ceec4c0",
+    "f4d6818b-1a99-43ca-8533-4c556f448919"
+   ],
+   "identical_to": []
+  }
+ ],
+ "records": {
+  "059c59dd-3c50-4dbe-8fee-c7ad1129a29b": {
+   "id": "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+   "category": "outpatient_clinic",
+   "name": "Dr.Sattarkulovich",
+   "address": "Dr.Sattarkulovich clinic",
+   "lon": 69.5958,
+   "lat": 42.3167,
+   "coord_decimals": {
+    "lon": 4,
+    "lat": 4
+   },
+   "provenance": {
+    "overture_category": "diagnostics_imaging_or_lab_service",
+    "overture_version": 3,
+    "confidence": 0.705,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "1418660554873664",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-08-24T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "1adb0a8fa6c79ae8c65913c5e636422f58fdbbd0f8e5ebf37e54507ad07354f2",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": {
+     "lon": 69.5958,
+     "lat": 42.3167,
+     "size": 10,
+     "ids": [
+      "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "2264dcf0-549d-451a-b846-3f207d411e0c",
+      "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+      "68c8f007-75bc-42f6-8da8-baa72042bde4",
+      "6d4636dd-c9f3-4d9b-8c01-b361e86c8659",
+      "7bc29930-e875-4c3d-b805-97cbcfc81159",
+      "9d31b953-ccc4-42bd-a3a3-3e4e21f44051",
+      "b08d41c4-c682-4335-94fc-65dac48411ed",
+      "c2990416-dca7-4e3a-b539-30e69cadf724",
+      "f4d6818b-1a99-43ca-8533-4c556f448919"
+     ]
+    },
+    "possible_duplicates": [],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [
+     "2264dcf0-549d-451a-b846-3f207d411e0c",
+     "c2990416-dca7-4e3a-b539-30e69cadf724",
+     "f4d6818b-1a99-43ca-8533-4c556f448919"
+    ],
+    "other_categories": [
+     "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+     "68c8f007-75bc-42f6-8da8-baa72042bde4",
+     "6d4636dd-c9f3-4d9b-8c01-b361e86c8659",
+     "7bc29930-e875-4c3d-b805-97cbcfc81159",
+     "9d31b953-ccc4-42bd-a3a3-3e4e21f44051",
+     "b08d41c4-c682-4335-94fc-65dac48411ed"
+    ]
+   }
+  },
+  "1cb001b2-d62f-4c28-ba0a-864ffa56808f": {
+   "id": "1cb001b2-d62f-4c28-ba0a-864ffa56808f",
+   "category": "outpatient_clinic",
+   "name": "Пространство Где Всё Возможно",
+   "address": null,
+   "lon": 69.607757,
+   "lat": 42.306934,
+   "coord_decimals": {
+    "lon": 6,
+    "lat": 6
+   },
+   "provenance": {
+    "overture_category": "complementary_and_alternative_medicine",
+    "overture_version": 3,
+    "confidence": 0.729,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "1795525484098587",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "8009509cc16ace4aa42fb8614fe4bd6ad09cdcd5f204cb94fd36cd675cd712aa",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": null,
+    "possible_duplicates": [],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [],
+    "other_categories": []
+   }
+  },
+  "2264dcf0-549d-451a-b846-3f207d411e0c": {
+   "id": "2264dcf0-549d-451a-b846-3f207d411e0c",
+   "category": "outpatient_clinic",
+   "name": "Сункар",
+   "address": "Дулат, проспект Тауке Хана 45",
+   "lon": 69.5958,
+   "lat": 42.3167,
+   "coord_decimals": {
+    "lon": 4,
+    "lat": 4
+   },
+   "provenance": {
+    "overture_category": "diagnostics_imaging_or_lab_service",
+    "overture_version": 10,
+    "confidence": 0.456,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "501978790148696",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "8f0d3055b3cbda28078522bf1bd1fb8c30d8b08c39d3ae72655ca701126d8dd7",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": {
+     "lon": 69.5958,
+     "lat": 42.3167,
+     "size": 10,
+     "ids": [
+      "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "2264dcf0-549d-451a-b846-3f207d411e0c",
+      "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+      "68c8f007-75bc-42f6-8da8-baa72042bde4",
+      "6d4636dd-c9f3-4d9b-8c01-b361e86c8659",
+      "7bc29930-e875-4c3d-b805-97cbcfc81159",
+      "9d31b953-ccc4-42bd-a3a3-3e4e21f44051",
+      "b08d41c4-c682-4335-94fc-65dac48411ed",
+      "c2990416-dca7-4e3a-b539-30e69cadf724",
+      "f4d6818b-1a99-43ca-8533-4c556f448919"
+     ]
+    },
+    "possible_duplicates": [],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [
+     "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+     "c2990416-dca7-4e3a-b539-30e69cadf724",
+     "f4d6818b-1a99-43ca-8533-4c556f448919"
+    ],
+    "other_categories": [
+     "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+     "68c8f007-75bc-42f6-8da8-baa72042bde4",
+     "6d4636dd-c9f3-4d9b-8c01-b361e86c8659",
+     "7bc29930-e875-4c3d-b805-97cbcfc81159",
+     "9d31b953-ccc4-42bd-a3a3-3e4e21f44051",
+     "b08d41c4-c682-4335-94fc-65dac48411ed"
+    ]
+   }
+  },
+  "50802484-b7f9-492e-8a4c-f75312fc7751": {
+   "id": "50802484-b7f9-492e-8a4c-f75312fc7751",
+   "category": "outpatient_clinic",
+   "name": "Kosmetolog Жазира",
+   "address": "Казахстан",
+   "lon": 69.60702,
+   "lat": 42.31757,
+   "coord_decimals": {
+    "lon": 5,
+    "lat": 5
+   },
+   "provenance": {
+    "overture_category": "physical_medicine_and_rehabilitation",
+    "overture_version": 3,
+    "confidence": 0.068,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "359415810580985",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "252f64d6fd9848997159f3b9b57d864ef210296f0b9c15523a04b2d228098e92",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": {
+     "lon": 69.60702,
+     "lat": 42.31757,
+     "size": 4,
+     "ids": [
+      "477b7659-21b2-4f90-a526-2817bc77fe79",
+      "50802484-b7f9-492e-8a4c-f75312fc7751",
+      "622b4786-89fa-4853-b109-18054e3ebe0d",
+      "e1b19ead-4505-4acd-8aed-9c561ceec4c0"
+     ]
+    },
+    "possible_duplicates": [
+     {
+      "other": "622b4786-89fa-4853-b109-18054e3ebe0d",
+      "rule": "same_address",
+      "distance_m": 0.0
+     }
+    ],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [
+     "622b4786-89fa-4853-b109-18054e3ebe0d",
+     "e1b19ead-4505-4acd-8aed-9c561ceec4c0"
+    ],
+    "other_categories": [
+     "477b7659-21b2-4f90-a526-2817bc77fe79"
+    ]
+   }
+  },
+  "621acb4b-a1bd-45ce-891f-c0a4634a6103": {
+   "id": "621acb4b-a1bd-45ce-891f-c0a4634a6103",
+   "category": "outpatient_clinic",
+   "name": "MasterDent",
+   "address": "Хайдара Дулати көшесі 6",
+   "lon": 69.601822,
+   "lat": 42.317791,
+   "coord_decimals": {
+    "lon": 6,
+    "lat": 6
+   },
+   "provenance": {
+    "overture_category": "dental_clinic",
+    "overture_version": 2,
+    "confidence": 0.567,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "282369154970240",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "51a41305c92fdb60f6db988310aeeb489cf8ecca3a497a034708185357b347bc",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": null,
+    "possible_duplicates": [],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [],
+    "other_categories": []
+   }
+  },
+  "622b4786-89fa-4853-b109-18054e3ebe0d": {
+   "id": "622b4786-89fa-4853-b109-18054e3ebe0d",
+   "category": "outpatient_clinic",
+   "name": "Aza Бизнес Страница Шымкент",
+   "address": "Казахстан",
+   "lon": 69.60702,
+   "lat": 42.31757,
+   "coord_decimals": {
+    "lon": 5,
+    "lat": 5
+   },
+   "provenance": {
+    "overture_category": "specialized_health_care",
+    "overture_version": 3,
+    "confidence": 0.271,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "108996182001512",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "2fcd35dae65e37f318dc3730c82fb3e253a3336f845b56643990ff09518f3789",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": {
+     "lon": 69.60702,
+     "lat": 42.31757,
+     "size": 4,
+     "ids": [
+      "477b7659-21b2-4f90-a526-2817bc77fe79",
+      "50802484-b7f9-492e-8a4c-f75312fc7751",
+      "622b4786-89fa-4853-b109-18054e3ebe0d",
+      "e1b19ead-4505-4acd-8aed-9c561ceec4c0"
+     ]
+    },
+    "possible_duplicates": [
+     {
+      "other": "50802484-b7f9-492e-8a4c-f75312fc7751",
+      "rule": "same_address",
+      "distance_m": 0.0
+     }
+    ],
+    "category_doubt": {
+     "rule": "ad_or_business_page",
+     "reason": "название похоже на рекламу или страницу бизнеса, а не на учреждение категории"
+    }
+   },
+   "same_coordinates": {
+    "in_category": [
+     "50802484-b7f9-492e-8a4c-f75312fc7751",
+     "e1b19ead-4505-4acd-8aed-9c561ceec4c0"
+    ],
+    "other_categories": [
+     "477b7659-21b2-4f90-a526-2817bc77fe79"
+    ]
+   }
+  },
+  "6e92676a-1297-446d-9956-731023da6339": {
+   "id": "6e92676a-1297-446d-9956-731023da6339",
+   "category": "outpatient_clinic",
+   "name": "Стомотология",
+   "address": "Ахмет Байтұрсынов көшесі 20",
+   "lon": 69.59527,
+   "lat": 42.32423,
+   "coord_decimals": {
+    "lon": 5,
+    "lat": 5
+   },
+   "provenance": {
+    "overture_category": "dental_clinic",
+    "overture_version": 8,
+    "confidence": 0.364,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "102890309332872",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "20cbc07897d539d6c86c6c621c639799e8d76e650b9e6c15bfc87ef1dedf1665",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": null,
+    "possible_duplicates": [],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [],
+    "other_categories": []
+   }
+  },
+  "7cd057e0-fd66-4026-8d41-717b3d1d0c60": {
+   "id": "7cd057e0-fd66-4026-8d41-717b3d1d0c60",
+   "category": "outpatient_clinic",
+   "name": "Easy Health Shymkent",
+   "address": "Улица Т. Орынбаева 23",
+   "lon": 69.609396,
+   "lat": 42.31437,
+   "coord_decimals": {
+    "lon": 6,
+    "lat": 5
+   },
+   "provenance": {
+    "overture_category": "complementary_and_alternative_medicine",
+    "overture_version": 3,
+    "confidence": 0.274,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "1092057477314002",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "451effb5e8b194276c0ef48d26bc1302f39b79af82137e717520e55a50d1452d",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": null,
+    "possible_duplicates": [],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [],
+    "other_categories": []
+   }
+  },
+  "833280f2-ff82-4dd6-a174-d2a9203420fa": {
+   "id": "833280f2-ff82-4dd6-a174-d2a9203420fa",
+   "category": "outpatient_clinic",
+   "name": "ИП Ауелбекова Р.И.",
+   "address": "Алматинская 25а",
+   "lon": 69.60702,
+   "lat": 42.31758,
+   "coord_decimals": {
+    "lon": 5,
+    "lat": 5
+   },
+   "provenance": {
+    "overture_category": "diagnostics_imaging_or_lab_service",
+    "overture_version": 1,
+    "confidence": 0.415,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "102619214751763",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "335f4c15a6d6debbfc06d6b88fb34c109734f3cc2b6dad3b564998f62e24b92b",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": null,
+    "possible_duplicates": [],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [],
+    "other_categories": [
+     "b9656404-dad2-4021-b6ef-65a9fbab074a"
+    ]
+   }
+  },
+  "99c68068-aa6e-4ff2-af5f-455675f93313": {
+   "id": "99c68068-aa6e-4ff2-af5f-455675f93313",
+   "category": "outpatient_clinic",
+   "name": "MicoOne Orthodontics Kazakhstan",
+   "address": "Ғани Иляев көшесі 22",
+   "lon": 69.59586,
+   "lat": 42.32122,
+   "coord_decimals": {
+    "lon": 5,
+    "lat": 5
+   },
+   "provenance": {
+    "overture_category": "dental_clinic",
+    "overture_version": 3,
+    "confidence": 0.515,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "312878188568494",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "a3e7d1094cd7ab314449be52834d8b4692ef8a1e328e915fdd5dd6c4a99a2894",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": null,
+    "possible_duplicates": [],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [],
+    "other_categories": []
+   }
+  },
+  "a10bb8cf-c446-4066-9cda-a5befa189a60": {
+   "id": "a10bb8cf-c446-4066-9cda-a5befa189a60",
+   "category": "outpatient_clinic",
+   "name": "ProfMedService",
+   "address": "Tauke Khan Ave 130",
+   "lon": 69.61684,
+   "lat": 42.313453,
+   "coord_decimals": {
+    "lon": 5,
+    "lat": 6
+   },
+   "provenance": {
+    "overture_category": "outpatient_care_facility",
+    "overture_version": 9,
+    "confidence": 0.681,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "350295158913547",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "3ba38747b28ef64d04d86050e73dd24f9b068bfff87109f4af34f369f8a96ebc",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": null,
+    "possible_duplicates": [],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [],
+    "other_categories": []
+   }
+  },
+  "b845d434-7da3-4755-9ae9-bb6d40fc7520": {
+   "id": "b845d434-7da3-4755-9ae9-bb6d40fc7520",
+   "category": "outpatient_clinic",
+   "name": "Стоматологическая клиника Диастом",
+   "address": "Желтоқсан көшесі 29",
+   "lon": 69.602416,
+   "lat": 42.323312,
+   "coord_decimals": {
+    "lon": 6,
+    "lat": 6
+   },
+   "provenance": {
+    "overture_category": "dental_clinic",
+    "overture_version": 10,
+    "confidence": 0.881,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "711528382271242",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "a676db2dcf81ad80e78fe8b87be4211ca9681e004fc00115c08b0581bd9cdfa4",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": null,
+    "possible_duplicates": [],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [],
+    "other_categories": []
+   }
+  },
+  "c2990416-dca7-4e3a-b539-30e69cadf724": {
+   "id": "c2990416-dca7-4e3a-b539-30e69cadf724",
+   "category": "outpatient_clinic",
+   "name": "Джафар Стоматология",
+   "address": "Әйбергенов өтпесі 1а",
+   "lon": 69.5958,
+   "lat": 42.3167,
+   "coord_decimals": {
+    "lon": 4,
+    "lat": 4
+   },
+   "provenance": {
+    "overture_category": "dental_clinic",
+    "overture_version": 1,
+    "confidence": 0.258,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "591837107356119",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "b2985b35da977192e4725a21cc56d6983ea3f5c507a9320389b2d6f75e5e554f",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": {
+     "lon": 69.5958,
+     "lat": 42.3167,
+     "size": 10,
+     "ids": [
+      "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "2264dcf0-549d-451a-b846-3f207d411e0c",
+      "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+      "68c8f007-75bc-42f6-8da8-baa72042bde4",
+      "6d4636dd-c9f3-4d9b-8c01-b361e86c8659",
+      "7bc29930-e875-4c3d-b805-97cbcfc81159",
+      "9d31b953-ccc4-42bd-a3a3-3e4e21f44051",
+      "b08d41c4-c682-4335-94fc-65dac48411ed",
+      "c2990416-dca7-4e3a-b539-30e69cadf724",
+      "f4d6818b-1a99-43ca-8533-4c556f448919"
+     ]
+    },
+    "possible_duplicates": [],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [
+     "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+     "2264dcf0-549d-451a-b846-3f207d411e0c",
+     "f4d6818b-1a99-43ca-8533-4c556f448919"
+    ],
+    "other_categories": [
+     "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+     "68c8f007-75bc-42f6-8da8-baa72042bde4",
+     "6d4636dd-c9f3-4d9b-8c01-b361e86c8659",
+     "7bc29930-e875-4c3d-b805-97cbcfc81159",
+     "9d31b953-ccc4-42bd-a3a3-3e4e21f44051",
+     "b08d41c4-c682-4335-94fc-65dac48411ed"
+    ]
+   }
+  },
+  "da9cd7b1-eefe-40eb-aebe-8ef720de4354": {
+   "id": "da9cd7b1-eefe-40eb-aebe-8ef720de4354",
+   "category": "outpatient_clinic",
+   "name": "Atlant Clinic",
+   "address": "Aqpan Batyr St",
+   "lon": 69.615192,
+   "lat": 42.31673,
+   "coord_decimals": {
+    "lon": 6,
+    "lat": 5
+   },
+   "provenance": {
+    "overture_category": "outpatient_care_facility",
+    "overture_version": 8,
+    "confidence": 0.312,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "101241175283458",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "ce58c9a16d38810838bad53bc8f68d18ca03ddd9874997a3e3ddfe64cc5f6247",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": null,
+    "possible_duplicates": [],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [],
+    "other_categories": []
+   }
+  },
+  "e1b19ead-4505-4acd-8aed-9c561ceec4c0": {
+   "id": "e1b19ead-4505-4acd-8aed-9c561ceec4c0",
+   "category": "outpatient_clinic",
+   "name": "АССОР",
+   "address": "gulnara901@icloiud.com",
+   "lon": 69.60702,
+   "lat": 42.31757,
+   "coord_decimals": {
+    "lon": 5,
+    "lat": 5
+   },
+   "provenance": {
+    "overture_category": "specialized_health_care",
+    "overture_version": 3,
+    "confidence": 0.339,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "168037206402259",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "e2e993d85668350c814ed2c6ef852a386d8fe02c867f3e0956e1a38db4a288c9",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": {
+     "lon": 69.60702,
+     "lat": 42.31757,
+     "size": 4,
+     "ids": [
+      "477b7659-21b2-4f90-a526-2817bc77fe79",
+      "50802484-b7f9-492e-8a4c-f75312fc7751",
+      "622b4786-89fa-4853-b109-18054e3ebe0d",
+      "e1b19ead-4505-4acd-8aed-9c561ceec4c0"
+     ]
+    },
+    "possible_duplicates": [],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [
+     "50802484-b7f9-492e-8a4c-f75312fc7751",
+     "622b4786-89fa-4853-b109-18054e3ebe0d"
+    ],
+    "other_categories": [
+     "477b7659-21b2-4f90-a526-2817bc77fe79"
+    ]
+   }
+  },
+  "f4d6818b-1a99-43ca-8533-4c556f448919": {
+   "id": "f4d6818b-1a99-43ca-8533-4c556f448919",
+   "category": "outpatient_clinic",
+   "name": "Стоматологическое оборудование",
+   "address": null,
+   "lon": 69.5958,
+   "lat": 42.3167,
+   "coord_decimals": {
+    "lon": 4,
+    "lat": 4
+   },
+   "provenance": {
+    "overture_category": "dental_clinic",
+    "overture_version": 1,
+    "confidence": 0.238,
+    "operating_status": null,
+    "sources": [
+     {
+      "dataset": "meta",
+      "record_id": "938855905976141",
+      "license": "CDLA-Permissive-2.0",
+      "update_time": "2026-09-14T00:00:00.000Z"
+     }
+    ]
+   },
+   "record_sha256": "82f61551dbb67447072b94b61de019afe68e83c2f99ec514c0ccf9e1387e8d2b",
+   "position_status": "source_reported_unverified",
+   "qa": {
+    "available": true,
+    "colocated": {
+     "lon": 69.5958,
+     "lat": 42.3167,
+     "size": 10,
+     "ids": [
+      "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+      "2264dcf0-549d-451a-b846-3f207d411e0c",
+      "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+      "68c8f007-75bc-42f6-8da8-baa72042bde4",
+      "6d4636dd-c9f3-4d9b-8c01-b361e86c8659",
+      "7bc29930-e875-4c3d-b805-97cbcfc81159",
+      "9d31b953-ccc4-42bd-a3a3-3e4e21f44051",
+      "b08d41c4-c682-4335-94fc-65dac48411ed",
+      "c2990416-dca7-4e3a-b539-30e69cadf724",
+      "f4d6818b-1a99-43ca-8533-4c556f448919"
+     ]
+    },
+    "possible_duplicates": [],
+    "category_doubt": null
+   },
+   "same_coordinates": {
+    "in_category": [
+     "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+     "2264dcf0-549d-451a-b846-3f207d411e0c",
+     "c2990416-dca7-4e3a-b539-30e69cadf724"
+    ],
+    "other_categories": [
+     "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+     "68c8f007-75bc-42f6-8da8-baa72042bde4",
+     "6d4636dd-c9f3-4d9b-8c01-b361e86c8659",
+     "7bc29930-e875-4c3d-b805-97cbcfc81159",
+     "9d31b953-ccc4-42bd-a3a3-3e4e21f44051",
+     "b08d41c4-c682-4335-94fc-65dac48411ed"
+    ]
+   }
+  }
+ }
+}

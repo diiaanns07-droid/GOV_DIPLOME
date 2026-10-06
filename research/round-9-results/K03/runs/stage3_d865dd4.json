@@ -1,0 +1,97 @@
+{
+ "summary": {
+  "PASS": 8,
+  "FAIL": 0,
+  "SKIP": 0,
+  "NOT_RUN": 1,
+  "TEST_INCOMPATIBLE": 0,
+  "INFO": 0
+ },
+ "results": [
+  {
+   "check": "S3-fixtures-match-build",
+   "verdict": "PASS",
+   "summary": "fixtures этапа 3 (4 среза) построены на данных этой сборки (d865dd4a1242)",
+   "details": {
+    "target_sha": "d865dd4a124291e10dd0b7bb1d9eada20d34c268"
+   }
+  },
+  {
+   "check": "S3-plan-case-baseline",
+   "verdict": "PASS",
+   "summary": "26 случаев (с base) × точки = 256 строк: baseline через plan.precompute на отфильтрованной копии = оракулу K03 (с нуля по оставшимся записям), число записей случая = N − k; ничьих 49; расхождений 0",
+   "details": {
+    "mismatches": []
+   }
+  },
+  {
+   "check": "S3-plan-after-manual",
+   "verdict": "PASS",
+   "summary": "after/nearest_after/delta ручного плана в каждом случае = оракулу; расхождений 0",
+   "details": {
+    "mismatches": []
+   }
+  },
+  {
+   "check": "S3-construction",
+   "verdict": "PASS",
+   "summary": "14 утверждений по построению на plan.js: исключение одной записи из общих координат оставляет соседнюю (0 мм, тот же адрес точки); QA-группа и отдельная запись — ближайшая дальше; все записи исключены → до неизвестно (None), не 0; нарушений 0",
+   "details": {
+    "errors": []
+   }
+  },
+  {
+   "check": "S3-module-view",
+   "verdict": "PASS",
+   "summary": "caseView модуля K03 на контексте plan.js: тот же source_snapshot (= независимый пересчёт), исключены ровно ID случая, контекст не изменён, представление заморожено; ошибок 0",
+   "details": {
+    "errors": []
+   }
+  },
+  {
+   "check": "S3-other-city",
+   "verdict": "PASS",
+   "summary": "другой город отклонён: план Шымкента в контексте Астаны → other_city (plan.js), чужой snapshot → foreign_snapshot, ID записи другого города в случае → other_city_source (модуль K03 JS и оракул); свой план принят с тем же snapshot",
+   "details": {
+    "errors": []
+   }
+  },
+  {
+   "check": "S3-no-qa-group",
+   "verdict": "PASS",
+   "summary": "Астана: в evidence.js групп COLOCATED нет — модуль возвращает no_qa_group, случай «qa-colocated» не создан ни для школ, ни для поликлиник; Шымкент: случай из явно указанной группы создан",
+   "details": {
+    "errors": []
+   }
+  },
+  {
+   "check": "S3-integrity",
+   "verdict": "PASS",
+   "summary": "после всех случаев (plan.js и модуль K03) data.js/evidence.js — файл и объект — не изменились; source_snapshot контекста = независимому пересчёту и не зависит от исключений",
+   "details": {
+    "integrity": {
+     "data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+     "evidence_js_sha256": "df736e986145da33dee60f692e020486720b72db5b6116af31640cc8693b11b9",
+     "file_unchanged": true,
+     "loaded_data_unchanged": true,
+     "snapshots": {
+      "shymkent": {
+       "ctx": "sha256:a9326b5633c513c0bfeccbb2248b26cf3b706c902f77745073a2959ad8d7ff3e",
+       "recomputed": "sha256:a9326b5633c513c0bfeccbb2248b26cf3b706c902f77745073a2959ad8d7ff3e"
+      },
+      "astana": {
+       "ctx": "sha256:67a40b96d29873118780969eb11c32deba49a0c64fda1f185efe634882f04c6d",
+       "recomputed": "sha256:67a40b96d29873118780969eb11c32deba49a0c64fda1f185efe634882f04c6d"
+      }
+     }
+    }
+   }
+  },
+  {
+   "check": "S3-build-resilience",
+   "verdict": "NOT_RUN",
+   "summary": "в сборке d865dd4a1242 нет web/resilience.js — интеграция устойчивости не проверялась (не PASS)",
+   "details": {}
+  }
+ ]
+}
