@@ -1,0 +1,733 @@
+{
+ "pack_format": "k10-resilience-pack-v1",
+ "pack_id": "synthetic-robust-tiebreak",
+ "kind": "synthetic",
+ "stage": 3,
+ "purpose": "two plans share the worst vector; the better base loss wins before the lower cost",
+ "city_id": "synthetic-equator",
+ "category": "school",
+ "disclaimer": "Условно исключаем из расчёта; это не подтверждение закрытия. Пустые исходные данные не означают отсутствие услуги.",
+ "design": {
+  "hand_expectation": {
+   "robust_selected_ids": [
+    "b"
+   ],
+   "nominal_selected_ids": [
+    "b"
+   ],
+   "robust_worst_vector": [
+    0,
+    4000000,
+    3000000
+   ],
+   "manual_worst_vector": [
+    0,
+    4000000,
+    3000000
+   ],
+   "plans_identical": true,
+   "price_of_robustness_m": 0.0
+  },
+  "why": "a: base 0+3000, without S 1000+3000 m; b: base 0+1000, without S 3000+1000 m; W equal, b has the smaller base loss although a is cheaper"
+ },
+ "synthetic_slice": {
+  "bbox": [
+   -0.01,
+   -0.01,
+   0.2,
+   0.01
+  ],
+  "source_snapshot": "synthetic:eda001dcc903922d696d702b09ae70f38979c0bf3c5c90ffc05ad8ca4f0e2854",
+  "records": [
+   {
+    "id": "S",
+    "lon": 0.0,
+    "lat": 0.0,
+    "group": "school",
+    "name": "S",
+    "qa_flags": []
+   },
+   {
+    "id": "F",
+    "lon": 0.17986407274490757,
+    "lat": 0.0,
+    "group": "school",
+    "name": "F",
+    "qa_flags": []
+   }
+  ],
+  "note": "SYNTHETIC geometry on the equator near 0°E; not Shymkent or Astana data"
+ },
+ "envelope": {
+  "schema_version": "city-resilience-v1",
+  "plan": {
+   "schema_version": "city-plan-v2",
+   "city_id": "synthetic-equator",
+   "source_snapshot": "synthetic:eda001dcc903922d696d702b09ae70f38979c0bf3c5c90ffc05ad8ca4f0e2854",
+   "category": "school",
+   "control_points": [
+    {
+     "id": "P1",
+     "lon": 0.0,
+     "lat": 0.0,
+     "weight": 1
+    },
+    {
+     "id": "P2",
+     "lon": 0.03597281454898152,
+     "lat": 0.0,
+     "weight": 1
+    }
+   ],
+   "candidates": [
+    {
+     "id": "a",
+     "lon": 0.00899320363724538,
+     "lat": 0.0,
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 1
+    },
+    {
+     "id": "b",
+     "lon": 0.026979610911736136,
+     "lat": 0.0,
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 5
+    }
+   ],
+   "budget": 10,
+   "max_selected": 1,
+   "coverage_radius_m": 300,
+   "required_ids": [],
+   "excluded_ids": [],
+   "selected_ids": [
+    "a"
+   ]
+  },
+  "cases": [
+   {
+    "id": "noS",
+    "label": "Условно не учитываем S",
+    "disabled_source_ids": [
+     "S"
+    ]
+   }
+  ]
+ },
+ "expected": {
+  "generated_by": "k10res.oracle_res",
+  "validation": "accepted",
+  "optimize": {
+   "schema_version": "city-resilience-v1",
+   "metric_version": "haversine-mm-v1",
+   "objective_version": "worst-lex-v1",
+   "resilience_problem_digest": "sha256:6e452962610150f5d34c21a09ab2cac411755dd7b6fd5596f3982510d748b0f5",
+   "resilience_scenario_digest": "sha256:90294f4f049d69403c91b04d7d66b292c2bd4bd2272dffc077e08e859dc935c4",
+   "exclusions_digest": "sha256:200c354464dc991296baf602c54ad165ffc08e665b27cd1afcb9881161cb2e47",
+   "source_snapshot": "synthetic:eda001dcc903922d696d702b09ae70f38979c0bf3c5c90ffc05ad8ca4f0e2854",
+   "case_ids": [
+    "base",
+    "noS"
+   ],
+   "evaluated": 3,
+   "feasible_count": 3,
+   "candidate_count": 2,
+   "manual": {
+    "selected_ids": [
+     "a"
+    ],
+    "cost": 1,
+    "per_case": [
+     {
+      "case_id": "base",
+      "label": "base",
+      "disabled_source_ids": [],
+      "baseline_records": 2,
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 3000000,
+       "weighted_mean_mm": 1500000.0,
+       "max_mm": 3000000,
+       "covered_weight": 1,
+       "coverage_fraction": 0.5,
+       "cost": 1
+      },
+      "loss": [
+       0,
+       3000000,
+       3000000
+      ]
+     },
+     {
+      "case_id": "noS",
+      "label": "Условно не учитываем S",
+      "disabled_source_ids": [
+       "S"
+      ],
+      "baseline_records": 1,
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 4000000,
+       "weighted_mean_mm": 2000000.0,
+       "max_mm": 3000000,
+       "covered_weight": 0,
+       "coverage_fraction": 0.0,
+       "cost": 1
+      },
+      "loss": [
+       0,
+       4000000,
+       3000000
+      ]
+     }
+    ],
+    "worst_vector": [
+     0,
+     4000000,
+     3000000
+    ],
+    "worst_case_ids": [
+     "noS"
+    ],
+    "feasibility": {
+     "feasible": true,
+     "reasons": []
+    }
+   },
+   "status": "optimal",
+   "infeasible_reasons": null,
+   "nominal": {
+    "selected_ids": [
+     "b"
+    ],
+    "cost": 5,
+    "per_case": [
+     {
+      "case_id": "base",
+      "label": "base",
+      "disabled_source_ids": [],
+      "baseline_records": 2,
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 1000000,
+       "weighted_mean_mm": 500000.0,
+       "max_mm": 1000000,
+       "covered_weight": 1,
+       "coverage_fraction": 0.5,
+       "cost": 5
+      },
+      "loss": [
+       0,
+       1000000,
+       1000000
+      ]
+     },
+     {
+      "case_id": "noS",
+      "label": "Условно не учитываем S",
+      "disabled_source_ids": [
+       "S"
+      ],
+      "baseline_records": 1,
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 4000000,
+       "weighted_mean_mm": 2000000.0,
+       "max_mm": 3000000,
+       "covered_weight": 0,
+       "coverage_fraction": 0.0,
+       "cost": 5
+      },
+      "loss": [
+       0,
+       4000000,
+       3000000
+      ]
+     }
+    ],
+    "worst_vector": [
+     0,
+     4000000,
+     3000000
+    ],
+    "worst_case_ids": [
+     "noS"
+    ],
+    "feasibility": {
+     "feasible": true,
+     "reasons": []
+    }
+   },
+   "robust": {
+    "selected_ids": [
+     "b"
+    ],
+    "cost": 5,
+    "per_case": [
+     {
+      "case_id": "base",
+      "label": "base",
+      "disabled_source_ids": [],
+      "baseline_records": 2,
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 1000000,
+       "weighted_mean_mm": 500000.0,
+       "max_mm": 1000000,
+       "covered_weight": 1,
+       "coverage_fraction": 0.5,
+       "cost": 5
+      },
+      "loss": [
+       0,
+       1000000,
+       1000000
+      ]
+     },
+     {
+      "case_id": "noS",
+      "label": "Условно не учитываем S",
+      "disabled_source_ids": [
+       "S"
+      ],
+      "baseline_records": 1,
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 4000000,
+       "weighted_mean_mm": 2000000.0,
+       "max_mm": 3000000,
+       "covered_weight": 0,
+       "coverage_fraction": 0.0,
+       "cost": 5
+      },
+      "loss": [
+       0,
+       4000000,
+       3000000
+      ]
+     }
+    ],
+    "worst_vector": [
+     0,
+     4000000,
+     3000000
+    ],
+    "worst_case_ids": [
+     "noS"
+    ],
+    "feasibility": {
+     "feasible": true,
+     "reasons": []
+    }
+   },
+   "plans_identical": true,
+   "price_of_robustness_m": 0.0,
+   "price_reason": null
+  },
+  "plans_with_rows": {
+   "manual": {
+    "selected_ids": [
+     "a"
+    ],
+    "cost": 1,
+    "per_case": [
+     {
+      "case_id": "base",
+      "label": "base",
+      "disabled_source_ids": [],
+      "baseline_records": 2,
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 3000000,
+       "weighted_mean_mm": 1500000.0,
+       "max_mm": 3000000,
+       "covered_weight": 1,
+       "coverage_fraction": 0.5,
+       "cost": 1
+      },
+      "loss": [
+       0,
+       3000000,
+       3000000
+      ],
+      "rows": [
+       {
+        "control_point_id": "P1",
+        "before_mm": 0,
+        "nearest_before": {
+         "kind": "source",
+         "id": "S"
+        },
+        "after_mm": 0,
+        "nearest_after": {
+         "kind": "source",
+         "id": "S"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "P2",
+        "before_mm": 4000000,
+        "nearest_before": {
+         "kind": "source",
+         "id": "S"
+        },
+        "after_mm": 3000000,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "a"
+        },
+        "delta_mm": 1000000
+       }
+      ]
+     },
+     {
+      "case_id": "noS",
+      "label": "Условно не учитываем S",
+      "disabled_source_ids": [
+       "S"
+      ],
+      "baseline_records": 1,
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 4000000,
+       "weighted_mean_mm": 2000000.0,
+       "max_mm": 3000000,
+       "covered_weight": 0,
+       "coverage_fraction": 0.0,
+       "cost": 1
+      },
+      "loss": [
+       0,
+       4000000,
+       3000000
+      ],
+      "rows": [
+       {
+        "control_point_id": "P1",
+        "before_mm": 20000000,
+        "nearest_before": {
+         "kind": "source",
+         "id": "F"
+        },
+        "after_mm": 1000000,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "a"
+        },
+        "delta_mm": 19000000
+       },
+       {
+        "control_point_id": "P2",
+        "before_mm": 16000000,
+        "nearest_before": {
+         "kind": "source",
+         "id": "F"
+        },
+        "after_mm": 3000000,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "a"
+        },
+        "delta_mm": 13000000
+       }
+      ]
+     }
+    ],
+    "worst_vector": [
+     0,
+     4000000,
+     3000000
+    ],
+    "worst_case_ids": [
+     "noS"
+    ],
+    "feasibility": {
+     "feasible": true,
+     "reasons": []
+    }
+   },
+   "nominal": {
+    "selected_ids": [
+     "b"
+    ],
+    "cost": 5,
+    "per_case": [
+     {
+      "case_id": "base",
+      "label": "base",
+      "disabled_source_ids": [],
+      "baseline_records": 2,
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 1000000,
+       "weighted_mean_mm": 500000.0,
+       "max_mm": 1000000,
+       "covered_weight": 1,
+       "coverage_fraction": 0.5,
+       "cost": 5
+      },
+      "loss": [
+       0,
+       1000000,
+       1000000
+      ],
+      "rows": [
+       {
+        "control_point_id": "P1",
+        "before_mm": 0,
+        "nearest_before": {
+         "kind": "source",
+         "id": "S"
+        },
+        "after_mm": 0,
+        "nearest_after": {
+         "kind": "source",
+         "id": "S"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "P2",
+        "before_mm": 4000000,
+        "nearest_before": {
+         "kind": "source",
+         "id": "S"
+        },
+        "after_mm": 1000000,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "b"
+        },
+        "delta_mm": 3000000
+       }
+      ]
+     },
+     {
+      "case_id": "noS",
+      "label": "Условно не учитываем S",
+      "disabled_source_ids": [
+       "S"
+      ],
+      "baseline_records": 1,
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 4000000,
+       "weighted_mean_mm": 2000000.0,
+       "max_mm": 3000000,
+       "covered_weight": 0,
+       "coverage_fraction": 0.0,
+       "cost": 5
+      },
+      "loss": [
+       0,
+       4000000,
+       3000000
+      ],
+      "rows": [
+       {
+        "control_point_id": "P1",
+        "before_mm": 20000000,
+        "nearest_before": {
+         "kind": "source",
+         "id": "F"
+        },
+        "after_mm": 3000000,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "b"
+        },
+        "delta_mm": 17000000
+       },
+       {
+        "control_point_id": "P2",
+        "before_mm": 16000000,
+        "nearest_before": {
+         "kind": "source",
+         "id": "F"
+        },
+        "after_mm": 1000000,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "b"
+        },
+        "delta_mm": 15000000
+       }
+      ]
+     }
+    ],
+    "worst_vector": [
+     0,
+     4000000,
+     3000000
+    ],
+    "worst_case_ids": [
+     "noS"
+    ],
+    "feasibility": {
+     "feasible": true,
+     "reasons": []
+    }
+   },
+   "robust": {
+    "selected_ids": [
+     "b"
+    ],
+    "cost": 5,
+    "per_case": [
+     {
+      "case_id": "base",
+      "label": "base",
+      "disabled_source_ids": [],
+      "baseline_records": 2,
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 1000000,
+       "weighted_mean_mm": 500000.0,
+       "max_mm": 1000000,
+       "covered_weight": 1,
+       "coverage_fraction": 0.5,
+       "cost": 5
+      },
+      "loss": [
+       0,
+       1000000,
+       1000000
+      ],
+      "rows": [
+       {
+        "control_point_id": "P1",
+        "before_mm": 0,
+        "nearest_before": {
+         "kind": "source",
+         "id": "S"
+        },
+        "after_mm": 0,
+        "nearest_after": {
+         "kind": "source",
+         "id": "S"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "P2",
+        "before_mm": 4000000,
+        "nearest_before": {
+         "kind": "source",
+         "id": "S"
+        },
+        "after_mm": 1000000,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "b"
+        },
+        "delta_mm": 3000000
+       }
+      ]
+     },
+     {
+      "case_id": "noS",
+      "label": "Условно не учитываем S",
+      "disabled_source_ids": [
+       "S"
+      ],
+      "baseline_records": 1,
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 4000000,
+       "weighted_mean_mm": 2000000.0,
+       "max_mm": 3000000,
+       "covered_weight": 0,
+       "coverage_fraction": 0.0,
+       "cost": 5
+      },
+      "loss": [
+       0,
+       4000000,
+       3000000
+      ],
+      "rows": [
+       {
+        "control_point_id": "P1",
+        "before_mm": 20000000,
+        "nearest_before": {
+         "kind": "source",
+         "id": "F"
+        },
+        "after_mm": 3000000,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "b"
+        },
+        "delta_mm": 17000000
+       },
+       {
+        "control_point_id": "P2",
+        "before_mm": 16000000,
+        "nearest_before": {
+         "kind": "source",
+         "id": "F"
+        },
+        "after_mm": 1000000,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "b"
+        },
+        "delta_mm": 15000000
+       }
+      ]
+     }
+    ],
+    "worst_vector": [
+     0,
+     4000000,
+     3000000
+    ],
+    "worst_case_ids": [
+     "noS"
+    ],
+    "feasibility": {
+     "feasible": true,
+     "reasons": []
+    }
+   }
+  }
+ },
+ "observations": {
+  "status": "optimal",
+  "evaluated": 3,
+  "feasible_count": 3,
+  "cases": 2,
+  "manual_feasible": true,
+  "manual_worst_case_ids": [
+   "noS"
+  ],
+  "nominal": [
+   "b"
+  ],
+  "robust": [
+   "b"
+  ],
+  "plans_identical": true,
+  "price_of_robustness_m": 0.0,
+  "price_reason": null,
+  "nominal_worst": [
+   0,
+   4000000,
+   3000000
+  ],
+  "robust_worst": [
+   0,
+   4000000,
+   3000000
+  ],
+  "nominal_worst_case_ids": [
+   "noS"
+  ],
+  "robust_worst_case_ids": [
+   "noS"
+  ]
+ }
+}

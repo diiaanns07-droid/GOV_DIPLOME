@@ -1,0 +1,405 @@
+{
+ "note": "K10 proposal resilience.js on top of the BUILD's plan.js; not a BUILD implementation",
+ "build_plan_js_sha256": "b2029640f00c10f6018f469ba4e157705d405e1de65178bca824769d50b9a3c7",
+ "proposal_sha256": "0f29d4767443cc5ae4418ac409ea52ede3c3194af36dbb7d4a3b3265ad909735",
+ "packs": 19,
+ "failures": [],
+ "results": [
+  {
+   "pack_id": "astana-outpatient_clinic-relied",
+   "checks": {
+    "STATUS": "PASS",
+    "CASE_IDS": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "MANUAL": "PASS",
+    "NOMINAL": "PASS",
+    "ROBUST": "PASS",
+    "PRICE": "PASS",
+    "ROWS_PER_CASE": "PASS",
+    "ORDER": "PASS",
+    "PARTIAL_NOT_OPTIMAL": "PASS",
+    "VALIDATED_FROZEN": "PASS",
+    "UNCHECKED_INPUT_VALIDATED": "PASS"
+   },
+   "problems": [],
+   "notes": []
+  },
+  {
+   "pack_id": "astana-outpatient_clinic-seeded",
+   "checks": {
+    "STATUS": "PASS",
+    "CASE_IDS": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "MANUAL": "PASS",
+    "NOMINAL": "PASS",
+    "ROBUST": "PASS",
+    "PRICE": "PASS",
+    "ROWS_PER_CASE": "PASS",
+    "ORDER": "PASS",
+    "PARTIAL_NOT_OPTIMAL": "PASS",
+    "VALIDATED_FROZEN": "PASS",
+    "UNCHECKED_INPUT_VALIDATED": "PASS"
+   },
+   "problems": [],
+   "notes": []
+  },
+  {
+   "pack_id": "astana-school-invalid-envelopes",
+   "checks": {
+    "INVALID_CASES": "PASS"
+   },
+   "problems": [],
+   "notes": [],
+   "codes": {
+    "duplicate_key": "bad_json",
+    "nan_budget": "bad_json",
+    "too_large": "too_large",
+    "missing_cases": "bad_shape",
+    "extra_top_field": "bad_shape",
+    "v2_schema_in_envelope": "bad_version",
+    "plan_derived_results": "derived_not_allowed",
+    "plan_foreign_snapshot": "foreign_snapshot",
+    "13_candidates": "too_many_candidates",
+    "17_candidates": "too_many_candidates",
+    "plan_point_id_html": "bad_id",
+    "zero_cases": "bad_cases",
+    "8_user_cases": "bad_cases",
+    "case_id_base": "reserved_case_id",
+    "case_id_duplicate": "duplicate_case_id",
+    "case_id_space": "bad_id",
+    "case_id_not_nfc": "bad_id",
+    "case_id_jamo_not_nfc": "bad_id",
+    "case_id_cyrillic": "accepted",
+    "label_empty": "bad_label",
+    "label_spaces": "bad_label",
+    "label_121": "bad_label",
+    "label_120": "accepted",
+    "label_control_char": "bad_label",
+    "label_html": "accepted",
+    "disabled_empty": "bad_disabled",
+    "disabled_candidate_id": "candidate_id_not_source",
+    "disabled_unknown": "unknown_source_id",
+    "disabled_other_category": "unknown_source_id",
+    "disabled_duplicate": "duplicate_id",
+    "disabled_number": "bad_id",
+    "case_extra_field": "bad_shape",
+    "duplicate_exclusion_sets": "accepted",
+    "all_records_left_out": "accepted"
+   }
+  },
+  {
+   "pack_id": "astana-school-relied",
+   "checks": {
+    "STATUS": "PASS",
+    "CASE_IDS": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "MANUAL": "PASS",
+    "NOMINAL": "PASS",
+    "ROBUST": "PASS",
+    "PRICE": "PASS",
+    "ROWS_PER_CASE": "PASS",
+    "ORDER": "PASS",
+    "PARTIAL_NOT_OPTIMAL": "PASS",
+    "VALIDATED_FROZEN": "PASS",
+    "UNCHECKED_INPUT_VALIDATED": "PASS"
+   },
+   "problems": [],
+   "notes": []
+  },
+  {
+   "pack_id": "astana-school-seeded",
+   "checks": {
+    "STATUS": "PASS",
+    "CASE_IDS": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "MANUAL": "PASS",
+    "NOMINAL": "PASS",
+    "ROBUST": "PASS",
+    "PRICE": "PASS",
+    "ROWS_PER_CASE": "PASS",
+    "ORDER": "PASS",
+    "PARTIAL_NOT_OPTIMAL": "PASS",
+    "VALIDATED_FROZEN": "PASS",
+    "UNCHECKED_INPUT_VALIDATED": "PASS"
+   },
+   "problems": [],
+   "notes": []
+  },
+  {
+   "pack_id": "shymkent-outpatient_clinic-qa",
+   "checks": {
+    "STATUS": "PASS",
+    "CASE_IDS": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "MANUAL": "PASS",
+    "NOMINAL": "PASS",
+    "ROBUST": "PASS",
+    "PRICE": "PASS",
+    "ROWS_PER_CASE": "PASS",
+    "ORDER": "PASS",
+    "PARTIAL_NOT_OPTIMAL": "PASS",
+    "VALIDATED_FROZEN": "PASS",
+    "UNCHECKED_INPUT_VALIDATED": "PASS"
+   },
+   "problems": [],
+   "notes": []
+  },
+  {
+   "pack_id": "shymkent-outpatient_clinic-relied",
+   "checks": {
+    "STATUS": "PASS",
+    "CASE_IDS": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "MANUAL": "PASS",
+    "NOMINAL": "PASS",
+    "ROBUST": "PASS",
+    "PRICE": "PASS",
+    "ROWS_PER_CASE": "PASS",
+    "ORDER": "PASS",
+    "PARTIAL_NOT_OPTIMAL": "PASS",
+    "VALIDATED_FROZEN": "PASS",
+    "UNCHECKED_INPUT_VALIDATED": "PASS"
+   },
+   "problems": [],
+   "notes": []
+  },
+  {
+   "pack_id": "shymkent-outpatient_clinic-seeded",
+   "checks": {
+    "STATUS": "PASS",
+    "CASE_IDS": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "MANUAL": "PASS",
+    "NOMINAL": "PASS",
+    "ROBUST": "PASS",
+    "PRICE": "PASS",
+    "ROWS_PER_CASE": "PASS",
+    "ORDER": "PASS",
+    "PARTIAL_NOT_OPTIMAL": "PASS",
+    "VALIDATED_FROZEN": "PASS",
+    "UNCHECKED_INPUT_VALIDATED": "PASS"
+   },
+   "problems": [],
+   "notes": []
+  },
+  {
+   "pack_id": "shymkent-school-invalid-envelopes",
+   "checks": {
+    "INVALID_CASES": "PASS"
+   },
+   "problems": [],
+   "notes": [],
+   "codes": {
+    "duplicate_key": "bad_json",
+    "nan_budget": "bad_json",
+    "too_large": "too_large",
+    "missing_cases": "bad_shape",
+    "extra_top_field": "bad_shape",
+    "v2_schema_in_envelope": "bad_version",
+    "plan_derived_results": "derived_not_allowed",
+    "plan_foreign_snapshot": "foreign_snapshot",
+    "13_candidates": "too_many_candidates",
+    "17_candidates": "too_many_candidates",
+    "plan_point_id_html": "bad_id",
+    "zero_cases": "bad_cases",
+    "8_user_cases": "bad_cases",
+    "case_id_base": "reserved_case_id",
+    "case_id_duplicate": "duplicate_case_id",
+    "case_id_space": "bad_id",
+    "case_id_not_nfc": "bad_id",
+    "case_id_jamo_not_nfc": "bad_id",
+    "case_id_cyrillic": "accepted",
+    "label_empty": "bad_label",
+    "label_spaces": "bad_label",
+    "label_121": "bad_label",
+    "label_120": "accepted",
+    "label_control_char": "bad_label",
+    "label_html": "accepted",
+    "disabled_empty": "bad_disabled",
+    "disabled_candidate_id": "candidate_id_not_source",
+    "disabled_unknown": "unknown_source_id",
+    "disabled_other_category": "unknown_source_id",
+    "disabled_duplicate": "duplicate_id",
+    "disabled_number": "bad_id",
+    "case_extra_field": "bad_shape",
+    "duplicate_exclusion_sets": "accepted",
+    "all_records_left_out": "accepted"
+   }
+  },
+  {
+   "pack_id": "shymkent-school-qa",
+   "checks": {
+    "STATUS": "PASS",
+    "CASE_IDS": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "MANUAL": "PASS",
+    "NOMINAL": "PASS",
+    "ROBUST": "PASS",
+    "PRICE": "PASS",
+    "ROWS_PER_CASE": "PASS",
+    "ORDER": "PASS",
+    "PARTIAL_NOT_OPTIMAL": "PASS",
+    "VALIDATED_FROZEN": "PASS",
+    "UNCHECKED_INPUT_VALIDATED": "PASS"
+   },
+   "problems": [],
+   "notes": []
+  },
+  {
+   "pack_id": "shymkent-school-relied",
+   "checks": {
+    "STATUS": "PASS",
+    "CASE_IDS": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "MANUAL": "PASS",
+    "NOMINAL": "PASS",
+    "ROBUST": "PASS",
+    "PRICE": "PASS",
+    "ROWS_PER_CASE": "PASS",
+    "ORDER": "PASS",
+    "PARTIAL_NOT_OPTIMAL": "PASS",
+    "VALIDATED_FROZEN": "PASS",
+    "UNCHECKED_INPUT_VALIDATED": "PASS"
+   },
+   "problems": [],
+   "notes": []
+  },
+  {
+   "pack_id": "shymkent-school-seeded",
+   "checks": {
+    "STATUS": "PASS",
+    "CASE_IDS": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "MANUAL": "PASS",
+    "NOMINAL": "PASS",
+    "ROBUST": "PASS",
+    "PRICE": "PASS",
+    "ROWS_PER_CASE": "PASS",
+    "ORDER": "PASS",
+    "PARTIAL_NOT_OPTIMAL": "PASS",
+    "VALIDATED_FROZEN": "PASS",
+    "UNCHECKED_INPUT_VALIDATED": "PASS"
+   },
+   "problems": [],
+   "notes": []
+  },
+  {
+   "pack_id": "synthetic-all-sources-left-out",
+   "checks": {
+    "STATUS": "PASS",
+    "CASE_IDS": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "MANUAL": "PASS",
+    "NOMINAL": "PASS",
+    "ROBUST": "PASS",
+    "PRICE": "PASS",
+    "ROWS_PER_CASE": "PASS",
+    "ORDER": "PASS",
+    "PARTIAL_NOT_OPTIMAL": "PASS",
+    "VALIDATED_FROZEN": "PASS"
+   },
+   "problems": [],
+   "notes": []
+  },
+  {
+   "pack_id": "synthetic-infeasible-budget",
+   "checks": {
+    "STATUS": "PASS",
+    "CASE_IDS": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "MANUAL": "PASS",
+    "INFEASIBLE_REASONS": "PASS",
+    "PRICE_NULL": "PASS",
+    "ROWS_PER_CASE": "PASS",
+    "ORDER": "PASS",
+    "VALIDATED_FROZEN": "PASS"
+   },
+   "problems": [],
+   "notes": []
+  },
+  {
+   "pack_id": "synthetic-plans-coincide",
+   "checks": {
+    "STATUS": "PASS",
+    "CASE_IDS": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "MANUAL": "PASS",
+    "NOMINAL": "PASS",
+    "ROBUST": "PASS",
+    "PRICE": "PASS",
+    "ROWS_PER_CASE": "PASS",
+    "ORDER": "PASS",
+    "PARTIAL_NOT_OPTIMAL": "PASS",
+    "VALIDATED_FROZEN": "PASS"
+   },
+   "problems": [],
+   "notes": []
+  },
+  {
+   "pack_id": "synthetic-robust-differs",
+   "checks": {
+    "STATUS": "PASS",
+    "CASE_IDS": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "MANUAL": "PASS",
+    "NOMINAL": "PASS",
+    "ROBUST": "PASS",
+    "PRICE": "PASS",
+    "ROWS_PER_CASE": "PASS",
+    "ORDER": "PASS",
+    "PARTIAL_NOT_OPTIMAL": "PASS",
+    "VALIDATED_FROZEN": "PASS"
+   },
+   "problems": [],
+   "notes": []
+  },
+  {
+   "pack_id": "synthetic-robust-tiebreak",
+   "checks": {
+    "STATUS": "PASS",
+    "CASE_IDS": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "MANUAL": "PASS",
+    "NOMINAL": "PASS",
+    "ROBUST": "PASS",
+    "PRICE": "PASS",
+    "ROWS_PER_CASE": "PASS",
+    "ORDER": "PASS",
+    "PARTIAL_NOT_OPTIMAL": "PASS",
+    "VALIDATED_FROZEN": "PASS"
+   },
+   "problems": [],
+   "notes": []
+  },
+  {
+   "pack_id": "synthetic-unknown-base-refused",
+   "checks": {
+    "INVALID_CASES": "PASS"
+   },
+   "problems": [],
+   "notes": [],
+   "codes": {
+    "clinic_as_school": "unknown_source_id",
+    "no_ids": "bad_disabled"
+   }
+  },
+  {
+   "pack_id": "synthetic-unknown-worst",
+   "checks": {
+    "STATUS": "PASS",
+    "CASE_IDS": "PASS",
+    "FEASIBLE_COUNT": "PASS",
+    "MANUAL": "PASS",
+    "NOMINAL": "PASS",
+    "ROBUST": "PASS",
+    "PRICE": "PASS",
+    "ROWS_PER_CASE": "PASS",
+    "ORDER": "PASS",
+    "PARTIAL_NOT_OPTIMAL": "PASS",
+    "VALIDATED_FROZEN": "PASS"
+   },
+   "problems": [],
+   "notes": []
+  }
+ ]
+}

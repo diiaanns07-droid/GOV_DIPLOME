@@ -352,6 +352,26 @@
    "sha256": "8ee2075636cb1b410c09304125947a6226b19e4abbfdb44507dc85c893cecdc8"
   },
   {
+   "pack_id": "synthetic-robust-tiebreak",
+   "kind": "synthetic",
+   "stage": 3,
+   "purpose": "two plans share the worst vector; the better base loss wins before the lower cost",
+   "status": "optimal",
+   "plans_identical": true,
+   "price_of_robustness_m": 0.0,
+   "nominal": [
+    "b"
+   ],
+   "robust": [
+    "b"
+   ],
+   "infeasible_reasons": null,
+   "cases": 2,
+   "rejected": null,
+   "accepted": null,
+   "sha256": "c7ea681e340a18389fd938212cd084c543454b737fc394dbcf961e30d9c1cce8"
+  },
+  {
    "pack_id": "synthetic-unknown-base-refused",
    "kind": "synthetic",
    "stage": 3,
@@ -378,10 +398,10 @@
    "nominal": null,
    "robust": null,
    "infeasible_reasons": null,
-   "cases": 33,
-   "rejected": 28,
+   "cases": 34,
+   "rejected": 29,
    "accepted": 5,
-   "sha256": "e8a409e7af6e06604aa1533f0cbaad7e326e4b1d2f31cb185463bc63f954191b"
+   "sha256": "6d899d1c8587311bcd757981c4bbe60eb566aabc4da6ec43bc056cf374ebcd86"
   },
   {
    "pack_id": "astana-school-invalid-envelopes",
@@ -394,10 +414,10 @@
    "nominal": null,
    "robust": null,
    "infeasible_reasons": null,
-   "cases": 33,
-   "rejected": 28,
+   "cases": 34,
+   "rejected": 29,
    "accepted": 5,
-   "sha256": "d9803d7853b9c266bf51d6cf75cf352855d630d4c3770582e113419d25e909fa"
+   "sha256": "9d0d8879e854d2313c5f873875ca26833dcb1e2087ea2b8ab131049d511b67df"
   }
  ],
  "not_built": [

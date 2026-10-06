@@ -1,0 +1,73 @@
+{
+ "unmutated_exit": 0,
+ "mutants": 16,
+ "killed": 16,
+ "survived": [],
+ "not_applicable": [],
+ "results": [
+  {
+   "mutant": "robust: best case instead of worst",
+   "result": "killed"
+  },
+  {
+   "mutant": "robust: cost before base loss",
+   "result": "killed"
+  },
+  {
+   "mutant": "nominal: uses the worst case",
+   "result": "killed"
+  },
+  {
+   "mutant": "worst ids: only the first",
+   "result": "killed"
+  },
+  {
+   "mutant": "price sign reversed",
+   "result": "killed"
+  },
+  {
+   "mutant": "exclusions ignored",
+   "result": "killed"
+  },
+  {
+   "mutant": "unknown max counted as 0",
+   "result": "killed"
+  },
+  {
+   "mutant": "unknown not first in search",
+   "result": "killed"
+  },
+  {
+   "mutant": "label limit 121",
+   "result": "killed"
+  },
+  {
+   "mutant": "candidate limit 16",
+   "result": "killed"
+  },
+  {
+   "mutant": "base id not reserved",
+   "result": "killed"
+  },
+  {
+   "mutant": "derived accepted",
+   "result": "killed"
+  },
+  {
+   "mutant": "candidate id accepted as source",
+   "result": "killed"
+  },
+  {
+   "mutant": "NFC not required",
+   "result": "killed"
+  },
+  {
+   "mutant": "cancel reported optimal",
+   "result": "killed"
+  },
+  {
+   "mutant": "budget check strict",
+   "result": "killed"
+  }
+ ]
+}

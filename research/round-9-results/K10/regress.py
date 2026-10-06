@@ -13,7 +13,10 @@ Steps -> DIR/summary.json (default research/round-9-results/K10/results/<sha7>/)
   SOURCE_IDS      data.js places per city: same ids and groups as the K10 package; lon/lat = package values rounded to 6 dp
   R8_SUITE        research/round-8-results/K10/tests/run_build_suite.py (packs vs data, oracle recompute, JS geometry,
                   unit tests, verify-inputs, packs through web/plan.js, export round trip, plan.js mutants)
-Exit 0 only if every step is PASS (SKIP inside R8_SUITE is allowed and reported).
+  R9_ENVELOPES    tests/check_envelopes.py: the 19 city-resilience-v1 packs vs this build's data + K10 oracle checks
+  R9_PROPOSAL_ON_PLAN_JS  tests/run_res_adapter.cjs: K10 proposals/resilience.js over this build's plan.js (SKIP if absent)
+  build_resilience  NOT_RUN while the build has no web/resilience.js; FOUND_NOT_MAPPED when it appears (map it first)
+Exit 0 only if every step is PASS or SKIP.
 """
 import argparse
 import hashlib
@@ -128,18 +131,41 @@ def main():
         s["steps"]["R8_SUITE"] = {"status": "PASS" if r.returncode == 0 else "FAIL", "steps": suite.get("steps"),
                                   "build_exports": suite.get("build_exports"), "build_mutants": suite.get("build_mutants"),
                                   "stderr_tail": r.stderr[-400:] if r.returncode else ""}
+        # round 9: resilience envelopes (K10 oracle) and the K10 proposal module on top of this build's plan.js
+        r = subprocess.run([sys.executable, str(HERE / "tests/check_envelopes.py"), "--app-root", str(app),
+                            "--json", str(out / "check_envelopes.json")], capture_output=True, text=True, cwd=HERE)
+        s["steps"]["R9_ENVELOPES"] = {"status": "PASS" if r.returncode == 0 else "FAIL", "summary": r.stdout.strip()[-600:]}
+        packs9 = sorted(str(q) for q in (HERE / "envelopes").glob("*.json") if q.name != "INDEX.json")
+        if (app / "web/plan.js").exists():
+            r = subprocess.run(["node", str(HERE / "tests/run_res_adapter.cjs"), str(app), *packs9], capture_output=True, text=True)
+            (out / "res_adapter.json").write_text(r.stdout, encoding="utf-8")
+            s["steps"]["R9_PROPOSAL_ON_PLAN_JS"] = {"status": "PASS" if r.returncode == 0 else "FAIL",
+                                                    "note": "K10 proposals/resilience.js on this build's plan.js; not a BUILD feature"}
+        else:
+            s["steps"]["R9_PROPOSAL_ON_PLAN_JS"] = {"status": "SKIP", "note": "no web/plan.js in this build"}
+        own = app / "web/resilience.js"
+        s["build_resilience"] = ({"status": "NOT_RUN", "note": "this build has no web/resilience.js (city-resilience-v1 not implemented)"}
+                                 if not own.exists() else
+                                 {"status": "FOUND_NOT_MAPPED", "sha256": sha256(own.read_bytes()),
+                                  "note": "BUILD module present; map its output format in tests/run_res_adapter.cjs before claiming a result"})
     finally:
         if tmp:
             shutil.rmtree(tmp, ignore_errors=True)
     s["seconds"] = round(time.time() - t0, 1)
-    s["ok"] = all(v["status"] == "PASS" for v in s["steps"].values())
+    s["ok"] = all(v["status"] in ("PASS", "SKIP") for v in s["steps"].values())
     txt = json.dumps(s, ensure_ascii=False, indent=1)
-    if tmp:
+    if tmp:  # keep local temporary paths out of the stored results
         txt = txt.replace(tmp, "<workdir>")
+        for f in out.rglob("*"):
+            if f.is_file() and f.suffix in (".json", ".txt"):
+                t = f.read_text(encoding="utf-8")
+                if tmp in t:
+                    f.write_text(t.replace(tmp, "<workdir>"), encoding="utf-8")
     (out / "summary.json").write_text(txt + "\n", encoding="utf-8")
     print(json.dumps({"sha": full, "ok": s["ok"], "seconds": s["seconds"],
                       "steps": {k: v["status"] for k, v in s["steps"].items()},
-                      "r8_suite": s["steps"].get("R8_SUITE", {}).get("steps")}, ensure_ascii=False))
+                      "r8_suite": s["steps"].get("R8_SUITE", {}).get("steps"),
+                      "build_resilience": s.get("build_resilience", {}).get("status")}, ensure_ascii=False))
     sys.exit(0 if s["ok"] else 1)
 
 

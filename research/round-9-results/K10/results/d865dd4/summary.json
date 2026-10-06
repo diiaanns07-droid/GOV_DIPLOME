@@ -84,8 +84,20 @@
     "not_applicable": []
    },
    "stderr_tail": ""
+  },
+  "R9_ENVELOPES": {
+   "status": "PASS",
+   "summary": "{\"IMMUTABLE\": \"PASS\", \"counts\": {\"CROSS_R8=PASS\": 16, \"HAND=PASS\": 6, \"INDEX=PASS\": 19, \"ORDER=PASS\": 16, \"RECOMPUTE=PASS\": 19, \"SOURCE=PASS\": 12, \"SOURCE=SYNTHETIC\": 7, \"VALID=PASS\": 16}, \"failures\": [], \"packs\": 19, \"stale\": []}"
+  },
+  "R9_PROPOSAL_ON_PLAN_JS": {
+   "status": "PASS",
+   "note": "K10 proposals/resilience.js on this build's plan.js; not a BUILD feature"
   }
  },
- "seconds": 15.1,
+ "build_resilience": {
+  "status": "NOT_RUN",
+  "note": "this build has no web/resilience.js (city-resilience-v1 not implemented)"
+ },
+ "seconds": 16.5,
  "ok": true
 }

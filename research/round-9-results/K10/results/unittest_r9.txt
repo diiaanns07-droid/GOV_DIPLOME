@@ -1,0 +1,23 @@
+test_changed_geojson_byte_fails (test_regress.Regress.test_changed_geojson_byte_fails) ... ok
+test_edited_r8_pack_fails (test_regress.Regress.test_edited_r8_pack_fails) ... ok
+test_extract_is_byte_exact (test_regress.Regress.test_extract_is_byte_exact) ... ok
+test_moved_removed_regrouped_records_fail (test_regress.Regress.test_moved_removed_regrouped_records_fail) ... ok
+test_pristine_sources_pass (test_regress.Regress.test_pristine_sources_pass) ... ok
+test_cases_inside_each_case (test_res_oracle.Compute.test_cases_inside_each_case) ... ok
+test_digests (test_res_oracle.Compute.test_digests) ... ok
+test_identical_plans_price_zero (test_res_oracle.Compute.test_identical_plans_price_zero) ... ok
+test_infeasible_and_price_null (test_res_oracle.Compute.test_infeasible_and_price_null) ... ok
+test_no_mutation_and_limit_speed (test_res_oracle.Compute.test_no_mutation_and_limit_speed) ... ok
+test_robust_differs_and_price (test_res_oracle.Compute.test_robust_differs_and_price) ... ok
+test_robust_uses_base_after_worst (test_res_oracle.Compute.test_robust_uses_base_after_worst) ... ok
+test_tie_breaks_base_then_cost_then_ids (test_res_oracle.Compute.test_tie_breaks_base_then_cost_then_ids) ... ok
+test_ties_list_all_worst_and_duplicates_do_not_matter (test_res_oracle.Compute.test_ties_list_all_worst_and_duplicates_do_not_matter) ... ok
+test_unknown_dominates_and_null_max (test_res_oracle.Compute.test_unknown_dominates_and_null_max) ... ok
+test_base_added_and_cases_sorted (test_res_oracle.Validation.test_base_added_and_cases_sorted) ... ok
+test_candidate_limit_12 (test_res_oracle.Validation.test_candidate_limit_12) ... ok
+test_refusals (test_res_oracle.Validation.test_refusals) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 1.134s
+
+OK

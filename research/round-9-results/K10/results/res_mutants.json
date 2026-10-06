@@ -1,0 +1,76 @@
+{
+ "mutants": 17,
+ "killed": 17,
+ "survived": [],
+ "not_applicable": [],
+ "results": [
+  {
+   "mutant": "robust: best case instead of worst",
+   "result": "killed"
+  },
+  {
+   "mutant": "robust: cost before base loss",
+   "result": "killed"
+  },
+  {
+   "mutant": "nominal: uses the worst case",
+   "result": "killed"
+  },
+  {
+   "mutant": "worst ids: only the first",
+   "result": "killed"
+  },
+  {
+   "mutant": "price sign reversed",
+   "result": "killed"
+  },
+  {
+   "mutant": "exclusions ignored",
+   "result": "killed"
+  },
+  {
+   "mutant": "unknown max counted as 0",
+   "result": "killed"
+  },
+  {
+   "mutant": "unknown not compared first",
+   "result": "killed"
+  },
+  {
+   "mutant": "label limit off by one",
+   "result": "killed"
+  },
+  {
+   "mutant": "candidate limit 16",
+   "result": "killed"
+  },
+  {
+   "mutant": "8 user cases allowed",
+   "result": "killed"
+  },
+  {
+   "mutant": "base id not reserved",
+   "result": "killed"
+  },
+  {
+   "mutant": "derived results accepted",
+   "result": "killed"
+  },
+  {
+   "mutant": "candidate id accepted as source",
+   "result": "killed"
+  },
+  {
+   "mutant": "labels not in digest",
+   "result": "killed"
+  },
+  {
+   "mutant": "selected ids in problem digest",
+   "result": "killed"
+  },
+  {
+   "mutant": "NFC not required",
+   "result": "killed"
+  }
+ ]
+}

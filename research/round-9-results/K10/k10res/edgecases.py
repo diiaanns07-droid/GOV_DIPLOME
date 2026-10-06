@@ -127,6 +127,17 @@ def synthetic_packs():
                                                 "robust_worst_vector": [2, 0, None], "robust_worst_case_ids": ["none"],
                                                 "price_of_robustness_m": 0.0, "case_unknown": {"base": 0, "none": 2}},
                            "why": "only the empty plan is allowed; without schools both points have no known distance"}))
+    # 6. equal worst vector: the base loss decides before cost
+    ctx3 = synth_context([("S", 0, "school"), ("F", 20000, "school")])
+    p = plan(ctx3, [("P1", 0, 1), ("P2", 4000, 1)], [("a", 1000, 1), ("b", 3000, 5)], 10, 1, 300, ["a"])
+    out.append(synth_pack("synthetic-robust-tiebreak", "two plans share the worst vector; the better base loss wins before "
+                          "the lower cost", ctx3, env(p, [("noS", "Условно не учитываем S", ["S"])]),
+                          {"hand_expectation": {"robust_selected_ids": ["b"], "nominal_selected_ids": ["b"],
+                                                "robust_worst_vector": [0, 4000000, 3000000],
+                                                "manual_worst_vector": [0, 4000000, 3000000], "plans_identical": True,
+                                                "price_of_robustness_m": 0.0},
+                           "why": "a: base 0+3000, without S 1000+3000 m; b: base 0+1000, without S 3000+1000 m; "
+                                  "W equal, b has the smaller base loss although a is cheaper"}))
     return out
 
 
@@ -198,6 +209,8 @@ def _cases(base_env, other_snapshot, other_cat_id, ctx_ids):
     obj("case_id_duplicate", "duplicate_case_id", lambda e: e["cases"][1].update(id=e["cases"][0]["id"]))
     obj("case_id_space", "bad_id", lambda e: e["cases"][0].update(id="top 1"))
     obj("case_id_not_nfc", "bad_id", lambda e: e["cases"][0].update(id="cafe\u0301"))
+    obj("case_id_jamo_not_nfc", "bad_id", lambda e: e["cases"][0].update(id="\u1100\u1161"),
+        "letters only, but not NFC (NFC form is U+AC00): refused only by the NFC rule")
     obj("case_id_cyrillic", None, lambda e: e["cases"][0].update(id="случай_1"), "accepted: Unicode NFC ids as in BUILD")
     obj("label_empty", "bad_label", lambda e: e["cases"][0].update(label=""))
     obj("label_spaces", "bad_label", lambda e: e["cases"][0].update(label="   "))
