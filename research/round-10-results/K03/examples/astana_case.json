@@ -1,0 +1,279 @@
+{
+ "schema_version": "school-access-case-v1",
+ "case_id": "k03-demo-astana",
+ "city_id": "astana",
+ "title": "K03 демо: пешеходные расстояния (astana)",
+ "bbox": [
+  71.418372,
+  51.163033,
+  71.447,
+  51.181
+ ],
+ "snapshot_id": "graph:799d26e5155248cc",
+ "sources": [
+  {
+   "id": "overture-k10-astana",
+   "url": null,
+   "publisher": "Overture Maps Foundation / OpenStreetMap",
+   "title": "K10 segments/connectors astana",
+   "data_period": "2026-09-23.1",
+   "retrieved_at": null,
+   "verification_status": "secondary_only",
+   "license": "ODbL-1.0",
+   "content_sha256": "5fc1b3b5f6cabad6e2edfd042bb3727aa8fd0c7bcba9962175025e37eb08dbb9"
+  }
+ ],
+ "schools": [
+  {
+   "id": "7b39e048-341b-454a-a63c-4b7e1ae73e9f",
+   "label": "Школа-гимназия 3",
+   "lon": 71.42501,
+   "lat": 51.17087,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "data.js:astana"
+   ],
+   "field_provenance": {
+    "lon": "Overture place geometry",
+    "lat": "Overture place geometry"
+   },
+   "qa": [],
+   "category": "school",
+   "access_eligibility": "unknown",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "8ca53724-c558-46b7-826b-13e3e8fbb7e6",
+   "label": "\"ГУ \"Средняя школа № 8\" УО г. Астаны\"",
+   "lon": 71.445305,
+   "lat": 51.166662,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "data.js:astana"
+   ],
+   "field_provenance": {
+    "lon": "Overture place geometry",
+    "lat": "Overture place geometry"
+   },
+   "qa": [],
+   "category": "school",
+   "access_eligibility": "unknown",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+   "label": "Учебный ЦЕНТР ФПРК",
+   "lon": 71.43372,
+   "lat": 51.16862,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "data.js:astana"
+   ],
+   "field_provenance": {
+    "lon": "Overture place geometry",
+    "lat": "Overture place geometry"
+   },
+   "qa": [],
+   "category": "school",
+   "access_eligibility": "unknown",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "a4483f53-7de8-4df1-b61b-b4066b0ad5dd",
+   "label": "Astana Garden International School",
+   "lon": 71.42298,
+   "lat": 51.16765,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "data.js:astana"
+   ],
+   "field_provenance": {
+    "lon": "Overture place geometry",
+    "lat": "Overture place geometry"
+   },
+   "qa": [],
+   "category": "school",
+   "access_eligibility": "unknown",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "b5dd5f1a-9d55-48b1-9d68-7172ea84da3f",
+   "label": "Образовательный центр АЗиЯ",
+   "lon": 71.44184,
+   "lat": 51.16473,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "data.js:astana"
+   ],
+   "field_provenance": {
+    "lon": "Overture place geometry",
+    "lat": "Overture place geometry"
+   },
+   "qa": [],
+   "category": "school",
+   "access_eligibility": "unknown",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a",
+   "label": "Учебный Центр Expert-A",
+   "lon": 71.423338,
+   "lat": 51.1677,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "data.js:astana"
+   ],
+   "field_provenance": {
+    "lon": "Overture place geometry",
+    "lat": "Overture place geometry"
+   },
+   "qa": [],
+   "category": "school",
+   "access_eligibility": "unknown",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "c97435da-cd05-4549-bec1-ff297e858554",
+   "label": "Гимназия №6",
+   "lon": 71.420262,
+   "lat": 51.177527,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "data.js:astana"
+   ],
+   "field_provenance": {
+    "lon": "Overture place geometry",
+    "lat": "Overture place geometry"
+   },
+   "qa": [],
+   "category": "school",
+   "access_eligibility": "unknown",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783",
+   "label": "\"Школа \"Почемучка\"\"",
+   "lon": 71.426672,
+   "lat": 51.179297,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "data.js:astana"
+   ],
+   "field_provenance": {
+    "lon": "Overture place geometry",
+    "lat": "Overture place geometry"
+   },
+   "qa": [],
+   "category": "school",
+   "access_eligibility": "unknown",
+   "capacity": null,
+   "capacity_source_ids": []
+  }
+ ],
+ "origins": [
+  {
+   "id": "grid-00",
+   "label": "grid-00",
+   "lon": 71.4240976,
+   "lat": 51.1666264,
+   "kind": "synthetic",
+   "source_ids": [],
+   "field_provenance": {},
+   "qa": []
+  },
+  {
+   "id": "grid-01",
+   "label": "grid-01",
+   "lon": 71.4240976,
+   "lat": 51.1720165,
+   "kind": "synthetic",
+   "source_ids": [],
+   "field_provenance": {},
+   "qa": []
+  },
+  {
+   "id": "grid-02",
+   "label": "grid-02",
+   "lon": 71.4240976,
+   "lat": 51.1774066,
+   "kind": "synthetic",
+   "source_ids": [],
+   "field_provenance": {},
+   "qa": []
+  },
+  {
+   "id": "grid-10",
+   "label": "grid-10",
+   "lon": 71.432686,
+   "lat": 51.1666264,
+   "kind": "synthetic",
+   "source_ids": [],
+   "field_provenance": {},
+   "qa": []
+  },
+  {
+   "id": "grid-11",
+   "label": "grid-11",
+   "lon": 71.432686,
+   "lat": 51.1720165,
+   "kind": "synthetic",
+   "source_ids": [],
+   "field_provenance": {},
+   "qa": []
+  },
+  {
+   "id": "grid-12",
+   "label": "grid-12",
+   "lon": 71.432686,
+   "lat": 51.1774066,
+   "kind": "synthetic",
+   "source_ids": [],
+   "field_provenance": {},
+   "qa": []
+  }
+ ],
+ "candidates": [
+  {
+   "id": "cand-A",
+   "label": "cand-A",
+   "lon": 71.4283918,
+   "lat": 51.1747115,
+   "kind": "synthetic",
+   "cost": null,
+   "land_status": "unknown",
+   "source_ids": [],
+   "field_provenance": {},
+   "qa": []
+  },
+  {
+   "id": "cand-B",
+   "label": "cand-B",
+   "lon": 71.4369802,
+   "lat": 51.1693214,
+   "kind": "synthetic",
+   "cost": null,
+   "land_status": "unknown",
+   "source_ids": [],
+   "field_provenance": {},
+   "qa": []
+  }
+ ],
+ "selected_candidate_ids": [],
+ "parameters": {
+  "distance_method": "pedestrian-v1",
+  "routing_policy_id": "pedestrian-v1-exploratory",
+  "threshold_m": 800,
+  "max_new_objects": 1
+ },
+ "model_assumptions": [
+  "точки анализа synthetic — не жители и не здания",
+  "маршрут по неполным данным OSM/Overture"
+ ]
+}

@@ -1,0 +1,105 @@
+{
+ "note": "origins и candidates — synthetic; schools — Overture/OSM observed_secondary (data.js d2ff344); не прогноз и не оценка доступности",
+ "cities": {
+  "shymkent": {
+   "results": {
+    "geodesic": {
+     "rows": 102,
+     "statuses": {
+      "ok": 102
+     },
+     "graph_sha256": "b4a59a4c90b31b6b0685e5d949e81c0c87aee9580c7a3696bb416eca8033ec87",
+     "policy_sha256": null,
+     "first_origin_nearest_school": {
+      "target_id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+      "distance_mm": 487951,
+      "text": "488 м — прямая, не маршрут"
+     },
+     "first_origin_unknown_schools": 0
+    },
+    "pedestrian-v1-strict": {
+     "rows": 102,
+     "statuses": {
+      "access_unknown": 78,
+      "ok": 24
+     },
+     "graph_sha256": "b4a59a4c90b31b6b0685e5d949e81c0c87aee9580c7a3696bb416eca8033ec87",
+     "policy_sha256": "ba8a525a511b4629919e3022b371b4f3d2db1ebf032e1fc1823802e1b772c783",
+     "first_origin_nearest_school": {
+      "target_id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+      "distance_mm": 1449818,
+      "text": "1450 м — маршрут по пешеходным рёбрам OSM/Overture (не проверено на месте); от точки до сети — модельный отрезок по прямой"
+     },
+     "first_origin_unknown_schools": 7
+    },
+    "pedestrian-v1-exploratory": {
+     "rows": 102,
+     "statuses": {
+      "ok": 102
+     },
+     "graph_sha256": "b4a59a4c90b31b6b0685e5d949e81c0c87aee9580c7a3696bb416eca8033ec87",
+     "policy_sha256": "ba8a525a511b4629919e3022b371b4f3d2db1ebf032e1fc1823802e1b772c783",
+     "first_origin_nearest_school": {
+      "target_id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+      "distance_mm": 577025,
+      "text": "577 м — маршрут по неполным данным (не гарантированно доступный пешеходный путь); часть пути — велодорожка, доступ для пешеходов не отмечен; доступ для пешеходов на части пути не отмечен в данных; от точки до сети — модельный отрезок по прямой"
+     },
+     "first_origin_unknown_schools": 0
+    }
+   },
+   "adapter_rejects": {
+    "other_city": "other_city",
+    "too_many_points": "too_many_points",
+    "bad_policy": "bad_policy"
+   }
+  },
+  "astana": {
+   "results": {
+    "geodesic": {
+     "rows": 60,
+     "statuses": {
+      "ok": 60
+     },
+     "graph_sha256": "799d26e5155248cceb31eb67f76f92d453491770a73c387bf0371289ddcf0ae4",
+     "policy_sha256": null,
+     "first_origin_nearest_school": {
+      "target_id": "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a",
+      "distance_mm": 130600,
+      "text": "131 м — прямая, не маршрут"
+     },
+     "first_origin_unknown_schools": 0
+    },
+    "pedestrian-v1-strict": {
+     "rows": 60,
+     "statuses": {
+      "access_unknown": 15,
+      "ok": 45
+     },
+     "graph_sha256": "799d26e5155248cceb31eb67f76f92d453491770a73c387bf0371289ddcf0ae4",
+     "policy_sha256": "ba8a525a511b4629919e3022b371b4f3d2db1ebf032e1fc1823802e1b772c783",
+     "first_origin_nearest_school": null,
+     "first_origin_unknown_schools": 8
+    },
+    "pedestrian-v1-exploratory": {
+     "rows": 60,
+     "statuses": {
+      "ok": 60
+     },
+     "graph_sha256": "799d26e5155248cceb31eb67f76f92d453491770a73c387bf0371289ddcf0ae4",
+     "policy_sha256": "ba8a525a511b4629919e3022b371b4f3d2db1ebf032e1fc1823802e1b772c783",
+     "first_origin_nearest_school": {
+      "target_id": "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a",
+      "distance_mm": 199736,
+      "text": "200 м — маршрут по неполным данным (не гарантированно доступный пешеходный путь); доступ для пешеходов на части пути не отмечен в данных; от точки до сети — модельный отрезок по прямой"
+     },
+     "first_origin_unknown_schools": 0
+    }
+   },
+   "adapter_rejects": {
+    "other_city": "other_city",
+    "too_many_points": "too_many_points",
+    "bad_policy": "bad_policy"
+   }
+  }
+ }
+}

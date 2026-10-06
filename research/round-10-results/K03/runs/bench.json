@@ -1,0 +1,73 @@
+{
+ "environment": {
+  "node": "v22.22.0",
+  "platform": "linux 6.18.44-fc-v70",
+  "arch": "x64",
+  "cpu": "Intel(R) Xeon(R) Processor @ 2.80GHz",
+  "cpus": 4,
+  "note": "один процесс, без воркеров; замер этого окружения, не гарантия для браузера или Windows"
+ },
+ "runs": 5,
+ "cities": {
+  "shymkent": {
+   "graph_sha256": "b4a59a4c90b31b6b0685e5d949e81c0c87aee9580c7a3696bb416eca8033ec87",
+   "graph_bytes": 1259961,
+   "nodes": 1729,
+   "edges": 2260,
+   "origins": 25,
+   "targets": 31,
+   "schools": 15,
+   "pairs_per_policy": 775,
+   "median_ms": {
+    "parse_ms": 7.1,
+    "prepare_hash_ms": 55,
+    "prepare_ms": 8.4,
+    "matrix_strict_ms": 120.2,
+    "matrix_exploratory_ms": 490.6,
+    "max_single_route_ms": 16.8
+   },
+   "statuses_last_run": {
+    "pedestrian-v1-strict": {
+     "access_unknown": 694,
+     "ok": 78,
+     "outside_coverage": 3
+    },
+    "pedestrian-v1-exploratory": {
+     "ok": 744,
+     "outside_coverage": 31
+    }
+   },
+   "note": "точки и кандидаты — seeded synthetic; первая строка от точки включает её привязку и полный обход Дейкстры, следующие берут кэш"
+  },
+  "astana": {
+   "graph_sha256": "799d26e5155248cceb31eb67f76f92d453491770a73c387bf0371289ddcf0ae4",
+   "graph_bytes": 1793075,
+   "nodes": 2309,
+   "edges": 3269,
+   "origins": 25,
+   "targets": 24,
+   "schools": 8,
+   "pairs_per_policy": 600,
+   "median_ms": {
+    "parse_ms": 9.9,
+    "prepare_hash_ms": 78.9,
+    "prepare_ms": 15.9,
+    "matrix_strict_ms": 354.4,
+    "matrix_exploratory_ms": 619.1,
+    "max_single_route_ms": 23.9
+   },
+   "statuses_last_run": {
+    "pedestrian-v1-strict": {
+     "ok": 210,
+     "access_unknown": 386,
+     "disconnected": 4
+    },
+    "pedestrian-v1-exploratory": {
+     "ok": 576,
+     "disconnected": 24
+    }
+   },
+   "note": "точки и кандидаты — seeded synthetic; первая строка от точки включает её привязку и полный обход Дейкстры, следующие берут кэш"
+  }
+ }
+}

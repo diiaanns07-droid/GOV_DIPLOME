@@ -1,0 +1,44 @@
+--- a/ui/web_server.py
++++ b/ui/web_server.py
+@@ -45,7 +45,10 @@
+                "core/facts.js", "core/whatif.js", "core/plan.js", "core/resilience.js",
+                "core/plan-ui.js", "core/resilience-ui.js", "core/attribution/ATTRIBUTION.md",
+                "core/attribution/attribution.json", "core/attribution/LICENSES/Apache-2.0.txt",
+-               "core/attribution/LICENSES/CDLA-Permissive-2.0.txt", "core/attribution/LICENSES/ODbL-1.0.txt"):
++               "core/attribution/LICENSES/CDLA-Permissive-2.0.txt", "core/attribution/LICENSES/ODbL-1.0.txt",
++               # K03 r10: пешеходные расстояния pedestrian-v1 (модуль, граф ODbL, манифест хэшей)
++               "k03/routing.js", "k03/school-access-routing.js", "k03/shymkent.graph.json", "k03/astana.graph.json",
++               "k03/K03_MANIFEST.json"):
+     _mime = {".js": "text/javascript", ".css": "text/css", ".json": "application/json"}.get(Path(_asset).suffix, "text/plain")
+     ASSETS["/govtech/" + _asset] = ("govtech/" + _asset, _mime + "; charset=utf-8")
+ 
+--- a/web/index.html
++++ b/web/index.html
+@@ -185,6 +185,8 @@
+     <script defer src="/govtech/core/whatif.js"></script>
+     <script defer src="/govtech/core/plan.js"></script>
+     <script defer src="/govtech/core/resilience.js"></script>
++    <script defer src="/govtech/k03/routing.js"></script>
++    <script defer src="/govtech/k03/school-access-routing.js"></script>
+     <script defer src="/govtech/shell.js"></script>
+     <script defer src="/govtech/core/plan-ui.js"></script>
+     <script defer src="/govtech/core/resilience-ui.js"></script>
+--- a/tests/test_k03_routing_assets.py
++++ b/tests/test_k03_routing_assets.py
+@@ -0,0 +1,16 @@
++"""K03 r10: модуль pedestrian-v1 и графы в web/govtech/k03 совпадают с K03_MANIFEST.json (без незадокументированных правок)."""
++import hashlib
++import json
++from pathlib import Path
++
++
++def test_k03_routing_assets_match_manifest():
++    root = Path(__file__).resolve().parents[1] / "web" / "govtech" / "k03"
++    manifest = json.loads((root / "K03_MANIFEST.json").read_text(encoding="utf-8"))
++    names = {item["file"] for item in manifest["files"]}
++    assert names == {"routing.js", "school-access-routing.js", "shymkent.graph.json", "astana.graph.json"}
++    for item in manifest["files"]:
++        assert hashlib.sha256((root / item["file"]).read_bytes()).hexdigest() == item["sha256"], item["file"]
++    for city, meta in manifest["graphs"].items():
++        graph = json.loads((root / f"{city}.graph.json").read_text(encoding="utf-8"))
++        assert graph["graph_sha256"] == meta["graph_sha256"] and graph["license"]["id"] == "ODbL-1.0"

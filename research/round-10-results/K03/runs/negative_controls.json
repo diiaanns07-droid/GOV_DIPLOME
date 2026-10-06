@@ -1,0 +1,87 @@
+{
+ "controls": [
+  {
+   "mutant": "ignore-direction",
+   "why": "одностороннее ограничение игнорируется",
+   "expected_fail": [
+    "R-hand-js",
+    "R-direction"
+   ],
+   "failed": [
+    "R-direction",
+    "R-hand-js",
+    "R-parity"
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "mutant": "silent-geodesic",
+   "why": "при отсутствии пути молча подставляется прямая",
+   "expected_fail": [
+    "R-hand-js"
+   ],
+   "failed": [
+    "R-geometry",
+    "R-hand-js",
+    "R-parity"
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "mutant": "no-max-snap",
+   "why": "допуск привязки 100 м не проверяется",
+   "expected_fail": [
+    "R-hand-js"
+   ],
+   "failed": [
+    "R-city-js",
+    "R-hand-js",
+    "R-parity"
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "mutant": "strict-uses-exploratory",
+   "why": "strict использует рёбра с неизвестным доступом",
+   "expected_fail": [
+    "R-hand-js",
+    "R-city-js"
+   ],
+   "failed": [
+    "R-city-js",
+    "R-direction",
+    "R-hand-js",
+    "R-parity"
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "mutant": "no-boundary-check",
+   "why": "не отмечается, что более короткий путь вне среза не исключён",
+   "expected_fail": [
+    "R-hand-js",
+    "R-city-js"
+   ],
+   "failed": [
+    "R-city-js",
+    "R-hand-js",
+    "R-parity"
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "mutant": "unknown-as-disconnected",
+   "why": "неизвестный доступ выдаётся за отсутствие пути",
+   "expected_fail": [
+    "R-hand-js",
+    "R-city-js"
+   ],
+   "failed": [
+    "R-city-js",
+    "R-hand-js",
+    "R-parity"
+   ],
+   "verdict": "PASS"
+  }
+ ]
+}

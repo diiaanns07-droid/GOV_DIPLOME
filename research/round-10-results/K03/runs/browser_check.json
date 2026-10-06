@@ -1,0 +1,75 @@
+{
+ "what": "модуль в Chromium с sha256hex facts.js d2ff344; не интегрированный сайт",
+ "browser": "Chromium 141.0.7390.37",
+ "platform": "linux",
+ "results": [
+  {
+   "name": "shymkent: graph_sha256 проверен в браузере функцией CITY_FACTS.sha256hex базы",
+   "ok": true
+  },
+  {
+   "name": "shymkent: подмена длины ребра в браузере → graph_hash_mismatch",
+   "ok": true
+  },
+  {
+   "name": "shymkent geodesic: 102 строк браузера = Node (статус, мм, рёбра, геометрия, допущения)",
+   "ok": true
+  },
+  {
+   "name": "shymkent pedestrian-v1-strict: 102 строк браузера = Node (статус, мм, рёбра, геометрия, допущения)",
+   "ok": true
+  },
+  {
+   "name": "shymkent pedestrian-v1-exploratory: 102 строк браузера = Node (статус, мм, рёбра, геометрия, допущения)",
+   "ok": true
+  },
+  {
+   "name": "astana: graph_sha256 проверен в браузере функцией CITY_FACTS.sha256hex базы",
+   "ok": true
+  },
+  {
+   "name": "astana: подмена длины ребра в браузере → graph_hash_mismatch",
+   "ok": true
+  },
+  {
+   "name": "astana geodesic: 60 строк браузера = Node (статус, мм, рёбра, геометрия, допущения)",
+   "ok": true
+  },
+  {
+   "name": "astana pedestrian-v1-strict: 60 строк браузера = Node (статус, мм, рёбра, геометрия, допущения)",
+   "ok": true
+  },
+  {
+   "name": "astana pedestrian-v1-exploratory: 60 строк браузера = Node (статус, мм, рёбра, геометрия, допущения)",
+   "ok": true
+  },
+  {
+   "name": "нет ошибок страницы",
+   "ok": true
+  },
+  {
+   "name": "нет запросов вне localhost",
+   "ok": true
+  }
+ ],
+ "timing_ms": {
+  "shymkent": {
+   "prepare_with_hash_ms": 274,
+   "matrix_ms": {
+    "geodesic": 2,
+    "pedestrian-v1-strict": 80,
+    "pedestrian-v1-exploratory": 127
+   },
+   "rows": 102
+  },
+  "astana": {
+   "prepare_with_hash_ms": 164,
+   "matrix_ms": {
+    "geodesic": 0,
+    "pedestrian-v1-strict": 194,
+    "pedestrian-v1-exploratory": 166
+   },
+   "rows": 60
+  }
+ }
+}

@@ -220,10 +220,16 @@ class Router:
         if any(G.E[G.idx[e]]['out'] for e, _, _ in edges):
             A.add('route_partly_outside_slice')
         bdist = self.bwd(k, pt, st)[0]
+        # нижняя граница через внешнюю сеть: пары открытых узлов с c < net (полный перебор; JS считает то же решение через f(b'))
         o_open = [(n, c) for n, c in dist.items() if G.N[n]['open'] and c < net]
         t_open = [(n, c) for n, c in bdist.items() if G.N[n]['open'] and c < net]
-        lb = min((c1 + mm(K.haversine_m((G.N[n1]['lon'], G.N[n1]['lat']), (G.N[n2]['lon'], G.N[n2]['lat']))) + c2
-                  for n1, c1 in o_open for n2, c2 in t_open), default=None)
+        lb = None
+        for n2, c2 in t_open:
+            p2 = (G.N[n2]['lon'], G.N[n2]['lat'])
+            for n1, c1 in o_open:
+                v = c1 + c2 + mm(K.haversine_m((G.N[n1]['lon'], G.N[n1]['lat']), p2))
+                if lb is None or v < lb:
+                    lb = v
         if lb is not None and lb < net:
             A.add('boundary_unverified')
         coords = []

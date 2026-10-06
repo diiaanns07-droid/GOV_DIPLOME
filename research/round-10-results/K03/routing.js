@@ -160,15 +160,25 @@
     if ((endD === 0 ? ts.a : ts.b) > 0) { edges.push({ id: eT.id, d: endD, partial: true }); assume.push(...eT.xa[endD]); }
     return { edges, cs, assume, nodes: [first, ...chain.map((p) => (p.d === 0 ? E[p.e].to : E[p.e].from))] };
   }
-  /* boundary: нижняя граница пути через внешнюю сеть по открытым узлам (геодезия между ними) */
-  function boundaryLB(G, k, F, B, found) {
-    const open = (m) => [...m.dist].filter(([n, c]) => G.nodes.get(n).open && c < found);
-    const A = open(F), C = open(B);
-    let lb = null;
-    for (const [n1, c1] of A) for (const [n2, c2] of C) {
-      const n = G.nodes.get(n1), m = G.nodes.get(n2), v = c1 + mm(haversine([n.lon, n.lat], [m.lon, m.lat])) + c2;
-      if (lb === null || v < lb) lb = v;
+  /* boundary: нижняя граница пути через внешнюю сеть = min d(o→b) + геодезия(b,b') + d(b'→t) по открытым узлам.
+   * f(b') = min_b [d(o→b) + геодезия(b,b')] считается один раз на точку отправления; решение «граница < найденной длины»
+   * то же, что при переборе пар с отсечением c < found (все слагаемые ≥ 0). */
+  function openReach(G, k, pt, F) {
+    const key = "o" + k + keyOf(pt);
+    if (!G.cache.has(key)) {
+      const A = [...F.dist].filter(([n]) => G.nodes.get(n).open), f = new Map();
+      for (const m of G.g.nodes) if (m.open) {
+        let best = null;
+        for (const [n1, c1] of A) { const n = G.nodes.get(n1), v = c1 + mm(haversine([n.lon, n.lat], [m.lon, m.lat])); if (best === null || v < best) best = v; }
+        if (best !== null) f.set(m.id, best);
+      }
+      G.cache.set(key, f);
     }
+    return G.cache.get(key);
+  }
+  function boundaryLB(G, f, B) {
+    let lb = null;
+    for (const [n2, c2] of B.dist) if (G.nodes.get(n2).open && f.has(n2)) { const v = f.get(n2) + c2; if (lb === null || v < lb) lb = v; }
     return lb;
   }
   function reachesOpen(m, G) { for (const n of m.dist.keys()) if (G.nodes.get(n).open) return true; return false; }
@@ -200,7 +210,7 @@
     const assumptions = new Set(P.assume);
     if (os.d > 0 || ts.d > 0) assumptions.add("snap_model_connection");
     if (P.edges.some((x) => G.g.edges[G.idx.get(x.id)].out)) assumptions.add("route_partly_outside_slice");
-    const B = backward(G, k, pt, ts), lb = boundaryLB(G, k, F, B, net);
+    const B = backward(G, k, pt, ts), lb = boundaryLB(G, openReach(G, k, po, F), B);
     if (lb !== null && lb < net) assumptions.add("boundary_unverified");
     const coords = [po].concat(P.cs, [pt]).filter((c, i, a) => i === 0 || c[0] !== a[i - 1][0] || c[1] !== a[i - 1][1]);
     const incomplete = k === "x" && P.assume.length > 0;

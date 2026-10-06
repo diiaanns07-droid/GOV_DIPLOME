@@ -200,7 +200,11 @@ def main():
             continue
         n += 1
         rr = dict(r, _o=q['origin'], _t=q['target'])
-        for m in validate_route(rr, g, 's' if p.endswith('strict') else 'x'):
+        try:
+            msgs = validate_route(rr, g, 's' if p.endswith('strict') else 'x')
+        except Exception as e:  # noqa: BLE001 — неправильная форма результата = FAIL, а не падение проверки
+            msgs = [f'форма результата не проверяется: {type(e).__name__} {str(e)[:80]}']
+        for m in msgs:
             (derr if 'направлени' in m or 'цепочки' in m else gerr).append(f'{qid}: {m}')
     rec('R-geometry', 'FAIL' if gerr else 'PASS', f'{n} маршрутов ok: геометрия от точки до точки, |distance_mm − длина геометрии| ≤ 0,5 мм × кусков + 1, '
         f'distance = сумма частей, вершины — из рёбер маршрута (кроме 2 точек привязки); ошибок {len(gerr)}', errors=gerr[:20])
@@ -218,17 +222,17 @@ def main():
             inv.append(f'{qid}: при {r["status"]} есть рёбра или подменён метод')
         if p == 'pedestrian-v1-strict' and r['status'] == 'ok':
             x = res.get(qid.replace('strict', 'exploratory'))
-            att = lambda y: [pp['edge_id'] for pp in y['parts'] if pp['kind'] == 'snap']  # noqa: E731
+            att = lambda y: [pp.get('edge_id') for pp in y.get('parts') or [] if pp.get('kind') == 'snap']  # noqa: E731
             if not x or x['status'] != 'ok':
                 inv.append(f'{qid}: strict ok, а exploratory {x and x["status"]}')
             elif att(x) == att(r) and x['distance_mm'] > r['distance_mm']:
                 inv.append(f'{qid}: при тех же рёбрах привязки exploratory {x["distance_mm"]} > strict {r["distance_mm"]}')
             elif x['distance_mm'] > r['distance_mm']:
                 longer_other_snap.append({'pair': qid, 'strict_mm': r['distance_mm'], 'exploratory_mm': x['distance_mm'],
-                                          'strict_snap_mm': [pp['length_mm'] for pp in r['parts'] if pp['kind'] == 'snap'],
-                                          'exploratory_snap_mm': [pp['length_mm'] for pp in x['parts'] if pp['kind'] == 'snap']})
+                                          'strict_snap_mm': [pp.get('length_mm') for pp in r.get('parts') or [] if pp.get('kind') == 'snap'],
+                                          'exploratory_snap_mm': [pp.get('length_mm') for pp in x.get('parts') or [] if pp.get('kind') == 'snap']})
             strict_ok_pairs += 1
-        if qid.startswith('C|') and p != 'geodesic' and r['status'] == 'ok':
+        if qid.startswith('C|') and p != 'geodesic' and r['status'] == 'ok' and (qid.rsplit('|', 1)[0] + '|geodesic') in res:
             gd = res[qid.rsplit('|', 1)[0] + '|geodesic']['distance_mm']
             if r['distance_mm'] < gd - 1:
                 inv.append(f'{qid}: сеть {r["distance_mm"]} < прямой {gd}')
