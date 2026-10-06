@@ -60,7 +60,7 @@
   "limitations": [
     "Local pilot auth (SQLite accounts, scrypt, cookie sessions); not production IAM/SSO, no MFA or e-mail recovery.",
     "Default HTTP on loopback; network exposure needs a TLS proxy and explicit allowed_hosts.",
-    "Login rate limit is best-effort under parallel attempts; behind a proxy all clients share one IP.",
+    "Login rate limit is strict but keyed by client IP: behind NAT/proxy one client can lock others out for 15 minutes.",
     "SQLite single writer: suited for tens of editors, not thousands of concurrent writes.",
     "Real Astana data: R05 reports 0 confirmed records (egress blocked); demo data is synthetic and labelled."
   ],
