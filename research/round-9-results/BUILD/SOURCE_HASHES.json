@@ -1,0 +1,43 @@
+{
+ "commit": "e82214e295d907e373e6232ae24895f8d9937c9e",
+ "base": "d865dd4a124291e10dd0b7bb1d9eada20d34c268 (code = 3e1302a)",
+ "note": "sha256 at the candidate code commit; data.js / evidence.js / facts.js / inputs/ byte-equal to the base",
+ "inputs": {
+  "codex/research-import-2026-10-05@0ab1667:research/round-9/START_HERE.txt": "77b394b9ebdfbcb045a2b2b2781b8a7aa32443ada2567a3cf642876f2c2d9027",
+  "codex/research-import-2026-10-05@0ab1667:research/round-9/REVIEW.txt": "3e35df187d0522024040a90b4952072c22a6ccc12909b3b79e71e41a931baa98",
+  "codex/research-import-2026-10-05@0ab1667:research/round-9/CORE_SPEC.txt": "13baba9647cafb86ae7fbe9cdab2d5d4df57b90e5daaebfda2e73357e8abad93",
+  "codex/research-import-2026-10-05@0ab1667:research/round-9/BUILD.txt": "5498c46a2acf68b59816502f954539a547040e54f58e228e767c2c7e990d5666",
+  "codex/research-import-2026-10-05@0ab1667:research/round-9/SEND_BUILD.txt": "2e41177667d5998d77ef72084c407cced3a422ff482a1db1efb8e9801f7ef0d3",
+  "codex/research-import-2026-10-05@0ab1667:research/round-9/snapshots.json": "51b89a19b7dc028e70b2f02d5f1e24b906c0d5f554e69943c3f74a722125348a"
+ },
+ "files": {
+  "prototypes/city-evidence/web/index.html": "700c7e7b8401c05be1960455e8d4ad7348f40cc8be6272bf6042a9b66111ba40",
+  "prototypes/city-evidence/web/app.js": "b58973dc78fee17bf2c3849665c0c4b9aa81777f667894519f045957ae099442",
+  "prototypes/city-evidence/web/plan.js": "3c0638e268ed69ad034ac9675228730b036a28a8b14193232cd32cb844945961",
+  "prototypes/city-evidence/web/plan-ui.js": "74d49451639367c3caceb1283032b3b9937338d6b0ec3c7a94d255f88993f64f",
+  "prototypes/city-evidence/web/resilience.js": "d401ff82f7633191a3ca9d35ceb6dad7a511d6f8a7cb359ae7380f62babb7c2c",
+  "prototypes/city-evidence/web/resilience-ui.js": "9afc63a20a0e2a2bfa8cc16a6781cea2bd0cc80d28ebd4b25e5801c606dc6728",
+  "prototypes/city-evidence/web/whatif.js": "46e3b042d2402a46ca34e454139e7744ba9d379866c500a7809546d0dab72a72",
+  "prototypes/city-evidence/web/facts.js": "3994a275ddb8c0cb857478365d94810a945752a96fff10d53d37bc8dc9808c64",
+  "prototypes/city-evidence/web/data.js": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "prototypes/city-evidence/web/evidence.js": "df736e986145da33dee60f692e020486720b72db5b6116af31640cc8693b11b9",
+  "prototypes/city-evidence/serve.py": "8780e6cc7ae30d66fb317cabd129b5498436a114504fafe7a4844783ae81f523",
+  "prototypes/city-evidence/tools/resilience_oracle.py": "95af06376875892189f149c5101c4249bcc1b4d16a21905cfb3261e2bd7c9206",
+  "prototypes/city-evidence/tools/plan_oracle.py": "3bdbae1d3a42471ca2864a6b34286a6a60042549429af7187f5bfb0e2d7b0d6c",
+  "prototypes/city-evidence/tools/bench_resilience.cjs": "bc9201775146b66968e40d6766a7f3f4b171e23feed6a05ee926b6090d9512a5",
+  "prototypes/city-evidence/tools/bench_plan.cjs": "6a3ddc24edbe604c217935f98c4bf13ab2ab44b16a0b8b34732bd067062be83e",
+  "prototypes/city-evidence/tools/check_all.py": "08800a1ad1f8e7d97afbd0ad563d60df598e0274a5778415f162f90d620a80c1",
+  "prototypes/city-evidence/tests/expected_resilience.json": "6517fb8ba6a7e3da8661f47b1df0a5d5f9acb453a64501fb1645780acee9be68",
+  "prototypes/city-evidence/tests/resilience.cjs": "a3dd6f905c61ec211f29ac86fd6997826842a063d1652d68c5e2be71d250c229",
+  "prototypes/city-evidence/tests/resilience_smoke.cjs": "4286a702686fd2376787de460959b715e5802d42d745c78786863e8f7695275e",
+  "prototypes/city-evidence/tests/plan_keyboard.cjs": "49994efa55eec52d4155400ea28ca6e76261c609ca00b43bb9745e433248d4b7",
+  "prototypes/city-evidence/tests/test_serve.py": "3c6c4da77ad0ca9b6f6411be62ee12e06523058457c859d43bbd422605649ae1",
+  "prototypes/city-evidence/tests/test_resilience_oracle.py": "6d6131044685d97a0733445f6236788650e061b9fc1753dfdbd827b8748cb65c",
+  "prototypes/city-evidence/tests/plan.cjs": "f2b24ad270f0003a8fa3f36b4fee9c8f0c34e73da1a40dbe141f40173580978f",
+  "prototypes/city-evidence/tests/plan_smoke.cjs": "a5ebb9fb0deb14f26094eff6cbc7c52fee5902464a024c42c7d01d5ac71b3df5",
+  "prototypes/city-evidence/tests/whatif.cjs": "881cc0406490b51d57efb473b9af5ba06420e75c391f858411aeb757f35ad3e0",
+  "prototypes/city-evidence/tests/whatif_smoke.cjs": "2fa30cead34f6e27d115aebafb0dba26a90bbce746bd8f28c33bba16068e68cb",
+  "prototypes/city-evidence/tests/smoke.cjs": "db947b46a5feaf91b28626442d99a28cdcc642ca6e9041599dc666deb2c970b2",
+  "prototypes/city-evidence/README.md": "adc587c6e18eb01ce456ec3ae598a27eaf4c83a552531ba4ddddb6a93ce06113"
+ }
+}

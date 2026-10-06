@@ -1,0 +1,17 @@
+20 passed, 0 skipped, 0 failed
+19 passed, 1 skipped, 0 failed
+plan=0 164 0
+whatif=0 71 0
+resilience=0 112 0
+conformance=0 44 0
+smoke=0 24 0
+whatif_smoke=0 32 0
+plan_smoke=0 52 0
+plan_keyboard=0 16 0
+resilience_smoke=0 40 0
+bench_res=0
+bench_plan=0
+{"K06":{"pass":96,"fail":0,"info":0},"K10":{"pass":288,"fail":0,"info":4}}
+25/27 agree
+e82214e295d907e373e6232ae24895f8d9937c9e
+imports-checked

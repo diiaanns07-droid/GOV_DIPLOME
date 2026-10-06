@@ -1,5 +1,8 @@
 # BUILD раунд 9 — STATUS
 
+**Итог: все четыре этапа выполнены. Проверенный кандидат (код): `e82214e295d907e373e6232ae24895f8d9937c9e`.**
+Коммиты кода: e990f01 (этап 1), 7077ff7 (этап 2), 5e8c417 (этап 3), 7687c43 (бенчмарк), e82214e (исправление гонки ввода, этап 4); затем документальные коммиты.
+
 Ветка `claude/beautiful-clarke-sbzomj`; стартовая база `d865dd4` (код = `3e1302a`); входы `codex/research-import-2026-10-05 @ 0ab1667`
 (`research/round-9/START_HERE, REVIEW, CORE_SPEC, BUILD, snapshots.json`). Пины чужих пакетов — по `snapshots.json`.
 
@@ -51,5 +54,33 @@
 check_all 20/20; plan_keyboard 14; plan_smoke 52; whatif_smoke 32; smoke 24.
 Найдено и исправлено своим тестом: при смене города хук срабатывал до смены города, и вторая перерисовка стирала сообщение о сбросе.
 
-## Дальше
-Этап 4 — бенчмарк 12×25×8, чистое извлечение точного SHA, независимые фикстуры на новом коде, DEMO_GUIDE (7 минут), COMPLETION_MATRIX, SOURCE_HASHES.
+## Этап 4 — проверка и передача: ГОТОВ (код `e82214e`)
+- Первый чистый прогон (7687c43) выявил гонку: «ввести значение → сразу «Найти»» запускал поиск со старым значением, `plan_smoke` FAIL (exit 2).
+  Не замаскировано: исправлено (`defer/flush` во всех действиях v2 и устойчивости), добавлены 2 теста, `plan_smoke` 3 прогона подряд 52/52 (ISSUE_LOG №10).
+- Чистый worktree точного **e82214e** (Linux x64, 4 × Xeon 2.8 GHz, Node v22.22.0, Chromium 141 headless, file://) — `results/SUMMARY.txt`:
+
+| команда | результат |
+|---|---|
+| `python3 tools/check_all.py` (venv shapely/pyproj) | 20 passed, 0 skipped, 0 failed (`results/check_all.json`) |
+| то же системным python3 без shapely | 19 passed, 1 skipped (пересборка evidence.js), 0 failed |
+| `node tests/plan.cjs` · `whatif.cjs` · `resilience.cjs` · `conformance.cjs` | 164 · 71 · 112 · 44 — все PASS |
+| `smoke.cjs` · `whatif_smoke.cjs` · `plan_smoke.cjs` | 24 · 32 · 52 — PASS |
+| `plan_keyboard.cjs` · `resilience_smoke.cjs` (новые) | 16 · 40 — PASS |
+| независимые r8: K06 gold / K10 packs | 96/96 · 288 PASS + 4 INFO (намеренные различия) |
+| независимые r7: K01/K11 | 25/27 (2 намеренных различия, как в r8) |
+| `tools/bench_resilience.cjs` · `tools/bench_plan.cjs` | выполнены: `BENCHMARK_resilience.json`, `BENCHMARK_plan.json` |
+| независимые фикстуры r9 | NOT_RUN — не закреплены в snapshots.json раунда 9 |
+| Windows / `run-demo.bat` / экранный диктор | NOT_RUN (модель реестра MIME — не Windows) |
+
+- Бенчмарк 12×25×8 (7 случаев + base), только эта машина: Node медиана Шымкент 16,8 мс / Астана 10,3 мс (4096 наборов, 1586 допустимых);
+  Chromium через реальный UI ≈ 86 / 83 мс с отрисовкой, самый длинный разрыв event loop 13 мс, задач > 50 мс нет; отмена 4–7 мс, после отмены статус
+  «cancelled» сохраняется; отказ при 13 кандидатах < 0,4 мс до предвычислений.
+- Все 9 скриптов index.html на месте; data.js / evidence.js / facts.js / inputs/ байтово равны базе d865dd4; изменения только в назначенных путях.
+- Документы: `DEMO_GUIDE.txt` (7 минут), `COMPLETION_MATRIX.json` (31 требование → код → тест → статус), `SOURCE_HASHES.json`,
+  `INTEGRATED_PACKAGES.json` (что реально интегрировано/запущено, а что только прочитано), `ISSUE_LOG.md` (11 пунктов + политика импорта), `ADAPTER_API.md`.
+
+## Ограничения
+- Анализ допущений о данных, не прогноз: нет вероятностей, «риска», населения, вместимости, пешего времени, реальных смет.
+- Устойчивость — до 12 кандидатов и 7 случаев; v2 — до 16 кандидатов. Ничего не отбрасывается автоматически.
+- Скорость замерена только здесь. Windows, экранный диктор и телефоны не проверялись.
+- Merge в main и deploy не выполнялись.

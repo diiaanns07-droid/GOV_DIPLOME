@@ -1,0 +1,40 @@
+PASS resilience card hidden in v1 mode
+PASS v2 mode: card shown with the 'не подтверждение закрытия' notice
+PASS keyboard: «Добавить случай» → focus on the new case label
+PASS label typed by keyboard and applied; focus moved on
+PASS records list shows real source IDs, names, source and QA
+PASS 3 records excluded with Space; focus kept on the checkbox
+PASS source data unchanged (records count, table rows)
+PASS duplicate exclusion sets shown as such
+PASS delete case by keyboard: removed, focus kept in the card
+PASS comparison done: three plan cards + per-case table (3 rows)
+PASS UI result = direct optimizeResilience (nominal, robust, price, digest)
+PASS price of robustness shown (or reason)
+PASS worst cases marked ▲ in the table
+PASS search does not change the manual plan
+PASS apply robust by keyboard: manual := robust, result still valid
+PASS restore manual plan
+PASS explanation: template, conditional exclusions, no probabilities
+PASS export: city-resilience-v1, input only (plan + 2 cases), plan snapshot kept
+PASS HTML report: no scripts, exclusions + provenance + versions + limits
+PASS cancel: status cancelled, no result shown later
+PASS editing a case during the search: answer discarded (stale)
+PASS changing the v2 budget invalidates the comparison
+PASS import nan.json rejected, state unchanged
+PASS import dup.json rejected, state unchanged
+PASS import forged.json rejected, state unchanged
+PASS import foreign.json rejected, state unchanged
+PASS import candidate_as_source.json rejected, state unchanged
+PASS import base_id.json rejected, state unchanged
+PASS import v2.json rejected, state unchanged
+PASS import big.json rejected, state unchanged
+PASS v2 file in the resilience import → hint to open it in v2 mode
+PASS city switch: cases reset with a reason, no IDs carried over
+PASS Astana: comparison computed on the Astana slice (65 records untouched)
+PASS import round trip: city switched back, plan and cases equal the export
+PASS category change: cases reset (record IDs belong to another category)
+PASS 13 candidates: limit notice, run disabled, candidates kept
+PASS v1 mode intact: resilience card hidden, v1 card shown
+PASS 390 px: no page or card horizontal overflow
+PASS no console/page errors
+PASS no network requests

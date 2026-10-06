@@ -1,0 +1,165 @@
+{
+ "url": "web/index.html (file://)",
+ "results": [
+  {
+   "name": "resilience card hidden in v1 mode",
+   "ok": true
+  },
+  {
+   "name": "v2 mode: card shown with the 'не подтверждение закрытия' notice",
+   "ok": true
+  },
+  {
+   "name": "keyboard: «Добавить случай» → focus on the new case label",
+   "ok": true
+  },
+  {
+   "name": "label typed by keyboard and applied; focus moved on",
+   "ok": true
+  },
+  {
+   "name": "records list shows real source IDs, names, source and QA",
+   "ok": true
+  },
+  {
+   "name": "3 records excluded with Space; focus kept on the checkbox",
+   "ok": true
+  },
+  {
+   "name": "source data unchanged (records count, table rows)",
+   "ok": true
+  },
+  {
+   "name": "duplicate exclusion sets shown as such",
+   "ok": true
+  },
+  {
+   "name": "delete case by keyboard: removed, focus kept in the card",
+   "ok": true
+  },
+  {
+   "name": "comparison done: three plan cards + per-case table (3 rows)",
+   "ok": true
+  },
+  {
+   "name": "UI result = direct optimizeResilience (nominal, robust, price, digest)",
+   "ok": true
+  },
+  {
+   "name": "price of robustness shown (or reason)",
+   "ok": true
+  },
+  {
+   "name": "worst cases marked ▲ in the table",
+   "ok": true
+  },
+  {
+   "name": "search does not change the manual plan",
+   "ok": true
+  },
+  {
+   "name": "apply robust by keyboard: manual := robust, result still valid",
+   "ok": true
+  },
+  {
+   "name": "restore manual plan",
+   "ok": true
+  },
+  {
+   "name": "explanation: template, conditional exclusions, no probabilities",
+   "ok": true
+  },
+  {
+   "name": "export: city-resilience-v1, input only (plan + 2 cases), plan snapshot kept",
+   "ok": true
+  },
+  {
+   "name": "HTML report: no scripts, exclusions + provenance + versions + limits",
+   "ok": true
+  },
+  {
+   "name": "cancel: status cancelled, no result shown later",
+   "ok": true
+  },
+  {
+   "name": "editing a case during the search: answer discarded (stale)",
+   "ok": true
+  },
+  {
+   "name": "changing the v2 budget invalidates the comparison",
+   "ok": true
+  },
+  {
+   "name": "import nan.json rejected, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "import dup.json rejected, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "import forged.json rejected, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "import foreign.json rejected, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "import candidate_as_source.json rejected, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "import base_id.json rejected, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "import v2.json rejected, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "import big.json rejected, state unchanged",
+   "ok": true
+  },
+  {
+   "name": "v2 file in the resilience import → hint to open it in v2 mode",
+   "ok": true
+  },
+  {
+   "name": "city switch: cases reset with a reason, no IDs carried over",
+   "ok": true
+  },
+  {
+   "name": "Astana: comparison computed on the Astana slice (65 records untouched)",
+   "ok": true
+  },
+  {
+   "name": "import round trip: city switched back, plan and cases equal the export",
+   "ok": true
+  },
+  {
+   "name": "category change: cases reset (record IDs belong to another category)",
+   "ok": true
+  },
+  {
+   "name": "13 candidates: limit notice, run disabled, candidates kept",
+   "ok": true
+  },
+  {
+   "name": "v1 mode intact: resilience card hidden, v1 card shown",
+   "ok": true
+  },
+  {
+   "name": "390 px: no page or card horizontal overflow",
+   "ok": true
+  },
+  {
+   "name": "no console/page errors",
+   "ok": true
+  },
+  {
+   "name": "no network requests",
+   "ok": true
+  }
+ ]
+}

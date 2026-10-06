@@ -1,0 +1,23 @@
+{
+ "note": "what was actually integrated or run against THIS build in round 9 (not the number of reports read)",
+ "integrated_into_code": [
+  {"slot": "K07", "sha": "ab71b735e5300ec4bd1d267b01b9d7b67603e6b0", "item": "patch/build_d865dd4_planner_keyboard_390.patch", "how": "read, git apply (sha256 14335f10…), extended by BUILD", "files": ["web/app.js", "web/plan-ui.js", "web/index.html"]},
+  {"slot": "K12", "sha": "c7dfafb9a756b7315c5fa62e6dc3dd56f897650e", "item": "FIX_PROPOSALS F1/F2", "how": "re-implemented by BUILD (validation in every public entry; version-first in v1), patch not applied verbatim", "files": ["web/plan.js", "web/whatif.js"]},
+  {"slot": "K11", "sha": "50b15bdd3987beb78878f521be3dedd02671eca8", "item": "proposed_serve_mime.patch idea", "how": "re-implemented by BUILD with busy-port handling", "files": ["serve.py"]}
+ ],
+ "run_against_build_via_BUILD_adapters": [
+  {"slot": "K06", "sha": "58cf89973cf3578620e016329139697becaf860f", "data": "fixtures/gold_cases.json (96)", "adapter": "research/round-9-results/BUILD/adapters/r8_independent.cjs", "code_executed": false},
+  {"slot": "K10", "sha": "c8df74b500dd1d1c1ea39496307062e6c2db1ba3", "data": "packs/*.json (37 packs, 45 invalid files each in 2 packs)", "adapter": "research/round-9-results/BUILD/adapters/r8_independent.cjs", "code_executed": false},
+  {"slot": "K01", "sha": "42e68ef3e6c7ea8ddf31c25a62b75f7c0d26bdad", "data": "r7 v1 fixtures", "adapter": "research/round-8-results/BUILD/adapters/r7_independent_fixtures.cjs", "code_executed": false},
+  {"slot": "K11", "sha": "aa9ce4f7f90101b86342654a867ad619fd43d04e", "data": "r7 v1 fixtures", "adapter": "research/round-8-results/BUILD/adapters/r7_independent_fixtures.cjs", "code_executed": false}
+ ],
+ "read_not_integrated": [
+  {"slot": "K07", "item": "own planner UI modules (plan_calc.js etc.)", "reason": "BUILD keeps its tested engine; no second implementation"},
+  {"slot": "K11", "item": "Web Worker runner", "reason": "file:// pages cannot start workers; chunked event-loop search kept (allowed by CORE_SPEC)"},
+  {"slot": "K12", "item": "patch verbatim", "reason": "r9 CORE_SPEC asks for full validation, which supersedes the 3-line guard"}
+ ],
+ "not_run": [
+  {"what": "round-9 results of other agents", "reason": "not pinned in research/round-9/snapshots.json at BUILD start"},
+  {"what": "K02, K03, K05, K08, K09 r8 packages", "reason": "tested old a5b5e2d / own modules; REVIEW: their PASS is not product PASS"}
+ ]
+}

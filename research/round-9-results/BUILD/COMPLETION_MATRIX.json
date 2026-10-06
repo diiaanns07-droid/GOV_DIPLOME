@@ -1,0 +1,196 @@
+{
+ "build": "round 9",
+ "candidate_code_sha": "e82214e295d907e373e6232ae24895f8d9937c9e",
+ "branch": "claude/beautiful-clarke-sbzomj",
+ "base": "d865dd4a124291e10dd0b7bb1d9eada20d34c268",
+ "spec": "codex/research-import-2026-10-05 @ 0ab1667: research/round-9/CORE_SPEC.txt, BUILD.txt",
+ "status_rule": "PASS = run on the clean worktree of the candidate SHA; NOT_RUN is named, never counted as PASS",
+ "requirements": [
+  {
+   "requirement": "S1 r8 K12: API bounds before search",
+   "code": "prototypes/city-evidence/web/plan.js (public entries validate)",
+   "tests": "tests/plan.cjs 4b (17/20/40 candidates, mutation)",
+   "status": "PASS"
+  },
+  {
+   "requirement": "S1 r8 K12 F2: v1 import names a v2 file",
+   "code": "prototypes/city-evidence/web/whatif.js",
+   "tests": "tests/plan.cjs",
+   "status": "PASS"
+  },
+  {
+   "requirement": "S1 r8 K07 K2: Tab stops while placing",
+   "code": "prototypes/city-evidence/web/app.js placingTab",
+   "tests": "tests/plan_keyboard.cjs K2 ×3",
+   "status": "PASS"
+  },
+  {
+   "requirement": "S1 r8 K07 K3/K4/K5: focus on input / delete / search",
+   "code": "prototypes/city-evidence/web/plan-ui.js",
+   "tests": "tests/plan_keyboard.cjs K3–K5",
+   "status": "PASS"
+  },
+  {
+   "requirement": "S1 r8 K07 N2: 390 px tables (accessibility, no hidden columns)",
+   "code": "prototypes/city-evidence/web/index.html",
+   "tests": "tests/plan_keyboard.cjs N2 + card overflow",
+   "status": "PASS"
+  },
+  {
+   "requirement": "S1 r8 K11: explicit MIME on a modelled wrong registry",
+   "code": "prototypes/city-evidence/serve.py",
+   "tests": "tests/test_serve.py (model)",
+   "status": "PASS (model only; real Windows NOT_RUN)"
+  },
+  {
+   "requirement": "S1 busy port message, no killing other process",
+   "code": "prototypes/city-evidence/serve.py",
+   "tests": "tests/test_serve.py busy-port",
+   "status": "PASS (Linux); Windows NOT_RUN"
+  },
+  {
+   "requirement": "S1 K06 r8 gold through current plan.js",
+   "code": "research/round-9-results/BUILD/adapters/r8_independent.cjs",
+   "tests": "96/96",
+   "status": "PASS"
+  },
+  {
+   "requirement": "S1 K10 r8 packs through current plan.js",
+   "code": "same adapter",
+   "tests": "288 PASS + 4 INFO (intentional policy differences)",
+   "status": "PASS"
+  },
+  {
+   "requirement": "S1 ISSUE_LOG with repro / SHA / test",
+   "code": "research/round-9-results/BUILD/ISSUE_LOG.md",
+   "tests": "—",
+   "status": "DONE"
+  },
+  {
+   "requirement": "S2 strict envelope city-resilience-v1, ≤12 candidates, 1..7 cases + base",
+   "code": "prototypes/city-evidence/web/resilience.js validateResilience",
+   "tests": "tests/resilience.cjs (30+ rejections)",
+   "status": "PASS"
+  },
+  {
+   "requirement": "S2 case-specific baseline on copies; context immutable",
+   "code": "prototypes/city-evidence/web/resilience.js caseContext/precomputeCases",
+   "tests": "tests/resilience.cjs section 3",
+   "status": "PASS"
+  },
+  {
+   "requirement": "S2 exact robust objective worst-lex-v1; nominal = v2 mean on base",
+   "code": "prototypes/city-evidence/web/resilience.js createSearchInternal",
+   "tests": "tests/resilience.cjs vs tools/resilience_oracle.py ×13; nominal = plan.js mean",
+   "status": "PASS"
+  },
+  {
+   "requirement": "S2 price of robustness, null with reason",
+   "code": "prototypes/city-evidence/web/resilience.js",
+   "tests": "tests/resilience.cjs semantics",
+   "status": "PASS"
+  },
+  {
+   "requirement": "S2 digests (problem / scenario / exclusions), order independent",
+   "code": "prototypes/city-evidence/web/resilience.js",
+   "tests": "tests/resilience.cjs section 5",
+   "status": "PASS"
+  },
+  {
+   "requirement": "S2 cancel / incomplete never optimal; chunked = one-shot",
+   "code": "prototypes/city-evidence/web/resilience.js",
+   "tests": "tests/resilience.cjs section 6",
+   "status": "PASS"
+  },
+  {
+   "requirement": "S2 independent Python oracle (no shared algorithm code)",
+   "code": "prototypes/city-evidence/tools/resilience_oracle.py",
+   "tests": "tests/test_resilience_oracle.py + --check in check_all",
+   "status": "PASS"
+  },
+  {
+   "requirement": "S2 identical plans, unknown baseline, duplicate cases, required/excluded, IDs/order, limit before precompute",
+   "code": "—",
+   "tests": "tests/resilience.cjs",
+   "status": "PASS"
+  },
+  {
+   "requirement": "S3 case panel: real record names / IDs / source / QA, explicit exclusions",
+   "code": "prototypes/city-evidence/web/resilience-ui.js",
+   "tests": "tests/resilience_smoke.cjs",
+   "status": "PASS"
+  },
+  {
+   "requirement": "S3 comparison of 3 plans, price, per-case table, worst cases, reasons",
+   "code": "prototypes/city-evidence/web/resilience-ui.js",
+   "tests": "tests/resilience_smoke.cjs",
+   "status": "PASS"
+  },
+  {
+   "requirement": "S3 manual plan changes only by Apply; restore",
+   "code": "prototypes/city-evidence/web/resilience-ui.js",
+   "tests": "tests/resilience_smoke.cjs",
+   "status": "PASS"
+  },
+  {
+   "requirement": "S3 JSON export (input only) / strict atomic import; v1/v2 in own modes; snapshot kept",
+   "code": "prototypes/city-evidence/web/resilience.js + resilience-ui.js",
+   "tests": "tests/resilience.cjs + resilience_smoke.cjs (8 bad files)",
+   "status": "PASS"
+  },
+  {
+   "requirement": "S3 HTML report recomputed, escaped, no scripts",
+   "code": "prototypes/city-evidence/web/resilience.js reportHtml",
+   "tests": "tests/resilience.cjs 9 + resilience_smoke.cjs",
+   "status": "PASS"
+  },
+  {
+   "requirement": "S3 keyboard / focus, 390 px, cancel, edit during search, city switch, untrusted import",
+   "code": "prototypes/city-evidence/web/resilience-ui.js",
+   "tests": "tests/resilience_smoke.cjs",
+   "status": "PASS"
+  },
+  {
+   "requirement": "S4 browser path both cities; v1/v2 regressions",
+   "code": "—",
+   "tests": "resilience_smoke, plan_smoke, plan_keyboard, whatif_smoke, smoke",
+   "status": "PASS"
+  },
+  {
+   "requirement": "S4 independent r8 fixtures on the new code; r7 fixtures",
+   "code": "adapters",
+   "tests": "K06 96/96, K10 288+4 INFO, r7 K01/K11 25/27 (2 intentional)",
+   "status": "PASS"
+  },
+  {
+   "requirement": "S4 independent r9 fixtures",
+   "code": "—",
+   "tests": "none pinned in round-9 snapshots.json",
+   "status": "NOT_RUN"
+  },
+  {
+   "requirement": "S4 benchmark 12×25×8 both slices (time, event loop, cancel, env)",
+   "code": "prototypes/city-evidence/tools/bench_resilience.cjs",
+   "tests": "BENCHMARK_resilience.json",
+   "status": "DONE (this machine only)"
+  },
+  {
+   "requirement": "S4 clean checkout of exact code SHA",
+   "code": "worktree",
+   "tests": "results/*.txt, check_all.json",
+   "status": "PASS"
+  },
+  {
+   "requirement": "S4 Windows",
+   "code": "—",
+   "tests": "—",
+   "status": "NOT_RUN"
+  },
+  {
+   "requirement": "S4 screen reader",
+   "code": "—",
+   "tests": "—",
+   "status": "NOT_RUN"
+  }
+ ]
+}

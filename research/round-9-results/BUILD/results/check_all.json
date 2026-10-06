@@ -1,0 +1,130 @@
+{
+ "when_utc": "2026-10-06T05:30:52+00:00",
+ "python": "3.11.15",
+ "platform": "Linux-6.18.44-fc-v70-x86_64-with-glibc2.39",
+ "passed": 20,
+ "skipped": 0,
+ "failed": 0,
+ "results": [
+  {
+   "step": "inputs",
+   "check": "42 + 82 copied inputs match recorded sha256",
+   "status": "pass",
+   "detail": ""
+  },
+  {
+   "step": "inputs",
+   "check": "contract k05-obs-v1.2+k12r4+k05r5: originals and patched copy match manifest (2 modified)",
+   "status": "pass",
+   "detail": ""
+  },
+  {
+   "step": "inputs",
+   "check": "K03 v2.1: original byte-exact, patched copy and all its files match MANIFEST_K03.json",
+   "status": "pass",
+   "detail": ""
+  },
+  {
+   "step": "inputs",
+   "check": "K02 v4: original byte-exact, adapted copy matches manifest",
+   "status": "pass",
+   "detail": ""
+  },
+  {
+   "step": "inputs",
+   "check": "web/attribution equals K08 r4 originals",
+   "status": "pass",
+   "detail": ""
+  },
+  {
+   "step": "inputs",
+   "check": "K10 package_manifest.json anchored by source_manifest sha256 (K01 #2)",
+   "status": "pass",
+   "detail": ""
+  },
+  {
+   "step": "package",
+   "check": "K10 offline_check.py (subprocess) exit 0, ok=true",
+   "status": "pass",
+   "detail": ""
+  },
+  {
+   "step": "build",
+   "check": "web/data.js == rebuild",
+   "status": "pass",
+   "detail": ""
+  },
+  {
+   "step": "build",
+   "check": "committed evidence.js passes k05-obs-v1.2+k12r4+k05r5 (strict JSON, records, dataset)",
+   "status": "pass",
+   "detail": ""
+  },
+  {
+   "step": "build",
+   "check": "web/evidence.js == rebuild (K03 v2 assign + K05 recount + QA)",
+   "status": "pass",
+   "detail": ""
+  },
+  {
+   "step": "fresh",
+   "check": "evidence.js boundary_binding matches K03 code/layers and data.js places",
+   "status": "pass",
+   "detail": ""
+  },
+  {
+   "step": "facts",
+   "check": "Python K02 reference reproduces 7 expected explanations",
+   "status": "pass",
+   "detail": ""
+  },
+  {
+   "step": "facts",
+   "check": "JS facts.js conformance (44 checks)",
+   "status": "pass",
+   "detail": ""
+  },
+  {
+   "step": "whatif",
+   "check": "Python reference reproduces tests/expected_whatif.json",
+   "status": "pass",
+   "detail": "OK tests/expected_whatif.json"
+  },
+  {
+   "step": "whatif",
+   "check": "JS whatif.js = Python reference + city-whatif-v1 rules (71 checks)",
+   "status": "pass",
+   "detail": ""
+  },
+  {
+   "step": "plan",
+   "check": "Python oracle reproduces tests/expected_plans.json",
+   "status": "pass",
+   "detail": "OK tests/expected_plans.json"
+  },
+  {
+   "step": "plan",
+   "check": "JS plan.js = Python oracle + city-plan-v2 rules (164 checks)",
+   "status": "pass",
+   "detail": ""
+  },
+  {
+   "step": "resilience",
+   "check": "Python oracle reproduces tests/expected_resilience.json",
+   "status": "pass",
+   "detail": "OK tests/expected_resilience.json"
+  },
+  {
+   "step": "resilience",
+   "check": "JS resilience.js = Python oracle + city-resilience-v1 rules (112 checks)",
+   "status": "pass",
+   "detail": ""
+  },
+  {
+   "step": "tests",
+   "check": "python -m unittest discover -s tests (Ran 50 tests in 3.857s; OK)",
+   "status": "pass",
+   "detail": ""
+  }
+ ]
+}

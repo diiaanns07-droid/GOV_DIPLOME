@@ -1,0 +1,75 @@
+{
+ "generated_utc": "2026-10-06T05:32:22.981Z",
+ "note": "this machine only; synthetic 12×25×8 inputs on the real slices; not a promise for other devices",
+ "environment": {
+  "os": "Linux 6.18.44-fc-v70 x64",
+  "cpus": "4 × Intel(R) Xeon(R) Processor @ 2.80GHz",
+  "node": "v22.22.0"
+ },
+ "node": [
+  {
+   "city": "shymkent",
+   "candidates": 12,
+   "points": 25,
+   "cases": 8,
+   "status": "optimal",
+   "subsets": 4096,
+   "feasible": 1586,
+   "median_ms": 16.79,
+   "max_ms": 29.35,
+   "same_plan": false,
+   "price_of_robustness_m": 15.84347111111111,
+   "refuse_13_candidates": {
+    "code": "too_many_candidates",
+    "ms": 0.366
+   }
+  },
+  {
+   "city": "astana",
+   "candidates": 12,
+   "points": 25,
+   "cases": 8,
+   "status": "optimal",
+   "subsets": 4096,
+   "feasible": 1586,
+   "median_ms": 10.31,
+   "max_ms": 12.28,
+   "same_plan": true,
+   "price_of_robustness_m": 0,
+   "refuse_13_candidates": {
+    "code": "too_many_candidates",
+    "ms": 0.151
+   }
+  }
+ ],
+ "browser": {
+  "status": "RUN",
+  "runs": [
+   {
+    "city": "shymkent",
+    "status": "cancelled",
+    "total_ms_incl_render": 86.3,
+    "longest_event_loop_gap_ms": 13.4,
+    "long_tasks_over_50ms": 0,
+    "longest_task_ms": 0,
+    "cancel_call_ms": 6.7,
+    "examined_before_cancel": 512,
+    "after_cancel_status": "cancelled",
+    "js_heap_mb": 10.1
+   },
+   {
+    "city": "astana",
+    "status": "cancelled",
+    "total_ms_incl_render": 82.7,
+    "longest_event_loop_gap_ms": 13.2,
+    "long_tasks_over_50ms": 0,
+    "longest_task_ms": 0,
+    "cancel_call_ms": 4.5,
+    "examined_before_cancel": 512,
+    "after_cancel_status": "cancelled",
+    "js_heap_mb": 9.5
+   }
+  ],
+  "browser": "Chromium 141.0.7390.37 (Playwright, headless)"
+ }
+}

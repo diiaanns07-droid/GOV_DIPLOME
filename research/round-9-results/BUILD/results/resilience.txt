@@ -1,0 +1,113 @@
+PASS manual plan per case = oracle: robust_differs_from_nominal
+PASS optimizeResilience = oracle: robust_differs_from_nominal
+PASS input order independent: robust_differs_from_nominal
+PASS nominal = plan.js v2 mean optimum: robust_differs_from_nominal
+PASS manual plan per case = oracle: identical_plans
+PASS optimizeResilience = oracle: identical_plans
+PASS input order independent: identical_plans
+PASS nominal = plan.js v2 mean optimum: identical_plans
+PASS manual plan per case = oracle: all_sources_off_unknown
+PASS optimizeResilience = oracle: all_sources_off_unknown
+PASS input order independent: all_sources_off_unknown
+PASS nominal = plan.js v2 mean optimum: all_sources_off_unknown
+PASS manual plan per case = oracle: unknown_vs_candidate
+PASS optimizeResilience = oracle: unknown_vs_candidate
+PASS input order independent: unknown_vs_candidate
+PASS nominal = plan.js v2 mean optimum: unknown_vs_candidate
+PASS manual plan per case = oracle: duplicate_cases
+PASS optimizeResilience = oracle: duplicate_cases
+PASS input order independent: duplicate_cases
+PASS nominal = plan.js v2 mean optimum: duplicate_cases
+PASS manual plan per case = oracle: required_excluded
+PASS optimizeResilience = oracle: required_excluded
+PASS input order independent: required_excluded
+PASS nominal = plan.js v2 mean optimum: required_excluded
+PASS manual plan per case = oracle: required_over_budget
+PASS optimizeResilience = oracle: required_over_budget
+PASS input order independent: required_over_budget
+PASS manual plan per case = oracle: zero_budget
+PASS optimizeResilience = oracle: zero_budget
+PASS input order independent: zero_budget
+PASS nominal = plan.js v2 mean optimum: zero_budget
+PASS manual plan per case = oracle: no_candidates
+PASS optimizeResilience = oracle: no_candidates
+PASS input order independent: no_candidates
+PASS nominal = plan.js v2 mean optimum: no_candidates
+PASS manual plan per case = oracle: astana_school_8x12x5
+PASS optimizeResilience = oracle: astana_school_8x12x5
+PASS input order independent: astana_school_8x12x5
+PASS nominal = plan.js v2 mean optimum: astana_school_8x12x5
+PASS manual plan per case = oracle: astana_outpatient_clinic_8x12x5
+PASS optimizeResilience = oracle: astana_outpatient_clinic_8x12x5
+PASS input order independent: astana_outpatient_clinic_8x12x5
+PASS nominal = plan.js v2 mean optimum: astana_outpatient_clinic_8x12x5
+PASS manual plan per case = oracle: shymkent_school_8x12x5
+PASS optimizeResilience = oracle: shymkent_school_8x12x5
+PASS input order independent: shymkent_school_8x12x5
+PASS nominal = plan.js v2 mean optimum: shymkent_school_8x12x5
+PASS manual plan per case = oracle: shymkent_outpatient_clinic_8x12x5
+PASS optimizeResilience = oracle: shymkent_outpatient_clinic_8x12x5
+PASS input order independent: shymkent_outpatient_clinic_8x12x5
+PASS nominal = plan.js v2 mean optimum: shymkent_outpatient_clinic_8x12x5
+PASS robust differs from nominal; price of robustness > 0 and equals base mean difference
+PASS robust worst vector ≤ nominal worst vector (lexicographic)
+PASS identical plans: same_plan, price exactly 0 (no invented advantage)
+PASS all sources off, no candidate: distances null (not 0), worst case named
+PASS price null with reason when a base mean is unknown OR equal plans → 0
+PASS duplicate cases: shown as a group, result equals the single-case result
+PASS infeasible required: status infeasible, reason, price null, constraints not dropped
+PASS manual plan violating required is flagged infeasible
+PASS context not mutated by cases (records, snapshot, frozen)
+PASS case context is a filtered copy
+PASS source_snapshot of the result is the plan's own (exclusions have a separate digest)
+PASS rejects 13 candidates (limit 12 for resilience) (too_many_candidates)
+PASS 13 candidates refused fast, before precomputation
+PASS v2 still accepts 16 candidates (unchanged)
+PASS rejects 0 cases (bad_cases)
+PASS rejects 8 user cases (bad_cases)
+PASS 7 user cases accepted (+ base = 8)
+PASS rejects id base (reserved) (reserved_id)
+PASS rejects duplicate case id (duplicate_id)
+PASS rejects case id with markup (bad_id)
+PASS rejects empty label (bad_label)
+PASS rejects label 121 code points (bad_label)
+PASS rejects label with control char (bad_label)
+PASS Kazakh label of 120 code points accepted
+PASS rejects no exclusions (bad_exclusions)
+PASS rejects candidate ID instead of source ID (candidate_not_source)
+PASS rejects unknown source ID (unknown_source)
+PASS rejects source of another category (unknown_source)
+PASS rejects duplicate exclusion (duplicate_id)
+PASS rejects more exclusions than records (bad_exclusions)
+PASS rejects extra field in case (bad_shape)
+PASS rejects derived results in envelope (unknown_field)
+PASS rejects derived_results inside plan (derived_not_allowed)
+PASS rejects missing cases (missing_field)
+PASS rejects v2 file (wrong_version)
+PASS rejects unknown version (bad_version)
+PASS rejects foreign snapshot in plan (foreign_snapshot)
+PASS rejects plan with weight 0 (bad_weight)
+PASS public evaluate / search validate unchecked input
+PASS mutating the passed envelope after createResilienceSearch changes nothing
+PASS problem digest independent of case order / exclusion order
+PASS problem digest changes with label / exclusion / plan budget; selection only in scenario digest
+PASS resilience digest differs from the v2 problem digest
+PASS chunked (64 per step) = one-shot; request_id kept
+PASS cancelled: status cancelled, no plans, price null
+PASS unfinished search never 'optimal'
+PASS export = input only (no derived fields), schema city-resilience-v1
+PASS export → import round trip (same envelope, recomputed result identical)
+PASS import rejects NaN (bad_json)
+PASS import rejects 1e999 (bad_json)
+PASS import rejects duplicate key (bad_json)
+PASS import rejects oversize (too_large)
+PASS import rejects v2 plan file (wrong_version)
+PASS import rejects v1 file (wrong_version)
+PASS import rejects unknown city (bad_city)
+PASS import rejects Shymkent plan claiming Astana (foreign_snapshot)
+PASS import rejects forged result field (unknown_field)
+PASS Astana envelope imported in the Astana context
+PASS explanation: template, 'не подтверждение закрытия', no probability/risk claims
+PASS explanation names duplicate cases
+PASS report: no script tag, labels/names escaped, CSP, no external URLs
+all resilience checks passed

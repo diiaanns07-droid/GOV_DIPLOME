@@ -1,0 +1,16 @@
+PASS K2 placement mode: map → v2 card in 4 Tab presses (≤ 30)
+PASS K2 no road / record Tab stops while placing (0)
+PASS K2 outside placement mode roads and records stay keyboard-reachable
+PASS K3 budget + Tab: value applied, focus on «Максимум объектов»
+PASS K3 invalid value + Tab: rejected, focus still moves on
+PASS K4 delete point by keyboard: focus on the neighbouring «Удалить»
+PASS K4 delete last candidate by keyboard: focus on the previous candidate's «Удалить»
+PASS K5 during the search the focus is on «Отменить поиск»
+PASS K5 after the search the focus is on «Найти точные оптимумы»
+PASS apply by keyboard keeps the focus in the card
+PASS typed budget + immediate «Найти»: search uses the new value and is not stale
+PASS typed value + immediate export: value applied first
+PASS N2 390 px: Pareto and sensitivity tables fit the card, no clipped cells
+PASS 390 px: the v2 card itself has no horizontal overflow
+PASS 390 px: no page-level horizontal scroll
+PASS no page errors
