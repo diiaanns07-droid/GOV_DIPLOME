@@ -30,3 +30,16 @@ overpass-api.de — proxy 403 (2026-10-06 15:28–15:35 UTC). Доступен �
 
 Следующий шаг: builder среза (intake → civic-v1 objects.json, стабильные ID, версия среза),
 LICENSE_REGISTER/ATTRIBUTION, synthetic demo slice, импорт-хелпер для R02.
+
+## Checkpoint 2 — PARTIAL
+
+Готово:
+- `tools/build_slice.py` — сборка срезов из intake: `objects.json` (реальные, draft), `historical.json`,
+  `demo_synthetic.json` (slice.demo=true), `evidence_index.json` (claim→источник→выдержка, для редактора),
+  `validation.json` (QA). Без чтения часов; версия среза = хэш содержимого и входов; `--check` сравнивает с диском.
+- `intake/demo/demo_records.json` — 9 синтетических записей (сдвиг срока, план, unknown, событие, завершено,
+  отменено, без геометрии, draft, archived). Геометрия схематичная в районе графа K03, бюджет/организация null.
+- `intake/real/` пуст: реальные источники не получены (egress 403). objects.json содержит 0 записей.
+
+Проверки: `python3 -m pytest tests/civic/R05 -q` → 47 passed; `python3 -I data/civic/astana/tools/build_slice.py --check` → exit 0.
+Следующий шаг: LICENSE_REGISTER.json/ATTRIBUTION.txt, import helper для R02, INTEGRATION.txt.
