@@ -1,0 +1,17 @@
+PASS valid Shymkent v2 file imported 
+PASS city is shymkent after import 
+PASS refused, plan and city unchanged: synthetic/shy_valid_forged_derived.json 
+PASS refused, plan and city unchanged: synthetic/shy_invalid_conflict.json 
+PASS refused, plan and city unchanged: synthetic/shy_invalid_outside_bbox.json 
+PASS refused, plan and city unchanged: synthetic/shy_invalid_nan.json 
+PASS refused, plan and city unchanged: synthetic/shy_invalid_dup_key_via_escape.json 
+PASS refused, plan and city unchanged: synthetic/shy_invalid_too_large.json 
+PASS refused, plan and city unchanged: synthetic/shy_invalid_bad_utf8.json 
+PASS refused, plan and city unchanged: synthetic/ast_invalid_foreign_snapshot.json 
+PASS refused, plan and city unchanged: synthetic/ast_invalid_17_candidates.json 
+PASS refused, plan and city unchanged: v1/astana_v1_from_build_whatif.json 
+PASS valid Astana file switches the city (BUILD policy) 
+PASS then a refused Shymkent file keeps Astana plan 
+PASS no page errors 
+
+15 passed, 0 failed, 0 skipped

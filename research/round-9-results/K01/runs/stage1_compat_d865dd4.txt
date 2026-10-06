@@ -1,0 +1,74 @@
+PASS r8 fixture shy_valid_basic.json
+PASS r8 fixture shy_valid_clinic_constraints.json
+PASS r8 fixture shy_valid_forged_derived.json
+PASS r8 fixture shy_valid_limits.json
+PASS r8 fixture shy_valid_empty_candidates.json
+PASS r8 fixture shy_invalid_foreign_snapshot.json
+PASS r8 fixture shy_invalid_foreign_city.json
+PASS r8 fixture shy_invalid_outside_bbox.json
+PASS r8 fixture shy_invalid_weight_fraction.json
+PASS r8 fixture shy_invalid_cost_zero.json
+PASS r8 fixture shy_invalid_conflict.json
+PASS r8 fixture shy_invalid_unknown_ref.json
+PASS r8 fixture shy_invalid_17_candidates.json
+PASS r8 fixture ast_valid_basic.json
+PASS r8 fixture ast_valid_clinic_constraints.json
+PASS r8 fixture ast_valid_forged_derived.json
+PASS r8 fixture ast_valid_limits.json
+PASS r8 fixture ast_valid_empty_candidates.json
+PASS r8 fixture ast_invalid_foreign_snapshot.json
+PASS r8 fixture ast_invalid_foreign_city.json
+PASS r8 fixture ast_invalid_outside_bbox.json
+PASS r8 fixture ast_invalid_weight_fraction.json
+PASS r8 fixture ast_invalid_cost_zero.json
+PASS r8 fixture ast_invalid_conflict.json
+PASS r8 fixture ast_invalid_unknown_ref.json
+PASS r8 fixture ast_invalid_17_candidates.json
+PASS r8 fixture shy_invalid_26_points.json
+PASS r8 fixture shy_invalid_dup_candidate_id.json
+PASS r8 fixture shy_invalid_kind.json
+PASS r8 fixture shy_invalid_candidate_category.json
+PASS r8 fixture shy_invalid_extra_field.json
+PASS r8 fixture shy_invalid_missing_field.json
+PASS r8 fixture shy_invalid_url_id.json
+PASS r8 fixture shy_invalid_long_id.json
+PASS r8 fixture shy_invalid_bool_weight.json
+PASS r8 fixture ast_invalid_budget.json
+PASS r8 fixture ast_invalid_max_selected.json
+PASS r8 fixture ast_invalid_radius.json
+PASS r8 fixture ast_invalid_v1_schema.json
+PASS r8 fixture shy_valid_unicode_escaped_keys.json
+PASS r8 fixture shy_invalid_dup_key_via_escape.json
+PASS r8 fixture shy_invalid_nan.json
+PASS r8 fixture shy_invalid_1e999.json
+PASS r8 fixture shy_invalid_bad_utf8.json
+PASS r8 fixture shy_invalid_too_large.json
+PASS r8 fixture shy_valid_exactly_256k.json
+PASS v2 roundtrip shymkent: export (with derived) → import gives the same scenario
+PASS v2 shymkent: tampered derived → forged_derived; derived removed → accepted (derived optional)
+PASS v1 shymkent: BUILD whatif export → v1 import ok, v2 import → wrong_version
+PASS v2 roundtrip astana: export (with derived) → import gives the same scenario
+PASS v2 astana: tampered derived → forged_derived; derived removed → accepted (derived optional)
+PASS v1 astana: BUILD whatif export → v1 import ok, v2 import → wrong_version
+PASS foreign snapshot: Astana snapshot in a Shymkent file → foreign_snapshot
+PASS foreign snapshot: metric/version change → foreign_snapshot (snapshot binds metric)
+PASS validatePlanScenario with the other city's ctx → other_city
+PASS ID Cyrillic → accepted
+PASS ID Kazakh letters → accepted
+PASS ID 64 Cyrillic code points (128 bytes) → accepted
+PASS ID 65 code points → bad_id
+PASS ID NFD й (и + U+0306) → bad_id
+PASS ID NFC й → accepted
+PASS ID zero-width space → bad_id
+PASS ID emoji → bad_id
+PASS ID lone surrogate (escaped) → bad_id
+PASS ID space → bad_id
+PASS ID slash/URL → bad_id
+PASS ID leading underscore → accepted
+PASS ID empty → bad_id
+PASS ID Arabic-Indic digits → accepted
+PASS BOM-prefixed UTF-8 file accepted
+PASS size: exactly 256 KiB (UTF-8 bytes incl. 2-byte Cyrillic ID) accepted, +1 byte → too_large
+PASS refusal leaves context and input untouched
+
+72 passed, 0 failed, 0 skipped

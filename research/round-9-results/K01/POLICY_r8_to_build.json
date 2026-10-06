@@ -1,0 +1,18 @@
+{
+ "note": "How K01 r8 expectations translate to the BUILD contract (BUILD is the reference for policy; r8 K01 module is not). Written by K01 from reading web/plan.js d865dd4, not from BUILD test output.",
+ "code_map": {
+  "constraint_conflict": "required_excluded_overlap",
+  "bad_candidates": "too_many_candidates",
+  "duplicate_key": "bad_json",
+  "non_finite": "bad_json",
+  "foreign_city": "other_city"
+ },
+ "policy_overrides": {
+  "shy_valid_forged_derived.json": {"build": "forged_derived", "why": "BUILD checks derived_results against a recomputation and rejects a mismatch; r8 K01 dropped them. Both satisfy 'never trust derived', BUILD is stricter."},
+  "ast_valid_forged_derived.json": {"build": "forged_derived", "why": "same"},
+  "shy_invalid_foreign_city.json": {"build": "valid:shymkent", "why": "BUILD import picks the context by the file's city_id and the UI switches the city (plan-ui.js importText); validatePlanScenario with an explicit other-city ctx still gives other_city."},
+  "ast_invalid_foreign_city.json": {"build": "valid:astana", "why": "same"},
+  "ast_invalid_v1_schema.json": {"build": "wrong_version", "why": "BUILD gives a dedicated code for a city-whatif-v1 file in v2 mode"}
+ },
+ "id_policy": "BUILD: /^[\\p{L}\\p{N}_.-]+$/u, NFC, 1..64 code points (Cyrillic/Kazakh allowed). r8 K01 ASCII-only rule is withdrawn per round-9 CORE_SPEC."
+}
