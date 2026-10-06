@@ -1,0 +1,140 @@
+{
+ "scanned_utc": "2026-10-06T15:40:19+00:00",
+ "pack_sha": "9c2f5c0dae14b46c0697a9dfc7f854351bfd570d",
+ "branches_scanned": 23,
+ "deliveries": [
+  {
+   "branch": "origin/claude/trusting-ptolemy-6ms354",
+   "head": "a95f8574ec4446b92f9f5e47856cb6ef8bbfce54",
+   "path": "research/round-11-results/R02/DELIVERY.json",
+   "role_dir": "R02",
+   "head_time": "2026-10-06T15:36:41+00:00",
+   "valid_json": true,
+   "role": "R02",
+   "status": "partial",
+   "pack_sha": "9c2f5c0dae14b46c0697a9dfc7f854351bfd570d",
+   "code_commit": null,
+   "checks": [
+    {
+     "name": "schema-and-empty-db",
+     "status": "PASS"
+    },
+    {
+     "name": "civic-service-http",
+     "status": "NOT_RUN"
+    }
+   ],
+   "status_md_present": true,
+   "owned_paths_present": {
+    "ui/civic_store/": true,
+    "tests/civic/R02/": true,
+    "research/round-11-results/R02/": true,
+    "research/handoffs/astana/R02/round-11/STATUS.md": true
+   },
+   "r01_files": null,
+   "next_step": "Валидация civic-v1 и CRUD с публичной проекцией по allowlist.",
+   "problems": []
+  },
+  {
+   "branch": "origin/claude/fervent-ritchie-1zih1y",
+   "head": "597b14c3aabed9e4399038fcabbc9db3ba542b01",
+   "path": "research/round-11-results/R04/DELIVERY.json",
+   "role_dir": "R04",
+   "head_time": "2026-10-06T15:38:20+00:00",
+   "valid_json": true,
+   "role": "R04",
+   "status": "partial",
+   "pack_sha": "9c2f5c0dae14b46c0697a9dfc7f854351bfd570d",
+   "code_commit": null,
+   "checks": [
+    {
+     "name": "editor-core contract tests",
+     "status": "PASS"
+    },
+    {
+     "name": "browser UI walkthrough",
+     "status": "NOT_RUN"
+    }
+   ],
+   "status_md_present": true,
+   "owned_paths_present": {
+    "web/civic/editor/": true,
+    "tests/civic/R04/": true,
+    "research/round-11-results/R04/": true,
+    "research/handoffs/astana/R04/round-11/STATUS.md": true
+   },
+   "r01_files": null,
+   "next_step": "Write web/civic/editor/editor.js + editor.css and run the browser walkthrough against the contract mock.",
+   "problems": []
+  },
+  {
+   "branch": "origin/claude/intelligent-sagan-7shpeh",
+   "head": "eebb1a1156049f9835426da8087fe04c90256f33",
+   "path": "research/round-11-results/R05/DELIVERY.json",
+   "role_dir": "R05",
+   "head_time": "2026-10-06T15:37:30+00:00",
+   "valid_json": true,
+   "role": "R05",
+   "status": "partial",
+   "pack_sha": "9c2f5c0dae14b46c0697a9dfc7f854351bfd570d",
+   "code_commit": null,
+   "checks": [
+    {
+     "name": "r05-validator-unit-tests",
+     "status": "PASS"
+    },
+    {
+     "name": "official-source-fetch",
+     "status": "FAIL"
+    }
+   ],
+   "status_md_present": true,
+   "owned_paths_present": {
+    "data/civic/astana/": true,
+    "tests/civic/R05/": true,
+    "research/round-11-results/R05/": true,
+    "research/handoffs/astana/R05/round-11/STATUS.md": true
+   },
+   "r01_files": null,
+   "next_step": "Slice builder + license register + synthetic demo slice + R02 import helper.",
+   "problems": []
+  },
+  {
+   "branch": "origin/claude/wizardly-ptolemy-qy8ltw",
+   "head": "cbae33762cc0e303a0c0b4bcca15103d1a39e7ff",
+   "path": "research/round-11-results/R09/DELIVERY.json",
+   "role_dir": "R09",
+   "head_time": "2026-10-06T15:39:49+00:00",
+   "valid_json": true,
+   "role": "R09",
+   "status": "partial",
+   "pack_sha": "9c2f5c0dae14b46c0697a9dfc7f854351bfd570d",
+   "code_commit": {
+    "sha": "dea3874",
+    "exists": true,
+    "ancestor_of_head": true
+   },
+   "checks": [
+    {
+     "name": "r09-cp2-facts-template-provider",
+     "status": "PASS"
+    },
+    {
+     "name": "live-llm",
+     "status": "NOT_RUN"
+    }
+   ],
+   "status_md_present": true,
+   "owned_paths_present": {
+    "agent/civic_assistant/": true,
+    "web/civic/assistant/": false,
+    "tests/civic/R09/": true,
+    "research/round-11-results/R09/": true,
+    "research/handoffs/astana/R09/round-11/STATUS.md": true
+   },
+   "r01_files": null,
+   "next_step": "CP3: scenario facts + safe API handler example",
+   "problems": []
+  }
+ ]
+}

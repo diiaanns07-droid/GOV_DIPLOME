@@ -55,8 +55,12 @@ class Resp:
 class CivicClient:
     """One browser-like actor: own cookie jar and CSRF token."""
 
-    def __init__(self, base_url: str, prefix: str = PREFIX, timeout: float = 15.0):
+    def __init__(self, base_url: str, prefix: str = PREFIX, timeout: float = 15.0,
+                 source_ip: str | None = None):
         parts = urlsplit(base_url)
+        # Loopback source address (127.0.0.x) lets one machine act as several residents
+        # without asking the server to trust X-Forwarded-For or to relax rate limits.
+        self.source_ip = source_ip
         self.scheme = parts.scheme or "http"
         self.netloc = parts.netloc
         self.host = parts.hostname
@@ -88,7 +92,8 @@ class CivicClient:
             else:
                 hdrs[key] = value
         conn_cls = http.client.HTTPSConnection if self.scheme == "https" else http.client.HTTPConnection
-        conn = conn_cls(self.host, self.port, timeout=self.timeout)
+        extra = {"source_address": (self.source_ip, 0)} if self.source_ip else {}
+        conn = conn_cls(self.host, self.port, timeout=self.timeout, **extra)
         try:
             conn.putrequest(method, path, skip_host=True, skip_accept_encoding=True)
             for key, value in hdrs.items():
@@ -168,7 +173,7 @@ class CivicClient:
 
     def clone_credentials(self) -> "CivicClient":
         """A second actor holding a copy of this one's cookies/token (stolen-session tests)."""
-        other = CivicClient(self.base_url, self.prefix, self.timeout)
+        other = CivicClient(self.base_url, self.prefix, self.timeout, self.source_ip)
         other.cookies = dict(self.cookies)
         other.csrf_token = self.csrf_token
         return other

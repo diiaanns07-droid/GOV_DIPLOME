@@ -159,8 +159,16 @@ class Target:
         self.code_root: Path | None = None
         self.notes: list[str] = []
 
-    def client(self) -> CivicClient:
-        return CivicClient(self.base_url, self.prefix)
+    def client(self, source_ip: str | None = None) -> CivicClient:
+        return CivicClient(self.base_url, self.prefix, source_ip=source_ip)
+
+    _next_resident = 10
+
+    def resident(self) -> CivicClient:
+        """Anonymous client from its own loopback address (127.0.0.x): a distinct resident."""
+        Target._next_resident += 1
+        n = Target._next_resident
+        return self.client(source_ip=f"127.0.{n // 250}.{n % 250 + 2}")
 
     def editor(self, index: int = 0) -> CivicClient:
         """Fresh logged-in editor client (own cookie jar)."""

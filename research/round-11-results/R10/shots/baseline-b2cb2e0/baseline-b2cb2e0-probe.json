@@ -1,0 +1,172 @@
+{
+ "label": "baseline-b2cb2e0",
+ "url": "http://127.0.0.1:18501/",
+ "at": "2026-10-06T15:45:23.932Z",
+ "chromium": "/opt/pw-browsers/chromium-1194/chrome-linux/chrome",
+ "results": [
+  {
+   "viewport": {
+    "name": "desktop",
+    "width": 1440,
+    "height": 900
+   },
+   "url": "http://127.0.0.1:18501/",
+   "navError": null,
+   "loadMs": 6116,
+   "screenshot": "research/round-11-results/R10/shots/baseline-b2cb2e0/baseline-b2cb2e0-desktop-1440x900.png",
+   "facts": {
+    "title": "Аким на 5 часов · Астана",
+    "canvasCount": 1,
+    "mapCanvasCount": 1,
+    "attribution": {
+     "text": "Границы OpenStreetMap (не юридически официальные) · На карте: 6; в модели: 5",
+     "inViewport": true,
+     "notCovered": true,
+     "rect": [
+      399,
+      869.5,
+      376.109375,
+      19.5
+     ]
+    },
+    "attributionCandidates": [
+     {
+      "text": "Границы OpenStreetMap (не юридически официальные) · На карте: 6; в модели: 5",
+      "inViewport": true,
+      "notCovered": true,
+      "rect": [
+       399,
+       869.5,
+       376.109375,
+       19.5
+      ]
+     }
+    ],
+    "bodyBackground": "rgb(229, 235, 225)",
+    "jsCookies": "",
+    "localStorage": {
+     "govtech.school-case.v1": "{\"shymkent\":{\"snapshot_id\":\"shymkent-2026-09-23.1-ed0d46bbe5fa1f8e\",\"case_id\":\"shymkent-k10r3-schools-v1\",\"variants\":{\"A\":null,\"B\":null},\"method\":{\"distance_method\":\"geodesic\",\"routing_policy_id\":null"
+    },
+    "sessionStorage": {
+     "akim-session-v1": "{\"schema\":1,\"plan\":[],\"event\":null,\"district\":null,\"targets\":{},\"tab\":\"overview\",\"after\":false,\"mapMetric\":\"D\",\"savedPlans\":[],\"messages\":[],\"advisor\":null,\"advisorError\":null,\"checked_plans\":[],\"resu"
+    },
+    "xssSentinel": null,
+    "lang": "ru",
+    "textSample": "Есиль\n62,99\nАлматы\n57,06\nСарыарка\n54,65\nБайконур\n56,63\nНура\n49,18\nСарайшык\n—\nАким на 5 часов.\nГород меняется с ваших решений\nАстана / Городская лаборатория\n6 районов на карте · 5 в модели · 14 проектов\nДвижок подключён\nГородское планирование\nСбросить\nПланы команд\nОтчёт\nСобытие\nДемо-сценарий\nКАЧЕСТВО ЖИЗНИ · ASTANA\nИСХОДНОЕ\n52,56\nБаза: 52,56 · горизонт 8 кварталов\nГород\nПроекты 14\nРезультат\nВаш город. Ваши решения.\n\nВыберите ровно 5 проектов в пределах бюджета. Нажмите на район — он подставится в новые районные проекты. Уже выбранные проекты сохранят свои районы.\n\nРАЙОНЫ АСТАНЫ\nОценка D\nЕсиль\n6"
+   },
+   "checks": {
+    "U01_single_map_canvas": "PASS",
+    "U01_light_background": "PASS",
+    "U06_attribution_visible": "PASS",
+    "U06_basemap": "NOT_RUN(basemap blocked by network; check fallback in screenshot)",
+    "U09_no_staff_calls_public": "PASS",
+    "S06_no_session_in_js_storage": "PASS",
+    "S10_xss_not_executed": "PASS",
+    "console_errors": "REVIEW(2)"
+   },
+   "staffCalls": [],
+   "basemapRequests": 2,
+   "failures": [
+    {
+     "url": "https://tiles.openfreemap.org/styles/liberty",
+     "error": "net::ERR_TUNNEL_CONNECTION_FAILED"
+    },
+    {
+     "url": "https://tiles.openfreemap.org/planet",
+     "error": "net::ERR_TUNNEL_CONNECTION_FAILED"
+    }
+   ],
+   "consoleErrors": [
+    "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED",
+    "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   ],
+   "dialogs": [],
+   "apiRequests": [
+    "GET /api/bootstrap",
+    "POST /api/plan-status"
+   ]
+  },
+  {
+   "viewport": {
+    "name": "mobile",
+    "width": 390,
+    "height": 844
+   },
+   "url": "http://127.0.0.1:18501/",
+   "navError": null,
+   "loadMs": 6126,
+   "screenshot": "research/round-11-results/R10/shots/baseline-b2cb2e0/baseline-b2cb2e0-mobile-390x844.png",
+   "facts": {
+    "title": "Аким на 5 часов · Астана",
+    "canvasCount": 1,
+    "mapCanvasCount": 1,
+    "attribution": {
+     "text": "Границы OpenStreetMap (не юридически официальные) · На карте: 6; в модели: 5",
+     "inViewport": true,
+     "notCovered": true,
+     "rect": [
+      14,
+      414.640625,
+      265.1875,
+      30
+     ]
+    },
+    "attributionCandidates": [
+     {
+      "text": "Границы OpenStreetMap (не юридически официальные) · На карте: 6; в модели: 5",
+      "inViewport": true,
+      "notCovered": true,
+      "rect": [
+       14,
+       414.640625,
+       265.1875,
+       30
+      ]
+     }
+    ],
+    "bodyBackground": "rgb(229, 235, 225)",
+    "jsCookies": "",
+    "localStorage": {
+     "govtech.school-case.v1": "{\"shymkent\":{\"snapshot_id\":\"shymkent-2026-09-23.1-ed0d46bbe5fa1f8e\",\"case_id\":\"shymkent-k10r3-schools-v1\",\"variants\":{\"A\":null,\"B\":null},\"method\":{\"distance_method\":\"geodesic\",\"routing_policy_id\":null"
+    },
+    "sessionStorage": {
+     "akim-session-v1": "{\"schema\":1,\"plan\":[],\"event\":null,\"district\":null,\"targets\":{},\"tab\":\"overview\",\"after\":false,\"mapMetric\":\"D\",\"savedPlans\":[],\"messages\":[],\"advisor\":null,\"advisorError\":null,\"checked_plans\":[],\"resu"
+    },
+    "xssSentinel": null,
+    "lang": "ru",
+    "textSample": "Есиль\n62,99\nАлматы\n57,06\nСарыарка\n54,65\nБайконур\n56,63\nНура\n49,18\nСарайшык\n—\nАким на 5 часов.\nГород меняется с ваших решений\nГородское планирование\nСбросить\nСобытие\n52,56\nБаза: 52,56 · горизонт 8 кварталов\nГород\nПроекты 14\nРезультат\nВаш город. Ваши решения.\n\nВыберите ровно 5 проектов в пределах бюджета. Нажмите на район — он подставится в новые районные проекты. Уже выбранные проекты сохранят свои районы.\n\nРАЙОНЫ АСТАНЫ\nОценка D\nЕсиль\n62,99\nАлматы\n57,06\nСарыарка\n54,65\nБайконур\n56,63\nНура\nСамый уязвимый район\n49,18\nСарайшык\nНет показателей в модели\n—\n С чего начать?\n\nСамый слабый район — Нура. "
+   },
+   "checks": {
+    "U01_single_map_canvas": "PASS",
+    "U01_light_background": "PASS",
+    "U06_attribution_visible": "PASS",
+    "U06_basemap": "NOT_RUN(basemap blocked by network; check fallback in screenshot)",
+    "U09_no_staff_calls_public": "PASS",
+    "S06_no_session_in_js_storage": "PASS",
+    "S10_xss_not_executed": "PASS",
+    "console_errors": "REVIEW(2)"
+   },
+   "staffCalls": [],
+   "basemapRequests": 2,
+   "failures": [
+    {
+     "url": "https://tiles.openfreemap.org/styles/liberty",
+     "error": "net::ERR_TUNNEL_CONNECTION_FAILED"
+    },
+    {
+     "url": "https://tiles.openfreemap.org/planet",
+     "error": "net::ERR_TUNNEL_CONNECTION_FAILED"
+    }
+   ],
+   "consoleErrors": [
+    "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED",
+    "Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"
+   ],
+   "dialogs": [],
+   "apiRequests": [
+    "GET /api/bootstrap",
+    "POST /api/plan-status"
+   ]
+  }
+ ]
+}
