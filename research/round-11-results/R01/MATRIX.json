@@ -1,0 +1,150 @@
+{
+  "round": 11,
+  "role": "R01",
+  "branch": "claude/affectionate-ride-bol5v8",
+  "pack_sha": "9c2f5c0dae14b46c0697a9dfc7f854351bfd570d",
+  "updated_at": "2026-10-06T15:30Z",
+  "application_snapshot": {
+    "source_branch": "claude/beautiful-clarke-sbzomj",
+    "source_sha": "b2cb2e02c602c166ba6d47c02d8e902e5478c791",
+    "code_sha": "6de3f253d8ec0743450259f9f13722c16cd36099",
+    "imported_paths": [
+      ".gitattributes",
+      "CLAUDE.md",
+      "PROJECT_CONTEXT.md",
+      "agent/school_ai.py",
+      "tests/govtech/",
+      "tests/test_govtech_integration.py",
+      "tests/test_k03_routing_assets.py",
+      "tests/test_school_ai.py",
+      "ui/web_server.py",
+      "web/govtech/",
+      "web/index.html",
+      "web/map.js"
+    ],
+    "integrated": true,
+    "checks": [
+      {
+        "name": "pytest",
+        "status": "PASS",
+        "command": "python -m pytest -q -p no:cacheprovider",
+        "result": "133 passed"
+      },
+      {
+        "name": "ui.web_check",
+        "status": "PASS",
+        "command": "python -B -m ui.web_check",
+        "result": "14 OK"
+      },
+      {
+        "name": "node govtech suites",
+        "status": "PASS",
+        "command": "node tests/govtech/{plan,resilience,whatif,school_case,school_vs_k05}.cjs",
+        "result": "PASS; school_case 3621; school_vs_k05 7560"
+      }
+    ],
+    "status": "imported",
+    "reason": "Reviewed path import (git checkout <sha> -- <paths>), no branch merge; .gitattributes + coordinator LF/CRLF fix from PACK_SHA."
+  },
+  "roles": {
+    "R02": {
+      "title": "Сервер, база объектов и доступ редактора",
+      "expected_paths": "ui/civic_store/",
+      "source_branch": null,
+      "source_sha": null,
+      "imported_paths": [],
+      "integrated": false,
+      "checks": [],
+      "status": "not_delivered",
+      "reason": "No research/round-11-results/R02/DELIVERY.json in any origin branch at 2026-10-06T15:29Z."
+    },
+    "R03": {
+      "title": "Публичная карта и карточки",
+      "expected_paths": "web/civic/map/",
+      "source_branch": null,
+      "source_sha": null,
+      "imported_paths": [],
+      "integrated": false,
+      "checks": [],
+      "status": "not_delivered",
+      "reason": "No research/round-11-results/R03/DELIVERY.json in any origin branch at 2026-10-06T15:29Z."
+    },
+    "R04": {
+      "title": "Кабинет редактора",
+      "expected_paths": "web/civic/editor/",
+      "source_branch": null,
+      "source_sha": null,
+      "imported_paths": [],
+      "integrated": false,
+      "checks": [],
+      "status": "not_delivered",
+      "reason": "No research/round-11-results/R04/DELIVERY.json in any origin branch at 2026-10-06T15:29Z."
+    },
+    "R05": {
+      "title": "Реальные объекты Астаны",
+      "expected_paths": "data/civic/astana/",
+      "source_branch": null,
+      "source_sha": null,
+      "imported_paths": [],
+      "integrated": false,
+      "checks": [],
+      "status": "not_delivered",
+      "reason": "No research/round-11-results/R05/DELIVERY.json in any origin branch at 2026-10-06T15:29Z."
+    },
+    "R06": {
+      "title": "Обращения жителей",
+      "expected_paths": "ui/civic_feedback/ + web/civic/feedback/",
+      "source_branch": null,
+      "source_sha": null,
+      "imported_paths": [],
+      "integrated": false,
+      "checks": [],
+      "status": "not_delivered",
+      "reason": "No research/round-11-results/R06/DELIVERY.json in any origin branch at 2026-10-06T15:29Z."
+    },
+    "R07": {
+      "title": "Симулятор ограничений",
+      "expected_paths": "engine/civic_scenarios/ + web/civic/scenarios/",
+      "source_branch": null,
+      "source_sha": null,
+      "imported_paths": [],
+      "integrated": false,
+      "checks": [],
+      "status": "not_delivered",
+      "reason": "No research/round-11-results/R07/DELIVERY.json in any origin branch at 2026-10-06T15:29Z."
+    },
+    "R08": {
+      "title": "Обучаемая модель обращений",
+      "expected_paths": "ml/civic_classifier/",
+      "source_branch": null,
+      "source_sha": null,
+      "imported_paths": [],
+      "integrated": false,
+      "checks": [],
+      "status": "not_delivered",
+      "reason": "No research/round-11-results/R08/DELIVERY.json in any origin branch at 2026-10-06T15:29Z."
+    },
+    "R09": {
+      "title": "AI-помощник",
+      "expected_paths": "agent/civic_assistant/ + web/civic/assistant/",
+      "source_branch": null,
+      "source_sha": null,
+      "imported_paths": [],
+      "integrated": false,
+      "checks": [],
+      "status": "not_delivered",
+      "reason": "No research/round-11-results/R09/DELIVERY.json in any origin branch at 2026-10-06T15:29Z."
+    },
+    "R10": {
+      "title": "Независимая приёмка",
+      "expected_paths": "tests/civic/R10/",
+      "source_branch": null,
+      "source_sha": null,
+      "imported_paths": [],
+      "integrated": false,
+      "checks": [],
+      "status": "not_delivered",
+      "reason": "No research/round-11-results/R10/DELIVERY.json in any origin branch at 2026-10-06T15:29Z."
+    }
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "source_branch": "claude/beautiful-clarke-sbzomj",
+  "source_commit": "d18847f9e7c18fcfae3349c0b223b023d359a838",
+  "source_root": "prototypes/city-evidence/web/",
+  "files": [
+    {
+      "file": "data.js",
+      "sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+      "integrated_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72"
+    },
+    {
+      "file": "evidence.js",
+      "sha256": "df736e986145da33dee60f692e020486720b72db5b6116af31640cc8693b11b9",
+      "integrated_sha256": "df736e986145da33dee60f692e020486720b72db5b6116af31640cc8693b11b9"
+    },
+    {
+      "file": "facts.js",
+      "sha256": "3994a275ddb8c0cb857478365d94810a945752a96fff10d53d37bc8dc9808c64",
+      "integrated_sha256": "3994a275ddb8c0cb857478365d94810a945752a96fff10d53d37bc8dc9808c64"
+    },
+    {
+      "file": "whatif.js",
+      "sha256": "46e3b042d2402a46ca34e454139e7744ba9d379866c500a7809546d0dab72a72",
+      "integrated_sha256": "46e3b042d2402a46ca34e454139e7744ba9d379866c500a7809546d0dab72a72"
+    },
+    {
+      "file": "plan.js",
+      "sha256": "3c0638e268ed69ad034ac9675228730b036a28a8b14193232cd32cb844945961",
+      "integrated_sha256": "3c0638e268ed69ad034ac9675228730b036a28a8b14193232cd32cb844945961"
+    },
+    {
+      "file": "resilience.js",
+      "sha256": "d401ff82f7633191a3ca9d35ceb6dad7a511d6f8a7cb359ae7380f62babb7c2c",
+      "integrated_sha256": "d401ff82f7633191a3ca9d35ceb6dad7a511d6f8a7cb359ae7380f62babb7c2c"
+    },
+    {
+      "file": "plan-ui.js",
+      "sha256": "74d49451639367c3caceb1283032b3b9937338d6b0ec3c7a94d255f88993f64f",
+      "integrated_sha256": "bf3f1184571e8fe6007eae4217e0b1b64f309ce22f656cd2ef823c87718c922e",
+      "integrated_sha256_d2ff344": "eb34eb6cd3e0e95ea801ed4b292d6691b4bb69c925c802247c399073f2f1223c"
+    },
+    {
+      "file": "resilience-ui.js",
+      "sha256": "9afc63a20a0e2a2bfa8cc16a6781cea2bd0cc80d28ebd4b25e5801c606dc6728",
+      "integrated_sha256": "1e95013510ca44538aa2ba199f9ec77235e4f4029b99090f49446177723a5b49"
+    },
+    {
+      "file": "attribution/ATTRIBUTION.md",
+      "sha256": "4de942304f8657f1747a8f8976887255fad4a76d4c35129aa871ed1cbb9615c6",
+      "integrated_sha256": "4de942304f8657f1747a8f8976887255fad4a76d4c35129aa871ed1cbb9615c6"
+    },
+    {
+      "file": "attribution/attribution.json",
+      "sha256": "313c9b0eaaa695aa4a0221077bc5487fed91ff443d1b204bafb80b0cc4bf8588",
+      "integrated_sha256": "313c9b0eaaa695aa4a0221077bc5487fed91ff443d1b204bafb80b0cc4bf8588"
+    },
+    {
+      "file": "attribution/LICENSES/Apache-2.0.txt",
+      "sha256": "074e6e32c86a4c0ef8b3ed25b721ca23aca83df277cd88106ef7177c354615ff",
+      "integrated_sha256": "074e6e32c86a4c0ef8b3ed25b721ca23aca83df277cd88106ef7177c354615ff"
+    },
+    {
+      "file": "attribution/LICENSES/CDLA-Permissive-2.0.txt",
+      "sha256": "4531a67d443284d93ffed0803df5b10634aff21c3d77e381f2d48af01d875868",
+      "integrated_sha256": "4531a67d443284d93ffed0803df5b10634aff21c3d77e381f2d48af01d875868"
+    },
+    {
+      "file": "attribution/LICENSES/ODbL-1.0.txt",
+      "sha256": "77d2692c3d64efdd4db18dce2407699baf62930e2b50d6e5ed90b48acf16b7c1",
+      "integrated_sha256": "77d2692c3d64efdd4db18dce2407699baf62930e2b50d6e5ed90b48acf16b7c1"
+    }
+  ],
+  "adaptations": {
+    "plan-ui.js": "Collapsible calculation assumptions and keyboard hint for slice centre; BUILD r10: pending numeric edits wait for pointerup while a pointer is down (D1: first human-speed click after typing was lost); math unchanged.",
+    "resilience-ui.js": "Readable fallback for invalid import instead of literal undefined; math unchanged."
+  }
+}

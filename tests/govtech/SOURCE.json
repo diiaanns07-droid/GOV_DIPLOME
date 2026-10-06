@@ -1,0 +1,30 @@
+{
+  "sha": "d18847f9e7c18fcfae3349c0b223b023d359a838",
+  "adaptation": "Only W path changed to main web/govtech/core",
+  "files": [
+    {
+      "file": "plan.cjs",
+      "sha256": "a9fe5c431e4e57ca7224bb009117a2ea90a70330489e8b5661baf3c3a10bdc26"
+    },
+    {
+      "file": "resilience.cjs",
+      "sha256": "0edbbd0dfa9846342199157f6423984622be493ce22f22efcce0ca902eb66bf9"
+    },
+    {
+      "file": "whatif.cjs",
+      "sha256": "2091a697dd0aef4bf7e06338119ff242463824a544ec83b6ec7aa94073f2d614"
+    },
+    {
+      "file": "expected_plans.json",
+      "sha256": "e0e3bd0913dc6c636a934a2f7be9e8257f3ef626ce1dd6886a48e37e31178f19"
+    },
+    {
+      "file": "expected_resilience.json",
+      "sha256": "6517fb8ba6a7e3da8661f47b1df0a5d5f9acb453a64501fb1645780acee9be68"
+    },
+    {
+      "file": "expected_whatif.json",
+      "sha256": "adf227f612e6cf86ab628a97aec44a9074e5c4c7a91c7cc69b5425021c1362bc"
+    }
+  ]
+}

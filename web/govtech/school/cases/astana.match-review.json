@@ -1,0 +1,3359 @@
+{
+ "schema": "k10-match-review-v1",
+ "city_id": "astana",
+ "bbox": [
+  71.418372,
+  51.163033,
+  71.447,
+  51.181
+ ],
+ "package_buffer_m": 2100,
+ "summary": {
+  "app_slice_school_records": 8,
+  "app_slice_decisions": {
+   "attach": 2,
+   "conflict_not_target": 1,
+   "include_meta_only": 1,
+   "not_school": 4
+  },
+  "osm_school_entities_in_bbox": 6,
+  "osm_school_entities_in_bbox_missing_from_app_slice": [
+   "ast-sch-osm-w1512939127",
+   "ast-sch-osm-w1512942774",
+   "ast-sch-osm-w1513435673",
+   "ast-sch-osm-w1513435675"
+  ],
+  "osm_records_excluded_as_not_school": [
+   "w240485228@4"
+  ],
+  "package_schools": 40,
+  "package_schools_by_eligibility": {
+   "known_public": 29,
+   "known_restricted": 6,
+   "unknown": 5
+  },
+  "poi_records_reviewed_within_buffer": 41,
+  "unresolved_or_excluded_within_buffer": 21,
+  "verified_against_official_source": 0
+ },
+ "note": "Desk matching of independent secondary layers (OSM via Overture vs Overture/Meta POI) plus NOT_FETCHED official targets. 0 records are verified against an official source; the count of valid JSON records is not a count of verified schools.",
+ "poi_records": [
+  {
+   "layer": "overture_places",
+   "record_id": "7b39e048-341b-454a-a63c-4b7e1ae73e9f",
+   "name": "Школа-гимназия 3",
+   "lon": 71.42501,
+   "lat": 51.17087,
+   "category_by_source": "high_school",
+   "confidence": 0.894,
+   "in_app_slice": true,
+   "distance_to_bbox_m": 0.0,
+   "numbers_in_name": [
+    "3"
+   ],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1512939125",
+     "distance_m": 0.0
+    },
+    {
+     "entity": "ast-sch-osm-w1512939127",
+     "distance_m": 420.9
+    },
+    {
+     "entity": "ast-sch-osmb-w30012477",
+     "distance_m": 513.9
+    }
+   ],
+   "same_number_osm_entities": [
+    {
+     "entity": "ast-sch-osm-w1512939125",
+     "distance_m": 0.0
+    }
+   ],
+   "decision": "attach",
+   "decided_by": "manual_review",
+   "reason": "Meta POI «Школа-гимназия 3» lies inside OSM school grounds «№3 мектеп-гимназия» (ru: Школа-гимназия №3), which also contain an OSM building=school; same number.",
+   "entity": "ast-sch-osm-w1512939125",
+   "within_package_buffer": true
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "8ca53724-c558-46b7-826b-13e3e8fbb7e6",
+   "name": "\"ГУ \"Средняя школа № 8\" УО г. Астаны\"",
+   "lon": 71.4453049,
+   "lat": 51.166662,
+   "category_by_source": "middle_school",
+   "confidence": 0.536,
+   "in_app_slice": true,
+   "distance_to_bbox_m": 0.0,
+   "numbers_in_name": [
+    "8"
+   ],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1519562357",
+     "distance_m": 255.0
+    },
+    {
+     "entity": "ast-sch-osm-w1512942775",
+     "distance_m": 623.9
+    },
+    {
+     "entity": "ast-sch-osm-w1513435675",
+     "distance_m": 624.5
+    }
+   ],
+   "same_number_osm_entities": [
+    {
+     "entity": "ast-sch-osm-w1513435675",
+     "distance_m": 624.5
+    }
+   ],
+   "decision": "conflict_not_target",
+   "decided_by": "manual_review",
+   "reason": "Meta POI «ГУ Средняя школа № 8 УО г. Астаны» (address Асан Қайғы 56) has no OSM school geometry nearby (nearest OSM school grounds are №119 at 255 m); OSM «№8 мектеп-лицей» grounds are ~620 m away. News leads about a 2017 pre-emergency closure of school No. 8 (informburo.kz, NOT_FETCHED) are unverified. Not used as a separate target; the OSM №8 entity is kept with eligibility unknown and the conflict shown.",
+   "entity": "ast-sch-osm-w1513435675",
+   "within_package_buffer": true
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+   "name": "Учебный ЦЕНТР ФПРК",
+   "lon": 71.43372,
+   "lat": 51.16862,
+   "category_by_source": "school",
+   "confidence": 0.594,
+   "in_app_slice": true,
+   "distance_to_bbox_m": 0.0,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1512942774",
+     "distance_m": 145.8
+    },
+    {
+     "entity": "ast-sch-osm-w1512939125",
+     "distance_m": 579.6
+    },
+    {
+     "entity": "ast-sch-osm-w1512939127",
+     "distance_m": 620.1
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "not_school",
+   "decided_by": "manual_review",
+   "reason": "Name «Учебный ЦЕНТР ФПРК» indicates a training centre, not a general school; no OSM school geometry within 140 m.",
+   "within_package_buffer": true
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "a4483f53-7de8-4df1-b61b-b4066b0ad5dd",
+   "name": "Astana Garden International School",
+   "lon": 71.42298,
+   "lat": 51.16765,
+   "category_by_source": "private_school",
+   "confidence": 0.374,
+   "in_app_slice": true,
+   "distance_to_bbox_m": 0.0,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1512939125",
+     "distance_m": 254.2
+    },
+    {
+     "entity": "ast-sch-osmb-w30012477",
+     "distance_m": 508.0
+    },
+    {
+     "entity": "ast-sch-osmb-w30012464",
+     "distance_m": 576.3
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "include_meta_only",
+   "decided_by": "manual_review",
+   "reason": "Name «Astana Garden International School» indicates a private international school (search lead forbes.kz ranking page, NOT_FETCHED). No OSM school geometry within 250 m. Kept as a restricted existing school, not counted as a public target.",
+   "entity": "ast-sch-meta-a4483f53",
+   "within_package_buffer": true
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "b5dd5f1a-9d55-48b1-9d68-7172ea84da3f",
+   "name": "Образовательный центр АЗиЯ",
+   "lon": 71.44184,
+   "lat": 51.16473,
+   "category_by_source": "school",
+   "confidence": 0.303,
+   "in_app_slice": true,
+   "distance_to_bbox_m": 0.0,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1512942775",
+     "distance_m": 321.5
+    },
+    {
+     "entity": "ast-sch-osm-w1519562357",
+     "distance_m": 418.7
+    },
+    {
+     "entity": "ast-sch-osm-w1512942774",
+     "distance_m": 587.0
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "not_school",
+   "decided_by": "manual_review",
+   "reason": "Name «Образовательный центр АЗиЯ» indicates a tutoring/education centre; Meta confidence 0.30; no OSM school geometry within 320 m.",
+   "within_package_buffer": true
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a",
+   "name": "Учебный Центр Expert-A",
+   "lon": 71.4233379,
+   "lat": 51.1677,
+   "category_by_source": "school",
+   "confidence": 0.332,
+   "in_app_slice": true,
+   "distance_to_bbox_m": 0.0,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1512939125",
+     "distance_m": 243.5
+    },
+    {
+     "entity": "ast-sch-osmb-w30012477",
+     "distance_m": 523.1
+    },
+    {
+     "entity": "ast-sch-osm-w1512942774",
+     "distance_m": 568.2
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "not_school",
+   "decided_by": "manual_review",
+   "reason": "Name «Учебный Центр Expert-A» indicates a training centre; confidence 0.33; no OSM school geometry within 240 m.",
+   "within_package_buffer": true
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "c97435da-cd05-4549-bec1-ff297e858554",
+   "name": "Гимназия №6",
+   "lon": 71.4202624,
+   "lat": 51.1775272,
+   "category_by_source": "school",
+   "confidence": 0.527,
+   "in_app_slice": true,
+   "distance_to_bbox_m": 0.0,
+   "numbers_in_name": [
+    "6"
+   ],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1443249141",
+     "distance_m": 0.0
+    },
+    {
+     "entity": "ast-sch-osm-w1512939123",
+     "distance_m": 422.9
+    },
+    {
+     "entity": "ast-sch-osm-w1513435673",
+     "distance_m": 450.1
+    }
+   ],
+   "same_number_osm_entities": [
+    {
+     "entity": "ast-sch-osm-w1443249141",
+     "distance_m": 0.0
+    }
+   ],
+   "decision": "attach",
+   "decided_by": "manual_review",
+   "reason": "Meta POI «Гимназия №6» lies inside OSM school grounds «№6 гимназия» with an OSM building=school; same number.",
+   "entity": "ast-sch-osm-w1443249141",
+   "within_package_buffer": true
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783",
+   "name": "\"Школа \"Почемучка\"\"",
+   "lon": 71.426672,
+   "lat": 51.1792966,
+   "category_by_source": "high_school",
+   "confidence": 0.534,
+   "in_app_slice": true,
+   "distance_to_bbox_m": 0.0,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1513435673",
+     "distance_m": 39.5
+    },
+    {
+     "entity": "ast-sch-osm-w1443249141",
+     "distance_m": 421.4
+    },
+    {
+     "entity": "ast-sch-osm-w1512939127",
+     "distance_m": 552.8
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "not_school",
+   "decided_by": "manual_review",
+   "reason": "Meta calls «Школа \"Почемучка\"» a high_school, but at the same place OSM maps amenity=kindergarten «\"Почемучка\" балаларды дамыту мектебінің мекемесі» (child development institution). Category conflict; not counted as a general school.",
+   "within_package_buffer": true
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "89d23158-25ff-4829-ab77-2c83d986eed5",
+   "name": "гимназия N 47",
+   "lon": 71.4175272,
+   "lat": 51.1707837,
+   "category_by_source": "school",
+   "confidence": 0.557,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 58.9,
+   "numbers_in_name": [
+    "47"
+   ],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osmb-w30012477",
+     "distance_m": 0.0
+    },
+    {
+     "entity": "ast-sch-osmb-w30012464",
+     "distance_m": 95.5
+    },
+    {
+     "entity": "ast-sch-osm-w1512939123",
+     "distance_m": 314.3
+    }
+   ],
+   "same_number_osm_entities": [
+    {
+     "entity": "ast-sch-osmb-w30012477",
+     "distance_m": 0.0
+    }
+   ],
+   "decision": "attach",
+   "decided_by": "rule:R-attach-75m-number-compatible",
+   "entity": "ast-sch-osmb-w30012477",
+   "reason": "POI within 75 m of OSM school geometry, school numbers compatible",
+   "within_package_buffer": true
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "2b731251-aa57-4256-8130-d1739368fe39",
+   "name": "Казахско-турецкий лицей / Kazakh-Turkish High School",
+   "lon": 71.4482,
+   "lat": 51.17445,
+   "category_by_source": "school",
+   "confidence": 0.631,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 83.7,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1513435675",
+     "distance_m": 95.5
+    },
+    {
+     "entity": "ast-sch-osmb-w240110499",
+     "distance_m": 410.7
+    },
+    {
+     "entity": "ast-sch-osm-w1519562357",
+     "distance_m": 940.3
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "include_meta_only",
+   "decided_by": "manual_review",
+   "reason": "Meta POI «Казахско-турецкий лицей / Kazakh-Turkish High School» ~100 m from the OSM «№8 мектеп-лицей» grounds; may be the same site. Admission rules not verified.",
+   "entity": "ast-sch-meta-2b731251",
+   "within_package_buffer": true
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "b3763276-0a14-41b3-b258-e2883722bcc8",
+   "name": "Первая Столичная школа Дизайна и Моды",
+   "lon": 71.43584,
+   "lat": 51.1619,
+   "category_by_source": "school",
+   "confidence": 0.738,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 126.0,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1512942775",
+     "distance_m": 43.3
+    },
+    {
+     "entity": "ast-sch-osm-w1512942776",
+     "distance_m": 280.3
+    },
+    {
+     "entity": "ast-sch-osm-w1512942774",
+     "distance_m": 536.5
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "not_school",
+   "decided_by": "rule:R-not-school-name",
+   "reason": "name indicates a non-school place (centre, course, kindergarten, college, arts, sport …)",
+   "within_package_buffer": true
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "1c004136-8f4d-463b-88fc-4769e8f8dccd",
+   "name": "школа #2",
+   "lon": 71.4159393,
+   "lat": 51.1707736,
+   "category_by_source": "high_school",
+   "confidence": 0.571,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 169.6,
+   "numbers_in_name": [
+    "2"
+   ],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osmb-w30012464",
+     "distance_m": 6.8
+    },
+    {
+     "entity": "ast-sch-osmb-w30012477",
+     "distance_m": 73.4
+    },
+    {
+     "entity": "ast-sch-osm-w1512939123",
+     "distance_m": 301.2
+    }
+   ],
+   "same_number_osm_entities": [
+    {
+     "entity": "ast-sch-osmb-w30012464",
+     "distance_m": 6.8
+    },
+    {
+     "entity": "ast-sch-osm-w1512939123",
+     "distance_m": 301.2
+    }
+   ],
+   "decision": "attach",
+   "decided_by": "rule:R-attach-75m-number-compatible",
+   "entity": "ast-sch-osmb-w30012464",
+   "reason": "POI within 75 m of OSM school geometry, school numbers compatible",
+   "within_package_buffer": true
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "2176c0b8-d2db-47a8-aaf0-3968c198baac",
+   "name": "Школа-лицей №54",
+   "lon": 71.4386527,
+   "lat": 51.1612335,
+   "category_by_source": "middle_school",
+   "confidence": 0.74,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 200.1,
+   "numbers_in_name": [
+    "54"
+   ],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1512942775",
+     "distance_m": 0.0
+    },
+    {
+     "entity": "ast-sch-osm-w1512942776",
+     "distance_m": 423.1
+    },
+    {
+     "entity": "ast-sch-osm-w1513435683",
+     "distance_m": 588.0
+    }
+   ],
+   "same_number_osm_entities": [
+    {
+     "entity": "ast-sch-osm-w1512942775",
+     "distance_m": 0.0
+    }
+   ],
+   "decision": "attach",
+   "decided_by": "rule:R-attach-75m-number-compatible",
+   "entity": "ast-sch-osm-w1512942775",
+   "reason": "POI within 75 m of OSM school geometry, school numbers compatible",
+   "within_package_buffer": true
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "6c52953d-d2be-430c-bec7-b51e65aaa076",
+   "name": "Колледж Управления",
+   "lon": 71.42301,
+   "lat": 51.18314,
+   "category_by_source": "school",
+   "confidence": 0.627,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 238.0,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1512939129",
+     "distance_m": 237.2
+    },
+    {
+     "entity": "ast-sch-osm-w1512939139",
+     "distance_m": 506.5
+    },
+    {
+     "entity": "ast-sch-osm-w1513435673",
+     "distance_m": 519.9
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "not_school",
+   "decided_by": "rule:R-not-school-name",
+   "reason": "name indicates a non-school place (centre, course, kindergarten, college, arts, sport …)",
+   "within_package_buffer": true
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "fc123f17-00ec-408d-8801-267e50c547ea",
+   "name": "Школа-лицей №62",
+   "lon": 71.4188271,
+   "lat": 51.1832977,
+   "category_by_source": "high_school",
+   "confidence": 0.848,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 255.5,
+   "numbers_in_name": [
+    "62"
+   ],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1512939129",
+     "distance_m": 0.0
+    },
+    {
+     "entity": "ast-sch-osm-w1512939139",
+     "distance_m": 400.1
+    },
+    {
+     "entity": "ast-sch-osm-w1443249141",
+     "distance_m": 604.0
+    }
+   ],
+   "same_number_osm_entities": [
+    {
+     "entity": "ast-sch-osm-w1512939129",
+     "distance_m": 0.0
+    }
+   ],
+   "decision": "attach",
+   "decided_by": "rule:R-attach-75m-number-compatible",
+   "entity": "ast-sch-osm-w1512939129",
+   "reason": "POI within 75 m of OSM school geometry, school numbers compatible",
+   "within_package_buffer": true
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "40b47fa8-827c-4958-9a7f-92a9e57e20a3",
+   "name": "Государственное коммунальное казенное предприятие «Детская музыкальная школа 3, имени Ермека Серкебаева»",
+   "lon": 71.4504383,
+   "lat": 51.1622078,
+   "category_by_source": "school",
+   "confidence": 0.918,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 256.7,
+   "numbers_in_name": [
+    "3"
+   ],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1519562357",
+     "distance_m": 211.1
+    },
+    {
+     "entity": "ast-sch-osm-w1513435677",
+     "distance_m": 265.2
+    },
+    {
+     "entity": "ast-sch-osm-w1513435680",
+     "distance_m": 385.0
+    }
+   ],
+   "same_number_osm_entities": [
+    {
+     "entity": "ast-sch-osm-w1512939125",
+     "distance_m": 1935.1
+    }
+   ],
+   "decision": "not_school",
+   "decided_by": "rule:R-not-school-name",
+   "reason": "name indicates a non-school place (centre, course, kindergarten, college, arts, sport …)",
+   "within_package_buffer": true
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "68483cf5-b727-4de8-976e-b8183699be1a",
+   "name": "Ғали Орманов атындағы 7 мектеп-гимназиясы",
+   "lon": 71.4265935,
+   "lat": 51.1606619,
+   "category_by_source": "school",
+   "confidence": 0.587,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 263.7,
+   "numbers_in_name": [
+    "7"
+   ],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1512942776",
+     "distance_m": 269.1
+    },
+    {
+     "entity": "ast-sch-osm-w1512942775",
+     "distance_m": 651.3
+    },
+    {
+     "entity": "ast-sch-osm-w1512942774",
+     "distance_m": 720.5
+    }
+   ],
+   "same_number_osm_entities": [
+    {
+     "entity": "ast-sch-osm-w1513435673",
+     "distance_m": 1901.6
+    }
+   ],
+   "decision": "conflict_not_target",
+   "decided_by": "manual_review",
+   "reason": "Meta POI «Ғали Орманов атындағы 7 мектеп-гимназиясы» has only the locality as address and lies ~1.9 km from OSM grounds of school No. 7 named after G. Ormanov; treated as a poor geocode, not a second school.",
+   "entity": "ast-sch-osm-w1513435673",
+   "within_package_buffer": true
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "0cf5bbec-95b8-4adc-918c-505562b6f8b3",
+   "name": "Nurorda Kindergarten",
+   "lon": 71.4318781,
+   "lat": 51.1589945,
+   "category_by_source": "school",
+   "confidence": 0.748,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 449.1,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1512942776",
+     "distance_m": 33.6
+    },
+    {
+     "entity": "ast-sch-osm-w1512942775",
+     "distance_m": 343.9
+    },
+    {
+     "entity": "ast-sch-osm-w1513435683",
+     "distance_m": 682.2
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "not_school",
+   "decided_by": "rule:R-not-school-name",
+   "reason": "name indicates a non-school place (centre, course, kindergarten, college, arts, sport …)",
+   "within_package_buffer": true
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "17461b15-d7b9-4c70-bc15-6c050fa903cc",
+   "name": "Детский САД«ТәйТәй Star»астана",
+   "lon": 71.45373,
+   "lat": 51.16341,
+   "category_by_source": "school",
+   "confidence": 0.842,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 469.3,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1513435677",
+     "distance_m": 68.2
+    },
+    {
+     "entity": "ast-sch-osm-w1513435676",
+     "distance_m": 239.5
+    },
+    {
+     "entity": "ast-sch-osm-w1519562357",
+     "distance_m": 279.2
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "not_school",
+   "decided_by": "rule:R-not-school-name",
+   "reason": "name indicates a non-school place (centre, course, kindergarten, college, arts, sport …)",
+   "within_package_buffer": true
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "9b22641d-54ea-4a4b-ae5d-b45d703d28cc",
+   "name": "Vinetka",
+   "lon": 71.4395213,
+   "lat": 51.1581184,
+   "category_by_source": "middle_school",
+   "confidence": 0.34,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 546.5,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1513435683",
+     "distance_m": 243.3
+    },
+    {
+     "entity": "ast-sch-osm-w1512942775",
+     "distance_m": 324.2
+    },
+    {
+     "entity": "ast-sch-osm-w1512942776",
+     "distance_m": 475.0
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "unresolved_excluded",
+   "decided_by": "rule:R-unresolved",
+   "reason": "category from the POI source only; the name does not show a general school; no OSM school geometry",
+   "within_package_buffer": true
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "a60ef26e-c6e7-406d-86a9-e1326cd70b54",
+   "name": "VerAcademy Astana",
+   "lon": 71.41017,
+   "lat": 51.16363,
+   "category_by_source": "school",
+   "confidence": 0.47,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 571.9,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osmb-w240949245",
+     "distance_m": 197.3
+    },
+    {
+     "entity": "ast-sch-osm-w1512939111",
+     "distance_m": 245.7
+    },
+    {
+     "entity": "ast-sch-osmb-w240938582",
+     "distance_m": 404.7
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "not_school",
+   "decided_by": "rule:R-not-school-name",
+   "reason": "name indicates a non-school place (centre, course, kindergarten, college, arts, sport …)",
+   "within_package_buffer": true
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "e18f1fd3-7e5e-4d8c-a2f8-f4d869e82568",
+   "name": "Зерде Дарынды Балаларға Арналған Мектеп",
+   "lon": 71.4092664,
+   "lat": 51.1656953,
+   "category_by_source": "elementary_school",
+   "confidence": 0.604,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 634.9,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osmb-w240949245",
+     "distance_m": 19.5
+    },
+    {
+     "entity": "ast-sch-osm-w1512939114",
+     "distance_m": 271.8
+    },
+    {
+     "entity": "ast-sch-osm-w1512939113",
+     "distance_m": 385.9
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "duplicate_of",
+   "decided_by": "manual_review",
+   "reason": "«Зерде Дарынды Балаларға Арналған Мектеп» (kk) is most likely the same school as the Meta POI «Зерде № 9» 266 m away; the location difference is kept as a QA conflict.",
+   "entity": "ast-sch-meta-491687bb",
+   "within_package_buffer": true
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "491687bb-69b7-4bf0-8122-01e16165937e",
+   "name": "\"ГУ \"Школа для одарённых детей Зерде № 9\" УО г. Астаны\"",
+   "lon": 71.4086396,
+   "lat": 51.1680544,
+   "category_by_source": "school",
+   "confidence": 0.53,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 678.6,
+   "numbers_in_name": [
+    "9"
+   ],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1512939114",
+     "distance_m": 216.0
+    },
+    {
+     "entity": "ast-sch-osmb-w240949245",
+     "distance_m": 236.5
+    },
+    {
+     "entity": "ast-sch-osm-w1512939116",
+     "distance_m": 429.3
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "include_meta_only",
+   "decided_by": "manual_review",
+   "reason": "Meta POI «ГУ Школа для одарённых детей Зерде № 9 УО г. Астаны»: a school for gifted children by its name (admission by selection, not verified).",
+   "entity": "ast-sch-meta-491687bb",
+   "within_package_buffer": true
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "1a3ab899-f9f6-483e-989f-8253aadff60a",
+   "name": "Школа- Лицей 27 Г. Астана",
+   "lon": 71.44125,
+   "lat": 51.15498,
+   "category_by_source": "school",
+   "confidence": 0.713,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 895.5,
+   "numbers_in_name": [
+    "27"
+   ],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1513435683",
+     "distance_m": 0.0
+    },
+    {
+     "entity": "ast-sch-osm-w1512942775",
+     "distance_m": 689.6
+    },
+    {
+     "entity": "ast-sch-osm-w1512942776",
+     "distance_m": 756.9
+    }
+   ],
+   "same_number_osm_entities": [
+    {
+     "entity": "ast-sch-osm-w1513435683",
+     "distance_m": 0.0
+    }
+   ],
+   "decision": "attach",
+   "decided_by": "rule:R-attach-75m-number-compatible",
+   "entity": "ast-sch-osm-w1513435683",
+   "reason": "POI within 75 m of OSM school geometry, school numbers compatible",
+   "within_package_buffer": true
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "b90d2473-22ce-4266-9e71-17fb5f32da2b",
+   "name": "Роботи від Кролика",
+   "lon": 71.41013,
+   "lat": 51.15529,
+   "category_by_source": "school",
+   "confidence": 0.114,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 1035.2,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1512939111",
+     "distance_m": 616.2
+    },
+    {
+     "entity": "ast-sch-osmb-w240938582",
+     "distance_m": 921.3
+    },
+    {
+     "entity": "ast-sch-osm-w1512939113",
+     "distance_m": 1072.5
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "not_school",
+   "decided_by": "rule:R-not-school-name",
+   "reason": "name indicates a non-school place (centre, course, kindergarten, college, arts, sport …)",
+   "within_package_buffer": true
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "0704d9e4-9c1c-4e12-a48f-7d521a27ac81",
+   "name": "Support AI",
+   "lon": 71.4028214,
+   "lat": 51.1665441,
+   "category_by_source": "private_school",
+   "confidence": 0.82,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 1084.3,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1512939114",
+     "distance_m": 105.2
+    },
+    {
+     "entity": "ast-sch-osm-w1512939113",
+     "distance_m": 139.3
+    },
+    {
+     "entity": "ast-sch-osm-w1512939116",
+     "distance_m": 428.1
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "not_school",
+   "decided_by": "rule:R-not-school-name",
+   "reason": "name indicates a non-school place (centre, course, kindergarten, college, arts, sport …)",
+   "within_package_buffer": true
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "9c7f89c1-15d7-428a-ac62-6f4efa0e8d75",
+   "name": "Zharkyn Smart School",
+   "lon": 71.4028214,
+   "lat": 51.1665441,
+   "category_by_source": "school",
+   "confidence": 0.865,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 1084.3,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1512939114",
+     "distance_m": 105.2
+    },
+    {
+     "entity": "ast-sch-osm-w1512939113",
+     "distance_m": 139.3
+    },
+    {
+     "entity": "ast-sch-osm-w1512939116",
+     "distance_m": 428.1
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "unresolved_excluded",
+   "decided_by": "rule:R-unresolved",
+   "reason": "category from the POI source only; the name does not show a general school; no OSM school geometry",
+   "within_package_buffer": true
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "62f30abd-df54-44aa-8d8d-22554d1f362a",
+   "name": "Trinity School - Language Centre",
+   "lon": 71.4029922,
+   "lat": 51.1603402,
+   "category_by_source": "school",
+   "confidence": 0.849,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 1113.5,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1512939111",
+     "distance_m": 171.1
+    },
+    {
+     "entity": "ast-sch-osm-w1512939113",
+     "distance_m": 399.8
+    },
+    {
+     "entity": "ast-sch-osm-w1512939114",
+     "distance_m": 709.3
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "not_school",
+   "decided_by": "rule:R-not-school-name",
+   "reason": "name indicates a non-school place (centre, course, kindergarten, college, arts, sport …)",
+   "within_package_buffer": true
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "09777f23-2725-4527-8e44-333299060aea",
+   "name": "Shkola-Litsey No. 60",
+   "lon": 71.4019213,
+   "lat": 51.1708911,
+   "category_by_source": "high_school",
+   "confidence": 0.872,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 1146.9,
+   "numbers_in_name": [
+    "60"
+   ],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1512939116",
+     "distance_m": 0.0
+    },
+    {
+     "entity": "ast-sch-osm-w1512939114",
+     "distance_m": 383.6
+    },
+    {
+     "entity": "ast-sch-osm-w1530014506",
+     "distance_m": 500.5
+    }
+   ],
+   "same_number_osm_entities": [
+    {
+     "entity": "ast-sch-osm-w1512939116",
+     "distance_m": 0.0
+    }
+   ],
+   "decision": "attach",
+   "decided_by": "rule:R-attach-75m-number-compatible",
+   "entity": "ast-sch-osm-w1512939116",
+   "reason": "POI within 75 m of OSM school geometry, school numbers compatible",
+   "within_package_buffer": true
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "e5b1b388-bccb-41c2-b6c1-45b7399bc97a",
+   "name": "Ледовая Арена «Тарлан »",
+   "lon": 71.41012,
+   "lat": 51.15276,
+   "category_by_source": "school",
+   "confidence": 0.903,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 1279.1,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1512939111",
+     "distance_m": 891.4
+    },
+    {
+     "entity": "ast-sch-osm-w1512939110",
+     "distance_m": 968.4
+    },
+    {
+     "entity": "ast-sch-osmb-w240938582",
+     "distance_m": 1178.6
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "not_school",
+   "decided_by": "rule:R-not-school-name",
+   "reason": "name indicates a non-school place (centre, course, kindergarten, college, arts, sport …)",
+   "within_package_buffer": true
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "33d6047a-6f33-487d-959e-e06f6aee4a67",
+   "name": "New art design school",
+   "lon": 71.4116557,
+   "lat": 51.1490269,
+   "category_by_source": "school",
+   "confidence": 0.612,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 1626.3,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1512939110",
+     "distance_m": 540.6
+    },
+    {
+     "entity": "ast-sch-osm-w1512939111",
+     "distance_m": 1319.9
+    },
+    {
+     "entity": "ast-sch-osm-w1505708407",
+     "distance_m": 1513.7
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "not_school",
+   "decided_by": "rule:R-not-school-name",
+   "reason": "name indicates a non-school place (centre, course, kindergarten, college, arts, sport …)",
+   "within_package_buffer": true
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "5452ab56-23b1-48ab-a87d-52e7ce8fdedd",
+   "name": "Центр Батутной Гимнастики",
+   "lon": 71.4171163,
+   "lat": 51.1484056,
+   "category_by_source": "school",
+   "confidence": 0.243,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 1628.9,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1512939110",
+     "distance_m": 479.0
+    },
+    {
+     "entity": "ast-sch-osm-w1512939111",
+     "distance_m": 1502.7
+    },
+    {
+     "entity": "ast-sch-osm-w1512942776",
+     "distance_m": 1513.3
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "not_school",
+   "decided_by": "rule:R-not-school-name",
+   "reason": "name indicates a non-school place (centre, course, kindergarten, college, arts, sport …)",
+   "within_package_buffer": true
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "6063eb53-4727-4f3d-899a-7690b23a24a5",
+   "name": "Astana Merey School",
+   "lon": 71.4092511,
+   "lat": 51.1487731,
+   "category_by_source": "elementary_school",
+   "confidence": 0.88,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 1708.5,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1512939110",
+     "distance_m": 590.0
+    },
+    {
+     "entity": "ast-sch-osm-w1512939111",
+     "distance_m": 1313.0
+    },
+    {
+     "entity": "ast-sch-osm-w1505708407",
+     "distance_m": 1343.3
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "unresolved_excluded",
+   "decided_by": "rule:R-unresolved",
+   "reason": "category from the POI source only; the name does not show a general school; no OSM school geometry",
+   "within_package_buffer": true
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "821166c9-bbb8-48a0-ba5e-dd4d9f5103e3",
+   "name": "Средняя школа №28",
+   "lon": 71.462665,
+   "lat": 51.149561,
+   "category_by_source": "middle_school",
+   "confidence": 0.914,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 1854.1,
+   "numbers_in_name": [
+    "28"
+   ],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1513435691",
+     "distance_m": 4.1
+    },
+    {
+     "entity": "ast-sch-osm-w1513435689",
+     "distance_m": 215.7
+    },
+    {
+     "entity": "ast-sch-osm-w1513992057",
+     "distance_m": 467.1
+    }
+   ],
+   "same_number_osm_entities": [
+    {
+     "entity": "ast-sch-osm-w1513435691",
+     "distance_m": 4.1
+    }
+   ],
+   "decision": "attach",
+   "decided_by": "rule:R-attach-75m-number-compatible",
+   "entity": "ast-sch-osm-w1513435691",
+   "reason": "POI within 75 m of OSM school geometry, school numbers compatible",
+   "within_package_buffer": true
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "47e1ffcd-2c25-4b45-bbfc-3ef4a7c911a4",
+   "name": "Жиырма Үшінші Орта Мектеп",
+   "lon": 71.4245201,
+   "lat": 51.198154,
+   "category_by_source": "middle_school",
+   "confidence": 0.704,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 1907.4,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1512939135",
+     "distance_m": 1067.1
+    },
+    {
+     "entity": "ast-sch-osm-w1512939139",
+     "distance_m": 1222.5
+    },
+    {
+     "entity": "ast-sch-osm-w1512939129",
+     "distance_m": 1587.9
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "include_meta_only",
+   "decided_by": "rule:R-meta-only-school-name",
+   "entity": "ast-sch-meta-47e1ffcd",
+   "reason": "school name without OSM school geometry: kept as an existing school with eligibility unknown",
+   "within_package_buffer": true
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "443c45d7-57f6-4fbf-b763-912440b91c2b",
+   "name": "Astana English School",
+   "lon": 71.4142292,
+   "lat": 51.1454589,
+   "category_by_source": "high_school",
+   "confidence": 0.817,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 1975.4,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1512939110",
+     "distance_m": 110.3
+    },
+    {
+     "entity": "ast-sch-osm-w1505708407",
+     "distance_m": 1660.5
+    },
+    {
+     "entity": "ast-sch-osm-w1454112385",
+     "distance_m": 1731.1
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "unresolved_excluded",
+   "decided_by": "rule:R-unresolved",
+   "reason": "category from the POI source only; the name does not show a general school; no OSM school geometry",
+   "within_package_buffer": true
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "5019774f-854f-4fc7-9297-69c279f39265",
+   "name": "Астана Пр.победы Музыкальная Академия",
+   "lon": 71.3899716,
+   "lat": 51.1700203,
+   "category_by_source": "school",
+   "confidence": 0.792,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 1980.1,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w501653304",
+     "distance_m": 253.8
+    },
+    {
+     "entity": "ast-sch-osm-w1513435667",
+     "distance_m": 360.9
+    },
+    {
+     "entity": "ast-sch-osm-w1513435668",
+     "distance_m": 623.8
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "not_school",
+   "decided_by": "rule:R-not-school-name",
+   "reason": "name indicates a non-school place (centre, course, kindergarten, college, arts, sport …)",
+   "within_package_buffer": true
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "78fce555-4e3d-48ad-b6a6-dfd4fb69a0b6",
+   "name": "State School No. 48",
+   "lon": 71.4707407,
+   "lat": 51.1532341,
+   "category_by_source": "school",
+   "confidence": 0.775,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 1982.0,
+   "numbers_in_name": [
+    "48"
+   ],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1513435686",
+     "distance_m": 0.0
+    },
+    {
+     "entity": "ast-sch-osm-w1513435687",
+     "distance_m": 250.9
+    },
+    {
+     "entity": "ast-sch-osm-w1513435689",
+     "distance_m": 351.4
+    }
+   ],
+   "same_number_osm_entities": [
+    {
+     "entity": "ast-sch-osm-w1513435686",
+     "distance_m": 0.0
+    }
+   ],
+   "decision": "attach",
+   "decided_by": "rule:R-attach-75m-number-compatible",
+   "entity": "ast-sch-osm-w1513435686",
+   "reason": "POI within 75 m of OSM school geometry, school numbers compatible",
+   "within_package_buffer": true
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "59906dca-fbf0-4e8b-9dc5-2da0d7d1b250",
+   "name": "\"ГУ \"Школа-гимназия 30\"\"",
+   "lon": 71.466371,
+   "lat": 51.149288,
+   "category_by_source": "middle_school",
+   "confidence": 0.712,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 2039.9,
+   "numbers_in_name": [
+    "30"
+   ],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1513435689",
+     "distance_m": 0.0
+    },
+    {
+     "entity": "ast-sch-osm-w1513435691",
+     "distance_m": 249.3
+    },
+    {
+     "entity": "ast-sch-osm-w1513992057",
+     "distance_m": 385.8
+    }
+   ],
+   "same_number_osm_entities": [
+    {
+     "entity": "ast-sch-osm-w1513435689",
+     "distance_m": 0.0
+    }
+   ],
+   "decision": "attach",
+   "decided_by": "rule:R-attach-75m-number-compatible",
+   "entity": "ast-sch-osm-w1513435689",
+   "reason": "POI within 75 m of OSM school geometry, school numbers compatible",
+   "within_package_buffer": true
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "7d548c22-02db-4e0b-a5e4-8140591dc359",
+   "name": "Дарынды Қыз Балаларға Арналған Астана Бил / Астана Бил Для Одаренных Девочек",
+   "lon": 71.3885,
+   "lat": 51.17312,
+   "category_by_source": "high_school",
+   "confidence": 0.474,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 2082.6,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w501653304",
+     "distance_m": 87.1
+    },
+    {
+     "entity": "ast-sch-osmb-w241090081",
+     "distance_m": 548.9
+    },
+    {
+     "entity": "ast-sch-osm-w1513435667",
+     "distance_m": 585.4
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "include_meta_only",
+   "decided_by": "rule:R-meta-only-school-name",
+   "entity": "ast-sch-meta-7d548c22",
+   "reason": "school name without OSM school geometry: kept as an existing school with eligibility known_restricted",
+   "within_package_buffer": true
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "8a0e86d5-58d4-4de5-b31c-f17b85d5c3f2",
+   "name": "школа 36",
+   "lon": 71.3996488,
+   "lat": 51.1957589,
+   "category_by_source": "middle_school",
+   "confidence": 0.463,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 2096.7,
+   "numbers_in_name": [
+    "36"
+   ],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w260543959",
+     "distance_m": 0.0
+    },
+    {
+     "entity": "ast-sch-osm-w1512939134",
+     "distance_m": 522.9
+    },
+    {
+     "entity": "ast-sch-osm-w1163895965",
+     "distance_m": 782.7
+    }
+   ],
+   "same_number_osm_entities": [
+    {
+     "entity": "ast-sch-osm-w260543959",
+     "distance_m": 0.0
+    }
+   ],
+   "decision": "attach",
+   "decided_by": "rule:R-attach-75m-number-compatible",
+   "entity": "ast-sch-osm-w260543959",
+   "reason": "POI within 75 m of OSM school geometry, school numbers compatible",
+   "within_package_buffer": true
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "e8a5d62d-be5a-414c-9332-8ced89996486",
+   "name": "Столичная Школа имени Садвакасова Х.Ж.",
+   "lon": 71.40452,
+   "lat": 51.1451,
+   "category_by_source": "school",
+   "confidence": 0.888,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 2215.8,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1512939110",
+     "distance_m": 650.8
+    },
+    {
+     "entity": "ast-sch-osm-w1505708407",
+     "distance_m": 986.0
+    },
+    {
+     "entity": "ast-sch-osm-w1454112385",
+     "distance_m": 1209.0
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "unresolved_excluded",
+   "decided_by": "rule:R-unresolved",
+   "reason": "category from the POI source only; the name does not show a general school; no OSM school geometry",
+   "within_package_buffer": false
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "d5a89817-b8d2-418b-a798-e05d77eec232",
+   "name": "школа-гимназия #22",
+   "lon": 71.47457,
+   "lat": 51.15305,
+   "category_by_source": "high_school",
+   "confidence": 0.792,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 2220.1,
+   "numbers_in_name": [
+    "22"
+   ],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1513435687",
+     "distance_m": 0.0
+    },
+    {
+     "entity": "ast-sch-osm-w1513435686",
+     "distance_m": 152.6
+    },
+    {
+     "entity": "ast-sch-osm-w1513435689",
+     "distance_m": 578.3
+    }
+   ],
+   "same_number_osm_entities": [
+    {
+     "entity": "ast-sch-osm-w1513435687",
+     "distance_m": 0.0
+    }
+   ],
+   "decision": "attach",
+   "decided_by": "rule:R-attach-75m-number-compatible",
+   "entity": "ast-sch-osm-w1513435687",
+   "reason": "POI within 75 m of OSM school geometry, school numbers compatible",
+   "within_package_buffer": false
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "b726e525-5279-4f99-ab4c-1cdfb7444049",
+   "name": "Мирас г.Астана",
+   "lon": 71.44811,
+   "lat": 51.14269,
+   "category_by_source": "school",
+   "confidence": 0.953,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 2263.4,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1513435691",
+     "distance_m": 1113.7
+    },
+    {
+     "entity": "ast-sch-osm-w1513992057",
+     "distance_m": 1245.0
+    },
+    {
+     "entity": "ast-sch-osm-w1513435683",
+     "distance_m": 1349.6
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "unresolved_excluded",
+   "decided_by": "rule:R-unresolved",
+   "reason": "category from the POI source only; the name does not show a general school; no OSM school geometry",
+   "within_package_buffer": false
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "f6ced04e-e767-400b-b76e-856ec325d584",
+   "name": "Harmony School",
+   "lon": 71.3960566,
+   "lat": 51.148149,
+   "category_by_source": "private_school",
+   "confidence": 0.958,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 2271.8,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1505708407",
+     "distance_m": 431.5
+    },
+    {
+     "entity": "ast-sch-osm-w1505708405",
+     "distance_m": 923.1
+    },
+    {
+     "entity": "ast-sch-osm-w1454112385",
+     "distance_m": 1299.2
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "unresolved_excluded",
+   "decided_by": "rule:R-unresolved",
+   "reason": "category from the POI source only; the name does not show a general school; no OSM school geometry",
+   "within_package_buffer": false
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "f1e75ca9-d77c-4a26-bc1f-08d34122bf92",
+   "name": "Райымбек батыр атындағы №50 \"Қазғарыш\" мектеп-лицейі",
+   "lon": 71.46437,
+   "lat": 51.14559,
+   "category_by_source": "middle_school",
+   "confidence": 0.767,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 2286.8,
+   "numbers_in_name": [
+    "50"
+   ],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1513992057",
+     "distance_m": 96.2
+    },
+    {
+     "entity": "ast-sch-osm-w1513435691",
+     "distance_m": 397.1
+    },
+    {
+     "entity": "ast-sch-osm-w1513435689",
+     "distance_m": 401.9
+    }
+   ],
+   "same_number_osm_entities": [
+    {
+     "entity": "ast-sch-osm-w1513992057",
+     "distance_m": 96.2
+    }
+   ],
+   "decision": "conflict_not_target",
+   "decided_by": "rule:R-same-number-far",
+   "entity": "ast-sch-osm-w1513992057",
+   "reason": "Same school number as ast-sch-osm-w1513992057 at 96.2 m: location conflict, not a second school",
+   "within_package_buffer": false
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "a5d7309c-8229-4497-bce7-503ea145d5a2",
+   "name": "Школа-лицей #66",
+   "lon": 71.4765989,
+   "lat": 51.1527649,
+   "category_by_source": "middle_school",
+   "confidence": 0.552,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 2358.9,
+   "numbers_in_name": [
+    "66"
+   ],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1513435687",
+     "distance_m": 10.8
+    },
+    {
+     "entity": "ast-sch-osm-w1513435686",
+     "distance_m": 296.5
+    },
+    {
+     "entity": "ast-sch-osm-w1513435689",
+     "distance_m": 699.7
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "include_meta_only",
+   "decided_by": "rule:R-meta-only-school-name",
+   "entity": "ast-sch-meta-a5d7309c",
+   "reason": "school name without OSM school geometry: kept as an existing school with eligibility unknown",
+   "within_package_buffer": false
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "b6d6fc83-4f45-4e3b-838d-69afa92965d7",
+   "name": "Ardingly Astana",
+   "lon": 71.4541812,
+   "lat": 51.1422552,
+   "category_by_source": "school",
+   "confidence": 0.503,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 2364.1,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1513992057",
+     "distance_m": 839.2
+    },
+    {
+     "entity": "ast-sch-osm-w1513435691",
+     "distance_m": 868.5
+    },
+    {
+     "entity": "ast-sch-osm-w1513435689",
+     "distance_m": 1110.6
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "unresolved_excluded",
+   "decided_by": "rule:R-unresolved",
+   "reason": "category from the POI source only; the name does not show a general school; no OSM school geometry",
+   "within_package_buffer": false
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "206fe222-8ecb-4d5f-84b6-11b71407cacd",
+   "name": "ГККП \"Гуманитарный колледж\" акимата г. Нур-Султан",
+   "lon": 71.48128,
+   "lat": 51.15902,
+   "category_by_source": "school",
+   "confidence": 0.701,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 2431.8,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1513435703",
+     "distance_m": 177.1
+    },
+    {
+     "entity": "ast-sch-osm-w426394353",
+     "distance_m": 191.0
+    },
+    {
+     "entity": "ast-sch-osm-w1513435687",
+     "distance_m": 561.4
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "not_school",
+   "decided_by": "rule:R-not-school-name",
+   "reason": "name indicates a non-school place (centre, course, kindergarten, college, arts, sport …)",
+   "within_package_buffer": false
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "554aa850-19b1-4ba3-9770-ad55e1779860",
+   "name": "Алгоритмика Астана",
+   "lon": 71.41479,
+   "lat": 51.1408,
+   "category_by_source": "school",
+   "confidence": 0.673,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 2484.8,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1512939110",
+     "distance_m": 151.2
+    },
+    {
+     "entity": "ast-sch-osm-w1454112385",
+     "distance_m": 1529.4
+    },
+    {
+     "entity": "ast-sch-osm-w1505708407",
+     "distance_m": 1798.3
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "unresolved_excluded",
+   "decided_by": "rule:R-unresolved",
+   "reason": "category from the POI source only; the name does not show a general school; no OSM school geometry",
+   "within_package_buffer": false
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "578df129-09c8-49c8-af7b-b3f5c32159f4",
+   "name": "Астана қаласы  N 32 \"Балдәурен\" балабақшасы",
+   "lon": 71.48241,
+   "lat": 51.15664,
+   "category_by_source": "school",
+   "confidence": 0.746,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 2569.6,
+   "numbers_in_name": [
+    "32"
+   ],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w426394353",
+     "distance_m": 149.3
+    },
+    {
+     "entity": "ast-sch-osm-w1513435687",
+     "distance_m": 411.9
+    },
+    {
+     "entity": "ast-sch-osm-w1513435703",
+     "distance_m": 449.6
+    }
+   ],
+   "same_number_osm_entities": [
+    {
+     "entity": "ast-sch-osm-w426394353",
+     "distance_m": 149.3
+    }
+   ],
+   "decision": "not_school",
+   "decided_by": "rule:R-not-school-name",
+   "reason": "name indicates a non-school place (centre, course, kindergarten, college, arts, sport …)",
+   "within_package_buffer": false
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "e1bd5825-6c35-4b01-afad-39d83bb57211",
+   "name": "Milestone",
+   "lon": 71.4556097,
+   "lat": 51.1403584,
+   "category_by_source": "private_school",
+   "confidence": 0.924,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 2591.8,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1513992057",
+     "distance_m": 833.7
+    },
+    {
+     "entity": "ast-sch-osm-w1513435691",
+     "distance_m": 1017.8
+    },
+    {
+     "entity": "ast-sch-osm-w1513435689",
+     "distance_m": 1203.2
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "unresolved_excluded",
+   "decided_by": "rule:R-unresolved",
+   "reason": "category from the POI source only; the name does not show a general school; no OSM school geometry",
+   "within_package_buffer": false
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "b80cee23-0a39-4d90-a497-6b32c6faa547",
+   "name": "Shkola Inzhenerii i Robototekhniki STEM",
+   "lon": 71.4841868,
+   "lat": 51.1603489,
+   "category_by_source": "school",
+   "confidence": 0.293,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 2610.3,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w426394353",
+     "distance_m": 168.3
+    },
+    {
+     "entity": "ast-sch-osm-w1513435703",
+     "distance_m": 191.4
+    },
+    {
+     "entity": "ast-sch-osm-w1513435687",
+     "distance_m": 794.7
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "unresolved_excluded",
+   "decided_by": "rule:R-unresolved",
+   "reason": "category from the POI source only; the name does not show a general school; no OSM school geometry",
+   "within_package_buffer": false
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "5e7898ee-5218-4204-a446-61250f667db0",
+   "name": "School 32",
+   "lon": 71.4848753,
+   "lat": 51.1585623,
+   "category_by_source": "school",
+   "confidence": 0.853,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 2687.6,
+   "numbers_in_name": [
+    "32"
+   ],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w426394353",
+     "distance_m": 0.0
+    },
+    {
+     "entity": "ast-sch-osm-w1513435703",
+     "distance_m": 342.3
+    },
+    {
+     "entity": "ast-sch-osm-w1513435687",
+     "distance_m": 679.5
+    }
+   ],
+   "same_number_osm_entities": [
+    {
+     "entity": "ast-sch-osm-w426394353",
+     "distance_m": 0.0
+    }
+   ],
+   "decision": "attach",
+   "decided_by": "rule:R-attach-75m-number-compatible",
+   "entity": "ast-sch-osm-w426394353",
+   "reason": "POI within 75 m of OSM school geometry, school numbers compatible",
+   "within_package_buffer": false
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "83e62fc3-d5e6-483b-b564-fcf11506cf6b",
+   "name": "Школа Голубой Парус",
+   "lon": 71.48304,
+   "lat": 51.15388,
+   "category_by_source": "high_school",
+   "confidence": 0.469,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 2711.6,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1513435687",
+     "distance_m": 364.6
+    },
+    {
+     "entity": "ast-sch-osm-w426394353",
+     "distance_m": 396.3
+    },
+    {
+     "entity": "ast-sch-osm-w1513435686",
+     "distance_m": 750.7
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "unresolved_excluded",
+   "decided_by": "rule:R-unresolved",
+   "reason": "category from the POI source only; the name does not show a general school; no OSM school geometry",
+   "within_package_buffer": false
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "5b36b919-c04d-4003-9463-eb773dc1f727",
+   "name": "\"ГУ \"Школа-гимназия № 67\"\"",
+   "lon": 71.379356,
+   "lat": 51.169766,
+   "category_by_source": "middle_school",
+   "confidence": 0.735,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 2720.2,
+   "numbers_in_name": [
+    "67"
+   ],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1513435668",
+     "distance_m": 0.0
+    },
+    {
+     "entity": "ast-sch-osm-w1513435667",
+     "distance_m": 262.7
+    },
+    {
+     "entity": "ast-sch-osm-w501653304",
+     "distance_m": 421.0
+    }
+   ],
+   "same_number_osm_entities": [
+    {
+     "entity": "ast-sch-osm-w1513435668",
+     "distance_m": 0.0
+    }
+   ],
+   "decision": "attach",
+   "decided_by": "rule:R-attach-75m-number-compatible",
+   "entity": "ast-sch-osm-w1513435668",
+   "reason": "POI within 75 m of OSM school geometry, school numbers compatible",
+   "within_package_buffer": false
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "e95ca667-66a7-456e-90b7-4e2eaddbcaca",
+   "name": "QSI International School of Astana",
+   "lon": 71.3897053,
+   "lat": 51.1462913,
+   "category_by_source": "school",
+   "confidence": 0.957,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 2731.8,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1505708407",
+     "distance_m": 0.0
+    },
+    {
+     "entity": "ast-sch-osm-w1505708405",
+     "distance_m": 448.5
+    },
+    {
+     "entity": "ast-sch-osm-w1454112385",
+     "distance_m": 1033.1
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "attach",
+   "decided_by": "rule:R-attach-75m-number-compatible",
+   "entity": "ast-sch-osm-w1505708407",
+   "reason": "POI within 75 m of OSM school geometry, school numbers compatible",
+   "within_package_buffer": false
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "b97efc14-1a26-4a5c-afdc-3eab4b178edd",
+   "name": "Колледж общественного питания и сервиса г. Астана",
+   "lon": 71.4712572,
+   "lat": 51.1434001,
+   "category_by_source": "school",
+   "confidence": 0.782,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 2761.9,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1513992057",
+     "distance_m": 284.8
+    },
+    {
+     "entity": "ast-sch-osm-w1513992059",
+     "distance_m": 553.4
+    },
+    {
+     "entity": "ast-sch-osm-w1531404935",
+     "distance_m": 663.8
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "not_school",
+   "decided_by": "rule:R-not-school-name",
+   "reason": "name indicates a non-school place (centre, course, kindergarten, college, arts, sport …)",
+   "within_package_buffer": false
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "b1fbdcfe-d4c7-4234-b252-be6a2ba5f007",
+   "name": "Мерей Балабақшасы",
+   "lon": 71.3944686,
+   "lat": 51.1429359,
+   "category_by_source": "elementary_school",
+   "confidence": 0.548,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 2788.1,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1505708407",
+     "distance_m": 449.1
+    },
+    {
+     "entity": "ast-sch-osm-w1505708405",
+     "distance_m": 539.3
+    },
+    {
+     "entity": "ast-sch-osm-w1454112385",
+     "distance_m": 709.2
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "not_school",
+   "decided_by": "rule:R-not-school-name",
+   "reason": "name indicates a non-school place (centre, course, kindergarten, college, arts, sport …)",
+   "within_package_buffer": false
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "66ccddd3-40fe-4c9c-9cef-382714cf7ca5",
+   "name": "Образовательный центр Topjargan",
+   "lon": 71.41789,
+   "lat": 51.13765,
+   "category_by_source": "school",
+   "confidence": 0.4,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 2822.7,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1512939110",
+     "distance_m": 535.2
+    },
+    {
+     "entity": "ast-sch-osm-w1454112385",
+     "distance_m": 1673.3
+    },
+    {
+     "entity": "ast-sch-osm-w1505708407",
+     "distance_m": 2134.4
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "not_school",
+   "decided_by": "rule:R-not-school-name",
+   "reason": "name indicates a non-school place (centre, course, kindergarten, college, arts, sport …)",
+   "within_package_buffer": false
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "dcb6b66f-229f-4efd-8205-aacdd42bd12f",
+   "name": "Частная школа \"Акжол-РА\"",
+   "lon": 71.3932031,
+   "lat": 51.1424064,
+   "category_by_source": "private_school",
+   "confidence": 0.936,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 2888.3,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1505708405",
+     "distance_m": 443.5
+    },
+    {
+     "entity": "ast-sch-osm-w1505708407",
+     "distance_m": 453.6
+    },
+    {
+     "entity": "ast-sch-osm-w1454112385",
+     "distance_m": 631.8
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "include_meta_only",
+   "decided_by": "rule:R-meta-only-school-name",
+   "entity": "ast-sch-meta-dcb6b66f",
+   "reason": "school name without OSM school geometry: kept as an existing school with eligibility known_restricted",
+   "within_package_buffer": false
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "2c05798e-f57c-4f56-a553-f8abad4a963e",
+   "name": "Средняя школа 20",
+   "lon": 71.38042,
+   "lat": 51.1916,
+   "category_by_source": "school",
+   "confidence": 0.747,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 2895.8,
+   "numbers_in_name": [
+    "20"
+   ],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1530014511",
+     "distance_m": 0.0
+    },
+    {
+     "entity": "ast-sch-osm-w1519562355",
+     "distance_m": 708.2
+    },
+    {
+     "entity": "ast-sch-osm-w1163895965",
+     "distance_m": 860.7
+    }
+   ],
+   "same_number_osm_entities": [
+    {
+     "entity": "ast-sch-osm-w1530014511",
+     "distance_m": 0.0
+    }
+   ],
+   "decision": "attach",
+   "decided_by": "rule:R-attach-75m-number-compatible",
+   "entity": "ast-sch-osm-w1530014511",
+   "reason": "POI within 75 m of OSM school geometry, school numbers compatible",
+   "within_package_buffer": false
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "ef462f3a-c11a-4250-8db6-2c869ae1522f",
+   "name": "Ecole française d'Astana",
+   "lon": 71.48552,
+   "lat": 51.1512811,
+   "category_by_source": "school",
+   "confidence": 0.959,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 2987.4,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1513435687",
+     "distance_m": 623.7
+    },
+    {
+     "entity": "ast-sch-osm-w426394353",
+     "distance_m": 660.4
+    },
+    {
+     "entity": "ast-sch-osm-w1513992059",
+     "distance_m": 837.8
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "unresolved_excluded",
+   "decided_by": "rule:R-unresolved",
+   "reason": "category from the POI source only; the name does not show a general school; no OSM school geometry",
+   "within_package_buffer": false
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "71cbbbec-22c8-4932-b16c-543d43795416",
+   "name": "Oqu.kz",
+   "lon": 71.4888107,
+   "lat": 51.1555671,
+   "category_by_source": "school",
+   "confidence": 0.528,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 3031.6,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w426394353",
+     "distance_m": 319.4
+    },
+    {
+     "entity": "ast-sch-osm-w1513435703",
+     "distance_m": 772.4
+    },
+    {
+     "entity": "ast-sch-osm-w1513435687",
+     "distance_m": 783.7
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "unresolved_excluded",
+   "decided_by": "rule:R-unresolved",
+   "reason": "category from the POI source only; the name does not show a general school; no OSM school geometry",
+   "within_package_buffer": false
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "c86a5f19-07fe-45cd-a307-c772a7307e9e",
+   "name": "Mezhdunarodnaya Shkola Miras",
+   "lon": 71.4871713,
+   "lat": 51.1523694,
+   "category_by_source": "school",
+   "confidence": 0.88,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 3042.1,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w426394353",
+     "distance_m": 558.5
+    },
+    {
+     "entity": "ast-sch-osm-w1513435687",
+     "distance_m": 681.4
+    },
+    {
+     "entity": "ast-sch-osm-w1513992059",
+     "distance_m": 999.1
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "unresolved_excluded",
+   "decided_by": "rule:R-unresolved",
+   "reason": "category from the POI source only; the name does not show a general school; no OSM school geometry",
+   "within_package_buffer": false
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "abceb01e-cd9e-4ec1-b45a-36c3774d7158",
+   "name": "Частная школа Talant School",
+   "lon": 71.48688,
+   "lat": 51.1490694,
+   "category_by_source": "school",
+   "confidence": 0.833,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 3185.3,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1513992059",
+     "distance_m": 689.2
+    },
+    {
+     "entity": "ast-sch-osm-w1513435687",
+     "distance_m": 816.1
+    },
+    {
+     "entity": "ast-sch-osm-w426394353",
+     "distance_m": 914.6
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "include_meta_only",
+   "decided_by": "rule:R-meta-only-school-name",
+   "entity": "ast-sch-meta-abceb01e",
+   "reason": "school name without OSM school geometry: kept as an existing school with eligibility known_restricted",
+   "within_package_buffer": false
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "c5212e3b-1e0f-4583-a9c6-2b940d276c16",
+   "name": "Quantum STEM School Astana",
+   "lon": 71.4028931,
+   "lat": 51.1360627,
+   "category_by_source": "school",
+   "confidence": 0.953,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 3187.4,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1454112385",
+     "distance_m": 619.9
+    },
+    {
+     "entity": "ast-sch-osm-w1512939110",
+     "distance_m": 1076.7
+    },
+    {
+     "entity": "ast-sch-osm-w1505708405",
+     "distance_m": 1303.2
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "unresolved_excluded",
+   "decided_by": "rule:R-unresolved",
+   "reason": "category from the POI source only; the name does not show a general school; no OSM school geometry",
+   "within_package_buffer": false
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "d2780162-006c-45a9-ba14-e5e1d072e22b",
+   "name": "Zerdeli",
+   "lon": 71.4771581,
+   "lat": 51.1400479,
+   "category_by_source": "school",
+   "confidence": 0.731,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 3310.1,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1531404935",
+     "distance_m": 190.9
+    },
+    {
+     "entity": "ast-sch-osm-w1513992059",
+     "distance_m": 403.0
+    },
+    {
+     "entity": "ast-sch-osm-w1513992057",
+     "distance_m": 828.8
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "unresolved_excluded",
+   "decided_by": "rule:R-unresolved",
+   "reason": "category from the POI source only; the name does not show a general school; no OSM school geometry",
+   "within_package_buffer": false
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "277fcfe7-3948-4b79-8f1c-c2786968306d",
+   "name": "Cредняя школа цифровых технологий Skillset_school",
+   "lon": 71.47828,
+   "lat": 51.14037,
+   "category_by_source": "middle_school",
+   "confidence": 0.731,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 3333.2,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1531404935",
+     "distance_m": 251.8
+    },
+    {
+     "entity": "ast-sch-osm-w1513992059",
+     "distance_m": 322.4
+    },
+    {
+     "entity": "ast-sch-osm-w1513992057",
+     "distance_m": 875.6
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "unresolved_excluded",
+   "decided_by": "rule:R-unresolved",
+   "reason": "category from the POI source only; the name does not show a general school; no OSM school geometry",
+   "within_package_buffer": false
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "da2389b5-6601-4e4d-a9fd-61764750bc00",
+   "name": "Детский Сад \"Aiya KIDS\"",
+   "lon": 71.48539,
+   "lat": 51.14461,
+   "category_by_source": "school",
+   "confidence": 0.927,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 3371.3,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1513992059",
+     "distance_m": 262.9
+    },
+    {
+     "entity": "ast-sch-osm-w1531404935",
+     "distance_m": 927.7
+    },
+    {
+     "entity": "ast-sch-osm-w1513435687",
+     "distance_m": 1101.2
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "not_school",
+   "decided_by": "rule:R-not-school-name",
+   "reason": "name indicates a non-school place (centre, course, kindergarten, college, arts, sport …)",
+   "within_package_buffer": false
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "7c80febf-b4a0-4058-9b1d-6374b51ed5a6",
+   "name": "Kazbilim.Kz",
+   "lon": 71.4781022,
+   "lat": 51.1387958,
+   "category_by_source": "private_school",
+   "confidence": 0.701,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 3459.7,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1531404935",
+     "distance_m": 115.5
+    },
+    {
+     "entity": "ast-sch-osm-w1513992059",
+     "distance_m": 470.5
+    },
+    {
+     "entity": "ast-sch-osm-w1513992057",
+     "distance_m": 965.9
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "unresolved_excluded",
+   "decided_by": "rule:R-unresolved",
+   "reason": "category from the POI source only; the name does not show a general school; no OSM school geometry",
+   "within_package_buffer": false
+  },
+  {
+   "layer": "overture_places",
+   "record_id": "4102c233-4df2-4b4d-bd07-e7775e324240",
+   "name": "Академия детского развития \"Ребус\"",
+   "lon": 71.48653,
+   "lat": 51.14093,
+   "category_by_source": "school",
+   "confidence": 0.385,
+   "in_app_slice": false,
+   "distance_to_bbox_m": 3693.5,
+   "numbers_in_name": [],
+   "nearest_osm_school_entities": [
+    {
+     "entity": "ast-sch-osm-w1513992059",
+     "distance_m": 341.3
+    },
+    {
+     "entity": "ast-sch-osm-w1531404935",
+     "distance_m": 750.5
+    },
+    {
+     "entity": "ast-sch-osm-w1513992057",
+     "distance_m": 1386.8
+    }
+   ],
+   "same_number_osm_entities": [],
+   "decision": "not_school",
+   "decided_by": "rule:R-not-school-name",
+   "reason": "name indicates a non-school place (centre, course, kindergarten, college, arts, sport …)",
+   "within_package_buffer": false
+  }
+ ],
+ "osm_entities": [
+  {
+   "layer": "osm_grounds",
+   "record_id": "w1443249141@2",
+   "entity": "ast-sch-osm-w1443249141",
+   "name": "Гимназия №6",
+   "distance_to_bbox_m": 0.0,
+   "within_package_buffer": true,
+   "in_app_slice": false,
+   "app_slice_has_poi": true,
+   "decision": "include",
+   "decided_by": "R-general-numbered",
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "poi_attached": [
+    "c97435da-cd05-4549-bec1-ff297e858554"
+   ],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_grounds",
+   "record_id": "w1512939125@1",
+   "entity": "ast-sch-osm-w1512939125",
+   "name": "Школа-гимназия №3",
+   "distance_to_bbox_m": 0.0,
+   "within_package_buffer": true,
+   "in_app_slice": false,
+   "app_slice_has_poi": true,
+   "decision": "include",
+   "decided_by": "R-general-numbered",
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "poi_attached": [
+    "7b39e048-341b-454a-a63c-4b7e1ae73e9f"
+   ],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_grounds",
+   "record_id": "w1512939127@1",
+   "entity": "ast-sch-osm-w1512939127",
+   "name": "Школа-гимназия №4 имени Жамбыла Жабаева",
+   "distance_to_bbox_m": 0.0,
+   "within_package_buffer": true,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "include",
+   "decided_by": "R-general-numbered",
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "poi_attached": [],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_grounds",
+   "record_id": "w1512942774@1",
+   "entity": "ast-sch-osm-w1512942774",
+   "name": "Школа-гимназия №31",
+   "distance_to_bbox_m": 0.0,
+   "within_package_buffer": true,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "include",
+   "decided_by": "R-general-numbered",
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "poi_attached": [],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_grounds",
+   "record_id": "w1513435673@1",
+   "entity": "ast-sch-osm-w1513435673",
+   "name": "Школа-гимназия №7 им. Г. Орманова",
+   "distance_to_bbox_m": 0.0,
+   "within_package_buffer": true,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "include",
+   "decided_by": "R-general-numbered",
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "poi_attached": [],
+   "conflicts": [
+    "68483cf5-b727-4de8-976e-b8183699be1a"
+   ]
+  },
+  {
+   "layer": "osm_grounds",
+   "record_id": "w1513435675@1",
+   "entity": "ast-sch-osm-w1513435675",
+   "name": "Школа-лицей №8",
+   "distance_to_bbox_m": 0.0,
+   "within_package_buffer": true,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "include",
+   "decided_by": "manual_review",
+   "category": "general_school",
+   "access_eligibility": "unknown",
+   "poi_attached": [],
+   "conflicts": [
+    "8ca53724-c558-46b7-826b-13e3e8fbb7e6"
+   ]
+  },
+  {
+   "layer": "osm_building",
+   "record_id": "w30012477@13",
+   "entity": "ast-sch-osmb-w30012477",
+   "name": "Детский сад - Школа гимназия №47",
+   "distance_to_bbox_m": 72.1,
+   "within_package_buffer": true,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "include",
+   "decided_by": "R-general-numbered",
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "poi_attached": [
+    "89d23158-25ff-4829-ab77-2c83d986eed5"
+   ],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_grounds",
+   "record_id": "w1512939123@1",
+   "entity": "ast-sch-osm-w1512939123",
+   "name": "Специальная школа №2",
+   "distance_to_bbox_m": 131.9,
+   "within_package_buffer": true,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "include",
+   "decided_by": "R-special_school",
+   "category": "special_school",
+   "access_eligibility": "known_restricted",
+   "poi_attached": [],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_building",
+   "record_id": "w240938582@10",
+   "entity": "ast-sch-osmb-w240938582",
+   "name": "Школа-лицей №1 им. Талгата Бигельдинова",
+   "distance_to_bbox_m": 144.0,
+   "within_package_buffer": true,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "include",
+   "decided_by": "R-general-numbered",
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "poi_attached": [],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_grounds",
+   "record_id": "w1519562357@1",
+   "entity": "ast-sch-osm-w1519562357",
+   "name": "Общеобразовательная школа №119",
+   "distance_to_bbox_m": 162.3,
+   "within_package_buffer": true,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "include",
+   "decided_by": "R-general-numbered",
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "poi_attached": [],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_building",
+   "record_id": "w30012464@16",
+   "entity": "ast-sch-osmb-w30012464",
+   "name": "Школа-гимназия №2 им. Гафу Каирбекова",
+   "distance_to_bbox_m": 179.2,
+   "within_package_buffer": true,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "include",
+   "decided_by": "R-general-numbered",
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "poi_attached": [
+    "1c004136-8f4d-463b-88fc-4769e8f8dccd"
+   ],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_grounds",
+   "record_id": "w1512942775@1",
+   "entity": "ast-sch-osm-w1512942775",
+   "name": "Школа-лицей №54 имени Акселеу Сейдимбека",
+   "distance_to_bbox_m": 189.2,
+   "within_package_buffer": true,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "include",
+   "decided_by": "R-general-numbered",
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "poi_attached": [
+    "2176c0b8-d2db-47a8-aaf0-3968c198baac"
+   ],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_grounds",
+   "record_id": "w1512939129@1",
+   "entity": "ast-sch-osm-w1512939129",
+   "name": "Школа-лицей №62",
+   "distance_to_bbox_m": 276.3,
+   "within_package_buffer": true,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "include",
+   "decided_by": "R-general-numbered",
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "poi_attached": [
+    "fc123f17-00ec-408d-8801-267e50c547ea"
+   ],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_grounds",
+   "record_id": "w1512942776@1",
+   "entity": "ast-sch-osm-w1512942776",
+   "name": "Школа-гимназия №10 имени Жумабека Ташенева",
+   "distance_to_bbox_m": 371.7,
+   "within_package_buffer": true,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "include",
+   "decided_by": "R-general-numbered",
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "poi_attached": [],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_building",
+   "record_id": "w240110499@5",
+   "entity": "ast-sch-osmb-w240110499",
+   "name": null,
+   "distance_to_bbox_m": 491.7,
+   "within_package_buffer": true,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "include",
+   "decided_by": "R-unnamed-building",
+   "category": "school_unknown_type",
+   "access_eligibility": "unknown",
+   "poi_attached": [],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_grounds",
+   "record_id": "w1513435677@1",
+   "entity": "ast-sch-osm-w1513435677",
+   "name": "Школа-гимназия №87 им. А. Қунанбайулы",
+   "distance_to_bbox_m": 594.4,
+   "within_package_buffer": true,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "include",
+   "decided_by": "R-general-numbered",
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "poi_attached": [],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_building",
+   "record_id": "w240949245@9",
+   "entity": "ast-sch-osmb-w240949245",
+   "name": "Школа-лицей №15",
+   "distance_to_bbox_m": 609.3,
+   "within_package_buffer": true,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "include",
+   "decided_by": "R-general-numbered",
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "poi_attached": [],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_grounds",
+   "record_id": "w1513435676@1",
+   "entity": "ast-sch-osm-w1513435676",
+   "name": "Общеобразовательная школа №16 им. Т. Айбергенова",
+   "distance_to_bbox_m": 672.1,
+   "within_package_buffer": true,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "include",
+   "decided_by": "R-general-numbered",
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "poi_attached": [],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_grounds",
+   "record_id": "w1512939139@1",
+   "entity": "ast-sch-osm-w1512939139",
+   "name": "Детский сад-школа-гимназия №46",
+   "distance_to_bbox_m": 690.9,
+   "within_package_buffer": true,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "include",
+   "decided_by": "R-general-numbered",
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "poi_attached": [],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_grounds",
+   "record_id": "w1513435680@1",
+   "entity": "ast-sch-osm-w1513435680",
+   "name": "Гимназия №5",
+   "distance_to_bbox_m": 706.8,
+   "within_package_buffer": true,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "include",
+   "decided_by": "R-general-numbered",
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "poi_attached": [],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_grounds",
+   "record_id": "w1512939111@2",
+   "entity": "ast-sch-osm-w1512939111",
+   "name": "Школа-лицей №56 имени Шакарима",
+   "distance_to_bbox_m": 844.5,
+   "within_package_buffer": true,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "include",
+   "decided_by": "R-general-numbered",
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "poi_attached": [],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_grounds",
+   "record_id": "w1513435683@1",
+   "entity": "ast-sch-osm-w1513435683",
+   "name": "Школа-лицей №27 им. К. Кайсенова",
+   "distance_to_bbox_m": 862.4,
+   "within_package_buffer": true,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "include",
+   "decided_by": "R-general-numbered",
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "poi_attached": [
+    "1a3ab899-f9f6-483e-989f-8253aadff60a"
+   ],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_grounds",
+   "record_id": "w1512939114@1",
+   "entity": "ast-sch-osm-w1512939114",
+   "name": "Школа-лицей № 35 имени Назира Торекулова",
+   "distance_to_bbox_m": 939.4,
+   "within_package_buffer": true,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "include",
+   "decided_by": "R-general-numbered",
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "poi_attached": [],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_building",
+   "record_id": "w30014478@9",
+   "entity": "ast-sch-osmb-w30014478",
+   "name": "Вечерняя сменная школа №39",
+   "distance_to_bbox_m": 940.4,
+   "within_package_buffer": true,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "include",
+   "decided_by": "R-evening_school",
+   "category": "evening_school",
+   "access_eligibility": "known_restricted",
+   "poi_attached": [],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_grounds",
+   "record_id": "w1512939113@1",
+   "entity": "ast-sch-osm-w1512939113",
+   "name": "Школа-лицей №11 имени Узбекали Жанибекова",
+   "distance_to_bbox_m": 1089.4,
+   "within_package_buffer": true,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "include",
+   "decided_by": "R-general-numbered",
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "poi_attached": [],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_grounds",
+   "record_id": "w1530014507@1",
+   "entity": "ast-sch-osm-w1530014507",
+   "name": "Школа-гимназия №14",
+   "distance_to_bbox_m": 1113.5,
+   "within_package_buffer": true,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "include",
+   "decided_by": "R-general-numbered",
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "poi_attached": [],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_grounds",
+   "record_id": "w1512939116@1",
+   "entity": "ast-sch-osm-w1512939116",
+   "name": "Школа-лицей №60",
+   "distance_to_bbox_m": 1120.1,
+   "within_package_buffer": true,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "include",
+   "decided_by": "R-general-numbered",
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "poi_attached": [
+    "09777f23-2725-4527-8e44-333299060aea"
+   ],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_grounds",
+   "record_id": "w1512939135@1",
+   "entity": "ast-sch-osm-w1512939135",
+   "name": "Средняя школа №25",
+   "distance_to_bbox_m": 1255.5,
+   "within_package_buffer": true,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "include",
+   "decided_by": "R-general-numbered",
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "poi_attached": [],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_grounds",
+   "record_id": "w1530014506@1",
+   "entity": "ast-sch-osm-w1530014506",
+   "name": "Общеобразовательная школа №18",
+   "distance_to_bbox_m": 1298.4,
+   "within_package_buffer": true,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "include",
+   "decided_by": "R-general-numbered",
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "poi_attached": [],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_building",
+   "record_id": "w240485228@4",
+   "entity": null,
+   "name": "Астау Ренессанс балетная школа",
+   "distance_to_bbox_m": 1449.5,
+   "decision": "not_school",
+   "decided_by": "rule:R-not-school-name",
+   "reason": "building=school, but the name shows an arts/sport/other non-general school",
+   "within_package_buffer": true
+  },
+  {
+   "layer": "osm_grounds",
+   "record_id": "w1512939134@1",
+   "entity": "ast-sch-osm-w1512939134",
+   "name": "Областная специализированная школа-лицей-интернат №2 \"Дарын\"",
+   "distance_to_bbox_m": 1575.2,
+   "within_package_buffer": true,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "include",
+   "decided_by": "R-school_for_gifted",
+   "category": "school_for_gifted",
+   "access_eligibility": "known_restricted",
+   "poi_attached": [],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_grounds",
+   "record_id": "w1513435691@1",
+   "entity": "ast-sch-osm-w1513435691",
+   "name": "Школа-лицей №28",
+   "distance_to_bbox_m": 1796.2,
+   "within_package_buffer": true,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "include",
+   "decided_by": "R-general-numbered",
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "poi_attached": [
+    "821166c9-bbb8-48a0-ba5e-dd4d9f5103e3"
+   ],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_building",
+   "record_id": "w241090081@9",
+   "entity": "ast-sch-osmb-w241090081",
+   "name": null,
+   "distance_to_bbox_m": 1851.0,
+   "within_package_buffer": true,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "include",
+   "decided_by": "R-unnamed-building",
+   "category": "school_unknown_type",
+   "access_eligibility": "unknown",
+   "poi_attached": [],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_grounds",
+   "record_id": "w1513435689@1",
+   "entity": "ast-sch-osm-w1513435689",
+   "name": "Школа-гимназия №30",
+   "distance_to_bbox_m": 1979.7,
+   "within_package_buffer": true,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "include",
+   "decided_by": "R-general-numbered",
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "poi_attached": [
+    "59906dca-fbf0-4e8b-9dc5-2da0d7d1b250"
+   ],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_grounds",
+   "record_id": "w1513435686@1",
+   "entity": "ast-sch-osm-w1513435686",
+   "name": "Школа-лицей №48 им. А. Байтурсынулы",
+   "distance_to_bbox_m": 1989.3,
+   "within_package_buffer": true,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "include",
+   "decided_by": "R-general-numbered",
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "poi_attached": [
+    "78fce555-4e3d-48ad-b6a6-dfd4fb69a0b6"
+   ],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_grounds",
+   "record_id": "w260543959@7",
+   "entity": "ast-sch-osm-w260543959",
+   "name": "Средняя школа №36",
+   "distance_to_bbox_m": 2096.7,
+   "within_package_buffer": true,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "include",
+   "decided_by": "R-general-numbered",
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "poi_attached": [
+    "8a0e86d5-58d4-4de5-b31c-f17b85d5c3f2"
+   ],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_building",
+   "record_id": "w1354207762@2",
+   "entity": "ast-sch-osmb-w1354207762",
+   "name": null,
+   "distance_to_bbox_m": 2119.2,
+   "within_package_buffer": false,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "outside_buffer",
+   "decided_by": "R-unnamed-building",
+   "category": "school_unknown_type",
+   "access_eligibility": "unknown",
+   "poi_attached": [],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_grounds",
+   "record_id": "w1512939110@1",
+   "entity": "ast-sch-osm-w1512939110",
+   "name": "Школа-гимназии №17 имени Акана Курманова",
+   "distance_to_bbox_m": 2217.2,
+   "within_package_buffer": false,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "outside_buffer",
+   "decided_by": "R-general-numbered",
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "poi_attached": [],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_grounds",
+   "record_id": "w501653304@4",
+   "entity": "ast-sch-osm-w501653304",
+   "name": "Школа-гимназия №65 им. М. Жумабаева",
+   "distance_to_bbox_m": 2262.6,
+   "within_package_buffer": false,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "outside_buffer",
+   "decided_by": "R-general-numbered",
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "poi_attached": [],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_grounds",
+   "record_id": "w1513435687@1",
+   "entity": "ast-sch-osm-w1513435687",
+   "name": "Школа-гимназия №22",
+   "distance_to_bbox_m": 2273.3,
+   "within_package_buffer": false,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "outside_buffer",
+   "decided_by": "R-general-numbered",
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "poi_attached": [
+    "d5a89817-b8d2-418b-a798-e05d77eec232"
+   ],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_grounds",
+   "record_id": "w1513435703@1",
+   "entity": "ast-sch-osm-w1513435703",
+   "name": "Общеобразовательная школа №114",
+   "distance_to_bbox_m": 2346.7,
+   "within_package_buffer": false,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "outside_buffer",
+   "decided_by": "R-general-numbered",
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "poi_attached": [],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_grounds",
+   "record_id": "w1513435667@1",
+   "entity": "ast-sch-osm-w1513435667",
+   "name": "Школа-гимназия №80 им. С. Сейфуллина",
+   "distance_to_bbox_m": 2398.0,
+   "within_package_buffer": false,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "outside_buffer",
+   "decided_by": "R-general-numbered",
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "poi_attached": [],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_grounds",
+   "record_id": "w1513992057@1",
+   "entity": "ast-sch-osm-w1513992057",
+   "name": "Школа-лицей \"Қазгарыш\" №50 им. Райымбек батыра",
+   "distance_to_bbox_m": 2421.2,
+   "within_package_buffer": false,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "outside_buffer",
+   "decided_by": "R-general-numbered",
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "poi_attached": [],
+   "conflicts": [
+    "f1e75ca9-d77c-4a26-bc1f-08d34122bf92"
+   ]
+  },
+  {
+   "layer": "osm_grounds",
+   "record_id": "w426394353@3",
+   "entity": "ast-sch-osm-w426394353",
+   "name": "Школа-гимназия №32",
+   "distance_to_bbox_m": 2703.2,
+   "within_package_buffer": false,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "outside_buffer",
+   "decided_by": "R-general-numbered",
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "poi_attached": [
+    "5e7898ee-5218-4204-a446-61250f667db0"
+   ],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_grounds",
+   "record_id": "w1513435668@1",
+   "entity": "ast-sch-osm-w1513435668",
+   "name": "Гимназия №67 им. И. Есенберлина",
+   "distance_to_bbox_m": 2725.1,
+   "within_package_buffer": false,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "outside_buffer",
+   "decided_by": "R-general-numbered",
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "poi_attached": [
+    "5b36b919-c04d-4003-9463-eb773dc1f727"
+   ],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_grounds",
+   "record_id": "w1505708407@1",
+   "entity": "ast-sch-osm-w1505708407",
+   "name": "QSI International School",
+   "distance_to_bbox_m": 2807.4,
+   "within_package_buffer": false,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "outside_buffer",
+   "decided_by": "R-school_private_international",
+   "category": "school_private_international",
+   "access_eligibility": "known_restricted",
+   "poi_attached": [
+    "e95ca667-66a7-456e-90b7-4e2eaddbcaca"
+   ],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_grounds",
+   "record_id": "w1163895965@3",
+   "entity": "ast-sch-osm-w1163895965",
+   "name": "Школа-гимназия №26",
+   "distance_to_bbox_m": 2831.6,
+   "within_package_buffer": false,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "outside_buffer",
+   "decided_by": "R-general-numbered",
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "poi_attached": [],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_grounds",
+   "record_id": "w1530014511@1",
+   "entity": "ast-sch-osm-w1530014511",
+   "name": "Общеобразовательная школа №20 им. Ш. Айманова",
+   "distance_to_bbox_m": 2971.3,
+   "within_package_buffer": false,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "outside_buffer",
+   "decided_by": "R-general-numbered",
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "poi_attached": [
+    "2c05798e-f57c-4f56-a553-f8abad4a963e"
+   ],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_grounds",
+   "record_id": "w1513992059@1",
+   "entity": "ast-sch-osm-w1513992059",
+   "name": "Школа-гимназия №51 им. М. Шокая",
+   "distance_to_bbox_m": 3216.0,
+   "within_package_buffer": false,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "outside_buffer",
+   "decided_by": "R-general-numbered",
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "poi_attached": [],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_grounds",
+   "record_id": "w1519562355@1",
+   "entity": "ast-sch-osm-w1519562355",
+   "name": "Школа-лицей №61 им. К. Сатпаева",
+   "distance_to_bbox_m": 3224.0,
+   "within_package_buffer": false,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "outside_buffer",
+   "decided_by": "R-general-numbered",
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "poi_attached": [],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_grounds",
+   "record_id": "w1505708405@1",
+   "entity": "ast-sch-osm-w1505708405",
+   "name": "Школа-лицей №79",
+   "distance_to_bbox_m": 3270.0,
+   "within_package_buffer": false,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "outside_buffer",
+   "decided_by": "R-general-numbered",
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "poi_attached": [],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_grounds",
+   "record_id": "w1531404935@1",
+   "entity": "ast-sch-osm-w1531404935",
+   "name": "Школа-лицей №53 им. Б. Момышулы",
+   "distance_to_bbox_m": 3487.2,
+   "within_package_buffer": false,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "outside_buffer",
+   "decided_by": "R-general-numbered",
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "poi_attached": [],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_grounds",
+   "record_id": "w1454112385@2",
+   "entity": "ast-sch-osm-w1454112385",
+   "name": "Общеобразовательная школа №117",
+   "distance_to_bbox_m": 3505.5,
+   "within_package_buffer": false,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "outside_buffer",
+   "decided_by": "R-general-numbered",
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "poi_attached": [],
+   "conflicts": []
+  },
+  {
+   "layer": "osm_grounds",
+   "record_id": "w1455752636@2",
+   "entity": "ast-sch-osm-w1455752636",
+   "name": "Общеобразовательная школа №115",
+   "distance_to_bbox_m": 4002.4,
+   "within_package_buffer": false,
+   "in_app_slice": false,
+   "app_slice_has_poi": false,
+   "decision": "outside_buffer",
+   "decided_by": "R-general-numbered",
+   "category": "general_school",
+   "access_eligibility": "known_public",
+   "poi_attached": [],
+   "conflicts": []
+  }
+ ]
+}

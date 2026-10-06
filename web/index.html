@@ -8,6 +8,8 @@
     <link rel="icon" href="/favicon.svg" />
     <link rel="stylesheet" href="/vendor/maplibre-gl.css" />
     <link rel="stylesheet" href="/style.css" />
+    <link rel="stylesheet" href="/govtech/shell.css" />
+    <link rel="stylesheet" href="/govtech/school/school.css" />
   </head>
   <body>
     <div id="map" aria-label="Интерактивная карта районов Астаны"></div>
@@ -32,6 +34,7 @@
         <i class="dot"></i><span>Подключение…</span>
       </div>
       <div class="top-actions">
+        <button id="govtech-toggle" class="btn govtech-toggle" aria-pressed="false">Городское планирование</button>
         <button id="reset-demo-button" class="btn" title="Сбросить проекты, событие и текущий чат. Сохранённые планы команд останутся." disabled>Сбросить</button>
         <button id="saved-plans-button" class="btn" title="Сохранение, импорт и сравнение команд">Планы команд</button>
         <button id="print-report-button" class="btn" title="Краткая презентация и печатный отчёт">Отчёт</button>
@@ -177,5 +180,19 @@
     <script defer src="/app.js"></script>
     <script defer src="/interface.js"></script>
     <script defer src="/map.js"></script>
+    <script defer src="/govtech/core/data.js"></script>
+    <script defer src="/govtech/core/evidence.js"></script>
+    <script defer src="/govtech/core/facts.js"></script>
+    <script defer src="/govtech/core/whatif.js"></script>
+    <script defer src="/govtech/core/plan.js"></script>
+    <script defer src="/govtech/core/resilience.js"></script>
+    <script defer src="/govtech/shell.js"></script>
+    <script defer src="/govtech/core/plan-ui.js"></script>
+    <script defer src="/govtech/core/resilience-ui.js"></script>
+    <script defer src="/govtech/k03/routing.js"></script>
+    <script defer src="/govtech/k03/school-access-routing.js"></script>
+    <script defer src="/govtech/school/case.js"></script>
+    <script defer src="/govtech/school/note.js"></script>
+    <script defer src="/govtech/school/school-ui.js"></script>
   </body>
 </html>
