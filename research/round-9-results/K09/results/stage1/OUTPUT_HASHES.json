@@ -1,0 +1,19 @@
+{
+ "build_sha": "d865dd4a124291e10dd0b7bb1d9eada20d34c268",
+ "r8_k09_sha": "e953ddc0bbee6589ca461407c3689064a45e99a1",
+ "tasks_jsonl": {
+  "lines": 6064,
+  "sha256": "c5a16e3ca64f9c878887e0a981a006fd1228cfedeb386633d55b6ad1405e7adf",
+  "regenerate": "python3 scripts/make_build_tasks.py --out <path>  (побайтно воспроизводится)"
+ },
+ "build_jsonl_without_t_optimize_ms": {
+  "sha256": "b044dd48e856c9f750fa567bfe4fd766d7a3ac3c3b4fbaf72b31e485b891f671",
+  "how": "sha256 по строкам json.dumps(sort_keys=True, ensure_ascii=False) без поля t_optimize_ms; два прогона адаптера совпали"
+ },
+ "not_committed": "полные tasks.jsonl (14.8 МБ) и build.jsonl (31 МБ) не коммитятся — воспроизводятся командами; коммитятся ind34 (34 задачи) и сводка сравнения",
+ "environment": {
+  "node": "v22.22.0",
+  "python": "3.11.15",
+  "platform": "linux x64 (облачный контейнер, 4 CPU)"
+ }
+}
