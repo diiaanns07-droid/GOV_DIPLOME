@@ -1,0 +1,21 @@
+{
+  "round": 11,
+  "role": "R10",
+  "pack_sha": "9c2f5c0dae14b46c0697a9dfc7f854351bfd570d",
+  "note": "Each defect is tied to the exact SHA it was observed on. Fixes are proposed as patches for R01 (or the owning role); R10 does not edit product files. Severity: critical (data loss / unauthorized publication / secret exposure in normal use), high, medium, low.",
+  "defects": [
+    {
+      "id": "R10-D001",
+      "title": "Runtime SQLite (.runtime/) is neither git-ignored nor docker-ignored",
+      "severity": "medium",
+      "owner": "R01 (.gitignore/.dockerignore are R01 paths)",
+      "sha": ["b2cb2e02c602c166ba6d47c02d8e902e5478c791", "9c2f5c0dae14b46c0697a9dfc7f854351bfd570d", "c8c1a98 (R02 branch claude/trusting-ptolemy-6ms354)"],
+      "repro": "In a clean checkout of b2cb2e0: mkdir .runtime && touch .runtime/civic.sqlite3 .runtime/civic.sqlite3-wal && git status --porcelain --ignored .runtime",
+      "expected": "CONTRACT §3: 'Хранилище SQLite в .runtime/ … без раздачи файла и без коммита DB'; COMMON: не коммитить SQLite с пользователями/private обращения. Status should be '!! .runtime/' (ignored).",
+      "actual": "'?? .runtime/' (untracked, not ignored): git add . / -A would commit civic_users.password_hash, sessions and private feedback. Dockerfile 'COPY . .' with .dockerignore lacking .runtime would bake the DB into an image. R02 db.py docstring states the folder 'игнорируется Git', which is not true on any pushed branch.",
+      "evidence": "research/round-11-results/R10/COMMANDS.md (16:0x UTC rows)",
+      "patch": "research/round-11-results/R10/patches/R01-gitignore-runtime.patch (git apply --check OK on b2cb2e0; after applying, status is '!! .runtime/')",
+      "status": "open"
+    }
+  ]
+}

@@ -15,3 +15,5 @@
 | 15:43 | `python3 -I -B app.py --port 18501` (base_b2cb2e0) | 1 | ModuleNotFoundError ui: `-I` не добавляет каталог скрипта; для app.py нужен `-E -s -B` |
 | 15:44 | `python3 -E -s -B app.py --port 18501` (base_b2cb2e0) | — | сервер 200 на / |
 | 15:46 | `node tests/civic/R10/browser/probe.cjs --url http://127.0.0.1:18501/ …` | 0 | baseline: 1 canvas, светлый фон, attribution OSM видна, подложка заблокирована (уведомление есть), staff-вызовов нет |
+| 15:55 | `git status --porcelain --ignored .runtime` (b2cb2e0 worktree, после `touch .runtime/civic.sqlite3`) | 0 | `?? .runtime/` — не игнорируется (R10-D001) |
+| 15:56 | то же после патча `.gitignore` | 0 | `!! .runtime/` — игнорируется; `git apply --check patches/R01-gitignore-runtime.patch` OK |

@@ -1,0 +1,33 @@
+diff --git a/.gitignore b/.gitignore
+index 62c0df7..f480c9d 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -26,3 +26,13 @@ venv/
+ .DS_Store
+ Thumbs.db
+ desktop.ini
++
++# Runtime civic data (SQLite with editor password hashes, sessions, private feedback).
++# Never commit or serve: R02/R06 keep it in .runtime/ outside web/.
++.runtime/
++*.sqlite
++*.sqlite3
++*.sqlite-wal
++*.sqlite-shm
++*.sqlite3-wal
++*.sqlite3-shm
+diff --git a/.dockerignore b/.dockerignore
+index 72a7d19..e0c2b4c 100644
+--- a/.dockerignore
++++ b/.dockerignore
+@@ -14,3 +14,10 @@ __pycache__
+ .claude
+ *.zip
+ *.log
++
++# Runtime civic SQLite (password hashes, sessions, private feedback) must not enter images
++.runtime
++*.sqlite
++*.sqlite3
++*.sqlite*-wal
++*.sqlite*-shm
