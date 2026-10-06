@@ -1,0 +1,20 @@
+--- a/prototypes/city-evidence/web/plan.js
++++ b/prototypes/city-evidence/web/plan.js
+@@ -169,6 +169,8 @@
+   /* evaluatePlan(ctx, scenario, selectedIds) -> rows (input order of control points) + metrics + feasibility.
+    * nearest_* = {kind: "source"|"hypothetical", id}; ties: mm, then source before hypothetical, then ID. */
+   function evaluatePlan(ctx, sc, selectedIds, pre) {
++    // public entry: re-validate (limits, refs) unless called internally with a precomputation of an already clean copy
++    if (!pre) sc = validatePlanScenario(sc, ctx, { requirePoints: false });
+     const P = pre || precompute(ctx, sc);
+     const ids = [...new Set(selectedIds)].sort(cmpStr);
+     for (const id of ids) if (!P.candIndex.has(id)) fail("unknown_ref", `кандидата ${id} нет`);
+@@ -211,6 +213,8 @@
+   /* createSearch(ctx, validatedScenario, {request_id}) -> { total, examined, step(n) -> done, cancel(), result() }.
+    * Constraints are checked before any enumeration; the result is "optimal" only after every subset was examined. */
+   function createSearch(ctx, sc, opts) {
++    // public entry: size/limits are checked BEFORE precomputation; the clean copy also ignores later mutation of the caller's object
++    sc = validatePlanScenario(sc, ctx, { requirePoints: false });
+     const F = (opts && opts.F) || null;
+     const request_id = opts && opts.request_id !== undefined ? opts.request_id : null;
+     const P = precompute(ctx, sc), nP = P.pts.length, nC = P.cands.length;

@@ -1,0 +1,143 @@
+{
+ "app_root": "/tmp/claude-0/-home-user-GOV-DIPLOME/58b57e28-2f87-51c8-8e87-47271ca72a4c/scratchpad/r9p/prototypes/city-evidence",
+ "timeout_ms": 8000,
+ "runs": [
+  {
+   "mode": "validated",
+   "n": 16,
+   "wall_ms": 129,
+   "timed_out": false,
+   "signal": null,
+   "child": [
+    {
+     "n": 16,
+     "mode": "validated",
+     "started": true,
+     "total_subsets": 65536
+    },
+    {
+     "n": 16,
+     "mode": "validated",
+     "done": true,
+     "status": "optimal",
+     "evaluated": 65536,
+     "ms": 39
+    }
+   ]
+  },
+  {
+   "mode": "validated",
+   "n": 20,
+   "wall_ms": 88,
+   "timed_out": false,
+   "signal": null,
+   "child": [
+    {
+     "n": 20,
+     "mode": "validated",
+     "rejected": "too_many_candidates"
+    }
+   ]
+  },
+  {
+   "mode": "raw",
+   "n": 16,
+   "wall_ms": 140,
+   "timed_out": false,
+   "signal": null,
+   "child": [
+    {
+     "n": 16,
+     "mode": "raw",
+     "started": true,
+     "total_subsets": 65536
+    },
+    {
+     "n": 16,
+     "mode": "raw",
+     "done": true,
+     "status": "optimal",
+     "evaluated": 65536,
+     "ms": 44
+    }
+   ]
+  },
+  {
+   "mode": "raw",
+   "n": 20,
+   "wall_ms": 115,
+   "timed_out": false,
+   "signal": null,
+   "child": [
+    {
+     "n": 20,
+     "mode": "raw",
+     "rejected_at_createSearch": "too_many_candidates"
+    }
+   ]
+  },
+  {
+   "mode": "raw",
+   "n": 22,
+   "wall_ms": 95,
+   "timed_out": false,
+   "signal": null,
+   "child": [
+    {
+     "n": 22,
+     "mode": "raw",
+     "rejected_at_createSearch": "too_many_candidates"
+    }
+   ]
+  },
+  {
+   "mode": "raw",
+   "n": 30,
+   "wall_ms": 112,
+   "timed_out": false,
+   "signal": null,
+   "child": [
+    {
+     "n": 30,
+     "mode": "raw",
+     "rejected_at_createSearch": "too_many_candidates"
+    }
+   ]
+  },
+  {
+   "mode": "mutated",
+   "n": 22,
+   "wall_ms": 116,
+   "timed_out": false,
+   "signal": null,
+   "child": [
+    {
+     "n": 22,
+     "mode": "mutated",
+     "rejected_at_createSearch": "too_many_candidates"
+    }
+   ]
+  },
+  {
+   "mode": "mutated",
+   "n": 30,
+   "wall_ms": 122,
+   "timed_out": false,
+   "signal": null,
+   "child": [
+    {
+     "n": 30,
+     "mode": "mutated",
+     "rejected_at_createSearch": "too_many_candidates"
+    }
+   ]
+  }
+ ],
+ "verdict": {
+  "validated_path_guarded": true,
+  "raw_path_unguarded": false,
+  "mutated_path_unguarded": false,
+  "hang_reproduced": false,
+  "all_oversize_rejected": true
+ }
+}
