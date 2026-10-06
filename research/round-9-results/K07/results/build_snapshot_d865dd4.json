@@ -1,0 +1,171 @@
+{
+ "build_sha": "d865dd4a124291e10dd0b7bb1d9eada20d34c268",
+ "source_dirs": [
+  "prototypes/city-evidence/web",
+  "prototypes/city-evidence/tests"
+ ],
+ "files": [
+  {
+   "file": "tests/.gitignore",
+   "bytes": 5,
+   "sha256": "a888b9df89402a815bdb15d30c5280b090be11655ab4cc2299ce748d44cd6ed4",
+   "identical": true
+  },
+  {
+   "file": "tests/conformance.cjs",
+   "bytes": 8149,
+   "sha256": "670cb2358479b07006dc04c025a8994b77bb6bfb4362667a95b147714b253bfa",
+   "identical": true
+  },
+  {
+   "file": "tests/expected_explanations.json",
+   "bytes": 17976,
+   "sha256": "fc0c85939a13be7a93585cdb92e82317f244cf4ac39f55d3cf3a853a4727677c",
+   "identical": true
+  },
+  {
+   "file": "tests/expected_plans.json",
+   "bytes": 111998,
+   "sha256": "e0e3bd0913dc6c636a934a2f7be9e8257f3ef626ce1dd6886a48e37e31178f19",
+   "identical": true
+  },
+  {
+   "file": "tests/expected_whatif.json",
+   "bytes": 39335,
+   "sha256": "adf227f612e6cf86ab628a97aec44a9074e5c4c7a91c7cc69b5425021c1362bc",
+   "identical": true
+  },
+  {
+   "file": "tests/plan.cjs",
+   "bytes": 19810,
+   "sha256": "915a8d727637117299ce7442074308506702b662dae14ad1f991589a6243c310",
+   "identical": true
+  },
+  {
+   "file": "tests/plan_smoke.cjs",
+   "bytes": 20376,
+   "sha256": "a5ebb9fb0deb14f26094eff6cbc7c52fee5902464a024c42c7d01d5ac71b3df5",
+   "identical": true
+  },
+  {
+   "file": "tests/smoke.cjs",
+   "bytes": 12631,
+   "sha256": "db947b46a5feaf91b28626442d99a28cdcc642ca6e9041599dc666deb2c970b2",
+   "identical": true
+  },
+  {
+   "file": "tests/test_contract.py",
+   "bytes": 4072,
+   "sha256": "623c25d07ceba02bb92ec924b1abea4fa0674778388d59d4c70cbfbf28b6ef8d",
+   "identical": true
+  },
+  {
+   "file": "tests/test_inputs.py",
+   "bytes": 10734,
+   "sha256": "050f3ed1551dab4eef06db6c36cedc9ceaa8c1f2a28b2205c878996005577ac6",
+   "identical": true
+  },
+  {
+   "file": "tests/test_plan_oracle.py",
+   "bytes": 2731,
+   "sha256": "8b0d16e442a0ee7ec9fecf631760d7df87b398886c137fe2a39297fb4d410475",
+   "identical": true
+  },
+  {
+   "file": "tests/test_whatif.py",
+   "bytes": 3214,
+   "sha256": "dda9da8a344b115d4ab0e553ccbf8468cf472e20ea438468d18f900ca40d415d",
+   "identical": true
+  },
+  {
+   "file": "tests/whatif.cjs",
+   "bytes": 10961,
+   "sha256": "881cc0406490b51d57efb473b9af5ba06420e75c391f858411aeb757f35ad3e0",
+   "identical": true
+  },
+  {
+   "file": "tests/whatif_smoke.cjs",
+   "bytes": 12526,
+   "sha256": "2fa30cead34f6e27d115aebafb0dba26a90bbce746bd8f28c33bba16068e68cb",
+   "identical": true
+  },
+  {
+   "file": "web/app.js",
+   "bytes": 54417,
+   "sha256": "873eda35849f13d632e116a8e2e963d4a5e1707febbaeb0180bf7e7f63b0c8b9",
+   "identical": true
+  },
+  {
+   "file": "web/attribution/ATTRIBUTION.md",
+   "bytes": 7708,
+   "sha256": "4de942304f8657f1747a8f8976887255fad4a76d4c35129aa871ed1cbb9615c6",
+   "identical": true
+  },
+  {
+   "file": "web/attribution/LICENSES/Apache-2.0.txt",
+   "bytes": 10280,
+   "sha256": "074e6e32c86a4c0ef8b3ed25b721ca23aca83df277cd88106ef7177c354615ff",
+   "identical": true
+  },
+  {
+   "file": "web/attribution/LICENSES/CDLA-Permissive-2.0.txt",
+   "bytes": 2354,
+   "sha256": "4531a67d443284d93ffed0803df5b10634aff21c3d77e381f2d48af01d875868",
+   "identical": true
+  },
+  {
+   "file": "web/attribution/LICENSES/ODbL-1.0.txt",
+   "bytes": 25289,
+   "sha256": "77d2692c3d64efdd4db18dce2407699baf62930e2b50d6e5ed90b48acf16b7c1",
+   "identical": true
+  },
+  {
+   "file": "web/attribution/attribution.json",
+   "bytes": 32634,
+   "sha256": "313c9b0eaaa695aa4a0221077bc5487fed91ff443d1b204bafb80b0cc4bf8588",
+   "identical": true
+  },
+  {
+   "file": "web/data.js",
+   "bytes": 1070322,
+   "sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+   "identical": true
+  },
+  {
+   "file": "web/evidence.js",
+   "bytes": 151637,
+   "sha256": "df736e986145da33dee60f692e020486720b72db5b6116af31640cc8693b11b9",
+   "identical": true
+  },
+  {
+   "file": "web/facts.js",
+   "bytes": 28467,
+   "sha256": "3994a275ddb8c0cb857478365d94810a945752a96fff10d53d37bc8dc9808c64",
+   "identical": true
+  },
+  {
+   "file": "web/index.html",
+   "bytes": 14628,
+   "sha256": "fe834b921ddc237a64f01b65e2d35cbcd95a5ebbb94b65cb2feef49a5c0f1365",
+   "identical": true
+  },
+  {
+   "file": "web/plan-ui.js",
+   "bytes": 45081,
+   "sha256": "a9e066a196b0bf31ce80b42d9118659e380c68662baef0118056f03ba548cb71",
+   "identical": true
+  },
+  {
+   "file": "web/plan.js",
+   "bytes": 38760,
+   "sha256": "b2029640f00c10f6018f469ba4e157705d405e1de65178bca824769d50b9a3c7",
+   "identical": true
+  },
+  {
+   "file": "web/whatif.js",
+   "bytes": 15692,
+   "sha256": "e8f7c18d9b839983af4fed6e2a82532531d2ff26545b524fdcedb42373c64deb",
+   "identical": true
+  }
+ ]
+}

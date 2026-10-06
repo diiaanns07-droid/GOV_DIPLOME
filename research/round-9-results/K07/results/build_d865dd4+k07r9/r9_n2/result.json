@@ -1,0 +1,67 @@
+{
+ "kind": "K07 r9 N2 assessment (horizontal scroll of the Pareto table at 390 px)",
+ "label": "build_d865dd4+k07r9",
+ "sha": "d865dd4+k07r9",
+ "app_root": "city-evidence",
+ "total": 3,
+ "pass": [
+  "N2a",
+  "N2b",
+  "N2c"
+ ],
+ "fail": [],
+ "test_incompatible": [],
+ "advisory_N2d": {
+  "role": "region",
+  "name": "Граница Парето (прокручивается)",
+  "tabindex": "0",
+  "recommended": false,
+  "text": "for screen readers and non-Chromium keyboards: role=region, aria-label and tabindex=0 on the scroll container"
+ },
+ "errors": [],
+ "checks": [
+  {
+   "id": "N2a",
+   "expect": "precondition: at 390 px the Pareto table overflows its card horizontally (otherwise N2 does not apply)",
+   "verdict": "PASS",
+   "observed": {
+    "overflow": true,
+    "scrollWidth": 392,
+    "clientWidth": 328,
+    "role": "region",
+    "name": "Граница Парето (прокручивается)",
+    "tabindex": "0",
+    "tableName": "Граница Парето",
+    "cells": 32
+   }
+  },
+  {
+   "id": "N2b",
+   "expect": "no information loss: no Pareto cell is clipped and every cell can be scrolled fully into view (empty cells are reported, not counted)",
+   "verdict": "PASS",
+   "observed": {
+    "bad": [],
+    "n": 0,
+    "visibleWidth": 328,
+    "emptyCellsByColumn": {
+     "3": 6
+    }
+   }
+  },
+  {
+   "id": "N2c",
+   "expect": "keyboard: the scroll container is reached by Tab from «Найти точные оптимумы» and ArrowRight scrolls it horizontally",
+   "verdict": "PASS",
+   "observed": {
+    "tabs": 4,
+    "focused": "DIV.tablewrap",
+    "scrollLeft": [
+     0,
+     64
+    ],
+    "focusableByAttribute": "0",
+    "note": "Chromium ≥130 makes scrollers without focusable children keyboard-focusable; other browsers need tabindex=0"
+   }
+  }
+ ]
+}
