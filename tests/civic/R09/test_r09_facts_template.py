@@ -138,3 +138,23 @@ def test_question_validation():
     for bad in (None, 5, ["когда"], {"q": 1}, "", "   ​ ", "я" * 501):
         with pytest.raises(AssistantInputError):
             build_answer(bad, ctx)
+
+
+def test_cancelled_object_never_presents_plan_as_expected_end(data):
+    item = dict(data["objects"]["planned_end_passed"], status="cancelled", id="r09-synth-cancelled")
+    ctx = build_verified_context(item)
+    for q in ("Когда закончат?", "Работы уже закончены?", "Почему перенесли срок?"):
+        text = build_answer(q, ctx)["text"]
+        assert "«отменено»" in text and "не ожидаемое окончание" in text, (q, text)
+        assert "Завершение работ не подтверждено" not in text
+    kk = build_answer("Жұмыс қашан аяқталады?", ctx)["text"]
+    assert "«тоқтатылды»" in kk
+
+
+def test_ui_example_chips_map_to_expected_intents(ctx_of):
+    from pathlib import Path
+    js = Path("web/civic/assistant/assistant.js").read_text(encoding="utf-8")
+    block = js[js.index("const EXAMPLES = ["):js.index("];", js.index("const EXAMPLES = ["))]
+    chips = re.findall(r'"([^"]+)"', block)
+    expected = ["overview", "schedule", "delay_reason", "responsible", "budget", "sources", "status", "schedule"]
+    assert [build_answer(q, ctx_of("full"))["intent"] for q in chips] == expected

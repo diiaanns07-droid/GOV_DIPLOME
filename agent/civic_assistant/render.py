@@ -77,6 +77,7 @@ T = {
         "actual_end": "Фактическая дата окончания: {d}.",
         "planned_not_actual": "Плановый срок — это план; он не означает, что работы закончены.",
         "completed_status": "В карточке указан статус «завершено».",
+        "cancelled": "В карточке указан статус «отменено»: даты ниже относятся к прежнему плану, это не ожидаемое окончание.",
         "completed_no_actual": "Фактическая дата окончания в карточке не указана.",
         "not_confirmed_done": "Завершение работ не подтверждено: в карточке нет даты фактического окончания.",
         "actual_status_conflict": "В карточке есть дата фактического окончания ({d}), но статус — «{status}». "
@@ -129,6 +130,7 @@ T = {
         "actual_end": "Нақты аяқталу күні: {d}.",
         "planned_not_actual": "Жоспарлы мерзім — жоспар ғана; ол жұмыстың аяқталғанын білдірмейді.",
         "completed_status": "Карточкада «аяқталды» мәртебесі көрсетілген.",
+        "cancelled": "Карточкада «тоқтатылды» мәртебесі көрсетілген: төмендегі күндер бұрынғы жоспарға қатысты, күтілетін аяқталу емес.",
         "completed_no_actual": "Нақты аяқталу күні карточкада көрсетілмеген.",
         "not_confirmed_done": "Жұмыстың аяқталуы расталмаған: карточкада нақты аяқталу күні жоқ.",
         "actual_status_conflict": "Карточкада нақты аяқталу күні бар ({d}), бірақ мәртебесі — «{status}». "
@@ -262,6 +264,9 @@ def r_status(facts, lang):
         else:
             out.append(_req(_st(t["completed_no_actual"], ["schedule.actual_end"], kind="missing")))
         return out
+    if status == "cancelled":
+        out.append(_req(_st(t["cancelled"], ["object.status"], kind="notice", facts=facts)))
+        return out
     out.append(_req(_st(t["status"].format(status=STATUS_LABELS[lang][status]), ["object.status"], facts=facts)))
     if actual:
         out.append(_st(t["actual_status_conflict"].format(d=fmt_date(actual, lang), status=STATUS_LABELS[lang][status]),
@@ -274,9 +279,15 @@ def r_status(facts, lang):
     return out
 
 
+def _cancelled_notice(facts, lang):
+    if _v(facts, "object.status") == "cancelled":
+        return [_req(_st(T[lang]["cancelled"], ["object.status"], kind="notice", facts=facts))]
+    return []
+
+
 def r_schedule(facts, lang, brief=False):
     t = T[lang]
-    out = []
+    out = [] if brief else _cancelled_notice(facts, lang)
     current = _v(facts, "schedule.current_planned_end")
     kind = "fact" if current else "missing"
     out.append(_req(_st(t["current_end"].format(d=fmt_date(current, lang)), ["schedule.current_planned_end"], kind,
@@ -316,7 +327,7 @@ def _history(facts):
 
 def r_delay_reason(facts, lang):
     t = T[lang]
-    out = []
+    out = _cancelled_notice(facts, lang)
     for key, fid in (("original_end", "schedule.original_planned_end"), ("current_end", "schedule.current_planned_end")):
         val = _v(facts, fid)
         out.append(_st(t[key].format(d=fmt_date(val, lang)), [fid], "fact" if val else "missing", facts))
