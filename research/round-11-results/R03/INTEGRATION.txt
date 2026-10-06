@@ -1,20 +1,93 @@
-R03 -> R01 INTEGRATION (draft, checkpoint 1; final version replaces this text)
+R03 -> R01 INTEGRATION — public map, object cards (civic-v1, round 11, Astana)
 
-Files (load order, after MapLibre and before the R01 shell code that calls mount):
-  <link rel="stylesheet" href="/civic/map/civic-map.css">        (after /style.css)
-  <script defer src="/civic/map/civic-map-core.js"></script>
-  <script defer src="/civic/map/civic-map.js"></script>
+Source of truth: branch claude/zen-mendel-e79iiv; take the SHA named in DELIVERY.json "code_commit"
+(or the final head reported in the R03 handoff). Import by path, no branch merge.
 
-Hook (R01 shell, once GOVTECH.map is non-null, i.e. after the map 'load'):
-  const civicMap = window.CivicMap.mount({
-    root: document.getElementById("civic-public"),   // empty element owned by the shell
-    map: window.GOVTECH.map,                           // the one MapLibre instance
-    api,                                               // R01 api.request(method, path, body) -> Promise<data>
-    onSelect: (obj, meta) => {...},                    // obj = {id,title,kind,status,geometry,...} | null
-    onFeedback: ({objectId, geometry}) => window.CivicFeedback.mount({root, api, objectId, geometry}),
-  });
-  ...
-  civicMap.destroy();   // on leaving the civic mode
+1. FILES TO IMPORT (only these three are product code)
+   web/civic/map/civic-map-core.js   pure civic-v1 logic, window.CivicMapCore (also Node-requirable for tests)
+   web/civic/map/civic-map.js        window.CivicMap.mount(...)
+   web/civic/map/civic-map.css       styles, every selector under .civic-r03-*
+   Optional to copy for R10/R01 checks: tests/civic/R03/ (node tests, Playwright suite, R02 read-only harness).
+   Do NOT import research/round-11-results/R03/stand/ into web/: it is a verification stand with a mock API.
 
-Paths requested: GET /objects[?cursor=] and GET /objects/{id} relative to /api/civic/v1
-(pass option pathPrefix if api.request expects full paths). No /staff endpoint is ever called.
+2. SERVER (ui/web_server.py, R01-owned) — explicit asset allowlist
+   CIVIC_ASSETS = (..., "map/civic-map-core.js", "map/civic-map.js", "map/civic-map.css")
+   => served at /civic/map/civic-map-core.js, /civic/map/civic-map.js, /civic/map/civic-map.css
+
+3. web/index.html (R01-owned) — order
+   <head>  ... /style.css ... /civic/shell/shell.css
+           <link rel="stylesheet" href="/civic/map/civic-map.css" />        (after style.css; order vs shell.css does not matter)
+   <body>  ... existing scripts (app.js, interface.js, map.js, govtech/*) ...
+           <script defer src="/civic/map/civic-map-core.js"></script>        (must precede civic-map.js)
+           <script defer src="/civic/map/civic-map.js"></script>
+           <script defer src="/civic/shell/fallback.js"></script>             (R01; window.CivicMap now wins over the fallback)
+           <script defer src="/civic/shell/shell.js"></script>
+   MapLibre (/vendor/maplibre-gl.js) is only needed for the hover tooltip (maplibregl.Popup); the layers use the map instance passed in.
+
+4. HOOK — R01 shell already calls it correctly (origin/claude/affectionate-ride-bol5v8 @ f639a4b, shell.js mountPublic):
+     mount("map", $c("civic-map-root"), { map: currentMap(), onSelect, onFeedback })
+   -> CivicMap.mount({ root, map, api, onSelect, onFeedback }) returns { refresh, selectObject, destroy }
+   plus optional extras: setMap(map) (late binding when the map was null), fitAll(), getState(), getLayout(),
+   layerIds(), sourceId, setFilters(f).
+   Layout is automatic: root is not a direct child of <body> -> "embedded" (no own positioning, no own scroll,
+   own heading hidden; R01's panel/sheet/heading stay in charge). Root directly in <body> -> "overlay"
+   (own desktop side panel + mobile bottom sheet; used by the stand). Force with option layout:"embedded"|"overlay".
+   Other options (all optional): mapPadding {top,right,bottom,left} (overrides computed camera padding),
+   persistFilters (default true; localStorage key civic-r03:filters:v1 with kinds/statuses/period/from/to/area only),
+   permalink (default false — R01 owns #object=), fitOnLoad (default false), title, now() (clock for tests),
+   pathPrefix (default "" — paths are relative to /api/civic/v1 as in R01 api.request), autoload (default true).
+
+5. EVENTS / CALLBACKS
+   onSelect(obj | null, { source })   once per selection change. obj = frozen {id,title,kind,status,geometry,
+                                      precision,evidence,schedule}; null when the card is closed (source "close").
+                                      source: "list" | "map" | "api" | "permalink" | "close".
+                                      Compatible with R01 onSelect(item) -> item.id.
+   onFeedback({ objectId, title, geometry, object })   from the card button «Задать вопрос по объекту».
+                                      Compatible with R01 openFeedback(target) -> target.objectId / target.geometry
+                                      and with CivicFeedback.mount({root, api, objectId, geometry}).
+   DOM CustomEvent "civic-r03:layout" on root (non-bubbling): {mobile, sheet, view, rect} — for hosts that place
+                                      the attribution/toasts relative to the overlay sheet.
+   No other globals are written. document.body, other modules' state and the hash are not touched (permalink off).
+
+6. API USE (public, GET only; never /staff)
+   GET /objects            then GET /objects?cursor=<next_cursor> until null (max 20 pages; truncation is shown)
+   GET /objects/{id}       card details + public history
+   Called as api.request("GET", path, undefined, { signal }) — the 4th argument (R01 api.request option) aborts
+   superseded requests; implementations without it are fine (stale responses are also dropped by a sequence guard).
+   Envelope {ok,data} is unwrapped defensively if an api returns it raw. Errors read {status, code}:
+   network/timeout/aborted/404/429/503/5xx have distinct Russian texts and a «Повторить» button.
+   Filtering (kind, status, planned period, search, visible area) is client-side over the published list, so facet
+   counts and the honest «без плановых дат / неполный интервал / без места на карте» notes are exact.
+
+7. MAP (the one MapLibre instance; never creates a map)
+   Source  civic-r03-objects (GeoJSON, promoteId cid)
+   Layers  civic-r03-area-fill, -area-line, -area-line-approx, -line-casing, -line, -line-approx,
+           -synthetic-outline, -selected-line           (inserted before the first basemap label layer)
+           civic-r03-point-halo, -point-synthetic, -point, -selected-point   (on top)
+   Handlers map.on: click (one handler, queryRenderedFeatures on R03 layers), mousemove, mouseout, styledata
+           (re-adds R03 layers after setStyle, e.g. map.js offline fallback), moveend (visible-area filter).
+   destroy() removes all of the above, the tooltip popup, the cursor change, timers/rAF, root listeners and restores
+   the root element (children, class, role, aria-label) exactly. Verified twice in a row in the browser suite.
+   Null geometry -> list only. Approximate geometry -> dashed line/halo, never mixed with source geometry.
+   Synthetic -> grey dotted ring/outline on the map, «Демо» badge in the list, banner in the card, note in tooltip.
+   Camera: selection fits the object into the part of the map not covered by the host panel (outermost
+   absolute/fixed ancestor of root), keeps the user's pitch/bearing (2D/3D), duration 0 with prefers-reduced-motion.
+   No extrusions, heights or traffic are drawn.
+
+8. STYLES — reuse of the original light UI without editing web/style.css
+   civic-map.css reads the existing tokens --ink, --line, --paper, --green, --shadow, --ease (with fallbacks) and
+   keeps the original font stack, 18px/13px radii and light gradient header. Text tokens inside the module are
+   darker than --muted (#6d7c76 is 4.3:1 on white) to reach >= 4.5:1. Nothing in style.css needs to change.
+   The stand demonstrates reuse of .topbar, .brand*, .map-tools, .icon-btn, .map-status unchanged.
+
+9. KNOWN CONSTRAINTS FROM R02 (origin/claude/trusting-ptolemy-6ms354 @ 6a28de2)
+   R02 refuses tenge amounts on synthetic records and titles > 200 characters; the R03 R02 harness adapts its seed
+   accordingly. Public history changed_fields are strings; timestamps come in UTC (+00:00).
+
+10. HOW TO VERIFY AFTER IMPORT
+   node --test tests/civic/R03/core.test.mjs
+   node --test --test-concurrency=1 tests/civic/R03/browser.test.mjs           (stand, mock api)
+   node --test --test-concurrency=1 tests/civic/R03/r02_readonly.test.mjs      (R02 CivicService read-only)
+   In the integrated app (R01/R10): open the civic mode, check that window.CivicMap is used (not the fallback),
+   map style has 12 civic-r03-* layers, selecting a list item opens the card and moves the camera clear of the panel,
+   mode switch to «Учебная модель» destroys the module (no civic-r03-* layers left).

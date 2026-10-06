@@ -17,13 +17,16 @@
   const now = fixed ? () => new Date(fixed + "T12:00:00") : () => new Date();
 
   const get = (p) => fetch(p).then((r) => { if (!r.ok) throw new Error(p + " " + r.status); return r.json(); });
-  const [objs, hist, hostile] = await Promise.all([
+  const real0 = q.get("api") === "real";
+  const [objs, hist, hostile] = real0 ? [{ items: [] }, { history: {} }, { items: [] }] : await Promise.all([
     get("/tests/civic/R03/fixtures/objects.json"),
     get("/tests/civic/R03/fixtures/history.json"),
     q.get("hostile") ? get("/tests/civic/R03/fixtures/hostile.json") : Promise.resolve({ items: [] }),
   ]);
   const fail = q.get("fail") || "";
-  const api = window.R03CreateMockApi({
+  // api=real: same-origin /api/civic/v1 (R02 read-only harness); otherwise the contract mock.
+  const real = q.get("api") === "real";
+  const api = real ? window.R03CreateFetchApi("/api/civic/v1") : window.R03CreateMockApi({
     items: q.get("empty") ? [] : objs.items.concat(hostile.items),
     history: hist.history,
     delay: Number(q.get("delay") || 80),
@@ -32,6 +35,7 @@
     leakDrafts: q.get("leak") === "1",
   });
 
+  if (real) document.getElementById("stand-flag").textContent = "СТЕНД · R02 CivicService (read-only) · без оболочки R01";
   const stand = { api, instance: null, map: null, mounts: 0, destroys: 0, basemap: "pending", feedback: [], selects: [] };
   window.__stand = stand;
 

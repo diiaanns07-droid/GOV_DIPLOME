@@ -12,7 +12,7 @@
     "research/handoffs/astana/R03/round-11/STATUS.md"
   ],
   "integration_notes": "research/round-11-results/R03/INTEGRATION.txt",
-  "code_commit": null,
+  "code_commit": "9cb1a2e0d0373922419897060951264a17221f27",
   "checks": [
     {
       "name": "core-unit-tests",
@@ -43,11 +43,18 @@
       "reason": "Needs OpenFreeMap vector tiles; camera tilt verified, buildings not"
     },
     {
-      "name": "integration-with-R01-shell-and-R02-backend",
+      "name": "r02-civicservice-readonly",
+      "status": "PASS",
+      "command": "node --test --test-concurrency=1 tests/civic/R03/r02_readonly.test.mjs",
+      "input": "R02 ui/civic_store @ 6a28de2 (git archive into temp dir), seeded via R02 staff API with R03 synthetic fixtures; browser reads only",
+      "reason": "2/2: 11 published of 13 seeded (draft+archived hidden), card shows R02 history reschedule reason, real 404, null geometry list-only, browser made only GET /objects*, 390x844 no overflow"
+    },
+    {
+      "name": "r01-shell-integration",
       "status": "NOT_RUN",
       "command": null,
-      "input": null,
-      "reason": "NOT_INTEGRATED: no R01/R02 round-11 delivery on origin at checkpoint 2"
+      "input": "origin/claude/affectionate-ride-bol5v8 @ f639a4b (read only)",
+      "reason": "NOT_INTEGRATED: R01 has not imported web/civic/map yet; compatibility reviewed from its shell.js and an R01-like host panel test in the stand"
     }
   ],
   "limitations": [
@@ -55,5 +62,5 @@
     "OpenFreeMap blocked in sandbox: basemap streets and 3D buildings NOT_RUN",
     "Client-side filtering over all published objects (cursor pages up to 20); very large datasets would need server-side filters"
   ],
-  "next_step": "Adversarial review of module; read R01/R02 branches if pushed; finalize INTEGRATION.txt"
+  "next_step": "Apply verified review findings; then final DELIVERY (ready)."
 }
