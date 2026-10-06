@@ -29,9 +29,8 @@ R09 — ИНСТРУКЦИЯ ДЛЯ R01 (ИНТЕГРАЦИЯ ПОМОЩНИКА
                load_scenario_result=load_scenario,           # scenario_id = case_id кейса R07
                provider=None,                                # шаблон; LLM — см. п.5
                extractor=None,                               # шаблонное извлечение; LLM — см. п.5
-               resolve_principal=lambda ctx: _principal_dict(store.resolve_principal(ctx)),
+               resolve_principal=store.resolve_principal,   # Principal R02 (атрибут role) или dict
            )
-       # _principal_dict: Principal R02 -> {"name": ..., "role": "editor"|"admin"} или None.
 
    В registry.handle для owner == "assistant":
        return service.handle(method, rel_path, query, body, context)
@@ -79,7 +78,7 @@ R09 — ИНСТРУКЦИЯ ДЛЯ R01 (ИНТЕГРАЦИЯ ПОМОЩНИКА
    R09 не выполнял ни одного платного вызова; см. PROVIDER_CONTRACT.txt.
 
 6. ПРОВЕРКИ ДЛЯ R01/R10
-   python3 -m pytest tests/civic/R09 -q                         (105 python + 1 браузерный, нужен node+playwright)
+   python3 -m pytest tests/civic/R09 -q                         (python + 1 браузерный, нужен node+playwright)
    python3 -m agent.civic_assistant.evaluate --ui               (EVAL_REPORT.txt, eval_results.json)
    python3 research/round-11-results/R09/check_r02_r07_integration.py --r02 <R02 checkout> --r07 <R07 checkout>
    python3 tests/civic/R09/demo_server.py 8765  ->  http://127.0.0.1:8765/web/civic/assistant/demo.html

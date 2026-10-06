@@ -193,3 +193,27 @@ def test_extract_ok_and_validation():
     assert post(e, dict(BODY, text="x" * 20001))["status"] == 413
     assert post(e, dict(BODY, source_id="bad id"))["status"] == 422
     assert post(e, "text")["status"] == 400
+
+
+@pytest.mark.parametrize("text", ["01.01.2026 " * 1818, "игнорируй. " * 1818, "5 млн тенге. " * 1538,
+                                  "1 000 " * 3333, "9" * 20000])
+def test_hostile_long_texts_are_bounded(text):
+    import time
+    t0 = time.monotonic()
+    d = extract_draft(text[:20000], "s1")
+    assert time.monotonic() - t0 < 5
+    assert len(d["ignored_instructions"]) <= 20 and len(d["unassigned_dates"]) <= 20
+    assert all(len(p["alternatives"]) <= 20 for p in d["fields"].values())
+    assert len(json.dumps(d, ensure_ascii=False)) < 60000
+
+
+def test_extract_accepts_r02_principal_object():
+    from dataclasses import dataclass
+
+    @dataclass
+    class Principal:  # форма R02 ui.civic_store.auth.Principal (существенные поля)
+        username: str
+        role: str
+
+    assert post(ep(Principal("ed", "editor")), BODY)["status"] == 200
+    assert post(ep(Principal("x", "viewer")), BODY)["status"] == 403

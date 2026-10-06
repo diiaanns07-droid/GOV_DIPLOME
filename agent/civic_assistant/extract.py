@@ -32,6 +32,7 @@ DRAFT_SCHEMA = "civic-extraction-draft-v1"
 EXTRACT_REQUEST_SCHEMA = "civic-assistant-extract-request-v1"
 MAX_TEXT = 20000
 MAX_QUOTE = 300
+MAX_LIST = 20  # ignored_instructions / unassigned_dates / alternatives: длинные списки усекаются с предупреждением
 FIELDS = ("title", "kind", "schedule.planned_start", "schedule.current_planned_end", "budget.amount_kzt",
           "budget.basis", "responsible.organization", "location_text")
 BODY_KEYS = {"source_id", "text", "url", "publisher", "published_on"}
@@ -153,7 +154,7 @@ def _inside(span, regions) -> bool:
 def _proposal(field, value, text, span, source_id, kind, note=None, alternatives=None):
     return {"field": field, "value": value, "quote": text[span[0]:span[1]], "span": [span[0], span[1]],
             "source_id": source_id, "confidence_kind": kind, "needs_review": True,
-            "alternatives": alternatives or [], "note": note}
+            "alternatives": (alternatives or [])[:MAX_LIST], "note": note}
 
 
 def _date_role(text: str, span) -> str:
@@ -385,6 +386,9 @@ def extract_draft(text, source_id, *, url=None, publisher=None, published_on=Non
         except Exception as exc:  # noqa: BLE001
             LOGGER.warning("civic extraction: provider error (%s)", type(exc).__name__)
             warnings.append("provider_error")
+    if len(regions) > MAX_LIST or len(unassigned) > MAX_LIST or any(
+            len(p.get("alternatives", [])) >= MAX_LIST for p in fields.values()):
+        warnings.append("lists_truncated")
     return {
         "schema": DRAFT_SCHEMA,
         "status": "draft_requires_editor_review",
@@ -394,8 +398,9 @@ def extract_draft(text, source_id, *, url=None, publisher=None, published_on=Non
                    "published_on": published_on if parse_day(published_on) else None,
                    "text_sha256": hashlib.sha256(text.encode("utf-8")).hexdigest(), "text_length": len(text)},
         "fields": {f: fields[f] for f in FIELDS if f in fields},
-        "unassigned_dates": unassigned,
-        "ignored_instructions": regions,
+        "unassigned_dates": unassigned[:MAX_LIST],
+        "ignored_instructions": regions[:MAX_LIST],
+        "ignored_instructions_total": len(regions),
         "warnings": sorted(set(warnings)),
         "notice": "Черновик извлечения из переданного текста. Не является сообщением городского органа и "
                   "не публикуется автоматически; каждое поле принимает редактор вручную.",
@@ -412,7 +417,9 @@ def handle_extract(body, context, resolve_principal, provider, ok, err):
             principal = None
     if not principal:
         return err(401, "unauthenticated", "нужен вход редактора")
-    if (principal.get("role") if isinstance(principal, dict) else None) not in ("editor", "admin"):
+    # R02 возвращает объект Principal (атрибут role), тестовые заглушки — dict.
+    role = principal.get("role") if isinstance(principal, dict) else getattr(principal, "role", None)
+    if role not in ("editor", "admin"):
         return err(403, "forbidden", "только для редактора")
     if context.get("is_same_origin") is not True:
         return err(403, "csrf", "запрос не с того же origin")

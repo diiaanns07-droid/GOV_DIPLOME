@@ -163,7 +163,7 @@ class AssistantEndpoint:
             except Exception:  # noqa: BLE001 — хранилище недоступно: не раскрываем детали
                 loaded = None
                 warnings.append("object_store_error")
-            if not loaded:
+            if not loaded or not isinstance(loaded, (tuple, list)) or len(loaded) != 2:
                 return _ok(unavailable_answer(lang, "object_not_public_or_missing"))
             item, history = loaded
         if scenario_id is not None:

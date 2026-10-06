@@ -387,8 +387,9 @@
       else out.append(table);
       const ignored = Array.isArray(draft.ignored_instructions) ? draft.ignored_instructions : [];
       if (ignored.length) {
+        const total = Number.isInteger(draft.ignored_instructions_total) ? draft.ignored_instructions_total : ignored.length;
         out.append(el("p", { className: "civic-r09-warn" },
-          "В тексте найдены инструкции (" + ignored.length + "). Они не выполнялись и учтены только как текст."));
+          "В тексте найдены инструкции (" + total + "). Они не выполнялись и учтены только как текст."));
         for (const r of ignored) spans.push({ span: r.span, kind: "ignored", label: "проигнорированная инструкция" });
       }
       const unassigned = Array.isArray(draft.unassigned_dates) ? draft.unassigned_dates : [];

@@ -220,3 +220,10 @@ def test_r07_case_loader_uses_server_payload():
     assert load(SID) is RESULT and load(SID) is RESULT and len(calls) == 1
     assert calls[0] == ({"graph_id": "g1", "x": 1}, ("graph", "g1"))
     assert load("other") is None
+
+
+@pytest.mark.parametrize("bad", [("only-one",), "string", {"item": {}}, (None, None, None)])
+def test_malformed_loader_result_is_unavailable(bad):
+    ep = AssistantEndpoint(lambda oid: bad, rate_limiter=RateLimiter(100, 60))
+    d = post(ep, {"question": "Когда?", "object_id": "x1"})["body"]["data"]
+    assert d["source"] == "unavailable"
