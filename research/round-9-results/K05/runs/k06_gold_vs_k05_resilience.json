@@ -1,0 +1,195 @@
+{
+ "implementation": "resilience.js",
+ "commit": "d865dd4a124291e10dd0b7bb1d9eada20d34c268+K05-resilience",
+ "cases": {
+  "nominal_vs_robust_differ": {
+   "status": "PASS"
+  },
+  "price_zero_plans_differ": {
+   "status": "PASS"
+  },
+  "all_sources_excluded": {
+   "status": "PASS"
+  },
+  "all_sources_excluded_budget0": {
+   "status": "PASS"
+  },
+  "no_candidates": {
+   "status": "PASS"
+  },
+  "equal_worst_cases": {
+   "status": "PASS"
+  },
+  "symmetric_worst_tie": {
+   "status": "PASS"
+  },
+  "required_infeasible": {
+   "status": "PASS"
+  },
+  "required_kept": {
+   "status": "PASS"
+  },
+  "unknown_in_case_only": {
+   "status": "PASS"
+  },
+  "cost_tiebreak": {
+   "status": "PASS"
+  },
+  "id_tiebreak": {
+   "status": "PASS"
+  },
+  "syn_random_00": {
+   "status": "PASS"
+  },
+  "syn_random_01": {
+   "status": "PASS"
+  },
+  "syn_random_02": {
+   "status": "PASS"
+  },
+  "syn_random_03": {
+   "status": "PASS"
+  },
+  "syn_random_04": {
+   "status": "PASS"
+  },
+  "syn_random_05": {
+   "status": "PASS"
+  },
+  "syn_random_06": {
+   "status": "PASS"
+  },
+  "syn_random_07": {
+   "status": "PASS"
+  },
+  "syn_random_08": {
+   "status": "PASS"
+  },
+  "syn_random_09": {
+   "status": "PASS"
+  },
+  "syn_random_10": {
+   "status": "PASS"
+  },
+  "syn_random_11": {
+   "status": "PASS"
+  },
+  "syn_random_12": {
+   "status": "PASS"
+  },
+  "syn_random_13": {
+   "status": "PASS"
+  },
+  "syn_random_14": {
+   "status": "PASS"
+  },
+  "syn_random_15": {
+   "status": "PASS"
+  },
+  "syn_random_16": {
+   "status": "PASS"
+  },
+  "syn_random_17": {
+   "status": "PASS"
+  },
+  "syn_random_18": {
+   "status": "PASS"
+  },
+  "syn_random_19": {
+   "status": "PASS"
+  },
+  "syn_random_20": {
+   "status": "PASS"
+  },
+  "syn_random_21": {
+   "status": "PASS"
+  },
+  "syn_random_22": {
+   "status": "PASS"
+  },
+  "syn_random_23": {
+   "status": "PASS"
+  },
+  "syn_random_24": {
+   "status": "PASS"
+  },
+  "syn_random_25": {
+   "status": "PASS"
+  },
+  "syn_random_26": {
+   "status": "PASS"
+  },
+  "syn_random_27": {
+   "status": "PASS"
+  },
+  "syn_random_28": {
+   "status": "PASS"
+  },
+  "syn_random_29": {
+   "status": "PASS"
+  },
+  "real_shymkent_school_00": {
+   "status": "PASS"
+  },
+  "real_shymkent_school_01": {
+   "status": "PASS"
+  },
+  "real_shymkent_school_02": {
+   "status": "PASS"
+  },
+  "real_shymkent_school_03": {
+   "status": "PASS"
+  },
+  "real_shymkent_school_04": {
+   "status": "PASS"
+  },
+  "real_shymkent_outpatient_clinic_00": {
+   "status": "PASS"
+  },
+  "real_shymkent_outpatient_clinic_01": {
+   "status": "PASS"
+  },
+  "real_shymkent_outpatient_clinic_02": {
+   "status": "PASS"
+  },
+  "real_shymkent_outpatient_clinic_03": {
+   "status": "PASS"
+  },
+  "real_shymkent_outpatient_clinic_04": {
+   "status": "PASS"
+  },
+  "real_astana_school_00": {
+   "status": "PASS"
+  },
+  "real_astana_school_01": {
+   "status": "PASS"
+  },
+  "real_astana_school_02": {
+   "status": "PASS"
+  },
+  "real_astana_school_03": {
+   "status": "PASS"
+  },
+  "real_astana_school_04": {
+   "status": "PASS"
+  },
+  "real_astana_outpatient_clinic_00": {
+   "status": "PASS"
+  },
+  "real_astana_outpatient_clinic_01": {
+   "status": "PASS"
+  },
+  "real_astana_outpatient_clinic_02": {
+   "status": "PASS"
+  },
+  "real_astana_outpatient_clinic_03": {
+   "status": "PASS"
+  },
+  "real_astana_outpatient_clinic_04": {
+   "status": "PASS"
+  }
+ },
+ "summary": {
+  "PASS": 62
+ }
+}

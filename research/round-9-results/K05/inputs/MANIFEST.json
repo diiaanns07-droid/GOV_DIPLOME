@@ -1,0 +1,45 @@
+{
+ "note": "K06 commit newer than round-9 snapshots pin 58cf899; used as published independent reference",
+ "files": [
+  {
+   "local": "research/round-9-results/K05/inputs/k06/fixtures/resilience_gold.json",
+   "source_branch": "claude/ecstatic-curie-hzfzn0",
+   "source_sha": "b9b8145515795c5dd90ccddc61a0de3c2d97b695",
+   "source_path": "research/round-9-results/K06/fixtures/resilience_gold.json",
+   "git_blob": "9257b214d37006b7ec0d35fcb3690235f64aef04",
+   "sha256": "01b127018379947d2734ccff947731ca7f23e6e2161207455e1e97d4bb8c75a3"
+  },
+  {
+   "local": "research/round-9-results/K05/inputs/k06/run_resilience_js.cjs",
+   "source_branch": "claude/ecstatic-curie-hzfzn0",
+   "source_sha": "b9b8145515795c5dd90ccddc61a0de3c2d97b695",
+   "source_path": "research/round-9-results/K06/run_resilience_js.cjs",
+   "git_blob": "bf3429efcbd817d1d5b8950ca51f9b955d8fa667",
+   "sha256": "8466b4cdcdc956458f0e5ab839527161992ee43fb549791a76ffd63b1072a9d6"
+  },
+  {
+   "local": "research/round-9-results/K05/inputs/k06/compare_resilience_js.py",
+   "source_branch": "claude/ecstatic-curie-hzfzn0",
+   "source_sha": "b9b8145515795c5dd90ccddc61a0de3c2d97b695",
+   "source_path": "research/round-9-results/K06/compare_resilience_js.py",
+   "git_blob": "7da3b7cf741aa5757cb47188429e4bb3be070425",
+   "sha256": "cfc2041fa91bb30cfb8eaff3c87ecc30b3584817a4553f8d4b36fb009371e173"
+  },
+  {
+   "local": "research/round-9-results/K05/inputs/k06/resilience_gold.py",
+   "source_branch": "claude/ecstatic-curie-hzfzn0",
+   "source_sha": "b9b8145515795c5dd90ccddc61a0de3c2d97b695",
+   "source_path": "research/round-9-results/K06/resilience_gold.py",
+   "git_blob": "ebc5ed1f607dcc51d4af0884bfababcf0f142521",
+   "sha256": "1623513a3ddab4882cca5bd0091fe2b0af627893b3a6ad1b4e2c06d94fac9347"
+  },
+  {
+   "local": "research/round-9-results/K05/inputs/k06/HANDOFF.md",
+   "source_branch": "claude/ecstatic-curie-hzfzn0",
+   "source_sha": "b9b8145515795c5dd90ccddc61a0de3c2d97b695",
+   "source_path": "research/round-9-results/K06/HANDOFF.md",
+   "git_blob": "6dac053428e86f852f34c327049bd84471b12db1",
+   "sha256": "b75b89341df2aacbf495901888c8b3a1a18ba2300acc00655ed22a16cd755e93"
+  }
+ ]
+}

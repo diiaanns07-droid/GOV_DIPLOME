@@ -1,0 +1,121 @@
+{
+ "summary": {
+  "items": 16,
+  "rejected_by_k05": 16,
+  "same_code": 12
+ },
+ "rows": [
+  {
+   "case": "candidate_id_as_source",
+   "k06_code": "candidate_not_source",
+   "k05_code": "candidate_not_source",
+   "rejected_both": true,
+   "same_code": true
+  },
+  {
+   "case": "unknown_source",
+   "k06_code": "unknown_source",
+   "k05_code": "unknown_source",
+   "rejected_both": true,
+   "same_code": true
+  },
+  {
+   "case": "base_reserved",
+   "k06_code": "reserved_id",
+   "k05_code": "reserved_id",
+   "rejected_both": true,
+   "same_code": true
+  },
+  {
+   "case": "empty_label",
+   "k06_code": "bad_label",
+   "k05_code": "bad_label",
+   "rejected_both": true,
+   "same_code": true
+  },
+  {
+   "case": "control_char_label",
+   "k06_code": "bad_label",
+   "k05_code": "bad_label",
+   "rejected_both": true,
+   "same_code": true
+  },
+  {
+   "case": "label_121",
+   "k06_code": "bad_label",
+   "k05_code": "bad_label",
+   "rejected_both": true,
+   "same_code": true
+  },
+  {
+   "case": "disabled_empty",
+   "k06_code": "bad_disabled",
+   "k05_code": "bad_exclusions",
+   "rejected_both": true,
+   "same_code": false
+  },
+  {
+   "case": "disabled_duplicate",
+   "k06_code": "duplicate_id",
+   "k05_code": "duplicate_id",
+   "rejected_both": true,
+   "same_code": true
+  },
+  {
+   "case": "duplicate_case_id",
+   "k06_code": "duplicate_id",
+   "k05_code": "duplicate_id",
+   "rejected_both": true,
+   "same_code": true
+  },
+  {
+   "case": "eight_user_cases",
+   "k06_code": "bad_cases",
+   "k05_code": "bad_cases",
+   "rejected_both": true,
+   "same_code": true
+  },
+  {
+   "case": "zero_cases",
+   "k06_code": "bad_cases",
+   "k05_code": "bad_cases",
+   "rejected_both": true,
+   "same_code": true
+  },
+  {
+   "case": "derived_field",
+   "k06_code": "unexpected_field",
+   "k05_code": "unknown_field",
+   "rejected_both": true,
+   "same_code": false
+  },
+  {
+   "case": "case_extra_field",
+   "k06_code": "bad_case",
+   "k05_code": "unknown_field",
+   "rejected_both": true,
+   "same_code": false
+  },
+  {
+   "case": "bad_version",
+   "k06_code": "bad_version",
+   "k05_code": "bad_version",
+   "rejected_both": true,
+   "same_code": true
+  },
+  {
+   "case": "too_many_candidates_13",
+   "k06_code": "too_many_candidates",
+   "k05_code": "too_many_candidates",
+   "rejected_both": true,
+   "same_code": true
+  },
+  {
+   "case": "plan_invalid_inside",
+   "k06_code": "out_of_range",
+   "k05_code": "bad_budget",
+   "rejected_both": true,
+   "same_code": false
+  }
+ ]
+}

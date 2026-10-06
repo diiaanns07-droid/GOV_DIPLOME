@@ -7,7 +7,7 @@
 |---|---|
 | 1. r8 oracle/fixtures против plan.js d865dd4 через адаптер; API-guard repro | **done** |
 | 2. resilience-модуль поверх API BUILD | **done** |
-| 3. gold/оракул/свойства/benchmark, полный handoff | не начат |
+| 3. gold/оракул/свойства/benchmark, полный handoff | в работе: K06 gold done (checkpoint 3a) |
 
 ## Этап 1 — результаты на d865dd4 (реально выполнено)
 | Проверка | Результат |
@@ -33,6 +33,13 @@
 - `node research/round-9-results/K05/tests/test_resilience.cjs --app-root <d865dd4>/prototypes/city-evidence` → **17 passed, 0 failed** (`runs/stage2_resilience_d865dd4.json`); то же на копии d865dd4 + `plan_api_guard.patch` → 17/0.
 - Первый прогон 16/1: тест roundtrip упал из-за массивов из vm-realm (data.js загружается в песочнице) — валидатор теперь создаёт новый массив (`[...d]`), не наследуя realm входа; повтор 17/0.
 - Это тест модуля K05 на API сборки, **не** тест интегрированной функции: в BUILD resilience.js нет (интеграция NOT_RUN).
+
+## Этап 3a — независимый gold K06 (сделано)
+- Входы K06 (`claude/ecstatic-curie-hzfzn0` @ `b9b8145515795c5dd90ccddc61a0de3c2d97b695`, новее пина 58cf899) скопированы побайтно в `inputs/k06/` (MANIFEST): fixture 62 задачи + 16 must_reject, их адаптер `run_resilience_js.cjs` и сравнитель `compare_resilience_js.py` (прочитаны до запуска: только чтение/запись файлов).
+- Мой адаптер формы `stage3/map_to_k06.py` (worst_vector объект → [u,sum,max|null]; `price_of_resilience_m` → `price_of_robustness_m`) — меняет только представление; gold и код K06 не менялись.
+- Цепочка на копии d865dd4 + `add_web_resilience_js.patch`: `compare --export` → `node run_resilience_js.cjs <copy> …` → `map_to_k06.py` → `compare --candidate-json` → **62/62 PASS** (59 optimal + 3 infeasible; 20 задач на реальных записях обоих городов) — `runs/k06_gold_vs_k05_resilience.json`.
+- `stage3/k06_must_reject.cjs`: 16/16 отвергнуты; имя кода совпало в 12, в 4 — API_POLICY имён (bad_disabled↔bad_exclusions, unexpected_field/bad_case↔unknown_field, out_of_range↔bad_budget).
+- Мутации модуля: покомпонентный max вместо лексикографического → 2 FAIL; только первый худший случай → 21 FAIL (пойманы gold K06).
 
 ## Следующий шаг
 Этап 3: независимый Python-оракул устойчивости, gold-примеры, свойства (перестановки, дубликат случая, супермножество исключений, 0 кандидатов, infeasible), benchmark.
