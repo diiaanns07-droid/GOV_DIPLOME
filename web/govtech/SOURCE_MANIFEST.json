@@ -36,7 +36,8 @@
     {
       "file": "plan-ui.js",
       "sha256": "74d49451639367c3caceb1283032b3b9937338d6b0ec3c7a94d255f88993f64f",
-      "integrated_sha256": "eb34eb6cd3e0e95ea801ed4b292d6691b4bb69c925c802247c399073f2f1223c"
+      "integrated_sha256": "bf3f1184571e8fe6007eae4217e0b1b64f309ce22f656cd2ef823c87718c922e",
+      "integrated_sha256_d2ff344": "eb34eb6cd3e0e95ea801ed4b292d6691b4bb69c925c802247c399073f2f1223c"
     },
     {
       "file": "resilience-ui.js",
@@ -70,7 +71,7 @@
     }
   ],
   "adaptations": {
-    "plan-ui.js": "Collapsible calculation assumptions and keyboard hint for slice centre; math unchanged.",
+    "plan-ui.js": "Collapsible calculation assumptions and keyboard hint for slice centre; BUILD r10: pending numeric edits wait for pointerup while a pointer is down (D1: first human-speed click after typing was lost); math unchanged.",
     "resilience-ui.js": "Readable fallback for invalid import instead of literal undefined; math unchanged."
   }
 }

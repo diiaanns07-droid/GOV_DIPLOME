@@ -17,9 +17,16 @@
   const isInt = (v, lo, hi) => Number.isInteger(v) && v >= lo && v <= hi;
   // Edits are applied on the next turn (K07 r8 K3: keeps the focus when Tab follows a change). An action button pressed
   // right after typing must see the typed value, so every action first flushes the pending edits (round 9 race fix).
+  // BUILD r10 (D1, reported by K07 r9, reproduced on the root shell): a mouse press on a button blurs the field first;
+  // re-rendering between pointerdown and click replaced the button and the first human-speed click was lost.
+  // While a pointer is down, edits wait for the click (every action flushes) or for pointerup.
   const PENDING = [];
+  let pressed = false;
   function flush() { while (PENDING.length) PENDING.shift()(); }
-  function defer(f) { PENDING.push(f); setTimeout(flush, 0); }
+  function defer(f) { PENDING.push(f); if (!pressed) setTimeout(flush, 0); }
+  document.addEventListener("pointerdown", () => { pressed = true; }, true);
+  for (const t of ["pointerup", "pointercancel"]) document.addEventListener(t, () => { pressed = false; setTimeout(flush, 0); }, true);
+  window.addEventListener("blur", () => { if (pressed) { pressed = false; setTimeout(flush, 0); } });
   // collapsible sections; open state survives re-render (long lists of 25 points / 16 candidates)
   const OPEN = {};
   function section(parent, id, title, openByDefault) {

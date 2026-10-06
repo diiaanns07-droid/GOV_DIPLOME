@@ -187,6 +187,7 @@ function showMapError(text) {
   $("map-status").textContent = text;
   $("map-status").classList.remove("hidden");
 }
+let offlineBasemap = false;
 async function loadMap() {
   if (!geojson?.features?.length) {
     showMapError("Границы районов недоступны. Выберите район на карточке.");
@@ -219,6 +220,13 @@ async function loadMap() {
       "bottom-right",
     );
     map.on("error", (e) => {
+      // Basemap style unreachable (offline/blocked host): continue on a plain local
+      // background so data layers still work. No streets and no 3D buildings then.
+      if (!mapReady && !map.isStyleLoaded() && !offlineBasemap) {
+        offlineBasemap = true;
+        map.setStyle({ version: 8, sources: {}, layers: [{ id: "offline-bg", type: "background", paint: { "background-color": "#eef1ea" } }] });
+        return;
+      }
       if (!mapReady)
         showMapError(
           "Карта загружается медленно. Можно выбирать районы слева.",
@@ -460,6 +468,11 @@ async function loadMap() {
         mapReady = true;
         $("map-fallback").classList.add("hidden");
         $("map-status").classList.add("hidden");
+        if (offlineBasemap) {
+          $("map-status").textContent = "Подложка OpenFreeMap недоступна: упрощённый фон без улиц и 3D-зданий";
+          $("map-status").classList.remove("hidden");
+          document.body.classList.add("offline-basemap");
+        }
         updateMap();
         flyOverview(true);
         window.GOVTECH?.onMapReady();
