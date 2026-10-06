@@ -1,0 +1,33 @@
+{
+ "engine": "engine.civic_scenarios 1.0.0",
+ "cases": [
+  {
+   "case_id": "k03-astana-demo-v1",
+   "evidence_type": "hypothesis",
+   "graph_id": "k03-astana-pedestrian-r10",
+   "graph_digest": "15d85071aa92934082e2c02fe627687729c006d327c2fdc25bf6b3aae75bd357",
+   "payload_digest": "ae1c2859587eec3500de6141d6a2385fa87b5d3ee133508c2912fd7570b9f8de",
+   "scenario_digest": "8b83cddb8e801592b93475524305256ec3730b5c75326e7a387cf453a15246e2",
+   "result_digest": "5e485402f3e6b445f1bb6bad94404ae1828ac507a5063f695d98a4ab50695002",
+   "timeline_window": [
+    "2026-10-10T00:00:00+05:00",
+    "2026-10-12T00:00:00+05:00"
+   ],
+   "timeline_digest": "a985dd6ca4b9ca78ed020d710bc1a69ce790b75d2b652c8fc16683e0a4b8ef8b"
+  },
+  {
+   "case_id": "synthetic-tiny-v1-demo",
+   "evidence_type": "synthetic",
+   "graph_id": "synthetic-tiny-v1",
+   "graph_digest": "05e89ec78e774e34e664db0297c2c11766e854101697b4b61d74a1a52b2cd4bf",
+   "payload_digest": "efb32f8cace0856c9e103951d6d55af3c62bc9eaebc78d3dbb90f2a9bcfb7889",
+   "scenario_digest": "55d17ba1b795f7db2d5792de0aad7a007bc9b22c2cf0ef4f82190a756d17b8ab",
+   "result_digest": "c9cb2ffabdcaecff711a1872fa33194430071b471dfc43c9b6f7acf3a9130648",
+   "timeline_window": [
+    "2026-10-07T00:00:00+05:00",
+    "2026-10-09T00:00:00+05:00"
+   ],
+   "timeline_digest": "1ab20666b7fdcfcdeb52d2a9720a7ab33ab95be0f177f0ace98ebc89978bf2b5"
+  }
+ ]
+}

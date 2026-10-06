@@ -1,0 +1,883 @@
+{
+ "endpoint": "POST /api/civic/v1/scenarios/compare",
+ "graph": "engine/civic_scenarios/graphs/synthetic-tiny-v1.graph.json",
+ "positive": {
+  "payload": {
+   "schema_version": "civic-scenario-v1",
+   "city": "astana",
+   "graph_id": "synthetic-tiny-v1",
+   "graph_digest": "05e89ec78e774e34e664db0297c2c11766e854101697b4b61d74a1a52b2cd4bf",
+   "mode": "walking",
+   "analysis_at": "2026-10-07T09:00:00+05:00",
+   "origin_node_ids": [
+    "n_a",
+    "n_h"
+   ],
+   "destination_node_ids": [
+    "n_c",
+    "n_d",
+    "n_h",
+    "n_u",
+    "n_x",
+    "n_a"
+   ],
+   "plans": [
+    {
+     "id": "A",
+     "closures": [
+      {
+       "edge_ids": [
+        "e_bc"
+       ],
+       "start_at": "2026-10-07T08:00:00+05:00",
+       "end_at": "2026-10-07T18:00:00+05:00"
+      },
+      {
+       "edge_ids": [
+        "e_ab"
+       ],
+       "start_at": "2026-10-08T08:00:00+05:00",
+       "end_at": "2026-10-08T18:00:00+05:00"
+      }
+     ]
+    },
+    {
+     "id": "B",
+     "closures": [
+      {
+       "edge_ids": [
+        "e_cd",
+        "e_gd"
+       ],
+       "start_at": "2026-10-07T04:00:00Z",
+       "end_at": "2026-10-07T12:00:00+05:00"
+      }
+     ]
+    }
+   ]
+  },
+  "expected": "tests/civic/R07/fixtures/synthetic_expected.json",
+  "invariants": [
+   "нулевой сценарий = baseline",
+   "перестановка closures/edge_ids не меняет routes и scenario_digest",
+   "один момент в разных offset -> одинаковый результат",
+   "start_at включительно, end_at исключительно",
+   "unreachable/unknown -> length_m null, не 0; средние только по ok/ok",
+   "равные пути: проверять стоимость и equal_cost_alternatives, не конкретную ветку"
+  ]
+ },
+ "negative": [
+  {
+   "name": "naive_analysis_at",
+   "payload": {
+    "schema_version": "civic-scenario-v1",
+    "city": "astana",
+    "graph_id": "synthetic-tiny-v1",
+    "graph_digest": "05e89ec78e774e34e664db0297c2c11766e854101697b4b61d74a1a52b2cd4bf",
+    "mode": "walking",
+    "analysis_at": "2026-10-07T09:00:00",
+    "origin_node_ids": [
+     "n_a",
+     "n_h"
+    ],
+    "destination_node_ids": [
+     "n_c",
+     "n_d",
+     "n_h",
+     "n_u",
+     "n_x",
+     "n_a"
+    ],
+    "plans": [
+     {
+      "id": "A",
+      "closures": [
+       {
+        "edge_ids": [
+         "e_bc"
+        ],
+        "start_at": "2026-10-07T08:00:00+05:00",
+        "end_at": "2026-10-07T18:00:00+05:00"
+       },
+       {
+        "edge_ids": [
+         "e_ab"
+        ],
+        "start_at": "2026-10-08T08:00:00+05:00",
+        "end_at": "2026-10-08T18:00:00+05:00"
+       }
+      ]
+     },
+     {
+      "id": "B",
+      "closures": [
+       {
+        "edge_ids": [
+         "e_cd",
+         "e_gd"
+        ],
+        "start_at": "2026-10-07T04:00:00Z",
+        "end_at": "2026-10-07T12:00:00+05:00"
+       }
+      ]
+     }
+    ]
+   },
+   "expect_status": 422,
+   "expect_code": "invalid_payload"
+  },
+  {
+   "name": "reversed_interval",
+   "payload": {
+    "schema_version": "civic-scenario-v1",
+    "city": "astana",
+    "graph_id": "synthetic-tiny-v1",
+    "graph_digest": "05e89ec78e774e34e664db0297c2c11766e854101697b4b61d74a1a52b2cd4bf",
+    "mode": "walking",
+    "analysis_at": "2026-10-07T09:00:00+05:00",
+    "origin_node_ids": [
+     "n_a",
+     "n_h"
+    ],
+    "destination_node_ids": [
+     "n_c",
+     "n_d",
+     "n_h",
+     "n_u",
+     "n_x",
+     "n_a"
+    ],
+    "plans": [
+     {
+      "id": "A",
+      "closures": [
+       {
+        "edge_ids": [
+         "e_bc"
+        ],
+        "start_at": "2026-10-07T10:00:00+05:00",
+        "end_at": "2026-10-07T09:00:00+05:00"
+       }
+      ]
+     }
+    ]
+   },
+   "expect_status": 422,
+   "expect_code": "invalid_payload"
+  },
+  {
+   "name": "empty_interval_same_instant_other_offset",
+   "payload": {
+    "schema_version": "civic-scenario-v1",
+    "city": "astana",
+    "graph_id": "synthetic-tiny-v1",
+    "graph_digest": "05e89ec78e774e34e664db0297c2c11766e854101697b4b61d74a1a52b2cd4bf",
+    "mode": "walking",
+    "analysis_at": "2026-10-07T09:00:00+05:00",
+    "origin_node_ids": [
+     "n_a",
+     "n_h"
+    ],
+    "destination_node_ids": [
+     "n_c",
+     "n_d",
+     "n_h",
+     "n_u",
+     "n_x",
+     "n_a"
+    ],
+    "plans": [
+     {
+      "id": "A",
+      "closures": [
+       {
+        "edge_ids": [
+         "e_bc"
+        ],
+        "start_at": "2026-10-07T09:00:00+05:00",
+        "end_at": "2026-10-07T04:00:00Z"
+       }
+      ]
+     }
+    ]
+   },
+   "expect_status": 422,
+   "expect_code": "invalid_payload"
+  },
+  {
+   "name": "unknown_edge",
+   "payload": {
+    "schema_version": "civic-scenario-v1",
+    "city": "astana",
+    "graph_id": "synthetic-tiny-v1",
+    "graph_digest": "05e89ec78e774e34e664db0297c2c11766e854101697b4b61d74a1a52b2cd4bf",
+    "mode": "walking",
+    "analysis_at": "2026-10-07T09:00:00+05:00",
+    "origin_node_ids": [
+     "n_a",
+     "n_h"
+    ],
+    "destination_node_ids": [
+     "n_c",
+     "n_d",
+     "n_h",
+     "n_u",
+     "n_x",
+     "n_a"
+    ],
+    "plans": [
+     {
+      "id": "A",
+      "closures": [
+       {
+        "edge_ids": [
+         "e_zz"
+        ],
+        "start_at": "2026-10-07T08:00:00+05:00",
+        "end_at": "2026-10-07T18:00:00+05:00"
+       }
+      ]
+     }
+    ]
+   },
+   "expect_status": 422,
+   "expect_code": "unknown_edge"
+  },
+  {
+   "name": "unknown_origin_node",
+   "payload": {
+    "schema_version": "civic-scenario-v1",
+    "city": "astana",
+    "graph_id": "synthetic-tiny-v1",
+    "graph_digest": "05e89ec78e774e34e664db0297c2c11766e854101697b4b61d74a1a52b2cd4bf",
+    "mode": "walking",
+    "analysis_at": "2026-10-07T09:00:00+05:00",
+    "origin_node_ids": [
+     "n_zz"
+    ],
+    "destination_node_ids": [
+     "n_c",
+     "n_d",
+     "n_h",
+     "n_u",
+     "n_x",
+     "n_a"
+    ],
+    "plans": [
+     {
+      "id": "A",
+      "closures": [
+       {
+        "edge_ids": [
+         "e_bc"
+        ],
+        "start_at": "2026-10-07T08:00:00+05:00",
+        "end_at": "2026-10-07T18:00:00+05:00"
+       },
+       {
+        "edge_ids": [
+         "e_ab"
+        ],
+        "start_at": "2026-10-08T08:00:00+05:00",
+        "end_at": "2026-10-08T18:00:00+05:00"
+       }
+      ]
+     },
+     {
+      "id": "B",
+      "closures": [
+       {
+        "edge_ids": [
+         "e_cd",
+         "e_gd"
+        ],
+        "start_at": "2026-10-07T04:00:00Z",
+        "end_at": "2026-10-07T12:00:00+05:00"
+       }
+      ]
+     }
+    ]
+   },
+   "expect_status": 422,
+   "expect_code": "unknown_node"
+  },
+  {
+   "name": "duplicate_plan_id",
+   "payload": {
+    "schema_version": "civic-scenario-v1",
+    "city": "astana",
+    "graph_id": "synthetic-tiny-v1",
+    "graph_digest": "05e89ec78e774e34e664db0297c2c11766e854101697b4b61d74a1a52b2cd4bf",
+    "mode": "walking",
+    "analysis_at": "2026-10-07T09:00:00+05:00",
+    "origin_node_ids": [
+     "n_a",
+     "n_h"
+    ],
+    "destination_node_ids": [
+     "n_c",
+     "n_d",
+     "n_h",
+     "n_u",
+     "n_x",
+     "n_a"
+    ],
+    "plans": [
+     {
+      "id": "A",
+      "closures": []
+     },
+     {
+      "id": "A",
+      "closures": []
+     }
+    ]
+   },
+   "expect_status": 422,
+   "expect_code": "invalid_payload"
+  },
+  {
+   "name": "plan_id_not_A_B",
+   "payload": {
+    "schema_version": "civic-scenario-v1",
+    "city": "astana",
+    "graph_id": "synthetic-tiny-v1",
+    "graph_digest": "05e89ec78e774e34e664db0297c2c11766e854101697b4b61d74a1a52b2cd4bf",
+    "mode": "walking",
+    "analysis_at": "2026-10-07T09:00:00+05:00",
+    "origin_node_ids": [
+     "n_a",
+     "n_h"
+    ],
+    "destination_node_ids": [
+     "n_c",
+     "n_d",
+     "n_h",
+     "n_u",
+     "n_x",
+     "n_a"
+    ],
+    "plans": [
+     {
+      "id": "C",
+      "closures": []
+     }
+    ]
+   },
+   "expect_status": 422,
+   "expect_code": "invalid_payload"
+  },
+  {
+   "name": "client_metrics_injected",
+   "payload": {
+    "schema_version": "civic-scenario-v1",
+    "city": "astana",
+    "graph_id": "synthetic-tiny-v1",
+    "graph_digest": "05e89ec78e774e34e664db0297c2c11766e854101697b4b61d74a1a52b2cd4bf",
+    "mode": "walking",
+    "analysis_at": "2026-10-07T09:00:00+05:00",
+    "origin_node_ids": [
+     "n_a",
+     "n_h"
+    ],
+    "destination_node_ids": [
+     "n_c",
+     "n_d",
+     "n_h",
+     "n_u",
+     "n_x",
+     "n_a"
+    ],
+    "plans": [
+     {
+      "id": "A",
+      "closures": [
+       {
+        "edge_ids": [
+         "e_bc"
+        ],
+        "start_at": "2026-10-07T08:00:00+05:00",
+        "end_at": "2026-10-07T18:00:00+05:00"
+       },
+       {
+        "edge_ids": [
+         "e_ab"
+        ],
+        "start_at": "2026-10-08T08:00:00+05:00",
+        "end_at": "2026-10-08T18:00:00+05:00"
+       }
+      ]
+     },
+     {
+      "id": "B",
+      "closures": [
+       {
+        "edge_ids": [
+         "e_cd",
+         "e_gd"
+        ],
+        "start_at": "2026-10-07T04:00:00Z",
+        "end_at": "2026-10-07T12:00:00+05:00"
+       }
+      ]
+     }
+    ],
+    "baseline": {
+     "mean": 0
+    }
+   },
+   "expect_status": 422,
+   "expect_code": "invalid_payload"
+  },
+  {
+   "name": "graph_path_injected",
+   "payload": {
+    "schema_version": "civic-scenario-v1",
+    "city": "astana",
+    "graph_id": "synthetic-tiny-v1",
+    "graph_digest": "05e89ec78e774e34e664db0297c2c11766e854101697b4b61d74a1a52b2cd4bf",
+    "mode": "walking",
+    "analysis_at": "2026-10-07T09:00:00+05:00",
+    "origin_node_ids": [
+     "n_a",
+     "n_h"
+    ],
+    "destination_node_ids": [
+     "n_c",
+     "n_d",
+     "n_h",
+     "n_u",
+     "n_x",
+     "n_a"
+    ],
+    "plans": [
+     {
+      "id": "A",
+      "closures": [
+       {
+        "edge_ids": [
+         "e_bc"
+        ],
+        "start_at": "2026-10-07T08:00:00+05:00",
+        "end_at": "2026-10-07T18:00:00+05:00"
+       },
+       {
+        "edge_ids": [
+         "e_ab"
+        ],
+        "start_at": "2026-10-08T08:00:00+05:00",
+        "end_at": "2026-10-08T18:00:00+05:00"
+       }
+      ]
+     },
+     {
+      "id": "B",
+      "closures": [
+       {
+        "edge_ids": [
+         "e_cd",
+         "e_gd"
+        ],
+        "start_at": "2026-10-07T04:00:00Z",
+        "end_at": "2026-10-07T12:00:00+05:00"
+       }
+      ]
+     }
+    ],
+    "graph_path": "/etc/passwd"
+   },
+   "expect_status": 422,
+   "expect_code": "invalid_payload"
+  },
+  {
+   "name": "driving_on_walking_graph",
+   "payload": {
+    "schema_version": "civic-scenario-v1",
+    "city": "astana",
+    "graph_id": "synthetic-tiny-v1",
+    "graph_digest": "05e89ec78e774e34e664db0297c2c11766e854101697b4b61d74a1a52b2cd4bf",
+    "mode": "driving",
+    "analysis_at": "2026-10-07T09:00:00+05:00",
+    "origin_node_ids": [
+     "n_a",
+     "n_h"
+    ],
+    "destination_node_ids": [
+     "n_c",
+     "n_d",
+     "n_h",
+     "n_u",
+     "n_x",
+     "n_a"
+    ],
+    "plans": [
+     {
+      "id": "A",
+      "closures": [
+       {
+        "edge_ids": [
+         "e_bc"
+        ],
+        "start_at": "2026-10-07T08:00:00+05:00",
+        "end_at": "2026-10-07T18:00:00+05:00"
+       },
+       {
+        "edge_ids": [
+         "e_ab"
+        ],
+        "start_at": "2026-10-08T08:00:00+05:00",
+        "end_at": "2026-10-08T18:00:00+05:00"
+       }
+      ]
+     },
+     {
+      "id": "B",
+      "closures": [
+       {
+        "edge_ids": [
+         "e_cd",
+         "e_gd"
+        ],
+        "start_at": "2026-10-07T04:00:00Z",
+        "end_at": "2026-10-07T12:00:00+05:00"
+       }
+      ]
+     }
+    ]
+   },
+   "expect_status": 422,
+   "expect_code": "mode_mismatch"
+  },
+  {
+   "name": "other_city",
+   "payload": {
+    "schema_version": "civic-scenario-v1",
+    "city": "shymkent",
+    "graph_id": "synthetic-tiny-v1",
+    "graph_digest": "05e89ec78e774e34e664db0297c2c11766e854101697b4b61d74a1a52b2cd4bf",
+    "mode": "walking",
+    "analysis_at": "2026-10-07T09:00:00+05:00",
+    "origin_node_ids": [
+     "n_a",
+     "n_h"
+    ],
+    "destination_node_ids": [
+     "n_c",
+     "n_d",
+     "n_h",
+     "n_u",
+     "n_x",
+     "n_a"
+    ],
+    "plans": [
+     {
+      "id": "A",
+      "closures": [
+       {
+        "edge_ids": [
+         "e_bc"
+        ],
+        "start_at": "2026-10-07T08:00:00+05:00",
+        "end_at": "2026-10-07T18:00:00+05:00"
+       },
+       {
+        "edge_ids": [
+         "e_ab"
+        ],
+        "start_at": "2026-10-08T08:00:00+05:00",
+        "end_at": "2026-10-08T18:00:00+05:00"
+       }
+      ]
+     },
+     {
+      "id": "B",
+      "closures": [
+       {
+        "edge_ids": [
+         "e_cd",
+         "e_gd"
+        ],
+        "start_at": "2026-10-07T04:00:00Z",
+        "end_at": "2026-10-07T12:00:00+05:00"
+       }
+      ]
+     }
+    ]
+   },
+   "expect_status": 422,
+   "expect_code": "city_mismatch"
+  },
+  {
+   "name": "stale_graph_digest",
+   "payload": {
+    "schema_version": "civic-scenario-v1",
+    "city": "astana",
+    "graph_id": "synthetic-tiny-v1",
+    "graph_digest": "0000000000000000000000000000000000000000000000000000000000000000",
+    "mode": "walking",
+    "analysis_at": "2026-10-07T09:00:00+05:00",
+    "origin_node_ids": [
+     "n_a",
+     "n_h"
+    ],
+    "destination_node_ids": [
+     "n_c",
+     "n_d",
+     "n_h",
+     "n_u",
+     "n_x",
+     "n_a"
+    ],
+    "plans": [
+     {
+      "id": "A",
+      "closures": [
+       {
+        "edge_ids": [
+         "e_bc"
+        ],
+        "start_at": "2026-10-07T08:00:00+05:00",
+        "end_at": "2026-10-07T18:00:00+05:00"
+       },
+       {
+        "edge_ids": [
+         "e_ab"
+        ],
+        "start_at": "2026-10-08T08:00:00+05:00",
+        "end_at": "2026-10-08T18:00:00+05:00"
+       }
+      ]
+     },
+     {
+      "id": "B",
+      "closures": [
+       {
+        "edge_ids": [
+         "e_cd",
+         "e_gd"
+        ],
+        "start_at": "2026-10-07T04:00:00Z",
+        "end_at": "2026-10-07T12:00:00+05:00"
+       }
+      ]
+     }
+    ]
+   },
+   "expect_status": 409,
+   "expect_code": "graph_digest_mismatch"
+  },
+  {
+   "name": "graph_id_not_registered",
+   "payload": {
+    "schema_version": "civic-scenario-v1",
+    "city": "astana",
+    "graph_id": "../graphs/x",
+    "graph_digest": "05e89ec78e774e34e664db0297c2c11766e854101697b4b61d74a1a52b2cd4bf",
+    "mode": "walking",
+    "analysis_at": "2026-10-07T09:00:00+05:00",
+    "origin_node_ids": [
+     "n_a",
+     "n_h"
+    ],
+    "destination_node_ids": [
+     "n_c",
+     "n_d",
+     "n_h",
+     "n_u",
+     "n_x",
+     "n_a"
+    ],
+    "plans": [
+     {
+      "id": "A",
+      "closures": [
+       {
+        "edge_ids": [
+         "e_bc"
+        ],
+        "start_at": "2026-10-07T08:00:00+05:00",
+        "end_at": "2026-10-07T18:00:00+05:00"
+       },
+       {
+        "edge_ids": [
+         "e_ab"
+        ],
+        "start_at": "2026-10-08T08:00:00+05:00",
+        "end_at": "2026-10-08T18:00:00+05:00"
+       }
+      ]
+     },
+     {
+      "id": "B",
+      "closures": [
+       {
+        "edge_ids": [
+         "e_cd",
+         "e_gd"
+        ],
+        "start_at": "2026-10-07T04:00:00Z",
+        "end_at": "2026-10-07T12:00:00+05:00"
+       }
+      ]
+     }
+    ]
+   },
+   "expect_status": 404,
+   "expect_code": "unknown_graph"
+  },
+  {
+   "name": "too_many_destinations",
+   "payload": {
+    "schema_version": "civic-scenario-v1",
+    "city": "astana",
+    "graph_id": "synthetic-tiny-v1",
+    "graph_digest": "05e89ec78e774e34e664db0297c2c11766e854101697b4b61d74a1a52b2cd4bf",
+    "mode": "walking",
+    "analysis_at": "2026-10-07T09:00:00+05:00",
+    "origin_node_ids": [
+     "n_a",
+     "n_h"
+    ],
+    "destination_node_ids": [
+     "n0",
+     "n1",
+     "n2",
+     "n3",
+     "n4",
+     "n5",
+     "n6",
+     "n7",
+     "n8",
+     "n9",
+     "n10",
+     "n11",
+     "n12",
+     "n13",
+     "n14",
+     "n15",
+     "n16",
+     "n17",
+     "n18",
+     "n19",
+     "n20",
+     "n21",
+     "n22",
+     "n23",
+     "n24",
+     "n25",
+     "n26",
+     "n27",
+     "n28",
+     "n29",
+     "n30",
+     "n31",
+     "n32",
+     "n33",
+     "n34",
+     "n35",
+     "n36",
+     "n37",
+     "n38",
+     "n39",
+     "n40",
+     "n41",
+     "n42",
+     "n43",
+     "n44",
+     "n45",
+     "n46",
+     "n47",
+     "n48",
+     "n49",
+     "n50",
+     "n51",
+     "n52",
+     "n53",
+     "n54",
+     "n55",
+     "n56",
+     "n57",
+     "n58",
+     "n59",
+     "n60",
+     "n61",
+     "n62",
+     "n63",
+     "n64",
+     "n65",
+     "n66",
+     "n67",
+     "n68",
+     "n69",
+     "n70",
+     "n71",
+     "n72",
+     "n73",
+     "n74",
+     "n75",
+     "n76",
+     "n77",
+     "n78",
+     "n79",
+     "n80",
+     "n81",
+     "n82",
+     "n83",
+     "n84",
+     "n85",
+     "n86",
+     "n87",
+     "n88",
+     "n89",
+     "n90",
+     "n91",
+     "n92",
+     "n93",
+     "n94",
+     "n95",
+     "n96",
+     "n97",
+     "n98",
+     "n99",
+     "n100"
+    ],
+    "plans": [
+     {
+      "id": "A",
+      "closures": [
+       {
+        "edge_ids": [
+         "e_bc"
+        ],
+        "start_at": "2026-10-07T08:00:00+05:00",
+        "end_at": "2026-10-07T18:00:00+05:00"
+       },
+       {
+        "edge_ids": [
+         "e_ab"
+        ],
+        "start_at": "2026-10-08T08:00:00+05:00",
+        "end_at": "2026-10-08T18:00:00+05:00"
+       }
+      ]
+     },
+     {
+      "id": "B",
+      "closures": [
+       {
+        "edge_ids": [
+         "e_cd",
+         "e_gd"
+        ],
+        "start_at": "2026-10-07T04:00:00Z",
+        "end_at": "2026-10-07T12:00:00+05:00"
+       }
+      ]
+     }
+    ]
+   },
+   "expect_status": 413,
+   "expect_code": "too_large"
+  }
+ ]
+}

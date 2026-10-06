@@ -1,0 +1,44 @@
+R07 -> R01: ПОДКЛЮЧЕНИЕ СЦЕНАРИЕВ (civic-scenario-v1)
+
+Источник: ветка claude/brave-hopper-bkc58b (см. DELIVERY.json code_commit). Импортировать каталоги целиком:
+  engine/civic_scenarios/   (Python stdlib, без зависимостей; graphs/ ~1.6 МБ, ODbL-атрибуция в MANIFEST.json)
+  web/civic/scenarios/scenarios.js, scenarios.css   (demo.html — только для демо модуля, в продукт не обязателен)
+  tests/civic/R07/          (python3 -m pytest -q tests/civic/R07)
+
+1) СЕРВЕР (ui/web_server.py, делает только R01)
+   from engine.civic_scenarios.http import handle as scenarios_handle, MAX_BODY_BYTES
+   В обработчике до общего 404:
+     r = scenarios_handle(method, path, query, body_dict_or_None)
+     if r is not None: отправить r["status"], r["headers"], json(r["body"])
+   - Тело POST: проверить Content-Length <= 64 КБ (MAX_BODY_BYTES) до чтения, иначе 413 too_large;
+     невалидный JSON -> 400 {ok:false,error:{code:"invalid_json"}}. handle принимает уже разобранный dict.
+   - Граф выбирается только по payload.graph_id из graphs/MANIFEST.json; путей/URL от клиента нет.
+   - Endpoint'ы не меняют состояние; авторизация не нужна. Если R01 требует same-origin для всех POST — совместимо.
+   - Ошибки ScenarioError уже превращены в {ok:false,error:{code,message,fields?}}; 404/405/409/413/422.
+   - Первый запрос к графу K03 загружает и проверяет его (~0.05–0.1 с), далее кэш в памяти процесса.
+   - Ответ compare содержит timing_ms (вне result_digest).
+
+2) ФРОНТЕНД (web/index.html / shell, делает только R01)
+   <link rel="stylesheet" href="/civic/scenarios/scenarios.css">
+   <script src="/civic/scenarios/scenarios.js"></script>
+   const h = window.CivicScenarios.mount({ root, map, api, apiPrefix: "/api/civic/v1" });  ... h.destroy();
+   - api.request(method, path, body) -> Promise<data>; ошибки — Error с .code (как нормализует R01).
+   - Если api.request уже добавляет "/api/civic/v1", передать apiPrefix: "".
+   - map — основной MapLibre; модуль добавляет только слои/источники civic-r07-* и снимает их в destroy().
+     map может быть null — тогда таблица без карты.
+   - Панель рассчитана на ширину 360–440 px (боковая колонка или bottom sheet).
+
+3) ЧТО ПОКАЗЫВАТЬ ПОЛЬЗОВАТЕЛЮ (уже в компоненте)
+   - Плашка «Сценарий — гипотеза, не официальное перекрытие»; метрика — длина в метрах, не время.
+   - Бейдж статуса графа (СИНТЕТИКА / производные данные); режим «пешеход»; driving показан как NOT_READY.
+
+4) ПРОВЕРКА ПОСЛЕ ИНТЕГРАЦИИ
+   python3 -m pytest -q tests/civic/R07
+   curl -s -X POST localhost:<port>/api/civic/v1/scenarios/compare -H 'Content-Type: application/json' \
+     --data @research/round-11-results/R07/results/synthetic-tiny-v1-demo.input.json | python3 -m json.tool | head
+   Ожидаемый result_digest для этого входа — research/round-11-results/R07/results/INDEX.json.
+
+5) ДЛЯ R10
+   research/round-11-results/R07/fixtures_R10/compare_cases.json — 1 позитивный и 14 негативных кейсов с ожидаемыми
+   HTTP-статусами/кодами; ручные ожидания: tests/civic/R07/fixtures/synthetic_expected.json;
+   сверка с K03 routing.js: research/round-11-results/R07/compare_k03_routing.py.

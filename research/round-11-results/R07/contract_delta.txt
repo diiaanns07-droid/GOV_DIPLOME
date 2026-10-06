@@ -1,0 +1,14 @@
+R07 CONTRACT DELTA (совместимые расширения civic-v1, раздел 5). Обязательный v1 не меняется.
+
+1. Граф: необязательные поля (v1-граф без них валиден и считается так же):
+   node.boundary: boolean — граница среза; при её наличии «нет пути» становится unknown(path_may_exist_outside_graph).
+   edge.geometry: [[lon,lat],...] — линия для карты; в расчёте не участвует.
+   edge.source, graph.label, graph.limitations, graph.license, graph.source, graph.bbox — описательные.
+   Обоснование: без boundary нельзя честно отличить «нет пути» от «путь вне среза»; без geometry UI рисовал бы прямые.
+2. Нулевая длина ребра допустима (v1: «неотрицательны»), выдаётся warning zero_length_edges; отрицательная — ошибка.
+3. Перекрытие закрывает ребро в обоих направлениях (v1 не уточнял).
+4. Пустой интервал (start_at >= end_at) — ошибка 422, а не «неактивное перекрытие».
+5. Дополнительные GET (только чтение, для UI): /scenarios/graphs, /scenarios/graphs/{id}, /scenarios/cases.
+   В v1 был только POST /scenarios/compare; UI без них не знает геометрию и ID рёбер.
+6. Результат: schema_version "civic-scenario-result-v1"; поля описаны в engine/civic_scenarios/README.md.
+   Stretch-функция timeline(payload, graph, window_start, window_end) — отдельный вызов, HTTP пока не выставлен.

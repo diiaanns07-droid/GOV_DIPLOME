@@ -1,0 +1,19 @@
+{
+ "graph": "k03-astana-pedestrian-r10",
+ "nodes": 2309,
+ "edges": 3269,
+ "pairs": 1000,
+ "closed_edges_per_plan": 200,
+ "prepare_graph_s_incl_digest": 0.044,
+ "compare_s_runs": [
+  0.486,
+  0.51,
+  0.477,
+  0.46,
+  0.47
+ ],
+ "compare_s_median": 0.477,
+ "python": "3.13.16",
+ "machine": "x86_64",
+ "note": "1000 пар = максимальный лимит payload (25 стартов × 40 целей); 3 набора маршрутов (база, A, B)."
+}

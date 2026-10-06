@@ -1,0 +1,53 @@
+{
+ "schema_version": "civic-scenario-v1",
+ "city": "astana",
+ "graph_id": "k03-astana-pedestrian-r10",
+ "graph_digest": "15d85071aa92934082e2c02fe627687729c006d327c2fdc25bf6b3aae75bd357",
+ "mode": "walking",
+ "analysis_at": "2026-10-10T12:00:00+05:00",
+ "origin_node_ids": [
+  "7e3cae1b-c038-4fd3-817e-f72258924fc3",
+  "88922650-69e5-479c-83e2-a5597bbec299",
+  "cf6d1bca-9872-44a8-a9be-24d0fa2d454d"
+ ],
+ "destination_node_ids": [
+  "3f82b2bd-94b2-4984-8f1d-9c543e93c332",
+  "8ddc426d-ab32-48f5-a45f-c6276aa34cb8",
+  "aa2e2abe-4284-4c27-b50e-bba3cffdba06",
+  "e213951a-7a43-482a-8afd-955bba04e56f",
+  "0f31ebb2-5826-4385-916e-8ab6e9a29786",
+  "b5494d15-e83c-430e-822b-15d994e9a859"
+ ],
+ "plans": [
+  {
+   "id": "A",
+   "closures": [
+    {
+     "edge_ids": [
+      "1b8d7028-194a-4736-851a-18f65bc82e0d#1",
+      "3cd24d7e-7e2f-4dff-9472-c40f0932858f#0"
+     ],
+     "start_at": "2026-10-10T08:00:00+05:00",
+     "end_at": "2026-10-10T20:00:00+05:00"
+    }
+   ]
+  },
+  {
+   "id": "B",
+   "closures": [
+    {
+     "edge_ids": [
+      "fabebdab-626f-4f2e-b1f8-fd2e1f4f38fb#5",
+      "4ebb7fbb-8af6-4120-b6c9-87ba78ffdc05#0",
+      "4ebb7fbb-8af6-4120-b6c9-87ba78ffdc05#1",
+      "ef80a00b-156c-4ced-bf3b-bdfe96c93b9a#3",
+      "ef80a00b-156c-4ced-bf3b-bdfe96c93b9a#2",
+      "ef80a00b-156c-4ced-bf3b-bdfe96c93b9a#1"
+     ],
+     "start_at": "2026-10-10T10:00:00+05:00",
+     "end_at": "2026-10-11T10:00:00+05:00"
+    }
+   ]
+  }
+ ]
+}

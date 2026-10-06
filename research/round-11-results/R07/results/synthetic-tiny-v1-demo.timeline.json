@@ -1,0 +1,431 @@
+{
+ "schema_version": "civic-scenario-result-v1+timeline",
+ "input": {
+  "payload_digest": "efb32f8cace0856c9e103951d6d55af3c62bc9eaebc78d3dbb90f2a9bcfb7889",
+  "graph_id": "synthetic-tiny-v1",
+  "graph_digest": "05e89ec78e774e34e664db0297c2c11766e854101697b4b61d74a1a52b2cd4bf",
+  "mode": "walking",
+  "window_start_utc": "2026-10-06T19:00:00Z",
+  "window_end_utc": "2026-10-08T19:00:00Z",
+  "interval_rule": "start_at <= t < end_at"
+ },
+ "baseline_status": {
+  "n_a>n_c": "ok",
+  "n_a>n_d": "ok",
+  "n_a>n_h": "ok",
+  "n_a>n_u": "unknown",
+  "n_a>n_x": "unreachable",
+  "n_a>n_a": "ok",
+  "n_h>n_c": "unreachable",
+  "n_h>n_d": "unreachable",
+  "n_h>n_h": "ok",
+  "n_h>n_u": "unreachable",
+  "n_h>n_x": "unreachable",
+  "n_h>n_a": "unreachable"
+ },
+ "plans": [
+  {
+   "id": "A",
+   "segments": [
+    {
+     "start_utc": "2026-10-06T19:00:00Z",
+     "end_utc": "2026-10-07T03:00:00Z",
+     "duration_h": 8.0,
+     "active_closed_edge_ids": [],
+     "changes": {
+      "unchanged": 5,
+      "longer": 0,
+      "shorter": 0,
+      "lost_within_model": 0,
+      "became_uncertain": 0,
+      "gained": 0,
+      "not_comparable": 7
+     }
+    },
+    {
+     "start_utc": "2026-10-07T03:00:00Z",
+     "end_utc": "2026-10-07T13:00:00Z",
+     "duration_h": 10.0,
+     "active_closed_edge_ids": [
+      "e_bc"
+     ],
+     "changes": {
+      "unchanged": 2,
+      "longer": 3,
+      "shorter": 0,
+      "lost_within_model": 0,
+      "became_uncertain": 0,
+      "gained": 0,
+      "not_comparable": 7
+     }
+    },
+    {
+     "start_utc": "2026-10-07T13:00:00Z",
+     "end_utc": "2026-10-08T03:00:00Z",
+     "duration_h": 14.0,
+     "active_closed_edge_ids": [],
+     "changes": {
+      "unchanged": 5,
+      "longer": 0,
+      "shorter": 0,
+      "lost_within_model": 0,
+      "became_uncertain": 0,
+      "gained": 0,
+      "not_comparable": 7
+     }
+    },
+    {
+     "start_utc": "2026-10-08T03:00:00Z",
+     "end_utc": "2026-10-08T13:00:00Z",
+     "duration_h": 10.0,
+     "active_closed_edge_ids": [
+      "e_ab"
+     ],
+     "changes": {
+      "unchanged": 2,
+      "longer": 0,
+      "shorter": 0,
+      "lost_within_model": 3,
+      "became_uncertain": 0,
+      "gained": 0,
+      "not_comparable": 7
+     }
+    },
+    {
+     "start_utc": "2026-10-08T13:00:00Z",
+     "end_utc": "2026-10-08T19:00:00Z",
+     "duration_h": 6.0,
+     "active_closed_edge_ids": [],
+     "changes": {
+      "unchanged": 5,
+      "longer": 0,
+      "shorter": 0,
+      "lost_within_model": 0,
+      "became_uncertain": 0,
+      "gained": 0,
+      "not_comparable": 7
+     }
+    }
+   ],
+   "pairs": [
+    {
+     "origin_node_id": "n_a",
+     "destination_node_id": "n_c",
+     "baseline_status": "ok",
+     "hours_lost_within_model": 10.0,
+     "hours_became_uncertain": 0.0,
+     "hours_comparable": 38.0,
+     "extra_length_m_h": 1600.0,
+     "max_extra_length_m": 160.0
+    },
+    {
+     "origin_node_id": "n_a",
+     "destination_node_id": "n_d",
+     "baseline_status": "ok",
+     "hours_lost_within_model": 10.0,
+     "hours_became_uncertain": 0.0,
+     "hours_comparable": 38.0,
+     "extra_length_m_h": 1600.0,
+     "max_extra_length_m": 160.0
+    },
+    {
+     "origin_node_id": "n_a",
+     "destination_node_id": "n_h",
+     "baseline_status": "ok",
+     "hours_lost_within_model": 10.0,
+     "hours_became_uncertain": 0.0,
+     "hours_comparable": 38.0,
+     "extra_length_m_h": 1600.0,
+     "max_extra_length_m": 160.0
+    },
+    {
+     "origin_node_id": "n_a",
+     "destination_node_id": "n_u",
+     "baseline_status": "unknown",
+     "hours_lost_within_model": 0.0,
+     "hours_became_uncertain": 0.0,
+     "hours_comparable": 0.0,
+     "extra_length_m_h": 0.0,
+     "max_extra_length_m": null
+    },
+    {
+     "origin_node_id": "n_a",
+     "destination_node_id": "n_x",
+     "baseline_status": "unreachable",
+     "hours_lost_within_model": 0.0,
+     "hours_became_uncertain": 0.0,
+     "hours_comparable": 0.0,
+     "extra_length_m_h": 0.0,
+     "max_extra_length_m": null
+    },
+    {
+     "origin_node_id": "n_a",
+     "destination_node_id": "n_a",
+     "baseline_status": "ok",
+     "hours_lost_within_model": 0.0,
+     "hours_became_uncertain": 0.0,
+     "hours_comparable": 48.0,
+     "extra_length_m_h": 0.0,
+     "max_extra_length_m": 0.0
+    },
+    {
+     "origin_node_id": "n_h",
+     "destination_node_id": "n_c",
+     "baseline_status": "unreachable",
+     "hours_lost_within_model": 0.0,
+     "hours_became_uncertain": 0.0,
+     "hours_comparable": 0.0,
+     "extra_length_m_h": 0.0,
+     "max_extra_length_m": null
+    },
+    {
+     "origin_node_id": "n_h",
+     "destination_node_id": "n_d",
+     "baseline_status": "unreachable",
+     "hours_lost_within_model": 0.0,
+     "hours_became_uncertain": 0.0,
+     "hours_comparable": 0.0,
+     "extra_length_m_h": 0.0,
+     "max_extra_length_m": null
+    },
+    {
+     "origin_node_id": "n_h",
+     "destination_node_id": "n_h",
+     "baseline_status": "ok",
+     "hours_lost_within_model": 0.0,
+     "hours_became_uncertain": 0.0,
+     "hours_comparable": 48.0,
+     "extra_length_m_h": 0.0,
+     "max_extra_length_m": 0.0
+    },
+    {
+     "origin_node_id": "n_h",
+     "destination_node_id": "n_u",
+     "baseline_status": "unreachable",
+     "hours_lost_within_model": 0.0,
+     "hours_became_uncertain": 0.0,
+     "hours_comparable": 0.0,
+     "extra_length_m_h": 0.0,
+     "max_extra_length_m": null
+    },
+    {
+     "origin_node_id": "n_h",
+     "destination_node_id": "n_x",
+     "baseline_status": "unreachable",
+     "hours_lost_within_model": 0.0,
+     "hours_became_uncertain": 0.0,
+     "hours_comparable": 0.0,
+     "extra_length_m_h": 0.0,
+     "max_extra_length_m": null
+    },
+    {
+     "origin_node_id": "n_h",
+     "destination_node_id": "n_a",
+     "baseline_status": "unreachable",
+     "hours_lost_within_model": 0.0,
+     "hours_became_uncertain": 0.0,
+     "hours_comparable": 0.0,
+     "extra_length_m_h": 0.0,
+     "max_extra_length_m": null
+    }
+   ],
+   "totals": {
+    "pair_hours_lost_within_model": 30.0,
+    "pair_hours_became_uncertain": 0.0,
+    "extra_length_m_h": 4800.0,
+    "pairs_with_any_loss": 3,
+    "units": {
+     "pair_hours": "пара·ч",
+     "extra_length_m_h": "м·ч"
+    }
+   }
+  },
+  {
+   "id": "B",
+   "segments": [
+    {
+     "start_utc": "2026-10-06T19:00:00Z",
+     "end_utc": "2026-10-07T04:00:00Z",
+     "duration_h": 9.0,
+     "active_closed_edge_ids": [],
+     "changes": {
+      "unchanged": 5,
+      "longer": 0,
+      "shorter": 0,
+      "lost_within_model": 0,
+      "became_uncertain": 0,
+      "gained": 0,
+      "not_comparable": 7
+     }
+    },
+    {
+     "start_utc": "2026-10-07T04:00:00Z",
+     "end_utc": "2026-10-07T07:00:00Z",
+     "duration_h": 3.0,
+     "active_closed_edge_ids": [
+      "e_cd",
+      "e_gd"
+     ],
+     "changes": {
+      "unchanged": 3,
+      "longer": 0,
+      "shorter": 0,
+      "lost_within_model": 2,
+      "became_uncertain": 0,
+      "gained": 0,
+      "not_comparable": 7
+     }
+    },
+    {
+     "start_utc": "2026-10-07T07:00:00Z",
+     "end_utc": "2026-10-08T19:00:00Z",
+     "duration_h": 36.0,
+     "active_closed_edge_ids": [],
+     "changes": {
+      "unchanged": 5,
+      "longer": 0,
+      "shorter": 0,
+      "lost_within_model": 0,
+      "became_uncertain": 0,
+      "gained": 0,
+      "not_comparable": 7
+     }
+    }
+   ],
+   "pairs": [
+    {
+     "origin_node_id": "n_a",
+     "destination_node_id": "n_c",
+     "baseline_status": "ok",
+     "hours_lost_within_model": 0.0,
+     "hours_became_uncertain": 0.0,
+     "hours_comparable": 48.0,
+     "extra_length_m_h": 0.0,
+     "max_extra_length_m": 0.0
+    },
+    {
+     "origin_node_id": "n_a",
+     "destination_node_id": "n_d",
+     "baseline_status": "ok",
+     "hours_lost_within_model": 3.0,
+     "hours_became_uncertain": 0.0,
+     "hours_comparable": 45.0,
+     "extra_length_m_h": 0.0,
+     "max_extra_length_m": 0.0
+    },
+    {
+     "origin_node_id": "n_a",
+     "destination_node_id": "n_h",
+     "baseline_status": "ok",
+     "hours_lost_within_model": 3.0,
+     "hours_became_uncertain": 0.0,
+     "hours_comparable": 45.0,
+     "extra_length_m_h": 0.0,
+     "max_extra_length_m": 0.0
+    },
+    {
+     "origin_node_id": "n_a",
+     "destination_node_id": "n_u",
+     "baseline_status": "unknown",
+     "hours_lost_within_model": 0.0,
+     "hours_became_uncertain": 0.0,
+     "hours_comparable": 0.0,
+     "extra_length_m_h": 0.0,
+     "max_extra_length_m": null
+    },
+    {
+     "origin_node_id": "n_a",
+     "destination_node_id": "n_x",
+     "baseline_status": "unreachable",
+     "hours_lost_within_model": 0.0,
+     "hours_became_uncertain": 0.0,
+     "hours_comparable": 0.0,
+     "extra_length_m_h": 0.0,
+     "max_extra_length_m": null
+    },
+    {
+     "origin_node_id": "n_a",
+     "destination_node_id": "n_a",
+     "baseline_status": "ok",
+     "hours_lost_within_model": 0.0,
+     "hours_became_uncertain": 0.0,
+     "hours_comparable": 48.0,
+     "extra_length_m_h": 0.0,
+     "max_extra_length_m": 0.0
+    },
+    {
+     "origin_node_id": "n_h",
+     "destination_node_id": "n_c",
+     "baseline_status": "unreachable",
+     "hours_lost_within_model": 0.0,
+     "hours_became_uncertain": 0.0,
+     "hours_comparable": 0.0,
+     "extra_length_m_h": 0.0,
+     "max_extra_length_m": null
+    },
+    {
+     "origin_node_id": "n_h",
+     "destination_node_id": "n_d",
+     "baseline_status": "unreachable",
+     "hours_lost_within_model": 0.0,
+     "hours_became_uncertain": 0.0,
+     "hours_comparable": 0.0,
+     "extra_length_m_h": 0.0,
+     "max_extra_length_m": null
+    },
+    {
+     "origin_node_id": "n_h",
+     "destination_node_id": "n_h",
+     "baseline_status": "ok",
+     "hours_lost_within_model": 0.0,
+     "hours_became_uncertain": 0.0,
+     "hours_comparable": 48.0,
+     "extra_length_m_h": 0.0,
+     "max_extra_length_m": 0.0
+    },
+    {
+     "origin_node_id": "n_h",
+     "destination_node_id": "n_u",
+     "baseline_status": "unreachable",
+     "hours_lost_within_model": 0.0,
+     "hours_became_uncertain": 0.0,
+     "hours_comparable": 0.0,
+     "extra_length_m_h": 0.0,
+     "max_extra_length_m": null
+    },
+    {
+     "origin_node_id": "n_h",
+     "destination_node_id": "n_x",
+     "baseline_status": "unreachable",
+     "hours_lost_within_model": 0.0,
+     "hours_became_uncertain": 0.0,
+     "hours_comparable": 0.0,
+     "extra_length_m_h": 0.0,
+     "max_extra_length_m": null
+    },
+    {
+     "origin_node_id": "n_h",
+     "destination_node_id": "n_a",
+     "baseline_status": "unreachable",
+     "hours_lost_within_model": 0.0,
+     "hours_became_uncertain": 0.0,
+     "hours_comparable": 0.0,
+     "extra_length_m_h": 0.0,
+     "max_extra_length_m": null
+    }
+   ],
+   "totals": {
+    "pair_hours_lost_within_model": 6.0,
+    "pair_hours_became_uncertain": 0.0,
+    "extra_length_m_h": 0.0,
+    "pairs_with_any_loss": 2,
+    "units": {
+     "pair_hours": "пара·ч",
+     "extra_length_m_h": "м·ч"
+    }
+   }
+  }
+ ],
+ "note": "м·ч и пара·ч — разные величины; общий балл не вычисляется. Длина пути, не время в пути.",
+ "result_digest": "1ab20666b7fdcfcdeb52d2a9720a7ab33ab95be0f177f0ace98ebc89978bf2b5"
+}
