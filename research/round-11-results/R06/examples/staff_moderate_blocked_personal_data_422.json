@@ -1,0 +1,27 @@
+{
+  "_note": "FIXTURE: синтетические объекты и учётные записи для тестов R06, не реальные данные. Сгенерировано make_examples.py.",
+  "example": {
+    "status": 422,
+    "headers": {
+      "Cache-Control": "no-store"
+    },
+    "body": {
+      "ok": false,
+      "error": {
+        "code": "personal_data_suspected",
+        "message": "В публичном тексте похоже есть персональные данные. Скройте их перед публикацией.",
+        "fields": {
+          "public_text": "номер телефона"
+        },
+        "hints": [
+          {
+            "type": "phone",
+            "label": "номер телефона",
+            "start": 64,
+            "end": 80
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "_note": "FIXTURE: синтетические объекты и учётные записи для тестов R06, не реальные данные. Сгенерировано make_examples.py.",
+  "example": {
+    "status": 422,
+    "headers": {
+      "Cache-Control": "no-store"
+    },
+    "body": {
+      "ok": false,
+      "error": {
+        "code": "location_required",
+        "message": "Проверьте поля формы.",
+        "fields": {
+          "location": "Выберите объект на карте или укажите место."
+        }
+      }
+    }
+  }
+}

@@ -297,6 +297,8 @@ class FeedbackService:
             return None
         context = context if isinstance(context, Mapping) else {}
         try:
+            if context.get("host_allowed") is False:
+                raise ApiError(403, "host_not_allowed", "Недопустимый адрес сервера.")
             route = self._route(method, segments)
             if route is None:
                 return None
@@ -431,11 +433,19 @@ class FeedbackService:
             raise ApiError(401, "unauthenticated", "Сессия закрыта. Войдите снова.")
         expires = get("expires_at")
         if expires is not None:
+            # R02 Principal.expires_at — epoch-секунды; допускаются также datetime и ISO8601.
             try:
-                moment = expires if isinstance(expires, datetime) else datetime.fromisoformat(str(expires).replace("Z", "+00:00"))
+                if isinstance(expires, bool):
+                    raise ValueError(expires)
+                if isinstance(expires, (int, float)):
+                    moment = datetime.fromtimestamp(float(expires), timezone.utc)
+                elif isinstance(expires, datetime):
+                    moment = expires
+                else:
+                    moment = datetime.fromisoformat(str(expires).replace("Z", "+00:00"))
                 if moment.tzinfo is None:
                     moment = moment.replace(tzinfo=timezone.utc)
-            except ValueError:
+            except (ValueError, OverflowError, OSError):
                 raise ApiError(401, "unauthenticated", "Сессия недействительна. Войдите снова.") from None
             if moment <= self._now():
                 raise ApiError(401, "session_expired", "Сессия истекла. Войдите снова — действие не выполнено.")
@@ -731,7 +741,7 @@ class FeedbackService:
                          "public_actor_label": PUBLIC_ACTOR_LABEL} for event in events],
         }
 
-    def _staff_dto(self, row, *, full_text: bool = True) -> dict:
+    def _staff_dto(self, row) -> dict:
         classifier = json.loads(row["classifier_json"]) if row["classifier_json"] else None
         hints = textutil.personal_hints(row["text"])
         same_sender = self._db.execute(
@@ -746,7 +756,7 @@ class FeedbackService:
             "kind": row["kind"],
             "category": row["category"],
             "category_label": CATEGORY_LABELS[row["category"]],
-            "text": row["text"] if full_text else row["text"][:280],
+            "text": row["text"],
             "language": row["language"],
             "consent_public": bool(row["consent_public"]),
             "consent_withdrawn_at": row["consent_withdrawn_at"],
@@ -820,7 +830,8 @@ class FeedbackService:
                                     (*params, limit + 1, offset)).fetchall()
             items = []
             for row in rows[:limit]:
-                item = self._staff_dto(row, full_text=False)
+                # Полный текст: модератор может решить даже без маршрута GET /staff/feedback/{id}.
+                item = self._staff_dto(row)
                 item["similar_count"] = len(self._similar(row))
                 items.append(item)
             counts = {name: 0 for name in MODERATION}

@@ -129,6 +129,13 @@
     return info.message || fallback;
   }
 
+  function receiptError(err, fallback) {
+    var info = errorInfo(err);
+    if ((info.status === 404 || info.status === 405) && info.code !== "receipt_not_found")
+      return "Эта функция пока не подключена в сборке платформы. Номер квитанции сохраните.";
+    return humanError(info, fallback);
+  }
+
   function createFetchApi(base, options) {
     base = base || "/api/civic/v1";
     options = options || {};
@@ -464,7 +471,7 @@
           },
           function (err) {
             check.disabled = false;
-            if (!life.destroyed) actionStatus.textContent = humanError(errorInfo(err), "Не удалось проверить статус.");
+            if (!life.destroyed) actionStatus.textContent = receiptError(err, "Не удалось проверить статус.");
           }
         );
       });
@@ -482,7 +489,7 @@
             },
             function (err) {
               withdraw.disabled = false;
-              if (!life.destroyed) actionStatus.textContent = humanError(errorInfo(err), "Не удалось отозвать согласие.");
+              if (!life.destroyed) actionStatus.textContent = receiptError(err, "Не удалось отозвать согласие.");
             }
           );
         });
@@ -520,6 +527,7 @@
     var filters = { moderation: "pending", category: "", consent: "" };
     var selectedId = null;
     var loadToken = 0;
+    var cached = {};
 
     clear(root);
     root.classList.add(P);
@@ -602,7 +610,9 @@
         list.appendChild(el("li", { className: P + "-empty", text: "Нет сообщений в этом фильтре." }));
         return;
       }
+      cached = {};
       items.forEach(function (item) {
+        cached[item.id] = item;
         var flags = [];
         var hints = item.personal_data_hints || [];
         if (hints.some(function (h) { return h.type !== "url"; })) flags.push("возможны контакты");
@@ -638,6 +648,12 @@
         function (data) { if (!life.destroyed && selectedId === id) renderDetail(data); },
         function (err) {
           if (life.destroyed) return;
+          var info = errorInfo(err);
+          // Шлюз без маршрута GET /staff/feedback/{id}: решение возможно по данным очереди.
+          if ((info.status === 404 || info.status === 405) && info.code !== "feedback_not_found" && cached[id]) {
+            renderDetail({ item: cached[id], history: null, object: null, similar: null, degraded: true });
+            return;
+          }
           clear(detail);
           detail.appendChild(el("p", { className: P + "-error", text: staffError(err, "Не удалось открыть сообщение.") }));
         }
@@ -671,6 +687,9 @@
         : item.consent_public ? "Автор разрешил публикацию текста после проверки" : "Автор НЕ разрешил публиковать текст";
       detail.appendChild(el("h4", { text: "Сообщение #" + item.id + " · " + item.moderation_label }));
       detail.appendChild(el("p", { className: P + "-muted", text: "Ревизия " + item.revision + " · получено " + formatDate(item.created_at) }));
+      if (data.degraded) {
+        detail.appendChild(el("p", { className: P + "-warning-text", text: "Карточка собрана из очереди: журнал, похожие сообщения и сведения об объекте недоступны в этой сборке (нет маршрута GET /staff/feedback/{id})." }));
+      }
       detail.appendChild(el("p", { className: item.consent_public && !item.consent_withdrawn_at ? P + "-ok" : P + "-warning-text", text: consentText }));
       detail.appendChild(el("div", { className: P + "-private" }, [
         el("small", { text: "Исходный текст — только для модераторов" }),
@@ -723,8 +742,9 @@
 
       detail.appendChild(renderDecisionForm(item));
 
+      if (!data.history) return;
       var history = el("ol", { className: P + "-history" });
-      (data.history || []).forEach(function (h) {
+      data.history.forEach(function (h) {
         history.appendChild(el("li", {}, [
           el("span", { text: formatDate(h.at) + " · " + (HISTORY_LABELS[h.action] || h.action) + " · ревизия " + h.revision + (h.actor ? " · " + h.actor : "") }),
           h.reason ? el("span", { className: P + "-muted", text: " — " + h.reason }) : null,

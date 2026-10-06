@@ -1,0 +1,105 @@
+R06 — ИНТЕГРАЦИЯ СООБЩЕНИЙ ЖИТЕЛЕЙ (civic-v1), для R01/R02/R03/R04/R10
+Ветка R06: claude/focused-hypatia-z8h0no. PACK_SHA 9c2f5c0dae14b46c0697a9dfc7f854351bfd570d.
+Проверено против: R01 claude/affectionate-ride-bol5v8 @341c554, R02 claude/trusting-ptolemy-6ms354 @6a28de2.
+
+1. ЧТО ИМПОРТИРОВАТЬ (только пути R06)
+  ui/civic_feedback/__init__.py           экспорт FeedbackService
+  ui/civic_feedback/service.py            FeedbackService(db_path, object_lookup, clock=None, *, classifier=None,
+                                          staff_roles={"editor","moderator","admin"}, limits=None)
+                                          handle(method, path, query, body, principal, context) -> None | {status,headers,body}
+  ui/civic_feedback/text.py               нормализация, подсказки о персональных данных (неполные)
+  ui/civic_feedback/classifier_adapter.py load_r08_classifier() -> classify | None
+  ui/civic_feedback/integration.py        object_lookup_from_civic_service(civic), build_feedback_service,
+                                          dispatch_civic (эталонный порядок)
+  ui/civic_feedback/fixtures.py           FIXTURE ONLY: синтетические объекты/principal для тестов, не для продукта
+  web/civic/feedback/feedback.js          window.CivicFeedback = {mount, mountModeration, createFetchApi, version}
+  web/civic/feedback/feedback.css         все селекторы под .civic-r06, без глобальных правил
+  tests/civic/R06/                        pytest + browser_r06.cjs + FIXTURE-стенд harness/
+
+2. МАРШРУТЫ R06 (все под /api/civic/v1; path принимается и с префиксом, и без него)
+  Контрактные (CONTRACT.txt §3):
+    GET  /objects/{id}/feedback                 публичный список: approved + consent + согласие не отозвано
+    POST /feedback                              {object_id|null, geometry|null, category, text, consent_public,
+                                                 kind?, client_request_id?, confirm_duplicate?} -> 201 receipt
+    GET  /staff/feedback                        очередь: ?moderation=pending|approved|rejected|all&category=&kind=
+                                                 &consent=true|false&object_id=&limit=&cursor= ; data={items,next_cursor,counts}
+    POST /staff/feedback/{id}/moderate          {expected_revision, action:"approve"|"reject", reason, public_reply|null,
+                                                 public_text?} -> {item, history}
+  Дополнительные (обратносовместимые, см. contract_delta.txt) — ПРОСЬБА ДОБАВИТЬ В CIVIC_ROUTES R01:
+    ("GET",  ("staff", "feedback", "{id}"), "feedback"),          карточка: item, history, object, similar
+    ("POST", ("feedback", "receipt"), "feedback"),                статус по номеру квитанции {receipt_id}
+    ("POST", ("feedback", "withdraw-consent"), "feedback"),       отзыв согласия автором {receipt_id}
+  Без них UI работает: карточка модератора строится из элемента очереди (полный текст есть),
+  кнопки квитанции честно сообщают «функция не подключена». Но журнал/похожие/отзыв согласия недоступны.
+
+  ПОРЯДОК: GET /objects/{id}/feedback раньше GET /objects/{id}. В шлюзе R01 @341c554 это уже так
+  (CIVIC_ROUTES, строка с ("objects","{id}","feedback") выше ("objects","{id}")). CivicService R02 сам
+  возвращает None для трёхсегментного пути, поэтому и обратный порядок не «проглатывает» маршрут.
+  Для своих путей R06 отвечает JSON 404/405 (Allow), для чужих — None.
+
+3. CONTEXT И PRINCIPAL (что требуется от R01/R02)
+  principal  — ТОЛЬКО store.resolve_principal(context) (Principal R02 или None). Никогда из body.
+               R06 читает role (editor|admin|moderator), username|name (аудит), csrf_token, expires_at
+               (epoch-число R02, datetime или ISO). Тело с полями role/actor/moderated_by -> 400.
+  context    — headers (регистр ключей любой; нужен X-CSRF-Token), client_ip (для лимита и хэша
+               отправителя; сам IP не хранится — HMAC с солью из runtime-БД), is_same_origin.
+  is_same_origin — для ВСЕХ POST R06 должен быть строго True (иначе 403 cross_origin). Шлюз R01
+               считает True при совпадении Origin с Host — браузерный fetch POST присылает Origin.
+  CSRF       — для POST /staff/... сверяется X-CSRF-Token с principal.csrf_token (compare_digest);
+               либо адаптер ставит context["csrf_verified"]=True после собственной проверки.
+  host_allowed=False -> 403 (если ключ передан). Ответ 403 csrf_failed совместим с повтором в shell R01.
+
+4. OBJECT LOOKUP
+  Шлюз R01 @341c554: FeedbackService(str(db_path), gateway.public_object) — публичный DTO R02.
+  Это безопасно и совместимо: в DTO есть city и publication (R06 сам требует city=astana и
+  publication=published; черновик/архив неотличимы от отсутствия для жителя).
+  Вариант лучше для модератора: integration.object_lookup_from_civic_service(civic) — служебное чтение
+  R02 (archived-объект в карточке модератора виден как контекст; internal_notes R06 не выводит).
+  Исключение lookup -> 503 object_lookup_unavailable (не «объект не найден»).
+
+5. НАЙДЕННЫЕ РАСХОЖДЕНИЯ R01 @341c554 <-> R02 @6a28de2 (НЕ код R06; проверено в scratch-копии)
+  a) ui/civic_store/__init__.py не экспортирует CivicService (контракт §3 требует экспорт), а фабрика
+     R01 вызывает module.CivicService -> AttributeError -> store "init_failed" -> все /api/civic/v1 503.
+     Исправление: R02 добавляет `from .service import CivicService` в __init__ (или R01 импортирует
+     ui.civic_store.service).
+  b) Шлюз передаёт в R02 путь без префикса (rel_path "/session/login"), а CivicService.handle R02
+     принимает только "/api/civic/v1/...": login/objects -> None -> 404. То же в public_object
+     ("/objects/" + id) -> lookup всегда None -> каждое сообщение получило бы object_not_found.
+     Исправление: одна сторона договаривается о форме path (R06 принимает обе).
+  c) R02 требует context["host_allowed"] is True (отсутствие = запрет), шлюз R01 ключ не передаёт ->
+     403 forbidden_host. Исправление: R01 добавляет "host_allowed": True после своей проверки Host.
+  С тремя обходами ТОЛЬКО в scratch-копии сквозной HTTP-тест tests/civic/R06/test_r06_gateway_smoke.py
+  (настоящий сервер R01 + R02 + R06: логин, создание/публикация объекта, сообщение, Origin, CSRF,
+  модерация, публичный список, logout -> 401) прошёл: 1 passed. Обход (b) ломает 3 теста дублёра R01,
+  поэтому выбирать решение должен R01.
+
+6. FRONTEND
+  Подключение статики (allowlist R01 ASSETS): /civic/feedback/feedback.js, /civic/feedback/feedback.css
+  (или путь, принятый для web/civic/*). Нет inline-скриптов/стилей, совместимо со строгим CSP.
+  Житель: shell R01 уже вызывает window.CivicFeedback.mount({root, api, objectId, geometry}) из
+  openFeedback(target) (R03 onFeedback). geometry — GeoJSON Point [lon,lat] для места без объекта.
+  Модератор: window.CivicFeedback.mountModeration({root, api, map?, onOpenObject?}) -> {refresh, destroy}.
+    Предлагаемое место — вкладка «Сообщения» в кабинете редактора (R04) или отдельная staff-панель shell.
+    map — основной MapLibre (маркер места сообщения с классом civic-r06-marker, удаляется в destroy);
+    onOpenObject(objectId) — например CivicEditor.openObject или CivicMap.selectObject.
+  api.request(method, path, body) R01 подходит как есть: R06 использует error.status/code/message/fields.
+  Компонент не трогает document.body, localStorage/sessionStorage, не грузит /staff из публичной формы,
+  не использует innerHTML; черновик текста хранится в памяти страницы.
+
+7. ХРАНИЛИЩЕ
+  Таблицы feedback_meta, feedback_messages, feedback_events; можно в том же файле .runtime/civic.sqlite3,
+  что и R02 (проверено: миграции R02 не мешают). Соль хэша отправителя — в feedback_meta runtime-БД.
+  Runtime-БД не коммитить (.runtime/ — ответственность R01/R02 .gitignore).
+  Обслуживание: feedback.purge_antispam(older_than_days=30) обезличивает служебные антиспам-поля.
+
+8. R08
+  build_feedback_service(..., classifier="auto") подключит ml.civic_classifier.classify(text, language),
+  если модуль есть. Ошибка/мусор/зависание (>2 c) не теряют сообщение: статус подсказки error|invalid|timeout.
+  Категорию жителя модель не меняет; ничего не публикует и не отклоняет.
+
+9. ПРОВЕРКА
+  python3 -m pytest tests/civic/R06 -q
+  node tests/civic/R06/browser_r06.cjs --screenshots <dir>          (реальный Chromium, FIXTURE-стенд)
+  python3 tests/civic/R06/harness/serve_r06.py --port 8766            ручной просмотр: /harness/
+  В интегрированной ветке test_r06_r02_compat.py и test_r06_gateway_smoke.py выполняются сами
+  (в ветке R06 пропускаются: нет ui.civic_store / CivicGateway).

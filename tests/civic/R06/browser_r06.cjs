@@ -206,6 +206,19 @@ async function fillForm(page, { category = "sidewalks", text, consent = true, ki
     await page.waitForFunction(() => document.getElementById("session").textContent.includes("editor"));
     check("pending unchanged after logout/expired attempts", (await apiQueue(page, "pending")).body.data.items.length === 1);
 
+    // 14a. Шлюз без маршрута GET /staff/feedback/{id}: карточка из очереди, решение доступно.
+    await page.route(/\/api\/civic\/v1\/staff\/feedback\/\d+$/, (route) => route.request().method() === "GET"
+      ? route.fulfill({ status: 404, contentType: "application/json",
+          body: JSON.stringify({ ok: false, error: { code: "not_found", message: "Адрес API не найден." } }) })
+      : route.continue());
+    await page.evaluate(() => window.__r06.moderation.refresh());
+    await page.waitForSelector("#moderation-root .civic-r06-queue-item");
+    await page.locator("#moderation-root .civic-r06-queue-item").first().click();
+    await page.waitForSelector("#moderation-root .civic-r06-decision");
+    const degraded = await page.locator("#moderation-root .civic-r06-detail").innerText();
+    check("degraded detail without detail route", degraded.includes("Карточка собрана из очереди") && degraded.includes("Предлагаю поставить скамейки"));
+    await page.unroute(/\/api\/civic\/v1\/staff\/feedback\/\d+$/);
+
     // 14. destroy() снимает разметку и класс.
     const destroyed = await page.evaluate(() => {
       window.__r06.resident.destroy();

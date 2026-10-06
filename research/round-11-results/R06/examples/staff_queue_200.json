@@ -1,0 +1,123 @@
+{
+  "_note": "FIXTURE: синтетические объекты и учётные записи для тестов R06, не реальные данные. Сгенерировано make_examples.py.",
+  "example": {
+    "status": 200,
+    "headers": {
+      "Cache-Control": "no-store"
+    },
+    "body": {
+      "ok": true,
+      "data": {
+        "items": [
+          {
+            "id": "1",
+            "public_id": "fbp_yzxo8Eit-Clo",
+            "object_id": "demo-astana-work-01",
+            "geometry": null,
+            "kind": "problem",
+            "category": "sidewalks",
+            "category_label": "Тротуары и пешеходные пути",
+            "text": "Нет прохода вдоль ограждения, люди идут по проезжей части. Тел. +7 701 000 00 00",
+            "language": "ru",
+            "consent_public": true,
+            "consent_withdrawn_at": null,
+            "moderation": "pending",
+            "moderation_label": "Ожидает проверки модератором платформы",
+            "moderation_reason": null,
+            "public_text": null,
+            "public_reply": null,
+            "is_public": false,
+            "revision": 1,
+            "created_at": "2026-10-07T09:00:00Z",
+            "updated_at": "2026-10-07T09:00:00Z",
+            "moderated_at": null,
+            "moderated_by": null,
+            "published_at": null,
+            "personal_data_hints": [
+              {
+                "type": "phone",
+                "label": "номер телефона",
+                "start": 64,
+                "end": 80
+              }
+            ],
+            "classifier": {
+              "status": "ok",
+              "suggestion": {
+                "label": "sidewalks",
+                "label_text": "Тротуары и пешеходные пути",
+                "score": 0.42,
+                "score_kind": "uncalibrated_margin",
+                "needs_review": true,
+                "model_version": "fixture-classifier-0",
+                "training_data_status": "synthetic_fixture"
+              },
+              "note": "Подсказка модели, не решение. Категорию жителя не меняет."
+            },
+            "antispam": {
+              "same_sender_24h": 0,
+              "duplicate_confirmed_by_sender": false
+            },
+            "similar_count": 0
+          },
+          {
+            "id": "2",
+            "public_id": "fbp_UFvilIc7nHlY",
+            "object_id": null,
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                71.45,
+                51.16
+              ]
+            },
+            "kind": "suggestion",
+            "category": "transport_stops",
+            "category_label": "Остановки транспорта",
+            "text": "Предлагаю поставить навес на остановке.",
+            "language": "ru",
+            "consent_public": false,
+            "consent_withdrawn_at": null,
+            "moderation": "pending",
+            "moderation_label": "Ожидает проверки модератором платформы",
+            "moderation_reason": null,
+            "public_text": null,
+            "public_reply": null,
+            "is_public": false,
+            "revision": 1,
+            "created_at": "2026-10-07T09:00:00Z",
+            "updated_at": "2026-10-07T09:00:00Z",
+            "moderated_at": null,
+            "moderated_by": null,
+            "published_at": null,
+            "personal_data_hints": [],
+            "classifier": {
+              "status": "ok",
+              "suggestion": {
+                "label": "sidewalks",
+                "label_text": "Тротуары и пешеходные пути",
+                "score": 0.42,
+                "score_kind": "uncalibrated_margin",
+                "needs_review": true,
+                "model_version": "fixture-classifier-0",
+                "training_data_status": "synthetic_fixture"
+              },
+              "note": "Подсказка модели, не решение. Категорию жителя не меняет."
+            },
+            "antispam": {
+              "same_sender_24h": 0,
+              "duplicate_confirmed_by_sender": false
+            },
+            "similar_count": 0
+          }
+        ],
+        "next_cursor": null,
+        "counts": {
+          "pending": 2,
+          "approved": 0,
+          "rejected": 0
+        }
+      }
+    }
+  }
+}

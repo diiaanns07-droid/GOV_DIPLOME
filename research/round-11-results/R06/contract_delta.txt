@@ -1,0 +1,33 @@
+R06 contract_delta к civic-v1 (только добавления; обязательный v1 работает без изменений)
+
+1. POST /feedback — необязательные поля тела:
+   kind: "problem"|"suggestion" (по умолчанию problem) — проблема или предложение по объекту;
+   client_request_id: 16–64 символа [A-Za-z0-9-] — идемпотентность повторной отправки после обрыва
+     связи: тот же отправитель + тот же id в течение 24 ч -> 200 с тем же receipt (replayed:true);
+   confirm_duplicate: bool — подтвердить отправку после предупреждения duplicate_warning.
+   Любые другие поля (role, phone, iin, moderation…) -> 400 unknown_fields.
+   geometry для сообщения — только GeoJSON Point в рамке Астаны; объект + далёкая точка (>1.5 км)
+   -> 422 location_conflict. object_id черновика/архива/другого города -> 422 object_not_found.
+   Ответ 201: receipt_id, moderation:"pending" (контракт) + moderation_label, consent_public,
+   submitted_at, kind, category, official_registration:false, notice, warnings[].
+
+2. Коды 409 кроме stale_revision: duplicate_warning (тот же текст того же отправителя к тому же
+   объекту за 24 ч; error.can_confirm=true) и request_id_conflict.
+
+3. POST /staff/feedback/{id}/moderate — необязательное public_text (редакторская публичная версия
+   текста, только при approve и согласии автора). Отсутствие ключа public_reply сохраняет прежний
+   ответ; null — удаляет. Публикация блокируется 422 personal_data_suspected, если в публичном
+   тексте/ответе найдены телефон/почта/12 цифр/длинный номер; 422 reply_reveals_hidden_text, если
+   ответ цитирует скрытые фрагменты. Это эвристики, не гарантия деперсонализации.
+   Ответ: {item, history} (контракт требует item).
+
+4. Новые маршруты:
+   GET  /staff/feedback/{id}          {item, history, object, similar, similar_note}
+   POST /feedback/receipt             {receipt_id} -> статус для автора (без текста)
+   POST /feedback/withdraw-consent    {receipt_id} -> consent_public=false, публичная карточка исчезает
+   receipt_id передаётся в теле POST, а не в URL, чтобы не попадать в журналы адресов.
+
+5. Frontend: mountModeration({root, api, map?, onOpenObject?}) -> {refresh, destroy};
+   mount(...) дополнительно возвращает lastReceipt(). Префикс классов/DOM: civic-r06-.
+
+6. Строже контракта: для всех POST R06 требуется context.is_same_origin === true (None не принимается).

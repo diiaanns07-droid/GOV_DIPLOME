@@ -1,0 +1,17 @@
+{
+  "_note": "FIXTURE: синтетические объекты и учётные записи для тестов R06, не реальные данные. Сгенерировано make_examples.py.",
+  "example": {
+    "status": 409,
+    "headers": {
+      "Cache-Control": "no-store"
+    },
+    "body": {
+      "ok": false,
+      "error": {
+        "code": "stale_revision",
+        "message": "Сообщение изменено другим действием. Обновите карточку.",
+        "current_revision": 2
+      }
+    }
+  }
+}

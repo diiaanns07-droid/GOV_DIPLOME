@@ -1,0 +1,26 @@
+{
+  "_note": "FIXTURE: синтетические объекты и учётные записи для тестов R06, не реальные данные. Сгенерировано make_examples.py.",
+  "example": {
+    "status": 201,
+    "headers": {
+      "Cache-Control": "no-store"
+    },
+    "body": {
+      "ok": true,
+      "data": {
+        "receipt_id": "fbr_9g3iTruQqkuClcqItJRyBOgn",
+        "moderation": "pending",
+        "moderation_label": "Ожидает проверки модератором платформы",
+        "consent_public": true,
+        "submitted_at": "2026-10-07T09:00:00Z",
+        "kind": "problem",
+        "category": "sidewalks",
+        "official_registration": false,
+        "notice": "Сообщение сохранено на платформе и ожидает проверки модератором. Официальная регистрация обращения не выполняется; городские службы автоматически не уведомляются.",
+        "warnings": [
+          "Похоже, в тексте есть контактные данные или номер документа. Они не будут опубликованы: модератор скроет их или не опубликует текст."
+        ]
+      }
+    }
+  }
+}

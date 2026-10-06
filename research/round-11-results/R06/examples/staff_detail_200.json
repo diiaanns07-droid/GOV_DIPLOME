@@ -1,0 +1,132 @@
+{
+  "_note": "FIXTURE: синтетические объекты и учётные записи для тестов R06, не реальные данные. Сгенерировано make_examples.py.",
+  "example": {
+    "status": 200,
+    "headers": {
+      "Cache-Control": "no-store"
+    },
+    "body": {
+      "ok": true,
+      "data": {
+        "item": {
+          "id": "1",
+          "public_id": "fbp_yzxo8Eit-Clo",
+          "object_id": "demo-astana-work-01",
+          "geometry": null,
+          "kind": "problem",
+          "category": "sidewalks",
+          "category_label": "Тротуары и пешеходные пути",
+          "text": "Нет прохода вдоль ограждения, люди идут по проезжей части. Тел. +7 701 000 00 00",
+          "language": "ru",
+          "consent_public": true,
+          "consent_withdrawn_at": null,
+          "moderation": "approved",
+          "moderation_label": "Проверено модератором платформы",
+          "moderation_reason": "Проверено: по теме объекта",
+          "public_text": "Нет прохода вдоль ограждения, люди идут по проезжей части. Тел. [скрыто]",
+          "public_reply": "Спасибо. Сообщение проверено модератором платформы; это не официальное обращение.",
+          "is_public": true,
+          "revision": 2,
+          "created_at": "2026-10-07T09:00:00Z",
+          "updated_at": "2026-10-07T09:00:00Z",
+          "moderated_at": "2026-10-07T09:00:00Z",
+          "moderated_by": "fixture-editor",
+          "published_at": "2026-10-07T09:00:00Z",
+          "personal_data_hints": [
+            {
+              "type": "phone",
+              "label": "номер телефона",
+              "start": 64,
+              "end": 80
+            }
+          ],
+          "classifier": {
+            "status": "ok",
+            "suggestion": {
+              "label": "sidewalks",
+              "label_text": "Тротуары и пешеходные пути",
+              "score": 0.42,
+              "score_kind": "uncalibrated_margin",
+              "needs_review": true,
+              "model_version": "fixture-classifier-0",
+              "training_data_status": "synthetic_fixture"
+            },
+            "note": "Подсказка модели, не решение. Категорию жителя не меняет."
+          },
+          "antispam": {
+            "same_sender_24h": 0,
+            "duplicate_confirmed_by_sender": false
+          }
+        },
+        "history": [
+          {
+            "id": "1",
+            "revision": 1,
+            "at": "2026-10-07T09:00:00Z",
+            "action": "submitted",
+            "actor_kind": "resident",
+            "actor": null,
+            "reason": null,
+            "changed_fields": [
+              "category",
+              "consent_public",
+              "kind",
+              "location",
+              "text"
+            ],
+            "is_public": false
+          },
+          {
+            "id": "3",
+            "revision": 2,
+            "at": "2026-10-07T09:00:00Z",
+            "action": "approved",
+            "actor_kind": "staff",
+            "actor": "fixture-editor",
+            "reason": "Проверено: по теме объекта",
+            "changed_fields": [
+              "moderation",
+              "moderation_reason",
+              "public_reply",
+              "public_text"
+            ],
+            "is_public": false
+          },
+          {
+            "id": "4",
+            "revision": 2,
+            "at": "2026-10-07T09:00:00Z",
+            "action": "published",
+            "actor_kind": "staff",
+            "actor": "fixture-editor",
+            "reason": null,
+            "changed_fields": [
+              "public_reply",
+              "text"
+            ],
+            "is_public": true
+          }
+        ],
+        "object": {
+          "id": "demo-astana-work-01",
+          "title": "Демонстрационный ремонт прохода",
+          "kind": "roadworks",
+          "status": "planned",
+          "publication": "published",
+          "geometry": {
+            "type": "Point",
+            "coordinates": [
+              71.43,
+              51.17
+            ]
+          },
+          "evidence_type": "synthetic",
+          "revision": 2,
+          "available": true
+        },
+        "similar": [],
+        "similar_note": "Похожие сообщения — подсказка. Система не объединяет и не отклоняет их сама."
+      }
+    }
+  }
+}

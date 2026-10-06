@@ -1,0 +1,44 @@
+{
+  "_note": "FIXTURE: синтетические объекты и учётные записи для тестов R06, не реальные данные. Сгенерировано make_examples.py.",
+  "example": {
+    "status": 200,
+    "headers": {
+      "Cache-Control": "no-cache"
+    },
+    "body": {
+      "ok": true,
+      "data": {
+        "items": [
+          {
+            "id": "fbp_yzxo8Eit-Clo",
+            "object_id": "demo-astana-work-01",
+            "kind": "problem",
+            "kind_label": "Проблема",
+            "category": "sidewalks",
+            "category_label": "Тротуары и пешеходные пути",
+            "text": "Нет прохода вдоль ограждения, люди идут по проезжей части. Тел. [скрыто]",
+            "public_reply": "Спасибо. Сообщение проверено модератором платформы; это не официальное обращение.",
+            "submitted_on": "2026-10-07",
+            "published_at": "2026-10-07T09:00:00Z",
+            "moderation_label": "Проверено модератором платформы",
+            "official_registration": false,
+            "history": [
+              {
+                "revision": 2,
+                "at": "2026-10-07T09:00:00Z",
+                "event": "published",
+                "changed_fields": [
+                  "public_reply",
+                  "text"
+                ],
+                "public_actor_label": "Модератор платформы"
+              }
+            ]
+          }
+        ],
+        "next_cursor": null,
+        "notice": "Сообщения жителей на платформе. Это не официальные обращения: регистрация в iKOMEK/eOtinish не выполняется, публикация не означает, что работы начаты или запланированы."
+      }
+    }
+  }
+}
