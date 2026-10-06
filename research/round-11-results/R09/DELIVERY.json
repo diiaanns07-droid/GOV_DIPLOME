@@ -4,7 +4,7 @@
   "branch": "claude/wizardly-ptolemy-qy8ltw",
   "base_sha": "834a25fb860dd5514d02c9274b70d7bf8a53a79c",
   "pack_sha": "9c2f5c0dae14b46c0697a9dfc7f854351bfd570d",
-  "status": "partial",
+  "status": "ready",
   "owned_paths": [
     "agent/civic_assistant/",
     "web/civic/assistant/",
@@ -12,27 +12,78 @@
     "research/round-11-results/R09/",
     "research/handoffs/astana/R09/round-11/STATUS.md"
   ],
-  "integration_notes": "research/round-11-results/R09/INTEGRATION.txt (будет на этапе CP6)",
-  "code_commit": "4619315",
+  "integration_notes": "research/round-11-results/R09/INTEGRATION.txt",
+  "code_commit": "789a954f76457853a9c961b55c4837ab75e2ca47",
+  "exports": {
+    "python": [
+      "agent.civic_assistant.build_answer(question, verified_context, provider=None)",
+      "agent.civic_assistant.build_verified_context(item, history, scenario, audience='public', scenario_id=None)",
+      "agent.civic_assistant.api.AssistantEndpoint(...).handle(method, path, query, body, context)",
+      "agent.civic_assistant.api.r02_public_loader(service)",
+      "agent.civic_assistant.api.r07_case_loader(list_cases, load_graph, compare)",
+      "agent.civic_assistant.extract.extract_draft(text, source_id, ...)",
+      "agent.civic_assistant.providers.provider_from_settings(settings, client_factory)"
+    ],
+    "js": [
+      "window.CivicAssistant.mount({root, api, objectId, scenarioId?}) -> {destroy}",
+      "window.CivicAssistant.mountDraftReview({root, api, onApplyField}) -> {destroy}"
+    ],
+    "http": [
+      "POST /api/civic/v1/assistant {question, object_id|null, scenario_id|null}",
+      "POST /api/civic/v1/staff/assistant/extract {source_id, text, url?, publisher?, published_on?} (additive, see contract_delta.txt)"
+    ]
+  },
   "checks": [
     {
-      "name": "r09-cp5-python-and-ui-suite",
+      "name": "r09-pytest-suite",
       "status": "PASS",
-      "command": "R09_SCREENSHOT_DIR=research/round-11-results/R09 python3 -m pytest tests/civic/R09 -q",
-      "input": "synthetic fixtures; R07 compare() output; MockProvider; fake chat client; fake R02 service; demo_server.py + Chromium (Playwright 1.56.1)",
-      "reason": "104 passed"
+      "command": "python3 -m pytest tests/civic/R09 -q",
+      "input": "synthetic fixtures (objects, publications, R07 compare() output 18f8ac8), MockProvider, fake chat client, fake R02 service, demo_server + Chromium",
+      "reason": "106 passed at 789a954"
+    },
+    {
+      "name": "r09-adversarial-eval",
+      "status": "PASS",
+      "command": "python3 -m agent.civic_assistant.evaluate --ui",
+      "input": "tests/civic/R09/fixtures/eval_cases.json (37 cases) + 17 browser checks",
+      "reason": "54 PASS / 0 FAIL / 1 NOT_RUN (live LLM); EVAL_REPORT.txt, code_sha 789a954"
+    },
+    {
+      "name": "r09-ui-chromium",
+      "status": "PASS",
+      "command": "python3 -m pytest tests/civic/R09/test_r09_ui.py -q",
+      "input": "tests/civic/R09/demo_server.py + ui_check.cjs, Playwright 1.56.1, chromium-1194",
+      "reason": "17/17: XSS as text, stale/aborted answers, object switch, 429/network, cancel, draft review manual apply, 375px no horizontal scroll; real screenshots ui_assistant_*.png"
+    },
+    {
+      "name": "r09-integration-real-r02-r07",
+      "status": "PASS",
+      "command": "python3 research/round-11-results/R09/check_r02_r07_integration.py --r02 <R02 92f7aba checkout> --r07 <R07 18f8ac8 checkout>",
+      "input": "temporary SQLite, one-time random editor password (not stored), pack civic_object fixture",
+      "reason": "15/15 (draft invisible, publish, unpublished edit invisible, delay reason from publish reason, staff update reason not public, real compare()); integration_r02_r07.json"
     },
     {
       "name": "live-llm",
       "status": "NOT_RUN",
       "command": null,
       "input": null,
-      "reason": "Оплачиваемые живые вызовы вне задания R09"
+      "reason": "Оплачиваемые живые вызовы вне задания R09; OpenAICompatibleProvider проверен на поддельном клиенте"
+    },
+    {
+      "name": "r01-app-integration",
+      "status": "NOT_RUN",
+      "command": null,
+      "input": null,
+      "reason": "Встраивание в общий app выполняет R01 по INTEGRATION.txt"
     }
   ],
   "limitations": [
-    "Только шаблонный режим проверен на CP1",
-    "KK-формулировки требуют проверки носителем языка"
+    "KK-формулировки написаны без проверки носителем языка",
+    "Классификатор шаблонного режима — ключевые слова RU/KK; перефразировки вне словаря дают overview с warning intent_guessed",
+    "Извлечение из текста — регулярные шаблоны для типовых форм дат/сумм/организаций; всё помечено needs_review",
+    "Rate limit in-memory на процесс; провайдер, зависший дольше тайм-аута, продолжает занимать поток пула (ответ при этом уже отдан шаблоном)",
+    "Шлюз R01 и R02 используют разные формы пути (относительный/полный); r02_public_loader поддерживает обе",
+    "Все проверки на синтетических записях; реальные объекты Астаны (R05) не проверялись этим модулем"
   ],
-  "next_step": "CP6: adversarial eval + INTEGRATION.txt"
+  "next_step": "R01: подключить AssistantEndpoint и assets по INTEGRATION.txt; R09 далее — прогон на пакете реальных объектов R05"
 }

@@ -1,0 +1,82 @@
+{
+ "r02_sha": "92f7abae8184516c9bf6bd89367a63692402cc1b",
+ "r07_sha": "18f8ac80ae497b3e2a5e8cfdc73aedfa3adf4599",
+ "r09_sha": "789a954f76457853a9c961b55c4837ab75e2ca47",
+ "checks": [
+  {
+   "name": "r02_login",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "name": "r02_create_draft",
+   "status": "PASS",
+   "detail": "201"
+  },
+  {
+   "name": "draft_not_visible_to_assistant",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "name": "r02_publish",
+   "status": "PASS",
+   "detail": "200"
+  },
+  {
+   "name": "public_loader_returns_item_and_history",
+   "status": "PASS",
+   "detail": "[2]"
+  },
+  {
+   "name": "r02_public_dto_accepted_by_facts",
+   "status": "PASS",
+   "detail": "[]"
+  },
+  {
+   "name": "answer_from_r02_object",
+   "status": "PASS",
+   "detail": "Это демонстрационная (синтетическая) запись, а не сведения о реальных работах. Текущий плановый срок окончания: 22.10.2026. Первоначальный плановый срок окончания: 20.10.2026. Плановое начало: 14.10.2"
+  },
+  {
+   "name": "r02_update_schedule",
+   "status": "PASS",
+   "detail": "200"
+  },
+  {
+   "name": "unpublished_staff_change_not_visible",
+   "status": "PASS",
+   "detail": "Это демонстрационная (синтетическая) запись, а не сведения о реальных работах. Текущий плановый срок окончания: 22.10.2026. Первоначальный плановый срок окончан"
+  },
+  {
+   "name": "r02_republish",
+   "status": "PASS",
+   "detail": "200"
+  },
+  {
+   "name": "delay_reason_from_r02_public_history",
+   "status": "PASS",
+   "detail": "10.2026. Текущий плановый срок окончания: 29.10.2026. Текущий срок сдвинут относительно первоначального на 9 дн. (разница посчитана по датам карточки). В публичной истории (ревизия 4, 06.10.2026) причина изменения сроков указана так: «Синтетическая причина: задержка поставки покрытия (проверка R09)»"
+  },
+  {
+   "name": "staff_update_reason_not_public",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "name": "unknown_budget_not_zero_r02",
+   "status": "PASS",
+   "detail": "Это демонстрационная (синтетическая) запись, а не сведения о реальных работах. Сумма в карточке не указана — нет данных. Источник суммы не указан."
+  },
+  {
+   "name": "no_staff_fields_in_public_dto",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "name": "scenario_from_real_r07_compare",
+   "status": "PASS",
+   "detail": "Граф сценария синтетический (условный), это не улицы Астаны. Перекрытие в сценарии — гипотеза для сравнения; это не решение городских органов о перекрытии. Расчёт движка: режим «пешком», момент анализа 07.10.2026 09:00 (UTC+05:00). Доля длины сети с известным режимом доступа: 82,5 %. Без перекрытий "
+  }
+ ]
+}
