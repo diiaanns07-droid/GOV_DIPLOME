@@ -31,6 +31,26 @@ python3 mutation_check_stage1.py --problems r8/fixtures/gold_cases.json --plan-j
 python3 probe_api_policy.py --app-root <app> --json out/api_policy_d865dd4.json
 ```
 
+## Этап 2 — Python reference city-resilience-v1 (готово)
+- `resilience_oracle.py` (stdlib; геометрия и v2-ограничения из собственного r8 оракула, не из JS):
+  `validate_envelope` (строгий JSON ≤ 256 KiB; ровно schema_version/plan/cases; без производных полей; 1..7 случаев +
+  авто "base"; id ≠ "base", уникальны; label 1..120 code points без Cc; disabled — уникальные ID исходных записей
+  категории, 1..N; candidate ID вместо source → candidate_not_source; > 12 кандидатов → too_many_candidates до расчёта),
+  `evaluate_resilience` (per_case, worst_vector с null вместо ∞, worst_case_ids, feasible), `optimize_resilience`
+  (nominal = v2 mean на base; robust = min (W, L_base, cost, ids); price в метрах или null с причиной; digest не зависит
+  от порядка случаев).
+- `resilience_gold.py` — независимый переборщик (метрики из r8 gold_bruteforce, ключи/W/выбор отдельно, битовые маски).
+- `make_resilience_cases.py` → `fixtures/resilience_gold.json` (seed 920261006): 62 задачи — 12 именованных SYNTHETIC
+  (обычный ≠ устойчивый, цена 0 при разных планах, все записи исключены, то же при budget 0, нет кандидатов, равные
+  худшие случаи / дубль случая, симметричная ничья всех трёх случаев, required невыполним, required сохранён, unknown
+  только в случае, ничья по стоимости, ничья по ID) + 30 SYNTHETIC случайных + 20 на РЕАЛЬНЫХ записях обоих городов
+  (data.js d865dd4) с синтетическими точками/кандидатами/исключениями; 16 must_reject.
+  59 optimal, 3 infeasible; обычный ≠ устойчивый в 12; несколько худших случаев в 21.
+- `test_resilience.py`: оракул = gold на 62; 16 must_reject с ожидаемым кодом; ручной пример (цена 79,425 м =
+  5·(2,5u − 1,5u)/7, замкнутая формула); строгий JSON / размер; в выводе нет Infinity. 5 OK.
+
+**BUILD r9 с устойчивостью не опубликован** (ветка сборщика: последний коммит d865dd4, resilience.js нет) →
+интеграция city-resilience-v1: NOT_RUN.
+
 ## Дальше
-2. Python reference city-resilience-v1 (envelope, исключения, worst-lex-v1) + small exhaustive cases.
-3. Метаморфные свойства устойчивости, gold, адаптер, mutation checks; сравнение с BUILD r9 при наличии.
+3. Метаморфные свойства устойчивости, адаптер для будущего resilience.js, mutation checks (нарушенный worst, tie-break).
