@@ -59,7 +59,7 @@ FIELD_PATHS = frozenset(
 # Hosts whose map geometry must never be copied (viewing licence != extraction licence).
 PROPRIETARY_MAP_HOSTS = ("2gis.", "google.", "goo.gl", "yandex.", "here.com", "apple.com")
 
-ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]{2,95}$")
+ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]{2,63}$")  # R02 civic_objects.id is <= 64 chars
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 TS_RE = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d{1,6})?)?(Z|[+-]\d{2}:\d{2})$")
 HTML_RE = re.compile(r"<\s*/?\s*[A-Za-z!?][^>]*>|&(?:lt|gt|amp|quot|#\d+);", re.I)
@@ -344,7 +344,7 @@ def validate_object(obj: Any, *, profile: str = "contract", as_of: str | None = 
     if not isinstance(oid, str) or not oid:
         issues.append(_issue("id_type", "id", "id must be a non-empty string"))
     elif not ID_RE.match(oid):
-        issues.append(_issue("id_format", "id", "R05 ids are lowercase [a-z0-9-], 3-96 chars", "warning"
+        issues.append(_issue("id_format", "id", "R05 ids are lowercase [a-z0-9-], 3-64 chars", "warning"
                              if profile == "contract" else "error"))
     if obj.get("city") != CITY:
         issues.append(_issue("city", "city", "city must be 'astana'"))

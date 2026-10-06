@@ -43,3 +43,19 @@ LICENSE_REGISTER/ATTRIBUTION, synthetic demo slice, импорт-хелпер д
 
 Проверки: `python3 -m pytest tests/civic/R05 -q` → 47 passed; `python3 -I data/civic/astana/tools/build_slice.py --check` → exit 0.
 Следующий шаг: LICENSE_REGISTER.json/ATTRIBUTION.txt, import helper для R02, INTEGRATION.txt.
+
+## Checkpoint 3 — PARTIAL
+
+Готово:
+- `LICENSE_REGISTER.json` (11 записей: OSM/ODbL, тайлы OSMF, OpenFreeMap, OpenMapTiles, Overture, MapLibre,
+  geofence, демо, реальные объекты, проприетарные карты, код) и `ATTRIBUTION.txt`. Для каждой записи указано,
+  получен ли текст условий в этом раунде; not_fetched = перепроверить.
+- `tools/import_helper.py` — пакет → план импорта для R02 (create/skip_unchanged/update_import_draft/
+  editor_review/report_missing; публикации нет), проверка целостности среза, демо только флагом.
+  Согласовано со схемой R02 `ui/civic_store/db.py` @ a95f857 (import_source/external_id/digest, id ≤ 64).
+- `tools/pilot_check.py`, `pilot_reference.json`, `research/round-11-results/R05/PILOT.md`.
+- `README.md` пакета, `research/round-11-results/R05/INTEGRATION.txt`.
+
+Проверки: `python3 -m pytest tests/civic/R05 -q` → 71 passed; `build_slice.py --check` → без изменений.
+Следующий шаг: stretch — обнаружение смены опубликованного срока между двумя версиями источника; затем
+независимая проверка (adversarial review) и финальный DELIVERY.
