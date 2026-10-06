@@ -1,0 +1,1653 @@
+{
+ "generator": "web/resilience.js via node (BUILD r9 stage 2)",
+ "cases": {
+  "robust_differs_from_nominal": {
+   "status": "optimal",
+   "reasons": [],
+   "evaluated": 4,
+   "feasible_count": 3,
+   "nominal": {
+    "selected_ids": [
+     "C1"
+    ],
+    "cost": 5,
+    "worst_vector": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 2235049,
+     "max_mm": 2223929
+    },
+    "worst_case_ids": [
+     "noB"
+    ],
+    "per_case": [
+     {
+      "case_id": "base",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 122315,
+       "weighted_mean_mm": 61157.5,
+       "max_mm": 111195,
+       "covered_weight": 2,
+       "total_weight": 2,
+       "coverage_fraction": 1,
+       "cost": 5,
+       "count": 1
+      }
+     },
+     {
+      "case_id": "noB",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 2235049,
+       "weighted_mean_mm": 1117524.5,
+       "max_mm": 2223929,
+       "covered_weight": 1,
+       "total_weight": 2,
+       "coverage_fraction": 0.5,
+       "cost": 5,
+       "count": 1
+      }
+     }
+    ]
+   },
+   "robust": {
+    "selected_ids": [
+     "C2"
+    ],
+    "cost": 5,
+    "worst_vector": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 166793,
+     "max_mm": 111195
+    },
+    "worst_case_ids": [
+     "base",
+     "noB"
+    ],
+    "per_case": [
+     {
+      "case_id": "base",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 166793,
+       "weighted_mean_mm": 83396.5,
+       "max_mm": 111195,
+       "covered_weight": 2,
+       "total_weight": 2,
+       "coverage_fraction": 1,
+       "cost": 5,
+       "count": 1
+      }
+     },
+     {
+      "case_id": "noB",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 166793,
+       "weighted_mean_mm": 83396.5,
+       "max_mm": 111195,
+       "covered_weight": 2,
+       "total_weight": 2,
+       "coverage_fraction": 1,
+       "cost": 5,
+       "count": 1
+      }
+     }
+    ]
+   },
+   "same_plan": false,
+   "price_of_robustness_m": 22.239,
+   "price_reason": null,
+   "duplicate_case_groups": [],
+   "resilience_problem_digest": "sha256:4a0293dfd730543df9215fc3849228ebe627a0e150bd5d32a7d66f71f59175db",
+   "exclusions_digest": "sha256:d3698c8e47f789a4f452fd7ec060fec0aa6748b8cd2e19bfaae3bed5715308ce"
+  },
+  "identical_plans": {
+   "status": "optimal",
+   "reasons": [],
+   "evaluated": 4,
+   "feasible_count": 4,
+   "nominal": {
+    "selected_ids": [
+     "C1",
+     "C2"
+    ],
+    "cost": 10,
+    "worst_vector": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 66718,
+     "max_mm": 55598
+    },
+    "worst_case_ids": [
+     "base",
+     "noB"
+    ],
+    "per_case": [
+     {
+      "case_id": "base",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 66718,
+       "weighted_mean_mm": 33359,
+       "max_mm": 55598,
+       "covered_weight": 2,
+       "total_weight": 2,
+       "coverage_fraction": 1,
+       "cost": 10,
+       "count": 2
+      }
+     },
+     {
+      "case_id": "noB",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 66718,
+       "weighted_mean_mm": 33359,
+       "max_mm": 55598,
+       "covered_weight": 2,
+       "total_weight": 2,
+       "coverage_fraction": 1,
+       "cost": 10,
+       "count": 2
+      }
+     }
+    ]
+   },
+   "robust": {
+    "selected_ids": [
+     "C1",
+     "C2"
+    ],
+    "cost": 10,
+    "worst_vector": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 66718,
+     "max_mm": 55598
+    },
+    "worst_case_ids": [
+     "base",
+     "noB"
+    ],
+    "per_case": [
+     {
+      "case_id": "base",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 66718,
+       "weighted_mean_mm": 33359,
+       "max_mm": 55598,
+       "covered_weight": 2,
+       "total_weight": 2,
+       "coverage_fraction": 1,
+       "cost": 10,
+       "count": 2
+      }
+     },
+     {
+      "case_id": "noB",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 66718,
+       "weighted_mean_mm": 33359,
+       "max_mm": 55598,
+       "covered_weight": 2,
+       "total_weight": 2,
+       "coverage_fraction": 1,
+       "cost": 10,
+       "count": 2
+      }
+     }
+    ]
+   },
+   "same_plan": true,
+   "price_of_robustness_m": 0,
+   "price_reason": null,
+   "duplicate_case_groups": [],
+   "resilience_problem_digest": "sha256:74a76ad432f922f8bc808cd5b0c1cc4fbf0795d083d866e30317ada546e5499a",
+   "exclusions_digest": "sha256:d3698c8e47f789a4f452fd7ec060fec0aa6748b8cd2e19bfaae3bed5715308ce"
+  },
+  "all_sources_off_unknown": {
+   "status": "optimal",
+   "reasons": [],
+   "evaluated": 2,
+   "feasible_count": 1,
+   "nominal": {
+    "selected_ids": [],
+    "cost": 0,
+    "worst_vector": {
+     "unknown_count": 2,
+     "weighted_sum_mm": 0,
+     "max_mm": null
+    },
+    "worst_case_ids": [
+     "none"
+    ],
+    "per_case": [
+     {
+      "case_id": "base",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 222390,
+       "weighted_mean_mm": 111195,
+       "max_mm": 111195,
+       "covered_weight": 2,
+       "total_weight": 2,
+       "coverage_fraction": 1,
+       "cost": 0,
+       "count": 0
+      }
+     },
+     {
+      "case_id": "none",
+      "metrics": {
+       "unknown_count": 2,
+       "weighted_sum_mm": 0,
+       "weighted_mean_mm": null,
+       "max_mm": null,
+       "covered_weight": 0,
+       "total_weight": 2,
+       "coverage_fraction": 0,
+       "cost": 0,
+       "count": 0
+      }
+     }
+    ]
+   },
+   "robust": {
+    "selected_ids": [],
+    "cost": 0,
+    "worst_vector": {
+     "unknown_count": 2,
+     "weighted_sum_mm": 0,
+     "max_mm": null
+    },
+    "worst_case_ids": [
+     "none"
+    ],
+    "per_case": [
+     {
+      "case_id": "base",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 222390,
+       "weighted_mean_mm": 111195,
+       "max_mm": 111195,
+       "covered_weight": 2,
+       "total_weight": 2,
+       "coverage_fraction": 1,
+       "cost": 0,
+       "count": 0
+      }
+     },
+     {
+      "case_id": "none",
+      "metrics": {
+       "unknown_count": 2,
+       "weighted_sum_mm": 0,
+       "weighted_mean_mm": null,
+       "max_mm": null,
+       "covered_weight": 0,
+       "total_weight": 2,
+       "coverage_fraction": 0,
+       "cost": 0,
+       "count": 0
+      }
+     }
+    ]
+   },
+   "same_plan": true,
+   "price_of_robustness_m": 0,
+   "price_reason": null,
+   "duplicate_case_groups": [],
+   "resilience_problem_digest": "sha256:eef484c4edfb407221c0a33e3ab91189d9fe5526ca7a34e17840bad8e7b4b993",
+   "exclusions_digest": "sha256:9ef1414638992ca77581c701b0aaa33794f43388925821195ac3fabc40ae4c5c"
+  },
+  "unknown_vs_candidate": {
+   "status": "optimal",
+   "reasons": [],
+   "evaluated": 4,
+   "feasible_count": 3,
+   "nominal": {
+    "selected_ids": [
+     "C1"
+    ],
+    "cost": 5,
+    "worst_vector": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 2235049,
+     "max_mm": 2223929
+    },
+    "worst_case_ids": [
+     "none"
+    ],
+    "per_case": [
+     {
+      "case_id": "base",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 122315,
+       "weighted_mean_mm": 61157.5,
+       "max_mm": 111195,
+       "covered_weight": 2,
+       "total_weight": 2,
+       "coverage_fraction": 1,
+       "cost": 5,
+       "count": 1
+      }
+     },
+     {
+      "case_id": "none",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 2235049,
+       "weighted_mean_mm": 1117524.5,
+       "max_mm": 2223929,
+       "covered_weight": 1,
+       "total_weight": 2,
+       "coverage_fraction": 0.5,
+       "cost": 5,
+       "count": 1
+      }
+     }
+    ]
+   },
+   "robust": {
+    "selected_ids": [
+     "C1"
+    ],
+    "cost": 5,
+    "worst_vector": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 2235049,
+     "max_mm": 2223929
+    },
+    "worst_case_ids": [
+     "none"
+    ],
+    "per_case": [
+     {
+      "case_id": "base",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 122315,
+       "weighted_mean_mm": 61157.5,
+       "max_mm": 111195,
+       "covered_weight": 2,
+       "total_weight": 2,
+       "coverage_fraction": 1,
+       "cost": 5,
+       "count": 1
+      }
+     },
+     {
+      "case_id": "none",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 2235049,
+       "weighted_mean_mm": 1117524.5,
+       "max_mm": 2223929,
+       "covered_weight": 1,
+       "total_weight": 2,
+       "coverage_fraction": 0.5,
+       "cost": 5,
+       "count": 1
+      }
+     }
+    ]
+   },
+   "same_plan": true,
+   "price_of_robustness_m": 0,
+   "price_reason": null,
+   "duplicate_case_groups": [],
+   "resilience_problem_digest": "sha256:c63796a7d07d4f59301bf452dbb2b59dce92497973099b85ba6f5065c040ed26",
+   "exclusions_digest": "sha256:9ef1414638992ca77581c701b0aaa33794f43388925821195ac3fabc40ae4c5c"
+  },
+  "duplicate_cases": {
+   "status": "optimal",
+   "reasons": [],
+   "evaluated": 4,
+   "feasible_count": 3,
+   "nominal": {
+    "selected_ids": [
+     "C1"
+    ],
+    "cost": 5,
+    "worst_vector": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 2235049,
+     "max_mm": 2223929
+    },
+    "worst_case_ids": [
+     "x1",
+     "x2"
+    ],
+    "per_case": [
+     {
+      "case_id": "base",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 122315,
+       "weighted_mean_mm": 61157.5,
+       "max_mm": 111195,
+       "covered_weight": 2,
+       "total_weight": 2,
+       "coverage_fraction": 1,
+       "cost": 5,
+       "count": 1
+      }
+     },
+     {
+      "case_id": "x1",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 2235049,
+       "weighted_mean_mm": 1117524.5,
+       "max_mm": 2223929,
+       "covered_weight": 1,
+       "total_weight": 2,
+       "coverage_fraction": 0.5,
+       "cost": 5,
+       "count": 1
+      }
+     },
+     {
+      "case_id": "x2",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 2235049,
+       "weighted_mean_mm": 1117524.5,
+       "max_mm": 2223929,
+       "covered_weight": 1,
+       "total_weight": 2,
+       "coverage_fraction": 0.5,
+       "cost": 5,
+       "count": 1
+      }
+     }
+    ]
+   },
+   "robust": {
+    "selected_ids": [
+     "C2"
+    ],
+    "cost": 5,
+    "worst_vector": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 166793,
+     "max_mm": 111195
+    },
+    "worst_case_ids": [
+     "base",
+     "x1",
+     "x2"
+    ],
+    "per_case": [
+     {
+      "case_id": "base",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 166793,
+       "weighted_mean_mm": 83396.5,
+       "max_mm": 111195,
+       "covered_weight": 2,
+       "total_weight": 2,
+       "coverage_fraction": 1,
+       "cost": 5,
+       "count": 1
+      }
+     },
+     {
+      "case_id": "x1",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 166793,
+       "weighted_mean_mm": 83396.5,
+       "max_mm": 111195,
+       "covered_weight": 2,
+       "total_weight": 2,
+       "coverage_fraction": 1,
+       "cost": 5,
+       "count": 1
+      }
+     },
+     {
+      "case_id": "x2",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 166793,
+       "weighted_mean_mm": 83396.5,
+       "max_mm": 111195,
+       "covered_weight": 2,
+       "total_weight": 2,
+       "coverage_fraction": 1,
+       "cost": 5,
+       "count": 1
+      }
+     }
+    ]
+   },
+   "same_plan": false,
+   "price_of_robustness_m": 22.239,
+   "price_reason": null,
+   "duplicate_case_groups": [
+    [
+     "x1",
+     "x2"
+    ]
+   ],
+   "resilience_problem_digest": "sha256:c4ff3e5779b25dade9cbbf73a590d53547eb24898108342127e91d4784c0ea6a",
+   "exclusions_digest": "sha256:322366d4b38cca778b6f7b438791596afa850e1ad257d7ed435233d57a654018"
+  },
+  "required_excluded": {
+   "status": "optimal",
+   "reasons": [],
+   "evaluated": 2,
+   "feasible_count": 2,
+   "nominal": {
+    "selected_ids": [
+     "C1",
+     "C3"
+    ],
+    "cost": 7,
+    "worst_vector": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 1128617,
+     "max_mm": 1117497
+    },
+    "worst_case_ids": [
+     "noB"
+    ],
+    "per_case": [
+     {
+      "case_id": "base",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 122315,
+       "weighted_mean_mm": 61157.5,
+       "max_mm": 111195,
+       "covered_weight": 2,
+       "total_weight": 2,
+       "coverage_fraction": 1,
+       "cost": 7,
+       "count": 2
+      }
+     },
+     {
+      "case_id": "noB",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 1128617,
+       "weighted_mean_mm": 564308.5,
+       "max_mm": 1117497,
+       "covered_weight": 1,
+       "total_weight": 2,
+       "coverage_fraction": 0.5,
+       "cost": 7,
+       "count": 2
+      }
+     },
+     {
+      "case_id": "noA",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 122315,
+       "weighted_mean_mm": 61157.5,
+       "max_mm": 111195,
+       "covered_weight": 2,
+       "total_weight": 2,
+       "coverage_fraction": 1,
+       "cost": 7,
+       "count": 2
+      }
+     }
+    ]
+   },
+   "robust": {
+    "selected_ids": [
+     "C1",
+     "C3"
+    ],
+    "cost": 7,
+    "worst_vector": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 1128617,
+     "max_mm": 1117497
+    },
+    "worst_case_ids": [
+     "noB"
+    ],
+    "per_case": [
+     {
+      "case_id": "base",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 122315,
+       "weighted_mean_mm": 61157.5,
+       "max_mm": 111195,
+       "covered_weight": 2,
+       "total_weight": 2,
+       "coverage_fraction": 1,
+       "cost": 7,
+       "count": 2
+      }
+     },
+     {
+      "case_id": "noB",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 1128617,
+       "weighted_mean_mm": 564308.5,
+       "max_mm": 1117497,
+       "covered_weight": 1,
+       "total_weight": 2,
+       "coverage_fraction": 0.5,
+       "cost": 7,
+       "count": 2
+      }
+     },
+     {
+      "case_id": "noA",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 122315,
+       "weighted_mean_mm": 61157.5,
+       "max_mm": 111195,
+       "covered_weight": 2,
+       "total_weight": 2,
+       "coverage_fraction": 1,
+       "cost": 7,
+       "count": 2
+      }
+     }
+    ]
+   },
+   "same_plan": true,
+   "price_of_robustness_m": 0,
+   "price_reason": null,
+   "duplicate_case_groups": [],
+   "resilience_problem_digest": "sha256:08391e4a18a802e816d4b80494537ea5d37242d53e5109eae898b3b23b4a5445",
+   "exclusions_digest": "sha256:d10da643209bfad40462db1e53045f0f4a44902bec4d2f837ecf4cb30d5588da"
+  },
+  "required_over_budget": {
+   "status": "infeasible",
+   "reasons": [
+    {
+     "code": "required_cost_exceeds_budget",
+     "text": "стоимость обязательных 5 > бюджета 4 усл. ед."
+    }
+   ],
+   "evaluated": 0,
+   "feasible_count": 0,
+   "nominal": null,
+   "robust": null,
+   "price_of_robustness_m": null,
+   "price_reason": "нет допустимых планов",
+   "resilience_problem_digest": "sha256:3afbb7f4586ad936e86b1c66c4e32d2f461b627af3c62777e35d0d9579327c6e",
+   "exclusions_digest": "sha256:d3698c8e47f789a4f452fd7ec060fec0aa6748b8cd2e19bfaae3bed5715308ce"
+  },
+  "zero_budget": {
+   "status": "optimal",
+   "reasons": [],
+   "evaluated": 4,
+   "feasible_count": 1,
+   "nominal": {
+    "selected_ids": [],
+    "cost": 0,
+    "worst_vector": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 2337875,
+     "max_mm": 2226680
+    },
+    "worst_case_ids": [
+     "noA"
+    ],
+    "per_case": [
+     {
+      "case_id": "base",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 222390,
+       "weighted_mean_mm": 111195,
+       "max_mm": 111195,
+       "covered_weight": 2,
+       "total_weight": 2,
+       "coverage_fraction": 1,
+       "cost": 0,
+       "count": 0
+      }
+     },
+     {
+      "case_id": "noA",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 2337875,
+       "weighted_mean_mm": 1168937.5,
+       "max_mm": 2226680,
+       "covered_weight": 1,
+       "total_weight": 2,
+       "coverage_fraction": 0.5,
+       "cost": 0,
+       "count": 0
+      }
+     }
+    ]
+   },
+   "robust": {
+    "selected_ids": [],
+    "cost": 0,
+    "worst_vector": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 2337875,
+     "max_mm": 2226680
+    },
+    "worst_case_ids": [
+     "noA"
+    ],
+    "per_case": [
+     {
+      "case_id": "base",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 222390,
+       "weighted_mean_mm": 111195,
+       "max_mm": 111195,
+       "covered_weight": 2,
+       "total_weight": 2,
+       "coverage_fraction": 1,
+       "cost": 0,
+       "count": 0
+      }
+     },
+     {
+      "case_id": "noA",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 2337875,
+       "weighted_mean_mm": 1168937.5,
+       "max_mm": 2226680,
+       "covered_weight": 1,
+       "total_weight": 2,
+       "coverage_fraction": 0.5,
+       "cost": 0,
+       "count": 0
+      }
+     }
+    ]
+   },
+   "same_plan": true,
+   "price_of_robustness_m": 0,
+   "price_reason": null,
+   "duplicate_case_groups": [],
+   "resilience_problem_digest": "sha256:57096ba2537a8abb1468b5609eceda936a33cd9dd1b9ca599793d0c6c6f73e9c",
+   "exclusions_digest": "sha256:f1d9282793cecade086a9d7e6004d9cafb10f0129d5d5b8adf1f99190f7bb2e8"
+  },
+  "no_candidates": {
+   "status": "optimal",
+   "reasons": [],
+   "evaluated": 1,
+   "feasible_count": 1,
+   "nominal": {
+    "selected_ids": [],
+    "cost": 0,
+    "worst_vector": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 2337875,
+     "max_mm": 2226680
+    },
+    "worst_case_ids": [
+     "noA"
+    ],
+    "per_case": [
+     {
+      "case_id": "base",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 222390,
+       "weighted_mean_mm": 111195,
+       "max_mm": 111195,
+       "covered_weight": 2,
+       "total_weight": 2,
+       "coverage_fraction": 1,
+       "cost": 0,
+       "count": 0
+      }
+     },
+     {
+      "case_id": "noA",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 2337875,
+       "weighted_mean_mm": 1168937.5,
+       "max_mm": 2226680,
+       "covered_weight": 1,
+       "total_weight": 2,
+       "coverage_fraction": 0.5,
+       "cost": 0,
+       "count": 0
+      }
+     }
+    ]
+   },
+   "robust": {
+    "selected_ids": [],
+    "cost": 0,
+    "worst_vector": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 2337875,
+     "max_mm": 2226680
+    },
+    "worst_case_ids": [
+     "noA"
+    ],
+    "per_case": [
+     {
+      "case_id": "base",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 222390,
+       "weighted_mean_mm": 111195,
+       "max_mm": 111195,
+       "covered_weight": 2,
+       "total_weight": 2,
+       "coverage_fraction": 1,
+       "cost": 0,
+       "count": 0
+      }
+     },
+     {
+      "case_id": "noA",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 2337875,
+       "weighted_mean_mm": 1168937.5,
+       "max_mm": 2226680,
+       "covered_weight": 1,
+       "total_weight": 2,
+       "coverage_fraction": 0.5,
+       "cost": 0,
+       "count": 0
+      }
+     }
+    ]
+   },
+   "same_plan": true,
+   "price_of_robustness_m": 0,
+   "price_reason": null,
+   "duplicate_case_groups": [],
+   "resilience_problem_digest": "sha256:0943ac0b22a373895bc1032efa0569df72a32dbdf261937161f9ae1788149b22",
+   "exclusions_digest": "sha256:f1d9282793cecade086a9d7e6004d9cafb10f0129d5d5b8adf1f99190f7bb2e8"
+  },
+  "astana_school_8x12x5": {
+   "status": "optimal",
+   "reasons": [],
+   "evaluated": 256,
+   "feasible_count": 49,
+   "nominal": {
+    "selected_ids": [
+     "K01",
+     "K02",
+     "K08"
+    ],
+    "cost": 596,
+    "worst_vector": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 26224893,
+     "max_mm": 871495
+    },
+    "worst_case_ids": [
+     "all"
+    ],
+    "per_case": [
+     {
+      "case_id": "base",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 18239308,
+       "weighted_mean_mm": 303988.4666666667,
+       "max_mm": 507929,
+       "covered_weight": 51,
+       "total_weight": 60,
+       "coverage_fraction": 0.85,
+       "cost": 596,
+       "count": 3
+      }
+     },
+     {
+      "case_id": "every2",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 22757981,
+       "weighted_mean_mm": 379299.68333333335,
+       "max_mm": 662348,
+       "covered_weight": 35,
+       "total_weight": 60,
+       "coverage_fraction": 0.5833333333333334,
+       "cost": 596,
+       "count": 3
+      }
+     },
+     {
+      "case_id": "first3",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 20603221,
+       "weighted_mean_mm": 343387.01666666666,
+       "max_mm": 564366,
+       "covered_weight": 44,
+       "total_weight": 60,
+       "coverage_fraction": 0.7333333333333333,
+       "cost": 596,
+       "count": 3
+      }
+     },
+     {
+      "case_id": "all",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 26224893,
+       "weighted_mean_mm": 437081.55,
+       "max_mm": 871495,
+       "covered_weight": 31,
+       "total_weight": 60,
+       "coverage_fraction": 0.5166666666666667,
+       "cost": 596,
+       "count": 3
+      }
+     },
+     {
+      "case_id": "first3dup",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 20603221,
+       "weighted_mean_mm": 343387.01666666666,
+       "max_mm": 564366,
+       "covered_weight": 44,
+       "total_weight": 60,
+       "coverage_fraction": 0.7333333333333333,
+       "cost": 596,
+       "count": 3
+      }
+     }
+    ]
+   },
+   "robust": {
+    "selected_ids": [
+     "K01",
+     "K02",
+     "K08"
+    ],
+    "cost": 596,
+    "worst_vector": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 26224893,
+     "max_mm": 871495
+    },
+    "worst_case_ids": [
+     "all"
+    ],
+    "per_case": [
+     {
+      "case_id": "base",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 18239308,
+       "weighted_mean_mm": 303988.4666666667,
+       "max_mm": 507929,
+       "covered_weight": 51,
+       "total_weight": 60,
+       "coverage_fraction": 0.85,
+       "cost": 596,
+       "count": 3
+      }
+     },
+     {
+      "case_id": "every2",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 22757981,
+       "weighted_mean_mm": 379299.68333333335,
+       "max_mm": 662348,
+       "covered_weight": 35,
+       "total_weight": 60,
+       "coverage_fraction": 0.5833333333333334,
+       "cost": 596,
+       "count": 3
+      }
+     },
+     {
+      "case_id": "first3",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 20603221,
+       "weighted_mean_mm": 343387.01666666666,
+       "max_mm": 564366,
+       "covered_weight": 44,
+       "total_weight": 60,
+       "coverage_fraction": 0.7333333333333333,
+       "cost": 596,
+       "count": 3
+      }
+     },
+     {
+      "case_id": "all",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 26224893,
+       "weighted_mean_mm": 437081.55,
+       "max_mm": 871495,
+       "covered_weight": 31,
+       "total_weight": 60,
+       "coverage_fraction": 0.5166666666666667,
+       "cost": 596,
+       "count": 3
+      }
+     },
+     {
+      "case_id": "first3dup",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 20603221,
+       "weighted_mean_mm": 343387.01666666666,
+       "max_mm": 564366,
+       "covered_weight": 44,
+       "total_weight": 60,
+       "coverage_fraction": 0.7333333333333333,
+       "cost": 596,
+       "count": 3
+      }
+     }
+    ]
+   },
+   "same_plan": true,
+   "price_of_robustness_m": 0,
+   "price_reason": null,
+   "duplicate_case_groups": [
+    [
+     "first3",
+     "first3dup"
+    ]
+   ],
+   "resilience_problem_digest": "sha256:ca78aac00127b52509fe3798e45ea23b060ad41bccc2a1a258f70c64526727df",
+   "exclusions_digest": "sha256:794b01118362b5ffe1d263ba0e4d2070004d84a3c1dde57dc6027b5a82a9de22"
+  },
+  "astana_outpatient_clinic_8x12x5": {
+   "status": "optimal",
+   "reasons": [],
+   "evaluated": 256,
+   "feasible_count": 49,
+   "nominal": {
+    "selected_ids": [
+     "K01",
+     "K02",
+     "K08"
+    ],
+    "cost": 596,
+    "worst_vector": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 26224893,
+     "max_mm": 871495
+    },
+    "worst_case_ids": [
+     "all"
+    ],
+    "per_case": [
+     {
+      "case_id": "base",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 12463825,
+       "weighted_mean_mm": 207730.41666666666,
+       "max_mm": 331807,
+       "covered_weight": 60,
+       "total_weight": 60,
+       "coverage_fraction": 1,
+       "cost": 596,
+       "count": 3
+      }
+     },
+     {
+      "case_id": "every2",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 19070199,
+       "weighted_mean_mm": 317836.65,
+       "max_mm": 507929,
+       "covered_weight": 46,
+       "total_weight": 60,
+       "coverage_fraction": 0.7666666666666667,
+       "cost": 596,
+       "count": 3
+      }
+     },
+     {
+      "case_id": "first3",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 13091343,
+       "weighted_mean_mm": 218189.05,
+       "max_mm": 331807,
+       "covered_weight": 60,
+       "total_weight": 60,
+       "coverage_fraction": 1,
+       "cost": 596,
+       "count": 3
+      }
+     },
+     {
+      "case_id": "all",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 26224893,
+       "weighted_mean_mm": 437081.55,
+       "max_mm": 871495,
+       "covered_weight": 31,
+       "total_weight": 60,
+       "coverage_fraction": 0.5166666666666667,
+       "cost": 596,
+       "count": 3
+      }
+     },
+     {
+      "case_id": "first3dup",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 13091343,
+       "weighted_mean_mm": 218189.05,
+       "max_mm": 331807,
+       "covered_weight": 60,
+       "total_weight": 60,
+       "coverage_fraction": 1,
+       "cost": 596,
+       "count": 3
+      }
+     }
+    ]
+   },
+   "robust": {
+    "selected_ids": [
+     "K01",
+     "K02",
+     "K08"
+    ],
+    "cost": 596,
+    "worst_vector": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 26224893,
+     "max_mm": 871495
+    },
+    "worst_case_ids": [
+     "all"
+    ],
+    "per_case": [
+     {
+      "case_id": "base",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 12463825,
+       "weighted_mean_mm": 207730.41666666666,
+       "max_mm": 331807,
+       "covered_weight": 60,
+       "total_weight": 60,
+       "coverage_fraction": 1,
+       "cost": 596,
+       "count": 3
+      }
+     },
+     {
+      "case_id": "every2",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 19070199,
+       "weighted_mean_mm": 317836.65,
+       "max_mm": 507929,
+       "covered_weight": 46,
+       "total_weight": 60,
+       "coverage_fraction": 0.7666666666666667,
+       "cost": 596,
+       "count": 3
+      }
+     },
+     {
+      "case_id": "first3",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 13091343,
+       "weighted_mean_mm": 218189.05,
+       "max_mm": 331807,
+       "covered_weight": 60,
+       "total_weight": 60,
+       "coverage_fraction": 1,
+       "cost": 596,
+       "count": 3
+      }
+     },
+     {
+      "case_id": "all",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 26224893,
+       "weighted_mean_mm": 437081.55,
+       "max_mm": 871495,
+       "covered_weight": 31,
+       "total_weight": 60,
+       "coverage_fraction": 0.5166666666666667,
+       "cost": 596,
+       "count": 3
+      }
+     },
+     {
+      "case_id": "first3dup",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 13091343,
+       "weighted_mean_mm": 218189.05,
+       "max_mm": 331807,
+       "covered_weight": 60,
+       "total_weight": 60,
+       "coverage_fraction": 1,
+       "cost": 596,
+       "count": 3
+      }
+     }
+    ]
+   },
+   "same_plan": true,
+   "price_of_robustness_m": 0,
+   "price_reason": null,
+   "duplicate_case_groups": [
+    [
+     "first3",
+     "first3dup"
+    ]
+   ],
+   "resilience_problem_digest": "sha256:06d8041ae823f29a0870b45598e4146b8f4dec998f60cb9b3b5dd0de08af3609",
+   "exclusions_digest": "sha256:b8ea74c3cae299bc6cecb06a45d44f1b26745a249d3c269df6d9787cd5f2edee"
+  },
+  "shymkent_school_8x12x5": {
+   "status": "optimal",
+   "reasons": [],
+   "evaluated": 256,
+   "feasible_count": 49,
+   "nominal": {
+    "selected_ids": [
+     "K02",
+     "K03",
+     "K04"
+    ],
+    "cost": 522,
+    "worst_vector": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 28862552,
+     "max_mm": 1034244
+    },
+    "worst_case_ids": [
+     "all"
+    ],
+    "per_case": [
+     {
+      "case_id": "base",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 15868844,
+       "weighted_mean_mm": 264480.73333333334,
+       "max_mm": 600196,
+       "covered_weight": 53,
+       "total_weight": 60,
+       "coverage_fraction": 0.8833333333333333,
+       "cost": 522,
+       "count": 3
+      }
+     },
+     {
+      "case_id": "every2",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 18178213,
+       "weighted_mean_mm": 302970.2166666667,
+       "max_mm": 600196,
+       "covered_weight": 45,
+       "total_weight": 60,
+       "coverage_fraction": 0.75,
+       "cost": 522,
+       "count": 3
+      }
+     },
+     {
+      "case_id": "first3",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 17840328,
+       "weighted_mean_mm": 297338.8,
+       "max_mm": 600196,
+       "covered_weight": 45,
+       "total_weight": 60,
+       "coverage_fraction": 0.75,
+       "cost": 522,
+       "count": 3
+      }
+     },
+     {
+      "case_id": "all",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 28862552,
+       "weighted_mean_mm": 481042.5333333333,
+       "max_mm": 1034244,
+       "covered_weight": 39,
+       "total_weight": 60,
+       "coverage_fraction": 0.65,
+       "cost": 522,
+       "count": 3
+      }
+     },
+     {
+      "case_id": "first3dup",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 17840328,
+       "weighted_mean_mm": 297338.8,
+       "max_mm": 600196,
+       "covered_weight": 45,
+       "total_weight": 60,
+       "coverage_fraction": 0.75,
+       "cost": 522,
+       "count": 3
+      }
+     }
+    ]
+   },
+   "robust": {
+    "selected_ids": [
+     "K01",
+     "K02",
+     "K08"
+    ],
+    "cost": 596,
+    "worst_vector": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 26230240,
+     "max_mm": 871399
+    },
+    "worst_case_ids": [
+     "all"
+    ],
+    "per_case": [
+     {
+      "case_id": "base",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 18648334,
+       "weighted_mean_mm": 310805.56666666665,
+       "max_mm": 537917,
+       "covered_weight": 43,
+       "total_weight": 60,
+       "coverage_fraction": 0.7166666666666667,
+       "cost": 596,
+       "count": 3
+      }
+     },
+     {
+      "case_id": "every2",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 20371011,
+       "weighted_mean_mm": 339516.85,
+       "max_mm": 537917,
+       "covered_weight": 35,
+       "total_weight": 60,
+       "coverage_fraction": 0.5833333333333334,
+       "cost": 596,
+       "count": 3
+      }
+     },
+     {
+      "case_id": "first3",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 20033126,
+       "weighted_mean_mm": 333885.43333333335,
+       "max_mm": 537917,
+       "covered_weight": 35,
+       "total_weight": 60,
+       "coverage_fraction": 0.5833333333333334,
+       "cost": 596,
+       "count": 3
+      }
+     },
+     {
+      "case_id": "all",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 26230240,
+       "weighted_mean_mm": 437170.6666666667,
+       "max_mm": 871399,
+       "covered_weight": 31,
+       "total_weight": 60,
+       "coverage_fraction": 0.5166666666666667,
+       "cost": 596,
+       "count": 3
+      }
+     },
+     {
+      "case_id": "first3dup",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 20033126,
+       "weighted_mean_mm": 333885.43333333335,
+       "max_mm": 537917,
+       "covered_weight": 35,
+       "total_weight": 60,
+       "coverage_fraction": 0.5833333333333334,
+       "cost": 596,
+       "count": 3
+      }
+     }
+    ]
+   },
+   "same_plan": false,
+   "price_of_robustness_m": 46.324833333333316,
+   "price_reason": null,
+   "duplicate_case_groups": [
+    [
+     "first3",
+     "first3dup"
+    ]
+   ],
+   "resilience_problem_digest": "sha256:049540d749ed390e3db9c9f10251d24122e4a0ef92982ce0032c73f6fc03371c",
+   "exclusions_digest": "sha256:9d4cffcc4dbd82d7c52477b8df8bfc8eb51423b23903af19348c0641752e6dc0"
+  },
+  "shymkent_outpatient_clinic_8x12x5": {
+   "status": "optimal",
+   "reasons": [],
+   "evaluated": 256,
+   "feasible_count": 49,
+   "nominal": {
+    "selected_ids": [
+     "K01",
+     "K02",
+     "K04"
+    ],
+    "cost": 448,
+    "worst_vector": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 31315871,
+     "max_mm": 967796
+    },
+    "worst_case_ids": [
+     "all"
+    ],
+    "per_case": [
+     {
+      "case_id": "base",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 11750465,
+       "weighted_mean_mm": 195841.08333333334,
+       "max_mm": 347692,
+       "covered_weight": 60,
+       "total_weight": 60,
+       "coverage_fraction": 1,
+       "cost": 448,
+       "count": 3
+      }
+     },
+     {
+      "case_id": "every2",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 13166851,
+       "weighted_mean_mm": 219447.51666666666,
+       "max_mm": 393617,
+       "covered_weight": 60,
+       "total_weight": 60,
+       "coverage_fraction": 1,
+       "cost": 448,
+       "count": 3
+      }
+     },
+     {
+      "case_id": "first3",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 13491029,
+       "weighted_mean_mm": 224850.48333333334,
+       "max_mm": 476638,
+       "covered_weight": 54,
+       "total_weight": 60,
+       "coverage_fraction": 0.9,
+       "cost": 448,
+       "count": 3
+      }
+     },
+     {
+      "case_id": "all",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 31315871,
+       "weighted_mean_mm": 521931.18333333335,
+       "max_mm": 967796,
+       "covered_weight": 29,
+       "total_weight": 60,
+       "coverage_fraction": 0.48333333333333334,
+       "cost": 448,
+       "count": 3
+      }
+     },
+     {
+      "case_id": "first3dup",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 13491029,
+       "weighted_mean_mm": 224850.48333333334,
+       "max_mm": 476638,
+       "covered_weight": 54,
+       "total_weight": 60,
+       "coverage_fraction": 0.9,
+       "cost": 448,
+       "count": 3
+      }
+     }
+    ]
+   },
+   "robust": {
+    "selected_ids": [
+     "K01",
+     "K02",
+     "K08"
+    ],
+    "cost": 596,
+    "worst_vector": {
+     "unknown_count": 0,
+     "weighted_sum_mm": 26230240,
+     "max_mm": 871399
+    },
+    "worst_case_ids": [
+     "all"
+    ],
+    "per_case": [
+     {
+      "case_id": "base",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 13148165,
+       "weighted_mean_mm": 219136.08333333334,
+       "max_mm": 572729,
+       "covered_weight": 56,
+       "total_weight": 60,
+       "coverage_fraction": 0.9333333333333333,
+       "cost": 596,
+       "count": 3
+      }
+     },
+     {
+      "case_id": "every2",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 14505013,
+       "weighted_mean_mm": 241750.21666666667,
+       "max_mm": 636917,
+       "covered_weight": 56,
+       "total_weight": 60,
+       "coverage_fraction": 0.9333333333333333,
+       "cost": 596,
+       "count": 3
+      }
+     },
+     {
+      "case_id": "first3",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 15256403,
+       "weighted_mean_mm": 254273.38333333333,
+       "max_mm": 572729,
+       "covered_weight": 50,
+       "total_weight": 60,
+       "coverage_fraction": 0.8333333333333334,
+       "cost": 596,
+       "count": 3
+      }
+     },
+     {
+      "case_id": "all",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 26230240,
+       "weighted_mean_mm": 437170.6666666667,
+       "max_mm": 871399,
+       "covered_weight": 31,
+       "total_weight": 60,
+       "coverage_fraction": 0.5166666666666667,
+       "cost": 596,
+       "count": 3
+      }
+     },
+     {
+      "case_id": "first3dup",
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 15256403,
+       "weighted_mean_mm": 254273.38333333333,
+       "max_mm": 572729,
+       "covered_weight": 50,
+       "total_weight": 60,
+       "coverage_fraction": 0.8333333333333334,
+       "cost": 596,
+       "count": 3
+      }
+     }
+    ]
+   },
+   "same_plan": false,
+   "price_of_robustness_m": 23.295,
+   "price_reason": null,
+   "duplicate_case_groups": [
+    [
+     "first3",
+     "first3dup"
+    ]
+   ],
+   "resilience_problem_digest": "sha256:5fb1fc523f5c85a3b02826f7dcf8ee431dd5d89c4c7e71f45ef63b8027966c9f",
+   "exclusions_digest": "sha256:6a9e87845f0c7da53cde6957f3164cd1d23ee92aa5f6c9c67aa2906e0e1aa5f9"
+  }
+ }
+}

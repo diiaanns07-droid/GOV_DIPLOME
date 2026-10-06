@@ -11,4 +11,5 @@ NODE_PATH="$(npm root -g)" node tests/plan_keyboard.cjs
 NODE_PATH="$(npm root -g)" node tests/plan_smoke.cjs ; NODE_PATH="$(npm root -g)" node tests/whatif_smoke.cjs ; NODE_PATH="$(npm root -g)" node tests/smoke.cjs
 cd ../.. && node research/round-9-results/BUILD/adapters/r8_independent.cjs research/round-9-results/BUILD/r8_independent_result.json
 ```
-Продолжение: этап 2 — `web/resilience.js` поверх `plan.js` (`internal.*`, `KEYS`, `cmpIds`), оракул `tools/resilience_oracle.py`.
+Этапы 1–2 готовы. Продолжение: этап 3 — `web/resilience-ui.js` (панель в v2-режиме), браузерный тест `tests/resilience_smoke.cjs`.
+`node tests/resilience.cjs`, `python3 tools/resilience_oracle.py --check` — проверки ядра.
