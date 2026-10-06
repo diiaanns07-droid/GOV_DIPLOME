@@ -327,7 +327,9 @@ class ObjectRepository:
         with self.db.write() as conn:
             row = self._locked_row(conn, object_id, expected_revision)
             reason_text = clean_reason(reason, required=True)
-            content = self._content(row)
+            # Повторная проверка по текущим правилам: данные могли быть записаны раньше
+            # (импорт, прежняя версия кода) — опубликовать можно только валидный объект.
+            content = validate_content(self._content(row), today=self.today())
             validate_for_publication(content)
             previous = self._last_public_dto(conn, object_id)
             first = row["first_published_at"] is None

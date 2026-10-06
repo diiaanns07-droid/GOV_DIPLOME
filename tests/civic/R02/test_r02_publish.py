@@ -1,5 +1,6 @@
 """R02: обновление, публикация, архив, история и оптимистичная блокировка."""
 
+import json
 import threading
 
 import pytest
@@ -226,3 +227,16 @@ def test_staff_audit_export_is_paginated_and_editor_only(editor, service):
         assert key not in str(page)
     for bad in ("limit=0", "limit=501", "after=-1", "after=%C2%B2", "limit=%C2%B2", "since=yesterday", "object_id=..%2F"):
         assert editor.get("/staff/audit", query=bad)["status"] == 400, bad
+
+
+def test_publish_revalidates_stored_content(editor, service):
+    """Запись, ставшая невалидной в базе (старый код/ручная правка), не публикуется."""
+    item = editor.create()
+    with service.db.write() as conn:
+        row = conn.execute("SELECT data_json FROM civic_objects WHERE id = ?", (item["id"],)).fetchone()
+        data = json.loads(row["data_json"])
+        data["geometry"] = {"type": "Point", "coordinates": [51.17, 71.43]}  # перепутаны lon/lat
+        conn.execute("UPDATE civic_objects SET data_json = ? WHERE id = ?", (json.dumps(data), item["id"]))
+    result = editor.publish(item)
+    assert result["status"] == 422 and "geometry.coordinates" in result["body"]["error"]["fields"]
+    assert public(service, item["id"])["status"] == 404
