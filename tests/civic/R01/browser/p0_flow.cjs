@@ -2,8 +2,8 @@
 // light map -> deadline moves with history -> resident sends a message -> moderation -> public.
 // Usage: node tests/civic/R01/browser/p0_flow.cjs <out_dir> [--backend double|real]
 //   double: starts tests/civic/R01/serve_double.py (in-memory TEST DOUBLE, not a backend)
-//   real:   starts `python -B app.py` with a temp CIVIC_DB; needs an editor created beforehand via
-//           CIVIC_EDITOR_SETUP (shell command run once with CIVIC_DB/CIVIC_TEST_PASSWORD in env).
+//   real:   starts `python -B app.py` with a temp SQLite (R02 ui.civic_store): seeds R02's synthetic
+//           demo package and creates the editor through R02's CLI (password via stdin, never argv).
 "use strict";
 const { chromium } = require("playwright");
 const { spawn, execSync } = require("child_process");
@@ -13,7 +13,7 @@ const REPO = path.resolve(__dirname, "../../../..");
 const OUT = path.resolve(process.argv[2] || "p0-out");
 const BACKEND = (process.argv.find((a) => a.startsWith("--backend=")) || "--backend=double").split("=")[1];
 const NOISE = /openfreemap|Failed to load resource|GL Driver|style diff/i;
-const PASSWORD = "p0-" + Math.random().toString(36).slice(2, 12);
+const PASSWORD = "p0-Esil-" + require("crypto").randomBytes(9).toString("base64url");
 const USER = process.env.CIVIC_TEST_USER || "test-editor";
 const checks = [];
 const check = (name, ok, detail) => { checks.push({ name, status: ok ? "PASS" : "FAIL", detail: detail ?? null }); console.log((ok ? "PASS " : "FAIL ") + name + (detail ? " — " + JSON.stringify(detail) : "")); };
@@ -22,8 +22,13 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const freePort = () => new Promise((ok, no) => { const s = net.createServer().on("error", no); s.listen(0, "127.0.0.1", () => { const { port } = s.address(); s.close(() => ok(port)); }); });
 
 async function startServer(port, dbDir) {
-  const env = { ...process.env, CIVIC_TEST_PASSWORD: PASSWORD, CIVIC_DB: path.join(dbDir, "civic.sqlite3"), PYTHONDONTWRITEBYTECODE: "1" };
-  if (BACKEND === "real" && process.env.CIVIC_EDITOR_SETUP) execSync(process.env.CIVIC_EDITOR_SETUP, { cwd: REPO, env, stdio: "inherit" });
+  const db = path.join(dbDir, "civic.sqlite3");
+  const env = { ...process.env, CIVIC_TEST_PASSWORD: PASSWORD, CIVIC_DB: db, CIVIC_DB_PATH: db, PYTHONDONTWRITEBYTECODE: "1" };
+  if (BACKEND === "real") {
+    execSync(`python3 -B -m ui.civic_store --db "${db}" seed-demo`, { cwd: REPO, env, stdio: ["ignore", "ignore", "inherit"] });
+    execSync(`python3 -B -m ui.civic_store --db "${db}" create-editor ${USER} --password-stdin --display-name "Редактор смоука"`,
+      { cwd: REPO, env, input: PASSWORD + "\n", stdio: ["pipe", "ignore", "inherit"] });
+  }
   const args = BACKEND === "double" ? ["-B", "tests/civic/R01/serve_double.py", "--port", String(port)]
     : ["-B", "app.py", "--host", "127.0.0.1", "--port", String(port)];
   const srv = spawn("python3", args, { cwd: REPO, env, stdio: ["ignore", "pipe", "pipe"] });
@@ -78,20 +83,20 @@ const apiFetch = (page, method, p, body, headers) => page.evaluate(async ([metho
 
     // editor: login, create draft
     await page.click("#civic-staff-button");
-    await page.waitForSelector("#civic-editor input[name=username]", { timeout: 10000 });
-    await page.fill("#civic-editor input[name=username]", USER);
-    await page.fill("#civic-editor input[name=password]", "wrong-password");
-    await page.click("#civic-editor button[type=submit]");
-    await page.waitForFunction(() => /не выполнен/i.test(document.querySelector("#civic-editor .civic-form-status")?.textContent || ""), null, { timeout: 10000 });
-    check("wrong password rejected, form stays", await page.isVisible("#civic-editor input[name=username]"));
-    await page.fill("#civic-editor input[name=password]", PASSWORD);
-    await page.click("#civic-editor button[type=submit]");
+    await page.waitForSelector("#civic-editor-root input[name=username]", { timeout: 10000 });
+    await page.fill("#civic-editor-root input[name=username]", USER);
+    await page.fill("#civic-editor-root input[name=password]", "wrong-password");
+    await page.click("#civic-editor-root button[type=submit]");
+    await page.waitForFunction(() => /не выполнен/i.test(document.querySelector("#civic-editor-root .civic-form-status")?.textContent || ""), null, { timeout: 10000 });
+    check("wrong password rejected, form stays", await page.isVisible("#civic-editor-root input[name=username]"));
+    await page.fill("#civic-editor-root input[name=password]", PASSWORD);
+    await page.click("#civic-editor-root button[type=submit]");
     await page.waitForFunction(() => window.CivicShell.api.session.authenticated, null, { timeout: 10000 });
     check("editor login via session API", true);
     const storage = await page.evaluate(() => JSON.stringify({ ...localStorage }) + JSON.stringify({ ...sessionStorage }));
     check("no session/CSRF token in web storage", !/csrf|civic_session|token/i.test(storage), storage.slice(0, 200));
-    await page.click("#civic-editor .civic-tabs button:nth-child(2)");
-    const ed = "#civic-editor ";
+    await page.click("#civic-editor-root .civic-tabs button:nth-child(2)");
+    const ed = "#civic-editor-root ";
     await page.fill(ed + "input[name=title]", "Проверочная запись R01 — синтетическая");
     await page.selectOption(ed + "select[name=kind]", "roadworks");
     await page.selectOption(ed + "select[name=status]", "planned");
@@ -103,8 +108,8 @@ const apiFetch = (page, method, p, body, headers) => page.evaluate(async ([metho
     await page.fill(ed + "input[name=lon]", "71.4304");
     await page.fill(ed + "input[name=lat]", "51.1282");
     await page.click(ed + "button[type=submit]");
-    await page.waitForFunction(() => /id\s+\S+/.test(document.querySelector("#civic-editor header p")?.textContent || ""), null, { timeout: 10000 });
-    createdId = await page.evaluate(() => (document.querySelector("#civic-editor header p").textContent.match(/id\s+(\S+)/) || [])[1]);
+    await page.waitForFunction(() => /id\s+\S+/.test(document.querySelector("#civic-editor-root header p")?.textContent || ""), null, { timeout: 10000 });
+    createdId = await page.evaluate(() => (document.querySelector("#civic-editor-root header p").textContent.match(/id\s+(\S+)/) || [])[1]);
     check("draft created with server id", !!createdId, createdId);
     const draftPublic = await apiFetch(page, "GET", "/objects/" + encodeURIComponent(createdId));
     check("draft not visible by direct public ID", draftPublic.status === 404, draftPublic.status);
@@ -116,8 +121,8 @@ const apiFetch = (page, method, p, body, headers) => page.evaluate(async ([metho
     check("publish with wrong CSRF rejected", badCsrf.status === 403, badCsrf.status);
 
     // publish
-    await page.click("#civic-editor .civic-actions button:has-text('Опубликовать')");
-    await page.waitForFunction(() => /Опубликовано/.test(document.querySelector("#civic-editor header p")?.textContent || ""), null, { timeout: 10000 });
+    await page.click("#civic-editor-root .civic-actions button:has-text('Опубликовать')");
+    await page.waitForFunction(() => /Опубликовано/.test(document.querySelector("#civic-editor-root header p")?.textContent || ""), null, { timeout: 10000 });
     const pub = await apiFetch(page, "GET", "/objects/" + encodeURIComponent(createdId));
     check("published object readable publicly", pub.status === 200 && pub.body?.data?.item?.publication === "published", pub.status);
     check("public DTO has no internal fields", pub.status === 200 && !("internal_notes" in pub.body.data.item) && !JSON.stringify(pub.body).includes("actor\""), Object.keys(pub.body?.data?.item || {}));
@@ -131,11 +136,11 @@ const apiFetch = (page, method, p, body, headers) => page.evaluate(async ([metho
     await page.fill(ed + "input[name=current_planned_end]", "2026-11-15");
     await page.fill(ed + "input[name=reason]", "Перенос срока: проверка истории (смоук R01)");
     await page.click(ed + "button[type=submit]");
-    await page.waitForSelector("#civic-editor .civic-actions button:has-text('Опубликовать изменения')", { timeout: 10000 });
+    await page.waitForSelector("#civic-editor-root .civic-actions button:has-text('Опубликовать изменения')", { timeout: 10000 });
     const beforeRepublish = await apiFetch(page, "GET", "/objects/" + encodeURIComponent(createdId));
     check("saved change not public until published", beforeRepublish.body?.data?.item?.schedule?.current_planned_end === "2026-10-30", beforeRepublish.body?.data?.item?.schedule);
-    await page.click("#civic-editor .civic-actions button:has-text('Опубликовать изменения')");
-    await page.waitForFunction(() => /Опубликовано/.test(document.querySelector("#civic-editor .civic-form-status")?.textContent || ""), null, { timeout: 10000 });
+    await page.click("#civic-editor-root .civic-actions button:has-text('Опубликовать изменения')");
+    await page.waitForFunction(() => /Опубликовано/.test(document.querySelector("#civic-editor-root .civic-form-status")?.textContent || ""), null, { timeout: 10000 });
     const moved = await apiFetch(page, "GET", "/objects/" + encodeURIComponent(createdId));
     const sch = moved.body?.data?.item?.schedule || {};
     check("deadline moved, original kept", sch.original_planned_end === "2026-10-30" && sch.current_planned_end === "2026-11-15", sch);
@@ -156,36 +161,66 @@ const apiFetch = (page, method, p, body, headers) => page.evaluate(async ([metho
     check("selected object permalink in URL", (await page.evaluate(() => location.hash)).includes(encodeURIComponent(createdId)));
     await page.screenshot({ path: path.join(OUT, "03_resident_card_1440.png") });
 
-    // resident message
+    // resident message (R06 CivicFeedback if delivered, else the R01 fallback form)
+    const r06 = await page.evaluate(() => !window.CivicShell.isFallback("feedback") && typeof window.CivicFeedback?.mountModeration === "function");
+    result.feedback_module = r06 ? "R06 CivicFeedback" : "R01 fallback";
     await page.click("#civic-map-root .civic-ask");
-    await page.waitForSelector("#civic-feedback-root textarea[name=text]");
-    const xss = "Яма у входа <img src=x onerror=window.__xss=1> <b>тест</b>";
-    await page.selectOption("#civic-feedback-root select[name=category]", "roads");
-    await page.fill("#civic-feedback-root textarea[name=text]", xss);
-    await page.check("#civic-feedback-root input[name=consent_public]");
-    await page.click("#civic-feedback-root button[type=submit]");
-    await page.waitForSelector("#civic-feedback-root .civic-receipt", { timeout: 10000 });
-    check("resident gets a receipt", /Номер/.test(await page.textContent("#civic-feedback-root .civic-receipt")));
+    const fb = "#civic-feedback-root ";
+    const xss = "Яма у входа <img src=x onerror=window.__xss=1> <b>тест</b> — нужен ремонт";
+    if (r06) {
+      await page.waitForSelector(fb + ".civic-r06-form", { timeout: 10000 });
+      await page.locator(fb + "input[type=radio][value=problem]").check().catch(() => null);
+      await page.locator(fb + "select").first().selectOption("roads");
+      await page.locator(fb + "textarea").first().fill(xss);
+      await page.locator(fb + "input[type=radio][value=true]").check();
+      await page.click(fb + "button[type=submit]");
+      await page.waitForSelector(fb + ".civic-r06-receipt", { timeout: 10000 });
+      check("resident gets a receipt", /\S/.test(await page.textContent(fb + ".civic-r06-receipt")));
+    } else {
+      await page.waitForSelector(fb + "textarea[name=text]");
+      await page.selectOption(fb + "select[name=category]", "roads");
+      await page.fill(fb + "textarea[name=text]", xss);
+      await page.check(fb + "input[name=consent_public]");
+      await page.click(fb + "button[type=submit]");
+      await page.waitForSelector(fb + ".civic-receipt", { timeout: 10000 });
+      check("resident gets a receipt", /Номер/.test(await page.textContent(fb + ".civic-receipt")));
+    }
+    const receiptText = await page.textContent("#civic-feedback-root");
+    check("receipt does not claim official registration", !/зарегистрирован[оа]? в iKOMEK|принят[оа]? в работу/i.test(receiptText));
     const pending = await apiFetch(page, "GET", `/objects/${encodeURIComponent(createdId)}/feedback`);
     check("pending message not public", pending.status === 200 && (pending.body?.data?.items || []).length === 0, pending.body?.data);
     await page.screenshot({ path: path.join(OUT, "04_feedback_receipt_1440.png") });
 
-    // moderation
+    // moderation in the staff drawer
     await page.click("#civic-staff-button");
-    await page.click("#civic-editor .civic-tabs button:nth-child(3)");
-    await page.waitForSelector("#civic-editor .civic-msg input[name=reason]", { timeout: 10000 });
-    await page.fill("#civic-editor .civic-msg input[name=reason]", "Сообщение по существу");
-    await page.fill("#civic-editor .civic-msg input[name=public_reply]", "Спасибо, передано подрядчику (тест).");
-    await page.click("#civic-editor .civic-msg button:has-text('Одобрить')");
-    await page.waitForFunction(() => /одобрено/i.test(document.querySelector("#civic-editor .civic-form-status")?.textContent || ""), null, { timeout: 10000 });
+    if (r06) {
+      await page.click("#civic-staff-tabs [data-staff-tab=messages]");
+      await page.waitForSelector("#civic-moderation-root .civic-r06-queue-item", { timeout: 10000 });
+      await page.locator("#civic-moderation-root .civic-r06-queue-item").first().click();
+      await page.waitForSelector("#civic-moderation-root .civic-r06-decision", { timeout: 10000 });
+      const decision = page.locator("#civic-moderation-root .civic-r06-decision");
+      await decision.locator("textarea").first().fill("Сообщение по существу объекта");
+      await decision.locator("textarea").last().fill("Спасибо, сообщение передано ответственным (тест).");
+      await decision.locator("button[type=submit]").click();
+      await page.waitForFunction(() => /Проверено модератором|одобрено/i.test(document.querySelector("#civic-moderation-root .civic-r06-detail")?.textContent || ""), null, { timeout: 10000 });
+      await page.screenshot({ path: path.join(OUT, "05a_moderation_1440.png") });
+    } else {
+      await page.click("#civic-editor-root .civic-tabs button:nth-child(3)");
+      await page.waitForSelector("#civic-editor-root .civic-msg input[name=reason]", { timeout: 10000 });
+      await page.fill("#civic-editor-root .civic-msg input[name=reason]", "Сообщение по существу");
+      await page.fill("#civic-editor-root .civic-msg input[name=public_reply]", "Спасибо, передано подрядчику (тест).");
+      await page.click("#civic-editor-root .civic-msg button:has-text('Одобрить')");
+      await page.waitForFunction(() => /одобрено/i.test(document.querySelector("#civic-editor-root .civic-form-status")?.textContent || ""), null, { timeout: 10000 });
+    }
     const approved = await apiFetch(page, "GET", `/objects/${encodeURIComponent(createdId)}/feedback`);
     const items = approved.body?.data?.items || [];
-    check("approved message public", items.length === 1 && items[0].text.includes("<b>тест</b>"), items.length);
-    check("public feedback has no private fields", items.every((i) => !("consent_public" in i) && !("ip" in i) && !("contact" in i)));
+    check("approved message public", items.length === 1 && JSON.stringify(items[0]).includes("<b>тест</b>"), items.length);
+    check("public feedback has no private fields", items.every((i) => !("consent_public" in i) && !("ip" in i) && !("client_hash" in i) && !("contact" in i) && !("reason" in i)), items.map((i) => Object.keys(i)));
     await page.click("#civic-editor [data-close=editor]");
     await page.click("#civic-map-root .civic-ask");
-    await page.waitForSelector("#civic-feedback-root .civic-msg", { timeout: 10000 });
-    const xssState = await page.evaluate(() => ({ fired: !!window.__xss, injected: !!document.querySelector("#civic-feedback-root .civic-msg b, #civic-feedback-root .civic-msg img") }));
+    await page.waitForSelector(r06 ? "#civic-feedback-root .civic-r06-public-item" : "#civic-feedback-root .civic-msg", { timeout: 10000 });
+    const xssState = await page.evaluate(() => ({ fired: !!window.__xss,
+      injected: !!document.querySelector("#civic-feedback-root .civic-r06-public-item b, #civic-feedback-root .civic-r06-public-item img, #civic-feedback-root .civic-msg b, #civic-feedback-root .civic-msg img") }));
     check("untrusted text rendered as text (no XSS)", !xssState.fired && !xssState.injected, xssState);
     await page.screenshot({ path: path.join(OUT, "05_public_message_1440.png") });
 

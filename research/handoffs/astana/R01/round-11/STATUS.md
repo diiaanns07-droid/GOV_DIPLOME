@@ -36,4 +36,14 @@ web/govtech/shell.{js,css}, web/civic/shell/, requirements*.txt, run.{bat,sh},
 - Итог на ТЕСТОВОМ ДУБЛЁРЕ: 37 PASS / 0 FAIL / 2 NOT_RUN (подложка/attribution: хост недоступен).
   research/round-11-results/R01/runs/cp3_p0_flow_test_double/. Это не рабочий backend.
 
-Следующий шаг: ревью и импорт поставок R02/R03/R04 (первые checkpoint 15:38–15:45Z), R07 (ready).
+## Checkpoint 5 — настоящий backend R02 + R06 встроены (PARTIAL)
+- DONE: импорт по путям R02 @92f7aba (ui/civic_store, tests/civic/R02) и R06 @eaa113d
+  (ui/civic_feedback, web/civic/feedback, tests/civic/R06). Независимое ревью R02 (workflow):
+  блокеров нет. Решения D-01..D-05 в MATRIX.json (один транспорт — CivicGateway R01).
+- DONE: P0 HTTP-приёмка на SQLite R02 — 8/8 PASS, включая сохранность после перезапуска.
+- DONE: браузер P0 на R02+R06 — 39 PASS / 0 FAIL / 2 NOT_RUN (runs/cp5_p0_flow_real_r02_r06/).
+- Полный pytest 440 passed, 2 skipped, 1 deselected (патч-тест R02 к исходному web_server —
+  неприменим после интеграции, см. MATRIX R02); web_check 14 OK; node plan/resilience/whatif PASS.
+
+Следующий шаг: блокировка параллельного входа (ревью R02 M1), импорт R07 по рецепту ревью,
+затем R03/R04 вместо резервных модулей R01.

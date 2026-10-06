@@ -61,7 +61,8 @@ for _asset in ("shell.js", "shell.css", "core/data.js", "core/evidence.js",
 
 # Round 11 civic-v1 frontend: explicit files only (R01 shell; role modules are added
 # here by R01 when their reviewed delivery is imported). No directory serving.
-CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/fallback.js")
+CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/fallback.js",
+                "feedback/feedback.js", "feedback/feedback.css")  # R06 @eaa113d
 for _asset in CIVIC_ASSETS:
     _mime = {".js": "text/javascript", ".css": "text/css", ".json": "application/json"}.get(Path(_asset).suffix, "text/plain")
     ASSETS["/civic/" + _asset] = ("civic/" + _asset, _mime + "; charset=utf-8")
@@ -95,6 +96,11 @@ CIVIC_ROUTES = (
     ("POST", ("feedback",), "feedback"),
     ("GET", ("staff", "feedback"), "feedback"),
     ("POST", ("staff", "feedback", "{id}", "moderate"), "feedback"),
+    # R06 contract_delta (compatible additions, accepted by R01): moderator card, receipt status,
+    # consent withdrawal by receipt number (receipt in the body, not in the URL).
+    ("GET", ("staff", "feedback", "{id}"), "feedback"),
+    ("POST", ("feedback", "receipt"), "feedback"),
+    ("POST", ("feedback", "withdraw-consent"), "feedback"),
     ("POST", ("scenarios", "compare"), "scenarios"),
     ("POST", ("assistant",), "assistant"),
 )
@@ -162,12 +168,15 @@ class CivicGateway:
             return service_class(str(db_path))
 
         def feedback():
-            module = importlib.import_module("ui.civic_feedback")
+            # R06 on the same SQLite file (own feedback_* tables). Object lookup via R02's staff
+            # read; R06 itself requires city=astana and publication=published for residents.
+            integration = importlib.import_module("ui.civic_feedback.integration")
             store_service = gateway.service("store")
             if store_service is None:
                 raise ImportError("feedback needs the object store")
             db_path.parent.mkdir(parents=True, exist_ok=True)
-            return module.FeedbackService(str(db_path), gateway.public_object)
+            # classifier=None: the R08 model is not integrated/verified in this build.
+            return integration.build_feedback_service(str(db_path), store_service, classifier=None)
 
         gateway = cls({"store": store, "feedback": feedback})
         return gateway
@@ -448,8 +457,13 @@ class Handler(BaseHTTPRequestHandler):
         origin = self.headers.get("Origin")
         if not origin:
             return False
-        parsed = urlsplit(origin)
-        return parsed.scheme in ("http", "https") and parsed.netloc == self.headers.get("Host")
+        try:
+            parsed = urlsplit(origin)
+        except ValueError:
+            return False
+        host = self.headers.get("Host") or ""
+        # This server speaks plain HTTP on loopback; "null" and https origins are foreign.
+        return parsed.scheme == "http" and parsed.netloc.lower() == host.lower() and not parsed.path
 
     def origin_state(self):
         """False on any cross-origin signal; True when Origin/Sec-Fetch-Site confirm same origin;
@@ -492,6 +506,8 @@ class Handler(BaseHTTPRequestHandler):
             self.send_header("Cache-Control", "no-store")
             self.send_header("X-Content-Type-Options", "nosniff")
             self.send_header("Referrer-Policy", "same-origin")
+            self.send_header("X-Frame-Options", "DENY")
+            self.send_header("Cross-Origin-Resource-Policy", "same-origin")
             for name, value in extra:
                 self.send_header(name, value)
             self.end_headers()
@@ -520,6 +536,11 @@ class Handler(BaseHTTPRequestHandler):
             return
         query = parsed.query  # raw; each service parses and bounds it (R02 parse_query)
         body = None
+        if self.headers.get("Transfer-Encoding"):
+            # Content-Length only; a chunked body would stay in the stream (adopted from R02 adapter).
+            self.close_connection = True
+            self.civic_send(civic_error(411, "length_required", "Нужен Content-Length; chunked не поддерживается."))
+            return
         if method == "POST":
             try:
                 length = int(self.headers.get("Content-Length", "0"))
@@ -528,6 +549,7 @@ class Handler(BaseHTTPRequestHandler):
             if not 0 < length <= CIVIC_MAX_BODY:
                 if CIVIC_MAX_BODY < length <= CIVIC_MAX_BODY * 2:
                     self.rfile.read(length)
+                self.close_connection = True
                 code = 413 if length > CIVIC_MAX_BODY else 400
                 self.civic_send(civic_error(code, "too_large" if code == 413 else "empty_body",
                                             "Слишком большой запрос." if code == 413 else "Пустой запрос."))
@@ -658,6 +680,19 @@ class Handler(BaseHTTPRequestHandler):
             self.error_reply(500, "Не удалось выполнить запрос. Попробуйте ещё раз.")
 
 
+    def do_unsupported(self):
+        """PUT/PATCH/DELETE: civic answers 405 in its envelope; the rest keeps a JSON 405."""
+        path = urlsplit(self.path).path
+        self.discard_body()
+        self.close_connection = True
+        if path == CIVIC_PREFIX or path.startswith(CIVIC_PREFIX + "/"):
+            self.civic_send(civic_error(405, "method_not_allowed", "Метод не поддерживается."))
+        else:
+            self.error_reply(405, "Метод не поддерживается.")
+
+    do_PUT = do_PATCH = do_DELETE = do_unsupported
+
+
 def _invalid_number(value):
     raise ValueError("JSON должен содержать только конечные числа.")
 
@@ -677,7 +712,7 @@ def main():
     parser.add_argument("--port", type=int, default=8501)
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--open", action="store_true", help="Открыть браузер после запуска")
-    parser.add_argument("--civic-db", default=os.environ.get("CIVIC_DB"),
+    parser.add_argument("--civic-db", default=os.environ.get("CIVIC_DB_PATH") or os.environ.get("CIVIC_DB"),
                         help="SQLite городских объектов (по умолчанию .runtime/civic.sqlite3)")
     args = parser.parse_args()
     if not 1 <= args.port <= 65535:

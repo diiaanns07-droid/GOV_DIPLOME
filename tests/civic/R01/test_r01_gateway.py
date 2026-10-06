@@ -233,3 +233,31 @@ def test_legacy_routes_unchanged(served):
     assert (status, body) == (200, {"status": "ok"})
     status, _, body = call(port, "POST", "/api/not-a-route", {"a": 1})
     assert status == 404 and body["valid"] is False
+
+
+def test_chunked_put_delete_and_frame_headers(served):
+    port, store, _ = served
+    conn = HTTPConnection("127.0.0.1", port, timeout=10)
+    try:
+        conn.putrequest("POST", "/api/civic/v1/staff/objects")
+        conn.putheader("Origin", f"http://127.0.0.1:{port}")
+        conn.putheader("Content-Type", "application/json")
+        conn.putheader("Transfer-Encoding", "chunked")
+        conn.endheaders()
+        conn.send(b"2\r\n{}\r\n0\r\n\r\n")
+        response = conn.getresponse()
+        assert response.status == 411
+    finally:
+        conn.close()
+    for method in ("PUT", "PATCH", "DELETE"):
+        status, headers, body = call(port, method, "/api/civic/v1/objects/x1", {"a": 1})
+        assert status == 405 and body["ok"] is False
+    status, headers, _ = call(port, "GET", "/api/civic/v1/objects")
+    names = {k.lower(): v for k, v in headers}
+    assert names["x-frame-options"] == "DENY" and names["cross-origin-resource-policy"] == "same-origin"
+    status, _, body = call(port, "POST", "/api/civic/v1/staff/objects", {"t": 1}, headers={"Origin": "null"})
+    assert status == 403
+    status, _, body = call(port, "POST", "/api/civic/v1/staff/objects", {"t": 1},
+                           headers={"Origin": f"https://127.0.0.1:{port}"})
+    assert status == 403
+    assert all(c[1] != "/api/civic/v1/staff/objects" or c[0] != "POST" for c in store.calls)

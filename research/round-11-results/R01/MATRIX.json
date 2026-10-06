@@ -3,7 +3,7 @@
   "role": "R01",
   "branch": "claude/affectionate-ride-bol5v8",
   "pack_sha": "9c2f5c0dae14b46c0697a9dfc7f854351bfd570d",
-  "updated_at": "2026-10-06T15:30Z",
+  "updated_at": "2026-10-06T16:20Z",
   "application_snapshot": {
     "source_branch": "claude/beautiful-clarke-sbzomj",
     "source_sha": "b2cb2e02c602c166ba6d47c02d8e902e5478c791",
@@ -50,13 +50,46 @@
     "R02": {
       "title": "Сервер, база объектов и доступ редактора",
       "expected_paths": "ui/civic_store/",
-      "source_branch": null,
-      "source_sha": null,
-      "imported_paths": [],
-      "integrated": false,
-      "checks": [],
-      "status": "not_delivered",
-      "reason": "No research/round-11-results/R02/DELIVERY.json in any origin branch at 2026-10-06T15:29Z."
+      "source_branch": "claude/trusting-ptolemy-6ms354",
+      "source_sha": "92f7abae8184516c9bf6bd89367a63692402cc1b",
+      "imported_paths": [
+        "ui/civic_store/",
+        "tests/civic/R02/"
+      ],
+      "integrated": true,
+      "checks": [
+        {
+          "name": "R02 own tests in integrated tree",
+          "status": "PASS",
+          "command": "python -m pytest -q -p no:cacheprovider tests/civic/R02 --deselect tests/civic/R02/test_r02_http.py::test_patch_applies_to_real_web_server_and_serves_both_apis",
+          "result": "145 passed, 1 skipped"
+        },
+        {
+          "name": "R02 web_server.patch test",
+          "status": "NOT_RUN",
+          "command": "tests/civic/R02/test_r02_http.py::test_patch_applies_to_real_web_server_and_serves_both_apis",
+          "reason": "Test applies R02's proposed patch to ui/web_server.py; R01 integrated through its own CivicGateway instead (decision D-02), so the patch does not apply to the integrated file. Not a product defect; deselected, expected unchanged."
+        },
+        {
+          "name": "R01 P0 HTTP acceptance on R02 SQLite (incl. restart)",
+          "status": "PASS",
+          "command": "python -m pytest -q tests/civic/R01/test_r01_p0_api.py",
+          "result": "r02 params 8/8 PASS"
+        },
+        {
+          "name": "R01 browser P0 flow on R02+R06",
+          "status": "PASS",
+          "command": "node tests/civic/R01/browser/p0_flow.cjs <out> --backend=real",
+          "result": "39 PASS / 0 FAIL / 2 NOT_RUN (basemap, attribution: host blocked)"
+        },
+        {
+          "name": "Independent review workflow (security, persistence, interface) @6a28de2",
+          "status": "PASS",
+          "result": "no blockers; M1 login rate race -> gateway lock; M3/M4 fixed in 92f7aba"
+        }
+      ],
+      "status": "integrated",
+      "reason": "Reviewed and imported by path at pinned SHA. Delta 6a28de2..92f7aba (cli, importer, http_adapter, demo_package) read before import. CivicHttpAdapter imported with the package but NOT used: R01 keeps one transport (CivicGateway) and adopted its checks (411 chunked, strict Origin, X-Frame-Options/CORP)."
     },
     "R03": {
       "title": "Публичная карта и карточки",
@@ -94,13 +127,29 @@
     "R06": {
       "title": "Обращения жителей",
       "expected_paths": "ui/civic_feedback/ + web/civic/feedback/",
-      "source_branch": null,
-      "source_sha": null,
-      "imported_paths": [],
-      "integrated": false,
-      "checks": [],
-      "status": "not_delivered",
-      "reason": "No research/round-11-results/R06/DELIVERY.json in any origin branch at 2026-10-06T15:29Z."
+      "source_branch": "claude/focused-hypatia-z8h0no",
+      "source_sha": "eaa113d146d5ccdd2ef81a7e79228691062040af",
+      "imported_paths": [
+        "ui/civic_feedback/",
+        "web/civic/feedback/",
+        "tests/civic/R06/"
+      ],
+      "integrated": true,
+      "checks": [
+        {
+          "name": "R06 own tests in integrated tree (incl. gateway smoke and R02 compat)",
+          "status": "PASS",
+          "command": "python -m pytest -q tests/civic/R06",
+          "result": "PASS (part of 440 passed full run)"
+        },
+        {
+          "name": "R01 browser P0 flow: resident message, moderation tab, public reply, XSS as text",
+          "status": "PASS",
+          "command": "node tests/civic/R01/browser/p0_flow.cjs <out> --backend=real"
+        }
+      ],
+      "status": "integrated",
+      "reason": "DELIVERY ready (code 36a0604); imported latest checkpoint eaa113d (maintenance CLI, R03 geometry guard). Wired via ui.civic_feedback.integration.build_feedback_service(db, CivicService, classifier=None) on the same SQLite file; R06 contract_delta routes accepted (GET /staff/feedback/{id}, POST /feedback/receipt, POST /feedback/withdraw-consent). Moderation mounted as a staff-drawer tab."
     },
     "R07": {
       "title": "Симулятор ограничений",
@@ -146,5 +195,27 @@
       "status": "not_delivered",
       "reason": "No research/round-11-results/R10/DELIVERY.json in any origin branch at 2026-10-06T15:29Z."
     }
-  }
+  },
+  "decisions": [
+    {
+      "id": "D-01",
+      "decision": "Single transport: R01 CivicGateway with an explicit route table for all roles; unknown -> 404 JSON, undelivered module -> 503 module_unavailable."
+    },
+    {
+      "id": "D-02",
+      "decision": "Services receive the full path /api/civic/v1/..., raw query string, context {headers, cookies, client_ip, host_allowed=True, is_same_origin True/False/None, is_https=False} (R02 convention). R02 CivicHttpAdapter not used."
+    },
+    {
+      "id": "D-03",
+      "decision": "Publication model follows R02: edits of a published object stay in the staff copy until 'publish' with a public reason; residents never see unpublished edits."
+    },
+    {
+      "id": "D-04",
+      "decision": "R06 contract_delta routes accepted as compatible additions."
+    },
+    {
+      "id": "D-05",
+      "decision": "Mode switch Город (default) / Школы / Учебная модель on the same MapLibre instance; training and school modes unchanged."
+    }
+  ]
 }

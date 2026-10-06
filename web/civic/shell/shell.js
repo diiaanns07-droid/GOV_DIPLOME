@@ -167,7 +167,11 @@
     </div>
     <section id="civic-editor" class="civic-drawer" hidden aria-label="Кабинет сотрудника">
       <div class="civic-box-head"><h2>Кабинет сотрудника</h2><button type="button" class="civic-close" data-close="editor" aria-label="Закрыть кабинет">×</button></div>
+      <div id="civic-staff-tabs" class="civic-tabs" role="group" aria-label="Разделы кабинета" hidden>
+        <button type="button" data-staff-tab="records" aria-pressed="true">Записи</button><button type="button" data-staff-tab="messages" aria-pressed="false">Сообщения жителей</button>
+      </div>
       <div id="civic-editor-root" class="civic-slot civic-drawer-body"></div>
+      <div id="civic-moderation-root" class="civic-slot civic-drawer-body" hidden></div>
     </section>
     <section id="civic-scenarios" class="civic-drawer" hidden aria-label="Сравнение ограничений">
       <div class="civic-box-head"><h2>Сравнение ограничений</h2><button type="button" class="civic-close" data-close="scenarios" aria-label="Закрыть сравнение">×</button></div>
@@ -307,11 +311,50 @@
       },
     });
     if (objectId && handle?.openObject) handle.openObject(objectId);
+    syncStaffTabs();
+    setStaffTab(S.staffTab || "records");
     $c("civic-editor").querySelector(".civic-close")?.focus();
   }
+  // Resident messages (R06 mountModeration) live next to the records in the staff drawer.
+  const moderationReady = () => S.modules?.feedback?.status === "ready" && typeof window.CivicFeedback?.mountModeration === "function";
+  function syncStaffTabs() {
+    const tabs = $c("civic-staff-tabs");
+    tabs.hidden = !(moderationReady() && session.authenticated);
+    if (tabs.hidden && S.staffTab === "messages") setStaffTab("records");
+  }
+  function setStaffTab(tab) {
+    S.staffTab = tab === "messages" && moderationReady() ? "messages" : "records";
+    document.querySelectorAll("#civic-staff-tabs [data-staff-tab]").forEach((b) =>
+      b.setAttribute("aria-pressed", String(b.dataset.staffTab === S.staffTab)));
+    $c("civic-editor-root").hidden = S.staffTab !== "records";
+    $c("civic-moderation-root").hidden = S.staffTab !== "messages";
+    if (S.staffTab === "messages") {
+      if (!S.mounted.moderation) {
+        const module = window.CivicFeedback;
+        try {
+          S.mounted.moderation = module.mountModeration({ root: $c("civic-moderation-root"), api, map: currentMap(),
+            onOpenObject: (id) => { setStaffTab("records"); S.mounted.editor?.openObject?.(id); } }) || {};
+        } catch (error) {
+          console.error("civic moderation", error);
+          $c("civic-moderation-root").replaceChildren(el("p", { class: "civic-error" }, "Очередь сообщений не запустилась."));
+        }
+      } else S.mounted.moderation.refresh?.();
+    }
+  }
+  document.querySelectorAll("#civic-staff-tabs [data-staff-tab]").forEach((b) =>
+    b.addEventListener("click", () => setStaffTab(b.dataset.staffTab)));
+  sessionListeners.add(() => {
+    syncStaffTabs();
+    if (!session.authenticated && S.mounted.moderation) {
+      destroyMounted("moderation");
+      $c("civic-moderation-root").replaceChildren();
+    }
+  });
   function closeEditor() {
     destroyMounted("editor");
-    $c("civic-editor-root").replaceChildren();
+    destroyMounted("moderation");
+    $c("civic-moderation-root").replaceChildren();
+    S.staffTab = "records";
     $c("civic-editor").hidden = true;
     document.body.classList.remove("civic-editor-open");
     $c("civic-staff-button").focus();
@@ -389,7 +432,7 @@
   }
   function deactivateCivic() {
     for (const name of Object.keys(S.mounted)) destroyMounted(name);
-    for (const id of ["civic-map-root", "civic-feedback-root", "civic-assistant-root", "civic-editor-root", "civic-scenarios-root"])
+    for (const id of ["civic-map-root", "civic-feedback-root", "civic-assistant-root", "civic-editor-root", "civic-moderation-root", "civic-scenarios-root"])
       $c(id).replaceChildren();
     $c("civic-feedback-box").hidden = $c("civic-assistant-box").hidden = true;
     $c("civic-editor").hidden = $c("civic-scenarios").hidden = true;

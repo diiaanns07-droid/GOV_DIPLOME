@@ -364,7 +364,10 @@
       logout.addEventListener("click", async () => { try { await api.logout(); } catch (error) { say(errorText(error)); } render(); });
       bar.append(logout);
       const tabs = el("div", { class: "civic-tabs", role: "group" });
-      for (const [view, text] of [["list", "Записи"], ["new", "Новая запись"], ["feedback", "Сообщения"]]) {
+      // R06 moderation (if delivered) is a separate staff tab of the shell; no duplicate here.
+      const views = [["list", "Записи"], ["new", "Новая запись"]];
+      if (typeof window.CivicFeedback?.mountModeration !== "function") views.push(["feedback", "Сообщения"]);
+      for (const [view, text] of views) {
         const b = el("button", { type: "button", "aria-pressed": String(S.view === view) }, text);
         b.addEventListener("click", () => { S.view = view; S.current = null; render(); });
         tabs.append(b);
