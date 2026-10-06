@@ -1,0 +1,1722 @@
+{
+ "case_id": "astana-schools-k05-r10",
+ "case_digest": "sha256:ad45edd2bf6db3440b25b62f0c2f4e38152e508f764f72c430c09b77e2bb8876",
+ "code_sha": "d2ff344c5ec9b9a729ea59df50ec81f981e619de",
+ "facts": [
+  {
+   "id": "current/total_origins",
+   "metric": "total_origins",
+   "value": 12,
+   "unit": "points",
+   "plan_id": "current",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников"
+   ]
+  },
+  {
+   "id": "current/known_count",
+   "metric": "known_count",
+   "value": 12,
+   "unit": "points",
+   "plan_id": "current",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников"
+   ]
+  },
+  {
+   "id": "current/unknown_count",
+   "metric": "unknown_count",
+   "value": 0,
+   "unit": "points",
+   "plan_id": "current",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников"
+   ]
+  },
+  {
+   "id": "current/mean_distance_mm",
+   "metric": "mean_distance_mm",
+   "value": 409489.75,
+   "unit": "mm",
+   "plan_id": "current",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "среднее только среди известных путей"
+   ]
+  },
+  {
+   "id": "current/max_distance_mm",
+   "metric": "max_distance_mm",
+   "value": 1176337,
+   "unit": "mm",
+   "plan_id": "current",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "максимум только среди известных путей"
+   ]
+  },
+  {
+   "id": "current/within_threshold_count",
+   "metric": "within_threshold_count",
+   "value": 9,
+   "unit": "points",
+   "plan_id": "current",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "порог 500 м — параметр пользователя, не норматив"
+   ]
+  },
+  {
+   "id": "current/within_threshold_share_of_all_points",
+   "metric": "within_threshold_share_of_all_points",
+   "value": 0.75,
+   "unit": "share",
+   "plan_id": "current",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "знаменатель — все точки, неизвестные не покрыты"
+   ]
+  },
+  {
+   "id": "current/selected_candidate_ids",
+   "metric": "selected_candidate_ids",
+   "value": [],
+   "unit": "ids",
+   "plan_id": "current",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": []
+  },
+  {
+   "id": "candidate:cand-A/total_origins",
+   "metric": "total_origins",
+   "value": 12,
+   "unit": "points",
+   "plan_id": "candidate:cand-A",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников"
+   ]
+  },
+  {
+   "id": "candidate:cand-A/known_count",
+   "metric": "known_count",
+   "value": 12,
+   "unit": "points",
+   "plan_id": "candidate:cand-A",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников"
+   ]
+  },
+  {
+   "id": "candidate:cand-A/unknown_count",
+   "metric": "unknown_count",
+   "value": 0,
+   "unit": "points",
+   "plan_id": "candidate:cand-A",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников"
+   ]
+  },
+  {
+   "id": "candidate:cand-A/mean_distance_mm",
+   "metric": "mean_distance_mm",
+   "value": 296034.25,
+   "unit": "mm",
+   "plan_id": "candidate:cand-A",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "среднее только среди известных путей"
+   ]
+  },
+  {
+   "id": "candidate:cand-A/max_distance_mm",
+   "metric": "max_distance_mm",
+   "value": 609657,
+   "unit": "mm",
+   "plan_id": "candidate:cand-A",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "максимум только среди известных путей"
+   ]
+  },
+  {
+   "id": "candidate:cand-A/within_threshold_count",
+   "metric": "within_threshold_count",
+   "value": 11,
+   "unit": "points",
+   "plan_id": "candidate:cand-A",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "порог 500 м — параметр пользователя, не норматив"
+   ]
+  },
+  {
+   "id": "candidate:cand-A/within_threshold_share_of_all_points",
+   "metric": "within_threshold_share_of_all_points",
+   "value": 0.9166666666666666,
+   "unit": "share",
+   "plan_id": "candidate:cand-A",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "знаменатель — все точки, неизвестные не покрыты"
+   ]
+  },
+  {
+   "id": "candidate:cand-A/selected_candidate_ids",
+   "metric": "selected_candidate_ids",
+   "value": [
+    "cand-A"
+   ],
+   "unit": "ids",
+   "plan_id": "candidate:cand-A",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": []
+  },
+  {
+   "id": "candidate:cand-A/origin:pt-00/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "candidate:cand-A",
+   "origin_id": "pt-00",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "candidate:cand-A/origin:pt-01/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "candidate:cand-A",
+   "origin_id": "pt-01",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "candidate:cand-A/origin:pt-02/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "candidate:cand-A",
+   "origin_id": "pt-02",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "candidate:cand-A/origin:pt-03/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "candidate:cand-A",
+   "origin_id": "pt-03",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "candidate:cand-A/origin:pt-10/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "candidate:cand-A",
+   "origin_id": "pt-10",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "candidate:cand-A/origin:pt-11/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "candidate:cand-A",
+   "origin_id": "pt-11",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "candidate:cand-A/origin:pt-12/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "candidate:cand-A",
+   "origin_id": "pt-12",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "candidate:cand-A/origin:pt-13/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "candidate:cand-A",
+   "origin_id": "pt-13",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "candidate:cand-A/origin:pt-20/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "candidate:cand-A",
+   "origin_id": "pt-20",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "candidate:cand-A/origin:pt-21/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "candidate:cand-A",
+   "origin_id": "pt-21",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "candidate:cand-A/origin:pt-22/delta_mm",
+   "metric": "delta_mm",
+   "value": -185129,
+   "unit": "mm",
+   "plan_id": "candidate:cand-A",
+   "origin_id": "pt-22",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "candidate:cand-A/origin:pt-23/delta_mm",
+   "metric": "delta_mm",
+   "value": -1176337,
+   "unit": "mm",
+   "plan_id": "candidate:cand-A",
+   "origin_id": "pt-23",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "candidate:cand-B/total_origins",
+   "metric": "total_origins",
+   "value": 12,
+   "unit": "points",
+   "plan_id": "candidate:cand-B",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников"
+   ]
+  },
+  {
+   "id": "candidate:cand-B/known_count",
+   "metric": "known_count",
+   "value": 12,
+   "unit": "points",
+   "plan_id": "candidate:cand-B",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников"
+   ]
+  },
+  {
+   "id": "candidate:cand-B/unknown_count",
+   "metric": "unknown_count",
+   "value": 0,
+   "unit": "points",
+   "plan_id": "candidate:cand-B",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников"
+   ]
+  },
+  {
+   "id": "candidate:cand-B/mean_distance_mm",
+   "metric": "mean_distance_mm",
+   "value": 375684.4166666667,
+   "unit": "mm",
+   "plan_id": "candidate:cand-B",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "среднее только среди известных путей"
+   ]
+  },
+  {
+   "id": "candidate:cand-B/max_distance_mm",
+   "metric": "max_distance_mm",
+   "value": 1001770,
+   "unit": "mm",
+   "plan_id": "candidate:cand-B",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "максимум только среди известных путей"
+   ]
+  },
+  {
+   "id": "candidate:cand-B/within_threshold_count",
+   "metric": "within_threshold_count",
+   "value": 9,
+   "unit": "points",
+   "plan_id": "candidate:cand-B",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "порог 500 м — параметр пользователя, не норматив"
+   ]
+  },
+  {
+   "id": "candidate:cand-B/within_threshold_share_of_all_points",
+   "metric": "within_threshold_share_of_all_points",
+   "value": 0.75,
+   "unit": "share",
+   "plan_id": "candidate:cand-B",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "знаменатель — все точки, неизвестные не покрыты"
+   ]
+  },
+  {
+   "id": "candidate:cand-B/selected_candidate_ids",
+   "metric": "selected_candidate_ids",
+   "value": [
+    "cand-B"
+   ],
+   "unit": "ids",
+   "plan_id": "candidate:cand-B",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": []
+  },
+  {
+   "id": "candidate:cand-B/origin:pt-00/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "candidate:cand-B",
+   "origin_id": "pt-00",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "candidate:cand-B/origin:pt-01/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "candidate:cand-B",
+   "origin_id": "pt-01",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "candidate:cand-B/origin:pt-02/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "candidate:cand-B",
+   "origin_id": "pt-02",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "candidate:cand-B/origin:pt-03/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "candidate:cand-B",
+   "origin_id": "pt-03",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "candidate:cand-B/origin:pt-10/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "candidate:cand-B",
+   "origin_id": "pt-10",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "candidate:cand-B/origin:pt-11/delta_mm",
+   "metric": "delta_mm",
+   "value": -63387,
+   "unit": "mm",
+   "plan_id": "candidate:cand-B",
+   "origin_id": "pt-11",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "candidate:cand-B/origin:pt-12/delta_mm",
+   "metric": "delta_mm",
+   "value": -167710,
+   "unit": "mm",
+   "plan_id": "candidate:cand-B",
+   "origin_id": "pt-12",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "candidate:cand-B/origin:pt-13/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "candidate:cand-B",
+   "origin_id": "pt-13",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "candidate:cand-B/origin:pt-20/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "candidate:cand-B",
+   "origin_id": "pt-20",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "candidate:cand-B/origin:pt-21/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "candidate:cand-B",
+   "origin_id": "pt-21",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "candidate:cand-B/origin:pt-22/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "candidate:cand-B",
+   "origin_id": "pt-22",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "candidate:cand-B/origin:pt-23/delta_mm",
+   "metric": "delta_mm",
+   "value": -174567,
+   "unit": "mm",
+   "plan_id": "candidate:cand-B",
+   "origin_id": "pt-23",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:contract-lex/total_origins",
+   "metric": "total_origins",
+   "value": 12,
+   "unit": "points",
+   "plan_id": "auto:contract-lex",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников"
+   ]
+  },
+  {
+   "id": "auto:contract-lex/known_count",
+   "metric": "known_count",
+   "value": 12,
+   "unit": "points",
+   "plan_id": "auto:contract-lex",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников"
+   ]
+  },
+  {
+   "id": "auto:contract-lex/unknown_count",
+   "metric": "unknown_count",
+   "value": 0,
+   "unit": "points",
+   "plan_id": "auto:contract-lex",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников"
+   ]
+  },
+  {
+   "id": "auto:contract-lex/mean_distance_mm",
+   "metric": "mean_distance_mm",
+   "value": 296034.25,
+   "unit": "mm",
+   "plan_id": "auto:contract-lex",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "среднее только среди известных путей"
+   ]
+  },
+  {
+   "id": "auto:contract-lex/max_distance_mm",
+   "metric": "max_distance_mm",
+   "value": 609657,
+   "unit": "mm",
+   "plan_id": "auto:contract-lex",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "максимум только среди известных путей"
+   ]
+  },
+  {
+   "id": "auto:contract-lex/within_threshold_count",
+   "metric": "within_threshold_count",
+   "value": 11,
+   "unit": "points",
+   "plan_id": "auto:contract-lex",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "порог 500 м — параметр пользователя, не норматив"
+   ]
+  },
+  {
+   "id": "auto:contract-lex/within_threshold_share_of_all_points",
+   "metric": "within_threshold_share_of_all_points",
+   "value": 0.9166666666666666,
+   "unit": "share",
+   "plan_id": "auto:contract-lex",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "знаменатель — все точки, неизвестные не покрыты"
+   ]
+  },
+  {
+   "id": "auto:contract-lex/selected_candidate_ids",
+   "metric": "selected_candidate_ids",
+   "value": [
+    "cand-A"
+   ],
+   "unit": "ids",
+   "plan_id": "auto:contract-lex",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": []
+  },
+  {
+   "id": "auto:contract-lex/origin:pt-00/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "auto:contract-lex",
+   "origin_id": "pt-00",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:contract-lex/origin:pt-01/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "auto:contract-lex",
+   "origin_id": "pt-01",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:contract-lex/origin:pt-02/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "auto:contract-lex",
+   "origin_id": "pt-02",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:contract-lex/origin:pt-03/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "auto:contract-lex",
+   "origin_id": "pt-03",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:contract-lex/origin:pt-10/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "auto:contract-lex",
+   "origin_id": "pt-10",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:contract-lex/origin:pt-11/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "auto:contract-lex",
+   "origin_id": "pt-11",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:contract-lex/origin:pt-12/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "auto:contract-lex",
+   "origin_id": "pt-12",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:contract-lex/origin:pt-13/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "auto:contract-lex",
+   "origin_id": "pt-13",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:contract-lex/origin:pt-20/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "auto:contract-lex",
+   "origin_id": "pt-20",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:contract-lex/origin:pt-21/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "auto:contract-lex",
+   "origin_id": "pt-21",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:contract-lex/origin:pt-22/delta_mm",
+   "metric": "delta_mm",
+   "value": -185129,
+   "unit": "mm",
+   "plan_id": "auto:contract-lex",
+   "origin_id": "pt-22",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:contract-lex/origin:pt-23/delta_mm",
+   "metric": "delta_mm",
+   "value": -1176337,
+   "unit": "mm",
+   "plan_id": "auto:contract-lex",
+   "origin_id": "pt-23",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:minimax/total_origins",
+   "metric": "total_origins",
+   "value": 12,
+   "unit": "points",
+   "plan_id": "auto:minimax",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников"
+   ]
+  },
+  {
+   "id": "auto:minimax/known_count",
+   "metric": "known_count",
+   "value": 12,
+   "unit": "points",
+   "plan_id": "auto:minimax",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников"
+   ]
+  },
+  {
+   "id": "auto:minimax/unknown_count",
+   "metric": "unknown_count",
+   "value": 0,
+   "unit": "points",
+   "plan_id": "auto:minimax",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников"
+   ]
+  },
+  {
+   "id": "auto:minimax/mean_distance_mm",
+   "metric": "mean_distance_mm",
+   "value": 296034.25,
+   "unit": "mm",
+   "plan_id": "auto:minimax",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "среднее только среди известных путей"
+   ]
+  },
+  {
+   "id": "auto:minimax/max_distance_mm",
+   "metric": "max_distance_mm",
+   "value": 609657,
+   "unit": "mm",
+   "plan_id": "auto:minimax",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "максимум только среди известных путей"
+   ]
+  },
+  {
+   "id": "auto:minimax/within_threshold_count",
+   "metric": "within_threshold_count",
+   "value": 11,
+   "unit": "points",
+   "plan_id": "auto:minimax",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "порог 500 м — параметр пользователя, не норматив"
+   ]
+  },
+  {
+   "id": "auto:minimax/within_threshold_share_of_all_points",
+   "metric": "within_threshold_share_of_all_points",
+   "value": 0.9166666666666666,
+   "unit": "share",
+   "plan_id": "auto:minimax",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "знаменатель — все точки, неизвестные не покрыты"
+   ]
+  },
+  {
+   "id": "auto:minimax/selected_candidate_ids",
+   "metric": "selected_candidate_ids",
+   "value": [
+    "cand-A"
+   ],
+   "unit": "ids",
+   "plan_id": "auto:minimax",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": []
+  },
+  {
+   "id": "auto:minimax/origin:pt-00/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "auto:minimax",
+   "origin_id": "pt-00",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:minimax/origin:pt-01/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "auto:minimax",
+   "origin_id": "pt-01",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:minimax/origin:pt-02/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "auto:minimax",
+   "origin_id": "pt-02",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:minimax/origin:pt-03/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "auto:minimax",
+   "origin_id": "pt-03",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:minimax/origin:pt-10/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "auto:minimax",
+   "origin_id": "pt-10",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:minimax/origin:pt-11/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "auto:minimax",
+   "origin_id": "pt-11",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:minimax/origin:pt-12/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "auto:minimax",
+   "origin_id": "pt-12",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:minimax/origin:pt-13/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "auto:minimax",
+   "origin_id": "pt-13",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:minimax/origin:pt-20/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "auto:minimax",
+   "origin_id": "pt-20",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:minimax/origin:pt-21/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "auto:minimax",
+   "origin_id": "pt-21",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:minimax/origin:pt-22/delta_mm",
+   "metric": "delta_mm",
+   "value": -185129,
+   "unit": "mm",
+   "plan_id": "auto:minimax",
+   "origin_id": "pt-22",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:minimax/origin:pt-23/delta_mm",
+   "metric": "delta_mm",
+   "value": -1176337,
+   "unit": "mm",
+   "plan_id": "auto:minimax",
+   "origin_id": "pt-23",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  }
+ ]
+}

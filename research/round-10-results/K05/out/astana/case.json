@@ -1,0 +1,464 @@
+{
+ "schema_version": "school-access-case-v1",
+ "case_id": "astana-schools-k05-r10",
+ "city_id": "astana",
+ "title": "Доступность школ: участок Астаны (демо K05)",
+ "bbox": [
+  71.418372,
+  51.163033,
+  71.447,
+  51.181
+ ],
+ "snapshot_id": "k10-r3:f5722c4455ca37d7@2026-09-23.1",
+ "sources": [
+  {
+   "id": "src:astana:overture-places-2026-09-23.1",
+   "url": null,
+   "publisher": "Overture Maps Foundation (агрегат OSM/Meta/Foursquare и др.)",
+   "title": "places_social astana, срез K10 2×2 км, выпуск 2026-09-23.1",
+   "published_at": null,
+   "data_period": "2026-09-23.1",
+   "retrieved_at": "2026-10-05T06:20:01+00:00",
+   "verification_status": "secondary_only",
+   "license": "per record: Apache-2.0, CDLA-Permissive-2.0",
+   "content_sha256": "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343"
+  },
+  {
+   "id": "src:build-data-js",
+   "url": null,
+   "publisher": "GOV_DIPLOME BUILD",
+   "title": "web/govtech/core/data.js @ d2ff344c5ec9b9a729ea59df50ec81f981e619de",
+   "published_at": null,
+   "data_period": null,
+   "retrieved_at": null,
+   "verification_status": "secondary_only",
+   "license": "derived from the records above",
+   "content_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72"
+  },
+  {
+   "id": "src:k05-synthetic",
+   "url": null,
+   "publisher": "K05 round 10",
+   "title": "synthetic analysis points and hypothetical candidate sites",
+   "published_at": null,
+   "data_period": null,
+   "retrieved_at": null,
+   "verification_status": "not_fetched",
+   "license": "unknown"
+  }
+ ],
+ "schools": [
+  {
+   "id": "7b39e048-341b-454a-a63c-4b7e1ae73e9f",
+   "label": "Школа-гимназия 3",
+   "lon": 71.42501,
+   "lat": 51.17087,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js"
+   ],
+   "field_provenance": {
+    "lon": "Overture geometry (OSM/вторичные)",
+    "lat": "Overture geometry (OSM/вторичные)",
+    "label": "Overture names.primary — не официальное название",
+    "category": "Overture taxonomy → правило K10 social_group"
+   },
+   "qa": [],
+   "category": "school",
+   "access_eligibility": "unknown",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "8ca53724-c558-46b7-826b-13e3e8fbb7e6",
+   "label": "\"ГУ \"Средняя школа № 8\" УО г. Астаны\"",
+   "lon": 71.445305,
+   "lat": 51.166662,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js"
+   ],
+   "field_provenance": {
+    "lon": "Overture geometry (OSM/вторичные)",
+    "lat": "Overture geometry (OSM/вторичные)",
+    "label": "Overture names.primary — не официальное название",
+    "category": "Overture taxonomy → правило K10 social_group"
+   },
+   "qa": [],
+   "category": "school",
+   "access_eligibility": "unknown",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+   "label": "Учебный ЦЕНТР ФПРК",
+   "lon": 71.43372,
+   "lat": 51.16862,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js"
+   ],
+   "field_provenance": {
+    "lon": "Overture geometry (OSM/вторичные)",
+    "lat": "Overture geometry (OSM/вторичные)",
+    "label": "Overture names.primary — не официальное название",
+    "category": "Overture taxonomy → правило K10 social_group"
+   },
+   "qa": [],
+   "category": "school",
+   "access_eligibility": "unknown",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "a4483f53-7de8-4df1-b61b-b4066b0ad5dd",
+   "label": "Astana Garden International School",
+   "lon": 71.42298,
+   "lat": 51.16765,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js"
+   ],
+   "field_provenance": {
+    "lon": "Overture geometry (OSM/вторичные)",
+    "lat": "Overture geometry (OSM/вторичные)",
+    "label": "Overture names.primary — не официальное название",
+    "category": "Overture taxonomy → правило K10 social_group"
+   },
+   "qa": [],
+   "category": "school",
+   "access_eligibility": "unknown",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "b5dd5f1a-9d55-48b1-9d68-7172ea84da3f",
+   "label": "Образовательный центр АЗиЯ",
+   "lon": 71.44184,
+   "lat": 51.16473,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js"
+   ],
+   "field_provenance": {
+    "lon": "Overture geometry (OSM/вторичные)",
+    "lat": "Overture geometry (OSM/вторичные)",
+    "label": "Overture names.primary — не официальное название",
+    "category": "Overture taxonomy → правило K10 social_group"
+   },
+   "qa": [],
+   "category": "school",
+   "access_eligibility": "unknown",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a",
+   "label": "Учебный Центр Expert-A",
+   "lon": 71.423338,
+   "lat": 51.1677,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js"
+   ],
+   "field_provenance": {
+    "lon": "Overture geometry (OSM/вторичные)",
+    "lat": "Overture geometry (OSM/вторичные)",
+    "label": "Overture names.primary — не официальное название",
+    "category": "Overture taxonomy → правило K10 social_group"
+   },
+   "qa": [],
+   "category": "school",
+   "access_eligibility": "unknown",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "c97435da-cd05-4549-bec1-ff297e858554",
+   "label": "Гимназия №6",
+   "lon": 71.420262,
+   "lat": 51.177527,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js"
+   ],
+   "field_provenance": {
+    "lon": "Overture geometry (OSM/вторичные)",
+    "lat": "Overture geometry (OSM/вторичные)",
+    "label": "Overture names.primary — не официальное название",
+    "category": "Overture taxonomy → правило K10 social_group"
+   },
+   "qa": [],
+   "category": "school",
+   "access_eligibility": "unknown",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783",
+   "label": "\"Школа \"Почемучка\"\"",
+   "lon": 71.426672,
+   "lat": 51.179297,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "src:astana:overture-places-2026-09-23.1",
+    "src:build-data-js"
+   ],
+   "field_provenance": {
+    "lon": "Overture geometry (OSM/вторичные)",
+    "lat": "Overture geometry (OSM/вторичные)",
+    "label": "Overture names.primary — не официальное название",
+    "category": "Overture taxonomy → правило K10 social_group"
+   },
+   "qa": [],
+   "category": "school",
+   "access_eligibility": "unknown",
+   "capacity": null,
+   "capacity_source_ids": []
+  }
+ ],
+ "origins": [
+  {
+   "id": "pt-00",
+   "label": "Точка 1",
+   "lon": 71.421951,
+   "lat": 51.166027,
+   "kind": "synthetic",
+   "source_ids": [
+    "src:k05-synthetic"
+   ],
+   "field_provenance": {
+    "lon": "центр ячейки сетки 3×4 участка",
+    "lat": "центр ячейки сетки 3×4 участка"
+   },
+   "qa": []
+  },
+  {
+   "id": "pt-01",
+   "label": "Точка 2",
+   "lon": 71.429108,
+   "lat": 51.166027,
+   "kind": "synthetic",
+   "source_ids": [
+    "src:k05-synthetic"
+   ],
+   "field_provenance": {
+    "lon": "центр ячейки сетки 3×4 участка",
+    "lat": "центр ячейки сетки 3×4 участка"
+   },
+   "qa": []
+  },
+  {
+   "id": "pt-02",
+   "label": "Точка 3",
+   "lon": 71.436265,
+   "lat": 51.166027,
+   "kind": "synthetic",
+   "source_ids": [
+    "src:k05-synthetic"
+   ],
+   "field_provenance": {
+    "lon": "центр ячейки сетки 3×4 участка",
+    "lat": "центр ячейки сетки 3×4 участка"
+   },
+   "qa": []
+  },
+  {
+   "id": "pt-03",
+   "label": "Точка 4",
+   "lon": 71.443421,
+   "lat": 51.166027,
+   "kind": "synthetic",
+   "source_ids": [
+    "src:k05-synthetic"
+   ],
+   "field_provenance": {
+    "lon": "центр ячейки сетки 3×4 участка",
+    "lat": "центр ячейки сетки 3×4 участка"
+   },
+   "qa": []
+  },
+  {
+   "id": "pt-10",
+   "label": "Точка 5",
+   "lon": 71.421951,
+   "lat": 51.172016,
+   "kind": "synthetic",
+   "source_ids": [
+    "src:k05-synthetic"
+   ],
+   "field_provenance": {
+    "lon": "центр ячейки сетки 3×4 участка",
+    "lat": "центр ячейки сетки 3×4 участка"
+   },
+   "qa": []
+  },
+  {
+   "id": "pt-11",
+   "label": "Точка 6",
+   "lon": 71.429108,
+   "lat": 51.172016,
+   "kind": "synthetic",
+   "source_ids": [
+    "src:k05-synthetic"
+   ],
+   "field_provenance": {
+    "lon": "центр ячейки сетки 3×4 участка",
+    "lat": "центр ячейки сетки 3×4 участка"
+   },
+   "qa": []
+  },
+  {
+   "id": "pt-12",
+   "label": "Точка 7",
+   "lon": 71.436265,
+   "lat": 51.172016,
+   "kind": "synthetic",
+   "source_ids": [
+    "src:k05-synthetic"
+   ],
+   "field_provenance": {
+    "lon": "центр ячейки сетки 3×4 участка",
+    "lat": "центр ячейки сетки 3×4 участка"
+   },
+   "qa": []
+  },
+  {
+   "id": "pt-13",
+   "label": "Точка 8",
+   "lon": 71.443421,
+   "lat": 51.172016,
+   "kind": "synthetic",
+   "source_ids": [
+    "src:k05-synthetic"
+   ],
+   "field_provenance": {
+    "lon": "центр ячейки сетки 3×4 участка",
+    "lat": "центр ячейки сетки 3×4 участка"
+   },
+   "qa": []
+  },
+  {
+   "id": "pt-20",
+   "label": "Точка 9",
+   "lon": 71.421951,
+   "lat": 51.178005,
+   "kind": "synthetic",
+   "source_ids": [
+    "src:k05-synthetic"
+   ],
+   "field_provenance": {
+    "lon": "центр ячейки сетки 3×4 участка",
+    "lat": "центр ячейки сетки 3×4 участка"
+   },
+   "qa": []
+  },
+  {
+   "id": "pt-21",
+   "label": "Точка 10",
+   "lon": 71.429108,
+   "lat": 51.178005,
+   "kind": "synthetic",
+   "source_ids": [
+    "src:k05-synthetic"
+   ],
+   "field_provenance": {
+    "lon": "центр ячейки сетки 3×4 участка",
+    "lat": "центр ячейки сетки 3×4 участка"
+   },
+   "qa": []
+  },
+  {
+   "id": "pt-22",
+   "label": "Точка 11",
+   "lon": 71.436265,
+   "lat": 51.178005,
+   "kind": "synthetic",
+   "source_ids": [
+    "src:k05-synthetic"
+   ],
+   "field_provenance": {
+    "lon": "центр ячейки сетки 3×4 участка",
+    "lat": "центр ячейки сетки 3×4 участка"
+   },
+   "qa": []
+  },
+  {
+   "id": "pt-23",
+   "label": "Точка 12",
+   "lon": 71.443421,
+   "lat": 51.178005,
+   "kind": "synthetic",
+   "source_ids": [
+    "src:k05-synthetic"
+   ],
+   "field_provenance": {
+    "lon": "центр ячейки сетки 3×4 участка",
+    "lat": "центр ячейки сетки 3×4 участка"
+   },
+   "qa": []
+  }
+ ],
+ "candidates": [
+  {
+   "id": "cand-A",
+   "label": "Вариант A (гипотеза)",
+   "lon": 71.443421,
+   "lat": 51.178005,
+   "kind": "hypothesis",
+   "source_ids": [
+    "src:k05-synthetic"
+   ],
+   "field_provenance": {
+    "lon": "правило K05: точка анализа pt-23, сейчас дальше всех от известных школ",
+    "lat": "правило K05: точка анализа pt-23, сейчас дальше всех от известных школ"
+   },
+   "qa": [],
+   "cost": null,
+   "land_status": "unknown"
+  },
+  {
+   "id": "cand-B",
+   "label": "Вариант B (гипотеза)",
+   "lon": 71.432686,
+   "lat": 51.172016,
+   "kind": "hypothesis",
+   "source_ids": [
+    "src:k05-synthetic"
+   ],
+   "field_provenance": {
+    "lon": "правило K05: центр участка",
+    "lat": "правило K05: центр участка"
+   },
+   "qa": [],
+   "cost": null,
+   "land_status": "unknown"
+  }
+ ],
+ "selected_candidate_ids": [
+  "cand-A",
+  "cand-B"
+ ],
+ "parameters": {
+  "distance_method": "geodesic",
+  "routing_policy_id": null,
+  "threshold_m": 500,
+  "max_new_objects": 1
+ },
+ "model_assumptions": [
+  "Расстояние по прямой (geodesic, haversine-mm-v1), не пеший маршрут",
+  "Школы — записи Overture внутри участка; буфер за краем участка НЕ включён: у точек у края ближайшая школа может быть снаружи",
+  "Точки анализа — синтетическая сетка 3×4, равновесные; не жители и не ученики",
+  "Кандидаты A/B — гипотетические места по правилу K05, статус земли неизвестен, стоимость неизвестна",
+  "Порог 500 м — параметр анализа, не норматив",
+  "Доступ (общедоступная/ограниченная) у всех школ неизвестен"
+ ]
+}

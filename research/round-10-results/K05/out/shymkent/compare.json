@@ -1,0 +1,2835 @@
+{
+ "schema_version": "school-access-compare-v1",
+ "case_id": "shymkent-schools-k05-r10",
+ "city_id": "shymkent",
+ "case_digest": "sha256:d41c4daddcf7294ff118d717a70ef0549d6d923d49183aa472a54454088e80c8",
+ "method": "geodesic",
+ "policy_id": null,
+ "threshold_mm": 500000,
+ "eligibility_policy": "public_and_unknown_flagged-v1",
+ "objective": "contract-lex-v1: unknown_count, sum_distance_mm, max_distance_mm, sorted IDs (empty first)",
+ "cost_mode": "no_cost_data",
+ "evaluated_sets": 3,
+ "plans": [
+  {
+   "plan_id": "current",
+   "label": "Сейчас: существующие школы",
+   "selected_candidate_ids": [],
+   "rows": [
+    {
+     "origin_id": "pt-00",
+     "before_mm": 594827,
+     "after_mm": 594827,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-01",
+     "before_mm": 609118,
+     "after_mm": 609118,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-02",
+     "before_mm": 621629,
+     "after_mm": 621629,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "18df815b-170a-437c-977f-0769690315d4",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-03",
+     "before_mm": 347425,
+     "after_mm": 347425,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "18df815b-170a-437c-977f-0769690315d4",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-10",
+     "before_mm": 129070,
+     "after_mm": 129070,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-11",
+     "before_mm": 127302,
+     "after_mm": 127302,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-12",
+     "before_mm": 475033,
+     "after_mm": 475033,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "fd50a858-462d-477f-8bc6-a8d3e03a9576",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-13",
+     "before_mm": 319327,
+     "after_mm": 319327,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "18df815b-170a-437c-977f-0769690315d4",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-20",
+     "before_mm": 243522,
+     "after_mm": 243522,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-21",
+     "before_mm": 227004,
+     "after_mm": 227004,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-22",
+     "before_mm": 220726,
+     "after_mm": 220726,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-23",
+     "before_mm": 176421,
+     "after_mm": 176421,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    }
+   ],
+   "metrics": {
+    "total_origins": 12,
+    "known_count": 12,
+    "unknown_count": 0,
+    "partial_count": 0,
+    "sum_distance_mm": 4091404,
+    "mean_distance_mm": 340950.3333333333,
+    "max_distance_mm": 621629,
+    "within_threshold_count": 9,
+    "within_threshold_share_of_all_points": 0.75
+   },
+   "cost": null,
+   "limitations": [
+    "nearest_school_access_eligibility_unknown"
+   ]
+  },
+  {
+   "plan_id": "candidate:cand-A",
+   "label": "Вариант cand-A",
+   "selected_candidate_ids": [
+    "cand-A"
+   ],
+   "rows": [
+    {
+     "origin_id": "pt-00",
+     "before_mm": 594827,
+     "after_mm": 594827,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-01",
+     "before_mm": 609118,
+     "after_mm": 499387,
+     "delta_mm": -109731,
+     "status": "ok",
+     "nearest_target_id": "cand-A",
+     "nearest_target_kind": "candidate",
+     "nearest_access_eligibility_unknown": false,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:k05-synthetic"
+     ]
+    },
+    {
+     "origin_id": "pt-02",
+     "before_mm": 621629,
+     "after_mm": 0,
+     "delta_mm": -621629,
+     "status": "ok",
+     "nearest_target_id": "cand-A",
+     "nearest_target_kind": "candidate",
+     "nearest_access_eligibility_unknown": false,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:k05-synthetic"
+     ]
+    },
+    {
+     "origin_id": "pt-03",
+     "before_mm": 347425,
+     "after_mm": 347425,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "18df815b-170a-437c-977f-0769690315d4",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-10",
+     "before_mm": 129070,
+     "after_mm": 129070,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-11",
+     "before_mm": 127302,
+     "after_mm": 127302,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-12",
+     "before_mm": 475033,
+     "after_mm": 475033,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "fd50a858-462d-477f-8bc6-a8d3e03a9576",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-13",
+     "before_mm": 319327,
+     "after_mm": 319327,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "18df815b-170a-437c-977f-0769690315d4",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-20",
+     "before_mm": 243522,
+     "after_mm": 243522,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-21",
+     "before_mm": 227004,
+     "after_mm": 227004,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-22",
+     "before_mm": 220726,
+     "after_mm": 220726,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-23",
+     "before_mm": 176421,
+     "after_mm": 176421,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    }
+   ],
+   "metrics": {
+    "total_origins": 12,
+    "known_count": 12,
+    "unknown_count": 0,
+    "partial_count": 0,
+    "sum_distance_mm": 3360044,
+    "mean_distance_mm": 280003.6666666667,
+    "max_distance_mm": 594827,
+    "within_threshold_count": 11,
+    "within_threshold_share_of_all_points": 0.9166666666666666
+   },
+   "cost": null,
+   "limitations": [
+    "nearest_school_access_eligibility_unknown"
+   ]
+  },
+  {
+   "plan_id": "candidate:cand-B",
+   "label": "Вариант cand-B",
+   "selected_candidate_ids": [
+    "cand-B"
+   ],
+   "rows": [
+    {
+     "origin_id": "pt-00",
+     "before_mm": 594827,
+     "after_mm": 594827,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-01",
+     "before_mm": 609118,
+     "after_mm": 609118,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-02",
+     "before_mm": 621629,
+     "after_mm": 621629,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "18df815b-170a-437c-977f-0769690315d4",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-03",
+     "before_mm": 347425,
+     "after_mm": 347425,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "18df815b-170a-437c-977f-0769690315d4",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-10",
+     "before_mm": 129070,
+     "after_mm": 129070,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-11",
+     "before_mm": 127302,
+     "after_mm": 127302,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-12",
+     "before_mm": 475033,
+     "after_mm": 249629,
+     "delta_mm": -225404,
+     "status": "ok",
+     "nearest_target_id": "cand-B",
+     "nearest_target_kind": "candidate",
+     "nearest_access_eligibility_unknown": false,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:k05-synthetic"
+     ]
+    },
+    {
+     "origin_id": "pt-13",
+     "before_mm": 319327,
+     "after_mm": 319327,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "18df815b-170a-437c-977f-0769690315d4",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-20",
+     "before_mm": 243522,
+     "after_mm": 243522,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-21",
+     "before_mm": 227004,
+     "after_mm": 227004,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-22",
+     "before_mm": 220726,
+     "after_mm": 220726,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-23",
+     "before_mm": 176421,
+     "after_mm": 176421,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    }
+   ],
+   "metrics": {
+    "total_origins": 12,
+    "known_count": 12,
+    "unknown_count": 0,
+    "partial_count": 0,
+    "sum_distance_mm": 3866000,
+    "mean_distance_mm": 322166.6666666667,
+    "max_distance_mm": 621629,
+    "within_threshold_count": 9,
+    "within_threshold_share_of_all_points": 0.75
+   },
+   "cost": null,
+   "limitations": [
+    "nearest_school_access_eligibility_unknown"
+   ]
+  },
+  {
+   "plan_id": "auto:contract-lex",
+   "label": "Предложение по правилу контракта (лучшее среди введённых кандидатов)",
+   "selected_candidate_ids": [
+    "cand-A"
+   ],
+   "rows": [
+    {
+     "origin_id": "pt-00",
+     "before_mm": 594827,
+     "after_mm": 594827,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-01",
+     "before_mm": 609118,
+     "after_mm": 499387,
+     "delta_mm": -109731,
+     "status": "ok",
+     "nearest_target_id": "cand-A",
+     "nearest_target_kind": "candidate",
+     "nearest_access_eligibility_unknown": false,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:k05-synthetic"
+     ]
+    },
+    {
+     "origin_id": "pt-02",
+     "before_mm": 621629,
+     "after_mm": 0,
+     "delta_mm": -621629,
+     "status": "ok",
+     "nearest_target_id": "cand-A",
+     "nearest_target_kind": "candidate",
+     "nearest_access_eligibility_unknown": false,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:k05-synthetic"
+     ]
+    },
+    {
+     "origin_id": "pt-03",
+     "before_mm": 347425,
+     "after_mm": 347425,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "18df815b-170a-437c-977f-0769690315d4",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-10",
+     "before_mm": 129070,
+     "after_mm": 129070,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-11",
+     "before_mm": 127302,
+     "after_mm": 127302,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-12",
+     "before_mm": 475033,
+     "after_mm": 475033,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "fd50a858-462d-477f-8bc6-a8d3e03a9576",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-13",
+     "before_mm": 319327,
+     "after_mm": 319327,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "18df815b-170a-437c-977f-0769690315d4",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-20",
+     "before_mm": 243522,
+     "after_mm": 243522,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-21",
+     "before_mm": 227004,
+     "after_mm": 227004,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-22",
+     "before_mm": 220726,
+     "after_mm": 220726,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-23",
+     "before_mm": 176421,
+     "after_mm": 176421,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    }
+   ],
+   "metrics": {
+    "total_origins": 12,
+    "known_count": 12,
+    "unknown_count": 0,
+    "partial_count": 0,
+    "sum_distance_mm": 3360044,
+    "mean_distance_mm": 280003.6666666667,
+    "max_distance_mm": 594827,
+    "within_threshold_count": 11,
+    "within_threshold_share_of_all_points": 0.9166666666666666
+   },
+   "cost": null,
+   "limitations": [
+    "nearest_school_access_eligibility_unknown"
+   ],
+   "objective": "contract-lex-v1: unknown_count, sum_distance_mm, max_distance_mm, sorted IDs (empty first)"
+  },
+  {
+   "plan_id": "auto:minimax",
+   "label": "Другая цель: минимум худшего пути",
+   "selected_candidate_ids": [
+    "cand-A"
+   ],
+   "rows": [
+    {
+     "origin_id": "pt-00",
+     "before_mm": 594827,
+     "after_mm": 594827,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-01",
+     "before_mm": 609118,
+     "after_mm": 499387,
+     "delta_mm": -109731,
+     "status": "ok",
+     "nearest_target_id": "cand-A",
+     "nearest_target_kind": "candidate",
+     "nearest_access_eligibility_unknown": false,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:k05-synthetic"
+     ]
+    },
+    {
+     "origin_id": "pt-02",
+     "before_mm": 621629,
+     "after_mm": 0,
+     "delta_mm": -621629,
+     "status": "ok",
+     "nearest_target_id": "cand-A",
+     "nearest_target_kind": "candidate",
+     "nearest_access_eligibility_unknown": false,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:k05-synthetic"
+     ]
+    },
+    {
+     "origin_id": "pt-03",
+     "before_mm": 347425,
+     "after_mm": 347425,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "18df815b-170a-437c-977f-0769690315d4",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-10",
+     "before_mm": 129070,
+     "after_mm": 129070,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-11",
+     "before_mm": 127302,
+     "after_mm": 127302,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-12",
+     "before_mm": 475033,
+     "after_mm": 475033,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "fd50a858-462d-477f-8bc6-a8d3e03a9576",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-13",
+     "before_mm": 319327,
+     "after_mm": 319327,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "18df815b-170a-437c-977f-0769690315d4",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-20",
+     "before_mm": 243522,
+     "after_mm": 243522,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-21",
+     "before_mm": 227004,
+     "after_mm": 227004,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-22",
+     "before_mm": 220726,
+     "after_mm": 220726,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    },
+    {
+     "origin_id": "pt-23",
+     "before_mm": 176421,
+     "after_mm": 176421,
+     "delta_mm": 0,
+     "status": "ok",
+     "nearest_target_id": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+     "nearest_target_kind": "school",
+     "nearest_access_eligibility_unknown": true,
+     "unknown_target_ids": [],
+     "source_ids": [
+      "src:build-data-js",
+      "src:k05-synthetic",
+      "src:shymkent:overture-places-2026-09-23.1"
+     ]
+    }
+   ],
+   "metrics": {
+    "total_origins": 12,
+    "known_count": 12,
+    "unknown_count": 0,
+    "partial_count": 0,
+    "sum_distance_mm": 3360044,
+    "mean_distance_mm": 280003.6666666667,
+    "max_distance_mm": 594827,
+    "within_threshold_count": 11,
+    "within_threshold_share_of_all_points": 0.9166666666666666
+   },
+   "cost": null,
+   "limitations": [
+    "nearest_school_access_eligibility_unknown"
+   ],
+   "objective": "minimax-v1 (другая цель): unknown_count, max_distance_mm, sum_distance_mm, sorted IDs"
+  }
+ ],
+ "facts": [
+  {
+   "id": "current/total_origins",
+   "metric": "total_origins",
+   "value": 12,
+   "unit": "points",
+   "plan_id": "current",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников"
+   ]
+  },
+  {
+   "id": "current/known_count",
+   "metric": "known_count",
+   "value": 12,
+   "unit": "points",
+   "plan_id": "current",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников"
+   ]
+  },
+  {
+   "id": "current/unknown_count",
+   "metric": "unknown_count",
+   "value": 0,
+   "unit": "points",
+   "plan_id": "current",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников"
+   ]
+  },
+  {
+   "id": "current/mean_distance_mm",
+   "metric": "mean_distance_mm",
+   "value": 340950.3333333333,
+   "unit": "mm",
+   "plan_id": "current",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "среднее только среди известных путей"
+   ]
+  },
+  {
+   "id": "current/max_distance_mm",
+   "metric": "max_distance_mm",
+   "value": 621629,
+   "unit": "mm",
+   "plan_id": "current",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "максимум только среди известных путей"
+   ]
+  },
+  {
+   "id": "current/within_threshold_count",
+   "metric": "within_threshold_count",
+   "value": 9,
+   "unit": "points",
+   "plan_id": "current",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "порог 500 м — параметр пользователя, не норматив"
+   ]
+  },
+  {
+   "id": "current/within_threshold_share_of_all_points",
+   "metric": "within_threshold_share_of_all_points",
+   "value": 0.75,
+   "unit": "share",
+   "plan_id": "current",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "знаменатель — все точки, неизвестные не покрыты"
+   ]
+  },
+  {
+   "id": "current/selected_candidate_ids",
+   "metric": "selected_candidate_ids",
+   "value": [],
+   "unit": "ids",
+   "plan_id": "current",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": []
+  },
+  {
+   "id": "candidate:cand-A/total_origins",
+   "metric": "total_origins",
+   "value": 12,
+   "unit": "points",
+   "plan_id": "candidate:cand-A",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников"
+   ]
+  },
+  {
+   "id": "candidate:cand-A/known_count",
+   "metric": "known_count",
+   "value": 12,
+   "unit": "points",
+   "plan_id": "candidate:cand-A",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников"
+   ]
+  },
+  {
+   "id": "candidate:cand-A/unknown_count",
+   "metric": "unknown_count",
+   "value": 0,
+   "unit": "points",
+   "plan_id": "candidate:cand-A",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников"
+   ]
+  },
+  {
+   "id": "candidate:cand-A/mean_distance_mm",
+   "metric": "mean_distance_mm",
+   "value": 280003.6666666667,
+   "unit": "mm",
+   "plan_id": "candidate:cand-A",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "среднее только среди известных путей"
+   ]
+  },
+  {
+   "id": "candidate:cand-A/max_distance_mm",
+   "metric": "max_distance_mm",
+   "value": 594827,
+   "unit": "mm",
+   "plan_id": "candidate:cand-A",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "максимум только среди известных путей"
+   ]
+  },
+  {
+   "id": "candidate:cand-A/within_threshold_count",
+   "metric": "within_threshold_count",
+   "value": 11,
+   "unit": "points",
+   "plan_id": "candidate:cand-A",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "порог 500 м — параметр пользователя, не норматив"
+   ]
+  },
+  {
+   "id": "candidate:cand-A/within_threshold_share_of_all_points",
+   "metric": "within_threshold_share_of_all_points",
+   "value": 0.9166666666666666,
+   "unit": "share",
+   "plan_id": "candidate:cand-A",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "знаменатель — все точки, неизвестные не покрыты"
+   ]
+  },
+  {
+   "id": "candidate:cand-A/selected_candidate_ids",
+   "metric": "selected_candidate_ids",
+   "value": [
+    "cand-A"
+   ],
+   "unit": "ids",
+   "plan_id": "candidate:cand-A",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": []
+  },
+  {
+   "id": "candidate:cand-A/origin:pt-00/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "candidate:cand-A",
+   "origin_id": "pt-00",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "candidate:cand-A/origin:pt-01/delta_mm",
+   "metric": "delta_mm",
+   "value": -109731,
+   "unit": "mm",
+   "plan_id": "candidate:cand-A",
+   "origin_id": "pt-01",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "candidate:cand-A/origin:pt-02/delta_mm",
+   "metric": "delta_mm",
+   "value": -621629,
+   "unit": "mm",
+   "plan_id": "candidate:cand-A",
+   "origin_id": "pt-02",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "candidate:cand-A/origin:pt-03/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "candidate:cand-A",
+   "origin_id": "pt-03",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "candidate:cand-A/origin:pt-10/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "candidate:cand-A",
+   "origin_id": "pt-10",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "candidate:cand-A/origin:pt-11/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "candidate:cand-A",
+   "origin_id": "pt-11",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "candidate:cand-A/origin:pt-12/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "candidate:cand-A",
+   "origin_id": "pt-12",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "candidate:cand-A/origin:pt-13/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "candidate:cand-A",
+   "origin_id": "pt-13",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "candidate:cand-A/origin:pt-20/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "candidate:cand-A",
+   "origin_id": "pt-20",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "candidate:cand-A/origin:pt-21/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "candidate:cand-A",
+   "origin_id": "pt-21",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "candidate:cand-A/origin:pt-22/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "candidate:cand-A",
+   "origin_id": "pt-22",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "candidate:cand-A/origin:pt-23/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "candidate:cand-A",
+   "origin_id": "pt-23",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "candidate:cand-B/total_origins",
+   "metric": "total_origins",
+   "value": 12,
+   "unit": "points",
+   "plan_id": "candidate:cand-B",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников"
+   ]
+  },
+  {
+   "id": "candidate:cand-B/known_count",
+   "metric": "known_count",
+   "value": 12,
+   "unit": "points",
+   "plan_id": "candidate:cand-B",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников"
+   ]
+  },
+  {
+   "id": "candidate:cand-B/unknown_count",
+   "metric": "unknown_count",
+   "value": 0,
+   "unit": "points",
+   "plan_id": "candidate:cand-B",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников"
+   ]
+  },
+  {
+   "id": "candidate:cand-B/mean_distance_mm",
+   "metric": "mean_distance_mm",
+   "value": 322166.6666666667,
+   "unit": "mm",
+   "plan_id": "candidate:cand-B",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "среднее только среди известных путей"
+   ]
+  },
+  {
+   "id": "candidate:cand-B/max_distance_mm",
+   "metric": "max_distance_mm",
+   "value": 621629,
+   "unit": "mm",
+   "plan_id": "candidate:cand-B",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "максимум только среди известных путей"
+   ]
+  },
+  {
+   "id": "candidate:cand-B/within_threshold_count",
+   "metric": "within_threshold_count",
+   "value": 9,
+   "unit": "points",
+   "plan_id": "candidate:cand-B",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "порог 500 м — параметр пользователя, не норматив"
+   ]
+  },
+  {
+   "id": "candidate:cand-B/within_threshold_share_of_all_points",
+   "metric": "within_threshold_share_of_all_points",
+   "value": 0.75,
+   "unit": "share",
+   "plan_id": "candidate:cand-B",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "знаменатель — все точки, неизвестные не покрыты"
+   ]
+  },
+  {
+   "id": "candidate:cand-B/selected_candidate_ids",
+   "metric": "selected_candidate_ids",
+   "value": [
+    "cand-B"
+   ],
+   "unit": "ids",
+   "plan_id": "candidate:cand-B",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": []
+  },
+  {
+   "id": "candidate:cand-B/origin:pt-00/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "candidate:cand-B",
+   "origin_id": "pt-00",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "candidate:cand-B/origin:pt-01/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "candidate:cand-B",
+   "origin_id": "pt-01",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "candidate:cand-B/origin:pt-02/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "candidate:cand-B",
+   "origin_id": "pt-02",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "candidate:cand-B/origin:pt-03/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "candidate:cand-B",
+   "origin_id": "pt-03",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "candidate:cand-B/origin:pt-10/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "candidate:cand-B",
+   "origin_id": "pt-10",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "candidate:cand-B/origin:pt-11/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "candidate:cand-B",
+   "origin_id": "pt-11",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "candidate:cand-B/origin:pt-12/delta_mm",
+   "metric": "delta_mm",
+   "value": -225404,
+   "unit": "mm",
+   "plan_id": "candidate:cand-B",
+   "origin_id": "pt-12",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "candidate:cand-B/origin:pt-13/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "candidate:cand-B",
+   "origin_id": "pt-13",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "candidate:cand-B/origin:pt-20/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "candidate:cand-B",
+   "origin_id": "pt-20",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "candidate:cand-B/origin:pt-21/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "candidate:cand-B",
+   "origin_id": "pt-21",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "candidate:cand-B/origin:pt-22/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "candidate:cand-B",
+   "origin_id": "pt-22",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "candidate:cand-B/origin:pt-23/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "candidate:cand-B",
+   "origin_id": "pt-23",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:contract-lex/total_origins",
+   "metric": "total_origins",
+   "value": 12,
+   "unit": "points",
+   "plan_id": "auto:contract-lex",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников"
+   ]
+  },
+  {
+   "id": "auto:contract-lex/known_count",
+   "metric": "known_count",
+   "value": 12,
+   "unit": "points",
+   "plan_id": "auto:contract-lex",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников"
+   ]
+  },
+  {
+   "id": "auto:contract-lex/unknown_count",
+   "metric": "unknown_count",
+   "value": 0,
+   "unit": "points",
+   "plan_id": "auto:contract-lex",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников"
+   ]
+  },
+  {
+   "id": "auto:contract-lex/mean_distance_mm",
+   "metric": "mean_distance_mm",
+   "value": 280003.6666666667,
+   "unit": "mm",
+   "plan_id": "auto:contract-lex",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "среднее только среди известных путей"
+   ]
+  },
+  {
+   "id": "auto:contract-lex/max_distance_mm",
+   "metric": "max_distance_mm",
+   "value": 594827,
+   "unit": "mm",
+   "plan_id": "auto:contract-lex",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "максимум только среди известных путей"
+   ]
+  },
+  {
+   "id": "auto:contract-lex/within_threshold_count",
+   "metric": "within_threshold_count",
+   "value": 11,
+   "unit": "points",
+   "plan_id": "auto:contract-lex",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "порог 500 м — параметр пользователя, не норматив"
+   ]
+  },
+  {
+   "id": "auto:contract-lex/within_threshold_share_of_all_points",
+   "metric": "within_threshold_share_of_all_points",
+   "value": 0.9166666666666666,
+   "unit": "share",
+   "plan_id": "auto:contract-lex",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "знаменатель — все точки, неизвестные не покрыты"
+   ]
+  },
+  {
+   "id": "auto:contract-lex/selected_candidate_ids",
+   "metric": "selected_candidate_ids",
+   "value": [
+    "cand-A"
+   ],
+   "unit": "ids",
+   "plan_id": "auto:contract-lex",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": []
+  },
+  {
+   "id": "auto:contract-lex/origin:pt-00/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "auto:contract-lex",
+   "origin_id": "pt-00",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:contract-lex/origin:pt-01/delta_mm",
+   "metric": "delta_mm",
+   "value": -109731,
+   "unit": "mm",
+   "plan_id": "auto:contract-lex",
+   "origin_id": "pt-01",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:contract-lex/origin:pt-02/delta_mm",
+   "metric": "delta_mm",
+   "value": -621629,
+   "unit": "mm",
+   "plan_id": "auto:contract-lex",
+   "origin_id": "pt-02",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:contract-lex/origin:pt-03/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "auto:contract-lex",
+   "origin_id": "pt-03",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:contract-lex/origin:pt-10/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "auto:contract-lex",
+   "origin_id": "pt-10",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:contract-lex/origin:pt-11/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "auto:contract-lex",
+   "origin_id": "pt-11",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:contract-lex/origin:pt-12/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "auto:contract-lex",
+   "origin_id": "pt-12",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:contract-lex/origin:pt-13/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "auto:contract-lex",
+   "origin_id": "pt-13",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:contract-lex/origin:pt-20/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "auto:contract-lex",
+   "origin_id": "pt-20",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:contract-lex/origin:pt-21/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "auto:contract-lex",
+   "origin_id": "pt-21",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:contract-lex/origin:pt-22/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "auto:contract-lex",
+   "origin_id": "pt-22",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:contract-lex/origin:pt-23/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "auto:contract-lex",
+   "origin_id": "pt-23",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:minimax/total_origins",
+   "metric": "total_origins",
+   "value": 12,
+   "unit": "points",
+   "plan_id": "auto:minimax",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников"
+   ]
+  },
+  {
+   "id": "auto:minimax/known_count",
+   "metric": "known_count",
+   "value": 12,
+   "unit": "points",
+   "plan_id": "auto:minimax",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников"
+   ]
+  },
+  {
+   "id": "auto:minimax/unknown_count",
+   "metric": "unknown_count",
+   "value": 0,
+   "unit": "points",
+   "plan_id": "auto:minimax",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников"
+   ]
+  },
+  {
+   "id": "auto:minimax/mean_distance_mm",
+   "metric": "mean_distance_mm",
+   "value": 280003.6666666667,
+   "unit": "mm",
+   "plan_id": "auto:minimax",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "среднее только среди известных путей"
+   ]
+  },
+  {
+   "id": "auto:minimax/max_distance_mm",
+   "metric": "max_distance_mm",
+   "value": 594827,
+   "unit": "mm",
+   "plan_id": "auto:minimax",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "максимум только среди известных путей"
+   ]
+  },
+  {
+   "id": "auto:minimax/within_threshold_count",
+   "metric": "within_threshold_count",
+   "value": 11,
+   "unit": "points",
+   "plan_id": "auto:minimax",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "порог 500 м — параметр пользователя, не норматив"
+   ]
+  },
+  {
+   "id": "auto:minimax/within_threshold_share_of_all_points",
+   "metric": "within_threshold_share_of_all_points",
+   "value": 0.9166666666666666,
+   "unit": "share",
+   "plan_id": "auto:minimax",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "знаменатель — все точки, неизвестные не покрыты"
+   ]
+  },
+  {
+   "id": "auto:minimax/selected_candidate_ids",
+   "metric": "selected_candidate_ids",
+   "value": [
+    "cand-A"
+   ],
+   "unit": "ids",
+   "plan_id": "auto:minimax",
+   "origin_id": null,
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": []
+  },
+  {
+   "id": "auto:minimax/origin:pt-00/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "auto:minimax",
+   "origin_id": "pt-00",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:minimax/origin:pt-01/delta_mm",
+   "metric": "delta_mm",
+   "value": -109731,
+   "unit": "mm",
+   "plan_id": "auto:minimax",
+   "origin_id": "pt-01",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:minimax/origin:pt-02/delta_mm",
+   "metric": "delta_mm",
+   "value": -621629,
+   "unit": "mm",
+   "plan_id": "auto:minimax",
+   "origin_id": "pt-02",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:k05-synthetic"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:minimax/origin:pt-03/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "auto:minimax",
+   "origin_id": "pt-03",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:minimax/origin:pt-10/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "auto:minimax",
+   "origin_id": "pt-10",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:minimax/origin:pt-11/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "auto:minimax",
+   "origin_id": "pt-11",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:minimax/origin:pt-12/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "auto:minimax",
+   "origin_id": "pt-12",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:minimax/origin:pt-13/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "auto:minimax",
+   "origin_id": "pt-13",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:minimax/origin:pt-20/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "auto:minimax",
+   "origin_id": "pt-20",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:minimax/origin:pt-21/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "auto:minimax",
+   "origin_id": "pt-21",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:minimax/origin:pt-22/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "auto:minimax",
+   "origin_id": "pt-22",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  },
+  {
+   "id": "auto:minimax/origin:pt-23/delta_mm",
+   "metric": "delta_mm",
+   "value": 0,
+   "unit": "mm",
+   "plan_id": "auto:minimax",
+   "origin_id": "pt-23",
+   "kind": "derived",
+   "source_ids": [
+    "matrix:geodesic/none",
+    "src:build-data-js",
+    "src:k05-synthetic",
+    "src:shymkent:overture-places-2026-09-23.1"
+   ],
+   "assumptions": [
+    "geodesic: прямая линия, не путь по улицам",
+    "точки анализа равновесные; доля — доля точек, не жителей и не учеников",
+    "delta = после − до; отрицательное — ближе"
+   ]
+  }
+ ],
+ "limitations": [
+  {
+   "code": "analysis_points_not_population",
+   "text": "Точки равновесные: это не жители, не ученики и не спрос."
+  },
+  {
+   "code": "candidates_hypothetical",
+   "text": "Кандидаты — гипотезы; статус земли не подтверждён, проект не обещается."
+  },
+  {
+   "code": "no_capacity_claim",
+   "text": "Вместимость и дефицит мест не оцениваются."
+  },
+  {
+   "code": "best_among_entered",
+   "text": "«Лучшее» — только среди введённых кандидатов и при текущих допущениях."
+  },
+  {
+   "code": "geodesic_straight_line",
+   "text": "Расстояние по прямой — нижняя граница пешего пути, не маршрут."
+  },
+  {
+   "code": "cost",
+   "text": "стоимость хотя бы одного кандидата неизвестна — денежная оптимизация отключена, географическое сравнение работает",
+   "cost_mode": "no_cost_data"
+  },
+  {
+   "code": "eligibility_unknown",
+   "text": "У части школ доступ (общедоступная/ограниченная) неизвестен; такие школы учитываются, строки помечены."
+  }
+ ],
+ "code_sha": "d2ff344c5ec9b9a729ea59df50ec81f981e619de",
+ "generated_by": "research/round-10-results/K05/cases/make_city_cases.cjs"
+}

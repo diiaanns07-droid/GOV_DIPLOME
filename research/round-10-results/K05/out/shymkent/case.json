@@ -1,0 +1,634 @@
+{
+ "schema_version": "school-access-case-v1",
+ "case_id": "shymkent-schools-k05-r10",
+ "city_id": "shymkent",
+ "title": "Доступность школ: участок Шымкента (демо K05)",
+ "bbox": [
+  69.593365,
+  42.306645,
+  69.617658,
+  42.324611
+ ],
+ "snapshot_id": "k10-r3:e0959270b962362a@2026-09-23.1",
+ "sources": [
+  {
+   "id": "src:shymkent:overture-places-2026-09-23.1",
+   "url": null,
+   "publisher": "Overture Maps Foundation (агрегат OSM/Meta/Foursquare и др.)",
+   "title": "places_social shymkent, срез K10 2×2 км, выпуск 2026-09-23.1",
+   "published_at": null,
+   "data_period": "2026-09-23.1",
+   "retrieved_at": "2026-10-05T06:19:53+00:00",
+   "verification_status": "secondary_only",
+   "license": "per record: CDLA-Permissive-2.0",
+   "content_sha256": "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7"
+  },
+  {
+   "id": "src:build-data-js",
+   "url": null,
+   "publisher": "GOV_DIPLOME BUILD",
+   "title": "web/govtech/core/data.js @ d2ff344c5ec9b9a729ea59df50ec81f981e619de",
+   "published_at": null,
+   "data_period": null,
+   "retrieved_at": null,
+   "verification_status": "secondary_only",
+   "license": "derived from the records above",
+   "content_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72"
+  },
+  {
+   "id": "src:k05-synthetic",
+   "url": null,
+   "publisher": "K05 round 10",
+   "title": "synthetic analysis points and hypothetical candidate sites",
+   "published_at": null,
+   "data_period": null,
+   "retrieved_at": null,
+   "verification_status": "not_fetched",
+   "license": "unknown"
+  }
+ ],
+ "schools": [
+  {
+   "id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+   "label": "Реклама 42",
+   "lon": 69.61052,
+   "lat": 42.32027,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "src:shymkent:overture-places-2026-09-23.1",
+    "src:build-data-js"
+   ],
+   "field_provenance": {
+    "lon": "Overture geometry (OSM/вторичные)",
+    "lat": "Overture geometry (OSM/вторичные)",
+    "label": "Overture names.primary — не официальное название",
+    "category": "Overture taxonomy → правило K10 social_group"
+   },
+   "qa": [
+    "CATEGORY_DOUBT:ad_or_business_page"
+   ],
+   "category": "school",
+   "access_eligibility": "unknown",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+   "label": "М.Х.Дулати атындағы үш тілде оқытатын N8 мамандандырылған  гимназия\" КММ",
+   "lon": 69.60294,
+   "lat": 42.31672,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "src:shymkent:overture-places-2026-09-23.1",
+    "src:build-data-js"
+   ],
+   "field_provenance": {
+    "lon": "Overture geometry (OSM/вторичные)",
+    "lat": "Overture geometry (OSM/вторичные)",
+    "label": "Overture names.primary — не официальное название",
+    "category": "Overture taxonomy → правило K10 social_group"
+   },
+   "qa": [],
+   "category": "school",
+   "access_eligibility": "unknown",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "176c5993-4b62-4e90-849f-88addc0153bb",
+   "label": "Dostyk Bilim Beru Ortalygy",
+   "lon": 69.605699,
+   "lat": 42.323129,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "src:shymkent:overture-places-2026-09-23.1",
+    "src:build-data-js"
+   ],
+   "field_provenance": {
+    "lon": "Overture geometry (OSM/вторичные)",
+    "lat": "Overture geometry (OSM/вторичные)",
+    "label": "Overture names.primary — не официальное название",
+    "category": "Overture taxonomy → правило K10 social_group"
+   },
+   "qa": [],
+   "category": "school",
+   "access_eligibility": "unknown",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "18df815b-170a-437c-977f-0769690315d4",
+   "label": "Ақпан батыр Атындағы Орта Мектеп",
+   "lon": 69.61482,
+   "lat": 42.31276,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "src:shymkent:overture-places-2026-09-23.1",
+    "src:build-data-js"
+   ],
+   "field_provenance": {
+    "lon": "Overture geometry (OSM/вторичные)",
+    "lat": "Overture geometry (OSM/вторичные)",
+    "label": "Overture names.primary — не официальное название",
+    "category": "Overture taxonomy → правило K10 social_group"
+   },
+   "qa": [],
+   "category": "school",
+   "access_eligibility": "unknown",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+   "label": "Reklama 8888",
+   "lon": 69.5958,
+   "lat": 42.3167,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "src:shymkent:overture-places-2026-09-23.1",
+    "src:build-data-js"
+   ],
+   "field_provenance": {
+    "lon": "Overture geometry (OSM/вторичные)",
+    "lat": "Overture geometry (OSM/вторичные)",
+    "label": "Overture names.primary — не официальное название",
+    "category": "Overture taxonomy → правило K10 social_group"
+   },
+   "qa": [
+    "COLOCATED",
+    "CATEGORY_DOUBT:ad_or_business_page"
+   ],
+   "category": "school",
+   "access_eligibility": "unknown",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+   "label": "Жолдасбекова Атындағы 9 Лицей",
+   "lon": 69.605231,
+   "lat": 42.321741,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "src:shymkent:overture-places-2026-09-23.1",
+    "src:build-data-js"
+   ],
+   "field_provenance": {
+    "lon": "Overture geometry (OSM/вторичные)",
+    "lat": "Overture geometry (OSM/вторичные)",
+    "label": "Overture names.primary — не официальное название",
+    "category": "Overture taxonomy → правило K10 social_group"
+   },
+   "qa": [],
+   "category": "school",
+   "access_eligibility": "unknown",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "68c8f007-75bc-42f6-8da8-baa72042bde4",
+   "label": "Baiterek School",
+   "lon": 69.5958,
+   "lat": 42.3167,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "src:shymkent:overture-places-2026-09-23.1",
+    "src:build-data-js"
+   ],
+   "field_provenance": {
+    "lon": "Overture geometry (OSM/вторичные)",
+    "lat": "Overture geometry (OSM/вторичные)",
+    "label": "Overture names.primary — не официальное название",
+    "category": "Overture taxonomy → правило K10 social_group"
+   },
+   "qa": [
+    "COLOCATED"
+   ],
+   "category": "school",
+   "access_eligibility": "unknown",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+   "label": "Учебный центр Меруерт",
+   "lon": 69.599229,
+   "lat": 42.314563,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "src:shymkent:overture-places-2026-09-23.1",
+    "src:build-data-js"
+   ],
+   "field_provenance": {
+    "lon": "Overture geometry (OSM/вторичные)",
+    "lat": "Overture geometry (OSM/вторичные)",
+    "label": "Overture names.primary — не официальное название",
+    "category": "Overture taxonomy → правило K10 social_group"
+   },
+   "qa": [],
+   "category": "school",
+   "access_eligibility": "unknown",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+   "label": "Express toefl",
+   "lon": 69.59496,
+   "lat": 42.32353,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "src:shymkent:overture-places-2026-09-23.1",
+    "src:build-data-js"
+   ],
+   "field_provenance": {
+    "lon": "Overture geometry (OSM/вторичные)",
+    "lat": "Overture geometry (OSM/вторичные)",
+    "label": "Overture names.primary — не официальное название",
+    "category": "Overture taxonomy → правило K10 social_group"
+   },
+   "qa": [
+    "POSSIBLE_DUPLICATE"
+   ],
+   "category": "school",
+   "access_eligibility": "unknown",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "9d31b953-ccc4-42bd-a3a3-3e4e21f44051",
+   "label": "Реклама 3131",
+   "lon": 69.5958,
+   "lat": 42.3167,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "src:shymkent:overture-places-2026-09-23.1",
+    "src:build-data-js"
+   ],
+   "field_provenance": {
+    "lon": "Overture geometry (OSM/вторичные)",
+    "lat": "Overture geometry (OSM/вторичные)",
+    "label": "Overture names.primary — не официальное название",
+    "category": "Overture taxonomy → правило K10 social_group"
+   },
+   "qa": [
+    "COLOCATED",
+    "CATEGORY_DOUBT:ad_or_business_page"
+   ],
+   "category": "school",
+   "access_eligibility": "unknown",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6",
+   "label": "Kasipkoy.kurs",
+   "lon": 69.59496,
+   "lat": 42.32353,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "src:shymkent:overture-places-2026-09-23.1",
+    "src:build-data-js"
+   ],
+   "field_provenance": {
+    "lon": "Overture geometry (OSM/вторичные)",
+    "lat": "Overture geometry (OSM/вторичные)",
+    "label": "Overture names.primary — не официальное название",
+    "category": "Overture taxonomy → правило K10 social_group"
+   },
+   "qa": [
+    "POSSIBLE_DUPLICATE"
+   ],
+   "category": "school",
+   "access_eligibility": "unknown",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+   "label": "Монтессори Детский Сад \"Бала Би\"",
+   "lon": 69.59895,
+   "lat": 42.31906,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "src:shymkent:overture-places-2026-09-23.1",
+    "src:build-data-js"
+   ],
+   "field_provenance": {
+    "lon": "Overture geometry (OSM/вторичные)",
+    "lat": "Overture geometry (OSM/вторичные)",
+    "label": "Overture names.primary — не официальное название",
+    "category": "Overture taxonomy → правило K10 social_group"
+   },
+   "qa": [],
+   "category": "school",
+   "access_eligibility": "unknown",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+   "label": "ALEM мектебі",
+   "lon": 69.61557,
+   "lat": 42.32304,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "src:shymkent:overture-places-2026-09-23.1",
+    "src:build-data-js"
+   ],
+   "field_provenance": {
+    "lon": "Overture geometry (OSM/вторичные)",
+    "lat": "Overture geometry (OSM/вторичные)",
+    "label": "Overture names.primary — не официальное название",
+    "category": "Overture taxonomy → правило K10 social_group"
+   },
+   "qa": [],
+   "category": "school",
+   "access_eligibility": "unknown",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "bcd265d0-0799-4dbf-8b15-23bae752a4d2",
+   "label": "Алем мектеп",
+   "lon": 69.61557,
+   "lat": 42.32304,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "src:shymkent:overture-places-2026-09-23.1",
+    "src:build-data-js"
+   ],
+   "field_provenance": {
+    "lon": "Overture geometry (OSM/вторичные)",
+    "lat": "Overture geometry (OSM/вторичные)",
+    "label": "Overture names.primary — не официальное название",
+    "category": "Overture taxonomy → правило K10 social_group"
+   },
+   "qa": [],
+   "category": "school",
+   "access_eligibility": "unknown",
+   "capacity": null,
+   "capacity_source_ids": []
+  },
+  {
+   "id": "fd50a858-462d-477f-8bc6-a8d3e03a9576",
+   "label": "Техникалық лицей",
+   "lon": 69.60322,
+   "lat": 42.31728,
+   "kind": "observed_secondary",
+   "source_ids": [
+    "src:shymkent:overture-places-2026-09-23.1",
+    "src:build-data-js"
+   ],
+   "field_provenance": {
+    "lon": "Overture geometry (OSM/вторичные)",
+    "lat": "Overture geometry (OSM/вторичные)",
+    "label": "Overture names.primary — не официальное название",
+    "category": "Overture taxonomy → правило K10 social_group"
+   },
+   "qa": [
+    "POSSIBLE_DUPLICATE"
+   ],
+   "category": "school",
+   "access_eligibility": "unknown",
+   "capacity": null,
+   "capacity_source_ids": []
+  }
+ ],
+ "origins": [
+  {
+   "id": "pt-00",
+   "label": "Точка 1",
+   "lon": 69.596402,
+   "lat": 42.309639,
+   "kind": "synthetic",
+   "source_ids": [
+    "src:k05-synthetic"
+   ],
+   "field_provenance": {
+    "lon": "центр ячейки сетки 3×4 участка",
+    "lat": "центр ячейки сетки 3×4 участка"
+   },
+   "qa": []
+  },
+  {
+   "id": "pt-01",
+   "label": "Точка 2",
+   "lon": 69.602475,
+   "lat": 42.309639,
+   "kind": "synthetic",
+   "source_ids": [
+    "src:k05-synthetic"
+   ],
+   "field_provenance": {
+    "lon": "центр ячейки сетки 3×4 участка",
+    "lat": "центр ячейки сетки 3×4 участка"
+   },
+   "qa": []
+  },
+  {
+   "id": "pt-02",
+   "label": "Точка 3",
+   "lon": 69.608548,
+   "lat": 42.309639,
+   "kind": "synthetic",
+   "source_ids": [
+    "src:k05-synthetic"
+   ],
+   "field_provenance": {
+    "lon": "центр ячейки сетки 3×4 участка",
+    "lat": "центр ячейки сетки 3×4 участка"
+   },
+   "qa": []
+  },
+  {
+   "id": "pt-03",
+   "label": "Точка 4",
+   "lon": 69.614621,
+   "lat": 42.309639,
+   "kind": "synthetic",
+   "source_ids": [
+    "src:k05-synthetic"
+   ],
+   "field_provenance": {
+    "lon": "центр ячейки сетки 3×4 участка",
+    "lat": "центр ячейки сетки 3×4 участка"
+   },
+   "qa": []
+  },
+  {
+   "id": "pt-10",
+   "label": "Точка 5",
+   "lon": 69.596402,
+   "lat": 42.315628,
+   "kind": "synthetic",
+   "source_ids": [
+    "src:k05-synthetic"
+   ],
+   "field_provenance": {
+    "lon": "центр ячейки сетки 3×4 участка",
+    "lat": "центр ячейки сетки 3×4 участка"
+   },
+   "qa": []
+  },
+  {
+   "id": "pt-11",
+   "label": "Точка 6",
+   "lon": 69.602475,
+   "lat": 42.315628,
+   "kind": "synthetic",
+   "source_ids": [
+    "src:k05-synthetic"
+   ],
+   "field_provenance": {
+    "lon": "центр ячейки сетки 3×4 участка",
+    "lat": "центр ячейки сетки 3×4 участка"
+   },
+   "qa": []
+  },
+  {
+   "id": "pt-12",
+   "label": "Точка 7",
+   "lon": 69.608548,
+   "lat": 42.315628,
+   "kind": "synthetic",
+   "source_ids": [
+    "src:k05-synthetic"
+   ],
+   "field_provenance": {
+    "lon": "центр ячейки сетки 3×4 участка",
+    "lat": "центр ячейки сетки 3×4 участка"
+   },
+   "qa": []
+  },
+  {
+   "id": "pt-13",
+   "label": "Точка 8",
+   "lon": 69.614621,
+   "lat": 42.315628,
+   "kind": "synthetic",
+   "source_ids": [
+    "src:k05-synthetic"
+   ],
+   "field_provenance": {
+    "lon": "центр ячейки сетки 3×4 участка",
+    "lat": "центр ячейки сетки 3×4 участка"
+   },
+   "qa": []
+  },
+  {
+   "id": "pt-20",
+   "label": "Точка 9",
+   "lon": 69.596402,
+   "lat": 42.321617,
+   "kind": "synthetic",
+   "source_ids": [
+    "src:k05-synthetic"
+   ],
+   "field_provenance": {
+    "lon": "центр ячейки сетки 3×4 участка",
+    "lat": "центр ячейки сетки 3×4 участка"
+   },
+   "qa": []
+  },
+  {
+   "id": "pt-21",
+   "label": "Точка 10",
+   "lon": 69.602475,
+   "lat": 42.321617,
+   "kind": "synthetic",
+   "source_ids": [
+    "src:k05-synthetic"
+   ],
+   "field_provenance": {
+    "lon": "центр ячейки сетки 3×4 участка",
+    "lat": "центр ячейки сетки 3×4 участка"
+   },
+   "qa": []
+  },
+  {
+   "id": "pt-22",
+   "label": "Точка 11",
+   "lon": 69.608548,
+   "lat": 42.321617,
+   "kind": "synthetic",
+   "source_ids": [
+    "src:k05-synthetic"
+   ],
+   "field_provenance": {
+    "lon": "центр ячейки сетки 3×4 участка",
+    "lat": "центр ячейки сетки 3×4 участка"
+   },
+   "qa": []
+  },
+  {
+   "id": "pt-23",
+   "label": "Точка 12",
+   "lon": 69.614621,
+   "lat": 42.321617,
+   "kind": "synthetic",
+   "source_ids": [
+    "src:k05-synthetic"
+   ],
+   "field_provenance": {
+    "lon": "центр ячейки сетки 3×4 участка",
+    "lat": "центр ячейки сетки 3×4 участка"
+   },
+   "qa": []
+  }
+ ],
+ "candidates": [
+  {
+   "id": "cand-A",
+   "label": "Вариант A (гипотеза)",
+   "lon": 69.608548,
+   "lat": 42.309639,
+   "kind": "hypothesis",
+   "source_ids": [
+    "src:k05-synthetic"
+   ],
+   "field_provenance": {
+    "lon": "правило K05: точка анализа pt-02, сейчас дальше всех от известных школ",
+    "lat": "правило K05: точка анализа pt-02, сейчас дальше всех от известных школ"
+   },
+   "qa": [],
+   "cost": null,
+   "land_status": "unknown"
+  },
+  {
+   "id": "cand-B",
+   "label": "Вариант B (гипотеза)",
+   "lon": 69.605512,
+   "lat": 42.315628,
+   "kind": "hypothesis",
+   "source_ids": [
+    "src:k05-synthetic"
+   ],
+   "field_provenance": {
+    "lon": "правило K05: центр участка",
+    "lat": "правило K05: центр участка"
+   },
+   "qa": [],
+   "cost": null,
+   "land_status": "unknown"
+  }
+ ],
+ "selected_candidate_ids": [
+  "cand-A",
+  "cand-B"
+ ],
+ "parameters": {
+  "distance_method": "geodesic",
+  "routing_policy_id": null,
+  "threshold_m": 500,
+  "max_new_objects": 1
+ },
+ "model_assumptions": [
+  "Расстояние по прямой (geodesic, haversine-mm-v1), не пеший маршрут",
+  "Школы — записи Overture внутри участка; буфер за краем участка НЕ включён: у точек у края ближайшая школа может быть снаружи",
+  "Точки анализа — синтетическая сетка 3×4, равновесные; не жители и не ученики",
+  "Кандидаты A/B — гипотетические места по правилу K05, статус земли неизвестен, стоимость неизвестна",
+  "Порог 500 м — параметр анализа, не норматив",
+  "Доступ (общедоступная/ограниченная) у всех школ неизвестен"
+ ]
+}
