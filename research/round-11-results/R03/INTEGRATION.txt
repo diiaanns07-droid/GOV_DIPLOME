@@ -3,6 +3,16 @@ R03 -> R01 INTEGRATION — public map, object cards (civic-v1, round 11, Astana)
 Source of truth: branch claude/zen-mendel-e79iiv; take the SHA named in DELIVERY.json "code_commit"
 (or the final head reported in the R03 handoff). Import by path, no branch merge.
 
+0. RE-IMPORT NOTE FOR R01 (you integrated f73745c at checkpoint 7)
+   Replace the same three files with the code_commit version. Delta = fixes for 25 confirmed review findings
+   (REVIEW_FINDINGS.json): R02-equal Astana bbox; period rule = contract §2/R02 (open unknown bound, flagged;
+   original_planned_end is history only); timestamps shown in Astana time (R02 sends UTC); synthetic records never
+   show tenge; search also filters the map; dashed demo ring on points (symbol layer + image, see §7); safe second
+   mount on the same root; focus/live-region fixes; camera waits for the phone sheet; landscape phones keep the
+   tool column free (overlay only); "visible part" excludes the panel. No API/option/callback changed.
+   Verified: R01's own tests/civic/R01/browser/p0_flow.cjs on R01 8c6add9 with these files = 47 PASS / 0 FAIL /
+   2 NOT_RUN (runs/r01_build_8c6add9_with_r03_161467d/). The same counts as R01's run with f73745c.
+
 1. FILES TO IMPORT (only these three are product code)
    web/civic/map/civic-map-core.js   pure civic-v1 logic, window.CivicMapCore (also Node-requirable for tests)
    web/civic/map/civic-map.js        window.CivicMap.mount(...)
@@ -57,19 +67,29 @@ Source of truth: branch claude/zen-mendel-e79iiv; take the SHA named in DELIVERY
    Envelope {ok,data} is unwrapped defensively if an api returns it raw. Errors read {status, code}:
    network/timeout/aborted/404/429/503/5xx have distinct Russian texts and a «Повторить» button.
    Filtering (kind, status, planned period, search, visible area) is client-side over the published list, so facet
-   counts and the honest «без плановых дат / неполный интервал / без места на карте» notes are exact.
+   counts and the «без плановых дат / с неполными сроками / без координат» notes count exactly what the other
+   filters let through. The period rule equals R02 _filter_sql: [planned_start, current_planned_end] overlaps
+   [from, to]; an unknown bound is open and the row is badged «Начало/Окончание неизвестно»; no planned dates ->
+   not in a period. The search box is debounced (150 ms) and applies to list and map. The list renders 200 rows
+   at a time («Показать ещё»).
+   Times: timestamps with an offset are shown in Astana time («(время Астаны)»: UTC+6 before 2024-02-29T18:00Z,
+   UTC+5 after), dates YYYY-MM-DD as written, money with U+202F grouping and «₸», unknown as «нет данных».
 
 7. MAP (the one MapLibre instance; never creates a map)
    Source  civic-r03-objects (GeoJSON, promoteId cid)
    Layers  civic-r03-area-fill, -area-line, -area-line-approx, -line-casing, -line, -line-approx,
            -synthetic-outline, -selected-line           (inserted before the first basemap label layer)
-           civic-r03-point-halo, -point-synthetic, -point, -selected-point   (on top)
+           civic-r03-point-halo, -point-synthetic (symbol, icon only, no glyphs), -point, -selected-point (on top)
+   Image   civic-r03-demo-ring (map.addImage, canvas-drawn dashed ring; removed in destroy, re-added after setStyle)
    Handlers map.on: click (one handler, queryRenderedFeatures on R03 layers), mousemove, mouseout, styledata
            (re-adds R03 layers after setStyle, e.g. map.js offline fallback), moveend (visible-area filter).
    destroy() removes all of the above, the tooltip popup, the cursor change, timers/rAF, root listeners and restores
    the root element (children, class, role, aria-label) exactly. Verified twice in a row in the browser suite.
    Null geometry -> list only. Approximate geometry -> dashed line/halo, never mixed with source geometry.
-   Synthetic -> grey dotted ring/outline on the map, «Демо» badge in the list, banner in the card, note in tooltip.
+   Coordinates outside the R02 Astana envelope [70.8,50.75,72.1,51.6] -> list only with a reason.
+   Synthetic -> dashed grey ring (points) / dotted outline (lines, areas), «Демо» badge in the list, banner in
+   the card, note in the tooltip; no tenge amount is shown for a synthetic record.
+   Among overlapping areas a click picks the smallest; a small polygon is drawn above a large one.
    Camera: selection fits the object into the part of the map not covered by the host panel (outermost
    absolute/fixed ancestor of root), keeps the user's pitch/bearing (2D/3D), duration 0 with prefers-reduced-motion.
    No extrusions, heights or traffic are drawn.
@@ -80,14 +100,16 @@ Source of truth: branch claude/zen-mendel-e79iiv; take the SHA named in DELIVERY
    darker than --muted (#6d7c76 is 4.3:1 on white) to reach >= 4.5:1. Nothing in style.css needs to change.
    The stand demonstrates reuse of .topbar, .brand*, .map-tools, .icon-btn, .map-status unchanged.
 
-9. KNOWN CONSTRAINTS FROM R02 (origin/claude/trusting-ptolemy-6ms354 @ 6a28de2)
-   R02 refuses tenge amounts on synthetic records and titles > 200 characters; the R03 R02 harness adapts its seed
-   accordingly. Public history changed_fields are strings; timestamps come in UTC (+00:00).
+9. KNOWN CONSTRAINTS FROM R02 (origin/claude/trusting-ptolemy-6ms354 @ 6a28de2 .. 3d2b8b9)
+   R02 refuses tenge amounts on synthetic records and titles > 200 characters (R03 fixtures follow both).
+   Public history changed_fields are strings; timestamps come in UTC (+00:00) and are converted for display.
+   Observation in R01 8c6add9 (R01 file, not R03): at 1440x900 the third footer button of .civic-foot is cut off.
 
 10. HOW TO VERIFY AFTER IMPORT
    node --test tests/civic/R03/core.test.mjs
    node --test --test-concurrency=1 tests/civic/R03/browser.test.mjs           (stand, mock api)
    node --test --test-concurrency=1 tests/civic/R03/r02_readonly.test.mjs      (R02 CivicService read-only)
+   R01 flow with these files: NODE_PATH=$(npm root -g) node tests/civic/R01/browser/p0_flow.cjs <out>
    In the integrated app (R01/R10): open the civic mode, check that window.CivicMap is used (not the fallback),
    map style has 12 civic-r03-* layers, selecting a list item opens the card and moves the camera clear of the panel,
    mode switch to «Учебная модель» destroys the module (no civic-r03-* layers left).

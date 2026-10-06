@@ -67,6 +67,10 @@
 .civic-r03-layout-embedded .civic-r03-head-row {
   display: none;
 }
+/* In the host panel the card needs no list header above it. */
+.civic-r03-layout-embedded[data-civic-r03-view="card"] .civic-r03-head {
+  display: none;
+}
 .civic-r03-layout-embedded .civic-r03-scroll {
   overflow: visible;
   padding: 4px 0 8px;
