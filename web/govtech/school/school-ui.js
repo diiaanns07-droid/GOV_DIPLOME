@@ -773,7 +773,15 @@
   }
 
   // ---------- render ----------
+  // Same race as D1: an input's change fires on pointerdown (blur); re-rendering then replaced the pressed button and the
+  // first human-speed click was lost. While a pointer is down the panels are not rebuilt; the render runs after the click.
+  const PRESS = { down: false, pending: false };
+  document.addEventListener("pointerdown", () => { PRESS.down = true; }, true);
+  const release = () => { if (!PRESS.down) return; PRESS.down = false; if (PRESS.pending) { PRESS.pending = false; setTimeout(render, 0); } };
+  for (const t of ["pointerup", "pointercancel"]) document.addEventListener(t, release, true);
+  addEventListener("blur", release);
   function render() {
+    if (PRESS.down) { PRESS.pending = true; return; }
     const on = active();
     strip.hidden = actions.hidden = legend.hidden = !on;
     card.hidden = !on || !S.cardOpen; reopen.hidden = !on || S.cardOpen;
