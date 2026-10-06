@@ -1,0 +1,3511 @@
+{
+ "report_schema": "k08-resilience-report/v1",
+ "schema_version": "city-resilience-v1",
+ "metric_version": "haversine-mm-v1",
+ "objective_version": "worst-lex-v1",
+ "generator": "research/round-9-results/K08/resilience_report.js (adapter over web/plan.js)",
+ "resilience_problem_digest": "sha256:e2103ed8cbbd8e48f913f85f5f44254b4c1908b076908922209f45ca0bbf4642",
+ "resilience_scenario_digest": "sha256:061d4de81f026875665f722e84abd9cb2a1a688069c56138f97d98877c50d608",
+ "exclusions_digest": "sha256:3d5f2bf926926120f3c6fc484abf1cd5afc372f8d70af5044b8f6704fa6e8827",
+ "v2_problem_digest": "sha256:9808a0a3edba62456a1a6cf123692972800061bfb8ea2d62f9b73cbea078a322",
+ "v2_scenario_digest": "sha256:6f05a6b881be4f3ac86d61c93ad305ee6496a5d2476fc9deef44c1405f2e9fc9",
+ "source": {
+  "city_id": "shymkent",
+  "label": "Шымкент",
+  "source_snapshot": "sha256:a9326b5633c513c0bfeccbb2248b26cf3b706c902f77745073a2959ad8d7ff3e",
+  "release": "2026-09-23.1",
+  "bbox": [
+   69.593365,
+   42.306645,
+   69.617658,
+   42.324611
+  ],
+  "places_file": {
+   "path": "inputs/k10/data/shymkent/places_social.geojson",
+   "sha256": "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7"
+  },
+  "records_in_slice": 15,
+  "attribution": [
+   {
+    "dataset": "OpenStreetMap",
+    "layer": "connectors",
+    "license": "ODbL-1.0"
+   },
+   {
+    "dataset": "Overture",
+    "layer": "places_social",
+    "license": "CDLA-Permissive-2.0"
+   },
+   {
+    "dataset": "meta",
+    "layer": "places_social",
+    "license": "CDLA-Permissive-2.0"
+   },
+   {
+    "dataset": "OpenStreetMap",
+    "layer": "segments",
+    "license": "ODbL-1.0"
+   },
+   {
+    "dataset": "TomTom",
+    "layer": "segments",
+    "license": "ODbL-1.0"
+   }
+  ]
+ },
+ "input": {
+  "plan": {
+   "schema_version": "city-plan-v2",
+   "city_id": "shymkent",
+   "source_snapshot": "sha256:a9326b5633c513c0bfeccbb2248b26cf3b706c902f77745073a2959ad8d7ff3e",
+   "category": "school",
+   "control_points": [
+    {
+     "id": "p1",
+     "lon": 69.59628,
+     "lat": 42.308801,
+     "weight": 1
+    },
+    {
+     "id": "p2",
+     "lon": 69.605512,
+     "lat": 42.308801,
+     "weight": 8
+    },
+    {
+     "id": "p3",
+     "lon": 69.614743,
+     "lat": 42.308801,
+     "weight": 5
+    },
+    {
+     "id": "p4",
+     "lon": 69.59628,
+     "lat": 42.315628,
+     "weight": 2
+    },
+    {
+     "id": "p5",
+     "lon": 69.605512,
+     "lat": 42.315628,
+     "weight": 9
+    },
+    {
+     "id": "p6",
+     "lon": 69.614743,
+     "lat": 42.315628,
+     "weight": 6
+    },
+    {
+     "id": "p7",
+     "lon": 69.59628,
+     "lat": 42.322455,
+     "weight": 3
+    },
+    {
+     "id": "p8",
+     "lon": 69.605512,
+     "lat": 42.322455,
+     "weight": 10
+    },
+    {
+     "id": "p9",
+     "lon": 69.614743,
+     "lat": 42.322455,
+     "weight": 7
+    }
+   ],
+   "candidates": [
+    {
+     "id": "c1",
+     "lon": 69.598224,
+     "lat": 42.310238,
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 120
+    },
+    {
+     "id": "c2",
+     "lon": 69.605512,
+     "lat": 42.310238,
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 90
+    },
+    {
+     "id": "c3",
+     "lon": 69.612799,
+     "lat": 42.310238,
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 150
+    },
+    {
+     "id": "c4",
+     "lon": 69.598224,
+     "lat": 42.321018,
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 60
+    },
+    {
+     "id": "c5",
+     "lon": 69.605512,
+     "lat": 42.321018,
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 200
+    },
+    {
+     "id": "c6",
+     "lon": 69.612799,
+     "lat": 42.321018,
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 80
+    }
+   ],
+   "budget": 300,
+   "max_selected": 3,
+   "coverage_radius_m": 400,
+   "required_ids": [],
+   "excluded_ids": [
+    "c6"
+   ],
+   "selected_ids": [
+    "c1"
+   ]
+  },
+  "cases": [
+   {
+    "id": "qa_doubt",
+    "label": "QA: сомнение в категории — условно не учитываем",
+    "disabled_source_ids": [
+     "01961e84-815f-4bd1-85c3-6bf1734256ec",
+     "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+     "9d31b953-ccc4-42bd-a3a3-3e4e21f44051"
+    ]
+   },
+   {
+    "id": "near_two",
+    "label": "Без двух ближайших записей",
+    "disabled_source_ids": [
+     "18df815b-170a-437c-977f-0769690315d4",
+     "51ac9e88-456d-4b3a-a657-d3cbc516c708"
+    ]
+   },
+   {
+    "id": "дубль_near_two",
+    "label": "Тот же набор, другая подпись <b>не тег</b>",
+    "disabled_source_ids": [
+     "18df815b-170a-437c-977f-0769690315d4",
+     "51ac9e88-456d-4b3a-a657-d3cbc516c708"
+    ]
+   },
+   {
+    "id": "все_записи",
+    "label": "Все записи школ условно исключены",
+    "disabled_source_ids": [
+     "01961e84-815f-4bd1-85c3-6bf1734256ec",
+     "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+     "176c5993-4b62-4e90-849f-88addc0153bb",
+     "18df815b-170a-437c-977f-0769690315d4",
+     "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+     "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+     "68c8f007-75bc-42f6-8da8-baa72042bde4",
+     "931d6da5-e9db-4523-a6fd-79c88f235f88",
+     "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+     "9d31b953-ccc4-42bd-a3a3-3e4e21f44051",
+     "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6",
+     "b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+     "baeda67d-e701-4c2a-bba6-10a13466e76d",
+     "bcd265d0-0799-4dbf-8b15-23bae752a4d2",
+     "fd50a858-462d-477f-8bc6-a8d3e03a9576"
+    ]
+   }
+  ]
+ },
+ "cases": [
+  {
+   "id": "base",
+   "label": "Без исключений (base)",
+   "disabled_source_ids": [],
+   "same_exclusions_as": []
+  },
+  {
+   "id": "qa_doubt",
+   "label": "QA: сомнение в категории — условно не учитываем",
+   "disabled_source_ids": [
+    "01961e84-815f-4bd1-85c3-6bf1734256ec",
+    "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+    "9d31b953-ccc4-42bd-a3a3-3e4e21f44051"
+   ],
+   "same_exclusions_as": []
+  },
+  {
+   "id": "near_two",
+   "label": "Без двух ближайших записей",
+   "disabled_source_ids": [
+    "18df815b-170a-437c-977f-0769690315d4",
+    "51ac9e88-456d-4b3a-a657-d3cbc516c708"
+   ],
+   "same_exclusions_as": [
+    "дубль_near_two"
+   ]
+  },
+  {
+   "id": "дубль_near_two",
+   "label": "Тот же набор, другая подпись <b>не тег</b>",
+   "disabled_source_ids": [
+    "18df815b-170a-437c-977f-0769690315d4",
+    "51ac9e88-456d-4b3a-a657-d3cbc516c708"
+   ],
+   "same_exclusions_as": [
+    "near_two"
+   ]
+  },
+  {
+   "id": "все_записи",
+   "label": "Все записи школ условно исключены",
+   "disabled_source_ids": [
+    "01961e84-815f-4bd1-85c3-6bf1734256ec",
+    "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+    "176c5993-4b62-4e90-849f-88addc0153bb",
+    "18df815b-170a-437c-977f-0769690315d4",
+    "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+    "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+    "68c8f007-75bc-42f6-8da8-baa72042bde4",
+    "931d6da5-e9db-4523-a6fd-79c88f235f88",
+    "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+    "9d31b953-ccc4-42bd-a3a3-3e4e21f44051",
+    "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6",
+    "b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+    "baeda67d-e701-4c2a-bba6-10a13466e76d",
+    "bcd265d0-0799-4dbf-8b15-23bae752a4d2",
+    "fd50a858-462d-477f-8bc6-a8d3e03a9576"
+   ],
+   "same_exclusions_as": []
+  }
+ ],
+ "search": {
+  "status": "optimal",
+  "evaluated": 64,
+  "feasible_count": 16,
+  "subsets_limit": 4096,
+  "v2_status": "optimal",
+  "v2_reasons": []
+ },
+ "plans": {
+  "manual": {
+   "selected_ids": [
+    "c1"
+   ],
+   "feasible": true,
+   "reasons": [],
+   "per_case": [
+    {
+     "case_id": "base",
+     "unknown_count": 0,
+     "weighted_sum_mm": 13656968,
+     "weighted_mean_mm": 267783.6862745098,
+     "max_mm": 620235,
+     "covered_weight": 38,
+     "coverage_fraction": 0.7450980392156863,
+     "cost": 120,
+     "vector": [
+      0,
+      13656968,
+      620235
+     ]
+    },
+    {
+     "case_id": "qa_doubt",
+     "unknown_count": 0,
+     "weighted_sum_mm": 13656968,
+     "weighted_mean_mm": 267783.6862745098,
+     "max_mm": 620235,
+     "covered_weight": 38,
+     "coverage_fraction": 0.7450980392156863,
+     "cost": 120,
+     "vector": [
+      0,
+      13656968,
+      620235
+     ]
+    },
+    {
+     "case_id": "near_two",
+     "unknown_count": 0,
+     "weighted_sum_mm": 19826576,
+     "weighted_mean_mm": 388756.39215686277,
+     "max_mm": 1310453,
+     "covered_weight": 32,
+     "coverage_fraction": 0.6274509803921569,
+     "cost": 120,
+     "vector": [
+      0,
+      19826576,
+      1310453
+     ]
+    },
+    {
+     "case_id": "дубль_near_two",
+     "unknown_count": 0,
+     "weighted_sum_mm": 19826576,
+     "weighted_mean_mm": 388756.39215686277,
+     "max_mm": 1310453,
+     "covered_weight": 32,
+     "coverage_fraction": 0.6274509803921569,
+     "cost": 120,
+     "vector": [
+      0,
+      19826576,
+      1310453
+     ]
+    },
+    {
+     "case_id": "все_записи",
+     "unknown_count": 0,
+     "weighted_sum_mm": 62201094,
+     "weighted_mean_mm": 1219629.294117647,
+     "max_mm": 1920994,
+     "covered_weight": 1,
+     "coverage_fraction": 0.0196078431372549,
+     "cost": 120,
+     "vector": [
+      0,
+      62201094,
+      1920994
+     ]
+    }
+   ],
+   "worst_vector": [
+    0,
+    62201094,
+    1920994
+   ],
+   "worst_case_ids": [
+    "все_записи"
+   ],
+   "rows_by_case": [
+    {
+     "case_id": "base",
+     "rows": [
+      {
+       "id": "p1",
+       "lon": 69.59628,
+       "lat": 42.308801,
+       "weight": 1,
+       "before_mm": 685059,
+       "before_m": 685.0590768974313,
+       "nearest_before": {
+        "kind": "source",
+        "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       },
+       "after_mm": 226023,
+       "after_m": 226.0225923125521,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c1"
+       },
+       "delta_mm": 459036
+      },
+      {
+       "id": "p2",
+       "lon": 69.605512,
+       "lat": 42.308801,
+       "weight": 8,
+       "before_mm": 823055,
+       "before_m": 823.0553579051015,
+       "nearest_before": {
+        "kind": "source",
+        "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       },
+       "after_mm": 620235,
+       "after_m": 620.2346953710767,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c1"
+       },
+       "delta_mm": 202820
+      },
+      {
+       "id": "p3",
+       "lon": 69.614743,
+       "lat": 42.308801,
+       "weight": 5,
+       "before_mm": 440267,
+       "before_m": 440.2668540069261,
+       "nearest_before": {
+        "kind": "source",
+        "id": "18df815b-170a-437c-977f-0769690315d4"
+       },
+       "after_mm": 440267,
+       "after_m": 440.2668540069261,
+       "nearest_after": {
+        "kind": "source",
+        "id": "18df815b-170a-437c-977f-0769690315d4"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p4",
+       "lon": 69.59628,
+       "lat": 42.315628,
+       "weight": 2,
+       "before_mm": 125565,
+       "before_m": 125.56482893167745,
+       "nearest_before": {
+        "kind": "source",
+        "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708"
+       },
+       "after_mm": 125565,
+       "after_m": 125.56482893167745,
+       "nearest_after": {
+        "kind": "source",
+        "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p5",
+       "lon": 69.605512,
+       "lat": 42.315628,
+       "weight": 9,
+       "before_mm": 243856,
+       "before_m": 243.85638190754193,
+       "nearest_before": {
+        "kind": "source",
+        "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+       },
+       "after_mm": 243856,
+       "after_m": 243.85638190754193,
+       "nearest_after": {
+        "kind": "source",
+        "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p6",
+       "lon": 69.614743,
+       "lat": 42.315628,
+       "weight": 6,
+       "before_mm": 318970,
+       "before_m": 318.9703320476458,
+       "nearest_before": {
+        "kind": "source",
+        "id": "18df815b-170a-437c-977f-0769690315d4"
+       },
+       "after_mm": 318970,
+       "after_m": 318.9703320476458,
+       "nearest_after": {
+        "kind": "source",
+        "id": "18df815b-170a-437c-977f-0769690315d4"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p7",
+       "lon": 69.59628,
+       "lat": 42.322455,
+       "weight": 3,
+       "before_mm": 161448,
+       "before_m": 161.44805864518838,
+       "nearest_before": {
+        "kind": "source",
+        "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+       },
+       "after_mm": 161448,
+       "after_m": 161.44805864518838,
+       "nearest_after": {
+        "kind": "source",
+        "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p8",
+       "lon": 69.605512,
+       "lat": 42.322455,
+       "weight": 10,
+       "before_mm": 76506,
+       "before_m": 76.50610107223703,
+       "nearest_before": {
+        "kind": "source",
+        "id": "176c5993-4b62-4e90-849f-88addc0153bb"
+       },
+       "after_mm": 76506,
+       "after_m": 76.50610107223703,
+       "nearest_after": {
+        "kind": "source",
+        "id": "176c5993-4b62-4e90-849f-88addc0153bb"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p9",
+       "lon": 69.614743,
+       "lat": 42.322455,
+       "weight": 7,
+       "before_mm": 94096,
+       "before_m": 94.09632706115694,
+       "nearest_before": {
+        "kind": "source",
+        "id": "baeda67d-e701-4c2a-bba6-10a13466e76d"
+       },
+       "after_mm": 94096,
+       "after_m": 94.09632706115694,
+       "nearest_after": {
+        "kind": "source",
+        "id": "baeda67d-e701-4c2a-bba6-10a13466e76d"
+       },
+       "delta_mm": 0
+      }
+     ]
+    },
+    {
+     "case_id": "qa_doubt",
+     "rows": [
+      {
+       "id": "p1",
+       "lon": 69.59628,
+       "lat": 42.308801,
+       "weight": 1,
+       "before_mm": 685059,
+       "before_m": 685.0590768974313,
+       "nearest_before": {
+        "kind": "source",
+        "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       },
+       "after_mm": 226023,
+       "after_m": 226.0225923125521,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c1"
+       },
+       "delta_mm": 459036
+      },
+      {
+       "id": "p2",
+       "lon": 69.605512,
+       "lat": 42.308801,
+       "weight": 8,
+       "before_mm": 823055,
+       "before_m": 823.0553579051015,
+       "nearest_before": {
+        "kind": "source",
+        "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       },
+       "after_mm": 620235,
+       "after_m": 620.2346953710767,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c1"
+       },
+       "delta_mm": 202820
+      },
+      {
+       "id": "p3",
+       "lon": 69.614743,
+       "lat": 42.308801,
+       "weight": 5,
+       "before_mm": 440267,
+       "before_m": 440.2668540069261,
+       "nearest_before": {
+        "kind": "source",
+        "id": "18df815b-170a-437c-977f-0769690315d4"
+       },
+       "after_mm": 440267,
+       "after_m": 440.2668540069261,
+       "nearest_after": {
+        "kind": "source",
+        "id": "18df815b-170a-437c-977f-0769690315d4"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p4",
+       "lon": 69.59628,
+       "lat": 42.315628,
+       "weight": 2,
+       "before_mm": 125565,
+       "before_m": 125.56482893167745,
+       "nearest_before": {
+        "kind": "source",
+        "id": "68c8f007-75bc-42f6-8da8-baa72042bde4"
+       },
+       "after_mm": 125565,
+       "after_m": 125.56482893167745,
+       "nearest_after": {
+        "kind": "source",
+        "id": "68c8f007-75bc-42f6-8da8-baa72042bde4"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p5",
+       "lon": 69.605512,
+       "lat": 42.315628,
+       "weight": 9,
+       "before_mm": 243856,
+       "before_m": 243.85638190754193,
+       "nearest_before": {
+        "kind": "source",
+        "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+       },
+       "after_mm": 243856,
+       "after_m": 243.85638190754193,
+       "nearest_after": {
+        "kind": "source",
+        "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p6",
+       "lon": 69.614743,
+       "lat": 42.315628,
+       "weight": 6,
+       "before_mm": 318970,
+       "before_m": 318.9703320476458,
+       "nearest_before": {
+        "kind": "source",
+        "id": "18df815b-170a-437c-977f-0769690315d4"
+       },
+       "after_mm": 318970,
+       "after_m": 318.9703320476458,
+       "nearest_after": {
+        "kind": "source",
+        "id": "18df815b-170a-437c-977f-0769690315d4"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p7",
+       "lon": 69.59628,
+       "lat": 42.322455,
+       "weight": 3,
+       "before_mm": 161448,
+       "before_m": 161.44805864518838,
+       "nearest_before": {
+        "kind": "source",
+        "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+       },
+       "after_mm": 161448,
+       "after_m": 161.44805864518838,
+       "nearest_after": {
+        "kind": "source",
+        "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p8",
+       "lon": 69.605512,
+       "lat": 42.322455,
+       "weight": 10,
+       "before_mm": 76506,
+       "before_m": 76.50610107223703,
+       "nearest_before": {
+        "kind": "source",
+        "id": "176c5993-4b62-4e90-849f-88addc0153bb"
+       },
+       "after_mm": 76506,
+       "after_m": 76.50610107223703,
+       "nearest_after": {
+        "kind": "source",
+        "id": "176c5993-4b62-4e90-849f-88addc0153bb"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p9",
+       "lon": 69.614743,
+       "lat": 42.322455,
+       "weight": 7,
+       "before_mm": 94096,
+       "before_m": 94.09632706115694,
+       "nearest_before": {
+        "kind": "source",
+        "id": "baeda67d-e701-4c2a-bba6-10a13466e76d"
+       },
+       "after_mm": 94096,
+       "after_m": 94.09632706115694,
+       "nearest_after": {
+        "kind": "source",
+        "id": "baeda67d-e701-4c2a-bba6-10a13466e76d"
+       },
+       "delta_mm": 0
+      }
+     ]
+    },
+    {
+     "case_id": "near_two",
+     "rows": [
+      {
+       "id": "p1",
+       "lon": 69.59628,
+       "lat": 42.308801,
+       "weight": 1,
+       "before_mm": 685059,
+       "before_m": 685.0590768974313,
+       "nearest_before": {
+        "kind": "source",
+        "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       },
+       "after_mm": 226023,
+       "after_m": 226.0225923125521,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c1"
+       },
+       "delta_mm": 459036
+      },
+      {
+       "id": "p2",
+       "lon": 69.605512,
+       "lat": 42.308801,
+       "weight": 8,
+       "before_mm": 823055,
+       "before_m": 823.0553579051015,
+       "nearest_before": {
+        "kind": "source",
+        "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       },
+       "after_mm": 620235,
+       "after_m": 620.2346953710767,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c1"
+       },
+       "delta_mm": 202820
+      },
+      {
+       "id": "p3",
+       "lon": 69.614743,
+       "lat": 42.308801,
+       "weight": 5,
+       "before_mm": 1310453,
+       "before_m": 1310.4529067882995,
+       "nearest_before": {
+        "kind": "source",
+        "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+       },
+       "after_mm": 1310453,
+       "after_m": 1310.4529067882995,
+       "nearest_after": {
+        "kind": "source",
+        "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p4",
+       "lon": 69.59628,
+       "lat": 42.315628,
+       "weight": 2,
+       "before_mm": 125565,
+       "before_m": 125.56482893167745,
+       "nearest_before": {
+        "kind": "source",
+        "id": "68c8f007-75bc-42f6-8da8-baa72042bde4"
+       },
+       "after_mm": 125565,
+       "after_m": 125.56482893167745,
+       "nearest_after": {
+        "kind": "source",
+        "id": "68c8f007-75bc-42f6-8da8-baa72042bde4"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p5",
+       "lon": 69.605512,
+       "lat": 42.315628,
+       "weight": 9,
+       "before_mm": 243856,
+       "before_m": 243.85638190754193,
+       "nearest_before": {
+        "kind": "source",
+        "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+       },
+       "after_mm": 243856,
+       "after_m": 243.85638190754193,
+       "nearest_after": {
+        "kind": "source",
+        "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p6",
+       "lon": 69.614743,
+       "lat": 42.315628,
+       "weight": 6,
+       "before_mm": 622083,
+       "before_m": 622.0827365431909,
+       "nearest_before": {
+        "kind": "source",
+        "id": "01961e84-815f-4bd1-85c3-6bf1734256ec"
+       },
+       "after_mm": 622083,
+       "after_m": 622.0827365431909,
+       "nearest_after": {
+        "kind": "source",
+        "id": "01961e84-815f-4bd1-85c3-6bf1734256ec"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p7",
+       "lon": 69.59628,
+       "lat": 42.322455,
+       "weight": 3,
+       "before_mm": 161448,
+       "before_m": 161.44805864518838,
+       "nearest_before": {
+        "kind": "source",
+        "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+       },
+       "after_mm": 161448,
+       "after_m": 161.44805864518838,
+       "nearest_after": {
+        "kind": "source",
+        "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p8",
+       "lon": 69.605512,
+       "lat": 42.322455,
+       "weight": 10,
+       "before_mm": 76506,
+       "before_m": 76.50610107223703,
+       "nearest_before": {
+        "kind": "source",
+        "id": "176c5993-4b62-4e90-849f-88addc0153bb"
+       },
+       "after_mm": 76506,
+       "after_m": 76.50610107223703,
+       "nearest_after": {
+        "kind": "source",
+        "id": "176c5993-4b62-4e90-849f-88addc0153bb"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p9",
+       "lon": 69.614743,
+       "lat": 42.322455,
+       "weight": 7,
+       "before_mm": 94096,
+       "before_m": 94.09632706115694,
+       "nearest_before": {
+        "kind": "source",
+        "id": "baeda67d-e701-4c2a-bba6-10a13466e76d"
+       },
+       "after_mm": 94096,
+       "after_m": 94.09632706115694,
+       "nearest_after": {
+        "kind": "source",
+        "id": "baeda67d-e701-4c2a-bba6-10a13466e76d"
+       },
+       "delta_mm": 0
+      }
+     ]
+    },
+    {
+     "case_id": "дубль_near_two",
+     "rows": [
+      {
+       "id": "p1",
+       "lon": 69.59628,
+       "lat": 42.308801,
+       "weight": 1,
+       "before_mm": 685059,
+       "before_m": 685.0590768974313,
+       "nearest_before": {
+        "kind": "source",
+        "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       },
+       "after_mm": 226023,
+       "after_m": 226.0225923125521,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c1"
+       },
+       "delta_mm": 459036
+      },
+      {
+       "id": "p2",
+       "lon": 69.605512,
+       "lat": 42.308801,
+       "weight": 8,
+       "before_mm": 823055,
+       "before_m": 823.0553579051015,
+       "nearest_before": {
+        "kind": "source",
+        "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       },
+       "after_mm": 620235,
+       "after_m": 620.2346953710767,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c1"
+       },
+       "delta_mm": 202820
+      },
+      {
+       "id": "p3",
+       "lon": 69.614743,
+       "lat": 42.308801,
+       "weight": 5,
+       "before_mm": 1310453,
+       "before_m": 1310.4529067882995,
+       "nearest_before": {
+        "kind": "source",
+        "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+       },
+       "after_mm": 1310453,
+       "after_m": 1310.4529067882995,
+       "nearest_after": {
+        "kind": "source",
+        "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p4",
+       "lon": 69.59628,
+       "lat": 42.315628,
+       "weight": 2,
+       "before_mm": 125565,
+       "before_m": 125.56482893167745,
+       "nearest_before": {
+        "kind": "source",
+        "id": "68c8f007-75bc-42f6-8da8-baa72042bde4"
+       },
+       "after_mm": 125565,
+       "after_m": 125.56482893167745,
+       "nearest_after": {
+        "kind": "source",
+        "id": "68c8f007-75bc-42f6-8da8-baa72042bde4"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p5",
+       "lon": 69.605512,
+       "lat": 42.315628,
+       "weight": 9,
+       "before_mm": 243856,
+       "before_m": 243.85638190754193,
+       "nearest_before": {
+        "kind": "source",
+        "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+       },
+       "after_mm": 243856,
+       "after_m": 243.85638190754193,
+       "nearest_after": {
+        "kind": "source",
+        "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p6",
+       "lon": 69.614743,
+       "lat": 42.315628,
+       "weight": 6,
+       "before_mm": 622083,
+       "before_m": 622.0827365431909,
+       "nearest_before": {
+        "kind": "source",
+        "id": "01961e84-815f-4bd1-85c3-6bf1734256ec"
+       },
+       "after_mm": 622083,
+       "after_m": 622.0827365431909,
+       "nearest_after": {
+        "kind": "source",
+        "id": "01961e84-815f-4bd1-85c3-6bf1734256ec"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p7",
+       "lon": 69.59628,
+       "lat": 42.322455,
+       "weight": 3,
+       "before_mm": 161448,
+       "before_m": 161.44805864518838,
+       "nearest_before": {
+        "kind": "source",
+        "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+       },
+       "after_mm": 161448,
+       "after_m": 161.44805864518838,
+       "nearest_after": {
+        "kind": "source",
+        "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p8",
+       "lon": 69.605512,
+       "lat": 42.322455,
+       "weight": 10,
+       "before_mm": 76506,
+       "before_m": 76.50610107223703,
+       "nearest_before": {
+        "kind": "source",
+        "id": "176c5993-4b62-4e90-849f-88addc0153bb"
+       },
+       "after_mm": 76506,
+       "after_m": 76.50610107223703,
+       "nearest_after": {
+        "kind": "source",
+        "id": "176c5993-4b62-4e90-849f-88addc0153bb"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p9",
+       "lon": 69.614743,
+       "lat": 42.322455,
+       "weight": 7,
+       "before_mm": 94096,
+       "before_m": 94.09632706115694,
+       "nearest_before": {
+        "kind": "source",
+        "id": "baeda67d-e701-4c2a-bba6-10a13466e76d"
+       },
+       "after_mm": 94096,
+       "after_m": 94.09632706115694,
+       "nearest_after": {
+        "kind": "source",
+        "id": "baeda67d-e701-4c2a-bba6-10a13466e76d"
+       },
+       "delta_mm": 0
+      }
+     ]
+    },
+    {
+     "case_id": "все_записи",
+     "rows": [
+      {
+       "id": "p1",
+       "lon": 69.59628,
+       "lat": 42.308801,
+       "weight": 1,
+       "before_mm": null,
+       "before_m": null,
+       "nearest_before": null,
+       "after_mm": 226023,
+       "after_m": 226.0225923125521,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c1"
+       },
+       "delta_mm": null
+      },
+      {
+       "id": "p2",
+       "lon": 69.605512,
+       "lat": 42.308801,
+       "weight": 8,
+       "before_mm": null,
+       "before_m": null,
+       "nearest_before": null,
+       "after_mm": 620235,
+       "after_m": 620.2346953710767,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c1"
+       },
+       "delta_mm": null
+      },
+      {
+       "id": "p3",
+       "lon": 69.614743,
+       "lat": 42.308801,
+       "weight": 5,
+       "before_mm": null,
+       "before_m": null,
+       "nearest_before": null,
+       "after_mm": 1367738,
+       "after_m": 1367.7380246864132,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c1"
+       },
+       "delta_mm": null
+      },
+      {
+       "id": "p4",
+       "lon": 69.59628,
+       "lat": 42.315628,
+       "weight": 2,
+       "before_mm": null,
+       "before_m": null,
+       "nearest_before": null,
+       "after_mm": 620292,
+       "after_m": 620.2915945593998,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c1"
+       },
+       "delta_mm": null
+      },
+      {
+       "id": "p5",
+       "lon": 69.605512,
+       "lat": 42.315628,
+       "weight": 9,
+       "before_mm": null,
+       "before_m": null,
+       "nearest_before": null,
+       "after_mm": 847544,
+       "after_m": 847.5437123753696,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c1"
+       },
+       "delta_mm": null
+      },
+      {
+       "id": "p6",
+       "lon": 69.614743,
+       "lat": 42.315628,
+       "weight": 6,
+       "before_mm": null,
+       "before_m": null,
+       "nearest_before": null,
+       "after_mm": 1484650,
+       "after_m": 1484.649924033323,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c1"
+       },
+       "delta_mm": null
+      },
+      {
+       "id": "p7",
+       "lon": 69.59628,
+       "lat": 42.322455,
+       "weight": 3,
+       "before_mm": null,
+       "before_m": null,
+       "nearest_before": null,
+       "after_mm": 1367841,
+       "after_m": 1367.8414457795525,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c1"
+       },
+       "delta_mm": null
+      },
+      {
+       "id": "p8",
+       "lon": 69.605512,
+       "lat": 42.322455,
+       "weight": 10,
+       "before_mm": null,
+       "before_m": null,
+       "nearest_before": null,
+       "after_mm": 1484764,
+       "after_m": 1484.7635221611465,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c1"
+       },
+       "delta_mm": null
+      },
+      {
+       "id": "p9",
+       "lon": 69.614743,
+       "lat": 42.322455,
+       "weight": 7,
+       "before_mm": null,
+       "before_m": null,
+       "nearest_before": null,
+       "after_mm": 1920994,
+       "after_m": 1920.9936441682162,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c1"
+       },
+       "delta_mm": null
+      }
+     ]
+    }
+   ]
+  },
+  "nominal": {
+   "selected_ids": [
+    "c2",
+    "c3"
+   ],
+   "feasible": true,
+   "reasons": [],
+   "per_case": [
+    {
+     "case_id": "base",
+     "unknown_count": 0,
+     "weighted_sum_mm": 9361200,
+     "weighted_mean_mm": 183552.9411764706,
+     "max_mm": 685059,
+     "covered_weight": 50,
+     "coverage_fraction": 0.9803921568627451,
+     "cost": 240,
+     "vector": [
+      0,
+      9361200,
+      685059
+     ]
+    },
+    {
+     "case_id": "qa_doubt",
+     "unknown_count": 0,
+     "weighted_sum_mm": 9361200,
+     "weighted_mean_mm": 183552.9411764706,
+     "max_mm": 685059,
+     "covered_weight": 50,
+     "coverage_fraction": 0.9803921568627451,
+     "cost": 240,
+     "vector": [
+      0,
+      9361200,
+      685059
+     ]
+    },
+    {
+     "case_id": "near_two",
+     "unknown_count": 0,
+     "weighted_sum_mm": 11169132,
+     "weighted_mean_mm": 219002.58823529413,
+     "max_mm": 685059,
+     "covered_weight": 44,
+     "coverage_fraction": 0.8627450980392157,
+     "cost": 240,
+     "vector": [
+      0,
+      11169132,
+      685059
+     ]
+    },
+    {
+     "case_id": "дубль_near_two",
+     "unknown_count": 0,
+     "weighted_sum_mm": 11169132,
+     "weighted_mean_mm": 219002.58823529413,
+     "max_mm": 685059,
+     "covered_weight": 44,
+     "coverage_fraction": 0.8627450980392157,
+     "cost": 240,
+     "vector": [
+      0,
+      11169132,
+      685059
+     ]
+    },
+    {
+     "case_id": "все_записи",
+     "unknown_count": 0,
+     "weighted_sum_mm": 42062477,
+     "weighted_mean_mm": 824754.4509803922,
+     "max_mm": 1556160,
+     "covered_weight": 13,
+     "coverage_fraction": 0.2549019607843137,
+     "cost": 240,
+     "vector": [
+      0,
+      42062477,
+      1556160
+     ]
+    }
+   ],
+   "worst_vector": [
+    0,
+    42062477,
+    1556160
+   ],
+   "worst_case_ids": [
+    "все_записи"
+   ],
+   "rows_by_case": [
+    {
+     "case_id": "base",
+     "rows": [
+      {
+       "id": "p1",
+       "lon": 69.59628,
+       "lat": 42.308801,
+       "weight": 1,
+       "before_mm": 685059,
+       "before_m": 685.0590768974313,
+       "nearest_before": {
+        "kind": "source",
+        "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       },
+       "after_mm": 685059,
+       "after_m": 685.0590768974313,
+       "nearest_after": {
+        "kind": "source",
+        "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p2",
+       "lon": 69.605512,
+       "lat": 42.308801,
+       "weight": 8,
+       "before_mm": 823055,
+       "before_m": 823.0553579051015,
+       "nearest_before": {
+        "kind": "source",
+        "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       },
+       "after_mm": 159787,
+       "after_m": 159.78733029510772,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c2"
+       },
+       "delta_mm": 663268
+      },
+      {
+       "id": "p3",
+       "lon": 69.614743,
+       "lat": 42.308801,
+       "weight": 5,
+       "before_mm": 440267,
+       "before_m": 440.2668540069261,
+       "nearest_before": {
+        "kind": "source",
+        "id": "18df815b-170a-437c-977f-0769690315d4"
+       },
+       "after_mm": 226023,
+       "after_m": 226.0225923125521,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c3"
+       },
+       "delta_mm": 214244
+      },
+      {
+       "id": "p4",
+       "lon": 69.59628,
+       "lat": 42.315628,
+       "weight": 2,
+       "before_mm": 125565,
+       "before_m": 125.56482893167745,
+       "nearest_before": {
+        "kind": "source",
+        "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708"
+       },
+       "after_mm": 125565,
+       "after_m": 125.56482893167745,
+       "nearest_after": {
+        "kind": "source",
+        "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p5",
+       "lon": 69.605512,
+       "lat": 42.315628,
+       "weight": 9,
+       "before_mm": 243856,
+       "before_m": 243.85638190754193,
+       "nearest_before": {
+        "kind": "source",
+        "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+       },
+       "after_mm": 243856,
+       "after_m": 243.85638190754193,
+       "nearest_after": {
+        "kind": "source",
+        "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p6",
+       "lon": 69.614743,
+       "lat": 42.315628,
+       "weight": 6,
+       "before_mm": 318970,
+       "before_m": 318.9703320476458,
+       "nearest_before": {
+        "kind": "source",
+        "id": "18df815b-170a-437c-977f-0769690315d4"
+       },
+       "after_mm": 318970,
+       "after_m": 318.9703320476458,
+       "nearest_after": {
+        "kind": "source",
+        "id": "18df815b-170a-437c-977f-0769690315d4"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p7",
+       "lon": 69.59628,
+       "lat": 42.322455,
+       "weight": 3,
+       "before_mm": 161448,
+       "before_m": 161.44805864518838,
+       "nearest_before": {
+        "kind": "source",
+        "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+       },
+       "after_mm": 161448,
+       "after_m": 161.44805864518838,
+       "nearest_after": {
+        "kind": "source",
+        "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p8",
+       "lon": 69.605512,
+       "lat": 42.322455,
+       "weight": 10,
+       "before_mm": 76506,
+       "before_m": 76.50610107223703,
+       "nearest_before": {
+        "kind": "source",
+        "id": "176c5993-4b62-4e90-849f-88addc0153bb"
+       },
+       "after_mm": 76506,
+       "after_m": 76.50610107223703,
+       "nearest_after": {
+        "kind": "source",
+        "id": "176c5993-4b62-4e90-849f-88addc0153bb"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p9",
+       "lon": 69.614743,
+       "lat": 42.322455,
+       "weight": 7,
+       "before_mm": 94096,
+       "before_m": 94.09632706115694,
+       "nearest_before": {
+        "kind": "source",
+        "id": "baeda67d-e701-4c2a-bba6-10a13466e76d"
+       },
+       "after_mm": 94096,
+       "after_m": 94.09632706115694,
+       "nearest_after": {
+        "kind": "source",
+        "id": "baeda67d-e701-4c2a-bba6-10a13466e76d"
+       },
+       "delta_mm": 0
+      }
+     ]
+    },
+    {
+     "case_id": "qa_doubt",
+     "rows": [
+      {
+       "id": "p1",
+       "lon": 69.59628,
+       "lat": 42.308801,
+       "weight": 1,
+       "before_mm": 685059,
+       "before_m": 685.0590768974313,
+       "nearest_before": {
+        "kind": "source",
+        "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       },
+       "after_mm": 685059,
+       "after_m": 685.0590768974313,
+       "nearest_after": {
+        "kind": "source",
+        "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p2",
+       "lon": 69.605512,
+       "lat": 42.308801,
+       "weight": 8,
+       "before_mm": 823055,
+       "before_m": 823.0553579051015,
+       "nearest_before": {
+        "kind": "source",
+        "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       },
+       "after_mm": 159787,
+       "after_m": 159.78733029510772,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c2"
+       },
+       "delta_mm": 663268
+      },
+      {
+       "id": "p3",
+       "lon": 69.614743,
+       "lat": 42.308801,
+       "weight": 5,
+       "before_mm": 440267,
+       "before_m": 440.2668540069261,
+       "nearest_before": {
+        "kind": "source",
+        "id": "18df815b-170a-437c-977f-0769690315d4"
+       },
+       "after_mm": 226023,
+       "after_m": 226.0225923125521,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c3"
+       },
+       "delta_mm": 214244
+      },
+      {
+       "id": "p4",
+       "lon": 69.59628,
+       "lat": 42.315628,
+       "weight": 2,
+       "before_mm": 125565,
+       "before_m": 125.56482893167745,
+       "nearest_before": {
+        "kind": "source",
+        "id": "68c8f007-75bc-42f6-8da8-baa72042bde4"
+       },
+       "after_mm": 125565,
+       "after_m": 125.56482893167745,
+       "nearest_after": {
+        "kind": "source",
+        "id": "68c8f007-75bc-42f6-8da8-baa72042bde4"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p5",
+       "lon": 69.605512,
+       "lat": 42.315628,
+       "weight": 9,
+       "before_mm": 243856,
+       "before_m": 243.85638190754193,
+       "nearest_before": {
+        "kind": "source",
+        "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+       },
+       "after_mm": 243856,
+       "after_m": 243.85638190754193,
+       "nearest_after": {
+        "kind": "source",
+        "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p6",
+       "lon": 69.614743,
+       "lat": 42.315628,
+       "weight": 6,
+       "before_mm": 318970,
+       "before_m": 318.9703320476458,
+       "nearest_before": {
+        "kind": "source",
+        "id": "18df815b-170a-437c-977f-0769690315d4"
+       },
+       "after_mm": 318970,
+       "after_m": 318.9703320476458,
+       "nearest_after": {
+        "kind": "source",
+        "id": "18df815b-170a-437c-977f-0769690315d4"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p7",
+       "lon": 69.59628,
+       "lat": 42.322455,
+       "weight": 3,
+       "before_mm": 161448,
+       "before_m": 161.44805864518838,
+       "nearest_before": {
+        "kind": "source",
+        "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+       },
+       "after_mm": 161448,
+       "after_m": 161.44805864518838,
+       "nearest_after": {
+        "kind": "source",
+        "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p8",
+       "lon": 69.605512,
+       "lat": 42.322455,
+       "weight": 10,
+       "before_mm": 76506,
+       "before_m": 76.50610107223703,
+       "nearest_before": {
+        "kind": "source",
+        "id": "176c5993-4b62-4e90-849f-88addc0153bb"
+       },
+       "after_mm": 76506,
+       "after_m": 76.50610107223703,
+       "nearest_after": {
+        "kind": "source",
+        "id": "176c5993-4b62-4e90-849f-88addc0153bb"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p9",
+       "lon": 69.614743,
+       "lat": 42.322455,
+       "weight": 7,
+       "before_mm": 94096,
+       "before_m": 94.09632706115694,
+       "nearest_before": {
+        "kind": "source",
+        "id": "baeda67d-e701-4c2a-bba6-10a13466e76d"
+       },
+       "after_mm": 94096,
+       "after_m": 94.09632706115694,
+       "nearest_after": {
+        "kind": "source",
+        "id": "baeda67d-e701-4c2a-bba6-10a13466e76d"
+       },
+       "delta_mm": 0
+      }
+     ]
+    },
+    {
+     "case_id": "near_two",
+     "rows": [
+      {
+       "id": "p1",
+       "lon": 69.59628,
+       "lat": 42.308801,
+       "weight": 1,
+       "before_mm": 685059,
+       "before_m": 685.0590768974313,
+       "nearest_before": {
+        "kind": "source",
+        "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       },
+       "after_mm": 685059,
+       "after_m": 685.0590768974313,
+       "nearest_after": {
+        "kind": "source",
+        "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p2",
+       "lon": 69.605512,
+       "lat": 42.308801,
+       "weight": 8,
+       "before_mm": 823055,
+       "before_m": 823.0553579051015,
+       "nearest_before": {
+        "kind": "source",
+        "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       },
+       "after_mm": 159787,
+       "after_m": 159.78733029510772,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c2"
+       },
+       "delta_mm": 663268
+      },
+      {
+       "id": "p3",
+       "lon": 69.614743,
+       "lat": 42.308801,
+       "weight": 5,
+       "before_mm": 1310453,
+       "before_m": 1310.4529067882995,
+       "nearest_before": {
+        "kind": "source",
+        "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+       },
+       "after_mm": 226023,
+       "after_m": 226.0225923125521,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c3"
+       },
+       "delta_mm": 1084430
+      },
+      {
+       "id": "p4",
+       "lon": 69.59628,
+       "lat": 42.315628,
+       "weight": 2,
+       "before_mm": 125565,
+       "before_m": 125.56482893167745,
+       "nearest_before": {
+        "kind": "source",
+        "id": "68c8f007-75bc-42f6-8da8-baa72042bde4"
+       },
+       "after_mm": 125565,
+       "after_m": 125.56482893167745,
+       "nearest_after": {
+        "kind": "source",
+        "id": "68c8f007-75bc-42f6-8da8-baa72042bde4"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p5",
+       "lon": 69.605512,
+       "lat": 42.315628,
+       "weight": 9,
+       "before_mm": 243856,
+       "before_m": 243.85638190754193,
+       "nearest_before": {
+        "kind": "source",
+        "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+       },
+       "after_mm": 243856,
+       "after_m": 243.85638190754193,
+       "nearest_after": {
+        "kind": "source",
+        "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p6",
+       "lon": 69.614743,
+       "lat": 42.315628,
+       "weight": 6,
+       "before_mm": 622083,
+       "before_m": 622.0827365431909,
+       "nearest_before": {
+        "kind": "source",
+        "id": "01961e84-815f-4bd1-85c3-6bf1734256ec"
+       },
+       "after_mm": 620292,
+       "after_m": 620.2915945593998,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c3"
+       },
+       "delta_mm": 1791
+      },
+      {
+       "id": "p7",
+       "lon": 69.59628,
+       "lat": 42.322455,
+       "weight": 3,
+       "before_mm": 161448,
+       "before_m": 161.44805864518838,
+       "nearest_before": {
+        "kind": "source",
+        "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+       },
+       "after_mm": 161448,
+       "after_m": 161.44805864518838,
+       "nearest_after": {
+        "kind": "source",
+        "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p8",
+       "lon": 69.605512,
+       "lat": 42.322455,
+       "weight": 10,
+       "before_mm": 76506,
+       "before_m": 76.50610107223703,
+       "nearest_before": {
+        "kind": "source",
+        "id": "176c5993-4b62-4e90-849f-88addc0153bb"
+       },
+       "after_mm": 76506,
+       "after_m": 76.50610107223703,
+       "nearest_after": {
+        "kind": "source",
+        "id": "176c5993-4b62-4e90-849f-88addc0153bb"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p9",
+       "lon": 69.614743,
+       "lat": 42.322455,
+       "weight": 7,
+       "before_mm": 94096,
+       "before_m": 94.09632706115694,
+       "nearest_before": {
+        "kind": "source",
+        "id": "baeda67d-e701-4c2a-bba6-10a13466e76d"
+       },
+       "after_mm": 94096,
+       "after_m": 94.09632706115694,
+       "nearest_after": {
+        "kind": "source",
+        "id": "baeda67d-e701-4c2a-bba6-10a13466e76d"
+       },
+       "delta_mm": 0
+      }
+     ]
+    },
+    {
+     "case_id": "дубль_near_two",
+     "rows": [
+      {
+       "id": "p1",
+       "lon": 69.59628,
+       "lat": 42.308801,
+       "weight": 1,
+       "before_mm": 685059,
+       "before_m": 685.0590768974313,
+       "nearest_before": {
+        "kind": "source",
+        "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       },
+       "after_mm": 685059,
+       "after_m": 685.0590768974313,
+       "nearest_after": {
+        "kind": "source",
+        "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p2",
+       "lon": 69.605512,
+       "lat": 42.308801,
+       "weight": 8,
+       "before_mm": 823055,
+       "before_m": 823.0553579051015,
+       "nearest_before": {
+        "kind": "source",
+        "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       },
+       "after_mm": 159787,
+       "after_m": 159.78733029510772,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c2"
+       },
+       "delta_mm": 663268
+      },
+      {
+       "id": "p3",
+       "lon": 69.614743,
+       "lat": 42.308801,
+       "weight": 5,
+       "before_mm": 1310453,
+       "before_m": 1310.4529067882995,
+       "nearest_before": {
+        "kind": "source",
+        "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+       },
+       "after_mm": 226023,
+       "after_m": 226.0225923125521,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c3"
+       },
+       "delta_mm": 1084430
+      },
+      {
+       "id": "p4",
+       "lon": 69.59628,
+       "lat": 42.315628,
+       "weight": 2,
+       "before_mm": 125565,
+       "before_m": 125.56482893167745,
+       "nearest_before": {
+        "kind": "source",
+        "id": "68c8f007-75bc-42f6-8da8-baa72042bde4"
+       },
+       "after_mm": 125565,
+       "after_m": 125.56482893167745,
+       "nearest_after": {
+        "kind": "source",
+        "id": "68c8f007-75bc-42f6-8da8-baa72042bde4"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p5",
+       "lon": 69.605512,
+       "lat": 42.315628,
+       "weight": 9,
+       "before_mm": 243856,
+       "before_m": 243.85638190754193,
+       "nearest_before": {
+        "kind": "source",
+        "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+       },
+       "after_mm": 243856,
+       "after_m": 243.85638190754193,
+       "nearest_after": {
+        "kind": "source",
+        "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p6",
+       "lon": 69.614743,
+       "lat": 42.315628,
+       "weight": 6,
+       "before_mm": 622083,
+       "before_m": 622.0827365431909,
+       "nearest_before": {
+        "kind": "source",
+        "id": "01961e84-815f-4bd1-85c3-6bf1734256ec"
+       },
+       "after_mm": 620292,
+       "after_m": 620.2915945593998,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c3"
+       },
+       "delta_mm": 1791
+      },
+      {
+       "id": "p7",
+       "lon": 69.59628,
+       "lat": 42.322455,
+       "weight": 3,
+       "before_mm": 161448,
+       "before_m": 161.44805864518838,
+       "nearest_before": {
+        "kind": "source",
+        "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+       },
+       "after_mm": 161448,
+       "after_m": 161.44805864518838,
+       "nearest_after": {
+        "kind": "source",
+        "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p8",
+       "lon": 69.605512,
+       "lat": 42.322455,
+       "weight": 10,
+       "before_mm": 76506,
+       "before_m": 76.50610107223703,
+       "nearest_before": {
+        "kind": "source",
+        "id": "176c5993-4b62-4e90-849f-88addc0153bb"
+       },
+       "after_mm": 76506,
+       "after_m": 76.50610107223703,
+       "nearest_after": {
+        "kind": "source",
+        "id": "176c5993-4b62-4e90-849f-88addc0153bb"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p9",
+       "lon": 69.614743,
+       "lat": 42.322455,
+       "weight": 7,
+       "before_mm": 94096,
+       "before_m": 94.09632706115694,
+       "nearest_before": {
+        "kind": "source",
+        "id": "baeda67d-e701-4c2a-bba6-10a13466e76d"
+       },
+       "after_mm": 94096,
+       "after_m": 94.09632706115694,
+       "nearest_after": {
+        "kind": "source",
+        "id": "baeda67d-e701-4c2a-bba6-10a13466e76d"
+       },
+       "delta_mm": 0
+      }
+     ]
+    },
+    {
+     "case_id": "все_записи",
+     "rows": [
+      {
+       "id": "p1",
+       "lon": 69.59628,
+       "lat": 42.308801,
+       "weight": 1,
+       "before_mm": null,
+       "before_m": null,
+       "nearest_before": null,
+       "after_mm": 775790,
+       "after_m": 775.7895187884766,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c2"
+       },
+       "delta_mm": null
+      },
+      {
+       "id": "p2",
+       "lon": 69.605512,
+       "lat": 42.308801,
+       "weight": 8,
+       "before_mm": null,
+       "before_m": null,
+       "nearest_before": null,
+       "after_mm": 159787,
+       "after_m": 159.78733029510772,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c2"
+       },
+       "delta_mm": null
+      },
+      {
+       "id": "p3",
+       "lon": 69.614743,
+       "lat": 42.308801,
+       "weight": 5,
+       "before_mm": null,
+       "before_m": null,
+       "nearest_before": null,
+       "after_mm": 226023,
+       "after_m": 226.0225923125521,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c3"
+       },
+       "delta_mm": null
+      },
+      {
+       "id": "p4",
+       "lon": 69.59628,
+       "lat": 42.315628,
+       "weight": 2,
+       "before_mm": null,
+       "before_m": null,
+       "nearest_before": null,
+       "after_mm": 967194,
+       "after_m": 967.1944434169889,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c2"
+       },
+       "delta_mm": null
+      },
+      {
+       "id": "p5",
+       "lon": 69.605512,
+       "lat": 42.315628,
+       "weight": 9,
+       "before_mm": null,
+       "before_m": null,
+       "nearest_before": null,
+       "after_mm": 599341,
+       "after_m": 599.3414824585701,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c2"
+       },
+       "delta_mm": null
+      },
+      {
+       "id": "p6",
+       "lon": 69.614743,
+       "lat": 42.315628,
+       "weight": 6,
+       "before_mm": null,
+       "before_m": null,
+       "nearest_before": null,
+       "after_mm": 620292,
+       "after_m": 620.2915945593998,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c3"
+       },
+       "delta_mm": null
+      },
+      {
+       "id": "p7",
+       "lon": 69.59628,
+       "lat": 42.322455,
+       "weight": 3,
+       "before_mm": null,
+       "before_m": null,
+       "nearest_before": null,
+       "after_mm": 1556160,
+       "after_m": 1556.1599880938825,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c2"
+       },
+       "delta_mm": null
+      },
+      {
+       "id": "p8",
+       "lon": 69.605512,
+       "lat": 42.322455,
+       "weight": 10,
+       "before_mm": null,
+       "before_m": null,
+       "nearest_before": null,
+       "after_mm": 1358470,
+       "after_m": 1358.470295213038,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c2"
+       },
+       "delta_mm": null
+      },
+      {
+       "id": "p9",
+       "lon": 69.614743,
+       "lat": 42.322455,
+       "weight": 7,
+       "before_mm": null,
+       "before_m": null,
+       "nearest_before": null,
+       "after_mm": 1367841,
+       "after_m": 1367.8414457795525,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c3"
+       },
+       "delta_mm": null
+      }
+     ]
+    }
+   ]
+  },
+  "robust": {
+   "selected_ids": [
+    "c2",
+    "c5"
+   ],
+   "feasible": true,
+   "reasons": [],
+   "per_case": [
+    {
+     "case_id": "base",
+     "unknown_count": 0,
+     "weighted_sum_mm": 10432420,
+     "weighted_mean_mm": 204557.25490196078,
+     "max_mm": 685059,
+     "covered_weight": 45,
+     "coverage_fraction": 0.8823529411764706,
+     "cost": 290,
+     "vector": [
+      0,
+      10432420,
+      685059
+     ]
+    },
+    {
+     "case_id": "qa_doubt",
+     "unknown_count": 0,
+     "weighted_sum_mm": 10432420,
+     "weighted_mean_mm": 204557.25490196078,
+     "max_mm": 685059,
+     "covered_weight": 45,
+     "coverage_fraction": 0.8823529411764706,
+     "cost": 290,
+     "vector": [
+      0,
+      10432420,
+      685059
+     ]
+    },
+    {
+     "case_id": "near_two",
+     "unknown_count": 0,
+     "weighted_sum_mm": 13928308,
+     "weighted_mean_mm": 273104.07843137253,
+     "max_mm": 775709,
+     "covered_weight": 39,
+     "coverage_fraction": 0.7647058823529411,
+     "cost": 290,
+     "vector": [
+      0,
+      13928308,
+      775709
+     ]
+    },
+    {
+     "case_id": "дубль_near_two",
+     "unknown_count": 0,
+     "weighted_sum_mm": 13928308,
+     "weighted_mean_mm": 273104.07843137253,
+     "max_mm": 775709,
+     "covered_weight": 39,
+     "coverage_fraction": 0.7647058823529411,
+     "cost": 290,
+     "vector": [
+      0,
+      13928308,
+      775709
+     ]
+    },
+    {
+     "case_id": "все_записи",
+     "unknown_count": 0,
+     "weighted_sum_mm": 28417220,
+     "weighted_mean_mm": 557200.3921568628,
+     "max_mm": 967143,
+     "covered_weight": 18,
+     "coverage_fraction": 0.35294117647058826,
+     "cost": 290,
+     "vector": [
+      0,
+      28417220,
+      967143
+     ]
+    }
+   ],
+   "worst_vector": [
+    0,
+    28417220,
+    967143
+   ],
+   "worst_case_ids": [
+    "все_записи"
+   ],
+   "rows_by_case": [
+    {
+     "case_id": "base",
+     "rows": [
+      {
+       "id": "p1",
+       "lon": 69.59628,
+       "lat": 42.308801,
+       "weight": 1,
+       "before_mm": 685059,
+       "before_m": 685.0590768974313,
+       "nearest_before": {
+        "kind": "source",
+        "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       },
+       "after_mm": 685059,
+       "after_m": 685.0590768974313,
+       "nearest_after": {
+        "kind": "source",
+        "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p2",
+       "lon": 69.605512,
+       "lat": 42.308801,
+       "weight": 8,
+       "before_mm": 823055,
+       "before_m": 823.0553579051015,
+       "nearest_before": {
+        "kind": "source",
+        "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       },
+       "after_mm": 159787,
+       "after_m": 159.78733029510772,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c2"
+       },
+       "delta_mm": 663268
+      },
+      {
+       "id": "p3",
+       "lon": 69.614743,
+       "lat": 42.308801,
+       "weight": 5,
+       "before_mm": 440267,
+       "before_m": 440.2668540069261,
+       "nearest_before": {
+        "kind": "source",
+        "id": "18df815b-170a-437c-977f-0769690315d4"
+       },
+       "after_mm": 440267,
+       "after_m": 440.2668540069261,
+       "nearest_after": {
+        "kind": "source",
+        "id": "18df815b-170a-437c-977f-0769690315d4"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p4",
+       "lon": 69.59628,
+       "lat": 42.315628,
+       "weight": 2,
+       "before_mm": 125565,
+       "before_m": 125.56482893167745,
+       "nearest_before": {
+        "kind": "source",
+        "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708"
+       },
+       "after_mm": 125565,
+       "after_m": 125.56482893167745,
+       "nearest_after": {
+        "kind": "source",
+        "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p5",
+       "lon": 69.605512,
+       "lat": 42.315628,
+       "weight": 9,
+       "before_mm": 243856,
+       "before_m": 243.85638190754193,
+       "nearest_before": {
+        "kind": "source",
+        "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+       },
+       "after_mm": 243856,
+       "after_m": 243.85638190754193,
+       "nearest_after": {
+        "kind": "source",
+        "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p6",
+       "lon": 69.614743,
+       "lat": 42.315628,
+       "weight": 6,
+       "before_mm": 318970,
+       "before_m": 318.9703320476458,
+       "nearest_before": {
+        "kind": "source",
+        "id": "18df815b-170a-437c-977f-0769690315d4"
+       },
+       "after_mm": 318970,
+       "after_m": 318.9703320476458,
+       "nearest_after": {
+        "kind": "source",
+        "id": "18df815b-170a-437c-977f-0769690315d4"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p7",
+       "lon": 69.59628,
+       "lat": 42.322455,
+       "weight": 3,
+       "before_mm": 161448,
+       "before_m": 161.44805864518838,
+       "nearest_before": {
+        "kind": "source",
+        "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+       },
+       "after_mm": 161448,
+       "after_m": 161.44805864518838,
+       "nearest_after": {
+        "kind": "source",
+        "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p8",
+       "lon": 69.605512,
+       "lat": 42.322455,
+       "weight": 10,
+       "before_mm": 76506,
+       "before_m": 76.50610107223703,
+       "nearest_before": {
+        "kind": "source",
+        "id": "176c5993-4b62-4e90-849f-88addc0153bb"
+       },
+       "after_mm": 76506,
+       "after_m": 76.50610107223703,
+       "nearest_after": {
+        "kind": "source",
+        "id": "176c5993-4b62-4e90-849f-88addc0153bb"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p9",
+       "lon": 69.614743,
+       "lat": 42.322455,
+       "weight": 7,
+       "before_mm": 94096,
+       "before_m": 94.09632706115694,
+       "nearest_before": {
+        "kind": "source",
+        "id": "baeda67d-e701-4c2a-bba6-10a13466e76d"
+       },
+       "after_mm": 94096,
+       "after_m": 94.09632706115694,
+       "nearest_after": {
+        "kind": "source",
+        "id": "baeda67d-e701-4c2a-bba6-10a13466e76d"
+       },
+       "delta_mm": 0
+      }
+     ]
+    },
+    {
+     "case_id": "qa_doubt",
+     "rows": [
+      {
+       "id": "p1",
+       "lon": 69.59628,
+       "lat": 42.308801,
+       "weight": 1,
+       "before_mm": 685059,
+       "before_m": 685.0590768974313,
+       "nearest_before": {
+        "kind": "source",
+        "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       },
+       "after_mm": 685059,
+       "after_m": 685.0590768974313,
+       "nearest_after": {
+        "kind": "source",
+        "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p2",
+       "lon": 69.605512,
+       "lat": 42.308801,
+       "weight": 8,
+       "before_mm": 823055,
+       "before_m": 823.0553579051015,
+       "nearest_before": {
+        "kind": "source",
+        "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       },
+       "after_mm": 159787,
+       "after_m": 159.78733029510772,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c2"
+       },
+       "delta_mm": 663268
+      },
+      {
+       "id": "p3",
+       "lon": 69.614743,
+       "lat": 42.308801,
+       "weight": 5,
+       "before_mm": 440267,
+       "before_m": 440.2668540069261,
+       "nearest_before": {
+        "kind": "source",
+        "id": "18df815b-170a-437c-977f-0769690315d4"
+       },
+       "after_mm": 440267,
+       "after_m": 440.2668540069261,
+       "nearest_after": {
+        "kind": "source",
+        "id": "18df815b-170a-437c-977f-0769690315d4"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p4",
+       "lon": 69.59628,
+       "lat": 42.315628,
+       "weight": 2,
+       "before_mm": 125565,
+       "before_m": 125.56482893167745,
+       "nearest_before": {
+        "kind": "source",
+        "id": "68c8f007-75bc-42f6-8da8-baa72042bde4"
+       },
+       "after_mm": 125565,
+       "after_m": 125.56482893167745,
+       "nearest_after": {
+        "kind": "source",
+        "id": "68c8f007-75bc-42f6-8da8-baa72042bde4"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p5",
+       "lon": 69.605512,
+       "lat": 42.315628,
+       "weight": 9,
+       "before_mm": 243856,
+       "before_m": 243.85638190754193,
+       "nearest_before": {
+        "kind": "source",
+        "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+       },
+       "after_mm": 243856,
+       "after_m": 243.85638190754193,
+       "nearest_after": {
+        "kind": "source",
+        "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p6",
+       "lon": 69.614743,
+       "lat": 42.315628,
+       "weight": 6,
+       "before_mm": 318970,
+       "before_m": 318.9703320476458,
+       "nearest_before": {
+        "kind": "source",
+        "id": "18df815b-170a-437c-977f-0769690315d4"
+       },
+       "after_mm": 318970,
+       "after_m": 318.9703320476458,
+       "nearest_after": {
+        "kind": "source",
+        "id": "18df815b-170a-437c-977f-0769690315d4"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p7",
+       "lon": 69.59628,
+       "lat": 42.322455,
+       "weight": 3,
+       "before_mm": 161448,
+       "before_m": 161.44805864518838,
+       "nearest_before": {
+        "kind": "source",
+        "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+       },
+       "after_mm": 161448,
+       "after_m": 161.44805864518838,
+       "nearest_after": {
+        "kind": "source",
+        "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p8",
+       "lon": 69.605512,
+       "lat": 42.322455,
+       "weight": 10,
+       "before_mm": 76506,
+       "before_m": 76.50610107223703,
+       "nearest_before": {
+        "kind": "source",
+        "id": "176c5993-4b62-4e90-849f-88addc0153bb"
+       },
+       "after_mm": 76506,
+       "after_m": 76.50610107223703,
+       "nearest_after": {
+        "kind": "source",
+        "id": "176c5993-4b62-4e90-849f-88addc0153bb"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p9",
+       "lon": 69.614743,
+       "lat": 42.322455,
+       "weight": 7,
+       "before_mm": 94096,
+       "before_m": 94.09632706115694,
+       "nearest_before": {
+        "kind": "source",
+        "id": "baeda67d-e701-4c2a-bba6-10a13466e76d"
+       },
+       "after_mm": 94096,
+       "after_m": 94.09632706115694,
+       "nearest_after": {
+        "kind": "source",
+        "id": "baeda67d-e701-4c2a-bba6-10a13466e76d"
+       },
+       "delta_mm": 0
+      }
+     ]
+    },
+    {
+     "case_id": "near_two",
+     "rows": [
+      {
+       "id": "p1",
+       "lon": 69.59628,
+       "lat": 42.308801,
+       "weight": 1,
+       "before_mm": 685059,
+       "before_m": 685.0590768974313,
+       "nearest_before": {
+        "kind": "source",
+        "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       },
+       "after_mm": 685059,
+       "after_m": 685.0590768974313,
+       "nearest_after": {
+        "kind": "source",
+        "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p2",
+       "lon": 69.605512,
+       "lat": 42.308801,
+       "weight": 8,
+       "before_mm": 823055,
+       "before_m": 823.0553579051015,
+       "nearest_before": {
+        "kind": "source",
+        "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       },
+       "after_mm": 159787,
+       "after_m": 159.78733029510772,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c2"
+       },
+       "delta_mm": 663268
+      },
+      {
+       "id": "p3",
+       "lon": 69.614743,
+       "lat": 42.308801,
+       "weight": 5,
+       "before_mm": 1310453,
+       "before_m": 1310.4529067882995,
+       "nearest_before": {
+        "kind": "source",
+        "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+       },
+       "after_mm": 775709,
+       "after_m": 775.7090511928473,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c2"
+       },
+       "delta_mm": 534744
+      },
+      {
+       "id": "p4",
+       "lon": 69.59628,
+       "lat": 42.315628,
+       "weight": 2,
+       "before_mm": 125565,
+       "before_m": 125.56482893167745,
+       "nearest_before": {
+        "kind": "source",
+        "id": "68c8f007-75bc-42f6-8da8-baa72042bde4"
+       },
+       "after_mm": 125565,
+       "after_m": 125.56482893167745,
+       "nearest_after": {
+        "kind": "source",
+        "id": "68c8f007-75bc-42f6-8da8-baa72042bde4"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p5",
+       "lon": 69.605512,
+       "lat": 42.315628,
+       "weight": 9,
+       "before_mm": 243856,
+       "before_m": 243.85638190754193,
+       "nearest_before": {
+        "kind": "source",
+        "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+       },
+       "after_mm": 243856,
+       "after_m": 243.85638190754193,
+       "nearest_after": {
+        "kind": "source",
+        "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p6",
+       "lon": 69.614743,
+       "lat": 42.315628,
+       "weight": 6,
+       "before_mm": 622083,
+       "before_m": 622.0827365431909,
+       "nearest_before": {
+        "kind": "source",
+        "id": "01961e84-815f-4bd1-85c3-6bf1734256ec"
+       },
+       "after_mm": 622083,
+       "after_m": 622.0827365431909,
+       "nearest_after": {
+        "kind": "source",
+        "id": "01961e84-815f-4bd1-85c3-6bf1734256ec"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p7",
+       "lon": 69.59628,
+       "lat": 42.322455,
+       "weight": 3,
+       "before_mm": 161448,
+       "before_m": 161.44805864518838,
+       "nearest_before": {
+        "kind": "source",
+        "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+       },
+       "after_mm": 161448,
+       "after_m": 161.44805864518838,
+       "nearest_after": {
+        "kind": "source",
+        "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p8",
+       "lon": 69.605512,
+       "lat": 42.322455,
+       "weight": 10,
+       "before_mm": 76506,
+       "before_m": 76.50610107223703,
+       "nearest_before": {
+        "kind": "source",
+        "id": "176c5993-4b62-4e90-849f-88addc0153bb"
+       },
+       "after_mm": 76506,
+       "after_m": 76.50610107223703,
+       "nearest_after": {
+        "kind": "source",
+        "id": "176c5993-4b62-4e90-849f-88addc0153bb"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p9",
+       "lon": 69.614743,
+       "lat": 42.322455,
+       "weight": 7,
+       "before_mm": 94096,
+       "before_m": 94.09632706115694,
+       "nearest_before": {
+        "kind": "source",
+        "id": "baeda67d-e701-4c2a-bba6-10a13466e76d"
+       },
+       "after_mm": 94096,
+       "after_m": 94.09632706115694,
+       "nearest_after": {
+        "kind": "source",
+        "id": "baeda67d-e701-4c2a-bba6-10a13466e76d"
+       },
+       "delta_mm": 0
+      }
+     ]
+    },
+    {
+     "case_id": "дубль_near_two",
+     "rows": [
+      {
+       "id": "p1",
+       "lon": 69.59628,
+       "lat": 42.308801,
+       "weight": 1,
+       "before_mm": 685059,
+       "before_m": 685.0590768974313,
+       "nearest_before": {
+        "kind": "source",
+        "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       },
+       "after_mm": 685059,
+       "after_m": 685.0590768974313,
+       "nearest_after": {
+        "kind": "source",
+        "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p2",
+       "lon": 69.605512,
+       "lat": 42.308801,
+       "weight": 8,
+       "before_mm": 823055,
+       "before_m": 823.0553579051015,
+       "nearest_before": {
+        "kind": "source",
+        "id": "931d6da5-e9db-4523-a6fd-79c88f235f88"
+       },
+       "after_mm": 159787,
+       "after_m": 159.78733029510772,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c2"
+       },
+       "delta_mm": 663268
+      },
+      {
+       "id": "p3",
+       "lon": 69.614743,
+       "lat": 42.308801,
+       "weight": 5,
+       "before_mm": 1310453,
+       "before_m": 1310.4529067882995,
+       "nearest_before": {
+        "kind": "source",
+        "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+       },
+       "after_mm": 775709,
+       "after_m": 775.7090511928473,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c2"
+       },
+       "delta_mm": 534744
+      },
+      {
+       "id": "p4",
+       "lon": 69.59628,
+       "lat": 42.315628,
+       "weight": 2,
+       "before_mm": 125565,
+       "before_m": 125.56482893167745,
+       "nearest_before": {
+        "kind": "source",
+        "id": "68c8f007-75bc-42f6-8da8-baa72042bde4"
+       },
+       "after_mm": 125565,
+       "after_m": 125.56482893167745,
+       "nearest_after": {
+        "kind": "source",
+        "id": "68c8f007-75bc-42f6-8da8-baa72042bde4"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p5",
+       "lon": 69.605512,
+       "lat": 42.315628,
+       "weight": 9,
+       "before_mm": 243856,
+       "before_m": 243.85638190754193,
+       "nearest_before": {
+        "kind": "source",
+        "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+       },
+       "after_mm": 243856,
+       "after_m": 243.85638190754193,
+       "nearest_after": {
+        "kind": "source",
+        "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p6",
+       "lon": 69.614743,
+       "lat": 42.315628,
+       "weight": 6,
+       "before_mm": 622083,
+       "before_m": 622.0827365431909,
+       "nearest_before": {
+        "kind": "source",
+        "id": "01961e84-815f-4bd1-85c3-6bf1734256ec"
+       },
+       "after_mm": 622083,
+       "after_m": 622.0827365431909,
+       "nearest_after": {
+        "kind": "source",
+        "id": "01961e84-815f-4bd1-85c3-6bf1734256ec"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p7",
+       "lon": 69.59628,
+       "lat": 42.322455,
+       "weight": 3,
+       "before_mm": 161448,
+       "before_m": 161.44805864518838,
+       "nearest_before": {
+        "kind": "source",
+        "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+       },
+       "after_mm": 161448,
+       "after_m": 161.44805864518838,
+       "nearest_after": {
+        "kind": "source",
+        "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p8",
+       "lon": 69.605512,
+       "lat": 42.322455,
+       "weight": 10,
+       "before_mm": 76506,
+       "before_m": 76.50610107223703,
+       "nearest_before": {
+        "kind": "source",
+        "id": "176c5993-4b62-4e90-849f-88addc0153bb"
+       },
+       "after_mm": 76506,
+       "after_m": 76.50610107223703,
+       "nearest_after": {
+        "kind": "source",
+        "id": "176c5993-4b62-4e90-849f-88addc0153bb"
+       },
+       "delta_mm": 0
+      },
+      {
+       "id": "p9",
+       "lon": 69.614743,
+       "lat": 42.322455,
+       "weight": 7,
+       "before_mm": 94096,
+       "before_m": 94.09632706115694,
+       "nearest_before": {
+        "kind": "source",
+        "id": "baeda67d-e701-4c2a-bba6-10a13466e76d"
+       },
+       "after_mm": 94096,
+       "after_m": 94.09632706115694,
+       "nearest_after": {
+        "kind": "source",
+        "id": "baeda67d-e701-4c2a-bba6-10a13466e76d"
+       },
+       "delta_mm": 0
+      }
+     ]
+    },
+    {
+     "case_id": "все_записи",
+     "rows": [
+      {
+       "id": "p1",
+       "lon": 69.59628,
+       "lat": 42.308801,
+       "weight": 1,
+       "before_mm": null,
+       "before_m": null,
+       "nearest_before": null,
+       "after_mm": 775790,
+       "after_m": 775.7895187884766,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c2"
+       },
+       "delta_mm": null
+      },
+      {
+       "id": "p2",
+       "lon": 69.605512,
+       "lat": 42.308801,
+       "weight": 8,
+       "before_mm": null,
+       "before_m": null,
+       "nearest_before": null,
+       "after_mm": 159787,
+       "after_m": 159.78733029510772,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c2"
+       },
+       "delta_mm": null
+      },
+      {
+       "id": "p3",
+       "lon": 69.614743,
+       "lat": 42.308801,
+       "weight": 5,
+       "before_mm": null,
+       "before_m": null,
+       "nearest_before": null,
+       "after_mm": 775709,
+       "after_m": 775.7090511928473,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c2"
+       },
+       "delta_mm": null
+      },
+      {
+       "id": "p4",
+       "lon": 69.59628,
+       "lat": 42.315628,
+       "weight": 2,
+       "before_mm": null,
+       "before_m": null,
+       "nearest_before": null,
+       "after_mm": 967143,
+       "after_m": 967.1434179299216,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c5"
+       },
+       "delta_mm": null
+      },
+      {
+       "id": "p5",
+       "lon": 69.605512,
+       "lat": 42.315628,
+       "weight": 9,
+       "before_mm": null,
+       "before_m": null,
+       "nearest_before": null,
+       "after_mm": 599341,
+       "after_m": 599.3414824585701,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c2"
+       },
+       "delta_mm": null
+      },
+      {
+       "id": "p6",
+       "lon": 69.614743,
+       "lat": 42.315628,
+       "weight": 6,
+       "before_mm": null,
+       "before_m": null,
+       "nearest_before": null,
+       "after_mm": 967079,
+       "after_m": 967.0788904776787,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c5"
+       },
+       "delta_mm": null
+      },
+      {
+       "id": "p7",
+       "lon": 69.59628,
+       "lat": 42.322455,
+       "weight": 3,
+       "before_mm": null,
+       "before_m": null,
+       "nearest_before": null,
+       "after_mm": 775645,
+       "after_m": 775.645319950243,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c5"
+       },
+       "delta_mm": null
+      },
+      {
+       "id": "p8",
+       "lon": 69.605512,
+       "lat": 42.322455,
+       "weight": 10,
+       "before_mm": null,
+       "before_m": null,
+       "nearest_before": null,
+       "after_mm": 159787,
+       "after_m": 159.78733029510772,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c5"
+       },
+       "delta_mm": null
+      },
+      {
+       "id": "p9",
+       "lon": 69.614743,
+       "lat": 42.322455,
+       "weight": 7,
+       "before_mm": null,
+       "before_m": null,
+       "nearest_before": null,
+       "after_mm": 775565,
+       "after_m": 775.564868636844,
+       "nearest_after": {
+        "kind": "hypothetical",
+        "id": "c5"
+       },
+       "delta_mm": null
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "price_of_robustness_m": 21.00431372549018,
+ "price_reason": null,
+ "same_plans": {
+  "nominal_eq_robust": false,
+  "manual_eq_robust": false
+ },
+ "source_records": [
+  {
+   "id": "01961e84-815f-4bd1-85c3-6bf1734256ec",
+   "name": "Реклама 42",
+   "category_overture": "middle_school",
+   "lon": 69.61052,
+   "lat": 42.32027,
+   "sources": [
+    {
+     "dataset": "meta",
+     "license": "CDLA-Permissive-2.0",
+     "record_id": "135783212958156",
+     "update_time": "2026-09-14T00:00:00.000Z"
+    }
+   ],
+   "qa": {
+    "available": true,
+    "flags": [
+     "ad_or_business_page"
+    ]
+   },
+   "excluded_in": [
+    "qa_doubt",
+    "все_записи"
+   ]
+  },
+  {
+   "id": "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+   "name": "М.Х.Дулати атындағы үш тілде оқытатын N8 мамандандырылған  гимназия\" КММ",
+   "category_overture": "high_school",
+   "lon": 69.60294,
+   "lat": 42.31672,
+   "sources": [
+    {
+     "dataset": "meta",
+     "license": "CDLA-Permissive-2.0",
+     "record_id": "109733650870275",
+     "update_time": "2026-09-14T00:00:00.000Z"
+    }
+   ],
+   "qa": {
+    "available": true,
+    "flags": []
+   },
+   "excluded_in": [
+    "все_записи"
+   ]
+  },
+  {
+   "id": "176c5993-4b62-4e90-849f-88addc0153bb",
+   "name": "Dostyk Bilim Beru Ortalygy",
+   "category_overture": "middle_school",
+   "lon": 69.605699,
+   "lat": 42.323129,
+   "sources": [
+    {
+     "dataset": "meta",
+     "license": "CDLA-Permissive-2.0",
+     "record_id": "198636846666153",
+     "update_time": "2026-09-14T00:00:00.000Z"
+    }
+   ],
+   "qa": {
+    "available": true,
+    "flags": []
+   },
+   "excluded_in": [
+    "все_записи"
+   ]
+  },
+  {
+   "id": "18df815b-170a-437c-977f-0769690315d4",
+   "name": "Ақпан батыр Атындағы Орта Мектеп",
+   "category_overture": "elementary_school",
+   "lon": 69.61482,
+   "lat": 42.31276,
+   "sources": [
+    {
+     "dataset": "meta",
+     "license": "CDLA-Permissive-2.0",
+     "record_id": "321415295158302",
+     "update_time": "2026-09-14T00:00:00.000Z"
+    }
+   ],
+   "qa": {
+    "available": true,
+    "flags": []
+   },
+   "excluded_in": [
+    "near_two",
+    "дубль_near_two",
+    "все_записи"
+   ]
+  },
+  {
+   "id": "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+   "name": "Reklama 8888",
+   "category_overture": "place_of_learning",
+   "lon": 69.5958,
+   "lat": 42.3167,
+   "sources": [
+    {
+     "dataset": "meta",
+     "license": "CDLA-Permissive-2.0",
+     "record_id": "457518577441642",
+     "update_time": "2026-09-14T00:00:00.000Z"
+    }
+   ],
+   "qa": {
+    "available": true,
+    "flags": [
+     "ad_or_business_page",
+     "colocated"
+    ]
+   },
+   "excluded_in": [
+    "qa_doubt",
+    "near_two",
+    "дубль_near_two",
+    "все_записи"
+   ]
+  },
+  {
+   "id": "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+   "name": "Жолдасбекова Атындағы 9 Лицей",
+   "category_overture": "elementary_school",
+   "lon": 69.605231,
+   "lat": 42.321741,
+   "sources": [
+    {
+     "dataset": "meta",
+     "license": "CDLA-Permissive-2.0",
+     "record_id": "496982004171164",
+     "update_time": "2026-09-14T00:00:00.000Z"
+    }
+   ],
+   "qa": {
+    "available": true,
+    "flags": []
+   },
+   "excluded_in": [
+    "все_записи"
+   ]
+  },
+  {
+   "id": "68c8f007-75bc-42f6-8da8-baa72042bde4",
+   "name": "Baiterek School",
+   "category_overture": "place_of_learning",
+   "lon": 69.5958,
+   "lat": 42.3167,
+   "sources": [
+    {
+     "dataset": "meta",
+     "license": "CDLA-Permissive-2.0",
+     "record_id": "104043422727734",
+     "update_time": "2026-09-14T00:00:00.000Z"
+    }
+   ],
+   "qa": {
+    "available": true,
+    "flags": [
+     "colocated"
+    ]
+   },
+   "excluded_in": [
+    "все_записи"
+   ]
+  },
+  {
+   "id": "931d6da5-e9db-4523-a6fd-79c88f235f88",
+   "name": "Учебный центр Меруерт",
+   "category_overture": "place_of_learning",
+   "lon": 69.599229,
+   "lat": 42.314563,
+   "sources": [
+    {
+     "dataset": "meta",
+     "license": "CDLA-Permissive-2.0",
+     "record_id": "101309298709568",
+     "update_time": "2026-09-14T00:00:00.000Z"
+    }
+   ],
+   "qa": {
+    "available": true,
+    "flags": []
+   },
+   "excluded_in": [
+    "все_записи"
+   ]
+  },
+  {
+   "id": "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+   "name": "Express toefl",
+   "category_overture": "place_of_learning",
+   "lon": 69.59496,
+   "lat": 42.32353,
+   "sources": [
+    {
+     "dataset": "meta",
+     "license": "CDLA-Permissive-2.0",
+     "record_id": "103951562798946",
+     "update_time": "2026-09-14T00:00:00.000Z"
+    }
+   ],
+   "qa": {
+    "available": true,
+    "flags": [
+     "possible_duplicate:same_address"
+    ]
+   },
+   "excluded_in": [
+    "все_записи"
+   ]
+  },
+  {
+   "id": "9d31b953-ccc4-42bd-a3a3-3e4e21f44051",
+   "name": "Реклама 3131",
+   "category_overture": "middle_school",
+   "lon": 69.5958,
+   "lat": 42.3167,
+   "sources": [
+    {
+     "dataset": "meta",
+     "license": "CDLA-Permissive-2.0",
+     "record_id": "698764723318625",
+     "update_time": "2026-09-14T00:00:00.000Z"
+    }
+   ],
+   "qa": {
+    "available": true,
+    "flags": [
+     "ad_or_business_page",
+     "colocated"
+    ]
+   },
+   "excluded_in": [
+    "qa_doubt",
+    "все_записи"
+   ]
+  },
+  {
+   "id": "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6",
+   "name": "Kasipkoy.kurs",
+   "category_overture": "place_of_learning",
+   "lon": 69.59496,
+   "lat": 42.32353,
+   "sources": [
+    {
+     "dataset": "meta",
+     "license": "CDLA-Permissive-2.0",
+     "record_id": "115444977828089",
+     "update_time": "2026-09-14T00:00:00.000Z"
+    }
+   ],
+   "qa": {
+    "available": true,
+    "flags": [
+     "possible_duplicate:same_address"
+    ]
+   },
+   "excluded_in": [
+    "все_записи"
+   ]
+  },
+  {
+   "id": "b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+   "name": "Монтессори Детский Сад \"Бала Би\"",
+   "category_overture": "place_of_learning",
+   "lon": 69.59895,
+   "lat": 42.31906,
+   "sources": [
+    {
+     "dataset": "meta",
+     "license": "CDLA-Permissive-2.0",
+     "record_id": "652390848258401",
+     "update_time": "2026-09-14T00:00:00.000Z"
+    }
+   ],
+   "qa": {
+    "available": true,
+    "flags": []
+   },
+   "excluded_in": [
+    "все_записи"
+   ]
+  },
+  {
+   "id": "baeda67d-e701-4c2a-bba6-10a13466e76d",
+   "name": "ALEM мектебі",
+   "category_overture": "place_of_learning",
+   "lon": 69.61557,
+   "lat": 42.32304,
+   "sources": [
+    {
+     "dataset": "meta",
+     "license": "CDLA-Permissive-2.0",
+     "record_id": "100576409602303",
+     "update_time": "2026-09-14T00:00:00.000Z"
+    }
+   ],
+   "qa": {
+    "available": true,
+    "flags": []
+   },
+   "excluded_in": [
+    "все_записи"
+   ]
+  },
+  {
+   "id": "bcd265d0-0799-4dbf-8b15-23bae752a4d2",
+   "name": "Алем мектеп",
+   "category_overture": "middle_school",
+   "lon": 69.61557,
+   "lat": 42.32304,
+   "sources": [
+    {
+     "dataset": "meta",
+     "license": "CDLA-Permissive-2.0",
+     "record_id": "117725867952475",
+     "update_time": "2026-09-14T00:00:00.000Z"
+    }
+   ],
+   "qa": {
+    "available": true,
+    "flags": []
+   },
+   "excluded_in": [
+    "все_записи"
+   ]
+  },
+  {
+   "id": "fd50a858-462d-477f-8bc6-a8d3e03a9576",
+   "name": "Техникалық лицей",
+   "category_overture": "place_of_learning",
+   "lon": 69.60322,
+   "lat": 42.31728,
+   "sources": [
+    {
+     "dataset": "meta",
+     "license": "CDLA-Permissive-2.0",
+     "record_id": "103027011922854",
+     "update_time": "2026-09-14T00:00:00.000Z"
+    }
+   ],
+   "qa": {
+    "available": true,
+    "flags": [
+     "possible_duplicate:same_address"
+    ]
+   },
+   "excluded_in": [
+    "все_записи"
+   ]
+  }
+ ],
+ "notes": [
+  "Условно исключаем из расчёта; это не подтверждение закрытия.",
+  "Анализ допущений о данных, не прогноз кризиса, закрытия, риска или потребностей жителей; вероятностей случаев нет.",
+  "QA-флаг не доказывает ошибку и не исключает запись автоматически; исключения выбраны пользователем.",
+  "Пустые исходные данные в случае не означают отсутствие услуги в городе.",
+  "Расстояния по прямой (haversine-mm-v1) в квадрате среза; стоимости — условные единицы, не тенге."
+ ]
+}

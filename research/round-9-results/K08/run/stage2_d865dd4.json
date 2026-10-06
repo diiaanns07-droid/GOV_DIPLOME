@@ -1,0 +1,74 @@
+{
+ "checker": "K08 R9 check_stage2",
+ "target_app_root": "/tmp/claude-0/-home-user-ADMIT-STUTU/6cfc5b67-d133-5868-9e23-1581b53a3f54/scratchpad/k04r9/prototypes/city-evidence",
+ "results": [
+  {
+   "id": "R1:shymkent_school_r9",
+   "verdict": "PASS",
+   "text": "manual/nominal/robust, per-case метрики, W, worst_case_ids, цена = независимый Python-оракул",
+   "mismatches": [],
+   "nominal": [
+    "c2",
+    "c3"
+   ],
+   "robust": [
+    "c2",
+    "c5"
+   ],
+   "price_m": 21.00431372549018
+  },
+  {
+   "id": "R2:shymkent_school_r9",
+   "verdict": "PASS",
+   "text": "источник/лицензия/QA каждой исключённой записи, snapshot плана не подменён, версии и digests"
+  },
+  {
+   "id": "R3:shymkent_school_r9",
+   "verdict": "PASS",
+   "text": "статический HTML: белый список, CSP, подписи как текст, исключения перечислены",
+   "audit": [],
+   "missing": []
+  },
+  {
+   "id": "R1:astana_clinic_r9",
+   "verdict": "PASS",
+   "text": "manual/nominal/robust, per-case метрики, W, worst_case_ids, цена = независимый Python-оракул",
+   "mismatches": [],
+   "nominal": [
+    "c3",
+    "c8"
+   ],
+   "robust": [
+    "c3",
+    "c8"
+   ],
+   "price_m": 0
+  },
+  {
+   "id": "R2:astana_clinic_r9",
+   "verdict": "PASS",
+   "text": "источник/лицензия/QA каждой исключённой записи, snapshot плана не подменён, версии и digests"
+  },
+  {
+   "id": "R3:astana_clinic_r9",
+   "verdict": "PASS",
+   "text": "статический HTML: белый список, CSP, подписи как текст, исключения перечислены",
+   "audit": [],
+   "missing": []
+  },
+  {
+   "id": "R4",
+   "verdict": "PASS",
+   "text": "одинаковый набор исключений помечен совпадающим; nominal/robust/цена от дубля не зависят"
+  },
+  {
+   "id": "R5",
+   "verdict": "PASS",
+   "text": "exportResilienceEnvelope: только schema_version/plan/cases, без производных"
+  }
+ ],
+ "summary": {
+  "PASS": 8,
+  "FAIL": 0
+ }
+}
