@@ -8,7 +8,7 @@
 - Собственные пути: `ui/civic_feedback/`, `web/civic/feedback/`, `tests/civic/R06/`,
   `research/round-11-results/R06/`, `research/handoffs/astana/R06/round-11/STATUS.md`
 
-## Статус: PARTIAL — checkpoint 2 (backend + тесты)
+## Статус: PARTIAL — checkpoint 3 (backend + фронтенд + браузер)
 
 Сделано:
 - `ui/civic_feedback/service.py` — `FeedbackService(db_path, object_lookup, clock=None)`,
@@ -21,11 +21,18 @@
   истёкшая сессия, 409 по ревизии, согласие и его отзыв, скрытие контактов, ответ не цитирует скрытое,
   XSS как текст, классификатор (ошибка/мусор/зависание), похожие сообщения, маршрутизация.
 - `ui/civic_feedback/classifier_adapter.py` — необязательная загрузка `ml.civic_classifier.classify`.
+- `web/civic/feedback/feedback.js|.css` — `window.CivicFeedback.mount` (форма жителя + публичные
+  сообщения объекта + квитанция/отзыв согласия) и `mountModeration` (очередь, фильтры, счётчики,
+  карточка рядом с объектом, решение с причиной/ответом/публичной версией, журнал).
+- `tests/civic/R06/harness/` — FIXTURE-стенд (loopback, cookie-сессия fixture, CSRF, Origin).
+- `tests/civic/R06/browser_r06.cjs` — прогон в реальном Chromium; скриншоты в
+  `research/round-11-results/R06/screenshots/`.
 
 Проверки:
-- `python3 -m pytest tests/civic/R06 -q` → 111 passed (PASS)
+- `python3 -m pytest tests/civic/R06 -q` → 118 passed (PASS)
+- `node tests/civic/R06/browser_r06.cjs --screenshots research/round-11-results/R06/screenshots` → 26/26 PASS
 - `python3 -m pytest -q` → 115 passed (PASS, весь репозиторий)
 
-Не запускалось: фронтенд, браузерный прогон, интеграция с R02/R01 (их кода в GitHub нет).
+Не запускалось: интеграция с R02/R01 (их кода в GitHub на момент проверки нет).
 
-Следующий шаг: фронтенд `web/civic/feedback/` (CivicFeedback.mount, mountModeration) и браузерная проверка.
+Следующий шаг: INTEGRATION.txt, примеры DTO, DELIVERY.json, contract_delta.txt.
