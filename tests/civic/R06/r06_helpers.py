@@ -59,7 +59,7 @@ def queue_items(service, moderation="pending"):
     return response["body"]["data"]["items"]
 
 
-def moderate(service, staff_id, revision, action="approve", reason="Проверено модератором",
+def moderate(service, staff_id, revision, action="approve", reason="Внутренняя причина R06-test",
              principal=FIXTURE_EDITOR, **extra):
     body = {"expected_revision": revision, "action": action, "reason": reason}
     body.update(extra)

@@ -8,20 +8,24 @@
 - Собственные пути: `ui/civic_feedback/`, `web/civic/feedback/`, `tests/civic/R06/`,
   `research/round-11-results/R06/`, `research/handoffs/astana/R06/round-11/STATUS.md`
 
-## Статус: PARTIAL — checkpoint 1
+## Статус: PARTIAL — checkpoint 2 (backend + тесты)
 
 Сделано:
 - `ui/civic_feedback/service.py` — `FeedbackService(db_path, object_lookup, clock=None)`,
   `handle(method, path, query, body, principal, context)`; таблицы `feedback_meta`,
   `feedback_messages`, `feedback_events`.
 - `ui/civic_feedback/fixtures.py` — FIXTURE object_lookup/principal (R02 ещё не запушен).
-- Тесты: сохранение сообщения, receipt без персональных данных, pending не в публичном списке,
-  сохранение после перезапуска.
+- Тесты: сохранение, receipt без персональных данных, pending не публичен, перезапуск;
+  валидация (object_id/черновик/город/место/противоречие), 413/400/422, лишние поля и поддельная роль,
+  rate limit (5 локальных запросов), дубликаты/повтор client_request_id, модерация с CSRF/Origin,
+  истёкшая сессия, 409 по ревизии, согласие и его отзыв, скрытие контактов, ответ не цитирует скрытое,
+  XSS как текст, классификатор (ошибка/мусор/зависание), похожие сообщения, маршрутизация.
+- `ui/civic_feedback/classifier_adapter.py` — необязательная загрузка `ml.civic_classifier.classify`.
 
 Проверки:
-- `python3 -m pytest tests/civic/R06 -q` → 3 passed (PASS)
+- `python3 -m pytest tests/civic/R06 -q` → 111 passed (PASS)
 - `python3 -m pytest -q` → 115 passed (PASS, весь репозиторий)
 
 Не запускалось: фронтенд, браузерный прогон, интеграция с R02/R01 (их кода в GitHub нет).
 
-Следующий шаг: тесты валидации/rate limit/модерации/приватности, затем фронтенд `web/civic/feedback/`.
+Следующий шаг: фронтенд `web/civic/feedback/` (CivicFeedback.mount, mountModeration) и браузерная проверка.
