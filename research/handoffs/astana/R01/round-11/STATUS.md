@@ -60,4 +60,10 @@ web/govtech/shell.{js,css}, web/civic/shell/, requirements*.txt, run.{bat,sh},
 - DONE: интегрированный браузерный P0 (R02+R03+R04+R06) — 41 PASS / 0 FAIL / 2 NOT_RUN;
   сценарии R07 — 16 PASS; pytest 491 passed. runs/cp7_p0_integrated_r02_r03_r04_r06/.
 
-Следующий шаг: R09 (готов) и R05 (данные), обновления R02 (632c5b2) и R04 по мере поставки.
+## Checkpoint 8 — R09 помощник встроен (шаблонный режим)
+- DONE: импорт R09 @f895c30 (agent/civic_assistant, web/civic/assistant, tests/civic/R09: 119 PASS).
+  Факты — только публичная проекция R02 и кейсы R07; LLM не настроен (NOT_RUN, без платных вызовов).
+  /staff/assistant/extract — только с сессией+CSRF (require_staff R02 в шлюзе).
+- DONE: браузер P0 + помощник — 44 PASS / 0 FAIL / 2 NOT_RUN (runs/cp8_p0_integrated_with_r09/).
+
+Следующий шаг: R05 (реальные/синтетические наборы), обновления R02 (632c5b2) и R04, R08 (нет ветки).

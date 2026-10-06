@@ -3,7 +3,7 @@
   "role": "R01",
   "branch": "claude/affectionate-ride-bol5v8",
   "pack_sha": "9c2f5c0dae14b46c0697a9dfc7f854351bfd570d",
-  "updated_at": "2026-10-06T16:17:18Z",
+  "updated_at": "2026-10-06T16:19:45Z",
   "application_snapshot": {
     "source_branch": "claude/beautiful-clarke-sbzomj",
     "source_sha": "b2cb2e02c602c166ba6d47c02d8e902e5478c791",
@@ -239,13 +239,34 @@
     "R09": {
       "title": "AI-помощник",
       "expected_paths": "agent/civic_assistant/ + web/civic/assistant/",
-      "source_branch": null,
-      "source_sha": null,
-      "imported_paths": [],
-      "integrated": false,
-      "checks": [],
-      "status": "not_delivered",
-      "reason": "No research/round-11-results/R09/DELIVERY.json in any origin branch at 2026-10-06T15:29Z."
+      "source_branch": "claude/wizardly-ptolemy-qy8ltw",
+      "source_sha": "f895c30",
+      "imported_paths": [
+        "agent/civic_assistant/",
+        "web/civic/assistant/ (assistant.js, assistant.css served; demo.html in repo for R09 tests only, not in ASSETS)",
+        "tests/civic/R09/"
+      ],
+      "integrated": true,
+      "checks": [
+        {
+          "name": "R09 tests in integrated tree",
+          "status": "PASS",
+          "command": "python -m pytest -q tests/civic/R09",
+          "result": "119 passed"
+        },
+        {
+          "name": "R01 browser: assistant under the card, template answer from public facts, staff reason not leaked, client facts -> 400",
+          "status": "PASS",
+          "command": "node tests/civic/R01/browser/p0_flow.cjs <out>"
+        },
+        {
+          "name": "live LLM",
+          "status": "NOT_RUN",
+          "reason": "no provider configured; template mode only (no paid calls)"
+        }
+      ],
+      "status": "integrated",
+      "reason": "DELIVERY ready (code 5d1e251, head f895c30 = verified R01 patch notes). Wired manually (R09 patch targets be8cb79): AssistantEndpoint(r02_public_loader, r07_case_loader, provider=None, extractor=None); /staff/assistant/extract requires R02 require_staff (session+CSRF+origin) in the gateway. Draft-review panel for R04 not mounted yet."
     },
     "R10": {
       "title": "Независимая приёмка",
@@ -291,6 +312,10 @@
     {
       "id": "D-08",
       "decision": "R01 fallback modules (fallback.js) removed after R03/R04/R06 integration: one implementation per function; a missing module is shown as such."
+    },
+    {
+      "id": "D-09",
+      "decision": "R09 POST /staff/assistant/extract accepted; gateway enforces staff session+CSRF before R09. Assistant facts only from R02 public view and R07 prepared cases; no LLM provider configured."
     }
   ]
 }

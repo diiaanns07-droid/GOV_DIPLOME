@@ -171,6 +171,23 @@ const okNotice = (page, text) => page.waitForSelector(`#civic-editor-root .civic
     check("selected object permalink in URL", (await page.evaluate(() => location.hash)).includes(encodeURIComponent(createdId)));
     await page.screenshot({ path: path.join(OUT, "04_resident_card_1440.png") });
 
+    // ---- assistant (R09) under the card: template answer from published facts only
+    const assistantReady = await page.evaluate(() => window.CivicShell.modules?.assistant?.status === "ready");
+    if (!assistantReady) notRun("assistant answer from verified facts", "R09 module not ready in this build");
+    else {
+      await page.waitForSelector("#civic-assistant-root .civic-r09-input", { timeout: 10000 });
+      await page.fill("#civic-assistant-root .civic-r09-input", "Почему перенесли срок?");
+      await page.click("#civic-assistant-root .civic-r09-ask");
+      await page.waitForSelector("#civic-assistant-root .civic-r09-badge", { timeout: 15000 });
+      const ans = await page.evaluate(() => ({ source: document.querySelector("#civic-assistant-root .civic-r09-badge")?.dataset.source,
+        text: document.querySelector("#civic-assistant-root .civic-r09-answer")?.textContent || "" }));
+      check("assistant answers from published facts (template, labelled)", ans.source === "template" && /задержке|15\.11\.2026|15 ноября/.test(ans.text), ans);
+      check("assistant does not leak the unpublished staff reason", !/проверка истории \(смоук R01\)/.test(ans.text));
+      await page.screenshot({ path: path.join(OUT, "04b_assistant_1440.png") });
+      const injected = await apiFetch(page, "POST", "/assistant", { question: "Когда закончат?", object_id: createdId, scenario_id: null, facts: [{ id: "x", value: "завершено" }] });
+      check("assistant rejects client-supplied facts", injected.status === 400, injected.status);
+    }
+
     // ---- resident message (R06)
     await page.click("#civic-map-root [data-r03-action=feedback]");
     const fb = "#civic-feedback-root ";

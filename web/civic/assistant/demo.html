@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>R09 помощник — демо</title>
+<link rel="stylesheet" href="assistant.css">
+<style>
+  body { margin: 0; font: 14px/1.5 "Segoe UI", Inter, Arial, sans-serif; background: #e5ebe1; color: #152c26; }
+  main { max-width: 920px; margin: 0 auto; padding: 16px; display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); }
+  .card { background: #fff; border: 1px solid #e4e9e3; border-radius: 20px; padding: 16px 18px; box-shadow: 0 12px 44px #19362812; min-width: 0; }
+  .demo-flag { font-size: 12px; background: #fff6df; color: #6b4a10; border-radius: 10px; padding: 6px 10px; }
+  .demo-bar { display: flex; flex-wrap: wrap; gap: 6px; }
+  .demo-bar button { border: 1px solid #dce4d7; border-radius: 10px; padding: 6px 10px; background: #fff; cursor: pointer; }
+  .demo-bar button[aria-pressed=true] { background: #e4efda; border-color: #91b58a; }
+  #applied { font-size: 12px; white-space: pre-wrap; }
+</style>
+</head>
+<body>
+<main>
+  <p class="demo-flag">Демо R09 на синтетических данных (тестовые записи, не сведения о реальных работах в Астане). В продукте компонент монтирует R01 в карточку объекта.</p>
+  <section class="card" aria-label="Карточка объекта (демо)">
+    <div class="demo-bar" id="objects"></div>
+    <div id="assistant-root"></div>
+  </section>
+  <section class="card" aria-label="Редактор (демо)">
+    <div id="draft-root"></div>
+    <pre id="applied" aria-label="Перенесённые в форму поля"></pre>
+  </section>
+</main>
+<script src="assistant.js"></script>
+<script>
+  // Минимальная копия контракта api.request R01: относительный путь, конверт {ok,data}, signal, без секретов.
+  (function () {
+    const API_BASE = "/api/civic/v1";
+    async function request(method, path, body, options) {
+      const ctrl = new AbortController();
+      const outer = options && options.signal;
+      if (outer) outer.addEventListener("abort", () => ctrl.abort(), { once: true });
+      let res;
+      try {
+        res = await fetch(API_BASE + path, { method, credentials: "same-origin", cache: "no-store", signal: ctrl.signal,
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: method === "POST" ? JSON.stringify(body || {}) : undefined });
+      } catch (e) {
+        const err = new Error(outer && outer.aborted ? "aborted" : "network");
+        err.code = outer && outer.aborted ? "aborted" : "network"; err.status = 0; throw err;
+      }
+      let env = null;
+      try { env = await res.json(); } catch (e) { env = null; }
+      if (!env || env.ok !== true) {
+        const err = new Error("api"); err.status = res.status;
+        err.code = env && env.error && env.error.code ? String(env.error.code) : "error"; throw err;
+      }
+      return env.data;
+    }
+    const api = { request };
+    window.__r09demo = { api, applied: [] };
+    const ids = ["r09-synth-full", "r09-synth-missing", "r09-synth-html", "r09-synth-draft"];
+    const bar = document.getElementById("objects");
+    let handle = null;
+    function select(id) {
+      if (handle) handle.destroy();
+      for (const b of bar.children) b.setAttribute("aria-pressed", String(b.dataset.id === id));
+      handle = window.CivicAssistant.mount({ root: document.getElementById("assistant-root"), api, objectId: id });
+      window.__r09demo.handle = handle;
+      window.__r09demo.objectId = id;
+    }
+    for (const id of ids) {
+      const b = document.createElement("button");
+      b.type = "button"; b.dataset.id = id; b.textContent = id;
+      b.addEventListener("click", () => select(id));
+      bar.append(b);
+    }
+    window.__r09demo.select = select;
+    select(new URLSearchParams(location.search).get("object") || ids[0]);
+    window.CivicAssistant.mountDraftReview({ root: document.getElementById("draft-root"), api, sourceId: "synth-pub-demo",
+      onApplyField(field, value, evidence) {
+        window.__r09demo.applied.push({ field, value, quote: evidence.quote });
+        document.getElementById("applied").textContent = JSON.stringify(window.__r09demo.applied, null, 1);
+      } });
+  })();
+</script>
+</body>
+</html>

@@ -65,7 +65,8 @@ CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css",
                 "feedback/feedback.js", "feedback/feedback.css",      # R06 @eaa113d
                 "scenarios/scenarios.js", "scenarios/scenarios.css",  # R07 @22fa413 (graphs only via API)
                 "map/civic-map-core.js", "map/civic-map.js", "map/civic-map.css",  # R03 @f73745c
-                "editor/editor-core.js", "editor/editor.js", "editor/editor.css")  # R04 @da46e1c
+                "editor/editor-core.js", "editor/editor.js", "editor/editor.css",  # R04 @da46e1c
+                "assistant/assistant.js", "assistant/assistant.css")  # R09 @f895c30 (demo.html not served)
 for _asset in CIVIC_ASSETS:
     _mime = {".js": "text/javascript", ".css": "text/css", ".json": "application/json"}.get(Path(_asset).suffix, "text/plain")
     ASSETS["/civic/" + _asset] = ("civic/" + _asset, _mime + "; charset=utf-8")
@@ -110,6 +111,8 @@ CIVIC_ROUTES = (
     ("GET", ("scenarios", "cases"), "scenarios"),
     ("POST", ("scenarios", "compare"), "scenarios"),
     ("POST", ("assistant",), "assistant"),
+    # R09 contract_delta (accepted): editor-only extraction draft from supplied publication text.
+    ("POST", ("staff", "assistant", "extract"), "assistant"),
 )
 CIVIC_MODULE_LABELS = {
     "store": "Объекты и доступ редактора (R02)",
@@ -211,7 +214,27 @@ class CivicGateway:
                 registry.load_graph(item["id"])
             return module
 
-        gateway = cls({"store": store, "feedback": feedback, "scenarios": scenarios})
+        def assistant():
+            # R09 @f895c30: template answers from verified server facts (no key, no network). Facts come
+            # from R02's PUBLIC object view and R07 prepared cases; provider/extractor stay None
+            # (no live LLM in this build). Client-supplied facts are rejected by R09 (400).
+            api = importlib.import_module("agent.civic_assistant.api")
+            store_service = gateway.service("store")
+            if store_service is None:
+                raise ImportError("assistant needs the object store")
+            load_scenario = None
+            try:
+                scen_registry = importlib.import_module("engine.civic_scenarios.registry")
+                scen_compare = importlib.import_module("engine.civic_scenarios.compare")
+                load_scenario = api.r07_case_loader(scen_registry.list_cases, scen_registry.load_graph,
+                                                    scen_compare.compare)
+            except ImportError:
+                load_scenario = None
+            return api.AssistantEndpoint(load_public_object=api.r02_public_loader(store_service),
+                                         load_scenario_result=load_scenario, provider=None, extractor=None,
+                                         resolve_principal=store_service.resolve_principal)
+
+        gateway = cls({"store": store, "feedback": feedback, "scenarios": scenarios, "assistant": assistant})
         return gateway
 
     def service(self, name):
@@ -305,6 +328,16 @@ class CivicGateway:
             return service.handle(method, full_path, query, body, context)
         if owner == "scenarios":
             return self._scenarios(service, method, full_path, query, body)
+        if owner == "assistant":
+            if rel_path.startswith("/staff/"):
+                # Staff extraction: the gateway enforces R02 session + CSRF + origin like other staff POSTs.
+                store = self.service("store")
+                if store is None:
+                    return civic_error(503, "module_unavailable", "Модуль доступа редактора не подключён.")
+                _, denied = store.require_staff(context, unsafe=True)
+                if denied:
+                    return denied
+            return service.handle(method, full_path, query, body, context)
         if owner == "feedback":
             store = self.service("store")
             principal = store.resolve_principal(context) if store is not None else None
