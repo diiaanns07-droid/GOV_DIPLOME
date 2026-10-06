@@ -1,0 +1,75 @@
+{
+ "app_root": "/tmp/claude-0/-home-user-GOV-DIPLOME/58b57e28-2f87-51c8-8e87-47271ca72a4c/scratchpad/r9/prototypes/city-evidence",
+ "pass": 17,
+ "fail": 0,
+ "results": [
+  {
+   "name": "валидный конверт: deep-frozen копия, cases отсортированы по исключениям",
+   "status": "PASS"
+  },
+  {
+   "name": "коды ошибок конверта",
+   "status": "PASS"
+  },
+  {
+   "name": "13 кандидатов → too_many_candidates до проверки plan (даже если plan иначе ошибочен); 12 проходит",
+   "status": "PASS"
+  },
+  {
+   "name": "строгий импорт: NaN, 1e999, повтор ключа, >256 KiB; экспорт→импорт → тот же конверт и digest",
+   "status": "PASS"
+  },
+  {
+   "name": "контекст не мутирован; base = PL.evaluatePlan на полном срезе",
+   "status": "PASS"
+  },
+  {
+   "name": "исключение ближайшей записи меняет before только там, где она была ближайшей; кандидаты не меняются",
+   "status": "PASS"
+  },
+  {
+   "name": "W = лексикографический максимум L по случаям; worst_case_ids — все случаи с W; дубли помечены",
+   "status": "PASS"
+  },
+  {
+   "name": "shymkent/school: nominal = mean-оптимум PL; robust W ≤ nominal W; цена ≥ 0 или null с причиной",
+   "status": "PASS"
+  },
+  {
+   "name": "shymkent/outpatient_clinic: nominal = mean-оптимум PL; robust W ≤ nominal W; цена ≥ 0 или null с причиной",
+   "status": "PASS"
+  },
+  {
+   "name": "astana/school: nominal = mean-оптимум PL; robust W ≤ nominal W; цена ≥ 0 или null с причиной",
+   "status": "PASS"
+  },
+  {
+   "name": "astana/outpatient_clinic: nominal = mean-оптимум PL; robust W ≤ nominal W; цена ≥ 0 или null с причиной",
+   "status": "PASS"
+  },
+  {
+   "name": "ручной недопустимый план помечен feasible=false с причинами",
+   "status": "PASS"
+  },
+  {
+   "name": "infeasible required: status infeasible, robust/nominal/price null; ограничения не снимаются",
+   "status": "PASS"
+  },
+  {
+   "name": "cancel/неполный поиск: не optimal, robust=null",
+   "status": "PASS"
+  },
+  {
+   "name": "digest: не зависит от порядка cases/исключений/массивов plan; label меняет, selected_ids — только scenario digest",
+   "status": "PASS"
+  },
+  {
+   "name": "async = sync; event loop уступается; isCurrent",
+   "status": "PASS"
+  },
+  {
+   "name": "async: AbortController → cancelled, robust=null",
+   "status": "PASS"
+  }
+ ]
+}

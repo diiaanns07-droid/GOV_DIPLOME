@@ -1,0 +1,250 @@
+/* «Устойчивость к допущениям» — city-resilience-v1 (research/round-9/CORE_SPEC.txt). K05 round 9. Pure module, no DOM.
+ * Тонкий слой над web/plan.js сборки (city-plan-v2), не второй движок: геометрия, округление до мм, ничьи и
+ * ограничения берутся из PL.precompute / PL.evaluatePlan / PL.optimizePlans / PL.validatePlanScenario.
+ *
+ * Случай (case) = набор ИСХОДНЫХ записей категории, которые условно не учитываются. Это анализ допущений о данных,
+ * НЕ прогноз закрытия объекта, риска или потребностей жителей. Исходные записи/контекст не мутируются.
+ *
+ * Браузер: после facts.js, whatif.js, plan.js → window.CITY_RESILIENCE. Node: require("./resilience.js").bind(PL, F, X)
+ * (или без bind, если файл лежит рядом с plan.js/facts.js/whatif.js).
+ */
+(function (root) {
+  "use strict";
+  const SCHEMA = "city-resilience-v1";
+  const OBJECTIVE = "worst-lex-v1";
+  const LIMITS = { candidates: 12, user_cases: 7, label: 120, subsets: 4096 };
+  const ENV_KEYS = ["schema_version", "plan", "cases"];
+  const CASE_KEYS = ["id", "label", "disabled_source_ids"];
+  const ID_CHARS = /^[\p{L}\p{N}_.-]+$/u;  // то же правило ID, что в plan.js сборки (NFC, 1..64 code points)
+  const validId = (v) => typeof v === "string" && v.normalize("NFC") === v && [...v].length >= 1 && [...v].length <= 64 && ID_CHARS.test(v);
+  const cmpStr = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
+  const cmpIds = (a, b) => { for (let i = 0; i < Math.min(a.length, b.length); i++) { const c = cmpStr(a[i], b[i]); if (c) return c; } return a.length - b.length; };
+  const deepFreeze = (o) => { if (o && typeof o === "object" && !Object.isFrozen(o)) { Object.freeze(o); for (const v of Object.values(o)) deepFreeze(v); } return o; };
+
+  function makeApi(PL, F, X) {
+    class ResilienceError extends Error { constructor(code, detail) { super(code + ": " + detail); this.code = code; this.detail = detail; } }
+    const fail = (code, d) => { throw new ResilienceError(code, d); };
+    const CLEAN = new WeakSet();  // envelopes produced by validateResilience (deep-frozen): internal fast path
+
+    // ---------- проверка ----------
+    function parseResilienceJSON(text) {
+      try { return X.parseStrict(text); } catch (e) { fail(e.code === "too_large" ? "too_large" : "bad_json", e.detail || e.message); }
+    }
+    function checkKeys(o, what, keys) {
+      if (!o || typeof o !== "object" || Array.isArray(o)) fail("bad_shape", `${what}: ожидается объект`);
+      for (const k of Object.keys(o)) if (!keys.includes(k)) fail("unknown_field", `${what}: поле ${JSON.stringify(k).slice(0, 40)} не допускается`);
+      for (const k of keys) if (!(k in o)) fail("missing_field", `${what}.${k}`);
+    }
+    function validateResilience(input, ctx) {
+      checkKeys(input, "envelope", ENV_KEYS);
+      if (input.schema_version !== SCHEMA) fail("bad_version", `версия ${String(input.schema_version).slice(0, 40)} ≠ ${SCHEMA}`);
+      const plan = input.plan;
+      if (!plan || typeof plan !== "object" || Array.isArray(plan)) fail("bad_shape", "plan: ожидается объект city-plan-v2");
+      if ("derived_results" in plan) fail("unknown_field", "plan.derived_results: в city-resilience-v1 производные поля не принимаются");
+      // размер — ДО любых предвычислений и до полной проверки v2
+      if (Array.isArray(plan.candidates) && plan.candidates.length > LIMITS.candidates)
+        fail("too_many_candidates", `для устойчивости не больше ${LIMITS.candidates} кандидатов, получено ${plan.candidates.length}`);
+      let sc;
+      try { sc = PL.validatePlanScenario(plan, ctx); } catch (e) { fail(e.code || "bad_plan", "plan: " + (e.detail || e.message)); }
+      const sources = ctx.places.filter((p) => p.group === sc.category);
+      const srcIds = new Set(sources.map((p) => p.id)), candIds = new Set(sc.candidates.map((c) => c.id));
+      if (!Array.isArray(input.cases)) fail("bad_shape", "cases: массив");
+      if (input.cases.length < 1 || input.cases.length > LIMITS.user_cases) fail("bad_cases", `пользовательских случаев 1..${LIMITS.user_cases}, получено ${input.cases.length}`);
+      const seen = new Set();
+      const cases = input.cases.map((c, k) => {
+        checkKeys(c, `cases[${k}]`, CASE_KEYS);
+        if (!validId(c.id)) fail("bad_id", `cases[${k}].id`);
+        if (c.id === "base") fail("reserved_id", "id «base» зарезервирован для случая без исключений");
+        if (seen.has(c.id)) fail("duplicate_id", `cases: ${c.id}`);
+        seen.add(c.id);
+        if (typeof c.label !== "string" || !c.label.trim() || [...c.label].length > LIMITS.label || /\p{Cc}/u.test(c.label))
+          fail("bad_label", `cases[${k}].label: непустая строка ≤${LIMITS.label} символов без управляющих`);
+        const d = c.disabled_source_ids;
+        if (!Array.isArray(d) || d.length < 1 || d.length > sources.length) fail("bad_exclusions", `cases[${k}]: исключений 1..${sources.length}`);
+        const ds = new Set();
+        for (const id of d) {
+          if (!validId(id)) fail("bad_id", `cases[${k}].disabled_source_ids`);
+          if (ds.has(id)) fail("duplicate_id", `cases[${k}].disabled_source_ids: ${id}`);
+          if (!srcIds.has(id)) fail(candIds.has(id) ? "candidate_not_source" : "unknown_source", `cases[${k}]: ${id} — не исходная запись категории ${sc.category}`);
+          ds.add(id);
+        }
+        return { id: c.id, label: c.label, disabled_source_ids: [...d].sort(cmpStr) };  // новый массив этого realm (чистая копия)
+      });
+      const env = deepFreeze({ schema_version: SCHEMA, plan: sc, cases });
+      CLEAN.add(env);
+      return env;
+    }
+    const ensure = (ctx, env) => (CLEAN.has(env) ? env : validateResilience(env, ctx));
+
+    // ---------- digests (не зависят от порядка случаев и ID) ----------
+    const casesCanon = (env) => env.cases.slice().sort((a, b) => cmpStr(a.id, b.id)).map((c) => [c.id, c.label, c.disabled_source_ids.slice().sort(cmpStr)]);
+    function digests(env) {
+      const prob = PL.problemDigest(env.plan, F);
+      const ex = "sha256:" + F.sha256hex(JSON.stringify(casesCanon(env).map(([id, , d]) => [id, d])));
+      const rp = "sha256:" + F.sha256hex(JSON.stringify([SCHEMA, PL.METRIC, OBJECTIVE, prob, casesCanon(env)]));
+      const rs = "sha256:" + F.sha256hex(JSON.stringify([rp, env.plan.selected_ids.slice().sort(cmpStr)]));
+      return { plan_problem_digest: prob, exclusions_digest: ex, resilience_problem_digest: rp, resilience_scenario_digest: rs };
+    }
+
+    // ---------- предвычисление: по одному PL.precompute на случай (база фильтруется, контекст не мутируется) ----------
+    function prepare(ctx, env) {
+      const all = [{ id: "base", label: "Без исключений", disabled_source_ids: [] }, ...env.cases.slice().sort((a, b) => cmpStr(a.id, b.id))];
+      const per = all.map((c) => {
+        const off = new Set(c.disabled_source_ids);
+        const cctx = { ...ctx, places: ctx.places.filter((p) => !off.has(p.id)) };
+        return { c, cctx, pre: PL.precompute(cctx, env.plan) };
+      });
+      const P0 = per[0].pre;  // кандидаты и точки одинаковы во всех случаях (порядок id), расстояния до кандидатов — из P0
+      const nP = P0.pts.length;
+      const dupOf = new Map();
+      per.forEach((x) => { const k = x.c.disabled_source_ids.join("\u0000"); if (!dupOf.has(k)) dupOf.set(k, []); dupOf.get(k).push(x.c.id); });
+      return { all, per, P0, nP, weights: P0.pts.map((p) => p.weight), radiusMm: env.plan.coverage_radius_m * 1000,
+        baseMm: per.map((x) => x.pre.base.map((b) => (b ? b.mm : Infinity))), candMm: P0.dist.map((row) => row.map((d) => d.mm)),
+        same: Object.fromEntries(per.map((x) => [x.c.id, dupOf.get(x.c.disabled_source_ids.join("\u0000")).filter((id) => id !== x.c.id)])) };
+    }
+
+    // L = (unknown, weighted_sum_mm, max_mm|+inf); сравнение лексикографическое
+    const cmpL = (a, b) => a[0] - b[0] || a[1] - b[1] || (a[2] === b[2] ? 0 : a[2] < b[2] ? -1 : 1);
+    function lossOf(R, ci, candIdx) {
+      let unknown = 0, wsum = 0, max = 0;
+      for (let j = 0; j < R.nP; j++) {
+        let a = R.baseMm[ci][j];
+        for (const i of candIdx) if (R.candMm[i][j] < a) a = R.candMm[i][j];
+        if (a === Infinity) { unknown++; continue; }
+        wsum += R.weights[j] * a; if (a > max) max = a;
+      }
+      return [unknown, wsum, unknown ? Infinity : max];
+    }
+    function worstOf(R, candIdx) {
+      const Ls = R.all.map((_, ci) => lossOf(R, ci, candIdx));
+      let W = Ls[0];
+      for (const L of Ls) if (cmpL(L, W) > 0) W = L;
+      return { Ls, W, worst: R.all.filter((_, ci) => cmpL(Ls[ci], W) === 0).map((c) => c.id).sort(cmpStr) };
+    }
+    const outL = (L) => ({ unknown_count: L[0], weighted_sum_mm: L[1], max_mm: L[2] === Infinity ? null : L[2] });
+
+    // ---------- оценка набора во всех случаях (таблица через PL.evaluatePlan — те же строки/метрики, что в v2) ----------
+    function evaluateResilience(ctx, envIn, selectedIds, R0) {
+      const env = ensure(ctx, envIn);
+      const R = R0 || prepare(ctx, env);
+      const ids = [...new Set(selectedIds)].sort(cmpStr);
+      for (const id of ids) if (!R.P0.candIndex.has(id)) fail("unknown_ref", `кандидата ${id} нет`);
+      const idx = ids.map((id) => R.P0.candIndex.get(id));
+      const { Ls, W, worst } = worstOf(R, idx);
+      const per_case = R.per.map((x, ci) => {
+        const ev = PL.evaluatePlan(x.cctx, env.plan, ids, x.pre);
+        return { case_id: x.c.id, label: x.c.label, disabled_source_ids: x.c.disabled_source_ids, same_exclusions_as: R.same[x.c.id],
+          n_source_records: x.pre.src.length, loss: outL(Ls[ci]),
+          metrics: { unknown_count: ev.metrics.unknown_count, weighted_mean_mm: ev.metrics.weighted_mean_mm, max_mm: ev.metrics.max_mm,
+            covered_weight: ev.metrics.covered_weight, coverage_fraction: ev.metrics.coverage_fraction, cost: ev.metrics.cost },
+          rows: ev.rows };
+      });
+      const f = PL.feasibility(env.plan, ids);
+      return { selected_ids: ids, feasible: f.feasible, reasons: f.reasons, cost: f.cost, per_case, worst_vector: outL(W), worst_case_ids: worst,
+        metric_version: PL.METRIC, objective_version: OBJECTIVE };
+    }
+
+    // ---------- точный устойчивый поиск: ≤ 2^12 подмножеств, пошагово, отменяемо ----------
+    function createResilienceSearch(ctx, envIn, opts) {
+      const env = ensure(ctx, envIn);
+      const sc = env.plan, R = prepare(ctx, env);
+      const request_id = opts && opts.request_id !== undefined ? opts.request_id : null;
+      const P0 = R.P0, nC = P0.cands.length;
+      const req = sc.required_ids.map((id) => P0.candIndex.get(id));
+      const exc = new Set(sc.excluded_ids.map((id) => P0.candIndex.get(id)));
+      const free = []; for (let i = 0; i < nC; i++) if (!req.includes(i) && !exc.has(i)) free.push(i);
+      const reqCost = req.reduce((s, i) => s + P0.cands[i].cost, 0);
+      const reasons = [];
+      if (req.length > sc.max_selected) reasons.push({ code: "required_exceeds_max_selected", text: `обязательных ${req.length} > максимума ${sc.max_selected}` });
+      if (reqCost > sc.budget) reasons.push({ code: "required_cost_exceeds_budget", text: `стоимость обязательных ${reqCost} > бюджета ${sc.budget} усл. ед.` });
+      const total = reasons.length ? 0 : 2 ** free.length;
+      if (total > LIMITS.subsets) fail("too_many_candidates", `${total} подмножеств > ${LIMITS.subsets}`);
+      const slots = sc.max_selected - req.length;
+      let mask = 0, examined = 0, feasible = 0, cancelled = false, best = null;
+      const pop = (x) => { let c = 0; while (x) { x &= x - 1; c++; } return c; };
+      function step(n) {
+        if (cancelled || reasons.length) return true;
+        const end = Math.min(total, mask + n);
+        for (; mask < end; mask++) {
+          examined++;
+          if (pop(mask) > slots) continue;
+          let cost = reqCost;
+          const idx = req.slice();
+          for (let k = 0; k < free.length; k++) if (mask & (1 << k)) { cost += P0.cands[free[k]].cost; idx.push(free[k]); }
+          if (cost > sc.budget) continue;
+          feasible++;
+          const { W, Ls } = worstOf(R, idx);
+          const ids = idx.map((i) => P0.cands[i].id).sort(cmpStr);
+          // ключ устойчивого плана: (W, L_base, cost, sorted ids)
+          const better = !best || cmpL(W, best.W) < 0 || (cmpL(W, best.W) === 0 && (cmpL(Ls[0], best.Lb) < 0
+            || (cmpL(Ls[0], best.Lb) === 0 && (cost < best.cost || (cost === best.cost && cmpIds(ids, best.ids) < 0)))));
+          if (better) best = { W, Lb: Ls[0], cost, ids };
+        }
+        return mask >= total;
+      }
+      function result() {
+        const dg = digests(env);
+        const base = { schema_version: SCHEMA, ...dg, metric_version: PL.METRIC, objective_version: OBJECTIVE, request_id,
+          cases: R.all.map((c) => ({ id: c.id, label: c.label, disabled_source_ids: c.disabled_source_ids, same_exclusions_as: R.same[c.id] })),
+          evaluated: examined, total_subsets: total, feasible_count: feasible };
+        if (reasons.length) return { ...base, status: "infeasible", reasons, nominal: null, robust: null, price_of_resilience_m: null, price_reason: "нет допустимых планов" };
+        if (cancelled || mask < total) return { ...base, status: cancelled ? "cancelled" : "incomplete", reasons: [], nominal: null, robust: null,
+          price_of_resilience_m: null, price_reason: "поиск не завершён" };
+        // обычный план = mean-оптимум v2 на base (движок сборки)
+        const nom = PL.optimizePlans(ctx, sc, { F });
+        const nominalIds = nom.status === "optimal" ? nom.objectives.mean.ids : null;
+        const nominal = nominalIds ? { status: nom.status, ...evaluateResilience(ctx, env, nominalIds, R) } : { status: nom.status, reasons: nom.reasons };
+        const robust = { status: "optimal", ...evaluateResilience(ctx, env, best.ids, R) };
+        const mNom = nominalIds ? nominal.per_case[0].metrics.weighted_mean_mm : null, mRob = robust.per_case[0].metrics.weighted_mean_mm;
+        let price = null, why = null;
+        if (nom.status !== "optimal") why = "обычный план не найден как optimal";
+        else if (mNom === null || mRob === null) why = "среднее расстояние в base неизвестно (нет известных after)";
+        else price = (mRob - mNom) / 1000;
+        return { ...base, status: "optimal", reasons: [], nominal, robust, same_plan: !!nominalIds && cmpIds(nominalIds, best.ids) === 0,
+          price_of_resilience_m: price, price_reason: why };
+      }
+      return { get total() { return total; }, get examined() { return examined; }, step, cancel: () => { cancelled = true; }, result, request_id };
+    }
+
+    function optimizeResilience(ctx, env, opts) { const s = createResilienceSearch(ctx, env, opts); while (!s.step(LIMITS.subsets)); return s.result(); }
+
+    // Асинхронно для UI: чанки + уступка event loop; signal/shouldCancel; onProgress.
+    function optimizeResilienceAsync(ctx, env, opts) {
+      const o = opts || {}, chunk = o.chunk || 256;
+      const tick = typeof setImmediate === "function" ? setImmediate : (f) => setTimeout(f, 0);
+      return new Promise((resolve, reject) => {
+        let s;
+        try { s = createResilienceSearch(ctx, env, o); } catch (e) { reject(e); return; }
+        const loop = () => {
+          if ((o.signal && o.signal.aborted) || (o.shouldCancel && o.shouldCancel())) s.cancel();
+          const done = s.step(chunk);
+          if (o.onProgress) o.onProgress({ examined: s.examined, total: s.total });
+          if (done) resolve(s.result()); else tick(loop);
+        };
+        tick(loop);
+      });
+    }
+
+    const isCurrent = (res, currentDigest, rid) => !!res && res.resilience_problem_digest === currentDigest && (rid === undefined || res.request_id === rid);
+
+    function exportResilience(env) {  // только вход; производные поля не экспортируются
+      const p = env.plan;
+      return JSON.stringify({ schema_version: SCHEMA, plan: { schema_version: p.schema_version, city_id: p.city_id, source_snapshot: p.source_snapshot,
+        category: p.category, control_points: p.control_points, candidates: p.candidates, budget: p.budget, max_selected: p.max_selected,
+        coverage_radius_m: p.coverage_radius_m, required_ids: p.required_ids, excluded_ids: p.excluded_ids, selected_ids: p.selected_ids },
+      cases: env.cases.map((c) => ({ id: c.id, label: c.label, disabled_source_ids: c.disabled_source_ids })) });
+    }
+    function importResilience(text, ctx) { return validateResilience(parseResilienceJSON(text), ctx); }
+
+    return { SCHEMA, OBJECTIVE, LIMITS, ResilienceError, parseResilienceJSON, validateResilience, digests, evaluateResilience,
+      createResilienceSearch, optimizeResilience, optimizeResilienceAsync, isCurrent, exportResilience, importResilience };
+  }
+
+  let bound = null;
+  if (typeof module !== "undefined" && module.exports) {
+    module.exports = { bind: makeApi };
+    try { bound = makeApi(require("./plan.js"), require("./facts.js"), require("./whatif.js")); Object.assign(module.exports, bound); } catch (e) { /* не рядом с plan.js: используйте bind */ }
+  } else if (root.CITY_PLAN && root.CITY_FACTS && root.CITY_WHATIF) {
+    root.CITY_RESILIENCE = makeApi(root.CITY_PLAN, root.CITY_FACTS, root.CITY_WHATIF);
+  }
+})(typeof window !== "undefined" ? window : globalThis);

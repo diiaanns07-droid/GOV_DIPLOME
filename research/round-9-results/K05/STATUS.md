@@ -6,7 +6,7 @@
 | Этап | Статус |
 |---|---|
 | 1. r8 oracle/fixtures против plan.js d865dd4 через адаптер; API-guard repro | **done** |
-| 2. resilience-модуль поверх API BUILD | не начат |
+| 2. resilience-модуль поверх API BUILD | **done** |
 | 3. gold/оракул/свойства/benchmark, полный handoff | не начат |
 
 ## Этап 1 — результаты на d865dd4 (реально выполнено)
@@ -25,5 +25,14 @@
 - тесты сборки: `node tests/plan.cjs` — all plan checks passed; `whatif.cjs` — passed; `conformance.cjs` — passed;
 - браузер `tests/plan_smoke.cjs` (Playwright): 52 PASS / 0 FAIL и без patch, и с patch; отличие только во времени (`runs/build_plan_smoke_*.txt`).
 
+## Этап 2 — resilience.js (сделано)
+- `resilience.js` (API — `README.md`): validate/evaluate/createSearch/optimize(+Async)/digests/isCurrent/export/import поверх PL.validatePlanScenario/precompute/evaluatePlan/feasibility/optimizePlans сборки; база случая — PL.precompute на отфильтрованной копии контекста; W — лексикографический максимум L; nominal = mean-оптимум PL; robust по (W, L_base, cost, ids); цена устойчивости или null с причиной; ≤12 кандидатов (`too_many_candidates` до предвычислений и до проверки plan), ≤4096 подмножеств; deep-frozen проверенный конверт + повторная проверка непроверенных объектов в публичных функциях.
+- `patches/add_web_resilience_js.patch` — новый файл `web/resilience.js` (предложение; `git apply -p1` на копии d865dd4 — ok, файл идентичен; авто-привязка в Node и `window.CITY_RESILIENCE` при загрузке скриптами проверены).
+
+## Проверки этапа 2 (реально выполнены)
+- `node research/round-9-results/K05/tests/test_resilience.cjs --app-root <d865dd4>/prototypes/city-evidence` → **17 passed, 0 failed** (`runs/stage2_resilience_d865dd4.json`); то же на копии d865dd4 + `plan_api_guard.patch` → 17/0.
+- Первый прогон 16/1: тест roundtrip упал из-за массивов из vm-realm (data.js загружается в песочнице) — валидатор теперь создаёт новый массив (`[...d]`), не наследуя realm входа; повтор 17/0.
+- Это тест модуля K05 на API сборки, **не** тест интегрированной функции: в BUILD resilience.js нет (интеграция NOT_RUN).
+
 ## Следующий шаг
-Этап 2: `research/round-9-results/K05/resilience.js` поверх API plan.js сборки.
+Этап 3: независимый Python-оракул устойчивости, gold-примеры, свойства (перестановки, дубликат случая, супермножество исключений, 0 кандидатов, infeasible), benchmark.
