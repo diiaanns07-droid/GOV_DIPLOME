@@ -1,14 +1,14 @@
 {
- "scanned_utc": "2026-10-06T15:40:19+00:00",
+ "scanned_utc": "2026-10-06T15:47:51+00:00",
  "pack_sha": "9c2f5c0dae14b46c0697a9dfc7f854351bfd570d",
- "branches_scanned": 23,
+ "branches_scanned": 24,
  "deliveries": [
   {
    "branch": "origin/claude/trusting-ptolemy-6ms354",
-   "head": "a95f8574ec4446b92f9f5e47856cb6ef8bbfce54",
+   "head": "6a28de21f890b9201d177e3c4ca20bc2e9c9bd99",
    "path": "research/round-11-results/R02/DELIVERY.json",
    "role_dir": "R02",
-   "head_time": "2026-10-06T15:36:41+00:00",
+   "head_time": "2026-10-06T15:47:10+00:00",
    "valid_json": true,
    "role": "R02",
    "status": "partial",
@@ -33,6 +33,38 @@
    },
    "r01_files": null,
    "next_step": "Валидация civic-v1 и CRUD с публичной проекцией по allowlist.",
+   "problems": []
+  },
+  {
+   "branch": "origin/claude/zen-mendel-e79iiv",
+   "head": "5275d0a04984a9fddf4aeb66781c8d4a3df8451b",
+   "path": "research/round-11-results/R03/DELIVERY.json",
+   "role_dir": "R03",
+   "head_time": "2026-10-06T15:41:21+00:00",
+   "valid_json": true,
+   "role": "R03",
+   "status": "partial",
+   "pack_sha": "9c2f5c0dae14b46c0697a9dfc7f854351bfd570d",
+   "code_commit": null,
+   "checks": [
+    {
+     "name": "core-unit-tests",
+     "status": "PASS"
+    },
+    {
+     "name": "browser-walkthrough",
+     "status": "NOT_RUN"
+    }
+   ],
+   "status_md_present": true,
+   "owned_paths_present": {
+    "web/civic/map/": true,
+    "tests/civic/R03/": true,
+    "research/round-11-results/R03/": true,
+    "research/handoffs/astana/R03/round-11/STATUS.md": true
+   },
+   "r01_files": null,
+   "next_step": "Stand + Playwright tests (layers, card, race, destroy, 390x844/1440x900).",
    "problems": []
   },
   {
@@ -69,10 +101,10 @@
   },
   {
    "branch": "origin/claude/intelligent-sagan-7shpeh",
-   "head": "eebb1a1156049f9835426da8087fe04c90256f33",
+   "head": "b2c7c8ee445383b5d8bc093949b32dc4c514ccff",
    "path": "research/round-11-results/R05/DELIVERY.json",
    "role_dir": "R05",
-   "head_time": "2026-10-06T15:37:30+00:00",
+   "head_time": "2026-10-06T15:46:56+00:00",
    "valid_json": true,
    "role": "R05",
    "status": "partial",
@@ -100,23 +132,92 @@
    "problems": []
   },
   {
-   "branch": "origin/claude/wizardly-ptolemy-qy8ltw",
-   "head": "cbae33762cc0e303a0c0b4bcca15103d1a39e7ff",
-   "path": "research/round-11-results/R09/DELIVERY.json",
-   "role_dir": "R09",
-   "head_time": "2026-10-06T15:39:49+00:00",
+   "branch": "origin/claude/brave-hopper-bkc58b",
+   "head": "22fa41308489f9e3ffe2f76b73f373e25f686f58",
+   "path": "research/round-11-results/R07/DELIVERY.json",
+   "role_dir": "R07",
+   "head_time": "2026-10-06T15:44:34+00:00",
    "valid_json": true,
-   "role": "R09",
-   "status": "partial",
+   "role": "R07",
+   "status": "ready",
    "pack_sha": "9c2f5c0dae14b46c0697a9dfc7f854351bfd570d",
    "code_commit": {
-    "sha": "dea3874",
+    "sha": "d77ec45c529af6529ea1ec0cc7189ff84fb6cd87",
     "exists": true,
     "ancestor_of_head": true
    },
    "checks": [
     {
-     "name": "r09-cp2-facts-template-provider",
+     "name": "unit+risk tests",
+     "status": "PASS"
+    },
+    {
+     "name": "full repo test suite unaffected",
+     "status": "PASS"
+    },
+    {
+     "name": "hand-calculated synthetic case",
+     "status": "PASS"
+    },
+    {
+     "name": "parity with existing K03 routing.js (b2cb2e0)",
+     "status": "PASS"
+    },
+    {
+     "name": "K03 adapter reproducible from pinned source",
+     "status": "PASS"
+    },
+    {
+     "name": "browser check demo (Chromium/Playwright)",
+     "status": "PASS"
+    },
+    {
+     "name": "basemap OpenFreeMap in browser",
+     "status": "NOT_RUN"
+    },
+    {
+     "name": "reproducible results + digests",
+     "status": "PASS"
+    },
+    {
+     "name": "benchmark",
+     "status": "PASS"
+    },
+    {
+     "name": "integration into app.py/ui/web_server.py",
+     "status": "NOT_RUN"
+    }
+   ],
+   "status_md_present": true,
+   "owned_paths_present": {
+    "engine/civic_scenarios/": true,
+    "web/civic/scenarios/": true,
+    "tests/civic/R07/": true,
+    "research/round-11-results/R07/": true,
+    "research/handoffs/astana/R07/round-11/STATUS.md": true
+   },
+   "r01_files": null,
+   "next_step": "R01: подключить engine.civic_scenarios.http.handle и CivicScenarios.mount по INTEGRATION.txt; затем R10 прогоняет fixtures_R10/compare_cases.json через живой сервер.",
+   "problems": []
+  },
+  {
+   "branch": "origin/claude/wizardly-ptolemy-qy8ltw",
+   "head": "cdd265879614738cf74c6ac58ceeec8d8a478f31",
+   "path": "research/round-11-results/R09/DELIVERY.json",
+   "role_dir": "R09",
+   "head_time": "2026-10-06T15:43:58+00:00",
+   "valid_json": true,
+   "role": "R09",
+   "status": "partial",
+   "pack_sha": "9c2f5c0dae14b46c0697a9dfc7f854351bfd570d",
+   "code_commit": {
+    "sha": "cbae337",
+    "exists": true,
+    "ancestor_of_head": true
+   },
+   "checks": [
+    {
+     "name": "r09-cp3-facts-template-provider-scenario-api",
      "status": "PASS"
     },
     {
@@ -133,7 +234,7 @@
     "research/handoffs/astana/R09/round-11/STATUS.md": true
    },
    "r01_files": null,
-   "next_step": "CP3: scenario facts + safe API handler example",
+   "next_step": "CP4: extraction draft validator",
    "problems": []
   }
  ]
