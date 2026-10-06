@@ -85,6 +85,13 @@ def main():
                         bl = [[c["case_id"]] + vec(c["loss"]) for c in bb["per_case"]]
                         chk("build", f"{k}.per_case_L", ob["L"] == bl, key, ob["L"], bl)
                         chk("build", f"{k}.per_case_covered", ob["covered"] == [c["covered_weight"] for c in bb["per_case"]], key)
+                        if "rows" in bb["per_case"][0]:
+                            ev = RS.evaluate_resilience(ctxs[t["slice"]], t["envelope"], ob["ids"])
+                            nk = lambda x: None if x is None else x["kind"] + ":" + x["id"]
+                            ours_rows = [{r["point_id"]: [r["before_mm"], nk(r["nearest_before"]), r["after_mm"], nk(r["nearest_after"]), r["delta_mm"]] for r in pc["rows"]}
+                                         for pc in ev["per_case"]]
+                            their_rows = [{r[0]: r[1:] for r in c["rows"]} for c in bb["per_case"]]
+                            chk("build", f"{k}.per_case_rows", ours_rows == their_rows, key, None if ours_rows == their_rows else "rows differ")
                     times[(t["task_key"].split("|")[0], t["task_key"].split("|")[2], len(t["envelope"]["cases"]) + 1)].append(b["t_ms"])
         if third:
             j = blind.get(key)

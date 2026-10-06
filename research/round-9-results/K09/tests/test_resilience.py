@@ -93,6 +93,27 @@ class TestHand(unittest.TestCase):
         self.assertNotEqual(a["resilience_problem_digest"], b["resilience_problem_digest"])
 
 
+    def test_case_rows_nearest_inside_case(self):
+        ev = RS.evaluate_resilience(HAND_CTX, hand_env([X]), ["cB"])
+        base, x = ev["per_case"][0]["rows"], ev["per_case"][1]["rows"]
+        self.assertEqual(base[0], {"point_id": "p1", "before_mm": 0, "nearest_before": {"kind": "source", "id": "s1"}, "after_mm": 0,
+                                   "nearest_after": {"kind": "source", "id": "s1"}, "delta_mm": 0})
+        self.assertEqual(x[0], {"point_id": "p1", "before_mm": M10, "nearest_before": {"kind": "source", "id": "s2"}, "after_mm": M1,
+                                "nearest_after": {"kind": "hypothetical", "id": "cB"}, "delta_mm": M10 - M1})
+        ez = RS.evaluate_resilience(HAND_CTX, hand_env([Z]), [])
+        self.assertEqual(ez["per_case"][1]["rows"][1], {"point_id": "p2", "before_mm": None, "nearest_before": None, "after_mm": None,
+                                                       "nearest_after": None, "delta_mm": None})
+        tie_ctx = dict(HAND_CTX, sources=[{"id": "s1", "lon": 69.6, "lat": 42.305}, {"id": "s2", "lon": 69.6, "lat": 42.310}])
+        et = RS.evaluate_resilience(tie_ctx, hand_env([X]), ["cA"])                    # cA в той же точке, что s1
+        self.assertEqual(et["per_case"][0]["rows"][0]["nearest_after"], {"kind": "source", "id": "s1"})
+        self.assertEqual(et["per_case"][1]["rows"][0]["nearest_after"], {"kind": "hypothetical", "id": "cA"})
+
+    def test_limit_also_on_trusted_path(self):
+        env = hand_env([X]); env["plan"]["candidates"] = [dict(env["plan"]["candidates"][0], id=f"c{i}") for i in range(13)]
+        with self.assertRaises(RS.ResError) as cm:
+            RS.evaluate_resilience(HAND_CTX, env, [], validated=True)
+        self.assertEqual(cm.exception.code, "too_many_candidates")
+
 # ---------- независимый наивный оракул (своя формула, itertools, свои ключи) ----------
 def nv_mm(a, b):
     p1, p2 = math.radians(a["lat"]), math.radians(b["lat"])

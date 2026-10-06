@@ -150,11 +150,33 @@ class CaseModel:
         src = sorted(ctx["sources"], key=lambda s: s["id"])
         from k09plan.metric import dist_mm
         src_mm = {s["id"]: [dist_mm(p["lon"], p["lat"], s["lon"], s["lat"]) for p in pts] for s in src}
-        self.case_base = []
+        self.case_base, self.case_near = [], []
         for c in self.cases:
             off = set(c["disabled_source_ids"])
             on = [s["id"] for s in src if s["id"] not in off]
-            self.case_base.append([min((src_mm[i][j] for i in on), default=None) for j in range(self.n)])
+            near = [min(((src_mm[i][j], i) for i in on), default=None) for j in range(self.n)]   # (мм, id) — ничья: меньший id
+            self.case_near.append(near)
+            self.case_base.append([None if x is None else x[0] for x in near])
+
+    def case_rows(self, sel_idx):
+        """Строки по точкам в каждом случае: before/after/delta и nearest (source раньше hypothetical при равных мм, затем id)."""
+        pr, out = self.pr, []
+        for k in range(len(self.cases)):
+            rows = []
+            for j, p in enumerate(pr.points):
+                b = self.case_near[k][j]
+                best = None if b is None else (b[0], 0, b[1])
+                for i in sel_idx:
+                    cand = (pr.cand_mm[i][j], 1, pr.cand_ids[i])
+                    if best is None or cand < best:
+                        best = cand
+                rows.append({"point_id": p["id"], "before_mm": None if b is None else b[0],
+                             "nearest_before": None if b is None else {"kind": "source", "id": b[1]},
+                             "after_mm": None if best is None else best[0],
+                             "nearest_after": None if best is None else {"kind": "source" if best[1] == 0 else "hypothetical", "id": best[2]},
+                             "delta_mm": (b[0] - best[0]) if b is not None and best is not None else None})
+            out.append(rows)
+        return out
 
     def losses(self, candmin):
         """candmin: минимум по выбранным кандидатам (None — нет кандидатов). Возвращает [(L, metrics)] по случаям."""
@@ -199,6 +221,8 @@ def evaluate_resilience(ctx, env, selected_ids, model=None, validated=False):
     """Непроверенный env валидируется (лимит до предвычислений); validated=True — внутренний уже проверенный путь."""
     if not validated:
         env = validate_resilience(env, ctx)
+    if len(env["plan"]["candidates"]) > MAX_CANDIDATES:      # и на внутреннем пути (обзор K09 r9, замечание 9)
+        raise ResError("too_many_candidates", str(len(env["plan"]["candidates"])))
     model = model or CaseModel(ctx, env)
     pr, plan = model.pr, env["plan"]
     ids = sorted(set(selected_ids))
@@ -215,6 +239,8 @@ def evaluate_resilience(ctx, env, selected_ids, model=None, validated=False):
     if set(plan["excluded_ids"]) & set(ids): reasons.append("has_excluded")
     v = _plan_view(model, ids, cost, model.losses(candmin), feasible=not reasons)
     v["infeasible_reasons"] = reasons
+    for pc, rows in zip(v["per_case"], model.case_rows(idx)):
+        pc["rows"] = rows
     return v
 
 

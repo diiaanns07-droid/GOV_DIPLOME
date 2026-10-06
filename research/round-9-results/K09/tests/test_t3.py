@@ -54,5 +54,21 @@ class TestT3(unittest.TestCase):
         self.assertIn(row3["W_improvement"], ("none", "unknown", "wsum", "max"))
 
 
+class TestInference(unittest.TestCase):
+    def test_sign_flip_exact(self):
+        rows = []
+        for g, (a, b) in enumerate([(1, 0), (1, 0), (1, 0), (0, 0)]):       # три геометрии в пользу a, одна нейтральна
+            for lvl, v in (("A", a), ("B", b)):
+                rows.append({"slice": "s", "seed": g, "lvl": lvl, "status": "optimal", "same_plan": v})
+        r = T.sign_flip(rows, "lvl", "A", "B", lambda x: (x["slice"], x["seed"]))
+        self.assertEqual((r["geometries"], r["sum_d"]), (4, 3))
+        self.assertAlmostEqual(r["p_exact_two_sided"], 4 / 16)                # |S|≥3: (+++·, −−−·) × 2 знака нейтральной = 4 из 16
+
+    def test_cluster_bootstrap_deterministic(self):
+        rows = [{"slice": "s", "seed": g, "status": "optimal", "same_plan": int(i < g)} for g in range(1, 6) for i in range(5)]
+        a, b = T.cluster_bootstrap(rows, "x", B=2000), T.cluster_bootstrap(rows, "x", B=2000)
+        self.assertEqual(a, b); self.assertEqual(a["clusters"], 5)
+        self.assertLessEqual(a["ci95"][0], a["rate"]); self.assertGreaterEqual(a["ci95"][1], a["rate"])
+
 if __name__ == "__main__":
     unittest.main()

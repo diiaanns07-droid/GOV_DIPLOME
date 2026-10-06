@@ -100,12 +100,15 @@ def run_one(ctx, cfg, attr, spec, repeats=1):
     env = RS.validate_resilience(make_env(ctx, cfg, size, br, ms, seed, cases), ctx)
     r, t = _timed(lambda: RS.optimize_resilience(ctx, env, validated=True), repeats)
     key = f"{an}|{sid}|{size}|{fam}|k{k}|br{br}|ms{ms}|s{seed}"
+    cm = RS.CaseModel(ctx, env)
+    noop = sum(1 for b in cm.case_base[1:] if b == cm.case_base[0])     # случаи, не меняющие baseline ни в одной точке
     tw = sum(p["weight"] for p in env["plan"]["control_points"])
     row = {"task_key": key, "analysis": an, "slice": sid, "size": size, "n_candidates": len(env["plan"]["candidates"]),
            "n_points": len(env["plan"]["control_points"]), "family": fam, "k_cases": len(cases), "budget_ratio": br, "max_selected": ms,
            "seed": seed, "budget": env["plan"]["budget"], "n_sources": len(ctx["sources"]),
            "distinct_exclusion_sets": len({tuple(c["disabled_source_ids"]) for c in cases}),
            "excluded_records_max": max(len(c["disabled_source_ids"]) for c in cases),
+           "noop_cases": noop, "all_cases_noop": int(noop == len(cases)),
            "status": r["status"], "resilience_problem_digest": r["resilience_problem_digest"]}
     if r["status"] != "optimal":
         row.update({"same_plan": "", "price_m": "", "price_null_reason": r["price_null_reason"]})
@@ -131,9 +134,10 @@ def run_one(ctx, cfg, attr, spec, repeats=1):
         "robust_base_unknown": Rb["base_vector"]["unknown_count"], "robust_base_wsum": Rb["base_vector"]["weighted_sum_mm"],
         "nominal_worst_case_ids": " ".join(N["worst_case_ids"]), "robust_worst_case_ids": " ".join(Rb["worst_case_ids"]),
         "base_in_worst_nominal": int("base" in N["worst_case_ids"]), "base_in_worst_robust": int("base" in Rb["worst_case_ids"]),
+        "nominal_worst_n": len(N["worst_case_ids"]), "robust_worst_n": len(Rb["worst_case_ids"]),
         "W_improvement": cls,
         "worst_mean_gain_m": f"{(Wn[1] - Wr[1]) / tw / 1000:.6f}" if both_known else "",
-        "worst_max_gain_m": f"{(Wn[2] - Wr[2]) / 1000:.6f}" if both_known else "",
+        "W_max_component_gain_m": f"{(Wn[2] - Wr[2]) / 1000:.6f}" if both_known else "",   # max-компонента вектора W (не худший max по случаям)
         "price_m": "" if r["price_of_robustness_m"] is None else f"{r['price_of_robustness_m']:.6f}",
         "price_null_reason": r["price_null_reason"] or "",
         "evaluated": r["evaluated"], "feasible_count": r["feasible_count"], "subsets_total": r["subsets_total"]})
@@ -173,6 +177,7 @@ def cell(rows):
     gain = [float(r["worst_mean_gain_m"]) for r in ok if r["worst_mean_gain_m"] != ""]
     gpos = [g for g in gain if g > 0]
     cls = {c: sum(1 for r in ok if r["W_improvement"] == c) for c in ("none", "unknown", "wsum", "max")}
+    wmax = [float(r["W_max_component_gain_m"]) for r in ok if r["W_max_component_gain_m"] != ""]
     return {"n": len(rows), "optimal": n, "same_plan": same, "same_plan_rate": round(same / n, 6) if n else None, "same_plan_wilson95": wilson(same, n),
             "price_defined": len(price), "price_null": n - len(price), "price_zero": sum(1 for p in price if p == 0),
             "price_p50_m": q(price, 0.5), "price_p90_m": q(price, 0.9), "price_max_m": max(price) if price else None,
@@ -180,7 +185,72 @@ def cell(rows):
             "W_improvement": cls,
             "worst_mean_gain_positive_n": len(gpos), "worst_mean_gain_p50_m_positive": q(gpos, 0.5), "worst_mean_gain_max_m": max(gain) if gain else None,
             "nominal_W_unknown_tasks": sum(1 for r in ok if r["nominal_W_unknown"] > 0), "robust_W_unknown_tasks": sum(1 for r in ok if r["robust_W_unknown"] > 0),
-            "base_in_worst_nominal": sum(r["base_in_worst_nominal"] for r in ok), "base_in_worst_robust": sum(r["base_in_worst_robust"] for r in ok)}
+            "base_in_worst_nominal": sum(r["base_in_worst_nominal"] for r in ok), "base_in_worst_robust": sum(r["base_in_worst_robust"] for r in ok),
+            # добавлено после обзора (не предрегистрировано): ничьи, max-компонента W, причины null, нетривиальные задачи
+            "worst_ties_nominal": sum(1 for r in ok if r["nominal_worst_n"] > 1), "worst_ties_robust": sum(1 for r in ok if r["robust_worst_n"] > 1),
+            "W_max_component_gain": {"pos": sum(1 for x in wmax if x > 0), "zero": sum(1 for x in wmax if x == 0), "neg": sum(1 for x in wmax if x < 0),
+                                     "p50_m": q(wmax, 0.5), "min_m": min(wmax) if wmax else None},
+            "price_null_reasons": {k: sum(1 for r in ok if r["price_m"] == "" and r["price_null_reason"] == k) for k in sorted({r["price_null_reason"] for r in ok if r["price_m"] == ""})},
+            "nontrivial": sum(1 for r in ok if not r["all_cases_noop"]),
+            "nontrivial_same_plan": sum(r["same_plan"] for r in ok if not r["all_cases_noop"]),
+            "nontrivial_same_rate": round(sum(r["same_plan"] for r in ok if not r["all_cases_noop"]) / max(1, sum(1 for r in ok if not r["all_cases_noop"])), 6),
+            "all_cases_noop_tasks": sum(r["all_cases_noop"] for r in ok),
+            "distinct_exclusion_sets_mean": round(statistics.fmean(r["distinct_exclusion_sets"] for r in rows), 3) if rows else None}
+
+
+def _geom(r):
+    return (r["slice"], r["seed"])
+
+
+def cluster_bootstrap(rows, label, B=10000):
+    """95% перцентильный интервал доли same_plan с ресэмплингом геометрий (срез × seed); детерминированный seed."""
+    ok = [r for r in rows if r["status"] == "optimal"]
+    by = {}
+    for r in ok:
+        s_, n_ = by.get(_geom(r), (0, 0)); by[_geom(r)] = (s_ + r["same_plan"], n_ + 1)
+    cl = [by[k] for k in sorted(by)]
+    if not cl:
+        return None
+    rng = random.Random(f"k09-r9-t3-boot|{label}")
+    est = []
+    for _ in range(B):
+        smp = [cl[rng.randrange(len(cl))] for _ in cl]
+        est.append(sum(a for a, _ in smp) / sum(b for _, b in smp))
+    est.sort()
+    return {"clusters": len(cl), "B": B, "rate": round(sum(a for a, _ in cl) / sum(b for _, b in cl), 6),
+            "ci95": [round(est[int(0.025 * B)], 6), round(est[int(0.975 * B) - 1], 6)],
+            "cluster_rates_min_max": [round(min(a / b for a, b in cl), 6), round(max(a / b for a, b in cl), 6)]}
+
+
+def sign_flip(rows, fac, a, b, keyf):
+    """Точный двусторонний sign-flip тест по геометриям: d_g = (#пар a=1,b=0) − (#пар a=0,b=1) внутри геометрии g."""
+    xa = {keyf(r): r for r in rows if r[fac] == a and r["status"] == "optimal"}
+    xb = {keyf(r): r for r in rows if r[fac] == b and r["status"] == "optimal"}
+    d = {}
+    for k in set(xa) & set(xb):
+        g = _geom(xa[k]); d[g] = d.get(g, 0) + (xa[k]["same_plan"] - xb[k]["same_plan"])
+    vals = [d[g] for g in sorted(d)]
+    dist = {0: 1}
+    for v in vals:
+        nd = {}
+        for s_, c in dist.items():
+            for t in (s_ + v, s_ - v):
+                nd[t] = nd.get(t, 0) + c
+        dist = nd
+    obs = abs(sum(vals))
+    tot = 2 ** len(vals)
+    p = sum(c for s_, c in dist.items() if abs(s_) >= obs) / tot
+    return {"geometries": len(vals), "sum_d": sum(vals), "p_exact_two_sided": p, "per_geometry_d": vals}
+
+
+def cluster_inference(main, grp):
+    out = {"note": "единица — геометрия (срез × seed), 20 независимых; задачи внутри геометрии зависимы (вложенные размеры, общие исключения)",
+           "same_plan_main": cluster_bootstrap(main, "main")}
+    for g in ("random", "attribute", "all_disabled"):
+        out[f"same_plan_group_{g}"] = cluster_bootstrap([r for r in main if grp(r) == g], f"group:{g}")
+    for f in ("single", "pair", "cluster"):
+        out[f"same_plan_family_{f}"] = cluster_bootstrap([r for r in main if r["family"] == f], f"family:{f}")
+    return out
 
 
 def summarize(rows, cfg):
@@ -189,6 +259,13 @@ def summarize(rows, cfg):
     for fac in ("family", "k_cases", "size", "budget_ratio", "slice"):
         levels = sorted({r[fac] for r in main}, key=lambda v: (str(type(v)), v))
         out["by"][fac] = {str(l): cell([r for r in main if r[fac] == l]) for l in levels}
+    # после обзора: k только по случайным семействам (в by.k_cases k=1 смешан с all_disabled и attribute astana)
+    rndf = [r for r in main if r["family"] in FAMILIES_RANDOM]
+    out["by"]["k_cases_random_families"] = {str(k): cell([r for r in rndf if r["k_cases"] == k]) for k in sorted({r["k_cases"] for r in rndf})}
+    grp = lambda r: "random" if r["family"] in FAMILIES_RANDOM else r["family"]
+    out["by"]["family_group"] = {g: cell([r for r in main if grp(r) == g]) for g in ("random", "attribute", "all_disabled")}
+    # после обзора: вывод на уровне 20 независимых геометрий (срез × seed) — кластерный бутстрэп и точный sign-flip
+    out["cluster_inference"] = cluster_inference(main, grp)
     out["by"]["family_x_k"] = {f"{f}|k{k}": cell([r for r in main if r["family"] == f and r["k_cases"] == k])
                                for f in FAMILIES_RANDOM for k in cfg["families"][f]["k_cases"]}
     out["by"]["family_x_slice"] = {f"{f}|{s}": cell([r for r in main if r["family"] == f and r["slice"] == s])
@@ -206,6 +283,10 @@ def summarize(rows, cfg):
         rf = [r for r in rnd if r["family"] == f]
         out["paired"][f"{f}:k1_vs_k7"] = pair(rf, "k_cases", 1, 7, lambda r: (r["slice"], r["size"], r["budget_ratio"], r["seed"]))
     out["paired"]["budget:0.5_vs_1.0"] = pair(main, "budget_ratio", 0.5, 1.0, lambda r: (r["slice"], r["size"], r["family"], r["k_cases"], r["seed"]))
+    for name, (rows_, fac, a_, b_, keyf) in {
+            **{f"{f}:k1_vs_k7": ([r for r in rnd if r["family"] == f], "k_cases", 1, 7, lambda r: (r["slice"], r["size"], r["budget_ratio"], r["seed"])) for f in FAMILIES_RANDOM},
+            "budget:0.5_vs_1.0": (main, "budget_ratio", 0.5, 1.0, lambda r: (r["slice"], r["size"], r["family"], r["k_cases"], r["seed"]))}.items():
+        out["paired"][name]["sign_flip_over_geometries"] = sign_flip(rows_, fac, a_, b_, keyf)
     out["stress"] = cell([r for r in rows if r["analysis"] == "stress"])
     return out
 

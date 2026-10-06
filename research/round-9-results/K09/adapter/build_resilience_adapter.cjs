@@ -27,7 +27,9 @@ const vec = (v) => (v ? { unknown_count: v.unknown_count, weighted_sum_mm: v.wei
 const view = (p) => p && {
   ids: p.selected_ids, cost: p.cost, feasible: p.feasibility.feasible, W: vec(p.worst_vector), worst_case_ids: p.worst_case_ids,
   base_weighted_mean_mm: p.base_weighted_mean_mm,
-  per_case: p.per_case.map((c) => ({ case_id: c.case_id, loss: vec(c.loss), covered_weight: c.metrics.covered_weight, weighted_mean_mm: c.metrics.weighted_mean_mm, source_records: c.source_records })),
+  per_case: p.per_case.map((c) => ({ case_id: c.case_id, loss: vec(c.loss), covered_weight: c.metrics.covered_weight, weighted_mean_mm: c.metrics.weighted_mean_mm, source_records: c.source_records,
+    rows: c.rows.map((r) => [r.id, r.before_mm, r.nearest_before ? r.nearest_before.kind + ":" + r.nearest_before.id : null, r.after_mm,
+      r.nearest_after ? r.nearest_after.kind + ":" + r.nearest_after.id : null, r.delta_mm]) })),
 };
 
 function runTask(t) {

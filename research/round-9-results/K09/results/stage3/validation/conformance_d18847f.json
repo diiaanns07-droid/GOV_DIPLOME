@@ -1,0 +1,430 @@
+{
+ "variants": 60,
+ "agree": 54,
+ "same_decision_code_name": 2,
+ "policy_difference": 4,
+ "DISAGREE": 0,
+ "rows": [
+  {
+   "variant": "valid",
+   "k09": "accepted",
+   "build": "accepted",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "unknown_env_field",
+   "k09": "unknown_field",
+   "build": "unknown_field",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "missing_cases",
+   "k09": "missing_field",
+   "build": "missing_field",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "bad_version",
+   "k09": "bad_version",
+   "build": "bad_version",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "v2_file_as_envelope",
+   "k09": "bad_version",
+   "build": "wrong_version",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "plan_derived_results",
+   "k09": "derived_not_accepted",
+   "build": "derived_not_allowed",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "13_candidates",
+   "k09": "too_many_candidates",
+   "build": "too_many_candidates",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "zero_cases",
+   "k09": "bad_cases",
+   "build": "bad_cases",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "eight_cases",
+   "k09": "bad_cases",
+   "build": "bad_cases",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "reserved_base",
+   "k09": "reserved_case_id",
+   "build": "reserved_id",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "duplicate_case_id",
+   "k09": "duplicate_case_id",
+   "build": "duplicate_id",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "case_id_space",
+   "k09": "bad_id",
+   "build": "bad_id",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "case_id_kazakh_ok",
+   "k09": "accepted",
+   "build": "accepted",
+   "result": "agree",
+   "note": "Unicode NFC ID допустим"
+  },
+  {
+   "variant": "label_empty",
+   "k09": "bad_label",
+   "build": "bad_label",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "label_121",
+   "k09": "bad_label",
+   "build": "bad_label",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "label_120_ok",
+   "k09": "accepted",
+   "build": "accepted",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "label_control",
+   "k09": "bad_label",
+   "build": "bad_label",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "label_spaces_only",
+   "k09": "accepted",
+   "build": "bad_label",
+   "result": "policy_difference",
+   "note": "политика: «непустая» — BUILD требует непробельный текст"
+  },
+  {
+   "variant": "label_line_separator",
+   "k09": "accepted",
+   "build": "bad_label",
+   "result": "policy_difference",
+   "note": "политика: U+2028 не Cc; BUILD отклоняет как разделитель строк"
+  },
+  {
+   "variant": "case_extra_field",
+   "k09": "bad_case_shape",
+   "build": "bad_shape",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "exclusions_empty",
+   "k09": "bad_exclusions",
+   "build": "bad_exclusions",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "exclusions_duplicate",
+   "k09": "duplicate_exclusion",
+   "build": "duplicate_id",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "exclusions_candidate_id",
+   "k09": "candidate_not_source",
+   "build": "candidate_not_source",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "exclusions_unknown",
+   "k09": "unknown_source",
+   "build": "unknown_source",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "exclusions_all_ok",
+   "k09": "accepted",
+   "build": "accepted",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "exclusions_not_string",
+   "k09": "bad_exclusions",
+   "build": "bad_id",
+   "result": "same_decision_code_name",
+   "note": ""
+  },
+  {
+   "variant": "plan_bad_weight",
+   "k09": "bad_plan",
+   "build": "bad_weight",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "plan_bad_kind",
+   "k09": "bad_plan",
+   "build": "bad_kind",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "plan_bad_max_selected",
+   "k09": "bad_plan",
+   "build": "bad_max_selected",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "plan_required_excluded_overlap",
+   "k09": "bad_plan",
+   "build": "required_excluded_overlap",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "shymkent:valid",
+   "k09": "accepted",
+   "build": "accepted",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "shymkent:unknown_env_field",
+   "k09": "unknown_field",
+   "build": "unknown_field",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "shymkent:missing_cases",
+   "k09": "missing_field",
+   "build": "missing_field",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "shymkent:bad_version",
+   "k09": "bad_version",
+   "build": "bad_version",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "shymkent:v2_file_as_envelope",
+   "k09": "bad_version",
+   "build": "wrong_version",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "shymkent:plan_derived_results",
+   "k09": "derived_not_accepted",
+   "build": "derived_not_allowed",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "shymkent:13_candidates",
+   "k09": "too_many_candidates",
+   "build": "too_many_candidates",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "shymkent:zero_cases",
+   "k09": "bad_cases",
+   "build": "bad_cases",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "shymkent:eight_cases",
+   "k09": "bad_cases",
+   "build": "bad_cases",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "shymkent:reserved_base",
+   "k09": "reserved_case_id",
+   "build": "reserved_id",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "shymkent:duplicate_case_id",
+   "k09": "duplicate_case_id",
+   "build": "duplicate_id",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "shymkent:case_id_space",
+   "k09": "bad_id",
+   "build": "bad_id",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "shymkent:case_id_kazakh_ok",
+   "k09": "accepted",
+   "build": "accepted",
+   "result": "agree",
+   "note": "Unicode NFC ID допустим"
+  },
+  {
+   "variant": "shymkent:label_empty",
+   "k09": "bad_label",
+   "build": "bad_label",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "shymkent:label_121",
+   "k09": "bad_label",
+   "build": "bad_label",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "shymkent:label_120_ok",
+   "k09": "accepted",
+   "build": "accepted",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "shymkent:label_control",
+   "k09": "bad_label",
+   "build": "bad_label",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "shymkent:label_spaces_only",
+   "k09": "accepted",
+   "build": "bad_label",
+   "result": "policy_difference",
+   "note": "политика: «непустая» — BUILD требует непробельный текст"
+  },
+  {
+   "variant": "shymkent:label_line_separator",
+   "k09": "accepted",
+   "build": "bad_label",
+   "result": "policy_difference",
+   "note": "политика: U+2028 не Cc; BUILD отклоняет как разделитель строк"
+  },
+  {
+   "variant": "shymkent:case_extra_field",
+   "k09": "bad_case_shape",
+   "build": "bad_shape",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "shymkent:exclusions_empty",
+   "k09": "bad_exclusions",
+   "build": "bad_exclusions",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "shymkent:exclusions_duplicate",
+   "k09": "duplicate_exclusion",
+   "build": "duplicate_id",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "shymkent:exclusions_candidate_id",
+   "k09": "candidate_not_source",
+   "build": "candidate_not_source",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "shymkent:exclusions_unknown",
+   "k09": "unknown_source",
+   "build": "unknown_source",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "shymkent:exclusions_all_ok",
+   "k09": "accepted",
+   "build": "accepted",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "shymkent:exclusions_not_string",
+   "k09": "bad_exclusions",
+   "build": "bad_id",
+   "result": "same_decision_code_name",
+   "note": ""
+  },
+  {
+   "variant": "shymkent:plan_bad_weight",
+   "k09": "bad_plan",
+   "build": "bad_weight",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "shymkent:plan_bad_kind",
+   "k09": "bad_plan",
+   "build": "bad_kind",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "shymkent:plan_bad_max_selected",
+   "k09": "bad_plan",
+   "build": "bad_max_selected",
+   "result": "agree",
+   "note": ""
+  },
+  {
+   "variant": "shymkent:plan_required_excluded_overlap",
+   "k09": "bad_plan",
+   "build": "required_excluded_overlap",
+   "result": "agree",
+   "note": ""
+  }
+ ],
+ "legend": "agree — то же решение и код по карте; same_decision_code_name — оба отклоняют, имена кодов разные; policy_difference — заранее помеченное различие политики; DISAGREE — разные решения без объяснения"
+}
