@@ -1,0 +1,131 @@
+{
+ "note": "Собственные r8 фикстуры и ожидания независимого Python-оракула K02 r8, побайтно",
+ "files": [
+  {
+   "source": "eedbf9da9cc845104cb0484cfd871bc538df1bca:research/round-8-results/K02/expected/real_astana_clinic__base.json",
+   "dest": "inputs/r8/expected/real_astana_clinic__base.json",
+   "git_blob": "d8f841b339c83be61ed93ec6a40d42c25be68699",
+   "sha256": "3e7a6238745ff2ee5aff0a456d1cbc5dde392516143c383dc80e97aeceb1f9c5"
+  },
+  {
+   "source": "eedbf9da9cc845104cb0484cfd871bc538df1bca:research/round-8-results/K02/expected/real_astana_clinic__no_required.json",
+   "dest": "inputs/r8/expected/real_astana_clinic__no_required.json",
+   "git_blob": "fe6f4662ab27004dc34be2fe8656e9c73a485a37",
+   "sha256": "fd3049bca486eff2af890b32368cec1a00e86b3e5fa46ce73205b45060d6d90f"
+  },
+  {
+   "source": "eedbf9da9cc845104cb0484cfd871bc538df1bca:research/round-8-results/K02/expected/real_astana_clinic__radius_150.json",
+   "dest": "inputs/r8/expected/real_astana_clinic__radius_150.json",
+   "git_blob": "a900027095efb91315482126fb037e7a858166a7",
+   "sha256": "4dd0623b1122399064a738be63aaa86643009c4056d1be89d54823109d9cd730"
+  },
+  {
+   "source": "eedbf9da9cc845104cb0484cfd871bc538df1bca:research/round-8-results/K02/expected/real_shymkent_school__base.json",
+   "dest": "inputs/r8/expected/real_shymkent_school__base.json",
+   "git_blob": "d627481438db10ed49966a6797c3191bdf496aef",
+   "sha256": "ba6addb3c3986ba260f6cd623c4d622b5991ebfb401b3d5da572f04ee0fedb65"
+  },
+  {
+   "source": "eedbf9da9cc845104cb0484cfd871bc538df1bca:research/round-8-results/K02/expected/real_shymkent_school__excluded_sev.json",
+   "dest": "inputs/r8/expected/real_shymkent_school__excluded_sev.json",
+   "git_blob": "6c0084ad39913362c4b8129e010b22d05883f010",
+   "sha256": "caad33f792575b5d2435bf82602d55fe4d294519a609b3784f1285b31d152c42"
+  },
+  {
+   "source": "eedbf9da9cc845104cb0484cfd871bc538df1bca:research/round-8-results/K02/expected/real_shymkent_school__radius_100.json",
+   "dest": "inputs/r8/expected/real_shymkent_school__radius_100.json",
+   "git_blob": "bbd9e40f0bee043f342ed11f4c331bba6fde846b",
+   "sha256": "6c953ee217dc523b60004c71079e11efba2f7cc32a2eb7da2b40acbe75f067dc"
+  },
+  {
+   "source": "eedbf9da9cc845104cb0484cfd871bc538df1bca:research/round-8-results/K02/expected/real_shymkent_school__radius_600.json",
+   "dest": "inputs/r8/expected/real_shymkent_school__radius_600.json",
+   "git_blob": "050ccd7f478ace4b53d6ec801d08532a6d8c6651",
+   "sha256": "4078d4077b117dd0acfcc5928c907bfaa837abb7217a6f23390dbf707a413f92"
+  },
+  {
+   "source": "eedbf9da9cc845104cb0484cfd871bc538df1bca:research/round-8-results/K02/expected/real_shymkent_school__required_park.json",
+   "dest": "inputs/r8/expected/real_shymkent_school__required_park.json",
+   "git_blob": "bd9ffb5a2e041896966b091a5a4c9a6128c0343e",
+   "sha256": "12aec31010946eec260f6f5ad3a7be4721b2ebe1ccec0699bf72766d8a10e100"
+  },
+  {
+   "source": "eedbf9da9cc845104cb0484cfd871bc538df1bca:research/round-8-results/K02/expected/real_shymkent_school__weight_center_10.json",
+   "dest": "inputs/r8/expected/real_shymkent_school__weight_center_10.json",
+   "git_blob": "de51c3b481ad7328fe5d60ff78da4af7dde3877a",
+   "sha256": "23eb81811f0650844613541b97b83eb4e9fd833af5c9b121a13479021fd373a6"
+  },
+  {
+   "source": "eedbf9da9cc845104cb0484cfd871bc538df1bca:research/round-8-results/K02/expected/synthetic_empty_sources__base.json",
+   "dest": "inputs/r8/expected/synthetic_empty_sources__base.json",
+   "git_blob": "e60f8a82a6ba2c613b43b2d4584819120072f88e",
+   "sha256": "4f6dc4a201fec1447799e58c6b2b2ae3821fc15f2f75e30e82edf156641a6bbb"
+  },
+  {
+   "source": "eedbf9da9cc845104cb0484cfd871bc538df1bca:research/round-8-results/K02/expected/synthetic_infeasible_required__base.json",
+   "dest": "inputs/r8/expected/synthetic_infeasible_required__base.json",
+   "git_blob": "a88eb0d6d5f0fc22a63b6a41119f24e66fce8e27",
+   "sha256": "37d3ef5249b6cc252f1c2f922ca2c9af63e0850b3259303d236b4fc70f0e09c3"
+  },
+  {
+   "source": "eedbf9da9cc845104cb0484cfd871bc538df1bca:research/round-8-results/K02/expected/synthetic_infeasible_required__budget_600.json",
+   "dest": "inputs/r8/expected/synthetic_infeasible_required__budget_600.json",
+   "git_blob": "f5a4bc6d73b5d0a00c2e66a09a2a3cc7bdf63890",
+   "sha256": "d899f4a9690e0eabd52fd3cddc3a1a8109be2c81af6725ff035f65142e16464a"
+  },
+  {
+   "source": "eedbf9da9cc845104cb0484cfd871bc538df1bca:research/round-8-results/K02/expected/synthetic_radius_boundary__base.json",
+   "dest": "inputs/r8/expected/synthetic_radius_boundary__base.json",
+   "git_blob": "69fe2eb3b2f62d5a963c97c8fb2d494bc673c9d6",
+   "sha256": "00a4541cbf75861f73c80990423ce5115984c4e852bf9501d0c1820f46058865"
+  },
+  {
+   "source": "eedbf9da9cc845104cb0484cfd871bc538df1bca:research/round-8-results/K02/expected/synthetic_tie_same_winners__base.json",
+   "dest": "inputs/r8/expected/synthetic_tie_same_winners__base.json",
+   "git_blob": "0ee54492a1a5355f50addaf24eb1757eff985fd6",
+   "sha256": "48abacb5880d26b1e9f71c9d6044003a56d21e6250abdea6df5a1a7eea206383"
+  },
+  {
+   "source": "eedbf9da9cc845104cb0484cfd871bc538df1bca:research/round-8-results/K02/fixtures/real_astana_clinic.json",
+   "dest": "inputs/r8/fixtures/real_astana_clinic.json",
+   "git_blob": "e00c265feaa37add9f61c55c7c0040d81e16acbb",
+   "sha256": "124571cdc5858aa4d3ec4f9ee09aa9ad9ae734f03cb7da545170a0ac9a1bdcaa"
+  },
+  {
+   "source": "eedbf9da9cc845104cb0484cfd871bc538df1bca:research/round-8-results/K02/fixtures/real_shymkent_school.json",
+   "dest": "inputs/r8/fixtures/real_shymkent_school.json",
+   "git_blob": "917a37a7ffcb7572c13812b9100d5d0f8d2570b9",
+   "sha256": "91d6c1a0ea039e2017713493190c29d0f7ebdaa2f21599b822106e7c19bf6dfc"
+  },
+  {
+   "source": "eedbf9da9cc845104cb0484cfd871bc538df1bca:research/round-8-results/K02/fixtures/synthetic_empty_sources.json",
+   "dest": "inputs/r8/fixtures/synthetic_empty_sources.json",
+   "git_blob": "333750f1de3378684796e1e3544289239f673287",
+   "sha256": "002b89b5bdd6df6f00f84ef2b6ebc12c19ce2a11d896550f21487adcca14dc3c"
+  },
+  {
+   "source": "eedbf9da9cc845104cb0484cfd871bc538df1bca:research/round-8-results/K02/fixtures/synthetic_infeasible_required.json",
+   "dest": "inputs/r8/fixtures/synthetic_infeasible_required.json",
+   "git_blob": "59a5fc72d768f0cc0a95d08c291e196169097f68",
+   "sha256": "6fbf9d4a838280385bfcc894b4e51c32b57b1d0bed07ad469af3ae1be7423b83"
+  },
+  {
+   "source": "eedbf9da9cc845104cb0484cfd871bc538df1bca:research/round-8-results/K02/fixtures/synthetic_radius_boundary.json",
+   "dest": "inputs/r8/fixtures/synthetic_radius_boundary.json",
+   "git_blob": "eb59178c0465287b516feafd96389df8e1f738b6",
+   "sha256": "486107ce885809812d230c951bffeb2f1a0c54d130fb6ebbbf5d7685b600b11d"
+  },
+  {
+   "source": "eedbf9da9cc845104cb0484cfd871bc538df1bca:research/round-8-results/K02/fixtures/synthetic_tie_same_winners.json",
+   "dest": "inputs/r8/fixtures/synthetic_tie_same_winners.json",
+   "git_blob": "58180d88b74bca108a45009b48cf7f7213c6ac43",
+   "sha256": "1a66fb798ea2161a1964d88bca5f0282d8116059e43e8af0753e0362e6e00e47"
+  },
+  {
+   "source": "eedbf9da9cc845104cb0484cfd871bc538df1bca:research/round-8-results/K02/variants.json",
+   "dest": "inputs/r8/variants.json",
+   "git_blob": "f21258adab869568654d5c510ac4a9cb42d95eb3",
+   "sha256": "5c5c9ae4d3af37ec3e273ad92052a1f88ec204f50efa9994ed69cf33c547674c"
+  }
+ ]
+}

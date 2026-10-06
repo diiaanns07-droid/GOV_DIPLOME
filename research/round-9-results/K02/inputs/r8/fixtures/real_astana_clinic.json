@@ -1,0 +1,220 @@
+{
+ "name": "real_astana_clinic",
+ "provenance": {
+  "kind": "real_slice_with_synthetic_candidates",
+  "build_branch": "claude/beautiful-clarke-sbzomj",
+  "build_sha": "a5b5e2ddbe087c4eab8e947748cdf69dbae84a0d",
+  "data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "whatif_js_sha256": "944adfa63500d9bc13b3da859cf4a56a3d3e3f92fa0f565ed655bedfb81d8f2f",
+  "release": "2026-09-23.1",
+  "note": "Исходные записи — Overture places среза сборки (не полный реестр города). Кандидаты, веса, стоимости и бюджет — synthetic demo, не тенге и не население."
+ },
+ "context": {
+  "city": "astana",
+  "category": "outpatient_clinic",
+  "bbox": [
+   71.418372,
+   51.163033,
+   71.447,
+   51.181
+  ],
+  "release": "2026-09-23.1",
+  "source_snapshot": "sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d",
+  "sources": [
+   {
+    "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+    "lon": 71.422483,
+    "lat": 51.169953,
+    "name": "Family Clinic"
+   },
+   {
+    "id": "1116880a-cbb6-4271-9a59-a277083b792c",
+    "lon": 71.424931,
+    "lat": 51.176756,
+    "name": "Лор центр Сезiм"
+   },
+   {
+    "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08",
+    "lon": 71.44229,
+    "lat": 51.1699,
+    "name": "Стоматология МерейДент"
+   },
+   {
+    "id": "166c939f-9131-4fbb-bf75-4ab543916f20",
+    "lon": 71.41939,
+    "lat": 51.17117,
+    "name": "Ирина Кулинич родолог"
+   },
+   {
+    "id": "1d137305-49cd-450b-9626-9762db14d080",
+    "lon": 71.436912,
+    "lat": 51.1748,
+    "name": "Центр Поддержки Детей с РАС Асыл Мирас"
+   },
+   {
+    "id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f",
+    "lon": 71.44025,
+    "lat": 51.16873,
+    "name": "Медицинский центр Жәрдем - Астана"
+   },
+   {
+    "id": "3fba1026-8464-41ab-88f8-633e3df0de30",
+    "lon": 71.441358,
+    "lat": 51.166785,
+    "name": "Astana Clinic"
+   },
+   {
+    "id": "410f0193-f0bc-4553-bee5-660aab0287a5",
+    "lon": 71.429936,
+    "lat": 51.167329,
+    "name": "Family Stom"
+   },
+   {
+    "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371",
+    "lon": 71.422047,
+    "lat": 51.177044,
+    "name": "Stomatologiya Kog'gan Dent"
+   },
+   {
+    "id": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2",
+    "lon": 71.42513,
+    "lat": 51.16305,
+    "name": "Akademiya Ortopedii"
+   },
+   {
+    "id": "5f76d9b9-bdd1-4cea-9157-fef68ac60270",
+    "lon": 71.434725,
+    "lat": 51.166964,
+    "name": "Aura Clinic"
+   },
+   {
+    "id": "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8",
+    "lon": 71.44127,
+    "lat": 51.16756,
+    "name": "Gulsezim Aitugan"
+   },
+   {
+    "id": "771c278a-af10-4c57-b9fc-52755437345d",
+    "lon": 71.438397,
+    "lat": 51.164151,
+    "name": "\"ЗарДан\" стоматологическая клиника"
+   },
+   {
+    "id": "aca68551-4a03-47c2-813f-d13dceb85c62",
+    "lon": 71.44606,
+    "lat": 51.16817,
+    "name": "Sanjar Dental Clinic"
+   },
+   {
+    "id": "b1fc81c5-7f00-4a0a-969d-2da872515916",
+    "lon": 71.42629,
+    "lat": 51.17692,
+    "name": "Стоматология Protezist_n"
+   },
+   {
+    "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050",
+    "lon": 71.435461,
+    "lat": 51.179776,
+    "name": "Visa Dent"
+   }
+  ],
+  "versions": {
+   "schema": "city-plan-v2",
+   "metric": "haversine-mm-v1",
+   "formula": "haversine:R=6371008.8"
+  }
+ },
+ "scenario": {
+  "schema_version": "city-plan-v2",
+  "city_id": "astana",
+  "source_snapshot": "sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d",
+  "category": "outpatient_clinic",
+  "control_points": [
+   {
+    "id": "p1",
+    "lon": 71.421235,
+    "lat": 51.16483,
+    "weight": 1
+   },
+   {
+    "id": "p2",
+    "lon": 71.444137,
+    "lat": 51.16483,
+    "weight": 2
+   },
+   {
+    "id": "p3",
+    "lon": 71.432686,
+    "lat": 51.172016,
+    "weight": 1
+   },
+   {
+    "id": "p4",
+    "lon": 71.421235,
+    "lat": 51.179203,
+    "weight": 4
+   },
+   {
+    "id": "p5",
+    "lon": 71.444137,
+    "lat": 51.179203,
+    "weight": 1
+   }
+  ],
+  "candidates": [
+   {
+    "id": "k-a",
+    "lon": 71.421807,
+    "lat": 51.165189,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 80
+   },
+   {
+    "id": "k-b",
+    "lon": 71.443565,
+    "lat": 51.165189,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 60
+   },
+   {
+    "id": "k-c",
+    "lon": 71.421807,
+    "lat": 51.178844,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 90
+   },
+   {
+    "id": "k-d",
+    "lon": 71.443565,
+    "lat": 51.178844,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 40
+   },
+   {
+    "id": "k-e",
+    "lon": 71.432686,
+    "lat": 51.171118,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 30
+   }
+  ],
+  "budget": 150,
+  "max_selected": 2,
+  "coverage_radius_m": 400,
+  "required_ids": [
+   "k-d"
+  ],
+  "excluded_ids": [
+   "k-e"
+  ],
+  "selected_ids": [
+   "k-a",
+   "k-c"
+  ]
+ }
+}

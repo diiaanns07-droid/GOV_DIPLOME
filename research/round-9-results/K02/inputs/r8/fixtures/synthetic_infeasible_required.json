@@ -1,0 +1,80 @@
+{
+ "name": "synthetic_infeasible_required",
+ "provenance": {
+  "kind": "synthetic",
+  "note": "Полностью синтетическая геометрия в условном квадрате [10,10,10.02,10.02]; city_id нужен схеме, это НЕ данные города."
+ },
+ "context": {
+  "city": "astana",
+  "category": "school",
+  "bbox": [
+   10,
+   10,
+   10.02,
+   10.02
+  ],
+  "release": "synthetic",
+  "source_snapshot": "sha256:02c33cf60a66d725e6d7a85d476c03c71bac7098e98ca71d9ef045cbc8f7d051",
+  "sources": [
+   {
+    "id": "s1",
+    "lon": 10.01,
+    "lat": 10.01,
+    "name": "synthetic s1"
+   }
+  ],
+  "versions": {
+   "schema": "city-plan-v2",
+   "metric": "haversine-mm-v1",
+   "formula": "haversine:R=6371008.8"
+  }
+ },
+ "scenario": {
+  "schema_version": "city-plan-v2",
+  "city_id": "astana",
+  "source_snapshot": "sha256:02c33cf60a66d725e6d7a85d476c03c71bac7098e98ca71d9ef045cbc8f7d051",
+  "category": "school",
+  "control_points": [
+   {
+    "id": "a",
+    "lon": 10.004,
+    "lat": 10.004,
+    "weight": 1
+   },
+   {
+    "id": "b",
+    "lon": 10.016,
+    "lat": 10.016,
+    "weight": 1
+   }
+  ],
+  "candidates": [
+   {
+    "id": "big",
+    "lon": 10.004,
+    "lat": 10.004,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 500
+   },
+   {
+    "id": "small",
+    "lon": 10.016,
+    "lat": 10.016,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 10
+   }
+  ],
+  "budget": 100,
+  "max_selected": 2,
+  "coverage_radius_m": 200,
+  "required_ids": [
+   "big"
+  ],
+  "excluded_ids": [],
+  "selected_ids": [
+   "small"
+  ]
+ }
+}

@@ -1,0 +1,72 @@
+{
+ "name": "synthetic_tie_same_winners",
+ "provenance": {
+  "kind": "synthetic",
+  "note": "Полностью синтетическая геометрия в условном квадрате [10,10,10.02,10.02]; city_id нужен схеме, это НЕ данные города."
+ },
+ "context": {
+  "city": "shymkent",
+  "category": "outpatient_clinic",
+  "bbox": [
+   10,
+   10,
+   10.02,
+   10.02
+  ],
+  "release": "synthetic",
+  "source_snapshot": "sha256:061271bfbe614a0e84c3792930567d9166b75d703a2c948ca43f719adb411b14",
+  "sources": [
+   {
+    "id": "s1",
+    "lon": 10,
+    "lat": 10,
+    "name": "synthetic s1"
+   }
+  ],
+  "versions": {
+   "schema": "city-plan-v2",
+   "metric": "haversine-mm-v1",
+   "formula": "haversine:R=6371008.8"
+  }
+ },
+ "scenario": {
+  "schema_version": "city-plan-v2",
+  "city_id": "shymkent",
+  "source_snapshot": "sha256:061271bfbe614a0e84c3792930567d9166b75d703a2c948ca43f719adb411b14",
+  "category": "outpatient_clinic",
+  "control_points": [
+   {
+    "id": "a",
+    "lon": 10.01,
+    "lat": 10.01,
+    "weight": 1
+   }
+  ],
+  "candidates": [
+   {
+    "id": "t1",
+    "lon": 10.009,
+    "lat": 10.01,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 10
+   },
+   {
+    "id": "t2",
+    "lon": 10.011,
+    "lat": 10.01,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 10
+   }
+  ],
+  "budget": 10,
+  "max_selected": 1,
+  "coverage_radius_m": 1000,
+  "required_ids": [],
+  "excluded_ids": [],
+  "selected_ids": [
+   "t2"
+  ]
+ }
+}

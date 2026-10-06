@@ -1,0 +1,25 @@
+--- a/prototypes/city-evidence/web/plan.js
++++ b/prototypes/city-evidence/web/plan.js
+@@ -338,6 +338,10 @@
+   function explainPlans(sc, manual, result, sens, digestAtRequest, F) {
+     const cur = explanationDigest(sc, manual, result, sens, F);
+     if (digestAtRequest !== cur) fail("stale_explanation", "сценарий или результаты изменились после запроса — объяснение отклонено");
++    // K02 r9: the facts must belong to THIS scenario, not only be internally consistent with the digest.
++    if (result && result.problem_digest !== problemDigest(sc, F)) fail("stale_explanation", "результат поиска относится к другой задаче (problem_digest)");
++    if (manual && manual.selected_ids.join("\u0000") !== sc.selected_ids.slice().sort(cmpStr).join("\u0000")) fail("stale_explanation", "оценка ручного плана относится к другому выбору");
++    if (sens && sens.map((x) => x.budget).join() !== [...new Set([0, Math.floor(sc.budget / 2), sc.budget])].sort((a, b) => a - b).join()) fail("stale_explanation", "изменение бюджета посчитано для другого бюджета");
+     const tw = sc.control_points.reduce((t, p) => t + p.weight, 0);
+     const mean = (o) => (o.unknown_count ? null : o.weighted_sum_mm / tw);
+     const L = [`Шаблонное объяснение по вычисленным фактам (не LLM). Категория: ${CATEGORIES[sc.category]}; ${sc.control_points.length} контрольных точек (сумма весов ${tw}), ${sc.candidates.length} кандидатных мест, бюджет ${sc.budget} усл. ед., не больше ${sc.max_selected} объектов, радиус охвата ${sc.coverage_radius_m} м по прямой. Отпечаток ${cur}.`];
+--- a/prototypes/city-evidence/tests/plan.cjs
++++ b/prototypes/city-evidence/tests/plan.cjs
+@@ -190,7 +190,8 @@
+ check("identical winners explained as one plan, not three decisions", sT.includes("нет трёх разных решений"));
+ const ires = PL.optimizePlans(rctx, rsc, { F }), iT = PL.explainPlans(rsc, null, ires, null, PL.explanationDigest(rsc, null, ires, null, F), F).text;
+ check("infeasible explained with reason; constraints not dropped", iT.includes("Допустимых планов нет") && iT.includes("не снимались"));
+-const nb = exp.cases.find((c) => c.name === "no_baseline"), nbsc = caseScenario(nb, caseCtx(nb)), nbm = PL.evaluatePlan(caseCtx(nb), nbsc, []);
++// K02 r9: manual evaluation must match the scenario selection (explainPlans now checks it) — use an explicit empty selection
++const nb = exp.cases.find((c) => c.name === "no_baseline"), nbsc = { ...caseScenario(nb, caseCtx(nb)), selected_ids: [] }, nbm = PL.evaluatePlan(caseCtx(nb), nbsc, []);
+ check("unknown distance explained as unknown, not zero", PL.explainPlans(nbsc, nbm, null, null, PL.explanationDigest(nbsc, nbm, null, null, F), F).text.includes("неизвестно, а не равно нулю"));
+ const evil = "<script>alert(1)</script>\"'&";
+ const html = PL.reportHtml({ scenario: bsc, city_label: evil, release: "2026-09-23.1", problem_digest: "p", scenario_digest: "s", generated: "t", manual: bman, result: bres, sens: bsens,

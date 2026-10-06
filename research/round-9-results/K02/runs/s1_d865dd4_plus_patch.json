@@ -1,0 +1,165 @@
+{
+ "suite": "s1_build_explain",
+ "target": {
+  "build_sha": "d865dd4a124291e10dd0b7bb1d9eada20d34c268"
+ },
+ "node": "v22.22.0",
+ "results": [
+  {
+   "id": "B0_real_shymkent_school__base",
+   "title": "optimizePlans/evaluatePlan/sensitivity = оракул r8",
+   "status": "PASS",
+   "observed": []
+  },
+  {
+   "id": "B0_real_shymkent_school__radius_600",
+   "title": "optimizePlans/evaluatePlan/sensitivity = оракул r8",
+   "status": "PASS",
+   "observed": []
+  },
+  {
+   "id": "B0_real_shymkent_school__radius_100",
+   "title": "optimizePlans/evaluatePlan/sensitivity = оракул r8",
+   "status": "PASS",
+   "observed": []
+  },
+  {
+   "id": "B0_real_shymkent_school__weight_center_10",
+   "title": "optimizePlans/evaluatePlan/sensitivity = оракул r8",
+   "status": "PASS",
+   "observed": []
+  },
+  {
+   "id": "B0_real_shymkent_school__required_park",
+   "title": "optimizePlans/evaluatePlan/sensitivity = оракул r8",
+   "status": "PASS",
+   "observed": []
+  },
+  {
+   "id": "B0_real_shymkent_school__excluded_sev",
+   "title": "optimizePlans/evaluatePlan/sensitivity = оракул r8",
+   "status": "PASS",
+   "observed": []
+  },
+  {
+   "id": "B0_real_astana_clinic__base",
+   "title": "optimizePlans/evaluatePlan/sensitivity = оракул r8",
+   "status": "PASS",
+   "observed": []
+  },
+  {
+   "id": "B0_real_astana_clinic__no_required",
+   "title": "optimizePlans/evaluatePlan/sensitivity = оракул r8",
+   "status": "PASS",
+   "observed": []
+  },
+  {
+   "id": "B0_real_astana_clinic__radius_150",
+   "title": "optimizePlans/evaluatePlan/sensitivity = оракул r8",
+   "status": "PASS",
+   "observed": []
+  },
+  {
+   "id": "B0_synthetic_empty_sources__base",
+   "title": "optimizePlans/evaluatePlan/sensitivity = оракул r8",
+   "status": "PASS",
+   "observed": []
+  },
+  {
+   "id": "B0_synthetic_infeasible_required__base",
+   "title": "optimizePlans/evaluatePlan/sensitivity = оракул r8",
+   "status": "PASS",
+   "observed": []
+  },
+  {
+   "id": "B0_synthetic_infeasible_required__budget_600",
+   "title": "optimizePlans/evaluatePlan/sensitivity = оракул r8",
+   "status": "PASS",
+   "observed": []
+  },
+  {
+   "id": "B0_synthetic_tie_same_winners__base",
+   "title": "optimizePlans/evaluatePlan/sensitivity = оракул r8",
+   "status": "PASS",
+   "observed": []
+  },
+  {
+   "id": "B0_synthetic_radius_boundary__base",
+   "title": "optimizePlans/evaluatePlan/sensitivity = оракул r8",
+   "status": "PASS",
+   "observed": []
+  },
+  {
+   "id": "E1_numbers_from_result",
+   "title": "все числа explainPlans — значения сценария/результата (6 фикстур)",
+   "status": "PASS",
+   "observed": {}
+  },
+  {
+   "id": "E2_unknown_not_zero",
+   "title": "пустой срез: среднее/худшая = «нет данных», сказано «неизвестно, а не равно нулю», нет «0 м»",
+   "status": "PASS",
+   "observed": [
+    "Ручной план (без новых объектов): допустим; стоимость 0 усл. ед.; взвешенное среднее нет данных, худшая точка нет данных, охват 0 из 4 по весу.",
+    "У 3 точек нет ни одной записи категории в срезе и ни одного выбранного кандидата — расстояние неизвестно, а не равно нулю."
+   ]
+  },
+  {
+   "id": "E3_coincident_labelled",
+   "title": "совпавшие стратегии подписаны: Астана — одна для всех целей; Шымкент — «Охват» = «Среднее», minimax отличается",
+   "status": "PASS",
+   "observed": [
+    "Почему планы разные: «Худшая точка» уменьшает самое большое расстояние (326 м → 323 м), но жертвует средним (163 м → 209 м).",
+    "«Охват» совпал со «Средним»."
+   ]
+  },
+  {
+   "id": "E4_old_digest_rejected",
+   "title": "старый digest: смена бюджета/выбора/подмена числа результата → stale_explanation",
+   "status": "PASS",
+   "observed": [
+    "stale_explanation",
+    "stale_explanation",
+    "stale_explanation"
+   ]
+  },
+  {
+   "id": "E5_result_of_other_problem",
+   "title": "результат оптимизации ДРУГОЙ задачи с пересчитанным digest отклоняется самим explainPlans",
+   "status": "PASS",
+   "observed": {
+    "code": "stale_explanation",
+    "result_problem_digest_matches": false
+   }
+  },
+  {
+   "id": "E6_manual_of_other_selection",
+   "title": "оценка ручного плана для другого selected_ids с пересчитанным digest отклоняется самим explainPlans",
+   "status": "PASS",
+   "observed": {
+    "code": "stale_explanation",
+    "sc_selected": [
+     "c-centr",
+     "c-zap"
+    ],
+    "manual_selected": [
+     "c-sev"
+    ]
+   }
+  },
+  {
+   "id": "E7_infeasible_explained",
+   "title": "infeasible: «Допустимых планов нет … Ограничения не снимались автоматически»",
+   "status": "PASS",
+   "observed": [
+    "Допустимых планов нет: стоимость обязательных 500 > бюджета 100 усл. ед.. Ограничения не снимались автоматически."
+   ]
+  },
+  {
+   "id": "E8_report_html",
+   "title": "reportHtml: null → «нет данных», экранирование, без скриптов/внешних ссылок, объяснение помечено шаблоном",
+   "status": "PASS",
+   "observed": "Взвешенное среднее</td><td>нет данных"
+  }
+ ]
+}
