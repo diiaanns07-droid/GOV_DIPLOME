@@ -1,0 +1,127 @@
+{
+ "fixture": "res_astana_clinic",
+ "feasible_count": 4,
+ "status": "optimal",
+ "nominal": {
+  "selected_ids": [
+   "k-c",
+   "k-d"
+  ],
+  "worst_vector": [
+   0,
+   1772471,
+   427354
+  ],
+  "worst_case_ids": [
+   "p2-p4"
+  ],
+  "per_case": {
+   "base": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 1627947,
+    "weighted_mean_mm": 180883.0,
+    "max_mm": 427354,
+    "covered_weight": 8,
+    "cost": 130
+   },
+   "p4-без-ближайшей": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 1627947,
+    "weighted_mean_mm": 180883.0,
+    "max_mm": 427354,
+    "covered_weight": 8,
+    "cost": 130
+   },
+   "p2-p4": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 1772471,
+    "weighted_mean_mm": 196941.22222222222,
+    "max_mm": 427354,
+    "covered_weight": 8,
+    "cost": 130
+   }
+  }
+ },
+ "robust": {
+  "selected_ids": [
+   "k-c",
+   "k-d"
+  ],
+  "worst_vector": [
+   0,
+   1772471,
+   427354
+  ],
+  "worst_case_ids": [
+   "p2-p4"
+  ],
+  "per_case": {
+   "base": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 1627947,
+    "weighted_mean_mm": 180883.0,
+    "max_mm": 427354,
+    "covered_weight": 8,
+    "cost": 130
+   },
+   "p4-без-ближайшей": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 1627947,
+    "weighted_mean_mm": 180883.0,
+    "max_mm": 427354,
+    "covered_weight": 8,
+    "cost": 130
+   },
+   "p2-p4": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 1772471,
+    "weighted_mean_mm": 196941.22222222222,
+    "max_mm": 427354,
+    "covered_weight": 8,
+    "cost": 130
+   }
+  }
+ },
+ "price_m": 0.0,
+ "manual": {
+  "selected_ids": [
+   "k-a",
+   "k-c"
+  ],
+  "worst_vector": [
+   0,
+   2044533,
+   608119
+  ],
+  "worst_case_ids": [
+   "p2-p4"
+  ],
+  "per_case": {
+   "base": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 1900009,
+    "weighted_mean_mm": 211112.11111111112,
+    "max_mm": 608119,
+    "covered_weight": 7,
+    "cost": 170
+   },
+   "p4-без-ближайшей": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 1900009,
+    "weighted_mean_mm": 211112.11111111112,
+    "max_mm": 608119,
+    "covered_weight": 7,
+    "cost": 170
+   },
+   "p2-p4": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 2044533,
+    "weighted_mean_mm": 227170.33333333334,
+    "max_mm": 608119,
+    "covered_weight": 7,
+    "cost": 170
+   }
+  },
+  "feasible": false
+ }
+}

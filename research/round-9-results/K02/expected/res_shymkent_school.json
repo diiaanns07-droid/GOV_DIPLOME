@@ -1,0 +1,176 @@
+{
+ "fixture": "res_shymkent_school",
+ "feasible_count": 29,
+ "status": "optimal",
+ "nominal": {
+  "selected_ids": [
+   "c-sev",
+   "c-yug"
+  ],
+  "worst_vector": [
+   0,
+   5230469,
+   1372791
+  ],
+  "worst_case_ids": [
+   "все-записи"
+  ],
+  "per_case": {
+   "base": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 1629159,
+    "weighted_mean_mm": 162915.9,
+    "max_mm": 325976,
+    "covered_weight": 9,
+    "cost": 160
+   },
+   "без-ближайшей-север": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 1629159,
+    "weighted_mean_mm": 162915.9,
+    "max_mm": 325976,
+    "covered_weight": 9,
+    "cost": 160
+   },
+   "юг-и-остановка": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 1861141,
+    "weighted_mean_mm": 186114.1,
+    "max_mm": 357996,
+    "covered_weight": 7,
+    "cost": 160
+   },
+   "дубль-север": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 1629159,
+    "weighted_mean_mm": 162915.9,
+    "max_mm": 325976,
+    "covered_weight": 9,
+    "cost": 160
+   },
+   "все-записи": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 5230469,
+    "weighted_mean_mm": 523046.9,
+    "max_mm": 1372791,
+    "covered_weight": 5,
+    "cost": 160
+   }
+  }
+ },
+ "robust": {
+  "selected_ids": [
+   "c-park",
+   "c-sev",
+   "c-vost"
+  ],
+  "worst_vector": [
+   0,
+   4937812,
+   1138818
+  ],
+  "worst_case_ids": [
+   "все-записи"
+  ],
+  "per_case": {
+   "base": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 2610655,
+    "weighted_mean_mm": 261065.5,
+    "max_mm": 690624,
+    "covered_weight": 8,
+    "cost": 200
+   },
+   "без-ближайшей-север": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 2610655,
+    "weighted_mean_mm": 261065.5,
+    "max_mm": 690624,
+    "covered_weight": 8,
+    "cost": 200
+   },
+   "юг-и-остановка": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 3340361,
+    "weighted_mean_mm": 334036.1,
+    "max_mm": 939486,
+    "covered_weight": 6,
+    "cost": 200
+   },
+   "дубль-север": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 2610655,
+    "weighted_mean_mm": 261065.5,
+    "max_mm": 690624,
+    "covered_weight": 8,
+    "cost": 200
+   },
+   "все-записи": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 4937812,
+    "weighted_mean_mm": 493781.2,
+    "max_mm": 1138818,
+    "covered_weight": 5,
+    "cost": 200
+   }
+  }
+ },
+ "price_m": 98.1496,
+ "manual": {
+  "selected_ids": [
+   "c-centr",
+   "c-zap"
+  ],
+  "worst_vector": [
+   0,
+   6880706,
+   1031991
+  ],
+  "worst_case_ids": [
+   "все-записи"
+  ],
+  "per_case": {
+   "base": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 3304892,
+    "weighted_mean_mm": 330489.2,
+    "max_mm": 690624,
+    "covered_weight": 4,
+    "cost": 160
+   },
+   "без-ближайшей-север": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 3304892,
+    "weighted_mean_mm": 330489.2,
+    "max_mm": 690624,
+    "covered_weight": 4,
+    "cost": 160
+   },
+   "юг-и-остановка": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 3997870,
+    "weighted_mean_mm": 399787.0,
+    "max_mm": 939486,
+    "covered_weight": 2,
+    "cost": 160
+   },
+   "дубль-север": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 3304892,
+    "weighted_mean_mm": 330489.2,
+    "max_mm": 690624,
+    "covered_weight": 4,
+    "cost": 160
+   },
+   "все-записи": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 6880706,
+    "weighted_mean_mm": 688070.6,
+    "max_mm": 1031991,
+    "covered_weight": 1,
+    "cost": 160
+   }
+  },
+  "feasible": true
+ }
+}

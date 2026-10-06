@@ -1,0 +1,103 @@
+{
+ "fixture": "res_synthetic_tie",
+ "feasible_count": 3,
+ "status": "optimal",
+ "nominal": {
+  "selected_ids": [
+   "t1"
+  ],
+  "worst_vector": [
+   0,
+   109502,
+   109502
+  ],
+  "worst_case_ids": [
+   "base",
+   "off"
+  ],
+  "per_case": {
+   "base": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 109502,
+    "weighted_mean_mm": 109502.0,
+    "max_mm": 109502,
+    "covered_weight": 1,
+    "cost": 10
+   },
+   "off": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 109502,
+    "weighted_mean_mm": 109502.0,
+    "max_mm": 109502,
+    "covered_weight": 1,
+    "cost": 10
+   }
+  }
+ },
+ "robust": {
+  "selected_ids": [
+   "t1"
+  ],
+  "worst_vector": [
+   0,
+   109502,
+   109502
+  ],
+  "worst_case_ids": [
+   "base",
+   "off"
+  ],
+  "per_case": {
+   "base": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 109502,
+    "weighted_mean_mm": 109502.0,
+    "max_mm": 109502,
+    "covered_weight": 1,
+    "cost": 10
+   },
+   "off": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 109502,
+    "weighted_mean_mm": 109502.0,
+    "max_mm": 109502,
+    "covered_weight": 1,
+    "cost": 10
+   }
+  }
+ },
+ "price_m": 0.0,
+ "manual": {
+  "selected_ids": [
+   "t2"
+  ],
+  "worst_vector": [
+   0,
+   109502,
+   109502
+  ],
+  "worst_case_ids": [
+   "base",
+   "off"
+  ],
+  "per_case": {
+   "base": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 109502,
+    "weighted_mean_mm": 109502.0,
+    "max_mm": 109502,
+    "covered_weight": 1,
+    "cost": 10
+   },
+   "off": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 109502,
+    "weighted_mean_mm": 109502.0,
+    "max_mm": 109502,
+    "covered_weight": 1,
+    "cost": 10
+   }
+  },
+  "feasible": true
+ }
+}

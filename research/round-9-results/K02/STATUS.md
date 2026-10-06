@@ -1,4 +1,5 @@
 # K02 r9 — объяснения по фактам (REVIEW/модуль, не BUILD)
+Статус: этапы 1–3 выполнены (ready_for_review); дефект E5/E6 — patch предложен, не применён.
 Ветка: claude/clever-mccarthy-pywscu. Проверяемая сборка: prototypes/city-evidence @ d865dd4a124291e10dd0b7bb1d9eada20d34c268 (claude/beautiful-clarke-sbzomj; diff с 3e1302a пуст; 199 файлов извлечены, git blob сверен, MANIFEST во временной копии).
 Входы: свои r8 фикстуры и ожидания Python-оракула @ eedbf9d → inputs/r8 (git blob сверен, inputs/MANIFEST.json).
 
@@ -18,4 +19,9 @@ tests/common.cjs (адаптер r8 фикстур → makeContext/validatePlanS
 - resilience_ref.js — генератор результатов для фикстур поверх plan.js сборки (precompute/evaluatePlan/optimizePlans/feasibility), формат API CORE_SPEC r9. Не продукт и не второй движок.
 - make_resilience_fixtures.cjs → fixtures/res_*.json (Шымкент школы, Астана поликлиники — реальные срезы + synthetic кандидаты/случаи; 2 synthetic).
 `node tests/s2_resilience.cjs --app-root <d865dd4>` → 8 PASS (runs/s2_d865dd4.json). R8 сначала дал FAIL из-за артефакта теста (ID кандидата t2); тест исправлен, продукт не менялся.
-Следующий шаг: этап 3 (негативные fixtures, примеры обоих городов, HANDOFF).
+
+## Этап 3 — готово
+oracle/resilience_oracle.py (независимый Python) → expected/res_*.json; fixtures/negative.json (18 мутаций); tests/s3_negative_oracle.cjs → 22 PASS (runs/s3_d865dd4.json). Примеры обоих городов: examples/*.txt (demo.cjs).
+Дополнительно на новом коммите сборщика fb768b25b5de5b151bb83ad9ce0af3b965ab2025: s1 20/2 (E5, E6 те же), s2 8/8, s3 22/22; patch применяется.
+NOT_RUN: интеграция устойчивости в BUILD (нет web/resilience.js), браузерный UI устойчивости, LLM.
+Полный пакет и команды: HANDOFF.md.

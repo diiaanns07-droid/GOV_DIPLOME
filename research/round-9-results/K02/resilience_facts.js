@@ -36,6 +36,16 @@
       for (const w of plans[p].worst_case_ids) check(caseIds.includes(w), F, "bad_result", `${p}: худший случай ${w} не из envelope`);
     }
     check(JSON.stringify(manualEval.selected_ids) === JSON.stringify(env.sc.selected_ids.slice().sort()), F, "stale_explanation", "ручная оценка для другого выбора");
+    if (opt.status === "optimal") {
+      check(opt.nominal && opt.robust, F, "bad_result", "optimal без обычного/устойчивого плана");
+      const nm = opt.nominal.per_case[0].metrics.weighted_mean_mm, rm = opt.robust.per_case[0].metrics.weighted_mean_mm, pr = opt.price_of_robustness_m;
+      if (opt.nominal.selected_ids.join() === opt.robust.selected_ids.join()) check(pr === 0, F, "bad_result", "планы совпадают, а цена устойчивости не 0");
+      if (nm !== null && rm !== null) check(fin(pr) && Math.abs(pr * 1000 - (rm - nm)) < 1e-6, F, "bad_result", "цена устойчивости не согласована со средними base");
+      else check(pr === null, F, "bad_result", "цена при неизвестном среднем должна быть null");
+    } else {
+      check(!opt.nominal && !opt.robust, F, "bad_result", `статус ${opt.status}: оптимальные планы не заявляются`);
+      check(opt.price_of_robustness_m === null || opt.price_of_robustness_m === undefined, F, "bad_result", "цена без optimal");
+    }
     const city = "kz." + env.sc.city_id, scenario = `resilience-${env.sc.category.replace(/_/g, "-")}-${opt.resilience_problem_digest.slice(7, 19)}`;
     const cat = new Map();
     const add = (path, value, unit, kind, scope, label, extra = {}) => {
@@ -72,14 +82,20 @@
       add(`plan.${p}.worst.case_ids`, r.worst_case_ids.join(", "), "text", "derived", "plan", [`${lx(PL_LABEL[p], "ru")}: худшие случаи`, `${lx(PL_LABEL[p], "kk")}: ең нашар жағдайлар`]);
     }
     add("price.robustness", opt.price_of_robustness_m ?? null, "m", "derived", "plan", ["Цена устойчивости: рост среднего без исключений", "Тұрақтылық бағасы"],
-      { missing_reason: opt.price_of_robustness_m === null || opt.price_of_robustness_m === undefined ? (opt.price_reason || "unknown") : null, hypothetical: true });
+      { missing_reason: opt.price_of_robustness_m === null || opt.price_of_robustness_m === undefined ? (opt.price_reason || (opt.status === "optimal" ? "unknown" : "not_optimal")) : null, hypothetical: true });
     add("search.evaluated", opt.evaluated, "count", "derived", "search_space", ["Проверено наборов", "Тексерілген жиындар"]);
     add("search.feasible_count", opt.feasible_count, "count", "derived", "search_space", ["Допустимых наборов", "Рұқсат етілген жиындар"]);
-    const rows = [...cat.values()].map((f) => [f.id, f.value === null ? null : String(f.value), f.kind, f.unit, f.missing_reason]).sort((a, b) => (a[0] < b[0] ? -1 : 1));
-    const digest = F.sha256hex(JSON.stringify(["resilience-facts-v1", opt.resilience_problem_digest, env.sc.selected_ids.slice().sort(), opt.status, rows])).slice(0, 16);
-    return { catalog: cat, city, scenario, digest, resilience_problem_digest: opt.resilience_problem_digest, status: opt.status, reasons: opt.reasons || [], ncases: env.cases.length };
+    const sel = env.sc.selected_ids.slice().sort();
+    const digest = factsDigest(cat, opt.resilience_problem_digest, sel, opt.status, F);
+    return { catalog: cat, city, scenario, digest, _sel: sel, resilience_problem_digest: opt.resilience_problem_digest, status: opt.status, reasons: opt.reasons || [], ncases: env.cases.length };
   }
 
+  // Отпечаток по ВСЕМ полям фактов, включая текстовые и вспомогательные (имена, причины): подмена любого факта меняет его.
+  function factsDigest(cat, rpd, sel, status, F) {
+    const rows = [...cat.values()].map((f) => JSON.stringify([f.id, f.value, f.kind, f.unit, f.scope, f.missing_reason, f.case_id ?? null, f.case_label ?? null,
+      f.names ?? null, f.reasons ?? null, f.hypothetical])).sort();
+    return F.sha256hex(JSON.stringify(["resilience-facts-v1", rpd, sel, status, rows])).slice(0, 16);
+  }
   const view = (b) => [...b.catalog.values()].map((f) => ({ id: f.id, path: f.path, has_value: f.value !== null }));
   // Заглушка выбора (не LLM): подсветить цену устойчивости и худшие векторы; null — только в data_gaps.
   const StubSelector = { name: TEMPLATE, select(v, digest) {
@@ -105,6 +121,7 @@
   function render(accepted, b, lang, deps, request, caseInfo) {
     const F = deps.F;
     check(request && request.resilience_problem_digest === b.resilience_problem_digest, F, "stale_problem", "объяснение запрошено для другой задачи");
+    check(factsDigest(b.catalog, b.resilience_problem_digest, b._sel, b.status, F) === b.digest, F, "tampered_catalog", "каталог фактов изменён после построения");
     const g = (p) => b.catalog.get(`${b.city}/${b.scenario}/${p}`);
     const out = [lx([`**Устойчивость к допущениям — ${TEMPLATE}.**`, `**Болжамдарға тұрақтылық — шаблон (LLM емес).**`], lang)];
     if (lang === "kk") out.push(KK_DRAFT);

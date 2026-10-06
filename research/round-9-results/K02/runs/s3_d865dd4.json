@@ -1,0 +1,141 @@
+{
+ "suite": "s3_negative_oracle",
+ "target": {
+  "note": "движок устойчивости в BUILD отсутствует; проверяются адаптер K02 и генератор resilience_ref поверх plan.js сборки"
+ },
+ "node": "v22.22.0",
+ "results": [
+  {
+   "id": "O_res_shymkent_school",
+   "title": "результат = Python-оракул (обычный/устойчивый/худшие векторы/все худшие случаи/по случаям/цена/ручной)",
+   "status": "PASS",
+   "observed": []
+  },
+  {
+   "id": "O_res_astana_clinic",
+   "title": "результат = Python-оракул (обычный/устойчивый/худшие векторы/все худшие случаи/по случаям/цена/ручной)",
+   "status": "PASS",
+   "observed": []
+  },
+  {
+   "id": "O_res_synthetic_infeasible",
+   "title": "результат = Python-оракул (обычный/устойчивый/худшие векторы/все худшие случаи/по случаям/цена/ручной)",
+   "status": "PASS",
+   "observed": []
+  },
+  {
+   "id": "O_res_synthetic_tie",
+   "title": "результат = Python-оракул (обычный/устойчивый/худшие векторы/все худшие случаи/по случаям/цена/ручной)",
+   "status": "PASS",
+   "observed": []
+  },
+  {
+   "id": "N01_tampered_fact_value",
+   "title": "после построения каталога изменить значение факта price.robustness → tampered_catalog",
+   "status": "PASS",
+   "observed": "tampered_catalog"
+  },
+  {
+   "id": "N02_tampered_fact_name",
+   "title": "изменить имя исключённой записи в факте case.c1.excluded_ids → tampered_catalog",
+   "status": "PASS",
+   "observed": "tampered_catalog"
+  },
+  {
+   "id": "N03_tampered_case_exclusion",
+   "title": "изменить disabled_source_ids случая после оптимизации; запросить объяснение для нового envelope → stale_problem",
+   "status": "PASS",
+   "observed": "stale_problem"
+  },
+  {
+   "id": "N04_digest_swap",
+   "title": "request.resilience_problem_digest от другой задачи (другой радиус) → stale_problem",
+   "status": "PASS",
+   "observed": "stale_problem"
+  },
+  {
+   "id": "N05_old_selector_plan",
+   "title": "план селектора по каталогу старого ручного выбора применить к новому каталогу → stale_catalog",
+   "status": "PASS",
+   "observed": "stale_catalog"
+  },
+  {
+   "id": "N06_duplicate_fact_in_plan",
+   "title": "один ID факта в двух секциях плана → duplicate_id",
+   "status": "PASS",
+   "observed": "duplicate_id"
+  },
+  {
+   "id": "N07_engine_case_order",
+   "title": "per_case устойчивого плана в другом порядке случаев → bad_result",
+   "status": "PASS",
+   "observed": "bad_result"
+  },
+  {
+   "id": "N08_engine_unknown_worst_case",
+   "title": "worst_case_ids содержит случай не из envelope → bad_result",
+   "status": "PASS",
+   "observed": "bad_result"
+  },
+  {
+   "id": "N09_same_plans_nonzero_price",
+   "title": "обычный = устойчивый, но цена 5 м → bad_result",
+   "status": "PASS",
+   "observed": "bad_result"
+  },
+  {
+   "id": "N10_price_inconsistent",
+   "title": "цена не равна разности средних base → bad_result",
+   "status": "PASS",
+   "observed": "bad_result"
+  },
+  {
+   "id": "N11_incomplete_claims_optimal_plans",
+   "title": "status=incomplete, но nominal/robust заданы → bad_result",
+   "status": "PASS",
+   "observed": "bad_result"
+  },
+  {
+   "id": "N12_incomplete_honest",
+   "title": "status=incomplete, nominal/robust=null, цена null → accepted: «поиск не завершён», цена «нет данных (поиск не завершён…)»",
+   "status": "PASS",
+   "observed": "accepted: «поиск не завершён», цена «нет данных (поиск не завершён…)»"
+  },
+  {
+   "id": "N13_manual_other_selection",
+   "title": "ручная оценка для другого selected_ids → stale_explanation",
+   "status": "PASS",
+   "observed": "stale_explanation"
+  },
+  {
+   "id": "N14_case_id_base_reserved",
+   "title": "пользовательский случай с id base → duplicate_case",
+   "status": "PASS",
+   "observed": "duplicate_case"
+  },
+  {
+   "id": "N15_duplicate_case_id",
+   "title": "два случая с одинаковым id → duplicate_case",
+   "status": "PASS",
+   "observed": "duplicate_case"
+  },
+  {
+   "id": "N16_candidate_id_as_source",
+   "title": "candidate ID в disabled_source_ids → unknown_source",
+   "status": "PASS",
+   "observed": "unknown_source"
+  },
+  {
+   "id": "N17_unknown_baseline_no_sources",
+   "title": "срез без исходных записей категории: исключать нечего → bad_exclusion",
+   "status": "PASS",
+   "observed": "bad_exclusion"
+  },
+  {
+   "id": "N18_too_many_candidates",
+   "title": "13 кандидатов при пределе устойчивости 12 → too_many_candidates",
+   "status": "PASS",
+   "observed": "too_many_candidates"
+  }
+ ]
+}

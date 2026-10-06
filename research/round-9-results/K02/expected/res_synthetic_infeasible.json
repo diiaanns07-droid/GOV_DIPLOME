@@ -1,0 +1,40 @@
+{
+ "fixture": "res_synthetic_infeasible",
+ "feasible_count": 0,
+ "status": "infeasible",
+ "nominal": null,
+ "robust": null,
+ "price_m": null,
+ "manual": {
+  "selected_ids": [
+   "small"
+  ],
+  "worst_vector": [
+   0,
+   1872735,
+   1872735
+  ],
+  "worst_case_ids": [
+   "off"
+  ],
+  "per_case": {
+   "base": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 936372,
+    "weighted_mean_mm": 468186.0,
+    "max_mm": 936372,
+    "covered_weight": 1,
+    "cost": 10
+   },
+   "off": {
+    "unknown_count": 0,
+    "weighted_sum_mm": 1872735,
+    "weighted_mean_mm": 936367.5,
+    "max_mm": 1872735,
+    "covered_weight": 1,
+    "cost": 10
+   }
+  },
+  "feasible": false
+ }
+}
