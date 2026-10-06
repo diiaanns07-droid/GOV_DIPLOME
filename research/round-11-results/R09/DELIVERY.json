@@ -13,7 +13,7 @@
     "research/handoffs/astana/R09/round-11/STATUS.md"
   ],
   "integration_notes": "research/round-11-results/R09/INTEGRATION.txt",
-  "code_commit": "97c01b1561213e83bf4db655f8ae392b8634fe3e",
+  "code_commit": "6490397490843881b6d070ee20ee782bf328100b",
   "exports": {
     "python": [
       "agent.civic_assistant.build_answer(question, verified_context, provider=None)",
@@ -39,14 +39,14 @@
       "status": "PASS",
       "command": "python3 -m pytest tests/civic/R09 -q",
       "input": "synthetic fixtures (objects, publications, R07 compare() output 18f8ac8), MockProvider, fake chat client, fake R02 service, demo_server + Chromium",
-      "reason": "108 passed at 97c01b1"
+      "reason": "118 passed at 6490397"
     },
     {
       "name": "r09-adversarial-eval",
       "status": "PASS",
       "command": "python3 -m agent.civic_assistant.evaluate --ui",
       "input": "tests/civic/R09/fixtures/eval_cases.json (37 cases) + 17 browser checks",
-      "reason": "54 PASS / 0 FAIL / 1 NOT_RUN (live LLM); EVAL_REPORT.txt, code_sha 97c01b1"
+      "reason": "54 PASS / 0 FAIL / 1 NOT_RUN (live LLM); EVAL_REPORT.txt, code_sha 6490397"
     },
     {
       "name": "r09-ui-chromium",
@@ -60,7 +60,7 @@
       "status": "PASS",
       "command": "python3 research/round-11-results/R09/check_r02_r07_integration.py --r02 <R02 92f7aba checkout> --r07 <R07 18f8ac8 checkout>",
       "input": "temporary SQLite, one-time random editor password (not stored), pack civic_object fixture",
-      "reason": "15/15 at 97c01b1 (draft invisible, publish, unpublished edit invisible, delay reason from publish reason, staff update reason not public, real compare()); integration_r02_r07.json"
+      "reason": "16/16 at 6490397 (draft invisible, publish, unpublished edit invisible, delay reason from publish reason, staff update reason not public, extract with real R02 Principal: editor 200 / anonymous 401, real R07 compare()); integration_r02_r07.json"
     },
     {
       "name": "r09-compat-r05-demo-slice",

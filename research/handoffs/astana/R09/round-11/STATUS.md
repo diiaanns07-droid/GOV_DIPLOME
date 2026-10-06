@@ -7,7 +7,7 @@
 - Снимок приложения для сравнения: `b2cb2e02c602c166ba6d47c02d8e902e5478c791` (agent/school_ai.py, evidence.py, tools.py прочитаны через git show; подход «модель выбирает ID, код пишет текст» перенят)
 - Собственные пути: `agent/civic_assistant/`, `web/civic/assistant/`, `tests/civic/R09/`,
   `research/round-11-results/R09/`, `research/handoffs/astana/R09/round-11/STATUS.md`
-- Проверенный код: `97c01b1561213e83bf4db655f8ae392b8634fe3e`
+- Проверенный код: `6490397490843881b6d070ee20ee782bf328100b`
 
 ## Статус: READY (модуль готов к интеграции R01) — checkpoint 6
 
@@ -32,10 +32,12 @@
   номер запроса; ручной перенос полей редактором.
 - `evaluate.py` — adversarial-оценка (37 кейсов + 17 браузерных).
 
-### Проверки (выполнены на 97c01b1)
-- `python3 -m pytest tests/civic/R09 -q` -> 108 passed (включая реальный Chromium).
+### Проверки (выполнены на 6490397)
+- `python3 -m pytest tests/civic/R09 -q` -> 118 passed (включая реальный Chromium).
 - `python3 -m agent.civic_assistant.evaluate --ui` -> PASS 54 / FAIL 0 / NOT_RUN 1 (EVAL_REPORT.txt).
-- `check_r02_r07_integration.py` на коде R02 92f7aba и R07 18f8ac8 -> 15/15 (integration_r02_r07.json).
+- `check_r02_r07_integration.py` на коде R02 92f7aba и R07 18f8ac8 -> 16/16 (integration_r02_r07.json),
+  включая извлечение с настоящим R02 Principal (редактор 200, аноним 401).
+- Враждебные тексты 20 000 символов: извлечение < 1 с, списки усечены до 20 (lists_truncated).
 - Совместимость с записями R05 (e477e5d, demo_synthetic.json — 9 СИНТЕТИЧЕСКИХ записей) -> 9/9
   (compat_r05_demo.json). Прогон нашёл и исправил: для отменённого объекта сроки показывались без
   пометки отмены; «Откуда эти данные?» уходило в overview.

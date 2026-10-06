@@ -1,7 +1,7 @@
 {
  "r02_sha": "92f7abae8184516c9bf6bd89367a63692402cc1b",
  "r07_sha": "18f8ac80ae497b3e2a5e8cfdc73aedfa3adf4599",
- "r09_sha": "97c01b1561213e83bf4db655f8ae392b8634fe3e",
+ "r09_sha": "6490397490843881b6d070ee20ee782bf328100b",
  "checks": [
   {
    "name": "r02_login",
@@ -72,6 +72,11 @@
    "name": "no_staff_fields_in_public_dto",
    "status": "PASS",
    "detail": ""
+  },
+  {
+   "name": "extract_with_real_r02_principal",
+   "status": "PASS",
+   "detail": "editor=200 anonymous=401"
   },
   {
    "name": "scenario_from_real_r07_compare",

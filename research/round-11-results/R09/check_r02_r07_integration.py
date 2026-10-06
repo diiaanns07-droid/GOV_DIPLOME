@@ -130,6 +130,24 @@ def main():
     rec("no_staff_fields_in_public_dto", not any(k in secret_probe for k in ("password", "csrf", "session", "internal")),
         "")
 
+    # Редакторское извлечение с настоящим R02 resolve_principal (Principal-объект, а не dict).
+    staff_ep = AssistantEndpoint(load, resolve_principal=svc.resolve_principal, rate_limiter=RateLimiter(100, 60))
+    pub_text = json.loads((REPO / "tests/civic/R09/fixtures/publications.json").read_text(encoding="utf-8"))["ru_full"]
+    body = {"source_id": pub_text["source_id"], "text": pub_text["text"]}
+
+    def staff_ctx(with_cookie):
+        headers = {"Host": "127.0.0.1:8501"}
+        if with_cookie:
+            headers.update({"Cookie": cookie, "X-CSRF-Token": csrf})
+        return {"headers": headers, "client_ip": "127.0.0.1", "host_allowed": True, "is_same_origin": True,
+                "is_https": False}
+
+    ok_resp = staff_ep.handle("POST", "/staff/assistant/extract", {}, body, staff_ctx(True))
+    anon = staff_ep.handle("POST", "/staff/assistant/extract", {}, body, staff_ctx(False))
+    rec("extract_with_real_r02_principal", ok_resp["status"] == 200 and anon["status"] == 401
+        and ok_resp["body"]["data"]["fields"]["schedule.current_planned_end"]["value"] == "2026-10-20",
+        f"editor={ok_resp['status']} anonymous={anon['status']}")
+
     cases = [c["case_id"] for c in list_cases()]
     sid = "synthetic-tiny-v1-demo" if "synthetic-tiny-v1-demo" in cases else (cases[0] if cases else None)
     if sid:
