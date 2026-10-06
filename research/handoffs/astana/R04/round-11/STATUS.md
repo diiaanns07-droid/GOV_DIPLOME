@@ -7,7 +7,7 @@
 - Исходники приложения для сравнения: `6de3f253d8ec0743450259f9f13722c16cd36099` (CODE_SHA сборщика), читались через `git show`
 - Собственные пути: `web/civic/editor/`, `tests/civic/R04/`, `research/round-11-results/R04/`, этот файл
 
-## Состояние: PARTIAL (checkpoint 2)
+## Состояние: PARTIAL (checkpoint 3)
 
 Сделано:
 - `web/civic/editor/editor-core.js` — чистая логика без DOM/сети: модель формы ↔ объект civic-v1,
@@ -22,10 +22,15 @@
   публикация/архив с причиной, история, 409/401/сеть/двойное нажатие, память несохранённых правок (только RAM).
 - `tests/civic/R04/contract_mock.cjs` (+ тест) — контрактный mock civic-v1 (НЕ R02), `stand.cjs`, `harness/`.
 
+- `tests/civic/R04/e2e.test.cjs` — 18 браузерных сценариев приёмки (Chromium + MapLibre, контрактный mock).
+- Найдено и исправлено: первоначальный срок не был readonly после публикации; aria-busy оставался true после сохранения.
+- Найден риск дубликата: Chromium сам повторяет POST после обрыва keep-alive соединения, если сервер уже создал объект.
+  UI передаёт стабильный ключ `api.request(..., {idempotencyKey})`; предложение `Idempotency-Key` для R01/R02 — contract_delta.
+
 Проверено:
-- `node --test tests/civic/R04/*.test.cjs` → 26 pass, 0 fail (Node v22.22.0).
-- Ручной smoke в headless Chromium (Playwright 1.56.1): вход → список → новый объект рендерится, карта MapLibre 5.6.2 загружена (software WebGL, без подложки).
+- `node --test tests/civic/R04/core.test.cjs tests/civic/R04/contract_mock.test.cjs` → 26 pass, 0 fail.
+- `node --test tests/civic/R04/e2e.test.cjs` → 18 pass, 0 fail (Chromium headless shell 1194 / Playwright 1.56.1, MapLibre 5.6.2 из 6de3f253, software WebGL, без подложки).
 
-Не запускалось: полный браузерный walkthrough (следующий шаг), R02 (не опубликован).
+Не запускалось: R02 (не опубликован), реальная подложка/3D (стенд без подложки — это не подтверждение 3D).
 
-Следующий шаг: `tests/civic/R04/e2e.test.cjs` — сценарии приёмки в браузере + screenshots 390/1280.
+Следующий шаг: исправления по adversarial review, screenshots, INTEGRATION.txt, REQUESTS.txt, contract_delta.txt.

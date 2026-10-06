@@ -6,8 +6,9 @@
   const params = new URLSearchParams(location.search);
   let csrf = null;
   const api = {
-    async request(method, path, body) {
+    async request(method, path, body, opts) {
       const headers = { Accept: "application/json" };
+      if (opts && opts.idempotencyKey) headers["Idempotency-Key"] = opts.idempotencyKey;
       if (body !== undefined) headers["Content-Type"] = "application/json";
       if (method !== "GET" && csrf) headers["X-CSRF-Token"] = csrf;
       const res = await fetch("/api/civic/v1" + path, { method, headers, credentials: "same-origin", body: body === undefined ? undefined : JSON.stringify(body) });

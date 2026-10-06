@@ -311,6 +311,8 @@ function createMockServer(opts = {}) {
   const loginFailures = new Map(); // username -> {count, last}
   const faults = [];
   const writeSeq = new Map(); // id -> monotonic write order (sort tie-break)
+  const idempotent = new Map(); // "username:Idempotency-Key" -> object id
+  let keepAlive = true;         // hooks.keepAlive(false): answer with Connection: close (no browser transport retries)
   const timers = new Set();
   let counters = { obj: 0, hist: 0, write: 0 };
   let port = null;
@@ -623,10 +625,23 @@ function createMockServer(opts = {}) {
         case "publicGet": data = publicGet(id); break;
         case "staffList": requireSession(req, session, editorRead); data = staffList(query); break;
         case "staffGet": requireSession(req, session, editorRead); data = staffGet(id); break;
-        case "create":
+        case "create": {
           requireSession(req, session, editorWrite);
-          data = { item: staffDTO(createObject(parseJson(raw), session.user)) };
+          // Proposed contract delta (R04 contract_delta.txt): optional Idempotency-Key makes a replayed create
+          // (browser transport retry, user retry after a lost answer) return the first object instead of a copy.
+          const key = req.headers["idempotency-key"];
+          if (key !== undefined && !/^[A-Za-z0-9_-]{8,200}$/.test(String(key))) throw new ApiError(400, "bad_request", "Некорректный Idempotency-Key");
+          const ik = key ? session.user.username + ":" + key : null;
+          if (ik && idempotent.has(ik) && state.objects.has(idempotent.get(ik))) {
+            data = { item: staffDTO(state.objects.get(idempotent.get(ik))) };
+            headers = { "Idempotent-Replay": "true" };
+            break;
+          }
+          const rec = createObject(parseJson(raw), session.user);
+          if (ik) idempotent.set(ik, rec.id);
+          data = { item: staffDTO(rec) };
           break;
+        }
         case "update":
           requireSession(req, session, editorWrite);
           data = { item: staffDTO(updateObject(id, parseJson(raw), session.user)) };
@@ -757,6 +772,7 @@ function createMockServer(opts = {}) {
       }
       if (log) log.status = out.status;
       if (res.destroyed) return;
+      if (!keepAlive) res.shouldKeepAlive = false;
       res.writeHead(out.status, out.headers);
       res.end(req.method === "HEAD" ? undefined : out.body);
     } catch (e) {
@@ -793,6 +809,7 @@ function createMockServer(opts = {}) {
     requests,
     errors,
     expireSessions() { state.sessions.clear(); },
+    keepAlive(on) { keepAlive = !!on; },
     // Concurrent edit by another editor; throws ApiError on validation failure.
     mutate(id, changes, reason = "Другой редактор") {
       const rec = getRec(id);
@@ -816,6 +833,8 @@ function createMockServer(opts = {}) {
       loginFailures.clear();
       faults.length = 0;
       writeSeq.clear();
+      idempotent.clear();
+      keepAlive = true;
       counters = { obj: 0, hist: 0, write: 0 };
       loadSeed();
     },

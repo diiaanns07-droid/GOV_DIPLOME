@@ -46,6 +46,13 @@
     }
     return e;
   }
+  function newKey() {
+    const c = window.crypto;
+    if (c && typeof c.randomUUID === "function") return c.randomUUID();
+    const a = new Uint8Array(16);
+    c.getRandomValues(a);
+    return Array.from(a, (b) => b.toString(16).padStart(2, "0")).join("");
+  }
   const badge = (text, kind) => el("span", { class: "civic-r04-badge civic-r04-badge-" + kind }, text);
 
   function mount(opts) {
@@ -64,7 +71,7 @@
       list: { items: [], next: null, filter: "draft", mine: false, loaded: false, loading: false },
       item: null, history: [], form: null, saved: null, mirror: false, internalNotes: o.internalNotes === true,
       errors: {}, warnings: {}, server: {}, touched: {}, tried: false, busy: null, confirm: null, reason: "", reasonErr: null,
-      conflict: null, reauth: false, uncertain: null, dup: null, restore: null, tool: null, cursor: "", preview: false, publicCopy: null,
+      conflict: null, reauth: false, uncertain: null, createKey: null, dup: null, restore: null, tool: null, cursor: "", preview: false, publicCopy: null,
       notice: null, logoutAsk: false, lastDirty: false, mapOn: false, diffOpen: true,
     };
     const F = {};            // field key -> {control, err, warn}
@@ -111,10 +118,10 @@
     });
 
     // ---------- API ----------
-    async function call(method, path, body) {
+    async function call(method, path, body, extra) {
       const ep = S.epoch;
       let data;
-      try { data = C.unwrap(await api.request(method, apiPrefix + path, body)); }
+      try { data = C.unwrap(await (extra ? api.request(method, apiPrefix + path, body, extra) : api.request(method, apiPrefix + path, body))); }
       catch (e) { if (ep !== S.epoch || !S.alive) throw STALE; throw e; }
       if (ep !== S.epoch || !S.alive) throw STALE;
       return data;
@@ -412,9 +419,9 @@
       x.addEventListener("change", () => { S.form[key] = x.value; changed(key); touch(key); });
       return x;
     }
-    function dateField(key, label, help) {
-      const x = input(key, { type: "date", min: "1990-01-01", max: "2100-12-31" });
-      const clear = btn("× неизвестно", () => { x.value = ""; S.form[key] = ""; changed(key); x.focus(); }, "mini", "clear-" + key, { "aria-label": "Очистить: " + label + " (неизвестно)" });
+    function dateField(key, label, help, readonly) {
+      const x = input(key, { type: "date", min: "1990-01-01", max: "2100-12-31", readonly: !!readonly, "aria-readonly": readonly ? "true" : null });
+      const clear = readonly ? null : btn("× неизвестно", () => { x.value = ""; S.form[key] = ""; changed(key); x.focus(); }, "mini", "clear-" + key, { "aria-label": "Очистить: " + label + " (неизвестно)" });
       return field(key, label, x, help, clear);
     }
     function section(title, kids, cls) {
@@ -448,7 +455,7 @@
         el("p", { class: "civic-r04-help" }, "Плановый срок — дата по плану. «Фактически завершено» — только когда работы действительно закончены. Пустое поле = «неизвестно»: сегодняшняя дата сама не подставляется."),
         el("div", { class: "civic-r04-grid" }, [
           dateField("planned_start", "Плановое начало"),
-          dateField("original_planned_end", "Плановое окончание — первоначальное", origHelp),
+          dateField("original_planned_end", "Плановое окончание — первоначальное", origHelp, locked),
           dateField("current_planned_end", "Плановое окончание — актуальное",
             locked ? "Перенос опубликованного срока сохраняется в истории вместе с причиной." : "Пока даты совпадают, поле повторяет первоначальное; измените его, если срок уже перенесён."),
           dateField("actual_end", "Фактически завершено", "Только при статусе «Завершено» и только по факту. Будущая дата не принимается."),
@@ -814,7 +821,7 @@
           el("p", {}, "Связь прервалась при создании, а сервер, похоже, успел создать черновик: «" + (d.title || "") + "», ред. " + d.revision + ", " + C.fmtDateTime(d.updated_at) + "."),
           el("p", {}, "Чтобы не появилась копия, откройте его — ваши правки перенесутся в форму."),
           el("p", { class: "civic-r04-row-btns" }, [btn("Открыть найденный и перенести правки", adoptDuplicate, "primary", "dup-open"),
-            btn("Это другой объект — создать новый", () => { S.dup = null; S.uncertain = null; renderConflict(); save(); }, "ghost", "dup-new")])]));
+            btn("Это другой объект — создать новый", () => { S.dup = null; S.uncertain = null; S.createKey = null; renderConflict(); save(); }, "ghost", "dup-new")])]));
         return;
       }
       const c = S.conflict;
@@ -855,7 +862,7 @@
       try {
         const r = await call("GET", "/staff/objects/" + enc(d.id));
         S.dup = null; S.uncertain = null;
-        S.busy = null;
+        setBusy(null);
         openEditor(r.item, r.history);
         RECOVERY.delete("new");
         S.form = mine;
@@ -1071,9 +1078,14 @@
             const dup = C.findPossibleDuplicate(d && d.items, fields, S.uncertain.since);
             if (dup) { S.dup = dup; renderConflict(); setNotice("warn", "Найден похожий черновик — выберите, что сделать, чтобы не создать копию."); focusKey("dup-open"); return; }
           }
-          const d = await call("POST", "/staff/objects", fields);
+          // One key per submitted content: a replay of the same attempt (lost answer, browser transport retry) can be
+          // recognised by a server that supports Idempotency-Key (contract_delta); changed content gets a new key.
+          const fp = JSON.stringify(fields);
+          if (!S.createKey || S.createKey.fp !== fp) S.createKey = { key: newKey(), fp };
+          const d = await call("POST", "/staff/objects", fields, { idempotencyKey: S.createKey.key });
           item = d && d.item;
           S.uncertain = null;
+          S.createKey = null;
           RECOVERY.delete("new");
         } else {
           const reason = S.reason.trim() || null;
@@ -1133,7 +1145,7 @@
         /* the action itself succeeded; history refresh can wait */
       }
       const notice = S.notice;
-      S.busy = null;
+      setBusy(null);
       openEditor(it, hist);
       S.notice = notice;
     }
@@ -1213,7 +1225,7 @@
       RECOVERY.clear();
       Object.assign(S, { session: { authenticated: false, user: null }, view: "login", item: null, form: null, saved: null, history: [],
         list: { items: [], next: null, filter: "draft", mine: false, loaded: false, loading: false }, busy: null, confirm: null, reason: "",
-        conflict: null, reauth: false, uncertain: null, dup: null, restore: null, preview: false, publicCopy: null, notice: null, alert: null, logoutAsk: false });
+        conflict: null, reauth: false, uncertain: null, createKey: null, dup: null, restore: null, preview: false, publicCopy: null, notice: null, alert: null, logoutAsk: false });
       shell.setAttribute("aria-busy", "false");
       render();
       say("Вы вышли. Редакторские действия закрыты.");
