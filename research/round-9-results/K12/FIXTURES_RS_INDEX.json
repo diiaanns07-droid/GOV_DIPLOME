@@ -1,0 +1,695 @@
+{
+ "fixture_set": "k12r9-city-resilience-v1-corpus-v1",
+ "spec": "research/round-9/CORE_SPEC.txt @ 0ab1667",
+ "data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+ "placeholders": [
+  "__SNAPSHOT__",
+  "__SNAPSHOT_OTHER_CITY__"
+ ],
+ "note": "SYNTHETIC plans/costs/weights; source IDs are real record IDs of the slice; not city statistics",
+ "fixtures": [
+  {
+   "id": "A01",
+   "file": "fixtures_rs/A01_base_shymkent_school.json",
+   "sha256": "cc06a08838378e85b62994fa09d447e7778941597be19dd4a4d43ccd1aa8d064",
+   "name": "base_shymkent_school",
+   "expect": "accept",
+   "rule": "valid",
+   "spec": "2 случая, по одной условно исключённой записи",
+   "city": "shymkent",
+   "bytes": 2032
+  },
+  {
+   "id": "A02",
+   "file": "fixtures_rs/A02_astana_clinic.json",
+   "sha256": "f9e22a5e05c693e39584de6c8cf20db6f64f8efd5a0c1c9733efc13c22badab9",
+   "name": "astana_clinic",
+   "expect": "accept",
+   "rule": "valid",
+   "spec": "Астана, поликлиника, 3 случая",
+   "city": "astana",
+   "bytes": 2277
+  },
+  {
+   "id": "A03",
+   "file": "fixtures_rs/A03_seven_user_cases.json",
+   "sha256": "3b851a27ec0ee57cae3343f3247a821c6755d52647d2ad9724570ad03df26966",
+   "name": "seven_user_cases",
+   "expect": "accept",
+   "rule": "cases_max",
+   "spec": "7 пользовательских случаев + base = 8",
+   "city": "shymkent",
+   "bytes": 2887
+  },
+  {
+   "id": "A04",
+   "file": "fixtures_rs/A04_twelve_candidates_25_points.json",
+   "sha256": "bb9dadbcbaa3f4b6a05d7ccba503f638790538a491bc16322faa24d334c40b1e",
+   "name": "twelve_candidates_25_points",
+   "expect": "accept",
+   "rule": "candidates_max",
+   "spec": "12 кандидатов, 25 точек, 7 случаев (4096 наборов)",
+   "city": "shymkent",
+   "bytes": 5517
+  },
+  {
+   "id": "A05",
+   "file": "fixtures_rs/A05_duplicate_case_sets.json",
+   "sha256": "91c14217dd59f5970b7565764bc55c71ec3d184e72c16cfa2c35f90751334a51",
+   "name": "duplicate_case_sets",
+   "expect": "accept",
+   "rule": "duplicate_sets_allowed",
+   "spec": "одинаковые наборы допустимы; результат не зависит от дубля",
+   "city": "shymkent",
+   "bytes": 2178,
+   "check": {
+    "same_plans_as": "A01"
+   }
+  },
+  {
+   "id": "A06",
+   "file": "fixtures_rs/A06_all_sources_disabled.json",
+   "sha256": "d8bbde21a7f715ead0bfbc599e461fdc4f00ccfc439038a80fc777f9e83009e9",
+   "name": "all_sources_disabled",
+   "expect": "accept",
+   "rule": "unknown_baseline",
+   "spec": "все записи категории исключены: baseline неизвестен, null вместо 0",
+   "city": "shymkent",
+   "bytes": 2648,
+   "check": {
+    "case_unknown_baseline": "case2"
+   }
+  },
+  {
+   "id": "A07",
+   "file": "fixtures_rs/A07_unicode_id_html_label.json",
+   "sha256": "90327de34a13af02ca66f93e0775ed1b9a944cdf7de16625289ed9f4b20bfd43",
+   "name": "unicode_id_html_label",
+   "expect": "accept",
+   "rule": "label_text",
+   "spec": "Unicode NFC id по правилам BUILD; HTML в label — только текст",
+   "city": "shymkent",
+   "bytes": 2083,
+   "check": {
+    "label_is_text": true
+   }
+  },
+  {
+   "id": "A08",
+   "file": "fixtures_rs/A08_label_120_codepoints.json",
+   "sha256": "552a71cc709905ca0ea309790279560b863a67492585bb75673549beb6f576d3",
+   "name": "label_120_codepoints",
+   "expect": "accept",
+   "rule": "label_max",
+   "spec": "label ровно 120 code points (эмодзи = 1)",
+   "city": "shymkent",
+   "bytes": 2260
+  },
+  {
+   "id": "A09",
+   "file": "fixtures_rs/A09_permuted_order.json",
+   "sha256": "eb7303cf2008d7d8f553956aa94fbdab8f34028d3440d58d4e98210b88bf8ed1",
+   "name": "permuted_order",
+   "expect": "accept",
+   "rule": "order_independent",
+   "spec": "перестановка случаев/точек/кандидатов",
+   "city": "shymkent",
+   "bytes": 2032,
+   "check": {
+    "same_plans_as": "A01"
+   }
+  },
+  {
+   "id": "A10",
+   "file": "fixtures_rs/A10_zero_candidates.json",
+   "sha256": "317e6a1abe7ff94ff37462ce475265828dca7d099439ef0a35288c0118a898e0",
+   "name": "zero_candidates",
+   "expect": "accept",
+   "rule": "candidates_min",
+   "spec": "0 кандидатов: только ручной/пустой план",
+   "city": "shymkent",
+   "bytes": 1158
+  },
+  {
+   "id": "A11",
+   "file": "fixtures_rs/A11_required_infeasible.json",
+   "sha256": "4927fa829b31640e90766352e7136ca54aac3eda51d514e1ccc76ed6aa1f052a",
+   "name": "required_infeasible",
+   "expect": "accept",
+   "rule": "infeasible_reported",
+   "spec": "required невыполнимы по бюджету → infeasible с причиной, не снимаются",
+   "city": "shymkent",
+   "bytes": 2052,
+   "check": {
+    "status": "infeasible"
+   }
+  },
+  {
+   "id": "A12",
+   "file": "fixtures_rs/A12_multi_exclusion.json",
+   "sha256": "add53baa357fea822077a5192f3c690502e12899c9d8d1e0abb3c6c0af555789",
+   "name": "multi_exclusion",
+   "expect": "accept",
+   "rule": "valid",
+   "spec": "случай с 3 исключёнными записями",
+   "city": "shymkent",
+   "bytes": 2120
+  },
+  {
+   "id": "A13",
+   "file": null,
+   "recipe": {
+    "op": "pad",
+    "from": "A01",
+    "total_bytes": 262144
+   },
+   "sha256": "dcba9ffd892efa8210c0fa713a22ac8ee4ef9839d07e9b33501ee71585675500",
+   "name": "exactly_256KiB",
+   "expect": "accept",
+   "rule": "size_max",
+   "spec": "ровно 262144 байта UTF-8",
+   "city": "shymkent",
+   "bytes": 262144
+  },
+  {
+   "id": "N01",
+   "file": "fixtures_rs/N01_candidate_id_as_source.json",
+   "sha256": "206bf6e823f33fdc39d4173b8e11d55adc0cbef01d002e72c90ddf95a62966e9",
+   "name": "candidate_id_as_source",
+   "expect": "reject",
+   "rule": "unknown_source",
+   "spec": "ID кандидата вместо source ID (namespace)",
+   "city": "shymkent",
+   "bytes": 1998
+  },
+  {
+   "id": "N02",
+   "file": "fixtures_rs/N02_fake_source_id.json",
+   "sha256": "331e957b8e9a6d5e5625bd06c032e12c03925f94bf8652c1457770fdce501ad5",
+   "name": "fake_source_id",
+   "expect": "reject",
+   "rule": "unknown_source",
+   "spec": "несуществующий source ID",
+   "city": "shymkent",
+   "bytes": 2032
+  },
+  {
+   "id": "N03",
+   "file": "fixtures_rs/N03_other_category_source.json",
+   "sha256": "4539b4eda972fbcca9c1727ff13b27bf6b3227465a1d1e91944b679d82cd4705",
+   "name": "other_category_source",
+   "expect": "reject",
+   "rule": "unknown_source",
+   "spec": "source ID поликлиники в сценарии школ",
+   "city": "shymkent",
+   "bytes": 2032
+  },
+  {
+   "id": "N04",
+   "file": "fixtures_rs/N04_other_city_source.json",
+   "sha256": "7097b1439d3b78a5f32c6bc0104ab2664eea12cd7523f0ace086907a51f53efe",
+   "name": "other_city_source",
+   "expect": "reject",
+   "rule": "unknown_source",
+   "spec": "source ID Астаны в сценарии Шымкента",
+   "city": "shymkent",
+   "bytes": 2032
+  },
+  {
+   "id": "N05",
+   "file": "fixtures_rs/N05_reserved_base_id.json",
+   "sha256": "ca398306801bdda02eadcc7f1184059ee9d1d008b965ea568a094e04cd034492",
+   "name": "reserved_base_id",
+   "expect": "reject",
+   "rule": "reserved_id",
+   "spec": "id \"base\" зарезервирован",
+   "city": "shymkent",
+   "bytes": 2031
+  },
+  {
+   "id": "N06",
+   "file": "fixtures_rs/N06_duplicate_case_id.json",
+   "sha256": "f55c8606b05fe73e639c01312ea34acf6366e43d5c0998f2122d293805cd93fd",
+   "name": "duplicate_case_id",
+   "expect": "reject",
+   "rule": "duplicate_id",
+   "spec": "повтор id случая",
+   "city": "shymkent",
+   "bytes": 2032
+  },
+  {
+   "id": "N07",
+   "file": "fixtures_rs/N07_eight_user_cases.json",
+   "sha256": "a12b7b31c978f9b01782d19dac05796a8195062697f521a2278272d09ede67cd",
+   "name": "eight_user_cases",
+   "expect": "reject",
+   "rule": "too_many_cases",
+   "spec": "8 пользовательских + base = 9",
+   "city": "shymkent",
+   "bytes": 3058
+  },
+  {
+   "id": "N08",
+   "file": "fixtures_rs/N08_zero_cases.json",
+   "sha256": "e08c90adc2d8514f7a1537f5eafdcf8255e958f2debffd2fe646be3955ad73e4",
+   "name": "zero_cases",
+   "expect": "reject",
+   "rule": "too_few_cases",
+   "spec": "нет ни одного пользовательского случая",
+   "city": "shymkent",
+   "bytes": 1689
+  },
+  {
+   "id": "N09",
+   "file": "fixtures_rs/N09_thirteen_candidates.json",
+   "sha256": "ae42c65c2e2b516b587959e8de5d77b896226541e653904672b4cb8306cface9",
+   "name": "thirteen_candidates",
+   "expect": "reject",
+   "rule": "too_many_candidates",
+   "spec": "13 кандидатов: typed too_many_candidates до предвычислений",
+   "city": "shymkent",
+   "bytes": 3036
+  },
+  {
+   "id": "N10",
+   "file": "fixtures_rs/N10_seventeen_candidates.json",
+   "sha256": "b338d74e6a226f25432c0faaa8d1d58d3c28f0b21c91d0f5875bd4725ba34a25",
+   "name": "seventeen_candidates",
+   "expect": "reject",
+   "rule": "too_many_candidates",
+   "spec": "17 кандидатов (больше и предела v2)",
+   "city": "shymkent",
+   "bytes": 3616
+  },
+  {
+   "id": "N11",
+   "file": "fixtures_rs/N11_empty_exclusion.json",
+   "sha256": "7299ffeaf2a9cb336d44ca6e37aa5ec41231470a5dfe303d5630814000bf847c",
+   "name": "empty_exclusion",
+   "expect": "reject",
+   "rule": "bad_exclusion",
+   "spec": "хотя бы одна запись",
+   "city": "shymkent",
+   "bytes": 1985
+  },
+  {
+   "id": "N12",
+   "file": "fixtures_rs/N12_duplicate_source_in_case.json",
+   "sha256": "2f7da91a4c9e74e58da3fff50af1d46e0fd0e99a0bcee35f737d5e3ed78263a7",
+   "name": "duplicate_source_in_case",
+   "expect": "reject",
+   "rule": "duplicate_id",
+   "spec": "повтор source ID внутри случая",
+   "city": "shymkent",
+   "bytes": 2076
+  },
+  {
+   "id": "N13",
+   "file": "fixtures_rs/N13_empty_label.json",
+   "sha256": "ca3272bce39e6065ed7a39e41dd1ace57fbd0ae5b883f85c394dd4ed36c7fc83",
+   "name": "empty_label",
+   "expect": "reject",
+   "rule": "bad_label",
+   "spec": "label непустой",
+   "city": "shymkent",
+   "bytes": 1980
+  },
+  {
+   "id": "N14",
+   "file": "fixtures_rs/N14_label_121_codepoints.json",
+   "sha256": "56983dc19212c289b6e4dc1141693f94492adc7e8d36b5a0ec25555038b41e54",
+   "name": "label_121_codepoints",
+   "expect": "reject",
+   "rule": "bad_label",
+   "spec": "121 code point",
+   "city": "shymkent",
+   "bytes": 2262
+  },
+  {
+   "id": "N15",
+   "file": "fixtures_rs/N15_label_control_char.json",
+   "sha256": "586560ff67ae2edaeb178866dc1401d84c0449bdbc2d157ab9743050af920c88",
+   "name": "label_control_char",
+   "expect": "reject",
+   "rule": "bad_label",
+   "spec": "управляющий символ \\n",
+   "city": "shymkent",
+   "bytes": 2006
+  },
+  {
+   "id": "N16",
+   "file": "fixtures_rs/N16_label_bell_char.json",
+   "sha256": "615f624a8f8706273c58a57bf2d235b7dbfec8524037325961c69368017f4fad",
+   "name": "label_bell_char",
+   "expect": "reject",
+   "rule": "bad_label",
+   "spec": "управляющий символ U+0007",
+   "city": "shymkent",
+   "bytes": 1998
+  },
+  {
+   "id": "N17",
+   "file": "fixtures_rs/N17_label_number.json",
+   "sha256": "4ee3de275ed851ed2bcf0fb9bcfaf1e3eb92efbe0bd2a9bb35ed00869ddc6232",
+   "name": "label_number",
+   "expect": "reject",
+   "rule": "bad_label",
+   "spec": "label не строка",
+   "city": "shymkent",
+   "bytes": 1979
+  },
+  {
+   "id": "N18",
+   "file": "fixtures_rs/N18_case_extra_field.json",
+   "sha256": "fbdb325958c7726113a832de98d23e7410a6609733c6b3b323e40bc2a5f389f1",
+   "name": "case_extra_field",
+   "expect": "reject",
+   "rule": "unknown_field",
+   "spec": "лишнее поле случая (вероятность запрещена)",
+   "city": "shymkent",
+   "bytes": 2055
+  },
+  {
+   "id": "N19",
+   "file": "fixtures_rs/N19_case_missing_label.json",
+   "sha256": "9b7d4476bd25d0f6c060afddf80c7386d300187cca906d744f054c942844c6b1",
+   "name": "case_missing_label",
+   "expect": "reject",
+   "rule": "missing_field",
+   "spec": "нет label",
+   "city": "shymkent",
+   "bytes": 1964
+  },
+  {
+   "id": "N20",
+   "file": "fixtures_rs/N20_envelope_derived_results.json",
+   "sha256": "59e5564d737e053d52698b737425d29b1df37a95978429ea8d03f20cabd0c691",
+   "name": "envelope_derived_results",
+   "expect": "reject",
+   "rule": "unknown_field",
+   "spec": "r9 envelope не принимает производные поля",
+   "city": "shymkent",
+   "bytes": 2116
+  },
+  {
+   "id": "N21",
+   "file": "fixtures_rs/N21_plan_derived_results.json",
+   "sha256": "51e3686da4b3298c553a77597838fb040bfaf7c70325f600c0a8a6109ae63532",
+   "name": "plan_derived_results",
+   "expect": "reject",
+   "rule": "derived_in_plan",
+   "spec": "производные поля внутри plan конверта",
+   "city": "shymkent",
+   "bytes": 2075,
+   "policy": "CORE_SPEC: envelope без производных полей; политика v2 для plan внутри конверта не названа"
+  },
+  {
+   "id": "N22",
+   "file": "fixtures_rs/N22_schema_v2_tag.json",
+   "sha256": "9f78fce63ff84dd23f885e803c4843d3fd7253764d773162aa5975398330e572",
+   "name": "schema_v2_tag",
+   "expect": "reject",
+   "rule": "bad_version",
+   "spec": "неизвестная версия",
+   "city": "shymkent",
+   "bytes": 2032
+  },
+  {
+   "id": "N23",
+   "file": "fixtures_rs/N23_plan_is_v1.json",
+   "sha256": "f1127d44229fc42a9e28fcd08ab2c01fb289e1515db0640d05b44731d95488f2",
+   "name": "plan_is_v1",
+   "expect": "reject",
+   "rule": "bad_plan",
+   "spec": "plan в формате city-whatif-v1",
+   "city": "shymkent",
+   "bytes": 772
+  },
+  {
+   "id": "N24",
+   "file": "fixtures_rs/N24_foreign_snapshot.json",
+   "sha256": "2e90c721449328ec47652194d13394bad7b14326b9a102a1666f0d9c7293da80",
+   "name": "foreign_snapshot",
+   "expect": "reject",
+   "rule": "foreign_snapshot",
+   "spec": "snapshot другого среза/города",
+   "city": "shymkent",
+   "bytes": 2043
+  },
+  {
+   "id": "N25",
+   "file": "fixtures_rs/N25_plan_weight_zero.json",
+   "sha256": "e23b851518a6b520eaf3c9c080944798d8af8eb2688deb04add0bbae999c16bc",
+   "name": "plan_weight_zero",
+   "expect": "reject",
+   "rule": "bad_plan",
+   "spec": "ошибка внутри plan (вес 0)",
+   "city": "shymkent",
+   "bytes": 2032
+  },
+  {
+   "id": "N26",
+   "file": "fixtures_rs/N26_plan_cost_string.json",
+   "sha256": "95cedd1038a4cbfa62104b359a7905eb9e1fb778459d2bdc448c17bad2623390",
+   "name": "plan_cost_string",
+   "expect": "reject",
+   "rule": "bad_plan",
+   "spec": "стоимость строкой",
+   "city": "shymkent",
+   "bytes": 2034
+  },
+  {
+   "id": "N27",
+   "file": "fixtures_rs/N27_case_id_html.json",
+   "sha256": "b7270836a51216caee00b0092d6bede5fed13a38a2ea62c51de792bd61825e28",
+   "name": "case_id_html",
+   "expect": "reject",
+   "rule": "bad_id",
+   "spec": "HTML в id",
+   "city": "shymkent",
+   "bytes": 2035
+  },
+  {
+   "id": "N28",
+   "file": "fixtures_rs/N28_case_id_65.json",
+   "sha256": "7ad59f7de6aa461652c9f2be20d55a0efa0f6400fc6951882e759c1e45d78122",
+   "name": "case_id_65",
+   "expect": "reject",
+   "rule": "bad_id",
+   "spec": "id 65 символов",
+   "city": "shymkent",
+   "bytes": 2092
+  },
+  {
+   "id": "N29",
+   "file": "fixtures_rs/N29_case_id_not_nfc.json",
+   "sha256": "90cbfea2bd52f6b7568904265179ad39d310c0e473b40265275d3f685d033e58",
+   "name": "case_id_not_nfc",
+   "expect": "reject",
+   "rule": "bad_id",
+   "spec": "id не в NFC",
+   "city": "shymkent",
+   "bytes": 2033
+  },
+  {
+   "id": "N30",
+   "file": "fixtures_rs/N30_exclusion_not_array.json",
+   "sha256": "3d3a01bc3cd15cd927c1f93644f6d8f6d88bcfe5ec2e7adf1c86e4e53ca67675",
+   "name": "exclusion_not_array",
+   "expect": "reject",
+   "rule": "bad_shape",
+   "spec": "disabled_source_ids строкой",
+   "city": "shymkent",
+   "bytes": 2021
+  },
+  {
+   "id": "N31",
+   "file": "fixtures_rs/N31_cases_not_array.json",
+   "sha256": "0bc589ef67cc1ac68dfc7c432daef58f6ad792510ecccf6c872ea59c3de094a0",
+   "name": "cases_not_array",
+   "expect": "reject",
+   "rule": "bad_shape",
+   "spec": "cases объектом",
+   "city": "shymkent",
+   "bytes": 1848
+  },
+  {
+   "id": "N32",
+   "file": "fixtures_rs/N32_proto_key_in_case.json",
+   "sha256": "749aed7ed510c5e8b8b6aedc48c6b3be434a95dd34fbb9c9817441e9cc853090",
+   "name": "proto_key_in_case",
+   "expect": "reject",
+   "rule": "unknown_field",
+   "spec": "__proto__ в случае",
+   "city": "shymkent",
+   "bytes": 2074
+  },
+  {
+   "id": "N33",
+   "file": "fixtures_rs/N33_missing_plan.json",
+   "sha256": "7046a4e2c91f568a823b1b1e41ebd3719a601c84d3f3738cc11765c5e0e0d086",
+   "name": "missing_plan",
+   "expect": "reject",
+   "rule": "missing_field",
+   "spec": "нет plan",
+   "city": "shymkent",
+   "bytes": 401
+  },
+  {
+   "id": "N34",
+   "file": "fixtures_rs/N34_whitespace_label.json",
+   "sha256": "575956c1659dd8929032379e6593120eb39135ec8c576cf0e7c1f66945626660",
+   "name": "whitespace_label",
+   "expect": "reject",
+   "rule": "bad_label",
+   "spec": "label из одних пробелов",
+   "city": "shymkent",
+   "bytes": 1983,
+   "policy": "CORE_SPEC: «непустая строка» — пробельная строка формально непустая"
+  },
+  {
+   "id": "N35",
+   "file": "fixtures_rs/N35_bidi_override_label.json",
+   "sha256": "0cba437b78ac5bb6de8fced8c3f5f182c8ca724442a42bb792b7aa0592120aa0",
+   "name": "bidi_override_label",
+   "expect": "reject",
+   "rule": "bad_label",
+   "spec": "U+202E (формат, не управляющий Cc)",
+   "city": "shymkent",
+   "bytes": 1990,
+   "policy": "CORE_SPEC запрещает управляющие символы; U+202E — категория Cf"
+  },
+  {
+   "id": "N36",
+   "file": "fixtures_rs/N36_astana_plan_shymkent_sources.json",
+   "sha256": "05f3680c484e8c48cd458b081a810c8c5da0cac273f0c61fba11ab9bd8948540",
+   "name": "astana_plan_shymkent_sources",
+   "expect": "reject",
+   "rule": "unknown_source",
+   "spec": "Астана: source ID Шымкента",
+   "city": "astana",
+   "bytes": 2277
+  },
+  {
+   "id": "N40",
+   "file": "fixtures_rs/N40_duplicate_key_cases.json",
+   "sha256": "b1d52e9fcd4efb766379ce2cbaa4330b4b94f6db13c247efbfbb77fa81b7a5e2",
+   "name": "duplicate_key_cases",
+   "expect": "reject",
+   "rule": "bad_json",
+   "spec": "повтор ключа cases",
+   "city": "shymkent",
+   "bytes": 2045
+  },
+  {
+   "id": "N41",
+   "file": "fixtures_rs/N41_nan_budget.json",
+   "sha256": "2b9d717a9c6127612ac2b9d6ae875348027a40abe3c47dafd2ba7539fb3f99ab",
+   "name": "nan_budget",
+   "expect": "reject",
+   "rule": "bad_json",
+   "spec": "NaN",
+   "city": "shymkent",
+   "bytes": 2029
+  },
+  {
+   "id": "N42",
+   "file": "fixtures_rs/N42_infinity_weight.json",
+   "sha256": "b6043cbb222a635bf023ac052529f116c7141e7817ffc274fcaf53614a55212c",
+   "name": "infinity_weight",
+   "expect": "reject",
+   "rule": "bad_json",
+   "spec": "Infinity",
+   "city": "shymkent",
+   "bytes": 2039
+  },
+  {
+   "id": "N43",
+   "file": "fixtures_rs/N43_overflow_1e999.json",
+   "sha256": "1459ce6d82b249e73a52fd1e69ffb84357a75cf9c372c3259ab2819fe75f2b44",
+   "name": "overflow_1e999",
+   "expect": "reject",
+   "rule": "bad_json",
+   "spec": "1e999",
+   "city": "shymkent",
+   "bytes": 2031
+  },
+  {
+   "id": "N44",
+   "file": "fixtures_rs/N44_deep_in_exclusion.json",
+   "sha256": "802d616f0e67fc4eb5f1b71380edb62a14d077cf1b16a090dee8b336d6c941d9",
+   "name": "deep_in_exclusion",
+   "expect": "reject",
+   "rule": "bad_json",
+   "spec": "вложенность 40 внутри disabled_source_ids (предел глубины)",
+   "city": "shymkent",
+   "bytes": 2114
+  },
+  {
+   "id": "N45",
+   "file": null,
+   "recipe": {
+    "op": "deep_field",
+    "from": "A01",
+    "depth": 20000
+   },
+   "sha256": "e98829cde7ae78a64a498ef8a58fcfdc7ea5505228e126bd7f44fc382d74b02d",
+   "name": "deep_20000",
+   "expect": "reject",
+   "rule": "bad_json",
+   "spec": "вложенность 20000",
+   "city": "shymkent",
+   "bytes": 42041
+  },
+  {
+   "id": "N46",
+   "file": null,
+   "recipe": {
+    "op": "pad",
+    "from": "A01",
+    "total_bytes": 262145
+   },
+   "sha256": "f6a78176b750b453245125fd9b1a52969377b70c02bb1d8379e916a5e8e6d461",
+   "name": "over_256KiB",
+   "expect": "reject",
+   "rule": "too_large",
+   "spec": "262145 байт",
+   "city": "shymkent",
+   "bytes": 262145
+  },
+  {
+   "id": "N47",
+   "file": "fixtures_rs/N47_truncated.json",
+   "sha256": "1f29c167a3f8cf6a9062ad797648d5281f507ee3315de4e3d07b4e284eb8804f",
+   "name": "truncated",
+   "expect": "reject",
+   "rule": "bad_json",
+   "spec": "обрезанный JSON",
+   "city": "shymkent",
+   "bytes": 994
+  },
+  {
+   "id": "N48",
+   "file": "fixtures_rs/N48_top_level_array.json",
+   "sha256": "8cfdfc60f5a4f113edc9f9887874133e2732047b51dbcf6418f08f7d7ad9926b",
+   "name": "top_level_array",
+   "expect": "reject",
+   "rule": "bad_shape",
+   "spec": "корень — массив",
+   "city": "shymkent",
+   "bytes": 2034
+  },
+  {
+   "id": "N49",
+   "file": "fixtures_rs/N49_lone_surrogate_label.json",
+   "sha256": "f99072a222db254b76b6db09a7eae632e4209081ec6980350a867fe489603685",
+   "name": "lone_surrogate_label",
+   "expect": "reject",
+   "rule": "bad_label",
+   "spec": "одиночный суррогат в label",
+   "city": "shymkent",
+   "bytes": 2038,
+   "policy": "CORE_SPEC: JSON UTF-8; одиночный суррогат — не символ Unicode"
+  }
+ ]
+}

@@ -1,0 +1,1759 @@
+{
+ "data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+ "problems": [
+  {
+   "name": "A01",
+   "envelope": {
+    "schema_version": "city-resilience-v1",
+    "plan": {
+     "schema_version": "city-plan-v2",
+     "city_id": "shymkent",
+     "source_snapshot": "__SNAPSHOT__",
+     "category": "school",
+     "control_points": [
+      {
+       "id": "cp1",
+       "lon": 69.595794,
+       "lat": 42.308442,
+       "weight": 1
+      },
+      {
+       "id": "cp2",
+       "lon": 69.602985,
+       "lat": 42.317209,
+       "weight": 2
+      },
+      {
+       "id": "cp3",
+       "lon": 69.610176,
+       "lat": 42.311604,
+       "weight": 3
+      },
+      {
+       "id": "cp4",
+       "lon": 69.597932,
+       "lat": 42.320371,
+       "weight": 1
+      },
+      {
+       "id": "cp5",
+       "lon": 69.605123,
+       "lat": 42.314766,
+       "weight": 5
+      }
+     ],
+     "candidates": [
+      {
+       "id": "c1",
+       "lon": 69.597009,
+       "lat": 42.310238,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 100000
+      },
+      {
+       "id": "c2",
+       "lon": 69.606022,
+       "lat": 42.313364,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 250000
+      },
+      {
+       "id": "c3",
+       "lon": 69.598029,
+       "lat": 42.31649,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 300000
+      },
+      {
+       "id": "c4",
+       "lon": 69.607042,
+       "lat": 42.319616,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 150000
+      },
+      {
+       "id": "c5",
+       "lon": 69.59905,
+       "lat": 42.311963,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 50000
+      },
+      {
+       "id": "c6",
+       "lon": 69.608062,
+       "lat": 42.315089,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 400000
+      }
+     ],
+     "budget": 500000,
+     "max_selected": 3,
+     "coverage_radius_m": 500,
+     "required_ids": [],
+     "excluded_ids": [],
+     "selected_ids": [
+      "c1"
+     ]
+    },
+    "cases": [
+     {
+      "id": "case1",
+      "label": "Случай 1: условно без записи 1",
+      "disabled_source_ids": [
+       "01961e84-815f-4bd1-85c3-6bf1734256ec"
+      ]
+     },
+     {
+      "id": "case2",
+      "label": "Случай 2: условно без записи 2",
+      "disabled_source_ids": [
+       "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "name": "A02",
+   "envelope": {
+    "schema_version": "city-resilience-v1",
+    "plan": {
+     "schema_version": "city-plan-v2",
+     "city_id": "astana",
+     "source_snapshot": "__SNAPSHOT__",
+     "category": "outpatient_clinic",
+     "control_points": [
+      {
+       "id": "cp1",
+       "lon": 71.421235,
+       "lat": 51.16483,
+       "weight": 1
+      },
+      {
+       "id": "cp2",
+       "lon": 71.429709,
+       "lat": 51.173598,
+       "weight": 2
+      },
+      {
+       "id": "cp3",
+       "lon": 71.438183,
+       "lat": 51.167992,
+       "weight": 3
+      },
+      {
+       "id": "cp4",
+       "lon": 71.423754,
+       "lat": 51.17676,
+       "weight": 1
+      },
+      {
+       "id": "cp5",
+       "lon": 71.432228,
+       "lat": 51.171154,
+       "weight": 5
+      }
+     ],
+     "candidates": [
+      {
+       "id": "c1",
+       "lon": 71.422666,
+       "lat": 51.166626,
+       "category": "outpatient_clinic",
+       "kind": "hypothetical",
+       "cost": 100000
+      },
+      {
+       "id": "c2",
+       "lon": 71.433287,
+       "lat": 51.169753,
+       "category": "outpatient_clinic",
+       "kind": "hypothetical",
+       "cost": 250000
+      },
+      {
+       "id": "c3",
+       "lon": 71.423869,
+       "lat": 51.172879,
+       "category": "outpatient_clinic",
+       "kind": "hypothetical",
+       "cost": 300000
+      },
+      {
+       "id": "c4",
+       "lon": 71.43449,
+       "lat": 51.176005,
+       "category": "outpatient_clinic",
+       "kind": "hypothetical",
+       "cost": 150000
+      },
+      {
+       "id": "c5",
+       "lon": 71.425071,
+       "lat": 51.168351,
+       "category": "outpatient_clinic",
+       "kind": "hypothetical",
+       "cost": 50000
+      },
+      {
+       "id": "c6",
+       "lon": 71.435692,
+       "lat": 51.171477,
+       "category": "outpatient_clinic",
+       "kind": "hypothetical",
+       "cost": 400000
+      }
+     ],
+     "budget": 500000,
+     "max_selected": 3,
+     "coverage_radius_m": 500,
+     "required_ids": [],
+     "excluded_ids": [],
+     "selected_ids": [
+      "c1"
+     ]
+    },
+    "cases": [
+     {
+      "id": "case1",
+      "label": "Случай 1: условно без записи 1",
+      "disabled_source_ids": [
+       "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+      ]
+     },
+     {
+      "id": "case2",
+      "label": "Случай 2: условно без записи 2",
+      "disabled_source_ids": [
+       "1116880a-cbb6-4271-9a59-a277083b792c"
+      ]
+     },
+     {
+      "id": "case3",
+      "label": "Случай 3: условно без записи 3",
+      "disabled_source_ids": [
+       "140ab4bc-e560-41e3-aeaf-cb7b8b821f08"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "name": "A03",
+   "envelope": {
+    "schema_version": "city-resilience-v1",
+    "plan": {
+     "schema_version": "city-plan-v2",
+     "city_id": "shymkent",
+     "source_snapshot": "__SNAPSHOT__",
+     "category": "school",
+     "control_points": [
+      {
+       "id": "cp1",
+       "lon": 69.595794,
+       "lat": 42.308442,
+       "weight": 1
+      },
+      {
+       "id": "cp2",
+       "lon": 69.602985,
+       "lat": 42.317209,
+       "weight": 2
+      },
+      {
+       "id": "cp3",
+       "lon": 69.610176,
+       "lat": 42.311604,
+       "weight": 3
+      },
+      {
+       "id": "cp4",
+       "lon": 69.597932,
+       "lat": 42.320371,
+       "weight": 1
+      },
+      {
+       "id": "cp5",
+       "lon": 69.605123,
+       "lat": 42.314766,
+       "weight": 5
+      }
+     ],
+     "candidates": [
+      {
+       "id": "c1",
+       "lon": 69.597009,
+       "lat": 42.310238,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 100000
+      },
+      {
+       "id": "c2",
+       "lon": 69.606022,
+       "lat": 42.313364,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 250000
+      },
+      {
+       "id": "c3",
+       "lon": 69.598029,
+       "lat": 42.31649,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 300000
+      },
+      {
+       "id": "c4",
+       "lon": 69.607042,
+       "lat": 42.319616,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 150000
+      },
+      {
+       "id": "c5",
+       "lon": 69.59905,
+       "lat": 42.311963,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 50000
+      },
+      {
+       "id": "c6",
+       "lon": 69.608062,
+       "lat": 42.315089,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 400000
+      }
+     ],
+     "budget": 500000,
+     "max_selected": 3,
+     "coverage_radius_m": 500,
+     "required_ids": [],
+     "excluded_ids": [],
+     "selected_ids": [
+      "c1"
+     ]
+    },
+    "cases": [
+     {
+      "id": "case1",
+      "label": "Случай 1: условно без записи 1",
+      "disabled_source_ids": [
+       "01961e84-815f-4bd1-85c3-6bf1734256ec"
+      ]
+     },
+     {
+      "id": "case2",
+      "label": "Случай 2: условно без записи 2",
+      "disabled_source_ids": [
+       "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+      ]
+     },
+     {
+      "id": "case3",
+      "label": "Случай 3: условно без записи 3",
+      "disabled_source_ids": [
+       "176c5993-4b62-4e90-849f-88addc0153bb"
+      ]
+     },
+     {
+      "id": "case4",
+      "label": "Случай 4: условно без записи 4",
+      "disabled_source_ids": [
+       "18df815b-170a-437c-977f-0769690315d4"
+      ]
+     },
+     {
+      "id": "case5",
+      "label": "Случай 5: условно без записи 5",
+      "disabled_source_ids": [
+       "51ac9e88-456d-4b3a-a657-d3cbc516c708"
+      ]
+     },
+     {
+      "id": "case6",
+      "label": "Случай 6: условно без записи 6",
+      "disabled_source_ids": [
+       "537980b9-4d8b-4c25-8e27-a6af60ffac34"
+      ]
+     },
+     {
+      "id": "case7",
+      "label": "Случай 7: условно без записи 7",
+      "disabled_source_ids": [
+       "68c8f007-75bc-42f6-8da8-baa72042bde4"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "name": "A04",
+   "envelope": {
+    "schema_version": "city-resilience-v1",
+    "plan": {
+     "schema_version": "city-plan-v2",
+     "city_id": "shymkent",
+     "source_snapshot": "__SNAPSHOT__",
+     "category": "school",
+     "control_points": [
+      {
+       "id": "cp1",
+       "lon": 69.595794,
+       "lat": 42.308442,
+       "weight": 1
+      },
+      {
+       "id": "cp2",
+       "lon": 69.602985,
+       "lat": 42.317209,
+       "weight": 2
+      },
+      {
+       "id": "cp3",
+       "lon": 69.610176,
+       "lat": 42.311604,
+       "weight": 3
+      },
+      {
+       "id": "cp4",
+       "lon": 69.597932,
+       "lat": 42.320371,
+       "weight": 1
+      },
+      {
+       "id": "cp5",
+       "lon": 69.605123,
+       "lat": 42.314766,
+       "weight": 5
+      },
+      {
+       "id": "cp6",
+       "lon": 69.612314,
+       "lat": 42.30916,
+       "weight": 4
+      },
+      {
+       "id": "cp7",
+       "lon": 69.60007,
+       "lat": 42.317928,
+       "weight": 2
+      },
+      {
+       "id": "cp8",
+       "lon": 69.607261,
+       "lat": 42.312322,
+       "weight": 1
+      },
+      {
+       "id": "cp9",
+       "lon": 69.614451,
+       "lat": 42.32109,
+       "weight": 2
+      },
+      {
+       "id": "cp10",
+       "lon": 69.602208,
+       "lat": 42.315484,
+       "weight": 3
+      },
+      {
+       "id": "cp11",
+       "lon": 69.609398,
+       "lat": 42.309879,
+       "weight": 1
+      },
+      {
+       "id": "cp12",
+       "lon": 69.597155,
+       "lat": 42.318646,
+       "weight": 5
+      },
+      {
+       "id": "cp13",
+       "lon": 69.604345,
+       "lat": 42.313041,
+       "weight": 4
+      },
+      {
+       "id": "cp14",
+       "lon": 69.611536,
+       "lat": 42.321808,
+       "weight": 2
+      },
+      {
+       "id": "cp15",
+       "lon": 69.599292,
+       "lat": 42.316203,
+       "weight": 1
+      },
+      {
+       "id": "cp16",
+       "lon": 69.606483,
+       "lat": 42.310598,
+       "weight": 2
+      },
+      {
+       "id": "cp17",
+       "lon": 69.613674,
+       "lat": 42.319365,
+       "weight": 3
+      },
+      {
+       "id": "cp18",
+       "lon": 69.60143,
+       "lat": 42.31376,
+       "weight": 1
+      },
+      {
+       "id": "cp19",
+       "lon": 69.608621,
+       "lat": 42.322527,
+       "weight": 5
+      },
+      {
+       "id": "cp20",
+       "lon": 69.596377,
+       "lat": 42.316922,
+       "weight": 4
+      },
+      {
+       "id": "cp21",
+       "lon": 69.603568,
+       "lat": 42.311316,
+       "weight": 2
+      },
+      {
+       "id": "cp22",
+       "lon": 69.610759,
+       "lat": 42.320084,
+       "weight": 1
+      },
+      {
+       "id": "cp23",
+       "lon": 69.598515,
+       "lat": 42.314478,
+       "weight": 2
+      },
+      {
+       "id": "cp24",
+       "lon": 69.605706,
+       "lat": 42.308873,
+       "weight": 3
+      },
+      {
+       "id": "cp25",
+       "lon": 69.612897,
+       "lat": 42.31764,
+       "weight": 1
+      }
+     ],
+     "candidates": [
+      {
+       "id": "c1",
+       "lon": 69.597009,
+       "lat": 42.310238,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 100000
+      },
+      {
+       "id": "c2",
+       "lon": 69.606022,
+       "lat": 42.313364,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 250000
+      },
+      {
+       "id": "c3",
+       "lon": 69.598029,
+       "lat": 42.31649,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 300000
+      },
+      {
+       "id": "c4",
+       "lon": 69.607042,
+       "lat": 42.319616,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 150000
+      },
+      {
+       "id": "c5",
+       "lon": 69.59905,
+       "lat": 42.311963,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 50000
+      },
+      {
+       "id": "c6",
+       "lon": 69.608062,
+       "lat": 42.315089,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 400000
+      },
+      {
+       "id": "c7",
+       "lon": 69.60007,
+       "lat": 42.318215,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 120000
+      },
+      {
+       "id": "c8",
+       "lon": 69.609083,
+       "lat": 42.310562,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 80000
+      },
+      {
+       "id": "c9",
+       "lon": 69.60109,
+       "lat": 42.313688,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 60000
+      },
+      {
+       "id": "c10",
+       "lon": 69.610103,
+       "lat": 42.316814,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 220000
+      },
+      {
+       "id": "c11",
+       "lon": 69.60211,
+       "lat": 42.31994,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 90000
+      },
+      {
+       "id": "c12",
+       "lon": 69.611123,
+       "lat": 42.312286,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 70000
+      }
+     ],
+     "budget": 1000000,
+     "max_selected": 5,
+     "coverage_radius_m": 500,
+     "required_ids": [],
+     "excluded_ids": [],
+     "selected_ids": [
+      "c1"
+     ]
+    },
+    "cases": [
+     {
+      "id": "case1",
+      "label": "Случай 1: условно без записи 1",
+      "disabled_source_ids": [
+       "01961e84-815f-4bd1-85c3-6bf1734256ec"
+      ]
+     },
+     {
+      "id": "case2",
+      "label": "Случай 2: условно без записи 2",
+      "disabled_source_ids": [
+       "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+      ]
+     },
+     {
+      "id": "case3",
+      "label": "Случай 3: условно без записи 3",
+      "disabled_source_ids": [
+       "176c5993-4b62-4e90-849f-88addc0153bb"
+      ]
+     },
+     {
+      "id": "case4",
+      "label": "Случай 4: условно без записи 4",
+      "disabled_source_ids": [
+       "18df815b-170a-437c-977f-0769690315d4"
+      ]
+     },
+     {
+      "id": "case5",
+      "label": "Случай 5: условно без записи 5",
+      "disabled_source_ids": [
+       "51ac9e88-456d-4b3a-a657-d3cbc516c708"
+      ]
+     },
+     {
+      "id": "case6",
+      "label": "Случай 6: условно без записи 6",
+      "disabled_source_ids": [
+       "537980b9-4d8b-4c25-8e27-a6af60ffac34"
+      ]
+     },
+     {
+      "id": "case7",
+      "label": "Случай 7: условно без записи 7",
+      "disabled_source_ids": [
+       "68c8f007-75bc-42f6-8da8-baa72042bde4"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "name": "A05",
+   "envelope": {
+    "schema_version": "city-resilience-v1",
+    "plan": {
+     "schema_version": "city-plan-v2",
+     "city_id": "shymkent",
+     "source_snapshot": "__SNAPSHOT__",
+     "category": "school",
+     "control_points": [
+      {
+       "id": "cp1",
+       "lon": 69.595794,
+       "lat": 42.308442,
+       "weight": 1
+      },
+      {
+       "id": "cp2",
+       "lon": 69.602985,
+       "lat": 42.317209,
+       "weight": 2
+      },
+      {
+       "id": "cp3",
+       "lon": 69.610176,
+       "lat": 42.311604,
+       "weight": 3
+      },
+      {
+       "id": "cp4",
+       "lon": 69.597932,
+       "lat": 42.320371,
+       "weight": 1
+      },
+      {
+       "id": "cp5",
+       "lon": 69.605123,
+       "lat": 42.314766,
+       "weight": 5
+      }
+     ],
+     "candidates": [
+      {
+       "id": "c1",
+       "lon": 69.597009,
+       "lat": 42.310238,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 100000
+      },
+      {
+       "id": "c2",
+       "lon": 69.606022,
+       "lat": 42.313364,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 250000
+      },
+      {
+       "id": "c3",
+       "lon": 69.598029,
+       "lat": 42.31649,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 300000
+      },
+      {
+       "id": "c4",
+       "lon": 69.607042,
+       "lat": 42.319616,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 150000
+      },
+      {
+       "id": "c5",
+       "lon": 69.59905,
+       "lat": 42.311963,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 50000
+      },
+      {
+       "id": "c6",
+       "lon": 69.608062,
+       "lat": 42.315089,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 400000
+      }
+     ],
+     "budget": 500000,
+     "max_selected": 3,
+     "coverage_radius_m": 500,
+     "required_ids": [],
+     "excluded_ids": [],
+     "selected_ids": [
+      "c1"
+     ]
+    },
+    "cases": [
+     {
+      "id": "case1",
+      "label": "Случай 1: условно без записи 1",
+      "disabled_source_ids": [
+       "01961e84-815f-4bd1-85c3-6bf1734256ec"
+      ]
+     },
+     {
+      "id": "case2",
+      "label": "Случай 2: условно без записи 2",
+      "disabled_source_ids": [
+       "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+      ]
+     },
+     {
+      "id": "case3",
+      "label": "Повтор случая 1",
+      "disabled_source_ids": [
+       "01961e84-815f-4bd1-85c3-6bf1734256ec"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "name": "A06",
+   "envelope": {
+    "schema_version": "city-resilience-v1",
+    "plan": {
+     "schema_version": "city-plan-v2",
+     "city_id": "shymkent",
+     "source_snapshot": "__SNAPSHOT__",
+     "category": "school",
+     "control_points": [
+      {
+       "id": "cp1",
+       "lon": 69.595794,
+       "lat": 42.308442,
+       "weight": 1
+      },
+      {
+       "id": "cp2",
+       "lon": 69.602985,
+       "lat": 42.317209,
+       "weight": 2
+      },
+      {
+       "id": "cp3",
+       "lon": 69.610176,
+       "lat": 42.311604,
+       "weight": 3
+      },
+      {
+       "id": "cp4",
+       "lon": 69.597932,
+       "lat": 42.320371,
+       "weight": 1
+      },
+      {
+       "id": "cp5",
+       "lon": 69.605123,
+       "lat": 42.314766,
+       "weight": 5
+      }
+     ],
+     "candidates": [
+      {
+       "id": "c1",
+       "lon": 69.597009,
+       "lat": 42.310238,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 100000
+      },
+      {
+       "id": "c2",
+       "lon": 69.606022,
+       "lat": 42.313364,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 250000
+      },
+      {
+       "id": "c3",
+       "lon": 69.598029,
+       "lat": 42.31649,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 300000
+      },
+      {
+       "id": "c4",
+       "lon": 69.607042,
+       "lat": 42.319616,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 150000
+      },
+      {
+       "id": "c5",
+       "lon": 69.59905,
+       "lat": 42.311963,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 50000
+      },
+      {
+       "id": "c6",
+       "lon": 69.608062,
+       "lat": 42.315089,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 400000
+      }
+     ],
+     "budget": 500000,
+     "max_selected": 3,
+     "coverage_radius_m": 500,
+     "required_ids": [],
+     "excluded_ids": [],
+     "selected_ids": [
+      "c1"
+     ]
+    },
+    "cases": [
+     {
+      "id": "case1",
+      "label": "Случай 1: условно без записи 1",
+      "disabled_source_ids": [
+       "01961e84-815f-4bd1-85c3-6bf1734256ec"
+      ]
+     },
+     {
+      "id": "case2",
+      "label": "Случай 2: условно без записи 2",
+      "disabled_source_ids": [
+       "01961e84-815f-4bd1-85c3-6bf1734256ec",
+       "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+       "176c5993-4b62-4e90-849f-88addc0153bb",
+       "18df815b-170a-437c-977f-0769690315d4",
+       "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+       "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+       "68c8f007-75bc-42f6-8da8-baa72042bde4",
+       "931d6da5-e9db-4523-a6fd-79c88f235f88",
+       "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+       "9d31b953-ccc4-42bd-a3a3-3e4e21f44051",
+       "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6",
+       "b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+       "baeda67d-e701-4c2a-bba6-10a13466e76d",
+       "bcd265d0-0799-4dbf-8b15-23bae752a4d2",
+       "fd50a858-462d-477f-8bc6-a8d3e03a9576"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "name": "A07",
+   "envelope": {
+    "schema_version": "city-resilience-v1",
+    "plan": {
+     "schema_version": "city-plan-v2",
+     "city_id": "shymkent",
+     "source_snapshot": "__SNAPSHOT__",
+     "category": "school",
+     "control_points": [
+      {
+       "id": "cp1",
+       "lon": 69.595794,
+       "lat": 42.308442,
+       "weight": 1
+      },
+      {
+       "id": "cp2",
+       "lon": 69.602985,
+       "lat": 42.317209,
+       "weight": 2
+      },
+      {
+       "id": "cp3",
+       "lon": 69.610176,
+       "lat": 42.311604,
+       "weight": 3
+      },
+      {
+       "id": "cp4",
+       "lon": 69.597932,
+       "lat": 42.320371,
+       "weight": 1
+      },
+      {
+       "id": "cp5",
+       "lon": 69.605123,
+       "lat": 42.314766,
+       "weight": 5
+      }
+     ],
+     "candidates": [
+      {
+       "id": "c1",
+       "lon": 69.597009,
+       "lat": 42.310238,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 100000
+      },
+      {
+       "id": "c2",
+       "lon": 69.606022,
+       "lat": 42.313364,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 250000
+      },
+      {
+       "id": "c3",
+       "lon": 69.598029,
+       "lat": 42.31649,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 300000
+      },
+      {
+       "id": "c4",
+       "lon": 69.607042,
+       "lat": 42.319616,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 150000
+      },
+      {
+       "id": "c5",
+       "lon": 69.59905,
+       "lat": 42.311963,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 50000
+      },
+      {
+       "id": "c6",
+       "lon": 69.608062,
+       "lat": 42.315089,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 400000
+      }
+     ],
+     "budget": 500000,
+     "max_selected": 3,
+     "coverage_radius_m": 500,
+     "required_ids": [],
+     "excluded_ids": [],
+     "selected_ids": [
+      "c1"
+     ]
+    },
+    "cases": [
+     {
+      "id": "жағдай_1",
+      "label": "<b>Мектеп</b> «жабық» деп есептелмейді & <script>alert(1)</script>",
+      "disabled_source_ids": [
+       "01961e84-815f-4bd1-85c3-6bf1734256ec"
+      ]
+     },
+     {
+      "id": "case2",
+      "label": "Случай 2: условно без записи 2",
+      "disabled_source_ids": [
+       "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "name": "A08",
+   "envelope": {
+    "schema_version": "city-resilience-v1",
+    "plan": {
+     "schema_version": "city-plan-v2",
+     "city_id": "shymkent",
+     "source_snapshot": "__SNAPSHOT__",
+     "category": "school",
+     "control_points": [
+      {
+       "id": "cp1",
+       "lon": 69.595794,
+       "lat": 42.308442,
+       "weight": 1
+      },
+      {
+       "id": "cp2",
+       "lon": 69.602985,
+       "lat": 42.317209,
+       "weight": 2
+      },
+      {
+       "id": "cp3",
+       "lon": 69.610176,
+       "lat": 42.311604,
+       "weight": 3
+      },
+      {
+       "id": "cp4",
+       "lon": 69.597932,
+       "lat": 42.320371,
+       "weight": 1
+      },
+      {
+       "id": "cp5",
+       "lon": 69.605123,
+       "lat": 42.314766,
+       "weight": 5
+      }
+     ],
+     "candidates": [
+      {
+       "id": "c1",
+       "lon": 69.597009,
+       "lat": 42.310238,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 100000
+      },
+      {
+       "id": "c2",
+       "lon": 69.606022,
+       "lat": 42.313364,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 250000
+      },
+      {
+       "id": "c3",
+       "lon": 69.598029,
+       "lat": 42.31649,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 300000
+      },
+      {
+       "id": "c4",
+       "lon": 69.607042,
+       "lat": 42.319616,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 150000
+      },
+      {
+       "id": "c5",
+       "lon": 69.59905,
+       "lat": 42.311963,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 50000
+      },
+      {
+       "id": "c6",
+       "lon": 69.608062,
+       "lat": 42.315089,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 400000
+      }
+     ],
+     "budget": 500000,
+     "max_selected": 3,
+     "coverage_radius_m": 500,
+     "required_ids": [],
+     "excluded_ids": [],
+     "selected_ids": [
+      "c1"
+     ]
+    },
+    "cases": [
+     {
+      "id": "case1",
+      "label": "ЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖ😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀",
+      "disabled_source_ids": [
+       "01961e84-815f-4bd1-85c3-6bf1734256ec"
+      ]
+     },
+     {
+      "id": "case2",
+      "label": "Случай 2: условно без записи 2",
+      "disabled_source_ids": [
+       "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "name": "A09",
+   "envelope": {
+    "schema_version": "city-resilience-v1",
+    "plan": {
+     "schema_version": "city-plan-v2",
+     "city_id": "shymkent",
+     "source_snapshot": "__SNAPSHOT__",
+     "category": "school",
+     "control_points": [
+      {
+       "id": "cp5",
+       "lon": 69.605123,
+       "lat": 42.314766,
+       "weight": 5
+      },
+      {
+       "id": "cp4",
+       "lon": 69.597932,
+       "lat": 42.320371,
+       "weight": 1
+      },
+      {
+       "id": "cp3",
+       "lon": 69.610176,
+       "lat": 42.311604,
+       "weight": 3
+      },
+      {
+       "id": "cp2",
+       "lon": 69.602985,
+       "lat": 42.317209,
+       "weight": 2
+      },
+      {
+       "id": "cp1",
+       "lon": 69.595794,
+       "lat": 42.308442,
+       "weight": 1
+      }
+     ],
+     "candidates": [
+      {
+       "id": "c6",
+       "lon": 69.608062,
+       "lat": 42.315089,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 400000
+      },
+      {
+       "id": "c5",
+       "lon": 69.59905,
+       "lat": 42.311963,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 50000
+      },
+      {
+       "id": "c4",
+       "lon": 69.607042,
+       "lat": 42.319616,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 150000
+      },
+      {
+       "id": "c3",
+       "lon": 69.598029,
+       "lat": 42.31649,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 300000
+      },
+      {
+       "id": "c2",
+       "lon": 69.606022,
+       "lat": 42.313364,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 250000
+      },
+      {
+       "id": "c1",
+       "lon": 69.597009,
+       "lat": 42.310238,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 100000
+      }
+     ],
+     "budget": 500000,
+     "max_selected": 3,
+     "coverage_radius_m": 500,
+     "required_ids": [],
+     "excluded_ids": [],
+     "selected_ids": [
+      "c1"
+     ]
+    },
+    "cases": [
+     {
+      "id": "case2",
+      "label": "Случай 2: условно без записи 2",
+      "disabled_source_ids": [
+       "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+      ]
+     },
+     {
+      "id": "case1",
+      "label": "Случай 1: условно без записи 1",
+      "disabled_source_ids": [
+       "01961e84-815f-4bd1-85c3-6bf1734256ec"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "name": "A10",
+   "envelope": {
+    "schema_version": "city-resilience-v1",
+    "plan": {
+     "schema_version": "city-plan-v2",
+     "city_id": "shymkent",
+     "source_snapshot": "__SNAPSHOT__",
+     "category": "school",
+     "control_points": [
+      {
+       "id": "cp1",
+       "lon": 69.595794,
+       "lat": 42.308442,
+       "weight": 1
+      },
+      {
+       "id": "cp2",
+       "lon": 69.602985,
+       "lat": 42.317209,
+       "weight": 2
+      },
+      {
+       "id": "cp3",
+       "lon": 69.610176,
+       "lat": 42.311604,
+       "weight": 3
+      },
+      {
+       "id": "cp4",
+       "lon": 69.597932,
+       "lat": 42.320371,
+       "weight": 1
+      },
+      {
+       "id": "cp5",
+       "lon": 69.605123,
+       "lat": 42.314766,
+       "weight": 5
+      }
+     ],
+     "candidates": [],
+     "budget": 500000,
+     "max_selected": 3,
+     "coverage_radius_m": 500,
+     "required_ids": [],
+     "excluded_ids": [],
+     "selected_ids": []
+    },
+    "cases": [
+     {
+      "id": "case1",
+      "label": "Случай 1: условно без записи 1",
+      "disabled_source_ids": [
+       "01961e84-815f-4bd1-85c3-6bf1734256ec"
+      ]
+     },
+     {
+      "id": "case2",
+      "label": "Случай 2: условно без записи 2",
+      "disabled_source_ids": [
+       "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "name": "A11",
+   "envelope": {
+    "schema_version": "city-resilience-v1",
+    "plan": {
+     "schema_version": "city-plan-v2",
+     "city_id": "shymkent",
+     "source_snapshot": "__SNAPSHOT__",
+     "category": "school",
+     "control_points": [
+      {
+       "id": "cp1",
+       "lon": 69.595794,
+       "lat": 42.308442,
+       "weight": 1
+      },
+      {
+       "id": "cp2",
+       "lon": 69.602985,
+       "lat": 42.317209,
+       "weight": 2
+      },
+      {
+       "id": "cp3",
+       "lon": 69.610176,
+       "lat": 42.311604,
+       "weight": 3
+      },
+      {
+       "id": "cp4",
+       "lon": 69.597932,
+       "lat": 42.320371,
+       "weight": 1
+      },
+      {
+       "id": "cp5",
+       "lon": 69.605123,
+       "lat": 42.314766,
+       "weight": 5
+      }
+     ],
+     "candidates": [
+      {
+       "id": "c1",
+       "lon": 69.597009,
+       "lat": 42.310238,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 100000
+      },
+      {
+       "id": "c2",
+       "lon": 69.606022,
+       "lat": 42.313364,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 250000
+      },
+      {
+       "id": "c3",
+       "lon": 69.598029,
+       "lat": 42.31649,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 300000
+      },
+      {
+       "id": "c4",
+       "lon": 69.607042,
+       "lat": 42.319616,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 150000
+      },
+      {
+       "id": "c5",
+       "lon": 69.59905,
+       "lat": 42.311963,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 50000
+      },
+      {
+       "id": "c6",
+       "lon": 69.608062,
+       "lat": 42.315089,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 400000
+      }
+     ],
+     "budget": 500000,
+     "max_selected": 3,
+     "coverage_radius_m": 500,
+     "required_ids": [
+      "c6",
+      "c3"
+     ],
+     "excluded_ids": [],
+     "selected_ids": [
+      "c1"
+     ]
+    },
+    "cases": [
+     {
+      "id": "case1",
+      "label": "Случай 1: условно без записи 1",
+      "disabled_source_ids": [
+       "01961e84-815f-4bd1-85c3-6bf1734256ec"
+      ]
+     },
+     {
+      "id": "case2",
+      "label": "Случай 2: условно без записи 2",
+      "disabled_source_ids": [
+       "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "name": "A12",
+   "envelope": {
+    "schema_version": "city-resilience-v1",
+    "plan": {
+     "schema_version": "city-plan-v2",
+     "city_id": "shymkent",
+     "source_snapshot": "__SNAPSHOT__",
+     "category": "school",
+     "control_points": [
+      {
+       "id": "cp1",
+       "lon": 69.595794,
+       "lat": 42.308442,
+       "weight": 1
+      },
+      {
+       "id": "cp2",
+       "lon": 69.602985,
+       "lat": 42.317209,
+       "weight": 2
+      },
+      {
+       "id": "cp3",
+       "lon": 69.610176,
+       "lat": 42.311604,
+       "weight": 3
+      },
+      {
+       "id": "cp4",
+       "lon": 69.597932,
+       "lat": 42.320371,
+       "weight": 1
+      },
+      {
+       "id": "cp5",
+       "lon": 69.605123,
+       "lat": 42.314766,
+       "weight": 5
+      }
+     ],
+     "candidates": [
+      {
+       "id": "c1",
+       "lon": 69.597009,
+       "lat": 42.310238,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 100000
+      },
+      {
+       "id": "c2",
+       "lon": 69.606022,
+       "lat": 42.313364,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 250000
+      },
+      {
+       "id": "c3",
+       "lon": 69.598029,
+       "lat": 42.31649,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 300000
+      },
+      {
+       "id": "c4",
+       "lon": 69.607042,
+       "lat": 42.319616,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 150000
+      },
+      {
+       "id": "c5",
+       "lon": 69.59905,
+       "lat": 42.311963,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 50000
+      },
+      {
+       "id": "c6",
+       "lon": 69.608062,
+       "lat": 42.315089,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 400000
+      }
+     ],
+     "budget": 500000,
+     "max_selected": 3,
+     "coverage_radius_m": 500,
+     "required_ids": [],
+     "excluded_ids": [],
+     "selected_ids": [
+      "c1"
+     ]
+    },
+    "cases": [
+     {
+      "id": "case1",
+      "label": "Случай 1: условно без записи 1",
+      "disabled_source_ids": [
+       "01961e84-815f-4bd1-85c3-6bf1734256ec"
+      ]
+     },
+     {
+      "id": "case2",
+      "label": "Случай 2: условно без записи 2",
+      "disabled_source_ids": [
+       "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+       "176c5993-4b62-4e90-849f-88addc0153bb",
+       "18df815b-170a-437c-977f-0769690315d4"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "name": "A13",
+   "envelope": {
+    "schema_version": "city-resilience-v1",
+    "plan": {
+     "schema_version": "city-plan-v2",
+     "city_id": "shymkent",
+     "source_snapshot": "__SNAPSHOT__",
+     "category": "school",
+     "control_points": [
+      {
+       "id": "cp1",
+       "lon": 69.595794,
+       "lat": 42.308442,
+       "weight": 1
+      },
+      {
+       "id": "cp2",
+       "lon": 69.602985,
+       "lat": 42.317209,
+       "weight": 2
+      },
+      {
+       "id": "cp3",
+       "lon": 69.610176,
+       "lat": 42.311604,
+       "weight": 3
+      },
+      {
+       "id": "cp4",
+       "lon": 69.597932,
+       "lat": 42.320371,
+       "weight": 1
+      },
+      {
+       "id": "cp5",
+       "lon": 69.605123,
+       "lat": 42.314766,
+       "weight": 5
+      }
+     ],
+     "candidates": [
+      {
+       "id": "c1",
+       "lon": 69.597009,
+       "lat": 42.310238,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 100000
+      },
+      {
+       "id": "c2",
+       "lon": 69.606022,
+       "lat": 42.313364,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 250000
+      },
+      {
+       "id": "c3",
+       "lon": 69.598029,
+       "lat": 42.31649,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 300000
+      },
+      {
+       "id": "c4",
+       "lon": 69.607042,
+       "lat": 42.319616,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 150000
+      },
+      {
+       "id": "c5",
+       "lon": 69.59905,
+       "lat": 42.311963,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 50000
+      },
+      {
+       "id": "c6",
+       "lon": 69.608062,
+       "lat": 42.315089,
+       "category": "school",
+       "kind": "hypothetical",
+       "cost": 400000
+      }
+     ],
+     "budget": 500000,
+     "max_selected": 3,
+     "coverage_radius_m": 500,
+     "required_ids": [],
+     "excluded_ids": [],
+     "selected_ids": [
+      "c1"
+     ]
+    },
+    "cases": [
+     {
+      "id": "case1",
+      "label": "Случай 1: условно без записи 1",
+      "disabled_source_ids": [
+       "01961e84-815f-4bd1-85c3-6bf1734256ec"
+      ]
+     },
+     {
+      "id": "case2",
+      "label": "Случай 2: условно без записи 2",
+      "disabled_source_ids": [
+       "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+      ]
+     }
+    ]
+   }
+  }
+ ]
+}

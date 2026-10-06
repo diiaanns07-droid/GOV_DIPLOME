@@ -1,0 +1,66 @@
+{
+ "summary": {
+  "app_root": "r9_d865dd4",
+  "groups": [
+   "B"
+  ],
+  "total": 6,
+  "pass": 5,
+  "fail": [],
+  "not_run": 1,
+  "external_requests": 0,
+  "verdict": "PASS"
+ },
+ "results": [
+  {
+   "group": "B",
+   "id": "B1",
+   "title": "v2-импорт в UI отклоняет 56 конвертов city-resilience-v1, план v2 и город не меняются, есть сообщение",
+   "status": "PASS",
+   "detail": {
+    "bad": [],
+    "msg": "Файл не принят, текущий план не изменён: версия city-resilience-v1 не поддерживается"
+   }
+  },
+  {
+   "group": "B",
+   "id": "B2",
+   "title": "v1-импорт в UI отклоняет те же 56 конвертов, сценарий v1 не меняется",
+   "status": "PASS",
+   "detail": {
+    "bad": []
+   }
+  },
+  {
+   "group": "B",
+   "id": "B3",
+   "title": "данные среза на странице (CITY_EVIDENCE) не изменились",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "group": "B",
+   "id": "B4",
+   "title": "панель «Устойчивость к допущениям»: отображение label только текстом, отмена, смена города",
+   "status": "NOT_RUN",
+   "detail": "в этой сборке нет UI устойчивости"
+  },
+  {
+   "group": "Z",
+   "id": "Z1",
+   "title": "нет внешних запросов и ошибок страницы",
+   "status": "PASS",
+   "detail": {
+    "external": [],
+    "errors": []
+   }
+  },
+  {
+   "group": "Z",
+   "id": "Z2",
+   "title": "данные среза на странице не изменились за весь прогон",
+   "status": "PASS",
+   "detail": null
+  }
+ ]
+}

@@ -1,0 +1,122 @@
+{
+ "schema_version": "city-resilience-v1",
+ "plan": {
+  "schema_version": "city-plan-v2",
+  "city_id": "astana",
+  "source_snapshot": "__SNAPSHOT__",
+  "category": "outpatient_clinic",
+  "control_points": [
+   {
+    "id": "cp1",
+    "lon": 71.421235,
+    "lat": 51.16483,
+    "weight": 1
+   },
+   {
+    "id": "cp2",
+    "lon": 71.429709,
+    "lat": 51.173598,
+    "weight": 2
+   },
+   {
+    "id": "cp3",
+    "lon": 71.438183,
+    "lat": 51.167992,
+    "weight": 3
+   },
+   {
+    "id": "cp4",
+    "lon": 71.423754,
+    "lat": 51.17676,
+    "weight": 1
+   },
+   {
+    "id": "cp5",
+    "lon": 71.432228,
+    "lat": 51.171154,
+    "weight": 5
+   }
+  ],
+  "candidates": [
+   {
+    "id": "c1",
+    "lon": 71.422666,
+    "lat": 51.166626,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 100000
+   },
+   {
+    "id": "c2",
+    "lon": 71.433287,
+    "lat": 51.169753,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 250000
+   },
+   {
+    "id": "c3",
+    "lon": 71.423869,
+    "lat": 51.172879,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 300000
+   },
+   {
+    "id": "c4",
+    "lon": 71.43449,
+    "lat": 51.176005,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 150000
+   },
+   {
+    "id": "c5",
+    "lon": 71.425071,
+    "lat": 51.168351,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 50000
+   },
+   {
+    "id": "c6",
+    "lon": 71.435692,
+    "lat": 51.171477,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 400000
+   }
+  ],
+  "budget": 500000,
+  "max_selected": 3,
+  "coverage_radius_m": 500,
+  "required_ids": [],
+  "excluded_ids": [],
+  "selected_ids": [
+   "c1"
+  ]
+ },
+ "cases": [
+  {
+   "id": "case1",
+   "label": "Случай 1: условно без записи 1",
+   "disabled_source_ids": [
+    "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+   ]
+  },
+  {
+   "id": "case2",
+   "label": "Случай 2: условно без записи 2",
+   "disabled_source_ids": [
+    "1116880a-cbb6-4271-9a59-a277083b792c"
+   ]
+  },
+  {
+   "id": "case3",
+   "label": "Случай 3: условно без записи 3",
+   "disabled_source_ids": [
+    "140ab4bc-e560-41e3-aeaf-cb7b8b821f08"
+   ]
+  }
+ ]
+}

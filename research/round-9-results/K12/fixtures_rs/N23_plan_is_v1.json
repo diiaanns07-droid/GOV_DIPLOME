@@ -1,0 +1,39 @@
+{
+ "schema_version": "city-resilience-v1",
+ "plan": {
+  "schema_version": "city-whatif-v1",
+  "city_id": "shymkent",
+  "source_snapshot": "__SNAPSHOT__",
+  "category": "school",
+  "control_points": [
+   {
+    "id": "cp1",
+    "lon": 69.595794,
+    "lat": 42.308442
+   }
+  ],
+  "proposed_object": {
+   "id": "p1",
+   "lon": 69.597009,
+   "lat": 42.310238,
+   "category": "school",
+   "kind": "hypothetical"
+  }
+ },
+ "cases": [
+  {
+   "id": "case1",
+   "label": "Случай 1: условно без записи 1",
+   "disabled_source_ids": [
+    "01961e84-815f-4bd1-85c3-6bf1734256ec"
+   ]
+  },
+  {
+   "id": "case2",
+   "label": "Случай 2: условно без записи 2",
+   "disabled_source_ids": [
+    "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+   ]
+  }
+ ]
+}

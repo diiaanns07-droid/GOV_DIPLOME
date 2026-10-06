@@ -1,0 +1,2205 @@
+{
+ "oracle": "k12-r9-resilience-oracle",
+ "objective_version": "worst-lex-v1",
+ "metric_version": "haversine-mm-v1",
+ "data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+ "results": [
+  {
+   "status": "optimal",
+   "reasons": [],
+   "case_ids": [
+    "base",
+    "case1",
+    "case2"
+   ],
+   "manual": {
+    "ids": [
+     "c1"
+    ],
+    "feasible": true,
+    "reasons": [],
+    "per_case": [
+     {
+      "case_id": "base",
+      "unknown_count": 0,
+      "weighted_sum_mm": 3051030,
+      "weighted_mean_mm": 254252.5,
+      "max_mm": 402918,
+      "covered_weight": 12,
+      "cost": 100000
+     },
+     {
+      "case_id": "case1",
+      "unknown_count": 0,
+      "weighted_sum_mm": 3051030,
+      "weighted_mean_mm": 254252.5,
+      "max_mm": 402918,
+      "covered_weight": 12,
+      "cost": 100000
+     },
+     {
+      "case_id": "case2",
+      "unknown_count": 0,
+      "weighted_sum_mm": 3243680,
+      "weighted_mean_mm": 270306.6666666667,
+      "max_mm": 402918,
+      "covered_weight": 12,
+      "cost": 100000
+     }
+    ],
+    "worst_vector": [
+     0,
+     3243680,
+     402918
+    ],
+    "worst_case_ids": [
+     "case2"
+    ]
+   },
+   "evaluated": 64,
+   "feasible_count": 24,
+   "nominal": {
+    "ids": [
+     "c1",
+     "c2"
+    ],
+    "cost": 350000,
+    "per_case": [
+     {
+      "case_id": "base",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     },
+     {
+      "case_id": "case1",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     },
+     {
+      "case_id": "case2",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     }
+    ],
+    "worst_vector": [
+     0,
+     2476800,
+     393663
+    ],
+    "worst_case_ids": [
+     "base",
+     "case1",
+     "case2"
+    ]
+   },
+   "robust": {
+    "ids": [
+     "c1",
+     "c2"
+    ],
+    "cost": 350000,
+    "per_case": [
+     {
+      "case_id": "base",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     },
+     {
+      "case_id": "case1",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     },
+     {
+      "case_id": "case2",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     }
+    ],
+    "worst_vector": [
+     0,
+     2476800,
+     393663
+    ],
+    "worst_case_ids": [
+     "base",
+     "case1",
+     "case2"
+    ]
+   },
+   "price_of_robustness_m": 0.0,
+   "price_null_reason": null,
+   "name": "A01"
+  },
+  {
+   "status": "optimal",
+   "reasons": [],
+   "case_ids": [
+    "base",
+    "case1",
+    "case2",
+    "case3"
+   ],
+   "manual": {
+    "ids": [
+     "c1"
+    ],
+    "feasible": true,
+    "reasons": [],
+    "per_case": [
+     {
+      "case_id": "base",
+      "unknown_count": 0,
+      "weighted_sum_mm": 3953804,
+      "weighted_mean_mm": 329483.6666666667,
+      "max_mm": 454351,
+      "covered_weight": 12,
+      "cost": 100000
+     },
+     {
+      "case_id": "case1",
+      "unknown_count": 0,
+      "weighted_sum_mm": 3953804,
+      "weighted_mean_mm": 329483.6666666667,
+      "max_mm": 454351,
+      "covered_weight": 12,
+      "cost": 100000
+     },
+     {
+      "case_id": "case2",
+      "unknown_count": 0,
+      "weighted_sum_mm": 3994868,
+      "weighted_mean_mm": 332905.6666666667,
+      "max_mm": 454351,
+      "covered_weight": 12,
+      "cost": 100000
+     },
+     {
+      "case_id": "case3",
+      "unknown_count": 0,
+      "weighted_sum_mm": 3953804,
+      "weighted_mean_mm": 329483.6666666667,
+      "max_mm": 454351,
+      "covered_weight": 12,
+      "cost": 100000
+     }
+    ],
+    "worst_vector": [
+     0,
+     3994868,
+     454351
+    ],
+    "worst_case_ids": [
+     "case2"
+    ]
+   },
+   "evaluated": 64,
+   "feasible_count": 24,
+   "nominal": {
+    "ids": [
+     "c1",
+     "c2",
+     "c4"
+    ],
+    "cost": 500000,
+    "per_case": [
+     {
+      "case_id": "base",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2519722,
+      "weighted_mean_mm": 209976.83333333334,
+      "max_mm": 427461,
+      "covered_weight": 12,
+      "cost": 500000
+     },
+     {
+      "case_id": "case1",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2519722,
+      "weighted_mean_mm": 209976.83333333334,
+      "max_mm": 427461,
+      "covered_weight": 12,
+      "cost": 500000
+     },
+     {
+      "case_id": "case2",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2560786,
+      "weighted_mean_mm": 213398.83333333334,
+      "max_mm": 427461,
+      "covered_weight": 12,
+      "cost": 500000
+     },
+     {
+      "case_id": "case3",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2519722,
+      "weighted_mean_mm": 209976.83333333334,
+      "max_mm": 427461,
+      "covered_weight": 12,
+      "cost": 500000
+     }
+    ],
+    "worst_vector": [
+     0,
+     2560786,
+     427461
+    ],
+    "worst_case_ids": [
+     "case2"
+    ]
+   },
+   "robust": {
+    "ids": [
+     "c1",
+     "c2",
+     "c4"
+    ],
+    "cost": 500000,
+    "per_case": [
+     {
+      "case_id": "base",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2519722,
+      "weighted_mean_mm": 209976.83333333334,
+      "max_mm": 427461,
+      "covered_weight": 12,
+      "cost": 500000
+     },
+     {
+      "case_id": "case1",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2519722,
+      "weighted_mean_mm": 209976.83333333334,
+      "max_mm": 427461,
+      "covered_weight": 12,
+      "cost": 500000
+     },
+     {
+      "case_id": "case2",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2560786,
+      "weighted_mean_mm": 213398.83333333334,
+      "max_mm": 427461,
+      "covered_weight": 12,
+      "cost": 500000
+     },
+     {
+      "case_id": "case3",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2519722,
+      "weighted_mean_mm": 209976.83333333334,
+      "max_mm": 427461,
+      "covered_weight": 12,
+      "cost": 500000
+     }
+    ],
+    "worst_vector": [
+     0,
+     2560786,
+     427461
+    ],
+    "worst_case_ids": [
+     "case2"
+    ]
+   },
+   "price_of_robustness_m": 0.0,
+   "price_null_reason": null,
+   "name": "A02"
+  },
+  {
+   "status": "optimal",
+   "reasons": [],
+   "case_ids": [
+    "base",
+    "case1",
+    "case2",
+    "case3",
+    "case4",
+    "case5",
+    "case6",
+    "case7"
+   ],
+   "manual": {
+    "ids": [
+     "c1"
+    ],
+    "feasible": true,
+    "reasons": [],
+    "per_case": [
+     {
+      "case_id": "base",
+      "unknown_count": 0,
+      "weighted_sum_mm": 3051030,
+      "weighted_mean_mm": 254252.5,
+      "max_mm": 402918,
+      "covered_weight": 12,
+      "cost": 100000
+     },
+     {
+      "case_id": "case1",
+      "unknown_count": 0,
+      "weighted_sum_mm": 3051030,
+      "weighted_mean_mm": 254252.5,
+      "max_mm": 402918,
+      "covered_weight": 12,
+      "cost": 100000
+     },
+     {
+      "case_id": "case2",
+      "unknown_count": 0,
+      "weighted_sum_mm": 3243680,
+      "weighted_mean_mm": 270306.6666666667,
+      "max_mm": 402918,
+      "covered_weight": 12,
+      "cost": 100000
+     },
+     {
+      "case_id": "case3",
+      "unknown_count": 0,
+      "weighted_sum_mm": 3051030,
+      "weighted_mean_mm": 254252.5,
+      "max_mm": 402918,
+      "covered_weight": 12,
+      "cost": 100000
+     },
+     {
+      "case_id": "case4",
+      "unknown_count": 0,
+      "weighted_sum_mm": 4311801,
+      "weighted_mean_mm": 359316.75,
+      "max_mm": 823175,
+      "covered_weight": 9,
+      "cost": 100000
+     },
+     {
+      "case_id": "case5",
+      "unknown_count": 0,
+      "weighted_sum_mm": 3051030,
+      "weighted_mean_mm": 254252.5,
+      "max_mm": 402918,
+      "covered_weight": 12,
+      "cost": 100000
+     },
+     {
+      "case_id": "case6",
+      "unknown_count": 0,
+      "weighted_sum_mm": 3051030,
+      "weighted_mean_mm": 254252.5,
+      "max_mm": 402918,
+      "covered_weight": 12,
+      "cost": 100000
+     },
+     {
+      "case_id": "case7",
+      "unknown_count": 0,
+      "weighted_sum_mm": 3051030,
+      "weighted_mean_mm": 254252.5,
+      "max_mm": 402918,
+      "covered_weight": 12,
+      "cost": 100000
+     }
+    ],
+    "worst_vector": [
+     0,
+     4311801,
+     823175
+    ],
+    "worst_case_ids": [
+     "case4"
+    ]
+   },
+   "evaluated": 64,
+   "feasible_count": 24,
+   "nominal": {
+    "ids": [
+     "c1",
+     "c2"
+    ],
+    "cost": 350000,
+    "per_case": [
+     {
+      "case_id": "base",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     },
+     {
+      "case_id": "case1",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     },
+     {
+      "case_id": "case2",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     },
+     {
+      "case_id": "case3",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     },
+     {
+      "case_id": "case4",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     },
+     {
+      "case_id": "case5",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     },
+     {
+      "case_id": "case6",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     },
+     {
+      "case_id": "case7",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     }
+    ],
+    "worst_vector": [
+     0,
+     2476800,
+     393663
+    ],
+    "worst_case_ids": [
+     "base",
+     "case1",
+     "case2",
+     "case3",
+     "case4",
+     "case5",
+     "case6",
+     "case7"
+    ]
+   },
+   "robust": {
+    "ids": [
+     "c1",
+     "c2"
+    ],
+    "cost": 350000,
+    "per_case": [
+     {
+      "case_id": "base",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     },
+     {
+      "case_id": "case1",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     },
+     {
+      "case_id": "case2",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     },
+     {
+      "case_id": "case3",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     },
+     {
+      "case_id": "case4",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     },
+     {
+      "case_id": "case5",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     },
+     {
+      "case_id": "case6",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     },
+     {
+      "case_id": "case7",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     }
+    ],
+    "worst_vector": [
+     0,
+     2476800,
+     393663
+    ],
+    "worst_case_ids": [
+     "base",
+     "case1",
+     "case2",
+     "case3",
+     "case4",
+     "case5",
+     "case6",
+     "case7"
+    ]
+   },
+   "price_of_robustness_m": 0.0,
+   "price_null_reason": null,
+   "name": "A03"
+  },
+  {
+   "status": "optimal",
+   "reasons": [],
+   "case_ids": [
+    "base",
+    "case1",
+    "case2",
+    "case3",
+    "case4",
+    "case5",
+    "case6",
+    "case7"
+   ],
+   "manual": {
+    "ids": [
+     "c1"
+    ],
+    "feasible": true,
+    "reasons": [],
+    "per_case": [
+     {
+      "case_id": "base",
+      "unknown_count": 0,
+      "weighted_sum_mm": 17932616,
+      "weighted_mean_mm": 293977.31147540984,
+      "max_mm": 731091,
+      "covered_weight": 52,
+      "cost": 100000
+     },
+     {
+      "case_id": "case1",
+      "unknown_count": 0,
+      "weighted_sum_mm": 19422603,
+      "weighted_mean_mm": 318403.3278688525,
+      "max_mm": 731091,
+      "covered_weight": 51,
+      "cost": 100000
+     },
+     {
+      "case_id": "case2",
+      "unknown_count": 0,
+      "weighted_sum_mm": 18456565,
+      "weighted_mean_mm": 302566.6393442623,
+      "max_mm": 731091,
+      "covered_weight": 52,
+      "cost": 100000
+     },
+     {
+      "case_id": "case3",
+      "unknown_count": 0,
+      "weighted_sum_mm": 18146161,
+      "weighted_mean_mm": 297478.04918032786,
+      "max_mm": 731091,
+      "covered_weight": 52,
+      "cost": 100000
+     },
+     {
+      "case_id": "case4",
+      "unknown_count": 0,
+      "weighted_sum_mm": 22361226,
+      "weighted_mean_mm": 366577.47540983604,
+      "max_mm": 1140520,
+      "covered_weight": 45,
+      "cost": 100000
+     },
+     {
+      "case_id": "case5",
+      "unknown_count": 0,
+      "weighted_sum_mm": 17932616,
+      "weighted_mean_mm": 293977.31147540984,
+      "max_mm": 731091,
+      "covered_weight": 52,
+      "cost": 100000
+     },
+     {
+      "case_id": "case6",
+      "unknown_count": 0,
+      "weighted_sum_mm": 17932616,
+      "weighted_mean_mm": 293977.31147540984,
+      "max_mm": 731091,
+      "covered_weight": 52,
+      "cost": 100000
+     },
+     {
+      "case_id": "case7",
+      "unknown_count": 0,
+      "weighted_sum_mm": 17932616,
+      "weighted_mean_mm": 293977.31147540984,
+      "max_mm": 731091,
+      "covered_weight": 52,
+      "cost": 100000
+     }
+    ],
+    "worst_vector": [
+     0,
+     22361226,
+     1140520
+    ],
+    "worst_case_ids": [
+     "case4"
+    ]
+   },
+   "evaluated": 4096,
+   "feasible_count": 1467,
+   "nominal": {
+    "ids": [
+     "c1",
+     "c2",
+     "c7",
+     "c8",
+     "c9"
+    ],
+    "cost": 610000,
+    "per_case": [
+     {
+      "case_id": "base",
+      "unknown_count": 0,
+      "weighted_sum_mm": 10958974,
+      "weighted_mean_mm": 179655.31147540984,
+      "max_mm": 351735,
+      "covered_weight": 61,
+      "cost": 610000
+     },
+     {
+      "case_id": "case1",
+      "unknown_count": 0,
+      "weighted_sum_mm": 12448961,
+      "weighted_mean_mm": 204081.32786885247,
+      "max_mm": 565199,
+      "covered_weight": 60,
+      "cost": 610000
+     },
+     {
+      "case_id": "case2",
+      "unknown_count": 0,
+      "weighted_sum_mm": 11157904,
+      "weighted_mean_mm": 182916.45901639343,
+      "max_mm": 351735,
+      "covered_weight": 61,
+      "cost": 610000
+     },
+     {
+      "case_id": "case3",
+      "unknown_count": 0,
+      "weighted_sum_mm": 11172519,
+      "weighted_mean_mm": 183156.04918032786,
+      "max_mm": 351735,
+      "covered_weight": 61,
+      "cost": 610000
+     },
+     {
+      "case_id": "case4",
+      "unknown_count": 0,
+      "weighted_sum_mm": 10958974,
+      "weighted_mean_mm": 179655.31147540984,
+      "max_mm": 351735,
+      "covered_weight": 61,
+      "cost": 610000
+     },
+     {
+      "case_id": "case5",
+      "unknown_count": 0,
+      "weighted_sum_mm": 10958974,
+      "weighted_mean_mm": 179655.31147540984,
+      "max_mm": 351735,
+      "covered_weight": 61,
+      "cost": 610000
+     },
+     {
+      "case_id": "case6",
+      "unknown_count": 0,
+      "weighted_sum_mm": 10958974,
+      "weighted_mean_mm": 179655.31147540984,
+      "max_mm": 351735,
+      "covered_weight": 61,
+      "cost": 610000
+     },
+     {
+      "case_id": "case7",
+      "unknown_count": 0,
+      "weighted_sum_mm": 10958974,
+      "weighted_mean_mm": 179655.31147540984,
+      "max_mm": 351735,
+      "covered_weight": 61,
+      "cost": 610000
+     }
+    ],
+    "worst_vector": [
+     0,
+     12448961,
+     565199
+    ],
+    "worst_case_ids": [
+     "case1"
+    ]
+   },
+   "robust": {
+    "ids": [
+     "c1",
+     "c10",
+     "c2",
+     "c7",
+     "c8"
+    ],
+    "cost": 770000,
+    "per_case": [
+     {
+      "case_id": "base",
+      "unknown_count": 0,
+      "weighted_sum_mm": 11027369,
+      "weighted_mean_mm": 180776.54098360657,
+      "max_mm": 335239,
+      "covered_weight": 61,
+      "cost": 770000
+     },
+     {
+      "case_id": "case1",
+      "unknown_count": 0,
+      "weighted_sum_mm": 12093715,
+      "weighted_mean_mm": 198257.62295081967,
+      "max_mm": 408249,
+      "covered_weight": 61,
+      "cost": 770000
+     },
+     {
+      "case_id": "case2",
+      "unknown_count": 0,
+      "weighted_sum_mm": 11226299,
+      "weighted_mean_mm": 184037.68852459016,
+      "max_mm": 335239,
+      "covered_weight": 61,
+      "cost": 770000
+     },
+     {
+      "case_id": "case3",
+      "unknown_count": 0,
+      "weighted_sum_mm": 11240914,
+      "weighted_mean_mm": 184277.2786885246,
+      "max_mm": 335239,
+      "covered_weight": 61,
+      "cost": 770000
+     },
+     {
+      "case_id": "case4",
+      "unknown_count": 0,
+      "weighted_sum_mm": 11027369,
+      "weighted_mean_mm": 180776.54098360657,
+      "max_mm": 335239,
+      "covered_weight": 61,
+      "cost": 770000
+     },
+     {
+      "case_id": "case5",
+      "unknown_count": 0,
+      "weighted_sum_mm": 11027369,
+      "weighted_mean_mm": 180776.54098360657,
+      "max_mm": 335239,
+      "covered_weight": 61,
+      "cost": 770000
+     },
+     {
+      "case_id": "case6",
+      "unknown_count": 0,
+      "weighted_sum_mm": 11027369,
+      "weighted_mean_mm": 180776.54098360657,
+      "max_mm": 335239,
+      "covered_weight": 61,
+      "cost": 770000
+     },
+     {
+      "case_id": "case7",
+      "unknown_count": 0,
+      "weighted_sum_mm": 11027369,
+      "weighted_mean_mm": 180776.54098360657,
+      "max_mm": 335239,
+      "covered_weight": 61,
+      "cost": 770000
+     }
+    ],
+    "worst_vector": [
+     0,
+     12093715,
+     408249
+    ],
+    "worst_case_ids": [
+     "case1"
+    ]
+   },
+   "price_of_robustness_m": 1.1212295081967314,
+   "price_null_reason": null,
+   "name": "A04"
+  },
+  {
+   "status": "optimal",
+   "reasons": [],
+   "case_ids": [
+    "base",
+    "case1",
+    "case2",
+    "case3"
+   ],
+   "manual": {
+    "ids": [
+     "c1"
+    ],
+    "feasible": true,
+    "reasons": [],
+    "per_case": [
+     {
+      "case_id": "base",
+      "unknown_count": 0,
+      "weighted_sum_mm": 3051030,
+      "weighted_mean_mm": 254252.5,
+      "max_mm": 402918,
+      "covered_weight": 12,
+      "cost": 100000
+     },
+     {
+      "case_id": "case1",
+      "unknown_count": 0,
+      "weighted_sum_mm": 3051030,
+      "weighted_mean_mm": 254252.5,
+      "max_mm": 402918,
+      "covered_weight": 12,
+      "cost": 100000
+     },
+     {
+      "case_id": "case2",
+      "unknown_count": 0,
+      "weighted_sum_mm": 3243680,
+      "weighted_mean_mm": 270306.6666666667,
+      "max_mm": 402918,
+      "covered_weight": 12,
+      "cost": 100000
+     },
+     {
+      "case_id": "case3",
+      "unknown_count": 0,
+      "weighted_sum_mm": 3051030,
+      "weighted_mean_mm": 254252.5,
+      "max_mm": 402918,
+      "covered_weight": 12,
+      "cost": 100000
+     }
+    ],
+    "worst_vector": [
+     0,
+     3243680,
+     402918
+    ],
+    "worst_case_ids": [
+     "case2"
+    ]
+   },
+   "evaluated": 64,
+   "feasible_count": 24,
+   "nominal": {
+    "ids": [
+     "c1",
+     "c2"
+    ],
+    "cost": 350000,
+    "per_case": [
+     {
+      "case_id": "base",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     },
+     {
+      "case_id": "case1",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     },
+     {
+      "case_id": "case2",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     },
+     {
+      "case_id": "case3",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     }
+    ],
+    "worst_vector": [
+     0,
+     2476800,
+     393663
+    ],
+    "worst_case_ids": [
+     "base",
+     "case1",
+     "case2",
+     "case3"
+    ]
+   },
+   "robust": {
+    "ids": [
+     "c1",
+     "c2"
+    ],
+    "cost": 350000,
+    "per_case": [
+     {
+      "case_id": "base",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     },
+     {
+      "case_id": "case1",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     },
+     {
+      "case_id": "case2",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     },
+     {
+      "case_id": "case3",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     }
+    ],
+    "worst_vector": [
+     0,
+     2476800,
+     393663
+    ],
+    "worst_case_ids": [
+     "base",
+     "case1",
+     "case2",
+     "case3"
+    ]
+   },
+   "price_of_robustness_m": 0.0,
+   "price_null_reason": null,
+   "name": "A05"
+  },
+  {
+   "status": "optimal",
+   "reasons": [],
+   "case_ids": [
+    "base",
+    "case1",
+    "case2"
+   ],
+   "manual": {
+    "ids": [
+     "c1"
+    ],
+    "feasible": true,
+    "reasons": [],
+    "per_case": [
+     {
+      "case_id": "base",
+      "unknown_count": 0,
+      "weighted_sum_mm": 3051030,
+      "weighted_mean_mm": 254252.5,
+      "max_mm": 402918,
+      "covered_weight": 12,
+      "cost": 100000
+     },
+     {
+      "case_id": "case1",
+      "unknown_count": 0,
+      "weighted_sum_mm": 3051030,
+      "weighted_mean_mm": 254252.5,
+      "max_mm": 402918,
+      "covered_weight": 12,
+      "cost": 100000
+     },
+     {
+      "case_id": "case2",
+      "unknown_count": 0,
+      "weighted_sum_mm": 10647320,
+      "weighted_mean_mm": 887276.6666666666,
+      "max_mm": 1129293,
+      "covered_weight": 1,
+      "cost": 100000
+     }
+    ],
+    "worst_vector": [
+     0,
+     10647320,
+     1129293
+    ],
+    "worst_case_ids": [
+     "case2"
+    ]
+   },
+   "evaluated": 64,
+   "feasible_count": 24,
+   "nominal": {
+    "ids": [
+     "c1",
+     "c2"
+    ],
+    "cost": 350000,
+    "per_case": [
+     {
+      "case_id": "base",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     },
+     {
+      "case_id": "case1",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     },
+     {
+      "case_id": "case2",
+      "unknown_count": 0,
+      "weighted_sum_mm": 4281671,
+      "weighted_mean_mm": 356805.9166666667,
+      "max_mm": 1024459,
+      "covered_weight": 11,
+      "cost": 350000
+     }
+    ],
+    "worst_vector": [
+     0,
+     4281671,
+     1024459
+    ],
+    "worst_case_ids": [
+     "case2"
+    ]
+   },
+   "robust": {
+    "ids": [
+     "c1",
+     "c2",
+     "c4"
+    ],
+    "cost": 500000,
+    "per_case": [
+     {
+      "case_id": "base",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 500000
+     },
+     {
+      "case_id": "case1",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 500000
+     },
+     {
+      "case_id": "case2",
+      "unknown_count": 0,
+      "weighted_sum_mm": 3875981,
+      "weighted_mean_mm": 322998.4166666667,
+      "max_mm": 753689,
+      "covered_weight": 11,
+      "cost": 500000
+     }
+    ],
+    "worst_vector": [
+     0,
+     3875981,
+     753689
+    ],
+    "worst_case_ids": [
+     "case2"
+    ]
+   },
+   "price_of_robustness_m": 0.0,
+   "price_null_reason": null,
+   "name": "A06"
+  },
+  {
+   "status": "optimal",
+   "reasons": [],
+   "case_ids": [
+    "base",
+    "жағдай_1",
+    "case2"
+   ],
+   "manual": {
+    "ids": [
+     "c1"
+    ],
+    "feasible": true,
+    "reasons": [],
+    "per_case": [
+     {
+      "case_id": "base",
+      "unknown_count": 0,
+      "weighted_sum_mm": 3051030,
+      "weighted_mean_mm": 254252.5,
+      "max_mm": 402918,
+      "covered_weight": 12,
+      "cost": 100000
+     },
+     {
+      "case_id": "жағдай_1",
+      "unknown_count": 0,
+      "weighted_sum_mm": 3051030,
+      "weighted_mean_mm": 254252.5,
+      "max_mm": 402918,
+      "covered_weight": 12,
+      "cost": 100000
+     },
+     {
+      "case_id": "case2",
+      "unknown_count": 0,
+      "weighted_sum_mm": 3243680,
+      "weighted_mean_mm": 270306.6666666667,
+      "max_mm": 402918,
+      "covered_weight": 12,
+      "cost": 100000
+     }
+    ],
+    "worst_vector": [
+     0,
+     3243680,
+     402918
+    ],
+    "worst_case_ids": [
+     "case2"
+    ]
+   },
+   "evaluated": 64,
+   "feasible_count": 24,
+   "nominal": {
+    "ids": [
+     "c1",
+     "c2"
+    ],
+    "cost": 350000,
+    "per_case": [
+     {
+      "case_id": "base",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     },
+     {
+      "case_id": "жағдай_1",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     },
+     {
+      "case_id": "case2",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     }
+    ],
+    "worst_vector": [
+     0,
+     2476800,
+     393663
+    ],
+    "worst_case_ids": [
+     "base",
+     "case2",
+     "жағдай_1"
+    ]
+   },
+   "robust": {
+    "ids": [
+     "c1",
+     "c2"
+    ],
+    "cost": 350000,
+    "per_case": [
+     {
+      "case_id": "base",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     },
+     {
+      "case_id": "жағдай_1",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     },
+     {
+      "case_id": "case2",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     }
+    ],
+    "worst_vector": [
+     0,
+     2476800,
+     393663
+    ],
+    "worst_case_ids": [
+     "base",
+     "case2",
+     "жағдай_1"
+    ]
+   },
+   "price_of_robustness_m": 0.0,
+   "price_null_reason": null,
+   "name": "A07"
+  },
+  {
+   "status": "optimal",
+   "reasons": [],
+   "case_ids": [
+    "base",
+    "case1",
+    "case2"
+   ],
+   "manual": {
+    "ids": [
+     "c1"
+    ],
+    "feasible": true,
+    "reasons": [],
+    "per_case": [
+     {
+      "case_id": "base",
+      "unknown_count": 0,
+      "weighted_sum_mm": 3051030,
+      "weighted_mean_mm": 254252.5,
+      "max_mm": 402918,
+      "covered_weight": 12,
+      "cost": 100000
+     },
+     {
+      "case_id": "case1",
+      "unknown_count": 0,
+      "weighted_sum_mm": 3051030,
+      "weighted_mean_mm": 254252.5,
+      "max_mm": 402918,
+      "covered_weight": 12,
+      "cost": 100000
+     },
+     {
+      "case_id": "case2",
+      "unknown_count": 0,
+      "weighted_sum_mm": 3243680,
+      "weighted_mean_mm": 270306.6666666667,
+      "max_mm": 402918,
+      "covered_weight": 12,
+      "cost": 100000
+     }
+    ],
+    "worst_vector": [
+     0,
+     3243680,
+     402918
+    ],
+    "worst_case_ids": [
+     "case2"
+    ]
+   },
+   "evaluated": 64,
+   "feasible_count": 24,
+   "nominal": {
+    "ids": [
+     "c1",
+     "c2"
+    ],
+    "cost": 350000,
+    "per_case": [
+     {
+      "case_id": "base",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     },
+     {
+      "case_id": "case1",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     },
+     {
+      "case_id": "case2",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     }
+    ],
+    "worst_vector": [
+     0,
+     2476800,
+     393663
+    ],
+    "worst_case_ids": [
+     "base",
+     "case1",
+     "case2"
+    ]
+   },
+   "robust": {
+    "ids": [
+     "c1",
+     "c2"
+    ],
+    "cost": 350000,
+    "per_case": [
+     {
+      "case_id": "base",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     },
+     {
+      "case_id": "case1",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     },
+     {
+      "case_id": "case2",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     }
+    ],
+    "worst_vector": [
+     0,
+     2476800,
+     393663
+    ],
+    "worst_case_ids": [
+     "base",
+     "case1",
+     "case2"
+    ]
+   },
+   "price_of_robustness_m": 0.0,
+   "price_null_reason": null,
+   "name": "A08"
+  },
+  {
+   "status": "optimal",
+   "reasons": [],
+   "case_ids": [
+    "base",
+    "case2",
+    "case1"
+   ],
+   "manual": {
+    "ids": [
+     "c1"
+    ],
+    "feasible": true,
+    "reasons": [],
+    "per_case": [
+     {
+      "case_id": "base",
+      "unknown_count": 0,
+      "weighted_sum_mm": 3051030,
+      "weighted_mean_mm": 254252.5,
+      "max_mm": 402918,
+      "covered_weight": 12,
+      "cost": 100000
+     },
+     {
+      "case_id": "case2",
+      "unknown_count": 0,
+      "weighted_sum_mm": 3243680,
+      "weighted_mean_mm": 270306.6666666667,
+      "max_mm": 402918,
+      "covered_weight": 12,
+      "cost": 100000
+     },
+     {
+      "case_id": "case1",
+      "unknown_count": 0,
+      "weighted_sum_mm": 3051030,
+      "weighted_mean_mm": 254252.5,
+      "max_mm": 402918,
+      "covered_weight": 12,
+      "cost": 100000
+     }
+    ],
+    "worst_vector": [
+     0,
+     3243680,
+     402918
+    ],
+    "worst_case_ids": [
+     "case2"
+    ]
+   },
+   "evaluated": 64,
+   "feasible_count": 24,
+   "nominal": {
+    "ids": [
+     "c1",
+     "c2"
+    ],
+    "cost": 350000,
+    "per_case": [
+     {
+      "case_id": "base",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     },
+     {
+      "case_id": "case2",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     },
+     {
+      "case_id": "case1",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     }
+    ],
+    "worst_vector": [
+     0,
+     2476800,
+     393663
+    ],
+    "worst_case_ids": [
+     "base",
+     "case1",
+     "case2"
+    ]
+   },
+   "robust": {
+    "ids": [
+     "c1",
+     "c2"
+    ],
+    "cost": 350000,
+    "per_case": [
+     {
+      "case_id": "base",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     },
+     {
+      "case_id": "case2",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     },
+     {
+      "case_id": "case1",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     }
+    ],
+    "worst_vector": [
+     0,
+     2476800,
+     393663
+    ],
+    "worst_case_ids": [
+     "base",
+     "case1",
+     "case2"
+    ]
+   },
+   "price_of_robustness_m": 0.0,
+   "price_null_reason": null,
+   "name": "A09"
+  },
+  {
+   "status": "optimal",
+   "reasons": [],
+   "case_ids": [
+    "base",
+    "case1",
+    "case2"
+   ],
+   "manual": {
+    "ids": [],
+    "feasible": true,
+    "reasons": [],
+    "per_case": [
+     {
+      "case_id": "base",
+      "unknown_count": 0,
+      "weighted_sum_mm": 3564632,
+      "weighted_mean_mm": 297052.6666666667,
+      "max_mm": 736906,
+      "covered_weight": 11,
+      "cost": 0
+     },
+     {
+      "case_id": "case1",
+      "unknown_count": 0,
+      "weighted_sum_mm": 3564632,
+      "weighted_mean_mm": 297052.6666666667,
+      "max_mm": 736906,
+      "covered_weight": 11,
+      "cost": 0
+     },
+     {
+      "case_id": "case2",
+      "unknown_count": 0,
+      "weighted_sum_mm": 3757282,
+      "weighted_mean_mm": 313106.8333333333,
+      "max_mm": 736906,
+      "covered_weight": 11,
+      "cost": 0
+     }
+    ],
+    "worst_vector": [
+     0,
+     3757282,
+     736906
+    ],
+    "worst_case_ids": [
+     "case2"
+    ]
+   },
+   "evaluated": 1,
+   "feasible_count": 1,
+   "nominal": {
+    "ids": [],
+    "cost": 0,
+    "per_case": [
+     {
+      "case_id": "base",
+      "unknown_count": 0,
+      "weighted_sum_mm": 3564632,
+      "weighted_mean_mm": 297052.6666666667,
+      "max_mm": 736906,
+      "covered_weight": 11,
+      "cost": 0
+     },
+     {
+      "case_id": "case1",
+      "unknown_count": 0,
+      "weighted_sum_mm": 3564632,
+      "weighted_mean_mm": 297052.6666666667,
+      "max_mm": 736906,
+      "covered_weight": 11,
+      "cost": 0
+     },
+     {
+      "case_id": "case2",
+      "unknown_count": 0,
+      "weighted_sum_mm": 3757282,
+      "weighted_mean_mm": 313106.8333333333,
+      "max_mm": 736906,
+      "covered_weight": 11,
+      "cost": 0
+     }
+    ],
+    "worst_vector": [
+     0,
+     3757282,
+     736906
+    ],
+    "worst_case_ids": [
+     "case2"
+    ]
+   },
+   "robust": {
+    "ids": [],
+    "cost": 0,
+    "per_case": [
+     {
+      "case_id": "base",
+      "unknown_count": 0,
+      "weighted_sum_mm": 3564632,
+      "weighted_mean_mm": 297052.6666666667,
+      "max_mm": 736906,
+      "covered_weight": 11,
+      "cost": 0
+     },
+     {
+      "case_id": "case1",
+      "unknown_count": 0,
+      "weighted_sum_mm": 3564632,
+      "weighted_mean_mm": 297052.6666666667,
+      "max_mm": 736906,
+      "covered_weight": 11,
+      "cost": 0
+     },
+     {
+      "case_id": "case2",
+      "unknown_count": 0,
+      "weighted_sum_mm": 3757282,
+      "weighted_mean_mm": 313106.8333333333,
+      "max_mm": 736906,
+      "covered_weight": 11,
+      "cost": 0
+     }
+    ],
+    "worst_vector": [
+     0,
+     3757282,
+     736906
+    ],
+    "worst_case_ids": [
+     "case2"
+    ]
+   },
+   "price_of_robustness_m": 0.0,
+   "price_null_reason": null,
+   "name": "A10"
+  },
+  {
+   "status": "infeasible",
+   "reasons": [
+    "required_cost_exceeds_budget"
+   ],
+   "case_ids": [
+    "base",
+    "case1",
+    "case2"
+   ],
+   "manual": {
+    "ids": [
+     "c1"
+    ],
+    "feasible": false,
+    "reasons": [
+     "missing_required"
+    ],
+    "per_case": [
+     {
+      "case_id": "base",
+      "unknown_count": 0,
+      "weighted_sum_mm": 3051030,
+      "weighted_mean_mm": 254252.5,
+      "max_mm": 402918,
+      "covered_weight": 12,
+      "cost": 100000
+     },
+     {
+      "case_id": "case1",
+      "unknown_count": 0,
+      "weighted_sum_mm": 3051030,
+      "weighted_mean_mm": 254252.5,
+      "max_mm": 402918,
+      "covered_weight": 12,
+      "cost": 100000
+     },
+     {
+      "case_id": "case2",
+      "unknown_count": 0,
+      "weighted_sum_mm": 3243680,
+      "weighted_mean_mm": 270306.6666666667,
+      "max_mm": 402918,
+      "covered_weight": 12,
+      "cost": 100000
+     }
+    ],
+    "worst_vector": [
+     0,
+     3243680,
+     402918
+    ],
+    "worst_case_ids": [
+     "case2"
+    ]
+   },
+   "evaluated": 0,
+   "feasible_count": 0,
+   "nominal": null,
+   "robust": null,
+   "price_of_robustness_m": null,
+   "price_null_reason": "infeasible",
+   "name": "A11"
+  },
+  {
+   "status": "optimal",
+   "reasons": [],
+   "case_ids": [
+    "base",
+    "case1",
+    "case2"
+   ],
+   "manual": {
+    "ids": [
+     "c1"
+    ],
+    "feasible": true,
+    "reasons": [],
+    "per_case": [
+     {
+      "case_id": "base",
+      "unknown_count": 0,
+      "weighted_sum_mm": 3051030,
+      "weighted_mean_mm": 254252.5,
+      "max_mm": 402918,
+      "covered_weight": 12,
+      "cost": 100000
+     },
+     {
+      "case_id": "case1",
+      "unknown_count": 0,
+      "weighted_sum_mm": 3051030,
+      "weighted_mean_mm": 254252.5,
+      "max_mm": 402918,
+      "covered_weight": 12,
+      "cost": 100000
+     },
+     {
+      "case_id": "case2",
+      "unknown_count": 0,
+      "weighted_sum_mm": 4590167,
+      "weighted_mean_mm": 382513.9166666667,
+      "max_mm": 851747,
+      "covered_weight": 9,
+      "cost": 100000
+     }
+    ],
+    "worst_vector": [
+     0,
+     4590167,
+     851747
+    ],
+    "worst_case_ids": [
+     "case2"
+    ]
+   },
+   "evaluated": 64,
+   "feasible_count": 24,
+   "nominal": {
+    "ids": [
+     "c1",
+     "c2"
+    ],
+    "cost": 350000,
+    "per_case": [
+     {
+      "case_id": "base",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     },
+     {
+      "case_id": "case1",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     },
+     {
+      "case_id": "case2",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     }
+    ],
+    "worst_vector": [
+     0,
+     2476800,
+     393663
+    ],
+    "worst_case_ids": [
+     "base",
+     "case1",
+     "case2"
+    ]
+   },
+   "robust": {
+    "ids": [
+     "c1",
+     "c2"
+    ],
+    "cost": 350000,
+    "per_case": [
+     {
+      "case_id": "base",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     },
+     {
+      "case_id": "case1",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     },
+     {
+      "case_id": "case2",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     }
+    ],
+    "worst_vector": [
+     0,
+     2476800,
+     393663
+    ],
+    "worst_case_ids": [
+     "base",
+     "case1",
+     "case2"
+    ]
+   },
+   "price_of_robustness_m": 0.0,
+   "price_null_reason": null,
+   "name": "A12"
+  },
+  {
+   "status": "optimal",
+   "reasons": [],
+   "case_ids": [
+    "base",
+    "case1",
+    "case2"
+   ],
+   "manual": {
+    "ids": [
+     "c1"
+    ],
+    "feasible": true,
+    "reasons": [],
+    "per_case": [
+     {
+      "case_id": "base",
+      "unknown_count": 0,
+      "weighted_sum_mm": 3051030,
+      "weighted_mean_mm": 254252.5,
+      "max_mm": 402918,
+      "covered_weight": 12,
+      "cost": 100000
+     },
+     {
+      "case_id": "case1",
+      "unknown_count": 0,
+      "weighted_sum_mm": 3051030,
+      "weighted_mean_mm": 254252.5,
+      "max_mm": 402918,
+      "covered_weight": 12,
+      "cost": 100000
+     },
+     {
+      "case_id": "case2",
+      "unknown_count": 0,
+      "weighted_sum_mm": 3243680,
+      "weighted_mean_mm": 270306.6666666667,
+      "max_mm": 402918,
+      "covered_weight": 12,
+      "cost": 100000
+     }
+    ],
+    "worst_vector": [
+     0,
+     3243680,
+     402918
+    ],
+    "worst_case_ids": [
+     "case2"
+    ]
+   },
+   "evaluated": 64,
+   "feasible_count": 24,
+   "nominal": {
+    "ids": [
+     "c1",
+     "c2"
+    ],
+    "cost": 350000,
+    "per_case": [
+     {
+      "case_id": "base",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     },
+     {
+      "case_id": "case1",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     },
+     {
+      "case_id": "case2",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     }
+    ],
+    "worst_vector": [
+     0,
+     2476800,
+     393663
+    ],
+    "worst_case_ids": [
+     "base",
+     "case1",
+     "case2"
+    ]
+   },
+   "robust": {
+    "ids": [
+     "c1",
+     "c2"
+    ],
+    "cost": 350000,
+    "per_case": [
+     {
+      "case_id": "base",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     },
+     {
+      "case_id": "case1",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     },
+     {
+      "case_id": "case2",
+      "unknown_count": 0,
+      "weighted_sum_mm": 2476800,
+      "weighted_mean_mm": 206400.0,
+      "max_mm": 393663,
+      "covered_weight": 12,
+      "cost": 350000
+     }
+    ],
+    "worst_vector": [
+     0,
+     2476800,
+     393663
+    ],
+    "worst_case_ids": [
+     "base",
+     "case1",
+     "case2"
+    ]
+   },
+   "price_of_robustness_m": 0.0,
+   "price_null_reason": null,
+   "name": "A13"
+  }
+ ]
+}

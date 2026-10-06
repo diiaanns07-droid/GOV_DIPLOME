@@ -1,0 +1,483 @@
+{
+ "summary": {
+  "data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "index_data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "fixtures": 59,
+  "match": 59,
+  "mismatch": []
+ },
+ "rows": [
+  {
+   "id": "A01",
+   "expect": "accept",
+   "rule": "valid",
+   "oracle": "accept",
+   "code": null,
+   "match": true
+  },
+  {
+   "id": "A02",
+   "expect": "accept",
+   "rule": "valid",
+   "oracle": "accept",
+   "code": null,
+   "match": true
+  },
+  {
+   "id": "A03",
+   "expect": "accept",
+   "rule": "cases_max",
+   "oracle": "accept",
+   "code": null,
+   "match": true
+  },
+  {
+   "id": "A04",
+   "expect": "accept",
+   "rule": "candidates_max",
+   "oracle": "accept",
+   "code": null,
+   "match": true
+  },
+  {
+   "id": "A05",
+   "expect": "accept",
+   "rule": "duplicate_sets_allowed",
+   "oracle": "accept",
+   "code": null,
+   "match": true
+  },
+  {
+   "id": "A06",
+   "expect": "accept",
+   "rule": "unknown_baseline",
+   "oracle": "accept",
+   "code": null,
+   "match": true
+  },
+  {
+   "id": "A07",
+   "expect": "accept",
+   "rule": "label_text",
+   "oracle": "accept",
+   "code": null,
+   "match": true
+  },
+  {
+   "id": "A08",
+   "expect": "accept",
+   "rule": "label_max",
+   "oracle": "accept",
+   "code": null,
+   "match": true
+  },
+  {
+   "id": "A09",
+   "expect": "accept",
+   "rule": "order_independent",
+   "oracle": "accept",
+   "code": null,
+   "match": true
+  },
+  {
+   "id": "A10",
+   "expect": "accept",
+   "rule": "candidates_min",
+   "oracle": "accept",
+   "code": null,
+   "match": true
+  },
+  {
+   "id": "A11",
+   "expect": "accept",
+   "rule": "infeasible_reported",
+   "oracle": "accept",
+   "code": null,
+   "match": true
+  },
+  {
+   "id": "A12",
+   "expect": "accept",
+   "rule": "valid",
+   "oracle": "accept",
+   "code": null,
+   "match": true
+  },
+  {
+   "id": "A13",
+   "expect": "accept",
+   "rule": "size_max",
+   "oracle": "accept",
+   "code": null,
+   "match": true
+  },
+  {
+   "id": "N01",
+   "expect": "reject",
+   "rule": "unknown_source",
+   "oracle": "reject",
+   "code": "unknown_source",
+   "match": true
+  },
+  {
+   "id": "N02",
+   "expect": "reject",
+   "rule": "unknown_source",
+   "oracle": "reject",
+   "code": "unknown_source",
+   "match": true
+  },
+  {
+   "id": "N03",
+   "expect": "reject",
+   "rule": "unknown_source",
+   "oracle": "reject",
+   "code": "unknown_source",
+   "match": true
+  },
+  {
+   "id": "N04",
+   "expect": "reject",
+   "rule": "unknown_source",
+   "oracle": "reject",
+   "code": "unknown_source",
+   "match": true
+  },
+  {
+   "id": "N05",
+   "expect": "reject",
+   "rule": "reserved_id",
+   "oracle": "reject",
+   "code": "reserved_id",
+   "match": true
+  },
+  {
+   "id": "N06",
+   "expect": "reject",
+   "rule": "duplicate_id",
+   "oracle": "reject",
+   "code": "duplicate_id",
+   "match": true
+  },
+  {
+   "id": "N07",
+   "expect": "reject",
+   "rule": "too_many_cases",
+   "oracle": "reject",
+   "code": "too_many_cases",
+   "match": true
+  },
+  {
+   "id": "N08",
+   "expect": "reject",
+   "rule": "too_few_cases",
+   "oracle": "reject",
+   "code": "too_few_cases",
+   "match": true
+  },
+  {
+   "id": "N09",
+   "expect": "reject",
+   "rule": "too_many_candidates",
+   "oracle": "reject",
+   "code": "too_many_candidates",
+   "match": true
+  },
+  {
+   "id": "N10",
+   "expect": "reject",
+   "rule": "too_many_candidates",
+   "oracle": "reject",
+   "code": "too_many_candidates",
+   "match": true
+  },
+  {
+   "id": "N11",
+   "expect": "reject",
+   "rule": "bad_exclusion",
+   "oracle": "reject",
+   "code": "bad_exclusion",
+   "match": true
+  },
+  {
+   "id": "N12",
+   "expect": "reject",
+   "rule": "duplicate_id",
+   "oracle": "reject",
+   "code": "duplicate_id",
+   "match": true
+  },
+  {
+   "id": "N13",
+   "expect": "reject",
+   "rule": "bad_label",
+   "oracle": "reject",
+   "code": "bad_label",
+   "match": true
+  },
+  {
+   "id": "N14",
+   "expect": "reject",
+   "rule": "bad_label",
+   "oracle": "reject",
+   "code": "bad_label",
+   "match": true
+  },
+  {
+   "id": "N15",
+   "expect": "reject",
+   "rule": "bad_label",
+   "oracle": "reject",
+   "code": "bad_label",
+   "match": true
+  },
+  {
+   "id": "N16",
+   "expect": "reject",
+   "rule": "bad_label",
+   "oracle": "reject",
+   "code": "bad_label",
+   "match": true
+  },
+  {
+   "id": "N17",
+   "expect": "reject",
+   "rule": "bad_label",
+   "oracle": "reject",
+   "code": "bad_label",
+   "match": true
+  },
+  {
+   "id": "N18",
+   "expect": "reject",
+   "rule": "unknown_field",
+   "oracle": "reject",
+   "code": "unknown_field",
+   "match": true
+  },
+  {
+   "id": "N19",
+   "expect": "reject",
+   "rule": "missing_field",
+   "oracle": "reject",
+   "code": "missing_field",
+   "match": true
+  },
+  {
+   "id": "N20",
+   "expect": "reject",
+   "rule": "unknown_field",
+   "oracle": "reject",
+   "code": "unknown_field",
+   "match": true
+  },
+  {
+   "id": "N21",
+   "expect": "reject",
+   "rule": "derived_in_plan",
+   "oracle": "reject",
+   "code": "derived_in_plan",
+   "match": true
+  },
+  {
+   "id": "N22",
+   "expect": "reject",
+   "rule": "bad_version",
+   "oracle": "reject",
+   "code": "bad_version",
+   "match": true
+  },
+  {
+   "id": "N23",
+   "expect": "reject",
+   "rule": "bad_plan",
+   "oracle": "reject",
+   "code": "bad_plan",
+   "match": true
+  },
+  {
+   "id": "N24",
+   "expect": "reject",
+   "rule": "foreign_snapshot",
+   "oracle": "reject",
+   "code": "foreign_snapshot",
+   "match": true
+  },
+  {
+   "id": "N25",
+   "expect": "reject",
+   "rule": "bad_plan",
+   "oracle": "reject",
+   "code": "bad_plan",
+   "match": true
+  },
+  {
+   "id": "N26",
+   "expect": "reject",
+   "rule": "bad_plan",
+   "oracle": "reject",
+   "code": "bad_plan",
+   "match": true
+  },
+  {
+   "id": "N27",
+   "expect": "reject",
+   "rule": "bad_id",
+   "oracle": "reject",
+   "code": "bad_id",
+   "match": true
+  },
+  {
+   "id": "N28",
+   "expect": "reject",
+   "rule": "bad_id",
+   "oracle": "reject",
+   "code": "bad_id",
+   "match": true
+  },
+  {
+   "id": "N29",
+   "expect": "reject",
+   "rule": "bad_id",
+   "oracle": "reject",
+   "code": "bad_id",
+   "match": true
+  },
+  {
+   "id": "N30",
+   "expect": "reject",
+   "rule": "bad_shape",
+   "oracle": "reject",
+   "code": "bad_shape",
+   "match": true
+  },
+  {
+   "id": "N31",
+   "expect": "reject",
+   "rule": "bad_shape",
+   "oracle": "reject",
+   "code": "bad_shape",
+   "match": true
+  },
+  {
+   "id": "N32",
+   "expect": "reject",
+   "rule": "unknown_field",
+   "oracle": "reject",
+   "code": "unknown_field",
+   "match": true
+  },
+  {
+   "id": "N33",
+   "expect": "reject",
+   "rule": "missing_field",
+   "oracle": "reject",
+   "code": "missing_field",
+   "match": true
+  },
+  {
+   "id": "N34",
+   "expect": "reject",
+   "rule": "bad_label",
+   "oracle": "reject",
+   "code": "bad_label",
+   "match": true
+  },
+  {
+   "id": "N35",
+   "expect": "reject",
+   "rule": "bad_label",
+   "oracle": "reject",
+   "code": "bad_label",
+   "match": true
+  },
+  {
+   "id": "N36",
+   "expect": "reject",
+   "rule": "unknown_source",
+   "oracle": "reject",
+   "code": "unknown_source",
+   "match": true
+  },
+  {
+   "id": "N40",
+   "expect": "reject",
+   "rule": "bad_json",
+   "oracle": "reject",
+   "code": "bad_json",
+   "match": true
+  },
+  {
+   "id": "N41",
+   "expect": "reject",
+   "rule": "bad_json",
+   "oracle": "reject",
+   "code": "bad_json",
+   "match": true
+  },
+  {
+   "id": "N42",
+   "expect": "reject",
+   "rule": "bad_json",
+   "oracle": "reject",
+   "code": "bad_json",
+   "match": true
+  },
+  {
+   "id": "N43",
+   "expect": "reject",
+   "rule": "bad_json",
+   "oracle": "reject",
+   "code": "bad_json",
+   "match": true
+  },
+  {
+   "id": "N44",
+   "expect": "reject",
+   "rule": "bad_json",
+   "oracle": "reject",
+   "code": "bad_json",
+   "match": true
+  },
+  {
+   "id": "N45",
+   "expect": "reject",
+   "rule": "bad_json",
+   "oracle": "reject",
+   "code": "bad_json",
+   "match": true
+  },
+  {
+   "id": "N46",
+   "expect": "reject",
+   "rule": "too_large",
+   "oracle": "reject",
+   "code": "too_large",
+   "match": true
+  },
+  {
+   "id": "N47",
+   "expect": "reject",
+   "rule": "bad_json",
+   "oracle": "reject",
+   "code": "bad_json",
+   "match": true
+  },
+  {
+   "id": "N48",
+   "expect": "reject",
+   "rule": "bad_shape",
+   "oracle": "reject",
+   "code": "bad_shape",
+   "match": true
+  },
+  {
+   "id": "N49",
+   "expect": "reject",
+   "rule": "bad_label",
+   "oracle": "reject",
+   "code": "bad_label",
+   "match": true
+  }
+ ]
+}
