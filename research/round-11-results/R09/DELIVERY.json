@@ -13,14 +13,14 @@
     "research/handoffs/astana/R09/round-11/STATUS.md"
   ],
   "integration_notes": "research/round-11-results/R09/INTEGRATION.txt (будет на этапе CP6)",
-  "code_commit": "cbae337",
+  "code_commit": "cdd2658",
   "checks": [
     {
-      "name": "r09-cp3-facts-template-provider-scenario-api",
+      "name": "r09-cp4-python-suite",
       "status": "PASS",
       "command": "python3 -m pytest tests/civic/R09 -q",
-      "input": "tests/civic/R09/fixtures/*.json (synthetic objects; R07 compare() output on synthetic-tiny-v1-demo), MockProvider, fake chat client, fake R02 service",
-      "reason": "79 passed"
+      "input": "tests/civic/R09/fixtures/*.json (synthetic objects, synthetic publications, R07 compare() output), MockProvider, fake chat client, fake R02 service",
+      "reason": "100 passed"
     },
     {
       "name": "live-llm",
@@ -34,5 +34,5 @@
     "Только шаблонный режим проверен на CP1",
     "KK-формулировки требуют проверки носителем языка"
   ],
-  "next_step": "CP4: extraction draft validator"
+  "next_step": "CP5: CivicAssistant UI"
 }

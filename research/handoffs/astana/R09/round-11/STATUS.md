@@ -8,7 +8,7 @@
 - Собственные пути: `agent/civic_assistant/`, `web/civic/assistant/`, `tests/civic/R09/`,
   `research/round-11-results/R09/`, `research/handoffs/astana/R09/round-11/STATUS.md`
 
-## Статус: PARTIAL — checkpoint 3
+## Статус: PARTIAL — checkpoint 4
 
 ### Сделано
 - `agent/civic_assistant/facts.py`: серверный каталог фактов из публичного DTO civic-v1 (allowlist),
@@ -33,12 +33,18 @@
   POST /api/civic/v1/assistant; тело — ровно {question,object_id,scenario_id}; facts/context/role -> 400;
   draft и несуществующий объект неразличимы (unavailable); 413/422/429/405; r02_public_loader
   (публичный GET /objects/{id} без cookie), r07_case_loader (scenario_id = case_id, payload с сервера).
+- CP4 `agent/civic_assistant/extract.py`: extract_draft(text, source_id, ...) из ПЕРЕДАННОГО текста (URL не
+  скачивается). Поля: title, kind, planned_start, current_planned_end, amount_kzt, basis, organization,
+  location_text; у каждого quote/span/source_id/confidence_kind/needs_review/alternatives. Неполная дата и
+  противоречия -> null. Статус не извлекается. Инструкции в тексте -> ignored_instructions (данные).
+  Провайдер возвращает только цитаты; код проверяет вхождение и сам разбирает значение.
+  POST /api/civic/v1/staff/assistant/extract: 401/403 (роль, same-origin), 400/413/422; ничего не сохраняет.
 
 ### Проверки
-- `python3 -m pytest tests/civic/R09 -q` -> 79 passed (CP3; CP2 49; CP1 16).
+- `python3 -m pytest tests/civic/R09 -q` -> 100 passed (CP4; CP3 79; CP2 49; CP1 16).
 
 ### Не запускалось
 - Живой LLM (вне задания). Интеграция в app (делает R01).
 
 ### Следующий шаг
-CP4: черновик извлечения из переданного текста публикации (quote/span/source_id/confidence_kind), staff-only.
+CP5: web/civic/assistant (CivicAssistant.mount + редакторская панель черновика) и проверка в реальном Chromium.
