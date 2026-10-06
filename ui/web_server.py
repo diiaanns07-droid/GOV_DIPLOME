@@ -37,7 +37,7 @@ ASSETS = {
 }
 POST_ROUTES = {
     "/api/validate", "/api/simulate", "/api/plan-status", "/api/optimize",
-    "/api/robustness", "/api/compare", "/api/advisor",
+    "/api/robustness", "/api/compare", "/api/advisor", "/api/school-ai",
 }
 
 # Explicit public assets only: no directory serving, source code, or local settings.
@@ -46,7 +46,7 @@ for _asset in ("shell.js", "shell.css", "core/data.js", "core/evidence.js",
                "core/plan-ui.js", "core/resilience-ui.js", "core/attribution/ATTRIBUTION.md",
                "core/attribution/attribution.json", "core/attribution/LICENSES/Apache-2.0.txt",
                "core/attribution/LICENSES/CDLA-Permissive-2.0.txt", "core/attribution/LICENSES/ODbL-1.0.txt",
-               "school/case.js", "school/school-ui.js", "school/school.css",
+               "school/case.js", "school/note.js", "school/school-ui.js", "school/school.css",
                "school/cases/shymkent.case.json", "school/cases/shymkent.case.meta.json",
                # K03 r10: pedestrian-v1 routing (module, ODbL graphs, hash manifest)
                "k03/routing.js", "k03/school-access-routing.js", "k03/shymkent.graph.json", "k03/astana.graph.json",
@@ -167,6 +167,11 @@ class Backend:
                     raise ValueError("Название плана слишком длинное.")
                 decisions(plan if isinstance(plan, dict) else {"decisions": plan})
             return engine.compare(plans, data=self.data, event_id=selected_event)
+        if path == "/api/school-ai":
+            # Школьный кейс: модель выбирает только ID фактов/действия; числа и текст собирает браузер.
+            from agent.school_ai import answer
+
+            return answer(body)
         if path == "/api/advisor":
             # Браузер присылает только решения: его Score и тексты не являются фактами.
             from agent.advisor import ask_advisor

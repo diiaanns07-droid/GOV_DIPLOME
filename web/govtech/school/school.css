@@ -80,6 +80,11 @@
 .sc-ghost:hover:not(:disabled) { background: #f0f5e9; }
 .sc-ghost:disabled { opacity: .5; }
 .sc-short { display: none; }
+.sc-ask { display: grid; gap: 6px; margin: 12px 0; font-size: 12px; }
+.sc-ask form input { flex: 1 1 180px; border: 1px solid #d9e2d4; border-radius: 9px; padding: 8px; min-width: 0; font: inherit; }
+.sc-ask form .sc-ghost { margin-top: 0; }
+.sc-ai { background: #f3f6ee; border-radius: 12px; padding: 10px 12px; }
+.sc-ai ul { margin: 6px 0; padding-left: 18px; }
 .sc-method { display: grid; gap: 6px; margin: 12px 0; font-size: 12px; }
 .sc-method small { color: var(--muted); }
 .sc-seg-small { flex-wrap: wrap; }

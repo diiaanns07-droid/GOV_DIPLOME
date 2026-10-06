@@ -22,7 +22,7 @@ def test_school_case_assets_are_served_and_linked():
 
     web = Path(__file__).resolve().parents[1] / "web"
     page = (web / "index.html").read_text(encoding="utf-8")
-    for name in ("school/case.js", "school/school-ui.js", "school/school.css"):
+    for name in ("school/case.js", "school/note.js", "school/school-ui.js", "school/school.css"):
         assert "/govtech/" + name in ASSETS
         assert (web / "govtech" / name).is_file()
         assert "/govtech/" + name in page

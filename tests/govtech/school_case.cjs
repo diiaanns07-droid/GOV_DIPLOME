@@ -193,3 +193,24 @@ for (const city of ["shymkent", "astana"]) {
   eq(m2, 4, "4 pedestrian cases checked");
 }
 console.log(`all school-case checks passed incl. pedestrian (${n})`);
+
+// decision note: built only from the case/comparison; the embedded case loads back to the same digest; no markup injection
+{
+  const N = require(path.join(root, "school/note.js"));
+  const c = SC.buildCase(D, "astana", F.qaOf);
+  c.title = 'Тест </script><script>alert(1)</script> & "кавычки"';
+  c.variants = { A: c.candidates[2].id, B: c.candidates[7].id };
+  const cmp = SC.compareCase(c, SC.geodesicMatrix(c)), text = SC.exportCase(c);
+  const html = N.buildNote(c, cmp, { caseText: text, cityLabel: "Астана", label: (k) => k.label, verdict: SC.verdict(cmp, "A", "B"), generatedAt: "2026-10-06 00:00 UTC" });
+  eq((html.match(/<script/g) || []).length, 1, "note has exactly one script element (the JSON data block)");
+  ok(html.includes('<script type="application/json" id="school-access-case-embedded">'), "data block is application/json");
+  ok(!html.includes("<script>alert"), "title cannot inject markup");
+  ok(html.includes(cmp.case_digest), "note shows case_digest");
+  const back = SC.importCase(N.extractCase(html), D);
+  eq(SC.caseDigest(back), cmp.case_digest, "note → embedded case → same digest");
+  eq(SC.compareCase(back, SC.geodesicMatrix(back)).plans.map((p) => p.metrics), cmp.plans.map((p) => p.metrics), "note reimport → same metrics");
+  eq(N.extractCase("<html>no case</html>"), null, "html without case");
+  let threw = false; try { N.buildNote(c, { ...cmp, case_digest: "sha256:" + "0".repeat(64) }, { caseText: text, cityLabel: "", label: (k) => k.label }); } catch (e) { threw = true; }
+  ok(threw, "note refuses a comparison of other inputs");
+}
+console.log(`all school-case + note checks passed (${n})`);

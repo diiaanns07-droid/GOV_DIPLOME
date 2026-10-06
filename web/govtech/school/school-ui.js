@@ -269,10 +269,78 @@
     if (cur !== "geodesic") box.append(el("small", { class: "sc-prov" }, "Пешеходный граф: © OpenStreetMap contributors (ODbL-1.0) через Overture Maps Foundation, выпуск " + D.cities[S.city].release + "; производная база данных K03."));
     return box;
   }
+  // ---------- AI seam: the model picks fact IDs/intents/tools; text and numbers are built here from current facts ----------
+  const AI = { seq: 0, pending: null, last: null, busy: false };
+  function factText(f) {
+    const plan = f.plan_id === "current" ? "сейчас" : f.plan_id === "auto" ? "лучшее по правилу" : "вариант " + f.plan_id;
+    const tot = plan && S.cmp.plans.find((p) => p.id === f.plan_id), total = tot ? tot.metrics.total_origins : null;
+    switch (f.metric) {
+      case "mean_distance_mm": return `Среднее до школы (${plan}): ${m(f.value)}`;
+      case "max_distance_mm": return `Самая дальняя точка (${plan}): ${m(f.value)}`;
+      case "within_threshold_count": return `В пределах ${caseOf(S.city).parameters.threshold_m} м (${plan}): ${f.value} из ${total} точек`;
+      case "unknown_count": return `Неизвестно (${plan}): ${pts(f.value)}`;
+      case "closer_count": return `Стало ближе (${plan}): ${pts(f.value)}`;
+      case "delta_mm": return `${f.origin_id} (${plan}): изменение ${dm(f.value)}`;
+      default: return `${f.metric} (${plan}): ${f.value === null ? "нет данных" : f.value}`;
+    }
+  }
+  const INTENT_HEAD = { data_limits: "На это расчёт не отвечает: в кейсе нет стоимости, вместимости, населения и трафика.",
+    method: () => "Расстояние: " + METHOD_TEXT[methodKey(caseOf(S.city))] + ".", unsupported: "Вопрос вне этого расчёта.",
+    point_detail: "Самые дальние точки по вариантам:", explain_metric: "Показатели из расчёта:", compare_variants: () => {
+      const v = plan("A") && plan("B") ? SC.verdict(S.cmp, "A", "B") : null;
+      return !v ? "Сравнение требует выбранных мест." : v.code === "better" ? `По правилу сравнения лучше вариант ${v.winner}.` : v.code === "tie" ? "Варианты равны по правилу." : "Ни A, ни B не сокращают расстояния."; } };
+  function askBox() {
+    const box = el("div", { class: "sc-ask" });
+    box.append(el("b", null, "Спросить о результате"));
+    const f = el("form", { class: "sc-row" });
+    const q = el("input", { type: "text", id: "sc-ask-q", maxlength: 600, placeholder: "Например: почему B лучше? что значит порог?", "aria-label": "Вопрос" });
+    const go = el("button", { type: "submit", class: "sc-ghost", id: "sc-ask-go", disabled: AI.busy }, AI.busy ? "Ждём ответ…" : "Спросить");
+    f.append(q, go);
+    f.addEventListener("submit", (e) => { e.preventDefault(); ask(q.value); });
+    box.append(f);
+    const r = AI.last;
+    if (r && r.case_digest === S.digest) {
+      const out = el("div", { class: "sc-ai", role: "status", "aria-live": "polite", id: "sc-ai-out" });
+      out.append(el("span", { class: "sc-tag" }, r.source === "model" ? `Ответ AI-помощника (${r.model}): выбор фактов; числа и текст — из расчёта` : "Шаблонный ответ без AI" + (r.reason ? " — " + r.reason : "")));
+      const h = INTENT_HEAD[r.intent]; if (h) out.append(el("p", null, typeof h === "function" ? h() : h));
+      const byId = new Map(S.cmp.facts.map((x) => [x.id, x]));
+      const ul = el("ul"); for (const id of r.fact_ids) { const fx = byId.get(id); if (fx) ul.append(el("li", null, factText(fx))); }
+      if (ul.children.length) out.append(ul);
+      if (r.needs_clarification) out.append(el("p", { class: "sc-note" }, "Уточните: " + r.needs_clarification));
+      const acts = el("div", { class: "sc-row" });
+      for (const c of r.tool_calls) {
+        if (c.name === "show_view") acts.append(btn(c.args.view === "current" ? "Показать «Сейчас»" : `Показать ${c.args.view} на карте`, () => setView(c.args.view), { class: "sc-ghost" }));
+        if (c.name === "select_origin") acts.append(btn("Открыть точку " + c.args.origin_id, () => select("origin", c.args.origin_id), { class: "sc-ghost" }));
+        if (c.name === "open_limits") acts.append(btn("Что расчёт не говорит", () => { const d = card.querySelector(".sc-limits"); if (d) { d.open = true; d.scrollIntoView({ block: "nearest" }); } }, { class: "sc-ghost" }));
+      }
+      if (acts.children.length) out.append(acts, el("small", { class: "sc-note" }, "Кнопки только меняют вид. Места A/B меняете вы сами."));
+      box.append(out);
+    }
+    return box;
+  }
+  function ask(question) {
+    question = String(question || "").trim();
+    if (!question) { S.msg = "Введите вопрос."; render(); return; }
+    const rid = "q" + (++AI.seq) + "-" + Date.now().toString(36), digest = S.digest;
+    const facts = S.cmp.facts.map((f) => ({ id: f.id, metric: f.metric, value: f.value, unit: f.unit, plan_id: f.plan_id, origin_id: f.origin_id }));
+    const views = ["current", ...["A", "B"].filter((v) => plan(v))];
+    AI.pending = { rid, digest }; AI.busy = true; S.msg = ""; render();
+    fetch("/api/school-ai", { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ schema_version: "school-ai-request-v1", request_id: rid, case_digest: digest, question, facts, views, origin_ids: caseOf(S.city).origins.map((o) => o.id) }) })
+      .then((r) => r.json().then((j) => ({ ok: r.ok, j })))
+      .then(({ ok, j }) => {
+        AI.busy = false;
+        if (!ok) { S.msg = "Сервер отклонил вопрос: " + (j.error || "ошибка"); render(); return; }
+        // the answer counts only for the request that asked it and only while the inputs are unchanged
+        if (!AI.pending || j.request_id !== AI.pending.rid || j.case_digest !== AI.pending.digest || j.case_digest !== S.digest) { S.msg = "Ответ устарел: входы кейса изменились после вопроса. Спросите снова."; render(); return; }
+        AI.last = j; AI.pending = null; render();
+      }, () => { AI.busy = false; AI.pending = null; S.msg = "Сервер не ответил. Ответ не получен; цифры выше — из расчёта в браузере."; render(); });
+  }
   function fileRow() {
     const r = el("div", { class: "sc-row sc-files" });
+    if (window.SCHOOL_NOTE && (plan("A") || plan("B"))) r.append(btn("Скачать записку (HTML)", noteFile, { class: "sc-ghost", id: "sc-note", title: "Вывод, таблица, источники, ограничения и встроенные входы кейса" }));
     r.append(btn("Сохранить кейс (JSON)", exportFile, { class: "sc-ghost", id: "sc-export", title: "Входы кейса и case_digest: файл можно загрузить снова и получить те же числа" }));
-    const inp = el("input", { type: "file", accept: "application/json,.json", id: "sc-import-file", hidden: true });
+    const inp = el("input", { type: "file", accept: "application/json,.json,text/html,.html", id: "sc-import-file", hidden: true });
     inp.addEventListener("change", () => { const f = inp.files && inp.files[0]; inp.value = ""; if (f) importFile(f); });
     r.append(btn("Загрузить кейс…", () => inp.click(), { class: "sc-ghost", id: "sc-import" }), inp);
     r.append(btn("Начать заново", () => { delete S.cases[S.city]; S.compared = false; S.view = "current"; S.diff = false; S.sel = null; S.msg = "Кейс города сброшен к исходному."; recompute(); render(); }, { class: "sc-ghost", id: "sc-reset" }));
@@ -436,7 +504,8 @@
       ex.append(el("p", null, `Для справки: среди ${c.candidates.length} мест правило выбирает «${lab(k)}» — среднее ${m(auto.metrics.mean_distance_mm)} (сейчас ${m(cur.metrics.mean_distance_mm)}).`));
     } else if (auto && !auto.selected_candidate_ids.length) ex.append(el("p", null, "Ни одно место примера не уменьшает сумму расстояний: правило оставляет текущую сеть."));
     card.append(ex);
-    const lim = el("details", { class: "sc-assume" }); lim.append(el("summary", null, "Что этот расчёт не говорит"));
+    card.append(askBox());
+    const lim = el("details", { class: "sc-assume sc-limits" }); lim.append(el("summary", null, "Что этот расчёт не говорит"));
     for (const t2 of [methodKey(c) === "geodesic" ? "Это расстояние по прямой, не пешеходный маршрут и не время в пути." : "Маршрут модельной сети среза, не проверен на месте; отсутствие пути в срезе — ограничение сети, а не доказанная недоступность. Не время в пути.", "Точки — равномерная сетка, не жители и не дети; доля — от всех точек, не от населения.",
       "Вместимость и допуск к приёму школ неизвестны: ближе — не значит, что есть места.", "Школы за рамкой участка не загружены: у края расстояния могут быть завышены.",
       "Места A/B — гипотезы: участок, стоимость и возможность строительства не проверены."]) lim.append(el("p", null, t2));
@@ -511,18 +580,38 @@
   function exportFile() {
     try {
       const c = caseOf(S.city), text = SC.exportCase(c), name = `school-case-${S.city}-${S.cmp.case_digest.slice(7, 15)}.json`;
-      const a = el("a", { href: URL.createObjectURL(new Blob([text], { type: "application/json" })), download: name });
-      document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+      download(text, "application/json", name);
       S.msg = `Кейс сохранён в файл ${name}: входы и case_digest. Загрузка файла пересчитает те же числа.`;
     } catch (e) { S.msg = "Не удалось сохранить: " + (e.detail || e.message); }
     render();
   }
+  function download(text, type, name) {
+    const a = el("a", { href: URL.createObjectURL(new Blob([text], { type })), download: name });
+    document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  }
+  function noteFile() {
+    try {
+      const c = caseOf(S.city), name = `school-note-${S.city}-${S.cmp.case_digest.slice(7, 15)}.html`;
+      const html = window.SCHOOL_NOTE.buildNote(c, S.cmp, { caseText: SC.exportCase(c), cityLabel: D.cities[S.city].label, label: lab,
+        verdict: plan("A") && plan("B") ? SC.verdict(S.cmp, "A", "B") : null, generatedAt: new Date().toISOString().slice(0, 16).replace("T", " ") + " UTC" });
+      download(html, "text/html", name);
+      S.msg = `Записка сохранена: ${name}. В ней же — входы кейса: её можно загрузить обратно.`;
+    } catch (e) { S.msg = "Записка не сохранена: " + (e.detail || e.message); }
+    render();
+  }
   function importFile(file) {
     // size check before reading; parse, validate, bind to the loaded slice, verify digest — or refuse and change nothing
-    if (file.size > SC.LIMITS.bytes) { S.msg = `Файл не загружен: больше ${SC.LIMITS.bytes / 1024} КБ.`; render(); return; }
+    if (file.size > 2 * SC.LIMITS.bytes) { S.msg = `Файл не загружен: больше ${2 * SC.LIMITS.bytes / 1024} КБ.`; render(); return; }
     file.text().then((text) => {
       let c;
-      try { c = SC.importCase(text, D); } catch (e) { S.msg = "Файл не загружен, текущий кейс не изменён: " + (e.detail || e.message); render(); return; }
+      try {
+        if (/^\s*</.test(text)) {  // a decision note: only its embedded case is read, nothing else from the HTML
+          const inner = window.SCHOOL_NOTE && window.SCHOOL_NOTE.extractCase(text);
+          if (!inner) throw new Error("в HTML-файле нет встроенного кейса");
+          text = inner;
+        }
+        c = SC.importCase(text, D);
+      } catch (e) { S.msg = "Файл не загружен, текущий кейс не изменён: " + (e.detail || e.message); render(); return; }
       S.cases[c.city_id] = c;
       S.userSeq = 1 + Math.max(0, ...c.candidates.filter((k) => isUser(k.id)).map((k) => +k.id.slice(1)));
       const msg = `Загружен кейс «${c.title}». Все числа пересчитаны из входов файла.`;
