@@ -1,0 +1,56 @@
+Независимый повторный прогон BUILD r10 (вторая сессия K04, 2026-10-06 UTC)
+Цель: проверить приёмку CODE_SHA 6de3f253d8ec0743450259f9f13722c16cd36099 без доверия к записям первой сессии.
+Метод: git archive CODE_SHA в отдельный каталог; все наборы и браузерный сценарий acceptance.cjs запущены заново в этой среде.
+Код не менялся; CODE_SHA тот же.
+Итог: результаты совпали с runs/acceptance_6de3f25 (26 PASS / 3 NOT_RUN / 0 FAIL в браузере; все наборы зелёные).
+Визуальный просмотр кадров 1440 и 390: сравнение A/B, карточка, легенда и нижний лист читаются. На 390 строка атрибуции
+«Данные: Overture…» касается верхнего края рамки кейса (косметика, данные не закрыты); исправление не делалось.
+NOT_RUN: подложка и 3D-здания OpenFreeMap (host_not_allowed), живой AI (ключа нет; .env не читался),
+проверка людьми, Windows-запуск.
+
+## code_sha 6de3f253d8ec0743450259f9f13722c16cd36099 (git archive, independent rerun by this session)
+## env: Python 3.11.15 / node v22.22.0 / Linux 6.18.44-fc-v70
+## pytest
+133 passed in 23.45s
+## web_check
+OK
+## node plan
+all plan checks passed
+## node resilience
+all resilience checks passed
+## node whatif
+all what-if checks passed
+## node school_case
+all school-case checks incl. K10 package passed (3621)
+## node school_vs_k05
+BUILD school case = K05 compare on 4 cases × (geodesic, unknown paths) + 8 pedestrian matrices (7560 checks)
+## browser acceptance
+PASS    training_mode_52_56 {"score":"52,56","canvases":1,"iframes":0,"offline":true,"mapReady":true}
+PASS    one_canvas_no_iframe {"score":"52,56","canvases":1,"iframes":0,"offline":true,"mapReady":true}
+NOT_RUN basemap_openfreemap OpenFreeMap недоступна из этой среды (host_not_allowed); показан офлайн-фон с подписью
+PASS    city_mode_opens_school_path {"strip":true,"card":true,"actions":true,"text":"Шымкент\nАстана\nДоступность школ\nКакие точки участка дальше от школ и какое место A или B это лучше меняет?\nСЕЙЧАС\nСреднее до школы\n466 м\nДо 500 
+PASS    packages_loaded_and_bound {"shymkent":"source_content_sha256","astana":"vendored_package_manifest"}
+PASS    select_school_shows_provenance_and_links {"head":"М.Х.Дулати атындағы үш тілде оқытатын N8 мамандандырылған  гимназия\" КММ","hl":8,"prov":true}
+PASS    keyboard_pick_B_and_compare {"city":"shymkent","digest":"sha256:a1f393549f2ec9a89ea6be67343f211ff0ba14c980e24ba648eff32c582e075d","v":{"A":"shy-h-2","B":"shy-h-1"},"compared":true,"view":"B"}
+PASS    views_switch_layer_data {"current":{"toNew":0,"metric":"466 м"},"A":{"toNew":12,"metric":"376 м"},"B":{"toNew":4,"metric":"367 м"}}
+PASS    difference_mode_matches_rows {"green":2,"expected":2,"unk":0}
+PASS    input_then_first_click_school {"thr":700,"compared":true}
+PASS    3d_camera_tilt {"pitch":52,"toast":"3D-здания появятся, когда загрузится подложка OpenFreeMap. Сейчас наклоняется только камера.","ext3d":true}
+NOT_RUN 3d_buildings_visible слой akim-3d есть, но тайлы зданий OpenFreeMap недоступны в этой среде
+PASS    3d_offline_explained 3D-здания появятся, когда загрузится подложка OpenFreeMap. Сейчас наклоняется только камера.
+PASS    ai_answer_labelled ШАБЛОННЫЙ ОТВЕТ БЕЗ AI — ПРОВАЙДЕР AI НЕ НАСТРОЕН НА СЕРВЕРЕ (НЕТ КЛЮЧА). ПОКАЗАН ШАБЛОННЫЙ ОТВЕТ.
+NOT_RUN ai_live_provider сервер: провайдер не настроен (нет ключа в среде); живой ответ не проверен
+PASS    ai_network_failure_message Сервер не ответил. Ответ не получен; цифры выше — из расчёта в браузере.
+PASS    ai_stale_answer_discarded {"msg":"Ответ устарел: входы кейса изменились после вопроса. Спросите снова.","shown":false}
+PASS    export_json_file_and_reimport {"file":"school-case-shymkent-a6b2a5fa.json","bytes":34170,"same":true}
+PASS    tampered_import_refused_atomically Файл не загружен, текущий кейс не изменён: case_digest файла не совпадает с пересчитанным: файл изменён
+PASS    note_file_and_reimport {"file":"school-note-shymkent-a6b2a5fa.html","bytes":41477}
+PASS    city_switch_astana_separate {"case_id":"astana-school-access-k10-r10-v1","schools":40,"leak":0,"ai":false,"title":"Астана: доступность школ","compared":false}
+PASS    street_routes_strict_unknown_not_zero {"m":{"total_origins":23,"known_count":17,"unknown_count":6,"partial_count":17,"sum_distance_mm":14811897,"mean_distance_mm":871288.0588235294,"max_distance_mm":1570063,"within_threshold_count":9,"wit
+PASS    f5_restores_case {"before":"a4a4229b76a9","after":"a4a4229b76a9","city":"astana"}
+PASS    advanced_v2_first_click_after_typing {"status":"done","budget":400}
+PASS    return_to_training {"score":"52,56","sc":"none","districts":"visible","strip":true}
+PASS    no_page_errors_1440 []
+PASS    training_plan_kept_across_city_mode {"before":"[{\"measure\":\"M1\",\"district\":\"esil\"}]","after":"[{\"measure\":\"M1\",\"district\":\"esil\"}]"}
+PASS    mobile390_layout {"scrollW":390,"small":[],"compared":true,"canvases":1,"cardTop":487}
+PASS    no_page_errors_390 []

@@ -17,6 +17,7 @@ CODE_SHA (код+тесты, принят на чистой копии): 6de3f25
 Подробно: research/round-10-results/BUILD/STATUS.md, INTEGRATION.json, COMPLETION_MATRIX.json, DEMO_GUIDE.txt.
 
 Проверки на CODE_SHA (чистая копия): pytest 133; ui.web_check 14; node plan/resilience/whatif; school_case 3621; school_vs_k05 7560; браузер 26 PASS / 3 NOT_RUN / 0 FAIL; K10 ui_import_smoke 13/13.
+Независимый повторный прогон того же CODE_SHA второй сессией K04 (git archive, без изменений кода): результаты совпали — research/round-10-results/BUILD/runs/independent_rerun_6de3f25/.
 Не запускалось (NOT_RUN): реальные 3D-здания и подложка (OpenFreeMap: host_not_allowed); живой AI-провайдер (нет ключа; .env не читался); проверка людьми; маршруты на месте; тесты K03/K07 против BUILD SHA.
 
 Доказательства и ограничения: школы — вторичные Overture/OSM, 0 сверено с официальным перечнем (все официальные источники NOT_FETCHED у K01/K10); точки — не жители; места — гипотезы; стоимости и вместимости нет (K11 не поставил); расстояния по прямой или по модели сети.

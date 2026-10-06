@@ -1,0 +1,268 @@
+{
+ "code_sha": "6de3f253d8ec0743450259f9f13722c16cd36099",
+ "url": "http://127.0.0.1:8501/",
+ "browser": "Chromium (Playwright, headless, swiftshader)",
+ "checks": [
+  {
+   "id": "training_mode_52_56",
+   "status": "PASS",
+   "detail": {
+    "score": "52,56",
+    "canvases": 1,
+    "iframes": 0,
+    "offline": true,
+    "mapReady": true
+   }
+  },
+  {
+   "id": "one_canvas_no_iframe",
+   "status": "PASS",
+   "detail": {
+    "score": "52,56",
+    "canvases": 1,
+    "iframes": 0,
+    "offline": true,
+    "mapReady": true
+   }
+  },
+  {
+   "id": "basemap_openfreemap",
+   "status": "NOT_RUN",
+   "detail": "OpenFreeMap недоступна из этой среды (host_not_allowed); показан офлайн-фон с подписью"
+  },
+  {
+   "id": "city_mode_opens_school_path",
+   "status": "PASS",
+   "detail": {
+    "strip": true,
+    "card": true,
+    "actions": true,
+    "text": "Шымкент\nАстана\nДоступность школ\nКакие точки участка дальше от школ и какое место A или B это лучше меняет?\nСЕЙЧАС\nСреднее до школы\n466 м\nДо 500 м\n7 из 12 точек\nДальше всего\n953 м\nпо прямой\nРасширенный режим | Шымкент: доступность школ",
+    "pkg": {
+     "shymkent": "source_content_sha256",
+     "astana": "vendored_package_manifest"
+    }
+   }
+  },
+  {
+   "id": "packages_loaded_and_bound",
+   "status": "PASS",
+   "detail": {
+    "shymkent": "source_content_sha256",
+    "astana": "vendored_package_manifest"
+   }
+  },
+  {
+   "id": "select_school_shows_provenance_and_links",
+   "status": "PASS",
+   "detail": {
+    "head": "М.Х.Дулати атындағы үш тілде оқытатын N8 мамандандырылған  гимназия\" КММ",
+    "hl": 8,
+    "prov": true
+   }
+  },
+  {
+   "id": "keyboard_pick_B_and_compare",
+   "status": "PASS",
+   "detail": {
+    "city": "shymkent",
+    "digest": "sha256:a1f393549f2ec9a89ea6be67343f211ff0ba14c980e24ba648eff32c582e075d",
+    "v": {
+     "A": "shy-h-2",
+     "B": "shy-h-1"
+    },
+    "compared": true,
+    "view": "B"
+   }
+  },
+  {
+   "id": "views_switch_layer_data",
+   "status": "PASS",
+   "detail": {
+    "current": {
+     "toNew": 0,
+     "metric": "466 м"
+    },
+    "A": {
+     "toNew": 12,
+     "metric": "376 м"
+    },
+    "B": {
+     "toNew": 4,
+     "metric": "367 м"
+    }
+   }
+  },
+  {
+   "id": "difference_mode_matches_rows",
+   "status": "PASS",
+   "detail": {
+    "green": 2,
+    "expected": 2,
+    "unk": 0
+   }
+  },
+  {
+   "id": "input_then_first_click_school",
+   "status": "PASS",
+   "detail": {
+    "thr": 700,
+    "compared": true
+   }
+  },
+  {
+   "id": "3d_camera_tilt",
+   "status": "PASS",
+   "detail": {
+    "pitch": 52,
+    "toast": "3D-здания появятся, когда загрузится подложка OpenFreeMap. Сейчас наклоняется только камера.",
+    "ext3d": true
+   }
+  },
+  {
+   "id": "3d_buildings_visible",
+   "status": "NOT_RUN",
+   "detail": "слой akim-3d есть, но тайлы зданий OpenFreeMap недоступны в этой среде"
+  },
+  {
+   "id": "3d_offline_explained",
+   "status": "PASS",
+   "detail": "3D-здания появятся, когда загрузится подложка OpenFreeMap. Сейчас наклоняется только камера."
+  },
+  {
+   "id": "ai_answer_labelled",
+   "status": "PASS",
+   "detail": "ШАБЛОННЫЙ ОТВЕТ БЕЗ AI — ПРОВАЙДЕР AI НЕ НАСТРОЕН НА СЕРВЕРЕ (НЕТ КЛЮЧА). ПОКАЗАН ШАБЛОННЫЙ ОТВЕТ.\n\nПо правилу сравнения лучше вариант B.\n\nСреднее до школы (сей"
+  },
+  {
+   "id": "ai_live_provider",
+   "status": "NOT_RUN",
+   "detail": "сервер: провайдер не настроен (нет ключа в среде); живой ответ не проверен"
+  },
+  {
+   "id": "ai_network_failure_message",
+   "status": "PASS",
+   "detail": "Сервер не ответил. Ответ не получен; цифры выше — из расчёта в браузере."
+  },
+  {
+   "id": "ai_stale_answer_discarded",
+   "status": "PASS",
+   "detail": {
+    "msg": "Ответ устарел: входы кейса изменились после вопроса. Спросите снова.",
+    "shown": false
+   }
+  },
+  {
+   "id": "export_json_file_and_reimport",
+   "status": "PASS",
+   "detail": {
+    "file": "school-case-shymkent-a6b2a5fa.json",
+    "bytes": 34170,
+    "same": true
+   }
+  },
+  {
+   "id": "tampered_import_refused_atomically",
+   "status": "PASS",
+   "detail": "Файл не загружен, текущий кейс не изменён: case_digest файла не совпадает с пересчитанным: файл изменён"
+  },
+  {
+   "id": "note_file_and_reimport",
+   "status": "PASS",
+   "detail": {
+    "file": "school-note-shymkent-a6b2a5fa.html",
+    "bytes": 41477
+   }
+  },
+  {
+   "id": "city_switch_astana_separate",
+   "status": "PASS",
+   "detail": {
+    "case_id": "astana-school-access-k10-r10-v1",
+    "schools": 40,
+    "leak": 0,
+    "ai": false,
+    "title": "Астана: доступность школ",
+    "compared": false
+   }
+  },
+  {
+   "id": "street_routes_strict_unknown_not_zero",
+   "status": "PASS",
+   "detail": {
+    "m": {
+     "total_origins": 23,
+     "known_count": 17,
+     "unknown_count": 6,
+     "partial_count": 17,
+     "sum_distance_mm": 14811897,
+     "mean_distance_mm": 871288.0588235294,
+     "max_distance_mm": 1570063,
+     "within_threshold_count": 9,
+     "within_threshold_share_of_all_points": 0.391304347826087
+    },
+    "label": "по улицам"
+   }
+  },
+  {
+   "id": "f5_restores_case",
+   "status": "PASS",
+   "detail": {
+    "before": "a4a4229b76a9",
+    "after": "a4a4229b76a9",
+    "city": "astana"
+   }
+  },
+  {
+   "id": "advanced_v2_first_click_after_typing",
+   "status": "PASS",
+   "detail": {
+    "status": "done",
+    "budget": 400
+   }
+  },
+  {
+   "id": "return_to_training",
+   "status": "PASS",
+   "detail": {
+    "score": "52,56",
+    "sc": "none",
+    "districts": "visible",
+    "strip": true
+   }
+  },
+  {
+   "id": "no_page_errors_1440",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "id": "training_plan_kept_across_city_mode",
+   "status": "PASS",
+   "detail": {
+    "before": "[{\"measure\":\"M1\",\"district\":\"esil\"}]",
+    "after": "[{\"measure\":\"M1\",\"district\":\"esil\"}]"
+   }
+  },
+  {
+   "id": "mobile390_layout",
+   "status": "PASS",
+   "detail": {
+    "scrollW": 390,
+    "small": [],
+    "compared": true,
+    "canvases": 1,
+    "cardTop": 487
+   }
+  },
+  {
+   "id": "no_page_errors_390",
+   "status": "PASS",
+   "detail": []
+  }
+ ],
+ "summary": {
+  "PASS": 26,
+  "NOT_RUN": 3
+ }
+}
