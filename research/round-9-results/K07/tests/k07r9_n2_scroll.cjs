@@ -1,14 +1,14 @@
 // K07 round 9: N2 assessment — is the horizontal scroll of the Pareto table at 390 px an accessibility problem?
 // REVIEW r9: a local horizontal scroll is not an error by itself; judge keyboard access and loss of information.
 // Usage: node k07r9_n2_scroll.cjs --app-root <BUILD extraction> [--label …] [--sha …] [--out …]
-// Checks (390×844, Chromium): N2a the table really overflows (precondition); N2b no data loss — every cell has text, none is
+// Checks (390×844 by default, --width N; Chromium): N2a the table fits or overflows inside a scroll container (recorded); N2b no data loss — every cell has text, none is
 // clipped by text-overflow, each cell can be scrolled fully into the visible part of its scroll container; N2c keyboard —
 // the scroll container is reached by Tab from «Найти точные оптимумы» and ArrowRight scrolls it; N2d (advisory, not a
 // verdict) — the container has a role and an accessible name. Data: BUILD's own SYNTHETIC demo set.
 const path = require("path"), fs = require("fs"), { pathToFileURL } = require("url");
 const { chromium } = require("playwright");
-const a = process.argv.slice(2), OPT = { label: "n2", sha: null, out: null, appRoot: null };
-for (let i = 0; i < a.length; i++) { const k = a[i], v = a[i + 1]; if (k === "--app-root") { OPT.appRoot = v; i++; } else if (k === "--label") { OPT.label = v; i++; } else if (k === "--sha") { OPT.sha = v; i++; } else if (k === "--out") { OPT.out = v; i++; } else { console.error("unknown argument " + k); process.exit(2); } }
+const a = process.argv.slice(2), OPT = { label: "n2", sha: null, out: null, appRoot: null, width: 390 };
+for (let i = 0; i < a.length; i++) { const k = a[i], v = a[i + 1]; if (k === "--app-root") { OPT.appRoot = v; i++; } else if (k === "--width") { OPT.width = Number(v); i++; } else if (k === "--label") { OPT.label = v; i++; } else if (k === "--sha") { OPT.sha = v; i++; } else if (k === "--out") { OPT.out = v; i++; } else { console.error("unknown argument " + k); process.exit(2); } }
 const ROOT = path.resolve(OPT.appRoot), WEB = fs.existsSync(path.join(ROOT, "web")) ? path.join(ROOT, "web") : ROOT;
 const OUT = path.resolve(OPT.out || path.join(__dirname, "..", "results", OPT.label));
 const checks = [];
@@ -17,7 +17,7 @@ const check = (id, expect, ok, observed, pre) => checks.push({ id, expect, verdi
 (async () => {
   fs.mkdirSync(path.join(OUT, "screenshots"), { recursive: true });
   const browser = await chromium.launch();
-  const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } }), p = await ctx.newPage(), errors = [];
+  const ctx = await browser.newContext({ viewport: { width: OPT.width, height: 844 } }), p = await ctx.newPage(), errors = [];
   p.on("pageerror", (e) => errors.push(String(e)));
   await p.goto(pathToFileURL(path.join(WEB, "index.html")).href);
   await p.waitForSelector("#map g[data-id]");
@@ -35,7 +35,8 @@ const check = (id, expect, ok, observed, pre) => checks.push({ id, expect, verdi
       role: scroller && scroller.getAttribute("role"), name: scroller && (scroller.getAttribute("aria-label") || scroller.getAttribute("aria-labelledby")), tabindex: scroller && scroller.getAttribute("tabindex"),
       tableName: t.getAttribute("aria-label"), cells: t.querySelectorAll("td").length };
   });
-  check("N2a", "precondition: at 390 px the Pareto table overflows its card horizontally (otherwise N2 does not apply)", !!info && info.overflow, info, !!info);
+  // N2a: either the table fits (N2 resolved, nothing to check) or it overflows and N2b/N2c decide whether that is acceptable
+  check("N2a", `at ${OPT.width} px the Pareto table fits its card, or overflows inside a scroll container (then N2b/N2c apply)`, !!info, info, !!info);
   if (info && info.overflow) {
     // N2b: no data loss — every cell can be brought fully into view inside the scroller
     const loss = await p.evaluate(() => {

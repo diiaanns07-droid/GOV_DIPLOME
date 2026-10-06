@@ -1,0 +1,467 @@
+{
+ "kind": "K07 round-9 independent browser tests of the BUILD resilience panel",
+ "label": "build_d18847f+k07r9",
+ "sha": "d18847f+k07r9",
+ "app_root": "city-evidence",
+ "total": 36,
+ "pass": [
+  "BR1",
+  "BR2",
+  "BR3",
+  "BR4",
+  "BR5",
+  "BR6",
+  "BR7",
+  "BR11",
+  "BR9",
+  "BR8",
+  "BR17",
+  "BR10",
+  "BR10b",
+  "BR14",
+  "BR12",
+  "BR13a",
+  "BR13b",
+  "BR16",
+  "BR18",
+  "BR19",
+  "BR23",
+  "BR24",
+  "BR25",
+  "BR20",
+  "BR21",
+  "BR21b",
+  "BR22",
+  "BRT1",
+  "BRT2",
+  "BRT3",
+  "BRN1",
+  "BRN2",
+  "BRN3",
+  "BRN4",
+  "BRN5",
+  "BRN6"
+ ],
+ "fail": [],
+ "test_incompatible": [],
+ "note": "SYNTHETIC plans (BUILD demo, K07 files) on the real slices; record IDs are real; exclusions are conditional assumptions, not closures. setTimeout slowed to ≥ 40 ms only for the cancel/stale checks.",
+ "checks": [
+  {
+   "id": "BR1",
+   "area": "path",
+   "expect": "v2 shows the panel with «Условно исключаем из расчёта; это не подтверждение закрытия»; a case lists all real records of the category (one checkbox each)",
+   "verdict": "PASS",
+   "observed": {
+    "notice": "Условно исключаем из расчёта; это не подтверждение закрытия. Пустые исходные дан",
+    "recs": 15,
+    "nRec": 15
+   }
+  },
+  {
+   "id": "BR2",
+   "area": "keyboard",
+   "expect": "«Добавить случай» with Enter: case c1, focus on its name field; typing a name + Tab applies it and moves the focus on (not <body>)",
+   "verdict": "PASS",
+   "observed": {
+    "afterAdd": "rsLabel_c1",
+    "label": "две записи",
+    "focus": "rsShow_c1"
+   }
+  },
+  {
+   "id": "BR3",
+   "area": "keyboard",
+   "expect": "Space chooses / un-chooses records of the case; the case summary shows «исключено 2 из N»",
+   "verdict": "PASS",
+   "observed": {
+    "ids": 2,
+    "sum": "c1: две записи — исключено 2 из 15"
+   }
+  },
+  {
+   "id": "BR4",
+   "area": "cases",
+   "expect": "a second case with the same records is allowed and named as a duplicate (c1 = c2)",
+   "verdict": "PASS",
+   "observed": "Одинаковые наборы исключений: c1 = c2 — допустимо, результат от повтора не меняется."
+  },
+  {
+   "id": "BR5",
+   "area": "keyboard",
+   "expect": "«Удалить случай» with Enter removes it; the focus stays in the panel (previous «Удалить» or «Добавить случай»)",
+   "verdict": "PASS",
+   "observed": {
+    "cases": 1,
+    "focus": "rsDel_c1"
+   }
+  },
+  {
+   "id": "BR6",
+   "area": "compare",
+   "expect": "«Сравнить» with Enter: focus stays in the panel while running and after; cards Ручной/Обычный/Устойчивый = the independent K07 oracle (plan IDs, price)",
+   "verdict": "PASS",
+   "observed": {
+    "focusRun": "rsRun",
+    "focusDone": "rsRun",
+    "page": {
+     "status": "optimal",
+     "nominal": [
+      "K1",
+      "K2",
+      "K8"
+     ],
+     "robust": [
+      "K1",
+      "K4",
+      "K6"
+     ],
+     "price": 43.505636363636384
+    },
+    "oracle": {
+     "nominal": [
+      "K1",
+      "K2",
+      "K8"
+     ],
+     "robust": [
+      "K1",
+      "K4",
+      "K6"
+     ],
+     "price": 43.505636363636384
+    },
+    "cards": {
+     "manual": "без новых объектов",
+     "nominal": "K1, K2, K8",
+     "robust": "K1, K4, K6"
+    }
+   }
+  },
+  {
+   "id": "BR7",
+   "area": "null",
+   "expect": "every record excluded and no site in the manual plan: the table shows «нет данных» / «без расстояния: N», the worst outcome says «среднее не определено» (no 0 m)",
+   "verdict": "PASS",
+   "observed": {
+    "nullCell": "▲ нет данных · худшая нет данных · охват 0/55 · без расстояния: 10",
+    "manualWorst": "без новых объектов | 0 усл. ед. | 257 м | 10 точек без расстояния; среднее не определено, худшая точка нет данных | c3 (все записи категории)"
+   }
+  },
+  {
+   "id": "BR11",
+   "area": "apply",
+   "expect": "«Применить» (устойчивый) replaces the manual plan only on Enter; «Вернуть ручной план» restores it; focus not lost",
+   "verdict": "PASS",
+   "observed": {
+    "applied": [
+     "K1",
+     "K4",
+     "K6"
+    ],
+    "restored": [],
+    "focus": [
+     "rsApply_robust",
+     "rsRun"
+    ]
+   }
+  },
+  {
+   "id": "BR9",
+   "area": "stale",
+   "expect": "editing a weight (type + Tab) after the comparison: focus moves on, the comparison is marked out of date, «Применить» disappears",
+   "verdict": "PASS",
+   "observed": {
+    "status": "stale",
+    "msg": "Входные данные изменились — прежнее сравнение устарело. Запустите снова.",
+    "focus": "plDelP_P1"
+   }
+  },
+  {
+   "id": "BR8",
+   "area": "null",
+   "expect": "required site cost > budget: «Нет допустимых планов» with the reason; no Обычный/Устойчивый cards, no price",
+   "verdict": "PASS",
+   "observed": {
+    "msg": "Нет допустимых планов: стоимость обязательных 100 > бюджета 50 усл. ед.",
+    "robustCard": 0
+   }
+  },
+  {
+   "id": "BR17",
+   "area": "import",
+   "expect": "a resilience file with derived results is refused («не принят»), the current plan and cases stay unchanged",
+   "verdict": "PASS",
+   "observed": {
+    "msg": "Файл не принят, текущее состояние не изменено: поле \"derived_results\" не допускается (производные значения в city-resilience-v1 не принимаются)"
+   }
+  },
+  {
+   "id": "BR10",
+   "area": "cancel",
+   "expect": "12 sites × 7 cases: «Отменить» stops the run, no result arrives later, message «отменено», focus not lost",
+   "verdict": "PASS",
+   "observed": {
+    "loaded": true,
+    "mid": "running",
+    "status": "cancelled",
+    "msg": "Сравнение отменено (просмотрено 1024 из 4096); неполный результат не показывается, ручной план не изменён.",
+    "focus": "rsRun"
+   }
+  },
+  {
+   "id": "BR10b",
+   "area": "stale",
+   "expect": "changing the budget while comparing stops the run («поиск остановлен»); its answer never appears",
+   "verdict": "PASS",
+   "observed": {
+    "mid": "running",
+    "atChange": "running",
+    "status": "stale",
+    "msg": "Входные данные изменились — поиск остановлен, его ответ не будет показан."
+   }
+  },
+  {
+   "id": "BR14",
+   "area": "keyboard",
+   "expect": "the panel's Tab stops stay bounded (≤ 7 cases × (records + 4) + 20); no map mode",
+   "verdict": "PASS",
+   "observed": {
+    "stops": 138,
+    "records": 15
+   }
+  },
+  {
+   "id": "BR12",
+   "area": "limits",
+   "expect": "13 sites: the panel names the 12-site limit, nothing is removed automatically, «Сравнить» disabled",
+   "verdict": "PASS",
+   "observed": {
+    "cands": 13,
+    "lim": "Анализ устойчивости — до 12 кандидатов, сейчас 13. Ничего не отбрасывается автоматически: удалите лишних кандидатов в плане v2 (обычный v2 по-прежнему решает до 16)."
+   }
+  },
+  {
+   "id": "BR13a",
+   "area": "reset",
+   "expect": "category change resets the cases (no IDs carried) with a reason",
+   "verdict": "PASS",
+   "observed": {
+    "cases": 0,
+    "msg": "Город или категория изменились — случаи сброшены: ID исходных записей не переносятся."
+   }
+  },
+  {
+   "id": "BR13b",
+   "area": "reset",
+   "expect": "city switch resets the cases with a reason (nothing carried to Astana)",
+   "verdict": "PASS",
+   "observed": {
+    "city": "astana",
+    "cases": 0,
+    "msg": "Город изменён — случаи сброшены: ID записей другого города не переносятся."
+   }
+  },
+  {
+   "id": "BR16",
+   "area": "general",
+   "expect": "no console or page errors on the desktop path",
+   "verdict": "PASS",
+   "observed": []
+  },
+  {
+   "id": "BR18",
+   "area": "race",
+   "expect": "case name typed + immediate «Сравнить»: the run uses the typed name and finishes (not «устарело»)",
+   "verdict": "PASS",
+   "observed": {
+    "status": "done",
+    "label": "метка без Tab",
+    "env": "метка без Tab",
+    "msg": "Готово: просмотрены все 256 наборов, допустимых 49."
+   }
+  },
+  {
+   "id": "BR19",
+   "area": "race",
+   "expect": "budget typed + immediate «Сравнить»: the comparison uses the typed budget and is not stale",
+   "verdict": "PASS",
+   "observed": {
+    "status": "done",
+    "budget": 777,
+    "msg": "Готово: просмотрены все 256 наборов, допустимых 77."
+   }
+  },
+  {
+   "id": "BR23",
+   "area": "race",
+   "expect": "planner: budget typed + immediate «Найти точные оптимумы»: the search uses the typed budget and finishes",
+   "verdict": "PASS",
+   "observed": {
+    "status": "done",
+    "budget": 650,
+    "state": 650
+   }
+  },
+  {
+   "id": "BR24",
+   "area": "race",
+   "expect": "planner: budget typed + a human-speed click (100 ms press) on «Найти точные оптимумы» starts the search with the typed budget (the click is not lost)",
+   "verdict": "PASS",
+   "observed": {
+    "status": "done",
+    "budget": 660,
+    "state": 660
+   }
+  },
+  {
+   "id": "BR25",
+   "area": "race",
+   "expect": "case name typed + a human-speed click (100 ms press) on «Сравнить» starts the comparison (the click is not lost)",
+   "verdict": "PASS",
+   "observed": {
+    "status": "done",
+    "label": "человеческий клик",
+    "msg": "Готово: просмотрены все 256 наборов, допустимых 58."
+   }
+  },
+  {
+   "id": "BR20",
+   "area": "race",
+   "expect": "case name typed + immediate «Удалить случай»: the case is gone, no error message about the name, focus not lost",
+   "verdict": "PASS",
+   "observed": {
+    "cases": [
+     "c1"
+    ],
+    "msg": "Случай c2 удалён.",
+    "focus": "rsDel_c1"
+   }
+  },
+  {
+   "id": "BR21",
+   "area": "race",
+   "expect": "invalid cost typed + immediate city switch: Astana gets no Shymkent sites or cases, no page error (observed: plan message after the switch)",
+   "verdict": "PASS",
+   "observed": {
+    "city": "astana",
+    "cands": 0,
+    "cases": 0,
+    "planMsg": "Город изменён — сценарий v2 сброшен: точки и кандидаты между городами не переносятся, старые результаты поиска не применяются.",
+    "errors": []
+   }
+  },
+  {
+   "id": "BR21b",
+   "area": "race",
+   "expect": "after that switch the plan message gives the city-reset reason, not a refusal about the old city's site K1",
+   "verdict": "PASS",
+   "observed": {
+    "planMsg": "Город изменён — сценарий v2 сброшен: точки и кандидаты между городами не переносятся, старые результаты поиска не применяются."
+   }
+  },
+  {
+   "id": "BR22",
+   "area": "general",
+   "expect": "no console or page errors on the race path",
+   "verdict": "PASS",
+   "observed": []
+  },
+  {
+   "id": "BRT1",
+   "area": "touch",
+   "expect": "390 px touch: budget typed + tap «Найти точные оптимумы» runs the search with the typed budget",
+   "verdict": "PASS",
+   "observed": {
+    "status": "done",
+    "budget": 670
+   }
+  },
+  {
+   "id": "BRT2",
+   "area": "touch",
+   "expect": "390 px touch: invalid cost typed + tap «Астана»: no sites carried, the message gives the city-reset reason (not a refusal about Shymkent's K1)",
+   "verdict": "PASS",
+   "observed": {
+    "city": "astana",
+    "cands": 0,
+    "msg": "Город изменён — сценарий v2 сброшен: точки и кандидаты между городами не переносятся, старые результаты поиска не применяются."
+   }
+  },
+  {
+   "id": "BRT3",
+   "area": "general",
+   "expect": "no page errors on the touch path",
+   "verdict": "PASS",
+   "observed": []
+  },
+  {
+   "id": "BRN1",
+   "area": "390px",
+   "expect": "390 px: typing a weight and Tab applies it and moves the focus on (not <body>)",
+   "verdict": "PASS",
+   "observed": {
+    "w": 7,
+    "focus": "plDelP_P1"
+   }
+  },
+  {
+   "id": "BRN2",
+   "area": "390px",
+   "expect": "390 px: un-choosing a record and deleting a case work; the focus stays in the panel",
+   "verdict": "PASS",
+   "observed": {
+    "cases": 1,
+    "ids": 14,
+    "focus": "rsDel_c1"
+   }
+  },
+  {
+   "id": "BRN3",
+   "area": "390px",
+   "expect": "390 px: no horizontal page scroll; nothing sticks out of the panel; the per-case table loses no data (no ellipsis; any overflow scrolls inside its container)",
+   "verdict": "PASS",
+   "observed": {
+    "pageScroll": false,
+    "outside": [],
+    "tableScrolls": false,
+    "clipped": 0,
+    "region": {
+     "role": null,
+     "name": null,
+     "tabindex": null
+    }
+   }
+  },
+  {
+   "id": "BRN4",
+   "area": "390px",
+   "expect": "390 px: a scrolling per-case table is reachable with Tab (Chromium focuses scrollers); advisory: role/name/tabindex for other browsers",
+   "verdict": "PASS",
+   "observed": {
+    "tableScrolls": false,
+    "reach": null,
+    "region": {
+     "role": null,
+     "name": null,
+     "tabindex": null
+    }
+   }
+  },
+  {
+   "id": "BRN5",
+   "area": "390px",
+   "expect": "390 px: city switch resets the cases with a reason",
+   "verdict": "PASS",
+   "observed": {
+    "msg": "Город изменён — случаи сброшены: ID записей другого города не переносятся."
+   }
+  },
+  {
+   "id": "BRN6",
+   "area": "general",
+   "expect": "no console or page errors at 390 px",
+   "verdict": "PASS",
+   "observed": []
+  }
+ ]
+}

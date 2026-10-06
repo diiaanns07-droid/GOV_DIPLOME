@@ -1,0 +1,31 @@
+{
+ "kind": "K07 r9 N2 assessment (horizontal scroll of the Pareto table at 390 px)",
+ "label": "build_d18847f+k07r9",
+ "sha": "d18847f+k07r9",
+ "app_root": "city-evidence",
+ "total": 1,
+ "pass": [
+  "N2a"
+ ],
+ "fail": [],
+ "test_incompatible": [],
+ "advisory_N2d": null,
+ "errors": [],
+ "checks": [
+  {
+   "id": "N2a",
+   "expect": "at 390 px the Pareto table fits its card, or overflows inside a scroll container (then N2b/N2c apply)",
+   "verdict": "PASS",
+   "observed": {
+    "overflow": false,
+    "scrollWidth": null,
+    "clientWidth": null,
+    "role": null,
+    "name": null,
+    "tabindex": null,
+    "tableName": "Граница Парето",
+    "cells": 32
+   }
+  }
+ ]
+}

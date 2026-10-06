@@ -1,0 +1,1583 @@
+[
+ {
+  "name": "shymkent/school/demo",
+  "status": "optimal",
+  "feasible_count": 10,
+  "nominal": {
+   "selected_ids": [
+    "site-2"
+   ],
+   "cost": 90,
+   "worst_case_ids": [
+    "C4"
+   ],
+   "worst_vector": [
+    0,
+    21283574,
+    1424789
+   ],
+   "per_case": [
+    {
+     "case_id": "base",
+     "unknown_count": 0,
+     "weighted_sum_mm": 6677021,
+     "max_mm": 558828,
+     "covered_weight": 14
+    },
+    {
+     "case_id": "C1",
+     "unknown_count": 0,
+     "weighted_sum_mm": 7534733,
+     "max_mm": 558828,
+     "covered_weight": 12
+    },
+    {
+     "case_id": "C2",
+     "unknown_count": 0,
+     "weighted_sum_mm": 8058259,
+     "max_mm": 624035,
+     "covered_weight": 12
+    },
+    {
+     "case_id": "C3",
+     "unknown_count": 0,
+     "weighted_sum_mm": 7534733,
+     "max_mm": 558828,
+     "covered_weight": 12
+    },
+    {
+     "case_id": "C4",
+     "unknown_count": 0,
+     "weighted_sum_mm": 21283574,
+     "max_mm": 1424789,
+     "covered_weight": 2
+    }
+   ]
+  },
+  "robust": {
+   "selected_ids": [
+    "site-2",
+    "site-4"
+   ],
+   "cost": 150,
+   "worst_case_ids": [
+    "C4"
+   ],
+   "worst_vector": [
+    0,
+    15466352,
+    1219551
+   ],
+   "per_case": [
+    {
+     "case_id": "base",
+     "unknown_count": 0,
+     "weighted_sum_mm": 6677021,
+     "max_mm": 558828,
+     "covered_weight": 14
+    },
+    {
+     "case_id": "C1",
+     "unknown_count": 0,
+     "weighted_sum_mm": 7534733,
+     "max_mm": 558828,
+     "covered_weight": 12
+    },
+    {
+     "case_id": "C2",
+     "unknown_count": 0,
+     "weighted_sum_mm": 8058259,
+     "max_mm": 624035,
+     "covered_weight": 12
+    },
+    {
+     "case_id": "C3",
+     "unknown_count": 0,
+     "weighted_sum_mm": 7534733,
+     "max_mm": 558828,
+     "covered_weight": 12
+    },
+    {
+     "case_id": "C4",
+     "unknown_count": 0,
+     "weighted_sum_mm": 15466352,
+     "max_mm": 1219551,
+     "covered_weight": 5
+    }
+   ]
+  },
+  "price_of_robustness_m": 0.0,
+  "manual": {
+   "selected_ids": [
+    "site-2"
+   ],
+   "cost": 90,
+   "worst_case_ids": [
+    "C4"
+   ],
+   "worst_vector": [
+    0,
+    21283574,
+    1424789
+   ],
+   "per_case": [
+    {
+     "case_id": "base",
+     "unknown_count": 0,
+     "weighted_sum_mm": 6677021,
+     "max_mm": 558828,
+     "covered_weight": 14
+    },
+    {
+     "case_id": "C1",
+     "unknown_count": 0,
+     "weighted_sum_mm": 7534733,
+     "max_mm": 558828,
+     "covered_weight": 12
+    },
+    {
+     "case_id": "C2",
+     "unknown_count": 0,
+     "weighted_sum_mm": 8058259,
+     "max_mm": 624035,
+     "covered_weight": 12
+    },
+    {
+     "case_id": "C3",
+     "unknown_count": 0,
+     "weighted_sum_mm": 7534733,
+     "max_mm": 558828,
+     "covered_weight": 12
+    },
+    {
+     "case_id": "C4",
+     "unknown_count": 0,
+     "weighted_sum_mm": 21283574,
+     "max_mm": 1424789,
+     "covered_weight": 2
+    }
+   ]
+  }
+ },
+ {
+  "name": "shymkent/school/budget300_max3",
+  "status": "optimal",
+  "feasible_count": 47,
+  "nominal": {
+   "selected_ids": [
+    "site-1",
+    "site-2",
+    "site-6"
+   ],
+   "cost": 290,
+   "worst_case_ids": [
+    "C2"
+   ],
+   "worst_vector": [
+    0,
+    7036040,
+    624035
+   ],
+   "per_case": [
+    {
+     "case_id": "base",
+     "unknown_count": 0,
+     "weighted_sum_mm": 5654802,
+     "max_mm": 357287,
+     "covered_weight": 18
+    },
+    {
+     "case_id": "C1",
+     "unknown_count": 0,
+     "weighted_sum_mm": 6512514,
+     "max_mm": 467567,
+     "covered_weight": 16
+    },
+    {
+     "case_id": "C2",
+     "unknown_count": 0,
+     "weighted_sum_mm": 7036040,
+     "max_mm": 624035,
+     "covered_weight": 16
+    }
+   ]
+  },
+  "robust": {
+   "selected_ids": [
+    "site-1",
+    "site-2",
+    "site-6"
+   ],
+   "cost": 290,
+   "worst_case_ids": [
+    "C2"
+   ],
+   "worst_vector": [
+    0,
+    7036040,
+    624035
+   ],
+   "per_case": [
+    {
+     "case_id": "base",
+     "unknown_count": 0,
+     "weighted_sum_mm": 5654802,
+     "max_mm": 357287,
+     "covered_weight": 18
+    },
+    {
+     "case_id": "C1",
+     "unknown_count": 0,
+     "weighted_sum_mm": 6512514,
+     "max_mm": 467567,
+     "covered_weight": 16
+    },
+    {
+     "case_id": "C2",
+     "unknown_count": 0,
+     "weighted_sum_mm": 7036040,
+     "max_mm": 624035,
+     "covered_weight": 16
+    }
+   ]
+  },
+  "price_of_robustness_m": 0.0,
+  "manual": {
+   "selected_ids": [
+    "site-2",
+    "site-4"
+   ],
+   "cost": 150,
+   "worst_case_ids": [
+    "C2"
+   ],
+   "worst_vector": [
+    0,
+    8058259,
+    624035
+   ],
+   "per_case": [
+    {
+     "case_id": "base",
+     "unknown_count": 0,
+     "weighted_sum_mm": 6677021,
+     "max_mm": 558828,
+     "covered_weight": 14
+    },
+    {
+     "case_id": "C1",
+     "unknown_count": 0,
+     "weighted_sum_mm": 7534733,
+     "max_mm": 558828,
+     "covered_weight": 12
+    },
+    {
+     "case_id": "C2",
+     "unknown_count": 0,
+     "weighted_sum_mm": 8058259,
+     "max_mm": 624035,
+     "covered_weight": 12
+    }
+   ]
+  }
+ },
+ {
+  "name": "shymkent/outpatient_clinic/demo",
+  "status": "optimal",
+  "feasible_count": 10,
+  "nominal": {
+   "selected_ids": [
+    "site-1"
+   ],
+   "cost": 120,
+   "worst_case_ids": [
+    "C4"
+   ],
+   "worst_vector": [
+    0,
+    22595821,
+    1695037
+   ],
+   "per_case": [
+    {
+     "case_id": "base",
+     "unknown_count": 0,
+     "weighted_sum_mm": 9101009,
+     "max_mm": 601605,
+     "covered_weight": 9
+    },
+    {
+     "case_id": "C1",
+     "unknown_count": 0,
+     "weighted_sum_mm": 9268173,
+     "max_mm": 601605,
+     "covered_weight": 9
+    },
+    {
+     "case_id": "C2",
+     "unknown_count": 0,
+     "weighted_sum_mm": 9681780,
+     "max_mm": 601605,
+     "covered_weight": 6
+    },
+    {
+     "case_id": "C3",
+     "unknown_count": 0,
+     "weighted_sum_mm": 9268173,
+     "max_mm": 601605,
+     "covered_weight": 9
+    },
+    {
+     "case_id": "C4",
+     "unknown_count": 0,
+     "weighted_sum_mm": 22595821,
+     "max_mm": 1695037,
+     "covered_weight": 3
+    }
+   ]
+  },
+  "robust": {
+   "selected_ids": [
+    "site-2",
+    "site-4"
+   ],
+   "cost": 150,
+   "worst_case_ids": [
+    "C4"
+   ],
+   "worst_vector": [
+    0,
+    15466352,
+    1219551
+   ],
+   "per_case": [
+    {
+     "case_id": "base",
+     "unknown_count": 0,
+     "weighted_sum_mm": 10200936,
+     "max_mm": 762609,
+     "covered_weight": 8
+    },
+    {
+     "case_id": "C1",
+     "unknown_count": 0,
+     "weighted_sum_mm": 10200936,
+     "max_mm": 762609,
+     "covered_weight": 8
+    },
+    {
+     "case_id": "C2",
+     "unknown_count": 0,
+     "weighted_sum_mm": 10573383,
+     "max_mm": 762609,
+     "covered_weight": 8
+    },
+    {
+     "case_id": "C3",
+     "unknown_count": 0,
+     "weighted_sum_mm": 10200936,
+     "max_mm": 762609,
+     "covered_weight": 8
+    },
+    {
+     "case_id": "C4",
+     "unknown_count": 0,
+     "weighted_sum_mm": 15466352,
+     "max_mm": 1219551,
+     "covered_weight": 5
+    }
+   ]
+  },
+  "price_of_robustness_m": 42.30488461538462,
+  "manual": {
+   "selected_ids": [
+    "site-2"
+   ],
+   "cost": 90,
+   "worst_case_ids": [
+    "C4"
+   ],
+   "worst_vector": [
+    0,
+    21283574,
+    1424789
+   ],
+   "per_case": [
+    {
+     "case_id": "base",
+     "unknown_count": 0,
+     "weighted_sum_mm": 10257790,
+     "max_mm": 762609,
+     "covered_weight": 8
+    },
+    {
+     "case_id": "C1",
+     "unknown_count": 0,
+     "weighted_sum_mm": 10257790,
+     "max_mm": 762609,
+     "covered_weight": 8
+    },
+    {
+     "case_id": "C2",
+     "unknown_count": 0,
+     "weighted_sum_mm": 10671397,
+     "max_mm": 762609,
+     "covered_weight": 5
+    },
+    {
+     "case_id": "C3",
+     "unknown_count": 0,
+     "weighted_sum_mm": 10257790,
+     "max_mm": 762609,
+     "covered_weight": 8
+    },
+    {
+     "case_id": "C4",
+     "unknown_count": 0,
+     "weighted_sum_mm": 21283574,
+     "max_mm": 1424789,
+     "covered_weight": 2
+    }
+   ]
+  }
+ },
+ {
+  "name": "shymkent/outpatient_clinic/budget300_max3",
+  "status": "optimal",
+  "feasible_count": 47,
+  "nominal": {
+   "selected_ids": [
+    "site-1",
+    "site-8"
+   ],
+   "cost": 250,
+   "worst_case_ids": [
+    "C2"
+   ],
+   "worst_vector": [
+    0,
+    8301426,
+    479089
+   ],
+   "per_case": [
+    {
+     "case_id": "base",
+     "unknown_count": 0,
+     "weighted_sum_mm": 7720655,
+     "max_mm": 479089,
+     "covered_weight": 11
+    },
+    {
+     "case_id": "C1",
+     "unknown_count": 0,
+     "weighted_sum_mm": 7887819,
+     "max_mm": 479089,
+     "covered_weight": 11
+    },
+    {
+     "case_id": "C2",
+     "unknown_count": 0,
+     "weighted_sum_mm": 8301426,
+     "max_mm": 479089,
+     "covered_weight": 8
+    }
+   ]
+  },
+  "robust": {
+   "selected_ids": [
+    "site-1",
+    "site-8"
+   ],
+   "cost": 250,
+   "worst_case_ids": [
+    "C2"
+   ],
+   "worst_vector": [
+    0,
+    8301426,
+    479089
+   ],
+   "per_case": [
+    {
+     "case_id": "base",
+     "unknown_count": 0,
+     "weighted_sum_mm": 7720655,
+     "max_mm": 479089,
+     "covered_weight": 11
+    },
+    {
+     "case_id": "C1",
+     "unknown_count": 0,
+     "weighted_sum_mm": 7887819,
+     "max_mm": 479089,
+     "covered_weight": 11
+    },
+    {
+     "case_id": "C2",
+     "unknown_count": 0,
+     "weighted_sum_mm": 8301426,
+     "max_mm": 479089,
+     "covered_weight": 8
+    }
+   ]
+  },
+  "price_of_robustness_m": 0.0,
+  "manual": {
+   "selected_ids": [
+    "site-2",
+    "site-4"
+   ],
+   "cost": 150,
+   "worst_case_ids": [
+    "C2"
+   ],
+   "worst_vector": [
+    0,
+    10573383,
+    762609
+   ],
+   "per_case": [
+    {
+     "case_id": "base",
+     "unknown_count": 0,
+     "weighted_sum_mm": 10200936,
+     "max_mm": 762609,
+     "covered_weight": 8
+    },
+    {
+     "case_id": "C1",
+     "unknown_count": 0,
+     "weighted_sum_mm": 10200936,
+     "max_mm": 762609,
+     "covered_weight": 8
+    },
+    {
+     "case_id": "C2",
+     "unknown_count": 0,
+     "weighted_sum_mm": 10573383,
+     "max_mm": 762609,
+     "covered_weight": 8
+    }
+   ]
+  }
+ },
+ {
+  "name": "shymkent/school/max_12x25x8",
+  "status": "optimal",
+  "feasible_count": 519,
+  "nominal": {
+   "selected_ids": [
+    "site-01",
+    "site-02",
+    "site-04",
+    "site-08"
+   ],
+   "cost": 367,
+   "worst_case_ids": [
+    "K2"
+   ],
+   "worst_vector": [
+    0,
+    33764724,
+    523254
+   ],
+   "per_case": [
+    {
+     "case_id": "base",
+     "unknown_count": 0,
+     "weighted_sum_mm": 30641666,
+     "max_mm": 427550,
+     "covered_weight": 85
+    },
+    {
+     "case_id": "K1",
+     "unknown_count": 0,
+     "weighted_sum_mm": 33718446,
+     "max_mm": 513321,
+     "covered_weight": 78
+    },
+    {
+     "case_id": "K2",
+     "unknown_count": 0,
+     "weighted_sum_mm": 33764724,
+     "max_mm": 523254,
+     "covered_weight": 70
+    },
+    {
+     "case_id": "K3",
+     "unknown_count": 0,
+     "weighted_sum_mm": 31365871,
+     "max_mm": 427550,
+     "covered_weight": 85
+    },
+    {
+     "case_id": "K4",
+     "unknown_count": 0,
+     "weighted_sum_mm": 32244385,
+     "max_mm": 427550,
+     "covered_weight": 85
+    },
+    {
+     "case_id": "K5",
+     "unknown_count": 0,
+     "weighted_sum_mm": 31365871,
+     "max_mm": 427550,
+     "covered_weight": 85
+    },
+    {
+     "case_id": "K6",
+     "unknown_count": 0,
+     "weighted_sum_mm": 31365871,
+     "max_mm": 427550,
+     "covered_weight": 85
+    },
+    {
+     "case_id": "K7",
+     "unknown_count": 0,
+     "weighted_sum_mm": 31365871,
+     "max_mm": 427550,
+     "covered_weight": 85
+    }
+   ]
+  },
+  "robust": {
+   "selected_ids": [
+    "site-02",
+    "site-04",
+    "site-08",
+    "site-11"
+   ],
+   "cost": 377,
+   "worst_case_ids": [
+    "K4"
+   ],
+   "worst_vector": [
+    0,
+    33650528,
+    584817
+   ],
+   "per_case": [
+    {
+     "case_id": "base",
+     "unknown_count": 0,
+     "weighted_sum_mm": 31453203,
+     "max_mm": 584817,
+     "covered_weight": 86
+    },
+    {
+     "case_id": "K1",
+     "unknown_count": 0,
+     "weighted_sum_mm": 33220717,
+     "max_mm": 584817,
+     "covered_weight": 79
+    },
+    {
+     "case_id": "K2",
+     "unknown_count": 0,
+     "weighted_sum_mm": 33299786,
+     "max_mm": 584817,
+     "covered_weight": 76
+    },
+    {
+     "case_id": "K3",
+     "unknown_count": 0,
+     "weighted_sum_mm": 32177408,
+     "max_mm": 584817,
+     "covered_weight": 86
+    },
+    {
+     "case_id": "K4",
+     "unknown_count": 0,
+     "weighted_sum_mm": 33650528,
+     "max_mm": 584817,
+     "covered_weight": 86
+    },
+    {
+     "case_id": "K5",
+     "unknown_count": 0,
+     "weighted_sum_mm": 32177408,
+     "max_mm": 584817,
+     "covered_weight": 86
+    },
+    {
+     "case_id": "K6",
+     "unknown_count": 0,
+     "weighted_sum_mm": 32177408,
+     "max_mm": 584817,
+     "covered_weight": 86
+    },
+    {
+     "case_id": "K7",
+     "unknown_count": 0,
+     "weighted_sum_mm": 32177408,
+     "max_mm": 584817,
+     "covered_weight": 86
+    }
+   ]
+  },
+  "price_of_robustness_m": 6.01138518518518,
+  "manual": {
+   "selected_ids": [
+    "site-01"
+   ],
+   "cost": 50,
+   "worst_case_ids": [
+    "K2"
+   ],
+   "worst_vector": [
+    0,
+    45613406,
+    763367
+   ],
+   "per_case": [
+    {
+     "case_id": "base",
+     "unknown_count": 0,
+     "weighted_sum_mm": 42490348,
+     "max_mm": 763367,
+     "covered_weight": 54
+    },
+    {
+     "case_id": "K1",
+     "unknown_count": 0,
+     "weighted_sum_mm": 45567128,
+     "max_mm": 763367,
+     "covered_weight": 47
+    },
+    {
+     "case_id": "K2",
+     "unknown_count": 0,
+     "weighted_sum_mm": 45613406,
+     "max_mm": 763367,
+     "covered_weight": 39
+    },
+    {
+     "case_id": "K3",
+     "unknown_count": 0,
+     "weighted_sum_mm": 43214553,
+     "max_mm": 763367,
+     "covered_weight": 54
+    },
+    {
+     "case_id": "K4",
+     "unknown_count": 0,
+     "weighted_sum_mm": 44407971,
+     "max_mm": 763367,
+     "covered_weight": 54
+    },
+    {
+     "case_id": "K5",
+     "unknown_count": 0,
+     "weighted_sum_mm": 43214553,
+     "max_mm": 763367,
+     "covered_weight": 54
+    },
+    {
+     "case_id": "K6",
+     "unknown_count": 0,
+     "weighted_sum_mm": 43214553,
+     "max_mm": 763367,
+     "covered_weight": 54
+    },
+    {
+     "case_id": "K7",
+     "unknown_count": 0,
+     "weighted_sum_mm": 43214553,
+     "max_mm": 763367,
+     "covered_weight": 54
+    }
+   ]
+  }
+ },
+ {
+  "name": "astana/school/demo",
+  "status": "optimal",
+  "feasible_count": 10,
+  "nominal": {
+   "selected_ids": [
+    "site-8"
+   ],
+   "cost": 130,
+   "worst_case_ids": [
+    "C4"
+   ],
+   "worst_vector": [
+    0,
+    22944539,
+    1646524
+   ],
+   "per_case": [
+    {
+     "case_id": "base",
+     "unknown_count": 0,
+     "weighted_sum_mm": 6884298,
+     "max_mm": 554454,
+     "covered_weight": 15
+    },
+    {
+     "case_id": "C1",
+     "unknown_count": 0,
+     "weighted_sum_mm": 7470732,
+     "max_mm": 554454,
+     "covered_weight": 13
+    },
+    {
+     "case_id": "C2",
+     "unknown_count": 0,
+     "weighted_sum_mm": 12426532,
+     "max_mm": 1082646,
+     "covered_weight": 7
+    },
+    {
+     "case_id": "C3",
+     "unknown_count": 0,
+     "weighted_sum_mm": 7470732,
+     "max_mm": 554454,
+     "covered_weight": 13
+    },
+    {
+     "case_id": "C4",
+     "unknown_count": 0,
+     "weighted_sum_mm": 22944539,
+     "max_mm": 1646524,
+     "covered_weight": 2
+    }
+   ]
+  },
+  "robust": {
+   "selected_ids": [
+    "site-2",
+    "site-4"
+   ],
+   "cost": 150,
+   "worst_case_ids": [
+    "C4"
+   ],
+   "worst_vector": [
+    0,
+    15460487,
+    1218889
+   ],
+   "per_case": [
+    {
+     "case_id": "base",
+     "unknown_count": 0,
+     "weighted_sum_mm": 10225107,
+     "max_mm": 1141199,
+     "covered_weight": 18
+    },
+    {
+     "case_id": "C1",
+     "unknown_count": 0,
+     "weighted_sum_mm": 10811541,
+     "max_mm": 1141199,
+     "covered_weight": 16
+    },
+    {
+     "case_id": "C2",
+     "unknown_count": 0,
+     "weighted_sum_mm": 12322747,
+     "max_mm": 1141199,
+     "covered_weight": 10
+    },
+    {
+     "case_id": "C3",
+     "unknown_count": 0,
+     "weighted_sum_mm": 10811541,
+     "max_mm": 1141199,
+     "covered_weight": 16
+    },
+    {
+     "case_id": "C4",
+     "unknown_count": 0,
+     "weighted_sum_mm": 15460487,
+     "max_mm": 1218889,
+     "covered_weight": 5
+    }
+   ]
+  },
+  "price_of_robustness_m": 128.49265384615381,
+  "manual": {
+   "selected_ids": [
+    "site-2"
+   ],
+   "cost": 90,
+   "worst_case_ids": [
+    "C4"
+   ],
+   "worst_vector": [
+    0,
+    21278209,
+    1424724
+   ],
+   "per_case": [
+    {
+     "case_id": "base",
+     "unknown_count": 0,
+     "weighted_sum_mm": 11144952,
+     "max_mm": 1141199,
+     "covered_weight": 15
+    },
+    {
+     "case_id": "C1",
+     "unknown_count": 0,
+     "weighted_sum_mm": 11731386,
+     "max_mm": 1141199,
+     "covered_weight": 13
+    },
+    {
+     "case_id": "C2",
+     "unknown_count": 0,
+     "weighted_sum_mm": 13242592,
+     "max_mm": 1141199,
+     "covered_weight": 7
+    },
+    {
+     "case_id": "C3",
+     "unknown_count": 0,
+     "weighted_sum_mm": 11731386,
+     "max_mm": 1141199,
+     "covered_weight": 13
+    },
+    {
+     "case_id": "C4",
+     "unknown_count": 0,
+     "weighted_sum_mm": 21278209,
+     "max_mm": 1424724,
+     "covered_weight": 2
+    }
+   ]
+  }
+ },
+ {
+  "name": "astana/school/budget300_max3",
+  "status": "optimal",
+  "feasible_count": 47,
+  "nominal": {
+   "selected_ids": [
+    "site-2",
+    "site-4",
+    "site-8"
+   ],
+   "cost": 280,
+   "worst_case_ids": [
+    "C2"
+   ],
+   "worst_vector": [
+    0,
+    7755619,
+    570007
+   ],
+   "per_case": [
+    {
+     "case_id": "base",
+     "unknown_count": 0,
+     "weighted_sum_mm": 5711253,
+     "max_mm": 479473,
+     "covered_weight": 20
+    },
+    {
+     "case_id": "C1",
+     "unknown_count": 0,
+     "weighted_sum_mm": 6297687,
+     "max_mm": 479473,
+     "covered_weight": 18
+    },
+    {
+     "case_id": "C2",
+     "unknown_count": 0,
+     "weighted_sum_mm": 7755619,
+     "max_mm": 570007,
+     "covered_weight": 12
+    }
+   ]
+  },
+  "robust": {
+   "selected_ids": [
+    "site-2",
+    "site-4",
+    "site-8"
+   ],
+   "cost": 280,
+   "worst_case_ids": [
+    "C2"
+   ],
+   "worst_vector": [
+    0,
+    7755619,
+    570007
+   ],
+   "per_case": [
+    {
+     "case_id": "base",
+     "unknown_count": 0,
+     "weighted_sum_mm": 5711253,
+     "max_mm": 479473,
+     "covered_weight": 20
+    },
+    {
+     "case_id": "C1",
+     "unknown_count": 0,
+     "weighted_sum_mm": 6297687,
+     "max_mm": 479473,
+     "covered_weight": 18
+    },
+    {
+     "case_id": "C2",
+     "unknown_count": 0,
+     "weighted_sum_mm": 7755619,
+     "max_mm": 570007,
+     "covered_weight": 12
+    }
+   ]
+  },
+  "price_of_robustness_m": 0.0,
+  "manual": {
+   "selected_ids": [
+    "site-2",
+    "site-4"
+   ],
+   "cost": 150,
+   "worst_case_ids": [
+    "C2"
+   ],
+   "worst_vector": [
+    0,
+    12322747,
+    1141199
+   ],
+   "per_case": [
+    {
+     "case_id": "base",
+     "unknown_count": 0,
+     "weighted_sum_mm": 10225107,
+     "max_mm": 1141199,
+     "covered_weight": 18
+    },
+    {
+     "case_id": "C1",
+     "unknown_count": 0,
+     "weighted_sum_mm": 10811541,
+     "max_mm": 1141199,
+     "covered_weight": 16
+    },
+    {
+     "case_id": "C2",
+     "unknown_count": 0,
+     "weighted_sum_mm": 12322747,
+     "max_mm": 1141199,
+     "covered_weight": 10
+    }
+   ]
+  }
+ },
+ {
+  "name": "astana/outpatient_clinic/demo",
+  "status": "optimal",
+  "feasible_count": 10,
+  "nominal": {
+   "selected_ids": [
+    "site-8"
+   ],
+   "cost": 130,
+   "worst_case_ids": [
+    "C4"
+   ],
+   "worst_vector": [
+    0,
+    22944539,
+    1646524
+   ],
+   "per_case": [
+    {
+     "case_id": "base",
+     "unknown_count": 0,
+     "weighted_sum_mm": 7412908,
+     "max_mm": 405869,
+     "covered_weight": 11
+    },
+    {
+     "case_id": "C1",
+     "unknown_count": 0,
+     "weighted_sum_mm": 7825554,
+     "max_mm": 405869,
+     "covered_weight": 9
+    },
+    {
+     "case_id": "C2",
+     "unknown_count": 0,
+     "weighted_sum_mm": 8204460,
+     "max_mm": 515173,
+     "covered_weight": 9
+    },
+    {
+     "case_id": "C3",
+     "unknown_count": 0,
+     "weighted_sum_mm": 7825554,
+     "max_mm": 405869,
+     "covered_weight": 9
+    },
+    {
+     "case_id": "C4",
+     "unknown_count": 0,
+     "weighted_sum_mm": 22944539,
+     "max_mm": 1646524,
+     "covered_weight": 2
+    }
+   ]
+  },
+  "robust": {
+   "selected_ids": [
+    "site-2",
+    "site-4"
+   ],
+   "cost": 150,
+   "worst_case_ids": [
+    "C4"
+   ],
+   "worst_vector": [
+    0,
+    15460487,
+    1218889
+   ],
+   "per_case": [
+    {
+     "case_id": "base",
+     "unknown_count": 0,
+     "weighted_sum_mm": 7940950,
+     "max_mm": 544236,
+     "covered_weight": 14
+    },
+    {
+     "case_id": "C1",
+     "unknown_count": 0,
+     "weighted_sum_mm": 8283536,
+     "max_mm": 544236,
+     "covered_weight": 12
+    },
+    {
+     "case_id": "C2",
+     "unknown_count": 0,
+     "weighted_sum_mm": 8850776,
+     "max_mm": 544236,
+     "covered_weight": 10
+    },
+    {
+     "case_id": "C3",
+     "unknown_count": 0,
+     "weighted_sum_mm": 8283536,
+     "max_mm": 544236,
+     "covered_weight": 12
+    },
+    {
+     "case_id": "C4",
+     "unknown_count": 0,
+     "weighted_sum_mm": 15460487,
+     "max_mm": 1218889,
+     "covered_weight": 5
+    }
+   ]
+  },
+  "price_of_robustness_m": 20.309307692307748,
+  "manual": {
+   "selected_ids": [
+    "site-2"
+   ],
+   "cost": 90,
+   "worst_case_ids": [
+    "C4"
+   ],
+   "worst_vector": [
+    0,
+    21278209,
+    1424724
+   ],
+   "per_case": [
+    {
+     "case_id": "base",
+     "unknown_count": 0,
+     "weighted_sum_mm": 8170252,
+     "max_mm": 544236,
+     "covered_weight": 11
+    },
+    {
+     "case_id": "C1",
+     "unknown_count": 0,
+     "weighted_sum_mm": 8582898,
+     "max_mm": 544236,
+     "covered_weight": 9
+    },
+    {
+     "case_id": "C2",
+     "unknown_count": 0,
+     "weighted_sum_mm": 9432608,
+     "max_mm": 544236,
+     "covered_weight": 7
+    },
+    {
+     "case_id": "C3",
+     "unknown_count": 0,
+     "weighted_sum_mm": 8582898,
+     "max_mm": 544236,
+     "covered_weight": 9
+    },
+    {
+     "case_id": "C4",
+     "unknown_count": 0,
+     "weighted_sum_mm": 21278209,
+     "max_mm": 1424724,
+     "covered_weight": 2
+    }
+   ]
+  }
+ },
+ {
+  "name": "astana/outpatient_clinic/budget300_max3",
+  "status": "optimal",
+  "feasible_count": 47,
+  "nominal": {
+   "selected_ids": [
+    "site-1",
+    "site-8"
+   ],
+   "cost": 250,
+   "worst_case_ids": [
+    "C2"
+   ],
+   "worst_vector": [
+    0,
+    7479258,
+    364463
+   ],
+   "per_case": [
+    {
+     "case_id": "base",
+     "unknown_count": 0,
+     "weighted_sum_mm": 7059046,
+     "max_mm": 364463,
+     "covered_weight": 14
+    },
+    {
+     "case_id": "C1",
+     "unknown_count": 0,
+     "weighted_sum_mm": 7382822,
+     "max_mm": 364463,
+     "covered_weight": 12
+    },
+    {
+     "case_id": "C2",
+     "unknown_count": 0,
+     "weighted_sum_mm": 7479258,
+     "max_mm": 364463,
+     "covered_weight": 12
+    }
+   ]
+  },
+  "robust": {
+   "selected_ids": [
+    "site-1",
+    "site-8"
+   ],
+   "cost": 250,
+   "worst_case_ids": [
+    "C2"
+   ],
+   "worst_vector": [
+    0,
+    7479258,
+    364463
+   ],
+   "per_case": [
+    {
+     "case_id": "base",
+     "unknown_count": 0,
+     "weighted_sum_mm": 7059046,
+     "max_mm": 364463,
+     "covered_weight": 14
+    },
+    {
+     "case_id": "C1",
+     "unknown_count": 0,
+     "weighted_sum_mm": 7382822,
+     "max_mm": 364463,
+     "covered_weight": 12
+    },
+    {
+     "case_id": "C2",
+     "unknown_count": 0,
+     "weighted_sum_mm": 7479258,
+     "max_mm": 364463,
+     "covered_weight": 12
+    }
+   ]
+  },
+  "price_of_robustness_m": 0.0,
+  "manual": {
+   "selected_ids": [
+    "site-2",
+    "site-4"
+   ],
+   "cost": 150,
+   "worst_case_ids": [
+    "C2"
+   ],
+   "worst_vector": [
+    0,
+    8850776,
+    544236
+   ],
+   "per_case": [
+    {
+     "case_id": "base",
+     "unknown_count": 0,
+     "weighted_sum_mm": 7940950,
+     "max_mm": 544236,
+     "covered_weight": 14
+    },
+    {
+     "case_id": "C1",
+     "unknown_count": 0,
+     "weighted_sum_mm": 8283536,
+     "max_mm": 544236,
+     "covered_weight": 12
+    },
+    {
+     "case_id": "C2",
+     "unknown_count": 0,
+     "weighted_sum_mm": 8850776,
+     "max_mm": 544236,
+     "covered_weight": 10
+    }
+   ]
+  }
+ },
+ {
+  "name": "astana/school/max_12x25x8",
+  "status": "optimal",
+  "feasible_count": 519,
+  "nominal": {
+   "selected_ids": [
+    "site-01",
+    "site-02",
+    "site-08",
+    "site-11",
+    "site-12"
+   ],
+   "cost": 363,
+   "worst_case_ids": [
+    "K4"
+   ],
+   "worst_vector": [
+    0,
+    38663926,
+    550147
+   ],
+   "per_case": [
+    {
+     "case_id": "base",
+     "unknown_count": 0,
+     "weighted_sum_mm": 29645510,
+     "max_mm": 389961,
+     "covered_weight": 96
+    },
+    {
+     "case_id": "K1",
+     "unknown_count": 0,
+     "weighted_sum_mm": 32716405,
+     "max_mm": 533409,
+     "covered_weight": 88
+    },
+    {
+     "case_id": "K2",
+     "unknown_count": 0,
+     "weighted_sum_mm": 34678075,
+     "max_mm": 550147,
+     "covered_weight": 86
+    },
+    {
+     "case_id": "K3",
+     "unknown_count": 0,
+     "weighted_sum_mm": 37056520,
+     "max_mm": 572356,
+     "covered_weight": 79
+    },
+    {
+     "case_id": "K4",
+     "unknown_count": 0,
+     "weighted_sum_mm": 38663926,
+     "max_mm": 550147,
+     "covered_weight": 78
+    },
+    {
+     "case_id": "K5",
+     "unknown_count": 0,
+     "weighted_sum_mm": 34601398,
+     "max_mm": 550147,
+     "covered_weight": 86
+    },
+    {
+     "case_id": "K6",
+     "unknown_count": 0,
+     "weighted_sum_mm": 34601398,
+     "max_mm": 550147,
+     "covered_weight": 86
+    },
+    {
+     "case_id": "K7",
+     "unknown_count": 0,
+     "weighted_sum_mm": 34601398,
+     "max_mm": 550147,
+     "covered_weight": 86
+    }
+   ]
+  },
+  "robust": {
+   "selected_ids": [
+    "site-02",
+    "site-08",
+    "site-10",
+    "site-12"
+   ],
+   "cost": 396,
+   "worst_case_ids": [
+    "K3"
+   ],
+   "worst_vector": [
+    0,
+    38268695,
+    572356
+   ],
+   "per_case": [
+    {
+     "case_id": "base",
+     "unknown_count": 0,
+     "weighted_sum_mm": 30857685,
+     "max_mm": 437877,
+     "covered_weight": 93
+    },
+    {
+     "case_id": "K1",
+     "unknown_count": 0,
+     "weighted_sum_mm": 33928580,
+     "max_mm": 533409,
+     "covered_weight": 85
+    },
+    {
+     "case_id": "K2",
+     "unknown_count": 0,
+     "weighted_sum_mm": 35890250,
+     "max_mm": 550147,
+     "covered_weight": 83
+    },
+    {
+     "case_id": "K3",
+     "unknown_count": 0,
+     "weighted_sum_mm": 38268695,
+     "max_mm": 572356,
+     "covered_weight": 76
+    },
+    {
+     "case_id": "K4",
+     "unknown_count": 0,
+     "weighted_sum_mm": 37173941,
+     "max_mm": 550147,
+     "covered_weight": 83
+    },
+    {
+     "case_id": "K5",
+     "unknown_count": 0,
+     "weighted_sum_mm": 35813573,
+     "max_mm": 550147,
+     "covered_weight": 83
+    },
+    {
+     "case_id": "K6",
+     "unknown_count": 0,
+     "weighted_sum_mm": 35813573,
+     "max_mm": 550147,
+     "covered_weight": 83
+    },
+    {
+     "case_id": "K7",
+     "unknown_count": 0,
+     "weighted_sum_mm": 35813573,
+     "max_mm": 550147,
+     "covered_weight": 83
+    }
+   ]
+  },
+  "price_of_robustness_m": 8.979074074074074,
+  "manual": {
+   "selected_ids": [
+    "site-01"
+   ],
+   "cost": 50,
+   "worst_case_ids": [
+    "K4"
+   ],
+   "worst_vector": [
+    0,
+    77704039,
+    1435127
+   ],
+   "per_case": [
+    {
+     "case_id": "base",
+     "unknown_count": 0,
+     "weighted_sum_mm": 57079557,
+     "max_mm": 1257711,
+     "covered_weight": 58
+    },
+    {
+     "case_id": "K1",
+     "unknown_count": 0,
+     "weighted_sum_mm": 60150452,
+     "max_mm": 1257711,
+     "covered_weight": 50
+    },
+    {
+     "case_id": "K2",
+     "unknown_count": 0,
+     "weighted_sum_mm": 65659804,
+     "max_mm": 1257711,
+     "covered_weight": 48
+    },
+    {
+     "case_id": "K3",
+     "unknown_count": 0,
+     "weighted_sum_mm": 68038249,
+     "max_mm": 1257711,
+     "covered_weight": 41
+    },
+    {
+     "case_id": "K4",
+     "unknown_count": 0,
+     "weighted_sum_mm": 77704039,
+     "max_mm": 1435127,
+     "covered_weight": 40
+    },
+    {
+     "case_id": "K5",
+     "unknown_count": 0,
+     "weighted_sum_mm": 65583127,
+     "max_mm": 1257711,
+     "covered_weight": 48
+    },
+    {
+     "case_id": "K6",
+     "unknown_count": 0,
+     "weighted_sum_mm": 65583127,
+     "max_mm": 1257711,
+     "covered_weight": 48
+    },
+    {
+     "case_id": "K7",
+     "unknown_count": 0,
+     "weighted_sum_mm": 65583127,
+     "max_mm": 1257711,
+     "covered_weight": 48
+    }
+   ]
+  }
+ }
+]

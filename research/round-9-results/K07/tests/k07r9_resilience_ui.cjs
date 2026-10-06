@@ -33,6 +33,15 @@ const rs = (p) => p.evaluate(() => {
 const engineResult = (p) => p.evaluate(() => { const RE = window.CITY_RESILIENCE || window.CITY_RESILIENCE_K07, U = window.CITY_PLAN_UI;
   const r = RE.optimizeResilience(U.ctxOf(window.CITY_APP.state.city), window.CITY_RESILIENCE_UI.envelope(), { F: window.CITY_FACTS });
   return { status: r.status, nominal: r.nominal && r.nominal.selected_ids, robust: r.robust && r.robust.selected_ids, price: r.price_of_robustness_m, worstR: r.robust && r.robust.worst_case_ids }; });
+// open the collapsed sections of the plan card like a user (BUILD remembers only user toggles across re-renders)
+async function openSections(p) {
+  await p.waitForTimeout(80);  // a deferred re-render (value applied on the next turn) may still be pending
+  for (let i = 0; i < 12; i++) {  // the set of closed sections changes after each click: always take the first one
+    const sm = p.locator("#planCard details:not([open]) > summary").first();
+    if (!(await sm.count())) break;
+    await sm.click();
+  }
+}
 async function setup(p) { await p.click('#toolSeg button[data-tool="v2"]'); await p.click("#plDemo"); await p.evaluate(() => { const d = document.getElementById("rsSec"); if (d) d.open = true; }); }
 async function addCaseByKeyboard(p, ids, label) {
   for (const id of ids) { await p.focus(srcSel(id)); await p.keyboard.press("Space"); }
@@ -102,7 +111,7 @@ async function desktop(browser) {
   const nullCell = await p.evaluate(() => { const r = document.querySelector('#rsTable tr[data-rs-row="C3"]'); return r && r.cells[1].textContent; });
   const manualW = await p.evaluate(() => { const c = document.querySelector('[data-rs-plan="manual"]'); return c && [...c.querySelectorAll("dd")].pop().textContent; });
   check("RS11", "null", "with every record excluded and no site in the manual plan, the cell says «нет данных: у N точ. …» and the worst-case line names the unknown points without a «сумма 0 м»",
-    !!nullCell && /нет данных: у \d+ точ\./.test(nullCell) && !/ 0 м/.test(nullCell) && !!manualW && /без расстояния/.test(manualW) && !/сумма 0/.test(manualW), { nullCell, manualW });
+    !!nullCell && /нет данных: у \d+ точ\./.test(nullCell) && !/ 0 м/.test(nullCell) && !!manualW && /без расстояния/.test(manualW) && !/сумма[^,—]* 0 м/.test(manualW), { nullCell, manualW });
   // apply robust → restore
   const before = (await rs(p)).selected;
   if (await p.isEnabled("#rsApply_robust")) { await p.focus("#rsApply_robust"); await p.keyboard.press("Enter"); }
@@ -112,7 +121,7 @@ async function desktop(browser) {
   const sR = await rs(p);
   check("RS10", "apply", "«Применить» (устойчивый) replaces the manual plan only on Enter/click; «Вернуть ручной план» restores it", JSON.stringify(sA.selected) === JSON.stringify(ref.robust.slice().sort()) && JSON.stringify(sR.selected) === JSON.stringify(before), { before, applied: sA.selected, restored: sR.selected });
   // number editing after the result → stale; Tab moves on (K3 of the keyboard patch)
-  await p.evaluate(() => { for (const d of document.querySelectorAll("#planCard details")) d.open = true; });
+  await openSections(p);
   await p.focus("#plBudget"); await p.keyboard.press("Control+A"); await p.keyboard.type("700"); await p.keyboard.press("Tab"); await p.waitForTimeout(120);
   s = await rs(p);
   const applyDisabled = await p.isDisabled("#rsApply_robust").catch(() => true);
@@ -132,6 +141,13 @@ async function desktop(browser) {
   const tabStops = await p.evaluate(() => [...document.querySelectorAll("#rsSec a, #rsSec button, #rsSec input, #rsSec select, #rsSec [tabindex]")].filter((e) => !e.disabled && e.tabIndex >= 0 && e.offsetParent !== null).length);
   check("RS16", "keyboard", "the panel adds a bounded number of Tab stops (≤ 2 × records + 20) and no map mode", tabStops <= 2 * recs.length + 20, { tabStops, records: recs.length });
   await p.screenshot({ path: path.join(SHOTS, "RS_1400_panel.png"), fullPage: false });
+  // infeasible: a required site costing more than the budget → message with the reason, no plans, no price
+  await openSections(p);
+  await p.selectOption("#plS_K1", "required"); await p.locator("#plBudget").fill("50"); await p.locator("#plBudget").press("Enter"); await p.waitForTimeout(120);
+  await p.click("#rsRun"); await p.waitForSelector("#rsResultTitle", { timeout: 30000 });
+  const inf = await p.evaluate(() => ({ text: (document.getElementById("rsInfeasible") || {}).textContent || null, price: !!document.getElementById("rsPrice"), cards: document.querySelectorAll("[data-rs-plan]").length }));
+  check("RS15", "null", "required site cost > budget: «Нет допустимых планов» with the reason and numbers; no plan cards and no price (null, not 0)", !!inf.text && /обязательных \d+ > бюджета 50/.test(inf.text) && !inf.price && inf.cards === 0, inf);
+  await p.selectOption("#plS_K1", "free"); await p.locator("#plBudget").fill("600"); await p.locator("#plBudget").press("Enter"); await p.waitForTimeout(120);
   // the 12-candidate limit: add sites on the map until 13
   await p.click("#plModeCands");
   await p.evaluate(() => document.querySelector(".mapwrap").scrollIntoView({ block: "start" }));
@@ -163,6 +179,20 @@ async function narrow(browser) {
   const { p, ctx, errors } = await open(browser, { width: 390, height: 844 });
   await setup(p);
   const recs = (await records(p)).map((r) => r.id).sort();
+  // number editing at 390 px: type a weight, Tab moves on (keyboard patch K3), the weight is applied
+  await openSections(p);
+  await p.focus("#plW_P1"); await p.keyboard.press("Control+A"); await p.keyboard.type("7"); await p.keyboard.press("Tab"); await p.waitForTimeout(120);
+  const wN = await p.evaluate(() => ({ w: window.CITY_PLAN_UI.state.points.find((x) => x.id === "P1").weight, focus: document.activeElement.id || document.activeElement.tagName }));
+  check("RSN1", "390px", "390 px: typing a weight and Tab applies it (7) and moves the focus to the next control (not <body>)", wN.w === 7 && wN.focus !== "BODY" && wN.focus !== "plW_P1", wN);
+  // choose 4 records, un-choose one, add; then delete the case with the keyboard
+  for (const id of recs.slice(0, 4)) await p.check(srcSel(id));
+  await p.uncheck(srcSel(recs[3]));
+  await p.fill("#rsLabel", "временный"); await p.click("#rsAdd");
+  let s = await rs(p);
+  const unchosen = s.cases.length === 1 && s.cases[0].ids.length === 3 && !s.cases[0].ids.includes(recs[3]);
+  await p.focus("#rsDel_C1"); await p.keyboard.press("Enter"); await p.waitForTimeout(60);
+  s = await rs(p);
+  check("RSN2", "390px", "390 px: an un-chosen source is not in the case; the case is deleted with Enter and the focus stays in the panel", unchosen && s.cases.length === 0 && ["rsLabel"].includes(s.focus), { unchosen, cases: s.cases.length, focus: s.focus });
   await addCaseByKeyboard(p, recs.slice(0, 3), "три записи");
   for (const id of recs) await p.check(srcSel(id));
   await p.fill("#rsLabel", "все записи"); await p.click("#rsAdd");
@@ -182,6 +212,17 @@ async function narrow(browser) {
   check("RS11b", "null", "390 px: the «все записи» row of the manual plan shows the null message (no distance), not 0", !!nullCell && /нет данных/.test(nullCell), nullCell);
   await p.locator("#rsCompare").scrollIntoViewIfNeeded();
   await p.screenshot({ path: path.join(SHOTS, "RS_390_compare.png") });
+  // cancel at 390 px
+  await p.evaluate(() => { window.CITY_RESILIENCE_UI.state.runOpts = { chunk: 8, delayMs: 20 }; });
+  await p.click("#rsRun"); await p.waitForTimeout(80);
+  await p.click("#rsCancel"); await p.waitForTimeout(700);
+  let s2 = await rs(p);
+  check("RSN3", "390px", "390 px: «Отменить сравнение» — no result appears, message «отменено», focus on «Сравнить»", !s2.running && !s2.result && /отменено/.test(s2.msg) && s2.focus === "rsRun", { msg: s2.msg, focus: s2.focus });
+  await p.evaluate(() => { window.CITY_RESILIENCE_UI.state.runOpts = { chunk: 256, delayMs: 0 }; });
+  // city switch at 390 px
+  await p.click('#citySeg button[data-city="astana"]'); await p.waitForTimeout(60);
+  s2 = await rs(p);
+  check("RSN4", "390px", "390 px: city switch resets the cases with a reason (nothing carried)", s2.city === "astana" && s2.cases.length === 0 && /Город изменён/.test(s2.msg), { city: s2.city, msg: s2.msg });
   check("RS18b", "general", "no console or page errors at 390 px", errors.length === 0, errors);
   await ctx.close();
 }

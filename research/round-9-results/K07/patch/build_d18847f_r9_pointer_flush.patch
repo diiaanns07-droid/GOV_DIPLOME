@@ -1,0 +1,28 @@
+diff --git a/prototypes/city-evidence/web/plan-ui.js b/prototypes/city-evidence/web/plan-ui.js
+index 87d5b61..4bb0b87 100644
+--- a/prototypes/city-evidence/web/plan-ui.js
++++ b/prototypes/city-evidence/web/plan-ui.js
+@@ -17,9 +17,14 @@
+   const isInt = (v, lo, hi) => Number.isInteger(v) && v >= lo && v <= hi;
+   // Edits are applied on the next turn (K07 r8 K3: keeps the focus when Tab follows a change). An action button pressed
+   // right after typing must see the typed value, so every action first flushes the pending edits (round 9 race fix).
++  // K07 r9: a mouse press on a button blurs the field (change) before mouseup; re-rendering then replaced the button and a
++  // human-speed click (~100 ms) was lost. While a pointer is down the edit waits for the click (actions flush) or pointerup.
+   const PENDING = [];
++  let pressed = false;
+   function flush() { while (PENDING.length) PENDING.shift()(); }
+-  function defer(f) { PENDING.push(f); setTimeout(flush, 0); }
++  function defer(f) { PENDING.push(f); setTimeout(flush, pressed ? 1500 : 0); }
++  document.addEventListener("pointerdown", () => { pressed = true; }, true);
++  for (const t of ["pointerup", "pointercancel"]) document.addEventListener(t, () => { pressed = false; setTimeout(flush, 0); }, true);
+   // collapsible sections; open state survives re-render (long lists of 25 points / 16 candidates)
+   const OPEN = {};
+   function section(parent, id, title, openByDefault) {
+@@ -553,6 +558,7 @@
+         : `План v2: щёлкните на карте новое место для ${PS.moveId}. Escape — отмена.` });
+   EXT.onCity.push((key, changedCity) => {
+     if (!changedCity) return;
++    flush();  // K07 r9: an edit typed just before the switch belongs to the old city; apply it before the reset message
+     const had = PS.points.length || PS.cands.length;
+     reset(had ? "Город изменён — сценарий v2 сброшен: точки и кандидаты между городами не переносятся, старые результаты поиска не применяются." : "");
+     onProblemChange();

@@ -1,0 +1,219 @@
+{
+ "build_sha": "e1cbc3fa84518a84698c03d014dc153f71338d54",
+ "source_dirs": [
+  "prototypes/city-evidence/web",
+  "prototypes/city-evidence/tests"
+ ],
+ "files": [
+  {
+   "file": "tests/.gitignore",
+   "bytes": 5,
+   "sha256": "a888b9df89402a815bdb15d30c5280b090be11655ab4cc2299ce748d44cd6ed4",
+   "identical": true
+  },
+  {
+   "file": "tests/conformance.cjs",
+   "bytes": 8149,
+   "sha256": "670cb2358479b07006dc04c025a8994b77bb6bfb4362667a95b147714b253bfa",
+   "identical": true
+  },
+  {
+   "file": "tests/expected_explanations.json",
+   "bytes": 17976,
+   "sha256": "fc0c85939a13be7a93585cdb92e82317f244cf4ac39f55d3cf3a853a4727677c",
+   "identical": true
+  },
+  {
+   "file": "tests/expected_plans.json",
+   "bytes": 111998,
+   "sha256": "e0e3bd0913dc6c636a934a2f7be9e8257f3ef626ce1dd6886a48e37e31178f19",
+   "identical": true
+  },
+  {
+   "file": "tests/expected_resilience.json",
+   "bytes": 64455,
+   "sha256": "6517fb8ba6a7e3da8661f47b1df0a5d5f9acb453a64501fb1645780acee9be68",
+   "identical": true
+  },
+  {
+   "file": "tests/expected_whatif.json",
+   "bytes": 39335,
+   "sha256": "adf227f612e6cf86ab628a97aec44a9074e5c4c7a91c7cc69b5425021c1362bc",
+   "identical": true
+  },
+  {
+   "file": "tests/plan.cjs",
+   "bytes": 21619,
+   "sha256": "f2b24ad270f0003a8fa3f36b4fee9c8f0c34e73da1a40dbe141f40173580978f",
+   "identical": true
+  },
+  {
+   "file": "tests/plan_keyboard.cjs",
+   "bytes": 6761,
+   "sha256": "b3e7715d8e49c011237b7360d2b7e0f571209401c577ded1f16ad519e6a4fad0",
+   "identical": true
+  },
+  {
+   "file": "tests/plan_smoke.cjs",
+   "bytes": 20376,
+   "sha256": "a5ebb9fb0deb14f26094eff6cbc7c52fee5902464a024c42c7d01d5ac71b3df5",
+   "identical": true
+  },
+  {
+   "file": "tests/resilience.cjs",
+   "bytes": 17815,
+   "sha256": "a3dd6f905c61ec211f29ac86fd6997826842a063d1652d68c5e2be71d250c229",
+   "identical": true
+  },
+  {
+   "file": "tests/resilience_smoke.cjs",
+   "bytes": 13819,
+   "sha256": "4286a702686fd2376787de460959b715e5802d42d745c78786863e8f7695275e",
+   "identical": true
+  },
+  {
+   "file": "tests/smoke.cjs",
+   "bytes": 12631,
+   "sha256": "db947b46a5feaf91b28626442d99a28cdcc642ca6e9041599dc666deb2c970b2",
+   "identical": true
+  },
+  {
+   "file": "tests/test_contract.py",
+   "bytes": 4072,
+   "sha256": "623c25d07ceba02bb92ec924b1abea4fa0674778388d59d4c70cbfbf28b6ef8d",
+   "identical": true
+  },
+  {
+   "file": "tests/test_inputs.py",
+   "bytes": 10734,
+   "sha256": "050f3ed1551dab4eef06db6c36cedc9ceaa8c1f2a28b2205c878996005577ac6",
+   "identical": true
+  },
+  {
+   "file": "tests/test_plan_oracle.py",
+   "bytes": 2731,
+   "sha256": "8b0d16e442a0ee7ec9fecf631760d7df87b398886c137fe2a39297fb4d410475",
+   "identical": true
+  },
+  {
+   "file": "tests/test_resilience_oracle.py",
+   "bytes": 2132,
+   "sha256": "6d6131044685d97a0733445f6236788650e061b9fc1753dfdbd827b8748cb65c",
+   "identical": true
+  },
+  {
+   "file": "tests/test_serve.py",
+   "bytes": 2332,
+   "sha256": "3c6c4da77ad0ca9b6f6411be62ee12e06523058457c859d43bbd422605649ae1",
+   "identical": true
+  },
+  {
+   "file": "tests/test_whatif.py",
+   "bytes": 3214,
+   "sha256": "dda9da8a344b115d4ab0e553ccbf8468cf472e20ea438468d18f900ca40d415d",
+   "identical": true
+  },
+  {
+   "file": "tests/whatif.cjs",
+   "bytes": 10961,
+   "sha256": "881cc0406490b51d57efb473b9af5ba06420e75c391f858411aeb757f35ad3e0",
+   "identical": true
+  },
+  {
+   "file": "tests/whatif_smoke.cjs",
+   "bytes": 12526,
+   "sha256": "2fa30cead34f6e27d115aebafb0dba26a90bbce746bd8f28c33bba16068e68cb",
+   "identical": true
+  },
+  {
+   "file": "web/app.js",
+   "bytes": 54756,
+   "sha256": "b58973dc78fee17bf2c3849665c0c4b9aa81777f667894519f045957ae099442",
+   "identical": true
+  },
+  {
+   "file": "web/attribution/ATTRIBUTION.md",
+   "bytes": 7708,
+   "sha256": "4de942304f8657f1747a8f8976887255fad4a76d4c35129aa871ed1cbb9615c6",
+   "identical": true
+  },
+  {
+   "file": "web/attribution/LICENSES/Apache-2.0.txt",
+   "bytes": 10280,
+   "sha256": "074e6e32c86a4c0ef8b3ed25b721ca23aca83df277cd88106ef7177c354615ff",
+   "identical": true
+  },
+  {
+   "file": "web/attribution/LICENSES/CDLA-Permissive-2.0.txt",
+   "bytes": 2354,
+   "sha256": "4531a67d443284d93ffed0803df5b10634aff21c3d77e381f2d48af01d875868",
+   "identical": true
+  },
+  {
+   "file": "web/attribution/LICENSES/ODbL-1.0.txt",
+   "bytes": 25289,
+   "sha256": "77d2692c3d64efdd4db18dce2407699baf62930e2b50d6e5ed90b48acf16b7c1",
+   "identical": true
+  },
+  {
+   "file": "web/attribution/attribution.json",
+   "bytes": 32634,
+   "sha256": "313c9b0eaaa695aa4a0221077bc5487fed91ff443d1b204bafb80b0cc4bf8588",
+   "identical": true
+  },
+  {
+   "file": "web/data.js",
+   "bytes": 1070322,
+   "sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+   "identical": true
+  },
+  {
+   "file": "web/evidence.js",
+   "bytes": 151637,
+   "sha256": "df736e986145da33dee60f692e020486720b72db5b6116af31640cc8693b11b9",
+   "identical": true
+  },
+  {
+   "file": "web/facts.js",
+   "bytes": 28467,
+   "sha256": "3994a275ddb8c0cb857478365d94810a945752a96fff10d53d37bc8dc9808c64",
+   "identical": true
+  },
+  {
+   "file": "web/index.html",
+   "bytes": 15882,
+   "sha256": "700c7e7b8401c05be1960455e8d4ad7348f40cc8be6272bf6042a9b66111ba40",
+   "identical": true
+  },
+  {
+   "file": "web/plan-ui.js",
+   "bytes": 46782,
+   "sha256": "dd59b444d606541f3128319e87f855f661cd2d472df5c490c080c49a97cb69eb",
+   "identical": true
+  },
+  {
+   "file": "web/plan.js",
+   "bytes": 39602,
+   "sha256": "3c0638e268ed69ad034ac9675228730b036a28a8b14193232cd32cb844945961",
+   "identical": true
+  },
+  {
+   "file": "web/resilience-ui.js",
+   "bytes": 26517,
+   "sha256": "7963c92a31989126cf4ee7204fd7fd1ea7c59b0d43b5761cc4074ba18dcdf180",
+   "identical": true
+  },
+  {
+   "file": "web/resilience.js",
+   "bytes": 27426,
+   "sha256": "d401ff82f7633191a3ca9d35ceb6dad7a511d6f8a7cb359ae7380f62babb7c2c",
+   "identical": true
+  },
+  {
+   "file": "web/whatif.js",
+   "bytes": 16193,
+   "sha256": "46e3b042d2402a46ca34e454139e7744ba9d379866c500a7809546d0dab72a72",
+   "identical": true
+  }
+ ]
+}

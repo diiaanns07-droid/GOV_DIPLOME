@@ -1,0 +1,395 @@
+{
+ "kind": "K07 r9 resilience adapter on BUILD plan.js",
+ "app_root": "city-evidence",
+ "total": 77,
+ "pass": 77,
+ "fail": 0,
+ "test_incompatible": 0,
+ "checks": [
+  {
+   "id": "H01",
+   "name": "robust ≠ nominal with zero price: nominal {c1}, robust {c2}, worst case Y for the nominal, price 0 m (not an invented advantage)",
+   "verdict": "PASS"
+  },
+  {
+   "id": "H02",
+   "name": "W of the robust plan is one real case vector (base and Y tie → both listed, sorted)",
+   "verdict": "PASS"
+  },
+  {
+   "id": "H03",
+   "name": "all records of the category excluded and budget 0: unknown 3, mean/max null (not 0), W = (3, 0, null); price known (base means)",
+   "verdict": "PASS"
+  },
+  {
+   "id": "H04",
+   "name": "two cases with the same exclusions: allowed, both reported, the plans do not change because of the duplicate",
+   "verdict": "PASS"
+  },
+  {
+   "id": "H05",
+   "name": "required sites over the budget: infeasible with the reason, price null with a reason, constraints not dropped",
+   "verdict": "PASS"
+  },
+  {
+   "id": "H06",
+   "name": "evaluateResilience (manual {c1}): per case metrics; worst case Y with W = (0, 1 667 926, 1 111 951)",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-unknown top field (derived)",
+   "name": "refused: unknown top field (derived) → unknown_field",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-schema",
+   "name": "refused: schema → bad_schema",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-no cases",
+   "name": "refused: no cases → bad_count",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-8 user cases",
+   "name": "refused: 8 user cases → bad_count",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-case id base",
+   "name": "refused: case id base → reserved_id",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-duplicate case id",
+   "name": "refused: duplicate case id → duplicate_id",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-case id with markup",
+   "name": "refused: case id with markup → bad_id",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-empty label",
+   "name": "refused: empty label → bad_label",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-label 121 chars",
+   "name": "refused: label 121 chars → bad_label",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-label with control char",
+   "name": "refused: label with control char → bad_label",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-no exclusions",
+   "name": "refused: no exclusions → bad_exclusions",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-duplicate exclusion",
+   "name": "refused: duplicate exclusion → duplicate_id",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-candidate ID as exclusion",
+   "name": "refused: candidate ID as exclusion → candidate_not_source",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-unknown source",
+   "name": "refused: unknown source → unknown_source",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-source of another category (no clinic records here)",
+   "name": "refused: source of another category (no clinic records here) (v2 code)",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-extra case field",
+   "name": "refused: extra case field → unknown_field",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-bad plan (v2 rule)",
+   "name": "refused: bad plan (v2 rule) (v2 code)",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-13 candidates",
+   "name": "refused: 13 candidates → too_many_candidates",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-ok",
+   "name": "a valid envelope with 12 candidates is accepted (limit is 12)",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-mutated",
+   "name": "a validated envelope mutated to 13 candidates → createResilienceSearch refuses (too_many_candidates) before precomputation",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-partial",
+   "name": "an unfinished search is «incomplete», a cancelled one «cancelled»; neither is «optimal» nor has plans",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-order",
+   "name": "order of cases, candidates and points changes neither the plans nor resilience_problem_digest",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-digest",
+   "name": "selected_ids: same problem digest, different scenario digest; a changed label changes the problem digest",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-immutable",
+   "name": "the source context is not mutated by case filtering",
+   "verdict": "PASS"
+  },
+  {
+   "id": "V-other-category",
+   "name": "a real school record ID in a clinic envelope is refused (unknown_source); a clinic ID is accepted",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-shymkent/school/demo",
+   "name": "adapter on BUILD plan.js = Python oracle (nominal, robust, W, worst cases, per-case metrics, price): shymkent/school/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-shymkent/school/demo",
+   "name": "evaluateResilience of the manual plan = oracle: shymkent/school/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "N-shymkent/school/demo",
+   "name": "nominal plan = BUILD v2 mean optimum on the same plan: shymkent/school/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-shymkent/school/budget300_max3",
+   "name": "adapter on BUILD plan.js = Python oracle (nominal, robust, W, worst cases, per-case metrics, price): shymkent/school/budget300_max3",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-shymkent/school/budget300_max3",
+   "name": "evaluateResilience of the manual plan = oracle: shymkent/school/budget300_max3",
+   "verdict": "PASS"
+  },
+  {
+   "id": "N-shymkent/school/budget300_max3",
+   "name": "nominal plan = BUILD v2 mean optimum on the same plan: shymkent/school/budget300_max3",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-shymkent/outpatient_clinic/demo",
+   "name": "adapter on BUILD plan.js = Python oracle (nominal, robust, W, worst cases, per-case metrics, price): shymkent/outpatient_clinic/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-shymkent/outpatient_clinic/demo",
+   "name": "evaluateResilience of the manual plan = oracle: shymkent/outpatient_clinic/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "N-shymkent/outpatient_clinic/demo",
+   "name": "nominal plan = BUILD v2 mean optimum on the same plan: shymkent/outpatient_clinic/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-shymkent/outpatient_clinic/budget300_max3",
+   "name": "adapter on BUILD plan.js = Python oracle (nominal, robust, W, worst cases, per-case metrics, price): shymkent/outpatient_clinic/budget300_max3",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-shymkent/outpatient_clinic/budget300_max3",
+   "name": "evaluateResilience of the manual plan = oracle: shymkent/outpatient_clinic/budget300_max3",
+   "verdict": "PASS"
+  },
+  {
+   "id": "N-shymkent/outpatient_clinic/budget300_max3",
+   "name": "nominal plan = BUILD v2 mean optimum on the same plan: shymkent/outpatient_clinic/budget300_max3",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-shymkent/school/max_12x25x8",
+   "name": "adapter on BUILD plan.js = Python oracle (nominal, robust, W, worst cases, per-case metrics, price): shymkent/school/max_12x25x8",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-shymkent/school/max_12x25x8",
+   "name": "evaluateResilience of the manual plan = oracle: shymkent/school/max_12x25x8",
+   "verdict": "PASS"
+  },
+  {
+   "id": "N-shymkent/school/max_12x25x8",
+   "name": "nominal plan = BUILD v2 mean optimum on the same plan: shymkent/school/max_12x25x8",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-astana/school/demo",
+   "name": "adapter on BUILD plan.js = Python oracle (nominal, robust, W, worst cases, per-case metrics, price): astana/school/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-astana/school/demo",
+   "name": "evaluateResilience of the manual plan = oracle: astana/school/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "N-astana/school/demo",
+   "name": "nominal plan = BUILD v2 mean optimum on the same plan: astana/school/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-astana/school/budget300_max3",
+   "name": "adapter on BUILD plan.js = Python oracle (nominal, robust, W, worst cases, per-case metrics, price): astana/school/budget300_max3",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-astana/school/budget300_max3",
+   "name": "evaluateResilience of the manual plan = oracle: astana/school/budget300_max3",
+   "verdict": "PASS"
+  },
+  {
+   "id": "N-astana/school/budget300_max3",
+   "name": "nominal plan = BUILD v2 mean optimum on the same plan: astana/school/budget300_max3",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-astana/outpatient_clinic/demo",
+   "name": "adapter on BUILD plan.js = Python oracle (nominal, robust, W, worst cases, per-case metrics, price): astana/outpatient_clinic/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-astana/outpatient_clinic/demo",
+   "name": "evaluateResilience of the manual plan = oracle: astana/outpatient_clinic/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "N-astana/outpatient_clinic/demo",
+   "name": "nominal plan = BUILD v2 mean optimum on the same plan: astana/outpatient_clinic/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-astana/outpatient_clinic/budget300_max3",
+   "name": "adapter on BUILD plan.js = Python oracle (nominal, robust, W, worst cases, per-case metrics, price): astana/outpatient_clinic/budget300_max3",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-astana/outpatient_clinic/budget300_max3",
+   "name": "evaluateResilience of the manual plan = oracle: astana/outpatient_clinic/budget300_max3",
+   "verdict": "PASS"
+  },
+  {
+   "id": "N-astana/outpatient_clinic/budget300_max3",
+   "name": "nominal plan = BUILD v2 mean optimum on the same plan: astana/outpatient_clinic/budget300_max3",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-astana/school/max_12x25x8",
+   "name": "adapter on BUILD plan.js = Python oracle (nominal, robust, W, worst cases, per-case metrics, price): astana/school/max_12x25x8",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-astana/school/max_12x25x8",
+   "name": "evaluateResilience of the manual plan = oracle: astana/school/max_12x25x8",
+   "verdict": "PASS"
+  },
+  {
+   "id": "N-astana/school/max_12x25x8",
+   "name": "nominal plan = BUILD v2 mean optimum on the same plan: astana/school/max_12x25x8",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-eq/robust_differs_zero_price",
+   "name": "adapter on BUILD plan.js = Python oracle (nominal, robust, W, worst cases, per-case metrics, price): eq/robust_differs_zero_price",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-eq/robust_differs_zero_price",
+   "name": "evaluateResilience of the manual plan = oracle: eq/robust_differs_zero_price",
+   "verdict": "PASS"
+  },
+  {
+   "id": "N-eq/robust_differs_zero_price",
+   "name": "nominal plan = BUILD v2 mean optimum on the same plan: eq/robust_differs_zero_price",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-eq/all_excluded_budget0",
+   "name": "adapter on BUILD plan.js = Python oracle (nominal, robust, W, worst cases, per-case metrics, price): eq/all_excluded_budget0",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-eq/all_excluded_budget0",
+   "name": "evaluateResilience of the manual plan = oracle: eq/all_excluded_budget0",
+   "verdict": "PASS"
+  },
+  {
+   "id": "N-eq/all_excluded_budget0",
+   "name": "nominal plan = BUILD v2 mean optimum on the same plan: eq/all_excluded_budget0",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-eq/duplicate_cases",
+   "name": "adapter on BUILD plan.js = Python oracle (nominal, robust, W, worst cases, per-case metrics, price): eq/duplicate_cases",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-eq/duplicate_cases",
+   "name": "evaluateResilience of the manual plan = oracle: eq/duplicate_cases",
+   "verdict": "PASS"
+  },
+  {
+   "id": "N-eq/duplicate_cases",
+   "name": "nominal plan = BUILD v2 mean optimum on the same plan: eq/duplicate_cases",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-eq/required_over_budget",
+   "name": "adapter on BUILD plan.js = Python oracle (nominal, robust, W, worst cases, per-case metrics, price): eq/required_over_budget",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-eq/manual_c1",
+   "name": "adapter on BUILD plan.js = Python oracle (nominal, robust, W, worst cases, per-case metrics, price): eq/manual_c1",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-eq/manual_c1",
+   "name": "evaluateResilience of the manual plan = oracle: eq/manual_c1",
+   "verdict": "PASS"
+  },
+  {
+   "id": "N-eq/manual_c1",
+   "name": "nominal plan = BUILD v2 mean optimum on the same plan: eq/manual_c1",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-eq/two_cases_both_sides",
+   "name": "adapter on BUILD plan.js = Python oracle (nominal, robust, W, worst cases, per-case metrics, price): eq/two_cases_both_sides",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-eq/two_cases_both_sides",
+   "name": "evaluateResilience of the manual plan = oracle: eq/two_cases_both_sides",
+   "verdict": "PASS"
+  },
+  {
+   "id": "N-eq/two_cases_both_sides",
+   "name": "nominal plan = BUILD v2 mean optimum on the same plan: eq/two_cases_both_sides",
+   "verdict": "PASS"
+  }
+ ]
+}

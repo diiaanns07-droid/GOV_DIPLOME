@@ -1,0 +1,118 @@
+{
+ "node": "v22.22.0",
+ "platform": "linux x64",
+ "cases": [
+  {
+   "name": "shymkent/school/demo",
+   "ms": 2.5,
+   "subsets": 256,
+   "feasible": 10,
+   "cases": 5
+  },
+  {
+   "name": "shymkent/school/budget300_max3",
+   "ms": 6.8,
+   "subsets": 256,
+   "feasible": 47,
+   "cases": 3
+  },
+  {
+   "name": "shymkent/outpatient_clinic/demo",
+   "ms": 1.9,
+   "subsets": 256,
+   "feasible": 10,
+   "cases": 5
+  },
+  {
+   "name": "shymkent/outpatient_clinic/budget300_max3",
+   "ms": 3.3,
+   "subsets": 256,
+   "feasible": 47,
+   "cases": 3
+  },
+  {
+   "name": "shymkent/school/max_12x25x8",
+   "ms": 20.4,
+   "subsets": 4096,
+   "feasible": 519,
+   "cases": 8
+  },
+  {
+   "name": "astana/school/demo",
+   "ms": 1.1,
+   "subsets": 256,
+   "feasible": 10,
+   "cases": 5
+  },
+  {
+   "name": "astana/school/budget300_max3",
+   "ms": 1.4,
+   "subsets": 256,
+   "feasible": 47,
+   "cases": 3
+  },
+  {
+   "name": "astana/outpatient_clinic/demo",
+   "ms": 0.6,
+   "subsets": 256,
+   "feasible": 10,
+   "cases": 5
+  },
+  {
+   "name": "astana/outpatient_clinic/budget300_max3",
+   "ms": 0.6,
+   "subsets": 256,
+   "feasible": 47,
+   "cases": 3
+  },
+  {
+   "name": "astana/school/max_12x25x8",
+   "ms": 14.2,
+   "subsets": 4096,
+   "feasible": 519,
+   "cases": 8
+  },
+  {
+   "name": "eq/robust_differs_zero_price",
+   "ms": 0.5,
+   "subsets": 8,
+   "feasible": 4,
+   "cases": 2
+  },
+  {
+   "name": "eq/all_excluded_budget0",
+   "ms": 0.4,
+   "subsets": 8,
+   "feasible": 1,
+   "cases": 2
+  },
+  {
+   "name": "eq/duplicate_cases",
+   "ms": 0.2,
+   "subsets": 8,
+   "feasible": 7,
+   "cases": 3
+  },
+  {
+   "name": "eq/required_over_budget",
+   "ms": 0.1,
+   "subsets": 0,
+   "feasible": 0,
+   "cases": 2
+  },
+  {
+   "name": "eq/manual_c1",
+   "ms": 0.2,
+   "subsets": 8,
+   "feasible": 4,
+   "cases": 2
+  },
+  {
+   "name": "eq/two_cases_both_sides",
+   "ms": 0.2,
+   "subsets": 8,
+   "feasible": 7,
+   "cases": 3
+  }
+ ]
+}

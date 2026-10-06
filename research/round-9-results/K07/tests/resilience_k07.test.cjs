@@ -52,20 +52,9 @@ const env = (plan, cases) => ({ schema_version: "city-resilience-v1", plan, case
 }
 // ---------- refusals ----------
 const good = () => env(eqPlan(), [{ id: "Y", label: "без s-b", disabled_source_ids: ["s-b"] }]);
-const REJ = [
-  ["unknown top field (derived)", (e) => { e.derived_results = { robust: ["c3"] }; }, "unknown_field"], ["schema", (e) => { e.schema_version = "city-resilience-v2"; }, "bad_schema"],
-  ["no cases", (e) => { e.cases = []; }, "bad_count"], ["8 user cases", (e) => { e.cases = Array.from({ length: 8 }, (_, i) => ({ id: "c" + i, label: "x", disabled_source_ids: ["s-a"] })); }, "bad_count"],
-  ["case id base", (e) => { e.cases[0].id = "base"; }, "reserved_id"], ["duplicate case id", (e) => { e.cases.push({ ...e.cases[0] }); }, "duplicate_id"],
-  ["case id with markup", (e) => { e.cases[0].id = "<b>"; }, "bad_id"], ["empty label", (e) => { e.cases[0].label = "  "; }, "bad_label"],
-  ["label 121 chars", (e) => { e.cases[0].label = "я".repeat(121); }, "bad_label"], ["label with control char", (e) => { e.cases[0].label = "a\u0007b"; }, "bad_label"],
-  ["no exclusions", (e) => { e.cases[0].disabled_source_ids = []; }, "bad_exclusions"], ["duplicate exclusion", (e) => { e.cases[0].disabled_source_ids = ["s-b", "s-b"]; }, "duplicate_id"],
-  ["candidate ID as exclusion", (e) => { e.cases[0].disabled_source_ids = ["c1"]; }, "candidate_not_source"], ["unknown source", (e) => { e.cases[0].disabled_source_ids = ["s-z"]; }, "unknown_source"],
-  ["source of another category (no clinic records here)", (e) => { e.plan = eqPlan({ category: "outpatient_clinic", candidates: eqPlan().candidates.map((c) => ({ ...c, category: "outpatient_clinic" })) }); }, null],
-  ["extra case field", (e) => { e.cases[0].weight = 5; }, "unknown_field"], ["bad plan (v2 rule)", (e) => { e.plan.budget = -1; }, null],
-  ["13 candidates", (e) => { e.plan.candidates = Array.from({ length: 13 }, (_, i) => ({ id: "k" + i, lon: 0.001 * (i + 1), lat: 0, category: "school", kind: "hypothetical", cost: 1 })); }, "too_many_candidates"],
-];
+const { REJ } = require(path.join(HERE, "resilience_cases.cjs"));  // shared with build_resilience_crosscheck.cjs
 for (const [name, mut, want] of REJ) {
-  const e = good(); mut(e);
+  const e = good(); e.__ctx = ctxEq; mut(e); delete e.__ctx;
   const got = code(() => RS.validateResilience(e, ctxEq));
   check("V-" + name, `refused: ${name}${want ? " → " + want : " (v2 code)"}`, got !== "accepted" && (want === null || got === want), got);
 }
@@ -99,54 +88,35 @@ check("V-ok", "a valid envelope with 12 candidates is accepted (limit is 12)", c
     code(() => RS.validateResilience(env(plan, [{ id: "C1", label: "школа", disabled_source_ids: [school] }]), ctx)) === "unknown_source" &&
     code(() => RS.validateResilience(env(plan, [{ id: "C1", label: "поликлиника", disabled_source_ids: [clinic] }]), ctx)) === "accepted", { school, clinic });
 }
-// ---------- real slices vs the Python oracle ----------
+// ---------- real slices (and the hand envelopes) vs the Python oracle ----------
 const timing = [];
-function realEnvelopes() {
-  const out = [];
-  for (const city of ["shymkent", "astana"]) {
-    const ctx = PL.makeContext(D, city, F);
-    for (const cat of ["school", "outpatient_clinic"]) {
-      const plan = JSON.parse(fs.readFileSync(path.join(R8, "fixtures", `synthetic_demo_${city}_${cat}.json`), "utf8"));
-      const src = RS.sourceIds(ctx, cat).sort();
-      const cases = [{ id: "C1", label: "две записи под вопросом", disabled_source_ids: src.slice(0, 2) },
-        { id: "C2", label: "пять записей", disabled_source_ids: src.slice(0, 5) },
-        { id: "C3", label: "то же, что C1", disabled_source_ids: src.slice(0, 2) },
-        { id: "C4", label: "все записи категории", disabled_source_ids: src.slice() }];
-      out.push({ name: `${city}/${cat}/demo`, ctx, envelope: env({ ...plan, selected_ids: ["site-2"] }, cases) });
-      out.push({ name: `${city}/${cat}/budget300_max3`, ctx, envelope: env({ ...plan, budget: 300, max_selected: 3, selected_ids: ["site-2", "site-4"] }, cases.slice(0, 2)) });
-    }
-    // 12 sites × 25 points × 8 cases (SYNTHETIC grid inside the real bbox)
-    const bb = ctx.bbox, g = (u, v) => [Math.round((bb[0] + (bb[2] - bb[0]) * u) * 1e6) / 1e6, Math.round((bb[1] + (bb[3] - bb[1]) * v) * 1e6) / 1e6];
-    const src = RS.sourceIds(ctx, "school").sort();
-    const plan = { schema_version: "city-plan-v2", city_id: city, source_snapshot: ctx.source_snapshot, category: "school",
-      control_points: Array.from({ length: 25 }, (_, i) => { const [lon, lat] = g(0.08 + 0.21 * (i % 5), 0.08 + 0.21 * Math.floor(i / 5)); return { id: `cp-${i + 1}`, lon, lat, weight: 1 + (i * 7) % 10 }; }),
-      candidates: Array.from({ length: 12 }, (_, i) => { const [lon, lat] = g(0.12 + 0.25 * (i % 4), 0.12 + 0.37 * Math.floor(i / 4)); return { id: `site-${String(i + 1).padStart(2, "0")}`, lon, lat, category: "school", kind: "hypothetical", cost: 50 + (i * 37) % 120 }; }),
-      budget: 400, max_selected: 5, coverage_radius_m: 300, required_ids: [], excluded_ids: [], selected_ids: ["site-01"] };
-    const cases = Array.from({ length: 7 }, (_, k) => ({ id: `K${k + 1}`, label: `случай ${k + 1}`, disabled_source_ids: src.filter((_, i) => (i + k) % (k + 2) === 0).slice(0, Math.max(1, Math.min(src.length, k + 1))) }));
-    out.push({ name: `${city}/school/max_12x25x8`, ctx, envelope: env(plan, cases) });
-  }
-  return out;
-}
-const items = realEnvelopes();
-fs.writeFileSync(path.join(OUT, "cases.json"), JSON.stringify(items.map((c) => ({ name: c.name, envelope: c.envelope })), null, 1) + "\n");
-const py = spawnSync("python3", [path.join(HERE, "oracle_resilience.py"), "--data", path.join(W, "data.js"), "--cases", path.join(OUT, "cases.json"), "--out", path.join(OUT, "oracle.json")], { encoding: "utf8" });
-if (py.status !== 0) check("O00", "Python oracle ran", false, (py.stderr || String(py.error)).slice(0, 300), false);
-else {
-  const orc = JSON.parse(fs.readFileSync(path.join(OUT, "oracle.json"), "utf8"));
+const { realEnvelopes, handEnvelopes } = require(path.join(HERE, "resilience_cases.cjs"));
+const ctxs = { synthetic_eq: ctxEq };
+const ctxOf = (city) => ctxs[city] || (ctxs[city] = PL.makeContext(D, city, F));
+function compareWithOracle(items, dataFile, tag) {
+  fs.writeFileSync(path.join(OUT, `cases${tag}.json`), JSON.stringify(items.map((c) => ({ name: c.name, envelope: c.envelope })), null, 1) + "\n");
+  const py = spawnSync("python3", [path.join(HERE, "oracle_resilience.py"), "--data", dataFile, "--cases", path.join(OUT, `cases${tag}.json`), "--out", path.join(OUT, `oracle${tag}.json`)], { encoding: "utf8" });
+  if (py.status !== 0) { check("O00" + tag, "Python oracle ran", false, (py.stderr || String(py.error)).slice(0, 300), false); return; }
+  const orc = JSON.parse(fs.readFileSync(path.join(OUT, `oracle${tag}.json`), "utf8"));
   const pick = (x) => x && { selected_ids: x.selected_ids, cost: x.cost, worst_case_ids: x.worst_case_ids, worst_vector: x.worst_vector,
     per_case: x.per_case.map((c) => ({ case_id: c.case_id, unknown_count: c.metrics ? c.metrics.unknown_count : c.unknown_count, weighted_sum_mm: c.metrics ? c.metrics.weighted_sum_mm : c.weighted_sum_mm, max_mm: c.metrics ? c.metrics.max_mm : c.max_mm, covered_weight: c.metrics ? c.metrics.covered_weight : c.covered_weight })) };
   items.forEach((c, i) => {
-    const t0 = process.hrtime.bigint(), r = RS.optimizeResilience(c.ctx, c.envelope, { F }), ms = Number(process.hrtime.bigint() - t0) / 1e6, o = orc[i];
+    const ctx = ctxOf(c.envelope.plan.city_id), t0 = process.hrtime.bigint(), r = RS.optimizeResilience(ctx, c.envelope, { F }), ms = Number(process.hrtime.bigint() - t0) / 1e6, o = orc[i];
     timing.push({ name: c.name, ms: Math.round(ms * 10) / 10, subsets: r.total_subsets, feasible: r.feasible_count, cases: c.envelope.cases.length + 1 });
-    const a = JSON.stringify({ status: r.status, feasible: r.feasible_count, nominal: pick(r.nominal), robust: pick(r.robust), price: r.price_of_robustness_m });
+    const a = JSON.stringify({ status: r.status, feasible: r.status === "optimal" ? r.feasible_count : 0, nominal: pick(r.nominal), robust: pick(r.robust), price: r.price_of_robustness_m });
     const b = JSON.stringify({ status: o.status, feasible: o.feasible_count, nominal: o.nominal && pick(o.nominal), robust: o.robust && pick(o.robust), price: o.price_of_robustness_m });
     check("O-" + c.name, `adapter on BUILD plan.js = Python oracle (nominal, robust, W, worst cases, per-case metrics, price): ${c.name}`, a === b, { js: a.slice(0, 500), oracle: b.slice(0, 500) });
-    const m = RS.evaluateResilience(c.ctx, c.envelope);
+    if (o.status !== "optimal") return;
+    const m = RS.evaluateResilience(ctx, c.envelope);
     check("E-" + c.name, `evaluateResilience of the manual plan = oracle: ${c.name}`, JSON.stringify(pick({ ...m })) === JSON.stringify(pick(o.manual)), { js: pick(m), oracle: o.manual });
-    const v2 = PL.optimizePlans(c.ctx, PL.validatePlanScenario(c.envelope.plan, c.ctx), { F });
+    const v2 = PL.optimizePlans(ctx, PL.validatePlanScenario(c.envelope.plan, ctx), { F });
     check("N-" + c.name, `nominal plan = BUILD v2 mean optimum on the same plan: ${c.name}`, r.nominal && v2.objectives && r.nominal.selected_ids.join() === v2.objectives.mean.ids.join(), { resilience: r.nominal && r.nominal.selected_ids, v2: v2.objectives && v2.objectives.mean.ids });
   });
 }
+compareWithOracle(realEnvelopes(PL, D, F, R8), path.join(W, "data.js"), "");
+const eqFile = path.join(OUT, "synthetic_eq_data.js");
+fs.writeFileSync(eqFile, "// SYNTHETIC equator test city (K07 tests), not city data\nwindow.CITY_EVIDENCE = " + JSON.stringify(EQ_DATA) + ";\n");
+compareWithOracle(handEnvelopes(ctxEq), eqFile, "_eq");
 fs.writeFileSync(path.join(OUT, "timing.json"), JSON.stringify({ node: process.version, platform: `${process.platform} ${process.arch}`, cases: timing }, null, 1) + "\n");
 const by = (v) => checks.filter((c) => c.verdict === v).length;
 fs.writeFileSync(path.join(OUT, "result.json"), JSON.stringify({ kind: "K07 r9 resilience adapter on BUILD plan.js", app_root: path.basename(ROOT), total: checks.length, pass: by("PASS"), fail: by("FAIL"), test_incompatible: by("TEST_INCOMPATIBLE"), checks }, null, 1) + "\n");

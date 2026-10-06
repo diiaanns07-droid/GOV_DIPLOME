@@ -1,0 +1,1544 @@
+[
+ {
+  "name": "eq/ties",
+  "status": "optimal",
+  "feasible_count": 7,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "c1",
+     "c2"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 555975,
+    "max_mm": 555975,
+    "covered_weight": 2,
+    "cost": 20
+   },
+   "minimax": {
+    "selected_ids": [
+     "c1",
+     "c2"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 555975,
+    "max_mm": 555975,
+    "covered_weight": 2,
+    "cost": 20
+   },
+   "coverage": {
+    "selected_ids": [
+     "c1",
+     "c2"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 555975,
+    "max_mm": 555975,
+    "covered_weight": 2,
+    "cost": 20
+   }
+  },
+  "pareto": [
+   {
+    "selected_ids": [],
+    "cost": 0,
+    "weighted_sum_mm": 2223901
+   },
+   {
+    "selected_ids": [
+     "c1"
+    ],
+    "cost": 10,
+    "weighted_sum_mm": 1111950
+   },
+   {
+    "selected_ids": [
+     "c1",
+     "c2"
+    ],
+    "cost": 20,
+    "weighted_sum_mm": 555975
+   }
+  ],
+  "pareto_excluded_unknown": 0,
+  "sensitivity": [
+   {
+    "budget": 0,
+    "feasible_count": 1,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 2223901,
+      "max_mm": 1111951,
+      "covered_weight": 0,
+      "cost": 0
+     },
+     "minimax": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 2223901,
+      "max_mm": 1111951,
+      "covered_weight": 0,
+      "cost": 0
+     },
+     "coverage": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 2223901,
+      "max_mm": 1111951,
+      "covered_weight": 0,
+      "cost": 0
+     }
+    }
+   },
+   {
+    "budget": 10,
+    "feasible_count": 4,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "c1"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 1111950,
+      "max_mm": 555975,
+      "covered_weight": 1,
+      "cost": 10
+     },
+     "minimax": {
+      "selected_ids": [
+       "c1"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 1111950,
+      "max_mm": 555975,
+      "covered_weight": 1,
+      "cost": 10
+     },
+     "coverage": {
+      "selected_ids": [
+       "c1"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 1111950,
+      "max_mm": 555975,
+      "covered_weight": 1,
+      "cost": 10
+     }
+    }
+   },
+   {
+    "budget": 20,
+    "feasible_count": 7,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "c1",
+       "c2"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 555975,
+      "max_mm": 555975,
+      "covered_weight": 2,
+      "cost": 20
+     },
+     "minimax": {
+      "selected_ids": [
+       "c1",
+       "c2"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 555975,
+      "max_mm": 555975,
+      "covered_weight": 2,
+      "cost": 20
+     },
+     "coverage": {
+      "selected_ids": [
+       "c1",
+       "c2"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 555975,
+      "max_mm": 555975,
+      "covered_weight": 2,
+      "cost": 20
+     }
+    }
+   }
+  ],
+  "manual": {
+   "selected_ids": [],
+   "unknown_count": 0,
+   "weighted_sum_mm": 2223901,
+   "max_mm": 1111951,
+   "covered_weight": 0,
+   "total_weight": 3,
+   "cost": 0,
+   "before_mm": [
+    555975,
+    1111951,
+    555975
+   ]
+  }
+ },
+ {
+  "name": "eq/required_over_budget",
+  "status": "infeasible",
+  "feasible_count": 0,
+  "objectives": {
+   "mean": null,
+   "minimax": null,
+   "coverage": null
+  },
+  "pareto": [],
+  "pareto_excluded_unknown": 0,
+  "sensitivity": [
+   {
+    "budget": 0,
+    "feasible_count": 0,
+    "objectives": {
+     "mean": null,
+     "minimax": null,
+     "coverage": null
+    }
+   },
+   {
+    "budget": 7,
+    "feasible_count": 0,
+    "objectives": {
+     "mean": null,
+     "minimax": null,
+     "coverage": null
+    }
+   },
+   {
+    "budget": 15,
+    "feasible_count": 0,
+    "objectives": {
+     "mean": null,
+     "minimax": null,
+     "coverage": null
+    }
+   }
+  ],
+  "manual": {
+   "selected_ids": [],
+   "unknown_count": 0,
+   "weighted_sum_mm": 2223901,
+   "max_mm": 1111951,
+   "covered_weight": 0,
+   "total_weight": 3,
+   "cost": 0,
+   "before_mm": [
+    555975,
+    1111951,
+    555975
+   ]
+  }
+ },
+ {
+  "name": "eq/required_over_count",
+  "status": "infeasible",
+  "feasible_count": 0,
+  "objectives": {
+   "mean": null,
+   "minimax": null,
+   "coverage": null
+  },
+  "pareto": [],
+  "pareto_excluded_unknown": 0,
+  "sensitivity": [
+   {
+    "budget": 0,
+    "feasible_count": 0,
+    "objectives": {
+     "mean": null,
+     "minimax": null,
+     "coverage": null
+    }
+   },
+   {
+    "budget": 50,
+    "feasible_count": 0,
+    "objectives": {
+     "mean": null,
+     "minimax": null,
+     "coverage": null
+    }
+   },
+   {
+    "budget": 100,
+    "feasible_count": 0,
+    "objectives": {
+     "mean": null,
+     "minimax": null,
+     "coverage": null
+    }
+   }
+  ],
+  "manual": {
+   "selected_ids": [],
+   "unknown_count": 0,
+   "weighted_sum_mm": 2223901,
+   "max_mm": 1111951,
+   "covered_weight": 0,
+   "total_weight": 3,
+   "cost": 0,
+   "before_mm": [
+    555975,
+    1111951,
+    555975
+   ]
+  }
+ },
+ {
+  "name": "eq/zero_budget",
+  "status": "optimal",
+  "feasible_count": 1,
+  "objectives": {
+   "mean": {
+    "selected_ids": [],
+    "unknown_count": 0,
+    "weighted_sum_mm": 2223901,
+    "max_mm": 1111951,
+    "covered_weight": 0,
+    "cost": 0
+   },
+   "minimax": {
+    "selected_ids": [],
+    "unknown_count": 0,
+    "weighted_sum_mm": 2223901,
+    "max_mm": 1111951,
+    "covered_weight": 0,
+    "cost": 0
+   },
+   "coverage": {
+    "selected_ids": [],
+    "unknown_count": 0,
+    "weighted_sum_mm": 2223901,
+    "max_mm": 1111951,
+    "covered_weight": 0,
+    "cost": 0
+   }
+  },
+  "pareto": [
+   {
+    "selected_ids": [],
+    "cost": 0,
+    "weighted_sum_mm": 2223901
+   }
+  ],
+  "pareto_excluded_unknown": 0,
+  "sensitivity": [
+   {
+    "budget": 0,
+    "feasible_count": 1,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 2223901,
+      "max_mm": 1111951,
+      "covered_weight": 0,
+      "cost": 0
+     },
+     "minimax": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 2223901,
+      "max_mm": 1111951,
+      "covered_weight": 0,
+      "cost": 0
+     },
+     "coverage": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 2223901,
+      "max_mm": 1111951,
+      "covered_weight": 0,
+      "cost": 0
+     }
+    }
+   }
+  ],
+  "manual": {
+   "selected_ids": [],
+   "unknown_count": 0,
+   "weighted_sum_mm": 2223901,
+   "max_mm": 1111951,
+   "covered_weight": 0,
+   "total_weight": 3,
+   "cost": 0,
+   "before_mm": [
+    555975,
+    1111951,
+    555975
+   ]
+  }
+ },
+ {
+  "name": "eq/no_candidates",
+  "status": "optimal",
+  "feasible_count": 1,
+  "objectives": {
+   "mean": {
+    "selected_ids": [],
+    "unknown_count": 0,
+    "weighted_sum_mm": 2223901,
+    "max_mm": 1111951,
+    "covered_weight": 0,
+    "cost": 0
+   },
+   "minimax": {
+    "selected_ids": [],
+    "unknown_count": 0,
+    "weighted_sum_mm": 2223901,
+    "max_mm": 1111951,
+    "covered_weight": 0,
+    "cost": 0
+   },
+   "coverage": {
+    "selected_ids": [],
+    "unknown_count": 0,
+    "weighted_sum_mm": 2223901,
+    "max_mm": 1111951,
+    "covered_weight": 0,
+    "cost": 0
+   }
+  },
+  "pareto": [
+   {
+    "selected_ids": [],
+    "cost": 0,
+    "weighted_sum_mm": 2223901
+   }
+  ],
+  "pareto_excluded_unknown": 0,
+  "sensitivity": [
+   {
+    "budget": 0,
+    "feasible_count": 1,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 2223901,
+      "max_mm": 1111951,
+      "covered_weight": 0,
+      "cost": 0
+     },
+     "minimax": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 2223901,
+      "max_mm": 1111951,
+      "covered_weight": 0,
+      "cost": 0
+     },
+     "coverage": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 2223901,
+      "max_mm": 1111951,
+      "covered_weight": 0,
+      "cost": 0
+     }
+    }
+   },
+   {
+    "budget": 10,
+    "feasible_count": 1,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 2223901,
+      "max_mm": 1111951,
+      "covered_weight": 0,
+      "cost": 0
+     },
+     "minimax": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 2223901,
+      "max_mm": 1111951,
+      "covered_weight": 0,
+      "cost": 0
+     },
+     "coverage": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 2223901,
+      "max_mm": 1111951,
+      "covered_weight": 0,
+      "cost": 0
+     }
+    }
+   },
+   {
+    "budget": 20,
+    "feasible_count": 1,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 2223901,
+      "max_mm": 1111951,
+      "covered_weight": 0,
+      "cost": 0
+     },
+     "minimax": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 2223901,
+      "max_mm": 1111951,
+      "covered_weight": 0,
+      "cost": 0
+     },
+     "coverage": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 2223901,
+      "max_mm": 1111951,
+      "covered_weight": 0,
+      "cost": 0
+     }
+    }
+   }
+  ],
+  "manual": {
+   "selected_ids": [],
+   "unknown_count": 0,
+   "weighted_sum_mm": 2223901,
+   "max_mm": 1111951,
+   "covered_weight": 0,
+   "total_weight": 3,
+   "cost": 0,
+   "before_mm": [
+    555975,
+    1111951,
+    555975
+   ]
+  }
+ },
+ {
+  "name": "eq/no_baseline",
+  "status": "optimal",
+  "feasible_count": 7,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "c1",
+     "c2"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 555975,
+    "max_mm": 555975,
+    "covered_weight": 2,
+    "cost": 20
+   },
+   "minimax": {
+    "selected_ids": [
+     "c1",
+     "c2"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 555975,
+    "max_mm": 555975,
+    "covered_weight": 2,
+    "cost": 20
+   },
+   "coverage": {
+    "selected_ids": [
+     "c1",
+     "c2"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 555975,
+    "max_mm": 555975,
+    "covered_weight": 2,
+    "cost": 20
+   }
+  },
+  "pareto": [
+   {
+    "selected_ids": [
+     "c2"
+    ],
+    "cost": 10,
+    "weighted_sum_mm": 1111950
+   },
+   {
+    "selected_ids": [
+     "c1",
+     "c2"
+    ],
+    "cost": 20,
+    "weighted_sum_mm": 555975
+   }
+  ],
+  "pareto_excluded_unknown": 1,
+  "sensitivity": [
+   {
+    "budget": 0,
+    "feasible_count": 1,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "unknown_count": 3,
+      "weighted_sum_mm": 0,
+      "max_mm": null,
+      "covered_weight": 0,
+      "cost": 0
+     },
+     "minimax": {
+      "selected_ids": [],
+      "unknown_count": 3,
+      "weighted_sum_mm": 0,
+      "max_mm": null,
+      "covered_weight": 0,
+      "cost": 0
+     },
+     "coverage": {
+      "selected_ids": [],
+      "unknown_count": 3,
+      "weighted_sum_mm": 0,
+      "max_mm": null,
+      "covered_weight": 0,
+      "cost": 0
+     }
+    }
+   },
+   {
+    "budget": 10,
+    "feasible_count": 4,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "c2"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 1111950,
+      "max_mm": 555975,
+      "covered_weight": 1,
+      "cost": 10
+     },
+     "minimax": {
+      "selected_ids": [
+       "c2"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 1111950,
+      "max_mm": 555975,
+      "covered_weight": 1,
+      "cost": 10
+     },
+     "coverage": {
+      "selected_ids": [
+       "c2"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 1111950,
+      "max_mm": 555975,
+      "covered_weight": 1,
+      "cost": 10
+     }
+    }
+   },
+   {
+    "budget": 20,
+    "feasible_count": 7,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "c1",
+       "c2"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 555975,
+      "max_mm": 555975,
+      "covered_weight": 2,
+      "cost": 20
+     },
+     "minimax": {
+      "selected_ids": [
+       "c1",
+       "c2"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 555975,
+      "max_mm": 555975,
+      "covered_weight": 2,
+      "cost": 20
+     },
+     "coverage": {
+      "selected_ids": [
+       "c1",
+       "c2"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 555975,
+      "max_mm": 555975,
+      "covered_weight": 2,
+      "cost": 20
+     }
+    }
+   }
+  ],
+  "manual": {
+   "selected_ids": [
+    "c2"
+   ],
+   "unknown_count": 0,
+   "weighted_sum_mm": 1111950,
+   "max_mm": 555975,
+   "covered_weight": 1,
+   "total_weight": 3,
+   "cost": 10,
+   "before_mm": [
+    null,
+    null,
+    null
+   ]
+  }
+ },
+ {
+  "name": "eq/dominated",
+  "status": "optimal",
+  "feasible_count": 12,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "c1",
+     "c2",
+     "c3"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 0,
+    "max_mm": 0,
+    "covered_weight": 3,
+    "cost": 30
+   },
+   "minimax": {
+    "selected_ids": [
+     "c1",
+     "c2",
+     "c3"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 0,
+    "max_mm": 0,
+    "covered_weight": 3,
+    "cost": 30
+   },
+   "coverage": {
+    "selected_ids": [
+     "c1",
+     "c2",
+     "c3"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 0,
+    "max_mm": 0,
+    "covered_weight": 3,
+    "cost": 30
+   }
+  },
+  "pareto": [
+   {
+    "selected_ids": [],
+    "cost": 0,
+    "weighted_sum_mm": 2223901
+   },
+   {
+    "selected_ids": [
+     "c1"
+    ],
+    "cost": 10,
+    "weighted_sum_mm": 1111950
+   },
+   {
+    "selected_ids": [
+     "c1",
+     "c2"
+    ],
+    "cost": 20,
+    "weighted_sum_mm": 555975
+   },
+   {
+    "selected_ids": [
+     "c1",
+     "c2",
+     "c3"
+    ],
+    "cost": 30,
+    "weighted_sum_mm": 0
+   }
+  ],
+  "pareto_excluded_unknown": 0,
+  "sensitivity": [
+   {
+    "budget": 0,
+    "feasible_count": 1,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 2223901,
+      "max_mm": 1111951,
+      "covered_weight": 0,
+      "cost": 0
+     },
+     "minimax": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 2223901,
+      "max_mm": 1111951,
+      "covered_weight": 0,
+      "cost": 0
+     },
+     "coverage": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 2223901,
+      "max_mm": 1111951,
+      "covered_weight": 0,
+      "cost": 0
+     }
+    }
+   },
+   {
+    "budget": 15,
+    "feasible_count": 5,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "c1"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 1111950,
+      "max_mm": 555975,
+      "covered_weight": 1,
+      "cost": 10
+     },
+     "minimax": {
+      "selected_ids": [
+       "c1"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 1111950,
+      "max_mm": 555975,
+      "covered_weight": 1,
+      "cost": 10
+     },
+     "coverage": {
+      "selected_ids": [
+       "c1"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 1111950,
+      "max_mm": 555975,
+      "covered_weight": 1,
+      "cost": 10
+     }
+    }
+   },
+   {
+    "budget": 30,
+    "feasible_count": 12,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "c1",
+       "c2",
+       "c3"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 0,
+      "max_mm": 0,
+      "covered_weight": 3,
+      "cost": 30
+     },
+     "minimax": {
+      "selected_ids": [
+       "c1",
+       "c2",
+       "c3"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 0,
+      "max_mm": 0,
+      "covered_weight": 3,
+      "cost": 30
+     },
+     "coverage": {
+      "selected_ids": [
+       "c1",
+       "c2",
+       "c3"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 0,
+      "max_mm": 0,
+      "covered_weight": 3,
+      "cost": 30
+     }
+    }
+   }
+  ],
+  "manual": {
+   "selected_ids": [
+    "c1",
+    "c4"
+   ],
+   "unknown_count": 0,
+   "weighted_sum_mm": 555976,
+   "max_mm": 544856,
+   "covered_weight": 2,
+   "total_weight": 3,
+   "cost": 25,
+   "before_mm": [
+    555975,
+    1111951,
+    555975
+   ]
+  }
+ },
+ {
+  "name": "eq/coverage",
+  "status": "optimal",
+  "feasible_count": 4,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "c2"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 1223145,
+    "max_mm": 555975,
+    "covered_weight": 5,
+    "cost": 10
+   },
+   "minimax": {
+    "selected_ids": [
+     "c2"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 1223145,
+    "max_mm": 555975,
+    "covered_weight": 5,
+    "cost": 10
+   },
+   "coverage": {
+    "selected_ids": [
+     "c2"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 1223145,
+    "max_mm": 555975,
+    "covered_weight": 5,
+    "cost": 10
+   }
+  },
+  "pareto": [
+   {
+    "selected_ids": [],
+    "cost": 0,
+    "weighted_sum_mm": 6560510
+   },
+   {
+    "selected_ids": [
+     "c2"
+    ],
+    "cost": 10,
+    "weighted_sum_mm": 1223145
+   }
+  ],
+  "pareto_excluded_unknown": 0,
+  "sensitivity": [
+   {
+    "budget": 0,
+    "feasible_count": 1,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 6560510,
+      "max_mm": 1089712,
+      "covered_weight": 0,
+      "cost": 0
+     },
+     "minimax": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 6560510,
+      "max_mm": 1089712,
+      "covered_weight": 0,
+      "cost": 0
+     },
+     "coverage": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 6560510,
+      "max_mm": 1089712,
+      "covered_weight": 0,
+      "cost": 0
+     }
+    }
+   },
+   {
+    "budget": 5,
+    "feasible_count": 1,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 6560510,
+      "max_mm": 1089712,
+      "covered_weight": 0,
+      "cost": 0
+     },
+     "minimax": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 6560510,
+      "max_mm": 1089712,
+      "covered_weight": 0,
+      "cost": 0
+     },
+     "coverage": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 6560510,
+      "max_mm": 1089712,
+      "covered_weight": 0,
+      "cost": 0
+     }
+    }
+   },
+   {
+    "budget": 10,
+    "feasible_count": 4,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "c2"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 1223145,
+      "max_mm": 555975,
+      "covered_weight": 5,
+      "cost": 10
+     },
+     "minimax": {
+      "selected_ids": [
+       "c2"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 1223145,
+      "max_mm": 555975,
+      "covered_weight": 5,
+      "cost": 10
+     },
+     "coverage": {
+      "selected_ids": [
+       "c2"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 1223145,
+      "max_mm": 555975,
+      "covered_weight": 5,
+      "cost": 10
+     }
+    }
+   }
+  ],
+  "manual": {
+   "selected_ids": [],
+   "unknown_count": 0,
+   "weighted_sum_mm": 6560510,
+   "max_mm": 1089712,
+   "covered_weight": 0,
+   "total_weight": 7,
+   "cost": 0,
+   "before_mm": [
+    555975,
+    1089712,
+    555975
+   ]
+  }
+ },
+ {
+  "name": "eq/pareto_equal_pairs",
+  "status": "optimal",
+  "feasible_count": 3,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "c1"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 1111950,
+    "max_mm": 555975,
+    "covered_weight": 1,
+    "cost": 10
+   },
+   "minimax": {
+    "selected_ids": [
+     "c1"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 1111950,
+    "max_mm": 555975,
+    "covered_weight": 1,
+    "cost": 10
+   },
+   "coverage": {
+    "selected_ids": [
+     "c1"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 1111950,
+    "max_mm": 555975,
+    "covered_weight": 1,
+    "cost": 10
+   }
+  },
+  "pareto": [
+   {
+    "selected_ids": [],
+    "cost": 0,
+    "weighted_sum_mm": 2223901
+   },
+   {
+    "selected_ids": [
+     "c1"
+    ],
+    "cost": 10,
+    "weighted_sum_mm": 1111950
+   }
+  ],
+  "pareto_excluded_unknown": 0,
+  "sensitivity": [
+   {
+    "budget": 0,
+    "feasible_count": 1,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 2223901,
+      "max_mm": 1111951,
+      "covered_weight": 0,
+      "cost": 0
+     },
+     "minimax": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 2223901,
+      "max_mm": 1111951,
+      "covered_weight": 0,
+      "cost": 0
+     },
+     "coverage": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 2223901,
+      "max_mm": 1111951,
+      "covered_weight": 0,
+      "cost": 0
+     }
+    }
+   },
+   {
+    "budget": 5,
+    "feasible_count": 1,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 2223901,
+      "max_mm": 1111951,
+      "covered_weight": 0,
+      "cost": 0
+     },
+     "minimax": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 2223901,
+      "max_mm": 1111951,
+      "covered_weight": 0,
+      "cost": 0
+     },
+     "coverage": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 2223901,
+      "max_mm": 1111951,
+      "covered_weight": 0,
+      "cost": 0
+     }
+    }
+   },
+   {
+    "budget": 10,
+    "feasible_count": 3,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "c1"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 1111950,
+      "max_mm": 555975,
+      "covered_weight": 1,
+      "cost": 10
+     },
+     "minimax": {
+      "selected_ids": [
+       "c1"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 1111950,
+      "max_mm": 555975,
+      "covered_weight": 1,
+      "cost": 10
+     },
+     "coverage": {
+      "selected_ids": [
+       "c1"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 1111950,
+      "max_mm": 555975,
+      "covered_weight": 1,
+      "cost": 10
+     }
+    }
+   }
+  ],
+  "manual": {
+   "selected_ids": [
+    "c3"
+   ],
+   "unknown_count": 0,
+   "weighted_sum_mm": 1111950,
+   "max_mm": 555975,
+   "covered_weight": 1,
+   "total_weight": 3,
+   "cost": 10,
+   "before_mm": [
+    555975,
+    1111951,
+    555975
+   ]
+  }
+ },
+ {
+  "name": "eq/source_tie",
+  "status": "optimal",
+  "feasible_count": 2,
+  "objectives": {
+   "mean": {
+    "selected_ids": [],
+    "unknown_count": 0,
+    "weighted_sum_mm": 0,
+    "max_mm": 0,
+    "covered_weight": 1,
+    "cost": 0
+   },
+   "minimax": {
+    "selected_ids": [],
+    "unknown_count": 0,
+    "weighted_sum_mm": 0,
+    "max_mm": 0,
+    "covered_weight": 1,
+    "cost": 0
+   },
+   "coverage": {
+    "selected_ids": [],
+    "unknown_count": 0,
+    "weighted_sum_mm": 0,
+    "max_mm": 0,
+    "covered_weight": 1,
+    "cost": 0
+   }
+  },
+  "pareto": [
+   {
+    "selected_ids": [],
+    "cost": 0,
+    "weighted_sum_mm": 0
+   }
+  ],
+  "pareto_excluded_unknown": 0,
+  "sensitivity": [
+   {
+    "budget": 0,
+    "feasible_count": 1,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 0,
+      "max_mm": 0,
+      "covered_weight": 1,
+      "cost": 0
+     },
+     "minimax": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 0,
+      "max_mm": 0,
+      "covered_weight": 1,
+      "cost": 0
+     },
+     "coverage": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 0,
+      "max_mm": 0,
+      "covered_weight": 1,
+      "cost": 0
+     }
+    }
+   },
+   {
+    "budget": 10,
+    "feasible_count": 2,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 0,
+      "max_mm": 0,
+      "covered_weight": 1,
+      "cost": 0
+     },
+     "minimax": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 0,
+      "max_mm": 0,
+      "covered_weight": 1,
+      "cost": 0
+     },
+     "coverage": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 0,
+      "max_mm": 0,
+      "covered_weight": 1,
+      "cost": 0
+     }
+    }
+   },
+   {
+    "budget": 20,
+    "feasible_count": 2,
+    "objectives": {
+     "mean": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 0,
+      "max_mm": 0,
+      "covered_weight": 1,
+      "cost": 0
+     },
+     "minimax": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 0,
+      "max_mm": 0,
+      "covered_weight": 1,
+      "cost": 0
+     },
+     "coverage": {
+      "selected_ids": [],
+      "unknown_count": 0,
+      "weighted_sum_mm": 0,
+      "max_mm": 0,
+      "covered_weight": 1,
+      "cost": 0
+     }
+    }
+   }
+  ],
+  "manual": {
+   "selected_ids": [
+    "c0"
+   ],
+   "unknown_count": 0,
+   "weighted_sum_mm": 0,
+   "max_mm": 0,
+   "covered_weight": 1,
+   "total_weight": 1,
+   "cost": 1,
+   "before_mm": [
+    0
+   ]
+  }
+ },
+ {
+  "name": "eq/excluded_required",
+  "status": "optimal",
+  "feasible_count": 2,
+  "objectives": {
+   "mean": {
+    "selected_ids": [
+     "c1",
+     "c3"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 555975,
+    "max_mm": 555975,
+    "covered_weight": 2,
+    "cost": 20
+   },
+   "minimax": {
+    "selected_ids": [
+     "c1",
+     "c3"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 555975,
+    "max_mm": 555975,
+    "covered_weight": 2,
+    "cost": 20
+   },
+   "coverage": {
+    "selected_ids": [
+     "c1",
+     "c3"
+    ],
+    "unknown_count": 0,
+    "weighted_sum_mm": 555975,
+    "max_mm": 555975,
+    "covered_weight": 2,
+    "cost": 20
+   }
+  },
+  "pareto": [
+   {
+    "selected_ids": [
+     "c3"
+    ],
+    "cost": 10,
+    "weighted_sum_mm": 1111950
+   },
+   {
+    "selected_ids": [
+     "c1",
+     "c3"
+    ],
+    "cost": 20,
+    "weighted_sum_mm": 555975
+   }
+  ],
+  "pareto_excluded_unknown": 0,
+  "sensitivity": [
+   {
+    "budget": 0,
+    "feasible_count": 0,
+    "objectives": {
+     "mean": null,
+     "minimax": null,
+     "coverage": null
+    }
+   },
+   {
+    "budget": 10,
+    "feasible_count": 1,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "c3"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 1111950,
+      "max_mm": 555975,
+      "covered_weight": 1,
+      "cost": 10
+     },
+     "minimax": {
+      "selected_ids": [
+       "c3"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 1111950,
+      "max_mm": 555975,
+      "covered_weight": 1,
+      "cost": 10
+     },
+     "coverage": {
+      "selected_ids": [
+       "c3"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 1111950,
+      "max_mm": 555975,
+      "covered_weight": 1,
+      "cost": 10
+     }
+    }
+   },
+   {
+    "budget": 20,
+    "feasible_count": 2,
+    "objectives": {
+     "mean": {
+      "selected_ids": [
+       "c1",
+       "c3"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 555975,
+      "max_mm": 555975,
+      "covered_weight": 2,
+      "cost": 20
+     },
+     "minimax": {
+      "selected_ids": [
+       "c1",
+       "c3"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 555975,
+      "max_mm": 555975,
+      "covered_weight": 2,
+      "cost": 20
+     },
+     "coverage": {
+      "selected_ids": [
+       "c1",
+       "c3"
+      ],
+      "unknown_count": 0,
+      "weighted_sum_mm": 555975,
+      "max_mm": 555975,
+      "covered_weight": 2,
+      "cost": 20
+     }
+    }
+   }
+  ],
+  "manual": {
+   "selected_ids": [
+    "c3"
+   ],
+   "unknown_count": 0,
+   "weighted_sum_mm": 1111950,
+   "max_mm": 555975,
+   "covered_weight": 1,
+   "total_weight": 3,
+   "cost": 10,
+   "before_mm": [
+    555975,
+    1111951,
+    555975
+   ]
+  }
+ }
+]

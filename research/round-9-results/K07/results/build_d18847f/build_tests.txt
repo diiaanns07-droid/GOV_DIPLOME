@@ -1,0 +1,168 @@
+conformance: all passed
+whatif: all what-if checks passed
+plan: all plan checks passed
+resilience: all resilience checks passed
+smoke: PASS Shymkent: 55 records, slice says 'complete query result' and city total unknown
+smoke: PASS Shymkent colocated group of 10 drawn on the map; flagged rows in table
+smoke: PASS object card lists the 9 other records at the same coordinate, marks district as uncertain
+smoke: PASS category doubt shown with rule and reason, record kept
+smoke: PASS point selected; status line next to map; clear enabled
+smoke: PASS Escape clears point, card and disables the clear button
+smoke: PASS Astana after keyboard switch: own 65 records, no Shymkent markers, tooltip hidden
+smoke: PASS Astana has no colocated groups (QA says 0)
+smoke: PASS category filter (Astana: 8 school records)
+smoke: PASS empty state is explicit
+smoke: PASS road card: foot access status, dataset, no walking minutes
+smoke: PASS hiding roads deselects the road (K07 F2)
+smoke: PASS TomTom road card names TomTom, not OSM (K08 r5 A7)
+smoke: PASS template explanation labelled; units and missing reasons visible
+smoke: PASS old answer rejected after catalog update in the same city (stale_catalog)
+smoke: PASS pending answer discarded after city switch
+smoke: PASS source card: contract, K03 v2, K08 gap; license links resolve to committed files
+smoke: PASS map attribution names record providers (not only OSM)
+smoke: PASS focused map pans with arrow keys
+smoke: PASS narrow viewport (380 px) has no horizontal scroll
+smoke: PASS clear state when data.js is missing
+smoke: PASS clear state when evidence.js is missing
+smoke: PASS no console/page errors
+smoke: PASS no network requests (file:// only)
+whatif_smoke: PASS card shown with category, explicit modes and 'по прямой' wording
+whatif_smoke: PASS 4 control points by click (one on a marker), object not selected
+whatif_smoke: PASS without project: after = before, 'без изменений'
+whatif_smoke: PASS click outside the square rejected with a clear message
+whatif_smoke: PASS keyboard: Enter on map adds a point (P5)
+whatif_smoke: PASS keyboard: point removed from the list
+whatif_smoke: PASS project placed: P2 nearer to project, delta > 0 shown as 'ближе на'
+whatif_smoke: PASS other rows: after ≤ before, delta = before − after
+whatif_smoke: PASS hypothetical not in observed counters (55 markers / 55 table rows / slice 55)
+whatif_smoke: PASS project drawn in separate hypothetical layer, labelled 'Проектный объект'
+whatif_smoke: PASS source of the nearest record shown (with QA mark when flagged)
+whatif_smoke: PASS move: project moved, recomputed (P3 now nearer to project)
+whatif_smoke: PASS template explanation over computed facts (not LLM), with digest
+whatif_smoke: PASS delete project: baseline restored exactly; old explanation dropped
+whatif_smoke: PASS project mode stays on after delete (next click puts it back)
+whatif_smoke: PASS project returned: same numbers as first placement
+whatif_smoke: PASS export: city-whatif-v1, snapshot, 4 points, hypothetical project, derived block labelled
+whatif_smoke: PASS export file name and no local paths
+whatif_smoke: PASS import nan.json rejected, scenario unchanged
+whatif_smoke: PASS import dup.json rejected, scenario unchanged
+whatif_smoke: PASS import foreign.json rejected, scenario unchanged
+whatif_smoke: PASS import two.json rejected, scenario unchanged
+whatif_smoke: PASS import big.json rejected, scenario unchanged
+whatif_smoke: PASS category change resets scenario with a reason
+whatif_smoke: PASS valid import restores scenario, category and recomputed numbers (file values ignored)
+whatif_smoke: PASS city switch: scenario reset with a reason, nothing carried over
+whatif_smoke: PASS Astana: clinic scenario computed (P1 nearer to project), 65 records untouched
+whatif_smoke: PASS Shymkent file in Astana: city switched, same scenario and numbers
+whatif_smoke: PASS Shymkent scenario with the Astana snapshot rejected
+whatif_smoke: PASS narrow viewport (380 px): no horizontal scroll with the what-if card
+whatif_smoke: PASS no console/page errors
+whatif_smoke: PASS no network requests
+plan_smoke: PASS v1 card shown by default, v2 hidden
+plan_smoke: PASS tool switch: v2 card shown, v1 card hidden, v1 layer not drawn
+plan_smoke: PASS 4 control points by click (one on a marker; object not selected)
+plan_smoke: PASS click outside the square rejected with a message
+plan_smoke: PASS 3 candidates by click (default cost 100, hypothetical)
+plan_smoke: PASS keyboard: Enter on map adds a candidate at the centre
+plan_smoke: PASS Escape leaves the placement mode
+plan_smoke: PASS weight and cost edited by keyboard
+plan_smoke: PASS weight 101 rejected, previous value kept
+plan_smoke: PASS cost 0 rejected
+plan_smoke: PASS manual plan over budget: infeasible with reason, not altered
+plan_smoke: PASS manual plan K2 feasible; rows use the candidate where nearer
+plan_smoke: PASS after ≤ before and delta = before − after in mm
+plan_smoke: PASS hypothetical candidates not in observed counters (55/55/55)
+plan_smoke: PASS candidates and points drawn in the separate hypothetical layer
+plan_smoke: PASS constraints: required K3, excluded K2 reported for the manual plan
+plan_smoke: PASS move candidate: position changed, recomputed, mode closed
+plan_smoke: PASS delete candidate: removed from list, constraints and manual plan
+plan_smoke: PASS v1 scenario intact after working in v2
+plan_smoke: PASS category change resets the v2 scenario with a reason
+plan_smoke: PASS synthetic demo set labelled as invented
+plan_smoke: PASS city switch resets v2 with a reason
+plan_smoke: PASS Astana: demo plan evaluated (clinics), 65 records untouched
+plan_smoke: PASS editor at the maximum: 16 candidates × 25 points
+plan_smoke: PASS search 16×25 in the browser finished (889 ms incl. sensitivity), progress shown
+plan_smoke: PASS UI result = direct optimizePlans (same winners, Pareto, digest)
+plan_smoke: PASS comparison table: manual + three objectives with 'Применить'
+plan_smoke: PASS search does not auto-apply (manual plan unchanged)
+plan_smoke: PASS apply: manual plan := minimax winner; result stays valid
+plan_smoke: PASS restore: manual plan back
+plan_smoke: PASS budget change: old optimum marked stale, apply buttons gone
+plan_smoke: PASS cancel: status cancelled, no partial result shown later
+plan_smoke: PASS parameter change during the search: answer discarded (stale)
+plan_smoke: PASS long lists collapse (16 candidates): section closed by default, opens by click
+plan_smoke: PASS infeasible: required cost > budget reported with reason, constraint kept
+plan_smoke: PASS keyboard Enter on 'Найти' runs the search; Pareto table + chart shown
+plan_smoke: PASS budget sensitivity rows for 0 / B/2 / B
+plan_smoke: PASS explanation: template over computed facts, conditional units, capacity disclaimer
+plan_smoke: PASS selection change drops the old explanation
+plan_smoke: PASS export: city-plan-v2, 25 points, 16 candidates, derived block, file name
+plan_smoke: PASS import forged.json rejected, plan unchanged
+plan_smoke: PASS import v1.json rejected, plan unchanged
+plan_smoke: PASS import nan.json rejected, plan unchanged
+plan_smoke: PASS import foreign.json rejected, plan unchanged
+plan_smoke: PASS import big.json rejected, plan unchanged
+plan_smoke: PASS v1 file rejected with the hint to use the v1 mode
+plan_smoke: PASS HTML report: self-contained, no scripts, plan + Pareto + limitations + attribution
+plan_smoke: PASS switch to Shymkent: v2 reset, optimizer result dropped
+plan_smoke: PASS import round trip: same scenario, city switched, category select updated
+plan_smoke: PASS 390 px: no horizontal scroll with the v2 card
+plan_smoke: PASS no console/page errors
+plan_smoke: PASS no network requests
+plan_keyboard: PASS K2 placement mode: map → v2 card in 4 Tab presses (≤ 30)
+plan_keyboard: PASS K2 no road / record Tab stops while placing (0)
+plan_keyboard: PASS K2 outside placement mode roads and records stay keyboard-reachable
+plan_keyboard: PASS K3 budget + Tab: value applied, focus on «Максимум объектов»
+plan_keyboard: PASS K3 invalid value + Tab: rejected, focus still moves on
+plan_keyboard: PASS K4 delete point by keyboard: focus on the neighbouring «Удалить»
+plan_keyboard: PASS K4 delete last candidate by keyboard: focus on the previous candidate's «Удалить»
+plan_keyboard: PASS K5 during the search the focus is on «Отменить поиск»
+plan_keyboard: PASS K5 after the search the focus is on «Найти точные оптимумы»
+plan_keyboard: PASS apply by keyboard keeps the focus in the card
+plan_keyboard: PASS typed budget + immediate «Найти»: search uses the new value and is not stale
+plan_keyboard: PASS typed value + immediate export: value applied first
+plan_keyboard: PASS N2 390 px: Pareto and sensitivity tables fit the card, no clipped cells
+plan_keyboard: PASS 390 px: the v2 card itself has no horizontal overflow
+plan_keyboard: PASS 390 px: no page-level horizontal scroll
+plan_keyboard: PASS no page errors
+resilience_smoke: PASS resilience card hidden in v1 mode
+resilience_smoke: PASS v2 mode: card shown with the 'не подтверждение закрытия' notice
+resilience_smoke: PASS keyboard: «Добавить случай» → focus on the new case label
+resilience_smoke: PASS label typed by keyboard and applied; focus moved on
+resilience_smoke: PASS records list shows real source IDs, names, source and QA
+resilience_smoke: PASS 3 records excluded with Space; focus kept on the checkbox
+resilience_smoke: PASS source data unchanged (records count, table rows)
+resilience_smoke: PASS duplicate exclusion sets shown as such
+resilience_smoke: PASS delete case by keyboard: removed, focus kept in the card
+resilience_smoke: PASS comparison done: three plan cards + per-case table (3 rows)
+resilience_smoke: PASS UI result = direct optimizeResilience (nominal, robust, price, digest)
+resilience_smoke: PASS price of robustness shown (or reason)
+resilience_smoke: PASS worst cases marked ▲ in the table
+resilience_smoke: PASS search does not change the manual plan
+resilience_smoke: PASS apply robust by keyboard: manual := robust, result still valid
+resilience_smoke: PASS restore manual plan
+resilience_smoke: PASS explanation: template, conditional exclusions, no probabilities
+resilience_smoke: PASS export: city-resilience-v1, input only (plan + 2 cases), plan snapshot kept
+resilience_smoke: PASS HTML report: no scripts, exclusions + provenance + versions + limits
+resilience_smoke: PASS cancel: status cancelled, no result shown later
+resilience_smoke: PASS editing a case during the search: answer discarded (stale)
+resilience_smoke: PASS changing the v2 budget invalidates the comparison
+resilience_smoke: PASS import nan.json rejected, state unchanged
+resilience_smoke: PASS import dup.json rejected, state unchanged
+resilience_smoke: PASS import forged.json rejected, state unchanged
+resilience_smoke: PASS import foreign.json rejected, state unchanged
+resilience_smoke: PASS import candidate_as_source.json rejected, state unchanged
+resilience_smoke: PASS import base_id.json rejected, state unchanged
+resilience_smoke: PASS import v2.json rejected, state unchanged
+resilience_smoke: PASS import big.json rejected, state unchanged
+resilience_smoke: PASS v2 file in the resilience import → hint to open it in v2 mode
+resilience_smoke: PASS city switch: cases reset with a reason, no IDs carried over
+resilience_smoke: PASS Astana: comparison computed on the Astana slice (65 records untouched)
+resilience_smoke: PASS import round trip: city switched back, plan and cases equal the export
+resilience_smoke: PASS category change: cases reset (record IDs belong to another category)
+resilience_smoke: PASS 13 candidates: limit notice, run disabled, candidates kept
+resilience_smoke: PASS v1 mode intact: resilience card hidden, v1 card shown
+resilience_smoke: PASS 390 px: no page or card horizontal overflow
+resilience_smoke: PASS no console/page errors
+resilience_smoke: PASS no network requests
