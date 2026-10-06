@@ -132,7 +132,8 @@
       const idx = ids.map((id) => R.P0.candIndex.get(id));
       const { Ls, W, worst } = worstOf(R, idx);
       const per_case = R.per.map((x, ci) => {
-        const ev = PL.evaluatePlan(x.cctx, env.plan, ids, x.pre);
+        // plan.js ≥ 33cc635: публичный evaluatePlan(ctx, sc, ids) проверяет вход и не принимает pre; внутренний — PL.internal.evaluate
+        const ev = PL.internal && PL.internal.evaluate ? PL.internal.evaluate(x.cctx, env.plan, ids, x.pre) : PL.evaluatePlan(x.cctx, env.plan, ids, x.pre);
         return { case_id: x.c.id, label: x.c.label, disabled_source_ids: x.c.disabled_source_ids, same_exclusions_as: R.same[x.c.id],
           n_source_records: x.pre.src.length, loss: outL(Ls[ci]),
           metrics: { unknown_count: ev.metrics.unknown_count, weighted_mean_mm: ev.metrics.weighted_mean_mm, max_mm: ev.metrics.max_mm,

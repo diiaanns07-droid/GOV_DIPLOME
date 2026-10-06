@@ -1,0 +1,59 @@
+{
+ "node": "v22.22.0",
+ "cpu": "Intel(R) Xeon(R) Processor @ 2.80GHz",
+ "cores": 4,
+ "rows": [
+  {
+   "city": "shymkent",
+   "category": "school",
+   "candidates": 12,
+   "points": 25,
+   "cases_total": 8,
+   "max_selected": 5,
+   "total_subsets": 4096,
+   "feasible_count": 1586,
+   "sync_ms_median": 17.5,
+   "async_max_chunk_ms_256": 4.02,
+   "async_equals_sync": true
+  },
+  {
+   "city": "shymkent",
+   "category": "outpatient_clinic",
+   "candidates": 12,
+   "points": 25,
+   "cases_total": 8,
+   "max_selected": 5,
+   "total_subsets": 4096,
+   "feasible_count": 1586,
+   "sync_ms_median": 16.4,
+   "async_max_chunk_ms_256": 1.94,
+   "async_equals_sync": true
+  },
+  {
+   "city": "astana",
+   "category": "school",
+   "candidates": 12,
+   "points": 25,
+   "cases_total": 8,
+   "max_selected": 5,
+   "total_subsets": 4096,
+   "feasible_count": 1586,
+   "sync_ms_median": 14.4,
+   "async_max_chunk_ms_256": 4.76,
+   "async_equals_sync": true
+  },
+  {
+   "city": "astana",
+   "category": "outpatient_clinic",
+   "candidates": 12,
+   "points": 25,
+   "cases_total": 8,
+   "max_selected": 5,
+   "total_subsets": 4096,
+   "feasible_count": 1586,
+   "sync_ms_median": 11.7,
+   "async_max_chunk_ms_256": 1.79,
+   "async_equals_sync": true
+  }
+ ]
+}

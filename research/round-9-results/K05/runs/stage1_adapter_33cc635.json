@@ -1,0 +1,132 @@
+{
+ "app_root": "/tmp/claude-0/-home-user-GOV-DIPLOME/58b57e28-2f87-51c8-8e87-47271ca72a4c/scratchpad/r9n/prototypes/city-evidence",
+ "cases": "research/round-8-results/K05/runs/cases_dump_a5b5e2d.json",
+ "pass": 31,
+ "fail": 0,
+ "results": [
+  {
+   "name": "r8→BUILD shymkent/school/seed1/n0: статус, допустимые, 3 оптимума, Парето, чувствительность",
+   "status": "PASS"
+  },
+  {
+   "name": "r8→BUILD shymkent/school/seed2/n1: статус, допустимые, 3 оптимума, Парето, чувствительность",
+   "status": "PASS"
+  },
+  {
+   "name": "r8→BUILD shymkent/school/seed3/n5: статус, допустимые, 3 оптимума, Парето, чувствительность",
+   "status": "PASS"
+  },
+  {
+   "name": "r8→BUILD shymkent/school/seed4/n9: статус, допустимые, 3 оптимума, Парето, чувствительность",
+   "status": "PASS"
+  },
+  {
+   "name": "r8→BUILD shymkent/school/seed5/n12: статус, допустимые, 3 оптимума, Парето, чувствительность",
+   "status": "PASS"
+  },
+  {
+   "name": "r8→BUILD shymkent/school/seed6/n16: статус, допустимые, 3 оптимума, Парето, чувствительность",
+   "status": "PASS"
+  },
+  {
+   "name": "r8→BUILD shymkent/outpatient_clinic/seed1/n0: статус, допустимые, 3 оптимума, Парето, чувствительность",
+   "status": "PASS"
+  },
+  {
+   "name": "r8→BUILD shymkent/outpatient_clinic/seed2/n1: статус, допустимые, 3 оптимума, Парето, чувствительность",
+   "status": "PASS"
+  },
+  {
+   "name": "r8→BUILD shymkent/outpatient_clinic/seed3/n5: статус, допустимые, 3 оптимума, Парето, чувствительность",
+   "status": "PASS"
+  },
+  {
+   "name": "r8→BUILD shymkent/outpatient_clinic/seed4/n9: статус, допустимые, 3 оптимума, Парето, чувствительность",
+   "status": "PASS"
+  },
+  {
+   "name": "r8→BUILD shymkent/outpatient_clinic/seed5/n12: статус, допустимые, 3 оптимума, Парето, чувствительность",
+   "status": "PASS"
+  },
+  {
+   "name": "r8→BUILD shymkent/outpatient_clinic/seed6/n16: статус, допустимые, 3 оптимума, Парето, чувствительность",
+   "status": "PASS"
+  },
+  {
+   "name": "r8→BUILD astana/school/seed1/n0: статус, допустимые, 3 оптимума, Парето, чувствительность",
+   "status": "PASS"
+  },
+  {
+   "name": "r8→BUILD astana/school/seed2/n1: статус, допустимые, 3 оптимума, Парето, чувствительность",
+   "status": "PASS"
+  },
+  {
+   "name": "r8→BUILD astana/school/seed3/n5: статус, допустимые, 3 оптимума, Парето, чувствительность",
+   "status": "PASS"
+  },
+  {
+   "name": "r8→BUILD astana/school/seed4/n9: статус, допустимые, 3 оптимума, Парето, чувствительность",
+   "status": "PASS"
+  },
+  {
+   "name": "r8→BUILD astana/school/seed5/n12: статус, допустимые, 3 оптимума, Парето, чувствительность",
+   "status": "PASS"
+  },
+  {
+   "name": "r8→BUILD astana/school/seed6/n16: статус, допустимые, 3 оптимума, Парето, чувствительность",
+   "status": "PASS"
+  },
+  {
+   "name": "r8→BUILD astana/outpatient_clinic/seed1/n0: статус, допустимые, 3 оптимума, Парето, чувствительность",
+   "status": "PASS"
+  },
+  {
+   "name": "r8→BUILD astana/outpatient_clinic/seed2/n1: статус, допустимые, 3 оптимума, Парето, чувствительность",
+   "status": "PASS"
+  },
+  {
+   "name": "r8→BUILD astana/outpatient_clinic/seed3/n5: статус, допустимые, 3 оптимума, Парето, чувствительность",
+   "status": "PASS"
+  },
+  {
+   "name": "r8→BUILD astana/outpatient_clinic/seed4/n9: статус, допустимые, 3 оптимума, Парето, чувствительность",
+   "status": "PASS"
+  },
+  {
+   "name": "r8→BUILD astana/outpatient_clinic/seed5/n12: статус, допустимые, 3 оптимума, Парето, чувствительность",
+   "status": "PASS"
+  },
+  {
+   "name": "r8→BUILD astana/outpatient_clinic/seed6/n16: статус, допустимые, 3 оптимума, Парето, чувствительность",
+   "status": "PASS"
+  },
+  {
+   "name": "r8→BUILD synthetic/empty-baseline: статус, допустимые, 3 оптимума, Парето, чувствительность",
+   "status": "PASS"
+  },
+  {
+   "name": "r8→BUILD synthetic/all-candidates-same-point: статус, допустимые, 3 оптимума, Парето, чувствительность",
+   "status": "PASS"
+  },
+  {
+   "name": "r8→BUILD shymkent/school/infeasible-budget: статус, допустимые, 3 оптимума, Парето, чувствительность",
+   "status": "PASS"
+  },
+  {
+   "name": "r8→BUILD shymkent/outpatient_clinic/infeasible-count: статус, допустимые, 3 оптимума, Парето, чувствительность",
+   "status": "PASS"
+  },
+  {
+   "name": "экватор: три оптимума = ручной расчёт r8 (c_mid+c_near2; feasible 5 из 8)",
+   "status": "PASS"
+  },
+  {
+   "name": "tie-break: источник выигрывает у кандидата на том же расстоянии; среди кандидатов — меньший id; оптимизатор → [aa]",
+   "status": "PASS"
+  },
+  {
+   "name": "пустой план: при max_selected=0 и budget=0 единственный допустимый; при пустом baseline unknown=все точки и не выбирается",
+   "status": "PASS"
+  }
+ ]
+}

@@ -1,45 +1,48 @@
-# K05 round 9 — точный устойчивый поиск: STATUS
+# K05 round 9 — точный устойчивый поиск: STATUS (итог)
 
-Ветка `claude/optimistic-davinci-1oiqs9`. Задание `research/round-9/tasks/K05.txt`, CORE_SPEC r9 @ codex/research-import-2026-10-05 (0ab1667).
-**Проверенная сборка: `d865dd4a124291e10dd0b7bb1d9eada20d34c268`** (`claude/beautiful-clarke-sbzomj`; дерево приложения = 3e1302a, `git diff --quiet` пуст), извлечена `git archive` во временный каталог. Общий прототип не менялся. Мой r8: `1804f5b`.
+Ветка `claude/optimistic-davinci-1oiqs9`. Задание `research/round-9/tasks/K05.txt`, CORE_SPEC r9 @ codex/research-import-2026-10-05 (0ab1667). Мой r8: `1804f5b`.
+**Проверенные сборки** (`claude/beautiful-clarke-sbzomj`, извлечены `git archive` во временный каталог; общий прототип не менялся):
+- `d865dd4a124291e10dd0b7bb1d9eada20d34c268` — закреплённая база раунда (дерево = 3e1302a);
+- `33cc635ec212e522b3e17fb0b598fad0ad602f71` — новый BUILD r9 этапа 2 (появился во время работы; свой `web/resilience.js` и исправление API-guard), проверен дополнительно, на явном SHA.
 
 | Этап | Статус |
 |---|---|
-| 1. r8 oracle/fixtures против plan.js d865dd4 через адаптер; API-guard repro | **done** |
-| 2. resilience-модуль поверх API BUILD | **done** |
-| 3. gold/оракул/свойства/benchmark, полный handoff | в работе: K06 gold done (checkpoint 3a) |
+| 1. r8 oracle/fixtures против plan.js через адаптер; API-guard repro | **done** |
+| 2. resilience.js поверх API BUILD | **done** (модуль K05 — независимая вторая реализация; у BUILD теперь своя) |
+| 3. gold K06, ручные gold, свойства, перебор, benchmark, повторная проверка | **done** |
 
-## Этап 1 — результаты на d865dd4 (реально выполнено)
-| Проверка | Результат |
-|---|---|
-| `node research/round-9-results/K05/stage1/adapter_r8_vs_build.cjs --app-root <d865dd4>/prototypes/city-evidence --cases research/round-8-results/K05/runs/cases_dump_a5b5e2d.json` | **31 PASS / 0 FAIL**: 28 задач r8 (оба города, обе категории, 0..16 кандидатов, 2 infeasible, пустой baseline, все кандидаты в одной точке) — статус, feasible_count, 3 оптимума (ids+метрики), Парето, pareto_excluded, чувствительность, инвариантность к перестановке; + 3 ручные: три оптимума экватора, tie-break (source<hypothetical<id), пустой план |
-| r8 Python-оракул на ОТВЕТАХ СБОРКИ (`--oracle-dump` → `oracle.py`) | **28/28** |
-| Записи срезов: data.js a5b5e2d = d865dd4 (blob e61ff99); адаптер сверяет записи категории задачи с `makeContext` сборки | совпали |
-| `stage1/repro_api_guard.cjs` (дочерние процессы, таймаут 8 с) | **дефект подтверждён**: `validatePlanScenario` отвергает 20 (`too_many_candidates`), но прямой `createSearch` без валидации перебирает 2^20/2^22 и зависает на 30 (2^30); проверенный объект не заморожен — дописанные после валидации кандидаты + `max_selected` обходят лимит (22 → таймаут) |
+## Результаты (все реально запущены; Node v22.22.0, Python 3.11.15, Linux)
+| Проверка | d865dd4 | 33cc635 |
+|---|---|---|
+| `stage1/adapter_r8_vs_build.cjs` — 28 задач r8 + 3 ручные (три оптимума, tie-break, пустой план) через plan.js BUILD | 31 PASS / 0 FAIL | 31 PASS / 0 FAIL |
+| r8 Python-оракул на ответах plan.js BUILD | 28/28 | 28/28 |
+| `stage1/repro_api_guard.cjs` (дочерние процессы, таймаут 8 с) | **FAIL продукта**: прямой `createSearch` без валидации — 2^20/2^22, 2^30 таймаут; мутация проверенного объекта обходит лимит | **исправлено BUILD**: все >16 → `too_many_candidates`, зависаний нет |
+| plan.js + мой `plan_api_guard.patch` (копия d865dd4): repro / `tests/plan.cjs` / `whatif.cjs` / `conformance.cjs` / браузер `plan_smoke.cjs` | исправлено / passed / passed / passed / 52 PASS (как без patch) | — (BUILD исправил сам, эквивалентно: публичные точки входа валидируют, `PL.internal` для проверенного пути) |
+| K06 gold (62 задачи: 59 optimal + 3 infeasible, 20 на реальных записях) против **resilience.js K05** | 62/62 PASS | — |
+| K06 gold против **resilience.js BUILD** | NOT_RUN (модуля нет) | **62/62 PASS** |
+| K06 must_reject (16) | K05: 16/16 отвергнуты, коды совпали 12 | BUILD: 16/16 отвергнуты, коды совпали 12 |
+| `stage3/cross_build_vs_k05.cjs` — две независимые JS-реализации, 96 случайных конвертов (оба города/категории; 31 с robust≠nominal, 18 с несколькими худшими случаями) | — | **96/96** одинаковая математика (89 optimal, 7 infeasible) |
+| `tests/test_resilience.cjs` (модуль K05, 17 тестов) | 17/0 | 17/0 |
+| `tests/test_stage3.cjs` (модуль K05: 4 ручных gold, 8 сверок с перебором через PL.evaluatePlan, 5 свойств, benchmark) | 18/0 | 18/0 |
+| Мутации модуля K05 против gold K06: покомпонентный max / только первый худший | 2 FAIL / 21 FAIL (пойманы) | — |
 
-Адрес дефекта: `web/plan.js:213` `createSearch` (и `:171` `evaluatePlan`) используют переданный объект без повторной проверки; маски `1 << k` (`:236-242`) при >31 свободных кандидатах ещё и переполняются (по чтению кода, не запускалось).
+Benchmark модуля K05 (12 кандидатов × 25 точек × 8 случаев, ≤5): 4096 подмножеств, синхронно 11–20 мс, max async-чанк (256) ≤ 4,1 мс; `runs/benchmark_resilience_*.json`.
 
-## Предложение (не применено к прототипу)
-`patches/plan_api_guard.patch` — 2 строки: `createSearch` и публичный `evaluatePlan` (без `pre`) повторно вызывают `validatePlanScenario(sc, ctx, {requirePoints:false})` до предвычислений. На копии d865dd4 + patch:
-- repro: все >16 отвергнуты `too_many_candidates`, зависаний нет (`runs/api_guard_patched_copy.json`);
-- тесты сборки: `node tests/plan.cjs` — all plan checks passed; `whatif.cjs` — passed; `conformance.cjs` — passed;
-- браузер `tests/plan_smoke.cjs` (Playwright): 52 PASS / 0 FAIL и без patch, и с patch; отличие только во времени (`runs/build_plan_smoke_*.txt`).
+## Что отмечено как ошибки моего кода/тестов (не продукта), исправлены
+- массивы из vm-realm в проверенной копии (валидатор теперь создаёт новый массив);
+- ручной gold 1: A помогал p1 в случае x — пример перестроен (модуль не менялся);
+- адаптер формы для K06 перезаписывал цену BUILD на null — исправлен (`stage3/map_to_k06.py`);
+- для plan.js ≥33cc635 модуль K05 использует `PL.internal.evaluate` (публичный `evaluatePlan` больше не принимает `pre`).
 
-## Этап 2 — resilience.js (сделано)
-- `resilience.js` (API — `README.md`): validate/evaluate/createSearch/optimize(+Async)/digests/isCurrent/export/import поверх PL.validatePlanScenario/precompute/evaluatePlan/feasibility/optimizePlans сборки; база случая — PL.precompute на отфильтрованной копии контекста; W — лексикографический максимум L; nominal = mean-оптимум PL; robust по (W, L_base, cost, ids); цена устойчивости или null с причиной; ≤12 кандидатов (`too_many_candidates` до предвычислений и до проверки plan), ≤4096 подмножеств; deep-frozen проверенный конверт + повторная проверка непроверенных объектов в публичных функциях.
-- `patches/add_web_resilience_js.patch` — новый файл `web/resilience.js` (предложение; `git apply -p1` на копии d865dd4 — ok, файл идентичен; авто-привязка в Node и `window.CITY_RESILIENCE` при загрузке скриптами проверены).
+## API_POLICY (не математика)
+Имена кодов при одинаковом решении: K06 `bad_disabled`/`unexpected_field`/`bad_case`/`out_of_range` ↔ BUILD/K05 `bad_exclusions`/`unknown_field`(K05)·`derived_not_allowed`/`bad_shape`(BUILD)/`bad_budget`. Поле цены: BUILD/K06 `price_of_robustness_m`, K05 `price_of_resilience_m`. Форма W: объект (BUILD/K05) ↔ массив (K06) — адаптер.
 
-## Проверки этапа 2 (реально выполнены)
-- `node research/round-9-results/K05/tests/test_resilience.cjs --app-root <d865dd4>/prototypes/city-evidence` → **17 passed, 0 failed** (`runs/stage2_resilience_d865dd4.json`); то же на копии d865dd4 + `plan_api_guard.patch` → 17/0.
-- Первый прогон 16/1: тест roundtrip упал из-за массивов из vm-realm (data.js загружается в песочнице) — валидатор теперь создаёт новый массив (`[...d]`), не наследуя realm входа; повтор 17/0.
-- Это тест модуля K05 на API сборки, **не** тест интегрированной функции: в BUILD resilience.js нет (интеграция NOT_RUN).
+## Предложения (не применены к прототипу)
+- `patches/plan_api_guard.patch` — для d865dd4; в 33cc635 BUILD сделал эквивалентное исправление → **устарел**.
+- `patches/add_web_resilience_js.patch` — для d865dd4; в 33cc635 у BUILD свой `web/resilience.js` → **устарел**; модуль K05 полезен как независимая реализация для перекрёстной сверки.
 
-## Этап 3a — независимый gold K06 (сделано)
-- Входы K06 (`claude/ecstatic-curie-hzfzn0` @ `b9b8145515795c5dd90ccddc61a0de3c2d97b695`, новее пина 58cf899) скопированы побайтно в `inputs/k06/` (MANIFEST): fixture 62 задачи + 16 must_reject, их адаптер `run_resilience_js.cjs` и сравнитель `compare_resilience_js.py` (прочитаны до запуска: только чтение/запись файлов).
-- Мой адаптер формы `stage3/map_to_k06.py` (worst_vector объект → [u,sum,max|null]; `price_of_resilience_m` → `price_of_robustness_m`) — меняет только представление; gold и код K06 не менялись.
-- Цепочка на копии d865dd4 + `add_web_resilience_js.patch`: `compare --export` → `node run_resilience_js.cjs <copy> …` → `map_to_k06.py` → `compare --candidate-json` → **62/62 PASS** (59 optimal + 3 infeasible; 20 задач на реальных записях обоих городов) — `runs/k06_gold_vs_k05_resilience.json`.
-- `stage3/k06_must_reject.cjs`: 16/16 отвергнуты; имя кода совпало в 12, в 4 — API_POLICY имён (bad_disabled↔bad_exclusions, unexpected_field/bad_case↔unknown_field, out_of_range↔bad_budget).
-- Мутации модуля: покомпонентный max вместо лексикографического → 2 FAIL; только первый худший случай → 21 FAIL (пойманы gold K06).
+## Ограничения
+Точки, кандидаты, стоимости, веса и исключения — SYNTHETIC; реальные только записи срезов (observed_secondary, не реестр). Исключения — допущения о данных, не закрытие учреждений. UI вкладки «Устойчивость» и браузерный импорт BUILD 33cc635 мной не проверялись (NOT_RUN): проверены модули и математика.
 
-## Следующий шаг
-Этап 3: независимый Python-оракул устойчивости, gold-примеры, свойства (перестановки, дубликат случая, супермножество исключений, 0 кандидатов, infeasible), benchmark.
+## Команды
+См. `HANDOFF.md`.

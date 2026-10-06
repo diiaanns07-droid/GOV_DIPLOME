@@ -1,0 +1,79 @@
+{
+ "app_root": "/tmp/claude-0/-home-user-GOV-DIPLOME/58b57e28-2f87-51c8-8e87-47271ca72a4c/scratchpad/r9/prototypes/city-evidence",
+ "pass": 18,
+ "fail": 0,
+ "results": [
+  {
+   "name": "gold 1: обычный (A) ≠ устойчивый (B); W, worst_case_ids и цена — замкнутые формулы",
+   "status": "PASS"
+  },
+  {
+   "name": "gold 2: исключены все записи → unknown в случае; пустой план худший, устойчивый выбирает объект",
+   "status": "PASS"
+  },
+  {
+   "name": "gold 3: 0 кандидатов → один план (пустой), nominal = robust, цена 0",
+   "status": "PASS"
+  },
+  {
+   "name": "gold 4: required невыполним → infeasible; required выполним → он в обоих планах",
+   "status": "PASS"
+  },
+  {
+   "name": "shymkent/school/seed11: robust = собственный перебор через PL.evaluatePlan; evaluate(robust).W = W",
+   "status": "PASS"
+  },
+  {
+   "name": "shymkent/school/seed12: robust = собственный перебор через PL.evaluatePlan; evaluate(robust).W = W",
+   "status": "PASS"
+  },
+  {
+   "name": "shymkent/outpatient_clinic/seed11: robust = собственный перебор через PL.evaluatePlan; evaluate(robust).W = W",
+   "status": "PASS"
+  },
+  {
+   "name": "shymkent/outpatient_clinic/seed12: robust = собственный перебор через PL.evaluatePlan; evaluate(robust).W = W",
+   "status": "PASS"
+  },
+  {
+   "name": "astana/school/seed11: robust = собственный перебор через PL.evaluatePlan; evaluate(robust).W = W",
+   "status": "PASS"
+  },
+  {
+   "name": "astana/school/seed12: robust = собственный перебор через PL.evaluatePlan; evaluate(robust).W = W",
+   "status": "PASS"
+  },
+  {
+   "name": "astana/outpatient_clinic/seed11: robust = собственный перебор через PL.evaluatePlan; evaluate(robust).W = W",
+   "status": "PASS"
+  },
+  {
+   "name": "astana/outpatient_clinic/seed12: robust = собственный перебор через PL.evaluatePlan; evaluate(robust).W = W",
+   "status": "PASS"
+  },
+  {
+   "name": "перестановка случаев, исключений, точек и кандидатов не меняет результат и digest",
+   "status": "PASS"
+  },
+  {
+   "name": "дубль случая не меняет выбор, W и цену; дубль попадает в worst_case_ids, только если оригинал худший",
+   "status": "PASS"
+  },
+  {
+   "name": "супермножество исключений: потери любого плана не меньше (лексикографически)",
+   "status": "PASS"
+  },
+  {
+   "name": "добавление случая не улучшает минимальный W; nominal не меняется",
+   "status": "PASS"
+  },
+  {
+   "name": "robust: W ≤ W(nominal), L_base ≥ L_base(nominal), цена ≥ 0",
+   "status": "PASS"
+  },
+  {
+   "name": "benchmark: 4 конфигурации завершены, async = sync",
+   "status": "PASS"
+  }
+ ]
+}

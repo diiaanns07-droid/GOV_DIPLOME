@@ -17,7 +17,9 @@ for name, r in (doc.get("results") or {}).items():
         continue
     for k in ("nominal", "robust"):
         if r.get(k):
-            r[k] = {"selected_ids": r[k]["selected_ids"], "worst_vector": vec(r[k]["worst_vector"]), "worst_case_ids": r[k]["worst_case_ids"]}
-    r["price_of_robustness_m"] = r.get("price_of_resilience_m")
+            w = r[k]["worst_vector"]
+            r[k] = {"selected_ids": r[k]["selected_ids"], "worst_vector": vec(w) if isinstance(w, dict) else w, "worst_case_ids": r[k]["worst_case_ids"]}
+    if "price_of_robustness_m" not in r:  # имя поля в K05; у BUILD уже price_of_robustness_m — не перезаписывать
+        r["price_of_robustness_m"] = r.get("price_of_resilience_m")
 json.dump(doc, open(dst, "w", encoding="utf-8"), ensure_ascii=False)
 print("mapped", len(doc.get("results") or {}), "->", dst)
