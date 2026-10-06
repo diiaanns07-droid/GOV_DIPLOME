@@ -9,5 +9,5 @@
 | Этап | Состояние | Проверка |
 |---|---|---|
 | 1. Быстрая регрессия нового SHA по замороженным пакетам r8, хеши и ID источников | готово | `regress.py --sha d865dd4`: EXTRACT, FROZEN_PACKS, SOURCE_HASHES, SOURCE_IDS, R8_SUITE — PASS (15 с); `test_regress.py` 5 OK |
-| 2. Конверты `city-resilience-v1` для Шымкента и Астаны | в работе | — |
+| 2. Конверты `city-resilience-v1` для Шымкента и Астаны + независимый оракул устойчивости | готово | 10 конвертов (Шымкент 6, Астана 4); `check_envelopes.py` на d865dd4: SOURCE, VALID, RECOMPUTE, ORDER, CROSS_R8, INDEX — PASS, IMMUTABLE PASS |
 | 3. Синтетические крайние случаи, импорт в настоящий UI r9 | не начат | — |

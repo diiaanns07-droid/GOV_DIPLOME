@@ -8,8 +8,8 @@
 
 Цель: регрессия нового SHA по замороженным ожиданиям r8; конверты устойчивости по 2+ на город; синтетические крайние случаи с независимым оракулом.
 
-Что сделано: этап 1 — regress.py, frozen/, tests/test_regress.py; прогон на d865dd4 PASS.
+Что сделано: этап 1 — regress.py, frozen/, tests/test_regress.py (d865dd4 PASS); этап 2 — k10res (оракул устойчивости, генератор), 10 конвертов, check_envelopes 10/10 PASS.
 Проверки: python3 research/round-9-results/K10/regress.py --sha d865dd4 -> ok=true (15 с); test_regress 5 OK.
 Не запускалось: интеграция city-resilience-v1 с BUILD — сборки r9 нет.
 Подробно: research/round-9-results/K10/STATUS.md и HANDOFF.md.
-Следующий шаг: этап 2 (k10res: оракул устойчивости и конверты).
+Следующий шаг: этап 3 (синтетические крайние случаи, тесты, итог).

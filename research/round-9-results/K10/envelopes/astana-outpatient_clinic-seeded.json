@@ -1,0 +1,3912 @@
+{
+ "pack_format": "k10-resilience-pack-v1",
+ "pack_id": "astana-outpatient_clinic-seeded",
+ "kind": "real_slice",
+ "stage": 2,
+ "purpose": "leave out 1, 2 or 3 records chosen by a recorded seed",
+ "city_id": "astana",
+ "category": "outpatient_clinic",
+ "disclaimer": "Условно исключаем из расчёта; это не подтверждение закрытия. Пустые исходные данные не означают отсутствие услуги.",
+ "synthetic_parts": [
+  "control points and weights",
+  "candidate places and costs",
+  "budget, max_selected, radius",
+  "the choice of records conditionally left out of each case"
+ ],
+ "rules": {
+  "fixed_before_computing": true,
+  "plan": "K10 r8 base plan of the same city and category: control points cp01..cp16 on a 4x4 bbox grid with SYNTHETIC weights 1+(3k mod 5); 12 hypothetical candidates c01..c12 with SYNTHETIC costs 100+50*(5k mod 7) (conditional units, not tenge); budget 700, max_selected 3, coverage radius 400 m; manual selection c06+c07",
+  "labels": "labels state the rule only ('Условно не учитываем ...'); they never claim a closure",
+  "objectives_and_price": "computed after the fact by the oracle; whether the robust plan differs is reported as it came out",
+  "seeded": "envelope 'seeded': LCG x=(1103515245*x+12345) mod 2^31, seed 20261006 + index in [shymkent/school, shymkent/outpatient_clinic, astana/school, astana/outpatient_clinic]; case sK (K=1,2,3) starts the LCG at seed+1000*K and leaves out K distinct records, each drawn as position (x mod remaining) of the still unused id-sorted records"
+ },
+ "provenance": {
+  "build_branch": "claude/beautiful-clarke-sbzomj",
+  "build_commit": "d865dd4a124291e10dd0b7bb1d9eada20d34c268",
+  "app_path": "prototypes/city-evidence",
+  "data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "evidence_js_sha256": "df736e986145da33dee60f692e020486720b72db5b6116af31640cc8693b11b9",
+  "places_social_file": "inputs/k10/data/astana/places_social.geojson",
+  "places_social_sha256": "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343",
+  "release": "2026-09-23.1",
+  "bbox": [
+   71.418372,
+   51.163033,
+   71.447,
+   51.181
+  ],
+  "source_snapshot": "sha256:67a40b96d29873118780969eb11c32deba49a0c64fda1f185efe634882f04c6d",
+  "snapshot_components": [
+   "city-plan-v2",
+   "astana",
+   "2026-09-23.1",
+   "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343",
+   "4ea80e67e9ae236eee42b6ca74e650efec2d46dad0982448906d809c8eeb8a43",
+   "haversine-mm-v1"
+  ],
+  "snapshot_format": "plan-v2: web/plan.js sourceSnapshot (BUILD 60f44d9)",
+  "whatif_v1_snapshot_same_slice": "sha256:2ad032350a411cbec2f6a04d86e53a5bc84fe45609be87891d4b5dfebe771c9d",
+  "upstream": "Overture Maps places 2026-09-23.1 via K10 package (round-3 results); not re-downloaded"
+ },
+ "source_copy": {
+  "category_records": [
+   {
+    "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f",
+    "lon": 71.422483,
+    "lat": 51.169953,
+    "group": "outpatient_clinic",
+    "name": "Family Clinic",
+    "qa_flags": []
+   },
+   {
+    "id": "1116880a-cbb6-4271-9a59-a277083b792c",
+    "lon": 71.424931,
+    "lat": 51.176756,
+    "group": "outpatient_clinic",
+    "name": "Лор центр Сезiм",
+    "qa_flags": []
+   },
+   {
+    "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08",
+    "lon": 71.44229,
+    "lat": 51.1699,
+    "group": "outpatient_clinic",
+    "name": "Стоматология МерейДент",
+    "qa_flags": []
+   },
+   {
+    "id": "166c939f-9131-4fbb-bf75-4ab543916f20",
+    "lon": 71.41939,
+    "lat": 51.17117,
+    "group": "outpatient_clinic",
+    "name": "Ирина Кулинич родолог",
+    "qa_flags": []
+   },
+   {
+    "id": "1d137305-49cd-450b-9626-9762db14d080",
+    "lon": 71.436912,
+    "lat": 51.1748,
+    "group": "outpatient_clinic",
+    "name": "Центр Поддержки Детей с РАС Асыл Мирас",
+    "qa_flags": []
+   },
+   {
+    "id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f",
+    "lon": 71.44025,
+    "lat": 51.16873,
+    "group": "outpatient_clinic",
+    "name": "Медицинский центр Жәрдем - Астана",
+    "qa_flags": []
+   },
+   {
+    "id": "3fba1026-8464-41ab-88f8-633e3df0de30",
+    "lon": 71.441358,
+    "lat": 51.166785,
+    "group": "outpatient_clinic",
+    "name": "Astana Clinic",
+    "qa_flags": []
+   },
+   {
+    "id": "410f0193-f0bc-4553-bee5-660aab0287a5",
+    "lon": 71.429936,
+    "lat": 51.167329,
+    "group": "outpatient_clinic",
+    "name": "Family Stom",
+    "qa_flags": []
+   },
+   {
+    "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371",
+    "lon": 71.422047,
+    "lat": 51.177044,
+    "group": "outpatient_clinic",
+    "name": "Stomatologiya Kog'gan Dent",
+    "qa_flags": []
+   },
+   {
+    "id": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2",
+    "lon": 71.42513,
+    "lat": 51.16305,
+    "group": "outpatient_clinic",
+    "name": "Akademiya Ortopedii",
+    "qa_flags": []
+   },
+   {
+    "id": "5f76d9b9-bdd1-4cea-9157-fef68ac60270",
+    "lon": 71.434725,
+    "lat": 51.166964,
+    "group": "outpatient_clinic",
+    "name": "Aura Clinic",
+    "qa_flags": []
+   },
+   {
+    "id": "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8",
+    "lon": 71.44127,
+    "lat": 51.16756,
+    "group": "outpatient_clinic",
+    "name": "Gulsezim Aitugan",
+    "qa_flags": []
+   },
+   {
+    "id": "771c278a-af10-4c57-b9fc-52755437345d",
+    "lon": 71.438397,
+    "lat": 51.164151,
+    "group": "outpatient_clinic",
+    "name": "\"ЗарДан\" стоматологическая клиника",
+    "qa_flags": []
+   },
+   {
+    "id": "aca68551-4a03-47c2-813f-d13dceb85c62",
+    "lon": 71.44606,
+    "lat": 51.16817,
+    "group": "outpatient_clinic",
+    "name": "Sanjar Dental Clinic",
+    "qa_flags": []
+   },
+   {
+    "id": "b1fc81c5-7f00-4a0a-969d-2da872515916",
+    "lon": 71.42629,
+    "lat": 51.17692,
+    "group": "outpatient_clinic",
+    "name": "Стоматология Protezist_n",
+    "qa_flags": []
+   },
+   {
+    "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050",
+    "lon": 71.435461,
+    "lat": 51.179776,
+    "group": "outpatient_clinic",
+    "name": "Visa Dent",
+    "qa_flags": []
+   }
+  ],
+  "note": "read-only copy of web/data.js records of this category; the source records are never modified"
+ },
+ "left_out_records": [
+  {
+   "id": "1d137305-49cd-450b-9626-9762db14d080",
+   "name": "Центр Поддержки Детей с РАС Асыл Мирас",
+   "qa_flags": [],
+   "in_cases": [
+    "s3"
+   ]
+  },
+  {
+   "id": "3fba1026-8464-41ab-88f8-633e3df0de30",
+   "name": "Astana Clinic",
+   "qa_flags": [],
+   "in_cases": [
+    "s2"
+   ]
+  },
+  {
+   "id": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2",
+   "name": "Akademiya Ortopedii",
+   "qa_flags": [],
+   "in_cases": [
+    "s3"
+   ]
+  },
+  {
+   "id": "aca68551-4a03-47c2-813f-d13dceb85c62",
+   "name": "Sanjar Dental Clinic",
+   "qa_flags": [],
+   "in_cases": [
+    "s2"
+   ]
+  },
+  {
+   "id": "b1fc81c5-7f00-4a0a-969d-2da872515916",
+   "name": "Стоматология Protezist_n",
+   "qa_flags": [],
+   "in_cases": [
+    "s1",
+    "s3"
+   ]
+  }
+ ],
+ "envelope": {
+  "schema_version": "city-resilience-v1",
+  "plan": {
+   "schema_version": "city-plan-v2",
+   "city_id": "astana",
+   "source_snapshot": "sha256:67a40b96d29873118780969eb11c32deba49a0c64fda1f185efe634882f04c6d",
+   "category": "outpatient_clinic",
+   "control_points": [
+    {
+     "id": "cp01",
+     "lon": 71.421951,
+     "lat": 51.165279,
+     "weight": 4
+    },
+    {
+     "id": "cp02",
+     "lon": 71.429108,
+     "lat": 51.165279,
+     "weight": 2
+    },
+    {
+     "id": "cp03",
+     "lon": 71.436265,
+     "lat": 51.165279,
+     "weight": 5
+    },
+    {
+     "id": "cp04",
+     "lon": 71.443421,
+     "lat": 51.165279,
+     "weight": 3
+    },
+    {
+     "id": "cp05",
+     "lon": 71.421951,
+     "lat": 51.169771,
+     "weight": 1
+    },
+    {
+     "id": "cp06",
+     "lon": 71.429108,
+     "lat": 51.169771,
+     "weight": 4
+    },
+    {
+     "id": "cp07",
+     "lon": 71.436265,
+     "lat": 51.169771,
+     "weight": 2
+    },
+    {
+     "id": "cp08",
+     "lon": 71.443421,
+     "lat": 51.169771,
+     "weight": 5
+    },
+    {
+     "id": "cp09",
+     "lon": 71.421951,
+     "lat": 51.174262,
+     "weight": 3
+    },
+    {
+     "id": "cp10",
+     "lon": 71.429108,
+     "lat": 51.174262,
+     "weight": 1
+    },
+    {
+     "id": "cp11",
+     "lon": 71.436265,
+     "lat": 51.174262,
+     "weight": 4
+    },
+    {
+     "id": "cp12",
+     "lon": 71.443421,
+     "lat": 51.174262,
+     "weight": 2
+    },
+    {
+     "id": "cp13",
+     "lon": 71.421951,
+     "lat": 51.178754,
+     "weight": 5
+    },
+    {
+     "id": "cp14",
+     "lon": 71.429108,
+     "lat": 51.178754,
+     "weight": 3
+    },
+    {
+     "id": "cp15",
+     "lon": 71.436265,
+     "lat": 51.178754,
+     "weight": 1
+    },
+    {
+     "id": "cp16",
+     "lon": 71.443421,
+     "lat": 51.178754,
+     "weight": 4
+    }
+   ],
+   "candidates": [
+    {
+     "id": "c01",
+     "lon": 71.421951,
+     "lat": 51.166027,
+     "category": "outpatient_clinic",
+     "kind": "hypothetical",
+     "cost": 350
+    },
+    {
+     "id": "c02",
+     "lon": 71.429108,
+     "lat": 51.166027,
+     "category": "outpatient_clinic",
+     "kind": "hypothetical",
+     "cost": 250
+    },
+    {
+     "id": "c03",
+     "lon": 71.436265,
+     "lat": 51.166027,
+     "category": "outpatient_clinic",
+     "kind": "hypothetical",
+     "cost": 150
+    },
+    {
+     "id": "c04",
+     "lon": 71.443421,
+     "lat": 51.166027,
+     "category": "outpatient_clinic",
+     "kind": "hypothetical",
+     "cost": 400
+    },
+    {
+     "id": "c05",
+     "lon": 71.421951,
+     "lat": 51.172016,
+     "category": "outpatient_clinic",
+     "kind": "hypothetical",
+     "cost": 300
+    },
+    {
+     "id": "c06",
+     "lon": 71.429108,
+     "lat": 51.172016,
+     "category": "outpatient_clinic",
+     "kind": "hypothetical",
+     "cost": 200
+    },
+    {
+     "id": "c07",
+     "lon": 71.436265,
+     "lat": 51.172016,
+     "category": "outpatient_clinic",
+     "kind": "hypothetical",
+     "cost": 100
+    },
+    {
+     "id": "c08",
+     "lon": 71.443421,
+     "lat": 51.172016,
+     "category": "outpatient_clinic",
+     "kind": "hypothetical",
+     "cost": 350
+    },
+    {
+     "id": "c09",
+     "lon": 71.421951,
+     "lat": 51.178005,
+     "category": "outpatient_clinic",
+     "kind": "hypothetical",
+     "cost": 250
+    },
+    {
+     "id": "c10",
+     "lon": 71.429108,
+     "lat": 51.178005,
+     "category": "outpatient_clinic",
+     "kind": "hypothetical",
+     "cost": 150
+    },
+    {
+     "id": "c11",
+     "lon": 71.436265,
+     "lat": 51.178005,
+     "category": "outpatient_clinic",
+     "kind": "hypothetical",
+     "cost": 400
+    },
+    {
+     "id": "c12",
+     "lon": 71.443421,
+     "lat": 51.178005,
+     "category": "outpatient_clinic",
+     "kind": "hypothetical",
+     "cost": 300
+    }
+   ],
+   "budget": 700,
+   "max_selected": 3,
+   "coverage_radius_m": 400,
+   "required_ids": [],
+   "excluded_ids": [],
+   "selected_ids": [
+    "c06",
+    "c07"
+   ]
+  },
+  "cases": [
+   {
+    "id": "s1",
+    "label": "Условно не учитываем 1 запись по правилу seed 20261009",
+    "disabled_source_ids": [
+     "b1fc81c5-7f00-4a0a-969d-2da872515916"
+    ]
+   },
+   {
+    "id": "s2",
+    "label": "Условно не учитываем 2 записи по правилу seed 20261009",
+    "disabled_source_ids": [
+     "3fba1026-8464-41ab-88f8-633e3df0de30",
+     "aca68551-4a03-47c2-813f-d13dceb85c62"
+    ]
+   },
+   {
+    "id": "s3",
+    "label": "Условно не учитываем 3 записи по правилу seed 20261009",
+    "disabled_source_ids": [
+     "1d137305-49cd-450b-9626-9762db14d080",
+     "5c3a8d6d-117d-4cce-9dde-ad820e6967d2",
+     "b1fc81c5-7f00-4a0a-969d-2da872515916"
+    ]
+   }
+  ]
+ },
+ "expected": {
+  "generated_by": "k10res.oracle_res",
+  "validation": "accepted",
+  "optimize": {
+   "schema_version": "city-resilience-v1",
+   "metric_version": "haversine-mm-v1",
+   "objective_version": "worst-lex-v1",
+   "resilience_problem_digest": "sha256:8671122b9d38c7f177820aa432936cc4c33206e41f3779de0974d2cee808b890",
+   "resilience_scenario_digest": "sha256:4e125767df5bb69c15b8ba7946633c883d9bd7946d6fc83815a502c5502a91b8",
+   "exclusions_digest": "sha256:888962803172b1883af3bdf67a7f66bf27a57e6419c3197a9360da891cba9b33",
+   "source_snapshot": "sha256:67a40b96d29873118780969eb11c32deba49a0c64fda1f185efe634882f04c6d",
+   "case_ids": [
+    "base",
+    "s1",
+    "s2",
+    "s3"
+   ],
+   "evaluated": 299,
+   "feasible_count": 143,
+   "candidate_count": 12,
+   "manual": {
+    "selected_ids": [
+     "c06",
+     "c07"
+    ],
+    "cost": 300,
+    "per_case": [
+     {
+      "case_id": "base",
+      "label": "base",
+      "disabled_source_ids": [],
+      "baseline_records": 16,
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 11962045,
+       "weighted_mean_mm": 244123.3673469388,
+       "max_mm": 566383,
+       "covered_weight": 43,
+       "coverage_fraction": 0.8775510204081632,
+       "cost": 300
+      },
+      "loss": [
+       0,
+       11962045,
+       566383
+      ]
+     },
+     {
+      "case_id": "s1",
+      "label": "Условно не учитываем 1 запись по правилу seed 20261009",
+      "disabled_source_ids": [
+       "b1fc81c5-7f00-4a0a-969d-2da872515916"
+      ],
+      "baseline_records": 15,
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 12211336,
+       "weighted_mean_mm": 249210.9387755102,
+       "max_mm": 566383,
+       "covered_weight": 43,
+       "coverage_fraction": 0.8775510204081632,
+       "cost": 300
+      },
+      "loss": [
+       0,
+       12211336,
+       566383
+      ]
+     },
+     {
+      "case_id": "s2",
+      "label": "Условно не учитываем 2 записи по правилу seed 20261009",
+      "disabled_source_ids": [
+       "3fba1026-8464-41ab-88f8-633e3df0de30",
+       "aca68551-4a03-47c2-813f-d13dceb85c62"
+      ],
+      "baseline_records": 14,
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 12183754,
+       "weighted_mean_mm": 248648.04081632654,
+       "max_mm": 566383,
+       "covered_weight": 43,
+       "coverage_fraction": 0.8775510204081632,
+       "cost": 300
+      },
+      "loss": [
+       0,
+       12183754,
+       566383
+      ]
+     },
+     {
+      "case_id": "s3",
+      "label": "Условно не учитываем 3 записи по правилу seed 20261009",
+      "disabled_source_ids": [
+       "1d137305-49cd-450b-9626-9762db14d080",
+       "5c3a8d6d-117d-4cce-9dde-ad820e6967d2",
+       "b1fc81c5-7f00-4a0a-969d-2da872515916"
+      ],
+      "baseline_records": 13,
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 13732158,
+       "weighted_mean_mm": 280248.1224489796,
+       "max_mm": 566383,
+       "covered_weight": 39,
+       "coverage_fraction": 0.7959183673469388,
+       "cost": 300
+      },
+      "loss": [
+       0,
+       13732158,
+       566383
+      ]
+     }
+    ],
+    "worst_vector": [
+     0,
+     13732158,
+     566383
+    ],
+    "worst_case_ids": [
+     "s3"
+    ],
+    "feasibility": {
+     "feasible": true,
+     "reasons": []
+    }
+   },
+   "status": "optimal",
+   "infeasible_reasons": null,
+   "nominal": {
+    "selected_ids": [
+     "c03",
+     "c10",
+     "c12"
+    ],
+    "cost": 600,
+    "per_case": [
+     {
+      "case_id": "base",
+      "label": "base",
+      "disabled_source_ids": [],
+      "baseline_records": 16,
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 9110157,
+       "weighted_mean_mm": 185921.57142857142,
+       "max_mm": 416203,
+       "covered_weight": 47,
+       "coverage_fraction": 0.9591836734693877,
+       "cost": 600
+      },
+      "loss": [
+       0,
+       9110157,
+       416203
+      ]
+     },
+     {
+      "case_id": "s1",
+      "label": "Условно не учитываем 1 запись по правилу seed 20261009",
+      "disabled_source_ids": [
+       "b1fc81c5-7f00-4a0a-969d-2da872515916"
+      ],
+      "baseline_records": 15,
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 9157385,
+       "weighted_mean_mm": 186885.4081632653,
+       "max_mm": 416203,
+       "covered_weight": 46,
+       "coverage_fraction": 0.9387755102040817,
+       "cost": 600
+      },
+      "loss": [
+       0,
+       9157385,
+       416203
+      ]
+     },
+     {
+      "case_id": "s2",
+      "label": "Условно не учитываем 2 записи по правилу seed 20261009",
+      "disabled_source_ids": [
+       "3fba1026-8464-41ab-88f8-633e3df0de30",
+       "aca68551-4a03-47c2-813f-d13dceb85c62"
+      ],
+      "baseline_records": 14,
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 9331866,
+       "weighted_mean_mm": 190446.24489795917,
+       "max_mm": 416203,
+       "covered_weight": 47,
+       "coverage_fraction": 0.9591836734693877,
+       "cost": 600
+      },
+      "loss": [
+       0,
+       9331866,
+       416203
+      ]
+     },
+     {
+      "case_id": "s3",
+      "label": "Условно не учитываем 3 записи по правилу seed 20261009",
+      "disabled_source_ids": [
+       "1d137305-49cd-450b-9626-9762db14d080",
+       "5c3a8d6d-117d-4cce-9dde-ad820e6967d2",
+       "b1fc81c5-7f00-4a0a-969d-2da872515916"
+      ],
+      "baseline_records": 13,
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 12074561,
+       "weighted_mean_mm": 246419.61224489796,
+       "max_mm": 615686,
+       "covered_weight": 38,
+       "coverage_fraction": 0.7755102040816326,
+       "cost": 600
+      },
+      "loss": [
+       0,
+       12074561,
+       615686
+      ]
+     }
+    ],
+    "worst_vector": [
+     0,
+     12074561,
+     615686
+    ],
+    "worst_case_ids": [
+     "s3"
+    ],
+    "feasibility": {
+     "feasible": true,
+     "reasons": []
+    }
+   },
+   "robust": {
+    "selected_ids": [
+     "c07",
+     "c10",
+     "c12"
+    ],
+    "cost": 550,
+    "per_case": [
+     {
+      "case_id": "base",
+      "label": "base",
+      "disabled_source_ids": [],
+      "baseline_records": 16,
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 9564103,
+       "weighted_mean_mm": 195185.77551020408,
+       "max_mm": 416203,
+       "covered_weight": 47,
+       "coverage_fraction": 0.9591836734693877,
+       "cost": 550
+      },
+      "loss": [
+       0,
+       9564103,
+       416203
+      ]
+     },
+     {
+      "case_id": "s1",
+      "label": "Условно не учитываем 1 запись по правилу seed 20261009",
+      "disabled_source_ids": [
+       "b1fc81c5-7f00-4a0a-969d-2da872515916"
+      ],
+      "baseline_records": 15,
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 9611331,
+       "weighted_mean_mm": 196149.61224489796,
+       "max_mm": 416203,
+       "covered_weight": 46,
+       "coverage_fraction": 0.9387755102040817,
+       "cost": 550
+      },
+      "loss": [
+       0,
+       9611331,
+       416203
+      ]
+     },
+     {
+      "case_id": "s2",
+      "label": "Условно не учитываем 2 записи по правилу seed 20261009",
+      "disabled_source_ids": [
+       "3fba1026-8464-41ab-88f8-633e3df0de30",
+       "aca68551-4a03-47c2-813f-d13dceb85c62"
+      ],
+      "baseline_records": 14,
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 9785812,
+       "weighted_mean_mm": 199710.44897959183,
+       "max_mm": 416203,
+       "covered_weight": 47,
+       "coverage_fraction": 0.9591836734693877,
+       "cost": 550
+      },
+      "loss": [
+       0,
+       9785812,
+       416203
+      ]
+     },
+     {
+      "case_id": "s3",
+      "label": "Условно не учитываем 3 записи по правилу seed 20261009",
+      "disabled_source_ids": [
+       "1d137305-49cd-450b-9626-9762db14d080",
+       "5c3a8d6d-117d-4cce-9dde-ad820e6967d2",
+       "b1fc81c5-7f00-4a0a-969d-2da872515916"
+      ],
+      "baseline_records": 13,
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 11064739,
+       "weighted_mean_mm": 225811.0,
+       "max_mm": 521048,
+       "covered_weight": 42,
+       "coverage_fraction": 0.8571428571428571,
+       "cost": 550
+      },
+      "loss": [
+       0,
+       11064739,
+       521048
+      ]
+     }
+    ],
+    "worst_vector": [
+     0,
+     11064739,
+     521048
+    ],
+    "worst_case_ids": [
+     "s3"
+    ],
+    "feasibility": {
+     "feasible": true,
+     "reasons": []
+    }
+   },
+   "plans_identical": false,
+   "price_of_robustness_m": 9.264204081632663,
+   "price_reason": null
+  },
+  "plans_with_rows": {
+   "manual": {
+    "selected_ids": [
+     "c06",
+     "c07"
+    ],
+    "cost": 300,
+    "per_case": [
+     {
+      "case_id": "base",
+      "label": "base",
+      "disabled_source_ids": [],
+      "baseline_records": 16,
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 11962045,
+       "weighted_mean_mm": 244123.3673469388,
+       "max_mm": 566383,
+       "covered_weight": 43,
+       "coverage_fraction": 0.8775510204081632,
+       "cost": 300
+      },
+      "loss": [
+       0,
+       11962045,
+       566383
+      ],
+      "rows": [
+       {
+        "control_point_id": "cp01",
+        "before_mm": 332519,
+        "nearest_before": {
+         "kind": "source",
+         "id": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2"
+        },
+        "after_mm": 332519,
+        "nearest_after": {
+         "kind": "source",
+         "id": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp02",
+        "before_mm": 235147,
+        "nearest_before": {
+         "kind": "source",
+         "id": "410f0193-f0bc-4553-bee5-660aab0287a5"
+        },
+        "after_mm": 235147,
+        "nearest_after": {
+         "kind": "source",
+         "id": "410f0193-f0bc-4553-bee5-660aab0287a5"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp03",
+        "before_mm": 194506,
+        "nearest_before": {
+         "kind": "source",
+         "id": "771c278a-af10-4c57-b9fc-52755437345d"
+        },
+        "after_mm": 194506,
+        "nearest_after": {
+         "kind": "source",
+         "id": "771c278a-af10-4c57-b9fc-52755437345d"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp04",
+        "before_mm": 220759,
+        "nearest_before": {
+         "kind": "source",
+         "id": "3fba1026-8464-41ab-88f8-633e3df0de30"
+        },
+        "after_mm": 220759,
+        "nearest_after": {
+         "kind": "source",
+         "id": "3fba1026-8464-41ab-88f8-633e3df0de30"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp05",
+        "before_mm": 42253,
+        "nearest_before": {
+         "kind": "source",
+         "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+        },
+        "after_mm": 42253,
+        "nearest_after": {
+         "kind": "source",
+         "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp06",
+        "before_mm": 277607,
+        "nearest_before": {
+         "kind": "source",
+         "id": "410f0193-f0bc-4553-bee5-660aab0287a5"
+        },
+        "after_mm": 249633,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "c06"
+        },
+        "delta_mm": 27974
+       },
+       {
+        "control_point_id": "cp07",
+        "before_mm": 300990,
+        "nearest_before": {
+         "kind": "source",
+         "id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f"
+        },
+        "after_mm": 249633,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "c07"
+        },
+        "delta_mm": 51357
+       },
+       {
+        "control_point_id": "cp08",
+        "before_mm": 80148,
+        "nearest_before": {
+         "kind": "source",
+         "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08"
+        },
+        "after_mm": 80148,
+        "nearest_after": {
+         "kind": "source",
+         "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp09",
+        "before_mm": 309417,
+        "nearest_before": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "after_mm": 309417,
+        "nearest_after": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp10",
+        "before_mm": 354888,
+        "nearest_before": {
+         "kind": "source",
+         "id": "b1fc81c5-7f00-4a0a-969d-2da872515916"
+        },
+        "after_mm": 249744,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "c06"
+        },
+        "delta_mm": 105144
+       },
+       {
+        "control_point_id": "cp11",
+        "before_mm": 74921,
+        "nearest_before": {
+         "kind": "source",
+         "id": "1d137305-49cd-450b-9626-9762db14d080"
+        },
+        "after_mm": 74921,
+        "nearest_after": {
+         "kind": "source",
+         "id": "1d137305-49cd-450b-9626-9762db14d080"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp12",
+        "before_mm": 457693,
+        "nearest_before": {
+         "kind": "source",
+         "id": "1d137305-49cd-450b-9626-9762db14d080"
+        },
+        "after_mm": 457693,
+        "nearest_after": {
+         "kind": "source",
+         "id": "1d137305-49cd-450b-9626-9762db14d080"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp13",
+        "before_mm": 190261,
+        "nearest_before": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "after_mm": 190261,
+        "nearest_after": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp14",
+        "before_mm": 283155,
+        "nearest_before": {
+         "kind": "source",
+         "id": "b1fc81c5-7f00-4a0a-969d-2da872515916"
+        },
+        "after_mm": 283155,
+        "nearest_after": {
+         "kind": "source",
+         "id": "b1fc81c5-7f00-4a0a-969d-2da872515916"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp15",
+        "before_mm": 126710,
+        "nearest_before": {
+         "kind": "source",
+         "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+        },
+        "after_mm": 126710,
+        "nearest_after": {
+         "kind": "source",
+         "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp16",
+        "before_mm": 566383,
+        "nearest_before": {
+         "kind": "source",
+         "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+        },
+        "after_mm": 566383,
+        "nearest_after": {
+         "kind": "source",
+         "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+        },
+        "delta_mm": 0
+       }
+      ]
+     },
+     {
+      "case_id": "s1",
+      "label": "Условно не учитываем 1 запись по правилу seed 20261009",
+      "disabled_source_ids": [
+       "b1fc81c5-7f00-4a0a-969d-2da872515916"
+      ],
+      "baseline_records": 15,
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 12211336,
+       "weighted_mean_mm": 249210.9387755102,
+       "max_mm": 566383,
+       "covered_weight": 43,
+       "coverage_fraction": 0.8775510204081632,
+       "cost": 300
+      },
+      "loss": [
+       0,
+       12211336,
+       566383
+      ],
+      "rows": [
+       {
+        "control_point_id": "cp01",
+        "before_mm": 332519,
+        "nearest_before": {
+         "kind": "source",
+         "id": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2"
+        },
+        "after_mm": 332519,
+        "nearest_after": {
+         "kind": "source",
+         "id": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp02",
+        "before_mm": 235147,
+        "nearest_before": {
+         "kind": "source",
+         "id": "410f0193-f0bc-4553-bee5-660aab0287a5"
+        },
+        "after_mm": 235147,
+        "nearest_after": {
+         "kind": "source",
+         "id": "410f0193-f0bc-4553-bee5-660aab0287a5"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp03",
+        "before_mm": 194506,
+        "nearest_before": {
+         "kind": "source",
+         "id": "771c278a-af10-4c57-b9fc-52755437345d"
+        },
+        "after_mm": 194506,
+        "nearest_after": {
+         "kind": "source",
+         "id": "771c278a-af10-4c57-b9fc-52755437345d"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp04",
+        "before_mm": 220759,
+        "nearest_before": {
+         "kind": "source",
+         "id": "3fba1026-8464-41ab-88f8-633e3df0de30"
+        },
+        "after_mm": 220759,
+        "nearest_after": {
+         "kind": "source",
+         "id": "3fba1026-8464-41ab-88f8-633e3df0de30"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp05",
+        "before_mm": 42253,
+        "nearest_before": {
+         "kind": "source",
+         "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+        },
+        "after_mm": 42253,
+        "nearest_after": {
+         "kind": "source",
+         "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp06",
+        "before_mm": 277607,
+        "nearest_before": {
+         "kind": "source",
+         "id": "410f0193-f0bc-4553-bee5-660aab0287a5"
+        },
+        "after_mm": 249633,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "c06"
+        },
+        "delta_mm": 27974
+       },
+       {
+        "control_point_id": "cp07",
+        "before_mm": 300990,
+        "nearest_before": {
+         "kind": "source",
+         "id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f"
+        },
+        "after_mm": 249633,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "c07"
+        },
+        "delta_mm": 51357
+       },
+       {
+        "control_point_id": "cp08",
+        "before_mm": 80148,
+        "nearest_before": {
+         "kind": "source",
+         "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08"
+        },
+        "after_mm": 80148,
+        "nearest_after": {
+         "kind": "source",
+         "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp09",
+        "before_mm": 309417,
+        "nearest_before": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "after_mm": 309417,
+        "nearest_after": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp10",
+        "before_mm": 402116,
+        "nearest_before": {
+         "kind": "source",
+         "id": "1116880a-cbb6-4271-9a59-a277083b792c"
+        },
+        "after_mm": 249744,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "c06"
+        },
+        "delta_mm": 152372
+       },
+       {
+        "control_point_id": "cp11",
+        "before_mm": 74921,
+        "nearest_before": {
+         "kind": "source",
+         "id": "1d137305-49cd-450b-9626-9762db14d080"
+        },
+        "after_mm": 74921,
+        "nearest_after": {
+         "kind": "source",
+         "id": "1d137305-49cd-450b-9626-9762db14d080"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp12",
+        "before_mm": 457693,
+        "nearest_before": {
+         "kind": "source",
+         "id": "1d137305-49cd-450b-9626-9762db14d080"
+        },
+        "after_mm": 457693,
+        "nearest_after": {
+         "kind": "source",
+         "id": "1d137305-49cd-450b-9626-9762db14d080"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp13",
+        "before_mm": 190261,
+        "nearest_before": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "after_mm": 190261,
+        "nearest_after": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp14",
+        "before_mm": 366252,
+        "nearest_before": {
+         "kind": "source",
+         "id": "1116880a-cbb6-4271-9a59-a277083b792c"
+        },
+        "after_mm": 366252,
+        "nearest_after": {
+         "kind": "source",
+         "id": "1116880a-cbb6-4271-9a59-a277083b792c"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp15",
+        "before_mm": 126710,
+        "nearest_before": {
+         "kind": "source",
+         "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+        },
+        "after_mm": 126710,
+        "nearest_after": {
+         "kind": "source",
+         "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp16",
+        "before_mm": 566383,
+        "nearest_before": {
+         "kind": "source",
+         "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+        },
+        "after_mm": 566383,
+        "nearest_after": {
+         "kind": "source",
+         "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+        },
+        "delta_mm": 0
+       }
+      ]
+     },
+     {
+      "case_id": "s2",
+      "label": "Условно не учитываем 2 записи по правилу seed 20261009",
+      "disabled_source_ids": [
+       "3fba1026-8464-41ab-88f8-633e3df0de30",
+       "aca68551-4a03-47c2-813f-d13dceb85c62"
+      ],
+      "baseline_records": 14,
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 12183754,
+       "weighted_mean_mm": 248648.04081632654,
+       "max_mm": 566383,
+       "covered_weight": 43,
+       "coverage_fraction": 0.8775510204081632,
+       "cost": 300
+      },
+      "loss": [
+       0,
+       12183754,
+       566383
+      ],
+      "rows": [
+       {
+        "control_point_id": "cp01",
+        "before_mm": 332519,
+        "nearest_before": {
+         "kind": "source",
+         "id": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2"
+        },
+        "after_mm": 332519,
+        "nearest_after": {
+         "kind": "source",
+         "id": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp02",
+        "before_mm": 235147,
+        "nearest_before": {
+         "kind": "source",
+         "id": "410f0193-f0bc-4553-bee5-660aab0287a5"
+        },
+        "after_mm": 235147,
+        "nearest_after": {
+         "kind": "source",
+         "id": "410f0193-f0bc-4553-bee5-660aab0287a5"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp03",
+        "before_mm": 194506,
+        "nearest_before": {
+         "kind": "source",
+         "id": "771c278a-af10-4c57-b9fc-52755437345d"
+        },
+        "after_mm": 194506,
+        "nearest_after": {
+         "kind": "source",
+         "id": "771c278a-af10-4c57-b9fc-52755437345d"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp04",
+        "before_mm": 294662,
+        "nearest_before": {
+         "kind": "source",
+         "id": "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8"
+        },
+        "after_mm": 294662,
+        "nearest_after": {
+         "kind": "source",
+         "id": "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp05",
+        "before_mm": 42253,
+        "nearest_before": {
+         "kind": "source",
+         "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+        },
+        "after_mm": 42253,
+        "nearest_after": {
+         "kind": "source",
+         "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp06",
+        "before_mm": 277607,
+        "nearest_before": {
+         "kind": "source",
+         "id": "410f0193-f0bc-4553-bee5-660aab0287a5"
+        },
+        "after_mm": 249633,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "c06"
+        },
+        "delta_mm": 27974
+       },
+       {
+        "control_point_id": "cp07",
+        "before_mm": 300990,
+        "nearest_before": {
+         "kind": "source",
+         "id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f"
+        },
+        "after_mm": 249633,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "c07"
+        },
+        "delta_mm": 51357
+       },
+       {
+        "control_point_id": "cp08",
+        "before_mm": 80148,
+        "nearest_before": {
+         "kind": "source",
+         "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08"
+        },
+        "after_mm": 80148,
+        "nearest_after": {
+         "kind": "source",
+         "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp09",
+        "before_mm": 309417,
+        "nearest_before": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "after_mm": 309417,
+        "nearest_after": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp10",
+        "before_mm": 354888,
+        "nearest_before": {
+         "kind": "source",
+         "id": "b1fc81c5-7f00-4a0a-969d-2da872515916"
+        },
+        "after_mm": 249744,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "c06"
+        },
+        "delta_mm": 105144
+       },
+       {
+        "control_point_id": "cp11",
+        "before_mm": 74921,
+        "nearest_before": {
+         "kind": "source",
+         "id": "1d137305-49cd-450b-9626-9762db14d080"
+        },
+        "after_mm": 74921,
+        "nearest_after": {
+         "kind": "source",
+         "id": "1d137305-49cd-450b-9626-9762db14d080"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp12",
+        "before_mm": 457693,
+        "nearest_before": {
+         "kind": "source",
+         "id": "1d137305-49cd-450b-9626-9762db14d080"
+        },
+        "after_mm": 457693,
+        "nearest_after": {
+         "kind": "source",
+         "id": "1d137305-49cd-450b-9626-9762db14d080"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp13",
+        "before_mm": 190261,
+        "nearest_before": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "after_mm": 190261,
+        "nearest_after": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp14",
+        "before_mm": 283155,
+        "nearest_before": {
+         "kind": "source",
+         "id": "b1fc81c5-7f00-4a0a-969d-2da872515916"
+        },
+        "after_mm": 283155,
+        "nearest_after": {
+         "kind": "source",
+         "id": "b1fc81c5-7f00-4a0a-969d-2da872515916"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp15",
+        "before_mm": 126710,
+        "nearest_before": {
+         "kind": "source",
+         "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+        },
+        "after_mm": 126710,
+        "nearest_after": {
+         "kind": "source",
+         "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp16",
+        "before_mm": 566383,
+        "nearest_before": {
+         "kind": "source",
+         "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+        },
+        "after_mm": 566383,
+        "nearest_after": {
+         "kind": "source",
+         "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+        },
+        "delta_mm": 0
+       }
+      ]
+     },
+     {
+      "case_id": "s3",
+      "label": "Условно не учитываем 3 записи по правилу seed 20261009",
+      "disabled_source_ids": [
+       "1d137305-49cd-450b-9626-9762db14d080",
+       "5c3a8d6d-117d-4cce-9dde-ad820e6967d2",
+       "b1fc81c5-7f00-4a0a-969d-2da872515916"
+      ],
+      "baseline_records": 13,
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 13732158,
+       "weighted_mean_mm": 280248.1224489796,
+       "max_mm": 566383,
+       "covered_weight": 39,
+       "coverage_fraction": 0.7959183673469388,
+       "cost": 300
+      },
+      "loss": [
+       0,
+       13732158,
+       566383
+      ],
+      "rows": [
+       {
+        "control_point_id": "cp01",
+        "before_mm": 521048,
+        "nearest_before": {
+         "kind": "source",
+         "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+        },
+        "after_mm": 521048,
+        "nearest_after": {
+         "kind": "source",
+         "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp02",
+        "before_mm": 235147,
+        "nearest_before": {
+         "kind": "source",
+         "id": "410f0193-f0bc-4553-bee5-660aab0287a5"
+        },
+        "after_mm": 235147,
+        "nearest_after": {
+         "kind": "source",
+         "id": "410f0193-f0bc-4553-bee5-660aab0287a5"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp03",
+        "before_mm": 194506,
+        "nearest_before": {
+         "kind": "source",
+         "id": "771c278a-af10-4c57-b9fc-52755437345d"
+        },
+        "after_mm": 194506,
+        "nearest_after": {
+         "kind": "source",
+         "id": "771c278a-af10-4c57-b9fc-52755437345d"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp04",
+        "before_mm": 220759,
+        "nearest_before": {
+         "kind": "source",
+         "id": "3fba1026-8464-41ab-88f8-633e3df0de30"
+        },
+        "after_mm": 220759,
+        "nearest_after": {
+         "kind": "source",
+         "id": "3fba1026-8464-41ab-88f8-633e3df0de30"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp05",
+        "before_mm": 42253,
+        "nearest_before": {
+         "kind": "source",
+         "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+        },
+        "after_mm": 42253,
+        "nearest_after": {
+         "kind": "source",
+         "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp06",
+        "before_mm": 277607,
+        "nearest_before": {
+         "kind": "source",
+         "id": "410f0193-f0bc-4553-bee5-660aab0287a5"
+        },
+        "after_mm": 249633,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "c06"
+        },
+        "delta_mm": 27974
+       },
+       {
+        "control_point_id": "cp07",
+        "before_mm": 300990,
+        "nearest_before": {
+         "kind": "source",
+         "id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f"
+        },
+        "after_mm": 249633,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "c07"
+        },
+        "delta_mm": 51357
+       },
+       {
+        "control_point_id": "cp08",
+        "before_mm": 80148,
+        "nearest_before": {
+         "kind": "source",
+         "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08"
+        },
+        "after_mm": 80148,
+        "nearest_after": {
+         "kind": "source",
+         "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp09",
+        "before_mm": 309417,
+        "nearest_before": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "after_mm": 309417,
+        "nearest_after": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp10",
+        "before_mm": 402116,
+        "nearest_before": {
+         "kind": "source",
+         "id": "1116880a-cbb6-4271-9a59-a277083b792c"
+        },
+        "after_mm": 249744,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "c06"
+        },
+        "delta_mm": 152372
+       },
+       {
+        "control_point_id": "cp11",
+        "before_mm": 615686,
+        "nearest_before": {
+         "kind": "source",
+         "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+        },
+        "after_mm": 249744,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "c07"
+        },
+        "delta_mm": 365942
+       },
+       {
+        "control_point_id": "cp12",
+        "before_mm": 491400,
+        "nearest_before": {
+         "kind": "source",
+         "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08"
+        },
+        "after_mm": 491400,
+        "nearest_after": {
+         "kind": "source",
+         "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp13",
+        "before_mm": 190261,
+        "nearest_before": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "after_mm": 190261,
+        "nearest_after": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp14",
+        "before_mm": 366252,
+        "nearest_before": {
+         "kind": "source",
+         "id": "1116880a-cbb6-4271-9a59-a277083b792c"
+        },
+        "after_mm": 366252,
+        "nearest_after": {
+         "kind": "source",
+         "id": "1116880a-cbb6-4271-9a59-a277083b792c"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp15",
+        "before_mm": 126710,
+        "nearest_before": {
+         "kind": "source",
+         "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+        },
+        "after_mm": 126710,
+        "nearest_after": {
+         "kind": "source",
+         "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp16",
+        "before_mm": 566383,
+        "nearest_before": {
+         "kind": "source",
+         "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+        },
+        "after_mm": 566383,
+        "nearest_after": {
+         "kind": "source",
+         "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+        },
+        "delta_mm": 0
+       }
+      ]
+     }
+    ],
+    "worst_vector": [
+     0,
+     13732158,
+     566383
+    ],
+    "worst_case_ids": [
+     "s3"
+    ],
+    "feasibility": {
+     "feasible": true,
+     "reasons": []
+    }
+   },
+   "nominal": {
+    "selected_ids": [
+     "c03",
+     "c10",
+     "c12"
+    ],
+    "cost": 600,
+    "per_case": [
+     {
+      "case_id": "base",
+      "label": "base",
+      "disabled_source_ids": [],
+      "baseline_records": 16,
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 9110157,
+       "weighted_mean_mm": 185921.57142857142,
+       "max_mm": 416203,
+       "covered_weight": 47,
+       "coverage_fraction": 0.9591836734693877,
+       "cost": 600
+      },
+      "loss": [
+       0,
+       9110157,
+       416203
+      ],
+      "rows": [
+       {
+        "control_point_id": "cp01",
+        "before_mm": 332519,
+        "nearest_before": {
+         "kind": "source",
+         "id": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2"
+        },
+        "after_mm": 332519,
+        "nearest_after": {
+         "kind": "source",
+         "id": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp02",
+        "before_mm": 235147,
+        "nearest_before": {
+         "kind": "source",
+         "id": "410f0193-f0bc-4553-bee5-660aab0287a5"
+        },
+        "after_mm": 235147,
+        "nearest_after": {
+         "kind": "source",
+         "id": "410f0193-f0bc-4553-bee5-660aab0287a5"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp03",
+        "before_mm": 194506,
+        "nearest_before": {
+         "kind": "source",
+         "id": "771c278a-af10-4c57-b9fc-52755437345d"
+        },
+        "after_mm": 83174,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "c03"
+        },
+        "delta_mm": 111332
+       },
+       {
+        "control_point_id": "cp04",
+        "before_mm": 220759,
+        "nearest_before": {
+         "kind": "source",
+         "id": "3fba1026-8464-41ab-88f8-633e3df0de30"
+        },
+        "after_mm": 220759,
+        "nearest_after": {
+         "kind": "source",
+         "id": "3fba1026-8464-41ab-88f8-633e3df0de30"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp05",
+        "before_mm": 42253,
+        "nearest_before": {
+         "kind": "source",
+         "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+        },
+        "after_mm": 42253,
+        "nearest_after": {
+         "kind": "source",
+         "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp06",
+        "before_mm": 277607,
+        "nearest_before": {
+         "kind": "source",
+         "id": "410f0193-f0bc-4553-bee5-660aab0287a5"
+        },
+        "after_mm": 277607,
+        "nearest_after": {
+         "kind": "source",
+         "id": "410f0193-f0bc-4553-bee5-660aab0287a5"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp07",
+        "before_mm": 300990,
+        "nearest_before": {
+         "kind": "source",
+         "id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f"
+        },
+        "after_mm": 300990,
+        "nearest_after": {
+         "kind": "source",
+         "id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp08",
+        "before_mm": 80148,
+        "nearest_before": {
+         "kind": "source",
+         "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08"
+        },
+        "after_mm": 80148,
+        "nearest_after": {
+         "kind": "source",
+         "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp09",
+        "before_mm": 309417,
+        "nearest_before": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "after_mm": 309417,
+        "nearest_after": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp10",
+        "before_mm": 354888,
+        "nearest_before": {
+         "kind": "source",
+         "id": "b1fc81c5-7f00-4a0a-969d-2da872515916"
+        },
+        "after_mm": 354888,
+        "nearest_after": {
+         "kind": "source",
+         "id": "b1fc81c5-7f00-4a0a-969d-2da872515916"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp11",
+        "before_mm": 74921,
+        "nearest_before": {
+         "kind": "source",
+         "id": "1d137305-49cd-450b-9626-9762db14d080"
+        },
+        "after_mm": 74921,
+        "nearest_after": {
+         "kind": "source",
+         "id": "1d137305-49cd-450b-9626-9762db14d080"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp12",
+        "before_mm": 457693,
+        "nearest_before": {
+         "kind": "source",
+         "id": "1d137305-49cd-450b-9626-9762db14d080"
+        },
+        "after_mm": 416203,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "c12"
+        },
+        "delta_mm": 41490
+       },
+       {
+        "control_point_id": "cp13",
+        "before_mm": 190261,
+        "nearest_before": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "after_mm": 190261,
+        "nearest_after": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp14",
+        "before_mm": 283155,
+        "nearest_before": {
+         "kind": "source",
+         "id": "b1fc81c5-7f00-4a0a-969d-2da872515916"
+        },
+        "after_mm": 83285,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "c10"
+        },
+        "delta_mm": 199870
+       },
+       {
+        "control_point_id": "cp15",
+        "before_mm": 126710,
+        "nearest_before": {
+         "kind": "source",
+         "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+        },
+        "after_mm": 126710,
+        "nearest_after": {
+         "kind": "source",
+         "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp16",
+        "before_mm": 566383,
+        "nearest_before": {
+         "kind": "source",
+         "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+        },
+        "after_mm": 83285,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "c12"
+        },
+        "delta_mm": 483098
+       }
+      ]
+     },
+     {
+      "case_id": "s1",
+      "label": "Условно не учитываем 1 запись по правилу seed 20261009",
+      "disabled_source_ids": [
+       "b1fc81c5-7f00-4a0a-969d-2da872515916"
+      ],
+      "baseline_records": 15,
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 9157385,
+       "weighted_mean_mm": 186885.4081632653,
+       "max_mm": 416203,
+       "covered_weight": 46,
+       "coverage_fraction": 0.9387755102040817,
+       "cost": 600
+      },
+      "loss": [
+       0,
+       9157385,
+       416203
+      ],
+      "rows": [
+       {
+        "control_point_id": "cp01",
+        "before_mm": 332519,
+        "nearest_before": {
+         "kind": "source",
+         "id": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2"
+        },
+        "after_mm": 332519,
+        "nearest_after": {
+         "kind": "source",
+         "id": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp02",
+        "before_mm": 235147,
+        "nearest_before": {
+         "kind": "source",
+         "id": "410f0193-f0bc-4553-bee5-660aab0287a5"
+        },
+        "after_mm": 235147,
+        "nearest_after": {
+         "kind": "source",
+         "id": "410f0193-f0bc-4553-bee5-660aab0287a5"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp03",
+        "before_mm": 194506,
+        "nearest_before": {
+         "kind": "source",
+         "id": "771c278a-af10-4c57-b9fc-52755437345d"
+        },
+        "after_mm": 83174,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "c03"
+        },
+        "delta_mm": 111332
+       },
+       {
+        "control_point_id": "cp04",
+        "before_mm": 220759,
+        "nearest_before": {
+         "kind": "source",
+         "id": "3fba1026-8464-41ab-88f8-633e3df0de30"
+        },
+        "after_mm": 220759,
+        "nearest_after": {
+         "kind": "source",
+         "id": "3fba1026-8464-41ab-88f8-633e3df0de30"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp05",
+        "before_mm": 42253,
+        "nearest_before": {
+         "kind": "source",
+         "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+        },
+        "after_mm": 42253,
+        "nearest_after": {
+         "kind": "source",
+         "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp06",
+        "before_mm": 277607,
+        "nearest_before": {
+         "kind": "source",
+         "id": "410f0193-f0bc-4553-bee5-660aab0287a5"
+        },
+        "after_mm": 277607,
+        "nearest_after": {
+         "kind": "source",
+         "id": "410f0193-f0bc-4553-bee5-660aab0287a5"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp07",
+        "before_mm": 300990,
+        "nearest_before": {
+         "kind": "source",
+         "id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f"
+        },
+        "after_mm": 300990,
+        "nearest_after": {
+         "kind": "source",
+         "id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp08",
+        "before_mm": 80148,
+        "nearest_before": {
+         "kind": "source",
+         "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08"
+        },
+        "after_mm": 80148,
+        "nearest_after": {
+         "kind": "source",
+         "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp09",
+        "before_mm": 309417,
+        "nearest_before": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "after_mm": 309417,
+        "nearest_after": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp10",
+        "before_mm": 402116,
+        "nearest_before": {
+         "kind": "source",
+         "id": "1116880a-cbb6-4271-9a59-a277083b792c"
+        },
+        "after_mm": 402116,
+        "nearest_after": {
+         "kind": "source",
+         "id": "1116880a-cbb6-4271-9a59-a277083b792c"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp11",
+        "before_mm": 74921,
+        "nearest_before": {
+         "kind": "source",
+         "id": "1d137305-49cd-450b-9626-9762db14d080"
+        },
+        "after_mm": 74921,
+        "nearest_after": {
+         "kind": "source",
+         "id": "1d137305-49cd-450b-9626-9762db14d080"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp12",
+        "before_mm": 457693,
+        "nearest_before": {
+         "kind": "source",
+         "id": "1d137305-49cd-450b-9626-9762db14d080"
+        },
+        "after_mm": 416203,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "c12"
+        },
+        "delta_mm": 41490
+       },
+       {
+        "control_point_id": "cp13",
+        "before_mm": 190261,
+        "nearest_before": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "after_mm": 190261,
+        "nearest_after": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp14",
+        "before_mm": 366252,
+        "nearest_before": {
+         "kind": "source",
+         "id": "1116880a-cbb6-4271-9a59-a277083b792c"
+        },
+        "after_mm": 83285,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "c10"
+        },
+        "delta_mm": 282967
+       },
+       {
+        "control_point_id": "cp15",
+        "before_mm": 126710,
+        "nearest_before": {
+         "kind": "source",
+         "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+        },
+        "after_mm": 126710,
+        "nearest_after": {
+         "kind": "source",
+         "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp16",
+        "before_mm": 566383,
+        "nearest_before": {
+         "kind": "source",
+         "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+        },
+        "after_mm": 83285,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "c12"
+        },
+        "delta_mm": 483098
+       }
+      ]
+     },
+     {
+      "case_id": "s2",
+      "label": "Условно не учитываем 2 записи по правилу seed 20261009",
+      "disabled_source_ids": [
+       "3fba1026-8464-41ab-88f8-633e3df0de30",
+       "aca68551-4a03-47c2-813f-d13dceb85c62"
+      ],
+      "baseline_records": 14,
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 9331866,
+       "weighted_mean_mm": 190446.24489795917,
+       "max_mm": 416203,
+       "covered_weight": 47,
+       "coverage_fraction": 0.9591836734693877,
+       "cost": 600
+      },
+      "loss": [
+       0,
+       9331866,
+       416203
+      ],
+      "rows": [
+       {
+        "control_point_id": "cp01",
+        "before_mm": 332519,
+        "nearest_before": {
+         "kind": "source",
+         "id": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2"
+        },
+        "after_mm": 332519,
+        "nearest_after": {
+         "kind": "source",
+         "id": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp02",
+        "before_mm": 235147,
+        "nearest_before": {
+         "kind": "source",
+         "id": "410f0193-f0bc-4553-bee5-660aab0287a5"
+        },
+        "after_mm": 235147,
+        "nearest_after": {
+         "kind": "source",
+         "id": "410f0193-f0bc-4553-bee5-660aab0287a5"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp03",
+        "before_mm": 194506,
+        "nearest_before": {
+         "kind": "source",
+         "id": "771c278a-af10-4c57-b9fc-52755437345d"
+        },
+        "after_mm": 83174,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "c03"
+        },
+        "delta_mm": 111332
+       },
+       {
+        "control_point_id": "cp04",
+        "before_mm": 294662,
+        "nearest_before": {
+         "kind": "source",
+         "id": "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8"
+        },
+        "after_mm": 294662,
+        "nearest_after": {
+         "kind": "source",
+         "id": "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp05",
+        "before_mm": 42253,
+        "nearest_before": {
+         "kind": "source",
+         "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+        },
+        "after_mm": 42253,
+        "nearest_after": {
+         "kind": "source",
+         "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp06",
+        "before_mm": 277607,
+        "nearest_before": {
+         "kind": "source",
+         "id": "410f0193-f0bc-4553-bee5-660aab0287a5"
+        },
+        "after_mm": 277607,
+        "nearest_after": {
+         "kind": "source",
+         "id": "410f0193-f0bc-4553-bee5-660aab0287a5"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp07",
+        "before_mm": 300990,
+        "nearest_before": {
+         "kind": "source",
+         "id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f"
+        },
+        "after_mm": 300990,
+        "nearest_after": {
+         "kind": "source",
+         "id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp08",
+        "before_mm": 80148,
+        "nearest_before": {
+         "kind": "source",
+         "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08"
+        },
+        "after_mm": 80148,
+        "nearest_after": {
+         "kind": "source",
+         "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp09",
+        "before_mm": 309417,
+        "nearest_before": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "after_mm": 309417,
+        "nearest_after": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp10",
+        "before_mm": 354888,
+        "nearest_before": {
+         "kind": "source",
+         "id": "b1fc81c5-7f00-4a0a-969d-2da872515916"
+        },
+        "after_mm": 354888,
+        "nearest_after": {
+         "kind": "source",
+         "id": "b1fc81c5-7f00-4a0a-969d-2da872515916"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp11",
+        "before_mm": 74921,
+        "nearest_before": {
+         "kind": "source",
+         "id": "1d137305-49cd-450b-9626-9762db14d080"
+        },
+        "after_mm": 74921,
+        "nearest_after": {
+         "kind": "source",
+         "id": "1d137305-49cd-450b-9626-9762db14d080"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp12",
+        "before_mm": 457693,
+        "nearest_before": {
+         "kind": "source",
+         "id": "1d137305-49cd-450b-9626-9762db14d080"
+        },
+        "after_mm": 416203,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "c12"
+        },
+        "delta_mm": 41490
+       },
+       {
+        "control_point_id": "cp13",
+        "before_mm": 190261,
+        "nearest_before": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "after_mm": 190261,
+        "nearest_after": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp14",
+        "before_mm": 283155,
+        "nearest_before": {
+         "kind": "source",
+         "id": "b1fc81c5-7f00-4a0a-969d-2da872515916"
+        },
+        "after_mm": 83285,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "c10"
+        },
+        "delta_mm": 199870
+       },
+       {
+        "control_point_id": "cp15",
+        "before_mm": 126710,
+        "nearest_before": {
+         "kind": "source",
+         "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+        },
+        "after_mm": 126710,
+        "nearest_after": {
+         "kind": "source",
+         "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp16",
+        "before_mm": 566383,
+        "nearest_before": {
+         "kind": "source",
+         "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+        },
+        "after_mm": 83285,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "c12"
+        },
+        "delta_mm": 483098
+       }
+      ]
+     },
+     {
+      "case_id": "s3",
+      "label": "Условно не учитываем 3 записи по правилу seed 20261009",
+      "disabled_source_ids": [
+       "1d137305-49cd-450b-9626-9762db14d080",
+       "5c3a8d6d-117d-4cce-9dde-ad820e6967d2",
+       "b1fc81c5-7f00-4a0a-969d-2da872515916"
+      ],
+      "baseline_records": 13,
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 12074561,
+       "weighted_mean_mm": 246419.61224489796,
+       "max_mm": 615686,
+       "covered_weight": 38,
+       "coverage_fraction": 0.7755102040816326,
+       "cost": 600
+      },
+      "loss": [
+       0,
+       12074561,
+       615686
+      ],
+      "rows": [
+       {
+        "control_point_id": "cp01",
+        "before_mm": 521048,
+        "nearest_before": {
+         "kind": "source",
+         "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+        },
+        "after_mm": 521048,
+        "nearest_after": {
+         "kind": "source",
+         "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp02",
+        "before_mm": 235147,
+        "nearest_before": {
+         "kind": "source",
+         "id": "410f0193-f0bc-4553-bee5-660aab0287a5"
+        },
+        "after_mm": 235147,
+        "nearest_after": {
+         "kind": "source",
+         "id": "410f0193-f0bc-4553-bee5-660aab0287a5"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp03",
+        "before_mm": 194506,
+        "nearest_before": {
+         "kind": "source",
+         "id": "771c278a-af10-4c57-b9fc-52755437345d"
+        },
+        "after_mm": 83174,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "c03"
+        },
+        "delta_mm": 111332
+       },
+       {
+        "control_point_id": "cp04",
+        "before_mm": 220759,
+        "nearest_before": {
+         "kind": "source",
+         "id": "3fba1026-8464-41ab-88f8-633e3df0de30"
+        },
+        "after_mm": 220759,
+        "nearest_after": {
+         "kind": "source",
+         "id": "3fba1026-8464-41ab-88f8-633e3df0de30"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp05",
+        "before_mm": 42253,
+        "nearest_before": {
+         "kind": "source",
+         "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+        },
+        "after_mm": 42253,
+        "nearest_after": {
+         "kind": "source",
+         "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp06",
+        "before_mm": 277607,
+        "nearest_before": {
+         "kind": "source",
+         "id": "410f0193-f0bc-4553-bee5-660aab0287a5"
+        },
+        "after_mm": 277607,
+        "nearest_after": {
+         "kind": "source",
+         "id": "410f0193-f0bc-4553-bee5-660aab0287a5"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp07",
+        "before_mm": 300990,
+        "nearest_before": {
+         "kind": "source",
+         "id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f"
+        },
+        "after_mm": 300990,
+        "nearest_after": {
+         "kind": "source",
+         "id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp08",
+        "before_mm": 80148,
+        "nearest_before": {
+         "kind": "source",
+         "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08"
+        },
+        "after_mm": 80148,
+        "nearest_after": {
+         "kind": "source",
+         "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp09",
+        "before_mm": 309417,
+        "nearest_before": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "after_mm": 309417,
+        "nearest_after": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp10",
+        "before_mm": 402116,
+        "nearest_before": {
+         "kind": "source",
+         "id": "1116880a-cbb6-4271-9a59-a277083b792c"
+        },
+        "after_mm": 402116,
+        "nearest_after": {
+         "kind": "source",
+         "id": "1116880a-cbb6-4271-9a59-a277083b792c"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp11",
+        "before_mm": 615686,
+        "nearest_before": {
+         "kind": "source",
+         "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+        },
+        "after_mm": 615686,
+        "nearest_after": {
+         "kind": "source",
+         "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp12",
+        "before_mm": 491400,
+        "nearest_before": {
+         "kind": "source",
+         "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08"
+        },
+        "after_mm": 416203,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "c12"
+        },
+        "delta_mm": 75197
+       },
+       {
+        "control_point_id": "cp13",
+        "before_mm": 190261,
+        "nearest_before": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "after_mm": 190261,
+        "nearest_after": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp14",
+        "before_mm": 366252,
+        "nearest_before": {
+         "kind": "source",
+         "id": "1116880a-cbb6-4271-9a59-a277083b792c"
+        },
+        "after_mm": 83285,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "c10"
+        },
+        "delta_mm": 282967
+       },
+       {
+        "control_point_id": "cp15",
+        "before_mm": 126710,
+        "nearest_before": {
+         "kind": "source",
+         "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+        },
+        "after_mm": 126710,
+        "nearest_after": {
+         "kind": "source",
+         "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp16",
+        "before_mm": 566383,
+        "nearest_before": {
+         "kind": "source",
+         "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+        },
+        "after_mm": 83285,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "c12"
+        },
+        "delta_mm": 483098
+       }
+      ]
+     }
+    ],
+    "worst_vector": [
+     0,
+     12074561,
+     615686
+    ],
+    "worst_case_ids": [
+     "s3"
+    ],
+    "feasibility": {
+     "feasible": true,
+     "reasons": []
+    }
+   },
+   "robust": {
+    "selected_ids": [
+     "c07",
+     "c10",
+     "c12"
+    ],
+    "cost": 550,
+    "per_case": [
+     {
+      "case_id": "base",
+      "label": "base",
+      "disabled_source_ids": [],
+      "baseline_records": 16,
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 9564103,
+       "weighted_mean_mm": 195185.77551020408,
+       "max_mm": 416203,
+       "covered_weight": 47,
+       "coverage_fraction": 0.9591836734693877,
+       "cost": 550
+      },
+      "loss": [
+       0,
+       9564103,
+       416203
+      ],
+      "rows": [
+       {
+        "control_point_id": "cp01",
+        "before_mm": 332519,
+        "nearest_before": {
+         "kind": "source",
+         "id": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2"
+        },
+        "after_mm": 332519,
+        "nearest_after": {
+         "kind": "source",
+         "id": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp02",
+        "before_mm": 235147,
+        "nearest_before": {
+         "kind": "source",
+         "id": "410f0193-f0bc-4553-bee5-660aab0287a5"
+        },
+        "after_mm": 235147,
+        "nearest_after": {
+         "kind": "source",
+         "id": "410f0193-f0bc-4553-bee5-660aab0287a5"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp03",
+        "before_mm": 194506,
+        "nearest_before": {
+         "kind": "source",
+         "id": "771c278a-af10-4c57-b9fc-52755437345d"
+        },
+        "after_mm": 194506,
+        "nearest_after": {
+         "kind": "source",
+         "id": "771c278a-af10-4c57-b9fc-52755437345d"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp04",
+        "before_mm": 220759,
+        "nearest_before": {
+         "kind": "source",
+         "id": "3fba1026-8464-41ab-88f8-633e3df0de30"
+        },
+        "after_mm": 220759,
+        "nearest_after": {
+         "kind": "source",
+         "id": "3fba1026-8464-41ab-88f8-633e3df0de30"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp05",
+        "before_mm": 42253,
+        "nearest_before": {
+         "kind": "source",
+         "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+        },
+        "after_mm": 42253,
+        "nearest_after": {
+         "kind": "source",
+         "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp06",
+        "before_mm": 277607,
+        "nearest_before": {
+         "kind": "source",
+         "id": "410f0193-f0bc-4553-bee5-660aab0287a5"
+        },
+        "after_mm": 277607,
+        "nearest_after": {
+         "kind": "source",
+         "id": "410f0193-f0bc-4553-bee5-660aab0287a5"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp07",
+        "before_mm": 300990,
+        "nearest_before": {
+         "kind": "source",
+         "id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f"
+        },
+        "after_mm": 249633,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "c07"
+        },
+        "delta_mm": 51357
+       },
+       {
+        "control_point_id": "cp08",
+        "before_mm": 80148,
+        "nearest_before": {
+         "kind": "source",
+         "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08"
+        },
+        "after_mm": 80148,
+        "nearest_after": {
+         "kind": "source",
+         "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp09",
+        "before_mm": 309417,
+        "nearest_before": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "after_mm": 309417,
+        "nearest_after": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp10",
+        "before_mm": 354888,
+        "nearest_before": {
+         "kind": "source",
+         "id": "b1fc81c5-7f00-4a0a-969d-2da872515916"
+        },
+        "after_mm": 354888,
+        "nearest_after": {
+         "kind": "source",
+         "id": "b1fc81c5-7f00-4a0a-969d-2da872515916"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp11",
+        "before_mm": 74921,
+        "nearest_before": {
+         "kind": "source",
+         "id": "1d137305-49cd-450b-9626-9762db14d080"
+        },
+        "after_mm": 74921,
+        "nearest_after": {
+         "kind": "source",
+         "id": "1d137305-49cd-450b-9626-9762db14d080"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp12",
+        "before_mm": 457693,
+        "nearest_before": {
+         "kind": "source",
+         "id": "1d137305-49cd-450b-9626-9762db14d080"
+        },
+        "after_mm": 416203,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "c12"
+        },
+        "delta_mm": 41490
+       },
+       {
+        "control_point_id": "cp13",
+        "before_mm": 190261,
+        "nearest_before": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "after_mm": 190261,
+        "nearest_after": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp14",
+        "before_mm": 283155,
+        "nearest_before": {
+         "kind": "source",
+         "id": "b1fc81c5-7f00-4a0a-969d-2da872515916"
+        },
+        "after_mm": 83285,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "c10"
+        },
+        "delta_mm": 199870
+       },
+       {
+        "control_point_id": "cp15",
+        "before_mm": 126710,
+        "nearest_before": {
+         "kind": "source",
+         "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+        },
+        "after_mm": 126710,
+        "nearest_after": {
+         "kind": "source",
+         "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp16",
+        "before_mm": 566383,
+        "nearest_before": {
+         "kind": "source",
+         "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+        },
+        "after_mm": 83285,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "c12"
+        },
+        "delta_mm": 483098
+       }
+      ]
+     },
+     {
+      "case_id": "s1",
+      "label": "Условно не учитываем 1 запись по правилу seed 20261009",
+      "disabled_source_ids": [
+       "b1fc81c5-7f00-4a0a-969d-2da872515916"
+      ],
+      "baseline_records": 15,
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 9611331,
+       "weighted_mean_mm": 196149.61224489796,
+       "max_mm": 416203,
+       "covered_weight": 46,
+       "coverage_fraction": 0.9387755102040817,
+       "cost": 550
+      },
+      "loss": [
+       0,
+       9611331,
+       416203
+      ],
+      "rows": [
+       {
+        "control_point_id": "cp01",
+        "before_mm": 332519,
+        "nearest_before": {
+         "kind": "source",
+         "id": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2"
+        },
+        "after_mm": 332519,
+        "nearest_after": {
+         "kind": "source",
+         "id": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp02",
+        "before_mm": 235147,
+        "nearest_before": {
+         "kind": "source",
+         "id": "410f0193-f0bc-4553-bee5-660aab0287a5"
+        },
+        "after_mm": 235147,
+        "nearest_after": {
+         "kind": "source",
+         "id": "410f0193-f0bc-4553-bee5-660aab0287a5"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp03",
+        "before_mm": 194506,
+        "nearest_before": {
+         "kind": "source",
+         "id": "771c278a-af10-4c57-b9fc-52755437345d"
+        },
+        "after_mm": 194506,
+        "nearest_after": {
+         "kind": "source",
+         "id": "771c278a-af10-4c57-b9fc-52755437345d"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp04",
+        "before_mm": 220759,
+        "nearest_before": {
+         "kind": "source",
+         "id": "3fba1026-8464-41ab-88f8-633e3df0de30"
+        },
+        "after_mm": 220759,
+        "nearest_after": {
+         "kind": "source",
+         "id": "3fba1026-8464-41ab-88f8-633e3df0de30"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp05",
+        "before_mm": 42253,
+        "nearest_before": {
+         "kind": "source",
+         "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+        },
+        "after_mm": 42253,
+        "nearest_after": {
+         "kind": "source",
+         "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp06",
+        "before_mm": 277607,
+        "nearest_before": {
+         "kind": "source",
+         "id": "410f0193-f0bc-4553-bee5-660aab0287a5"
+        },
+        "after_mm": 277607,
+        "nearest_after": {
+         "kind": "source",
+         "id": "410f0193-f0bc-4553-bee5-660aab0287a5"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp07",
+        "before_mm": 300990,
+        "nearest_before": {
+         "kind": "source",
+         "id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f"
+        },
+        "after_mm": 249633,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "c07"
+        },
+        "delta_mm": 51357
+       },
+       {
+        "control_point_id": "cp08",
+        "before_mm": 80148,
+        "nearest_before": {
+         "kind": "source",
+         "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08"
+        },
+        "after_mm": 80148,
+        "nearest_after": {
+         "kind": "source",
+         "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp09",
+        "before_mm": 309417,
+        "nearest_before": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "after_mm": 309417,
+        "nearest_after": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp10",
+        "before_mm": 402116,
+        "nearest_before": {
+         "kind": "source",
+         "id": "1116880a-cbb6-4271-9a59-a277083b792c"
+        },
+        "after_mm": 402116,
+        "nearest_after": {
+         "kind": "source",
+         "id": "1116880a-cbb6-4271-9a59-a277083b792c"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp11",
+        "before_mm": 74921,
+        "nearest_before": {
+         "kind": "source",
+         "id": "1d137305-49cd-450b-9626-9762db14d080"
+        },
+        "after_mm": 74921,
+        "nearest_after": {
+         "kind": "source",
+         "id": "1d137305-49cd-450b-9626-9762db14d080"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp12",
+        "before_mm": 457693,
+        "nearest_before": {
+         "kind": "source",
+         "id": "1d137305-49cd-450b-9626-9762db14d080"
+        },
+        "after_mm": 416203,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "c12"
+        },
+        "delta_mm": 41490
+       },
+       {
+        "control_point_id": "cp13",
+        "before_mm": 190261,
+        "nearest_before": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "after_mm": 190261,
+        "nearest_after": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp14",
+        "before_mm": 366252,
+        "nearest_before": {
+         "kind": "source",
+         "id": "1116880a-cbb6-4271-9a59-a277083b792c"
+        },
+        "after_mm": 83285,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "c10"
+        },
+        "delta_mm": 282967
+       },
+       {
+        "control_point_id": "cp15",
+        "before_mm": 126710,
+        "nearest_before": {
+         "kind": "source",
+         "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+        },
+        "after_mm": 126710,
+        "nearest_after": {
+         "kind": "source",
+         "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp16",
+        "before_mm": 566383,
+        "nearest_before": {
+         "kind": "source",
+         "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+        },
+        "after_mm": 83285,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "c12"
+        },
+        "delta_mm": 483098
+       }
+      ]
+     },
+     {
+      "case_id": "s2",
+      "label": "Условно не учитываем 2 записи по правилу seed 20261009",
+      "disabled_source_ids": [
+       "3fba1026-8464-41ab-88f8-633e3df0de30",
+       "aca68551-4a03-47c2-813f-d13dceb85c62"
+      ],
+      "baseline_records": 14,
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 9785812,
+       "weighted_mean_mm": 199710.44897959183,
+       "max_mm": 416203,
+       "covered_weight": 47,
+       "coverage_fraction": 0.9591836734693877,
+       "cost": 550
+      },
+      "loss": [
+       0,
+       9785812,
+       416203
+      ],
+      "rows": [
+       {
+        "control_point_id": "cp01",
+        "before_mm": 332519,
+        "nearest_before": {
+         "kind": "source",
+         "id": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2"
+        },
+        "after_mm": 332519,
+        "nearest_after": {
+         "kind": "source",
+         "id": "5c3a8d6d-117d-4cce-9dde-ad820e6967d2"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp02",
+        "before_mm": 235147,
+        "nearest_before": {
+         "kind": "source",
+         "id": "410f0193-f0bc-4553-bee5-660aab0287a5"
+        },
+        "after_mm": 235147,
+        "nearest_after": {
+         "kind": "source",
+         "id": "410f0193-f0bc-4553-bee5-660aab0287a5"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp03",
+        "before_mm": 194506,
+        "nearest_before": {
+         "kind": "source",
+         "id": "771c278a-af10-4c57-b9fc-52755437345d"
+        },
+        "after_mm": 194506,
+        "nearest_after": {
+         "kind": "source",
+         "id": "771c278a-af10-4c57-b9fc-52755437345d"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp04",
+        "before_mm": 294662,
+        "nearest_before": {
+         "kind": "source",
+         "id": "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8"
+        },
+        "after_mm": 294662,
+        "nearest_after": {
+         "kind": "source",
+         "id": "6b48e0f6-30c5-4b1f-828a-c90c408ee9f8"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp05",
+        "before_mm": 42253,
+        "nearest_before": {
+         "kind": "source",
+         "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+        },
+        "after_mm": 42253,
+        "nearest_after": {
+         "kind": "source",
+         "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp06",
+        "before_mm": 277607,
+        "nearest_before": {
+         "kind": "source",
+         "id": "410f0193-f0bc-4553-bee5-660aab0287a5"
+        },
+        "after_mm": 277607,
+        "nearest_after": {
+         "kind": "source",
+         "id": "410f0193-f0bc-4553-bee5-660aab0287a5"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp07",
+        "before_mm": 300990,
+        "nearest_before": {
+         "kind": "source",
+         "id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f"
+        },
+        "after_mm": 249633,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "c07"
+        },
+        "delta_mm": 51357
+       },
+       {
+        "control_point_id": "cp08",
+        "before_mm": 80148,
+        "nearest_before": {
+         "kind": "source",
+         "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08"
+        },
+        "after_mm": 80148,
+        "nearest_after": {
+         "kind": "source",
+         "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp09",
+        "before_mm": 309417,
+        "nearest_before": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "after_mm": 309417,
+        "nearest_after": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp10",
+        "before_mm": 354888,
+        "nearest_before": {
+         "kind": "source",
+         "id": "b1fc81c5-7f00-4a0a-969d-2da872515916"
+        },
+        "after_mm": 354888,
+        "nearest_after": {
+         "kind": "source",
+         "id": "b1fc81c5-7f00-4a0a-969d-2da872515916"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp11",
+        "before_mm": 74921,
+        "nearest_before": {
+         "kind": "source",
+         "id": "1d137305-49cd-450b-9626-9762db14d080"
+        },
+        "after_mm": 74921,
+        "nearest_after": {
+         "kind": "source",
+         "id": "1d137305-49cd-450b-9626-9762db14d080"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp12",
+        "before_mm": 457693,
+        "nearest_before": {
+         "kind": "source",
+         "id": "1d137305-49cd-450b-9626-9762db14d080"
+        },
+        "after_mm": 416203,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "c12"
+        },
+        "delta_mm": 41490
+       },
+       {
+        "control_point_id": "cp13",
+        "before_mm": 190261,
+        "nearest_before": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "after_mm": 190261,
+        "nearest_after": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp14",
+        "before_mm": 283155,
+        "nearest_before": {
+         "kind": "source",
+         "id": "b1fc81c5-7f00-4a0a-969d-2da872515916"
+        },
+        "after_mm": 83285,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "c10"
+        },
+        "delta_mm": 199870
+       },
+       {
+        "control_point_id": "cp15",
+        "before_mm": 126710,
+        "nearest_before": {
+         "kind": "source",
+         "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+        },
+        "after_mm": 126710,
+        "nearest_after": {
+         "kind": "source",
+         "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp16",
+        "before_mm": 566383,
+        "nearest_before": {
+         "kind": "source",
+         "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+        },
+        "after_mm": 83285,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "c12"
+        },
+        "delta_mm": 483098
+       }
+      ]
+     },
+     {
+      "case_id": "s3",
+      "label": "Условно не учитываем 3 записи по правилу seed 20261009",
+      "disabled_source_ids": [
+       "1d137305-49cd-450b-9626-9762db14d080",
+       "5c3a8d6d-117d-4cce-9dde-ad820e6967d2",
+       "b1fc81c5-7f00-4a0a-969d-2da872515916"
+      ],
+      "baseline_records": 13,
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 11064739,
+       "weighted_mean_mm": 225811.0,
+       "max_mm": 521048,
+       "covered_weight": 42,
+       "coverage_fraction": 0.8571428571428571,
+       "cost": 550
+      },
+      "loss": [
+       0,
+       11064739,
+       521048
+      ],
+      "rows": [
+       {
+        "control_point_id": "cp01",
+        "before_mm": 521048,
+        "nearest_before": {
+         "kind": "source",
+         "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+        },
+        "after_mm": 521048,
+        "nearest_after": {
+         "kind": "source",
+         "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp02",
+        "before_mm": 235147,
+        "nearest_before": {
+         "kind": "source",
+         "id": "410f0193-f0bc-4553-bee5-660aab0287a5"
+        },
+        "after_mm": 235147,
+        "nearest_after": {
+         "kind": "source",
+         "id": "410f0193-f0bc-4553-bee5-660aab0287a5"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp03",
+        "before_mm": 194506,
+        "nearest_before": {
+         "kind": "source",
+         "id": "771c278a-af10-4c57-b9fc-52755437345d"
+        },
+        "after_mm": 194506,
+        "nearest_after": {
+         "kind": "source",
+         "id": "771c278a-af10-4c57-b9fc-52755437345d"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp04",
+        "before_mm": 220759,
+        "nearest_before": {
+         "kind": "source",
+         "id": "3fba1026-8464-41ab-88f8-633e3df0de30"
+        },
+        "after_mm": 220759,
+        "nearest_after": {
+         "kind": "source",
+         "id": "3fba1026-8464-41ab-88f8-633e3df0de30"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp05",
+        "before_mm": 42253,
+        "nearest_before": {
+         "kind": "source",
+         "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+        },
+        "after_mm": 42253,
+        "nearest_after": {
+         "kind": "source",
+         "id": "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp06",
+        "before_mm": 277607,
+        "nearest_before": {
+         "kind": "source",
+         "id": "410f0193-f0bc-4553-bee5-660aab0287a5"
+        },
+        "after_mm": 277607,
+        "nearest_after": {
+         "kind": "source",
+         "id": "410f0193-f0bc-4553-bee5-660aab0287a5"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp07",
+        "before_mm": 300990,
+        "nearest_before": {
+         "kind": "source",
+         "id": "1e587c48-b425-4d8a-ba90-37f1ad41e24f"
+        },
+        "after_mm": 249633,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "c07"
+        },
+        "delta_mm": 51357
+       },
+       {
+        "control_point_id": "cp08",
+        "before_mm": 80148,
+        "nearest_before": {
+         "kind": "source",
+         "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08"
+        },
+        "after_mm": 80148,
+        "nearest_after": {
+         "kind": "source",
+         "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp09",
+        "before_mm": 309417,
+        "nearest_before": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "after_mm": 309417,
+        "nearest_after": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp10",
+        "before_mm": 402116,
+        "nearest_before": {
+         "kind": "source",
+         "id": "1116880a-cbb6-4271-9a59-a277083b792c"
+        },
+        "after_mm": 402116,
+        "nearest_after": {
+         "kind": "source",
+         "id": "1116880a-cbb6-4271-9a59-a277083b792c"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp11",
+        "before_mm": 615686,
+        "nearest_before": {
+         "kind": "source",
+         "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+        },
+        "after_mm": 249744,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "c07"
+        },
+        "delta_mm": 365942
+       },
+       {
+        "control_point_id": "cp12",
+        "before_mm": 491400,
+        "nearest_before": {
+         "kind": "source",
+         "id": "140ab4bc-e560-41e3-aeaf-cb7b8b821f08"
+        },
+        "after_mm": 416203,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "c12"
+        },
+        "delta_mm": 75197
+       },
+       {
+        "control_point_id": "cp13",
+        "before_mm": 190261,
+        "nearest_before": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "after_mm": 190261,
+        "nearest_after": {
+         "kind": "source",
+         "id": "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp14",
+        "before_mm": 366252,
+        "nearest_before": {
+         "kind": "source",
+         "id": "1116880a-cbb6-4271-9a59-a277083b792c"
+        },
+        "after_mm": 83285,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "c10"
+        },
+        "delta_mm": 282967
+       },
+       {
+        "control_point_id": "cp15",
+        "before_mm": 126710,
+        "nearest_before": {
+         "kind": "source",
+         "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+        },
+        "after_mm": 126710,
+        "nearest_after": {
+         "kind": "source",
+         "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "cp16",
+        "before_mm": 566383,
+        "nearest_before": {
+         "kind": "source",
+         "id": "fcdc8d2f-41ff-42ea-99fe-726d7d844050"
+        },
+        "after_mm": 83285,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "c12"
+        },
+        "delta_mm": 483098
+       }
+      ]
+     }
+    ],
+    "worst_vector": [
+     0,
+     11064739,
+     521048
+    ],
+    "worst_case_ids": [
+     "s3"
+    ],
+    "feasibility": {
+     "feasible": true,
+     "reasons": []
+    }
+   }
+  }
+ },
+ "observations": {
+  "status": "optimal",
+  "evaluated": 299,
+  "feasible_count": 143,
+  "cases": 4,
+  "manual_feasible": true,
+  "manual_worst_case_ids": [
+   "s3"
+  ],
+  "nominal": [
+   "c03",
+   "c10",
+   "c12"
+  ],
+  "robust": [
+   "c07",
+   "c10",
+   "c12"
+  ],
+  "plans_identical": false,
+  "price_of_robustness_m": 9.264204081632663,
+  "price_reason": null,
+  "nominal_worst": [
+   0,
+   12074561,
+   615686
+  ],
+  "robust_worst": [
+   0,
+   11064739,
+   521048
+  ],
+  "nominal_worst_case_ids": [
+   "s3"
+  ],
+  "robust_worst_case_ids": [
+   "s3"
+  ]
+ },
+ "seed": 20261009
+}

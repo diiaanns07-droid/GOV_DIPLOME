@@ -1,0 +1,142 @@
+{
+ "IMMUTABLE": "PASS",
+ "failures": [],
+ "packs": 10,
+ "results": [
+  {
+   "checks": {
+    "CROSS_R8": "PASS",
+    "INDEX": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "kind": "real_slice",
+   "pack_id": "astana-outpatient_clinic-relied",
+   "problems": []
+  },
+  {
+   "checks": {
+    "CROSS_R8": "PASS",
+    "INDEX": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "kind": "real_slice",
+   "pack_id": "astana-outpatient_clinic-seeded",
+   "problems": []
+  },
+  {
+   "checks": {
+    "CROSS_R8": "PASS",
+    "INDEX": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "kind": "real_slice",
+   "pack_id": "astana-school-relied",
+   "problems": []
+  },
+  {
+   "checks": {
+    "CROSS_R8": "PASS",
+    "INDEX": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "kind": "real_slice",
+   "pack_id": "astana-school-seeded",
+   "problems": []
+  },
+  {
+   "checks": {
+    "CROSS_R8": "PASS",
+    "INDEX": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "kind": "real_slice",
+   "pack_id": "shymkent-outpatient_clinic-qa",
+   "problems": []
+  },
+  {
+   "checks": {
+    "CROSS_R8": "PASS",
+    "INDEX": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "kind": "real_slice",
+   "pack_id": "shymkent-outpatient_clinic-relied",
+   "problems": []
+  },
+  {
+   "checks": {
+    "CROSS_R8": "PASS",
+    "INDEX": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "kind": "real_slice",
+   "pack_id": "shymkent-outpatient_clinic-seeded",
+   "problems": []
+  },
+  {
+   "checks": {
+    "CROSS_R8": "PASS",
+    "INDEX": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "kind": "real_slice",
+   "pack_id": "shymkent-school-qa",
+   "problems": []
+  },
+  {
+   "checks": {
+    "CROSS_R8": "PASS",
+    "INDEX": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "kind": "real_slice",
+   "pack_id": "shymkent-school-relied",
+   "problems": []
+  },
+  {
+   "checks": {
+    "CROSS_R8": "PASS",
+    "INDEX": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS",
+    "VALID": "PASS"
+   },
+   "kind": "real_slice",
+   "pack_id": "shymkent-school-seeded",
+   "problems": []
+  }
+ ],
+ "stale": [],
+ "target": {
+  "app_root": "<app-parent>/city-evidence",
+  "data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72"
+ }
+}

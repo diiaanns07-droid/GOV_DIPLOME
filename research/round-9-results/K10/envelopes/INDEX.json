@@ -1,0 +1,252 @@
+{
+ "pack_format": "k10-resilience-pack-v1",
+ "generated_by": "k10res.envelopes + k10res.oracle_res",
+ "build": {
+  "commit": "d865dd4a124291e10dd0b7bb1d9eada20d34c268",
+  "branch": "claude/beautiful-clarke-sbzomj",
+  "data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "evidence_js_sha256": "df736e986145da33dee60f692e020486720b72db5b6116af31640cc8693b11b9"
+ },
+ "rules": {
+  "fixed_before_computing": true,
+  "plan": "K10 r8 base plan of the same city and category: control points cp01..cp16 on a 4x4 bbox grid with SYNTHETIC weights 1+(3k mod 5); 12 hypothetical candidates c01..c12 with SYNTHETIC costs 100+50*(5k mod 7) (conditional units, not tenge); budget 700, max_selected 3, coverage radius 400 m; manual selection c06+c07",
+  "relied": "envelope 'relied': source records of the category ranked by the total weight of control points whose nearest source (before any candidate) is that record, ties by id; cases top1 = rank 1, top2 = ranks 1-2, second = rank 2 alone",
+  "seeded": "envelope 'seeded': LCG x=(1103515245*x+12345) mod 2^31, seed 20261006 + index in [shymkent/school, shymkent/outpatient_clinic, astana/school, astana/outpatient_clinic]; case sK (K=1,2,3) starts the LCG at seed+1000*K and leaves out K distinct records, each drawn as position (x mod remaining) of the still unused id-sorted records",
+  "qa": "envelope 'qa' (built only where records of the category carry QA flags): case qa_all leaves out every record with a QA flag in web/evidence.js; case colocated leaves out the records of the category in the largest qa.colocated group. A QA flag is a reason to check a record, not proof of an error",
+  "labels": "labels state the rule only ('Условно не учитываем ...'); they never claim a closure",
+  "objectives_and_price": "computed after the fact by the oracle; whether the robust plan differs is reported as it came out"
+ },
+ "disclaimer": "Условно исключаем из расчёта; это не подтверждение закрытия. Пустые исходные данные не означают отсутствие услуги.",
+ "packs": [
+  {
+   "pack_id": "shymkent-school-relied",
+   "kind": "real_slice",
+   "stage": 2,
+   "purpose": "leave out the source records most control points rely on",
+   "status": "optimal",
+   "plans_identical": true,
+   "price_of_robustness_m": 0.0,
+   "nominal": [
+    "c01",
+    "c03",
+    "c07"
+   ],
+   "robust": [
+    "c01",
+    "c03",
+    "c07"
+   ],
+   "infeasible_reasons": null,
+   "sha256": "f9893f7d524ed482dabe4d240fa58b2fb3a38e8cea158cfd0028c4a3c6c8d602"
+  },
+  {
+   "pack_id": "shymkent-school-seeded",
+   "kind": "real_slice",
+   "stage": 2,
+   "purpose": "leave out 1, 2 or 3 records chosen by a recorded seed",
+   "status": "optimal",
+   "plans_identical": true,
+   "price_of_robustness_m": 0.0,
+   "nominal": [
+    "c01",
+    "c03",
+    "c07"
+   ],
+   "robust": [
+    "c01",
+    "c03",
+    "c07"
+   ],
+   "infeasible_reasons": null,
+   "sha256": "23604ef2b6260a8ae7d372d4849d0fc67a581994030444b72bf0e174b2543f4e"
+  },
+  {
+   "pack_id": "shymkent-school-qa",
+   "kind": "real_slice",
+   "stage": 2,
+   "purpose": "leave out QA-flagged records (assumption about data quality)",
+   "status": "optimal",
+   "plans_identical": true,
+   "price_of_robustness_m": 0.0,
+   "nominal": [
+    "c01",
+    "c03",
+    "c07"
+   ],
+   "robust": [
+    "c01",
+    "c03",
+    "c07"
+   ],
+   "infeasible_reasons": null,
+   "sha256": "e4dd6ff26decda54ecc13b5febd2c2b9ae89603af6a57c7bf6e5f090eb0aeb0c"
+  },
+  {
+   "pack_id": "shymkent-outpatient_clinic-relied",
+   "kind": "real_slice",
+   "stage": 2,
+   "purpose": "leave out the source records most control points rely on",
+   "status": "optimal",
+   "plans_identical": true,
+   "price_of_robustness_m": 0.0,
+   "nominal": [
+    "c02",
+    "c03",
+    "c12"
+   ],
+   "robust": [
+    "c02",
+    "c03",
+    "c12"
+   ],
+   "infeasible_reasons": null,
+   "sha256": "fb6c33a08fc7b81a9af9d546023313d854c1f6a85fea3e47fa669491ca816a0f"
+  },
+  {
+   "pack_id": "shymkent-outpatient_clinic-seeded",
+   "kind": "real_slice",
+   "stage": 2,
+   "purpose": "leave out 1, 2 or 3 records chosen by a recorded seed",
+   "status": "optimal",
+   "plans_identical": true,
+   "price_of_robustness_m": 0.0,
+   "nominal": [
+    "c02",
+    "c03",
+    "c12"
+   ],
+   "robust": [
+    "c02",
+    "c03",
+    "c12"
+   ],
+   "infeasible_reasons": null,
+   "sha256": "ce7a4de9ae3cc948c30faeed69165051f1ab2ca338acaf010d67162717c50d6e"
+  },
+  {
+   "pack_id": "shymkent-outpatient_clinic-qa",
+   "kind": "real_slice",
+   "stage": 2,
+   "purpose": "leave out QA-flagged records (assumption about data quality)",
+   "status": "optimal",
+   "plans_identical": true,
+   "price_of_robustness_m": 0.0,
+   "nominal": [
+    "c02",
+    "c03",
+    "c12"
+   ],
+   "robust": [
+    "c02",
+    "c03",
+    "c12"
+   ],
+   "infeasible_reasons": null,
+   "sha256": "f583d952bc4f0ba332a15c846600539c3e100586456378ad0e3e366cb0a2ee9c"
+  },
+  {
+   "pack_id": "astana-school-relied",
+   "kind": "real_slice",
+   "stage": 2,
+   "purpose": "leave out the source records most control points rely on",
+   "status": "optimal",
+   "plans_identical": true,
+   "price_of_robustness_m": 0.0,
+   "nominal": [
+    "c03",
+    "c07",
+    "c12"
+   ],
+   "robust": [
+    "c03",
+    "c07",
+    "c12"
+   ],
+   "infeasible_reasons": null,
+   "sha256": "18f49a91226fb07e6539e8b830cd9f13c19d9873ed55b0119fd2f3b36c3a929c"
+  },
+  {
+   "pack_id": "astana-school-seeded",
+   "kind": "real_slice",
+   "stage": 2,
+   "purpose": "leave out 1, 2 or 3 records chosen by a recorded seed",
+   "status": "optimal",
+   "plans_identical": true,
+   "price_of_robustness_m": 0.0,
+   "nominal": [
+    "c03",
+    "c07",
+    "c12"
+   ],
+   "robust": [
+    "c03",
+    "c07",
+    "c12"
+   ],
+   "infeasible_reasons": null,
+   "sha256": "66d188389daa63dc8e005e229d42d1fbb68bba01e56eed689a2cbc43dd6ba574"
+  },
+  {
+   "pack_id": "astana-outpatient_clinic-relied",
+   "kind": "real_slice",
+   "stage": 2,
+   "purpose": "leave out the source records most control points rely on",
+   "status": "optimal",
+   "plans_identical": false,
+   "price_of_robustness_m": 10.585224489795918,
+   "nominal": [
+    "c03",
+    "c10",
+    "c12"
+   ],
+   "robust": [
+    "c07",
+    "c09",
+    "c12"
+   ],
+   "infeasible_reasons": null,
+   "sha256": "cbe3b88f9fe72623a9537ec6f5dd1c335afa0de28f12668b044b4c0599a41a40"
+  },
+  {
+   "pack_id": "astana-outpatient_clinic-seeded",
+   "kind": "real_slice",
+   "stage": 2,
+   "purpose": "leave out 1, 2 or 3 records chosen by a recorded seed",
+   "status": "optimal",
+   "plans_identical": false,
+   "price_of_robustness_m": 9.264204081632663,
+   "nominal": [
+    "c03",
+    "c10",
+    "c12"
+   ],
+   "robust": [
+    "c07",
+    "c10",
+    "c12"
+   ],
+   "infeasible_reasons": null,
+   "sha256": "c4b3b446ebb99d8d3bf761a494acadf0289a2ad078acf85c5f8a925820cd1d94"
+  }
+ ],
+ "not_built": [
+  {
+   "pack_id": "astana-school-qa",
+   "reason": "no record of this category carries a QA flag in web/evidence.js"
+  },
+  {
+   "pack_id": "astana-outpatient_clinic-qa",
+   "reason": "no record of this category carries a QA flag in web/evidence.js"
+  }
+ ],
+ "input_manifest": {
+  "web/data.js": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "web/evidence.js": "df736e986145da33dee60f692e020486720b72db5b6116af31640cc8693b11b9",
+  "inputs/k10/data/shymkent/places_social.geojson": "e0959270b962362a400723fba0ae26d8190e2ab0ac11278bd93cf872b7b003e7",
+  "inputs/k10/data/astana/places_social.geojson": "f5722c4455ca37d7ff23c2b48dc6e0097737e1cdc9e5faea8c0ed8dd4200e343",
+  "inputs/k10/package_manifest.json": "0616c08b65285ed4a5324c9e0238a31bec004857705cdb22c6b26e032fa4551d",
+  "web/whatif.js": "e8f7c18d9b839983af4fed6e2a82532531d2ff26545b524fdcedb42373c64deb",
+  "web/facts.js": "3994a275ddb8c0cb857478365d94810a945752a96fff10d53d37bc8dc9808c64",
+  "web/plan.js": "b2029640f00c10f6018f469ba4e157705d405e1de65178bca824769d50b9a3c7"
+ }
+}
