@@ -176,6 +176,22 @@ test("state matrix: logged-out UI has no actions; browser role is not a source o
   assert.equal(C.allowedActions({ publication: "weird" }, { authenticated: true }).edit, false);
 });
 
+test("pending-changes servers (R02 staff block): publish again only when edits are pending; server lock flag wins", () => {
+  const sess = { authenticated: true };
+  const live = { publication: "published" };
+  assert.equal(C.pendingInfo(live).known, false);
+  assert.equal(C.allowedActions(live, sess).publish, false, "live model: nothing to re-publish");
+  const clean = { publication: "published", staff: { has_unpublished_changes: false, public_item: { title: "A" }, original_planned_end_locked: true } };
+  const dirty = { publication: "published", staff: { has_unpublished_changes: true, public_item: { title: "A" }, original_planned_end_locked: true } };
+  assert.equal(C.allowedActions(clean, sess).publish, false);
+  assert.equal(C.allowedActions(dirty, sess).publish, true);
+  assert.deepEqual(C.pendingInfo(dirty), { known: true, pending: true, publicItem: { title: "A" } });
+  assert.equal(C.reasonRule(dirty, "publish").title, "Причина публикации изменений");
+  assert.equal(C.isOriginalLocked({ publication: "archived", staff: { original_planned_end_locked: false } }), false, "archived draft never published");
+  assert.equal(C.isOriginalLocked({ publication: "archived" }), true, "unknown history: safe side");
+  assert.ok(!("staff" in C.pickPublic(dirty)), "staff block never reaches the public projection");
+});
+
 test("public preview is an allowlist: internal notes and service fields never appear", () => {
   const item = Object.assign(clone(FIXTURE), {
     internal_notes: "служебно", created_by: { name: "editor1" }, actor: "editor1", password_hash: "x", csrf_token: "t",
@@ -196,6 +212,9 @@ test("public preview is an allowlist: internal notes and service fields never ap
 
 test("API errors: normalized kinds and server field paths mapped to form fields", () => {
   assert.equal(C.normalizeError(new TypeError("Failed to fetch")).kind, "network");
+  // R01 shell CivicApiError shapes (status 0 + code)
+  for (const code of ["network", "timeout", "aborted"]) assert.equal(C.normalizeError({ name: "CivicApiError", status: 0, code }).kind, "network", code);
+  assert.equal(C.normalizeError({ name: "CivicApiError", status: 422, code: "validation_failed", fields: { "schedule.current_planned_end": "x" } }).fields.current_planned_end, "x");
   assert.equal(C.normalizeError({ status: 401, code: "unauthenticated" }).kind, "auth");
   assert.equal(C.normalizeError({ status: 403, code: "csrf" }).kind, "csrf");
   assert.equal(C.normalizeError({ status: 403, code: "forbidden" }).kind, "forbidden");

@@ -25,6 +25,7 @@
     reason: "Причина",
   };
   const HISTORY_LABEL = Object.assign({}, C.PATH_LABEL, { publication: "Публикация", schedule: "Сроки", budget: "Стоимость", responsible: "Ответственный" });
+  const ACTION_LABEL = { create: "создание", update: "изменение", publish: "публикация", archive: "архив", import_create: "импорт", import_update: "импорт" };
   const FILTERS = [["draft", "Черновики"], ["published", "Опубликованные"], ["archived", "Архив"], ["all", "Все"]];
 
   const clone = (x) => (x === null || x === undefined ? x : JSON.parse(JSON.stringify(x)));
@@ -306,6 +307,7 @@
         const badges = [badge(C.PUBLICATION[it.publication] || String(it.publication), "pub-" + it.publication)];
         if (it.evidence_type === "synthetic") badges.push(badge("синтетические данные", "synthetic"));
         if (!it.geometry) badges.push(badge("без места на карте", "muted"));
+        if (C.pendingInfo(it).pending) badges.push(badge("есть неопубликованные изменения", "warn"));
         if (RECOVERY.has(it.id)) badges.push(badge("есть несохранённые правки", "warn"));
         return el("li", {}, el("button", { type: "button", class: "civic-r04-row", "data-fk": "row-" + it.id, onclick: () => openObject(it.id) }, [
           el("span", { class: "civic-r04-row-title" }, it.title || "(без названия)"),
@@ -439,6 +441,8 @@
         : el("p", { class: "civic-r04-meta" }, [badge("Будет черновиком", "pub-draft"), " ID и номер редакции назначит сервер. Жители черновик не видят."]);
       const banner = !it ? null
         : it.publication === "archived" ? el("p", { class: "civic-r04-msg civic-r04-msg-info" }, "Запись в архиве: только просмотр. Возврат из архива в civic-v1 не предусмотрен.")
+        : it.publication === "published" && C.pendingInfo(it).pending ? el("p", { class: "civic-r04-msg civic-r04-msg-warn" }, "Есть сохранённые, но не опубликованные изменения: жители видят прежнюю версию" + (it.staff.published_revision ? " (ред. " + it.staff.published_revision + ")" : "") + ". Нажмите «Опубликовать изменения…».")
+        : it.publication === "published" && C.pendingInfo(it).known ? el("p", { class: "civic-r04-msg civic-r04-msg-info" }, "Запись опубликована. Сохранённые правки станут видны жителям после «Опубликовать изменения…»; причина попадёт в историю.")
         : it.publication === "published" ? el("p", { class: "civic-r04-msg civic-r04-msg-info" }, "Запись опубликована. Сохранённые изменения сразу видны жителям и записываются в историю с причиной.")
         : null;
 
@@ -920,6 +924,16 @@
       if (isDirty()) kids.push(el("p", { class: "civic-r04-warn" }, "С учётом несохранённых правок. Жители увидят их только после сохранения."));
       if (dto.publication !== "published") kids.push(el("p", { class: "civic-r04-msg civic-r04-msg-info" }, dto.publication === "archived" ? "Запись в архиве: жители её не видят." : "Черновик: жители не видят эту запись, пока вы её не опубликуете."));
       kids.push(publicCard(dto, "Внутренние заметки и служебные поля сюда не попадают."));
+      const pend = C.pendingInfo(S.item);
+      if (pend.publicItem && (publishing || pend.pending)) {
+        const d = C.diffFields(C.pickPublic(pend.publicItem), C.pickPublic(dto));
+        kids.push(el("h4", {}, "Было у жителей / станет после публикации"));
+        kids.push(d.length ? el("div", { class: "civic-r04-tablewrap civic-r04-diff" }, el("table", {}, [
+          el("thead", {}, el("tr", {}, [el("th", { scope: "col" }, "Поле"), el("th", { scope: "col" }, "Сейчас у жителей"), el("th", { scope: "col" }, "Станет")])),
+          el("tbody", {}, d.map((x) => el("tr", {}, [el("th", { scope: "row" }, x.label), el("td", {}, C.fmtValue(x.path, x.before)), el("td", {}, C.fmtValue(x.path, x.after))])))]))
+          : el("p", { class: "civic-r04-muted" }, "Публичная версия уже совпадает с сохранённой."));
+        if (!publishing) kids.push(publicCard(C.pickPublic(pend.publicItem), "Сейчас у жителей (опубликованная версия)."));
+      }
       if (S.item && S.item.publication === "published") {
         kids.push(el("p", { class: "civic-r04-row-btns" }, [btn("Сверить с публичной версией на сервере", loadPublicCopy, "ghost", "public-copy")]));
         if (S.publicCopy) kids.push(S.publicCopy.item ? publicCard(C.pickPublic(S.publicCopy.item), "Сейчас у жителей (ответ публичного API).") : el("p", { class: "civic-r04-err" }, S.publicCopy.error));
@@ -948,7 +962,8 @@
         el("p", { class: "civic-r04-help" }, "Редакторская история. Жителям сервер показывает только опубликованные изменения публичных полей."),
         h.length ? el("ol", { reversed: true }, h.map((x) => el("li", {}, [
           el("p", {}, el("b", {}, "ред. " + x.revision + " · " + C.fmtDateTime(x.at)), ),
-          el("p", {}, (x.public_actor_label || "Редактор") + (x.actor ? " (" + x.actor + ")" : "") + (x.action ? " · " + x.action : "")),
+          el("p", {}, (x.public_actor_label || "Редактор") + (x.actor_label || x.actor ? " (" + (x.actor_label || x.actor) + ")" : "") + (x.action ? " · " + (ACTION_LABEL[x.action] || x.action) : "")
+            + (typeof x.is_public === "boolean" ? (x.is_public ? " · видно жителям" : " · только редакторам") : "")),
           el("p", {}, "Причина: " + (x.reason || "не указана")),
           (x.changed_fields || []).length ? el("p", { class: "civic-r04-muted" }, "Поля: " + x.changed_fields.map((f) => HISTORY_LABEL[f] || f).join(", ")) : null,
         ].filter(Boolean)))) : el("p", { class: "civic-r04-muted" }, "Записей истории пока нет."),
@@ -987,8 +1002,12 @@
       if (S.reasonErr) ta.setAttribute("aria-invalid", "true");
       const shifted = S.item && isDirty() && C.diffFields(S.item, currentFields()).some((x) => x.path === "schedule.current_planned_end");
       const chips = (shifted ? ["Перенос срока: "] : []).concat(rule.suggestions || []).filter((v, i, a) => a.indexOf(v) === i);
+      const oe = S.form.original_planned_end, ce = S.form.current_planned_end;
+      const fixed = oe ? "Первоначальный срок окончания будет зафиксирован: " + C.fmtDate(oe) + "."
+        : ce ? "Первоначальный срок не указан — сервер зафиксирует как первоначальный актуальный срок " + C.fmtDate(ce) + "."
+        : "Сроки неизвестны — в карточке будет «неизвестно».";
       const intro = S.confirm === "publish"
-        ? "После публикации запись увидят жители" + (S.form.geometry ? " на карте" : " в списке (без точки на карте)") + ". Первоначальный срок окончания будет зафиксирован: " + C.fmtDate(S.form.original_planned_end) + "."
+        ? "После публикации запись увидят жители" + (S.form.geometry ? " на карте" : " в списке (без точки на карте)") + ". " + fixed
         : S.confirm === "archive" ? "Запись исчезнет из публичного списка. Физического удаления нет — история сохраняется."
         : "Запись опубликована: причину увидят в истории изменений.";
       const kids = [
@@ -1015,7 +1034,7 @@
         kids = [
           acts.edit ? btn(saveLabel, save, "primary", "save", { disabled: busy || (it && !dirty), "aria-busy": S.busy === "save" ? "true" : null }) : null,
           btn(S.preview ? "Скрыть предпросмотр" : "Как увидят жители", () => { S.preview = !S.preview; renderPreview(); renderButtons(); focusKey("preview"); }, "", "preview", { "aria-expanded": String(!!S.preview) }),
-          acts.publish && it ? btn("Опубликовать…", () => askConfirm("publish"), "", "publish", { disabled: busy || dirty }) : null,
+          acts.publish && it ? btn(it.publication === "published" ? "Опубликовать изменения…" : "Опубликовать…", () => askConfirm("publish"), "", "publish", { disabled: busy || dirty }) : null,
           acts.archive && it ? btn("В архив…", () => askConfirm("archive"), "ghost", "archive", { disabled: busy || dirty }) : null,
         ].filter(Boolean);
         if (dirty && it && (acts.publish || acts.archive)) kids.push(el("p", { class: "civic-r04-help" }, "Публикация и архив доступны после сохранения изменений."));
@@ -1071,7 +1090,7 @@
       }
       setBusy("save");
       try {
-        let item;
+        let item, ignored = [];
         if (!it) {
           if (S.uncertain) {
             const d = await call("GET", "/staff/objects");
@@ -1084,6 +1103,7 @@
           if (!S.createKey || S.createKey.fp !== fp) S.createKey = { key: newKey(), fp };
           const d = await call("POST", "/staff/objects", fields, { idempotencyKey: S.createKey.key });
           item = d && d.item;
+          ignored = d && Array.isArray(d.ignored_fields) ? d.ignored_fields : [];
           S.uncertain = null;
           S.createKey = null;
           RECOVERY.delete("new");
@@ -1091,15 +1111,22 @@
           const reason = S.reason.trim() || null;
           const d = await call("POST", "/staff/objects/" + enc(it.id) + "/update", { expected_revision: it.revision, changes, reason });
           item = d && d.item;
+          ignored = d && Array.isArray(d.ignored_fields) ? d.ignored_fields : [];
           RECOVERY.delete(it.id);
         }
         if (!item || !item.id) throw Object.assign(new Error("Сервер не вернул сохранённую запись"), { status: 500 });
         const wasPublic = !!it && it.publication === "published";
+        const pend = C.pendingInfo(item);
         S.reason = "";
         await reloadDetail(item);
-        setNotice("ok", !it ? "Черновик создан (ред. " + item.revision + "). Жители его не видят." : "Сохранено (ред. " + item.revision + ")." + (wasPublic ? " Изменение видно жителям и записано в историю." : ""));
+        const msg = !it ? "Черновик создан (ред. " + item.revision + "). Жители его не видят."
+          : "Сохранено (ред. " + item.revision + ")." + (!wasPublic ? "" : pend.known
+            ? " Жители пока видят опубликованную версию — чтобы показать правки, нажмите «Опубликовать изменения…»."
+            : " Изменение видно жителям и записано в историю.");
+        if (ignored.length) setNotice("warn", msg + " Сервер не принял поля: " + ignored.join(", ") + " — они не сохранены.");
+        else setNotice("ok", msg);
         focusKey("msg");
-        if (wasPublic) notifyPublished(item, "update");
+        if (wasPublic && !pend.known) notifyPublished(item, "update");
         updateListCache(item);
       } catch (e) {
         if (e === STALE) return;
@@ -1123,7 +1150,7 @@
         S.confirm = null; S.reason = "";
         await reloadDetail(item);
         setNotice("ok", action === "publish"
-          ? (item.geometry ? "Опубликовано: жители видят запись на карте." : "Опубликовано: жители видят запись в списке, без точки на карте.")
+          ? (wasPublic ? "Изменения опубликованы (ред. " + item.revision + ")." : item.geometry ? "Опубликовано: жители видят запись на карте." : "Опубликовано: жители видят запись в списке, без точки на карте.")
           : "Запись в архиве и скрыта из публичного списка. История сохранена.");
         focusKey("msg");
         if (action === "publish" || wasPublic) notifyPublished(item, action);

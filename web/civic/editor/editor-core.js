@@ -318,19 +318,34 @@
     published: { edit: true, publish: false, archive: true, editNeedsReason: true },
     archived: { edit: false, publish: false, archive: false, editNeedsReason: true },
   };
+  // Two server models fit civic-v1: edits of a published record are public at once ("live"), or they stay
+  // pending until published again ("pending", R02: item.staff.has_unpublished_changes / public_item).
+  function pendingInfo(item) {
+    const st = item && item.staff && typeof item.staff === "object" ? item.staff : null;
+    if (!st || typeof st.has_unpublished_changes !== "boolean") return { known: false, pending: false, publicItem: null };
+    return { known: true, pending: item.publication === "published" && st.has_unpublished_changes,
+      publicItem: st.public_item && typeof st.public_item === "object" ? st.public_item : null };
+  }
   function allowedActions(item, session) {
     const none = { create: false, edit: false, publish: false, archive: false, preview: false, editNeedsReason: false };
     if (!session || !session.authenticated) return none;
     if (!item) return { create: true, edit: true, publish: false, archive: false, preview: true, editNeedsReason: false };
     const m = MATRIX[item.publication];
     if (!m) return Object.assign({}, none, { preview: true });
-    return Object.assign({ create: true, preview: true }, m);
+    const out = Object.assign({ create: true, preview: true }, m);
+    if (item.publication === "published" && pendingInfo(item).pending) out.publish = true;  // publish the pending edits
+    return out;
   }
-  // A record leaves "draft" only through publish/archive and never returns, so any non-draft is treated as published once.
+  // The server flag wins when present (an archived record that was never published is not locked);
+  // otherwise any non-draft is treated as published once, which is the safe side.
   function isOriginalLocked(item) {
-    return !!item && item.publication !== "draft";
+    if (!item) return false;
+    if (item.staff && typeof item.staff.original_planned_end_locked === "boolean") return item.staff.original_planned_end_locked;
+    return item.publication !== "draft";
   }
   function reasonRule(item, action) {
+    if (action === "publish" && item && item.publication === "published")
+      return { required: true, title: "Причина публикации изменений", suggestions: ["Перенос срока", "Уточнение по источнику", "Исправление ошибки ввода"] };
     if (action === "publish") return { required: true, title: "Причина публикации", suggestions: ["Первая публикация", "Сведения проверены по источнику"] };
     if (action === "archive") return { required: true, title: "Причина переноса в архив", suggestions: ["Работы завершены, запись больше не актуальна", "Запись создана по ошибке", "Дубликат другой записи"] };
     if (action === "update" && item && item.publication !== "draft")
@@ -454,7 +469,8 @@
     const code = x.code || inner.code || null;
     const raw = x.fields || inner.fields || (x.data && x.data.error && x.data.error.fields) || null;
     let kind;
-    if (!status && (code === "network" || x.name === "TypeError" || x.name === "AbortError" || /network|failed to fetch|load failed/i.test(String(x.message || "")))) kind = "network";
+    // status 0/absent: transport failure (R01 CivicApiError codes network/timeout/aborted, raw fetch TypeError).
+    if (!status && (["network", "timeout", "aborted"].includes(code) || x.name === "TypeError" || x.name === "AbortError" || /network|failed to fetch|load failed/i.test(String(x.message || "")))) kind = "network";
     else if (status === 401 || code === "unauthenticated") kind = "auth";
     else if (status === 403) kind = code === "csrf" || code === "origin" ? "csrf" : "forbidden";
     else if (status === 404) kind = "not_found";
@@ -513,7 +529,7 @@
     KINDS, STATUSES, PUBLICATION, PRECISION, BASIS, EVIDENCE, ACCESS, SOURCE_FIELDS, ASTANA_BBOX, LIMITS, REASON_MIN, PATHS, PATH_LABEL,
     isIsoDate, todayIso, fmtDate, fmtMoney, parseAmount, parseCoord, inAstana, positionsOf,
     emptyForm, formFromItem, newSource, fieldsFromForm, validateForm, validateReason,
-    allowedActions, isOriginalLocked, reasonRule, diffFields, buildChanges, fmtValue,
+    allowedActions, isOriginalLocked, pendingInfo, reasonRule, diffFields, buildChanges, fmtValue,
     pickPublic, previewFromForm, scheduleShift, unwrap, normalizeError, fieldKeyFromPath, findPossibleDuplicate,
     rebaseForm, fmtDateTime,
   };

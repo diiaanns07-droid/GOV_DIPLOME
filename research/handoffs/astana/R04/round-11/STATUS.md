@@ -7,7 +7,7 @@
 - Исходники приложения для сравнения: `6de3f253d8ec0743450259f9f13722c16cd36099` (CODE_SHA сборщика), читались через `git show`
 - Собственные пути: `web/civic/editor/`, `tests/civic/R04/`, `research/round-11-results/R04/`, этот файл
 
-## Состояние: PARTIAL (checkpoint 3)
+## Состояние: PARTIAL (checkpoint 4)
 
 Сделано:
 - `web/civic/editor/editor-core.js` — чистая логика без DOM/сети: модель формы ↔ объект civic-v1,
@@ -27,10 +27,18 @@
 - Найден риск дубликата: Chromium сам повторяет POST после обрыва keep-alive соединения, если сервер уже создал объект.
   UI передаёт стабильный ключ `api.request(..., {idempotencyKey})`; предложение `Idempotency-Key` для R01/R02 — contract_delta.
 
-Проверено:
-- `node --test tests/civic/R04/core.test.cjs tests/civic/R04/contract_mock.test.cjs` → 26 pass, 0 fail.
-- `node --test tests/civic/R04/e2e.test.cjs` → 18 pass, 0 fail (Chromium headless shell 1194 / Playwright 1.56.1, MapLibre 5.6.2 из 6de3f253, software WebGL, без подложки).
+- Проверено с НАСТОЯЩИМ R02 (`claude/trusting-ptolemy-6ms354` @ `92f7abae8184516c9bf6bd89367a63692402cc1b`, detached worktree вне моей ветки):
+  `tests/civic/R04/r02_stand.py` + `tests/civic/R04/e2e_r02.test.cjs`.
+- R02 держит правки опубликованной записи как неопубликованные до повторной публикации (`item.staff.has_unpublished_changes`,
+  `public_item`). UI поддерживает обе модели: кнопка «Опубликовать изменения…», таблица «было у жителей / станет», onPublished
+  только когда публичная версия реально изменилась. R02 уже принимает `Idempotency-Key` — R01 нужно лишь передать заголовок.
+- R01 `api.request` (`claude/affectionate-ride-bol5v8`): совместим (относительные пути, CivicApiError, 4-й аргумент options).
 
-Не запускалось: R02 (не опубликован), реальная подложка/3D (стенд без подложки — это не подтверждение 3D).
+Проверено:
+- `node --test tests/civic/R04/core.test.cjs tests/civic/R04/contract_mock.test.cjs` → 27 pass, 0 fail.
+- `node --test tests/civic/R04/e2e.test.cjs` → 18 pass, 0 fail (контрактный mock).
+- `R04_R02_ROOT=<worktree R02> node --test tests/civic/R04/e2e_r02.test.cjs` → 5 pass, 0 fail (настоящий R02).
+
+Не запускалось: интеграция в shell R01 (делает R01), реальная подложка/3D.
 
 Следующий шаг: исправления по adversarial review, screenshots, INTEGRATION.txt, REQUESTS.txt, contract_delta.txt.
