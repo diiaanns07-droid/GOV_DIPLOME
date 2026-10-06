@@ -57,24 +57,18 @@ R06 — ИНТЕГРАЦИЯ СООБЩЕНИЙ ЖИТЕЛЕЙ (civic-v1), дл�
   R02 (archived-объект в карточке модератора виден как контекст; internal_notes R06 не выводит).
   Исключение lookup -> 503 object_lookup_unavailable (не «объект не найден»).
 
-5. НАЙДЕННЫЕ РАСХОЖДЕНИЯ R01 @341c554 <-> R02 @6a28de2 (НЕ код R06; проверено в scratch-копии)
-  a) ui/civic_store/__init__.py не экспортирует CivicService (контракт §3 требует экспорт), а фабрика
-     R01 вызывает module.CivicService -> AttributeError -> store "init_failed" -> все /api/civic/v1 503.
-     Исправление: R02 добавляет `from .service import CivicService` в __init__ (или R01 импортирует
-     ui.civic_store.service).
-  b) Шлюз передаёт в R02 и R06 путь без префикса (rel_path "/session/login", "/feedback"), а
-     CivicService.handle R02 и FeedbackService.handle R06 принимают только "/api/civic/v1/...":
-     -> None -> 404. То же в public_object ("/objects/" + id) -> lookup всегда None.
-     Исправление (одна строка в CivicGateway.handle и public_object): передавать CIVIC_PREFIX + rel_path.
-     R06 сначала принимал обе формы, но независимая приёмка R10 (standalone_r06 C01) справедливо
-     требует не перехватывать пути вне /api/civic/v1 (например, статическую страницу /feedback),
-     поэтому с коммита после 417cc23 R06 ведёт себя как R02.
-  c) R02 требует context["host_allowed"] is True (отсутствие = запрет), шлюз R01 ключ не передаёт ->
-     403 forbidden_host. Исправление: R01 добавляет "host_allowed": True после своей проверки Host.
-  С тремя обходами ТОЛЬКО в scratch-копии (для b — префикс и для store, и для feedback) сквозной HTTP-тест tests/civic/R06/test_r06_gateway_smoke.py
-  (настоящий сервер R01 + R02 + R06: логин, создание/публикация объекта, сообщение, Origin, CSRF,
-  модерация, публичный список, logout -> 401) прошёл: 1 passed. Обход (b) ломает 3 теста дублёра R01,
-  поэтому выбирать решение должен R01.
+5. РАСХОЖДЕНИЯ R01 <-> R02 (не код R06) — УСТРАНЕНЫ
+  Найдены на R01 @341c554 + R02 @6a28de2: (a) нет экспорта ui.civic_store.CivicService;
+  (b) шлюз передавал путь без префикса /api/civic/v1; (c) в context не было host_allowed.
+  Исправлены в R02 @92f7aba (экспорт) и R01 @eef5a7b (full_path = CIVIC_PREFIX + rel_path для store и
+  feedback, host_allowed=True, public_object с префиксом).
+  Проверка без каких-либо обходов (scratch-копия R01 @eef5a7b + R02 @92f7aba + R06 текущий):
+    python3 -m pytest tests/civic/R06/test_r06_gateway_smoke.py tests/civic/R06/test_r06_r02_compat.py
+    -> 3 passed (настоящий HTTP-сервер R01: логин R02, создание/публикация объекта, сообщение, Origin,
+       CSRF, модерация, публичный список, logout -> 401).
+  Новый шлюз отдаёт is_same_origin=None, если клиент не прислал ни Origin, ни Sec-Fetch-Site:
+  POST R06 в этом случае -> 403 (браузерный fetch POST всегда присылает Origin; это осознанно строже).
+  Осталось за R01: 3 дополнительных маршрута из §2 и монтирование mountModeration (§6).
 
 6. FRONTEND
   Подключение статики (allowlist R01 ASSETS): /civic/feedback/feedback.js, /civic/feedback/feedback.css

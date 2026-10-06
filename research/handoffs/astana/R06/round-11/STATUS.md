@@ -8,7 +8,7 @@
 - Собственные пути: `ui/civic_feedback/`, `web/civic/feedback/`, `tests/civic/R06/`,
   `research/round-11-results/R06/`, `research/handoffs/astana/R06/round-11/STATUS.md`
 
-## Статус: DONE (обязательная часть) — checkpoint 6 (stretch)
+## Статус: DONE (обязательная часть) — checkpoint 7
 
 Сделано:
 - `ui/civic_feedback/service.py` — `FeedbackService(db_path, object_lookup, clock=None)`,
@@ -31,23 +31,25 @@
 - `research/round-11-results/R06/INTEGRATION.txt`, `contract_delta.txt`, `examples/*.json`
   (make_examples.py), `checks/*.txt|json`.
 - Совместимость с реальным Principal R02: `expires_at` — epoch-число (исправлено до коммита).
-- Найдены 3 расхождения R01@341c554 <-> R02@6a28de2 (не код R06), описаны в INTEGRATION.txt §5:
-  нет экспорта CivicService, путь без префикса, нет host_allowed в context.
+- Найдены 3 расхождения R01@341c554 <-> R02@6a28de2 (не код R06): нет экспорта CivicService, путь без
+  префикса, нет host_allowed. Устранены в R01@eef5a7b и R02@92f7aba; сквозной тест через шлюз R01
+  проходит БЕЗ обходов (INTEGRATION.txt §5).
 - С 36a0604 R06 (как R02) обслуживает только полный путь `/api/civic/v1/...`.
 - Stretch: CLI `python -m ui.civic_feedback stats|purge-antispam`; совместимость с onFeedback R03
   (геометрия объекта не путается с местом); фильтры очереди и счётчик pending уже были.
 
 Проверки:
 - `python3 -m pytest tests/civic/R06 -q` → 129 passed, 2 skipped (PASS; skip = нет R01/R02 в ветке)
-- `python3 -m pytest -q` → 240 passed, 2 skipped (PASS, весь репозиторий ветки)
+- `python3 -m pytest -q` → 241 passed, 2 skipped (PASS, весь репозиторий ветки)
 - `node tests/civic/R06/browser_r06.cjs --screenshots research/round-11-results/R06/screenshots` → 29/29 PASS
-- Независимая приёмка R10 (`tests/civic/R10/standalone/standalone_r06.py` из ветки R10) на 36a0604 → 23/23 OK.
+- Независимая приёмка R10 (`tests/civic/R10/standalone/standalone_r06.py`, R10@9123af0) на eaa113d → 23/23 OK.
   На 417cc23 она нашла 2 дефекта (суррогат `\ud800` → исключение; перехват путей без префикса) —
   исправлены в 36a0604. Лог: `research/round-11-results/R06/checks/r10_standalone_r06.txt`.
-- scratch: R06 + R02@6a28de2 → test_r06_r02_compat.py 2 passed; R01@341c554 + R02 + R06 с тремя
-  scratch-обходами стыка R01/R02 → test_r06_gateway_smoke.py 1 passed
+- scratch R01@eef5a7b + R02@92f7aba + R06 без обходов → test_r06_gateway_smoke.py + test_r06_r02_compat.py
+  3 passed; весь объединённый набор 439 passed, 1 failed (тест R02 ищет свой web_server.patch, которого
+  я не копировал в scratch — артефакт сборки, не R06)
 - `python3 -m pytest -q` → 115 passed (PASS, весь репозиторий)
 
 Не запускалось: сборка R01 с картой R03 и кабинетом R04 (не объединены); R08 нет в GitHub.
 
-Следующий шаг: финальная перепроверка и итоговый DELIVERY; при появлении R08 — прогон с настоящим classify.
+Следующий шаг (R01): импорт путей R06, 3 маршрута из INTEGRATION §2, mountModeration в кабинете. R06: при появлении R08 — прогон с настоящим classify.

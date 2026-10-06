@@ -13,35 +13,35 @@
     "research/handoffs/astana/R06/round-11/STATUS.md"
   ],
   "integration_notes": "research/round-11-results/R06/INTEGRATION.txt",
-  "code_commit": "36a0604",
+  "code_commit": "eaa113d",
   "checks": [
     {
       "name": "pytest R06 (service, validation, moderation, privacy, routing, classifier, frontend static, HTTP harness)",
       "status": "PASS",
       "command": "python3 -m pytest tests/civic/R06 -q -p no:cacheprovider",
-      "input": "code_commit 36a0604; FIXTURE objects/principals; temporary SQLite",
-      "reason": "128 passed, 2 skipped (R02/R01 modules absent in this branch)"
+      "input": "code_commit eaa113d; FIXTURE objects/principals; temporary SQLite",
+      "reason": "129 passed, 2 skipped (R02/R01 modules absent in this branch)"
     },
     {
       "name": "pytest whole branch",
       "status": "PASS",
       "command": "python3 -m pytest -q -p no:cacheprovider",
-      "input": "code_commit 36a0604",
-      "reason": "240 passed, 2 skipped"
+      "input": "code_commit eaa113d",
+      "reason": "241 passed, 2 skipped"
     },
     {
       "name": "browser: real Chromium on FIXTURE harness",
       "status": "PASS",
       "command": "node tests/civic/R06/browser_r06.cjs --screenshots research/round-11-results/R06/screenshots",
-      "input": "code_commit 36a0604; harness tests/civic/R06/harness/serve_r06.py on 127.0.0.1, temp DB",
-      "reason": "27/27 (rerun on 36a0604): receipt, no official-registration claim, text kept on network/server error, double click -> one message, duplicate warning, draft object hidden, anonymous 401, resident 403, XSS shown as text and not executed, logout/expired session blocked, degraded detail, destroy, 375px no overflow. Log: checks/browser_r06.json"
+      "input": "code_commit eaa113d; harness tests/civic/R06/harness/serve_r06.py on 127.0.0.1, temp DB",
+      "reason": "29/29 (incl. R03-style onFeedback geometry): receipt, no official-registration claim, text kept on network/server error, double click -> one message, duplicate warning, draft object hidden, anonymous 401, resident 403, XSS shown as text and not executed, logout/expired session blocked, degraded detail, destroy, 375px no overflow. Log: checks/browser_r06.json"
     },
     {
       "name": "independent R10 standalone acceptance of R06",
       "status": "PASS",
-      "command": "R10_R06_ROOT=<detached worktree of 36a0604> python3 -I -B tests/civic/R10/standalone/standalone_r06.py",
+      "command": "R10_R06_ROOT=<detached worktree of eaa113d> python3 -I -B tests/civic/R10/standalone/standalone_r06.py",
       "input": "R10 tests from origin/claude/fervent-dijkstra-1cqrg5 @9123af0",
-      "reason": "23/23 OK. On 417cc23 it found 2 defects (lone surrogate -> exception; non-prefixed paths claimed); fixed in 36a0604. Log: checks/r10_standalone_r06.txt"
+      "reason": "23/23 OK on eaa113d (and on 36a0604). On 417cc23 it found 2 defects (lone surrogate -> exception; non-prefixed paths claimed); fixed in 36a0604. Log: checks/r10_standalone_r06.txt"
     },
     {
       "name": "compat with real R02 CivicService/Principal",
@@ -54,8 +54,8 @@
       "name": "end-to-end through R01 HTTP gateway + R02 + R06",
       "status": "PASS",
       "command": "scratch copy of R01 341c554 + R02 6a28de2 + R06; python3 -m pytest tests/civic/R06/test_r06_gateway_smoke.py",
-      "input": "R01 341c554 + R02 6a28de2 + R06 36a0604; three scratch-only glue workarounds (CivicService export, /api/civic/v1 prefix passed to R02 and R06, host_allowed)",
-      "reason": "1 passed only WITH workarounds; without them R01->R02 fails (503/404/403). Not R06 code; see INTEGRATION.txt §5"
+      "input": "R01 eef5a7b + R02 92f7aba + R06 (36a0604 code paths), no workarounds",
+      "reason": "3 passed (gateway smoke + 2 compat). Earlier on R01 341c554 + R02 6a28de2 it passed only with three glue workarounds; those mismatches were fixed by R01/R02. See INTEGRATION.txt §5"
     },
     {
       "name": "integrated R01 build with R03 map and R04 editor",
@@ -81,5 +81,5 @@
     "Публичная проекция не показывает сообщения о точках без объекта (нет публичного маршрута по месту).",
     "Классификатор вызывается синхронно с таймаутом 2 с; зависший поток-демон не прерывается."
   ],
-  "next_step": "R01: импортировать пути R06, передавать в R02/R06 полный путь /api/civic/v1/..., добавить host_allowed и 3 маршрута из INTEGRATION.txt §2; R02: экспорт CivicService; R04/R01: смонтировать mountModeration."
+  "next_step": "R01: импортировать пути R06 (ui/civic_feedback, web/civic/feedback, tests/civic/R06), добавить 3 маршрута из INTEGRATION.txt §2 и смонтировать mountModeration (§6)."
 }

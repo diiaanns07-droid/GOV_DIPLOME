@@ -1,4 +1,4 @@
-R10 standalone_r06.py from origin/claude/fervent-dijkstra-1cqrg5 @9123af0 against R06 @36a0604 (detached worktree, python3 -I -B)
+R10 standalone_r06.py from origin/claude/fervent-dijkstra-1cqrg5 @9123af0 against R06 @eaa113d (detached worktree, python3 -I -B)
 [META] product imported from the pinned worktree, -I -B, sys.path[0]=root. ... ok
 [A06][A08] close + reopen on same DB: approved still public, pending still hidden and still moderatable. ... ok
 [A07] classifier raising / hanging / returning garbage: 201, message stored, category unchanged, not public. ... ok
@@ -22,5 +22,5 @@ R10 standalone_r06.py from origin/claude/fervent-dijkstra-1cqrg5 @9123af0 agains
 [S10] HTML/script text stored and returned literally in JSON (not executed, not mangled). ... ok
 [S12][S07][S04] anon->401, logged-out->401, fake/resident role->403, no/bad CSRF or cross-origin->403; no state change. ... ok
 [S14] feedback to draft/archived vs nonexistent id: identical error; no title leak; nothing stored. ... ok
-Ran 23 tests in 1.144s
+Ran 23 tests in 1.109s
 OK
