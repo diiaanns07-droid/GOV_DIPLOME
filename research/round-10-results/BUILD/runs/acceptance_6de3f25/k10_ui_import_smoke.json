@@ -1,0 +1,178 @@
+{
+ "kind": "K10 round-10 UI-import smoke (school-access-case-v1, Astana)",
+ "url": "http://127.0.0.1:8501/",
+ "build_sha": "6de3f253d8ec0743450259f9f13722c16cd36099",
+ "case": "astana.case.json",
+ "adapter": {
+  "open": "window.GOVTECH && GOVTECH.setActive && GOVTECH.setActive(true)",
+  "import": "window.SCHOOL_ACCESS_UI.importText(text)",
+  "fileInput": null,
+  "state": "window.SCHOOL_ACCESS_UI.state()"
+ },
+ "total": 13,
+ "pass": [
+  "U1",
+  "U2",
+  "U3",
+  "UR-derived_results",
+  "UR-unknown_field",
+  "UR-too_many_origins",
+  "UR-bad_city",
+  "UR-capacity_without_source",
+  "UR-candidate_called_land",
+  "UR-origin_outside_bbox",
+  "UR-not_json",
+  "U4",
+  "U5"
+ ],
+ "fail": [],
+ "not_run": [],
+ "test_incompatible": [],
+ "checks": [
+  {
+   "id": "U1",
+   "expect": "Astana package imports: city astana, case_id, all school/origin/candidate IDs of the file",
+   "verdict": "PASS",
+   "observed": {
+    "r": {
+     "ok": true
+    },
+    "city": "astana",
+    "schools": 40,
+    "origins": 23
+   }
+  },
+  {
+   "id": "U2",
+   "expect": "the page shows that data are secondary/not verified and that candidates are hypotheses (labels text)",
+   "verdict": "PASS",
+   "observed": "Шымкент\nАстана\nДоступность школ\nКакие точки участка дальше от школ и какое место A или B это лучше меняет?\nСЕЙЧАС\nСреднее до школы\n340 м\nДо 800 м\n23 из 23 точек\nДальше всего\n611 м\nпо прямой\nРасширенны"
+  },
+  {
+   "id": "U3",
+   "expect": "a case digest is shown and no result/AI answer exists before a run",
+   "verdict": "PASS",
+   "observed": {
+    "digest": "sha256:113d0cc0fd7d27692338e846f404631e595f1feee429de5a1b1d31082ac0ce8a",
+    "result": null,
+    "ai": null
+   }
+  },
+  {
+   "id": "UR-derived_results",
+   "expect": "refused import (derived_results) leaves the state unchanged",
+   "verdict": "PASS",
+   "observed": {
+    "r": {
+     "ok": false,
+     "code": "unknown_field"
+    },
+    "changed": false
+   }
+  },
+  {
+   "id": "UR-unknown_field",
+   "expect": "refused import (unknown_field) leaves the state unchanged",
+   "verdict": "PASS",
+   "observed": {
+    "r": {
+     "ok": false,
+     "code": "unknown_field"
+    },
+    "changed": false
+   }
+  },
+  {
+   "id": "UR-too_many_origins",
+   "expect": "refused import (too_many_origins) leaves the state unchanged",
+   "verdict": "PASS",
+   "observed": {
+    "r": {
+     "ok": false,
+     "code": "limit_origins"
+    },
+    "changed": false
+   }
+  },
+  {
+   "id": "UR-bad_city",
+   "expect": "refused import (bad_city) leaves the state unchanged",
+   "verdict": "PASS",
+   "observed": {
+    "r": {
+     "ok": false,
+     "code": "city"
+    },
+    "changed": false
+   }
+  },
+  {
+   "id": "UR-capacity_without_source",
+   "expect": "refused import (capacity_without_source) leaves the state unchanged",
+   "verdict": "PASS",
+   "observed": {
+    "r": {
+     "ok": false,
+     "code": "capacity_without_source"
+    },
+    "changed": false
+   }
+  },
+  {
+   "id": "UR-candidate_called_land",
+   "expect": "refused import (candidate_called_land) leaves the state unchanged",
+   "verdict": "PASS",
+   "observed": {
+    "r": {
+     "ok": false,
+     "code": "land_status"
+    },
+    "changed": false
+   }
+  },
+  {
+   "id": "UR-origin_outside_bbox",
+   "expect": "refused import (origin_outside_bbox) leaves the state unchanged",
+   "verdict": "PASS",
+   "observed": {
+    "r": {
+     "ok": false,
+     "code": "origin_outside"
+    },
+    "changed": false
+   }
+  },
+  {
+   "id": "UR-not_json",
+   "expect": "refused import (not_json) leaves the state unchanged",
+   "verdict": "PASS",
+   "observed": {
+    "r": {
+     "ok": false,
+     "code": "import_json"
+    },
+    "changed": false
+   }
+  },
+  {
+   "id": "U4",
+   "expect": "switch shymkent → astana by import: digest changes, no record of shymkent remains, no result/AI of the previous case",
+   "verdict": "PASS",
+   "observed": {
+    "from": "shymkent",
+    "to": "astana",
+    "digests": [
+     "sha256:2e283e77662720e4d5f0e32a921eb5c1cc124582198d9c71b3777d366f908531",
+     "sha256:113d0cc0fd7d27692338e846f404631e595f1feee429de5a1b1d31082ac0ce8a"
+    ],
+    "foreign": []
+   }
+  },
+  {
+   "id": "U5",
+   "expect": "no page errors",
+   "verdict": "PASS",
+   "observed": []
+  }
+ ]
+}

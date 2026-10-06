@@ -1,0 +1,157 @@
+{
+ "schema": "build-r10-completion-v1",
+ "code_sha": "6de3f253d8ec0743450259f9f13722c16cd36099",
+ "legend": "true/false per column; null = not applicable. No column implies another.",
+ "rows": [
+  {
+   "item": "Учебная модель 52,56 сохранена и не смешана",
+   "implemented": true,
+   "integrated": true,
+   "tested_exact_sha": true,
+   "data_primary_checked": null,
+   "live_ai_run": null,
+   "human_validated": false,
+   "evidence": "acceptance: training_mode_52_56, return_to_training, training_plan_kept_across_city_mode"
+  },
+  {
+   "item": "Один сайт 8501, светлый стиль, один canvas, без iframe",
+   "implemented": true,
+   "integrated": true,
+   "tested_exact_sha": true,
+   "data_primary_checked": null,
+   "live_ai_run": null,
+   "human_validated": false,
+   "evidence": "one_canvas_no_iframe; screens/final"
+  },
+  {
+   "item": "Реальные 3D-здания MapLibre",
+   "implemented": true,
+   "integrated": true,
+   "tested_exact_sha": false,
+   "data_primary_checked": null,
+   "live_ai_run": null,
+   "human_validated": false,
+   "evidence": "NOT_RUN: OpenFreeMap host_not_allowed in this environment; camera tilt + offline explanation PASS"
+  },
+  {
+   "item": "Путь «Доступность школ»: Сейчас/A/B/Разница на одной карте",
+   "implemented": true,
+   "integrated": true,
+   "tested_exact_sha": true,
+   "data_primary_checked": false,
+   "live_ai_run": null,
+   "human_validated": false,
+   "evidence": "views_switch_layer_data, difference_mode_matches_rows, keyboard_pick_B_and_compare"
+  },
+  {
+   "item": "Шымкент: пакет K01",
+   "implemented": true,
+   "integrated": true,
+   "tested_exact_sha": true,
+   "data_primary_checked": false,
+   "live_ai_run": null,
+   "human_validated": false,
+   "evidence": "13 official sources NOT_FETCHED; secondary Overture"
+  },
+  {
+   "item": "Астана: пакет K10 (буфер, допуск, конфликты)",
+   "implemented": true,
+   "integrated": true,
+   "tested_exact_sha": true,
+   "data_primary_checked": false,
+   "live_ai_run": null,
+   "human_validated": false,
+   "evidence": "0 schools verified against an official source (K10); K10 smoke 13/13"
+  },
+  {
+   "item": "Расчёт сравнения (compareCase, факты, digest)",
+   "implemented": true,
+   "integrated": true,
+   "tested_exact_sha": true,
+   "data_primary_checked": null,
+   "live_ai_run": null,
+   "human_validated": false,
+   "evidence": "school_case.cjs 3621; school_vs_k05.cjs 7560; K10 reference"
+  },
+  {
+   "item": "Пешеходные маршруты K03 (strict/exploratory)",
+   "implemented": true,
+   "integrated": true,
+   "tested_exact_sha": true,
+   "data_primary_checked": false,
+   "live_ai_run": null,
+   "human_validated": false,
+   "evidence": "foot access mostly not tagged in data; routes not checked on site"
+  },
+  {
+   "item": "AI-шов (request_id+case_digest, только ID фактов, fallback)",
+   "implemented": true,
+   "integrated": true,
+   "tested_exact_sha": true,
+   "data_primary_checked": null,
+   "live_ai_run": false,
+   "human_validated": false,
+   "evidence": "tests/test_school_ai.py 17 (fake client); browser: fallback labelled, stale discarded; live provider NOT_RUN (no key)"
+  },
+  {
+   "item": "Записка HTML + повторная загрузка",
+   "implemented": true,
+   "integrated": true,
+   "tested_exact_sha": true,
+   "data_primary_checked": null,
+   "live_ai_run": null,
+   "human_validated": false,
+   "evidence": "note_file_and_reimport (41 477 bytes on disk)"
+  },
+  {
+   "item": "Экспорт/импорт кейса (файл на диске, атомарный отказ)",
+   "implemented": true,
+   "integrated": true,
+   "tested_exact_sha": true,
+   "data_primary_checked": null,
+   "live_ai_run": null,
+   "human_validated": false,
+   "evidence": "export_json_file_and_reimport, tampered_import_refused_atomically"
+  },
+  {
+   "item": "F5 / смена города / 390 px",
+   "implemented": true,
+   "integrated": true,
+   "tested_exact_sha": true,
+   "data_primary_checked": null,
+   "live_ai_run": null,
+   "human_validated": false,
+   "evidence": "f5_restores_case, city_switch_astana_separate, mobile390_layout"
+  },
+  {
+   "item": "D1 (первый клик после ввода)",
+   "implemented": true,
+   "integrated": true,
+   "tested_exact_sha": true,
+   "data_primary_checked": null,
+   "live_ai_run": null,
+   "human_validated": false,
+   "evidence": "advanced_v2_first_click_after_typing, input_then_first_click_school"
+  },
+  {
+   "item": "Стоимость / вместимость / участки",
+   "implemented": false,
+   "integrated": false,
+   "tested_exact_sha": false,
+   "data_primary_checked": false,
+   "live_ai_run": null,
+   "human_validated": false,
+   "evidence": "K11 not delivered; cost null, capacity null; refused without source"
+  },
+  {
+   "item": "Полезность для специалиста (гипотеза продукта)",
+   "implemented": false,
+   "integrated": false,
+   "tested_exact_sha": false,
+   "data_primary_checked": false,
+   "live_ai_run": null,
+   "human_validated": false,
+   "evidence": "K09 not delivered; owner-test template only"
+  }
+ ]
+}

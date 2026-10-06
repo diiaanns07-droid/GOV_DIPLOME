@@ -1,0 +1,183 @@
+{
+ "schema": "build-r10-integration-v1",
+ "build_branch": "claude/beautiful-clarke-sbzomj",
+ "code_sha": "6de3f253d8ec0743450259f9f13722c16cd36099",
+ "round_package": {
+  "branch": "codex/govtech-main-interface",
+  "sha": "7c6fb75ec66c50627af62b9d0d8e94c1f09bee16"
+ },
+ "code_base": {
+  "sha": "d2ff344c5ec9b9a729ea59df50ec81f981e619de",
+  "how": "cherry-pick -x → 5f81e4d; production tree identical to d2ff344 before BUILD changes"
+ },
+ "read_at_utc": "2026-10-06 (fetches ~07:20–07:50 UTC)",
+ "packages": [
+  {
+   "slot": "K01",
+   "branch": "claude/clever-mccarthy-pywscu",
+   "sha": "996bbbcc67e88bb432dddf0c1b1292390ff63853",
+   "note": "K01 role executed in the K02 branch (see K01 STATUS)",
+   "status": "integrated",
+   "what": "Shymkent school-access-case-v1 package + meta (excluded records, data gaps)",
+   "files": [
+    "web/govtech/school/cases/shymkent.case.json",
+    "web/govtech/school/cases/shymkent.case.meta.json"
+   ],
+   "how": "byte-identical, sha256 in SCHOOL_MANIFEST.json, checked in the browser before use; normalizeCase + bindToSlice (bbox, source file hash e0959270…, 5/5 school coordinates)",
+   "checks": [
+    "numbers equal K01 preview (within 500 m 7/9/9; closer 2/3)",
+    "school_vs_k05.cjs"
+   ],
+   "not_done": [
+    "K01 validate_k01.py not re-run by BUILD"
+   ]
+  },
+  {
+   "slot": "K10",
+   "branch": "claude/save-work-handoff-j7pc05",
+   "sha": "75d2f10e5c200569f9e2d21491d8e6a313649591",
+   "status": "integrated",
+   "what": "Astana package (40 schools incl. 2.1 km buffer, 23 OSM residential building centres, 3 hypotheses) + match-review",
+   "files": [
+    "web/govtech/school/cases/astana.case.json",
+    "web/govtech/school/cases/astana.match-review.json"
+   ],
+   "how": "byte-identical (sha256 = K10 MANIFEST), registered as vendored snapshot; qa {code,text}, assumptions {id,text}, buffer-derived limitation; slice records shown with K10 decisions",
+   "checks": [
+    "school_case.cjs: K10 reference_compare_k10.json — counts exact, rows ±1 mm, same nearest school (known_public policy)",
+    "K10 ui_import_smoke.cjs on 6de3f25: 13/13 PASS (on b04dc0a it found 3 FAIL, fixed)"
+   ],
+   "decisions": [
+    "K10 asked targets = known_public only; BUILD default stays K05 policy (unknown admission counted, flagged) because the K01 Shymkent case has no known_public school; the policy is a visible switch with a computed sensitivity line and is part of case_digest"
+   ]
+  },
+  {
+   "slot": "K03",
+   "branch": "claude/epic-curie-iitc43",
+   "sha": "8d888685485df0a9571b72b08a70a423349ea471",
+   "status": "integrated",
+   "what": "pedestrian-v1 routing (routing.js, school-access-routing.js), ODbL graphs of both slices",
+   "files": [
+    "web/govtech/k03/*",
+    "tests/test_k03_routing_assets.py"
+   ],
+   "how": "equivalent of install_for_build.py (files via git show at the pinned commit) + K03 patch applied by hand to the diverged index/server; method switch strict/exploratory/geodesic; graph_sha256 verified in the browser; graph/policy hash in case_digest; no straight-line substitution",
+   "checks": [
+    "school_case.cjs pedestrian matrices both cities × both policies vs brute force",
+    "school_vs_k05.cjs 8 street matrices"
+   ],
+   "not_done": [
+    "K03 run_tests.py / site_copy_check.cjs not re-run against the BUILD SHA"
+   ]
+  },
+  {
+   "slot": "K05",
+   "branch": "claude/optimistic-davinci-1oiqs9",
+   "sha": "9c00e45576c3f32354d413fe9661ddc1ec3e3add",
+   "status": "used_as_test_oracle",
+   "what": "school-compare.js",
+   "files": [
+    "tests/govtech/k05/*",
+    "tests/govtech/school_vs_k05.cjs"
+   ],
+   "how": "vendored only for the differential test; its plan.js patch applied to a test copy; pinned core/plan.js of the product unchanged",
+   "checks": [
+    "7560 equal rows/metrics/auto choices on 4 cases × (geodesic, unknown paths) + 8 street matrices"
+   ],
+   "findings": [
+    "K05 rejects K01 IDs with ':' (plan.js ID pattern) and K01/K10 extra record fields; test renames IDs reversibly for K05 only — needs a K01/K05 agreement"
+   ]
+  },
+  {
+   "slot": "K07",
+   "branch": "claude/save-work-handoff-ku3ej3",
+   "sha": "f36651c1c535d93d3c4fc4f8f4bb46a13ca7c206",
+   "status": "partially_ported",
+   "what": "r10 patches (D1 fix, school path on city-plan-v2, offline SVG scheme)",
+   "how": "not applied as a whole: a parallel school path conflicting with the integrated contract path. Ported: D1 approach, F2 (3D → fitSlice), F3 (3D offline explained). F1 solved differently (offline MapLibre background).",
+   "not_done": [
+    "K07 walkthrough tests target its own DOM; not re-run against BUILD"
+   ]
+  },
+  {
+   "slot": "K02",
+   "status": "not_delivered",
+   "note": "no round-10 results in any origin branch at read time; BUILD implemented the AI seam itself (agent/school_ai.py) by CONTRACT"
+  },
+  {
+   "slot": "K08",
+   "status": "not_delivered",
+   "note": "no round-10 results; BUILD implemented the note (web/govtech/school/note.js)"
+  },
+  {
+   "slot": "K06",
+   "status": "not_delivered",
+   "note": "no round-10 results; independent verification came from K05 module and K10 reference instead"
+  },
+  {
+   "slot": "K09",
+   "status": "not_delivered",
+   "note": "no round-10 results; owner-test template in DEMO_GUIDE.txt, not performed"
+  },
+  {
+   "slot": "K11",
+   "status": "not_delivered",
+   "note": "no round-10 results; cost stays null, no_cost_data"
+  },
+  {
+   "slot": "K12",
+   "status": "not_delivered",
+   "note": "no round-10 results at read time; K12 should re-check CODE_SHA"
+  }
+ ],
+ "defects": [
+  {
+   "id": "D1",
+   "source": "K07 r9 report",
+   "status": "reproduced_and_fixed",
+   "where": "core/plan-ui.js (adaptation recorded in SOURCE_MANIFEST.json)"
+  },
+  {
+   "id": "D2",
+   "source": "K07 r9 report",
+   "status": "not_reproduced",
+   "variants": 4
+  },
+  {
+   "id": "D1-school",
+   "source": "BUILD own check",
+   "status": "reproduced_and_fixed",
+   "where": "school-ui.js: panels wait for pointerup"
+  },
+  {
+   "id": "F5-city",
+   "source": "BUILD acceptance on a171885",
+   "status": "fixed"
+  },
+  {
+   "id": "K10-U2/unknown_field/capacity_without_source",
+   "source": "K10 ui_import_smoke on b04dc0a",
+   "status": "fixed in 6de3f25"
+  },
+  {
+   "id": "mobile-offline-note-overlap",
+   "source": "BUILD screenshots",
+   "status": "open",
+   "note": "at 390 px the offline-basemap note is partly under the top strip; cosmetic"
+  }
+ ],
+ "changed_shared_paths": [
+  "web/map.js (offline background only)",
+  "web/index.html (scripts/styles)",
+  "ui/web_server.py (whitelist + /api/school-ai)",
+  "web/govtech/shell.js",
+  "web/govtech/core/plan-ui.js (D1)",
+  "tests/test_govtech_integration.py (new tests; the 2-adaptation check kept)"
+ ],
+ "not_changed": [
+  "engine/",
+  "data/ training data",
+  "root README.md",
+  "pinned core math (plan.js, whatif.js, resilience.js, facts.js, data.js, evidence.js)"
+ ]
+}

@@ -1,0 +1,18 @@
+## code_sha 6de3f253d8ec0743450259f9f13722c16cd36099
+## env: Python 3.11.15 / node v22.22.0 / Linux 6.18.44-fc-v70
+## pytest
+133 passed in 17.13s
+## web_check
+Ran 14 tests in 1.544s
+
+OK
+## node plan
+all plan checks passed
+## node resilience
+all resilience checks passed
+## node whatif
+all what-if checks passed
+## node school_case
+all school-case checks incl. K10 package passed (3621)
+## node school_vs_k05
+BUILD school case = K05 compare on 4 cases × (geodesic, unknown paths) + 8 pedestrian matrices (7560 checks)
