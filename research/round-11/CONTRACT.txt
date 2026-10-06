@@ -4,6 +4,7 @@ CIVIC V1 — КОНТРАКТ РАУНДА 11
 обоснование, совместимый адаптер; обязательный v1 остаётся доступным.
 
 1. ОБЪЕКТ (пример fixtures/civic_object.json)
+schema_version: "civic-v1".
 id: стабильная строка; city: "astana";
 kind: construction | roadworks | landscaping | event;
 title, description: plain text, без HTML;
@@ -38,6 +39,9 @@ location без достоверной геометрии остаётся null;
 Ошибки — JSON, не traceback/HTML. unknown path 404; validation 400/422;
 unauthenticated 401; unauthorized/CSRF 403; stale revision 409; too large 413; limit 429.
 GET /objects?kind=&status=&from=&to=&cursor= : data={items,next_cursor}
+Параметры from/to — YYYY-MM-DD, включительные границы фильтра календарных дат.
+Фильтр сопоставляет известный planned_start/current_planned_end, с признаком
+неполного интервала; не вычисляет из даты статус active/completed.
 GET /objects/{id} : data={item,history}; draft/archived не видны публично.
 GET /staff/objects : редакторский список, data={items,next_cursor}.
 GET /staff/objects/{id} : редакторская карточка, data={item,history}.
@@ -70,6 +74,8 @@ handle(method,path,query,body,principal,context) -> тот же ApiResponse/None
 Только собственные таблицы feedback_*. Не мигрировать таблицы R02.
 object_lookup — внедряемая функция чтения объекта; авторизацию берёт из principal.
 POST /feedback : {object_id|null,geometry|null,category,text,consent_public},
+category использует labels из раздела 6, other допустим. Нужен object_id либо
+geometry, или оба; взаимно противоречивые данные требуют ошибки/уточнения.
 возвращает {receipt_id,moderation:"pending"}, без персональных данных.
 GET /objects/{id}/feedback : только одобренные публичные сообщения.
 GET /staff/feedback : очередь редактора.

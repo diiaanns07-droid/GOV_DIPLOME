@@ -36,7 +36,11 @@
       "result_dir": "research/round-11-results/R01/",
       "handoff": "research/handoffs/astana/R01/round-11/STATUS.md",
       "full_prompt": "prompts/R01.txt",
-      "duration_target_minutes": 300
+      "duration_target_minutes": 300,
+      "integration_authority": {
+        "imports_only": "Reviewed paths from the pinned application snapshot and assigned R02-R09 modules, with source SHA recorded; no whole-branch merges.",
+        "contract_owner": true
+      }
     },
     {
       "id": "R02",

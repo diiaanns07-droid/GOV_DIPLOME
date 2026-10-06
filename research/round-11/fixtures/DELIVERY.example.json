@@ -1,0 +1,29 @@
+{
+  "round": 11,
+  "role": "R02",
+  "branch": "REPLACE_WITH_OWN_SESSION_BRANCH",
+  "base_sha": null,
+  "pack_sha": null,
+  "status": "partial",
+  "owned_paths": [
+    "ui/civic_store/",
+    "tests/civic/R02/",
+    "research/round-11-results/R02/",
+    "research/handoffs/astana/R02/round-11/STATUS.md"
+  ],
+  "integration_notes": "research/round-11-results/R02/INTEGRATION.txt",
+  "code_commit": null,
+  "checks": [
+    {
+      "name": "example-placeholder-not-a-run",
+      "status": "NOT_RUN",
+      "command": null,
+      "input": null,
+      "reason": "Template only. Replace with factual execution results."
+    }
+  ],
+  "limitations": [
+    "Example only"
+  ],
+  "next_step": "Replace this template with the first useful checkpoint."
+}

@@ -1,0 +1,16 @@
+Новый раунд 11, твоя единственная роль R08: Обучаемая модель обращений и эксперимент диплома. Работай до пяти часов полезного времени, насколько позволяет лимит. Не останавливайся на плане: поставляй код/данные/проверки по заданию.
+
+Репозиторий https://github.com/diiaanns07-droid/GOV_DIPLOME.git. Продолжай свою выделенную ветку сессии, не main. Сначала проверь dirty files и origin; не менять remote и не затирать предыдущую работу.
+
+Выполни git fetch origin. Получи SHA командой git rev-parse origin/codex/govtech-main-interface и зафиксируй как PACK_SHA. Через git show PACK_SHA:путь прочитай:
+research/round-11/PACK_STATUS.txt (должно быть READY)
+research/round-11/prompts/R08.txt
+research/round-11/BRIEF.txt
+research/round-11/CONTRACT.txt
+research/round-11/ROLES.json
+research/round-11/BASELINE.json
+research/round-11/fixtures/civic_object.json
+
+Первый полезный результат сохрани и push в первые 15–25 минут. Затем каждые 25–40 минут, после законченного этапа и перед остановкой: файлы -> свой handoff -> проверка diff -> commit только своих путей -> push своей ветки. Не жди конца сессии/лимита. Ошибку push сообщай честно.
+
+Твой handoff research/handoffs/astana/R08/round-11/STATUS.md; поставка research/round-11-results/R08/DELIVERY.json. Не бери другую роль и не перезаписывай общие файлы. Все подробности и пятичасовой план находятся в твоём полном промпте. В конце: branch, SHA, push OK/FAILED, что работает, проверки и следующий шаг.
