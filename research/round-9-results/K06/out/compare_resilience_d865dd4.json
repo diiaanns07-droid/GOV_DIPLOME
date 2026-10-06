@@ -1,0 +1,9 @@
+{
+ "implementation": null,
+ "commit": "d865dd4a124291e10dd0b7bb1d9eada20d34c268",
+ "cases": {},
+ "summary": {
+  "NOT_RUN": 62
+ },
+ "reason": "web/resilience.js not found in the given BUILD copy"
+}

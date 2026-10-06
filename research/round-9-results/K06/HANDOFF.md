@@ -52,5 +52,44 @@ python3 probe_api_policy.py --app-root <app> --json out/api_policy_d865dd4.json
 **BUILD r9 с устойчивостью не опубликован** (ветка сборщика: последний коммит d865dd4, resilience.js нет) →
 интеграция city-resilience-v1: NOT_RUN.
 
-## Дальше
-3. Метаморфные свойства устойчивости, адаптер для будущего resilience.js, mutation checks (нарушенный worst, tie-break).
+## Этап 3 — свойства, адаптер, мутации, повторная проверка (готово)
+- `test_resilience_metamorphic.py` (9 тестов): перестановки точек/кандидатов/случаев/исключений/записей не меняют
+  устойчивый выбор, W, worst_case_ids и digest; дубль случая не меняет выбор (дубль попадает в список худших);
+  добавление случая не улучшает минимальный worst vector, nominal и его base-строка неизменны; W(robust) ≤ W(nominal),
+  L_base(robust) ≥ L_base(nominal), цена ≥ 0; evaluate(robust) = W. Мутации эталона обнаруживаются gold-фикстурой:
+  покомпонентный max вместо лексикографического, только первый худший случай, max=null как 0, обратная ничья по ID,
+  игнор стоимости в ничьей.
+- `run_resilience_js.cjs` — адаптер к будущему `web/resilience.js` (`validateResilience` + `optimizeResilience`);
+  без модуля пишет NOT_RUN. `compare_resilience_js.py` — сравнение по математике (status, feasible_count, nominal и
+  robust IDs, robust W и worst_case_ids, цена); NOT_RUN → код 2, никогда не PASS.
+- `resilience_harness_selftest.py` (только тестовые эхо-модули, не реализации): эхо 62 PASS (код 0); испорченный робастный
+  выбор + обрезанный список худших → ровно 2 FAIL (код 1); нет модуля → 62 NOT_RUN (код 2).
+- Повторная проверка этапа 1 на свежем извлечении d865dd4: вывод plan.js побайтно тот же, 96/96 PASS.
+
+## Итог по проверенному SHA d865dd4a124291e10dd0b7bb1d9eada20d34c268
+| Проверка | Результат |
+|---|---|
+| plan.js, 96 независимых gold-задач city-plan-v2 | 96 PASS, 0 MATH |
+| политика валидации (24 пробы) | 21 одинаково; 3 API_POLICY (символы ID, обязательный weight, имена кодов) |
+| mutation_check_stage1 (9 порч вывода) | 9/9 верно классифицированы |
+| city-resilience-v1 в BUILD | **NOT_RUN** — web/resilience.js нет (ветка сборщика на d865dd4 на момент проверки) |
+| эталон устойчивости: test_resilience + test_resilience_metamorphic | 14 OK |
+| конвейер JS-сравнения устойчивости (resilience_harness_selftest) | PASS |
+Python 3.11.15, Node 22, Linux.
+
+## Команды (из этой папки)
+```
+python3 -m unittest -v test_resilience test_resilience_metamorphic
+python3 make_resilience_cases.py --app-root <app>            # пересборка fixture (детерминирована)
+python3 compare_resilience_js.py --fixture fixtures/resilience_gold.json --export /tmp/rp.json
+node run_resilience_js.cjs <app> /tmp/rp.json /tmp/res_out.json <SHA>
+python3 compare_resilience_js.py --fixture fixtures/resilience_gold.json --candidate-json /tmp/res_out.json
+python3 resilience_harness_selftest.py
+```
+Когда BUILD опубликует resilience.js: извлечь новый SHA и выполнить две последние команды с ним; ожидания не менять.
+Если имена полей отличаются (например, другой ключ цены) — это API_POLICY, правится адаптер, не gold.
+
+## Ограничения
+- Исключения записей — допущения о данных, не закрытие объектов и не прогноз риска; веса — приоритеты, не население.
+- Метаморфное «добавление случая» проверено на эталоне K06, не на BUILD (у BUILD нет модуля).
+- Оракул K06 принимает ID шире, чем BUILD, и подставлял weight=1 — это отличия политики, не математики.
