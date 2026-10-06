@@ -1,0 +1,35 @@
+{
+ "source": "Overture Maps Foundation",
+ "bucket": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com",
+ "release": "2026-09-23.1",
+ "theme": "places",
+ "type": "place",
+ "query_bbox": [
+  71.3754,
+  51.136,
+  71.49,
+  51.208
+ ],
+ "started_utc": "2026-10-06T07:02:52+00:00",
+ "excluded_columns": [
+  "emails",
+  "phones",
+  "socials"
+ ],
+ "files": [
+  {
+   "key": "release/2026-09-23.1/theme=places/type=place/part-00014-1d36203b-4312-5a97-b9e0-5c110ae7a274-c000.zstd.parquet",
+   "size": 683038313,
+   "row_groups_total": 256,
+   "row_groups_read": [
+    91
+   ],
+   "rows_kept": 4504
+  }
+ ],
+ "finished_utc": "2026-10-06T07:03:03+00:00",
+ "rows_out": 4504,
+ "http_requests": 51,
+ "bytes_downloaded": 33286400,
+ "output_sha256": "b391ac6d692fe00e71637e3696258fcd9d1882d50edb39e2bb3a36ff548ff580"
+}

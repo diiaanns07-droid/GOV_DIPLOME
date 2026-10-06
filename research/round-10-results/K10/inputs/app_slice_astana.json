@@ -1,0 +1,269 @@
+{
+ "bbox": [
+  71.418372,
+  51.163033,
+  71.447,
+  51.181
+ ],
+ "city": "astana",
+ "code_sha": "d2ff344c5ec9b9a729ea59df50ec81f981e619de",
+ "counts_places_by_group": {
+  "college_university": 10,
+  "government_office": 16,
+  "hospital": 9,
+  "outpatient_clinic": 16,
+  "pharmacy": 3,
+  "preschool": 3,
+  "school": 8
+ },
+ "data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+ "kind": "observed_secondary (Overture/OSM), not an official registry",
+ "note": "Copied from the pinned app slice (observed_secondary Overture/OSM), not an official registry. Contact fields are absent in the slice.",
+ "places_school_and_preschool": [
+  {
+   "address": "Луи Пастер көшесі 107",
+   "category": "preschool",
+   "confidence": 0.623,
+   "group": "preschool",
+   "group_label": "Детский сад",
+   "id": "3486c949-32bb-4c6e-b138-c0e5596fe74c",
+   "lat": 51.16882,
+   "lon": 71.44491,
+   "name": "Детский сад Гулливер",
+   "operating_status": null,
+   "overture_version": 8,
+   "sector": "education",
+   "sources": [
+    {
+     "dataset": "meta",
+     "license": "CDLA-Permissive-2.0",
+     "record_id": "101311025260779",
+     "update_time": "2026-09-14T00:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "address": "проспект Республики 35",
+   "category": "high_school",
+   "confidence": 0.894,
+   "group": "school",
+   "group_label": "Школа",
+   "id": "7b39e048-341b-454a-a63c-4b7e1ae73e9f",
+   "lat": 51.17087,
+   "lon": 71.42501,
+   "name": "Школа-гимназия 3",
+   "operating_status": null,
+   "overture_version": 5,
+   "sector": "education",
+   "sources": [
+    {
+     "dataset": "meta",
+     "license": "CDLA-Permissive-2.0",
+     "record_id": "489956668166313",
+     "update_time": "2026-09-14T00:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "address": "Асан Қайғы көшесі 56",
+   "category": "middle_school",
+   "confidence": 0.536,
+   "group": "school",
+   "group_label": "Школа",
+   "id": "8ca53724-c558-46b7-826b-13e3e8fbb7e6",
+   "lat": 51.166662,
+   "lon": 71.445305,
+   "name": "\"ГУ \"Средняя школа № 8\" УО г. Астаны\"",
+   "operating_status": null,
+   "overture_version": 9,
+   "sector": "education",
+   "sources": [
+    {
+     "dataset": "meta",
+     "license": "CDLA-Permissive-2.0",
+     "record_id": "386757418528326",
+     "update_time": "2026-09-14T00:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "address": "проспект Абая 38",
+   "category": "place_of_learning",
+   "confidence": 0.594,
+   "group": "school",
+   "group_label": "Школа",
+   "id": "a1e56dec-ec3b-4c84-aa96-a4ca5762caf2",
+   "lat": 51.16862,
+   "lon": 71.43372,
+   "name": "Учебный ЦЕНТР ФПРК",
+   "operating_status": null,
+   "overture_version": 9,
+   "sector": "education",
+   "sources": [
+    {
+     "dataset": "meta",
+     "license": "CDLA-Permissive-2.0",
+     "record_id": "398348000992239",
+     "update_time": "2026-09-14T00:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "address": "Жақып Омаров көшесі 150",
+   "category": "preschool",
+   "confidence": 0.237,
+   "group": "preschool",
+   "group_label": "Детский сад",
+   "id": "a1ee9e73-d0bd-43da-a0a0-e919f7908471",
+   "lat": 51.17144,
+   "lon": 71.44231,
+   "name": "Esma kids",
+   "operating_status": null,
+   "overture_version": 2,
+   "sector": "education",
+   "sources": [
+    {
+     "dataset": "meta",
+     "license": "CDLA-Permissive-2.0",
+     "record_id": "886879444511195",
+     "update_time": "2026-09-14T00:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "address": "улица Алихана Бокейханова 32",
+   "category": "place_of_learning",
+   "confidence": 0.374,
+   "group": "school",
+   "group_label": "Школа",
+   "id": "a4483f53-7de8-4df1-b61b-b4066b0ad5dd",
+   "lat": 51.16765,
+   "lon": 71.42298,
+   "name": "Astana Garden International School",
+   "operating_status": null,
+   "overture_version": 2,
+   "sector": "education",
+   "sources": [
+    {
+     "dataset": "meta",
+     "license": "CDLA-Permissive-2.0",
+     "record_id": "476791848859434",
+     "update_time": "2026-09-14T00:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "address": "Аманкелді Иманов көшесі 26",
+   "category": "place_of_learning",
+   "confidence": 0.303,
+   "group": "school",
+   "group_label": "Школа",
+   "id": "b5dd5f1a-9d55-48b1-9d68-7172ea84da3f",
+   "lat": 51.16473,
+   "lon": 71.44184,
+   "name": "Образовательный центр АЗиЯ",
+   "operating_status": null,
+   "overture_version": 8,
+   "sector": "education",
+   "sources": [
+    {
+     "dataset": "meta",
+     "license": "CDLA-Permissive-2.0",
+     "record_id": "1603511493043057",
+     "update_time": "2026-09-14T00:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "address": "51, Abay Ave д.24/1",
+   "category": "place_of_learning",
+   "confidence": 0.332,
+   "group": "school",
+   "group_label": "Школа",
+   "id": "c83fb2da-1be8-4d7d-8d4a-fc95b6d5bf5a",
+   "lat": 51.1677,
+   "lon": 71.423338,
+   "name": "Учебный Центр Expert-A",
+   "operating_status": null,
+   "overture_version": 11,
+   "sector": "education",
+   "sources": [
+    {
+     "dataset": "meta",
+     "license": "CDLA-Permissive-2.0",
+     "record_id": "406231823527583",
+     "update_time": "2026-09-14T00:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "address": "Mukhtar Auezov St 31",
+   "category": "place_of_learning",
+   "confidence": 0.527,
+   "group": "school",
+   "group_label": "Школа",
+   "id": "c97435da-cd05-4549-bec1-ff297e858554",
+   "lat": 51.177527,
+   "lon": 71.420262,
+   "name": "Гимназия №6",
+   "operating_status": null,
+   "overture_version": 9,
+   "sector": "education",
+   "sources": [
+    {
+     "dataset": "meta",
+     "license": "CDLA-Permissive-2.0",
+     "record_id": "2080224758957423",
+     "update_time": "2026-09-14T00:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "address": null,
+   "category": "preschool",
+   "confidence": 0.485,
+   "group": "preschool",
+   "group_label": "Детский сад",
+   "id": "d40e30a8-deb4-4359-ab31-189e1bf535f8",
+   "lat": 51.164324,
+   "lon": 71.439974,
+   "name": "\"детский сад \"Максат\"\"",
+   "operating_status": null,
+   "overture_version": 9,
+   "sector": "education",
+   "sources": [
+    {
+     "dataset": "meta",
+     "license": "CDLA-Permissive-2.0",
+     "record_id": "1144588982371292",
+     "update_time": "2026-09-14T00:00:00.000Z"
+    }
+   ]
+  },
+  {
+   "address": null,
+   "category": "high_school",
+   "confidence": 0.534,
+   "group": "school",
+   "group_label": "Школа",
+   "id": "de04f003-bb3d-4ea7-93e1-cd825e5c1783",
+   "lat": 51.179297,
+   "lon": 71.426672,
+   "name": "\"Школа \"Почемучка\"\"",
+   "operating_status": null,
+   "overture_version": 9,
+   "sector": "education",
+   "sources": [
+    {
+     "dataset": "meta",
+     "license": "CDLA-Permissive-2.0",
+     "record_id": "1980413868917585",
+     "update_time": "2026-09-14T00:00:00.000Z"
+    }
+   ]
+  }
+ ],
+ "release": "2026-09-23.1",
+ "retrieved_utc": "2026-10-05T06:20:01+00:00",
+ "source_file": "web/govtech/core/data.js"
+}

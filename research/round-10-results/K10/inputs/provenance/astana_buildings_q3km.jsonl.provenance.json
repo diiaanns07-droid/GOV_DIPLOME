@@ -1,0 +1,36 @@
+{
+ "source": "Overture Maps Foundation",
+ "bucket": "https://overturemaps-us-west-2.s3.us-west-2.amazonaws.com",
+ "release": "2026-09-23.1",
+ "theme": "buildings",
+ "type": "building",
+ "query_bbox": [
+  71.3754,
+  51.136,
+  71.49,
+  51.208
+ ],
+ "started_utc": "2026-10-06T07:03:25+00:00",
+ "excluded_columns": [
+  "emails",
+  "phones",
+  "socials"
+ ],
+ "files": [
+  {
+   "key": "release/2026-09-23.1/theme=buildings/type=building/part-00442-db5518c0-22b6-53fd-bd28-37dbc08f1f9d-c000.zstd.parquet",
+   "size": 528095959,
+   "row_groups_total": 128,
+   "row_groups_read": [
+    63,
+    106
+   ],
+   "rows_kept": 30206
+  }
+ ],
+ "finished_utc": "2026-10-06T07:06:21+00:00",
+ "rows_out": 30206,
+ "http_requests": 1168,
+ "bytes_downloaded": 481562678,
+ "output_sha256": "07d675dca636eae2e5978a03e5447824a3a79db564192c0f70c53dd3ba143125"
+}

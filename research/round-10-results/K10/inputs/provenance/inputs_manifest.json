@@ -1,0 +1,82 @@
+{
+ "bbox_building_counts_by_class": {
+  "apartments": 172,
+  "commercial": 22,
+  "detached": 28,
+  "garage": 1,
+  "government": 3,
+  "guardhouse": 2,
+  "hospital": 1,
+  "hotel": 8,
+  "house": 46,
+  "industrial": 5,
+  "kindergarten": 1,
+  "null": 2089,
+  "office": 12,
+  "parking": 2,
+  "public": 2,
+  "residential": 2,
+  "retail": 48,
+  "roof": 2,
+  "school": 6,
+  "shed": 2,
+  "university": 1
+ },
+ "outputs": {
+  "app_slice_astana.json": {
+   "rows": 11,
+   "sha256": "5fe5185b80351b9f48b2fa1d71a696a9165fd5e26eabb072f8820faf52a4f23d"
+  },
+  "buildings_bbox_residential.jsonl": {
+   "rows": 248,
+   "sha256": "364c85783df8c5ea1ecb5c52a885a2db9ba9d8ab278adc3970d694d65bd93a11"
+  },
+  "osm_buildings_education.jsonl": {
+   "rows": 98,
+   "sha256": "e1c27eda5cb47970d6b6cffef2d04c1d63fc38dc78c82d83cb8ad1441f2ba189"
+  },
+  "osm_landuse_education.jsonl": {
+   "rows": 95,
+   "sha256": "06d7f12881a5e05423e8ab0fa671e49d31b23407820495e016cc2ab67aa9240f"
+  },
+  "overture_places_education.jsonl": {
+   "rows": 292,
+   "sha256": "d737a18842c2f521d3fe6dfd4174c788ba4cdcab3f340cc1b4caab2cd7914250"
+  }
+ },
+ "raw_dir_files": {
+  "astana_buildings_q3km.jsonl": {
+   "query_bbox": [
+    71.3754,
+    51.136,
+    71.49,
+    51.208
+   ],
+   "release": "2026-09-23.1",
+   "rows": 30206,
+   "sha256": "07d675dca636eae2e5978a03e5447824a3a79db564192c0f70c53dd3ba143125"
+  },
+  "astana_land_use_q3km.jsonl": {
+   "query_bbox": [
+    71.3754,
+    51.136,
+    71.49,
+    51.208
+   ],
+   "release": "2026-09-23.1",
+   "rows": 1608,
+   "sha256": "bc5767d65e2a2458c53239232a0fe7556d3b65b8bcd949799dc6800c9a2349e8"
+  },
+  "astana_places_q3km.jsonl": {
+   "query_bbox": [
+    71.3754,
+    51.136,
+    71.49,
+    51.208
+   ],
+   "release": "2026-09-23.1",
+   "rows": 4504,
+   "sha256": "b391ac6d692fe00e71637e3696258fcd9d1882d50edb39e2bb3a36ff548ff580"
+  }
+ }
+}
