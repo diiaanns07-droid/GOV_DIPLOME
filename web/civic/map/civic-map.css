@@ -104,6 +104,13 @@
   border: 1px dashed var(--civic-r03-demo-line);
   color: var(--civic-r03-demo-ink);
 }
+.civic-r03-root[data-civic-r03-view="card"] .civic-r03-demo-note,
+.civic-r03-root[data-civic-r03-view="card"] .civic-r03-count {
+  display: none;
+}
+.civic-r03-root[data-civic-r03-view="card"] .civic-r03-head {
+  padding-bottom: 8px;
+}
 .civic-r03-scroll {
   flex: 1;
   min-height: 0;
@@ -564,7 +571,7 @@
   justify-content: space-between;
   align-items: center;
   gap: 8px;
-  margin: -4px -6px 8px;
+  margin: -4px 0 8px;
 }
 .civic-r03-card-title {
   margin: 4px 0 6px;
@@ -839,7 +846,7 @@
     transition: height 0.24s var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
   }
   .civic-r03-layout-overlay[data-civic-r03-sheet="peek"] {
-    --civic-r03-sheet-h: 150px;
+    --civic-r03-sheet-h: 158px;
   }
   .civic-r03-layout-overlay[data-civic-r03-sheet="half"] {
     --civic-r03-sheet-h: 46vh;
@@ -858,8 +865,8 @@
     align-items: center;
     flex-shrink: 0;
     width: 100%;
-    height: 26px;
-    min-height: 26px;
+    height: 44px;
+    min-height: 44px;
     border: 0;
     background: #fff;
     padding: 0;
@@ -873,6 +880,7 @@
   }
   .civic-r03-layout-overlay .civic-r03-head {
     padding: 0 16px 8px;
+    margin-top: -8px;
     background: #fff;
   }
   .civic-r03-title {

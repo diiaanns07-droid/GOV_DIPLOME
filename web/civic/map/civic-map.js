@@ -132,9 +132,12 @@
     const persist = opt.persistFilters !== false;
     const permalink = opt.permalink === true;
     const region = opt.region === null ? null : (Array.isArray(opt.region) ? opt.region : C.ASTANA_BBOX);
-    const basePadding = Object.assign({ top: 110, right: 80, bottom: 40, left: 40 }, opt.mapPadding || {});
+    // Defaults keep objects clear of the original topbar (bottom ≈ 96px) and map tools (right).
+    const basePadding = Object.assign({ top: 130, right: 84, bottom: 48, left: 40 }, opt.mapPadding || {});
     const pathPrefix = typeof opt.pathPrefix === "string" ? opt.pathPrefix : "";
     const title = typeof opt.title === "string" && opt.title ? opt.title : "Что делают рядом";
+    const fitOnLoad = opt.fitOnLoad === true;
+    let fitted = false;
 
     let map = null;
     let destroyed = false;
@@ -160,7 +163,7 @@
     if (opt.filters) st.filters = C.sanitizeFilters(opt.filters);
 
     // ---------- root setup (restored in destroy) ----------
-    const saved = { className: root.className, role: root.getAttribute("role"), label: root.getAttribute("aria-label"), children: [...root.childNodes] };
+    const saved = { className: root.getAttribute("class"), role: root.getAttribute("role"), label: root.getAttribute("aria-label"), children: [...root.childNodes] };
     root.replaceChildren();
     root.classList.add(P + "root", P + "layout-" + layout);
     if (!saved.role) root.setAttribute("role", "region");
@@ -517,6 +520,7 @@
         st.list = "ready";
         renderList();
         updateMapData();
+        if (fitOnLoad && !fitted && !st.selectedId) fitted = fitAll();
         // Keep an open card in sync with the fresh list (or say it is gone).
         if (st.selectedId) {
           const fresh = st.items.find((x) => x.id === st.selectedId);
@@ -549,7 +553,7 @@
       const listed = findItem(id);
       st.detail = { id, state: "loading", item: listed, history: [], error: null, returnFocus: prevFocus };
       updateSelection();
-      renderCard(true);
+      renderCard(opts.source === "list" || opts.source === "map" || opts.focus === true);
       if (isMobile() && st.sheet === "peek") setSheet("half");
       if (listed && opts.fly !== false && opts.source !== "map") flyTo(listed);
       if (permalink) writeHash(id);
@@ -610,6 +614,9 @@
     }
     function renderCard(focus) {
       if (destroyed) return;
+      // Re-rendering replaces nodes; keep keyboard focus where the user was.
+      const active = document.activeElement;
+      const keep = !focus && active && cardView.contains(active) ? (active.getAttribute("data-r03-action") || active.getAttribute("data-r03-compare") || "title") : null;
       root.setAttribute("data-civic-r03-view", st.view);
       listView.hidden = st.view === "card";
       cardView.hidden = st.view !== "card";
@@ -622,10 +629,11 @@
         it && it.geometry && map ? h("button", { type: "button", class: P + "btn " + P + "btn-quiet", "data-r03-action": "fly" }, svgIcon(ICON.pin), "На карте") : null);
       cardView.append(top);
       if (!it) {
-        if (d.state === "loading") cardView.append(h("div", { class: P + "loading" }, h("span", { class: P + "spinner", "aria-hidden": "true" }), "Загружаем карточку…"));
+        if (d.state === "loading") cardView.append(h("h3", { class: P + "card-title " + P + "sr", tabindex: "-1", text: "Карточка объекта" }), h("div", { class: P + "loading" }, h("span", { class: P + "spinner", "aria-hidden": "true" }), "Загружаем карточку…"));
         else if (d.state === "notfound") cardView.append(h("div", { class: P + "empty", role: "alert" }, h("h3", { class: P + "card-title", tabindex: "-1", text: "Объект не найден" }), h("p", { text: "Возможно, его сняли с публикации или ссылка устарела." })));
-        else if (d.state === "error") cardView.append(h("div", { class: P + "error", role: "alert" }, h("p", { text: d.error ? d.error.text : "Не удалось загрузить карточку." }), h("button", { type: "button", class: P + "btn", "data-r03-action": "retry-card" }, svgIcon(ICON.retry), "Повторить")));
+        else if (d.state === "error") cardView.append(h("h3", { class: P + "card-title " + P + "sr", tabindex: "-1", text: "Карточка объекта" }), h("div", { class: P + "error", role: "alert" }, h("p", { text: d.error ? d.error.text : "Не удалось загрузить карточку." }), h("button", { type: "button", class: P + "btn", "data-r03-action": "retry-card" }, svgIcon(ICON.retry), "Повторить")));
         if (focus) focusCard();
+        else if (keep) restoreFocus("title");
         return;
       }
       const k = C.kindInfo(it.kind);
@@ -652,7 +660,7 @@
       if (shift) {
         const dir = shift.days > 0 ? "позже" : "раньше";
         let reasonText;
-        if (reasonInfo && reasonInfo.reason) reasonText = h("span", null, "Причина: ", h("q", { text: reasonInfo.reason }), reasonInfo.at ? " · " + C.formatTimestamp(reasonInfo.at) : "");
+        if (reasonInfo && reasonInfo.reason) reasonText = h("span", null, "Причина: «" + reasonInfo.reason + "»", reasonInfo.at ? " · " + C.formatTimestamp(reasonInfo.at) : "");
         else if (d.state === "loading") reasonText = h("span", { class: P + "muted", text: "Причина: загружаем историю…" });
         else if (d.state === "error") reasonText = h("span", { class: P + "muted", text: "Причина: история не загрузилась." });
         else reasonText = h("span", { class: P + "muted", text: "Причина переноса в опубликованной истории не указана." });
@@ -737,6 +745,12 @@
       if (permalink) actions.append(h("button", { type: "button", class: P + "btn", "data-r03-action": "copy-link" }, svgIcon(ICON.link), "Ссылка на объект"));
       if (actions.childNodes.length) cardView.append(actions);
       if (focus) focusCard();
+      else if (keep) restoreFocus(keep);
+    }
+    function restoreFocus(key) {
+      const el = key === "title" ? null : cardView.querySelector('[data-r03-action="' + key + '"], [data-r03-compare="' + key + '"]');
+      const t = el || cardView.querySelector("." + P + "card-title");
+      if (t) { try { t.focus({ preventScroll: true }); } catch (e) { t.focus(); } }
     }
     function touches(r) { return r.changed.some((c) => c.field.startsWith("schedule")); }
     function valueText(field, v) {
@@ -937,6 +951,17 @@
         });
       } catch (e2) { /* camera can fail on a zero-size container; selection still works */ }
     }
+    // Fit every mapped object (current filters) into the part of the map not covered by the panel.
+    function fitAll() {
+      if (!map || destroyed) return false;
+      const boxes = mapItems().map((it) => it.bbox).filter(Boolean);
+      if (!boxes.length) return false;
+      const b = boxes.reduce((a, x) => [Math.min(a[0], x[0]), Math.min(a[1], x[1]), Math.max(a[2], x[2]), Math.max(a[3], x[3])]);
+      try {
+        map.fitBounds([[b[0], b[1]], [b[2], b[3]]], { padding: freePadding(), maxZoom: 14, duration: reducedMotion() ? 0 : 700, bearing: map.getBearing(), pitch: map.getPitch() });
+      } catch (e) { return false; }
+      return true;
+    }
     function attachMap(m) {
       if (destroyed) return;
       if (map === m) return;
@@ -976,9 +1001,8 @@
       destroyed = true;
       for (const f of cleanups.splice(0)) { try { f(); } catch (e) { /* ignore */ } }
       root.replaceChildren(...saved.children);
-      root.className = saved.className;
-      for (const a of ["role", "aria-label"]) {
-        const v = a === "role" ? saved.role : saved.label;
+      for (const a of ["class", "role", "aria-label"]) {
+        const v = a === "class" ? saved.className : a === "role" ? saved.role : saved.label;
         if (v === null) root.removeAttribute(a); else root.setAttribute(a, v);
       }
       root.removeAttribute("data-civic-r03-sheet");
@@ -993,6 +1017,7 @@
       destroy,
       // Optional extras for R01 (not part of civic-v1): late map binding, layout and state probes.
       setMap: attachMap,
+      fitAll,
       getLayout,
       layerIds: () => BELOW_LABELS.concat(ON_TOP),
       sourceId: SRC,

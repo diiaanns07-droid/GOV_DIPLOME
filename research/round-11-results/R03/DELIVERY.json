@@ -17,21 +17,43 @@
     {
       "name": "core-unit-tests",
       "status": "PASS",
-      "command": "node --test tests/civic/R03/*.test.mjs",
+      "command": "node --test tests/civic/R03/core.test.mjs",
       "input": "tests/civic/R03/fixtures/{objects,history,hostile,pack_civic_object}.json",
-      "reason": "17/17 pass on checkpoint 1"
+      "reason": "17/17 pass"
     },
     {
-      "name": "browser-walkthrough",
+      "name": "browser-suite-stand",
+      "status": "PASS",
+      "command": "node --test --test-concurrency=1 tests/civic/R03/browser.test.mjs",
+      "input": "research/round-11-results/R03/stand/ (mock api.request, MapLibre 5.6.2 from web/vendor, Chromium 1194 headless/SwiftShader, external hosts blocked)",
+      "reason": "20/20 pass: 1440x900 + 390x844, card data/no-data, long ru/kk titles, historical plan, hostile/XSS, 500 list/card + retry, empty server/filter, period filter, stale card/list responses, single map click, mount/destroy x2 (layers, sources, popup, root attrs, map+window+matchMedia listeners), keyboard focus, onFeedback, bottom sheet keeps 3D toggle + attribution reachable, offline basemap, reduced motion, permalink, filter persistence, area filter"
+    },
+    {
+      "name": "openfreemap-basemap",
+      "status": "NOT_RUN",
+      "command": "curl https://tiles.openfreemap.org/styles/liberty",
+      "input": null,
+      "reason": "Sandbox proxy answers CONNECT 403; only the honest offline fallback could be verified"
+    },
+    {
+      "name": "3d-buildings",
       "status": "NOT_RUN",
       "command": null,
       "input": null,
-      "reason": "Checkpoint 1: stand and Playwright tests not written yet"
+      "reason": "Needs OpenFreeMap vector tiles; camera tilt verified, buildings not"
+    },
+    {
+      "name": "integration-with-R01-shell-and-R02-backend",
+      "status": "NOT_RUN",
+      "command": null,
+      "input": null,
+      "reason": "NOT_INTEGRATED: no R01/R02 round-11 delivery on origin at checkpoint 2"
     }
   ],
   "limitations": [
-    "Checkpoint 1 only: browser behaviour not verified yet",
-    "NOT_INTEGRATED: R01 shell and R02 backend not available; only contract fixtures"
+    "NOT_INTEGRATED: verified only on the R03 stand with a contract mock of api.request; screenshots show the stand, not the final product",
+    "OpenFreeMap blocked in sandbox: basemap streets and 3D buildings NOT_RUN",
+    "Client-side filtering over all published objects (cursor pages up to 20); very large datasets would need server-side filters"
   ],
-  "next_step": "Stand + Playwright tests (layers, card, race, destroy, 390x844/1440x900)."
+  "next_step": "Adversarial review of module; read R01/R02 branches if pushed; finalize INTEGRATION.txt"
 }
