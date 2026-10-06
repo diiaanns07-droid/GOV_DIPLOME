@@ -1,0 +1,255 @@
+{
+ "note": "SYNTHETIC envelopes; source IDs are real record IDs of the BUILD slice d865dd4",
+ "build_sha": "d865dd4a124291e10dd0b7bb1d9eada20d34c268",
+ "fixtures": {
+  "shy_valid_two_cases.json": {
+   "city": "shymkent",
+   "valid": true
+  },
+  "shy_valid_seven_cases_dup_sets.json": {
+   "city": "shymkent",
+   "valid": true,
+   "note": "7 user cases (+base = 8); c1 and c7 share the same exclusion set: allowed"
+  },
+  "shy_valid_exclude_all_sources.json": {
+   "city": "shymkent",
+   "valid": true,
+   "note": "exclusions == number of category records: allowed; baseline becomes empty in that case"
+  },
+  "shy_valid_12_candidates.json": {
+   "city": "shymkent",
+   "valid": true
+  },
+  "shy_invalid_13_candidates.json": {
+   "city": "shymkent",
+   "valid": false,
+   "code": "too_many_candidates"
+  },
+  "shy_invalid_unknown_source.json": {
+   "city": "shymkent",
+   "valid": false,
+   "code": "unknown_source"
+  },
+  "shy_invalid_other_city_source.json": {
+   "city": "shymkent",
+   "valid": false,
+   "code": "unknown_source",
+   "note": "source ID of the other city"
+  },
+  "shy_invalid_other_category_source.json": {
+   "city": "shymkent",
+   "valid": false,
+   "code": "wrong_category_source"
+  },
+  "shy_invalid_candidate_as_source.json": {
+   "city": "shymkent",
+   "valid": false,
+   "code": "candidate_id_as_source"
+  },
+  "shy_invalid_base_reserved.json": {
+   "city": "shymkent",
+   "valid": false,
+   "code": "reserved_case_id"
+  },
+  "shy_invalid_duplicate_case_id.json": {
+   "city": "shymkent",
+   "valid": false,
+   "code": "duplicate_case_id"
+  },
+  "shy_invalid_eight_user_cases.json": {
+   "city": "shymkent",
+   "valid": false,
+   "code": "bad_cases"
+  },
+  "shy_invalid_no_cases.json": {
+   "city": "shymkent",
+   "valid": false,
+   "code": "bad_cases"
+  },
+  "ast_valid_two_cases.json": {
+   "city": "astana",
+   "valid": true
+  },
+  "ast_valid_seven_cases_dup_sets.json": {
+   "city": "astana",
+   "valid": true,
+   "note": "7 user cases (+base = 8); c1 and c7 share the same exclusion set: allowed"
+  },
+  "ast_valid_exclude_all_sources.json": {
+   "city": "astana",
+   "valid": true,
+   "note": "exclusions == number of category records: allowed; baseline becomes empty in that case"
+  },
+  "ast_valid_12_candidates.json": {
+   "city": "astana",
+   "valid": true
+  },
+  "ast_invalid_13_candidates.json": {
+   "city": "astana",
+   "valid": false,
+   "code": "too_many_candidates"
+  },
+  "ast_invalid_unknown_source.json": {
+   "city": "astana",
+   "valid": false,
+   "code": "unknown_source"
+  },
+  "ast_invalid_other_city_source.json": {
+   "city": "astana",
+   "valid": false,
+   "code": "unknown_source",
+   "note": "source ID of the other city"
+  },
+  "ast_invalid_other_category_source.json": {
+   "city": "astana",
+   "valid": false,
+   "code": "wrong_category_source"
+  },
+  "ast_invalid_candidate_as_source.json": {
+   "city": "astana",
+   "valid": false,
+   "code": "candidate_id_as_source"
+  },
+  "ast_invalid_base_reserved.json": {
+   "city": "astana",
+   "valid": false,
+   "code": "reserved_case_id"
+  },
+  "ast_invalid_duplicate_case_id.json": {
+   "city": "astana",
+   "valid": false,
+   "code": "duplicate_case_id"
+  },
+  "ast_invalid_eight_user_cases.json": {
+   "city": "astana",
+   "valid": false,
+   "code": "bad_cases"
+  },
+  "ast_invalid_no_cases.json": {
+   "city": "astana",
+   "valid": false,
+   "code": "bad_cases"
+  },
+  "shy_invalid_label_empty.json": {
+   "city": "shymkent",
+   "valid": false,
+   "code": "bad_label"
+  },
+  "shy_invalid_label_spaces.json": {
+   "city": "shymkent",
+   "valid": false,
+   "code": "bad_label"
+  },
+  "shy_valid_label_120_codepoints.json": {
+   "city": "shymkent",
+   "valid": true,
+   "note": "120 astral code points = 240 UTF-16 units: allowed"
+  },
+  "shy_invalid_label_121.json": {
+   "city": "shymkent",
+   "valid": false,
+   "code": "bad_label"
+  },
+  "shy_invalid_label_control.json": {
+   "city": "shymkent",
+   "valid": false,
+   "code": "bad_label"
+  },
+  "shy_invalid_label_newline.json": {
+   "city": "shymkent",
+   "valid": false,
+   "code": "bad_label"
+  },
+  "shy_invalid_label_lone_surrogate.json": {
+   "city": "shymkent",
+   "valid": false,
+   "code": "bad_label",
+   "note": "escaped \\ud800 in label"
+  },
+  "shy_valid_label_html_text.json": {
+   "city": "shymkent",
+   "valid": true,
+   "note": "markup is just text; UI must render via textContent"
+  },
+  "shy_invalid_exclusions_empty.json": {
+   "city": "shymkent",
+   "valid": false,
+   "code": "bad_exclusions"
+  },
+  "shy_invalid_exclusions_too_many.json": {
+   "city": "shymkent",
+   "valid": false,
+   "code": "bad_exclusions"
+  },
+  "shy_invalid_duplicate_source_id.json": {
+   "city": "shymkent",
+   "valid": false,
+   "code": "duplicate_source_id"
+  },
+  "shy_invalid_case_id_nfd.json": {
+   "city": "shymkent",
+   "valid": false,
+   "code": "bad_case_id"
+  },
+  "shy_invalid_case_unknown_field.json": {
+   "city": "shymkent",
+   "valid": false,
+   "code": "unknown_field"
+  },
+  "shy_invalid_envelope_derived.json": {
+   "city": "shymkent",
+   "valid": false,
+   "code": "unknown_field"
+  },
+  "shy_invalid_plan_derived.json": {
+   "city": "shymkent",
+   "valid": false,
+   "code": "derived_not_allowed"
+  },
+  "shy_invalid_version.json": {
+   "city": "shymkent",
+   "valid": false,
+   "code": "bad_version"
+  },
+  "shy_invalid_plan_as_envelope.json": {
+   "city": "shymkent",
+   "valid": false,
+   "code": "wrong_version",
+   "note": "a bare city-plan-v2 file opened as resilience"
+  },
+  "shy_invalid_foreign_snapshot.json": {
+   "city": "shymkent",
+   "valid": false,
+   "code": "foreign_snapshot"
+  },
+  "shy_invalid_plan_bad_weight.json": {
+   "city": "shymkent",
+   "valid": false,
+   "code": "bad_weight",
+   "note": "plan errors are BUILD PlanError codes"
+  },
+  "shy_invalid_too_large.json": {
+   "city": "shymkent",
+   "valid": false,
+   "code": "too_large",
+   "note": "262145 bytes"
+  },
+  "shy_valid_exactly_256k.json": {
+   "city": "shymkent",
+   "valid": true,
+   "note": "262144 bytes"
+  },
+  "shy_invalid_nan.json": {
+   "city": "shymkent",
+   "valid": false,
+   "code": "bad_json",
+   "note": "NaN in plan"
+  },
+  "shy_invalid_dup_key.json": {
+   "city": "shymkent",
+   "valid": false,
+   "code": "bad_json",
+   "note": "cases twice via escape"
+  }
+ }
+}

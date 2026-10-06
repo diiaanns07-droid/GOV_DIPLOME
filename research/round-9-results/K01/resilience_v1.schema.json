@@ -1,0 +1,25 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "city-resilience-v1.schema.json",
+ "title": "city-resilience-v1 envelope (structure). plan = full city-plan-v2 validated by BUILD web/plan.js validatePlanScenario; semantics (sources of the city/category, ≤12 candidates, reserved 'base', canonical order) in resilience_contract.js",
+ "type": "object",
+ "additionalProperties": false,
+ "required": ["schema_version", "plan", "cases"],
+ "properties": {
+  "schema_version": {"const": "city-resilience-v1"},
+  "plan": {"type": "object", "description": "city-plan-v2 without derived_results (derived fields are neither exported nor accepted in r9 envelopes)",
+           "not": {"required": ["derived_results"]}},
+  "cases": {"type": "array", "minItems": 1, "maxItems": 7, "items": {"$ref": "#/$defs/case"},
+            "description": "1..7 user cases; the engine adds case 'base' (no exclusions) itself: 8 at most"}
+ },
+ "$defs": {
+  "id": {"type": "string", "minLength": 1, "description": "BUILD rule: NFC, /^[\\p{L}\\p{N}_.-]+$/u, 1..64 code points (JSON Schema regex has no \\p in every engine; enforced in code)"},
+  "case": {"type": "object", "additionalProperties": false, "required": ["id", "label", "disabled_source_ids"],
+   "properties": {
+    "id": {"allOf": [{"$ref": "#/$defs/id"}, {"not": {"const": "base"}}]},
+    "label": {"type": "string", "minLength": 1, "maxLength": 120, "description": "≤120 Unicode code points, no control characters (Cc), well-formed (no lone surrogates); shown as text only"},
+    "disabled_source_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/id"},
+     "description": "IDs of SOURCE records of plan.city_id + plan.category (never candidate IDs); ≤ number of such records"}
+   }}
+ }
+}

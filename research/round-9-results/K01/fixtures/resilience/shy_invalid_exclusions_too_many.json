@@ -1,0 +1,113 @@
+{
+ "schema_version": "city-resilience-v1",
+ "plan": {
+  "schema_version": "city-plan-v2",
+  "city_id": "shymkent",
+  "source_snapshot": "sha256:a9326b5633c513c0bfeccbb2248b26cf3b706c902f77745073a2959ad8d7ff3e",
+  "category": "outpatient_clinic",
+  "control_points": [
+   {
+    "id": "cp-01",
+    "lon": 69.595794,
+    "lat": 42.30934,
+    "weight": 1
+   },
+   {
+    "id": "cp-02",
+    "lon": 69.603568,
+    "lat": 42.316886,
+    "weight": 4
+   },
+   {
+    "id": "cp-03",
+    "lon": 69.611342,
+    "lat": 42.311855,
+    "weight": 2
+   },
+   {
+    "id": "cp-04",
+    "lon": 69.599681,
+    "lat": 42.319401,
+    "weight": 5
+   },
+   {
+    "id": "cp-05",
+    "lon": 69.607455,
+    "lat": 42.31437,
+    "weight": 3
+   }
+  ],
+  "candidates": [
+   {
+    "id": "cand-01",
+    "lon": 69.598224,
+    "lat": 42.321018,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 3000
+   },
+   {
+    "id": "cand-02",
+    "lon": 69.601868,
+    "lat": 42.318323,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 10000
+   },
+   {
+    "id": "cand-03",
+    "lon": 69.605512,
+    "lat": 42.315628,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 8000
+   },
+   {
+    "id": "cand-04",
+    "lon": 69.609155,
+    "lat": 42.312933,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 6000
+   }
+  ],
+  "budget": 12000,
+  "max_selected": 2,
+  "coverage_radius_m": 500,
+  "required_ids": [
+   "cand-02"
+  ],
+  "excluded_ids": [
+   "cand-03"
+  ],
+  "selected_ids": [
+   "cand-02",
+   "cand-01"
+  ]
+ },
+ "cases": [
+  {
+   "id": "c1",
+   "label": "метка",
+   "disabled_source_ids": [
+    "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+    "1cb001b2-d62f-4c28-ba0a-864ffa56808f",
+    "2264dcf0-549d-451a-b846-3f207d411e0c",
+    "50802484-b7f9-492e-8a4c-f75312fc7751",
+    "621acb4b-a1bd-45ce-891f-c0a4634a6103",
+    "622b4786-89fa-4853-b109-18054e3ebe0d",
+    "6e92676a-1297-446d-9956-731023da6339",
+    "7cd057e0-fd66-4026-8d41-717b3d1d0c60",
+    "833280f2-ff82-4dd6-a174-d2a9203420fa",
+    "99c68068-aa6e-4ff2-af5f-455675f93313",
+    "a10bb8cf-c446-4066-9cda-a5befa189a60",
+    "b845d434-7da3-4755-9ae9-bb6d40fc7520",
+    "c2990416-dca7-4e3a-b539-30e69cadf724",
+    "da9cd7b1-eefe-40eb-aebe-8ef720de4354",
+    "e1b19ead-4505-4acd-8aed-9c561ceec4c0",
+    "f4d6818b-1a99-43ca-8533-4c556f448919",
+    "extra-1"
+   ]
+  }
+ ]
+}

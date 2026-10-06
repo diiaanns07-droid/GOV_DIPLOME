@@ -1,0 +1,155 @@
+{
+ "schema_version": "city-resilience-v1",
+ "plan": {
+  "schema_version": "city-plan-v2",
+  "city_id": "shymkent",
+  "source_snapshot": "sha256:a9326b5633c513c0bfeccbb2248b26cf3b706c902f77745073a2959ad8d7ff3e",
+  "category": "outpatient_clinic",
+  "control_points": [
+   {
+    "id": "cp-01",
+    "lon": 69.595794,
+    "lat": 42.30934,
+    "weight": 1
+   },
+   {
+    "id": "cp-02",
+    "lon": 69.603568,
+    "lat": 42.316886,
+    "weight": 4
+   },
+   {
+    "id": "cp-03",
+    "lon": 69.611342,
+    "lat": 42.311855,
+    "weight": 2
+   },
+   {
+    "id": "cp-04",
+    "lon": 69.599681,
+    "lat": 42.319401,
+    "weight": 5
+   },
+   {
+    "id": "cp-05",
+    "lon": 69.607455,
+    "lat": 42.31437,
+    "weight": 3
+   }
+  ],
+  "candidates": [
+   {
+    "id": "k0",
+    "lon": 69.598224,
+    "lat": 42.321018,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 100
+   },
+   {
+    "id": "k1",
+    "lon": 69.598224,
+    "lat": 42.321018,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 101
+   },
+   {
+    "id": "k2",
+    "lon": 69.598224,
+    "lat": 42.321018,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 102
+   },
+   {
+    "id": "k3",
+    "lon": 69.598224,
+    "lat": 42.321018,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 103
+   },
+   {
+    "id": "k4",
+    "lon": 69.598224,
+    "lat": 42.321018,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 104
+   },
+   {
+    "id": "k5",
+    "lon": 69.598224,
+    "lat": 42.321018,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 105
+   },
+   {
+    "id": "k6",
+    "lon": 69.598224,
+    "lat": 42.321018,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 106
+   },
+   {
+    "id": "k7",
+    "lon": 69.598224,
+    "lat": 42.321018,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 107
+   },
+   {
+    "id": "k8",
+    "lon": 69.598224,
+    "lat": 42.321018,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 108
+   },
+   {
+    "id": "k9",
+    "lon": 69.598224,
+    "lat": 42.321018,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 109
+   },
+   {
+    "id": "k10",
+    "lon": 69.598224,
+    "lat": 42.321018,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 110
+   },
+   {
+    "id": "k11",
+    "lon": 69.598224,
+    "lat": 42.321018,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 111
+   }
+  ],
+  "budget": 12000,
+  "max_selected": 2,
+  "coverage_radius_m": 500,
+  "required_ids": [],
+  "excluded_ids": [],
+  "selected_ids": []
+ },
+ "cases": [
+  {
+   "id": "без-ближайших",
+   "label": "Условно без двух записей (не подтверждение закрытия)",
+   "disabled_source_ids": [
+    "059c59dd-3c50-4dbe-8fee-c7ad1129a29b",
+    "1cb001b2-d62f-4c28-ba0a-864ffa56808f"
+   ]
+  }
+ ]
+}

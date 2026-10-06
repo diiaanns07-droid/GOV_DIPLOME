@@ -1,0 +1,146 @@
+{
+ "schema_version": "city-resilience-v1",
+ "plan": {
+  "schema_version": "city-plan-v2",
+  "city_id": "astana",
+  "source_snapshot": "sha256:67a40b96d29873118780969eb11c32deba49a0c64fda1f185efe634882f04c6d",
+  "category": "outpatient_clinic",
+  "control_points": [
+   {
+    "id": "cp-01",
+    "lon": 71.421235,
+    "lat": 51.165728,
+    "weight": 1
+   },
+   {
+    "id": "cp-02",
+    "lon": 71.430396,
+    "lat": 51.173274,
+    "weight": 4
+   },
+   {
+    "id": "cp-03",
+    "lon": 71.439557,
+    "lat": 51.168243,
+    "weight": 2
+   },
+   {
+    "id": "cp-04",
+    "lon": 71.425815,
+    "lat": 51.17579,
+    "weight": 5
+   },
+   {
+    "id": "cp-05",
+    "lon": 71.434976,
+    "lat": 51.170759,
+    "weight": 3
+   }
+  ],
+  "candidates": [
+   {
+    "id": "cand-01",
+    "lon": 71.424098,
+    "lat": 51.177407,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 3000
+   },
+   {
+    "id": "cand-02",
+    "lon": 71.428392,
+    "lat": 51.174712,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 10000
+   },
+   {
+    "id": "cand-03",
+    "lon": 71.432686,
+    "lat": 51.172016,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 8000
+   },
+   {
+    "id": "cand-04",
+    "lon": 71.43698,
+    "lat": 51.169321,
+    "category": "outpatient_clinic",
+    "kind": "hypothetical",
+    "cost": 6000
+   }
+  ],
+  "budget": 12000,
+  "max_selected": 2,
+  "coverage_radius_m": 500,
+  "required_ids": [
+   "cand-02"
+  ],
+  "excluded_ids": [
+   "cand-03"
+  ],
+  "selected_ids": [
+   "cand-02",
+   "cand-01"
+  ]
+ },
+ "cases": [
+  {
+   "id": "c1",
+   "label": "Случай 1 😀 әңғ",
+   "disabled_source_ids": [
+    "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+   ]
+  },
+  {
+   "id": "c2",
+   "label": "Случай 2 😀 әңғ",
+   "disabled_source_ids": [
+    "1116880a-cbb6-4271-9a59-a277083b792c"
+   ]
+  },
+  {
+   "id": "c3",
+   "label": "Случай 3 😀 әңғ",
+   "disabled_source_ids": [
+    "140ab4bc-e560-41e3-aeaf-cb7b8b821f08"
+   ]
+  },
+  {
+   "id": "c4",
+   "label": "Случай 4 😀 әңғ",
+   "disabled_source_ids": [
+    "166c939f-9131-4fbb-bf75-4ab543916f20"
+   ]
+  },
+  {
+   "id": "c5",
+   "label": "Случай 5 😀 әңғ",
+   "disabled_source_ids": [
+    "1d137305-49cd-450b-9626-9762db14d080"
+   ]
+  },
+  {
+   "id": "c6",
+   "label": "Случай 6 😀 әңғ",
+   "disabled_source_ids": [
+    "1e587c48-b425-4d8a-ba90-37f1ad41e24f"
+   ]
+  },
+  {
+   "id": "c7",
+   "label": "Случай 7 😀 әңғ",
+   "disabled_source_ids": [
+    "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+   ]
+  },
+  {
+   "id": "c8",
+   "label": "восьмой",
+   "disabled_source_ids": [
+    "0dc3b66b-d8c1-4b7b-b769-06988161ac3f"
+   ]
+  }
+ ]
+}

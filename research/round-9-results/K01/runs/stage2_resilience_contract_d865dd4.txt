@@ -1,0 +1,57 @@
+PASS RESILIENCE_MANIFEST sha256
+PASS fixture shy_valid_two_cases.json → valid
+PASS fixture shy_valid_seven_cases_dup_sets.json → valid
+PASS fixture shy_valid_exclude_all_sources.json → valid
+PASS fixture shy_valid_12_candidates.json → valid
+PASS fixture shy_invalid_13_candidates.json → too_many_candidates
+PASS fixture shy_invalid_unknown_source.json → unknown_source
+PASS fixture shy_invalid_other_city_source.json → unknown_source
+PASS fixture shy_invalid_other_category_source.json → wrong_category_source
+PASS fixture shy_invalid_candidate_as_source.json → candidate_id_as_source
+PASS fixture shy_invalid_base_reserved.json → reserved_case_id
+PASS fixture shy_invalid_duplicate_case_id.json → duplicate_case_id
+PASS fixture shy_invalid_eight_user_cases.json → bad_cases
+PASS fixture shy_invalid_no_cases.json → bad_cases
+PASS fixture ast_valid_two_cases.json → valid
+PASS fixture ast_valid_seven_cases_dup_sets.json → valid
+PASS fixture ast_valid_exclude_all_sources.json → valid
+PASS fixture ast_valid_12_candidates.json → valid
+PASS fixture ast_invalid_13_candidates.json → too_many_candidates
+PASS fixture ast_invalid_unknown_source.json → unknown_source
+PASS fixture ast_invalid_other_city_source.json → unknown_source
+PASS fixture ast_invalid_other_category_source.json → wrong_category_source
+PASS fixture ast_invalid_candidate_as_source.json → candidate_id_as_source
+PASS fixture ast_invalid_base_reserved.json → reserved_case_id
+PASS fixture ast_invalid_duplicate_case_id.json → duplicate_case_id
+PASS fixture ast_invalid_eight_user_cases.json → bad_cases
+PASS fixture ast_invalid_no_cases.json → bad_cases
+PASS fixture shy_invalid_label_empty.json → bad_label
+PASS fixture shy_invalid_label_spaces.json → bad_label
+PASS fixture shy_valid_label_120_codepoints.json → valid
+PASS fixture shy_invalid_label_121.json → bad_label
+PASS fixture shy_invalid_label_control.json → bad_label
+PASS fixture shy_invalid_label_newline.json → bad_label
+PASS fixture shy_invalid_label_lone_surrogate.json → bad_label
+PASS fixture shy_valid_label_html_text.json → valid
+PASS fixture shy_invalid_exclusions_empty.json → bad_exclusions
+PASS fixture shy_invalid_exclusions_too_many.json → bad_exclusions
+PASS fixture shy_invalid_duplicate_source_id.json → duplicate_source_id
+PASS fixture shy_invalid_case_id_nfd.json → bad_case_id
+PASS fixture shy_invalid_case_unknown_field.json → unknown_field
+PASS fixture shy_invalid_envelope_derived.json → unknown_field
+PASS fixture shy_invalid_plan_derived.json → derived_not_allowed
+PASS fixture shy_invalid_version.json → bad_version
+PASS fixture shy_invalid_plan_as_envelope.json → wrong_version
+PASS fixture shy_invalid_foreign_snapshot.json → foreign_snapshot
+PASS fixture shy_invalid_plan_bad_weight.json → bad_weight
+PASS fixture shy_invalid_too_large.json → too_large
+PASS fixture shy_valid_exactly_256k.json → valid
+PASS fixture shy_invalid_nan.json → bad_json
+PASS fixture shy_invalid_dup_key.json → bad_json
+PASS JSON Schema file: strict envelope/case, base excluded, 1..7 cases, plan derived forbidden
+PASS export = input only, roundtrip identical, no derived, no paths; exclusions sorted, cases sorted
+PASS digests: order of cases/exclusions irrelevant; label/exclusion/plan change → new problem digest; selected only in scenario digest
+PASS computationCases adds base first; file never contains base; duplicate exclusion sets kept as separate cases
+PASS refusal does not mutate input object or BUILD context
+
+55 passed, 0 failed, 0 skipped
