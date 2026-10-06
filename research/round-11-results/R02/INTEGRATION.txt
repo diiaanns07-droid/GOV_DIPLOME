@@ -12,6 +12,31 @@ requirements*.txt менять не нужно.
    python -B app.py --open                                # civic API на /api/civic/v1
    Без civic: python -B app.py --no-civic. Другая база: --civic-db PATH или $CIVIC_DB_PATH.
 
+0a. СОСТОЯНИЕ СТЫКОВКИ (проверено чтением веток 2026-10-06 ~16:05Z)
+   - R01 claude/affectionate-ride-bol5v8 @eef5a7b уже содержит собственный CivicGateway в ui/web_server.py:
+     полный путь /api/civic/v1/..., body уже dict, headers в нижнем регистре, host_allowed=True после своей
+     проверки Host, is_same_origin из Origin/Sec-Fetch-Site, пропускает Set-Cookie/Retry-After/Vary/Allow.
+     Это СОВМЕСТИМО с CivicService R02 — патч web_server.patch ниже тогда НЕ нужен (он остаётся эталоном
+     и проверен на исходном Handler). Двойник tests/civic/R01/contract_double.py следует модели R02
+     (правка опубликованного объекта видна после повторного publish).
+     Нужно добавить в CIVIC_ROUTES R01 (необязательно): ("GET", ("staff", "audit"), "store").
+     object_lookup для R06 можно заменить на civic.lookup_public_object (тот же публичный DTO).
+     ui/civic_store/__init__.py экспортирует CivicService с коммита 92f7aba (запасной импорт R01 больше не нужен).
+   - R04 claude/fervent-ritchie-1zih1y @2ff117c (editor-core.js, contract_mock.cjs) РАСХОДИТСЯ в двух местах:
+     a) матрица действий: для published publish=false, а mock делает правку опубликованной записи сразу
+        публичной. В R02 (и в двойнике R01) правка опубликованного объекта меняет рабочую копию;
+        житель увидит её после POST .../publish. Нужно: показывать «Опубликовать изменения», когда
+        item.staff.has_unpublished_changes === true (publication=published), причина — публичный текст;
+        staff.public_item — то, что видит житель сейчас (готовое «было/станет»).
+     b) коды 403: R02 отдаёт "csrf_failed" и "cross_origin" (R04 ждёт "csrf"/"origin" и иначе покажет
+        «Недостаточно прав»). Также: update без изменений → 200 с тем же item (не 422 no_changes);
+        publish без изменений → 200 без новой ревизии; 409 бывает только stale_revision.
+   - R03 claude/zen-mendel-e79iiv @9cb1a2e: читает GET /objects[?cursor] и /objects/{id}, history.changed_fields
+     как список путей и причину переноса по schedule.current_planned_end — совместимо.
+   - R06 claude/focused-hypatia-z8h0no @eaa113d: Principal R02 (role, username, csrf_token, expires_at epoch)
+     и require_staff подходят; feedback_* в том же файле проверены тестом R02 test_r02_migration_policy.py.
+   - R05 claude/intelligent-sagan-7shpeh: формат пакета и действия импорта совпадают с планом import_helper R05.
+
 1. ЧТО МЕНЯЕТ R01 В ОБЩИХ ФАЙЛАХ (R02 их не редактировал)
    a) ui/web_server.py — research/round-11-results/R02/web_server.patch (≈40 строк, git apply --check OK
       на b2cb2e0 = версия в ветке R01):
