@@ -26,3 +26,12 @@ venv/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Round 11 civic-v1: runtime SQLite (objects, sessions, feedback) never goes to Git
+.runtime/
+*.sqlite
+*.sqlite3
+*.sqlite3-wal
+*.sqlite3-shm
+*.db-wal
+*.db-shm

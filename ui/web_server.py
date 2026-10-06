@@ -8,11 +8,15 @@ from __future__ import annotations
 
 import argparse
 from copy import deepcopy
+from http.cookies import CookieError, SimpleCookie
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+import importlib
 import ipaddress
 import json
 import logging
+import os
 from pathlib import Path
+import re
 import threading
 from urllib.parse import parse_qs, urlsplit
 import webbrowser
@@ -54,6 +58,188 @@ for _asset in ("shell.js", "shell.css", "core/data.js", "core/evidence.js",
                "k03/K03_MANIFEST.json"):
     _mime = {".js": "text/javascript", ".css": "text/css", ".json": "application/json"}.get(Path(_asset).suffix, "text/plain")
     ASSETS["/govtech/" + _asset] = ("govtech/" + _asset, _mime + "; charset=utf-8")
+
+# Round 11 civic-v1 frontend: explicit files only (R01 shell; role modules are added
+# here by R01 when their reviewed delivery is imported). No directory serving.
+CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/fallback.js")
+for _asset in CIVIC_ASSETS:
+    _mime = {".js": "text/javascript", ".css": "text/css", ".json": "application/json"}.get(Path(_asset).suffix, "text/plain")
+    ASSETS["/civic/" + _asset] = ("civic/" + _asset, _mime + "; charset=utf-8")
+
+
+# ---------------------------------------------------------------------------
+# civic-v1 gateway (round 11, R01). Role services stay in their own packages:
+#   R02 ui.civic_store.CivicService      R06 ui.civic_feedback.FeedbackService
+#   R07 engine.civic_scenarios.compare    R09 agent.civic_assistant.build_answer
+# The gateway owns only transport: explicit routes, Host/Origin, size, JSON envelope.
+# A route whose module is not delivered answers 503 — it is never silently open.
+CIVIC_PREFIX = "/api/civic/v1"
+CIVIC_MAX_BODY = 64 * 1024
+CIVIC_MAX_QUERY = 2048
+CIVIC_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:-]{0,95}$")
+# Order matters: /objects/{id}/feedback must win over /objects/{id}.
+CIVIC_ROUTES = (
+    ("GET", ("modules",), "gateway"),
+    ("GET", ("session",), "store"),
+    ("POST", ("session", "login"), "store"),
+    ("POST", ("session", "logout"), "store"),
+    ("GET", ("objects",), "store"),
+    ("GET", ("objects", "{id}", "feedback"), "feedback"),
+    ("GET", ("objects", "{id}"), "store"),
+    ("GET", ("staff", "objects"), "store"),
+    ("POST", ("staff", "objects"), "store"),
+    ("GET", ("staff", "objects", "{id}"), "store"),
+    ("POST", ("staff", "objects", "{id}", "update"), "store"),
+    ("POST", ("staff", "objects", "{id}", "publish"), "store"),
+    ("POST", ("staff", "objects", "{id}", "archive"), "store"),
+    ("POST", ("feedback",), "feedback"),
+    ("GET", ("staff", "feedback"), "feedback"),
+    ("POST", ("staff", "feedback", "{id}", "moderate"), "feedback"),
+    ("POST", ("scenarios", "compare"), "scenarios"),
+    ("POST", ("assistant",), "assistant"),
+)
+CIVIC_MODULE_LABELS = {
+    "store": "Объекты и доступ редактора (R02)",
+    "feedback": "Сообщения жителей (R06)",
+    "scenarios": "Сравнение ограничений (R07)",
+    "assistant": "Помощник по фактам (R09)",
+}
+# Headers a role service may set on its response; everything else is dropped.
+CIVIC_SERVICE_HEADERS = {"set-cookie", "retry-after"}
+
+
+def civic_error(status, code, message, fields=None):
+    error = {"code": code, "message": message}
+    if fields:
+        error["fields"] = fields
+    return {"status": status, "headers": {}, "body": {"ok": False, "error": error}}
+
+
+def match_civic_route(method, segments):
+    """Returns (owner, params) or raises LookupError('not_found'|'method')."""
+    allowed = []
+    for route_method, pattern, owner in CIVIC_ROUTES:
+        if len(pattern) != len(segments):
+            continue
+        params = {}
+        for part, value in zip(pattern, segments):
+            if part == "{id}":
+                if not CIVIC_ID.match(value):
+                    break
+                params["id"] = value
+            elif part != value:
+                break
+        else:
+            if route_method == method:
+                return owner, params
+            allowed.append(route_method)
+    raise LookupError(",".join(sorted(set(allowed))) if allowed else "")
+
+
+class CivicGateway:
+    """Explicit civic-v1 routing to role services; services are created lazily.
+
+    Lazy creation keeps unrelated checks (ui.web_check) free of a runtime DB.
+    Each factory returns the service or raises ImportError when not delivered.
+    """
+
+    def __init__(self, factories=None):
+        self._factories = dict(factories or {})
+        self._services = {}
+        self._failed = {}
+        self._lock = threading.Lock()
+
+    @classmethod
+    def for_project(cls, project: Path, db_path: Path | None = None):
+        db_path = Path(db_path) if db_path else project / ".runtime" / "civic.sqlite3"
+
+        def store():
+            module = importlib.import_module("ui.civic_store")
+            db_path.parent.mkdir(parents=True, exist_ok=True)
+            return module.CivicService(str(db_path))
+
+        def feedback():
+            module = importlib.import_module("ui.civic_feedback")
+            store_service = gateway.service("store")
+            if store_service is None:
+                raise ImportError("feedback needs the object store")
+            db_path.parent.mkdir(parents=True, exist_ok=True)
+            return module.FeedbackService(str(db_path), gateway.public_object)
+
+        gateway = cls({"store": store, "feedback": feedback})
+        return gateway
+
+    def service(self, name):
+        if name in self._services:
+            return self._services[name]
+        factory = self._factories.get(name)
+        if factory is None:
+            return None
+        with self._lock:
+            if name in self._services:
+                return self._services[name]
+            if name in self._failed:
+                return None
+            try:
+                self._services[name] = factory()
+            except ImportError as exc:
+                # Not delivered yet: recorded once, reported as module_unavailable.
+                self._failed[name] = "not_delivered"
+                LOGGER.info("civic module %s unavailable: %s", name, exc.__class__.__name__)
+                return None
+            except Exception:
+                self._failed[name] = "init_failed"
+                LOGGER.exception("civic module %s failed to start", name)
+                return None
+            return self._services[name]
+
+    def modules(self):
+        result = {}
+        for name, label in CIVIC_MODULE_LABELS.items():
+            ready = self.service(name) is not None
+            result[name] = {"label": label, "status": "ready" if ready else
+                            ("init_failed" if self._failed.get(name) == "init_failed" else "unavailable")}
+        return result
+
+    def public_object(self, object_id):
+        """Object lookup for R06: the published public DTO only (never drafts)."""
+        store = self.service("store")
+        if store is None or not isinstance(object_id, str) or not CIVIC_ID.match(object_id):
+            return None
+        reply = store.handle("GET", "/objects/" + object_id, {}, None,
+                             {"headers": {}, "client_ip": None, "is_same_origin": False,
+                              "internal_lookup": True})
+        if not reply or reply.get("status") != 200:
+            return None
+        data = (reply.get("body") or {}).get("data") or {}
+        return data.get("item")
+
+    def handle(self, method, rel_path, query, body, context):
+        segments = rel_path.strip("/").split("/") if rel_path.strip("/") else []
+        if rel_path != "/" + "/".join(segments) or any(not s for s in segments):
+            return civic_error(404, "not_found", "Адрес API не найден.")
+        try:
+            owner, params = match_civic_route(method, segments)
+        except LookupError as exc:
+            if str(exc):
+                reply = civic_error(405, "method_not_allowed", "Метод не поддерживается для этого адреса.")
+                reply["headers"]["Allow"] = str(exc)
+                return reply
+            return civic_error(404, "not_found", "Адрес API не найден.")
+        if owner == "gateway":
+            return {"status": 200, "headers": {}, "body": {"ok": True, "data": {"modules": self.modules()}}}
+        service = self.service(owner)
+        if service is None:
+            return civic_error(503, "module_unavailable",
+                               f"Модуль «{CIVIC_MODULE_LABELS[owner]}» не подключён в этой сборке.")
+        if owner == "store":
+            return service.handle(method, rel_path, query, body, context)
+        if owner == "feedback":
+            store = self.service("store")
+            principal = store.resolve_principal(context) if store is not None else None
+            return service.handle(method, rel_path, query, body, principal, context)
+        return civic_error(503, "module_unavailable",
+                           f"Модуль «{CIVIC_MODULE_LABELS[owner]}» не подключён в этой сборке.")
 
 
 def event_id(value):
@@ -240,9 +426,148 @@ class Handler(BaseHTTPRequestHandler):
     def do_HEAD(self):
         self.do_GET()
 
+    # --- civic-v1 transport -------------------------------------------------
+    def host_allowed(self):
+        """Same rule as the legacy POST guard: loopback or this server's address."""
+        try:
+            host = urlsplit("http://" + self.headers.get("Host", "")).hostname
+            if host in {"localhost", "127.0.0.1", "::1", self.server.server_address[0]}:
+                return True
+            if self.server.server_address[0] == "0.0.0.0":
+                return ipaddress.ip_address(host).is_private
+        except ValueError:
+            return False
+        return False
+
+    def same_origin(self):
+        origin = self.headers.get("Origin")
+        if not origin:
+            return False
+        parsed = urlsplit(origin)
+        return parsed.scheme in ("http", "https") and parsed.netloc == self.headers.get("Host")
+
+    def civic_send(self, reply):
+        status = reply.get("status") if isinstance(reply, dict) else None
+        body = reply.get("body") if isinstance(reply, dict) else None
+        if (not isinstance(status, int) or isinstance(status, bool) or not 200 <= status <= 599
+                or not isinstance(body, dict) or not isinstance(body.get("ok"), bool)):
+            LOGGER.error("civic service returned a malformed response")
+            reply = civic_error(500, "bad_service_response", "Сервис вернул некорректный ответ.")
+            status, body = reply["status"], reply["body"]
+        try:
+            data = json.dumps(body, ensure_ascii=False, allow_nan=False).encode("utf-8")
+        except (TypeError, ValueError):
+            LOGGER.error("civic service response is not JSON-serialisable")
+            reply = civic_error(500, "bad_service_response", "Сервис вернул некорректный ответ.")
+            status, data = 500, json.dumps(reply["body"], ensure_ascii=False).encode("utf-8")
+        extra = []
+        for name, value in (reply.get("headers") or {}).items():
+            key = str(name).lower()
+            if key in CIVIC_SERVICE_HEADERS or (key == "allow" and status == 405):
+                for item in (value if isinstance(value, (list, tuple)) else [value]):
+                    text = str(item)
+                    if "\r" not in text and "\n" not in text:
+                        extra.append((str(name), text))
+        try:
+            self.send_response(status)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.send_header("Content-Length", str(len(data)))
+            self.send_header("Cache-Control", "no-store")
+            self.send_header("X-Content-Type-Options", "nosniff")
+            self.send_header("Referrer-Policy", "same-origin")
+            for name, value in extra:
+                self.send_header(name, value)
+            self.end_headers()
+            if self.command != "HEAD":
+                self.wfile.write(data)
+        except CLIENT_DISCONNECTED:
+            self.close_connection = True
+
+    def civic_request(self, method):
+        parsed = urlsplit(self.path)
+        rel_path = parsed.path[len(CIVIC_PREFIX):] or "/"
+        if not self.host_allowed():
+            if method == "POST":
+                self.discard_body()
+            self.civic_send(civic_error(403, "forbidden_host", "Откройте интерфейс через адрес этого сервера."))
+            return
+        if method == "POST":
+            origin = self.headers.get("Origin")
+            if (origin and not self.same_origin()) or self.headers.get("Sec-Fetch-Site") == "cross-site":
+                self.discard_body()
+                self.civic_send(civic_error(403, "cross_origin", "Запрос с другого сайта отклонён."))
+                return
+        if len(parsed.query) > CIVIC_MAX_QUERY:
+            if method == "POST":
+                self.discard_body()
+            self.civic_send(civic_error(400, "query_too_long", "Слишком длинная строка запроса."))
+            return
+        try:
+            query = {key: values[-1] for key, values in
+                     parse_qs(parsed.query, keep_blank_values=True, strict_parsing=False).items()}
+        except ValueError:
+            query = None
+        if query is None:
+            self.civic_send(civic_error(400, "invalid_query", "Некорректная строка запроса."))
+            return
+        body = None
+        if method == "POST":
+            try:
+                length = int(self.headers.get("Content-Length", "0"))
+            except ValueError:
+                length = -1
+            if not 0 < length <= CIVIC_MAX_BODY:
+                if CIVIC_MAX_BODY < length <= CIVIC_MAX_BODY * 2:
+                    self.rfile.read(length)
+                code = 413 if length > CIVIC_MAX_BODY else 400
+                self.civic_send(civic_error(code, "too_large" if code == 413 else "empty_body",
+                                            "Слишком большой запрос." if code == 413 else "Пустой запрос."))
+                return
+            if self.headers.get_content_type() != "application/json":
+                self.rfile.read(length)
+                self.civic_send(civic_error(415, "unsupported_media_type", "Ожидается Content-Type: application/json."))
+                return
+            try:
+                body = json.loads(self.rfile.read(length).decode("utf-8"), parse_constant=_invalid_number)
+            except CLIENT_DISCONNECTED:
+                self.close_connection = True
+                return
+            except (ValueError, UnicodeDecodeError):
+                self.civic_send(civic_error(400, "invalid_json", "Тело запроса должно быть корректным JSON."))
+                return
+            if not isinstance(body, dict):
+                self.civic_send(civic_error(400, "invalid_json", "Тело запроса должно быть JSON-объектом."))
+                return
+        cookies = {}
+        try:
+            jar = SimpleCookie()
+            jar.load(self.headers.get("Cookie", ""))
+            cookies = {key: morsel.value for key, morsel in jar.items()}
+        except CookieError:
+            cookies = {}
+        context = {
+            "method": method, "path": rel_path,
+            "headers": {key.lower(): value for key, value in self.headers.items()},
+            "cookies": cookies, "client_ip": self.client_address[0] if self.client_address else None,
+            "is_same_origin": self.same_origin(), "host": self.headers.get("Host"),
+            "scheme": "http", "secure": False,
+        }
+        try:
+            reply = self.server.civic.handle(method, rel_path, query, body, context)
+        except Exception:
+            # No body, cookies or provider details in the log or the reply.
+            LOGGER.exception("civic handler failed for %s %s", method, rel_path)
+            reply = civic_error(500, "internal", "Не удалось выполнить запрос. Попробуйте ещё раз.")
+        if reply is None:
+            reply = civic_error(404, "not_found", "Адрес API не найден.")
+        self.civic_send(reply)
+
     def do_GET(self):
         parsed = urlsplit(self.path)
         path = parsed.path
+        if path == CIVIC_PREFIX or path.startswith(CIVIC_PREFIX + "/"):
+            self.civic_request("GET")
+            return
         if path == "/api/health":
             self.json_reply(200, {"status": "ok"})
             return
@@ -271,6 +596,9 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         path = urlsplit(self.path).path
+        if path == CIVIC_PREFIX or path.startswith(CIVIC_PREFIX + "/"):
+            self.civic_request("POST")
+            return
         if path not in POST_ROUTES:
             self.discard_body()
             self.error_reply(404, "Метод не найден.")
@@ -324,11 +652,13 @@ def _invalid_number(value):
     raise ValueError("JSON должен содержать только конечные числа.")
 
 
-def create_server(project: Path = ROOT, port: int = 8501, host: str = "127.0.0.1"):
+def create_server(project: Path = ROOT, port: int = 8501, host: str = "127.0.0.1",
+                  civic: CivicGateway | None = None, civic_db: Path | None = None):
     backend = Backend(project)
     server = ThreadingHTTPServer((host, port), Handler)
     server.daemon_threads = True
     server.backend = backend
+    server.civic = civic if civic is not None else CivicGateway.for_project(Path(project), civic_db)
     return server
 
 
@@ -337,17 +667,22 @@ def main():
     parser.add_argument("--port", type=int, default=8501)
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--open", action="store_true", help="Открыть браузер после запуска")
+    parser.add_argument("--civic-db", default=os.environ.get("CIVIC_DB"),
+                        help="SQLite городских объектов (по умолчанию .runtime/civic.sqlite3)")
     args = parser.parse_args()
     if not 1 <= args.port <= 65535:
         parser.error("Порт должен быть от 1 до 65535.")
     try:
-        server = create_server(port=args.port, host=args.host)
+        server = create_server(port=args.port, host=args.host,
+                               civic_db=Path(args.civic_db) if args.civic_db else None)
     except OSError as exc:
         if getattr(exc, "winerror", None) == 10048 or getattr(exc, "errno", None) in (48, 98, 10048):
             parser.exit(1, "Порт занят. Закройте прежнее приложение или задайте другой PORT.\n")
         raise
     address = "127.0.0.1" if args.host == "0.0.0.0" else args.host
     url = f"http://{address}:{args.port}"
+    modules = server.civic.modules()
+    print("civic-v1: " + ", ".join(f"{name}={item['status']}" for name, item in modules.items()), flush=True)
     print(f"Аким на 5 часов: {url}\nОстановить — Ctrl+C", flush=True)
     if args.open:
         opener = threading.Timer(0.3, webbrowser.open, args=(url,))

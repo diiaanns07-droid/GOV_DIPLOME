@@ -1,0 +1,129 @@
+/* Civic shell (round 11, R01): light design of the original simulator, one map.
+ * Desktop: left panel (map tools and MapLibre attribution stay free on the right).
+ * Mobile ≤760: bottom sheet; attribution is lifted above the sheet. */
+
+/* Mode switch replaces the old single "Городское планирование" toggle. */
+#govtech-toggle { display: none !important; }
+#civic-modes { display: flex; gap: 3px; padding: 3px; border-radius: 12px; background: #e8eee3; }
+#civic-modes button { padding: 7px 12px; border-radius: 9px; font-size: 12px; font-weight: 600; color: var(--muted); white-space: nowrap; }
+#civic-modes button[aria-pressed="true"] { background: #fff; color: var(--ink); box-shadow: 0 2px 6px #19362812; }
+#civic-modes button:hover:not([aria-pressed="true"]) { background: #f3f6ee; }
+.govtech-mode .top-actions > #civic-modes { display: flex !important; }
+
+/* Training UI is hidden while the civic mode owns the map. */
+.civic-mode .top-actions > :not(#civic-modes),
+.civic-mode .sidebar, .civic-mode .top-center, .civic-mode #connection,
+.civic-mode .map-top, .civic-mode .plan-ribbon, .civic-mode .map-footer,
+.civic-mode #map-hint, .civic-mode #event-banner, .civic-mode #advisor-card,
+.civic-mode #drawer, .civic-mode #tour, .civic-mode #map-fallback,
+.civic-mode .district-marker { display: none !important; }
+.civic-mode .top-actions { margin-left: auto; }
+
+#civic-root[hidden], #civic-root [hidden] { display: none !important; }
+.civic-panel { position: absolute; z-index: 5; top: 112px; bottom: 34px; left: 20px; width: 420px;
+  display: flex; flex-direction: column; background: #fffffff7; border: 1px solid var(--line);
+  border-radius: 20px; box-shadow: var(--shadow); overflow: hidden; }
+.civic-sheet-handle { display: none; }
+.civic-head { padding: 18px 22px 10px; background: linear-gradient(130deg, #fff, #eff4e6); flex-shrink: 0; }
+.civic-head h1 { margin: 2px 0 4px; font-size: 24px; line-height: 1.15; letter-spacing: -.6px; }
+.civic-data-note { margin: 0; font-size: 12px; color: var(--muted); }
+.civic-state { margin: 10px 16px 0; padding: 9px 12px; border-radius: 11px; font-size: 12px; background: #f0f5e7; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.civic-state[data-kind="warn"] { background: #faf5e7; color: #7a531a; }
+.civic-state[data-kind="error"] { background: #fbeceb; color: #ab3934; }
+.civic-scroll { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 4px 16px 16px; scrollbar-width: thin; }
+.civic-foot { flex-shrink: 0; display: flex; gap: 8px; padding: 10px 16px; border-top: 1px solid var(--line); background: #f7f9f2; }
+.civic-foot .btn { padding: 8px 12px; }
+
+/* Shared building blocks for the fallback modules (role modules ship their own CSS). */
+.civic-filters { display: flex; gap: 8px; margin: 12px 0 6px; }
+.civic-filters select, .civic-field input, .civic-field select, .civic-field textarea, .civic-msg input {
+  border: 1px solid #d9e2d4; border-radius: 9px; padding: 8px 9px; background: #fff; color: var(--ink); max-width: 100%; }
+.civic-filters select { flex: 1; min-width: 0; min-height: 40px; }
+.civic-count { font-size: 12px; color: var(--muted); margin: 6px 0; }
+.civic-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.civic-item { width: 100%; text-align: left; display: grid; grid-template-columns: 12px 1fr; column-gap: 9px; row-gap: 2px;
+  padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); background: #fff; min-height: 44px; }
+.civic-item:hover { background: #f0f5e9; }
+.civic-item[aria-pressed="true"] { border-color: #91b58a; background: #e9f2df; }
+.civic-item b { grid-column: 2; font-size: 13px; line-height: 1.3; overflow-wrap: anywhere; }
+.civic-item span, .civic-item em { grid-column: 2; font-size: 11px; color: var(--muted); }
+.civic-kind-dot { grid-row: 1 / span 2; width: 10px; height: 10px; border-radius: 50%; margin-top: 4px; }
+.civic-badge { font-style: normal; font-size: 11px; display: inline-block; padding: 1px 7px; border-radius: 7px; background: #f0f3ec; color: var(--muted); width: max-content; max-width: 100%; }
+.civic-badge.synthetic { background: #fdf0d8; color: #7a531a; font-weight: 600; }
+.civic-badge.block { display: block; width: auto; margin: 6px 0 0; }
+.civic-card { margin-top: 12px; padding: 14px; border-radius: 14px; border: 1px solid var(--line); background: #fff; }
+.civic-card h2 { margin: 2px 0 4px; font-size: 18px; line-height: 1.25; overflow-wrap: anywhere; }
+.civic-card h3, .civic-box h3 { font-size: 13px; margin: 14px 0 6px; }
+.civic-desc { font-size: 13px; overflow-wrap: anywhere; }
+.civic-facts { display: grid; grid-template-columns: minmax(110px, 40%) 1fr; gap: 4px 10px; margin: 10px 0; font-size: 12px; }
+.civic-facts dt { color: var(--muted); }
+.civic-facts dd { margin: 0; overflow-wrap: anywhere; }
+.civic-moved { color: #91601f; font-weight: 600; }
+.civic-sources p, .civic-history li { font-size: 12px; overflow-wrap: anywhere; }
+.civic-history ol { padding-left: 18px; margin: 0; }
+.civic-history p { margin: 2px 0; }
+.civic-ask { width: 100%; margin-top: 12px; min-height: 44px; }
+.civic-error { color: #ab3934; font-size: 12px; }
+.civic-box { margin-top: 12px; padding: 12px 14px; border-radius: 14px; border: 1px solid var(--line); background: #fbfcf8; }
+.civic-box-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.civic-box-head h2 { margin: 0; font-size: 15px; }
+.civic-close { width: 36px; height: 36px; border-radius: 10px; font-size: 20px; line-height: 1; flex-shrink: 0; }
+.civic-close:hover { background: #f0f5e9; }
+.civic-form { display: grid; gap: 10px; }
+.civic-field { display: grid; gap: 4px; font-size: 12px; }
+.civic-field > span { font-weight: 600; }
+.civic-field small { color: var(--muted); font-size: 11px; }
+.civic-field textarea { resize: vertical; font: inherit; }
+.civic-check { font-size: 12px; display: flex; gap: 8px; align-items: flex-start; }
+.civic-check input { width: 18px; height: 18px; accent-color: var(--green); flex-shrink: 0; }
+.civic-note { font-size: 12px; background: #f0f5e7; border-radius: 10px; padding: 8px 10px; margin: 0; }
+.civic-form-status { font-size: 12px; min-height: 1em; margin: 6px 0 0; }
+.civic-receipt { font-weight: 600; }
+.civic-msg { border-top: 1px solid var(--line); padding: 8px 0; font-size: 12px; display: grid; gap: 6px; }
+.civic-msg p { margin: 0; overflow-wrap: anywhere; }
+.civic-reply { background: #f0f5e7; border-radius: 8px; padding: 6px 8px; }
+.civic-geo { border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px 12px; display: grid; gap: 8px; }
+.civic-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.civic-editor-bar { display: flex; justify-content: space-between; align-items: center; font-size: 12px; margin-bottom: 8px; }
+.civic-tabs { display: flex; gap: 3px; padding: 3px; border-radius: 12px; background: #e8eee3; margin-bottom: 12px; }
+.civic-tabs button { flex: 1; padding: 8px 6px; border-radius: 9px; font-size: 12px; font-weight: 600; min-height: 38px; }
+.civic-tabs button[aria-pressed="true"] { background: #fff; box-shadow: 0 2px 6px #19362812; }
+
+/* Staff drawer and scenarios drawer: right side, clear of the map tools column. */
+.civic-drawer { position: absolute; z-index: 6; top: 112px; bottom: 34px; right: 84px; width: 440px;
+  display: flex; flex-direction: column; gap: 8px; padding: 14px 16px; background: #fffffffa;
+  border: 1px solid var(--line); border-radius: 20px; box-shadow: 0 12px 60px #213b2726; }
+.civic-drawer-body { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+
+.civic-mode #map-status { top: 112px; left: 460px; max-width: 420px; }
+@media (max-width: 1100px) {
+  .civic-panel { width: 360px; }
+  .civic-drawer { width: 380px; right: 70px; }
+  .civic-mode #map-status { left: 400px; }
+}
+
+@media (max-width: 760px) {
+  #civic-modes button { padding: 6px 7px; font-size: 11px; }
+  .civic-mode .brand > div:not(.brand-mark) .brand-sub { display: none; }
+  .civic-panel { top: auto; left: 0; right: 0; bottom: 0; width: auto; height: 46%; border-radius: 18px 18px 0 0;
+    box-shadow: 0 -8px 30px #19362818; padding-bottom: env(safe-area-inset-bottom); transition: height .25s var(--ease); }
+  .civic-panel[data-sheet="peek"] { height: 24%; }
+  .civic-panel[data-sheet="full"] { height: calc(100% - 132px); }
+  .civic-sheet-handle { display: grid; place-items: center; width: 100%; height: 22px; flex-shrink: 0; }
+  .civic-sheet-handle i { width: 44px; height: 5px; border-radius: 3px; background: #c9d3c4; }
+  .civic-head { padding: 0 16px 8px; background: #fff; }
+  .civic-head h1 { font-size: 18px; }
+  .civic-data-note { display: none; }
+  .civic-scroll { padding: 2px 12px 12px; }
+  .civic-foot { padding: 8px 12px calc(8px + env(safe-area-inset-bottom)); }
+  .civic-drawer { top: 80px; bottom: 0; left: 0; right: 0; width: auto; border-radius: 18px 18px 0 0; }
+  .civic-mode .maplibregl-ctrl-bottom-right { bottom: calc(46% + 6px); right: 4px; transition: bottom .25s var(--ease); }
+  body[data-civic-sheet="peek"].civic-mode .maplibregl-ctrl-bottom-right { bottom: calc(24% + 6px); }
+  body[data-civic-sheet="full"].civic-mode .maplibregl-ctrl-bottom-right { bottom: calc(100% - 126px); }
+  .civic-mode .map-tools { top: 84px; }
+  .civic-mode #map-status { top: 84px; left: 10px; right: 60px; max-width: none; white-space: normal; }
+  .civic-mode .toast { bottom: calc(46% + 48px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .civic-panel, .civic-mode .maplibregl-ctrl-bottom-right { transition: none; }
+}
