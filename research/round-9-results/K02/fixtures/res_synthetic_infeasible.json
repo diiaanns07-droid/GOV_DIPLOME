@@ -1,0 +1,68 @@
+{
+ "name": "res_synthetic_infeasible",
+ "provenance": {
+  "kind": "synthetic",
+  "note": "Синтетика: required дороже бюджета — infeasible.",
+  "from_r8_fixture": "synthetic_infeasible_required"
+ },
+ "envelope": {
+  "schema_version": "city-resilience-v1",
+  "plan": {
+   "schema_version": "city-plan-v2",
+   "city_id": "astana",
+   "source_snapshot": "sha256:5bdf1f1755a5a105160e4301f6cfe72a539b33175f9dffe9750328ec55d2e35f",
+   "category": "school",
+   "control_points": [
+    {
+     "id": "a",
+     "lon": 10.004,
+     "lat": 10.004,
+     "weight": 1
+    },
+    {
+     "id": "b",
+     "lon": 10.016,
+     "lat": 10.016,
+     "weight": 1
+    }
+   ],
+   "candidates": [
+    {
+     "id": "big",
+     "lon": 10.004,
+     "lat": 10.004,
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 500
+    },
+    {
+     "id": "small",
+     "lon": 10.016,
+     "lat": 10.016,
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 10
+    }
+   ],
+   "budget": 100,
+   "max_selected": 2,
+   "coverage_radius_m": 200,
+   "required_ids": [
+    "big"
+   ],
+   "excluded_ids": [],
+   "selected_ids": [
+    "small"
+   ]
+  },
+  "cases": [
+   {
+    "id": "off",
+    "label": "Единственная запись выключена",
+    "disabled_source_ids": [
+     "s1"
+    ]
+   }
+  ]
+ }
+}

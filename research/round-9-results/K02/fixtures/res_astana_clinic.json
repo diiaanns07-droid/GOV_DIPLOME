@@ -1,0 +1,124 @@
+{
+ "name": "res_astana_clinic",
+ "provenance": {
+  "kind": "real_slice_with_synthetic_candidates_and_user_cases",
+  "build_sha": "d865dd4a124291e10dd0b7bb1d9eada20d34c268",
+  "data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "plan_js_sha256": "b2029640f00c10f6018f469ba4e157705d405e1de65178bca824769d50b9a3c7",
+  "from_r8_fixture": "real_astana_clinic",
+  "note": "Исключения — допущение пользователя для анализа. Кандидаты/веса/стоимости — synthetic demo."
+ },
+ "envelope": {
+  "schema_version": "city-resilience-v1",
+  "plan": {
+   "schema_version": "city-plan-v2",
+   "city_id": "astana",
+   "source_snapshot": "sha256:67a40b96d29873118780969eb11c32deba49a0c64fda1f185efe634882f04c6d",
+   "category": "outpatient_clinic",
+   "control_points": [
+    {
+     "id": "p1",
+     "lon": 71.421235,
+     "lat": 51.16483,
+     "weight": 1
+    },
+    {
+     "id": "p2",
+     "lon": 71.444137,
+     "lat": 51.16483,
+     "weight": 2
+    },
+    {
+     "id": "p3",
+     "lon": 71.432686,
+     "lat": 51.172016,
+     "weight": 1
+    },
+    {
+     "id": "p4",
+     "lon": 71.421235,
+     "lat": 51.179203,
+     "weight": 4
+    },
+    {
+     "id": "p5",
+     "lon": 71.444137,
+     "lat": 51.179203,
+     "weight": 1
+    }
+   ],
+   "candidates": [
+    {
+     "id": "k-a",
+     "lon": 71.421807,
+     "lat": 51.165189,
+     "category": "outpatient_clinic",
+     "kind": "hypothetical",
+     "cost": 80
+    },
+    {
+     "id": "k-b",
+     "lon": 71.443565,
+     "lat": 51.165189,
+     "category": "outpatient_clinic",
+     "kind": "hypothetical",
+     "cost": 60
+    },
+    {
+     "id": "k-c",
+     "lon": 71.421807,
+     "lat": 51.178844,
+     "category": "outpatient_clinic",
+     "kind": "hypothetical",
+     "cost": 90
+    },
+    {
+     "id": "k-d",
+     "lon": 71.443565,
+     "lat": 51.178844,
+     "category": "outpatient_clinic",
+     "kind": "hypothetical",
+     "cost": 40
+    },
+    {
+     "id": "k-e",
+     "lon": 71.432686,
+     "lat": 51.171118,
+     "category": "outpatient_clinic",
+     "kind": "hypothetical",
+     "cost": 30
+    }
+   ],
+   "budget": 150,
+   "max_selected": 2,
+   "coverage_radius_m": 400,
+   "required_ids": [
+    "k-d"
+   ],
+   "excluded_ids": [
+    "k-e"
+   ],
+   "selected_ids": [
+    "k-a",
+    "k-c"
+   ]
+  },
+  "cases": [
+   {
+    "id": "p4-без-ближайшей",
+    "label": "Не учитываем ближайшую поликлинику к p4",
+    "disabled_source_ids": [
+     "43c64670-1b4c-4d42-bd0f-0049a7b49371"
+    ]
+   },
+   {
+    "id": "p2-p4",
+    "label": "Не учитываем ближайшие к p2 и p4",
+    "disabled_source_ids": [
+     "43c64670-1b4c-4d42-bd0f-0049a7b49371",
+     "3fba1026-8464-41ab-88f8-633e3df0de30"
+    ]
+   }
+  ]
+ }
+}

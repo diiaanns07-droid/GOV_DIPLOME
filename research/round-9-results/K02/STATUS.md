@@ -11,4 +11,11 @@ tests/common.cjs (адаптер r8 фикстур → makeContext/validatePlanS
 - FAIL E6: то же для оценки ручного плана другого selected_ids.
   Уровень: публичный API; UI защищён (plan-ui.js:443 сверяет problem_digest и сам вычисляет manual).
 - Patch-предложение patches/explain_binds_facts.patch (plan.js + правка tests/plan.cjs:193, который сам передавал manual для [] при другом selected_ids). На копии: s1 22/22, plan.cjs/conformance/whatif/smoke/plan_smoke — pass; применяется к чистой d865dd4 и воспроизводит копию (cmp). НЕ применён к сборке — не FIXED.
-Следующий шаг: этап 2 (renderer фактов устойчивости manual/nominal/robust).
+
+## Этап 2 — готово
+В BUILD d865dd4 нет web/resilience.js (новой сборки нет). Поэтому:
+- resilience_facts.js — узкий адаптер фактов + шаблонный renderer (ru; kk — черновик с пометкой о языковой проверке): manual/nominal/robust по случаям, худший вектор и ВСЕ худшие case IDs, цена устойчивости (из результата движка), исключённые записи с ID/именами, null с причиной, дубль случаев, НЕДОПУСТИМ ручной; stale_problem/stale_explanation/duplicate_id через facts.validatePlan.
+- resilience_ref.js — генератор результатов для фикстур поверх plan.js сборки (precompute/evaluatePlan/optimizePlans/feasibility), формат API CORE_SPEC r9. Не продукт и не второй движок.
+- make_resilience_fixtures.cjs → fixtures/res_*.json (Шымкент школы, Астана поликлиники — реальные срезы + synthetic кандидаты/случаи; 2 synthetic).
+`node tests/s2_resilience.cjs --app-root <d865dd4>` → 8 PASS (runs/s2_d865dd4.json). R8 сначала дал FAIL из-за артефакта теста (ID кандидата t2); тест исправлен, продукт не менялся.
+Следующий шаг: этап 3 (негативные fixtures, примеры обоих городов, HANDOFF).

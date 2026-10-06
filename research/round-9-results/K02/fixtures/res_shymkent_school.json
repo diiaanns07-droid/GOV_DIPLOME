@@ -1,0 +1,162 @@
+{
+ "name": "res_shymkent_school",
+ "provenance": {
+  "kind": "real_slice_with_synthetic_candidates_and_user_cases",
+  "build_sha": "d865dd4a124291e10dd0b7bb1d9eada20d34c268",
+  "data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+  "plan_js_sha256": "b2029640f00c10f6018f469ba4e157705d405e1de65178bca824769d50b9a3c7",
+  "from_r8_fixture": "real_shymkent_school",
+  "note": "Исключения — допущение пользователя для анализа, не подтверждение закрытия. Кандидаты/веса/стоимости — synthetic demo."
+ },
+ "envelope": {
+  "schema_version": "city-resilience-v1",
+  "plan": {
+   "schema_version": "city-plan-v2",
+   "city_id": "shymkent",
+   "source_snapshot": "sha256:a9326b5633c513c0bfeccbb2248b26cf3b706c902f77745073a2959ad8d7ff3e",
+   "category": "school",
+   "control_points": [
+    {
+     "id": "двор-север",
+     "lon": 69.598224,
+     "lat": 42.321916,
+     "weight": 3
+    },
+    {
+     "id": "двор-центр",
+     "lon": 69.605512,
+     "lat": 42.315628,
+     "weight": 1
+    },
+    {
+     "id": "двор-юг",
+     "lon": 69.600653,
+     "lat": 42.308442,
+     "weight": 2
+    },
+    {
+     "id": "рынок",
+     "lon": 69.612799,
+     "lat": 42.310238,
+     "weight": 1
+    },
+    {
+     "id": "парк",
+     "lon": 69.615229,
+     "lat": 42.322814,
+     "weight": 1
+    },
+    {
+     "id": "остановка",
+     "lon": 69.607941,
+     "lat": 42.319221,
+     "weight": 2
+    }
+   ],
+   "candidates": [
+    {
+     "id": "c-sev",
+     "lon": 69.598709,
+     "lat": 42.321018,
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 90
+    },
+    {
+     "id": "c-yug",
+     "lon": 69.601139,
+     "lat": 42.30934,
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 70
+    },
+    {
+     "id": "c-vost",
+     "lon": 69.614014,
+     "lat": 42.311137,
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 60
+    },
+    {
+     "id": "c-park",
+     "lon": 69.614743,
+     "lat": 42.321916,
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 50
+    },
+    {
+     "id": "c-centr",
+     "lon": 69.605997,
+     "lat": 42.316526,
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 120
+    },
+    {
+     "id": "c-zap",
+     "lon": 69.59458,
+     "lat": 42.315628,
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 40
+    }
+   ],
+   "budget": 200,
+   "max_selected": 3,
+   "coverage_radius_m": 300,
+   "required_ids": [],
+   "excluded_ids": [],
+   "selected_ids": [
+    "c-centr",
+    "c-zap"
+   ]
+  },
+  "cases": [
+   {
+    "id": "без-ближайшей-север",
+    "label": "Условно не учитываем ближайшую школу к точке «двор-север»",
+    "disabled_source_ids": [
+     "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+    ]
+   },
+   {
+    "id": "юг-и-остановка",
+    "label": "Не учитываем две записи (юг, остановка)",
+    "disabled_source_ids": [
+     "931d6da5-e9db-4523-a6fd-79c88f235f88",
+     "01961e84-815f-4bd1-85c3-6bf1734256ec"
+    ]
+   },
+   {
+    "id": "дубль-север",
+    "label": "Тот же набор, что и первый случай",
+    "disabled_source_ids": [
+     "99759f95-3ddb-4d87-8091-c301f9c23c9b"
+    ]
+   },
+   {
+    "id": "все-записи",
+    "label": "Все записи категории условно не учитываются",
+    "disabled_source_ids": [
+     "01961e84-815f-4bd1-85c3-6bf1734256ec",
+     "01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+     "176c5993-4b62-4e90-849f-88addc0153bb",
+     "18df815b-170a-437c-977f-0769690315d4",
+     "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+     "537980b9-4d8b-4c25-8e27-a6af60ffac34",
+     "68c8f007-75bc-42f6-8da8-baa72042bde4",
+     "931d6da5-e9db-4523-a6fd-79c88f235f88",
+     "99759f95-3ddb-4d87-8091-c301f9c23c9b",
+     "9d31b953-ccc4-42bd-a3a3-3e4e21f44051",
+     "a2cb79c8-c922-47a9-96a2-6cc326bbc3d6",
+     "b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+     "baeda67d-e701-4c2a-bba6-10a13466e76d",
+     "bcd265d0-0799-4dbf-8b15-23bae752a4d2",
+     "fd50a858-462d-477f-8bc6-a8d3e03a9576"
+    ]
+   }
+  ]
+ }
+}

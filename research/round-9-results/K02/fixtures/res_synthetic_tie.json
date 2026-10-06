@@ -1,0 +1,60 @@
+{
+ "name": "res_synthetic_tie",
+ "provenance": {
+  "kind": "synthetic",
+  "note": "Синтетика: равные кандидаты; обычный и устойчивый совпадают.",
+  "from_r8_fixture": "synthetic_tie_same_winners"
+ },
+ "envelope": {
+  "schema_version": "city-resilience-v1",
+  "plan": {
+   "schema_version": "city-plan-v2",
+   "city_id": "shymkent",
+   "source_snapshot": "sha256:6c583e7b551ec9101ef0d9f94614389592eceedc81a156e1d824c226a432cc0c",
+   "category": "outpatient_clinic",
+   "control_points": [
+    {
+     "id": "a",
+     "lon": 10.01,
+     "lat": 10.01,
+     "weight": 1
+    }
+   ],
+   "candidates": [
+    {
+     "id": "t1",
+     "lon": 10.009,
+     "lat": 10.01,
+     "category": "outpatient_clinic",
+     "kind": "hypothetical",
+     "cost": 10
+    },
+    {
+     "id": "t2",
+     "lon": 10.011,
+     "lat": 10.01,
+     "category": "outpatient_clinic",
+     "kind": "hypothetical",
+     "cost": 10
+    }
+   ],
+   "budget": 10,
+   "max_selected": 1,
+   "coverage_radius_m": 1000,
+   "required_ids": [],
+   "excluded_ids": [],
+   "selected_ids": [
+    "t2"
+   ]
+  },
+  "cases": [
+   {
+    "id": "off",
+    "label": "Единственная запись выключена",
+    "disabled_source_ids": [
+     "s1"
+    ]
+   }
+  ]
+ }
+}
