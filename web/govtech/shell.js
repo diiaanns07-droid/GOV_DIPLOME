@@ -222,11 +222,10 @@
     state.threeD = !state.threeD;
     $g("toggle-3d").classList.toggle("active", state.threeD);
     $g("toggle-3d").setAttribute("aria-pressed", String(state.threeD));
-    if (mapReady) {
-      const [w, s, east, n] = D.cities[S.city].bbox;
-      map.easeTo({ center: [(w + east) / 2, (s + n) / 2], pitch: state.threeD ? 52 : 0,
-        zoom: state.threeD ? Math.max(15.5, map.getZoom()) : map.getZoom(), duration: 650 * motion() });
-    }
+    // K07 r10 F2: tilt keeps the whole slice clear of the panels (same padding as fitSlice), not a fixed zoom on its centre.
+    if (mapReady) fitSlice();
+    // K07 r10 F3: without the basemap only the camera tilts; say so instead of switching silently.
+    if (state.threeD && document.body.classList.contains("offline-basemap")) toast("3D-здания появятся, когда загрузится подложка OpenFreeMap. Сейчас наклоняется только камера.");
   }, true);
   // Preserve the original map and its 3D/zoom controls; expose only the UI seam expected by pinned modules.
   window.CITY_APP = { state: S, switchCity, setTool: () => setActive(true), ui: { el, sv, $: $g, D, F, EXT,

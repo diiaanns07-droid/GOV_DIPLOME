@@ -46,7 +46,11 @@ for _asset in ("shell.js", "shell.css", "core/data.js", "core/evidence.js",
                "core/plan-ui.js", "core/resilience-ui.js", "core/attribution/ATTRIBUTION.md",
                "core/attribution/attribution.json", "core/attribution/LICENSES/Apache-2.0.txt",
                "core/attribution/LICENSES/CDLA-Permissive-2.0.txt", "core/attribution/LICENSES/ODbL-1.0.txt",
-               "school/case.js", "school/school-ui.js", "school/school.css"):
+               "school/case.js", "school/school-ui.js", "school/school.css",
+               "school/cases/shymkent.case.json", "school/cases/shymkent.case.meta.json",
+               # K03 r10: pedestrian-v1 routing (module, ODbL graphs, hash manifest)
+               "k03/routing.js", "k03/school-access-routing.js", "k03/shymkent.graph.json", "k03/astana.graph.json",
+               "k03/K03_MANIFEST.json"):
     _mime = {".js": "text/javascript", ".css": "text/css", ".json": "application/json"}.get(Path(_asset).suffix, "text/plain")
     ASSETS["/govtech/" + _asset] = ("govtech/" + _asset, _mime + "; charset=utf-8")
 

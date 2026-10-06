@@ -13,6 +13,8 @@
   const COMPARE_SCHEMA = "school-access-compare-v1";
   const CANON = "sac-canon-v1";
   const GEODESIC = "geodesic";
+  const PEDESTRIAN = "pedestrian-v1";
+  const ROUTING_POLICIES = ["pedestrian-v1-strict", "pedestrian-v1-exploratory"];  // K03 r10 policy/pedestrian-v1.json
   const METRIC = "haversine-mm-v1";
   const LIMITS = { origins: 25, candidates: 16, schools: 200, bytes: 256 * 1024 };
   const CITIES = ["shymkent", "astana"];
@@ -24,6 +26,9 @@
   // Default target policy: Overture school categories; records with a QA category doubt are left out.
   const SCHOOL_CATEGORIES = ["elementary_school", "middle_school", "high_school"];
   const TARGET_POLICY = "overture-school-category-v1";
+  // A prepared package (e.g. K01) already lists only its target schools: every school is a target unless restricted.
+  const PACKAGE_POLICY = "case-package-v1";
+  const POLICIES = [TARGET_POLICY, PACKAGE_POLICY];
 
   class CaseError extends Error { constructor(code, detail) { super(code + ": " + detail); this.code = code; this.detail = detail; } }
   const fail = (code, detail) => { throw new CaseError(code, detail); };
@@ -90,6 +95,7 @@
   }
 
   // ---------- validation (also for untrusted imports) ----------
+  // Contract fields + two documented BUILD extensions: variants {A,B} and parameters.target_policy (see normalizeCase).
   const KEYS = ["schema_version", "case_id", "city_id", "title", "bbox", "snapshot_id", "sources", "schools", "origins", "candidates",
     "selected_candidate_ids", "variants", "parameters", "model_assumptions"];
   function checkRecord(r, where, kinds) {
@@ -147,12 +153,20 @@
     for (const v of ["A", "B"]) if (c.variants[v] !== null && !cand.has(c.variants[v])) fail("variants", `вариант ${v} ссылается на неизвестное место`);
     for (const k of Object.keys(c.variants)) if (k !== "A" && k !== "B") fail("variants", "допустимы только A и B");
     const p = c.parameters || fail("parameters", "нет parameters");
-    if (p.distance_method !== GEODESIC) fail("method", "в этой сборке доступен только geodesic (по прямой); pedestrian-v1 не подключён");
-    if (p.routing_policy_id !== null) fail("policy", "для прямой routing_policy_id = null");
+    if (p.distance_method === GEODESIC) {
+      if (p.routing_policy_id !== null) fail("policy", "для прямой routing_policy_id = null");
+      if ("routing" in p) fail("policy", "для прямой нет графа маршрутов");
+    } else if (p.distance_method === PEDESTRIAN) {
+      if (!ROUTING_POLICIES.includes(p.routing_policy_id)) fail("policy", "pedestrian-v1: routing_policy_id " + ROUTING_POLICIES.join(" | "));
+      // BUILD extension: which graph/policy file the distances come from (part of case_digest; checked against the matrix)
+      const r = p.routing;
+      if (!r || typeof r.graph_sha256 !== "string" || typeof r.policy_sha256 !== "string" || !finite(r.max_snap_m)) fail("routing", "pedestrian-v1: нужен parameters.routing {graph_sha256, policy_sha256, max_snap_m}");
+    } else fail("method", "distance_method: geodesic | pedestrian-v1");
     if (!isInt(p.threshold_m) || p.threshold_m < 50 || p.threshold_m > 5000) fail("threshold", "threshold_m — целое 50…5000");
     if (p.max_new_objects !== 1) fail("max_new_objects", "в основном кейсе max_new_objects = 1");
     const tp = p.target_policy;
-    if (!tp || tp.id !== TARGET_POLICY || !Array.isArray(tp.categories) || !Array.isArray(tp.exclude_qa) || !Array.isArray(tp.include_ids) || !Array.isArray(tp.exclude_ids)) fail("target_policy", "target_policy " + TARGET_POLICY);
+    if (!tp || !POLICIES.includes(tp.id) || !Array.isArray(tp.categories) || !Array.isArray(tp.exclude_qa) || !Array.isArray(tp.include_ids) || !Array.isArray(tp.exclude_ids)) fail("target_policy", "target_policy: " + POLICIES.join(" | "));
+    for (const k of Object.keys(p)) if (!["distance_method", "routing_policy_id", "threshold_m", "max_new_objects", "target_policy", "routing"].includes(k)) fail("unknown_field", "parameters." + k);
     const sch = new Set(c.schools.map((s) => s.id));
     for (const id of [...tp.include_ids, ...tp.exclude_ids]) if (!sch.has(id)) fail("target_policy", "ручной выбор ссылается на неизвестную школу " + id);
     if (!Array.isArray(c.model_assumptions) || !c.model_assumptions.every((s) => typeof s === "string")) fail("assumptions", "model_assumptions — строки");
@@ -164,6 +178,8 @@
     const tp = c.parameters.target_policy;
     if (tp.exclude_ids.includes(s.id)) return { eligible: false, reason: "исключено пользователем" };
     if (tp.include_ids.includes(s.id)) return { eligible: true, reason: "включено пользователем" };
+    if (s.access_eligibility === "known_restricted") return { eligible: false, reason: "приём ограничен (known_restricted)" };
+    if (tp.id === PACKAGE_POLICY) return { eligible: true, reason: "в списке школ подготовленного пакета; допуск к приёму: " + (s.access_eligibility === "known_public" ? "общедоступная" : "неизвестно") };
     if (!tp.categories.includes(s.category)) return { eligible: false, reason: `категория «${s.category}» — не школа по правилу ${tp.id}` };
     const q = (s.qa || []).find((x) => tp.exclude_qa.includes(x));
     if (q) return { eligible: false, reason: "QA: " + q };
@@ -207,10 +223,15 @@
   }
   function checkMatrix(c, mx) {
     if (!mx || !Array.isArray(mx.rows)) fail("matrix", "нет строк матрицы");
-    if (mx.method !== c.parameters.distance_method) fail("matrix_method", "метод матрицы не совпадает с кейсом");
+    const p = c.parameters;
+    if (mx.method !== p.distance_method) fail("matrix_method", "метод матрицы не совпадает с кейсом");
+    if (mx.policy_id !== p.routing_policy_id) fail("matrix_policy", "политика матрицы не совпадает с кейсом: политики не смешиваются");
+    if (p.distance_method === PEDESTRIAN && (mx.graph_sha256 !== p.routing.graph_sha256 || mx.policy_sha256 !== p.routing.policy_sha256))
+      fail("matrix_graph", "матрица посчитана по другому графу/политике, чем указано в кейсе");
     for (const r of mx.rows) {
       if (!STATUSES.includes(r.status)) fail("matrix_status", r.status);
       if (r.status === "ok" ? !(isInt(r.distance_mm) && r.distance_mm >= 0) : r.distance_mm !== null) fail("matrix_distance", `${r.origin_id}→${r.target_id}: distance_mm при status=${r.status}`);
+      if (r.method !== mx.method || r.policy_id !== mx.policy_id) fail("matrix_mixed", `${r.origin_id}→${r.target_id}: строка другого метода/политики`);
     }
   }
 
@@ -229,13 +250,15 @@
     const thr = c.parameters.threshold_m * 1000;
     const rows = c.origins.slice().sort(byId).map((o) => {
       const b = nearestOf(index, o.id, eligible), a = nearestOf(index, o.id, [...eligible, ...extra]);
+      // partial: a path is known, but some school/place in use has no known path (the minimum may be incomplete)
+      const missing = [...eligible, ...extra].filter((t) => { const r = index.get(o.id + "\u0000" + t.id); return !r || r.status !== "ok"; }).map((t) => t.id).sort();
       return { origin_id: o.id, before_mm: b ? b.mm : null, after_mm: a ? a.mm : null, delta_mm: a && b ? a.mm - b.mm : null,
-        status: a ? "ok" : "unknown", nearest_target_id: a ? a.t.id : null, source_ids: a ? a.t.source_ids.slice() : [] };
+        status: !a ? "unknown" : missing.length ? "partial" : "ok", nearest_target_id: a ? a.t.id : null, unknown_target_ids: missing, source_ids: a ? a.t.source_ids.slice() : [] };
     });
     const known = rows.filter((r) => r.after_mm !== null);
     const sum = known.reduce((s, r) => s + r.after_mm, 0);
-    const metrics = { total_origins: rows.length, known_count: known.length, unknown_count: rows.length - known.length,
-      sum_distance_mm: known.length ? sum : null, mean_distance_mm: known.length ? Math.round(sum / known.length) : null,
+    const metrics = { total_origins: rows.length, known_count: known.length, unknown_count: rows.length - known.length, partial_count: rows.filter((r) => r.status === "partial").length,
+      sum_distance_mm: known.length ? sum : null, mean_distance_mm: known.length ? sum / known.length : null,
       max_distance_mm: known.length ? Math.max(...known.map((r) => r.after_mm)) : null,
       within_threshold_count: known.filter((r) => r.after_mm <= thr).length,
       within_threshold_share_of_all_points: rows.length ? known.filter((r) => r.after_mm <= thr).length / rows.length : null };
@@ -243,6 +266,7 @@
     const limitations = [];
     if (!eligible.length) limitations.push("no_eligible_school");
     if (metrics.unknown_count) limitations.push("unknown_distances");
+    if (metrics.partial_count) limitations.push("some_targets_without_known_path");
     return { id, label, selected_candidate_ids: selected.slice().sort(), rows, metrics, closer_count: closer, limitations };
   }
   const rankKey = (m) => [m.unknown_count, m.sum_distance_mm === null ? Infinity : m.sum_distance_mm, m.max_distance_mm === null ? Infinity : m.max_distance_mm];
@@ -266,15 +290,16 @@
     const facts = [];
     const fact = (plan, metric, value, unit, origin, extraAssumptions) => facts.push({ id: `${plan.id}/${origin ? origin + "/" : ""}${metric}`, metric, value, unit,
       plan_id: plan.id, origin_id: origin || null, kind: "derived", source_ids: origin ? (plan.rows.find((r) => r.origin_id === origin) || { source_ids: [] }).source_ids : c.sources.map((s) => s.id),
-      assumptions: ["straight_line_not_route", ...(extraAssumptions || [])] });
+      assumptions: [c.parameters.distance_method === GEODESIC ? "straight_line_not_route" : c.parameters.routing_policy_id, ...(extraAssumptions || [])] });
     for (const p of plans) {
       for (const [k, v] of Object.entries(p.metrics)) fact(p, k, v, k.endsWith("_mm") ? "mm" : k.endsWith("share_of_all_points") ? "share" : "points");
       fact(p, "closer_count", p.closer_count, "points");
       if (p.id !== "current") for (const r of p.rows) fact(p, "delta_mm", r.delta_mm, "mm", r.origin_id);
     }
-    const limitations = ["straight_line_not_route", "schools_outside_slice_not_loaded", "access_eligibility_unknown", "capacity_unknown",
+    const limitations = [c.parameters.distance_method === GEODESIC ? "straight_line_not_route" : "model_network_not_verified_on_site", "schools_outside_slice_not_loaded", "access_eligibility_unknown", "capacity_unknown",
       "secondary_source_not_registry", "grid_points_not_population", "candidates_hypothetical_land_unknown", "no_cost_data"];
     return { schema_version: COMPARE_SCHEMA, case_digest: caseDigest(c), method: mx.method, metric: METRIC, policy_id: mx.policy_id,
+      graph_sha256: mx.graph_sha256 || null,
       threshold_m: c.parameters.threshold_m, eligible_school_ids: eligible.map((s) => s.id).sort(), plans, facts, limitations };
   }
 
@@ -291,6 +316,54 @@
     return { code: "better", winner: o < 0 ? aId : bId };
   }
 
+  // ---------- packages from other agents (contract-only fields) → internal case ----------
+  /* normalizeCase(raw): deep copy; adds the BUILD extensions when absent: variants from selected_candidate_ids[0..1]
+   * (A, B; the contract list is read as separately compared variants) and target policy case-package-v1
+   * (a prepared package lists only its target schools). Does not change any value of the package. */
+  function normalizeCase(raw) {
+    if (!raw || typeof raw !== "object" || Array.isArray(raw)) fail("not_object", "кейс должен быть объектом");
+    const c = JSON.parse(JSON.stringify(raw));
+    if (!("variants" in c)) {
+      const sel = Array.isArray(c.selected_candidate_ids) ? c.selected_candidate_ids : [];
+      if (sel.length > 2) fail("variants", "в основном пути сравниваются не больше двух мест (A, B)");
+      c.variants = { A: sel[0] ?? null, B: sel[1] ?? null };
+      c.selected_candidate_ids = [];
+    }
+    if (c.parameters && typeof c.parameters === "object" && !("target_policy" in c.parameters))
+      c.parameters.target_policy = { id: PACKAGE_POLICY, categories: [], exclude_qa: [], include_ids: [], exclude_ids: [] };
+    return validateCase(c);
+  }
+  /* toContract(c): the strict contract view (no BUILD extensions): only target schools, A/B as selected_candidate_ids. */
+  function toContract(c) {
+    validateCase(c);
+    const out = JSON.parse(JSON.stringify(c));
+    out.schools = out.schools.filter((s) => targetStatus(c, s).eligible);
+    out.selected_candidate_ids = [c.variants.A, c.variants.B].filter(Boolean);
+    delete out.variants; delete out.parameters.target_policy; delete out.parameters.routing;
+    return out;
+  }
+  /* bindToSlice(c, D): the case must describe the slice actually loaded in this page — same city, same frame, a source
+   * with the slice file hash (or the BUILD snapshot id), schools that are slice records keep their slice coordinates.
+   * Another snapshot is refused, never silently replaced. */
+  function bindToSlice(c, D) {
+    const city = D && D.cities && D.cities[c.city_id];
+    if (!city) fail("bind_city", "нет загруженного среза для " + c.city_id);
+    const fileSha = city.files && city.files.places_social ? city.files.places_social.sha256 : null;
+    const own = c.snapshot_id === `overture-${city.release}-${c.city_id}`;
+    const hashed = fileSha && c.sources.some((s) => s.content_sha256 === fileSha) && c.snapshot_id.includes(city.release);
+    if (!own && !hashed) fail("bind_snapshot", `кейс построен на «${c.snapshot_id}», а загружен срез ${city.release} (${String(fileSha).slice(0, 12)}…). Другой снимок не подставляется.`);
+    if (c.bbox.some((v, i) => Math.abs(v - city.bbox[i]) > 1e-9)) fail("bind_bbox", "рамка кейса не совпадает с рамкой загруженного среза");
+    const places = new Map(city.places.map((p) => [p.id, p]));
+    let matched = 0;
+    for (const s of c.schools) {
+      const p = places.get(s.id.replace(/^overture:/, ""));
+      if (!p) continue;
+      if (Math.abs(p.lon - s.lon) > 1e-9 || Math.abs(p.lat - s.lat) > 1e-9) fail("bind_coordinates", `${s.id}: координата отличается от записи среза`);
+      matched++;
+    }
+    return { matched_slice_records: matched, school_count: c.schools.length, by: own ? "build_snapshot_id" : "source_content_sha256" };
+  }
+
   // ---------- import / export (untrusted input) ----------
   function exportCase(c) { validateCase(c); return JSON.stringify({ ...c, case_digest: caseDigest(c) }, null, 2); }
   function importCase(text, D) {
@@ -300,18 +373,16 @@
     try { raw = JSON.parse(text); } catch (e) { fail("import_json", "файл не является JSON"); }
     if (!raw || typeof raw !== "object" || Array.isArray(raw)) fail("import_type", "ожидается объект кейса");
     const claimed = raw.case_digest;
-    const c = { ...raw }; delete c.case_digest;
-    validateCase(c);
-    const city = D && D.cities[c.city_id];
-    if (!city) fail("import_city", "нет загруженного среза для " + c.city_id);
-    if (c.snapshot_id !== `overture-${city.release}-${c.city_id}`) fail("import_snapshot", `кейс построен на ${c.snapshot_id}; загружен срез ${city.release}. Другой снимок не подставляется.`);
+    const r = { ...raw }; delete r.case_digest;
+    const c = normalizeCase(r);
+    bindToSlice(c, D);
     const digest = caseDigest(c);
     if (claimed !== undefined && claimed !== digest) fail("import_digest", "case_digest файла не совпадает с пересчитанным: файл изменён");
     return c;
   }
 
-  const api = { SCHEMA, COMPARE_SCHEMA, CANON, METRIC, LIMITS, TARGET_POLICY, SCHOOL_CATEGORIES, CaseError, buildCase, validateCase, targetStatus,
-    canon, caseDigest, geodesicMatrix, compareCase, verdict, cmpPlans, exportCase, importCase };
+  const api = { SCHEMA, COMPARE_SCHEMA, CANON, METRIC, LIMITS, GEODESIC, PEDESTRIAN, ROUTING_POLICIES, TARGET_POLICY, PACKAGE_POLICY, SCHOOL_CATEGORIES, CaseError, buildCase, validateCase, normalizeCase,
+    toContract, bindToSlice, targetStatus, canon, caseDigest, geodesicMatrix, compareCase, verdict, cmpPlans, exportCase, importCase };
   if (NODE) module.exports = api;
   else root.SCHOOL_CASE = api;
 })(typeof window !== "undefined" ? window : globalThis);

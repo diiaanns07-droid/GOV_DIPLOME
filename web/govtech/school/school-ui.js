@@ -20,20 +20,89 @@
   };
   const m = (mm) => (mm === null || mm === undefined ? "нет данных" : Math.round(mm / 1000).toLocaleString("ru-RU") + " м");
   const dm = (mm) => (mm === null || mm === undefined ? "нет данных" : mm === 0 ? "0 м" : (mm < 0 ? "−" : "+") + Math.round(Math.abs(mm) / 1000).toLocaleString("ru-RU") + " м");
+  const pts = (n) => { const a = n % 10, b = n % 100; return n + " " + (a === 1 && b !== 11 ? "точка" : a >= 2 && a <= 4 && (b < 12 || b > 14) ? "точки" : "точек"); };
   const motion = () => (matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 1);
 
   const S = { city: GOV.state.city, cases: {}, view: "current", diff: false, pick: null, sel: null, card: "start", cardOpen: true, compared: false,
-    cmp: null, digest: null, msg: "", userSeq: 1, map: null, pending: false };
+    cmp: null, mx: null, digest: null, msg: "", userSeq: 1, map: null, pending: false, pkg: {}, loading: true, graphs: {} };
+  const RT = window.K03_ROUTING, RA = window.K03_SCHOOL_ROUTING;
+  // Texts of the K03 integration note (section 3): never replaced by stronger wording.
+  const METHOD_TEXT = { geodesic: "по прямой — не маршрут", "pedestrian-v1-strict": "маршрут по пешеходным рёбрам OSM/Overture (не проверено на месте)",
+    "pedestrian-v1-exploratory": "маршрут по неполным данным (не гарантированно доступный пешеходный путь)" };
+  const methodKey = (c) => c.parameters.distance_method === "geodesic" ? "geodesic" : c.parameters.routing_policy_id;
+  // Prepared case packages, served byte-identical (see school/SCHOOL_MANIFEST.json). A city without a package, or with a
+  // package that fails validation/binding to the loaded slice, uses the reproducible case built from the slice.
+  const PACKAGES = { shymkent: { case: "/govtech/school/cases/shymkent.case.json", meta: "/govtech/school/cases/shymkent.case.meta.json", by: "K01, раунд 10" } };
 
   // ---------- case state ----------
+  function freshCase(city) {
+    const p = S.pkg[city];
+    return p && p.case ? JSON.parse(JSON.stringify(p.case)) : SC.buildCase(D, city, F.qaOf);
+  }
   function caseOf(city) {
-    if (!S.cases[city]) S.cases[city] = SC.buildCase(D, city, F.qaOf);
+    if (!S.cases[city]) S.cases[city] = freshCase(city);
     return S.cases[city];
+  }
+  async function loadPackages() {
+    for (const [city, f] of Object.entries(PACKAGES)) {
+      try {
+        const res = await fetch(f.case);
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        const c = SC.importCase(await res.text(), D);
+        let meta = null;
+        try { const r2 = await fetch(f.meta); if (r2.ok) meta = await r2.json(); } catch (e) { meta = null; }
+        S.pkg[city] = { case: c, meta, by: f.by, bind: SC.bindToSlice(c, D) };
+      } catch (e) { S.pkg[city] = { error: (e.code ? e.code + ": " : "") + (e.detail || e.message) }; }
+    }
+  }
+  // Street graph of a city (K03, ODbL): loaded on first use, graph_sha256 verified against its content before use.
+  function ensureGraph(city) {
+    const g = S.graphs[city] || (S.graphs[city] = {});
+    if (g.G || g.error) return Promise.resolve(g);
+    if (!g.promise) g.promise = fetch("/govtech/k03/" + city + ".graph.json").then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      .then((raw) => { g.G = RT.prepare(raw, { sha256hex: F.sha256hex }); return g; }, (e) => { g.error = (e.code ? e.code + ": " : "") + (e.detail || e.message); return g; })
+      .catch((e) => { g.error = (e.code ? e.code + ": " : "") + (e.detail || e.message); return g; });
+    return g.promise;
+  }
+  function matrixOf(c) {
+    if (c.parameters.distance_method === "geodesic") return SC.geodesicMatrix(c);
+    const g = S.graphs[c.city_id];
+    if (!g || !g.G) return null;  // never a straight line instead of a missing network matrix
+    return RA.distanceMatrix(c, g.G);
+  }
+  function setMethod(key) {
+    const c = caseOf(S.city), city = S.city;
+    if (key === methodKey(c)) return;
+    if (key === "geodesic") {
+      Object.assign(c.parameters, { distance_method: "geodesic", routing_policy_id: null }); delete c.parameters.routing;
+      S.msg = "Расстояния по прямой. Это не маршрут."; recompute(); render(); return;
+    }
+    if (!RT || !RA) { S.msg = "Модуль маршрутов не загружен: остаётся расчёт по прямой."; render(); return; }
+    S.msg = "Загружаем сеть улиц среза…"; render();
+    ensureGraph(city).then((g) => {
+      if (S.city !== city) return;
+      if (g.error) { S.msg = "Сеть улиц не загружена (" + g.error + "). Расчёт по прямой не подменяет маршрут: метод не изменён."; render(); return; }
+      Object.assign(c.parameters, { distance_method: "pedestrian-v1", routing_policy_id: key, routing: { graph_sha256: g.G.g.graph_sha256, policy_sha256: g.G.g.policy_sha256, max_snap_m: g.G.g.max_snap_m } });
+      S.msg = "Расстояния: " + METHOD_TEXT[key] + ". Точки без известного пути — «неизвестно», не 0.";
+      recompute(); render();
+    });
   }
   function recompute() {
     const c = caseOf(S.city);
-    S.cmp = SC.compareCase(c, SC.geodesicMatrix(c));
-    if (S.digest && S.digest !== S.cmp.case_digest) S.compared = S.compared && false;
+    const mx = matrixOf(c);
+    if (!mx) {  // pedestrian case restored before its graph is loaded
+      S.cmp = null; S.mx = null;
+      const city = S.city;
+      ensureGraph(city).then((g) => {
+        if (S.city !== city) return;
+        if (g.error) { Object.assign(c.parameters, { distance_method: "geodesic", routing_policy_id: null }); delete c.parameters.routing; S.msg = "Сеть улиц не загружена (" + g.error + "): кейс переведён на расчёт по прямой, это видно в подписи."; }
+        else if (g.G.g.graph_sha256 !== c.parameters.routing.graph_sha256) { Object.assign(c.parameters, { distance_method: "geodesic", routing_policy_id: null }); delete c.parameters.routing; S.msg = "Сохранённый кейс ссылается на другой граф улиц: переведён на расчёт по прямой."; }
+        recompute(); render();
+      });
+      return;
+    }
+    S.mx = mx;
+    S.cmp = SC.compareCase(c, mx);
     S.digest = S.cmp.case_digest;
     save();
   }
@@ -42,15 +111,30 @@
   const cand = (id) => caseOf(S.city).candidates.find((k) => k.id === id) || null;
   const school = (id) => caseOf(S.city).schools.find((s) => s.id === id) || null;
   const target = (id) => school(id) || cand(id);
-  const variantLabel = (v) => { const id = caseOf(S.city).variants[v]; return id ? cand(id).label : null; };
+  // Package places keep their own labels («Гипотетическое место A…») in the card; on the map/buttons they are numbered,
+  // so that a package label «A» is never confused with the user's variant A.
+  function lab(t) {
+    if (!t) return "нет данных";
+    const pk = S.pkg[S.city] && S.pkg[S.city].case, i = pk ? pk.candidates.findIndex((k) => k.id === t.id) : -1;
+    return i >= 0 ? "Место " + (i + 1) : t.label;
+  }
+  const variantLabel = (v) => { const id = caseOf(S.city).variants[v]; return id ? lab(cand(id)) : null; };
+  // Records of the slice category «school» that are not targets of the case: shown on the map with the reason.
+  function excludedRecords() {
+    const c = caseOf(S.city), meta = S.pkg[S.city] && S.pkg[S.city].case && S.pkg[S.city].meta, inCase = new Set(c.schools.map((s) => s.id.replace(/^overture:/, "")));
+    const reasons = new Map(((meta && meta.excluded_school_records) || []).map((e) => [e.id.replace(/^overture:/, ""), e.reason]));
+    return D.cities[S.city].places.filter((p) => p.group === "school" && !inCase.has(p.id)).map((p) => ({ id: p.id, label: p.name || p.id, lon: p.lon, lat: p.lat,
+      category: p.category, confidence: p.confidence, reason: reasons.get(p.id) || "запись среза не входит в список школ кейса", place: p }));
+  }
 
+  const isUser = (id) => /^u\d+$/.test(id);  // places the user put on the map (not package or grid places)
   function save() {
     try {
       const c = caseOf(S.city);
       const all = JSON.parse(localStorage.getItem(STORE) || "{}");
-      all[S.city] = { snapshot_id: c.snapshot_id, variants: c.variants, threshold_m: c.parameters.threshold_m,
+      all[S.city] = { snapshot_id: c.snapshot_id, case_id: c.case_id, variants: c.variants, method: { distance_method: c.parameters.distance_method, routing_policy_id: c.parameters.routing_policy_id, routing: c.parameters.routing || null }, threshold_m: c.parameters.threshold_m,
         include_ids: c.parameters.target_policy.include_ids, exclude_ids: c.parameters.target_policy.exclude_ids,
-        user: c.candidates.filter((k) => k.kind === "hypothesis"), compared: S.compared };
+        user: c.candidates.filter((k) => isUser(k.id)), compared: S.compared };
       localStorage.setItem(STORE, JSON.stringify(all));
     } catch (e) { /* storage unavailable: the case still works for this tab */ }
   }
@@ -58,16 +142,17 @@
     try {
       const all = JSON.parse(localStorage.getItem(STORE) || "{}"), r = all[city];
       if (!r) return;
-      const c = SC.buildCase(D, city, F.qaOf);
-      if (r.snapshot_id !== c.snapshot_id) return;
+      const c = freshCase(city);
+      if (r.snapshot_id !== c.snapshot_id || r.case_id !== c.case_id) return;
       c.candidates.push(...(r.user || []).slice(0, SC.LIMITS.candidates - c.candidates.length));
       Object.assign(c.parameters, { threshold_m: r.threshold_m });
+      if (r.method && r.method.distance_method === "pedestrian-v1" && r.method.routing) Object.assign(c.parameters, { distance_method: "pedestrian-v1", routing_policy_id: r.method.routing_policy_id, routing: r.method.routing });
       Object.assign(c.parameters.target_policy, { include_ids: r.include_ids || [], exclude_ids: r.exclude_ids || [] });
       c.variants = { A: r.variants?.A ?? null, B: r.variants?.B ?? null };
       SC.validateCase(c);
       S.cases[city] = c; S.compared = !!r.compared;
-      S.userSeq = 1 + Math.max(0, ...c.candidates.filter((k) => k.kind === "hypothesis").map((k) => +k.id.slice(1) || 0));
-    } catch (e) { delete S.cases[city]; }
+      S.userSeq = 1 + Math.max(0, ...c.candidates.filter((k) => isUser(k.id)).map((k) => +k.id.slice(1)));
+    } catch (e) { delete S.cases[city]; S.msg = "Сохранённое состояние не восстановлено (" + (e.detail || e.message) + "): открыт исходный кейс."; }
   }
 
   // ---------- DOM ----------
@@ -102,10 +187,11 @@
       : { text: (a > b ? "+" : "−") + Math.abs(a - b).toLocaleString("ru-RU") + unit, cls: (a < b) === lowerBetter ? "good" : "bad" });
     const mm2m = (v) => (v === null ? null : Math.round(v / 1000));
     metrics.append(el("span", { class: "sc-view-name" }, p.id === "current" ? "Сейчас" : p.label),
-      chip("Среднее до школы", m(p.metrics.mean_distance_mm), delta(mm2m(p.metrics.mean_distance_mm), mm2m(cur.metrics.mean_distance_mm), true, " м"), "Среднее расстояние по прямой от точек сетки до ближайшей школы"),
+      chip(p.metrics.unknown_count ? "Среднее (известные)" : "Среднее до школы", m(p.metrics.mean_distance_mm), delta(mm2m(p.metrics.mean_distance_mm), mm2m(cur.metrics.mean_distance_mm), true, " м"), "Среднее расстояние по прямой от точек сетки до ближайшей школы"),
       chip(`До ${thr.toLocaleString("ru-RU")} м`, `${p.metrics.within_threshold_count} из ${p.metrics.total_origins} точек`, delta(p.metrics.within_threshold_count, cur.metrics.within_threshold_count, false, ""), "Порог — ваш параметр анализа, не норматив. Знаменатель — все точки, включая неизвестные"),
       chip("Дальше всего", m(p.metrics.max_distance_mm), delta(mm2m(p.metrics.max_distance_mm), mm2m(cur.metrics.max_distance_mm), true, " м"), "Самая дальняя точка сетки от ближайшей школы"));
-    if (p.metrics.unknown_count) metrics.append(chip("Неизвестно", `${p.metrics.unknown_count} точек`, null, "Для этих точек нет известного расстояния; они не считаются нулём"));
+    if (p.metrics.unknown_count) metrics.append(chip("Неизвестно", pts(p.metrics.unknown_count), null, "Для этих точек нет известного расстояния; они не считаются нулём"));
+    metrics.append(el("span", { class: "sc-method-tag", title: METHOD_TEXT[methodKey(c)] }, methodKey(c) === "geodesic" ? "по прямой" : methodKey(c) === "pedestrian-v1-strict" ? "по улицам" : "по улицам*"));
     const adv = btn("Расширенный режим", () => GOV.setSchool(false), { class: "sc-adv", title: "Прежний планировщик: несколько объектов, бюджет в условных единицах, Парето, устойчивость" });
     strip.append(cities, q, metrics, adv);
   }
@@ -143,11 +229,19 @@
     return h;
   }
   function dataBox() {
-    const c = caseOf(S.city), src = c.sources[0], elig = S.cmp.eligible_school_ids.length;
+    const c = caseOf(S.city), pk = S.pkg[S.city], elig = S.cmp.eligible_school_ids.length, ex = excludedRecords();
+    const total = D.cities[S.city].places.filter((p) => p.group === "school").length;
     const box = el("div", { class: "sc-box" });
-    box.append(el("p", null, `Школ в расчёте: ${elig} из ${c.schools.length} записей категории «школа». Остальные — курсы, центры, записи с сомнением QA; их можно включить вручную.`));
-    box.append(el("p", { class: "sc-prov" }, `Источник: ${src.title}. Вторичные данные (${src.verification_status}), получено ${String(src.retrieved_at).slice(0, 10)}. Не официальный реестр.`));
-    const d = el("details"); d.append(el("summary", null, "Все школьные записи"));
+    const avail = c.sources.filter((x) => x.verification_status !== "not_fetched"), nf = c.sources.length - avail.length;
+    if (pk && pk.case) {
+      box.append(el("p", null, `Кейс: подготовленный пакет ${pk.by}. Школ в расчёте: ${elig}; ещё ${ex.length} записей среза в категории «школа» исключены с причиной (реклама, курсы, детсад, координата-заглушка).`));
+      box.append(el("p", { class: "sc-prov" }, `Источники: ${avail.length} открыты (вторичные), ${nf} не открыты (NOT_FETCHED) — официальный перечень не сверялся. Снимок ${c.snapshot_id}.`));
+    } else {
+      box.append(el("p", null, `Кейс собран из среза по правилу «${c.parameters.target_policy.id}»: школ в расчёте ${elig} из ${total} записей категории «школа». Остальные — курсы, центры, записи с сомнением QA; их можно включить вручную.`));
+      box.append(el("p", { class: "sc-prov" }, `Источник: ${c.sources[0].title}. Вторичные данные (${c.sources[0].verification_status}), получено ${String(c.sources[0].retrieved_at).slice(0, 10)}. Не официальный реестр.`));
+      if (pk && pk.error) box.append(el("p", { class: "sc-warn" }, "Подготовленный пакет не принят: " + pk.error));
+    }
+    const d = el("details"); d.append(el("summary", null, `Все школьные записи (${total})`));
     const ul = el("ul", { class: "sc-list" });
     for (const s of c.schools) {
       const st = SC.targetStatus(c, s);
@@ -155,24 +249,50 @@
       b.append(el("span", { class: "sc-shape " + (st.eligible ? "sc-shape-school" : "sc-shape-excl") }), el("span", null, s.label));
       const li = el("li"); li.append(b); ul.append(li);
     }
+    for (const e of ex) {
+      const b = btn("", () => select("school", e.id), { class: "muted" });
+      b.append(el("span", { class: "sc-shape sc-shape-excl" }), el("span", null, e.label));
+      const li = el("li"); li.append(b); ul.append(li);
+    }
     d.append(ul); box.append(d);
+    const gaps = pk && pk.case && pk.meta && pk.meta.data_gaps;
+    if (gaps && gaps.length) { const g = el("details"); g.append(el("summary", null, "Пробелы данных")); for (const x of gaps) g.append(el("p", { class: "sc-note" }, x.text)); box.append(g); }
     return box;
+  }
+  function methodBox() {
+    const c = caseOf(S.city), cur = methodKey(c), box = el("div", { class: "sc-method", role: "group", "aria-label": "Как считать расстояние" });
+    box.append(el("b", null, "Как считать расстояние"));
+    const seg = el("div", { class: "sc-seg sc-seg-small" });
+    for (const [k, t] of [["geodesic", "По прямой"], ["pedestrian-v1-strict", "По улицам: проверенные"], ["pedestrian-v1-exploratory", "По улицам: неполные данные"]])
+      seg.append(btn(t, () => setMethod(k), { "aria-pressed": String(cur === k), id: "sc-method-" + k, disabled: k !== "geodesic" && !(RT && RA) }));
+    box.append(seg, el("small", null, METHOD_TEXT[cur] + (cur === "pedestrian-v1-strict" ? ". Где пешеходный доступ не отмечен в данных, путь неизвестен." : "")));
+    if (cur !== "geodesic") box.append(el("small", { class: "sc-prov" }, "Пешеходный граф: © OpenStreetMap contributors (ODbL-1.0) через Overture Maps Foundation, выпуск " + D.cities[S.city].release + "; производная база данных K03."));
+    return box;
+  }
+  function fileRow() {
+    const r = el("div", { class: "sc-row sc-files" });
+    r.append(btn("Сохранить кейс (JSON)", exportFile, { class: "sc-ghost", id: "sc-export", title: "Входы кейса и case_digest: файл можно загрузить снова и получить те же числа" }));
+    const inp = el("input", { type: "file", accept: "application/json,.json", id: "sc-import-file", hidden: true });
+    inp.addEventListener("change", () => { const f = inp.files && inp.files[0]; inp.value = ""; if (f) importFile(f); });
+    r.append(btn("Загрузить кейс…", () => inp.click(), { class: "sc-ghost", id: "sc-import" }), inp);
+    r.append(btn("Начать заново", () => { delete S.cases[S.city]; S.compared = false; S.view = "current"; S.diff = false; S.sel = null; S.msg = "Кейс города сброшен к исходному."; recompute(); render(); }, { class: "sc-ghost", id: "sc-reset" }));
+    return r;
   }
   function legendItems(parent) {
     const thr = caseOf(S.city).parameters.threshold_m.toLocaleString("ru-RU");
     const pts = S.diff && S.view !== "current" ? [["sc-shape-closer", "Точке стало ближе"], ["sc-shape-same", "Без изменений"], ["sc-shape-unk", "Неизвестно (не 0)"]]
       : [["sc-shape-point", `Точка сетки ≤ ${thr} м — не жители`], ["sc-shape-far", `Точка дальше ${thr} м`]];
     for (const [cls, text] of [["sc-shape-school", "Школа (в расчёте)"], ["sc-shape-excl", "Запись не в расчёте"], ...pts,
-      ["sc-shape-cand", "Место-гипотеза для A/B"], ["sc-shape-line", "Связь с ближайшей школой (по прямой)"]]) {
+      ["sc-shape-cand", "Место-гипотеза для A/B"], ["sc-shape-line", methodKey(caseOf(S.city)) === "geodesic" ? "Связь с ближайшей школой (по прямой)" : "Путь к ближайшей школе (модель сети); пунктир — модельный отрезок до сети"]]) {
       const s = el("span"); s.append(el("i", { class: "sc-shape " + cls }), document.createTextNode(text)); parent.append(s);
     }
   }
   function startCard() {
     const c = caseOf(S.city);
-    card.append(head(D.cities[S.city].label + ": доступность школ", "Участок ≈2×2 км · расстояния по прямой"));
+    card.append(head(D.cities[S.city].label + ": доступность школ", "Участок ≈2×2 км · " + METHOD_TEXT[methodKey(caseOf(S.city))]));
     const steps = el("ol", { class: "sc-howto" });
     for (const t of ["Посмотрите, какие точки дальше от школ (оранжевые квадраты — дальше порога).", "Выберите место A и место B: пунктирные ромбы на карте или своё место внутри рамки.", "Нажмите «Сравнить»: карта и цифры покажут Сейчас / A / B."]) steps.append(el("li", null, t));
-    card.append(steps, dataBox());
+    card.append(steps, dataBox(), methodBox());
     const thr = el("label", { class: "sc-thr" }, "Порог анализа, м ");
     const inp = el("input", { type: "number", min: 50, max: 5000, step: 50, value: String(c.parameters.threshold_m), id: "sc-threshold" });
     inp.addEventListener("change", () => {
@@ -185,7 +305,7 @@
     const lg = el("div", { class: "sc-legend-inline" }); legendItems(lg); card.append(lg);
     const as = el("details", { class: "sc-assume" }); as.append(el("summary", null, "Допущения модели"));
     for (const a of c.model_assumptions) as.append(el("p", null, a));
-    card.append(as);
+    card.append(as, fileRow());
   }
   function pickCard() {
     const c = caseOf(S.city);
@@ -195,21 +315,39 @@
     for (const k of c.candidates) {
       const other = S.pick === "A" ? "B" : "A";
       const b = btn("", () => assign(S.pick, k.id), { disabled: c.variants[other] === k.id, "aria-pressed": String(c.variants[S.pick] === k.id) });
-      b.append(el("span", { class: "sc-shape sc-shape-cand" }), el("span", null, k.label + (k.kind === "hypothesis" ? " (ваше)" : "")));
+      b.append(el("span", { class: "sc-shape sc-shape-cand" }), el("span", null, lab(k) + (isUser(k.id) ? " (ваше)" : "")));
       const li = el("li"); li.append(b); ul.append(li);
     }
     card.append(ul, btn("Отмена", () => setPick(null), { class: "sc-ghost" }));
   }
+  function excludedCard(e) {
+    card.append(head(e.label, "Запись среза не в расчёте"));
+    const dl = el("dl", { class: "sc-dl" });
+    const row = (k, v) => dl.append(el("dt", null, k), el("dd", null, v));
+    row("Почему не в расчёте", e.reason); row("Категория (Overture)", e.category || "нет данных");
+    row("Уверенность источника", typeof e.confidence === "number" ? e.confidence.toFixed(2) : "нет данных"); row("Координаты", `${e.lon}, ${e.lat}`);
+    row("Источник", "Overture places " + D.cities[S.city].release + " (вторичные данные)");
+    card.append(dl);
+    for (const q of F.qaOf(S.city, e.place)) card.append(el("p", { class: "sc-warn" }, q.text));
+    card.append(el("p", { class: "sc-id" }, e.id));
+  }
   function schoolCard(id) {
-    const c = caseOf(S.city), s = school(id), st = SC.targetStatus(c, s), src = c.sources.find((x) => x.id === s.source_ids[0]);
+    const c = caseOf(S.city), s = school(id);
+    if (!s) { const e = excludedRecords().find((x) => x.id === id); if (e) excludedCard(e); return; }
+    const st = SC.targetStatus(c, s), src = c.sources.find((x) => x.id === s.source_ids[0]);
     card.append(head(s.label, st.eligible ? "Школа в расчёте" : "Запись не в расчёте"));
     const dl = el("dl", { class: "sc-dl" });
     const row = (k, v) => dl.append(el("dt", null, k), el("dd", null, v));
-    row("Категория (Overture)", s.category); row("Уверенность источника", s.confidence === null ? "нет данных" : s.confidence.toFixed(2));
+    const fp = s.field_provenance || {}, cat = fp.overture_category && fp.overture_category.value ? fp.overture_category : null;
+    row("Категория (Overture)", cat ? cat.value : s.category);
+    const conf = typeof s.confidence === "number" ? s.confidence : cat && typeof cat.confidence === "number" ? cat.confidence : null;
+    row("Уверенность источника", conf === null ? "нет данных" : conf.toFixed(2));
     row("Допуск к приёму", "неизвестно"); row("Вместимость", "нет данных"); row("Почему " + (st.eligible ? "в расчёте" : "не в расчёте"), st.reason);
     row("Координаты", `${s.lon}, ${s.lat}`); row("Источник", src ? src.title : "не указан"); row("Статус источника", "вторичные данные, не реестр");
     card.append(dl);
-    for (const q of F.qaOf(S.city, D.cities[S.city].places.find((p) => p.id === id) || {})) card.append(el("p", { class: "sc-warn" }, q.text));
+    for (const q of F.qaOf(S.city, D.cities[S.city].places.find((p) => p.id === id.replace(/^overture:/, "")) || {})) card.append(el("p", { class: "sc-warn" }, q.text));
+    if (fp.type_assessment) card.append(el("p", { class: "sc-note" }, `Оценка типа (${fp.type_assessment.source_id || "обзор"}): ${fp.type_assessment.value}; ${fp.type_assessment.method || ""}`));
+    if (fp.official_match) card.append(el("p", { class: "sc-note" }, "Сверка с официальным перечнем: " + (fp.official_match.status === "not_fetched" ? "не выполнена — источники не открыты (NOT_FETCHED)" : fp.official_match.status)));
     const tp = c.parameters.target_policy;
     card.append(btn(st.eligible ? "Не учитывать в расчёте" : "Учитывать в расчёте", () => {
       tp.include_ids = tp.include_ids.filter((x) => x !== id); tp.exclude_ids = tp.exclude_ids.filter((x) => x !== id);
@@ -227,17 +365,28 @@
     const tr = el("tr"); for (const h of ["", "Ближайшая", "Расстояние", "Изменение"]) tr.append(el("th", null, h)); t.append(tr);
     for (const p of S.cmp.plans.filter((p) => p.id !== "auto")) {
       const r = p.rows.find((x) => x.origin_id === id), tg = r.nearest_target_id && target(r.nearest_target_id);
-      const row = el("tr"); row.append(el("th", null, p.id === "current" ? "Сейчас" : p.id), el("td", null, tg ? tg.label : "нет данных"), el("td", null, m(r.after_mm)), el("td", null, p.id === "current" ? "—" : dm(r.delta_mm)));
+      const row = el("tr"); row.append(el("th", null, p.id === "current" ? "Сейчас" : p.id), el("td", null, tg ? lab(tg) : "нет данных"), el("td", null, m(r.after_mm)), el("td", null, p.id === "current" ? "—" : dm(r.delta_mm)));
       t.append(row);
     }
-    card.append(t, el("p", { class: "sc-note" }, "Расстояние по прямой до ближайшей школы из расчёта. Реальный путь по улицам длиннее и здесь не считается."));
+    card.append(t);
+    const cur = plan("current").rows.find((x) => x.origin_id === id);
+    if (methodKey(caseOf(S.city)) === "geodesic") card.append(el("p", { class: "sc-note" }, "Расстояние по прямой до ближайшей школы из расчёта. Реальный путь по улицам длиннее и здесь не считается."));
+    else if (S.mx && RA) {
+      const r = cur.nearest_target_id && S.mx.rows.find((x) => x.origin_id === id && x.target_id === cur.nearest_target_id);
+      if (r) card.append(el("p", { class: "sc-note" }, "Сейчас: " + RA.explainRow(r)));
+      const bad = S.mx.rows.filter((x) => x.origin_id === id && x.status !== "ok" && S.cmp.eligible_school_ids.includes(x.target_id));
+      if (bad.length) card.append(el("p", { class: "sc-warn" }, `До ${bad.length} школ путь неизвестен: ` + [...new Set(bad.map((x) => RA.STATUS_RU[x.status] || x.status))].join("; ") + "."));
+    }
   }
   function candCard(id) {
     const c = caseOf(S.city), k = cand(id);
-    card.append(head(k.label, k.kind === "hypothesis" ? "Ваше место-гипотеза" : "Место из примера (синтетическое)"));
+    const user = isUser(k.id), pk = S.pkg[S.city] && S.pkg[S.city].case && S.pkg[S.city].case.candidates.some((x) => x.id === k.id);
+    card.append(head(lab(k), user ? "Ваше место-гипотеза" : pk ? "Место-гипотеза из пакета " + S.pkg[S.city].by : "Место из примера (синтетическое)"));
     const dl = el("dl", { class: "sc-dl" });
     const row = (a, b) => dl.append(el("dt", null, a), el("dd", null, b));
-    row("Тип", k.kind === "hypothesis" ? "гипотеза пользователя" : "синтетическая сетка 3×4"); row("Участок", "не проверен"); row("Стоимость", "нет данных");
+    row("Тип", user ? "гипотеза пользователя" : pk ? "гипотеза пакета (" + k.label + ")" : "синтетическая сетка 3×4");
+    if (pk && k.field_provenance && k.field_provenance.lon_lat) row("Как выбрано", k.field_provenance.lon_lat.method || "");
+    row("Участок", "не проверен"); row("Стоимость", "нет данных");
     row("Координаты", `${k.lon}, ${k.lat}`);
     card.append(dl);
     const r = el("div", { class: "sc-row" });
@@ -271,27 +420,28 @@
         if (notes.length) lead += " Но " + notes.join("; ") + ": выбор зависит от того, что для вас важнее.";
       }
     } else { const p = A || B; title = p.closer_count ? `${p.label}: ближе для ${p.closer_count} точек` : `${p.label} не сокращает расстояния`; lead = "Выберите второе место, чтобы сравнить два варианта."; }
-    card.append(head(title, "Сравнение по прямой · одна карта и один масштаб"));
+    card.append(head(title, "Расстояние: " + METHOD_TEXT[methodKey(c)] + " · одна карта и один масштаб"));
     card.append(el("p", { class: "sc-lead" }, lead));
     const t = el("table", { class: "sc-table", id: "sc-result" });
     const plans = [cur, A, B].filter(Boolean);
     const hr = el("tr"); hr.append(el("th", null, "")); for (const p of plans) hr.append(el("th", null, p.id === "current" ? "Сейчас" : p.id)); t.append(hr);
     const rows = [["Среднее до школы", (p) => m(p.metrics.mean_distance_mm)], [`В пределах ${c.parameters.threshold_m} м`, (p) => `${p.metrics.within_threshold_count} из ${p.metrics.total_origins}`],
-      ["Самая дальняя точка", (p) => m(p.metrics.max_distance_mm)], ["Стало ближе", (p) => (p.id === "current" ? "—" : `${p.closer_count} точек`)], ["Неизвестно", (p) => String(p.metrics.unknown_count)]];
+      ["Самая дальняя точка", (p) => m(p.metrics.max_distance_mm)], ["Стало ближе", (p) => (p.id === "current" ? "—" : pts(p.closer_count))], ["Неизвестно", (p) => String(p.metrics.unknown_count)]];
     for (const [name, f] of rows) { const r = el("tr"); r.append(el("th", null, name)); for (const p of plans) r.append(el("td", null, f(p))); t.append(r); }
-    card.append(t);
+    card.append(t, methodBox());
     const ex = el("div", { class: "sc-explain" }); ex.append(el("span", { class: "sc-tag" }, "Объяснение по шаблону из вычисленных чисел (не AI)"));
     for (const line of explain()) ex.append(el("p", null, line));
     if (auto && auto.selected_candidate_ids.length && ![c.variants.A, c.variants.B].includes(auto.selected_candidate_ids[0])) {
       const k = cand(auto.selected_candidate_ids[0]);
-      ex.append(el("p", null, `Для справки: среди ${c.candidates.length} мест правило выбирает «${k.label}» — среднее ${m(auto.metrics.mean_distance_mm)} (сейчас ${m(cur.metrics.mean_distance_mm)}).`));
+      ex.append(el("p", null, `Для справки: среди ${c.candidates.length} мест правило выбирает «${lab(k)}» — среднее ${m(auto.metrics.mean_distance_mm)} (сейчас ${m(cur.metrics.mean_distance_mm)}).`));
     } else if (auto && !auto.selected_candidate_ids.length) ex.append(el("p", null, "Ни одно место примера не уменьшает сумму расстояний: правило оставляет текущую сеть."));
     card.append(ex);
     const lim = el("details", { class: "sc-assume" }); lim.append(el("summary", null, "Что этот расчёт не говорит"));
-    for (const t2 of ["Это расстояние по прямой, не пешеходный маршрут и не время в пути.", "Точки — равномерная сетка, не жители и не дети; доля — от всех точек, не от населения.",
+    for (const t2 of [methodKey(c) === "geodesic" ? "Это расстояние по прямой, не пешеходный маршрут и не время в пути." : "Маршрут модельной сети среза, не проверен на месте; отсутствие пути в срезе — ограничение сети, а не доказанная недоступность. Не время в пути.", "Точки — равномерная сетка, не жители и не дети; доля — от всех точек, не от населения.",
       "Вместимость и допуск к приёму школ неизвестны: ближе — не значит, что есть места.", "Школы за рамкой участка не загружены: у края расстояния могут быть завышены.",
       "Места A/B — гипотезы: участок, стоимость и возможность строительства не проверены."]) lim.append(el("p", null, t2));
     card.append(lim);
+    card.append(fileRow());
     card.append(el("p", { class: "sc-id", title: "Отпечаток входов: меняется при любом изменении данных, мест или порога" }, "case_digest " + S.cmp.case_digest.slice(7, 23)));
   }
   function renderCard() {
@@ -322,7 +472,7 @@
     if (c.variants[other] === id) { S.msg = `Это место уже выбрано как ${other}.`; render(); return; }
     c.variants[v] = id; S.pick = null; S.sel = null; S.view = v; S.diff = true; S.compared = !!(c.variants.A && c.variants.B) || S.compared;
     if (S.map) S.map.getCanvas().style.cursor = "";
-    S.msg = `Вариант ${v}: ${cand(id).label}. Карта показывает ${v}; точки окрашены по изменению.`;
+    S.msg = `Вариант ${v}: ${lab(cand(id))}. Карта показывает ${v}; точки окрашены по изменению.`;
     recompute(); render();
   }
   function placeUser(lon, lat) {
@@ -345,9 +495,9 @@
     const auto = plan("auto"), c = caseOf(S.city);
     if (!auto.selected_candidate_ids.length) { S.msg = "Ни одно место примера не уменьшает сумму расстояний — подсказывать нечего."; render(); return; }
     const id = auto.selected_candidate_ids[0];
-    if (c.variants.A === id || c.variants.B === id) { S.msg = `Лучшее по правилу место «${cand(id).label}» уже выбрано.`; render(); return; }
+    if (c.variants.A === id || c.variants.B === id) { S.msg = `Лучшее по правилу место «${lab(cand(id))}» уже выбрано.`; render(); return; }
     assign(c.variants.A ? "B" : "A", id);
-    S.msg = `Подобрано правилом: «${cand(id).label}». Это минимум суммы расстояний по прямой среди мест примера, не решение о строительстве.`; render();
+    S.msg = `Подобрано правилом: «${lab(cand(id))}». Это минимум суммы расстояний по прямой среди мест примера, не решение о строительстве.`; render();
   }
   function compare() {
     const c = caseOf(S.city);
@@ -357,6 +507,29 @@
     S.view = v && v.winner ? v.winner : c.variants.A ? "A" : "B"; S.diff = true;
     S.msg = ""; save(); render();
     document.getElementById("sc-card").focus?.();
+  }
+  function exportFile() {
+    try {
+      const c = caseOf(S.city), text = SC.exportCase(c), name = `school-case-${S.city}-${S.cmp.case_digest.slice(7, 15)}.json`;
+      const a = el("a", { href: URL.createObjectURL(new Blob([text], { type: "application/json" })), download: name });
+      document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+      S.msg = `Кейс сохранён в файл ${name}: входы и case_digest. Загрузка файла пересчитает те же числа.`;
+    } catch (e) { S.msg = "Не удалось сохранить: " + (e.detail || e.message); }
+    render();
+  }
+  function importFile(file) {
+    // size check before reading; parse, validate, bind to the loaded slice, verify digest — or refuse and change nothing
+    if (file.size > SC.LIMITS.bytes) { S.msg = `Файл не загружен: больше ${SC.LIMITS.bytes / 1024} КБ.`; render(); return; }
+    file.text().then((text) => {
+      let c;
+      try { c = SC.importCase(text, D); } catch (e) { S.msg = "Файл не загружен, текущий кейс не изменён: " + (e.detail || e.message); render(); return; }
+      S.cases[c.city_id] = c;
+      S.userSeq = 1 + Math.max(0, ...c.candidates.filter((k) => isUser(k.id)).map((k) => +k.id.slice(1)));
+      const msg = `Загружен кейс «${c.title}». Все числа пересчитаны из входов файла.`;
+      if (c.city_id !== S.city) GOV.switchCity(c.city_id);
+      S.sel = null; S.pick = null; S.compared = !!(c.variants.A || c.variants.B); S.view = c.variants.A ? "A" : c.variants.B ? "B" : "current"; S.diff = S.view !== "current";
+      recompute(); S.msg = msg; render();
+    }, () => { S.msg = "Файл не прочитан."; render(); });
   }
   function setView(v) { S.view = v; if (v === "current") S.diff = false; render(); }
   function select(type, id) { S.sel = { type, id }; S.pick = null; S.cardOpen = true; S.msg = ""; render(); }
@@ -371,6 +544,8 @@
       paint: { "line-color": "#176b4a", "line-width": ["case", ["get", "hl"], 4, 1.6], "line-opacity": ["case", ["get", "hl"], 0.95, 0.5] } });
     map.addLayer({ id: "sc-links-new", type: "line", source: "sc-links", filter: ["==", ["get", "to"], "candidate"], layout: { "line-cap": "round" },
       paint: { "line-color": "#c06a2b", "line-width": ["case", ["get", "hl"], 4, 2], "line-opacity": ["case", ["get", "hl"], 1, 0.8], "line-dasharray": [1.5, 1.2] } });
+    map.addLayer({ id: "sc-links-snap", type: "line", source: "sc-links", filter: ["==", ["get", "to"], "snap"],
+      paint: { "line-color": "#6d7c76", "line-width": 1.2, "line-opacity": 0.8, "line-dasharray": [1, 1.5] } });
     map.addLayer({ id: "sc-schools-excl", type: "circle", source: "sc-schools", filter: ["!", ["get", "eligible"]],
       paint: { "circle-radius": 5, "circle-color": "#ffffff", "circle-stroke-color": "#8f9b95", "circle-stroke-width": 1.6 } });
     map.addLayer({ id: "sc-schools-in", type: "circle", source: "sc-schools", filter: ["get", "eligible"],
@@ -390,23 +565,26 @@
   }
   const active = () => GOV.active && GOV.school;
   function mapData() {
-    const map = S.map; if (!map || !map.getSource("sc-links")) return;
+    const map = S.map; if (!map || !map.getSource("sc-links") || !S.cmp) return;
     const show = active(), c = caseOf(S.city), p = viewPlan();
     const vis = show ? "visible" : "none";
-    for (const id of ["sc-links-school", "sc-links-new", "sc-schools-excl", "sc-schools-in"]) if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", vis);
+    for (const id of ["sc-links-school", "sc-links-new", "sc-links-snap", "sc-schools-excl", "sc-schools-in"]) if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", vis);
     if (!show) return;
     const selO = S.sel && S.sel.type === "origin" ? S.sel.id : null, selT = S.sel && S.sel.type !== "origin" ? S.sel.id : null;
-    const lines = [];
+    const lines = [], idx = new Map((S.mx ? S.mx.rows : []).map((r) => [r.origin_id + "\u0000" + r.target_id, r]));
     for (const r of p.rows) {
       if (!r.nearest_target_id) continue;
-      const o = c.origins.find((x) => x.id === r.origin_id), t = target(r.nearest_target_id);
-      const isNew = !!cand(r.nearest_target_id);
-      lines.push({ type: "Feature", properties: { to: isNew ? "candidate" : "school", hl: r.origin_id === selO || r.nearest_target_id === selT },
-        geometry: { type: "LineString", coordinates: [[o.lon, o.lat], [t.lon, t.lat]] } });
+      const o = c.origins.find((x) => x.id === r.origin_id), t = target(r.nearest_target_id), mr = idx.get(r.origin_id + "\u0000" + r.nearest_target_id);
+      const props = { to: cand(r.nearest_target_id) ? "candidate" : "school", hl: r.origin_id === selO || r.nearest_target_id === selT };
+      if (mr && mr.method !== "geodesic" && RA) {
+        // street route of the nearest target: network part solid, model connection to the network dashed (K03 routeLayers)
+        for (const f of RA.routeLayers({ rows: [mr] }).features) lines.push({ type: "Feature", properties: { ...props, to: f.properties.part === "snap" ? "snap" : props.to }, geometry: f.geometry });
+      } else lines.push({ type: "Feature", properties: props, geometry: { type: "LineString", coordinates: [[o.lon, o.lat], [t.lon, t.lat]] } });
     }
     map.getSource("sc-links").setData({ type: "FeatureCollection", features: lines });
-    map.getSource("sc-schools").setData({ type: "FeatureCollection", features: c.schools.map((s) => ({ type: "Feature",
-      properties: { id: s.id, eligible: SC.targetStatus(c, s).eligible, sel: s.id === selT }, geometry: { type: "Point", coordinates: [s.lon, s.lat] } })) });
+    map.getSource("sc-schools").setData({ type: "FeatureCollection", features: [...c.schools.map((s) => ({ type: "Feature",
+      properties: { id: s.id, eligible: SC.targetStatus(c, s).eligible, sel: s.id === selT }, geometry: { type: "Point", coordinates: [s.lon, s.lat] } })),
+      ...excludedRecords().map((e) => ({ type: "Feature", properties: { id: e.id, eligible: false, sel: e.id === selT }, geometry: { type: "Point", coordinates: [e.lon, e.lat] } }))] });
   }
   function schedule() {
     if (S.pending) return; S.pending = true;
@@ -416,7 +594,7 @@
     overlay.replaceChildren();
     const map = S.map;
     overlay.style.display = active() && map ? "block" : "none";
-    if (!active() || !map) return;
+    if (!active() || !map || !S.cmp) return;
     const c = caseOf(S.city), p = viewPlan(), cur = plan("current"), thr = c.parameters.threshold_m * 1000;
     const pt = (lon, lat) => { const q = map.project([lon, lat]); return [q.x, q.y]; };
     const gL = sv("g"), gC = sv("g"), gO = sv("g"), gT = sv("g");
@@ -426,7 +604,7 @@
       const [x, y] = pt(k.lon, k.lat), v = c.variants.A === k.id ? "A" : c.variants.B === k.id ? "B" : null;
       const r = v ? 13 : 8, sel = S.sel && S.sel.id === k.id;
       const d = sv("path", { d: `M${x} ${y - r}L${x + r} ${y}L${x} ${y + r}L${x - r} ${y}Z`, class: "sc-cand" + (v ? " sc-cand-" + v : "") + (sel ? " sc-sel" : "") + (S.pick ? " sc-pickable" : "") });
-      const tt = sv("title"); tt.textContent = k.label + (v ? ` — вариант ${v}` : "") + " (гипотеза)"; d.append(tt);
+      const tt = sv("title"); tt.textContent = lab(k) + (v ? ` — вариант ${v}` : "") + " (гипотеза)"; d.append(tt);
       d.addEventListener("click", (e) => { e.stopPropagation(); if (S.pick) assign(S.pick, k.id); else select("cand", k.id); });
       gC.append(d);
       if (v) { const t = sv("text", { x, y: y + 4, class: "sc-cand-letter" }); t.textContent = v; gC.append(t); }
@@ -447,7 +625,7 @@
       }
     }
     // school labels only for the selected school (the map stays readable)
-    if (S.sel && S.sel.type === "school") { const s = school(S.sel.id); if (s) { const [x, y] = pt(s.lon, s.lat); const t = sv("text", { x: x + 14, y: y + 4, class: "sc-label" }); t.textContent = s.label.slice(0, 40); gT.append(t); } }
+    if (S.sel && S.sel.type === "school") { const s = school(S.sel.id) || excludedRecords().find((x) => x.id === S.sel.id); if (s) { const [x, y] = pt(s.lon, s.lat); const t = sv("text", { x: x + 14, y: y + 4, class: "sc-label" }); t.textContent = s.label.slice(0, 40); gT.append(t); } }
     void cur;
   }
 
@@ -458,6 +636,7 @@
     card.hidden = !on || !S.cardOpen; reopen.hidden = !on || S.cardOpen;
     document.body.classList.toggle("sc-mode", on);
     if (!on) { overlay.style.display = "none"; mapData(); return; }
+    if (!S.cmp) { strip.replaceChildren(el("div", { class: "sc-q" }, "Загружаем кейс…")); actions.replaceChildren(); card.replaceChildren(el("p", null, "Загружаем подготовленный кейс…")); return; }
     renderStrip(); renderActions(); renderCard();
     legend.replaceChildren(); legendItems(legend);
     mapData(); drawOverlay();
@@ -465,10 +644,11 @@
 
   // ---------- hooks ----------
   GOV.EXT.onMap.push((map) => { S.map = map; ensureLayers(map); render(); });
-  GOV.EXT.onActive.push((on) => { if (on && !S.cases[S.city]) { restore(S.city); recompute(); } setPick(null); render(); });
+  GOV.EXT.onActive.push((on) => { if (on && !S.loading && !S.cases[S.city]) { restore(S.city); recompute(); } setPick(null); render(); });
   GOV.EXT.onMode.push(() => render());
   GOV.EXT.onCity.push((city) => {
     S.city = city; S.pick = null; S.sel = null; S.view = "current"; S.diff = false; S.compared = false; S.msg = "";
+    if (S.loading) { S.cmp = null; return; }
     if (!S.cases[city]) restore(city);
     recompute();
     const c = caseOf(city);
@@ -477,8 +657,9 @@
   });
   document.addEventListener("keydown", (e) => { if (e.key === "Escape" && active() && S.pick) { setPick(null); } });
   addEventListener("resize", schedule);
-  window.SCHOOL_UI = { state: S, caseOf, recompute, render, assign, compare, setView, select, suggest, plan, exportCase: () => SC.exportCase(caseOf(S.city)) };
-  restore(S.city); recompute();
+  window.SCHOOL_UI = { state: S, caseOf, recompute, render, assign, compare, setView, select, suggest, plan, lab, excludedRecords,
+    exportCase: () => SC.exportCase(caseOf(S.city)), ready: () => !S.loading };
   if (GOV.map) { S.map = GOV.map; ensureLayers(GOV.map); }
   render();
+  loadPackages().then(() => { S.loading = false; restore(S.city); recompute(); render(); });
 })();

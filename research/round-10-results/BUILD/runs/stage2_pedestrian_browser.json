@@ -1,0 +1,132 @@
+{
+ "pedestrian-v1-exploratory": {
+  "method": "pedestrian-v1",
+  "policy": "pedestrian-v1-exploratory",
+  "digest": "2e7e7f8145ef",
+  "cur": {
+   "total_origins": 12,
+   "known_count": 12,
+   "unknown_count": 0,
+   "partial_count": 0,
+   "sum_distance_mm": 7636612,
+   "mean_distance_mm": 636384.3333333334,
+   "max_distance_mm": 1214656,
+   "within_threshold_count": 5,
+   "within_threshold_share_of_all_points": 0.4166666666666667
+  },
+  "A": {
+   "total_origins": 12,
+   "known_count": 12,
+   "unknown_count": 0,
+   "partial_count": 0,
+   "sum_distance_mm": 7107119,
+   "mean_distance_mm": 592259.9166666666,
+   "max_distance_mm": 1214656,
+   "within_threshold_count": 6,
+   "within_threshold_share_of_all_points": 0.5
+  },
+  "B": {
+   "total_origins": 12,
+   "known_count": 12,
+   "unknown_count": 0,
+   "partial_count": 0,
+   "sum_distance_mm": 6327586,
+   "mean_distance_mm": 527298.8333333334,
+   "max_distance_mm": 1010744,
+   "within_threshold_count": 6,
+   "within_threshold_share_of_all_points": 0.5
+  },
+  "title": "Лучше вариант B",
+  "lines": 80,
+  "ms": 1367
+ },
+ "pedestrian-v1-strict": {
+  "method": "pedestrian-v1",
+  "policy": "pedestrian-v1-strict",
+  "digest": "06467c49f84f",
+  "cur": {
+   "total_origins": 12,
+   "known_count": 4,
+   "unknown_count": 8,
+   "partial_count": 4,
+   "sum_distance_mm": 3078912,
+   "mean_distance_mm": 769728,
+   "max_distance_mm": 1592707,
+   "within_threshold_count": 1,
+   "within_threshold_share_of_all_points": 0.08333333333333333
+  },
+  "A": {
+   "total_origins": 12,
+   "known_count": 4,
+   "unknown_count": 8,
+   "partial_count": 4,
+   "sum_distance_mm": 3078912,
+   "mean_distance_mm": 769728,
+   "max_distance_mm": 1592707,
+   "within_threshold_count": 1,
+   "within_threshold_share_of_all_points": 0.08333333333333333
+  },
+  "B": {
+   "total_origins": 12,
+   "known_count": 4,
+   "unknown_count": 8,
+   "partial_count": 4,
+   "sum_distance_mm": 1658873,
+   "mean_distance_mm": 414718.25,
+   "max_distance_mm": 788551,
+   "within_threshold_count": 2,
+   "within_threshold_share_of_all_points": 0.16666666666666666
+  },
+  "title": "Лучше вариант B",
+  "lines": 17,
+  "ms": 958
+ },
+ "geodesic": {
+  "method": "geodesic",
+  "policy": null,
+  "digest": "8c75ac1b6d2c",
+  "cur": {
+   "total_origins": 12,
+   "known_count": 12,
+   "unknown_count": 0,
+   "partial_count": 0,
+   "sum_distance_mm": 5587800,
+   "mean_distance_mm": 465650,
+   "max_distance_mm": 953395,
+   "within_threshold_count": 7,
+   "within_threshold_share_of_all_points": 0.5833333333333334
+  },
+  "A": {
+   "total_origins": 12,
+   "known_count": 12,
+   "unknown_count": 0,
+   "partial_count": 0,
+   "sum_distance_mm": 4514053,
+   "mean_distance_mm": 376171.0833333333,
+   "max_distance_mm": 755140,
+   "within_threshold_count": 9,
+   "within_threshold_share_of_all_points": 0.75
+  },
+  "B": {
+   "total_origins": 12,
+   "known_count": 12,
+   "unknown_count": 0,
+   "partial_count": 0,
+   "sum_distance_mm": 4399449,
+   "mean_distance_mm": 366620.75,
+   "max_distance_mm": 726007,
+   "within_threshold_count": 9,
+   "within_threshold_share_of_all_points": 0.75
+  },
+  "title": "Лучше вариант B",
+  "lines": 29,
+  "ms": 883
+ },
+ "origin_card": "Точка сетки анализа: не дом и не жители | До 5 школ путь неизвестен: пешеходный доступ на пути не подтверждён данными. | ",
+ "f5": {
+  "policy": "pedestrian-v1-strict",
+  "cmp": true,
+  "digest": "06467c49f84f"
+ },
+ "errs": []
+}

@@ -1,0 +1,32 @@
+{
+ "score0": "52,56",
+ "shy": {
+  "A": "shy-h-3",
+  "d": "sha256:b58ea5fdcd404570c01dd48e78d136947d1ddc671051b9fa0d2ad40c02ad5c6d"
+ },
+ "ast": {
+  "city": "astana",
+  "A": null,
+  "view": "current",
+  "title": "Астана: доступность школ",
+  "schools": 8,
+  "d": "sha256:cbbc1c27331a6218c26ffc2708e33e50e778ce07f507aa06727550301216ef02"
+ },
+ "adv": {
+  "panel": true,
+  "strip": true
+ },
+ "back": {
+  "score": "52,56",
+  "strip": true,
+  "overlay": "none",
+  "links": "none",
+  "district": "visible"
+ },
+ "f5": {
+  "city": "shymkent",
+  "A": "shy-h-3",
+  "d": "sha256:b58ea5fdcd404570c01dd48e78d136947d1ddc671051b9fa0d2ad40c02ad5c6d"
+ },
+ "errs": []
+}

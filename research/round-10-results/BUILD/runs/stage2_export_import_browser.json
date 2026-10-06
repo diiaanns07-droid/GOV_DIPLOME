@@ -1,0 +1,55 @@
+{
+ "before": {
+  "city": "astana",
+  "digest": "sha256:572c0fd75ae0b9a899b0d8a118b3a0086723307e478ead8574ac4b5e62c08e18",
+  "v": {
+   "A": "m1d",
+   "B": "m3a"
+  },
+  "title": "Лучше вариант A",
+  "metrics": {
+   "total_origins": 25,
+   "known_count": 25,
+   "unknown_count": 0,
+   "partial_count": 0,
+   "sum_distance_mm": 12626663,
+   "mean_distance_mm": 505066.52,
+   "max_distance_mm": 1217471,
+   "within_threshold_count": 12,
+   "within_threshold_share_of_all_points": 0.48
+  }
+ },
+ "file": "school-case-astana-572c0fd7.json",
+ "bytes": 20243,
+ "sha256": "cc4dbf58be37d38b036a82f76cc546f0eb3e8dc895459dd99eadb2e568aa0b7f",
+ "file_digest": "sha256:572c0fd75ae0b9a899b0d8a118b3a0086723307e478ead8574ac4b5e62c08e18",
+ "after_import": {
+  "city": "astana",
+  "digest": "sha256:572c0fd75ae0b9a899b0d8a118b3a0086723307e478ead8574ac4b5e62c08e18",
+  "v": {
+   "A": "m1d",
+   "B": "m3a"
+  },
+  "metrics": {
+   "total_origins": 25,
+   "known_count": 25,
+   "unknown_count": 0,
+   "partial_count": 0,
+   "sum_distance_mm": 12626663,
+   "mean_distance_mm": 505066.52,
+   "max_distance_mm": 1217471,
+   "within_threshold_count": 12,
+   "within_threshold_share_of_all_points": 0.48
+  },
+  "msg": "Загружен кейс «Астана: доступность школ на участке ≈2×2 км». Все числа пересчитаны из входов файла."
+ },
+ "tampered": {
+  "digest": "sha256:572c0fd75ae0b9a899b0d8a118b3a0086723307e478ead8574ac4b5e62c08e18",
+  "msg": "Файл не загружен, текущий кейс не изменён: case_digest файла не совпадает с пересчитанным: файл изменён"
+ },
+ "foreign": {
+  "digest": "sha256:572c0fd75ae0b9a899b0d8a118b3a0086723307e478ead8574ac4b5e62c08e18",
+  "msg": "Файл не загружен, текущий кейс не изменён: кейс построен на «overture-2025-01-01.0-astana», а загружен срез 2026-09-23.1 (f5722c4455ca…). Другой снимок не подставляется."
+ },
+ "errs": []
+}
