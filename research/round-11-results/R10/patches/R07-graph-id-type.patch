@@ -1,0 +1,14 @@
+diff --git a/engine/civic_scenarios/registry.py b/engine/civic_scenarios/registry.py
+index c3557c4..109cfe4 100644
+--- a/engine/civic_scenarios/registry.py
++++ b/engine/civic_scenarios/registry.py
+@@ -43,6 +43,9 @@ def load_graph_dict(graph_id):
+ 
+ def load_graph(graph_id):
+     """PreparedGraph из кэша (проверка digest — при первой загрузке)."""
++    if not isinstance(graph_id, str):
++        # До обращения к кэшу: list/dict как ключ дают TypeError -> 500 вместо 400.
++        raise ScenarioError("unknown_graph", "graph_id — строка")
+     with _lock:
+         pg = _cache.get(graph_id)
+         if pg is None:

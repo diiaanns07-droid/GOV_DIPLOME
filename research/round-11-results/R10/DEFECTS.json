@@ -9,13 +9,61 @@
       "title": "Runtime SQLite (.runtime/) is neither git-ignored nor docker-ignored",
       "severity": "medium",
       "owner": "R01 (.gitignore/.dockerignore are R01 paths)",
-      "sha": ["b2cb2e02c602c166ba6d47c02d8e902e5478c791", "9c2f5c0dae14b46c0697a9dfc7f854351bfd570d", "c8c1a98 (R02 branch claude/trusting-ptolemy-6ms354)"],
+      "sha": [
+        "b2cb2e02c602c166ba6d47c02d8e902e5478c791",
+        "9c2f5c0dae14b46c0697a9dfc7f854351bfd570d",
+        "c8c1a98 (R02 branch claude/trusting-ptolemy-6ms354)"
+      ],
       "repro": "In a clean checkout of b2cb2e0: mkdir .runtime && touch .runtime/civic.sqlite3 .runtime/civic.sqlite3-wal && git status --porcelain --ignored .runtime",
       "expected": "CONTRACT §3: 'Хранилище SQLite в .runtime/ … без раздачи файла и без коммита DB'; COMMON: не коммитить SQLite с пользователями/private обращения. Status should be '!! .runtime/' (ignored).",
       "actual": "'?? .runtime/' (untracked, not ignored): git add . / -A would commit civic_users.password_hash, sessions and private feedback. Dockerfile 'COPY . .' with .dockerignore lacking .runtime would bake the DB into an image. R02 db.py docstring states the folder 'игнорируется Git', which is not true on any pushed branch.",
-      "evidence": "research/round-11-results/R10/COMMANDS.md (16:0x UTC rows)",
+      "evidence": "research/round-11-results/R10/COMMANDS.md (rows 15:46–15:47 UTC)",
       "patch": "research/round-11-results/R10/patches/R01-gitignore-runtime.patch (git apply --check OK on b2cb2e0; after applying, status is '!! .runtime/')",
       "status": "open"
+    },
+    {
+      "id": "R10-D002",
+      "title": "R07 /scenarios/compare: non-string graph_id raises TypeError (unhashable) -> HTTP 500 instead of 4xx",
+      "severity": "low",
+      "owner": "R07 (engine/civic_scenarios/registry.py)",
+      "sha": [
+        "d77ec45c529af6529ea1ec0cc7189ff84fb6cd87 (claude/brave-hopper-bkc58b, DELIVERY status=ready)"
+      ],
+      "repro": "cd <worktree d77ec45> && python3 -I -B -c \"import sys; sys.path.insert(0,'.'); from engine.civic_scenarios import http as h; h.handle('POST','/api/civic/v1/scenarios/compare',None,{'graph_id':['x']})\"  -> TypeError: unhashable type: 'list' (registry.load_graph: _cache.get(graph_id) before the type check in _entry). Full fuzz: tests/civic/R10/standalone/r07_typefuzz.py -> 5/210 probes escape (graph_id = [], {}, [1], [None], {'a':1}).",
+      "expected": "CONTRACT §2: validation errors 400/422 as JSON envelope; 'Ошибки — JSON, не traceback/HTML'. R07 http.handle documents ScenarioError -> {ok:false,error}.",
+      "actual": "Exception escapes http.handle; behind R01 CivicGateway it becomes 500 'internal' with a logged stack trace; standalone devserver behaviour depends on its own catch-all.",
+      "evidence": "research/round-11-results/R10/COMMANDS.md (R07 fuzz rows)",
+      "patch": "research/round-11-results/R10/patches/R07-graph-id-type.patch (type check before cache lookup; with it 0/210 probes escape, graph_id=['x'] -> 404 unknown_graph like other unknown ids)",
+      "status": "open"
+    }
+  ],
+  "observations": [
+    {
+      "id": "R10-O001",
+      "title": "Public history of a re-published date change carries the publish reason, not the editor's update reason",
+      "kind": "contract-ambiguity / explanation risk",
+      "severity_if_confirmed": "low",
+      "owner": "R02 (projection) + R04 (editor flow) + R01 (contract_delta)",
+      "sha": [
+        "6a28de21f890b9201d177e3c4ca20bc2e9c9bd99 (R02, standalone via tests/civic/R10/r10lib/standalone_server.py)"
+      ],
+      "repro": "create draft -> publish(reason A) -> update(changes.schedule.current_planned_end=2026-10-27, reason 'Подрядчик перенёс срок (R10)') -> public detail still 2026-10-20 (working copy) -> publish(reason 'Публикация переноса') -> public history entry {changed_fields:[schedule.current_planned_end], reason:'Публикация переноса'}",
+      "expected": "Product criterion (prompts/R10): житель видит объяснение изменения. CONTRACT §1 history has one reason per entry and does not say whose reason a published change shows.",
+      "actual": "The update reason stays only in staff history; residents see whatever the publish reason says.",
+      "recommendation": "Either carry update reasons of public fields into the public entry (e.g. joined), or make R04 prefill/require the publish reason from the pending change; document in R01 contract_delta.",
+      "status": "open"
+    }
+  ],
+  "integration_risks": [
+    {
+      "id": "R10-I001",
+      "title": "R01 gateway context keys differ from what R02 CivicService requires",
+      "sha": [
+        "R01 341c554 (ui/web_server.py civic_request context)",
+        "R02 6a28de2 (ui/civic_store/service.py docstring + require_staff/_login)"
+      ],
+      "detail": "R02 refuses session/login/staff unless context['host_allowed'] is True and reads 'is_https' for the Secure flag; R01 cp2 sends host/scheme/secure but no host_allowed/is_https, and is_same_origin=False (not None) when Origin is absent. As-is, every login through R01 would be refused. Expected to be resolved by R01 during integration; R10 will re-test on R01's CODE_SHA.",
+      "status": "watch"
     }
   ]
 }
