@@ -15,12 +15,15 @@ Steps -> DIR/summary.json (default research/round-9-results/K10/results/<sha7>/)
                   unit tests, verify-inputs, packs through web/plan.js, export round trip, plan.js mutants)
   R9_ENVELOPES    tests/check_envelopes.py: the 19 city-resilience-v1 packs vs this build's data + K10 oracle checks
   R9_PROPOSAL_ON_PLAN_JS  tests/run_res_adapter.cjs: K10 proposals/resilience.js over this build's plan.js (SKIP if absent)
-  build_resilience  NOT_RUN while the build has no web/resilience.js; FOUND_NOT_MAPPED when it appears (map it first)
-Exit 0 only if every step is PASS or SKIP.
+  BUILD_RESILIENCE  the build's own web/resilience.js against the 19 packs (tests/run_build_resilience.cjs: math, rows per
+                  case, order, import/export, refusals), its exports re-checked by the K10 oracle, and the packs' power to
+                  catch injected rule errors (tests/run_build_res_mutants.py); NOT_RUN when the build has no resilience.js
+Exit 0 only if every step is PASS, SKIP or NOT_RUN (NOT_RUN is reported, never counted as PASS).
 """
 import argparse
 import hashlib
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -104,6 +107,24 @@ def check_sources(app):
     return ({"status": "PASS" if ok_h else "FAIL", **hashes}, {"status": "PASS" if ok_i else "FAIL", "cities": ids})
 
 
+def check_build_exports(d):
+    """The BUILD's own exports (exportResilience) must be accepted by the K10 oracle and give the same optimum."""
+    sys.path.insert(0, str(HERE))
+    from k10res import edgecases as XE  # noqa: E402
+    from k10res import oracle_res as RO  # noqa: E402
+    files, differ = sorted(d.glob("*.json")), []
+    for f in files:
+        pack = json.loads((HERE / "envelopes" / f.name).read_text(encoding="utf-8"))
+        try:
+            ctx = XE.context_of(pack)
+            got = RO.optimize_resilience(ctx, RO.validate_resilience(RO.O.parse_strict(f.read_bytes()), ctx))
+            if json.dumps(got, sort_keys=True) != json.dumps(pack["expected"]["optimize"], sort_keys=True):
+                differ.append(f.stem)
+        except (RO.ResError, RO.O.PlanError) as e:
+            differ.append(f"{f.stem}: {e.code}")
+    return {"files": len(files), "differ": differ}
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--sha", required=True)
@@ -143,16 +164,27 @@ def main():
                                                     "note": "K10 proposals/resilience.js on this build's plan.js; not a BUILD feature"}
         else:
             s["steps"]["R9_PROPOSAL_ON_PLAN_JS"] = {"status": "SKIP", "note": "no web/plan.js in this build"}
-        own = app / "web/resilience.js"
-        s["build_resilience"] = ({"status": "NOT_RUN", "note": "this build has no web/resilience.js (city-resilience-v1 not implemented)"}
-                                 if not own.exists() else
-                                 {"status": "FOUND_NOT_MAPPED", "sha256": sha256(own.read_bytes()),
-                                  "note": "BUILD module present; map its output format in tests/run_res_adapter.cjs before claiming a result"})
+        # the BUILD's own city-resilience-v1 module, if this build has one
+        if (app / "web/resilience.js").exists():
+            with tempfile.TemporaryDirectory() as exp_dir:
+                r = subprocess.run(["node", str(HERE / "tests/run_build_resilience.cjs"), str(app), *packs9], capture_output=True,
+                                   text=True, env={**os.environ, "K10_EXPORT_DIR": exp_dir})
+                (out / "build_resilience.json").write_text(r.stdout, encoding="utf-8")
+                exports = check_build_exports(Path(exp_dir))
+            m = subprocess.run([sys.executable, str(HERE / "tests/run_build_res_mutants.py"), "--app-root", str(app),
+                                "--json", str(out / "build_res_mutants.json")], capture_output=True, text=True)
+            mut = json.loads((out / "build_res_mutants.json").read_text(encoding="utf-8"))
+            ok = r.returncode == 0 and exports["differ"] == [] and exports["files"] > 0 and m.returncode == 0
+            s["steps"]["BUILD_RESILIENCE"] = {"status": "PASS" if ok else "FAIL", "packs_exit": r.returncode, "exports": exports,
+                                              "mutants": {k: mut[k] for k in ("mutants", "killed", "survived", "not_applicable")},
+                                              "resilience_js_sha256": sha256((app / "web/resilience.js").read_bytes())}
+        else:
+            s["steps"]["BUILD_RESILIENCE"] = {"status": "NOT_RUN", "note": "this build has no web/resilience.js"}
     finally:
         if tmp:
             shutil.rmtree(tmp, ignore_errors=True)
     s["seconds"] = round(time.time() - t0, 1)
-    s["ok"] = all(v["status"] in ("PASS", "SKIP") for v in s["steps"].values())
+    s["ok"] = all(v["status"] in ("PASS", "SKIP", "NOT_RUN") for v in s["steps"].values())
     txt = json.dumps(s, ensure_ascii=False, indent=1)
     if tmp:  # keep local temporary paths out of the stored results
         txt = txt.replace(tmp, "<workdir>")
@@ -164,8 +196,7 @@ def main():
     (out / "summary.json").write_text(txt + "\n", encoding="utf-8")
     print(json.dumps({"sha": full, "ok": s["ok"], "seconds": s["seconds"],
                       "steps": {k: v["status"] for k, v in s["steps"].items()},
-                      "r8_suite": s["steps"].get("R8_SUITE", {}).get("steps"),
-                      "build_resilience": s.get("build_resilience", {}).get("status")}, ensure_ascii=False))
+                      "r8_suite": s["steps"].get("R8_SUITE", {}).get("steps")}, ensure_ascii=False))
     sys.exit(0 if s["ok"] else 1)
 
 

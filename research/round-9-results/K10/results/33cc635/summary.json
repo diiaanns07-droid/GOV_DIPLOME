@@ -1,9 +1,9 @@
 {
- "sha": "d865dd4a124291e10dd0b7bb1d9eada20d34c268",
+ "sha": "33cc635ec212e522b3e17fb0b598fad0ad602f71",
  "steps": {
   "EXTRACT": {
    "status": "PASS",
-   "files": 199
+   "files": 206
   },
   "FROZEN_PACKS": {
    "status": "PASS",
@@ -94,10 +94,21 @@
    "note": "K10 proposals/resilience.js on this build's plan.js; not a BUILD feature"
   },
   "BUILD_RESILIENCE": {
-   "status": "NOT_RUN",
-   "note": "this build has no web/resilience.js"
+   "status": "PASS",
+   "packs_exit": 0,
+   "exports": {
+    "files": 10,
+    "differ": []
+   },
+   "mutants": {
+    "mutants": 18,
+    "killed": 18,
+    "survived": [],
+    "not_applicable": []
+   },
+   "resilience_js_sha256": "c16d81aff909e7bbd8b296aa3aa618a94b1e8919273c95caf41a807dbd4667b3"
   }
  },
- "seconds": 16.7,
+ "seconds": 24.3,
  "ok": true
 }

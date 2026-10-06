@@ -1,87 +1,154 @@
-# K10, раунд 9 — передача
+# K10, раунд 9 — передача: демо-сценарии двух городов, регрессия, city-resilience-v1
 
-**Состояние:** этапы 1–2 из 3. Следующий шаг — этап 3: синтетические крайние случаи и итоговые проверки.
+**Слот:** K10, ветка `claude/save-work-handoff-j7pc05`. Задание: `research/round-9/tasks/K10.txt` @ `0ab1667`.
 
-## Этап 1: регрессия одной командой
+**Все три этапа выполнены.** Общий прототип, main и чужие ветки не менялись. Все выходы лежат в `research/round-9-results/K10/` и `research/handoffs/shared/K10/round-9/STATUS.md`.
+
+## Проверенные сборки (`claude/beautiful-clarke-sbzomj`, извлечение из git побайтно)
+
+| SHA | Что это | `regress.py` |
+|---|---|---|
+| `d865dd4a124291e10dd0b7bb1d9eada20d34c268` | база раунда, `resilience.js` нет | всё PASS; BUILD_RESILIENCE **NOT_RUN** |
+| `33cc635ec212e522b3e17fb0b598fad0ad602f71` | BUILD r9 stage 2, опубликована во время работы | всё PASS, включая BUILD_RESILIENCE |
+
+**Интерфейс устойчивости в браузере: NOT_RUN.** В `33cc635` есть только модуль `web/resilience.js`. В `index.html`, `app.js` и `plan-ui.js` нет ни панели, ни подключения скрипта. Импорт demo-конвертов проверен функцией BUILD `importResilience` без браузера; в настоящем UI он не проверялся.
+
+## Одна команда для нового SHA
 
 ```bash
-python3 research/round-9-results/K10/regress.py --sha <BUILD sha>          # из корня репозитория; нужен node
-python3 -m unittest discover -s research/round-9-results/K10/tests -p "test_regress.py" -v
+python3 research/round-9-results/K10/regress.py --sha <BUILD sha>     # из корня репозитория; нужны git, python3, node
 ```
 
-Шаги (итог в `results/<sha7>/summary.json`):
+Итог пишется в `results/<sha7>/summary.json`. Ожидания никогда не пересоздаются из BUILD.
 
-1. **EXTRACT** — `prototypes/city-evidence` копируется из git побайтно, с пересчётом git blob id. Манифест сохраняется в `extract_manifest.json`.
-2. **FROZEN_PACKS** — пакеты r8 (`research/round-8-results/K10/packs`, 161 файл) побайтно равны `frozen/r8_packs.json`, снятому с коммита `c8df74b`. Ожидания из BUILD не пересоздаются: они посчитаны оракулом K10 в r8.
-3. **SOURCE_HASHES** — sha256 двух файлов `inputs/k10/.../places_social.geojson` и `package_manifest.json` равны значениям в пакете K10 (git `602f0c0`, `frozen/sources.json`). sha256, указанный в `web/data.js`, тоже совпадает.
-4. **SOURCE_IDS** — в `web/data.js` по каждому городу те же ID и группы, что в пакете K10. lon/lat равны значениям пакета, округлённым до 6 знаков: Шымкент 55 записей, Астана 65; школ 15/8, поликлиник 16/16.
-5. **R8_SUITE** — `research/round-8-results/K10/tests/run_build_suite.py`: пакеты против данных, пересчёт оракулом, JS-геометрия, unit-тесты, verify-inputs, прогон через `web/plan.js`, круг экспорта, мутанты `plan.js`.
+| Шаг | Что проверяет |
+|---|---|
+| EXTRACT | Побайтная копия `prototypes/city-evidence` с пересчётом git blob id; манифест в `extract_manifest.json` |
+| FROZEN_PACKS | 161 файл пакетов r8 побайтно равен `frozen/r8_packs.json` (коммит `c8df74b`) |
+| SOURCE_HASHES | sha256 двух `places_social.geojson` и `package_manifest.json` равны значениям пакета K10 (git `602f0c0`); `data.js` ссылается на те же sha256 |
+| SOURCE_IDS | `data.js`: те же ID и группы, что в пакете K10; lon/lat = значения пакета, округлённые до 6 знаков. Шымкент 55 записей, Астана 65 |
+| R8_SUITE | 37 пакетов v2 r8: данные, пересчёт оракулом, JS-геометрия, тесты, `verify-inputs`, `plan.js`, круг экспорта, мутанты `plan.js` |
+| R9_ENVELOPES | 19 пакетов устойчивости против данных сборки (`check_envelopes.py`) |
+| R9_PROPOSAL_ON_PLAN_JS | Предложение K10 `proposals/resilience.js` поверх `plan.js` этой сборки |
+| BUILD_RESILIENCE | Собственный `web/resilience.js` сборки на 19 пакетах. Плюс её экспорты, перепроверенные оракулом K10, и мутации её модуля. NOT_RUN, если модуля нет |
 
-Результат на `d865dd4a124291e10dd0b7bb1d9eada20d34c268`: все 5 шагов PASS, внутри R8_SUITE все 6 подшагов PASS. Экспорт 30/30, мутанты 15/15.
-
-`tests/test_regress.py` проверяет, что регрессия замечает изменения: байт в geojson, сдвиг, удаление и смену группы записи, правку пакета r8.
-
-`freeze.py` пересоздаёт `frozen/` из git-объектов. Запускать не нужно, файлы уже в репозитории.
+Время прогона: около 17 с на d865dd4 и 24 с на 33cc635.
 
 ## Этап 2: конверты `city-resilience-v1` на реальных срезах
 
 ```bash
 cd research/round-9-results/K10
-python3 -m k10res.envelopes --app-root <d865dd4>/prototypes/city-evidence --commit d865dd4a124291e10dd0b7bb1d9eada20d34c268 --out envelopes
-python3 tests/check_envelopes.py --app-root <d865dd4>/prototypes/city-evidence --json results/d865dd4/check_envelopes.json
+python3 -m k10res.envelopes --app-root <сборка>/prototypes/city-evidence --commit d865dd4a124291e10dd0b7bb1d9eada20d34c268 --out envelopes
+python3 tests/check_envelopes.py --app-root <сборка>/prototypes/city-evidence
 ```
 
-### Модули
+- **Подлинное:** ID, имена и координаты исходных записей, QA-флаги, bbox, snapshot (формат `plan.js`), sha256 файлов. Повторно ничего не скачивалось.
+- **SYNTHETIC:** контрольные точки, веса, кандидаты, стоимости (условные единицы, не тенге), бюджет, `max_selected`, радиус. План взят из базового пакета r8.
+- **Выбор исключаемых записей** — по правилам, заданным до расчёта (`RULES`, копия в каждом пакете):
+  - `relied` — записи, ближайшие к наибольшему весу точек: случаи top1, top2, second;
+  - `seeded` — LCG, seed 20261006 + индекс (+1000·K для случая sK), 1–3 записи;
+  - `qa` — только Шымкент: все записи с QA-флагом и крупнейшая группа с одинаковыми координатами.
+- **Подпись каждого пакета:** «Условно исключаем из расчёта; это не подтверждение закрытия».
 
-- **`k10res/oracle_res.py`** — независимый оракул устойчивости по `round-9/CORE_SPEC.txt`. Геометрия, строгий JSON и валидация плана берутся из оракула K10 r8. Слой устойчивости написан заново по спецификации, не переведён из кода BUILD.
-  - `validate_resilience(obj, ctx)` проверяет конверт целиком и возвращает чистый конверт, где первым идёт автоматический случай `base`, остальные отсортированы по id.
-  - Коды ошибок: `missing_field`, `unexpected_field`, `bad_schema_version`, `derived_not_allowed`, коды плана v2, `bad_id` (правило ID BUILD: NFC, буквы, цифры, `_ . -`), `too_many_candidates` (больше 12), `bad_case_count`, `reserved_case_id`, `duplicate_case_id`, `bad_label`, `bad_disabled`, `duplicate_id`, `unknown_source_id`, `candidate_id_not_source`.
-  - `evaluate_resilience(ctx, env, ids)` по каждому случаю даёт метрики и строки: before/after/delta/nearest внутри случая. Плюс `worst_vector` и `worst_case_ids`.
-  - `optimize_resilience(ctx, env)` возвращает: `status`; ручной (`manual`), обычный (`nominal`, оптимум mean на base) и устойчивый (`robust`, минимум `(W, L_base, cost, ids)`) планы; `price_of_robustness_m` и `price_reason`; `evaluated`, `feasible_count`; дайджесты `resilience_problem_digest`, `resilience_scenario_digest`, `exclusions_digest`; исходный `source_snapshot`.
-- **`k10res/envelopes.py`** — генератор по правилам `RULES`, заданным до расчёта.
+| Конверт | Обычный | Устойчивый | Совпали | Цена, м |
+|---|---|---|---|---|
+| `astana-outpatient_clinic-relied` | c03+c10+c12 | c07+c09+c12 | нет | 10.585 |
+| `astana-outpatient_clinic-seeded` | c03+c10+c12 | c07+c10+c12 | нет | 9.264 |
+| `astana-school-relied`, `-seeded` | c03+c07+c12 | = | да | 0 |
+| `shymkent-school-relied`, `-seeded`, `-qa` | c01+c03+c07 | = | да | 0 |
+| `shymkent-outpatient_clinic-relied`, `-seeded`, `-qa` | c02+c03+c12 | = | да | 0 |
 
-### Файлы
+Устойчивый план отличается только у поликлиник Астаны. Это вышло само; ни правила, ни seed не подбирались. Для Астаны QA-конвертов нет: у её школ и поликлиник нет QA-флагов (`envelopes/INDEX.json → not_built`).
 
-- `envelopes/*.json` — пакет: конверт, копия среза, исключённые записи с именами и QA-флагами, ожидаемое от оракула, наблюдения.
-- `envelopes/inputs/*.json` — чистый конверт для импорта.
-- `envelopes/INDEX.json` — манифест происхождения: сборка, sha256 файлов, правила, `not_built`.
+## Этап 3: синтетические крайние случаи и отказы
 
-### Правила исключения
+Каждый синтетический пакет сверяется с ручным расчётом (`design.hand_expectation`). Генерация останавливается, если оракул ответил иначе.
 
-Исключение условное: «считаем, как если бы этих записей не было в срезе». Это не утверждение о закрытии.
+| Пакет | Что показывает |
+|---|---|
+| `synthetic-robust-differs` | Обычный A опирается на запись S, устойчивый B; цена 333.333 м |
+| `synthetic-plans-coincide` | Исключённая запись никому не ближайшая; планы совпали, цена 0, худшие случаи — оба (ничья) |
+| `synthetic-all-sources-left-out` | Исключены все школы плюс случай-дубль. У пустого плана W = (2, 0, null). Устойчивый L+M при цене 0 м: дороже, среднее на base то же. BUILD сообщает дубль в `duplicate_case_groups` |
+| `synthetic-infeasible-budget` | Обязательный кандидат дороже бюджета: `infeasible`, цена null с причиной, ручной план недопустим |
+| `synthetic-unknown-worst` | `max_selected` 0: худший случай остаётся неизвестным и показан как неизвестный, а не 0 |
+| `synthetic-robust-tiebreak` | Одинаковый W: решает потеря на base, а не меньшая стоимость |
+| `synthetic-unknown-base-refused` | Пустая категория: ни один случай не может назвать запись, поэтому отказ |
+| `shymkent-school-invalid-envelopes`, `astana-school-invalid-envelopes` | По 34 случая: 29 отказов с кодом, записанным до расчёта, 5 «принять» |
 
-- **`relied`** — записи, ближайшие к наибольшему суммарному весу точек: случаи top1, top2, second.
-- **`seeded`** — 1, 2 или 3 записи по LCG. Seed 20261006 + индекс, плюс 1000·K для случая sK.
-- **`qa`** — только Шымкент. Случай qa_all — все записи категории с QA-флагом; случай colocated — крупнейшая группа с одинаковыми координатами.
+Случаи «принять»: кириллический NFC id, метка ровно 120 символов, HTML в метке как текст, два случая с одинаковым набором, исключение всех записей категории.
 
-Для Астаны QA-конвертов нет: у её школ и поликлиник нет QA-флагов (`not_built`).
+**Честный статус «неизвестной базы».** В корректном конверте случай `base` всегда содержит хотя бы одну запись: каждый пользовательский случай обязан назвать существующую запись категории. Поэтому «до» на base всегда известно, и цена устойчивости бывает null только при `infeasible`. Пустую категорию K10 проверяет как отказ.
 
-### Результаты (оракул; обычный и устойчивый план совпали или нет — как вышло)
+## Модули и API (K10)
 
-| Конверт | Случаи (сколько записей исключено) | Обычный | Устойчивый | Совпали | Цена, м | Худшие случаи (robust) |
-|---|---|---|---|---|---|---|
-| `astana-outpatient_clinic-relied` | top1(1), top2(2), second(1) | c03+c10+c12 | c07+c09+c12 | нет | 10.585 | top2 |
-| `astana-outpatient_clinic-seeded` | s1(1), s2(2), s3(3) | c03+c10+c12 | c07+c10+c12 | нет | 9.264 | s3 |
-| `astana-school-relied` | top1, top2, second | c03+c07+c12 | = | да | 0.000 | top2 |
-| `astana-school-seeded` | s1, s2, s3 | c03+c07+c12 | = | да | 0.000 | s2 |
-| `shymkent-outpatient_clinic-qa` | qa_all(7), colocated(4) | c02+c03+c12 | = | да | 0.000 | colocated, qa_all (ничья) |
-| `shymkent-outpatient_clinic-relied` | top1, top2, second | c02+c03+c12 | = | да | 0.000 | second, top2 (ничья) |
-| `shymkent-outpatient_clinic-seeded` | s1, s2, s3 | c02+c03+c12 | = | да | 0.000 | s1, s3 (ничья) |
-| `shymkent-school-qa` | qa_all(7), colocated(3) | c01+c03+c07 | = | да | 0.000 | qa_all |
-| `shymkent-school-relied` | top1, top2, second | c01+c03+c07 | = | да | 0.000 | top2 |
-| `shymkent-school-seeded` | s1, s2, s3 | c01+c03+c07 | = | да | 0.000 | s3 |
+### `k10res/oracle_res.py` — независимый оракул устойчивости
 
-Цена устойчивости = base `weighted_mean_mm` устойчивого минус обычного, в метрах. Это расстояние по прямой, не тенге и не время.
+Геометрия, строгий JSON и правила плана v2 берутся из оракула K10 r8. Слой устойчивости написан по `round-9/CORE_SPEC.txt`, не переведён из кода BUILD.
 
-### Проверки (`check_envelopes.py`)
+- `validate_resilience(obj, ctx)` возвращает чистый конверт: первым идёт автоматический `base`, остальные случаи отсортированы по id. При ошибке — `ResError(code)`.
+- `evaluate_resilience(ctx, env, ids)` возвращает:
+  - `per_case[]`: метрики, `loss` и строки before/after/delta/nearest внутри случая;
+  - `worst_vector`, `worst_case_ids`, `feasibility`.
+- `optimize_resilience(ctx, env)` возвращает:
+  - `status`, `manual`, `nominal`, `robust`, `plans_identical`;
+  - `price_of_robustness_m`, `price_reason`;
+  - `evaluated`, `feasible_count`;
+  - `resilience_problem_digest`, `resilience_scenario_digest`, `exclusions_digest`, `source_snapshot`.
 
-- **SOURCE** — копия среза и snapshot совпадают со сборкой; все исключённые ID — настоящие записи категории.
-- **VALID** — конверт проходит валидацию.
-- **RECOMPUTE** — пересчёт оракулом из собственной копии пакета даёт то же ожидаемое.
-- **ORDER** — перевёрнутые массивы случаев, ID, точек и кандидатов дают тот же результат и те же дайджесты.
-- **CROSS_R8** — независимый путь. По каждому случаю считается оракул r8 v2 на копии среза без исключённых записей. Обычный план = mean оракула r8. Устойчивый план = перебор всех допустимых наборов через r8.
-- **INDEX**, **IMMUTABLE**.
+Порядок сравнения:
 
-Результат на d865dd4: 10/10 PASS.
+- L = (unknown, sum, max); null-max считается +∞ только внутри сравнения.
+- W = лексикографический максимум L по всем случаям.
+- Обычный план — минимум (L_base, cost, ids).
+- Устойчивый план — минимум (W, L_base, cost, ids).
 
-**Интеграция с BUILD: NOT_RUN** — на момент проверки в BUILD нет `resilience.js` / city-resilience-v1, ветка стоит на `d865dd4`.
+### Генераторы
+
+- `k10res/envelopes.py` — реальные пакеты.
+- `k10res/edgecases.py` — синтетика и отказы. `context_of(pack)` и `run_case(pack, case)` — для проверок.
+
+### `proposals/resilience.js` — предложение для BUILD, не часть сборки
+
+Тонкий слой поверх `plan.js` с API из CORE_SPEC: `validateResilience`, `evaluateResilience`, `createResilienceSearch`, `optimizeResilience`. Независимая вторая JS-реализация. BUILD написал свою, поэтому предложение остаётся эталоном для перекрёстной проверки.
+
+### Проверки
+
+| Скрипт | Что делает |
+|---|---|
+| `tests/check_envelopes.py` | SOURCE, VALID, RECOMPUTE, ORDER, CROSS_R8 (по каждому случаю оракул r8 на копии среза без исключённых записей + полный перебор устойчивого оптимума), HAND, INDEX, IMMUTABLE |
+| `tests/run_build_resilience.cjs` | Пакеты через `web/resilience.js` сборки; сравнение по смыслу и по id случая |
+| `tests/run_res_adapter.cjs` | Пакеты через предложение K10 на `plan.js` сборки |
+| `tests/run_build_res_mutants.py`, `tests/run_adapter_mutants.py`, `tests/run_res_mutants.py` | Ловят ли пакеты и тесты внесённые ошибки правил |
+| `tests/test_res_oracle.py` (13), `tests/test_regress.py` (5) | unit-тесты |
+
+## Результаты (фактические прогоны, файлы в `results/`)
+
+| Проверка | d865dd4 | 33cc635 |
+|---|---|---|
+| `regress.py`: EXTRACT, FROZEN_PACKS, SOURCE_HASHES, SOURCE_IDS, R8_SUITE (6 подшагов) | PASS | PASS |
+| R9_ENVELOPES (19 пакетов) | PASS | PASS |
+| Предложение K10 на `plan.js` (19 пакетов) | PASS; мутанты 16/16 | PASS |
+| `resilience.js` BUILD: 19 пакетов | NOT_RUN (нет модуля) | PASS |
+| `resilience.js` BUILD: экспорт ↔ импорт | NOT_RUN | 10/10 |
+| `resilience.js` BUILD: экспорты BUILD → оракул K10 | NOT_RUN | 10/10, тот же результат |
+| `resilience.js` BUILD: мутанты | NOT_RUN | 18/18 |
+| UI устойчивости (импорт в браузере) | NOT_RUN | NOT_RUN (панели нет) |
+| unit: `test_res_oracle` + `test_regress` (от сборки не зависят) | 18 OK | — |
+| мутанты оракула K10 (от сборки не зависят) | 17/17 | — |
+
+### Расхождения с BUILD 33cc635
+
+Это не ошибки: смысл совпадает, отличаются только названия кодов или строгость.
+
+- **Коды ошибок** называются иначе: `bad_json` вместо `duplicate_key`/`non_finite`, `unknown_field`, `wrong_version`, `bad_cases`, `reserved_id`, `duplicate_id`, `bad_exclusions`, `candidate_not_source`, `unknown_source`. Отказ/принятие совпали во всех 70 случаях.
+- **17 кандидатов:** BUILD проверяет лимит 12 до валидации v2 (`too_many_candidates`), K10 — после (`bad_candidate_count`). Оба отказывают до расчёта.
+- **Метки:** BUILD дополнительно отклоняет U+2028/U+2029 (разделители строк) — строже K10, который отклоняет категорию Cc. В пакетах этого случая нет, спецификация его прямо не называет.
+- **Порядок:** BUILD выдаёт случаи в порядке ввода, K10 сортирует. `worst_case_ids` у обоих отсортированы. Дайджесты независимы и побайтно не сравниваются (так требует CORE_SPEC).
+
+## Ограничения
+
+- Все конверты — анализ допущений о данных. Это не прогноз закрытия, риска, нагрузки или потребностей жителей. QA-флаг — повод проверить запись, а не доказанная ошибка.
+- Оптимум — только среди введённых кандидатов. Расстояния — по прямой до записей среза Overture `2026-09-23.1`, который неполон.
+- Мутации показывают, что пакеты ловят перечисленные ошибки, а не отсутствие всех ошибок.
+- Строковые сравнения: Python сортирует по кодовым точкам, JS — по UTF-16. Для ID из BMP порядок одинаков; для символов вне BMP может отличаться. В пакетах таких ID нет.
+- Новая сборка BUILD требует нового прогона `regress.py --sha <sha>`. Результат здесь относится только к двум перечисленным SHA.
