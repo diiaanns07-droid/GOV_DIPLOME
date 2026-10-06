@@ -146,6 +146,10 @@
   function validateScenario(obj, data, F, { requirePoints = true } = {}) {
     const fail = (code, d) => { throw new WhatIfError(code, d); };
     if (!obj || typeof obj !== "object" || Array.isArray(obj)) fail("bad_shape", "ожидается объект");
+    // K12 r8 F2: a file of another schema (e.g. city-plan-v2) is named as such, before its fields are reported as unknown
+    if ("schema_version" in obj && obj.schema_version !== SCHEMA)
+      fail("bad_version", obj.schema_version === "city-plan-v2" ? "это план нескольких объектов (city-plan-v2) — загрузите его в режиме «Несколько объектов (v2)»"
+        : `версия ${String(obj.schema_version).slice(0, 40)} ≠ ${SCHEMA}`);
     for (const k of Object.keys(obj)) if (!TOP_KEYS.has(k)) fail("unknown_field", `поле ${JSON.stringify(k).slice(0, 40)} не допускается`);
     for (const k of ["schema_version", "city_id", "source_snapshot", "category", "control_points", "proposed_object"])
       if (!(k in obj)) fail("missing_field", k);

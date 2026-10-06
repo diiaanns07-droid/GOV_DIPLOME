@@ -20,7 +20,7 @@
   function section(parent, id, title, openByDefault) {
     const d = el("details", { id, class: "pl-sec" });
     d.open = id in OPEN ? OPEN[id] : openByDefault;
-    const sm = el("summary", null, title);
+    const sm = el("summary", { id: id + "_sum" }, title);  // K07 r8: an id keeps the focus across re-renders
     sm.addEventListener("click", () => { OPEN[id] = !d.open; });  // only a user toggle is remembered
     d.append(sm);
     parent.append(d);
@@ -77,12 +77,26 @@
   }
   function inBbox(lon, lat) { const b = D.cities[STATE.city].bbox; return b[0] <= lon && lon <= b[2] && b[1] <= lat && lat <= b[3]; }
   const without = (arr, id) => arr.filter((x) => x !== id);
-  function removePoint(id) { PS.points = PS.points.filter((p) => p.id !== id); changed(`Точка ${id} удалена.`); }
+  function removePoint(id) {
+    const i = PS.points.findIndex((p) => p.id === id);
+    PS.points = PS.points.filter((p) => p.id !== id); changed(`Точка ${id} удалена.`);
+    const nx = PS.points[i] || PS.points[i - 1];  // K07 r8 K4: the pressed button is gone — keep the focus in the card
+    focusById(nx ? `plDelP_${nx.id}` : "plSecPoints_sum", "plSecPoints_sum");
+  }
+  // focus a control by id; if it is hidden (e.g. a collapsed section) fall back to the section header
+  function focusById(id, fallbackId) {
+    let f = document.getElementById(id);
+    if (!f || !f.getClientRects().length) f = fallbackId ? document.getElementById(fallbackId) : null;
+    if (f) f.focus();
+  }
   function removeCand(id) {
+    const ci = PS.cands.findIndex((c) => c.id === id);
     PS.cands = PS.cands.filter((c) => c.id !== id);
     PS.required = without(PS.required, id); PS.excluded = without(PS.excluded, id); PS.selected = without(PS.selected, id);
     if (PS.moveId === id) { PS.mode = null; PS.moveId = null; }
     changed(`Кандидат ${id} удалён (и из ограничений, и из ручного плана).`);
+    const nx = PS.cands[ci] || PS.cands[ci - 1];  // K07 r8 K4
+    focusById(nx ? `plDelK_${nx.id}` : "plSecCands_sum", "plSecCands_sum");
   }
   function setStatus(id, st) {
     PS.required = without(PS.required, id); PS.excluded = without(PS.excluded, id);
@@ -153,7 +167,9 @@
   function numInput(id, label, value, lo, hi, apply, what) {
     const lab = el("label", { class: "ctl", for: id }, label + " ");
     const inp = el("input", { type: "number", id, min: lo, max: hi, step: 1, value: String(value), inputmode: "numeric", class: "num-in" });
-    inp.addEventListener("change", () => setNumber(what || label, inp.value.trim(), lo, hi, apply));
+    // K07 r8 K3: «change» fires before Tab moves the focus; re-rendering inside it replaced the next control and the focus
+    // fell to <body>. The value is applied on the next turn, after the focus has moved (render() keeps it by id).
+    inp.addEventListener("change", () => { const raw = inp.value.trim(); setTimeout(() => setNumber(what || label, raw, lo, hi, apply), 0); });
     lab.append(inp);
     return lab;
   }
@@ -192,7 +208,7 @@
         const li = el("li", { "data-plan-item": p.id });
         li.append(el("span", null, p.id),
           numInput(`plW_${p.id}`, "вес", p.weight, 1, 100, (v) => { p.weight = v; }, `Вес ${p.id}`),
-          btn(null, "Удалить", () => removePoint(p.id), { "aria-label": `Удалить контрольную точку ${p.id}` }));
+          btn(`plDelP_${p.id}`, "Удалить", () => removePoint(p.id), { "aria-label": `Удалить контрольную точку ${p.id}` }));
         ul.append(li);
       }
       secP.append(ul);
@@ -216,14 +232,18 @@
         const lab = el("label", { class: "chk", for: `plSel_${c.id}` }); lab.append(chk, document.createTextNode("в ручном плане"));
         li.append(el("strong", null, c.id), numInput(`plC_${c.id}`, "стоимость", c.cost, 1, 1000000, (v) => { c.cost = v; }, `Стоимость ${c.id}`), st, lab,
           btn(`plMove_${c.id}`, PS.mode === "move" && PS.moveId === c.id ? "Щёлкните на карте…" : "Перенести", () => setMode("move", c.id), { "aria-pressed": String(PS.mode === "move" && PS.moveId === c.id) }),
-          btn(null, "Удалить", () => removeCand(c.id), { "aria-label": `Удалить кандидата ${c.id}` }));
+          btn(`plDelK_${c.id}`, "Удалить", () => removeCand(c.id), { "aria-label": `Удалить кандидата ${c.id}` }));
         ul.append(li);
       }
       secC.append(ul);
     }
     renderManual(b);
     for (const f of OPT.render) f(b);
-    if (focusId) { const f = document.getElementById(focusId); if (f) f.focus(); }
+    if (focusId) {  // K07 r8 K5: «Найти» / «Отменить поиск» swap enabled state — the focus moves to the enabled one
+      let f = document.getElementById(focusId);
+      if (f && f.disabled) f = document.getElementById({ plRun: "plCancel", plCancel: "plRun" }[focusId] || "");
+      if (f && !f.disabled) f.focus();
+    }
   }
   function renderManual(b) {
     b.append(el("h3", null, "Ручной план: до и после"));
@@ -259,7 +279,7 @@
       let srcRow = null;
       if (r.nearest_before) {  // nearest source record before: name, QA marks, opens the record card
         const src = byId[r.nearest_before.id], qa = src ? qaOf(src) : [];
-        const sb = el("button", { type: "button", class: "tool wi-src", "data-plan-source": r.nearest_before.id }, `${qa.length ? "⚠ " : ""}${src ? src.name || "Без названия" : r.nearest_before.id}`);
+        const sb = el("button", { type: "button", class: "tool wi-src", id: `plSrc_${r.id}`, "data-plan-source": r.nearest_before.id }, `${qa.length ? "⚠ " : ""}${src ? src.name || "Без названия" : r.nearest_before.id}`);
         sb.addEventListener("click", () => selectPlace(r.nearest_before.id));
         const td = el("td", { colspan: 4, class: "muted" }, `${r.id} — ближайшая запись среза: `);
         td.append(sb, document.createTextNode(qa.length ? " · QA: " + qa.map((q) => q.code).join(", ") : ""));

@@ -61,6 +61,9 @@
   // Extension points for plan-ui.js (round 8): map layers, placement tools, city-switch hooks.
   const EXT = { layers: [], tools: [], onCity: [], onTool: [], cards: [] };
   const extTool = () => EXT.tools.find((t) => t.placing()) || null;
+  // K07 r8 K2: while a hypothetical item is being placed (v1 or v2), roads and records leave the Tab order — otherwise
+  // 1084–1326 roads and 55–65 records stand between the map and the scenario card; mouse still works, records via the table
+  const placingTab = () => (STATE.wi.mode || extTool() ? -1 : 0);
   const stopExt = () => { for (const t of EXT.tools) t.stop(); };
 
   // ---------- projection: local equirectangular metres around the square centre ----------
@@ -223,7 +226,7 @@
       let d = ""; sg.coords.forEach(([x, y], i) => { const [a, b] = toScreen(x, y); d += (i ? "L" : "M") + a.toFixed(1) + " " + b.toFixed(1); });
       const color = STATE.roadStyle === "foot" ? FOOT_COLOR[sg.foot_access] : "var(--base)";
       gRoad.append(sv("path", { d, fill: "none", stroke: color, "stroke-width": sg.class === "footway" || sg.class === "path" ? 1.2 : 2, "stroke-linecap": "round" }));
-      const hit = sv("path", { d, fill: "none", stroke: "transparent", "stroke-width": 10, tabindex: 0, role: "button",
+      const hit = sv("path", { d, fill: "none", stroke: "transparent", "stroke-width": 10, tabindex: placingTab(), role: "button",
         "aria-label": `Дорога: ${sg.class}${sg.name ? ", " + sg.name : ""}` });
       hit.style.cursor = "pointer";
       hit.addEventListener("pointermove", (ev) => showTip(ev, [`${sg.class}${sg.name ? " · " + sg.name : ""}`, `${fmtM(sg.length_m)} · проход пешком: ${sg.foot_access}`]));
@@ -251,7 +254,7 @@
     }
     for (const p of places) {
       const [sx, sy] = toScreen(p.lon, p.lat);
-      const g = sv("g", { transform: `translate(${sx.toFixed(1)} ${sy.toFixed(1)})`, tabindex: 0, role: "button",
+      const g = sv("g", { transform: `translate(${sx.toFixed(1)} ${sy.toFixed(1)})`, tabindex: placingTab(), role: "button",
         "aria-label": `${p.name || "Без названия"}, ${p.group_label}`, "data-id": p.id });
       g.style.cursor = "pointer";
       const sel = STATE.selected && STATE.selected.type === "place" && STATE.selected.id === p.id;

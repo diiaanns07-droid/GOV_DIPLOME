@@ -168,7 +168,7 @@
 
   /* evaluatePlan(ctx, scenario, selectedIds) -> rows (input order of control points) + metrics + feasibility.
    * nearest_* = {kind: "source"|"hypothetical", id}; ties: mm, then source before hypothetical, then ID. */
-  function evaluatePlan(ctx, sc, selectedIds, pre) {
+  function evaluateInternal(ctx, sc, selectedIds, pre) {  // sc already validated against ctx
     const P = pre || precompute(ctx, sc);
     const ids = [...new Set(selectedIds)].sort(cmpStr);
     for (const id of ids) if (!P.candIndex.has(id)) fail("unknown_ref", `кандидата ${id} нет`);
@@ -210,7 +210,7 @@
   function popcount(x) { let c = 0; while (x) { x &= x - 1; c++; } return c; }
   /* createSearch(ctx, validatedScenario, {request_id}) -> { total, examined, step(n) -> done, cancel(), result() }.
    * Constraints are checked before any enumeration; the result is "optimal" only after every subset was examined. */
-  function createSearch(ctx, sc, opts) {
+  function createSearchInternal(ctx, sc, opts) {  // sc already validated against ctx
     const F = (opts && opts.F) || null;
     const request_id = opts && opts.request_id !== undefined ? opts.request_id : null;
     const P = precompute(ctx, sc), nP = P.pts.length, nC = P.cands.length;
@@ -283,6 +283,11 @@
     }
     return { get total() { return total; }, get examined() { return examined; }, step, cancel: () => { cancelled = true; }, result, request_id };
   }
+  // Public entry points validate every input themselves (round 9, K12 r8 F1): an unchecked object with 20+ candidates
+  // used to run 2^20+ subsets and report "optimal". Limits are checked before precomputation; the validated copy is used,
+  // so mutating the caller's object afterwards cannot bypass them.
+  function evaluatePlan(ctx, sc, selectedIds) { return evaluateInternal(ctx, validatePlanScenario(sc, ctx), selectedIds); }
+  function createSearch(ctx, sc, opts) { return createSearchInternal(ctx, validatePlanScenario(sc, ctx), opts); }
   function optimizePlans(ctx, sc, opts) { const s = createSearch(ctx, sc, opts); while (!s.step(1 << 20)); return s.result(); }
   // Budgets [0, floor(B/2), B] without duplicates; everything else unchanged.
   function sensitivity(ctx, sc, opts) {
@@ -293,7 +298,7 @@
 
   // ---------- files: strict export / import (city-plan-v2); derived_results are checked against a recomputation ----------
   function derivedOf(ctx, sc, F) {
-    const ev = evaluatePlan(ctx, sc, sc.selected_ids);
+    const ev = evaluateInternal(ctx, sc, sc.selected_ids);
     return { note: "производные значения; при импорте пересчитываются и сверяются, из файла не принимаются", metric_version: METRIC,
       problem_digest: problemDigest(sc, F), scenario_digest: scenarioDigest(sc, F),
       manual: { selected_ids: ev.selected_ids, feasible: ev.feasibility.feasible,
@@ -322,7 +327,7 @@
       const want = canon(derivedOf(ctx, sc, F)), got = canon(obj.derived_results);
       if (want !== got) fail("forged_derived", "derived_results в файле не совпадают с пересчётом — файл изменён вручную или сделан другой версией; не принят");
     }
-    return { scenario: sc, evaluation: evaluatePlan(ctx, sc, sc.selected_ids), ctx };
+    return { scenario: sc, evaluation: evaluateInternal(ctx, sc, sc.selected_ids), ctx };
   }
 
   // ---------- template explanation over computed facts (not an LLM); digest covers problem, scenario and values ----------
@@ -413,7 +418,8 @@
   }
 
   const api = { SCHEMA, METRIC, CATEGORIES, LIMITS, PlanError, mmOf, sourceSnapshot, makeContext, validatePlanScenario, problemDigest, scenarioDigest,
-    precompute, feasibility, metricsOf, evaluatePlan, createSearch, optimizePlans, sensitivity, derivedOf, exportPlanScenario, importPlanScenario,
+    precompute, feasibility, metricsOf, evaluatePlan, createSearch, optimizePlans, sensitivity, KEYS, cmpIds,
+    internal: { evaluate: evaluateInternal, createSearch: createSearchInternal }, derivedOf: (ctx, sc, F) => derivedOf(ctx, validatePlanScenario(sc, ctx), F), exportPlanScenario, importPlanScenario,
     explanationDigest, explainPlans, reportHtml, esc };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else root.CITY_PLAN = api;

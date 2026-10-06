@@ -147,6 +147,22 @@ check("problem_digest in the result binds it to the input", PL.optimizePlans(bct
 const t0 = Date.now(); PL.optimizePlans(bctx, bsc, { F }); const tBig = Date.now() - t0;
 check(`16×25 full search under 2 s in Node (${tBig} ms)`, tBig < 2000);
 
+// 4b. round 9 (K12 r8 F1): public entry points validate unchecked objects before any precomputation
+const many = (n) => ({ ...bsc, candidates: Array.from({ length: n }, (_, k) => ({ ...bsc.candidates[k % bsc.candidates.length], id: "Z" + k })) });
+for (const n of [17, 20, 40]) {
+  const t0 = Date.now(), c1 = code(() => PL.optimizePlans(bctx, many(n), { F })), c2 = code(() => PL.createSearch(bctx, many(n), { F }));
+  check(`direct API with ${n} candidates refused before search (${Date.now() - t0} ms)`, c1 === "too_many_candidates" && c2 === "too_many_candidates" && Date.now() - t0 < 200, c1 + " " + c2);
+}
+check("direct evaluatePlan validates (weight 0 rejected)", code(() => PL.evaluatePlan(bctx, { ...bsc, control_points: bsc.control_points.map((p, k) => (k ? p : { ...p, weight: 0 })) }, [])) === "bad_weight");
+check("direct optimizePlans validates (foreign snapshot rejected)", code(() => PL.optimizePlans(bctx, { ...bsc, source_snapshot: "sha256:x" }, { F })) === "foreign_snapshot");
+const mut = JSON.parse(J(bsc)), ms = PL.createSearch(bctx, mut, { F });
+mut.candidates.push(...many(20).candidates); mut.budget = -5;
+while (!ms.step(1 << 20));
+check("mutating the passed object after createSearch cannot change limits or inputs", ms.result().status === "optimal" && ms.result().evaluated === 65536 && ms.result().budget === bsc.budget);
+check("public derivedOf validates", code(() => PL.derivedOf(bctx, many(20), F)) === "too_many_candidates");
+// K12 r8 F2: v1 importer names a v2 file as a foreign version (before unknown fields)
+check("v1 import of a v2 file: bad_version with the v2 hint", (() => { try { X.importScenario(PL.exportPlanScenario(bctx, bsc, F), D, F); return "accepted"; } catch (e) { return e.code + (e.detail.includes("v2") ? "+hint" : ""); } })() === "bad_version+hint");
+
 // 5. files: export / import city-plan-v2 (strict, atomic, derived_results verified)
 const ctxFor = (city) => PL.makeContext(D, city, F);
 const txt = PL.exportPlanScenario(bctx, bsc, F), ej = JSON.parse(txt);

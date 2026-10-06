@@ -141,6 +141,10 @@ figure.pl-chart { margin: 6px 0; }
 .pl-cmp dt { color: var(--ink-2); font-size: 11px; margin-top: 3px; }
 .pl-cmp dd { margin: 0; font-weight: 600; }
 #plPareto td, #plSens td { font-size: 12px; }
+#planCard th { white-space: normal; }  /* round 9: long headers wrap instead of widening the card at 390 px */
+@media (max-width: 480px) { #plMetrics, #plRows { width: 100%; table-layout: fixed; } #plMetrics td.num, #plRows td.num { white-space: normal; } }
+@media (max-width: 480px) { #plPareto, #plSens { width: 100%; table-layout: fixed; } #plPareto th, #plSens th { white-space: normal; font-size: 12px; }
+  #plPareto td.num, #plSens td.num { white-space: normal; } }  /* K07 r8 N2: no inner horizontal scroll at 390 px */
 td.better { font-weight: 600; }
 button.wi-src { white-space: normal; text-align: left; font-size: 12px; padding: 2px 6px; }
 #wiTable caption { text-align: left; caption-side: top; }
