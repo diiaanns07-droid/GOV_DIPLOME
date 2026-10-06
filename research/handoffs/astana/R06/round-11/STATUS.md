@@ -57,3 +57,15 @@
 Не запускалось: сборка R01 с картой R03 и кабинетом R04 (не объединены); R08 нет в GitHub.
 
 Следующий шаг (R01): импорт путей R06 + `git apply research/round-11-results/R06/r01_integration.patch`, затем app_e2e_r06.cjs на CODE_SHA. R06: при появлении R08 — прогон с настоящим classify.
+
+## Финал сессии
+- Роль R06, ветка `claude/focused-hypatia-z8h0no`, код проверен на `91f2508` (DELIVERY.code_commit).
+- Push: OK для всех checkpoint (462ecf5, 7effc8e, d8aff46, 591386e, 417cc23, 36a0604, a6c0260, eaa113d,
+  0d97313, 91f2508 и этот коммит с handoff).
+- Работает: FeedbackService (приём, лимиты, дубликаты, модерация с CSRF/ревизиями, согласие и его отзыв,
+  скрытие контактов, журнал), CivicFeedback.mount / mountModeration, CLI обслуживания, адаптер R08.
+- Команды: `python3 -m pytest tests/civic/R06 -q`; `node tests/civic/R06/browser_r06.cjs`;
+  `R06_BASE=… node tests/civic/R06/app_e2e_r06.cjs` (на собранном приложении).
+- Остаточный риск: подсказки о персональных данных — эвристики (имена/адреса находит только человек);
+  лимит по IP делится за NAT; R08 не проверен с настоящей моделью; карта/подложка в песочнице не проверялись.
+- Следующий шаг: R01 импортирует пути R06 и применяет `r01_integration.patch`.
