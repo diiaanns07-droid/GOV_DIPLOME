@@ -1,0 +1,172 @@
+{
+ "workflow_run": "wf_6017987f-133",
+ "agents": {
+  "blind_js_resilience": {
+   "out_path": "/tmp/claude-0/-home-user-GOV-DIPLOME/e220e412-94a1-5250-b65e-0d50545b9515/scratchpad/t3_blind_js/out.jsonl",
+   "tasks": 1340,
+   "ambiguities": [
+    "Results: all 1340 tasks have status optimal (no required_ids or excluded_ids anywhere, at most 12 candidates, empty plan always feasible). 897 tasks have same_plan=true. 328 have a non-zero price, none negative, none null. A second naive implementation in naive_check.js recomputes haversine inside the loop and sorts all feasible plans by the full key; it matches out.jsonl exactly on all 1340 tasks. The optimizer is resilience_oracle.js in the same directory; check.js gives distribution and rounding diagnostics. Nothing in /home/user/GOV_DIPLOME was written (the untracked files under research/round-9-results/K09 shown by git status are not mine).",
+    "Haversine last step is not specified (2*asin(sqrt(a)) or 2*atan2(sqrt(a), sqrt(1-a))). I used atan2 by default. An asin run gave byte-identical output, and changing the degree-to-radian expression order changed no mm value. The closest any of the 12750 unique point-to-object distances comes to a .5 mm rounding boundary is 3.0e-5 mm, so the mm values are not sensitive to the formula choice.",
+    "Floating-point order for price_of_robustness_m: I computed (sum_R/total_w - sum_N/total_w)/1000 as the conventions state. The equivalent (sum_R - sum_N)/total_w/1000 can differ in the last ulp, so compare with a small tolerance, not bytewise.",
+    "When unknown_count > 0, weighted_sum_mm is still the sum over known points and max_mm is null. Example: for all-disabled cases the nominal empty plan gets W = {unknown_count:5, weighted_sum_mm:0, max_mm:null}.",
+    "worst_case_ids are computed separately for each plan from that plan's own per-case L vectors. They include 'base' and duplicate cases whenever their L equals W (there are 258 cases that repeat another case's exclusion set). Duplicates do not change plan choice, but every tied ID is listed and sorted by code point. All IDs are ASCII, so code-point order equals plain sort.",
+    "Price is 0 when the plans differ but have equal base L (seen in all-disabled tasks: nominal [] and robust [c01,c02] have the same base sum). It is reported as 0, with no claimed advantage.",
+    "feasible_count counts the empty plan when it is feasible.",
+    "My code would return nominal/robust null for an infeasible result. No input was infeasible, so this was not exercised.",
+    "I did not implement full strict-envelope validation (JSON size, duplicate keys, label rules, bbox, unknown fields). I checked only that slice, city, category and snapshot match the context, that 'base' is not used as a case ID, that every disabled_source_id exists in context.sources, and that candidates number 12 or fewer. Every input passed.",
+    "Nominal is taken as the v2 mean objective on base (unknown, weighted_sum, max, cost, sorted ids), which matches the conventions' (L_base, cost, sorted ids). Context sources include several records with identical coordinates, so disabling one of them often leaves the baseline unchanged; I treated that as correct behaviour, not an error."
+   ]
+  },
+  "review_build_resilience": {
+   "findings": [
+    {
+     "severity": "medium",
+     "claim": "The resilience limits are checked on the raw input, not on the validated copy. A getter or Proxy on the passed object can therefore get past the 12-candidate limit (and v2's 16), the 1..7 case limit and the 'at least 1 exclusion' rule; optimizeResilience then reports status 'optimal'. Cause: validateResilience reads plan.candidates.length (line 42) and then calls PL.validatePlanScenario. That function reads input.candidates again and checks cands.length before cands.map (plan.js lines 81/92). The same happens with cases.length (line 47) before cases.map (line 50), and with ids.length (line 63) before iterating. The lengths of cleanPlan.candidates, clean (cases) and set.size are never re-checked. This cannot be reached through JSON import, because parsed objects are plain. It breaks the spec rule that 'Непроверенные объекты при прямом вызове публичных evaluate/optimize/создания поиска валидировать... изменение переданного объекта не должно обходить ограничения'. It also breaks the limits 'Полный перебор <=4096' and 1..7 cases. Fix: snapshot each array once (Array.from), or re-check the clean lengths before returning; the same fix is needed in plan.js validatePlanScenario.",
+     "repro": "/opt/node22/bin/node /tmp/claude-0/-home-user-GOV-DIPLOME/e220e412-94a1-5250-b65e-0d50545b9515/scratchpad/t3_review_build/findings_repro.cjs  -> 'F1a optimal candidates 18 total_subsets 262144' (Proxy on plan.candidates whose length is 5 for the first 2 reads and 18 after); 'F1b optimal cases incl. base 31' (Proxy on cases, length 1 then 30); 'F1c []' (validated case with an empty disabled_source_ids); 'F1d optimal total_subsets 65536' (getter on plan.candidates: 5 then 16). Core snippet: e.plan.candidates = new Proxy(arr18,{get(t,p,r){ if(p==='length') return reads++<2?5:t.length; return Reflect.get(t,p,r);}}); RS.optimizeResilience(ctx,e,{F}).status === 'optimal'",
+     "spec_ref": "round-9 CORE_SPEC: 'Устойчивость: 1..25 точек, 0..12 кандидатов'; 'cases: 1..7'; 'хотя бы 1'; 'Полный перебор <=4096 подмножеств'; 'Непроверенные объекты ... валидировать ... изменение переданного объекта не должно обходить ограничения'"
+    },
+    {
+     "severity": "low",
+     "claim": "The JSON round trip fails for a label that contains U+FFFD. validateResilience accepts it; importResilience also accepts it when the file writes it as the escape �. exportResilience then writes the character raw, because JSON.stringify does not escape it. X.parseStrict rejects any raw U+FFFD as bad_encoding, so the module cannot re-import its own export. The label is the only free-text field, since v2 IDs cannot contain U+FFFD. Fix: reject U+FFFD in labels, or escape it on export.",
+     "repro": "/opt/node22/bin/node .../t3_review_build/findings_repro.cjs -> 'F2 validate accepted export→import bad_encoding' and 'F2 import(�) ok → export→import bad_encoding'. Snippet: e.cases[0].label='a�b'; RS.importResilience(RS.exportResilience(ctx,e), c=>ctxs[c]) throws PlanError code 'bad_encoding'.",
+     "spec_ref": "round-9 CORE_SPEC: 'JSON roundtrip'; 'label непустая строка <=120 Unicode code points'"
+    },
+    {
+     "severity": "low",
+     "claim": "Results and explanations are not tied to the scenario that produced them, so a late answer from an earlier scenario cannot be detected. The output of evaluateResilience has no digest or request_id. optimizeResilience returns resilience_problem_digest=null unless opts.F is passed. explainResilience(env, manual, result) checks nothing: it accepts a manual plan or result computed for a different envelope and writes mixed text. For example, it names envelope B's duplicate group k0=k1 but lists only 'k0' as worst, taken from envelope A's result. v2's explainPlans rejects this case with stale_explanation. Marked plausible: the UI (BUILD stage 3) might add a guard, but the module API has no way to do this check.",
+     "repro": "/opt/node22/bin/node .../t3_review_build/p7_explain.cjs (or findings_repro.cjs line F3): A = envelope whose case k0 disables all 15 schools; B = same plan with cases k0, k1 identical (one school). RS.explainResilience(B, RS.evaluateResilience(ctx,B,[]), RS.optimizeResilience(ctx,A,{F})) returns text without error ('Случаи с одинаковым набором исключений: k0 = k1 ...' next to plans and worst case '(k0)' taken from A). PL.explainPlans with a wrong digest throws stale_explanation. RS.optimizeResilience(ctx,B).resilience_problem_digest === null.",
+     "spec_ref": "round-9 CORE_SPEC ПРОВЕНАНС: 'Изменение любого входа/среза/города инвалидирует результат и объяснение; request_id + digest не позволяют позднему ответу перерисовать новый сценарий'"
+    },
+    {
+     "severity": "low",
+     "claim": "evaluateResilience does not validate its selectedIds argument. undefined, null, a number or a plain object raises an untyped TypeError ('selectedIds is not iterable') instead of a typed PlanError. A string is iterated one character at a time, so 'C0' is reported as unknown_ref 'C'. Other unchecked input to this public function gets typed errors.",
+     "repro": "RS.evaluateResilience(ctx, validEnvelope, undefined) -> TypeError: selectedIds is not iterable (code undefined); the same for null, 5 and {}. Run: /opt/node22/bin/node .../t3_review_build/p8_misc.cjs",
+     "spec_ref": "round-9 CORE_SPEC API: 'validateResilience(input, ctx) -> clean envelope / typed error'; 'Непроверенные объекты при прямом вызове публичных evaluate ... валидировать'"
+    },
+    {
+     "severity": "info",
+     "claim": "The label check rejects only C0, DEL, C1 and U+2028/2029. It accepts a label made only of invisible U+200B, because trim() does not remove it, so 'непустая' is met only formally. It accepts Bidi_Control format characters such as U+202E RLO, which can visually reverse the rest of the label when shown as text. It also accepts lone surrogates, which are not Unicode scalar values and cannot be encoded in UTF-8; any UTF-8 writer, such as an HTML report or a Python oracle using ensure_ascii=False, would replace or reject them. Whether this is a spec deviation depends on the reading: whether 'управляющие символы' covers only Cc or also Bidi_Control.",
+     "repro": "/opt/node22/bin/node .../t3_review_build/findings_repro.cjs -> 'F5 ZWSP only accepted', 'F5 RLO accepted', 'F5 lone surrogate accepted' (label '​', 'a‮b', 'a\\ud800b').",
+     "spec_ref": "round-9 CORE_SPEC: 'label непустая строка <=120 Unicode code points, без управляющих символов, отображается только текстом'; 'JSON UTF-8'"
+    }
+   ],
+   "checked_ok": [
+    "Read resilience.js (230 lines) and plan.js (426 lines) in full, plus whatif.parseStrict. The product test tests/resilience.cjs passes in the snapshot ('all resilience checks passed').",
+    "Strict envelope: unknown top-level field -> unknown_field (including derived names such as nominal and results); plan.derived_results -> derived_not_allowed; extra case field -> bad_shape; missing schema_version, plan or cases -> missing_field; schema_version null or unknown -> bad_version; v2 or v1 file -> wrong_version; an own __proto__ key at top level or in a case is rejected.",
+    "Candidate limit: 13 candidates -> too_many_candidates from validate, evaluate, createSearch, optimize and export, before precomputation, even when the plan is also otherwise invalid (foreign snapshot). 12 are accepted, and v2 optimizePlans still solves 13 to 16.",
+    "Cases: 0 or 8 -> bad_cases; 7 accepted; 'base' -> reserved_id (exact match, so 'Base' is allowed); duplicate case ID -> duplicate_id; ID rules follow PL.isId (NFC, Kazakh letters, 64 code points, empty, number, non-NFC).",
+    "Labels: 120 emoji (240 UTF-16 units) accepted, 121 rejected; empty, spaces only or NBSP only rejected; TAB, LF, DEL, NEL (U+0085) and U+2028 rejected; non-string rejected; markup kept as plain text.",
+    "disabled_source_ids: empty -> bad_exclusions; all 15 records accepted; 16 -> bad_exclusions; duplicate -> duplicate_id; candidate ID -> candidate_not_source; ID of another category, another city or a case-variant -> unknown_source; non-string -> bad_id; non-array or null -> bad_shape. A candidate whose ID equals a source ID is treated in the source namespace.",
+    "Plain mutation of the caller's envelope after createResilienceSearch (more candidates, empty cases, max_selected 99, budget 1e9) does not affect the result: the search runs on the validated copy.",
+    "Randomized differential test, 400 runs, both cities and both categories, 0..9 candidates, duplicate candidate positions, required and excluded IDs, cases that disable all records, duplicate cases, run against my own independent brute force with its own haversine, mm rounding and feasibility: 0 mismatches in status, nominal IDs, robust IDs, robust W, worst_case_ids for nominal and robust (141 runs had tied worst cases), feasible_count and price.",
+    "Nominal plan equals plan.js optimizePlans objectives.mean.ids in all 400 runs.",
+    "Robust objective (W, L_base, cost, sorted IDs) matches the brute force; W is the lexicographic maximum over all cases including base, and is never a mix of components from different cases.",
+    "Per-case manual evaluation, 200 runs: before/after/delta, nearest_after kind and ID, unknown_count, weighted_sum_mm, max_mm (null when unknown), covered_weight, weighted_mean_mm, source_records and disabled_count all match my own computation for every case.",
+    "Order independence, 200 runs, with cases, exclusion IDs, control points, candidates and selected_ids shuffled: identical problem digest, exclusions digest, scenario digest, nominal and robust IDs, worst vectors and IDs, price and feasible_count. selected_ids enters only the scenario digest; the problem digest changes when a duplicate case is added.",
+    "Duplicate cases leave nominal, robust, W and price unchanged; worst_case_ids lists both duplicates when that case is worst; duplicate_case_groups shows the duplicates (the order of the groups follows input order, which is cosmetic only).",
+    "When all records are disabled and no candidates are selected: per-case distance, mean and max are null, delta is null, coverage is 0, and W = (n, 0, null) with that case named. Robust and nominal then select a candidate. No Infinity or NaN appears in the JSON output.",
+    "Price is (robust base mean minus nominal base mean)/1000. It is exactly 0 when the plans coincide, and null with a reason when the status is infeasible, cancelled or incomplete. The 'base mean unknown' branch cannot be reached by a valid envelope, because a case needs at least one category record, so base always has a baseline.",
+    "Required cost over budget, or more required than max_selected -> status infeasible with reasons, evaluated 0, price null, constraints kept. A manual plan missing a required candidate is flagged missing_required.",
+    "Search lifecycle: result() before any step, after step(0), after step(4095 of 4096), after step(NaN, -5 or 'abc'), and after cancel (including cancel after completion) is never 'optimal'. step returns true after cancel; request_id is passed through. Full 12 candidates x 25 points x 8 cases takes about 23 ms.",
+    "Export contains only the input (schema_version, plan with the 12 v2 input keys, cases with id, label and sorted exclusions). export -> import -> export is byte-identical. An Astana envelope imports into the Astana context.",
+    "Strict import: trailing data, double BOM, duplicate keys (case and plan), NaN, Infinity, -1e400, raw control characters, nesting depth over 32 and a raw U+FFFD are all rejected; 256 KiB + 1 byte -> too_large, exactly 256 KiB accepted; a v1 or v2 file -> wrong_version; a Shymkent plan relabelled as Astana -> foreign_snapshot; unknown city -> bad_city with ctxFor not called. A failed import leaves the context unchanged; the function only returns on success (atomic).",
+    "A file without 'plan' is rejected, but with code bad_city instead of missing_field (cosmetic, not reported as a finding).",
+    "Context immutability: ctx stays frozen; caseContext returns a filtered copy; result.source_snapshot is the plan's own; the exclusions digest is separate.",
+    "Explanation text contains 'не подтверждение закрытия' and no probabilities, risk, population or tenge.",
+    "Out of scope for this commit: the UI panel and the HTML report are not built yet. BUILD STATUS lists them as stage 3, and index.html does not load resilience.js."
+   ]
+  },
+  "review_k09_oracle": {
+   "findings": [
+    {
+     "severity": "medium",
+     "file": "research/round-9-results/K09/k09res/t3.py",
+     "claim": "The Wilson 95% intervals and the exact McNemar tests (pre-registered in T3_PROTOCOL.md lines 81 and 96) treat the 1320 tasks and the matched pairs as independent. They are not: all main tasks come from only 20 independent geometries (slice x seed). Sizes are nested (first n points and candidates), and one exclusion draw per (family, k, seed) is reused across every size and budget. The reported significance is overstated by 1 to 2 orders of magnitude, and the CIs are too narrow.",
+     "evidence": "I reran the unchanged run_one/summarize code in scratch (myrun.py, repeats=1; same_plan and the other fields are deterministic). Results: 20 clusters of 66 tasks; per-geometry same_plan ranges 0.50 to 0.92; design effect about 2.58 (effective n about 513). Main same_plan 886/1320: Wilson [0.645, 0.696], cluster bootstrap over geometries [0.633, 0.712]. Paired contrasts, naive exact McNemar vs clustered McNemar (Obuchowski) vs exact sign-flip permutation over the 20 geometries: budget 0.5 vs 1.0 (80/42) p=7.4e-4 (log10 -3.13) vs 0.037 vs 0.038; single k1 vs k7 (27/7) 8.2e-4 vs 0.033 vs 0.040; pair (27/5) 1.1e-4 vs 0.019 vs 0.021; cluster (43/12) 3.3e-5 vs 0.004 vs 0.003. Script: scratchpad/t3_review_k09/analyze2.py plus the inline Obuchowski/permutation snippet.",
+     "suggested_fix": "Report Wilson and McNemar values as descriptive only, or replace them with geometry-level inference: cluster bootstrap or per-(slice, seed) aggregates for rates, and clustered McNemar (Obuchowski/Durkalski) or a sign-flip permutation over the 20 geometries for the contrasts. State in the protocol and results that the effective number of independent units is 20 geometries."
+    },
+    {
+     "severity": "medium",
+     "file": "research/round-9-results/K09/k09res/t3.py",
+     "claim": "summary.by.k_cases (line 189) groups tasks by len(cases) across all families. Level k=1 therefore contains all 120 all_disabled tasks plus the 60 Astana attribute tasks, and level k=3 contains the 60 Shymkent attribute tasks. The factor table for k is confounded with family and shows a non-monotone pattern that does not exist within the random families. The pooled 'main' rate is also a design-mix artefact, because all_disabled (same_plan 8.3%) enters with a fixed weight of 1/11.",
+     "evidence": "From my scratch rerun: by.k_cases same_plan is k1=0.637 (n=540), k3=0.733 (n=420), k7=0.650 (n=360). Random families only (single, pair, cluster) give k1=0.853, k3=0.733, k7=0.650. Composition of k=1: single, pair, cluster, all_disabled for both slices, plus attribute for astana. The untracked scripts/t3_tables.py adds an 'N.B.' line, but the hashed deterministic output t3_summary.json still carries the confounded by.k_cases table, and t3_tables prints it as 'Число пользовательских случаев k'.",
+     "suggested_fix": "Compute by.k_cases only over FAMILIES_RANDOM, or rename it, for example 'n_user_cases (mixed families)'. Report the main pooled rate separately for the random families, attribute and all_disabled."
+    },
+    {
+     "severity": "low",
+     "file": "research/round-9-results/K09/T3_PROTOCOL.md",
+     "claim": "same_plan mixes trivially identical tasks with substantive agreement. In 14% of main tasks no user case changes the baseline distance at any control point, so robust = nominal by construction. Part of this comes from colocated duplicate records in Shymkent: 7 of the 15 school records sit in 3 groups with identical coordinates, so excluding one twin has no effect. The protocol does not separate this, so family, k and size rates partly measure 'did a random exclusion hit the nearest record of the 5-25 points'.",
+     "evidence": "CaseModel.case_base[k] == case_base[0] for all user cases in 190/1320 main tasks: single shymkent 52/180, single astana 44/180, pair shymkent 46/180, pair astana 22/180, cluster shymkent 16/180, cluster astana 6/180, attribute shymkent 4/60. Colocated groups in the Shymkent sources: (69.5958, 42.3167) x3, (69.59496, 42.32353) x2, (69.61557, 42.32304) x2. In 20 of 220 cluster cases the 3rd and 4th nearest records are at the same distance.",
+     "suggested_fix": "Add a per-task flag 'exclusions_affect_baseline' (or the count of no-op cases) and report same_plan also on the non-trivial subset. Mention the colocated duplicates in the interpretation limits."
+    },
+    {
+     "severity": "low",
+     "file": "research/round-9-results/K09/k09res/t3.py",
+     "claim": "Several pre-registered metrics are missing from the summary, and the CSV column worst_max_gain_m is easy to misread. (1) config metrics.worst_case_ids promises 'число худших случаев (ничьи)', but cell() has no tie count. (2) Protocol metric 3 'выигрыш по max' is only written to the CSV, not to the summary. (3) Price null reasons are not broken out. Also, worst_max_gain_m (line 136) is the difference of W.max, which is the max of the lex-worst case and not the worst max over cases. It is negative in some tasks.",
+     "evidence": "My rerun: 334/1320 main tasks have tied worst_case_ids (not reported). worst_max_gain_m < 0 in 43/1330 tasks where it is defined. W.max differs from max over cases of max_mm for 124 nominal and 142 robust plans. In 35 tasks the robust plan's overall max distance across cases is worse than the nominal plan's.",
+     "suggested_fix": "Add a tie count or distribution to cell(). Either summarize worst_max_gain with its sign distribution or drop it from the protocol. Label it 'max component of the worst vector W', not 'worst-case max distance', following the spec's warning not to present component maxima as one case."
+    },
+    {
+     "severity": "low",
+     "file": "research/round-9-results/K09/T3_PROTOCOL.md",
+     "claim": "Metric 5 'входит ли base в худшие случаи' is purely a tie artefact. Disabling records can only lengthen distances, so L_case >= L_base componentwise for every plan. Base is among the worst only when some user case has exactly the base L, meaning that case has no effect on this plan.",
+     "evidence": "base_in_worst_nominal 235 and base_in_worst_robust 239 tasks. In 235/235 and 239/239 of them worst_case_ids also contains at least one user case.",
+     "suggested_fix": "Describe and report this metric as 'at least one exclusion case has no effect on the plan's losses'. Do not present base as a worst scenario."
+    },
+    {
+     "severity": "low",
+     "file": "research/round-9-results/K09/T3_PROTOCOL.md",
+     "claim": "Exact (non-preregistered) remark: 'price = 0' is not the same as 'robustness is free'. In 115 of the 1340 tasks the robust plan differs from the nominal plan with a base distance price of exactly 0, but it adds 1-3 candidates and costs more. The pre-registered summary has no cost-difference metric.",
+     "evidence": "Zero-price but different-plan tasks: 115. Cost difference robust - nominal is 128 / 499 / 2219 units (min / median / max). Extra candidates: +1 in 93 tasks, +2 in 21, +3 in 1. Across all 443 differing plans: robust is costlier in 278 and cheaper in 165. The untracked scripts/t3_tables.py already adds this as 'не предрегистрировано'.",
+     "suggested_fix": "Keep the cost-difference table, mark it non-preregistered, and say in the protocol's interpretation section that a zero distance price can come with a higher cost."
+    },
+    {
+     "severity": "low",
+     "file": "research/round-9-results/K09/k09res/t3.py",
+     "claim": "The k contrast is paired on geometry only, not on exclusions. The k=1 and k=7 case sets are separate draws (k is part of the RNG seed string), so the k=1 case is usually not among the k=7 cases. In addition, cluster cases often coincide, so the nominal k overstates the number of distinct scenarios. The protocol's statement that comparisons of 'семейств, k, бюджетов и размеров на одном seed парные' (line 54) holds only for geometry.",
+     "evidence": "The k=1 case is contained in the k=7 cases for 6/20 (single), 0/20 (pair) and 5/20 (cluster) slice x seed combinations. Mean distinct exclusion sets: cluster k3 = 2.75 (min 2), cluster k7 = 5.5 (min 4), pair k7 = 6.85.",
+     "suggested_fix": "For a future version, draw one sequence of 7 cases per (family, seed) and take the first k, so the levels are nested. Also report distinct_exclusion_sets in the summary. For now, qualify the pairing claim."
+    },
+    {
+     "severity": "low",
+     "file": "research/round-9-results/K09/config/t3_config.json",
+     "claim": "The stress rule claims '4096 подмножеств'. With max_selected=5 only 1586 subsets are feasible, so only those are evaluated. 4096 is the size of the mask domain, so stress timings are for 1586 loss evaluations, not 4096.",
+     "evidence": "All 20 stress tasks: evaluated=1586, subsets_total=4096. 1586 = sum of C(12, i) for i = 0..5.",
+     "suggested_fix": "Change the wording to '4096 masks, 1586 feasible subsets evaluated (max under max_selected <= 5)'."
+    },
+    {
+     "severity": "low",
+     "file": "research/round-9-results/K09/k09res/resilience.py",
+     "claim": "Two validation gaps, neither of which affects T3 numbers. (1) Label and ID policy: _label_ok (line 42) rejects only Cc. It accepts U+2028, the bidi override U+202E, the zero-width U+200B, U+FEFF and whitespace-only labels. Case IDs 'Base', 'BASE' and the Cyrillic homoglyph 'bаse' are accepted as distinct from the reserved 'base'. A mixed-type duplicate [1, '1'] reports duplicate_exclusion instead of a type error. (2) The public evaluate_resilience(..., validated=True) skips all validation, including the 12-candidate limit; optimize re-checks the limit.",
+     "evidence": "Probe output: ' ' accepted, ' ' accepted, 'a‮b' accepted, '﻿' accepted, '​' accepted; 'Base', 'BASE' and 'bаse' accepted; [1,'1'] -> duplicate_exclusion. evaluate_resilience on a 13-candidate env with validated=True returns feasible=True, while validated=False gives too_many_candidates. STATUS.md already records U+2028 and whitespace labels as a known policy difference with BUILD.",
+     "suggested_fix": "Optionally also reject Cf, Zl and Zp and whitespace-only labels. Make validated an internal or private parameter, or re-check the candidate limit in evaluate too."
+    },
+    {
+     "severity": "low",
+     "file": "research/round-9-results/K09/k09res/resilience.py",
+     "claim": "Coverage gap. The oracle does not compute per-case point rows (before, after, delta and nearest with case-filtered sources), which CORE_SPEC requires ('before/after/delta и nearest считаются внутри конкретного случая'). The independent check of BUILD therefore covers only the aggregate L and coverage per case.",
+     "evidence": "CaseModel.losses returns only unknown, wsum, max, covered and mean per case. There is no per-point or nearest output, and r8 Problem.rows uses the unfiltered baseline.",
+     "suggested_fix": "Add a per-case rows() that uses the filtered sources for 'nearest_before' and 'nearest_after', so this part of BUILD can be cross-checked."
+    }
+   ],
+   "checked_ok": [
+    "Oracle vs my own brute force (separate haversine; itertools over all candidates; per-case object lists; no shared code path except the k09res import under test): 2900 random envelopes, seeds 1-4. Coverage: real astana and shymkent contexts plus a synthetic tie-heavy grid context with colocated points, candidates and sources; 0-9 candidates; 1-10 points; max_selected 0-5; budgets 0, partial and total; required and excluded ids; 1-7 cases including all-disabled, duplicate sets and shuffled exclusion order; Unicode case IDs. 0 mismatches in status (294 infeasible), feasible_count, nominal and robust ids and cost, W, worst_case_ids (including ties), base_vector, per-case L, null semantics for max and mean, price (exact float equality), same_plan, and evaluate_resilience consistency.",
+    "123 real T3 envelopes (120 random main plus 3 stress with 1586 feasible subsets each) vs brute force: 0 mismatches.",
+    "Per-case baseline uses only records not in disabled_source_ids; candidates and constraints are shared across cases; L = (unknown, wsum, max with null as +inf); W = lex max including base; worst_case_ids lists all ties, sorted; the nominal key equals r8 key_mean (L_base, cost, ids); the robust key is (W, L_base, cost, ids); price = (mean_r - mean_n)/1000 only when both are optimal and known, otherwise null with a reason; infeasible required items give status infeasible and are not dropped.",
+    "Incremental enumeration: parent = mask without its lowest bit. Pruning is sound because v2 validation enforces cost >= 1 and the count is monotone. evaluated == feasible_count == brute-force feasible count.",
+    "too_many_candidates is raised in validate_resilience before v2 validation and before CaseModel. validate returns a deep copy, so later mutation of the input has no effect.",
+    "Digest is independent of the order of cases, candidates, points and exclusions. selected_ids is excluded from the problem digest and included in the scenario digest. Labels are included.",
+    "Generator: the sha256 over all 1340 envelopes is identical under PYTHONHASHSEED=0, 1, 12345 and random (string seeds, sha512-based).",
+    "Task counts are 1080 + 120 + 120 + 20 = 1340 with unique specs. Geometry is nested S < M < L. Exclusions do not depend on size or budget. Budget = floor(br x sum of the top max_selected costs), so br=1.0 is non-binding. All generated points are inside the bbox.",
+    "Families recomputed independently: single draws without replacement; pair has 2 distinct records; cluster takes the 3 nearest by haversine with id tie-break (220 cases, 0 mismatches); all_disabled excludes all records.",
+    "Attribute sets re-derived from BUILD d865dd4 data.js and evidence.js using the facts.qaOf rules (COLOCATED, POSSIBLE_DUPLICATE, CATEGORY_DOUBT): shymkent 15 records (low_confidence 6, QA 7, union 9), astana 16 records (low_confidence 7, QA 0). All records are inside the bbox, so they match ctx sources. 3 cases and 1 case after removing empty and duplicate sets, as claimed.",
+    "Statistics formulas: Wilson matches the closed form with z = NormalDist().inv_cdf(0.975). The exact two-sided McNemar log10 matches an exact Fraction computation on 9 (b, c) pairs, including the 0/0 and b=c edge cases. Nearest-rank q is correct, with no float ceil anomalies for p in {0.5, 0.9} and n < 3000. W_improvement class logic is correct. worst_mean_gain >= 0 whenever it is defined.",
+    "Rounding price to 6 decimals cannot hide a positive price: the minimum positive base delta-wsum is 21267 mm*weight, about 8.5e-3 m.",
+    "All 1340 tasks are optimal and the run_one asserts (W_r <= W_n, L_base_n <= L_base_r) hold. No task differs between plans while W_improvement = 'none', which matches theory.",
+    "The pre-registered files (T3_PROTOCOL.md, config/*.json, k09res/*.py, scripts/run_t3.py, scripts/t3_attribute_sets.py) are unchanged between f6ac93c (registration) and 0af089e (results).",
+    "The existing 17 unit tests pass (Python 3.11.15).",
+    "Scope: I did not read results/ or the hidden expected outputs. All numbers above come from my own scratch rerun (scratchpad/t3_review_k09/myrows.pkl and mysummary.json). Process note: my first unittest run created gitignored __pycache__ directories in k09res/, tests/ and round-8 k09plan/. I deleted them right away; git status was clean and every later run used -B / PYTHONDONTWRITEBYTECODE."
+   ]
+  }
+ }
+}

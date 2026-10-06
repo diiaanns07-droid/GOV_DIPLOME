@@ -1,0 +1,92 @@
+{
+ "findings": [
+  {
+   "severity": "medium",
+   "file": "research/round-9-results/K09/k09res/t3.py",
+   "claim": "The Wilson 95% intervals and the exact McNemar tests (pre-registered in T3_PROTOCOL.md lines 81 and 96) treat the 1320 tasks and the matched pairs as independent. They are not: all main tasks come from only 20 independent geometries (slice x seed). Sizes are nested (first n points and candidates), and one exclusion draw per (family, k, seed) is reused across every size and budget. The reported significance is overstated by 1 to 2 orders of magnitude, and the CIs are too narrow.",
+   "evidence": "I reran the unchanged run_one/summarize code in scratch (myrun.py, repeats=1; same_plan and the other fields are deterministic). Results: 20 clusters of 66 tasks; per-geometry same_plan ranges 0.50 to 0.92; design effect about 2.58 (effective n about 513). Main same_plan 886/1320: Wilson [0.645, 0.696], cluster bootstrap over geometries [0.633, 0.712]. Paired contrasts, naive exact McNemar vs clustered McNemar (Obuchowski) vs exact sign-flip permutation over the 20 geometries: budget 0.5 vs 1.0 (80/42) p=7.4e-4 (log10 -3.13) vs 0.037 vs 0.038; single k1 vs k7 (27/7) 8.2e-4 vs 0.033 vs 0.040; pair (27/5) 1.1e-4 vs 0.019 vs 0.021; cluster (43/12) 3.3e-5 vs 0.004 vs 0.003. Script: scratchpad/t3_review_k09/analyze2.py plus the inline Obuchowski/permutation snippet.",
+   "suggested_fix": "Report Wilson and McNemar values as descriptive only, or replace them with geometry-level inference: cluster bootstrap or per-(slice, seed) aggregates for rates, and clustered McNemar (Obuchowski/Durkalski) or a sign-flip permutation over the 20 geometries for the contrasts. State in the protocol and results that the effective number of independent units is 20 geometries."
+  },
+  {
+   "severity": "medium",
+   "file": "research/round-9-results/K09/k09res/t3.py",
+   "claim": "summary.by.k_cases (line 189) groups tasks by len(cases) across all families. Level k=1 therefore contains all 120 all_disabled tasks plus the 60 Astana attribute tasks, and level k=3 contains the 60 Shymkent attribute tasks. The factor table for k is confounded with family and shows a non-monotone pattern that does not exist within the random families. The pooled 'main' rate is also a design-mix artefact, because all_disabled (same_plan 8.3%) enters with a fixed weight of 1/11.",
+   "evidence": "From my scratch rerun: by.k_cases same_plan is k1=0.637 (n=540), k3=0.733 (n=420), k7=0.650 (n=360). Random families only (single, pair, cluster) give k1=0.853, k3=0.733, k7=0.650. Composition of k=1: single, pair, cluster, all_disabled for both slices, plus attribute for astana. The untracked scripts/t3_tables.py adds an 'N.B.' line, but the hashed deterministic output t3_summary.json still carries the confounded by.k_cases table, and t3_tables prints it as 'Число пользовательских случаев k'.",
+   "suggested_fix": "Compute by.k_cases only over FAMILIES_RANDOM, or rename it, for example 'n_user_cases (mixed families)'. Report the main pooled rate separately for the random families, attribute and all_disabled."
+  },
+  {
+   "severity": "low",
+   "file": "research/round-9-results/K09/T3_PROTOCOL.md",
+   "claim": "same_plan mixes trivially identical tasks with substantive agreement. In 14% of main tasks no user case changes the baseline distance at any control point, so robust = nominal by construction. Part of this comes from colocated duplicate records in Shymkent: 7 of the 15 school records sit in 3 groups with identical coordinates, so excluding one twin has no effect. The protocol does not separate this, so family, k and size rates partly measure 'did a random exclusion hit the nearest record of the 5-25 points'.",
+   "evidence": "CaseModel.case_base[k] == case_base[0] for all user cases in 190/1320 main tasks: single shymkent 52/180, single astana 44/180, pair shymkent 46/180, pair astana 22/180, cluster shymkent 16/180, cluster astana 6/180, attribute shymkent 4/60. Colocated groups in the Shymkent sources: (69.5958, 42.3167) x3, (69.59496, 42.32353) x2, (69.61557, 42.32304) x2. In 20 of 220 cluster cases the 3rd and 4th nearest records are at the same distance.",
+   "suggested_fix": "Add a per-task flag 'exclusions_affect_baseline' (or the count of no-op cases) and report same_plan also on the non-trivial subset. Mention the colocated duplicates in the interpretation limits."
+  },
+  {
+   "severity": "low",
+   "file": "research/round-9-results/K09/k09res/t3.py",
+   "claim": "Several pre-registered metrics are missing from the summary, and the CSV column worst_max_gain_m is easy to misread. (1) config metrics.worst_case_ids promises 'число худших случаев (ничьи)', but cell() has no tie count. (2) Protocol metric 3 'выигрыш по max' is only written to the CSV, not to the summary. (3) Price null reasons are not broken out. Also, worst_max_gain_m (line 136) is the difference of W.max, which is the max of the lex-worst case and not the worst max over cases. It is negative in some tasks.",
+   "evidence": "My rerun: 334/1320 main tasks have tied worst_case_ids (not reported). worst_max_gain_m < 0 in 43/1330 tasks where it is defined. W.max differs from max over cases of max_mm for 124 nominal and 142 robust plans. In 35 tasks the robust plan's overall max distance across cases is worse than the nominal plan's.",
+   "suggested_fix": "Add a tie count or distribution to cell(). Either summarize worst_max_gain with its sign distribution or drop it from the protocol. Label it 'max component of the worst vector W', not 'worst-case max distance', following the spec's warning not to present component maxima as one case."
+  },
+  {
+   "severity": "low",
+   "file": "research/round-9-results/K09/T3_PROTOCOL.md",
+   "claim": "Metric 5 'входит ли base в худшие случаи' is purely a tie artefact. Disabling records can only lengthen distances, so L_case >= L_base componentwise for every plan. Base is among the worst only when some user case has exactly the base L, meaning that case has no effect on this plan.",
+   "evidence": "base_in_worst_nominal 235 and base_in_worst_robust 239 tasks. In 235/235 and 239/239 of them worst_case_ids also contains at least one user case.",
+   "suggested_fix": "Describe and report this metric as 'at least one exclusion case has no effect on the plan's losses'. Do not present base as a worst scenario."
+  },
+  {
+   "severity": "low",
+   "file": "research/round-9-results/K09/T3_PROTOCOL.md",
+   "claim": "Exact (non-preregistered) remark: 'price = 0' is not the same as 'robustness is free'. In 115 of the 1340 tasks the robust plan differs from the nominal plan with a base distance price of exactly 0, but it adds 1-3 candidates and costs more. The pre-registered summary has no cost-difference metric.",
+   "evidence": "Zero-price but different-plan tasks: 115. Cost difference robust - nominal is 128 / 499 / 2219 units (min / median / max). Extra candidates: +1 in 93 tasks, +2 in 21, +3 in 1. Across all 443 differing plans: robust is costlier in 278 and cheaper in 165. The untracked scripts/t3_tables.py already adds this as 'не предрегистрировано'.",
+   "suggested_fix": "Keep the cost-difference table, mark it non-preregistered, and say in the protocol's interpretation section that a zero distance price can come with a higher cost."
+  },
+  {
+   "severity": "low",
+   "file": "research/round-9-results/K09/k09res/t3.py",
+   "claim": "The k contrast is paired on geometry only, not on exclusions. The k=1 and k=7 case sets are separate draws (k is part of the RNG seed string), so the k=1 case is usually not among the k=7 cases. In addition, cluster cases often coincide, so the nominal k overstates the number of distinct scenarios. The protocol's statement that comparisons of 'семейств, k, бюджетов и размеров на одном seed парные' (line 54) holds only for geometry.",
+   "evidence": "The k=1 case is contained in the k=7 cases for 6/20 (single), 0/20 (pair) and 5/20 (cluster) slice x seed combinations. Mean distinct exclusion sets: cluster k3 = 2.75 (min 2), cluster k7 = 5.5 (min 4), pair k7 = 6.85.",
+   "suggested_fix": "For a future version, draw one sequence of 7 cases per (family, seed) and take the first k, so the levels are nested. Also report distinct_exclusion_sets in the summary. For now, qualify the pairing claim."
+  },
+  {
+   "severity": "low",
+   "file": "research/round-9-results/K09/config/t3_config.json",
+   "claim": "The stress rule claims '4096 подмножеств'. With max_selected=5 only 1586 subsets are feasible, so only those are evaluated. 4096 is the size of the mask domain, so stress timings are for 1586 loss evaluations, not 4096.",
+   "evidence": "All 20 stress tasks: evaluated=1586, subsets_total=4096. 1586 = sum of C(12, i) for i = 0..5.",
+   "suggested_fix": "Change the wording to '4096 masks, 1586 feasible subsets evaluated (max under max_selected <= 5)'."
+  },
+  {
+   "severity": "low",
+   "file": "research/round-9-results/K09/k09res/resilience.py",
+   "claim": "Two validation gaps, neither of which affects T3 numbers. (1) Label and ID policy: _label_ok (line 42) rejects only Cc. It accepts U+2028, the bidi override U+202E, the zero-width U+200B, U+FEFF and whitespace-only labels. Case IDs 'Base', 'BASE' and the Cyrillic homoglyph 'bаse' are accepted as distinct from the reserved 'base'. A mixed-type duplicate [1, '1'] reports duplicate_exclusion instead of a type error. (2) The public evaluate_resilience(..., validated=True) skips all validation, including the 12-candidate limit; optimize re-checks the limit.",
+   "evidence": "Probe output: ' ' accepted, ' ' accepted, 'a‮b' accepted, '﻿' accepted, '​' accepted; 'Base', 'BASE' and 'bаse' accepted; [1,'1'] -> duplicate_exclusion. evaluate_resilience on a 13-candidate env with validated=True returns feasible=True, while validated=False gives too_many_candidates. STATUS.md already records U+2028 and whitespace labels as a known policy difference with BUILD.",
+   "suggested_fix": "Optionally also reject Cf, Zl and Zp and whitespace-only labels. Make validated an internal or private parameter, or re-check the candidate limit in evaluate too."
+  },
+  {
+   "severity": "low",
+   "file": "research/round-9-results/K09/k09res/resilience.py",
+   "claim": "Coverage gap. The oracle does not compute per-case point rows (before, after, delta and nearest with case-filtered sources), which CORE_SPEC requires ('before/after/delta и nearest считаются внутри конкретного случая'). The independent check of BUILD therefore covers only the aggregate L and coverage per case.",
+   "evidence": "CaseModel.losses returns only unknown, wsum, max, covered and mean per case. There is no per-point or nearest output, and r8 Problem.rows uses the unfiltered baseline.",
+   "suggested_fix": "Add a per-case rows() that uses the filtered sources for 'nearest_before' and 'nearest_after', so this part of BUILD can be cross-checked."
+  }
+ ],
+ "checked_ok": [
+  "Oracle vs my own brute force (separate haversine; itertools over all candidates; per-case object lists; no shared code path except the k09res import under test): 2900 random envelopes, seeds 1-4. Coverage: real astana and shymkent contexts plus a synthetic tie-heavy grid context with colocated points, candidates and sources; 0-9 candidates; 1-10 points; max_selected 0-5; budgets 0, partial and total; required and excluded ids; 1-7 cases including all-disabled, duplicate sets and shuffled exclusion order; Unicode case IDs. 0 mismatches in status (294 infeasible), feasible_count, nominal and robust ids and cost, W, worst_case_ids (including ties), base_vector, per-case L, null semantics for max and mean, price (exact float equality), same_plan, and evaluate_resilience consistency.",
+  "123 real T3 envelopes (120 random main plus 3 stress with 1586 feasible subsets each) vs brute force: 0 mismatches.",
+  "Per-case baseline uses only records not in disabled_source_ids; candidates and constraints are shared across cases; L = (unknown, wsum, max with null as +inf); W = lex max including base; worst_case_ids lists all ties, sorted; the nominal key equals r8 key_mean (L_base, cost, ids); the robust key is (W, L_base, cost, ids); price = (mean_r - mean_n)/1000 only when both are optimal and known, otherwise null with a reason; infeasible required items give status infeasible and are not dropped.",
+  "Incremental enumeration: parent = mask without its lowest bit. Pruning is sound because v2 validation enforces cost >= 1 and the count is monotone. evaluated == feasible_count == brute-force feasible count.",
+  "too_many_candidates is raised in validate_resilience before v2 validation and before CaseModel. validate returns a deep copy, so later mutation of the input has no effect.",
+  "Digest is independent of the order of cases, candidates, points and exclusions. selected_ids is excluded from the problem digest and included in the scenario digest. Labels are included.",
+  "Generator: the sha256 over all 1340 envelopes is identical under PYTHONHASHSEED=0, 1, 12345 and random (string seeds, sha512-based).",
+  "Task counts are 1080 + 120 + 120 + 20 = 1340 with unique specs. Geometry is nested S < M < L. Exclusions do not depend on size or budget. Budget = floor(br x sum of the top max_selected costs), so br=1.0 is non-binding. All generated points are inside the bbox.",
+  "Families recomputed independently: single draws without replacement; pair has 2 distinct records; cluster takes the 3 nearest by haversine with id tie-break (220 cases, 0 mismatches); all_disabled excludes all records.",
+  "Attribute sets re-derived from BUILD d865dd4 data.js and evidence.js using the facts.qaOf rules (COLOCATED, POSSIBLE_DUPLICATE, CATEGORY_DOUBT): shymkent 15 records (low_confidence 6, QA 7, union 9), astana 16 records (low_confidence 7, QA 0). All records are inside the bbox, so they match ctx sources. 3 cases and 1 case after removing empty and duplicate sets, as claimed.",
+  "Statistics formulas: Wilson matches the closed form with z = NormalDist().inv_cdf(0.975). The exact two-sided McNemar log10 matches an exact Fraction computation on 9 (b, c) pairs, including the 0/0 and b=c edge cases. Nearest-rank q is correct, with no float ceil anomalies for p in {0.5, 0.9} and n < 3000. W_improvement class logic is correct. worst_mean_gain >= 0 whenever it is defined.",
+  "Rounding price to 6 decimals cannot hide a positive price: the minimum positive base delta-wsum is 21267 mm*weight, about 8.5e-3 m.",
+  "All 1340 tasks are optimal and the run_one asserts (W_r <= W_n, L_base_n <= L_base_r) hold. No task differs between plans while W_improvement = 'none', which matches theory.",
+  "The pre-registered files (T3_PROTOCOL.md, config/*.json, k09res/*.py, scripts/run_t3.py, scripts/t3_attribute_sets.py) are unchanged between f6ac93c (registration) and 0af089e (results).",
+  "The existing 17 unit tests pass (Python 3.11.15).",
+  "Scope: I did not read results/ or the hidden expected outputs. All numbers above come from my own scratch rerun (scratchpad/t3_review_k09/myrows.pkl and mysummary.json). Process note: my first unittest run created gitignored __pycache__ directories in k09res/, tests/ and round-8 k09plan/. I deleted them right away; git status was clean and every later run used -B / PYTHONDONTWRITEBYTECODE."
+ ]
+}
