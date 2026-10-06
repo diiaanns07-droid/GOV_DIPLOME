@@ -1,0 +1,36 @@
+--- a/prototypes/city-evidence/web/resilience.js
++++ b/prototypes/city-evidence/web/resilience.js
+@@ -20,7 +20,8 @@
+   const PlanError = PL.PlanError;
+   const fail = (code, d) => { throw new PlanError(code, d); };
+   const cmpStr = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
+-  const CTRL = new RegExp("[\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]");  // control characters and line/paragraph separators
++  // control characters, line/paragraph separators and lone surrogates (K03 r9: a lone surrogate became U+FFFD in the UTF-8 HTML report)
++  const CTRL = new RegExp("[\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]|\\p{Cs}", "u");
+ 
+   // ---------- validation: full envelope and plan, before any precomputation or UI change ----------
+   function sourcesOf(ctx, category) { return ctx.places.filter((p) => p.group === category); }
+--- a/prototypes/city-evidence/web/resilience-ui.js
++++ b/prototypes/city-evidence/web/resilience-ui.js
+@@ -185,6 +185,12 @@
+     const nC = U.state.cands.length;
+     if (nC > RS.LIMITS.candidates) b.append(el("p", { class: "err", id: "rsLimit" }, `Анализ устойчивости — до ${RS.LIMITS.candidates} кандидатов, сейчас ${nC}. Ничего не отбрасывается автоматически: удалите лишних кандидатов в плане v2 (обычный v2 по-прежнему решает до 16).`));
+     const src = sources();
++    // K03 r9: records of this category at exactly the same coordinates. Excluding one of them does not change distances while
++    // the others are still counted; equal coordinates are not proof of a duplicate (QA COLOCATED starts at 3 records).
++    const atXY = new Map();
++    for (const p of src) { const k = p.lon + "," + p.lat; atXY.set(k, [...(atXY.get(k) || []), p]); }
++    const sameText = (p) => { const o = atXY.get(p.lon + "," + p.lat).filter((x) => x.id !== p.id);
++      return o.length ? ` · в тех же координатах ещё ${o.length}: ${o.map((x) => x.name || "Без названия").join(", ")} (не доказательство дубликата; пока они учитываются, расстояние не изменится)` : ""; };
+     if (!src.length) b.append(el("p", { class: "warn" }, "В срезе нет исходных записей этой категории — исключать нечего; это не значит, что услуги нет."));
+     // cases
+     b.append(el("h3", null, `Случаи (${RSS.cases.length} из ${RS.LIMITS.user_cases}) + базовый «все записи»`));
+@@ -219,7 +225,7 @@
+         cb.addEventListener("change", () => toggleRecord(c.id, p.id, cb.checked));
+         const td0 = el("td"); td0.append(cb);
+         const qa = qaOf(p), lab2 = el("label", { for: `rsX_${c.id}_${k}` }, `${qa.length ? "⚠ " : ""}${p.name || "Без названия"}`);
+-        const td1 = el("td"); td1.append(lab2, el("div", { class: "muted" }, `${p.id} · ${(p.sources[0] || {}).dataset || "источник не указан"}${qa.length ? " · QA: " + qa.map((q) => q.code).join(", ") : ""}`));
++        const td1 = el("td"); td1.append(lab2, el("div", { class: "muted" }, `${p.id} · ${(p.sources[0] || {}).dataset || "источник не указан"}${qa.length ? " · QA: " + qa.map((q) => q.code).join(", ") : ""}${sameText(p)}`));
+         tr.append(td0, td1); tb.append(tr);
+       });
+       t.append(tb); d.append(t); b.append(d);

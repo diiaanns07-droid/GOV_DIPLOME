@@ -1,0 +1,29 @@
+{
+ "app_root": "/tmp/claude-0/-home-user-GOV-DIPLOME/5a6c223b-c534-5851-800c-535296b16e05/scratchpad/app9cp",
+ "results": [
+  {
+   "name": "shymkent/school: подсказка общих координат у 7 из 15 записей = data.js",
+   "ok": true
+  },
+  {
+   "name": "shymkent/outpatient_clinic: подсказка общих координат у 7 из 16 записей = data.js",
+   "ok": true
+  },
+  {
+   "name": "astana/school: подсказка общих координат у 0 из 8 записей = data.js",
+   "ok": true
+  },
+  {
+   "name": "astana/outpatient_clinic: подсказка общих координат у 0 из 16 записей = data.js",
+   "ok": true
+  },
+  {
+   "name": "нет ошибок страницы",
+   "ok": true
+  },
+  {
+   "name": "нет сетевых запросов",
+   "ok": true
+  }
+ ]
+}

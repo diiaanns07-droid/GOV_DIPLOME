@@ -51,6 +51,21 @@ MUTANTS = {
         ('digest-order', 'module:resilience_cases.js', '.sort((a, b) => cmpStr(a[0], b[0]));\n    return "sha256:"',
          ';\n    return "sha256:"', 'digest зависит от порядка случаев', ['S2-digest-invariance']),
     ],
+    # этап 3: порча КОПИИ сборки с web/resilience.js (e1cbc3f) и plan.js
+    3: [
+        ('case-not-filtered', 'web/resilience.js', 'places: ctx.places.filter((p) => !off.has(p.id)) }; }', 'places: ctx.places }; }',
+         'случай не фильтрует исходные записи (baseline как у base)', ['S3-build-case-baseline', 'S3-build-optimize']),
+        ('worst-is-min', 'web/resilience.js', 'if (w === null || lexCmp(r.key, w) > 0) w = r.key;', 'if (w === null || lexCmp(r.key, w) < 0) w = r.key;',
+         'худший вектор W берётся как минимум', ['S3-build-case-baseline']),
+        ('snapshot-replaced', 'web/resilience.js', 'source_snapshot: sc.source_snapshot, cases:', 'source_snapshot: F ? exclusionsDigest(env, F) : null, cases:',
+         'исключения подменяют source_snapshot результата', ['S3-build-invariants']),
+        ('foreign-id-accepted', 'web/resilience.js',
+         'if (!srcIds.has(id)) fail("unknown_source",', 'if (false) fail("unknown_source",',
+         'ID записи другого города/категории принимается', ['S3-build-other-city', 'S3-build-validate-map']),
+        ('plan-src-extra-group', 'web/plan.js', 'const src = ctx.places.filter((p) => p.group === sc.category)',
+         'const src = ctx.places.filter((p) => p.group === sc.category || p.group === "outpatient_clinic")',
+         'в baseline попадают записи другой категории', ['S3-plan-case-baseline', 'S3-build-case-baseline']),
+    ],
 }
 
 

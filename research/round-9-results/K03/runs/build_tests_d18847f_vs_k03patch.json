@@ -1,0 +1,40 @@
+{
+ "what": "тесты сборки (tests/resilience.cjs, tests/plan.cjs, tests/resilience_smoke.cjs через Playwright/Chromium) на копии d18847f без патча и с патчем K03 patches/build_d18847f_k03_same_coords_label.patch; Linux, node v22.22.0; не Windows",
+ "base_sha": "d18847f9e7c18fcfae3349c0b223b023d359a838",
+ "runs": {
+  "d18847f": {
+   "tests/resilience.cjs": {
+    "PASS": 112,
+    "FAIL": 0,
+    "fail_lines": []
+   },
+   "tests/plan.cjs": {
+    "PASS": 164,
+    "FAIL": 0,
+    "fail_lines": []
+   },
+   "tests/resilience_smoke.cjs": {
+    "PASS": 40,
+    "FAIL": 0,
+    "fail_lines": []
+   }
+  },
+  "d18847f+k03patch": {
+   "tests/resilience.cjs": {
+    "PASS": 112,
+    "FAIL": 0,
+    "fail_lines": []
+   },
+   "tests/plan.cjs": {
+    "PASS": 164,
+    "FAIL": 0,
+    "fail_lines": []
+   },
+   "tests/resilience_smoke.cjs": {
+    "PASS": 40,
+    "FAIL": 0,
+    "fail_lines": []
+   }
+  }
+ }
+}

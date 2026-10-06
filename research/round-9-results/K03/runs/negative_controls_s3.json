@@ -1,0 +1,116 @@
+{
+ "stage": 3,
+ "base": "e1cbc3fa84518a84698c03d014dc153f71338d54",
+ "controls": [
+  {
+   "mutant": "case-not-filtered",
+   "file": "web/resilience.js",
+   "why": "случай не фильтрует исходные записи (baseline как у base)",
+   "expected_fail": [
+    "S3-build-case-baseline",
+    "S3-build-optimize"
+   ],
+   "failed": [
+    "S3-build-case-baseline",
+    "S3-build-optimize"
+   ],
+   "summary": {
+    "PASS": 14,
+    "FAIL": 2,
+    "SKIP": 0,
+    "NOT_RUN": 0,
+    "TEST_INCOMPATIBLE": 0,
+    "INFO": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "mutant": "worst-is-min",
+   "file": "web/resilience.js",
+   "why": "худший вектор W берётся как минимум",
+   "expected_fail": [
+    "S3-build-case-baseline"
+   ],
+   "failed": [
+    "S3-build-case-baseline",
+    "S3-build-optimize"
+   ],
+   "summary": {
+    "PASS": 14,
+    "FAIL": 2,
+    "SKIP": 0,
+    "NOT_RUN": 0,
+    "TEST_INCOMPATIBLE": 0,
+    "INFO": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "mutant": "snapshot-replaced",
+   "file": "web/resilience.js",
+   "why": "исключения подменяют source_snapshot результата",
+   "expected_fail": [
+    "S3-build-invariants"
+   ],
+   "failed": [
+    "S3-build-invariants"
+   ],
+   "summary": {
+    "PASS": 15,
+    "FAIL": 1,
+    "SKIP": 0,
+    "NOT_RUN": 0,
+    "TEST_INCOMPATIBLE": 0,
+    "INFO": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "mutant": "foreign-id-accepted",
+   "file": "web/resilience.js",
+   "why": "ID записи другого города/категории принимается",
+   "expected_fail": [
+    "S3-build-other-city",
+    "S3-build-validate-map"
+   ],
+   "failed": [
+    "S3-build-other-city",
+    "S3-build-validate-map"
+   ],
+   "summary": {
+    "PASS": 14,
+    "FAIL": 2,
+    "SKIP": 0,
+    "NOT_RUN": 0,
+    "TEST_INCOMPATIBLE": 0,
+    "INFO": 1
+   },
+   "verdict": "PASS"
+  },
+  {
+   "mutant": "plan-src-extra-group",
+   "file": "web/plan.js",
+   "why": "в baseline попадают записи другой категории",
+   "expected_fail": [
+    "S3-plan-case-baseline",
+    "S3-build-case-baseline"
+   ],
+   "failed": [
+    "S3-build-case-baseline",
+    "S3-build-optimize",
+    "S3-construction",
+    "S3-plan-after-manual",
+    "S3-plan-case-baseline"
+   ],
+   "summary": {
+    "PASS": 11,
+    "FAIL": 5,
+    "SKIP": 0,
+    "NOT_RUN": 0,
+    "TEST_INCOMPATIBLE": 0,
+    "INFO": 1
+   },
+   "verdict": "PASS"
+  }
+ ]
+}

@@ -29,7 +29,9 @@ def main():
     ap.add_argument('--sha', required=True)
     a = ap.parse_args()
     files, bad = {}, []
-    for rel in USED:
+    present = set(git('ls-tree', '-r', '--name-only', a.sha, 'prototypes/city-evidence/').splitlines())
+    for rel in USED + [r for r in ('web/resilience.js', 'web/resilience-ui.js', 'tests/resilience.cjs', 'tools/resilience_oracle.py')
+                       if f'prototypes/city-evidence/{r}' in present]:
         p = a.app_root / rel
         blob = git('rev-parse', f'{a.sha}:prototypes/city-evidence/{rel}')
         have = git('hash-object', str(p))
@@ -47,7 +49,7 @@ def main():
                              'path': 'research/round-8-results/K03/', 'files': r8},
            'note': 'data.js/evidence.js в Git этой ветки не копируются: берутся из коммита сборки по blob; копия — временная.'}
     (HERE / 'inputs').mkdir(exist_ok=True)
-    (HERE / 'inputs/BUILD_MANIFEST.json').write_text(json.dumps(doc, ensure_ascii=False, indent=1) + '\n', encoding='utf-8')
+    (HERE / f'inputs/BUILD_MANIFEST_{a.sha[:7]}.json').write_text(json.dumps(doc, ensure_ascii=False, indent=1) + '\n', encoding='utf-8')
     print('blob mismatch:', bad or 'нет')
     return 1 if bad else 0
 

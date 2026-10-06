@@ -1,0 +1,128 @@
+{
+ "build": {
+  "branch": "claude/beautiful-clarke-sbzomj",
+  "sha": "d18847f9e7c18fcfae3349c0b223b023d359a838",
+  "prototype_tree": "09b4cd5ceb1d6339a2c6e6ddb9068f63c9c5356e",
+  "code_candidate": "3e1302aa583594b0bf674090ac9c2d49ac424dae",
+  "same_tree_as_code_candidate": false,
+  "path": "prototypes/city-evidence/",
+  "files": {
+   "web/plan.js": {
+    "git_blob": "593ead0921174ea8dded4bc3e63fb2d1b704c497",
+    "sha256": "3c0638e268ed69ad034ac9675228730b036a28a8b14193232cd32cb844945961",
+    "bytes": 39602
+   },
+   "web/whatif.js": {
+    "git_blob": "66b820f44610a768dc76c3ccb4f61d1ca37fd16d",
+    "sha256": "46e3b042d2402a46ca34e454139e7744ba9d379866c500a7809546d0dab72a72",
+    "bytes": 16193
+   },
+   "web/facts.js": {
+    "git_blob": "e085eaf8be575de06ad2cf9857c1f05cafa86ff8",
+    "sha256": "3994a275ddb8c0cb857478365d94810a945752a96fff10d53d37bc8dc9808c64",
+    "bytes": 28467
+   },
+   "web/plan-ui.js": {
+    "git_blob": "87d5b617c9adb441e77c52b27e43e4d0930fda3c",
+    "sha256": "74d49451639367c3caceb1283032b3b9937338d6b0ec3c7a94d255f88993f64f",
+    "bytes": 47222
+   },
+   "web/app.js": {
+    "git_blob": "13b86e7d7fb718708b6565c79092a37d4b6b94f4",
+    "sha256": "b58973dc78fee17bf2c3849665c0c4b9aa81777f667894519f045957ae099442",
+    "bytes": 54756
+   },
+   "web/index.html": {
+    "git_blob": "36a2c7017c3beb759049b6b28e616190c6d1e6e9",
+    "sha256": "700c7e7b8401c05be1960455e8d4ad7348f40cc8be6272bf6042a9b66111ba40",
+    "bytes": 15882
+   },
+   "web/data.js": {
+    "git_blob": "e61ff9925a51505dbf2b307d950aab558b4d2a5d",
+    "sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+    "bytes": 1070322
+   },
+   "web/evidence.js": {
+    "git_blob": "3158f6fa1a419f84c78a6aa04f9db194e4a83004",
+    "sha256": "df736e986145da33dee60f692e020486720b72db5b6116af31640cc8693b11b9",
+    "bytes": 151637
+   },
+   "tests/plan.cjs": {
+    "git_blob": "ffbb668e49c3c2c6487d5ebbdafe382bae06bc1d",
+    "sha256": "f2b24ad270f0003a8fa3f36b4fee9c8f0c34e73da1a40dbe141f40173580978f",
+    "bytes": 21619
+   },
+   "tools/plan_oracle.py": {
+    "git_blob": "f71becb3d7fe1947d425f86c664ae993efdd7a34",
+    "sha256": "3bdbae1d3a42471ca2864a6b34286a6a60042549429af7187f5bfb0e2d7b0d6c",
+    "bytes": 11670
+   },
+   "tools/build_evidence.py": {
+    "git_blob": "d11027cb70a91eda628fb7a11f807a9fd8b5dcc5",
+    "sha256": "8cf2c438d117267264d1b2d7e0b60f142eff9d740c5444ea8144e66a5c785204",
+    "bytes": 16011
+   },
+   "web/resilience.js": {
+    "git_blob": "24e0b9f7a28b9584a8a73da8b46faae3e29611b3",
+    "sha256": "d401ff82f7633191a3ca9d35ceb6dad7a511d6f8a7cb359ae7380f62babb7c2c",
+    "bytes": 27426
+   },
+   "web/resilience-ui.js": {
+    "git_blob": "d5e26609103303c345f91d2d431ec75982fecc02",
+    "sha256": "9afc63a20a0e2a2bfa8cc16a6781cea2bd0cc80d28ebd4b25e5801c606dc6728",
+    "bytes": 26577
+   },
+   "tests/resilience.cjs": {
+    "git_blob": "6e2d30f322e62fa429819b0951c12e895f3fc1e6",
+    "sha256": "a3dd6f905c61ec211f29ac86fd6997826842a063d1652d68c5e2be71d250c229",
+    "bytes": 17815
+   },
+   "tools/resilience_oracle.py": {
+    "git_blob": "9bc5b8c8bb14bbb2e5b23b991d7a9eb384a37b53",
+    "sha256": "95af06376875892189f149c5101c4249bcc1b4d16a21905cfb3261e2bd7c9206",
+    "bytes": 10145
+   }
+  },
+  "blob_mismatch": []
+ },
+ "k03_r8_inputs": {
+  "branch": "claude/epic-curie-iitc43",
+  "pinned_commit": "9b39f0f34f6086a20d8a6359352a9dfe30300d80",
+  "path": "research/round-8-results/K03/",
+  "files": {
+   "geo_v2.js": {
+    "git_blob": "390363d6d61e5613a178ab5d1cc28a82e4042e36",
+    "sha256": "41139c39e13c6c5f4a26cf7e192b0da65c0a867161dd94fb2170e908340bbb85"
+   },
+   "geo_v2_ref.py": {
+    "git_blob": "2be1a3b5643544f1f00fb1648de9cf50cee92f7a",
+    "sha256": "1dc4ceb606cc5125b2bf4f5a121ef5586b583f0fc6723844e0f1b9b43d6ef3bc"
+   },
+   "run_tests.py": {
+    "git_blob": "d5a17d175b863a374c6f8729c729b2a5e2aee7ba",
+    "sha256": "abb0791512ea0e0ce0c925d290d3699ab6a6b2ab41b09332a1f8aabd8aac50ef"
+   },
+   "node_runner.cjs": {
+    "git_blob": "ec6ab821327f672129e825af1403c2f0cc7aaf9d",
+    "sha256": "c00499f2121b92a5d59dfc15e703fad0bc9e0ffefcc7a853ab5b8badd8c290e4"
+   },
+   "stage_checks.py": {
+    "git_blob": "1925f103dc8fc5dd0cbeee37699ff24e5da317e4",
+    "sha256": "d7fc7a1ed50ba032ac96ee750336e601e2031a71d4929b373d9e2f250074e215"
+   },
+   "fixtures/stage1.json": {
+    "git_blob": "ad2f8b6bf8db26ac3a1723ed2ebffd20120c9d74",
+    "sha256": "8fd32a7a9c887e22acfc5f25ad957d5f17b6537915fb823c1ec91909388ddb17"
+   },
+   "fixtures/stage2.json": {
+    "git_blob": "75c14a8a51e3333161128cd6e918e6e0ea80b1d5",
+    "sha256": "244930c4ad1dfe42d6796fe3b2c96f08943ba78680836230433532ef78cb5d34"
+   },
+   "fixtures/stage3.json": {
+    "git_blob": "f885d92476495c221c69bef4a45c709cc1554dd5",
+    "sha256": "44233d0a0ccb51bc528ea931f997276033d07d9decda280490d9f823b4efab4d"
+   }
+  }
+ },
+ "note": "data.js/evidence.js в Git этой ветки не копируются: берутся из коммита сборки по blob; копия — временная."
+}

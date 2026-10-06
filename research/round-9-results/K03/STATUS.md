@@ -4,9 +4,28 @@
 |---|---|
 | Слот | K03 (`research/round-9/tasks/K03.txt` @ `0ab1667`, ветка codex/research-import-2026-10-05), не BUILD |
 | Ветка | `claude/epic-curie-iitc43` (вход r9: `9b39f0f`) |
-| Проверенная сборка | `claude/beautiful-clarke-sbzomj` @ **`d865dd4a124291e10dd0b7bb1d9eada20d34c268`**. Дерево `prototypes/city-evidence` = `3e1302a` (проверено, `inputs/BUILD_MANIFEST.json`) |
-| Обновлено | 2026-10-06, этапы 1–2 |
-| Статус | **этапы 1–2 done**; этап 3 — в работе |
+| Закреплённая сборка (snapshots r9) | `d865dd4a124291e10dd0b7bb1d9eada20d34c268`; дерево прототипа = `3e1302a` (проверено) |
+| Новые сборки BUILD, проверенные явно | `e1cbc3fa84518a84698c03d014dc153f71338d54` (r9 stage 3: `web/resilience.js`); `d18847f9e7c18fcfae3349c0b223b023d359a838` (r9 stage 4, последняя на 2026-10-06; движок и данные = e1cbc3f, изменены только UI и инструменты) |
+| Обновлено | 2026-10-06, этапы 1–3 |
+| Статус | **этапы 1–3 done** |
+
+## Итог прогонов (финальные скрипты; `runs/stage{1,2,3}_<sha>.json`)
+
+| Сборка | Этап 1 | Этап 2 | Этап 3 |
+|---|---|---|---|
+| d865dd4 (закреплённая) | PASS 10 | PASS 8 | PASS 8; устойчивость **NOT_RUN** (в сборке нет `resilience.js`) |
+| e1cbc3f | PASS 10 | PASS 8 | PASS 16, INFO 1 |
+| d18847f (последняя) | PASS 10 | PASS 8 | PASS 16, INFO 1 |
+| d18847f + патч K03 | — | — | PASS 16, INFO 1; неоднозначностей спецификации 0 вместо 4 |
+
+FAIL 0, SKIP 0 во всех прогонах.
+
+Отрицательный контроль — каждая испорченная копия дала FAIL в ожидаемых проверках:
+- этап 1 — 5/5;
+- этап 2 — 7/7 (копии модуля);
+- этап 3 — 5/5 (копии `resilience.js`/`plan.js` e1cbc3f).
+
+Тесты сборки на d18847f без патча и с патчем K03 одинаковы: `resilience.cjs` 112/112, `plan.cjs` 164/164, браузерный `resilience_smoke.cjs` 40/40.
 
 ## Этап 1 — r8 geo-fixtures на настоящем plan.js (done)
 
@@ -118,13 +137,77 @@ JS выполнялся на контексте **настоящего** `plan.j
 - без индекса берётся первая QA-группа (автоисключение);
 - digest зависит от порядка.
 
+## Этап 3 — сценарная фильтрация, другой город, кейсы Шымкента и Астаны (done)
+
+### Кейсы
+
+`make_stage3.py` → `fixtures/stage3.json` и `cases/<город>_<категория>.envelope.json` + `.manifest.json`, 4 среза.
+- Каждый envelope — полный city-resilience-v1: план city-plan-v2 (точки и кандидаты synthetic) и до 7 явных случаев на **настоящих** source ID.
+- Каждый manifest — копии исключаемых записей с provenance на базовом срезе.
+
+| Срез | Случаи | Группа COLOCATED |
+|---|---|---|
+| Шымкент, школы | одна изолированная; по одной из двух пар в общих координатах; QA-группа COLOCATED (3 школы из 10 записей); 3 у центра; тот же набор повторно; все 15 | есть |
+| Шымкент, поликлиники | то же: группы 3 и 4 в общих координатах, QA-группа — 4 из 10 | есть |
+| Астана, школы / поликлиники | одна изолированная; 3 у центра; повтор; все | **нет: `no_qa_group`, группа не создана** |
+
+### Ожидания
+
+- Baseline каждого случая с нуля по оставшимся записям: `resilience_cases_ref.case_baseline`.
+- After ручного плана.
+- Полный перебор nominal/robust: `robust_ref.py`, отдельный от сборки.
+- 14 утверждений по построению.
+
+Результат перебора: в Астане (школы) устойчивый план отличается от обычного, цена устойчивости +23,4 м. В трёх других срезах планы совпадают, цена 0; преимущество не придумывается.
+
+### Проверки (`runs/stage3_<sha>.json`)
+
+**Часть A — `plan.js` любой сборки (d865dd4, e1cbc3f, d18847f): PASS 8**
+
+| Проверка | Что подтверждено |
+|---|---|
+| S3-plan-case-baseline | 26 случаев с base, 256 строк: baseline через `plan.precompute` на отфильтрованной копии = оракулу; записей в случае N − k; 49 ничьих |
+| S3-plan-after-manual | after/delta ручного плана в каждом случае = оракулу |
+| S3-construction | Исключение одной записи из общих координат оставляет соседнюю в тех же координатах (0 мм) — совпадение координат не дубликат. QA-группа или одиночная запись: ближайшая дальше. Все записи исключены → «до» неизвестно (`null`), а не 0 |
+| S3-module-view | `caseView` модуля K03: тот же `source_snapshot`, исключены ровно ID случая, контекст не изменён |
+| S3-other-city | План Шымкента в контексте Астаны → `other_city`; чужой snapshot → `foreign_snapshot`; ID записи другого города → `other_city_source` |
+| S3-no-qa-group | Астана: групп COLOCATED в `evidence.js` нет — статус `no_qa_group`, случай не создан |
+| S3-integrity | `data.js`/`evidence.js` (файл и объект) и `source_snapshot` не изменились |
+
+**Часть B — `web/resilience.js` (e1cbc3f и d18847f): PASS 8, INFO 1. На d865dd4 — NOT_RUN**
+
+| Проверка | Что подтверждено |
+|---|---|
+| S3-build-envelopes | Мои 4 файла импортируются сборкой; её чистые случаи = случаям модуля K03 |
+| S3-build-case-baseline | `evaluateResilience`, 512 строк: before по оставшимся записям каждого случая; after/delta, метрики случаев, W и худшие случаи = оракулу |
+| S3-build-optimize | `optimizeResilience` = моему полному перебору: планы, W, худшие случаи, среднее base, цена, `same_plan`, число допустимых наборов |
+| S3-build-invariants | После validate/evaluate/optimize/export/import исходники и контексты не изменились; `source_snapshot` результата = исходному; экспорт — только вход |
+| S3-build-other-city | Envelope в чужом городе → `other_city`; ID записи другого города → `unknown_source` |
+| S3-build-duplicates-order | Повтор набора показан и результат не меняет; порядок случаев и ID не влияет на результаты и digest |
+| S3-build-validate-map | 96 списков случаев из fixtures этапа 2 в настоящем плане: решение = ожиданию K03, коды по таблице. 4 расхождения из-за неоднозначности спецификации (одиночный суррогат) показаны отдельно |
+| S3-build-envelope-rules | Производные и лишние поля отклонены; 13 кандидатов → `too_many_candidates` до проверки плана; `base` в файле → `reserved_id` |
+| S3-build-policy (INFO) | Различия политики подписи — `patches/README.md` |
+
+### Предложения к BUILD (`patches/`, не применены)
+
+Патч против d18847f проверен на копии. Тесты сборки до и после одинаковы: 112/112, 164/164, браузер 40/40.
+- **P1** — подсказка «в тех же координатах ещё N» в таблице записей случая. `ui_same_coords_check.cjs`: на d18847f FAIL на Шымкенте (пробел), с патчем 6/6.
+- **P2** — `\p{Cs}` в `CTRL`: одиночный суррогат в подписи превращался в U+FFFD в HTML-отчёте.
+
+### Честные примечания по ходу
+
+- Мутант этапа 3 «записи `hospital` в baseline» сначала не был пойман. Причина: `makeContext` и так оставляет только школы и поликлиники, то есть мутант эквивалентен исходному коду, а не тест слаб. Заменён на реальный дефект — поликлиники в baseline школ; пойман.
+- Прогоны этапов 1–2 на e1cbc3f и d18847f повторены финальными скриптами. Адаптер `plan_adapter.cjs` после этапа 1 получил только новую операцию `validate_raw`.
+
 ## Также выполнено
 
 - `research/round-8-results/K03/run_tests.py --app-root <копия d865dd4> --stages 1,2,3` → PASS 21, FAIL 0 (`runs/r8_module_on_d865dd4.json`). Это тест **моего модуля** geo_v2 на данных d865dd4, а не тест продукта.
 
 ## Ограничения
 
-- Устойчивости (`resilience.js`, envelope city-resilience-v1) в d865dd4 нет. Её интеграцию я не проверял. Коды ошибок моего модуля — предложение; у BUILD они могут отличаться.
+- В закреплённой d865dd4 устойчивости нет — там эта часть NOT_RUN. Интеграция проверена на явно записанных новых SHA e1cbc3f и d18847f.
+- Модуль K03 `resilience_cases.js` в сборку не встроен. Мои коды ошибок отличаются от кодов сборки названиями (таблица `CODE_MAP` в `run_stage3.py`), решения совпадают.
+- Браузер — Chromium через Playwright на Linux (file://). Windows и другие браузеры — NOT_RUN.
 - Контрольные точки, веса, стоимости и кандидаты — synthetic. Записи — Overture из сборки: вторичные данные, на месте не проверены.
 - Браузерный UI не запускался: QA проверен через `facts.qaOf`, которую вызывает `plan-ui.js`.
 - Окружение: Linux, Python 3.11.15, node v22.22.0.
@@ -134,7 +217,7 @@ JS выполнялся на контексте **настоящего** `plan.j
 ```bash
 git fetch origin claude/beautiful-clarke-sbzomj
 python3 research/round-5-results/K03/extract_build.py --sha d865dd4a124291e10dd0b7bb1d9eada20d34c268 --out /tmp/app9
-python3 research/round-9-results/K03/make_manifest.py --app-root /tmp/app9 --sha d865dd4a124291e10dd0b7bb1d9eada20d34c268
+python3 research/round-9-results/K03/make_manifest.py --app-root /tmp/app9 --sha d865dd4a124291e10dd0b7bb1d9eada20d34c268   # → inputs/BUILD_MANIFEST_d865dd4.json
 python3 research/round-9-results/K03/make_stage1_scan.py --app-root /tmp/app9 --target-sha d865dd4a124291e10dd0b7bb1d9eada20d34c268  # уже в fixtures/
 python3 research/round-9-results/K03/run_stage1.py --app-root /tmp/app9 --target-sha d865dd4a124291e10dd0b7bb1d9eada20d34c268 --json /tmp/s1.json
 python3 research/round-9-results/K03/negative_controls.py --app-root /tmp/app9 --work /tmp/k03neg --stage 1
@@ -147,6 +230,26 @@ python3 research/round-9-results/K03/make_stage2.py --app-root /tmp/app9 --targe
 python3 research/round-9-results/K03/run_stage2.py --app-root /tmp/app9 --target-sha d865dd4a124291e10dd0b7bb1d9eada20d34c268 --json /tmp/s2.json
 python3 research/round-9-results/K03/negative_controls.py --app-root /tmp/app9 --work /tmp/k03neg --stage 2
 ```
+
+## Воспроизведение этапа 3
+
+```bash
+git fetch origin claude/beautiful-clarke-sbzomj
+python3 research/round-5-results/K03/extract_build.py --sha d18847f9e7c18fcfae3349c0b223b023d359a838 --out /tmp/app9c
+python3 research/round-9-results/K03/make_stage3.py --app-root /tmp/app9 --target-sha d865dd4a124291e10dd0b7bb1d9eada20d34c268   # уже в fixtures/ и cases/
+python3 research/round-9-results/K03/run_stage3.py --app-root /tmp/app9  --target-sha d865dd4a124291e10dd0b7bb1d9eada20d34c268 --json /tmp/s3a.json  # часть B: NOT_RUN
+python3 research/round-9-results/K03/run_stage3.py --app-root /tmp/app9c --target-sha d18847f9e7c18fcfae3349c0b223b023d359a838 --json /tmp/s3c.json
+python3 research/round-9-results/K03/negative_controls.py --app-root /tmp/app9b --work /tmp/k03neg --stage 3 --target-sha e1cbc3fa84518a84698c03d014dc153f71338d54
+NODE_PATH="$(npm root -g)" node research/round-9-results/K03/ui_same_coords_check.cjs /tmp/app9c /tmp/ui.json   # FAIL до патча P1
+```
+
+## Файлы этапа 3
+
+- `make_stage3.py` → `fixtures/stage3.json`, `cases/*.envelope.json`, `cases/*.manifest.json`.
+- `robust_ref.py`, `run_stage3.py`, `resilience_adapter.cjs`, `ui_same_coords_check.cjs`.
+- `patches/build_d18847f_k03_same_coords_label.patch`, `patches/README.md`.
+- `inputs/BUILD_MANIFEST_{d865dd4,e1cbc3f,d18847f}.json`.
+- `runs/stage{1,2,3}_{d865dd4,e1cbc3f,d18847f}.json`, `runs/stage3_d18847f_k03patch.json`, `runs/negative_controls_s3.json`, `runs/ui_same_coords_d18847f*.json`, `runs/build_tests_d18847f_vs_k03patch.json`.
 
 ## Файлы этапа 2
 
@@ -162,5 +265,5 @@ python3 research/round-9-results/K03/negative_controls.py --app-root /tmp/app9 -
 - `run_stage1.py` — проверки этапа 1.
 - `make_stage1_scan.py` → `fixtures/stage1_scan.json`.
 - `negative_controls.py`.
-- `make_manifest.py` → `inputs/BUILD_MANIFEST.json`.
+- `make_manifest.py` → `inputs/BUILD_MANIFEST_<sha>.json`.
 - `runs/stage1_d865dd4.json`, `runs/negative_controls_s1.json`, `runs/r8_module_on_d865dd4.json`.

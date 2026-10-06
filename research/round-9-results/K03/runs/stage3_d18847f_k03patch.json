@@ -1,0 +1,314 @@
+{
+ "summary": {
+  "PASS": 16,
+  "FAIL": 0,
+  "SKIP": 0,
+  "NOT_RUN": 0,
+  "TEST_INCOMPATIBLE": 0,
+  "INFO": 1
+ },
+ "results": [
+  {
+   "check": "S3-fixtures-match-build",
+   "verdict": "PASS",
+   "summary": "fixtures этапа 3 (4 среза) построены на данных этой сборки (d18847f+k03p)",
+   "details": {
+    "target_sha": "d18847f+k03patch"
+   }
+  },
+  {
+   "check": "S3-plan-case-baseline",
+   "verdict": "PASS",
+   "summary": "26 случаев (с base) × точки = 256 строк: baseline через plan.precompute на отфильтрованной копии = оракулу K03 (с нуля по оставшимся записям), число записей случая = N − k; ничьих 49; расхождений 0",
+   "details": {
+    "mismatches": []
+   }
+  },
+  {
+   "check": "S3-plan-after-manual",
+   "verdict": "PASS",
+   "summary": "after/nearest_after/delta ручного плана в каждом случае = оракулу; расхождений 0",
+   "details": {
+    "mismatches": []
+   }
+  },
+  {
+   "check": "S3-construction",
+   "verdict": "PASS",
+   "summary": "14 утверждений по построению на plan.js: исключение одной записи из общих координат оставляет соседнюю (0 мм, тот же адрес точки); QA-группа и отдельная запись — ближайшая дальше; все записи исключены → до неизвестно (None), не 0; нарушений 0",
+   "details": {
+    "errors": []
+   }
+  },
+  {
+   "check": "S3-module-view",
+   "verdict": "PASS",
+   "summary": "caseView модуля K03 на контексте plan.js: тот же source_snapshot (= независимый пересчёт), исключены ровно ID случая, контекст не изменён, представление заморожено; ошибок 0",
+   "details": {
+    "errors": []
+   }
+  },
+  {
+   "check": "S3-other-city",
+   "verdict": "PASS",
+   "summary": "другой город отклонён: план Шымкента в контексте Астаны → other_city (plan.js), чужой snapshot → foreign_snapshot, ID записи другого города в случае → other_city_source (модуль K03 JS и оракул); свой план принят с тем же snapshot",
+   "details": {
+    "errors": []
+   }
+  },
+  {
+   "check": "S3-no-qa-group",
+   "verdict": "PASS",
+   "summary": "Астана: в evidence.js групп COLOCATED нет — модуль возвращает no_qa_group, случай «qa-colocated» не создан ни для школ, ни для поликлиник; Шымкент: случай из явно указанной группы создан",
+   "details": {
+    "errors": []
+   }
+  },
+  {
+   "check": "S3-integrity",
+   "verdict": "PASS",
+   "summary": "после всех случаев (plan.js и модуль K03) data.js/evidence.js — файл и объект — не изменились; source_snapshot контекста = независимому пересчёту и не зависит от исключений",
+   "details": {
+    "integrity": {
+     "data_js_sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+     "evidence_js_sha256": "df736e986145da33dee60f692e020486720b72db5b6116af31640cc8693b11b9",
+     "file_unchanged": true,
+     "loaded_data_unchanged": true,
+     "snapshots": {
+      "shymkent": {
+       "ctx": "sha256:a9326b5633c513c0bfeccbb2248b26cf3b706c902f77745073a2959ad8d7ff3e",
+       "recomputed": "sha256:a9326b5633c513c0bfeccbb2248b26cf3b706c902f77745073a2959ad8d7ff3e"
+      },
+      "astana": {
+       "ctx": "sha256:67a40b96d29873118780969eb11c32deba49a0c64fda1f185efe634882f04c6d",
+       "recomputed": "sha256:67a40b96d29873118780969eb11c32deba49a0c64fda1f185efe634882f04c6d"
+      }
+     }
+    }
+   }
+  },
+  {
+   "check": "S3-build-envelopes",
+   "verdict": "PASS",
+   "summary": "файлы cases/*.envelope.json K03 (Шымкент и Астана, обе категории) импортируются сборкой (importResilience); чистые случаи сборки = случаям модуля K03 (отсортированные ID, подписи), snapshot прежний",
+   "details": {
+    "errors": []
+   }
+  },
+  {
+   "check": "S3-build-case-baseline",
+   "verdict": "PASS",
+   "summary": "evaluateResilience сборки: 512 строк before (без выбора и с ручным планом) = baseline оракула по оставшимся записям каждого случая; after/delta ручного плана, метрики случаев, худший вектор W и список худших случаев = оракулу; source_records = N − k; расхождений 0",
+   "details": {
+    "mismatches": []
+   }
+  },
+  {
+   "check": "S3-build-optimize",
+   "verdict": "PASS",
+   "summary": "optimizeResilience сборки = независимому полному перебору K03 на baseline случаев: обычный и устойчивый план, W, худшие случаи, среднее base, цена устойчивости, same_plan, число допустимых наборов; расхождений 0",
+   "details": {
+    "mismatches": [],
+    "plans": {
+     "shymkent|school": {
+      "nominal": [
+       "cand-1",
+       "cand-5"
+      ],
+      "robust": [
+       "cand-1",
+       "cand-5"
+      ],
+      "price_m": 0,
+      "same_plan": true,
+      "robust_worst_case_ids": [
+       "all-records"
+      ]
+     },
+     "shymkent|outpatient_clinic": {
+      "nominal": [
+       "cand-1",
+       "cand-5"
+      ],
+      "robust": [
+       "cand-1",
+       "cand-5"
+      ],
+      "price_m": 0,
+      "same_plan": true,
+      "robust_worst_case_ids": [
+       "all-records"
+      ]
+     },
+     "astana|school": {
+      "nominal": [
+       "cand-3",
+       "cand-4"
+      ],
+      "robust": [
+       "cand-1",
+       "cand-3"
+      ],
+      "price_m": 23.43128571428571,
+      "same_plan": false,
+      "robust_worst_case_ids": [
+       "all-records"
+      ]
+     },
+     "astana|outpatient_clinic": {
+      "nominal": [
+       "cand-1",
+       "cand-3"
+      ],
+      "robust": [
+       "cand-1",
+       "cand-3"
+      ],
+      "price_m": 0,
+      "same_plan": true,
+      "robust_worst_case_ids": [
+       "all-records"
+      ]
+     }
+    }
+   }
+  },
+  {
+   "check": "S3-build-invariants",
+   "verdict": "PASS",
+   "summary": "после validate/evaluate/optimize/export/import сборки: data.js/evidence.js (файл и объект) и контексты plan.js не изменились; source_snapshot результата = исходному плана (исключения его не подменяют); экспорт — только вход (schema_version, plan без derived_results, cases)",
+   "details": {
+    "errors": [],
+    "integrity": {
+     "file_unchanged": true,
+     "loaded_unchanged": true,
+     "ctx_unchanged": true,
+     "snapshots": {
+      "shymkent": {
+       "ctx": "sha256:a9326b5633c513c0bfeccbb2248b26cf3b706c902f77745073a2959ad8d7ff3e",
+       "recomputed": "sha256:a9326b5633c513c0bfeccbb2248b26cf3b706c902f77745073a2959ad8d7ff3e"
+      },
+      "astana": {
+       "ctx": "sha256:67a40b96d29873118780969eb11c32deba49a0c64fda1f185efe634882f04c6d",
+       "recomputed": "sha256:67a40b96d29873118780969eb11c32deba49a0c64fda1f185efe634882f04c6d"
+      }
+     },
+     "limits": {
+      "candidates": 12,
+      "user_cases": 7,
+      "label": 120
+     },
+     "schema": "city-resilience-v1",
+     "objective": "worst-lex-v1"
+    }
+   }
+  },
+  {
+   "check": "S3-build-other-city",
+   "verdict": "PASS",
+   "summary": "сборка: envelope в контексте другого города → other_city; ID записи другого города в disabled_source_ids → unknown_source (оба города, обе категории)",
+   "details": {
+    "errors": []
+   }
+  },
+  {
+   "check": "S3-build-duplicates-order",
+   "verdict": "PASS",
+   "summary": "повтор набора исключений показан (duplicate_case_groups = identical_sets K03) и не меняет планы и W; перестановка случаев и ID не меняет результаты по случаям, планы, exclusions_digest и resilience_problem_digest",
+   "details": {
+    "errors": []
+   }
+  },
+  {
+   "check": "S3-build-validate-map",
+   "verdict": "PASS",
+   "summary": "96 проверок списков случаев (fixtures этапа 2) в настоящем plan: решение и код сборки = ожиданию K03 по таблице кодов; несоответствий 0, неоднозначностей спецификации 0",
+   "details": {
+    "mismatches": [],
+    "code_names": {
+     "too_many_cases→bad_cases": [
+      "8"
+     ],
+     "no_cases→bad_cases": [
+      "0"
+     ],
+     "reserved_case_id→reserved_id": [
+      "base"
+     ],
+     "duplicate_case_id→duplicate_id": [
+      "dup-case"
+     ],
+     "bad_case_id→bad_id": [
+      "id-65",
+      "id-empty",
+      "id-nfd",
+      "id-space"
+     ],
+     "unknown_field→bad_shape": [
+      "unknown-field"
+     ],
+     "missing_field→bad_shape": [
+      "missing-label"
+     ],
+     "other_city_source→unknown_source": [
+      "other-city"
+     ]
+    },
+    "spec_ambiguous": {}
+   }
+  },
+  {
+   "check": "S3-build-envelope-rules",
+   "verdict": "PASS",
+   "summary": "envelope сборки — только вход: производные поля (per_case, worst_case_ids, verified, plan.derived_results) и лишние поля отклонены; без cases — missing_field; файл v2 назван; 13 кандидатов → too_many_candidates до проверки плана (13-й кандидат вне bbox не успевает проверяться); base в файле → reserved_id",
+   "details": {
+    "errors": []
+   }
+  },
+  {
+   "check": "S3-build-policy",
+   "verdict": "INFO",
+   "summary": "политика подписей случаев: сборка vs модуль K03 (не PASS/FAIL; для решения координатора)",
+   "details": {
+    "labels": {
+     "ws": [
+      [
+       "bad_label",
+       "принято"
+      ]
+     ],
+     "u2028": [
+      [
+       "bad_label",
+       "принято"
+      ]
+     ],
+     "c1": [
+      [
+       "bad_label",
+       "bad_label"
+      ]
+     ],
+     "surrogate": [
+      [
+       "bad_label",
+       "bad_label"
+      ]
+     ],
+     "rtl": [
+      [
+       "принято",
+       "принято"
+      ]
+     ],
+     "html": [
+      [
+       "принято",
+       "принято"
+      ]
+     ]
+    }
+   }
+  }
+ ]
+}
