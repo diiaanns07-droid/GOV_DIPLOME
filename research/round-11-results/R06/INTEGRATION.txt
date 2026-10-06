@@ -16,7 +16,7 @@ R06 — ИНТЕГРАЦИЯ СООБЩЕНИЙ ЖИТЕЛЕЙ (civic-v1), дл�
   web/civic/feedback/feedback.css         все селекторы под .civic-r06, без глобальных правил
   tests/civic/R06/                        pytest + browser_r06.cjs + FIXTURE-стенд harness/
 
-2. МАРШРУТЫ R06 (все под /api/civic/v1; path принимается и с префиксом, и без него)
+2. МАРШРУТЫ R06 (path — ПОЛНЫЙ /api/civic/v1/..., как у CivicService R02; путь без префикса -> None)
   Контрактные (CONTRACT.txt §3):
     GET  /objects/{id}/feedback                 публичный список: approved + consent + согласие не отозвано
     POST /feedback                              {object_id|null, geometry|null, category, text, consent_public,
@@ -62,13 +62,16 @@ R06 — ИНТЕГРАЦИЯ СООБЩЕНИЙ ЖИТЕЛЕЙ (civic-v1), дл�
      R01 вызывает module.CivicService -> AttributeError -> store "init_failed" -> все /api/civic/v1 503.
      Исправление: R02 добавляет `from .service import CivicService` в __init__ (или R01 импортирует
      ui.civic_store.service).
-  b) Шлюз передаёт в R02 путь без префикса (rel_path "/session/login"), а CivicService.handle R02
-     принимает только "/api/civic/v1/...": login/objects -> None -> 404. То же в public_object
-     ("/objects/" + id) -> lookup всегда None -> каждое сообщение получило бы object_not_found.
-     Исправление: одна сторона договаривается о форме path (R06 принимает обе).
+  b) Шлюз передаёт в R02 и R06 путь без префикса (rel_path "/session/login", "/feedback"), а
+     CivicService.handle R02 и FeedbackService.handle R06 принимают только "/api/civic/v1/...":
+     -> None -> 404. То же в public_object ("/objects/" + id) -> lookup всегда None.
+     Исправление (одна строка в CivicGateway.handle и public_object): передавать CIVIC_PREFIX + rel_path.
+     R06 сначала принимал обе формы, но независимая приёмка R10 (standalone_r06 C01) справедливо
+     требует не перехватывать пути вне /api/civic/v1 (например, статическую страницу /feedback),
+     поэтому с коммита после 417cc23 R06 ведёт себя как R02.
   c) R02 требует context["host_allowed"] is True (отсутствие = запрет), шлюз R01 ключ не передаёт ->
      403 forbidden_host. Исправление: R01 добавляет "host_allowed": True после своей проверки Host.
-  С тремя обходами ТОЛЬКО в scratch-копии сквозной HTTP-тест tests/civic/R06/test_r06_gateway_smoke.py
+  С тремя обходами ТОЛЬКО в scratch-копии (для b — префикс и для store, и для feedback) сквозной HTTP-тест tests/civic/R06/test_r06_gateway_smoke.py
   (настоящий сервер R01 + R02 + R06: логин, создание/публикация объекта, сообщение, Origin, CSRF,
   модерация, публичный список, logout -> 401) прошёл: 1 passed. Обход (b) ломает 3 теста дублёра R01,
   поэтому выбирать решение должен R01.

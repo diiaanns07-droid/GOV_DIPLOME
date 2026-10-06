@@ -311,16 +311,20 @@ class FeedbackService:
             LOGGER.exception("feedback storage error")
             return _error(ApiError(503, "storage_unavailable",
                                    "Хранилище сообщений временно недоступно. Текст не потерян в форме — повторите позже."))
+        except Exception:  # страховка: наружу только конверт, без traceback и путей
+            LOGGER.exception("feedback handler failed")
+            return _error(ApiError(500, "internal_error", "Не удалось выполнить запрос. Попробуйте ещё раз."))
 
     @staticmethod
     def _segments(path) -> list[str] | None:
         if not isinstance(path, str):
             return None
         raw = urlsplit(path).path
-        if raw.startswith(API_PREFIX + "/"):
-            raw = raw[len(API_PREFIX):]
-        elif raw == API_PREFIX:
+        # Как CivicService R02: только полный путь /api/civic/v1/...; чужие пути (в т.ч.
+        # возможная статическая страница /feedback) не перехватываются.
+        if not raw.startswith(API_PREFIX + "/"):
             return None
+        raw = raw[len(API_PREFIX):]
         parts = [unquote(part) for part in raw.split("/") if part != ""]
         if not parts:
             return None
@@ -402,6 +406,7 @@ class FeedbackService:
             except (UnicodeDecodeError, ValueError):
                 raise ApiError(400, "invalid_json", "Тело запроса — не корректный JSON.") from None
         elif isinstance(body, Mapping):
+            self._reject_unencodable(body)
             try:
                 size = len(json.dumps(body, ensure_ascii=False).encode("utf-8"))
             except (TypeError, ValueError):
@@ -410,7 +415,26 @@ class FeedbackService:
                 raise ApiError(413, "too_large", "Слишком большой запрос.")
         if not isinstance(body, Mapping):
             raise ApiError(400, "invalid_body", "Ожидается JSON-объект в теле запроса.")
+        self._reject_unencodable(body)
         return dict(body)
+
+    @classmethod
+    def _reject_unencodable(cls, value, depth: int = 0) -> None:
+        """JSON допускает одиночные суррогаты (\\ud800), UTF-8 и SQLite — нет: 400, а не исключение."""
+        if depth > 20:
+            raise ApiError(400, "invalid_body", "Слишком глубокая вложенность JSON.")
+        if isinstance(value, str):
+            try:
+                value.encode("utf-8")
+            except UnicodeEncodeError:
+                raise ApiError(400, "invalid_text", "Текст содержит недопустимые символы.") from None
+        elif isinstance(value, Mapping):
+            for key, item in value.items():
+                cls._reject_unencodable(key, depth + 1)
+                cls._reject_unencodable(item, depth + 1)
+        elif isinstance(value, (list, tuple)):
+            for item in value:
+                cls._reject_unencodable(item, depth + 1)
 
     @staticmethod
     def _reject_unknown(body: dict, allowed: frozenset) -> None:

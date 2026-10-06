@@ -91,7 +91,7 @@ def test_invalid_fields_are_rejected(service, override, field):
 def test_missing_consent_is_rejected_not_defaulted(service):
     payload = {"object_id": "demo-astana-work-01", "category": "roads",
                "text": "Яма на въезде во двор, машины объезжают по тротуару."}
-    response = service.handle("POST", "/feedback", {}, payload, None, fixture_context())
+    response = service.handle("POST", "/api/civic/v1/feedback", {}, payload, None, fixture_context())
     status, err = error(response)
     assert status == 422 and "consent_public" in err["fields"]
 
@@ -108,14 +108,14 @@ def test_unknown_fields_including_fake_role_are_rejected(service, extra):
 
 def test_body_must_be_json_object_and_not_too_large(service):
     ctx = fixture_context()
-    assert error(service.handle("POST", "/feedback", {}, b"{not json", None, ctx))[0] == 400
-    assert error(service.handle("POST", "/feedback", {}, b"[1,2]", None, ctx))[0] == 400
-    assert error(service.handle("POST", "/feedback", {}, None, None, ctx))[0] == 400
+    assert error(service.handle("POST", "/api/civic/v1/feedback", {}, b"{not json", None, ctx))[0] == 400
+    assert error(service.handle("POST", "/api/civic/v1/feedback", {}, b"[1,2]", None, ctx))[0] == 400
+    assert error(service.handle("POST", "/api/civic/v1/feedback", {}, None, None, ctx))[0] == 400
     huge = json.dumps({"text": "x" * 20000}).encode()
-    assert error(service.handle("POST", "/feedback", {}, huge, None, ctx)) [0] == 413
+    assert error(service.handle("POST", "/api/civic/v1/feedback", {}, huge, None, ctx)) [0] == 413
     big_dict = {"object_id": "demo-astana-work-01", "category": "roads", "consent_public": True,
                 "text": "я" * 9000}
-    assert error(service.handle("POST", "/feedback", {}, big_dict, None, ctx))[0] == 413
+    assert error(service.handle("POST", "/api/civic/v1/feedback", {}, big_dict, None, ctx))[0] == 413
 
 
 def test_bytes_body_is_accepted(service):
@@ -127,10 +127,10 @@ def test_bytes_body_is_accepted(service):
 
 
 def test_cross_origin_submission_is_rejected(service):
-    response = service.handle("POST", "/feedback", {}, {"text": "x"}, None,
+    response = service.handle("POST", "/api/civic/v1/feedback", {}, {"text": "x"}, None,
                               fixture_context(same_origin=False))
     assert error(response) == (403, error(response)[1]) and error(response)[1]["code"] == "cross_origin"
-    missing = service.handle("POST", "/feedback", {}, {"text": "x"}, None, {"client_ip": "1.2.3.4"})
+    missing = service.handle("POST", "/api/civic/v1/feedback", {}, {"text": "x"}, None, {"client_ip": "1.2.3.4"})
     assert missing["status"] == 403
 
 
@@ -209,3 +209,29 @@ def test_receipt_warns_about_contact_data(service):
     response = submit(service, text="Позвоните мне +7 701 123 45 67, яма у подъезда очень глубокая.")
     warnings = response["body"]["data"]["warnings"]
     assert response["status"] == 201 and warnings and "не будут опубликованы" in warnings[0]
+
+
+@pytest.mark.parametrize("raw", [
+    b'{"object_id":"demo-astana-work-01","category":"roads","consent_public":true,"text":"\\ud800 \xd1\x8f\xd0\xbc\xd0\xb0 \xd1\x83 \xd0\xb2\xd1\x8a\xd0\xb5\xd0\xb7\xd0\xb4\xd0\xb0"}',
+    b'{"\\udc00":1}',
+])
+def test_lone_surrogate_gives_json_400_not_exception(service, raw):
+    response = service.handle("POST", "/api/civic/v1/feedback", {}, raw, None, fixture_context())
+    assert response["status"] == 400 and response["body"]["error"]["code"] in ("invalid_text", "unknown_fields")
+    assert queue_items(service) == []
+
+
+def test_surrogate_in_dict_body_is_rejected(service):
+    response = submit(service, text="Яма у въезда \ud800 во двор, глубокая.")
+    assert response["status"] == 400 and response["body"]["error"]["code"] == "invalid_text"
+
+
+def test_unexpected_exception_becomes_json_500(service, monkeypatch):
+    def boom(object_id):
+        raise KeyError("boom /srv/secret.py")
+
+    monkeypatch.setattr(service, "_lookup", boom)
+    response = submit(service)
+    assert response["status"] == 500 and response["body"]["error"]["code"] == "internal_error"
+    dumped = json.dumps(response, ensure_ascii=False)
+    assert "boom" not in dumped and "secret" not in dumped and "KeyError" not in dumped

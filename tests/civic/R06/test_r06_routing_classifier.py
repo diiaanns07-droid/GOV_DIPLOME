@@ -29,12 +29,20 @@ def test_foreign_paths_are_not_claimed(service, method, path):
 
 def test_object_feedback_route_is_not_swallowed_by_object_route(service):
     for path in ("/api/civic/v1/objects/demo-astana-work-01/feedback",
-                 "/objects/demo-astana-work-01/feedback",
                  "/api/civic/v1/objects/demo-astana-work-01/feedback?limit=5"):
         response = service.handle("GET", path, None, None, None, fixture_context())
         assert response is not None and response["status"] == 200, path
     assert service.handle("GET", "/api/civic/v1/objects/demo-astana-work-01/feedback?limit=x",
                           None, None, None, fixture_context())["status"] == 400
+
+
+@pytest.mark.parametrize("method,path", [
+    ("POST", "/feedback"), ("GET", "/objects/demo-astana-work-01/feedback"), ("GET", "/staff/feedback"),
+    ("POST", "/staff/feedback/1/moderate"), ("GET", "/api/civic/v2/feedback"), ("GET", "/api/civic/v1feedback"),
+])
+def test_paths_without_api_prefix_are_not_claimed(service, method, path):
+    # Как R02: возможная статическая страница /feedback не перехватывается сервисом.
+    assert service.handle(method, path, {}, None, None, fixture_context()) is None
 
 
 @pytest.mark.parametrize("method,path,status", [
@@ -57,7 +65,8 @@ def test_own_namespace_returns_json_errors(service, method, path, status):
 
 def test_public_and_private_cache_headers(service):
     submit(service)
-    public = service.handle("GET", "/objects/demo-astana-work-01/feedback", {}, None, None, fixture_context())
+    public = service.handle("GET", "/api/civic/v1/objects/demo-astana-work-01/feedback", {}, None, None,
+                            fixture_context())
     assert public["headers"]["Cache-Control"] == "no-cache"
     assert staff(service, "GET", "/staff/feedback")["headers"]["Cache-Control"] == "no-store"
 
