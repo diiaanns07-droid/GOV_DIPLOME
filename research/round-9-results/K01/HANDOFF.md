@@ -32,10 +32,14 @@
 - `bash run_all.sh d865dd4…` → exit 1 (`runs/run_all_d865dd4.txt`): compat 72/72, browser 15/15, resilience contract 55/55, public API 1/7, BUILD r9 resilience NOT_RUN.
 - Итог расхождений: `CONTRACT_DIFF.txt`.
 
+## Дополнительный прогон: новый BUILD fb768b2 (явно записанный SHA)
+- `bash run_all.sh fb768b25b5de5b151bb83ad9ce0af3b965ab2025` → **exit 0** (`runs/run_all_fb768b2.txt`): compat 72/72, browser 15/15, resilience contract 55/55,
+  **public API 7/7** (дефект D1 исправлен в BUILD `e990f01` своей реализацией; подтверждено тестом K01), BUILD resilience.js — **NOT_RUN** (ещё нет).
+
 ## SKIP / NOT_RUN / ограничения
 - Интеграция resilience в BUILD: NOT_RUN (нет web/resilience.js на d865dd4 и новее в ветке BUILD).
 - `check_all` skip: пересборка evidence.js (нет shapely/pyproj). Только Linux/Chromium; Windows не проверялся.
 - Независимый Python-оракул для resilience не писался (ожидания заданы генератором фикстур по CORE_SPEC); вычисление устойчивых планов — не задача K01.
 
 ## Следующий шаг
-BUILD: применить/адаптировать `patches/plan_public_api_guard.patch`; при создании `web/resilience.js` — запустить `bash research/round-9-results/K01/run_all.sh <новый SHA>` (ожидается: public API 7/7, test_build_r9 вместо NOT_RUN — PASS или список CONTRACT_DIFF).
+BUILD: D1 уже закрыт в fb768b2 (патч K01 не нужен); при создании `web/resilience.js` — запустить `bash research/round-9-results/K01/run_all.sh <новый SHA>` (ожидается: public API 7/7, test_build_r9 вместо NOT_RUN — PASS или список CONTRACT_DIFF).

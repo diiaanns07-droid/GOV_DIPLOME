@@ -33,3 +33,10 @@ C. city-resilience-v1 (по CORE_SPEC r9; эталон K01 до появлени
   C4 Открытые вопросы спецификации, решённые в K01 явно (BUILD может выбрать иначе — тогда обновить RESILIENCE_EXPECTED):
      метка из одних пробелов -> bad_label; U+2028/2029 считаются управляющими; исключение всех записей категории допустимо;
      plan.derived_results в envelope -> derived_not_allowed; верхний derived_results -> unknown_field; файл v2 в режиме resilience -> wrong_version.
+
+D. Дополнительный прогон на новом BUILD (появился во время работы): claude/beautiful-clarke-sbzomj @ fb768b25b5de5b151bb83ad9ce0af3b965ab2025
+  bash research/round-9-results/K01/run_all.sh fb768b25b5de5b151bb83ad9ce0af3b965ab2025 -> exit 0 (runs/run_all_fb768b2.txt)
+  compat 72/72, browser atomic 15/15, resilience contract 55/55, public API 7/7, BUILD resilience.js NOT_RUN (модуля ещё нет).
+  D1 на fb768b2: все 6 минимальных входов получают типизированные ошибки — исправлено BUILD собственной реализацией (e990f01 «API validation before search»),
+  подтверждено тестом K01 test_public_api.cjs. Патч K01 plan_public_api_guard.patch больше не нужен (оставлен как запись).
+  Пункты A и C3/C4 без изменений.
