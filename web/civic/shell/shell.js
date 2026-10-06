@@ -4,8 +4,7 @@
  * page modes (civic | school | training), mount points and module lifecycle.
  * Role modules plug in through the civic-v1 globals (CONTRACT.txt §4):
  *   CivicMap, CivicEditor, CivicFeedback, CivicScenarios, CivicAssistant.
- * When a role module is not delivered the shell uses CivicShellFallback (fallback.js),
- * a deliberately minimal R01 implementation that is replaced, not merged, later.
+ * A role module that is missing is reported in place (no hidden substitute implementation).
  * Untrusted text is rendered with textContent only.
  */
 (function () {
@@ -59,6 +58,9 @@
     if (method === "POST") {
       headers["Content-Type"] = "application/json";
       if (session.csrfToken) headers["X-CSRF-Token"] = session.csrfToken;
+      // Stable key from the caller (R04 create) lets R02 return the same object on a repeated POST.
+      if (typeof options?.idempotencyKey === "string" && /^[A-Za-z0-9._:-]{8,64}$/.test(options.idempotencyKey))
+        headers["Idempotency-Key"] = options.idempotencyKey;
       payload = JSON.stringify(body ?? {});
     }
     const controller = new AbortController();
@@ -181,15 +183,19 @@
     </section>`;
   document.body.append(root);
 
-  const fallback = () => window.CivicShellFallback || {};
+  // Role modules only (R03 map, R04 editor, R06 feedback, R07 scenarios, R09 assistant). The R01
+  // fallbacks used before the deliveries were removed once the modules were integrated: one
+  // implementation per function. A missing module is reported, never silently replaced.
   const moduleFor = (name) => ({
-    map: window.CivicMap || fallback().map,
-    editor: window.CivicEditor || fallback().editor,
-    feedback: window.CivicFeedback || fallback().feedback,
-    scenarios: window.CivicScenarios || null,
-    assistant: window.CivicAssistant || null,
+    map: window.CivicMap, editor: window.CivicEditor, feedback: window.CivicFeedback,
+    scenarios: window.CivicScenarios, assistant: window.CivicAssistant,
   })[name] || null;
-  const isFallback = (name) => !!moduleFor(name) && moduleFor(name) === fallback()[name];
+  const isFallback = () => false;
+  const MODULE_MISSING = {
+    map: "Модуль карты и карточек (R03) не загружен.", editor: "Кабинет редактора (R04) не загружен.",
+    feedback: "Форма сообщений (R06) не загружена.", scenarios: "Модуль сравнения (R07) не загружен.",
+    assistant: "Помощник (R09) не загружен.",
+  };
 
   function currentMap() {
     return typeof mapReady !== "undefined" && mapReady && typeof map !== "undefined" ? map : null;
@@ -217,7 +223,10 @@
   function mount(name, rootNode, options) {
     destroyMounted(name);
     const module = moduleFor(name);
-    if (!module || typeof module.mount !== "function") return null;
+    if (!module || typeof module.mount !== "function") {
+      rootNode.replaceChildren(el("p", { class: "civic-error" }, MODULE_MISSING[name] || "Модуль не загружен."));
+      return null;
+    }
     try {
       const handle = module.mount({ root: rootNode, api, ...options });
       S.mounted[name] = handle || {};
@@ -259,6 +268,7 @@
     if (S.modules?.store?.status !== "ready") { destroyMounted("map"); $c("civic-map-root").replaceChildren(); return; }
     mount("map", $c("civic-map-root"), {
       map: currentMap(),
+      fitOnLoad: !S.selected,  // R03 option: frame published objects (city overview otherwise too far out)
       onSelect: (item) => onSelect(item),
       onFeedback: (target) => openFeedback(target),
     });

@@ -61,9 +61,11 @@ for _asset in ("shell.js", "shell.css", "core/data.js", "core/evidence.js",
 
 # Round 11 civic-v1 frontend: explicit files only (R01 shell; role modules are added
 # here by R01 when their reviewed delivery is imported). No directory serving.
-CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/fallback.js",
+CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css",
                 "feedback/feedback.js", "feedback/feedback.css",      # R06 @eaa113d
-                "scenarios/scenarios.js", "scenarios/scenarios.css")  # R07 @22fa413 (graphs only via API)
+                "scenarios/scenarios.js", "scenarios/scenarios.css",  # R07 @22fa413 (graphs only via API)
+                "map/civic-map-core.js", "map/civic-map.js", "map/civic-map.css",  # R03 @f73745c
+                "editor/editor-core.js", "editor/editor.js", "editor/editor.css")  # R04 @da46e1c
 for _asset in CIVIC_ASSETS:
     _mime = {".js": "text/javascript", ".css": "text/css", ".json": "application/json"}.get(Path(_asset).suffix, "text/plain")
     ASSETS["/civic/" + _asset] = ("civic/" + _asset, _mime + "; charset=utf-8")

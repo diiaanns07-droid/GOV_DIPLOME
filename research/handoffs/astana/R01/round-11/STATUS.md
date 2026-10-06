@@ -53,4 +53,11 @@ web/govtech/shell.{js,css}, web/civic/shell/, requirements*.txt, run.{bat,sh},
   слои civic-r07-* снимаются при закрытии. runs/cp6_scenarios_r07/.
 - DONE: блокировка параллельного входа (R02 M1), права 0600 на БД.
 
-Следующий шаг: R03/R04 вместо резервных модулей R01, затем R05 (данные) и R09.
+## Checkpoint 7 — R03 карта/карточки и R04 редактор встроены; резервные модули R01 удалены
+- DONE: импорт R03 @f73745c (web/civic/map, tests/civic/R03: 17 PASS) и R04 @da46e1c
+  (web/civic/editor, tests/civic/R04: 27 PASS). Idempotency-Key из api.request (R04 -> R02).
+- DONE: fallback.js удалён (одна реализация на функцию; отсутствующий модуль показывается честно).
+- DONE: интегрированный браузерный P0 (R02+R03+R04+R06) — 41 PASS / 0 FAIL / 2 NOT_RUN;
+  сценарии R07 — 16 PASS; pytest 491 passed. runs/cp7_p0_integrated_r02_r03_r04_r06/.
+
+Следующий шаг: R09 (готов) и R05 (данные), обновления R02 (632c5b2) и R04 по мере поставки.
