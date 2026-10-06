@@ -1,0 +1,58 @@
+{
+ "schema_version": "city-resilience-v1",
+ "plan": {
+  "schema_version": "city-plan-v2",
+  "city_id": "synthetic-equator",
+  "source_snapshot": "synthetic:814bfe40f719e1e265be5f60eec75d5b680c3b71e97731e692d509b8b8b20c04",
+  "category": "school",
+  "control_points": [
+   {
+    "id": "P1",
+    "lon": 0.0,
+    "lat": 0.0,
+    "weight": 2
+   },
+   {
+    "id": "P2",
+    "lon": 0.01798640727449076,
+    "lat": 0.0,
+    "weight": 1
+   }
+  ],
+  "candidates": [
+   {
+    "id": "A",
+    "lon": 0.01798640727449076,
+    "lat": 0.0,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 1
+   },
+   {
+    "id": "B",
+    "lon": 0.00899320363724538,
+    "lat": 0.0,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 1
+   }
+  ],
+  "budget": 10,
+  "max_selected": 1,
+  "coverage_radius_m": 300,
+  "required_ids": [],
+  "excluded_ids": [],
+  "selected_ids": [
+   "A"
+  ]
+ },
+ "cases": [
+  {
+   "id": "noS",
+   "label": "Условно не учитываем S",
+   "disabled_source_ids": [
+    "S"
+   ]
+  }
+ ]
+}

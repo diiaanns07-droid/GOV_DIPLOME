@@ -1,0 +1,65 @@
+{
+ "schema_version": "city-resilience-v1",
+ "plan": {
+  "schema_version": "city-plan-v2",
+  "city_id": "synthetic-equator",
+  "source_snapshot": "synthetic:e055d89ac795d5b9e463ce51c378469a9d31c1b97d51cea402367fa16bd156e3",
+  "category": "school",
+  "control_points": [
+   {
+    "id": "P1",
+    "lon": 0.0,
+    "lat": 0.0,
+    "weight": 1
+   },
+   {
+    "id": "P2",
+    "lon": 0.026979610911736136,
+    "lat": 0.0,
+    "weight": 1
+   }
+  ],
+  "candidates": [
+   {
+    "id": "M",
+    "lon": 0.013489805455868068,
+    "lat": 0.0,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 5
+   },
+   {
+    "id": "L",
+    "lon": 0.0,
+    "lat": 0.0,
+    "category": "school",
+    "kind": "hypothetical",
+    "cost": 3
+   }
+  ],
+  "budget": 10,
+  "max_selected": 2,
+  "coverage_radius_m": 500,
+  "required_ids": [],
+  "excluded_ids": [],
+  "selected_ids": []
+ },
+ "cases": [
+  {
+   "id": "none",
+   "label": "Условно не учитываем все школы среза",
+   "disabled_source_ids": [
+    "S1",
+    "S2"
+   ]
+  },
+  {
+   "id": "none_again",
+   "label": "То же исключение второй раз",
+   "disabled_source_ids": [
+    "S2",
+    "S1"
+   ]
+  }
+ ]
+}

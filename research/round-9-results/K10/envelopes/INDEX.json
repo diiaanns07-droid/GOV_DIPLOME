@@ -37,6 +37,9 @@
     "c07"
    ],
    "infeasible_reasons": null,
+   "cases": 4,
+   "rejected": null,
+   "accepted": null,
    "sha256": "f9893f7d524ed482dabe4d240fa58b2fb3a38e8cea158cfd0028c4a3c6c8d602"
   },
   {
@@ -58,6 +61,9 @@
     "c07"
    ],
    "infeasible_reasons": null,
+   "cases": 4,
+   "rejected": null,
+   "accepted": null,
    "sha256": "23604ef2b6260a8ae7d372d4849d0fc67a581994030444b72bf0e174b2543f4e"
   },
   {
@@ -79,6 +85,9 @@
     "c07"
    ],
    "infeasible_reasons": null,
+   "cases": 3,
+   "rejected": null,
+   "accepted": null,
    "sha256": "e4dd6ff26decda54ecc13b5febd2c2b9ae89603af6a57c7bf6e5f090eb0aeb0c"
   },
   {
@@ -100,6 +109,9 @@
     "c12"
    ],
    "infeasible_reasons": null,
+   "cases": 4,
+   "rejected": null,
+   "accepted": null,
    "sha256": "fb6c33a08fc7b81a9af9d546023313d854c1f6a85fea3e47fa669491ca816a0f"
   },
   {
@@ -121,6 +133,9 @@
     "c12"
    ],
    "infeasible_reasons": null,
+   "cases": 4,
+   "rejected": null,
+   "accepted": null,
    "sha256": "ce7a4de9ae3cc948c30faeed69165051f1ab2ca338acaf010d67162717c50d6e"
   },
   {
@@ -142,6 +157,9 @@
     "c12"
    ],
    "infeasible_reasons": null,
+   "cases": 3,
+   "rejected": null,
+   "accepted": null,
    "sha256": "f583d952bc4f0ba332a15c846600539c3e100586456378ad0e3e366cb0a2ee9c"
   },
   {
@@ -163,6 +181,9 @@
     "c12"
    ],
    "infeasible_reasons": null,
+   "cases": 4,
+   "rejected": null,
+   "accepted": null,
    "sha256": "18f49a91226fb07e6539e8b830cd9f13c19d9873ed55b0119fd2f3b36c3a929c"
   },
   {
@@ -184,6 +205,9 @@
     "c12"
    ],
    "infeasible_reasons": null,
+   "cases": 4,
+   "rejected": null,
+   "accepted": null,
    "sha256": "66d188389daa63dc8e005e229d42d1fbb68bba01e56eed689a2cbc43dd6ba574"
   },
   {
@@ -205,6 +229,9 @@
     "c12"
    ],
    "infeasible_reasons": null,
+   "cases": 4,
+   "rejected": null,
+   "accepted": null,
    "sha256": "cbe3b88f9fe72623a9537ec6f5dd1c335afa0de28f12668b044b4c0599a41a40"
   },
   {
@@ -226,7 +253,151 @@
     "c12"
    ],
    "infeasible_reasons": null,
+   "cases": 4,
+   "rejected": null,
+   "accepted": null,
    "sha256": "c4b3b446ebb99d8d3bf761a494acadf0289a2ad078acf85c5f8a925820cd1d94"
+  },
+  {
+   "pack_id": "synthetic-robust-differs",
+   "kind": "synthetic",
+   "stage": 3,
+   "purpose": "nominal plan relies on one source; the robust plan does not",
+   "status": "optimal",
+   "plans_identical": false,
+   "price_of_robustness_m": 333.3333333333333,
+   "nominal": [
+    "A"
+   ],
+   "robust": [
+    "B"
+   ],
+   "infeasible_reasons": null,
+   "cases": 2,
+   "rejected": null,
+   "accepted": null,
+   "sha256": "8a16bbfde71bd6ea2d086a2bd1eb947179c3e0cff7319c02c65b51f304321d2b"
+  },
+  {
+   "pack_id": "synthetic-plans-coincide",
+   "kind": "synthetic",
+   "stage": 3,
+   "purpose": "the left-out record is nobody's nearest: nominal = robust, price 0",
+   "status": "optimal",
+   "plans_identical": true,
+   "price_of_robustness_m": 0.0,
+   "nominal": [
+    "A"
+   ],
+   "robust": [
+    "A"
+   ],
+   "infeasible_reasons": null,
+   "cases": 2,
+   "rejected": null,
+   "accepted": null,
+   "sha256": "ae9fb7dfb3048c94dbad11f6d0d754746bac4b136f2795f6a0ca981474ad53a1"
+  },
+  {
+   "pack_id": "synthetic-all-sources-left-out",
+   "kind": "synthetic",
+   "stage": 3,
+   "purpose": "a case leaves out every school; a second case repeats it",
+   "status": "optimal",
+   "plans_identical": false,
+   "price_of_robustness_m": 0.0,
+   "nominal": [],
+   "robust": [
+    "L",
+    "M"
+   ],
+   "infeasible_reasons": null,
+   "cases": 3,
+   "rejected": null,
+   "accepted": null,
+   "sha256": "cdd0448bc71bbb1efeceba6cc72c4eaa064372b1684485b37e172dfed9d582e3"
+  },
+  {
+   "pack_id": "synthetic-infeasible-budget",
+   "kind": "synthetic",
+   "stage": 3,
+   "purpose": "required candidate costs more than the budget: infeasible, nothing is dropped silently",
+   "status": "infeasible",
+   "plans_identical": null,
+   "price_of_robustness_m": null,
+   "nominal": null,
+   "robust": null,
+   "infeasible_reasons": [
+    "required_cost_exceeds_budget"
+   ],
+   "cases": 2,
+   "rejected": null,
+   "accepted": null,
+   "sha256": "a9073b3244b933bdffbf5ca3544ec015cfc674c567c30a1df7a759694c28dad6"
+  },
+  {
+   "pack_id": "synthetic-unknown-worst",
+   "kind": "synthetic",
+   "stage": 3,
+   "purpose": "no plan may add a site, a case leaves out every school: the worst vector stays unknown and is reported as unknown, not as 0",
+   "status": "optimal",
+   "plans_identical": true,
+   "price_of_robustness_m": 0.0,
+   "nominal": [],
+   "robust": [],
+   "infeasible_reasons": null,
+   "cases": 2,
+   "rejected": null,
+   "accepted": null,
+   "sha256": "8ee2075636cb1b410c09304125947a6226b19e4abbfdb44507dc85c893cecdc8"
+  },
+  {
+   "pack_id": "synthetic-unknown-base-refused",
+   "kind": "synthetic",
+   "stage": 3,
+   "purpose": "unknown base: the category has no source record, so the base is unknown and no case can be formed",
+   "status": "validation_cases",
+   "plans_identical": null,
+   "price_of_robustness_m": null,
+   "nominal": null,
+   "robust": null,
+   "infeasible_reasons": null,
+   "cases": 2,
+   "rejected": 2,
+   "accepted": 0,
+   "sha256": "07b80280c09a56abe0ff55e190b8dd0d621627ac5a13c3d629404da5a857a16b"
+  },
+  {
+   "pack_id": "shymkent-school-invalid-envelopes",
+   "kind": "real_slice",
+   "stage": 3,
+   "purpose": "envelopes that must be refused before any computation (state unchanged), and some that must be accepted",
+   "status": "validation_cases",
+   "plans_identical": null,
+   "price_of_robustness_m": null,
+   "nominal": null,
+   "robust": null,
+   "infeasible_reasons": null,
+   "cases": 33,
+   "rejected": 28,
+   "accepted": 5,
+   "sha256": "e8a409e7af6e06604aa1533f0cbaad7e326e4b1d2f31cb185463bc63f954191b"
+  },
+  {
+   "pack_id": "astana-school-invalid-envelopes",
+   "kind": "real_slice",
+   "stage": 3,
+   "purpose": "envelopes that must be refused before any computation (state unchanged), and some that must be accepted",
+   "status": "validation_cases",
+   "plans_identical": null,
+   "price_of_robustness_m": null,
+   "nominal": null,
+   "robust": null,
+   "infeasible_reasons": null,
+   "cases": 33,
+   "rejected": 28,
+   "accepted": 5,
+   "sha256": "d9803d7853b9c266bf51d6cf75cf352855d630d4c3770582e113419d25e909fa"
   }
  ],
  "not_built": [

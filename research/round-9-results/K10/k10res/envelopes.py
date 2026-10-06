@@ -164,12 +164,18 @@ def write_all(out, packs, not_built, src, app):
     index = []
     for p in packs:
         write_json(out / f"{p['pack_id']}.json", p)
-        if "envelope" in p:
+        if "invalid_cases" in p:
+            d = out / "inputs" / "invalid" / p["pack_id"]
+            d.mkdir(parents=True, exist_ok=True)
+            for c in p["invalid_cases"]:
+                if not c.get("pad_to_bytes"):  # too_large: write it with tests/export_case.py
+                    (d / f"{c['case_id']}.json").write_text(c["raw"], encoding="utf-8")
+        elif "envelope" in p:
             write_json(out / "inputs" / f"{p['pack_id']}.json", p["envelope"])
         o = p["observations"]
         index.append({"pack_id": p["pack_id"], "kind": p["kind"], "stage": p["stage"], "purpose": p["purpose"],
                       **{k: o.get(k) for k in ("status", "plans_identical", "price_of_robustness_m", "nominal", "robust",
-                                                 "infeasible_reasons")},
+                                                 "infeasible_reasons", "cases", "rejected", "accepted")},
                       "sha256": hashlib.sha256((out / f"{p['pack_id']}.json").read_bytes()).hexdigest()})
     write_json(out / "INDEX.json", {"pack_format": PACK_FORMAT, "generated_by": "k10res.envelopes + k10res.oracle_res",
                                     "build": src, "rules": RULES, "disclaimer": DISCLAIMER, "packs": index,
@@ -188,11 +194,14 @@ def main():
            "evidence_js_sha256": S8.sha256_file(app / "web/evidence.js")}
     before = S8.input_manifest(app)
     packs, not_built = build_real(app, src)
-    try:
-        from . import edgecases  # stage 3: synthetic packs (separate module)
-        packs += edgecases.synthetic_packs()
-    except ImportError:
-        pass
+    from . import edgecases  # stage 3: synthetic packs and envelopes that must be refused
+    packs += edgecases.synthetic_packs() + [edgecases.unknown_base_pack()]
+    ctxs = {c: S8.load_context(app, c) for c in O.CITIES}
+    for city in O.CITIES:
+        other = [c for c in O.CITIES if c != city][0]
+        clinic = sorted(r["id"] for r in ctxs[city]["records"] if r["group"] == "outpatient_clinic")[0]
+        base = next(p for p in packs if p["pack_id"] == f"{city}-school-relied")
+        packs.append(edgecases.invalid_pack(base, ctxs[other]["source_snapshot"], clinic))
     after = S8.input_manifest(app)
     write_all(a.out, packs, not_built, src, app)
     print(json.dumps({"packs": len(packs), "not_built": not_built, "inputs_unchanged": before == after}, ensure_ascii=False))

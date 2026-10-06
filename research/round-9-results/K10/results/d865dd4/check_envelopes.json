@@ -1,7 +1,7 @@
 {
  "IMMUTABLE": "PASS",
  "failures": [],
- "packs": 10,
+ "packs": 18,
  "results": [
   {
    "checks": {
@@ -27,6 +27,16 @@
    },
    "kind": "real_slice",
    "pack_id": "astana-outpatient_clinic-seeded",
+   "problems": []
+  },
+  {
+   "checks": {
+    "INDEX": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS"
+   },
+   "kind": "real_slice",
+   "pack_id": "astana-school-invalid-envelopes",
    "problems": []
   },
   {
@@ -96,6 +106,16 @@
   },
   {
    "checks": {
+    "INDEX": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "PASS"
+   },
+   "kind": "real_slice",
+   "pack_id": "shymkent-school-invalid-envelopes",
+   "problems": []
+  },
+  {
+   "checks": {
     "CROSS_R8": "PASS",
     "INDEX": "PASS",
     "ORDER": "PASS",
@@ -131,6 +151,86 @@
    },
    "kind": "real_slice",
    "pack_id": "shymkent-school-seeded",
+   "problems": []
+  },
+  {
+   "checks": {
+    "CROSS_R8": "PASS",
+    "HAND": "PASS",
+    "INDEX": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "SYNTHETIC",
+    "VALID": "PASS"
+   },
+   "kind": "synthetic",
+   "pack_id": "synthetic-all-sources-left-out",
+   "problems": []
+  },
+  {
+   "checks": {
+    "CROSS_R8": "PASS",
+    "HAND": "PASS",
+    "INDEX": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "SYNTHETIC",
+    "VALID": "PASS"
+   },
+   "kind": "synthetic",
+   "pack_id": "synthetic-infeasible-budget",
+   "problems": []
+  },
+  {
+   "checks": {
+    "CROSS_R8": "PASS",
+    "HAND": "PASS",
+    "INDEX": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "SYNTHETIC",
+    "VALID": "PASS"
+   },
+   "kind": "synthetic",
+   "pack_id": "synthetic-plans-coincide",
+   "problems": []
+  },
+  {
+   "checks": {
+    "CROSS_R8": "PASS",
+    "HAND": "PASS",
+    "INDEX": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "SYNTHETIC",
+    "VALID": "PASS"
+   },
+   "kind": "synthetic",
+   "pack_id": "synthetic-robust-differs",
+   "problems": []
+  },
+  {
+   "checks": {
+    "INDEX": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "SYNTHETIC"
+   },
+   "kind": "synthetic",
+   "pack_id": "synthetic-unknown-base-refused",
+   "problems": []
+  },
+  {
+   "checks": {
+    "CROSS_R8": "PASS",
+    "HAND": "PASS",
+    "INDEX": "PASS",
+    "ORDER": "PASS",
+    "RECOMPUTE": "PASS",
+    "SOURCE": "SYNTHETIC",
+    "VALID": "PASS"
+   },
+   "kind": "synthetic",
+   "pack_id": "synthetic-unknown-worst",
    "problems": []
   }
  ],

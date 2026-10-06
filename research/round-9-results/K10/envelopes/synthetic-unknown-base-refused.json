@@ -1,0 +1,57 @@
+{
+ "pack_format": "k10-resilience-pack-v1",
+ "pack_id": "synthetic-unknown-base-refused",
+ "kind": "synthetic",
+ "stage": 3,
+ "city_id": "synthetic-equator",
+ "category": "school",
+ "disclaimer": "Условно исключаем из расчёта; это не подтверждение закрытия. Пустые исходные данные не означают отсутствие услуги.",
+ "purpose": "unknown base: the category has no source record, so the base is unknown and no case can be formed",
+ "synthetic_slice": {
+  "bbox": [
+   -0.01,
+   -0.01,
+   0.2,
+   0.01
+  ],
+  "source_snapshot": "synthetic:7348d6aa7f29893a27d09aa1d5643fc50352efb758699efbc5cb6e4cbc6e3da7",
+  "records": [
+   {
+    "id": "O1",
+    "lon": 0.00899320363724538,
+    "lat": 0.0,
+    "group": "outpatient_clinic",
+    "name": "O1",
+    "qa_flags": []
+   }
+  ],
+  "note": "SYNTHETIC; empty baseline does not mean the service is absent"
+ },
+ "invalid_cases": [
+  {
+   "case_id": "clinic_as_school",
+   "raw": "{\"schema_version\":\"city-resilience-v1\",\"plan\":{\"schema_version\":\"city-plan-v2\",\"city_id\":\"synthetic-equator\",\"source_snapshot\":\"synthetic:7348d6aa7f29893a27d09aa1d5643fc50352efb758699efbc5cb6e4cbc6e3da7\",\"category\":\"school\",\"control_points\":[{\"id\":\"P1\",\"lon\":0.0,\"lat\":0.0,\"weight\":1}],\"candidates\":[{\"id\":\"A\",\"lon\":0.00449660181862269,\"lat\":0.0,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":1}],\"budget\":5,\"max_selected\":1,\"coverage_radius_m\":500,\"required_ids\":[],\"excluded_ids\":[],\"selected_ids\":[]},\"cases\":[{\"id\":\"c1\",\"label\":\"Условно\",\"disabled_source_ids\":[\"O1\"]}]}",
+   "note": "O1 is a clinic, not a school",
+   "expected": {
+    "rejected": true,
+    "code": "unknown_source_id"
+   }
+  },
+  {
+   "case_id": "no_ids",
+   "raw": "{\"schema_version\":\"city-resilience-v1\",\"plan\":{\"schema_version\":\"city-plan-v2\",\"city_id\":\"synthetic-equator\",\"source_snapshot\":\"synthetic:7348d6aa7f29893a27d09aa1d5643fc50352efb758699efbc5cb6e4cbc6e3da7\",\"category\":\"school\",\"control_points\":[{\"id\":\"P1\",\"lon\":0.0,\"lat\":0.0,\"weight\":1}],\"candidates\":[{\"id\":\"A\",\"lon\":0.00449660181862269,\"lat\":0.0,\"category\":\"school\",\"kind\":\"hypothetical\",\"cost\":1}],\"budget\":5,\"max_selected\":1,\"coverage_radius_m\":500,\"required_ids\":[],\"excluded_ids\":[],\"selected_ids\":[]},\"cases\":[{\"id\":\"c1\",\"label\":\"Условно\",\"disabled_source_ids\":[]}]}",
+   "note": "a case must name at least one record",
+   "expected": {
+    "rejected": true,
+    "code": "bad_disabled"
+   }
+  }
+ ],
+ "observations": {
+  "status": "validation_cases",
+  "cases": 2,
+  "rejected": 2,
+  "accepted": 0,
+  "note": "in a valid envelope the base case always contains >= 1 record, so its distances are known and the price of robustness is null only when no plan is feasible"
+ }
+}

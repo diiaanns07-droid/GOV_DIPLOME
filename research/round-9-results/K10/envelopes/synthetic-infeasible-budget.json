@@ -1,0 +1,344 @@
+{
+ "pack_format": "k10-resilience-pack-v1",
+ "pack_id": "synthetic-infeasible-budget",
+ "kind": "synthetic",
+ "stage": 3,
+ "purpose": "required candidate costs more than the budget: infeasible, nothing is dropped silently",
+ "city_id": "synthetic-equator",
+ "category": "school",
+ "disclaimer": "Условно исключаем из расчёта; это не подтверждение закрытия. Пустые исходные данные не означают отсутствие услуги.",
+ "design": {
+  "hand_expectation": {
+   "status": "infeasible",
+   "infeasible_reasons": [
+    "required_cost_exceeds_budget"
+   ],
+   "price_of_robustness_m": null,
+   "manual_feasible": false,
+   "manual_selected_ids": [
+    "A"
+   ]
+  },
+  "why": "B (cost 7) is required, budget 6; manual {A} misses B"
+ },
+ "synthetic_slice": {
+  "bbox": [
+   -0.01,
+   -0.01,
+   0.2,
+   0.01
+  ],
+  "source_snapshot": "synthetic:814bfe40f719e1e265be5f60eec75d5b680c3b71e97731e692d509b8b8b20c04",
+  "records": [
+   {
+    "id": "S",
+    "lon": 0.0,
+    "lat": 0.0,
+    "group": "school",
+    "name": "S",
+    "qa_flags": []
+   },
+   {
+    "id": "far",
+    "lon": 0.17986407274490757,
+    "lat": 0.0,
+    "group": "school",
+    "name": "far",
+    "qa_flags": []
+   }
+  ],
+  "note": "SYNTHETIC geometry on the equator near 0°E; not Shymkent or Astana data"
+ },
+ "envelope": {
+  "schema_version": "city-resilience-v1",
+  "plan": {
+   "schema_version": "city-plan-v2",
+   "city_id": "synthetic-equator",
+   "source_snapshot": "synthetic:814bfe40f719e1e265be5f60eec75d5b680c3b71e97731e692d509b8b8b20c04",
+   "category": "school",
+   "control_points": [
+    {
+     "id": "P1",
+     "lon": 0.0,
+     "lat": 0.0,
+     "weight": 2
+    },
+    {
+     "id": "P2",
+     "lon": 0.01798640727449076,
+     "lat": 0.0,
+     "weight": 1
+    }
+   ],
+   "candidates": [
+    {
+     "id": "A",
+     "lon": 0.01798640727449076,
+     "lat": 0.0,
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 5
+    },
+    {
+     "id": "B",
+     "lon": 0.00899320363724538,
+     "lat": 0.0,
+     "category": "school",
+     "kind": "hypothetical",
+     "cost": 7
+    }
+   ],
+   "budget": 6,
+   "max_selected": 1,
+   "coverage_radius_m": 300,
+   "required_ids": [
+    "B"
+   ],
+   "excluded_ids": [],
+   "selected_ids": [
+    "A"
+   ]
+  },
+  "cases": [
+   {
+    "id": "noS",
+    "label": "Условно не учитываем S",
+    "disabled_source_ids": [
+     "S"
+    ]
+   }
+  ]
+ },
+ "expected": {
+  "generated_by": "k10res.oracle_res",
+  "validation": "accepted",
+  "optimize": {
+   "schema_version": "city-resilience-v1",
+   "metric_version": "haversine-mm-v1",
+   "objective_version": "worst-lex-v1",
+   "resilience_problem_digest": "sha256:b105ccb884c825afe67a587f8435d789e7de5021f4eeb66e7d32f2b8cfac562c",
+   "resilience_scenario_digest": "sha256:7f0163ebd128cb3ed3cefa2351f23e76393d90fd274cdcfcfd2b50a031a75b14",
+   "exclusions_digest": "sha256:200c354464dc991296baf602c54ad165ffc08e665b27cd1afcb9881161cb2e47",
+   "source_snapshot": "synthetic:814bfe40f719e1e265be5f60eec75d5b680c3b71e97731e692d509b8b8b20c04",
+   "case_ids": [
+    "base",
+    "noS"
+   ],
+   "evaluated": 1,
+   "feasible_count": 0,
+   "candidate_count": 2,
+   "manual": {
+    "selected_ids": [
+     "A"
+    ],
+    "cost": 5,
+    "per_case": [
+     {
+      "case_id": "base",
+      "label": "base",
+      "disabled_source_ids": [],
+      "baseline_records": 2,
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 0,
+       "weighted_mean_mm": 0.0,
+       "max_mm": 0,
+       "covered_weight": 3,
+       "coverage_fraction": 1.0,
+       "cost": 5
+      },
+      "loss": [
+       0,
+       0,
+       0
+      ]
+     },
+     {
+      "case_id": "noS",
+      "label": "Условно не учитываем S",
+      "disabled_source_ids": [
+       "S"
+      ],
+      "baseline_records": 1,
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 4000000,
+       "weighted_mean_mm": 1333333.3333333333,
+       "max_mm": 2000000,
+       "covered_weight": 1,
+       "coverage_fraction": 0.3333333333333333,
+       "cost": 5
+      },
+      "loss": [
+       0,
+       4000000,
+       2000000
+      ]
+     }
+    ],
+    "worst_vector": [
+     0,
+     4000000,
+     2000000
+    ],
+    "worst_case_ids": [
+     "noS"
+    ],
+    "feasibility": {
+     "feasible": false,
+     "reasons": [
+      "required_missing"
+     ]
+    }
+   },
+   "status": "infeasible",
+   "infeasible_reasons": [
+    "required_cost_exceeds_budget"
+   ],
+   "nominal": null,
+   "robust": null,
+   "plans_identical": null,
+   "price_of_robustness_m": null,
+   "price_reason": "no feasible plan"
+  },
+  "plans_with_rows": {
+   "manual": {
+    "selected_ids": [
+     "A"
+    ],
+    "cost": 5,
+    "per_case": [
+     {
+      "case_id": "base",
+      "label": "base",
+      "disabled_source_ids": [],
+      "baseline_records": 2,
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 0,
+       "weighted_mean_mm": 0.0,
+       "max_mm": 0,
+       "covered_weight": 3,
+       "coverage_fraction": 1.0,
+       "cost": 5
+      },
+      "loss": [
+       0,
+       0,
+       0
+      ],
+      "rows": [
+       {
+        "control_point_id": "P1",
+        "before_mm": 0,
+        "nearest_before": {
+         "kind": "source",
+         "id": "S"
+        },
+        "after_mm": 0,
+        "nearest_after": {
+         "kind": "source",
+         "id": "S"
+        },
+        "delta_mm": 0
+       },
+       {
+        "control_point_id": "P2",
+        "before_mm": 2000000,
+        "nearest_before": {
+         "kind": "source",
+         "id": "S"
+        },
+        "after_mm": 0,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "A"
+        },
+        "delta_mm": 2000000
+       }
+      ]
+     },
+     {
+      "case_id": "noS",
+      "label": "Условно не учитываем S",
+      "disabled_source_ids": [
+       "S"
+      ],
+      "baseline_records": 1,
+      "metrics": {
+       "unknown_count": 0,
+       "weighted_sum_mm": 4000000,
+       "weighted_mean_mm": 1333333.3333333333,
+       "max_mm": 2000000,
+       "covered_weight": 1,
+       "coverage_fraction": 0.3333333333333333,
+       "cost": 5
+      },
+      "loss": [
+       0,
+       4000000,
+       2000000
+      ],
+      "rows": [
+       {
+        "control_point_id": "P1",
+        "before_mm": 20000000,
+        "nearest_before": {
+         "kind": "source",
+         "id": "far"
+        },
+        "after_mm": 2000000,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "A"
+        },
+        "delta_mm": 18000000
+       },
+       {
+        "control_point_id": "P2",
+        "before_mm": 18000000,
+        "nearest_before": {
+         "kind": "source",
+         "id": "far"
+        },
+        "after_mm": 0,
+        "nearest_after": {
+         "kind": "hypothetical",
+         "id": "A"
+        },
+        "delta_mm": 18000000
+       }
+      ]
+     }
+    ],
+    "worst_vector": [
+     0,
+     4000000,
+     2000000
+    ],
+    "worst_case_ids": [
+     "noS"
+    ],
+    "feasibility": {
+     "feasible": false,
+     "reasons": [
+      "required_missing"
+     ]
+    }
+   }
+  }
+ },
+ "observations": {
+  "status": "infeasible",
+  "evaluated": 1,
+  "feasible_count": 0,
+  "cases": 2,
+  "manual_feasible": false,
+  "manual_worst_case_ids": [
+   "noS"
+  ],
+  "infeasible_reasons": [
+   "required_cost_exceeds_budget"
+  ]
+ }
+}
