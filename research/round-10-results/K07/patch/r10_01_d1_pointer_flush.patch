@@ -1,0 +1,18 @@
+diff --git a/web/govtech/core/plan-ui.js b/web/govtech/core/plan-ui.js
+index e819605..c39cebe 100644
+--- a/web/govtech/core/plan-ui.js
++++ b/web/govtech/core/plan-ui.js
+@@ -19,7 +19,12 @@
+   // right after typing must see the typed value, so every action first flushes the pending edits (round 9 race fix).
+   const PENDING = [];
+   function flush() { while (PENDING.length) PENDING.shift()(); }
+-  function defer(f) { PENDING.push(f); setTimeout(flush, 0); }
++  // K07 r10 D1: blur (change) fires on mousedown of a button; flushing before mouseup re-renders the panel and the
++  // pressed button is replaced, so its click is lost. While a pointer is down the flush waits for pointerup.
++  let pressed = false;
++  function defer(f) { PENDING.push(f); if (!pressed) setTimeout(flush, 0); }
++  document.addEventListener("pointerdown", () => { pressed = true; }, true);
++  for (const t of ["pointerup", "pointercancel"]) document.addEventListener(t, () => { pressed = false; if (PENDING.length) setTimeout(flush, 0); }, true);
+   // collapsible sections; open state survives re-render (long lists of 25 points / 16 candidates)
+   const OPEN = {};
+   function section(parent, id, title, openByDefault) {
