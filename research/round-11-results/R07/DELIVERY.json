@@ -1,0 +1,98 @@
+{
+ "round": 11,
+ "role": "R07",
+ "branch": "claude/brave-hopper-bkc58b",
+ "base_sha": "834a25f0",
+ "pack_sha": "9c2f5c0dae14b46c0697a9dfc7f854351bfd570d",
+ "status": "ready",
+ "owned_paths": [
+  "engine/civic_scenarios/",
+  "web/civic/scenarios/",
+  "tests/civic/R07/",
+  "research/round-11-results/R07/",
+  "research/handoffs/astana/R07/round-11/STATUS.md"
+ ],
+ "integration_notes": "research/round-11-results/R07/INTEGRATION.txt",
+ "code_commit": "d77ec45c529af6529ea1ec0cc7189ff84fb6cd87",
+ "checks": [
+  {
+   "name": "unit+risk tests",
+   "status": "PASS",
+   "command": "python3 -m pytest -q tests/civic/R07",
+   "input": "synthetic-tiny-v1, k03-astana-pedestrian-r10",
+   "reason": "51 passed (code d77ec45c)"
+  },
+  {
+   "name": "full repo test suite unaffected",
+   "status": "PASS",
+   "command": "python3 -m pytest -q",
+   "input": "tests/",
+   "reason": "163 passed"
+  },
+  {
+   "name": "hand-calculated synthetic case",
+   "status": "PASS",
+   "command": "pytest tests/civic/R07/test_r07_synthetic.py",
+   "input": "tests/civic/R07/fixtures/synthetic_expected.json",
+   "reason": "ожидания записаны до запуска движка"
+  },
+  {
+   "name": "parity with existing K03 routing.js (b2cb2e0)",
+   "status": "PASS",
+   "command": "python3 research/round-11-results/R07/compare_k03_routing.py",
+   "input": "400 node-to-node пар, strict+exploratory, seed 11",
+   "reason": "355/355 длин в мм совпали, 45/45 no-path совпали; см. compare_k03_routing.json"
+  },
+  {
+   "name": "K03 adapter reproducible from pinned source",
+   "status": "PASS",
+   "command": "python3 -m engine.civic_scenarios.build_graphs --check",
+   "input": "b2cb2e0:web/govtech/k03/astana.graph.json sha256 a6f82329…",
+   "reason": "sha256 файла и graph_sha256 источника пересчитаны"
+  },
+  {
+   "name": "browser check demo (Chromium/Playwright)",
+   "status": "PASS",
+   "command": "python3 -m engine.civic_scenarios.devserver & node research/round-11-results/R07/browser_check.cjs",
+   "input": "demo.html?basemap=none",
+   "reason": "15/15; скриншоты screenshot_*.png реальные; подложка отключена"
+  },
+  {
+   "name": "basemap OpenFreeMap in browser",
+   "status": "NOT_RUN",
+   "command": null,
+   "input": null,
+   "reason": "tiles.openfreemap.org и unpkg.com недоступны из среды (403 proxy); 3D/подложка не подтверждены"
+  },
+  {
+   "name": "reproducible results + digests",
+   "status": "PASS",
+   "command": "python3 research/round-11-results/R07/run_results.py",
+   "input": "engine/civic_scenarios/cases/*.case.json",
+   "reason": "повторный расчёт даёт тот же result_digest; results/INDEX.json"
+  },
+  {
+   "name": "benchmark",
+   "status": "PASS",
+   "command": "python3 research/round-11-results/R07/run_results.py",
+   "input": "K03 2309 узлов/3269 рёбер, 1000 пар, 200 закрытых рёбер на план",
+   "reason": "медиана 0.48 с (bench.json, x86_64, Python 3.13)"
+  },
+  {
+   "name": "integration into app.py/ui/web_server.py",
+   "status": "NOT_RUN",
+   "command": null,
+   "input": null,
+   "reason": "общие файлы ведёт R01; инструкции в INTEGRATION.txt"
+  }
+ ],
+ "limitations": [
+  "Только пешеходный режим; реальный driving-граф Астаны не подтверждён (NOT_READY, недостающие поля в MANIFEST.json).",
+  "Реальный граф — срез центра ~2×2 км (K03, Overture/OSM, ODbL), 64% рёбер с неизвестным доступом; не проверен на местности.",
+  "Метрика — длина в метрах; нет времени в пути, пробок, CO2, аварийности, экономики.",
+  "Демо-перекрытия на K03 — алгоритмическая гипотеза, не официальное/реальное перекрытие.",
+  "timeline (stretch) — Python API, HTTP-endpoint не выставлен.",
+  "equal_cost_alternatives может недосчитать при рёбрах нулевой длины (в K03 их нет)."
+ ],
+ "next_step": "R01: подключить engine.civic_scenarios.http.handle и CivicScenarios.mount по INTEGRATION.txt; затем R10 прогоняет fixtures_R10/compare_cases.json через живой сервер."
+}
