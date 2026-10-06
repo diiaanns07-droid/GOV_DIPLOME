@@ -3,7 +3,7 @@
  "label": "build_d865dd4+k07r9",
  "sha": "d865dd4+k07r9",
  "app_root": "city-evidence",
- "total": 20,
+ "total": 25,
  "pass": [
   "RS1",
   "RS2",
@@ -18,12 +18,17 @@
   "RS9b",
   "RS8",
   "RS16",
+  "RS15",
   "RS12",
   "RS14",
   "RS13",
   "RS18",
+  "RSN1",
+  "RSN2",
   "RS17",
   "RS11b",
+  "RSN3",
+  "RSN4",
   "RS18b"
  ],
  "fail": [],
@@ -211,6 +216,17 @@
    }
   },
   {
+   "id": "RS15",
+   "area": "null",
+   "expect": "required site cost > budget: «Нет допустимых планов» with the reason and numbers; no plan cards and no price (null, not 0)",
+   "verdict": "PASS",
+   "observed": {
+    "text": "Нет допустимых планов: стоимость обязательных 100 > бюджета 50 усл. ед.. Ограничения не снимались.",
+    "price": false,
+    "cards": 0
+   }
+  },
+  {
    "id": "RS12",
    "area": "limits",
    "expect": "13 candidates: the panel says too_many_candidates (nothing removed automatically) and «Сравнить» is disabled; v2 still has all 13",
@@ -250,6 +266,27 @@
    "observed": []
   },
   {
+   "id": "RSN1",
+   "area": "390px",
+   "expect": "390 px: typing a weight and Tab applies it (7) and moves the focus to the next control (not <body>)",
+   "verdict": "PASS",
+   "observed": {
+    "w": 7,
+    "focus": "plDelP_P1"
+   }
+  },
+  {
+   "id": "RSN2",
+   "area": "390px",
+   "expect": "390 px: an un-chosen source is not in the case; the case is deleted with Enter and the focus stays in the panel",
+   "verdict": "PASS",
+   "observed": {
+    "unchosen": true,
+    "cases": 0,
+    "focus": "rsLabel"
+   }
+  },
+  {
    "id": "RS17",
    "area": "390px",
    "expect": "390 px: no horizontal page scroll, nothing sticks out of the plan card; the per-case table, if wider, scrolls inside a named, focusable region",
@@ -270,7 +307,27 @@
    "area": "null",
    "expect": "390 px: the «все записи» row of the manual plan shows the null message (no distance), not 0",
    "verdict": "PASS",
-   "observed": "★ нет данных: у 10 точ. нет ни записи, ни выбранного места · охват 0/55"
+   "observed": "★ нет данных: у 10 точ. нет ни записи, ни выбранного места · охват 0/61"
+  },
+  {
+   "id": "RSN3",
+   "area": "390px",
+   "expect": "390 px: «Отменить сравнение» — no result appears, message «отменено», focus on «Сравнить»",
+   "verdict": "PASS",
+   "observed": {
+    "msg": "Сравнение отменено; ручной план не изменён, неполный результат не показывается.",
+    "focus": "rsRun"
+   }
+  },
+  {
+   "id": "RSN4",
+   "area": "390px",
+   "expect": "390 px: city switch resets the cases with a reason (nothing carried)",
+   "verdict": "PASS",
+   "observed": {
+    "city": "astana",
+    "msg": "Город изменён — случаи устойчивости сброшены: ID записей между городами не переносятся."
+   }
   },
   {
    "id": "RS18b",

@@ -11,28 +11,28 @@
   },
   {
    "name": "shymkent/school/budget300_max3",
-   "ms": 3.8,
+   "ms": 3.7,
    "subsets": 256,
    "feasible": 47,
    "cases": 3
   },
   {
    "name": "shymkent/outpatient_clinic/demo",
-   "ms": 1.9,
+   "ms": 1.5,
    "subsets": 256,
    "feasible": 10,
    "cases": 5
   },
   {
    "name": "shymkent/outpatient_clinic/budget300_max3",
-   "ms": 2.4,
+   "ms": 3.1,
    "subsets": 256,
    "feasible": 47,
    "cases": 3
   },
   {
    "name": "shymkent/school/max_12x25x8",
-   "ms": 19.4,
+   "ms": 15.6,
    "subsets": 4096,
    "feasible": 519,
    "cases": 8
@@ -46,35 +46,35 @@
   },
   {
    "name": "astana/school/budget300_max3",
-   "ms": 1,
+   "ms": 0.9,
    "subsets": 256,
    "feasible": 47,
    "cases": 3
   },
   {
    "name": "astana/outpatient_clinic/demo",
-   "ms": 0.9,
+   "ms": 2.2,
    "subsets": 256,
    "feasible": 10,
    "cases": 5
   },
   {
    "name": "astana/outpatient_clinic/budget300_max3",
-   "ms": 1.1,
+   "ms": 0.9,
    "subsets": 256,
    "feasible": 47,
    "cases": 3
   },
   {
    "name": "astana/school/max_12x25x8",
-   "ms": 15.8,
+   "ms": 16.8,
    "subsets": 4096,
    "feasible": 519,
    "cases": 8
   },
   {
    "name": "eq/robust_differs_zero_price",
-   "ms": 0.4,
+   "ms": 0.5,
    "subsets": 8,
    "feasible": 4,
    "cases": 2
@@ -95,7 +95,7 @@
   },
   {
    "name": "eq/required_over_budget",
-   "ms": 0.1,
+   "ms": 0.2,
    "subsets": 0,
    "feasible": 0,
    "cases": 2

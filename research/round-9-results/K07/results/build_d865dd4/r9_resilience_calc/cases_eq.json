@@ -1,0 +1,460 @@
+[
+ {
+  "name": "eq/robust_differs_zero_price",
+  "envelope": {
+   "schema_version": "city-resilience-v1",
+   "plan": {
+    "schema_version": "city-plan-v2",
+    "city_id": "synthetic_eq",
+    "source_snapshot": "sha256:d0a5b1f3de0712ed53320471cd36fc602f81bd9a39e18a4e20ce5e1bee1ddf1b",
+    "category": "school",
+    "control_points": [
+     {
+      "id": "p1",
+      "lon": 0.005,
+      "lat": 0,
+      "weight": 1
+     },
+     {
+      "id": "p2",
+      "lon": 0.01,
+      "lat": 0,
+      "weight": 1
+     },
+     {
+      "id": "p3",
+      "lon": 0.015,
+      "lat": 0,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "c1",
+      "lon": 0.005,
+      "lat": 0,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 10
+     },
+     {
+      "id": "c2",
+      "lon": 0.01,
+      "lat": 0,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 10
+     },
+     {
+      "id": "c3",
+      "lon": 0.015,
+      "lat": 0,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 10
+     }
+    ],
+    "budget": 10,
+    "max_selected": 1,
+    "coverage_radius_m": 100,
+    "required_ids": [],
+    "excluded_ids": [],
+    "selected_ids": []
+   },
+   "cases": [
+    {
+     "id": "Y",
+     "label": "без записи s-b",
+     "disabled_source_ids": [
+      "s-b"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "eq/all_excluded_budget0",
+  "envelope": {
+   "schema_version": "city-resilience-v1",
+   "plan": {
+    "schema_version": "city-plan-v2",
+    "city_id": "synthetic_eq",
+    "source_snapshot": "sha256:d0a5b1f3de0712ed53320471cd36fc602f81bd9a39e18a4e20ce5e1bee1ddf1b",
+    "category": "school",
+    "control_points": [
+     {
+      "id": "p1",
+      "lon": 0.005,
+      "lat": 0,
+      "weight": 1
+     },
+     {
+      "id": "p2",
+      "lon": 0.01,
+      "lat": 0,
+      "weight": 1
+     },
+     {
+      "id": "p3",
+      "lon": 0.015,
+      "lat": 0,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "c1",
+      "lon": 0.005,
+      "lat": 0,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 10
+     },
+     {
+      "id": "c2",
+      "lon": 0.01,
+      "lat": 0,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 10
+     },
+     {
+      "id": "c3",
+      "lon": 0.015,
+      "lat": 0,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 10
+     }
+    ],
+    "budget": 0,
+    "max_selected": 1,
+    "coverage_radius_m": 100,
+    "required_ids": [],
+    "excluded_ids": [],
+    "selected_ids": []
+   },
+   "cases": [
+    {
+     "id": "Z",
+     "label": "все записи исключены",
+     "disabled_source_ids": [
+      "s-a",
+      "s-b"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "eq/duplicate_cases",
+  "envelope": {
+   "schema_version": "city-resilience-v1",
+   "plan": {
+    "schema_version": "city-plan-v2",
+    "city_id": "synthetic_eq",
+    "source_snapshot": "sha256:d0a5b1f3de0712ed53320471cd36fc602f81bd9a39e18a4e20ce5e1bee1ddf1b",
+    "category": "school",
+    "control_points": [
+     {
+      "id": "p1",
+      "lon": 0.005,
+      "lat": 0,
+      "weight": 1
+     },
+     {
+      "id": "p2",
+      "lon": 0.01,
+      "lat": 0,
+      "weight": 1
+     },
+     {
+      "id": "p3",
+      "lon": 0.015,
+      "lat": 0,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "c1",
+      "lon": 0.005,
+      "lat": 0,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 10
+     },
+     {
+      "id": "c2",
+      "lon": 0.01,
+      "lat": 0,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 10
+     },
+     {
+      "id": "c3",
+      "lon": 0.015,
+      "lat": 0,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 10
+     }
+    ],
+    "budget": 20,
+    "max_selected": 2,
+    "coverage_radius_m": 100,
+    "required_ids": [],
+    "excluded_ids": [],
+    "selected_ids": []
+   },
+   "cases": [
+    {
+     "id": "Y",
+     "label": "без записи s-b",
+     "disabled_source_ids": [
+      "s-b"
+     ]
+    },
+    {
+     "id": "Y2",
+     "label": "то же, другой ID",
+     "disabled_source_ids": [
+      "s-b"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "eq/required_over_budget",
+  "envelope": {
+   "schema_version": "city-resilience-v1",
+   "plan": {
+    "schema_version": "city-plan-v2",
+    "city_id": "synthetic_eq",
+    "source_snapshot": "sha256:d0a5b1f3de0712ed53320471cd36fc602f81bd9a39e18a4e20ce5e1bee1ddf1b",
+    "category": "school",
+    "control_points": [
+     {
+      "id": "p1",
+      "lon": 0.005,
+      "lat": 0,
+      "weight": 1
+     },
+     {
+      "id": "p2",
+      "lon": 0.01,
+      "lat": 0,
+      "weight": 1
+     },
+     {
+      "id": "p3",
+      "lon": 0.015,
+      "lat": 0,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "c1",
+      "lon": 0.005,
+      "lat": 0,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 10
+     },
+     {
+      "id": "c2",
+      "lon": 0.01,
+      "lat": 0,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 10
+     },
+     {
+      "id": "c3",
+      "lon": 0.015,
+      "lat": 0,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 10
+     }
+    ],
+    "budget": 15,
+    "max_selected": 2,
+    "coverage_radius_m": 100,
+    "required_ids": [
+     "c1",
+     "c2"
+    ],
+    "excluded_ids": [],
+    "selected_ids": []
+   },
+   "cases": [
+    {
+     "id": "Y",
+     "label": "без записи s-b",
+     "disabled_source_ids": [
+      "s-b"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "eq/manual_c1",
+  "envelope": {
+   "schema_version": "city-resilience-v1",
+   "plan": {
+    "schema_version": "city-plan-v2",
+    "city_id": "synthetic_eq",
+    "source_snapshot": "sha256:d0a5b1f3de0712ed53320471cd36fc602f81bd9a39e18a4e20ce5e1bee1ddf1b",
+    "category": "school",
+    "control_points": [
+     {
+      "id": "p1",
+      "lon": 0.005,
+      "lat": 0,
+      "weight": 1
+     },
+     {
+      "id": "p2",
+      "lon": 0.01,
+      "lat": 0,
+      "weight": 1
+     },
+     {
+      "id": "p3",
+      "lon": 0.015,
+      "lat": 0,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "c1",
+      "lon": 0.005,
+      "lat": 0,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 10
+     },
+     {
+      "id": "c2",
+      "lon": 0.01,
+      "lat": 0,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 10
+     },
+     {
+      "id": "c3",
+      "lon": 0.015,
+      "lat": 0,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 10
+     }
+    ],
+    "budget": 10,
+    "max_selected": 1,
+    "coverage_radius_m": 100,
+    "required_ids": [],
+    "excluded_ids": [],
+    "selected_ids": [
+     "c1"
+    ]
+   },
+   "cases": [
+    {
+     "id": "Y",
+     "label": "без записи s-b",
+     "disabled_source_ids": [
+      "s-b"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "name": "eq/two_cases_both_sides",
+  "envelope": {
+   "schema_version": "city-resilience-v1",
+   "plan": {
+    "schema_version": "city-plan-v2",
+    "city_id": "synthetic_eq",
+    "source_snapshot": "sha256:d0a5b1f3de0712ed53320471cd36fc602f81bd9a39e18a4e20ce5e1bee1ddf1b",
+    "category": "school",
+    "control_points": [
+     {
+      "id": "p1",
+      "lon": 0.005,
+      "lat": 0,
+      "weight": 1
+     },
+     {
+      "id": "p2",
+      "lon": 0.01,
+      "lat": 0,
+      "weight": 1
+     },
+     {
+      "id": "p3",
+      "lon": 0.015,
+      "lat": 0,
+      "weight": 1
+     }
+    ],
+    "candidates": [
+     {
+      "id": "c1",
+      "lon": 0.005,
+      "lat": 0,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 10
+     },
+     {
+      "id": "c2",
+      "lon": 0.01,
+      "lat": 0,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 10
+     },
+     {
+      "id": "c3",
+      "lon": 0.015,
+      "lat": 0,
+      "category": "school",
+      "kind": "hypothetical",
+      "cost": 10
+     }
+    ],
+    "budget": 20,
+    "max_selected": 2,
+    "coverage_radius_m": 100,
+    "required_ids": [],
+    "excluded_ids": [],
+    "selected_ids": []
+   },
+   "cases": [
+    {
+     "id": "Y",
+     "label": "без записи s-b",
+     "disabled_source_ids": [
+      "s-b"
+     ]
+    },
+    {
+     "id": "X",
+     "label": "без s-a",
+     "disabled_source_ids": [
+      "s-a"
+     ]
+    }
+   ]
+  }
+ }
+]

@@ -1,0 +1,1065 @@
+{
+ "kind": "K07 r8 cross-check of BUILD web/plan.js vs K07 oracle",
+ "app_root": "city-evidence",
+ "total": 211,
+ "pass": 211,
+ "fail": 0,
+ "test_incompatible": 0,
+ "checks": [
+  {
+   "id": "X01-shymkent",
+   "name": "source_snapshot of BUILD = K07 for shymkent",
+   "verdict": "PASS"
+  },
+  {
+   "id": "X01-astana",
+   "name": "source_snapshot of BUILD = K07 for astana",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-schema",
+   "name": "BUILD validator refuses: schema",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-city",
+   "name": "BUILD validator refuses: city",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-snapshot",
+   "name": "BUILD validator refuses: snapshot",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-unknown field",
+   "name": "BUILD validator refuses: unknown field",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-point extra field",
+   "name": "BUILD validator refuses: point extra field",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-duplicate point id",
+   "name": "BUILD validator refuses: duplicate point id",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-outside bbox",
+   "name": "BUILD validator refuses: outside bbox",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-NaN lat",
+   "name": "BUILD validator refuses: NaN lat",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-weight 0",
+   "name": "BUILD validator refuses: weight 0",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-weight 1.5",
+   "name": "BUILD validator refuses: weight 1.5",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-cost 0",
+   "name": "BUILD validator refuses: cost 0",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-cost negative",
+   "name": "BUILD validator refuses: cost negative",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-budget too big",
+   "name": "BUILD validator refuses: budget too big",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-max_selected 6",
+   "name": "BUILD validator refuses: max_selected 6",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-radius 50",
+   "name": "BUILD validator refuses: radius 50",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-required∩excluded",
+   "name": "BUILD validator refuses: required∩excluded",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-unknown reference",
+   "name": "BUILD validator refuses: unknown reference",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-duplicate in required",
+   "name": "BUILD validator refuses: duplicate in required",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-candidate kind",
+   "name": "BUILD validator refuses: candidate kind",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-candidate category",
+   "name": "BUILD validator refuses: candidate category",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-26 points",
+   "name": "BUILD validator refuses: 26 points",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-17 candidates",
+   "name": "BUILD validator refuses: 17 candidates",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-id 65 chars",
+   "name": "BUILD validator refuses: id 65 chars",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-id with markup",
+   "name": "BUILD validator refuses: id with markup",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-0 points",
+   "name": "BUILD validator refuses: 0 points",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-missing field",
+   "name": "BUILD validator refuses: missing field",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-Infinity budget",
+   "name": "BUILD validator refuses: Infinity budget",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-string weight",
+   "name": "BUILD validator refuses: string weight",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-derived",
+   "name": "BUILD validator does not reject the allowed derived_results field (it is checked on import)",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-shymkent/school/demo",
+   "name": "BUILD optimum = oracle (status, feasible count, three winners with metrics): shymkent/school/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-shymkent/school/demo",
+   "name": "BUILD Pareto front = oracle: shymkent/school/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XS-shymkent/school/demo",
+   "name": "BUILD budgets [0, B/2, B] = oracle: shymkent/school/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-shymkent/school/demo",
+   "name": "BUILD evaluatePlan (manual plan) = oracle: shymkent/school/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-shymkent/school/budget0",
+   "name": "BUILD optimum = oracle (status, feasible count, three winners with metrics): shymkent/school/budget0",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-shymkent/school/budget0",
+   "name": "BUILD Pareto front = oracle: shymkent/school/budget0",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XS-shymkent/school/budget0",
+   "name": "BUILD budgets [0, B/2, B] = oracle: shymkent/school/budget0",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-shymkent/school/budget0",
+   "name": "BUILD evaluatePlan (manual plan) = oracle: shymkent/school/budget0",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-shymkent/school/budget150",
+   "name": "BUILD optimum = oracle (status, feasible count, three winners with metrics): shymkent/school/budget150",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-shymkent/school/budget150",
+   "name": "BUILD Pareto front = oracle: shymkent/school/budget150",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XS-shymkent/school/budget150",
+   "name": "BUILD budgets [0, B/2, B] = oracle: shymkent/school/budget150",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-shymkent/school/budget150",
+   "name": "BUILD evaluatePlan (manual plan) = oracle: shymkent/school/budget150",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-shymkent/school/max5_b1000",
+   "name": "BUILD optimum = oracle (status, feasible count, three winners with metrics): shymkent/school/max5_b1000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-shymkent/school/max5_b1000",
+   "name": "BUILD Pareto front = oracle: shymkent/school/max5_b1000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XS-shymkent/school/max5_b1000",
+   "name": "BUILD budgets [0, B/2, B] = oracle: shymkent/school/max5_b1000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-shymkent/school/max5_b1000",
+   "name": "BUILD evaluatePlan (manual plan) = oracle: shymkent/school/max5_b1000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-shymkent/school/req_exc",
+   "name": "BUILD optimum = oracle (status, feasible count, three winners with metrics): shymkent/school/req_exc",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-shymkent/school/req_exc",
+   "name": "BUILD Pareto front = oracle: shymkent/school/req_exc",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XS-shymkent/school/req_exc",
+   "name": "BUILD budgets [0, B/2, B] = oracle: shymkent/school/req_exc",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-shymkent/school/req_exc",
+   "name": "BUILD evaluatePlan (manual plan) = oracle: shymkent/school/req_exc",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-shymkent/school/radius100",
+   "name": "BUILD optimum = oracle (status, feasible count, three winners with metrics): shymkent/school/radius100",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-shymkent/school/radius100",
+   "name": "BUILD Pareto front = oracle: shymkent/school/radius100",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XS-shymkent/school/radius100",
+   "name": "BUILD budgets [0, B/2, B] = oracle: shymkent/school/radius100",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-shymkent/school/radius100",
+   "name": "BUILD evaluatePlan (manual plan) = oracle: shymkent/school/radius100",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-shymkent/school/radius5000",
+   "name": "BUILD optimum = oracle (status, feasible count, three winners with metrics): shymkent/school/radius5000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-shymkent/school/radius5000",
+   "name": "BUILD Pareto front = oracle: shymkent/school/radius5000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XS-shymkent/school/radius5000",
+   "name": "BUILD budgets [0, B/2, B] = oracle: shymkent/school/radius5000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-shymkent/school/radius5000",
+   "name": "BUILD evaluatePlan (manual plan) = oracle: shymkent/school/radius5000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-shymkent/school/infeasible",
+   "name": "BUILD optimum = oracle (status, feasible count, three winners with metrics): shymkent/school/infeasible",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-shymkent/school/infeasible",
+   "name": "BUILD Pareto front = oracle: shymkent/school/infeasible",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XS-shymkent/school/infeasible",
+   "name": "BUILD budgets [0, B/2, B] = oracle: shymkent/school/infeasible",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-shymkent/school/infeasible",
+   "name": "BUILD evaluatePlan (manual plan) = oracle: shymkent/school/infeasible",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-shymkent/outpatient_clinic/demo",
+   "name": "BUILD optimum = oracle (status, feasible count, three winners with metrics): shymkent/outpatient_clinic/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-shymkent/outpatient_clinic/demo",
+   "name": "BUILD Pareto front = oracle: shymkent/outpatient_clinic/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XS-shymkent/outpatient_clinic/demo",
+   "name": "BUILD budgets [0, B/2, B] = oracle: shymkent/outpatient_clinic/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-shymkent/outpatient_clinic/demo",
+   "name": "BUILD evaluatePlan (manual plan) = oracle: shymkent/outpatient_clinic/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-shymkent/outpatient_clinic/budget0",
+   "name": "BUILD optimum = oracle (status, feasible count, three winners with metrics): shymkent/outpatient_clinic/budget0",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-shymkent/outpatient_clinic/budget0",
+   "name": "BUILD Pareto front = oracle: shymkent/outpatient_clinic/budget0",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XS-shymkent/outpatient_clinic/budget0",
+   "name": "BUILD budgets [0, B/2, B] = oracle: shymkent/outpatient_clinic/budget0",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-shymkent/outpatient_clinic/budget0",
+   "name": "BUILD evaluatePlan (manual plan) = oracle: shymkent/outpatient_clinic/budget0",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-shymkent/outpatient_clinic/budget150",
+   "name": "BUILD optimum = oracle (status, feasible count, three winners with metrics): shymkent/outpatient_clinic/budget150",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-shymkent/outpatient_clinic/budget150",
+   "name": "BUILD Pareto front = oracle: shymkent/outpatient_clinic/budget150",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XS-shymkent/outpatient_clinic/budget150",
+   "name": "BUILD budgets [0, B/2, B] = oracle: shymkent/outpatient_clinic/budget150",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-shymkent/outpatient_clinic/budget150",
+   "name": "BUILD evaluatePlan (manual plan) = oracle: shymkent/outpatient_clinic/budget150",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-shymkent/outpatient_clinic/max5_b1000",
+   "name": "BUILD optimum = oracle (status, feasible count, three winners with metrics): shymkent/outpatient_clinic/max5_b1000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-shymkent/outpatient_clinic/max5_b1000",
+   "name": "BUILD Pareto front = oracle: shymkent/outpatient_clinic/max5_b1000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XS-shymkent/outpatient_clinic/max5_b1000",
+   "name": "BUILD budgets [0, B/2, B] = oracle: shymkent/outpatient_clinic/max5_b1000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-shymkent/outpatient_clinic/max5_b1000",
+   "name": "BUILD evaluatePlan (manual plan) = oracle: shymkent/outpatient_clinic/max5_b1000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-shymkent/outpatient_clinic/req_exc",
+   "name": "BUILD optimum = oracle (status, feasible count, three winners with metrics): shymkent/outpatient_clinic/req_exc",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-shymkent/outpatient_clinic/req_exc",
+   "name": "BUILD Pareto front = oracle: shymkent/outpatient_clinic/req_exc",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XS-shymkent/outpatient_clinic/req_exc",
+   "name": "BUILD budgets [0, B/2, B] = oracle: shymkent/outpatient_clinic/req_exc",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-shymkent/outpatient_clinic/req_exc",
+   "name": "BUILD evaluatePlan (manual plan) = oracle: shymkent/outpatient_clinic/req_exc",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-shymkent/outpatient_clinic/radius100",
+   "name": "BUILD optimum = oracle (status, feasible count, three winners with metrics): shymkent/outpatient_clinic/radius100",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-shymkent/outpatient_clinic/radius100",
+   "name": "BUILD Pareto front = oracle: shymkent/outpatient_clinic/radius100",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XS-shymkent/outpatient_clinic/radius100",
+   "name": "BUILD budgets [0, B/2, B] = oracle: shymkent/outpatient_clinic/radius100",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-shymkent/outpatient_clinic/radius100",
+   "name": "BUILD evaluatePlan (manual plan) = oracle: shymkent/outpatient_clinic/radius100",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-shymkent/outpatient_clinic/radius5000",
+   "name": "BUILD optimum = oracle (status, feasible count, three winners with metrics): shymkent/outpatient_clinic/radius5000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-shymkent/outpatient_clinic/radius5000",
+   "name": "BUILD Pareto front = oracle: shymkent/outpatient_clinic/radius5000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XS-shymkent/outpatient_clinic/radius5000",
+   "name": "BUILD budgets [0, B/2, B] = oracle: shymkent/outpatient_clinic/radius5000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-shymkent/outpatient_clinic/radius5000",
+   "name": "BUILD evaluatePlan (manual plan) = oracle: shymkent/outpatient_clinic/radius5000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-shymkent/outpatient_clinic/infeasible",
+   "name": "BUILD optimum = oracle (status, feasible count, three winners with metrics): shymkent/outpatient_clinic/infeasible",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-shymkent/outpatient_clinic/infeasible",
+   "name": "BUILD Pareto front = oracle: shymkent/outpatient_clinic/infeasible",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XS-shymkent/outpatient_clinic/infeasible",
+   "name": "BUILD budgets [0, B/2, B] = oracle: shymkent/outpatient_clinic/infeasible",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-shymkent/outpatient_clinic/infeasible",
+   "name": "BUILD evaluatePlan (manual plan) = oracle: shymkent/outpatient_clinic/infeasible",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-shymkent/school/max_16x25",
+   "name": "BUILD optimum = oracle (status, feasible count, three winners with metrics): shymkent/school/max_16x25",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-shymkent/school/max_16x25",
+   "name": "BUILD Pareto front = oracle: shymkent/school/max_16x25",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XS-shymkent/school/max_16x25",
+   "name": "BUILD budgets [0, B/2, B] = oracle: shymkent/school/max_16x25",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-shymkent/school/max_16x25",
+   "name": "BUILD evaluatePlan (manual plan) = oracle: shymkent/school/max_16x25",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-astana/school/demo",
+   "name": "BUILD optimum = oracle (status, feasible count, three winners with metrics): astana/school/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-astana/school/demo",
+   "name": "BUILD Pareto front = oracle: astana/school/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XS-astana/school/demo",
+   "name": "BUILD budgets [0, B/2, B] = oracle: astana/school/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-astana/school/demo",
+   "name": "BUILD evaluatePlan (manual plan) = oracle: astana/school/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-astana/school/budget0",
+   "name": "BUILD optimum = oracle (status, feasible count, three winners with metrics): astana/school/budget0",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-astana/school/budget0",
+   "name": "BUILD Pareto front = oracle: astana/school/budget0",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XS-astana/school/budget0",
+   "name": "BUILD budgets [0, B/2, B] = oracle: astana/school/budget0",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-astana/school/budget0",
+   "name": "BUILD evaluatePlan (manual plan) = oracle: astana/school/budget0",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-astana/school/budget150",
+   "name": "BUILD optimum = oracle (status, feasible count, three winners with metrics): astana/school/budget150",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-astana/school/budget150",
+   "name": "BUILD Pareto front = oracle: astana/school/budget150",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XS-astana/school/budget150",
+   "name": "BUILD budgets [0, B/2, B] = oracle: astana/school/budget150",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-astana/school/budget150",
+   "name": "BUILD evaluatePlan (manual plan) = oracle: astana/school/budget150",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-astana/school/max5_b1000",
+   "name": "BUILD optimum = oracle (status, feasible count, three winners with metrics): astana/school/max5_b1000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-astana/school/max5_b1000",
+   "name": "BUILD Pareto front = oracle: astana/school/max5_b1000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XS-astana/school/max5_b1000",
+   "name": "BUILD budgets [0, B/2, B] = oracle: astana/school/max5_b1000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-astana/school/max5_b1000",
+   "name": "BUILD evaluatePlan (manual plan) = oracle: astana/school/max5_b1000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-astana/school/req_exc",
+   "name": "BUILD optimum = oracle (status, feasible count, three winners with metrics): astana/school/req_exc",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-astana/school/req_exc",
+   "name": "BUILD Pareto front = oracle: astana/school/req_exc",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XS-astana/school/req_exc",
+   "name": "BUILD budgets [0, B/2, B] = oracle: astana/school/req_exc",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-astana/school/req_exc",
+   "name": "BUILD evaluatePlan (manual plan) = oracle: astana/school/req_exc",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-astana/school/radius100",
+   "name": "BUILD optimum = oracle (status, feasible count, three winners with metrics): astana/school/radius100",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-astana/school/radius100",
+   "name": "BUILD Pareto front = oracle: astana/school/radius100",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XS-astana/school/radius100",
+   "name": "BUILD budgets [0, B/2, B] = oracle: astana/school/radius100",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-astana/school/radius100",
+   "name": "BUILD evaluatePlan (manual plan) = oracle: astana/school/radius100",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-astana/school/radius5000",
+   "name": "BUILD optimum = oracle (status, feasible count, three winners with metrics): astana/school/radius5000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-astana/school/radius5000",
+   "name": "BUILD Pareto front = oracle: astana/school/radius5000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XS-astana/school/radius5000",
+   "name": "BUILD budgets [0, B/2, B] = oracle: astana/school/radius5000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-astana/school/radius5000",
+   "name": "BUILD evaluatePlan (manual plan) = oracle: astana/school/radius5000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-astana/school/infeasible",
+   "name": "BUILD optimum = oracle (status, feasible count, three winners with metrics): astana/school/infeasible",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-astana/school/infeasible",
+   "name": "BUILD Pareto front = oracle: astana/school/infeasible",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XS-astana/school/infeasible",
+   "name": "BUILD budgets [0, B/2, B] = oracle: astana/school/infeasible",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-astana/school/infeasible",
+   "name": "BUILD evaluatePlan (manual plan) = oracle: astana/school/infeasible",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-astana/outpatient_clinic/demo",
+   "name": "BUILD optimum = oracle (status, feasible count, three winners with metrics): astana/outpatient_clinic/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-astana/outpatient_clinic/demo",
+   "name": "BUILD Pareto front = oracle: astana/outpatient_clinic/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XS-astana/outpatient_clinic/demo",
+   "name": "BUILD budgets [0, B/2, B] = oracle: astana/outpatient_clinic/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-astana/outpatient_clinic/demo",
+   "name": "BUILD evaluatePlan (manual plan) = oracle: astana/outpatient_clinic/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-astana/outpatient_clinic/budget0",
+   "name": "BUILD optimum = oracle (status, feasible count, three winners with metrics): astana/outpatient_clinic/budget0",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-astana/outpatient_clinic/budget0",
+   "name": "BUILD Pareto front = oracle: astana/outpatient_clinic/budget0",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XS-astana/outpatient_clinic/budget0",
+   "name": "BUILD budgets [0, B/2, B] = oracle: astana/outpatient_clinic/budget0",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-astana/outpatient_clinic/budget0",
+   "name": "BUILD evaluatePlan (manual plan) = oracle: astana/outpatient_clinic/budget0",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-astana/outpatient_clinic/budget150",
+   "name": "BUILD optimum = oracle (status, feasible count, three winners with metrics): astana/outpatient_clinic/budget150",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-astana/outpatient_clinic/budget150",
+   "name": "BUILD Pareto front = oracle: astana/outpatient_clinic/budget150",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XS-astana/outpatient_clinic/budget150",
+   "name": "BUILD budgets [0, B/2, B] = oracle: astana/outpatient_clinic/budget150",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-astana/outpatient_clinic/budget150",
+   "name": "BUILD evaluatePlan (manual plan) = oracle: astana/outpatient_clinic/budget150",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-astana/outpatient_clinic/max5_b1000",
+   "name": "BUILD optimum = oracle (status, feasible count, three winners with metrics): astana/outpatient_clinic/max5_b1000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-astana/outpatient_clinic/max5_b1000",
+   "name": "BUILD Pareto front = oracle: astana/outpatient_clinic/max5_b1000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XS-astana/outpatient_clinic/max5_b1000",
+   "name": "BUILD budgets [0, B/2, B] = oracle: astana/outpatient_clinic/max5_b1000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-astana/outpatient_clinic/max5_b1000",
+   "name": "BUILD evaluatePlan (manual plan) = oracle: astana/outpatient_clinic/max5_b1000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-astana/outpatient_clinic/req_exc",
+   "name": "BUILD optimum = oracle (status, feasible count, three winners with metrics): astana/outpatient_clinic/req_exc",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-astana/outpatient_clinic/req_exc",
+   "name": "BUILD Pareto front = oracle: astana/outpatient_clinic/req_exc",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XS-astana/outpatient_clinic/req_exc",
+   "name": "BUILD budgets [0, B/2, B] = oracle: astana/outpatient_clinic/req_exc",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-astana/outpatient_clinic/req_exc",
+   "name": "BUILD evaluatePlan (manual plan) = oracle: astana/outpatient_clinic/req_exc",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-astana/outpatient_clinic/radius100",
+   "name": "BUILD optimum = oracle (status, feasible count, three winners with metrics): astana/outpatient_clinic/radius100",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-astana/outpatient_clinic/radius100",
+   "name": "BUILD Pareto front = oracle: astana/outpatient_clinic/radius100",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XS-astana/outpatient_clinic/radius100",
+   "name": "BUILD budgets [0, B/2, B] = oracle: astana/outpatient_clinic/radius100",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-astana/outpatient_clinic/radius100",
+   "name": "BUILD evaluatePlan (manual plan) = oracle: astana/outpatient_clinic/radius100",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-astana/outpatient_clinic/radius5000",
+   "name": "BUILD optimum = oracle (status, feasible count, three winners with metrics): astana/outpatient_clinic/radius5000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-astana/outpatient_clinic/radius5000",
+   "name": "BUILD Pareto front = oracle: astana/outpatient_clinic/radius5000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XS-astana/outpatient_clinic/radius5000",
+   "name": "BUILD budgets [0, B/2, B] = oracle: astana/outpatient_clinic/radius5000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-astana/outpatient_clinic/radius5000",
+   "name": "BUILD evaluatePlan (manual plan) = oracle: astana/outpatient_clinic/radius5000",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-astana/outpatient_clinic/infeasible",
+   "name": "BUILD optimum = oracle (status, feasible count, three winners with metrics): astana/outpatient_clinic/infeasible",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-astana/outpatient_clinic/infeasible",
+   "name": "BUILD Pareto front = oracle: astana/outpatient_clinic/infeasible",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XS-astana/outpatient_clinic/infeasible",
+   "name": "BUILD budgets [0, B/2, B] = oracle: astana/outpatient_clinic/infeasible",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-astana/outpatient_clinic/infeasible",
+   "name": "BUILD evaluatePlan (manual plan) = oracle: astana/outpatient_clinic/infeasible",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-astana/school/max_16x25",
+   "name": "BUILD optimum = oracle (status, feasible count, three winners with metrics): astana/school/max_16x25",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-astana/school/max_16x25",
+   "name": "BUILD Pareto front = oracle: astana/school/max_16x25",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XS-astana/school/max_16x25",
+   "name": "BUILD budgets [0, B/2, B] = oracle: astana/school/max_16x25",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-astana/school/max_16x25",
+   "name": "BUILD evaluatePlan (manual plan) = oracle: astana/school/max_16x25",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-eq/ties",
+   "name": "BUILD optimum = oracle (status, feasible count, three winners with metrics): eq/ties",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-eq/ties",
+   "name": "BUILD Pareto front = oracle: eq/ties",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XS-eq/ties",
+   "name": "BUILD budgets [0, B/2, B] = oracle: eq/ties",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-eq/ties",
+   "name": "BUILD evaluatePlan (manual plan) = oracle: eq/ties",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-eq/required_over_budget",
+   "name": "BUILD optimum = oracle (status, feasible count, three winners with metrics): eq/required_over_budget",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-eq/required_over_budget",
+   "name": "BUILD Pareto front = oracle: eq/required_over_budget",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XS-eq/required_over_budget",
+   "name": "BUILD budgets [0, B/2, B] = oracle: eq/required_over_budget",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-eq/required_over_budget",
+   "name": "BUILD evaluatePlan (manual plan) = oracle: eq/required_over_budget",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-eq/required_over_count",
+   "name": "BUILD optimum = oracle (status, feasible count, three winners with metrics): eq/required_over_count",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-eq/required_over_count",
+   "name": "BUILD Pareto front = oracle: eq/required_over_count",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XS-eq/required_over_count",
+   "name": "BUILD budgets [0, B/2, B] = oracle: eq/required_over_count",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-eq/required_over_count",
+   "name": "BUILD evaluatePlan (manual plan) = oracle: eq/required_over_count",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-eq/zero_budget",
+   "name": "BUILD optimum = oracle (status, feasible count, three winners with metrics): eq/zero_budget",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-eq/zero_budget",
+   "name": "BUILD Pareto front = oracle: eq/zero_budget",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XS-eq/zero_budget",
+   "name": "BUILD budgets [0, B/2, B] = oracle: eq/zero_budget",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-eq/zero_budget",
+   "name": "BUILD evaluatePlan (manual plan) = oracle: eq/zero_budget",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-eq/no_candidates",
+   "name": "BUILD optimum = oracle (status, feasible count, three winners with metrics): eq/no_candidates",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-eq/no_candidates",
+   "name": "BUILD Pareto front = oracle: eq/no_candidates",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XS-eq/no_candidates",
+   "name": "BUILD budgets [0, B/2, B] = oracle: eq/no_candidates",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-eq/no_candidates",
+   "name": "BUILD evaluatePlan (manual plan) = oracle: eq/no_candidates",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-eq/no_baseline",
+   "name": "BUILD optimum = oracle (status, feasible count, three winners with metrics): eq/no_baseline",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-eq/no_baseline",
+   "name": "BUILD Pareto front = oracle: eq/no_baseline",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XS-eq/no_baseline",
+   "name": "BUILD budgets [0, B/2, B] = oracle: eq/no_baseline",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-eq/no_baseline",
+   "name": "BUILD evaluatePlan (manual plan) = oracle: eq/no_baseline",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-eq/dominated",
+   "name": "BUILD optimum = oracle (status, feasible count, three winners with metrics): eq/dominated",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-eq/dominated",
+   "name": "BUILD Pareto front = oracle: eq/dominated",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XS-eq/dominated",
+   "name": "BUILD budgets [0, B/2, B] = oracle: eq/dominated",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-eq/dominated",
+   "name": "BUILD evaluatePlan (manual plan) = oracle: eq/dominated",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-eq/coverage",
+   "name": "BUILD optimum = oracle (status, feasible count, three winners with metrics): eq/coverage",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-eq/coverage",
+   "name": "BUILD Pareto front = oracle: eq/coverage",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XS-eq/coverage",
+   "name": "BUILD budgets [0, B/2, B] = oracle: eq/coverage",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-eq/coverage",
+   "name": "BUILD evaluatePlan (manual plan) = oracle: eq/coverage",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-eq/pareto_equal_pairs",
+   "name": "BUILD optimum = oracle (status, feasible count, three winners with metrics): eq/pareto_equal_pairs",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-eq/pareto_equal_pairs",
+   "name": "BUILD Pareto front = oracle: eq/pareto_equal_pairs",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XS-eq/pareto_equal_pairs",
+   "name": "BUILD budgets [0, B/2, B] = oracle: eq/pareto_equal_pairs",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-eq/pareto_equal_pairs",
+   "name": "BUILD evaluatePlan (manual plan) = oracle: eq/pareto_equal_pairs",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-eq/source_tie",
+   "name": "BUILD optimum = oracle (status, feasible count, three winners with metrics): eq/source_tie",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-eq/source_tie",
+   "name": "BUILD Pareto front = oracle: eq/source_tie",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XS-eq/source_tie",
+   "name": "BUILD budgets [0, B/2, B] = oracle: eq/source_tie",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-eq/source_tie",
+   "name": "BUILD evaluatePlan (manual plan) = oracle: eq/source_tie",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-eq/excluded_required",
+   "name": "BUILD optimum = oracle (status, feasible count, three winners with metrics): eq/excluded_required",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-eq/excluded_required",
+   "name": "BUILD Pareto front = oracle: eq/excluded_required",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XS-eq/excluded_required",
+   "name": "BUILD budgets [0, B/2, B] = oracle: eq/excluded_required",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-eq/excluded_required",
+   "name": "BUILD evaluatePlan (manual plan) = oracle: eq/excluded_required",
+   "verdict": "PASS"
+  }
+ ]
+}

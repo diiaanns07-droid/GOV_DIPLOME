@@ -22,7 +22,7 @@
  "checks": [
   {
    "id": "N2a",
-   "expect": "precondition: at 390 px the Pareto table overflows its card horizontally (otherwise N2 does not apply)",
+   "expect": "at 390 px the Pareto table fits its card, or overflows inside a scroll container (then N2b/N2c apply)",
    "verdict": "PASS",
    "observed": {
     "overflow": true,

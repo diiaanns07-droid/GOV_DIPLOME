@@ -81,7 +81,7 @@ plan_smoke: PASS synthetic demo set labelled as invented
 plan_smoke: PASS city switch resets v2 with a reason
 plan_smoke: PASS Astana: demo plan evaluated (clinics), 65 records untouched
 plan_smoke: PASS editor at the maximum: 16 candidates × 25 points
-plan_smoke: PASS search 16×25 in the browser finished (989 ms incl. sensitivity), progress shown
+plan_smoke: PASS search 16×25 in the browser finished (986 ms incl. sensitivity), progress shown
 plan_smoke: PASS UI result = direct optimizePlans (same winners, Pareto, digest)
 plan_smoke: PASS comparison table: manual + three objectives with 'Применить'
 plan_smoke: PASS search does not auto-apply (manual plan unchanged)

@@ -1,0 +1,355 @@
+{
+ "kind": "K07 r9 cross-check of BUILD web/resilience.js vs K07 oracle",
+ "app_root": "city-evidence",
+ "total": 69,
+ "pass": 69,
+ "fail": 0,
+ "test_incompatible": 0,
+ "checks": [
+  {
+   "id": "XV-unknown top field (derived)",
+   "name": "BUILD refuses: unknown top field (derived)",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-schema",
+   "name": "BUILD refuses: schema",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-no cases",
+   "name": "BUILD refuses: no cases",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-8 user cases",
+   "name": "BUILD refuses: 8 user cases",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-case id base",
+   "name": "BUILD refuses: case id base",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-duplicate case id",
+   "name": "BUILD refuses: duplicate case id",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-case id with markup",
+   "name": "BUILD refuses: case id with markup",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-empty label",
+   "name": "BUILD refuses: empty label",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-label 121 chars",
+   "name": "BUILD refuses: label 121 chars",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-label with control char",
+   "name": "BUILD refuses: label with control char",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-no exclusions",
+   "name": "BUILD refuses: no exclusions",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-duplicate exclusion",
+   "name": "BUILD refuses: duplicate exclusion",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-candidate ID as exclusion",
+   "name": "BUILD refuses: candidate ID as exclusion",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-unknown source",
+   "name": "BUILD refuses: unknown source",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-source of another category (no clinic records here)",
+   "name": "BUILD refuses: source of another category (no clinic records here)",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-extra case field",
+   "name": "BUILD refuses: extra case field",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-bad plan (v2 rule)",
+   "name": "BUILD refuses: bad plan (v2 rule)",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-13 candidates",
+   "name": "BUILD refuses: 13 candidates",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-mutated",
+   "name": "BUILD createResilienceSearch refuses an envelope mutated to 13 candidates after validation",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XV-other-category",
+   "name": "BUILD refuses a real school record ID in a clinic envelope",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-shymkent/school/demo",
+   "name": "BUILD resilience = K07 oracle (status, feasible count, nominal and robust plans, W, worst cases, per-case metrics, price): shymkent/school/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-shymkent/school/demo",
+   "name": "BUILD evaluateResilience (manual plan) = oracle: shymkent/school/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XN-shymkent/school/demo",
+   "name": "BUILD nominal = BUILD v2 mean optimum: shymkent/school/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-shymkent/school/budget300_max3",
+   "name": "BUILD resilience = K07 oracle (status, feasible count, nominal and robust plans, W, worst cases, per-case metrics, price): shymkent/school/budget300_max3",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-shymkent/school/budget300_max3",
+   "name": "BUILD evaluateResilience (manual plan) = oracle: shymkent/school/budget300_max3",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XN-shymkent/school/budget300_max3",
+   "name": "BUILD nominal = BUILD v2 mean optimum: shymkent/school/budget300_max3",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-shymkent/outpatient_clinic/demo",
+   "name": "BUILD resilience = K07 oracle (status, feasible count, nominal and robust plans, W, worst cases, per-case metrics, price): shymkent/outpatient_clinic/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-shymkent/outpatient_clinic/demo",
+   "name": "BUILD evaluateResilience (manual plan) = oracle: shymkent/outpatient_clinic/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XN-shymkent/outpatient_clinic/demo",
+   "name": "BUILD nominal = BUILD v2 mean optimum: shymkent/outpatient_clinic/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-shymkent/outpatient_clinic/budget300_max3",
+   "name": "BUILD resilience = K07 oracle (status, feasible count, nominal and robust plans, W, worst cases, per-case metrics, price): shymkent/outpatient_clinic/budget300_max3",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-shymkent/outpatient_clinic/budget300_max3",
+   "name": "BUILD evaluateResilience (manual plan) = oracle: shymkent/outpatient_clinic/budget300_max3",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XN-shymkent/outpatient_clinic/budget300_max3",
+   "name": "BUILD nominal = BUILD v2 mean optimum: shymkent/outpatient_clinic/budget300_max3",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-shymkent/school/max_12x25x8",
+   "name": "BUILD resilience = K07 oracle (status, feasible count, nominal and robust plans, W, worst cases, per-case metrics, price): shymkent/school/max_12x25x8",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-shymkent/school/max_12x25x8",
+   "name": "BUILD evaluateResilience (manual plan) = oracle: shymkent/school/max_12x25x8",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XN-shymkent/school/max_12x25x8",
+   "name": "BUILD nominal = BUILD v2 mean optimum: shymkent/school/max_12x25x8",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-astana/school/demo",
+   "name": "BUILD resilience = K07 oracle (status, feasible count, nominal and robust plans, W, worst cases, per-case metrics, price): astana/school/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-astana/school/demo",
+   "name": "BUILD evaluateResilience (manual plan) = oracle: astana/school/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XN-astana/school/demo",
+   "name": "BUILD nominal = BUILD v2 mean optimum: astana/school/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-astana/school/budget300_max3",
+   "name": "BUILD resilience = K07 oracle (status, feasible count, nominal and robust plans, W, worst cases, per-case metrics, price): astana/school/budget300_max3",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-astana/school/budget300_max3",
+   "name": "BUILD evaluateResilience (manual plan) = oracle: astana/school/budget300_max3",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XN-astana/school/budget300_max3",
+   "name": "BUILD nominal = BUILD v2 mean optimum: astana/school/budget300_max3",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-astana/outpatient_clinic/demo",
+   "name": "BUILD resilience = K07 oracle (status, feasible count, nominal and robust plans, W, worst cases, per-case metrics, price): astana/outpatient_clinic/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-astana/outpatient_clinic/demo",
+   "name": "BUILD evaluateResilience (manual plan) = oracle: astana/outpatient_clinic/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XN-astana/outpatient_clinic/demo",
+   "name": "BUILD nominal = BUILD v2 mean optimum: astana/outpatient_clinic/demo",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-astana/outpatient_clinic/budget300_max3",
+   "name": "BUILD resilience = K07 oracle (status, feasible count, nominal and robust plans, W, worst cases, per-case metrics, price): astana/outpatient_clinic/budget300_max3",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-astana/outpatient_clinic/budget300_max3",
+   "name": "BUILD evaluateResilience (manual plan) = oracle: astana/outpatient_clinic/budget300_max3",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XN-astana/outpatient_clinic/budget300_max3",
+   "name": "BUILD nominal = BUILD v2 mean optimum: astana/outpatient_clinic/budget300_max3",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-astana/school/max_12x25x8",
+   "name": "BUILD resilience = K07 oracle (status, feasible count, nominal and robust plans, W, worst cases, per-case metrics, price): astana/school/max_12x25x8",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-astana/school/max_12x25x8",
+   "name": "BUILD evaluateResilience (manual plan) = oracle: astana/school/max_12x25x8",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XN-astana/school/max_12x25x8",
+   "name": "BUILD nominal = BUILD v2 mean optimum: astana/school/max_12x25x8",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-eq/robust_differs_zero_price",
+   "name": "BUILD resilience = K07 oracle (status, feasible count, nominal and robust plans, W, worst cases, per-case metrics, price): eq/robust_differs_zero_price",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-eq/robust_differs_zero_price",
+   "name": "BUILD evaluateResilience (manual plan) = oracle: eq/robust_differs_zero_price",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XN-eq/robust_differs_zero_price",
+   "name": "BUILD nominal = BUILD v2 mean optimum: eq/robust_differs_zero_price",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-eq/all_excluded_budget0",
+   "name": "BUILD resilience = K07 oracle (status, feasible count, nominal and robust plans, W, worst cases, per-case metrics, price): eq/all_excluded_budget0",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-eq/all_excluded_budget0",
+   "name": "BUILD evaluateResilience (manual plan) = oracle: eq/all_excluded_budget0",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XN-eq/all_excluded_budget0",
+   "name": "BUILD nominal = BUILD v2 mean optimum: eq/all_excluded_budget0",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-eq/duplicate_cases",
+   "name": "BUILD resilience = K07 oracle (status, feasible count, nominal and robust plans, W, worst cases, per-case metrics, price): eq/duplicate_cases",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-eq/duplicate_cases",
+   "name": "BUILD evaluateResilience (manual plan) = oracle: eq/duplicate_cases",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XN-eq/duplicate_cases",
+   "name": "BUILD nominal = BUILD v2 mean optimum: eq/duplicate_cases",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-eq/required_over_budget",
+   "name": "BUILD resilience = K07 oracle (status, feasible count, nominal and robust plans, W, worst cases, per-case metrics, price): eq/required_over_budget",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-eq/manual_c1",
+   "name": "BUILD resilience = K07 oracle (status, feasible count, nominal and robust plans, W, worst cases, per-case metrics, price): eq/manual_c1",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-eq/manual_c1",
+   "name": "BUILD evaluateResilience (manual plan) = oracle: eq/manual_c1",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XN-eq/manual_c1",
+   "name": "BUILD nominal = BUILD v2 mean optimum: eq/manual_c1",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XO-eq/two_cases_both_sides",
+   "name": "BUILD resilience = K07 oracle (status, feasible count, nominal and robust plans, W, worst cases, per-case metrics, price): eq/two_cases_both_sides",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XE-eq/two_cases_both_sides",
+   "name": "BUILD evaluateResilience (manual plan) = oracle: eq/two_cases_both_sides",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XN-eq/two_cases_both_sides",
+   "name": "BUILD nominal = BUILD v2 mean optimum: eq/two_cases_both_sides",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-order",
+   "name": "BUILD: order of cases, candidates and points changes neither plans nor resilience_problem_digest",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-immutable",
+   "name": "BUILD: the source context is not mutated by a run",
+   "verdict": "PASS"
+  },
+  {
+   "id": "XP-cancel",
+   "name": "BUILD: a cancelled search is not «optimal» and has no plans",
+   "verdict": "PASS"
+  }
+ ]
+}

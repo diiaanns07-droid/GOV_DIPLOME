@@ -1,8 +1,8 @@
 {
  "kind": "K07 r9 resilience adapter on BUILD plan.js",
  "app_root": "city-evidence",
- "total": 61,
- "pass": 61,
+ "total": 77,
+ "pass": 77,
  "fail": 0,
  "test_incompatible": 0,
  "checks": [
@@ -309,6 +309,86 @@
   {
    "id": "N-astana/school/max_12x25x8",
    "name": "nominal plan = BUILD v2 mean optimum on the same plan: astana/school/max_12x25x8",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-eq/robust_differs_zero_price",
+   "name": "adapter on BUILD plan.js = Python oracle (nominal, robust, W, worst cases, per-case metrics, price): eq/robust_differs_zero_price",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-eq/robust_differs_zero_price",
+   "name": "evaluateResilience of the manual plan = oracle: eq/robust_differs_zero_price",
+   "verdict": "PASS"
+  },
+  {
+   "id": "N-eq/robust_differs_zero_price",
+   "name": "nominal plan = BUILD v2 mean optimum on the same plan: eq/robust_differs_zero_price",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-eq/all_excluded_budget0",
+   "name": "adapter on BUILD plan.js = Python oracle (nominal, robust, W, worst cases, per-case metrics, price): eq/all_excluded_budget0",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-eq/all_excluded_budget0",
+   "name": "evaluateResilience of the manual plan = oracle: eq/all_excluded_budget0",
+   "verdict": "PASS"
+  },
+  {
+   "id": "N-eq/all_excluded_budget0",
+   "name": "nominal plan = BUILD v2 mean optimum on the same plan: eq/all_excluded_budget0",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-eq/duplicate_cases",
+   "name": "adapter on BUILD plan.js = Python oracle (nominal, robust, W, worst cases, per-case metrics, price): eq/duplicate_cases",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-eq/duplicate_cases",
+   "name": "evaluateResilience of the manual plan = oracle: eq/duplicate_cases",
+   "verdict": "PASS"
+  },
+  {
+   "id": "N-eq/duplicate_cases",
+   "name": "nominal plan = BUILD v2 mean optimum on the same plan: eq/duplicate_cases",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-eq/required_over_budget",
+   "name": "adapter on BUILD plan.js = Python oracle (nominal, robust, W, worst cases, per-case metrics, price): eq/required_over_budget",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-eq/manual_c1",
+   "name": "adapter on BUILD plan.js = Python oracle (nominal, robust, W, worst cases, per-case metrics, price): eq/manual_c1",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-eq/manual_c1",
+   "name": "evaluateResilience of the manual plan = oracle: eq/manual_c1",
+   "verdict": "PASS"
+  },
+  {
+   "id": "N-eq/manual_c1",
+   "name": "nominal plan = BUILD v2 mean optimum on the same plan: eq/manual_c1",
+   "verdict": "PASS"
+  },
+  {
+   "id": "O-eq/two_cases_both_sides",
+   "name": "adapter on BUILD plan.js = Python oracle (nominal, robust, W, worst cases, per-case metrics, price): eq/two_cases_both_sides",
+   "verdict": "PASS"
+  },
+  {
+   "id": "E-eq/two_cases_both_sides",
+   "name": "evaluateResilience of the manual plan = oracle: eq/two_cases_both_sides",
+   "verdict": "PASS"
+  },
+  {
+   "id": "N-eq/two_cases_both_sides",
+   "name": "nominal plan = BUILD v2 mean optimum on the same plan: eq/two_cases_both_sides",
    "verdict": "PASS"
   }
  ]

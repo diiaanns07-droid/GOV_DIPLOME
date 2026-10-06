@@ -1,6 +1,7 @@
 conformance: all passed
 whatif: all what-if checks passed
 plan: all plan checks passed
+resilience: all resilience checks passed
 smoke: PASS Shymkent: 55 records, slice says 'complete query result' and city total unknown
 smoke: PASS Shymkent colocated group of 10 drawn on the map; flagged rows in table
 smoke: PASS object card lists the 9 other records at the same coordinate, marks district as uncertain
@@ -81,7 +82,7 @@ plan_smoke: PASS synthetic demo set labelled as invented
 plan_smoke: PASS city switch resets v2 with a reason
 plan_smoke: PASS Astana: demo plan evaluated (clinics), 65 records untouched
 plan_smoke: PASS editor at the maximum: 16 candidates × 25 points
-plan_smoke: PASS search 16×25 in the browser finished (875 ms incl. sensitivity), progress shown
+plan_smoke: PASS search 16×25 in the browser finished (916 ms incl. sensitivity), progress shown
 plan_smoke: PASS UI result = direct optimizePlans (same winners, Pareto, digest)
 plan_smoke: PASS comparison table: manual + three objectives with 'Применить'
 plan_smoke: PASS search does not auto-apply (manual plan unchanged)
@@ -109,3 +110,57 @@ plan_smoke: PASS import round trip: same scenario, city switched, category selec
 plan_smoke: PASS 390 px: no horizontal scroll with the v2 card
 plan_smoke: PASS no console/page errors
 plan_smoke: PASS no network requests
+plan_keyboard: PASS K2 placement mode: map → v2 card in 4 Tab presses (≤ 30)
+plan_keyboard: PASS K2 no road / record Tab stops while placing (0)
+plan_keyboard: PASS K2 outside placement mode roads and records stay keyboard-reachable
+plan_keyboard: PASS K3 budget + Tab: value applied, focus on «Максимум объектов»
+plan_keyboard: PASS K3 invalid value + Tab: rejected, focus still moves on
+plan_keyboard: PASS K4 delete point by keyboard: focus on the neighbouring «Удалить»
+plan_keyboard: PASS K4 delete last candidate by keyboard: focus on the previous candidate's «Удалить»
+plan_keyboard: PASS K5 during the search the focus is on «Отменить поиск»
+plan_keyboard: PASS K5 after the search the focus is on «Найти точные оптимумы»
+plan_keyboard: PASS apply by keyboard keeps the focus in the card
+plan_keyboard: PASS N2 390 px: Pareto and sensitivity tables fit the card, no clipped cells
+plan_keyboard: PASS 390 px: the v2 card itself has no horizontal overflow
+plan_keyboard: PASS 390 px: no page-level horizontal scroll
+plan_keyboard: PASS no page errors
+resilience_smoke: PASS resilience card hidden in v1 mode
+resilience_smoke: PASS v2 mode: card shown with the 'не подтверждение закрытия' notice
+resilience_smoke: PASS keyboard: «Добавить случай» → focus on the new case label
+resilience_smoke: PASS label typed by keyboard and applied; focus moved on
+resilience_smoke: PASS records list shows real source IDs, names, source and QA
+resilience_smoke: PASS 3 records excluded with Space; focus kept on the checkbox
+resilience_smoke: PASS source data unchanged (records count, table rows)
+resilience_smoke: PASS duplicate exclusion sets shown as such
+resilience_smoke: PASS delete case by keyboard: removed, focus kept in the card
+resilience_smoke: PASS comparison done: three plan cards + per-case table (3 rows)
+resilience_smoke: PASS UI result = direct optimizeResilience (nominal, robust, price, digest)
+resilience_smoke: PASS price of robustness shown (or reason)
+resilience_smoke: PASS worst cases marked ▲ in the table
+resilience_smoke: PASS search does not change the manual plan
+resilience_smoke: PASS apply robust by keyboard: manual := robust, result still valid
+resilience_smoke: PASS restore manual plan
+resilience_smoke: PASS explanation: template, conditional exclusions, no probabilities
+resilience_smoke: PASS export: city-resilience-v1, input only (plan + 2 cases), plan snapshot kept
+resilience_smoke: PASS HTML report: no scripts, exclusions + provenance + versions + limits
+resilience_smoke: PASS cancel: status cancelled, no result shown later
+resilience_smoke: PASS editing a case during the search: answer discarded (stale)
+resilience_smoke: PASS changing the v2 budget invalidates the comparison
+resilience_smoke: PASS import nan.json rejected, state unchanged
+resilience_smoke: PASS import dup.json rejected, state unchanged
+resilience_smoke: PASS import forged.json rejected, state unchanged
+resilience_smoke: PASS import foreign.json rejected, state unchanged
+resilience_smoke: PASS import candidate_as_source.json rejected, state unchanged
+resilience_smoke: PASS import base_id.json rejected, state unchanged
+resilience_smoke: PASS import v2.json rejected, state unchanged
+resilience_smoke: PASS import big.json rejected, state unchanged
+resilience_smoke: PASS v2 file in the resilience import → hint to open it in v2 mode
+resilience_smoke: PASS city switch: cases reset with a reason, no IDs carried over
+resilience_smoke: PASS Astana: comparison computed on the Astana slice (65 records untouched)
+resilience_smoke: PASS import round trip: city switched back, plan and cases equal the export
+resilience_smoke: PASS category change: cases reset (record IDs belong to another category)
+resilience_smoke: PASS 13 candidates: limit notice, run disabled, candidates kept
+resilience_smoke: PASS v1 mode intact: resilience card hidden, v1 card shown
+resilience_smoke: PASS 390 px: no page or card horizontal overflow
+resilience_smoke: PASS no console/page errors
+resilience_smoke: PASS no network requests
