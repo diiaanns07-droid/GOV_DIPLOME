@@ -1,0 +1,433 @@
+diff --git a/prototypes/city-evidence/web/index.html b/prototypes/city-evidence/web/index.html
+index 6d71f09..c740b58 100644
+--- a/prototypes/city-evidence/web/index.html
++++ b/prototypes/city-evidence/web/index.html
+@@ -148,6 +148,16 @@ button.wi-src { white-space: normal; text-align: left; font-size: 12px; padding:
+ #plRows tbody tr[data-plan-row] td { border-bottom: 0; }
+ #wiTable tbody tr[data-wi-row] td { border-bottom: 0; }
+ #wiTable tbody tr { cursor: default; }
++/* K07 r9: «Устойчивость к допущениям» panel (resilience_panel_k07.js) */
++.rs-sec > summary { font-weight: 600; color: var(--ink-2); }
++fieldset.rs-src { border: 1px solid var(--grid); border-radius: 8px; margin: 6px 0; padding: 4px 8px; }
++.rs-list { list-style: none; margin: 4px 0; padding: 0; }
++.rs-list li { display: flex; gap: 6px; align-items: flex-start; padding: 2px 0; border-bottom: 1px solid var(--grid); }
++.rs-list li label { min-width: 0; overflow-wrap: anywhere; }
++input.rs-label { width: 100%; max-width: 22em; font: inherit; padding: 3px 6px; border-radius: 6px; border: 1px solid var(--base); background: var(--surface); color: var(--ink); }
++.rs-cases { margin: 4px 0; padding-left: 20px; } .rs-cases li { margin: 4px 0; overflow-wrap: anywhere; }
++#rsCasesTitle:focus, #rsResultTitle:focus { outline: 2px solid var(--focus); outline-offset: 2px; }
++#rsTable td, #rsTable th { font-size: 12px; } #rsProgress { width: 100%; }
+ </style>
+ </head>
+ <body>
+@@ -205,7 +215,9 @@ button.wi-src { white-space: normal; text-align: left; font-size: 12px; padding:
+ <script src="facts.js"></script>
+ <script src="whatif.js"></script>
+ <script src="plan.js"></script>
++<script src="resilience_k07.js"></script>
+ <script src="app.js"></script>
+ <script src="plan-ui.js"></script>
++<script src="resilience_panel_k07.js"></script>
+ </body>
+ </html>
+diff --git a/prototypes/city-evidence/web/resilience_k07.js b/prototypes/city-evidence/web/resilience_k07.js
+new file mode 100644
+index 0000000..8518e36
+--- /dev/null
++++ b/prototypes/city-evidence/web/resilience_k07.js
+@@ -0,0 +1,149 @@
++/* K07 round 9 — small adapter «Устойчивость к допущениям» (city-resilience-v1, research/round-9/CORE_SPEC.txt) on top of
++ * the BUILD module plan.js (d865dd4): validation, geometry, feasibility and metrics are BUILD's own functions
++ * (validatePlanScenario, precompute, feasibility, metricsOf, problemDigest); this file only filters source records per case
++ * and runs the worst-case (lexicographic) search. It is NOT a second plan.js. If BUILD ships web/resilience.js with the
++ * CORE_SPEC API (window.CITY_RESILIENCE), the K07 panel uses that one instead.
++ * Analysis of assumptions about the data: no probabilities, no risk, no closures, no population, no walking time.
++ * Browser: window.CITY_RESILIENCE_K07 (needs plan.js, facts.js loaded first); Node: module.exports(PL).
++ */
++(function (root) {
++  "use strict";
++  const SCHEMA = "city-resilience-v1", OBJECTIVE = "worst-lex-v1";
++  const LIM = { candidates: 12, cases: 7, label: 120, subsets: 4096 };
++  const ID_CHARS = /^[\p{L}\p{N}_.-]+$/u;  // the BUILD v2 ID rule (NFC, 1..64 code points)
++  const okId = (v) => typeof v === "string" && v.normalize("NFC") === v && [...v].length >= 1 && [...v].length <= 64 && ID_CHARS.test(v);
++  const cmpStr = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
++  const INF = Number.POSITIVE_INFINITY;
++
++  function make(PL) {
++    class ResilienceError extends Error { constructor(code, detail) { super(code + ": " + detail); this.code = code; this.detail = detail; } }
++    const fail = (code, d) => { throw new ResilienceError(code, d); };
++    const isObj = (o) => o && typeof o === "object" && !Array.isArray(o);
++    const sourceIds = (ctx, category) => ctx.places.filter((p) => p.group === category).map((p) => p.id);
++
++    // ---------- validation: the whole envelope before any computation ----------
++    function validateResilience(input, ctx) {
++      if (!isObj(input)) fail("bad_shape", "ожидается объект");
++      for (const k of Object.keys(input)) if (!["schema_version", "plan", "cases"].includes(k)) fail("unknown_field", `поле ${JSON.stringify(k).slice(0, 40)} не допускается (производные поля в r9 не принимаются)`);
++      if (input.schema_version !== SCHEMA) fail("bad_schema", String(input.schema_version).slice(0, 40));
++      if (!isObj(input.plan)) fail("bad_shape", "plan: ожидается объект city-plan-v2");
++      if (Array.isArray(input.plan.candidates) && input.plan.candidates.length > LIM.candidates)
++        fail("too_many_candidates", `${input.plan.candidates.length} > ${LIM.candidates}: точный анализ устойчивости ограничен ${LIM.subsets} наборами; кандидаты не удаляются автоматически`);
++      const plan = PL.validatePlanScenario(input.plan, ctx);  // BUILD's v2 rules (throws PlanError with its code)
++      if (plan.candidates.length > LIM.candidates) fail("too_many_candidates", `${plan.candidates.length} > ${LIM.candidates}`);
++      if (!Array.isArray(input.cases)) fail("bad_shape", "cases: ожидается массив");
++      if (input.cases.length < 1 || input.cases.length > LIM.cases) fail("bad_count", `случаев ${input.cases.length}, нужно 1..${LIM.cases} (base добавляется автоматически)`);
++      const src = new Set(sourceIds(ctx, plan.category)), cands = new Set(plan.candidates.map((c) => c.id)), seen = new Set();
++      const cases = input.cases.map((c, i) => {
++        const w = `cases[${i}]`;
++        if (!isObj(c)) fail("bad_shape", `${w}: ожидается объект`);
++        for (const k of Object.keys(c)) if (!["id", "label", "disabled_source_ids"].includes(k)) fail("unknown_field", `${w}.${String(k).slice(0, 30)}`);
++        if (!okId(c.id)) fail("bad_id", `${w}.id`);
++        if (c.id === "base") fail("reserved_id", `${w}.id: «base» зарезервирован`);
++        if (seen.has(c.id)) fail("duplicate_id", `${w}.id: ${c.id}`);
++        seen.add(c.id);
++        if (typeof c.label !== "string" || !c.label.trim()) fail("bad_label", `${w}.label: пустая`);
++        if ([...c.label].length > LIM.label) fail("bad_label", `${w}.label: больше ${LIM.label} символов`);
++        if (/\p{Cc}/u.test(c.label)) fail("bad_label", `${w}.label: управляющие символы`);
++        if (!Array.isArray(c.disabled_source_ids) || !c.disabled_source_ids.length) fail("bad_exclusions", `${w}: нужно хотя бы одно исключение`);
++        if (c.disabled_source_ids.length > src.size) fail("bad_exclusions", `${w}: исключений больше, чем записей категории (${src.size})`);
++        const ex = new Set();
++        for (const id of c.disabled_source_ids) {
++          if (typeof id !== "string") fail("bad_exclusions", `${w}: ID должен быть строкой`);
++          if (ex.has(id)) fail("duplicate_id", `${w}: ${id.slice(0, 40)} повторяется`);
++          if (!src.has(id)) fail(cands.has(id) ? "candidate_not_source" : "unknown_source", `${w}: ${id.slice(0, 40)} — ${cands.has(id) ? "это кандидат, а не исходная запись" : "нет такой исходной записи этой категории в срезе"}`);
++          ex.add(id);
++        }
++        return { id: c.id, label: c.label, disabled_source_ids: [...ex].sort(cmpStr) };
++      });
++      return { schema_version: SCHEMA, plan, cases };
++    }
++    const allCases = (env) => [{ id: "base", label: "Исходный срез (без исключений)", disabled_source_ids: [] }, ...env.cases];
++
++    // ---------- digests (order-independent; selected_ids only in the scenario digest) ----------
++    function canonCases(env) { return env.cases.slice().sort((a, b) => cmpStr(a.id, b.id)).map((c) => [c.id, c.label, c.disabled_source_ids.slice().sort(cmpStr)]); }
++    const resilienceProblemDigest = (env, F) => "sha256:" + F.sha256hex(JSON.stringify([SCHEMA, PL.METRIC, OBJECTIVE, PL.problemDigest(env.plan, F), canonCases(env)]));
++    const resilienceScenarioDigest = (env, F) => "sha256:" + F.sha256hex(JSON.stringify([resilienceProblemDigest(env, F), env.plan.selected_ids.slice().sort(cmpStr)]));
++
++    // ---------- per-case precomputation: the context is filtered in a new object, never mutated ----------
++    function prepare(ctx, env) {
++      const cases = allCases(env);
++      const pres = cases.map((c) => { const off = new Set(c.disabled_source_ids); return PL.precompute({ ...ctx, places: ctx.places.filter((p) => !off.has(p.id)) }, env.plan); });
++      const P0 = pres[0];
++      return { cases, pres, cands: P0.cands, pts: P0.pts, weights: P0.pts.map((p) => p.weight), radiusMm: env.plan.coverage_radius_m * 1000,
++        base: pres.map((P) => P.base.map((b) => (b ? b.mm : null))), dist: P0.dist.map((row) => row.map((d) => d.mm)), index: P0.candIndex };
++    }
++    const lossOf = (m) => [m.unknown_count, m.weighted_sum_mm, m.max_mm === null ? INF : m.max_mm];
++    const cmpVec = (a, b) => { for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return a[i] < b[i] ? -1 : 1; return 0; };
++    const cmpIds = (a, b) => { for (let i = 0; i < Math.min(a.length, b.length); i++) { const c = cmpStr(a[i], b[i]); if (c) return c; } return a.length - b.length; };
++    const ext = (v) => v.map((x) => (x === INF ? null : x));  // strict JSON outside: null instead of infinity
++    function perCase(R, idx) {
++      const per = R.cases.map((c, k) => {
++        const after = R.base[k].map((b, j) => { let a = b; for (const i of idx) { const d = R.dist[i][j]; if (a === null || d < a) a = d; } return a; });
++        const m = PL.metricsOf(after, R.weights, R.radiusMm);
++        return { case_id: c.id, label: c.label, metrics: m, loss: lossOf(m) };
++      });
++      let W = per[0].loss;
++      for (const x of per) if (cmpVec(x.loss, W) > 0) W = x.loss;
++      const worst = per.filter((x) => cmpVec(x.loss, W) === 0).map((x) => x.case_id).sort(cmpStr);
++      return { per, W, worst };
++    }
++    const shapeOut = (pc) => ({ per_case: pc.per.map((x) => ({ case_id: x.case_id, label: x.label, metrics: x.metrics, loss: ext(x.loss) })), worst_vector: ext(pc.W), worst_case_ids: pc.worst });
++
++    // public entry points re-validate the envelope: a mutated object can not bypass the limits (CORE_SPEC r9)
++    function evaluateResilience(ctx, input, selectedIds) {
++      const env = validateResilience(input, ctx), R = prepare(ctx, env), ids = [...new Set(selectedIds === undefined ? env.plan.selected_ids : selectedIds)].sort(cmpStr);
++      for (const id of ids) if (!R.index.has(id)) fail("unknown_ref", `кандидата ${id} нет`);
++      const f = PL.feasibility(env.plan, ids);
++      return { selected_ids: ids, cost: f.cost, feasible: f.feasible, feasibility: f, ...shapeOut(perCase(R, ids.map((id) => R.index.get(id)))) };
++    }
++
++    // ---------- exact search over ≤ 4096 subsets: nominal (mean on base) and robust (W, L_base, cost, IDs) ----------
++    function createResilienceSearch(ctx, input, opts) {
++      const env = validateResilience(input, ctx);  // limits (≤ 12 candidates, cases) are checked before any precomputation
++      const F = opts && opts.F, R = prepare(ctx, env), sc = env.plan, n = R.cands.length;
++      const req = sc.required_ids.map((id) => R.index.get(id)), exc = new Set(sc.excluded_ids.map((id) => R.index.get(id)));
++      const reqCost = req.reduce((s, i) => s + R.cands[i].cost, 0), reasons = [];
++      if (req.length > sc.max_selected) reasons.push({ code: "required_exceeds_max_selected", text: `обязательных ${req.length} > максимума ${sc.max_selected}` });
++      if (reqCost > sc.budget) reasons.push({ code: "required_cost_exceeds_budget", text: `стоимость обязательных ${reqCost} > бюджета ${sc.budget} усл. ед.` });
++      const total = reasons.length ? 0 : 2 ** n;
++      let mask = 0, examined = 0, feasible = 0, cancelled = false, nominal = null, robust = null;
++      const digest = F ? resilienceProblemDigest(env, F) : null;
++      function step(k) {
++        if (cancelled || reasons.length) return true;
++        const end = Math.min(total, mask + k);
++        for (; mask < end; mask++) {
++          examined++;
++          let ok = true, cost = 0; const idx = [];
++          for (let i = 0; i < n && ok; i++) if (mask & (1 << i)) { if (exc.has(i)) ok = false; cost += R.cands[i].cost; idx.push(i); }
++          if (!ok || idx.length > sc.max_selected || cost > sc.budget || req.some((i) => !(mask & (1 << i)))) continue;
++          feasible++;
++          const pc = perCase(R, idx), ids = idx.map((i) => R.cands[i].id).sort(cmpStr), Lb = pc.per[0].loss;
++          const nk = [...Lb, cost], rk = [...pc.W, ...Lb, cost];
++          if (!nominal || cmpVec(nk, nominal.k) < 0 || (cmpVec(nk, nominal.k) === 0 && cmpIds(ids, nominal.ids) < 0)) nominal = { k: nk, ids, pc, cost };
++          if (!robust || cmpVec(rk, robust.k) < 0 || (cmpVec(rk, robust.k) === 0 && cmpIds(ids, robust.ids) < 0)) robust = { k: rk, ids, pc, cost };
++        }
++        return mask >= total;
++      }
++      function result() {
++        const base = { resilience_problem_digest: digest, metric_version: PL.METRIC, objective_version: OBJECTIVE, total_subsets: total, evaluated: examined, feasible_count: feasible };
++        if (reasons.length) return { ...base, status: "infeasible", reasons, nominal: null, robust: null, price_of_robustness_m: null, price_reason: "нет допустимых планов" };
++        if (cancelled || mask < total) return { ...base, status: cancelled ? "cancelled" : "incomplete", reasons: [], nominal: null, robust: null, price_of_robustness_m: null, price_reason: "поиск не завершён" };
++        if (!feasible) return { ...base, status: "infeasible", reasons: [{ code: "no_feasible_plan", text: "нет допустимого набора" }], nominal: null, robust: null, price_of_robustness_m: null, price_reason: "нет допустимых планов" };
++        const out = (x) => ({ selected_ids: x.ids, cost: x.cost, ...shapeOut(x.pc) });
++        const mN = nominal.pc.per[0].metrics.weighted_mean_mm, mR = robust.pc.per[0].metrics.weighted_mean_mm;
++        const known = mN !== null && mR !== null;
++        return { ...base, status: "optimal", reasons: [], nominal: out(nominal), robust: out(robust), same_plan: nominal.ids.join("\u0000") === robust.ids.join("\u0000"),
++          price_of_robustness_m: known ? (mR - mN) / 1000 : null,
++          price_reason: known ? null : "среднее расстояние в исходном срезе не определено (есть точки без записи и без выбранного места)" };
++      }
++      return { get total() { return total; }, get examined() { return examined; }, step, cancel: () => { cancelled = true; }, result, problem_digest: digest };
++    }
++    function optimizeResilience(ctx, env, opts) { const s = createResilienceSearch(ctx, env, opts); while (!s.step(1 << 16)); return s.result(); }
++
++    return { SCHEMA, OBJECTIVE, LIMITS: LIM, ResilienceError, validateResilience, evaluateResilience, createResilienceSearch, optimizeResilience,
++      resilienceProblemDigest, resilienceScenarioDigest, allCases, sourceIds };
++  }
++  if (typeof module !== "undefined" && module.exports) module.exports = make;
++  else if (root.CITY_PLAN) root.CITY_RESILIENCE_K07 = make(root.CITY_PLAN);
++})(typeof window !== "undefined" ? window : globalThis);
+diff --git a/prototypes/city-evidence/web/resilience_panel_k07.js b/prototypes/city-evidence/web/resilience_panel_k07.js
+new file mode 100644
+index 0000000..7c57e8b
+--- /dev/null
++++ b/prototypes/city-evidence/web/resilience_panel_k07.js
+@@ -0,0 +1,241 @@
++/* K07 round 9 — panel «Устойчивость к допущениям» for the BUILD plan card (plan-ui.js @ d865dd4).
++ * Plugs into BUILD's own hooks (CITY_PLAN_UI.OPT.render / onProblemChange, CITY_APP.ui.EXT.onCity); plan-ui.js is not
++ * rewritten. Engine: window.CITY_RESILIENCE (BUILD, if present) or window.CITY_RESILIENCE_K07 (K07 adapter on plan.js).
++ * Source records are chosen in a keyboard list (≤ 16 per category, QA filter); there is no map mode, so no extra Tab stops.
++ * «Условно исключаем из расчёта; это не подтверждение закрытия.» No probabilities, risk, population or walking time.
++ * Strings from data and labels are inserted with textContent only.
++ */
++(function () {
++  "use strict";
++  const U = window.CITY_PLAN_UI, APP = window.CITY_APP, F = window.CITY_FACTS, D = window.CITY_EVIDENCE;
++  const RE = window.CITY_RESILIENCE || window.CITY_RESILIENCE_K07;
++  if (!U || !U.OPT || !APP || !APP.ui || !RE || !F) return;
++  const { el, btn } = U, PS = U.state, $ = (id) => document.getElementById(id);
++  const RS = { city: APP.state.city, category: PS.category, qa: "all", sel: new Set(), label: "", cases: [], seq: 1,
++    run: null, progress: null, result: null, backup: null, msg: "", open: true, runOpts: { chunk: 256, delayMs: 0 } };
++  const LIM = RE.LIMITS || { candidates: 12, cases: 7, label: 120 };
++  const nf = new Intl.NumberFormat("ru-RU");
++  const mText = (mm) => (mm === null || mm === undefined ? null : U.mmText(mm));
++  const units = (v) => `${nf.format(v)} усл. ед.`;
++  let focusAfter = null;
++
++  // ---------- data ----------
++  const records = () => {
++    const places = D.cities[APP.state.city].places.filter((p) => p.group === PS.category);
++    return places.map((p) => { const qa = APP.ui.qaOf(p); return { id: p.id, name: p.name || "Без названия", qa: qa.map((q) => q.code), src: [...new Set((p.sources || []).map((s) => s.dataset))].join("/") || "источник не указан" }; })
++      .sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : a.id < b.id ? -1 : 1));
++  };
++  const nameOf = (id) => { const p = D.cities[APP.state.city].places.find((x) => x.id === id); return p ? p.name || "Без названия" : id; };
++  const envelope = () => ({ schema_version: "city-resilience-v1", plan: U.rawScenario(), cases: RS.cases.map((c) => ({ id: c.id, label: c.label, disabled_source_ids: c.ids.slice() })) });
++  function validEnv() { try { return { env: RE.validateResilience(envelope(), U.ctxOf(APP.state.city)) }; } catch (e) { return { error: e }; } }
++  function currentDigest() { const v = validEnv(); return v.env ? RE.resilienceProblemDigest(v.env, F) : null; }
++
++  // ---------- state changes ----------
++  function reset(msg) {
++    if (RS.run) { const r = RS.run; RS.run = null; r.cancel(); }
++    Object.assign(RS, { city: APP.state.city, category: PS.category, sel: new Set(), label: "", cases: [], seq: 1, progress: null, result: null, backup: null, msg: msg || "" });
++  }
++  function addCase() {
++    const label = RS.label.trim();
++    if (!RS.sel.size || !label) { RS.msg = "Нужны название случая и хотя бы одна выбранная запись."; return false; }
++    if (RS.cases.length >= LIM.cases) { RS.msg = `Не больше ${LIM.cases} случаев (исходный срез добавляется сам).`; return false; }
++    if ([...label].length > LIM.label) { RS.msg = `Название длиннее ${LIM.label} символов.`; return false; }
++    let id; do { id = "C" + RS.seq++; } while (RS.cases.some((c) => c.id === id));
++    const ids = [...RS.sel].sort();
++    const same = RS.cases.find((c) => c.ids.join() === ids.join());
++    RS.cases.push({ id, label, ids });
++    RS.sel = new Set(); RS.label = "";
++    RS.msg = `Случай ${id} «${label}» добавлен: условно исключено ${ids.length} записей.${same ? ` Набор совпадает со случаем ${same.id} — результат от повтора не меняется.` : ""}`;
++    return true;
++  }
++  function removeCase(id) { RS.cases = RS.cases.filter((c) => c.id !== id); RS.msg = `Случай ${id} удалён.`; }
++  function stopRun(msg) { if (RS.run) { const r = RS.run; RS.run = null; RS.progress = null; r.cancel(); RS.msg = msg; } }
++  function startRun() {
++    const v = validEnv();
++    if (!v.env) { RS.msg = `Сравнение не запущено: ${v.error.code ? v.error.code + " — " : ""}${v.error.detail || v.error.message}`; return; }
++    stopRun("");
++    const s = RE.createResilienceSearch(U.ctxOf(APP.state.city), v.env, { F }), digest = RE.resilienceProblemDigest(v.env, F);
++    const run = { s, digest, cancel: () => s.cancel() };
++    RS.run = run; RS.result = null; RS.progress = { examined: 0, total: s.total };
++    RS.msg = `Идёт точный перебор ${nf.format(s.total)} наборов по ${v.env.cases.length + 1} случаям…`;
++    focusAfter = "rsCancel";
++    const tick = () => {
++      if (RS.run !== run) return;  // cancelled or superseded: the answer of an old request is never shown
++      const done = s.step(RS.runOpts.chunk);
++      RS.progress = { examined: s.examined, total: s.total };
++      const pb = $("rsProgress"), pt = $("rsProgressText");
++      if (pb) { pb.max = Math.max(1, s.total); pb.value = s.examined; }
++      if (pt) pt.textContent = `просмотрено ${nf.format(s.examined)} из ${nf.format(s.total)} наборов`;
++      if (!done) { setTimeout(tick, RS.runOpts.delayMs); return; }
++      RS.run = null; RS.progress = null;
++      const r = s.result();
++      if (digest !== currentDigest()) { RS.msg = "Ответ устарел (условия изменены) и отброшен."; U.render(); return; }
++      RS.result = r;
++      RS.msg = r.status === "optimal" ? `Готово: просмотрено ${nf.format(r.evaluated)} наборов, допустимых ${nf.format(r.feasible_count)}. Ручной план меняется только кнопкой «Применить».`
++        : `Нет допустимых планов: ${r.reasons.map((x) => x.text).join("; ")}.`;
++      focusAfter = "rsResultTitle";
++      U.render();
++    };
++    setTimeout(tick, RS.runOpts.delayMs);
++  }
++  function apply(kind) {
++    const r = RS.result; if (!r || !r[kind] || r.resilience_problem_digest !== currentDigest()) { RS.msg = "Нечего применять: результат отсутствует или устарел."; return; }
++    if (!RS.backup) RS.backup = PS.selected.slice();
++    PS.selected = r[kind].selected_ids.slice();
++    focusAfter = "rsRestore";
++    U.changed(`План «${kind === "robust" ? "Устойчивый" : "Обычный"}» применён как ручной (условное предложение по введённым местам). «Вернуть ручной план» отменит это.`);
++  }
++  function restore() { if (!RS.backup) return; PS.selected = RS.backup; RS.backup = null; focusAfter = "rsApplyAnchor"; U.changed("Ручной план восстановлен."); }
++
++  // ---------- hooks from BUILD ----------
++  U.OPT.onProblemChange.push(() => {
++    if (APP.state.city !== RS.city || PS.category !== RS.category) {  // category change (city is handled by onCity)
++      const had = RS.cases.length || RS.result;
++      reset(had ? "Категория изменена — случаи и результат сброшены: ID записей другой категории не переносятся." : "");
++      return;
++    }
++    if (RS.run && RS.run.digest !== currentDigest()) stopRun("Условия изменены — сравнение остановлено, его ответ не будет показан. Запустите снова.");
++  });
++  APP.ui.EXT.onCity.push((key, changedCity) => {
++    if (!changedCity) return;
++    const had = RS.cases.length || RS.result || RS.run;
++    reset(had ? "Город изменён — случаи устойчивости сброшены: ID записей между городами не переносятся." : "");
++    RS.city = key;  // BUILD calls onCity before STATE.city changes: remember the new city, or the next render resets again
++  });
++
++  // ---------- rendering (inside the BUILD plan card) ----------
++  const nullWhy = (m) => `нет данных: у ${m.unknown_count} точ. нет ни записи, ни выбранного места`;
++  const metricLine = (m) => [m.weighted_mean_mm === null ? nullWhy(m) : `среднее ${mText(m.weighted_mean_mm)}`, m.max_mm === null ? null : `худшая ${mText(m.max_mm)}`,
++    `охват ${nf.format(m.covered_weight)}/${nf.format(m.total_weight)}`].filter(Boolean).join(" · ");
++  const caseLabel = (id) => (id === "base" ? "исходный срез" : `${id} «${(RS.cases.find((c) => c.id === id) || {}).label || id}»`);
++  function wText(x) {
++    const w = x.worst_vector, cs = x.worst_case_ids.map(caseLabel).join(", ");
++    // unknown points first; a sum is shown only over points that have a distance (never «сумма 0 м» for unknown ones)
++    const parts = w[0] ? [`${w[0]} точ. без расстояния (нет ни записи, ни выбранного места)`] : [];
++    if (w[1] > 0) parts.push(`${w[0] ? "сумма по остальным" : "сумма"} ${mText(w[1])}`);
++    if (w[2] !== null) parts.push(`худшая точка ${mText(w[2])}`);
++    return `худший случай: ${cs} — ${parts.join(", ")}`;
++  }
++  U.OPT.render.push((b) => {
++    if (APP.state.city !== RS.city || PS.category !== RS.category) reset("");
++    const sec = el("details", { id: "rsSec", class: "pl-sec rs-sec" });
++    sec.open = RS.open;
++    const sm = el("summary", { id: "rsSec_sum" }, "Устойчивость к допущениям о данных");
++    sm.addEventListener("click", () => { RS.open = !sec.open; });
++    sec.append(sm);
++    b.append(sec);
++    sec.append(el("p", { class: "warn", id: "rsNote" }, "Условно исключаем из расчёта выбранные исходные записи; это не подтверждение закрытия, не прогноз и не оценка риска. Пустые исходные данные не означают отсутствие услуги в городе."));
++    sec.append(el("p", { class: "muted" }, `Случаи сравниваются по худшему результату (вектор: точки без расстояния, сумма, худшая точка). До ${LIM.candidates} кандидатов и ${LIM.cases} случаев плюс исходный срез; перебор до 4096 наборов. Расчёт: ${window.CITY_RESILIENCE ? "модуль BUILD" : "адаптер K07 к plan.js"}.`));
++    if (PS.cands.length > LIM.candidates) sec.append(el("p", { class: "warn", id: "rsTooMany", role: "alert" }, `too_many_candidates: в плане ${PS.cands.length} кандидатов > ${LIM.candidates}. Обычный план v2 считается как раньше; для анализа устойчивости уберите кандидатов сами — автоматически ничего не удаляется.`));
++    // source selector
++    const recs = records(), shown = recs.filter((r) => RS.qa === "all" || (RS.qa === "qa" ? r.qa.length : !r.qa.length));
++    const fs = el("fieldset", { class: "rs-src" });
++    fs.append(el("legend", null, `Исходные записи категории «${window.CITY_PLAN.CATEGORIES[PS.category]}» (${recs.length})`));
++    const fl = el("label", { for: "rsQa" }, "Показать "), qs = el("select", { id: "rsQa" });
++    for (const [k, v] of [["all", "все записи"], ["qa", "только с QA-флагом"], ["noqa", "без QA-флага"]]) { const o = el("option", { value: k }, v); if (k === RS.qa) o.selected = true; qs.append(o); }
++    qs.addEventListener("change", () => { RS.qa = qs.value; U.render(); });
++    fl.append(qs); fs.append(fl);
++    if (!recs.length) fs.append(el("p", { class: "muted", id: "rsNoRecords" }, "В срезе нет записей этой категории — исключать нечего. Это не значит, что услуги нет в городе."));
++    const ul = el("ul", { class: "rs-list", id: "rsSources" });
++    for (const r of shown) {
++      const li = el("li", { "data-rs-source": r.id }), cb = el("input", { type: "checkbox", id: "rsSrc_" + r.id });
++      cb.checked = RS.sel.has(r.id);
++      cb.addEventListener("change", () => { if (cb.checked) RS.sel.add(r.id); else RS.sel.delete(r.id); U.render(); });
++      const lab = el("label", { for: "rsSrc_" + r.id });
++      lab.append(document.createTextNode(r.name), el("span", { class: "muted" }, ` · ${r.src}${r.qa.length ? " · ⚠ " + r.qa.join(", ") : ""} · ${r.id.slice(0, 8)}`));
++      li.append(cb, lab); ul.append(li);
++    }
++    fs.append(ul);
++    const hidden = [...RS.sel].filter((id) => !shown.some((r) => r.id === id)).length;
++    fs.append(el("p", { class: "muted", id: "rsSelCount" }, `Выбрано ${RS.sel.size}${hidden ? ` (из них скрыто фильтром ${hidden})` : ""}. QA-флаг не доказывает ошибку и не исключает запись сам.`));
++    sec.append(fs);
++    // new case
++    const row = el("div", { class: "wi-ctl" });
++    const lab = el("label", { for: "rsLabel" }, "Название случая ");
++    const inp = el("input", { type: "text", id: "rsLabel", maxlength: String(LIM.label), value: RS.label, placeholder: "например: записи с QA-флагом", class: "rs-label" });
++    const add = btn("rsAdd", "Добавить случай", () => { if (addCase()) focusAfter = "rsLabel"; U.render(); });
++    add.disabled = !RS.sel.size || !RS.label.trim() || RS.cases.length >= LIM.cases;
++    inp.addEventListener("input", () => { RS.label = inp.value; add.disabled = !RS.sel.size || !RS.label.trim() || RS.cases.length >= LIM.cases; });
++    inp.addEventListener("keydown", (e) => { if (e.key === "Enter" && !add.disabled) { e.preventDefault(); add.click(); } });
++    lab.append(inp); row.append(lab, add); sec.append(row);
++    // cases
++    sec.append(el("h4", { id: "rsCasesTitle", tabindex: "-1" }, `Случаи (${RS.cases.length} из ${LIM.cases}, плюс исходный срез)`));
++    const ol = el("ol", { class: "rs-cases", id: "rsCases" });
++    ol.append(el("li", { "data-rs-case": "base" }, "base — исходный срез, ничего не исключено"));
++    RS.cases.forEach((c, i) => {
++      const li = el("li", { "data-rs-case": c.id }), same = RS.cases.find((o) => o !== c && o.ids.join() === c.ids.join());
++      li.append(el("strong", null, `${c.id} `), document.createTextNode(c.label), el("div", { class: "muted" }, "условно исключено: " + c.ids.map(nameOf).join("; ")));
++      if (same) li.append(el("div", { class: "pill" }, `тот же набор, что ${same.id}`));
++      li.append(btn("rsDel_" + c.id, "Удалить", () => { removeCase(c.id); const nx = RS.cases[i] || RS.cases[i - 1]; focusAfter = nx ? "rsDel_" + nx.id : "rsLabel"; U.render(); }, { "aria-label": `Удалить случай ${c.id} «${c.label}»` }));
++      ol.append(li);
++    });
++    sec.append(ol);
++    // run
++    const rr = el("div", { class: "wi-ctl" });
++    const run = btn("rsRun", "Сравнить планы по случаям", () => { startRun(); U.render(); });
++    run.disabled = !!RS.run || !RS.cases.length || !PS.points.length || PS.cands.length > LIM.candidates;
++    const cancel = btn("rsCancel", "Отменить сравнение", () => { stopRun("Сравнение отменено; ручной план не изменён, неполный результат не показывается."); focusAfter = "rsRun"; U.render(); });
++    cancel.disabled = !RS.run;
++    rr.append(run, cancel);
++    if (RS.backup) rr.append(btn("rsRestore", "Вернуть ручной план", () => restore()));
++    sec.append(rr);
++    if (!RS.cases.length) sec.append(el("p", { class: "muted", id: "rsNoCases" }, "Добавьте хотя бы один случай, чтобы сравнить планы."));
++    if (RS.run && RS.progress) {
++      const pb = el("progress", { id: "rsProgress", max: Math.max(1, RS.progress.total), "aria-labelledby": "rsProgressText" }); pb.value = RS.progress.examined;
++      sec.append(pb, el("span", { id: "rsProgressText", class: "muted" }, `просмотрено ${nf.format(RS.progress.examined)} из ${nf.format(RS.progress.total)} наборов`));
++    }
++    sec.append(el("p", { class: "wi-msg warn", id: "rsMsg", role: "status", "aria-live": "polite" }, RS.msg));
++    renderResult(sec);
++    if (focusAfter) { const want = focusAfter; focusAfter = null; setTimeout(() => { const f = $(want); if (f && !f.disabled) f.focus(); }, 0); }
++  });
++  function renderResult(sec) {
++    const r = RS.result; if (!r) return;
++    const stale = r.resilience_problem_digest !== currentDigest();
++    sec.append(el("h4", { id: "rsResultTitle", tabindex: "-1" }, "Сравнение: ручной · обычный · устойчивый"));
++    if (stale) { sec.append(el("p", { class: "warn", id: "rsStale", role: "alert" }, "Результат устарел: план или случаи изменены после сравнения. «Применить» недоступно — сравните снова.")); }
++    if (r.status !== "optimal") { sec.append(el("p", { class: "warn", id: "rsInfeasible" }, "Нет допустимых планов: " + r.reasons.map((x) => x.text).join("; ") + ". Ограничения не снимались.")); return; }
++    let man = null; try { man = RE.evaluateResilience(U.ctxOf(APP.state.city), envelope(), PS.selected); } catch (e) { man = null; }
++    sec.append(el("p", { id: "rsPrice" }, r.price_of_robustness_m === null ? `Цена устойчивости: не определена — ${r.price_reason}.`
++      : r.same_plan ? "Устойчивый план совпадает с обычным: цена устойчивости 0 м."
++        : `Цена устойчивости: ${r.price_of_robustness_m > 0 ? "+" : ""}${nf.format(Math.round(r.price_of_robustness_m))} м среднего расстояния в исходном срезе (устойчивый минус обычный). Это расстояние по прямой, не деньги и не время.`));
++    const box = el("div", { class: "pl-compare", id: "rsCompare", role: "list", "aria-label": "Ручной, обычный и устойчивый планы" });
++    const card = (key, title, x, note, canApply) => {
++      const c = el("div", { class: "pl-cmp", role: "listitem", "data-rs-plan": key });
++      c.append(el("h4", null, title));
++      if (note) c.append(el("p", { class: "pill" }, note));
++      const dl = el("dl"), add = (k, v) => dl.append(el("dt", null, k), el("dd", null, v));
++      add("Объекты", x.selected_ids.length ? x.selected_ids.join(", ") : "без новых объектов");
++      add("Стоимость", units(x.cost));
++      add("Исходный срез", metricLine(x.per_case[0].metrics));
++      add("Худший результат", wText(x));
++      c.append(dl);
++      if (canApply) c.append(btn("rsApply_" + key, "Применить", () => apply(key), { disabled: stale || undefined, "aria-label": `Применить ${title.toLowerCase()} план` }));
++      box.append(c);
++    };
++    if (man) card("manual", "Ручной", man, man.feasible ? null : "недопустим: " + man.feasibility.reasons.map((x) => x.text).join("; ") + " — не рекомендуется", false);
++    card("nominal", "Обычный (лучшее среднее в исходном срезе)", r.nominal, null, true);
++    card("robust", "Устойчивый (лучший худший случай)", r.robust, r.same_plan ? "тот же план, что «Обычный»" : null, true);
++    sec.append(el("span", { id: "rsApplyAnchor", tabindex: "-1" }), box);
++    // per-case table in an accessible scroll region (N2 r9)
++    const t = el("table", { id: "rsTable", "aria-label": "Исходы по случаям" });
++    const hr = el("tr"); for (const h of ["Случай", "Ручной", "Обычный", "Устойчивый"]) hr.append(el("th", null, h));
++    const th = el("thead"); th.append(hr); t.append(th);
++    const tb = el("tbody");
++    r.nominal.per_case.forEach((pc, i) => {
++      const tr = el("tr", { "data-rs-row": pc.case_id });
++      tr.append(el("td", null, caseLabel(pc.case_id)));
++      for (const x of [man, r.nominal, r.robust]) {
++        if (!x) { tr.append(el("td", null, "—")); continue; }
++        const m = x.per_case[i].metrics, worst = x.worst_case_ids.includes(pc.case_id);
++        tr.append(el("td", null, (worst ? "★ " : "") + metricLine(m)));
++      }
++      tb.append(tr);
++    });
++    t.append(tb);
++    const wrap = el("div", { class: "tablewrap", role: "region", "aria-label": "Исходы по случаям (прокручивается)", tabindex: "0" });
++    wrap.append(t);
++    sec.append(wrap, el("p", { class: "muted" }, `★ — худший случай этого плана. Без вероятностей и усреднения по случаям; цена устойчивости — только расстояние по прямой. Просмотрено ${nf.format(r.evaluated)} наборов; ${r.objective_version}, ${r.metric_version}.`));
++  }
++  window.CITY_RESILIENCE_UI = { state: RS, addCase, removeCase, startRun, stopRun, envelope, validEnv, currentDigest };
++  U.render();
++})();

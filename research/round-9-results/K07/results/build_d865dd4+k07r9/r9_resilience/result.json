@@ -1,0 +1,283 @@
+{
+ "kind": "K07 round-9 browser tests: resilience panel on the real BUILD page",
+ "label": "build_d865dd4+k07r9",
+ "sha": "d865dd4+k07r9",
+ "app_root": "city-evidence",
+ "total": 20,
+ "pass": [
+  "RS1",
+  "RS2",
+  "RS3",
+  "RS4",
+  "RS5",
+  "RS7",
+  "RS7b",
+  "RS11",
+  "RS10",
+  "RS9",
+  "RS9b",
+  "RS8",
+  "RS16",
+  "RS12",
+  "RS14",
+  "RS13",
+  "RS18",
+  "RS17",
+  "RS11b",
+  "RS18b"
+ ],
+ "fail": [],
+ "test_incompatible": [],
+ "note": "BUILD's SYNTHETIC demo plan on the real slices; source record IDs are real; exclusions are conditional assumptions, not closures.",
+ "checks": [
+  {
+   "id": "RS1",
+   "area": "selector",
+   "expect": "the panel lists the real source records of the plan category (names, source, QA marks) and says «Условно исключаем … не подтверждение закрытия»",
+   "verdict": "PASS",
+   "observed": {
+    "n": 15,
+    "recs": 15
+   }
+  },
+  {
+   "id": "RS2",
+   "area": "selector",
+   "expect": "QA filter: «с QA-флагом» / «без QA-флага» show exactly the records with / without QA flags (QA does not exclude anything by itself)",
+   "verdict": "PASS",
+   "observed": {
+    "qaShown": 7,
+    "qaWant": 7,
+    "noShown": 8
+   }
+  },
+  {
+   "id": "RS3",
+   "area": "cases",
+   "expect": "keyboard only: Space chooses / un-chooses records, Tab reaches «Название случая», Enter adds case C1 with the 2 chosen records; selection cleared, focus back on the name field",
+   "verdict": "PASS",
+   "observed": {
+    "unchoose": true,
+    "cases": [
+     {
+      "id": "C1",
+      "label": "две записи",
+      "ids": [
+       "01961e84-815f-4bd1-85c3-6bf1734256ec",
+       "01eb7090-bb5f-4e52-b3c9-4ef95707ad67"
+      ]
+     }
+    ],
+    "focus": "rsLabel",
+    "tabs": 6
+   }
+  },
+  {
+   "id": "RS4",
+   "area": "cases",
+   "expect": "a second case with the same records is allowed and marked «тот же набор, что C1»; the message says the result does not change",
+   "verdict": "PASS",
+   "observed": {
+    "cases": [
+     "C1",
+     "C2"
+    ],
+    "msg": "Случай C2 «то же самое» добавлен: условно исключено 2 записей. Набор совпадает со случаем C1 — результат от повтора не меняется."
+   }
+  },
+  {
+   "id": "RS5",
+   "area": "cases",
+   "expect": "deleting a case with the keyboard removes it and keeps the focus in the panel (previous «Удалить» or the name field)",
+   "verdict": "PASS",
+   "observed": {
+    "cases": [
+     "C1"
+    ],
+    "focus": "rsDel_C1"
+   }
+  },
+  {
+   "id": "RS7",
+   "area": "compare",
+   "expect": "«Сравнить планы» (Enter): progress and focus on «Отменить сравнение» while running; at the end focus on the result heading; cards = engine (nominal, robust IDs), table rows base + cases",
+   "verdict": "PASS",
+   "observed": {
+    "mid": {
+     "running": true,
+     "focus": "rsCancel"
+    },
+    "focus": "rsResultTitle",
+    "cards": {
+     "manual": "без новых объектов",
+     "nominal": "K1, K2, K8",
+     "robust": "K1, K4, K6"
+    },
+    "ref": {
+     "status": "optimal",
+     "nominal": [
+      "K1",
+      "K2",
+      "K8"
+     ],
+     "robust": [
+      "K1",
+      "K4",
+      "K6"
+     ],
+     "price": 43.505636363636384,
+     "worstR": [
+      "C3"
+     ]
+    },
+    "rows": [
+     "base",
+     "C1",
+     "C3"
+    ]
+   }
+  },
+  {
+   "id": "RS7b",
+   "area": "compare",
+   "expect": "the price of robustness is shown in metres of the base mean (or «совпадает … 0 м»), never as money or probability",
+   "verdict": "PASS",
+   "observed": "Цена устойчивости: +44 м среднего расстояния в исходном срезе (устойчивый минус обычный). Это расстояние по прямой, не деньги и не время."
+  },
+  {
+   "id": "RS11",
+   "area": "null",
+   "expect": "with every record excluded and no site in the manual plan, the cell says «нет данных: у N точ. …» and the worst-case line names the unknown points without a «сумма 0 м»",
+   "verdict": "PASS",
+   "observed": {
+    "nullCell": "★ нет данных: у 10 точ. нет ни записи, ни выбранного места · охват 0/55",
+    "manualW": "худший случай: C3 «все записи категории» — 10 точ. без расстояния (нет ни записи, ни выбранного места)"
+   }
+  },
+  {
+   "id": "RS10",
+   "area": "apply",
+   "expect": "«Применить» (устойчивый) replaces the manual plan only on Enter/click; «Вернуть ручной план» restores it",
+   "verdict": "PASS",
+   "observed": {
+    "before": [],
+    "applied": [
+     "K1",
+     "K4",
+     "K6"
+    ],
+    "restored": []
+   }
+  },
+  {
+   "id": "RS9",
+   "area": "stale",
+   "expect": "editing the budget after the comparison (type + Tab): focus moves on, the result is marked stale and «Применить» is disabled",
+   "verdict": "PASS",
+   "observed": {
+    "stale": true,
+    "applyDisabled": true,
+    "focus": "plMax"
+   }
+  },
+  {
+   "id": "RS9b",
+   "area": "stale",
+   "expect": "changing the budget while comparing stops the run («Условия изменены»); its answer never appears",
+   "verdict": "PASS",
+   "observed": {
+    "msg": "Условия изменены — сравнение остановлено, его ответ не будет показан. Запустите снова.",
+    "result": null
+   }
+  },
+  {
+   "id": "RS8",
+   "area": "cancel",
+   "expect": "«Отменить сравнение»: no result, message, focus back on «Сравнить планы», nothing arrives later",
+   "verdict": "PASS",
+   "observed": {
+    "msg": "Сравнение отменено; ручной план не изменён, неполный результат не показывается.",
+    "focus": "rsRun"
+   }
+  },
+  {
+   "id": "RS16",
+   "area": "keyboard",
+   "expect": "the panel adds a bounded number of Tab stops (≤ 2 × records + 20) and no map mode",
+   "verdict": "PASS",
+   "observed": {
+    "tabStops": 20,
+    "records": 15
+   }
+  },
+  {
+   "id": "RS12",
+   "area": "limits",
+   "expect": "13 candidates: the panel says too_many_candidates (nothing removed automatically) and «Сравнить» is disabled; v2 still has all 13",
+   "verdict": "PASS",
+   "observed": {
+    "nc": 13,
+    "tooMany": "too_many_candidates: в плане 13 кандидатов > 12. Обычный план v2 считается как раньше; для анализа устойчивости уберите кандидатов сами — автоматически ничего не удаляется."
+   }
+  },
+  {
+   "id": "RS14",
+   "area": "reset",
+   "expect": "category change: cases and result reset (no IDs carried), the selector now lists the other category",
+   "verdict": "PASS",
+   "observed": {
+    "cases": 0,
+    "sources": 16
+   }
+  },
+  {
+   "id": "RS13",
+   "area": "reset",
+   "expect": "city switch: cases reset with a reason; the list shows Astana records; nothing from Shymkent is carried",
+   "verdict": "PASS",
+   "observed": {
+    "had": 1,
+    "city": "astana",
+    "msg": "Город изменён — случаи устойчивости сброшены: ID записей между городами не переносятся.",
+    "sources": 16
+   }
+  },
+  {
+   "id": "RS18",
+   "area": "general",
+   "expect": "no console or page errors on the desktop path",
+   "verdict": "PASS",
+   "observed": []
+  },
+  {
+   "id": "RS17",
+   "area": "390px",
+   "expect": "390 px: no horizontal page scroll, nothing sticks out of the plan card; the per-case table, if wider, scrolls inside a named, focusable region",
+   "verdict": "PASS",
+   "observed": {
+    "pageScroll": false,
+    "outside": [],
+    "tableScrolls": true,
+    "region": {
+     "role": "region",
+     "name": "Исходы по случаям (прокручивается)",
+     "tabindex": "0"
+    }
+   }
+  },
+  {
+   "id": "RS11b",
+   "area": "null",
+   "expect": "390 px: the «все записи» row of the manual plan shows the null message (no distance), not 0",
+   "verdict": "PASS",
+   "observed": "★ нет данных: у 10 точ. нет ни записи, ни выбранного места · охват 0/55"
+  },
+  {
+   "id": "RS18b",
+   "area": "general",
+   "expect": "no console or page errors at 390 px",
+   "verdict": "PASS",
+   "observed": []
+  }
+ ]
+}

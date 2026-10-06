@@ -1,7 +1,7 @@
 Задача / идентификатор: round-9 · K07 · «Исправление настоящего интерфейса» (research/round-9/tasks/K07.txt @ codex/research-import-2026-10-05 0ab1667)
 Агент / город / сфера: K07 / shared (Шымкент и Астана) / интерфейс планировщика BUILD
 Обновлено (дата, время, часовой пояс): 2026-10-06, UTC
-Статус: partial (этап 1 из 3 готов)
+Статус: partial (этапы 1 и 2 из 3 готовы)
 Рабочая ветка: claude/save-work-handoff-ku3ej3
 Исходный коммит, от которого началась работа: ab71b735e5300ec4bd1d267b01b9d7b67603e6b0 (K07 r8)
 Назначенные пути / модуль: research/round-9-results/K07/, этот файл
@@ -15,11 +15,14 @@
 - Тесты r8 повторно запущены без изменений на d865dd4 (byte-exact копия, manifest results/build_snapshot_d865dd4.json).
 - K2–K5 воспроизведены (FAIL); с патчем r9 на копии — PASS.
 - N2 переоценён тестом k07r9_n2_scroll.cjs: данные не теряются, область достижима с клавиатуры (Chromium 141). Это не дефект; добавлены role, имя и tabindex области вместо смены раскладки.
+- Этап 2: адаптер web/resilience_k07.js к настоящему plan.js (61/61 против Python-оракула) и панель web/resilience_panel_k07.js (20/20 в браузере на копии d865dd4 + патчи); patch/build_d865dd4_r9_resilience_panel.patch.
 
 Файлы результата (точные пути от корня):
 - research/round-9-results/K07/STATUS.md, HANDOFF.md
 - research/round-9-results/K07/patch/build_d865dd4_r9_keyboard.patch
-- research/round-9-results/K07/tests/k07r9_n2_scroll.cjs
+- research/round-9-results/K07/tests/k07r9_n2_scroll.cjs, oracle_resilience.py, resilience_k07.test.cjs, k07r9_resilience_ui.cjs
+- research/round-9-results/K07/web/resilience_k07.js, resilience_panel_k07.js; API.md
+- research/round-9-results/K07/patch/build_d865dd4_r9_resilience_panel.patch
 - research/round-9-results/K07/scripts/{extract_build.py, run_r9_review.sh}
 - research/round-9-results/K07/results/build_d865dd4/, build_d865dd4+k07r9/, build_snapshot_d865dd4.json
 
@@ -33,10 +36,10 @@
 - Данные — срез K10 в BUILD d865dd4. Точки, места и стоимости в тестах — SYNTHETIC или демо-набор BUILD.
 
 Незавершённое:
-- Этапы 2 и 3.
+- Этап 3.
 
 Следующий конкретный шаг:
-1. Этап 2: research/round-9-results/K07/web/resilience_k07.js (адаптер к plan.js) + панель + патч.
+1. Этап 3: расширить браузерные тесты страницы (desktop и 390 px), повторно проверить, не появился ли новый SHA BUILD.
 
 Для воспроизведения:
 - git fetch origin claude/beautiful-clarke-sbzomj; NODE_PATH="$(npm root -g)" bash research/round-9-results/K07/scripts/run_r9_review.sh

@@ -1,0 +1,26 @@
+{
+ "kind": "K07 round-9 browser tests: resilience panel on the real BUILD page",
+ "label": "build_d865dd4",
+ "sha": "d865dd4a124291e10dd0b7bb1d9eada20d34c268",
+ "app_root": "city-evidence",
+ "total": 1,
+ "pass": [],
+ "fail": [],
+ "test_incompatible": [
+  "P0"
+ ],
+ "note": "BUILD's SYNTHETIC demo plan on the real slices; source record IDs are real; exclusions are conditional assumptions, not closures.",
+ "checks": [
+  {
+   "id": "P0",
+   "area": "precondition",
+   "expect": "the page contains the K07 resilience panel (CITY_RESILIENCE_UI) and an engine (CITY_RESILIENCE or CITY_RESILIENCE_K07)",
+   "verdict": "TEST_INCOMPATIBLE",
+   "observed": {
+    "panel": false,
+    "engine": false,
+    "plan": true
+   }
+  }
+ ]
+}

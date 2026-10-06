@@ -6,7 +6,8 @@
 # new temp dir outside the repo and runs:
 #   BUILD's own tests (conformance, whatif, plan, smoke, whatif_smoke, plan_smoke; resilience tests if the commit has them),
 #   r8 tests reused unchanged: research/round-8-results/K07/tests/{build_engine_crosscheck,k07r8_build_planner}.cjs,
-#   r9 tests: tests/k07r9_n2_scroll.cjs (+ tests/k07r9_resilience_ui.cjs when present).
+#   r9 tests: tests/k07r9_n2_scroll.cjs, tests/resilience_k07.test.cjs (K07 adapter on this plan.js vs the Python oracle),
+#   tests/k07r9_resilience_ui.cjs (panel in the page; on a build without the panel it reports TEST_INCOMPATIBLE P0).
 # Results: research/round-9-results/K07/results/<label>/…  Nothing in prototypes/city-evidence is changed.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../../../.." && pwd)"
@@ -27,6 +28,7 @@ review() {  # $1 app dir, $2 label, $3 sha text
   echo "[$2] r8 engine vs oracle: $(node "$R8/tests/build_engine_crosscheck.cjs" --app-root "$APP" --out "$OUTD/r8_engine" | tail -1)"
   echo "[$2] r8 browser review: $(node "$R8/tests/k07r8_build_planner.cjs" --app-root "$APP" --label "$2" --sha "$3" --out "$OUTD/r8_browser" | tail -1)"
   echo "[$2] r9 N2 assessment: $(node "$K/tests/k07r9_n2_scroll.cjs" --app-root "$APP" --label "$2" --sha "$3" --out "$OUTD/r9_n2" | tail -1)"
+  echo "[$2] r9 resilience adapter on this plan.js (headless, Python oracle): $(node "$K/tests/resilience_k07.test.cjs" --app-root "$APP" --out "$OUTD/r9_resilience_calc" | tail -1)"
   if [ -f "$K/tests/k07r9_resilience_ui.cjs" ]; then
     echo "[$2] r9 resilience UI: $(node "$K/tests/k07r9_resilience_ui.cjs" --app-root "$APP" --label "$2" --sha "$3" --out "$OUTD/r9_resilience" | tail -1)"
   fi
