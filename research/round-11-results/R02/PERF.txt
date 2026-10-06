@@ -1,0 +1,27 @@
+R02 — ЗАМЕР ЗАПРОСОВ И ИНДЕКСЫ (2026-10-06, локальный контейнер, Python 3.13.16, SQLite 3.45.1)
+
+Вход: временная база /tmp (не в репозитории), 3000 синтетических объектов, 1500 опубликованы,
+случайные kind/status/даты, scrypt понижен только для заполнения. Скрипт — в истории сессии R02,
+воспроизводится заполнением через ObjectRepository.create/publish в цикле.
+
+Заполнение 3000 create + 1500 publish: 14,1 c (≈3 мс на транзакцию, synchronous=FULL, WAL).
+
+Среднее время (20 повторов):
+  GET /objects (страница 50)                    1,37 мс
+  GET /objects?kind=roadworks&status=planned    1,68 мс
+  GET /objects?from=2026-10-01&to=2026-10-31    1,26 мс
+  GET /staff/objects (страница 50)              2,74 мс
+  GET /objects/{id} (+history)                  0,48 мс
+  GET /staff/objects/{id} (+history)            0,64 мс
+
+EXPLAIN QUERY PLAN:
+  публичный список (с фильтрами и без)      SCAN civic_public_objects USING INDEX civic_public_order
+  последняя публикация объекта              SEARCH civic_history USING INDEX (object_id=?)
+  поиск импортированной записи              SEARCH civic_objects USING INDEX (import_source, import_external_id)
+  лимит неудачных входов                    SEARCH civic_login_failures USING COVERING INDEX
+  счётчик кандидатов импорта на объект      SCAN civic_import_candidates   ← полный проход на каждую
+                                            staff-карточку (50 на страницу списка)
+
+Решение: миграция 3 добавляет только индекс civic_import_candidates(object_id) — единственный
+измеренный полный проход. Отдельные индексы kind/status/дат не добавлены: при пилотном объёме
+порядок по civic_public_order с фильтром дешевле и не требует поддержки лишних индексов.

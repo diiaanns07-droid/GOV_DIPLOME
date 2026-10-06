@@ -286,3 +286,34 @@ def test_runtime_database_files_are_not_in_web_or_git():
     if runtime.exists():
         ignored = subprocess.run(["git", "check-ignore", "-q", str(runtime / "civic.sqlite3")], cwd=REPO_ROOT)
         assert ignored.returncode == 0
+
+
+def test_adapter_guards_staff_routes_of_other_modules(tmp_path):
+    """Обработчик R06 под /staff/ получает запрос только после проверки сессии/CSRF у R02."""
+    service = CivicService(tmp_path / "guard.sqlite3")
+    service.accounts.create_user("editor1", PASSWORD)
+    calls = []
+
+    def fake_feedback(method, path, query, body, context):
+        if not path.startswith("/api/civic/v1/staff/feedback") and path != "/api/civic/v1/feedback":
+            return None
+        principal = service.resolve_principal(context)
+        calls.append((method, path, principal.username if principal else None))
+        return {"status": 200, "headers": {"Content-Type": "application/json; charset=utf-8"},
+                "body": {"ok": True, "data": {"queue": []}}}
+
+    adapter = CivicHttpAdapter(service, extra_handlers=[fake_feedback])
+    server = ThreadingHTTPServer(("127.0.0.1", 0), make_reference_handler(adapter))
+    server.daemon_threads = True
+    with running(server) as port:
+        anonymous = Client(port)
+        assert anonymous.request("GET", "/staff/feedback")[0] == 401
+        assert anonymous.request("POST", "/feedback", {"text": "x"})[0] == 200  # публичный маршрут R06
+        editor = Client(port).login()
+        assert editor.request("GET", "/staff/feedback")[0] == 200
+        no_csrf = Client(port)
+        no_csrf.cookie = editor.cookie
+        status, _, body = no_csrf.request("POST", "/staff/feedback/f1/moderate", {"action": "approve"})
+        assert status == 403 and body["error"]["code"] == "csrf_failed"
+        assert editor.request("POST", "/staff/feedback/f1/moderate", {"action": "approve"})[0] == 200
+    assert [c[2] for c in calls] == [None, "editor1", "editor1"]

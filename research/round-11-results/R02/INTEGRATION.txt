@@ -1,0 +1,179 @@
+R02 → R01 / R03 / R04 / R06 / R10 — ИНТЕГРАЦИЯ civic_store (раунд 11, civic-v1)
+Ветка: claude/trusting-ptolemy-6ms354 (GOV_DIPLOME). PACK_SHA 9c2f5c0dae14b46c0697a9dfc7f854351bfd570d.
+Импортировать пути: ui/civic_store/ и tests/civic/R02/ по SHA из DELIVERY.json (code_commit).
+Зависимости: только стандартная библиотека Python (sqlite3 ≥ 3.24, Python ≥ 3.12 как у проекта).
+requirements*.txt менять не нужно.
+
+0. КОРОТКО
+   python -m ui.civic_store init                          # .runtime/civic.sqlite3 (WAL), миграции
+   python -m ui.civic_store create-editor editor1         # пароль через getpass, дважды
+   python -m ui.civic_store seed-demo                     # 4 синтетические записи, 3 опубликованы
+   git apply research/round-11-results/R02/web_server.patch
+   python -B app.py --open                                # civic API на /api/civic/v1
+   Без civic: python -B app.py --no-civic. Другая база: --civic-db PATH или $CIVIC_DB_PATH.
+
+1. ЧТО МЕНЯЕТ R01 В ОБЩИХ ФАЙЛАХ (R02 их не редактировал)
+   a) ui/web_server.py — research/round-11-results/R02/web_server.patch (≈40 строк, git apply --check OK
+      на b2cb2e0 = версия в ветке R01):
+      - Handler.civic_route(): если путь под /api/civic/v1 — отдать CivicHttpAdapter.serve(self);
+        вызывается первой строкой do_GET/do_HEAD/do_POST и в новых do_PUT/do_PATCH/do_DELETE
+        (не-civic PUT/PATCH/DELETE получают прежний JSON 405);
+      - create_server(..., civic_db=None): при civic_db строит CivicService + CivicHttpAdapter(bind_host=host);
+        без civic_db поведение и существующие тесты прежние (база не создаётся);
+      - main(): --civic-db (по умолчанию $CIVIC_DB_PATH или .runtime/civic.sqlite3), --no-civic.
+      Тест tests/civic/R02/test_r02_http.py::test_patch_applies_to_real_web_server_and_serves_both_apis
+      применяет патч к копии общего файла и гоняет настоящие HTTP-запросы: старые /api/health и
+      /api/validate работают, civic login/create/publish/public list работают.
+   b) .gitignore — добавить строку ".runtime/" (R02 дополнительно сам пишет .runtime/.gitignore = "*").
+   c) Allowlist статики (ASSETS) и POST_ROUTES НЕ расширять: R02 не раздаёт файлов; civic-маршруты
+      перехватываются по префиксу ДО проверки POST_ROUTES. Файл базы никогда не добавлять в ASSETS.
+      Публичный allowlist полей объекта — в ui/civic_store/dto.py (PUBLIC_FIELDS), его не трогать.
+   d) run.bat/run.sh: перед первым запуском `python -m ui.civic_store init` (CivicService и сам
+      мигрирует при старте; init нужен, чтобы создать редактора до открытия сайта).
+
+2. PYTHON API (CONTRACT §3)
+   from ui.civic_store import CivicService, CivicHttpAdapter
+   civic = CivicService(db_path, clock=None)     # clock() -> aware datetime; по умолчанию UTC now
+   civic.handle(method, path, query, body, context) -> None | {"status": int, "headers": dict, "body": envelope}
+     method  "GET"/"HEAD"/"POST"/...; path — ПОЛНЫЙ путь (/api/civic/v1/objects), percent-encoded как пришёл;
+     query   сырая строка (urlsplit(...).query) или dict; body — bytes (как прочитаны) | str | dict | None;
+     context {"headers": HTTPMessage|dict, "client_ip": str, "host_allowed": bool,
+              "is_same_origin": True|False|None, "is_https": bool}
+     None    — путь не принадлежит R02 (вне префикса или маршрут другого модуля: /feedback,
+               /objects/{id}/feedback, /staff/feedback...). Адаптер тогда спрашивает следующий
+               обработчик, и если никто не взял — 404 в конверте.
+   civic.resolve_principal(context) -> Principal | None    # только cookie-сессия; body не читается
+     Principal: user_id, username, display_name, role ("editor"|"admin"), public_label,
+                is_staff, check_csrf(header_value) -> bool, public_user() -> {name, role}
+   civic.require_staff(context, unsafe=True|False) -> (Principal, None) | (None, ответ-ошибка)
+     unsafe=True дополнительно требует X-CSRF-Token и не-кросс-доменный запрос.
+   CivicHttpAdapter(civic, extra_handlers=(), bind_host="127.0.0.1", allowed_hosts=())
+     .handles(raw_path) -> bool;  .serve(handler) — читает тело (≤64 КиБ, только application/json),
+     строит context, вызывает обработчики, пишет JSON.
+   Безопасные значения по умолчанию: context без host_allowed=True — staff и /session закрыты;
+   is_same_origin=False — любые POST staff/session отклоняются (403).
+
+3. HTTP API /api/civic/v1 (конверт {ok:true,data} | {ok:false,error:{code,message,fields?}})
+   ПУБЛИЧНО (без сессии)
+   GET  /objects?kind=&status=&from=&to=&cursor=&limit=
+        kind/status — одно значение или через запятую; from/to — YYYY-MM-DD включительно; limit 1–100 (50).
+        data = {items:[public object], next_cursor: str|null,
+                date_filter?: {from, to, basis, incomplete_interval_ids:[id]}}   # только если from/to заданы
+        Порядок: updated_at убыв., id убыв. Фильтр по датам: объект подходит, если его известный интервал
+        [planned_start, current_planned_end] пересекает [from, to]; объект без обеих дат исключается;
+        с одной известной границей — включается и попадает в incomplete_interval_ids. Статус из дат не выводится.
+   GET  /objects/{id}   data = {item, history:[{id,object_id,revision,at,changed_fields,reason,public_actor_label}]}
+        draft/archived/несуществующий → 404 not_found (неотличимы). Пустой/недопустимый id → 400.
+   СЕССИЯ
+   GET  /session        data = {authenticated, user:{name,role}|null, csrf_token|null}
+   POST /session/login  {username,password} → data как /session + Set-Cookie
+   POST /session/logout {} (+ X-CSRF-Token, если сессия жива) → {authenticated:false,user:null,csrf_token:null}
+   РЕДАКТОР (cookie; POST также X-CSRF-Token)
+   GET  /staff/objects?kind=&status=&publication=&from=&to=&cursor=&limit=  data = {items:[staff item], next_cursor}
+   GET  /staff/objects/{id}            data = {item: staff item, history:[staff history]}
+   POST /staff/objects                 тело = поля объекта civic-v1 (+ internal_notes) → 201 {item}
+        заголовок Idempotency-Key (8–64 [A-Za-z0-9._:-]) — повтор с тем же ключом → 200 тот же item.
+   POST /staff/objects/{id}/update     {expected_revision, changes:{...частично...}, reason} → {item}
+        schedule/budget/responsible сливаются по ключам; geometry/source_refs заменяются целиком.
+   POST /staff/objects/{id}/publish    {expected_revision, reason} → {item}
+   POST /staff/objects/{id}/archive    {expected_revision, reason} → {item}
+   DELETE и прочие методы → 405 (Allow). Физического удаления нет.
+
+   staff item = public object (working copy) + {
+     internal_notes: str,
+     staff: {created_at, created_by, updated_by, first_published_at, published_revision,
+             has_unpublished_changes: bool, public_item: public object|null (что видит житель сейчас),
+             original_planned_end_locked: bool, import: {source, external_id}|null,
+             pending_import_candidates: int}}
+   staff history entry = {id, object_id, revision, at, action (create|update|publish|archive|import_create|
+     import_update), publication, changed_fields, diff:{path:{before,after}}, reason, actor_kind,
+     actor_label (логин), public_actor_label, is_public}
+   Ответы записи могут содержать data.ignored_fields — служебные поля из тела, которые сервер не принял
+   (id, revision, publication, updated_at, actor, role, ...; в update — с префиксом "changes.").
+
+4. СЕМАНТИКА ПУБЛИКАЦИИ (важно для R03/R04)
+   - Рабочая копия и публичный снимок разделены. update меняет только рабочую копию (revision+1);
+     житель видит изменения после publish. has_unpublished_changes и staff.public_item дают «было/станет».
+   - publish: reason обязателен и ПУБЛИЧЕН (попадает в history). reason у update — служебный
+     (виден только в staff history). Для опубликованного объекта update тоже требует reason.
+     R04: удобно подставлять последний reason правки как черновик причины публикации.
+   - original_planned_end: до первой публикации редактируется свободно; если пуст, первая публикация
+     записывает в него current_planned_end; после первой публикации изменение → 422
+     (fields["schedule.original_planned_end"]). Перенос срока — через current_planned_end + reason.
+   - Публичная history: только события publish (и archive ранее опубликованного), changed_fields — пути
+     вида "schedule.current_planned_end", "status", "publication". Причина переноса для карточки R03 —
+     reason записи, у которой changed_fields содержит schedule.current_planned_end.
+   - Повторный publish без изменений — 200 без новой ревизии; archive скрывает объект публично
+     (404), история сохраняется; publish архивного объекта возвращает его.
+   - Перед публикацией: evidence_type observed|derived требует хотя бы один source_ref.
+   - Сервер назначает id ("ast-" + 10 hex), revision, updated_at (UTC ISO 8601), publication.
+
+5. ПРОВЕРКА ДАННЫХ (422 validation_failed, error.fields: {путь: сообщение})
+   title 1–200, description ≤5000, evidence_notes ≤2000, internal_notes ≤5000, reason ≤1000 символов;
+   простой текст: без HTML-тегов (<b>, <script>...), управляющих и bidi-символов.
+   Даты YYYY-MM-DD (1990–2100, реальные); окончания не раньше planned_start; actual_end только при
+   status=completed и не в будущем (по Астане UTC+5); actual_end никогда не ставится автоматически.
+   budget.amount_kzt: null или конечное число 0..1e13; при сумме нужны basis≠unknown и source_id из
+   source_refs; synthetic не может иметь сумму. 0 и null различаются.
+   geometry: null | Point | LineString | Polygon в WGS84 [lon,lat] внутри рамки Астаны
+   (70.8–72.1 в.д., 50.75–51.6 с.ш.; ловит перепутанные lon/lat); без геометрии precision = unknown.
+   source_refs ≤30: id уникален, url только http/https без логина, access_status=fetched требует
+   retrieved_at, fields — пути полей civic-v1. Неизвестные поля → 422; NaN/Infinity/битый JSON → 400.
+
+6. КОДЫ ОШИБОК
+   400 bad_request · 401 unauthenticated / invalid_credentials · 403 forbidden_host / cross_origin /
+   csrf_failed / forbidden · 404 not_found · 405 method_not_allowed (+Allow) · 409 stale_revision
+   (+error.current_revision) · 411 length_required · 413 payload_too_large · 415 unsupported_media_type ·
+   422 validation_failed (+fields) · 429 rate_limited (+Retry-After, error.retry_after) ·
+   503 busy (+Retry-After: 1; база занята дольше busy_timeout) · 500 internal_error (без traceback).
+
+7. ЗАГОЛОВКИ
+   Ответ: Content-Type application/json; charset=utf-8, Cache-Control no-store, X-Content-Type-Options
+   nosniff, Vary Cookie, Referrer-Policy same-origin, X-Frame-Options DENY, CORP same-origin.
+   Set-Cookie: civic_session=<токен>; Path=/api/civic/v1; Max-Age=28800; HttpOnly; SameSite=Strict
+   (+ Secure, если запрос пришёл по TLS). Logout/истёкшая сессия: Max-Age=0.
+   Запрос: X-CSRF-Token для всех POST редактора и logout; Idempotency-Key — необязательно для создания.
+
+8. ДЛЯ api.request (R01)
+   fetch(url, {method, credentials: "same-origin", headers: {"Content-Type": "application/json",
+   "X-CSRF-Token": csrf}}). csrf брать из GET /session после входа и после перезагрузки страницы;
+   хранить только в памяти (не localStorage). 403 csrf_failed → один раз перечитать /session и повторить;
+   401 → показать вход. Браузер сам шлёт Origin — сервер сверяет его с Host. Не устанавливать CORS.
+
+9. R06 (обращения) — подключение без доступа к таблицам R02
+   adapter = CivicHttpAdapter(civic, extra_handlers=[
+       lambda m, p, q, b, c: feedback.handle(m, p, q, b, civic.resolve_principal(c), c)], bind_host=host)
+   object_lookup = civic.lookup_public_object   # (object_id) -> public object | None, только опубликованные
+   Для /staff/feedback* R06 вызывает civic.require_staff(context, unsafe=(method == "POST")) и
+   возвращает его ответ-ошибку, если доступ закрыт. Адаптер дополнительно сам проверяет сессию и CSRF
+   для любых POST под /api/civic/v1/staff/, которые не взял R02 (защита по умолчанию).
+   Таблицы feedback_* в том же файле допустимы — правила в MIGRATIONS.txt.
+
+10. R09 (помощник) — verified_context на сервере
+   Публичные факты объекта: civic.lookup_public_object(id) (тот же allowlist DTO). Черновики и
+   internal_notes в контекст помощника не передавать.
+
+11. ДЕМО И ИМПОРТ
+   python -m ui.civic_store seed-demo [--package data/civic/astana/demo_synthetic.json] [--no-publish]
+     Только slice.demo=true и evidence_type=synthetic; публикует по suggested_publication/publication
+     записи пакета с причиной «Демо: ...»; у demo-r02-sidewalk-delay есть публичный перенос срока.
+   python -m ui.civic_store import data/civic/astana/objects.json [--dry-run] [--source S] [--allow-partial]
+     Формат R05; создаёт только draft; повтор не дублирует; изменения в объектах, уже правленных
+     или опубликованных редактором, ложатся в civic_import_candidates (editor_review); исчезнувшие
+     записи только перечисляются (report_missing). Синтетика в реальный срез не импортируется.
+
+12. ЭКСПЛУАТАЦИЯ
+   python -m ui.civic_store status | list-editors | disable-editor U | set-password U | revoke-sessions [U]
+   python -m ui.civic_store backup /вне/репозитория/civic-YYYYMMDD.sqlite3
+   python -m ui.civic_store restore FILE --yes      (сервер остановить; прежняя база сохраняется рядом)
+   python -m ui.civic_store export-audit [--since ISO] [--out FILE]   (служебная история, JSON Lines)
+
+13. ПРЕДЕЛЫ И РИСКИ (честно)
+   - Локальный пилот: учётные записи в SQLite, без SSO/MFA/восстановления пароля через почту, без
+     уведомлений о блокировке. Не production IAM и не сервис для открытого интернета.
+   - По умолчанию HTTP на loopback; cookie без Secure. Для сети нужен TLS-прокси и явный allowed_hosts;
+     за прокси client_ip = адрес прокси, и лимит входов станет общим (X-Forwarded-For не доверяется).
+   - Лимит неудачных входов best-effort: при параллельных попытках возможно превышение на 1–3.
+   - scrypt N=2^14,r=8,p=5 (~0,2–0,3 c, 16 МиБ на проверку; не более 4 одновременно).
+   - Резервные копии содержат хэши паролей и служебные заметки — хранить как секрет.
+   - SQLite: один писатель за раз; рассчитано на десятки редакторов, не на тысячи одновременных записей.

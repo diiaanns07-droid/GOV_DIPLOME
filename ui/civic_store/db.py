@@ -168,6 +168,10 @@ MIGRATIONS: list[tuple[int, str, tuple[str, ...]]] = [
             PRIMARY KEY (user_id, request_key)
         )""",
     )),
+    # Измерено (PERF.txt): счётчик кандидатов импорта на каждую staff-карточку шёл полным проходом.
+    (3, "index import candidates by object", (
+        "CREATE INDEX civic_import_candidates_object ON civic_import_candidates(object_id)",
+    )),
 ]
 SCHEMA_VERSION = MIGRATIONS[-1][0]
 

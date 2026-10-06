@@ -11,27 +11,58 @@
     "research/round-11-results/R02/",
     "research/handoffs/astana/R02/round-11/STATUS.md"
   ],
-  "integration_notes": "research/round-11-results/R02/INTEGRATION.txt (появится в следующих checkpoint; сейчас только схема)",
-  "code_commit": null,
+  "integration_notes": "research/round-11-results/R02/INTEGRATION.txt; patch research/round-11-results/R02/web_server.patch; migration policy research/round-11-results/R02/MIGRATIONS.txt",
+  "code_commit": "92f7aba",
   "checks": [
     {
-      "name": "schema-and-empty-db",
+      "name": "r02-unit-and-integration",
       "status": "PASS",
       "command": "python -m pytest -q -p no:cacheprovider tests/civic/R02",
-      "input": "temporary SQLite files in pytest tmp_path",
-      "reason": "13 passed: migrations, idempotency, append-only history, path policy, rollback"
+      "input": "temporary SQLite files in pytest tmp_path; real HTTP to 127.0.0.1:0 servers",
+      "reason": "150 passed, 1 skipped (skip: import of data/civic/astana/demo_synthetic.json, present only after R01 integrates R05)"
     },
     {
-      "name": "civic-service-http",
+      "name": "repository-suite-regression",
+      "status": "PASS",
+      "command": "python -m pytest -q -p no:cacheprovider",
+      "input": "whole repository at checkpoint 4 (92f7aba)",
+      "reason": "279 passed, 1 skipped; existing tests unaffected (create_server without civic_db behaves as before)"
+    },
+    {
+      "name": "web_server-patch-on-real-handler",
+      "status": "PASS",
+      "command": "python -m pytest -q -p no:cacheprovider tests/civic/R02/test_r02_http.py -k patch",
+      "input": "git apply research/round-11-results/R02/web_server.patch to a temp copy of ui/web_server.py (b2cb2e0)",
+      "reason": "legacy /api/health and /api/validate still work; civic login/create/publish/public list work"
+    },
+    {
+      "name": "r05-demo-slice-compatibility",
+      "status": "PASS",
+      "command": "python -m ui.civic_store --db /tmp/.../c.sqlite3 import r05_demo.json --dry-run",
+      "input": "git show origin/claude/intelligent-sagan-7shpeh:data/civic/astana/demo_synthetic.json (9 synthetic items)",
+      "reason": "9/9 pass R02 validation; dry-run plan create 9; nothing written"
+    },
+    {
+      "name": "independent-adversarial-review",
       "status": "NOT_RUN",
       "command": null,
       "input": null,
-      "reason": "CivicService.handle ещё не реализован (checkpoint 1 = схема)."
+      "reason": "workflow running at this checkpoint; results and fixes go into the next checkpoint"
+    },
+    {
+      "name": "browser-walkthrough",
+      "status": "NOT_RUN",
+      "command": null,
+      "input": null,
+      "reason": "R02 has no UI; browser checks belong to R03/R04 after R01 integration"
     }
   ],
   "limitations": [
-    "Checkpoint 1: только схема/миграции, без API.",
-    "Локальный пилот на SQLite; не production IAM/SSO и не сервис для открытого интернета."
+    "Local pilot auth (SQLite accounts, scrypt, cookie sessions); not production IAM/SSO, no MFA or e-mail recovery.",
+    "Default HTTP on loopback; network exposure needs a TLS proxy and explicit allowed_hosts.",
+    "Login rate limit is best-effort under parallel attempts; behind a proxy all clients share one IP.",
+    "SQLite single writer: suited for tens of editors, not thousands of concurrent writes.",
+    "Real Astana data: R05 reports 0 confirmed records (egress blocked); demo data is synthetic and labelled."
   ],
-  "next_step": "Валидация civic-v1 и CRUD с публичной проекцией по allowlist."
+  "next_step": "Apply review findings, then R01 imports ui/civic_store/ and applies web_server.patch."
 }

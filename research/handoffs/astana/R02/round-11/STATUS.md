@@ -47,5 +47,14 @@
 - Проверка: `python -m pytest -q -p no:cacheprovider` (весь репозиторий) → 279 passed, 1 skipped
   (skip — тест импорта файла R05, появится после интеграции R01).
 
+## Checkpoint 5 — документы, политика миграций, аудит, индекс (DONE)
+- `research/round-11-results/R02/INTEGRATION.txt` (init, handle/context, endpoints, заголовки, коды ошибок,
+  api.request, R04/R03/R06/R09 заметки, риски), `MIGRATIONS.txt` (feedback_* R06 в том же файле), `PERF.txt`.
+- Миграция 3: индекс civic_import_candidates(object_id) — единственный измеренный полный проход.
+- `CivicService.lookup_public_object(id)` для R06 object_lookup/R09; `GET /staff/audit` (редакторский экспорт истории);
+  адаптер требует сессию (и CSRF для записи) у staff-маршрутов других модулей.
+- Проверка: tests/civic/R02 → 150 passed, 1 skipped.
+- Запущено независимое состязательное ревью (workflow): безопасность, утечки/контракт, целостность, fuzz, interop.
+
 ## Следующий шаг
-INTEGRATION.txt, MIGRATIONS.txt (политика для R06 feedback_*), DELIVERY.json; затем независимое ревью безопасности.
+Разобрать подтверждённые находки ревью, исправить, повторить тесты, финальный DELIVERY.json.

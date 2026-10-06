@@ -11,6 +11,7 @@ import base64
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 import json
+import re
 import secrets
 
 from . import dto
@@ -473,6 +474,57 @@ class ObjectRepository:
                 (*params, filters["limit"] + 1)).fetchall()
             page = self._page(rows, filters, lambda r: self._staff_item(conn, r["id"]))
         return page
+
+    def audit_page(self, query: dict) -> dict:
+        """Ограниченная служебная выгрузка истории для редактора (без снимков и паролей).
+
+        ?since=ISO-время (включительно) &object_id= &after=<id записи> &limit=1..500 (200).
+        """
+        def single(name):
+            items = query.get(name, [])
+            if len(items) > 1:
+                raise BadRequest("Параметр указан несколько раз.", {name: "Один раз."})
+            return items[0] if items else None
+
+        where, params = [], []
+        since = single("since")
+        if since is not None:
+            if len(since) > 40 or not re.match(r"^\d{4}-\d{2}-\d{2}", since):
+                raise BadRequest("Недопустимый since.", {"since": "ISO 8601, например 2026-10-01"})
+            where.append("at >= ?")
+            params.append(since)
+        object_id = single("object_id")
+        if object_id is not None:
+            if not is_valid_id(object_id):
+                raise BadRequest("Недопустимый ID объекта.", {"object_id": "Недопустимый ID."})
+            where.append("object_id = ?")
+            params.append(object_id)
+        after = single("after")
+        if after is not None:
+            if not after.isdigit() or len(after) > 18:
+                raise BadRequest("Недопустимый after.", {"after": "id записи из next_after"})
+            where.append("id > ?")
+            params.append(int(after))
+        limit = single("limit") or "200"
+        if not limit.isdigit() or not 1 <= int(limit) <= 500:
+            raise BadRequest("Недопустимый limit.", {"limit": "Целое 1–500."})
+        limit = int(limit)
+        clause = (" WHERE " + " AND ".join(where)) if where else ""
+        with self.db.read() as conn:
+            rows = conn.execute(
+                f"""SELECT id, object_id, revision, at, action, publication, changed_fields_json,
+                           diff_json, reason, actor_kind, actor_label, public_actor_label, is_public
+                    FROM civic_history{clause} ORDER BY id LIMIT ?""", (*params, limit + 1)).fetchall()
+        more = len(rows) > limit
+        rows = rows[:limit]
+        entries = [{
+            "id": r["id"], "object_id": r["object_id"], "revision": r["revision"], "at": r["at"],
+            "action": r["action"], "publication": r["publication"],
+            "changed_fields": _loads(r["changed_fields_json"]), "diff": _loads(r["diff_json"]),
+            "reason": r["reason"], "actor_kind": r["actor_kind"], "actor_label": r["actor_label"],
+            "public_actor_label": r["public_actor_label"], "is_public": bool(r["is_public"]),
+        } for r in rows]
+        return {"entries": entries, "next_after": str(rows[-1]["id"]) if more else None}
 
     @staticmethod
     def _page(rows, filters, render) -> dict:

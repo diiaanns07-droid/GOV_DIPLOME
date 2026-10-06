@@ -23,7 +23,7 @@ def tables(path):
 
 def test_empty_database_in_tmp_dir_reads_as_empty(tmp_path):
     database = Database(tmp_path / "civic.sqlite3")
-    assert database.migrate() == [1, 2]
+    assert database.migrate() == [1, 2, 3]
     assert tables(database.path) == EXPECTED_TABLES
     with database.read() as conn:
         assert conn.execute("SELECT COUNT(*) FROM civic_objects").fetchone()[0] == 0
@@ -38,7 +38,7 @@ def test_empty_database_in_tmp_dir_reads_as_empty(tmp_path):
 
 def test_migrate_is_idempotent_and_survives_restart(tmp_path):
     path = tmp_path / "civic.sqlite3"
-    assert Database(path).migrate() == [1, 2]
+    assert Database(path).migrate() == [1, 2, 3]
     again = Database(path)
     assert again.migrate() == []
     assert set(again.applied_migrations()) == set(range(1, SCHEMA_VERSION + 1))

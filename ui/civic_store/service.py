@@ -180,6 +180,15 @@ class CivicService:
             return None, error(403, "csrf_failed", "Неверный CSRF-токен: обновите сессию (GET /session).")
         return principal, None
 
+    def lookup_public_object(self, object_id):
+        """Опубликованный объект (публичный DTO) либо None — для R06 object_lookup и R09 контекста."""
+        if not is_valid_id(object_id):
+            return None
+        try:
+            return self.objects.get_public(object_id)["item"]
+        except NotFound:
+            return None
+
     def _clear_if_stale(self, context):
         if self._session_token(context) is not None:
             return {"Set-Cookie": clear_cookie(secure=bool((context or {}).get("is_https")))}
@@ -250,6 +259,8 @@ class CivicService:
             return {"GET": (self._staff_detail, (s[2],))}
         if n == 4 and s[:2] == ["staff", "objects"] and s[3] in ("update", "publish", "archive"):
             return {"POST": (self._staff_action, (s[2], s[3]))}
+        if s == ["staff", "audit"]:
+            return {"GET": (self._staff_audit, ())}
         return None
 
     # --- публичное --------------------------------------------------------------------
@@ -335,6 +346,12 @@ class CivicService:
         if ignored:
             data["ignored_fields"] = ignored
         return ok(data, status=201 if created else 200)
+
+    def _staff_audit(self, context, params, payload):
+        principal, denied = self.require_staff(context, unsafe=False)
+        if denied:
+            return denied
+        return ok(self.objects.audit_page(params))
 
     def _staff_detail(self, context, params, payload, object_id):
         principal, denied = self.require_staff(context, unsafe=False)

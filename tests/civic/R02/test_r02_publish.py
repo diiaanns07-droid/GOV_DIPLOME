@@ -197,3 +197,32 @@ def test_staff_list_filters_by_publication(editor, service):
     items = editor.get("/staff/objects", query="publication=published")["body"]["data"]["items"]
     assert [entry["id"] for entry in items] == [published["id"]]
     assert items[0]["staff"]["public_item"]["revision"] == published["revision"]
+
+
+def test_lookup_public_object_returns_only_published(editor, service):
+    draft = editor.create()
+    assert service.lookup_public_object(draft["id"]) is None
+    assert service.lookup_public_object("") is None and service.lookup_public_object("../x") is None
+    published = item_of(editor.publish(draft))
+    found = service.lookup_public_object(draft["id"])
+    assert found["revision"] == published["revision"] and "internal_notes" not in found
+    item_of(editor.archive(published, reason="снято"))
+    assert service.lookup_public_object(draft["id"]) is None
+
+
+def test_staff_audit_export_is_paginated_and_editor_only(editor, service):
+    for index in range(3):
+        item = editor.create(title=f"Аудит {index}", internal_notes="заметка")
+        editor.publish(item)
+    assert call(service, "GET", "/staff/audit")["status"] == 401
+    page = editor.get("/staff/audit", query="limit=4")["body"]["data"]
+    assert [entry["action"] for entry in page["entries"]] == ["create", "publish", "create", "publish"]
+    assert page["next_after"] == str(page["entries"][-1]["id"])
+    rest = editor.get("/staff/audit", query=f"after={page['next_after']}&limit=500")["body"]["data"]
+    assert len(rest["entries"]) == 2 and rest["next_after"] is None
+    only = editor.get("/staff/audit", query=f"object_id={item['id']}")["body"]["data"]["entries"]
+    assert {entry["object_id"] for entry in only} == {item["id"]}
+    for key in ("snapshot", "password_hash", "csrf"):
+        assert key not in str(page)
+    for bad in ("limit=0", "limit=501", "after=-1", "since=yesterday", "object_id=..%2F"):
+        assert editor.get("/staff/audit", query=bad)["status"] == 400, bad

@@ -1,0 +1,61 @@
+R02 — ПОЛИТИКА МИГРАЦИЙ SQLite И СОВМЕСТНОЕ ИСПОЛЬЗОВАНИЕ ФАЙЛА С R06 (feedback_*)
+Раунд 11, civic-v1. Владелец таблиц civic_* — R02 (ui/civic_store/db.py).
+
+1. ВЛАДЕНИЕ
+   - R02 создаёт и меняет только таблицы, индексы и триггеры с префиксом civic_.
+   - R06 создаёт и меняет только feedback_* (CONTRACT §3). R02 никогда не читает,
+     не мигрирует и не удаляет feedback_*; R06 не пишет в civic_* (объект получает
+     через object_lookup, личность — через principal от R02/R01).
+   - Учёт версий раздельный: civic_schema_migrations (R02) и, например,
+     feedback_schema_migrations (R06). PRAGMA user_version НЕ используется никем —
+     он один на файл, и два модуля перетирали бы его.
+   - Внешних ключей между модулями нет: feedback_* хранит object_id TEXT и проверяет его
+     функцией object_lookup (объект может быть архивирован, но не удаляется).
+
+2. ФАЙЛ
+   - Можно один файл (.runtime/civic.sqlite3) или отдельный (.runtime/civic_feedback.sqlite3).
+     Рекомендация R02: ОДИН файл — общая резервная копия/восстановление и одна точка WAL.
+     Если R06 выбирает отдельный файл — правила ниже всё равно действуют.
+   - Файл только вне репозитория или в .runtime/ (R02 сам отказывает для web/ и папок проекта
+     и создаёт .runtime/.gitignore = "*"). R01 должен добавить ".runtime/" в корневой .gitignore.
+
+3. СОЕДИНЕНИЯ И БЛОКИРОВКИ (обязательно для обоих модулей в одном файле)
+   - Соединение на операцию (ThreadingHTTPServer = поток на запрос); закрывать в finally.
+   - PRAGMA journal_mode=WAL (сохраняется в файле; включает R02 при init), busy_timeout ≥ 5000,
+     foreign_keys=ON, synchronous=FULL (или NORMAL), trusted_schema=OFF.
+   - Запись только короткой транзакцией BEGIN IMMEDIATE (сразу берёт блокировку записи,
+     не получает SQLITE_BUSY при повышении блокировки). Внутри транзакции — никакого сетевого
+     ввода-вывода, ожидания клиента или LLM.
+   - Ошибка "database is locked" после busy_timeout → HTTP 503 с Retry-After (так делает R02),
+     а не 500 и не повтор в цикле.
+
+4. ПРАВИЛА МИГРАЦИЙ
+   - Только добавление: CREATE TABLE / CREATE INDEX / ALTER TABLE ADD COLUMN с DEFAULT.
+     Никаких DROP, переименований и переписывания истории в той же версии.
+   - Применённая миграция не редактируется: R02 хранит checksum и отказывается работать,
+     если код и база расходятся; база новее кода — отказ (без понижения версии).
+   - Каждая миграция в одной транзакции вместе с записью в таблицу версий.
+   - Удаление данных: в v1 физического удаления объектов и истории нет (триггеры
+     civic_history_no_update/no_delete, civic_objects_no_delete). Сессии и неудачные входы —
+     служебные данные, их чистка разрешена.
+   - Если понадобится несовместимая перестройка: новая таблица + копирование + новая версия,
+     перед этим обязательный backup.
+
+5. ВЕРСИИ R02
+   1  civic-v1 initial schema: civic_users, civic_sessions, civic_login_failures, civic_objects,
+      civic_public_objects (публичная проекция), civic_history (append-only), civic_imports,
+      civic_import_candidates.
+   2  civic_create_requests (Idempotency-Key создания черновика).
+
+6. РЕЗЕРВНАЯ КОПИЯ И ВОССТАНОВЛЕНИЕ (целиком файл, включая feedback_*)
+   python -m ui.civic_store --db .runtime/civic.sqlite3 backup /path/outside/repo/civic-YYYYMMDD.sqlite3
+   python -m ui.civic_store --db .runtime/civic.sqlite3 restore /path/civic-YYYYMMDD.sqlite3 --yes
+   - backup использует SQLite backup API (согласованный снимок вместе с WAL) и integrity_check.
+   - restore: сервер остановить; копия проверяется (integrity_check, версия схемы ≤ кода);
+     текущая база сначала сохраняется как civic.pre-restore-<время>.sqlite3, затем заменяется.
+   - Копии содержат хэши паролей и служебные заметки: хранить вне репозитория и не публиковать.
+
+7. ПРОВЕРКА
+   tests/civic/R02/test_r02_schema.py — миграции, checksum, отказ от новой схемы, append-only;
+   tests/civic/R02/test_r02_migration_policy.py — чужие feedback_* таблицы в том же файле
+   переживают init/миграции/backup/restore R02 без изменений.
