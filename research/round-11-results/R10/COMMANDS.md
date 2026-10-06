@@ -1,6 +1,6 @@
 # R10 журнал команд (раунд 11)
 
-Время UTC; до 15:50 строки записаны вручную с точностью ±2 мин (точное время коммитов — `git log`), далее время берётся из `date -u` в той же команде. Машинные прогоны набора дополнительно пишут `journal` (каждый процесс, exit code) в runs/*.json.
+Время UTC; строки без `date -u` восстановлены по mtime файлов и `git log` (±1 мин) (точное время коммитов — `git log`), далее время берётся из `date -u` в той же команде. Машинные прогоны набора дополнительно пишут `journal` (каждый процесс, exit code) в runs/*.json.
 Рабочая копия: /home/user/GOV_DIPLOME (ветка claude/fervent-dijkstra-1cqrg5). Изолированные копии — `git worktree add --detach` во временном каталоге сессии.
 
 | UTC | Команда | Exit | Результат |
@@ -19,9 +19,9 @@
 | 15:47 | то же после патча `.gitignore` | 0 | `!! .runtime/` — игнорируется; `git apply --check patches/R01-gitignore-runtime.patch` OK |
 | 15:46 | `git commit` + `git push` | 0 | checkpoint 2 = 8c676dc, push OK |
 | 15:47 | `git commit` + `git push` | 0 | R10-D001 = 753bcf4, push OK |
-| 15:51 | `git worktree add --detach <tmp>/wt-r07-d77ec45 d77ec45` | 0 | R07 DELIVERY status=ready, code_commit d77ec45 |
-| 15:52 | `python3 -I -B tests/civic/R10/standalone/r07_typefuzz.py <wt-r07-d77ec45>` | 0 | 5/210 некорректных payload дают исключение (graph_id list/dict) → R10-D002 |
-| 15:53 | то же после patches/R07-graph-id-type.patch (во временной копии, затем откат) | 0 | 0/210 |
+| 15:48 | `git worktree add --detach <tmp>/wt-r07-d77ec45 d77ec45` | 0 | R07 DELIVERY status=ready, code_commit d77ec45 |
+| 15:49 | `python3 -I -B tests/civic/R10/standalone/r07_typefuzz.py <wt-r07-d77ec45>` | 0 | 5/210 некорректных payload дают исключение (graph_id list/dict) → R10-D002 |
+| 15:49 | то же после patches/R07-graph-id-type.patch (во временной копии, затем откат) | 0 | 0/210 |
 | 15:49 | повторный прогон фаззера на чистом d77ec45 | 0 | воспроизводится: 5/210 |
 | 15:50 | `git worktree add --detach … 6a28de2` (R02) и `… d8aff46` (R06) | 0 | изолированные копии для standalone |
 | 15:50 | standalone smoke: R10_TARGET=command, standalone_server.py serve --root <R02> --feedback-root <R06> | 0 | create-editor через pty/getpass ×2 OK; draft→404 публично; publish; DTO allowlist OK; feedback 201 pending |
