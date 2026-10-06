@@ -13,7 +13,8 @@ module.exports = function ({ appRoot, D, requireWeb }) {
   const cache = {};
   const ctxFor = (city) => cache[city] || (cache[city] = PL.makeContext(D, city, F));
   const ids = (p) => p && (p.ids || p.selected_ids || null);
-  const norm = (p) => p && { ids: ids(p), worst_vector: p.worst_vector || null, worst_case_ids: p.worst_case_ids || null };
+  const vec = (v) => (v && !Array.isArray(v) ? [v.unknown_count, v.weighted_sum_mm, v.max_mm] : v || null);   // {u, s, max} -> [u, s, max]
+  const norm = (p) => p && { ids: ids(p), worst_vector: vec(p.worst_vector), worst_case_ids: p.worst_case_ids || null };
   return {
     name: "build-resilience-import",
     snapshot: (city) => PL.sourceSnapshot(D, city, F),

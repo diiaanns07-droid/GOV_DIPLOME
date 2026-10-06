@@ -18,5 +18,6 @@ module.exports = function ({ D, requireWeb }) {
     optimize: (c, obj) => PL.optimizePlans(c, obj, { F }),
     sensitivity: (c, obj) => PL.sensitivity(c, obj, { F }),
     evaluate: (c, obj, ids) => PL.evaluatePlan(c, obj, ids),
+    raw: PL, F,                                  // for probes of other exported entry points (e.g. PL.internal)
   };
 };

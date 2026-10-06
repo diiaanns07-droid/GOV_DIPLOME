@@ -23,5 +23,6 @@ module.exports = function ({ appRoot, D, requireWeb }) {
     createSearch: (c, env) => RS.createResilienceSearch(c, env, { F }),
     optimize: (c, env) => RS.optimizeResilience(c, env, { F }),
     evaluate: (c, env, ids) => RS.evaluateResilience(c, env, ids),
+    raw: RS, F,
   };
 };

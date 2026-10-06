@@ -1,0 +1,452 @@
+{
+ "summary": {
+  "app_root": "r9_33cc635",
+  "timeout_ms": 10000,
+  "fast_ms": 200,
+  "total": 35,
+  "pass": 33,
+  "fail": [
+   "rs/R_selected_null"
+  ],
+  "not_run": 0,
+  "advisory": [
+   "v2/I_internal_export"
+  ],
+  "verdict": "FAIL"
+ },
+ "results": [
+  {
+   "group": "v2",
+   "id": "S17_create",
+   "what": "createSearch, 17 кандидатов",
+   "expect": "typed refusal before heavy work",
+   "outcome": "refused",
+   "ms": 5.27,
+   "code": "too_many_candidates",
+   "status": "PASS",
+   "detail": "too_many_candidates: кандидатов не больше 16, получено 17"
+  },
+  {
+   "group": "v2",
+   "id": "S20_create",
+   "what": "createSearch, 20 кандидатов",
+   "expect": "typed refusal before heavy work",
+   "outcome": "refused",
+   "ms": 8.83,
+   "code": "too_many_candidates",
+   "status": "PASS",
+   "detail": "too_many_candidates: кандидатов не больше 16, получено 20"
+  },
+  {
+   "group": "v2",
+   "id": "S17_optimize",
+   "what": "optimizePlans, 17 кандидатов",
+   "expect": "typed refusal before heavy work",
+   "outcome": "refused",
+   "ms": 5.41,
+   "code": "too_many_candidates",
+   "status": "PASS",
+   "detail": "too_many_candidates: кандидатов не больше 16, получено 17"
+  },
+  {
+   "group": "v2",
+   "id": "S20_optimize",
+   "what": "optimizePlans, 20 кандидатов",
+   "expect": "typed refusal before heavy work",
+   "outcome": "refused",
+   "ms": 5.38,
+   "code": "too_many_candidates",
+   "status": "PASS",
+   "detail": "too_many_candidates: кандидатов не больше 16, получено 20"
+  },
+  {
+   "group": "v2",
+   "id": "S17_sensitivity",
+   "what": "sensitivity, 17 кандидатов",
+   "expect": "typed refusal before heavy work",
+   "outcome": "refused",
+   "ms": 4.81,
+   "code": "too_many_candidates",
+   "status": "PASS",
+   "detail": "too_many_candidates: кандидатов не больше 16, получено 17"
+  },
+  {
+   "group": "v2",
+   "id": "S17_evaluate",
+   "what": "evaluatePlan, 17 кандидатов",
+   "expect": "typed refusal before heavy work",
+   "outcome": "refused",
+   "ms": 5.18,
+   "code": "too_many_candidates",
+   "status": "PASS",
+   "detail": "too_many_candidates: кандидатов не больше 16, получено 17"
+  },
+  {
+   "group": "v2",
+   "id": "M_after_validation",
+   "what": "объект прошёл validate, затем дополнен до 17 кандидатов → optimizePlans",
+   "expect": "typed refusal before heavy work",
+   "outcome": "refused",
+   "ms": 6.45,
+   "code": "too_many_candidates",
+   "status": "PASS",
+   "detail": "too_many_candidates: кандидатов не больше 16, получено 17"
+  },
+  {
+   "group": "v2",
+   "id": "M_after_validation_eval",
+   "what": "объект прошёл validate, затем вес стал строкой \"5\" → evaluatePlan",
+   "expect": "typed refusal before heavy work",
+   "outcome": "refused",
+   "ms": 5.82,
+   "code": "bad_weight",
+   "status": "PASS",
+   "detail": "bad_weight: p0: вес — целое 1..100"
+  },
+  {
+   "group": "v2",
+   "id": "T_weight_string",
+   "what": "вес \"5\" (строка) → evaluatePlan",
+   "expect": "typed refusal before heavy work",
+   "outcome": "refused",
+   "ms": 5.23,
+   "code": "bad_weight",
+   "status": "PASS",
+   "detail": "bad_weight: p0: вес — целое 1..100"
+  },
+  {
+   "group": "v2",
+   "id": "T_cost_string",
+   "what": "стоимость \"100\" (строка) → optimizePlans",
+   "expect": "typed refusal before heavy work",
+   "outcome": "refused",
+   "ms": 5.45,
+   "code": "bad_cost",
+   "status": "PASS",
+   "detail": "bad_cost: c0: стоимость — целое 1..1000000 условных единиц"
+  },
+  {
+   "group": "v2",
+   "id": "T_nan_coord",
+   "what": "lon = NaN → evaluatePlan",
+   "expect": "typed refusal before heavy work",
+   "outcome": "refused",
+   "ms": 4.9,
+   "code": "bad_coord",
+   "status": "PASS",
+   "detail": "bad_coord: p0: координаты не конечны или вне диапазона"
+  },
+  {
+   "group": "v2",
+   "id": "T_negative_weight",
+   "what": "вес −50 → optimizePlans",
+   "expect": "typed refusal before heavy work",
+   "outcome": "refused",
+   "ms": 5.53,
+   "code": "bad_weight",
+   "status": "PASS",
+   "detail": "bad_weight: p0: вес — целое 1..100"
+  },
+  {
+   "group": "v2",
+   "id": "T_dup_candidate",
+   "what": "повтор ID кандидата → optimizePlans",
+   "expect": "typed refusal before heavy work",
+   "outcome": "refused",
+   "ms": 6.02,
+   "code": "duplicate_id",
+   "status": "PASS",
+   "detail": "duplicate_id: candidates: c0"
+  },
+  {
+   "group": "v2",
+   "id": "T_max_selected_99",
+   "what": "max_selected 99 → optimizePlans",
+   "expect": "typed refusal before heavy work",
+   "outcome": "refused",
+   "ms": 5.88,
+   "code": "bad_max_selected",
+   "status": "PASS",
+   "detail": "bad_max_selected: max_selected — целое 0..5"
+  },
+  {
+   "group": "v2",
+   "id": "T_city_mismatch",
+   "what": "city_id astana при контексте Шымкента → evaluatePlan",
+   "expect": "typed refusal before heavy work",
+   "outcome": "refused",
+   "ms": 4.6,
+   "code": "other_city",
+   "status": "PASS",
+   "detail": "other_city: astana"
+  },
+  {
+   "group": "v2",
+   "id": "T_foreign_snapshot",
+   "what": "чужой source_snapshot → optimizePlans",
+   "expect": "typed refusal before heavy work",
+   "outcome": "refused",
+   "ms": 4.75,
+   "code": "foreign_snapshot",
+   "status": "PASS",
+   "detail": "foreign_snapshot: сценарий сделан на другом срезе данных или другой метрике (source_snapshot не совпадает)"
+  },
+  {
+   "group": "v2",
+   "id": "T_category_unknown",
+   "what": "категория hospital → evaluatePlan",
+   "expect": "typed refusal before heavy work",
+   "outcome": "refused",
+   "ms": 4.72,
+   "code": "bad_category",
+   "status": "PASS",
+   "detail": "bad_category: hospital"
+  },
+  {
+   "group": "v2",
+   "id": "T_outside_bbox",
+   "what": "кандидат вне bbox среза → optimizePlans",
+   "expect": "typed refusal before heavy work",
+   "outcome": "refused",
+   "ms": 5.26,
+   "code": "outside_bbox",
+   "status": "PASS",
+   "detail": "outside_bbox: c0: вне квадрата среза"
+  },
+  {
+   "group": "v2",
+   "id": "T_unknown_required",
+   "what": "required_ids с неизвестным ID → optimizePlans (ожидается типизированный отказ, не TypeError)",
+   "expect": "typed refusal before heavy work",
+   "outcome": "refused",
+   "ms": 5.53,
+   "code": "unknown_ref",
+   "status": "PASS",
+   "detail": "unknown_ref: required_ids: кандидата nope нет"
+  },
+  {
+   "group": "v2",
+   "id": "C_valid16",
+   "what": "контроль: валидные 16 кандидатов через прямой API = optimal, 65 536 наборов, как после validate",
+   "expect": "check",
+   "status": "PASS",
+   "outcome": "check",
+   "ms": 79.73,
+   "detail": {
+    "status": "optimal",
+    "evaluated": 65536
+   }
+  },
+  {
+   "group": "v2",
+   "id": "C_clean_copy",
+   "what": "контроль: validate возвращает независимую копию (изменение входа после validate её не меняет)",
+   "expect": "check",
+   "status": "PASS",
+   "outcome": "check",
+   "ms": 6.35,
+   "detail": {
+    "candidates": 3,
+    "budget": 1000000
+   }
+  },
+  {
+   "group": "v2",
+   "id": "C_mid_search_mutation",
+   "what": "изменение переданного объекта посреди пошагового поиска не меняет ответ (бюджет 0, max_selected 0)",
+   "expect": "check",
+   "status": "PASS",
+   "outcome": "check",
+   "ms": 20.76,
+   "detail": {
+    "ref": [
+     "optimal",
+     382,
+     [
+      "c0",
+      "c1"
+     ]
+    ],
+    "got": [
+     "optimal",
+     382,
+     [
+      "c0",
+      "c1"
+     ]
+    ]
+   }
+  },
+  {
+   "group": "v2",
+   "id": "I_internal_export",
+   "what": "экспортированный PL.internal.createSearch без валидации, 20 кандидатов (CORE_SPEC допускает внутренний путь)",
+   "expect": "check",
+   "status": "ADVISORY",
+   "outcome": "check",
+   "ms": 9.33,
+   "detail": {
+    "reachable_unvalidated": true,
+    "total": 1048576
+   }
+  },
+  {
+   "group": "rs",
+   "id": "R13_create",
+   "what": "createResilienceSearch, 13 кандидатов",
+   "expect": "typed refusal before heavy work",
+   "outcome": "refused",
+   "ms": 7.65,
+   "code": "too_many_candidates",
+   "status": "PASS",
+   "detail": "too_many_candidates: для анализа устойчивости не больше 12 кандидатов, получено 13; кандидаты не отбрасываются автоматически"
+  },
+  {
+   "group": "rs",
+   "id": "R13_optimize",
+   "what": "optimizeResilience, 13 кандидатов",
+   "expect": "typed refusal before heavy work",
+   "outcome": "refused",
+   "ms": 5.56,
+   "code": "too_many_candidates",
+   "status": "PASS",
+   "detail": "too_many_candidates: для анализа устойчивости не больше 12 кандидатов, получено 13; кандидаты не отбрасываются автоматически"
+  },
+  {
+   "group": "rs",
+   "id": "R13_evaluate",
+   "what": "evaluateResilience, 13 кандидатов",
+   "expect": "typed refusal before heavy work",
+   "outcome": "refused",
+   "ms": 5.46,
+   "code": "too_many_candidates",
+   "status": "PASS",
+   "detail": "too_many_candidates: для анализа устойчивости не больше 12 кандидатов, получено 13; кандидаты не отбрасываются автоматически"
+  },
+  {
+   "group": "rs",
+   "id": "R16_optimize",
+   "what": "optimizeResilience, 16 кандидатов (предел v2, не устойчивости)",
+   "expect": "typed refusal before heavy work",
+   "outcome": "refused",
+   "ms": 5.98,
+   "code": "too_many_candidates",
+   "status": "PASS",
+   "detail": "too_many_candidates: для анализа устойчивости не больше 12 кандидатов, получено 16; кандидаты не отбрасываются автоматически"
+  },
+  {
+   "group": "rs",
+   "id": "R_cases_8user",
+   "what": "8 пользовательских случаев (+base = 9) → optimizeResilience",
+   "expect": "typed refusal before heavy work",
+   "outcome": "refused",
+   "ms": 6.9,
+   "code": "bad_cases",
+   "status": "PASS",
+   "detail": "bad_cases: случаев 1..7 (плюс автоматический base), получено 8"
+  },
+  {
+   "group": "rs",
+   "id": "R_after_validation",
+   "what": "envelope прошёл validate, затем 13-й кандидат → optimizeResilience",
+   "expect": "typed refusal before heavy work",
+   "outcome": "refused",
+   "ms": 6.23,
+   "code": "too_many_candidates",
+   "status": "PASS",
+   "detail": "too_many_candidates: для анализа устойчивости не больше 12 кандидатов, получено 13; кандидаты не отбрасываются автоматически"
+  },
+  {
+   "group": "rs",
+   "id": "R_candidate_as_source",
+   "what": "ID кандидата в disabled_source_ids → optimizeResilience",
+   "expect": "typed refusal before heavy work",
+   "outcome": "refused",
+   "ms": 6.32,
+   "code": "candidate_not_source",
+   "status": "PASS",
+   "detail": "candidate_not_source: cases[0]: c0 — кандидат (гипотеза), а не исходная запись"
+  },
+  {
+   "group": "rs",
+   "id": "R_reserved_base",
+   "what": "case id \"base\" → evaluateResilience",
+   "expect": "typed refusal before heavy work",
+   "outcome": "refused",
+   "ms": 24.22,
+   "code": "reserved_id",
+   "status": "PASS",
+   "detail": "reserved_id: cases[0].id: «base» зарезервирован для автоматического случая без исключений"
+  },
+  {
+   "group": "rs",
+   "id": "R_selected_null",
+   "what": "evaluateResilience(ctx, env, null) → типизированный отказ, не TypeError",
+   "expect": "typed refusal before heavy work",
+   "outcome": "crash",
+   "ms": 8.82,
+   "code": null,
+   "status": "FAIL",
+   "detail": "TypeError: selectedIds is not iterable"
+  },
+  {
+   "group": "rs",
+   "id": "R_selected_unknown",
+   "what": "evaluateResilience с неизвестным ID выбора → unknown_ref",
+   "expect": "typed refusal before heavy work",
+   "outcome": "refused",
+   "ms": 7.82,
+   "code": "unknown_ref",
+   "status": "PASS",
+   "detail": "unknown_ref: кандидата zz нет"
+  },
+  {
+   "group": "rs",
+   "id": "RC_mid_search_mutation",
+   "what": "контроль: изменение конверта посреди поиска устойчивости не меняет ответ",
+   "expect": "check",
+   "status": "PASS",
+   "outcome": "check",
+   "ms": 22.37,
+   "detail": {
+    "ref": [
+     "optimal",
+     382,
+     [
+      "c0",
+      "c1"
+     ],
+     [
+      "c0",
+      "c1"
+     ]
+    ],
+    "got": [
+     "optimal",
+     382,
+     [
+      "c0",
+      "c1"
+     ],
+     [
+      "c0",
+      "c1"
+     ]
+    ]
+   }
+  },
+  {
+   "group": "rs",
+   "id": "RC_valid12",
+   "what": "контроль: 12 кандидатов × 7 случаев → optimal, 4096 наборов",
+   "expect": "check",
+   "status": "PASS",
+   "outcome": "check",
+   "ms": 27.83,
+   "detail": {
+    "status": "optimal",
+    "evaluated": 4096
+   }
+  }
+ ]
+}

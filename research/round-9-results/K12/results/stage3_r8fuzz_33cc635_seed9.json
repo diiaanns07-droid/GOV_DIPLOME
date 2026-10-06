@@ -1,0 +1,121 @@
+{
+ "summary": {
+  "adapter": "build_v2_plan_adapter.cjs",
+  "app_root": "r9_33cc635",
+  "seed": 9,
+  "cases_requested": 500,
+  "cases_run": 500,
+  "truncated_by_time_budget": false,
+  "property_checks": 4500,
+  "invalid_mutations": 500,
+  "mutation_kinds": {
+   "budget_out_of_range": 25,
+   "coord_string": 18,
+   "cost_out_of_range": 19,
+   "deep_derived": 37,
+   "duplicate_candidate_id": 21,
+   "duplicate_key": 36,
+   "duplicate_point_id": 34,
+   "extra_field": 19,
+   "foreign_snapshot": 21,
+   "kind_observed": 15,
+   "max_selected_out_of_range": 21,
+   "nan_token": 25,
+   "outside_bbox": 26,
+   "overflow_1e999": 23,
+   "oversize": 31,
+   "radius_out_of_range": 28,
+   "required_excluded_conflict": 18,
+   "too_many_points": 16,
+   "truncated": 29,
+   "unknown_id": 16,
+   "weight_out_of_range": 22
+  },
+  "oracle": "compared 500 scenarios with oracle/plan_v2_oracle.py",
+  "limits": {
+   "import": "PASS",
+   "api": "PASS"
+  },
+  "advisories": 0,
+  "generator_coverage": {
+   "candidates:0": 40,
+   "candidates:1-5": 188,
+   "candidates:11-15": 54,
+   "candidates:16": 36,
+   "candidates:6-10": 182,
+   "city:astana/outpatient_clinic": 134,
+   "city:astana/school": 126,
+   "city:shymkent/outpatient_clinic": 127,
+   "city:shymkent/school": 113,
+   "has_excluded": 93,
+   "has_required": 109,
+   "pareto_len>1": 152,
+   "status:infeasible": 70,
+   "status:optimal": 430
+  },
+  "failures": 0,
+  "elapsed_ms": 12104,
+  "verdict": "PASS",
+  "failures_by_property": {}
+ },
+ "limits": {
+  "child": "exit 0",
+  "import": {
+   "16": {
+    "ok": true,
+    "code": null,
+    "ms": 14.247072
+   },
+   "17": {
+    "ok": false,
+    "code": "too_many_candidates",
+    "ms": 2.736437
+   },
+   "24": {
+    "ok": false,
+    "code": "too_many_candidates",
+    "ms": 4.164634
+   },
+   "40": {
+    "ok": false,
+    "code": "too_many_candidates",
+    "ms": 4.856613
+   }
+  },
+  "unchecked": {
+   "20": {
+    "status": "refused:too_many_candidates",
+    "evaluated": 0,
+    "ms": 4.1
+   },
+   "30": {
+    "status": "refused:too_many_candidates",
+    "evaluated": 0,
+    "ms": 2.9
+   },
+   "40": {
+    "status": "refused:too_many_candidates",
+    "evaluated": 0,
+    "ms": 0.6
+   }
+  },
+  "import_verdict": "PASS",
+  "api_verdict": "PASS"
+ },
+ "advisories": [],
+ "bench": {
+  "scenario": "25 points × 16 candidates × max_selected 5, budget 1000000 (synthetic)",
+  "evaluated": 65536,
+  "feasible": 6885,
+  "sync_ms_median_incl_sensitivity": 31.8,
+  "sync_ms_max": 35.7,
+  "python_oracle_ms_incl_startup": 1797,
+  "async_ms_total_no_sensitivity": 12.3,
+  "async_slices": 16,
+  "async_max_slice_ms": 3,
+  "async_status": "optimal",
+  "async_equals_sync": true
+ },
+ "failures": [],
+ "failures_omitted": 0
+}

@@ -17,7 +17,7 @@
 |---|---|
 | 1. Повторная проверка F1 и границ прямого API, патч и регрессионный тест | **done** |
 | 2. Корпус устойчивости (`city-resilience-v1`), атомарность, сеть, неизменность источников | **done** на `d865dd4`; прогон на новом BUILD `33cc635` — далее |
-| 3. Ограниченный fuzz на BUILD, оракул, поздние результаты в UI, итоговый handoff | — |
+| 3. Ограниченный fuzz на BUILD, оракул, поздние результаты в UI, итоговый handoff | **в работе**: новый BUILD `33cc635` проверен (API, корпус, v2 fuzz); fuzz устойчивости, UI и патчи — далее |
 
 ## Этап 1 — границы прямого API `plan.js`
 
@@ -117,3 +117,36 @@
   - панели устойчивости нет — NOT_RUN.
 - **Новый BUILD:** при повторной проверке после этапа 2 найден `33cc635` («BUILD round 9 stage 2»), в нём есть
   `web/resilience.js`. Явная проверка этого SHA — следующий шаг.
+
+## Этап 3 — новый BUILD `33cc635ec212e522b3e17fb0b598fad0ad602f71` (промежуточный итог)
+
+- BUILD опубликовал этапы 1–2 раунда 9: `e990f01` → `fb768b2` → `7077ff7` → `33cc635`.
+  - Копия байтами, manifest `manifests/33cc635_extract.json` (206 файлов).
+  - Прочитаны до запуска: `web/resilience.js` целиком, диффы `plan.js`, `whatif.js`, `app.js`, `index.html`,
+    `check_all.py`, `test_serve.py` (поднимает только 127.0.0.1).
+  - `data.js` байт-в-байт тот же (`bb2a7e66…`), поэтому ожидания оракула общие с `d865dd4`.
+- BUILD закрыл r8 F1 своим патчем: публичные `evaluatePlan` и `createSearch` вызывают `validatePlanScenario`.
+  r8 F2 (`whatif.js`) применён.
+- **`api_guard.cjs` на `33cc635`:** 33 PASS, **1 FAIL**, **1 ADVISORY**, 0 NOT_RUN → `results/stage3_api_guard_33cc635.json`.
+  - Все 20 прежних FAIL `d865dd4` теперь PASS. Устойчивость: 13/16 кандидатов, 8 случаев, изменение после
+    validate, кандидат вместо записи, `base` — типизированные отказы за 5–25 мс. 12 × 7 = 4096 наборов, `optimal`.
+  - Изменение конверта посреди поиска ответ не меняет.
+  - **FAIL `rs/R_selected_null`:** `evaluateResilience(ctx, env, null)` → `TypeError: selectedIds is not iterable`
+    вместо типизированного кода.
+  - **ADVISORY `v2/I_internal_export`:** `PL.internal.createSearch` экспортирован без валидации; непроверенный
+    объект с 20 кандидатами даёт поиск на 1 048 576 наборов. CORE_SPEC допускает внутренний проверенный путь, но
+    этот путь достижим снаружи.
+- **Корпус устойчивости `resilience_stress.cjs` на `33cc635`:** 63 PASS, 0 FAIL, **2 ADVISORY**
+  → `results/stage3_resilience_33cc635.json`.
+  - Все 46 отказов: типизированный код, состояние прежнее, сети нет, `CITY_EVIDENCE` не меняется.
+  - Все 13 допустимых совпали с независимым оракулом K12: nominal и robust ID, худший вектор, худшие случаи,
+    `evaluated`, `feasible_count`, цена устойчивости. Дубль случая и перестановка дают те же планы.
+  - X1–X6 PASS.
+  - ADVISORY (policy): N35 — label с U+202E (bidi override, категория Cf) принят; N49 — одиночный суррогат принят.
+- **Собственные проверки BUILD на копии:** `check_all` exit 0 (plan 164 проверки, resilience 111, whatif, facts,
+  unittest; `evidence.js` rebuild — SKIP).
+- **Харнесс K12 r8 на `33cc635`:**
+  - `plan_stress` 73 PASS + 2 ADVISORY;
+  - `stage2_runtime` 33 PASS, 0 FAIL, 6 SKIP;
+  - `plan_fuzz` seed 9, 500 случаев с оракулом, `--strict-api-guard`: **PASS**. API 20/30/40 →
+    `too_many_candidates` за 0,6–4,1 мс. Худший случай v2 32 мс, async-кусок 3 мс.

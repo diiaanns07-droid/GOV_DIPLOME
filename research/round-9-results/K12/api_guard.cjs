@@ -97,6 +97,10 @@ const V2 = {
       while (!s.step(4096)); const r = s.result();
       const same = JSON.stringify([r.status, r.objectives, r.feasible_count]) === JSON.stringify([ref.status, ref.objectives, ref.feasible_count]);
       return { ok: same, detail: { ref: [ref.status, ref.feasible_count, ref.objectives && ref.objectives.mean.ids], got: [r.status, r.feasible_count, r.objectives && r.objectives.mean && r.objectives.mean.ids] } }; } },
+  I_internal_export: { advisory: true, what: "экспортированный PL.internal.createSearch без валидации, 20 кандидатов (CORE_SPEC допускает внутренний путь)",
+    check: (A) => { const I = A.raw && A.raw.internal; if (!I || typeof I.createSearch !== "function") return { ok: true, detail: "PL.internal нет" };
+      let s; try { s = I.createSearch(A.ctx("shymkent"), plan(A, 20), { F: A.F }); } catch (e) { return { ok: !!e.code, detail: `refused ${e.code}` }; }
+      return { ok: false, detail: { reachable_unvalidated: true, total: s.total } }; } },
 };
 const RS = {
   R13_create:   { what: "createResilienceSearch, 13 кандидатов", refuse: (A) => A.createSearch(A.ctx("shymkent"), envelope(A, 13)) },
@@ -110,6 +114,14 @@ const RS = {
   R_candidate_as_source: { what: "ID кандидата в disabled_source_ids → optimizeResilience",
     refuse: (A) => { const e = envelope(A, 3); e.cases[0].disabled_source_ids = ["c0"]; return A.optimize(A.ctx("shymkent"), e); } },
   R_reserved_base: { what: "case id \"base\" → evaluateResilience", refuse: (A) => { const e = envelope(A, 3); e.cases[0].id = "base"; return A.evaluate(A.ctx("shymkent"), e, ["c0"]); } },
+  R_selected_null: { what: "evaluateResilience(ctx, env, null) → типизированный отказ, не TypeError", refuse: (A) => A.evaluate(A.ctx("shymkent"), envelope(A, 3), null) },
+  R_selected_unknown: { what: "evaluateResilience с неизвестным ID выбора → unknown_ref", refuse: (A) => A.evaluate(A.ctx("shymkent"), envelope(A, 3), ["zz"]) },
+  RC_mid_search_mutation: { what: "контроль: изменение конверта посреди поиска устойчивости не меняет ответ",
+    check: (A) => { const c = A.ctx("shymkent"), e = envelope(A, 10, 3); e.plan.budget = 5000;
+      const ref = A.optimize(c, clone(e)); const s = A.createSearch(c, e); s.step(32);
+      e.plan.budget = 0; e.plan.max_selected = 0; e.cases.push({ ...e.cases[0], id: "late" }); e.cases[0].disabled_source_ids = [];
+      while (!s.step(4096)); const r = s.result(); const pick = (x) => [x.status, x.feasible_count, x.nominal && x.nominal.selected_ids, x.robust && x.robust.selected_ids];
+      return { ok: JSON.stringify(pick(r)) === JSON.stringify(pick(ref)), detail: { ref: pick(ref), got: pick(r) } }; } },
   RC_valid12: { what: "контроль: 12 кандидатов × 7 случаев → optimal, 4096 наборов",
     check: (A) => { const r = A.optimize(A.ctx("shymkent"), envelope(A, 12, 7)); return { ok: r.status === "optimal" && r.evaluated === 4096, detail: { status: r.status, evaluated: r.evaluated } }; } },
 };
@@ -152,7 +164,7 @@ for (const [group, table, A] of [["v2", V2, av.v2], ["rs", RS, av.rs]]) {
     const line = String(r.stdout || "").trim().split("\n").filter(Boolean).pop();
     let o = null; try { o = JSON.parse(line); } catch (e) { o = null; }
     if (!o) { row.status = "FAIL"; row.outcome = r.error ? "timeout" : "no_answer"; row.detail = r.error ? `снят сторожем через ${TIMEOUT} мс` : String(r.stderr || "").slice(0, 200); }
-    else if (P.check) { row.status = o.kind === "check" && o.ok ? "PASS" : "FAIL"; row.outcome = o.kind; row.ms = o.ms; row.detail = o.detail || o.message; }
+    else if (P.check) { row.status = o.kind === "check" && o.ok ? "PASS" : P.advisory ? "ADVISORY" : "FAIL"; row.outcome = o.kind; row.ms = o.ms; row.detail = o.detail || o.message; }
     else {
       row.outcome = o.kind; row.ms = o.ms; row.code = o.code || null;
       row.status = o.kind === "refused" && o.ms < FAST_MS ? "PASS" : "FAIL";
@@ -165,7 +177,7 @@ for (const [group, table, A] of [["v2", V2, av.v2], ["rs", RS, av.rs]]) {
 for (const r of results.filter((x) => x.status === "NOT_RUN")) console.log(`NOT_RUN ${r.group}/${r.id} ${r.detail}`);
 const summary = { app_root: path.basename(APP), timeout_ms: TIMEOUT, fast_ms: FAST_MS, total: results.length,
   pass: results.filter((r) => r.status === "PASS").length, fail: results.filter((r) => r.status === "FAIL").map((r) => `${r.group}/${r.id}`),
-  not_run: results.filter((r) => r.status === "NOT_RUN").length,
+  not_run: results.filter((r) => r.status === "NOT_RUN").length, advisory: results.filter((r) => r.status === "ADVISORY").map((r) => `${r.group}/${r.id}`),
   verdict: results.some((r) => r.status === "FAIL") ? "FAIL" : "PASS" };
 console.log(JSON.stringify(summary));
 if (OUT) fs.writeFileSync(OUT, JSON.stringify({ summary, results }, null, 1) + "\n");
