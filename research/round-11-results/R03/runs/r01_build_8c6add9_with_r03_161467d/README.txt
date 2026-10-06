@@ -12,3 +12,6 @@ break the integrated P0 path. p0_flow.json is the flow's own output; screenshots
 Real R02 timestamps (UTC) are now shown in Astana time ("21:46 (время Астаны)" for 16:46Z).
 Observation for R01 (not an R03 file): at 1440x900 the third footer button «Сообщения…» is cut off by
 the panel edge (.civic-foot in web/civic/shell/shell.css).
+
+Re-run with the final R03 files of commit 1c75a96 (161467d + one CSS rule hiding the empty list header above
+an embedded card): 47 PASS / 0 FAIL / 2 NOT_RUN, same NOT_RUN reasons.
