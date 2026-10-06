@@ -261,3 +261,26 @@ def test_chunked_put_delete_and_frame_headers(served):
                            headers={"Origin": f"https://127.0.0.1:{port}"})
     assert status == 403
     assert all(c[1] != "/api/civic/v1/staff/objects" or c[0] != "POST" for c in store.calls)
+
+
+def test_lazy_dependent_service_does_not_deadlock():
+    """Regression: a factory that needs another service while the gateway lock is held."""
+    created = []
+    gateway = CivicGateway({})
+
+    def store():
+        created.append("store")
+        return RecordingStore()
+
+    def feedback():
+        assert gateway.service("store") is not None
+        created.append("feedback")
+        return RecordingFeedback()
+
+    gateway._factories.update({"store": store, "feedback": feedback})
+    result = {}
+    worker = threading.Thread(target=lambda: result.setdefault("svc", gateway.service("feedback")), daemon=True)
+    worker.start()
+    worker.join(timeout=5)
+    assert not worker.is_alive(), "gateway.service deadlocked"
+    assert result["svc"] is not None and created == ["store", "feedback"]

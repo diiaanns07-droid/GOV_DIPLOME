@@ -178,7 +178,8 @@ class CivicGateway:
         self._factories = dict(factories or {})
         self._services = {}
         self._failed = {}
-        self._lock = threading.Lock()
+        # Re-entrant: the feedback/assistant factories ask for the store while the lock is held.
+        self._lock = threading.RLock()
 
     @classmethod
     def for_project(cls, project: Path, db_path: Path | None = None):

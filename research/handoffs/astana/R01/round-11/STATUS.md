@@ -76,4 +76,11 @@ web/govtech/shell.{js,css}, web/civic/shell/, requirements*.txt, run.{bat,sh},
 - DONE: pytest 717 passed, 2 skipped; браузер P0 47 PASS / 0 FAIL / 2 NOT_RUN; независимый
   app-e2e R06 против собранного приложения 9/9 PASS (runs/cp10_*).
 
-Следующий шаг: RUN.txt/DEMO.txt/run-скрипты, R08 (ветки нет), замечания R10, финальные кадры.
+## Checkpoint 11 — исправления по R10 и найденная взаимоблокировка
+- FIXED (R01): взаимоблокировка ленивого запуска feedback/assistant при первом запросе к ним
+  (Lock -> RLock), регрессионный тест; R10-D001 (.runtime в .gitignore и .dockerignore — последний
+  вне списка путей R01, см. D-11); R10-D002 (graph_id не строка -> 422 до R07).
+- DONE: run.sh/run.bat — необязательный CIVIC_DEMO=1 (синтетический срез R05); учётная запись
+  редактора только через CLI с getpass.
+
+Следующий шаг: RUN.txt/DEMO.txt, финальные кадры 1440/390, CODE_SHA. R08 — ветки нет.
