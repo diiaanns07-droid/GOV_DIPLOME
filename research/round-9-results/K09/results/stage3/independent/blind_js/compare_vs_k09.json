@@ -1,0 +1,19 @@
+{
+ "tasks": 1340,
+ "mismatches": 0,
+ "checks": {
+  "blind:feasible_count:ok": 1340,
+  "blind:nominal.W:ok": 1340,
+  "blind:nominal.base:ok": 1340,
+  "blind:nominal.ids:ok": 1340,
+  "blind:nominal.worst_case_ids:ok": 1340,
+  "blind:price:ok": 1340,
+  "blind:robust.W:ok": 1340,
+  "blind:robust.base:ok": 1340,
+  "blind:robust.ids:ok": 1340,
+  "blind:robust.worst_case_ids:ok": 1340,
+  "blind:status:ok": 1340
+ },
+ "build_optimize_ms": {},
+ "mismatch_examples": []
+}

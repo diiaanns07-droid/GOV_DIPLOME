@@ -1,0 +1,60 @@
+--- a/prototypes/city-evidence/web/plan.js
++++ b/prototypes/city-evidence/web/plan.js
+@@ -100,6 +100,9 @@
+       if (!isInt(c.cost, LIMITS.cost)) fail("bad_cost", `${c.id}: стоимость — целое 1..1000000 условных единиц`);
+       return { id: c.id, lon: c.lon, lat: c.lat, category: c.category, kind: "hypothetical", cost: c.cost };
+     });
++    // K09 r9: пределы ещё раз по ЧИСТЫМ копиям — длина исходного массива могла измениться между чтениями (getter/Proxy)
++    if (control_points.length > LIMITS.points || (requirePoints && control_points.length < 1)) fail("bad_points", `контрольных точек 1..${LIMITS.points}, получено ${control_points.length}`);
++    if (candidates.length > LIMITS.candidates) fail("too_many_candidates", `кандидатов не больше ${LIMITS.candidates}, получено ${candidates.length}`);
+     if (!isInt(input.budget, LIMITS.budget)) fail("bad_budget", "бюджет — целое 0..1000000 условных единиц");
+     if (!isInt(input.max_selected, [0, LIMITS.max_selected])) fail("bad_max_selected", "max_selected — целое 0..5");
+     if (!isInt(input.coverage_radius_m, LIMITS.radius)) fail("bad_radius", "coverage_radius_m — целое 100..5000 м");
+--- a/prototypes/city-evidence/web/resilience.js
++++ b/prototypes/city-evidence/web/resilience.js
+@@ -21,6 +21,8 @@
+   const fail = (code, d) => { throw new PlanError(code, d); };
+   const cmpStr = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
+   const CTRL = new RegExp("[\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029]");  // control characters and line/paragraph separators
++  // K09 r9: также одиночные суррогаты, bidi-управление и U+FFFD (иначе экспорт не импортируется обратно); нужен хотя бы один видимый символ
++  const BAD_LABEL = /[\p{Cs}\p{Bidi_Control}\ufffd]/u, VISIBLE = /[^\p{White_Space}\p{Default_Ignorable_Code_Point}]/u;
+ 
+   // ---------- validation: full envelope and plan, before any precomputation or UI change ----------
+   function sourcesOf(ctx, category) { return ctx.places.filter((p) => p.group === category); }
+@@ -42,6 +44,8 @@
+     if (Array.isArray(plan.candidates) && plan.candidates.length > LIMITS.candidates)
+       fail("too_many_candidates", `для анализа устойчивости не больше ${LIMITS.candidates} кандидатов, получено ${plan.candidates.length}; кандидаты не отбрасываются автоматически`);
+     const cleanPlan = PL.validatePlanScenario(plan, ctx);
++    if (cleanPlan.candidates.length > LIMITS.candidates)  // K09 r9: предел устойчивости и по чистой копии, до предвычислений
++      fail("too_many_candidates", `для анализа устойчивости не больше ${LIMITS.candidates} кандидатов, получено ${cleanPlan.candidates.length}; кандидаты не отбрасываются автоматически`);
+     const cases = input.cases;
+     if (!Array.isArray(cases)) fail("bad_shape", "cases — массив");
+     if (cases.length < 1 || cases.length > LIMITS.user_cases) fail("bad_cases", `случаев 1..${LIMITS.user_cases} (плюс автоматический base), получено ${cases.length}`);
+@@ -56,7 +60,7 @@
+       if (c.id === "base") fail("reserved_id", `${what}.id: «base» зарезервирован для автоматического случая без исключений`);
+       if (seen.has(c.id)) fail("duplicate_id", `cases: ${c.id}`);
+       seen.add(c.id);
+-      if (typeof c.label !== "string" || !c.label.trim() || [...c.label].length > LIMITS.label || CTRL.test(c.label))
++      if (typeof c.label !== "string" || !c.label.trim() || [...c.label].length > LIMITS.label || CTRL.test(c.label) || BAD_LABEL.test(c.label) || !VISIBLE.test(c.label))
+         fail("bad_label", `${what}.label: непустой текст до ${LIMITS.label} символов без управляющих символов`);
+       const ids = c.disabled_source_ids;
+       if (!Array.isArray(ids)) fail("bad_shape", `${what}.disabled_source_ids — массив`);
+@@ -69,8 +73,10 @@
+         if (!srcIds.has(id)) fail("unknown_source", `${what}: исходной записи ${id.slice(0, 64)} категории «${PL.CATEGORIES[cleanPlan.category]}» в срезе нет`);
+         set.add(id);
+       }
++      if (set.size < 1 || set.size > src.length) fail("bad_exclusions", `${what}: исключить можно от 1 до ${src.length} записей категории`);  // K09 r9: по чистой копии
+       return { id: c.id, label: c.label, disabled_source_ids: [...set].sort(cmpStr) };
+     });
++    if (clean.length < 1 || clean.length > LIMITS.user_cases) fail("bad_cases", `случаев 1..${LIMITS.user_cases} (плюс автоматический base), получено ${clean.length}`);  // K09 r9
+     return { schema_version: SCHEMA, plan: cleanPlan, cases: clean };
+   }
+   const allCases = (env) => [{ id: "base", label: "Базовый: все записи среза", disabled_source_ids: [] }, ...env.cases];
+@@ -117,6 +123,7 @@
+   }
+   function evaluateResilience(ctx, env, selectedIds) {
+     const clean = validateResilience(env, ctx);
++    if (!Array.isArray(selectedIds) || selectedIds.some((id) => typeof id !== "string")) fail("bad_shape", "selectedIds: ожидается массив строк ID кандидатов");  // K09 r9
+     for (const id of selectedIds) if (!clean.plan.candidates.some((c) => c.id === id)) fail("unknown_ref", `кандидата ${id} нет`);
+     return evaluateInternal(ctx, clean, selectedIds);
+   }
