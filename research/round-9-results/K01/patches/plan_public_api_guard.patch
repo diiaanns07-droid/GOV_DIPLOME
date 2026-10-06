@@ -1,0 +1,23 @@
+--- a/prototypes/city-evidence/web/plan.js
++++ b/prototypes/city-evidence/web/plan.js
+@@ -412,8 +412,19 @@
+     return parts.join("\n") + "\n";
+   }
+ 
++  // Public entry points re-validate the object they receive (CORE_SPEC r9): an unverified or later-mutated scenario cannot
++  // bypass limits, bbox, city/snapshot or integer rules. Internal calls above use the unguarded functions on already clean copies.
++  const guard = (ctx, sc) => validatePlanScenario(sc, ctx, { requirePoints: false });
++  const pub = {
++    precompute: (ctx, sc) => precompute(ctx, guard(ctx, sc)),
++    evaluatePlan: (ctx, sc, ids) => evaluatePlan(ctx, guard(ctx, sc), ids),   // an external precompute is not trusted at the boundary
++    createSearch: (ctx, sc, opts) => createSearch(ctx, guard(ctx, sc), opts),
++    optimizePlans: (ctx, sc, opts) => optimizePlans(ctx, guard(ctx, sc), opts),
++    sensitivity: (ctx, sc, opts) => sensitivity(ctx, guard(ctx, sc), opts),
++  };
+   const api = { SCHEMA, METRIC, CATEGORIES, LIMITS, PlanError, mmOf, sourceSnapshot, makeContext, validatePlanScenario, problemDigest, scenarioDigest,
+-    precompute, feasibility, metricsOf, evaluatePlan, createSearch, optimizePlans, sensitivity, derivedOf, exportPlanScenario, importPlanScenario,
++    precompute: pub.precompute, feasibility, metricsOf, evaluatePlan: pub.evaluatePlan, createSearch: pub.createSearch, optimizePlans: pub.optimizePlans,
++    sensitivity: pub.sensitivity, derivedOf, exportPlanScenario, importPlanScenario,
+     explanationDigest, explainPlans, reportHtml, esc };
+   if (typeof module !== "undefined" && module.exports) module.exports = api;
+   else root.CITY_PLAN = api;

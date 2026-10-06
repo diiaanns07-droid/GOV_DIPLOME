@@ -1,0 +1,35 @@
+K01 · раунд 9 · CONTRACT_DIFF
+Проверенный BUILD: claude/beautiful-clarke-sbzomj @ d865dd4a124291e10dd0b7bb1d9eada20d34c268 (byte-exact по git-объектам)
+Новый BUILD r9 с web/resilience.js на момент проверки отсутствует (последний коммит ветки BUILD = d865dd4).
+Команда: bash research/round-9-results/K01/run_all.sh d865dd4a124291e10dd0b7bb1d9eada20d34c268  -> exit 1 (дефект D1), resilience NOT_RUN
+
+A. city-plan-v2: K01 r8 ↔ BUILD (политика/имена кодов, НЕ дефекты; подробно DIFF_r8_vs_BUILD.md)
+  A1 derived_results с неверными значениями: r8 отбрасывал; BUILD -> forged_derived. Эталон: BUILD.
+  A2 файл другого города: r8 foreign_city; BUILD принимает и переключает город (plan-ui.js importText). validatePlanScenario с явным чужим ctx -> other_city.
+  A3 коды: constraint_conflict->required_excluded_overlap; bad_candidates->too_many_candidates; v1-файл->wrong_version; NaN/1e999/дубль ключа->bad_json; вложенное лишнее поле->bad_shape.
+  A4 ID: запрет кириллицы r8 снят; BUILD NFC /^[\p{L}\p{N}_.-]+$/u, 1..64 code points — подтверждено 14 случаями.
+  Совпадает без перевода 34/46 фикстур r8; браузер: 10 отказов импорта не меняют план и город.
+
+B. Дефект продукта на d865dd4 (CORE_SPEC r9 «прямой вызов публичных evaluate/optimize/создания поиска валидировать»)
+  D1 web/plan.js api (строки 415-417): precompute/evaluatePlan/createSearch/optimizePlans/sensitivity не проверяют объект.
+     Минимальные входы (test_public_api.cjs, 6 FAIL):
+       createSearch / optimizePlans со сценарием из 17 кандидатов -> поиск 2^17, без too_many_candidates
+       evaluatePlan с control_points[0].weight = NaN -> weighted_sum_mm = NaN
+       evaluatePlan с candidates[0].lon = 0 (вне bbox) -> расстояния ~3900 км
+       optimizePlans(makeContext("astana"), шымкентский сценарий) -> status "optimal" на чужих исходных записях
+       validatePlanScenario, затем sc.budget = 5000000 -> evaluatePlan принимает
+     Через UI/импорт эти входы уже отклоняются (атомарно, проверено в браузере) — риск для API/Worker/будущего resilience.js.
+     Предложение: patches/plan_public_api_guard.patch (обёртка публичных функций validatePlanScenario(sc, ctx, {requirePoints:false})).
+     Проверено ТОЛЬКО на временной копии d865dd4+patch: test_public_api 7/7, BUILD check_all 17 pass/1 skip/0 fail, tests/plan.cjs all passed,
+     tests/plan_smoke.cjs 52/52 (как и без патча). В BUILD не применён -> НЕ FIXED.
+
+C. city-resilience-v1 (по CORE_SPEC r9; эталон K01 до появления BUILD r9)
+  C1 resilience_v1.schema.json + resilience_contract.js (узкий модуль на validatePlanScenario BUILD) + 49 фикстур обоих городов, 55/55.
+  C2 test_build_r9.cjs: прогон тех же фикстур против web/resilience.js BUILD, канонизация resilience_problem_digest, too_many_candidates до поиска.
+     На d865dd4: NOT_RUN (exit 3). Самопроверка адаптера: заглушка K01 (не BUILD) 51/51 exit 0; «принимающая всё» заглушка 37 FAIL exit 1.
+  C3 Замечание к r9-импорту меток: whatif.parseStrict отклоняет любой U+FFFD как bad_encoding (whatif.js:80) —
+     законный символ «�» в label будет отклонён, а экранированный "�" пройдёт. Для свободного текста надёжнее
+     проверять байты TextDecoder("utf-8", {fatal:true}) до parseStrict. Не дефект v2 (U+FFFD недопустим в ID).
+  C4 Открытые вопросы спецификации, решённые в K01 явно (BUILD может выбрать иначе — тогда обновить RESILIENCE_EXPECTED):
+     метка из одних пробелов -> bad_label; U+2028/2029 считаются управляющими; исключение всех записей категории допустимо;
+     plan.derived_results в envelope -> derived_not_allowed; верхний derived_results -> unknown_field; файл v2 в режиме resilience -> wrong_version.
