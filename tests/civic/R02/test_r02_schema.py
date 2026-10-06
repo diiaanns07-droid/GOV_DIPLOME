@@ -147,3 +147,15 @@ def test_runtime_dir_is_git_ignored_by_itself(tmp_path, monkeypatch):
     marker = fake_root / ".runtime" / ".gitignore"
     assert marker.read_text(encoding="utf-8").splitlines()[-1] == "*"
     assert database.path.is_file()
+
+
+@pytest.mark.skipif(__import__("os").name != "posix", reason="права POSIX")
+def test_database_file_is_private(tmp_path):
+    import stat
+    from ui.civic_store import cli
+    database = Database(tmp_path / "private.sqlite3")
+    database.migrate()
+    assert stat.S_IMODE(database.path.stat().st_mode) == 0o600
+    copy = tmp_path / "backup with space.sqlite3"
+    cli._backup(database.path, copy)
+    assert stat.S_IMODE(copy.stat().st_mode) == 0o600

@@ -202,6 +202,15 @@ def resolve_db_path(db_path) -> Path:
     return path
 
 
+def restrict_permissions(path: Path) -> None:
+    """0600 для файла базы/копии на POSIX: внутри хэши паролей и служебные заметки."""
+    if os.name == "posix" and path.exists():
+        try:
+            os.chmod(path, 0o600)
+        except OSError:
+            pass  # чужой файл или ФС без прав — не мешаем запуску
+
+
 def _prepare_parent(path: Path) -> None:
     parent = path.parent
     parent.mkdir(mode=0o700, parents=True, exist_ok=True)
@@ -304,8 +313,9 @@ class Database:
         applied_now = []
         with self.connect() as conn:
             mode = conn.execute("PRAGMA journal_mode = WAL").fetchone()[0]
-            if str(mode).lower() != "wal":
-                raise StorageError("SQLite не включил WAL; сетевые/только-для-чтения диски не поддерживаются.")
+        if str(mode).lower() != "wal":
+            raise StorageError("SQLite не включил WAL; сетевые/только-для-чтения диски не поддерживаются.")
+        restrict_permissions(self.path)
         stamp = now_iso or time.strftime("%Y-%m-%dT%H:%M:%S+00:00", time.gmtime())
         with self.write() as conn:
             conn.execute("""CREATE TABLE IF NOT EXISTS civic_schema_migrations (

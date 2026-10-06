@@ -29,7 +29,8 @@ import sys
 import time
 
 from .auth import PasswordPolicyError, ROLES, check_password_policy, normalize_username
-from .db import DEFAULT_DB_PATH, SCHEMA_VERSION, Database, StorageError, resolve_db_path
+from .db import (DEFAULT_DB_PATH, SCHEMA_VERSION, Database, StorageError, resolve_db_path,
+                 restrict_permissions)
 from .importer import ImportRejected, describe_package, import_package, load_package
 from .objects import Actor, BadRequest, Conflict, NotFound
 from .service import CivicService
@@ -171,11 +172,19 @@ def cmd_seed_demo(args, service):
 
 
 def _backup(src: Path, dest: Path) -> None:
-    with sqlite3.connect(src) as source, sqlite3.connect(dest) as target:
+    source, target = sqlite3.connect(src), sqlite3.connect(dest)
+    try:
         source.backup(target)
-    with sqlite3.connect(dest) as check:
+    finally:
+        source.close()
+        target.close()
+    restrict_permissions(dest)
+    check = sqlite3.connect(dest)
+    try:
         if check.execute("PRAGMA integrity_check").fetchone()[0] != "ok":
             raise StorageError("Копия не прошла integrity_check.")
+    finally:
+        check.close()
 
 
 def cmd_backup(args, service):
@@ -192,13 +201,17 @@ def cmd_restore(args, _service_unused=None):
     source = Path(args.src).expanduser().resolve()
     if not args.yes:
         raise SystemExit("Восстановление заменит текущую базу. Остановите сервер и повторите с --yes.")
-    with sqlite3.connect(f"file:{source}?mode=ro", uri=True) as conn:
+    if not source.is_file():
+        raise SystemExit("Файл копии не найден.")
+    conn = sqlite3.connect(f"{source.as_uri()}?mode=ro", uri=True)
+    try:
         if conn.execute("PRAGMA integrity_check").fetchone()[0] != "ok":
             raise SystemExit("Исходный файл повреждён (integrity_check).")
-        try:
-            versions = {row[0] for row in conn.execute("SELECT version FROM civic_schema_migrations")}
-        except sqlite3.DatabaseError:
-            raise SystemExit("Это не база civic_store.")
+        versions = {row[0] for row in conn.execute("SELECT version FROM civic_schema_migrations")}
+    except sqlite3.DatabaseError:
+        raise SystemExit("Это не база civic_store.")
+    finally:
+        conn.close()
     if not versions or max(versions) > SCHEMA_VERSION:
         raise SystemExit("Версия схемы копии не поддерживается этим кодом.")
     target_path = resolve_db_path(target)
@@ -206,8 +219,12 @@ def cmd_restore(args, _service_unused=None):
         safety = target_path.with_name(f"{target_path.stem}.pre-restore-{time.strftime('%Y%m%dT%H%M%S')}.sqlite3")
         _backup(target_path, safety)
         print(f"Текущая база сохранена: {safety}")
-    with sqlite3.connect(source) as src, sqlite3.connect(target_path) as dst:
+    src, dst = sqlite3.connect(source), sqlite3.connect(target_path)
+    try:
         src.backup(dst)
+    finally:
+        src.close()
+        dst.close()
     Database(target_path).migrate()
     print(f"Восстановлено из {source}")
 
