@@ -76,6 +76,30 @@ python3 scripts/compare_build.py <tmp>/s1_tasks.jsonl <tmp>/s1_build.jsonl resul
   - все правила валидации; лимит до предвычислений.
 - **Формат** проверен на 12 задачах в scratch. Это не прогон: результаты не смотрелись.
 
-## Этап 3 — далее
+## Этап 3 — В РАБОТЕ: эксперимент T3 выполнен, BUILD r9 проверен
 
-Прогон через BUILD r9, если resilience.js появится. Иначе — независимый оракул и интеграция NOT_RUN.
+**BUILD r9.** Опубликован: `33cc635ec212e522b3e17fb0b598fad0ad602f71` (этап 2 BUILD; код resilience.js = `7077ff7`, дерево приложения то же). Закреплён, манифест — `inputs/BUILD_MANIFEST_33cc635.json`. Код resilience.js прочитан до запуска: чистый модуль, без I/O.
+
+**Прогон T3 оракулом:** `scripts/run_t3.py` → `results/stage3/`:
+- 1340 задач, ~17 с;
+- инварианты (assert) выполнены во всех задачах;
+- детерминированные файлы — sha256 в `results/stage3/DETERMINISTIC_SHA256.txt`.
+
+**Интеграция с BUILD 33cc635:** `adapter/build_resilience_adapter.cjs` + `scripts/compare_t3_build.py`. На тех же 1340 envelope **0 расхождений**:
+- статусы, feasible_count, same_plan, цена;
+- nominal и robust: ids, cost, W, worst_case_ids;
+- потери L и охват в каждом случае.
+
+**Строгая валидация:** `scripts/validation_conformance.py`, 60 неверных и пограничных envelope:
+- 54 — совпадение;
+- 2 — то же решение с другим именем кода (`bad_exclusions` против `bad_id`);
+- 4 — различие политики, отмеченное до запуска: BUILD строже и отклоняет пробельную метку и U+2028;
+- 0 настоящих расхождений.
+
+**Время BUILD** (Node v22, медиана):
+- 12 кандидатов, 25 точек, 8 случаев, max_selected = 3 — 2.2 мс;
+- stress, max_selected = 5 — 8.3 мс (максимум 9.0).
+
+**Дальше:**
+- независимая проверка (workflow: слепая JS-реализация по CORE_SPEC, обзор BUILD resilience.js, обзор оракула K09);
+- T3_RESULTS.md, финальный HANDOFF.

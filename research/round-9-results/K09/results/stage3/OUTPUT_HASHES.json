@@ -1,0 +1,19 @@
+{
+ "build_sha": "33cc635ec212e522b3e17fb0b598fad0ad602f71",
+ "build_code_commit_per_status": "7077ff7 (дерево приложения совпадает с 33cc635)",
+ "envelopes_jsonl": {
+  "lines": 1340,
+  "sha256": "67fd07869d1023446871955e91a1bbf516498ff189bbb81d3a39ff6475390f22",
+  "regenerate": "python3 scripts/run_t3.py --emit-envelopes <path>"
+ },
+ "build_output_without_t_ms": {
+  "sha256": "9394f7e58b901183943be35828b145eb0e00da814b2961180794c47956f5698d",
+  "how": "sha256 по строкам json.dumps(sort_keys=True, ensure_ascii=False) без t_ms"
+ },
+ "environment": {
+  "node": "v22.22.0",
+  "python": "3.11.15",
+  "platform": "linux x64, 4 CPU"
+ },
+ "not_committed": "envelopes.jsonl (4.2 МБ) и build.jsonl — воспроизводятся командами"
+}

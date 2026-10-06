@@ -1,0 +1,307 @@
+{
+ "build_sha": "33cc635ec212e522b3e17fb0b598fad0ad602f71",
+ "app_tree": "339b7cdb58403cf449b9294361424515f96e0321",
+ "copied": "web/, tests/, tools/ (байтовая копия через git cat-file)",
+ "files": [
+  {
+   "path": "prototypes/city-evidence/tests/.gitignore",
+   "git_blob": "89f9ac04aac6c8ee66e158853e7d0439b3ec782d",
+   "sha256": "a888b9df89402a815bdb15d30c5280b090be11655ab4cc2299ce748d44cd6ed4",
+   "bytes": 5
+  },
+  {
+   "path": "prototypes/city-evidence/tests/conformance.cjs",
+   "git_blob": "353b5cc85acadad38a55a47f2c3f436fb2f0bcb6",
+   "sha256": "670cb2358479b07006dc04c025a8994b77bb6bfb4362667a95b147714b253bfa",
+   "bytes": 8149
+  },
+  {
+   "path": "prototypes/city-evidence/tests/expected_explanations.json",
+   "git_blob": "dac8a40827d977d30b042222a80a95567f343241",
+   "sha256": "fc0c85939a13be7a93585cdb92e82317f244cf4ac39f55d3cf3a853a4727677c",
+   "bytes": 17976
+  },
+  {
+   "path": "prototypes/city-evidence/tests/expected_plans.json",
+   "git_blob": "81de3099545167975216801117a48d0edb3d0747",
+   "sha256": "e0e3bd0913dc6c636a934a2f7be9e8257f3ef626ce1dd6886a48e37e31178f19",
+   "bytes": 111998
+  },
+  {
+   "path": "prototypes/city-evidence/tests/expected_resilience.json",
+   "git_blob": "363725b943ca4cc2fff9c59bd3aec27e0e839c59",
+   "sha256": "6517fb8ba6a7e3da8661f47b1df0a5d5f9acb453a64501fb1645780acee9be68",
+   "bytes": 64455
+  },
+  {
+   "path": "prototypes/city-evidence/tests/expected_whatif.json",
+   "git_blob": "958241289eb16406881b5f2b59e6811e48095225",
+   "sha256": "adf227f612e6cf86ab628a97aec44a9074e5c4c7a91c7cc69b5425021c1362bc",
+   "bytes": 39335
+  },
+  {
+   "path": "prototypes/city-evidence/tests/plan.cjs",
+   "git_blob": "ffbb668e49c3c2c6487d5ebbdafe382bae06bc1d",
+   "sha256": "f2b24ad270f0003a8fa3f36b4fee9c8f0c34e73da1a40dbe141f40173580978f",
+   "bytes": 21619
+  },
+  {
+   "path": "prototypes/city-evidence/tests/plan_keyboard.cjs",
+   "git_blob": "304a56f16444ce9ba29eff05adc17328d1c39a88",
+   "sha256": "b3e7715d8e49c011237b7360d2b7e0f571209401c577ded1f16ad519e6a4fad0",
+   "bytes": 6761
+  },
+  {
+   "path": "prototypes/city-evidence/tests/plan_smoke.cjs",
+   "git_blob": "cbb0812b51c436e786bb8811c7679f465a575e4f",
+   "sha256": "a5ebb9fb0deb14f26094eff6cbc7c52fee5902464a024c42c7d01d5ac71b3df5",
+   "bytes": 20376
+  },
+  {
+   "path": "prototypes/city-evidence/tests/resilience.cjs",
+   "git_blob": "83d9d981ecb637ca99526d00772e9fb2b1e91d34",
+   "sha256": "18081c9dfe967280ca8cf86c1f6a09bd34d86740b6486a4f92905b16b9822eb9",
+   "bytes": 16921
+  },
+  {
+   "path": "prototypes/city-evidence/tests/smoke.cjs",
+   "git_blob": "05ab4315142519685681110f7772e6f696ddcc77",
+   "sha256": "db947b46a5feaf91b28626442d99a28cdcc642ca6e9041599dc666deb2c970b2",
+   "bytes": 12631
+  },
+  {
+   "path": "prototypes/city-evidence/tests/test_contract.py",
+   "git_blob": "f9260a61e81190f4e62202811f7016c191423ffb",
+   "sha256": "623c25d07ceba02bb92ec924b1abea4fa0674778388d59d4c70cbfbf28b6ef8d",
+   "bytes": 4072
+  },
+  {
+   "path": "prototypes/city-evidence/tests/test_inputs.py",
+   "git_blob": "edd8cbedb2dce31dd1aa63bc820ec39003adb5dd",
+   "sha256": "050f3ed1551dab4eef06db6c36cedc9ceaa8c1f2a28b2205c878996005577ac6",
+   "bytes": 10734
+  },
+  {
+   "path": "prototypes/city-evidence/tests/test_plan_oracle.py",
+   "git_blob": "3db2a45f230f4f5961fb23ffb96725f12e481948",
+   "sha256": "8b0d16e442a0ee7ec9fecf631760d7df87b398886c137fe2a39297fb4d410475",
+   "bytes": 2731
+  },
+  {
+   "path": "prototypes/city-evidence/tests/test_resilience_oracle.py",
+   "git_blob": "d1bd4f937f3c76e22585537c0c6a1a9760802459",
+   "sha256": "6d6131044685d97a0733445f6236788650e061b9fc1753dfdbd827b8748cb65c",
+   "bytes": 2132
+  },
+  {
+   "path": "prototypes/city-evidence/tests/test_serve.py",
+   "git_blob": "69d609b0923dbdc13d496b1671fa7cd3cfea616a",
+   "sha256": "3c6c4da77ad0ca9b6f6411be62ee12e06523058457c859d43bbd422605649ae1",
+   "bytes": 2332
+  },
+  {
+   "path": "prototypes/city-evidence/tests/test_whatif.py",
+   "git_blob": "e7702d22ce152c1e57cd679ba992cbfe05b61f65",
+   "sha256": "dda9da8a344b115d4ab0e553ccbf8468cf472e20ea438468d18f900ca40d415d",
+   "bytes": 3214
+  },
+  {
+   "path": "prototypes/city-evidence/tests/whatif.cjs",
+   "git_blob": "90910f0fe04bf76520cc493d1fe7e6f24348bcba",
+   "sha256": "881cc0406490b51d57efb473b9af5ba06420e75c391f858411aeb757f35ad3e0",
+   "bytes": 10961
+  },
+  {
+   "path": "prototypes/city-evidence/tests/whatif_smoke.cjs",
+   "git_blob": "b41ff9393b39982071cfa351a3822cabd246b180",
+   "sha256": "2fa30cead34f6e27d115aebafb0dba26a90bbce746bd8f28c33bba16068e68cb",
+   "bytes": 12526
+  },
+  {
+   "path": "prototypes/city-evidence/tools/bench_plan.cjs",
+   "git_blob": "8a0f8fda1836f35675ab771d2817a7e30512facb",
+   "sha256": "6a3ddc24edbe604c217935f98c4bf13ab2ab44b16a0b8b34732bd067062be83e",
+   "bytes": 6396
+  },
+  {
+   "path": "prototypes/city-evidence/tools/build_data.py",
+   "git_blob": "11af5865d36c99b20104b8f2c122adfa164d02cd",
+   "sha256": "ea6b23456c4e8cf8d7ce3bd757699256d7aa1a44942641b70cedff9accafb213",
+   "bytes": 12908
+  },
+  {
+   "path": "prototypes/city-evidence/tools/build_evidence.py",
+   "git_blob": "d11027cb70a91eda628fb7a11f807a9fd8b5dcc5",
+   "sha256": "8cf2c438d117267264d1b2d7e0b60f142eff9d740c5444ea8144e66a5c785204",
+   "bytes": 16011
+  },
+  {
+   "path": "prototypes/city-evidence/tools/check_all.py",
+   "git_blob": "86393d7902be62498984416b996f703d90c058f1",
+   "sha256": "08800a1ad1f8e7d97afbd0ad563d60df598e0274a5778415f162f90d620a80c1",
+   "bytes": 11120
+  },
+  {
+   "path": "prototypes/city-evidence/tools/check_evidence_fresh.py",
+   "git_blob": "889790ab74f9f07b0736b227d0c8fd0e7fca1f77",
+   "sha256": "28862b495b78d1b4c5ea7368841578143c02699365b9097844f219dc1fa4dd20",
+   "bytes": 4631
+  },
+  {
+   "path": "prototypes/city-evidence/tools/contract.py",
+   "git_blob": "8553a5c221042867063ec32ecb7078aa3598c15c",
+   "sha256": "88cdebdd7cd8abc6183b51f5e1f99c83a264a26aae9a81fd020aa81529fe5c19",
+   "bytes": 1868
+  },
+  {
+   "path": "prototypes/city-evidence/tools/copy_inputs.py",
+   "git_blob": "aee516c7235227e704d2bf98836667929c2064ff",
+   "sha256": "bbd1f73f9d17472068951a6e320d5e29e1ef8f28751897130b47f69abf01f508",
+   "bytes": 4538
+  },
+  {
+   "path": "prototypes/city-evidence/tools/copy_round5_inputs.py",
+   "git_blob": "48a44e1787607bd40c43f37d9e18d0e8aa7e70ae",
+   "sha256": "cb2b85d7fb5c8e7341de2b6905ce1bad8a65385161cdacb609b48b65015679f9",
+   "bytes": 1670
+  },
+  {
+   "path": "prototypes/city-evidence/tools/copy_round6_inputs.py",
+   "git_blob": "4c233cd14e826a91cb9588acae40086bdce58999",
+   "sha256": "2d5aba1857fef10ab5198fd61e267bf241e09f5415fb677b450914cac4a55ab9",
+   "bytes": 1967
+  },
+  {
+   "path": "prototypes/city-evidence/tools/explain_ref.py",
+   "git_blob": "9d52f01453ba33308f6dcbea3f79405d31928c39",
+   "sha256": "53796452b782a4bc00633c045d40e31249c0ebcf4e3c54057227367ebdd8a508",
+   "bytes": 8127
+  },
+  {
+   "path": "prototypes/city-evidence/tools/plan_oracle.py",
+   "git_blob": "f71becb3d7fe1947d425f86c664ae993efdd7a34",
+   "sha256": "3bdbae1d3a42471ca2864a6b34286a6a60042549429af7187f5bfb0e2d7b0d6c",
+   "bytes": 11670
+  },
+  {
+   "path": "prototypes/city-evidence/tools/repro_baseline.py",
+   "git_blob": "ff55b5e1a64d5bad8a0a117346b511b8478a2038",
+   "sha256": "a66bfcdbaa476d74985066fd0203862c1756dd7c403d631650cdbb7fe99cf57a",
+   "bytes": 2066
+  },
+  {
+   "path": "prototypes/city-evidence/tools/resilience_oracle.py",
+   "git_blob": "9bc5b8c8bb14bbb2e5b23b991d7a9eb384a37b53",
+   "sha256": "95af06376875892189f149c5101c4249bcc1b4d16a21905cfb3261e2bd7c9206",
+   "bytes": 10145
+  },
+  {
+   "path": "prototypes/city-evidence/tools/setup_contract.py",
+   "git_blob": "690553884a0cd6aa70bdf08c910269ce8a71410c",
+   "sha256": "2cdde78685436e1c6c01aac7d288291dce731284a0a283fa4998faa2a9bd567a",
+   "bytes": 3050
+  },
+  {
+   "path": "prototypes/city-evidence/tools/setup_k02.py",
+   "git_blob": "e1d3257cf9de7c011ac3c7a2b57371a6a748fc63",
+   "sha256": "4310b87d48587ef69742a787fac2a61c8a386d01d5737ecc19cda1c92eebb4a6",
+   "bytes": 4574
+  },
+  {
+   "path": "prototypes/city-evidence/tools/setup_k03.py",
+   "git_blob": "4aac1a6d6746dd4b276dbaea49d44cc9c8672a5d",
+   "sha256": "7d9ba7aff2547198b841304c11eddbd13c0e6ca82f4ea55e91602057b05e8469",
+   "bytes": 2053
+  },
+  {
+   "path": "prototypes/city-evidence/tools/whatif_ref.py",
+   "git_blob": "4d71d2dfae05f4dbd77d5716c6e54abd3ba5a4ca",
+   "sha256": "14960af742ea9390656897c444281ca821a31d47a3bf30b40c29cb100d149d79",
+   "bytes": 4991
+  },
+  {
+   "path": "prototypes/city-evidence/web/app.js",
+   "git_blob": "13b86e7d7fb718708b6565c79092a37d4b6b94f4",
+   "sha256": "b58973dc78fee17bf2c3849665c0c4b9aa81777f667894519f045957ae099442",
+   "bytes": 54756
+  },
+  {
+   "path": "prototypes/city-evidence/web/attribution/ATTRIBUTION.md",
+   "git_blob": "e540d8320fb91f2d0b520291bb6a097ee7fb17ee",
+   "sha256": "4de942304f8657f1747a8f8976887255fad4a76d4c35129aa871ed1cbb9615c6",
+   "bytes": 7708
+  },
+  {
+   "path": "prototypes/city-evidence/web/attribution/LICENSES/Apache-2.0.txt",
+   "git_blob": "137069b823873b8bcf42979bcf8e9371052d26a2",
+   "sha256": "074e6e32c86a4c0ef8b3ed25b721ca23aca83df277cd88106ef7177c354615ff",
+   "bytes": 10280
+  },
+  {
+   "path": "prototypes/city-evidence/web/attribution/LICENSES/CDLA-Permissive-2.0.txt",
+   "git_blob": "cc0f954b59ba22a5c892e9833b0013aa281f5838",
+   "sha256": "4531a67d443284d93ffed0803df5b10634aff21c3d77e381f2d48af01d875868",
+   "bytes": 2354
+  },
+  {
+   "path": "prototypes/city-evidence/web/attribution/LICENSES/ODbL-1.0.txt",
+   "git_blob": "8ca51c358d59596c271ee7c928e5feb0d4d9b817",
+   "sha256": "77d2692c3d64efdd4db18dce2407699baf62930e2b50d6e5ed90b48acf16b7c1",
+   "bytes": 25289
+  },
+  {
+   "path": "prototypes/city-evidence/web/attribution/attribution.json",
+   "git_blob": "ddeefb42f5b231eb9c9a087354a191c654010b97",
+   "sha256": "313c9b0eaaa695aa4a0221077bc5487fed91ff443d1b204bafb80b0cc4bf8588",
+   "bytes": 32634
+  },
+  {
+   "path": "prototypes/city-evidence/web/data.js",
+   "git_blob": "e61ff9925a51505dbf2b307d950aab558b4d2a5d",
+   "sha256": "bb2a7e6673ff4f9e46ef40df2db7830521603fd0a548ae6a581608a27e9d7d72",
+   "bytes": 1070322
+  },
+  {
+   "path": "prototypes/city-evidence/web/evidence.js",
+   "git_blob": "3158f6fa1a419f84c78a6aa04f9db194e4a83004",
+   "sha256": "df736e986145da33dee60f692e020486720b72db5b6116af31640cc8693b11b9",
+   "bytes": 151637
+  },
+  {
+   "path": "prototypes/city-evidence/web/facts.js",
+   "git_blob": "e085eaf8be575de06ad2cf9857c1f05cafa86ff8",
+   "sha256": "3994a275ddb8c0cb857478365d94810a945752a96fff10d53d37bc8dc9808c64",
+   "bytes": 28467
+  },
+  {
+   "path": "prototypes/city-evidence/web/index.html",
+   "git_blob": "d34920efefe6bbbb930a1f2873105cd15e4016f8",
+   "sha256": "539b4d8e5344275f426d510318990fdf95cd3f2fab7aa60c5c4120b2405ad9f4",
+   "bytes": 15155
+  },
+  {
+   "path": "prototypes/city-evidence/web/plan-ui.js",
+   "git_blob": "c89d9cea6771a642f6b70fad2cb5e6445b0fb49d",
+   "sha256": "d5426fe796b25850d6635defc720ebef5bcb0d59ff169245b99e61c44fa9d611",
+   "bytes": 46508
+  },
+  {
+   "path": "prototypes/city-evidence/web/plan.js",
+   "git_blob": "593ead0921174ea8dded4bc3e63fb2d1b704c497",
+   "sha256": "3c0638e268ed69ad034ac9675228730b036a28a8b14193232cd32cb844945961",
+   "bytes": 39602
+  },
+  {
+   "path": "prototypes/city-evidence/web/resilience.js",
+   "git_blob": "12f495717a436396428f2b39b77b12548f49fd4e",
+   "sha256": "c16d81aff909e7bbd8b296aa3aa618a94b1e8919273c95caf41a807dbd4667b3",
+   "bytes": 21265
+  },
+  {
+   "path": "prototypes/city-evidence/web/whatif.js",
+   "git_blob": "66b820f44610a768dc76c3ccb4f61d1ca37fd16d",
+   "sha256": "46e3b042d2402a46ca34e454139e7744ba9d379866c500a7809546d0dab72a72",
+   "bytes": 16193
+  }
+ ]
+}
