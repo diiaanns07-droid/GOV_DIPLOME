@@ -193,3 +193,21 @@ def test_purge_antispam_keeps_messages(service, clock):
     assert service.purge_antispam(30) == 1
     item = queue_items(service)[0]
     assert item["text"].startswith("Нет безопасного") and item["antispam"]["same_sender_24h"] == 0
+
+
+def test_maintenance_cli_stats_and_purge(tmp_path, clock, capsys):
+    import json as _json
+
+    from ui.civic_feedback.__main__ import main as cli
+    db = tmp_path / "cli.sqlite3"
+    svc = FeedbackService(db, fixture_object_lookup, clock)
+    submit(svc, text="Секретный текст жителя про яму у въезда.")
+    svc.close()
+    assert cli(["stats", "--db", str(db)]) == 0
+    out = capsys.readouterr().out
+    stats = _json.loads(out)
+    assert stats["moderation"]["pending"] == 1 and stats["public"] == 0
+    assert "Секретный" not in out and "127.0.0.1" not in out
+    assert cli(["purge-antispam", "--db", str(db), "--days", "1"]) == 0
+    assert cli(["stats", "--db", str(tmp_path / "missing.sqlite3")]) == 2
+    assert not (tmp_path / "missing.sqlite3").exists()

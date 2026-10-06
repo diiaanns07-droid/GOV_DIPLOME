@@ -189,6 +189,11 @@
     return state;
   }
 
+  function isPoint(geometry) {
+    return Boolean(geometry && geometry.type === "Point" && Array.isArray(geometry.coordinates) &&
+      geometry.coordinates.length >= 2 && isFinite(geometry.coordinates[0]) && isFinite(geometry.coordinates[1]));
+  }
+
   function targetKey(objectId, geometry) {
     if (objectId) return "object:" + objectId;
     if (geometry && geometry.coordinates) return "point:" + geometry.coordinates.join(",");
@@ -202,7 +207,8 @@
     if (!root || !root.appendChild) throw new Error("CivicFeedback.mount: root обязателен");
     var api = options.api || createFetchApi();
     var objectId = options.objectId || null;
-    var geometry = options.geometry || null;
+    // Место без объекта — только точка [lon, lat]. Геометрию объекта (R03 onFeedback) сервер не ждёт.
+    var geometry = isPoint(options.geometry) ? { type: "Point", coordinates: options.geometry.coordinates.slice(0, 2) } : null;
     var life = lifecycle(root);
     var on = life.on;
     var key = targetKey(objectId, geometry);

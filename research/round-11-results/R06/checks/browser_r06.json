@@ -1,5 +1,5 @@
 {
- "passed": 27,
+ "passed": 29,
  "failed": 0,
  "results": [
   {
@@ -121,6 +121,16 @@
    "name": "degraded detail without detail route",
    "status": "PASS",
    "detail": null
+  },
+  {
+   "name": "R03-style mount with object polygon submits",
+   "status": "PASS",
+   "detail": "{\"okReceipt\":true,\"noPlaceText\":true}"
+  },
+  {
+   "name": "polygon without object is not treated as a place",
+   "status": "PASS",
+   "detail": "{\"okReceipt\":true,\"noPlaceText\":true}"
   },
   {
    "name": "destroy clears root",

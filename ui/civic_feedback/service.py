@@ -1079,6 +1079,21 @@ class FeedbackService:
             LOGGER.exception("could not store classifier suggestion")
 
     # ------------------------------------------------------------ maintenance
+    def stats(self) -> dict:
+        """Только агрегаты: по статусам, с согласием/без, отозванные согласия, подсказки модели."""
+        with self._lock:
+            db = self._db
+            by_status = {name: 0 for name in MODERATION}
+            for name, count in db.execute("SELECT moderation, COUNT(*) FROM feedback_messages GROUP BY moderation"):
+                by_status[name] = count
+            public = db.execute(f"SELECT COUNT(*) FROM feedback_messages WHERE {PUBLIC_WHERE}").fetchone()[0]
+            withdrawn = db.execute(
+                "SELECT COUNT(*) FROM feedback_messages WHERE consent_withdrawn_at IS NOT NULL").fetchone()[0]
+            classifier = dict(db.execute(
+                "SELECT classifier_status, COUNT(*) FROM feedback_messages GROUP BY classifier_status").fetchall())
+        return {"schema_version": SCHEMA_VERSION, "moderation": by_status, "public": public,
+                "consent_withdrawn": withdrawn, "classifier_status": classifier}
+
     def purge_antispam(self, older_than_days: int = 30) -> int:
         """Обезличить служебные антиспам-поля старых сообщений; текст и решения остаются."""
         cutoff = self._now().timestamp() - older_than_days * 86400

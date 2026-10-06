@@ -81,6 +81,11 @@ R06 — ИНТЕГРАЦИЯ СООБЩЕНИЙ ЖИТЕЛЕЙ (civic-v1), дл�
   (или путь, принятый для web/civic/*). Нет inline-скриптов/стилей, совместимо со строгим CSP.
   Житель: shell R01 уже вызывает window.CivicFeedback.mount({root, api, objectId, geometry}) из
   openFeedback(target) (R03 onFeedback). geometry — GeoJSON Point [lon,lat] для места без объекта.
+  R03 (zen-mendel @a268f4a) передаёт onFeedback({objectId, title, geometry, object}) с геометрией
+  объекта (Point/LineString/Polygon): при objectId компонент отправляет geometry=null, а не-точку
+  без объекта не считает местом (проверено в browser_r06.cjs, сценарий 14b).
+  Замечание для R03: кнопка onFeedback подписана «Задать вопрос по объекту» — это звучит как помощник
+  R09; для формы R06 точнее «Сообщить о проблеме или предложить».
   Модератор: window.CivicFeedback.mountModeration({root, api, map?, onOpenObject?}) -> {refresh, destroy}.
     Предлагаемое место — вкладка «Сообщения» в кабинете редактора (R04) или отдельная staff-панель shell.
     map — основной MapLibre (маркер места сообщения с классом civic-r06-marker, удаляется в destroy);
@@ -94,6 +99,9 @@ R06 — ИНТЕГРАЦИЯ СООБЩЕНИЙ ЖИТЕЛЕЙ (civic-v1), дл�
   что и R02 (проверено: миграции R02 не мешают). Соль хэша отправителя — в feedback_meta runtime-БД.
   Runtime-БД не коммитить (.runtime/ — ответственность R01/R02 .gitignore).
   Обслуживание: feedback.purge_antispam(older_than_days=30) обезличивает служебные антиспам-поля.
+  CLI: python -m ui.civic_feedback stats --db .runtime/civic.sqlite3   (только счётчики, без текстов)
+       python -m ui.civic_feedback purge-antispam --db .runtime/civic.sqlite3 --days 30
+  Счётчик для бейджа модератора: GET /staff/feedback?limit=1 -> data.counts.pending.
 
 8. R08
   build_feedback_service(..., classifier="auto") подключит ml.civic_classifier.classify(text, language),

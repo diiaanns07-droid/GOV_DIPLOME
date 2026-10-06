@@ -219,6 +219,31 @@ async function fillForm(page, { category = "sidewalks", text, consent = true, ki
     check("degraded detail without detail route", degraded.includes("Карточка собрана из очереди") && degraded.includes("Предлагаю поставить скамейки"));
     await page.unroute(/\/api\/civic\/v1\/staff\/feedback\/\d+$/);
 
+    // 14b. Вызов как из R03 onFeedback: objectId + Polygon объекта; Polygon без объекта не отправляется.
+    const r03 = await page.evaluate(async () => {
+      const api = window.CivicFeedback.createFetchApi("/api/civic/v1");
+      const box = document.createElement("div");
+      document.getElementById("resident-root").after(box);
+      const polygon = { type: "Polygon", coordinates: [[[71.40, 51.12], [71.41, 51.12], [71.41, 51.13], [71.40, 51.12]]] };
+      const withObject = window.CivicFeedback.mount({ root: box, api, objectId: "demo-astana-park-02", geometry: polygon });
+      box.querySelector("select").value = "landscaping";
+      box.querySelector("select").dispatchEvent(new Event("change"));
+      box.querySelector("textarea").value = "Сломаны скамейки в сквере, нужен ремонт.";
+      box.querySelector("textarea").dispatchEvent(new Event("input"));
+      box.querySelectorAll("input[type=radio][value=false]")[0].click();
+      box.querySelector("form").requestSubmit();
+      for (let i = 0; i < 50 && !box.querySelector(".civic-r06-receipt"); i += 1) await new Promise((r) => setTimeout(r, 50));
+      const okReceipt = Boolean(box.querySelector(".civic-r06-receipt"));
+      withObject.destroy();
+      const noObject = window.CivicFeedback.mount({ root: box, api, objectId: null, geometry: polygon });
+      const noPlaceText = box.textContent.includes("Выберите объект или точку");
+      noObject.destroy();
+      box.remove();
+      return { okReceipt, noPlaceText };
+    });
+    check("R03-style mount with object polygon submits", r03.okReceipt, JSON.stringify(r03));
+    check("polygon without object is not treated as a place", r03.noPlaceText, JSON.stringify(r03));
+
     // 14. destroy() снимает разметку и класс.
     const destroyed = await page.evaluate(() => {
       window.__r06.resident.destroy();
