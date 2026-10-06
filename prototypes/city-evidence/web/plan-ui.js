@@ -15,6 +15,11 @@
   const ctxOf = (city) => ctxCache[city] || (ctxCache[city] = PL.makeContext(D, city, F));
   const mmText = (mm) => (mm === null || mm === undefined ? "нет данных" : fmtM(mm / 1000));
   const isInt = (v, lo, hi) => Number.isInteger(v) && v >= lo && v <= hi;
+  // Edits are applied on the next turn (K07 r8 K3: keeps the focus when Tab follows a change). An action button pressed
+  // right after typing must see the typed value, so every action first flushes the pending edits (round 9 race fix).
+  const PENDING = [];
+  function flush() { while (PENDING.length) PENDING.shift()(); }
+  function defer(f) { PENDING.push(f); setTimeout(flush, 0); }
   // collapsible sections; open state survives re-render (long lists of 25 points / 16 candidates)
   const OPEN = {};
   function section(parent, id, title, openByDefault) {
@@ -169,7 +174,7 @@
     const inp = el("input", { type: "number", id, min: lo, max: hi, step: 1, value: String(value), inputmode: "numeric", class: "num-in" });
     // K07 r8 K3: «change» fires before Tab moves the focus; re-rendering inside it replaced the next control and the focus
     // fell to <body>. The value is applied on the next turn, after the focus has moved (render() keeps it by id).
-    inp.addEventListener("change", () => { const raw = inp.value.trim(); setTimeout(() => setNumber(what || label, raw, lo, hi, apply), 0); });
+    inp.addEventListener("change", () => { const raw = inp.value.trim(); defer(() => setNumber(what || label, raw, lo, hi, apply)); });
     lab.append(inp);
     return lab;
   }
@@ -304,7 +309,7 @@
     if (OS.status === "running" && d !== OS.digest) { OS.status = "stale"; OS.msg = "Параметры задачи изменились — поиск остановлен, его ответ не будет применён."; }
     else if (OS.status === "done" && d !== OS.digest) { OS.status = "stale"; OS.result = null; OS.sens = null; OS.msg = "Задача изменилась — прежние оптимумы устарели. Запустите поиск снова."; }
   });
-  function startSearch() {
+  function startSearch() { flush();
     let sc;
     try { sc = PL.validatePlanScenario(rawScenario(), ctxOf(STATE.city)); } catch (e) { OS.msg = "Поиск не запущен: " + (e.detail || e.message); render(); return; }
     const ctx = ctxOf(STATE.city), rid = ++OS.request_id, digest = PL.problemDigest(sc, F);
@@ -341,7 +346,7 @@
     OS.msg = "Поиск отменён; ручной план не изменён, неполный результат не показывается.";
     render();
   }
-  function applyPlan(name) {
+  function applyPlan(name) { flush();
     if (OS.status !== "done" || !OS.result || !OS.result.objectives || OS.result.problem_digest !== currentProblemDigest()) { OS.msg = "Нечего применять: результат отсутствует или устарел."; render(); return false; }
     if (!OS.backup) OS.backup = PS.selected.slice();
     PS.selected = OS.result.objectives[name].ids.slice();
@@ -457,7 +462,7 @@
 
   // explanation (template, not LLM); shown only while its digest equals the current one
   PS.expl = null;
-  function explainNow() {
+  function explainNow() { flush();
     let sc; try { sc = PL.validatePlanScenario(rawScenario(), ctxOf(STATE.city)); } catch (e) { PS.msg = "Объяснение недоступно: " + (e.detail || e.message); render(); return; }
     const man = PL.evaluatePlan(ctxOf(STATE.city), sc, sc.selected_ids);
     const res = OS.status === "done" && OS.result && OS.result.problem_digest === PL.problemDigest(sc, F) ? OS.result : null, sens = res ? OS.sens : null;
@@ -476,7 +481,7 @@
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
   function exportText() { return PL.exportPlanScenario(ctxOf(STATE.city), PL.validatePlanScenario(rawScenario(), ctxOf(STATE.city)), F); }
-  function exportFile() {
+  function exportFile() { flush();
     let t; try { t = exportText(); } catch (e) { PS.msg = "Сохранить нельзя: " + (e.detail || e.message); render(); return; }
     download(`city-plan-${STATE.city}-${PS.category}.json`, t, "application/json");
     PS.msg = `План сохранён: city-plan-${STATE.city}-${PS.category}.json (входные поля + производные значения, которые при загрузке сверяются).`; render();
@@ -511,7 +516,7 @@
       generated: new Date().toISOString().slice(0, 19).replace("T", " ") + " UTC", manual: PL.evaluatePlan(ctx, sc, sc.selected_ids), result: res, sens: res ? OS.sens : null,
       explanation: ex, names, attribution: `Источники записей: ${att || "не указаны"} (через Overture Maps ${c.release}); лицензии ODbL-1.0 / CDLA-Permissive-2.0 / Apache-2.0 — см. web/attribution/ATTRIBUTION.md.`, demo: PS.demo });
   }
-  function reportFile() {
+  function reportFile() { flush();
     let t; try { t = reportText(); } catch (e) { PS.msg = "Отчёт не создан: " + (e.detail || e.message); render(); return; }
     download(`city-plan-report-${STATE.city}-${PS.category}.html`, t, "text/html");
     PS.msg = "HTML-отчёт сохранён (данные и ограничения встроены, без скриптов)."; render();
@@ -556,6 +561,6 @@
   EXT.cards.push(() => render());
   window.CITY_PLAN_UI = { state: PS, place, setMode, setCategory, setStatus, toggleSelected, removePoint, removeCand, demoSet, scenario, evaluate, render,
     rawScenario, setNumber, OPT, changed, reset, ctxOf, el, btn, mmText, opt: OS, startSearch, cancelSearch, applyPlan, restoreManual,
-    explainNow, exportText, importText, reportText, loadScenario, onProblemChange: (f) => OPT.onProblemChange.push(f), afterRender: (f) => OPT.render.push(f) };
+    explainNow, exportText, importText, reportText, loadScenario, flush, defer, onProblemChange: (f) => OPT.onProblemChange.push(f), afterRender: (f) => OPT.render.push(f) };
   render();
 })();

@@ -64,6 +64,14 @@ const active = (page) => page.evaluate(() => { const a = document.activeElement;
   const a5c = await active(page);
   check("apply by keyboard keeps the focus in the card", a5c.inPlan, JSON.stringify(a5c));
 
+  // round 9 race: type a value and press «Найти» immediately — the search must use the typed value and finish (not «stale»)
+  await page.fill("#plBudget", "640"); await page.click("#plRun");
+  await page.waitForFunction(() => CITY_PLAN_UI.opt.status !== "running", null, { timeout: 15000 });
+  const race = await page.evaluate(() => ({ st: CITY_PLAN_UI.opt.status, budget: CITY_PLAN_UI.opt.result && CITY_PLAN_UI.opt.result.budget, state: CITY_PLAN_UI.state.budget }));
+  check("typed budget + immediate «Найти»: search uses the new value and is not stale", race.st === "done" && race.budget === 640 && race.state === 640, JSON.stringify(race));
+  await page.fill("#plBudget", "620"); await page.click("#plExport").catch(() => {});
+  check("typed value + immediate export: value applied first", (await page.evaluate(() => CITY_PLAN_UI.state.budget)) === 620);
+  await page.click("#plRun"); await page.waitForFunction(() => CITY_PLAN_UI.opt.status === "done", null, { timeout: 15000 });
   // N2: 390 px — Pareto / sensitivity tables readable without hidden columns (no inner horizontal scroll)
   await page.setViewportSize({ width: 390, height: 844 });
   await page.waitForTimeout(100);

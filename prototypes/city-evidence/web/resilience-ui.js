@@ -40,7 +40,7 @@
     if (RSS.key === null) RSS.key = keyNow();
     if (RSS.key !== keyNow()) resetCases(RSS.cases.length ? "Город или категория изменились — случаи сброшены: ID исходных записей не переносятся." : "");
   }
-  function addCase() {
+  function addCase() { U.flush();
     if (RSS.cases.length >= RS.LIMITS.user_cases) { changed(`Не больше ${RS.LIMITS.user_cases} случаев (плюс базовый).`); return; }
     let id; do { id = "c" + RSS.seq++; } while (RSS.cases.some((c) => c.id === id));
     RSS.cases.push({ id, label: `Случай ${id.slice(1)}`, ids: new Set() });
@@ -66,7 +66,7 @@
   function focus(id) { setTimeout(() => { const f = document.getElementById(id); if (f && f.getClientRects().length) f.focus(); }, 0); }
 
   // ---------- search: chunked on the event loop; request_id + problem digest guard against late answers ----------
-  function start() {
+  function start() { U.flush();
     let env;
     try { env = validated(); } catch (e) { RSS.msg = "Сравнение не запущено: " + (e.detail || e.message); render(); return; }
     const rid = ++RSS.request_id, s = RS.createResilienceSearch(ctx(), env, { F, request_id: rid }), digest = RS.resilienceProblemDigest(env, F);
@@ -94,7 +94,7 @@
     RSS.msg = `Сравнение отменено (просмотрено ${RSS.examined} из ${RSS.total}); неполный результат не показывается, ручной план не изменён.`;
     render();
   }
-  function apply(which) {
+  function apply(which) { U.flush();
     const r = RSS.result;
     if (RSS.status !== "done" || !r || r.status !== "optimal" || r.resilience_problem_digest !== digestNow()) { RSS.msg = "Нечего применять: результат отсутствует или устарел."; render(); return false; }
     if (!RSS.backup) RSS.backup = U.state.selected.slice();
@@ -113,7 +113,7 @@
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
   function exportText() { return RS.exportResilience(ctx(), envelope()); }
-  function exportFile() {
+  function exportFile() { U.flush();
     let t; try { t = exportText(); } catch (e) { RSS.msg = "Сохранить нельзя: " + (e.detail || e.message); render(); return; }
     download(`city-resilience-${STATE.city}-${U.state.category}.json`, t, "application/json");
     RSS.msg = `Сохранено: city-resilience-${STATE.city}-${U.state.category}.json (только входные данные: план и случаи).`; render();
@@ -146,13 +146,13 @@
       explanation: RSS.expl && RSS.expl.digest === explDigest() ? RSS.expl.text : null,
       attribution: `Источники записей: ${att || "не указаны"} (через Overture Maps ${c.release}); лицензии — web/attribution/ATTRIBUTION.md.` });
   }
-  function reportFile() {
+  function reportFile() { U.flush();
     let t; try { t = reportText(); } catch (e) { RSS.msg = "Отчёт не создан: " + (e.detail || e.message); render(); return; }
     download(`city-resilience-report-${STATE.city}-${U.state.category}.html`, t, "text/html");
     RSS.msg = "HTML-отчёт сохранён (пересчитан, без скриптов)."; render();
   }
   function explDigest() { try { const env = validated(); return F.sha256hex(JSON.stringify([RS.resilienceScenarioDigest(env, F), currentResult(env) ? RSS.result.resilience_problem_digest : null])).slice(0, 16); } catch (e) { return null; } }
-  function explain() {
+  function explain() { U.flush();
     let env; try { env = validated(); } catch (e) { RSS.msg = "Объяснение недоступно: " + (e.detail || e.message); render(); return; }
     RSS.expl = { digest: explDigest(), text: RS.explainResilience(env, manualEval(env), currentResult(env)) };
     render();
@@ -202,7 +202,7 @@
       const ctl = el("div", { class: "wi-ctl" });
       const lab = el("label", { class: "ctl", for: `rsLabel_${c.id}` }, "Название ");
       const inp = el("input", { type: "text", id: `rsLabel_${c.id}`, value: c.label, maxlength: 120, class: "rs-label" });
-      inp.addEventListener("change", () => { const v = inp.value; setTimeout(() => setLabel(c.id, v), 0); });
+      inp.addEventListener("change", () => { const v = inp.value; U.defer(() => setLabel(c.id, v)); });
       lab.append(inp);
       ctl.append(lab, btn(`rsShow_${c.id}`, RSS.show === c.id ? "Скрыть на карте" : "Показать на карте", () => { RSS.show = RSS.show === c.id ? null : c.id; render(); renderMap(); }, { "aria-pressed": String(RSS.show === c.id) }),
         btn(`rsDel_${c.id}`, "Удалить случай", () => removeCase(c.id), { "aria-label": `Удалить случай ${c.id}` }));
