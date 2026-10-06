@@ -1,0 +1,19 @@
+R09 — ПРЕДЛАГАЕМЫЕ АДДИТИВНЫЕ ИЗМЕНЕНИЯ civic-v1 (решает R01; v1 остаётся совместимым)
+
+1. Ответ POST /assistant: обязательные по CONTRACT поля source, text, fact_ids, warnings сохранены.
+   Добавлены (аддитивно): schema="civic-assistant-answer-v1", mode, model, intent, language,
+   statements[{text,kind,fact_ids,source_ids,required?}], object_id, scenario_id, context_digest,
+   facts_version. Клиент, читающий только v1-поля, не ломается.
+   Обоснование: statements дают опору (fact_ids/source_ids) каждой фразе; object_id позволяет UI
+   отбросить ответ про другой объект; facts_version/mode — проверяемость режима.
+
+2. Новый редакторский маршрут POST /api/civic/v1/staff/assistant/extract
+   body {source_id, text, url?, publisher?, published_on?} -> data = civic-extraction-draft-v1.
+   Ничего не сохраняет и не публикует; URL не скачивается. 401/403/400/413/422 по CONTRACT.
+
+3. Дополнительная функция фронтенда window.CivicAssistant.mountDraftReview({root, api, onApplyField})
+   -> {destroy}. Обязательная CivicAssistant.mount({root, api, objectId}) -> {destroy} не изменена;
+   mount дополнительно принимает необязательный scenarioId.
+
+4. scenario_id в POST /assistant трактуется как case_id подготовленного кейса R07
+   (engine/civic_scenarios/cases/*.case.json): сервер сам считает compare(); клиент не передаёт payload.

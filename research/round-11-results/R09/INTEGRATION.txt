@@ -1,0 +1,90 @@
+R09 — ИНСТРУКЦИЯ ДЛЯ R01 (ИНТЕГРАЦИЯ ПОМОЩНИКА)
+Раунд 11, civic-v1, Астана. Ветка R09: claude/wizardly-ptolemy-qy8ltw. Изменять общие файлы может только R01.
+Ничего из этого не требует ключа, сети или платного вызова: по умолчанию работает шаблонный режим.
+
+1. ФАЙЛЫ ДЛЯ ИМПОРТА (только эти пути)
+   agent/civic_assistant/            Python-модуль (stdlib, без новых зависимостей)
+   web/civic/assistant/assistant.js  window.CivicAssistant
+   web/civic/assistant/assistant.css стили с префиксом .civic-r09-
+   web/civic/assistant/demo.html     только для локального демо; в продуктовые ASSETS не включать
+   tests/civic/R09/                  тесты, демо-сервер, Playwright-проверка
+
+2. СЕРВЕР (ui/web_server.py, R01)
+   Сейчас в CIVIC_ROUTES уже есть ("POST", ("assistant",), "assistant"). Добавить редакторский маршрут:
+       ("POST", ("staff", "assistant", "extract"), "assistant"),
+   Фабрика модуля (ленивая, как store/feedback):
+
+       from agent.civic_assistant.api import AssistantEndpoint, r02_public_loader, r07_case_loader
+       def assistant():
+           store = registry.service("store")              # R02 CivicService
+           load_scenario = None
+           try:
+               from engine.civic_scenarios.registry import list_cases, load_graph
+               from engine.civic_scenarios.compare import compare
+               load_scenario = r07_case_loader(list_cases, load_graph, compare)
+           except ImportError:
+               pass                                         # без R07 вопросы о сценарии -> «нет данных»
+           return AssistantEndpoint(
+               load_public_object=r02_public_loader(store),  # ПУБЛИЧНЫЙ GET /objects/{id}, без cookie
+               load_scenario_result=load_scenario,           # scenario_id = case_id кейса R07
+               provider=None,                                # шаблон; LLM — см. п.5
+               extractor=None,                               # шаблонное извлечение; LLM — см. п.5
+               resolve_principal=lambda ctx: _principal_dict(store.resolve_principal(ctx)),
+           )
+       # _principal_dict: Principal R02 -> {"name": ..., "role": "editor"|"admin"} или None.
+
+   В registry.handle для owner == "assistant":
+       return service.handle(method, rel_path, query, body, context)
+   AssistantEndpoint принимает и относительный путь (/assistant, /staff/assistant/extract), и полный
+   (/api/civic/v1/...). body — уже разобранный JSON (dict/list/str) после лимита 64 КБ (413 — у шлюза).
+   context: {"headers": {...}, "client_ip": str, "is_same_origin": bool} — как для остальных сервисов.
+   Для POST /staff/assistant/extract шлюз должен применить СВОЮ стандартную CSRF-проверку
+   (cookie + X-CSRF-Token), как для прочих staff POST: R09 сам проверяет роль и is_same_origin,
+   но к хранилищу сессий R02 доступа не имеет.
+   /modules: модуль assistant = ready, когда фабрика вернула объект.
+
+   ВНИМАНИЕ (расхождение R01/R02, не R09): шлюз R01 вызывает store.handle с относительным путём
+   (/objects/{id}), а R02 CivicService (92f7aba) ждёт полный /api/civic/v1/... и на относительный
+   отвечает None. r02_public_loader пробует обе формы, поэтому помощник работает при любом решении.
+
+3. ЧТО ГАРАНТИРУЕТ ENDPOINT
+   POST /assistant тело ровно {question, object_id|null, scenario_id|null}; facts/context/role/... -> 400.
+   question: строка 1..500 символов (иначе 422/413). Нужен object_id или scenario_id (422).
+   Черновик/архив/несуществующий объект неразличимы: 200 + source="unavailable".
+   429 при >20 вопросов/мин с одного client_ip (in-memory). Ответ: {ok:true,data:answer}, Cache-Control no-store.
+   answer: {schema, source: llm|template|unavailable, mode, model, intent, language, text,
+            statements:[{text,kind,fact_ids,source_ids,required?}], fact_ids, warnings,
+            object_id, scenario_id, context_digest, facts_version}
+   Поля source/text/fact_ids/warnings — по CONTRACT; остальные — аддитивные (contract_delta.txt).
+
+4. ФРОНТЕНД (web/index.html + ASSETS, R01)
+   ASSETS: "/civic/assistant/assistant.js" и "/civic/assistant/assistant.css" (явные файлы, без каталога).
+   Подключить <link rel="stylesheet" href="/civic/assistant/assistant.css"> и
+   <script src="/civic/assistant/assistant.js" defer></script> после shell.js.
+   shell.js R01 уже вызывает mount("assistant", root, {objectId}) -> CivicAssistant.mount({root, api, objectId}).
+   Компонент вызывает только api.request("POST", "/assistant", {...}, {signal, timeoutMs}).
+   Для сценариев: CivicAssistant.mount({root, api, objectId: null, scenarioId: "<case_id>"}).
+   Редактор (R04): CivicAssistant.mountDraftReview({root, api, onApplyField(field, value, evidence)})
+   field ∈ title|kind|schedule.planned_start|schedule.current_planned_end|budget.amount_kzt|
+           budget.basis|responsible.organization|location_text (location_text — только подсказка, не geometry).
+   onApplyField лишь заполняет форму R04; сохранение/публикация — обычными действиями редактора.
+   По умолчанию помощник не нужен для чтения карты/карточки: его отсутствие ничего не ломает.
+
+5. ВКЛЮЧЕНИЕ LLM (необязательно, решение R01/пользователя)
+   from agent.civic_assistant.providers import provider_from_settings
+   provider = provider_from_settings(read_settings(), _create_client)   # из agent/advisor.py снимка b2cb2e0
+   None без ключа/модели -> шаблон. Модель видит только {id,label,known} фактов (без значений) и
+   возвращает {intent, fact_ids}; при любой ошибке/тайм-ауте (8 с) — шаблон с warnings.
+   Для extractor тот же provider: модель возвращает только цитаты, код проверяет и разбирает.
+   R09 не выполнял ни одного платного вызова; см. PROVIDER_CONTRACT.txt.
+
+6. ПРОВЕРКИ ДЛЯ R01/R10
+   python3 -m pytest tests/civic/R09 -q                         (105 python + 1 браузерный, нужен node+playwright)
+   python3 -m agent.civic_assistant.evaluate --ui               (EVAL_REPORT.txt, eval_results.json)
+   python3 research/round-11-results/R09/check_r02_r07_integration.py --r02 <R02 checkout> --r07 <R07 checkout>
+   python3 tests/civic/R09/demo_server.py 8765  ->  http://127.0.0.1:8765/web/civic/assistant/demo.html
+
+7. ВАЖНО ДЛЯ РЕДАКТОРОВ (R04)
+   В R02 публичная история содержит только события публикации. Публичное объяснение переноса срока
+   нужно писать в reason ПУБЛИКАЦИИ: помощник цитирует его жителю. Reason промежуточной правки
+   остаётся служебным и помощнику жителя не виден (проверено на коде R02 92f7aba).

@@ -73,8 +73,19 @@ def test_fenced_json_is_accepted(ctx_of):
 def test_model_status_choice_cannot_claim_completion(ctx_of):
     ans, _ = ask(ctx_of("planned_end_passed"), "Готово?", {"intent": "status", "fact_ids": ["schedule.current_planned_end"]})
     assert ans["source"] == "llm"
-    assert "Завершение работ не подтверждено" in ans["text"] or "не означает" in ans["text"]
+    assert "Завершение работ не подтверждено" in ans["text"]  # сужение выбором модели не убирает оговорку
+    assert "не означает, что работы закончены" in ans["text"]
     assert "«завершено»" not in ans["text"]
+
+
+def test_model_narrowing_keeps_required_caveats(ctx_of):
+    for intent, ids, must in (
+        ("budget", ["budget.source_id"], "Сумма в карточке не указана — нет данных."),
+        ("delay_reason", ["schedule.original_planned_end"], "Причина изменения сроков в публичной истории не указана"),
+        ("schedule", ["schedule.planned_start"], "Текущий плановый срок окончания: нет данных."),
+    ):
+        ans, _ = ask(ctx_of("missing_deadline"), "вопрос", {"intent": intent, "fact_ids": ids})
+        assert ans["source"] == "llm" and must in ans["text"], (intent, ans["text"])
 
 
 def test_model_cannot_override_security_refusal(ctx_of):

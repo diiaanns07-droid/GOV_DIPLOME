@@ -29,6 +29,9 @@ from agent.civic_assistant.facts import ID_RE, ContextError, build_verified_cont
 API_PREFIX = "/api/civic/v1"
 ASSISTANT_PATH = API_PREFIX + "/assistant"
 EXTRACT_PATH = API_PREFIX + "/staff/assistant/extract"
+# Шлюз R01 передаёт сервисам путь без префикса (/assistant); принимаем обе формы.
+_ASSISTANT_PATHS = (ASSISTANT_PATH, "/assistant")
+_EXTRACT_PATHS = (EXTRACT_PATH, "/staff/assistant/extract")
 HEADERS = {"Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store"}
 ALLOWED_KEYS = {"question", "object_id", "scenario_id"}
 RATE_LIMIT = (20, 60.0)  # запросов на IP за окно, секунд
@@ -66,10 +69,18 @@ class RateLimiter:
 
 
 def r02_public_loader(service, prefix: str = API_PREFIX):
-    """Чтение объекта через ПУБЛИЧНЫЙ маршрут R02 GET /objects/{id} без сессии редактора."""
+    """Чтение объекта через ПУБЛИЧНЫЙ маршрут R02 GET /objects/{id} без сессии редактора.
+
+    Сначала полный путь (/api/civic/v1/objects/{id}), затем относительный (/objects/{id}):
+    R02 и шлюз R01 пока используют разные формы; None или 404 -> пробуем вторую форму.
+    """
     def load(object_id: str):
-        context = {"headers": {}, "client_ip": "127.0.0.1", "is_same_origin": True, "cookies": {}}
-        resp = service.handle("GET", f"{prefix}/objects/{quote(object_id, safe='')}", {}, None, context)
+        context = {"headers": {}, "client_ip": None, "is_same_origin": False, "cookies": {}}
+        resp = None
+        for base in dict.fromkeys((prefix, "")):
+            resp = service.handle("GET", f"{base}/objects/{quote(object_id, safe='')}", {}, None, context)
+            if isinstance(resp, dict) and resp.get("status") != 404:
+                break
         if not isinstance(resp, dict) or resp.get("status") != 200:
             return None
         body = resp.get("body") or {}
@@ -112,14 +123,14 @@ class AssistantEndpoint:
         self.timeout_s = timeout_s
 
     def handle(self, method, path, query=None, body=None, context=None):
-        if path not in (ASSISTANT_PATH, EXTRACT_PATH):
+        if path not in _ASSISTANT_PATHS + _EXTRACT_PATHS:
             return None
         if method != "POST":
             return _err(405, "method_not_allowed", "только POST")
         context = context if isinstance(context, dict) else {}
         if not self.rate_limiter.allow(str(context.get("client_ip") or "unknown")):
             return _err(429, "rate_limited", "Слишком много вопросов подряд. Повторите через минуту.")
-        if path == EXTRACT_PATH:
+        if path in _EXTRACT_PATHS:
             from agent.civic_assistant.extract import handle_extract  # редакторский путь
             return handle_extract(body, context, self.resolve_principal, self.extractor, _ok, _err)
         return self._assistant(body)

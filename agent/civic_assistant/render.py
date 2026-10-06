@@ -209,6 +209,12 @@ def _st(text, fact_ids=(), kind="fact", facts=None):
     return {"text": text, "kind": kind, "fact_ids": list(dict.fromkeys(fact_ids)), "source_ids": sorted(sources)}
 
 
+def _req(st):
+    """Обязательная фраза: выбор фактов моделью не может её убрать (оговорки о статусе/отсутствии данных)."""
+    st["required"] = True
+    return st
+
+
 def _v(facts, fid):
     f = facts.get(fid)
     return f["value"] if f and f["known"] else None
@@ -250,18 +256,18 @@ def r_status(facts, lang):
     current = _v(facts, "schedule.current_planned_end")
     out = []
     if status == "completed":
-        out.append(_st(t["completed_status"], ["object.status"], facts=facts))
+        out.append(_req(_st(t["completed_status"], ["object.status"], facts=facts)))
         if actual:
-            out.append(_st(t["actual_end"].format(d=fmt_date(actual, lang)), ["schedule.actual_end"], facts=facts))
+            out.append(_req(_st(t["actual_end"].format(d=fmt_date(actual, lang)), ["schedule.actual_end"], facts=facts)))
         else:
-            out.append(_st(t["completed_no_actual"], ["schedule.actual_end"], kind="missing"))
+            out.append(_req(_st(t["completed_no_actual"], ["schedule.actual_end"], kind="missing")))
         return out
-    out.append(_st(t["status"].format(status=STATUS_LABELS[lang][status]), ["object.status"], facts=facts))
+    out.append(_req(_st(t["status"].format(status=STATUS_LABELS[lang][status]), ["object.status"], facts=facts)))
     if actual:
         out.append(_st(t["actual_status_conflict"].format(d=fmt_date(actual, lang), status=STATUS_LABELS[lang][status]),
                        ["schedule.actual_end", "object.status"], kind="notice", facts=facts))
     else:
-        out.append(_st(t["not_confirmed_done"], ["schedule.actual_end"], kind="missing"))
+        out.append(_req(_st(t["not_confirmed_done"], ["schedule.actual_end"], kind="missing")))
     if current:
         out.append(_st(t["current_end"].format(d=fmt_date(current, lang)), ["schedule.current_planned_end"], facts=facts))
         out.append(_st(t["planned_not_actual"], ["schedule.current_planned_end"], kind="notice"))
@@ -273,7 +279,8 @@ def r_schedule(facts, lang, brief=False):
     out = []
     current = _v(facts, "schedule.current_planned_end")
     kind = "fact" if current else "missing"
-    out.append(_st(t["current_end"].format(d=fmt_date(current, lang)), ["schedule.current_planned_end"], kind, facts))
+    out.append(_req(_st(t["current_end"].format(d=fmt_date(current, lang)), ["schedule.current_planned_end"], kind,
+                        facts)))
     if brief:
         if current and not _v(facts, "schedule.actual_end"):
             out.append(_st(t["planned_not_actual"], ["schedule.current_planned_end"], kind="notice"))
@@ -324,7 +331,7 @@ def r_delay_reason(facts, lang):
         out.append(_st(t["reason_quote"].format(r=e["revision"], at=fmt_at(e["at"], lang), text=e["reason"]),
                        [h["id"]], kind="quote"))
     if not reasons:
-        out.append(_st(t["reason_missing"], [h["id"] for h in hist][-3:], kind="missing"))
+        out.append(_req(_st(t["reason_missing"], [h["id"] for h in hist][-3:], kind="missing")))
     return out
 
 
@@ -356,10 +363,10 @@ def r_budget(facts, lang):
     basis = _v(facts, "budget.basis") or "unknown"
     out = []
     if amount is None:
-        out.append(_st(t["amount_missing"], ["budget.amount_kzt"], kind="missing"))
+        out.append(_req(_st(t["amount_missing"], ["budget.amount_kzt"], kind="missing")))
     else:
-        out.append(_st(t["amount"].format(v=fmt_money(amount), basis=BASIS_LABELS[lang][basis]),
-                       ["budget.amount_kzt", "budget.basis"], facts=facts))
+        out.append(_req(_st(t["amount"].format(v=fmt_money(amount), basis=BASIS_LABELS[lang][basis]),
+                            ["budget.amount_kzt", "budget.basis"], facts=facts)))
     sid = _v(facts, "budget.source_id")
     ref = _v(facts, "source." + sid) if sid else None
     if ref:
@@ -464,7 +471,7 @@ def render(intent: str, facts: dict, lang: str, selected: list[str] | None = Non
     statements = RENDERERS[intent](facts, lang)
     if selected:
         chosen = set(selected)
-        narrowed = [s for s in statements if s["kind"] == "notice" or chosen & set(s["fact_ids"])]
+        narrowed = [s for s in statements if s["kind"] == "notice" or s.get("required") or chosen & set(s["fact_ids"])]
         if any(s["kind"] != "notice" for s in narrowed):
             statements = narrowed
     # Пометка synthetic/hypothesis/derived добавляется кодом в каждый ответ, а не только в README.

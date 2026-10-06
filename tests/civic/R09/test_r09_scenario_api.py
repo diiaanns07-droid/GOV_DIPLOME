@@ -137,6 +137,10 @@ def test_bad_requests_are_json_errors(endpoint, body, status, code):
 def test_methods_and_paths(endpoint):
     assert endpoint.handle("GET", ASSISTANT_PATH, {}, None, {})["status"] == 405
     assert endpoint.handle("POST", "/api/civic/v1/objects", {}, {}, {}) is None
+    # шлюз R01 передаёт относительный путь
+    rel = endpoint.handle("POST", "/assistant", {}, {"question": "Когда?", "object_id": "r09-synth-full"},
+                          {"client_ip": "1.2.3.4", "headers": {}})
+    assert rel["status"] == 200 and rel["body"]["data"]["object_id"] == "r09-synth-full"
 
 
 def test_draft_and_missing_are_indistinguishable(endpoint):
@@ -185,13 +189,15 @@ def test_provider_path_through_endpoint(data):
 
 
 class FakeR02:
-    def __init__(self, item, history):
+    def __init__(self, item, history, prefix="/api/civic/v1"):
         self.calls = []
-        self.item, self.history = item, history
+        self.item, self.history, self.prefix = item, history, prefix
 
     def handle(self, method, path, query, body, context):
         self.calls.append((method, path, context))
-        if path == "/api/civic/v1/objects/r09-synth-full":
+        if not path.startswith(self.prefix + "/"):
+            return None
+        if path == self.prefix + "/objects/r09-synth-full":
             return {"status": 200, "headers": {}, "body": {"ok": True, "data": {"item": self.item, "history": self.history}}}
         return {"status": 404, "headers": {}, "body": {"ok": False, "error": {"code": "not_found", "message": ""}}}
 
@@ -203,6 +209,8 @@ def test_r02_loader_uses_public_route_without_session(data):
     assert item["id"] == "r09-synth-full" and load("r09-synth-draft") is None
     for method, path, ctx in svc.calls:
         assert method == "GET" and "/staff/" not in path and not ctx.get("cookies") and "Cookie" not in ctx["headers"]
+    rel = FakeR02(data["objects"]["full"], data["history"]["full"], prefix="")
+    assert r02_public_loader(rel)("r09-synth-full")[0]["id"] == "r09-synth-full"
 
 
 def test_r07_case_loader_uses_server_payload():

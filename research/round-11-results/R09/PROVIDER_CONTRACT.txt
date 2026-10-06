@@ -1,0 +1,35 @@
+R09 — КОНТРАКТ АДАПТЕРА ПРОВАЙДЕРА (civic-assistant-provider-v1)
+
+Объект провайдера:
+    name: str            — короткое имя, попадает в answer.mode = "llm:<name>"
+    model: str | None    — попадает в answer.model
+    choose(request: dict, *, timeout_s: float) -> str   — сырой текст JSON
+
+Вызов выполняется в пуле потоков с жёстким тайм-аутом (по умолчанию 8 с). Тайм-аут, исключение,
+не-JSON, лишний ключ, неизвестный ID — ответ отклоняется ЦЕЛИКОМ, ответ строит шаблон:
+source="template", mode="template-fallback", model=null, warnings += [код].
+
+A) Выбор типа ответа — request.schema = "civic-assistant-choice-request-v1"
+   request = {schema, question, language: "ru"|"kk", intents: [...], max_fact_ids: 8,
+              facts: [{id, label, known}], output: {...}}
+   Значений фактов, цитат, истории, служебных полей в запросе НЕТ.
+   Ответ ровно: {"intent": <один из intents>, "fact_ids": [<id из facts>, ... не более 8]}
+   Коды отказа: provider_not_json, provider_schema, provider_free_text (ключи text/answer/comment/
+   message/reply), provider_intent, provider_unknown_fact, provider_fact_not_for_intent,
+   provider_too_long, provider_type, provider_timeout, provider_error.
+   Принятый выбор: source="llm"; текст, числа и даты всё равно собирает код (render.py).
+   Сужение выбором fact_ids не убирает обязательные оговорки (statement.required) и пометки.
+   Вопрос о паролях/публикации/SQL/пробках классифицируется шаблоном как unsupported, и модель
+   не может это переопределить (warning provider_overridden_unsupported).
+
+B) Извлечение черновика — request.schema = "civic-assistant-extract-request-v1"
+   request = {schema, fields: [...], text, output, rules}  (text — вставленный редактором текст)
+   Ответ ровно: {"fields": {"<field>": {"quote": "<дословная подстрока text>"}}}
+   Код проверяет: поле из allowlist, quote дословно есть в text, не лежит в найденной инструкции,
+   затем САМ разбирает дату/сумму/тип. Иначе: extract_provider_schema, extract_provider_unknown_field,
+   extract_provider_not_json, extract_quote_not_in_text:<f>, extract_quote_in_instruction:<f>.
+   Расхождение с шаблоном -> value=null, confidence_kind="conflict", обе цитаты в alternatives.
+
+Реализации: MockProvider (тесты/демо), OpenAICompatibleProvider(client, model) — chat.completions,
+temperature=0, response_format=json_object, max_tokens=200, timeout=timeout_s. Клиента создаёт
+сервер R01; R09 .env не читает. Платный вызов в R09 не выполнялся (EVAL_REPORT: L00 NOT_RUN).
