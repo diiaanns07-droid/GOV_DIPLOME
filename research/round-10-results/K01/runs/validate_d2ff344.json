@@ -1,0 +1,179 @@
+{
+ "code_sha": "d2ff344c5ec9b9a729ea59df50ec81f981e619de",
+ "snapshot_id": "shymkent-2026-09-23.1-ed0d46bbe5fa1f8e",
+ "results": [
+  {
+   "check": "case: обязательные поля CONTRACT",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "check": "case: нет полей верхнего уровня вне CONTRACT (строгий импорт)",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "check": "parameters: только поля CONTRACT",
+   "status": "PASS",
+   "detail": [
+    "distance_method",
+    "max_new_objects",
+    "routing_policy_id",
+    "threshold_m"
+   ]
+  },
+  {
+   "check": "case: schema_version/city_id",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "check": "case: bbox корректен",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "check": "sources: поля и verification_status",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "check": "sources: not_fetched имеют URL и ошибку попытки",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "check": "записи: обязательные поля",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "check": "записи: kind из допустимого набора",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "check": "записи: source_ids существуют",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "check": "ID уникальны",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "check": "координаты внутри bbox и конечны",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "check": "школы: category/access_eligibility/capacity по CONTRACT",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "check": "школы: нет официального статуса без первоисточника",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "check": "origins: derived, равные веса, не жители",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "check": "candidates: hypothesis, cost=null, land_status=unknown",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "check": "candidates: 2–3 гипотезы, origins ≤ 25, candidates ≤ 16",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "check": "parameters: geodesic, порог > 0, max_new_objects=1",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "check": "schools.json: все записи имеют source/период/проверку",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "check": "match-review: все записи среза, официальное сопоставление явно not_fetched",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "check": "case.schools ⊆ schools.json target",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "check": "исключённые записи перечислены с причиной (meta)",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "check": "null ≠ 0: официальная сверка null с причиной",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "check": "подтверждение проблемы пользователя отделено",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "check": "нет телефонов/e-mail/ИИН в выходах",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "check": "воспроизводимость: те же входы → те же байты и ID",
+   "status": "PASS",
+   "detail": {
+    "sources.json": true,
+    "schools.json": true,
+    "match-review.json": true,
+    "evidence.json": true,
+    "shymkent.case.json": true,
+    "shymkent.case.meta.json": true
+   }
+  },
+  {
+   "check": "предпросмотр: хотя бы одна гипотеза меняет расстояния (кейс не вырожден)",
+   "status": "PASS",
+   "detail": ""
+  }
+ ],
+ "preview": {
+  "note": "справочно: прямые расстояния до 5 target-школ, мм; BUILD считает compareCase сам",
+  "now": {
+   "sum_mm": 5587800,
+   "max_mm": 953395,
+   "within": 7
+  },
+  "shy-h-1": {
+   "sum_mm": 4399449,
+   "max_mm": 726007,
+   "within": 9,
+   "improved_points": 2
+  },
+  "shy-h-2": {
+   "sum_mm": 4514053,
+   "max_mm": 755140,
+   "within": 9,
+   "improved_points": 3
+  },
+  "shy-h-3": {
+   "sum_mm": 4988215,
+   "max_mm": 953395,
+   "within": 8,
+   "improved_points": 1
+  }
+ }
+}

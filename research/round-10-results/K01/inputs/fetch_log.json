@@ -1,0 +1,20 @@
+{
+ "about": "Попытки открыть первоисточники из облачной среды K01 (round 10), 2026-10-06 UTC. Каждый хост — одна попытка; обход не выполнялся. Недоступность ≠ отсутствие данных.",
+ "attempts": [
+  {"source_id": "SRC-GOVKZ-SHYMKENT", "url": "https://www.gov.kz/memleket/entities/shymkent", "method": "curl", "result": "NOT_FETCHED", "error": "curl: (56) CONNECT tunnel failed, response 403"},
+  {"source_id": "SRC-GOVKZ-SHYMKENT-BILIM", "url": "https://www.gov.kz/memleket/entities/shymkent-bilim?lang=ru", "method": "WebFetch", "result": "NOT_FETCHED", "error": "EGRESS_BLOCKED: Access to www.gov.kz is blocked by the network egress proxy."},
+  {"source_id": "SRC-SHYMKENT-GOV", "url": "https://shymkent.gov.kz/", "method": "curl", "result": "NOT_FETCHED", "error": "curl: (56) CONNECT tunnel failed, response 403"},
+  {"source_id": "SRC-EGOV", "url": "https://egov.kz/", "method": "curl", "result": "NOT_FETCHED", "error": "curl: (56) CONNECT tunnel failed, response 403"},
+  {"source_id": "SRC-DATA-EGOV", "url": "https://data.egov.kz/", "method": "curl", "result": "NOT_FETCHED", "error": "curl: (56) CONNECT tunnel failed, response 403"},
+  {"source_id": "SRC-EDU-GOV", "url": "https://edu.gov.kz/", "method": "curl", "result": "NOT_FETCHED", "error": "curl: (56) CONNECT tunnel failed, response 403"},
+  {"source_id": "SRC-BILIMAL", "url": "https://bilimal.kz/", "method": "curl", "result": "NOT_FETCHED", "error": "curl: (56) CONNECT tunnel failed, response 403"},
+  {"source_id": "SRC-OSM-OVERPASS", "url": "https://overpass-api.de/api/status", "method": "curl", "result": "NOT_FETCHED", "error": "curl: (56) CONNECT tunnel failed, response 403"},
+  {"source_id": "SRC-OSM-OVERPASS", "url": "https://overpass-api.de/api/interpreter?data=[out:json];nwr[\"amenity\"=\"school\"](42.306645,69.593365,42.324611,69.617658);out center tags;", "method": "WebFetch", "result": "NOT_FETCHED", "error": "EGRESS_BLOCKED: Access to overpass-api.de is blocked by the network egress proxy."},
+  {"source_id": "SRC-OSM-NOMINATIM", "url": "https://nominatim.openstreetmap.org/search?q=Shymkent", "method": "curl", "result": "NOT_FETCHED", "error": "curl: (56) CONNECT tunnel failed, response 403"},
+  {"source_id": "SRC-OSM-API", "url": "https://www.openstreetmap.org/api/0.6/capabilities", "method": "curl", "result": "NOT_FETCHED", "error": "curl: (56) CONNECT tunnel failed, response 403"},
+  {"source_id": "SRC-WIKIDATA", "url": "https://www.wikidata.org/w/api.php", "method": "curl", "result": "NOT_FETCHED", "error": "curl: (56) CONNECT tunnel failed, response 403"},
+  {"source_id": "SRC-WIKIPEDIA-KK", "url": "https://kk.wikipedia.org/", "method": "curl", "result": "NOT_FETCHED", "error": "curl: (56) CONNECT tunnel failed, response 403"},
+  {"source_id": "SRC-GITHUB-SEARCH", "url": "https://api.github.com/search/repositories?q=shymkent+schools", "method": "curl", "result": "NOT_FETCHED", "error": "HTTP 403"}
+ ],
+ "attempted_at": "2026-10-06"
+}

@@ -1,0 +1,589 @@
+{
+ "schema": "k01-match-review-v1",
+ "city_id": "shymkent",
+ "snapshot_id": "shymkent-2026-09-23.1-ed0d46bbe5fa1f8e",
+ "official_list_status": "not_fetched",
+ "records": [
+  {
+   "id": "overture:01961e84-815f-4bd1-85c3-6bf1734256ec",
+   "label": "Реклама 42",
+   "address": "Республика көшесі 5",
+   "overture_category": "middle_school",
+   "confidence": 0.786,
+   "upstream": "meta:135783212958156",
+   "upstream_update_time": "2026-09-14T00:00:00.000Z",
+   "type_assessment": "ad_or_business_page",
+   "case_role": "excluded",
+   "reason": "Название «Реклама 42»; QA ad_or_business_page. Адрес Республика көшесі 5 может принадлежать реальному объекту — проверить по официальному перечню.",
+   "qa": [
+    "category_doubt:ad_or_business_page",
+    "official_status:not_verified"
+   ],
+   "official_match": {
+    "status": "unmatched_not_fetched",
+    "official_id": null,
+    "source_ids": [
+     "SRC-GOVKZ-SHYMKENT",
+     "SRC-GOVKZ-SHYMKENT-BILIM",
+     "SRC-SHYMKENT-GOV",
+     "SRC-EGOV",
+     "SRC-DATA-EGOV",
+     "SRC-EDU-GOV",
+     "SRC-BILIMAL"
+    ]
+   },
+   "osm_match": {
+    "status": "unmatched_not_fetched",
+    "osm_id": null,
+    "source_ids": [
+     "SRC-OSM-OVERPASS"
+    ]
+   },
+   "conflict_id": null
+  },
+  {
+   "id": "overture:01eb7090-bb5f-4e52-b3c9-4ef95707ad67",
+   "label": "М.Х.Дулати атындағы үш тілде оқытатын N8 мамандандырылған  гимназия\" КММ",
+   "address": "Қазыбек Би көшесі 29",
+   "overture_category": "high_school",
+   "confidence": 0.662,
+   "upstream": "meta:109733650870275",
+   "upstream_update_time": "2026-09-14T00:00:00.000Z",
+   "type_assessment": "general_school_name",
+   "case_role": "target",
+   "reason": "«…N8 мамандандырылған гимназия КММ»: КММ в названии указывает на государственное учреждение, но это не подтверждено первоисточником; специализированная гимназия — приём может быть ограничен (access_eligibility unknown).",
+   "qa": [
+    "official_status:not_verified"
+   ],
+   "official_match": {
+    "status": "unmatched_not_fetched",
+    "official_id": null,
+    "source_ids": [
+     "SRC-GOVKZ-SHYMKENT",
+     "SRC-GOVKZ-SHYMKENT-BILIM",
+     "SRC-SHYMKENT-GOV",
+     "SRC-EGOV",
+     "SRC-DATA-EGOV",
+     "SRC-EDU-GOV",
+     "SRC-BILIMAL"
+    ]
+   },
+   "osm_match": {
+    "status": "unmatched_not_fetched",
+    "osm_id": null,
+    "source_ids": [
+     "SRC-OSM-OVERPASS"
+    ]
+   },
+   "conflict_id": null
+  },
+  {
+   "id": "overture:176c5993-4b62-4e90-849f-88addc0153bb",
+   "label": "Dostyk Bilim Beru Ortalygy",
+   "address": "Қазыбек Би көшесі 57",
+   "overture_category": "middle_school",
+   "confidence": 0.385,
+   "upstream": "meta:198636846666153",
+   "upstream_update_time": "2026-09-14T00:00:00.000Z",
+   "type_assessment": "education_center_name",
+   "case_role": "excluded",
+   "reason": "«Dostyk Bilim Beru Ortalygy» = «образовательный центр»; confidence 0.385. Не похоже на общеобразовательную школу; не подтверждено.",
+   "qa": [
+    "official_status:not_verified"
+   ],
+   "official_match": {
+    "status": "unmatched_not_fetched",
+    "official_id": null,
+    "source_ids": [
+     "SRC-GOVKZ-SHYMKENT",
+     "SRC-GOVKZ-SHYMKENT-BILIM",
+     "SRC-SHYMKENT-GOV",
+     "SRC-EGOV",
+     "SRC-DATA-EGOV",
+     "SRC-EDU-GOV",
+     "SRC-BILIMAL"
+    ]
+   },
+   "osm_match": {
+    "status": "unmatched_not_fetched",
+    "osm_id": null,
+    "source_ids": [
+     "SRC-OSM-OVERPASS"
+    ]
+   },
+   "conflict_id": null
+  },
+  {
+   "id": "overture:18df815b-170a-437c-977f-0769690315d4",
+   "label": "Ақпан батыр Атындағы Орта Мектеп",
+   "address": null,
+   "overture_category": "elementary_school",
+   "confidence": 0.762,
+   "upstream": "meta:321415295158302",
+   "upstream_update_time": "2026-09-14T00:00:00.000Z",
+   "type_assessment": "general_school_name",
+   "case_role": "target",
+   "reason": "«Ақпан батыр атындағы орта мектеп» = средняя школа им. Акпан батыра; адреса нет (null).",
+   "qa": [
+    "official_status:not_verified"
+   ],
+   "official_match": {
+    "status": "unmatched_not_fetched",
+    "official_id": null,
+    "source_ids": [
+     "SRC-GOVKZ-SHYMKENT",
+     "SRC-GOVKZ-SHYMKENT-BILIM",
+     "SRC-SHYMKENT-GOV",
+     "SRC-EGOV",
+     "SRC-DATA-EGOV",
+     "SRC-EDU-GOV",
+     "SRC-BILIMAL"
+    ]
+   },
+   "osm_match": {
+    "status": "unmatched_not_fetched",
+    "osm_id": null,
+    "source_ids": [
+     "SRC-OSM-OVERPASS"
+    ]
+   },
+   "conflict_id": null
+  },
+  {
+   "id": "overture:51ac9e88-456d-4b3a-a657-d3cbc516c708",
+   "label": "Reklama 8888",
+   "address": null,
+   "overture_category": "place_of_learning",
+   "confidence": 0.254,
+   "upstream": "meta:457518577441642",
+   "upstream_update_time": "2026-09-14T00:00:00.000Z",
+   "type_assessment": "ad_or_business_page",
+   "case_role": "excluded",
+   "reason": "«Reklama 8888»; QA ad_or_business_page; координата в точке-заглушке (10 записей в одной точке).",
+   "qa": [
+    "category_doubt:ad_or_business_page",
+    "colocated:10_records_same_point",
+    "conflict:CONFLICT-PLACEHOLDER-01",
+    "official_status:not_verified"
+   ],
+   "official_match": {
+    "status": "unmatched_not_fetched",
+    "official_id": null,
+    "source_ids": [
+     "SRC-GOVKZ-SHYMKENT",
+     "SRC-GOVKZ-SHYMKENT-BILIM",
+     "SRC-SHYMKENT-GOV",
+     "SRC-EGOV",
+     "SRC-DATA-EGOV",
+     "SRC-EDU-GOV",
+     "SRC-BILIMAL"
+    ]
+   },
+   "osm_match": {
+    "status": "unmatched_not_fetched",
+    "osm_id": null,
+    "source_ids": [
+     "SRC-OSM-OVERPASS"
+    ]
+   },
+   "conflict_id": "CONFLICT-PLACEHOLDER-01"
+  },
+  {
+   "id": "overture:537980b9-4d8b-4c25-8e27-a6af60ffac34",
+   "label": "Жолдасбекова Атындағы 9 Лицей",
+   "address": "Қазыбек Би көшесі",
+   "overture_category": "elementary_school",
+   "confidence": 0.583,
+   "upstream": "meta:496982004171164",
+   "upstream_update_time": "2026-09-14T00:00:00.000Z",
+   "type_assessment": "general_school_name",
+   "case_role": "target",
+   "reason": "«Жолдасбекова атындағы 9 лицей»; адрес без номера дома. Лицей — возможен конкурсный приём (access_eligibility unknown).",
+   "qa": [
+    "official_status:not_verified"
+   ],
+   "official_match": {
+    "status": "unmatched_not_fetched",
+    "official_id": null,
+    "source_ids": [
+     "SRC-GOVKZ-SHYMKENT",
+     "SRC-GOVKZ-SHYMKENT-BILIM",
+     "SRC-SHYMKENT-GOV",
+     "SRC-EGOV",
+     "SRC-DATA-EGOV",
+     "SRC-EDU-GOV",
+     "SRC-BILIMAL"
+    ]
+   },
+   "osm_match": {
+    "status": "unmatched_not_fetched",
+    "osm_id": null,
+    "source_ids": [
+     "SRC-OSM-OVERPASS"
+    ]
+   },
+   "conflict_id": null
+  },
+  {
+   "id": "overture:68c8f007-75bc-42f6-8da8-baa72042bde4",
+   "label": "Baiterek School",
+   "address": "Рыскулова 141",
+   "overture_category": "place_of_learning",
+   "confidence": 0.776,
+   "upstream": "meta:104043422727734",
+   "upstream_update_time": "2026-09-14T00:00:00.000Z",
+   "type_assessment": "school_name_coordinate_suspect",
+   "case_role": "excluded",
+   "reason": "«Baiterek School», адрес Рыскулова 141, но координата — точка-заглушка (QA colocated: 10 записей в одной точке). Положение неизвестно; в расстояния не включать, показать как пробел.",
+   "qa": [
+    "colocated:10_records_same_point",
+    "conflict:CONFLICT-PLACEHOLDER-01",
+    "official_status:not_verified"
+   ],
+   "official_match": {
+    "status": "unmatched_not_fetched",
+    "official_id": null,
+    "source_ids": [
+     "SRC-GOVKZ-SHYMKENT",
+     "SRC-GOVKZ-SHYMKENT-BILIM",
+     "SRC-SHYMKENT-GOV",
+     "SRC-EGOV",
+     "SRC-DATA-EGOV",
+     "SRC-EDU-GOV",
+     "SRC-BILIMAL"
+    ]
+   },
+   "osm_match": {
+    "status": "unmatched_not_fetched",
+    "osm_id": null,
+    "source_ids": [
+     "SRC-OSM-OVERPASS"
+    ]
+   },
+   "conflict_id": "CONFLICT-PLACEHOLDER-01"
+  },
+  {
+   "id": "overture:931d6da5-e9db-4523-a6fd-79c88f235f88",
+   "label": "Учебный центр Меруерт",
+   "address": "Токаева 27",
+   "overture_category": "place_of_learning",
+   "confidence": 0.68,
+   "upstream": "meta:101309298709568",
+   "upstream_update_time": "2026-09-14T00:00:00.000Z",
+   "type_assessment": "education_center_name",
+   "case_role": "excluded",
+   "reason": "«Учебный центр Меруерт» — учебный центр, не школа (по названию).",
+   "qa": [
+    "official_status:not_verified"
+   ],
+   "official_match": {
+    "status": "unmatched_not_fetched",
+    "official_id": null,
+    "source_ids": [
+     "SRC-GOVKZ-SHYMKENT",
+     "SRC-GOVKZ-SHYMKENT-BILIM",
+     "SRC-SHYMKENT-GOV",
+     "SRC-EGOV",
+     "SRC-DATA-EGOV",
+     "SRC-EDU-GOV",
+     "SRC-BILIMAL"
+    ]
+   },
+   "osm_match": {
+    "status": "unmatched_not_fetched",
+    "osm_id": null,
+    "source_ids": [
+     "SRC-OSM-OVERPASS"
+    ]
+   },
+   "conflict_id": null
+  },
+  {
+   "id": "overture:99759f95-3ddb-4d87-8091-c301f9c23c9b",
+   "label": "Express toefl",
+   "address": "Ахмет Байтұрсынов көшесі 18",
+   "overture_category": "place_of_learning",
+   "confidence": 0.33,
+   "upstream": "meta:103951562798946",
+   "upstream_update_time": "2026-09-14T00:00:00.000Z",
+   "type_assessment": "courses_name",
+   "case_role": "excluded",
+   "reason": "«Express toefl» — языковые курсы (по названию); та же точка, что Kasipkoy.kurs.",
+   "qa": [
+    "official_status:not_verified"
+   ],
+   "official_match": {
+    "status": "unmatched_not_fetched",
+    "official_id": null,
+    "source_ids": [
+     "SRC-GOVKZ-SHYMKENT",
+     "SRC-GOVKZ-SHYMKENT-BILIM",
+     "SRC-SHYMKENT-GOV",
+     "SRC-EGOV",
+     "SRC-DATA-EGOV",
+     "SRC-EDU-GOV",
+     "SRC-BILIMAL"
+    ]
+   },
+   "osm_match": {
+    "status": "unmatched_not_fetched",
+    "osm_id": null,
+    "source_ids": [
+     "SRC-OSM-OVERPASS"
+    ]
+   },
+   "conflict_id": null
+  },
+  {
+   "id": "overture:9d31b953-ccc4-42bd-a3a3-3e4e21f44051",
+   "label": "Реклама 3131",
+   "address": "шәуілдір",
+   "overture_category": "middle_school",
+   "confidence": 0.255,
+   "upstream": "meta:698764723318625",
+   "upstream_update_time": "2026-09-14T00:00:00.000Z",
+   "type_assessment": "ad_or_business_page",
+   "case_role": "excluded",
+   "reason": "«Реклама 3131»; QA ad_or_business_page; координата в точке-заглушке; адрес «шәуілдір» не адрес в срезе.",
+   "qa": [
+    "category_doubt:ad_or_business_page",
+    "colocated:10_records_same_point",
+    "conflict:CONFLICT-PLACEHOLDER-01",
+    "official_status:not_verified"
+   ],
+   "official_match": {
+    "status": "unmatched_not_fetched",
+    "official_id": null,
+    "source_ids": [
+     "SRC-GOVKZ-SHYMKENT",
+     "SRC-GOVKZ-SHYMKENT-BILIM",
+     "SRC-SHYMKENT-GOV",
+     "SRC-EGOV",
+     "SRC-DATA-EGOV",
+     "SRC-EDU-GOV",
+     "SRC-BILIMAL"
+    ]
+   },
+   "osm_match": {
+    "status": "unmatched_not_fetched",
+    "osm_id": null,
+    "source_ids": [
+     "SRC-OSM-OVERPASS"
+    ]
+   },
+   "conflict_id": "CONFLICT-PLACEHOLDER-01"
+  },
+  {
+   "id": "overture:a2cb79c8-c922-47a9-96a2-6cc326bbc3d6",
+   "label": "Kasipkoy.kurs",
+   "address": "Ахмет Байтұрсынов көшесі 18",
+   "overture_category": "place_of_learning",
+   "confidence": 0.376,
+   "upstream": "meta:115444977828089",
+   "upstream_update_time": "2026-09-14T00:00:00.000Z",
+   "type_assessment": "courses_name",
+   "case_role": "excluded",
+   "reason": "«Kasipkoy.kurs» — курсы (по названию).",
+   "qa": [
+    "official_status:not_verified"
+   ],
+   "official_match": {
+    "status": "unmatched_not_fetched",
+    "official_id": null,
+    "source_ids": [
+     "SRC-GOVKZ-SHYMKENT",
+     "SRC-GOVKZ-SHYMKENT-BILIM",
+     "SRC-SHYMKENT-GOV",
+     "SRC-EGOV",
+     "SRC-DATA-EGOV",
+     "SRC-EDU-GOV",
+     "SRC-BILIMAL"
+    ]
+   },
+   "osm_match": {
+    "status": "unmatched_not_fetched",
+    "osm_id": null,
+    "source_ids": [
+     "SRC-OSM-OVERPASS"
+    ]
+   },
+   "conflict_id": null
+  },
+  {
+   "id": "overture:b428a01b-fb2a-4dc1-b118-2127814b1fe9",
+   "label": "Монтессори Детский Сад \"Бала Би\"",
+   "address": "Шәймерденов көшесі 5",
+   "overture_category": "place_of_learning",
+   "confidence": 0.949,
+   "upstream": "meta:652390848258401",
+   "upstream_update_time": "2026-09-14T00:00:00.000Z",
+   "type_assessment": "preschool_name",
+   "case_role": "excluded",
+   "reason": "«Монтессори Детский Сад \"Бала Би\"» — детский сад, не школа.",
+   "qa": [
+    "official_status:not_verified"
+   ],
+   "official_match": {
+    "status": "unmatched_not_fetched",
+    "official_id": null,
+    "source_ids": [
+     "SRC-GOVKZ-SHYMKENT",
+     "SRC-GOVKZ-SHYMKENT-BILIM",
+     "SRC-SHYMKENT-GOV",
+     "SRC-EGOV",
+     "SRC-DATA-EGOV",
+     "SRC-EDU-GOV",
+     "SRC-BILIMAL"
+    ]
+   },
+   "osm_match": {
+    "status": "unmatched_not_fetched",
+    "osm_id": null,
+    "source_ids": [
+     "SRC-OSM-OVERPASS"
+    ]
+   },
+   "conflict_id": null
+  },
+  {
+   "id": "overture:baeda67d-e701-4c2a-bba6-10a13466e76d",
+   "label": "ALEM мектебі",
+   "address": "Ж. Адырбеков көшесі 87б",
+   "overture_category": "place_of_learning",
+   "confidence": 0.438,
+   "upstream": "meta:100576409602303",
+   "upstream_update_time": "2026-09-14T00:00:00.000Z",
+   "type_assessment": "general_school_name_duplicate_candidate",
+   "case_role": "target",
+   "reason": "«ALEM мектебі», Ж. Адырбеков 87б, place_of_learning. Те же координаты, что «Алем мектеп» (87): нерешённая коллизия CONFLICT-ALEM-01. Оставлены обе записи: на минимальное расстояние дубль не влияет.",
+   "qa": [
+    "conflict:CONFLICT-ALEM-01",
+    "official_status:not_verified"
+   ],
+   "official_match": {
+    "status": "unmatched_not_fetched",
+    "official_id": null,
+    "source_ids": [
+     "SRC-GOVKZ-SHYMKENT",
+     "SRC-GOVKZ-SHYMKENT-BILIM",
+     "SRC-SHYMKENT-GOV",
+     "SRC-EGOV",
+     "SRC-DATA-EGOV",
+     "SRC-EDU-GOV",
+     "SRC-BILIMAL"
+    ]
+   },
+   "osm_match": {
+    "status": "unmatched_not_fetched",
+    "osm_id": null,
+    "source_ids": [
+     "SRC-OSM-OVERPASS"
+    ]
+   },
+   "conflict_id": "CONFLICT-ALEM-01"
+  },
+  {
+   "id": "overture:bcd265d0-0799-4dbf-8b15-23bae752a4d2",
+   "label": "Алем мектеп",
+   "address": "Ж. Адырбеков көшесі 87",
+   "overture_category": "middle_school",
+   "confidence": 0.525,
+   "upstream": "meta:117725867952475",
+   "upstream_update_time": "2026-09-14T00:00:00.000Z",
+   "type_assessment": "general_school_name_duplicate_candidate",
+   "case_role": "target",
+   "reason": "«Алем мектеп», Ж. Адырбеков 87, middle_school. См. CONFLICT-ALEM-01: одна школа или две (87 / 87б), частная или государственная — неизвестно.",
+   "qa": [
+    "conflict:CONFLICT-ALEM-01",
+    "official_status:not_verified"
+   ],
+   "official_match": {
+    "status": "unmatched_not_fetched",
+    "official_id": null,
+    "source_ids": [
+     "SRC-GOVKZ-SHYMKENT",
+     "SRC-GOVKZ-SHYMKENT-BILIM",
+     "SRC-SHYMKENT-GOV",
+     "SRC-EGOV",
+     "SRC-DATA-EGOV",
+     "SRC-EDU-GOV",
+     "SRC-BILIMAL"
+    ]
+   },
+   "osm_match": {
+    "status": "unmatched_not_fetched",
+    "osm_id": null,
+    "source_ids": [
+     "SRC-OSM-OVERPASS"
+    ]
+   },
+   "conflict_id": "CONFLICT-ALEM-01"
+  },
+  {
+   "id": "overture:fd50a858-462d-477f-8bc6-a8d3e03a9576",
+   "label": "Техникалық лицей",
+   "address": "Қазыбек Би көшесі 33",
+   "overture_category": "place_of_learning",
+   "confidence": 0.776,
+   "upstream": "meta:103027011922854",
+   "upstream_update_time": "2026-09-14T00:00:00.000Z",
+   "type_assessment": "lyceum_type_uncertain",
+   "case_role": "excluded",
+   "reason": "«Техникалық лицей», place_of_learning: может быть колледжем/профтехучреждением, а не общеобразовательной школой. Не подтверждено — в расчёт по умолчанию не включено.",
+   "qa": [
+    "official_status:not_verified"
+   ],
+   "official_match": {
+    "status": "unmatched_not_fetched",
+    "official_id": null,
+    "source_ids": [
+     "SRC-GOVKZ-SHYMKENT",
+     "SRC-GOVKZ-SHYMKENT-BILIM",
+     "SRC-SHYMKENT-GOV",
+     "SRC-EGOV",
+     "SRC-DATA-EGOV",
+     "SRC-EDU-GOV",
+     "SRC-BILIMAL"
+    ]
+   },
+   "osm_match": {
+    "status": "unmatched_not_fetched",
+    "osm_id": null,
+    "source_ids": [
+     "SRC-OSM-OVERPASS"
+    ]
+   },
+   "conflict_id": null
+  }
+ ],
+ "conflicts": [
+  {
+   "id": "CONFLICT-ALEM-01",
+   "record_ids": [
+    "baeda67d-e701-4c2a-bba6-10a13466e76d",
+    "bcd265d0-0799-4dbf-8b15-23bae752a4d2"
+   ],
+   "status": "unresolved",
+   "observed": "Одинаковые координаты [69.61557, 42.32304]; адреса Ж. Адырбеков 87б и 87; названия ALEM мектебі / Алем мектеп; категории place_of_learning / middle_school; обе — dataset meta. QA K05 possible_duplicate их не отметил (разные номера домов).",
+   "open_questions": [
+    "Это одно учреждение или два (корпуса 87 и 87б)?",
+    "Государственное или частное, общий ли приём?",
+    "Где фактический вход/здание — координата одна на обе записи."
+   ],
+   "needed_source": "Официальный перечень организаций образования г. Шымкент (управление образования / eGov / data.egov.kz) — NOT_FETCHED в этой среде.",
+   "effect_on_case": "Минимальные расстояния не меняются (одна точка); число «известных школ» может быть завышено на 1."
+  },
+  {
+   "id": "CONFLICT-PLACEHOLDER-01",
+   "record_ids": [
+    "51ac9e88-456d-4b3a-a657-d3cbc516c708",
+    "68c8f007-75bc-42f6-8da8-baa72042bde4",
+    "9d31b953-ccc4-42bd-a3a3-3e4e21f44051"
+   ],
+   "status": "unresolved",
+   "observed": "Точка [69.5958, 42.3167] содержит 10 записей среза (QA colocated), из них 3 группы school; Baiterek School указывает адрес Рыскулова 141.",
+   "needed_source": "Геокодирование адреса по официальному адресному регистру или OSM — NOT_FETCHED.",
+   "effect_on_case": "Если Baiterek School — действующая школа в другом месте среза, расстояния до школ в кейсе завышены для её окрестности."
+  }
+ ]
+}
