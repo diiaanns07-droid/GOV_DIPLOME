@@ -374,6 +374,10 @@ class ObjectLifecycle(unittest.TestCase):
         check_public_history(self, history, pub["id"], "A05 after publish")
         for secret in [draft_title] + draft_reasons:
             self.assertNotIn(secret, resp.text, f"draft-era text {secret!r} is public: {resp.brief()}")
+        lst = walk(self, get_target().client(), query={"from": first, "to": first + 5 * DAY})
+        self.assertEqual(lst["ids"].count(pub["id"]), 1, "A05: published object missing from its window list")
+        for secret in [draft_title] + draft_reasons:  # list projection too (e.g. a "last change" field)
+            self.assertNotIn(secret, lst["text"], f"draft-era text {secret!r} is in the public list")
 
         # positive control: a change made after publication IS explained publicly
         after_reason = f"R10: перенос после публикации {token('ar')}"
@@ -447,6 +451,9 @@ class ObjectLifecycle(unittest.TestCase):
         lst = walk(self, get_target().client(), query={"from": first, "to": last})
         self.assertNotIn(pub["id"], lst["ids"], "archived object still in public list")
         self.assertNotIn(marker, lst["text"], "archived title still in public list")
+        full = walk(self, get_target().client())
+        self.assertNotIn(pub["id"], full["ids"], "archived object still in the default (unfiltered) public list")
+        self.assertNotIn(marker, full["text"], "archived title still in the default public list")
         staff_item, history = staff_view(self, ed, pub["id"])
         self.assertEqual(staff_item.get("publication"), "archived")
         for key in ("title", "schedule", "budget", "geometry", "kind", "status"):
@@ -573,8 +580,11 @@ class ServerOwnedFields(unittest.TestCase):
                         extra={"actor": label, "public_actor_label": label, "user": {"name": label, "role": "admin"}})
         if r.status in VALIDATION:
             NOTES.add("update rejects unknown top-level body keys such as actor (400/422)")
-            _, _, resp = public_view(self, pub["id"])
+            shown, _, resp = public_view(self, pub["id"])
             self.assertNotIn(fake, resp.text)
+            self.assertEqual(sched_of(shown), sched_of(pub), f"refused update still changed public dates: {resp.brief()}")
+            self.assertEqual(staff_view(self, ed, pub["id"])[0]["revision"], pub["revision"],
+                             "refused update still changed the stored object (revision)")
             return
         staff = expect_ok(self, r, "update with actor in body")["item"]
         make_public(self, ed, staff, reason,
@@ -637,6 +647,9 @@ class UnknownStaysUnknown(unittest.TestCase):
         if r.status in VALIDATION:
             NOTES.add("status=completed without actual_end is rejected (nothing auto-filled)")
             expect_error(self, r, "status completed without actual_end", VALIDATION)
+            now, _ = staff_view(self, ed, pub["id"])
+            self.assertEqual((now.get("status"), now.get("revision")), ("in_progress", pub["revision"]),
+                             "refused status update still changed the stored object")
             return
         staff = expect_ok(self, r, "status -> completed")["item"]
         resp, _ = make_public(self, ed, staff, "R10: работы завершены (синтетика)",
@@ -660,33 +673,44 @@ class RevisionsAndReasons(unittest.TestCase):
         title1 = f"R10 правка 1 {marker}"
         cur = expect_ok(self, post_update(ed, item["id"], item["revision"], {"title": title1}, "R10 правка 1"),
                         "first update")["item"]
+        _, hist0 = staff_view(self, ed, item["id"])
+        refused = [token("stale"), token("future")]  # reasons of refused writes: must not reach history
 
         def unchanged(what):
-            now, _ = staff_view(self, ed, item["id"])
+            now, hist = staff_view(self, ed, item["id"])
             self.assertEqual((now["title"], now["revision"], now["publication"]),
                              (title1, cur["revision"], "draft"), f"{what} changed the object")
+            if isinstance(hist0, list) and isinstance(hist, list):  # rollback leaves no half-written history
+                self.assertEqual(len(hist), len(hist0), f"{what} left a history entry behind: {hist}")
+            for mark in refused:
+                self.assertNotIn(mark, json.dumps(hist, ensure_ascii=False), f"{what}: refused reason in history")
 
-        r = post_update(ed, item["id"], item["revision"], {"title": "R10 STALE"}, "R10 stale")
+        r = post_update(ed, item["id"], item["revision"], {"title": "R10 STALE"}, f"R10 stale {refused[0]}")
         expect_error(self, r, "stale expected_revision", (409,))
         unchanged("stale update")
-        r = post_update(ed, item["id"], cur["revision"] + 5, {"title": "R10 FUTURE"}, "R10 future")
+        r = post_update(ed, item["id"], cur["revision"] + 5, {"title": "R10 FUTURE"}, f"R10 future {refused[1]}")
         expect_error(self, r, "future expected_revision", (409,) + VALIDATION)
         unchanged("future-revision update")
         r = ed.post(f"/staff/objects/{item['id']}/update", {"changes": {"title": "R10 NOREV"}, "reason": "R10"})
         expect_error(self, r, "update without expected_revision", (409,) + VALIDATION)
         unchanged("update without expected_revision")
-        r = ed.post(f"/staff/objects/{item['id']}/publish", {"expected_revision": item["revision"], "reason": "R10"})
+        # stale-only requests carry an unmistakably valid reason: the contract does not order the
+        # validation (400/422) and revision (409) checks, so only the revision may be wrong here
+        stale_reason = "R10: проверка устаревшей ревизии"
+        r = ed.post(f"/staff/objects/{item['id']}/publish", {"expected_revision": item["revision"], "reason": stale_reason})
         expect_error(self, r, "stale publish", (409,))
         unchanged("stale publish")
         assert_publicly_hidden(self, item["id"], [marker], "draft after stale publish")
 
         pub = publish(self, ed, cur)
-        r = ed.post(f"/staff/objects/{item['id']}/archive", {"expected_revision": item["revision"], "reason": "R10"})
+        _, pub_hist0, _ = public_view(self, item["id"], "published object before stale archive")
+        r = ed.post(f"/staff/objects/{item['id']}/archive", {"expected_revision": item["revision"], "reason": stale_reason})
         expect_error(self, r, "stale archive", (409,))
         now, _ = staff_view(self, ed, item["id"])
         self.assertEqual((now["publication"], now["revision"]), ("published", pub["revision"]),
                          "stale archive changed the object")
-        public_view(self, item["id"], "published object after stale archive")
+        _, pub_hist, _ = public_view(self, item["id"], "published object after stale archive")
+        self.assertEqual(len(pub_hist), len(pub_hist0), f"stale archive added a public history entry: {pub_hist}")
 
     def test_c04_concurrent_same_revision_exactly_one_wins(self):
         """[C04] two editors, same expected_revision, parallel -> one 2xx + one 409, revision+1, one history entry."""
@@ -747,7 +771,7 @@ class RevisionsAndReasons(unittest.TestCase):
                     ("current_planned_end", "   \t"), ("planned_start", OMIT)]
         for field, reason in attempts:
             with self.subTest(field=field, reason="<missing>" if reason is OMIT else repr(reason)):
-                cur, _ = staff_view(self, ed, pub["id"])
+                cur, cur_hist = staff_view(self, ed, pub["id"])
                 new = dict(base)
                 if field == "current_planned_end":
                     new["current_planned_end"] = iso(first + 9 * DAY)
@@ -756,8 +780,11 @@ class RevisionsAndReasons(unittest.TestCase):
                 r = post_update(ed, pub["id"], cur["revision"], {"schedule": new}, reason)
                 if r.status in VALIDATION:
                     expect_error(self, r, "date change without reason", VALIDATION)
-                    after, _ = staff_view(self, ed, pub["id"])
+                    after, after_hist = staff_view(self, ed, pub["id"])
                     self.assertEqual(after["revision"], cur["revision"], "rejected update still bumped revision")
+                    self.assertEqual(sched_of(after), sched_of(cur), "rejected update still changed stored dates")
+                    if isinstance(cur_hist, list) and isinstance(after_hist, list):
+                        self.assertEqual(len(after_hist), len(cur_hist), "rejected update still wrote history")
                 elif r.status in SUCCESS:
                     NOTES.add("update without reason on a published object is accepted as a staged change; "
                               "C05 then checked on publish")

@@ -4,7 +4,7 @@ Acceptance IDs: A07 A08 S09 S10 S12 S14 (+S07 for role spoofing on moderation).
 
 Written only from CONTRACT.txt (PACK_SHA 9c2f5c0, sections 2-3, 6) and the R10 harness;
 it does not look at how the R10 oracle or any product implements the API.
-At most 15 POST /feedback calls are made by this whole file (typical rate limits).
+At most 16 POST /feedback calls are made by this whole file (typical rate limits).
 
 Contract readings used here (ambiguities resolved explicitly, see report):
   F1  Public GET /objects/{id}/feedback: data is {items, next_cursor?} or a bare list.
@@ -44,6 +44,7 @@ import re
 import sys
 import threading
 import unittest
+from urllib.parse import quote
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from r10lib import contract, helpers  # noqa: E402
@@ -294,6 +295,7 @@ class FeedbackLifecycle(unittest.TestCase):
         pd = helpers.public_detail(obj["id"])
         expect_ok(self, pd, "public object detail", statuses=(200,))
         self.assertNotIn(tok, pd.text, f"A08: pending feedback text leaks into public object detail: {pd.brief()}")
+        self.assertNotIn(tok, public_objects_text(self), "A08: pending feedback text leaks into the public object list")
 
         fb = staff_one(self, ed, tok, "A07 staff queue")
         self.assertIn(text, list(string_values(fb)),
@@ -388,6 +390,7 @@ class FeedbackLifecycle(unittest.TestCase):
         pd = helpers.public_detail(obj["id"])
         expect_ok(self, pd, "public object detail", statuses=(200,))
         self.assertNotIn(tok, pd.text, f"A08: rejected feedback leaks into public object detail: {pd.brief()}")
+        self.assertNotIn(tok, public_objects_text(self), "A08: rejected feedback leaks into the public object list")
 
     def test_a08_moderation_revision_conflicts(self):
         """[A08][S12] concurrent same-revision moderation: exactly one wins, other 409; stale revision -> 409, no change."""
@@ -439,6 +442,36 @@ class FeedbackLifecycle(unittest.TestCase):
         self.assertEqual(tok in raw2, tok in raw,
                          f"stale moderation changed public visibility (winner={winner}): {last2.brief()}")
 
+    def test_a06_a08_restart_keeps_moderated_feedback(self):
+        """[A06][A08] after a real server restart approved feedback + reply stay public, revision stays stale."""
+        t = get_target()
+        if not t.can_restart:
+            raise unittest.SkipTest(f"target {t.name!r} cannot be restarted by the suite")
+        ed = editor(0)
+        obj = published(self, ed)
+        res = resident()
+        tok, rtok = token("a06fb"), token("reply")
+        receipt(self, submit(self, res, feedback_body(object_id=obj["id"], text=f"R10 до рестарта {tok}")),
+                "restart submit")
+        fb = staff_one(self, ed, tok, "restart staff queue")
+        reply = f"R10 синтетический ответ {rtok}"
+        expect_ok(self, helpers.moderate(ed, fb, "approve", public_reply=reply), "approve before restart")
+        before, _, last = public_feedback(self, obj["id"], "before restart")
+        self.assertEqual(len(mine(before, tok)), 1, f"approved item not public before restart: {last.brief()}")
+
+        t.restart()  # harness proves the old process stopped listening before the new one starts
+
+        after, _, last = public_feedback(self, obj["id"], "after restart")
+        hits = mine(after, tok)
+        self.assertEqual(len(hits), 1, f"A06: approved feedback lost/duplicated by restart (feedback storage "
+                                       f"not persistent?): {last.brief()}")
+        self.assertTrue(any(reply in v for v in string_values(hits[0])),
+                        f"A06: public_reply lost by restart: {hits[0]}")
+        stale = helpers.moderate(editor(0), fb, "reject")
+        expect_error(self, stale, "moderation with the pre-moderation revision after restart must be 409", (409,))
+        _, raw, last = public_feedback(self, obj["id"], "after stale moderation post restart")
+        self.assertIn(tok, raw, f"A06: stale moderation after restart hid the approved item: {last.brief()}")
+
 
 class FeedbackAccessControl(unittest.TestCase):
 
@@ -487,8 +520,8 @@ class FeedbackAccessControl(unittest.TestCase):
         after = staff_one(self, ed, tok, "S12 staff queue after refused attempts")
         self.assertEqual(after.get("revision"), fb.get("revision"),
                          f"S12: refused moderation attempts changed the item revision: {fb} -> {after}")
-        if "moderation" in after:
-            self.assertEqual(after["moderation"], "pending", f"S12: refused attempts changed moderation: {after}")
+        for key in ("moderation", "status", "public_reply"):  # whichever names the product uses
+            self.assertEqual(after.get(key), fb.get(key), f"S12: refused attempts changed {key}: {fb} -> {after}")
 
         ok = helpers.moderate(ed, after, "approve", public_reply=f"R10 синтетический ответ {token('ok')}")
         expect_ok(self, ok, "S12 positive control: editor with session + CSRF + Origin can moderate")
@@ -659,6 +692,29 @@ class FeedbackHtmlIsText(unittest.TestCase):
         self.assertEqual(len(hits), 1, f"S10: approved HTML-bearing feedback not listed once: {last.brief()}")
         literal_or_escaped(self, value_with(self, hits[0], tok, "S10 public item"), text, "feedback text (public)")
         literal_or_escaped(self, value_with(self, hits[0], rtok, "S10 public item"), reply, "public_reply (public)")
+
+        # the public object list is a second projection of the title, and error replies that may
+        # reflect the request (path, filter) must be JSON + nosniff too, or they are reflected XSS
+        anon, cursor, listed = get_target().client(), None, []
+        for _ in range(400):
+            lr = anon.get("/objects", query={"cursor": cursor} if cursor else None)
+            ldata = expect_ok(self, lr, "S10 public object list", statuses=(200,))
+            json_headers(self, lr, "S10 public object list")
+            listed += [it for it in ldata.get("items", []) if isinstance(it, dict) and it.get("id") == obj["id"]]
+            cursor = ldata.get("next_cursor")
+            if cursor in (None, ""):
+                break
+        self.assertEqual(len(listed), 1, f"S10: published object not listed once in the public list: {listed}")
+        if r.status not in VALIDATION and "title" in listed[0]:
+            literal_or_escaped(self, listed[0]["title"], title, "object title (public list)")
+        enc = quote(XSS, safe="")
+        for path, query in ((f"/objects/{enc}", None), (f"/objects/{enc}/feedback", None),
+                            (f"/r10-{enc}", None), ("/objects", {"kind": XSS})):
+            with self.subTest(reflected=path, query=query):
+                er = anon.get(path, query=query)
+                self.assertTrue(400 <= er.status < 500, f"S10: HTML in path/query must be a 4xx: {er.brief()}")
+                expect_error(self, er, f"S10 error reply for {path} {query}", (er.status,))
+                json_headers(self, er, f"S10 error reply for {path} {query}")
 
 
 if __name__ == "__main__":

@@ -264,6 +264,14 @@ class ProcessTarget(Target):
 
     def restart(self):
         self.stop()
+        # Prove the old server is gone: data read after start() can then only come from storage,
+        # not from a detached child that survived the process-group kill and still holds memory.
+        with socket.socket() as s:
+            s.settimeout(2.0)
+            still_listening = s.connect_ex(("127.0.0.1", self.port)) == 0
+        if still_listening:
+            raise RuntimeError(f"port {self.port} still accepts connections after the server process group "
+                               "was stopped (a detached process keeps serving); a restart would prove nothing")
         self.start()
 
     def create_editor(self, username: str) -> tuple[str, str]:

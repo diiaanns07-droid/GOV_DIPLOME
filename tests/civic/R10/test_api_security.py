@@ -125,6 +125,9 @@ class AnonymousAccess(unittest.TestCase):
         fb = pending_feedback(self, ed, obj["id"])
         before_obj, before_draft = staff_state(self, ed, obj["id"]), staff_state(self, ed, draft["id"])
         before_count = count_staff_objects(ed)
+        self.assertIsNotNone(before_count, "staff list unreadable: object-count check would be vacuous")
+        if fb is None:
+            NOTES.add("S01: anonymous moderate not exercised (feedback submit hit 429)")
         anon = get_target().client()
         anon.refresh_session()  # a server may hand anonymous clients a token; it must not help
         for name, path, body in write_routes(draft, fb) + write_routes(obj)[1:4]:
@@ -139,7 +142,9 @@ class AnonymousAccess(unittest.TestCase):
         if fb is not None:
             still = helpers.find_staff_feedback(ed, fb["text"])
             self.assertTrue(still, "feedback disappeared after anonymous moderate")
+            self.assertEqual(still[0].get("revision"), fb.get("revision"), "anonymous moderate changed the feedback")
             pub = get_target().client().get(f"/objects/{obj['id']}/feedback")
+            self.assertEqual(pub.status, 200, f"public feedback list unreadable (leak check vacuous): {pub.brief()}")
             self.assertNotIn(fb["text"], pub.text, "anonymous moderate published the feedback")
 
 
@@ -153,9 +158,15 @@ class CsrfAndOrigin(unittest.TestCase):
         draft = create_draft(self, ed)
         before = (staff_state(self, ed, obj["id"]), staff_state(self, ed, draft["id"]))
         before_count = count_staff_objects(ed)
+        self.assertIsNotNone(before_count, "staff list unreadable: object-count check would be vacuous")
+        anon = tgt.client()
+        anon.refresh_session()  # a token any visitor can read must never authorise the editor's session
         for label, csrf in (("missing", ""), ("wrong", "r10-not-a-token"),
-                            ("other session", other.csrf_token)):
+                            ("other session", other.csrf_token), ("anonymous visitor", anon.csrf_token)):
             if label == "other session" and other.csrf_token == ed.csrf_token:
+                NOTES.add("two editor sessions got the same CSRF token (token not bound to the session)")
+                continue
+            if label == "anonymous visitor" and not anon.csrf_token:
                 continue
             for name, path, body in write_routes(draft) + write_routes(obj)[1:4]:
                 with self.subTest(csrf=label, route=name):
@@ -170,12 +181,15 @@ class CsrfAndOrigin(unittest.TestCase):
         ed = get_target().editor(0)
         obj = publish(self, ed, create_draft(self, ed))
         before = staff_state(self, ed, obj["id"])
+        before_count = count_staff_objects(ed)
+        self.assertIsNotNone(before_count, "staff list unreadable: object-count check would be vacuous")
         for origin in ("http://evil.example", "null", f"http://127.0.0.1:1"):
-            for name, path, body in write_routes(obj)[1:3]:
+            for name, path, body in write_routes(obj):
                 with self.subTest(origin=origin, route=name):
                     r = ed.post(path, body, origin=origin)
                     expect_error(self, r, f"{name} from Origin {origin}", (403,))
         self.assertEqual(staff_state(self, ed, obj["id"]), before, "cross-origin write changed state")
+        self.assertEqual(count_staff_objects(ed), before_count, "cross-origin create added an object")
         user, password = get_target().editors[0]
         fresh = get_target().client()
         r = fresh.post("/session/login", {"username": user, "password": password}, origin="http://evil.example")
@@ -208,6 +222,7 @@ class SessionLifecycle(unittest.TestCase):
         """[S04] after logout a replayed cookie+CSRF token cannot read staff data or write"""
         ed = get_target().editor(0)
         obj = publish(self, ed, create_draft(self, ed))
+        fb = pending_feedback(self, ed, obj["id"])
         stolen = ed.clone_credentials()
         r = ed.logout()
         self.assertIn(r.status, (200, 204), f"logout: {r.brief()}")
@@ -221,6 +236,18 @@ class SessionLifecycle(unittest.TestCase):
         self.assertEqual(s.status, 200, s.brief())
         self.assertFalse((s.data or {}).get("authenticated"), f"session still authenticated: {s.brief()}")
         self.assertEqual(staff_state(self, get_target().editor(0), obj["id"]), before)
+        if fb is None:
+            NOTES.add("S04: moderation with a logged-out session not exercised (feedback submit hit 429)")
+            return
+        name, path, body = write_routes(obj, fb)[4]
+        r = stolen.post(path, body)
+        expect_error(self, r, "moderate with logged-out session", (401, 403))
+        still = helpers.find_staff_feedback(get_target().editor(0), fb["text"])
+        self.assertTrue(still, "feedback left the queue after moderation with a logged-out session")
+        self.assertEqual(still[0].get("revision"), fb.get("revision"), "logged-out session moderated the feedback")
+        pub = get_target().client().get(f"/objects/{obj['id']}/feedback")
+        self.assertEqual(pub.status, 200, pub.brief())
+        self.assertNotIn(fb["text"], pub.text, "logged-out session published the feedback")
 
     def test_s05_wrong_password_gives_401_and_no_session(self):
         """[S05] wrong password -> 401, no session cookie, /session stays anonymous"""
@@ -271,6 +298,26 @@ class SessionLifecycle(unittest.TestCase):
         s = c.get("/session", headers=spoof)
         self.assertFalse((s.data or {}).get("authenticated"), f"spoofed headers authenticated: {s.brief()}")
 
+    def test_zz_s06_passwords_and_session_ids_not_in_server_log(self):
+        """[S06] editor passwords, a submitted wrong password and session ids never reach the server log"""
+        tgt = get_target()
+        log = getattr(tgt, "server_log", None)
+        if log is None:
+            raise unittest.SkipTest("NOT_RUN: server output is not captured by the suite (external target)")
+        user, password = tgt.editors[0]
+        c = tgt.client()
+        self.assertEqual(c.login(user, password).status, 200)
+        c.get("/staff/objects")
+        wrong = "R10wrongpw" + token()[-10:]
+        tgt.resident().post("/session/login", {"username": user, "password": wrong})
+        time.sleep(0.5)
+        text = Path(log).read_text(encoding="utf-8", errors="replace")
+        values = [(p, "an editor password") for _, p in tgt.editors] + [(wrong, "a submitted wrong password")]
+        values += [(v, f"the value of cookie {k}") for k, v in c.cookies.items() if len(v) >= 16]
+        self.assertTrue(len(values) > len(tgt.editors) + 1, "login set no cookie value to look for")
+        for value, label in values:
+            self.assertNotIn(value, text, f"server log contains {label}")
+
     def test_zz_s05_failed_logins_are_limited(self):
         """[S05] repeated wrong passwords (N<=12, own source IP, throwaway name) eventually 429"""
         tgt = get_target()
@@ -292,7 +339,10 @@ class SessionLifecycle(unittest.TestCase):
 
 class StaticExposure(unittest.TestCase):
     MARKERS = (b"SQLite format 3", b"[core]", b"import ", b"def ", b"OPENAI", b"ANTHROPIC",
-               b"password_hash", b"scrypt$", b"pbkdf2")
+               b"password_hash", b"scrypt$", b"pbkdf2",
+               b"\x37\x7f\x06\x82", b"\x37\x7f\x06\x83",  # SQLite -wal header magic (no "SQLite format 3")
+               b"ref: refs/")  # .git/HEAD
+    ENV_LINE = re.compile(rb"(?m)^[A-Z][A-Z0-9_]{2,}=")  # KEY=value lines of a .env file (non-HTML bodies)
 
     def test_s08_runtime_db_env_and_sources_not_served(self):
         """[S08] .sqlite/-wal/-shm, .env, .git, Python sources not downloadable (incl. traversal)"""
@@ -314,7 +364,8 @@ class StaticExposure(unittest.TestCase):
         leaks = []
         for path in paths:
             r = c.raw("GET", path)
-            if r.status == 200 and any(m in r.raw for m in self.MARKERS):
+            if r.status == 200 and (any(m in r.raw for m in self.MARKERS) or (
+                    "html" not in r.content_type.lower() and self.ENV_LINE.search(r.raw))):
                 leaks.append(f"{path} -> 200 {r.raw[:40]!r}")
         self.assertEqual(leaks, [], "server returned runtime/secret/source content")
         root = c.raw("GET", "/")
@@ -344,7 +395,15 @@ class NoServerSideFetch(unittest.TestCase):
             ed = get_target().editor(0)
             ref = {"id": "r10-src-1", "url": url, "publisher": "R10 canary", "published_on": None,
                    "retrieved_at": None, "access_status": "not_fetched", "license": None, "fields": ["title"]}
-            draft = create_draft(self, ed, source_refs=[ref])
+            # the contract puts no rule on source URLs: refusing a loopback/http URL (400/422) is a
+            # conforming, SSRF-safe choice, like the refused update and feedback below
+            rc = ed.post("/staff/objects", helpers.wrap_create(helpers.object_payload(source_refs=[ref])))
+            if rc.status in VALIDATION:
+                expect_error(self, rc, "create with a loopback source URL", VALIDATION)
+                NOTES.add(f"source_refs with a loopback http URL refused at create ({rc.status})")
+                draft = create_draft(self, ed)
+            else:
+                draft = expect_ok(self, rc, "create with canary source URL")["item"]
             obj = publish(self, ed, draft)
             r = helpers.update(ed, obj, {"source_refs": [dict(ref, url=url + "/u")]}, "R10: источник")
             self.assertIn(r.status, (200, 400, 422), r.brief())
@@ -380,6 +439,8 @@ class RequestHygiene(unittest.TestCase):
     def test_c06_s13_invalid_values_rejected_without_500(self):
         """[C06][S13] bad dates/numbers/geometry/enums/title -> 400/422 JSON, server alive"""
         ed = get_target().editor(0)
+        before_count = count_staff_objects(ed)
+        self.assertIsNotNone(before_count, "staff list unreadable: object-count check would be vacuous")
         base = helpers.object_payload()
         cases = {
             "impossible date": {"schedule": dict(base["schedule"], current_planned_end="2026-02-30")},
@@ -410,6 +471,22 @@ class RequestHygiene(unittest.TestCase):
             with self.subTest(case=label):
                 r = ed.post("/staff/objects", raw_body=raw)
                 expect_error(self, r, f"create with {label}", VALIDATION)
+        self.assertEqual(count_staff_objects(ed), before_count, "a rejected create still stored an object")
+        # the same values in an update of a published object: refused, nothing stored or published
+        obj = publish(self, ed, create_draft(self, ed))
+        staff0 = expect_ok(self, ed.get(f"/staff/objects/{obj['id']}"), "staff detail")["item"]
+        public0 = expect_ok(self, get_target().client().get(f"/objects/{obj['id']}"), "public detail")["item"]
+        for label, override in cases.items():
+            with self.subTest(update=label):
+                r = helpers.update(ed, staff0, override, "R10: недопустимая правка")
+                expect_error(self, r, f"update with {label}", VALIDATION)
+        nan = (b'{"expected_revision":%d,"reason":"R10","changes":{"budget":{"amount_kzt":NaN,'
+               b'"basis":"planned","source_id":null}}}' % staff0["revision"])
+        expect_error(self, ed.post(f"/staff/objects/{obj['id']}/update", raw_body=nan), "update with NaN", VALIDATION)
+        self.assertEqual(expect_ok(self, ed.get(f"/staff/objects/{obj['id']}"), "staff detail")["item"], staff0,
+                         "a rejected update changed the stored object")
+        self.assertEqual(expect_ok(self, get_target().client().get(f"/objects/{obj['id']}"), "public detail")["item"],
+                         public0, "a rejected update changed the public object")
         assert_alive(self, "validation matrix")
 
     def test_c07_oversized_body_and_long_text(self):
@@ -435,6 +512,7 @@ class RequestHygiene(unittest.TestCase):
         """[C08][S13] wrong Content-Type -> 415/400; broken/non-object JSON -> 400; no object created"""
         ed = get_target().editor(0)
         before = count_staff_objects(ed)
+        self.assertIsNotNone(before, "staff list unreadable: object-count check would be vacuous")
         good = json.dumps(helpers.object_payload()).encode()
         cases = [
             ("text/plain", good, (400, 415)),
