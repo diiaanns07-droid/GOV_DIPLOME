@@ -1,0 +1,99 @@
+{
+ "schema_version": "civic-v1",
+ "city": "astana",
+ "slice": {
+  "name": "r02-format-example",
+  "version": "r02-example-1",
+  "demo": false,
+  "source": "r02-format-example",
+  "note": "НЕ реальные данные: пример структуры пакета для dry-run. Не импортировать в рабочую БД."
+ },
+ "items": [
+  {
+   "id": "r02-format-example-1",
+   "kind": "roadworks",
+   "title": "ПРИМЕР ФОРМАТА 1 — не реальная работа",
+   "description": "Запись только для проверки формата импорта R02; фактов не содержит.",
+   "status": "unknown",
+   "geometry": null,
+   "geometry_precision": "unknown",
+   "schedule": {
+    "planned_start": "2026-10-14",
+    "original_planned_end": null,
+    "current_planned_end": "2026-10-30",
+    "actual_end": null
+   },
+   "budget": {
+    "amount_kzt": null,
+    "basis": "unknown",
+    "source_id": null
+   },
+   "responsible": {
+    "organization": null,
+    "public_contact": null
+   },
+   "evidence_type": "hypothesis",
+   "source_refs": [
+    {
+     "id": "src-1",
+     "url": "https://example.org/format-example/1",
+     "publisher": "ПРИМЕР (не источник)",
+     "published_on": "2026-10-01",
+     "retrieved_at": "2026-10-07T10:00:00+05:00",
+     "access_status": "not_fetched",
+     "license": null,
+     "fields": [
+      "title",
+      "schedule.planned_start",
+      "schedule.current_planned_end"
+     ]
+    }
+   ],
+   "evidence_notes": "Пример формата. Источник не открывался (not_fetched).",
+   "publication": "draft"
+  },
+  {
+   "id": "r02-format-example-2",
+   "kind": "roadworks",
+   "title": "ПРИМЕР ФОРМАТА 2 — не реальная работа",
+   "description": "Запись только для проверки формата импорта R02; фактов не содержит.",
+   "status": "unknown",
+   "geometry": null,
+   "geometry_precision": "unknown",
+   "schedule": {
+    "planned_start": "2026-10-14",
+    "original_planned_end": null,
+    "current_planned_end": "2026-10-30",
+    "actual_end": null
+   },
+   "budget": {
+    "amount_kzt": null,
+    "basis": "unknown",
+    "source_id": null
+   },
+   "responsible": {
+    "organization": null,
+    "public_contact": null
+   },
+   "evidence_type": "hypothesis",
+   "source_refs": [
+    {
+     "id": "src-1",
+     "url": "https://example.org/format-example/1",
+     "publisher": "ПРИМЕР (не источник)",
+     "published_on": "2026-10-01",
+     "retrieved_at": "2026-10-07T10:00:00+05:00",
+     "access_status": "not_fetched",
+     "license": null,
+     "fields": [
+      "title",
+      "schedule.planned_start",
+      "schedule.current_planned_end"
+     ]
+    }
+   ],
+   "evidence_notes": "Пример формата. Источник не открывался (not_fetched).",
+   "publication": "draft"
+  }
+ ]
+}

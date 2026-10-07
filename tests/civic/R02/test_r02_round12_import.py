@@ -153,3 +153,28 @@ def test_package_cannot_relabel_demo_records(service):
     report = import_package(service.objects, package([real_item("ast-demo-1")]))
     assert by_id(report)["ast-demo-1"]["action"] == "id_conflict"
     assert service.objects.get_staff("ast-demo-1")["item"]["evidence_type"] == "synthetic"
+
+
+def test_same_work_twice_in_one_package_is_flagged(service):
+    report = by_id(import_package(service.objects, package([
+        real_item("ast-r12-d1"), real_item("ast-r12-d2"), real_item("ast-r12-d3", title="Другая работа")])))
+    assert report["ast-r12-d2"]["possible_duplicates"] == [
+        {"object_id": "ast-r12-d1", "import_source": "r05-astana-real", "match": ["kind_title", "source_url"]}]
+    assert "possible_duplicates" not in report["ast-r12-d1"]
+    assert "possible_duplicates" not in report["ast-r12-d3"]  # общий URL своего source — не дубль
+
+
+def test_all_field_errors_of_a_record_are_reported_together(service):
+    bad = real_item("ast-r12-bad", status="done", extra_field=1,
+                    budget={"amount_kzt": 1000, "basis": "unknown", "source_id": None})
+    with pytest.raises(ImportRejected) as rejected:
+        import_package(service.objects, package([bad]), dry_run=True)
+    # Неизвестное поле больше не скрывает ошибки типов; согласованность (сумма без источника)
+    # проверяется вторым этапом, когда типы полей уже верны.
+    assert set(rejected.value.report["items"][0]["fields"]) == {"extra_field", "status"}
+    fixed = real_item("ast-r12-bad", extra_field=1,
+                      budget={"amount_kzt": 1000, "basis": "unknown", "source_id": None})
+    with pytest.raises(ImportRejected) as rejected:
+        import_package(service.objects, package([fixed]), dry_run=True)
+    assert set(rejected.value.report["items"][0]["fields"]) == {"extra_field", "budget.source_id",
+                                                                "budget.basis"}

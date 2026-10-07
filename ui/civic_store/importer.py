@@ -107,6 +107,24 @@ def describe_package(package, source=None) -> dict:
             "slice_version": version if isinstance(version, str) else None}
 
 
+def _validate_record(payload, today):
+    """Все ошибки записи сразу: неизвестные поля не скрывают ошибки остальных полей."""
+    unknown = {}
+    try:
+        content_raw, _, ignored = split_payload(payload, allow_internal=False)
+    except ValidationError as exc:
+        unknown = exc.fields
+        known = {key: value for key, value in payload.items() if key not in unknown}
+        content_raw, _, ignored = split_payload(known, allow_internal=False)  # иначе — исходная ошибка
+    try:
+        content = validate_content(content_raw, today=today)
+    except ValidationError as exc:
+        raise ValidationError({**unknown, **exc.fields})
+    if unknown:
+        raise ValidationError(unknown)
+    return content, ignored
+
+
 def import_package(repo: ObjectRepository, package, *, source=None, dry_run=False,
                    allow_partial=False, actor_label="cli") -> dict:
     meta = describe_package(package, source)
@@ -142,8 +160,7 @@ def import_package(repo: ObjectRepository, package, *, source=None, dry_run=Fals
             if raw.get("city", CITY) != CITY:
                 raise ValidationError({"city": "Только astana."})
             payload = {key: value for key, value in raw.items() if key not in IMPORT_HINT_FIELDS}
-            content_raw, _, ignored = split_payload(payload, allow_internal=False)
-            content = validate_content(content_raw, today=today)
+            content, ignored = _validate_record(payload, today)
             # id/city/schema_version — опознавательные поля пакета; остальное серверное
             # (publication, revision...) не применяется, и отчёт это показывает.
             ignored = [key for key in ignored if key not in ("id", "city", "schema_version")]
@@ -228,8 +245,8 @@ def _norm_title(text) -> str:
 class _DuplicateIndex:
     """Подсказка редактору о возможных дублях: тот же URL источника или то же kind+название.
 
-    Сравниваются объекты ДРУГОГО происхождения (ручные, другой source): внутри одного source
-    стабильный external_id и так исключает повторное создание.
+    Сравниваются объекты другого происхождения (ручные, другой source) и записи своего source
+    с другим external_id и тем же kind+названием.
     """
 
     def __init__(self, conn, source):
@@ -252,9 +269,11 @@ class _DuplicateIndex:
                 hits.setdefault(object_id, (source, set()))[1].add("source_url")
         for object_id, source in self.by_title.get((content.get("kind"), _norm_title(content.get("title"))), []):
             hits.setdefault(object_id, (source, set()))[1].add("kind_title")
+        # Внутри своего source общий URL — норма (одна публикация о нескольких работах),
+        # а то же kind+название под другим id — вероятный повтор записи в пакете.
         return [{"object_id": object_id, "import_source": source, "match": sorted(match)}
                 for object_id, (source, match) in sorted(hits.items())
-                if object_id != exclude and source != self.source][:5]
+                if object_id != exclude and (source != self.source or "kind_title" in match)][:5]
 
 
 def _ref_summary(refs) -> dict:

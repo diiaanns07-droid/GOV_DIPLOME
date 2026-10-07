@@ -1,0 +1,39 @@
+{
+ "role": "R02",
+ "branch": "claude/elegant-franklin-jbhprq",
+ "base_sha": "56538a3a7504d4589c38ab4d3c5107f12aa7f8a6",
+ "code_sha": "(см. handoff: последний отправленный SHA; код этого коммита — HEAD ветки)",
+ "push_status": "OK (checkpoints b465013, c828df9, dcda6de; финальный SHA — в handoff)",
+ "changed_paths": [
+  "ui/civic_store/importer.py",
+  "ui/civic_store/objects.py",
+  "ui/civic_store/cli.py",
+  "ui/civic_store/public_export.py",
+  "tests/civic/R02/test_r02_round12_import.py",
+  "tests/civic/R02/test_r02_round12_history.py",
+  "tests/civic/R02/test_r02_round12_public.py",
+  "tests/civic/R02/test_r02_round12_export.py",
+  "research/round-12-results/R02/",
+  "research/handoffs/astana/R02/round-12/STATUS.md"
+ ],
+ "tests": {
+  "pytest tests/civic/R02": "PASS 233 passed, 1 skipped (skip унаследован от базы)",
+  "pytest tests/civic": "PASS 758 passed, 2 skipped",
+  "regression: candidate apply after publication": "PASS (2 теста падают на базе 56538a3, проходят с исправлением)",
+  "CLI end-to-end на временной базе": "PASS evidence/cli_run.txt",
+  "pytest всего репозитория (tests/)": "NOT_RUN: вне границ роли; координатор запускает при сборке",
+  "браузер/UI": "NOT_RUN: R02 не меняет интерфейс и маршруты",
+  "Windows run-city.bat": "NOT_RUN: облачный Linux"
+ },
+ "fixed_defects": [
+  "После первой публикации кандидат импорта с original_planned_end=null (обычный источник) нельзя было применить (422 навсегда): перенос срока из источника терялся. Исправлено в objects.py; совпадение правки редактора с источником на опубликованной карточке теперь закрывает кандидата."
+ ],
+ "known_limits": [
+  "Реальный пакет R05 раунда 12 в момент работы не был доступен в origin; проверено на тестовых и примерных пакетах (example.org, не реальные данные).",
+  "possible_duplicates — эвристика (URL источника, kind+нормализованное название); не сливает и не блокирует.",
+  "Ошибки согласованности (сумма без источника, actual_end) проверяются вторым этапом, после исправления ошибок типов.",
+  "restore-public переносит только публичную историю; служебная история/авторы правок не восстанавливаются (помечается в internal_notes). Архивные записи истории опознаются по нейтральной формулировке.",
+  "Причина изменения (update) остаётся служебной; публично видна причина публикации — редактор должен указать её при публикации переноса срока (так было и раньше)."
+ ],
+ "next_step": "Координатору: выполнить dry-run реального пакета R05 round12-verified командой из RUN.txt п.2 на временной базе и приложить отчёт."
+}

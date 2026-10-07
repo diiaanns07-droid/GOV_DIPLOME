@@ -1,0 +1,43 @@
+R02 раунд 12 — команды запуска и проверки (Linux/macOS; на Windows — python вместо python3)
+
+База для проверок — ТОЛЬКО временный файл вне репозитория (или .runtime/ при осознанном решении).
+Пользовательскую .runtime/round11-local.sqlite3 для проверок не использовать.
+
+1. Тесты модуля
+   python3 -m pip install pytest
+   python3 -m pytest -q tests/civic/R02            # ожидается 233 passed, 1 skipped
+   python3 -m pytest -q tests/civic                # ожидается 758 passed, 2 skipped
+
+2. Проверка пакета реальных объектов (R05) на временной базе
+   export T=$(mktemp -d)
+   python3 -m ui.civic_store --db $T/check.sqlite3 init
+   python3 -m ui.civic_store --db $T/check.sqlite3 import <пакет.json> --dry-run
+     - status=dry_run: ничего не записано; по каждой записи action
+       (create | update_import_draft | editor_review | skip_unchanged | id_conflict | invalid),
+       fields — точные ошибки по путям полей, ignored_fields — серверные поля пакета
+       (publication/revision не применяются), possible_duplicates — подсказка, не слияние,
+       changed_fields / source_changed_fields / source_refs_change — что изменилось.
+     - status=rejected (код выхода 2): в пакете есть недопустимые записи; отчёт всё равно
+       показывает, что произошло бы с допустимыми. Ничего не записано.
+   python3 -m ui.civic_store --db $T/check.sqlite3 import <пакет.json>       # только черновики
+   python3 -m ui.civic_store --db $T/check.sqlite3 import <пакет.json>       # повтор: skip_unchanged
+   python3 -m ui.civic_store --db $T/check.sqlite3 status
+   Пример структуры (НЕ реальные данные): research/round-12-results/R02/example_package.json,
+   с ошибками: example_package_with_errors.json. Пример вывода: evidence/cli_run.txt.
+
+3. Публичная выгрузка и восстановление (без учётных записей, сессий, черновиков, заметок)
+   python3 -m ui.civic_store --db <база> export-public --out $T/public.json
+   python3 -m ui.civic_store --db $T/new.sqlite3 init
+   python3 -m ui.civic_store --db $T/new.sqlite3 restore-public $T/public.json --dry-run
+   python3 -m ui.civic_store --db $T/new.sqlite3 restore-public $T/public.json
+   Восстановление идёт только в базу без объектов; повтор отклоняется (код 2).
+   Полная копия с паролями по-прежнему — backup/restore (файл 0600, не публиковать).
+
+4. Что сможет пользователь/редактор
+   - Проверить пакет R05 до записи и увидеть ошибки по каждому полю каждой записи.
+   - Импортировать реальные записи только черновиками; повтор не создаёт дублей;
+     изменение источника видно (какие поля и какие ссылки на источники изменились).
+   - Опубликованную карточку импорт не меняет: новая версия ждёт решения редактора
+     (GET/POST /api/civic/v1/staff/objects/{id}/import-candidates...). Перенос срока из
+     источника теперь можно применить и после публикации; первоначальный срок сохраняется.
+   - Выгрузить и восстановить опубликованные данные без секретов.

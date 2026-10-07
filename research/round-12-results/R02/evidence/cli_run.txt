@@ -1,0 +1,202 @@
+++ python3 -m ui.civic_store --db $SCRATCH/r12.sqlite3 init
+{
+  "db": "$SCRATCH/r12.sqlite3",
+  "schema_version": 4,
+  "migrations": [
+    1,
+    2,
+    3,
+    4
+  ]
+}
+++ python3 -m ui.civic_store --db $SCRATCH/r12.sqlite3 import research/round-12-results/R02/example_package.json --dry-run
+{
+  "dry_run": true,
+  "source": "r02-format-example",
+  "slice_version": "r02-example-1",
+  "demo": false,
+  "package_digest": "94583efa1d4dbce3e03f68094a5f1255d7fda2f5cdc522cbce244c3b69d926fa",
+  "status": "dry_run",
+  "counts": {
+    "create": 2,
+    "report_missing": 0
+  },
+  "items": [
+    {
+      "index": 0,
+      "external_id": "r02-format-example-1",
+      "ignored_fields": [
+        "publication"
+      ],
+      "action": "create",
+      "object_id": "r02-format-example-1"
+    },
+    {
+      "index": 1,
+      "external_id": "r02-format-example-2",
+      "ignored_fields": [
+        "publication"
+      ],
+      "action": "create",
+      "object_id": "r02-format-example-2"
+    }
+  ],
+  "missing": []
+}
+++ python3 -m ui.civic_store --db $SCRATCH/r12.sqlite3 import research/round-12-results/R02/example_package.json
+{
+  "dry_run": false,
+  "source": "r02-format-example",
+  "slice_version": "r02-example-1",
+  "demo": false,
+  "package_digest": "94583efa1d4dbce3e03f68094a5f1255d7fda2f5cdc522cbce244c3b69d926fa",
+  "status": "applied",
+  "counts": {
+    "create": 2,
+    "report_missing": 0
+  },
+  "items": [
+    {
+      "index": 0,
+      "external_id": "r02-format-example-1",
+      "ignored_fields": [
+        "publication"
+      ],
+      "action": "create",
+      "object_id": "r02-format-example-1"
+    },
+    {
+      "index": 1,
+      "external_id": "r02-format-example-2",
+      "ignored_fields": [
+        "publication"
+      ],
+      "action": "create",
+      "object_id": "r02-format-example-2"
+    }
+  ],
+  "missing": []
+}
+++ python3 -m ui.civic_store --db $SCRATCH/r12.sqlite3 import research/round-12-results/R02/example_package.json
+{
+  "dry_run": false,
+  "source": "r02-format-example",
+  "slice_version": "r02-example-1",
+  "demo": false,
+  "package_digest": "94583efa1d4dbce3e03f68094a5f1255d7fda2f5cdc522cbce244c3b69d926fa",
+  "status": "applied",
+  "counts": {
+    "skip_unchanged": 2,
+    "report_missing": 0
+  },
+  "items": [
+    {
+      "index": 0,
+      "external_id": "r02-format-example-1",
+      "ignored_fields": [
+        "publication"
+      ],
+      "action": "skip_unchanged",
+      "object_id": "r02-format-example-1"
+    },
+    {
+      "index": 1,
+      "external_id": "r02-format-example-2",
+      "ignored_fields": [
+        "publication"
+      ],
+      "action": "skip_unchanged",
+      "object_id": "r02-format-example-2"
+    }
+  ],
+  "missing": []
+}
+++ python3 -m ui.civic_store --db $SCRATCH/r12.sqlite3 import research/round-12-results/R02/example_package_with_errors.json --dry-run
+{
+  "dry_run": true,
+  "source": "r02-format-example",
+  "slice_version": "r02-example-2-invalid",
+  "demo": false,
+  "package_digest": "8e5ca61d900bfc65f28124ca6c972f6dbb5b3fad7221d79639d04993224ad1c8",
+  "status": "rejected",
+  "counts": {
+    "update_import_draft": 1,
+    "skip_unchanged": 1,
+    "invalid": 1,
+    "report_missing": 0,
+    "valid": 2
+  },
+  "items": [
+    {
+      "index": 0,
+      "external_id": "r02-format-example-1",
+      "ignored_fields": [
+        "publication"
+      ],
+      "action": "update_import_draft",
+      "object_id": "r02-format-example-1",
+      "changed_fields": [
+        "schedule.current_planned_end"
+      ],
+      "source_changed_fields": [
+        "schedule.current_planned_end"
+      ]
+    },
+    {
+      "index": 1,
+      "external_id": "r02-format-example-2",
+      "ignored_fields": [
+        "publication"
+      ],
+      "action": "skip_unchanged",
+      "object_id": "r02-format-example-2"
+    },
+    {
+      "index": 2,
+      "external_id": "r02-format-example-3",
+      "action": "invalid",
+      "fields": {
+        "extra_field": "Неизвестное поле civic-v1.",
+        "status": "Допустимые значения: planned, in_progress, completed, cancelled, unknown."
+      }
+    }
+  ],
+  "missing": []
+}
+Ошибка: Пакет содержит недопустимые записи; ничего не импортировано (dry-run показал и допустимые записи).
+++ echo exit=2
+exit=2
+++ python3 -m ui.civic_store --db $SCRATCH/r12.sqlite3 status
+{
+  "db": "$SCRATCH/r12.sqlite3",
+  "schema_version": 4,
+  "objects": {
+    "draft": 2
+  },
+  "public_objects": 0,
+  "history_entries": 2,
+  "editors": 0,
+  "pending_import_candidates": 0
+}
+++ python3 -m ui.civic_store --db $SCRATCH/r12.sqlite3 export-public --out $SCRATCH/pub.json
+Публичная выгрузка: $SCRATCH/pub.json
+++ python3 -m ui.civic_store --db $SCRATCH/r12b.sqlite3 init
+{
+  "db": "$SCRATCH/r12b.sqlite3",
+  "schema_version": 4,
+  "migrations": [
+    1,
+    2,
+    3,
+    4
+  ]
+}
+++ python3 -m ui.civic_store --db $SCRATCH/r12b.sqlite3 restore-public $SCRATCH/pub.json --dry-run
+{
+  "status": "dry_run",
+  "dry_run": true,
+  "objects": 0,
+  "history_entries": 0,
+  "objects_digest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+  "exported_at": "2026-10-07T10:25:11+00:00"
+}

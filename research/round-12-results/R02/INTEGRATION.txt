@@ -1,0 +1,32 @@
+R02 раунд 12 — интеграция для координатора (Codex)
+
+Новых HTTP-маршрутов НЕТ; ui/web_server.py не менялся и patch не нужен.
+Контракт civic-v1 (CONTRACT.txt раунда 11) не меняется: формат пакета, публичный DTO, история.
+
+Затронутые интерфейсы (совместимо, только дополнения):
+1. importer.import_package(...) — отчёт дополнен ключами записи: ignored_fields, changed_fields,
+   source_changed_fields, source_refs_change, possible_duplicates; counts.valid при rejected.
+   Поведение без dry-run не изменилось (ImportRejected, ничего не записано).
+   Изменилось: dry_run=True при недопустимых записях теперь моделирует и допустимые записи
+   и бросает ImportRejected с полным отчётом (status=rejected) — раньше отчёт содержал только
+   invalid. Кто читает report["items"], должен допускать новые ключи.
+2. GET /staff/objects/{id}/import-candidates — у элемента новый ключ original_planned_end_locked;
+   diff для опубликованной карточки не содержит schedule.original_planned_end (его кандидат не меняет).
+   Для R04 (кабинет): кнопка «Применить» теперь работает для переноса срока из источника после
+   публикации (раньше всегда 422). Отображать original_planned_end_locked можно как подсказку.
+3. CLI: новые команды export-public, restore-public (модуль ui/civic_store/public_export.py).
+4. Схема БД: без новых миграций (SCHEMA_VERSION = 4).
+
+R05 (data/civic/astana/round12-verified/): формат пакета не менялся. Требования импортера:
+- оболочка {"schema_version":"civic-v1","city":"astana","slice":{name,version,demo:false,source?},"items":[...]};
+  лишние ключи оболочки (например rejected/unverified списки) игнорируются, их записи НЕ импортируются;
+- в items — только поля civic-v1 + id/city/schema_version; publication/revision/updated_at
+  игнорируются (отчёт: ignored_fields); suggested_publication — подсказка только для seed-demo;
+- любое другое поле записи (например verification, unconfirmed_fields) — invalid с путём поля.
+  Если R05 нужны такие поля, их место — evidence_notes либо отдельный файл рядом с пакетом;
+  адаптер в R02 не добавлялся, чтобы не подменять владельца схемы;
+- evidence_type synthetic в реальном пакете запрещён, в demo-пакете — только synthetic;
+- id записи становится id объекта; id, совпадающий с демо/ручным объектом, даёт id_conflict
+  (ничего не меняется). source по умолчанию r05-astana-real; рекомендуется явный slice.source.
+
+Соседи: R06 (feedback_*) — таблицы не затрагиваются; R01 — подключение сервиса не меняется.
