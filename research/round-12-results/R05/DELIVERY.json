@@ -5,7 +5,7 @@
   "branch": "claude/focused-hypatia-z8h0no",
   "base_sha": "56538a3a7504d4589c38ab4d3c5107f12aa7f8a6",
   "base_mismatch": "Ветка назначена средой и содержит историю R06 раунда 11 (73f9576); перевод основы на 56538a3 merge-коммитом отклонён автоматической проверкой как разрушительная git-операция, force push запрещён. Коммиты раунда 12 трогают только пути R05; проверка — в отдельном worktree от 56538a3; перенос — по путям или патчем r05_round12_paths.patch (git apply --check на 56538a3: OK).",
-  "code_sha": "1f9c339",
+  "code_sha": "4d5731f",
   "push_status": "OK (checkpoint 6: 5 попыток GitHub 500 «remote rejected (Internal Server Error)» в 15:15Z, повтор в 15:16Z успешен)",
   "changed_paths": [
     "data/civic/astana/round12-verified/",
@@ -94,5 +94,5 @@
     "Ветка не основана на 56538a3 (BASE_MISMATCH): переносить по путям/патчем, не сливать ветку целиком."
   ],
   "next_step": "Открыть 19 текущих кандидатов из VERIFY_SHEET.md (официальные gov.kz первыми), сохранить тексты, заполнить drafts/ и выполнить r12.py verify → build → dry-run импорта.",
-  "patch": "research/round-12-results/R05/r05_round12_paths.patch (только пути R05; собирается от последнего коммита с кодом, проверка git apply --check на чистом 56538a3)"
+  "patch": "research/round-12-results/R05/r05_round12_paths.patch — пути R05 по состоянию 4d5731f (кроме самого патча); git apply --check и полный tests/civic/R05 (206 passed) на чистом 56538a3"
 }
