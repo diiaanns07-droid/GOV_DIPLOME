@@ -16,7 +16,7 @@
   },
   "handle": ["destroy", "openObject", "setMap"],
   "handle_semantics": {
-    "openObject": "(id: string) -> Promise<boolean>; false when not signed in or not found",
+    "openObject": "(id: string) -> Promise<boolean>. Called before the editor's own GET /session has answered, the promise waits for that one request. false when not signed in (the record is then opened right after a successful login), not found/refused (no fields shown) or superseded by a later navigation; true when the form is open",
     "setMap": "(map|null) -> void; detaches layers/listeners from the old map and attaches to the new one. With a map getter in options, setMap(null) only detaches: the getter supplies the map again on the next lookup",
     "destroy": "idempotent; removes map layers/sources/listeners, DOM listeners and timers; unsaved form goes to the per-tab copy"
   },

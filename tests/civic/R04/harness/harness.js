@@ -1,6 +1,8 @@
 /* R04 test stand: what R01 is expected to provide — api.request with cookies + X-CSRF-Token, one map, a root element.
  * ?nomap=1 mounts without a map. ?latemap=1 passes a getter that returns the map only after window.__mapReady = true
- * (as R01 currentMap() does before the map has loaded). Counters of map listeners let tests check that destroy/close remove them.
+ * (as R01 currentMap() does before the map has loaded); ?latemap=never never returns it (window.__getterCalls counts
+ * look-ups). ?open=<id> calls openObject(id) right after mount, before the editor's GET /session has answered
+ * (window.__openDone gets the result). Counters of map listeners let tests check that destroy/close remove them.
  */
 (function () {
   "use strict";
@@ -35,6 +37,7 @@
       root: document.getElementById("panel"), map, api,
       onPublished: (item, info) => window.__published.push({ item, info }),
     });
+    if (params.get("open")) { window.__openDone = undefined; window.__editor.openObject(params.get("open")).then((r) => { window.__openDone = r; }); }
   }
   window.__remount = () => { if (window.__editor) window.__editor.destroy(); mountWith(window.__map || null); };
   if (params.get("nomap") === "1" || !window.maplibregl) { window.__mapState = "none"; mountWith(null); return; }
@@ -51,5 +54,6 @@
   window.__map = map;
   map.once("load", () => { window.__mapState = "loaded"; });
   if (params.get("latemap") === "1") { window.__mapReady = false; mountWith(() => (window.__mapReady ? map : null)); return; }
+  if (params.get("latemap") === "never") { window.__getterCalls = 0; mountWith(() => { window.__getterCalls++; return null; }); return; }
   mountWith(map);
 })();

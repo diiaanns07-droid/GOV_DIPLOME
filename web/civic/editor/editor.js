@@ -8,8 +8,9 @@
  * Optional: apiPrefix (default "", paths are relative to /api/civic/v1), internalNotes:true, now() for tests.
  * The server decides rights. The UI never derives rights from a browser role and keeps no session in storage.
  * Unsaved text (RECOVERY) lives in this page's memory and, to survive a reload or a tab crash, in this tab's
- * sessionStorage: form fields only (never passwords, tokens or the CSRF value), bound to the signed-in user,
- * removed after a successful save, on "Удалить из памяти" and on logout. It is a local copy, not the server record.
+ * sessionStorage: form fields only (never passwords, tokens or the CSRF value), kept per signed-in user (another
+ * user signing in in this tab never sees them), removed after a successful save, on "Удалить из памяти" and on
+ * logout of that user. It is a local copy, not the server record.
  */
 (function () {
   "use strict";
@@ -18,32 +19,51 @@
   if (!C) { console.error("CivicEditor: load web/civic/editor/editor-core.js before editor.js"); return; }
 
   const RECOVERY = new Map();  // object id | "new" -> {base, form, at, title, revision}; this tab only
-  const STORE_KEY = "civic-r04-unsaved:v1";
+  const STORE_KEY = "civic-r04-unsaved:v1";  // value format v2: {v:2, users:{<user>: {<id|"new">: copy}}}
   const STORE = (() => {
     try { const s = window.sessionStorage, k = "civic-r04-probe"; s.setItem(k, k); s.removeItem(k); return s; } catch (e) { return null; }
   })();
   let storeUser = null;  // the user whose unsaved edits RECOVERY currently holds
+  function readStore() {
+    try {
+      const d = JSON.parse(STORE.getItem(STORE_KEY) || "null");
+      if (d && d.v === 2 && d.users && typeof d.users === "object") return d;
+      if (d && d.v === 1 && typeof d.user === "string" && d.entries && typeof d.entries === "object") return { v: 2, users: { [d.user]: d.entries } };
+    } catch (e) { /* damaged copy: start empty */ }
+    return { v: 2, users: {} };
+  }
   function persistRecovery() {
     if (!STORE) return;
     try {
-      if (!storeUser || !RECOVERY.size) { STORE.removeItem(STORE_KEY); return; }
-      STORE.setItem(STORE_KEY, JSON.stringify({ v: 1, user: storeUser, entries: Object.fromEntries(RECOVERY) }));
+      const all = readStore();
+      if (storeUser) { if (RECOVERY.size) all.users[storeUser] = Object.fromEntries(RECOVERY); else delete all.users[storeUser]; }
+      if (Object.keys(all.users).length) STORE.setItem(STORE_KEY, JSON.stringify(all)); else STORE.removeItem(STORE_KEY);
     } catch (e) { /* quota or privacy mode: memory copy still works */ }
   }
-  // After the server confirms who is signed in: keep only that user's local copies.
+  // After the server confirms who is signed in: RECOVERY holds only that user's local copies.
   function loadRecovery(user) {
-    if (storeUser && storeUser !== user) RECOVERY.clear();
+    if (storeUser !== (user || null)) RECOVERY.clear();
     storeUser = user || null;
     if (!STORE || !storeUser) return;
-    try {
-      const d = JSON.parse(STORE.getItem(STORE_KEY) || "null");
-      if (!d || d.v !== 1 || d.user !== storeUser || !d.entries || typeof d.entries !== "object") { if (d) STORE.removeItem(STORE_KEY); return; }
-      for (const [k, r] of Object.entries(d.entries)) if (!RECOVERY.has(k) && r && r.form && typeof r.form === "object") RECOVERY.set(k, r);
-    } catch (e) { try { STORE.removeItem(STORE_KEY); } catch (x) { /* ignore */ } }
+    const mine = readStore().users[storeUser] || {};
+    for (const [k, r] of Object.entries(mine)) if (!RECOVERY.has(k) && r && r.form && typeof r.form === "object") RECOVERY.set(k, r);
   }
   function dropRecovery(key) { if (RECOVERY.delete(key)) persistRecovery(); }
-  function clearRecovery() { RECOVERY.clear(); storeUser = null; persistRecovery(); }
+  function clearRecovery() { RECOVERY.clear(); persistRecovery(); storeUser = null; }  // logout: this user's copies only
   let seq = 0;
+  // Synchronous view of "is an editor drawing on the map right now" for neighbours (R03 click/hover, R01 Escape):
+  // window.CivicEditor.isDrawing() / activeTool(), and <html data-civic-editor-tool="point|line|area|edit">.
+  // The 'civic-editor:tool' event carries the same state; the attribute and getters do not depend on listener order.
+  let ACTIVE_TOOL = null;
+  function setActiveTool(mode) {
+    ACTIVE_TOOL = mode || null;
+    try {
+      if (ACTIVE_TOOL) document.documentElement.setAttribute("data-civic-editor-tool", ACTIVE_TOOL);
+      else document.documentElement.removeAttribute("data-civic-editor-tool");
+    } catch (e) { /* no document */ }
+  }
+  NS.isDrawing = () => !!ACTIVE_TOOL;
+  NS.activeTool = () => ACTIVE_TOOL;
   const FORM_LABEL = {
     title: "Название", kind: "Тип", status: "Статус работ", description: "Описание",
     planned_start: "Плановое начало", original_planned_end: "Первоначальный плановый срок", current_planned_end: "Актуальный плановый срок",
@@ -180,10 +200,70 @@
     function setCsrf(token) {
       if (typeof api.setCsrfToken === "function") { try { api.setCsrfToken(token || null); } catch (e) { /* adapter-specific */ } }
     }
+    const userKey = (sess) => (sess && sess.authenticated ? (sess.user && sess.user.name ? String(sess.user.name) : "?") : null);
+    // Returns true when the tab is now signed in as a DIFFERENT user (e.g. a login in another tab replaced the cookie).
     function applySession(d) {
-      S.session = { authenticated: !!(d && d.authenticated), user: (d && d.user) || null };
+      const prev = S.session;
+      const next = { authenticated: !!(d && d.authenticated), user: (d && d.user) || null };
+      const switched = !!(prev && prev.authenticated && next.authenticated && userKey(prev) !== userKey(next));
+      if (switched) {
+        S.epoch++;  // answers and retries of the previous user's requests are dropped
+        stashIfDirty(true);  // the previous user's unsaved form stays in HIS bucket of the tab copy
+        closeTool();
+      }
+      S.session = next;
       setCsrf(d && d.csrf_token);
-      if (S.session.authenticated) loadRecovery(S.session.user && S.session.user.name ? String(S.session.user.name) : "?");
+      if (next.authenticated) loadRecovery(userKey(next));
+      if (switched) {
+        S.switchedFrom = userKey(prev);
+        if (pendingOpen) { pendingOpen.resolve(false); pendingOpen = null; }
+      }
+      return switched;
+    }
+    // Before every write: is this tab still signed in as the same user? (A login in another tab replaces the cookie,
+    // and the R01 adapter re-sends a CSRF-rejected POST after refreshing the session — that must never carry the
+    // previous user's form.) Not signed in -> let the write get its 401 and the in-place re-login.
+    async function sameUserBeforeWrite() {
+      let d = null;
+      try { d = await call("GET", "/session"); } catch (e) { if (e === STALE) throw e; return true; }  // network: the write reports it
+      if (!d || !d.authenticated) return true;
+      if (applySession(d)) { await afterSwitch(); return false; }
+      return true;
+    }
+    function afterSwitch() {  // the form of the previous user is never shown to (or saved as) the new one
+      const who = S.switchedFrom;
+      S.switchedFrom = null;
+      detachMap();
+      // drop the previous user's form from the page before anything can stash it into the new user's copy
+      Object.assign(S, { view: "loading", item: null, form: null, saved: null, history: [], confirm: null, conflict: null, reauth: false,
+        uncertain: null, createKey: null, dup: null, restore: null, preview: false, publicCopy: null, notice: null, logoutAsk: false,
+        list: { items: [], next: null, filter: "draft", mine: false, loaded: false, loading: false } });
+      S.alert = { type: "warn", text: "В этой вкладке теперь вход «" + userKey(S.session) + "» (сессия сменилась, например, после входа в другой вкладке). "
+        + "Форма пользователя «" + who + "» закрыта и не отправлена; его несохранённые правки остались в этой вкладке и вернутся, когда он снова войдёт.", actions: [] };
+      return showList(true);
+    }
+    // Navigation token: an answer that arrives after the user went elsewhere does not open anything.
+    let navSeq = 0;
+    const nav = () => ++navSeq;
+    // openObject() called before the session check of mount finished: its promise waits for that one request.
+    // While signed out it resolves false at once (contract) but the record is still opened right after login.
+    let pendingOpen = null;  // {id, resolve}
+    const noop = () => {};
+    function deferOpen(id) {
+      if (pendingOpen) pendingOpen.resolve(false);
+      return new Promise((resolve) => { pendingOpen = { id, resolve }; });
+    }
+    function rememberOpen(id) {
+      if (pendingOpen) pendingOpen.resolve(false);
+      pendingOpen = { id, resolve: noop };
+    }
+    async function takePendingOpen() {
+      const p = pendingOpen;
+      pendingOpen = null;
+      if (!p) return false;
+      const ok = await openObject(p.id);
+      p.resolve(ok);
+      return true;
     }
 
     // ---------- small UI helpers ----------
@@ -284,8 +364,9 @@
       p.value = "";  // the password does not stay in the page after sending
       setBusy("login");
       submit.disabled = true;
+      let switched = false;
       try {
-        applySession(await call("POST", "/session/login", creds));
+        switched = applySession(await call("POST", "/session/login", creds));
       } catch (e) {
         if (e === STALE) return;
         const n = C.normalizeError(e);
@@ -300,19 +381,21 @@
       if (!S.session.authenticated) { err.textContent = "Сервер не подтвердил вход."; return; }
       S.alert = null;
       renderHead();
+      if (switched) { S.reauth = false; await afterSwitch(); return; }
       if (reauth) {
         S.reauth = false;
         renderReauth();
         setNotice("ok", "Вы снова вошли. Правки на месте — нажмите «Сохранить» ещё раз.");
         renderButtons();
         focusKey("save");
-      } else await showList(true);
+      } else if (!(await takePendingOpen())) await showList(true);
     }
     function renderLogin() {
       body.replaceChildren(el("div", { class: "civic-r04-topmsg" }, [msgBlock(S.alert)].filter(Boolean)), loginForm(false));
     }
 
     async function showList(reload) {
+      nav();
       stashIfDirty();
       detachMap();
       Object.assign(S, { view: "list", item: null, form: null, saved: null, history: [], confirm: null, conflict: null, reauth: false, preview: false, notice: null });
@@ -386,24 +469,35 @@
     // ---------- open / new ----------
     function newObject() {
       if (!S.session || !S.session.authenticated) { showLogin(); return; }
+      if (pendingOpen) { pendingOpen.resolve(false); pendingOpen = null; }
+      nav();
       stashIfDirty();
       openEditor(null, []);
     }
     async function openObject(objectId) {
       if (!S.alive) return false;
-      if (!S.session || !S.session.authenticated) { showLogin(); return false; }
       if (typeof objectId !== "string" || !objectId) return false;
+      if (!S.session) return deferOpen(objectId);  // mount's GET /session still running: open right after it
+      if (!S.session.authenticated) {
+        rememberOpen(objectId);
+        showLogin({ type: "info", text: "Войдите, чтобы открыть запись.", actions: [] });
+        return false;
+      }
+      if (pendingOpen && pendingOpen.id !== objectId) { pendingOpen.resolve(false); pendingOpen = null; }
+      const my = nav();
       stashIfDirty();
       detachMap();
-      S.view = "loading";
+      // nothing of the previous record stays in memory while the next one is requested (a refusal shows no fields)
+      Object.assign(S, { view: "loading", item: null, form: null, saved: null, history: [], confirm: null, conflict: null, preview: false, publicCopy: null });
       render();
       try {
         const d = await call("GET", "/staff/objects/" + enc(objectId));
+        if (my !== navSeq) return false;  // the user went elsewhere meanwhile
         if (!d || !d.item) throw Object.assign(new Error("Пустой ответ"), { status: 404 });
         openEditor(d.item, d.history);
         return true;
       } catch (e) {
-        if (e === STALE) return false;
+        if (e === STALE || my !== navSeq) return false;
         const n = handleError(e);
         if (n.kind !== "auth") await showList(false);
         if (n.kind !== "auth") { S.alert = Object.assign({ type: "error", actions: [] }, n); renderAlertOnly(); }
@@ -412,6 +506,7 @@
     }
     function openEditor(item, history) {
       detachMap();
+      mapTries = 0;
       S.item = item || null;
       S.history = Array.isArray(history) ? history : [];
       if (item && Object.prototype.hasOwnProperty.call(item, "internal_notes")) S.internalNotes = true;
@@ -671,16 +766,20 @@
       if (v === "unknown") closeTool();
       renderGeometry(); syncMap(); revalidate(); refreshDirty();
     }
-    let mapWait = null;
-    function waitForMap() {  // with a map getter: enable drawing as soon as the map is ready, no reopen needed
-      if (mapWait || map || !mapGetter) return;
+    // With a map getter: re-check a few times with back-off (about a minute in total per opened record), then only on
+    // a click on a drawing button or via setMap(). No endless polling; nothing runs outside the edit view.
+    const MAP_WAIT_MS = [1000, 2000, 4000, 8000, 15000, 30000];
+    let mapWait = null, mapTries = 0;
+    function waitForMap() {
+      if (mapWait || map || !mapGetter || mapTries >= MAP_WAIT_MS.length) return;
       mapWait = setTimeout(() => {
-        timers.delete(mapWait); mapWait = null;
+        timers.delete(mapWait); mapWait = null; mapTries++;
         if (!S.alive || S.view !== "edit") return;
         if (resolveMap()) renderGeometry(); else waitForMap();
-      }, 1000);
+      }, MAP_WAIT_MS[mapTries]);
       timers.add(mapWait);
     }
+    function stopMapWait() { if (mapWait) { clearTimeout(mapWait); timers.delete(mapWait); mapWait = null; } }
     function renderGeometry() {
       if (!V.geom) return;
       if (!resolveMap()) waitForMap();
@@ -697,13 +796,25 @@
       const placeErr = el("p", { class: "civic-r04-err", id: P + "f-place-err" }), placeWarn = el("p", { class: "civic-r04-warn", id: P + "f-place-warn" });
       F.place = { control: radios.querySelector("input"), err: placeErr, warn: placeWarn };
       kids.push(radios, placeErr, placeWarn);
+      const drawRow = (withMarkTools) => el("p", { class: "civic-r04-row-btns" }, [
+        btn(g && g.type === "Point" && withMarkTools ? "Поставить точку заново" : "Точка", () => startTool("point"), "", "tool-point", { disabled: (!map && !mapGetter) || ro, title: "Объект в одном месте: здание, остановка, перекрёсток" }),
+        btn(g && g.type === "LineString" && withMarkTools ? "Отметить линию заново" : "Линия (участок улицы)", () => startTool("line"), "", "tool-line", { disabled: (!map && !mapGetter) || ro, title: "Ремонт вдоль улицы или тротуара" }),
+        btn(g && g.type === "Polygon" && withMarkTools ? "Отметить площадь заново" : "Площадь (двор, сквер)", () => startTool("area"), "", "tool-area", { disabled: (!map && !mapGetter) || ro, title: "Благоустройство двора, сквера, площадки" }),
+        g && withMarkTools ? btn("Показать на карте", fitToGeometry, "ghost", "geo-show", { disabled: !map }) : null,
+        g && withMarkTools ? btn("Удалить отметку", () => { setGeometry(null); say("Отметка удалена."); focusKey("tool-point"); }, "danger", "geo-remove", { disabled: ro }) : null,
+      ].filter(Boolean));
       if (place === "unknown") {
         kids.push(el("p", { class: "civic-r04-help" }, "Запись сохранится и будет показана жителям списком, без точки на карте. Точку можно добавить позже, когда место станет известно."));
         if (g) kids.push(el("p", { class: "civic-r04-help" }, "Ранее отмеченное место (" + C.describeGeometry(g) + ") осталось в форме, но не будет отправлено. Выберите другой вариант, чтобы вернуть его."));
+        // drawing stays one click away: starting a tool switches the choice to «приблизительно» (said aloud and in the form)
+        kids.push(el("p", { class: "civic-r04-help" }, "Если место известно хотя бы приблизительно — отметьте его на карте, выбор сменится на «приблизительно»."));
+        kids.push(drawRow(false));
         rebuild(V.geom, kids); paintErrors(); return;
       }
       if (place === "exact") kids.push(el("p", { class: "civic-r04-help" }, "Отметьте место так, как оно указано в источнике, и отметьте у этого источника «Место» в разделе «Источники»."));
-      if (!map) kids.push(el("p", { class: "civic-r04-warn" }, "Карта недоступна — введите координаты точки вручную ниже."));
+      if (!map) kids.push(el("p", { class: "civic-r04-warn", "data-fk": "map-wait" }, mapGetter
+        ? "Карта ещё загружается. Кнопки рисования заработают, когда она будет готова; можно сразу ввести координаты точки ниже."
+        : "Карта недоступна — введите координаты точки вручную ниже."));
       // 2) Drawing on the map.
       if (t) {
         const n = t.vertices.length;
@@ -716,13 +827,7 @@
           btn("Отмена", () => { closeTool(); focusKey("tool-point"); }, "ghost", "tool-cancel")].filter(Boolean)));
       } else {
         kids.push(el("p", { class: "civic-r04-help" }, g ? "Отмечено: " + C.describeGeometry(g) + "." : "Выберите, как отметить место:"));
-        kids.push(el("p", { class: "civic-r04-row-btns" }, [
-          btn(g && g.type === "Point" ? "Поставить точку заново" : "Точка", () => startTool("point"), "", "tool-point", { disabled: !map || ro, title: "Объект в одном месте: здание, остановка, перекрёсток" }),
-          btn(g && g.type === "LineString" ? "Отметить линию заново" : "Линия (участок улицы)", () => startTool("line"), "", "tool-line", { disabled: !map || ro, title: "Ремонт вдоль улицы или тротуара" }),
-          btn(g && g.type === "Polygon" ? "Отметить площадь заново" : "Площадь (двор, сквер)", () => startTool("area"), "", "tool-area", { disabled: !map || ro, title: "Благоустройство двора, сквера, площадки" }),
-          g ? btn("Показать на карте", fitToGeometry, "ghost", "geo-show", { disabled: !map }) : null,
-          g ? btn("Удалить отметку", () => { setGeometry(null); say("Отметка удалена."); focusKey("tool-point"); }, "danger", "geo-remove", { disabled: ro }) : null,
-        ].filter(Boolean)));
+        kids.push(drawRow(true));
         kids.push(el("p", { class: "civic-r04-help" }, "Нарисованная линия — только отметка для жителей: она не привязывается к улицам и не меняет маршруты симулятора."));
       }
       // 3) Manual coordinates for specialists (collapsed by default).
@@ -824,6 +929,7 @@
     }
     function detachMap() {
       closeTool();
+      stopMapWait();
       if (!map || !S.mapOn) return;
       S.mapOn = false;
       offMap("styledata", syncMap);
@@ -833,17 +939,22 @@
       } catch (e) { /* map already removed by its owner */ }
     }
     function startTool(mode) {
-      resolveMap();
+      if (!resolveMap() && mapGetter) {
+        say("Карта ещё не готова. Попробуйте через несколько секунд или введите координаты точки вручную.", true);
+        mapTries = 0; waitForMap();
+        return;
+      }
       if (!map || S.busy || !C.allowedActions(S.item, S.session).edit) return;
       closeTool();
+      const prevPlace = S.form.place;
       if (placeNow() === "unknown") S.form.place = "approximate";
-      S.tool = { mode, vertices: [], problem: null, dblZoom: false };
+      S.tool = { mode, vertices: [], problem: null, dblZoom: false, prevPlace };
       // A double click while drawing must not zoom the map (and must not add a zero-length segment).
       try { if (map.doubleClickZoom && map.doubleClickZoom.isEnabled()) { map.doubleClickZoom.disable(); S.tool.dblZoom = true; } } catch (e) { /* optional API */ }
       try { S.cursor = map.getCanvas().style.cursor; map.getCanvas().style.cursor = "crosshair"; } catch (e) { S.cursor = ""; }
       onMap("click", onMapClick);
       onDom(document, "keydown", onToolKey);
-      shell.dispatchEvent(new CustomEvent("civic-editor:tool", { bubbles: true, detail: { active: true, mode } }));
+      announceTool(true, mode);
       renderGeometry(); syncMap();
       focusKey("tool-cancel");
       say(TOOL_TEXT[mode]);
@@ -853,7 +964,7 @@
       const p = [round6(e.lngLat.lng), round6(e.lngLat.lat)];
       if (!C.inAstana(p[0], p[1])) { S.tool.problem = "Эта точка за пределами Астаны — щёлкните внутри города."; renderGeometry(); say(S.tool.problem, true); return; }
       if (S.tool.mode === "point") {
-        closeTool(true);
+        closeTool(true, true);
         setGeometry({ type: "Point", coordinates: p });
         say("Точка поставлена: " + p[1].toFixed(5) + ", " + p[0].toFixed(5) + ". Подтвердите расположение.");
         focusKey("geometry_confirmed");
@@ -886,15 +997,36 @@
         e.preventDefault(); S.tool.vertices.pop(); S.tool.problem = null; renderGeometry(); syncMap();
       }
     }
-    function closeTool(quiet) {
+    // Every start is followed by exactly one {active:false}. When a map click ends the tool, the release is announced
+    // after that click has been handled by all listeners (a neighbour's click handler still sees "drawing").
+    let releaseTimer = null;
+    function announceTool(active, mode) {
+      if (releaseTimer) { clearTimeout(releaseTimer); releaseTimer = null; fireTool(false); }
+      if (active) { setActiveTool(mode); fireTool(true, mode); }
+    }
+    function fireTool(active, mode) {
+      if (!active) setActiveTool(null);
+      const ev = () => new CustomEvent("civic-editor:tool", { bubbles: true, detail: active ? { active: true, mode } : { active: false } });
+      shell.dispatchEvent(ev());
+      if (!shell.isConnected) { try { document.dispatchEvent(ev()); } catch (e) { /* no document */ } }  // detached root: still tell the page
+    }
+    function releaseTool(afterEvent) {
+      if (!afterEvent) { if (releaseTimer) { clearTimeout(releaseTimer); releaseTimer = null; } fireTool(false); return; }
+      if (releaseTimer) return;
+      releaseTimer = setTimeout(() => { releaseTimer = null; fireTool(false); }, 0);  // not in `timers`: destroy flushes it itself
+    }
+    function closeTool(quiet, afterMapClick) {
       if (!S.tool) return;
-      if (S.tool.dblZoom) { try { map.doubleClickZoom.enable(); } catch (e) { /* map gone */ } }
+      const t = S.tool;
+      if (t.dblZoom) { try { map.doubleClickZoom.enable(); } catch (e) { /* map gone */ } }
       S.tool = null;
+      // cancelled without a result: the place choice goes back to what it was before the tool started
+      if (!quiet && S.form && t.prevPlace !== undefined && !S.form.geometry) S.form.place = t.prevPlace;
       offMap("click", onMapClick);
       offDom(document, "keydown", onToolKey);
       try { if (map) map.getCanvas().style.cursor = S.cursor || ""; } catch (e) { /* map gone */ }
-      shell.dispatchEvent(new CustomEvent("civic-editor:tool", { bubbles: true, detail: { active: false } }));
-      if (!quiet && S.view === "edit" && V.geom && S.form) { renderGeometry(); syncMap(); }
+      releaseTool(!!afterMapClick && S.alive);
+      if (!quiet && S.view === "edit" && V.geom && S.form) { renderGeometry(); syncMap(); revalidate(); refreshDirty(); }
     }
     function fitToGeometry() {
       const pos = C.positionsOf(S.form && S.form.geometry);
@@ -1331,6 +1463,7 @@
       }
       setBusy("save");
       try {
+        if (!(await sameUserBeforeWrite())) return;
         let item, ignored = [];
         if (!it) {
           if (S.uncertain) {
@@ -1385,6 +1518,7 @@
       const it = S.item, wasPublic = it.publication === "published";
       setBusy(action);
       try {
+        if (!(await sameUserBeforeWrite())) return;
         const d = await call("POST", "/staff/objects/" + enc(it.id) + "/" + action, { expected_revision: it.revision, reason: S.reason.trim() });
         const item = d && d.item;
         if (!item || !item.id) throw Object.assign(new Error("Сервер не вернул запись"), { status: 500 });
@@ -1459,7 +1593,7 @@
         return;
       }
       if (n.kind === "csrf") {
-        call("GET", "/session").then(applySession, () => {});
+        call("GET", "/session").then((d) => { if (applySession(d)) afterSwitch(); else renderHead(); }, () => {});
         setNotice("error", n, [retry]);
         focusKey("msg");
         return;
@@ -1491,6 +1625,8 @@
     }
     async function doLogout() {
       S.epoch++;  // answers to requests of the closed session are ignored from here on
+      nav();
+      if (pendingOpen) { pendingOpen.resolve(false); pendingOpen = null; }
       detachMap();
       clearRecovery();
       Object.assign(S, { session: { authenticated: false, user: null }, view: "login", item: null, form: null, saved: null, history: [],
@@ -1516,7 +1652,9 @@
     function destroy() {
       if (!S.alive) return;
       stashIfDirty();  // unsaved text stays in this page's memory for the next mount
+      if (pendingOpen) { pendingOpen.resolve(false); pendingOpen = null; }
       detachMap();
+      if (releaseTimer) { clearTimeout(releaseTimer); releaseTimer = null; fireTool(false); }
       S.alive = false;
       S.epoch++;
       for (const [t, type, fn] of domListeners.splice(0)) t.removeEventListener(type, fn);
@@ -1529,13 +1667,17 @@
     // ---------- start ----------
     (async function boot() {
       render();
-      try { applySession(await call("GET", "/session")); }
+      try { if (applySession(await call("GET", "/session"))) { await afterSwitch(); return; } }
       catch (e) {
         if (e === STALE) return;
         S.session = { authenticated: false, user: null };
         S.alert = Object.assign({ type: "error", actions: [{ label: "Повторить", fk: "boot-retry", fn: () => { S.alert = null; boot(); } }] }, C.normalizeError(e));
       }
-      if (S.session.authenticated) await showList(true); else showLogin();
+      if (S.session.authenticated) { if (!(await takePendingOpen())) await showList(true); }
+      else {
+        if (pendingOpen) { pendingOpen.resolve(false); pendingOpen.resolve = noop; }  // not signed in: false now, open after login
+        showLogin(pendingOpen ? { type: "info", text: "Войдите, чтобы открыть запись.", actions: [] } : undefined);
+      }
     })();
 
     return {

@@ -29,9 +29,11 @@ function vendorDir() {
 async function startStand(opts) {
   const o = opts || {};
   const creds = { username: "editor-test", password: crypto.randomBytes(12).toString("base64url") };
+  const creds2 = { username: "editor-two", password: crypto.randomBytes(12).toString("base64url") };  // a second editor (session switch, two editors)
   const v = vendorDir();
   const mock = createMockServer({
-    users: [{ username: creds.username, password: creds.password, name: "Тестовый редактор", role: "editor" }],
+    users: [{ username: creds.username, password: creds.password, name: "Тестовый редактор", role: "editor" },
+      { username: creds2.username, password: creds2.password, name: "Второй редактор", role: "editor" }],
     pageSize: o.pageSize || 50,
     seed: o.seed || [],
     clock: o.clock,
@@ -46,7 +48,7 @@ async function startStand(opts) {
     ],
   });
   const url = await mock.listen(o.port || 0);
-  return { url, mock, creds, close: () => mock.close() };
+  return { url, mock, creds, creds2, close: () => mock.close() };
 }
 
 module.exports = { startStand, APP_SNAPSHOT };

@@ -156,7 +156,11 @@ describe("R04 editor in the browser (contract mock)", { skip: PW ? false : "play
     await login(p);
     await fillDraft(p, { title: "Точка на карте" });
     const base = await p.evaluate(() => Object.assign({}, window.__mapCounts));
-    assert.equal(await p.$(fk("tool-point")), null, "a new record starts as «место неизвестно»: no drawing tools until the user says the place is known");
+    assert.equal(await p.isChecked(fk("place-unknown")), true, "a new record starts as «место неизвестно» (never guessed)");
+    // round 13: the drawing buttons stay one click away (R01 P0 flow); Esc on a started tool returns to «неизвестно»
+    await p.click(fk("tool-point"));
+    await p.keyboard.press("Escape");
+    assert.equal(await p.isChecked(fk("place-unknown")), true, "a cancelled tool does not change the place choice");
     await p.check(fk("place-approximate"));
     await p.click(fk("tool-point"));
     assert.equal(await p.evaluate(() => window.__mapCounts.click), (base.click || 0) + 1);
@@ -687,7 +691,7 @@ describe("R04 editor in the browser (contract mock)", { skip: PW ? false : "play
     assert.equal(rec.geometry.type, "Point");
     // the place turns out to be unknown: the mark stays in the form, with a warning, but is not sent
     await p.check(fk("place-unknown"));
-    assert.equal(await p.$(fk("tool-point")), null);
+    assert.equal(await p.$(fk("geo-remove")), null, "no mark tools for a mark that will not be sent");
     assert.match(await p.textContent(".civic-r04-slot-geom"), /осталось в форме, но не будет отправлено/);
     await saveOk(p, "Сохранено");
     rec = objects()[0];
@@ -798,9 +802,10 @@ describe("R04 editor in the browser (contract mock)", { skip: PW ? false : "play
     await login(p);
     await fillDraft(p, { title: "Карта позже" });
     await p.check(fk("place-approximate"));
-    assert.equal(await p.isDisabled(fk("tool-point")), true);
+    // round 13: with a getter the button stays clickable and the form says the map is still loading
+    assert.match(await p.textContent(fk("map-wait")), /Карта ещё загружается/);
     await p.evaluate(() => { window.__mapReady = true; });
-    await p.waitForFunction(() => !document.querySelector('[data-fk="tool-point"]').disabled, null, { timeout: 5000 });
+    await p.waitForFunction(() => !document.querySelector('[data-fk="map-wait"]'), null, { timeout: 5000 });
     await p.click(fk("tool-point"));
     const b = await p.locator("#map").boundingBox();
     await p.mouse.click(b.x + b.width / 2, b.y + b.height / 2);
