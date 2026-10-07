@@ -85,3 +85,31 @@ def fixture_context(client_ip: str = "127.0.0.1", *, same_origin: bool = True,
     if csrf is not None:
         headers["X-CSRF-Token"] = csrf
     return {"headers": headers, "client_ip": client_ip, "is_same_origin": same_origin}
+
+
+# FIXTURE-«классификатор» по ключевым словам: только чтобы показать, как подсказка R08
+# выглядит в интерфейсе и что её отсутствие/ошибка не ломают сохранение. Это НЕ модель R08,
+# не обучен и не оценён; score — доля совпавших слов-маркеров, не вероятность.
+_FIXTURE_KEYWORDS = {
+    "lighting": ("фонар", "освещ", "темно", "свет"),
+    "sidewalks": ("тротуар", "проход", "переход", "бордюр"),
+    "roads": ("яма", "дорог", "асфальт", "разметк"),
+    "transport_stops": ("остановк", "автобус", "павильон"),
+    "landscaping": ("скамей", "дерев", "газон", "сквер", "двор"),
+}
+
+
+def fixture_keyword_classifier(text: str, language: str) -> dict:
+    lowered = text.casefold()
+    hits = {label: sum(1 for word in words if word in lowered) for label, words in _FIXTURE_KEYWORDS.items()}
+    label = max(sorted(hits), key=lambda key: hits[key])
+    total = sum(hits.values())
+    if total == 0:
+        label = "other"
+    return {"label": label, "score": round(hits.get(label, 0) / total, 2) if total else None,
+            "score_kind": "fixture_keyword_share", "needs_review": True,
+            "model_version": "FIXTURE-keywords-0 (не модель R08)", "training_data_status": "none"}
+
+
+def broken_classifier(text: str, language: str) -> dict:
+    raise RuntimeError("FIXTURE: модель недоступна")

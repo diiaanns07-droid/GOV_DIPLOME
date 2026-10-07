@@ -255,3 +255,49 @@ def test_v1_database_is_migrated_without_losing_rows(tmp_path, clock):
         svc.close()
     # повторное открытие — миграция идемпотентна
     FeedbackService(path, fixture_object_lookup, clock).close()
+
+
+# ------------------------------------------------- resend / reply invariants
+def test_request_id_conflict_returns_previous_receipt_to_same_sender(service):
+    first = submit(service, client_request_id="r12-request-0000000001")
+    assert first["status"] == 201
+    edited = submit(service, client_request_id="r12-request-0000000001",
+                    text="Нет безопасного прохода вдоль ограждения, люди идут по проезжей части. Уточнение.")
+    error = edited["body"]["error"]
+    assert edited["status"] == 409 and error["code"] == "request_id_conflict"
+    assert error["previous_receipt"]["receipt_id"] == first["body"]["data"]["receipt_id"]
+    assert "text" not in error["previous_receipt"]            # квитанция без текста сообщения
+    other_device = submit(service, ip="10.0.0.9", client_request_id="r12-request-0000000001",
+                          text="Совсем другое сообщение о яме на дороге возле остановки.")
+    assert other_device["status"] == 201                      # чужое устройство не видит чужую квитанцию
+
+
+def test_answered_reply_cannot_be_silently_removed(service):
+    staff_id, _ = new_message(service)
+    moderate(service, staff_id, 1, public_reply="Спасибо, сообщение учтено на платформе.")
+    assert card(service, staff_id)["item"]["handling_status"] == "answered"
+    removed = moderate(service, staff_id, 2, action="reject", public_reply=None)
+    assert removed["status"] == 422 and removed["body"]["error"]["code"] == "reply_required"
+    ok = moderate(service, staff_id, 2, action="reject", public_reply=None, status="in_review")
+    assert ok["status"] == 200 and ok["body"]["data"]["item"]["public_reply"] is None
+
+
+def test_fixture_classifier_is_labelled_and_never_decides(tmp_path, clock):
+    from ui.civic_feedback.fixtures import broken_classifier, fixture_keyword_classifier
+    svc = FeedbackService(tmp_path / "f.sqlite3", fixture_object_lookup, clock, classifier=fixture_keyword_classifier)
+    try:
+        submit(svc, category="roads", text="Не горят фонари, на дорожке темно вечером.")
+        item = svc.handle("GET", "/api/civic/v1/staff/feedback", {"status": "all"}, None, FIXTURE_EDITOR,
+                          fixture_context())["body"]["data"]["items"][0]
+        suggestion = item["classifier"]["suggestion"]
+        assert suggestion["label"] == "lighting" and "не модель R08" in suggestion["model_version"]
+        assert suggestion["score_kind"] == "fixture_keyword_share" and suggestion["needs_review"] is True
+        assert item["category"] == "roads" and item["staff_category"] is None   # подсказка не меняет категорию
+    finally:
+        svc.close()
+    broken = FeedbackService(tmp_path / "b.sqlite3", fixture_object_lookup, clock, classifier=broken_classifier)
+    try:
+        assert submit(broken)["status"] == 201
+        assert broken.stats()["classifier_status"] == {"error": 1}
+    finally:
+        broken.close()

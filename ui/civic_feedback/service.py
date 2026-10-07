@@ -694,8 +694,12 @@ class FeedbackService:
                                             now_ts - limits["duplicate_window_s"])).fetchone()
                 if previous is not None:
                     if previous["text_fingerprint"] != fingerprint or previous["object_id"] != object_id:
+                        # Тот же client_request_id и то же устройство: прежняя версия уже сохранена
+                        # (ответ мог потеряться в сети). Возвращаем её квитанцию, чтобы автор её не потерял.
                         raise ApiError(409, "request_id_conflict",
-                                       "Идентификатор отправки уже использован для другого сообщения.")
+                                       "Предыдущая версия этого сообщения уже сохранена. Изменённый текст "
+                                       "можно отправить отдельным сообщением.",
+                                       extra={"previous_receipt": self._receipt(previous)})
                     # Повтор той же отправки (например, после обрыва сети) — тот же receipt.
                     return _ok(200, self._receipt(previous, replayed=True))
 
@@ -1258,6 +1262,10 @@ class FeedbackService:
                 raise ApiError(422, "validation_failed", "duplicate_of задаётся вместе со status=duplicate.",
                                fields={"duplicate_of": "Только со статусом duplicate."})
             if current != "new":
+                if current == "answered" and not reply:
+                    raise ApiError(422, "reply_required",
+                                   "У сообщения статус «Дан ответ платформы»: ответ нельзя удалить без смены статуса.",
+                                   fields={"public_reply": "Сначала смените статус обработки."})
                 return current, row["duplicate_of"]
             requested = "answered" if reply else "in_review"
         if requested != current and requested not in HANDLING_TRANSITIONS[current]:
