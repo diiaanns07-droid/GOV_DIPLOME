@@ -206,7 +206,7 @@
       selectedId: null, view: "list",
       detail: { id: null, state: "idle", item: null, history: [], error: null },
       sheet: "peek", viewBox: null, limit: LIST_STEP, cameraPending: false,
-      compare: { a: null, b: null },
+      compare: { a: null, b: null }, pick: null,
     };
     if (persist) {
       try { const saved = JSON.parse(window.localStorage.getItem(STORAGE_KEY) || "null"); if (saved) st.filters = C.sanitizeFilters(saved); } catch (e) { /* storage blocked: defaults */ }
@@ -241,6 +241,10 @@
     const customBox = h("div", { class: P + "custom", hidden: true },
       h("label", { for: uid + "from" }, "с", fromInput), h("label", { for: uid + "to" }, "по", toInput));
     const areaBox = h("input", { type: "checkbox", id: uid + "area", "data-r03-filter": "area" });
+    const evidenceSel = h("select", { id: uid + "evidence", class: P + "select", "data-r03-filter": "evidence" },
+      Object.entries(C.EVIDENCE_FILTERS).map(([k, v]) => h("option", { value: k, text: v })));
+    const pastBox = h("input", { type: "checkbox", id: uid + "past", "data-r03-filter": "hidePast" });
+    const pills = h("div", { class: P + "pills", role: "group", "aria-label": "Активные фильтры" });
     const resetBtn = h("button", { type: "button", class: P + "link-btn", "data-r03-action": "reset-filters", text: "Сбросить фильтры" });
     const periodNote = h("p", { class: P + "hint" });
     const filtersSummary = h("summary", { class: P + "filters-summary" }, h("span", { text: "Фильтры" }), h("span", { class: P + "filters-active" }));
@@ -252,8 +256,10 @@
           h("label", { class: P + "field", for: uid + "status" }, h("span", { text: "Статус" }), statusSel),
           h("label", { class: P + "field", for: uid + "period" }, h("span", { text: "Период по плану" }), periodSel)),
         customBox, periodNote,
+        h("label", { class: P + "field", for: uid + "evidence" }, h("span", { text: "Сведения" }), evidenceSel),
         h("div", { class: P + "row" },
           h("label", { class: P + "check", for: uid + "area" }, areaBox, h("span", { text: "Только видимая часть карты" })),
+          h("label", { class: P + "check", for: uid + "past" }, pastBox, h("span", { text: "Скрыть планы с прошедшим сроком" })),
           resetBtn)));
     kindBox.setAttribute("aria-labelledby", uid + "kinds-label");
     for (const k of C.KIND_ORDER) {
@@ -265,7 +271,7 @@
     const listEl = h("ul", { class: P + "list", "aria-label": "Объекты" });
     const listNotes = h("div", { class: P + "list-notes" });
     const legend = buildLegend();
-    const listView = h("section", { class: P + "list-view", "aria-label": "Список объектов" }, filters, statusBox, listEl, listNotes, legend);
+    const listView = h("section", { class: P + "list-view", "aria-label": "Список объектов" }, filters, pills, statusBox, listEl, listNotes, legend);
     const cardView = h("section", { class: P + "card", "aria-label": "Карточка объекта", hidden: true });
     const scroller = h("div", { class: P + "scroll", id: uid + "scroll" }, listView, cardView);
     root.append(handle, head, scroller);
@@ -334,7 +340,7 @@
       const a = t.getAttribute("data-r03-action");
       const wasFocused = document.activeElement === t;
       handleAction(t, a);
-      if (wasFocused && a !== "select" && a !== "back") keepFocus(t, a);
+      if (wasFocused && a !== "select" && a !== "back" && a !== "pick-cancel") keepFocus(t, a);
     }
     // If the activated control vanished in the re-render, put focus somewhere stable nearby.
     function keepFocus(t, a) {
@@ -342,11 +348,16 @@
       let target = countEl;
       if (a === "reset-filters" || a === "show-undated") target = filters.open ? (a === "show-undated" ? periodSel : searchInput) : filtersSummary;
       else if (a === "more") target = listEl.querySelector("[data-r03-more-anchor]") || countEl;
+      else if (a === "drop-filter") target = pills.querySelector("button") || filtersSummary;
       if (target === countEl) countEl.setAttribute("tabindex", "-1");
       focusEl(target);
     }
     function handleAction(t, a) {
-      if (a === "select") { selectObject(t.getAttribute("data-id"), { source: "list" }); }
+      if (a === "select") {
+        const fromPick = st.view === "pick";
+        if (fromPick) st.pick = null;
+        selectObject(t.getAttribute("data-id"), { source: fromPick ? "map" : "list" });
+      }
       else if (a === "back") closeCard();
       else if (a === "retry-list") refresh();
       else if (a === "retry-card" && st.detail.id) loadDetail(st.detail.id);
@@ -365,6 +376,9 @@
       else if (a === "copy-link") copyLink(t);
       else if (a === "show-undated") { st.filters.period = "all"; filtersChanged(); }
       else if (a === "area-off") { st.filters.area = false; filtersChanged(); }
+      else if (a === "drop-filter") dropFilter(t.getAttribute("data-key"), t.getAttribute("data-value"));
+      else if (a === "pick-cancel") closePick();
+      else if (a === "pick-fit" && st.pick) fitIds(st.pick.ids);
       else if (a === "more") { st.limit += LIST_STEP; renderList(st.limit - LIST_STEP); }
     }
     function onRootChange(e) {
@@ -375,6 +389,8 @@
       else if (f === "from") st.filters.from = e.target.value || null;
       else if (f === "to") st.filters.to = e.target.value || null;
       else if (f === "area") { st.filters.area = !!e.target.checked; updateViewBox(); }
+      else if (f === "evidence") st.filters.evidence = e.target.value;
+      else if (f === "hidePast") st.filters.hidePast = !!e.target.checked;
       else if (e.target.getAttribute && e.target.getAttribute("data-r03-compare")) {
         st.compare[e.target.getAttribute("data-r03-compare")] = e.target.value ? +e.target.value : null;
         renderCompare();
@@ -400,6 +416,7 @@
     }
     function onRootKey(e) {
       if (e.key === "Escape" && st.view === "card") { e.preventDefault(); closeCard(); }
+      else if (e.key === "Escape" && st.view === "pick") { e.preventDefault(); closePick(); }
     }
     // Drag the mobile sheet handle; a tap cycles states.
     let drag = null;
@@ -470,6 +487,34 @@
       updateMapData();
     }
     function today() { return C.localDay(now()); }
+    function dropFilter(key, value) {
+      const f = st.filters;
+      if (key === "kind") f.kinds = f.kinds.filter((k) => k !== value);
+      else if (key === "status") f.statuses = [];
+      else if (key === "period") { f.period = "all"; f.from = null; f.to = null; }
+      else if (key === "area") f.area = false;
+      else if (key === "evidence") f.evidence = "all";
+      else if (key === "hidePast") f.hidePast = false;
+      else if (key === "q") { st.q = ""; searchInput.value = ""; clearTimeout(searchTimer); }
+      filtersChanged();
+    }
+    // Removable summary of what is filtered, visible even with the filter box folded.
+    function renderPills() {
+      const f = st.filters, items = [];
+      const pill = (key, value, text) => items.push(h("button", { type: "button", class: P + "pill", "data-r03-action": "drop-filter", "data-key": key, "data-value": value || "", "aria-label": "Убрать фильтр: " + text }, h("span", { text }), h("span", { class: P + "pill-x", "aria-hidden": "true", text: "×" })));
+      if (st.q) pill("q", "", "«" + st.q + "»");
+      for (const k of f.kinds) pill("kind", k, C.kindInfo(k).label);
+      if (f.statuses.length) pill("status", f.statuses[0], C.STATUSES[f.statuses[0]]);
+      if (f.period !== "all") {
+        const r = C.periodRange(f.period, today(), { from: f.from, to: f.to });
+        pill("period", "", f.period === "custom" ? (r.from ? "с " + C.formatDay(r.from) + " " : "") + (r.to ? "по " + C.formatDay(r.to) : "") || "свой период" : C.PERIODS[f.period]);
+      }
+      if (f.area) pill("area", "", "видимая часть карты");
+      if (f.evidence !== "all") pill("evidence", "", C.EVIDENCE_FILTERS[f.evidence]);
+      if (f.hidePast) pill("hidePast", "", "без прошедших планов");
+      pills.replaceChildren(...items);
+      pills.hidden = !items.length;
+    }
     function syncFilterControls() {
       const f = st.filters;
       for (const b of kindBox.querySelectorAll("[data-kind]")) b.setAttribute("aria-pressed", String(f.kinds.includes(b.getAttribute("data-kind"))));
@@ -479,6 +524,9 @@
       fromInput.value = f.from || "";
       toInput.value = f.to || "";
       areaBox.checked = f.area;
+      evidenceSel.value = f.evidence;
+      pastBox.checked = f.hidePast;
+      renderPills();
       areaBox.disabled = !map;
       const active = activeFilterCount();
       filtersSummary.lastChild.textContent = active ? "активно: " + active : "";
@@ -538,7 +586,8 @@
     }
     function activeFilterCount() {
       const f = st.filters;
-      return (f.kinds.length ? 1 : 0) + (f.statuses.length ? 1 : 0) + (f.period !== "all" ? 1 : 0) + (f.area ? 1 : 0) + (st.q ? 1 : 0);
+      return (f.kinds.length ? 1 : 0) + (f.statuses.length ? 1 : 0) + (f.period !== "all" ? 1 : 0) + (f.area ? 1 : 0) + (st.q ? 1 : 0) +
+        (f.evidence !== "all" ? 1 : 0) + (f.hidePast ? 1 : 0);
     }
     function renderList(focusFrom) {
       if (destroyed) return;
@@ -550,6 +599,10 @@
         const t = st.list === "ready" ? String(n) : "";
         const el = b.querySelector("." + P + "chip-count");
         if (el.textContent !== t) el.textContent = t;
+      }
+      if (st.list === "ready") {
+        for (const o of statusSel.options) if (o.value) o.textContent = C.STATUSES[o.value] + " (" + (c.byStatus[o.value] || 0) + ")";
+        for (const o of evidenceSel.options) if (o.value !== "all") o.textContent = C.EVIDENCE_FILTERS[o.value] + " (" + (c.byEvidence[o.value] || 0) + ")";
       }
       const cov = coverage();
       demoNote.hidden = !cov.demo;
@@ -612,6 +665,7 @@
         h("button", { type: "button", class: P + "link-btn", "data-r03-action": "more", text: "Показать ещё " + Math.min(LIST_STEP, res.shown.length - visible.length) })));
       if (c.undated) notes.push(h("li", null, "Без плановых дат: " + c.undated + " (в выбранный период не входят). ", h("button", { type: "button", class: P + "link-btn", "data-r03-action": "show-undated", text: "Показать все сроки" })));
       if (c.partial) notes.push(h("li", { text: "С неполными сроками: " + c.partial + " — одна из плановых дат неизвестна; такие записи помечены." }));
+      if (c.past) notes.push(h("li", null, "Скрыто планов с прошедшим сроком: " + c.past + ". ", h("button", { type: "button", class: P + "link-btn", "data-r03-action": "drop-filter", "data-key": "hidePast", text: "Показать" })));
       if (c.outsideArea) notes.push(h("li", { text: "Вне видимой части карты: " + c.outsideArea + "." }));
       if (c.noGeometry) notes.push(h("li", { text: "Без места на карте (не входят в «видимую часть»): " + c.noGeometry + "." }));
       if (c.mappedOut) {
@@ -636,7 +690,7 @@
     function plural(n, a, b, c) { return n + " " + C.plural(n, a, b, c); }
     function badge(text, cls, title) { return h("span", { class: P + "badge " + (cls ? P + cls : ""), title: title || null, text }); }
     function evidenceBadge(it) {
-      if (it.evidence === "observed") return null;
+      if (it.evidence === "observed") return badge("С источником", "b-ok", "Сведения из опубликованного источника");
       const info = C.evidenceInfo(it.evidence);
       return badge(info.short, it.evidence === "synthetic" ? "b-demo" : "b-warn", info.label);
     }
@@ -727,6 +781,7 @@
       // request, no second onSelect (the R01 shell would close an open feedback form).
       if (id === st.selectedId && (opts.source === "map" || opts.source === "list") && (st.detail.state === "ready" || st.detail.state === "loading")) {
         const it = currentItem();
+        if (st.view !== "card") { st.view = "card"; renderCard(true); updateSelection(); }
         if (isMobile() && layout === "overlay" && st.sheet === "peek") setSheet("half");
         if (opts.source === "map") focusCard();
         if (it && opts.source === "list" && opts.fly !== false) afterLayout(() => flyTo(it), id);
@@ -734,6 +789,8 @@
         return;
       }
       const prevFocus = opts.source === "list" ? id : null;
+      // Remember where the resident was in the list, to come back to the same place.
+      if (st.view === "list") st.listScroll = scroller.scrollTop;
       st.selectedId = id;
       st.view = "card";
       st.compare = { a: null, b: null };
@@ -790,6 +847,45 @@
       }
       try { renderCard(); } finally { updateSelection(); }
     }
+    // ---------- choosing among overlapping objects ----------
+    function openPick(ids) {
+      hideTip();
+      st.pick = { ids: ids.slice(0, 50), more: Math.max(0, ids.length - 50), prevView: st.view, prevId: st.selectedId };
+      st.view = "pick";
+      if (isMobile() && layout === "overlay" && st.sheet === "peek") setSheet("half");
+      renderCard(true);
+      updateSelection();
+    }
+    function closePick(nextView) {
+      if (!st.pick) return;
+      const prev = st.pick;
+      st.pick = null;
+      st.view = nextView || (prev.prevView === "card" && prev.prevId ? "card" : "list");
+      renderCard(st.view === "card");
+      if (st.view === "list") { renderList(); countEl.setAttribute("tabindex", "-1"); focusEl(countEl); }
+      updateSelection();
+    }
+    function renderPick(focus) {
+      const p = st.pick;
+      const ul = h("ul", { class: P + "list" });
+      for (const id of p.ids) { const it = findItem(id); if (it) ul.append(listItem(it, null)); }
+      cardView.append(
+        h("div", { class: P + "card-top" },
+          h("button", { type: "button", class: P + "btn " + P + "btn-quiet", "data-r03-action": "pick-cancel" }, svgIcon(ICON.back), "Отмена"),
+          map ? h("button", { type: "button", class: P + "btn " + P + "btn-quiet", "data-r03-action": "pick-fit" }, svgIcon(ICON.pin), "Приблизить все") : null),
+        h("h3", { class: P + "card-title", tabindex: "-1", text: "Здесь " + plural(p.ids.length, "объект", "объекта", "объектов") + " рядом" }),
+        h("p", { class: P + "hint", text: "Они перекрывают друг друга на карте. Выберите нужный." + (p.more ? " Ещё " + p.more + " — приблизьте карту." : "") }),
+        ul);
+      if (focus) focusCard();
+    }
+    function fitIds(ids) {
+      if (!map) return;
+      const boxes = ids.map((id) => findItem(id)).filter((it) => it && it.bbox).map((it) => it.bbox);
+      if (!boxes.length) return;
+      const b = boxes.reduce((a, x) => [Math.min(a[0], x[0]), Math.min(a[1], x[1]), Math.max(a[2], x[2]), Math.max(a[3], x[3])]);
+      try { map.fitBounds([[b[0], b[1]], [b[2], b[3]]], { padding: freePadding(), maxZoom: 17.5, duration: reducedMotion() ? 0 : 700, bearing: map.getBearing(), pitch: map.getPitch() }); } catch (e) { /* ignore */ }
+    }
+
     function closeCard() {
       cardSeq.cancel();
       clearTimeout(layoutTimer);
@@ -805,7 +901,8 @@
       if (permalink) writeHash(null);
       if (onSelect) safeCall(onSelect, null, { source: "close" });
       const target = back ? listEl.querySelector('[data-id="' + cssEscape(back) + '"]') : null;
-      if (target) focusEl(target);
+      if (typeof st.listScroll === "number") scroller.scrollTop = st.listScroll;
+      if (target) focusEl(target, { preventScroll: true });
       else if (root.contains(document.activeElement) || document.activeElement === document.body) { countEl.setAttribute("tabindex", "-1"); focusEl(countEl); }
     }
     function safeCall(fn, ...args) { try { fn(...args); } catch (e) { console.error("CivicMap callback failed", e); } }
@@ -820,9 +917,10 @@
       const active = document.activeElement;
       const keep = !focus && active && cardView.contains(active) ? (active.getAttribute("data-r03-action") || active.getAttribute("data-r03-compare") || "title") : null;
       root.setAttribute("data-civic-r03-view", st.view);
-      listView.hidden = st.view === "card";
-      cardView.hidden = st.view !== "card";
+      listView.hidden = st.view !== "list";
+      cardView.hidden = st.view === "list";
       cardView.replaceChildren();
+      if (st.view === "pick") { renderPick(focus); return; }
       if (st.view !== "card") return;
       const d = st.detail;
       const it = d.item;
@@ -1124,29 +1222,36 @@
     }
     function updateSelection() {
       if (!map || destroyed || !map.getLayer(L.selPoint)) return;
-      const id = st.selectedId || "\u0000none";
+      // While choosing among overlapping objects, all candidates are outlined.
+      const ids = st.view === "pick" && st.pick ? st.pick.ids : [st.selectedId || "\u0000none"];
+      const inIds = ["in", ["get", "cid"], ["literal", ids]];
       try {
-        map.setFilter(L.selPoint, ["all", ["==", ["geometry-type"], "Point"], ["==", ["get", "cid"], id]]);
-        map.setFilter(L.selLine, ["all", ["!", ["==", ["geometry-type"], "Point"]], ["==", ["get", "cid"], id]]);
+        map.setFilter(L.selPoint, ["all", ["==", ["geometry-type"], "Point"], inIds]);
+        map.setFilter(L.selLine, ["all", ["!", ["==", ["geometry-type"], "Point"]], inIds]);
       } catch (e) { /* layer removed by a style switch */ }
     }
     function liveLayers() { return INTERACTIVE.filter((id) => map.getLayer(id)); }
-    function hitAt(point) {
+    // All distinct objects under the pointer: points first, then lines, then areas (smallest first).
+    function hitIds(point) {
       const layers = liveLayers();
-      if (!layers.length) return null;
-      const box = [[point.x - 6, point.y - 6], [point.x + 6, point.y + 6]];
-      const feats = map.queryRenderedFeatures(box, { layers });
-      if (!feats.length) return null;
+      if (!layers.length) return [];
+      const r = isMobile() ? 11 : 7;
+      const feats = map.queryRenderedFeatures([[point.x - r, point.y - r], [point.x + r, point.y + r]], { layers });
       const rank = (f) => (f.geometry && f.geometry.type === "Point" ? 0 : f.geometry && f.geometry.type === "LineString" ? 1 : 2);
       // Among overlapping areas the smallest wins, so a small area inside a big one stays pickable.
       const area = (f) => { const it = findItem(f.properties && f.properties.cid); const b = it && it.bbox; return b ? (b[2] - b[0]) * (b[3] - b[1]) : Infinity; };
       feats.sort((a, b) => rank(a) - rank(b) || (rank(a) === 2 ? area(a) - area(b) : 0));
-      return feats[0].properties && feats[0].properties.cid;
+      const ids = [];
+      for (const f of feats) { const id = f.properties && f.properties.cid; if (id && !ids.includes(id) && findItem(id)) ids.push(id); }
+      return ids;
     }
+    function hitAt(point) { return hitIds(point)[0] || null; }
+    // One object -> open it. Several on top of each other -> let the resident choose in the panel.
     function onMapClick(e) {
       if (destroyed) return;
-      const id = hitAt(e.point);
-      if (id) selectObject(id, { source: "map" });
+      const ids = hitIds(e.point);
+      if (ids.length === 1) selectObject(ids[0], { source: "map" });
+      else if (ids.length > 1) openPick(ids);
     }
     function onMapMove(e) {
       lastHoverPoint = e;
@@ -1340,7 +1445,7 @@
 
     byRoot.set(root, instance);
     st.sheet = isMobile() ? "peek" : "half";
-    filters.open = !isMobile();
+    filters.open = false;
     applySheet();
     syncFilterControls();
     renderList();

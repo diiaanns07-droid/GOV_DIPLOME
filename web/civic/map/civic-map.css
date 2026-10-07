@@ -434,6 +434,44 @@
   border-color: var(--civic-r03-warn-line);
   color: var(--civic-r03-warn-ink);
 }
+.civic-r03-b-ok {
+  background: #e3f1e8;
+  color: #14532d;
+}
+.civic-r03-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: -4px 0 10px;
+}
+.civic-r03-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  max-width: 100%;
+  padding: 4px 6px 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--civic-r03-control);
+  background: #fff;
+  font-size: 12.5px;
+  font-weight: 600;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+.civic-r03-pill-x {
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #eef1ec;
+  font-size: 14px;
+  line-height: 1;
+}
+.civic-r03-pill:hover .civic-r03-pill-x {
+  background: #dde4d9;
+}
 .civic-r03-b-muted {
   background: #f1f3f1;
   color: #46524d;
@@ -995,7 +1033,8 @@
   }
   .civic-r03-chip,
   .civic-r03-check,
-  .civic-r03-link-btn {
+  .civic-r03-link-btn,
+  .civic-r03-pill {
     min-height: 44px;
   }
   .civic-r03-dl {

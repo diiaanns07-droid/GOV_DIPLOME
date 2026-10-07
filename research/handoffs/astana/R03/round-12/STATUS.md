@@ -8,7 +8,7 @@
   result files; the round-12 patch is `git diff 56538a3a -- web/civic/map tests/civic/R03`.
 - Owned paths: web/civic/map/ (except streets.json), tests/civic/R03/, research/round-12-results/R03/, this file.
 
-## Status: PARTIAL — checkpoint 2
+## Status: PARTIAL — checkpoint 3
 
 Done:
 - Checkpoint 1 (d72058a): honest empty state for a street/district without records; area filter measured on setFilters; stand in tests/civic/R03/stand/.
@@ -24,5 +24,13 @@ Done:
 - Before screenshots of the real app (base 56538a3, R05 demo slice): research/round-12-results/R03/screenshots/before-app-*.png
 - Tests: core 25/25, browser 45/45, R02 read-only 2/2.
 
-Next step: list/map — compact filters (list visible without scrolling), record type filter (demo / with source / past plans),
-counts per status, overlapping objects chooser.
+- Checkpoint 3: filters folded by default (≥3 objects visible at 1440x900 without scrolling); active filters as removable
+  pills; new filters «Сведения» (с источником / демонстрационные / без источника) and «Скрыть планы с прошедшим сроком»;
+  counts in status and «Сведения» options and kind chips follow all other filters (status counts add up to the list);
+  list badge «С источником»; overlapping objects: a click on several objects opens «Здесь N объектов рядом» in the panel
+  (keyboard, Escape/«Отмена» back to the previous card/list, «Приблизить все», candidates outlined on the map);
+  back to the list restores scroll position and focus.
+- Tests: core 25/25, browser 49/49, R02 read-only 2/2.
+
+Next step: 500–2000 synthetic objects (test fixture only) performance check; a11y pass (narrow screen, screen reader,
+quick double selection, late response), then after-screenshots of the real app.

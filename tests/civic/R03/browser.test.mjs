@@ -57,6 +57,8 @@ async function open(params, o = {}) {
   const qs = new URLSearchParams(Object.assign({ today: TODAY }, params || {}));
   await page.goto(base + "/tests/civic/R03/stand/?" + qs + (o.hash || ""));
   await page.waitForFunction(() => window.__stand && window.__stand.instance && ["ready", "error"].includes(window.__stand.instance.getState().list), null, { timeout: 30000 });
+  // r12: the filter box is folded by default; most tests drive its controls, so unfold it here.
+  if (!o.folded) await page.evaluate(() => { const d = document.querySelector(".civic-r03-filters"); if (d) d.open = true; });
   return { ctx, page, errors };
 }
 const state = (page) => page.evaluate(() => window.__stand.instance.getState());
@@ -504,7 +506,7 @@ test("filters persist across reload without private data", { skip: SKIP }, async
   await page.waitForFunction(() => window.__stand && window.__stand.instance && window.__stand.instance.getState().list === "ready");
   assert.equal(await page.getAttribute('[data-kind="roadworks"]', "aria-pressed"), "true");
   const stored = await page.evaluate(() => JSON.parse(localStorage.getItem("civic-r03:filters:v1")));
-  assert.deepEqual(Object.keys(stored).sort(), ["area", "from", "kinds", "period", "statuses", "to"]);
+  assert.deepEqual(Object.keys(stored).sort(), ["area", "evidence", "from", "hidePast", "kinds", "period", "statuses", "to"]);
   assert.deepEqual(stored.kinds, ["roadworks"]);
   await ctx.close();
 });
@@ -609,6 +611,10 @@ test("review: a small polygon inside a big one is selectable on the map", { skip
   await page.waitForTimeout(400);
   const pt = await page.evaluate(() => { const m = window.__stand.map, c = m.getCanvas().getBoundingClientRect(), p = m.project([71.372, 51.171]); return { x: c.left + p.x, y: c.top + p.y }; });
   await page.mouse.click(pt.x, pt.y);
+  // r12: both areas are under the pointer -> the chooser lists the small one first
+  await page.waitForFunction(() => window.__stand.instance.getState().view === "pick");
+  assert.deepEqual(await page.evaluate(() => [...document.querySelectorAll(".civic-r03-card .civic-r03-item")].map((b) => b.dataset.id)), ["small", "big"]);
+  await page.click('.civic-r03-card [data-id="small"]');
   await page.waitForFunction(() => window.__stand.instance.getState().selectedId !== null);
   assert.equal((await state(page)).selectedId, "small");
   await ctx.close();
@@ -901,5 +907,103 @@ test("r12: a street or district with no records does not read as 'no works here'
   await page.click('[data-r03-action="area-off"]');
   assert.equal(await page.locator(".civic-r03-item").count(), 12);
   assert.equal((await state(page)).filters.area, false);
+  await ctx.close();
+});
+
+test("r12: filters are folded by default, objects are visible at once; active filters show as removable pills with counts", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0" }, { folded: true });
+  const r = await page.evaluate(() => {
+    const items = [...document.querySelectorAll(".civic-r03-item")].filter((b) => { const x = b.getBoundingClientRect(); return x.bottom <= innerHeight && x.top >= 0; });
+    return { open: document.querySelector(".civic-r03-filters").open, visibleItems: items.length, pills: document.querySelector(".civic-r03-pills").hidden };
+  });
+  assert.equal(r.open, false);
+  assert.ok(r.visibleItems >= 3, "at least three objects visible without scrolling at 1440x900: " + r.visibleItems);
+  assert.equal(r.pills, true, "no pills without filters");
+  await page.evaluate(() => window.__stand.instance.setFilters({ kinds: ["roadworks"], hidePast: true }));
+  const pills = await page.locator(".civic-r03-pill").allInnerTexts();
+  assert.deepEqual(pills.map((t) => t.replace(/\s*×\s*$/, "")), ["Дорожные работы", "без прошедших планов"]);
+  // counts in the status select follow the other filters (roadworks, no past plans)
+  const opts = await page.evaluate(() => [...document.querySelector('[data-r03-filter="status"]').options].map((o) => o.textContent));
+  assert.ok(opts.includes("Запланировано (1)") || opts.some((t) => /^Запланировано \(\d+\)$/.test(t)), opts.join("|"));
+  const shown = await page.locator(".civic-r03-item").count();
+  const sum = opts.slice(1).reduce((a, t) => a + Number((t.match(/\((\d+)\)$/) || [0, 0])[1]), 0);
+  assert.equal(sum, shown, "status counts add up to the shown list");
+  await page.click('.civic-r03-pill[data-key="kind"]');
+  assert.equal(await page.locator(".civic-r03-pill").count(), 1);
+  assert.notEqual(await page.evaluate(() => document.activeElement.className), "", "focus stays in the panel");
+  await shot(page, "r12-desktop-1440-list-folded-filters");
+  await ctx.close();
+});
+
+test("r12: 'Сведения' separates demo, sourced and unsourced records; past plans can be hidden", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0", extra: "format" });
+  await page.selectOption('[data-r03-filter="evidence"]', "sourced");
+  assert.deepEqual(await page.evaluate(() => [...document.querySelectorAll(".civic-r03-item")].map((b) => b.dataset.id)), ["r03-format-derived"]);
+  await page.selectOption('[data-r03-filter="evidence"]', "demo");
+  assert.equal(await page.locator(".civic-r03-item").count(), 12);
+  const opt = await page.evaluate(() => [...document.querySelector('[data-r03-filter="evidence"]').options].map((o) => o.textContent));
+  assert.deepEqual(opt, ["Все записи", "С источником (1)", "Демонстрационные (12)", "Без источника (0)"]);
+  await page.selectOption('[data-r03-filter="evidence"]', "all");
+  await page.check('[data-r03-filter="hidePast"]');
+  const ids = await page.evaluate(() => [...document.querySelectorAll(".civic-r03-item")].map((b) => b.dataset.id));
+  assert.ok(!ids.includes("r03-demo-historical"));
+  assert.match(await page.locator(".civic-r03-list-notes").innerText(), /Скрыто планов с прошедшим сроком: 1/);
+  await ctx.close();
+});
+
+test("r12: overlapping objects: one click offers a choice, keyboard picks one, cancel goes back; copy link works", { skip: SKIP }, async () => {
+  const { ctx, page, errors } = await open({ persist: "0", fit: "0" }, { viewport: DESKTOP });
+  await page.evaluate(async () => {
+    // three synthetic objects at the same spot (test-only, never in the registry)
+    const mk = (id, kind, geometry) => ({ schema_version: "civic-v1", id, city: "astana", kind, title: "Тест перекрытия " + id, status: "planned", publication: "published",
+      geometry, geometry_precision: "source", schedule: {}, budget: {}, responsible: {}, evidence_type: "synthetic", source_refs: [], revision: 1 });
+    const o = window.__stand.api.options;
+    o.items.push(mk("ov-point", "event", { type: "Point", coordinates: [71.3800, 51.1800] }),
+      mk("ov-line", "roadworks", { type: "LineString", coordinates: [[71.3790, 51.1800], [71.3810, 51.1800]] }),
+      mk("ov-area", "landscaping", { type: "Polygon", coordinates: [[[71.3795, 51.1797], [71.3805, 51.1797], [71.3805, 51.1803], [71.3795, 51.1803], [71.3795, 51.1797]]] }));
+    await window.__stand.instance.refresh();
+    window.__stand.map.jumpTo({ center: [71.38, 51.18], zoom: 16 });
+  });
+  await page.waitForTimeout(400);
+  const pt = await page.evaluate(() => { const m = window.__stand.map, c = m.getCanvas().getBoundingClientRect(), p = m.project([71.38, 51.18]); return { x: c.left + p.x, y: c.top + p.y }; });
+  await page.mouse.click(pt.x, pt.y);
+  await page.waitForFunction(() => window.__stand.instance.getState().view === "pick");
+  assert.match(await page.locator(".civic-r03-card-title").innerText(), /Здесь 3 объекта рядом/);
+  assert.deepEqual(await page.evaluate(() => [...document.querySelectorAll(".civic-r03-card .civic-r03-item")].map((b) => b.dataset.id)), ["ov-point", "ov-line", "ov-area"]);
+  assert.equal(await page.evaluate(() => document.activeElement.className), "civic-r03-card-title");
+  assert.equal(await page.evaluate(() => window.__stand.selects.length), 0, "choosing is not a selection yet");
+  await shot(page, "r12-desktop-1440-overlap-chooser");
+  // keyboard: Tab to the area entry and open it
+  await page.focus('.civic-r03-card [data-id="ov-area"]');
+  await page.keyboard.press("Enter");
+  await page.waitForFunction(() => window.__stand.instance.getState().selectedId === "ov-area" && window.__stand.instance.getState().view === "card");
+  // copy link: clipboard may be unavailable headless -> a selectable field with the R01 link format appears
+  await page.click('[data-r03-action="copy-link"]');
+  await page.waitForSelector(".civic-r03-copy-note");
+  const note = await page.evaluate(() => { const n = document.querySelector(".civic-r03-copy-note"); const f = n.querySelector("input"); return { text: n.textContent, url: f ? f.value : null }; });
+  assert.ok(/Ссылка скопирована/.test(note.text) || /#object=ov-area$/.test(note.url), JSON.stringify(note));
+  // pick again, then cancel -> back to the open card
+  await page.mouse.click(pt.x, pt.y);
+  await page.waitForFunction(() => window.__stand.instance.getState().view === "pick");
+  await page.keyboard.press("Escape");
+  await page.waitForFunction(() => window.__stand.instance.getState().view === "card");
+  assert.equal((await state(page)).selectedId, "ov-area");
+  assert.deepEqual(errors, []);
+  await ctx.close();
+});
+
+test("r12: back to the list restores its scroll position and the focused item", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0" }, { viewport: MOBILE, folded: true });
+  await page.click(".civic-r03-handle"); await page.waitForTimeout(320);
+  await page.click(".civic-r03-handle"); await page.waitForTimeout(320);
+  const before = await page.evaluate(() => { const sc = document.querySelector(".civic-r03-scroll"); sc.scrollTop = 400; return sc.scrollTop; });
+  const id = await page.evaluate(() => { const r = document.querySelector(".civic-r03-scroll").getBoundingClientRect(); return [...document.querySelectorAll(".civic-r03-item")].find((b) => b.getBoundingClientRect().top > r.top).dataset.id; });
+  await page.focus(`[data-id="${id}"]`);
+  await page.keyboard.press("Enter");
+  await page.waitForFunction(() => window.__stand.instance.getState().detail === "ready");
+  await page.keyboard.press("Escape");
+  const after = await page.evaluate(() => ({ top: document.querySelector(".civic-r03-scroll").scrollTop, focused: document.activeElement.dataset.id }));
+  assert.equal(after.focused, id);
+  assert.ok(Math.abs(after.top - before) < 60, JSON.stringify({ before, after }));
   await ctx.close();
 });
