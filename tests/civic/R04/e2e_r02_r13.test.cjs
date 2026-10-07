@@ -92,6 +92,8 @@ describe("R04 round 13 against the real R02 service", { skip }, () => {
     const r1 = await imp(PACKAGE([ITEM()], "v1"));
     assert.equal(r1.items[0].action, "create");
     const p = await page();
+    await p.waitForSelector(fk("rules"));
+    assert.match(await p.textContent(fk("rules")), /с сервера \(\/staff\/meta\)/, "R02 serves /staff/meta directly (no R01 gateway in this stand)");
     await p.click(fk("row-" + id));
     await p.waitForSelector(fk("publish"));
     await p.click(fk("publish"));

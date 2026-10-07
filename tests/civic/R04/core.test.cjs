@@ -435,3 +435,28 @@ test("round 13: a deadline move residents see needs a resident-readable reason; 
   assert.equal(C.fmtFormValue("amount", ""), "неизвестно", "an empty budget is unknown, never 0");
   assert.equal(C.fmtFormValue("current_planned_end", "2026-11-30"), "30.11.2026");
 });
+
+test("round 13: /staff/meta of R02 is accepted as is (same rules as the local copy); garbage is ignored", () => {
+  const r02meta = { limits: { text: { title: 200, description: 5000, evidence_notes: 2000, internal_notes: 5000, organization: 300, public_contact: 200, publisher: 300, license: 200, reason: 1000 },
+    url: 2000, amount_kzt_max: 1e13 }, astana_bbox: [70.8, 50.75, 72.1, 51.6], source_field_paths: C.SOURCE_FIELD_PATHS.slice().sort() };
+  assert.deepEqual(C.applyServerMeta(r02meta), { changed: [] }, "the local copy equals R02 bd7a911 validate.py");
+  assert.equal(C.applyServerMeta(null), null);
+  assert.equal(C.applyServerMeta({ error: "x" }), null);
+});
+
+test("round 13: street search folds ё, Latin look-alikes and street-type words; vertices of a polygon exclude the closing point", () => {
+  const list = [{ name: "проспект Шaкaрима Кудайбердыулы", label: "проспект Шaкaрима Кудайбердыулы", bbox: [71.4, 51.1, 71.41, 51.11] },
+    { name: "улица Фёдора Достоевского", label: "улица Фёдора Достоевского", bbox: [71.4, 51.1, 71.41, 51.11] },
+    { name: "Абылай хан көшесі", label: "Абылай хан көшесі", bbox: [71.4, 51.1, 71.41, 51.11] }];
+  assert.equal(C.searchStreets(list, "Шакарима")[0].name, "проспект Шaкaрима Кудайбердыулы");
+  assert.equal(C.searchStreets(list, "федора")[0].name, "улица Фёдора Достоевского");
+  assert.equal(C.searchStreets(list, "ул. Абылай хан")[0].name, "Абылай хан көшесі");
+  assert.deepEqual(C.searchStreets(list, "а"), [], "one letter is not a query");
+  const poly = C.polygonFromVertices([[71.43, 51.13], [71.432, 51.13], [71.432, 51.131]]);
+  assert.equal(C.editableVertices(poly).length, 3);
+  assert.deepEqual(C.geometryFromVertices("Polygon", C.editableVertices(poly)).coordinates[0][0], C.geometryFromVertices("Polygon", C.editableVertices(poly)).coordinates[0][3]);
+  const bow = C.polygonFromVertices([[71.43, 51.13], [71.432, 51.131], [71.432, 51.13], [71.43, 51.131]]);
+  assert.match(C.geometryProblem(bow), /пересекает сам себя/);
+  const touch = C.polygonFromVertices([[71.43, 51.13], [71.432, 51.13], [71.432, 51.131], [71.431, 51.13], [71.43, 51.131]]);
+  assert.match(C.geometryProblem(touch), /пересекает сам себя/, "a corner lying on another edge");
+});

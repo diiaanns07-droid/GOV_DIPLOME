@@ -390,10 +390,14 @@
     for (let i = 0; i < ring.length - 1; i++) a += ring[i][0] * M_PER_DEG_LON * ring[i + 1][1] * M_PER_DEG_LAT - ring[i + 1][0] * M_PER_DEG_LON * ring[i][1] * M_PER_DEG_LAT;
     return a / 2;
   }
+  // Non-adjacent edges of one ring must not meet at all: a proper crossing, a vertex lying on another edge and
+  // overlapping collinear edges (possible once vertices can be moved) all count as self-intersection.
   function segmentsCross(a, b, c, d) {
     const o = (p, q, r) => Math.sign((q[0] - p[0]) * (r[1] - p[1]) - (q[1] - p[1]) * (r[0] - p[0]));
+    const on = (p, q, r) => Math.min(p[0], r[0]) <= q[0] && q[0] <= Math.max(p[0], r[0]) && Math.min(p[1], r[1]) <= q[1] && q[1] <= Math.max(p[1], r[1]);
     const o1 = o(a, b, c), o2 = o(a, b, d), o3 = o(c, d, a), o4 = o(c, d, b);
-    return o1 !== o2 && o3 !== o4 && o1 !== 0 && o2 !== 0 && o3 !== 0 && o4 !== 0;
+    if (o1 !== o2 && o3 !== o4 && o1 !== 0 && o2 !== 0 && o3 !== 0 && o4 !== 0) return true;
+    return (o1 === 0 && on(a, c, b)) || (o2 === 0 && on(a, d, b)) || (o3 === 0 && on(c, a, d)) || (o4 === 0 && on(c, b, d));
   }
   function ringSelfIntersects(ring) {
     const n = ring.length - 1;
@@ -410,6 +414,72 @@
     if (v.length >= 4 && ringAreaM2(v) < 0) v.reverse();
     return { type: "Polygon", coordinates: [v] };
   }
+  // ---------- server rules (R02 GET /staff/meta) ----------
+  // When the server answers /staff/meta its limits, bbox and source paths replace the local copy above; otherwise the
+  // local copy (= R02 validate.py at 56538a3 / bd7a911) stays and the UI says so — it never claims the endpoint works.
+  function applyServerMeta(meta) {
+    if (!meta || typeof meta !== "object" || !meta.limits || typeof meta.limits !== "object") return null;
+    const changed = [];
+    const set = (k, v) => { if (Number.isFinite(v) && v > 0 && LIMITS[k] !== v) { changed.push(k + " " + LIMITS[k] + "→" + v); LIMITS[k] = v; } };
+    const t = meta.limits.text;
+    if (t && typeof t === "object") for (const [k, v] of Object.entries(t)) if (has(LIMITS, k)) set(k, v);
+    set("url", meta.limits.url);
+    set("maxAmount", meta.limits.amount_kzt_max);
+    const bb = meta.astana_bbox;
+    if (Array.isArray(bb) && bb.length === 4 && bb.every(Number.isFinite) && bb[0] < bb[2] && bb[1] < bb[3]) {
+      if (bb.join() !== ASTANA_BBOX.join()) changed.push("astana_bbox");
+      ASTANA_BBOX.splice(0, 4, ...bb);
+    }
+    const sfp = meta.source_field_paths;
+    if (Array.isArray(sfp) && sfp.length && sfp.every((x) => typeof x === "string")) {
+      if (sfp.slice().sort().join() !== SOURCE_FIELD_PATHS.slice().sort().join()) changed.push("source_field_paths");
+      SOURCE_FIELD_PATHS.splice(0, SOURCE_FIELD_PATHS.length, ...sfp);
+    }
+    return { changed };
+  }
+
+  // ---------- approximate street search over the public streets.json (R07, OSM snapshot; read-only) ----------
+  // Entries are {name, label, bbox:[minLon,minLat,maxLon,maxLat]}: the bbox spans every walking-graph edge with that
+  // name — it is NOT an address and its centre need not lie on the street. The editor only frames the map on it.
+  const STREET_TYPES = /(^|\s)(улица|ул\.?|переулок|пер\.?|проспект|пр-т\.?|пр\.?|көшесі|даңғылы|шоссе|бульвар|б-р|проезд|набережная|тупик|көше)(?=\s|$)/g;
+  const HOMO = { a: "а", c: "с", e: "е", o: "о", p: "р", x: "х", y: "у", k: "к", m: "м", t: "т", h: "н", b: "в" };
+  function normStreet(v) {
+    let t = str(v).toLocaleLowerCase("ru").replace(/ё/g, "е");
+    // Latin look-alikes inside Cyrillic words (OSM has a few: «Сандыктаc», «Шaкaрима») fold to Cyrillic
+    t = t.replace(/[a-z]+/g, (w, i, all) => (/[а-яәіңғүұқөһ]/.test(all) ? w.replace(/[acopxyekmthb]/g, (ch) => HOMO[ch]) : w));
+    return t.replace(/[«»"'.,()]/g, " ").replace(STREET_TYPES, " ").replace(/\s+/g, " ").trim();
+  }
+  function searchStreets(list, query, limit) {
+    const q = normStreet(query);
+    if (q.length < 2 || !Array.isArray(list)) return [];
+    const words = q.split(" ");
+    const out = [];
+    for (const s of list) {
+      if (!s || typeof s.name !== "string" || !Array.isArray(s.bbox) || s.bbox.length !== 4) continue;
+      const n = s._n || (s._n = normStreet(s.name));
+      if (!words.every((w) => n.includes(w))) continue;
+      out.push({ s, rank: (n === q ? 0 : n.startsWith(q) ? 1 : 2) * 1000 + n.length });
+    }
+    out.sort((a, b) => a.rank - b.rank || String(a.s.label || a.s.name).localeCompare(String(b.s.label || b.s.name), "ru"));
+    return out.slice(0, limit || 8).map((x) => x.s);
+  }
+  // Vertex editing works on the corner list of the record's own line/area (a polygon without its closing point).
+  function editableVertices(g) {
+    if (!g) return [];
+    if (g.type === "LineString") return (g.coordinates || []).map((p) => [p[0], p[1]]);
+    if (g.type === "Polygon") {
+      const ring = ((g.coordinates || [])[0] || []).map((p) => [p[0], p[1]]);
+      if (ring.length > 1 && ring[0][0] === ring[ring.length - 1][0] && ring[0][1] === ring[ring.length - 1][1]) ring.pop();
+      return ring;
+    }
+    return [];
+  }
+  function geometryFromVertices(type, v) {
+    if (type === "Polygon") return v.length >= 3 ? polygonFromVertices(v) : { type: "LineString", coordinates: v.slice() };
+    return { type: "LineString", coordinates: v.slice() };
+  }
+  // ~5 m per arrow key press near 51°N (latitude 0.000045°, longitude 0.000072°).
+  const NUDGE = { lat: 0.000045, lon: 0.000072 };
   function describeGeometry(g) {
     if (!g) return "без места на карте";
     const pos = positionsOf(g);
@@ -868,6 +938,7 @@
     KINDS, STATUSES, PUBLICATION, PRECISION, PLACE, GEOMETRY_KIND, BASIS, EVIDENCE, ACCESS, SOURCE_FIELDS, SOURCE_FIELD_PATHS, ASTANA_BBOX, LIMITS, REASON_MIN, PATHS, PATH_LABEL,
     isIsoDate, isIsoTimestamp, todayIso, fmtDate, fmtMoney, parseAmount, parseCoord, inAstana, positionsOf,
     placeOf, placeFields, geometryProblem, polygonFromVertices, describeGeometry, pathLengthM, ringAreaM2,
+    editableVertices, geometryFromVertices, NUDGE, normStreet, searchStreets, applyServerMeta,
     emptyForm, formFromItem, newSource, fieldsFromForm, validateForm, validateReason,
     allowedActions, isOriginalLocked, pendingInfo, reasonRule, diffFields, buildChanges, fmtValue,
     pickPublic, previewFromForm, scheduleShift, unwrap, normalizeError, fieldKeyFromPath, findPossibleDuplicate,

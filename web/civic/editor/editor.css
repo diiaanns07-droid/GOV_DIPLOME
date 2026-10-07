@@ -144,6 +144,13 @@
 .civic-r04-card-banner { margin: 4px 0 8px; padding: 6px 8px; border-radius: 8px; background: #fdf1e4; font-size: 13px; }
 .civic-r04-card-demo { background: #eef0f2; border: 1px dashed #6d7c76; }
 .civic-r04-nodata { color: var(--r4-muted); font-style: italic; }
+.civic-r04-rules { margin: 2px 0 0; font-size: 12px; color: var(--r4-muted); }
+.civic-r04-street { margin: 8px 0; padding: 8px 10px; border: 1px solid var(--r4-line); border-radius: 10px; background: var(--r4-paper); }
+.civic-r04-street > label { font-weight: 700; font-size: 13px; display: block; margin: 0 0 4px; }
+.civic-r04-street-list { list-style: none; margin: 4px 0; padding: 0; max-height: 220px; overflow-y: auto; }
+.civic-r04-street-list .civic-r04-btn { text-align: left; width: 100%; min-height: 36px; }
+.civic-r04-vxlist { list-style: decimal inside; padding: 0; margin: 4px 0; max-height: 200px; overflow-y: auto; }
+.civic-r04-vxlist .civic-r04-btn[aria-pressed=true] { font-weight: 700; color: #1f5fa8; }
 /* a focused or error-jumped control is never left under the sticky bar */
 .civic-r04-body input, .civic-r04-body select, .civic-r04-body textarea, .civic-r04-body button { scroll-margin: 72px 0 200px; }
 .civic-r04-grid > .civic-r04-slot-sched { grid-column: 1 / -1; }

@@ -103,6 +103,15 @@ describe("R04 round 13 (contract mock)", { skip: PW ? false : "playwright not in
     assert.deepEqual(p.errors, []);
   });
 
+  it("rules of validation: the mock has no /staff/meta -> the head says «local copy», nothing claims the endpoint works", async () => {
+    const p = await K.open();
+    await K.loginToList(p);
+    await p.waitForSelector(fk("rules"));
+    assert.match(await p.textContent(fk("rules")), /локальная копия правил R02 \(сервер не отдаёт \/staff\/meta\)/);
+    assert.ok(K.H().requests.some((r) => r.method === "GET" && r.apiPath === "/staff/meta"), "asked once");
+    assert.equal(K.H().requests.filter((r) => r.apiPath === "/staff/meta").length, 1);
+  });
+
   it("map never ready (getter returns null): buttons explain, no endless polling, no tool started", async () => {
     K.H().reset();
     const p = await K.newPage();
@@ -291,5 +300,141 @@ describe("R04 round 13 (contract mock)", { skip: PW ? false : "playwright not in
     assert.equal(await K.value(p, "description"), "Описание, сохранённое другим редактором.", "nothing restored before the user chooses");
     await p.click(fk("restore"));
     assert.equal(await K.value(p, "description"), "Моё описание из копии");
+  });
+
+  it("vertex editing of the record's own area: select, move (click and arrows), self-crossing refused, undo, Esc restores, Done needs re-confirmation", async () => {
+    const p = await K.open();
+    await K.loginToList(p);
+    await K.fillDraft(p, { title: "Двор с правкой вершин" });
+    await p.check(fk("place-approximate"));
+    await p.click(fk("tool-area"));
+    const b = await p.locator("#map").boundingBox();
+    const at = (dx, dy) => p.mouse.click(b.x + b.width / 2 + dx, b.y + b.height / 2 + dy);
+    for (const [dx, dy] of [[-80, -60], [80, -60], [80, 60], [-80, 60]]) await at(dx, dy);
+    await p.click(fk("tool-done"));
+    await p.check(fk("geometry_confirmed"));
+    await K.saveOk(p, "Черновик создан");
+    const ring0 = K.objects()[0].geometry.coordinates[0];
+    // Esc after a move: nothing changes
+    await p.click(fk("tool-edit"));
+    assert.deepEqual(await p.evaluate(() => window.__toolEvents.at(-1)), { active: true, mode: "edit" });
+    await p.click(fk("vx-0"));
+    await at(0, 0);
+    await p.keyboard.press("Escape");
+    assert.equal(await p.$(fk("tool-done")), null);
+    assert.equal(await p.isChecked(fk("geometry_confirmed")), true, "cancel keeps the confirmed mark as it was");
+    // a move that makes the outline cross itself is refused at «Готово»; undo fixes it
+    await p.click(fk("tool-edit"));
+    await p.click(fk("vx-0"));
+    // move corner 1 just outside the edge between corners 2 and 3: the edge from corner 4 to it then crosses that edge
+    const cross = await p.evaluate((ring) => {
+      const m = window.__map, r = m.getCanvas().getBoundingClientRect(), v = ring.slice(0, -1).map((c) => m.project(c));
+      const mid = { x: (v[1].x + v[2].x) / 2, y: (v[1].y + v[2].y) / 2 }, cen = { x: v.reduce((a, q) => a + q.x, 0) / v.length, y: v.reduce((a, q) => a + q.y, 0) / v.length };
+      const d = Math.hypot(mid.x - cen.x, mid.y - cen.y);
+      return { x: r.left + mid.x + (mid.x - cen.x) / d * 25, y: r.top + mid.y + (mid.y - cen.y) / d * 25 };
+    }, ring0);
+    await p.mouse.click(cross.x, cross.y);
+    assert.match(await p.textContent(".civic-r04-slot-geom [role=alert]"), /пересекает сам себя/);
+    await p.click(fk("tool-done"));
+    assert.ok(await p.$(fk("tool-done")), "the tool stays open with the problem");
+    await p.click(fk("tool-undo"));
+    assert.equal(await p.$(".civic-r04-slot-geom [role=alert]"), null);
+    // keyboard: select corner 3 in the list, nudge it up twice (~10 m), Enter
+    await p.click(fk("vx-2"));
+    await p.keyboard.press("ArrowUp");
+    await p.keyboard.press("ArrowUp");
+    await K.shot(p, "r13-03-vertex-edit");
+    await p.keyboard.press("Enter");
+    await p.waitForSelector(fk("geometry_confirmed"));
+    assert.equal(await p.isChecked(fk("geometry_confirmed")), false, "a changed mark must be confirmed again");
+    await p.check(fk("geometry_confirmed"));
+    await K.saveOk(p, "Сохранено");
+    const ring1 = K.objects()[0].geometry.coordinates[0];
+    assert.equal(ring1.length, ring0.length, "same number of corners");
+    const moved = ring1.filter((q) => !ring0.some((r) => r[0] === q[0] && r[1] === q[1]));
+    assert.equal(moved.length, 1, "exactly one corner moved: " + JSON.stringify(moved));
+    const prev = ring0.find((r) => Math.abs(r[0] - moved[0][0]) < 1e-9);
+    assert.ok(prev && Math.abs(moved[0][1] - prev[1] - 2 * 0.000045) < 1e-6, "moved north by two nudges");
+    assert.deepEqual(ring1[0], ring1[ring1.length - 1], "the ring stays closed");
+    const ev = await p.evaluate(() => window.__toolEvents);
+    assert.equal(ev.filter((e) => e.active).length, ev.filter((e) => !e.active).length);
+    assert.deepEqual(p.errors, []);
+  });
+
+  it("street search: OSM names, approximate frame on the map, no point is invented; not found and unavailable are said plainly", async () => {
+    const p = await K.open();
+    await K.loginToList(p);
+    await K.fillDraft(p, { title: "Поиск улицы" });
+    const c0 = await p.evaluate(() => window.__map.getCenter().toArray());
+    await p.fill(fk("street-q"), "Кенесары");
+    await p.waitForSelector(fk("street-0"));
+    const label = await p.textContent(fk("street-0"));
+    assert.match(label, /Кенесары/);
+    await p.click(fk("street-0"));
+    const note = await p.textContent(fk("street-note"));
+    assert.match(note, /Это не адрес и не точка работ/);
+    assert.match(note, /© участники OpenStreetMap, ODbL-1\.0; снимок 06\.05\.2026/);
+    const c1 = await p.evaluate(() => window.__map.getCenter().toArray());
+    assert.ok(Math.abs(c1[0] - c0[0]) + Math.abs(c1[1] - c0[1]) > 1e-4, "the map moved to the street");
+    assert.equal(await p.isChecked(fk("place-unknown")), true, "choosing a street does not set a place");
+    assert.equal(await p.$(fk("geometry_confirmed")), null, "no point was created");
+    assert.ok(await p.evaluate(() => window.__map.getStyle().layers.some((l) => l.id.endsWith("street-box"))), "dashed frame of the street on the map");
+    await K.shot(p, "r13-04-street-search");
+    await p.fill(fk("street-q"), "Несуществующая улица Ыыы");
+    assert.match(await p.textContent(fk("street-note")), /Улица не найдена в снимке OSM/);
+    // a server without streets.json
+    const q = await K.newPage();
+    await q.route("**/civic/map/streets.json", (r) => r.fulfill({ status: 404, body: "" }));
+    await K.open(null, "", { page: q, keepState: true });
+    await K.loginToList(q);
+    await q.click(fk("new"));
+    await q.fill(fk("street-q"), "Кенесары");
+    await q.waitForSelector('[data-fk="street-note"]:has-text("Поиск улиц недоступен")');
+  });
+
+  it("390 px and keyboard only: source review, 409 comparison and street search fit the phone and are reachable without a mouse", async () => {
+    K.H().reset();
+    const rec = await K.seedPublished({ source_refs: [SRC] });
+    K.H().addCandidate(rec.id, { schedule: { current_planned_end: "2026-11-30" }, title: "Длинное название из источника, которое переносится по словам на узком экране телефона" });
+    const p = await K.newPage({ width: 390, height: 844 });
+    await K.open(null, "", { page: p, keepState: true });
+    await K.loginToList(p);
+    await p.click(fk("filter-published"));
+    await p.click(fk("row-" + rec.id));
+    await p.waitForSelector(fk("srcreview"));
+    const fit = () => p.evaluate(() => ({ doc: document.documentElement.scrollWidth, body: (() => { const b = document.querySelector(".civic-r04-body"); return b.scrollWidth - b.clientWidth; })() }));
+    let w = await fit();
+    assert.ok(w.doc <= 390 && w.body <= 0, "source review fits 390 px: " + JSON.stringify(w));
+    await K.shot(p, "r13-05-review-390");
+    // keyboard: Tab reaches «Принять изменения источника…» and Enter opens the step
+    await p.focus(fk("srcreview"));
+    let found = false;
+    for (let i = 0; i < 40 && !found; i++) { await p.keyboard.press("Tab"); found = await p.evaluate(() => document.activeElement && document.activeElement.dataset.fk === "cand-apply-0"); }
+    assert.ok(found, "Tab reaches the accept button");
+    await p.keyboard.press("Enter");
+    await p.waitForSelector(fk("confirm"));
+    await p.keyboard.press("Escape");
+    assert.equal(await p.$(fk("confirm")), null, "Esc closes the step");
+    // 409 comparison at 390 px
+    await p.fill(fk("description"), "Моё описание на телефоне");
+    K.H().mutate(rec.id, { description: "Чужое описание" });
+    await p.click(fk("chip-1"));
+    await p.click(fk("save"));
+    await p.waitForSelector(fk("compare"));
+    w = await fit();
+    assert.ok(w.doc <= 390 && w.body <= 0, "comparison fits 390 px: " + JSON.stringify(w));
+    await K.shot(p, "r13-06-conflict-390");
+    await p.click(fk("rebase"));
+    // street search by keyboard
+    await p.focus(fk("street-q"));
+    await p.keyboard.type("Кенесары");
+    await p.waitForSelector(fk("street-0"));
+    await p.keyboard.press("Tab");
+    assert.equal(await p.evaluate(() => document.activeElement.dataset.fk), "street-0");
+    await p.keyboard.press("Enter");
+    await p.waitForSelector('[data-fk="street-note"]:has-text("Это не адрес")');
+    w = await fit();
+    assert.ok(w.doc <= 390 && w.body <= 0, "street search fits 390 px: " + JSON.stringify(w));
+    assert.deepEqual(p.errors, []);
   });
 });

@@ -1,0 +1,46 @@
+# Proposed by R04 round 13 for R01 (owner of these files). Base: R01 code 223296ec02bb14568b7d5782dc7de473372d2aec.
+# Apply: git apply --check research/round-13-results/R04/r01_editor_integration.patch (on a checkout of 223296e)
+--- a/ui/web_server.py
++++ b/ui/web_server.py
+@@ -97,6 +97,11 @@
+     ("POST", ("staff", "objects", "{id}", "update"), "store"),
+     ("POST", ("staff", "objects", "{id}", "publish"), "store"),
+     ("POST", ("staff", "objects", "{id}", "archive"), "store"),
++    # R04 round 13 (proposed): R02 already serves these; the editor reads the rules and reviews a changed source.
++    ("GET", ("staff", "meta"), "store"),
++    ("GET", ("staff", "objects", "{id}", "import-candidates"), "store"),
++    ("POST", ("staff", "objects", "{id}", "import-candidates", "{id}", "apply"), "store"),
++    ("POST", ("staff", "objects", "{id}", "import-candidates", "{id}", "dismiss"), "store"),
+     ("POST", ("feedback",), "feedback"),
+     ("GET", ("staff", "feedback"), "feedback"),
+     ("POST", ("staff", "feedback", "{id}", "moderate"), "feedback"),
+--- a/web/civic/shell/shell.js
++++ b/web/civic/shell/shell.js
+@@ -117,8 +117,10 @@
+       // Safe to repeat: a 403 CSRF rejection means the server did not act.
+       if (error instanceof CivicApiError && error.status === 403 && /csrf/i.test(error.code)
+           && method === "POST" && !options?.retried) {
++        const who = session.user?.name || null;
+         await refreshSession().catch(() => null);
+-        if (session.authenticated) return request(method, path, body, { ...options, retried: true });
++        // never re-send a staff POST as a different user (another tab signed in): let the editor handle the switch
++        if (session.authenticated && (session.user?.name || null) === who) return request(method, path, body, { ...options, retried: true });
+       }
+       throw error;
+     }
+@@ -350,10 +352,12 @@
+     syncDrawerFlag();
+     document.body.classList.add("civic-editor-open");
+     const handle = S.mounted.editor || mount("editor", $c("civic-editor-root"), {
+-      map: currentMap(),
+-      onPublished: (item) => {
++      // R04 round 13: a getter, so a cabinet opened before the map is ready can draw once it is.
++      map: () => currentMap(),
++      onPublished: (item, info) => {
+         S.mounted.map?.refresh?.();
+-        if (item?.id) { S.selected = item.id; S.mounted.map?.selectObject?.(item.id); }
++        // after archive (info.visible === false) the record is no longer public: do not open it (R03 would show 404)
++        if (item?.id && info?.visible !== false && item.publication === "published") { S.selected = item.id; S.mounted.map?.selectObject?.(item.id); }
+       },
+     });
+     if (objectId && handle?.openObject) handle.openObject(objectId);

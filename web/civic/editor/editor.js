@@ -52,6 +52,19 @@
   function dropRecovery(key) { if (RECOVERY.delete(key)) persistRecovery(); }
   function clearRecovery() { RECOVERY.clear(); persistRecovery(); storeUser = null; }  // logout: this user's copies only
   let seq = 0;
+  // streets.json (≈280 KB, served with no-store) is fetched once per page, on the first use of the street search.
+  const STREETS = { state: "idle", list: [], snapshot: null, url: null, promise: null };
+  function loadStreetsFrom(url) {
+    if (STREETS.promise && STREETS.url === url) return STREETS.promise;
+    STREETS.url = url; STREETS.state = "loading";
+    STREETS.promise = fetch(url, { credentials: "same-origin" }).then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      .then((d) => {
+        STREETS.list = Array.isArray(d && d.streets) ? d.streets : [];
+        STREETS.snapshot = d && d.source && d.source.snapshot_at ? d.source.snapshot_at : null;
+        STREETS.state = STREETS.list.length ? "ok" : "unavailable";
+      }, () => { STREETS.state = "unavailable"; STREETS.promise = null; });
+    return STREETS.promise;
+  }
   // Synchronous view of "is an editor drawing on the map right now" for neighbours (R03 click/hover, R01 Escape):
   // window.CivicEditor.isDrawing() / activeTool(), and <html data-civic-editor-tool="point|line|area|edit">.
   // The 'civic-editor:tool' event carries the same state; the attribute and getters do not depend on listener order.
@@ -118,6 +131,8 @@
     const now = typeof o.now === "function" ? o.now : () => new Date();
     const STALE = Object.freeze({ stale: true });
     const SRC = P + "geom", LAYERS = [P + "geom-line", P + "geom-pt", P + "geom-fill"];
+    const SRC_STREET = P + "street", LAYER_STREET = P + "street-box";  // dashed frame of a found street (approximate)
+    const streetsUrl = typeof o.streetsUrl === "string" ? o.streetsUrl : "/civic/map/streets.json";
     const S = {
       epoch: 0, alive: true, session: null, view: "loading", alert: null,
       list: { items: [], next: null, filter: "draft", mine: false, loaded: false, loading: false },
@@ -221,12 +236,25 @@
       }
       S.session = next;
       setCsrf(d && d.csrf_token);
-      if (next.authenticated) loadRecovery(userKey(next));
+      if (next.authenticated) { loadRecovery(userKey(next)); loadRules(); }
       if (switched) {
         S.switchedFrom = userKey(prev);
         if (pendingOpen) { pendingOpen.resolve(false); pendingOpen = null; }
       }
       return switched;
+    }
+    // Rules of validation: from GET /staff/meta when the server routes it, else the editor's copy of R02's rules.
+    // Asked once per mount; a 404 is reported as "local copy", never as a working endpoint.
+    function loadRules() {
+      if (S.rules) return;
+      S.rules = { source: "checking" };
+      api.request("GET", apiPrefix + "/staff/meta").then((d) => {
+        const r = C.applyServerMeta(C.unwrap(d));
+        S.rules = r ? { source: "server", changed: r.changed } : { source: "local", why: "ответ /staff/meta не распознан" };
+      }, (e) => {
+        const n = C.normalizeError(e);
+        S.rules = { source: "local", why: n.status === 404 || n.status === 405 ? "сервер не отдаёт /staff/meta" : "не удалось получить /staff/meta (" + n.text + ")" };
+      }).then(() => { if (S.alive) { renderHead(); if (S.view === "edit" && S.form) revalidate(); } });
     }
     // Before every write: is this tab still signed in as the same user? (A login in another tab replaces the cookie,
     // and the R01 adapter re-sends a CSRF-rejected POST after refreshing the session — that must never carry the
@@ -328,6 +356,9 @@
       if (S.session && S.session.authenticated) {
         const u = S.session.user || {};
         kids.push(el("p", { class: "civic-r04-who" }, ["Вы вошли: ", el("b", {}, u.name || "сотрудник"), u.role ? " · роль по данным сервера: " + u.role : ""]));
+        if (S.rules && S.rules.source !== "checking") kids.push(el("p", { class: "civic-r04-rules", "data-fk": "rules" }, S.rules.source === "server"
+          ? "Правила проверки полей — с сервера (/staff/meta)."
+          : "Правила проверки полей — локальная копия правил R02 (" + S.rules.why + "); окончательно решает сервер при сохранении."));
         if (S.logoutAsk) {
           kids.push(el("div", { class: "civic-r04-ask", role: "group", "aria-label": "Подтверждение выхода" }, [
             el("p", {}, "Есть несохранённые правки. При выходе они будут удалены из памяти вкладки."),
@@ -524,7 +555,7 @@
       S.mirror = !item || (item.publication === "draft" && S.form.current_planned_end === S.form.original_planned_end);
       Object.assign(S, { errors: {}, warnings: {}, server: {}, touched: {}, tried: false, confirm: null, reason: "", reasonErr: null,
         conflict: null, notice: null, preview: false, publicCopy: null, dup: null, lastDirty: false, alert: null, coordDraft: null,
-        cands: { state: "idle", items: [] }, confirmCand: null });
+        cands: { state: "idle", items: [] }, confirmCand: null, streetQ: "", streetPick: null });
       S.restore = RECOVERY.get(item ? item.id : "new") || null;
       S.view = "edit";
       renderHead();
@@ -765,6 +796,7 @@
 
     // ----- place: what is known, then Point / LineString / Polygon on the shared map -----
     const TOOL_TEXT = {
+      edit: "Щёлкните по вершине на карте (или выберите её в списке), затем щёлкните, куда её перенести. Стрелки — сдвиг на ≈5 м, Delete — удалить вершину, Ctrl+Z — отменить шаг, Enter — готово, Esc — отмена без изменений.",
       point: "Щёлкните по карте в месте работ. Esc — отмена.",
       line: "Щёлкайте по карте вдоль участка улицы (не обязательно по каждому повороту). «Готово» — от двух точек. Esc — отмена.",
       area: "Щёлкайте по карте по углам двора, сквера или площадки — по порядку обхода. «Готово» — от трёх точек, контур замкнётся сам. Esc — отмена.",
@@ -807,10 +839,12 @@
       const placeErr = el("p", { class: "civic-r04-err", id: P + "f-place-err" }), placeWarn = el("p", { class: "civic-r04-warn", id: P + "f-place-warn" });
       F.place = { control: radios.querySelector("input"), err: placeErr, warn: placeWarn };
       kids.push(radios, placeErr, placeWarn);
+      if (!ro && !t) kids.push(streetSearch());
       const drawRow = (withMarkTools) => el("p", { class: "civic-r04-row-btns" }, [
         btn(g && g.type === "Point" && withMarkTools ? "Поставить точку заново" : "Точка", () => startTool("point"), "", "tool-point", { disabled: (!map && !mapGetter) || ro, title: "Объект в одном месте: здание, остановка, перекрёсток" }),
         btn(g && g.type === "LineString" && withMarkTools ? "Отметить линию заново" : "Линия (участок улицы)", () => startTool("line"), "", "tool-line", { disabled: (!map && !mapGetter) || ro, title: "Ремонт вдоль улицы или тротуара" }),
         btn(g && g.type === "Polygon" && withMarkTools ? "Отметить площадь заново" : "Площадь (двор, сквер)", () => startTool("area"), "", "tool-area", { disabled: (!map && !mapGetter) || ro, title: "Благоустройство двора, сквера, площадки" }),
+        g && withMarkTools && g.type !== "Point" ? btn("Изменить вершины", () => startTool("edit"), "", "tool-edit", { disabled: (!map && !mapGetter) || ro, title: "Передвинуть, удалить вершины; отменить шаг" }) : null,
         g && withMarkTools ? btn("Показать на карте", fitToGeometry, "ghost", "geo-show", { disabled: !map }) : null,
         g && withMarkTools ? btn("Удалить отметку", () => { setGeometry(null); say("Отметка удалена."); focusKey("tool-point"); }, "danger", "geo-remove", { disabled: ro }) : null,
       ].filter(Boolean));
@@ -827,7 +861,19 @@
         ? "Карта ещё загружается. Кнопки рисования заработают, когда она будет готова; можно сразу ввести координаты точки ниже."
         : "Карта недоступна — введите координаты точки вручную ниже."));
       // 2) Drawing on the map.
-      if (t) {
+      if (t && t.mode === "edit") {
+        const min = t.type === "Polygon" ? 3 : 2;
+        kids.push(el("p", { class: "civic-r04-tool", role: "status" }, TOOL_TEXT.edit));
+        if (t.problem) kids.push(el("p", { class: "civic-r04-err", role: "alert" }, t.problem));
+        kids.push(el("ol", { class: "civic-r04-vertices civic-r04-vxlist", "aria-label": "Вершины" }, t.vertices.map((v, i) => el("li", {},
+          btn("Вершина " + (i + 1) + ": " + v[1].toFixed(5) + ", " + v[0].toFixed(5), () => { t.selected = i; t.problem = null; renderGeometry(); syncMap(); focusKey("vx-" + i); },
+            "link", "vx-" + i, { "aria-pressed": String(t.selected === i) })))));
+        kids.push(el("p", { class: "civic-r04-row-btns" }, [
+          btn("Готово", finishEdit, "primary", "tool-done"),
+          btn("Отменить шаг", undoEdit, "", "tool-undo", { disabled: !t.undo.length }),
+          btn("Удалить вершину", deleteVertex, "", "vx-del", { disabled: t.selected === null || t.vertices.length <= min }),
+          btn("Отмена", () => { closeTool(); focusKey("tool-edit"); }, "ghost", "tool-cancel")]));
+      } else if (t) {
         const n = t.vertices.length;
         const need = t.mode === "area" ? 3 : 2;
         kids.push(el("p", { class: "civic-r04-tool", role: "status" }, [TOOL_TEXT[t.mode], t.mode === "point" ? "" : " Точек: " + n + "."]));
@@ -894,6 +940,48 @@
       rebuild(V.geom, kids);
       paintErrors();
     }
+    // ----- approximate street search (public streets.json of R07; read-only, loaded on first use) -----
+    function streetSearch() {
+      const q = el("input", { type: "search", id: P + "street-q", autocomplete: "off", "data-fk": "street-q", placeholder: "например, Кенесары или Абылай хан",
+        "aria-describedby": P + "street-help", value: S.streetQ || "" });
+      q.value = S.streetQ || "";
+      const list = el("ul", { class: "civic-r04-street-list", id: P + "street-list", "aria-label": "Найденные улицы" });
+      const note = el("div", { class: "civic-r04-street-note", "data-fk": "street-note", role: "status" });
+      const paint = () => {
+        const st = STREETS.state;
+        if (st === "unavailable") { list.replaceChildren(); note.replaceChildren(el("p", { class: "civic-r04-muted" }, "Поиск улиц недоступен на этом сервере — отметьте место на карте или введите координаты.")); return; }
+        if (st === "loading") { list.replaceChildren(); note.replaceChildren(el("p", { class: "civic-r04-muted" }, "Загружаем названия улиц…")); return; }
+        const found = st === "ok" ? C.searchStreets(STREETS.list, q.value, 8) : [];
+        list.replaceChildren(...found.map((x, i) => el("li", {}, btn(x.label || x.name, () => pickStreet(x), "link", "street-" + i))));
+        if (S.streetPick) note.replaceChildren(
+          el("p", {}, "«" + (S.streetPick.label || S.streetPick.name) + "»: на карте показан прямоугольник, охватывающий улицу целиком. Это не адрес и не точка работ — щёлкните по карте в точном месте («Точка» или «Линия»)."),
+          el("p", { class: "civic-r04-muted" }, "Названия улиц: © участники OpenStreetMap, ODbL-1.0" + (STREETS.snapshot ? "; снимок " + C.fmtDate(String(STREETS.snapshot).slice(0, 10)) : "") + "."));
+        else note.replaceChildren(...(q.value.trim().length >= 2 && st === "ok" && !found.length ? [el("p", { class: "civic-r04-muted" }, "Улица не найдена в снимке OSM. Отметьте место на карте.")] : []));
+      };
+      q.addEventListener("focus", () => { if (STREETS.state === "idle") loadStreets().then(() => { if (S.alive) paint(); }); });
+      q.addEventListener("input", () => {
+        S.streetQ = q.value;
+        if (S.streetPick) { S.streetPick = null; syncMap(); }  // a new search replaces the previous street frame
+        if (STREETS.state === "idle") loadStreets().then(() => { if (S.alive) paint(); });
+        paint();
+      });
+      paint();
+      return el("div", { class: "civic-r04-street" }, [
+        el("label", { for: q.id }, "Найти улицу (приблизительно)"), q,
+        el("p", { class: "civic-r04-help", id: P + "street-help" }, "Покажет улицу на карте; точное место отмечаете вы. Адресов и номеров домов в этом поиске нет."),
+        list, note]);
+    }
+    function loadStreets() { return loadStreetsFrom(streetsUrl); }
+    function pickStreet(x) {
+      S.streetPick = { name: x.name, label: x.label, bbox: x.bbox.slice() };
+      syncMap();
+      if (map) {
+        try { map.fitBounds([[x.bbox[0], x.bbox[1]], [x.bbox[2], x.bbox[3]]], { padding: 60, maxZoom: 17, duration: reduced() ? 0 : 600 }); } catch (e) { /* camera errors are not fatal */ }
+      }
+      renderGeometry();
+      say("Улица показана на карте приблизительно. Отметьте точное место щелчком по карте.");
+      focusKey("tool-point");
+    }
     function setGeometry(g) {
       S.coordDraft = null;  // a map click or «Удалить отметку» replaces whatever was typed
       S.form.geometry = g;
@@ -905,6 +993,7 @@
     function toolGeometry() {
       const t = S.tool, v = t.vertices;
       if (!v.length) return null;
+      if (t.mode === "edit") return C.geometryFromVertices(t.type, v);
       if (t.mode === "point" || v.length === 1) return { type: "Point", coordinates: v[v.length - 1] };
       if (t.mode === "area" && v.length >= 3) return C.polygonFromVertices(v);
       return { type: "LineString", coordinates: v.slice() };
@@ -914,12 +1003,27 @@
       const features = [];
       if (g) {
         features.push({ type: "Feature", geometry: g, properties: {} });
-        if (g.type !== "Point") for (const p of C.positionsOf(g)) features.push({ type: "Feature", geometry: { type: "Point", coordinates: p }, properties: { vertex: true } });
+        const corners = S.tool && S.tool.mode === "edit" ? S.tool.vertices : g.type !== "Point" ? C.positionsOf(g) : [];
+        corners.forEach((p, i) => features.push({ type: "Feature", geometry: { type: "Point", coordinates: p },
+          properties: { vertex: true, selected: !!(S.tool && S.tool.mode === "edit" && S.tool.selected === i) } }));
       }
       return { type: "FeatureCollection", features };
     }
+    function streetData() {
+      const b = S.streetPick && S.streetPick.bbox;
+      return { type: "FeatureCollection", features: b ? [{ type: "Feature", properties: {},
+        geometry: { type: "Polygon", coordinates: [[[b[0], b[1]], [b[2], b[1]], [b[2], b[3]], [b[0], b[3]], [b[0], b[1]]]] } }] : [] };
+    }
     function syncMap() {
       if (!map || !S.mapOn) return;
+      try {
+        const ss = map.getSource(SRC_STREET);
+        if (ss) ss.setData(streetData());
+        else {
+          map.addSource(SRC_STREET, { type: "geojson", data: streetData() });
+          map.addLayer({ id: LAYER_STREET, type: "line", source: SRC_STREET, paint: { "line-color": "#1f5fa8", "line-width": 2, "line-dasharray": [2, 2], "line-opacity": 0.85 } });
+        }
+      } catch (e) { /* style not ready */ }
       try {
         const src = map.getSource(SRC);
         if (src) { src.setData(geomData()); return; }
@@ -929,7 +1033,8 @@
         map.addLayer({ id: LAYERS[0], type: "line", source: SRC, filter: ["in", ["geometry-type"], ["literal", ["LineString", "Polygon"]]],
           paint: { "line-color": "#c17238", "line-width": 4, "line-opacity": 0.9 } });
         map.addLayer({ id: LAYERS[1], type: "circle", source: SRC, filter: ["==", ["geometry-type"], "Point"],
-          paint: { "circle-radius": ["case", ["has", "vertex"], 4, 7], "circle-color": "#c17238", "circle-stroke-color": "#ffffff", "circle-stroke-width": 2 } });
+          paint: { "circle-radius": ["case", ["==", ["get", "selected"], true], 9, ["has", "vertex"], 5, 7],
+            "circle-color": ["case", ["==", ["get", "selected"], true], "#1f5fa8", "#c17238"], "circle-stroke-color": "#ffffff", "circle-stroke-width": 2 } });
       } catch (e) { /* style not ready: the styledata handler retries */ }
     }
     function attachMap() {
@@ -945,8 +1050,9 @@
       S.mapOn = false;
       offMap("styledata", syncMap);
       try {
-        for (const l of LAYERS) if (map.getLayer(l)) map.removeLayer(l);
+        for (const l of LAYERS.concat(LAYER_STREET)) if (map.getLayer(l)) map.removeLayer(l);
         if (map.getSource(SRC)) map.removeSource(SRC);
+        if (map.getSource(SRC_STREET)) map.removeSource(SRC_STREET);
       } catch (e) { /* map already removed by its owner */ }
     }
     function startTool(mode) {
@@ -960,6 +1066,7 @@
       const prevPlace = S.form.place;
       if (placeNow() === "unknown") S.form.place = "approximate";
       S.tool = { mode, vertices: [], problem: null, dblZoom: false, prevPlace };
+      if (mode === "edit") Object.assign(S.tool, { type: S.form.geometry.type, vertices: C.editableVertices(S.form.geometry), selected: null, undo: [] });
       // A double click while drawing must not zoom the map (and must not add a zero-length segment).
       try { if (map.doubleClickZoom && map.doubleClickZoom.isEnabled()) { map.doubleClickZoom.disable(); S.tool.dblZoom = true; } } catch (e) { /* optional API */ }
       try { S.cursor = map.getCanvas().style.cursor; map.getCanvas().style.cursor = "crosshair"; } catch (e) { S.cursor = ""; }
@@ -972,6 +1079,7 @@
     }
     function onMapClick(e) {
       if (!S.tool || !e || !e.lngLat) return;
+      if (S.tool.mode === "edit") { editClick(e); return; }
       const p = [round6(e.lngLat.lng), round6(e.lngLat.lat)];
       if (!C.inAstana(p[0], p[1])) { S.tool.problem = "Эта точка за пределами Астаны — щёлкните внутри города."; renderGeometry(); say(S.tool.problem, true); return; }
       if (S.tool.mode === "point") {
@@ -1000,8 +1108,63 @@
       say("Отмечено: " + C.describeGeometry(g) + ". Подтвердите расположение.");
       focusKey("geometry_confirmed");
     }
+    // ----- vertex editing of the record's own line/area: select -> move (click, arrows) -> undo/delete -> validate -----
+    function editClick(e) {
+      const t = S.tool;
+      let hit = null, best = 15;  // px
+      try {
+        t.vertices.forEach((v, i) => { const q = map.project(v), d = Math.hypot(q.x - e.point.x, q.y - e.point.y); if (d < best) { best = d; hit = i; } });
+      } catch (x) { hit = null; }
+      if (hit !== null) { t.selected = hit; t.problem = null; renderGeometry(); syncMap(); say("Выбрана вершина " + (hit + 1) + ". Щёлкните, куда её перенести."); return; }
+      if (t.selected === null) { t.problem = "Сначала выберите вершину: щёлкните по ней на карте или в списке."; renderGeometry(); return; }
+      moveVertex(t.selected, [round6(e.lngLat.lng), round6(e.lngLat.lat)]);
+    }
+    function moveVertex(i, p) {
+      const t = S.tool;
+      if (!C.inAstana(p[0], p[1])) { t.problem = "Эта точка за пределами Астаны — вершину туда перенести нельзя."; renderGeometry(); say(t.problem, true); return; }
+      t.undo.push(t.vertices.map((v) => v.slice()));
+      t.vertices[i] = p;
+      t.problem = C.geometryProblem(toolGeometry());
+      renderGeometry(); syncMap();
+      say("Вершина " + (i + 1) + " перенесена." + (t.problem ? " " + t.problem : ""), !!t.problem);
+    }
+    function deleteVertex() {
+      const t = S.tool, min = t.type === "Polygon" ? 3 : 2;
+      if (t.selected === null || t.vertices.length <= min) return;
+      t.undo.push(t.vertices.map((v) => v.slice()));
+      t.vertices.splice(t.selected, 1);
+      t.selected = null;
+      t.problem = C.geometryProblem(toolGeometry());
+      renderGeometry(); syncMap(); say("Вершина удалена.");
+    }
+    function undoEdit() {
+      const t = S.tool;
+      if (!t.undo.length) return;
+      t.vertices = t.undo.pop();
+      t.problem = C.geometryProblem(toolGeometry());
+      renderGeometry(); syncMap(); say("Шаг отменён.");
+    }
+    function finishEdit() {
+      const t = S.tool, g = toolGeometry(), problem = C.geometryProblem(g);
+      if (problem) { t.problem = problem + " Исправьте вершины, отмените шаг или нажмите «Отмена»."; renderGeometry(); say(t.problem, true); return; }
+      closeTool(true);
+      setGeometry(g);  // a changed mark needs a fresh «Расположение проверено»
+      say("Вершины изменены: " + C.describeGeometry(g) + ". Подтвердите расположение.");
+      focusKey("geometry_confirmed");
+    }
     function onToolKey(e) {
       if (!S.tool) return;
+      const typing = e.target && /^(TEXTAREA|INPUT|SELECT)$/.test(e.target.tagName);
+      if (S.tool.mode === "edit") {
+        const t = S.tool, step = { ArrowUp: [0, 1], ArrowDown: [0, -1], ArrowLeft: [-1, 0], ArrowRight: [1, 0] }[e.key];
+        if (e.key === "Escape") { e.preventDefault(); closeTool(); focusKey("tool-edit"); }
+        else if (typing) return;
+        else if (e.key === "Enter") { e.preventDefault(); finishEdit(); }
+        else if (step && t.selected !== null) { e.preventDefault(); const v = t.vertices[t.selected]; moveVertex(t.selected, [round6(v[0] + step[0] * C.NUDGE.lon), round6(v[1] + step[1] * C.NUDGE.lat)]); }
+        else if ((e.key === "Delete" || e.key === "Backspace") && t.selected !== null) { e.preventDefault(); deleteVertex(); }
+        else if (e.key === "z" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); undoEdit(); }
+        return;
+      }
       if (e.key === "Escape") { e.preventDefault(); closeTool(); focusKey("tool-point"); }
       else if (e.key === "Enter" && S.tool.mode !== "point" && !(e.target && /^(TEXTAREA|INPUT|SELECT)$/.test(e.target.tagName))) { e.preventDefault(); finishShape(); }
       else if ((e.key === "Backspace" || (e.key === "z" && (e.ctrlKey || e.metaKey))) && S.tool.vertices.length && !(e.target && /^(TEXTAREA|INPUT|SELECT)$/.test(e.target.tagName))) {

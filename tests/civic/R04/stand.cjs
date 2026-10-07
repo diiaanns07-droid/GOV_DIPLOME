@@ -41,6 +41,8 @@ async function startStand(opts) {
       "/": path.join(__dirname, "harness/index.html"),
       "/vendor/maplibre-gl.js": path.join(v, "maplibre-gl.js"),
       "/vendor/maplibre-gl.css": path.join(v, "maplibre-gl.css"),
+      // read-only: the public street index of the base app (R07's file), served at the same URL as in app.py
+      "/civic/map/streets.json": path.join(REPO, "web/civic/map/streets.json"),
     },
     staticDirs: [
       { prefix: "/harness/", dir: path.join(__dirname, "harness") },
