@@ -1,16 +1,16 @@
 {
  "label": "oracle-clean",
- "started_utc": "2026-10-07T04:07:29+00:00",
- "seconds": 9.55,
+ "started_utc": "2026-10-07T04:35:01+00:00",
+ "seconds": 10.96,
  "command": "python3 -I -B tests/civic/R10/run_acceptance.py --label oracle-clean --out research/round-11-results/R10/runs/oracle-clean.json",
  "python": "3.13.16",
  "platform": "Linux-6.18.44-fc-v77-x86_64-with-glibc2.39",
  "target": {
   "target": "oracle",
-  "base_url": "http://127.0.0.1:58557",
+  "base_url": "http://127.0.0.1:36339",
   "prefix": "/api/civic/v1",
   "code_root": "tests/civic/R10/r10lib/oracle",
-  "code_sha": "13de522f452798f8d70ae12b8b48d03a292336d8",
+  "code_sha": "a8220f0e822b21b2247f63cc01f69be89050270b",
   "code_dirty": true,
   "can_restart": true,
   "notes": [
@@ -18,23 +18,24 @@
   ],
   "mutant": null
  },
+ "code_roots": {},
  "suite_files": {
-  "test_api_feedback.py": "8f90f7a570d6476f",
-  "test_api_objects.py": "9b9b177d4c4aee4d",
-  "test_api_security.py": "e1d012753d6c69f6",
+  "test_api_feedback.py": "f33284b359083f29",
+  "test_api_objects.py": "3b87090ad4735192",
+  "test_api_security.py": "cba407c6b6e4a7cd",
   "test_fixture_contract.py": "6e7dcc1932484be4",
-  "test_scenarios_tinygraph.py": "dc5bc76d8cd3c955",
+  "test_scenarios_tinygraph.py": "318bfc610e99ad75",
   "r10lib/__init__.py": "e3b0c44298fc1c14",
   "r10lib/client.py": "f27011e116d61022",
   "r10lib/contract.py": "bfe34000e9edbffd",
-  "r10lib/helpers.py": "3e9154c6fafb7b1a",
-  "r10lib/modrun.py": "3116b200792c0bc4",
+  "r10lib/helpers.py": "e73f272fdb7b4633",
+  "r10lib/modrun.py": "52eb8f5f41e17c42",
   "r10lib/oracle/server.py": "9862f8fd27f3ea6d",
   "r10lib/standalone_server.py": "9663021bedf286f8",
-  "r10lib/target.py": "f5405f6a86c5ae5b"
+  "r10lib/target.py": "5f09b1a8f34ebb91"
  },
  "counts": {
-  "PASS": 67,
+  "PASS": 69,
   "FAIL": 0,
   "ERROR": 0,
   "NOT_RUN": 13,
@@ -79,9 +80,9 @@
   },
   "A06": {
    "status": "PASS",
-   "tests": 1,
+   "tests": 2,
    "counts": {
-    "PASS": 1
+    "PASS": 2
    }
   },
   "A07": {
@@ -93,9 +94,9 @@
   },
   "A08": {
    "status": "PASS",
-   "tests": 5,
+   "tests": 6,
    "counts": {
-    "PASS": 5
+    "PASS": 6
    }
   },
   "A09": {
@@ -220,9 +221,9 @@
   },
   "S06": {
    "status": "PASS",
-   "tests": 1,
+   "tests": 2,
    "counts": {
-    "PASS": 1
+    "PASS": 2
    }
   },
   "S07": {
@@ -299,7 +300,7 @@
    ],
    "title": "moderation needs editor session + CSRF + same Origin; spoofed roles grant nothing.",
    "message": "",
-   "seconds": 1.847
+   "seconds": 1.856
   },
   {
    "test": "test_api_feedback.FeedbackAccessControl.test_s14_feedback_to_draft_and_missing_id_indistinguishable",
@@ -310,7 +311,7 @@
    ],
    "title": "feedback to a draft and to a missing id: same status, error.code, message; no draft data.",
    "message": "",
-   "seconds": 0.087
+   "seconds": 0.115
   },
   {
    "test": "test_api_feedback.FeedbackHtmlIsText.test_s10_html_payload_stays_literal_json_text",
@@ -320,7 +321,18 @@
    ],
    "title": "HTML/script in feedback text, public_reply and object title stays literal text in JSON with nosniff.",
    "message": "",
-   "seconds": 0.091
+   "seconds": 0.103
+  },
+  {
+   "test": "test_api_feedback.FeedbackLifecycle.test_a06_a08_restart_keeps_moderated_feedback",
+   "status": "PASS",
+   "ids": [
+    "A06",
+    "A08"
+   ],
+   "title": "after a real server restart approved feedback + reply stay public, revision stays stale.",
+   "message": "",
+   "seconds": 0.407
   },
   {
    "test": "test_api_feedback.FeedbackLifecycle.test_a07_receipt_only_pending_stays_private",
@@ -332,7 +344,7 @@
    ],
    "title": "submit -> receipt {receipt_id, moderation:pending} only; pending stays private, staff queue has it.",
    "message": "",
-   "seconds": 0.087
+   "seconds": 0.085
   },
   {
    "test": "test_api_feedback.FeedbackLifecycle.test_a08_approved_with_consent_public_with_reply",
@@ -354,7 +366,7 @@
    ],
    "title": "concurrent same-revision moderation: exactly one wins, other 409; stale revision -> 409, no change.",
    "message": "",
-   "seconds": 0.174
+   "seconds": 0.165
   },
   {
    "test": "test_api_feedback.FeedbackLifecycle.test_a08_rejected_never_public",
@@ -364,7 +376,7 @@
    ],
    "title": "rejected feedback (consent given) never appears publicly.",
    "message": "",
-   "seconds": 0.103
+   "seconds": 0.091
   },
   {
    "test": "test_api_feedback.FeedbackLifecycle.test_a08_s09_no_consent_text_never_public",
@@ -375,7 +387,7 @@
    ],
    "title": "consent_public=false: text never reaches public feedback, object detail or object list.",
    "message": "",
-   "seconds": 0.103
+   "seconds": 0.096
   },
   {
    "test": "test_api_feedback.FeedbackValidation.test_a07_duplicate_submission_not_silent",
@@ -385,7 +397,7 @@
    ],
    "title": "identical resubmission is deduplicated or flagged, never a silent duplicate; original kept.",
    "message": "",
-   "seconds": 0.095
+   "seconds": 0.09
   },
   {
    "test": "test_api_feedback.FeedbackValidation.test_a07_location_only_accepted_no_location_or_outside_astana_rejected",
@@ -395,7 +407,7 @@
    ],
    "title": "object_id null + Astana Point accepted; no object and no geometry -> 400/422; Shymkent point -> 4xx, not stored.",
    "message": "",
-   "seconds": 0.085
+   "seconds": 0.086
   },
   {
    "test": "test_api_feedback.FeedbackValidation.test_a07_unknown_category_rejected",
@@ -405,7 +417,7 @@
    ],
    "title": "category outside roads/sidewalks/transport_stops/lighting/landscaping/other -> 400/422, not stored.",
    "message": "",
-   "seconds": 0.081
+   "seconds": 0.087
   },
   {
    "test": "test_api_objects.FiltersAndPagination.test_a10_cursor_pagination_each_object_exactly_once",
@@ -415,7 +427,7 @@
    ],
    "title": "cursor walk (filtered and default list) returns every published object exactly once, incl. ties.",
    "message": "",
-   "seconds": 0.12
+   "seconds": 0.123
   },
   {
    "test": "test_api_objects.FiltersAndPagination.test_a10_inclusive_date_window_with_kind_and_status",
@@ -425,7 +437,7 @@
    ],
    "title": "from/to inclusive on boundaries, outside days excluded, kind/status narrow, drafts never listed.",
    "message": "",
-   "seconds": 0.125
+   "seconds": 0.128
   },
   {
    "test": "test_api_objects.FiltersAndPagination.test_a10_invalid_filters_rejected",
@@ -436,7 +448,7 @@
    ],
    "title": "unknown kind/status, impossible or malformed dates -> 400/422 JSON error, never 500.",
    "message": "",
-   "seconds": 0.008
+   "seconds": 0.01
   },
   {
    "test": "test_api_objects.FiltersAndPagination.test_a10_pagination_stable_when_objects_change_mid_walk",
@@ -446,7 +458,7 @@
    ],
    "title": "publish/archive between page requests: no other pre-existing object is lost or duplicated.",
    "message": "",
-   "seconds": 0.135
+   "seconds": 0.139
   },
   {
    "test": "test_api_objects.ObjectLifecycle.test_a01_create_draft_server_assigns_identity",
@@ -457,7 +469,7 @@
    ],
    "title": "create -> draft with server id, revision>=1, server updated_at, fields stored as sent.",
    "message": "",
-   "seconds": 0.083
+   "seconds": 0.088
   },
   {
    "test": "test_api_objects.ObjectLifecycle.test_a02_draft_invisible_publicly",
@@ -467,7 +479,7 @@
    ],
    "title": "draft: absent from every public list page (filtered or not), detail 404, nothing leaks.",
    "message": "",
-   "seconds": 0.082
+   "seconds": 0.092
   },
   {
    "test": "test_api_objects.ObjectLifecycle.test_a03_publish_makes_object_public_with_contract_dto",
@@ -477,7 +489,7 @@
    ],
    "title": "publish -> object in public list/detail, public DTO passes civic-v1 public checks.",
    "message": "",
-   "seconds": 0.083
+   "seconds": 0.088
   },
   {
    "test": "test_api_objects.ObjectLifecycle.test_a04_date_change_with_reason_is_public_and_explained",
@@ -488,7 +500,7 @@
    ],
    "title": "new current_planned_end with reason: public date changes, original kept, history explains.",
    "message": "",
-   "seconds": 0.083
+   "seconds": 0.091
   },
   {
    "test": "test_api_objects.ObjectLifecycle.test_a05_draft_era_changes_never_reach_public_history",
@@ -498,7 +510,7 @@
    ],
    "title": "contract reading \"только опубликованные изменения\": draft-era reasons/values never public.",
    "message": "",
-   "seconds": 0.094
+   "seconds": 0.092
   },
   {
    "test": "test_api_objects.ObjectLifecycle.test_a05_s09_no_editor_identity_or_internal_notes_publicly",
@@ -509,7 +521,7 @@
    ],
    "title": "editor usernames and internal notes never appear in public list/detail/history.",
    "message": "",
-   "seconds": 0.103
+   "seconds": 0.097
   },
   {
    "test": "test_api_objects.ObjectLifecycle.test_a09_archive_hides_publicly_staff_keeps",
@@ -519,7 +531,7 @@
    ],
    "title": "archive -> public list/detail hide it (404), staff still sees intact archived object.",
    "message": "",
-   "seconds": 0.106
+   "seconds": 0.1
   },
   {
    "test": "test_api_objects.ObjectLifecycle.test_c09_no_physical_delete",
@@ -529,7 +541,7 @@
    ],
    "title": "DELETE (and /delete) on objects -> 404/405 (anon also 401/403); objects still exist.",
    "message": "",
-   "seconds": 0.09
+   "seconds": 0.096
   },
   {
    "test": "test_api_objects.PersistenceAcrossRestart.test_a06_restart_keeps_objects_history_and_hiding",
@@ -541,7 +553,7 @@
    ],
    "title": "after restart: published object, dates, history, revision counter persist; draft stays hidden.",
    "message": "",
-   "seconds": 0.471
+   "seconds": 0.45
   },
   {
    "test": "test_api_objects.RevisionsAndReasons.test_c04_concurrent_same_revision_exactly_one_wins",
@@ -551,7 +563,7 @@
    ],
    "title": "two editors, same expected_revision, parallel -> one 2xx + one 409, revision+1, one history entry.",
    "message": "",
-   "seconds": 0.189
+   "seconds": 0.18
   },
   {
    "test": "test_api_objects.RevisionsAndReasons.test_c04_stale_or_missing_revision_rejected_without_change",
@@ -561,7 +573,7 @@
    ],
    "title": "stale/future/missing expected_revision on update, stale on publish/archive -> rejected, no change.",
    "message": "",
-   "seconds": 0.107
+   "seconds": 0.117
   },
   {
    "test": "test_api_objects.RevisionsAndReasons.test_c05_original_planned_end_never_silently_overwritten",
@@ -572,7 +584,7 @@
    ],
    "title": "after publication original_planned_end is rejected, ignored, or changed only with public history+reason.",
    "message": "",
-   "seconds": 0.119
+   "seconds": 0.109
   },
   {
    "test": "test_api_objects.RevisionsAndReasons.test_c05_reason_required_for_public_date_change",
@@ -582,7 +594,7 @@
    ],
    "title": "published object: no public date change without a non-blank reason (update or publish).",
    "message": "",
-   "seconds": 0.14
+   "seconds": 0.122
   },
   {
    "test": "test_api_objects.ServerOwnedFields.test_c02_create_ignores_server_owned_fields",
@@ -593,7 +605,7 @@
    ],
    "title": "create body id/publication/revision/updated_at/actor/city/schema are not trusted.",
    "message": "",
-   "seconds": 0.085
+   "seconds": 0.082
   },
   {
    "test": "test_api_objects.ServerOwnedFields.test_c02_create_with_existing_id_cannot_overwrite_published",
@@ -603,7 +615,7 @@
    ],
    "title": "create with body id of an existing published object never replaces/changes that object.",
    "message": "",
-   "seconds": 0.091
+   "seconds": 0.094
   },
   {
    "test": "test_api_objects.ServerOwnedFields.test_c02_public_actor_label_not_taken_from_body",
@@ -614,7 +626,7 @@
    ],
    "title": "actor/public_actor_label sent in an update body never shows in public history.",
    "message": "",
-   "seconds": 0.092
+   "seconds": 0.088
   },
   {
    "test": "test_api_objects.ServerOwnedFields.test_c02_update_ignores_server_owned_fields",
@@ -624,7 +636,7 @@
    ],
    "title": "update with publication/id/revision/updated_at in changes or body cannot publish/rename/rewind.",
    "message": "",
-   "seconds": 0.087
+   "seconds": 0.109
   },
   {
    "test": "test_api_objects.UnknownStaysUnknown.test_c03_a10_no_status_or_actual_end_computed_from_dates",
@@ -646,7 +658,7 @@
    ],
    "title": "null dates/budget/geometry stay null (not today/0) through create, publish, unrelated update.",
    "message": "",
-   "seconds": 0.085
+   "seconds": 0.088
   },
   {
    "test": "test_api_security.AnonymousAccess.test_s01_s12_staff_writes_require_session",
@@ -657,7 +669,7 @@
    ],
    "title": "anonymous create/update/publish/archive/moderate refused, state unchanged",
    "message": "",
-   "seconds": 0.102
+   "seconds": 0.118
   },
   {
    "test": "test_api_security.AnonymousAccess.test_s01_staff_reads_require_session",
@@ -667,7 +679,7 @@
    ],
    "title": "anonymous GET of staff list/detail/feedback queue -> 401 without data",
    "message": "",
-   "seconds": 0.062
+   "seconds": 0.072
   },
   {
    "test": "test_api_security.CsrfAndOrigin.test_s02_writes_without_or_with_wrong_csrf_rejected",
@@ -677,7 +689,7 @@
    ],
    "title": "editor session but missing/wrong/foreign-session CSRF -> 403, nothing changes",
    "message": "",
-   "seconds": 0.211
+   "seconds": 0.21
   },
   {
    "test": "test_api_security.CsrfAndOrigin.test_s03_foreign_or_null_origin_rejected",
@@ -687,7 +699,7 @@
    ],
    "title": "valid session+CSRF but foreign/null Origin -> 403, nothing changes; login too",
    "message": "",
-   "seconds": 0.081
+   "seconds": 0.117
   },
   {
    "test": "test_api_security.CsrfAndOrigin.test_s03_wrong_host_rejected",
@@ -697,7 +709,7 @@
    ],
    "title": "Host not this server (DNS-rebinding shape) -> refused for login and writes",
    "message": "",
-   "seconds": 0.086
+   "seconds": 0.091
   },
   {
    "test": "test_api_security.NoServerSideFetch.test_s11_urls_in_sources_and_feedback_are_never_fetched",
@@ -718,7 +730,7 @@
    ],
    "title": "unknown API path -> 404 JSON; DELETE/PUT/PATCH -> 404/405 JSON, object stays",
    "message": "",
-   "seconds": 0.089
+   "seconds": 0.095
   },
   {
    "test": "test_api_security.RequestHygiene.test_c06_s13_invalid_values_rejected_without_500",
@@ -729,7 +741,7 @@
    ],
    "title": "bad dates/numbers/geometry/enums/title -> 400/422 JSON, server alive",
    "message": "",
-   "seconds": 0.112
+   "seconds": 0.172
   },
   {
    "test": "test_api_security.RequestHygiene.test_c07_oversized_body_and_long_text",
@@ -750,7 +762,7 @@
    ],
    "title": "wrong Content-Type -> 415/400; broken/non-object JSON -> 400; no object created",
    "message": "",
-   "seconds": 0.093
+   "seconds": 0.095
   },
   {
    "test": "test_api_security.SessionLifecycle.test_s04_logout_revokes_server_side_session",
@@ -760,7 +772,7 @@
    ],
    "title": "after logout a replayed cookie+CSRF token cannot read staff data or write",
    "message": "",
-   "seconds": 0.22
+   "seconds": 0.346
   },
   {
    "test": "test_api_security.SessionLifecycle.test_s05_wrong_password_gives_401_and_no_session",
@@ -770,7 +782,7 @@
    ],
    "title": "wrong password -> 401, no session cookie, /session stays anonymous",
    "message": "",
-   "seconds": 0.064
+   "seconds": 0.069
   },
   {
    "test": "test_api_security.SessionLifecycle.test_s06_session_cookie_flags_and_not_in_body",
@@ -780,7 +792,7 @@
    ],
    "title": "session cookie HttpOnly + SameSite; session id never echoed in JSON",
    "message": "",
-   "seconds": 0.077
+   "seconds": 0.075
   },
   {
    "test": "test_api_security.SessionLifecycle.test_s07_role_and_identity_not_taken_from_request",
@@ -790,7 +802,7 @@
    ],
    "title": "role/actor in login body or headers grants nothing",
    "message": "",
-   "seconds": 0.081
+   "seconds": 0.074
   },
   {
    "test": "test_api_security.SessionLifecycle.test_zz_s05_failed_logins_are_limited",
@@ -800,7 +812,17 @@
    ],
    "title": "repeated wrong passwords (N<=12, own source IP, throwaway name) eventually 429",
    "message": "",
-   "seconds": 0.586
+   "seconds": 0.642
+  },
+  {
+   "test": "test_api_security.SessionLifecycle.test_zz_s06_passwords_and_session_ids_not_in_server_log",
+   "status": "PASS",
+   "ids": [
+    "S06"
+   ],
+   "title": "editor passwords, a submitted wrong password and session ids never reach the server log",
+   "message": "",
+   "seconds": 0.632
   },
   {
    "test": "test_api_security.StaticExposure.test_s08_runtime_db_env_and_sources_not_served",
@@ -810,7 +832,7 @@
    ],
    "title": ".sqlite/-wal/-shm, .env, .git, Python sources not downloadable (incl. traversal)",
    "message": "",
-   "seconds": 0.051
+   "seconds": 0.061
   },
   {
    "test": "test_fixture_contract.EnvelopeAndHistoryShapes.test_envelopes",
@@ -842,7 +864,7 @@
    "ids": [],
    "title": "",
    "message": "",
-   "seconds": 0.001
+   "seconds": 0.0
   },
   {
    "test": "test_fixture_contract.FixtureConforms.test_fixture_is_honestly_synthetic",
@@ -882,7 +904,7 @@
    "ids": [],
    "title": "",
    "message": "",
-   "seconds": 0.002
+   "seconds": 0.003
   },
   {
    "test": "test_fixture_contract.ValidatorRejectsBadVariants.test_nan_and_infinity_rejected",
@@ -926,7 +948,7 @@
    "ids": [
     "M01"
    ],
-   "title": "compare() must not mutate the caller's payload/graph (needs an in-process run)",
+   "title": "compare() must not mutate the caller's payload/graph (checked in-process inside the isolated child)",
    "message": "NOT_RUN: engine.civic_scenarios not present in /home/user/GOV_DIPLOME",
    "seconds": 0.0
   },
@@ -1038,7 +1060,7 @@
    ],
    "title": "a brute force with one injected bug (unknown as allowed, oneway ignored, closures ignored, string time compare, end inclusive, denied as allowed) disagrees with the expectations",
    "message": "",
-   "seconds": 0.015
+   "seconds": 0.021
   },
   {
    "test": "test_scenarios_tinygraph.TinyGraphSelfCheck.test_error_cases_are_invalid_for_exactly_their_stated_reason",
@@ -1048,7 +1070,7 @@
    ],
    "title": "each error case has exactly one defect of its kind; every result case is valid input",
    "message": "",
-   "seconds": 0.003
+   "seconds": 0.005
   },
   {
    "test": "test_scenarios_tinygraph.TinyGraphSelfCheck.test_every_result_case_has_an_owning_product_test",
@@ -1078,7 +1100,7 @@
    ],
    "title": "every hand-written status/length/tie flag equals the exhaustive simple-path enumeration",
    "message": "",
-   "seconds": 0.004
+   "seconds": 0.005
   },
   {
    "test": "test_scenarios_tinygraph.TinyGraphSelfCheck.test_hand_paths_are_valid_routes_summing_to_length",
@@ -1088,33 +1110,40 @@
    ],
    "title": "each hand-written path_edges is an open strict route of the stated length, and every derivation states its number",
    "message": "",
-   "seconds": 0.019
+   "seconds": 0.028
   }
  ],
  "journal": [
   {
-   "cmd": "/usr/bin/python3 -I -B /home/user/GOV_DIPLOME/tests/civic/R10/r10lib/oracle/server.py create-editor --db /tmp/r10-civic-q8y_3jjp/civic.sqlite3 --username r10_editor_alpha",
+   "cmd": "/usr/bin/python3 -I -B /home/user/GOV_DIPLOME/tests/civic/R10/r10lib/oracle/server.py create-editor --db /tmp/r10-civic-3bvm2h_u/civic.sqlite3 --username r10_editor_alpha",
    "cwd": "/home/user/GOV_DIPLOME/tests/civic/R10",
    "exit_code": 0,
    "seconds": 0.77,
    "interactive": true
   },
   {
-   "cmd": "/usr/bin/python3 -I -B /home/user/GOV_DIPLOME/tests/civic/R10/r10lib/oracle/server.py create-editor --db /tmp/r10-civic-q8y_3jjp/civic.sqlite3 --username r10_editor_beta",
+   "cmd": "/usr/bin/python3 -I -B /home/user/GOV_DIPLOME/tests/civic/R10/r10lib/oracle/server.py create-editor --db /tmp/r10-civic-3bvm2h_u/civic.sqlite3 --username r10_editor_beta",
    "cwd": "/home/user/GOV_DIPLOME/tests/civic/R10",
    "exit_code": 0,
    "seconds": 0.77,
    "interactive": true
   },
   {
-   "cmd": "/usr/bin/python3 -I -B /home/user/GOV_DIPLOME/tests/civic/R10/r10lib/oracle/server.py serve --db /tmp/r10-civic-q8y_3jjp/civic.sqlite3 --port 58557",
+   "cmd": "/usr/bin/python3 -I -B /home/user/GOV_DIPLOME/tests/civic/R10/r10lib/oracle/server.py serve --db /tmp/r10-civic-3bvm2h_u/civic.sqlite3 --port 36339",
    "cwd": "/home/user/GOV_DIPLOME/tests/civic/R10",
    "exit_code": null,
    "state": "running",
    "seconds_to_ready": 0.21
   },
   {
-   "cmd": "/usr/bin/python3 -I -B /home/user/GOV_DIPLOME/tests/civic/R10/r10lib/oracle/server.py serve --db /tmp/r10-civic-q8y_3jjp/civic.sqlite3 --port 58557",
+   "cmd": "/usr/bin/python3 -I -B /home/user/GOV_DIPLOME/tests/civic/R10/r10lib/oracle/server.py serve --db /tmp/r10-civic-3bvm2h_u/civic.sqlite3 --port 36339",
+   "cwd": "/home/user/GOV_DIPLOME/tests/civic/R10",
+   "exit_code": null,
+   "state": "running",
+   "seconds_to_ready": 0.2
+  },
+  {
+   "cmd": "/usr/bin/python3 -I -B /home/user/GOV_DIPLOME/tests/civic/R10/r10lib/oracle/server.py serve --db /tmp/r10-civic-3bvm2h_u/civic.sqlite3 --port 36339",
    "cwd": "/home/user/GOV_DIPLOME/tests/civic/R10",
    "exit_code": null,
    "state": "running",

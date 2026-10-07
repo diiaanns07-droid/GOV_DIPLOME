@@ -35,3 +35,6 @@
 | 04:13 | `integrated_checks.py --out runs/integrated-extra-8c6add9.json` | 0 | H6 даты прослеживаются, бюджет не 0, template; O001 подтверждено на API |
 | 04:14 | `run_acceptance.py --pattern test_scenarios_tinygraph.py` (R10_CODE_ROOT=wt-r07-d77ec45) | 0 | 19/19 PASS |
 | 04:15 | seed-demo + `app.py` (pid остановлен) + `probe.cjs` 1440/390 | 0 | 1 canvas, светлый фон, нет staff-вызовов; подложка/attribution NOT_RUN (сеть) |
+| 04:31 | `python3 -I -B tests/civic/R10/mutation_selftest.py` (финальный набор после ревью) | 0 | 28/28 мутантов убито, базовый прогон 52/52 |
+| 04:34 | `run_acceptance.py --label r01-8c6add9` (финальный набор) | 0 | 82 PASS / 0 FAIL / 0 NOT_RUN |
+| 04:35 | `run_acceptance.py --label oracle-clean` (финальный набор) | 0 | см. runs/oracle-clean.json |
