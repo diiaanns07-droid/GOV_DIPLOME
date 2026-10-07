@@ -72,7 +72,7 @@ def bulk_fixtures(n, same_spot):
                     "description": "Синтетическая запись теста R03 (раунд 13).", "status": "planned",
                     "geometry": {"type": "Point", "coordinates": coords}, "geometry_precision": "approximate",
                     "schedule": {"planned_start": "2026-10-01", "original_planned_end": None, "current_planned_end": "2026-11-30",
-                                 "actual_start": None, "actual_end": None},
+                                 "actual_end": None},
                     "budget": {"amount_kzt": None, "basis": "unknown", "source_id": None},
                     "responsible": {"organization": None, "public_contact": None},
                     "evidence_type": "synthetic", "source_refs": [], "evidence_notes": "Тест R03."})

@@ -29,6 +29,7 @@
   const INTERACTIVE = [L.point, L.pointHalo, L.line, L.lineApprox, L.lineCasing, L.areaFill];
   const STORAGE_KEY = "civic-r03:filters:v1";
   const HASH_KEY = "civic-object";
+  const PICK_MAX = 50;   // candidates listed in the overlap chooser
   const SVGNS = "http://www.w3.org/2000/svg";
   const MOBILE_QUERY = "(max-width: 760px)";
   const MAX_PAGES = 20;
@@ -956,7 +957,12 @@
       saveListScroll();
       // A second chooser opened over the first keeps the first one's origin (card or list) for «Отмена».
       const origin = st.view === "pick" && st.pick ? st.pick : { prevView: st.view, prevId: st.selectedId };
-      st.pick = { ids: ids.slice(0, 50), more: Math.max(0, ids.length - 50), prevView: origin.prevView, prevId: origin.prevId };
+      // Records at exactly the same place never separate by zooming in: say so instead of «приблизьте».
+      const shown = ids.slice(0, PICK_MAX), rest = ids.slice(PICK_MAX);
+      const key = (id) => { const it = findItem(id); return it && it.bbox ? it.bbox.join(",") : "?"; };
+      const shownKeys = new Set(shown.map(key));
+      const sameSpot = rest.length > 0 && rest.every((id) => shownKeys.has(key(id)));
+      st.pick = { ids: shown, more: rest.length, sameSpot, prevView: origin.prevView, prevId: origin.prevId };
       st.view = "pick";
       if (isMobile() && layout === "overlay" && st.sheet === "peek") setSheet("half");
       renderCard(true);
@@ -994,7 +1000,8 @@
           h("button", { type: "button", class: P + "btn " + P + "btn-quiet", "data-r03-action": "pick-cancel" }, svgIcon(ICON.back), "Отмена"),
           map ? h("button", { type: "button", class: P + "btn " + P + "btn-quiet", "data-r03-action": "pick-fit" }, svgIcon(ICON.pin), "Приблизить все") : null),
         h("h3", { class: P + "card-title", tabindex: "-1", text: "Здесь " + plural(p.ids.length, "объект", "объекта", "объектов") + " рядом" }),
-        h("p", { class: P + "hint", text: "Они перекрывают друг друга на карте. Выберите нужный." + (p.more ? " Ещё " + p.more + " — приблизьте карту." : "") }),
+        h("p", { class: P + "hint", text: "Они перекрывают друг друга на карте. Выберите нужный." +
+          (!p.more ? "" : p.sameSpot ? " Ещё " + p.more + " в этой же точке — они есть в общем списке (поиск по названию)." : " Ещё " + p.more + " — приблизьте карту.") }),
         ul);
       if (focus) focusCard();
     }

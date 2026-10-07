@@ -1,0 +1,128 @@
+{
+ "sha": "1ef06d61aec2856f4b10f5491002614d4696b3f4",
+ "web_civic_map_dirty": "M web/civic/map/civic-map.js",
+ "environment": "Linux container, Chromium (Playwright) with SwiftShader, OpenFreeMap blocked by proxy",
+ "base": "http://127.0.0.1:36995/",
+ "at": "2026-10-07T17:27:18.367Z",
+ "summary": {
+  "pass": 12,
+  "fail": 0,
+  "not_run": 1
+ },
+ "checks": [
+  {
+   "name": "render: one map canvas with 13 civic-r03 layers and the demo ring image",
+   "status": "PASS",
+   "detail": {
+    "canvases": 1,
+    "layers": 13,
+    "ring": true,
+    "offline": true
+   }
+  },
+  {
+   "name": "OpenFreeMap basemap and 3D buildings",
+   "status": "NOT_RUN",
+   "detail": "tiles.openfreemap.org not reachable from this environment (proxy 403) — offline light background used"
+  },
+  {
+   "name": "3D toggle: camera tilts, R03 layers stay",
+   "status": "PASS",
+   "detail": {
+    "pitch": 52,
+    "layers": 13
+   }
+  },
+  {
+   "name": "host style swap: layers and demo ring re-added, no missing-image warning",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "while the editor draws: a click on a public object adds a vertex, does not open its card or change #object=",
+   "status": "PASS",
+   "detail": {
+    "before": {
+     "view": "list",
+     "title": null,
+     "hash": "",
+     "cursor": "crosshair"
+    },
+    "during": {
+     "view": "list",
+     "title": null,
+     "hash": "",
+     "cursor": "crosshair"
+    }
+   }
+  },
+  {
+   "name": "while the editor draws: the crosshair stays (no public hover cursor/tooltip)",
+   "status": "PASS",
+   "detail": {
+    "view": "list",
+    "title": null,
+    "hash": "",
+    "cursor": "crosshair"
+   }
+  },
+  {
+   "name": "after cancel: the same click selects a public object again",
+   "status": "PASS",
+   "detail": {
+    "view": "card",
+    "title": "Демо: строительство с неизвестным статусом",
+    "hash": "#object=demo-astana-construction-unknown",
+    "cursor": "pointer"
+   }
+  },
+  {
+   "name": "no page errors (desktop)",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "deep link #object= opens the card and survives reload",
+   "status": "PASS",
+   "detail": {
+    "first": {
+     "view": "card",
+     "title": "Демо: ремонт участка дороги со сдвигом срока",
+     "hash": "#object=demo-astana-roadworks-delay",
+     "cursor": ""
+    },
+    "again": {
+     "view": "card",
+     "title": "Демо: ремонт участка дороги со сдвигом срока",
+     "hash": "#object=demo-astana-roadworks-delay",
+     "cursor": ""
+    }
+   }
+  },
+  {
+   "name": "link to an object that is not (or no longer) published: «Объект не найден … сняли с публикации»",
+   "status": "PASS",
+   "detail": "Все объекты\nОбъект не найден\n\nВозможно, его сняли с публикации или ссылка устарела."
+  },
+  {
+   "name": "no page errors (deep link)",
+   "status": "PASS",
+   "detail": []
+  },
+  {
+   "name": "phone: list item opens the card",
+   "status": "PASS",
+   "detail": {
+    "view": "card",
+    "title": "Демо: ремонт участка дороги со сдвигом срока",
+    "hash": "#object=demo-astana-roadworks-delay",
+    "cursor": ""
+   }
+  },
+  {
+   "name": "no page errors (phone)",
+   "status": "PASS",
+   "detail": []
+  }
+ ]
+}
