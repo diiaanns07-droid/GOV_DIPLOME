@@ -857,12 +857,13 @@ class FeedbackService:
         waits: list[tuple[float, str]] = []
         for name, where, params, window, maximum in windows:
             since = now_ts - window
-            count = db.execute(f"SELECT COUNT(*) FROM feedback_messages WHERE {where}created_ts >= ?",
+            # Окно открыто слева: ровно через Retry-After секунд старейшее сообщение уже не считается.
+            count = db.execute(f"SELECT COUNT(*) FROM feedback_messages WHERE {where}created_ts > ?",
                                (*params, since)).fetchone()[0]
             if count < maximum:
                 continue
             # Лимит освободится, когда из окна выйдет (count - maximum + 1)-е по старшинству сообщение.
-            oldest = db.execute(f"SELECT created_ts FROM feedback_messages WHERE {where}created_ts >= ? "
+            oldest = db.execute(f"SELECT created_ts FROM feedback_messages WHERE {where}created_ts > ? "
                                 "ORDER BY created_ts ASC LIMIT 1 OFFSET ?",
                                 (*params, since, count - maximum)).fetchone()
             free_at = (oldest[0] if oldest else now_ts) + window

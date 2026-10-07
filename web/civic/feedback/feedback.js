@@ -110,6 +110,74 @@
     drafts.delete(key);
     try { if (window.sessionStorage) window.sessionStorage.removeItem(DRAFT_PREFIX + key); } catch (e) { /* нет хранилища */ }
   }
+
+  // Round 13: номера квитанций этой вкладки (без текста) — чтобы после перезагрузки житель снова
+  // увидел статус. sessionStorage исчезает при закрытии вкладки; clearDrafts() чистит при выходе.
+  var RECEIPTS_PREFIX = "civic-r06-receipts:";
+  var RECEIPT_ID = /^fbr_[A-Za-z0-9_-]{16,64}$/;
+  var RECEIPT_HASH = "civic-receipt";
+  var MAX_RECEIPTS = 5;
+
+  function storedReceipts(key) {
+    try {
+      var raw = window.sessionStorage && window.sessionStorage.getItem(RECEIPTS_PREFIX + key);
+      var value = raw ? JSON.parse(raw) : null;
+      var ids = value && Array.isArray(value.ids) ? value.ids.filter(function (id) { return typeof id === "string" && RECEIPT_ID.test(id); }) : [];
+      return { ids: ids.slice(-MAX_RECEIPTS), showing: value && ids.indexOf(value.showing) >= 0 ? value.showing : null };
+    } catch (e) {
+      return { ids: [], showing: null };
+    }
+  }
+
+  function storeReceipts(key, value) {
+    try {
+      if (!window.sessionStorage) return;
+      if (!value.ids.length) window.sessionStorage.removeItem(RECEIPTS_PREFIX + key);
+      else window.sessionStorage.setItem(RECEIPTS_PREFIX + key, JSON.stringify({ ids: value.ids.slice(-MAX_RECEIPTS), showing: value.showing }));
+    } catch (e) { /* хранилище недоступно — квитанция видна до перезагрузки */ }
+  }
+
+  // Номер квитанции из ссылки: только из #фрагмента — он не уходит на сервер, в логи и Referer.
+  function receiptFromLocation(hash) {
+    var source = typeof hash === "string" ? hash : (window.location && window.location.hash) || "";
+    var match = new RegExp("(?:^#|&)" + RECEIPT_HASH + "=([^&]*)").exec(source);
+    if (!match) return null;
+    var value;
+    try { value = decodeURIComponent(match[1]); } catch (e) { return null; }
+    return RECEIPT_ID.test(value) ? value : null;
+  }
+
+  function parseReceiptInput(value) {
+    var text = String(value || "").trim();
+    if (RECEIPT_ID.test(text)) return text;
+    var hashAt = text.indexOf("#");
+    return hashAt >= 0 ? receiptFromLocation(text.slice(hashAt)) : null;
+  }
+
+  function receiptLink(receiptId) {
+    var loc = window.location;
+    return loc.origin + loc.pathname + loc.search + "#" + RECEIPT_HASH + "=" + encodeURIComponent(receiptId);
+  }
+
+  // Черновики сотрудника — только в памяти страницы (переживают повторный вход после истечения
+  // сессии без перезагрузки, но не попадают в хранилища браузера).
+  var staffDrafts = new Map();
+
+  // Выход из учётной записи / «забыть меня на этом устройстве»: черновики и квитанции вкладки.
+  function clearDrafts() {
+    drafts.clear();
+    staffDrafts.clear();
+    try {
+      var store = window.sessionStorage;
+      if (!store) return;
+      var doomed = [];
+      for (var i = 0; i < store.length; i += 1) {
+        var name = store.key(i);
+        if (name && (name.indexOf(DRAFT_PREFIX) === 0 || name.indexOf(RECEIPTS_PREFIX) === 0)) doomed.push(name);
+      }
+      doomed.forEach(function (name) { store.removeItem(name); });
+    } catch (e) { /* нет хранилища */ }
+  }
   var uid = 0;
 
   function nextId(name) {
@@ -174,6 +242,8 @@
       currentRevision: (err && err.current_revision) || source.current_revision || null,
       previousReceipt: (err && err.previous_receipt) || source.previous_receipt || null,
       allowed: (err && err.allowed) || source.allowed || null,
+      retryAfter: Number((err && err.retry_after_s) || source.retry_after_s) || null,
+      current: (err && err.current) || source.current || null,
     };
   }
 
@@ -183,7 +253,8 @@
     if (info.status === 401) return "Сессия истекла или вы вышли. Войдите снова — действие не выполнено.";
     if (info.status === 403) return info.message || "Действие запрещено. Обновите страницу.";
     if (info.status === 413) return "Слишком большой текст.";
-    if (info.status === 429) return "Слишком много сообщений подряд. Попробуйте позже — текст сохранён.";
+    if (info.status === 429) return info.message || ("Слишком много сообщений подряд. " +
+      (info.retryAfter ? "Повторите через " + Math.ceil(info.retryAfter / 60) + " мин" : "Попробуйте позже") + " — текст сохранён.");
     if (info.status >= 500) return "Сервис временно недоступен. Текст сохранён в форме — повторите позже.";
     return info.message || fallback;
   }
@@ -482,7 +553,8 @@
           sending = false;
           if (life.destroyed) return;
           dropDraft(key);
-          showReceipt(receipt);
+          rememberReceipt(receipt.receipt_id);
+          showReceipt(receipt, true);
         },
         function (err) {
           sending = false;
@@ -501,7 +573,14 @@
             var prev = info.previousReceipt;
             var resend = el("button", { type: "button", className: P + "-link", text: "Отправить изменённый текст отдельным сообщением" });
             on(resend, "click", function () { draft.requestId = requestId(); saveDraft(); send(); });
-            setStatus("Предыдущая версия уже сохранена" + (prev && prev.receipt_id ? " (квитанция " + prev.receipt_id + ")" : "") + ". ", "warning", resend);
+            var choices = el("span", {}, [resend]);
+            if (prev && prev.receipt_id && RECEIPT_ID.test(prev.receipt_id)) {
+              var openPrev = el("button", { type: "button", className: P + "-link", text: "Открыть квитанцию сохранённой версии" });
+              on(openPrev, "click", function () { rememberReceipt(prev.receipt_id); showReceipt(prev, false); });
+              choices.appendChild(document.createTextNode(" "));
+              choices.appendChild(openPrev);
+            }
+            setStatus("Предыдущая версия уже сохранена" + (prev && prev.receipt_id ? " (квитанция " + prev.receipt_id + ")" : "") + ". ", "warning", choices);
             return;
           }
           if (info.fields) Object.keys(info.fields).forEach(function (name) { fieldError(name, info.fields[name]); });
@@ -512,73 +591,49 @@
 
     on(form, "submit", function (event) { event.preventDefault(); send(); });
 
-    function showReceipt(receipt) {
+    function rememberReceipt(id) {
+      var value = storedReceipts(key);
+      if (value.ids.indexOf(id) < 0) value.ids.push(id);
+      value.ids = value.ids.slice(-MAX_RECEIPTS);
+      value.showing = id;
+      storeReceipts(key, value);
+    }
+
+    // После отправки (и после перезагрузки вкладки) — карточка квитанции вместо формы.
+    function showReceipt(receipt, fresh) {
       lastReceipt = receipt;
       clear(formSection);
-      var receiptBox = el("div", { className: P + "-receipt", role: "status", tabIndex: -1 });
-      var receiptStatus = el("p", { className: P + "-receipt-status", text: "Статус: " + (receipt.moderation_label || "ожидает проверки модератором платформы") });
-      var actionStatus = el("div", { className: P + "-status", role: "status", "aria-live": "polite" });
-      receiptBox.appendChild(el("h3", { className: P + "-title", text: "Сообщение сохранено на платформе" }));
-      receiptBox.appendChild(el("p", {}, [
-        "Номер квитанции: ",
-        el("code", { className: P + "-receipt-id", text: receipt.receipt_id }),
-      ]));
-      receiptBox.appendChild(el("p", { className: P + "-muted", text: "Сохраните номер: по нему можно проверить статус или отозвать согласие на публикацию." }));
-      receiptBox.appendChild(receiptStatus);
-      receiptBox.appendChild(el("p", { className: P + "-official", text: receipt.notice || OFFICIAL_NOTICE }));
-      (receipt.warnings || []).forEach(function (warning) {
-        receiptBox.appendChild(el("p", { className: P + "-status " + P + "-status-warning", text: warning }));
-      });
-      var actions = el("div", { className: P + "-actions" });
-      var check = el("button", { type: "button", className: P + "-link", text: "Проверить статус" });
-      on(check, "click", function () {
-        check.disabled = true;
-        api.request("POST", "/feedback/receipt", { receipt_id: receipt.receipt_id }).then(
-          function (data) {
-            check.disabled = false;
-            if (life.destroyed) return;
-            receiptStatus.textContent = "Статус: " + data.moderation_label + (data.handling_label ? " · обработка: " + data.handling_label : "") +
-              (data.is_public ? " · текст опубликован" : "");
-            clear(actionStatus);
-            if (data.public_reply) {
-              actionStatus.appendChild(el("span", { text: "Ответ платформы: " }));
-              actionStatus.appendChild(el("span", { text: data.public_reply }));
-            }
-          },
-          function (err) {
-            check.disabled = false;
-            if (!life.destroyed) actionStatus.textContent = receiptError(err, "Не удалось проверить статус.");
-          }
-        );
-      });
-      actions.appendChild(check);
-      if (receipt.consent_public) {
-        var withdraw = el("button", { type: "button", className: P + "-link", text: "Отозвать согласие на публикацию" });
-        on(withdraw, "click", function () {
-          withdraw.disabled = true;
-          api.request("POST", "/feedback/withdraw-consent", { receipt_id: receipt.receipt_id }).then(
-            function () {
-              if (life.destroyed) return;
-              withdraw.remove();
-              actionStatus.textContent = "Согласие отозвано: текст не будет показан публично.";
-              loadPublic();
-            },
-            function (err) {
-              withdraw.disabled = false;
-              if (!life.destroyed) actionStatus.textContent = receiptError(err, "Не удалось отозвать согласие.");
-            }
-          );
-        });
-        actions.appendChild(withdraw);
-      }
       var again = el("button", { type: "button", className: P + "-link", text: "Написать ещё одно сообщение" });
-      on(again, "click", function () { instance.destroy(); Object.assign(instance, mount(options)); });
-      actions.appendChild(again);
-      receiptBox.appendChild(actions);
-      receiptBox.appendChild(actionStatus);
-      formSection.appendChild(receiptBox);
-      if (receiptBox.focus) receiptBox.focus();
+      on(again, "click", function () {
+        var value = storedReceipts(key);
+        value.showing = null;
+        storeReceipts(key, value);
+        instance.destroy();
+        Object.assign(instance, mount(options));
+      });
+      var card = renderReceiptCard({ api: api, on: on, life: life, receiptId: receipt.receipt_id, receipt: receipt,
+        fresh: fresh, extraActions: [again], onWithdrawn: function () { loadPublic(); } });
+      formSection.appendChild(card.node);
+      if (fresh && card.node.focus) card.node.focus();
     }
+
+    // Квитанции, отправленные из этой вкладки ранее (только номера, без текста).
+    function renderOwnReceipts(ids) {
+      if (!ids.length) return;
+      var list = el("ul", { className: P + "-own-receipts" });
+      ids.slice().reverse().forEach(function (id) {
+        var open = el("button", { type: "button", className: P + "-link", text: "Статус сообщения " + id.slice(0, 10) + "…" });
+        on(open, "click", function () { rememberReceipt(id); showReceipt({ receipt_id: id }, false); });
+        list.appendChild(el("li", {}, [open]));
+      });
+      formSection.insertBefore(el("details", { className: P + "-own" }, [
+        el("summary", { text: "Ваши сообщения из этой вкладки: " + ids.length }), list,
+      ]), formSection.firstChild);
+    }
+
+    var ownReceipts = storedReceipts(key);
+    if (ownReceipts.showing) showReceipt({ receipt_id: ownReceipts.showing }, false);
+    else renderOwnReceipts(ownReceipts.ids);
 
     loadPublic();
     var instance = {
@@ -587,6 +642,169 @@
       lastReceipt: function () { return lastReceipt; },
     };
     return instance;
+  }
+
+  // ------------------------------------------------------------------ receipt
+  var RECEIPT_EVENT_CLASS = { submitted: "", moderation: "", handling: "", reply: "", consent_withdrawn: "" };
+
+  // Карточка квитанции: статус публикации и обработки, ответ платформы, хронология без
+  // исполнителей, причин, служебных заметок и номера исходного сообщения (их сервер не отдаёт).
+  function renderReceiptCard(opts) {
+    var on = opts.on;
+    var api = opts.api;
+    var id = opts.receiptId;
+    var box = el("div", { className: P + "-receipt", role: "region", "aria-label": "Квитанция сообщения", tabIndex: -1 });
+    var statusLine = el("p", { className: P + "-receipt-status", text: "Статус загружается…" });
+    var handlingLine = el("p", { className: P + "-receipt-handling" });
+    var replyBox = el("div", { className: P + "-receipt-reply", hidden: true });
+    var objectNote = el("p", { className: P + "-status " + P + "-status-warning", hidden: true });
+    var timeline = el("ol", { className: P + "-timeline", "aria-label": "Хронология сообщения" });
+    var actionStatus = el("div", { className: P + "-status", role: "status", "aria-live": "polite" });
+    var link = receiptLink(id);
+    var linkInput = el("input", { type: "text", readOnly: true, value: link, className: P + "-receipt-link", "aria-label": "Ссылка для проверки статуса" });
+    var copy = el("button", { type: "button", className: P + "-link", text: "Скопировать ссылку" });
+    on(copy, "click", function () {
+      var done = function () { actionStatus.textContent = "Ссылка скопирована."; };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(done, function () { linkInput.select(); });
+      else linkInput.select();
+    });
+
+    box.appendChild(el("h3", { className: P + "-title", text: opts.fresh ? "Сообщение сохранено на платформе" : "Ваше сообщение на платформе" }));
+    box.appendChild(el("p", {}, ["Номер квитанции: ", el("code", { className: P + "-receipt-id", text: id })]));
+    box.appendChild(el("p", { className: P + "-muted", text: "Сохраните номер или ссылку: по ним можно проверить статус и ответ платформы или отозвать согласие на публикацию. Не публикуйте ссылку — кто её знает, видит статус." }));
+    box.appendChild(el("div", { className: P + "-receipt-link-row" }, [linkInput, copy]));
+    box.appendChild(statusLine);
+    box.appendChild(handlingLine);
+    box.appendChild(replyBox);
+    box.appendChild(objectNote);
+    box.appendChild(el("p", { className: P + "-official", text: (opts.receipt && opts.receipt.notice) || OFFICIAL_NOTICE }));
+    ((opts.receipt && opts.receipt.warnings) || []).forEach(function (warning) {
+      box.appendChild(el("p", { className: P + "-status " + P + "-status-warning", text: warning }));
+    });
+    box.appendChild(el("details", { className: P + "-timeline-wrap" }, [el("summary", { text: "Хронология" }), timeline]));
+    var actions = el("div", { className: P + "-actions" });
+    var refresh = el("button", { type: "button", className: P + "-link", text: "Обновить статус" });
+    var withdraw = el("button", { type: "button", className: P + "-link", text: "Отозвать согласие на публикацию", hidden: true });
+    actions.appendChild(refresh);
+    actions.appendChild(withdraw);
+    (opts.extraActions || []).forEach(function (node) { actions.appendChild(node); });
+    box.appendChild(actions);
+    box.appendChild(actionStatus);
+
+    function apply(data) {
+      if (data.moderation_label) {
+        statusLine.textContent = "Публикация: " + data.moderation_label +
+          (data.is_public ? " · текст опубликован на карте" : data.consent_public === false ? " · текст не публикуется (нет согласия)" : "");
+      }
+      if (data.handling_label) handlingLine.textContent = "Обработка на платформе: " + data.handling_label;
+      clear(replyBox);
+      replyBox.hidden = !data.public_reply;
+      if (data.public_reply) {
+        replyBox.appendChild(el("strong", { text: "Ответ платформы: " }));
+        replyBox.appendChild(el("span", { text: data.public_reply }));
+        if (!data.is_public) replyBox.appendChild(el("small", { className: P + "-muted", text: " (виден только по этой квитанции)" }));
+      }
+      objectNote.hidden = !data.object_note;
+      objectNote.textContent = data.object_note || "";
+      if (Array.isArray(data.timeline)) {
+        clear(timeline);
+        data.timeline.forEach(function (entry) {
+          timeline.appendChild(el("li", { className: RECEIPT_EVENT_CLASS[entry.event] === undefined ? null : P + "-timeline-" + entry.event }, [
+            el("time", { dateTime: entry.at || "", text: formatDate(entry.at) }), " — " + entry.label,
+          ]));
+        });
+      }
+      withdraw.hidden = data.consent_public !== true;
+    }
+
+    function load() {
+      refresh.disabled = true;
+      return api.request("POST", "/feedback/receipt", { receipt_id: id }).then(
+        function (data) {
+          refresh.disabled = false;
+          if (opts.life.destroyed) return;
+          apply(data);
+          actionStatus.textContent = "";
+        },
+        function (err) {
+          refresh.disabled = false;
+          if (opts.life.destroyed) return;
+          var info = errorInfo(err);
+          if (info.code === "receipt_not_found") statusLine.textContent = "Квитанция не найдена. Проверьте номер или ссылку.";
+          else actionStatus.textContent = receiptError(err, "Не удалось проверить статус. Номер квитанции сохраните.");
+        }
+      );
+    }
+
+    on(refresh, "click", function () { load(); });
+    on(withdraw, "click", function () {
+      withdraw.disabled = true;
+      api.request("POST", "/feedback/withdraw-consent", { receipt_id: id }).then(
+        function (data) {
+          withdraw.disabled = false;
+          if (opts.life.destroyed) return;
+          apply(data);
+          withdraw.hidden = true;
+          actionStatus.textContent = "Согласие отозвано: текст не будет показан публично.";
+          if (opts.onWithdrawn) opts.onWithdrawn();
+          load();
+        },
+        function (err) {
+          withdraw.disabled = false;
+          if (!opts.life.destroyed) actionStatus.textContent = receiptError(err, "Не удалось отозвать согласие.");
+        }
+      );
+    });
+    if (opts.receipt && opts.receipt.moderation_label) apply(opts.receipt);
+    load();
+    return { node: box, reload: load };
+  }
+
+  // Отдельная страница/панель проверки статуса по ссылке (#civic-receipt=…) или по номеру.
+  function mountReceipt(options) {
+    options = options || {};
+    var root = options.root;
+    if (!root || !root.appendChild) throw new Error("CivicFeedback.mountReceipt: root обязателен");
+    var api = options.api || createFetchApi();
+    var life = lifecycle(root);
+    var on = life.on;
+    clear(root);
+    root.classList.add(P);
+    var wrap = el("section", { className: P + "-receipt-page", "aria-label": "Проверка статуса сообщения" });
+    root.appendChild(wrap);
+
+    function show(id) {
+      clear(wrap);
+      var other = el("button", { type: "button", className: P + "-link", text: "Проверить другую квитанцию" });
+      on(other, "click", function () { ask(); });
+      wrap.appendChild(renderReceiptCard({ api: api, on: on, life: life, receiptId: id, extraActions: [other] }).node);
+    }
+
+    function ask() {
+      clear(wrap);
+      var inputId = nextId("receipt");
+      var input = el("input", { id: inputId, type: "text", maxLength: 300, autocomplete: "off", placeholder: "fbr_… или ссылка из квитанции" });
+      var status = el("div", { className: P + "-status", role: "status", "aria-live": "polite" });
+      var form = el("form", { className: P + "-receipt-form", noValidate: true }, [
+        el("h3", { className: P + "-title", text: "Статус сообщения по квитанции" }),
+        el("label", { className: P + "-label", htmlFor: inputId, text: "Номер квитанции или ссылка" }),
+        input,
+        el("button", { type: "submit", className: P + "-primary", text: "Проверить" }),
+        status,
+      ]);
+      on(form, "submit", function (event) {
+        event.preventDefault();
+        var id = parseReceiptInput(input.value);
+        if (!id) { status.textContent = "Это не похоже на номер квитанции (fbr_…)."; return; }
+        show(id);
+      });
+      wrap.appendChild(form);
+    }
+
+    var initial = options.receiptId && RECEIPT_ID.test(options.receiptId) ? options.receiptId : receiptFromLocation();
+    if (initial) show(initial);
+    else ask();
+    return { destroy: function () { life.destroy(); } };
   }
 
   // ---------------------------------------------------------------- moderation
@@ -742,7 +960,7 @@
       });
     }
 
-    function select(id) {
+    function select(id, carry) {
       selectedId = id;
       Array.prototype.forEach.call(list.querySelectorAll("." + P + "-queue-item"), function (node) {
         node.setAttribute("aria-pressed", String(node.dataset.feedbackId === id));
@@ -750,7 +968,7 @@
       clear(detail);
       detail.appendChild(el("p", { className: P + "-muted", text: "Загрузка сообщения…" }));
       return api.request("GET", "/staff/feedback/" + encodeURIComponent(id)).then(
-        function (data) { if (!life.destroyed && selectedId === id) renderDetail(data); },
+        function (data) { if (!life.destroyed && selectedId === id) renderDetail(data, carry || staffDrafts.get(id) || null); },
         function (err) {
           if (life.destroyed) return;
           var info = errorInfo(err);
@@ -782,6 +1000,36 @@
       return out.join("");
     }
 
+    // Введённое сотрудником в формах карточки (по data-field) — чтобы не потерять при 409 и
+    // при истёкшей сессии. Берутся только изменённые сотрудником поля: подставленный старый ответ
+    // не должен затереть более новый ответ коллеги. Хранится только в памяти страницы.
+    function markInitial() {
+      Array.prototype.forEach.call(detail.querySelectorAll("[data-field]"), function (node) {
+        node.dataset.initial = node.type === "radio" ? String(node.checked) : node.value;
+      });
+    }
+
+    function collectInputs() {
+      var values = {};
+      Array.prototype.forEach.call(detail.querySelectorAll("[data-field]"), function (node) {
+        if (node.type === "radio") {
+          if (node.checked && node.dataset.initial !== "true") values[node.dataset.field] = node.value;
+        } else if (node.value !== node.dataset.initial) values[node.dataset.field] = node.value;
+      });
+      return values;
+    }
+
+    function restoreInputs(values) {
+      Object.keys(values || {}).forEach(function (field) {
+        Array.prototype.forEach.call(detail.querySelectorAll("[data-field]"), function (node) {
+          if (node.dataset.field !== field) return;
+          if (node.type === "radio") node.checked = node.value === values[field];
+          else node.value = values[field];
+          if (node.dispatchEvent) node.dispatchEvent(new Event("change"));
+        });
+      });
+    }
+
     // Общая отправка действия сотрудника: защита от двойного клика, 409, ошибки полей.
     function submitAction(form, button, status, item, body, done) {
       if (form.dataset.busy === "1") return;
@@ -789,29 +1037,45 @@
       button.disabled = true;
       status.textContent = "Сохраняем…";
       api.request("POST", "/staff/feedback/" + encodeURIComponent(item.id) + "/moderate", body).then(
-        function () {
+        function (data) {
           form.dataset.busy = "";
+          staffDrafts.delete(item.id);
           if (life.destroyed) return;
           refresh();
-          select(item.id).then(function () { if (done) done(); });
+          select(item.id).then(function () {
+            if (data && data.warnings && data.warnings.length) {
+              detail.insertBefore(el("p", { className: P + "-warning-text", text: "Сохранено. " + data.warnings.join(" ") }), detail.firstChild);
+            }
+            if (done) done();
+          });
         },
         function (err) {
           form.dataset.busy = "";
           button.disabled = false;
           if (life.destroyed) return;
           var info = errorInfo(err);
+          var typed = collectInputs();
           if (info.status === 409) {
-            status.textContent = "Сообщение уже изменено другим действием. Карточка обновлена — проверьте и повторите.";
-            select(item.id);
+            // Ничего не перезаписано: карточка перечитывается, введённый текст переносится в неё.
+            var current = info.current || {};
+            var last = current.last_action;
+            var conflict = "Сообщение уже изменено" + (last ? " (" + (HISTORY_LABELS[last.action] || last.action) + (last.actor ? ", " + last.actor : "") + ", " + formatDate(last.at) + ")" : "") +
+              ". Сейчас: " + (current.handling_label || "") + (current.revision ? ", ревизия " + current.revision : "") +
+              ". Ваше действие не сохранено; ваш текст перенесён в обновлённую карточку — проверьте и отправьте снова.";
+            staffDrafts.set(item.id, typed);
+            select(item.id, typed).then(function () {
+              detail.insertBefore(el("p", { className: P + "-warning-text " + P + "-conflict", role: "alert", text: conflict }), detail.firstChild);
+            });
             return;
           }
+          if (info.status === 401) staffDrafts.set(item.id, typed);   // после повторного входа текст вернётся
           var extra = info.fields ? " " + Object.keys(info.fields).map(function (k) { return info.fields[k]; }).join(" ") : "";
           status.textContent = staffError(err, "Не удалось сохранить.") + extra;
         }
       );
     }
 
-    function renderDetail(data) {
+    function renderDetail(data, carry) {
       var item = data.item;
       var object = data.object;
       clear(detail);
@@ -854,6 +1118,14 @@
       });
       if (onOpenObject || map) objectBox.appendChild(showButton);
       detail.appendChild(objectBox);
+      // Round 13: объект изменён/скрыт/удалён после отправки — привязка не переносится молча.
+      var binding = data.object_binding;
+      if (binding && binding.submitted_title && object && object.title && binding.submitted_title !== object.title) {
+        detail.appendChild(el("p", { className: P + "-muted", text: "При отправке объект назывался: «" + binding.submitted_title + "»." }));
+      }
+      ((binding && binding.warnings) || []).forEach(function (warning) {
+        detail.appendChild(el("p", { className: P + "-warning-text " + P + "-binding", text: warning }));
+      });
       if (map && item.geometry && window.maplibregl && window.maplibregl.Marker) {
         var markerNode = el("div", { className: P + "-marker", title: "Место из сообщения #" + item.id });
         marker = new window.maplibregl.Marker({ element: markerNode }).setLngLat(item.geometry.coordinates).addTo(map);
@@ -928,6 +1200,8 @@
         detail.appendChild(renderNoteForm(item));
       }
 
+      markInitial();
+      if (carry) restoreInputs(carry);
       if (!data.history) return;
       var history = el("ol", { className: P + "-history" });
       var notes = 0;
@@ -946,20 +1220,20 @@
       var form = el("form", { className: P + "-handling", noValidate: true });
       var next = item.handling_next || [];
       var statusId = nextId("handling");
-      var statusSelect = el("select", { id: statusId });
+      var statusSelect = el("select", { id: statusId, dataset: { field: "handling-status" } });
       statusSelect.appendChild(el("option", { value: "", text: "Выберите новый статус" }));
       next.forEach(function (key) { statusSelect.appendChild(el("option", { value: key, text: HANDLING_LABEL[key] || key })); });
       if (item.handling_status === "answered") statusSelect.appendChild(el("option", { value: "answered", text: "Дан ответ — изменить текст ответа" }));
       var dupId = nextId("dup");
-      var dup = el("input", { id: dupId, type: "text", inputMode: "numeric", maxLength: 12, placeholder: "номер, например 12" });
+      var dup = el("input", { id: dupId, type: "text", inputMode: "numeric", maxLength: 12, placeholder: "номер, например 12", dataset: { field: "handling-dup" } });
       var dupWrap = el("div", { className: P + "-dup-wrap", hidden: true }, [
         el("label", { className: P + "-label", htmlFor: dupId, text: "Номер исходного сообщения" }), dup,
       ]);
       var replyId = nextId("handling-reply");
-      var reply = el("textarea", { id: replyId, rows: 3, maxLength: 2000, placeholder: "Ответ платформы. Не обещайте сроки и работы, которые не подтверждены." });
+      var reply = el("textarea", { id: replyId, rows: 3, maxLength: 2000, placeholder: "Ответ платформы. Не обещайте сроки и работы, которые не подтверждены.", dataset: { field: "handling-reply" } });
       reply.value = item.public_reply || "";
       var reasonId = nextId("handling-reason");
-      var reason = el("textarea", { id: reasonId, rows: 2, maxLength: 500, placeholder: "Обоснование — видно только сотрудникам" });
+      var reason = el("textarea", { id: reasonId, rows: 2, maxLength: 500, placeholder: "Обоснование — видно только сотрудникам", dataset: { field: "handling-reason" } });
       var status = el("div", { className: P + "-status", role: "status", "aria-live": "polite" });
       var submit = el("button", { type: "submit", className: P + "-primary", text: "Сохранить статус" });
       on(statusSelect, "change", function () { dupWrap.hidden = statusSelect.value !== "duplicate"; });
@@ -1001,7 +1275,7 @@
       var catId = nextId("recat");
       var cat = el("select", { id: catId });
       CATEGORIES.forEach(function (c) { cat.appendChild(el("option", { value: c[0], text: c[1], selected: c[0] === current })); });
-      var reason = el("input", { type: "text", maxLength: 500, placeholder: "Почему категория другая", "aria-label": "Обоснование смены категории" });
+      var reason = el("input", { type: "text", maxLength: 500, placeholder: "Почему категория другая", "aria-label": "Обоснование смены категории", dataset: { field: "recat-reason" } });
       var status = el("div", { className: P + "-status", role: "status", "aria-live": "polite" });
       var submit = el("button", { type: "submit", className: P + "-link", text: "Исправить категорию" });
       form.appendChild(el("details", {}, [
@@ -1029,7 +1303,7 @@
     function renderNoteForm(item) {
       var form = el("form", { className: P + "-note", noValidate: true });
       var noteId = nextId("note");
-      var note = el("textarea", { id: noteId, rows: 2, maxLength: 1000, placeholder: "Служебная заметка: видна только сотрудникам, не публикуется и не отправляется автору" });
+      var note = el("textarea", { id: noteId, rows: 2, maxLength: 1000, placeholder: "Служебная заметка: видна только сотрудникам, не публикуется и не отправляется автору", dataset: { field: "note" } });
       var status = el("div", { className: P + "-status", role: "status", "aria-live": "polite" });
       var submit = el("button", { type: "submit", className: P + "-link", text: "Добавить заметку" });
       form.appendChild(el("label", { className: P + "-label", htmlFor: noteId, text: "Служебная заметка" }));
@@ -1047,16 +1321,16 @@
     function renderDecisionForm(item) {
       var form = el("form", { className: P + "-decision", noValidate: true });
       var actionName = nextId("action");
-      var approve = el("input", { type: "radio", name: actionName, value: "approve", checked: item.moderation !== "rejected" });
-      var reject = el("input", { type: "radio", name: actionName, value: "reject", checked: item.moderation === "rejected" });
+      var approve = el("input", { type: "radio", name: actionName, value: "approve", checked: item.moderation !== "rejected", dataset: { field: "decision-action" } });
+      var reject = el("input", { type: "radio", name: actionName, value: "reject", checked: item.moderation === "rejected", dataset: { field: "decision-action" } });
       var reasonId = nextId("reason");
-      var reason = el("textarea", { id: reasonId, rows: 2, maxLength: 500, required: true, placeholder: "Причина решения — видна только сотрудникам" });
+      var reason = el("textarea", { id: reasonId, rows: 2, maxLength: 500, required: true, placeholder: "Причина решения — видна только сотрудникам", dataset: { field: "decision-reason" } });
       var canPublish = item.consent_public && !item.consent_withdrawn_at;
       var publicTextId = nextId("public-text");
-      var publicText = el("textarea", { id: publicTextId, rows: 4, maxLength: 2000 });
+      var publicText = el("textarea", { id: publicTextId, rows: 4, maxLength: 2000, dataset: { field: "decision-public-text" } });
       publicText.value = item.public_text || item.text;
       var replyId = nextId("reply");
-      var reply = el("textarea", { id: replyId, rows: 3, maxLength: 2000, placeholder: "Необязательно. Не обещайте сроки и работы, которые не подтверждены." });
+      var reply = el("textarea", { id: replyId, rows: 3, maxLength: 2000, placeholder: "Необязательно. Не обещайте сроки и работы, которые не подтверждены.", dataset: { field: "decision-reply" } });
       reply.value = item.public_reply || "";
       var status = el("div", { className: P + "-status", role: "status", "aria-live": "polite" });
       var submit = el("button", { type: "submit", className: P + "-primary", text: "Сохранить решение о публикации" });
@@ -1110,6 +1384,9 @@
     version: "civic-v1",
     mount: mount,
     mountModeration: mountModeration,
+    mountReceipt: mountReceipt,
+    receiptFromLocation: receiptFromLocation,
+    clearDrafts: clearDrafts,
     createFetchApi: createFetchApi,
   };
 })();
