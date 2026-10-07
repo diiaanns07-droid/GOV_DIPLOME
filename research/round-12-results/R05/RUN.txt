@@ -1,0 +1,41 @@
+R05 РАУНД 12 — КОМАНДЫ ЗАПУСКА И ПРОВЕРКИ
+Каталог пакета: data/civic/astana/round12-verified/   Инструмент: tools/r12.py (stdlib Python 3.11+)
+Все команды — из корня репозитория, собранного на CODE_BASE_SHA 56538a3 + пути R05 (см. INTEGRATION.txt).
+
+1. ПРОВЕРКА ПАКЕТА (без сети, без БД)
+   python3 -I data/civic/astana/round12-verified/tools/r12.py check
+     -> JSON: issues (реестры, кандидаты, записи), civic_issues (валидатор R05 profile=real + validate_content R02),
+        validators (RUN/NOT_RUN), stale_packages. exit 0 = всё согласовано.
+   python3 -I data/civic/astana/round12-verified/tools/r12.py build --check     # пакеты на диске не устарели
+   python3 -I data/civic/astana/round12-verified/tools/r12.py summary           # подтверждено / историческое / не проверено / без координат
+   python3 -m pytest tests/civic/R05/round12 -q
+
+2. DRY-RUN ИМПОРТЕРА R02 (ничего не публикует; БД — временная)
+   python3 -m ui.civic_store --db /tmp/r05-r12-dry.sqlite3 init
+   python3 -m ui.civic_store --db /tmp/r05-r12-dry.sqlite3 import data/civic/astana/round12-verified/package.civic-v1.json --dry-run
+   python3 -m ui.civic_store --db /tmp/r05-r12-dry.sqlite3 import data/civic/astana/round12-verified/historical.civic-v1.json --dry-run
+   Источник импорта: r05-astana-r12-verified (и ...-historical). Импорт без --dry-run создаёт ТОЛЬКО черновики;
+   публикует редактор после своей проверки. В рабочую БД R05 ничего не импортировал.
+
+3. ЧТО МОЖЕТ СДЕЛАТЬ ЧЕЛОВЕК (или сессия, где сеть разрешает домены источников)
+   a) Лист проверки:  python3 -I data/civic/astana/round12-verified/tools/r12.py sheet --out /tmp/verify.md
+      (готовая копия: research/round-12-results/R05/VERIFY_SHEET.md)
+   b) Открыть URL кандидата, сохранить текст страницы ВНЕ репозитория (Ctrl+S «только текст» или копировать в .txt).
+      Где сеть разрешена агенту: r12.py fetch <source_id> --out /tmp/r05-pages   (попытка пишется в sources.json)
+   c) Создать data/civic/astana/round12-verified/drafts/<id>.json по SCHEMA.md §3: значения + дословные выдержки.
+      Геометрия-предложение для кандидата: r12.py geocode --street "Бейсековой" --cross "Тлендиева"
+                                            r12.py geocode --street "Алматы" --from "Акмешит" --to "..."
+   d) python3 -I data/civic/astana/round12-verified/tools/r12.py verify data/civic/astana/round12-verified/drafts/<id>.json \
+         --text <source_id>=/tmp/r05-pages/page.txt --published-on <source_id>=YYYY-MM-DD \
+         --retrieved-at 2026-10-07T12:00:00Z --method human_saved_text
+      exit 0 -> запись в verified/, sha256 текста в sources.json; exit 1 -> список ненайденных выдержек, ничего не меняется.
+   e) python3 -I data/civic/astana/round12-verified/tools/r12.py build   -> package.civic-v1.json, historical..., summary.json
+   f) шаг 2 (dry-run), затем обычный импорт и проверка редактором в кабинете.
+
+4. ПЕРЕСБОРКА СПИСКА КАНДИДАТОВ ИЗ СОХРАНЁННОГО РЕЗУЛЬТАТА ПОИСКА
+   python3 -I research/round-12-results/R05/import_search_results.py research/round-12-results/R05/search/workflow_result.json \
+       --curation research/round-12-results/R05/search/curation.json
+   (детерминированно; перезаписывает sources.json и candidates.json — ручные verify-отметки после этого повторить)
+
+ЧЕГО ПОЛЬЗОВАТЕЛЬ ПОКА НЕ УВИДИТ: реальных карточек на карте. Подтверждённых записей 0 — страницы источников в
+среде R05 не открывались (network_audit.json). Кандидаты на карту не выводятся и в БД не импортируются.

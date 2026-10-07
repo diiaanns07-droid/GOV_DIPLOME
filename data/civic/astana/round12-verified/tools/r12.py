@@ -553,7 +553,8 @@ def _same_word(q: str, w: str) -> bool:
         if a != b:
             break
         common += 1
-    return common >= max(4, max(len(q), len(w)) - 3)
+    # Падежное окончание — до 2 букв; и не меньше 3/4 более короткого слова («Алматы» ≠ «Алмалы»).
+    return common >= max(4, max(len(q), len(w)) - 2) and common * 4 >= 3 * min(len(q), len(w))
 
 
 def name_matches(query: str, name: str) -> bool:
@@ -755,6 +756,44 @@ def summary() -> dict:
     }
 
 
+# ---------------------------------------------------------------- verification sheet
+def verify_sheet() -> str:
+    """Лист проверки для человека: что открыть и что выписать дословно."""
+    reg = {s["id"]: s for s in (load_json(HERE / "sources.json", {}) or {}).get("sources") or []}
+    cands = [c for c in (load_json(HERE / "candidates.json", {}) or {}).get("candidates") or []
+             if c.get("decision") == "to_verify"]
+    order = {"official_gov": 0, "city_utility_or_operator": 1, "state_media": 2, "city_media": 3, "news": 4, "other": 5}
+    fresh = {"current_or_upcoming_2026": 0, "past_2026": 1, "unknown": 2, "historical_before_2026": 3}
+    cands.sort(key=lambda c: (fresh.get(c.get("freshness"), 9),
+                              order.get(reg.get((c.get("source_ids") or [""])[0], {}).get("publisher_kind"), 9), c["id"]))
+    lines = ["# Лист проверки кандидатов R05 (раунд 12)", "",
+             f"Срез: {config().get('as_of')}. Кандидатов к проверке: {len(cands)}. Все найдены поиском; страницы в среде R05 "
+             "не открывались (сеть закрыта). Подсказки «пересказ поиска» — ненадёжны, проверять по самой странице.", "",
+             "Порядок: открыть ссылку → сохранить текст страницы вне репозитория → заполнить drafts/<id>.json "
+             "(дословные выдержки ≤ 300 символов) → `r12.py verify`.", ""]
+    for i, cand in enumerate(cands, 1):
+        lines.append(f"## {i}. {cand['title_as_listed']}")
+        lines.append(f"- id кандидата: `{cand['id']}`; тип: {cand['kind']}; актуальность по выдаче: {cand.get('freshness')}")
+        for sid in cand.get("source_ids") or []:
+            src = reg.get(sid, {})
+            lines.append(f"- источник `{sid}` ({src.get('publisher') or 'издатель не определён'}, {src.get('publisher_kind')}): {src.get('url')}")
+        if cand.get("location_text"):
+            lines.append(f"- место по выдаче: {cand['location_text']}")
+        if cand.get("date_hint"):
+            lines.append(f"- дата-подсказка: {cand['date_hint']} (происхождение: {cand.get('date_hint_origin')})")
+        for hint in cand.get("hints") or []:
+            origin = {"search_title": "заголовок", "url": "URL", "search_summary": "пересказ поиска"}.get(hint["origin"], hint["origin"])
+            lines.append(f"  - подсказка [{origin}] {hint['field']}: {hint['text']}")
+        geo = cand.get("geocode") or {}
+        if geo.get("geometry"):
+            lines.append(f"- геометрия-предложение: {geo['geometry']['type']}, {geo.get('geometry_basis')}")
+        if cand.get("contradictions"):
+            lines.append(f"- противоречия: {cand['contradictions']}")
+        lines.append("- проверить: " + "; ".join(cand.get("verify_checklist") or []))
+        lines.append("")
+    return "\n".join(lines) + "\n"
+
+
 # ---------------------------------------------------------------- fetch (where the network allows it)
 def cmd_fetch(args) -> int:
     import urllib.request
@@ -836,6 +875,8 @@ def main(argv=None) -> int:
     f.add_argument("--out", required=True)
     f.add_argument("--timeout", type=float, default=20)
     sub.add_parser("summary")
+    sh = sub.add_parser("sheet")
+    sh.add_argument("--out", default=None, help="файл Markdown (по умолчанию — stdout)")
     args = ap.parse_args(argv)
 
     if args.cmd == "check":
@@ -863,6 +904,13 @@ def main(argv=None) -> int:
         return cmd_fetch(args)
     if args.cmd == "summary":
         print(dump_json(summary()))
+        return 0
+    if args.cmd == "sheet":
+        text = verify_sheet()
+        if args.out:
+            Path(args.out).write_text(text, encoding="utf-8")
+        else:
+            print(text)
         return 0
     return 2
 

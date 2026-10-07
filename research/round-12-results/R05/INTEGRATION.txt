@@ -1,0 +1,38 @@
+R05 РАУНД 12 — ИНТЕГРАЦИЯ ДЛЯ КООРДИНАТОРА
+
+1. ЧТО ПРИНЕСТИ (только новые пути R05; общие файлы и чужие модули не менялись)
+   data/civic/astana/round12-verified/     пакет, реестры, инструмент tools/r12.py
+   tests/civic/R05/round12/                тесты (уникальные имена test_r12_*.py)
+   research/round-12-results/R05/          DELIVERY.json, RUN.txt, этот файл, VERIFY_SHEET.md, журнал поиска
+   research/handoffs/astana/R05/round-12/STATUS.md
+
+   BASE_MISMATCH: ветка claude/focused-hypatia-z8h0no не начинается от 56538a3 (в ней история R06 раунда 11;
+   перевод основы merge-коммитом отклонён автоматической проверкой, force push запрещён). Поэтому НЕ сливать
+   ветку целиком. Перенос:
+     git checkout codex/govtech-main-interface
+     git checkout <R05_SHA> -- data/civic/astana/round12-verified tests/civic/R05/round12 \
+         research/round-12-results/R05 research/handoffs/astana/R05/round-12/STATUS.md
+   или git apply research/round-12-results/R05/r05_round12_paths.patch (патч только этих путей,
+   проверен `git apply --check` на 56538a3).
+
+2. ЗАВИСИМОСТИ ОТ БАЗЫ (только чтение, ничего не изменено)
+   data/civic/astana/tools/civic_v1.py      валидатор R05 раунда 11 (profile real) — вызывается из r12.py check
+   ui/civic_store/validate.py, importer.py  правила и dry-run импортера R02
+   data/civic/astana/osm-walking/overpass.json.gz   OSM-снимок 2026-05-06 (ODbL) для r12.py geocode
+   Без них соответствующие проверки помечаются NOT_RUN, а не PASS.
+
+3. ПОДКЛЮЧЕНИЕ К ПРИЛОЖЕНИЮ
+   Сейчас НИЧЕГО подключать не нужно: package.civic-v1.json пуст (подтверждённых записей 0), кандидаты
+   намеренно не импортируются. Соседние интерфейсы (R02 импорт, R03 карта, R04 кабинет) не затронуты.
+   Когда появятся verified-записи: импорт `python -m ui.civic_store import data/civic/astana/round12-verified/package.civic-v1.json`
+   (источник r05-astana-r12-verified, только черновики); исторический срез — отдельным файлом historical.civic-v1.json.
+   Демо-срез 7 синтетических записей и data/civic/astana/objects.json раунда 11 не трогать: это другой import_source.
+
+4. ЧТО НУЖНО ОТ ОКРУЖЕНИЯ/ЛЮДЕЙ
+   Сеть: разрешить домены gov.kz, www.gov.kz, astana.gov.kz, inform.kz, www.inform.kz, kazpravda.kz, vechastana.kz,
+   zakon.kz (и др. из sources.json) в Network access окружения — либо человек сохраняет текст страниц вручную.
+   Проверка: research/round-12-results/R05/VERIFY_SHEET.md — порядок (официальные и свежие первыми) и что выписать.
+
+5. ДЛЯ R10
+   Принятая запись проверяется так: открыть source_refs[].url, найти дословно каждую выдержку из
+   verified/<id>.json (claims[].quote), сверить значение поля. sha256 сохранённого текста — в sources.json.

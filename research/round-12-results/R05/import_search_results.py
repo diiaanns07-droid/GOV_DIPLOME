@@ -59,7 +59,8 @@ def publisher_for(host: str):
     for domain, value in PUBLISHERS.items():
         if host == domain or host.endswith("." + domain):
             return value
-    return (None, "other")
+    # Неизвестный домен: «официальный» только по домену gov.kz, а не по ярлыку поискового агента.
+    return (None, "official_gov" if host.endswith(".gov.kz") else "other")
 
 
 def source_id(url: str) -> str:
@@ -96,7 +97,7 @@ def main(argv=None) -> int:
         publisher, kind = publisher_for(host)
         m = URL_DATE.search(urlsplit(url).path)
         sources[sid] = {
-            "id": sid, "url": url, "publisher": publisher, "publisher_kind": kind if publisher else cand.get("source_kind", "other"),
+            "id": sid, "url": url, "publisher": publisher, "publisher_kind": kind,
             "title_as_listed": cand["title_as_listed"],
             "published_on": "-".join(m.groups()) if m else None, "published_on_basis": "url" if m else None,
             "discovered_via": {"tool": "WebSearch (server-side)", "at": discovered_at,
