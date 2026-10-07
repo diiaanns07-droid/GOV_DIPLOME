@@ -156,7 +156,8 @@ def test_ui_example_chips_map_to_expected_intents(ctx_of):
     js = Path("web/civic/assistant/assistant.js").read_text(encoding="utf-8")
     block = js[js.index("const EXAMPLES = ["):js.index("];", js.index("const EXAMPLES = ["))]
     chips = re.findall(r'"([^"]+)"', block)
-    expected = ["overview", "schedule", "delay_reason", "responsible", "budget", "sources", "status", "schedule"]
+    expected = ["overview", "schedule", "delay_reason", "responsible", "budget", "sources", "status", "missing_data",
+                "schedule"]
     assert [build_answer(q, ctx_of("full"))["intent"] for q in chips] == expected
 
 

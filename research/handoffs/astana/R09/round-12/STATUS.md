@@ -1,6 +1,6 @@
 # R09 — помощник по городским данным без выдумок (раунд 12, Астана)
 
-Статус: PARTIAL (checkpoint 2)
+Статус: PARTIAL (checkpoint 3)
 Обновлено: 2026-10-07 10:30 UTC
 Ветка: claude/fervent-dijkstra-1cqrg5 (назначенная ветка сессии)
 CODE_BASE_SHA: 56538a3a7504d4589c38ab4d3c5107f12aa7f8a6 — влит обычным merge (56885d5), без reset/force push.
@@ -30,6 +30,17 @@ agent/civic_assistant/, web/civic/assistant/, tests/civic/R09/, research/round-1
   (нужно подключение R01 — см. INTEGRATION.txt). tests/civic/R09/test_r09_round12_scenario.py (14, реальный движок
   на городском кейсе). R09 pytest 168/168.
 
+- Checkpoint 3 (устойчивость и UI):
+  любое исключение провайдера (в т.ч. CancelledError/SystemExit из его потока) -> шаблон + provider_error;
+  все слоты провайдера заняты зависшими вызовами -> сразу шаблон + provider_busy (раньше ложный provider_timeout
+  после полного ожидания); слоты восстанавливаются. Ответ содержит object_revision/object_updated_at и sources
+  (издатель, дата, ссылка http(s) из карточки). assistant.js: подпись источника «издатель, опубл. дата · ссылка»
+  (ID — в подсказке), строка «По данным карточки: редакция N от DD.MM.YYYY», mount({revision}) и
+  handle.update({objectId, scenarioId, revision}): ответ по другой редакции не показывается, запрос при
+  обновлении карточки отменяется. Новый пример «Какие сведения отсутствуют?».
+  tests/civic/R09/test_r09_round12_robustness.py (20), ui_check.cjs +6 проверок (22/22 в Chromium).
+  R09 pytest 188/188. Скриншоты компонента (демо, не интеграция): research/round-12-results/R09/screenshots/.
+
 ## Следующий шаг
-Устойчивость: CancelledError провайдера, зависшие провайдеры (fail-fast provider_busy), ответ по устаревшей
-ревизии карточки, понятные человеку подписи источников и дат в UI.
+Eval-набор раунда 12 (реальные поддерживаемые ситуации + отрицательные), протокол ошибок, инструкция демо,
+DELIVERY/RUN/INTEGRATION.
