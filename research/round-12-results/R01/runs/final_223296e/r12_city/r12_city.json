@@ -1,0 +1,769 @@
+{
+  "base": "http://127.0.0.1:45369/",
+  "empty": false,
+  "started_at": "2026-10-07T10:50:03.760Z",
+  "checks": [
+    {
+      "name": "360x800: no horizontal scroll",
+      "status": "PASS",
+      "detail": {
+        "scrollW": 360,
+        "innerW": 360,
+        "over": [],
+        "status": {
+          "text": "Подложка OpenFreeMap недоступна: упрощённый фон без улиц и 3D-зданий",
+          "readable": true,
+          "insideExplore": true
+        },
+        "explore": 290
+      }
+    },
+    {
+      "name": "360x800: navigation box, map tools, top bar and panel do not overlap",
+      "status": "PASS",
+      "detail": []
+    },
+    {
+      "name": "360x800: map notice readable (not under the navigation box)",
+      "status": "PASS",
+      "detail": {
+        "text": "Подложка OpenFreeMap недоступна: упрощённый фон без улиц и 3D-зданий",
+        "readable": true,
+        "insideExplore": true
+      }
+    },
+    {
+      "name": "360x800: navigation box wide enough for the district name and search (≥ 280px)",
+      "status": "PASS",
+      "detail": 290
+    },
+    {
+      "name": "360x800: city overview is named as such",
+      "status": "PASS",
+      "detail": "Обзор: вся Астана"
+    },
+    {
+      "name": "360x800: ambiguous search lists variants with a readable place, no raw coordinates",
+      "status": "PASS",
+      "detail": [
+        {
+          "name": "Қабанбай батыр көшесі",
+          "place": "окрестности, вне границ районов"
+        },
+        {
+          "name": "улица Кабанбай батыра",
+          "place": "окрестности, вне границ районов"
+        },
+        {
+          "name": "проспект Кабанбай Батыра",
+          "place": "район Есиль"
+        }
+      ]
+    },
+    {
+      "name": "360x800: choosing a variant (tap) frames the street and says where",
+      "status": "PASS",
+      "detail": {
+        "value": "улица Кабанбай батыра",
+        "listHidden": true,
+        "status": "Показана улица: улица Кабанбай батыра (окрестности, вне границ районов). Список записей — по видимой части карты.",
+        "zoom": 13.858366377984574
+      }
+    },
+    {
+      "name": "360x800: chosen street is marked in the free map area (not under panel/navigation/tools)",
+      "status": "PASS",
+      "detail": {
+        "pin": true,
+        "rect": [
+          76,
+          431,
+          238,
+          468
+        ],
+        "covered": [],
+        "inView": true
+      }
+    },
+    {
+      "name": "360x800: street view line says how many published records are in frame (zero is not \"no works\")",
+      "status": "PASS",
+      "detail": "Улица: улица Кабанбай батыра · в кадре опубликованных записей нет (это не значит, что работ нет)"
+    },
+    {
+      "name": "360x800: long Kazakh street name wraps inside the list (no sideways scroll)",
+      "status": "PASS",
+      "detail": {
+        "overflowX": 0,
+        "inside": true,
+        "first": "улица газеты «Егемен Қазақстан»",
+        "pageScrollW": 360
+      }
+    },
+    {
+      "name": "360x800: Escape closes the list, second Escape clears the field",
+      "status": "PASS",
+      "detail": {
+        "afterEsc1": {
+          "listHidden": true,
+          "value": "Егемен Қазақстан"
+        },
+        "afterEsc2": ""
+      }
+    },
+    {
+      "name": "360x800: clear button empties the field and keeps focus",
+      "status": "PASS",
+      "detail": {
+        "value": "",
+        "focused": true,
+        "clearHidden": true
+      }
+    },
+    {
+      "name": "360x800: the view line says what is shown (all records)",
+      "status": "PASS",
+      "detail": "Все опубликованные записи на карте"
+    },
+    {
+      "name": "360x800: 3D button matches the real tilt after an interrupted 3D -> zoom -> objects sequence",
+      "status": "PASS",
+      "detail": {
+        "pitch": 45,
+        "pressed": true,
+        "moving": false
+      }
+    },
+    {
+      "name": "360x800: selected object is shown in the free map area (not under navigation/panel/tools)",
+      "status": "PASS",
+      "detail": {
+        "id": "demo-astana-roadworks-completed",
+        "found": true,
+        "xy": [
+          159,
+          305
+        ],
+        "covered": [],
+        "inView": true
+      }
+    },
+    {
+      "name": "360x800: the view line names the open record",
+      "status": "PASS",
+      "detail": "Открыта запись: Демо: завершённый ремонт тротуара"
+    },
+    {
+      "name": "360x800: no page errors",
+      "status": "PASS",
+      "detail": []
+    },
+    {
+      "name": "768x1024: no horizontal scroll",
+      "status": "PASS",
+      "detail": {
+        "scrollW": 768,
+        "innerW": 768,
+        "over": [],
+        "status": {
+          "text": "Подложка OpenFreeMap недоступна: упрощённый фон без улиц и 3D-зданий",
+          "readable": true,
+          "insideExplore": true
+        },
+        "explore": 296
+      }
+    },
+    {
+      "name": "768x1024: navigation box, map tools, top bar and panel do not overlap",
+      "status": "PASS",
+      "detail": []
+    },
+    {
+      "name": "768x1024: map notice readable (not under the navigation box)",
+      "status": "PASS",
+      "detail": {
+        "text": "Подложка OpenFreeMap недоступна: упрощённый фон без улиц и 3D-зданий",
+        "readable": true,
+        "insideExplore": true
+      }
+    },
+    {
+      "name": "768x1024: navigation box wide enough for the district name and search (≥ 280px)",
+      "status": "PASS",
+      "detail": 296
+    },
+    {
+      "name": "768x1024: city overview is named as such",
+      "status": "PASS",
+      "detail": "Обзор: вся Астана"
+    },
+    {
+      "name": "768x1024: ambiguous search lists variants with a readable place, no raw coordinates",
+      "status": "PASS",
+      "detail": [
+        {
+          "name": "Қабанбай батыр көшесі",
+          "place": "окрестности, вне границ районов"
+        },
+        {
+          "name": "улица Кабанбай батыра",
+          "place": "окрестности, вне границ районов"
+        },
+        {
+          "name": "проспект Кабанбай Батыра",
+          "place": "район Есиль"
+        }
+      ]
+    },
+    {
+      "name": "768x1024: choosing a variant (arrows + Enter) frames the street and says where",
+      "status": "PASS",
+      "detail": {
+        "value": "улица Кабанбай батыра",
+        "listHidden": true,
+        "status": "Показана улица: улица Кабанбай батыра (окрестности, вне границ районов). Список записей — по видимой части карты.",
+        "zoom": 13.873265254365652
+      }
+    },
+    {
+      "name": "768x1024: chosen street is marked in the free map area (not under panel/navigation/tools)",
+      "status": "PASS",
+      "detail": {
+        "pin": true,
+        "rect": [
+          465,
+          664,
+          627,
+          701
+        ],
+        "covered": [],
+        "inView": true
+      }
+    },
+    {
+      "name": "768x1024: street view line says how many published records are in frame (zero is not \"no works\")",
+      "status": "PASS",
+      "detail": "Улица: улица Кабанбай батыра · в кадре опубликованных записей нет (это не значит, что работ нет)"
+    },
+    {
+      "name": "768x1024: long Kazakh street name wraps inside the list (no sideways scroll)",
+      "status": "PASS",
+      "detail": {
+        "overflowX": 0,
+        "inside": true,
+        "first": "улица газеты «Егемен Қазақстан»",
+        "pageScrollW": 768
+      }
+    },
+    {
+      "name": "768x1024: Escape closes the list, second Escape clears the field",
+      "status": "PASS",
+      "detail": {
+        "afterEsc1": {
+          "listHidden": true,
+          "value": "Егемен Қазақстан"
+        },
+        "afterEsc2": ""
+      }
+    },
+    {
+      "name": "768x1024: clear button empties the field and keeps focus",
+      "status": "PASS",
+      "detail": {
+        "value": "",
+        "focused": true,
+        "clearHidden": true
+      }
+    },
+    {
+      "name": "768x1024: the view line says what is shown (all records)",
+      "status": "PASS",
+      "detail": "Все опубликованные записи на карте"
+    },
+    {
+      "name": "768x1024: 3D button matches the real tilt after an interrupted 3D -> zoom -> objects sequence",
+      "status": "PASS",
+      "detail": {
+        "pitch": 45,
+        "pressed": true,
+        "moving": false
+      }
+    },
+    {
+      "name": "768x1024: selected object is shown in the free map area (not under navigation/panel/tools)",
+      "status": "PASS",
+      "detail": {
+        "id": "demo-astana-roadworks-completed",
+        "found": true,
+        "xy": [
+          555,
+          523
+        ],
+        "covered": [],
+        "inView": true
+      }
+    },
+    {
+      "name": "768x1024: the view line names the open record",
+      "status": "PASS",
+      "detail": "Открыта запись: Демо: завершённый ремонт тротуара"
+    },
+    {
+      "name": "768x1024: no page errors",
+      "status": "PASS",
+      "detail": []
+    },
+    {
+      "name": "1440x900: no horizontal scroll",
+      "status": "PASS",
+      "detail": {
+        "scrollW": 1440,
+        "innerW": 1440,
+        "over": [],
+        "status": {
+          "text": "Подложка OpenFreeMap недоступна: упрощённый фон без улиц и 3D-зданий",
+          "readable": true,
+          "insideExplore": true
+        },
+        "explore": 440
+      }
+    },
+    {
+      "name": "1440x900: navigation box, map tools, top bar and panel do not overlap",
+      "status": "PASS",
+      "detail": []
+    },
+    {
+      "name": "1440x900: map notice readable (not under the navigation box)",
+      "status": "PASS",
+      "detail": {
+        "text": "Подложка OpenFreeMap недоступна: упрощённый фон без улиц и 3D-зданий",
+        "readable": true,
+        "insideExplore": true
+      }
+    },
+    {
+      "name": "1440x900: navigation box wide enough for the district name and search (≥ 280px)",
+      "status": "PASS",
+      "detail": 440
+    },
+    {
+      "name": "1440x900: city overview is named as such",
+      "status": "PASS",
+      "detail": "Обзор: вся Астана"
+    },
+    {
+      "name": "1440x900: ambiguous search lists variants with a readable place, no raw coordinates",
+      "status": "PASS",
+      "detail": [
+        {
+          "name": "Қабанбай батыр көшесі",
+          "place": "окрестности, вне границ районов"
+        },
+        {
+          "name": "улица Кабанбай батыра",
+          "place": "окрестности, вне границ районов"
+        },
+        {
+          "name": "проспект Кабанбай Батыра",
+          "place": "район Есиль"
+        }
+      ]
+    },
+    {
+      "name": "1440x900: choosing a variant (arrows + Enter) frames the street and says where",
+      "status": "PASS",
+      "detail": {
+        "value": "улица Кабанбай батыра",
+        "listHidden": true,
+        "status": "Показана улица: улица Кабанбай батыра (окрестности, вне границ районов). Список записей — по видимой части карты.",
+        "zoom": 15.503619657898838
+      }
+    },
+    {
+      "name": "1440x900: chosen street is marked in the free map area (not under panel/navigation/tools)",
+      "status": "PASS",
+      "detail": {
+        "pin": true,
+        "rect": [
+          831,
+          578,
+          993,
+          615
+        ],
+        "covered": [],
+        "inView": true
+      }
+    },
+    {
+      "name": "1440x900: street view line says how many published records are in frame (zero is not \"no works\")",
+      "status": "PASS",
+      "detail": "Улица: улица Кабанбай батыра · в кадре опубликованных записей нет (это не значит, что работ нет)"
+    },
+    {
+      "name": "1440x900: long Kazakh street name wraps inside the list (no sideways scroll)",
+      "status": "PASS",
+      "detail": {
+        "overflowX": 0,
+        "inside": true,
+        "first": "улица газеты «Егемен Қазақстан»",
+        "pageScrollW": 1440
+      }
+    },
+    {
+      "name": "1440x900: Escape closes the list, second Escape clears the field",
+      "status": "PASS",
+      "detail": {
+        "afterEsc1": {
+          "listHidden": true,
+          "value": "Егемен Қазақстан"
+        },
+        "afterEsc2": ""
+      }
+    },
+    {
+      "name": "1440x900: clear button empties the field and keeps focus",
+      "status": "PASS",
+      "detail": {
+        "value": "",
+        "focused": true,
+        "clearHidden": true
+      }
+    },
+    {
+      "name": "1440x900: the view line says what is shown (all records)",
+      "status": "PASS",
+      "detail": "Все опубликованные записи на карте"
+    },
+    {
+      "name": "1440x900: 3D button matches the real tilt after an interrupted 3D -> zoom -> objects sequence",
+      "status": "PASS",
+      "detail": {
+        "pitch": 45,
+        "pressed": true,
+        "moving": false
+      }
+    },
+    {
+      "name": "1440x900: selected object is shown in the free map area (not under navigation/panel/tools)",
+      "status": "PASS",
+      "detail": {
+        "id": "demo-astana-roadworks-completed",
+        "found": true,
+        "xy": [
+          921,
+          461
+        ],
+        "covered": [],
+        "inView": true
+      }
+    },
+    {
+      "name": "1440x900: the view line names the open record",
+      "status": "PASS",
+      "detail": "Открыта запись: Демо: завершённый ремонт тротуара"
+    },
+    {
+      "name": "1440x900: no page errors",
+      "status": "PASS",
+      "detail": []
+    },
+    {
+      "name": "360x800: direct link opens the record card for a resident without an account",
+      "status": "PASS",
+      "detail": {
+        "selected": "demo-astana-roadworks-delay",
+        "hash": "#object=demo-astana-roadworks-delay",
+        "cardTitle": "Демо: ремонт участка дороги со сдвигом срока",
+        "view": "Открыта запись: Демо: ремонт участка дороги со сдвигом срока",
+        "covered": [],
+        "session": false
+      }
+    },
+    {
+      "name": "360x800: direct link: record in the free map area, view line names it",
+      "status": "PASS",
+      "detail": {
+        "selected": "demo-astana-roadworks-delay",
+        "hash": "#object=demo-astana-roadworks-delay",
+        "cardTitle": "Демо: ремонт участка дороги со сдвигом срока",
+        "view": "Открыта запись: Демо: ремонт участка дороги со сдвигом срока",
+        "covered": [],
+        "session": false
+      }
+    },
+    {
+      "name": "360x800: F5 keeps the city mode, the record and its place",
+      "status": "PASS",
+      "detail": {
+        "selected": "demo-astana-roadworks-delay",
+        "hash": "#object=demo-astana-roadworks-delay",
+        "cardTitle": "Демо: ремонт участка дороги со сдвигом срока",
+        "view": "Открыта запись: Демо: ремонт участка дороги со сдвигом срока",
+        "covered": [],
+        "session": false
+      }
+    },
+    {
+      "name": "360x800: resident session makes no staff API calls",
+      "status": "PASS",
+      "detail": []
+    },
+    {
+      "name": "360x800: no page errors on direct link / reload",
+      "status": "PASS",
+      "detail": []
+    },
+    {
+      "name": "768x1024: direct link opens the record card for a resident without an account",
+      "status": "PASS",
+      "detail": {
+        "selected": "demo-astana-roadworks-delay",
+        "hash": "#object=demo-astana-roadworks-delay",
+        "cardTitle": "Демо: ремонт участка дороги со сдвигом срока",
+        "view": "Открыта запись: Демо: ремонт участка дороги со сдвигом срока",
+        "covered": [],
+        "session": false
+      }
+    },
+    {
+      "name": "768x1024: direct link: record in the free map area, view line names it",
+      "status": "PASS",
+      "detail": {
+        "selected": "demo-astana-roadworks-delay",
+        "hash": "#object=demo-astana-roadworks-delay",
+        "cardTitle": "Демо: ремонт участка дороги со сдвигом срока",
+        "view": "Открыта запись: Демо: ремонт участка дороги со сдвигом срока",
+        "covered": [],
+        "session": false
+      }
+    },
+    {
+      "name": "768x1024: F5 keeps the city mode, the record and its place",
+      "status": "PASS",
+      "detail": {
+        "selected": "demo-astana-roadworks-delay",
+        "hash": "#object=demo-astana-roadworks-delay",
+        "cardTitle": "Демо: ремонт участка дороги со сдвигом срока",
+        "view": "Открыта запись: Демо: ремонт участка дороги со сдвигом срока",
+        "covered": [],
+        "session": false
+      }
+    },
+    {
+      "name": "768x1024: resident session makes no staff API calls",
+      "status": "PASS",
+      "detail": []
+    },
+    {
+      "name": "768x1024: no page errors on direct link / reload",
+      "status": "PASS",
+      "detail": []
+    },
+    {
+      "name": "1440x900: direct link opens the record card for a resident without an account",
+      "status": "PASS",
+      "detail": {
+        "selected": "demo-astana-roadworks-delay",
+        "hash": "#object=demo-astana-roadworks-delay",
+        "cardTitle": "Демо: ремонт участка дороги со сдвигом срока",
+        "view": "Открыта запись: Демо: ремонт участка дороги со сдвигом срока",
+        "covered": [],
+        "session": false
+      }
+    },
+    {
+      "name": "1440x900: direct link: record in the free map area, view line names it",
+      "status": "PASS",
+      "detail": {
+        "selected": "demo-astana-roadworks-delay",
+        "hash": "#object=demo-astana-roadworks-delay",
+        "cardTitle": "Демо: ремонт участка дороги со сдвигом срока",
+        "view": "Открыта запись: Демо: ремонт участка дороги со сдвигом срока",
+        "covered": [],
+        "session": false
+      }
+    },
+    {
+      "name": "1440x900: F5 keeps the city mode, the record and its place",
+      "status": "PASS",
+      "detail": {
+        "selected": "demo-astana-roadworks-delay",
+        "hash": "#object=demo-astana-roadworks-delay",
+        "cardTitle": "Демо: ремонт участка дороги со сдвигом срока",
+        "view": "Открыта запись: Демо: ремонт участка дороги со сдвигом срока",
+        "covered": [],
+        "session": false
+      }
+    },
+    {
+      "name": "1440x900: resident session makes no staff API calls",
+      "status": "PASS",
+      "detail": []
+    },
+    {
+      "name": "1440x900: no page errors on direct link / reload",
+      "status": "PASS",
+      "detail": []
+    },
+    {
+      "name": "1440x900: training district view: soft tilt, 3D button stays off",
+      "status": "PASS",
+      "detail": {
+        "pitch": 22,
+        "pressed": "false"
+      }
+    },
+    {
+      "name": "1440x900: training mode: no navigation box, map notice back in place and readable",
+      "status": "PASS",
+      "detail": {
+        "mode": "training",
+        "explore": false,
+        "statusInExplore": false,
+        "readable": true,
+        "districts": "visible",
+        "view": null,
+        "scrollW": 1440
+      }
+    },
+    {
+      "name": "1440x900: back from training: navigation box, notice inside it, city overview, training districts hidden",
+      "status": "PASS",
+      "detail": {
+        "mode": "civic",
+        "explore": true,
+        "statusInExplore": true,
+        "readable": true,
+        "districts": "none",
+        "view": "Обзор: вся Астана",
+        "scrollW": 1440
+      }
+    },
+    {
+      "name": "1440x900: school mode: no navigation box, map notice back in place and readable",
+      "status": "PASS",
+      "detail": {
+        "mode": "school",
+        "explore": false,
+        "statusInExplore": false,
+        "readable": true,
+        "districts": "none",
+        "view": null,
+        "scrollW": 1440
+      }
+    },
+    {
+      "name": "1440x900: back from school: navigation box, notice inside it, city overview, training districts hidden",
+      "status": "PASS",
+      "detail": {
+        "mode": "civic",
+        "explore": true,
+        "statusInExplore": true,
+        "readable": true,
+        "districts": "none",
+        "view": "Обзор: вся Астана",
+        "scrollW": 1440
+      }
+    },
+    {
+      "name": "1440x900: no page errors across mode switches",
+      "status": "PASS",
+      "detail": []
+    },
+    {
+      "name": "360x800: training district view: soft tilt, 3D button stays off",
+      "status": "PASS",
+      "detail": {
+        "pitch": 22,
+        "pressed": "false"
+      }
+    },
+    {
+      "name": "360x800: training mode: no navigation box, map notice back in place and readable",
+      "status": "PASS",
+      "detail": {
+        "mode": "training",
+        "explore": false,
+        "statusInExplore": false,
+        "readable": true,
+        "districts": "visible",
+        "view": null,
+        "scrollW": 360
+      }
+    },
+    {
+      "name": "360x800: back from training: navigation box, notice inside it, city overview, training districts hidden",
+      "status": "PASS",
+      "detail": {
+        "mode": "civic",
+        "explore": true,
+        "statusInExplore": true,
+        "readable": true,
+        "districts": "none",
+        "view": "Обзор: вся Астана",
+        "scrollW": 360
+      }
+    },
+    {
+      "name": "360x800: school mode: no navigation box, map notice back in place and readable",
+      "status": "PASS",
+      "detail": {
+        "mode": "school",
+        "explore": false,
+        "statusInExplore": false,
+        "readable": true,
+        "districts": "none",
+        "view": null,
+        "scrollW": 360
+      }
+    },
+    {
+      "name": "360x800: back from school: navigation box, notice inside it, city overview, training districts hidden",
+      "status": "PASS",
+      "detail": {
+        "mode": "civic",
+        "explore": true,
+        "statusInExplore": true,
+        "readable": true,
+        "districts": "none",
+        "view": "Обзор: вся Астана",
+        "scrollW": 360
+      }
+    },
+    {
+      "name": "360x800: no page errors across mode switches",
+      "status": "PASS",
+      "detail": []
+    },
+    {
+      "name": "360x800: index loading and failure are stated, not a silent empty list",
+      "status": "PASS",
+      "detail": {
+        "loading": "Загружаем список улиц…",
+        "failed": "Поиск улиц недоступен: список улиц не загрузился. Выберите район или повторите. Повторить"
+      }
+    },
+    {
+      "name": "360x800: district navigation works while street search is down (retry stays offered)",
+      "status": "PASS",
+      "detail": {
+        "cityZoom": 8,
+        "zoom": 8.879718968404974,
+        "value": "esil",
+        "retryKept": true
+      }
+    },
+    {
+      "name": "360x800: retry loads the street index",
+      "status": "PASS",
+      "detail": null
+    }
+  ],
+  "finished_at": "2026-10-07T10:51:35.419Z",
+  "summary": {
+    "pass": 81,
+    "fail": 0,
+    "not_run": 0
+  }
+}

@@ -14,6 +14,7 @@ PASS  node R04 core+mock
 PASS  node R01 explore
 PASS  browser P0 flow
 PASS  browser scenarios
+PASS  browser r12 city
 
 == pytest
 868 passed, 2 skipped in 105.40s (0:01:45)
