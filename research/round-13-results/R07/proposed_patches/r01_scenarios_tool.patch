@@ -1,0 +1,11 @@
+--- a/web/civic/shell/shell.js	2026-10-07 17:17:52.764457242 +0000
++++ b/web/civic/shell/shell.js	2026-10-07 17:17:52.784158590 +0000
+@@ -545,6 +545,8 @@
+   });
+   // R04 announces its map drawing tool; while it is active, Escape cancels the tool, not the cabinet.
+   root.addEventListener("civic-editor:tool", (event) => { S.editorTool = !!event.detail?.active; });
++  // R07 r13: while the scenario module picks places/segments, the public map does not open cards.
++  root.addEventListener("civic-scenarios:tool", (event) => { S.mounted.map?.pauseMapInput?.(!!event.detail?.active); });
+   document.addEventListener("keydown", (event) => {
+     if (event.key !== "Escape" || S.mode !== "civic") return;
+     // A module that handled Escape itself (confirmation, tool, menu) calls preventDefault.

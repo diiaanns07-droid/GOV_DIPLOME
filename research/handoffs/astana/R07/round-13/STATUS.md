@@ -24,3 +24,19 @@ A 2290.625 (+60.397), B 2387.062 (+156.834), B−A 96.437; в 21:00 A не де�
 Длины совпали с независимой простой Дейкстрой по JSON графа (±0.05 м).
 Проверки (worktree 56538a3): pytest tests/civic/R07 tests/civic/test_citywide_osm.py — PASS.
 NEXT: UI — места вместо node ID, явный выбор участков, состояния pending/stale/cancel, помощник R09.
+
+## Checkpoint 2 — PARTIAL
+DONE: новый web/civic/scenarios/scenarios.js — путь без node ID: «Откуда/Куда» кликом в явном режиме выбора,
+привязка в браузере = snap.py (паритет проверен в Node на 155 точках города), показ исходной/найденной
+точки, расстояния и порога, отказ без переноса, предупреждение о фрагменте и явный выбор узла основной сети;
+варианты A/B — явный выбор участков, список при наложении линий (мосты/уровни), периоды и момент;
+состояния pending/cancel/stale/error, отмена при изменении входа во время расчёта; таблица база/A/B/B−A
+в метрах, «нет пути» ≠ 0; объяснение R09 через scenarioId "result:"+digest, снимается при устаревании,
+подсказка пересчитать при scenario_not_found; Escape (capture+preventDefault), событие civic-scenarios:tool,
+destroy снимает слои/источники/курсор/слушатели.
+Исправлено по браузерной проверке: кнопка «Отменить расчёт» передавала event как silent (кнопка «Сравнить»
+оставалась заблокированной); переполнение таблицы на 390 px.
+Кандидат для проверки (scratch, не поставка): 56538a3 + r07 patch + R09 f2ebaf9 (agent/civic_assistant,
+web/civic/assistant) + R09 r01_integration.patch + proposed_patches (R01 shell, R03 pauseMapInput).
+Браузер (Chromium/Playwright, app.py на временной БД с seed-demo): browser_r07_r13.cjs — 31/31 PASS.
+NEXT: проверка истёкшего кэша (перезапуск сервера) и паузы кликов R03; замер производительности; RUN/DELIVERY.

@@ -1,0 +1,27 @@
+--- a/web/civic/map/civic-map.js	2026-10-07 17:17:52.759135454 +0000
++++ b/web/civic/map/civic-map.js	2026-10-07 17:17:52.783758612 +0000
+@@ -1061,12 +1061,15 @@
+       feats.sort((a, b) => rank(a) - rank(b) || (rank(a) === 2 ? area(a) - area(b) : 0));
+       return feats[0].properties && feats[0].properties.cid;
+     }
++    // R07 r13 proposal: another module's explicit map tool (scenario picking) owns clicks meanwhile.
++    let inputPaused = false;
+     function onMapClick(e) {
+-      if (destroyed) return;
++      if (destroyed || inputPaused) return;
+       const id = hitAt(e.point);
+       if (id) selectObject(id, { source: "map" });
+     }
+     function onMapMove(e) {
++      if (inputPaused) return;
+       lastHoverPoint = e;
+       if (hoverRaf) return;
+       hoverRaf = requestAnimationFrame(() => {
+@@ -1254,6 +1257,7 @@
+       sourceId: SRC,
+       getState: () => ({ list: st.list, count: st.items.length, selectedId: st.selectedId, view: st.view, detail: st.detail.state, filters: C.sanitizeFilters(st.filters), q: st.q, sheet: st.sheet, cameraPending: st.cameraPending }),
+       setFilters: (f) => { st.filters = C.sanitizeFilters(Object.assign({}, st.filters, f)); filtersChanged(); },
++      pauseMapInput: (flag) => { inputPaused = !!flag; if (inputPaused) hideTip(); },
+     };
+ 
+     byRoot.set(root, instance);

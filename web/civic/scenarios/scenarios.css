@@ -43,3 +43,22 @@
 .civic-r07-legend { display: flex; flex-wrap: wrap; gap: 4px 10px; font-size: 11px; color: #495057; margin: 4px 0 6px; }
 .civic-r07-lg { display: inline-flex; align-items: center; gap: 4px; }
 .civic-r07-lg i { display: inline-block; width: 18px; height: 0; }
+
+/* round 13: пошаговый путь, режим выбора, места, устаревший результат */
+.civic-r07-step { font-size: 14px; margin: 14px 0 6px; }
+.civic-r07-toolbar { background: #e7f5ff; border: 1px solid #74c0fc; border-radius: 8px; padding: 8px 10px; margin: 8px 0; font-size: 13px; display: grid; gap: 6px; }
+.civic-r07-placeblock { border: 1px solid #dee2e6; border-radius: 8px; padding: 8px 10px; margin-bottom: 8px; display: grid; gap: 6px; }
+.civic-r07-place { border-top: 1px dashed #e9ecef; padding-top: 6px; font-size: 13px; }
+.civic-r07-link { font: inherit; font-size: 12px; background: none; border: 0; color: #1971c2; cursor: pointer; padding: 0 4px; text-decoration: underline; }
+.civic-r07-segs { list-style: none; padding: 0; margin: 4px 0; font-size: 12px; display: grid; gap: 2px; }
+.civic-r07-segs li { display: flex; justify-content: space-between; gap: 6px; }
+.civic-r07-chooser { border: 2px solid #f59f00; border-radius: 8px; padding: 8px 10px; margin: 8px 0; font-size: 13px; }
+.civic-r07-chooser ul { list-style: none; padding: 0; display: grid; gap: 4px; }
+.civic-r07-chooser .civic-r07-btn { text-align: left; width: 100%; }
+.civic-r07-btn.civic-r07-active { background: #1971c2; color: #fff; border-color: #1971c2; }
+.civic-r07-stale { background: #fff4e6; border: 1px solid #ffa94d; color: #a74b00; border-radius: 8px; padding: 8px 10px; margin: 8px 0; font-size: 13px; font-weight: 600; }
+.civic-r07-is-stale { opacity: .55; filter: grayscale(.6); }
+.civic-r07-card h4 { margin: 0 0 4px; font-size: 14px; }
+.civic-r07-assistant { margin-top: 12px; }
+.civic-r07-table-wrap { max-width: 100%; overflow-x: auto; }
+.civic-r07-place, .civic-r07-toolbar, .civic-r07-chooser, .civic-r07-stale { overflow-wrap: anywhere; }

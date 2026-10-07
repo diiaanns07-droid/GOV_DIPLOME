@@ -1,0 +1,174 @@
+{
+ "base": "http://127.0.0.1:8631",
+ "passed": 31,
+ "failed": 0,
+ "results": [
+  {
+   "name": "city graph loaded in browser",
+   "status": "PASS",
+   "detail": "1879 ms (31 МБ JSON)"
+  },
+  {
+   "name": "hypothesis + snapshot + no travel time stated",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "compare disabled before places",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "pick mode announced",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "origin snapped with distance and threshold shown",
+   "status": "PASS",
+   "detail": "Откуда\nОткуда\nубрать\nУказано: 51.12830, 71.43050\nПривязано к узлу сети в 5,3 м (порог 150 м). Отрезок до сети не входит в длину и не проверен как путь — убедитесь, что точка на вашей стороне улицы или реки.\nУказать заново\n+ ещё"
+  },
+  {
+   "name": "pick mode ends after a valid place",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "destination snapped (88 м) and nearer unverified line reported",
+   "status": "PASS",
+   "detail": "Куда\nКуда\nубрать\nУказано: 51.13240, 71.40400\nПривязано к узлу сети в 88,2 м (порог 150 м). Отрезок до сети не входит в длину и не проверен как путь — убедитесь, что точка на вашей стороне улицы или реки.\nБлиже (25,3 м) есть линия, где пеший доступ в OSM не подтверждён: она в расчёт не берётся.\nУказать заново\n+ ещё"
+  },
+  {
+   "name": "far click refused, not moved",
+   "status": "PASS",
+   "detail": "Режим выбора: место «Куда». Щёлкните по карте. Esc или «Готово» — выйти; пока режим включён, клики по карте не открывают карточки объектов.Рядом нет участка с подтверждённым пешим доступом: ближайший дальше 1 км, порог 150 м. Точку не переносим — укажите место ближе к тротуару или пешеходной дорожке.Готово"
+  },
+  {
+   "name": "refused click did not add a place",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "Escape ends pick mode but keeps the drawer",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "segments selected explicitly",
+   "status": "PASS",
+   "detail": "Вариант A · участков: 1 | Вариант B · участков: 3"
+  },
+  {
+   "name": "period and analysis moment shown",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "UI payload uses snapped nodes, not raw coordinates",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "baseline/A/B lengths match engine example",
+   "status": "PASS",
+   "detail": [
+    2230.228,
+    2290.625,
+    2387.062
+   ]
+  },
+  {
+   "name": "table shows lengths and deltas in metres",
+   "status": "PASS",
+   "detail": "Откуда → Куда2 230,2 м2 290,6 м+60,4 м2 387,1 м+156,8 м+96,4 м"
+  },
+  {
+   "name": "no travel time in result",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "assistant asked about THIS result",
+   "status": "PASS",
+   "detail": "result:26a50cdbf0c52fa764c3bc010fbfeee3d325c6ca4b98ee0a79c6fe354dd0b43f"
+  },
+  {
+   "name": "assistant answer from server facts (not unavailable)",
+   "status": "PASS",
+   "detail": "template"
+  },
+  {
+   "name": "explanation cites engine numbers",
+   "status": "PASS",
+   "detail": "Граф сценария выведен из других данных; доступ части участков может быть неизвестен. Перекрытие в сценарии — гипотеза для сравнения; это не решение городских органов о перекрытии. Сеть: «Астана и окрестности · пешеходная сеть OSM». Снимок OpenStreetMap на 06.05.2026, получен 07.10.2026; лицензия: OD"
+  },
+  {
+   "name": "stale banner after input change",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "old explanation detached",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "second result differs (A inactive at 21:00)",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "stale banner cleared",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "two calculations -> two explanations",
+   "status": "PASS",
+   "detail": {
+    "sid1": "result:26a50cdbf0c52fa764c3bc010fbfeee3d325c6ca4b98ee0a79c6fe354dd0b43f",
+    "sid2": "result:d83e56b9a19d179f99b78c0c62e7e63ed846d7bbb1e8e2dfe804027eaba77e58"
+   }
+  },
+  {
+   "name": "cancelled request never rendered",
+   "status": "PASS",
+   "detail": null
+  },
+  {
+   "name": "input change during pending cancels; late answer not drawn",
+   "status": "PASS",
+   "detail": "Вход изменён во время расчёта — расчёт отменён. Нажмите «Сравнить»."
+  },
+  {
+   "name": "fragment warning shown",
+   "status": "PASS",
+   "detail": "Куда\nКуда\nубрать\nУказано: 51.11050, 71.53300\nПривязано к узлу сети в 89 м (порог 150 м). Отрезок до сети не входит в длину и не проверен как путь — убедитесь, что точка на вашей стороне улицы или реки.\nБлиже (21,3 м) есть линия, где пеший доступ в OSM не подтверждён: она в расчёт не берётся.\nНайденный узел — во фрагменте сети из 59 участков, не связанном с основной пешей сетью модели. Путь в другую часть города, скорее всего, не найдётся.\nУказать заново\n+ ещё"
+  },
+  {
+   "name": "no route shown as 'нет пути', length null not 0",
+   "status": "PASS",
+   "detail": "Откуда → Кудадоступ не подтверждёнпуть есть только через участки с неизвестным пешим доступом — он не считаетсядоступ не подтверждёнпуть есть только через участки с неизвестным пешим доступом — он не считаетсядоступ не подтверждёнпуть есть только через участки с неизвестным пешим доступом — он не считается—"
+  },
+  {
+   "name": "panel fits mobile width",
+   "status": "PASS",
+   "detail": 0
+  },
+  {
+   "name": "destroy removes layers/sources, resets cursor, ends tool",
+   "status": "PASS",
+   "detail": {
+    "layers": 0,
+    "sources": 0,
+    "cursor": "",
+    "lastTool": false
+   }
+  },
+  {
+   "name": "no page errors",
+   "status": "PASS",
+   "detail": []
+  }
+ ]
+}

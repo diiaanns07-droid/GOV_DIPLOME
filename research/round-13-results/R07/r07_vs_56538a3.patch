@@ -438,6 +438,226 @@ index 0000000..58966ea
 +        if alt is not None:
 +            out["main_alternative"] = {"node_id": alt[1], "node": list(pg.coords[alt[1]]), "distance_m": round(alt[0], 1)}
 +    return out
+diff --git a/tests/civic/R07/browser_r07_r13.cjs b/tests/civic/R07/browser_r07_r13.cjs
+new file mode 100644
+index 0000000..d2e1e8d
+--- /dev/null
++++ b/tests/civic/R07/browser_r07_r13.cjs
+@@ -0,0 +1,214 @@
++/* R07 round 13 — браузерная приёмка пользовательского пути в собранном приложении (Chromium/Playwright).
++ *
++ *   node tests/civic/R07/browser_r07_r13.cjs http://127.0.0.1:8631 [--screenshots DIR] [--restart-cmd "..."]
++ *
++ * Нужен запущенный app.py (R01 shell + R07 + R09 с кэшем результатов на сервере). Сценарий:
++ * места кликами по карте (без node ID) -> привязка с порогом и отказом -> участки A/B явным выбором ->
++ * сравнение (длины = пример движка) -> объяснение R09 своего расчёта -> изменение входа -> устаревание ->
++ * второй расчёт = второе объяснение -> отмена/поздний ответ -> нет пути != 0 -> Esc/destroy.
++ * Ожидаемые числа берутся из engine/civic_scenarios/cases/astana-baiterek-khanshatyr-v1.case.json.
++ */
++"use strict";
++const fs = require("fs");
++const path = require("path");
++const { execSync } = require("child_process");
++const { chromium } = require(path.join(execSync("npm root -g").toString().trim(), "playwright"));
++
++const ROOT = path.resolve(__dirname, "..", "..", "..");
++const BASE = process.argv[2] || "http://127.0.0.1:8631";
++const shotArg = process.argv.indexOf("--screenshots");
++const SHOTS = shotArg > 0 ? process.argv[shotArg + 1] : null;
++const CASE = JSON.parse(fs.readFileSync(path.join(ROOT, "engine/civic_scenarios/cases/astana-baiterek-khanshatyr-v1.case.json"), "utf8"));
++const EXP = CASE.expected;
++const GRAPH = JSON.parse(fs.readFileSync(path.join(ROOT, "engine/civic_scenarios/graphs/osm-astana-walking-20260506.graph.json"), "utf8"));
++const EDGES = new Map(GRAPH.edges.map((e) => [e.id, e]));
++const results = [];
++const check = (name, ok, detail) => { results.push({ name, status: ok ? "PASS" : "FAIL", detail: detail === undefined ? null : detail }); if (!ok) console.error("FAIL", name, detail || ""); };
++const PANEL = ".civic-r07-panel";
++
++function edgeMid(id) {   // вершина ломаной ближе всего к середине длины — точно лежит на линии
++  const g = EDGES.get(id).geometry;
++  if (g.length === 2) return [(g[0][0] + g[1][0]) / 2, (g[0][1] + g[1][1]) / 2];
++  return g[Math.floor(g.length / 2)];
++}
++
++(async () => {
++  const browser = await chromium.launch();
++  const page = await browser.newPage({ viewport: { width: 1366, height: 900 } });
++  const errors = [], toolEvents = [], compareBodies = [], assistantBodies = [];
++  page.on("pageerror", (e) => errors.push(String(e)));
++  page.on("request", (r) => {
++    if (r.url().endsWith("/scenarios/compare") && r.method() === "POST") compareBodies.push(JSON.parse(r.postData()));
++    if (r.url().endsWith("/assistant") && r.method() === "POST") assistantBodies.push(JSON.parse(r.postData()));
++  });
++  const lastCompare = () => page.waitForResponse((r) => r.url().endsWith("/scenarios/compare") && r.request().method() === "POST", { timeout: 60000 });
++  const lastAnswer = () => page.waitForResponse((r) => r.url().endsWith("/assistant") && r.request().method() === "POST", { timeout: 30000 });
++
++  async function clickMapAt(lon, lat, zoom) {
++    // Точку ставим в свободную от панели часть экрана и щёлкаем НАСТОЯЩЕЙ мышью по канве карты.
++    const pt = await page.evaluate(([lo, la, z]) => {
++      map.jumpTo({ center: [lo, la], zoom: z, pitch: 0, bearing: 0 });
++      const p = map.project([lo, la]);
++      map.panBy([p.x - 340, p.y - 520], { duration: 0 });
++      const q = map.project([lo, la]); const r = map.getCanvas().getBoundingClientRect();
++      return { x: r.left + q.x, y: r.top + q.y };
++    }, [lon, lat, zoom || 16]);
++    await page.waitForTimeout(500);
++    await page.mouse.click(pt.x, pt.y);
++    await page.waitForTimeout(300);
++  }
++  const block = (title) => page.locator(PANEL + " .civic-r07-placeblock[data-role=" + (title === "Откуда" ? "origins" : "dests") + "]");
++
++  try {
++    await page.goto(BASE + "/");
++    await page.waitForFunction(() => window.CivicShell && CivicShell.modules && CivicShell.modules.scenarios && typeof mapReady !== "undefined" && mapReady === true, null, { timeout: 40000 });
++    await page.evaluate(() => document.addEventListener("civic-scenarios:tool", (e) => (window.__r07tool = (window.__r07tool || []).concat([e.detail.active]))));
++    await page.click("#civic-scenarios-button");
++    const t0 = Date.now();
++    await page.waitForFunction(() => /участков/.test(document.querySelector(".civic-r07-graphinfo")?.textContent || "") && !/Загружаем/.test(document.querySelector(".civic-r07-graphinfo").textContent), null, { timeout: 90000 });
++    check("city graph loaded in browser", true, (Date.now() - t0) + " ms (31 МБ JSON)");
++    const notice = await page.textContent(PANEL + " .civic-r07-notice");
++    check("hypothesis + snapshot + no travel time stated", /Гипотетический/.test(notice) && /снимок/.test(notice) && /время в пути/.test(notice) && /Фон карты/.test(notice));
++    check("compare disabled before places", await page.locator(PANEL + " .civic-r07-primary").isDisabled());
++
++    // 1. Места кликом по карте, без node ID.
++    await block("Откуда").locator("button", { hasText: "Указать на карте" }).click();
++    check("pick mode announced", (await page.isVisible(PANEL + " .civic-r07-toolbar")) && (await page.evaluate(() => (window.__r07tool || []).slice(-1)[0])) === true);
++    await clickMapAt(...CASE.places.origin.input);
++    const origin = await block("Откуда").innerText();
++    check("origin snapped with distance and threshold shown", /Привязано к узлу сети в 5,3 м \(порог 150 м\)/.test(origin), origin);
++    check("pick mode ends after a valid place", !(await page.isVisible(PANEL + " .civic-r07-toolbar")) && (await page.evaluate(() => window.__r07tool.slice(-1)[0])) === false);
++    await block("Куда").locator("button", { hasText: "Указать на карте" }).click();
++    await clickMapAt(...CASE.places.destination.input);
++    const dest = await block("Куда").innerText();
++    check("destination snapped (88 м) and nearer unverified line reported", /88,2 м/.test(dest) && /не подтверждён/.test(dest), dest);
++
++    // Слишком далёкая точка: отказ, место не переносится; Esc выходит из режима, панель не закрывается.
++    await block("Куда").locator("button", { hasText: "+ ещё" }).click();
++    await clickMapAt(71.30, 51.30, 14);
++    const refusal = await page.textContent(PANEL + " .civic-r07-toolbar");
++    check("far click refused, not moved", /Рядом нет участка/.test(refusal) && /Точку не переносим/.test(refusal), refusal);
++    check("refused click did not add a place", (await block("Куда").locator(".civic-r07-place").count()) === 1);
++    await page.keyboard.press("Escape");
++    check("Escape ends pick mode but keeps the drawer", !(await page.isVisible(PANEL + " .civic-r07-toolbar")) && !(await page.isHidden("#civic-scenarios")));
++
++    // 2. Варианты: явный выбор участков (A — один участок, B — три).
++    const pick = async (plan, ids) => {
++      await page.locator(PANEL + " .civic-r07-tab", { hasText: "Вариант " + plan }).click();
++      await page.locator(PANEL + " .civic-r07-plan button", { hasText: "Выбрать участки на карте" }).click();
++      for (const id of ids) {
++        await clickMapAt(...edgeMid(id), 17.5);
++        if (await page.isVisible(PANEL + " .civic-r07-chooser")) {   // наложение линий — выбор из списка
++          await page.locator(PANEL + " .civic-r07-chooser button", { hasText: "OSM way " + EDGES.get(id).osm_way_id }).first().click();
++        }
++      }
++      await page.locator(PANEL + " .civic-r07-plan button", { hasText: "Готово" }).click();
++    };
++    const planA = CASE.payload.plans[0].closures[0].edge_ids, planB = CASE.payload.plans[1].closures[0].edge_ids;
++    await pick("A", planA);
++    await pick("B", planB);
++    const tabs = await page.locator(PANEL + " .civic-r07-tab").allInnerTexts();
++    check("segments selected explicitly", tabs[0].includes("участков: 1") && tabs[1].includes("участков: 3"), tabs.join(" | "));
++    check("period and analysis moment shown", /действует/.test(await page.textContent(PANEL + " .civic-r07-plan")) && /закрыто участков/.test(await page.textContent(PANEL + " .civic-r07-hint >> nth=0").catch(() => "")) || /закрыто участков/.test(await page.textContent(PANEL)));
++
++    // 3. Сравнение: числа = пример движка.
++    let resp = lastCompare();
++    await page.click(PANEL + " .civic-r07-primary");
++    const r1 = (await (await resp).json()).data;
++    const body1 = compareBodies[compareBodies.length - 1];
++    check("UI payload uses snapped nodes, not raw coordinates", body1.origin_node_ids[0] === EXP.snap.origin.node_id && body1.destination_node_ids[0] === EXP.snap.destination.node_id && !("coordinates" in body1));
++    const len = (p) => (p === "base" ? r1.baseline : r1.plans.find((x) => x.id === p)).routes[0].length_m;
++    check("baseline/A/B lengths match engine example", len("base") === EXP.baseline_length_m && len("A") === EXP.plan_length_m.A && len("B") === EXP.plan_length_m.B, [len("base"), len("A"), len("B")]);
++    await page.waitForSelector(PANEL + " .civic-r07-table tbody tr");
++    const row = await page.textContent(PANEL + " .civic-r07-table tbody tr");
++    check("table shows lengths and deltas in metres", /2\s?230,2 м/.test(row) && /\+60,4 м/.test(row) && /\+156,8 м/.test(row) && /\+96,4 м/.test(row), row);
++    check("no travel time in result", !/мин\b|минут|км\/ч/.test(await page.textContent(PANEL + " .civic-r07-result")));
++
++    // 4. Объяснение R09 именно этого расчёта.
++    await page.waitForSelector(PANEL + " .civic-r07-assistant .civic-r09", { timeout: 10000 });
++    const ask = async (q) => {
++      const a = lastAnswer();
++      await page.fill(PANEL + " .civic-r07-assistant .civic-r09 textarea, " + PANEL + " .civic-r07-assistant .civic-r09 input[type=text]", q);
++      await page.locator(PANEL + " .civic-r07-assistant .civic-r09 button[type=submit]").click();
++      return (await (await a).json()).data;
++    };
++    const ans1 = await ask("Почему вариант B длиннее варианта A?");
++    const sid1 = assistantBodies[assistantBodies.length - 1].scenario_id;
++    check("assistant asked about THIS result", sid1 === "result:" + r1.result_digest && Object.keys(assistantBodies.slice(-1)[0]).sort().join() === "object_id,question,scenario_id", sid1);
++    check("assistant answer from server facts (not unavailable)", ans1.source !== "unavailable" && !(ans1.warnings || []).includes("scenario_not_found"), ans1.source);
++    const text1 = (ans1.statements || []).map((s) => s.text).join(" ");
++    check("explanation cites engine numbers", /2\s?387|2\s?290|156|96/.test(text1.replace(/ /g, " ")), text1.slice(0, 300));
++    if (SHOTS) await page.screenshot({ path: path.join(SHOTS, "r07_r13_result_assistant.png") });
++
++    // 5. Изменение входа -> результат и объяснение устарели.
++    await page.fill(PANEL + " input[aria-label='Момент анализа']", "2026-10-10T21:00");
++    await page.dispatchEvent(PANEL + " input[aria-label='Момент анализа']", "change");
++    check("stale banner after input change", await page.isVisible(PANEL + " .civic-r07-stale"));
++    check("old explanation detached", (await page.locator(PANEL + " .civic-r07-assistant .civic-r09").count()) === 0 && /прежнему расчёту/.test(await page.textContent(PANEL + " .civic-r07-assistant")));
++    if (SHOTS) await page.screenshot({ path: path.join(SHOTS, "r07_r13_stale.png") });
++
++    // 6. Второй расчёт -> другое объяснение.
++    resp = lastCompare();
++    await page.click(PANEL + " .civic-r07-primary");
++    const r2 = (await (await resp).json()).data;
++    check("second result differs (A inactive at 21:00)", r2.result_digest !== r1.result_digest && r2.plans[0].active_closed_edge_ids.length === 0 && r2.plans[0].routes[0].length_m === EXP.late.plan_length_m.A);
++    check("stale banner cleared", !(await page.isVisible(PANEL + " .civic-r07-stale")));
++    await page.waitForSelector(PANEL + " .civic-r07-assistant .civic-r09");
++    const ans2 = await ask("Почему вариант B длиннее варианта A?");
++    const sid2 = assistantBodies[assistantBodies.length - 1].scenario_id;
++    const text2 = (ans2.statements || []).map((s) => s.text).join(" ");
++    check("two calculations -> two explanations", sid2 === "result:" + r2.result_digest && sid2 !== sid1 && text2 !== text1, { sid1, sid2 });
++
++    // 7. Отмена и поздний ответ.
++    await page.route("**/scenarios/compare", async (route) => { await new Promise((r) => setTimeout(r, 2500)); await route.continue().catch(() => {}); });
++    await page.fill(PANEL + " input[aria-label='Момент анализа']", "2026-10-10T13:00");
++    await page.dispatchEvent(PANEL + " input[aria-label='Момент анализа']", "change");
++    await page.click(PANEL + " .civic-r07-primary");
++    await page.waitForSelector(PANEL + " button:has-text('Отменить расчёт')");
++    await page.click(PANEL + " button:has-text('Отменить расчёт')");
++    await page.waitForTimeout(3500);
++    check("cancelled request never rendered", (await page.textContent(PANEL + " .civic-r07-result")).includes(r2.result_digest.slice(0, 8)) && await page.isVisible(PANEL + " .civic-r07-stale"));
++    await page.click(PANEL + " .civic-r07-primary");
++    await page.waitForTimeout(400);
++    await page.fill(PANEL + " input[aria-label='Момент анализа']", "2026-10-10T14:00");
++    await page.dispatchEvent(PANEL + " input[aria-label='Момент анализа']", "change");
++    await page.waitForTimeout(3500);
++    const runInfo = await page.textContent(PANEL + " .civic-r07-hint[role=status]");
++    check("input change during pending cancels; late answer not drawn", /Вход изменён во время расчёта/.test(runInfo) && (await page.textContent(PANEL + " .civic-r07-result")).includes(r2.result_digest.slice(0, 8)), runInfo);
++    await page.unroute("**/scenarios/compare");
++
++    // 8. Нет пути != 0: цель во фрагменте сети у вокзала.
++    await block("Куда").locator("button", { hasText: "Указать заново" }).click();
++    await clickMapAt(71.5330, 51.1105, 16);
++    const frag = await block("Куда").innerText();
++    check("fragment warning shown", /фрагменте сети из \d+ участков/.test(frag), frag);
++    resp = lastCompare();
++    await page.click(PANEL + " .civic-r07-primary");
++    const r3 = (await (await resp).json()).data;
++    const b3 = r3.baseline.routes[0];
++    const row3 = await page.textContent(PANEL + " .civic-r07-table tbody tr");
++    check("no route shown as 'нет пути', length null not 0", b3.length_m === null && /нет пути в модели|доступ не подтверждён/.test(row3) && !/\b0 м\b/.test(row3), row3);
++    if (SHOTS) await page.screenshot({ path: path.join(SHOTS, "r07_r13_no_route.png") });
++
++    // 9. Мобильная ширина и destroy.
++    await page.setViewportSize({ width: 390, height: 844 });
++    await page.waitForTimeout(400);
++    const overflow = await page.evaluate(() => { const p = document.querySelector(".civic-r07-panel"); return p.scrollWidth - p.clientWidth; });
++    check("panel fits mobile width", overflow <= 1, overflow);
++    await page.setViewportSize({ width: 1366, height: 900 });
++    await page.locator(PANEL + " .civic-r07-tab", { hasText: "Вариант A" }).click();
++    await page.locator(PANEL + " .civic-r07-plan button", { hasText: "Выбрать участки на карте" }).click();
++    await page.click("#civic-scenarios [data-close=scenarios]");
++    const after = await page.evaluate(() => ({ layers: (map.getStyle().layers || []).filter((l) => l.id.startsWith("civic-r07-")).length,
++      sources: Object.keys(map.getStyle().sources || {}).filter((s) => s.startsWith("civic-r07-")).length, cursor: map.getCanvas().style.cursor, lastTool: (window.__r07tool || []).slice(-1)[0] }));
++    check("destroy removes layers/sources, resets cursor, ends tool", after.layers === 0 && after.sources === 0 && after.cursor === "" && after.lastTool === false, after);
++    check("no page errors", errors.length === 0, errors);
++  } catch (error) {
++    check("run completed", false, String((error && error.stack) || error));
++  } finally {
++    await browser.close();
++  }
++  const failed = results.filter((r) => r.status !== "PASS");
++  console.log(JSON.stringify({ base: BASE, passed: results.length - failed.length, failed: failed.length, results }, null, 1));
++  process.exit(failed.length ? 1 : 0);
++})();
 diff --git a/tests/civic/R07/test_r07_r13_city.py b/tests/civic/R07/test_r07_r13_city.py
 new file mode 100644
 index 0000000..227ecca
@@ -696,3 +916,1111 @@ index 0000000..b7f6c7d
 +    for i in range(80):
 +        pg.adjacency(("allowed",), frozenset({ids[i % len(ids)], ids[(i * 7) % len(ids)], str(i)}))
 +    assert len(pg._adj_cache) <= 64
+diff --git a/tests/civic/R07/test_r07_r13_snap_parity.py b/tests/civic/R07/test_r07_r13_snap_parity.py
+new file mode 100644
+index 0000000..ed1895b
+--- /dev/null
++++ b/tests/civic/R07/test_r07_r13_snap_parity.py
+@@ -0,0 +1,76 @@
++"""R07 round 13: привязка в браузере (web/civic/scenarios/scenarios.js) = эталон engine/civic_scenarios/snap.py.
++
++Настоящий scenarios.js исполняется в Node (без DOM: используются только чистые функции _internal).
++Пропускается, если node не установлен.
++"""
++import json
++import random
++import shutil
++import subprocess
++from pathlib import Path
++
++import pytest
++
++from engine.civic_scenarios.registry import GRAPHS, load_graph, manifest
++from engine.civic_scenarios.snap import snap_point
++
++ROOT = Path(__file__).resolve().parents[3]
++JS = ROOT / "web/civic/scenarios/scenarios.js"
++NODE = shutil.which("node")
++RUNNER = r"""
++const fs = require("fs");
++require(process.argv[2]);
++const { buildSnapIndex, snapPoint } = globalThis.CivicScenarios._internal;
++const graph = JSON.parse(fs.readFileSync(process.argv[3], "utf8"));
++const points = JSON.parse(fs.readFileSync(process.argv[4], "utf8"));
++const idx = buildSnapIndex(graph);
++process.stdout.write(JSON.stringify(points.map(([lon, lat, max]) => snapPoint(idx, lon, lat, max))));
++"""
++
++
++def js_snaps(graph_file, points, tmp_path):
++    (tmp_path / "pts.json").write_text(json.dumps(points))
++    (tmp_path / "run.cjs").write_text(RUNNER)
++    out = subprocess.run([NODE, str(tmp_path / "run.cjs"), str(JS), str(graph_file), str(tmp_path / "pts.json")],
++                         check=True, capture_output=True, text=True, timeout=300)
++    return json.loads(out.stdout)
++
++
++def check(py, js):
++    for key in ("status", "node_id", "main_component", "component_edges"):
++        assert py[key] == js[key], (key, py, js)
++    for key in ("distance_m", "nearest_allowed_m", "nearer_unverified_m"):
++        if py[key] is None or js[key] is None:
++            assert py[key] == js[key], (key, py, js)
++        else:
++            assert abs(py[key] - js[key]) <= 0.11, (key, py, js)
++    assert (py["main_alternative"] or {}).get("node_id") == (js["main_alternative"] or {}).get("node_id")
++
++
++def graph_file(graph_id):
++    return GRAPHS / next(g["file"] for g in manifest()["graphs"] if g["id"] == graph_id)
++
++
++@pytest.mark.skipif(NODE is None, reason="node не установлен")
++def test_parity_on_synthetic_graph(tmp_path):
++    pg = load_graph("synthetic-tiny-v1")
++    rnd = random.Random(3)
++    points = [[rnd.uniform(71.398, 71.410), rnd.uniform(51.098, 51.103), rnd.choice([30, 150, 400])] for _ in range(60)]
++    for p, js in zip(points, js_snaps(graph_file("synthetic-tiny-v1"), points, tmp_path)):
++        check(snap_point(pg, p[0], p[1], max_m=p[2]), js)
++
++
++@pytest.mark.skipif(NODE is None, reason="node не установлен")
++def test_parity_on_city_snapshot(tmp_path):
++    gid = "osm-astana-walking-20260506"
++    pg = load_graph(gid)
++    rnd = random.Random(13)
++    points = [[rnd.uniform(71.36, 71.55), rnd.uniform(51.07, 51.22), 150] for _ in range(150)]
++    points += [[71.4305, 51.1283, 150], [71.404, 51.1324, 150], [71.5330, 51.1105, 150], [71.5330, 51.1105, 400], [72.5, 51.1, 150]]
++    results = js_snaps(graph_file(gid), points, tmp_path)
++    statuses = set()
++    for p, js in zip(points, results):
++        py = snap_point(pg, p[0], p[1], max_m=p[2])
++        check(py, js)
++        statuses.add(py["status"])
++    assert statuses == {"ok", "too_far", "outside_graph"}     # проверены все исходы, не только удачные
+diff --git a/web/civic/scenarios/scenarios.css b/web/civic/scenarios/scenarios.css
+index 585520a..56d320e 100644
+--- a/web/civic/scenarios/scenarios.css
++++ b/web/civic/scenarios/scenarios.css
+@@ -43,3 +43,22 @@
+ .civic-r07-legend { display: flex; flex-wrap: wrap; gap: 4px 10px; font-size: 11px; color: #495057; margin: 4px 0 6px; }
+ .civic-r07-lg { display: inline-flex; align-items: center; gap: 4px; }
+ .civic-r07-lg i { display: inline-block; width: 18px; height: 0; }
++
++/* round 13: пошаговый путь, режим выбора, места, устаревший результат */
++.civic-r07-step { font-size: 14px; margin: 14px 0 6px; }
++.civic-r07-toolbar { background: #e7f5ff; border: 1px solid #74c0fc; border-radius: 8px; padding: 8px 10px; margin: 8px 0; font-size: 13px; display: grid; gap: 6px; }
++.civic-r07-placeblock { border: 1px solid #dee2e6; border-radius: 8px; padding: 8px 10px; margin-bottom: 8px; display: grid; gap: 6px; }
++.civic-r07-place { border-top: 1px dashed #e9ecef; padding-top: 6px; font-size: 13px; }
++.civic-r07-link { font: inherit; font-size: 12px; background: none; border: 0; color: #1971c2; cursor: pointer; padding: 0 4px; text-decoration: underline; }
++.civic-r07-segs { list-style: none; padding: 0; margin: 4px 0; font-size: 12px; display: grid; gap: 2px; }
++.civic-r07-segs li { display: flex; justify-content: space-between; gap: 6px; }
++.civic-r07-chooser { border: 2px solid #f59f00; border-radius: 8px; padding: 8px 10px; margin: 8px 0; font-size: 13px; }
++.civic-r07-chooser ul { list-style: none; padding: 0; display: grid; gap: 4px; }
++.civic-r07-chooser .civic-r07-btn { text-align: left; width: 100%; }
++.civic-r07-btn.civic-r07-active { background: #1971c2; color: #fff; border-color: #1971c2; }
++.civic-r07-stale { background: #fff4e6; border: 1px solid #ffa94d; color: #a74b00; border-radius: 8px; padding: 8px 10px; margin: 8px 0; font-size: 13px; font-weight: 600; }
++.civic-r07-is-stale { opacity: .55; filter: grayscale(.6); }
++.civic-r07-card h4 { margin: 0 0 4px; font-size: 14px; }
++.civic-r07-assistant { margin-top: 12px; }
++.civic-r07-table-wrap { max-width: 100%; overflow-x: auto; }
++.civic-r07-place, .civic-r07-toolbar, .civic-r07-chooser, .civic-r07-stale { overflow-wrap: anywhere; }
+diff --git a/web/civic/scenarios/scenarios.js b/web/civic/scenarios/scenarios.js
+index d067c86..2e34415 100644
+--- a/web/civic/scenarios/scenarios.js
++++ b/web/civic/scenarios/scenarios.js
+@@ -1,24 +1,35 @@
+-/* R07 CivicScenarios — сравнение базового состояния и двух планов перекрытий (A/B) на одной карте.
+- * Контракт: window.CivicScenarios.mount({root, map, api, apiPrefix?}) -> {destroy}.
+- *   api.request(method, path, body) -> Promise<data> (R01); path = apiPrefix + "/scenarios/..." (по умолчанию "/api/civic/v1").
+- *   map — существующий MapLibre instance или null (тогда только таблица).
+- * Геометрию рёбер даёт подготовленный граф; закрыть можно только ребро графа (клик по линии), произвольная
+- * нарисованная линия дорожным объектом не считается. Сценарий — гипотеза, не официальное перекрытие.
+- * Текст из данных выводится только через textContent. Слои/источники/классы — с префиксом civic-r07-.
++/* R07 CivicScenarios (раунд 13) — сравнение пешей доступности: база, вариант A, вариант B.
++ *
++ * window.CivicScenarios.mount({root, map, api, apiPrefix?}) -> {destroy, cancelTool}
++ *   api.request(method, path, body, {signal}) -> Promise<data> (R01); путь = apiPrefix + "/scenarios/...".
++ *   map — основной MapLibre instance или null (тогда без карты).
++ *
++ * Пользовательский путь без знания ID: указать места на карте -> точка привязывается к ближайшему узлу
++ * сети с ПОДТВЕРЖДЁННЫМ пешим доступом (≤150 м; дальше — отказ), показаны исходная и найденная точки;
++ * варианты A/B — явно выбранные участки сети и период; результат — длина пути в метрах (не время);
++ * объяснение — помощник R09 по расчёту сервера ("result:" + result_digest), без цифр из браузера.
++ *
++ * Карта: клики перехватываются ТОЛЬКО в явном режиме выбора (кнопка «Указать на карте» / «Выбрать участки»).
++ * Режим объявляется событием "civic-scenarios:tool" {active, kind} (как civic-editor:tool у R04);
++ * Escape завершает режим (preventDefault — оболочка не закрывает панель); destroy снимает всё.
++ * Текст выводится через textContent. Слои/источники/классы — префикс civic-r07-.
+  */
+ (function (root) {
+   "use strict";
+   const P = "civic-r07-";
++  const SNAP_MAX_M = 150, SEARCH_MAX_M = 1000, CELL_DEG_LAT = 0.002, R_EARTH = 6371008.8;
++  const MAX_PLACES = 5;
++  const PLAN_IDS = ["A", "B"];
+   const PLAN_COLORS = { A: "#d9480f", B: "#7048e8" };
+   const ROUTE_COLORS = { base: "#1971c2", A: "#d9480f", B: "#7048e8" };
+-  const STATUS_LABEL = { ok: "", unknown: "нет данных о доступе", unreachable: "нет пути в модели" };
++  const STATUS_LABEL = { unknown: "доступ не подтверждён", unreachable: "нет пути в модели" };
+   const REASON_LABEL = {
+-    path_only_via_unknown_access: "путь есть только через рёбра с неизвестным доступом",
+-    path_may_exist_outside_graph: "путь может проходить вне среза графа",
+-    no_path_within_model: "в данной модели графа пути нет (не доказанная недоступность на местности)",
++    path_only_via_unknown_access: "путь есть только через участки с неизвестным пешим доступом — он не считается",
++    path_may_exist_outside_graph: "путь может проходить вне выгрузки сети",
++    no_path_within_model: "в этой модели сети пути нет; это не доказанная недоступность на местности",
+   };
++  const ACCESS_LABEL = { allowed: "пеший доступ подтверждён", unknown: "доступ неизвестен", denied: "доступ запрещён" };
+   const EVIDENCE_LABEL = { synthetic: "СИНТЕТИКА", derived: "производные данные", observed: "наблюдение", hypothesis: "гипотеза" };
+-  const MODE_LABEL = { walking: "пешеход", driving: "автомобиль" };
+ 
+   function el(tag, attrs, children) {
+     const n = document.createElement(tag);
+@@ -35,291 +46,562 @@
+   }
+   const fmtM = (m) => (m === null || m === undefined ? "—" : (Math.round(m * 10) / 10).toLocaleString("ru-RU") + " м");
+   const fmtD = (m) => (m === null || m === undefined ? "—" : (m > 0 ? "+" : m < 0 ? "−" : "±") + (Math.round(Math.abs(m) * 10) / 10).toLocaleString("ru-RU") + " м");
+-  const short = (id) => (id.length > 14 ? "…" + id.slice(-6) : id);
+-
+-  // "2026-10-07T09:00" + "+05:00" -> ISO с явным смещением
++  const fmtCoord = (p) => p[1].toFixed(5) + ", " + p[0].toFixed(5);
+   const isoWithOffset = (local, off) => (local.length === 16 ? local + ":00" : local) + off;
+   function splitIso(s) {
+     const m = /^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2})(?::\d{2}(?:\.\d+)?)?(Z|[+-]\d{2}:\d{2})$/.exec(s || "");
+     return m ? { local: m[1], off: m[2] === "Z" ? "+00:00" : m[2] } : { local: "", off: "+05:00" };
+   }
++  const active = (c, at) => Date.parse(c.start_at) <= at && at < Date.parse(c.end_at);
+ 
++  // ------------------------------------------------------------------ привязка к сети
++  // Повтор engine/civic_scenarios/snap.py: те же кандидаты, порог, ничья по ID, компоненты.
++  function haversine(a, b) {
++    const r = Math.PI / 180, p1 = a[1] * r, p2 = b[1] * r;
++    const h = Math.sin((p2 - p1) / 2) ** 2 + Math.cos(p1) * Math.cos(p2) * Math.sin((b[0] - a[0]) * r / 2) ** 2;
++    return 2 * R_EARTH * Math.asin(Math.min(1, Math.sqrt(h)));
++  }
++  function buildSnapIndex(graph) {
++    const coords = new Map(graph.nodes.map((n) => [n.id, [n.lon, n.lat]]));
++    const mid = graph.nodes.reduce((s, n) => s + n.lat, 0) / Math.max(1, graph.nodes.length);
++    const cellLat = CELL_DEG_LAT, cellLon = CELL_DEG_LAT / Math.max(0.2, Math.cos(mid * Math.PI / 180));
++    const parent = new Map(), allowed = new Set(), other = new Set();
++    const find = (x) => { while (parent.get(x) !== x) { parent.set(x, parent.get(parent.get(x))); x = parent.get(x); } return x; };
++    for (const e of graph.edges) {
++      if (e.access === "allowed") {
++        allowed.add(e.from); allowed.add(e.to);
++        if (!parent.has(e.from)) parent.set(e.from, e.from);
++        if (!parent.has(e.to)) parent.set(e.to, e.to);
++        const a = find(e.from), b = find(e.to);
++        if (a !== b) { if (a < b) parent.set(b, a); else parent.set(a, b); }   // корень — минимальный ID
++      } else { other.add(e.from); other.add(e.to); }
++    }
++    const size = new Map();
++    for (const e of graph.edges) if (e.access === "allowed") { const r = find(e.from); size.set(r, (size.get(r) || 0) + 1); }
++    let main = null;
++    for (const [r, s] of size) if (main === null || s > size.get(main) || (s === size.get(main) && r > main)) main = r;
++    const comp = new Map([...allowed].map((n) => [n, find(n)]));
++    const key = (lon, lat) => Math.floor(lon / cellLon) + "," + Math.floor(lat / cellLat);
++    const grid = (ids) => {
++      const g = new Map();
++      for (const id of [...ids].sort()) { const c = coords.get(id); const k = key(c[0], c[1]); if (!g.has(k)) g.set(k, []); g.get(k).push(id); }
++      return g;
++    };
++    for (const n of allowed) other.delete(n);
++    return { coords, cellLat, cellLon, key, comp, size, main, bbox: Array.isArray(graph.bbox) && graph.bbox.length === 4 ? graph.bbox : null,
++      allowed: grid(allowed), other: grid(other), mainGrid: grid([...allowed].filter((n) => comp.get(n) === main)) };
++  }
++  function nearest(idx, grid, lon, lat, limit) {
++    const cx = Math.floor(lon / idx.cellLon), cy = Math.floor(lat / idx.cellLat);
++    const rings = Math.ceil(limit / (idx.cellLat * 111000)) + 1;
++    let best = null;
++    for (let dx = -rings; dx <= rings; dx++) for (let dy = -rings; dy <= rings; dy++) {
++      for (const n of grid.get((cx + dx) + "," + (cy + dy)) || []) {
++        const d = haversine([lon, lat], idx.coords.get(n));
++        if (d <= limit && (best === null || d < best[0] || (d === best[0] && n < best[1]))) best = [d, n];
++      }
++    }
++    return best;
++  }
++  const r1 = (x) => Math.round(x * 10) / 10;
++  function snapPoint(idx, lon, lat, maxM) {
++    maxM = maxM || SNAP_MAX_M;
++    const out = { input: [lon, lat], max_m: maxM, status: null, node_id: null, node: null, distance_m: null, nearest_allowed_m: null,
++      nearer_unverified_m: null, component_edges: null, main_component: null, main_alternative: null };
++    if (idx.bbox && !(idx.bbox[0] <= lon && lon <= idx.bbox[2] && idx.bbox[1] <= lat && lat <= idx.bbox[3])) { out.status = "outside_graph"; return out; }
++    const best = nearest(idx, idx.allowed, lon, lat, SEARCH_MAX_M);
++    const other = nearest(idx, idx.other, lon, lat, best ? best[0] : SEARCH_MAX_M);
++    if (other && (!best || other[0] < best[0])) out.nearer_unverified_m = r1(other[0]);
++    if (!best) { out.status = "too_far"; return out; }
++    out.nearest_allowed_m = r1(best[0]);
++    if (best[0] > maxM) { out.status = "too_far"; return out; }
++    const c = idx.comp.get(best[1]);
++    Object.assign(out, { status: "ok", node_id: best[1], node: idx.coords.get(best[1]).slice(), distance_m: r1(best[0]),
++      component_edges: idx.size.get(c), main_component: c === idx.main });
++    if (!out.main_component) {
++      const alt = nearest(idx, idx.mainGrid, lon, lat, maxM);
++      if (alt) out.main_alternative = { node_id: alt[1], node: idx.coords.get(alt[1]).slice(), distance_m: r1(alt[0]) };
++    }
++    return out;
++  }
++  function fromNode(idx, id, label) {   // точка кейса задана узлом: привязка не требуется
++    const c = idx.coords.get(id);
++    if (!c) return null;
++    const comp = idx.comp.get(id);
++    return { input: c.slice(), node_id: id, node: c.slice(), distance_m: 0, status: "ok", max_m: SNAP_MAX_M, label,
++      component_edges: comp ? idx.size.get(comp) : 0, main_component: comp === idx.main, nearer_unverified_m: null, main_alternative: null, from_case: true };
++  }
++
++  // ------------------------------------------------------------------ компонент
+   function mount(opts) {
+     const host = opts && opts.root, map = (opts && opts.map) || null, api = opts && opts.api;
+     if (!host || !api || typeof api.request !== "function") throw new Error("CivicScenarios.mount: нужны root и api.request");
+     const prefix = (opts.apiPrefix === undefined ? "/api/civic/v1" : opts.apiPrefix) + "/scenarios";
+-    const state = {
+-      graphs: [], cases: [], graph: null, edgeIndex: new Map(), nodeIndex: new Map(),
+-      payload: null, editPlan: "A", clickMode: "close", result: null, selectedPair: null, busy: false, destroyed: false,
+-      graphSeq: 0, resultSeq: 0, drawnGraph: null,
++    const S = {
++      graphs: [], cases: [], graph: null, idx: null, edgeIndex: new Map(), graphSeq: 0, drawnGraph: null,
++      places: { origins: [], dests: [] }, plans: { A: [], B: [] }, editPlan: "A", analysisAt: "2026-10-10T12:00:00+05:00",
++      tool: null, chooser: null,
++      run: { seq: 0, controller: null, pending: false, error: null, result: null, resultKey: null, payload: null },
++      selectedPair: null, assistant: null, assistantFor: null, destroyed: false,
+     };
+-    const listeners = [];
++    const mapHandlers = [], docHandlers = [];
+     const ui = {};
+-    const wrap = el("section", { class: P + "panel", "aria-label": "Сценарии перекрытий" });
++    const wrap = el("section", { class: P + "panel", "aria-label": "Сравнение вариантов ограничений" });
+     host.appendChild(wrap);
++    const req = (method, path, body, o) => api.request(method, prefix + path, body, o);
+ 
+-    // ---------- каркас ----------
+     ui.notice = el("div", { class: P + "notice", role: "note" }, [
+-      el("strong", { text: "Сценарий — гипотеза." }),
+-      " Это не официальное решение о перекрытии. Метрика — длина пути по графу (м), не время в пути; пробки, CO2 и аварийность не моделируются.",
++      el("strong", { text: "Гипотетический сценарий на снимке данных." }),
++      " Перекрытия задаёте вы — это не официальное решение. Считается длина пешего пути по сети OSM (снимок, не live);" +
++      " время в пути, пробки и транспорт не моделируются. Фон карты вне линий сети не означает, что там можно посчитать путь.",
+     ]);
+-    ui.graphSel = el("select", { class: P + "select", "aria-label": "Граф", onchange: () => selectGraph(ui.graphSel.value, null) });
+-    ui.caseSel = el("select", { class: P + "select", "aria-label": "Кейс", onchange: () => applyCase(ui.caseSel.value) });
++    ui.graphSel = el("select", { class: P + "select", "aria-label": "Сеть", onchange: () => selectGraph(ui.graphSel.value, null) });
++    ui.caseSel = el("select", { class: P + "select", "aria-label": "Пример", onchange: () => applyCase(ui.caseSel.value) });
+     ui.graphInfo = el("div", { class: P + "graphinfo" });
++    ui.caseNote = el("p", { class: P + "hint", hidden: true });
++    ui.tool = el("div", { class: P + "toolbar", role: "status", "aria-live": "polite", hidden: true });
++    ui.places = el("div", { class: P + "places" });
++    ui.planTabs = el("div", { class: P + "tabs", role: "tablist" });
++    ui.planBody = el("div", { class: P + "plan" });
++    ui.chooser = el("div", { class: P + "chooser", hidden: true });
+     ui.atLocal = el("input", { type: "datetime-local", class: P + "input", "aria-label": "Момент анализа", onchange: syncAt });
+     ui.atOff = el("select", { class: P + "select " + P + "off", "aria-label": "Смещение UTC", onchange: syncAt },
+       ["+05:00", "+06:00", "+00:00"].map((o) => el("option", { value: o, text: "UTC" + o })));
+-    ui.planTabs = el("div", { class: P + "tabs", role: "tablist" });
+-    ui.modeBar = el("div", { class: P + "modes" });
+-    ui.planBody = el("div", { class: P + "plan" });
+-    ui.points = el("div", { class: P + "points" });
++    ui.atInfo = el("div", { class: P + "hint" });
+     ui.run = el("button", { class: P + "btn " + P + "primary", type: "button", text: "Сравнить", disabled: true, onclick: run });
++    ui.cancel = el("button", { class: P + "btn", type: "button", text: "Отменить расчёт", hidden: true, onclick: () => cancelRun(false) });
++    ui.runInfo = el("div", { class: P + "hint", role: "status", "aria-live": "polite" });
+     ui.err = el("div", { class: P + "error", role: "alert", hidden: true });
++    ui.stale = el("div", { class: P + "stale", role: "status", hidden: true });
+     ui.out = el("div", { class: P + "result", "aria-live": "polite" });
++    ui.assistant = el("div", { class: P + "assistant" });
+ 
+     wrap.append(
+-      el("h2", { class: P + "title", text: "Последствия перекрытий: база, план A, план B" }),
++      el("h2", { class: P + "title", text: "Сравнение вариантов: база, A и B" }),
+       ui.notice,
+-      el("div", { class: P + "row" }, [el("label", { class: P + "lbl" }, ["Граф ", ui.graphSel]), el("label", { class: P + "lbl" }, ["Кейс ", ui.caseSel])]),
+-      ui.graphInfo,
+-      el("div", { class: P + "legend" }, [
+-        ["#437b68", "solid", "разрешено в выбранном графе"], ["#adb5bd", "dashed", "доступ неизвестен (не используется)"], ["#c92a2a", "solid", "запрет"], ["#5d67a0", "dashed", "граница выгрузки, не гарантия полноты"],
+-        [PLAN_COLORS.A, "solid", "закрыто в плане A / путь A"], [PLAN_COLORS.B, "solid", "закрыто в плане B / путь B"], ["#adb5bd", "dotted", "перекрытие не действует в момент анализа"], [ROUTE_COLORS.base, "solid", "путь в базе"],
+-      ].map(([c, st, t]) => el("span", { class: P + "lg" }, [el("i", { style: "border-top:3px " + st + " " + c }), t]))),
+-      el("div", { class: P + "row" }, [el("label", { class: P + "lbl" }, ["Момент анализа ", ui.atLocal]), ui.atOff]),
+-      ui.planTabs, ui.modeBar, ui.planBody, ui.points,
+-      el("div", { class: P + "row" }, [ui.run, el("button", { class: P + "btn", type: "button", text: "Вся сеть", onclick: () => drawGraph(true) })]),
+-      ui.err, ui.out,
++      el("div", { class: P + "row" }, [el("label", { class: P + "lbl" }, ["Сеть ", ui.graphSel]), el("label", { class: P + "lbl" }, ["Пример ", ui.caseSel])]),
++      ui.graphInfo, ui.caseNote, ui.tool,
++      el("h3", { class: P + "step", text: "1. Откуда и куда" }), ui.places,
++      el("h3", { class: P + "step", text: "2. Варианты ограничений" }), ui.planTabs, ui.planBody, ui.chooser,
++      el("h3", { class: P + "step", text: "3. Момент, на который сравниваем" }),
++      el("div", { class: P + "row" }, [el("label", { class: P + "lbl" }, ["Дата и время ", ui.atLocal]), ui.atOff]), ui.atInfo,
++      el("div", { class: P + "row" }, [ui.run, ui.cancel]), ui.runInfo,
++      ui.err, ui.stale, ui.out, ui.assistant,
+     );
+ 
+-    // ---------- загрузка ----------
+-    function req(method, path, body) { return api.request(method, prefix + path, body); }
+     function showError(e) {
+       ui.err.hidden = false;
+       ui.err.textContent = "Ошибка: " + ((e && (e.message || e.code)) || String(e)) + (e && e.code ? " [" + e.code + "]" : "");
+     }
+     function clearError() { ui.err.hidden = true; ui.err.textContent = ""; }
+ 
++    // ---------------------------------------------------------------- загрузка
+     Promise.all([req("GET", "/graphs"), req("GET", "/cases")]).then(([g, c]) => {
+-      if (state.destroyed) return;
+-      state.graphs = g.items || []; state.cases = c.items || [];
+-      ui.graphSel.replaceChildren(...state.graphs.map((x) => el("option", { value: x.id, text: (x.evidence_type === "synthetic" ? "[СИНТЕТИКА] " : "") + x.label })));
+-      for (const nr of g.not_ready || []) ui.graphSel.appendChild(el("option", { disabled: true, text: "[NOT_READY] " + (MODE_LABEL[nr.mode] || nr.mode) + ": нет проверенного графа" }));
+-      const preferred = state.graphs.find((g) => g.default === true);
+-      const first = state.cases.find((x) => x.payload.graph_id === preferred?.id) || state.cases.find((x) => x.payload.graph_id !== "synthetic-tiny-v1") || state.cases[0];
+-      if (preferred) { selectGraph(preferred.id, first?.payload.graph_id === preferred.id ? first.case_id : null); return; }
+-      if (first) selectGraph(first.payload.graph_id, first.case_id); else if (state.graphs[0]) selectGraph(state.graphs[0].id, null);
+-    }).catch(showError);
++      if (S.destroyed) return;
++      S.graphs = g.items || []; S.cases = c.items || [];
++      ui.graphSel.replaceChildren(...S.graphs.map((x) => el("option", { value: x.id, text: (x.evidence_type === "synthetic" ? "[СИНТЕТИКА] " : "") + x.label })));
++      for (const nr of g.not_ready || []) ui.graphSel.appendChild(el("option", { disabled: true, text: "[NOT_READY] " + nr.mode + ": нет проверенного графа" }));
++      const preferred = S.graphs.find((x) => x.default === true) || S.graphs[0];
++      if (preferred) selectGraph(preferred.id, null);
++    }).catch((e) => { if (!S.destroyed) showError(e); });
+ 
+     function selectGraph(id, caseId) {
+-      clearError();
+-      const seq = ++state.graphSeq;
+-      ++state.resultSeq;
+-      state.payload = null; state.graph = null; state.result = null; state.drawnGraph = null;
++      clearError(); setTool(null);
++      const seq = ++S.graphSeq;
++      invalidate("graph");
++      S.graph = null; S.idx = null; S.drawnGraph = null; S.places = { origins: [], dests: [] }; S.plans = { A: [], B: [] };
+       ui.run.disabled = true; ui.caseSel.disabled = true;
+-      ui.graphInfo.textContent = "Загружаем сеть…";
+-      ui.planBody.replaceChildren(); ui.points.replaceChildren(); ui.out.replaceChildren();
+-      if (map) for (const source of SOURCES) map.getSource(source)?.setData(fc([]));
++      const meta = S.graphs.find((x) => x.id === id);
++      ui.graphInfo.textContent = "Загружаем сеть" + (meta && meta.edges > 20000 ? " (" + meta.edges.toLocaleString("ru-RU") + " участков, это может занять несколько секунд)…" : "…");
+       ui.graphSel.value = id;
++      renderAll();
++      if (map) for (const s of SOURCES) { const src = map.getSource(s); if (src) src.setData(fc([])); }
+       return req("GET", "/graphs/" + encodeURIComponent(id)).then((d) => {
+-        if (state.destroyed || seq !== state.graphSeq) return;
++        if (S.destroyed || seq !== S.graphSeq) return;   // пользователь уже выбрал другую сеть
+         const g = d.graph;
+-        state.graph = g; state.edgeIndex = new Map(g.edges.map((e) => [e.id, e])); state.nodeIndex = new Map(g.nodes.map((n) => [n.id, n]));
+-        state.result = null; state.selectedPair = null; ui.out.replaceChildren();
++        S.graph = g; S.edgeIndex = new Map(g.edges.map((e) => [e.id, e])); S.idx = buildSnapIndex(g);
+         renderGraphInfo();
+-        const cases = state.cases.filter((c) => c.payload.graph_id === id);
+-        ui.caseSel.replaceChildren(el("option", { value: "", text: "— пустой сценарий —" }), ...cases.map((c) => el("option", { value: c.case_id, text: c.title })));
+-        if (caseId) { ui.caseSel.value = caseId; applyCase(caseId); } else applyCase("");
+-        ui.run.disabled = false; ui.caseSel.disabled = false;
+-        // Keep the street/district the resident chose when opening the city graph.
+-        // Small teaching extracts still need to be brought into view explicitly.
++        const cases = S.cases.filter((c) => c.payload.graph_id === id);
++        ui.caseSel.replaceChildren(el("option", { value: "", text: "— свой сценарий —" }), ...cases.map((c) => el("option", { value: c.case_id, text: c.title })));
++        ui.caseSel.disabled = false;
++        if (caseId) { ui.caseSel.value = caseId; applyCase(caseId); } else renderAll();
+         drawGraph(g.nodes.length < 10000);
+-      }).catch((e) => { if (!state.destroyed && seq === state.graphSeq) { ui.graphInfo.textContent = "Сеть не загружена."; showError(e); } });
++      }).catch((e) => { if (!S.destroyed && seq === S.graphSeq) { ui.graphInfo.textContent = "Сеть не загружена."; showError(e); } });
+     }
+ 
+     function renderGraphInfo() {
+-      const g = state.graph;
+-      const badge = el("span", { class: P + "badge " + P + "ev-" + g.evidence_type, text: EVIDENCE_LABEL[g.evidence_type] || g.evidence_type });
++      const g = S.graph;
+       const lim = el("ul", { class: P + "lim" }, (g.limitations || []).map((t) => el("li", { text: t })));
++      const snap = g.source && g.source.snapshot_at ? "Снимок OSM: " + g.source.snapshot_at.slice(0, 10) + (g.source.retrieved_at ? ", получен " + g.source.retrieved_at : "") + ". " : "";
+       ui.graphInfo.replaceChildren(
+-        el("div", {}, [badge, " ", el("span", { text: "режим: " + (MODE_LABEL[g.mode] || g.mode) + " · участков " + g.edges.length.toLocaleString("ru-RU") })]),
+-        el("p", { text: g.source?.snapshot_at ? "Состояние OSM: " + g.source.snapshot_at.slice(0, 10) + ". Приблизьте карту, чтобы выбрать участок, старт и цель." : "Расчёт доступен только на показанных линиях. Приблизьте карту для выбора точек." }),
++        el("div", {}, [el("span", { class: P + "badge " + P + "ev-" + g.evidence_type, text: EVIDENCE_LABEL[g.evidence_type] || g.evidence_type }),
++          " пешая сеть · участков " + g.edges.length.toLocaleString("ru-RU")]),
++        el("p", { class: P + "hint", text: snap + "Маршрут строится только по участкам с подтверждённым пешим доступом; участки с неизвестным доступом (серый пунктир) не используются." }),
+         el("details", {}, [el("summary", { text: "Пределы данных и источник" }), lim,
+-          el("div", { class: P + "src", text: "Узлов " + g.nodes.length + " · digest " + g.digest }),
+-          el("div", { class: P + "src", text: g.source && g.source.commit ? "Источник: " + g.source.path + " @ " + g.source.commit.slice(0, 10) + (g.license && g.license.id ? " · лицензия " + g.license.id : "") : "Источник: " + ((g.source && g.source.kind) || "—") })]),
++          el("div", { class: P + "src", text: "graph " + g.id + " · digest " + g.digest + (g.license && g.license.id ? " · " + g.license.id : "") })]),
+       );
+     }
+ 
+-    function emptyPayload() {
+-      const g = state.graph;
+-      return { schema_version: "civic-scenario-v1", city: g.city, graph_id: g.id, graph_digest: g.digest, mode: g.mode,
+-        analysis_at: "2026-10-07T09:00:00+05:00", origin_node_ids: [], destination_node_ids: [],
+-        plans: [{ id: "A", closures: [] }, { id: "B", closures: [] }] };
+-    }
+     function applyCase(caseId) {
+-      if (!state.graph) return;
+-      ++state.resultSeq;
+-      const c = state.cases.find((x) => x.case_id === caseId);
+-      state.payload = c ? JSON.parse(JSON.stringify(c.payload)) : emptyPayload();
+-      for (const id of ["A", "B"]) if (!state.payload.plans.find((p) => p.id === id)) state.payload.plans.push({ id, closures: [] });
+-      state.payload.plans.sort((a, b) => (a.id < b.id ? -1 : 1));
+-      const s = splitIso(state.payload.analysis_at);
++      if (!S.graph) return;
++      setTool(null); invalidate("case");
++      const c = S.cases.find((x) => x.case_id === caseId);
++      S.places = { origins: [], dests: [] }; S.plans = { A: [], B: [] };
++      if (c) {
++        const p = c.payload, places = c.places || {};
++        // Места кейса с координатами проходят ту же привязку, что и клик пользователя.
++        const fromPlace = (pl, fallbackId, label) => {
++          if (pl && Array.isArray(pl.input)) { const s = snapPoint(S.idx, pl.input[0], pl.input[1]); s.label = pl.label || label; return s.status === "ok" ? s : null; }
++          return fromNode(S.idx, fallbackId, label);
++        };
++        S.places.origins = p.origin_node_ids.map((id, i) => fromPlace(i === 0 ? places.origin : null, id, "старт из примера")).filter(Boolean);
++        S.places.dests = p.destination_node_ids.map((id, i) => fromPlace(i === 0 ? places.destination : null, id, "цель из примера")).filter(Boolean);
++        for (const pl of p.plans) S.plans[pl.id] = pl.closures.map((x) => ({ edge_ids: x.edge_ids.slice(), start_at: x.start_at, end_at: x.end_at }));
++        S.analysisAt = p.analysis_at;
++      }
++      ui.caseNote.hidden = !(c && c.note);
++      ui.caseNote.textContent = c && c.note ? "Пример (" + (EVIDENCE_LABEL[c.evidence_type] || c.evidence_type) + "): " + c.note : "";
++      const s = splitIso(S.analysisAt);
+       ui.atLocal.value = s.local; if ([...ui.atOff.options].some((o) => o.value === s.off)) ui.atOff.value = s.off;
+-      state.result = null; ui.out.replaceChildren();
+-      renderPlans(); renderPoints(); drawOverlays();
++      renderAll(); drawOverlays();
++      const pts = [...S.places.origins, ...S.places.dests].map((x) => x.node);
++      if (pts.length) fitCoordinates(pts);
++    }
++    function syncAt() {
++      if (!ui.atLocal.value) return;
++      const at = isoWithOffset(ui.atLocal.value, ui.atOff.value);
++      if (at !== S.analysisAt) { S.analysisAt = at; inputChanged(); }
++    }
++
++    // ---------------------------------------------------------------- вход сценария
++    function buildPayload() {
++      const g = S.graph;
++      const uniq = (list) => [...new Set(list.map((x) => x.node_id))];
++      return { schema_version: "civic-scenario-v1", city: g.city, graph_id: g.id, graph_digest: g.digest, mode: g.mode,
++        analysis_at: S.analysisAt, origin_node_ids: uniq(S.places.origins), destination_node_ids: uniq(S.places.dests),
++        plans: PLAN_IDS.map((id) => ({ id, closures: S.plans[id].filter((c) => c.edge_ids.length).map((c) => ({ edge_ids: c.edge_ids.slice().sort(), start_at: c.start_at, end_at: c.end_at })) })) };
++    }
++    const inputKey = () => (S.graph ? JSON.stringify(buildPayload()) : null);
++    function inputChanged() {
++      // Вход изменился во время расчёта: этот расчёт уже не про текущий сценарий — отменяем его,
++      // чтобы поздний ответ не появился на экране.
++      if (S.run.pending) { cancelRun(true); S.run.cancelNote = "Вход изменён во время расчёта — расчёт отменён. Нажмите «Сравнить»."; }
++      renderAll(); drawOverlays();
++    }
++    function invalidate() {   // смена сети/примера: прежний результат больше не про текущий вход
++      cancelRun(true);
++      S.run.result = null; S.run.resultKey = null; S.selectedPair = null; S.run.error = null;
++      destroyAssistant();
++    }
++
++    // ---------------------------------------------------------------- места
++    function renderPlaces() {
++      ui.places.replaceChildren();
++      if (!S.graph) return;
++      const block = (key, title, verb) => {
++        const list = S.places[key];
++        const rows = list.map((p, i) => placeRow(key, p, i, title));
++        const pick = el("button", { type: "button", class: P + "btn" + (S.tool && S.tool.kind === key ? " " + P + "active" : ""),
++          text: list.length ? verb + " заново" : "Указать на карте", onclick: () => setTool({ kind: key, replace: true }) });
++        const add = list.length && list.length < MAX_PLACES ? el("button", { type: "button", class: P + "btn", text: "+ ещё", onclick: () => setTool({ kind: key, replace: false }) }) : null;
++        return el("div", { class: P + "placeblock", "data-role": key }, [el("strong", { text: title }), ...rows, el("div", { class: P + "row" }, [pick, add])]);
++      };
++      ui.places.append(block("origins", "Откуда", "Указать"), block("dests", "Куда", "Указать"));
++      const o = new Set(S.places.origins.map((x) => x.node_id));
++      if (S.places.dests.some((d) => o.has(d.node_id))) ui.places.append(el("p", { class: P + "warn", text: "Старт и цель привязаны к одному узлу сети — длина такой пары 0 м по определению." }));
++    }
++    function placeRow(key, p, i, title) {
++      const lines = [];
++      if (p.from_case) lines.push(el("div", { class: P + "hint", text: "Узел сети из примера (" + fmtCoord(p.node) + ")." }));
++      else {
++        lines.push(el("div", { text: "Указано: " + fmtCoord(p.input) + (p.label ? " · " + p.label : "") }));
++        lines.push(el("div", { class: P + "hint", text: "Привязано к узлу сети в " + fmtM(p.distance_m) + " (порог " + p.max_m + " м). Отрезок до сети не входит в длину и не проверен как путь — убедитесь, что точка на вашей стороне улицы или реки." }));
++      }
++      if (p.nearer_unverified_m !== null) lines.push(el("div", { class: P + "hint", text: "Ближе (" + fmtM(p.nearer_unverified_m) + ") есть линия, где пеший доступ в OSM не подтверждён: она в расчёт не берётся." }));
++      if (p.main_component === false) {
++        lines.push(el("div", { class: P + "warn", text: "Найденный узел — во фрагменте сети из " + p.component_edges + " участков, не связанном с основной пешей сетью модели. Путь в другую часть города, скорее всего, не найдётся." }));
++        if (p.main_alternative) lines.push(el("button", { type: "button", class: P + "btn", text: "Использовать узел основной сети (" + fmtM(p.main_alternative.distance_m) + ")",
++          onclick: () => { Object.assign(p, { node_id: p.main_alternative.node_id, node: p.main_alternative.node, distance_m: p.main_alternative.distance_m, main_component: true, component_edges: S.idx.size.get(S.idx.main), main_alternative: null, chosen_alternative: true }); inputChanged(); } }));
++      }
++      if (p.chosen_alternative) lines.push(el("div", { class: P + "hint", text: "Выбран узел основной сети по вашему решению." }));
++      const remove = el("button", { type: "button", class: P + "link", text: "убрать", "aria-label": "Убрать: " + title + " " + (i + 1), onclick: () => { S.places[key].splice(i, 1); inputChanged(); } });
++      return el("div", { class: P + "place", "data-node": p.node_id }, [el("div", { class: P + "row" }, [el("span", { class: P + "chip", text: title + (S.places[key].length > 1 ? " " + (i + 1) : "") }), remove]), ...lines]);
++    }
++    function onPlaceClick(lngLat) {
++      const s = snapPoint(S.idx, lngLat.lng, lngLat.lat);
++      const kind = S.tool.kind;
++      if (s.status !== "ok") {
++        S.tool.message = s.status === "outside_graph"
++          ? "Точка вне выгрузки сети (" + fmtCoord(s.input) + "): здесь расчёт невозможен. Укажите место внутри рамки."
++          : "Рядом нет участка с подтверждённым пешим доступом: ближайший " + (s.nearest_allowed_m !== null ? "в " + fmtM(s.nearest_allowed_m) : "дальше 1 км") + ", порог " + SNAP_MAX_M + " м. Точку не переносим — укажите место ближе к тротуару или пешеходной дорожке.";
++        S.tool.lastInput = s.input;
++        renderTool(); drawOverlays();
++        return;
++      }
++      if (S.tool.replace) S.places[kind] = [s]; else if (S.places[kind].length < MAX_PLACES) S.places[kind].push(s);
++      setTool(null);
++      inputChanged();
+     }
+-    function invalidateResult() { ++state.resultSeq; state.result = null; state.selectedPair = null; ui.out.replaceChildren(); }
+-    function syncAt() { if (state.payload && ui.atLocal.value) { const at = isoWithOffset(ui.atLocal.value, ui.atOff.value); if (state.payload.analysis_at !== at) invalidateResult(); state.payload.analysis_at = at; drawOverlays(); } }
+ 
+-    // ---------- планы ----------
+-    const plan = (id) => state.payload.plans.find((p) => p.id === id);
+-    function closedIds(id) { const s = new Set(); for (const c of plan(id).closures) for (const e of c.edge_ids) s.add(e); return s; }
+-    // действует ли перекрытие в момент анализа: start_at <= analysis_at < end_at (Date учитывает смещение)
+-    function activeIds(id) {
+-      const at = Date.parse(state.payload.analysis_at), s = new Set();
+-      for (const c of plan(id).closures) if (Date.parse(c.start_at) <= at && at < Date.parse(c.end_at)) for (const e of c.edge_ids) s.add(e);
++    // ---------------------------------------------------------------- варианты A/B
++    function closedSet(id, onlyActive) {
++      const at = Date.parse(S.analysisAt), s = new Set();
++      for (const c of S.plans[id]) if (!onlyActive || active(c, at)) for (const e of c.edge_ids) s.add(e);
+       return s;
+     }
++    function defaultClosure() {
++      const at = splitIso(S.analysisAt), d = new Date(at.local + ":00Z");
++      const end = new Date(d.getTime() + 8 * 3600e3).toISOString().slice(0, 16);
++      return { edge_ids: [], start_at: at.local + ":00" + at.off, end_at: end + ":00" + at.off };
++    }
+     function renderPlans() {
+-      if (!state.payload) return;
+-      ui.planTabs.replaceChildren(...["A", "B"].map((id) => el("button", {
+-        type: "button", role: "tab", class: P + "tab" + (state.editPlan === id ? " " + P + "active" : ""), "aria-selected": state.editPlan === id ? "true" : "false",
+-        style: "border-color:" + PLAN_COLORS[id], onclick: () => { state.editPlan = id; renderPlans(); },
+-        text: "План " + id + " · участков: " + closedIds(id).size })));
+-      ui.modeBar.replaceChildren(...[["close", "Закрыть / открыть участок"], ["origin", "Выбрать старт"], ["dest", "Выбрать цель"]].map(([m, t]) =>
+-        el("button", { type: "button", class: P + "chip" + (state.clickMode === m ? " " + P + "active" : ""), onclick: () => { state.clickMode = m; renderPlans(); drawOverlays(); }, text: t })));
+-      const p = plan(state.editPlan);
+-      const items = p.closures.map((c, i) => {
++      ui.planTabs.replaceChildren(); ui.planBody.replaceChildren();
++      if (!S.graph) return;
++      ui.planTabs.append(...PLAN_IDS.map((id) => el("button", {
++        type: "button", role: "tab", class: P + "tab" + (S.editPlan === id ? " " + P + "active" : ""), "aria-selected": S.editPlan === id ? "true" : "false",
++        style: "border-color:" + PLAN_COLORS[id], onclick: () => { S.editPlan = id; if (S.tool && S.tool.kind === "close") S.tool.plan = id; renderPlans(); renderTool(); },
++        text: "Вариант " + id + " · участков: " + closedSet(id).size })));
++      const plan = S.plans[S.editPlan], at = Date.parse(S.analysisAt);
++      const items = plan.map((c, i) => {
+         const s = splitIso(c.start_at), e = splitIso(c.end_at);
+-        const sIn = el("input", { type: "datetime-local", class: P + "input", value: s.local, "aria-label": "Начало", onchange: () => { invalidateResult(); c.start_at = isoWithOffset(sIn.value, s.off); drawOverlays(); } });
+-        const eIn = el("input", { type: "datetime-local", class: P + "input", value: e.local, "aria-label": "Конец", onchange: () => { invalidateResult(); c.end_at = isoWithOffset(eIn.value, e.off); drawOverlays(); } });
++        const sIn = el("input", { type: "datetime-local", class: P + "input", value: s.local, "aria-label": "Начало", onchange: () => { c.start_at = isoWithOffset(sIn.value, s.off); inputChanged(); } });
++        const eIn = el("input", { type: "datetime-local", class: P + "input", value: e.local, "aria-label": "Конец", onchange: () => { c.end_at = isoWithOffset(eIn.value, e.off); inputChanged(); } });
++        const bad = !(Date.parse(c.start_at) < Date.parse(c.end_at));
++        const segs = c.edge_ids.map((id) => {
++          const ed = S.edgeIndex.get(id);
++          return el("li", {}, [el("span", { text: segmentLabel(ed, id) }),
++            el("button", { type: "button", class: P + "link", text: "×", "aria-label": "Открыть участок " + id, onclick: () => { c.edge_ids = c.edge_ids.filter((x) => x !== id); inputChanged(); } })]);
++        });
+         return el("li", { class: P + "closure" }, [
+-          el("div", { text: "Перекрытие " + (i + 1) + ": участков " + c.edge_ids.length + " · UTC" + s.off }),
+           el("div", { class: P + "row" }, [el("label", { class: P + "lbl" }, ["с ", sIn]), el("label", { class: P + "lbl" }, ["до ", eIn])]),
+-          el("div", { class: P + "hint", text: "[начало, конец): начало включительно, конец — нет" }),
+-          el("button", { type: "button", class: P + "btn", text: "Удалить", onclick: () => { invalidateResult(); p.closures.splice(i, 1); renderPlans(); drawOverlays(); } }),
++          el("div", { class: bad ? P + "warn" : P + "hint", text: bad ? "Конец должен быть позже начала." : "Период [с, до): начало включительно, конец — нет. В выбранный момент: " + (active(c, at) ? "действует" : "не действует") + "." }),
++          el("ul", { class: P + "segs" }, segs.length ? segs : [el("li", { class: P + "hint", text: "Участки не выбраны." })]),
++          plan.length > 1 ? el("button", { type: "button", class: P + "link", text: "удалить период", onclick: () => { plan.splice(i, 1); inputChanged(); } }) : null,
+         ]);
+       });
+-      ui.planBody.replaceChildren(
+-        el("ul", { class: P + "closures" }, items),
+-        el("button", { type: "button", class: P + "btn", text: "+ интервал перекрытия", onclick: () => {
+-          const at = splitIso(state.payload.analysis_at);
+-          const d = new Date(at.local + ":00Z"); const end = new Date(d.getTime() + 6 * 3600e3).toISOString().slice(0, 16);
+-          p.closures.push({ edge_ids: [], start_at: at.local + ":00" + at.off, end_at: end + ":00" + at.off });
+-          renderPlans();
+-        } }),
+-        el("div", { class: P + "hint", text: state.graph && state.graph.edges.length ? "Приблизьте карту и нажмите на нужную линию. Участок добавится в последнее перекрытие плана " + state.editPlan + "." : "" }),
++      if (!plan.length) plan.push(defaultClosure());
++      const picking = S.tool && S.tool.kind === "close";
++      ui.planBody.append(
++        el("ul", { class: P + "closures" }, items.length ? items : []),
++        el("div", { class: P + "row" }, [
++          el("button", { type: "button", class: P + "btn" + (picking ? " " + P + "active" : ""), text: picking ? "Готово" : "Выбрать участки на карте",
++            onclick: () => setTool(picking ? null : { kind: "close", plan: S.editPlan }) }),
++          el("button", { type: "button", class: P + "link", text: "+ период", onclick: () => { plan.push(defaultClosure()); renderPlans(); } }),
++        ]),
++        el("p", { class: P + "hint", text: "Закрывается выбранный участок сети целиком и в обе стороны. Произвольную область нарисовать нельзя: линии, пересекающиеся только на экране (мост, тоннель, разные уровни), в модели не связаны — при наложении выберите нужную в списке." }),
+       );
++      if (!items.length) renderPlans();
+     }
+-    function renderPoints() {
+-      const mk = (ids, key, label) => el("div", {}, [el("strong", { text: label + ": " }),
+-        ...ids.map((id) => el("button", { type: "button", class: P + "chip", title: id, text: short(id) + " ×", onclick: () => {
+-          if (!state.payload) return; invalidateResult(); state.payload[key] = state.payload[key].filter((x) => x !== id); renderPoints(); drawOverlays(); } }))]);
+-      ui.points.replaceChildren(mk(state.payload.origin_node_ids, "origin_node_ids", "Старты"), mk(state.payload.destination_node_ids, "destination_node_ids", "Цели"));
++    function segmentLabel(ed, id) {
++      if (!ed) return id;
++      return (ed.name || "участок без названия") + " · " + fmtM(ed.length_m) + " · " + (ACCESS_LABEL[ed.access] || ed.access) + (ed.osm_way_id ? " · OSM way " + ed.osm_way_id : "") ;
+     }
+     function toggleEdge(id) {
+-      invalidateResult();
+-      const p = plan(state.editPlan);
+-      const holder = p.closures.find((c) => c.edge_ids.includes(id));
+-      if (holder) { holder.edge_ids = holder.edge_ids.filter((x) => x !== id); if (!holder.edge_ids.length) p.closures.splice(p.closures.indexOf(holder), 1); }
+-      else {
+-        if (!p.closures.length) { const at = splitIso(state.payload.analysis_at); const d = new Date(at.local + ":00Z");
+-          p.closures.push({ edge_ids: [], start_at: at.local + ":00" + at.off, end_at: new Date(d.getTime() + 6 * 3600e3).toISOString().slice(0, 16) + ":00" + at.off }); }
+-        p.closures[p.closures.length - 1].edge_ids.push(id);
+-      }
+-      renderPlans(); drawOverlays();
++      const plan = S.plans[S.tool.plan];
++      const holder = plan.find((c) => c.edge_ids.includes(id));
++      if (holder) holder.edge_ids = holder.edge_ids.filter((x) => x !== id);
++      else { if (!plan.length) plan.push(defaultClosure()); plan[plan.length - 1].edge_ids.push(id); }
++      S.chooser = null; renderChooser();
++      inputChanged();
+     }
+-    function addPoint(nodeId) {
+-      invalidateResult();
+-      const key = state.clickMode === "origin" ? "origin_node_ids" : "destination_node_ids";
+-      if (!state.payload[key].includes(nodeId)) state.payload[key].push(nodeId);
+-      renderPoints(); drawOverlays();
++    function onSegmentClick(point) {
++      const bb = [[point.x - 8, point.y - 8], [point.x + 8, point.y + 8]];
++      const layers = [P + "edges-allowed", P + "edges-unknown", P + "edges-denied"].filter((l) => map.getLayer(l));
++      const ids = [...new Set(map.queryRenderedFeatures(bb, { layers }).map((f) => f.properties.id))].filter((id) => S.edgeIndex.has(id));
++      if (!ids.length) { S.tool.message = "Здесь нет участка сети. Фон карты — не дорожный объект модели; приблизьте карту к линии."; renderTool(); return; }
++      if (ids.length === 1) { toggleEdge(ids[0]); return; }
++      S.chooser = { ids: ids.slice(0, 8) }; renderChooser(); drawOverlays();
++    }
++    function renderChooser() {
++      if (!S.chooser) { ui.chooser.hidden = true; ui.chooser.replaceChildren(); return; }
++      ui.chooser.hidden = false;
++      const plan = S.tool ? S.tool.plan : S.editPlan, sel = closedSet(plan);
++      ui.chooser.replaceChildren(
++        el("strong", { text: "Под курсором несколько участков (" + S.chooser.ids.length + "). Линии на экране пересекаются, но в модели они связаны только общими узлами OSM. Какой закрыть в варианте " + plan + "?" }),
++        el("ul", {}, S.chooser.ids.map((id) => el("li", {}, [el("button", { type: "button", class: P + "btn", text: (sel.has(id) ? "Открыть: " : "Закрыть: ") + segmentLabel(S.edgeIndex.get(id), id),
++          onmouseenter: () => { S.chooser.hover = id; drawOverlays(); }, onfocus: () => { S.chooser.hover = id; drawOverlays(); },
++          onclick: () => toggleEdge(id) })]))),
++        el("button", { type: "button", class: P + "link", text: "Отмена", onclick: () => { S.chooser = null; renderChooser(); drawOverlays(); } }),
++      );
+     }
+ 
+-    // ---------- расчёт ----------
++    // ---------------------------------------------------------------- режим выбора на карте
++    function setTool(tool) {
++      const was = !!S.tool;
++      S.tool = tool;
++      if (!tool) { S.chooser = null; renderChooser(); }
++      if (map) { try { map.getCanvas().style.cursor = tool ? "crosshair" : ""; } catch (e) { /* карта снята */ } }
++      if (was !== !!tool || tool) wrap.dispatchEvent(new CustomEvent("civic-scenarios:tool", { bubbles: true, detail: { active: !!tool, kind: tool ? tool.kind : null } }));
++      renderTool(); renderPlaces(); renderPlans(); drawOverlays();
++    }
++    function renderTool() {
++      const t = S.tool;
++      ui.tool.hidden = !t;
++      if (!t) { ui.tool.replaceChildren(); return; }
++      const what = t.kind === "origins" ? "место «Откуда»" : t.kind === "dests" ? "место «Куда»" : "участки для варианта " + t.plan;
++      ui.tool.replaceChildren(
++        el("strong", { text: "Режим выбора: " + what + "." }),
++        " Щёлкните по карте. Esc или «Готово» — выйти; пока режим включён, клики по карте не открывают карточки объектов.",
++        t.message ? el("div", { class: P + "warn", text: t.message }) : null,
++        el("button", { type: "button", class: P + "btn", text: "Готово", onclick: () => setTool(null) }),
++      );
++    }
++    function onMapClick(e) {
++      if (!S.tool || !S.graph || S.destroyed) return;   // без явного режима клик принадлежит публичной карте
++      if (S.tool.kind === "close") onSegmentClick(e.point); else onPlaceClick(e.lngLat);
++    }
++    function onKey(e) {
++      if (e.key !== "Escape" || !S.tool) return;
++      e.preventDefault();          // оболочка R01 не закроет панель: Escape завершил только режим выбора
++      setTool(null);
++    }
++
++    // ---------------------------------------------------------------- расчёт
++    function readiness() {
++      if (!S.graph) return "Сеть ещё загружается.";
++      if (!S.places.origins.length || !S.places.dests.length) return "Укажите на карте, откуда и куда.";
++      for (const id of PLAN_IDS) for (const c of S.plans[id]) if (!(Date.parse(c.start_at) < Date.parse(c.end_at))) return "У варианта " + id + " конец периода раньше начала.";
++      return null;
++    }
++    function renderRunBar() {
++      const notReady = readiness();
++      ui.run.disabled = !!notReady || S.run.pending;
++      ui.run.textContent = S.run.pending ? "Считаю…" : "Сравнить";
++      ui.cancel.hidden = !S.run.pending;
++      ui.runInfo.textContent = S.run.pending ? "Расчёт на сервере; можно отменить. Изменение входа отменит этот расчёт." : S.run.cancelNote || notReady || "";
++      const at = Date.parse(S.analysisAt);
++      ui.atInfo.textContent = Number.isFinite(at) ? PLAN_IDS.map((id) => "вариант " + id + ": " + (closedSet(id, true).size ? "закрыто участков " + closedSet(id, true).size : "в этот момент ничего не закрыто")).join(" · ") : "";
++    }
+     function run() {
+-      if (state.busy || !state.payload) return;
+-      clearError(); syncAt();
+-      const body = JSON.parse(JSON.stringify(state.payload));
+-      const seq = ++state.resultSeq;
+-      body.plans = body.plans.map((p) => ({ id: p.id, closures: p.closures.filter((c) => c.edge_ids.length) }));
+-      state.busy = true; ui.run.disabled = true; ui.run.textContent = "Считаю…";
+-      req("POST", "/compare", body).then((r) => {
+-        if (state.destroyed || seq !== state.resultSeq) return;
+-        state.result = r; state.sentPayload = body;
++      if (S.run.pending || readiness()) return;
++      clearError(); setTool(null);
++      const payload = buildPayload(), key = JSON.stringify(payload);
++      const seq = ++S.run.seq;
++      const controller = typeof AbortController === "function" ? new AbortController() : null;
++      S.run.controller = controller; S.run.pending = true; S.run.error = null; S.run.cancelNote = null;
++      renderAll();
++      req("POST", "/compare", payload, controller ? { signal: controller.signal } : undefined).then((r) => {
++        if (S.destroyed || seq !== S.run.seq) return;       // поздний ответ на отменённый/прежний расчёт
++        S.run.result = r; S.run.resultKey = key; S.run.payload = payload;
+         const first = r.baseline.routes[0];
+-        state.selectedPair = first ? first.origin_node_id + ">" + first.destination_node_id : null;
+-        renderResult(); drawOverlays(); fitSelectedRoute();
+-      }).catch((e) => { if (!state.destroyed && seq === state.resultSeq) showError(e); }).finally(() => { state.busy = false; ui.run.disabled = !state.graph; ui.run.textContent = "Сравнить"; });
++        S.selectedPair = first ? first.origin_node_id + ">" + first.destination_node_id : null;
++        fitSelectedRoute();
++      }).catch((e) => {
++        if (S.destroyed || seq !== S.run.seq) return;
++        if (e && (e.code === "aborted" || e.name === "AbortError")) return;
++        S.run.error = e; showError(e);
++      }).finally(() => {
++        if (S.destroyed || seq !== S.run.seq) return;
++        S.run.pending = false; S.run.controller = null; renderAll(); drawOverlays();
++      });
++    }
++    function cancelRun(silent) {
++      if (!S.run.pending) return;
++      ++S.run.seq;                                          // ответ, даже если придёт, будет проигнорирован
++      if (S.run.controller) try { S.run.controller.abort(); } catch (e) { /* уже завершён */ }
++      S.run.pending = false; S.run.controller = null;
++      if (!silent) { S.run.cancelNote = "Расчёт отменён; результат на экране (если есть) — от прежнего расчёта."; renderAll(); }
+     }
++    const isStale = () => !!S.run.result && S.run.resultKey !== inputKey();
+ 
+     function cell(row, delta) {
+       if (!row) return el("td", { text: "—" });
+-      if (row.status !== "ok") return el("td", { class: P + "st-" + row.status, title: REASON_LABEL[row.reason] || "", text: STATUS_LABEL[row.status] });
++      if (row.status !== "ok") return el("td", { class: P + "st-" + row.status, title: REASON_LABEL[row.reason] || "" }, [el("div", { text: STATUS_LABEL[row.status] || row.status }), el("div", { class: P + "hint", text: REASON_LABEL[row.reason] || "" })]);
+       return el("td", {}, [el("div", { text: fmtM(row.length_m) }), delta !== undefined && delta !== null ? el("div", { class: P + "delta" + (delta > 0 ? " " + P + "up" : ""), text: fmtD(delta) }) : null,
+-        row.equal_cost_alternatives ? el("div", { class: P + "hint", text: "есть равный по длине путь" }) : null]);
+-    }
+-    function planCard(p) {
+-      const s = p.vs_baseline.summary, ch = s.changes;
+-      return el("div", { class: P + "card", style: "border-top-color:" + PLAN_COLORS[p.id] }, [
+-        el("h3", { text: "План " + p.id }),
+-        el("div", { text: "Закрыто участков в момент анализа: " + p.active_closed_edge_ids.length + "; неактивных интервалов: " + p.inactive_closures.length }),
+-        el("div", { text: "Сопоставимых пар: " + s.comparable_pairs + " из " + s.pairs }),
+-        el("div", { text: "Средний прирост длины (только сопоставимые): " + fmtD(s.mean_delta_m_comparable) }),
+-        el("div", { text: "Максимальный прирост: " + fmtD(s.max_delta_m_comparable) }),
+-        el("div", { text: "Удлинилось: " + ch.longer + " · без изменений: " + ch.unchanged }),
+-        el("div", { class: ch.lost_within_model ? P + "st-unreachable" : "", text: "Нет пути в модели (было): " + ch.lost_within_model }),
+-        el("div", { class: ch.became_uncertain ? P + "st-unknown" : "", text: "Стало неизвестно: " + ch.became_uncertain + " · несопоставимо: " + ch.not_comparable }),
+-        ...p.warnings.map((w) => el("div", { class: P + "warn", text: "⚠ " + w.message })),
+-      ]);
++        row.equal_cost_alternatives ? el("div", { class: P + "hint", text: "есть другой путь той же длины" }) : null]);
+     }
+     function renderResult() {
+-      const r = state.result, inp = r.input;
+-      const plans = Object.fromEntries(r.plans.map((p) => [p.id, p]));
+-      const pairKey = (x) => x.origin_node_id + ">" + x.destination_node_id;
+-      const idx = (rows) => new Map(rows.map((x) => [pairKey(x), x]));
+-      const bRows = r.baseline.routes, aRows = plans.A ? idx(plans.A.routes) : new Map(), bbRows = plans.B ? idx(plans.B.routes) : new Map();
+-      const dA = plans.A ? idx(plans.A.vs_baseline.pairs) : new Map(), dB = plans.B ? idx(plans.B.vs_baseline.pairs) : new Map();
+-      const head = el("div", { class: P + "meta" }, [
+-        el("div", { text: "Момент: " + inp.analysis_at + " (UTC " + inp.analysis_at_utc + ")" }),
+-        el("div", { text: "Граф " + inp.graph_id + " · " + (EVIDENCE_LABEL[inp.graph_evidence_type] || inp.graph_evidence_type) + " · режим " + (MODE_LABEL[inp.mode] || inp.mode) }),
+-        el("div", { class: P + "hint", text: "scenario " + inp.scenario_digest.slice(0, 12) + " · result " + r.result_digest.slice(0, 12) + " · правило " + inp.interval_rule }),
+-      ]);
+-      const cards = el("div", { class: P + "cards" }, r.plans.map(planCard));
+-      let ab = null;
+-      if (r.a_vs_b) { const s = r.a_vs_b.summary;
+-        ab = el("div", { class: P + "ab" }, [el("strong", { text: "B относительно A: " }),
+-          "сопоставимых " + s.comparable_pairs + ", средняя разница " + fmtD(s.mean_delta_m_comparable) + ", B длиннее в " + s.changes.longer + ", короче в " + s.changes.shorter + ", потеря пути в модели " + s.changes.lost_within_model]); }
+-      const tbody = el("tbody", {}, bRows.map((b) => {
+-        const k = pairKey(b);
+-        const tr = el("tr", { class: P + "pair" + (state.selectedPair === k ? " " + P + "active" : ""), tabindex: "0",
+-          onclick: () => { state.selectedPair = k; renderResult(); drawOverlays(); fitSelectedRoute(); },
+-          onkeydown: (ev) => { if (ev.key === "Enter") { state.selectedPair = k; renderResult(); drawOverlays(); fitSelectedRoute(); } } }, [
+-          el("td", { title: b.origin_node_id + " → " + b.destination_node_id, text: short(b.origin_node_id) + " → " + short(b.destination_node_id) }),
+-          cell(b), cell(aRows.get(k), dA.get(k) && dA.get(k).delta_m), cell(bbRows.get(k), dB.get(k) && dB.get(k).delta_m)]);
+-        return tr;
+-      }));
+-      const table = el("table", { class: P + "table" }, [el("thead", {}, el("tr", {}, ["Пара", "База", "План A", "План B"].map((t) => el("th", { text: t })))), tbody]);
+-      const warns = el("ul", { class: P + "lim" }, r.warnings.map((w) => el("li", { text: w.message })));
+-      const lims = el("ul", { class: P + "lim" }, r.limitations.map((t) => el("li", { text: t })));
+-      const dl = el("button", { type: "button", class: P + "btn", text: "Скачать вход и результат (JSON)", onclick: () => {
+-        const blob = new Blob([JSON.stringify({ payload: state.sentPayload, result: r }, null, 1)], { type: "application/json" });
+-        const a = el("a", { href: URL.createObjectURL(blob), download: "scenario-" + inp.scenario_digest.slice(0, 12) + ".json" });
+-        a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+-      } });
+-      ui.out.replaceChildren(head, cards, ab, el("div", { class: P + "hint", text: "Щёлкните строку, чтобы показать пути на карте (синий — база)." }), table,
+-        el("details", {}, [el("summary", { text: "Предупреждения и ограничения" }), warns, lims]), dl);
++      const r = S.run.result;
++      ui.stale.hidden = !isStale();
++      ui.stale.textContent = isStale() ? "Вход изменён после расчёта: таблица и объяснение ниже относятся к ПРЕЖНЕМУ варианту (расчёт " + r.result_digest.slice(0, 8) + "). Нажмите «Сравнить», чтобы пересчитать." : "";
++      ui.out.classList.toggle(P + "is-stale", isStale());
++      if (!r) { ui.out.replaceChildren(); if (S.assistantFor) destroyAssistant(); return; }
++      const inp = r.input, plans = Object.fromEntries(r.plans.map((p) => [p.id, p]));
++      const key = (x) => x.origin_node_id + ">" + x.destination_node_id;
++      const idx = (rows) => new Map((rows || []).map((x) => [key(x), x]));
++      const name = (id, list, title) => { const i = list.findIndex((p) => p.node_id === id); return i < 0 ? id : title + (list.length > 1 ? " " + (i + 1) : ""); };
++      const aR = idx(plans.A && plans.A.routes), bR = idx(plans.B && plans.B.routes), dA = idx(plans.A && plans.A.vs_baseline.pairs), dB = idx(plans.B && plans.B.vs_baseline.pairs), ab = idx(r.a_vs_b && r.a_vs_b.pairs);
++      const rows = r.baseline.routes.map((b) => {
++        const k = key(b);
++        return el("tr", { class: P + "pair" + (S.selectedPair === k ? " " + P + "active" : ""), tabindex: "0",
++          onclick: () => { S.selectedPair = k; renderResult(); drawOverlays(); fitSelectedRoute(); },
++          onkeydown: (ev) => { if (ev.key === "Enter") { S.selectedPair = k; renderResult(); drawOverlays(); fitSelectedRoute(); } } }, [
++          el("td", { text: name(b.origin_node_id, S.places.origins, "Откуда") + " → " + name(b.destination_node_id, S.places.dests, "Куда") }),
++          cell(b), cell(aR.get(k), dA.get(k) && dA.get(k).delta_m), cell(bR.get(k), dB.get(k) && dB.get(k).delta_m),
++          el("td", { text: ab.get(k) && ab.get(k).delta_m !== null ? fmtD(ab.get(k).delta_m) : "—" })]);
++      });
++      const planLine = (p) => {
++        const s = p.vs_baseline.summary, ch = s.changes;
++        const closed = p.active_closed_edge_ids.length;
++        return el("div", { class: P + "card", style: "border-top-color:" + PLAN_COLORS[p.id] }, [
++          el("h4", { text: "Вариант " + p.id }),
++          el("div", { text: closed ? "В выбранный момент закрыто участков: " + closed + (p.closed_on_baseline_routes ? "; из них на базовых путях: " + p.closed_on_baseline_routes.length : "") : "В выбранный момент ничего не закрыто." }),
++          el("div", { text: "Удлинилось пар: " + ch.longer + " · без изменений: " + ch.unchanged + " · нет пути в модели: " + ch.lost_within_model + " · стало неизвестно: " + ch.became_uncertain }),
++          s.comparable_pairs ? el("div", { text: "Средний прирост длины по сопоставимым парам: " + fmtD(s.mean_delta_m_comparable) }) : el("div", { text: "Сопоставимых пар нет — среднее не считается." }),
++          ...p.warnings.filter((w) => w.code !== "no_active_closures").map((w) => el("div", { class: P + "warn", text: w.message })),
++        ]);
++      };
++      ui.out.replaceChildren(
++        el("div", { class: P + "meta" }, [
++          el("div", { text: "Расчёт " + r.result_digest.slice(0, 8) + " · момент " + inp.analysis_at + " · сеть " + inp.graph_id }),
++          el("div", { class: P + "hint", text: "Длина пешего пути по сети в метрах; время в пути не рассчитывается. «Нет пути в модели» — не 0 м и не доказанная недоступность." }),
++        ]),
++        el("div", { class: P + "table-wrap" }, el("table", { class: P + "table" }, [el("thead", {}, el("tr", {}, ["Пара", "База", "Вариант A", "Вариант B", "B − A"].map((t) => el("th", { text: t })))), el("tbody", {}, rows)])),
++        el("div", { class: P + "cards" }, r.plans.map(planLine)),
++        ...r.warnings.filter((w) => w.code !== "graph_is_slice").map((w) => el("div", { class: P + "warn", text: w.message })),
++        el("details", {}, [el("summary", { text: "Ограничения модели" }), el("ul", { class: P + "lim" }, r.limitations.map((t) => el("li", { text: t })))]),
++      );
++      // Объяснение всегда про ТЕКУЩИЙ результат: устарел вход — снимаем; вход снова совпал — возвращаем.
++      if (isStale()) detachAssistant();
++      else if (S.assistantFor !== r.result_digest) mountAssistant(r);
+     }
+ 
+-    // ---------- карта ----------
+-    const LAYERS = [P + "coverage", P + "edges-allowed", P + "edges-unknown", P + "edges-denied", P + "closed-A", P + "closed-B", P + "closed-A-other", P + "closed-B-other", P + "route-base", P + "route-A", P + "route-B", P + "pts"];
+-    const SOURCES = [P + "coverage", P + "graph", P + "closed", P + "routes", P + "pts"];
++    // ---------------------------------------------------------------- объяснение (R09)
++    function destroyAssistant() {
++      if (S.assistant) try { S.assistant.destroy(); } catch (e) { /* модуль соседа */ }
++      S.assistant = null; S.assistantFor = null; ui.assistant.replaceChildren();
++    }
++    function detachAssistant() {
++      if (S.assistantFor === "detached") return;
++      destroyAssistant();
++      S.assistantFor = "detached";
++      ui.assistant.append(el("p", { class: P + "hint", text: "Объяснение относилось к прежнему расчёту и снято. После «Сравнить» появится объяснение нового расчёта." }));
++    }
++    function mountAssistant(result) {
++      destroyAssistant();
++      S.assistantFor = result.result_digest;
++      const scenarioId = "result:" + result.result_digest;
++      const head = el("h3", { class: P + "step", text: "Объяснение этого расчёта (" + result.result_digest.slice(0, 8) + ")" });
++      const note = el("p", { class: P + "hint", text: "Помощник берёт цифры с сервера по номеру расчёта; браузер их не передаёт." });
++      const box = el("div", { class: P + "assistant-root" });
++      ui.assistant.append(head, note, box);
++      const A = root.CivicAssistant;
++      if (!A || typeof A.mount !== "function") { box.append(el("p", { class: P + "hint", text: "Помощник (R09) не загружен в этой сборке — объяснение недоступно; таблица выше остаётся результатом расчёта." })); return; }
++      // Ответ «расчёт не найден» (кэш сервера истёк или не подключён) — просим пересчитать, а не подставляем пример.
++      const watched = { request: (m, path, body, o) => api.request(m, path, body, o).then((d) => {
++        if (path === "/assistant" && d && d.source === "unavailable" && (d.warnings || []).indexOf("scenario_not_found") >= 0 && !S.destroyed)
++          note.textContent = "Сервер не нашёл расчёт " + result.result_digest.slice(0, 8) + " (срок хранения истёк или кэш не подключён). Нажмите «Сравнить» ещё раз — объяснение подставит только ваш расчёт.";
++        return d;
++      }) };
++      try { S.assistant = A.mount({ root: box, api: watched, scenarioId }); }
++      catch (e) { box.append(el("p", { class: P + "warn", text: "Помощник не запустился: " + (e && e.message) })); }
++    }
++
++    function renderAll() {
++      if (S.destroyed) return;
++      renderPlaces(); renderPlans(); renderChooser(); renderRunBar(); renderResult();
++    }
++
++    // ---------------------------------------------------------------- карта
++    const LAYERS = [P + "coverage", P + "edges-allowed", P + "edges-unknown", P + "edges-denied", P + "closed-A", P + "closed-B", P + "closed-A-other", P + "closed-B-other",
++      P + "cand", P + "route-base", P + "route-A", P + "route-B", P + "connect", P + "pt-input", P + "pt-node"];
++    const SOURCES = [P + "coverage", P + "graph", P + "closed", P + "cand", P + "routes", P + "places"];
+     const fc = (features) => ({ type: "FeatureCollection", features });
+-    function edgeLine(e) { return e.geometry || [[state.nodeIndex.get(e.from).lon, state.nodeIndex.get(e.from).lat], [state.nodeIndex.get(e.to).lon, state.nodeIndex.get(e.to).lat]]; }
++    function edgeLine(e) { return e.geometry; }
+     function routeLine(row) {
+       let cs = [];
+       row.edge_ids.forEach((id, i) => {
+-        const e = state.edgeIndex.get(id); let g = edgeLine(e);
++        const e = S.edgeIndex.get(id); let g = edgeLine(e);
+         if (e.from !== row.node_ids[i]) g = g.slice().reverse();
+         cs = cs.concat(cs.length ? g.slice(1) : g);
+       });
+@@ -328,121 +610,109 @@
+     function setData(id, data) { const s = map.getSource(id); if (s) s.setData(data); else map.addSource(id, { type: "geojson", data }); }
+     function ensureLayers() {
+       if (map.getLayer(P + "edges-allowed")) return;
+-      const line = (id, src, filter, paint) => map.addLayer({ id, type: "line", source: src, filter, layout: { "line-cap": "round", "line-join": "round" }, paint });
++      const line = (id, src, filter, paint, layout) => map.addLayer({ id, type: "line", source: src, filter, layout: Object.assign({ "line-cap": "round", "line-join": "round" }, layout || {}), paint });
+       line(P + "coverage", P + "coverage", ["==", ["geometry-type"], "LineString"], { "line-color": "#5d67a0", "line-width": 2, "line-dasharray": [4, 3] });
+       line(P + "edges-allowed", P + "graph", ["==", ["get", "access"], "allowed"], { "line-color": "#437b68", "line-width": ["interpolate", ["linear"], ["zoom"], 9, 0.6, 14, 2, 17, 3] });
+       line(P + "edges-unknown", P + "graph", ["==", ["get", "access"], "unknown"], { "line-color": "#adb5bd", "line-width": ["interpolate", ["linear"], ["zoom"], 9, 0.4, 14, 1.8], "line-opacity": 0.6, "line-dasharray": [2, 2] });
+       line(P + "edges-denied", P + "graph", ["==", ["get", "access"], "denied"], { "line-color": "#c92a2a", "line-width": 1.2, "line-opacity": 0.6 });
+-      for (const k of ["A", "B"]) {
++      for (const k of PLAN_IDS) {
+         line(P + "closed-" + k + "-other", P + "closed", ["==", ["get", "c" + k], "other"], { "line-color": PLAN_COLORS[k], "line-width": 5, "line-offset": k === "A" ? -3 : 3, "line-opacity": 0.35, "line-dasharray": [1, 1.5] });
+         line(P + "closed-" + k, P + "closed", ["==", ["get", "c" + k], "active"], { "line-color": PLAN_COLORS[k], "line-width": 7, "line-offset": k === "A" ? -3 : 3, "line-opacity": 0.85 });
+       }
++      line(P + "cand", P + "cand", ["==", ["geometry-type"], "LineString"], { "line-color": "#f59f00", "line-width": ["match", ["get", "hover"], 1, 9, 5], "line-opacity": 0.8 });
+       for (const [k, off] of [["base", 0], ["A", -5], ["B", 5]])
+         line(P + "route-" + k, P + "routes", ["==", ["get", "kind"], k], { "line-color": ROUTE_COLORS[k], "line-width": k === "base" ? 5 : 3.5, "line-offset": off, "line-opacity": 0.9 });
+-      map.addLayer({ id: P + "pts", type: "circle", source: P + "pts", paint: {
+-        "circle-radius": ["match", ["get", "kind"], "node", 3, 7],
+-        "circle-color": ["match", ["get", "kind"], "origin", "#2b8a3e", "dest", "#212529", "#868e96"],
+-        "circle-stroke-color": "#fff", "circle-stroke-width": ["match", ["get", "kind"], "node", 0, 2],
+-        "circle-opacity": ["match", ["get", "kind"], "node", 0.5, 1] } });
++      line(P + "connect", P + "places", ["==", ["get", "kind"], "connect"], { "line-color": "#495057", "line-width": 1.5, "line-dasharray": [1, 2] });
++      map.addLayer({ id: P + "pt-input", type: "circle", source: P + "places", filter: ["==", ["get", "kind"], "input"], paint: {
++        "circle-radius": 6, "circle-color": "rgba(255,255,255,0.6)", "circle-stroke-width": 2, "circle-stroke-color": ["match", ["get", "role"], "origins", "#2b8a3e", "rejected", "#c92a2a", "#212529"] } });
++      map.addLayer({ id: P + "pt-node", type: "circle", source: P + "places", filter: ["==", ["get", "kind"], "node"], paint: {
++        "circle-radius": 6, "circle-color": ["match", ["get", "role"], "origins", "#2b8a3e", "#212529"], "circle-stroke-color": "#fff", "circle-stroke-width": 2 } });
+     }
+     function fitCoordinates(coords) {
+       if (!map || !coords.length) return;
+       const b = coords.reduce((box, n) => [Math.min(box[0], n[0]), Math.min(box[1], n[1]), Math.max(box[2], n[0]), Math.max(box[3], n[1])], [180, 90, -180, -90]);
+-      const mobile = innerWidth < 761;
+-      const padding = mobile ? { top: 85, left: 24, right: 60, bottom: Math.round(innerHeight * 0.64) }
+-        : { top: 120, left: 50, right: Math.min(innerWidth * 0.65, 650), bottom: 60 };
+-      map.fitBounds([[b[0], b[1]], [b[2], b[3]]], { padding, pitch: map.getPitch(), bearing: map.getBearing(), maxZoom: 16, duration: 0 });
++      const mobile = root.innerWidth < 761;
++      const padding = mobile ? { top: 85, left: 24, right: 60, bottom: Math.round(root.innerHeight * 0.64) }
++        : { top: 120, left: 50, right: Math.min(root.innerWidth * 0.65, 650), bottom: 60 };
++      try { map.fitBounds([[b[0], b[1]], [b[2], b[3]]], { padding, maxZoom: 16, duration: 0 }); } catch (e) { map.fitBounds([[b[0], b[1]], [b[2], b[3]]], { padding: 40, maxZoom: 16, duration: 0 }); }
+     }
+     function fitSelectedRoute() {
+-      if (!state.result || !state.selectedPair) return;
+-      const rows = [state.result.baseline.routes, ...state.result.plans.map((p) => p.routes)];
+-      const coords = rows.flatMap((rs) => rs.filter((r) => r.status === "ok" && r.origin_node_id + ">" + r.destination_node_id === state.selectedPair).flatMap(routeLine));
+-      fitCoordinates(coords);
++      const r = S.run.result;
++      if (!r || !S.selectedPair) return;
++      const rows = [r.baseline.routes, ...r.plans.map((p) => p.routes)];
++      fitCoordinates(rows.flatMap((rs) => rs.filter((x) => x.status === "ok" && x.origin_node_id + ">" + x.destination_node_id === S.selectedPair).flatMap(routeLine)));
+     }
+     function drawGraph(fit) {
+-      if (!map || !state.graph) return;
+-      const go = () => {
+-        if (state.destroyed) return;
+-        drawOverlays();
+-        if (fit) {
+-          fitCoordinates(state.graph.nodes.map((n) => [n.lon, n.lat]));
+-        }
+-      };
+-      if (styleReady) go(); else pending = go;
++      if (!map || !S.graph) return;
++      const go = () => { if (S.destroyed) return; drawOverlays(); if (fit) fitCoordinates(S.graph.nodes.map((n) => [n.lon, n.lat])); };
++      if (styleReady) go(); else pendingDraw = go;
+     }
+     function drawOverlays() {
+-      // isStyleLoaded() ложно и во время обновления GeoJSON-источника, поэтому — собственный флаг готовности стиля
+-      if (!map || !styleReady || !state.graph || !state.payload) return;
+-      const cA = closedIds("A"), cB = closedIds("B"), aA = activeIds("A"), aB = activeIds("B");
+-      const st = (all, act, id) => (act.has(id) ? "active" : all.has(id) ? "other" : "no");
+-      if (!map.getSource(P + "graph") || state.drawnGraph !== state.graph.id) {
+-        const [w, s, e, n] = state.graph.bbox || state.graph.nodes.reduce((b, p) => [Math.min(b[0], p.lon), Math.min(b[1], p.lat), Math.max(b[2], p.lon), Math.max(b[3], p.lat)], [180, 90, -180, -90]);
++      if (!map || !styleReady || !S.graph || S.destroyed) return;
++      if (!map.getSource(P + "graph") || S.drawnGraph !== S.graph.id) {
++        const [w, s, e, n] = S.graph.bbox || S.graph.nodes.reduce((b, p) => [Math.min(b[0], p.lon), Math.min(b[1], p.lat), Math.max(b[2], p.lon), Math.max(b[3], p.lat)], [180, 90, -180, -90]);
+         setData(P + "coverage", fc([{ type: "Feature", properties: {}, geometry: { type: "LineString", coordinates: [[w, s], [e, s], [e, n], [w, n], [w, s]] } }]));
+-        setData(P + "graph", fc(state.graph.edges.map((e) => ({ type: "Feature", properties: { id: e.id, access: e.access },
+-          geometry: { type: "LineString", coordinates: edgeLine(e) } }))));
+-        state.drawnGraph = state.graph.id;
++        setData(P + "graph", fc(S.graph.edges.map((ed) => ({ type: "Feature", properties: { id: ed.id, access: ed.access }, geometry: { type: "LineString", coordinates: edgeLine(ed) } }))));
++        S.drawnGraph = S.graph.id;
+       }
+-      setData(P + "closed", fc([...new Set([...cA, ...cB])].map((id) => state.edgeIndex.get(id)).filter(Boolean).map((e) => ({
+-        type: "Feature", properties: { id: e.id, cA: st(cA, aA, e.id), cB: st(cB, aB, e.id) }, geometry: { type: "LineString", coordinates: edgeLine(e) },
+-      }))));
++      const cA = closedSet("A"), cB = closedSet("B"), aA = closedSet("A", true), aB = closedSet("B", true);
++      const st = (all, act, id) => (act.has(id) ? "active" : all.has(id) ? "other" : "no");
++      setData(P + "closed", fc([...new Set([...cA, ...cB])].map((id) => S.edgeIndex.get(id)).filter(Boolean).map((ed) => ({
++        type: "Feature", properties: { id: ed.id, cA: st(cA, aA, ed.id), cB: st(cB, aB, ed.id) }, geometry: { type: "LineString", coordinates: edgeLine(ed) } }))));
++      setData(P + "cand", fc(S.chooser ? S.chooser.ids.map((id) => S.edgeIndex.get(id)).filter(Boolean).map((ed) => ({
++        type: "Feature", properties: { id: ed.id, hover: S.chooser.hover === ed.id ? 1 : 0 }, geometry: { type: "LineString", coordinates: edgeLine(ed) } })) : []));
+       const routes = [];
+-      if (state.result && state.selectedPair) {
+-        const pick = (rows) => rows.find((x) => x.origin_node_id + ">" + x.destination_node_id === state.selectedPair);
++      if (S.run.result && S.selectedPair && !isStale()) {
++        const pick = (rows) => rows.find((x) => x.origin_node_id + ">" + x.destination_node_id === S.selectedPair);
+         const add = (row, kind) => { if (row && row.status === "ok" && row.edge_ids.length) routes.push({ type: "Feature", properties: { kind }, geometry: { type: "LineString", coordinates: routeLine(row) } }); };
+-        add(pick(state.result.baseline.routes), "base");
+-        for (const p of state.result.plans) add(pick(p.routes), p.id);
++        add(pick(S.run.result.baseline.routes), "base");
++        for (const p of S.run.result.plans) add(pick(p.routes), p.id);
+       }
+       setData(P + "routes", fc(routes));
+-      drawPoints();
+-      ensureLayers();
+-    }
+-    function drawPoints() {
+-      if (!map || !styleReady || !state.graph || !state.payload) return;
+-      const pts = [], visible = map.getBounds(), detailed = map.getZoom() >= 14;
+-      const o = new Set(state.payload.origin_node_ids), d = new Set(state.payload.destination_node_ids);
+-      for (const n of state.graph.nodes) {
+-        const kind = o.has(n.id) ? "origin" : d.has(n.id) ? "dest" : state.clickMode !== "close" && detailed && visible.contains([n.lon, n.lat]) ? "node" : null;
+-        if (kind) pts.push({ type: "Feature", properties: { id: n.id, kind }, geometry: { type: "Point", coordinates: [n.lon, n.lat] } });
+-      }
+-      setData(P + "pts", fc(pts));
+-    }
+-    function onClick(ev) {
+-      if (!state.graph || !state.payload) return;
+-      const bb = [[ev.point.x - 6, ev.point.y - 6], [ev.point.x + 6, ev.point.y + 6]];
+-      if (state.clickMode === "close") {
+-        const f = map.queryRenderedFeatures(bb, { layers: [P + "edges-allowed", P + "edges-unknown", P + "edges-denied"].filter((l) => map.getLayer(l)) });
+-        if (f.length) toggleEdge(f[0].properties.id);
+-      } else {
+-        const f = map.queryRenderedFeatures(bb, { layers: map.getLayer(P + "pts") ? [P + "pts"] : [] });
+-        if (f.length) addPoint(f[0].properties.id);
++      const pts = [];
++      for (const role of ["origins", "dests"]) for (const p of S.places[role]) {
++        pts.push({ type: "Feature", properties: { kind: "node", role }, geometry: { type: "Point", coordinates: p.node } });
++        if (!p.from_case) {
++          pts.push({ type: "Feature", properties: { kind: "input", role }, geometry: { type: "Point", coordinates: p.input } });
++          pts.push({ type: "Feature", properties: { kind: "connect", role }, geometry: { type: "LineString", coordinates: [p.input, p.node] } });
++        }
+       }
++      if (S.tool && S.tool.lastInput) pts.push({ type: "Feature", properties: { kind: "input", role: "rejected" }, geometry: { type: "Point", coordinates: S.tool.lastInput } });
++      setData(P + "places", fc(pts));
++      ensureLayers();
+     }
+-    let styleReady = false, pending = null;
+-    function onStyle() {  // первая загрузка или смена стиля подложки: слои надо добавить заново
+-      if (state.destroyed) return;
++    let styleReady = false, pendingDraw = null;
++    function onStyle() {
++      if (S.destroyed) return;
+       styleReady = true;
+-      const f = pending; pending = null;
++      const f = pendingDraw; pendingDraw = null;
++      S.drawnGraph = null;          // новый стиль — источники нужно добавить заново
+       if (f) f(); else drawOverlays();
+     }
+     if (map) {
+-      map.on("moveend", drawPoints); listeners.push(["moveend", drawPoints]);
+-      map.on("click", onClick); listeners.push(["click", onClick]);
+-      map.on("style.load", onStyle); listeners.push(["style.load", onStyle]);
+-      if (map.isStyleLoaded && map.isStyleLoaded()) styleReady = true;
+-      else if (map.style && map.style._loaded) styleReady = true;
++      map.on("click", onMapClick); mapHandlers.push(["click", onMapClick]);
++      map.on("style.load", onStyle); mapHandlers.push(["style.load", onStyle]);
++      if ((map.isStyleLoaded && map.isStyleLoaded()) || (map.style && map.style._loaded)) styleReady = true;
+     }
++    document.addEventListener("keydown", onKey, true); docHandlers.push(["keydown", onKey, true]);
+ 
+     function destroy() {
+-      state.destroyed = true;
++      if (S.destroyed) return;
++      cancelRun(true);
++      if (S.tool) setTool(null);
++      S.destroyed = true;
++      destroyAssistant();
++      for (const [ev, fn, cap] of docHandlers) document.removeEventListener(ev, fn, cap);
+       if (map) {
+-        for (const [ev, fn] of listeners) map.off(ev, fn);
++        for (const [ev, fn] of mapHandlers) map.off(ev, fn);
++        try { map.getCanvas().style.cursor = ""; } catch (e) { /* карта снята */ }
+         for (const l of LAYERS) if (map.getLayer(l)) map.removeLayer(l);
+         for (const s of SOURCES) if (map.getSource(s)) map.removeSource(s);
+       }
+       wrap.remove();
+     }
+-    return { destroy };
++    return { destroy, cancelTool: () => setTool(null) };
+   }
+ 
+-  root.CivicScenarios = { mount };
++  root.CivicScenarios = { mount, _internal: { buildSnapIndex, snapPoint, haversine, SNAP_MAX_M } };
+ })(typeof window !== "undefined" ? window : globalThis);
