@@ -96,3 +96,18 @@ LICENSE_REGISTER/ATTRIBUTION, synthetic demo slice, импорт-хелпер д
 - Доказательства: r02_import_check.json (R02 7d5e39a: create 9 → skip_unchanged 9) и дифференциальный fuzz
   (research/round-11-results/R05/evidence/*.py): 1863 принятых R05 записей — 0 отказов R02.
 - Проверки: pytest 149 passed; unittest 149 OK; build_slice --check valid.
+
+## ФИНАЛ СЕССИИ (2026-10-07)
+
+- Роль R05; ветка `claude/intelligent-sagan-7shpeh`; код проверен на `f90858c` (push OK); DELIVERY.json — следующим
+  коммитом (его SHA сообщается в чате, не вписывается в сам файл).
+- Работает: валидатор civic-v1 (contract/real/demo), детерминированная сборка срезов, синтетический демо-срез (9),
+  реестр источников с аудитом сети, LICENSE_REGISTER/ATTRIBUTION, import_helper (совместим с R02 7d5e39a),
+  pilot_check, schedule_diff (stretch), QA/REVIEW/INTEGRATION/PILOT/NEXT_SOURCES.
+- Команды: `python3 -m pytest tests/civic/R05 -q` (149 passed); `python3 -I data/civic/astana/tools/build_slice.py --check`;
+  `python3 -I data/civic/astana/tools/import_helper.py --include-demo`.
+- Не запускалось: реальная загрузка источников Астаны (egress 403), подложка/3D (NOT_RUN).
+- Риск: 0 реальных записей; эвристика дат требует подтверждения редактора; паритет с R02 нужно перепроверять
+  при изменении его validate.py.
+- Следующий шаг: открыть `www.gov.kz` в сетевых настройках окружения → по NEXT_SOURCES.md получить 8–15 объявлений,
+  создать intake, пересобрать, прогнать pilot_check по реальному срезу.
