@@ -1,0 +1,45 @@
+{
+  "role": "R05",
+  "round": 13,
+  "branch": "claude/focused-hypatia-z8h0no",
+  "base_sha": "56538a3a7504d4589c38ab4d3c5107f12aa7f8a6",
+  "source_deliveries": [
+    {
+      "role": "R05",
+      "branch": "claude/focused-hypatia-z8h0no",
+      "sha": "ca0f06f8245e24adcae751acea321d19d9366576",
+      "code_sha": "4d5731ff1cd4827086317bf5404ffd5a5ce0ef1c"
+    }
+  ],
+  "code_sha": "4d5731ff1cd4827086317bf5404ffd5a5ce0ef1c",
+  "tested_sha": null,
+  "status": "PARTIAL_NETWORK_BLOCKED_SESSION_REASSIGNED_TO_R06",
+  "push_status": "см. сообщение сессии после push",
+  "changed_paths": [
+    "research/round-13-results/R05/",
+    "research/handoffs/astana/R05/round-13/STATUS.md"
+  ],
+  "counts": {
+    "verified_current": 0,
+    "verified_historical": 0,
+    "candidates": 44,
+    "rejected": 20,
+    "fetched_sources": 0
+  },
+  "tests": [
+    {
+      "name": "network access to primary sources",
+      "status": "FAIL",
+      "detail": "curl CONNECT 403, WebFetch EGRESS_BLOCKED (NETWORK_STATUS.txt)"
+    },
+    {
+      "name": "R02 round-12 import dry-run of a verified package",
+      "status": "NOT_RUN",
+      "detail": "нет подтверждённых записей; сессия переназначена на R06"
+    }
+  ],
+  "known_limits": [
+    "0 подтверждённых объектов — это ограничение, а не выполненная загрузка реальных данных."
+  ],
+  "next_step": "Доступ к доменам источников или прикрепление сохранённых человеком текстов страниц через r12.py verify."
+}

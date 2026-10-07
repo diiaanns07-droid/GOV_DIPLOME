@@ -1,0 +1,24 @@
+R05 РАУНД 13 — СОСТОЯНИЕ СЕТИ (ограниченная диагностика, без обхода)
+Сессия: claude/focused-hypatia-z8h0no, HEAD до работы ca0f06f8245e24adcae751acea321d19d9366576.
+Время проверки: 2026-10-07T16:58Z–17:02Z (UTC).
+
+Результат: первичные источники недоступны так же, как в раунде 12.
+
+curl через прокси окружения (код HTTP 000 = туннель не открыт):
+2026-10-07T16:58:37Z  curl GET via egress proxy  www.gov.kz:443  connect_rejected: gateway answered 403 to CONNECT (policy denial or upstream failure)
+2026-10-07T16:58:37Z  curl GET via egress proxy  www.gov.kz:443  connect_rejected: gateway answered 403 to CONNECT (policy denial or upstream failure)
+2026-10-07T16:58:38Z  curl GET via egress proxy  www.inform.kz:443  connect_rejected: gateway answered 403 to CONNECT (policy denial or upstream failure)
+2026-10-07T16:58:38Z  curl GET via egress proxy  kazpravda.kz:443  connect_rejected: gateway answered 403 to CONNECT (policy denial or upstream failure)
+2026-10-07T16:58:38Z  curl GET via egress proxy  www.zakon.kz:443  connect_rejected: gateway answered 403 to CONNECT (policy denial or upstream failure)
+2026-10-07T16:58:39Z  curl GET via egress proxy  astana.gov.kz:443  connect_rejected: gateway answered 403 to CONNECT (policy denial or upstream failure)
+2026-10-07T16:58:39Z  curl GET via egress proxy  www.vechastana.kz:443  connect_rejected: gateway answered 403 to CONNECT (policy denial or upstream failure)
+2026-10-07T16:58:39Z  curl GET via egress proxy  en.wikipedia.org:443  connect_rejected: gateway answered 403 to CONNECT (policy denial or upstream failure)
+WebFetch (инструмент Claude Code):
+2026-10-07T17:01Z  WebFetch  https://www.gov.kz/memleket/entities/astana/press/news/details/1193903?lang=ru  EGRESS_BLOCKED (www.gov.kz)
+2026-10-07T17:01Z  WebFetch  https://www.inform.kz/ru/perekrestok-akmeshit-almati-polnostyu-perekroyut-v-astane-40f40b73  EGRESS_BLOCKED (www.inform.kz)
+
+Не выполнялось: обход через зеркала, веб-архивы, сервисы-читалки, чужие cookies.
+Повторные попытки по всем 73 URL не делались (одинаковый отказ политики, а не временный сбой).
+Как снять ограничение: настройки окружения → Network access → Allowed domains (gov.kz, www.gov.kz, inform.kz,
+www.inform.kz, kazpravda.kz, vechastana.kz, zakon.kz) — либо человек сохраняет тексты страниц вручную и
+прикрепляет их через data/civic/astana/round12-verified/tools/r12.py verify (см. research/round-12-results/R05/RUN.txt).
