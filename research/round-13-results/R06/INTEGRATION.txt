@@ -1,0 +1,68 @@
+R06 РАУНД 13 — ИНТЕГРАЦИЯ ДЛЯ R01 (и заметка для R08)
+
+Ветка R06: claude/focused-hypatia-z8h0no. Код R06 — только ui/civic_feedback/, web/civic/feedback/,
+tests/civic/R06/. Общие файлы R01 (ui/web_server.py, web/civic/shell/shell.js) R06 НЕ менял: ниже —
+предложенный патч и проверка контракта в изолированной сборке.
+
+BASE_MISMATCH: история ветки R06 не содержит 56538a3. Проверка выполнена в изолированных worktree:
+  r13     = 56538a3a7504d4589c38ab4d3c5107f12aa7f8a6 + пути R06 (эта ветка) + ml/civic_classifier и
+            tests/civic/R08 из поставки R08 9660885 (код e311ba8)
+  r13app  = то же + research/round-13-results/R06/r01_r13_integration.patch
+Для переноса R06 в сборку R01: research/round-13-results/R06/r06_vs_56538a3.patch (только пути R06,
+`git apply` поверх 56538a3; см. RUN.txt). Полный merge ветки R06 не нужен и не предлагается.
+
+1. ПРЕДЛОЖЕННЫЙ ПАТЧ R01: research/round-13-results/R06/r01_r13_integration.patch (2 файла, +27/−4)
+   a) ui/web_server.py, фабрика feedback(): R08 по-прежнему opt-in (CIVIC_R08_CLASSIFIER=1) через
+      classifier_adapter.load_r08_classifier() (пробный вызов по контракту с таймаутом); добавлен
+      classifier_source="r08" — подсказки помечаются как полученные от настоящего ml.civic_classifier.
+      Без переменной: classifier=None, источник «disabled», сообщения сохраняются как обычно.
+   b) web/civic/shell/shell.js:
+      - api.logout(): после выхода вызывает window.CivicFeedback.clearDrafts() — удаляет черновики
+        жителя и номера квитанций вкладки (sessionStorage civic-r06-draft:*, civic-r06-receipts:*).
+      - openReceiptFromLink(): ссылка вида /#civic-receipt=fbr_… открывает в civic-feedback-box карточку
+        CivicFeedback.mountReceipt (статус, ответ платформы, хронология без служебных данных).
+        Вызывается после loadModules() и по hashchange; initialMode() для такой ссылки выбирает «civic».
+        Фрагмент # не уходит на сервер, в логи и Referer; номер передаётся только в теле POST.
+   Проверка: `git apply --check` поверх 56538a3 — OK. Настоящее приложение r13app (ui.web_server,
+   временная БД, seed-demo R02, редактор с одноразовым паролем) + app_e2e_r06.cjs с
+   R06_EXPECT_CLASSIFIER=r08 R06_R01_R13_PATCH=1: 18/18 PASS (ссылка на 360 px показывает ответ,
+   выход очищает хранилище вкладки, шлюз сообщает source=r08, подсказка без числа).
+   Без патча (чистый 56538a3 + R06): 15 PASS, 2 NOT_RUN (ссылка и выход), source=disabled — R06
+   работает и без изменений R01, но ссылка из квитанции тогда открывает обычную карту.
+   Замечание R01 (не блокирует): заголовок блока civic-feedback-box «Сообщить о проблеме или
+   предложении» остаётся и над карточкой квитанции; можно сменить на «Ваше сообщение».
+
+2. ИЗМЕНЕНИЯ КОНТРАКТА R06 (обратно совместимые добавления, кроме отмеченного)
+   - window.CivicFeedback: + mountReceipt({root, api, receiptId?}), receiptFromLocation(hash?), clearDrafts().
+   - POST /feedback/receipt: + timeline [{at, event, label}] (без исполнителей, причин, заметок, номера
+     исходного для дубля), updated_at, object_note (если объект скрыт/удалён — без подробностей).
+   - GET /staff/feedback: + classifier {source, source_label, connected}; элемент: classifier →
+     {status, status_label, source, source_label, language, suggestion|null, note};
+     suggestion = {label, label_text, score_kind, needs_review, review_reasons, model_version,
+     training_data_status, synthetic_only, score_shown:false, score:null}. ИЗМЕНЕНО: числовой score
+     больше не отдаётся и не хранится (softmax_max_uncalibrated — не вероятность). antispam: +
+     same_network_24h, note (same_sender_24h оставлен как синоним).
+   - GET /staff/feedback/{id}: + object_binding {state published|not_public|missing|lookup_failed,
+     submitted_revision, current_revision, submitted_title, changed_since_submit, geometry_changed,
+     point_distance_m, warnings[]}; history[] + handling_after, moderation_after.
+   - POST .../moderate: 409 stale_revision + current {revision, moderation, handling_status, labels,
+     public_reply, updated_at, last_action}; 200 + warnings[] (например, объект не опубликован).
+   - POST /feedback: 429 → Retry-After = реальное время до освобождения окна; тело + retry_after_s, limit.
+     ИЗМЕНЕНО: повтор с тем же client_request_id распознаётся независимо от IP (смена сети не
+     создаёт копию); любое отличие (текст, место, категория, согласие) → 409 request_id_conflict с
+     previous_receipt. client_request_id с < 8 различными символами → 422 (форма шлёт UUID).
+   - Схема civic-feedback-v3: ALTER TABLE при первом запуске (feedback_messages.object_revision,
+     object_snapshot; feedback_events.handling_after, moderation_after). Строки v1/v2 сохраняются;
+     у старых строк снимок объекта «неизвестен» (null), а не «не менялся».
+
+3. R08 (заметка, чужие файлы не менялись)
+   Контракт classify(text, language) R08 9660885 соблюдён; R06 вызывает настоящий модуль
+   (tests/civic/R06/test_r06_r13_r08_pair.py, 11 PASS в r13). В объединённой сборке один тест R08
+   tests/civic/R08/test_r08_feedback_integration.py:59 ожидает, что R06 показывает score в [0,1];
+   по заданию round 13 R06 его скрывает. Предложенный патч теста:
+   research/round-13-results/R06/r08_test_score_hidden.patch (проверен: 3/3 PASS). Без него
+   ожидаемо 1 FAIL в tests/civic/R08 при сборке с R06 round 13.
+
+4. ЧТО НЕ ДЕЛАЛОСЬ
+   Нет merge в main/ветку координатора, нет PR, общие файлы R01/R08 не изменены, реальные
+   обращения не использовались (только FIXTURE/синтетика и seed-demo R02 на временной БД).

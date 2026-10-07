@@ -1,0 +1,51 @@
+R06 РАУНД 13 — ЗАПУСК И ПРОВЕРКА
+
+Код R06: ветка claude/focused-hypatia-z8h0no (пути ui/civic_feedback, web/civic/feedback, tests/civic/R06).
+BASE_MISMATCH: ветка основана на старой истории, поэтому всё приложение запускается из 56538a3 с
+путями R06 и поставкой R08 (ровно так проверено в облаке):
+
+  git fetch origin
+  git worktree add --detach ../gov-r06-r13 56538a3a7504d4589c38ab4d3c5107f12aa7f8a6
+  cd ../gov-r06-r13
+  git apply <эта папка>/r06_vs_56538a3.patch                     # только пути R06
+  git checkout 9660885db5baadac4a8ac15b0a6532314407bba2 -- ml/civic_classifier tests/civic/R08   # R08 (код e311ba8)
+  # необязательно (решение R01): git apply <эта папка>/r01_r13_integration.patch
+
+1. ТЕСТЫ (Python 3.11+, pytest; временные SQLite в tmp_path, без сети)
+   python -m pytest -q tests/civic/R06            # см. итог в DELIVERY.json (с ml/: + 11 тестов пары R06+R08)
+   python -m pytest -q tests/civic/R06 tests/civic/R08
+   Без ml/civic_classifier (ветка R06 сама по себе) тесты пары R06+R08 ПРОПУСКАЮТСЯ с причиной,
+   а не «проходят». R08 test_r08_feedback_integration.py:59 без r08_test_score_hidden.patch — 1 FAIL
+   (ожидаемо: R06 больше не показывает некалиброванный score; см. INTEGRATION.txt п.3).
+
+2. БРАУЗЕР НА СТЕНДЕ (Chromium + Playwright; FIXTURE-объекты и учётки, временная БД)
+   node tests/civic/R06/browser_r13_r06.cjs --classifier r08 --screenshots <папка>
+     настоящий R08; 360 px; казахский текст; квитанция и ссылка; перезагрузка; ссылка в другом
+     контексте браузера; конфликт двух сотрудников; истёкшая сессия; 429; выход очищает черновики.
+   node tests/civic/R06/browser_r06.cjs            # сценарии round 11–12 (обновлён шаг «после перезагрузки»)
+   Ручной стенд: python tests/civic/R06/harness/serve_r06.py --port 8766 --classifier r08
+     -> http://127.0.0.1:8766/harness/ ; ссылка квитанции: http://127.0.0.1:8766/harness/#civic-receipt=fbr_…
+     --classifier r08 без ml/civic_classifier — стенд НЕ стартует (подмены моделью-заглушкой нет).
+
+3. НАСТОЯЩЕЕ ПРИЛОЖЕНИЕ (Windows: run-city.bat -> http://127.0.0.1:8611/; в облаке — эквивалент)
+   python -m ui.civic_store --db <tmp>/civic.sqlite3 init
+   python -m ui.civic_store --db <tmp>/civic.sqlite3 create-editor <user> --password-stdin   # пароль одноразовый, не в Git
+   python -m ui.civic_store --db <tmp>/civic.sqlite3 seed-demo                                # синтетика R02
+   CIVIC_R08_CLASSIFIER=1 python -m ui.web_server --port 8611 --civic-db <tmp>/civic.sqlite3
+   R06_BASE=http://127.0.0.1:8611 R06_USER=<user> R06_PASS=<пароль> R06_OBJECT_ID=demo-r02-sidewalk-delay \
+   R06_EXPECT_CLASSIFIER=r08 R06_R01_R13_PATCH=1 node tests/civic/R06/app_e2e_r06.cjs --screenshots <папка>
+   (без патча R01: R06_EXPECT_CLASSIFIER=disabled и без R06_R01_R13_PATCH — проверки ссылки/выхода NOT_RUN)
+
+4. ДИАГНОСТИКА МОДЕЛИ (без текстов жителей)
+   python -c "from ui.civic_feedback.classifier_adapter import r08_status as s; d=s(); d.pop('classify',None); print(d)"
+   python -m ui.civic_feedback stats --db <tmp>/civic.sqlite3      # classifier_status: ok/unavailable/error/timeout/invalid/busy
+
+5. ЧТО ВИДИТ ЧЕЛОВЕК
+   Житель: после отправки — карточка квитанции с номером и ссылкой (#civic-receipt=…), статусом публикации,
+   статусом обработки, ответом платформы и хронологией; после перезагрузки вкладки карточка возвращается;
+   по ссылке на другом устройстве — то же (без имён сотрудников, причин, заметок, номера исходного сообщения).
+   При 429 — «повторите через N мин», текст в форме сохранён. Выход очищает черновики вкладки.
+   Сотрудник: AI-подсказка категории без числа, с источником (модель R08 / FIXTURE / выключена) и
+   предупреждением «демо-модель обучена только на синтетике — проверьте сами»; категория жителя и решение
+   не меняются. При одновременной работе — понятный конфликт «кто и что изменил», введённый текст
+   переносится в обновлённую карточку. Предупреждения, если объект скрыт, удалён или изменил геометрию.
