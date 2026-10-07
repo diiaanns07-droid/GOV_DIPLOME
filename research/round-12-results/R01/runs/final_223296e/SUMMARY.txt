@@ -1,0 +1,52 @@
+R01 round 12 — final run of tests/civic/R01/run_checks.sh on 223296ec02bb14568b7d5782dc7de473372d2aec
+(*.log files are git-ignored in this repo; result lines copied here)
+
+R01 checks on 223296e -> research/round-12-results/R01/runs/final_223296e
+PASS  pytest
+PASS  ui.web_check
+PASS  node govtech/plan
+PASS  node govtech/resilience
+PASS  node govtech/whatif
+PASS  node govtech/school_case
+PASS  node govtech/school_vs_k05
+PASS  node R03 core
+PASS  node R04 core+mock
+PASS  node R01 explore
+PASS  browser P0 flow
+
+== pytest
+868 passed, 2 skipped in 105.40s (0:01:45)
+== ui.web_check
+Ran 14 tests in 1.569s
+OK
+== node_govtech_plan
+PASS unknown distance explained as unknown, not zero
+PASS HTML report: no script tag, strings escaped, CSP default-src none, no external URL
+PASS HTML report contains plan tables and limitations
+all plan checks passed
+== node_govtech_resilience
+PASS explanation: template, 'не подтверждение закрытия', no probability/risk claims
+PASS explanation names duplicate cases
+PASS report: no script tag, labels/names escaped, CSP, no external URLs
+all resilience checks passed
+== node_govtech_whatif
+PASS digest changes when project moves
+PASS stale explanation rejected
+PASS digest changes with category
+all what-if checks passed
+== node_govtech_school_case
+all school-case checks incl. K10 package passed (3621)
+== node_govtech_school_vs_k05
+== node_R03_core
+ok 14 - staleness marks a passed plan without claiming completion
+# tests 24
+# pass 24
+# fail 0
+== node_R04_core+mock
+# tests 27
+# pass 27
+# fail 0
+== node_R01_explore
+# tests 5
+# pass 5
+# fail 0
