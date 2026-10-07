@@ -8,15 +8,21 @@
   result files; the round-12 patch is `git diff 56538a3a -- web/civic/map tests/civic/R03`.
 - Owned paths: web/civic/map/ (except streets.json), tests/civic/R03/, research/round-12-results/R03/, this file.
 
-## Status: PARTIAL — checkpoint 1
+## Status: PARTIAL — checkpoint 2
 
 Done:
-- Honest empty state when a street/district is chosen (shell calls setFilters({area:true})) and no record is there:
-  «В видимой части карты нет опубликованных записей. Это не значит, что здесь не ведутся работы: реестр неполный…»
-  with «Показать записи по всему городу». Demo note says plainly that no confirmed real works are in the registry.
-- Bug fixed: setFilters({area:true}) without a later map move left the view box unset, so the list silently showed
-  the whole city under the "visible part" filter.
-- Stand moved into my path: tests/civic/R03/stand/ (served by tests/civic/R03/serve.mjs).
-- Tests: core 24/24; browser 44/44 (+1 r12 test); R02 read-only 2/2.
+- Checkpoint 1 (d72058a): honest empty state for a street/district without records; area filter measured on setFilters; stand in tests/civic/R03/stand/.
+- Card: «Коротко» block first — Сейчас (status, «по источнику от …» or «по записи», plan-passed warning) / Когда закончат
+  (до …, «перенесён на N дней», завершено/отменено, «новый срок не опубликован») / Кто отвечает / Откуда сведения;
+  moved deadline with its reason right under it; dates «Начало / Изначально — до / Сейчас — до / Фактически».
+- Cost and responsible only when a source covers them (budget.source_id or source fields; «responsible» covers its children);
+  otherwise plain text («не подтверждено источником», «сумма … источник не указан — не показываем»).
+- Sources: short list (name, date, safe link); technical provenance (received, access, licence, covered fields, type,
+  notes, record updated/revision) folded into «Подробнее о сведениях».
+- «Скопировать ссылку» always available; default link format is the R01 shell's #object=<id> (host may pass linkFor);
+  clipboard failure shows a selectable field.
+- Before screenshots of the real app (base 56538a3, R05 demo slice): research/round-12-results/R03/screenshots/before-app-*.png
+- Tests: core 25/25, browser 45/45, R02 read-only 2/2.
 
-Next step: card — short summary first, «изначально / сейчас / фактически», cost/responsible only with a source.
+Next step: list/map — compact filters (list visible without scrolling), record type filter (demo / with source / past plans),
+counts per status, overlapping objects chooser.

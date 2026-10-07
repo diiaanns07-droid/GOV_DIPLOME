@@ -356,6 +356,42 @@
     return { items, excluded };
   }
 
+  // ---------- provenance ----------
+  // A source supports a field when one of its `fields` paths is that field, a parent of it
+  // ("responsible" covers "responsible.organization") or a child of it.
+  function sourceFor(item, path) {
+    const refs = (item && item.sourceRefs) || [];
+    return refs.find((r) => r.fields.some((f) => f === path || path.startsWith(f + ".") || f.startsWith(path + "."))) || null;
+  }
+  // Money is shown only with a source: the ref named by budget.source_id or one covering the amount.
+  function costView(item) {
+    const b = item.budget;
+    if (b.state !== "ok") return { show: false, state: b.state, text: b.text };
+    const src = (b.sourceId && item.sourceRefs.find((r) => r.id === b.sourceId)) || sourceFor(item, "budget.amount_kzt");
+    if (!src) return { show: false, state: "unsourced", text: "сумма в записи есть, но источник не указан — не показываем" };
+    return { show: true, state: "ok", text: b.text, approx: b.approx, basisLabel: b.basisLabel, source: src };
+  }
+  // The responsible organisation/contact is shown only when a source covers it.
+  function responsibleView(item) {
+    const r = item.responsible || {};
+    if (!r.organization && !r.public_contact) return { show: false, state: "missing" };
+    const orgSrc = r.organization ? sourceFor(item, "responsible.organization") : null;
+    const contactSrc = r.public_contact ? sourceFor(item, "responsible.public_contact") : null;
+    if (!orgSrc && !contactSrc) return { show: false, state: "unsourced" };
+    return { show: true, state: "ok", organization: orgSrc ? r.organization : null, contact: contactSrc ? r.public_contact : null, source: orgSrc || contactSrc };
+  }
+  // One plain-language line about where the record comes from.
+  function provenanceLine(item) {
+    const refs = item.sourceRefs || [];
+    if (!refs.length) {
+      if (item.evidence === "synthetic") return { state: "demo", text: "Демонстрационная запись — источника нет." };
+      return { state: "none", text: "Источник не указан — сведения нельзя проверить по документу." };
+    }
+    const r = refs[0];
+    const name = r.publisher || r.host || "источник без названия";
+    return { state: "ok", ref: r, text: name + (r.published_on ? ", " + formatDay(r.published_on) : "") + (refs.length > 1 ? " и ещё " + (refs.length - 1) : "") };
+  }
+
   // ---------- schedule semantics ----------
   // Planned interval only: [planned_start, current_planned_end ?? original_planned_end].
   // Planned interval exactly as civic-v1 §2 and R02 define it: [planned_start, current_planned_end].
@@ -654,6 +690,7 @@
     kindInfo: (k) => KINDS[k] || OTHER_KIND,
     evidenceInfo: (e) => EVIDENCE[e] || EVIDENCE_UNKNOWN,
     parseDay, addDays, dayDiff, localDay, formatDay, parseTimestamp, formatTimestamp, timestampDay, formatNumber,
+    sourceFor, costView, responsibleView, provenanceLine,
     budgetInfo, safeUrl, urlHost, normalizeGeometry, bboxOf, bboxIntersects, normalizeObject, normalizeList,
     plannedInterval, matchPeriod, scheduleShift, staleness, plural, daysText, normalizeHistory, fieldLabel,
     shiftReason, compareRevisions, periodRange, defaultFilters, sanitizeFilters, isDefaultFilters,

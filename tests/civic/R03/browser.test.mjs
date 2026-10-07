@@ -137,7 +137,13 @@ test("card with data: shift + reason, money with basis, safe source link, histor
   assert.match(demo, /Стоимость\s+нет данных/);
   assert.doesNotMatch(demo, /₸/, "no tenge on a synthetic record");
   assert.match(demo, /Демо\. Синтетическая демо-запись/);
-  assert.match(demo, /запись обновлена 5 октября 2026, 16:40 \(время Астаны\)/);
+  // r12: the short answer comes first; technical provenance is folded away
+  assert.match(demo, /Сейчас\s+Идут работы по записи/);
+  assert.match(demo, /Когда закончат\s+до 5 ноября 2026 \(по плану\)\s*перенесён на 16 дней/);
+  assert.match(demo, /Кто отвечает\s+не подтверждено источником/);
+  assert.match(demo, /Откуда сведения\s+Тестовый источник \(fixture R03\), 15\.09\.2026/);
+  assert.doesNotMatch(demo, /Демо-подрядчик/, "an unsourced organisation name is not shown");
+  assert.match(await page.locator(".civic-r03-tech").evaluate((d) => { d.open = true; return d.innerText; }), /Запись обновлена: 5 октября 2026, 16:40 \(время Астаны\)/);
   assert.doesNotMatch(demo, /по данным на/);
   await select(page, "r03-format-derived");
   const card = await page.evaluate(() => {
@@ -151,10 +157,12 @@ test("card with data: shift + reason, money with basis, safe source link, histor
   assert.match(card.text, /Причина: «Демо: перенос из-за поставки материалов/);
   assert.match(card.text, /48\u202f500\u202f000 ₸/);
   assert.match(card.text, /сумма договора · источник: Тестовый источник/);
-  assert.match(card.text, /Тестовая организация \(fixture\)/);
+  assert.match(card.text, /Кто отвечает\s+Тестовая организация \(fixture\) — по источнику/);
   assert.match(card.text, /Выведено из источников/);
-  assert.match(card.text, /статус по источнику от 15\.09\.2026 · запись обновлена 5 октября 2026, 16:40 \(время Астаны\)/);
-  assert.match(card.text, /подтверждает: статус, текущий срок, стоимость, основание стоимости/);
+  assert.match(card.text, /Сейчас\s+Идут работы по источнику от 15\.09\.2026/);
+  assert.match(card.text, /Откуда сведения\s+Тестовый источник \(fixture R03, не реальный\), 15\.09\.2026/);
+  assert.match(card.text, /Изначально — до\s+20 октября 2026\s+Сейчас — до\s+5 ноября 2026\s+Фактически\s+нет данных/);
+  assert.match(await page.locator(".civic-r03-tech").evaluate((d) => { d.open = true; return d.innerText; }), /подтверждает: статус, текущий срок, стоимость, основание стоимости, организация/);
   assert.equal(card.href, "https://example.org/civic-fixture/notice-1");
   assert.equal(card.target, "_blank");
   assert.match(card.rel, /noopener/);
@@ -175,11 +183,12 @@ test("card without data: every missing value reads 'нет данных', no inv
   const { ctx, page } = await open();
   await select(page, "r03-demo-nodata");
   const text = await page.locator(".civic-r03-card").innerText();
-  assert.match(text, /Организация\s+нет данных/);
-  assert.match(text, /Публичный контакт\s+нет данных/);
+  assert.match(text, /Ответственный\s+нет данных/);
+  assert.match(text, /Кто отвечает\s+не указано/);
+  assert.match(text, /Когда закончат\s+срок окончания не указан/);
   assert.match(text, /Стоимость\s+нет данных/);
   assert.match(text, /Начало по плану\s+нет данных/);
-  assert.match(text, /Текущий срок\s+нет данных/);
+  assert.match(text, /Сейчас — до\s+нет данных/);
   assert.match(text, /Место примерное/);
   assert.match(text, /Плановый интервал неполный/);
   assert.doesNotMatch(text, /0 ₸/);
@@ -765,7 +774,7 @@ test("review: a failed re-read after refresh shows the fresh list copy, not the 
   const t = await page.locator(".civic-r03-card").innerText();
   assert.match(t, /Демо: отменённый ремонт прохода \(ред\. 4\)/);
   assert.match(t, /Отменено/);
-  assert.match(t, /редакция 4/);
+  assert.match(await page.locator(".civic-r03-tech").evaluate((d) => { d.open = true; return d.innerText; }), /редакция 4/);
   await ctx.close();
 });
 

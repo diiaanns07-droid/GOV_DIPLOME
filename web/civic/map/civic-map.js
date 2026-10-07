@@ -847,14 +847,49 @@
       }
       cardView.append(
         h("div", { class: P + "card-kind", style: { "--civic-r03-k": k.color } }, h("i", { class: P + "dot " + P + "st-" + it.status, "aria-hidden": "true" }), k.label + (it.kind === "other" && it.rawKind ? " (" + it.rawKind.slice(0, 40) + ")" : "")),
-        h("h3", { class: P + "card-title", tabindex: "-1", text: it.title }),
-        h("p", { class: P + "status-line" }, h("span", { class: P + "status " + P + "status-" + it.status, text: C.STATUSES[it.status] }),
-          statusSrc ? h("span", { class: P + "muted", text: " · статус по источнику от " + C.formatDay(statusSrc.published_on) }) : null,
-          // updated_at is when the record was last published, not when the status was observed.
-          h("span", { class: P + "muted", text: it.updatedAt ? " · запись обновлена " + C.formatTimestamp(it.updatedAt) : " · дата обновления не указана" })));
-      if (it.description) cardView.append(h("section", { class: P + "sec" }, h("h4", { text: "Назначение" }), h("p", { class: P + "desc", text: it.description })));
+        h("h3", { class: P + "card-title", tabindex: "-1", text: it.title }));
 
+      // ---- "Коротко": what, until when, who, from where — before anything technical ----
+      const s = it.schedule;
+      const shift = C.scheduleShift(it);
       const stale = C.staleness(it, today());
+      const resp = C.responsibleView(it);
+      const prov = C.provenanceLine(it);
+      let whenText;
+      if (s.actual_end) whenText = "завершено " + C.formatDay(s.actual_end, "long");
+      else if (it.status === "cancelled") whenText = "отменено" + (s.current_planned_end ? " (план был до " + C.formatDay(s.current_planned_end, "long") + ")" : "");
+      else if (s.current_planned_end) whenText = "до " + C.formatDay(s.current_planned_end, "long") + " (по плану)";
+      else if (s.original_planned_end) whenText = "новый срок не опубликован (изначально до " + C.formatDay(s.original_planned_end, "long") + ")";
+      else whenText = "срок окончания не указан";
+      const summary = h("dl", { class: P + "summary", "aria-label": "Коротко об объекте" },
+        h("dt", { text: "Сейчас" }),
+        h("dd", null, h("span", { class: P + "status " + P + "status-" + it.status, text: C.STATUSES[it.status] }),
+          statusSrc ? h("span", { class: P + "muted", text: " по источнику от " + C.formatDay(statusSrc.published_on) }) : h("span", { class: P + "muted", text: " по записи" }),
+          stale ? h("span", { class: P + "warn-text", text: " · срок по плану уже прошёл" }) : null),
+        h("dt", { text: "Когда закончат" }),
+        h("dd", null, h("span", { text: whenText }),
+          shift && !s.actual_end ? h("span", { class: P + "shift-chip", text: (shift.days > 0 ? "перенесён на " : "сдвинут раньше на ") + C.daysText(shift.days) }) : null),
+        h("dt", { text: "Кто отвечает" }),
+        h("dd", null, resp.show
+          ? h("span", null, [resp.organization, resp.contact].filter(Boolean).join(" · "), h("span", { class: P + "muted", text: " — по источнику" }))
+          : h("span", { class: P + "nodata", text: resp.state === "unsourced" ? "не подтверждено источником" : "не указано" })),
+        h("dt", { text: "Откуда сведения" }),
+        h("dd", null, h("span", { class: prov.state === "ok" ? null : P + "nodata", text: prov.text })));
+      cardView.append(summary);
+
+      // Moved deadline with its reason, right under the summary.
+      const reasonInfo = C.shiftReason(d.history);
+      if (shift) {
+        const dir = shift.days > 0 ? "позже" : "раньше";
+        let reasonText;
+        if (reasonInfo && reasonInfo.reason) reasonText = h("span", null, "Причина: «" + reasonInfo.reason + "»", reasonInfo.at ? " · " + C.formatTimestamp(reasonInfo.at) : "");
+        else if (d.state === "loading") reasonText = h("span", { class: P + "muted", text: "Причина: загружаем историю…" });
+        else if (d.state === "error") reasonText = h("span", { class: P + "muted", text: "Причина: история не загрузилась." });
+        else reasonText = h("span", { class: P + "muted", text: "Причина переноса в опубликованной истории не указана." });
+        cardView.append(h("div", { class: P + "shift", role: "note" },
+          h("b", { text: "Срок перенесён на " + C.daysText(shift.days) + " " + dir + ": " }),
+          h("span", { text: C.formatDay(shift.from) + " → " + C.formatDay(shift.to) }), h("br"), reasonText));
+      }
       if (stale) {
         const st0 = "«" + C.STATUSES[it.status] + "»";
         const text = stale.kind === "old_start_no_end"
@@ -864,42 +899,30 @@
             : "Плановый срок окончания (" + C.formatDay(stale.end) + ") прошёл " + C.daysText(stale.days) + " назад, а в записи статус " + st0 + ".";
         cardView.append(h("p", { class: P + "banner " + P + "banner-warn", role: "note" }, text + " Фактическое состояние работ эта запись не подтверждает."));
       }
+      if (it.description) cardView.append(h("section", { class: P + "sec" }, h("h4", { text: "Назначение" }), h("p", { class: P + "desc", text: it.description })));
 
-      // Schedule
-      const s = it.schedule;
-      const shift = C.scheduleShift(it);
-      const reasonInfo = C.shiftReason(d.history);
-      let shiftNode = null;
-      if (shift) {
-        const dir = shift.days > 0 ? "позже" : "раньше";
-        let reasonText;
-        if (reasonInfo && reasonInfo.reason) reasonText = h("span", null, "Причина: «" + reasonInfo.reason + "»", reasonInfo.at ? " · " + C.formatTimestamp(reasonInfo.at) : "");
-        else if (d.state === "loading") reasonText = h("span", { class: P + "muted", text: "Причина: загружаем историю…" });
-        else if (d.state === "error") reasonText = h("span", { class: P + "muted", text: "Причина: история не загрузилась." });
-        else reasonText = h("span", { class: P + "muted", text: "Причина переноса в опубликованной истории не указана." });
-        shiftNode = h("div", { class: P + "shift", role: "note" },
-          h("b", { text: "Срок перенесён на " + C.daysText(shift.days) + " " + dir + ": " }),
-          h("span", { text: C.formatDay(shift.from) + " → " + C.formatDay(shift.to) }), h("br"), reasonText);
-      }
+      // Dates: originally / now / actually.
       const iv = C.plannedInterval(it);
       cardView.append(h("section", { class: P + "sec" }, h("h4", { text: "Сроки" }),
-        shiftNode,
         h("dl", { class: P + "dl" },
           dlRow("Начало по плану", s.planned_start ? C.formatDay(s.planned_start, "long") : null),
-          dlRow("Первоначальный срок", s.original_planned_end ? C.formatDay(s.original_planned_end, "long") : null),
-          dlRow("Текущий срок", s.current_planned_end ? C.formatDay(s.current_planned_end, "long") : null),
-          dlRow("Фактическое окончание", s.actual_end ? C.formatDay(s.actual_end, "long") : null)),
+          dlRow("Изначально — до", s.original_planned_end ? C.formatDay(s.original_planned_end, "long") : null),
+          dlRow("Сейчас — до", s.current_planned_end ? C.formatDay(s.current_planned_end, "long") : (s.original_planned_end ? "новый срок не опубликован" : null)),
+          dlRow("Фактически", s.actual_end ? "завершено " + C.formatDay(s.actual_end, "long") : null)),
         !iv.complete ? h("p", { class: P + "hint", text: "Плановый интервал неполный: неизвестную дату не заменяем сегодняшней." }) : null));
 
-      // Responsible + budget
-      const b = it.budget;
-      const budgetSrc = b.sourceId ? it.sourceRefs.find((r) => r.id === b.sourceId) : null;
+      // Money and responsible: shown only when a source covers them.
+      const cost = C.costView(it);
+      const costNode = cost.show
+        ? h("span", null, h("b", { class: P + "num", text: cost.text }), cost.approx ? h("span", { class: P + "muted", text: " " + cost.approx }) : null,
+          h("span", { class: P + "basis", text: cost.basisLabel + " · источник: " + (cost.source.publisher || cost.source.host || cost.source.id) }))
+        : h("span", { class: P + "nodata", text: cost.text });
+      const respNode = resp.show
+        ? h("span", null, resp.organization ? h("span", { text: resp.organization }) : null, resp.contact ? h("span", { class: P + "basis", text: resp.contact }) : null,
+          h("span", { class: P + "basis", text: "источник: " + (resp.source.publisher || resp.source.host || resp.source.id) }))
+        : h("span", { class: P + "nodata", text: resp.state === "unsourced" ? "в записи указан, но источник не подтверждает — не показываем" : C.NO_DATA });
       cardView.append(h("section", { class: P + "sec" }, h("h4", { text: "Кто отвечает и сколько стоит" }),
-        h("dl", { class: P + "dl" },
-          dlRow("Организация", it.responsible.organization),
-          dlRow("Публичный контакт", it.responsible.public_contact),
-          dlRow("Стоимость", b.state === "ok" ? h("span", null, h("b", { class: P + "num", text: b.text }), b.approx ? h("span", { class: P + "muted", text: " " + b.approx }) : null) : h("span", { class: P + "nodata", text: b.text }),
-            h("span", { class: P + "basis", text: b.state === "ok" ? b.basisLabel + (budgetSrc ? " · источник: " + (budgetSrc.publisher || budgetSrc.host || budgetSrc.id) : b.sourceId ? " · источник «" + b.sourceId + "» не найден в списке" : " · источник суммы не указан") : "" })))));
+        h("dl", { class: P + "dl" }, dlRow("Ответственный", respNode), dlRow("Стоимость", costNode))));
 
       // Place
       let placeText;
@@ -907,29 +930,33 @@
       else placeText = C.PRECISION[it.precision] + ". " + ({ Point: "Точка", LineString: "Линия (участок)", Polygon: "Территория" }[it.geometry.type] || "") + ".";
       cardView.append(h("section", { class: P + "sec" }, h("h4", { text: "Место" }), h("p", { text: placeText })));
 
-      // Sources
+      // Sources: short list first; technical provenance folded away.
       const srcSec = h("section", { class: P + "sec" }, h("h4", { text: "Источники" }));
-      if (!it.sourceRefs.length) srcSec.append(h("p", { class: P + "nodata", text: it.evidence === "synthetic" ? "Нет: это демо-запись." : "Источник не указан." }));
+      if (!it.sourceRefs.length) srcSec.append(h("p", { class: P + "nodata", text: prov.text }));
       else {
         const ul = h("ul", { class: P + "sources" });
         for (const r of it.sourceRefs) {
           const name = r.publisher || r.host || "Источник";
           const link = r.url ? h("a", { href: r.url, target: "_blank", rel: "noopener noreferrer nofollow", class: P + "src-link" }, name, svgIcon(ICON.out, 14), h("span", { class: P + "sr", text: " (откроется в новой вкладке)" })) : h("span", { text: name });
-          const meta = [];
-          if (r.published_on) meta.push("опубликовано " + C.formatDay(r.published_on));
-          if (r.retrieved_at) meta.push("получено " + (C.parseTimestamp(r.retrieved_at) ? C.formatTimestamp(r.retrieved_at) : C.formatDay(r.retrieved_at)));
-          if (r.access_status) meta.push(C.ACCESS[r.access_status]);
-          meta.push(r.license ? "лицензия: " + r.license : "лицензия не указана");
-          const fields = r.fields.length ? "подтверждает: " + [...new Set(r.fields.map(C.fieldLabel))].join(", ") : null;
-          ul.append(h("li", null, link, r.host && r.publisher ? h("span", { class: P + "muted", text: " · " + r.host }) : null,
-            r.rawUrlRejected ? h("span", { class: P + "warn-text", text: " · ссылка скрыта: небезопасный адрес" }) : null,
-            h("span", { class: P + "src-meta", text: meta.join(" · ") }), fields ? h("span", { class: P + "src-meta", text: fields }) : null));
+          ul.append(h("li", null, link, r.published_on ? h("span", { class: P + "muted", text: " · " + C.formatDay(r.published_on) }) : null,
+            r.rawUrlRejected ? h("span", { class: P + "warn-text", text: " · ссылка скрыта: небезопасный адрес" }) : null));
         }
         srcSec.append(ul);
       }
-      if (it.evidenceNotes) srcSec.append(h("p", { class: P + "notes" }, h("b", { text: "Примечание: " }), it.evidenceNotes));
-      if (it.issues.length) srcSec.append(h("p", { class: P + "warn-text", text: "Проблемы записи: " + it.issues.join("; ") + "." }));
-      srcSec.append(h("p", { class: P + "meta", text: "Обновлено: " + (it.updatedAt ? C.formatTimestamp(it.updatedAt) : C.NO_DATA) + (it.revision ? " · редакция " + it.revision : "") }));
+      const tech = h("div", { class: P + "tech-body" });
+      for (const r of it.sourceRefs) {
+        const meta = [];
+        if (r.retrieved_at) meta.push("получено " + (C.parseTimestamp(r.retrieved_at) ? C.formatTimestamp(r.retrieved_at) : C.formatDay(r.retrieved_at)));
+        if (r.access_status) meta.push(C.ACCESS[r.access_status]);
+        meta.push(r.license ? "лицензия: " + r.license : "лицензия не указана");
+        tech.append(h("p", null, h("b", { text: (r.publisher || r.host || r.id) + ": " }), meta.join(" · "),
+          r.fields.length ? h("span", { class: P + "src-meta", text: "подтверждает: " + [...new Set(r.fields.map(C.fieldLabel))].join(", ") }) : h("span", { class: P + "src-meta", text: "не указано, какие поля подтверждает" })));
+      }
+      tech.append(h("p", { text: "Тип сведений: " + ev.label + "." }));
+      if (it.evidenceNotes) tech.append(h("p", { class: P + "notes" }, h("b", { text: "Примечание: " }), it.evidenceNotes));
+      if (it.issues.length) tech.append(h("p", { class: P + "warn-text", text: "Проблемы записи: " + it.issues.join("; ") + "." }));
+      tech.append(h("p", { class: P + "meta", text: "Запись обновлена: " + (it.updatedAt ? C.formatTimestamp(it.updatedAt) : C.NO_DATA) + (it.revision ? " · редакция " + it.revision : "") }));
+      srcSec.append(h("details", { class: P + "tech" }, h("summary", { text: "Подробнее о сведениях" }), tech));
       cardView.append(srcSec);
 
       // History
@@ -955,7 +982,7 @@
       // Actions
       const actions = h("div", { class: P + "actions" });
       if (onFeedback) actions.append(h("button", { type: "button", class: P + "btn " + P + "btn-primary", "data-r03-action": "feedback" }, svgIcon(ICON.chat), "Задать вопрос по объекту"));
-      if (permalink) actions.append(h("button", { type: "button", class: P + "btn", "data-r03-action": "copy-link" }, svgIcon(ICON.link), "Ссылка на объект"));
+      actions.append(h("button", { type: "button", class: P + "btn", "data-r03-action": "copy-link" }, svgIcon(ICON.link), "Скопировать ссылку"));
       if (actions.childNodes.length) cardView.append(actions);
       if (focus) focusCard();
       else if (keep) restoreFocus(keep);
@@ -1027,10 +1054,30 @@
       const id = readHash();
       if (id && id !== st.selectedId) selectObject(id, { source: "permalink" });
     }
+    // Link to the open card. Default format is the R01 shell's "#object=<id>"; a host may pass linkFor(id).
+    function objectLink(id) {
+      if (typeof opt.linkFor === "function") { try { const u = opt.linkFor(id); if (typeof u === "string" && u) return u; } catch (e) { /* fall back */ } }
+      const l = window.location;
+      return l.origin + l.pathname + l.search + "#" + (permalink ? HASH_KEY : "object") + "=" + encodeURIComponent(id);
+    }
     function copyLink(btn) {
-      const url = window.location.href;
-      const done = (ok) => { btn.lastChild.textContent = ok ? "Ссылка скопирована" : "Скопируйте адрес из строки браузера"; };
-      try { navigator.clipboard.writeText(url).then(() => done(true), () => done(false)); } catch (e) { done(false); }
+      const id = st.selectedId;
+      if (!id) return;
+      const url = objectLink(id);
+      const box = btn.parentElement;
+      const say = (text, showField) => {
+        let note = box.querySelector("." + P + "copy-note");
+        if (!note) { note = h("p", { class: P + "copy-note", role: "status" }); box.append(note); }
+        note.replaceChildren(text);
+        if (showField) {
+          const field = h("input", { type: "text", readonly: true, class: P + "search", value: url, "aria-label": "Ссылка на объект" });
+          note.append(field);
+          field.select();
+        }
+      };
+      try {
+        navigator.clipboard.writeText(url).then(() => say("Ссылка скопирована.", false), () => say("Скопируйте ссылку:", true));
+      } catch (e) { say("Скопируйте ссылку:", true); }
     }
 
     // ---------- map ----------

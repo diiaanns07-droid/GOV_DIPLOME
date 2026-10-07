@@ -633,6 +633,58 @@
 .civic-r03-card-title:focus-visible {
   outline: 3px solid var(--civic-r03-focus);
 }
+/* "Коротко": the answer a resident looks for first */
+.civic-r03-summary {
+  display: grid;
+  grid-template-columns: minmax(104px, 34%) 1fr;
+  gap: 7px 12px;
+  margin: 4px 0 12px;
+  padding: 11px 12px;
+  border-radius: 12px;
+  background: var(--civic-r03-paper);
+  border: 1px solid var(--civic-r03-line);
+  font-size: 13.5px;
+}
+.civic-r03-summary dt {
+  color: var(--civic-r03-muted);
+  font-weight: 650;
+}
+.civic-r03-summary dd {
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.civic-r03-shift-chip {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 0 7px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  background: var(--civic-r03-warn-bg);
+  border: 1px solid var(--civic-r03-warn-line);
+  color: var(--civic-r03-warn-ink);
+}
+.civic-r03-tech {
+  margin-top: 8px;
+  font-size: 12.5px;
+}
+.civic-r03-tech > summary {
+  cursor: pointer;
+  min-height: 32px;
+  padding: 6px 0;
+  font-weight: 650;
+  color: var(--civic-r03-green);
+}
+.civic-r03-tech-body p {
+  margin: 0 0 6px;
+  overflow-wrap: anywhere;
+}
+.civic-r03-copy-note {
+  flex-basis: 100%;
+  margin: 4px 0 0;
+  font-size: 12.5px;
+}
 .civic-r03-status-line {
   margin: 0 0 10px;
   font-size: 13px;
