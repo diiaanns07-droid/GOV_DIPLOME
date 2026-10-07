@@ -1172,7 +1172,8 @@
           clfBox.appendChild(useHint);
         }
       } else {
-        clfBox.appendChild(el("span", { className: P + "-muted", text: "AI-подсказка: " + (clf.status_label || CLASSIFIER_STATUS[clf.status] || "нет") + " (" + sourceText + "). Сообщение сохранено, категория жителя не изменена." }));
+        clfBox.appendChild(el("span", { className: P + "-muted", text: "AI-подсказка: " + (clf.status_label || CLASSIFIER_STATUS[clf.status] || "нет") +
+          (clf.source && clf.source !== "disabled" ? " (" + sourceText + ")" : "") + ". Сообщение сохранено, категория жителя не изменена." }));
       }
       detail.appendChild(clfBox);
       if (data.similar && data.similar.length) {

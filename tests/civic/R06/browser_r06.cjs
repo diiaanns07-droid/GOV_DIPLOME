@@ -292,6 +292,11 @@ async function fillForm(page, { category = "sidewalks", text, consent = true, ki
     const firstReceipt = (await p2.locator("#resident-root .civic-r06-receipt-id").innerText()).trim();
     await p2.reload();
     await ready();
+    await p2.selectOption("#target", "object:demo-astana-park-02");
+    // Round 13: после перезагрузки вкладки житель снова видит квитанцию и статус, а не пустую форму.
+    await p2.waitForSelector("#resident-root .civic-r06-receipt .civic-r06-receipt-handling:not(:empty)");
+    check("r13 receipt card restored after reload", (await p2.locator("#resident-root .civic-r06-receipt-id").innerText()).trim() === firstReceipt);
+    await p2.locator("#resident-root button", { hasText: "Написать ещё одно сообщение" }).click();
     await park();
     check("r12 draft cleared after successful send", (await p2.locator("#resident-root textarea").inputValue()) === "");
     // Ответ потерян, автор исправил текст: понятное предупреждение с прежней квитанцией, копия только по явному выбору.
