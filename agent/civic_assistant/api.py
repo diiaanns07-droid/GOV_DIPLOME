@@ -325,6 +325,9 @@ class AssistantEndpoint:
             if not loaded or not isinstance(loaded, (tuple, list)) or len(loaded) != 2:
                 return _ok(unavailable_answer(lang, "object_not_public_or_missing"))
             item, history = loaded
+            if not isinstance(item, dict) or item.get("id") != object_id:
+                # Загрузчик вернул другой объект (ошибка интеграции): ответ про чужую карточку не выдаём.
+                return _ok(unavailable_answer(lang, "object_mismatch"))
             # Раунд 13: ответ о конкретной редакции — только если она всё ещё текущая.
             if revision is not None and isinstance(item, dict) and item.get("revision") != revision:
                 return _ok(stale_revision_answer(lang, object_id, item.get("revision"), item.get("updated_at")))

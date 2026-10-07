@@ -92,8 +92,8 @@ def endpoint(data):
     published = {"r09-synth-full": (data["objects"]["full"], data["history"]["full"])}
 
     def load(object_id):
-        if object_id == "leaky-draft":  # неисправный загрузчик вернул черновик — второй рубеж должен отказать
-            return data["objects"]["draft"], []
+        if object_id == "r09-synth-draft":  # неисправный загрузчик вернул черновик — второй рубеж должен отказать
+            return data["objects"]["draft"], []  # (раунд 13: тот же id, иначе раньше сработает object_mismatch)
         return published.get(object_id)
 
     return AssistantEndpoint(load, lambda sid: RESULT if sid == SID else None,
@@ -147,7 +147,7 @@ def test_draft_and_missing_are_indistinguishable(endpoint):
     a = post(endpoint, {"question": "Что здесь?", "object_id": "r09-synth-draft"})["body"]["data"]
     b = post(endpoint, {"question": "Что здесь?", "object_id": "no-such-object"})["body"]["data"]
     assert a["source"] == b["source"] == "unavailable" and a["text"] == b["text"]
-    leaked = post(endpoint, {"question": "Сколько стоит?", "object_id": "leaky-draft"})["body"]["data"]
+    leaked = post(endpoint, {"question": "Сколько стоит?", "object_id": "r09-synth-draft"})["body"]["data"]
     assert leaked["source"] == "unavailable" and "999" not in leaked["text"] and "Секретный" not in leaked["text"]
     assert leaked["warnings"] == ["object_not_public"]
 
