@@ -695,4 +695,117 @@ describe("R04 editor in the browser (contract mock)", { skip: PW ? false : "play
     assert.equal(rec.geometry_precision, "unknown");
     assert.deepEqual(p.errors, []);
   });
+
+  it("round 12 walkthrough: a half-typed date and typed-but-unapplied coordinates block saving with a message; nothing is lost or sent", async () => {
+    const p = await open();
+    await login(p);
+    await fillDraft(p, { title: "Неполная дата" });
+    await p.click(fk("original_planned_end"));
+    await p.keyboard.type("1215");  // month and day, no year
+    assert.equal(await p.$eval(fk("original_planned_end"), (x) => x.validity.badInput), true);
+    await p.click(fk("save"));
+    assert.match(await errorText(p, "original_planned_end"), /не полностью/);
+    assert.equal(posts("/staff/objects").length, 0, "a partial date is never sent as «unknown»");
+    await p.click(fk("clear-original_planned_end"));
+    // coordinates typed into the specialist panel but not applied
+    await p.check(fk("place-approximate"));
+    await p.click(fk("coords-open"));
+    await p.fill(fk("geometry"), "51.1282");
+    await p.fill(fk("geo-lon"), "71.4304");
+    await p.click(fk("save"));
+    assert.match(await errorText(p, "geometry"), /не применены/);
+    assert.equal(posts("/staff/objects").length, 0);
+    assert.equal(await value(p, "geometry"), "51.1282", "typed text stays");
+    await p.press(fk("geo-lon"), "Enter");
+    await p.check(fk("geometry_confirmed"));
+    await saveOk(p, "Черновик создан");
+    assert.deepEqual(objects()[0].geometry.coordinates, [71.4304, 51.1282]);
+    assert.equal(objects()[0].schedule.original_planned_end, null);
+    assert.deepEqual(p.errors, []);
+  });
+
+  it("round 12 walkthrough: «Выведено» without a source saves as a draft but publishing is stopped with the reason at «Источники»", async () => {
+    const p = await open();
+    await login(p);
+    await fillDraft(p, { title: "Выведено без источника", evidence: "derived" });
+    assert.match(await p.textContent(".civic-r04-sec:has(#" + (await p.getAttribute(fk("evidence_type"), "id")) + ") .civic-r04-warn"), /только с источником/);
+    await saveOk(p, "Черновик создан");
+    await p.click(fk("publish"));
+    await p.waitForSelector('.civic-r04-msg-error:has-text("Публиковать пока нельзя")');
+    assert.equal(await p.$(fk("confirm")), null, "the publish step does not open");
+    assert.match(await p.textContent('[id$="-sources-err"]'), /нужен хотя бы один источник/);
+    await p.click(fk("goto-sources"));
+    assert.equal(await p.evaluate(() => document.activeElement.dataset.fk), "src-add");
+    assert.equal(posts("/staff/objects/obj-1/publish").length, 0);
+    await p.click(fk("src-add"));
+    await p.fill(fk("sources.0.url"), "https://www.gov.kz/memleket/entities/astana/press/news/details/1193903?lang=ru");
+    await saveOk(p, "Сохранено");
+    await p.click(fk("publish"));
+    await p.click(fk("chip-0"));
+    await p.click(fk("confirm"));
+    await p.waitForSelector('.civic-r04-msg-ok:has-text("Опубликовано")');
+  });
+
+  it("round 12 walkthrough: Escape in a field keeps the cabinet open; long text shows a counter; the deadline note says what residents see", async () => {
+    const seeded = await (async () => { H().reset(); return seedPublished(); })();
+    const ctx = await browser.newContext({ viewport: { width: 440, height: 860 } });  // the R01 drawer width
+    const p = await ctx.newPage(); p.errors = []; p.reqs = []; pages.push(p);
+    p.on("pageerror", (e) => p.errors.push(e.message));
+    await p.goto(stand.url + "/"); await p.waitForSelector(fk("login-user"));
+    await login(p);
+    await p.evaluate(() => document.addEventListener("keydown", (e) => { if (e.key === "Escape") window.__escPrevented = e.defaultPrevented; }));
+    await p.click(fk("filter-published"));
+    await p.click(fk("row-" + seeded.id));
+    await p.waitForSelector(fk("current_planned_end"));
+    await p.focus(fk("title"));
+    await p.keyboard.press("Escape");
+    assert.equal(await p.evaluate(() => window.__escPrevented), true, "the R01 shell closes the cabinet only when Escape is not prevented");
+    await p.fill(fk("title"), "Д".repeat(170));
+    assert.equal(await p.textContent(fk("count-title")), "170 / 200");
+    await p.fill(fk("title"), seeded.title);
+    assert.match(await p.textContent(fk("sched-note")), /Жители увидят: окончание 20\.10\.2026/);
+    await p.fill(fk("current_planned_end"), "2026-11-05");
+    assert.match(await p.textContent(fk("sched-note")), /окончание 05\.11\.2026; первоначально обещали 20\.10\.2026 \(перенос на 16 дн\.\)/);
+    assert.match(await p.textContent(fk("sched-change")), /сохранено 20\.10\.2026 → станет 05\.11\.2026.*причину/);
+    const chips = await p.$$eval(".civic-r04-chips button", (b) => b.map((x) => x.textContent));
+    assert.equal(chips.filter((c) => /^Перенос срока/.test(c)).length, 1, "one «Перенос срока» chip: " + chips);
+    await p.click(fk("chip-0"));
+    await p.click(fk("save"));
+    assert.match(await p.textContent("#" + (await p.getAttribute(fk("reason"), "aria-describedby"))), /Допишите причину/);
+    await p.type(fk("reason"), "подрядчик сообщил о задержке поставки");
+    // 440 px drawer: date fields in one column, nothing cut off
+    const m = await p.evaluate(() => {
+      const body = document.querySelector(".civic-r04-body");
+      const a = document.querySelector('[data-fk="original_planned_end"]').getBoundingClientRect();
+      const b = document.querySelector('[data-fk="current_planned_end"]').getBoundingClientRect();
+      const bar = document.querySelector(".civic-r04-actions").getBoundingClientRect();
+      const parts = [...document.querySelectorAll(".civic-r04-actions *")].filter((x) => x.children.length === 0 || x.tagName === "P").map((x) => x.tagName + ":" + Math.round(x.getBoundingClientRect().height) + ":" + (x.textContent || "").slice(0, 40)).join(" | ");
+      return { overflow: body.scrollWidth - body.clientWidth, sameColumn: Math.abs(a.left - b.left) < 2, barH: bar.height, vh: innerHeight, parts };
+    });
+    assert.ok(m.overflow <= 0, "no horizontal overflow at 440 px: " + m.overflow);
+    assert.ok(m.sameColumn, "one column of dates in a 440 px container");
+    assert.ok(m.barH < m.vh * 0.3, "the sticky bar keeps the form visible: " + m.barH + " " + m.parts);
+    await shot(p, "16-reschedule-note-440");
+    await saveOk(p, "Сохранено");
+    await p.click(".civic-r04-history summary");
+    assert.match(await p.textContent(".civic-r04-history"), /Перенос срока: подрядчик сообщил о задержке поставки/);
+    assert.deepEqual(p.errors, []);
+  });
+
+  it("round 12 walkthrough: a cabinet opened before the map is ready enables drawing once the map appears (map getter)", async () => {
+    const p = await open(null, "?latemap=1");
+    await login(p);
+    await fillDraft(p, { title: "Карта позже" });
+    await p.check(fk("place-approximate"));
+    assert.equal(await p.isDisabled(fk("tool-point")), true);
+    await p.evaluate(() => { window.__mapReady = true; });
+    await p.waitForFunction(() => !document.querySelector('[data-fk="tool-point"]').disabled, null, { timeout: 5000 });
+    await p.click(fk("tool-point"));
+    const b = await p.locator("#map").boundingBox();
+    await p.mouse.click(b.x + b.width / 2, b.y + b.height / 2);
+    await p.check(fk("geometry_confirmed"));
+    await saveOk(p, "Черновик создан");
+    assert.equal(objects()[0].geometry.type, "Point");
+    assert.deepEqual(p.errors, []);
+  });
 });

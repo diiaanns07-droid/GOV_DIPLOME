@@ -1,5 +1,6 @@
 /* R04 staff editor UI (round 11, civic-v1).
- * window.CivicEditor.mount({root, map, api, onPublished}) -> {openObject, destroy}
+ * window.CivicEditor.mount({root, map, api, onPublished}) -> {openObject, setMap, destroy}
+ *   map: a MapLibre map, null, or a function returning the map once it is ready (looked up again before drawing).
  *   root        element given to the editor (it owns the children, never document.body);
  *   map         the one shared MapLibre instance, or null (coordinates can then be typed);
  *   api         R01 adapter: api.request(method, path, body) -> Promise<data>; cookies and CSRF are its job;
@@ -85,7 +86,9 @@
 
   function mount(opts) {
     const o = opts || {};
-    const root = o.root, api = o.api, map = o.map || null;
+    const root = o.root, api = o.api;
+    const mapGetter = typeof o.map === "function" ? o.map : null;
+    let map = mapGetter ? null : o.map || null;
     if (!root || root.nodeType !== 1) throw new TypeError("CivicEditor.mount: root element is required");
     if (!api || typeof api.request !== "function") throw new TypeError("CivicEditor.mount: api.request is required");
     const P = "civic-r04-" + ++seq + "-";
@@ -119,6 +122,10 @@
       if (S.tool) { e.preventDefault(); closeTool(); focusKey("tool-point"); }
       else if (S.confirm && !S.busy) { e.preventDefault(); cancelConfirm(); }
       else if (S.logoutAsk) { e.preventDefault(); S.logoutAsk = false; renderHead(); focusKey("logout"); }
+      else if (S.view === "edit" && (S.reauth || S.conflict || S.dup || (e.target && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)))) {
+        e.preventDefault();  // keep the cabinet open; it closes by its button or Escape outside a field
+        say("Escape в поле не закрывает кабинет. Закрыть — кнопкой закрытия или Escape вне поля.");
+      }
     });
     root.replaceChildren(shell);
 
@@ -129,6 +136,22 @@
       if (i >= 0) domListeners.splice(i, 1);
     }
     function onMap(type, fn) { if (!map) return; map.on(type, fn); mapHandlers.push([type, fn]); }
+    // The cabinet may open before the map is ready (R01 passes map=null then): look the map up again lazily.
+    function resolveMap() {
+      if (map || !mapGetter || !S.alive) return map;
+      let m = null;
+      try { m = mapGetter(); } catch (e) { m = null; }
+      if (m && typeof m.on === "function") { map = m; if (S.view === "edit" && S.form) attachMap(); }
+      return map;
+    }
+    function setMap(m) {
+      const next = m && typeof m.on === "function" ? m : null;
+      if (!S.alive || next === map) return;
+      detachMap();
+      for (const [type, fn] of mapHandlers.splice(0)) { try { map.off(type, fn); } catch (e) { /* old map gone */ } }
+      map = next;
+      if (S.view === "edit" && S.form) { attachMap(); renderGeometry(); }
+    }
     function offMap(type, fn) {
       if (!map) return;
       map.off(type, fn);
@@ -396,7 +419,7 @@
       S.saved = clone(S.form);
       S.mirror = !item || (item.publication === "draft" && S.form.current_planned_end === S.form.original_planned_end);
       Object.assign(S, { errors: {}, warnings: {}, server: {}, touched: {}, tried: false, confirm: null, reason: "", reasonErr: null,
-        conflict: null, notice: null, preview: false, publicCopy: null, dup: null, lastDirty: false, alert: null });
+        conflict: null, notice: null, preview: false, publicCopy: null, dup: null, lastDirty: false, alert: null, coordDraft: null });
       S.restore = RECOVERY.get(item ? item.id : "new") || null;
       S.view = "edit";
       renderHead();
@@ -424,7 +447,7 @@
       }, 600);
       timers.add(liveTimer);
     }
-    function isDirty() { return S.view === "edit" && !!S.form && !same(S.form, S.saved); }
+    function isDirty() { return S.view === "edit" && !!S.form && (!same(S.form, S.saved) || !!S.coordDraft); }
     function currentFields() { return C.fieldsFromForm(S.form, { internalNotes: S.internalNotes }); }
     function today() { return C.todayIso(now()); }
 
@@ -438,7 +461,19 @@
       const warn = el("p", { class: "civic-r04-warn", id: id + "-warn" });
       control.setAttribute("aria-describedby", [helpEl && helpEl.id, err.id, warn.id].filter(Boolean).join(" "));
       F[key] = { control, err, warn };
-      return el("div", { class: "civic-r04-field" }, [el("label", { for: id }, label), extra ? el("div", { class: "civic-r04-inline" }, [control, extra]) : control, helpEl, err, warn]);
+      // Length counter (as the server counts) from 80% of the limit: long official names/descriptions are not cut silently.
+      const lim = C.LIMITS[key.split(".").pop()];
+      const count = lim && (control.tagName === "TEXTAREA" || control.type === "text" || control.type === "url") ? el("p", { class: "civic-r04-count", "data-fk": "count-" + key }) : null;
+      if (count) {
+        const upd = () => {
+          const n = C.textLength(control.value);
+          count.textContent = n >= lim * 0.8 ? n + " / " + lim + (n > lim ? " — длиннее на " + (n - lim) : "") : "";
+          count.classList.toggle("civic-r04-count-over", n > lim);
+        };
+        control.addEventListener("input", upd);
+        upd();
+      }
+      return el("div", { class: "civic-r04-field" }, [el("label", { for: id }, label), extra ? el("div", { class: "civic-r04-inline" }, [control, extra]) : control, count, helpEl, err, warn]);
     }
     function input(key, attrs) {
       const x = el("input", Object.assign({ type: "text", autocomplete: "off" }, attrs || {}));
@@ -465,6 +500,9 @@
     function dateField(key, label, help, readonly) {
       const x = input(key, { type: "date", min: "1990-01-01", max: "2100-12-31", readonly: !!readonly, "aria-readonly": readonly ? "true" : null });
       const clear = readonly ? null : btn("× неизвестно", () => { x.value = ""; S.form[key] = ""; changed(key); x.focus(); }, "mini", "clear-" + key, { "aria-label": "Очистить: " + label + " (неизвестно)" });
+      // A half-typed date gives value "" (validity.badInput): re-check on every key so it is never saved as «unknown».
+      x.addEventListener("keyup", () => revalidate());
+      x.addEventListener("blur", () => revalidate());
       return field(key, label, x, help, clear);
     }
     function section(title, kids, cls) {
@@ -474,7 +512,7 @@
     function buildEditor() {
       const it = S.item, acts = C.allowedActions(it, S.session), locked = C.isOriginalLocked(it);
       for (const k of Object.keys(F)) delete F[k];
-      for (const k of ["reauth", "restore", "conflict", "geom", "sources", "diff", "reason", "buttons", "msg", "preview", "history"]) V[k] = el("div", { class: "civic-r04-slot-" + k });
+      for (const k of ["reauth", "restore", "conflict", "geom", "sources", "sched", "diff", "reason", "buttons", "msg", "preview", "history"]) V[k] = el("div", { class: "civic-r04-slot-" + k });
       V.msg.setAttribute("class", "civic-r04-slot-msg");
       const meta = it
         ? el("p", { class: "civic-r04-meta" }, [badge(C.PUBLICATION[it.publication] || String(it.publication), "pub-" + it.publication),
@@ -505,6 +543,7 @@
             locked ? "Перенос опубликованного срока сохраняется в истории вместе с причиной." : "Пока даты совпадают, поле повторяет первоначальное; измените его, если срок уже перенесён."),
           dateField("actual_end", "Фактически завершено", "Только при статусе «Завершено» и только по факту. Будущая дата не принимается."),
         ]),
+        V.sched,
       ]);
       const sec2 = section("2. Место на карте", [V.geom]);
       const amountCtl = input("amount", { inputmode: "decimal", placeholder: "неизвестно" });
@@ -544,13 +583,15 @@
       const form = el("form", { class: "civic-r04-form", novalidate: true, "aria-labelledby": P + "edit-h" }, [
         el("fieldset", { class: "civic-r04-plain", disabled: ro }, [sec1, sec2, sec3, sec4, sec5])]);
       form.addEventListener("submit", (e) => { e.preventDefault(); save(); });
-      const actions = el("div", { class: "civic-r04-actions", role: "region", "aria-label": "Сохранение и публикация" }, [V.diff, V.reason, V.msg, V.buttons]);
+      // Diff and reason sit in the page flow; the sticky bar keeps only messages and buttons, so it never hides the form.
+      const review = el("div", { class: "civic-r04-review" }, [V.diff, V.reason]);
+      const actions = el("div", { class: "civic-r04-actions", role: "region", "aria-label": "Сохранение и публикация" }, [V.buttons, V.msg]);  // buttons first: always reachable in a capped bar
       body.replaceChildren(el("div", { class: "civic-r04-edit" }, [
         el("div", { class: "civic-r04-bar" }, [
           btn("← Все записи", () => showList(true), "link", "back"),
           el("h3", { id: P + "edit-h", tabindex: "-1", "data-fk": "edit-h" }, it ? it.title || "(без названия)" : "Новый объект"), meta]),
-        V.reauth, V.restore, V.conflict, banner, form, V.preview, V.history, actions].filter(Boolean)));
-      renderGeometry(); renderSources(); renderReauth(); renderRestore(); renderConflict(); renderPreview(); renderHistory();
+        V.reauth, V.restore, V.conflict, banner, form, V.preview, V.history, review, actions].filter(Boolean)));
+      renderGeometry(); renderSources(); renderSchedNote(); renderReauth(); renderRestore(); renderConflict(); renderPreview(); renderHistory();
       renderDiff(); renderReason(); renderButtons();
       V.msg.replaceChildren(...[msgBlock(S.notice)].filter(Boolean));
       revalidate();
@@ -566,12 +607,19 @@
         delete S.server.current_planned_end;
       }
       if (/^sources\.\d+\.(url|publisher)$/.test(key)) renderBudgetSourceOptions();
+      if (key === "evidence_type") delete S.server.sources;
+      if (/planned|actual_end/.test(key)) renderSchedNote();
       revalidate();
       refreshDirty();
     }
+    function partialDates() {
+      return Object.keys(F).filter((k) => { const c = F[k].control; return c && c.type === "date" && c.validity && c.validity.badInput; });
+    }
     function revalidate() {
       if (!S.form) return;
-      const r = C.validateForm(S.form, { today: today(), item: S.item });
+      const r = C.validateForm(S.form, { today: today(), item: S.item, partialDates: partialDates() });
+      if (S.coordDraft && placeNow() !== "unknown")  // more precise than "no mark yet": the user did type a point
+        r.errors.geometry = "Координаты введены, но не применены — нажмите «Применить координаты» (или Enter) либо очистите оба поля.";
       S.errors = r.errors;
       S.warnings = r.warnings;
       paintErrors();
@@ -584,6 +632,12 @@
         f.warn.textContent = msg ? "" : S.warnings[k] || "";
         if (f.control) { if (msg) f.control.setAttribute("aria-invalid", "true"); else f.control.removeAttribute("aria-invalid"); }
       }
+    }
+    function renderSchedNote() {
+      if (!V.sched || !S.form) return;
+      const n = C.scheduleNote(S.form, S.item);
+      V.sched.replaceChildren(el("p", { class: "civic-r04-note", "data-fk": "sched-note" }, n.resident),
+        ...(n.change ? [el("p", { class: "civic-r04-note civic-r04-note-change", "data-fk": "sched-change" }, n.change)] : []));
     }
     function refreshDirty() {
       scheduleLiveStash();
@@ -607,8 +661,19 @@
       if (v === "unknown") closeTool();
       renderGeometry(); syncMap(); revalidate(); refreshDirty();
     }
+    let mapWait = null;
+    function waitForMap() {  // with a map getter: enable drawing as soon as the map is ready, no reopen needed
+      if (mapWait || map || !mapGetter) return;
+      mapWait = setTimeout(() => {
+        timers.delete(mapWait); mapWait = null;
+        if (!S.alive || S.view !== "edit") return;
+        if (resolveMap()) renderGeometry(); else waitForMap();
+      }, 1000);
+      timers.add(mapWait);
+    }
     function renderGeometry() {
       if (!V.geom) return;
+      if (!resolveMap()) waitForMap();
       const g = S.form.geometry, t = S.tool, ro = !C.allowedActions(S.item, S.session).edit, place = placeNow();
       delete F.geometry; delete F.geometry_precision; delete F.geometry_confirmed; delete F.place;
       const kids = [];
@@ -654,13 +719,22 @@
       const pt = g && g.type === "Point" ? g.coordinates : null;
       const lat = el("input", { type: "text", inputmode: "decimal", autocomplete: "off", id: P + "lat", "data-fk": "geometry", placeholder: "51.12825" });
       const lon = el("input", { type: "text", inputmode: "decimal", autocomplete: "off", id: P + "lon", "data-fk": "geo-lon", placeholder: "71.43042" });
-      lat.value = pt ? String(pt[1]) : "";
-      lon.value = pt ? String(pt[0]) : "";
+      lat.value = S.coordDraft ? S.coordDraft.lat : pt ? String(pt[1]) : "";
+      lon.value = S.coordDraft ? S.coordDraft.lon : pt ? String(pt[0]) : "";
+      const draft = () => {
+        const a = lat.value.trim(), b = lon.value.trim();
+        const unchanged = pt ? a === String(pt[1]) && b === String(pt[0]) : !a && !b;
+        S.coordDraft = unchanged ? null : { lat: lat.value, lon: lon.value };
+        revalidate(); refreshDirty();
+      };
+      lat.addEventListener("input", draft); lon.addEventListener("input", draft);
       const err = el("p", { class: "civic-r04-err", id: P + "geo-err" }), warn = el("p", { class: "civic-r04-warn" });
       lat.setAttribute("aria-describedby", err.id); lon.setAttribute("aria-describedby", err.id);
       const apply = () => {
         const la = C.parseCoord(lat.value), lo = C.parseCoord(lon.value);
         if (!Number.isFinite(la) || !Number.isFinite(lo)) { S.server.geometry = "Введите числа: широта ≈ 51.1, долгота ≈ 71.4 (точка или запятая)."; paintErrors(); lat.focus(); return; }
+        if (!C.inAstana(round6(lo), round6(la))) { S.server.geometry = "Точка вне Астаны: проверьте, не перепутаны ли широта (≈ 51) и долгота (≈ 71)."; paintErrors(); lat.focus(); return; }
+        S.coordDraft = null;
         setGeometry({ type: "Point", coordinates: [round6(lo), round6(la)] });
         say("Точка задана координатами. Подтвердите расположение.");
         focusKey("geometry_confirmed");
@@ -695,6 +769,7 @@
       paintErrors();
     }
     function setGeometry(g) {
+      S.coordDraft = null;  // a map click or «Удалить отметку» replaces whatever was typed
       S.form.geometry = g;
       S.form.geometry_confirmed = false;
       if (g && placeNow() === "unknown") S.form.place = "approximate";
@@ -748,10 +823,13 @@
       } catch (e) { /* map already removed by its owner */ }
     }
     function startTool(mode) {
+      resolveMap();
       if (!map || S.busy || !C.allowedActions(S.item, S.session).edit) return;
       closeTool();
       if (placeNow() === "unknown") S.form.place = "approximate";
-      S.tool = { mode, vertices: [], problem: null };
+      S.tool = { mode, vertices: [], problem: null, dblZoom: false };
+      // A double click while drawing must not zoom the map (and must not add a zero-length segment).
+      try { if (map.doubleClickZoom && map.doubleClickZoom.isEnabled()) { map.doubleClickZoom.disable(); S.tool.dblZoom = true; } } catch (e) { /* optional API */ }
       try { S.cursor = map.getCanvas().style.cursor; map.getCanvas().style.cursor = "crosshair"; } catch (e) { S.cursor = ""; }
       onMap("click", onMapClick);
       onDom(document, "keydown", onToolKey);
@@ -800,6 +878,7 @@
     }
     function closeTool(quiet) {
       if (!S.tool) return;
+      if (S.tool.dblZoom) { try { map.doubleClickZoom.enable(); } catch (e) { /* map gone */ } }
       S.tool = null;
       offMap("click", onMapClick);
       offDom(document, "keydown", onToolKey);
@@ -859,12 +938,17 @@
           el("p", { class: "civic-r04-row-btns" }, [btn("Удалить источник " + (i + 1), () => removeSource(i), "danger", "src-del-" + i)]),
         ]);
       });
-      kids.push(el("p", { class: "civic-r04-row-btns" }, [btn("+ Добавить источник", addSource, "", "src-add")]));
+      const addBtn = btn("+ Добавить источник", addSource, "", "src-add");
+      const se = el("p", { class: "civic-r04-err", id: P + "sources-err", role: "alert" }), sw = el("p", { class: "civic-r04-warn" });
+      addBtn.setAttribute("aria-describedby", se.id);
+      F.sources = { control: addBtn, err: se, warn: sw };  // R02 reports "source_refs" (e.g. no source for publication) here
+      kids.push(se, sw, el("p", { class: "civic-r04-row-btns" }, [addBtn]));
       rebuild(V.sources, kids);
       renderBudgetSourceOptions();
       paintErrors();
     }
     function addSource() {
+      delete S.server.sources;
       S.form.sources.push(C.newSource(S.form.sources));
       renderSources(); revalidate(); refreshDirty();
       focusKey("sources." + (S.form.sources.length - 1) + ".url");
@@ -946,8 +1030,15 @@
         L.publication !== (S.item && S.item.publication) ? el("p", {}, "Состояние публикации теперь: " + (C.PUBLICATION[L.publication] || L.publication) + ".") : null,
         el("p", { class: "civic-r04-row-btns" }, [
           c.rebase.kept.length ? btn("Перенести мои правки на новую версию", applyRebase, "primary", "rebase") : null,
-          btn(c.rebase.kept.length ? "Отказаться от моих правок" : "Открыть новую версию", () => { S.conflict = null; dropRecovery(L.id); openEditor(L, c.history); setNotice("info", "Открыта актуальная версия ред. " + L.revision + "."); }, "ghost", "rebase-drop"),
+          c.dropAsk ? null : btn(c.rebase.kept.length ? "Отказаться от моих правок…" : "Открыть новую версию", () => {
+            if (c.rebase.kept.length) { c.dropAsk = true; renderConflict(); focusKey("rebase-drop-yes"); return; }
+            S.conflict = null; dropRecovery(L.id); openEditor(L, c.history); setNotice("info", "Открыта актуальная версия ред. " + L.revision + ".");
+          }, "ghost", "rebase-drop"),
         ].filter(Boolean)),
+        c.dropAsk ? el("p", { class: "civic-r04-row-btns" }, [
+          el("span", {}, "Ваши правки (" + names(c.rebase.kept) + ") будут потеряны. Точно?"),
+          btn("Да, открыть версию сервера", () => { S.conflict = null; dropRecovery(L.id); openEditor(L, c.history); setNotice("info", "Ваши правки отброшены. Открыта актуальная версия ред. " + L.revision + "."); }, "danger", "rebase-drop-yes"),
+          btn("Нет, вернуться", () => { c.dropAsk = false; renderConflict(); focusKey("rebase"); }, "ghost", "rebase-drop-no")]) : null,
       ].filter(Boolean)));
     }
     function applyRebase() {
@@ -957,6 +1048,7 @@
       S.item = c.latest;
       S.history = c.history || [];
       S.saved = C.formFromItem(c.latest);
+      renderButtons();
       S.form = c.rebase.form;
       S.mirror = false;
       S.server = {};
@@ -1071,6 +1163,9 @@
             + (typeof x.is_public === "boolean" ? (x.is_public ? " · видно жителям" : " · только редакторам") : "")),
           el("p", {}, "Причина: " + (x.reason || "не указана")),
           (x.changed_fields || []).length ? el("p", { class: "civic-r04-muted" }, "Поля: " + x.changed_fields.map((f) => HISTORY_LABEL[f] || f).join(", ")) : null,
+          ...(x.action === "create" || x.action === "import_create" || !x.diff || typeof x.diff !== "object" ? [] : Object.keys(x.diff)
+            .filter((k) => /^schedule\.|^status$|^budget\.amount_kzt$|^geometry_precision$/.test(k) && x.diff[k] && typeof x.diff[k] === "object")
+            .map((k) => el("p", { class: "civic-r04-hist-change" }, (HISTORY_LABEL[k] || k) + ": было " + C.fmtValue(k, x.diff[k].before) + " → стало " + C.fmtValue(k, x.diff[k].after)))),
         ].filter(Boolean)))) : el("p", { class: "civic-r04-muted" }, "Записей истории пока нет."),
       ]));
     }
@@ -1106,14 +1201,20 @@
       const err = el("p", { class: "civic-r04-err", id: P + "reason-err" }, S.reasonErr || "");
       if (S.reasonErr) ta.setAttribute("aria-invalid", "true");
       const shifted = S.item && isDirty() && C.diffFields(S.item, currentFields()).some((x) => x.path === "schedule.current_planned_end");
-      const chips = (shifted ? ["Перенос срока: "] : []).concat(rule.suggestions || []).filter((v, i, a) => a.indexOf(v) === i);
+      const chips = (shifted ? ["Перенос срока: "] : []).concat((rule.suggestions || []).filter((v) => !(shifted && /^Перенос срока/.test(v))))
+        .filter((v, i, a) => a.indexOf(v) === i);
       const oe = S.form.original_planned_end, ce = S.form.current_planned_end;
       const fixed = oe ? "Первоначальный срок окончания будет зафиксирован: " + C.fmtDate(oe) + "."
         : ce ? "Первоначальный срок не указан — сервер зафиксирует как первоначальный актуальный срок " + C.fmtDate(ce) + "."
         : "Сроки неизвестны — в карточке будет «неизвестно».";
-      const intro = S.confirm === "publish"
-        ? "После публикации запись увидят жители" + (S.form.geometry ? " на карте" : " в списке (без точки на карте)") + ". " + fixed
+      const pend = S.item ? C.pendingInfo(S.item) : { known: false };
+      const republish = S.item && S.item.publication === "published";
+      const intro = S.confirm === "publish" && republish
+        ? "Жители сейчас видят прежнюю версию. После подтверждения они увидят изменения из таблицы ниже; причина попадёт в публичную историю."
+        : S.confirm === "publish"
+        ? "После публикации запись увидят жители" + (currentFields().geometry ? " на карте" : " в списке (без точки на карте)") + ". " + fixed
         : S.confirm === "archive" ? "Запись исчезнет из публичного списка. Физического удаления нет — история сохраняется."
+        : pend.known ? "Запись опубликована. Причина останется в служебной истории; жители увидят правки после «Опубликовать изменения…»."
         : "Запись опубликована: причину увидят в истории изменений.";
       const kids = [
         S.confirm ? el("h4", { id: P + "confirm-h" }, S.confirm === "publish" ? "Публикация" : "Перенос в архив") : null,
@@ -1129,7 +1230,7 @@
     }
     function renderButtons() {
       if (!V.buttons || S.view !== "edit") return;
-      const it = S.item, acts = C.allowedActions(it, S.session), dirty = isDirty(), busy = !!S.busy || S.reauth;
+      const it = S.item, acts = C.allowedActions(it, S.session), dirty = isDirty(), busy = !!S.busy || S.reauth || !!S.conflict;
       let kids;
       if (S.confirm) {
         kids = [btn(S.busy === S.confirm ? "Отправляем…" : S.confirm === "publish" ? "Подтвердить публикацию" : "Перенести в архив", () => doTransition(S.confirm), S.confirm === "publish" ? "primary" : "danger", "confirm", { disabled: busy, "aria-busy": S.busy ? "true" : null }),
@@ -1139,10 +1240,12 @@
         kids = [
           acts.edit ? btn(saveLabel, save, "primary", "save", { disabled: busy || (it && !dirty), "aria-busy": S.busy === "save" ? "true" : null }) : null,
           btn(S.preview ? "Скрыть предпросмотр" : "Как увидят жители", () => { S.preview = !S.preview; renderPreview(); renderButtons(); focusKey("preview"); }, "", "preview", { "aria-expanded": String(!!S.preview) }),
-          acts.publish && it ? btn(it.publication === "published" ? "Опубликовать изменения…" : "Опубликовать…", () => askConfirm("publish"), "", "publish", { disabled: busy || dirty }) : null,
-          acts.archive && it ? btn("В архив…", () => askConfirm("archive"), "ghost", "archive", { disabled: busy || dirty }) : null,
+          // with unsaved edits these are hidden (not just disabled): the line below explains, and the sticky bar stays short
+          acts.publish && it && !dirty ? btn(it.publication === "published" ? "Опубликовать изменения…" : "Опубликовать…", () => askConfirm("publish"), "", "publish", { disabled: busy }) : null,
+          acts.archive && it && !dirty ? btn("В архив…", () => askConfirm("archive"), "ghost", "archive", { disabled: busy }) : null,
         ].filter(Boolean);
-        if (dirty && it && (acts.publish || acts.archive)) kids.push(el("p", { class: "civic-r04-help" }, "Публикация и архив доступны после сохранения изменений."));
+        if (S.conflict) kids.push(el("p", { class: "civic-r04-help" }, "Сначала выберите вариант в блоке «Запись уже изменена» выше."));
+        else if (dirty && it && (acts.publish || acts.archive)) kids.push(el("p", { class: "civic-r04-help" }, "Публикация и архив доступны после сохранения изменений."));
       }
       rebuild(V.buttons, [el("div", { class: "civic-r04-row-btns" }, kids)]);
     }
@@ -1153,6 +1256,16 @@
     }
     function askConfirm(action) {
       if (S.busy || isDirty() || !S.item) return;
+      if (action === "publish") {
+        const pp = C.publishProblems(currentFields());
+        if (Object.keys(pp).length) {
+          Object.assign(S.server, pp);
+          paintErrors();
+          setNotice("error", "Публиковать пока нельзя. " + Object.values(pp).join(" "), [{ label: "К источникам", fk: "goto-sources", cls: "link", fn: () => focusField("sources") }]);
+          focusKey("msg");
+          return;
+        }
+      }
       S.confirm = action; S.reason = ""; S.reasonErr = null;
       renderPreview(); renderReason(); renderButtons();
       focusKey("reason");
@@ -1324,7 +1437,9 @@
         S.server = {};
         for (const [k, m] of Object.entries(n.fields)) { if (k === "reason") S.reasonErr = m; else if (k !== "_form") S.server[k] = m; }
         paintErrors(); renderReason();
-        setNotice("error", { text: n.text, detail: n.fields._form || n.detail });
+        const lost = Object.entries(S.server).filter(([k]) => !F[k]).map(([k, m]) => (FORM_LABEL[k] || FORM_LABEL[k.split(".")[0]] || k) + ": " + m);
+        const shown = Object.keys(S.server).some((k) => F[k]) || !!S.reasonErr;
+        setNotice("error", { text: shown ? n.text : "Сервер не принял запись. Причина:", detail: [n.fields._form].concat(lost).filter(Boolean).join(" ") || n.detail });
         const k = firstErrorKey();
         if (k) focusField(k); else if (S.reasonErr) focusKey("reason"); else focusKey("msg");
         return;
@@ -1411,6 +1526,7 @@
 
     return {
       openObject: (id) => openObject(id),
+      setMap,
       destroy,
     };
   }

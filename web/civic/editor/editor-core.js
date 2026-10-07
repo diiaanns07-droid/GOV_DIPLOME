@@ -41,9 +41,15 @@
   // Top-level paths a source can support (contract: source_refs[].fields).
   const SOURCE_FIELDS = { status: "Статус", schedule: "Сроки", geometry: "Место", budget: "Стоимость", responsible: "Ответственный", description: "Описание" };
   // Generous frame around Astana (WGS84 lon/lat). Round 11 covers Astana only.
-  const ASTANA_BBOX = [70.9, 50.9, 72.0, 51.4];
-  const LIMITS = { title: 200, description: 5000, evidence_notes: 2000, internal_notes: 2000, organization: 200, public_contact: 200,
-    reason: 500, url: 2000, publisher: 200, license: 100, maxAmount: 1e13 };
+  const ASTANA_BBOX = [70.8, 50.75, 72.1, 51.6];  // = R02 validate.py ASTANA_BBOX
+  // = R02 validate.py MAX_TEXT / MAX_URL: a stricter client limit would block saving values the server already holds.
+  const LIMITS = { title: 200, description: 5000, evidence_notes: 2000, internal_notes: 5000, organization: 300, public_contact: 200,
+    reason: 1000, url: 2000, publisher: 300, license: 200, maxAmount: 1e13 };
+  // Length as the server counts it: code points after CRLF->LF, NFC and trim (not JS UTF-16 units).
+  function textLength(v) {
+    const t = str(v).replace(/\r\n?/g, "\n");
+    return Array.from(t.normalize ? t.normalize("NFC").trim() : t.trim()).length;
+  }
   const REASON_MIN = 5;
 
   // Public object fields (allowlist). Anything else (internal_notes, created_by, actor, tokens) never reaches the preview.
@@ -215,7 +221,7 @@
       })),
       evidence_notes: str(form.evidence_notes).trim(),
     };
-    if (o.internalNotes) out.internal_notes = blankToNull(form.internal_notes);
+    if (o.internalNotes) out.internal_notes = str(form.internal_notes).trim();  // R02 stores "" (never null)
     return out;
   }
 
@@ -232,7 +238,8 @@
     const text = (k, max, required) => {
       const v = str(form[k]).trim();
       if (required && !v) return err(k, "Обязательное поле.");
-      if (v.length > max) return err(k, "Слишком длинно: " + v.length + " из " + max + " символов.");
+      const n = textLength(v);
+      if (n > max) return err(k, "Слишком длинно: " + n + " из " + max + " символов. Сократите на " + (n - max) + ".");
       if (v && !isPlain(v)) err(k, "Только обычный текст, без HTML-разметки.");
     };
     text("title", LIMITS.title, true);
@@ -246,20 +253,22 @@
 
     // dates: empty = unknown; never replaced by today
     const D = ["planned_start", "original_planned_end", "current_planned_end", "actual_end"];
+    const partial = c.partialDates || [];
     for (const k of D) {
       const v = str(form[k]).trim();
+      if (!v && partial.includes(k)) { err(k, "Дата введена не полностью — допишите день, месяц и год или нажмите «× неизвестно»."); continue; }
       if (!v) continue;
       if (!isIsoDate(v)) err(k, "Дата в формате ГГГГ-ММ-ДД, например 2026-10-14.");
       else if (v < "1990-01-01" || v > "2100-12-31") err(k, "Проверьте год.");
     }
     const ds = (k) => (errors[k] ? "" : str(form[k]).trim());
     const ps = ds("planned_start"), oe = ds("original_planned_end"), ce = ds("current_planned_end"), ae = ds("actual_end");
-    if (ps && oe && oe < ps) err("original_planned_end", "Окончание раньше планового начала (" + fmtDate(ps) + ").");
+    if (ps && oe && oe < ps && !locked) err("original_planned_end", "Окончание раньше планового начала (" + fmtDate(ps) + ").");
     if (ps && ce && ce < ps) err("current_planned_end", "Окончание раньше планового начала (" + fmtDate(ps) + ").");
     if (ae) {
       if (form.status !== "completed") err("actual_end", "Дата фактического завершения указывается только при статусе «Завершено». Иначе оставьте пустым.");
       else if (ae > today) err("actual_end", "Фактическое завершение не может быть в будущем.");
-      else if (ps && ae < ps) warnings.actual_end = "Завершено раньше планового начала — проверьте даты.";
+      else if (ps && ae < ps) err("actual_end", "Завершено раньше планового начала (" + fmtDate(ps) + ") — проверьте даты.");
     } else if (form.status === "completed") {
       warnings.actual_end = "Дата фактического завершения неизвестна — жители увидят «неизвестно».";
     }
@@ -268,6 +277,10 @@
       if (str(form.original_planned_end).trim() !== was) err("original_planned_end", "Первоначальный срок зафиксирован при первой публикации и не меняется. Меняйте актуальный срок.");
     }
     if (oe && !ce && !errors.original_planned_end) warnings.current_planned_end = "Актуальный срок пуст — жители увидят «неизвестно».";
+    else if (ce && ce < today && (form.status === "planned" || form.status === "in_progress") && !errors.current_planned_end)
+      warnings.current_planned_end = "Срок " + fmtDate(ce) + " уже прошёл, а статус «" + STATUSES[form.status] + "». Если работы продолжаются — перенесите срок и укажите причину; если закончены — смените статус.";
+    if (ps && ps > today && form.status === "in_progress" && !errors.planned_start)
+      warnings.planned_start = "Статус «" + STATUSES.in_progress + "», но начало только " + fmtDate(ps) + ". Проверьте статус или дату.";
 
     // place
     const place = form.place || placeOf(form.geometry, form.geometry_precision);
@@ -292,7 +305,8 @@
       if (amount > LIMITS.maxAmount) err("amount", "Проверьте сумму: слишком большое число.");
       if (form.basis === "unknown" || !has(BASIS, form.basis)) err("basis", "Укажите, что означает сумма: смета, контракт или израсходовано.");
       if (!form.budget_source_id) err("budget_source_id", "Сумма без источника не сохраняется. Добавьте источник ниже или оставьте сумму пустой — будет «неизвестно».");
-      if (amount === 0 && !errors.amount) warnings.amount = "Будет показано «0 ₸», а не «неизвестно». Если сумма неизвестна — оставьте поле пустым.";
+      if (amount !== null && !Number.isNaN(amount) && form.evidence_type === "synthetic") err("amount", "У синтетической (демо) записи не может быть суммы в тенге — оставьте поле пустым.");
+    if (amount === 0 && !errors.amount) warnings.amount = "Будет показано «0 ₸», а не «неизвестно». Если сумма неизвестна — оставьте поле пустым.";
     } else if (form.basis && form.basis !== "unknown") {
       err("amount", "Основание выбрано, а сумма пуста. Введите сумму или выберите «Неизвестно».");
     }
@@ -300,7 +314,8 @@
 
     // provenance
     if (!has(EVIDENCE, form.evidence_type)) err("evidence_type", "Выберите, насколько сведения подтверждены.");
-    else if (form.evidence_type === "observed" && !(form.sources || []).length) err("evidence_type", "«Наблюдаемо» требует хотя бы один источник. Иначе выберите «Предположение».");
+    else if (NEEDS_SOURCE.includes(form.evidence_type) && !(form.sources || []).length)
+      warnings.evidence_type = "Черновик сохранится, но опубликовать «" + EVIDENCE[form.evidence_type].split(" — ")[0] + "» можно только с источником. Добавьте источник ниже или выберите «Предположение».";
     (form.sources || []).forEach((s, i) => {
       const k = (f) => "sources." + i + "." + f;
       const url = str(s.url).trim();
@@ -317,6 +332,7 @@
         else if (v && v > today) err(k(f), "Дата не может быть в будущем.");
       }
       if (!has(ACCESS, s.access_status)) err(k("access_status"), "Выберите состояние доступа.");
+      else if (s.access_status === "fetched" && !str(s.retrieved_at).trim() && !errors[k("retrieved_at")]) err(k("retrieved_at"), "Источник отмечен как открытый — укажите, когда вы его открыли.");
       if (str(s.publisher).length > LIMITS.publisher) err(k("publisher"), "Слишком длинно.");
       if (str(s.license).length > LIMITS.license) err(k("license"), "Слишком длинно.");
       if (s.publisher && !isPlain(str(s.publisher))) err(k("publisher"), "Только обычный текст.");
@@ -393,7 +409,8 @@
   function validateReason(text) {
     const v = str(text).trim();
     if (v.length < REASON_MIN) return "Опишите причину изменения (минимум " + REASON_MIN + " символов). Её увидят в истории.";
-    if (v.length > LIMITS.reason) return "Слишком длинно: " + v.length + " из " + LIMITS.reason + " символов.";
+    if (/:\s*$/.test(v)) return "Допишите причину после двоеточия: например, «подрядчик сообщил о задержке поставки».";
+    if (textLength(v) > LIMITS.reason) return "Слишком длинно: " + textLength(v) + " из " + LIMITS.reason + " символов.";
     if (!isPlain(v)) return "Только обычный текст, без HTML-разметки.";
     return null;
   }
@@ -510,6 +527,31 @@
     return null;
   }
 
+  // Checks R02 makes only at publication (validate_for_publication): shown before the publish step opens.
+  const NEEDS_SOURCE = ["observed", "derived"];
+  function publishProblems(fields) {
+    const out = {};
+    if (NEEDS_SOURCE.includes(fields.evidence_type) && !(fields.source_refs || []).length)
+      out.sources = "Для публикации «" + EVIDENCE[fields.evidence_type].split(" — ")[0] + "» нужен хотя бы один источник. Добавьте его в разделе «Источники» или выберите «Предположение».";
+    return out;
+  }
+  // Plain-language explanation of the deadline under the date fields: what residents see and what this edit changes.
+  function scheduleNote(form, item, today) {
+    const oe = str(form.original_planned_end).trim(), ce = str(form.current_planned_end).trim();
+    const was = item && item.schedule ? item.schedule.current_planned_end || "" : null;
+    const days = (a, b) => Math.round((Date.parse(b) - Date.parse(a)) / 86400000);
+    let resident;
+    if (!oe && !ce) resident = "Жители увидят: срок окончания неизвестен.";
+    else if (oe && ce && oe !== ce && isIsoDate(oe) && isIsoDate(ce)) {
+      const d = days(oe, ce);
+      resident = "Жители увидят: окончание " + fmtDate(ce) + "; первоначально обещали " + fmtDate(oe) + " (" + (d > 0 ? "перенос на " + d + " дн." : "раньше на " + -d + " дн.") + ").";
+    } else resident = "Жители увидят: окончание " + fmtDate(ce || oe) + ".";
+    const change = item && was !== null && was !== ce
+      ? "Вы меняете актуальный срок: сохранено " + fmtDate(was) + " → станет " + fmtDate(ce) + "." + (item.publication !== "draft" ? " Укажите причину внизу — без неё сохранить нельзя." : "")
+      : null;
+    return { resident, change };
+  }
+
   // ---------- API results and errors ----------
   // api.request resolves with data (R01). Tolerate a raw envelope too, and turn {ok:false} into a thrown error.
   function unwrap(result) {
@@ -536,6 +578,7 @@
     auth: "Сессия истекла или вы вышли. Войдите снова — введённый текст сохранён в форме.",
     csrf: "Сервер отклонил запрос как небезопасный (проверка CSRF/Origin). Обновите сессию входом и повторите.",
     forbidden: "Недостаточно прав на это действие. Решение принимает сервер.",
+    host: "Сервер принимает запросы только с собственного адреса. Откройте кабинет по адресу этого сервера (например, http://127.0.0.1:8611/).",
     not_found: "Запись не найдена или недоступна.",
     conflict: "Запись уже изменил кто-то другой. Ваши правки не потеряны — сравните версии ниже.",
     transition: "Это действие недоступно для текущего состояния записи.",
@@ -555,7 +598,7 @@
     // status 0/absent: transport failure (R01 CivicApiError codes network/timeout/aborted, raw fetch TypeError).
     if (!status && (["network", "timeout", "aborted"].includes(code) || x.name === "TypeError" || x.name === "AbortError" || /network|failed to fetch|load failed/i.test(String(x.message || "")))) kind = "network";
     else if (status === 401 || code === "unauthenticated") kind = "auth";
-    else if (status === 403) kind = code === "csrf" || code === "origin" ? "csrf" : "forbidden";
+    else if (status === 403) kind = ["csrf", "origin", "csrf_failed", "cross_origin"].includes(code) ? "csrf" : code === "forbidden_host" ? "host" : "forbidden";
     else if (status === 404) kind = "not_found";
     else if (status === 409) kind = code === "invalid_transition" ? "transition" : "conflict";
     else if (status === 400 || status === 422) kind = "validation";
@@ -602,10 +645,16 @@
   }
 
   // After an uncertain create (connection lost), look for the draft the server may already have made.
+  // Exact title+kind first; otherwise (the user edited the title after the lost answer) a first-revision draft created
+  // since the uncertain attempt with the same kind, evidence type and description. The user decides in the duplicate
+  // panel ("это другой объект"); nothing is merged automatically.
   function findPossibleDuplicate(items, fields, sinceIso) {
     const since = sinceIso ? Date.parse(sinceIso) : 0;
-    return (items || []).find((it) => it && it.publication === "draft" && str(it.title).trim() === str(fields.title).trim() && it.kind === fields.kind
-      && (!since || !it.updated_at || Date.parse(it.updated_at) >= since)) || null;
+    const recent = (it) => it && it.publication === "draft" && (!since || !it.updated_at || Date.parse(it.updated_at) >= since);
+    const list = (items || []).filter(recent);
+    return list.find((it) => str(it.title).trim() === str(fields.title).trim() && it.kind === fields.kind)
+      || (since ? list.find((it) => it.kind === fields.kind && it.revision === 1 && it.evidence_type === fields.evidence_type
+        && str(it.description).trim() === str(fields.description).trim()) : null) || null;
   }
 
   return {
@@ -615,6 +664,7 @@
     emptyForm, formFromItem, newSource, fieldsFromForm, validateForm, validateReason,
     allowedActions, isOriginalLocked, pendingInfo, reasonRule, diffFields, buildChanges, fmtValue,
     pickPublic, previewFromForm, scheduleShift, unwrap, normalizeError, fieldKeyFromPath, findPossibleDuplicate,
+    publishProblems, scheduleNote, textLength, NEEDS_SOURCE,
     rebaseForm, fmtDateTime,
   };
 });

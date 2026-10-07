@@ -1,5 +1,6 @@
 /* R04 test stand: what R01 is expected to provide — api.request with cookies + X-CSRF-Token, one map, a root element.
- * ?nomap=1 mounts without a map. Counters of map listeners let tests check that destroy/close remove them.
+ * ?nomap=1 mounts without a map. ?latemap=1 passes a getter that returns the map only after window.__mapReady = true
+ * (as R01 currentMap() does before the map has loaded). Counters of map listeners let tests check that destroy/close remove them.
  */
 (function () {
   "use strict";
@@ -49,5 +50,6 @@
   map.off = function (type, ...rest) { if (typeof rest[0] === "function") window.__mapCounts[type] = (window.__mapCounts[type] || 0) - 1; return off(type, ...rest); };
   window.__map = map;
   map.once("load", () => { window.__mapState = "loaded"; });
+  if (params.get("latemap") === "1") { window.__mapReady = false; mountWith(() => (window.__mapReady ? map : null)); return; }
   mountWith(map);
 })();
