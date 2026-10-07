@@ -1,0 +1,483 @@
+{
+ "generated_utc": "2026-10-07T04:12:35+00:00",
+ "command": "python3 -I -B tests/civic/R10/mutation_selftest.py",
+ "python": "3.13.16",
+ "oracle_sha256": "9862f8fd27f3ea6d9f8600d6f711ada1612a06e70b9d54c9b634e4843216f3cd",
+ "suite_sha256": {
+  "tests/civic/R10/test_api_feedback.py": "8f90f7a570d6476fd27e065b1d61f4b416e758ac64b7297df8cdfc563ffaa688",
+  "tests/civic/R10/test_api_objects.py": "9b9b177d4c4aee4d91a0bb23864b56516aadf64cc91af907a7bfb16bfbd7597b",
+  "tests/civic/R10/test_api_security.py": "e1d012753d6c69f6791deb5d304f60edd5bd7c8a275c36697c4b8933a6fce1fa",
+  "tests/civic/R10/r10lib/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "tests/civic/R10/r10lib/client.py": "f27011e116d61022d4d40ae25e4cee7640bbebc7bab453d846c1658c612dfb59",
+  "tests/civic/R10/r10lib/contract.py": "bfe34000e9edbffdd416b5f2b13db6a3291901e263919c34d06b272584793090",
+  "tests/civic/R10/r10lib/helpers.py": "e73f272fdb7b46335b4e510222d3a299f9c3c7ed375c893445f8e87dc765ab4e",
+  "tests/civic/R10/r10lib/modrun.py": "52eb8f5f41e17c4299380d38e1ceb6112bd433590336a69fb2418cbd66af83c8",
+  "tests/civic/R10/r10lib/standalone_server.py": "9663021bedf286f8d596056b91ec353ebbcf6de656080fc6001afdbcf56a43c2",
+  "tests/civic/R10/r10lib/target.py": "f5405f6a86c5ae5be0f26151e4b6fd62106cdcb9a62ed3570063d84b0dd41b49"
+ },
+ "baseline": {
+  "counts": {
+   "ran": 50,
+   "failures": 0,
+   "errors": 0,
+   "skipped": 0,
+   "fail_or_error_tests": 0
+  },
+  "exit_code": 0,
+  "seconds": 9.6
+ },
+ "mutants": [
+  {
+   "name": "no_csrf",
+   "killed": true,
+   "killing_tests": [
+    "test_api_feedback.FeedbackAccessControl.test_s12_s07_moderation_needs_session_csrf_origin",
+    "test_api_security.CsrfAndOrigin.test_s02_writes_without_or_with_wrong_csrf_rejected"
+   ],
+   "seconds": 9.4,
+   "counts": {
+    "ran": 50,
+    "failures": 23,
+    "errors": 0,
+    "skipped": 0,
+    "fail_or_error_tests": 2
+   }
+  },
+  {
+   "name": "no_origin",
+   "killed": true,
+   "killing_tests": [
+    "test_api_feedback.FeedbackAccessControl.test_s12_s07_moderation_needs_session_csrf_origin",
+    "test_api_security.CsrfAndOrigin.test_s03_foreign_or_null_origin_rejected",
+    "test_api_security.CsrfAndOrigin.test_s03_wrong_host_rejected"
+   ],
+   "seconds": 9.4,
+   "counts": {
+    "ran": 50,
+    "failures": 11,
+    "errors": 0,
+    "skipped": 0,
+    "fail_or_error_tests": 3
+   }
+  },
+  {
+   "name": "draft_public",
+   "killed": true,
+   "killing_tests": [
+    "test_api_feedback.FeedbackAccessControl.test_s14_feedback_to_draft_and_missing_id_indistinguishable",
+    "test_api_objects.ObjectLifecycle.test_a02_draft_invisible_publicly",
+    "test_api_objects.PersistenceAcrossRestart.test_a06_restart_keeps_objects_history_and_hiding",
+    "test_api_objects.RevisionsAndReasons.test_c04_stale_or_missing_revision_rejected_without_change",
+    "test_api_objects.ServerOwnedFields.test_c02_create_ignores_server_owned_fields",
+    "test_api_objects.ServerOwnedFields.test_c02_create_with_existing_id_cannot_overwrite_published",
+    "test_api_objects.ServerOwnedFields.test_c02_update_ignores_server_owned_fields"
+   ],
+   "seconds": 9.3,
+   "counts": {
+    "ran": 50,
+    "failures": 7,
+    "errors": 0,
+    "skipped": 0,
+    "fail_or_error_tests": 7
+   }
+  },
+  {
+   "name": "list_drafts",
+   "killed": true,
+   "killing_tests": [
+    "test_api_objects.FiltersAndPagination.test_a10_inclusive_date_window_with_kind_and_status",
+    "test_api_objects.ObjectLifecycle.test_a02_draft_invisible_publicly",
+    "test_api_objects.PersistenceAcrossRestart.test_a06_restart_keeps_objects_history_and_hiding"
+   ],
+   "seconds": 9.2,
+   "counts": {
+    "ran": 50,
+    "failures": 9,
+    "errors": 0,
+    "skipped": 0,
+    "fail_or_error_tests": 3
+   }
+  },
+  {
+   "name": "body_publication",
+   "killed": true,
+   "killing_tests": [
+    "test_api_objects.ServerOwnedFields.test_c02_create_ignores_server_owned_fields",
+    "test_api_objects.ServerOwnedFields.test_c02_create_with_existing_id_cannot_overwrite_published"
+   ],
+   "seconds": 9.4,
+   "counts": {
+    "ran": 50,
+    "failures": 2,
+    "errors": 0,
+    "skipped": 0,
+    "fail_or_error_tests": 2
+   }
+  },
+  {
+   "name": "no_409",
+   "killed": true,
+   "killing_tests": [
+    "test_api_feedback.FeedbackLifecycle.test_a08_moderation_revision_conflicts",
+    "test_api_objects.RevisionsAndReasons.test_c04_concurrent_same_revision_exactly_one_wins",
+    "test_api_objects.RevisionsAndReasons.test_c04_stale_or_missing_revision_rejected_without_change"
+   ],
+   "seconds": 9.4,
+   "counts": {
+    "ran": 50,
+    "failures": 5,
+    "errors": 0,
+    "skipped": 0,
+    "fail_or_error_tests": 3
+   }
+  },
+  {
+   "name": "no_reason",
+   "killed": true,
+   "killing_tests": [
+    "test_api_objects.RevisionsAndReasons.test_c05_reason_required_for_public_date_change"
+   ],
+   "seconds": 9.4,
+   "counts": {
+    "ran": 50,
+    "failures": 5,
+    "errors": 0,
+    "skipped": 0,
+    "fail_or_error_tests": 1
+   }
+  },
+  {
+   "name": "overwrite_original",
+   "killed": true,
+   "killing_tests": [
+    "test_api_objects.ObjectLifecycle.test_a04_date_change_with_reason_is_public_and_explained",
+    "test_api_objects.PersistenceAcrossRestart.test_a06_restart_keeps_objects_history_and_hiding"
+   ],
+   "seconds": 9.3,
+   "counts": {
+    "ran": 50,
+    "failures": 2,
+    "errors": 0,
+    "skipped": 0,
+    "fail_or_error_tests": 2
+   }
+  },
+  {
+   "name": "leak_internal",
+   "killed": true,
+   "killing_tests": [
+    "test_api_objects.ObjectLifecycle.test_a03_publish_makes_object_public_with_contract_dto",
+    "test_api_objects.ObjectLifecycle.test_a04_date_change_with_reason_is_public_and_explained",
+    "test_api_objects.ObjectLifecycle.test_a05_s09_no_editor_identity_or_internal_notes_publicly",
+    "test_api_objects.UnknownStaysUnknown.test_c03_null_schedule_budget_geometry_survive_publish_and_update"
+   ],
+   "seconds": 9.5,
+   "counts": {
+    "ran": 50,
+    "failures": 4,
+    "errors": 0,
+    "skipped": 0,
+    "fail_or_error_tests": 4
+   }
+  },
+  {
+   "name": "history_username",
+   "killed": true,
+   "killing_tests": [
+    "test_api_objects.ObjectLifecycle.test_a05_s09_no_editor_identity_or_internal_notes_publicly"
+   ],
+   "seconds": 9.9,
+   "counts": {
+    "ran": 50,
+    "failures": 1,
+    "errors": 0,
+    "skipped": 0,
+    "fail_or_error_tests": 1
+   }
+  },
+  {
+   "name": "budget_zero",
+   "killed": true,
+   "killing_tests": [
+    "test_api_objects.ObjectLifecycle.test_a01_create_draft_server_assigns_identity",
+    "test_api_objects.UnknownStaysUnknown.test_c03_null_schedule_budget_geometry_survive_publish_and_update"
+   ],
+   "seconds": 9.7,
+   "counts": {
+    "ran": 50,
+    "failures": 2,
+    "errors": 0,
+    "skipped": 0,
+    "fail_or_error_tests": 2
+   }
+  },
+  {
+   "name": "today_dates",
+   "killed": true,
+   "killing_tests": [
+    "test_api_objects.UnknownStaysUnknown.test_c03_null_schedule_budget_geometry_survive_publish_and_update"
+   ],
+   "seconds": 10.0,
+   "counts": {
+    "ran": 50,
+    "failures": 1,
+    "errors": 0,
+    "skipped": 0,
+    "fail_or_error_tests": 1
+   }
+  },
+  {
+   "name": "logout_noop",
+   "killed": true,
+   "killing_tests": [
+    "test_api_security.SessionLifecycle.test_s04_logout_revokes_server_side_session"
+   ],
+   "seconds": 9.5,
+   "counts": {
+    "ran": 50,
+    "failures": 1,
+    "errors": 0,
+    "skipped": 0,
+    "fail_or_error_tests": 1
+   }
+  },
+  {
+   "name": "pending_public",
+   "killed": true,
+   "killing_tests": [
+    "test_api_feedback.FeedbackAccessControl.test_s12_s07_moderation_needs_session_csrf_origin",
+    "test_api_feedback.FeedbackLifecycle.test_a07_receipt_only_pending_stays_private",
+    "test_api_security.AnonymousAccess.test_s01_s12_staff_writes_require_session"
+   ],
+   "seconds": 9.7,
+   "counts": {
+    "ran": 50,
+    "failures": 3,
+    "errors": 0,
+    "skipped": 0,
+    "fail_or_error_tests": 3
+   }
+  },
+  {
+   "name": "no_consent",
+   "killed": true,
+   "killing_tests": [
+    "test_api_feedback.FeedbackLifecycle.test_a08_s09_no_consent_text_never_public"
+   ],
+   "seconds": 9.6,
+   "counts": {
+    "ran": 50,
+    "failures": 1,
+    "errors": 0,
+    "skipped": 0,
+    "fail_or_error_tests": 1
+   }
+  },
+  {
+   "name": "anon_moderate",
+   "killed": true,
+   "killing_tests": [
+    "test_api_feedback.FeedbackAccessControl.test_s12_s07_moderation_needs_session_csrf_origin",
+    "test_api_security.AnonymousAccess.test_s01_s12_staff_writes_require_session"
+   ],
+   "seconds": 10.5,
+   "counts": {
+    "ran": 50,
+    "failures": 3,
+    "errors": 0,
+    "skipped": 0,
+    "fail_or_error_tests": 2
+   }
+  },
+  {
+   "name": "traceback",
+   "killed": true,
+   "killing_tests": [
+    "test_api_security.RequestHygiene.test_c06_s13_invalid_values_rejected_without_500",
+    "test_api_security.RequestHygiene.test_c08_content_type_and_malformed_json"
+   ],
+   "seconds": 10.8,
+   "counts": {
+    "ran": 50,
+    "failures": 6,
+    "errors": 0,
+    "skipped": 0,
+    "fail_or_error_tests": 2
+   }
+  },
+  {
+   "name": "no_size_limit",
+   "killed": true,
+   "killing_tests": [
+    "test_api_security.RequestHygiene.test_c07_oversized_body_and_long_text"
+   ],
+   "seconds": 10.9,
+   "counts": {
+    "ran": 50,
+    "failures": 1,
+    "errors": 0,
+    "skipped": 0,
+    "fail_or_error_tests": 1
+   }
+  },
+  {
+   "name": "static_leak",
+   "killed": true,
+   "killing_tests": [
+    "test_api_security.StaticExposure.test_s08_runtime_db_env_and_sources_not_served"
+   ],
+   "seconds": 9.3,
+   "counts": {
+    "ran": 50,
+    "failures": 1,
+    "errors": 0,
+    "skipped": 0,
+    "fail_or_error_tests": 1
+   }
+  },
+  {
+   "name": "accept_nan",
+   "killed": true,
+   "killing_tests": [
+    "test_api_security.RequestHygiene.test_c06_s13_invalid_values_rejected_without_500"
+   ],
+   "seconds": 9.5,
+   "counts": {
+    "ran": 50,
+    "failures": 3,
+    "errors": 0,
+    "skipped": 0,
+    "fail_or_error_tests": 1
+   }
+  },
+  {
+   "name": "memory_db",
+   "killed": true,
+   "killing_tests": [
+    "test_api_objects.PersistenceAcrossRestart.test_a06_restart_keeps_objects_history_and_hiding"
+   ],
+   "seconds": 8.6,
+   "counts": {
+    "ran": 50,
+    "failures": 1,
+    "errors": 0,
+    "skipped": 0,
+    "fail_or_error_tests": 1
+   }
+  },
+  {
+   "name": "role_from_body",
+   "killed": true,
+   "killing_tests": [
+    "test_api_security.SessionLifecycle.test_s07_role_and_identity_not_taken_from_request"
+   ],
+   "seconds": 9.6,
+   "counts": {
+    "ran": 50,
+    "failures": 1,
+    "errors": 0,
+    "skipped": 0,
+    "fail_or_error_tests": 1
+   }
+  },
+  {
+   "name": "cookie_flags",
+   "killed": true,
+   "killing_tests": [
+    "test_api_security.SessionLifecycle.test_s06_session_cookie_flags_and_not_in_body"
+   ],
+   "seconds": 9.5,
+   "counts": {
+    "ran": 50,
+    "failures": 1,
+    "errors": 0,
+    "skipped": 0,
+    "fail_or_error_tests": 1
+   }
+  },
+  {
+   "name": "archive_visible",
+   "killed": true,
+   "killing_tests": [
+    "test_api_objects.ObjectLifecycle.test_a09_archive_hides_publicly_staff_keeps"
+   ],
+   "seconds": 9.6,
+   "counts": {
+    "ran": 50,
+    "failures": 1,
+    "errors": 0,
+    "skipped": 0,
+    "fail_or_error_tests": 1
+   }
+  },
+  {
+   "name": "ssrf",
+   "killed": true,
+   "killing_tests": [
+    "test_api_security.NoServerSideFetch.test_s11_urls_in_sources_and_feedback_are_never_fetched"
+   ],
+   "seconds": 12.5,
+   "counts": {
+    "ran": 50,
+    "failures": 1,
+    "errors": 0,
+    "skipped": 0,
+    "fail_or_error_tests": 1
+   }
+  },
+  {
+   "name": "draft_history_public",
+   "killed": true,
+   "killing_tests": [
+    "test_api_objects.ObjectLifecycle.test_a05_draft_era_changes_never_reach_public_history"
+   ],
+   "seconds": 9.8,
+   "counts": {
+    "ran": 50,
+    "failures": 1,
+    "errors": 0,
+    "skipped": 0,
+    "fail_or_error_tests": 1
+   }
+  },
+  {
+   "name": "feedback_draft",
+   "killed": true,
+   "killing_tests": [
+    "test_api_feedback.FeedbackAccessControl.test_s14_feedback_to_draft_and_missing_id_indistinguishable"
+   ],
+   "seconds": 9.7,
+   "counts": {
+    "ran": 50,
+    "failures": 1,
+    "errors": 0,
+    "skipped": 0,
+    "fail_or_error_tests": 1
+   }
+  },
+  {
+   "name": "dup_feedback",
+   "killed": true,
+   "killing_tests": [
+    "test_api_feedback.FeedbackValidation.test_a07_duplicate_submission_not_silent"
+   ],
+   "seconds": 9.5,
+   "counts": {
+    "ran": 50,
+    "failures": 1,
+    "errors": 0,
+    "skipped": 0,
+    "fail_or_error_tests": 1
+   }
+  }
+ ],
+ "score": "28/28",
+ "survivors": [],
+ "invalid": [],
+ "notes": [
+  "Oracle = tests/civic/R10/r10lib/oracle/server.py, R10's test-only reference server; a mutant is one deliberate defect switched on by R10_ORACLE_MUTANT.",
+  "Each mutant: python3 -I -B -m unittest discover -s tests/civic/R10 -p 'test_api_*.py' in a fresh subprocess with its own oracle, free port and temp DB (3 in parallel). Killed = at least one FAIL/ERROR test id (clean baseline has none).",
+  "killing_tests are unittest ids; subtests of one test collapse into that test id.",
+  "killed by exactly one test (keep those tests running on every target): no_reason, history_username, today_dates, logout_noop, no_consent, no_size_limit, static_leak, accept_nan, memory_db, role_from_body, cookie_flags, archive_visible, ssrf, draft_history_public, feedback_draft, dup_feedback"
+ ]
+}
