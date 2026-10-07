@@ -22,8 +22,8 @@ import json
 from pathlib import Path
 
 from .objects import Actor, ObjectRepository, iso, utc_now
-from .validate import (CITY, ID_RE, SCHEMA_VERSION, ValidationError, is_valid_id, split_payload,
-                       validate_content)
+from .validate import (CITY, ID_RE, SCHEMA_VERSION, ValidationError, clean_reason, is_valid_id,
+                       split_payload, validate_content)
 
 
 MAX_PACKAGE_BYTES = 20 * 1024 * 1024
@@ -112,6 +112,12 @@ def import_package(repo: ObjectRepository, package, *, source=None, dry_run=Fals
         "status": None, "counts": {}, "items": [], "missing": [],
     }
     reason = f"Импорт {meta['slice_version'] or meta['source']}"
+    try:
+        # Та же проверка, что у update: иначе первый импорт сохранял бы причину,
+        # которую следующий импорт уже отверг бы целиком.
+        reason = clean_reason(reason, required=True)
+    except ValidationError:
+        raise ImportRejected("slice.version пакета должен быть простым текстом (без HTML, ≤ 1000 символов).")
     today = repo.today()
 
     # Проверка без базы: недопустимые записи не доходят до транзакции.
@@ -139,6 +145,10 @@ def import_package(repo: ObjectRepository, package, *, source=None, dry_run=Fals
             prepared.append((entry, content, digest_of(content)))
         except ValidationError as exc:
             entry.update({"action": "invalid", "fields": exc.fields})
+            report["items"].append(entry)
+        except (TypeError, ValueError, UnicodeError, RecursionError):
+            # Мусор в записи (нехэшируемые id, суррогаты...) — недопустимая запись, а не падение импорта.
+            entry.update({"action": "invalid", "fields": {"item": "Запись не является корректным объектом civic-v1."}})
             report["items"].append(entry)
     invalid = len(report["items"])
     if invalid and not allow_partial:

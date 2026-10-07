@@ -288,3 +288,25 @@ def test_dummy_hash_is_ready_before_first_login(tmp_path):
     auth._DUMMY_HASH = None
     CivicService(tmp_path / "eager.sqlite3")
     assert auth._DUMMY_HASH is not None
+
+
+def test_garbage_items_become_invalid_entries_not_crashes(service):
+    bad_ref = real_item("ast-r05-bad", source_refs=[{"id": ["s1"], "url": "https://example.org/",
+                                                     "access_status": "not_fetched"}])
+    bad_url = real_item("ast-r05-sur", source_refs=[{"id": "s1", "url": "https://example.org/\ud800",
+                                                     "access_status": "not_fetched"}])
+    with pytest.raises(ImportRejected) as rejected:
+        import_package(service.objects, package([real_item("ast-r05-ok"), bad_ref, bad_url]))
+    assert {i["external_id"]: i["action"] for i in rejected.value.report["items"]} == {
+        "ast-r05-bad": "invalid", "ast-r05-sur": "invalid"}
+    report = import_package(service.objects, package([real_item("ast-r05-ok"), bad_ref, bad_url]),
+                            allow_partial=True)
+    assert report["counts"]["create"] == 1 and report["counts"]["invalid"] == 2
+
+
+@pytest.mark.parametrize("version", ["2026-10 <draft>", "v" * 1200, "ok‮evil"])
+def test_unsafe_slice_version_is_rejected_up_front(service, version):
+    with pytest.raises(ImportRejected, match="slice.version"):
+        import_package(service.objects, package([real_item()], version=version))
+    with service.db.read() as conn:
+        assert conn.execute("SELECT COUNT(*) FROM civic_objects").fetchone()[0] == 0

@@ -27,7 +27,7 @@ from .auth import (COOKIE_NAME, Accounts, AuthError, Principal, RateLimited, cle
                    parse_cookies, session_cookie)
 from .db import Database, StorageError
 from .objects import BadRequest, Conflict, NotFound, ObjectRepository, parse_filters
-from .validate import ValidationError, is_valid_id
+from .validate import ValidationError, echo_keys, is_valid_id
 
 
 LOGGER = logging.getLogger("ui.civic_store")
@@ -93,6 +93,7 @@ def parse_body(body):
     if body is None or body == b"" or body == "":
         return {}
     if isinstance(body, dict):
+        _require_utf8(body)
         return body
     if isinstance(body, str):
         body = body.encode("utf-8", "surrogatepass")
@@ -106,7 +107,20 @@ def parse_body(body):
         raise BadRequest("Некорректный JSON: ожидается объект с конечными числами.")
     if not isinstance(value, dict):
         raise BadRequest("Тело запроса должно быть JSON-объектом.")
+    _require_utf8(value)
     return value
+
+
+def _require_utf8(value) -> None:
+    """JSON-escape вида «обратная косая + ud800» даёт одиночный суррогат: его нельзя сохранить или отдать.
+
+    Проверяем всё тело (ключи и значения) ДО любой записи: иначе изменение фиксировалось,
+    а клиент получал 500 при кодировании ответа с эхом такого ключа.
+    """
+    try:
+        json.dumps(value, ensure_ascii=False, allow_nan=False).encode("utf-8")
+    except (UnicodeEncodeError, ValueError, TypeError, RecursionError):
+        raise BadRequest("Тело содержит недопустимые символы (одиночные суррогаты) или значения.")
 
 
 class _TooLarge(Exception):
@@ -367,7 +381,7 @@ class CivicService:
             raise BadRequest("Недопустимый ID объекта.", {"id": "Пустой или недопустимый ID."})
         expected = payload.get("expected_revision")
         reason = payload.get("reason")
-        ignored = sorted(key for key in payload if key not in ("expected_revision", "reason", "changes"))
+        ignored = echo_keys(key for key in payload if key not in ("expected_revision", "reason", "changes"))
         if action == "update":
             item, ignored_fields = self.objects.update(
                 principal.actor(), object_id, expected_revision=expected,

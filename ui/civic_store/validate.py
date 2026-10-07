@@ -44,12 +44,19 @@ SERVER_FIELDS = frozenset({
     "public_actor_label", "staff", "history",
 })
 NESTED_FIELDS = {"schedule": SCHEDULE_KEYS, "budget": BUDGET_KEYS, "responsible": RESPONSIBLE_KEYS}
+# Пути, которые источник может «поддерживать»: поля содержимого и ключи вложенных объектов.
+SOURCE_FIELD_PATHS = frozenset(
+    [key for key in CONTENT_FIELDS if key != "source_refs"]
+    + [f"{key}.{name}" for key, names in NESTED_FIELDS.items() for name in names])
 
 ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,63}\Z")
 DATE_RE = re.compile(r"^[0-9]{4}-[0-9]{2}-[0-9]{2}\Z")
-FIELD_PATH_RE = re.compile(r"^[a-z_]{1,40}(\.[a-z_]{1,40}){0,2}\Z")
 HTML_RE = re.compile(r"<\s*[A-Za-z/!?]")
-BIDI_CONTROLS = frozenset("‪‫‬‭‮⁦⁧⁨⁩")
+BIDI_CONTROLS = frozenset("\u202a\u202b\u202c\u202d\u202e\u2066\u2067\u2068\u2069")
+# Невидимые «буквы»/пробелы: заголовок из них выглядит пустым (категории Lo/So, а не Cf).
+INVISIBLE_FILLERS = frozenset("\u115f\u1160\u3164\uffa0\u2800\u180e")
+SAFE_KEY_RE = re.compile(r"^[A-Za-z0-9_.\-]{1,64}\Z")
+MAX_ECHOED_KEYS = 20
 
 MAX_TEXT = {"title": 200, "description": 5000, "evidence_notes": 2000, "internal_notes": 5000,
             "organization": 300, "public_contact": 200, "publisher": 300, "license": 200,
@@ -72,6 +79,16 @@ class ValidationError(ValueError):
         super().__init__(message)
         self.fields = dict(fields)
         self.message = message
+
+
+def safe_key(key) -> str:
+    """Имя поля клиента для эха в ответе: только безопасные ASCII-имена (иначе — маркер)."""
+    return key if isinstance(key, str) and SAFE_KEY_RE.match(key) else "<недопустимое имя поля>"
+
+
+def echo_keys(keys) -> list[str]:
+    names = sorted({safe_key(key) for key in keys})
+    return names[:MAX_ECHOED_KEYS]
 
 
 class _Errors:
@@ -105,12 +122,21 @@ def clean_text(value, path, errors, *, max_len, required=False, multiline=False,
         errors.add(path, "Ожидается строка.")
         return None
     text = unicodedata.normalize("NFC", value.replace("\r\n", "\n").replace("\r", "\n")).strip()
+    visible = False
     for char in text:
         category = unicodedata.category(char)
-        if char in BIDI_CONTROLS or category == "Cs" or (
-                category == "Cc" and not (multiline and char in "\n\t")):
-            errors.add(path, "Текст содержит управляющие символы.")
+        # Cs — одиночные суррогаты, Cf — невидимые форматирующие (ZWSP, LRM, BOM, мягкий перенос,
+        # теги), Co/Cn — частные/неназначенные, Zl/Zp — разделители строк в однострочном поле.
+        if (char in BIDI_CONTROLS or category in ("Cs", "Cf", "Co", "Cn")
+                or (category == "Cc" and not (multiline and char in "\n\t"))
+                or (category in ("Zl", "Zp") and not multiline)):
+            errors.add(path, "Текст содержит управляющие или невидимые символы.")
             return None
+        if category[0] in "LNPS" and char not in INVISIBLE_FILLERS:
+            visible = True
+    if text and not visible:
+        errors.add(path, "Текст без видимых символов.")
+        return None
     if HTML_RE.search(text):
         errors.add(path, "HTML не допускается: только простой текст.")
         return None
@@ -191,15 +217,18 @@ def clean_amount(value, path, errors):
     if value < 0 or value > MAX_AMOUNT_KZT:
         errors.add(path, "Сумма должна быть от 0 до 10^13 тенге.")
         return None
-    return value
+    return 0 if value == 0 else value  # -0.0 показывался бы как «-0 ₸»
 
 
 def clean_url(value, path, errors):
     if not isinstance(value, str) or not value or len(value) > MAX_URL:
         errors.add(path, f"Ссылка http(s) не длиннее {MAX_URL} символов.")
         return None
-    if any(char.isspace() or unicodedata.category(char) == "Cc" for char in value):
-        errors.add(path, "Ссылка не должна содержать пробелы и управляющие символы.")
+    if any(char.isspace() or char in BIDI_CONTROLS or char in INVISIBLE_FILLERS
+           or unicodedata.category(char) in ("Cc", "Cf", "Cs", "Co", "Cn", "Zl", "Zp", "Zs")
+           for char in value):
+        # Невидимые и bidi-символы позволяют подделать адрес источника на карточке.
+        errors.add(path, "Ссылка не должна содержать пробелы, управляющие и невидимые символы.")
         return None
     try:
         parts = urlsplit(value)
@@ -291,22 +320,22 @@ def clean_source_refs(value, path, errors):
             continue
         unknown = set(ref) - set(SOURCE_REF_KEYS)
         if unknown:
-            errors.add(here, "Неизвестные поля источника: " + ", ".join(sorted(unknown)) + ".")
+            errors.add(here, "Неизвестные поля источника: " + ", ".join(echo_keys(unknown)) + ".")
             continue
         ref_id = ref.get("id")
         if not is_valid_id(ref_id):
             errors.add(here + ".id", "ID источника: латиница/цифры/._- до 64 символов.")
         elif ref_id in seen:
             errors.add(here + ".id", "ID источников не должны повторяться.")
-        seen.add(ref_id)
+        else:
+            seen.add(ref_id)  # только строки: список/словарь в id не хэшируется
         fields = ref.get("fields", [])
         clean_fields = []
         if not isinstance(fields, list) or len(fields) > MAX_FIELDS_PER_REF:
             errors.add(here + ".fields", "Список путей полей, поддержанных источником.")
         else:
             for f_index, field in enumerate(fields):
-                if (not isinstance(field, str) or not FIELD_PATH_RE.match(field)
-                        or field.split(".")[0] not in CONTENT_FIELDS):
+                if not isinstance(field, str) or field not in SOURCE_FIELD_PATHS:
                     errors.add(f"{here}.fields[{f_index}]", "Путь поля civic-v1, например schedule.current_planned_end.")
                 else:
                     clean_fields.append(field)
@@ -348,9 +377,9 @@ def split_payload(payload, *, allow_internal=True):
         raise ValidationError({"body": "Ожидается JSON-объект."})
     ignored = sorted(key for key in payload if key in SERVER_FIELDS)
     allowed = set(CONTENT_FIELDS) | (set(STAFF_ONLY_FIELDS) if allow_internal else set())
-    unknown = sorted(key for key in payload if key not in SERVER_FIELDS and key not in allowed)
+    unknown = [key for key in payload if key not in SERVER_FIELDS and key not in allowed]
     if unknown:
-        raise ValidationError({key: "Неизвестное поле civic-v1." for key in unknown},
+        raise ValidationError({key: "Неизвестное поле civic-v1." for key in echo_keys(unknown)},
                               "Запрос содержит неизвестные поля.")
     content = {key: payload[key] for key in CONTENT_FIELDS if key in payload}
     internal = payload.get("internal_notes", ...) if allow_internal else ...
@@ -364,7 +393,7 @@ def merge_content(current: dict, changes: dict) -> dict:
     for key, value in changes.items():
         if key in NESTED_FIELDS and isinstance(value, dict):
             unknown = set(value) - set(NESTED_FIELDS[key])
-            for name in sorted(unknown):
+            for name in echo_keys(unknown):
                 errors.add(f"{key}.{name}", "Неизвестное поле civic-v1.")
             merged[key] = {**(merged.get(key) or {}), **value}
         else:
@@ -401,7 +430,7 @@ def validate_content(raw: dict, *, today: date, original_locked: bool = False) -
             errors.add(key, "Ожидается объект.")
             value = empty_content()[key]
         unknown = set(value) - set(names)
-        for name in sorted(unknown):
+        for name in echo_keys(unknown):
             errors.add(f"{key}.{name}", "Неизвестное поле civic-v1.")
         data[key] = {**empty_content()[key], **value}
 
