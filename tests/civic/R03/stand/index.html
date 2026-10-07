@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#f7f8f4" />
+    <title>Стенд R03 · публичная карта · mock API</title>
+    <!-- Verification stand only (NOT the product). Served from the repo root:
+         node tests/civic/R03/serve.mjs 8765 -> http://127.0.0.1:8765/tests/civic/R03/stand/
+         Reuses the original light shell styles (/web/style.css) without changing them. -->
+    <link rel="stylesheet" href="/web/vendor/maplibre-gl.css" />
+    <link rel="stylesheet" href="/web/style.css" />
+    <link rel="stylesheet" href="/web/civic/map/civic-map.css" />
+    <style>
+      /* Stand-only chrome; R01 owns the real shell. */
+      .stand-flag { font-size: 11px; font-weight: 700; color: #6e4b00; background: #fff6e0; border: 1px solid #ecd29a; border-radius: 8px; padding: 4px 9px; white-space: nowrap; }
+      .stand-dev { position: absolute; z-index: 7; right: 26px; bottom: 34px; display: flex; gap: 6px; }
+      .stand-dev button { font: 600 11px/1 "Segoe UI", Arial, sans-serif; padding: 7px 9px; border-radius: 8px; border: 1px solid #e4e9e3; background: #fff; }
+      .map-tools .icon-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
+      #stand-status { top: auto; bottom: 34px; left: 430px; right: auto; max-width: 420px; }
+      .stand-host-panel { position: absolute; z-index: 5; top: 112px; bottom: 34px; left: 20px; width: 420px; display: flex; flex-direction: column; background: #fffffff7; border: 1px solid var(--line); border-radius: 20px; box-shadow: var(--shadow); overflow: hidden; }
+      .stand-host-head { padding: 18px 22px 10px; font-weight: 700; font-size: 18px; background: linear-gradient(130deg, #fff, #eff4e6); }
+      .stand-host-scroll { flex: 1; min-height: 0; overflow-y: auto; padding: 4px 16px 16px; }
+      @media (max-width: 760px) {
+        .stand-host-panel { top: auto; left: 0; right: 0; bottom: 0; width: auto; height: 46%; border-radius: 18px 18px 0 0; }
+        .stand-dev { display: none; }
+        .stand-flag { font-size: 9px; padding: 3px 6px; }
+        .topbar .top-center { display: none; }
+        #stand-status { right: 12px; left: 12px; bottom: auto; top: 80px; max-width: none; }
+        /* Recommended for R01 civic mode: the sheet leaves a 38px strip for the attribution. */
+        .maplibregl-ctrl-bottom-right { bottom: 0 !important; }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map" aria-label="Карта Астаны: городские работы и события"></div>
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="27" height="27" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V9l5-3v15M8 21V3h8v18M16 21V11h5v10M1 21h22M11 7h2m-2 4h2m-2 4h2" /></svg>
+        </div>
+        <div>
+          <div class="brand-title">Астана<span style="color: #7e9b68">.</span></div>
+          <div class="brand-sub">Что делают в городе</div>
+        </div>
+      </div>
+      <div class="top-center"><b>Публичная карта</b><span>Стенд модуля R03, не итоговый сайт</span></div>
+      <span class="stand-flag" id="stand-flag">СТЕНД · mock API · NOT_INTEGRATED</span>
+    </header>
+    <section id="civic-public"></section>
+    <div class="map-tools" aria-label="Управление картой">
+      <button class="icon-btn" id="overview-map" title="Вся Астана" aria-label="Показать всю Астану"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="6" /><path d="M12 2v4m0 12v4M2 12h4m12 0h4" /></svg></button>
+      <button class="icon-btn" id="zoom-in" title="Приблизить" aria-label="Приблизить"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg></button>
+      <button class="icon-btn" id="zoom-out" title="Отдалить" aria-label="Отдалить"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14" /></svg></button>
+      <button class="icon-btn three-d" id="toggle-3d" title="Наклон камеры" aria-pressed="false">3D</button>
+    </div>
+    <div id="stand-status" class="map-status hidden" role="status"></div>
+    <div class="stand-dev" aria-label="Инструменты стенда">
+      <button id="dev-refresh" type="button">refresh()</button>
+      <button id="dev-remount" type="button">destroy + mount</button>
+      <button id="dev-destroy" type="button">destroy()</button>
+    </div>
+    <script src="/web/vendor/maplibre-gl.js"></script>
+    <script src="/web/civic/map/civic-map-core.js"></script>
+    <script src="/web/civic/map/civic-map.js"></script>
+    <script src="mock-api.js"></script>
+    <script src="fetch-api.js"></script>
+    <script src="stand.js"></script>
+  </body>
+</html>

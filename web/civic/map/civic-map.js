@@ -364,6 +364,7 @@
       } else if (a === "sheet") cycleSheet();
       else if (a === "copy-link") copyLink(t);
       else if (a === "show-undated") { st.filters.period = "all"; filtersChanged(); }
+      else if (a === "area-off") { st.filters.area = false; filtersChanged(); }
       else if (a === "more") { st.limit += LIST_STEP; renderList(st.limit - LIST_STEP); }
     }
     function onRootChange(e) {
@@ -461,6 +462,8 @@
     function filtersChanged() {
       st.filters = C.sanitizeFilters(st.filters);
       st.limit = LIST_STEP;
+      // setFilters({area:true}) from the host may come without any later map move: measure now.
+      if (st.filters.area) updateViewBox();
       if (persist) { try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify(st.filters)); } catch (e) { /* ignore */ } }
       syncFilterControls();
       renderList();
@@ -477,7 +480,7 @@
       toInput.value = f.to || "";
       areaBox.checked = f.area;
       areaBox.disabled = !map;
-      const active = (f.kinds.length ? 1 : 0) + (f.statuses.length ? 1 : 0) + (f.period !== "all" ? 1 : 0) + (f.area ? 1 : 0) + (st.q ? 1 : 0);
+      const active = activeFilterCount();
       filtersSummary.lastChild.textContent = active ? "активно: " + active : "";
       resetBtn.hidden = !active;
       const r = C.periodRange(f.period, today(), { from: f.from, to: f.to });
@@ -518,6 +521,25 @@
       if (keep) { countEl.setAttribute("tabindex", "-1"); focusEl(countEl); }
     }
     function setCount(text) { if (countEl.textContent !== text) countEl.textContent = text; }
+    // What the published list actually contains: demo vs records backed by a source (observed/derived).
+    function coverage() {
+      const c = { total: st.items.length, demo: 0, real: 0, other: 0 };
+      for (const it of st.items) {
+        if (it.evidence === "synthetic") c.demo++;
+        else if (it.evidence === "observed" || it.evidence === "derived") c.real++;
+        else c.other++;
+      }
+      return c;
+    }
+    function coverageText(c) {
+      if (!c.total) return "Опубликованных записей пока нет.";
+      if (!c.real) return "Подтверждённых реальных работ в нём пока нет, опубликовано " + plural(c.total, "запись", "записи", "записей") + (c.demo === c.total ? ", все демонстрационные." : ".");
+      return "Записей с источником: " + c.real + " из " + c.total + ".";
+    }
+    function activeFilterCount() {
+      const f = st.filters;
+      return (f.kinds.length ? 1 : 0) + (f.statuses.length ? 1 : 0) + (f.period !== "all" ? 1 : 0) + (f.area ? 1 : 0) + (st.q ? 1 : 0);
+    }
     function renderList(focusFrom) {
       if (destroyed) return;
       const focusedId = document.activeElement && listEl.contains(document.activeElement) ? document.activeElement.getAttribute("data-id") : null;
@@ -529,9 +551,11 @@
         const el = b.querySelector("." + P + "chip-count");
         if (el.textContent !== t) el.textContent = t;
       }
-      const synth = st.items.filter((it) => it.evidence === "synthetic").length;
-      demoNote.hidden = !synth;
-      demoNote.textContent = synth ? (synth === st.items.length ? "Все записи — синтетические демо-данные, не сведения о реальных работах." : "Демо-записей: " + synth + ". Они отмечены «Демо» и не описывают реальные работы.") : "";
+      const cov = coverage();
+      demoNote.hidden = !cov.demo;
+      demoNote.textContent = !cov.demo ? "" : cov.real === 0
+        ? "Подтверждённых реальных работ в реестре пока нет: все " + plural(cov.total, "запись", "записи", "записей") + " — демонстрационные, не сведения о работах в городе."
+        : "Демо-записей: " + cov.demo + ". Они отмечены «Демо» и не описывают реальные работы.";
       listEl.replaceChildren();
       listNotes.replaceChildren();
       listEl.setAttribute("aria-busy", String(st.list === "loading"));
@@ -542,12 +566,23 @@
       }
       const emptyFilter = st.items.length > 0 && !res.shown.length;
       const shownText = c.shown === c.total ? plural(c.total, "объект", "объекта", "объектов") : "Показано " + c.shown + " из " + c.total;
-      const emptyNode = () => h("div", { class: P + "empty" }, h("p", { text: "По выбранным условиям ничего не найдено." }),
-        h("button", { type: "button", class: P + "btn", "data-r03-action": "reset-filters", text: "Сбросить фильтры" }));
+      // With "visible part" on (the shell turns it on when a street or district is chosen) an empty
+      // result must not read as "no works here": the registry is incomplete.
+      const areaEmpty = emptyFilter && st.filters.area;
+      const emptyNode = () => areaEmpty
+        ? h("div", { class: P + "empty" },
+          h("p", { class: P + "empty-title", text: "В видимой части карты нет опубликованных записей." }),
+          h("p", { class: P + "hint", text: "Это не значит, что здесь не ведутся работы: реестр неполный. " + coverageText(cov) }),
+          h("div", { class: P + "row" },
+            h("button", { type: "button", class: P + "btn", "data-r03-action": "area-off", text: "Показать записи по всему городу" }),
+            activeFilterCount() > 1 ? h("button", { type: "button", class: P + "link-btn", "data-r03-action": "reset-filters", text: "Сбросить все фильтры" }) : null))
+        : h("div", { class: P + "empty" }, h("p", { text: "По выбранным условиям ничего не найдено." }),
+          h("button", { type: "button", class: P + "btn", "data-r03-action": "reset-filters", text: "Сбросить фильтры" }));
+      const emptyKey = areaEmpty ? "empty-area" : "empty-filter";
       if (st.list === "error") {
         const text = st.listError ? st.listError.text : "Не удалось загрузить объекты.";
         setCount(st.items.length ? shownText + " · прежние данные" : "Данные не загружены");
-        setStatus("error|" + text + "|" + emptyFilter, () => {
+        setStatus("error|" + text + "|" + (emptyFilter ? emptyKey : ""), () => {
           const box = h("div", null, h("div", { class: P + "error" },
             h("p", { text }), h("button", { type: "button", class: P + "btn", "data-r03-action": "retry-list" }, svgIcon(ICON.retry), "Повторить")));
           if (emptyFilter) box.append(emptyNode());
@@ -560,8 +595,8 @@
           h("p", { class: P + "hint", text: "Когда сотрудники опубликуют работы или события, они появятся на карте и в этом списке." })));
         return;
       } else {
-        if (st.list === "loading") setStatus("refreshing|" + emptyFilter, () => { const box = h("div", null, h("p", { class: P + "hint", text: "Обновляем…" })); if (emptyFilter) box.append(emptyNode()); return box; });
-        else setStatus(emptyFilter ? "empty-filter" : "", emptyFilter ? emptyNode : null);
+        if (st.list === "loading") setStatus("refreshing|" + (emptyFilter ? emptyKey : ""), () => { const box = h("div", null, h("p", { class: P + "hint", text: "Обновляем…" })); if (emptyFilter) box.append(emptyNode()); return box; });
+        else setStatus(emptyFilter ? emptyKey : "", emptyFilter ? emptyNode : null);
         setCount(st.list === "idle" ? "" : shownText);
       }
       const frag = document.createDocumentFragment();

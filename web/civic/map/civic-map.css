@@ -519,6 +519,9 @@
 .civic-r03-empty h3 {
   margin: 0 0 8px;
 }
+.civic-r03-empty-title {
+  font-weight: 650;
+}
 
 /* ---------- legend ---------- */
 .civic-r03-legend {

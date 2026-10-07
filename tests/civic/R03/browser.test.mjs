@@ -1,6 +1,6 @@
 // R03 browser tests on the verification stand (mock API, real MapLibre 5.6.2, real Chromium).
 //   node --test tests/civic/R03/browser.test.mjs
-//   R03_SHOTS=research/round-11-results/R03/screenshots node --test tests/civic/R03/browser.test.mjs
+//   R03_SHOTS=research/round-12-results/R03/screenshots node --test tests/civic/R03/browser.test.mjs
 // External hosts are blocked on purpose: OpenFreeMap is unreachable in the sandbox and
 // the stand must show its honest fallback. Results here are about the module, not R01/R02.
 import { test, before, after } from "node:test";
@@ -55,7 +55,7 @@ async function open(params, o = {}) {
   if (o.probe) await page.addInitScript(LISTENER_PROBE);
   await page.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => r.abort());
   const qs = new URLSearchParams(Object.assign({ today: TODAY }, params || {}));
-  await page.goto(base + "/research/round-11-results/R03/stand/?" + qs + (o.hash || ""));
+  await page.goto(base + "/tests/civic/R03/stand/?" + qs + (o.hash || ""));
   await page.waitForFunction(() => window.__stand && window.__stand.instance && ["ready", "error"].includes(window.__stand.instance.getState().list), null, { timeout: 30000 });
   return { ctx, page, errors };
 }
@@ -873,5 +873,24 @@ test("buttons keep their own colours: primary text readable on its dark fill, li
   await page.selectOption('[data-r03-filter="period"]', "next30");
   const link = await page.evaluate(() => getComputedStyle(document.querySelector(".civic-r03-link-btn")).color);
   assert.equal(link, "rgb(23, 107, 74)");
+  await ctx.close();
+});
+
+// ---------- round 12 ----------
+test("r12: a street or district with no records does not read as 'no works here'", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0" });
+  // what the R01 shell does on a street pick: frame an empty part of the city, then setFilters({area:true})
+  await page.evaluate(() => { window.__stand.map.jumpTo({ center: [71.36, 51.19], zoom: 16 }); window.__stand.instance.setFilters({ area: true }); });
+  await page.waitForTimeout(300);
+  const t = await page.locator(".civic-r03-state").innerText();
+  assert.match(t, /В видимой части карты нет опубликованных записей/);
+  assert.match(t, /Это не значит, что здесь не ведутся работы: реестр неполный/);
+  assert.match(t, /Подтверждённых реальных работ в нём пока нет, опубликовано 12 записей, все демонстрационные/);
+  assert.doesNotMatch(t, /ничего не найдено/);
+  assert.match(await page.locator(".civic-r03-demo-note").innerText(), /Подтверждённых реальных работ в реестре пока нет: все 12 записей — демонстрационные/);
+  await shot(page, "r12-desktop-1440-empty-street");
+  await page.click('[data-r03-action="area-off"]');
+  assert.equal(await page.locator(".civic-r03-item").count(), 12);
+  assert.equal((await state(page)).filters.area, false);
   await ctx.close();
 });

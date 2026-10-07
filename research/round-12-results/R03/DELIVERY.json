@@ -1,0 +1,36 @@
+{
+  "role": "R03",
+  "branch": "claude/zen-mendel-e79iiv",
+  "base_sha": "56538a3a7504d4589c38ab4d3c5107f12aa7f8a6",
+  "code_sha": null,
+  "push_status": "pending (see handoff)",
+  "changed_paths": [
+    "web/civic/map/civic-map.js",
+    "web/civic/map/civic-map.css",
+    "tests/civic/R03/"
+  ],
+  "tests": [
+    {
+      "name": "core",
+      "status": "PASS",
+      "command": "node --test tests/civic/R03/core.test.mjs",
+      "result": "24/24"
+    },
+    {
+      "name": "browser-stand",
+      "status": "PASS",
+      "command": "node --test --test-concurrency=1 tests/civic/R03/browser.test.mjs",
+      "result": "44/44"
+    },
+    {
+      "name": "r02-readonly",
+      "status": "PASS",
+      "command": "node --test --test-concurrency=1 tests/civic/R03/r02_readonly.test.mjs",
+      "result": "2/2"
+    }
+  ],
+  "known_limits": [
+    "checkpoint 1 only"
+  ],
+  "next_step": "card restructuring"
+}

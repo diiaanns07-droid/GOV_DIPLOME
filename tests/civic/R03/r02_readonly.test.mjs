@@ -63,7 +63,7 @@ async function open(viewport) {
   const errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
   await page.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => r.abort());
-  await page.goto(base + "/research/round-11-results/R03/stand/?api=real&persist=0&today=2026-10-06");
+  await page.goto(base + "/tests/civic/R03/stand/?api=real&persist=0&today=2026-10-06");
   await page.waitForFunction(() => window.__stand && window.__stand.instance && ["ready", "error"].includes(window.__stand.instance.getState().list), null, { timeout: 30000 });
   return { ctx, page, errors };
 }

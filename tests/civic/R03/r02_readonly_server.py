@@ -4,7 +4,7 @@ Runs R02's real service (imported from a directory given by --r02-root, e.g. an
 `git archive <R02 SHA> ui/civic_store` extraction) on a temporary SQLite file,
 seeds R03's synthetic fixtures through R02's own staff API, then serves:
   /api/civic/v1/...                    -> CivicService.handle (public reads by the browser)
-  /web/, /research/round-11-results/R03/, /tests/civic/R03/fixtures/  -> static (same allowlist as serve.mjs)
+  /web/, /tests/civic/R03/stand/, /tests/civic/R03/fixtures/  -> static (same allowlist as serve.mjs)
   /__r03/log                           -> JSON list of API requests made AFTER seeding (test probe)
 Prints one JSON line {"port":..,"ids":{fixture_id: server_id},"seeded":..} on stdout when ready.
 
@@ -25,7 +25,7 @@ import tempfile
 import threading
 
 REPO = Path(__file__).resolve().parents[3]
-ALLOWED = ("web/", "research/round-11-results/R03/", "tests/civic/R03/fixtures/")
+ALLOWED = ("web/", "tests/civic/R03/stand/", "tests/civic/R03/fixtures/")
 TYPES = {".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8",
          ".css": "text/css; charset=utf-8", ".json": "application/json; charset=utf-8",
          ".png": "image/png", ".svg": "image/svg+xml"}
