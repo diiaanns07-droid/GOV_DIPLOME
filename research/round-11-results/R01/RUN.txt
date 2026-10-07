@@ -1,0 +1,52 @@
+R01 — ЗАПУСК СОБРАННОГО ПРОДУКТА (раунд 11, Астана)
+
+Ветка: claude/affectionate-ride-bol5v8 (origin https://github.com/diiaanns07-droid/GOV_DIPLOME)
+CODE_SHA: см. CODE_SHA.txt рядом (последний коммит, меняющий код; следующие коммиты меняют только research/).
+Адрес: http://127.0.0.1:8611/   (порт 8611 выбран, чтобы не путать со старым 8501 и preview 8502;
+старый запущенный 8501 НЕ является доказательством этой сборки)
+
+ТРЕБОВАНИЯ
+- Python 3.11–3.14 (проверено на 3.13.16). Городская платформа использует только стандартную библиотеку;
+  requirements*.txt не менялись. Node 22 + Playwright нужны только для браузерных проверок.
+- Интернет не нужен: без OpenFreeMap карта работает на упрощённом светлом фоне (без улиц и 3D-зданий).
+
+ЗАПУСК С ЧИСТОЙ КОПИИ (Linux/macOS; на Windows те же команды с python вместо python3)
+  git fetch origin claude/affectionate-ride-bol5v8
+  git checkout <CODE_SHA>
+  # 1) по желанию — синтетический демо-срез Астаны (R05, evidence_type=synthetic, не реальные работы):
+  python3 -B -m ui.civic_store seed-demo --package data/civic/astana/demo_synthetic.json
+  # 2) учётная запись редактора: пароль вводится скрыто (getpass), в Git и аргументах его нет:
+  python3 -B -m ui.civic_store create-editor <логин>
+  # 3) сервер (один процесс, loopback):
+  python3 -B app.py --port 8611
+  # откройте http://127.0.0.1:8611/
+База: .runtime/civic.sqlite3 (вне web/, права 0600, в .gitignore и .dockerignore). Другой файл:
+  CIVIC_DB_PATH=/путь/civic.sqlite3 python3 -B app.py --port 8611
+Одной командой с установкой окружения: CIVIC_DEMO=1 PORT=8611 bash run.sh  (Windows: set CIVIC_DEMO=1 & run.bat)
+При старте сервер печатает строку статуса модулей, ожидаемо:
+  civic-v1: store=ready, feedback=ready, scenarios=ready, assistant=ready
+
+ЧТО НА СТРАНИЦЕ
+- По умолчанию режим «Город» (Астана): опубликованные работы/события на одной карте MapLibre, карточки,
+  история сроков, сообщения жителей, помощник по фактам карточки, сравнение ограничений (пешеходный граф).
+- «Школы» — прежний кейс доступности школ (GOVTECH, без изменений); «Учебная модель» — прежний
+  симулятор «Аким на 5 часов» (Score 52,56, условные показатели). Переключатель режимов вверху.
+
+ПРОВЕРКИ (все на этой сборке; результаты — runs/ и MATRIX.json)
+  python3 -m pytest -q -p no:cacheprovider tests            # 764 passed, 2 skipped на eb7b0cd
+  python3 -B -m ui.web_check                                # 14 OK
+  node tests/govtech/plan.cjs && node tests/govtech/resilience.cjs && node tests/govtech/whatif.cjs
+  node tests/govtech/school_case.cjs && node tests/govtech/school_vs_k05.cjs
+  node --test tests/civic/R03/core.test.mjs                 # 23 pass
+  node --test tests/civic/R04/core.test.cjs tests/civic/R04/contract_mock.test.cjs   # 27 pass
+  node tests/civic/R01/browser/p0_flow.cjs <out_dir>        # P0 в браузере: 48 PASS / 0 FAIL / 2 NOT_RUN
+  node tests/civic/R01/browser/scenarios_smoke.cjs <out_dir> # R07 в браузере: 16 PASS
+Браузерные проверки сами поднимают сервер на свободном порту с временной БД и удаляют её.
+
+НЕ ПРОВЕРЕНО / ВНЕШНИЕ ЗАВИСИМОСТИ (NOT_RUN)
+- Подложка OpenFreeMap и 3D-здания: хост закрыт прокси среды; все кадры на офлайн-фоне.
+- Живой LLM: провайдер не настроен, помощник работает в шаблонном режиме (без платных вызовов).
+- Реальные объекты Астаны: R05 не смог получить официальные источники — 0 подтверждённых записей;
+  демо полностью синтетическое и помечено на карте/в карточках.
+- R08 (классификатор обращений): поставки нет; модерация работает без подсказок модели.
+- Проверка людьми, публичное развёртывание, HTTPS, SSO — вне раунда.
