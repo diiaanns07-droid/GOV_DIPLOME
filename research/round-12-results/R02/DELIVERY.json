@@ -2,8 +2,8 @@
  "role": "R02",
  "branch": "claude/elegant-franklin-jbhprq",
  "base_sha": "56538a3a7504d4589c38ab4d3c5107f12aa7f8a6",
- "code_sha": "(см. handoff: последний отправленный SHA; код этого коммита — HEAD ветки)",
- "push_status": "OK (checkpoints b465013, c828df9, dcda6de; финальный SHA — в handoff)",
+ "code_sha": "bd7a911 (код и тесты; последующий коммит меняет только research/ файлы передачи)",
+ "push_status": "OK: b465013, c828df9, dcda6de, bd7a911 отправлены в origin/claude/elegant-franklin-jbhprq",
  "changed_paths": [
   "ui/civic_store/importer.py",
   "ui/civic_store/objects.py",
@@ -23,7 +23,8 @@
   "CLI end-to-end на временной базе": "PASS evidence/cli_run.txt",
   "pytest всего репозитория (tests/)": "NOT_RUN: вне границ роли; координатор запускает при сборке",
   "браузер/UI": "NOT_RUN: R02 не меняет интерфейс и маршруты",
-  "Windows run-city.bat": "NOT_RUN: облачный Linux"
+  "Windows run-city.bat": "NOT_RUN: облачный Linux",
+  "dry-run реального пакета R05 round12": "NOT_RUN: пакет ещё не опубликован R05 (есть только SCHEMA.md/инструменты)"
  },
  "fixed_defects": [
   "После первой публикации кандидат импорта с original_planned_end=null (обычный источник) нельзя было применить (422 навсегда): перенос срока из источника терялся. Исправлено в objects.py; совпадение правки редактора с источником на опубликованной карточке теперь закрывает кандидата."

@@ -25,5 +25,5 @@
 Проверки: tests/civic/R02 233 passed, 1 skipped; tests/civic 758 passed, 2 skipped; CLI e2e — evidence/cli_run.txt.
 Весь tests/ репозитория и UI — NOT_RUN (вне роли).
 
-Последний успешно отправленный SHA: см. git log origin/claude/elegant-franklin-jbhprq (финальное сообщение сессии).
+Последний успешно отправленный SHA с кодом: bd7a911 (далее только файлы передачи; фактический финальный SHA — в git log ветки).
 Следующий шаг: dry-run реального пакета R05 round12-verified (RUN.txt п.2) на временной базе.

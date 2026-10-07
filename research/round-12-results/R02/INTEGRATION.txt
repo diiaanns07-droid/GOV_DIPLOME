@@ -30,3 +30,13 @@ R05 (data/civic/astana/round12-verified/): формат пакета не мен
   (ничего не меняется). source по умолчанию r05-astana-real; рекомендуется явный slice.source.
 
 Соседи: R06 (feedback_*) — таблицы не затрагиваются; R01 — подключение сервиса не меняется.
+
+Сверка с черновой схемой R05 (ветка origin/claude/focused-hypatia-z8h0no, коммит 46142d2,
+data/civic/astana/round12-verified/SCHEMA.md; прочитано без запуска их скриптов):
+- Оболочка package.civic-v1.json совместима (slice.as_of — лишний ключ slice, игнорируется;
+  source "r05-astana-r12-verified" — допустимый). retrieved_at вида ...Z принимается.
+- candidates.json и drafts/ импортер не читает — правильно, они не для импорта.
+- Рекомендация: historical.civic-v1.json импортировать с ДРУГИМ slice.source (например
+  r05-astana-r12-historical). При общем source каждый пакет показывал бы записи другого как
+  report_missing (вреда нет — ничего не удаляется, — но отчёт путает).
+- Готового пакета в момент проверки не было: dry-run реальных записей — NOT_RUN.
