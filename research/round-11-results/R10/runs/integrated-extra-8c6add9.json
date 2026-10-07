@@ -1,0 +1,194 @@
+{
+ "generated_utc": "2026-10-07T04:12:02+00:00",
+ "target": {
+  "target": "command",
+  "base_url": "http://127.0.0.1:36759",
+  "prefix": "/api/civic/v1",
+  "code_root": "/tmp/claude-0/-home-user-GOV-DIPLOME/3e0e6753-d2bd-5d91-b2c4-232af89a775f/scratchpad/wt-r01-8c6add9",
+  "code_sha": "8c6add919efa9ed965cb05a57626744fed750da1",
+  "code_dirty": false,
+  "can_restart": true,
+  "notes": [],
+  "mutant": null
+ },
+ "object_id": "ast-2023b043ef",
+ "checks": [
+  {
+   "id": "D002-gateway",
+   "status": "PASS",
+   "evidence": {
+    "[\"x\"]": 422,
+    "{\"a\": 1}": 422,
+    "5": 422,
+    "null": 422
+   }
+  },
+  {
+   "id": "O001-history-reason",
+   "status": "OBSERVED",
+   "evidence": {
+    "needed_republish": true,
+    "public_reasons_for_date_change": [
+     "Публикация изменений (R10 общий текст)"
+    ],
+    "update_reason_visible_publicly": false
+   }
+  },
+  {
+   "id": "H6-dates-traceable",
+   "status": "PASS",
+   "evidence": {
+    "delay_reason": [],
+    "deadline": [],
+    "sources": [],
+    "history": [],
+    "responsible": [],
+    "budget": []
+   }
+  },
+  {
+   "id": "H6-source-label",
+   "status": "PASS",
+   "evidence": {
+    "delay_reason": "template",
+    "deadline": "template",
+    "sources": "template",
+    "history": "template",
+    "responsible": "template",
+    "budget": "template"
+   },
+   "note": "No LLM provider configured in this isolated run; 'llm' here would be a mislabel."
+  },
+  {
+   "id": "H6-C03-unknown-budget",
+   "status": "PASS",
+   "evidence": "Это демонстрационная (синтетическая) запись, а не сведения о реальных работах. Сумма в карточке не указана — нет данных. Источник суммы не указан."
+  },
+  {
+   "id": "H6-delay-reason",
+   "status": "PASS",
+   "evidence": "Это демонстрационная (синтетическая) запись, а не сведения о реальных работах. Первоначальный плановый срок окончания: 20.10.2026. Текущий плановый срок окончания: 27.10.2026. Текущий срок сдвинут относительно первоначального на 7 дн. (разница посчитана по датам карточки). В публичной истории (ревизия 4, 07.10.2026) причина изменения сроков указана так: «Публикация изменений (R10 общий текст)»"
+  },
+  {
+   "id": "H6-routing",
+   "status": "OBSERVED",
+   "evidence": {
+    "delay_reason": "delay_reason",
+    "deadline": "schedule",
+    "sources": "sources",
+    "history": "overview",
+    "responsible": "responsible",
+    "budget": "budget"
+   }
+  }
+ ],
+ "assistant_answers": {
+  "delay_reason": {
+   "question": "Почему перенесли срок?",
+   "http": 200,
+   "source": "template",
+   "intent": "delay_reason",
+   "warnings": [],
+   "fact_ids": 5,
+   "dates": [
+    "2026-10-07",
+    "2026-10-20",
+    "2026-10-27"
+   ],
+   "untraced_dates": [],
+   "money_amounts": [],
+   "text": "Это демонстрационная (синтетическая) запись, а не сведения о реальных работах. Первоначальный плановый срок окончания: 20.10.2026. Текущий плановый срок окончания: 27.10.2026. Текущий срок сдвинут относительно первоначального на 7 дн. (разница посчитана по датам карточки). В публичной истории (ревизия 4, 07.10.2026) причина изменения сроков указана так: «Публикация изменений (R10 общий текст)»"
+  },
+  "deadline": {
+   "question": "До какого числа ремонт?",
+   "http": 200,
+   "source": "template",
+   "intent": "schedule",
+   "warnings": [],
+   "fact_ids": 6,
+   "dates": [
+    "2026-10-14",
+    "2026-10-20",
+    "2026-10-27"
+   ],
+   "untraced_dates": [],
+   "money_amounts": [],
+   "text": "Это демонстрационная (синтетическая) запись, а не сведения о реальных работах. Текущий плановый срок окончания: 27.10.2026. Первоначальный плановый срок окончания: 20.10.2026. Плановое начало: 14.10.2026. Фактическая дата окончания: нет данных. Текущий срок сдвинут относительно первоначального на 7 дн. (разница посчитана по датам карточки). Плановый срок — это план; он не означает, что работы закончены."
+  },
+  "sources": {
+   "question": "Откуда эти данные?",
+   "http": 200,
+   "source": "template",
+   "intent": "sources",
+   "warnings": [],
+   "fact_ids": 1,
+   "dates": [],
+   "untraced_dates": [],
+   "money_amounts": [],
+   "text": "Это демонстрационная (синтетическая) запись, а не сведения о реальных работах. У записи нет ссылок на источники."
+  },
+  "history": {
+   "question": "Что менялось в карточке?",
+   "http": 200,
+   "source": "template",
+   "intent": "overview",
+   "warnings": [
+    "intent_guessed"
+   ],
+   "fact_ids": 6,
+   "dates": [
+    "2026-10-27"
+   ],
+   "untraced_dates": [],
+   "money_amounts": [],
+   "text": "Это демонстрационная (синтетическая) запись, а не сведения о реальных работах. Объект: «R10 проверочный объект obj-wcgmdzskwy» (дорожные работы). Статус в карточке: запланировано. Описание в карточке: «Синтетическая запись приёмочного теста R10. Не сведения о реальных работах.» Текущий плановый срок окончания: 27.10.2026. Плановый срок — это план; он не означает, что работы закончены."
+  },
+  "responsible": {
+   "question": "Кто отвечает за работы?",
+   "http": 200,
+   "source": "template",
+   "intent": "responsible",
+   "warnings": [],
+   "fact_ids": 3,
+   "dates": [],
+   "untraced_dates": [],
+   "money_amounts": [],
+   "text": "Это демонстрационная (синтетическая) запись, а не сведения о реальных работах. Ответственная организация в карточке не указана — нет данных. Публичный контакт: нет данных."
+  },
+  "budget": {
+   "question": "Сколько стоит ремонт?",
+   "http": 200,
+   "source": "template",
+   "intent": "budget",
+   "warnings": [],
+   "fact_ids": 3,
+   "dates": [],
+   "untraced_dates": [],
+   "money_amounts": [],
+   "text": "Это демонстрационная (синтетическая) запись, а не сведения о реальных работах. Сумма в карточке не указана — нет данных. Источник суммы не указан."
+  }
+ },
+ "journal": [
+  {
+   "cmd": "/usr/bin/python3 -E -s -B -m ui.civic_store --db /tmp/r10-civic-ud9w56ux/civic.sqlite3 create-editor r10_editor_alpha",
+   "cwd": "/tmp/claude-0/-home-user-GOV-DIPLOME/3e0e6753-d2bd-5d91-b2c4-232af89a775f/scratchpad/wt-r01-8c6add9",
+   "exit_code": 0,
+   "seconds": 1.03,
+   "interactive": true
+  },
+  {
+   "cmd": "/usr/bin/python3 -E -s -B -m ui.civic_store --db /tmp/r10-civic-ud9w56ux/civic.sqlite3 create-editor r10_editor_beta",
+   "cwd": "/tmp/claude-0/-home-user-GOV-DIPLOME/3e0e6753-d2bd-5d91-b2c4-232af89a775f/scratchpad/wt-r01-8c6add9",
+   "exit_code": 0,
+   "seconds": 1.09,
+   "interactive": true
+  },
+  {
+   "cmd": "/usr/bin/python3 -E -s -B app.py --port 36759 --civic-db /tmp/r10-civic-ud9w56ux/civic.sqlite3",
+   "cwd": "/tmp/claude-0/-home-user-GOV-DIPLOME/3e0e6753-d2bd-5d91-b2c4-232af89a775f/scratchpad/wt-r01-8c6add9",
+   "exit_code": null,
+   "state": "running",
+   "seconds_to_ready": 0.4
+  }
+ ]
+}

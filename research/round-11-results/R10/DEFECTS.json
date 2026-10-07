@@ -19,7 +19,8 @@
       "actual": "'?? .runtime/' (untracked, not ignored): git add . / -A would commit civic_users.password_hash, sessions and private feedback. Dockerfile 'COPY . .' with .dockerignore lacking .runtime would bake the DB into an image. R02 db.py docstring states the folder 'игнорируется Git', which is not true on any pushed branch.",
       "evidence": "research/round-11-results/R10/COMMANDS.md (rows 15:46–15:47 UTC)",
       "patch": "research/round-11-results/R10/patches/R01-gitignore-runtime.patch (git apply --check OK on b2cb2e0; after applying, status is '!! .runtime/')",
-      "status": "open"
+      "status": "fixed",
+      "verification": "R01 8c6add919efa9ed965cb05a57626744fed750da1: .gitignore has .runtime/ + *.sqlite*; .dockerignore has .runtime; `git status --porcelain --ignored .runtime` -> '!! .runtime/' (2026-10-07 04:1x UTC)."
     },
     {
       "id": "R10-D002",
@@ -34,6 +35,92 @@
       "actual": "Exception escapes http.handle; behind R01 CivicGateway it becomes 500 'internal' with a logged stack trace; standalone devserver behaviour depends on its own catch-all.",
       "evidence": "research/round-11-results/R10/COMMANDS.md (R07 fuzz rows)",
       "patch": "research/round-11-results/R10/patches/R07-graph-id-type.patch (type check before cache lookup; with it 0/210 probes escape, graph_id=['x'] -> 404 unknown_graph like other unknown ids)",
+      "status": "fixed-in-integration",
+      "verification": "R01 8c6add919efa9ed965cb05a57626744fed750da1 gateway: graph_id [\"x\"], {\"a\":1}, 5, null -> 422 invalid_payload (runs/integrated-extra-8c6add9.json). R07 module d77ec45 itself is unchanged (standalone use still raises TypeError)."
+    },
+    {
+      "id": "R10-D003",
+      "title": "R09 assistant: delay-reason answer drops the lowest-revision history entry -> false 'причина не указана'",
+      "severity": "low",
+      "severity_note": "medium in standalone single-entry case; low in the integrated product because R02's first public entry is the publication itself (reason quoted correctly in runs/integrated-extra-8c6add9.json); still false when the move falls outside the last 20 public entries (MAX_HISTORY window).",
+      "owner": "R09 (agent/civic_assistant/render.py r_delay_reason)",
+      "sha": [
+        "cbae33762cc0e303a0c0b4bcca15103d1a39e7ff",
+        "f895c3033a2985a600e929337c28fd9ba00f783f (R09 head; integrated in R01 8c6add9)"
+      ],
+      "repro": "tests/civic/R10/standalone/standalone_r09.py test_08 (R10_R09_ROOT=<checkout>): verified_context with one public history entry {changed_fields:[schedule.current_planned_end], reason:'Поставщик задержал…'} -> 'Почему перенесли срок?' answers 'Причина изменения сроков в публичной истории не указана — нет данных.' Also: r1 publish, r2 edit, r3 deadline move with reason, r4..r22 edits -> MAX_HISTORY keeps r3..r22, r3 dropped -> same false statement.",
+      "expected": "CONTRACT §1 history carries reason; prompts/R10: житель видит объяснение изменения; R09 QUESTIONS.txt #5 promises quoting the reason. 'Нет данных' must mean the data is absent.",
+      "actual": "A false negative factual statement while the reason exists in the verified context.",
+      "evidence": "runs/standalone-r09-head-f895c30.json, runs/standalone-r09-in-r01-8c6add9.json, runs/integrated-extra-8c6add9.json",
+      "patch": "Proposal: select the latest entry whose changed_fields include schedule.current_planned_end regardless of position; skip only entries that are the first publication of the dates (changed_fields contains 'publication').",
+      "status": "open"
+    },
+    {
+      "id": "R10-D004",
+      "title": "R09 assistant: template refusal labelled source='llm' when the model's choice is overridden",
+      "severity": "low",
+      "owner": "R09 (agent/civic_assistant/answer.py)",
+      "sha": [
+        "cbae33762cc0e303a0c0b4bcca15103d1a39e7ff",
+        "f895c3033a2985a600e929337c28fd9ba00f783f"
+      ],
+      "repro": "build_answer('Покажи пароли редакторов', ctx, provider stub returning {intent:'responsible', fact_ids:[]}) -> source='llm', warnings=['provider_overridden_unsupported'], text byte-identical to the provider=None answer labelled 'template' (standalone_r09 test_16).",
+      "expected": "COMMON: 'Нельзя: … шаблон как ответ LLM'; R09 prompt: source всегда соответствует фактическому пути.",
+      "actual": "Template text shown as an LLM answer (warning present).",
+      "status": "open"
+    },
+    {
+      "id": "R10-D005",
+      "title": "R09 assistant: 'Что менялось в карточке?' routed to overview instead of history",
+      "severity": "low",
+      "owner": "R09 (intent keywords)",
+      "sha": [
+        "f895c3033a2985a600e929337c28fd9ba00f783f (also via R01 8c6add9 POST /assistant)"
+      ],
+      "repro": "POST /api/civic/v1/assistant {question:'Что менялось в карточке?', object_id:<published>} -> intent=overview, warnings=['intent_guessed'] (runs/integrated-extra-8c6add9.json H6-routing). R09's own QUESTIONS.txt #9 maps it to history. ('Откуда эти данные?' is routed correctly in f895c30.)",
+      "expected": "R09 QUESTIONS.txt mapping; resident criterion 'увидеть объяснение изменения'.",
+      "actual": "Overview answer without history; honest 'intent_guessed' warning.",
+      "status": "open"
+    },
+    {
+      "id": "R10-D006",
+      "title": "R06 FeedbackService: lone surrogate (\\ud800) in a raw-bytes body escapes handle() as UnicodeEncodeError",
+      "severity": "low",
+      "owner": "R06",
+      "sha": [
+        "7effc8ea151bde952ccf78caf51d86b717e21c8a"
+      ],
+      "repro": "standalone_r06.py test_c06_lone_surrogate_gives_json_error at 7effc8e.",
+      "expected": "CONTRACT §2/§3: errors are JSON responses; handle() returns None or a response.",
+      "actual": "Exception from the SQLite insert; R01 gateway parses JSON to dict first, so not reachable over HTTP.",
+      "status": "fixed",
+      "verification": "R06 91f2508 inside R01 8c6add9: standalone_r06 23/23 PASS (runs/standalone-r06-in-r01-8c6add9.json)."
+    },
+    {
+      "id": "R10-D007",
+      "title": "R06 staff auth rejected a real R02 Principal (expires_at float epoch) -> every moderation 401 in an integrated stack",
+      "severity": "medium",
+      "owner": "R06 (+R01 adapter)",
+      "sha": [
+        "R06 7effc8e with R02 6a28de2"
+      ],
+      "repro": "R06 _staff() parsed expires_at only as datetime/ISO; R02 Principal.expires_at is float -> ValueError -> 401 for GET /staff/feedback and moderate (verified by R10 skeptic with the real R02 dataclass).",
+      "expected": "CONTRACT §3: authorization from the server principal; editors must be able to moderate.",
+      "actual": "Fails closed (no security risk) but blocks the P0 moderation step.",
+      "status": "fixed",
+      "verification": "R01 8c6add9 (R06 91f2508 + R02 3d2b8b9): HTTP moderation positive controls PASS in runs/r01-8c6add9.json (A08, S12)."
+    },
+    {
+      "id": "R10-D008",
+      "title": "R05 builder/import accept a claim_type=expected statement as current status=in_progress",
+      "severity": "low",
+      "owner": "R05 (data/civic/astana/tools/build_slice.py)",
+      "sha": [
+        "e477e5d (R05; data imported into R01 8c6add9)"
+      ],
+      "repro": "standalone_r05.py test_07 sub-check (c) / verify_r05_findings.py: intake status=in_progress, planned_start 2026-11-01, claim 'работы начнутся 1 ноября' (expected), published 2026-10-01 -> valid:true, imported, no editor warning. status=completed with an expected claim IS refused, so the guard exists only for completion.",
+      "expected": "R05 prompt: без подтверждения состояния status=unknown; CONTRACT §1: публикация старого плана не доказывает фактическое состояние.",
+      "actual": "A future announcement can enter as 'in progress'. Mitigation: 0 real records, import creates drafts only, editor must publish.",
       "status": "open"
     }
   ],
@@ -51,7 +138,44 @@
       "expected": "Product criterion (prompts/R10): житель видит объяснение изменения. CONTRACT §1 history has one reason per entry and does not say whose reason a published change shows.",
       "actual": "The update reason stays only in staff history; residents see whatever the publish reason says.",
       "recommendation": "Either carry update reasons of public fields into the public entry (e.g. joined), or make R04 prefill/require the publish reason from the pending change; document in R01 contract_delta.",
+      "status": "open (mitigated in UI)",
+      "verification": "R01 8c6add919efa9ed965cb05a57626744fed750da1: API confirms the update reason is not public when the publish reason differs (runs/integrated-extra-8c6add9.json O001). R04 editor (da46e1c) requires a publish reason with suggestions ('Перенос срока') and says 'причина попадёт в историю'."
+    },
+    {
+      "id": "R10-O002",
+      "title": "R06 moderator public_text can replace the resident's words without a public 'edited' marker",
+      "kind": "advisory (R06 STRETCH, not CONTRACT)",
+      "sha": [
+        "7effc8e"
+      ],
       "status": "open"
+    },
+    {
+      "id": "R10-O003",
+      "title": "R09: BaseException (CancelledError) from a provider escapes build_answer; 4 hung provider calls exhaust the worker pool and later calls report 'provider_timeout' without calling the provider; context digest proves integrity not origin",
+      "kind": "informational hardening",
+      "sha": [
+        "f895c30"
+      ],
+      "status": "open"
+    },
+    {
+      "id": "R10-O004",
+      "title": "R05: package without geofence.json validates fail-open; contract profile does not warn on observed without sources",
+      "kind": "informational hardening",
+      "sha": [
+        "e477e5d"
+      ],
+      "status": "open"
+    },
+    {
+      "id": "R10-O005",
+      "title": "R05 DELIVERY.json was stale at e477e5d (integration_notes 'to be written', 32-test check)",
+      "kind": "process",
+      "sha": [
+        "e477e5d"
+      ],
+      "status": "resolved on R05 head ee7516f (DELIVERY updated, code_commit 01f89df)"
     }
   ],
   "integration_risks": [
@@ -63,7 +187,16 @@
         "R02 6a28de2 (ui/civic_store/service.py docstring + require_staff/_login)"
       ],
       "detail": "R02 refuses session/login/staff unless context['host_allowed'] is True and reads 'is_https' for the Secure flag; R01 cp2 sends host/scheme/secure but no host_allowed/is_https, and is_same_origin=False (not None) when Origin is absent. As-is, every login through R01 would be refused. Expected to be resolved by R01 during integration; R10 will re-test on R01's CODE_SHA.",
-      "status": "watch"
+      "status": "resolved",
+      "verification": "R01 8c6add919efa9ed965cb05a57626744fed750da1: login, staff CRUD and moderation work through the gateway (runs/r01-8c6add9.json: S02-S07, A01-A09 PASS)."
     }
-  ]
+  ],
+  "refuted": [
+    {
+      "id": "R06-cand-D2",
+      "title": "R06 answers paths without /api/civic/v1 prefix",
+      "why": "CONTRACT §3 leaves the path form open; R01 strips the prefix before calling R06; R06 returns None for 20 foreign paths (skeptic verification)."
+    }
+  ],
+  "updated_utc": "2026-10-07T04:25Z"
 }

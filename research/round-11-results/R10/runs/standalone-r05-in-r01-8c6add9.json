@@ -1,0 +1,210 @@
+{
+ "label": "standalone-r05-in-r01-8c6add9",
+ "started_utc": "2026-10-07T04:10:28+00:00",
+ "seconds": 0.25,
+ "command": "python3 -I -B tests/civic/R10/run_acceptance.py --start standalone --pattern standalone_r05.py --label standalone-r05-in-r01-8c6add9 --out research/round-11-results/R10/runs/standalone-r05-in-r01-8c6add9.json",
+ "python": "3.13.16",
+ "platform": "Linux-6.18.44-fc-v77-x86_64-with-glibc2.39",
+ "target": {
+  "target": null,
+  "note": "no test started a server"
+ },
+ "suite_files": {
+  "test_api_feedback.py": "8f90f7a570d6476f",
+  "test_api_objects.py": "9b9b177d4c4aee4d",
+  "test_api_security.py": "e1d012753d6c69f6",
+  "test_fixture_contract.py": "6e7dcc1932484be4",
+  "test_scenarios_tinygraph.py": "dc5bc76d8cd3c955",
+  "r10lib/__init__.py": "e3b0c44298fc1c14",
+  "r10lib/client.py": "f27011e116d61022",
+  "r10lib/contract.py": "bfe34000e9edbffd",
+  "r10lib/helpers.py": "e73f272fdb7b4633",
+  "r10lib/modrun.py": "3116b200792c0bc4",
+  "r10lib/oracle/server.py": "9862f8fd27f3ea6d",
+  "r10lib/standalone_server.py": "9663021bedf286f8",
+  "r10lib/target.py": "f5405f6a86c5ae5b"
+ },
+ "counts": {
+  "PASS": 16,
+  "FAIL": 3,
+  "ERROR": 0,
+  "NOT_RUN": 1,
+  "XFAIL": 0,
+  "XPASS": 0
+ },
+ "acceptance": {
+  "untagged": {
+   "status": "FAIL",
+   "tests": 20,
+   "counts": {
+    "FAIL": 3,
+    "NOT_RUN": 1,
+    "PASS": 16
+   }
+  }
+ },
+ "tests": [
+  {
+   "test": "standalone_r05.R05FalseFacts.test_05_expected_end_is_not_actual_end",
+   "status": "PASS",
+   "ids": [],
+   "title": "[R10-R05-05] 'завершим в июне' never becomes actual_end (validator, builder, schedule_diff).",
+   "message": "",
+   "seconds": 0.244
+  },
+  {
+   "test": "standalone_r05.R05FalseFacts.test_06_old_announcement_not_current",
+   "status": "PASS",
+   "ids": [],
+   "title": "[R10-R05-06] Old announcement does not become current status: stale status rejected, old completion -> historical.",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r05.R05FalseFacts.test_07_future_announcement_not_current",
+   "status": "FAIL",
+   "ids": [],
+   "title": "[R10-R05-07] Future announcement ('начнутся 1 ноября') must not yield status in_progress/completed as current.",
+   "message": "AssertionError: Lists differ: ['validator(real) accepts status=in_progre[212 chars]ted'] != []\n\nFirst list contains 3 additional elements.\nFirst extra element 0:\n'validator(real) accepts status=in_progress with planned_start 2026-11-01 > as_of 2026-10-06'\n\n+ []\n- ['validator(real) accepts status=in_progress with planned_start 2026-11-01 > '\n-  'as_of 2026-10-06',\n-  'validator(real) accepts status=completed with planned_start 2026-12-01 > '\n-  'as_of',\n-  'builder+import_helper accept claim status=in_progress with '\n-  'claim_type=expected']\n",
+   "seconds": 0.001
+  },
+  {
+   "test": "standalone_r05.R05FalseFacts.test_08_budget_and_geometry_provenance",
+   "status": "PASS",
+   "ids": [],
+   "title": "[R10-R05-08] Budget from unfetched source, 0 as unknown, 2GIS geometry, claims on unfetched sources are refused.",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r05.R05Geofence.test_14_geofence_plausible",
+   "status": "PASS",
+   "ids": [],
+   "title": "[R10-R05-14] Geofence is a plausible Astana area: bbox ~71.2-71.8E/50.9-51.35N, closed 2D rings, not swapped, ODbL.",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r05.R05Geofence.test_15_geofence_points_and_rebuild",
+   "status": "PASS",
+   "ids": [],
+   "title": "[R10-R05-15] Landmarks inside, other cities and swapped point outside (R05 == R10 ray casting); rebuild reproduces file.",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r05.R05Import.test_09_import_creates_drafts_only",
+   "status": "PASS",
+   "ids": [],
+   "title": "[R10-R05-09] Import plan only creates drafts; no publish/archive action; create_body has no server-owned fields.",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r05.R05Import.test_10_reimport_idempotent",
+   "status": "PASS",
+   "ids": [],
+   "title": "[R10-R05-10] Same inputs -> same slice; committed files equal a rebuild; re-import is skip_unchanged.",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r05.R05Import.test_11_no_overwrite_no_auto_archive",
+   "status": "PASS",
+   "ids": [],
+   "title": "[R10-R05-11] Changed package never overwrites published/hand-edited records; absent record -> report_missing.",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r05.R05Import.test_12_smuggled_records_rejected",
+   "status": "PASS",
+   "ids": [],
+   "title": "[R10-R05-12] Hash-consistent real slice carrying synthetic / swapped-coordinate records: rejected at import.",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r05.R05Import.test_13_fail_closed_without_geofence",
+   "status": "FAIL",
+   "ids": [],
+   "title": "[R10-R05-13] Without geofence.json the import must not silently accept swapped [lat,lon] coordinates.",
+   "message": "AssertionError: False is not true : {'items': ['ast-r05-roadworks-r10-test'], 'rejected': []}\n",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r05.R05Sources.test_16_sources_match_fetch_audit",
+   "status": "PASS",
+   "ids": [],
+   "title": "[R10-R05-16] Every source has url/publisher/retrieved_at/access_status/license; status matches the fetch audit.",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r05.R05Sources.test_17_no_unbacked_real_records_and_licence_register",
+   "status": "PASS",
+   "ids": [],
+   "title": "[R10-R05-17] No real record without fetched source; demo slice synthetic+labelled; licence register consistent.",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r05.R05Sources.test_18_licence_texts_refetched",
+   "status": "PASS",
+   "ids": [],
+   "title": "[R10-R05-18] Licence texts R05 marks fetched (raw.githubusercontent.com) re-fetched by R10: identical sha256.",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r05.R05Sources.test_19_official_licence_pages",
+   "status": "NOT_RUN",
+   "ids": [],
+   "title": "[R10-R05-19] Official pages (openstreetmap.org/copyright, ODbL, OSMF, openfreemap.org, openmaptiles.org, Overture docs, gov.kz).",
+   "message": "NOT_RUN: official licence pages not reachable from R10 environment (proxy 403): https://astana.gov.kz/, https://docs.overturemaps.org/attribution/, https://opendatacommons.org/licenses/odbl/1-0/, https://openfreemap.org/, https://openmaptiles.org/, https://osmfoundation.org/wiki/Licence/Attribution_Guidelines, https://www.gov.kz/memleket/entities/astana/press/news/details/1193903?lang=ru, https://www.openstreetmap.org/copyright/en",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r05.R05Sources.test_20_delivery_current",
+   "status": "FAIL",
+   "ids": [],
+   "title": "[R10-R05-20] DELIVERY.json (CONTRACT §7) reflects the delivered head: integration notes exist, checks current.",
+   "message": "AssertionError: 'to be written' unexpectedly found in 'research/round-11-results/R05/INTEGRATION.txt (to be written)'\n",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r05.R05Validator.test_01_pack_fixture",
+   "status": "PASS",
+   "ids": [],
+   "title": "[R10-R05-01] PACK fixture: accepted by R05 contract/demo profiles and R10; real profile refuses synthetic.",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r05.R05Validator.test_02_bad_variants",
+   "status": "PASS",
+   "ids": [],
+   "title": "[R10-R05-02] R10 BAD_VARIANTS: every contract violation rejected by R05; disagreements only where CONTRACT is silent.",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r05.R05Validator.test_03_contract_text_variants",
+   "status": "PASS",
+   "ids": [],
+   "title": "[R10-R05-03] Extra variants from contract text (HTML in title, source_ref without license key) rejected by R05.",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r05.R05Validator.test_04_observed_needs_fetched_source",
+   "status": "PASS",
+   "ids": [],
+   "title": "[R10-R05-04] evidence_type=observed without a fetched source is refused for real data (real profile + import).",
+   "message": "",
+   "seconds": 0.0
+  }
+ ],
+ "journal": [],
+ "startup_error": null
+}

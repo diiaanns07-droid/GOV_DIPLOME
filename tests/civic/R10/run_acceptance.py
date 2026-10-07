@@ -106,11 +106,13 @@ def main():
     ap.add_argument("--label", required=True)
     ap.add_argument("--out", required=True)
     ap.add_argument("--pattern", default="test_*.py")
+    ap.add_argument("--start", default=None, help="sub-directory to discover in (e.g. standalone)")
     args = ap.parse_args()
 
     started = dt.datetime.now(dt.timezone.utc)
     loader = unittest.TestLoader()
-    suite = loader.discover(str(HERE), pattern=args.pattern, top_level_dir=str(HERE))
+    start = HERE / args.start if args.start else HERE
+    suite = loader.discover(str(start), pattern=args.pattern, top_level_dir=str(start))
     result = Collector()
     t0 = time.monotonic()
     startup_error = None

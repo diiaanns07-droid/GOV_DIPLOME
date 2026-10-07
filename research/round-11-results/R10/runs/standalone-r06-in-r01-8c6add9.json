@@ -1,0 +1,392 @@
+{
+ "label": "standalone-r06-in-r01-8c6add9",
+ "started_utc": "2026-10-07T04:10:04+00:00",
+ "seconds": 0.98,
+ "command": "python3 -I -B tests/civic/R10/run_acceptance.py --start standalone --pattern standalone_r06.py --label standalone-r06-in-r01-8c6add9 --out research/round-11-results/R10/runs/standalone-r06-in-r01-8c6add9.json",
+ "python": "3.13.16",
+ "platform": "Linux-6.18.44-fc-v77-x86_64-with-glibc2.39",
+ "target": {
+  "target": null,
+  "note": "no test started a server"
+ },
+ "suite_files": {
+  "test_api_feedback.py": "8f90f7a570d6476f",
+  "test_api_objects.py": "9b9b177d4c4aee4d",
+  "test_api_security.py": "e1d012753d6c69f6",
+  "test_fixture_contract.py": "6e7dcc1932484be4",
+  "test_scenarios_tinygraph.py": "dc5bc76d8cd3c955",
+  "r10lib/__init__.py": "e3b0c44298fc1c14",
+  "r10lib/client.py": "f27011e116d61022",
+  "r10lib/contract.py": "bfe34000e9edbffd",
+  "r10lib/helpers.py": "e73f272fdb7b4633",
+  "r10lib/modrun.py": "3116b200792c0bc4",
+  "r10lib/oracle/server.py": "9862f8fd27f3ea6d",
+  "r10lib/standalone_server.py": "9663021bedf286f8",
+  "r10lib/target.py": "f5405f6a86c5ae5b"
+ },
+ "counts": {
+  "PASS": 23,
+  "FAIL": 0,
+  "ERROR": 0,
+  "NOT_RUN": 0,
+  "XFAIL": 0,
+  "XPASS": 0
+ },
+ "acceptance": {
+  "A06": {
+   "status": "PASS",
+   "tests": 1,
+   "counts": {
+    "PASS": 1
+   }
+  },
+  "A07": {
+   "status": "PASS",
+   "tests": 3,
+   "counts": {
+    "PASS": 3
+   }
+  },
+  "A08": {
+   "status": "PASS",
+   "tests": 7,
+   "counts": {
+    "PASS": 7
+   }
+  },
+  "C01": {
+   "status": "PASS",
+   "tests": 5,
+   "counts": {
+    "PASS": 5
+   }
+  },
+  "C02": {
+   "status": "PASS",
+   "tests": 1,
+   "counts": {
+    "PASS": 1
+   }
+  },
+  "C04": {
+   "status": "PASS",
+   "tests": 1,
+   "counts": {
+    "PASS": 1
+   }
+  },
+  "C06": {
+   "status": "PASS",
+   "tests": 3,
+   "counts": {
+    "PASS": 3
+   }
+  },
+  "C07": {
+   "status": "PASS",
+   "tests": 1,
+   "counts": {
+    "PASS": 1
+   }
+  },
+  "S04": {
+   "status": "PASS",
+   "tests": 1,
+   "counts": {
+    "PASS": 1
+   }
+  },
+  "S07": {
+   "status": "PASS",
+   "tests": 2,
+   "counts": {
+    "PASS": 2
+   }
+  },
+  "S09": {
+   "status": "PASS",
+   "tests": 3,
+   "counts": {
+    "PASS": 3
+   }
+  },
+  "S10": {
+   "status": "PASS",
+   "tests": 1,
+   "counts": {
+    "PASS": 1
+   }
+  },
+  "S12": {
+   "status": "PASS",
+   "tests": 1,
+   "counts": {
+    "PASS": 1
+   }
+  },
+  "S13": {
+   "status": "PASS",
+   "tests": 2,
+   "counts": {
+    "PASS": 2
+   }
+  },
+  "S14": {
+   "status": "PASS",
+   "tests": 1,
+   "counts": {
+    "PASS": 1
+   }
+  },
+  "untagged": {
+   "status": "PASS",
+   "tests": 1,
+   "counts": {
+    "PASS": 1
+   }
+  }
+ },
+ "tests": [
+  {
+   "test": "standalone_r06.R06Standalone.test_00_pinned_sha_and_isolation",
+   "status": "PASS",
+   "ids": [],
+   "title": "[META] product imported from the pinned worktree, -I -B, sys.path[0]=root.",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r06.R06Standalone.test_a06_restart_keeps_public_and_hidden_state",
+   "status": "PASS",
+   "ids": [
+    "A06",
+    "A08"
+   ],
+   "title": "close + reopen on same DB: approved still public, pending still hidden and still moderatable.",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r06.R06Standalone.test_a07_classifier_failure_does_not_lose_message",
+   "status": "PASS",
+   "ids": [
+    "A07"
+   ],
+   "title": "classifier raising / hanging / returning garbage: 201, message stored, category unchanged, not public.",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r06.R06Standalone.test_a07_duplicate_submit_warned_or_single_row",
+   "status": "PASS",
+   "ids": [
+    "A07"
+   ],
+   "title": "repeated identical submit does not silently create many identical rows.",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r06.R06Standalone.test_a07_receipt_has_no_personal_echo",
+   "status": "PASS",
+   "ids": [
+    "A07",
+    "S09"
+   ],
+   "title": "receipt = {receipt_id, moderation:\"pending\"} without text/contact/ip echo.",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r06.R06Standalone.test_a08_approve_with_consent_visible_with_reply",
+   "status": "PASS",
+   "ids": [
+    "A08",
+    "S09"
+   ],
+   "title": "approve + consent -> text and public_reply visible; no staff/private fields leak.",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r06.R06Standalone.test_a08_approve_without_consent_text_absent",
+   "status": "PASS",
+   "ids": [
+    "A08"
+   ],
+   "title": "approve without consent_public -> text (and reply) absent from raw public JSON.",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r06.R06Standalone.test_a08_consent_withdrawal_removes_public_text",
+   "status": "PASS",
+   "ids": [
+    "A08"
+   ],
+   "title": "withdrawn consent -> no public card (R06 extension; NOT_RUN if absent).",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r06.R06Standalone.test_a08_pending_not_public",
+   "status": "PASS",
+   "ids": [
+    "A08"
+   ],
+   "title": "a pending message is absent from GET /objects/{id}/feedback.",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r06.R06Standalone.test_a08_reject_invisible_and_retained",
+   "status": "PASS",
+   "ids": [
+    "A08"
+   ],
+   "title": "reject -> invisible publicly, still in staff queue; approved-then-rejected disappears.",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r06.R06Standalone.test_c01_error_envelope_and_no_tracebacks",
+   "status": "PASS",
+   "ids": [
+    "C01",
+    "S13"
+   ],
+   "title": "every error is {ok:false,error:{code,message}} JSON without traceback/paths/exception names.",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r06.R06Standalone.test_c01_paths_outside_api_prefix_not_claimed",
+   "status": "PASS",
+   "ids": [
+    "C01"
+   ],
+   "title": "handle() returns None for paths outside /api/civic/v1 (e.g. '/feedback' static route).",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r06.R06Standalone.test_c04_stale_revision_409_without_change",
+   "status": "PASS",
+   "ids": [
+    "C04",
+    "A08"
+   ],
+   "title": "stale expected_revision -> 409; decision, reply and revision unchanged.",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r06.R06Standalone.test_c06_location_rules",
+   "status": "PASS",
+   "ids": [
+    "C06"
+   ],
+   "title": "no object & no geometry, outside Astana, swapped lon/lat, object far from point -> 4xx; valid -> 201.",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r06.R06Standalone.test_c06_lone_surrogate_gives_json_error",
+   "status": "PASS",
+   "ids": [
+    "C06",
+    "C01",
+    "S13"
+   ],
+   "title": "JSON with lone \\ud800 escape -> 400/422 envelope, never an exception out of handle().",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r06.R06Standalone.test_c06_raw_json_nan_infinity_malformed",
+   "status": "PASS",
+   "ids": [
+    "C06",
+    "C01"
+   ],
+   "title": "raw bytes accepted; NaN/Infinity/malformed/non-object/invalid UTF-8/empty -> 400/422.",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r06.R06Standalone.test_c07_body_size_limits",
+   "status": "PASS",
+   "ids": [
+    "C07"
+   ],
+   "title": "120 KB body (bytes and dict) -> 413; 2500-char text -> 400/413/422, not stored; alive after.",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r06.R06Standalone.test_rate_limit_per_sender_small_n",
+   "status": "PASS",
+   "ids": [
+    "C01"
+   ],
+   "title": "[R06-ACC-RATE] same client_ip -> 429 within 10 submits (no row created); other client_ip not blocked.",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r06.R06Standalone.test_s07_unknown_fields_with_role_never_grant_rights",
+   "status": "PASS",
+   "ids": [
+    "S07",
+    "C02"
+   ],
+   "title": "submit with role/actor/moderation/revision/public_text -> rejected or ignored, never published.",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r06.R06Standalone.test_s09_author_contacts_never_published",
+   "status": "PASS",
+   "ids": [
+    "S09"
+   ],
+   "title": "approve of a consented text containing e-mail/phone never publishes the contact.",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r06.R06Standalone.test_s10_xss_payload_returned_as_literal_text",
+   "status": "PASS",
+   "ids": [
+    "S10"
+   ],
+   "title": "HTML/script text stored and returned literally in JSON (not executed, not mangled).",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r06.R06Standalone.test_s12_moderation_only_editor_with_csrf_and_origin",
+   "status": "PASS",
+   "ids": [
+    "S12",
+    "S07",
+    "S04"
+   ],
+   "title": "anon->401, logged-out->401, fake/resident role->403, no/bad CSRF or cross-origin->403; no state change.",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r06.R06Standalone.test_s14_draft_and_nonexistent_indistinguishable",
+   "status": "PASS",
+   "ids": [
+    "S14"
+   ],
+   "title": "feedback to draft/archived vs nonexistent id: identical error; no title leak; nothing stored.",
+   "message": "",
+   "seconds": 0.0
+  }
+ ],
+ "journal": [],
+ "startup_error": null
+}

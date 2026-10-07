@@ -1,0 +1,332 @@
+{
+ "label": "standalone-r09-in-r01-8c6add9",
+ "started_utc": "2026-10-07T04:10:05+00:00",
+ "seconds": 3.52,
+ "command": "python3 -I -B tests/civic/R10/run_acceptance.py --start standalone --pattern standalone_r09.py --label standalone-r09-in-r01-8c6add9 --out research/round-11-results/R10/runs/standalone-r09-in-r01-8c6add9.json",
+ "python": "3.13.16",
+ "platform": "Linux-6.18.44-fc-v77-x86_64-with-glibc2.39",
+ "target": {
+  "target": null,
+  "note": "no test started a server"
+ },
+ "suite_files": {
+  "test_api_feedback.py": "8f90f7a570d6476f",
+  "test_api_objects.py": "9b9b177d4c4aee4d",
+  "test_api_security.py": "e1d012753d6c69f6",
+  "test_fixture_contract.py": "6e7dcc1932484be4",
+  "test_scenarios_tinygraph.py": "dc5bc76d8cd3c955",
+  "r10lib/__init__.py": "e3b0c44298fc1c14",
+  "r10lib/client.py": "f27011e116d61022",
+  "r10lib/contract.py": "bfe34000e9edbffd",
+  "r10lib/helpers.py": "e73f272fdb7b4633",
+  "r10lib/modrun.py": "3116b200792c0bc4",
+  "r10lib/oracle/server.py": "9862f8fd27f3ea6d",
+  "r10lib/standalone_server.py": "9663021bedf286f8",
+  "r10lib/target.py": "f5405f6a86c5ae5b"
+ },
+ "counts": {
+  "PASS": 16,
+  "FAIL": 6,
+  "ERROR": 0,
+  "NOT_RUN": 0,
+  "XFAIL": 0,
+  "XPASS": 0
+ },
+ "acceptance": {
+  "A02": {
+   "status": "PASS",
+   "tests": 1,
+   "counts": {
+    "PASS": 1
+   }
+  },
+  "A04": {
+   "status": "FAIL",
+   "tests": 2,
+   "counts": {
+    "FAIL": 1,
+    "PASS": 1
+   }
+  },
+  "C03": {
+   "status": "PASS",
+   "tests": 6,
+   "counts": {
+    "PASS": 6
+   }
+  },
+  "D02": {
+   "status": "PASS",
+   "tests": 1,
+   "counts": {
+    "PASS": 1
+   }
+  },
+  "M03": {
+   "status": "FAIL",
+   "tests": 22,
+   "counts": {
+    "FAIL": 6,
+    "PASS": 16
+   }
+  },
+  "S09": {
+   "status": "PASS",
+   "tests": 1,
+   "counts": {
+    "PASS": 1
+   }
+  },
+  "S10": {
+   "status": "FAIL",
+   "tests": 1,
+   "counts": {
+    "FAIL": 1
+   }
+  },
+  "S11": {
+   "status": "PASS",
+   "tests": 1,
+   "counts": {
+    "PASS": 1
+   }
+  }
+ },
+ "tests": [
+  {
+   "test": "standalone_r09.R09Standalone.test_00_isolation_and_pin",
+   "status": "PASS",
+   "ids": [
+    "M03",
+    "D02"
+   ],
+   "title": "product imported only from the pinned worktree, python -I -B, no writes to the worktree.",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r09.R09Standalone.test_01_no_provider_is_never_llm",
+   "status": "PASS",
+   "ids": [
+    "M03"
+   ],
+   "title": "provider=None -> source 'template' for every object question (never 'llm').",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r09.R09Standalone.test_02_dates_and_numbers_only_from_facts",
+   "status": "PASS",
+   "ids": [
+    "M03",
+    "C03"
+   ],
+   "title": "every date/number in answer text exists in the verified facts (or is the derived 2-day shift).",
+   "message": "",
+   "seconds": 0.003
+  },
+  {
+   "test": "standalone_r09.R09Standalone.test_03_unknown_budget_not_zero",
+   "status": "PASS",
+   "ids": [
+    "C03",
+    "M03"
+   ],
+   "title": "budget.amount_kzt=null is stated as unknown; never 0 or an invented amount (RU, KK, llm path).",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r09.R09Standalone.test_04_unknown_responsible_not_invented",
+   "status": "PASS",
+   "ids": [
+    "C03",
+    "M03"
+   ],
+   "title": "responsible.organization/public_contact null -> 'no data', no invented organisation.",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r09.R09Standalone.test_05_missing_deadline_says_no_data",
+   "status": "PASS",
+   "ids": [
+    "C03",
+    "M03"
+   ],
+   "title": "current/original end null -> 'no data'; no invented or today's date; no shift number.",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r09.R09Standalone.test_06_synthetic_visible_in_every_answer",
+   "status": "PASS",
+   "ids": [
+    "M03",
+    "C03"
+   ],
+   "title": "evidence_type=synthetic is visible in the text of every object answer (template, llm, fallback).",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r09.R09Standalone.test_07_planned_is_not_completed",
+   "status": "PASS",
+   "ids": [
+    "M03",
+    "C03"
+   ],
+   "title": "status=planned, actual_end=null: 'already finished?' gets no completion claim and no actual date.",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r09.R09Standalone.test_08_delay_reason_from_single_public_history_entry",
+   "status": "FAIL",
+   "ids": [
+    "M03",
+    "A04"
+   ],
+   "title": "PACK object (orig 2026-10-20 -> current 2026-10-22) + one public history entry with reason:",
+   "message": "AssertionError: 'Поставщик задержал материалы для покрытия (синтетическая причина для приёмки)' not found in 'Это демонстрационная (синтетическая) запись, а не сведения о реальных работах. Первоначальный плановый срок окончания: 20.10.2026. Текущий плановый срок окончания: 22.10.2026. Текущий срок сдвинут относительно первоначального на 2 дн. (разница посчитана по датам карточки). Причина изменения сроков в публичной истории не указана — нет данных.' : delay answer: Это демонстрационная (синтетическая) запись, а не сведения о реальных работах. Первоначальный плановый срок окончания: 20.10.2026. Текущий плановый срок окончания: 22.10.2026. Текущий срок сдвинут относительно первоначального на 2 дн. (разница посчитана по датам карточки). Причина изменения сроков в публичной истории не указана — нет данных.\n",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r09.R09Standalone.test_09_delay_reason_control_histories",
+   "status": "PASS",
+   "ids": [
+    "M03",
+    "A04"
+   ],
+   "title": "control: with an earlier publication entry (generic and R02-shaped history) the reason is quoted.",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r09.R09Standalone.test_10_provider_unknown_fact_ids_rejected",
+   "status": "PASS",
+   "ids": [
+    "M03"
+   ],
+   "title": "(1) provider returns fact ids absent from the catalog -> rejected with warning, template answer.",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r09.R09Standalone.test_11_provider_cannot_inject_numbers_or_dates",
+   "status": "PASS",
+   "ids": [
+    "M03"
+   ],
+   "title": "(2) provider adds a date/amount/free text -> not used; numbers in final text only from facts.",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r09.R09Standalone.test_12_no_fetch_shell_sql_or_writes",
+   "status": "PASS",
+   "ids": [
+    "M03",
+    "S11"
+   ],
+   "title": "instructions/URLs in provider output, question and verified context cause no fetch/shell/SQL/write.",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r09.R09Standalone.test_13_provider_failure_is_not_fabricated",
+   "status": "PASS",
+   "ids": [
+    "M03"
+   ],
+   "title": "(4) provider raises / times out / returns None -> template|unavailable with warning; no secret leak.",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r09.R09Standalone.test_14_provider_base_exception_does_not_escape",
+   "status": "FAIL",
+   "ids": [
+    "M03"
+   ],
+   "title": "(4b) provider raising asyncio.CancelledError (BaseException, common in async SDKs) -> template fallback,",
+   "message": "AssertionError: False is not true : exception escaped build_answer: {'type': 'CancelledError', 'code': None, 'msg': 'provider task cancelled'}\n",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r09.R09Standalone.test_15_source_label_honesty",
+   "status": "PASS",
+   "ids": [
+    "M03"
+   ],
+   "title": "(5) source matches the real path: provider claims of source/text are rejected; 'llm' only when a",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r09.R09Standalone.test_16_overridden_model_choice_not_labelled_llm",
+   "status": "FAIL",
+   "ids": [
+    "M03"
+   ],
+   "title": "when the safety rule discards the model's choice and returns the fixed template refusal,",
+   "message": "AssertionError: 'llm' == 'llm' : template refusal labelled llm; warnings=['provider_overridden_unsupported']\n",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r09.R09Standalone.test_17_html_is_plain_text",
+   "status": "FAIL",
+   "ids": [
+    "S10",
+    "M03"
+   ],
+   "title": "HTML/script in the question is not reflected; in card text it stays literal plain text",
+   "message": "AssertionError: True is not false : UI exists now: run browser check U10 for it\n",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r09.R09Standalone.test_18_private_fields_never_reach_answer_or_provider",
+   "status": "PASS",
+   "ids": [
+    "S09",
+    "M03"
+   ],
+   "title": "internal_notes/password_hash/author contact/session/editor login never reach context,",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r09.R09Standalone.test_19_context_gate",
+   "status": "PASS",
+   "ids": [
+    "A02",
+    "M03"
+   ],
+   "title": "draft/archived refused for public audience; tampered, absent or client-shaped context -> unavailable.",
+   "message": "",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r09.R09Standalone.test_20_hung_provider_calls_do_not_starve_others",
+   "status": "FAIL",
+   "ids": [
+    "M03"
+   ],
+   "title": "after several provider calls that time out but keep hanging, a provider that answers at once",
+   "message": "AssertionError: 0 != 1 : instant provider never called; source=template warnings=['provider_timeout'] elapsed=1.001s\n",
+   "seconds": 0.0
+  },
+  {
+   "test": "standalone_r09.R09Standalone.test_21_common_questions_routed [history]",
+   "status": "FAIL",
+   "ids": [
+    "M03"
+   ],
+   "title": "R09 prompt key questions in plain wording: 'Откуда эти данные?' must speak about sources;",
+   "message": "AssertionError: Regex didn't match: '[Рр]евизи|истори|изменен' not found in 'Это демонстрационная (синтетическая) запись, а не сведения о реальных работах. Объект: «Демонстрационный ремонт прохода» (дорожные работы). Статус в карточке: запланировано. Описание в карточке: «Синтетическая запись для проверки интерфейса. Не сведения о реальных работах.» Текущий плановый срок окончания: 22.10.2026. Плановый срок — это план; он не означает, что работы закончены.' : intent=overview warnings=['intent_guessed']\n",
+   "seconds": 0.0
+  }
+ ],
+ "journal": [],
+ "startup_error": null
+}

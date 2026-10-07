@@ -20,8 +20,13 @@ CREATE_WRAP = os.environ.get("R10_CREATE_WRAP")  # e.g. "item" -> {"item": {...}
 
 
 def token(prefix: str = "r10") -> str:
-    """Unique marker so a test can find its own rows among other tests' data."""
-    return f"{prefix}-{secrets.token_hex(4)}"
+    """Unique marker so a test can find its own rows among other tests' data.
+
+    Letters only: hex markers like "s12-49573021" look like phone numbers, and a product's
+    personal-data guard (R06 personal_data_suspected) then rightly refuses to publish them.
+    """
+    letters = "abcdefghijkmnpqrstuvwxyz"
+    return f"{prefix}-" + "".join(secrets.choice(letters) for _ in range(10))
 
 
 def object_payload(**overrides) -> dict:

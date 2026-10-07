@@ -1,26 +1,54 @@
 {
- "scanned_utc": "2026-10-06T15:47:51+00:00",
+ "scanned_utc": "2026-10-07T04:03:48+00:00",
  "pack_sha": "9c2f5c0dae14b46c0697a9dfc7f854351bfd570d",
  "branches_scanned": 24,
  "deliveries": [
   {
    "branch": "origin/claude/trusting-ptolemy-6ms354",
-   "head": "6a28de21f890b9201d177e3c4ca20bc2e9c9bd99",
+   "head": "597ff2c6ad9e6a11d8f8fbfed6928e390ac48ace",
    "path": "research/round-11-results/R02/DELIVERY.json",
    "role_dir": "R02",
-   "head_time": "2026-10-06T15:47:10+00:00",
+   "head_time": "2026-10-06T16:18:31+00:00",
    "valid_json": true,
    "role": "R02",
    "status": "partial",
    "pack_sha": "9c2f5c0dae14b46c0697a9dfc7f854351bfd570d",
-   "code_commit": null,
+   "code_commit": {
+    "sha": "3d2b8b9",
+    "exists": true,
+    "ancestor_of_head": true
+   },
    "checks": [
     {
-     "name": "schema-and-empty-db",
+     "name": "r02-unit-and-integration",
      "status": "PASS"
     },
     {
-     "name": "civic-service-http",
+     "name": "repository-suite-regression",
+     "status": "PASS"
+    },
+    {
+     "name": "combined-tree-with-R01-gateway",
+     "status": "PASS"
+    },
+    {
+     "name": "web_server-patch-on-original-handler",
+     "status": "PASS"
+    },
+    {
+     "name": "http-stress-16-threads",
+     "status": "PASS"
+    },
+    {
+     "name": "r05-demo-slice-compatibility",
+     "status": "PASS"
+    },
+    {
+     "name": "independent-adversarial-review",
+     "status": "PASS"
+    },
+    {
+     "name": "browser-walkthrough",
      "status": "NOT_RUN"
     }
    ],
@@ -32,28 +60,52 @@
     "research/handoffs/astana/R02/round-11/STATUS.md": true
    },
    "r01_files": null,
-   "next_step": "Валидация civic-v1 и CRUD с публичной проекцией по allowlist.",
+   "next_step": "R01 re-imports ui/civic_store/ and tests/civic/R02/ at code_commit; R02 finishes the remaining review findings (integrity, fuzz).",
    "problems": []
   },
   {
    "branch": "origin/claude/zen-mendel-e79iiv",
-   "head": "5275d0a04984a9fddf4aeb66781c8d4a3df8451b",
+   "head": "1bc9c48d6562d02bed7dbc98686f1b6b8a8a9a10",
    "path": "research/round-11-results/R03/DELIVERY.json",
    "role_dir": "R03",
-   "head_time": "2026-10-06T15:41:21+00:00",
+   "head_time": "2026-10-06T16:52:01+00:00",
    "valid_json": true,
    "role": "R03",
    "status": "partial",
    "pack_sha": "9c2f5c0dae14b46c0697a9dfc7f854351bfd570d",
-   "code_commit": null,
+   "code_commit": {
+    "sha": "9cb1a2e0d0373922419897060951264a17221f27",
+    "exists": true,
+    "ancestor_of_head": true
+   },
    "checks": [
     {
      "name": "core-unit-tests",
      "status": "PASS"
     },
     {
-     "name": "browser-walkthrough",
+     "name": "browser-suite-stand",
+     "status": "PASS"
+    },
+    {
+     "name": "openfreemap-basemap",
      "status": "NOT_RUN"
+    },
+    {
+     "name": "3d-buildings",
+     "status": "NOT_RUN"
+    },
+    {
+     "name": "r02-civicservice-readonly",
+     "status": "PASS"
+    },
+    {
+     "name": "r01-shell-integration",
+     "status": "NOT_RUN"
+    },
+    {
+     "name": "adversarial-review",
+     "status": "PASS"
     }
    ],
    "status_md_present": true,
@@ -64,15 +116,15 @@
     "research/handoffs/astana/R03/round-11/STATUS.md": true
    },
    "r01_files": null,
-   "next_step": "Stand + Playwright tests (layers, card, race, destroy, 390x844/1440x900).",
+   "next_step": "Final INTEGRATION/DELIVERY update; R01 imports web/civic/map (3 files) per INTEGRATION.txt.",
    "problems": []
   },
   {
    "branch": "origin/claude/fervent-ritchie-1zih1y",
-   "head": "597b14c3aabed9e4399038fcabbc9db3ba542b01",
+   "head": "da46e1c8e6e5978b96112199851b1c574b96d8c6",
    "path": "research/round-11-results/R04/DELIVERY.json",
    "role_dir": "R04",
-   "head_time": "2026-10-06T15:38:20+00:00",
+   "head_time": "2026-10-06T16:04:52+00:00",
    "valid_json": true,
    "role": "R04",
    "status": "partial",
@@ -101,10 +153,66 @@
   },
   {
    "branch": "origin/claude/intelligent-sagan-7shpeh",
-   "head": "b2c7c8ee445383b5d8bc093949b32dc4c514ccff",
+   "head": "ee7516f0f917f3286d998f04f3a397730332ae8a",
    "path": "research/round-11-results/R05/DELIVERY.json",
    "role_dir": "R05",
-   "head_time": "2026-10-06T15:46:56+00:00",
+   "head_time": "2026-10-06T16:30:41+00:00",
+   "valid_json": true,
+   "role": "R05",
+   "status": "partial",
+   "pack_sha": "9c2f5c0dae14b46c0697a9dfc7f854351bfd570d",
+   "code_commit": {
+    "sha": "01f89df37caec87c3aab0c9e48679192d15f6f20",
+    "exists": true,
+    "ancestor_of_head": true
+   },
+   "checks": [
+    {
+     "name": "r05-unit-tests",
+     "status": "PASS"
+    },
+    {
+     "name": "r05-unit-tests-stdlib",
+     "status": "PASS"
+    },
+    {
+     "name": "slice-determinism",
+     "status": "PASS"
+    },
+    {
+     "name": "r02-importer-compat",
+     "status": "PASS"
+    },
+    {
+     "name": "adversarial-review-round-1",
+     "status": "PASS"
+    },
+    {
+     "name": "official-source-fetch",
+     "status": "FAIL"
+    },
+    {
+     "name": "basemap-3d-render",
+     "status": "NOT_RUN"
+    }
+   ],
+   "status_md_present": true,
+   "owned_paths_present": {
+    "data/civic/astana/": true,
+    "tests/civic/R05/": true,
+    "research/round-11-results/R05/": true,
+    "research/handoffs/astana/R05/round-11/STATUS.md": true
+   },
+   "r01_files": null,
+   "next_step": "With www.gov.kz allowed in the environment network policy: fetch the two BRIEF.txt announcements and 30-45 days of akimat news, create 8-15 intake records (NEXT_SOURCES.md), rebuild, rerun pilot_check on the real slice.",
+   "problems": []
+  },
+  {
+   "branch": "origin/claude/affectionate-ride-bol5v8",
+   "head": "8c6add919efa9ed965cb05a57626744fed750da1",
+   "path": "research/round-11-results/R05/DELIVERY.json",
+   "role_dir": "R05",
+   "head_time": "2026-10-06T16:34:43+00:00",
    "valid_json": true,
    "role": "R05",
    "status": "partial",
@@ -120,15 +228,80 @@
      "status": "FAIL"
     }
    ],
-   "status_md_present": true,
+   "status_md_present": false,
    "owned_paths_present": {
     "data/civic/astana/": true,
     "tests/civic/R05/": true,
     "research/round-11-results/R05/": true,
-    "research/handoffs/astana/R05/round-11/STATUS.md": true
+    "research/handoffs/astana/R05/round-11/STATUS.md": false
    },
    "r01_files": null,
    "next_step": "Slice builder + license register + synthetic demo slice + R02 import helper.",
+   "problems": []
+  },
+  {
+   "branch": "origin/claude/focused-hypatia-z8h0no",
+   "head": "73f9576dc8b60f3cd0f2d9b2a9b1fcbdc3490b1b",
+   "path": "research/round-11-results/R06/DELIVERY.json",
+   "role_dir": "R06",
+   "head_time": "2026-10-06T16:06:43+00:00",
+   "valid_json": true,
+   "role": "R06",
+   "status": "ready",
+   "pack_sha": "9c2f5c0dae14b46c0697a9dfc7f854351bfd570d",
+   "code_commit": {
+    "sha": "91f2508",
+    "exists": true,
+    "ancestor_of_head": true
+   },
+   "checks": [
+    {
+     "name": "pytest R06 (service, validation, moderation, privacy, routing, classifier, frontend static, HTTP harness)",
+     "status": "PASS"
+    },
+    {
+     "name": "pytest whole branch",
+     "status": "PASS"
+    },
+    {
+     "name": "browser: real Chromium on FIXTURE harness",
+     "status": "PASS"
+    },
+    {
+     "name": "independent R10 standalone acceptance of R06",
+     "status": "PASS"
+    },
+    {
+     "name": "compat with real R02 CivicService/Principal",
+     "status": "PASS"
+    },
+    {
+     "name": "full R01 app in Chromium with R02 + R06 + r01_integration.patch",
+     "status": "PASS"
+    },
+    {
+     "name": "end-to-end through R01 HTTP gateway + R02 + R06",
+     "status": "PASS"
+    },
+    {
+     "name": "R08 classifier",
+     "status": "NOT_RUN"
+    },
+    {
+     "name": "integrated R01 build with R03 map and R04 editor",
+     "status": "NOT_RUN"
+    }
+   ],
+   "status_md_present": true,
+   "owned_paths_present": {
+    "ui/civic_feedback/": true,
+    "web/civic/feedback/": true,
+    "tests/civic/R06/": true,
+    "research/round-11-results/R06/": true,
+    "research/handoffs/astana/R06/round-11/STATUS.md": true
+   },
+   "r01_files": null,
+   "next_step": "R01: импортировать пути R06 и применить research/round-11-results/R06/r01_integration.patch (INTEGRATION.txt §6), затем прогнать tests/civic/R06/app_e2e_r06.cjs на CODE_SHA.",
    "problems": []
   },
   {
@@ -202,39 +375,63 @@
   },
   {
    "branch": "origin/claude/wizardly-ptolemy-qy8ltw",
-   "head": "cdd265879614738cf74c6ac58ceeec8d8a478f31",
+   "head": "f895c3033a2985a600e929337c28fd9ba00f783f",
    "path": "research/round-11-results/R09/DELIVERY.json",
    "role_dir": "R09",
-   "head_time": "2026-10-06T15:43:58+00:00",
+   "head_time": "2026-10-06T16:14:08+00:00",
    "valid_json": true,
    "role": "R09",
-   "status": "partial",
+   "status": "ready",
    "pack_sha": "9c2f5c0dae14b46c0697a9dfc7f854351bfd570d",
    "code_commit": {
-    "sha": "cbae337",
+    "sha": "5d1e251854ad6adce69dcbf7819e35c9386fa740",
     "exists": true,
     "ancestor_of_head": true
    },
    "checks": [
     {
-     "name": "r09-cp3-facts-template-provider-scenario-api",
+     "name": "r09-pytest-suite",
+     "status": "PASS"
+    },
+    {
+     "name": "r09-adversarial-eval",
+     "status": "PASS"
+    },
+    {
+     "name": "r09-ui-chromium",
+     "status": "PASS"
+    },
+    {
+     "name": "r09-integration-real-r02-r07",
+     "status": "PASS"
+    },
+    {
+     "name": "r09-compat-r05-demo-slice",
      "status": "PASS"
     },
     {
      "name": "live-llm",
+     "status": "NOT_RUN"
+    },
+    {
+     "name": "r01-app-integration",
+     "status": "PASS"
+    },
+    {
+     "name": "official-gov-kz-publication-fetch",
      "status": "NOT_RUN"
     }
    ],
    "status_md_present": true,
    "owned_paths_present": {
     "agent/civic_assistant/": true,
-    "web/civic/assistant/": false,
+    "web/civic/assistant/": true,
     "tests/civic/R09/": true,
     "research/round-11-results/R09/": true,
     "research/handoffs/astana/R09/round-11/STATUS.md": true
    },
    "r01_files": null,
-   "next_step": "CP4: extraction draft validator",
+   "next_step": "R01: git apply r01_integration.patch после импорта путей R09 @5d1e251; R10: проверить на CODE_SHA R01",
    "problems": []
   }
  ]
