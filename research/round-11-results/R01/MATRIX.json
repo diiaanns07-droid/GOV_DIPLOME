@@ -3,7 +3,7 @@
   "role": "R01",
   "branch": "claude/affectionate-ride-bol5v8",
   "pack_sha": "9c2f5c0dae14b46c0697a9dfc7f854351bfd570d",
-  "updated_at": "2026-10-07T04:20Z",
+  "updated_at": "2026-10-07T04:21:18Z",
   "application_snapshot": {
     "source_branch": "claude/beautiful-clarke-sbzomj",
     "source_sha": "b2cb2e02c602c166ba6d47c02d8e902e5478c791",
@@ -285,7 +285,7 @@
       "integrated": false,
       "checks": [],
       "status": "not_delivered",
-      "reason": "No research/round-11-results/R08/DELIVERY.json in any origin branch at 2026-10-06T15:29Z."
+      "reason": "No R08 branch or artefacts (ml/civic_classifier, tests/civic/R08, results) in any origin branch at 2026-10-07T04:21:18Z. R06 runs with classifier=None."
     },
     "R09": {
       "title": "AI-помощник",
@@ -424,5 +424,6 @@
       "status": "fixed (X-Frame-Options DENY + CSP frame-ancestors 'none')",
       "test": "test_html_shell_cannot_be_framed"
     }
-  ]
+  ],
+  "code_sha": "a5d184b4f5aa7df608a2ae9124408201b14ecb67"
 }
