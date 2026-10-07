@@ -1,0 +1,10 @@
+Начинаем седьмой раунд GOV_DIPLOME. Сборщик назначен отдельно.
+git fetch origin codex/research-import-2026-10-05
+git show origin/codex/research-import-2026-10-05:research/round-7/snapshots.json
+git show origin/codex/research-import-2026-10-05:research/round-7/FEATURE_SPEC.txt
+git show origin/codex/research-import-2026-10-05:research/round-7/TASK.txt
+Найди свой slot по текущей ветке и прочитай, заменив KXX:
+git show origin/codex/research-import-2026-10-05:research/round-7/tasks/KXX.txt
+Сделай назначенную часть по общей спецификации. Не повторяй старые исследования и не меняй общий прототип.
+После первого полезного результата STATUS → commit → push.
+Если уже назначен BUILD, выполняй BUILD.

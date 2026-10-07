@@ -1,0 +1,191 @@
+{
+  "checked_on": "2026-10-05",
+  "build": {
+    "branch": "claude/beautiful-clarke-sbzomj",
+    "sha": "064ed25368341edaa50289bc29e21dda7bdd9440",
+    "path": "prototypes/city-evidence/"
+  },
+  "previous_build": "0bf27deb8549b325b34a9610402613d745544edb",
+  "review_scope": "Read branch updates and selected reports; current code has not been independently executed by coordinator in this scheduling turn.",
+  "sources": [
+    {
+      "slot": "K01",
+      "branch": "claude/loving-thompson-nmajdo",
+      "sha": "295b3563d07c12bb6681b7b6a105a58c0edc7923",
+      "files": [
+        "research/round-5-results/K01/REPRO.md",
+        "research/round-5-results/K01/STATUS.md",
+        "research/round-5-results/K01/browser_check.cjs",
+        "research/round-5-results/K01/check_build.py",
+        "research/round-5-results/K01/extract_build.py",
+        "research/round-5-results/K01/patches/offline_check_restore_socket.patch",
+        "research/round-5-results/K01/test_socket_side_effect.py"
+      ]
+    },
+    {
+      "slot": "K02",
+      "branch": "claude/clever-mccarthy-pywscu",
+      "sha": "26fd30cf1ade3f21f554784420d1502b43cce0f2",
+      "files": [
+        "research/round-5-results/K02/REPORT.md",
+        "research/round-5-results/K02/STATUS.md",
+        "research/round-5-results/K02/patches/facts_catalog_digest.patch",
+        "research/round-5-results/K02/tests/facts_regression.cjs"
+      ]
+    },
+    {
+      "slot": "K03",
+      "branch": "claude/epic-curie-iitc43",
+      "sha": "5715a7f19ffc11926a5e4836e931cadf2c8c12e0",
+      "files": [
+        "research/round-5-results/K03/REVIEW.md",
+        "research/round-5-results/K03/STATUS.md",
+        "research/round-5-results/K03/extract_build.py",
+        "research/round-5-results/K03/make_patches.py",
+        "research/round-5-results/K03/patches/build_p1_binding.patch",
+        "research/round-5-results/K03/patches/k03_assign_v2_1.patch",
+        "research/round-5-results/K03/proposal/p1/tests/test_inputs.py",
+        "research/round-5-results/K03/proposal/p1/tools/build_evidence.py",
+        "research/round-5-results/K03/proposal/p1/tools/check_evidence_fresh.py",
+        "research/round-5-results/K03/proposal_check/patched_0bf27de_p1_p2.json",
+        "research/round-5-results/K03/test_boundaries_demo.py",
+        "research/round-5-results/K03/verify_proposal.py"
+      ]
+    },
+    {
+      "slot": "K04",
+      "branch": "claude/beautiful-clarke-sbzomj",
+      "sha": "064ed25368341edaa50289bc29e21dda7bdd9440",
+      "files": [
+        "research/round-5-results/BUILD/CHECK_LOG.md",
+        "research/round-5-results/BUILD/HANDOFF.md",
+        "research/round-5-results/BUILD/ISSUE_MATRIX.json",
+        "research/round-5-results/BUILD/MIGRATION.md",
+        "research/round-5-results/BUILD/STATUS.md",
+        "research/round-5-results/BUILD/baseline_repro.json",
+        "research/round-5-results/BUILD/clean_checkout/check_all_full.json",
+        "research/round-5-results/BUILD/clean_checkout/check_all_no_shapely.json",
+        "research/round-5-results/BUILD/clean_checkout/smoke_result.json"
+      ]
+    },
+    {
+      "slot": "K05",
+      "branch": "claude/optimistic-davinci-1oiqs9",
+      "sha": "fb2dea60a5e42e745e6914dc063355d6db67aebe",
+      "files": [
+        "research/round-5-results/K05/REPORT.md",
+        "research/round-5-results/K05/STATUS.md",
+        "research/round-5-results/K05/k05r5_compat.py",
+        "research/round-5-results/K05/patches/build_evidence_dataset_check.patch",
+        "research/round-5-results/K05/patches/k05r3_count_units_after_k12.patch",
+        "research/round-5-results/K05/patches/k05r4_contract_k12_compat.patch",
+        "research/round-5-results/K05/proposed/k05r4_contract.py",
+        "research/round-5-results/K05/repro_incompat.py"
+      ]
+    },
+    {
+      "slot": "K06",
+      "branch": "claude/ecstatic-curie-hzfzn0",
+      "sha": "982e3b419075139f2a47ed76bcafcad145825d02",
+      "files": [
+        "research/round-5-results/K06/README.md",
+        "research/round-5-results/K06/STATUS.md",
+        "research/round-5-results/K06/audit_numbers.py",
+        "research/round-5-results/K06/extract_build.py",
+        "research/round-5-results/K06/geo_oracle.py",
+        "research/round-5-results/K06/out/baseline_0bf27de.json",
+        "research/round-5-results/K06/out/baseline_0bf27de_url.json",
+        "research/round-5-results/K06/out/rendered_baseline_0bf27de.json",
+        "research/round-5-results/K06/out/rendered_baseline_0bf27de_url.json",
+        "research/round-5-results/K06/rendered_check.py",
+        "research/round-5-results/K06/rendered_labels.cjs",
+        "research/round-5-results/K06/test_audit_numbers.py"
+      ]
+    },
+    {
+      "slot": "K07",
+      "branch": "claude/save-work-handoff-ku3ej3",
+      "sha": "56c8bff12bf89dedf3f730be8b05b3024571b747",
+      "files": [
+        "research/round-5-results/K07/REVIEW.md",
+        "research/round-5-results/K07/STATUS.md",
+        "research/round-5-results/K07/patch/city_evidence_web.patch",
+        "research/round-5-results/K07/scripts/extract_build.py",
+        "research/round-5-results/K07/scripts/run_review.sh",
+        "research/round-5-results/K07/tests/k07r5_regressions.cjs"
+      ]
+    },
+    {
+      "slot": "K08",
+      "branch": "claude/dazzling-mayer-drhsxk",
+      "sha": "cdcfd200a8444037c30ae22951e0cdf1229eb18b",
+      "files": [
+        "research/round-5-results/K08/REVIEW.md",
+        "research/round-5-results/K08/STATUS.md",
+        "research/round-5-results/K08/check_demo_attribution.py",
+        "research/round-5-results/K08/positive_control/app_root_patched_on_0bf27de.json",
+        "research/round-5-results/K08/positive_control/smoke_patched.txt",
+        "research/round-5-results/K08/positive_control/test_checker_mutations.txt",
+        "research/round-5-results/K08/positive_control/url_patched_on_0bf27de.json",
+        "research/round-5-results/K08/positive_control/web_outputs.sha256",
+        "research/round-5-results/K08/proposal/attribution_demo.patch",
+        "research/round-5-results/K08/test_checker.py"
+      ]
+    },
+    {
+      "slot": "K09",
+      "branch": "claude/save-work-handoff-qho6eq",
+      "sha": "e4ac24fcdca2701f6fd674e59cbd485f0de42ece",
+      "files": []
+    },
+    {
+      "slot": "K10",
+      "branch": "claude/save-work-handoff-j7pc05",
+      "sha": "79fb961254f6118344302e888d4868495c4f0cf1",
+      "files": [
+        "research/round-5-results/K10/REVIEW.md",
+        "research/round-5-results/K10/STATUS.md",
+        "research/round-5-results/K10/fixtures/ui_coord_group_shymkent.json",
+        "research/round-5-results/K10/fixtures/ui_coord_group_synthetic.json",
+        "research/round-5-results/K10/tests/run_qa.py",
+        "research/round-5-results/K10/tests/ui_coord_group.cjs",
+        "research/round-5-results/K10/tools/extract_build.py",
+        "research/round-5-results/K10/tools/qa_flags.py",
+        "research/round-5-results/K10/tools/selection_impact.py"
+      ]
+    },
+    {
+      "slot": "K11",
+      "branch": "claude/save-work-handoff-fmjw6r",
+      "sha": "6aea792f215a234dc55a9b49f68016479d283c9e",
+      "files": [
+        "research/round-5-results/K11/CHECK_LOG.md",
+        "research/round-5-results/K11/README.md",
+        "research/round-5-results/K11/STATUS.md",
+        "research/round-5-results/K11/baseline_0bf27de.json",
+        "research/round-5-results/K11/baseline_0bf27de.txt",
+        "research/round-5-results/K11/extract_build.py",
+        "research/round-5-results/K11/info_fd43f9a.json",
+        "research/round-5-results/K11/info_fd43f9a.txt",
+        "research/round-5-results/K11/k11_demo_smoke.py",
+        "research/round-5-results/K11/make_proposal.py",
+        "research/round-5-results/K11/proposal_on_0bf27de.json",
+        "research/round-5-results/K11/proposal_on_0bf27de.txt",
+        "research/round-5-results/K11/proposed_launch_fix.patch",
+        "research/round-5-results/K11/url_mode_0bf27de.json",
+        "research/round-5-results/K11/url_mode_0bf27de.txt"
+      ]
+    },
+    {
+      "slot": "K12",
+      "branch": "claude/save-work-handoff-xuav3q",
+      "sha": "a9ed8be9163f4c302f028f6e2f69066ccd227bec",
+      "files": [
+        "research/round-5-results/K12/BASELINE_0bf27de_EXPECTED.json",
+        "research/round-5-results/K12/STATUS.md",
+        "research/round-5-results/K12/extract_build.py",
+        "research/round-5-results/K12/k12r5_negative_build.py"
+      ]
+    }
+  ]
+}

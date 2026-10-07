@@ -1,0 +1,9 @@
+Начинаем шестой раунд GOV_DIPLOME: приёмка исправленной сборки.
+git fetch origin codex/research-import-2026-10-05
+git show origin/codex/research-import-2026-10-05:research/round-6/snapshots.json
+git show origin/codex/research-import-2026-10-05:research/round-6/REVIEW.txt
+Найди свой slot по текущей ветке и прочитай:
+git show origin/codex/research-import-2026-10-05:research/round-6/review/KXX.txt
+Подставь свой номер. Выполни задание на НОВОМ SHA из snapshots.json. Старый baseline заново не исследуй, старые XFAIL к новой версии не применяй.
+После полезного прогона STATUS → commit → push. В отчёте обязательно укажи проверенный SHA.
+Если ты уже BUILD, продолжай BUILD.

@@ -1,1 +1,0 @@
-Прогон p0_flow.cjs (2026-10-07T04:07:05Z): R02 3d2b8b9 + R03 1bc9c48 + R04 da46e1c + R05 ee7516f (код 01f89df) + R06 91f2508 + R07 22fa413 + R09 f895c30. 48 PASS / 0 FAIL / 2 NOT_RUN (подложка/attribution: хост недоступен).

@@ -58,7 +58,7 @@ _RULES = (
     ("sources", ("источник", "откуда данн", "откуда эти", "откуда это", "откуда информац", "откуда сведен",
                  "откуда вы знаете", "на основании", "где взяли", "ссылк",
                  "дереккөз", "қайдан", "source")),
-    ("history", ("истори", "что измен", "что поменял", "изменени", "ревизи", "тарих", "өзгер", "history")),
+    ("history", ("истори", "что измен", "что поменял", "что менял", "изменени", "ревизи", "тарих", "өзгер", "history")),
     ("access_impact", ("доступн", "проезд", "проход", "пройти", "проехать", "объезд", "перекрыт", "обход",
                        "как добраться", "маршрут", "пешеход", "өту", "жабыл", "жол жабы", "access", "detour")),
     ("location", ("где", "адрес", "место", "располож", "қайда", "орны", "where")),
@@ -233,6 +233,10 @@ def build_answer(question, verified_context, provider=None, *, timeout_s: float 
     # Модель не может заставить ответить на «покажи пароли»: правило безопасности шаблона сильнее.
     intent = "unsupported" if template_intent == "unsupported" else choice["intent"]
     extra = ["provider_overridden_unsupported"] if intent != choice["intent"] else []
+    if extra:
+        st = render(template_intent, facts, lang)
+        return _result("template", template_intent, lang, st, verified_context,
+                       warnings + cw + extra, mode="template-fallback", facts=facts)
     st = render(intent, facts, lang, choice["fact_ids"])
     return _result("llm", intent, lang, st, verified_context, warnings + extra, mode="llm:" + str(name),
                    model=getattr(provider, "model", None), facts=facts)

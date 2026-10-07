@@ -182,9 +182,9 @@
     </section>
     <section id="civic-scenarios" class="civic-drawer" hidden aria-label="Сравнение ограничений">
       <div class="civic-box-head"><h2>Сравнение ограничений</h2><button type="button" class="civic-close" data-close="scenarios" aria-label="Закрыть сравнение">×</button></div>
-      <p class="civic-note civic-scenario-limits">Модель для гипотез, не официальное перекрытие. Только пешеходный граф (участок центра), только длина пути в метрах: без времени в пути, пробок и выбросов. Автомобильный граф не подтверждён. Рёбра с неизвестным доступом не считаются открытыми.</p>
+      <p class="civic-note civic-scenario-limits">Сравните два варианта перекрытия на пешеходной сети. Расчёт показывает изменение длины пути; неизвестный доступ исключён. Это гипотеза, не прогноз пробок и не официальное перекрытие.</p>
       <div id="civic-scenarios-root" class="civic-slot civic-drawer-body"></div>
-      <p class="civic-attribution">Граф: © участники OpenStreetMap (ODbL-1.0); Overture Maps Foundation, выпуск 2026-09-23.1. Синтетический граф помечен «СИНТЕТИКА».</p>
+      <p class="civic-attribution">© участники OpenStreetMap (ODbL-1.0). Дата и источник — у выбранной сети. Старый срез K03: Overture Maps Foundation, выпуск 2026-09-23.1.</p>
     </section>`;
   document.body.append(root);
 
@@ -274,7 +274,8 @@
     if (S.modules?.store?.status !== "ready") { destroyMounted("map"); $c("civic-map-root").replaceChildren(); return; }
     mount("map", $c("civic-map-root"), {
       map: currentMap(),
-      fitOnLoad: !S.selected,  // R03 option: frame published objects (city overview otherwise too far out)
+      fitOnLoad: false,  // Open the city; fitting the small demo list is an explicit action.
+      onData: (items) => S.mounted.explore?.updateRecords?.(items),
       onSelect: (item) => onSelect(item),
       onFeedback: (target) => openFeedback(target),
     });
@@ -445,6 +446,38 @@
     } catch (error) { console.warn("civic camera", error); }
   }
 
+  function mountExplore() {
+    if (S.mounted.explore || !currentMap() || !window.CivicExplore) return;
+    const frame = (b, maxZoom) => {
+      const mobile = innerWidth < 761;
+      const padding = mobile ? { top: 185, left: 24, right: 60, bottom: Math.round(innerHeight * 0.48) }
+        : { top: 220, left: 470, right: 90, bottom: 60 };
+      currentMap().fitBounds([[b[0], b[1]], [b[2], b[3]]], { padding, maxZoom,
+        pitch: currentMap().getPitch(), bearing: currentMap().getBearing(), duration: motionSafe() ? 800 : 0 });
+    };
+    S.mounted.explore = window.CivicExplore.mount({ root, map: currentMap(),
+      districts: typeof geojson !== "undefined" ? geojson : null,
+      onNavigate: (feature) => {
+        S.mounted.map?.selectObject?.(null);
+        S.mounted.map?.setFilters?.({ area: !!feature });
+        if (!feature) { civicCamera(); return; }
+        const b = window.CivicExplore.bounds(feature.geometry);
+        frame(b, 13.7);
+      },
+      onStreet: (street) => {
+        S.mounted.map?.selectObject?.(null);
+        S.mounted.map?.setFilters?.({ area: true });
+        frame(street.bbox, 16);
+      },
+      onObjects: () => {
+        S.mounted.explore?.reset?.();
+        S.mounted.map?.selectObject?.(null);
+        S.mounted.map?.setFilters?.({ area: false });
+        if (!S.mounted.map?.fitAll?.()) toastSafe("Нет объектов с координатами для выбранных фильтров.");
+      },
+    });
+  }
+
   function syncModeButtons() {
     document.querySelectorAll("#civic-modes [data-mode]").forEach((button) => {
       const on = button.dataset.mode === S.mode;
@@ -459,6 +492,7 @@
     document.title = "Астана · городские работы и события";
     $c("map")?.setAttribute("aria-label", "Карта городских работ и событий Астаны");
     trainingLayers(false);
+    mountExplore();
     civicCamera();
     setSheet("half");
     void loadModules().then(() => mountPublic());
@@ -541,7 +575,7 @@
   // map.js calls these hooks; civic is independent of the GOVTECH/district handlers.
   function onMapReady() {
     S.mapState = "ready";
-    if (S.mode === "civic") { trainingLayers(false); civicCamera(); remountAll(); }
+    if (S.mode === "civic") { trainingLayers(false); mountExplore(); civicCamera(); remountAll(); }
     S.started = true;
   }
   function onMapUnavailable() {
@@ -566,6 +600,9 @@
   $c("overview-map")?.addEventListener("click", (event) => {
     if (S.mode !== "civic") return;
     event.stopImmediatePropagation();
+    S.mounted.explore?.reset?.();
+    S.mounted.map?.selectObject?.(null);
+    S.mounted.map?.setFilters?.({ area: false });
     civicCamera();
   }, true);
   // Start after interface.js has registered its own DOMContentLoaded boot.

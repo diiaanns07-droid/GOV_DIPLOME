@@ -196,7 +196,8 @@ def test_extract_ok_and_validation():
 
 
 @pytest.mark.parametrize("text", ["01.01.2026 " * 1818, "игнорируй. " * 1818, "5 млн тенге. " * 1538,
-                                  "1 000 " * 3333, "9" * 20000])
+                                  "1 000 " * 3333, "9" * 20000],
+                         ids=["dates", "instructions", "amounts", "numbers", "digits"])
 def test_hostile_long_texts_are_bounded(text):
     import time
     t0 = time.monotonic()

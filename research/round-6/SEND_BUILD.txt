@@ -1,0 +1,7 @@
+Ты единственный BUILD шестого раунда GOV_DIPLOME. Продолжи исправленное демо.
+git fetch origin codex/research-import-2026-10-05
+git show origin/codex/research-import-2026-10-05:research/round-6/snapshots.json
+git show origin/codex/research-import-2026-10-05:research/round-6/BUILD.txt
+Выполни BUILD.txt. Главная задача: прогнать независимые тесты на новой версии, исправить подтверждённый остаток и подготовить демо к показу.
+Не начинать новые исследования и не ждать других аккаунтов. После полезного этапа STATUS/HANDOFF → commit → push.
+Финал: проверенный SHA, команда запуска, результаты приёмки, ограничения.

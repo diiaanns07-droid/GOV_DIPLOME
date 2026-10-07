@@ -74,7 +74,10 @@ class PreparedGraph:
                 if reverse:
                     a, b = b, a
                 adj.setdefault(a, []).append((eid, b, mm))
-        if len(self._adj_cache) > 64:
+        # A city graph has ~100k edges: retaining 65 alternate closure indexes
+        # can exhaust memory. Bound the cache by graph size, not just requests.
+        cache_limit = max(2, min(64, 200_000 // max(1, len(self.edges))))
+        if len(self._adj_cache) >= cache_limit:
             self._adj_cache.clear()
         self._adj_cache[key] = adj
         return adj

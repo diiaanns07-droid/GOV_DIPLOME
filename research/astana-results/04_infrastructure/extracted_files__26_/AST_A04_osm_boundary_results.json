@@ -1,0 +1,219 @@
+{
+ "input": "/home/claude/stupits/hack-d3b2c613-stupits-main/data/geo_sources/astana_districts_overpass.json",
+ "osm_base": "2026-09-22T08:45:51Z",
+ "retrieved_at": "2026-09-23T11:28:06+00:00",
+ "versions": {
+  "shapely": "2.1.2",
+  "pyproj": "3.8.0"
+ },
+ "units": [
+  {
+   "osm_relation": 3403760,
+   "name_ru": "Целиноградский район",
+   "name_kk": "Целиноград ауданы",
+   "admin_level": "6",
+   "addr_region": "Ақмола облысы",
+   "kato_tag": null,
+   "wikidata": "Q2224859",
+   "is_astana_district": false,
+   "geom_valid": true,
+   "geom_type": "MultiPolygon",
+   "area_km2_geodesic": 7666.7
+  },
+  {
+   "osm_relation": 3403782,
+   "name_ru": "Аршалынский район",
+   "name_kk": "Аршалы ауданы",
+   "admin_level": "6",
+   "addr_region": "Ақмола облысы",
+   "kato_tag": null,
+   "wikidata": "Q2321988",
+   "is_astana_district": false,
+   "geom_valid": true,
+   "geom_type": "Polygon",
+   "area_km2_geodesic": 5846.9
+  },
+  {
+   "osm_relation": 3404061,
+   "name_ru": "Шортандинский район",
+   "name_kk": "Шортанды ауданы",
+   "admin_level": "6",
+   "addr_region": "Ақмола облысы",
+   "kato_tag": null,
+   "wikidata": "Q2556281",
+   "is_astana_district": false,
+   "geom_valid": true,
+   "geom_type": "Polygon",
+   "area_km2_geodesic": 4681.7
+  },
+  {
+   "osm_relation": 3479876,
+   "name_ru": "район Есиль",
+   "name_kk": "Есіл ауданы",
+   "admin_level": "6",
+   "addr_region": null,
+   "kato_tag": "711210000",
+   "wikidata": "Q16648877",
+   "is_astana_district": true,
+   "geom_valid": true,
+   "geom_type": "Polygon",
+   "area_km2_geodesic": 194.6
+  },
+  {
+   "osm_relation": 3482819,
+   "name_ru": "район Алматы",
+   "name_kk": "Алматы ауданы",
+   "admin_level": "6",
+   "addr_region": null,
+   "kato_tag": "711110000",
+   "wikidata": "Q12528524",
+   "is_astana_district": true,
+   "geom_valid": true,
+   "geom_type": "MultiPolygon",
+   "area_km2_geodesic": 93.4
+  },
+  {
+   "osm_relation": 3486954,
+   "name_ru": "район Сарыарка",
+   "name_kk": "Сарыарқа ауданы",
+   "admin_level": "6",
+   "addr_region": null,
+   "kato_tag": "711310000",
+   "wikidata": "Q16694762",
+   "is_astana_district": true,
+   "geom_valid": true,
+   "geom_type": "Polygon",
+   "area_km2_geodesic": 67.8
+  },
+  {
+   "osm_relation": 8593081,
+   "name_ru": "район Байконур",
+   "name_kk": "Байқоңыр ауданы",
+   "admin_level": "6",
+   "addr_region": null,
+   "kato_tag": "711410000",
+   "wikidata": "Q57782659",
+   "is_astana_district": true,
+   "geom_valid": true,
+   "geom_type": "MultiPolygon",
+   "area_km2_geodesic": 183.5
+  },
+  {
+   "osm_relation": 15594335,
+   "name_ru": "городская администрация Косшы",
+   "name_kk": "Қосшы қалалық әкімдігі",
+   "admin_level": "6",
+   "addr_region": "Ақмола облысы",
+   "kato_tag": null,
+   "wikidata": null,
+   "is_astana_district": false,
+   "geom_valid": true,
+   "geom_type": "Polygon",
+   "area_km2_geodesic": 141.2
+  },
+  {
+   "osm_relation": 17952313,
+   "name_ru": "Тайтобинская сельская администрация",
+   "name_kk": "Тайтөбе ауылдық әкімдігі",
+   "admin_level": "8",
+   "addr_region": null,
+   "kato_tag": null,
+   "wikidata": "Q56367432",
+   "is_astana_district": false,
+   "geom_valid": true,
+   "geom_type": "Polygon",
+   "area_km2_geodesic": 89.3
+  },
+  {
+   "osm_relation": 19733918,
+   "name_ru": "район Сарайшык",
+   "name_kk": "Сарайшық ауданы",
+   "admin_level": "8",
+   "addr_region": null,
+   "kato_tag": null,
+   "wikidata": null,
+   "is_astana_district": true,
+   "geom_valid": true,
+   "geom_type": "Polygon",
+   "area_km2_geodesic": 61.4
+  },
+  {
+   "osm_relation": 20593940,
+   "name_ru": "район Нура",
+   "name_kk": "Нұра ауданы",
+   "admin_level": "6",
+   "addr_region": null,
+   "kato_tag": null,
+   "wikidata": null,
+   "is_astana_district": true,
+   "geom_valid": true,
+   "geom_type": "Polygon",
+   "area_km2_geodesic": 188.6
+  }
+ ],
+ "astana_union": {
+  "area_km2_geodesic": 789.3,
+  "sum_of_districts_km2": 789.3,
+  "parts": 4,
+  "interior_holes": 0,
+  "holes_area_km2": [],
+  "district_overlaps_gt_0_01km2": []
+ },
+ "neighbours_outside_astana": [
+  {
+   "osm_relation": 3403760,
+   "name_ru": "Целиноградский район",
+   "shared_boundary_km": 144.2,
+   "overlap_with_astana_km2": 9.021,
+   "min_distance_km": 0.0,
+   "area_in_2km_buffer_km2": 317.1,
+   "area_in_5km_buffer_km2": 752.7,
+   "area_in_10km_buffer_km2": 1407.4
+  },
+  {
+   "osm_relation": 3404061,
+   "name_ru": "Шортандинский район",
+   "shared_boundary_km": 22.2,
+   "overlap_with_astana_km2": 0.0,
+   "min_distance_km": 0.0,
+   "area_in_2km_buffer_km2": 38.3,
+   "area_in_5km_buffer_km2": 81.4,
+   "area_in_10km_buffer_km2": 141.8
+  },
+  {
+   "osm_relation": 15594335,
+   "name_ru": "городская администрация Косшы",
+   "shared_boundary_km": 12.5,
+   "overlap_with_astana_km2": 0.0,
+   "min_distance_km": 0.0,
+   "area_in_2km_buffer_km2": 26.6,
+   "area_in_5km_buffer_km2": 76.2,
+   "area_in_10km_buffer_km2": 141.0
+  },
+  {
+   "osm_relation": 3403782,
+   "name_ru": "Аршалынский район",
+   "shared_boundary_km": 10.8,
+   "overlap_with_astana_km2": 0.0,
+   "min_distance_km": 0.0,
+   "area_in_2km_buffer_km2": 21.6,
+   "area_in_5km_buffer_km2": 89.7,
+   "area_in_10km_buffer_km2": 312.7
+  },
+  {
+   "osm_relation": 17952313,
+   "name_ru": "Тайтобинская сельская администрация",
+   "shared_boundary_km": 7.4,
+   "overlap_with_astana_km2": 0.0,
+   "min_distance_km": 0.0,
+   "area_in_2km_buffer_km2": 13.7,
+   "area_in_5km_buffer_km2": 42.8,
+   "area_in_10km_buffer_km2": 89.1
+  }
+ ],
+ "buffer_ring_area_km2": {
+  "2": 403.7,
+  "5": 1000.1,
+  "10": 2013.2
+ }
+}

@@ -158,3 +158,28 @@ def test_ui_example_chips_map_to_expected_intents(ctx_of):
     chips = re.findall(r'"([^"]+)"', block)
     expected = ["overview", "schedule", "delay_reason", "responsible", "budget", "sources", "status", "schedule"]
     assert [build_answer(q, ctx_of("full"))["intent"] for q in chips] == expected
+
+
+@pytest.mark.parametrize("later_edits", [0, 19])
+def test_delay_reason_survives_single_entry_and_history_window(data, later_edits):
+    item = copy.deepcopy(data["objects"]["full"])
+    history = [{"object_id": item["id"], "revision": 3,
+                "at": "2026-10-01T09:00:00+05:00",
+                "changed_fields": ["schedule.current_planned_end"],
+                "reason": "Поставщик задержал материалы."}]
+    if later_edits:
+        history.insert(0, {"object_id": item["id"], "revision": 2,
+                           "changed_fields": ["publication"], "reason": "Публикация"})
+        history += [{"object_id": item["id"], "revision": n + 4,
+                     "changed_fields": ["description"], "reason": "Уточнение"}
+                    for n in range(later_edits)]
+    answer = build_answer("Почему перенесли срок?", build_verified_context(item, history))
+    assert "Поставщик задержал материалы." in answer["text"]
+    assert "Причина изменения сроков в публичной истории не указана" not in answer["text"]
+    assert "history.r3" in answer["fact_ids"]
+
+
+def test_resident_question_about_changes_opens_history(ctx_of):
+    answer = build_answer("Что менялось в карточке?", ctx_of("full"))
+    assert answer["intent"] == "history"
+    assert any(fid.startswith("history.") for fid in answer["fact_ids"])

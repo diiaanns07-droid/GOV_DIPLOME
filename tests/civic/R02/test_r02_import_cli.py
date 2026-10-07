@@ -157,7 +157,7 @@ def test_seed_demo_publishes_only_synthetic_with_visible_history(service):
 
 
 def run_cli(*args, stdin=""):
-    return subprocess.run([sys.executable, "-m", "ui.civic_store", *args], input=stdin, text=True,
+    return subprocess.run([sys.executable, "-X", "utf8", "-m", "ui.civic_store", *args], input=stdin, text=True, encoding="utf-8",
                           capture_output=True, cwd=REPO_ROOT, timeout=120)
 
 

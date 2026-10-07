@@ -71,6 +71,7 @@ def test_feedback_on_draft_is_rejected_like_missing(integrated):
     assert status == 422 and data["error"]["code"] == "object_not_found"
 
 
+@pytest.mark.skipif(os.name == "nt", reason="POSIX permission bits are not Windows ACLs")
 def test_existing_parent_folder_keeps_its_mode(tmp_path):
     pytest.importorskip("ui.civic_store.service")
     shared = tmp_path / "shared"
@@ -86,8 +87,7 @@ def test_existing_parent_folder_keeps_its_mode(tmp_path):
 
 
 def test_db_path_is_expanded_and_absolute(monkeypatch, tmp_path):
-    monkeypatch.setenv("HOME", str(tmp_path))
-    assert resolve_db_path("~/x/civic.sqlite3") == (tmp_path / "x" / "civic.sqlite3").resolve()
+    assert resolve_db_path("~/x/civic.sqlite3") == (Path.home() / "x" / "civic.sqlite3").resolve()
     assert resolve_db_path("rel.sqlite3").is_absolute()
     assert resolve_db_path(None) is None and resolve_db_path("") is None
 

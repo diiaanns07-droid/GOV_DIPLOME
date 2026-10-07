@@ -1,0 +1,47 @@
+КОНТРАКТ РАУНДА 10 — school-access-case-v1
+Это общий интерфейс новых пакетов. Старые city-plan-v2 / city-resilience-v1 и их snapshot/import сохраняются. BUILD не должен ломать их ради новой обёртки.
+
+ВЕРСИИ И ПРОИСХОЖДЕНИЕ
+case.schema_version = school-access-case-v1; case_id; city_id (shymkent|astana); title; bbox [west,south,east,north]; snapshot_id; sources[]; schools[]; origins[]; candidates[]; selected_candidate_ids[]; parameters; model_assumptions[].
+Каждый source: id,url,publisher,title,published_at/data_period (может null),retrieved_at,verification_status,license (может unknown),content_sha256 если сохранено допустимое содержимое.
+Каждая предметная запись: id,label,lon,lat,kind,source_ids[],field_provenance{},qa[].
+kind = observed | observed_secondary | derived | hypothesis | synthetic. observed означает действительно извлечённое наблюдение, не общую гарантию истинности; verification_status отдельно = primary_checked | secondary_only | conflict | not_fetched.
+field_provenance указывает источник/метод важных полей по отдельности. Координаты из OSM не наследуют официальный статус названия.
+schools дополнительно: category,access_eligibility (known_public/known_restricted/unknown),capacity (число или null),capacity_source_ids[].
+origins: равные веса в первом сценарии; derived origin из открытого здания имеет parent_source_id/method, не household/population claim.
+candidates: kind=hypothesis|synthetic, cost=null или {value,currency,period,kind,source_ids}, land_status=unknown если нет подтверждения. Не называть гипотезу свободным участком.
+parameters: distance_method=geodesic|pedestrian-v1; routing_policy_id (или null для прямой); threshold_m (положительный пользовательский параметр, не норматив); max_new_objects=1 для главного пути. Учебный бюджет хранится только в demo/advanced, не переносится как тенге.
+Пакет включает исходные школы текущего bbox + необходимый документированный буфер. Точки главного кейса в bbox; расширение требует нового snapshot. IDs стабильны и уникальны; координаты/диапазоны/размеры проверяются до вычислений. Безопасный лимит по умолчанию: 25 origins, 16 candidates; UI не скрывает усечённый остаток.
+
+МАТРИЦА РАССТОЯНИЙ
+Для каждого origin и существующей школы/кандидата:
+{origin_id,target_id,distance_mm:null|integer>=0,status,method,policy_id,route_edge_ids:[],geometry:null|GeoJSON,assumptions:[]}.
+status = ok | disconnected | outside_coverage | access_unknown | unsnappable.
+distance_mm при status!=ok = null. Подстановка прямой при ошибке сети запрещена; пользователь может явно выбрать отдельный geodesic.
+Режим exploratory с неизвестным доступом имеет отдельную policy и видимый assumption; он не считается верифицированным пешеходным путём. Геометрия привязок/путь согласованы с длиной; если учитываются модельные соединения от здания к графу, обозначить их явно.
+Одинаковые срез, метод, правила, origins и школы используются для сравниваемых вариантов.
+Отсутствие пути в срезе означает ограничение модельной сети, не доказанную физическую недоступность. Статус и неполнота следуют за метрикой в UI/экспорте.
+
+СРАВНЕНИЕ
+Выход compareCase(case, matrix) -> {schema_version,case_digest,method,policy_id,plans,facts,limitations}.
+Для каждого origin сначала расстояние до ближайшей допустимой существующей школы, затем до ближайшей из существующих + выбранных кандидатов. Если есть известный путь, минимум вычисляется по известным целям; непроверенные цели отдельно отмечаются как возможная неполнота базы. Если известных путей нет, origin unknown, не 0.
+Каждый plan: selected_candidate_ids; rows[{origin_id,before_mm,after_mm,delta_mm,status,nearest_target_id,source_ids}]; metrics{total_origins,known_count,unknown_count,sum_distance_mm,mean_distance_mm,max_distance_mm,within_threshold_count,within_threshold_share_of_all_points}; limitations[].
+delta=after-before, null если одно из расстояний неизвестно. mean = sum/known_count, null при known_count=0; max аналогично. При total=0 доля null и сравнение пустое. Порог сравнивается в целых мм; unknown не входит в covered, знаменатель всех точек показан явно. Доля известной выборки НЕ доля населения.
+Автовыбор по умолчанию среди допустимых наборов (в основном кейсе empty или один candidate): lexicographic min [unknown_count,sum_distance_mm,max_distance_mm], затем сортированные ID. null max при all unknown сравнивается одинаково; unknown_count уже определяет приоритет. При равенстве пустой набор предпочтительнее лишнего объекта. В основном режиме сравнивать также явно выбранные A и B.
+Отдельный minimax остаётся явно иной целью, его не называть тем же оптимумом. Денежные ограничения включаются только при однородных валидных стоимостях; иначе no_cost_data и географическое сравнение.
+Детерминированный сбор facts: каждый fact{id,metric,value,unit,plan_id,origin_id|null,kind=derived,source_ids,assumptions}. Никакого hardcoded улучшения из демонстрационного примера.
+case_digest охватывает всю расчётную семантику: город/snapshot/координаты/источники и QA-политики/origins/кандидаты/метод/граф/policy/порог/ограничения. Нормализованный формат и версию канонизации описывает BUILD. Перестановка семантически одинаковых записей не меняет digest.
+request_id + case_digest привязывают результат/AI к актуальному состоянию. Любое изменение входов инвалидирует старое; Apply явно подтверждает выбор.
+
+ГРАНИЦА AI
+Провайдер помогает понимать запрос и выбирать из разрешённых инструментов/фактов. Он не становится источником числовых результатов и не применяет план сам.
+Ответ содержит schema_version,request_id,case_digest,intent,tool_calls,fact_ids,needs_clarification; при ошибке схемы/ID/digest результат отклоняется.
+Публичный текст и числа собираются кодом из текущих фактов. Свободный текст модели, если оставлен, проходит проверку и не подменяет вычисления/источники.
+В текущем локальном однопользовательском приложении authoritative вычисление школьного кейса выполняет детерминированный локальный adapter. Сервер LLM не удостоверяет пришедшие из браузера числа. Не выдавать это за архитектуру доверенного многопользовательского сервиса.
+Ключи только на сервере. Fallback явно source=fallback; живой тест отдельно.
+
+ИНТЕГРАЦИЯ И СОВМЕСТИМОСТЬ
+BUILD вводит адаптеры в web/govtech/ и точечные API. Другие агенты поставляют patch/module в своих result folders; общие пути не пишут.
+Пакет данных не заменяет core/data.js без миграции provenance. Новые raw/data хэши и лицензии фиксируются отдельно; старые source_sha256 не переписываются.
+Если меняется pinned core, сохранить старый source hash, новый integrated hash, описание адаптации и независимые проверки. tests/test_govtech_integration.py сейчас разрешает ровно 2 UI-адаптации: его обновляет только BUILD обоснованно, не удаляя проверку.
+Импорт недоверенный, ограничение размера до разбора, строгая схема, unknown/missing без догадок, атомарный отказ; пересчёт результатов из входов. При нехватке реально загруженного source snapshot — отказ с причиной, не замена другим городом.

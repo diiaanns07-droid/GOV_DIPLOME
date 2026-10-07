@@ -1,3 +1,0 @@
-PASS {"mode":"civic","scrollW":390,"modes":[151,367],"legacyToggleVisible":false}
-PASS {"mode":"training","scrollW":390,"modes":[64,280],"legacyToggleVisible":false}
-PASS {"mode":"school","scrollW":390,"modes":[151,367],"legacyToggleVisible":false}

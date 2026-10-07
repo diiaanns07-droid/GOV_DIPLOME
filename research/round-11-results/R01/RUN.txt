@@ -13,8 +13,6 @@ CODE_SHA: см. CODE_SHA.txt рядом (последний коммит, мен
 ЗАПУСК С ЧИСТОЙ КОПИИ (Linux/macOS; на Windows те же команды с python вместо python3)
   git fetch origin claude/affectionate-ride-bol5v8
   git checkout <CODE_SHA>
-  # 0) база (R02 >= 9b005be требует init перед seed-demo/import; права 0600):
-  python3 -B -m ui.civic_store init
   # 1) по желанию — синтетический демо-срез Астаны (R05, evidence_type=synthetic, не реальные работы):
   python3 -B -m ui.civic_store seed-demo --package data/civic/astana/demo_synthetic.json
   # 2) учётная запись редактора: пароль вводится скрыто (getpass), в Git и аргументах его нет:
@@ -36,16 +34,15 @@ CODE_SHA: см. CODE_SHA.txt рядом (последний коммит, мен
 
 ПРОВЕРКИ (все на этой сборке; результаты — runs/, screens/final/ и MATRIX.json)
   bash tests/civic/R01/run_checks.sh <out_dir>            # всё ниже одной командой, PASS/FAIL по шагам
-  python3 -m pytest -q -p no:cacheprovider tests            # 849 passed, 2 skipped на CODE_SHA
+  python3 -m pytest -q -p no:cacheprovider tests            # 772 passed, 2 skipped на CODE_SHA
   python3 -B -m ui.web_check                                # 14 OK
   node tests/govtech/plan.cjs && node tests/govtech/resilience.cjs && node tests/govtech/whatif.cjs
   node tests/govtech/school_case.cjs && node tests/govtech/school_vs_k05.cjs
-  node --test tests/civic/R03/core.test.mjs                 # 24 pass
+  node --test tests/civic/R03/core.test.mjs                 # 23 pass
   node --test tests/civic/R04/core.test.cjs tests/civic/R04/contract_mock.test.cjs   # 27 pass
-  node tests/civic/R01/browser/p0_flow.cjs <out_dir>        # P0 в браузере: 59 PASS / 0 FAIL / 2 NOT_RUN
+  node tests/civic/R01/browser/p0_flow.cjs <out_dir>        # P0 в браузере: 49 PASS / 0 FAIL / 2 NOT_RUN
   node tests/civic/R01/browser/scenarios_smoke.cjs <out_dir> # R07 в браузере: 16 PASS
 Браузерные проверки сами поднимают сервер на свободном порту с временной БД и удаляют её.
-Результаты на CODE_SHA: runs/final_85b2aeb/ (11/11 PASS), кадры screens/final/.
 
 НЕ ПРОВЕРЕНО / ВНЕШНИЕ ЗАВИСИМОСТИ (NOT_RUN)
 - Подложка OpenFreeMap и 3D-здания: хост закрыт прокси среды; все кадры на офлайн-фоне.

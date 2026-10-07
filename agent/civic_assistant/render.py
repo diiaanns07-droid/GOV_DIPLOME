@@ -86,7 +86,7 @@ T = {
         "shift_earlier": "Текущий срок раньше первоначального на {n} дн. (разница посчитана по датам карточки).",
         "no_shift": "Текущий плановый срок совпадает с первоначальным.",
         "shift_unknown": "Сравнить первоначальный и текущий срок нельзя: одной из дат нет.",
-        "reason_quote": "В публичной истории (ревизия {r}, {at}) причина изменения сроков указана так: «{text}»",
+        "reason_quote": "В публичной истории (ревизия {r}, {at}) о сроках сказано: «{text}»",
         "reason_missing": "Причина изменения сроков в публичной истории не указана — нет данных.",
         "organization": "Ответственная организация: {v}.",
         "organization_missing": "Ответственная организация в карточке не указана — нет данных.",
@@ -139,7 +139,7 @@ T = {
         "shift_earlier": "Ағымдағы мерзім бастапқыдан {n} күн ерте (карточкадағы күндер бойынша есептелді).",
         "no_shift": "Ағымдағы жоспарлы мерзім бастапқымен сәйкес.",
         "shift_unknown": "Бастапқы және ағымдағы мерзімді салыстыру мүмкін емес: күндердің бірі жоқ.",
-        "reason_quote": "Жария тарихта ({r}-нұсқа, {at}) мерзімді өзгерту себебі былай көрсетілген: «{text}»",
+        "reason_quote": "Жария тарихта ({r}-нұсқа, {at}) мерзім туралы былай жазылған: «{text}»",
         "reason_missing": "Мерзімді өзгерту себебі жария тарихта көрсетілмеген — деректер жоқ.",
         "organization": "Жауапты ұйым: {v}.",
         "organization_missing": "Жауапты ұйым карточкада көрсетілмеген — деректер жоқ.",
@@ -333,10 +333,16 @@ def r_delay_reason(facts, lang):
         out.append(_st(t[key].format(d=fmt_date(val, lang)), [fid], "fact" if val else "missing", facts))
     out += _shift(facts, lang)
     hist = _history(facts)
-    # Первая запись истории — исходная публикация сроков, а не их перенос.
-    first = min((h["value"]["revision"] for h in hist), default=None)
-    reasons = [h for h in hist if h.get("meta", {}).get("schedule_change") and h["value"]["reason"]
-               and h["value"]["revision"] != first]
+    # История может быть неполной: первая доступная запись тоже может содержать перенос.
+    # Учитываем явное изменение текущего срока независимо от позиции записи.
+    reasons = [h for h in hist if h["value"]["reason"]
+               and "schedule.current_planned_end" in h["value"]["changed_fields"]]
+    if not reasons:
+        # Старый контракт мог отмечать весь schedule; цитируем его без вывода
+        # о конкретной изменённой дате. Явная публикация не является переносом.
+        reasons = [h for h in hist if h["value"]["reason"]
+                   and "schedule" in h["value"]["changed_fields"]
+                   and "publication" not in h["value"]["changed_fields"]]
     for h in reasons[-3:]:
         e = h["value"]
         out.append(_st(t["reason_quote"].format(r=e["revision"], at=fmt_at(e["at"], lang), text=e["reason"]),

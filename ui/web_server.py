@@ -61,7 +61,7 @@ for _asset in ("shell.js", "shell.css", "core/data.js", "core/evidence.js",
 
 # Round 11 civic-v1 frontend: explicit files only (R01 shell; role modules are added
 # here by R01 when their reviewed delivery is imported). No directory serving.
-CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css",
+CIVIC_ASSETS = ("shell/shell.js", "shell/shell.css", "shell/explore.js", "map/streets.json",
                 "feedback/feedback.js", "feedback/feedback.css",      # R06 @eaa113d
                 "scenarios/scenarios.js", "scenarios/scenarios.css",  # R07 @22fa413 (graphs only via API)
                 "map/civic-map-core.js", "map/civic-map.js", "map/civic-map.css",  # R03 @f73745c
@@ -870,6 +870,10 @@ class Handler(BaseHTTPRequestHandler):
         if not self._is_civic_path():
             return super().send_error(code, message, explain)
         self.close_connection = True
+        # Python 3.13 leaves HTTP/0.9 here for an unsupported protocol version;
+        # that suppresses all response headers, including our JSON content type.
+        if self.request_version == "HTTP/0.9":
+            self.request_version = "HTTP/1.0"
         if code == 501:  # unknown method: semantically "not allowed on this resource"
             reply = civic_error(405, "method_not_allowed", "Метод не поддерживается.")
         else:

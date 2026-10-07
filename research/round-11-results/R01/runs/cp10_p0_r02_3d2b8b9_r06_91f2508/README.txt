@@ -1,1 +1,0 @@
-Прогон (2026-10-06T16:27:18Z): R02 3d2b8b9 + R03 f73745c + R04 da46e1c + R05 e477e5d + R06 91f2508 + R07 22fa413 + R09 f895c30. p0_flow.cjs 47 PASS / 0 FAIL / 2 NOT_RUN; независимый tests/civic/R06/app_e2e_r06.cjs против собранного приложения 9/9 PASS (r06_app_e2e.json).

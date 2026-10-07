@@ -115,10 +115,10 @@ class Diff(unittest.TestCase):
             sd.diff(self.v1, other)
 
     def test_cli_roundtrip(self):
-        out = subprocess.run([sys.executable, "-I", os.path.join(TOOLS, "schedule_diff.py"), "snapshot",
+        out = subprocess.run([sys.executable, "-X", "utf8", "-I", os.path.join(TOOLS, "schedule_diff.py"), "snapshot",
                               "--text", os.path.join(FIX, "synthetic_source_v1.txt"), "--source-id", "src-synthetic",
                               "--url", "https://example.org/synthetic", "--retrieved-at", "2026-10-02T08:00:00Z",
-                              "--published-on", "2026-10-01"], capture_output=True, text=True, check=True)
+                              "--published-on", "2026-10-01"], capture_output=True, text=True, encoding="utf-8", check=True)
         self.assertEqual(json.loads(out.stdout)["excerpts"], self.v1["excerpts"])
 
 
