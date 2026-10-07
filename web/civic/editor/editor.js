@@ -5,8 +5,10 @@
  *   api         R01 adapter: api.request(method, path, body) -> Promise<data>; cookies and CSRF are its job;
  *   onPublished (publicItem, {action}) after the public version changed: publish, edit of a published record, archive.
  * Optional: apiPrefix (default "", paths are relative to /api/civic/v1), internalNotes:true, now() for tests.
- * The server decides rights. The UI never derives rights from a browser role, keeps no session in storage,
- * and unsaved text lives only in this page's memory (RECOVERY), cleared on logout.
+ * The server decides rights. The UI never derives rights from a browser role and keeps no session in storage.
+ * Unsaved text (RECOVERY) lives in this page's memory and, to survive a reload or a tab crash, in this tab's
+ * sessionStorage: form fields only (never passwords, tokens or the CSRF value), bound to the signed-in user,
+ * removed after a successful save, on "Удалить из памяти" and on logout. It is a local copy, not the server record.
  */
 (function () {
   "use strict";
@@ -14,7 +16,32 @@
   const C = NS.core;
   if (!C) { console.error("CivicEditor: load web/civic/editor/editor-core.js before editor.js"); return; }
 
-  const RECOVERY = new Map();  // object id | "new" -> {base, form, at, title, revision}; this page only
+  const RECOVERY = new Map();  // object id | "new" -> {base, form, at, title, revision}; this tab only
+  const STORE_KEY = "civic-r04-unsaved:v1";
+  const STORE = (() => {
+    try { const s = window.sessionStorage, k = "civic-r04-probe"; s.setItem(k, k); s.removeItem(k); return s; } catch (e) { return null; }
+  })();
+  let storeUser = null;  // the user whose unsaved edits RECOVERY currently holds
+  function persistRecovery() {
+    if (!STORE) return;
+    try {
+      if (!storeUser || !RECOVERY.size) { STORE.removeItem(STORE_KEY); return; }
+      STORE.setItem(STORE_KEY, JSON.stringify({ v: 1, user: storeUser, entries: Object.fromEntries(RECOVERY) }));
+    } catch (e) { /* quota or privacy mode: memory copy still works */ }
+  }
+  // After the server confirms who is signed in: keep only that user's local copies.
+  function loadRecovery(user) {
+    if (storeUser && storeUser !== user) RECOVERY.clear();
+    storeUser = user || null;
+    if (!STORE || !storeUser) return;
+    try {
+      const d = JSON.parse(STORE.getItem(STORE_KEY) || "null");
+      if (!d || d.v !== 1 || d.user !== storeUser || !d.entries || typeof d.entries !== "object") { if (d) STORE.removeItem(STORE_KEY); return; }
+      for (const [k, r] of Object.entries(d.entries)) if (!RECOVERY.has(k) && r && r.form && typeof r.form === "object") RECOVERY.set(k, r);
+    } catch (e) { try { STORE.removeItem(STORE_KEY); } catch (x) { /* ignore */ } }
+  }
+  function dropRecovery(key) { if (RECOVERY.delete(key)) persistRecovery(); }
+  function clearRecovery() { RECOVERY.clear(); storeUser = null; persistRecovery(); }
   let seq = 0;
   const FORM_LABEL = {
     title: "Название", kind: "Тип", status: "Статус работ", description: "Описание",
@@ -133,6 +160,7 @@
     function applySession(d) {
       S.session = { authenticated: !!(d && d.authenticated), user: (d && d.user) || null };
       setCsrf(d && d.csrf_token);
+      if (S.session.authenticated) loadRecovery(S.session.user && S.session.user.name ? String(S.session.user.name) : "?");
     }
 
     // ---------- small UI helpers ----------
@@ -298,7 +326,7 @@
       const mine = mineKnown ? el("label", { class: "civic-r04-check" }, [
         el("input", { type: "checkbox", "data-fk": "mine", checked: L.mine, onchange: (e) => { L.mine = e.target.checked; renderList(); focusKey("mine"); } }), " Только мои"]) : null;
       const rec = RECOVERY.size ? el("div", { class: "civic-r04-msg civic-r04-msg-warn" }, [
-        el("p", {}, "Несохранённые правки в памяти вкладки (пропадут при закрытии страницы или выходе):"),
+        el("p", {}, "Несохранённые правки в этой вкладке — локальная копия, не на сервере (переживёт перезагрузку страницы, пропадёт при закрытии вкладки или выходе):"),
         el("ul", {}, [...RECOVERY.entries()].map(([key, r]) => el("li", {}, [
           "«" + r.title + "», " + C.fmtDateTime(r.at) + " ",
           btn("Вернуться к правке", () => (key === "new" ? newObject() : openObject(key)), "link", "rec-" + key)])))]) : null;
@@ -376,12 +404,25 @@
       attachMap();
       focusKey("edit-h");
     }
-    function stashIfDirty() {
+    function stashIfDirty(quiet) {
       if (S.view !== "edit" || !S.form || !isDirty()) return;
       const key = S.item ? S.item.id : "new";
       const title = S.form.title.trim() || (S.item && S.item.title) || "Новый объект";
       RECOVERY.set(key, { base: clone(S.item), form: clone(S.form), at: now().toISOString(), title, revision: S.item ? S.item.revision : null });
-      say("Несохранённые правки «" + title + "» остались в памяти этой вкладки.");
+      persistRecovery();
+      if (!quiet) say("Несохранённые правки «" + title + "» остались в памяти этой вкладки.");
+    }
+    // Keep the tab copy current while typing, so a reload or a crash does not lose the form.
+    let liveTimer = null;
+    function scheduleLiveStash() {
+      if (liveTimer) { clearTimeout(liveTimer); timers.delete(liveTimer); }
+      liveTimer = setTimeout(() => {
+        timers.delete(liveTimer); liveTimer = null;
+        if (!S.alive || S.view !== "edit" || !S.form) return;
+        if (isDirty()) stashIfDirty(true);
+        else if (!S.restore) dropRecovery(S.item ? S.item.id : "new");
+      }, 600);
+      timers.add(liveTimer);
     }
     function isDirty() { return S.view === "edit" && !!S.form && !same(S.form, S.saved); }
     function currentFields() { return C.fieldsFromForm(S.form, { internalNotes: S.internalNotes }); }
@@ -545,6 +586,7 @@
       }
     }
     function refreshDirty() {
+      scheduleLiveStash();
       const d = isDirty();
       if (d !== S.lastDirty) { S.lastDirty = d; renderReason(); renderButtons(); }
       renderDiff();
@@ -799,15 +841,16 @@
       const r = S.restore;
       if (!r) { V.restore.replaceChildren(); return; }
       V.restore.replaceChildren(el("div", { class: "civic-r04-msg civic-r04-msg-warn", role: "group", "aria-label": "Несохранённые правки" }, [
-        el("p", {}, "В памяти вкладки есть несохранённые правки этой записи от " + C.fmtDateTime(r.at) + (r.revision ? " (на основе ред. " + r.revision + ")" : "") + "."),
+        el("p", {}, "В этой вкладке есть несохранённые правки этой записи от " + C.fmtDateTime(r.at) + (r.revision ? " (на основе ред. " + r.revision + ")" : "") + "."),
+        el("p", { class: "civic-r04-help" }, "Это локальная копия в браузере, не запись на сервере: жители и другие редакторы её не видят, пока вы не сохраните."),
         el("p", { class: "civic-r04-row-btns" }, [btn("Восстановить правки", restoreDraft, "primary", "restore"),
-          btn("Удалить из памяти", () => { RECOVERY.delete(S.item ? S.item.id : "new"); S.restore = null; renderRestore(); focusKey("edit-h"); }, "ghost", "restore-drop")])]));
+          btn("Удалить из памяти", () => { dropRecovery(S.item ? S.item.id : "new"); S.restore = null; renderRestore(); focusKey("edit-h"); }, "ghost", "restore-drop")])]));
     }
     function restoreDraft() {
       const r = S.restore;
       if (!r) return;
-      const res = C.rebaseForm(r.base ? C.formFromItem(r.base) : C.emptyForm(), r.form, S.saved);
-      RECOVERY.delete(S.item ? S.item.id : "new");
+      const res = C.rebaseForm(r.base ? C.formFromItem(r.base) : C.emptyForm(), Object.assign(C.emptyForm(), r.form), S.saved);
+      dropRecovery(S.item ? S.item.id : "new");
       S.restore = null;
       S.form = res.form;
       S.mirror = false;
@@ -841,7 +884,7 @@
         L.publication !== (S.item && S.item.publication) ? el("p", {}, "Состояние публикации теперь: " + (C.PUBLICATION[L.publication] || L.publication) + ".") : null,
         el("p", { class: "civic-r04-row-btns" }, [
           c.rebase.kept.length ? btn("Перенести мои правки на новую версию", applyRebase, "primary", "rebase") : null,
-          btn(c.rebase.kept.length ? "Отказаться от моих правок" : "Открыть новую версию", () => { S.conflict = null; openEditor(L, c.history); setNotice("info", "Открыта актуальная версия ред. " + L.revision + "."); }, "ghost", "rebase-drop"),
+          btn(c.rebase.kept.length ? "Отказаться от моих правок" : "Открыть новую версию", () => { S.conflict = null; dropRecovery(L.id); openEditor(L, c.history); setNotice("info", "Открыта актуальная версия ред. " + L.revision + "."); }, "ghost", "rebase-drop"),
         ].filter(Boolean)),
       ].filter(Boolean)));
     }
@@ -868,7 +911,7 @@
         S.dup = null; S.uncertain = null;
         setBusy(null);
         openEditor(r.item, r.history);
-        RECOVERY.delete("new");
+        dropRecovery("new");
         S.form = mine;
         S.mirror = false;
         buildEditor(); syncMap(); refreshDirty();
@@ -1106,13 +1149,13 @@
           ignored = d && Array.isArray(d.ignored_fields) ? d.ignored_fields : [];
           S.uncertain = null;
           S.createKey = null;
-          RECOVERY.delete("new");
+          dropRecovery("new");
         } else {
           const reason = S.reason.trim() || null;
           const d = await call("POST", "/staff/objects/" + enc(it.id) + "/update", { expected_revision: it.revision, changes, reason });
           item = d && d.item;
           ignored = d && Array.isArray(d.ignored_fields) ? d.ignored_fields : [];
-          RECOVERY.delete(it.id);
+          dropRecovery(it.id);
         }
         if (!item || !item.id) throw Object.assign(new Error("Сервер не вернул сохранённую запись"), { status: 500 });
         const wasPublic = !!it && it.publication === "published";
@@ -1249,7 +1292,7 @@
     async function doLogout() {
       S.epoch++;  // answers to requests of the closed session are ignored from here on
       detachMap();
-      RECOVERY.clear();
+      clearRecovery();
       Object.assign(S, { session: { authenticated: false, user: null }, view: "login", item: null, form: null, saved: null, history: [],
         list: { items: [], next: null, filter: "draft", mine: false, loaded: false, loading: false }, busy: null, confirm: null, reason: "",
         conflict: null, reauth: false, uncertain: null, createKey: null, dup: null, restore: null, preview: false, publicCopy: null, notice: null, alert: null, logoutAsk: false });

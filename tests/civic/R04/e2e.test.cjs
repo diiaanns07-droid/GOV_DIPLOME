@@ -2,7 +2,7 @@
  * (tests/civic/R04/contract_mock.cjs — not R02). One MapLibre map without a basemap (software WebGL).
  * Run:  node --test tests/civic/R04/e2e.test.cjs
  * Screenshots (real, from this run): R04_SCREENSHOTS=1 node --test tests/civic/R04/e2e.test.cjs
- *   -> research/round-11-results/R04/screenshots/
+ *   -> research/round-12-results/R04/screenshots/
  * Playwright is resolved locally or from the global npm root; without it the suite is skipped (NOT_RUN).
  */
 "use strict";
@@ -18,7 +18,7 @@ function loadPlaywright() {
   try { return require(path.join(execSync("npm root -g").toString().trim(), "playwright")); } catch (e) { return null; }
 }
 const PW = loadPlaywright();
-const SHOTS = path.resolve(__dirname, "../../../research/round-11-results/R04/screenshots");
+const SHOTS = path.resolve(__dirname, "../../../research/round-12-results/R04/screenshots");
 const fk = (k) => `[data-fk="${k}"]`;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 async function waitFor(cond, what, ms = 5000) {
@@ -563,5 +563,39 @@ describe("R04 editor in the browser (contract mock)", { skip: PW ? false : "play
     await p.check(fk("geometry_confirmed"));
     await saveOk(p, "Сохранено");
     assert.deepEqual(stand.mock.state.objects.get(c.item.id).geometry.coordinates, [71.4491, 51.1694]);
+  });
+
+  it("round 12: a filled form survives a page reload in the same tab; the copy holds no secrets and logout clears it", async () => {
+    const p = await open();
+    await login(p);
+    await fillDraft(p, { title: "Перезагрузка не теряет форму", description: "Длинное описание, которое нельзя потерять." });
+    await p.fill(fk("organization"), "ГУ «Тестовое управление»");
+    await p.waitForFunction(() => (sessionStorage.getItem("civic-r04-unsaved:v1") || "").includes("Перезагрузка не теряет форму"));
+    const stored = await p.evaluate(() => sessionStorage.getItem("civic-r04-unsaved:v1"));
+    assert.ok(!stored.includes(stand.creds.password), "password must never be stored");
+    assert.ok(!/csrf/i.test(stored), "no CSRF token in the tab copy");
+    await p.reload();
+    await p.waitForSelector(fk("rec-new"));  // the list offers the local copy after reload
+    assert.match(await p.textContent(".civic-r04-listview"), /локальная копия, не на сервере/);
+    await p.click(fk("rec-new"));
+    await p.waitForSelector(fk("restore"));
+    await p.click(fk("restore"));
+    assert.equal(await value(p, "title"), "Перезагрузка не теряет форму");
+    assert.equal(await value(p, "description"), "Длинное описание, которое нельзя потерять.");
+    assert.equal(await value(p, "organization"), "ГУ «Тестовое управление»");
+    assert.equal(posts("/staff/objects").length, 0, "restoring is local; nothing was sent");
+    await saveOk(p, "Черновик создан");
+    await p.waitForFunction(() => !sessionStorage.getItem("civic-r04-unsaved:v1"));
+    await p.click(fk("back"));
+    await p.click(fk("new"));
+    await p.fill(fk("title"), "Будет удалено при выходе");
+    await p.waitForFunction(() => !!sessionStorage.getItem("civic-r04-unsaved:v1"));
+    await p.click(fk("back"));
+    await p.click(fk("logout"));
+    const confirm = await p.$(fk("logout-confirm"));
+    if (confirm) await confirm.click();
+    await p.waitForSelector(fk("login-user"));
+    assert.equal(await p.evaluate(() => sessionStorage.getItem("civic-r04-unsaved:v1")), null, "logout clears the tab copy");
+    assert.deepEqual(p.errors, []);
   });
 });

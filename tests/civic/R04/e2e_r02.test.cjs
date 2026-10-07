@@ -1,7 +1,7 @@
 /* R04 editor against the REAL R02 CivicService (python3 tests/civic/R04/r02_stand.py), not the contract mock.
  * Run:  R04_R02_ROOT=<checkout of the R02 branch> node --test tests/civic/R04/e2e_r02.test.cjs
  *   e.g. git worktree add --detach /tmp/r02 92f7abae8184516c9bf6bd89367a63692402cc1b
- * Screenshots: add R04_SCREENSHOTS=1 -> research/round-11-results/R04/screenshots/r02-*.png
+ * Screenshots: add R04_SCREENSHOTS=1 -> research/round-12-results/R04/screenshots/r02-*.png
  * Without R04_R02_ROOT or Playwright the suite is skipped (NOT_RUN), never reported as passed.
  */
 "use strict";
@@ -18,7 +18,7 @@ function loadPlaywright() {
 }
 const PW = loadPlaywright();
 const R02 = process.env.R04_R02_ROOT;
-const SHOTS = path.resolve(__dirname, "../../../research/round-11-results/R04/screenshots");
+const SHOTS = path.resolve(__dirname, "../../../research/round-12-results/R04/screenshots");
 const fk = (k) => `[data-fk="${k}"]`;
 const skip = !PW ? "playwright not installed" : !R02 ? "R04_R02_ROOT not set (path to an R02 checkout)" : false;
 
