@@ -99,4 +99,3 @@ INTEGRATION.txt: что нужно подключить координатору
 Результаты: research/round-12-results/R07/
 Handoff: research/handoffs/astana/R07/round-12/STATUS.md
 Первый commit/push в первые 20–30 минут после полезного изменения. Не ограничивайся планом и финальным ответом в чате.
-
