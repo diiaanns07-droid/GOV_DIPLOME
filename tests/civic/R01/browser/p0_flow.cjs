@@ -294,6 +294,14 @@ const okNotice = (page, text) => page.waitForSelector(`#civic-editor-root .civic
     await m.page.click("#civic-sheet-handle");
     await m.page.waitForTimeout(500);
     await m.page.screenshot({ path: path.join(OUT, "11_card_full_390.png") });
+    // Signed-in editor on a phone: footer gains the moderation button; nothing may overflow.
+    await m.page.evaluate(([u, p]) => window.CivicShell.api.login(u, p), [USER, PASSWORD]);
+    await m.page.waitForSelector("#civic-moderation-button:not([hidden])", { timeout: 10000 });
+    const foot = await m.page.evaluate(() => ({ scrollW: document.documentElement.scrollWidth,
+      out: [...document.querySelectorAll(".civic-foot button")].filter((b) => b.offsetParent).map((b) => b.getBoundingClientRect())
+        .filter((r) => r.right > innerWidth + 0.5 || r.left < -0.5).length }));
+    check("mobile: staff footer fits (3 buttons, no overflow)", foot.scrollW <= 390 && foot.out === 0, foot);
+    await m.page.screenshot({ path: path.join(OUT, "12_staff_footer_390.png") });
     check("no page errors (mobile)", m.page.errs.length === 0, m.page.errs);
     await m.ctx.close();
   } catch (error) {

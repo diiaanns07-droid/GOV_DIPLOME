@@ -56,21 +56,39 @@ FIELD_PATHS = frozenset(
     + ["responsible." + k for k in RESPONSIBLE_KEYS]
 )
 
-# Hosts whose map geometry must never be copied (viewing licence != extraction licence).
-PROPRIETARY_MAP_HOSTS = ("2gis.", "google.", "goo.gl", "yandex.", "here.com", "apple.com")
+# Content fields as R02 accepts them in source_refs[].fields paths (first segment).
+CONTENT_FIELDS = ("kind", "title", "description", "status", "geometry", "geometry_precision",
+                  "schedule", "budget", "responsible", "evidence_type", "source_refs", "evidence_notes")
+COARSE_FIELD_PATH_RE = re.compile(r"^[a-z_]{1,40}(\.[a-z_]{1,40}){0,2}$")
+
+# Map services whose geometry must never be copied (viewing licence != extraction licence).
+PROPRIETARY_MAP_LABELS = frozenset({"2gis", "google", "yandex"})
+PROPRIETARY_MAP_DOMAINS = ("goo.gl", "here.com", "apple.com")
+
+ASTANA_TZ = _dt.timezone(_dt.timedelta(hours=5))  # Kazakhstan: single zone UTC+5 since 2024-03-01
+MIN_YEAR, MAX_YEAR = 1990, 2100                   # same window as R02 validate.py
 
 ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]{2,63}$")  # R02 civic_objects.id is <= 64 chars
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 TS_RE = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d{1,6})?)?(Z|[+-]\d{2}:\d{2})$")
-HTML_RE = re.compile(r"<\s*/?\s*[A-Za-z!?][^>]*>|&(?:lt|gt|amp|quot|#\d+);", re.I)
-CTRL_RE = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]")
-PHONE_RE = re.compile(r"(?:\+7|\b8)[\s\-()]*7\d{2}[\s\-()]*\d{3}[\s\-]*\d{2}[\s\-]*\d{2}\b")
-EMAIL_RE = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")
-SYNTHETIC_MARK_RE = re.compile(r"демо|синтет|demo|synthetic", re.I)
+# Any tag opener (closed or not) or any named/decimal/hex character reference.
+HTML_RE = re.compile(r"<\s*[/!?A-Za-z]|&(?:#[xX][0-9A-Fa-f]+|#\d+|[A-Za-z][A-Za-z0-9]{1,31});")
+# C0 (except tab/LF/CR), DEL, C1, zero-width, line/paragraph separators, bidi embeddings/isolates, BOM.
+CTRL_RE = re.compile("[\x00-\x08\x0b\x0c\x0e-\x1f\x7f-\x9f\u200b-\u200f\u2028-\u202e\u2060-\u2064\u2066-\u2069\ufeff\ud800-\udfff]")
+LINEBREAK_RE = re.compile(r"[\t\n\r]")
+DIGIT_RUN_RE = re.compile(r"\+?\d[\d\s\-().]{8,}\d")
+IIN_RE = re.compile(r"(?<!\d)\d{12}(?!\d)")
+EMAIL_RE = re.compile(r"[\w.%+-]+[@\uff20][\w-]+(?:\.[\w-]+)*\.\w{2,}")
+URL_BAD_CHARS_RE = re.compile(r"[\s\"'<>`\\\x00-\x1f\x7f-\x9f]")
+SYNTHETIC_MARK_RE = re.compile(r"\b(?:демо|demo|synthetic)\b|синтетическ\w*\s+(?:запис|данн|пример)|демонстрационн", re.I)
 
+# Text limits follow R02 ui/civic_store/validate.py MAX_TEXT so an R05-valid record imports.
 TITLE_MAX = 200
-DESCRIPTION_MAX = 4000
-NOTES_MAX = 4000
+DESCRIPTION_MAX = 5000
+NOTES_MAX = 2000
+ORGANIZATION_MAX = 300
+CONTACT_MAX = 200
+URL_MAX = 2000
 STATUS_MAX_AGE_DAYS = 45  # planned/in_progress claims older than this are stale
 MAX_LINE_KM = 60.0
 
@@ -86,9 +104,10 @@ def parse_date(value: Any) -> _dt.date | None:
     if not isinstance(value, str) or not DATE_RE.match(value):
         return None
     try:
-        return _dt.date.fromisoformat(value)
+        d = _dt.date.fromisoformat(value)
     except ValueError:
         return None
+    return d if MIN_YEAR <= d.year <= MAX_YEAR else None
 
 
 def parse_ts(value: Any) -> _dt.datetime | None:
@@ -101,7 +120,57 @@ def parse_ts(value: Any) -> _dt.datetime | None:
 
 
 def _is_number(value: Any) -> bool:
-    return isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value)
+    if not isinstance(value, (int, float)) or isinstance(value, bool):
+        return False
+    try:
+        return math.isfinite(value)
+    except OverflowError:  # a JSON integer with hundreds of digits
+        return False
+
+
+def _d(value: Any) -> dict:
+    return value if isinstance(value, dict) else {}
+
+
+def _l(value: Any) -> list:
+    return value if isinstance(value, list) else []
+
+
+def astana_date(ts: _dt.datetime) -> _dt.date:
+    """Calendar date in Astana for a timestamp (published_on dates are local dates)."""
+    return ts.astimezone(ASTANA_TZ).date()
+
+
+def _shoelace(ring: list) -> float:
+    return sum(ring[i][0] * ring[i + 1][1] - ring[i + 1][0] * ring[i][1] for i in range(len(ring) - 1)) / 2.0
+
+
+def proprietary_host(host: str) -> bool:
+    host = (host or "").lower().rstrip(".")
+    labels = host.split(".")
+    if any(label in PROPRIETARY_MAP_LABELS for label in labels[:-1]):
+        return True
+    return any(host == d or host.endswith("." + d) for d in PROPRIETARY_MAP_DOMAINS)
+
+
+def check_url(url: Any) -> str | None:
+    """Return None for an acceptable absolute http(s) URL, else a reason (mirrors R02 clean_url)."""
+    if not isinstance(url, str) or not url or len(url) > URL_MAX:
+        return f"url must be a non-empty string of at most {URL_MAX} characters"
+    if URL_BAD_CHARS_RE.search(url):
+        return "url must not contain spaces, quotes, angle brackets or control characters"
+    try:
+        parts = urlparse(url)
+        port_ok = parts.port is None or 0 < parts.port < 65536
+    except ValueError:
+        return "url cannot be parsed"
+    if parts.scheme.lower() not in ("http", "https") or not parts.hostname:
+        return "url must be an absolute http(s) URL with a host"
+    if parts.username is not None or parts.password is not None:
+        return "url must not carry a user name or password"
+    if not port_ok:
+        return "url port is invalid"
+    return None
 
 
 # ---------------------------------------------------------------- geofence
@@ -246,6 +315,19 @@ def validate_geometry(geometry: Any, issues: list, fence: dict | None, path: str
                 ok = False
             elif _ring_self_intersects(ring):
                 issues.append(_issue("geometry_self_intersection", rpath, "linear ring self-intersects"))
+                ok = False
+            elif _shoelace(ring) == 0:
+                issues.append(_issue("geometry_degenerate", rpath, "linear ring has zero area"))
+                ok = False
+        if ok and len(coords) > 1:
+            shell = coords[0]
+            for r, hole in enumerate(coords[1:], start=1):
+                inside = all(_point_in_ring(v[0], v[1], shell) for v in hole[:-1])
+                crosses = any(_segments_cross(hole[i], hole[i + 1], shell[j], shell[j + 1])
+                              for i in range(len(hole) - 1) for j in range(len(shell) - 1))
+                if not inside or crosses:
+                    issues.append(_issue("geometry_hole_outside", f"{path}.coordinates[{r}]",
+                                         "interior ring must lie inside the exterior ring"))
     if not ok or fence is None:
         return
     positions = _positions(geometry)
@@ -266,26 +348,42 @@ def validate_geometry(geometry: Any, issues: list, fence: dict | None, path: str
 
 # ---------------------------------------------------------------- text
 
-def _check_text(value: Any, path: str, issues: list, *, required: bool, max_len: int) -> None:
+def _check_text(value: Any, path: str, issues: list, *, required: bool, max_len: int,
+                single_line: bool = False, length_severity: str = "error") -> None:
     if not isinstance(value, str):
         issues.append(_issue("text_type", path, "must be a string"))
         return
     if required and not value.strip():
         issues.append(_issue("text_empty", path, "must not be empty"))
     if len(value) > max_len:
-        issues.append(_issue("text_too_long", path, f"longer than {max_len} characters"))
+        issues.append(_issue("text_too_long", path, f"longer than {max_len} characters (R02 limit)", length_severity))
     if HTML_RE.search(value):
         issues.append(_issue("text_html", path, "plain text only; HTML tags/entities are not allowed"))
     if CTRL_RE.search(value):
-        issues.append(_issue("text_control_chars", path, "contains control characters"))
+        issues.append(_issue("text_control_chars", path,
+                             "contains control, zero-width or bidi characters"))
+    if single_line and LINEBREAK_RE.search(value):
+        issues.append(_issue("text_line_break", path, "single-line field must not contain tabs or line breaks"))
 
 
-def _check_pii(value: Any, path: str, issues: list) -> None:
+def find_pii(value: Any) -> list[str]:
+    """Phone numbers (KZ mobile/landline, any grouping), 12-digit IIN/BIN, e-mails."""
     if not isinstance(value, str):
-        return
-    if PHONE_RE.search(value) or EMAIL_RE.search(value):
+        return []
+    hits = []
+    for m in DIGIT_RUN_RE.finditer(value):
+        digits = re.sub(r"\D", "", m.group(0))
+        if (len(digits) == 11 and digits[0] in "78" and digits[1] == "7") or (len(digits) == 10 and digits[0] == "7"):
+            hits.append(m.group(0))
+    hits += IIN_RE.findall(value)
+    hits += EMAIL_RE.findall(value)
+    return hits
+
+
+def _check_pii(value: Any, path: str, issues: list, severity: str = "error") -> None:
+    if find_pii(value):
         issues.append(_issue("pii_suspected", path,
-                             "looks like a phone number or e-mail; personal contacts must not be stored"))
+                             "looks like a phone number, IIN or e-mail; personal data must not be stored", severity))
 
 
 # ---------------------------------------------------------------- object
@@ -293,10 +391,10 @@ def _check_pii(value: Any, path: str, issues: list) -> None:
 def _supported_fields(obj: dict) -> dict:
     """Map field path -> list of fetched source_refs that claim to support it."""
     support: dict[str, list] = {}
-    for ref in obj.get("source_refs") or []:
+    for ref in _l(obj.get("source_refs")):
         if not isinstance(ref, dict) or ref.get("access_status") != "fetched":
             continue
-        for f in ref.get("fields") or []:
+        for f in _l(ref.get("fields")):
             if isinstance(f, str):
                 support.setdefault(f, []).append(ref)
     return support
@@ -310,23 +408,33 @@ def material_claims(obj: dict) -> list[str]:
     if obj.get("geometry") is not None and obj.get("geometry_precision") == "source":
         claims.append("geometry")
     for k in SCHEDULE_KEYS:
-        if (obj.get("schedule") or {}).get(k) is not None:
+        if _d(obj.get("schedule")).get(k) is not None:
             claims.append("schedule." + k)
-    budget = obj.get("budget") or {}
+    budget = _d(obj.get("budget"))
     if budget.get("amount_kzt") is not None:
         claims.append("budget.amount_kzt")
     if budget.get("basis") not in (None, "unknown"):
         claims.append("budget.basis")
     for k in RESPONSIBLE_KEYS:
-        if (obj.get("responsible") or {}).get(k) is not None:
+        if _d(obj.get("responsible")).get(k) is not None:
             claims.append("responsible." + k)
     return claims
 
 
 def validate_object(obj: Any, *, profile: str = "contract", as_of: str | None = None,
-                    fence: dict | None = None) -> list[dict]:
+                    fence: dict | None = None, max_status_age_days: int = STATUS_MAX_AGE_DAYS) -> list[dict]:
+    """Validate one object. Never raises on JSON input (only on a bad ``profile`` argument)."""
     if profile not in ("contract", "real", "demo"):
         raise ValueError("profile must be contract, real or demo")
+    try:
+        return _validate_object(obj, profile, as_of, fence, max_status_age_days)
+    except Exception as exc:  # defensive: a validator bug must surface as a rejection, not a crash
+        return [_issue("validator_exception", "", f"{type(exc).__name__}: {exc}"[:300])]
+
+
+def _validate_object(obj: Any, profile: str, as_of: str | None, fence: dict | None,
+                     max_status_age_days: int) -> list[dict]:
+    policy = "warning" if profile == "contract" else "error"  # R05 policies beyond the civic-v1 shape
     issues: list[dict] = []
     if not isinstance(obj, dict):
         return [_issue("object_type", "", "object must be a JSON object")]
@@ -353,11 +461,14 @@ def validate_object(obj: Any, *, profile: str = "contract", as_of: str | None = 
         if key in obj and obj.get(key) not in allowed:
             issues.append(_issue("enum", key, f"must be one of {allowed}"))
 
-    _check_text(obj.get("title"), "title", issues, required=True, max_len=TITLE_MAX)
-    _check_text(obj.get("description"), "description", issues, required=False, max_len=DESCRIPTION_MAX)
-    _check_text(obj.get("evidence_notes"), "evidence_notes", issues, required=False, max_len=NOTES_MAX)
+    _check_text(obj.get("title"), "title", issues, required=True, max_len=TITLE_MAX,
+                single_line=True, length_severity=policy)
+    _check_text(obj.get("description"), "description", issues, required=False, max_len=DESCRIPTION_MAX,
+                length_severity=policy)
+    _check_text(obj.get("evidence_notes"), "evidence_notes", issues, required=False, max_len=NOTES_MAX,
+                length_severity=policy)
     for key in ("title", "description", "evidence_notes"):
-        _check_pii(obj.get(key), key, issues)
+        _check_pii(obj.get(key), key, issues, policy)
 
     validate_geometry(obj.get("geometry"), issues, fence)
 
@@ -416,7 +527,9 @@ def validate_object(obj: Any, *, profile: str = "contract", as_of: str | None = 
             if k not in responsible:
                 issues.append(_issue("missing_field", "responsible." + k, "required (use null when unknown)"))
             elif responsible[k] is not None:
-                _check_text(responsible[k], "responsible." + k, issues, required=True, max_len=300)
+                _check_text(responsible[k], "responsible." + k, issues, required=True,
+                            max_len=CONTACT_MAX if k == "public_contact" else ORGANIZATION_MAX,
+                            single_line=True, length_severity=policy)
 
     # source refs
     refs = obj.get("source_refs")
@@ -444,9 +557,9 @@ def validate_object(obj: Any, *, profile: str = "contract", as_of: str | None = 
         else:
             ref_ids[rid] = ref
         url = ref.get("url")
-        parsed = urlparse(url) if isinstance(url, str) else None
-        if parsed is None or parsed.scheme not in ("https", "http") or not parsed.netloc:
-            issues.append(_issue("source_ref_url", f"{rp}.url", "url must be an absolute http(s) URL"))
+        url_problem = check_url(url)
+        if url_problem:
+            issues.append(_issue("source_ref_url", f"{rp}.url", url_problem))
         if ref.get("access_status") not in ACCESS_STATUSES:
             issues.append(_issue("enum", f"{rp}.access_status", f"must be one of {ACCESS_STATUSES}"))
         pub = ref.get("published_on")
@@ -459,9 +572,9 @@ def validate_object(obj: Any, *, profile: str = "contract", as_of: str | None = 
             issues.append(_issue("timestamp_format", f"{rp}.retrieved_at", "must be ISO8601 with offset or null"))
         if ref.get("access_status") == "fetched" and ret is None:
             issues.append(_issue("fetched_without_time", f"{rp}.retrieved_at", "fetched source needs retrieved_at"))
-        if pub_d and ret_ts and ret_ts.date() < pub_d:
+        if pub_d and ret_ts and astana_date(ret_ts) < pub_d:
             issues.append(_issue("retrieved_before_published", f"{rp}", "retrieved_at is earlier than published_on"))
-        if as_of_date and ret_ts and ret_ts.date() > as_of_date + _dt.timedelta(days=1):
+        if as_of_date and ret_ts and astana_date(ret_ts) > as_of_date + _dt.timedelta(days=1):
             issues.append(_issue("retrieved_in_future", f"{rp}.retrieved_at", "retrieved_at is after the slice as_of date"))
         lic = ref.get("license")
         if lic is not None and not isinstance(lic, str):
@@ -469,23 +582,40 @@ def validate_object(obj: Any, *, profile: str = "contract", as_of: str | None = 
         pubr = ref.get("publisher")
         if pubr is not None and not isinstance(pubr, str):
             issues.append(_issue("source_ref_publisher", f"{rp}.publisher", "publisher must be a string or null"))
+        elif isinstance(pubr, str):
+            _check_text(pubr, f"{rp}.publisher", issues, required=False, max_len=300, single_line=True,
+                        length_severity=policy)
+        if isinstance(lic, str):
+            _check_text(lic, f"{rp}.license", issues, required=False, max_len=200, single_line=True,
+                        length_severity=policy)
         fields = ref.get("fields")
         if not isinstance(fields, list) or not all(isinstance(f, str) for f in fields):
             issues.append(_issue("source_ref_fields", f"{rp}.fields", "fields must be a list of field paths"))
             fields = []
         for f in fields:
-            if f not in FIELD_PATHS:
-                issues.append(_issue("source_ref_field_path", f"{rp}.fields", f"unknown field path {f!r}"))
+            if f in FIELD_PATHS:
+                continue
+            coarse_ok = bool(COARSE_FIELD_PATH_RE.match(f)) and f.split(".")[0] in CONTENT_FIELDS
+            if profile == "contract" and coarse_ok:
+                continue  # civic-v1 only says "paths of supported fields"; R02 accepts these
+            issues.append(_issue("source_ref_field_path", f"{rp}.fields",
+                                 f"field path {f!r} is not a supported leaf path"
+                                 + (" (R05 real/demo slices need leaf paths such as schedule.planned_start)"
+                                    if coarse_ok else "")))
         if fields and ref.get("access_status") != "fetched":
             sev = "warning" if profile == "contract" else "error"
             issues.append(_issue("unfetched_support", f"{rp}.fields",
                                  "a source that was not fetched cannot support field values", sev))
-        host = (parsed.netloc.lower() if parsed else "")
-        if "geometry" in fields and any(h in host for h in PROPRIETARY_MAP_HOSTS):
+        try:
+            host = urlparse(url).hostname or "" if isinstance(url, str) else ""
+        except ValueError:
+            host = ""
+        if "geometry" in fields and proprietary_host(host):
             issues.append(_issue("proprietary_geometry", f"{rp}.fields",
-                                 "geometry must not be copied from proprietary web maps"))
+                                 "geometry must not be copied from proprietary web maps", policy))
 
-    if isinstance(budget, dict) and budget.get("source_id") is not None and budget.get("source_id") not in ref_ids:
+    sid = budget.get("source_id") if isinstance(budget, dict) else None
+    if isinstance(sid, str) and sid not in ref_ids:
         issues.append(_issue("budget_source", "budget.source_id", "source_id must match a source_refs[].id"))
 
     if not isinstance(obj.get("updated_at"), str) or parse_ts(obj.get("updated_at")) is None:
@@ -503,14 +633,12 @@ def validate_object(obj: Any, *, profile: str = "contract", as_of: str | None = 
     if as_of_date and actual_end and actual_end > as_of_date:
         issues.append(_issue("actual_end_in_future", "schedule.actual_end",
                              "actual_end cannot be later than the slice date; an expected date is not an actual end"))
-    ps, ope = dates.get("planned_start"), dates.get("original_planned_end")
-    if ps and ope and ope < ps:
-        issues.append(_issue("schedule_order", "schedule.original_planned_end",
-                             "original_planned_end is before planned_start", "warning"))
+    ps = dates.get("planned_start")
+    for key in ("original_planned_end", "current_planned_end", "actual_end"):
+        end = dates.get(key)
+        if ps and end and end < ps:  # R02 rejects this on import
+            issues.append(_issue("schedule_order", "schedule." + key, f"{key} is before planned_start", policy))
     cpe = dates.get("current_planned_end")
-    if ps and cpe and cpe < ps:
-        issues.append(_issue("schedule_order", "schedule.current_planned_end",
-                             "current_planned_end is before planned_start", "warning"))
     if cpe and dates.get("original_planned_end") is None and "original_planned_end" in (schedule or {}):
         issues.append(_issue("original_end_unknown", "schedule.original_planned_end",
                              "current end is known but the original end is not; history of delays cannot be shown",
@@ -528,6 +656,9 @@ def validate_object(obj: Any, *, profile: str = "contract", as_of: str | None = 
         sev = "warning" if profile == "contract" else "error"
         issues.append(_issue("budget_basis_without_amount", "budget",
                              "amount is unknown, so basis must be 'unknown' and source_id null", sev))
+    if _is_number(amount) and budget.get("basis") == "unknown":  # R02: a sum needs planned/contract/spent
+        issues.append(_issue("budget_amount_without_basis", "budget.basis",
+                             "an amount needs basis planned, contract or spent", policy))
     if _is_number(amount) and amount == 0 and profile != "contract":
         issues.append(_issue("budget_zero", "budget.amount_kzt",
                              "0 tenge is not a placeholder; use null when the amount is unknown"))
@@ -539,14 +670,16 @@ def validate_object(obj: Any, *, profile: str = "contract", as_of: str | None = 
         issues.append(_issue("hypothesis_published", "publication", "a hypothesis must not be published", sev))
 
     if profile == "real":
-        _real_rules(obj, issues, as_of_date, ref_ids)
+        _real_rules(obj, issues, as_of_date, ref_ids, max_status_age_days)
     elif profile == "demo":
         _demo_rules(obj, issues)
     return issues
 
 
-def _real_rules(obj: dict, issues: list, as_of_date, ref_ids: dict) -> None:
+def _real_rules(obj: dict, issues: list, as_of_date, ref_ids: dict, max_age: int) -> None:
     et = obj.get("evidence_type")
+    if as_of_date is None:
+        issues.append(_issue("as_of_required", "", "the real profile needs the slice as_of date for freshness checks"))
     if et == "synthetic":
         issues.append(_issue("synthetic_in_real", "evidence_type",
                              "synthetic records belong to the separate demo slice"))
@@ -554,18 +687,19 @@ def _real_rules(obj: dict, issues: list, as_of_date, ref_ids: dict) -> None:
     if isinstance(obj.get("id"), str) and obj["id"].startswith("demo-"):
         issues.append(_issue("demo_id_in_real", "id", "demo- ids are reserved for synthetic records"))
     support = _supported_fields(obj)
-    fetched = [r for r in obj.get("source_refs") or [] if isinstance(r, dict) and r.get("access_status") == "fetched"]
-    if et in ("observed", "derived") and not any(r.get("fields") for r in fetched):
+    fetched = [r for r in _l(obj.get("source_refs")) if isinstance(r, dict) and r.get("access_status") == "fetched"]
+    if et in ("observed", "derived") and not any(_l(r.get("fields")) for r in fetched):
         issues.append(_issue("no_fetched_source", "source_refs",
                              f"{et} records need at least one fetched source with supported fields"))
-    if et == "derived" and not (obj.get("evidence_notes") or "").strip():
+    notes = obj.get("evidence_notes")
+    if et == "derived" and not (notes.strip() if isinstance(notes, str) else ""):
         issues.append(_issue("derived_without_notes", "evidence_notes", "derived records must explain the derivation"))
     for claim in material_claims(obj):
         if claim not in support:
             issues.append(_issue("unsupported_claim", claim,
                                  "value is not backed by a fetched source_ref listing this field; use null/unknown"))
     # completion must be reported, not expected: a source cannot report an actual end after its publication
-    actual_end = parse_date((obj.get("schedule") or {}).get("actual_end"))
+    actual_end = parse_date(_d(obj.get("schedule")).get("actual_end"))
     if actual_end and "schedule.actual_end" in support:
         pubs = [parse_date(r.get("published_on")) for r in support["schedule.actual_end"]]
         pubs = [p for p in pubs if p]
@@ -580,15 +714,15 @@ def _real_rules(obj: dict, issues: list, as_of_date, ref_ids: dict) -> None:
         pubs = [parse_date(r.get("published_on")) for r in support["status"]]
         pubs = [p for p in pubs if p]
         newest = max(pubs) if pubs else None
-        if newest is None or (as_of_date - newest).days > STATUS_MAX_AGE_DAYS:
+        if newest is None or (as_of_date - newest).days > max_age:
             issues.append(_issue("stale_status", "status",
-                                 f"status '{status}' rests on a source older than {STATUS_MAX_AGE_DAYS} days "
+                                 f"status '{status}' rests on a source older than {max_age} days "
                                  "(or undated); an old announcement does not prove the current state"))
-    budget = obj.get("budget") or {}
+    budget = _d(obj.get("budget"))
     sid = budget.get("source_id")
     if budget.get("amount_kzt") is not None:
         ref = ref_ids.get(sid) if isinstance(sid, str) else None
-        if ref is None or "budget.amount_kzt" not in (ref.get("fields") or []) or ref.get("access_status") != "fetched":
+        if ref is None or "budget.amount_kzt" not in _l(ref.get("fields")) or ref.get("access_status") != "fetched":
             issues.append(_issue("budget_unlinked", "budget.source_id",
                                  "budget amount must name the fetched source_ref that states it"))
 
@@ -605,10 +739,10 @@ def _demo_rules(obj: dict, issues: list) -> None:
     if obj.get("source_refs"):
         issues.append(_issue("demo_with_sources", "source_refs",
                              "synthetic records must not carry source links that look like evidence"))
-    if (obj.get("budget") or {}).get("amount_kzt") is not None:
+    if _d(obj.get("budget")).get("amount_kzt") is not None:
         issues.append(_issue("demo_budget", "budget.amount_kzt",
                              "synthetic records carry no tenge amounts (a model budget is not money)"))
-    resp = obj.get("responsible") or {}
+    resp = _d(obj.get("responsible"))
     if resp.get("organization") is not None or resp.get("public_contact") is not None:
         issues.append(_issue("demo_responsible", "responsible",
                              "synthetic records must not name real organizations or contacts"))
@@ -621,7 +755,7 @@ def _norm_title(title: Any) -> str:
 
 
 def validate_collection(items: Iterable[Any], *, profile: str = "contract", as_of: str | None = None,
-                        fence: dict | None = None) -> dict:
+                        fence: dict | None = None, max_status_age_days: int = STATUS_MAX_AGE_DAYS) -> dict:
     """Validate a list of objects; returns {valid, errors, warnings, by_object, collection_issues}."""
     items = list(items)
     by_object: dict[str, list] = {}
@@ -630,14 +764,16 @@ def validate_collection(items: Iterable[Any], *, profile: str = "contract", as_o
     seen_titles: dict[tuple, str] = {}
     for idx, obj in enumerate(items):
         key = obj.get("id") if isinstance(obj, dict) and isinstance(obj.get("id"), str) else f"#{idx}"
-        issues = validate_object(obj, profile=profile, as_of=as_of, fence=fence)
+        issues = validate_object(obj, profile=profile, as_of=as_of, fence=fence,
+                                 max_status_age_days=max_status_age_days)
         if key in seen_ids:
             collection_issues.append(_issue("duplicate_id", f"[{idx}].id", f"id {key!r} repeats item #{seen_ids[key]}"))
             key = f"{key}#{idx}"
         else:
             seen_ids[key] = idx
         if isinstance(obj, dict):
-            tkey = (obj.get("kind"), _norm_title(obj.get("title")))
+            kind = obj.get("kind")
+            tkey = (kind if isinstance(kind, str) else None, _norm_title(obj.get("title")))
             if tkey[1] and tkey in seen_titles:
                 collection_issues.append(_issue("duplicate_title", f"[{idx}].title",
                                                 f"same kind and title as {seen_titles[tkey]!r}; possible duplicate",
@@ -663,7 +799,7 @@ def validate_collection(items: Iterable[Any], *, profile: str = "contract", as_o
 
 def load_items(path: str) -> list:
     """Load objects from a slice envelope {items:[...]} or a bare list."""
-    with open(path, encoding="utf-8") as fh:
+    with open(path, encoding="utf-8-sig") as fh:
         data = json.load(fh)
     if isinstance(data, dict) and isinstance(data.get("items"), list):
         return data["items"]
@@ -684,7 +820,20 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--no-geofence", action="store_true")
     args = ap.parse_args(argv)
     fence = None if args.no_geofence else load_geofence(args.geofence)
-    report = validate_collection(load_items(args.path), profile=args.profile, as_of=args.as_of, fence=fence)
+    as_of = args.as_of
+    max_age = STATUS_MAX_AGE_DAYS
+    try:
+        with open(args.path, encoding="utf-8-sig") as fh:
+            envelope = json.load(fh)
+        items = load_items(args.path)
+    except (OSError, ValueError) as exc:
+        print(json.dumps({"valid": False, "error": f"cannot read {args.path}: {exc}"}, ensure_ascii=False))
+        return 2
+    if isinstance(envelope, dict) and isinstance(envelope.get("slice"), dict):
+        as_of = as_of or envelope["slice"].get("as_of")  # the slice's own date unless overridden
+        max_age = envelope["slice"].get("status_max_age_days", max_age)
+    report = validate_collection(items, profile=args.profile, as_of=as_of, fence=fence,
+                                 max_status_age_days=max_age)
     print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
     return 0 if report["valid"] else 1
 

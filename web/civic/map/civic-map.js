@@ -31,7 +31,11 @@
   const SVGNS = "http://www.w3.org/2000/svg";
   const MOBILE_QUERY = "(max-width: 760px)";
   const MAX_PAGES = 20;
+  const LIST_STEP = 200;
+  const DEMO_IMG = P + "demo-ring";
   const byMap = new WeakMap();
+  const byRoot = new WeakMap();
+  let instanceCount = 0;
 
   // ---------- tiny DOM helpers (textContent only) ----------
   function h(tag, attrs, ...kids) {
@@ -74,7 +78,25 @@
     return e;
   }
 
-  function layerDefs() {
+  // Dashed grey ring for synthetic points, drawn on a canvas because MapLibre circle strokes
+  // cannot be dashed; the legend swatch shows the same dashed ring.
+  function demoRingImage() {
+    try {
+      const ratio = 2, size = 32 * ratio, c = document.createElement("canvas");
+      c.width = c.height = size;
+      const ctx = c.getContext("2d");
+      if (!ctx || typeof ctx.setLineDash !== "function") return null;
+      const r = 13 * ratio, mid = size / 2;
+      ctx.lineWidth = 4.5 * ratio; ctx.strokeStyle = "rgba(255,255,255,0.92)";
+      ctx.beginPath(); ctx.arc(mid, mid, r, 0, Math.PI * 2); ctx.stroke();
+      ctx.setLineDash([3.4 * ratio, 2.4 * ratio]); ctx.lineWidth = 2.2 * ratio; ctx.strokeStyle = "#374151";
+      ctx.beginPath(); ctx.arc(mid, mid, r, 0, Math.PI * 2); ctx.stroke();
+      const d = ctx.getImageData(0, 0, size, size);
+      return { image: { width: size, height: size, data: new Uint8Array(d.data.buffer) }, ratio };
+    } catch (e) { return null; }
+  }
+
+  function layerDefs(demoImage) {
     const kc = kindColorExpr();
     const isPoly = ["==", ["geometry-type"], "Polygon"];
     const isLine = ["==", ["geometry-type"], "LineString"];
@@ -103,8 +125,11 @@
         paint: { "line-color": "#152c26", "line-width": 3, "line-gap-width": ["case", isLine, 7, 0], "line-opacity": 0.95 } },
       { id: L.pointHalo, type: "circle", source: SRC, filter: ["all", isPoint, approx],
         paint: { "circle-radius": 18, "circle-color": kc, "circle-opacity": 0.13, "circle-stroke-color": kc, "circle-stroke-width": 1, "circle-stroke-opacity": 0.45, "circle-pitch-alignment": "map" } },
-      { id: L.pointSynth, type: "circle", source: SRC, filter: ["all", isPoint, ["==", ["get", "synthetic"], true]],
-        paint: { "circle-radius": 12.5, "circle-opacity": 0, "circle-stroke-color": "#4f5965", "circle-stroke-width": 1.5, "circle-stroke-opacity": 0.9 } },
+      demoImage
+        ? { id: L.pointSynth, type: "symbol", source: SRC, filter: ["all", isPoint, ["==", ["get", "synthetic"], true]],
+          layout: { "icon-image": DEMO_IMG, "icon-allow-overlap": true, "icon-ignore-placement": true, "icon-pitch-alignment": "viewport" } }
+        : { id: L.pointSynth, type: "circle", source: SRC, filter: ["all", isPoint, ["==", ["get", "synthetic"], true]],
+          paint: { "circle-radius": 13, "circle-opacity": 0, "circle-stroke-color": "#374151", "circle-stroke-width": 2 } },
       { id: L.point, type: "circle", source: SRC, filter: isPoint,
         paint: {
           "circle-radius": 7.5,
@@ -113,8 +138,9 @@
           "circle-stroke-color": ["match", ["get", "status"], "planned", kc, "in_progress", "#ffffff", "completed", "#ffffff", "#4f5965"],
           "circle-stroke-width": ["match", ["get", "status"], "planned", 3, "unknown", 2.5, 2],
         } },
+      // Outside the demo ring (r 13), so a selected demo point keeps its demo mark.
       { id: L.selPoint, type: "circle", source: SRC, filter: ["all", isPoint, none],
-        paint: { "circle-radius": 13, "circle-opacity": 0, "circle-stroke-color": "#152c26", "circle-stroke-width": 3 } },
+        paint: { "circle-radius": 17.5, "circle-opacity": 0, "circle-stroke-color": "#152c26", "circle-stroke-width": 3 } },
     ];
   }
 
@@ -124,6 +150,13 @@
     const root = opt.root;
     if (!root || root.nodeType !== 1) throw new Error("CivicMap.mount: root element is required");
     if (!opt.api || typeof opt.api.request !== "function") throw new Error("CivicMap.mount: api.request(method, path, body) is required");
+    // A second mount on the same root or map replaces the first one cleanly: the old instance
+    // restores the root first, then this one captures it.
+    const prevOnRoot = byRoot.get(root);
+    if (prevOnRoot) prevOnRoot.destroy();
+    const prevOnMap = opt.map && byMap.get(opt.map);
+    if (prevOnMap && prevOnMap !== prevOnRoot) prevOnMap.destroy();
+    const uid = P + (++instanceCount) + "-";
     const api = opt.api;
     const onSelect = typeof opt.onSelect === "function" ? opt.onSelect : null;
     const onFeedback = typeof opt.onFeedback === "function" ? opt.onFeedback : null;
@@ -154,7 +187,9 @@
       aborters[kind] = typeof AbortController === "function" ? new AbortController() : null;
       return aborters[kind] ? aborters[kind].signal : undefined;
     }
-    let popup = null, cursorSet = false, hoverRaf = 0, moveTimer = 0, lastHoverPoint = null;
+    let popup = null, cursorSet = false, hoverRaf = 0, moveTimer = 0, lastHoverPoint = null, searchTimer = 0, layoutTimer = 0;
+    let statusKey = null;
+    const searchText = new Map();
     let addingLayers = false;
 
     const st = {
@@ -163,7 +198,7 @@
       filters: C.defaultFilters(), q: "",
       selectedId: null, view: "list",
       detail: { id: null, state: "idle", item: null, history: [], error: null },
-      sheet: "peek", viewBox: null,
+      sheet: "peek", viewBox: null, limit: LIST_STEP, cameraPending: false,
       compare: { a: null, b: null },
     };
     if (persist) {
@@ -181,39 +216,39 @@
     const isMobile = () => !!(mql && mql.matches);
 
     // ---------- static skeleton ----------
-    const handle = h("button", { type: "button", class: P + "handle", "data-r03-action": "sheet", "aria-label": "Развернуть список" }, h("span", { class: P + "grip", "aria-hidden": "true" }));
+    const handle = h("button", { type: "button", class: P + "handle", "data-r03-action": "sheet", "aria-label": "Развернуть панель наполовину", "aria-controls": uid + "scroll" }, h("span", { class: P + "grip", "aria-hidden": "true" }));
     const countEl = h("p", { class: P + "count", role: "status", "aria-live": "polite" });
     const demoNote = h("p", { class: P + "demo-note", hidden: true });
     const head = h("header", { class: P + "head" },
       h("div", { class: P + "head-row" }, h("h2", { class: P + "title", text: title }), h("span", { class: P + "city", text: "Астана" })),
       countEl, demoNote);
 
-    const searchInput = h("input", { type: "search", class: P + "search", id: P + "q", placeholder: "Название или описание", autocomplete: "off", "aria-label": "Поиск по названию и описанию", maxlength: "120" });
+    const searchInput = h("input", { type: "search", class: P + "search", id: uid + "q", "data-r03-filter": "q", placeholder: "Название или описание", autocomplete: "off", "aria-label": "Поиск по названию и описанию", maxlength: "120" });
     const kindBox = h("div", { class: P + "chips", role: "group", "aria-label": "Вид работ" });
-    const statusSel = h("select", { id: P + "status", class: P + "select", "data-r03-filter": "status" },
+    const statusSel = h("select", { id: uid + "status", class: P + "select", "data-r03-filter": "status" },
       h("option", { value: "", text: "Все статусы" }), C.STATUS_ORDER.map((s) => h("option", { value: s, text: C.STATUSES[s] })));
-    const periodSel = h("select", { id: P + "period", class: P + "select", "data-r03-filter": "period" },
+    const periodSel = h("select", { id: uid + "period", class: P + "select", "data-r03-filter": "period" },
       Object.entries(C.PERIODS).map(([k, v]) => h("option", { value: k, text: v })));
-    const fromInput = h("input", { type: "date", id: P + "from", class: P + "date", "data-r03-filter": "from" });
-    const toInput = h("input", { type: "date", id: P + "to", class: P + "date", "data-r03-filter": "to" });
+    const fromInput = h("input", { type: "date", id: uid + "from", class: P + "date", "data-r03-filter": "from" });
+    const toInput = h("input", { type: "date", id: uid + "to", class: P + "date", "data-r03-filter": "to" });
     const customBox = h("div", { class: P + "custom", hidden: true },
-      h("label", { for: P + "from" }, "с", fromInput), h("label", { for: P + "to" }, "по", toInput));
-    const areaBox = h("input", { type: "checkbox", id: P + "area", "data-r03-filter": "area" });
+      h("label", { for: uid + "from" }, "с", fromInput), h("label", { for: uid + "to" }, "по", toInput));
+    const areaBox = h("input", { type: "checkbox", id: uid + "area", "data-r03-filter": "area" });
     const resetBtn = h("button", { type: "button", class: P + "link-btn", "data-r03-action": "reset-filters", text: "Сбросить фильтры" });
     const periodNote = h("p", { class: P + "hint" });
     const filtersSummary = h("summary", { class: P + "filters-summary" }, h("span", { text: "Фильтры" }), h("span", { class: P + "filters-active" }));
     const filters = h("details", { class: P + "filters" }, filtersSummary,
       h("div", { class: P + "filters-body" },
-        h("label", { class: P + "field", for: P + "q" }, h("span", { text: "Поиск" }), searchInput),
-        h("div", { class: P + "field" }, h("span", { class: P + "field-label", id: P + "kinds-label", text: "Вид" }), kindBox),
+        h("label", { class: P + "field", for: uid + "q" }, h("span", { text: "Поиск" }), searchInput),
+        h("div", { class: P + "field" }, h("span", { class: P + "field-label", id: uid + "kinds-label", text: "Вид" }), kindBox),
         h("div", { class: P + "two" },
-          h("label", { class: P + "field", for: P + "status" }, h("span", { text: "Статус" }), statusSel),
-          h("label", { class: P + "field", for: P + "period" }, h("span", { text: "Период по плану" }), periodSel)),
+          h("label", { class: P + "field", for: uid + "status" }, h("span", { text: "Статус" }), statusSel),
+          h("label", { class: P + "field", for: uid + "period" }, h("span", { text: "Период по плану" }), periodSel)),
         customBox, periodNote,
         h("div", { class: P + "row" },
-          h("label", { class: P + "check", for: P + "area" }, areaBox, h("span", { text: "Только видимая часть карты" })),
+          h("label", { class: P + "check", for: uid + "area" }, areaBox, h("span", { text: "Только видимая часть карты" })),
           resetBtn)));
-    kindBox.setAttribute("aria-labelledby", P + "kinds-label");
+    kindBox.setAttribute("aria-labelledby", uid + "kinds-label");
     for (const k of C.KIND_ORDER) {
       kindBox.append(h("button", { type: "button", class: P + "chip", "data-r03-action": "toggle-kind", "data-kind": k, "aria-pressed": "false", style: { "--civic-r03-k": C.KINDS[k].color } },
         h("i", { class: P + "dot", "aria-hidden": "true" }), h("span", { text: C.KINDS[k].label }), h("span", { class: P + "chip-count" })));
@@ -225,7 +260,7 @@
     const legend = buildLegend();
     const listView = h("section", { class: P + "list-view", "aria-label": "Список объектов" }, filters, statusBox, listEl, listNotes, legend);
     const cardView = h("section", { class: P + "card", "aria-label": "Карточка объекта", hidden: true });
-    const scroller = h("div", { class: P + "scroll" }, listView, cardView);
+    const scroller = h("div", { class: P + "scroll", id: uid + "scroll" }, listView, cardView);
     root.append(handle, head, scroller);
 
     function buildLegend() {
@@ -246,7 +281,7 @@
           h("ul", null,
             sample(P + "sw-solid", g, "Сплошная линия, точка — место по источнику"),
             sample(P + "sw-halo", g, "Пунктир, ореол — примерное место"),
-            sample(P + "sw-synth", g, "Серое пунктирное кольцо — демо-запись")),
+            sample(P + "sw-synth", g, "Серое пунктирное кольцо (у линий и участков — пунктирная обводка) — демо-запись")),
           h("p", { class: P + "hint", text: "Записи без координат есть только в списке: точку за них не придумываем." })));
     }
 
@@ -257,6 +292,8 @@
     on(root, "input", onRootInput);
     on(root, "keydown", onRootKey);
     on(handle, "pointerdown", onHandleDown);
+    // Keyboard focus entering a peeking sheet opens it, so the focused control is visible.
+    on(scroller, "focusin", () => { if (isMobile() && layout === "overlay" && st.sheet === "peek") setSheet("half"); });
     if (mql) {
       const f = () => { applySheet(); };
       if (mql.addEventListener) { mql.addEventListener("change", f); cleanups.push(() => mql.removeEventListener("change", f)); }
@@ -267,11 +304,25 @@
       const t = e.target.closest("[data-r03-action]");
       if (!t || !root.contains(t)) return;
       const a = t.getAttribute("data-r03-action");
+      const wasFocused = document.activeElement === t;
+      handleAction(t, a);
+      if (wasFocused && a !== "select" && a !== "back") keepFocus(t, a);
+    }
+    // If the activated control vanished in the re-render, put focus somewhere stable nearby.
+    function keepFocus(t, a) {
+      if (destroyed || (t.isConnected && !t.closest("[hidden]") && t.getClientRects().length)) return;
+      let target = countEl;
+      if (a === "reset-filters" || a === "show-undated") target = filters.open ? (a === "show-undated" ? periodSel : searchInput) : filtersSummary;
+      else if (a === "more") target = listEl.querySelector("[data-r03-more-anchor]") || countEl;
+      if (target === countEl) countEl.setAttribute("tabindex", "-1");
+      try { target.focus(); } catch (e) { /* ignore */ }
+    }
+    function handleAction(t, a) {
       if (a === "select") { selectObject(t.getAttribute("data-id"), { source: "list" }); }
       else if (a === "back") closeCard();
       else if (a === "retry-list") refresh();
       else if (a === "retry-card" && st.detail.id) loadDetail(st.detail.id);
-      else if (a === "reset-filters") { st.filters = C.defaultFilters(); st.q = ""; searchInput.value = ""; filtersChanged(); }
+      else if (a === "reset-filters") { st.filters = C.defaultFilters(); st.q = ""; searchInput.value = ""; clearTimeout(searchTimer); filtersChanged(); }
       else if (a === "toggle-kind") {
         const k = t.getAttribute("data-kind");
         const set = new Set(st.filters.kinds);
@@ -285,9 +336,11 @@
       } else if (a === "sheet") cycleSheet();
       else if (a === "copy-link") copyLink(t);
       else if (a === "show-undated") { st.filters.period = "all"; filtersChanged(); }
+      else if (a === "more") { st.limit += LIST_STEP; renderList(st.limit - LIST_STEP); }
     }
     function onRootChange(e) {
       const f = e.target.getAttribute && e.target.getAttribute("data-r03-filter");
+      if (f === "q") { applySearch(); return; }
       if (f === "status") st.filters.statuses = e.target.value ? [e.target.value] : [];
       else if (f === "period") st.filters.period = e.target.value;
       else if (f === "from") st.filters.from = e.target.value || null;
@@ -301,7 +354,20 @@
       filtersChanged();
     }
     function onRootInput(e) {
-      if (e.target === searchInput) { st.q = searchInput.value.slice(0, 120); renderList(); }
+      if (e.target !== searchInput) return;
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(applySearch, 150);
+    }
+    function applySearch() {
+      clearTimeout(searchTimer);
+      if (destroyed) return;
+      const q = searchInput.value.slice(0, 120);
+      if (q === st.q) return;
+      st.q = q;
+      st.limit = LIST_STEP;
+      syncFilterControls();
+      renderList();
+      updateMapData();
     }
     function onRootKey(e) {
       if (e.key === "Escape" && st.view === "card") { e.preventDefault(); closeCard(); }
@@ -349,11 +415,13 @@
     function setSheet(s) { st.sheet = s; applySheet(); }
     function applySheet() {
       root.setAttribute("data-civic-r03-sheet", st.sheet);
-      handle.setAttribute("aria-label", st.sheet === "full" ? "Свернуть панель" : "Развернуть панель");
-      handle.setAttribute("aria-expanded", String(st.sheet !== "peek"));
+      // The label names what the next tap does; the cycle is peek -> half -> full -> peek.
+      handle.setAttribute("aria-label", st.sheet === "peek" ? "Развернуть панель наполовину" : st.sheet === "half" ? "Развернуть панель полностью" : "Свернуть панель");
+      handle.setAttribute("aria-expanded", String(st.sheet === "full"));
       handle.hidden = !isMobile() || layout !== "overlay";
       if (isMobile() && filters.open && st.sheet === "peek") filters.open = false;
       if (destroyed) return;
+      if (st.filters.area && map) { clearTimeout(moveTimer); moveTimer = setTimeout(() => { if (!destroyed) { updateViewBox(); renderList(); } }, 320); }
       try { root.dispatchEvent(new CustomEvent("civic-r03:layout", { detail: getLayout() })); } catch (e) { /* old browsers */ }
     }
     function getLayout() {
@@ -364,6 +432,7 @@
     // ---------- filters ----------
     function filtersChanged() {
       st.filters = C.sanitizeFilters(st.filters);
+      st.limit = LIST_STEP;
       if (persist) { try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify(st.filters)); } catch (e) { /* ignore */ } }
       syncFilterControls();
       renderList();
@@ -385,89 +454,112 @@
       resetBtn.hidden = !active;
       const r = C.periodRange(f.period, today(), { from: f.from, to: f.to });
       periodNote.textContent = r.from || r.to
-        ? "Плановые сроки пересекают " + (r.from ? "с " + C.formatDay(r.from) : "") + (r.to ? " по " + C.formatDay(r.to) : "") + ". Это план, а не подтверждение, что работы идут."
+        ? "Показаны записи, плановые сроки которых пересекают период" + (r.from ? " с " + C.formatDay(r.from) : "") + (r.to ? " по " + C.formatDay(r.to) : "") +
+          ". Если одна из дат неизвестна, запись помечена. Это план, а не подтверждение, что работы идут."
         : "";
       periodNote.hidden = !periodNote.textContent;
     }
-    function textMatch(it, q) {
-      if (!q) return true;
-      const norm = (s) => String(s || "").toLocaleLowerCase("ru").replace(/ё/g, "е");
-      const needle = norm(q).trim();
-      return !needle || norm(it.title).includes(needle) || norm(it.description).includes(needle) || norm(it.responsible.organization).includes(needle);
+    const norm = (v) => String(v || "").toLocaleLowerCase("ru").replace(/ё/g, "е");
+    function textOf(it) {
+      let t = searchText.get(it.id);
+      if (t === undefined) { t = norm(it.title) + "\n" + norm(it.description) + "\n" + norm(it.responsible.organization); searchText.set(it.id, t); }
+      return t;
     }
+    function searchPredicate() {
+      const needle = norm(st.q).trim();
+      return needle ? (it) => textOf(it).includes(needle) : null;
+    }
+    // st.items is sorted once per load, so filtering keeps a stable, cheap order.
     function filtered() {
-      const res = C.applyFilters(st.items, st.filters, { today: today(), viewBox: st.filters.area ? st.viewBox : null });
-      if (st.q) {
-        const before = res.shown.length;
-        res.shown = res.shown.filter((r) => textMatch(r.item, st.q));
-        res.counts.bySearch = before - res.shown.length;
-        res.counts.shown = res.shown.length;
-      }
-      res.shown = C.sortItems(res.shown);
-      return res;
+      return C.applyFilters(st.items, st.filters, { today: today(), viewBox: st.filters.area ? st.viewBox : null, match: searchPredicate() });
     }
     // Map shows kind/status/period/search filters, never the viewport filter.
     function mapItems() {
-      const res = C.applyFilters(st.items, st.filters, { today: today(), viewBox: null });
-      return res.shown.map((r) => r.item).filter((it) => textMatch(it, st.q));
+      return C.applyFilters(st.items, st.filters, { today: today(), viewBox: null, match: searchPredicate() }).shown.map((r) => r.item);
     }
 
     // ---------- list ----------
-    function renderList() {
+    // The polite status region is rebuilt only when its meaning changes, so typing or panning
+    // does not re-announce the same error or empty message.
+    function setStatus(key, build) {
+      if (key === statusKey) return;
+      statusKey = key;
+      const keep = document.activeElement && statusBox.contains(document.activeElement);
+      statusBox.replaceChildren();
+      if (build) statusBox.append(build());
+      if (keep) { countEl.setAttribute("tabindex", "-1"); countEl.focus(); }
+    }
+    function setCount(text) { if (countEl.textContent !== text) countEl.textContent = text; }
+    function renderList(focusFrom) {
       if (destroyed) return;
       const focusedId = document.activeElement && listEl.contains(document.activeElement) ? document.activeElement.getAttribute("data-id") : null;
       const res = filtered();
       const c = res.counts;
       for (const b of kindBox.querySelectorAll("[data-kind]")) {
         const n = c.byKind[b.getAttribute("data-kind")] || 0;
-        b.querySelector("." + P + "chip-count").textContent = st.list === "ready" ? String(n) : "";
+        const t = st.list === "ready" ? String(n) : "";
+        const el = b.querySelector("." + P + "chip-count");
+        if (el.textContent !== t) el.textContent = t;
       }
       const synth = st.items.filter((it) => it.evidence === "synthetic").length;
       demoNote.hidden = !synth;
       demoNote.textContent = synth ? (synth === st.items.length ? "Все записи — синтетические демо-данные, не сведения о реальных работах." : "Демо-записей: " + synth + ". Они отмечены «Демо» и не описывают реальные работы.") : "";
-      statusBox.replaceChildren();
       listEl.replaceChildren();
       listNotes.replaceChildren();
       listEl.setAttribute("aria-busy", String(st.list === "loading"));
       if (st.list === "loading" && !st.items.length) {
-        countEl.textContent = "Загружаем объекты…";
-        statusBox.append(h("div", { class: P + "loading" }, h("span", { class: P + "spinner", "aria-hidden": "true" }), "Загружаем опубликованные объекты…"));
+        setCount("Загружаем объекты…");
+        setStatus("loading", () => h("div", { class: P + "loading", "aria-hidden": "true" }, h("span", { class: P + "spinner" }), "Загружаем опубликованные объекты…"));
         return;
       }
       if (st.list === "error") {
-        countEl.textContent = st.items.length ? "Показаны прежние данные" : "Данные не загружены";
-        statusBox.append(h("div", { class: P + "error", role: "alert" },
-          h("p", { text: st.listError ? st.listError.text : "Не удалось загрузить объекты." }),
-          h("button", { type: "button", class: P + "btn", "data-r03-action": "retry-list" }, svgIcon(ICON.retry), "Повторить")));
+        setCount(st.items.length ? "Показаны прежние данные" : "Данные не загружены");
+        const text = st.listError ? st.listError.text : "Не удалось загрузить объекты.";
+        setStatus("error|" + text, () => h("div", { class: P + "error" },
+          h("p", { text }), h("button", { type: "button", class: P + "btn", "data-r03-action": "retry-list" }, svgIcon(ICON.retry), "Повторить")));
         if (!st.items.length) return;
-      }
-      if (st.list === "loading") statusBox.append(h("p", { class: P + "hint", text: "Обновляем…" }));
-      countEl.textContent = st.list === "idle" ? "" : (c.shown === c.total ? plural(c.total, "объект", "объекта", "объектов") : "Показано " + c.shown + " из " + c.total);
-      if (st.list === "ready" && !st.items.length) {
-        statusBox.append(h("div", { class: P + "empty" }, h("p", { text: "Опубликованных объектов пока нет." }),
+      } else if (st.list === "loading") setStatus("refreshing", () => h("p", { class: P + "hint", text: "Обновляем…" }));
+      else if (st.list === "ready" && !st.items.length) {
+        setCount("0 объектов");
+        setStatus("empty-server", () => h("div", { class: P + "empty" }, h("p", { text: "Опубликованных объектов пока нет." }),
           h("p", { class: P + "hint", text: "Когда сотрудники опубликуют работы или события, они появятся на карте и в этом списке." })));
         return;
-      }
-      if (!res.shown.length && st.items.length) {
-        statusBox.append(h("div", { class: P + "empty" }, h("p", { text: "По выбранным условиям ничего не найдено." }),
+      } else if (!res.shown.length && st.items.length) {
+        setStatus("empty-filter", () => h("div", { class: P + "empty" }, h("p", { text: "По выбранным условиям ничего не найдено." }),
           h("button", { type: "button", class: P + "btn", "data-r03-action": "reset-filters", text: "Сбросить фильтры" })));
-      }
+      } else setStatus("", null);
+      if (st.list !== "error") setCount(st.list === "idle" ? "" : (c.shown === c.total ? plural(c.total, "объект", "объекта", "объектов") : "Показано " + c.shown + " из " + c.total));
       const frag = document.createDocumentFragment();
-      for (const row of res.shown) frag.append(listItem(row.item, row.partial));
+      const visible = res.shown.slice(0, st.limit);
+      visible.forEach((row, i) => {
+        const li = listItem(row.item, row.missing);
+        if (focusFrom !== undefined && i === focusFrom) li.firstChild.setAttribute("data-r03-more-anchor", "");
+        frag.append(li);
+      });
       listEl.append(frag);
       const notes = [];
-      if (c.undated) notes.push(h("li", null, "Без плановых дат: " + c.undated + " — период их не включает. ", h("button", { type: "button", class: P + "link-btn", "data-r03-action": "show-undated", text: "Показать все сроки" })));
-      if (c.partial) notes.push(h("li", { text: "С неполным интервалом: " + c.partial + " — известна только одна дата, она попадает в период." }));
+      if (res.shown.length > visible.length) notes.push(h("li", null, "Показаны первые " + visible.length + " из " + res.shown.length + ". ",
+        h("button", { type: "button", class: P + "link-btn", "data-r03-action": "more", text: "Показать ещё " + Math.min(LIST_STEP, res.shown.length - visible.length) })));
+      if (c.undated) notes.push(h("li", null, "Без плановых дат: " + c.undated + " — в выбранный период не попадают. ", h("button", { type: "button", class: P + "link-btn", "data-r03-action": "show-undated", text: "Показать все сроки" })));
+      if (c.partial) notes.push(h("li", { text: "С неполными сроками: " + c.partial + " — одна из плановых дат неизвестна; такие записи помечены." }));
       if (c.outsideArea) notes.push(h("li", { text: "Вне видимой части карты: " + c.outsideArea + "." }));
       if (c.noGeometry) notes.push(h("li", { text: "Без места на карте (не входят в «видимую часть»): " + c.noGeometry + "." }));
-      const noGeo = st.items.filter((it) => !it.geometry).length;
-      if (noGeo && !st.filters.area) notes.push(h("li", { text: "Без координат: " + noGeo + " — есть только в списке, на карте не показаны." }));
-      if (st.truncated) notes.push(h("li", { text: "Загружены первые " + st.items.length + " записей; остальные не показаны." }));
+      if (c.mappedOut) {
+        const rows = res.shown.filter((r) => !r.item.bbox);
+        const absent = rows.filter((r) => !r.item.geoIssue).length, bad = rows.length - absent;
+        if (absent) notes.push(h("li", { text: "Без координат: " + absent + " — есть только в списке, на карте не показаны." }));
+        if (bad) notes.push(h("li", { text: "Координаты вне области карты или некорректны: " + bad + " — показаны только в списке." }));
+      }
+      if (st.truncated) notes.push(h("li", { text: "Загружено " + plural(st.items.length, "запись", "записи", "записей") + "; остальные не показаны." }));
       if (st.excluded) notes.push(h("li", { text: "Пропущено некорректных или неопубликованных записей: " + st.excluded + "." }));
       if (notes.length) listNotes.append(h("ul", null, notes));
       if (focusedId) {
         const again = listEl.querySelector('[data-id="' + cssEscape(focusedId) + '"]');
         if (again) again.focus();
+        else { countEl.setAttribute("tabindex", "-1"); countEl.focus(); }
+      } else if (focusFrom !== undefined) {
+        const anchor = listEl.querySelector("[data-r03-more-anchor]");
+        if (anchor) anchor.focus();
       }
     }
     function cssEscape(s) { return window.CSS && CSS.escape ? CSS.escape(s) : String(s).replace(/["\\]/g, "\\$&"); }
@@ -478,7 +570,7 @@
       const info = C.evidenceInfo(it.evidence);
       return badge(info.short, it.evidence === "synthetic" ? "b-demo" : "b-warn", info.label);
     }
-    function listItem(it, partial) {
+    function listItem(it, missing) {
       const k = C.kindInfo(it.kind);
       const iv = C.plannedInterval(it);
       const shift = C.scheduleShift(it);
@@ -488,8 +580,8 @@
       if (shift) meta.push(shift.days > 0 ? "срок перенесён" : "срок сдвинут раньше");
       const badges = [evidenceBadge(it),
         stale ? badge("Срок по плану прошёл", "b-warn") : null,
-        !it.geometry ? badge("Нет на карте", "b-muted", it.issues[0] || "Координаты не указаны") : it.precision !== "source" ? badge(it.precision === "approximate" ? "Примерное место" : "Точность места?", "b-muted") : null,
-        partial ? badge("Неполный интервал", "b-muted", "Известна только одна плановая дата") : null].filter(Boolean);
+        !it.geometry ? badge("Нет на карте", "b-muted", it.geoIssue ? it.issues.find((x) => /координат|геометр/.test(x)) : "Координаты не указаны") : it.precision !== "source" ? badge(it.precision === "approximate" ? "Примерное место" : "Точность места?", "b-muted") : null,
+        missing === "end" ? badge("Окончание неизвестно", "b-muted", "Плановая дата окончания не указана") : missing === "start" ? badge("Начало неизвестно", "b-muted", "Плановая дата начала не указана") : null].filter(Boolean);
       const btn = h("button", { type: "button", class: P + "item", "data-r03-action": "select", "data-id": it.id, "aria-current": st.selectedId === it.id ? "true" : null, style: { "--civic-r03-k": k.color } },
         h("span", { class: P + "item-kind" }, h("i", { class: P + "dot " + P + "st-" + it.status, "aria-hidden": "true" }), k.label),
         h("span", { class: P + "item-title", text: it.title }),
@@ -524,17 +616,21 @@
           if (cursor && pages >= MAX_PAGES) { truncated = true; break; }
         } while (cursor);
         const norm = C.normalizeList(raw, { region });
-        st.items = norm.items;
+        st.items = C.sortItems(norm.items);
+        searchText.clear();
         st.excluded = norm.excluded.length;
         st.truncated = truncated;
         st.list = "ready";
         renderList();
         updateMapData();
         if (fitOnLoad && !fitted && !st.selectedId) fitted = fitAll();
-        // Keep an open card in sync with the fresh list (or say it is gone).
-        if (st.selectedId) {
-          const fresh = st.items.find((x) => x.id === st.selectedId);
-          if (fresh && st.detail.state !== "loading") { st.detail.item = fresh; renderCard(); }
+        // Keep an open card in sync with the fresh list. A changed revision or an object that
+        // left the public list is re-read from GET /objects/{id} (404 -> "не найден"), so the
+        // history and the reason for a moved date always match the shown record.
+        if (st.selectedId && st.detail.state !== "loading") {
+          const fresh = findItem(st.selectedId), cur = st.detail.item;
+          if (!fresh || !cur || fresh.revision !== cur.revision) loadDetail(st.selectedId, { fly: false, source: "refresh" });
+          else { st.detail.item = fresh; renderCard(); }
         }
       } catch (err) {
         if (destroyed || !listSeq.isCurrent(t)) return;
@@ -555,7 +651,15 @@
       if (destroyed) return;
       const opts = o || {};
       if (id === null || id === undefined || id === "") { closeCard(); return; }
-      id = String(id);
+      id = String(id).slice(0, 200);
+      // Clicking the object that is already open does not re-run the selection: no second
+      // request, no second onSelect (the R01 shell would close an open feedback form).
+      if (id === st.selectedId && (opts.source === "map" || opts.source === "list") && (st.detail.state === "ready" || st.detail.state === "loading")) {
+        const it = currentItem();
+        if (it && opts.source === "list" && opts.fly !== false) afterLayout(() => flyTo(it), id);
+        else if (it && opts.source === "map") afterLayout(() => ensureVisible(it), id);
+        return;
+      }
       const prevFocus = opts.source === "list" ? id : null;
       st.selectedId = id;
       st.view = "card";
@@ -564,11 +668,23 @@
       st.detail = { id, state: "loading", item: listed, history: [], error: null, returnFocus: prevFocus };
       updateSelection();
       renderCard(opts.source === "list" || opts.source === "map" || opts.focus === true);
-      if (isMobile() && st.sheet === "peek") setSheet("half");
-      if (listed && opts.fly !== false && opts.source !== "map") flyTo(listed);
+      if (isMobile() && layout === "overlay" && st.sheet === "peek") setSheet("half");
       if (permalink) writeHash(id);
+      // onSelect first: a host that resizes its own sheet does so before we measure the free area.
       if (onSelect) safeCall(onSelect, publicCopy(listed) || { id }, { source: opts.source || "api" });
+      if (listed && opts.fly !== false) afterLayout(() => (opts.source === "map" ? ensureVisible(listed) : flyTo(listed)), id);
       await loadDetail(id, opts);
+    }
+    // On phones the sheet animates its height; measure the free map area after it settles.
+    function afterLayout(fn, id) {
+      clearTimeout(layoutTimer);
+      const run = () => {
+        st.cameraPending = false;
+        if (!destroyed && st.selectedId === id) fn();
+      };
+      if (!isMobile() || reducedMotion()) { st.cameraPending = false; run(); return; }
+      st.cameraPending = true;
+      layoutTimer = setTimeout(run, 320);
     }
     async function loadDetail(id, opts) {
       const t = cardSeq.next();
@@ -589,7 +705,7 @@
           st.detail.item = norm.item;
           st.detail.history = C.normalizeHistory(data.history);
           st.detail.state = "ready";
-          if (!hadItem && opts && opts.fly !== false && (!opts.source || opts.source !== "map")) flyTo(norm.item);
+          if (!hadItem && opts && opts.fly !== false) { const it = norm.item; afterLayout(() => (opts.source === "map" ? ensureVisible(it) : flyTo(it)), id); }
         }
       } catch (err) {
         if (destroyed || !cardSeq.isCurrent(t) || st.selectedId !== id) return;
@@ -598,11 +714,12 @@
         if (info.notFound) st.detail.item = null;
         st.detail.error = info;
       }
-      renderCard();
-      updateSelection();
+      try { renderCard(); } finally { updateSelection(); }
     }
     function closeCard() {
       cardSeq.cancel();
+      clearTimeout(layoutTimer);
+      st.cameraPending = false;
       if (aborters.card) { try { aborters.card.abort(); } catch (e) { /* ignore */ } aborters.card = null; }
       const back = st.detail.returnFocus || st.selectedId;
       st.selectedId = null;
@@ -649,14 +766,18 @@
       }
       const k = C.kindInfo(it.kind);
       const ev = C.evidenceInfo(it.evidence);
+      const statusSrc = it.sourceRefs.find((r) => r.published_on && r.fields.includes("status"));
       if (it.evidence !== "observed") {
-        cardView.append(h("p", { class: P + "banner " + (it.evidence === "synthetic" ? P + "banner-demo" : P + "banner-warn"), role: "note" }, h("b", { text: ev.short + ". " }), ev.label + "."));
+        cardView.append(h("p", { class: P + "banner " + (it.evidence === "synthetic" ? P + "banner-demo" : P + "banner-warn"), role: "note" },
+          it.evidence === "synthetic" ? h("b", { text: "Демо. " }) : null, ev.label + "."));
       }
       cardView.append(
         h("div", { class: P + "card-kind", style: { "--civic-r03-k": k.color } }, h("i", { class: P + "dot " + P + "st-" + it.status, "aria-hidden": "true" }), k.label + (it.kind === "other" && it.rawKind ? " (" + it.rawKind.slice(0, 40) + ")" : "")),
         h("h3", { class: P + "card-title", tabindex: "-1", text: it.title }),
         h("p", { class: P + "status-line" }, h("span", { class: P + "status " + P + "status-" + it.status, text: C.STATUSES[it.status] }),
-          h("span", { class: P + "muted", text: it.updatedAt ? " по данным на " + C.formatTimestamp(it.updatedAt) : " · дата обновления не указана" })));
+          statusSrc ? h("span", { class: P + "muted", text: " · статус по источнику от " + C.formatDay(statusSrc.published_on) }) : null,
+          // updated_at is when the record was last published, not when the status was observed.
+          h("span", { class: P + "muted", text: it.updatedAt ? " · запись обновлена " + C.formatTimestamp(it.updatedAt) : " · дата обновления не указана" })));
       if (it.description) cardView.append(h("section", { class: P + "sec" }, h("h4", { text: "Назначение" }), h("p", { class: P + "desc", text: it.description })));
 
       const stale = C.staleness(it, today());
@@ -767,7 +888,7 @@
     function valueText(field, v) {
       if (v === null || v === undefined) return C.NO_DATA;
       if (typeof v === "string" && C.parseDay(v)) return C.formatDay(v);
-      if (field === "status" && C.STATUSES[v]) return C.STATUSES[v];
+      if (field === "status" && typeof v === "string" && Object.prototype.hasOwnProperty.call(C.STATUSES, v)) return C.STATUSES[v];
       if (typeof v === "number") return C.formatNumber(v);
       if (typeof v === "string") return v.length > 80 ? v.slice(0, 80) + "…" : v;
       return "изменено";
@@ -776,10 +897,10 @@
     function compareBlock(rows) {
       const revs = rows.filter((r) => r.revision !== null);
       const mk = (key, label) => {
-        const sel = h("select", { class: P + "select", "data-r03-compare": key, id: P + "cmp-" + key }, h("option", { value: "", text: "—" }),
-          revs.map((r) => h("option", { value: String(r.revision), text: "ред. " + r.revision + (r.at ? " · " + (C.parseTimestamp(r.at) ? C.formatDay(C.parseTimestamp(r.at).day) : "") : "") })));
+        const sel = h("select", { class: P + "select", "data-r03-compare": key, id: uid + "cmp-" + key }, h("option", { value: "", text: "—" }),
+          revs.map((r) => h("option", { value: String(r.revision), text: "ред. " + r.revision + (C.timestampDay(r.at) ? " · " + C.formatDay(C.timestampDay(r.at)) : "") })));
         if (st.compare[key]) sel.value = String(st.compare[key]);
-        return h("label", { class: P + "field", for: P + "cmp-" + key }, h("span", { text: label }), sel);
+        return h("label", { class: P + "field", for: uid + "cmp-" + key }, h("span", { text: label }), sel);
       };
       compareOut = h("div", { class: P + "cmp-out", "aria-live": "polite" });
       const box = h("details", { class: P + "compare" }, h("summary", { text: "Сравнить две редакции" }),
@@ -844,7 +965,12 @@
       addingLayers = true;
       try {
         if (!map.getSource(SRC)) map.addSource(SRC, { type: "geojson", data: C.featureCollection(mapItems()), promoteId: "cid" });
-        const defs = layerDefs();
+        let demo = map.hasImage(DEMO_IMG);
+        if (!demo) {
+          const img = demoRingImage();
+          if (img) { map.addImage(DEMO_IMG, img.image, { pixelRatio: img.ratio }); demo = true; }
+        }
+        const defs = layerDefs(demo);
         const before = firstLabelLayer();
         for (const def of defs) {
           if (map.getLayer(def.id)) continue;
@@ -860,6 +986,7 @@
       if (!map) return;
       for (const id of BELOW_LABELS.concat(ON_TOP)) { try { if (map.getLayer(id)) map.removeLayer(id); } catch (e) { /* style gone */ } }
       try { if (map.getSource(SRC)) map.removeSource(SRC); } catch (e) { /* style gone */ }
+      try { if (map.hasImage(DEMO_IMG)) map.removeImage(DEMO_IMG); } catch (e) { /* style gone */ }
     }
     function updateMapData() {
       if (!map || destroyed) return;
@@ -883,7 +1010,9 @@
       const feats = map.queryRenderedFeatures(box, { layers });
       if (!feats.length) return null;
       const rank = (f) => (f.geometry && f.geometry.type === "Point" ? 0 : f.geometry && f.geometry.type === "LineString" ? 1 : 2);
-      feats.sort((a, b) => rank(a) - rank(b));
+      // Among overlapping areas the smallest wins, so a small area inside a big one stays pickable.
+      const area = (f) => { const it = findItem(f.properties && f.properties.cid); const b = it && it.bbox; return b ? (b[2] - b[0]) * (b[3] - b[1]) : Infinity; };
+      feats.sort((a, b) => rank(a) - rank(b) || (rank(a) === 2 ? area(a) - area(b) : 0));
       return feats[0].properties && feats[0].properties.cid;
     }
     function onMapClick(e) {
@@ -926,12 +1055,36 @@
       clearTimeout(moveTimer);
       moveTimer = setTimeout(() => { updateViewBox(); renderList(); }, 120);
     }
+    // "Visible part" = the map canvas minus the panel or sheet that covers it.
     function updateViewBox() {
       if (!map) { st.viewBox = null; return; }
       try {
-        const b = map.getBounds();
-        st.viewBox = [b.getWest(), b.getSouth(), b.getEast(), b.getNorth()];
+        const c = map.getContainer().getBoundingClientRect();
+        const ob = obstruction();
+        const r = ob ? ob.getBoundingClientRect() : null;
+        let l = 0, t = 0, rt = c.width, b = c.height;
+        if (r && r.width && r.height) {
+          if (isMobile()) b = Math.min(b, Math.max(0, r.top - c.top));
+          else if (r.left - c.left < c.width / 2) l = Math.max(l, r.right - c.left);
+          else rt = Math.min(rt, r.left - c.left);
+        }
+        if (rt - l < 24 || b - t < 24) { l = 0; t = 0; rt = c.width; b = c.height; }
+        const pts = [[l, t], [rt, t], [l, b], [rt, b]].map((p) => map.unproject(p));
+        const xs = pts.map((p) => p.lng), ys = pts.map((p) => p.lat);
+        st.viewBox = [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)];
       } catch (e) { st.viewBox = null; }
+    }
+    // Pan just enough that an object chosen on the map is not left under the panel or sheet.
+    function ensureVisible(it) {
+      if (!map || destroyed || !it || !it.bbox) return;
+      const c = map.getContainer().getBoundingClientRect();
+      const pad = freePadding();
+      const free = { l: c.left + pad.left, t: c.top + pad.top, r: c.right - pad.right, b: c.bottom - pad.bottom };
+      let p;
+      try { p = map.project([(it.bbox[0] + it.bbox[2]) / 2, (it.bbox[1] + it.bbox[3]) / 2]); } catch (e) { return; }
+      const x = c.left + p.x, y = c.top + p.y;
+      if (x >= free.l && x <= free.r && y >= free.t && y <= free.b) return;
+      try { map.panBy([x - (free.l + free.r) / 2, y - (free.t + free.b) / 2], { duration: reducedMotion() ? 0 : 350 }); } catch (e) { /* ignore */ }
     }
     // The panel that covers the map: our root in overlay mode, or the host's positioned
     // panel (outermost absolute/fixed ancestor) when embedded in the R01 shell.
@@ -1021,8 +1174,10 @@
       cardSeq.cancel();
       for (const k of ["list", "card"]) if (aborters[k]) { try { aborters[k].abort(); } catch (e) { /* ignore */ } aborters[k] = null; }
       clearTimeout(moveTimer);
+      clearTimeout(searchTimer);
+      clearTimeout(layoutTimer);
       detachMap();
-      destroyed = true;
+      if (byRoot.get(root) === instance) byRoot.delete(root);
       for (const f of cleanups.splice(0)) { try { f(); } catch (e) { /* ignore */ } }
       root.replaceChildren(...saved.children);
       for (const a of ["class", "role", "aria-label"]) {
@@ -1045,10 +1200,11 @@
       getLayout,
       layerIds: () => BELOW_LABELS.concat(ON_TOP),
       sourceId: SRC,
-      getState: () => ({ list: st.list, count: st.items.length, selectedId: st.selectedId, view: st.view, detail: st.detail.state, filters: C.sanitizeFilters(st.filters), q: st.q, sheet: st.sheet }),
+      getState: () => ({ list: st.list, count: st.items.length, selectedId: st.selectedId, view: st.view, detail: st.detail.state, filters: C.sanitizeFilters(st.filters), q: st.q, sheet: st.sheet, cameraPending: st.cameraPending }),
       setFilters: (f) => { st.filters = C.sanitizeFilters(Object.assign({}, st.filters, f)); filtersChanged(); },
     };
 
+    byRoot.set(root, instance);
     st.sheet = isMobile() ? "peek" : "half";
     filters.open = !isMobile();
     applySheet();

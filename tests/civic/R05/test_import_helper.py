@@ -51,6 +51,46 @@ class PackageLoading(unittest.TestCase):
         finally:
             shutil.rmtree(d)
 
+    def test_edited_as_of_refused(self):
+        d = copy_package()
+        try:
+            path = os.path.join(d, "objects.json")
+            data = json.load(open(path, encoding="utf-8"))
+            data["slice"]["as_of"] = None  # would silently switch off the freshness checks
+            json.dump(data, open(path, "w", encoding="utf-8"), ensure_ascii=False)
+            with self.assertRaisesRegex(ih.PackageError, "does not match"):
+                ih.load_package(d)
+        finally:
+            shutil.rmtree(d)
+
+    def test_stale_inputs_refused(self):
+        d = copy_package()
+        try:
+            shutil.copy(os.path.join(PKG, "slice_config.json"), d)
+            shutil.copy(os.path.join(PKG, "sources.json"), d)
+            ih.load_package(d)  # consistent: fine
+            path = os.path.join(d, "sources.json")
+            reg = json.load(open(path, encoding="utf-8"))
+            reg["sources"][0]["notes"] = "changed after the slice was built"
+            json.dump(reg, open(path, "w", encoding="utf-8"), ensure_ascii=False)
+            with self.assertRaisesRegex(ih.PackageError, "changed since the slice was built"):
+                ih.load_package(d)
+        finally:
+            shutil.rmtree(d)
+
+    def test_bom_and_bad_json_are_package_errors(self):
+        d = copy_package()
+        try:
+            path = os.path.join(d, "objects.json")
+            raw = open(path, "rb").read()
+            open(path, "wb").write(b"\xef\xbb\xbf" + raw)
+            ih.load_package(d)  # BOM is tolerated
+            open(path, "wb").write(b"{not json")
+            with self.assertRaises(ih.PackageError):
+                ih.load_package(d)
+        finally:
+            shutil.rmtree(d)
+
     def test_demo_slice_cannot_pose_as_real(self):
         d = copy_package()
         try:
@@ -99,8 +139,19 @@ class ImportPlan(unittest.TestCase):
 
     def test_untouched_import_draft_is_refreshed(self):
         it = self.items[0]
-        existing = {it["external_id"]: {"digest": "old", "publication": "draft", "source": it["source"]}}
+        existing = {it["external_id"]: {"digest": "old", "publication": "draft", "edited_after_import": False,
+                                        "source": it["source"]}}
         self.assertEqual(ih.plan([it], existing)[0]["action"], "update_import_draft")
+
+    def test_unknown_edit_state_fails_closed(self):
+        it = self.items[0]
+        existing = {it["external_id"]: {"digest": "old", "publication": "draft", "source": it["source"]}}
+        self.assertEqual(ih.plan([it], existing)[0]["action"], "editor_review")
+
+    def test_historical_record_is_not_reported_missing(self):
+        existing = {"ast-r05-moved": {"digest": "x", "publication": "published", "source": ih.SOURCE_REAL}}
+        actions = ih.plan([], existing, [ih.SOURCE_REAL], [(ih.SOURCE_REAL, "ast-r05-moved")])
+        self.assertEqual(actions, [])
 
     def test_missing_records_are_reported_not_archived(self):
         existing = {"ast-r05-gone": {"digest": "x", "publication": "published", "source": ih.SOURCE_REAL}}

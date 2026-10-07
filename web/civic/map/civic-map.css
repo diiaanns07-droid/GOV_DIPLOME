@@ -18,6 +18,8 @@
   --civic-r03-demo-ink: #374151;
   --civic-r03-err-ink: #9b2c22;
   --civic-r03-focus: #176b4a;
+  /* >= 3:1 against #fff and #f7f8f4 (WCAG 1.4.11) for field, chip and grip outlines */
+  --civic-r03-control: #7c8881;
   color: var(--civic-r03-ink);
   font: 14px/1.45 "Segoe UI", Inter, Arial, sans-serif;
   box-sizing: border-box;
@@ -49,6 +51,7 @@
   border-radius: 18px;
   box-shadow: var(--shadow, 0 12px 44px #19362812, 0 2px 8px #19362808);
   overflow: hidden;
+  overflow: clip;
 }
 /* ---------- layout: embedded in a host panel (R01 shell) ---------- */
 .civic-r03-layout-embedded {
@@ -62,6 +65,10 @@
   background: none;
 }
 .civic-r03-layout-embedded .civic-r03-head-row {
+  display: none;
+}
+/* In the host panel the card needs no list header above it. */
+.civic-r03-layout-embedded[data-civic-r03-view="card"] .civic-r03-head {
   display: none;
 }
 .civic-r03-layout-embedded .civic-r03-scroll {
@@ -266,7 +273,7 @@
   min-width: 0;
   min-height: 40px;
   padding: 7px 10px;
-  border: 1px solid #cfd8cf;
+  border: 1px solid var(--civic-r03-control);
   border-radius: 10px;
   background: #fff;
   font-size: 14px;
@@ -298,7 +305,7 @@
   max-width: 100%;
   padding: 6px 10px;
   border-radius: 999px;
-  border: 1px solid #cfd8cf;
+  border: 1px solid var(--civic-r03-control);
   background: #fff;
   font-size: 13px;
   font-weight: 600;
@@ -569,7 +576,7 @@
 }
 .civic-r03-sw-synth {
   background: transparent;
-  border: 2px dashed #4f5965;
+  border: 2px dashed #374151;
 }
 
 /* ---------- card ---------- */
@@ -886,7 +893,7 @@
     width: 44px;
     height: 5px;
     border-radius: 3px;
-    background: #c3ccc5;
+    background: var(--civic-r03-control);
   }
   .civic-r03-layout-overlay .civic-r03-head {
     padding: 0 16px 8px;
@@ -918,9 +925,15 @@
     font-size: 18px;
   }
 }
+/* Landscape / short phones: the map tool column (2D/3D, zoom) sits on the right from the
+   top, so the sheet leaves that column free instead of covering it. */
 @media (max-width: 760px) and (max-height: 560px) {
   .civic-r03-layout-overlay {
+    right: var(--civic-r03-mobile-tools-gap, 62px);
     max-height: calc(100% - var(--civic-r03-mobile-bottom, 38px) - 70px);
+  }
+  .civic-r03-layout-overlay[data-civic-r03-sheet="peek"] {
+    --civic-r03-sheet-h: min(158px, 40vh);
   }
 }
 @media (prefers-reduced-motion: reduce) {

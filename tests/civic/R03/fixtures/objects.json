@@ -1,5 +1,5 @@
 {
- "_comment": "R03 synthetic fixtures (civic-v1). Every record is evidence_type=synthetic; none describes real works in Astana. pack_civic_object.json is copied verbatim from PACK_SHA 9c2f5c0d research/round-11/fixtures/civic_object.json.",
+ "_comment": "R03 synthetic fixtures (civic-v1). Every record is evidence_type=synthetic; none describes real works in Astana. Synthetic records carry no tenge amounts (same rule as R02 validation). pack_civic_object.json is copied verbatim from PACK_SHA 9c2f5c0d research/round-11/fixtures/civic_object.json.",
  "items": [
   {
    "schema_version": "civic-v1",
@@ -25,9 +25,9 @@
     "actual_end": null
    },
    "budget": {
-    "amount_kzt": 48500000,
-    "basis": "contract",
-    "source_id": "src-demo-1"
+    "amount_kzt": null,
+    "basis": "unknown",
+    "source_id": null
    },
    "responsible": {
     "organization": "Демо-подрядчик (условная организация)",
@@ -126,8 +126,8 @@
     "actual_end": null
    },
    "budget": {
-    "amount_kzt": 312000000,
-    "basis": "planned",
+    "amount_kzt": null,
+    "basis": "unknown",
     "source_id": null
    },
    "responsible": {
@@ -228,8 +228,8 @@
     "actual_end": null
    },
    "budget": {
-    "amount_kzt": 2350000000,
-    "basis": "planned",
+    "amount_kzt": null,
+    "basis": "unknown",
     "source_id": null
    },
    "responsible": {
@@ -317,7 +317,7 @@
    "id": "r03-demo-long-ru",
    "city": "astana",
    "kind": "roadworks",
-   "title": "Демо: капитальный ремонт внутриквартальных проездов, тротуаров, парковочных карманов и наружного освещения вдоль жилых домов с устройством пандусов для маломобильных групп населения и переустройством ливневой канализации",
+   "title": "Демо: капитальный ремонт внутриквартальных проездов, тротуаров, парковочных карманов и наружного освещения вдоль жилых домов с устройством пандусов и переустройством ливневой канализации",
    "description": "Демо-описание назначения работ для проверки карточки. Синтетическая запись R03 для проверки интерфейса. Не сведения о реальных работах в Астане.",
    "status": "planned",
    "publication": "published",
@@ -336,8 +336,8 @@
     "actual_end": null
    },
    "budget": {
-    "amount_kzt": 1275400000,
-    "basis": "planned",
+    "amount_kzt": null,
+    "basis": "unknown",
     "source_id": null
    },
    "responsible": {
@@ -412,8 +412,8 @@
     "actual_end": "2026-09-08"
    },
    "budget": {
-    "amount_kzt": 18750000,
-    "basis": "spent",
+    "amount_kzt": null,
+    "basis": "unknown",
     "source_id": null
    },
    "responsible": {

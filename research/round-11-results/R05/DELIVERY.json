@@ -11,14 +11,80 @@
     "research/round-11-results/R05/",
     "research/handoffs/astana/R05/round-11/STATUS.md"
   ],
-  "integration_notes": "research/round-11-results/R05/INTEGRATION.txt (to be written)",
-  "code_commit": null,
+  "integration_notes": "research/round-11-results/R05/INTEGRATION.txt",
+  "code_commit": "01f89df37caec87c3aab0c9e48679192d15f6f20",
+  "deliverables": {
+    "objects": "data/civic/astana/objects.json (real, 0 records: no Astana source reachable)",
+    "historical": "data/civic/astana/historical.json (0 records)",
+    "demo": "data/civic/astana/demo_synthetic.json (slice.demo=true, 9 synthetic records)",
+    "sources": "data/civic/astana/sources.json (28 sources, 7 fetched, 21 egress-denied)",
+    "validation": "data/civic/astana/validation.json",
+    "attribution": "data/civic/astana/ATTRIBUTION.txt",
+    "license_register": "data/civic/astana/LICENSE_REGISTER.json",
+    "import_helper": "data/civic/astana/tools/import_helper.py + README.md",
+    "validator": "data/civic/astana/tools/civic_v1.py",
+    "builder": "data/civic/astana/tools/build_slice.py",
+    "schedule_diff_stretch": "data/civic/astana/tools/schedule_diff.py",
+    "pilot": "research/round-11-results/R05/PILOT.md",
+    "qa": "research/round-11-results/R05/QA.md",
+    "review": "research/round-11-results/R05/REVIEW.md"
+  },
   "checks": [
-    {"name": "r05-validator-unit-tests", "status": "PASS", "command": "python3 -m pytest tests/civic/R05 -q", "input": "inline fixtures + PACK_SHA civic_object.json", "reason": "32 passed on checkpoint-1 working tree"},
-    {"name": "official-source-fetch", "status": "FAIL", "command": "python3 -I data/civic/astana/tools/probe_sources.py --from-file <list>", "input": "BRIEF.txt URLs + Kazakh official/news portals", "reason": "egress proxy 403 (policy) for all non-GitHub hosts; see fetch_audit_2026-10-06_*.json"}
+    {
+      "name": "r05-unit-tests",
+      "status": "PASS",
+      "command": "python3 -m pytest tests/civic/R05 -q",
+      "input": "tests/civic/R05 (inline + synthetic fixtures, PACK_SHA civic_object.json)",
+      "reason": "120 passed at 01f89df"
+    },
+    {
+      "name": "r05-unit-tests-stdlib",
+      "status": "PASS",
+      "command": "python3 -m unittest discover -s tests/civic/R05",
+      "input": "same",
+      "reason": "Ran 120, OK at 01f89df"
+    },
+    {
+      "name": "slice-determinism",
+      "status": "PASS",
+      "command": "python3 -I data/civic/astana/tools/build_slice.py --check",
+      "input": "data/civic/astana inputs",
+      "reason": "valid=true, changed=[] (committed outputs equal a fresh build)"
+    },
+    {
+      "name": "r02-importer-compat",
+      "status": "PASS",
+      "command": "python3 -B -m ui.civic_store --db <scratch>/.runtime/t.sqlite3 import data/civic/astana/demo_synthetic.json [--dry-run]",
+      "input": "R02 ui/civic_store @ 597ff2c (git archive to scratch)",
+      "reason": "demo create 9, re-import skip_unchanged 9; real slices empty; research/round-11-results/R05/r02_import_check.json"
+    },
+    {
+      "name": "adversarial-review-round-1",
+      "status": "PASS",
+      "command": "Workflow r05-adversarial-review (5 finders + 5 skeptics)",
+      "input": "tree e4ab1ff",
+      "reason": "40 findings, 33 confirmed and fixed with regression tests, 7 refuted; REVIEW.md"
+    },
+    {
+      "name": "official-source-fetch",
+      "status": "FAIL",
+      "command": "python3 -I data/civic/astana/tools/probe_sources.py --from-file <list>",
+      "input": "BRIEF.txt gov.kz URLs, astana.gov.kz, data.egov.kz, news, OSM/OpenFreeMap/Overture sites",
+      "reason": "egress proxy 403 (organisation policy) for every non-GitHub host; not circumvented; fetch_audit_2026-10-06_*.json"
+    },
+    {
+      "name": "basemap-3d-render",
+      "status": "NOT_RUN",
+      "command": null,
+      "input": null,
+      "reason": "tiles.openfreemap.org denied by egress policy; R05 owns no UI"
+    }
   ],
   "limitations": [
-    "No real Astana work/event announcement could be fetched in this environment; no confirmed real objects yet."
+    "No real Astana work/event announcement could be fetched (egress 403); objects.json has 0 confirmed records. Empty slice is not evidence that no works exist.",
+    "OSM copyright page, OSMF tile policy, gov.kz reuse terms not fetched; license register marks them not_verified/partial.",
+    "schedule_diff role detection is a Russian-language heuristic for editor triage; Kazakh text is not parsed.",
+    "Geofence uses OSM district polygons (not legal boundaries)."
   ],
-  "next_step": "Slice builder + license register + synthetic demo slice + R02 import helper."
+  "next_step": "With www.gov.kz allowed in the environment network policy: fetch the two BRIEF.txt announcements and 30-45 days of akimat news, create 8-15 intake records (NEXT_SOURCES.md), rebuild, rerun pilot_check on the real slice."
 }

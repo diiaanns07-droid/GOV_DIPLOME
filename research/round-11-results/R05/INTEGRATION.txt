@@ -2,34 +2,39 @@ R05 → R02/R01/R03/R10 INTEGRATION (раунд 11, civic-v1)
 PACK_SHA 9c2f5c0dae14b46c0697a9dfc7f854351bfd570d; ветка claude/intelligent-sagan-7shpeh.
 Импортировать только пути data/civic/astana/ (и тесты tests/civic/R05/) по закреплённому SHA.
 
-1. ЧТО ИМПОРТИРУЕТ R02
+1. ЧТО ИМПОРТИРУЕТСЯ
    data/civic/astana/objects.json        реальные, slice.demo=false (сейчас 0 записей — сеть закрыта)
-   data/civic/astana/historical.json     реальные исторические, только по явному флагу
-   data/civic/astana/demo_synthetic.json СИНТЕТИКА, slice.demo=true, только по явному флагу (--include-demo)
+   data/civic/astana/historical.json     реальные исторические (сейчас 0)
+   data/civic/astana/demo_synthetic.json СИНТЕТИКА, slice.demo=true, 9 записей — только явным действием
    Формат: {"schema_version":"civic-v1","city":"astana","slice":{name,version,as_of,demo,count,
-   content_sha256,inputs,notice},"items":[civic-v1 objects]}.
+   status_max_age_days,content_sha256,inputs,notice},"items":[civic-v1 objects]}.
 
-2. РЕКОМЕНДУЕМОЕ ИСПОЛЬЗОВАНИЕ (без копирования логики)
-   import sys; sys.path.insert(0, "data/civic/astana/tools")
-   import import_helper as ih
-   pkg = ih.load_package("data/civic/astana", include_demo=flag_demo, include_historical=flag_hist)
-   # pkg["rejected"] — записи, не прошедшие civic_v1 (профиль real/demo); импортировать нельзя
-   actions = ih.plan(pkg["items"], existing, pkg["package"]["sources"])
-   existing: {external_id: {"digest","publication","edited_after_import","schedule","source"}} из
-   civic_objects (import_source/import_external_id/import_digest — колонки вашей схемы
-   ui/civic_store/db.py на a95f857 совпадают по смыслу).
-   Действия: create | skip_unchanged | update_import_draft | editor_review | report_missing.
-   Публикации и архивации в плане нет никогда. editor_review → ваша civic_import_candidates.
-   create_body не содержит id/revision/updated_at/publication: сервер назначает их сам (CONTRACT §2).
-   external_id = id R05 (≤64 символов, [a-z0-9-]), source = r05-astana-real | r05-astana-demo.
+2. ИМПОРТ ДЕЛАЕТ R02 СВОИМ ИМПОРТЁРОМ (проверено)
+   python -m ui.civic_store --db .runtime/civic.sqlite3 import data/civic/astana/demo_synthetic.json [--dry-run]
+   Проверено на R02 597ff2c (research/round-11-results/R05/r02_import_check.json): демо — create 9 (draft),
+   повторный импорт — skip_unchanged 9; objects.json/historical.json — пустые, ошибок нет.
+   R02 сам назначает id/revision/updated_at/publication и считает свой import_digest по нормализованному
+   содержимому — это НЕ тот же хэш, что import_helper.content_digest. Не смешивать.
+   objects.json и historical.json имеют один source r05-astana-real: импортировать их вместе (или
+   считать report_missing по обоим файлам), иначе запись, перешедшая в historical, покажется «пропавшей».
 
-3. ДЕМО
-   Демо-записи имеют suggested_publication (published/draft/archived) для проверки показа;
-   сервер всё равно создаёт draft, а опубликовать может только редактор/скрипт демо-окружения,
-   оставив evidence_type=synthetic и пометку «Демо» в заголовке. Демо и реальные source не смешивать
-   в одном import_source. Бюджеты у демо всегда null (не «учебные тенге»).
+3. import_helper.py — ПРЕДВАРИТЕЛЬНАЯ ПРОВЕРКА ПАКЕТА (рекомендательно)
+   python3 -I data/civic/astana/tools/import_helper.py [--include-demo] [--include-historical]
+   Проверяет: срез не отредактирован вручную (content_sha256 + version + as_of), входы сборки на диске
+   совпадают с записанными хэшами (если sources.json/intake лежат рядом), каждая запись проходит
+   civic_v1 в профиле real/demo с порогами из среза. Отказ — PackageError с причиной.
+   plan(): create | skip_unchanged | update_import_draft | editor_review | report_missing; публикации и
+   архивации нет. update_import_draft только при явном existing.edited_after_import == False и
+   publication == "draft"; если состояние неизвестно — editor_review. Если R02 захочет использовать
+   plan(), existing.digest должен быть import_helper.content_digest, а edited_after_import можно
+   вывести как (import_revision == revision and first_published_at is null).
 
-4. ДЛЯ R01 (общие файлы — правите вы)
+4. ДЕМО
+   Демо-записи несут suggested_publication (published/draft/archived) как подсказку; импорт R02 всё равно
+   создаёт draft. Публиковать демо может только редактор/скрипт демо-окружения, сохраняя
+   evidence_type=synthetic и пометку «Демо» в заголовке. Бюджеты у демо всегда null.
+
+5. ДЛЯ R01 (общие файлы — правите вы)
    a) Атрибуция: data/civic/astana/ATTRIBUTION.txt. MapLibre AttributionControl из стиля OpenFreeMap
       не скрывать и не перекрывать bottom sheet. #gov-attribution сейчас виден только в govtech-режиме;
       в civic-режиме при показе слоёв K03/K10 нужна строка «© OpenStreetMap contributors, Overture Maps
@@ -41,12 +46,14 @@ PACK_SHA 9c2f5c0dae14b46c0697a9dfc7f854351bfd570d; ветка claude/intelligent
    c) Пилот: см. PILOT.md в этой папке — демо-объекты лежат в bbox графа K03; реальных объектов нет,
       поэтому пилот по концентрации подтверждённых работ выбрать нельзя.
 
-5. ДЛЯ R03/R10
+6. ДЛЯ R03/R10
    validation.json → public_readiness: для каждой реальной записи — можно ли показывать после проверки
-   редактором и что пометить (неизвестные условия источника, старый источник, статус не подтверждён).
-   evidence_index.json — только для редактора; не отдавать в публичный DTO.
+   редактором и что пометить (неизвестные условия источника, старый/недатированный источник, статус не
+   подтверждён). evidence_index.json — только для редактора; не отдавать в публичный DTO.
+   Тексты R05 проходят те же правила, что clean_text R02: без HTML-тегов и сущностей, без управляющих,
+   zero-width и bidi-символов, однострочные title/organization/public_contact/publisher, лимиты R02.
 
-6. ПРОВЕРКА ПОСЛЕ ИМПОРТА
+7. ПРОВЕРКА ПОСЛЕ ИМПОРТА
    python3 -m pytest tests/civic/R05 -q
    python3 -I data/civic/astana/tools/build_slice.py --check
    python3 -I data/civic/astana/tools/import_helper.py --include-demo
