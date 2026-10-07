@@ -139,13 +139,14 @@
 }
 
 /* ---------- controls ---------- */
-.civic-r03-root button,
-.civic-r03-root input,
-.civic-r03-root select {
+/* Resets carry zero class weight (:where), so every .civic-r03-* rule below wins over them.
+   (A plain `.civic-r03-root button` reset outranked `.civic-r03-btn-primary { color }` and the
+   button font sizes — found by R01 in the integrated build.) */
+:where(.civic-r03-root) :where(button, input, select) {
   font: inherit;
   color: inherit;
 }
-.civic-r03-root button {
+:where(.civic-r03-root) button {
   cursor: pointer;
   touch-action: manipulation;
 }
@@ -293,9 +294,9 @@
   color: var(--civic-r03-muted);
 }
 .civic-r03-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 5px;
 }
 .civic-r03-chip {
   display: inline-flex;
@@ -303,11 +304,13 @@
   gap: 6px;
   min-height: 36px;
   max-width: 100%;
-  padding: 6px 10px;
-  border-radius: 999px;
+  padding: 5px 9px;
+  border-radius: 12px;
   border: 1px solid var(--civic-r03-control);
+  text-align: left;
+  line-height: 1.25;
   background: #fff;
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 600;
   color: var(--civic-r03-ink);
 }

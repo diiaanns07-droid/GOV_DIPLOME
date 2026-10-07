@@ -857,3 +857,21 @@ test("review: field, chip and grip outlines reach 3:1 against white and the filt
   for (const [k, v] of Object.entries(r)) assert.ok(v >= 3, k + " " + v.toFixed(2));
   await ctx.close();
 });
+
+test("buttons keep their own colours: primary text readable on its dark fill, link buttons green (R01-F-R03-1)", { skip: SKIP }, async () => {
+  const { ctx, page } = await open({ persist: "0" });
+  await select(page, "r03-demo-shifted");
+  const r = await page.evaluate(() => {
+    const hex = (rgb) => "#" + rgb.match(/\d+/g).slice(0, 3).map((n) => (+n).toString(16).padStart(2, "0")).join("");
+    const b = document.querySelector(".civic-r03-btn-primary"), cs = getComputedStyle(b);
+    const back = document.querySelector('[data-r03-action="back"]');
+    return { fg: hex(cs.color), bg: hex(cs.backgroundColor), ratio: window.CivicMapCore.contrast(hex(cs.color), hex(cs.backgroundColor)), btnSize: getComputedStyle(back).fontSize };
+  });
+  assert.ok(r.ratio >= 4.5, JSON.stringify(r));
+  assert.equal(r.btnSize, "13px", "class font size is not wiped by the reset");
+  await page.click('[data-r03-action="back"]');
+  await page.selectOption('[data-r03-filter="period"]', "next30");
+  const link = await page.evaluate(() => getComputedStyle(document.querySelector(".civic-r03-link-btn")).color);
+  assert.equal(link, "rgb(23, 107, 74)");
+  await ctx.close();
+});
