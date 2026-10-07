@@ -70,6 +70,7 @@ rem Демо-данные только по флагу: set CIVIC_DEMO=1 (син
 rem Редактор создаётся отдельно, пароль скрыто: .venv\Scripts\python -m ui.civic_store create-editor ЛОГИН
 if defined CIVIC_DEMO (
     echo [civic] Загружаю синтетический демо-срез Астаны, не сведения о реальных работах...
+    "%VENV_PY%" -B -m ui.civic_store init >nul
     "%VENV_PY%" -B -m ui.civic_store seed-demo --package data\civic\astana\demo_synthetic.json >nul
 )
 

@@ -69,7 +69,7 @@ BAD_PAYLOADS = [
     ("title", {"title": "x" * 201}),
     ("title", {"title": "   "}),
     ("title", {"title": "<script>alert(1)</script>"}),
-    ("title", {"title": "Ремонт‮текст"}),
+    ("title", {"title": "Ремонт\u202eтекст"}),
     ("description", {"description": "д" * 5001}),
     ("kind", {"kind": "parade"}),
     ("status", {"status": "done"}),
@@ -323,3 +323,69 @@ def test_trailing_newline_ids_are_rejected(editor, service):
     assert call(service, "GET", "/objects/road-1%0A")["status"] == 400
     from ui.civic_store.validate import is_valid_id
     assert not is_valid_id("road-1\n") and is_valid_id("road-1")
+
+
+INVISIBLE_TITLES = ["​", "‎", "﻿", "\U000e0041", "́", "ㅤ", "­", "⁠",
+                    "​​", "a b"]
+
+
+@pytest.mark.parametrize("title", INVISIBLE_TITLES, ids=[hex(ord(t[0])) for t in INVISIBLE_TITLES])
+def test_invisible_or_format_only_titles_are_rejected(editor, title):
+    result = editor.post("/staff/objects", sample_object(title=title))
+    assert result["status"] == 422 and "title" in result["body"]["error"]["fields"]
+
+
+@pytest.mark.parametrize("url", ["https://‮astana.gov.kz/", "https://astana.gov.kz/‮txt.exe",
+                                 "https://astana.gov.kz/​", "https://astana​.gov.kz/",
+                                 "https://⁦evil.kz⁩/", "https://astana.gov.kz/\ud800"])
+def test_spoofing_or_unencodable_urls_are_rejected(editor, service, url):
+    source = {"id": "s1", "url": url, "access_status": "not_fetched"}
+    raw = json.dumps(sample_object(source_refs=[source])).encode()  # \ud800 как JSON-escape
+    result = call(service, "POST", "/staff/objects", raw, ctx=editor.ctx())
+    assert result["status"] in (400, 422), result
+    assert editor.get("/staff/objects")["body"]["data"]["items"] == []
+
+
+def test_cyrillic_url_path_is_still_allowed(editor):
+    source = {"id": "s1", "url": "https://astana.gov.kz/ru/новости/1", "access_status": "not_fetched"}
+    assert editor.post("/staff/objects", sample_object(source_refs=[source]))["status"] == 201
+
+
+@pytest.mark.parametrize("ref_id", [["s1"], {"a": 1}])
+def test_unhashable_source_ref_id_is_422_not_500(editor, ref_id):
+    source = {"id": ref_id, "url": "https://example.org/", "access_status": "not_fetched"}
+    result = editor.post("/staff/objects", sample_object(source_refs=[source]))
+    assert result["status"] == 422 and "source_refs[0].id" in result["body"]["error"]["fields"]
+
+
+def test_surrogate_keys_are_rejected_before_any_write(editor, service):
+    item = editor.create()
+    for raw in (b'{"expected_revision": 1, "changes": {"title": "x"}, "reason": "r", "\\udfff": 1}',
+                b'{"expected_revision": 1, "changes": {"title": "x", "schedule": {"\\ud800": 1}}, "reason": "r"}'):
+        result = call(service, "POST", f"/staff/objects/{item['id']}/update", raw, ctx=editor.ctx())
+        assert result["status"] == 400, result
+        json.dumps(result["body"], ensure_ascii=False).encode("utf-8")  # ответ кодируется
+    assert editor.get(f"/staff/objects/{item['id']}")["body"]["data"]["item"]["revision"] == 1
+    # Длинные/странные имена полей не возвращаются клиенту как есть.
+    result = editor.post("/staff/objects", {**sample_object(), "<script>" * 20: 1, "x" * 5000: 2})
+    assert result["status"] == 422
+    assert set(result["body"]["error"]["fields"]) == {"<недопустимое имя поля>"}
+
+
+def test_negative_zero_amount_is_normalised(editor, service):
+    source = {"id": "s1", "url": "https://example.org/", "access_status": "not_fetched"}
+    raw = json.dumps(sample_object(evidence_type="observed", source_refs=[source])).replace(
+        '"amount_kzt": null', '"amount_kzt": -0.0').replace('"basis": "unknown"', '"basis": "contract"').replace(
+        '"source_id": null', '"source_id": "s1"').encode()
+    result = call(service, "POST", "/staff/objects", raw, ctx=editor.ctx())
+    assert result["status"] == 201, result
+    amount = result["body"]["data"]["item"]["budget"]["amount_kzt"]
+    assert amount == 0 and json.dumps(amount) == "0"
+
+
+@pytest.mark.parametrize("field", ["kind.zzz", "title.x.y", "schedule.nonexistent", "budget.amount_kzt.extra",
+                                   "source_refs.id", "internal_notes", "password_hash"])
+def test_source_fields_must_be_real_civic_paths(editor, field):
+    source = {"id": "s1", "url": "https://example.org/", "access_status": "not_fetched", "fields": [field]}
+    result = editor.post("/staff/objects", sample_object(source_refs=[source]))
+    assert result["status"] == 422 and "source_refs[0].fields[0]" in result["body"]["error"]["fields"]

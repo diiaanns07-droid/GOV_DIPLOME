@@ -391,12 +391,16 @@
 
   // "План прошлых лет": the plan's end date is behind the viewer's day while the
   // record does not say the work finished. We do not conclude what happened.
+  // The mark uses every published promise: the current end, else the first (original) end
+  // when no new end was published, else a start more than a year old with no end at all.
   function staleness(item, today) {
-    const iv = plannedInterval(item);
     if (!today || !parseDay(today)) return null;
-    if (item.status === "completed" || item.status === "cancelled" || item.schedule.actual_end) return null;
-    if (iv.end && iv.end < today) {
-      return { kind: "plan_end_passed", end: iv.end, days: dayDiff(iv.end, today) };
+    const sc = item.schedule || {};
+    if (item.status === "completed" || item.status === "cancelled" || sc.actual_end) return null;
+    const end = sc.current_planned_end || sc.original_planned_end || null;
+    if (end && end < today) return { kind: "plan_end_passed", end, days: dayDiff(end, today), original: !sc.current_planned_end };
+    if (!end && sc.planned_start && dayDiff(sc.planned_start, today) > 365) {
+      return { kind: "old_start_no_end", start: sc.planned_start, days: dayDiff(sc.planned_start, today) };
     }
     return null;
   }
@@ -540,8 +544,9 @@
       // Facet counts: everything except the kind filter, so a chip shows what choosing it gives.
       if (pm.match && !areaOut) counts.byKind[it.kind] = (counts.byKind[it.kind] || 0) + 1;
       if (f.kinds.length && !f.kinds.includes(it.kind)) continue;
+      // Period first: an area counter must not promise records the period would hide anyway.
+      if (!pm.match) { if (pm.undated && !areaOut) counts.undated++; continue; }
       if (areaOut) { counts[areaOut]++; continue; }
-      if (!pm.match) { if (pm.undated) counts.undated++; continue; }
       if (pm.partial) counts.partial++;
       if (!it.bbox) counts.mappedOut++;
       shown.push({ item: it, partial: pm.partial, missing: pm.missing });
@@ -566,8 +571,10 @@
   function featureCollection(items) {
     const features = [];
     const area = (it) => (it.bbox ? (it.bbox[2] - it.bbox[0]) * (it.bbox[3] - it.bbox[1]) : 0);
-    const ordered = items.filter((it) => it.geometry).sort((a, b) =>
-      (a.geometry.type === "Polygon" && b.geometry.type === "Polygon") ? area(b) - area(a) : 0);
+    const withGeo = items.filter((it) => it.geometry);
+    // Partition (a mixed comparator is not a consistent order): polygons by area descending, then the rest.
+    const ordered = withGeo.filter((it) => it.geometry.type === "Polygon").sort((a, b) => area(b) - area(a))
+      .concat(withGeo.filter((it) => it.geometry.type !== "Polygon"));
     for (const it of ordered) {
       if (!it.geometry) continue;
       features.push({

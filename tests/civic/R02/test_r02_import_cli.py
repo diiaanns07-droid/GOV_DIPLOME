@@ -236,6 +236,7 @@ def test_export_audit_lists_history_without_secrets(service, editor, db_path, tm
 def test_password_stdin_accepts_windows_line_endings(tmp_path):
     db = str(tmp_path / "crlf.sqlite3")
     secret = "Crlf-Strong-Pass-2026"
+    assert run_cli("--db", db, "init").returncode == 0
     assert run_cli("--db", db, "create-editor", "crlfuser", "--password-stdin", stdin=secret + "\r\n").returncode == 0
     assert Editor(CivicService(db), "crlfuser", secret).get("/staff/objects")["status"] == 200
 
@@ -288,3 +289,127 @@ def test_dummy_hash_is_ready_before_first_login(tmp_path):
     auth._DUMMY_HASH = None
     CivicService(tmp_path / "eager.sqlite3")
     assert auth._DUMMY_HASH is not None
+
+
+def test_garbage_items_become_invalid_entries_not_crashes(service):
+    bad_ref = real_item("ast-r05-bad", source_refs=[{"id": ["s1"], "url": "https://example.org/",
+                                                     "access_status": "not_fetched"}])
+    bad_url = real_item("ast-r05-sur", source_refs=[{"id": "s1", "url": "https://example.org/\ud800",
+                                                     "access_status": "not_fetched"}])
+    with pytest.raises(ImportRejected) as rejected:
+        import_package(service.objects, package([real_item("ast-r05-ok"), bad_ref, bad_url]))
+    assert {i["external_id"]: i["action"] for i in rejected.value.report["items"]} == {
+        "ast-r05-bad": "invalid", "ast-r05-sur": "invalid"}
+    report = import_package(service.objects, package([real_item("ast-r05-ok"), bad_ref, bad_url]),
+                            allow_partial=True)
+    assert report["counts"]["create"] == 1 and report["counts"]["invalid"] == 2
+
+
+@pytest.mark.parametrize("version", ["2026-10 <draft>", "v" * 1200, "ok‮evil"])
+def test_unsafe_slice_version_is_rejected_up_front(service, version):
+    with pytest.raises(ImportRejected, match="slice.version"):
+        import_package(service.objects, package([real_item()], version=version))
+    with service.db.read() as conn:
+        assert conn.execute("SELECT COUNT(*) FROM civic_objects").fetchone()[0] == 0
+
+
+def test_read_only_commands_do_not_create_or_migrate(tmp_path):
+    missing = tmp_path / "typo.sqlite3"
+    for args in (["backup", str(tmp_path / "b.sqlite3")], ["status"], ["list-editors"],
+                 ["export-audit"], ["import", str(tmp_path / "none.json"), "--dry-run"]):
+        result = run_cli("--db", str(missing), *args)
+        assert result.returncode != 0, args
+        assert "init" in result.stderr + result.stdout
+        assert not missing.exists(), args
+    assert not (tmp_path / "b.sqlite3").exists()
+    # База старой схемы: status не мигрирует её молча, а просит init.
+    old = tmp_path / "old.sqlite3"
+    assert run_cli("--db", str(old), "init").returncode == 0
+    with sqlite3.connect(old) as conn:
+        conn.execute("DROP INDEX civic_import_candidates_object")
+        conn.execute("DELETE FROM civic_schema_migrations WHERE version = 3")
+    result = run_cli("--db", str(old), "status")
+    assert result.returncode == 2 and "init" in result.stderr
+    with sqlite3.connect(old) as conn:
+        assert conn.execute("SELECT COUNT(*) FROM civic_schema_migrations WHERE version = 3").fetchone()[0] == 0
+
+
+def test_restore_refuses_foreign_schema_before_touching_live_db(tmp_path, service, editor, db_path):
+    editor.create()
+    foreign = tmp_path / "foreign.sqlite3"
+    args = cli.build_parser().parse_args(["--db", str(db_path), "backup", str(foreign)])
+    args.func(args, service)
+    with sqlite3.connect(foreign) as conn:
+        conn.execute("UPDATE civic_schema_migrations SET checksum = 'other-build' WHERE version = 3")
+    editor.create(title="Второй объект")
+    args = cli.build_parser().parse_args(["--db", str(db_path), "restore", str(foreign), "--yes"])
+    with pytest.raises(SystemExit, match="отличается"):
+        args.func(args)
+    with sqlite3.connect(db_path) as conn:
+        assert conn.execute("SELECT COUNT(*) FROM civic_objects").fetchone()[0] == 2
+    assert list(db_path.parent.glob("*restore*")) == []  # ни копий, ни временных файлов
+
+
+def test_two_restores_keep_both_safety_copies(tmp_path, service, editor, db_path):
+    editor.create()
+    copy_a = tmp_path / "a.sqlite3"
+    args = cli.build_parser().parse_args(["--db", str(db_path), "backup", str(copy_a)])
+    args.func(args, service)
+    for _ in range(2):
+        args = cli.build_parser().parse_args(["--db", str(db_path), "restore", str(copy_a), "--yes"])
+        args.func(args)
+    safety = sorted(db_path.parent.glob("civic.pre-restore-*.sqlite3"))
+    assert len(safety) == 2 and not list(db_path.parent.glob("*restore-staging*"))
+
+
+def test_restore_into_new_location(tmp_path, service, editor, db_path):
+    item = editor.publish(editor.create())["body"]["data"]["item"]
+    copy = tmp_path / "copy.sqlite3"
+    args = cli.build_parser().parse_args(["--db", str(db_path), "backup", str(copy)])
+    args.func(args, service)
+    target = tmp_path / "new" / "civic.sqlite3"
+    args = cli.build_parser().parse_args(["--db", str(target), "restore", str(copy), "--yes"])
+    args.func(args)
+    assert call(CivicService(target), "GET", f"/objects/{item['id']}")["status"] == 200
+
+
+def test_editor_resolves_import_candidates(service, editor):
+    import_package(service.objects, package([real_item("ast-r05-a")]))
+    item = editor.get("/staff/objects/ast-r05-a")["body"]["data"]["item"]
+    editor.update(item, {"title": "Уточнено редактором"})
+    import_package(service.objects, package([real_item("ast-r05-a", title="Версия 2 из источника")], version="v2"))
+    listing = editor.get("/staff/objects/ast-r05-a/import-candidates")["body"]["data"]["items"]
+    assert len(listing) == 1 and listing[0]["resolution"] is None
+    assert listing[0]["diff"]["title"] == {"before": "Уточнено редактором", "after": "Версия 2 из источника"}
+    item = editor.get("/staff/objects/ast-r05-a")["body"]["data"]["item"]
+    assert item["staff"]["pending_import_candidates"] == 1
+    stale = editor.post(f"/staff/objects/ast-r05-a/import-candidates/{listing[0]['id']}/apply",
+                        {"expected_revision": item["revision"] - 1, "reason": "Принята версия источника"})
+    assert stale["status"] == 409
+    applied = editor.post(f"/staff/objects/ast-r05-a/import-candidates/{listing[0]['id']}/apply",
+                          {"expected_revision": item["revision"], "reason": "Принята версия источника"})
+    assert applied["status"] == 200, applied
+    item = applied["body"]["data"]["item"]
+    assert item["title"] == "Версия 2 из источника" and item["staff"]["pending_import_candidates"] == 0
+    again = import_package(service.objects, package([real_item("ast-r05-a", title="Версия 2 из источника")], version="v2"))
+    assert again["items"][0]["action"] == "skip_unchanged"
+    # Новая версия → отклонить → повтор той же версии не создаёт нового кандидата.
+    import_package(service.objects, package([real_item("ast-r05-a", title="Версия 3")], version="v3"))
+    cid = editor.get("/staff/objects/ast-r05-a/import-candidates")["body"]["data"]["items"][0]["id"]
+    dismissed = editor.post(f"/staff/objects/ast-r05-a/import-candidates/{cid}/dismiss",
+                            {"expected_revision": item["revision"], "reason": "Источник ошибочен"})
+    assert dismissed["body"]["data"]["item"]["staff"]["pending_import_candidates"] == 0
+    third = import_package(service.objects, package([real_item("ast-r05-a", title="Версия 3")], version="v3"))
+    assert third["items"][0]["action"] == "editor_review" and "dismissed" in third["items"][0]["detail"]
+    assert editor.post(f"/staff/objects/ast-r05-a/import-candidates/{cid}/apply",
+                       {"expected_revision": item["revision"], "reason": "x"})["status"] == 409
+    assert call(service, "GET", "/staff/objects/ast-r05-a/import-candidates")["status"] == 401
+
+
+def test_manual_edit_matching_import_is_superseded(service, editor):
+    import_package(service.objects, package([real_item("ast-r05-m")]))
+    item = editor.get("/staff/objects/ast-r05-m")["body"]["data"]["item"]
+    editor.update(item, {"title": "Совпадёт с v2"})
+    report = import_package(service.objects, package([real_item("ast-r05-m", title="Совпадёт с v2")], version="v2"))
+    assert report["items"][0]["action"] == "skip_unchanged"
+    assert editor.get("/staff/objects/ast-r05-m")["body"]["data"]["item"]["staff"]["pending_import_candidates"] == 0

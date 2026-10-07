@@ -27,7 +27,8 @@ from .auth import (COOKIE_NAME, Accounts, AuthError, Principal, RateLimited, cle
                    parse_cookies, session_cookie)
 from .db import Database, StorageError
 from .objects import BadRequest, Conflict, NotFound, ObjectRepository, parse_filters
-from .validate import ValidationError, is_valid_id
+from . import validate
+from .validate import ValidationError, echo_keys, is_valid_id
 
 
 LOGGER = logging.getLogger("ui.civic_store")
@@ -41,6 +42,25 @@ BASE_HEADERS = {
     "X-Content-Type-Options": "nosniff",
     "Vary": "Cookie",
 }
+
+
+def meta() -> dict:
+    """Перечисления и пределы проверки — чтобы редактор (R04) и приёмка (R10) не дублировали их."""
+    return {
+        "schema_version": validate.SCHEMA_VERSION, "city": validate.CITY,
+        "enums": {"kind": list(validate.KINDS), "status": list(validate.STATUSES),
+                  "publication": list(validate.PUBLICATIONS), "geometry_precision": list(validate.PRECISIONS),
+                  "evidence_type": list(validate.EVIDENCE_TYPES), "budget_basis": list(validate.BUDGET_BASES),
+                  "access_status": list(validate.ACCESS_STATUSES)},
+        "limits": {"text": dict(validate.MAX_TEXT), "url": validate.MAX_URL,
+                   "source_refs": validate.MAX_SOURCE_REFS, "fields_per_source": validate.MAX_FIELDS_PER_REF,
+                   "geometry_positions": validate.MAX_POSITIONS, "amount_kzt_max": validate.MAX_AMOUNT_KZT,
+                   "date_years": [validate.MIN_YEAR, validate.MAX_YEAR], "body_bytes": MAX_BODY,
+                   "page": {"default": 50, "max": 100}},
+        "astana_bbox": list(validate.ASTANA_BBOX),
+        "source_field_paths": sorted(validate.SOURCE_FIELD_PATHS),
+        "roles": ["editor", "admin"],
+    }
 
 
 def _system_clock():
@@ -93,6 +113,7 @@ def parse_body(body):
     if body is None or body == b"" or body == "":
         return {}
     if isinstance(body, dict):
+        _require_utf8(body)
         return body
     if isinstance(body, str):
         body = body.encode("utf-8", "surrogatepass")
@@ -106,7 +127,20 @@ def parse_body(body):
         raise BadRequest("Некорректный JSON: ожидается объект с конечными числами.")
     if not isinstance(value, dict):
         raise BadRequest("Тело запроса должно быть JSON-объектом.")
+    _require_utf8(value)
     return value
+
+
+def _require_utf8(value) -> None:
+    """JSON-escape вида «обратная косая + ud800» даёт одиночный суррогат: его нельзя сохранить или отдать.
+
+    Проверяем всё тело (ключи и значения) ДО любой записи: иначе изменение фиксировалось,
+    а клиент получал 500 при кодировании ответа с эхом такого ключа.
+    """
+    try:
+        json.dumps(value, ensure_ascii=False, allow_nan=False).encode("utf-8")
+    except (UnicodeEncodeError, ValueError, TypeError, RecursionError):
+        raise BadRequest("Тело содержит недопустимые символы (одиночные суррогаты) или значения.")
 
 
 class _TooLarge(Exception):
@@ -179,6 +213,29 @@ class CivicService:
         if unsafe and not principal.check_csrf(header(context, "X-CSRF-Token")):
             return None, error(403, "csrf_failed", "Неверный CSRF-токен: обновите сессию (GET /session).")
         return principal, None
+
+    def public_detail(self, object_id):
+        """{item, history} опубликованного объекта либо None — без HTTP-контекста (R09, R01)."""
+        if not is_valid_id(object_id):
+            return None
+        try:
+            return self.objects.get_public(object_id)
+        except NotFound:
+            return None
+
+    def lookup_staff_object(self, object_id):
+        """Рабочая копия (staff item без истории) либо None — только для контекста модератора R06.
+
+        Для проверок, которые видит житель (место сообщения, публичный список), используйте
+        lookup_public_object: неопубликованная правка не должна влиять на жителя.
+        """
+        if not is_valid_id(object_id):
+            return None
+        with self.db.read() as conn:
+            try:
+                return self.objects._staff_item(conn, object_id)
+            except NotFound:
+                return None
 
     def lookup_public_object(self, object_id):
         """Опубликованный объект (публичный DTO) либо None — для R06 object_lookup и R09 контекста."""
@@ -261,6 +318,12 @@ class CivicService:
             return {"POST": (self._staff_action, (s[2], s[3]))}
         if s == ["staff", "audit"]:
             return {"GET": (self._staff_audit, ())}
+        if s == ["staff", "meta"]:
+            return {"GET": (self._staff_meta, ())}
+        if n == 4 and s[:2] == ["staff", "objects"] and s[3] == "import-candidates":
+            return {"GET": (self._staff_candidates, (s[2],))}
+        if n == 6 and s[:2] == ["staff", "objects"] and s[3] == "import-candidates" and s[5] in ("apply", "dismiss"):
+            return {"POST": (self._staff_candidate_action, (s[2], s[4], s[5]))}
         return None
 
     # --- публичное --------------------------------------------------------------------
@@ -347,6 +410,27 @@ class CivicService:
             data["ignored_fields"] = ignored
         return ok(data, status=201 if created else 200)
 
+    def _staff_meta(self, context, params, payload):
+        principal, denied = self.require_staff(context, unsafe=False)
+        if denied:
+            return denied
+        return ok(meta())
+
+    def _staff_candidates(self, context, params, payload, object_id):
+        principal, denied = self.require_staff(context, unsafe=False)
+        if denied:
+            return denied
+        return ok(self.objects.list_candidates(object_id))
+
+    def _staff_candidate_action(self, context, params, payload, object_id, candidate_id, action):
+        principal, denied = self.require_staff(context, unsafe=True)
+        if denied:
+            return denied
+        item = self.objects.resolve_candidate(principal.actor(), object_id, candidate_id, action=action,
+                                              expected_revision=payload.get("expected_revision"),
+                                              reason=payload.get("reason"))
+        return ok({"item": item})
+
     def _staff_audit(self, context, params, payload):
         principal, denied = self.require_staff(context, unsafe=False)
         if denied:
@@ -367,7 +451,7 @@ class CivicService:
             raise BadRequest("Недопустимый ID объекта.", {"id": "Пустой или недопустимый ID."})
         expected = payload.get("expected_revision")
         reason = payload.get("reason")
-        ignored = sorted(key for key in payload if key not in ("expected_revision", "reason", "changes"))
+        ignored = echo_keys(key for key in payload if key not in ("expected_revision", "reason", "changes"))
         if action == "update":
             item, ignored_fields = self.objects.update(
                 principal.actor(), object_id, expected_revision=expected,

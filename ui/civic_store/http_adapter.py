@@ -22,6 +22,7 @@ from __future__ import annotations
 import ipaddress
 import json
 import logging
+import sqlite3
 import ssl
 from urllib.parse import unquote, urlsplit
 
@@ -167,6 +168,20 @@ class CivicHttpAdapter:
             self._write(handler, result or not_found())
         except CLIENT_DISCONNECTED:
             handler.close_connection = True
+        except TimeoutError:
+            # Клиент не дослал тело за тайм-аут сокета: его ошибка, не сбой сервера (без traceback).
+            handler.close_connection = True
+            LOGGER.info("civic request body timeout on %s", parsed.path[:80])
+            try:
+                self._write(handler, error(408, "request_timeout", "Тело запроса не получено вовремя."))
+            except OSError:
+                pass
+        except sqlite3.OperationalError as exc:
+            if "locked" not in str(exc) and "busy" not in str(exc):
+                LOGGER.exception("civic adapter db failure on %s", parsed.path[:80])
+                self._write(handler, error(500, "internal_error", "Внутренняя ошибка сервера."))
+            else:
+                self._write(handler, error(503, "busy", "База занята, повторите запрос.", headers={"Retry-After": "1"}))
         except Exception:  # noqa: BLE001
             LOGGER.exception("civic adapter failure on %s", parsed.path[:80])
             self._write(handler, error(500, "internal_error", "Внутренняя ошибка сервера."))
@@ -190,12 +205,24 @@ class CivicHttpAdapter:
             handler.close_connection = True
 
 
-def make_reference_handler(adapter):
+def make_reference_handler(adapter, *, timeout: float = 15):
     """Минимальный самостоятельный Handler (для тестов и примера, без остального приложения)."""
     from http.server import BaseHTTPRequestHandler
 
     class CivicOnlyHandler(BaseHTTPRequestHandler):
         server_version = "CivicR02/1.0"
+
+        def setup(self):
+            super().setup()
+            self.connection.settimeout(timeout)  # как у общего Handler: медленный клиент не держит поток
+
+        def send_error(self, code, message=None, explain=None):
+            # Неизвестный метод (BREW, PROPFIND...) на civic-пути: JSON 405 вместо HTML 501.
+            if code == 501 and adapter.handles(getattr(self, "path", "")):
+                self.close_connection = True
+                adapter.serve(self)
+                return
+            super().send_error(code, message, explain)
 
         def log_message(self, fmt, *args):  # без строк запросов в stderr (cookies не логируются и так)
             LOGGER.debug("http %s", self.command)
@@ -206,6 +233,6 @@ def make_reference_handler(adapter):
             else:
                 adapter._write(self, not_found())
 
-        do_GET = do_HEAD = do_POST = do_PUT = do_PATCH = do_DELETE = do_OPTIONS = _route
+        do_GET = do_HEAD = do_POST = do_PUT = do_PATCH = do_DELETE = do_OPTIONS = do_TRACE = _route
 
     return CivicOnlyHandler

@@ -7,6 +7,9 @@
 #civic-modes { display: flex; gap: 3px; padding: 3px; border-radius: 12px; background: #e8eee3; }
 #civic-modes button { padding: 7px 12px; border-radius: 9px; font-size: 12px; font-weight: 600; color: var(--muted); white-space: nowrap; }
 #civic-modes button[aria-pressed="true"] { background: #fff; color: var(--ink); box-shadow: 0 2px 6px #19362812; }
+/* The mode switch takes the room the training header's info block had (R10-D012): below 1680px that
+ * block («Астана / Городская лаборатория», counts) is hidden; the counts stay in the map footer. */
+@media (max-width: 1680px) { .topbar .top-center { display: none; } }
 #civic-modes button:hover:not([aria-pressed="true"]) { background: #f3f6ee; }
 .govtech-mode .top-actions > #civic-modes { display: flex !important; }
 
@@ -100,11 +103,11 @@
   .topbar .top-actions::-webkit-scrollbar { display: none; }
   .topbar .top-actions > * { flex-shrink: 0; }
 }
+/* Adapter for R04 @da46e1c (not an R01 style; R10-D010): R04's sticky action bar may grow to 70vh, taller
+ * than the editor body inside the drawer, and then covers the 409 conflict panel and its buttons.
+ * Inside the shell's drawer the bar is capped (it scrolls internally). Remove when R04 caps it itself. */
+#civic-editor .civic-r04-actions { max-height: 36vh; }
+@media (max-width: 760px) { #civic-editor .civic-r04-actions { max-height: 24vh; } }
 @media (prefers-reduced-motion: reduce) {
   .civic-panel, .civic-mode .maplibregl-ctrl-bottom-right { transition: none; }
 }
-
-/* Adapter for R03 @1bc9c48 (not an R01 style): in civic-map.css `.civic-r03-root button { color: inherit }`
- * outranks `.civic-r03-btn-primary { color: #fff }`, so the primary card button text («Задать вопрос
- * по объекту») matched its dark background. Remove once R03 fixes the specificity. */
-.civic-r03-root .civic-r03-btn-primary { color: #fff; }

@@ -16,6 +16,7 @@
     lineCasing: P + "line-casing",
     line: P + "line",
     lineApprox: P + "line-approx",
+    lineCore: P + "line-core",
     synthLine: P + "synthetic-outline",
     selLine: P + "selected-line",
     pointHalo: P + "point-halo",
@@ -23,7 +24,7 @@
     point: P + "point",
     selPoint: P + "selected-point",
   };
-  const BELOW_LABELS = [L.areaFill, L.areaLine, L.areaLineApprox, L.lineCasing, L.line, L.lineApprox, L.synthLine, L.selLine];
+  const BELOW_LABELS = [L.areaFill, L.areaLine, L.areaLineApprox, L.lineCasing, L.line, L.lineApprox, L.lineCore, L.synthLine, L.selLine];
   const ON_TOP = [L.pointHalo, L.pointSynth, L.point, L.selPoint];
   const INTERACTIVE = [L.point, L.pointHalo, L.line, L.lineApprox, L.lineCasing, L.areaFill];
   const STORAGE_KEY = "civic-r03:filters:v1";
@@ -106,19 +107,25 @@
     const statusOpacity = (inProgress, planned, completed, other) =>
       ["match", ["get", "status"], "in_progress", inProgress, "planned", planned, "completed", completed, other];
     const none = ["==", ["get", "cid"], "\u0000none"];
+    const lineColor = ["match", ["get", "status"], "cancelled", "#8b939c", "unknown", "#4f5965", kc];
+    const lineWidth = ["match", ["get", "status"], "in_progress", 5, "planned", 6, "unknown", 6, 3.5];
     return [
+      // Areas: planned/unknown without fill (like the hollow point), in progress filled, completed pale.
       { id: L.areaFill, type: "fill", source: SRC, filter: isPoly,
-        paint: { "fill-color": ["match", ["get", "status"], "cancelled", "#8b939c", kc], "fill-opacity": statusOpacity(0.3, 0.18, 0.12, 0.1) } },
+        paint: { "fill-color": ["match", ["get", "status"], "cancelled", "#8b939c", kc], "fill-opacity": ["match", ["get", "status"], "in_progress", 0.32, "completed", 0.12, "cancelled", 0.1, 0] } },
       { id: L.areaLine, type: "line", source: SRC, filter: ["all", isPoly, exact],
-        paint: { "line-color": kc, "line-width": 2, "line-opacity": statusOpacity(0.95, 0.9, 0.6, 0.55) } },
+        paint: { "line-color": lineColor, "line-width": ["match", ["get", "status"], "planned", 2.5, "in_progress", 2, 1.5], "line-opacity": statusOpacity(0.95, 0.95, 0.6, 0.7) } },
       { id: L.areaLineApprox, type: "line", source: SRC, filter: ["all", isPoly, approx],
-        paint: { "line-color": kc, "line-width": 2, "line-dasharray": [2, 1.6], "line-opacity": statusOpacity(0.95, 0.9, 0.6, 0.55) } },
+        paint: { "line-color": lineColor, "line-width": ["match", ["get", "status"], "planned", 2.5, "in_progress", 2, 1.5], "line-dasharray": [2, 1.6], "line-opacity": statusOpacity(0.95, 0.95, 0.6, 0.7) } },
       { id: L.lineCasing, type: "line", source: SRC, filter: isLine, layout: { "line-cap": "round", "line-join": "round" },
         paint: { "line-color": "#ffffff", "line-width": 9, "line-opacity": 0.9 } },
+      // Lines: planned/unknown are hollow (wide line + white core), in progress solid, completed thin and pale.
       { id: L.line, type: "line", source: SRC, filter: ["all", isLine, exact], layout: { "line-cap": "round", "line-join": "round" },
-        paint: { "line-color": ["match", ["get", "status"], "cancelled", "#8b939c", kc], "line-width": 5, "line-opacity": statusOpacity(1, 0.9, 0.55, 0.6) } },
+        paint: { "line-color": lineColor, "line-width": lineWidth, "line-opacity": statusOpacity(1, 1, 0.55, 0.8) } },
       { id: L.lineApprox, type: "line", source: SRC, filter: ["all", isLine, approx], layout: { "line-join": "round" },
-        paint: { "line-color": ["match", ["get", "status"], "cancelled", "#8b939c", kc], "line-width": 5, "line-dasharray": [1.4, 1.1], "line-opacity": statusOpacity(1, 0.9, 0.55, 0.6) } },
+        paint: { "line-color": lineColor, "line-width": lineWidth, "line-dasharray": [1.4, 1.1], "line-opacity": statusOpacity(1, 1, 0.55, 0.8) } },
+      { id: L.lineCore, type: "line", source: SRC, filter: ["all", isLine, ["match", ["get", "status"], ["planned", "unknown"], true, false]],
+        layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": "#ffffff", "line-width": 2.2 } },
       { id: L.synthLine, type: "line", source: SRC, filter: ["all", ["!", isPoint], ["==", ["get", "synthetic"], true]],
         paint: { "line-color": "#4f5965", "line-width": 1.2, "line-gap-width": ["case", isLine, 12, 5], "line-dasharray": [1, 2], "line-opacity": 0.85 } },
       { id: L.selLine, type: "line", source: SRC, filter: ["all", ["!", isPoint], none], layout: { "line-cap": "round", "line-join": "round" },
@@ -277,12 +284,26 @@
             sample(P + "sw-faded", g, "Завершено — бледная заливка"),
             sample(P + "sw-cancel", g, "Отменено — серый"),
             sample(P + "sw-unknown", g, "Статус неизвестен — серое кольцо")),
+          h("p", { class: P + "legend-h", text: "Линии и участки — статус" }),
+          h("ul", null,
+            sample(P + "sw-line " + P + "sw-line-hollow", g, "Запланировано — полая линия, участок без заливки"),
+            sample(P + "sw-line", g, "Идут работы — сплошная линия, залитый участок"),
+            sample(P + "sw-line " + P + "sw-line-faded", g, "Завершено — тонкая бледная линия"),
+            sample(P + "sw-line " + P + "sw-line-cancel", g, "Отменено — серая линия"),
+            sample(P + "sw-line " + P + "sw-line-hollow " + P + "sw-line-unknown", g, "Статус неизвестен — серая полая линия")),
           h("p", { class: P + "legend-h", text: "Точность места" }),
           h("ul", null,
             sample(P + "sw-solid", g, "Сплошная линия, точка — место по источнику"),
             sample(P + "sw-halo", g, "Пунктир, ореол — примерное место"),
             sample(P + "sw-synth", g, "Серое пунктирное кольцо (у линий и участков — пунктирная обводка) — демо-запись")),
           h("p", { class: P + "hint", text: "Записи без координат есть только в списке: точку за них не придумываем." })));
+    }
+
+    let ownFocus = false;
+    function focusEl(el, o) {
+      if (!el) return;
+      ownFocus = true;
+      try { el.focus(o); } catch (e) { try { el.focus(); } catch (e2) { /* ignore */ } } finally { ownFocus = false; }
     }
 
     // ---------- listeners on root (delegated; removed in destroy) ----------
@@ -293,7 +314,14 @@
     on(root, "keydown", onRootKey);
     on(handle, "pointerdown", onHandleDown);
     // Keyboard focus entering a peeking sheet opens it, so the focused control is visible.
-    on(scroller, "focusin", () => { if (isMobile() && layout === "overlay" && st.sheet === "peek") setSheet("half"); });
+    on(scroller, "focusin", (e) => {
+      // Only focus the user moved with the keyboard opens a peeking sheet; the module's own
+      // focus restoration after a re-render must not undo a sheet the user just collapsed.
+      if (ownFocus || !isMobile() || layout !== "overlay" || st.sheet !== "peek") return;
+      let keyboard = true;
+      try { keyboard = e.target.matches(":focus-visible"); } catch (err) { /* old browser: assume keyboard */ }
+      if (keyboard) setSheet("half");
+    });
     if (mql) {
       const f = () => { applySheet(); };
       if (mql.addEventListener) { mql.addEventListener("change", f); cleanups.push(() => mql.removeEventListener("change", f)); }
@@ -315,7 +343,7 @@
       if (a === "reset-filters" || a === "show-undated") target = filters.open ? (a === "show-undated" ? periodSel : searchInput) : filtersSummary;
       else if (a === "more") target = listEl.querySelector("[data-r03-more-anchor]") || countEl;
       if (target === countEl) countEl.setAttribute("tabindex", "-1");
-      try { target.focus(); } catch (e) { /* ignore */ }
+      focusEl(target);
     }
     function handleAction(t, a) {
       if (a === "select") { selectObject(t.getAttribute("data-id"), { source: "list" }); }
@@ -487,7 +515,7 @@
       const keep = document.activeElement && statusBox.contains(document.activeElement);
       statusBox.replaceChildren();
       if (build) statusBox.append(build());
-      if (keep) { countEl.setAttribute("tabindex", "-1"); countEl.focus(); }
+      if (keep) { countEl.setAttribute("tabindex", "-1"); focusEl(countEl); }
     }
     function setCount(text) { if (countEl.textContent !== text) countEl.textContent = text; }
     function renderList(focusFrom) {
@@ -512,23 +540,30 @@
         setStatus("loading", () => h("div", { class: P + "loading", "aria-hidden": "true" }, h("span", { class: P + "spinner" }), "Загружаем опубликованные объекты…"));
         return;
       }
+      const emptyFilter = st.items.length > 0 && !res.shown.length;
+      const shownText = c.shown === c.total ? plural(c.total, "объект", "объекта", "объектов") : "Показано " + c.shown + " из " + c.total;
+      const emptyNode = () => h("div", { class: P + "empty" }, h("p", { text: "По выбранным условиям ничего не найдено." }),
+        h("button", { type: "button", class: P + "btn", "data-r03-action": "reset-filters", text: "Сбросить фильтры" }));
       if (st.list === "error") {
-        setCount(st.items.length ? "Показаны прежние данные" : "Данные не загружены");
         const text = st.listError ? st.listError.text : "Не удалось загрузить объекты.";
-        setStatus("error|" + text, () => h("div", { class: P + "error" },
-          h("p", { text }), h("button", { type: "button", class: P + "btn", "data-r03-action": "retry-list" }, svgIcon(ICON.retry), "Повторить")));
+        setCount(st.items.length ? shownText + " · прежние данные" : "Данные не загружены");
+        setStatus("error|" + text + "|" + emptyFilter, () => {
+          const box = h("div", null, h("div", { class: P + "error" },
+            h("p", { text }), h("button", { type: "button", class: P + "btn", "data-r03-action": "retry-list" }, svgIcon(ICON.retry), "Повторить")));
+          if (emptyFilter) box.append(emptyNode());
+          return box;
+        });
         if (!st.items.length) return;
-      } else if (st.list === "loading") setStatus("refreshing", () => h("p", { class: P + "hint", text: "Обновляем…" }));
-      else if (st.list === "ready" && !st.items.length) {
+      } else if (st.list === "ready" && !st.items.length) {
         setCount("0 объектов");
         setStatus("empty-server", () => h("div", { class: P + "empty" }, h("p", { text: "Опубликованных объектов пока нет." }),
           h("p", { class: P + "hint", text: "Когда сотрудники опубликуют работы или события, они появятся на карте и в этом списке." })));
         return;
-      } else if (!res.shown.length && st.items.length) {
-        setStatus("empty-filter", () => h("div", { class: P + "empty" }, h("p", { text: "По выбранным условиям ничего не найдено." }),
-          h("button", { type: "button", class: P + "btn", "data-r03-action": "reset-filters", text: "Сбросить фильтры" })));
-      } else setStatus("", null);
-      if (st.list !== "error") setCount(st.list === "idle" ? "" : (c.shown === c.total ? plural(c.total, "объект", "объекта", "объектов") : "Показано " + c.shown + " из " + c.total));
+      } else {
+        if (st.list === "loading") setStatus("refreshing|" + emptyFilter, () => { const box = h("div", null, h("p", { class: P + "hint", text: "Обновляем…" })); if (emptyFilter) box.append(emptyNode()); return box; });
+        else setStatus(emptyFilter ? "empty-filter" : "", emptyFilter ? emptyNode : null);
+        setCount(st.list === "idle" ? "" : shownText);
+      }
       const frag = document.createDocumentFragment();
       const visible = res.shown.slice(0, st.limit);
       visible.forEach((row, i) => {
@@ -540,7 +575,7 @@
       const notes = [];
       if (res.shown.length > visible.length) notes.push(h("li", null, "Показаны первые " + visible.length + " из " + res.shown.length + ". ",
         h("button", { type: "button", class: P + "link-btn", "data-r03-action": "more", text: "Показать ещё " + Math.min(LIST_STEP, res.shown.length - visible.length) })));
-      if (c.undated) notes.push(h("li", null, "Без плановых дат: " + c.undated + " — в выбранный период не попадают. ", h("button", { type: "button", class: P + "link-btn", "data-r03-action": "show-undated", text: "Показать все сроки" })));
+      if (c.undated) notes.push(h("li", null, "Без плановых дат: " + c.undated + " (в выбранный период не входят). ", h("button", { type: "button", class: P + "link-btn", "data-r03-action": "show-undated", text: "Показать все сроки" })));
       if (c.partial) notes.push(h("li", { text: "С неполными сроками: " + c.partial + " — одна из плановых дат неизвестна; такие записи помечены." }));
       if (c.outsideArea) notes.push(h("li", { text: "Вне видимой части карты: " + c.outsideArea + "." }));
       if (c.noGeometry) notes.push(h("li", { text: "Без места на карте (не входят в «видимую часть»): " + c.noGeometry + "." }));
@@ -550,16 +585,16 @@
         if (absent) notes.push(h("li", { text: "Без координат: " + absent + " — есть только в списке, на карте не показаны." }));
         if (bad) notes.push(h("li", { text: "Координаты вне области карты или некорректны: " + bad + " — показаны только в списке." }));
       }
-      if (st.truncated) notes.push(h("li", { text: "Загружено " + plural(st.items.length, "запись", "записи", "записей") + "; остальные не показаны." }));
+      if (st.truncated) notes.push(h("li", { text: "Записей загружено: " + st.items.length + "; остальные не показаны." }));
       if (st.excluded) notes.push(h("li", { text: "Пропущено некорректных или неопубликованных записей: " + st.excluded + "." }));
       if (notes.length) listNotes.append(h("ul", null, notes));
       if (focusedId) {
         const again = listEl.querySelector('[data-id="' + cssEscape(focusedId) + '"]');
-        if (again) again.focus();
-        else { countEl.setAttribute("tabindex", "-1"); countEl.focus(); }
+        if (again) focusEl(again);
+        else { countEl.setAttribute("tabindex", "-1"); focusEl(countEl); }
       } else if (focusFrom !== undefined) {
         const anchor = listEl.querySelector("[data-r03-more-anchor]");
-        if (anchor) anchor.focus();
+        if (anchor) focusEl(anchor);
       }
     }
     function cssEscape(s) { return window.CSS && CSS.escape ? CSS.escape(s) : String(s).replace(/["\\]/g, "\\$&"); }
@@ -579,7 +614,7 @@
       const meta = [C.STATUSES[it.status], when];
       if (shift) meta.push(shift.days > 0 ? "срок перенесён" : "срок сдвинут раньше");
       const badges = [evidenceBadge(it),
-        stale ? badge("Срок по плану прошёл", "b-warn") : null,
+        stale ? badge(stale.kind === "old_start_no_end" ? "Старый план без срока" : "Срок по плану прошёл", "b-warn") : null,
         !it.geometry ? badge("Нет на карте", "b-muted", it.geoIssue ? it.issues.find((x) => /координат|геометр/.test(x)) : "Координаты не указаны") : it.precision !== "source" ? badge(it.precision === "approximate" ? "Примерное место" : "Точность места?", "b-muted") : null,
         missing === "end" ? badge("Окончание неизвестно", "b-muted", "Плановая дата окончания не указана") : missing === "start" ? badge("Начало неизвестно", "b-muted", "Плановая дата начала не указана") : null].filter(Boolean);
       const btn = h("button", { type: "button", class: P + "item", "data-r03-action": "select", "data-id": it.id, "aria-current": st.selectedId === it.id ? "true" : null, style: { "--civic-r03-k": k.color } },
@@ -656,6 +691,8 @@
       // request, no second onSelect (the R01 shell would close an open feedback form).
       if (id === st.selectedId && (opts.source === "map" || opts.source === "list") && (st.detail.state === "ready" || st.detail.state === "loading")) {
         const it = currentItem();
+        if (isMobile() && layout === "overlay" && st.sheet === "peek") setSheet("half");
+        if (opts.source === "map") focusCard();
         if (it && opts.source === "list" && opts.fly !== false) afterLayout(() => flyTo(it), id);
         else if (it && opts.source === "map") afterLayout(() => ensureVisible(it), id);
         return;
@@ -712,6 +749,7 @@
         const info = C.errorInfo(err);
         st.detail.state = info.notFound ? "notfound" : "error";
         if (info.notFound) st.detail.item = null;
+        else if (opts && opts.source === "refresh") { const f = findItem(id); if (f) { st.detail.item = f; st.detail.history = []; } }
         st.detail.error = info;
       }
       try { renderCard(); } finally { updateSelection(); }
@@ -731,8 +769,8 @@
       if (permalink) writeHash(null);
       if (onSelect) safeCall(onSelect, null, { source: "close" });
       const target = back ? listEl.querySelector('[data-id="' + cssEscape(back) + '"]') : null;
-      if (target) target.focus();
-      else if (root.contains(document.activeElement) || document.activeElement === document.body) { countEl.setAttribute("tabindex", "-1"); countEl.focus(); }
+      if (target) focusEl(target);
+      else if (root.contains(document.activeElement) || document.activeElement === document.body) { countEl.setAttribute("tabindex", "-1"); focusEl(countEl); }
     }
     function safeCall(fn, ...args) { try { fn(...args); } catch (e) { console.error("CivicMap callback failed", e); } }
 
@@ -781,8 +819,15 @@
       if (it.description) cardView.append(h("section", { class: P + "sec" }, h("h4", { text: "Назначение" }), h("p", { class: P + "desc", text: it.description })));
 
       const stale = C.staleness(it, today());
-      if (stale) cardView.append(h("p", { class: P + "banner " + P + "banner-warn", role: "note" },
-        "Плановый срок окончания (" + C.formatDay(stale.end) + ") прошёл " + C.daysText(stale.days) + " назад, а в записи статус «" + C.STATUSES[it.status] + "». Фактическое состояние работ эта запись не подтверждает."));
+      if (stale) {
+        const st0 = "«" + C.STATUSES[it.status] + "»";
+        const text = stale.kind === "old_start_no_end"
+          ? "Начало по плану — " + C.formatDay(stale.start) + " (" + C.daysText(stale.days) + " назад), срок окончания не опубликован, в записи статус " + st0 + "."
+          : stale.original
+            ? "Первоначальный срок окончания (" + C.formatDay(stale.end) + ") прошёл " + C.daysText(stale.days) + " назад, новый срок не опубликован, в записи статус " + st0 + "."
+            : "Плановый срок окончания (" + C.formatDay(stale.end) + ") прошёл " + C.daysText(stale.days) + " назад, а в записи статус " + st0 + ".";
+        cardView.append(h("p", { class: P + "banner " + P + "banner-warn", role: "note" }, text + " Фактическое состояние работ эта запись не подтверждает."));
+      }
 
       // Schedule
       const s = it.schedule;
@@ -882,7 +927,7 @@
     function restoreFocus(key) {
       const el = key === "title" ? null : cardView.querySelector('[data-r03-action="' + key + '"], [data-r03-compare="' + key + '"]');
       const t = el || cardView.querySelector("." + P + "card-title");
-      if (t) { try { t.focus({ preventScroll: true }); } catch (e) { t.focus(); } }
+      if (t) focusEl(t, { preventScroll: true });
     }
     function touches(r) { return r.changed.some((c) => c.field.startsWith("schedule")); }
     function valueText(field, v) {
@@ -923,7 +968,7 @@
     }
     function focusCard() {
       const t = cardView.querySelector("." + P + "card-title");
-      if (t) { try { t.focus({ preventScroll: true }); } catch (e) { t.focus(); } }
+      if (t) focusEl(t, { preventScroll: true });
       scroller.scrollTop = 0;
       if (layout === "embedded") { try { cardView.scrollIntoView({ block: "start", behavior: "auto" }); } catch (e) { /* ignore */ } }
     }
@@ -1018,7 +1063,7 @@
     function onMapClick(e) {
       if (destroyed) return;
       const id = hitAt(e.point);
-      if (id) selectObject(id, { source: "map", fly: false });
+      if (id) selectObject(id, { source: "map" });
     }
     function onMapMove(e) {
       lastHoverPoint = e;
@@ -1049,7 +1094,11 @@
       if (!popup.isOpen || !popup.isOpen()) popup.addTo(map);
     }
     function hideTip() { if (popup) popup.remove(); }
-    function onStyleData() { if (!destroyed && map && !map.getSource(SRC)) ensureLayers(); }
+    let styleRaf = 0;
+    function onStyleData() {
+      if (destroyed || !map || map.getSource(SRC) || styleRaf) return;
+      styleRaf = requestAnimationFrame(() => { styleRaf = 0; if (!destroyed && map && !map.getSource(SRC)) ensureLayers(); });
+    }
     function onMoveEnd() {
       if (!st.filters.area) return;
       clearTimeout(moveTimer);
@@ -1097,7 +1146,8 @@
       return found;
     }
     function freePadding() {
-      const pad = Object.assign({}, basePadding);
+      // Phones: the topbar ends near 72-84px and the tool column is ~50px wide.
+      const pad = Object.assign({}, basePadding, isMobile() && !opt.mapPadding ? { top: 84, right: 60, left: 16 } : null);
       const c = map.getContainer().getBoundingClientRect();
       const ob = obstruction();
       const r = ob ? ob.getBoundingClientRect() : { width: 0, height: 0 };
@@ -1163,6 +1213,7 @@
       if (popup) { popup.remove(); popup = null; }
       if (cursorSet) { try { map.getCanvas().style.cursor = ""; } catch (e) { /* ignore */ } cursorSet = false; }
       if (hoverRaf) { cancelAnimationFrame(hoverRaf); hoverRaf = 0; }
+      if (styleRaf) { cancelAnimationFrame(styleRaf); styleRaf = 0; }
       if (byMap.get(map) === instance) byMap.delete(map);
       map = null;
     }

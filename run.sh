@@ -81,10 +81,12 @@ else
     echo "[3/4] Создан .env из .env.example: советник работает офлайн, пока в .env не указан ключ OPENAI_API_KEY."
 fi
 
-# Городская платформа (civic-v1): база .runtime/civic.sqlite3 создаётся сервером при первом запросе.
+# Городская платформа (civic-v1): база .runtime/civic.sqlite3 создаётся сервером при первом запросе
+# или командой init (R02 >= 9b005be требует init перед seed-demo/import).
 # Демо-данные — только по явному флагу; импорт идемпотентен и публикует лишь synthetic-записи.
 if [ -n "${CIVIC_DEMO:-}" ]; then
     echo "[civic] Загружаю синтетический демо-срез Астаны (не сведения о реальных работах)..."
+    "$VENV_PY" -B -m ui.civic_store init >/dev/null
     "$VENV_PY" -B -m ui.civic_store seed-demo --package data/civic/astana/demo_synthetic.json >/dev/null
 fi
 

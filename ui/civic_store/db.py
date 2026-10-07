@@ -172,6 +172,12 @@ MIGRATIONS: list[tuple[int, str, tuple[str, ...]]] = [
     (3, "index import candidates by object", (
         "CREATE INDEX civic_import_candidates_object ON civic_import_candidates(object_id)",
     )),
+    # Решение редактора по кандидату импорта: applied | dismissed | superseded (строки не удаляются).
+    (4, "import candidate resolution", (
+        "ALTER TABLE civic_import_candidates ADD COLUMN resolved_at TEXT",
+        "ALTER TABLE civic_import_candidates ADD COLUMN resolution TEXT",
+        "ALTER TABLE civic_import_candidates ADD COLUMN resolved_by INTEGER REFERENCES civic_users(id)",
+    )),
 ]
 SCHEMA_VERSION = MIGRATIONS[-1][0]
 
@@ -202,18 +208,18 @@ def resolve_db_path(db_path) -> Path:
     return path
 
 
-def create_private_file(path: Path) -> None:
+def create_private_file(path: Path, *, exclusive: bool = False) -> bool:
     """Создаёт пустой файл с 0600 ДО того, как SQLite его откроет (без окна 0644).
 
     Пустой файл — корректная пустая база SQLite; -wal/-shm SQLite создаёт с правами основного файла.
+    exclusive=True: вернуть False, если файл уже есть (ничего не перезаписывать).
     """
-    if os.name != "posix":
-        return
     try:
         fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
     except FileExistsError:
-        return
+        return not exclusive
     os.close(fd)
+    return True
 
 
 def restrict_permissions(path: Path) -> None:
@@ -381,9 +387,11 @@ class Database:
         if not applied:
             raise StorageError("База civic не инициализирована: выполните "
                                "python -m ui.civic_store init")
-        if max(applied) != SCHEMA_VERSION:
-            raise StorageError(f"Схема базы {max(applied)}, код ожидает {SCHEMA_VERSION}: "
-                               "выполните python -m ui.civic_store init (миграция).")
+        expected = {version for version, _, _ in MIGRATIONS}
+        if set(applied) != expected:
+            missing = sorted(expected - set(applied))
+            raise StorageError(f"Схема базы не совпадает с кодом (нет миграций {missing or '—'}, "
+                               f"ожидается {SCHEMA_VERSION}): выполните python -m ui.civic_store init.")
 
     def checkpoint(self) -> None:
         """Переносит WAL в основной файл (для резервной копии и чистого закрытия)."""

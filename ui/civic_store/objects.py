@@ -403,7 +403,8 @@ class ObjectRepository:
 
     def _staff_item(self, conn, object_id) -> dict:
         row = conn.execute(
-            """SELECT o.*, cu.username AS created_by_name, uu.username AS updated_by_name
+            """SELECT o.*, cu.username AS created_by_name, uu.username AS updated_by_name,
+                      cu.display_name AS created_by_display
                FROM civic_objects o
                LEFT JOIN civic_users cu ON cu.id = o.created_by
                LEFT JOIN civic_users uu ON uu.id = o.updated_by
@@ -416,9 +417,13 @@ class ObjectRepository:
         published = conn.execute("SELECT dto_json FROM civic_public_objects WHERE id = ?",
                                  (object_id,)).fetchone()
         published_item = _loads(published["dto_json"]) if published else None
-        pending = conn.execute("SELECT COUNT(*) FROM civic_import_candidates WHERE object_id = ?",
-                               (object_id,)).fetchone()[0]
+        pending = conn.execute(
+            "SELECT COUNT(*) FROM civic_import_candidates WHERE object_id = ? AND resolved_at IS NULL",
+            (object_id,)).fetchone()[0]
         item["internal_notes"] = row["internal_notes"]
+        # Для фильтра «мои» в R04: name совпадает с /session user.name, username — логин.
+        item["created_by"] = ({"name": row["created_by_display"], "username": row["created_by_name"]}
+                              if row["created_by_name"] else None)
         item["staff"] = {
             "created_at": row["created_at"],
             "created_by": row["created_by_name"],
@@ -434,6 +439,54 @@ class ObjectRepository:
             "pending_import_candidates": pending,
         }
         return item
+
+    # --- кандидаты импорта (ручное решение редактора) --------------------------------
+
+    def list_candidates(self, object_id) -> dict:
+        if not is_valid_id(object_id):
+            raise BadRequest("Недопустимый ID объекта.", {"id": "Пустой или недопустимый ID."})
+        with self.db.read() as conn:
+            row = conn.execute("SELECT data_json FROM civic_objects WHERE id = ?", (object_id,)).fetchone()
+            if row is None:
+                raise NotFound(object_id)
+            current = _loads(row["data_json"])
+            rows = conn.execute(
+                """SELECT id, source, external_id, digest, data_json, created_at, resolved_at, resolution
+                   FROM civic_import_candidates WHERE object_id = ? ORDER BY id DESC""", (object_id,)).fetchall()
+        return {"items": [{
+            "id": r["id"], "source": r["source"], "external_id": r["external_id"], "digest": r["digest"],
+            "created_at": r["created_at"], "resolved_at": r["resolved_at"], "resolution": r["resolution"],
+            "content": _loads(r["data_json"]), "diff": diff(current, _loads(r["data_json"])),
+        } for r in rows]}
+
+    def resolve_candidate(self, actor: Actor, object_id, candidate_id, *, action, expected_revision,
+                          reason) -> dict:
+        """apply — правка объекта содержимым кандидата (как обычный update: reason, 409); dismiss — отказ."""
+        if not is_valid_id(object_id):
+            raise BadRequest("Недопустимый ID объекта.", {"id": "Пустой или недопустимый ID."})
+        candidate_key = ascii_int(candidate_id)
+        if candidate_key is None:
+            raise BadRequest("Недопустимый ID кандидата.", {"candidate_id": "Целое число."})
+        with self.db.write() as conn:
+            row = self._locked_row(conn, object_id, expected_revision)
+            cand = conn.execute(
+                "SELECT * FROM civic_import_candidates WHERE id = ? AND object_id = ?",
+                (candidate_key, object_id)).fetchone()
+            if cand is None:
+                raise NotFound(candidate_id)
+            if cand["resolved_at"] is not None:
+                raise Conflict("Кандидат уже рассмотрен.", row["revision"])
+            now = iso(utc_now(self.clock))
+            if action == "apply":
+                content = _loads(cand["data_json"])
+                self._update(conn, actor, object_id, row["revision"], content, ..., [], reason, None)
+                conn.execute("UPDATE civic_objects SET import_digest = ? WHERE id = ?", (cand["digest"], object_id))
+            else:
+                clean_reason(reason, required=False)
+            conn.execute(
+                """UPDATE civic_import_candidates SET resolved_at = ?, resolution = ?, resolved_by = ?
+                   WHERE id = ?""", (now, "applied" if action == "apply" else "dismissed", actor.user_id, cand["id"]))
+            return self._staff_item(conn, object_id)
 
     def get_staff(self, object_id) -> dict:
         if not is_valid_id(object_id):

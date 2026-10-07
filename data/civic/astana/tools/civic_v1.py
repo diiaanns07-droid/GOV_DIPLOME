@@ -17,10 +17,13 @@ Issues are dicts ``{code, severity, path, message}``; severity is ``error`` or
 from __future__ import annotations
 
 import datetime as _dt
+import html.entities
 import json
 import math
 import os
 import re
+import sys
+import unicodedata
 from typing import Any, Iterable
 from urllib.parse import urlparse
 
@@ -59,7 +62,15 @@ FIELD_PATHS = frozenset(
 # Content fields as R02 accepts them in source_refs[].fields paths (first segment).
 CONTENT_FIELDS = ("kind", "title", "description", "status", "geometry", "geometry_precision",
                   "schedule", "budget", "responsible", "evidence_type", "source_refs", "evidence_notes")
-COARSE_FIELD_PATH_RE = re.compile(r"^[a-z_]{1,40}(\.[a-z_]{1,40}){0,2}$")
+# Exactly the source_refs[].fields paths R02 validate.SOURCE_FIELD_PATHS accepts (7d5e39a).
+R02_SOURCE_FIELD_PATHS = frozenset(
+    [k for k in CONTENT_FIELDS if k != "source_refs"]
+    + ["schedule." + k for k in SCHEDULE_KEYS] + ["budget." + k for k in BUDGET_KEYS]
+    + ["responsible." + k for k in RESPONSIBLE_KEYS])
+BIDI_CONTROLS = frozenset("\u202a\u202b\u202c\u202d\u202e\u2066\u2067\u2068\u2069")
+INVISIBLE_FILLERS = frozenset("\u115f\u1160\u3164\uffa0\u2800\u180e")  # look like letters, render empty
+R02_REF_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,63}\Z")  # R02 validate.ID_RE for source ids
+MAX_AMOUNT_KZT = 10 ** 13                                           # R02 validate.MAX_AMOUNT_KZT
 
 # Map services whose geometry must never be copied (viewing licence != extraction licence).
 PROPRIETARY_MAP_LABELS = frozenset({"2gis", "google", "yandex"})
@@ -68,18 +79,21 @@ PROPRIETARY_MAP_DOMAINS = ("goo.gl", "here.com", "apple.com")
 ASTANA_TZ = _dt.timezone(_dt.timedelta(hours=5))  # Kazakhstan: single zone UTC+5 since 2024-03-01
 MIN_YEAR, MAX_YEAR = 1990, 2100                   # same window as R02 validate.py
 
-ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]{2,63}$")  # R02 civic_objects.id is <= 64 chars
-DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
-TS_RE = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d{1,6})?)?(Z|[+-]\d{2}:\d{2})$")
-# Any tag opener (closed or not) or any named/decimal/hex character reference.
-HTML_RE = re.compile(r"<\s*[/!?A-Za-z]|&(?:#[xX][0-9A-Fa-f]+|#\d+|[A-Za-z][A-Za-z0-9]{1,31});")
-# C0 (except tab/LF/CR), DEL, C1, zero-width, line/paragraph separators, bidi embeddings/isolates, BOM.
-CTRL_RE = re.compile("[\x00-\x08\x0b\x0c\x0e-\x1f\x7f-\x9f\u200b-\u200f\u2028-\u202e\u2060-\u2064\u2066-\u2069\ufeff\ud800-\udfff]")
+ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]{2,63}\Z")  # R02 civic_objects.id is <= 64 chars; \Z: no trailing newline
+DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}\Z")
+TS_RE = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d{1,6})?)?(Z|[+-]\d{2}:\d{2})\Z")
+# Any tag opener (closed or not) or a numeric character reference; named references are checked
+# against the HTML5 entity table so that "Ernst&Young;" stays plain text.
+HTML_RE = re.compile(r"<\s*[/!?A-Za-z]|&(?:#[xX][0-9A-Fa-f]+|#\d+);")
+NAMED_REF_RE = re.compile(r"&([A-Za-z][A-Za-z0-9]{1,31};)")
 LINEBREAK_RE = re.compile(r"[\t\n\r]")
-DIGIT_RUN_RE = re.compile(r"\+?\d[\d\s\-().]{8,}\d")
+# Phone-shaped only: +7 / 8 / "7 " prefix, then a 7xx (mobile) or 7xxx (city) code. Grouped amounts such as
+# "7 500 000 000 тенге" or dates such as "7.10.2026" do not match.
+PHONE_RE = re.compile(r"(?<![\d.,])(?:\+\s?7|8|7(?=[\s\-(]))[\s\-(]*7\d{2,3}[\s\-)]*\d{1,3}[\s\-]*\d{2}[\s\-]*\d{2}(?!\d|[.,]\d)")
+THOUSANDS_RE = re.compile(r"\d{1,3}(?:[ .\u00a0\u202f]\d{3})+")
 IIN_RE = re.compile(r"(?<!\d)\d{12}(?!\d)")
 EMAIL_RE = re.compile(r"[\w.%+-]+[@\uff20][\w-]+(?:\.[\w-]+)*\.\w{2,}")
-URL_BAD_CHARS_RE = re.compile(r"[\s\"'<>`\\\x00-\x1f\x7f-\x9f]")
+URL_BAD_CHARS_RE = re.compile(r"[\s\"<>`\\\x00-\x1f\x7f-\x9f]")  # apostrophe is a legal sub-delim
 SYNTHETIC_MARK_RE = re.compile(r"\b(?:демо|demo|synthetic)\b|синтетическ\w*\s+(?:запис|данн|пример)|демонстрационн", re.I)
 
 # Text limits follow R02 ui/civic_store/validate.py MAX_TEXT so an R05-valid record imports.
@@ -114,9 +128,10 @@ def parse_ts(value: Any) -> _dt.datetime | None:
     if not isinstance(value, str) or not TS_RE.match(value):
         return None
     try:
-        return _dt.datetime.fromisoformat(value.replace("Z", "+00:00"))
+        ts = _dt.datetime.fromisoformat(value.replace("Z", "+00:00"))
     except ValueError:
         return None
+    return ts if MIN_YEAR <= ts.year <= MAX_YEAR else None
 
 
 def _is_number(value: Any) -> bool:
@@ -157,8 +172,10 @@ def check_url(url: Any) -> str | None:
     """Return None for an acceptable absolute http(s) URL, else a reason (mirrors R02 clean_url)."""
     if not isinstance(url, str) or not url or len(url) > URL_MAX:
         return f"url must be a non-empty string of at most {URL_MAX} characters"
-    if URL_BAD_CHARS_RE.search(url):
-        return "url must not contain spaces, quotes, angle brackets or control characters"
+    if URL_BAD_CHARS_RE.search(url) or any(
+            ch in BIDI_CONTROLS or ch in INVISIBLE_FILLERS
+            or unicodedata.category(ch) in ("Cc", "Cf", "Cs", "Co", "Cn", "Zl", "Zp", "Zs") for ch in url):
+        return "url must not contain spaces, quotes, angle brackets, control or invisible characters"
     try:
         parts = urlparse(url)
         port_ok = parts.port is None or 0 < parts.port < 65536
@@ -176,12 +193,15 @@ def check_url(url: Any) -> str | None:
 # ---------------------------------------------------------------- geofence
 
 def load_geofence(path: str | None = None) -> dict | None:
-    """Load the Astana geofence produced by build_geofence (None if missing)."""
+    """Load the Astana geofence produced by build_geofence (None if missing; ValueError if unreadable)."""
     path = path or DEFAULT_GEOFENCE_PATH
     if not os.path.exists(path):
         return None
-    with open(path, encoding="utf-8") as fh:
-        return json.load(fh)
+    with open(path, encoding="utf-8-sig") as fh:
+        fence = json.load(fh)
+    if not isinstance(fence, dict) or not isinstance(fence.get("polygons"), list) or len(fence.get("outer_bbox") or []) != 4:
+        raise ValueError(f"{path}: not an r05 geofence")
+    return fence
 
 
 def _point_in_ring(lon: float, lat: float, ring: list) -> bool:
@@ -197,6 +217,17 @@ def _point_in_ring(lon: float, lat: float, ring: list) -> bool:
                 inside = not inside
         j = i
     return inside
+
+
+def _on_ring(lon: float, lat: float, ring: list) -> bool:
+    """True when the point lies on an edge of the ring (within floating-point noise)."""
+    for i in range(len(ring) - 1):
+        (x1, y1), (x2, y2) = ring[i][:2], ring[i + 1][:2]
+        cross = (x2 - x1) * (lat - y1) - (y2 - y1) * (lon - x1)
+        if abs(cross) < 1e-12 and min(x1, x2) - 1e-12 <= lon <= max(x1, x2) + 1e-12 \
+                and min(y1, y2) - 1e-12 <= lat <= max(y1, y2) + 1e-12:
+            return True
+    return False
 
 
 def _point_in_polygon(lon: float, lat: float, rings: list) -> bool:
@@ -268,7 +299,8 @@ def _validate_position(pos: Any, path: str, issues: list) -> bool:
     return True
 
 
-def validate_geometry(geometry: Any, issues: list, fence: dict | None, path: str = "geometry") -> None:
+def validate_geometry(geometry: Any, issues: list, fence: dict | None, path: str = "geometry",
+                      policy: str = "error") -> None:
     if geometry is None:
         return
     if not isinstance(geometry, dict):
@@ -296,7 +328,8 @@ def validate_geometry(geometry: Any, issues: list, fence: dict | None, path: str
                 issues.append(_issue("geometry_degenerate", path, "LineString has zero length"))
             elif length > MAX_LINE_KM:
                 issues.append(_issue("geometry_too_long", path,
-                                     f"LineString is {length:.1f} km; a single civic object should be a local section"))
+                                     f"LineString is {length:.1f} km; a single civic object should be a local section",
+                                     policy))
     elif gtype == "Polygon":
         if not isinstance(coords, list) or not coords:
             issues.append(_issue("geometry_polygon", path + ".coordinates", "Polygon needs at least one ring"))
@@ -322,7 +355,10 @@ def validate_geometry(geometry: Any, issues: list, fence: dict | None, path: str
         if ok and len(coords) > 1:
             shell = coords[0]
             for r, hole in enumerate(coords[1:], start=1):
-                inside = all(_point_in_ring(v[0], v[1], shell) for v in hole[:-1])
+                on = [_on_ring(v[0], v[1], shell) for v in hole[:-1]]
+                inn = [_point_in_ring(v[0], v[1], shell) for v in hole[:-1]]
+                # OGC: a hole may touch the shell at a point; it must not lie outside it.
+                inside = all(o or i for o, i in zip(on, inn)) and any(i and not o for o, i in zip(on, inn))
                 crosses = any(_segments_cross(hole[i], hole[i + 1], shell[j], shell[j + 1])
                               for i in range(len(hole) - 1) for j in range(len(shell) - 1))
                 if not inside or crosses:
@@ -357,13 +393,28 @@ def _check_text(value: Any, path: str, issues: list, *, required: bool, max_len:
         issues.append(_issue("text_empty", path, "must not be empty"))
     if len(value) > max_len:
         issues.append(_issue("text_too_long", path, f"longer than {max_len} characters (R02 limit)", length_severity))
-    if HTML_RE.search(value):
+    if HTML_RE.search(value) or any(m.group(1) in html.entities.html5 for m in NAMED_REF_RE.finditer(value)):
         issues.append(_issue("text_html", path, "plain text only; HTML tags/entities are not allowed"))
-    if CTRL_RE.search(value):
+    if _has_bad_chars(value, multiline=not single_line):
         issues.append(_issue("text_control_chars", path,
-                             "contains control, zero-width or bidi characters"))
+                             "contains control, format (zero-width, soft hyphen, bidi), private or unassigned characters"))
     if single_line and LINEBREAK_RE.search(value):
         issues.append(_issue("text_line_break", path, "single-line field must not contain tabs or line breaks"))
+    if value.strip() and not any(unicodedata.category(c)[0] in "LNPS" and c not in INVISIBLE_FILLERS
+                                 for c in unicodedata.normalize("NFC", value)):
+        issues.append(_issue("text_invisible", path, "text has no visible characters"))
+
+
+def _has_bad_chars(value: str, multiline: bool) -> bool:
+    """Same character policy as R02 clean_text: Cs/Cf/Co/Cn, bidi, Cc (except tab/newline in
+    multiline text) and line/paragraph separators in single-line fields are rejected."""
+    for ch in unicodedata.normalize("NFC", value.replace("\r\n", "\n").replace("\r", "\n")):
+        cat = unicodedata.category(ch)
+        if (ch in BIDI_CONTROLS or cat in ("Cs", "Cf", "Co", "Cn")
+                or (cat == "Cc" and not (multiline and ch in "\n\t"))
+                or (cat in ("Zl", "Zp") and not multiline)):
+            return True
+    return False
 
 
 def find_pii(value: Any) -> list[str]:
@@ -371,13 +422,30 @@ def find_pii(value: Any) -> list[str]:
     if not isinstance(value, str):
         return []
     hits = []
-    for m in DIGIT_RUN_RE.finditer(value):
-        digits = re.sub(r"\D", "", m.group(0))
-        if (len(digits) == 11 and digits[0] in "78" and digits[1] == "7") or (len(digits) == 10 and digits[0] == "7"):
+    for m in PHONE_RE.finditer(value):
+        if not THOUSANDS_RE.fullmatch(m.group(0).strip()):
             hits.append(m.group(0))
-    hits += IIN_RE.findall(value)
+    for m in IIN_RE.finditer(value):
+        label = value[max(0, m.start() - 8):m.start()]
+        if re.search(r"БИН\s*:?\s*$", label, re.I):
+            continue  # a company's BIN is public, not personal data
+        if re.search(r"ИИН\s*:?\s*$", label, re.I) or _iin_plausible(m.group(0)):
+            hits.append(m.group(0))
     hits += EMAIL_RE.findall(value)
     return hits
+
+
+def _iin_plausible(d: str) -> bool:
+    """A 12-digit number that has an IIN birth date, century digit and mod-11 check digit."""
+    if not (1 <= int(d[2:4]) <= 12 and 1 <= int(d[4:6]) <= 31 and d[6] in "0123456"):
+        return False
+    digits = [int(c) for c in d]
+    total = sum(a * b for a, b in zip(digits[:11], range(1, 12))) % 11
+    if total == 10:
+        total = sum(a * b for a, b in zip(digits[:11], (3, 4, 5, 6, 7, 8, 9, 10, 11, 1, 2))) % 11
+        if total == 10:
+            return False
+    return total == digits[11]
 
 
 def _check_pii(value: Any, path: str, issues: list, severity: str = "error") -> None:
@@ -470,7 +538,7 @@ def _validate_object(obj: Any, profile: str, as_of: str | None, fence: dict | No
     for key in ("title", "description", "evidence_notes"):
         _check_pii(obj.get(key), key, issues, policy)
 
-    validate_geometry(obj.get("geometry"), issues, fence)
+    validate_geometry(obj.get("geometry"), issues, fence, policy=policy)
 
     # schedule
     schedule = obj.get("schedule")
@@ -509,6 +577,8 @@ def _validate_object(obj: Any, profile: str, as_of: str | None, fence: dict | No
         amount = budget.get("amount_kzt")
         if amount is not None and (not _is_number(amount) or amount < 0):
             issues.append(_issue("budget_amount", "budget.amount_kzt", "must be a finite non-negative number or null"))
+        elif _is_number(amount) and amount > MAX_AMOUNT_KZT:
+            issues.append(_issue("budget_amount_limit", "budget.amount_kzt", "amount above 10^13 KZT (R02 limit)", policy))
         if budget.get("basis") not in BASES:
             issues.append(_issue("enum", "budget.basis", f"must be one of {BASES}"))
         sid = budget.get("source_id")
@@ -552,6 +622,9 @@ def _validate_object(obj: Any, profile: str, as_of: str | None, fence: dict | No
         rid = ref.get("id")
         if not isinstance(rid, str) or not rid:
             issues.append(_issue("source_ref_id", f"{rp}.id", "id must be a non-empty string"))
+        elif not R02_REF_ID_RE.match(rid):
+            issues.append(_issue("source_ref_id_format", f"{rp}.id", "source id: Latin letters/digits/._- up to 64 chars (R02)",
+                                 policy))
         elif rid in ref_ids:
             issues.append(_issue("source_ref_duplicate", f"{rp}.id", f"duplicate source_ref id {rid!r}"))
         else:
@@ -595,7 +668,7 @@ def _validate_object(obj: Any, profile: str, as_of: str | None, fence: dict | No
         for f in fields:
             if f in FIELD_PATHS:
                 continue
-            coarse_ok = bool(COARSE_FIELD_PATH_RE.match(f)) and f.split(".")[0] in CONTENT_FIELDS
+            coarse_ok = f in R02_SOURCE_FIELD_PATHS
             if profile == "contract" and coarse_ok:
                 continue  # civic-v1 only says "paths of supported fields"; R02 accepts these
             issues.append(_issue("source_ref_field_path", f"{rp}.fields",
@@ -826,7 +899,7 @@ def main(argv: list[str] | None = None) -> int:
         with open(args.path, encoding="utf-8-sig") as fh:
             envelope = json.load(fh)
         items = load_items(args.path)
-    except (OSError, ValueError) as exc:
+    except (OSError, ValueError, RecursionError) as exc:
         print(json.dumps({"valid": False, "error": f"cannot read {args.path}: {exc}"}, ensure_ascii=False))
         return 2
     if isinstance(envelope, dict) and isinstance(envelope.get("slice"), dict):
@@ -834,6 +907,10 @@ def main(argv: list[str] | None = None) -> int:
         max_age = envelope["slice"].get("status_max_age_days", max_age)
     report = validate_collection(items, profile=args.profile, as_of=as_of, fence=fence,
                                  max_status_age_days=max_age)
+    try:
+        sys.stdout.reconfigure(errors="backslashreplace")  # lone surrogates in input must not crash the report
+    except (AttributeError, ValueError):
+        pass
     print(json.dumps(report, ensure_ascii=False, indent=2, sort_keys=True))
     return 0 if report["valid"] else 1
 

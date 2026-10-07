@@ -26,6 +26,7 @@ async function startServer(port, db) {
   const env = { ...process.env, CIVIC_DB_PATH: db, PYTHONDONTWRITEBYTECODE: "1" };
   // R05 synthetic Astana slice (demo=true) through R02's seed-demo; the real slice (0 records in this
   // environment) goes through `import`, which only ever creates drafts.
+  execSync(`python3 -B -m ui.civic_store --db "${db}" init`, { cwd: REPO, env, stdio: ["ignore", "ignore", "inherit"] });
   execSync(`python3 -B -m ui.civic_store --db "${db}" seed-demo --package data/civic/astana/demo_synthetic.json`, { cwd: REPO, env, stdio: ["ignore", "ignore", "inherit"] });
   execSync(`python3 -B -m ui.civic_store --db "${db}" import data/civic/astana/objects.json`, { cwd: REPO, env, stdio: ["ignore", "ignore", "inherit"] });
   execSync(`python3 -B -m ui.civic_store --db "${db}" create-editor ${USER} --password-stdin --display-name "Редактор смоука"`,
@@ -165,6 +166,28 @@ const okNotice = (page, text) => page.waitForSelector(`#civic-editor-root .civic
     check("public history has the reason", (moved.body?.data?.history || []).some((h) => /задержке/.test(h.reason || "")), (moved.body?.data?.history || []).map((h) => h.reason));
     check("public history has no login names", !JSON.stringify(moved.body?.data?.history || []).includes(USER));
     await page.screenshot({ path: path.join(OUT, "03_editor_published_change_1440.png") });
+
+    // ---- R10-D010: a stale save shows R04's conflict panel; its action must be reachable by pointer
+    // (not hidden under the sticky action bar). The bump comes from a "second tab" (same session, API).
+    await page.fill(fk("description"), "Создано смоуком R01. Правка для проверки конфликта версий.");
+    await page.click(fk("save"));
+    await page.click(fk("chip-0")).catch(() => null);
+    if (await page.locator(fk("reason")).count()) await page.fill(fk("reason"), "Уточнение описания (смоук R01, конфликт)");
+    const revNow = (await apiFetch(page, "GET", "/staff/objects/" + encodeURIComponent(createdId))).body?.data?.item?.revision;
+    const bump = await apiFetch(page, "POST", `/staff/objects/${encodeURIComponent(createdId)}/update`,
+      { expected_revision: revNow, changes: { evidence_notes: "Правка из второй вкладки (смоук R01)." }, reason: "Вторая вкладка (смоук R01)" }, { "X-CSRF-Token": csrf });
+    await page.click(fk("save"));
+    const conflictShown = await page.waitForSelector('#civic-editor [aria-label="Конфликт версий"]', { timeout: 15000 }).then(() => true).catch(() => false);
+    const conflictReach = conflictShown && await page.locator(fk("rebase")).click({ trial: true, timeout: 5000 }).then(() => true).catch(() => false);
+    const conflictGeo = await page.evaluate(() => {
+      const a = document.querySelector("#civic-editor .civic-r04-actions")?.getBoundingClientRect();
+      const b = document.querySelector("#civic-editor .civic-r04-body")?.getBoundingClientRect();
+      return { actions: a ? Math.round(a.height) : null, body: b ? Math.round(b.height) : null,
+        descriptionKept: document.querySelector('#civic-editor [data-fk="description"]')?.value.includes("конфликта версий") };
+    });
+    await page.screenshot({ path: path.join(OUT, "03b_editor_conflict_1440.png") });
+    check("409 in the editor: conflict panel shown, typed text kept, action reachable by pointer (R10-D010)",
+      bump.status === 200 && conflictShown && conflictReach && conflictGeo.descriptionKept, { bump: bump.status, conflictShown, conflictReach, ...conflictGeo });
     await page.click("#civic-editor [data-close=editor]");
 
     // ---- resident card (R03)
@@ -225,6 +248,10 @@ const okNotice = (page, text) => page.waitForSelector(`#civic-editor-root .civic
     check("moderation button only for a signed-in editor", await page.isVisible("#civic-moderation-button"));
     await page.click("#civic-moderation-button");
     await page.waitForSelector("#civic-moderation-root .civic-r06-queue-item", { timeout: 10000 });
+    const deskFoot = await page.evaluate(() => { const f = document.querySelector(".civic-foot"), p = document.getElementById("civic-panel");
+      return { footScroll: f.scrollWidth, footClient: f.clientWidth, panelScrollLeft: p.scrollLeft,
+        out: [...f.querySelectorAll("button")].filter((b) => b.offsetParent).filter((b) => b.getBoundingClientRect().right > p.getBoundingClientRect().right + 0.5).length }; });
+    check("desktop staff footer: no clipping, panel not scrolled sideways (R10-D011)", deskFoot.footScroll <= deskFoot.footClient && deskFoot.panelScrollLeft === 0 && deskFoot.out === 0, deskFoot);
     await page.locator("#civic-moderation-root .civic-r06-queue-item").first().click();
     await page.waitForSelector("#civic-moderation-root .civic-r06-decision", { timeout: 10000 });
     const decision = page.locator("#civic-moderation-root .civic-r06-decision");
@@ -262,6 +289,12 @@ const okNotice = (page, text) => page.waitForSelector(`#civic-editor-root .civic
     await page.waitForTimeout(900);
     const training = await page.evaluate(() => ({ district: map.getLayoutProperty("district-fill", "visibility"), score: document.getElementById("city-score").textContent,
       civicLayers: map.getStyle().layers.filter((l) => l.id.startsWith("civic-")).length, canvases: document.querySelectorAll("canvas").length }));
+    const header = await page.evaluate(() => { const bar = document.querySelector(".topbar").getBoundingClientRect();
+      const kids = [...document.querySelectorAll(".topbar .top-center *, .topbar .brand *")].filter((e) => e.getClientRects().length && getComputedStyle(e).visibility !== "hidden");
+      const outside = kids.map((e) => e.getBoundingClientRect()).filter((r) => r.height > 0 && (r.top < bar.top - 0.5 || r.bottom > bar.bottom + 0.5));
+      return { bar: [Math.round(bar.top), Math.round(bar.bottom)], outside: outside.length, scrollW: document.documentElement.scrollWidth }; });
+    check("training mode header text stays inside the top bar at 1440 (R10-D012)", header.outside === 0 && header.scrollW <= 1440, header);
+    await page.screenshot({ path: path.join(OUT, "07b_training_mode_1440.png") });
     check("training mode: district layers, score 52,56, no civic layers, one canvas", training.district === "visible" && training.score.includes("52,56") && training.civicLayers === 0 && training.canvases === 1, training);
     await page.click("#civic-modes [data-mode=school]");
     await page.waitForTimeout(1200);
@@ -325,7 +358,8 @@ const okNotice = (page, text) => page.waitForSelector(`#civic-editor-root .civic
       const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
       return { ok: !!hit && (el === hit || el.contains(hit)) && r.top >= 0 && r.bottom <= innerHeight && r.left >= 0 && r.right <= innerWidth,
         injected, rect: [Math.round(r.left), Math.round(r.top), Math.round(r.right), Math.round(r.bottom)],
-        sheet: document.body.dataset.civicSheet || null, drawer: document.body.dataset.civicDrawer || null };
+        sheet: document.body.dataset.civicSheet || null, drawer: document.body.dataset.civicDrawer || null,
+        _cleanup: document.getElementById("r01-test-attrib")?.remove() };
     });
     const slots = [await attribSlot()];
     await m.page.click(`#civic-map-root .civic-r03-item[data-id="${createdId}"]`);
@@ -344,6 +378,16 @@ const okNotice = (page, text) => page.waitForSelector(`#civic-editor-root .civic
         .filter((r) => r.right > innerWidth + 0.5 || r.left < -0.5).length }));
     check("mobile: staff footer fits (3 buttons, no overflow)", foot.scrollW <= 390 && foot.out === 0, foot);
     await m.page.screenshot({ path: path.join(OUT, "12_staff_footer_390.png") });
+    // R04 form on a phone: its sticky action bar must leave room for the form/conflict panel (R10-D010).
+    await m.page.evaluate(() => window.CivicShell.openEditor());
+    await m.page.click(fk("new"));
+    await m.page.waitForSelector("#civic-editor .civic-r04-actions", { timeout: 10000 });
+    const barGeo = await m.page.evaluate(() => ({ bar: parseFloat(getComputedStyle(document.querySelector("#civic-editor .civic-r04-actions")).maxHeight),
+      body: document.querySelector("#civic-editor .civic-r04-body").getBoundingClientRect().height,
+      drawerTop: document.getElementById("civic-editor").getBoundingClientRect().top }));
+    check("mobile editor: action bar capped below the form body height, map visible above the drawer", barGeo.bar < barGeo.body * 0.75 && barGeo.drawerTop > 844 * 0.3, barGeo);
+    await m.page.screenshot({ path: path.join(OUT, "12b_editor_390.png") });
+    await m.page.click("#civic-editor [data-close=editor]");
     // Drawers are bottom sheets on a phone: map stays visible above, attribution moves above the drawer.
     await m.page.click("#civic-scenarios-button");
     await m.page.waitForTimeout(600);

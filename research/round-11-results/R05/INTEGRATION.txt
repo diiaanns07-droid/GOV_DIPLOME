@@ -11,8 +11,9 @@ PACK_SHA 9c2f5c0dae14b46c0697a9dfc7f854351bfd570d; ветка claude/intelligent
 
 2. ИМПОРТ ДЕЛАЕТ R02 СВОИМ ИМПОРТЁРОМ (проверено)
    python -m ui.civic_store --db .runtime/civic.sqlite3 import data/civic/astana/demo_synthetic.json [--dry-run]
-   Проверено на R02 597ff2c (research/round-11-results/R05/r02_import_check.json): демо — create 9 (draft),
-   повторный импорт — skip_unchanged 9; objects.json/historical.json — пустые, ошибок нет.
+   Проверено на R02 7d5e39a (research/round-11-results/R05/r02_import_check.json): демо — create 9 (draft),
+   повторный импорт — skip_unchanged 9; objects.json/historical.json — пустые, ошибок нет. Дифференциальный
+   fuzz (12 000 мутаций): всё, что принимают профили R05 demo/real, принимает и validate_content R02.
    R02 сам назначает id/revision/updated_at/publication и считает свой import_digest по нормализованному
    содержимому — это НЕ тот же хэш, что import_helper.content_digest. Не смешивать.
    objects.json и historical.json имеют один source r05-astana-real: импортировать их вместе (или
@@ -20,14 +21,16 @@ PACK_SHA 9c2f5c0dae14b46c0697a9dfc7f854351bfd570d; ветка claude/intelligent
 
 3. import_helper.py — ПРЕДВАРИТЕЛЬНАЯ ПРОВЕРКА ПАКЕТА (рекомендательно)
    python3 -I data/civic/astana/tools/import_helper.py [--include-demo] [--include-historical]
-   Проверяет: срез не отредактирован вручную (content_sha256 + version + as_of), входы сборки на диске
+   Проверяет: срез не отредактирован вручную (content_sha256 покрывает items, входы и параметры среза
+   name/as_of/demo/status_max_age_days; version должен совпадать), входы сборки на диске
    совпадают с записанными хэшами (если sources.json/intake лежат рядом), каждая запись проходит
    civic_v1 в профиле real/demo с порогами из среза. Отказ — PackageError с причиной.
    plan(): create | skip_unchanged | update_import_draft | editor_review | report_missing; публикации и
    архивации нет. update_import_draft только при явном existing.edited_after_import == False и
    publication == "draft"; если состояние неизвестно — editor_review. Если R02 захочет использовать
-   plan(), existing.digest должен быть import_helper.content_digest, а edited_after_import можно
-   вывести как (import_revision == revision and first_published_at is null).
+   plan(), existing.digest должен быть import_helper.content_digest, а
+   edited_after_import = not (import_revision == revision and first_published_at is null)
+   (True — редактор правил или публиковал; plan() тогда даёт editor_review).
 
 4. ДЕМО
    Демо-записи несут suggested_publication (published/draft/archived) как подсказку; импорт R02 всё равно

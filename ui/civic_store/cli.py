@@ -29,8 +29,8 @@ import sys
 import time
 
 from .auth import PasswordPolicyError, ROLES, check_password_policy, normalize_username
-from .db import (DEFAULT_DB_PATH, SCHEMA_VERSION, Database, StorageError, create_private_file,
-                 resolve_db_path, restrict_permissions)
+from .db import (DEFAULT_DB_PATH, MIGRATIONS, SCHEMA_VERSION, Database, StorageError, _checksum,
+                 create_private_file, resolve_db_path, restrict_permissions)
 from .importer import ImportRejected, describe_package, import_package, load_package
 from .objects import Actor, BadRequest, Conflict, NotFound
 from .service import CivicService
@@ -171,8 +171,17 @@ def cmd_seed_demo(args, service):
     _print(seed_demo(service, package, publish=not args.no_publish))
 
 
-def _backup(src: Path, dest: Path) -> None:
-    create_private_file(dest)
+def _integrity_ok(path: Path) -> bool:
+    conn = sqlite3.connect(f"{Path(path).resolve().as_uri()}?mode=ro", uri=True)
+    try:
+        return conn.execute("PRAGMA integrity_check").fetchone()[0] == "ok"
+    finally:
+        conn.close()
+
+
+def _backup(src: Path, dest: Path, *, exclusive: bool = False) -> None:
+    if not create_private_file(dest, exclusive=exclusive):
+        raise StorageError(f"Файл уже существует: {dest}")
     source, target = sqlite3.connect(src), sqlite3.connect(dest)
     try:
         source.backup(target)
@@ -180,21 +189,68 @@ def _backup(src: Path, dest: Path) -> None:
         source.close()
         target.close()
     restrict_permissions(dest)
-    check = sqlite3.connect(dest)
-    try:
-        if check.execute("PRAGMA integrity_check").fetchone()[0] != "ok":
-            raise StorageError("Копия не прошла integrity_check.")
-    finally:
-        check.close()
+    if not _integrity_ok(dest):
+        raise StorageError("Копия не прошла integrity_check.")
 
 
-def cmd_backup(args, service):
+def _existing_db(args) -> Path:
+    path = resolve_db_path(_db_path(args))
+    if not path.is_file():
+        raise SystemExit(f"База не найдена: {path}. Выполните init или укажите --db / CIVIC_DB_PATH.")
+    return path
+
+
+def cmd_backup(args, service=None):
+    # Копия «как есть»: без миграции и без создания пустой базы по опечатке в пути.
+    source = service.db.path if service is not None else _existing_db(args)
     dest = resolve_db_path(args.dest)
-    if dest.exists():
-        raise SystemExit("Файл назначения уже существует — выберите новое имя.")
     dest.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
-    _backup(service.db.path, dest)
+    try:
+        _backup(source, dest, exclusive=True)
+    except StorageError as exc:
+        if dest.exists() and "уже существует" in str(exc):
+            raise SystemExit("Файл назначения уже существует — выберите новое имя.")
+        raise
     print(f"Резервная копия: {dest}")
+
+
+def _check_source_schema(source: Path) -> None:
+    """Копия должна быть базой civic_store с миграциями, совпадающими с кодом (до любой записи)."""
+    known = {version: _checksum(statements) for version, _, statements in MIGRATIONS}
+    conn = sqlite3.connect(f"{source.as_uri()}?mode=ro", uri=True)
+    try:
+        if conn.execute("PRAGMA integrity_check").fetchone()[0] != "ok":
+            raise SystemExit("Исходный файл повреждён (integrity_check).")
+        rows = conn.execute("SELECT version, checksum FROM civic_schema_migrations").fetchall()
+    except sqlite3.DatabaseError:
+        raise SystemExit("Это не база civic_store.")
+    finally:
+        conn.close()
+    if not rows:
+        raise SystemExit("В копии нет миграций civic_store.")
+    for version, checksum in rows:
+        if version not in known:
+            raise SystemExit(f"Копия создана более новой версией (миграция {version}); восстановление не выполнено.")
+        if checksum != known[version]:
+            raise SystemExit(f"Миграция {version} в копии отличается от кода; восстановление не выполнено.")
+
+
+def _unique_sibling(path: Path, label: str) -> Path:
+    stamp = time.strftime("%Y%m%dT%H%M%S")
+    for attempt in range(1000):
+        suffix = f"-{attempt}" if attempt else ""
+        candidate = path.with_name(f"{path.stem}.{label}-{stamp}{suffix}.sqlite3")
+        if create_private_file(candidate, exclusive=True):
+            return candidate
+    raise StorageError("Не удалось выбрать имя файла копии.")
+
+
+def _remove_db_files(path: Path) -> None:
+    for suffix in ("", "-wal", "-shm"):
+        try:
+            Path(str(path) + suffix).unlink()
+        except FileNotFoundError:
+            pass
 
 
 def cmd_restore(args, _service_unused=None):
@@ -204,31 +260,41 @@ def cmd_restore(args, _service_unused=None):
         raise SystemExit("Восстановление заменит текущую базу. Остановите сервер и повторите с --yes.")
     if not source.is_file():
         raise SystemExit("Файл копии не найден.")
-    conn = sqlite3.connect(f"{source.as_uri()}?mode=ro", uri=True)
-    try:
-        if conn.execute("PRAGMA integrity_check").fetchone()[0] != "ok":
-            raise SystemExit("Исходный файл повреждён (integrity_check).")
-        versions = {row[0] for row in conn.execute("SELECT version FROM civic_schema_migrations")}
-    except sqlite3.DatabaseError:
-        raise SystemExit("Это не база civic_store.")
-    finally:
-        conn.close()
-    if not versions or max(versions) > SCHEMA_VERSION:
-        raise SystemExit("Версия схемы копии не поддерживается этим кодом.")
+    _check_source_schema(source)
     target_path = resolve_db_path(target)
+    target_path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
     current_users = _security_state(target_path) if target_path.exists() else {}
-    if target_path.exists():
-        safety = target_path.with_name(f"{target_path.stem}.pre-restore-{time.strftime('%Y%m%dT%H%M%S')}.sqlite3")
-        _backup(target_path, safety)
-        print(f"Текущая база сохранена: {safety}")
-    src, dst = sqlite3.connect(source), sqlite3.connect(target_path)
+    # 1) Готовим восстановленную базу во временном файле рядом: миграции и меры безопасности.
+    staging = _unique_sibling(target_path, "restore-staging")
     try:
-        src.backup(dst)
+        src, dst = sqlite3.connect(source), sqlite3.connect(staging)
+        try:
+            src.backup(dst)
+        finally:
+            src.close()
+            dst.close()
+        Database(staging).migrate()
+        notes = _carry_security_state(staging, current_users)
+        if not _integrity_ok(staging):
+            raise StorageError("Подготовленная копия не прошла integrity_check.")
+        # 2) Только теперь трогаем рабочую базу: сначала её копия с уникальным именем.
+        if target_path.exists():
+            safety = _unique_sibling(target_path, "pre-restore")
+            _backup(target_path, safety)
+            print(f"Текущая база сохранена: {safety}")
+        else:
+            create_private_file(target_path)
+        # 3) Запись через backup API (корректно с WAL рабочей базы), без os.replace поверх -wal.
+        src, dst = sqlite3.connect(staging), sqlite3.connect(target_path)
+        try:
+            src.backup(dst)
+        finally:
+            src.close()
+            dst.close()
     finally:
-        src.close()
-        dst.close()
-    Database(target_path).migrate()
-    for line in _carry_security_state(target_path, current_users):
+        _remove_db_files(staging)
+    restrict_permissions(target_path)
+    for line in notes:
         print(line)
     print(f"Восстановлено из {source}")
 
@@ -349,7 +415,7 @@ def build_parser() -> argparse.ArgumentParser:
     cmd.set_defaults(func=cmd_seed_demo)
     cmd = sub.add_parser("backup")
     cmd.add_argument("dest")
-    cmd.set_defaults(func=cmd_backup)
+    cmd.set_defaults(func=cmd_backup, no_service=True)
     cmd = sub.add_parser("restore")
     cmd.add_argument("src")
     cmd.add_argument("--yes", action="store_true")
@@ -366,8 +432,12 @@ def main(argv=None) -> int:
     try:
         if getattr(args, "no_service", False):
             args.func(args)
+        elif args.command == "init":
+            args.func(args, CivicService(_db_path(args)))  # единственная команда, что создаёт/мигрирует
         else:
-            args.func(args, CivicService(_db_path(args)))
+            # Остальные работают только с существующей базой текущей схемы: опечатка в --db
+            # не создаёт новую пустую базу, status/export/dry-run ничего не мигрируют.
+            args.func(args, CivicService(_existing_db(args), auto_migrate=False))
     except (StorageError, PasswordPolicyError, ImportRejected, ValidationError, BadRequest,
             NotFound, Conflict) as exc:
         report = getattr(exc, "report", None)

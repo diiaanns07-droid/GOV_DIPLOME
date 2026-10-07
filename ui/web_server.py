@@ -237,10 +237,15 @@ class CivicGateway:
             if store_service is None:
                 raise ModuleNotDelivered("feedback needs the object store")
             ensure_parent()
-            staff_lookup = integration.object_lookup_from_civic_service(store_service)
+            # R02 >= 9b005be exposes both lookups without an HTTP context; older R02 via handle()/staff read.
+            public_lookup = getattr(store_service, "lookup_public_object", None) or gateway.public_object
+            staff_lookup = getattr(store_service, "lookup_staff_object", None) or \
+                integration.object_lookup_from_civic_service(store_service)
 
             def lookup(object_id):
-                item = gateway.public_object(object_id)
+                if not isinstance(object_id, str) or not CIVIC_ID.match(object_id):
+                    return None
+                item = public_lookup(object_id)
                 if item is not None:
                     return item
                 staff_item = staff_lookup(object_id)

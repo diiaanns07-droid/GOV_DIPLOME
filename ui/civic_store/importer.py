@@ -22,8 +22,8 @@ import json
 from pathlib import Path
 
 from .objects import Actor, ObjectRepository, iso, utc_now
-from .validate import (CITY, ID_RE, SCHEMA_VERSION, ValidationError, is_valid_id, split_payload,
-                       validate_content)
+from .validate import (CITY, ID_RE, SCHEMA_VERSION, ValidationError, clean_reason, is_valid_id,
+                       split_payload, validate_content)
 
 
 MAX_PACKAGE_BYTES = 20 * 1024 * 1024
@@ -112,6 +112,12 @@ def import_package(repo: ObjectRepository, package, *, source=None, dry_run=Fals
         "status": None, "counts": {}, "items": [], "missing": [],
     }
     reason = f"Импорт {meta['slice_version'] or meta['source']}"
+    try:
+        # Та же проверка, что у update: иначе первый импорт сохранял бы причину,
+        # которую следующий импорт уже отверг бы целиком.
+        reason = clean_reason(reason, required=True)
+    except ValidationError:
+        raise ImportRejected("slice.version пакета должен быть простым текстом (без HTML, ≤ 1000 символов).")
     today = repo.today()
 
     # Проверка без базы: недопустимые записи не доходят до транзакции.
@@ -139,6 +145,10 @@ def import_package(repo: ObjectRepository, package, *, source=None, dry_run=Fals
             prepared.append((entry, content, digest_of(content)))
         except ValidationError as exc:
             entry.update({"action": "invalid", "fields": exc.fields})
+            report["items"].append(entry)
+        except (TypeError, ValueError, UnicodeError, RecursionError):
+            # Мусор в записи (нехэшируемые id, суррогаты...) — недопустимая запись, а не падение импорта.
+            entry.update({"action": "invalid", "fields": {"item": "Запись не является корректным объектом civic-v1."}})
             report["items"].append(entry)
     invalid = len(report["items"])
     if invalid and not allow_partial:
@@ -208,10 +218,22 @@ def _apply_one(repo, conn, actor, source, external_id, content, digest, reason) 
         repo.update(actor, row["id"], expected_revision=row["revision"], changes=content,
                     reason=reason, conn=conn, import_meta={"digest": digest})
         return {"action": "update_import_draft", "object_id": row["id"]}
-    pending = conn.execute(
-        "SELECT 1 FROM civic_import_candidates WHERE source = ? AND external_id = ? AND digest = ?",
+    if json.loads(row["data_json"]) == content:
+        # Редактор уже привёл объект к этой версии вручную: запоминаем отпечаток, кандидаты закрываем.
+        conn.execute("UPDATE civic_objects SET import_digest = ? WHERE id = ?", (digest, row["id"]))
+        conn.execute(
+            """UPDATE civic_import_candidates SET resolved_at = ?, resolution = 'superseded'
+               WHERE object_id = ? AND digest = ? AND resolved_at IS NULL""",
+            (iso(utc_now(repo.clock)), row["id"], digest))
+        return {"action": "skip_unchanged", "object_id": row["id"], "detail": "совпадает с правкой редактора"}
+    previous = conn.execute(
+        "SELECT resolution FROM civic_import_candidates WHERE source = ? AND external_id = ? AND digest = ?",
         (source, external_id, digest)).fetchone()
-    return {"action": "editor_review", "object_id": row["id"],
-            "detail": ("изменение уже ждёт редактора" if pending else
-                       "объект изменён редактором или опубликован; новая версия ждёт решения"),
-            "_candidate": None if pending else {"digest": digest, "content": content}}
+    if previous is None:
+        detail, candidate = ("объект изменён редактором или опубликован; новая версия ждёт решения",
+                             {"digest": digest, "content": content})
+    elif previous["resolution"] is None:
+        detail, candidate = "изменение уже ждёт редактора", None
+    else:
+        detail, candidate = f"эта версия уже рассмотрена редактором ({previous['resolution']})", None
+    return {"action": "editor_review", "object_id": row["id"], "detail": detail, "_candidate": candidate}

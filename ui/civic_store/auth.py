@@ -20,6 +20,7 @@ import hashlib
 import hmac
 import re
 import secrets
+import sqlite3
 import threading
 
 from .db import Database
@@ -298,6 +299,12 @@ class Accounts:
         if not ok:
             raise AuthError("Неверный логин или пароль.")  # резерв остаётся учтённой неудачей
         with self.db.write() as conn:
+            # Пароль проверялся вне транзакции: если за это время его сменили или учётную запись
+            # отключили, сессия по старому паролю не создаётся (иначе пережила бы set-password).
+            fresh = conn.execute("SELECT password_hash, disabled_at FROM civic_users WHERE id = ?",
+                                 (user["id"],)).fetchone()
+            if fresh is None or fresh["password_hash"] != stored or fresh["disabled_at"] is not None:
+                raise AuthError("Неверный логин или пароль.")
             conn.execute("DELETE FROM civic_login_failures WHERE username_key = ? AND client_key = ?",
                          (user_key, client_key))
             if previous_token and TOKEN_RE.match(previous_token):
@@ -332,9 +339,13 @@ class Accounts:
                 or row["role"] not in ROLES):
             return None
         if now - row["last_seen_at"] >= TOUCH_INTERVAL:
-            with self.db.write() as conn:
-                conn.execute("UPDATE civic_sessions SET last_seen_at = ? WHERE token_hash = ? AND revoked_at IS NULL",
-                             (now, hashed))
+            # Продление простоя — по возможности: занятая база (импорт из CLI) не должна ломать чтение.
+            try:
+                with self.db.write() as conn:
+                    conn.execute("UPDATE civic_sessions SET last_seen_at = ? WHERE token_hash = ? AND revoked_at IS NULL",
+                                 (now, hashed))
+            except sqlite3.OperationalError:
+                pass
         return Principal(user_id=row["user_id"], username=row["username"],
                          display_name=row["display_name"], role=row["role"],
                          public_label=row["public_label"], csrf_token=row["csrf_token"],
